@@ -2,6 +2,10 @@ language: python
 python:
   - "3.5"
 # command to install dependencies
+before_install:
+  - sudo apt-get update -qq
+  - sudo apt-get install -y freeglut3 freeglut3-dev binutils-gold
+
 install:
   - pip install .
   - pip install -r requirements.txt
