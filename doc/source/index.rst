@@ -8,13 +8,20 @@ Welcome to Arcade's documentation!
 
 Arcade is an easy-to-learn library for creating 2d video games with Python.
 
-Contents:
-
+API Documentation
+-----------------
 .. toctree::
    :maxdepth: 2
 
    arcade
-   modules
+
+Example Code
+------------
+.. toctree::
+   :maxdepth: 2
+
+   example_asteroid
+   example_drawing_primitives
 
 .. automodule:: arcade
 
