@@ -7,3 +7,5 @@ dist/
 doc/build/
 build/
 a_quick_test.py
+*.wpr
+arcade.wpu
