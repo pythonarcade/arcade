@@ -1,0 +1,9 @@
+*.sublime-project
+*.sublime-workspace
+arcade.egg-info/
+arcade/__pycache__/
+*.pyc
+dist/
+doc/build/
+build/
+a_quick_test.py
