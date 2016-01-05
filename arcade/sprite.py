@@ -87,12 +87,19 @@ scale)
     >>> # Enable the following to keep the window up after running.
     >>> # arcade.run()
     """
-    def __init__(self, filename, scale):
-        self.texture, width, height = load_texture(filename)
+    def __init__(self, filename=None, scale=0):
+        if filename != None:
+            self.texture, width, height = load_texture(filename)
+            self.textures = [self.texture]
+            self.width = width * scale
+            self.height = height * scale
+        else:
+            self.textures = []
+            self.width = 0
+            self.height = 0
+
         self.center_x = 0
         self.center_y = 0
-        self.width = width * scale
-        self.height = height * scale
         self.angle = 0.0
 
         self.change_x = 0
@@ -100,8 +107,14 @@ scale)
         self.change_angle = 0
 
         self.alpha = 1.0
-
         self.sprite_lists = []
+
+
+    def append_texture(self, texture):
+        self.textures.append(texture)
+
+    def set_texture(self, texture_no):
+        self.texture = self.textures[texture_no]
 
     def get_points(self):
         """
@@ -163,49 +176,11 @@ scale)
     def _register_sprite_list(self, new_list):
         self.sprite_lists.append(new_list)
 
-    def _draw_rect(self, x1, x2, y1, y2, z):
-        GL.glEnable(GL.GL_BLEND)
-        GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
-        GL.glEnable(GL.GL_TEXTURE_2D)
-        GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
-        GL.glHint(GL.GL_PERSPECTIVE_CORRECTION_HINT, GL.GL_NICEST)
-
-        GL.glColor4f(1, 1, 1, self.alpha)
-
-        GL.glBindTexture(GL.GL_TEXTURE_2D, self.texture)
-        GL.glBegin(GL.GL_POLYGON)                        # front face
-        GL.glNormal3f(0.0, 0.0, 1.0)
-        GL.glTexCoord2f(0, 0)
-        GL.glVertex3f(x1, y1, z)
-        GL.glTexCoord2f(1, 0)
-        GL.glVertex3f(x2, y1, z)
-        GL.glTexCoord2f(1, 1)
-        GL.glVertex3f(x2, y2, z)
-        GL.glTexCoord2f(0, 1)
-        GL.glVertex3f(x1, y2, z)
-        GL.glEnd()
-
-    def _draw_points(self, p, z):
-
-        GL.glPointSize(10.0)
-        GL.glBegin(GL.GL_POINTS)
-        GL.glNormal3f(0.0, 0.0, 1.0)
-        GL.glVertex3f(p[0].x, p[0].y, z)
-        GL.glVertex3f(p[1].x, p[1].y, z)
-        GL.glVertex3f(p[2].x, p[2].y, z)
-        GL.glVertex3f(p[3].x, p[3].y, z)
-        GL.glEnd()
-
     def draw(self):
         """ Draw the sprite. """
-        GL.glLoadIdentity()
-        GL.glTranslatef(self.center_x, self.center_y, 0)
-        GL.glRotatef(self.angle, 0, 0, 1)
-        self._draw_rect(-self.width / 2,
-                        self.width / 2,
-                        -self.height / 2,
-                        self.height / 2,
-                        0.5)
+        draw_texture_rect(self.center_x, self.center_y,
+                          self.width, self.height,
+                          self.texture, self.angle, self.alpha)
 
     def update(self):
         """ Update the sprite. """

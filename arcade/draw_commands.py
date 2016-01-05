@@ -847,7 +847,7 @@ def draw_text(text, x, y, color):
         GLUT.glutBitmapCharacter(GLUT.GLUT_BITMAP_8_BY_13, ord(character))
 
 
-def load_texture(fileName):
+def load_texture(fileName, x=0, y=0, width=0, height=0):
     """
     Load image from disk and create a texture.
 
@@ -859,8 +859,12 @@ def load_texture(fileName):
         None
     """
     image = PIL.Image.open(fileName)
-    width = image.size[0]
-    height = image.size[1]
+
+    if x != 0 or y != 0 or width != 0 or height != 0:
+        image = image.crop((x, y, width, height))
+
+    image_width = image.size[0]
+    image_height = image.size[1]
     image_bytes = image.convert("RGBA").tobytes("raw", "RGBA", 0, -1)
 
     my_texture = GL.glGenTextures(1)
@@ -873,10 +877,10 @@ def load_texture(fileName):
                        GL.GL_LINEAR)
     GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER,
                        GL.GL_LINEAR_MIPMAP_LINEAR)
-    GLU.gluBuild2DMipmaps(GL.GL_TEXTURE_2D, GL.GL_RGBA, width, height,
+    GLU.gluBuild2DMipmaps(GL.GL_TEXTURE_2D, GL.GL_RGBA, image_width, image_height,
                           GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, image_bytes)
 
-    return my_texture, width, height
+    return my_texture, image_width, image_height
 
 
 def draw_texture_rect(x, y, width, height, texture, angle=0, alpha=1):
@@ -931,11 +935,11 @@ scale * height, texture, 0)
     GL.glBegin(GL.GL_POLYGON)
     GL.glNormal3f(0.0, 0.0, 1.0)
     GL.glTexCoord2f(0, 0)
-    GL.glVertex3f(-width/2, height/2, z)
-    GL.glTexCoord2f(1, 0)
-    GL.glVertex3f(width/2, height/2, z)
-    GL.glTexCoord2f(1, 1)
-    GL.glVertex3f(width/2, -height/2, z)
-    GL.glTexCoord2f(0, 1)
     GL.glVertex3f(-width/2, -height/2, z)
+    GL.glTexCoord2f(1, 0)
+    GL.glVertex3f(width/2, -height/2, z)
+    GL.glTexCoord2f(1, 1)
+    GL.glVertex3f(width/2, height/2, z)
+    GL.glTexCoord2f(0, 1)
+    GL.glVertex3f(-width/2, height/2, z)
     GL.glEnd()

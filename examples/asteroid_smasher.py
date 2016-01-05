@@ -122,7 +122,7 @@ class MyApplication(arcade.ArcadeApplication):
     def render(self):
         arcade.start_render()
 
-        self.all_sprites_list.render()
+        self.all_sprites_list.draw()
         output = "Score: {}".format(self.score)
         arcade.draw_text(output, -1.0, 0.95, arcade.color.WHITE)
 
@@ -269,7 +269,7 @@ class MyApplication(arcade.ArcadeApplication):
 
     def run(self):
 
-        self.open_window()
+        self.open_window(1400, 1000)
         self.setup_game()
 
         arcade.run()

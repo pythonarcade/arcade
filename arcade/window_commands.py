@@ -9,6 +9,23 @@ import OpenGL.GLU as GLU
 import OpenGL.GLUT as GLUT
 
 
+def set_resize_window_function(function_pointer):
+    GLUT.glutReshapeFunc(function_pointer)
+
+
+def default_resize_window_function(width, height):
+    """ Called when the window is resized. """
+    GL.glViewport(0, 0, width, height)
+    GL.glMatrixMode(GL.GL_PROJECTION)
+    GL.glLoadIdentity()
+    ratio = width / height
+    GL.glOrtho(-1 * ratio, 1 * ratio, -1, 1, -1, 1)
+
+
+def set_render_function(function_pointer):
+    GLUT.glutDisplayFunc(function_pointer)
+
+
 def open_window(window_title: str, width: int, height: int):
     """
     This function opens a window.
