@@ -3,8 +3,7 @@ import os
 import sys
 import distutils.sysconfig
 from setuptools import setup
-
-VERSION = "0.0.3a3"
+from arcade.version import VERSION
 
 if __name__ == "__main__":
 
