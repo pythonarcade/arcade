@@ -4,7 +4,7 @@ import sys
 import distutils.sysconfig
 from setuptools import setup
 
-VERSION = "0.0.3a2"
+VERSION = "0.0.3a3"
 
 if __name__ == "__main__":
 

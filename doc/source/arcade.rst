@@ -1,5 +1,5 @@
-arcade package
-==============
+Arcade Package Documentation
+============================
 
 Subpackages
 -----------
