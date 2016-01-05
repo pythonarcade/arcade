@@ -2,7 +2,11 @@ About Arcade Game Library
 ============
 Arcade Game Library is a wrapper on top of OpenGL.
 
+For full documentation see the ArcadeDocs_.
+
 License
 =======
 This library is given to the public domain. There are no licensing
-restrictions. Please see *doc/copying.rst* for further details.
+restrictions.
+
+.. _ArcadeDocs: http://pythonhosted.org/arcade/

@@ -98,6 +98,8 @@ scale)
             self.width = 0
             self.height = 0
 
+        self.cur_texture_index = 0
+
         self.center_x = 0
         self.center_y = 0
         self.angle = 0.0
