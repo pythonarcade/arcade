@@ -7,7 +7,6 @@ before_install:
   - sudo apt-get install -y freeglut3 freeglut3-dev binutils-gold
 
 install:
-  - pip install .
   - pip install -r requirements.txt
 # command to run tests
 # script: python setup.py test
