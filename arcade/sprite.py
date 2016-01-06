@@ -87,9 +87,21 @@ scale)
     >>> # Enable the following to keep the window up after running.
     >>> # arcade.run()
     """
-    def __init__(self, filename=None, scale=0):
+    def __init__(self, filename=None, scale=0, x=0, y=0, width=0, height=0):
+        if width < 0:
+            raise SystemError("Width of image can't be less than zero.")
+
+        if height < 0:
+            raise SystemError("Height of image can't be less than zero.")
+
+        if width == 0 and height != 0:
+            raise SystemError("Width can't be zero.")
+
+        if height == 0 and width != 0:
+            raise SystemError("Height can't be zero.")
+
         if filename != None:
-            self.texture, width, height = load_texture(filename)
+            self.texture, width, height = load_texture(filename, x, y, width, height)
             self.textures = [self.texture]
             self.width = width * scale
             self.height = height * scale
