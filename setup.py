@@ -30,8 +30,7 @@ if __name__ == "__main__":
         "download_url": "http://arcade.academy",
         "packages": ["arcade",
                      "arcade.key",
-                     "arcade.color",
-                     "arcade.version"
+                     "arcade.color"
                      ],
         "classifiers": [
             "Development Status :: 1 - Planning",
