@@ -99,7 +99,7 @@ scale)
             self.height = 0
 
         self.cur_texture_index = 0
-
+        self.scale = scale
         self.center_x = 0
         self.center_y = 0
         self.angle = 0.0
@@ -112,11 +112,16 @@ scale)
         self.sprite_lists = []
 
 
-    def append_texture(self, texture):
-        self.textures.append(texture)
+    def append_texture(self, texture, width, height):
+        texture_info = (texture, width, height)
+        self.textures.append(texture_info)
 
     def set_texture(self, texture_no):
-        self.texture = self.textures[texture_no]
+        self.texture = self.textures[texture_no][0]
+        self.cur_texture_index = texture_no
+        print(self.cur_texture_index, self.texture)
+        self.width = self.textures[texture_no][1] * self.scale
+        self.height = self.textures[texture_no][2] * self.scale
 
     def get_points(self):
         """
