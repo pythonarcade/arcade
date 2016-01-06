@@ -3,7 +3,7 @@ import os
 import sys
 import distutils.sysconfig
 from setuptools import setup
-from arcade.version import VERSION
+from arcade import RELEASE
 
 if __name__ == "__main__":
 
@@ -20,7 +20,7 @@ if __name__ == "__main__":
 
     setupdata = {
         "name":  "arcade",
-        "version": VERSION,
+        "version": RELEASE,
         "description": "Arcade Game Development Library",
         "long_description": long_desc,
         "author": "Paul Vincent Craven",
