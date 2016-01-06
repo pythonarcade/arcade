@@ -1,2 +1,2 @@
 VERSION = "0.0.3"
-RELEASE = "0.0.3a7"
+RELEASE = "0.0.3a8"
