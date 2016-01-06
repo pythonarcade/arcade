@@ -15,7 +15,7 @@ environment:
 
 
 install:
-  - "%PYTHON%\\Scripts\\pip.exe install wheel twine"
+  - "%PYTHON%\\Scripts\\pip.exe install wheel twine pillow"
   - appveyor DownloadFile %PYOPENGL_LINK%
   - "%PYTHON%\\Scripts\\pip.exe install %PYOPENGL%"
   - appveyor DownloadFile %PYOPENGL_ACCL_LINK%
