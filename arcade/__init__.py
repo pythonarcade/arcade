@@ -5,3 +5,4 @@ from .window_commands import *
 from .draw_commands import *
 from .sprite import *
 from .application import *
+from .version import *

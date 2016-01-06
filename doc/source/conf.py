@@ -16,8 +16,8 @@
 import sys
 import os
 import shlex
-from arcade.version import VERSION
-from arcade.version import RELEASE
+from arcade import VERSION
+from arcade import RELEASE
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
