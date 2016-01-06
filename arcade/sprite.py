@@ -119,7 +119,6 @@ scale)
     def set_texture(self, texture_no):
         self.texture = self.textures[texture_no][0]
         self.cur_texture_index = texture_no
-        print(self.cur_texture_index, self.texture)
         self.width = self.textures[texture_no][1] * self.scale
         self.height = self.textures[texture_no][2] * self.scale
 

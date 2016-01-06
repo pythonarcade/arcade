@@ -4,34 +4,74 @@ import arcade
 
 SCALE = 0.0015
 
-class PlayerSprite(arcade.Sprite):
+class PlatformerCharacterSprite(arcade.Sprite):
     def __init__(self):
         super().__init__()
         self.last_change_x = self.center_x
         self.facing = "right"
+        self.left_textures = []
+        self.right_textures = []
+        self.up_textures = []
+        self.down_textures = []
+        self.jump_textures = []
+        self.cur_texture_index = 0
+        self.texture_change_distance = 0
 
     def update(self):
         self.center_x += self.change_x
+        self.center_y += self.change_y
+        if self.center_y > 0:
+            self.change_y -= 0.003
+        elif self.change_y != 0:
+            self.change_y = 0
+            self.center_y = 0
+            if self.facing == "right":
+                self.set_texture(self.right_textures[0])
+            if self.facing == "left":
+                self.set_texture(self.left_textures[0])            
 
-        if self.change_x < 0:
-            if abs(self.last_change_x - self.center_x) > 0.016:
-                self.cur_texture_index += 1
-                if self.cur_texture_index > 30:
-                    self.cur_texture_index = 20
-                self.set_texture(self.cur_texture_index)
-                self.last_change_x = self.center_x
+        if self.change_y == 0.0:
+            if self.change_x < 0:
+                if abs(self.last_change_x - self.center_x) > self.texture_change_distance:
+                    if self.cur_texture_index in self.left_textures:
+                        pos = self.left_textures.index(self.cur_texture_index) + 1
+                    else:
+                        pos = 0
+                    if pos >= len(self.left_textures):
+                        pos = 0
+                    self.set_texture(self.left_textures[pos])
+                    self.last_change_x = self.center_x
 
-        if self.change_x > 0:
-            if abs(self.last_change_x - self.center_x) > 0.016:
-                self.cur_texture_index += 1
-                if self.cur_texture_index > 15:
-                    self.cur_texture_index = 4
-                self.set_texture(self.cur_texture_index)
-                self.last_change_x = self.center_x
+            if self.change_x > 0:
+                if abs(self.last_change_x - self.center_x) > self.texture_change_distance:
+                    if self.cur_texture_index in self.right_textures:
+                        pos = self.right_textures.index(self.cur_texture_index) + 1
+                    else:
+                        pos = 0
+                    if pos >= len(self.right_textures):
+                        pos = 0
+                    self.set_texture(self.right_textures[pos])
+                    self.last_change_x = self.center_x
+
+    def set_left_textures(self, texture_index_list):
+        self.left_textures = texture_index_list
+
+    def set_right_textures(self, texture_index_list):
+        self.right_textures = texture_index_list
 
     def left(self):
         self.change_x = -0.003
 
+    def stop_left(self):
+        if self.change_x < 0:
+            self.change_x = 0
+
+    def right(self):
+        self.change_x = 0.003
+
+    def stop_right(self):
+        if self.change_x > 0:
+            self.change_x = 0
 
     def face_left(self):
         if self.facing != "left":
@@ -43,32 +83,18 @@ class PlayerSprite(arcade.Sprite):
             self.set_texture(4)
             self.facing = "right"
 
-    def right(self):
-        self.change_x = 0.003
+    def jump(self):
+        self.change_y = 0.05
+        if self.facing == "right":
+            self.set_texture(3)
+        if self.facing == "left":
+            self.set_texture(19)
 
-    def stop_left(self):
-        if self.change_x < 0:
-            self.change_x = 0
-
-    def stop_right(self):
-        if self.change_x > 0:
-            self.change_x = 0
-
-
-class MyApplication(arcade.ArcadeApplication):
-    """ Main application class. """
-
+class PlayerSprite(PlatformerCharacterSprite):
     def __init__(self):
-        pass
+        super().__init__()
 
-    def setup_game(self):
-        self.all_sprites_list = arcade.SpriteList()
-
-        x_pos = 0
-        pixel_width = 72
-        pixel_height = 93
-        y_border = 4
-        x_border = 0
+        self.texture_change_distance = 0.016
 
         image_location_list = [
             [365, 98, 69, 71],
@@ -90,21 +116,32 @@ class MyApplication(arcade.ArcadeApplication):
 
         texture_info_list = arcade.load_textures("images/p1_spritesheet.png", image_location_list)
 
-        self.player_sprite = PlayerSprite()
         for texture_info in texture_info_list:
             texture, width, height = texture_info
-            self.player_sprite.append_texture(texture, width, height)
+            self.append_texture(texture, width, height)
 
         texture_info_list = arcade.load_textures("images/p1_spritesheet.png", image_location_list, True)
 
         for texture_info in texture_info_list:
             texture, width, height = texture_info
-            self.player_sprite.append_texture(texture, width, height)
+            self.append_texture(texture, width, height)
 
-        self.player_sprite.scale = 0.003
-        self.player_sprite.center_x = x_pos
-        self.player_sprite.set_texture(4)
-        x_pos += 0.15
+        self.set_left_textures([20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30])
+        self.set_right_textures([4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15])
+        self.scale = 0.003
+        self.set_texture(4)        
+
+class MyApplication(arcade.ArcadeApplication):
+    """ Main application class. """
+
+    def __init__(self):
+        pass
+
+    def setup_game(self):
+        self.all_sprites_list = arcade.SpriteList()
+
+        self.player_sprite = PlayerSprite()
+
         self.all_sprites_list.append(self.player_sprite)
 
     def render(self):
@@ -127,7 +164,7 @@ class MyApplication(arcade.ArcadeApplication):
             self.player_sprite.right()
             self.player_sprite.face_right()
         elif key == arcade.key.UP:
-            self.player_sprite.thrust = .0005
+            self.player_sprite.jump()
         elif key == arcade.key.DOWN:
             self.player_sprite.thrust = -.0002
 
