@@ -26,7 +26,7 @@ def set_render_function(function_pointer):
     GLUT.glutDisplayFunc(function_pointer)
 
 
-def open_window(window_title: str, width: int, height: int):
+def open_window(window_title, width, height):
     """
     This function opens a window.
 
