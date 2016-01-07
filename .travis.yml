@@ -16,11 +16,11 @@ install:
   - pip install -r requirements.txt
 
 # command to run tests
-script: 
+script:
   - python setup.py test
 
 deploy:
   provider: pypi
   user: $USERNAME
   password: $PASSWORD
-  distributions: "bdist_wheel"
+  distributions: "bdist_rpm"
