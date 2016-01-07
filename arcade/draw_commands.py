@@ -8,9 +8,11 @@ import OpenGL.GL as GL
 import OpenGL.GLU as GLU
 import OpenGL.GLUT as GLUT
 
+
 def _trim_image(im):
     bbox = im.getbbox()
     return im.crop(bbox)
+
 
 def draw_arc_filled(cx, cy,
                     width, height,
@@ -850,7 +852,12 @@ def draw_text(text, x, y, color):
     for character in text:
         GLUT.glutBitmapCharacter(GLUT.GLUT_BITMAP_8_BY_13, ord(character))
 
-def load_textures(file_name, image_location_list, mirrored=False, flipped=False):
+
+def load_textures(file_name, image_location_list,
+                  mirrored=False, flipped=False):
+    """
+    Load a set of textures off of a single image file.
+    """
     source_image = PIL.Image.open(file_name)
 
     source_image_width, source_image_height = source_image.size
@@ -859,16 +866,24 @@ def load_textures(file_name, image_location_list, mirrored=False, flipped=False)
         x, y, width, height = image_location
 
         if x > source_image_width:
-            raise SystemError("Can't load texture starting at an x of {} when the image is only {} across.".format(x, source_image_width))
+            raise SystemError("Can't load texture starting at an x of {} " +
+                              "when the image is only {} across."
+                              .format(x, source_image_width))
         if y > source_image_height:
-            raise SystemError("Can't load texture starting at an y of {} when the image is only {} high.".format(y, source_image_height))
+            raise SystemError("Can't load texture starting at an y of {} " +
+                              "when the image is only {} high."
+                              .format(y, source_image_height))
         if x + width > source_image_width:
-            raise SystemError("Can't load texture ending at an x of {} when the image is only {} wide.".format(x + width, source_image_width))
+            raise SystemError("Can't load texture ending at an x of {} " +
+                              "when the image is only {} wide."
+                              .format(x + width, source_image_width))
         if y + height > source_image_height:
-            raise SystemError("Can't load texture ending at an y of {} when the image is only {} high.".format(y + height, source_image_height))
+            raise SystemError("Can't load texture ending at an y of {} " +
+                              "when the image is only {} high."
+                              .format(y + height, source_image_height))
 
         image = source_image.crop((x, y, x + width, y + height))
-        #image = _trim_image(image)
+        # image = _trim_image(image)
 
         if mirrored:
             image = PIL.ImageOps.mirror(image)
@@ -883,18 +898,20 @@ def load_textures(file_name, image_location_list, mirrored=False, flipped=False)
 
         GL.glBindTexture(GL.GL_TEXTURE_2D, texture)
         GL.glPixelStorei(GL.GL_UNPACK_ALIGNMENT, 1)
-        GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S, GL.GL_CLAMP_TO_BORDER)
-        GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T, GL.GL_CLAMP_TO_BORDER)
+        GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_CLAMP_TO_BORDER)
+        GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_CLAMP_TO_BORDER)
         GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER,
                            GL.GL_LINEAR)
         GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER,
                            GL.GL_LINEAR_MIPMAP_LINEAR)
-        GLU.gluBuild2DMipmaps(GL.GL_TEXTURE_2D, GL.GL_RGBA, image_width, image_height,
+        GLU.gluBuild2DMipmaps(GL.GL_TEXTURE_2D, GL.GL_RGBA,
+                              image_width, image_height,
                               GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, image_bytes)
 
         texture_info_list.append((texture, width, height))
 
     return texture_info_list
+
 
 def load_texture(file_name, x=0, y=0, width=0, height=0):
     """
@@ -913,18 +930,27 @@ def load_texture(file_name, x=0, y=0, width=0, height=0):
 
     if x != 0 or y != 0 or width != 0 or height != 0:
         if x > source_image_width:
-            raise SystemError("Can't load texture starting at an x of {} when the image is only {} across.".format(x, source_image_width))
+            raise SystemError("Can't load texture starting at an x of {} " +
+                              "when the image is only {} across."
+                              .format(x, source_image_width))
         if y > source_image_height:
-            raise SystemError("Can't load texture starting at an y of {} when the image is only {} high.".format(y, source_image_height))
+            raise SystemError("Can't load texture starting at an y of {} " +
+                              "when the image is only {} high."
+                              .format(y, source_image_height))
         if x + width > source_image_width:
-            raise SystemError("Can't load texture ending at an x of {} when the image is only {} wide.".format(x + width, source_image_width))
+            raise SystemError("Can't load texture ending at an x of {} " +
+                              "when the image is only {} wide."
+                              .format(x + width, source_image_width))
         if y + height > source_image_height:
-            raise SystemError("Can't load texture ending at an y of {} when the image is only {} high.".format(y + height, source_image_height))
+            raise SystemError("Can't load texture ending at an y of {} " +
+                              "when the image is only {} high."
+                              .format(y + height, source_image_height))
+
         image = source_image.crop((x, y, x + width, y + height))
     else:
         image = source_image
 
-    #image = _trim_image(image)
+    # image = _trim_image(image)
 
     image_width, image_height = image.size
     image_bytes = image.convert("RGBA").tobytes("raw", "RGBA", 0, -1)
@@ -933,20 +959,23 @@ def load_texture(file_name, x=0, y=0, width=0, height=0):
 
     GL.glBindTexture(GL.GL_TEXTURE_2D, texture)
     GL.glPixelStorei(GL.GL_UNPACK_ALIGNMENT, 1)
-    GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S, GL.GL_CLAMP_TO_BORDER)
-    GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T, GL.GL_CLAMP_TO_BORDER)
+    GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S,
+                       GL.GL_CLAMP_TO_BORDER)
+    GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T,
+                       GL.GL_CLAMP_TO_BORDER)
     GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER,
                        GL.GL_LINEAR)
     GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER,
                        GL.GL_LINEAR_MIPMAP_LINEAR)
-    GLU.gluBuild2DMipmaps(GL.GL_TEXTURE_2D, GL.GL_RGBA, image_width, image_height,
+    GLU.gluBuild2DMipmaps(GL.GL_TEXTURE_2D, GL.GL_RGBA,
+                          image_width, image_height,
                           GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, image_bytes)
-
 
     return texture, image_width, image_height
 
 
-def draw_texture_rect(x, y, width, height, texture, angle=0, alpha=1, transparent=True):
+def draw_texture_rect(x, y, width, height, texture,
+                      angle=0, alpha=1, transparent=True):
     """
     Draw a textured rectangle on-screen.
 

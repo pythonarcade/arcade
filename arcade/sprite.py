@@ -100,8 +100,9 @@ scale)
         if height == 0 and width != 0:
             raise SystemError("Height can't be zero.")
 
-        if filename != None:
-            self.texture, width, height = load_texture(filename, x, y, width, height)
+        if filename is not None:
+            self.texture, width, height = load_texture(filename, x, y,
+                                                       width, height)
             self.textures = [self.texture]
             self.width = width * scale
             self.height = height * scale
@@ -126,7 +127,6 @@ scale)
 
         # Physics
         self.apply_gravity = False
-
 
     def append_texture(self, texture, width, height):
         texture_info = (texture, width, height)
@@ -174,8 +174,8 @@ scale)
         >>> import arcade
         >>> arcade.open_window("Sprite Example", 800, 600)
         >>> scale = 1/75
-        >>> ship_sprite = arcade.Sprite("examples/images/playerShip1_orange.png", \
-scale)
+        >>> ship_sprite = \
+arcade.Sprite("examples/images/playerShip1_orange.png", scale)
         >>> ship_sprite.center_y = 0
         >>> print(ship_sprite.bottom)
         -0.5
@@ -202,8 +202,8 @@ scale)
         >>> import arcade
         >>> arcade.open_window("Sprite Example", 800, 600)
         >>> scale = 1/75
-        >>> ship_sprite = arcade.Sprite("examples/images/playerShip1_orange.png", \
-scale)
+        >>> ship_sprite = \
+arcade.Sprite("examples/images/playerShip1_orange.png", scale)
         >>> ship_sprite.center_y = 0
         >>> print(ship_sprite.top)
         0.5
@@ -232,8 +232,8 @@ scale)
         >>> import arcade
         >>> arcade.open_window("Sprite Example", 800, 600)
         >>> scale = 1/99
-        >>> ship_sprite = arcade.Sprite("examples/images/playerShip1_orange.png", \
-scale)
+        >>> ship_sprite = \
+arcade.Sprite("examples/images/playerShip1_orange.png", scale)
         >>> ship_sprite.center_x = 0
         >>> print(ship_sprite.left)
         -0.5
@@ -262,8 +262,8 @@ scale)
         >>> import arcade
         >>> arcade.open_window("Sprite Example", 800, 600)
         >>> scale = 1/99
-        >>> ship_sprite = arcade.Sprite("examples/images/playerShip1_orange.png", \
-scale)
+        >>> ship_sprite = \
+arcade.Sprite("examples/images/playerShip1_orange.png", scale)
         >>> ship_sprite.center_x = 0
         >>> print(ship_sprite.right)
         0.5
@@ -291,7 +291,8 @@ scale)
         """ Draw the sprite. """
         draw_texture_rect(self.center_x, self.center_y,
                           self.width, self.height,
-                          self.texture, self.angle, self.alpha, self.transparent)
+                          self.texture, self.angle, self.alpha,
+                          self.transparent)
 
     def update(self):
         """ Update the sprite. """
@@ -313,7 +314,11 @@ class TurningSprite(Sprite):
         self.angle = math.degrees(math.atan2(self.change_y, self.change_x)) \
             - 90
 
+
 class PlatformerSpriteSheetSprite(Sprite):
+    """
+    Sprite for platformer games that supports animations.
+    """
     def __init__(self):
         super().__init__()
         self.last_change_x = self.center_x
@@ -338,9 +343,11 @@ class PlatformerSpriteSheetSprite(Sprite):
         """
         if self.change_y == 0.0:
             if self.change_x < 0:
-                if abs(self.last_change_x - self.center_x) > self.texture_change_distance:
+                if abs(self.last_change_x - self.center_x) > \
+                        self.texture_change_distance:
                     if self.cur_texture_index in self.left_textures:
-                        pos = self.left_textures.index(self.cur_texture_index) + 1
+                        pos = self.left_textures.index(self.cur_texture_index)\
+                            + 1
                     else:
                         pos = 0
                     if pos >= len(self.left_textures):
@@ -349,9 +356,11 @@ class PlatformerSpriteSheetSprite(Sprite):
                     self.last_change_x = self.center_x
 
             elif self.change_x > 0:
-                if abs(self.last_change_x - self.center_x) > self.texture_change_distance:
+                if abs(self.last_change_x - self.center_x) \
+                        > self.texture_change_distance:
                     if self.cur_texture_index in self.right_textures:
-                        pos = self.right_textures.index(self.cur_texture_index) + 1
+                        i = self.cur_texture_index
+                        pos = self.right_textures.index(i) + 1
                     else:
                         pos = 0
                     if pos >= len(self.right_textures):
@@ -369,7 +378,6 @@ class PlatformerSpriteSheetSprite(Sprite):
                 self.set_texture(self.jump_right_textures[0])
             if self.facing == "left":
                 self.set_texture(self.jump_left_textures[0])
-
 
     def set_left_walk_textures(self, texture_index_list):
         self.left_textures = texture_index_list
@@ -413,4 +421,3 @@ class PlatformerSpriteSheetSprite(Sprite):
 
     def jump(self):
         self.change_y = self.jump_speed
-

@@ -6,7 +6,9 @@
 Welcome to Arcade's documentation!
 ==================================
 
-Arcade is an easy-to-learn library for creating 2d video games with Python.
+Arcade is an easy-to-learn Python library for creating 2d video games.
+
+The source is available on GitHub: https://github.com/pvcraven/arcade
 
 .. toctree::
    :maxdepth: 2

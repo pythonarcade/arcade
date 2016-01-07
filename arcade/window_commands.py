@@ -13,6 +13,7 @@ _right = 1
 _bottom = -1
 _top = 1
 
+
 def set_resize_window_function(function_pointer):
     GLUT.glutReshapeFunc(function_pointer)
 
@@ -24,7 +25,6 @@ def default_resize_window_function(width, height):
     GL.glLoadIdentity()
     ratio = width / height
     GL.glOrtho(_left * ratio, _right * ratio, _bottom, _top, -1, 1)
-    print("resize({}, {}, {}, {})".format(_left * ratio, _right * ratio, _bottom, _top, -1, 1))
 
 
 def set_ortho(left, right, bottom, top):
@@ -37,7 +37,8 @@ def set_ortho(left, right, bottom, top):
     _right = right
     _bottom = bottom
     _top = top
-    print("set_ortho({}, {}, {}, {})".format(_left, _right, _bottom, _top, -1, 1))
+    print("set_ortho({}, {}, {}, {})".format(_left, _right, _bottom, _top,
+                                             -1, 1))
 
     width = GLUT.glutGet(GLUT.GLUT_WINDOW_WIDTH)
     height = GLUT.glutGet(GLUT.GLUT_WINDOW_HEIGHT)
