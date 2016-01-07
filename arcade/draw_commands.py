@@ -959,10 +959,14 @@ def load_texture(file_name, x=0, y=0, width=0, height=0):
 
     GL.glBindTexture(GL.GL_TEXTURE_2D, texture)
     GL.glPixelStorei(GL.GL_UNPACK_ALIGNMENT, 1)
+    # GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S,
+    #                    GL.GL_CLAMP_TO_BORDER)
+    # GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T,
+    #                    GL.GL_CLAMP_TO_BORDER)
     GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S,
-                       GL.GL_CLAMP_TO_BORDER)
+                       GL.GL_REPEAT)
     GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T,
-                       GL.GL_CLAMP_TO_BORDER)
+                       GL.GL_REPEAT)
     GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER,
                        GL.GL_LINEAR)
     GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER,
