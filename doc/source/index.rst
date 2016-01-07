@@ -12,6 +12,7 @@ Arcade is an easy-to-learn library for creating 2d video games with Python.
    :maxdepth: 2
 
    arcade
+   installation
    examples
 
 .. automodule:: arcade

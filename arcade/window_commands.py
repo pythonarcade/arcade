@@ -39,6 +39,16 @@ def set_ortho(left, right, bottom, top):
     _top = top
     print("set_ortho({}, {}, {}, {})".format(_left, _right, _bottom, _top, -1, 1))
 
+    width = GLUT.glutGet(GLUT.GLUT_WINDOW_WIDTH)
+    height = GLUT.glutGet(GLUT.GLUT_WINDOW_HEIGHT)
+
+    GL.glViewport(0, 0, width, height)
+    GL.glMatrixMode(GL.GL_PROJECTION)
+    GL.glLoadIdentity()
+    ratio = width / height
+    GL.glOrtho(_left * ratio, _right * ratio, _bottom, _top, -1, 1)
+
+
 def set_render_function(function_pointer):
     GLUT.glutDisplayFunc(function_pointer)
 

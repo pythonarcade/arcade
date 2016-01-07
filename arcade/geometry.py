@@ -54,7 +54,7 @@ def are_polygons_intersecting(poly_a, poly_b):
                 if not maxB or projected > maxB:
                     maxB = projected
 
-            if maxA < minB or maxB < minA:
+            if maxA <= minB or maxB <= minA:
                 return False
 
     return True
@@ -87,6 +87,7 @@ def check_for_collision_with_list(sprite1, sprite_list):
     """ Check for a collision between a sprite, and a list of sprites. """
     collision_list = []
     for sprite2 in sprite_list:
-        if check_for_collision(sprite1, sprite2):
-            collision_list.append(sprite2)
+        if not sprite1 is sprite2:
+            if check_for_collision(sprite1, sprite2):
+                collision_list.append(sprite2)
     return collision_list

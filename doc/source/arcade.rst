@@ -53,6 +53,13 @@ arcade.sprite module
     :undoc-members:
     :show-inheritance:
 
+arcade.physics_engines module
+-----------------------------
+
+.. automodule:: arcade.physics_engines
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
 Module contents
 ---------------

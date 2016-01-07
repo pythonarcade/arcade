@@ -124,6 +124,9 @@ scale)
         self.sprite_lists = []
         self.transparent = True
 
+        # Physics
+        self.apply_gravity = False
+
 
     def append_texture(self, texture, width, height):
         texture_info = (texture, width, height)
@@ -165,7 +168,21 @@ scale)
     points = property(get_points)
 
     def _get_bottom(self):
-        """ The lowest y coordinate. """
+        """
+        The lowest y coordinate.
+
+        >>> import arcade
+        >>> arcade.open_window("Sprite Example", 800, 600)
+        >>> scale = 1/75
+        >>> ship_sprite = arcade.Sprite("examples/images/playerShip1_orange.png", \
+scale)
+        >>> ship_sprite.center_y = 0
+        >>> print(ship_sprite.bottom)
+        -0.5
+        >>> ship_sprite.bottom = 1
+        >>> print(ship_sprite.bottom)
+        1.0
+        """
         points = self.get_points()
         return min(points[0][1], points[1][1], points[2][1], points[3][1])
 
@@ -174,30 +191,98 @@ scale)
         points = self.get_points()
         lowest = min(points[0][1], points[1][1], points[2][1], points[3][1])
         diff = lowest - amount
-        self.center_y += diff
+        self.center_y -= diff
 
     bottom = property(_get_bottom, _set_bottom)
 
     def _get_top(self):
-        """ The highest y coordinate. """
+        """
+        The highest y coordinate.
+
+        >>> import arcade
+        >>> arcade.open_window("Sprite Example", 800, 600)
+        >>> scale = 1/75
+        >>> ship_sprite = arcade.Sprite("examples/images/playerShip1_orange.png", \
+scale)
+        >>> ship_sprite.center_y = 0
+        >>> print(ship_sprite.top)
+        0.5
+        >>> ship_sprite.top = 1
+        >>> print(ship_sprite.top)
+        1.0
+        """
         points = self.get_points()
         return max(points[0][1], points[1][1], points[2][1], points[3][1])
 
-    top = property(_get_top)
+    def _set_top(self, amount):
+        """ The highest y coordinate. """
+        points = self.get_points()
+        highest = max(points[0][1], points[1][1], points[2][1], points[3][1])
+        diff = highest - amount
+        self.center_y -= diff
+
+    top = property(_get_top, _set_top)
 
     def _get_left(self):
-        """ Left-most coordinate. """
+        """
+        Left-most coordinate.
+
+        :Example:
+
+        >>> import arcade
+        >>> arcade.open_window("Sprite Example", 800, 600)
+        >>> scale = 1/99
+        >>> ship_sprite = arcade.Sprite("examples/images/playerShip1_orange.png", \
+scale)
+        >>> ship_sprite.center_x = 0
+        >>> print(ship_sprite.left)
+        -0.5
+        >>> ship_sprite.left = 1
+        >>> print(ship_sprite.left)
+        1.0
+        """
         points = self.get_points()
         return min(points[0][0], points[1][0], points[2][0], points[3][0])
 
-    left = property(_get_left)
+    def _set_left(self, amount):
+        """ The left most x coordinate. """
+        points = self.get_points()
+        leftmost = min(points[0][0], points[1][0], points[2][0], points[3][0])
+        diff = amount - leftmost
+        self.center_x += diff
+
+    left = property(_get_left, _set_left)
 
     def _get_right(self):
-        """ Right-most coordinate """
+        """
+        Right-most coordinate
+
+        :Example:
+
+        >>> import arcade
+        >>> arcade.open_window("Sprite Example", 800, 600)
+        >>> scale = 1/99
+        >>> ship_sprite = arcade.Sprite("examples/images/playerShip1_orange.png", \
+scale)
+        >>> ship_sprite.center_x = 0
+        >>> print(ship_sprite.right)
+        0.5
+        >>> ship_sprite.right = 1
+        >>> print(ship_sprite.right)
+        1.0
+        """
+
         points = self.get_points()
         return max(points[0][0], points[1][0], points[2][0], points[3][0])
 
-    right = property(_get_right)
+    def _set_right(self, amount):
+        """ The right most x coordinate. """
+        points = self.get_points()
+        rightmost = max(points[0][0], points[1][0], points[2][0], points[3][0])
+        diff = rightmost - amount
+        self.center_x -= diff
+
+    right = property(_get_right, _set_right)
 
     def _register_sprite_list(self, new_list):
         self.sprite_lists.append(new_list)
@@ -227,3 +312,105 @@ class TurningSprite(Sprite):
         super().update()
         self.angle = math.degrees(math.atan2(self.change_y, self.change_x)) \
             - 90
+
+class PlatformerSpriteSheetSprite(Sprite):
+    def __init__(self):
+        super().__init__()
+        self.last_change_x = self.center_x
+        self.facing = "right"
+        self.left_walk_textures = []
+        self.right_walk_textures = []
+        self.up_walk_textures = []
+        self.down_walk_textures = []
+        self.jump_textures = []
+        self.left_stand_textures = []
+        self.right_stand_textures = []
+        self.up_stand_textures = []
+        self.down_stand_textures = []
+
+        self.cur_texture_index = 0
+        self.texture_change_distance = 0
+        self.speed = 0.003
+
+    def update(self):
+        """
+        Logic for selecting the proper texture to use.
+        """
+        if self.change_y == 0.0:
+            if self.change_x < 0:
+                if abs(self.last_change_x - self.center_x) > self.texture_change_distance:
+                    if self.cur_texture_index in self.left_textures:
+                        pos = self.left_textures.index(self.cur_texture_index) + 1
+                    else:
+                        pos = 0
+                    if pos >= len(self.left_textures):
+                        pos = 0
+                    self.set_texture(self.left_textures[pos])
+                    self.last_change_x = self.center_x
+
+            elif self.change_x > 0:
+                if abs(self.last_change_x - self.center_x) > self.texture_change_distance:
+                    if self.cur_texture_index in self.right_textures:
+                        pos = self.right_textures.index(self.cur_texture_index) + 1
+                    else:
+                        pos = 0
+                    if pos >= len(self.right_textures):
+                        pos = 0
+                    self.set_texture(self.right_textures[pos])
+                    self.last_change_x = self.center_x
+            else:
+                if self.facing == "right":
+                    self.set_texture(self.right_stand_textures[0])
+                if self.facing == "left":
+                    self.set_texture(self.left_stand_textures[0])
+
+        else:
+            if self.facing == "right":
+                self.set_texture(self.jump_right_textures[0])
+            if self.facing == "left":
+                self.set_texture(self.jump_left_textures[0])
+
+
+    def set_left_walk_textures(self, texture_index_list):
+        self.left_textures = texture_index_list
+
+    def set_right_walk_textures(self, texture_index_list):
+        self.right_textures = texture_index_list
+
+    def set_left_jump_textures(self, texture_index_list):
+        self.jump_left_textures = texture_index_list
+
+    def set_right_jump_textures(self, texture_index_list):
+        self.jump_right_textures = texture_index_list
+
+    def set_left_stand_textures(self, texture_index_list):
+        self.left_stand_textures = texture_index_list
+
+    def set_right_stand_textures(self, texture_index_list):
+        self.right_stand_textures = texture_index_list
+
+    def go_left(self):
+        self.change_x = -self.speed
+
+    def stop_left(self):
+        if self.change_x < 0:
+            self.change_x = 0
+
+    def go_right(self):
+        self.change_x = self.speed
+
+    def stop_right(self):
+        if self.change_x > 0:
+            self.change_x = 0
+
+    def face_left(self):
+        if self.facing != "left":
+            self.facing = "left"
+
+    def face_right(self):
+        if self.facing != "right":
+            self.facing = "right"
+
+    def jump(self):
+        self.change_y = self.jump_speed
+
