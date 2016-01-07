@@ -122,6 +122,7 @@ scale)
 
         self.alpha = 1.0
         self.sprite_lists = []
+        self.transparent = True
 
 
     def append_texture(self, texture, width, height):
@@ -168,7 +169,14 @@ scale)
         points = self.get_points()
         return min(points[0][1], points[1][1], points[2][1], points[3][1])
 
-    bottom = property(_get_bottom)
+    def _set_bottom(self, amount):
+        """ The lowest y coordinate. """
+        points = self.get_points()
+        lowest = min(points[0][1], points[1][1], points[2][1], points[3][1])
+        diff = lowest - amount
+        self.center_y += diff
+
+    bottom = property(_get_bottom, _set_bottom)
 
     def _get_top(self):
         """ The highest y coordinate. """
@@ -198,7 +206,7 @@ scale)
         """ Draw the sprite. """
         draw_texture_rect(self.center_x, self.center_y,
                           self.width, self.height,
-                          self.texture, self.angle, self.alpha)
+                          self.texture, self.angle, self.alpha, self.transparent)
 
     def update(self):
         """ Update the sprite. """

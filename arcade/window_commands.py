@@ -8,6 +8,10 @@ import OpenGL.GL as GL
 import OpenGL.GLU as GLU
 import OpenGL.GLUT as GLUT
 
+_left = -1
+_right = 1
+_bottom = -1
+_top = 1
 
 def set_resize_window_function(function_pointer):
     GLUT.glutReshapeFunc(function_pointer)
@@ -19,8 +23,21 @@ def default_resize_window_function(width, height):
     GL.glMatrixMode(GL.GL_PROJECTION)
     GL.glLoadIdentity()
     ratio = width / height
-    GL.glOrtho(-1 * ratio, 1 * ratio, -1, 1, -1, 1)
+    GL.glOrtho(_left * ratio, _right * ratio, _bottom, _top, -1, 1)
+    print("resize({}, {}, {}, {})".format(_left * ratio, _right * ratio, _bottom, _top, -1, 1))
 
+
+def set_ortho(left, right, bottom, top):
+    global _left
+    global _right
+    global _bottom
+    global _top
+
+    _left = left
+    _right = right
+    _bottom = bottom
+    _top = top
+    print("set_ortho({}, {}, {}, {})".format(_left, _right, _bottom, _top, -1, 1))
 
 def set_render_function(function_pointer):
     GLUT.glutDisplayFunc(function_pointer)

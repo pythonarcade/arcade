@@ -8,6 +8,9 @@ import OpenGL.GL as GL
 import OpenGL.GLU as GLU
 import OpenGL.GLUT as GLUT
 
+def _trim_image(im):
+    bbox = im.getbbox()
+    return im.crop(bbox)
 
 def draw_arc_filled(cx, cy,
                     width, height,
@@ -865,6 +868,7 @@ def load_textures(file_name, image_location_list, mirrored=False, flipped=False)
             raise SystemError("Can't load texture ending at an y of {} when the image is only {} high.".format(y + height, source_image_height))
 
         image = source_image.crop((x, y, x + width, y + height))
+        #image = _trim_image(image)
 
         if mirrored:
             image = PIL.ImageOps.mirror(image)
@@ -920,6 +924,8 @@ def load_texture(file_name, x=0, y=0, width=0, height=0):
     else:
         image = source_image
 
+    #image = _trim_image(image)
+
     image_width, image_height = image.size
     image_bytes = image.convert("RGBA").tobytes("raw", "RGBA", 0, -1)
 
@@ -940,7 +946,7 @@ def load_texture(file_name, x=0, y=0, width=0, height=0):
     return texture, image_width, image_height
 
 
-def draw_texture_rect(x, y, width, height, texture, angle=0, alpha=1):
+def draw_texture_rect(x, y, width, height, texture, angle=0, alpha=1, transparent=True):
     """
     Draw a textured rectangle on-screen.
 
@@ -975,8 +981,12 @@ scale * height, texture, 0)
 
     """
 
-    GL.glEnable(GL.GL_BLEND)
-    GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
+    if transparent:
+        GL.glEnable(GL.GL_BLEND)
+        GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
+    else:
+        GL.glDisable(GL.GL_BLEND)
+
     GL.glEnable(GL.GL_TEXTURE_2D)
     GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
     GL.glHint(GL.GL_PERSPECTIVE_CORRECTION_HINT, GL.GL_NICEST)
