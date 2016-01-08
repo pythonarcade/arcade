@@ -13,7 +13,7 @@ if __name__ == "__main__":
         VERSION = VERSION.replace("-beta", "b")
         VERSION = VERSION.replace("-rc", "r")
 
-    fname = os.path.join(os.path.dirname(os.path.abspath(__file__)), "README.md")
+    fname = os.path.join(os.path.dirname(os.path.abspath(__file__)), "README.rst")
     readme = open(fname, "r")
     long_desc = readme.read()
     readme.close()
