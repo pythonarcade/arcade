@@ -138,6 +138,13 @@ scale)
         self.width = self.textures[texture_no][1] * self.scale
         self.height = self.textures[texture_no][2] * self.scale
 
+    def set_position(self, center_x, center_y):
+        """
+        Set a sprite's position
+        """
+        self.center_x = center_x
+        self.center_y = center_y
+
     def get_points(self):
         """
         Get the corner points for the rect that makes up the sprite.

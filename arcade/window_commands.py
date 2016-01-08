@@ -37,8 +37,6 @@ def set_ortho(left, right, bottom, top):
     _right = right
     _bottom = bottom
     _top = top
-    print("set_ortho({}, {}, {}, {})".format(_left, _right, _bottom, _top,
-                                             -1, 1))
 
     width = GLUT.glutGet(GLUT.GLUT_WINDOW_WIDTH)
     height = GLUT.glutGet(GLUT.GLUT_WINDOW_HEIGHT)

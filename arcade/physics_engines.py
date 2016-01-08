@@ -4,7 +4,7 @@ from .geometry import *
 class PlatformerPhysicsEngine(SpriteList):
     def __init__(self):
         super().__init__()
-        self.gravity_constant = 0.003
+        self.gravity_constant = 0.004
 
     def update(self):
         """
