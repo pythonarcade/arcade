@@ -16,15 +16,16 @@ class PlayerSprite(arcade.PlatformerSpriteSheetSprite):
         self.jump_speed = 0.15
 
         top_trim = 100
-
+        left_trim = 2
+        right_trim = 2
         image_location_list = [
-                            [520, 516 + top_trim, 128, 256 - top_trim],
-                            [520, 258 + top_trim, 128, 256 - top_trim],
-                            [520, 0 + top_trim, 128, 256 - top_trim],
-                            [390, 1548 + top_trim, 128, 256 - top_trim],
-                            [390, 1290 + top_trim, 128, 256 - top_trim],
-                            [390, 516 + top_trim, 128, 256 - top_trim],
-                            [390, 258 + top_trim, 128, 256 - top_trim]]
+                            [520 + left_trim, 516 + top_trim, 128 - left_trim - right_trim, 256 - top_trim],
+                            [520 + left_trim, 258 + top_trim, 128 - left_trim - right_trim, 256 - top_trim],
+                            [520 + left_trim, 0 + top_trim, 128 - left_trim - right_trim, 256 - top_trim],
+                            [390 + left_trim, 1548 + top_trim, 128 - left_trim - right_trim, 256 - top_trim],
+                            [390 + left_trim, 1290 + top_trim, 128 - left_trim - right_trim, 256 - top_trim],
+                            [390 + left_trim, 516 + top_trim, 128 - left_trim - right_trim, 256 - top_trim],
+                            [390 + left_trim, 258 + top_trim, 128 - left_trim - right_trim, 256 - top_trim]]
 
         texture_info_list = arcade.load_textures("images/spritesheet_complete.png", image_location_list)
 
@@ -116,6 +117,9 @@ class MyApplication(arcade.ArcadeApplication):
         for y in range(3):
             self.create_platform(box_template, 8.5, y + 1.5)
 
+        # Coins right before the wall
+        self.create_coin(coin, 7.5, 1.5)
+
         # Create a platform to jump onto
         self.create_platform(platform_left, 4.5, 3.0)
         self.create_platform(platform_mid, 5.5, 3.0)
@@ -126,16 +130,45 @@ class MyApplication(arcade.ArcadeApplication):
         self.create_platform(platform_mid, 6.5, 5.5)
         self.create_platform(platform_right, 7.5, 5.5)
 
-        # Coins
-        self.create_coin(coin, 7.5, 1.5)
-        self.create_coin(coin, 7.5, 6.5)
-        self.create_coin(coin, 6.5, 6.5)
+        # Coins on the platform
         self.create_coin(coin, 5.5, 6.5)
+        self.create_coin(coin, 6.5, 6.5)
+        self.create_coin(coin, 7.5, 6.5)
+
+        # Coins in an arc after the platform
+        # and over the box wall
+        self.create_coin(coin, 8.5, 7)
+        self.create_coin(coin, 9.5, 8)
+        self.create_coin(coin, 10.5, 8)
+        self.create_coin(coin, 11.5, 7)
+
+        # Create another platform to jump onto
+        self.create_platform(platform_left, 13, 3.5)
+        self.create_platform(platform_mid, 14, 3.5)
+        self.create_platform(platform_right, 15, 3.5)
+
+        self.create_coin(coin, 13, 4.5)
+        self.create_coin(coin, 14, 4.5)
+        self.create_coin(coin, 15, 4.5)
+
+        # Create another platform to jump onto
+        self.create_platform(platform_left, 18, 3)
+        self.create_platform(platform_mid, 19, 3)
+        self.create_platform(platform_right, 20, 3)
+
+        self.create_coin(coin, 18, 4)
+        self.create_coin(coin, 19, 4)
+        self.create_coin(coin, 20, 4)
+
+
+
 
     def render(self):
         arcade.start_render()
 
         self.all_sprites_list.draw()
+
+        arcade.draw_text("Score: {}".format(self.score), self.ortho_left + 0.01, 9.75, arcade.color.BLACK)
 
         # grid_color = (0, 0, 255, 127)
 
