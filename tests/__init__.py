@@ -9,4 +9,5 @@ def load_tests(loader, tests, pattern):
     suite.addTests(DocTestSuite('arcade.window_commands'))
     suite.addTests(DocTestSuite('arcade.geometry'))
     suite.addTests(DocTestSuite('arcade.sprite'))
+    suite.addTests(DocTestSuite('arcade.application'))
     return suite

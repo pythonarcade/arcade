@@ -18,7 +18,7 @@ install:
 
 # command to run tests
 script:
-  - python setup.py test
+  - coverage run --source arcade setup.py test
 
 deploy:
   provider: pypi
