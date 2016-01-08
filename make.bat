@@ -4,4 +4,6 @@ python setup.py clean
 python setup.py build
 python setup.py install
 sphinx-build -b html doc/source doc/build/html
-python setup.py test
+rem python setup.py test
+coverage run --source arcade setup.py test
+coverage report -m

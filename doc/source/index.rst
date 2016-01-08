@@ -6,7 +6,7 @@
 Welcome to Arcade's documentation!
 ==================================
 
-|build-status-travis| |build-status-appveyor| |docs|
+|build-status-travis| |build-status-appveyor| |docs| |coverage|
 
 Arcade is an easy-to-learn Python library for creating 2d video games.
 
@@ -44,3 +44,8 @@ https://travis-ci.org/pvcraven/arcade.svg?branch=master
     :alt: Documentation Status
     :scale: 100%
     :target: https://arcade.readthedocs.org/en/latest/?badge=latest
+
+.. |coverage| image:: https://coveralls.io/repos/pvcraven/arcade/badge.svg?branch=master&service=github
+    :alt: Test Coverage Status
+    :scale: 100%
+    :target: https://coveralls.io/github/pvcraven/arcade?branch=master
