@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/pvcraven/arcade.svg?branch=master)](https://travis-ci.org/pvcraven/arcade)
 About Arcade Game Library
 =========================
 Arcade Game Library is a wrapper on top of OpenGL.
