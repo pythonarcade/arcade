@@ -1,7 +1,7 @@
 Welcome to Arcade's documentation!
 ==================================
 
-|build-status-travis| |build-status-appveyor| |docs| |coverage|
+|build-status-travis| |build-status-appveyor| |docs| |coverage| |version|
 
 Arcade is an easy-to-learn Python library for creating 2d video games.
 
