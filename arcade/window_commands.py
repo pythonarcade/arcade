@@ -15,6 +15,7 @@ _top = 1
 
 
 def set_resize_window_function(function_pointer):
+    """ Set a function that will be called whenever the window is resized. """
     GLUT.glutReshapeFunc(function_pointer)
 
 
@@ -27,7 +28,10 @@ def default_resize_window_function(width, height):
     GL.glOrtho(_left * ratio, _right * ratio, _bottom, _top, -1, 1)
 
 
-def set_ortho(left, right, bottom, top):
+def set_viewport(left, right, bottom, top):
+    """
+    This sets what coordinates appear on the window.
+    """
     global _left
     global _right
     global _bottom
@@ -89,7 +93,7 @@ def open_window(window_title, width, height):
     GLUT.glutDisplayFunc(start_render)
 
 
-def swap_buffers():
+def finish_render():
     """
     Swap buffers and display what has been drawn.
 
@@ -107,7 +111,7 @@ def swap_buffers():
     >>> arcade.set_background_color(arcade.color.RED)
     >>> arcade.start_render()
     >>> # All the drawing commands go here
-    >>> arcade.swap_buffers()
+    >>> arcade.finish_render()
     >>> # Enable the following to keep the window up after running
     >>> # arcade.run()
     """
@@ -148,7 +152,7 @@ def set_background_color(color):
     >>> arcade.open_window("Drawing Example", 800, 600)
     >>> arcade.set_background_color(arcade.color.RED)
     >>> arcade.start_render()
-    >>> arcade.swap_buffers()
+    >>> arcade.finish_render()
     >>> # Enable the following to keep the window up after running
     >>> # arcade.run()
     """

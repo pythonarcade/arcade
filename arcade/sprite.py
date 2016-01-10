@@ -22,7 +22,7 @@ scale)
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
     >>> meteor_list.draw()
-    >>> arcade.swap_buffers()
+    >>> arcade.finish_render()
     >>> # Enable the following to keep the window up after running.
     >>> # arcade.run()
     """
@@ -83,7 +83,7 @@ scale)
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
     >>> ship_sprite.draw()
-    >>> arcade.swap_buffers()
+    >>> arcade.finish_render()
     >>> # Enable the following to keep the window up after running.
     >>> # arcade.run()
     """
@@ -101,11 +101,12 @@ scale)
             raise SystemError("Height can't be zero.")
 
         if filename is not None:
-            self.texture, width, height = load_texture(filename, x, y,
-                                                       width, height)
+            self.texture = load_texture(filename, x, y,
+                                        width, height)
+
             self.textures = [self.texture]
-            self.width = width * scale
-            self.height = height * scale
+            self.width = self.texture.width * scale
+            self.height = self.texture.height * scale
         else:
             self.textures = []
             self.width = 0
@@ -128,15 +129,14 @@ scale)
         # Physics
         self.apply_gravity = False
 
-    def append_texture(self, texture, width, height):
-        texture_info = (texture, width, height)
-        self.textures.append(texture_info)
+    def append_texture(self, texture):
+        self.textures.append(texture)
 
     def set_texture(self, texture_no):
-        self.texture = self.textures[texture_no][0]
+        self.texture = self.textures[texture_no]
         self.cur_texture_index = texture_no
-        self.width = self.textures[texture_no][1] * self.scale
-        self.height = self.textures[texture_no][2] * self.scale
+        self.width = self.textures[texture_no].width * self.scale
+        self.height = self.textures[texture_no].height * self.scale
 
     def set_position(self, center_x, center_y):
         """
@@ -290,6 +290,17 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
         self.center_x -= diff
 
     right = property(_get_right, _set_right)
+
+    def _get_texture(self):
+        return self._texture
+
+    def _set_texture(self, texture):
+        if type(texture) is Texture:
+            self._texture = texture
+        else:
+            raise SystemError("Can't set the texture to something that is not an instance of the Texture class.")
+
+    texture = property(_get_texture, _set_texture)
 
     def _register_sprite_list(self, new_list):
         self.sprite_lists.append(new_list)

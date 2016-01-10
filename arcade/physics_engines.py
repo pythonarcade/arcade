@@ -13,9 +13,12 @@ class PlatformerPhysicsEngine(SpriteList):
         super().update()
 
         for sprite in self.sprite_list:
+
+            # Gravity
             if sprite.apply_gravity:
                 sprite.change_y -= self.gravity_constant
 
+            # y direction
             if sprite.change_y != 0:
                 sprite.center_y += sprite.change_y
 
@@ -38,6 +41,7 @@ class PlatformerPhysicsEngine(SpriteList):
                 if collision:
                     sprite.change_y = 0
 
+            # x direction
             if sprite.change_x != 0:
                 sprite.center_x += sprite.change_x
 

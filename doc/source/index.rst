@@ -3,8 +3,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Arcade's documentation!
-==================================
+The Arcade Python Package
+=========================
 
 |build-status-travis| |build-status-appveyor| |docs| |coverage|
 
@@ -12,23 +12,19 @@ Arcade is an easy-to-learn Python library for creating 2d video games.
 
 The source is available on GitHub: https://github.com/pvcraven/arcade
 
+API Documentation
+-----------------
+
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 4
 
    arcade
-   installation
    examples
+   installation
 
 .. automodule:: arcade
 
-Indexes and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
-
-https://travis-ci.org/pvcraven/arcade.svg?branch=master
+.. include:: ../../license.rst
 
 .. |build-status-travis| image:: https://travis-ci.org/pvcraven/arcade.svg
     :target: https://travis-ci.org/pvcraven/arcade

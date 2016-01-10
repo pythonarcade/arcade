@@ -8,8 +8,19 @@ import OpenGL.GL as GL
 import OpenGL.GLU as GLU
 import OpenGL.GLUT as GLUT
 
+class Texture():
+    """
+    Simple class that represents a texture
+    """
+    def __init__(self, id, width, height):
+        self.id = id
+        self.width = width
+        self.height = height
 
-def _trim_image(im):
+def trim_image(image):
+    """
+    Returns an image with extra whitespace cropped out.
+    """
     bbox = im.getbbox()
     return im.crop(bbox)
 
@@ -48,7 +59,7 @@ def draw_arc_filled(cx, cy,
     >>> arcade.start_render()
     >>> arcade.draw_arc_filled(-0.5, -0.52, 0.05, 0.12, \
 arcade.color.BOTTLE_GREEN, 0, 45)
-    >>> arcade.swap_buffers()
+    >>> arcade.finish_render()
     >>> # Enable the following to keep the window up after running.
     >>> # arcade.run()
     """
@@ -122,7 +133,7 @@ def draw_arc_outline(cx, cy,
     >>> arcade.start_render()
     >>> arcade.draw_arc_outline(-0.5, -0.73, 0.05, 0.12, \
 arcade.color.BRIGHT_MAROON, 90, 360)
-    >>> arcade.swap_buffers()
+    >>> arcade.finish_render()
     >>> # Enable the following to keep the window up after running.
     >>> # arcade.run()
     """
@@ -185,7 +196,7 @@ def draw_circle_filled(cx, cy, radius, color, num_segments=128):
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
     >>> arcade.draw_circle_filled(0.4, -0.05, 0.06, arcade.color.GREEN, 3)
-    >>> arcade.swap_buffers()
+    >>> arcade.finish_render()
     >>> # Enable the following to keep the window up after running.
     >>> # arcade.run()
     """
@@ -219,7 +230,7 @@ def draw_circle_outline(cx, cy, radius, color, line_width=1, num_segments=128):
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
     >>> arcade.draw_circle_outline(0, -0.05, 0.06, arcade.color.WISTERIA, 3)
-    >>> arcade.swap_buffers()
+    >>> arcade.finish_render()
     >>> # Enable the following to keep the window up after running.
     >>> # arcade.run()
     """
@@ -260,7 +271,7 @@ def draw_ellipse_filled(cx, cy,
     >>> arcade.draw_ellipse_filled(-0.8, -0.73, 0.05, 0.12, arcade.color.AMBER)
     >>> arcade.draw_ellipse_filled(-0.8, -0.52, 0.05, 0.12, \
 arcade.color.BLACK_BEAN, 45)
-    >>> arcade.swap_buffers()
+    >>> arcade.finish_render()
     >>> # Enable the following to keep the window up after running.
     >>> # arcade.run()
     """
@@ -329,7 +340,7 @@ def draw_ellipse_outline(cx, cy,
 arcade.color.AMBER, 3)
     >>> arcade.draw_ellipse_outline(0.8, 0.12, 0.05, 0.12, \
 arcade.color.BLACK_BEAN, 3, 45)
-    >>> arcade.swap_buffers()
+    >>> arcade.finish_render()
     >>> # Enable the following to keep the window up after running.
     >>> # arcade.run()
     """
@@ -389,7 +400,7 @@ def draw_line(x1, y1, x2, y2, color, line_width=1):
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
     >>> arcade.draw_line(-0.1, 0.65, 0, 0.5, arcade.color.WOOD_BROWN, 3)
-    >>> arcade.swap_buffers()
+    >>> arcade.finish_render()
     >>> # Enable the following to keep the window up after running.
     >>> # arcade.run()
     """
@@ -447,7 +458,7 @@ def draw_line_strip(point_list, color, line_width=1):
 )
     >>> arcade.draw_line_strip(point_list, \
 arcade.color.TROPICAL_RAIN_FOREST, 3)
-    >>> arcade.swap_buffers()
+    >>> arcade.finish_render()
     >>> # Enable the following to keep the window up after running.
     >>> # arcade.run()
     """
@@ -504,7 +515,7 @@ def draw_lines(point_list, color, line_width=1):
 (0.3, 0.7), \
 (0.5, 0.7))
     >>> arcade.draw_lines(point_list, arcade.color.BLUE, 3)
-    >>> arcade.swap_buffers()
+    >>> arcade.finish_render()
     >>> # Enable the following to keep the window up after running.
     >>> # arcade.run()
     """
@@ -553,7 +564,7 @@ def draw_point(x, y, color, size):
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
     >>> arcade.draw_point(-0.8, 0.65, arcade.color.RED, 10)
-    >>> arcade.swap_buffers()
+    >>> arcade.finish_render()
     >>> # Enable the following to keep the window up after running.
     >>> # arcade.run()
     """
@@ -596,7 +607,7 @@ def draw_points(point_list, color, size):
     >>> point_list = ((-0.45, 0.65), (-0.45, 0.60), (-0.45, 0.55), \
 (-0.35, 0.65), (-0.35, 0.60), (-0.35, 0.55))
     >>> arcade.draw_points(point_list, arcade.color.ZAFFRE, 10)
-    >>> arcade.swap_buffers()
+    >>> arcade.finish_render()
     >>> # Enable the following to keep the window up after running.
     >>> # arcade.run()
     """
@@ -637,7 +648,7 @@ def draw_polygon_filled(point_list, color):
     >>> point_list = ((-0.5, -0.2), (-0.45, -0.2), (-0.4, -0.15), \
 (-0.4, -0.05), (-0.45, 0), (-0.5, 0))
     >>> arcade.draw_polygon_filled(point_list, arcade.color.SPANISH_VIOLET)
-    >>> arcade.swap_buffers()
+    >>> arcade.finish_render()
     >>> # Enable the following to keep the window up after running.
     >>> # arcade.run()
     """
@@ -683,7 +694,7 @@ def draw_polygon_outline(point_list, color, line_width=1):
     >>> point_list = ((-0.9, -0.2), (-0.85, -0.2), (-0.8, -0.15), \
 (-0.8, -0.05), (-0.85, 0), (-0.9, 0))
     >>> arcade.draw_polygon_outline(point_list, arcade.color.SPANISH_VIOLET, 3)
-    >>> arcade.swap_buffers()
+    >>> arcade.finish_render()
     >>> # Enable the following to keep the window up after running.
     >>> # arcade.run()
 
@@ -734,7 +745,7 @@ def draw_rect_outline(x, y, width, height, color, line_width=1, angle=0):
     >>> arcade.start_render()
     >>> arcade.draw_rect_outline(-0.075, -0.5, 0.15, 0.35, \
 arcade.color.BRITISH_RACING_GREEN, 2)
-    >>> arcade.swap_buffers()
+    >>> arcade.finish_render()
     >>> # Enable the following to keep the window up after running
     >>> # arcade.run()
     """
@@ -832,7 +843,7 @@ def draw_text(text, x, y, color):
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
     >>> arcade.draw_text("This is a test",-0.2, 0.05, arcade.color.BLACK)
-    >>> arcade.swap_buffers()
+    >>> arcade.finish_render()
     >>> # Enable the following to keep the window up after running.
     >>> # arcade.run()
     """
@@ -898,8 +909,14 @@ def load_textures(file_name, image_location_list,
 
         GL.glBindTexture(GL.GL_TEXTURE_2D, texture)
         GL.glPixelStorei(GL.GL_UNPACK_ALIGNMENT, 1)
-        GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_CLAMP_TO_BORDER)
-        GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_CLAMP_TO_BORDER)
+        # GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S,
+        #                    GL.GL_REPEAT)
+        # GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T,
+        #                    GL.GL_REPEAT)
+        GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S,
+                           GL.GL_CLAMP_TO_BORDER)
+        GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T,
+                           GL.GL_CLAMP_TO_BORDER)
         GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER,
                            GL.GL_LINEAR)
         GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER,
@@ -908,7 +925,7 @@ def load_textures(file_name, image_location_list,
                               image_width, image_height,
                               GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, image_bytes)
 
-        texture_info_list.append((texture, width, height))
+        texture_info_list.append(Texture(texture, width, height))
 
     return texture_info_list
 
@@ -975,7 +992,7 @@ def load_texture(file_name, x=0, y=0, width=0, height=0):
                           image_width, image_height,
                           GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, image_bytes)
 
-    return texture, image_width, image_height
+    return Texture(texture, image_width, image_height)
 
 
 def draw_texture_rect(x, y, width, height, texture,
@@ -1002,12 +1019,12 @@ def draw_texture_rect(x, y, width, height, texture,
     >>> arcade.open_window("Drawing Example", 800, 600)
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
-    >>> texture, width, height = \
+    >>> texture = \
 arcade.load_texture("examples/images/playerShip1_orange.png")
     >>> scale = 0.002
-    >>> arcade.draw_texture_rect(0.8, -0.6, scale * width, \
-scale * height, texture, 0)
-    >>> arcade.swap_buffers()
+    >>> arcade.draw_texture_rect(0.8, -0.6, scale * texture.width, \
+scale * texture.height, texture, 0)
+    >>> arcade.finish_render()
     >>> # Enable the following to keep the window up after running.
     >>> # arcade.run()
 
@@ -1031,7 +1048,7 @@ scale * height, texture, 0)
     GL.glColor4f(1, 1, 1, alpha)
     z = 0.5
 
-    GL.glBindTexture(GL.GL_TEXTURE_2D, texture)
+    GL.glBindTexture(GL.GL_TEXTURE_2D, texture.id)
     GL.glBegin(GL.GL_POLYGON)
     GL.glNormal3f(0.0, 0.0, 1.0)
     GL.glTexCoord2f(0, 0)

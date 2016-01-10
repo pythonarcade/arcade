@@ -30,14 +30,14 @@ class PlayerSprite(arcade.PlatformerSpriteSheetSprite):
         texture_info_list = arcade.load_textures("images/spritesheet_complete.png", image_location_list)
 
         for texture_info in texture_info_list:
-            texture, width, height = texture_info
-            self.append_texture(texture, width, height)
+            texture = texture_info
+            self.append_texture(texture)
 
         texture_info_list = arcade.load_textures("images/spritesheet_complete.png", image_location_list, True)
 
         for texture_info in texture_info_list:
-            texture, width, height = texture_info
-            self.append_texture(texture, width, height)
+            texture = texture_info
+            self.append_texture(texture)
 
         self.set_left_walk_textures([12, 13])
         self.set_right_walk_textures([5, 6])
@@ -57,6 +57,18 @@ class Platform(arcade.Sprite):
     """ Platform class. """
     pass
 
+class MovingPlatform(Platform):
+    def __init__(self, filename=None, scale=0, x=0, y=0, width=0, height=0):
+        super().__init__(filename, scale, x, y, width, height)
+        self.left_boundary = 0
+        self.right_boundary = 0
+
+    def update(self):
+        super().update()
+        if self.center_x < self.left_boundary and self.change_x < 0:
+            self.change_x *= -1
+        if self.center_x > self.right_boundary and self.change_x > 0:
+            self.change_x *= -1
 
 class MyApplication(arcade.ArcadeApplication):
     """ Main application class. """
@@ -160,6 +172,13 @@ class MyApplication(arcade.ArcadeApplication):
         self.create_coin(coin, 19, 4)
         self.create_coin(coin, 20, 4)
 
+        moving_platform = MovingPlatform("images/spritesheet_complete.png", SCALE, 1430, 650, 128, 70)
+        moving_platform.set_position(2, 7)
+        moving_platform.left_boundary = 3
+        moving_platform.right_boundary = 8
+        moving_platform.change_x = .01
+        self.all_sprites_list.append(moving_platform)
+        self.physics_engine.append(moving_platform)
 
 
 
@@ -177,7 +196,7 @@ class MyApplication(arcade.ArcadeApplication):
         # for x in range(0, BLOCK_WIDTH):
         #     arcade.draw_line(x, 0, x, BLOCK_HEIGHT, grid_color)
 
-        arcade.swap_buffers()
+        arcade.finish_render()
 
     def key_pressed(self, key, x, y):
         pass
@@ -205,11 +224,11 @@ class MyApplication(arcade.ArcadeApplication):
 
         if self.player_sprite.center_x - self.ortho_left > 7:
             self.ortho_left = self.player_sprite.center_x - 7
-            arcade.set_ortho(self.ortho_left, BLOCK_WIDTH + self.ortho_left, 0, BLOCK_HEIGHT)
+            arcade.set_viewport(self.ortho_left, BLOCK_WIDTH + self.ortho_left, 0, BLOCK_HEIGHT)
 
         if self.player_sprite.center_x - self.ortho_left < 3:
             self.ortho_left = self.player_sprite.center_x - 3
-            arcade.set_ortho(self.ortho_left, BLOCK_WIDTH + self.ortho_left, 0, BLOCK_HEIGHT)
+            arcade.set_viewport(self.ortho_left, BLOCK_WIDTH + self.ortho_left, 0, BLOCK_HEIGHT)
 
         coins_hit = arcade.check_for_collision_with_list(self.player_sprite, self.coin_list)
         for coin in coins_hit:
@@ -223,7 +242,7 @@ class MyApplication(arcade.ArcadeApplication):
 
         self.open_window(800, 800)
         arcade.set_background_color((127, 127, 255))
-        arcade.set_ortho(self.ortho_left, BLOCK_WIDTH + self.ortho_left, 0, BLOCK_HEIGHT)
+        arcade.set_viewport(self.ortho_left, BLOCK_WIDTH + self.ortho_left, 0, BLOCK_HEIGHT)
         self.setup_game()
 
         arcade.run()

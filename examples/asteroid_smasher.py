@@ -128,7 +128,7 @@ class MyApplication(arcade.ArcadeApplication):
 
         output = "Asteroid Count: {}".format(len(self.asteroid_list))
         arcade.draw_text(output, -1.0, 0.9, arcade.color.WHITE)
-        arcade.swap_buffers()
+        arcade.finish_render()
 
     def key_pressed(self, key, x, y):
         if not self.player_sprite.respawning and key == b' ':
