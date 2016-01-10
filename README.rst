@@ -35,4 +35,8 @@ restrictions.
     :alt: Test Coverage Status
     :scale: 100%
     :target: https://coveralls.io/github/pvcraven/arcade?branch=master
+.. |version| image:: https://img.shields.io/pypi/v/arcade.svg   
+    :alt: Version
+    :scale: 100%
+    :target: https://pypi.python.org/pypi/arcade
 
