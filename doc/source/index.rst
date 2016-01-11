@@ -8,7 +8,7 @@ The Arcade Python Package
 
 |build-status-travis| |build-status-appveyor| |docs| |coverage|
 
-Arcade is an easy-to-learn Python library for creating 2d video games.
+Arcade is an easy-to-learn Python library for creating 2d video games. The API is designed to allow progressive functionality as you learn to code. To make images, you do not need to learn to define functions. To make animations, you don't need to understand classes. But once you do understand classes, it is easy to put together classic video games.
 
 The source is available on GitHub: https://github.com/pvcraven/arcade
 

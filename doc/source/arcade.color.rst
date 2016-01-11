@@ -1,10 +1,6 @@
 arcade.color package
-====================
+==================
 
-Module contents
----------------
+These are colors you can use when drawing. See http://www.colorpicker.com/color-chart/ for visuals on these colors.
 
-.. automodule:: arcade.color
-    :members:
-    :undoc-members:
-    :show-inheritance:
+.. literalinclude:: ../../arcade/color/__init__.py

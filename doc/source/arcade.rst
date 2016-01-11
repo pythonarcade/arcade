@@ -4,48 +4,48 @@ Arcade Package API
 Submodules
 ----------
 
-arcade.window_commands module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Window Commands Module
+^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: arcade.window_commands
     :members:
     :undoc-members:
     :show-inheritance:
 
-arcade.draw_commands module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Draw Commands Module
+^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: arcade.draw_commands
     :members:
     :undoc-members:
     :show-inheritance:
 
-arcade.application module
-^^^^^^^^^^^^^^^^^^^^^^^^^
+Application Class Module
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: arcade.application
     :members:
     :undoc-members:
     :show-inheritance:
 
-arcade.geometry module
-^^^^^^^^^^^^^^^^^^^^^^
+Geometry Module
+^^^^^^^^^^^^^^^
 
 .. automodule:: arcade.geometry
     :members:
     :undoc-members:
     :show-inheritance:
 
-arcade.sprite module
-^^^^^^^^^^^^^^^^^^^^
+Sprite Module
+^^^^^^^^^^^^^
 
 .. automodule:: arcade.sprite
     :members:
     :undoc-members:
     :show-inheritance:
 
-arcade.physics_engines module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Physics Engines Module
+^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: arcade.physics_engines
     :members:
@@ -53,8 +53,8 @@ arcade.physics_engines module
     :show-inheritance:
 
 
-Subpackages
------------
+Arcade Subpackages
+------------------
 
 .. toctree::
 

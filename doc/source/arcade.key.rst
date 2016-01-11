@@ -1,10 +1,6 @@
 arcade.key package
 ==================
 
-Module contents
----------------
+These are keys you can use in the set_keyboard_handler_function function that aren't easily defined.
 
-.. automodule:: arcade.key
-    :members:
-    :undoc-members:
-    :show-inheritance:
+.. literalinclude:: ../../arcade/key/__init__.py
