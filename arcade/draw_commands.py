@@ -8,6 +8,7 @@ import OpenGL.GL as GL
 import OpenGL.GLU as GLU
 import OpenGL.GLUT as GLUT
 
+
 class Texture():
     """
     Simple class that represents a texture
@@ -16,6 +17,7 @@ class Texture():
         self.id = id
         self.width = width
         self.height = height
+
 
 def trim_image(image):
     """

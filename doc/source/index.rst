@@ -12,15 +12,15 @@ Arcade is an easy-to-learn Python library for creating 2d video games. The API i
 
 The source is available on GitHub: https://github.com/pvcraven/arcade
 
-API Documentation
------------------
+Documentation
+-------------
 
 .. toctree::
    :maxdepth: 4
 
-   arcade
    examples
    installation
+   arcade
 
 .. automodule:: arcade
 

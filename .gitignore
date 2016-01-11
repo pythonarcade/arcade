@@ -9,3 +9,4 @@ build/
 a_quick_test.py
 *.wpr
 arcade.wpu
+.coverage

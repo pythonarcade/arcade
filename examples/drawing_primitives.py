@@ -127,8 +127,10 @@ arcade.draw_rect_filled(0.3, -0.5, .15, .35, arcade.color.BLUSH)
 arcade.draw_text("draw_bitmap", 0.61, -0.99, arcade.color.BLACK)
 texture = arcade.load_texture("images/playerShip1_orange.png")
 scale = 0.002
-arcade.draw_texture_rect(0.8, -0.6, scale * texture.width, scale * texture.height, texture, 0)
-arcade.draw_texture_rect(0.8, -0.8, scale * texture.width, scale * texture.height, texture, 90)
+arcade.draw_texture_rect(0.8, -0.6, scale * texture.width,
+                         scale * texture.height, texture, 0)
+arcade.draw_texture_rect(0.8, -0.8, scale * texture.width,
+                         scale * texture.height, texture, 90)
 
 # Finish the render.
 # Nothing will be drawn without this.

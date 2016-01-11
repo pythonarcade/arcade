@@ -298,7 +298,8 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
         if type(texture) is Texture:
             self._texture = texture
         else:
-            raise SystemError("Can't set the texture to something that is not an instance of the Texture class.")
+            raise SystemError("Can't set the texture to something that is " +
+                              "not an instance of the Texture class.")
 
     texture = property(_get_texture, _set_texture)
 

@@ -163,6 +163,7 @@ def set_background_color(color):
 
     GL.glClearColor(color[0]/255, color[1]/255, color[2]/255, alpha/255)
 
+
 def set_keyboard_handler_function(function_pointer):
     """
     Sets a function to be run everytime a key even occurs.
