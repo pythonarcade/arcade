@@ -1,2 +1,2 @@
-PyOpenGL
+Pyglet
 Pillow

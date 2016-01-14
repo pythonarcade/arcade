@@ -7,3 +7,9 @@ from .draw_commands import *
 from .sprite import *
 from .physics_engines import *
 from .application import *
+
+import time
+
+
+def pause(seconds):
+    time.sleep(seconds)

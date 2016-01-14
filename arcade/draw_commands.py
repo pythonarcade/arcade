@@ -1,12 +1,14 @@
 import sys
 import math
+import ctypes
 
 import PIL.Image
 import PIL.ImageOps
 
-import OpenGL.GL as GL
-import OpenGL.GLU as GLU
-import OpenGL.GLUT as GLUT
+import pyglet
+import pyglet.gl as GL
+import pyglet.gl.glu as GLU
+# import OpenGL.GLUT as GLUT
 
 
 class Texture():
@@ -22,9 +24,14 @@ class Texture():
 def trim_image(image):
     """
     Returns an image with extra whitespace cropped out.
+
+    >>> source_image = PIL.Image.open("examples/images/playerShip1_orange.png")
+    >>> cropped_image = trim_image(source_image)
+    >>> print(source_image.height, cropped_image.height)
+    75 75
     """
-    bbox = im.getbbox()
-    return im.crop(bbox)
+    bbox = image.getbbox()
+    return image.crop(bbox)
 
 
 def draw_arc_filled(cx, cy,
@@ -59,11 +66,14 @@ def draw_arc_filled(cx, cy,
     >>> arcade.open_window("Drawing Example", 800, 600)
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
-    >>> arcade.draw_arc_filled(-0.5, -0.52, 0.05, 0.12, \
-arcade.color.BOTTLE_GREEN, 0, 45)
+    >>> arcade.draw_arc_filled(150, 144, 15, 36, \
+arcade.color.BOTTLE_GREEN, 90, 360, 45)
+    >>> transparent_color = (255, 0, 0, 127)
+    >>> arcade.draw_arc_filled(150, 154, 15, 36, \
+transparent_color, 90, 360, 45)
     >>> arcade.finish_render()
-    >>> # Enable the following to keep the window up after running.
-    >>> # arcade.run()
+    >>> arcade.pause(0.5)
+    >>> arcade.close_window()
     """
 
     GL.glEnable(GL.GL_BLEND)
@@ -73,7 +83,7 @@ arcade.color.BOTTLE_GREEN, 0, 45)
     GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
 
     GL.glLoadIdentity()
-    GL.glTranslate(cx, cy, 0)
+    GL.glTranslatef(cx, cy, 0)
     GL.glRotatef(angle, 0, 0, 1)
 
     # Set color
@@ -133,11 +143,14 @@ def draw_arc_outline(cx, cy,
     >>> arcade.open_window("Drawing Example", 800, 600)
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
-    >>> arcade.draw_arc_outline(-0.5, -0.73, 0.05, 0.12, \
+    >>> arcade.draw_arc_outline(150, 81, 15, 36, \
 arcade.color.BRIGHT_MAROON, 90, 360)
+    >>> transparent_color = (255, 0, 0, 127)
+    >>> arcade.draw_arc_outline(150, 71, 15, 36, \
+transparent_color, 90, 360)
     >>> arcade.finish_render()
-    >>> # Enable the following to keep the window up after running.
-    >>> # arcade.run()
+    >>> arcade.pause(0.5)
+    >>> arcade.close_window()
     """
 
     GL.glEnable(GL.GL_BLEND)
@@ -147,7 +160,7 @@ arcade.color.BRIGHT_MAROON, 90, 360)
     GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
 
     GL.glLoadIdentity()
-    GL.glTranslate(cx, cy, 0)
+    GL.glTranslatef(cx, cy, 0)
     GL.glRotatef(angle, 0, 0, 1)
     GL.glLineWidth(line_width)
 
@@ -197,10 +210,10 @@ def draw_circle_filled(cx, cy, radius, color, num_segments=128):
     >>> arcade.open_window("Drawing Example", 800, 600)
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
-    >>> arcade.draw_circle_filled(0.4, -0.05, 0.06, arcade.color.GREEN, 3)
+    >>> arcade.draw_circle_filled(420, 285, 18, arcade.color.GREEN, 3)
     >>> arcade.finish_render()
-    >>> # Enable the following to keep the window up after running.
-    >>> # arcade.run()
+    >>> arcade.pause(0.5)
+    >>> arcade.close_window()
     """
     width = radius
     height = radius
@@ -231,10 +244,10 @@ def draw_circle_outline(cx, cy, radius, color, line_width=1, num_segments=128):
     >>> arcade.open_window("Drawing Example", 800, 600)
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
-    >>> arcade.draw_circle_outline(0, -0.05, 0.06, arcade.color.WISTERIA, 3)
+    >>> arcade.draw_circle_outline(300, 285, 18, arcade.color.WISTERIA, 3)
     >>> arcade.finish_render()
-    >>> # Enable the following to keep the window up after running.
-    >>> # arcade.run()
+    >>> arcade.pause(0.5)
+    >>> arcade.close_window()
     """
     width = radius
     height = radius
@@ -270,12 +283,12 @@ def draw_ellipse_filled(cx, cy,
     >>> arcade.open_window("Drawing Example", 800, 600)
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
-    >>> arcade.draw_ellipse_filled(-0.8, -0.73, 0.05, 0.12, arcade.color.AMBER)
-    >>> arcade.draw_ellipse_filled(-0.8, -0.52, 0.05, 0.12, \
+    >>> arcade.draw_ellipse_filled(60, 81, 15, 36, arcade.color.AMBER)
+    >>> arcade.draw_ellipse_filled(60, 144, 15, 36, \
 arcade.color.BLACK_BEAN, 45)
     >>> arcade.finish_render()
-    >>> # Enable the following to keep the window up after running.
-    >>> # arcade.run()
+    >>> arcade.pause(0.5)
+    >>> arcade.close_window()
     """
 
     GL.glEnable(GL.GL_BLEND)
@@ -285,7 +298,7 @@ arcade.color.BLACK_BEAN, 45)
     GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
 
     GL.glLoadIdentity()
-    GL.glTranslate(cx, cy, 0)
+    GL.glTranslatef(cx, cy, 0)
     GL.glRotatef(angle, 0, 0, 1)
 
     # Set color
@@ -338,13 +351,12 @@ def draw_ellipse_outline(cx, cy,
     >>> arcade.open_window("Drawing Example", 800, 600)
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
-    >>> arcade.draw_ellipse_outline(0.8, -0.09, 0.05, 0.12, \
-arcade.color.AMBER, 3)
-    >>> arcade.draw_ellipse_outline(0.8, 0.12, 0.05, 0.12, \
+    >>> arcade.draw_ellipse_outline(540, 273, 15, 36, arcade.color.AMBER, 3)
+    >>> arcade.draw_ellipse_outline(540, 336, 15, 36, \
 arcade.color.BLACK_BEAN, 3, 45)
     >>> arcade.finish_render()
-    >>> # Enable the following to keep the window up after running.
-    >>> # arcade.run()
+    >>> arcade.pause(0.5)
+    >>> arcade.close_window()
     """
 
     GL.glEnable(GL.GL_BLEND)
@@ -354,7 +366,7 @@ arcade.color.BLACK_BEAN, 3, 45)
     GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
 
     GL.glLoadIdentity()
-    GL.glTranslate(cx, cy, 0)
+    GL.glTranslatef(cx, cy, 0)
     GL.glRotatef(angle, 0, 0, 1)
     GL.glLineWidth(line_width)
 
@@ -401,10 +413,10 @@ def draw_line(x1, y1, x2, y2, color, line_width=1):
     >>> arcade.open_window("Drawing Example", 800, 600)
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
-    >>> arcade.draw_line(-0.1, 0.65, 0, 0.5, arcade.color.WOOD_BROWN, 3)
+    >>> arcade.draw_line(270, 495, 300, 450, arcade.color.WOOD_BROWN, 3)
     >>> arcade.finish_render()
-    >>> # Enable the following to keep the window up after running.
-    >>> # arcade.run()
+    >>> arcade.pause(0.5)
+    >>> arcade.close_window()
     """
     GL.glEnable(GL.GL_BLEND)
     GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
@@ -451,18 +463,17 @@ def draw_line_strip(point_list, color, line_width=1):
     >>> arcade.open_window("Drawing Example", 800, 600)
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
-    >>> point_list = ((0.7, 0.5), \
-(0.9, 0.5), \
-(0.7, 0.6), \
-(0.9, 0.6), \
-(0.7, 0.7), \
-(0.9, 0.7)\
-)
-    >>> arcade.draw_line_strip(point_list, \
-arcade.color.TROPICAL_RAIN_FOREST, 3)
+    >>> point_list = ((510, 450), \
+(570, 450), \
+(510, 480), \
+(570, 480), \
+(510, 510), \
+(570, 510))
+    >>> arcade.draw_line_strip(point_list, arcade.color.TROPICAL_RAIN_FOREST, \
+3)
     >>> arcade.finish_render()
-    >>> # Enable the following to keep the window up after running.
-    >>> # arcade.run()
+    >>> arcade.pause(0.5)
+    >>> arcade.close_window()
     """
     GL.glEnable(GL.GL_BLEND)
     GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
@@ -510,16 +521,16 @@ def draw_lines(point_list, color, line_width=1):
     >>> arcade.open_window("Drawing Example", 800, 600)
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
-    >>> point_list = ((0.3, 0.5), \
-(0.5, 0.5), \
-(0.3, 0.6), \
-(0.5, 0.6), \
-(0.3, 0.7), \
-(0.5, 0.7))
+    >>> point_list = ((390, 450), \
+(450, 450), \
+(390, 480), \
+(450, 480), \
+(390, 510), \
+(450, 510))
     >>> arcade.draw_lines(point_list, arcade.color.BLUE, 3)
     >>> arcade.finish_render()
-    >>> # Enable the following to keep the window up after running.
-    >>> # arcade.run()
+    >>> arcade.pause(0.5)
+    >>> arcade.close_window()
     """
     GL.glEnable(GL.GL_BLEND)
     GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
@@ -565,10 +576,10 @@ def draw_point(x, y, color, size):
     >>> arcade.open_window("Drawing Example", 800, 600)
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
-    >>> arcade.draw_point(-0.8, 0.65, arcade.color.RED, 10)
+    >>> arcade.draw_point(60, 495, arcade.color.RED, 10)
     >>> arcade.finish_render()
-    >>> # Enable the following to keep the window up after running.
-    >>> # arcade.run()
+    >>> arcade.pause(0.5)
+    >>> arcade.close_window()
     """
     GL.glEnable(GL.GL_BLEND)
     GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
@@ -606,12 +617,16 @@ def draw_points(point_list, color, size):
     >>> arcade.open_window("Drawing Example", 800, 600)
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
-    >>> point_list = ((-0.45, 0.65), (-0.45, 0.60), (-0.45, 0.55), \
-(-0.35, 0.65), (-0.35, 0.60), (-0.35, 0.55))
+    >>> point_list = ((165, 495), \
+(165, 480), \
+(165, 465), \
+(195, 495), \
+(195, 480), \
+(195, 465))
     >>> arcade.draw_points(point_list, arcade.color.ZAFFRE, 10)
     >>> arcade.finish_render()
-    >>> # Enable the following to keep the window up after running.
-    >>> # arcade.run()
+    >>> arcade.pause(0.5)
+    >>> arcade.close_window()
     """
     GL.glEnable(GL.GL_BLEND)
     GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
@@ -647,12 +662,17 @@ def draw_polygon_filled(point_list, color):
     >>> arcade.open_window("Drawing Example", 800, 600)
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
-    >>> point_list = ((-0.5, -0.2), (-0.45, -0.2), (-0.4, -0.15), \
-(-0.4, -0.05), (-0.45, 0), (-0.5, 0))
+    >>> point_list = ((150, 240), \
+(165, 240), \
+(180, 255), \
+(180, 285), \
+(165, 300), \
+(150, 300))
     >>> arcade.draw_polygon_filled(point_list, arcade.color.SPANISH_VIOLET)
     >>> arcade.finish_render()
-    >>> # Enable the following to keep the window up after running.
-    >>> # arcade.run()
+    >>> arcade.pause(0.5)
+    >>> arcade.close_window()
+    >>> arcade.pause(0.25)
     """
     GL.glEnable(GL.GL_BLEND)
     GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
@@ -693,13 +713,17 @@ def draw_polygon_outline(point_list, color, line_width=1):
     >>> arcade.open_window("Drawing Example", 800, 600)
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
-    >>> point_list = ((-0.9, -0.2), (-0.85, -0.2), (-0.8, -0.15), \
-(-0.8, -0.05), (-0.85, 0), (-0.9, 0))
+    >>> point_list = ((30, 240), \
+(45, 240), \
+(60, 255), \
+(60, 285), \
+(45, 300), \
+(30, 300))
     >>> arcade.draw_polygon_outline(point_list, arcade.color.SPANISH_VIOLET, 3)
     >>> arcade.finish_render()
-    >>> # Enable the following to keep the window up after running.
-    >>> # arcade.run()
-
+    >>> arcade.pause(0.5)
+    >>> arcade.close_window()
+    >>> arcade.pause(0.25)
 
     """
     GL.glEnable(GL.GL_BLEND)
@@ -745,11 +769,11 @@ def draw_rect_outline(x, y, width, height, color, line_width=1, angle=0):
     >>> arcade.open_window("Drawing Example", 800, 600)
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
-    >>> arcade.draw_rect_outline(-0.075, -0.5, 0.15, 0.35, \
+    >>> arcade.draw_rect_outline(278, 150, 45, 105, \
 arcade.color.BRITISH_RACING_GREEN, 2)
     >>> arcade.finish_render()
-    >>> # Enable the following to keep the window up after running
-    >>> # arcade.run()
+    >>> arcade.pause(0.5)
+    >>> arcade.close_window()
     """
 
     GL.glEnable(GL.GL_BLEND)
@@ -797,9 +821,10 @@ def draw_rect_filled(x, y, width, height, color, angle=0):
     >>> arcade.open_window("Drawing Example", 800, 600)
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
-    >>> arcade.draw_rect_filled(0.3, -0.5, .15, .35, arcade.color.BLUSH)
-    >>> # Enable the following to keep the window up after running
-    >>> # arcade.run()
+    >>> arcade.draw_rect_filled(390, 150, 45, 105, arcade.color.BLUSH)
+    >>> arcade.finish_render()
+    >>> arcade.pause(0.5)
+    >>> arcade.close_window()
     """
 
     GL.glEnable(GL.GL_BLEND)
@@ -827,7 +852,7 @@ def draw_rect_filled(x, y, width, height, color, angle=0):
     GL.glEnd()
 
 
-def draw_text(text, x, y, color):
+def draw_text(text, x, y, color, size):
     """
     Draw text to the screen.
 
@@ -844,26 +869,22 @@ def draw_text(text, x, y, color):
     >>> arcade.open_window("Drawing Example", 800, 600)
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
-    >>> arcade.draw_text("This is a test",-0.2, 0.05, arcade.color.BLACK)
+    >>> arcade.draw_text("Text Example", 250, 300, arcade.color.BLACK, 10)
     >>> arcade.finish_render()
-    >>> # Enable the following to keep the window up after running.
-    >>> # arcade.run()
+    >>> arcade.pause(0.5)
+    >>> arcade.close_window()
     """
 
-    GL.glLoadIdentity()
-    GL.glDisable(GL.GL_TEXTURE_2D)
-    w = float(GLUT.glutGet(GLUT.GLUT_WINDOW_WIDTH))
-    h = float(GLUT.glutGet(GLUT.GLUT_WINDOW_HEIGHT))
+    if len(color) == 3:
+        color = (color[0], color[1], color[2], 255)
 
-    # Set color
-    if len(color) == 4:
-        GL.glColor4ub(color[0], color[1], color[2], color[3])
-    elif len(color) == 3:
-        GL.glColor4ub(color[0], color[1], color[2], 255)
+    label = pyglet.text.Label(text,
+                              font_name='Times New Roman',
+                              font_size=size,
+                              x=x, y=y,
+                              color=color)
 
-    GL.glRasterPos(x, y)
-    for character in text:
-        GLUT.glutBitmapCharacter(GLUT.GLUT_BITMAP_8_BY_13, ord(character))
+    label.draw()
 
 
 def load_textures(file_name, image_location_list,
@@ -907,7 +928,8 @@ def load_textures(file_name, image_location_list,
         image_width, image_height = image.size
         image_bytes = image.convert("RGBA").tobytes("raw", "RGBA", 0, -1)
 
-        texture = GL.glGenTextures(1)
+        texture = GL.GLuint(0)
+        GL.glGenTextures(1, ctypes.byref(texture))
 
         GL.glBindTexture(GL.GL_TEXTURE_2D, texture)
         GL.glPixelStorei(GL.GL_UNPACK_ALIGNMENT, 1)
@@ -974,7 +996,8 @@ def load_texture(file_name, x=0, y=0, width=0, height=0):
     image_width, image_height = image.size
     image_bytes = image.convert("RGBA").tobytes("raw", "RGBA", 0, -1)
 
-    texture = GL.glGenTextures(1)
+    texture = GL.GLuint(0)
+    GL.glGenTextures(1, ctypes.byref(texture))
 
     GL.glBindTexture(GL.GL_TEXTURE_2D, texture)
     GL.glPixelStorei(GL.GL_UNPACK_ALIGNMENT, 1)
@@ -1021,16 +1044,16 @@ def draw_texture_rect(x, y, width, height, texture,
     >>> arcade.open_window("Drawing Example", 800, 600)
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
-    >>> texture = \
-arcade.load_texture("examples/images/playerShip1_orange.png")
-    >>> scale = 0.002
-    >>> arcade.draw_texture_rect(0.8, -0.6, scale * texture.width, \
+    >>> arcade.draw_text("draw_bitmap", 483, 3, arcade.color.BLACK, 12)
+    >>> texture = arcade.load_texture("examples/images/playerShip1_orange.png")
+    >>> scale = .6
+    >>> arcade.draw_texture_rect(540, 120, scale * texture.width, \
 scale * texture.height, texture, 0)
+    >>> arcade.draw_texture_rect(540, 60, scale * texture.width, \
+scale * texture.height, texture, 90)
     >>> arcade.finish_render()
-    >>> # Enable the following to keep the window up after running.
-    >>> # arcade.run()
-
-
+    >>> arcade.pause(0.5)
+    >>> arcade.close_window()
     """
 
     if transparent:
@@ -1062,3 +1085,11 @@ scale * texture.height, texture, 0)
     GL.glTexCoord2f(0, 1)
     GL.glVertex3f(-width/2, height/2, z)
     GL.glEnd()
+
+
+def _test():
+    import doctest
+    doctest.testmod()
+
+if __name__ == "__main__":
+    _test()

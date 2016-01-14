@@ -4,14 +4,17 @@ This submodule has functions that control creating and managing windows.
 
 import sys
 
-import OpenGL.GL as GL
-import OpenGL.GLU as GLU
-import OpenGL.GLUT as GLUT
+import pyglet
+import pyglet.gl as GL
+import pyglet.gl.glu as GLU
+# import OpenGL.GLUT as GLUT
 
 _left = -1
 _right = 1
 _bottom = -1
 _top = 1
+
+_window = None
 
 
 def set_resize_window_function(function_pointer):
@@ -21,11 +24,10 @@ def set_resize_window_function(function_pointer):
 
 def default_resize_window_function(width, height):
     """ Called when the window is resized. """
-    GL.glViewport(0, 0, width, height)
+    # GL.glViewport(0, 0, width, height)
     GL.glMatrixMode(GL.GL_PROJECTION)
     GL.glLoadIdentity()
-    ratio = width / height
-    GL.glOrtho(_left * ratio, _right * ratio, _bottom, _top, -1, 1)
+    GL.glOrtho(0, width, 0, height, -1, 1)
 
 
 def set_viewport(left, right, bottom, top):
@@ -42,14 +44,10 @@ def set_viewport(left, right, bottom, top):
     _bottom = bottom
     _top = top
 
-    width = GLUT.glutGet(GLUT.GLUT_WINDOW_WIDTH)
-    height = GLUT.glutGet(GLUT.GLUT_WINDOW_HEIGHT)
-
-    GL.glViewport(0, 0, width, height)
+    # GL.glViewport(0, 800, 0, 800)
     GL.glMatrixMode(GL.GL_PROJECTION)
     GL.glLoadIdentity()
-    ratio = width / height
-    GL.glOrtho(_left * ratio, _right * ratio, _bottom, _top, -1, 1)
+    GL.glOrtho(left, right, bottom, top, -1, 1)
 
 
 def set_render_function(function_pointer):
@@ -73,24 +71,23 @@ def open_window(window_title, width, height):
 
     >>> import arcade
     >>> arcade.open_window("Drawing Example", 800, 600)
-    >>> # Enable the following to keep the window up after running
-    >>> # arcade.run()
+    >>> arcade.pause(0.5)
+    >>> arcade.close_window()
     """
-    GLUT.glutInit(sys.argv)
-    GLUT.glutInitDisplayMode(GLUT.GLUT_RGBA | GLUT.GLUT_DOUBLE |
-                             GLUT.GLUT_DEPTH)
-    GLUT.glutInitWindowSize(width, height)
-    GLUT.glutInitWindowPosition(0, 0)
+    global _window
 
-    GLUT.glutCreateWindow(str.encode(window_title))
+    window = pyglet.window.Window(width=width, height=height,
+                                  caption=window_title)
+    set_viewport(0, width, 0, height)
+    window.invalid = False
 
-    GL.glClearColor(0.0, 0.0, 0.0, 0.0)
-    GL.glClearDepth(1.0)
-    GL.glDepthFunc(GL.GL_LEQUAL)
-    GL.glEnable(GL.GL_DEPTH_TEST)
+    _window = window
 
-    # This will hopefully be replaced by something better later.
-    GLUT.glutDisplayFunc(start_render)
+
+def close_window():
+    global _window
+
+    _window.close()
 
 
 def finish_render():
@@ -112,11 +109,12 @@ def finish_render():
     >>> arcade.start_render()
     >>> # All the drawing commands go here
     >>> arcade.finish_render()
-    >>> # Enable the following to keep the window up after running
-    >>> # arcade.run()
+    >>> arcade.pause(0.5)
+    >>> arcade.close_window()
     """
+    global _window
 
-    GLUT.glutSwapBuffers()
+    _window.flip()
 
 
 def redisplay():
@@ -126,7 +124,7 @@ def redisplay():
 
 def run():
     """ Run the main loop. """
-    GLUT.glutMainLoop()
+    pyglet.app.run()
 
 
 def start_render():
@@ -153,15 +151,11 @@ def set_background_color(color):
     >>> arcade.set_background_color(arcade.color.RED)
     >>> arcade.start_render()
     >>> arcade.finish_render()
-    >>> # Enable the following to keep the window up after running
-    >>> # arcade.run()
+    >>> arcade.pause(0.5)
+    >>> arcade.close_window()
     """
-    if len(color) == 4:
-        alpha = color[3]
-    elif len(color) == 3:
-        alpha = 255
 
-    GL.glClearColor(color[0]/255, color[1]/255, color[2]/255, alpha/255)
+    GL.glClearColor(color[0]/255, color[1]/255, color[2]/255, 1)
 
 
 def set_keyboard_handler_function(function_pointer):

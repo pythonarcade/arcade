@@ -23,8 +23,8 @@ scale)
     >>> arcade.start_render()
     >>> meteor_list.draw()
     >>> arcade.finish_render()
-    >>> # Enable the following to keep the window up after running.
-    >>> # arcade.run()
+    >>> arcade.pause(0.5)
+    >>> arcade.close_window()
     """
     def __init__(self):
         self.sprite_list = []

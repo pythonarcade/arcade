@@ -61,7 +61,13 @@ def are_polygons_intersecting(poly_a, poly_b):
 
 
 def rotate(x, y, cx, cy, angle):
-    """ Rotate a point around a center. """
+    """
+    Rotate a point around a center.
+
+    >>> x, y = rotate(1, 1, 0, 0, 90)
+    >>> print(round(x), round(y))
+    -1 1
+    """
     tempX = x - cx
     tempY = y - cy
 
@@ -79,12 +85,59 @@ def rotate(x, y, cx, cy, angle):
 
 
 def check_for_collision(sprite1, sprite2):
-    """ Check for a collision between two sprites. """
+    """
+    Check for a collision between two sprites.
+
+    >>> import arcade
+    >>> scale = 1
+    >>> sprite_1 = arcade.Sprite("examples/images/meteorGrey_big1.png", \
+scale)
+    >>> sprite_1.center_x = 0
+    >>> sprite_1.center_y = 0
+    >>> sprite_2 = arcade.Sprite("examples/images/meteorGrey_big1.png", \
+scale)
+    >>> sprite_2.center_x = 40
+    >>> sprite_2.center_y = 40
+    >>> result = check_for_collision(sprite_1, sprite_2)
+    >>> sprite_3 = arcade.Sprite("examples/images/meteorGrey_big1.png", \
+scale)
+    >>> sprite_3.center_x = 100
+    >>> sprite_3.center_y = 100
+    >>> result_1 = check_for_collision(sprite_1, sprite_2)
+    >>> result_2 = check_for_collision(sprite_2, sprite_3)
+    >>> result_3 = check_for_collision(sprite_1, sprite_3)
+    >>> print(result_1, result_2, result_3)
+    True True False
+    """
     return are_polygons_intersecting(sprite1.points, sprite2.points)
 
 
 def check_for_collision_with_list(sprite1, sprite_list):
-    """ Check for a collision between a sprite, and a list of sprites. """
+    """
+    Check for a collision between a sprite, and a list of sprites.
+
+    >>> import arcade
+    >>> scale = 1
+    >>> sprite_list = arcade.SpriteList()
+    >>> main_sprite = arcade.Sprite("examples/images/meteorGrey_big1.png", \
+scale)
+    >>> main_sprite.center_x = 0
+    >>> main_sprite.center_y = 0
+    >>> sprite = arcade.Sprite("examples/images/meteorGrey_big1.png", \
+scale)
+    >>> sprite.center_x = 40
+    >>> sprite.center_y = 40
+    >>> sprite_list.append(sprite)
+    >>> sprite = arcade.Sprite("examples/images/meteorGrey_big1.png", \
+scale)
+    >>> sprite.center_x = 100
+    >>> sprite.center_y = 100
+    >>> sprite_list.append(sprite)
+    >>> collision_list = arcade.check_for_collision_with_list(main_sprite, \
+sprite_list)
+    >>> print(len(collision_list))
+    1
+    """
     collision_list = []
     for sprite2 in sprite_list:
         if sprite1 is not sprite2:

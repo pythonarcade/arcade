@@ -36,7 +36,7 @@ class ShipSprite(arcade.Sprite):
         self.drag = 0.0001
 
         # Mark that we are respawning.
-        respawn()
+        self.respawn()
 
     def respawn(self):
         """
