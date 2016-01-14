@@ -4,8 +4,10 @@ This submodule has functions that control creating and managing windows.
 
 import sys
 
+import pyglet.gl as GL
+# import pyglet.gl.glu as GLU
 import OpenGL.GL as GL
-import OpenGL.GLU as GLU
+# import OpenGL.GLU as GLU
 import OpenGL.GLUT as GLUT
 
 _left = -1

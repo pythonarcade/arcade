@@ -1,13 +1,14 @@
 import sys
 import math
+import ctypes
 
 import PIL.Image
 import PIL.ImageOps
 
-import OpenGL.GL as GL
-import OpenGL.GLU as GLU
+import pyglet
+import pyglet.gl as GL
+import pyglet.gl.glu as GLU
 import OpenGL.GLUT as GLUT
-
 
 class Texture():
     """
@@ -73,7 +74,7 @@ arcade.color.BOTTLE_GREEN, 0, 45)
     GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
 
     GL.glLoadIdentity()
-    GL.glTranslate(cx, cy, 0)
+    GL.glTranslatef(cx, cy, 0)
     GL.glRotatef(angle, 0, 0, 1)
 
     # Set color
@@ -147,7 +148,7 @@ arcade.color.BRIGHT_MAROON, 90, 360)
     GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
 
     GL.glLoadIdentity()
-    GL.glTranslate(cx, cy, 0)
+    GL.glTranslatef(cx, cy, 0)
     GL.glRotatef(angle, 0, 0, 1)
     GL.glLineWidth(line_width)
 
@@ -285,7 +286,7 @@ arcade.color.BLACK_BEAN, 45)
     GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
 
     GL.glLoadIdentity()
-    GL.glTranslate(cx, cy, 0)
+    GL.glTranslatef(cx, cy, 0)
     GL.glRotatef(angle, 0, 0, 1)
 
     # Set color
@@ -354,7 +355,7 @@ arcade.color.BLACK_BEAN, 3, 45)
     GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
 
     GL.glLoadIdentity()
-    GL.glTranslate(cx, cy, 0)
+    GL.glTranslatef(cx, cy, 0)
     GL.glRotatef(angle, 0, 0, 1)
     GL.glLineWidth(line_width)
 
@@ -827,7 +828,7 @@ def draw_rect_filled(x, y, width, height, color, angle=0):
     GL.glEnd()
 
 
-def draw_text(text, x, y, color):
+def draw_text(text, x, y, color, font_size=36):
     """
     Draw text to the screen.
 
@@ -861,10 +862,15 @@ def draw_text(text, x, y, color):
     elif len(color) == 3:
         GL.glColor4ub(color[0], color[1], color[2], 255)
 
-    GL.glRasterPos(x, y)
+    GL.glRasterPos2f(x, y)
     for character in text:
         GLUT.glutBitmapCharacter(GLUT.GLUT_BITMAP_8_BY_13, ord(character))
-
+    # label = pyglet.text.Label(text,
+    #                           font_name='Times New Roman',
+    #                           font_size=font_size,
+    #                           x=x, y=y,
+    #                           anchor_x='center', anchor_y='center')
+    # label.draw()
 
 def load_textures(file_name, image_location_list,
                   mirrored=False, flipped=False):
@@ -907,7 +913,9 @@ def load_textures(file_name, image_location_list,
         image_width, image_height = image.size
         image_bytes = image.convert("RGBA").tobytes("raw", "RGBA", 0, -1)
 
-        texture = GL.glGenTextures(1)
+        # texture = GL.glGenTextures(1)
+        texture = GL.GLuint(0)
+        GL.glGenTextures(1,ctypes.byref(texture))
 
         GL.glBindTexture(GL.GL_TEXTURE_2D, texture)
         GL.glPixelStorei(GL.GL_UNPACK_ALIGNMENT, 1)
@@ -974,7 +982,9 @@ def load_texture(file_name, x=0, y=0, width=0, height=0):
     image_width, image_height = image.size
     image_bytes = image.convert("RGBA").tobytes("raw", "RGBA", 0, -1)
 
-    texture = GL.glGenTextures(1)
+    # texture = GL.glGenTextures(1)
+    texture = GL.GLuint(0)
+    GL.glGenTextures(1, ctypes.byref(texture))
 
     GL.glBindTexture(GL.GL_TEXTURE_2D, texture)
     GL.glPixelStorei(GL.GL_UNPACK_ALIGNMENT, 1)
