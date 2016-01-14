@@ -60,3 +60,12 @@ class ArcadeApplication():
 
     def animate(self):
         pass
+
+    def key_pressed(self, key, x, y):
+        pass
+
+    def special_pressed(self, key, x, y):
+        pass
+
+    def special_released(self, key, x, y):
+        pass
