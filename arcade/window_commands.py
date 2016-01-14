@@ -7,7 +7,6 @@ import sys
 import pyglet
 import pyglet.gl as GL
 import pyglet.gl.glu as GLU
-# import OpenGL.GLUT as GLUT
 
 _left = -1
 _right = 1
@@ -17,18 +16,13 @@ _top = 1
 _window = None
 
 
-def set_resize_window_function(function_pointer):
-    """ Set a function that will be called whenever the window is resized. """
-    GLUT.glutReshapeFunc(function_pointer)
+def get_window():
+    global _window
+    return _window
 
-
-def default_resize_window_function(width, height):
-    """ Called when the window is resized. """
-    # GL.glViewport(0, 0, width, height)
-    GL.glMatrixMode(GL.GL_PROJECTION)
-    GL.glLoadIdentity()
-    GL.glOrtho(0, width, 0, height, -1, 1)
-
+def set_window(window):
+    global _window
+    _window = window
 
 def set_viewport(left, right, bottom, top):
     """
@@ -48,10 +42,6 @@ def set_viewport(left, right, bottom, top):
     GL.glMatrixMode(GL.GL_PROJECTION)
     GL.glLoadIdentity()
     GL.glOrtho(left, right, bottom, top, -1, 1)
-
-
-def set_render_function(function_pointer):
-    GLUT.glutDisplayFunc(function_pointer)
 
 
 def open_window(window_title, width, height):
@@ -117,11 +107,6 @@ def finish_render():
     _window.flip()
 
 
-def redisplay():
-    """ Flag the screen that it needs to updated. """
-    GLUT.glutPostRedisplay()
-
-
 def run():
     """ Run the main loop. """
     pyglet.app.run()
@@ -157,9 +142,3 @@ def set_background_color(color):
 
     GL.glClearColor(color[0]/255, color[1]/255, color[2]/255, 1)
 
-
-def set_keyboard_handler_function(function_pointer):
-    """
-    Sets a function to be run everytime a key even occurs.
-    """
-    GLUT.glutKeyboardFunc(function_pointer)
