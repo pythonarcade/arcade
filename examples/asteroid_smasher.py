@@ -9,12 +9,12 @@ Artwork from http://kenney.nl
 import random
 import math
 import arcade
+import pyglet
+import pyglet.window.key
 
-# By default, the coordinate system goes from -1 to 1. If the
-# images are 100 pixels wide, we need to scale them down to fit
-# on the screen. This is that scaling factor.
-SCALE = 0.0015
+SCALE = 1
 
+window = None
 
 class ShipSprite(arcade.Sprite):
     """
@@ -32,8 +32,8 @@ class ShipSprite(arcade.Sprite):
         # Angle comes in automatically from the parent class.
         self.thrust = 0
         self.speed = 0
-        self.max_speed = 0.007
-        self.drag = 0.0001
+        self.max_speed = 1.1
+        self.drag = 0.01
 
         # Mark that we are respawning.
         self.respawn()
@@ -45,8 +45,8 @@ class ShipSprite(arcade.Sprite):
         """
         # If we are in the middle of respawning, this is non-zero.
         self.respawning = 1
-        self.center_x = 0
-        self.center_y = 0
+        self.center_x = window.width / 2
+        self.center_y = window.height / 2
         self.angle = 0
 
     def update(self):
@@ -78,6 +78,9 @@ class ShipSprite(arcade.Sprite):
         self.change_x = -math.sin(math.radians(self.angle)) * self.speed
         self.change_y = math.cos(math.radians(self.angle)) * self.speed
 
+        self.center_x += self.change_x
+        self.center_y += self.change_y
+
         """ Call the parent class. """
         super().update()
 
@@ -88,14 +91,14 @@ class AsteroidSprite(arcade.Sprite):
     def update(self):
         """ Move the asteroid around. """
         super().update()
-        if self.center_x < -2:
-            self.center_x = 2
-        if self.center_x > 2:
-            self.center_x = -2
-        if self.center_y > 2:
-            self.center_y = -2
-        if self.center_y < -2:
-            self.center_y = 2
+        if self.center_x < -window.width // 2:
+            self.center_x = window.width + (window.width // 2)
+        if self.center_x > window.width + (window.width // 2):
+            self.center_x = -window.width // 2
+        if self.center_y > window.height + (window.height // 2):
+            self.center_y = -window.height // 2
+        if self.center_y < -window.height // 2:
+            self.center_y = window.height + (window.height // 2)
 
 
 class BulletSprite(arcade.TurningSprite):
@@ -107,16 +110,19 @@ class BulletSprite(arcade.TurningSprite):
     """
     def update(self):
         super().update()
-        if self.center_x < -2.5 or self.center_x > 2.5 or self.center_y > 2.5 \
-                or self.center_y < -2.5:
+        if self.center_x < -100 or self.center_x > 1500 or self.center_y > 1100 \
+                or self.center_y < -100:
             self.kill()
 
 
-class MyApplication(arcade.ArcadeApplication):
+class MyApplication(pyglet.window.Window):
     """ Main application class. """
 
-    def setup_game(self):
+    def setup(self):
         """ Set up the game and initialize the variables. """
+
+
+
         self.game_over = False
 
         # Sprite lists
@@ -132,12 +138,12 @@ class MyApplication(arcade.ArcadeApplication):
         self.lives = 3
 
         # Set up the little icons that represent the player lives.
-        cur_pos = -1
+        cur_pos = 10
         for i in range(self.lives):
             life = arcade.Sprite("images/playerLife1_orange.png", SCALE)
             life.center_x = cur_pos + life.width
-            life.center_y = -1 + life.height
-            cur_pos -= life.width
+            life.center_y = life.height
+            cur_pos += life.width
             self.all_sprites_list.append(life)
             self.ship_life_list.append(life)
 
@@ -150,18 +156,22 @@ class MyApplication(arcade.ArcadeApplication):
             image_no = random.randrange(4)
             enemy_sprite = AsteroidSprite(image_list[image_no], SCALE)
 
-            enemy_sprite.center_y = (random.random() - 0.5) * 4
-            enemy_sprite.center_x = (random.random() - 0.5) * 4
+            enemy_sprite.center_y = random.randrange(window.width)
+            enemy_sprite.center_x = random.randrange(window.height)
 
-            enemy_sprite.change_x = (random.random() - 0.5) * 0.005
-            enemy_sprite.change_y = (random.random() - 0.5) * 0.005
+            enemy_sprite.change_x = random.random() * 2 - 1
+            enemy_sprite.change_y = random.random() * 2 - 1
 
             enemy_sprite.change_angle = (random.random() - 0.5) * 2
             enemy_sprite.size = 4
             self.all_sprites_list.append(enemy_sprite)
             self.asteroid_list.append(enemy_sprite)
 
-    def render(self):
+            pyglet.clock.schedule_interval(self.animate, 1/60)
+
+
+
+    def on_draw(self):
         """
         Render the screen.
         """
@@ -174,22 +184,19 @@ class MyApplication(arcade.ArcadeApplication):
 
         # Put the text on the screen.
         output = "Score: {}".format(self.score)
-        arcade.draw_text(output, -1.0, 0.95, arcade.color.WHITE)
+        arcade.draw_text(output, 10, 70, arcade.color.WHITE, 14)
 
         output = "Asteroid Count: {}".format(len(self.asteroid_list))
-        arcade.draw_text(output, -1.0, 0.9, arcade.color.WHITE)
+        arcade.draw_text(output, 10, 50, arcade.color.WHITE, 14)
 
-        # This command 'flips' the screen buffer and shows what we have drawn.
-        arcade.finish_render()
 
-    def key_pressed(self, key, x, y):
+    def on_key_press(self, symbol, modifiers):
         """ Called whenever a 'normal' key is pressed. """
-
         # Shoot if the player hit the space bar and we aren't respawning.
-        if not self.player_sprite.respawning and key == b' ':
+        if not self.player_sprite.respawning and symbol == pyglet.window.key.SPACE:
             bullet_sprite = BulletSprite("images/laserBlue01.png", SCALE)
 
-            bullet_speed = 0.02
+            bullet_speed = 4
             bullet_sprite.change_y = \
                 math.cos(math.radians(self.player_sprite.angle)) * bullet_speed
             bullet_sprite.change_x = \
@@ -203,26 +210,25 @@ class MyApplication(arcade.ArcadeApplication):
             self.all_sprites_list.append(bullet_sprite)
             self.bullet_list.append(bullet_sprite)
 
-    def special_pressed(self, key, x, y):
-        """ Called whenever a 'special' key is hit. """
-        if key == arcade.key.LEFT:
-            self.player_sprite.change_angle = 3
-        elif key == arcade.key.RIGHT:
-            self.player_sprite.change_angle = -3
-        elif key == arcade.key.UP:
-            self.player_sprite.thrust = .0005
-        elif key == arcade.key.DOWN:
-            self.player_sprite.thrust = -.0002
 
-    def special_released(self, key, x, y):
+        if symbol == pyglet.window.key.LEFT:
+            self.player_sprite.change_angle = 3
+        elif symbol == pyglet.window.key.RIGHT:
+            self.player_sprite.change_angle = -3
+        elif symbol == pyglet.window.key.UP:
+            self.player_sprite.thrust = 0.15
+        elif symbol == pyglet.window.key.DOWN:
+            self.player_sprite.thrust = -.2
+
+    def on_key_release(self, symbol, modifiers):
         """ Called whenever a 'special' key is released. """
-        if key == arcade.key.LEFT:
+        if symbol == pyglet.window.key.LEFT:
             self.player_sprite.change_angle = 0
-        elif key == arcade.key.RIGHT:
+        elif symbol == pyglet.window.key.RIGHT:
             self.player_sprite.change_angle = 0
-        elif key == arcade.key.UP:
+        elif symbol == pyglet.window.key.UP:
             self.player_sprite.thrust = 0
-        elif key == arcade.key.DOWN:
+        elif symbol == pyglet.window.key.DOWN:
             self.player_sprite.thrust = 0
 
     def split_asteroid(self, asteroid):
@@ -243,8 +249,8 @@ class MyApplication(arcade.ArcadeApplication):
                 enemy_sprite.center_y = y
                 enemy_sprite.center_x = x
 
-                enemy_sprite.change_x = (random.random() - 0.5) * 0.0065
-                enemy_sprite.change_y = (random.random() - 0.5) * 0.0065
+                enemy_sprite.change_x = random.random() * 2.5 - 1.25
+                enemy_sprite.change_y = random.random() * 2.5 - 1.25
 
                 enemy_sprite.change_angle = (random.random() - 0.5) * 2
                 enemy_sprite.size = 3
@@ -263,8 +269,8 @@ class MyApplication(arcade.ArcadeApplication):
                 enemy_sprite.center_y = y
                 enemy_sprite.center_x = x
 
-                enemy_sprite.change_x = (random.random() - 0.5) * 0.008
-                enemy_sprite.change_y = (random.random() - 0.5) * 0.008
+                enemy_sprite.change_x = random.random() * 3 - 1.5
+                enemy_sprite.change_y = random.random() * 3 - 1.5
 
                 enemy_sprite.change_angle = (random.random() - 0.5) * 2
                 enemy_sprite.size = 2
@@ -283,8 +289,8 @@ class MyApplication(arcade.ArcadeApplication):
                 enemy_sprite.center_y = y
                 enemy_sprite.center_x = x
 
-                enemy_sprite.change_x = (random.random() - 0.5) * 0.010
-                enemy_sprite.change_y = (random.random() - 0.5) * 0.010
+                enemy_sprite.change_x = random.random() * 3.5 - 1.75
+                enemy_sprite.change_y = random.random() * 3.5 - 1.75
 
                 enemy_sprite.change_angle = (random.random() - 0.5) * 2
                 enemy_sprite.size = 1
@@ -292,7 +298,7 @@ class MyApplication(arcade.ArcadeApplication):
                 self.all_sprites_list.append(enemy_sprite)
                 self.asteroid_list.append(enemy_sprite)
 
-    def animate(self):
+    def animate(self, x):
         """ Move everything """
         if not self.game_over:
             self.all_sprites_list.update()
@@ -322,15 +328,9 @@ class MyApplication(arcade.ArcadeApplication):
                         self.game_over = True
                         print("Game over")
 
-        arcade.redisplay()
 
-    def run(self):
-        """ Open the window, set up the game, and run it. """
-        self.open_window(1400, 1000)
-        self.setup_game()
+window = MyApplication()
+window.set_size(1400, 1000)
+window.setup()
 
-        arcade.run()
-
-# This is where we start. Make the app and run it.
-app = MyApplication()
-app.run()
+pyglet.app.run()

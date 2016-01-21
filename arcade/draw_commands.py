@@ -883,6 +883,7 @@ def draw_text(text, x, y, color, size):
                               font_size=size,
                               x=x, y=y,
                               color=color)
+    GL.glLoadIdentity()
 
     label.draw()
 
