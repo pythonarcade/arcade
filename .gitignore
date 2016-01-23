@@ -10,3 +10,4 @@ a_quick_test.py
 *.wpr
 arcade.wpu
 .coverage
+doc/source/quick_index.rst

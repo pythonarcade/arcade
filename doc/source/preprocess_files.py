@@ -83,4 +83,3 @@ def main():
 
 	output_file.close()
 
-main()
