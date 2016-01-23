@@ -19,11 +19,16 @@ scale)
     ...     meteor.center_x = random.random() * 2 - 1
     ...     meteor.center_y = random.random() * 2 - 1
     ...     meteor_list.append(meteor)
+    >>> meteor_list.remove(meteor) # Remove last meteor, just to test
+    >>> m = meteor_list.pop() # Remove another meteor, just to test
+    >>> meteor_list.update() # Call update on all items
+    >>> print(len(meteor_list))
+    98
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
     >>> meteor_list.draw()
     >>> arcade.finish_render()
-    >>> arcade.quick_run(0.75)
+    >>> arcade.quick_run(0.25)
     """
     def __init__(self):
         self.sprite_list = []
@@ -76,13 +81,18 @@ class Sprite():
 
     >>> import arcade
     >>> arcade.open_window("Sprite Example", 800, 600)
-    >>> scale = 0.002
+    >>> scale = 1
+    >>> empty_sprite = arcade.Sprite()
     >>> ship_sprite = arcade.Sprite("examples/images/playerShip1_orange.png", \
 scale)
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
     >>> ship_sprite.draw()
     >>> arcade.finish_render()
+    >>> ship_sprite.change_x = 1
+    >>> ship_sprite.change_y = 1
+    >>> ship_sprite.update() # Move/update the ship
+    >>> ship_sprite.kill() # Remove the ship
     >>> arcade.quick_run(0.25)
     """
     def __init__(self, filename=None, scale=0, x=0, y=0, width=0, height=0):
@@ -339,6 +349,41 @@ class TurningSprite(Sprite):
 class PlatformerSpriteSheetSprite(Sprite):
     """
     Sprite for platformer games that supports animations.
+
+    >>> import arcade
+    >>> arcade.open_window("Sprite Example", 800, 600)
+    >>> player = PlatformerSpriteSheetSprite()
+    >>> top_trim = 100
+    >>> left_trim = 2
+    >>> right_trim = 2
+    >>> image_location_list = [
+    ...                     [520 + left_trim, 516 + top_trim, 128 - left_trim - right_trim, 256 - top_trim],
+    ...                     [520 + left_trim, 258 + top_trim, 128 - left_trim - right_trim, 256 - top_trim],
+    ...                     [520 + left_trim, 0 + top_trim, 128 - left_trim - right_trim, 256 - top_trim],
+    ...                     [390 + left_trim, 1548 + top_trim, 128 - left_trim - right_trim, 256 - top_trim],
+    ...                     [390 + left_trim, 1290 + top_trim, 128 - left_trim - right_trim, 256 - top_trim],
+    ...                     [390 + left_trim, 516 + top_trim, 128 - left_trim - right_trim, 256 - top_trim],
+    ...                     [390 + left_trim, 258 + top_trim, 128 - left_trim - right_trim, 256 - top_trim]]
+    >>> texture_info_list = arcade.load_textures("examples/images/spritesheet_complete.png", image_location_list)
+    >>> for texture_info in texture_info_list:
+    ...     texture = texture_info
+    ...     player.append_texture(texture)
+    >>> player.set_left_walk_textures([12, 13])
+    >>> player.set_right_walk_textures([5, 6])
+    >>> player.set_left_jump_textures([10])
+    >>> player.set_right_jump_textures([3])
+    >>> player.set_left_stand_textures([11])
+    >>> player.set_right_stand_textures([4])
+    >>> player.change_x = 1 # Jump
+    >>> player.change_y = 1
+    >>> player.update()
+    >>> player.change_x = -1 #Left
+    >>> player.change_y = 0
+    >>> player.update()
+    >>> player.change_x = 1 # Right
+    >>> player.change_y = 0
+    >>> player.update()
+    >>> arcade.quick_run(0.25)
     """
     def __init__(self):
         super().__init__()

@@ -8,7 +8,6 @@ import PIL.ImageOps
 import pyglet
 import pyglet.gl as GL
 import pyglet.gl.glu as GLU
-# import OpenGL.GLUT as GLUT
 
 
 class Texture():
@@ -280,8 +279,8 @@ def draw_ellipse_filled(cx, cy,
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
     >>> arcade.draw_ellipse_filled(60, 81, 15, 36, arcade.color.AMBER)
-    >>> arcade.draw_ellipse_filled(60, 144, 15, 36, \
-arcade.color.BLACK_BEAN, 45)
+    >>> color = (127, 0, 127, 127)
+    >>> arcade.draw_ellipse_filled(60, 144, 15, 36, color, 45)
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
     """
@@ -347,8 +346,8 @@ def draw_ellipse_outline(cx, cy,
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
     >>> arcade.draw_ellipse_outline(540, 273, 15, 36, arcade.color.AMBER, 3)
-    >>> arcade.draw_ellipse_outline(540, 336, 15, 36, \
-arcade.color.BLACK_BEAN, 3, 45)
+    >>> color = (127, 0, 127, 127)
+    >>> arcade.draw_ellipse_outline(540, 336, 15, 36, color, 3, 45)
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
     """
@@ -408,6 +407,8 @@ def draw_line(x1, y1, x2, y2, color, line_width=1):
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
     >>> arcade.draw_line(270, 495, 300, 450, arcade.color.WOOD_BROWN, 3)
+    >>> color = (127, 0, 127, 127)
+    >>> arcade.draw_line(280, 495, 320, 450, color, 3)
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
     """
@@ -464,6 +465,14 @@ def draw_line_strip(point_list, color, line_width=1):
 (570, 510))
     >>> arcade.draw_line_strip(point_list, arcade.color.TROPICAL_RAIN_FOREST, \
 3)
+    >>> color = (127, 0, 127, 127)
+    >>> point_list = ((510, 455), \
+(570, 455), \
+(510, 485), \
+(570, 485), \
+(510, 515), \
+(570, 515))
+    >>> arcade.draw_line_strip(point_list, color, 3)
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
     """
@@ -873,6 +882,22 @@ def load_textures(file_name, image_location_list,
                   mirrored=False, flipped=False):
     """
     Load a set of textures off of a single image file.
+
+    >>> import arcade
+    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> top_trim = 100
+    >>> left_trim = 2
+    >>> right_trim = 2
+    >>> image_location_list = [
+    ...                     [520 + left_trim, 516 + top_trim, 128 - left_trim - right_trim, 256 - top_trim],
+    ...                     [520 + left_trim, 258 + top_trim, 128 - left_trim - right_trim, 256 - top_trim],
+    ...                     [520 + left_trim, 0 + top_trim, 128 - left_trim - right_trim, 256 - top_trim],
+    ...                     [390 + left_trim, 1548 + top_trim, 128 - left_trim - right_trim, 256 - top_trim],
+    ...                     [390 + left_trim, 1290 + top_trim, 128 - left_trim - right_trim, 256 - top_trim],
+    ...                     [390 + left_trim, 516 + top_trim, 128 - left_trim - right_trim, 256 - top_trim],
+    ...                     [390 + left_trim, 258 + top_trim, 128 - left_trim - right_trim, 256 - top_trim]]
+    >>> texture_info_list = arcade.load_textures("examples/images/spritesheet_complete.png", image_location_list)
+    >>> arcade.close_window()
     """
     source_image = PIL.Image.open(file_name)
 
@@ -946,6 +971,11 @@ def load_texture(file_name, x=0, y=0, width=0, height=0):
         Integer identifier for the new texture.
     Raises:
         None
+
+    >>> import arcade
+    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> texture = load_texture("examples/images/meteorGrey_big1.png", 1, 1, 50, 50  )
+    >>> arcade.close_window()
     """
     source_image = PIL.Image.open(file_name)
 
@@ -983,14 +1013,21 @@ def load_texture(file_name, x=0, y=0, width=0, height=0):
 
     GL.glBindTexture(GL.GL_TEXTURE_2D, texture)
     GL.glPixelStorei(GL.GL_UNPACK_ALIGNMENT, 1)
+
+    # The code below should be enabled, but it freaks out
+    # Travis CI.
     # GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S,
     #                    GL.GL_CLAMP_TO_BORDER)
     # GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T,
     #                    GL.GL_CLAMP_TO_BORDER)
+
+    # The code below should be disabled, but keeping it here for
+    # Travis CI
     GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S,
                        GL.GL_REPEAT)
     GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T,
                        GL.GL_REPEAT)
+
     GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER,
                        GL.GL_LINEAR)
     GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER,

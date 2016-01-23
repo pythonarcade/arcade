@@ -18,6 +18,16 @@ _top = 1
 _window = None
 
 
+def pause(seconds):
+    """
+    Pause for the specified number of seconds.
+
+    >>> import arcade
+    >>> arcade.pause(0.25) # Pause 1/2 second
+
+    """
+    time.sleep(seconds)
+
 def get_window():
     global _window
     return _window
@@ -29,6 +39,12 @@ def set_window(window):
 def set_viewport(left, right, bottom, top):
     """
     This sets what coordinates appear on the window.
+
+    >>> import arcade
+    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> set_viewport(-1, 1, -1, 1)
+    >>> arcade.quick_run(0.25)
+
     """
     global _left
     global _right
@@ -80,6 +96,10 @@ def close_window():
 
     _window.close()
     _window = None
+
+    # Have to do a garbage collection or Python will crash
+    # if we do a lot of window open and closes. Like for
+    # unit tests.
     gc.collect()
 
 
@@ -119,9 +139,10 @@ def _close(dt):
 def quick_run(time_to_pause):
     """ Only run the app for the specified time in seconds.
     Useful for testing. """
-    pyglet.clock.schedule_once(_close, time_to_pause)
-    pyglet.app.run()
-    # time.sleep(time_to_pause * 1.5)
+    # pyglet.clock.schedule_once(_close, time_to_pause)
+    # pyglet.app.run()
+    pause(time_to_pause)
+    close_window()
 
 def start_render():
     """ Get set up to render. """
