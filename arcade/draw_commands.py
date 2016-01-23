@@ -67,11 +67,10 @@ def draw_arc_filled(cx, cy,
     >>> arcade.start_render()
     >>> arcade.draw_arc_filled(150, 144, 15, 36, \
 arcade.color.BOTTLE_GREEN, 90, 360, 45)
-    >>> transparent_color = (255, 0, 0, 127)
-    >>> arcade.draw_arc_filled(150, 154, 15, 36, \
-transparent_color, 90, 360, 45)
+    >>> color = (255, 0, 0, 127)
+    >>> arcade.draw_arc_filled(150, 154, 15, 36, color, 90, 360, 45)
     >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
+    >>> arcade.close_window()
     """
 
     GL.glEnable(GL.GL_BLEND)
@@ -940,14 +939,21 @@ def load_textures(file_name, image_location_list,
 
         GL.glBindTexture(GL.GL_TEXTURE_2D, texture)
         GL.glPixelStorei(GL.GL_UNPACK_ALIGNMENT, 1)
+
+        # The code below should be enabled, but it freaks out
+        # during CI (AppVeyor).
         # GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S,
-        #                    GL.GL_REPEAT)
+        #                    GL.GL_CLAMP_TO_BORDER)
         # GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T,
-        #                    GL.GL_REPEAT)
+        #                    GL.GL_CLAMP_TO_BORDER)
+
+        # The code below should be disabled, but keeping it here for
+        # CI
         GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S,
-                           GL.GL_CLAMP_TO_BORDER)
+                           GL.GL_REPEAT)
         GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T,
-                           GL.GL_CLAMP_TO_BORDER)
+                           GL.GL_REPEAT)
+
         GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER,
                            GL.GL_LINEAR)
         GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER,
@@ -1015,14 +1021,14 @@ def load_texture(file_name, x=0, y=0, width=0, height=0):
     GL.glPixelStorei(GL.GL_UNPACK_ALIGNMENT, 1)
 
     # The code below should be enabled, but it freaks out
-    # Travis CI.
+    # during CI (AppVeyor).
     # GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S,
     #                    GL.GL_CLAMP_TO_BORDER)
     # GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T,
     #                    GL.GL_CLAMP_TO_BORDER)
 
     # The code below should be disabled, but keeping it here for
-    # Travis CI
+    # CI
     GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S,
                        GL.GL_REPEAT)
     GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T,
