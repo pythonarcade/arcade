@@ -3,6 +3,8 @@ This submodule has functions that control creating and managing windows.
 """
 
 import sys
+import time
+import gc
 
 import pyglet
 import pyglet.gl as GL
@@ -61,8 +63,7 @@ def open_window(window_title, width, height):
 
     >>> import arcade
     >>> arcade.open_window("Drawing Example", 800, 600)
-    >>> arcade.pause(0.5)
-    >>> arcade.close_window()
+    >>> arcade.quick_run(0.25)
     """
     global _window
 
@@ -78,6 +79,8 @@ def close_window():
     global _window
 
     _window.close()
+    _window = None
+    gc.collect()
 
 
 def finish_render():
@@ -99,8 +102,7 @@ def finish_render():
     >>> arcade.start_render()
     >>> # All the drawing commands go here
     >>> arcade.finish_render()
-    >>> arcade.pause(0.5)
-    >>> arcade.close_window()
+    >>> arcade.quick_run(0.25)
     """
     global _window
 
@@ -111,6 +113,15 @@ def run():
     """ Run the main loop. """
     pyglet.app.run()
 
+def _close(dt):
+    close_window()
+
+def quick_run(time_to_pause):
+    """ Only run the app for the specified time in seconds.
+    Useful for testing. """
+    pyglet.clock.schedule_once(_close, time_to_pause)
+    pyglet.app.run()
+    # time.sleep(time_to_pause * 1.5)
 
 def start_render():
     """ Get set up to render. """
@@ -136,8 +147,7 @@ def set_background_color(color):
     >>> arcade.set_background_color(arcade.color.RED)
     >>> arcade.start_render()
     >>> arcade.finish_render()
-    >>> arcade.pause(0.5)
-    >>> arcade.close_window()
+    >>> arcade.quick_run(0.25)
     """
 
     GL.glClearColor(color[0]/255, color[1]/255, color[2]/255, 1)

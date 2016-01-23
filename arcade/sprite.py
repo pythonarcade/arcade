@@ -23,8 +23,7 @@ scale)
     >>> arcade.start_render()
     >>> meteor_list.draw()
     >>> arcade.finish_render()
-    >>> arcade.pause(0.5)
-    >>> arcade.close_window()
+    >>> arcade.quick_run(0.75)
     """
     def __init__(self):
         self.sprite_list = []
@@ -84,8 +83,7 @@ scale)
     >>> arcade.start_render()
     >>> ship_sprite.draw()
     >>> arcade.finish_render()
-    >>> # Enable the following to keep the window up after running.
-    >>> # arcade.run()
+    >>> arcade.quick_run(0.25)
     """
     def __init__(self, filename=None, scale=0, x=0, y=0, width=0, height=0):
         if width < 0:
@@ -189,6 +187,7 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
         >>> ship_sprite.bottom = 1
         >>> print(ship_sprite.bottom)
         1.0
+        >>> arcade.quick_run(0.25)
         """
         points = self.get_points()
         return min(points[0][1], points[1][1], points[2][1], points[3][1])
@@ -217,6 +216,7 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
         >>> ship_sprite.top = 1
         >>> print(ship_sprite.top)
         1.0
+        >>> arcade.quick_run(0.25)
         """
         points = self.get_points()
         return max(points[0][1], points[1][1], points[2][1], points[3][1])
@@ -247,6 +247,7 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
         >>> ship_sprite.left = 1
         >>> print(ship_sprite.left)
         1.0
+        >>> arcade.quick_run(0.25)
         """
         points = self.get_points()
         return min(points[0][0], points[1][0], points[2][0], points[3][0])
@@ -277,6 +278,7 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
         >>> ship_sprite.right = 1
         >>> print(ship_sprite.right)
         1.0
+        >>> arcade.quick_run(0.25)
         """
 
         points = self.get_points()

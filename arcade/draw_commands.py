@@ -72,8 +72,7 @@ arcade.color.BOTTLE_GREEN, 90, 360, 45)
     >>> arcade.draw_arc_filled(150, 154, 15, 36, \
 transparent_color, 90, 360, 45)
     >>> arcade.finish_render()
-    >>> arcade.pause(0.5)
-    >>> arcade.close_window()
+    >>> arcade.quick_run(0.25)
     """
 
     GL.glEnable(GL.GL_BLEND)
@@ -149,8 +148,7 @@ arcade.color.BRIGHT_MAROON, 90, 360)
     >>> arcade.draw_arc_outline(150, 71, 15, 36, \
 transparent_color, 90, 360)
     >>> arcade.finish_render()
-    >>> arcade.pause(0.5)
-    >>> arcade.close_window()
+    >>> arcade.quick_run(0.25)
     """
 
     GL.glEnable(GL.GL_BLEND)
@@ -212,8 +210,7 @@ def draw_circle_filled(cx, cy, radius, color, num_segments=128):
     >>> arcade.start_render()
     >>> arcade.draw_circle_filled(420, 285, 18, arcade.color.GREEN, 3)
     >>> arcade.finish_render()
-    >>> arcade.pause(0.5)
-    >>> arcade.close_window()
+    >>> arcade.quick_run(0.25)
     """
     width = radius
     height = radius
@@ -246,8 +243,7 @@ def draw_circle_outline(cx, cy, radius, color, line_width=1, num_segments=128):
     >>> arcade.start_render()
     >>> arcade.draw_circle_outline(300, 285, 18, arcade.color.WISTERIA, 3)
     >>> arcade.finish_render()
-    >>> arcade.pause(0.5)
-    >>> arcade.close_window()
+    >>> arcade.quick_run(0.25)
     """
     width = radius
     height = radius
@@ -287,8 +283,7 @@ def draw_ellipse_filled(cx, cy,
     >>> arcade.draw_ellipse_filled(60, 144, 15, 36, \
 arcade.color.BLACK_BEAN, 45)
     >>> arcade.finish_render()
-    >>> arcade.pause(0.5)
-    >>> arcade.close_window()
+    >>> arcade.quick_run(0.25)
     """
 
     GL.glEnable(GL.GL_BLEND)
@@ -355,8 +350,7 @@ def draw_ellipse_outline(cx, cy,
     >>> arcade.draw_ellipse_outline(540, 336, 15, 36, \
 arcade.color.BLACK_BEAN, 3, 45)
     >>> arcade.finish_render()
-    >>> arcade.pause(0.5)
-    >>> arcade.close_window()
+    >>> arcade.quick_run(0.25)
     """
 
     GL.glEnable(GL.GL_BLEND)
@@ -415,8 +409,7 @@ def draw_line(x1, y1, x2, y2, color, line_width=1):
     >>> arcade.start_render()
     >>> arcade.draw_line(270, 495, 300, 450, arcade.color.WOOD_BROWN, 3)
     >>> arcade.finish_render()
-    >>> arcade.pause(0.5)
-    >>> arcade.close_window()
+    >>> arcade.quick_run(0.25)
     """
     GL.glEnable(GL.GL_BLEND)
     GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
@@ -472,8 +465,7 @@ def draw_line_strip(point_list, color, line_width=1):
     >>> arcade.draw_line_strip(point_list, arcade.color.TROPICAL_RAIN_FOREST, \
 3)
     >>> arcade.finish_render()
-    >>> arcade.pause(0.5)
-    >>> arcade.close_window()
+    >>> arcade.quick_run(0.25)
     """
     GL.glEnable(GL.GL_BLEND)
     GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
@@ -529,8 +521,7 @@ def draw_lines(point_list, color, line_width=1):
 (450, 510))
     >>> arcade.draw_lines(point_list, arcade.color.BLUE, 3)
     >>> arcade.finish_render()
-    >>> arcade.pause(0.5)
-    >>> arcade.close_window()
+    >>> arcade.quick_run(0.25)
     """
     GL.glEnable(GL.GL_BLEND)
     GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
@@ -578,8 +569,7 @@ def draw_point(x, y, color, size):
     >>> arcade.start_render()
     >>> arcade.draw_point(60, 495, arcade.color.RED, 10)
     >>> arcade.finish_render()
-    >>> arcade.pause(0.5)
-    >>> arcade.close_window()
+    >>> arcade.quick_run(0.25)
     """
     GL.glEnable(GL.GL_BLEND)
     GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
@@ -625,8 +615,7 @@ def draw_points(point_list, color, size):
 (195, 465))
     >>> arcade.draw_points(point_list, arcade.color.ZAFFRE, 10)
     >>> arcade.finish_render()
-    >>> arcade.pause(0.5)
-    >>> arcade.close_window()
+    >>> arcade.quick_run(0.25)
     """
     GL.glEnable(GL.GL_BLEND)
     GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
@@ -670,9 +659,7 @@ def draw_polygon_filled(point_list, color):
 (150, 300))
     >>> arcade.draw_polygon_filled(point_list, arcade.color.SPANISH_VIOLET)
     >>> arcade.finish_render()
-    >>> arcade.pause(0.5)
-    >>> arcade.close_window()
-    >>> arcade.pause(0.25)
+    >>> arcade.quick_run(0.25)
     """
     GL.glEnable(GL.GL_BLEND)
     GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
@@ -721,10 +708,7 @@ def draw_polygon_outline(point_list, color, line_width=1):
 (30, 300))
     >>> arcade.draw_polygon_outline(point_list, arcade.color.SPANISH_VIOLET, 3)
     >>> arcade.finish_render()
-    >>> arcade.pause(0.5)
-    >>> arcade.close_window()
-    >>> arcade.pause(0.25)
-
+    >>> arcade.quick_run(0.25)
     """
     GL.glEnable(GL.GL_BLEND)
     GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
@@ -772,8 +756,7 @@ def draw_rect_outline(x, y, width, height, color, line_width=1, angle=0):
     >>> arcade.draw_rect_outline(278, 150, 45, 105, \
 arcade.color.BRITISH_RACING_GREEN, 2)
     >>> arcade.finish_render()
-    >>> arcade.pause(0.5)
-    >>> arcade.close_window()
+    >>> arcade.quick_run(0.25)
     """
 
     GL.glEnable(GL.GL_BLEND)
@@ -823,8 +806,7 @@ def draw_rect_filled(x, y, width, height, color, angle=0):
     >>> arcade.start_render()
     >>> arcade.draw_rect_filled(390, 150, 45, 105, arcade.color.BLUSH)
     >>> arcade.finish_render()
-    >>> arcade.pause(0.5)
-    >>> arcade.close_window()
+    >>> arcade.quick_run(0.25)
     """
 
     GL.glEnable(GL.GL_BLEND)
@@ -871,8 +853,7 @@ def draw_text(text, x, y, color, size):
     >>> arcade.start_render()
     >>> arcade.draw_text("Text Example", 250, 300, arcade.color.BLACK, 10)
     >>> arcade.finish_render()
-    >>> arcade.pause(0.5)
-    >>> arcade.close_window()
+    >>> arcade.quick_run(0.25)
     """
 
     if len(color) == 3:
@@ -1053,8 +1034,7 @@ scale * texture.height, texture, 0)
     >>> arcade.draw_texture_rect(540, 60, scale * texture.width, \
 scale * texture.height, texture, 90)
     >>> arcade.finish_render()
-    >>> arcade.pause(0.5)
-    >>> arcade.close_window()
+    >>> arcade.quick_run(0.25)
     """
 
     if transparent:
