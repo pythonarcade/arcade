@@ -4,24 +4,13 @@ python:
 # command to install dependencies
 before_install:
   - sudo apt-get update -qq
-  - sudo apt-get install -y binutils-gold libosmesa6-dev libegl1-mesa-dev libgl1-mesa-dri libegl1-mesa xorg-dev libglu1-mesa-dev libgl1-mesa-dev
 
 install:
-  - wget -q https://raw.github.com/go-gl/testutils/master/travis-helper-functions.sh
-  - source travis-helper-functions.sh
-  - initialize
   - pip install -r requirements.txt
   - pip install coveralls python-coveralls coverage
-
-# command to run tests
-script:
-  - coverage run --source arcade setup.py test
 
 deploy:
   provider: pypi
   user: $USERNAME
   password: $PASSWORD
   distributions: "bdist_rpm"
-
-after_success:
-  - coveralls
