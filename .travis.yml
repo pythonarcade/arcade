@@ -4,7 +4,7 @@ python:
 # command to install dependencies
 before_install:
   - sudo apt-get update -qq
-  - sudo apt-get install -y freeglut3 freeglut3-dev binutils-gold
+  - sudo apt-get install -y freeglut3 freeglut3-dev binutils-gold libosmesa6-dev libegl1-mesa-dev
   - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16"
 
 before_script:
