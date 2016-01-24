@@ -11,15 +11,17 @@ environment:
 
 
 install:
-  - "%PYTHON%\\Scripts\\pip.exe install wheel twine pillow pyglet"
+  - "%PYTHON%\\Scripts\\pip.exe install wheel twine pillow pyglet coverage coveralls"
 
 build_script:
   - "%PYTHON%\\python.exe setup.py build"
 test_script:
-  - "%PYTHON%\\python.exe setup.py test"
+  - coverage run --source=arcade setup.py test"
 deploy_script:
   - "%PYTHON%\\python.exe setup.py sdist bdist_wheel bdist bdist_wininst bdist_egg"
 artifacts:
   - path: dist\*
 on_success:
+  - coverage report
+  - coveralls
   - "%PYTHON%/Scripts/twine upload -u %USER% -p %PASS% -r pypi dist/*"
