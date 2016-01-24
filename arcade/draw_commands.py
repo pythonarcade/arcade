@@ -885,17 +885,18 @@ def load_textures(file_name, image_location_list,
     >>> import arcade
     >>> arcade.open_window("Drawing Example", 800, 600)
     >>> top_trim = 100
-    >>> left_trim = 2
-    >>> right_trim = 2
+    >>> ltrim = 2
+    >>> rtrim = 2
     >>> image_location_list = [
-    ...                     [520 + left_trim, 516 + top_trim, 128 - left_trim - right_trim, 256 - top_trim],
-    ...                     [520 + left_trim, 258 + top_trim, 128 - left_trim - right_trim, 256 - top_trim],
-    ...                     [520 + left_trim, 0 + top_trim, 128 - left_trim - right_trim, 256 - top_trim],
-    ...                     [390 + left_trim, 1548 + top_trim, 128 - left_trim - right_trim, 256 - top_trim],
-    ...                     [390 + left_trim, 1290 + top_trim, 128 - left_trim - right_trim, 256 - top_trim],
-    ...                     [390 + left_trim, 516 + top_trim, 128 - left_trim - right_trim, 256 - top_trim],
-    ...                     [390 + left_trim, 258 + top_trim, 128 - left_trim - right_trim, 256 - top_trim]]
-    >>> texture_info_list = arcade.load_textures("examples/images/spritesheet_complete.png", image_location_list)
+    ... [520 + ltrim, 516 + top_trim, 128 - ltrim - rtrim, 256 - top_trim],
+    ... [520 + ltrim, 258 + top_trim, 128 - ltrim - rtrim, 256 - top_trim],
+    ... [520 + ltrim, 0 + top_trim, 128 - ltrim - rtrim, 256 - top_trim],
+    ... [390 + ltrim, 1548 + top_trim, 128 - ltrim - rtrim, 256 - top_trim],
+    ... [390 + ltrim, 1290 + top_trim, 128 - ltrim - rtrim, 256 - top_trim],
+    ... [390 + ltrim, 516 + top_trim, 128 - ltrim - rtrim, 256 - top_trim],
+    ... [390 + ltrim, 258 + top_trim, 128 - ltrim - rtrim, 256 - top_trim]]
+    >>> texture_info_list = arcade.load_textures( /
+"examples/images/spritesheet_complete.png", image_location_list)
     >>> arcade.close_window()
     """
     source_image = PIL.Image.open(file_name)
@@ -980,7 +981,8 @@ def load_texture(file_name, x=0, y=0, width=0, height=0):
 
     >>> import arcade
     >>> arcade.open_window("Drawing Example", 800, 600)
-    >>> texture = load_texture("examples/images/meteorGrey_big1.png", 1, 1, 50, 50  )
+    >>> texture = load_texture("examples/images/meteorGrey_big1.png", /
+1, 1, 50, 50  )
     >>> arcade.close_window()
     """
     source_image = PIL.Image.open(file_name)

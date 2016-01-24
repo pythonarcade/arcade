@@ -9,12 +9,11 @@ Artwork from http://kenney.nl
 import random
 import math
 import arcade
-import pyglet
-import pyglet.window.key
 
 SCALE = 1
 
 window = None
+
 
 class ShipSprite(arcade.Sprite):
     """
@@ -32,8 +31,8 @@ class ShipSprite(arcade.Sprite):
         # Angle comes in automatically from the parent class.
         self.thrust = 0
         self.speed = 0
-        self.max_speed = 1.1
-        self.drag = 0.01
+        self.max_speed = 4
+        self.drag = 0.05
 
         # Mark that we are respawning.
         self.respawn()
@@ -108,21 +107,21 @@ class BulletSprite(arcade.TurningSprite):
     Derives from arcade.TurningSprite which is just a Sprite
     that aligns to its direction.
     """
+
     def update(self):
         super().update()
-        if self.center_x < -100 or self.center_x > 1500 or self.center_y > 1100 \
-                or self.center_y < -100:
+        if self.center_x < -100 or self.center_x > 1500 or \
+                self.center_y > 1100 or self.center_y < -100:
             self.kill()
 
 
-class MyApplication(pyglet.window.Window):
+class MyApplication(arcade.Window):
     """ Main application class. """
 
     def setup(self):
         """ Set up the game and initialize the variables. """
 
-
-
+        self.frame_count = 0
         self.game_over = False
 
         # Sprite lists
@@ -167,10 +166,6 @@ class MyApplication(pyglet.window.Window):
             self.all_sprites_list.append(enemy_sprite)
             self.asteroid_list.append(enemy_sprite)
 
-            pyglet.clock.schedule_interval(self.animate, 1/60)
-
-
-
     def on_draw(self):
         """
         Render the screen.
@@ -189,14 +184,13 @@ class MyApplication(pyglet.window.Window):
         output = "Asteroid Count: {}".format(len(self.asteroid_list))
         arcade.draw_text(output, 10, 50, arcade.color.WHITE, 14)
 
-
     def on_key_press(self, symbol, modifiers):
         """ Called whenever a 'normal' key is pressed. """
         # Shoot if the player hit the space bar and we aren't respawning.
-        if not self.player_sprite.respawning and symbol == pyglet.window.key.SPACE:
+        if not self.player_sprite.respawning and symbol == arcade.key.SPACE:
             bullet_sprite = BulletSprite("images/laserBlue01.png", SCALE)
 
-            bullet_speed = 4
+            bullet_speed = 13
             bullet_sprite.change_y = \
                 math.cos(math.radians(self.player_sprite.angle)) * bullet_speed
             bullet_sprite.change_x = \
@@ -210,25 +204,24 @@ class MyApplication(pyglet.window.Window):
             self.all_sprites_list.append(bullet_sprite)
             self.bullet_list.append(bullet_sprite)
 
-
-        if symbol == pyglet.window.key.LEFT:
+        if symbol == arcade.key.LEFT:
             self.player_sprite.change_angle = 3
-        elif symbol == pyglet.window.key.RIGHT:
+        elif symbol == arcade.key.RIGHT:
             self.player_sprite.change_angle = -3
-        elif symbol == pyglet.window.key.UP:
+        elif symbol == arcade.key.UP:
             self.player_sprite.thrust = 0.15
-        elif symbol == pyglet.window.key.DOWN:
+        elif symbol == arcade.key.DOWN:
             self.player_sprite.thrust = -.2
 
     def on_key_release(self, symbol, modifiers):
         """ Called whenever a 'special' key is released. """
-        if symbol == pyglet.window.key.LEFT:
+        if symbol == arcade.key.LEFT:
             self.player_sprite.change_angle = 0
-        elif symbol == pyglet.window.key.RIGHT:
+        elif symbol == arcade.key.RIGHT:
             self.player_sprite.change_angle = 0
-        elif symbol == pyglet.window.key.UP:
+        elif symbol == arcade.key.UP:
             self.player_sprite.thrust = 0
-        elif symbol == pyglet.window.key.DOWN:
+        elif symbol == arcade.key.DOWN:
             self.player_sprite.thrust = 0
 
     def split_asteroid(self, asteroid):
@@ -300,6 +293,11 @@ class MyApplication(pyglet.window.Window):
 
     def animate(self, x):
         """ Move everything """
+
+        self.frame_count += 1
+        if self.frame_count % 60 == 0:
+            print(self.frame_count)
+
         if not self.game_over:
             self.all_sprites_list.update()
 
@@ -329,8 +327,7 @@ class MyApplication(pyglet.window.Window):
                         print("Game over")
 
 
-window = MyApplication()
-window.set_size(1400, 1000)
+window = MyApplication(1400, 1000)
 window.setup()
 
-pyglet.app.run()
+arcade.run()

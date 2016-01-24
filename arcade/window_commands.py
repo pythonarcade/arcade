@@ -28,13 +28,16 @@ def pause(seconds):
     """
     time.sleep(seconds)
 
+
 def get_window():
     global _window
     return _window
 
+
 def set_window(window):
     global _window
     _window = window
+
 
 def set_viewport(left, right, bottom, top):
     """
@@ -133,8 +136,10 @@ def run():
     """ Run the main loop. """
     pyglet.app.run()
 
+
 def _close(dt):
     close_window()
+
 
 def quick_run(time_to_pause):
     """ Only run the app for the specified time in seconds.
@@ -143,6 +148,7 @@ def quick_run(time_to_pause):
     # pyglet.app.run()
     pause(time_to_pause)
     close_window()
+
 
 def start_render():
     """ Get set up to render. """
@@ -172,4 +178,3 @@ def set_background_color(color):
     """
 
     GL.glClearColor(color[0]/255, color[1]/255, color[2]/255, 1)
-
