@@ -5,22 +5,17 @@ python:
 before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -y binutils-gold libosmesa6-dev libegl1-mesa-dev libgl1-mesa-dri libegl1-mesa xorg-dev libglu1-mesa-dev libgl1-mesa-dev
-  - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16"
 
 install:
+  - wget -q https://raw.github.com/go-gl/testutils/master/travis-helper-functions.sh
+  - source travis-helper-functions.sh
+  - initialize
   - pip install -r requirements.txt
   - pip install coveralls python-coveralls coverage
 
 # command to run tests
 script:
   - coverage run --source arcade setup.py test
-
-before_script:
-  - "export LD_LIBRARY_PATH=$HOME/osmesa/lib;"
-  - "export LIBRARY_PATH=$HOME/osmesa/lib"
-  - "export DISPLAY=:99.0"
-  - "sh -e /etc/init.d/xvfb start"
-  - sleep 3 # give xvfb some time to start
 
 deploy:
   provider: pypi
