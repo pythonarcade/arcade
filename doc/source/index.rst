@@ -21,6 +21,7 @@ Documentation
    examples
    installation
    arcade
+   quick_index
 
 .. automodule:: arcade
 
