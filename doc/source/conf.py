@@ -28,6 +28,20 @@ preprocess_files.main()
 
 import arcade
 
+# --- Mock up GLU interface ---
+# http://read-the-docs.readthedocs.org/en/latest/faq.html
+import sys
+from unittest.mock import MagicMock
+
+class Mock(MagicMock):
+    @classmethod
+    def __getattr__(cls, name):
+            return Mock()
+
+MOCK_MODULES = ['GLU']
+sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
+# ---
+
 # From http://stackoverflow.com/questions/12772927/specifying-an-online-image-in-sphinx-restructuredtext-format
 import sphinx.environment
 from docutils.utils import get_source_line
