@@ -356,7 +356,7 @@ class PlatformerSpriteSheetSprite(Sprite):
     >>> top_trim = 100
     >>> ltrim = 2
     >>> rtrim = 2
-    >>> image_location_list = [
+    >>> texture_info_list = [
     ... [520 + ltrim, 516 + top_trim, 128 - ltrim - rtrim, 256 - top_trim],
     ... [520 + ltrim, 258 + top_trim, 128 - ltrim - rtrim, 256 - top_trim],
     ... [520 + ltrim, 0 + top_trim, 128 - ltrim - rtrim, 256 - top_trim],
