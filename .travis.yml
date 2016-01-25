@@ -7,7 +7,8 @@ before_install:
 
 install:
   - pip install -r requirements.txt
-  - pip install coveralls python-coveralls coverage
+
+script: echo
 
 deploy:
   provider: pypi

@@ -15,12 +15,16 @@ install:
 
 build_script:
   - "%PYTHON%\\python.exe setup.py build"
+
 test_script:
-  - coverage run --source=arcade setup.py test"
+  - "%PYTHON%\\Scripts\\coverage run --source=arcade setup.py test"
+
 deploy_script:
   - "%PYTHON%\\python.exe setup.py sdist bdist_wheel bdist bdist_wininst bdist_egg"
+
 artifacts:
   - path: dist\*
+
 on_success:
   - coverage report
   - coveralls
