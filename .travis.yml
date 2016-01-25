@@ -18,6 +18,7 @@ install:
 
 script:
   - sphinx-build -b html doc/source doc/build/html
+  - python setup.py test
 
 deploy:
   provider: pypi
