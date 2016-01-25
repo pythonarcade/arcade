@@ -26,6 +26,6 @@ artifacts:
   - path: dist\*
 
 on_success:
-  - %PYTHON%\\Scripts\\coverage report
-  - %PYTHON%\\Scripts\\coveralls
+  - "%PYTHON%\\Scripts\\coverage report"
+  - "%PYTHON%\\Scripts\\coveralls"
   - "%PYTHON%/Scripts/twine upload -u %USER% -p %PASS% -r pypi dist/*"

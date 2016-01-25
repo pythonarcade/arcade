@@ -24,4 +24,4 @@ deploy:
   provider: pypi
   user: $USERNAME
   password: $PASSWORD
-  distributions: "bdist_rpm"
+  distributions: "bdist_wheel"
