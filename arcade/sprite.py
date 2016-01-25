@@ -356,7 +356,7 @@ class PlatformerSpriteSheetSprite(Sprite):
     >>> top_trim = 100
     >>> ltrim = 2
     >>> rtrim = 2
-    >>> texture_info_list = [
+    >>> image_location_list = [
     ... [520 + ltrim, 516 + top_trim, 128 - ltrim - rtrim, 256 - top_trim],
     ... [520 + ltrim, 258 + top_trim, 128 - ltrim - rtrim, 256 - top_trim],
     ... [520 + ltrim, 0 + top_trim, 128 - ltrim - rtrim, 256 - top_trim],
@@ -364,6 +364,13 @@ class PlatformerSpriteSheetSprite(Sprite):
     ... [390 + ltrim, 1290 + top_trim, 128 - ltrim - rtrim, 256 - top_trim],
     ... [390 + ltrim, 516 + top_trim, 128 - ltrim - rtrim, 256 - top_trim],
     ... [390 + ltrim, 258 + top_trim, 128 - ltrim - rtrim, 256 - top_trim]]
+    >>> texture_info_list = arcade.load_textures(\
+"examples/images/spritesheet_complete.png", image_location_list)
+    >>> for texture_info in texture_info_list:
+    ...     texture = texture_info
+    ...     player.append_texture(texture)
+    >>> texture_info_list = arcade.load_textures(\
+"examples/images/spritesheet_complete.png", image_location_list, True)
     >>> for texture_info in texture_info_list:
     ...     texture = texture_info
     ...     player.append_texture(texture)

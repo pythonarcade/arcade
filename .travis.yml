@@ -11,11 +11,13 @@ before_script:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
   - sleep 3 # give xvfb some time to start
+  - pip install sphinx
 
 install:
   - pip install -r requirements.txt
 
-script: echo
+script:
+  - sphinx-build -b html doc/source doc/build/html
 
 deploy:
   provider: pypi
