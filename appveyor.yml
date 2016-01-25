@@ -3,7 +3,8 @@ environment:
     secure: "ni4lUD07eVM5LR2qdot9b/eJZTf89cl0st/9/9wRcaw="
   USER:
     secure: "vqkRNxewT2z/PD+0VquHTA=="
-
+  COVERALLS_REPO_TOKEN:
+    secure: rAutnXmt6Uqrtbi7shwIii97qFj0dxwjhRRno6vlqL+Oa/StGUo2oZW8J8g0VVwx
   matrix:
     - PYTHON: "C:\\Python35-x64"
       PYTHON_VERSION: "3.5.0"

@@ -11,17 +11,20 @@ before_script:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
   - sleep 3 # give xvfb some time to start
-  - pip install sphinx
+  - pip install sphinx coverage coveralls
 
 install:
   - pip install -r requirements.txt
 
 script:
   - sphinx-build -b html doc/source doc/build/html
-  - python setup.py test
+  - coverage run --source=arcade setup.py test
 
 deploy:
   provider: pypi
   user: $USERNAME
   password: $PASSWORD
   distributions: "bdist_wheel"
+
+after_success:
+  - coveralls
