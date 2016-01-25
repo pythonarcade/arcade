@@ -70,7 +70,7 @@ class MovingPlatform(Platform):
         if self.center_x > self.right_boundary and self.change_x > 0:
             self.change_x *= -1
 
-class MyApplication(arcade.ArcadeApplication):
+class MyApplication(arcade.Window):
     """ Main application class. """
 
     def __init__(self):
@@ -240,12 +240,11 @@ class MyApplication(arcade.ArcadeApplication):
 
     def run(self):
 
-        self.open_window(800, 800)
         arcade.set_background_color((127, 127, 255))
         arcade.set_viewport(self.ortho_left, BLOCK_WIDTH + self.ortho_left, 0, BLOCK_HEIGHT)
         self.setup_game()
 
         arcade.run()
 
-app = MyApplication()
+app = MyApplication(800, 800)
 app.run()
