@@ -29,8 +29,10 @@ sys.path.insert(0, os.path.abspath('..'))
 import preprocess_files
 preprocess_files.main()
 
-from arcade import VERSION
-from arcade import RELEASE
+#from arcade import VERSION
+#from arcade import RELEASE
+VERSION = "0.0.5"
+RELEASE = VERSION + "a32"
 
 from ext.sphinx_mod import find_all_modules, write_build, write_blacklist
 implementations = ["carbon", "cocoa", "win32", "xlib"]
