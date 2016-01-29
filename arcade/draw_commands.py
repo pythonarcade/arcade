@@ -7,11 +7,8 @@ import PIL.ImageOps
 
 import pyglet
 
-import os
-on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
-if not on_rtd:
-    import pyglet.gl as GL
-    import pyglet.gl.glu as GLU
+import pyglet.gl as GL
+import pyglet.gl.glu as GLU
 
 
 class Texture():
