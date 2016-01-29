@@ -7,8 +7,8 @@ import time
 import gc
 
 import pyglet
-import os
 
+import os
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 if not on_rtd:
     import pyglet.gl as GL
