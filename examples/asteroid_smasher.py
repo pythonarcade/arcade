@@ -185,7 +185,7 @@ class MyApplication(arcade.Window):
         arcade.draw_text(output, 10, 50, arcade.color.WHITE, 14)
 
     def on_key_press(self, symbol, modifiers):
-        """ Called whenever a 'normal' key is pressed. """
+        """ Called whenever a key is pressed. """
         # Shoot if the player hit the space bar and we aren't respawning.
         if not self.player_sprite.respawning and symbol == arcade.key.SPACE:
             bullet_sprite = BulletSprite("images/laserBlue01.png", SCALE)
@@ -214,7 +214,7 @@ class MyApplication(arcade.Window):
             self.player_sprite.thrust = -.2
 
     def on_key_release(self, symbol, modifiers):
-        """ Called whenever a 'special' key is released. """
+        """ Called whenever a key is released. """
         if symbol == arcade.key.LEFT:
             self.player_sprite.change_angle = 0
         elif symbol == arcade.key.RIGHT:

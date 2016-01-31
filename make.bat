@@ -7,3 +7,4 @@ sphinx-build -b html doc/source doc/build/html
 rem python setup.py test
 coverage run --source arcade setup.py test
 coverage report -m
+rem python setup.py build install

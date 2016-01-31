@@ -60,10 +60,12 @@ def set_viewport(left, right, bottom, top):
     _bottom = bottom
     _top = top
 
-    # GL.glViewport(0, 800, 0, 800)
+    # GL.glViewport(0, 0, _window.height, _window.height)
     GL.glMatrixMode(GL.GL_PROJECTION)
     GL.glLoadIdentity()
     GL.glOrtho(left, right, bottom, top, -1, 1)
+    GL.glMatrixMode(GL.GL_MODELVIEW)
+    GL.glLoadIdentity()
 
 
 def open_window(window_title, width, height):

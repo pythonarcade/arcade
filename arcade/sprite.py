@@ -11,7 +11,7 @@ class SpriteList():
     >>> import arcade
     >>> import random
     >>> arcade.open_window("Sprite Example", 600, 600)
-    >>> scale = 0.002
+    >>> scale = 1
     >>> meteor_list = arcade.SpriteList()
     >>> for i in range(100):
     ...     meteor = arcade.Sprite("examples/images/meteorGrey_big1.png", \
@@ -188,12 +188,12 @@ scale)
 
         >>> import arcade
         >>> arcade.open_window("Sprite Example", 800, 600)
-        >>> scale = 1/75
+        >>> scale = 1
         >>> ship_sprite = \
 arcade.Sprite("examples/images/playerShip1_orange.png", scale)
         >>> ship_sprite.center_y = 0
         >>> print(ship_sprite.bottom)
-        -0.5
+        -37.5
         >>> ship_sprite.bottom = 1
         >>> print(ship_sprite.bottom)
         1.0
@@ -217,12 +217,12 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
 
         >>> import arcade
         >>> arcade.open_window("Sprite Example", 800, 600)
-        >>> scale = 1/75
+        >>> scale = 1
         >>> ship_sprite = \
 arcade.Sprite("examples/images/playerShip1_orange.png", scale)
         >>> ship_sprite.center_y = 0
         >>> print(ship_sprite.top)
-        0.5
+        37.5
         >>> ship_sprite.top = 1
         >>> print(ship_sprite.top)
         1.0
@@ -248,12 +248,12 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
 
         >>> import arcade
         >>> arcade.open_window("Sprite Example", 800, 600)
-        >>> scale = 1/99
+        >>> scale = 1
         >>> ship_sprite = \
 arcade.Sprite("examples/images/playerShip1_orange.png", scale)
         >>> ship_sprite.center_x = 0
         >>> print(ship_sprite.left)
-        -0.5
+        -49.5
         >>> ship_sprite.left = 1
         >>> print(ship_sprite.left)
         1.0
@@ -279,12 +279,12 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
 
         >>> import arcade
         >>> arcade.open_window("Sprite Example", 800, 600)
-        >>> scale = 1/99
+        >>> scale = 1
         >>> ship_sprite = \
 arcade.Sprite("examples/images/playerShip1_orange.png", scale)
         >>> ship_sprite.center_x = 0
         >>> print(ship_sprite.right)
-        0.5
+        49.5
         >>> ship_sprite.right = 1
         >>> print(ship_sprite.right)
         1.0
@@ -413,6 +413,7 @@ class PlatformerSpriteSheetSprite(Sprite):
         """
         Logic for selecting the proper texture to use.
         """
+
         if self.change_y == 0.0:
             if self.change_x < 0:
                 if abs(self.last_change_x - self.center_x) > \

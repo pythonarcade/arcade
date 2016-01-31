@@ -2,6 +2,7 @@ from .window_commands import *
 
 import pyglet
 
+
 class Window(pyglet.window.Window):
     """
     Window class
