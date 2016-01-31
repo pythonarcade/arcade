@@ -32,7 +32,7 @@ preprocess_files.main()
 #from arcade import VERSION
 #from arcade import RELEASE
 VERSION = "0.0.6"
-RELEASE = VERSION + "a3"
+RELEASE = VERSION + "a4"
 
 # From http://stackoverflow.com/questions/12772927/specifying-an-online-image-in-sphinx-restructuredtext-format
 import sphinx.environment
