@@ -1,9 +1,11 @@
+VERSION = "0.0.6"
+RELEASE = VERSION + "a2"
+
 #!/usr/bin/env python
 import os
 import sys
 import distutils.sysconfig
 from setuptools import setup
-from arcade import RELEASE
 
 if __name__ == "__main__":
 
@@ -17,6 +19,7 @@ if __name__ == "__main__":
     readme = open(fname, "r")
     long_desc = readme.read()
     readme.close()
+
 
     setupdata = {
         "name":  "arcade",
@@ -44,5 +47,6 @@ if __name__ == "__main__":
             "Topic :: Software Development :: Libraries :: Python Modules",
             ],
         "test_suite": "tests",
+        "data_files": [(distutils.sysconfig.get_python_lib(), ["dlls/avbin.dll"])],
         }
     setup(**setupdata)

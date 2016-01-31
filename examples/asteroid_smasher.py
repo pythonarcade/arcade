@@ -166,6 +166,9 @@ class MyApplication(arcade.Window):
             self.all_sprites_list.append(enemy_sprite)
             self.asteroid_list.append(enemy_sprite)
 
+        # Sounds
+        self.laser_sound = arcade.load_sound("sounds/laser1.ogg")
+
     def on_draw(self):
         """
         Render the screen.
@@ -203,6 +206,8 @@ class MyApplication(arcade.Window):
 
             self.all_sprites_list.append(bullet_sprite)
             self.bullet_list.append(bullet_sprite)
+
+            arcade.play_sound(self.laser_sound)
 
         if symbol == arcade.key.LEFT:
             self.player_sprite.change_angle = 3

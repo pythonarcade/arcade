@@ -52,6 +52,13 @@ Physics Engines Module
     :undoc-members:
     :show-inheritance:
 
+Sound Module
+^^^^^^^^^^^^
+
+.. automodule:: arcade.sound
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
 Arcade Subpackages
 ------------------

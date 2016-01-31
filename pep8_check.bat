@@ -3,6 +3,7 @@ pep8 arcade/__init__.py
 pep8 arcade/application.py
 pep8 arcade/draw_commands.py
 pep8 arcade/geometry.py
+pep8 arcade/sound.py
 pep8 arcade/sprite.py
 pep8 arcade/window_commands.py
 pep8 arcade/color/__init__.py
