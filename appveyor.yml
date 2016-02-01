@@ -12,12 +12,13 @@ environment:
 
 
 install:
+  - "%PYTHON%\\Scripts\\pip.exe install --upgrade pip"
   - "%PYTHON%\\Scripts\\pip.exe install wheel twine pillow pyglet coverage coveralls"
 
 build_script:
   - "%PYTHON%\\python.exe setup.py build"
   - "%PYTHON%\\python.exe setup.py bdist_wheel"
-  - "%PYTHON%\\Scripts\\pip.exe install dist\\arcade*.whl"
+  - "for /r %i in (dist\*) do pip install %i"
 
 test_script:
   - "%PYTHON%\\Scripts\\coverage run --source=arcade setup.py test"
