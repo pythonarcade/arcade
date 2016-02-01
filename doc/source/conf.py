@@ -1,7 +1,8 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
+BUILD = 10
 VERSION = "0.0.6"
-RELEASE = VERSION + "a9"
+RELEASE = VERSION + "a" + str(BUILD)
 
 # -*- coding: utf-8 -*-
 #
@@ -28,7 +29,6 @@ import datetime
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 sys.path.insert(0, os.path.abspath('../..'))
 sys.path.insert(0, os.path.abspath('.'))
-sys.path.insert(0, os.path.abspath('..'))
 
 import preprocess_files
 preprocess_files.main()

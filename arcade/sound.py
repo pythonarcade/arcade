@@ -27,7 +27,6 @@ def load_sound_library():
 	else:
 		path = "avbin"
 
-	print("path:", path)
 	pyglet.lib.load_library(path)
 	pyglet.have_avbin=True
 
