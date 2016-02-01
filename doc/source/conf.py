@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 VERSION = "0.0.6"
-RELEASE = VERSION + "a6"
+RELEASE = VERSION + "a7"
 
 # -*- coding: utf-8 -*-
 #

@@ -16,12 +16,14 @@ install:
 
 build_script:
   - "%PYTHON%\\python.exe setup.py build"
+  - "%PYTHON%\\python.exe setup.py bdist_wheel"
+  - "%PYTHON%\\Scripts\\pip.exe install dist\\arcade*.whl"
 
 test_script:
   - "%PYTHON%\\Scripts\\coverage run --source=arcade setup.py test"
 
 deploy_script:
-  - "%PYTHON%\\python.exe setup.py sdist bdist_wheel bdist bdist_wininst bdist_egg"
+  - "%PYTHON%\\python.exe setup.py sdist bdist bdist_wininst bdist_egg"
 
 artifacts:
   - path: dist\*

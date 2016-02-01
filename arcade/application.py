@@ -9,6 +9,7 @@ class Window(pyglet.window.Window):
 
     >>> import arcade
     >>> window = arcade.Window(800, 600)
+    >>> window.animate()
     >>> window.close()
     """
     def __init__(self, width, height):

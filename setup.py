@@ -1,5 +1,5 @@
 VERSION = "0.0.6"
-RELEASE = VERSION + "a6"
+RELEASE = VERSION + "a7"
 
 #!/usr/bin/env python
 import os
@@ -28,7 +28,7 @@ if __name__ == "__main__":
         long_description = long_desc,
         author = "Paul Vincent Craven",
         author_email = "paul.craven@simpson.edu",
-        license = "Apache",
+        license = "MIT",
         url = "http://arcade.academy",
         download_url = "http://arcade.academy",
         packages = ["arcade",
@@ -38,7 +38,7 @@ if __name__ == "__main__":
         classifiers = [
             "Development Status :: 1 - Planning",
             "Intended Audience :: Developers",
-            "License :: Apache",
+            "License :: MIT",
             "Operating System :: OS Independent",
             "Programming Language :: Python",
             "Programming Language :: Python :: 3.5",

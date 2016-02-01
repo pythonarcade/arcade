@@ -381,6 +381,7 @@ class PlatformerSpriteSheetSprite(Sprite):
     >>> player.set_left_stand_textures([11])
     >>> player.set_right_stand_textures([4])
     >>> player.texture_change_distance = 5
+    >>> player.set_position(5, 5)
     >>> player.change_x = 10 # Jump
     >>> player.change_y = 1
     >>> player.update()
@@ -397,6 +398,7 @@ class PlatformerSpriteSheetSprite(Sprite):
     >>> player.change_y = 0.0
     >>> player.update()
     >>> player.update()
+    >>> player.kill()
     >>> arcade.quick_run(0.25)
     """
     def __init__(self):
