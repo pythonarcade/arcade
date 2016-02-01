@@ -18,7 +18,7 @@ install:
 build_script:
   - "%PYTHON%\\python.exe setup.py build"
   - "%PYTHON%\\python.exe setup.py bdist_wheel"
-  - "for /r %i in (dist\*) do pip install %i"
+  - "for /r %i in (dist\\*) do pip install %i"
 
 test_script:
   - "%PYTHON%\\Scripts\\coverage run --source=arcade setup.py test"
