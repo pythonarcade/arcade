@@ -1,5 +1,5 @@
 VERSION = "0.0.6"
-RELEASE = VERSION + "a4"
+RELEASE = VERSION + "a5"
 
 #!/usr/bin/env python
 import os
@@ -21,32 +21,31 @@ if __name__ == "__main__":
     readme.close()
 
 
-    setupdata = {
-        "name":  "arcade",
-        "version": RELEASE,
-        "description": "Arcade Game Development Library",
-        "long_description": long_desc,
-        "author": "Paul Vincent Craven",
-        "author_email": "paul.craven@simpson.edu",
-        "license": "Public Domain / zlib",
-        "url": "http://arcade.academy",
-        "download_url": "http://arcade.academy",
-        "packages": ["arcade",
+    setup(
+        name =  "arcade",
+        version = RELEASE,
+        description = "Arcade Game Development Library",
+        long_description = long_desc,
+        author = "Paul Vincent Craven",
+        author_email = "paul.craven@simpson.edu",
+        license = "Apache",
+        url = "http://arcade.academy",
+        download_url = "http://arcade.academy",
+        packages = ["arcade",
                      "arcade.key",
                      "arcade.color"
                      ],
-        "classifiers": [
+        classifiers = [
             "Development Status :: 1 - Planning",
             "Intended Audience :: Developers",
-            "License :: Public Domain",
-            "License :: OSI Approved :: zlib/libpng License",
+            "License :: Apache",
             "Operating System :: OS Independent",
             "Programming Language :: Python",
             "Programming Language :: Python :: 3.5",
             "Programming Language :: Python :: Implementation :: CPython",
             "Topic :: Software Development :: Libraries :: Python Modules",
             ],
-        "test_suite": "tests",
-        "data_files": [(distutils.sysconfig.get_python_lib(), ["dlls/avbin.dll"])],
-        }
-    setup(**setupdata)
+        test_suite = "tests",
+        data_files = [("Lib/site-packages/arcade/Win32", ["Win32/avbin.dll"]),
+                      ("Lib/site-packages/arcade/Win64", ["Win64/avbin.dll"])],
+        )

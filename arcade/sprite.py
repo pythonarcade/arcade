@@ -380,14 +380,22 @@ class PlatformerSpriteSheetSprite(Sprite):
     >>> player.set_right_jump_textures([3])
     >>> player.set_left_stand_textures([11])
     >>> player.set_right_stand_textures([4])
-    >>> player.change_x = 1 # Jump
+    >>> player.texture_change_distance = 5
+    >>> player.change_x = 10 # Jump
     >>> player.change_y = 1
     >>> player.update()
-    >>> player.change_x = -1 #Left
-    >>> player.change_y = 0
     >>> player.update()
-    >>> player.change_x = 1 # Right
-    >>> player.change_y = 0
+    >>> player.change_x = -10 #Left
+    >>> player.change_y = 0.0
+    >>> player.update()
+    >>> player.update()
+    >>> player.change_x = 10 # Right
+    >>> player.change_y = 0.0
+    >>> player.update()
+    >>> player.update()
+    >>> player.change_x = 0 # Stop
+    >>> player.change_y = 0.0
+    >>> player.update()
     >>> player.update()
     >>> arcade.quick_run(0.25)
     """
