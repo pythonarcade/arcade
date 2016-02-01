@@ -4,6 +4,7 @@ def load_sound_library():
 	# Special code for Windows so we grab the proper avbin from our directory.
 	# Otherwise hope the correct package is installed.
 	import os
+	appveyor = not os.environ.get('KEY_THAT_MIGHT_EXIST') is None
 	if os.name == "nt":
 
 		import sys
@@ -12,10 +13,17 @@ def load_sound_library():
 		import site
 		packages = site.getsitepackages()
 
-		if is64bit:
-			path = packages[0] + "/lib/site-packages/arcade/Win64/avbin"
+		if appveyor:
+			if is64bit:
+				path = "Win64/avbin"
+			else:
+				path = "Win32/avbin"
+
 		else:
-			path = packages[0] + "/lib/site-packages/arcade/Win32/avbin"
+			if is64bit:
+				path = packages[0] + "/lib/site-packages/arcade/Win64/avbin"
+			else:
+				path = packages[0] + "/lib/site-packages/arcade/Win32/avbin"
 	else:
 		path = "avbin"
 
