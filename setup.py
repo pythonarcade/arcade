@@ -1,5 +1,5 @@
 VERSION = "0.0.6"
-RELEASE = VERSION + "a8"
+RELEASE = VERSION + "a9"
 
 #!/usr/bin/env python
 import os

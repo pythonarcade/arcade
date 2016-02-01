@@ -418,7 +418,7 @@ class PlatformerSpriteSheetSprite(Sprite):
         self.right_stand_textures = []
         self.up_stand_textures = []
         self.down_stand_textures = []
-
+        self.jump_speed = 10
         self.cur_texture_index = 0
         self.texture_change_distance = 0
         self.speed = 0.003
