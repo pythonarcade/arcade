@@ -4,7 +4,7 @@ def load_sound_library():
 	# Special code for Windows so we grab the proper avbin from our directory.
 	# Otherwise hope the correct package is installed.
 	import os
-	appveyor = not os.environ.get('KEY_THAT_MIGHT_EXIST') is None
+	appveyor = not os.environ.get('APPVEYOR') is None
 	if os.name == "nt":
 
 		import sys
@@ -27,6 +27,7 @@ def load_sound_library():
 	else:
 		path = "avbin"
 
+	print("path:", path)
 	pyglet.lib.load_library(path)
 	pyglet.have_avbin=True
 
