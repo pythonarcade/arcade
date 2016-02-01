@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+
+VERSION = "0.0.6"
+RELEASE = VERSION + "a6"
+
 # -*- coding: utf-8 -*-
 #
 # Arcade documentation build configuration file, created by
@@ -31,8 +35,6 @@ preprocess_files.main()
 
 #from arcade import VERSION
 #from arcade import RELEASE
-VERSION = "0.0.6"
-RELEASE = VERSION + "a5"
 
 # From http://stackoverflow.com/questions/12772927/specifying-an-online-image-in-sphinx-restructuredtext-format
 import sphinx.environment
