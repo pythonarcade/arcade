@@ -10,24 +10,8 @@ import numpy
 # http://gamedevelopment.tutsplus.com/tutorials/how-to-create-a-custom-2d-physics-engine-the-basics-and-impulse-resolution--gamedev-6331
 # The tutorial has a lot of mistakes in the code, which is kind of annoying.
 
-class Vector:
-
-    def __init__(self, x, y):
-        self.data = [x, y]
-
-    def _get_x(self):
-        return self.data[0]
-
-    x = property(_get_x)
-
-    def _get_y(self):
-        return self.data[1]
-
-    y = property(_get_y)
-
-    def __iter__(self):
-        for elem in self._data:
-            yield elem
+# Don't use this type of engine on a platformer
+# http://higherorderfun.com/blog/2012/05/20/the-guide-to-implementing-2d-platformers/
 
 class PhysicsObject:
     def __init__(self, position, velocity, restitution, mass):
@@ -37,48 +21,14 @@ class PhysicsObject:
         self.position = position # Vector
 
     def _get_x(self):
-        return self.position.x
+        return self.position[0]
 
     x = property(_get_x)
 
     def _get_y(self):
-        return self.position.y
+        return self.position[1]
 
     y = property(_get_y)
-
-class Rect():
-    def __init__(self, rect):
-        self.rect = rect
-
-    def _get_x(self):
-        return self.rect[0]
-
-    x = property(_get_x)
-
-    def _get_y(self):
-        return self.rect[1]
-
-    y = property(_get_y)
-
-    def _get_width(self):
-        return self.rect[2]
-
-    width = property(_get_width)
-
-    def _get_height(self):
-        return self.rect[3]
-
-    height = property(_get_height)
-
-    def _get_min(self):
-        return Vector(self.rect[0], self.rect[1])
-
-    min = property(_get_min)
-
-    def _get_max(self):
-        return Vector(self.rect[0] + self.rect[2], self.rect[1] + self.rect[3])
-
-    max = property(_get_max)
 
 class Circle(PhysicsObject):
     def __init__(self, position, velocity, restitution, mass, radius, color):
@@ -87,18 +37,18 @@ class Circle(PhysicsObject):
         self.color = color
 
     def draw(self):
-        arcade.draw_circle_filled(self.position.x, self.position.y, self.radius, self.color)
+        arcade.draw_circle_filled(self.position[0], self.position[1], self.radius, self.color)
 
 
 class AABB(PhysicsObject):
     def __init__(self, rect, velocity, restitution, mass, color):
-        super().__init__(Vector(rect[0], rect[1]), velocity, restitution, mass)
+        super().__init__([rect[0], rect[1]], velocity, restitution, mass)
         self.color = color
         self.width = rect[2]
         self.height = rect[3]
 
     def draw(self):
-        arcade.draw_rect_filled(self.position.x, self.position.y, self.width, self.height, self.color)
+        arcade.draw_rect_filled(self.position[0], self.position[1], self.width, self.height, self.color)
 
     def _get_min(self):
         return Vector(self.position.x, self.position.y)
@@ -121,7 +71,7 @@ def AABBvsAABB( a, b ):
     return True
 
 
-def distance(a, b):
+def distanceV(a, b):
     """
     Return the distance between two vectors
 
@@ -135,6 +85,8 @@ def distance(a, b):
     """
     return math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2)
 
+def distanceA(a, b):
+    return math.sqrt((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2)
 
 class Manifold:
     def __init__(self, a, b, penetration, normal):
@@ -154,7 +106,7 @@ def circle_vs_circle(m):
     if r < (m.a.x - m.b.x) ** 2 + (m.a.y - m.b.y) ** 2:
         return False
 
-    d = distance(m.a, m.b)
+    d = distanceA(m.a.position.data, m.b.position.data)
 
     if d != 0:
         # Distance is difference between radius and distance
@@ -166,7 +118,7 @@ def circle_vs_circle(m):
         return True
     else:
         # Choose random (but consistent) values
-        m.penetration = a.radius
+        m.penetration = m.a.radius
         m.normal = [1, 0]
         return True
 
@@ -175,13 +127,16 @@ def circle_vs_circle(m):
 
 def resolve_collision(m):
     # Calculate relative velocity
-    rv = numpy.subtract(m.b.velocity.data, m.a.velocity.data)
+    rv = numpy.subtract(m.b.velocity, m.a.velocity)
 
     # Calculate relative velocity in terms of the normal direction
     velocity_along_normal = numpy.dot(rv, m.normal)
 
     # Do not resolve if velocities are separating
     if velocity_along_normal > 0:
+        # print("Separating:", velocity_along_normal)
+        # print("  Normal:  ", m.normal)
+        # print("  Vel:     ", m.b.velocity, m.a.velocity)
         return False
 
     # Calculate restitution
@@ -194,13 +149,16 @@ def resolve_collision(m):
     # Apply impulse
     impulse = numpy.multiply(j, m.normal)
 
-    m.a.velocity.data = numpy.subtract(m.a.velocity.data, numpy.multiply(1 / m.a.mass, impulse))
-    m.b.velocity.data = numpy.add(m.b.velocity.data, numpy.multiply(1 / m.b.mass, impulse))
+    # print("Before: ", m.a.velocity, m.b.velocity)
+    m.a.velocity = numpy.subtract(m.a.velocity, numpy.multiply(1 / m.a.mass, impulse))
+    m.b.velocity = numpy.add(m.b.velocity, numpy.multiply(1 / m.b.mass, impulse))
+    # print("After:  ", m.a.velocity, m.b.velocity)
+    # print("  Normal:  ", m.normal)
 
     return True
 
 def aabb_vs_aabb(m):
-    n = numpy.subtract(m.b.position.data, m.a.position.data)
+    n = numpy.subtract(m.b.position, m.a.position)
 
     abox = m.a
     bbox = m.b
@@ -242,41 +200,114 @@ def aabb_vs_aabb(m):
 
     return False
 
+def clamp(a, min_value, max_value):
+    return max(min(a, max_value), min_value)
+
+def magnitude(v):
+    return math.sqrt(sum(v[i]*v[i] for i in range(len(v))))
+
+def add(u, v):
+    return [ u[i]+v[i] for i in range(len(u)) ]
+
+def sub(u, v):
+    return [ u[i]-v[i] for i in range(len(u)) ]
+
+def neg(u):
+    return [ -u[i] for i in range(len(u)) ]
+
+def dot(u, v):
+    return sum(u[i]*v[i] for i in range(len(u)))
+
+def normalize(v):
+    vmag = magnitude(v)
+    return [ v[i]/vmag  for i in range(len(v)) ]
+
+def aabb_vs_circle(m):
+    x_extent = m.a.width / 2
+    y_extent = m.a.height / 2
+
+    a_center = [m.a.x + x_extent, m.a.y - y_extent]
+    b_center = m.b.position
+
+    closestX = clamp(b_center[0], m.a.position[0], m.a.position[0] + m.a.width)
+    closestY = clamp(b_center[1],  m.a.position[1] - m.a.height, m.a.position[1])
+
+    # Calculate the distance between the circle's center and this closest point
+    distanceX = b_center[0] - closestX;
+    distanceY = b_center[1] - closestY;
+
+    # If the distance is less than the circle's radius, an intersection occurs
+    distanceSquared = (distanceX * distanceX) + (distanceY * distanceY);
+    collision = distanceSquared < (m.b.radius * m.b.radius);
+    if not collision:
+        return False
+
+    print("Bang")
+    d = distanceA(a_center, b_center)
+    print(d)
+
+    if d == 0:
+        # Choose random (but consistent) values
+        m.penetration = m.b.radius
+        m.normal = [1, 0]
+        return True
+    else:
+        m.normal = neg(normalize(sub(a_center, b_center)))
+
+        return collision
 
 
+def setup_a(object_list):
+    # a = Circle([600, 300], [0, -0.]), .5, 3, 15, arcade.color.RED)
+    # object_list.append(a)
+
+    a = AABB([590, 200, 20, 20], [0, 0], .5, 3, arcade.color.ALABAMA_CRIMSON)
+    object_list.append(a)
+
+    # a = AABB([550, 200, 20, 20], [0, 0], .5, 3, arcade.color.ALABAMA_CRIMSON)
+    # object_list.append(a)
+
+    a = Circle([600, 50], [0, 1], .5, 3, 10, arcade.color.RED)
+    object_list.append(a)
+
+    a = Circle([600, 450], [0, -1], .5, 3, 10, arcade.color.RED)
+    object_list.append(a)
+
+
+def setup_b(object_list):
+
+    a = Circle([390, 400], [0.5, -2], .5, 3, 15, arcade.color.RED)
+    object_list.append(a)
+
+    for x in range(300, 500, 25):
+        for y in range(250, 320, 25):
+            a = Circle([x, y], [0, 0], .5, .5, 10, arcade.color.AZURE)
+            object_list.append(a)
+
+    a = Circle([400, 150], [0, 0], .5, 2, 20, arcade.color.BANGLADESH_GREEN)
+    object_list.append(a)
+    a = Circle([370, 120], [0, 0], .5, 2, 20, arcade.color.BANGLADESH_GREEN)
+    object_list.append(a)
+    a = Circle([430, 120], [0, 0], .5, 2, 20, arcade.color.BANGLADESH_GREEN)
+    object_list.append(a)
+    a = Circle([400, 90], [0, 0], .5, 2, 20, arcade.color.BANGLADESH_GREEN)
+    object_list.append(a)
+
+    a = Circle([0, 350], [2, -3], .5, 3, 10, arcade.color.ALABAMA_CRIMSON)
+    object_list.append(a)
+
+    for x in range(50, 200, 20):
+        for y in range(150, 200, 20):
+            a = AABB([x, y, 15, 15], [0, 0], .5, 1, arcade.color.MELLOW_APRICOT)
+            object_list.append(a)
 
 class MyApplication(arcade.Window):
     """ Main application class. """
 
     def setup(self):
-        self.hit_sound = arcade.load_sound("rockHit2.ogg")
+        self.hit_sound = arcade.load_sound("sounds/rockHit2.ogg")
         self.object_list = []
-        a = Circle(Vector(390, 400), Vector(0.5, -2), .5, 3, 15, arcade.color.RED)
-        self.object_list.append(a)
-
-        for x in range(300, 500, 25):
-            for y in range(250, 320, 25):
-                a = Circle(Vector(x, y), Vector(0, 0), .5, .5, 10, arcade.color.AZURE)
-                self.object_list.append(a)
-
-        a = Circle(Vector(400, 150), Vector(0, 0), .5, 2, 20, arcade.color.BANGLADESH_GREEN)
-        self.object_list.append(a)
-        a = Circle(Vector(370, 120), Vector(0, 0), .5, 2, 20, arcade.color.BANGLADESH_GREEN)
-        self.object_list.append(a)
-        a = Circle(Vector(430, 120), Vector(0, 0), .5, 2, 20, arcade.color.BANGLADESH_GREEN)
-        self.object_list.append(a)
-        a = Circle(Vector(400, 90), Vector(0, 0), .5, 2, 20, arcade.color.BANGLADESH_GREEN)
-        self.object_list.append(a)
-
-        a = AABB([0, 400, 15, 15], Vector(1, -2), .5, 3, arcade.color.ALABAMA_CRIMSON)
-        self.object_list.append(a)
-
-        for x in range(50, 200, 20):
-            for y in range(150, 200, 20):
-                a = AABB([x, y, 15, 15], Vector(0, 0), .5, 1, arcade.color.MELLOW_APRICOT)
-                self.object_list.append(a)
-
-
+        setup_b(self.object_list)
 
     def on_draw(self):
         """
@@ -296,24 +327,30 @@ class MyApplication(arcade.Window):
         start_time = timeit.default_timer()
 
         for a in self.object_list:
-            a.position.data = numpy.add(a.position.data, a.velocity.data)
+            a.position = numpy.add(a.position, a.velocity)
 
-        for a in self.object_list:
-            for b in self.object_list:
-                if a is not b:
-                    m = Manifold(a, b, 0, 0)
+        for i in range(len(self.object_list)):
+            for j in range(i+1, len(self.object_list)):
+                a = self.object_list[i]
+                b = self.object_list[j]
+                m = Manifold(a, b, 0, 0)
 
-                    if isinstance(a, Circle) and isinstance(b, Circle):
-                        collided = circle_vs_circle(m)
-                    elif isinstance(a, AABB) and isinstance(b, AABB):
-                        collided = aabb_vs_aabb(m)
-                    else:
-                        collided = False
+                if isinstance(a, Circle) and isinstance(b, Circle):
+                    collided = circle_vs_circle(m)
+                elif isinstance(a, AABB) and isinstance(b, AABB):
+                    collided = aabb_vs_aabb(m)
+                elif isinstance(a, AABB) and isinstance(b, Circle):
+                    collided = aabb_vs_circle(m)
+                elif isinstance(a, Circle) and isinstance(b, AABB):
+                    m = Manifold(b, a, 0, 0)
+                    collided = aabb_vs_circle(m)
+                else:
+                    collided = False
 
-                    if collided:
-                        really_collided = resolve_collision(m)
-                        if really_collided:
-                            arcade.play_sound(self.hit_sound)
+                if collided:
+                    really_collided = resolve_collision(m)
+                    #if really_collided:
+                        #arcade.play_sound(self.hit_sound)
 
         elapsed = timeit.default_timer() - start_time
         print("Time: {}".format(elapsed))
