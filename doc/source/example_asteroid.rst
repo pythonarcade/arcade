@@ -1,7 +1,7 @@
 Asteroid Example
 ================
 
-This is a sample astroid game made with the Arcade library.
+This is a sample asteroid game made with the Arcade library.
 
 .. raw:: html
 
