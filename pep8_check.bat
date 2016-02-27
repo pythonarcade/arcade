@@ -12,3 +12,4 @@ pep8 arcade/key/__init__.py
 pep8 examples/asteroid_smasher.py
 pep8 examples/drawing_primitives.py
 pep8 examples/platformer.py
+pep8 examples/bouncing_rectangle.py

@@ -181,3 +181,7 @@ def set_background_color(color):
     """
 
     GL.glClearColor(color[0]/255, color[1]/255, color[2]/255, 1)
+
+
+def schedule(function_pointer, interval):
+    pyglet.clock.schedule_interval(function_pointer, interval)
