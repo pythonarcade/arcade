@@ -157,7 +157,7 @@ def start_render():
     """ Get set up to render. """
     GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
     GL.glMatrixMode(GL.GL_MODELVIEW)
-
+    GL.glEnableClientState(GL.GL_VERTEX_ARRAY)
 
 def set_background_color(color):
     """
