@@ -34,11 +34,11 @@ def trim_image(image):
     return image.crop(bbox)
 
 
-def draw_arc_filled(cx, cy,
+def draw_arc_filled(center_x, center_y,
                     width, height,
                     color,
                     start_angle, end_angle,
-                    angle=0, num_segments=128):
+                    tilt_angle=0):
     """
     Draw a filled in arc. Useful for drawing pie-wedges, or Pac-Man.
 
@@ -73,7 +73,7 @@ arcade.color.BOTTLE_GREEN, 90, 360, 45)
     >>> arcade.finish_render()
     >>> arcade.close_window()
     """
-
+    num_segments = 128
     GL.glEnable(GL.GL_BLEND)
     GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
     GL.glEnable(GL.GL_LINE_SMOOTH)
@@ -81,8 +81,8 @@ arcade.color.BOTTLE_GREEN, 90, 360, 45)
     GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
 
     GL.glLoadIdentity()
-    GL.glTranslatef(cx, cy, 0)
-    GL.glRotatef(angle, 0, 0, 1)
+    GL.glTranslatef(center_x, center_y, 0)
+    GL.glRotatef(tilt_angle, 0, 0, 1)
 
     # Set color
     if len(color) == 4:
@@ -108,11 +108,11 @@ arcade.color.BOTTLE_GREEN, 90, 360, 45)
     GL.glLoadIdentity()
 
 
-def draw_arc_outline(cx, cy,
+def draw_arc_outline(center_x, center_y,
                      width, height,
                      color,
                      start_angle, end_angle,
-                     line_width=1, angle=0, num_segments=128):
+                     line_width=1, tilt_angle=0):
     """
     Draw the outside edge of an arc. Useful for drawing curved lines.
 
@@ -149,7 +149,7 @@ transparent_color, 90, 360)
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
     """
-
+    num_segments = 128
     GL.glEnable(GL.GL_BLEND)
     GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
     GL.glEnable(GL.GL_LINE_SMOOTH)
@@ -157,8 +157,8 @@ transparent_color, 90, 360)
     GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
 
     GL.glLoadIdentity()
-    GL.glTranslatef(cx, cy, 0)
-    GL.glRotatef(angle, 0, 0, 1)
+    GL.glTranslatef(center_x, center_y, 0)
+    GL.glRotatef(tilt_angle, 0, 0, 1)
     GL.glLineWidth(line_width)
 
     # Set color
