@@ -184,7 +184,7 @@ transparent_color, 90, 360)
     GL.glLoadIdentity()
 
 
-def draw_circle_filled(cx, cy, radius, color, num_segments=128):
+def draw_circle_filled(center_x, center_y, radius, color, num_segments=128):
     """
     Draw a filled-in circle.
 
@@ -213,7 +213,80 @@ def draw_circle_filled(cx, cy, radius, color, num_segments=128):
     """
     width = radius
     height = radius
-    draw_ellipse_filled(cx, cy, width, height, color, num_segments)
+    draw_ellipse_filled(center_x, center_y, width, height, color, num_segments)
+    
+    
+    
+    
+    
+    
+    
+def draw_small_filled_circle(center_x, center_y, color):
+    # Draws a circle with a default small radius
+    radius = 10
+    
+    draw_circle_filled(center_x, center_y, radius, color)
+    
+def draw_medium_filled_circle(center_x, center_y, color):
+    # Draws a circle with a default medium radius
+    radius = 25
+    
+    draw_circle_filled(center_x, center_y, radius, color)
+
+def draw_large_filled_circle(center_x, center_y, color):
+    # Draws a circle with a default large radius
+    radius = 40
+    
+    draw_circle_filled(center_x, center_y, radius, color)
+
+
+def draw_standard_circle(size, adjustment = 0, filled, color, center_x, center_y):
+    #Draws a general circle with a limited number of specifications
+    
+    """This function is meant to encapsule all of the different kinds of circles that a person might want drawn. 
+    The arguments are the circle's specifications given in an order that a person would use to describe what they want
+    (i.e. "I want a 'large' 'solid 'red' circle at 'this spot'.)
+    
+    The arguments are as such;
+    size = The radius of the circle expressed in descriptive words like "small" or "s", "medium" or "m", or "large" or "l".
+    adjustment = A customizable adjustment to the size of the standard circle. Can be positive or negative or can be entirely ignored.
+    filled = If the circle is an outline or is a solid color expressed with words like "filled" or "solid" and "outline" or "hollow".
+    color = The color of the circle.
+    center_x = The center's x coordenent.
+    center_y = The center's y coordenent.
+    
+    Example:
+    
+    >>> import arcade
+    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.set_background_color(arcade.color.WHITE)
+    >>> arcade.start_render()
+    >>> arcade.draw_standard_circle(small, solid, blue, 500, 200) #Draws a small solid blue circle at (500, 200)
+    >>> arcade.finish_render()
+    >>> arcade.quick_run(0.25)
+    """
+    #--size--
+    if size == "small" or size == "Small" or size == "s" or size == "S":
+        radius = 10 + adjustment
+    
+    elif size == "medium" or size == "Medium" or size == "m" or size == "M":
+        radius = 25 + adjustment
+        
+    elif size == "large" or size == "Large" or size == "l" or size == "L":
+        radius = 40 + adjustment
+     
+     #--filled--
+    if filled == "filled" or filled == "solid":
+        draw_circle_filled(center_x, center_y, radius, color)
+         
+    elif filled == "outline" or filled == "hollow":
+        draw_circle_outline(center_x, center_y, radius, color)
+    
+
+
+
+
+
 
 
 def draw_circle_outline(cx, cy, radius, color, line_width=1, num_segments=128):
