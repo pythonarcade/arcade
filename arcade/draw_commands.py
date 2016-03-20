@@ -10,6 +10,11 @@ import pyglet
 import pyglet.gl as GL
 import pyglet.gl.glu as GLU
 
+from sympy import Symbol, nsolve
+import sympy
+import mpmath
+mpmath.mp.dps = 15
+
 
 class Texture():
     """
@@ -34,11 +39,11 @@ def trim_image(image):
     return image.crop(bbox)
 
 
-def draw_arc_filled(cx, cy,
+def draw_arc_filled(center_x, center_y,
                     width, height,
                     color,
                     start_angle, end_angle,
-                    angle=0, num_segments=128):
+                    tilt_angle=0):
     """
     Draw a filled in arc. Useful for drawing pie-wedges, or Pac-Man.
 
@@ -73,7 +78,7 @@ arcade.color.BOTTLE_GREEN, 90, 360, 45)
     >>> arcade.finish_render()
     >>> arcade.close_window()
     """
-
+    num_segments = 128
     GL.glEnable(GL.GL_BLEND)
     GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
     GL.glEnable(GL.GL_LINE_SMOOTH)
@@ -81,8 +86,8 @@ arcade.color.BOTTLE_GREEN, 90, 360, 45)
     GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
 
     GL.glLoadIdentity()
-    GL.glTranslatef(cx, cy, 0)
-    GL.glRotatef(angle, 0, 0, 1)
+    GL.glTranslatef(center_x, center_y, 0)
+    GL.glRotatef(tilt_angle, 0, 0, 1)
 
     # Set color
     if len(color) == 4:
@@ -108,16 +113,20 @@ arcade.color.BOTTLE_GREEN, 90, 360, 45)
     GL.glLoadIdentity()
 
 
+<<<<<<< HEAD
 
 
 
 
 #---------- This is my comment that shouldn't appear on anyone else's file ----------
 def draw_arc_outline(cx, cy,
+=======
+def draw_arc_outline(center_x, center_y,
+>>>>>>> Patrick
                      width, height,
                      color,
                      start_angle, end_angle,
-                     line_width=1, angle=0, num_segments=128):
+                     line_width=1, tilt_angle=0):
     """
     Draw the outside edge of an arc. Useful for drawing curved lines.
 
@@ -154,7 +163,7 @@ transparent_color, 90, 360)
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
     """
-
+    num_segments = 128
     GL.glEnable(GL.GL_BLEND)
     GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
     GL.glEnable(GL.GL_LINE_SMOOTH)
@@ -162,8 +171,8 @@ transparent_color, 90, 360)
     GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
 
     GL.glLoadIdentity()
-    GL.glTranslatef(cx, cy, 0)
-    GL.glRotatef(angle, 0, 0, 1)
+    GL.glTranslatef(center_x, center_y, 0)
+    GL.glRotatef(tilt_angle, 0, 0, 1)
     GL.glLineWidth(line_width)
 
     # Set color
@@ -189,7 +198,148 @@ transparent_color, 90, 360)
     GL.glLoadIdentity()
 
 
+<<<<<<< HEAD
 def draw_circle_filled(center_x, center_y, radius, color, num_segments=128):
+=======
+def draw_fancy_math_arc_outline(start_x, start_y, end_x, end_y, height, color, line_width=5, tilt_angle=0):
+    temp_x = end_x - start_x
+    temp_x = temp_x**2
+    temp_y = end_y - start_y
+    temp_y = temp_y**2
+    z = temp_x + temp_y
+    distance = math.sqrt(z)
+
+    a = height
+    b = height
+    c = distance
+
+    square_c = c**2
+    square_c = square_c * -1
+
+    square_b = b**2
+
+    square_a = a**2
+
+    numerator = square_c + square_b + square_a
+    denominator = 2 * a * b
+
+    cosine = numerator / denominator
+
+    radian = math.acos(cosine)
+
+    angle = radian*(180/math.pi)
+    print(angle)
+
+
+    h = height**2
+
+    cx = Symbol('cx')
+    cy = Symbol('cy')
+    center_vars = nsolve(((start_x-cx)**2 + (start_y-cy)**2-h,(end_x-cx)**2 + (end_y-cy)**2-h), (cx,cy), (-1,1))
+    print(center_vars)
+    center_x = center_vars[0]
+    center_y = center_vars[1]
+    print(center_x, center_y)
+    start_a = math.atan2(start_y-center_y,start_x-center_x)
+    end_a = math.atan2(end_y-center_y,end_x-center_x)
+    start_angle = start_a*(180/math.pi)
+    end_angle = end_a*(180/math.pi)
+    print(start_angle, end_angle)
+    if end_angle < 0:
+        end_angle *= -1
+    else:
+        end_angle = 180 - end_angle
+    if start_angle < 0:
+        start_angle *= -1
+    else:
+        start_angle = 180 - start_angle
+    if end_angle < start_angle:
+        temp = end_angle
+        end_angle = start_angle
+        start_angle = temp
+    print(start_angle, end_angle)
+
+    arcade.draw_arc_outline(center_x, center_y, distance, height, color, start_angle, end_angle, line_width, tilt_angle)
+
+def draw_fancy_math_arc_filled(start_x, start_y, end_x, end_y, height, color, tilt_angle=0):
+    temp_x = end_x - start_x
+    temp_x = temp_x**2
+    temp_y = end_y - start_y
+    temp_y = temp_y**2
+    z = temp_x + temp_y
+    distance = math.sqrt(z)
+
+    a = height
+    b = height
+    c = distance
+
+    square_c = c**2
+    square_c = square_c * -1
+
+    square_b = b**2
+
+    square_a = a**2
+
+    numerator = square_c + square_b + square_a
+    denominator = 2 * a * b
+
+    cosine = numerator / denominator
+
+    radian = math.acos(cosine)
+
+    angle = radian*(180/math.pi)
+    print(angle)
+
+
+    h = height**2
+
+    cx = Symbol('cx')
+    cy = Symbol('cy')
+    center_vars = nsolve(((start_x-cx)**2 + (start_y-cy)**2-h,(end_x-cx)**2 + (end_y-cy)**2-h), (cx,cy), (-1,1))
+    print(center_vars)
+    center_x = center_vars[0]
+    center_y = center_vars[1]
+    print(center_x, center_y)
+    start_a = math.atan2(start_y-center_y,start_x-center_x)
+    end_a = math.atan2(end_y-center_y,end_x-center_x)
+    start_angle = start_a*(180/math.pi)
+    end_angle = end_a*(180/math.pi)
+    print(start_angle, end_angle)
+    if end_angle < 0:
+        end_angle *= -1
+    else:
+        end_angle = 180 - end_angle
+    if start_angle < 0:
+        start_angle *= -1
+    else:
+        start_angle = 180 - start_angle
+    if end_angle < start_angle:
+        temp = end_angle
+        end_angle = start_angle
+        start_angle = temp
+    print(start_angle, end_angle)
+
+    arcade.draw_arc_filled(center_x, center_y, distance, height, color, start_angle, end_angle, tilt_angle)
+
+def draw_parabola_filled(start_x, start_y, end_x, height, color, tilt_angle=0):
+    cx = (start_x+end_x)/2
+    cy = start_y + height
+    start_angle = 0
+    end_angle = 180
+    width = (start_x - end_x)
+    arcade.draw_arc_filled(center_x, center_y, width, height, color, start_angle, end_angle, tilt_angle)
+
+def draw_parabola_outline(start_x, start_y, end_x, height, color, line_width=5, tilt_angle=0):
+    cx = (start_x+end_x)/2
+    cy = start_y + height
+    start_angle = 0
+    end_angle = 180
+    width = (start_x - end_x)
+    arcade.draw_arc_outline(center_x, center_y, width, height, color, start_angle, end_angle, line_width, tilt_angle)
+
+
+def draw_circle_filled(cx, cy, radius, color, num_segments=128):
+>>>>>>> Patrick
     """
     Draw a filled-in circle.
 
