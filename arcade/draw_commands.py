@@ -34,7 +34,7 @@ def trim_image(image):
     return image.crop(bbox)
 
 
-def draw_arc_filled(cx, cy,
+def draw_arc_filled(center_x, center_y,
                     width, height,
                     color,
                     start_angle, end_angle,
@@ -43,8 +43,8 @@ def draw_arc_filled(cx, cy,
     Draw a filled in arc. Useful for drawing pie-wedges, or Pac-Man.
 
     Args:
-        :cx (float): x position that is the center of the arc.
-        :cy (float): y position that is the center of the arc.
+        :center_x (float): x position that is the center of the arc.
+        :center_y (float): y position that is the center of the arc.
         :width (float): width of the arc.
         :height (float): height of the arc.
         :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
@@ -81,7 +81,7 @@ arcade.color.BOTTLE_GREEN, 90, 360, 45)
     GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
 
     GL.glLoadIdentity()
-    GL.glTranslatef(cx, cy, 0)
+    GL.glTranslatef(center_x, center_y, 0)
     GL.glRotatef(angle, 0, 0, 1)
 
     # Set color
