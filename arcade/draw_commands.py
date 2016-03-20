@@ -48,8 +48,8 @@ def draw_arc_filled(center_x, center_y,
     Draw a filled in arc. Useful for drawing pie-wedges, or Pac-Man.
 
     Args:
-        :cx (float): x position that is the center of the arc.
-        :cy (float): y position that is the center of the arc.
+        :center_x (float): x position that is the center of the arc.
+        :center_y (float): y position that is the center of the arc.
         :width (float): width of the arc.
         :height (float): height of the arc.
         :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
@@ -87,7 +87,11 @@ arcade.color.BOTTLE_GREEN, 90, 360, 45)
 
     GL.glLoadIdentity()
     GL.glTranslatef(center_x, center_y, 0)
+<<<<<<< HEAD
     GL.glRotatef(tilt_angle, 0, 0, 1)
+=======
+    GL.glRotatef(angle, 0, 0, 1)
+>>>>>>> Michael
 
     # Set color
     if len(color) == 4:
@@ -845,7 +849,159 @@ def draw_line(x1, y1, x2, y2, color, line_width=1):
     GL.glVertex3f(x2, y2, 0.5)
     GL.glEnd()
 
+def draw_thin_line(start_x, start_y, end_x, end_y, color, line_width=.5):
+    """
+    Draw a thin line.
 
+    Args:
+        :start_x (float): x position of line starting point.
+        :start_y (float): y position of line starting point.
+        :end_x (float): x position of line ending point.
+        :end_y (float): y position of line ending point.
+        :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
+         RGBA format.
+        :line_width (float): Width of the line in pixels.
+    Returns:
+        None
+    Raises:
+        None
+
+    Example:
+
+    >>> import arcade
+    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.set_background_color(arcade.color.WHITE)
+    >>> arcade.start_render()
+    >>> arcade.draw_line(270, 495, 300, 450, arcade.color.WOOD_BROWN, 3)
+    >>> color = (127, 0, 127, 127)
+    >>> arcade.draw_line(280, 495, 320, 450, color, 3)
+    >>> arcade.finish_render()
+    >>> arcade.quick_run(0.25)
+    """
+    GL.glEnable(GL.GL_BLEND)
+    GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
+    GL.glEnable(GL.GL_LINE_SMOOTH)
+    GL.glHint(GL.GL_LINE_SMOOTH_HINT, GL.GL_NICEST)
+    GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
+
+    GL.glLoadIdentity()
+
+    # Set line width
+    GL.glLineWidth(line_width)
+
+    # Set color
+    if len(color) == 4:
+        GL.glColor4ub(color[0], color[1], color[2], color[3])
+    elif len(color) == 3:
+        GL.glColor4ub(color[0], color[1], color[2], 255)
+
+    GL.glBegin(GL.GL_LINES)
+    GL.glVertex3f(start_x, start_y, 0.5)
+    GL.glVertex3f(end_x, end_y, 0.5)
+    GL.glEnd()
+    
+def draw_medium_line(start_x, start_y, end_x, end_y, color, line_width=1):
+    """
+    Draw a medium thickness line.
+
+    Args:
+        :start_x (float): x position of line starting point.
+        :start_y (float): y position of line starting point.
+        :end_x (float): x position of line ending point.
+        :end_y (float): y position of line ending point.
+        :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
+         RGBA format.
+        :line_width (float): Width of the line in pixels.
+    Returns:
+        None
+    Raises:
+        None
+
+    Example:
+
+    >>> import arcade
+    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.set_background_color(arcade.color.WHITE)
+    >>> arcade.start_render()
+    >>> arcade.draw_line(270, 495, 300, 450, arcade.color.WOOD_BROWN, 3)
+    >>> color = (127, 0, 127, 127)
+    >>> arcade.draw_line(280, 495, 320, 450, color, 3)
+    >>> arcade.finish_render()
+    >>> arcade.quick_run(0.25)
+    """
+    GL.glEnable(GL.GL_BLEND)
+    GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
+    GL.glEnable(GL.GL_LINE_SMOOTH)
+    GL.glHint(GL.GL_LINE_SMOOTH_HINT, GL.GL_NICEST)
+    GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
+
+    GL.glLoadIdentity()
+
+    # Set line width
+    GL.glLineWidth(line_width)
+
+    # Set color
+    if len(color) == 4:
+        GL.glColor4ub(color[0], color[1], color[2], color[3])
+    elif len(color) == 3:
+        GL.glColor4ub(color[0], color[1], color[2], 255)
+
+    GL.glBegin(GL.GL_LINES)
+    GL.glVertex3f(start_x, start_y, 0.5)
+    GL.glVertex3f(end_x, end_y, 0.5)
+    GL.glEnd()
+
+def draw_thick_line(start_x, start_y, end_x, end_y, color, line_width=2):
+    """
+    Draw a thick line.
+
+    Args:
+        :start_x (float): x position of line starting point.
+        :start_y (float): y position of line starting point.
+        :end_x (float): x position of line ending point.
+        :end_y (float): y position of line ending point.
+        :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
+         RGBA format.
+        :line_width (float): Width of the line in pixels.
+    Returns:
+        None
+    Raises:
+        None
+
+    Example:
+
+    >>> import arcade
+    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.set_background_color(arcade.color.WHITE)
+    >>> arcade.start_render()
+    >>> arcade.draw_line(270, 495, 300, 450, arcade.color.WOOD_BROWN, 3)
+    >>> color = (127, 0, 127, 127)
+    >>> arcade.draw_line(280, 495, 320, 450, color, 3)
+    >>> arcade.finish_render()
+    >>> arcade.quick_run(0.25)
+    """
+    GL.glEnable(GL.GL_BLEND)
+    GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
+    GL.glEnable(GL.GL_LINE_SMOOTH)
+    GL.glHint(GL.GL_LINE_SMOOTH_HINT, GL.GL_NICEST)
+    GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
+
+    GL.glLoadIdentity()
+
+    # Set line width
+    GL.glLineWidth(line_width)
+
+    # Set color
+    if len(color) == 4:
+        GL.glColor4ub(color[0], color[1], color[2], color[3])
+    elif len(color) == 3:
+        GL.glColor4ub(color[0], color[1], color[2], 255)
+
+    GL.glBegin(GL.GL_LINES)
+    GL.glVertex3f(start_x, start_y, 0.5)
+    GL.glVertex3f(end_x, end_y, 0.5)
+    GL.glEnd()
+    
 def draw_line_strip(point_list, color, line_width=1):
     """
     Draw a line strip. A line strip is a set of continuously connected
