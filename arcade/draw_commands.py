@@ -87,11 +87,8 @@ arcade.color.BOTTLE_GREEN, 90, 360, 45)
 
     GL.glLoadIdentity()
     GL.glTranslatef(center_x, center_y, 0)
-<<<<<<< HEAD
     GL.glRotatef(tilt_angle, 0, 0, 1)
-=======
     GL.glRotatef(angle, 0, 0, 1)
->>>>>>> Michael
 
     # Set color
     if len(color) == 4:
@@ -117,26 +114,13 @@ arcade.color.BOTTLE_GREEN, 90, 360, 45)
     GL.glLoadIdentity()
 
 
-<<<<<<< HEAD
-
-
-
-
-#---------- This is my comment that shouldn't appear on anyone else's file ----------
-def draw_arc_outline(cx, cy,
-=======
-def draw_arc_outline(center_x, center_y,
->>>>>>> Patrick
-                     width, height,
-                     color,
-                     start_angle, end_angle,
-                     line_width=1, tilt_angle=0):
+def draw_arc_outline(center_x, center_y, width, height, color, start_angle, end_angle, line_width=1, tilt_angle=0):
     """
     Draw the outside edge of an arc. Useful for drawing curved lines.
 
     Args:
-        :cx (float): x position that is the center of the arc.
-        :cy (float): y position that is the center of the arc.
+        :center_x (float): x position that is the center of the arc.
+        :center_y (float): y position that is the center of the arc.
         :width (float): width of the arc.
         :height (float): height of the arc.
         :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
@@ -201,10 +185,6 @@ transparent_color, 90, 360)
     GL.glEnd()
     GL.glLoadIdentity()
 
-
-<<<<<<< HEAD
-def draw_circle_filled(center_x, center_y, radius, color, num_segments=128):
-=======
 def draw_fancy_math_arc_outline(start_x, start_y, end_x, end_y, height, color, line_width=5, tilt_angle=0):
     temp_x = end_x - start_x
     temp_x = temp_x**2
@@ -342,8 +322,8 @@ def draw_parabola_outline(start_x, start_y, end_x, height, color, line_width=5, 
     arcade.draw_arc_outline(center_x, center_y, width, height, color, start_angle, end_angle, line_width, tilt_angle)
 
 
-def draw_circle_filled(cx, cy, radius, color, num_segments=128):
->>>>>>> Patrick
+
+def draw_circle_filled(center_x, center_y, radius, color, num_segments=128):
     """
     Draw a filled-in circle.
 
@@ -372,12 +352,7 @@ def draw_circle_filled(cx, cy, radius, color, num_segments=128):
     """
     width = radius
     height = radius
-    draw_ellipse_filled(center_x, center_y, width, height, color, num_segments)
-    
-    
-    
-    
-    
+    draw_ellipse_filled(center_x, center_y, width, height, color, num_segments) 
     
     
 def draw_small_filled_circle(center_x, center_y, color):
@@ -440,15 +415,9 @@ def draw_standard_circle(size, adjustment = 0, filled, color, center_x, center_y
          
     elif filled == "outline" or filled == "hollow":
         draw_circle_outline(center_x, center_y, radius, color)
-    
 
 
-
-
-
-
-
-def draw_circle_outline(cx, cy, radius, color, line_width=1, num_segments=128):
+def draw_circle_outline(center_x, center_y, radius, color, line_width=1, num_segments=128):
     """
     Draw the outline of a circle.
 
@@ -478,20 +447,17 @@ def draw_circle_outline(cx, cy, radius, color, line_width=1, num_segments=128):
     """
     width = radius
     height = radius
-    draw_ellipse_outline(cx, cy, width, height,
+    draw_ellipse_outline(center_x, center_y, width, height,
                          color, line_width, num_segments)
 
 
-def draw_ellipse_filled(center_x, center_y,
-                        width, height,
-                        color,
-                        angle=0):
+def draw_ellipse_filled(center_x, center_y, width, height, color, angle=0):
     """
     Draw a filled in ellipse.
 
     Args:
-        :cx (float): x position that is the center of the circle.
-        :cy (float): y position that is the center of the circle.
+        :center_x (float): x position that is the center of the circle.
+        :center_y (float): y position that is the center of the circle.
         :height (float): height of the ellipse.
         :width (float): width of the ellipse.
         :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
@@ -551,15 +517,13 @@ def draw_ellipse_filled(center_x, center_y,
     GL.glLoadIdentity()
 
 
-def draw_ellipse_outline(center_x, center_y,
-                         width, height,
-                         color, line_width=1, angle=0):
+def draw_ellipse_outline(center_x, center_y, width, height, color, line_width=1, angle=0):
     """
     Draw the outline of an ellipse.
 
     Args:
-        :cx (float): x position that is the center of the circle.
-        :cy (float): y position that is the center of the circle.
+        :center_x (float): x position that is the center of the circle.
+        :center_y (float): y position that is the center of the circle.
         :height (float): height of the ellipse.
         :width (float): width of the ellipse.
         :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
@@ -797,16 +761,16 @@ def draw_tiny_oval(center_x, center_y, color, fill = True, angle=0):
 ##### END OVAL FUNCTIONS #####
 
 
-def draw_line(x1, y1, x2, y2, color, line_width=1):
+def draw_line(start_x, start_y, end_x, end_y, color, line_width=1):
     """
     Draw a line.
 
 
     Args:
-        :x1 (float): x position of line starting point.
-        :y1 (float): y position of line starting point.
-        :x2 (float): x position of line ending point.
-        :y2 (float): y position of line ending point.
+        :start_x (float): x position of line starting point.
+        :start_y (float): y position of line starting point.
+        :end_x (float): x position of line ending point.
+        :end_y (float): y position of line ending point.
         :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
         :line_width (float): Width of the line in pixels.
@@ -845,8 +809,8 @@ def draw_line(x1, y1, x2, y2, color, line_width=1):
         GL.glColor4ub(color[0], color[1], color[2], 255)
 
     GL.glBegin(GL.GL_LINES)
-    GL.glVertex3f(x1, y1, 0.5)
-    GL.glVertex3f(x2, y2, 0.5)
+    GL.glVertex3f(start_x, start_y, 0.5)
+    GL.glVertex3f(end_x, end_y, 0.5)
     GL.glEnd()
 
 def draw_thin_line(start_x, start_y, end_x, end_y, color, line_width=.5):
