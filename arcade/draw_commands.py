@@ -478,10 +478,10 @@ def draw_circle_outline(cx, cy, radius, color, line_width=1, num_segments=128):
                          color, line_width, num_segments)
 
 
-def draw_ellipse_filled(cx, cy,
+def draw_ellipse_filled(center_x, center_y,
                         width, height,
                         color,
-                        angle=0, num_segments=128):
+                        angle=0):
     """
     Draw a filled in ellipse.
 
@@ -513,6 +513,8 @@ def draw_ellipse_filled(cx, cy,
     >>> arcade.quick_run(0.25)
     """
 
+    num_segments=128
+
     GL.glEnable(GL.GL_BLEND)
     GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
     GL.glEnable(GL.GL_LINE_SMOOTH)
@@ -520,7 +522,7 @@ def draw_ellipse_filled(cx, cy,
     GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
 
     GL.glLoadIdentity()
-    GL.glTranslatef(cx, cy, 0)
+    GL.glTranslatef(center_x, center_y, 0)
     GL.glRotatef(angle, 0, 0, 1)
 
     # Set color
@@ -545,9 +547,9 @@ def draw_ellipse_filled(cx, cy,
     GL.glLoadIdentity()
 
 
-def draw_ellipse_outline(cx, cy,
+def draw_ellipse_outline(center_x, center_y,
                          width, height,
-                         color, line_width=1, angle=0, num_segments=128):
+                         color, line_width=1, angle=0):
     """
     Draw the outline of an ellipse.
 
@@ -580,6 +582,8 @@ def draw_ellipse_outline(cx, cy,
     >>> arcade.quick_run(0.25)
     """
 
+    num_segments=128
+
     GL.glEnable(GL.GL_BLEND)
     GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
     GL.glEnable(GL.GL_LINE_SMOOTH)
@@ -587,7 +591,7 @@ def draw_ellipse_outline(cx, cy,
     GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
 
     GL.glLoadIdentity()
-    GL.glTranslatef(cx, cy, 0)
+    GL.glTranslatef(center_x, center_y, 0)
     GL.glRotatef(angle, 0, 0, 1)
     GL.glLineWidth(line_width)
 
@@ -608,6 +612,185 @@ def draw_ellipse_outline(cx, cy,
 
     GL.glEnd()
     GL.glLoadIdentity()
+
+##### BEGIN OVAL FUNCTIONS #####
+
+# draw any oval with 1 function with max parameters
+def draw_oval(center_x, center_y, width, height, color, border_width=0, angle=0):
+    if border_width <= 0:
+        draw_oval_filled_custom(center_x, center_y, width, height, color, angle)
+    else:
+        draw_oval_outline_custom(center_x, center_y, width, height, color, border_width, angle)
+        
+
+# draw a custom oval that is filled
+def draw_oval_filled_custom(center_x, center_y, width, height, color, angle=0):
+    
+    draw_ellipse_filled(center_x, center_y, width, height, color, angle)
+
+# draw a custom oval outline
+def draw_oval_outline_custom(center_x, center_y, width, height, color, border_width=5, angle=0):
+
+    if border_width <= 0:
+        draw_ellipse_filled(center_x, center_y, width, height, color, angle)
+    else:
+        draw_ellipse_outline(center_x, center_y, width, height, color, border_width, angle)
+
+# draw a semi custom filled oval using word descriptions for width and height
+def draw_described_oval_filled(center_x, center_y, width, height, color, angle=0):
+    if width.lower() == "very fat" or width.lower() == "vf" or width.lower() == "huge" or width.lower() == "h":
+        width = 200
+    elif width.lower() == "fat" or width.lower() == "f" or width.lower() == "big" or width.lower() == "b" or height.lower() == "large" or height.lower() == "l" or height.lower() == "max":
+        width = 100
+    elif width.lower() == "medium" or width.lower() == "m" or width.lower() == "average" or width.lower() == "a" or height.lower() == "mid":
+        width = 50
+    elif width.lower() == "skinny" or width.lower() == "s" or width.lower() == "small" or height.lower() == "min":
+        width = 25
+    elif width.lower() == "very skinny" or width.lower() == "vs" or width.lower() == "tiny" or width.lower() == "t":
+        width = 12.5
+    else:
+        width = -1
+
+    if height.lower() == "very tall" or height.lower() == "vt" or height.lower() == "huge" or height.lower() == "h":
+        height = 200
+    elif height.lower() == "tall" or height.lower() == "t" or height.lower() == "big" or height.lower() == "b" or height.lower() == "large" or height.lower() == "l" or height.lower() == "max":
+        height = 100
+    elif height.lower() == "medium" or height.lower() == "m" or height.lower() == "average" or height.lower() == "a" or height.lower() == "mid":
+        height = 50
+    elif height.lower() == "short" or height.lower() == "s" or height.lower() == "small" or height.lower() == "min":
+        height = 25
+    elif height.lower() == "very short" or height.lower() == "vs" or height.lower() == "tiny" or height.lower() == "t":
+        height = 12.5
+    else:
+        height = -1
+
+    if width != -1 and height != -1:
+        draw_oval_filled_custom(center_x, center_y, width, height, color, angle)
+        
+
+# draw a semi custom outlined oval using word descriptions for width and height
+def draw_described_oval_outline(center_x, center_y, width, height, color, border_width = 5, angle=0):
+    if width.lower() == "very fat" or width.lower() == "vf" or width.lower() == "huge" or width.lower() == "h":
+        width = 200
+    elif width.lower() == "fat" or width.lower() == "f" or width.lower() == "big" or width.lower() == "b" or height.lower() == "large" or height.lower() == "l" or height.lower() == "max":
+        width = 100
+    elif width.lower() == "medium" or width.lower() == "m" or width.lower() == "average" or width.lower() == "a" or height.lower() == "mid":
+        width = 50
+    elif width.lower() == "skinny" or width.lower() == "s" or width.lower() == "small" or height.lower() == "min":
+        width = 25
+    elif width.lower() == "very skinny" or width.lower() == "vs" or width.lower() == "tiny" or width.lower() == "t":
+        width = 12.5
+    else:
+        width = -1
+        
+    if height.lower() == "very tall" or height.lower() == "vt" or height.lower() == "huge" or height.lower() == "h":
+        height = 200
+    elif height.lower() == "tall" or height.lower() == "t" or height.lower() == "big" or height.lower() == "b" or height.lower() == "large" or height.lower() == "l" or height.lower() == "max":
+        height = 100
+    elif height.lower() == "medium" or height.lower() == "m" or height.lower() == "average" or height.lower() == "a" or height.lower() == "mid":
+        height = 50
+    elif height.lower() == "short" or height.lower() == "s" or height.lower() == "small" or height.lower() == "min":
+        height = 25
+    elif height.lower() == "very short" or height.lower() == "vs" or height.lower() == "tiny" or height.lower() == "t":
+        height = 12.5
+    else:
+        height = -1
+
+    if width != -1 and height != -1:
+        draw_oval_outline_custom(center_x, center_y, width, height, color, border_width, angle)
+    
+
+# draw a generic oval that is filled
+def draw_oval_filled(center_x, center_y, size, color, angle=0):
+    if size.lower() == "huge" or size.lower() == "h":
+        draw_oval_filled_custom(center_x, center_y, 300, 150, color, angle=0)
+    elif size.lower() == "large" or size.lower() == "l" or size.lower() == "big" or size.lower() == "b" or size.lower() == "max":
+        draw_oval_filled_custom(center_x, center_y, 200, 100, color, angle=0)
+    elif size.lower() == "medium" or size.lower() == "m" or size.lower() == "mid":
+        draw_oval_filled_custom(center_x, center_y, 100, 50, color, angle=0)
+    elif size.lower() == "small" or size.lower() == "s" or size.lower() == "min":
+        draw_oval_filled_custom(center_x, center_y, 50, 25, color, angle=0)
+    elif size.lower() == "tiny" or size.lower() == "t":
+        draw_oval_filled_custom(center_x, center_y, 25, 12.5, color, angle=0)
+
+# drsw a generic oval outline
+def draw_oval_outline(center_x, center_y, size, color, angle=0):
+    if size.lower() == "huge" or size.lower() == "h":
+        draw_oval_outline_custom(center_x, center_y, 300, 150, color, 5, angle=0)
+    elif size.lower() == "large" or size.lower() == "l" or size.lower() == "big" or size.lower() == "b" or size.lower() == "max":
+        draw_oval_outline_custom(center_x, center_y, 200, 100, color, 5, angle=0)
+    elif size.lower() == "medium" or size.lower() == "m" or size.lower() == "mid":
+        draw_oval_outline_custom(center_x, center_y, 100, 50, color, 5, angle=0)
+    elif size.lower() == "small" or size.lower() == "s" or size.lower() == "min":
+        draw_oval_outline_custom(center_x, center_y, 50, 25, color, 5, angle=0)
+    elif size.lower() == "tiny" or size.lower() == "t":
+        draw_oval_outline_custom(center_x, center_y, 25, 12.5, color, 5, angle=0)
+
+# set of functions that draw generic ovals that are filled
+def draw_huge_oval_filled(center_x, center_y, color, angle=0):
+    draw_oval_filled_custom(center_x, center_y, 300, 150, color, angle)
+
+def draw_large_oval_filled(center_x, center_y, color, angle=0):
+    draw_oval_filled_custom(center_x, center_y, 200, 100, color, angle)
+
+def draw_medium_oval_filled(center_x, center_y, color, angle=0):
+    draw_oval_filled_custom(center_x, center_y, 100, 50, color, angle)
+
+def draw_small_oval_filled(center_x, center_y, color, angle=0):
+    draw_oval_filled_custom(center_x, center_y, 50, 25, color, angle)
+
+def draw_tiny_oval_filled(center_x, center_y, color, angle=0):
+    draw_oval_filled_custom(center_x, center_y, 25, 12.5, color, angle)
+
+# set of functions that draw generic oval outlines
+def draw_huge_oval_outline(center_x, center_y, color, angle=0):
+    draw_oval_outline_custom(center_x, center_y, 300, 150, color, 5, angle)
+
+def draw_large_oval_outline(center_x, center_y, color, angle=0):
+    draw_oval_outline_custom(center_x, center_y, 200, 100, color, 5, angle)
+
+def draw_medium_oval_outline(center_x, center_y, color, angle=0):
+    draw_oval_outline_custom(center_x, center_y, 100, 50, color, 5, angle)
+
+def draw_small_oval_outline(center_x, center_y, color, angle=0):
+    draw_oval_outline_custom(center_x, center_y, 50, 25, color, 5, angle)
+
+def draw_tiny_oval_outline(center_x, center_y, color, angle=0):
+    draw_oval_outline_custom(center_x, center_y, 25, 12.5, color, 5, angle)
+
+# set of functions for drawing ovals of varying sizes with specified fill or outline
+def draw_huge_oval(center_x, center_y, color, fill = True, angle=0):
+    if fill == True:
+        draw_oval_filled_custom(center_x, center_y, 300, 150, color, angle)
+    else:
+        draw_oval_outline_custom(center_x, center_y, 300, 150, color, 5, angle)
+
+def draw_large_oval(center_x, center_y, color, fill = True, angle=0):
+    if fill == True:
+        draw_oval_filled_custom(center_x, center_y, 200, 100, color, angle)
+    else:
+        draw_oval_outline_custom(center_x, center_y, 200, 100, color, 5, angle)
+
+def draw_medium_oval(center_x, center_y, color, fill = True, angle=0):
+    if fill == True:
+        draw_oval_filled_custom(center_x, center_y, 100, 50, color, angle)
+    else:
+        draw_oval_outline_custom(center_x, center_y, 100, 50, color, 5, angle)
+
+def draw_small_oval(center_x, center_y, color, fill = True, angle=0):
+    if fill == True:
+        draw_oval_filled_custom(center_x, center_y, 50, 25, color, angle)
+    else:
+        draw_oval_outline_custom(center_x, center_y, 50, 25, color, 5, angle)
+
+def draw_tiny_oval(center_x, center_y, color, fill = True, angle=0):
+    if fill == True:
+        draw_oval_filled_custom(center_x, center_y, 25, 12.5, color, angle)
+    else:
+        draw_oval_outline_custom(center_x, center_y, 25, 12.5, color, 5, angle)
+
+    
+##### END OVAL FUNCTIONS #####
 
 
 def draw_line(x1, y1, x2, y2, color, line_width=1):
