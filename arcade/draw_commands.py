@@ -400,13 +400,13 @@ def draw_standard_circle(size, adjustment = 0, filled, color, center_x, center_y
     >>> arcade.quick_run(0.25)
     """
     #--size--
-    if size == "small" or size == "Small" or size == "s" or size == "S":
+    if size.lower() == "small" or size.lower() == "s":
         radius = 10 + adjustment
     
-    elif size == "medium" or size == "Medium" or size == "m" or size == "M":
+    elif size.lower() == "medium" or size.lower() == "m":
         radius = 25 + adjustment
         
-    elif size == "large" or size == "Large" or size == "l" or size == "L":
+    elif size.lower() == "large" or size.lower() == "l":
         radius = 40 + adjustment
      
      #--filled--
@@ -1273,7 +1273,7 @@ def draw_polygon_outline(point_list, color, line_width=1):
     GL.glEnd()
 
 
-def draw_rect_outline(x, y, width, height, color, line_width=1, angle=0):
+def draw_rectangle_outline(x, y, width, height, color, line_width=1, angle=0):
     """
     Draw a rectangle outline.
 
@@ -1325,7 +1325,7 @@ arcade.color.BRITISH_RACING_GREEN, 2)
     GL.glEnd()
 
 
-def draw_rect_filled(x, y, width, height, color, angle=0):
+def draw_rectangle_filled(x, y, width, height, color, angle=0):
     """
     Draw a filled-in rectangle.
 
@@ -1579,7 +1579,7 @@ def load_texture(file_name, x=0, y=0, width=0, height=0):
     return Texture(texture, image_width, image_height)
 
 
-def draw_texture_rect(x, y, width, height, texture,
+def draw_texture_rectangle(x, y, width, height, texture,
                       angle=0, alpha=1, transparent=True):
     """
     Draw a textured rectangle on-screen.
