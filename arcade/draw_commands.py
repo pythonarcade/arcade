@@ -374,7 +374,7 @@ def draw_large_filled_circle(center_x, center_y, color):
     draw_circle_filled(center_x, center_y, radius, color)
 
 
-def draw_standard_circle(size, adjustment = 0, filled, color, center_x, center_y):
+def draw_standard_circle(center_x, center_y, color, size, filled, adjustment = 0):
     #Draws a general circle with a limited number of specifications
     
     """This function is meant to encapsule all of the different kinds of circles that a person might want drawn. 
@@ -409,7 +409,7 @@ def draw_standard_circle(size, adjustment = 0, filled, color, center_x, center_y
     elif size.lower() == "large" or size.lower() == "l":
         radius = 40 + adjustment
      
-     #--filled--
+    #--filled--
     if filled == "filled" or filled == "solid":
         draw_circle_filled(center_x, center_y, radius, color)
          
