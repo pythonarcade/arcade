@@ -25,8 +25,7 @@ class Window(pyglet.window.Window):
         Move everything.
 
         Args:
-            :dt (float): Time interval since the last time the function
-            was called.
+            :dt (float): Time interval since the last time the function was called.
 
         """
         pass
@@ -48,4 +47,10 @@ class Window(pyglet.window.Window):
 
     def on_mouse_release(self, x, y, button, modifiers):
         """ Override this function to add mouse button functionality. """
+        pass
+
+    def on_key_press(self, symbol, modifiers):
+        pass
+
+    def on_key_release(self, symbol, modifiers):
         pass
