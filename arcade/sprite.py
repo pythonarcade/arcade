@@ -14,7 +14,7 @@ class SpriteList():
     >>> scale = 1
     >>> meteor_list = arcade.SpriteList()
     >>> for i in range(100):
-    ...     meteor = arcade.Sprite("examples/images/meteorGrey_big1.png", \
+    ...     meteor = arcade.Sprite("doc/source/examples/images/meteorGrey_big1.png", \
 scale)
     ...     meteor.center_x = random.random() * 2 - 1
     ...     meteor.center_y = random.random() * 2 - 1
@@ -83,7 +83,7 @@ class Sprite():
     >>> arcade.open_window("Sprite Example", 800, 600)
     >>> scale = 1
     >>> empty_sprite = arcade.Sprite()
-    >>> ship_sprite = arcade.Sprite("examples/images/playerShip1_orange.png", \
+    >>> ship_sprite = arcade.Sprite("doc/source/examples/images/playerShip1_orange.png", \
 scale)
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
@@ -190,7 +190,7 @@ scale)
         >>> arcade.open_window("Sprite Example", 800, 600)
         >>> scale = 1
         >>> ship_sprite = \
-arcade.Sprite("examples/images/playerShip1_orange.png", scale)
+arcade.Sprite("doc/source/examples/images/playerShip1_orange.png", scale)
         >>> ship_sprite.center_y = 0
         >>> print(ship_sprite.bottom)
         -37.5
@@ -219,7 +219,7 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
         >>> arcade.open_window("Sprite Example", 800, 600)
         >>> scale = 1
         >>> ship_sprite = \
-arcade.Sprite("examples/images/playerShip1_orange.png", scale)
+arcade.Sprite("doc/source/examples/images/playerShip1_orange.png", scale)
         >>> ship_sprite.center_y = 0
         >>> print(ship_sprite.top)
         37.5
@@ -250,7 +250,7 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
         >>> arcade.open_window("Sprite Example", 800, 600)
         >>> scale = 1
         >>> ship_sprite = \
-arcade.Sprite("examples/images/playerShip1_orange.png", scale)
+arcade.Sprite("doc/source/examples/images/playerShip1_orange.png", scale)
         >>> ship_sprite.center_x = 0
         >>> print(ship_sprite.left)
         -49.5
@@ -281,7 +281,7 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
         >>> arcade.open_window("Sprite Example", 800, 600)
         >>> scale = 1
         >>> ship_sprite = \
-arcade.Sprite("examples/images/playerShip1_orange.png", scale)
+arcade.Sprite("doc/source/examples/images/playerShip1_orange.png", scale)
         >>> ship_sprite.center_x = 0
         >>> print(ship_sprite.right)
         49.5
@@ -365,12 +365,12 @@ class PlatformerSpriteSheetSprite(Sprite):
     ... [390 + ltrim, 516 + top_trim, 128 - ltrim - rtrim, 256 - top_trim],
     ... [390 + ltrim, 258 + top_trim, 128 - ltrim - rtrim, 256 - top_trim]]
     >>> texture_info_list = arcade.load_textures(\
-"examples/images/spritesheet_complete.png", image_location_list)
+"doc/source/examples/images/spritesheet_complete.png", image_location_list)
     >>> for texture_info in texture_info_list:
     ...     texture = texture_info
     ...     player.append_texture(texture)
     >>> texture_info_list = arcade.load_textures(\
-"examples/images/spritesheet_complete.png", image_location_list, True)
+"doc/source/examples/images/spritesheet_complete.png", image_location_list, True)
     >>> for texture_info in texture_info_list:
     ...     texture = texture_info
     ...     player.append_texture(texture)

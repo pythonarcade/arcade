@@ -25,7 +25,7 @@ def trim_image(image):
     """
     Returns an image with extra whitespace cropped out.
 
-    >>> source_image = PIL.Image.open("examples/images/playerShip1_orange.png")
+    >>> source_image = PIL.Image.open("doc/source/examples/images/playerShip1_orange.png")
     >>> cropped_image = trim_image(source_image)
     >>> print(source_image.height, cropped_image.height)
     75 75
@@ -902,7 +902,7 @@ def load_textures(file_name, image_location_list,
     ... [390 + ltrim, 516 + top_trim, 128 - ltrim - rtrim, 256 - top_trim],
     ... [390 + ltrim, 258 + top_trim, 128 - ltrim - rtrim, 256 - top_trim]]
     >>> texture_info_list = arcade.load_textures( \
-"examples/images/spritesheet_complete.png", image_location_list)
+"doc/source/examples/images/spritesheet_complete.png", image_location_list)
     >>> arcade.close_window()
     """
     source_image = PIL.Image.open(file_name)
@@ -987,7 +987,7 @@ def load_texture(file_name, x=0, y=0, width=0, height=0):
 
     >>> import arcade
     >>> arcade.open_window("Drawing Example", 800, 600)
-    >>> texture = load_texture("examples/images/meteorGrey_big1.png", \
+    >>> texture = load_texture("doc/source/examples/images/meteorGrey_big1.png", \
 1, 1, 50, 50)
     >>> arcade.close_window()
     """
@@ -1078,7 +1078,7 @@ def draw_texture_rect(x, y, width, height, texture,
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
     >>> arcade.draw_text("draw_bitmap", 483, 3, arcade.color.BLACK, 12)
-    >>> texture = arcade.load_texture("examples/images/playerShip1_orange.png")
+    >>> texture = arcade.load_texture("doc/source/examples/images/playerShip1_orange.png")
     >>> scale = .6
     >>> arcade.draw_texture_rect(540, 120, scale * texture.width, \
 scale * texture.height, texture, 0)
