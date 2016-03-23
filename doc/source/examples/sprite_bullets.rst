@@ -1,7 +1,7 @@
 .. _example-sprite-bullets:
 
-Sprites: Shoot bullets at things
-================================
+Sprites: Shoot bullets upwards
+==============================
 
 .. image:: sprite_bullets.png
     :width: 600px

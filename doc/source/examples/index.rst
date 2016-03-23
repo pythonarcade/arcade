@@ -17,3 +17,4 @@ Example Code
    sprite_collect_coins_move_bouncing
    sprite_collect_coins_move_circle
    sprite_bullets
+   sprite_bullets_aimed

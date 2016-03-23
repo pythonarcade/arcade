@@ -7,6 +7,7 @@ Artwork from http://kenney.nl
 """
 import random
 import arcade
+import math
 
 SPRITE_SCALING = 0.5
 
@@ -19,7 +20,8 @@ window = None
 
 class Bullet(arcade.Sprite):
     def update(self):
-        self.center_y += BULLET_SPEED
+        self.center_x += self.change_x
+        self.center_y += self.change_y
 
 class MyApplication(arcade.Window):
     """ Main application class. """
@@ -52,9 +54,6 @@ class MyApplication(arcade.Window):
             self.all_sprites_list.append(coin)
             self.coin_list.append(coin)
 
-        # Don't show the mouse cursor
-        self.set_mouse_visible(False)
-
         # Set the background color
         arcade.set_background_color(arcade.color.AMAZON)
 
@@ -73,12 +72,6 @@ class MyApplication(arcade.Window):
         output = "Score: {}".format(self.score)
         arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
 
-    def on_mouse_motion(self, x, y, dx, dy):
-        """
-        Called whenever the mouse moves.
-        """
-        self.player_sprite.center_x = x
-
     def on_mouse_press(self, x, y, button, modifiers):
         """
         Called whenever the mouse moves.
@@ -86,13 +79,31 @@ class MyApplication(arcade.Window):
         # Create a bullet
         bullet = Bullet("images/laserBlue01.png", SPRITE_SCALING * 1.5)
 
-        # The image points to the right, and we want it to point up. So
-        # rotate it.
-        bullet.angle = 90
+        # Position the bullet at the player's current location
+        start_x = self.player_sprite.center_x
+        start_y = self.player_sprite.center_y
+        bullet.center_x = start_x
+        bullet.center_y = start_y
 
-        # Position the bullet
-        bullet.center_x = self.player_sprite.center_x
-        bullet.bottom = self.player_sprite.top
+        # Get from the mouse the destination location for the bullet
+        dest_x = x
+        dest_y = y
+
+        # Do math to calculate how to get the bullet to the destination.
+        # Calculation the angle in radians between the start points
+        # and end points. This is the angle the bullet will travel.
+        x_diff = dest_x - start_x
+        y_diff = dest_y - start_y
+        angle = math.atan2(y_diff, x_diff);
+        print("Bullet angle: {:.2f}".format(bullet.angle))
+
+        # Angle the bullet sprite so it doesn't look like it is flying sideways.
+        bullet.angle = math.degrees(angle)
+
+        # Taking into account the angle, calculate our change_x
+        # and change_y. Velocity is how fast the bullet travels.
+        bullet.change_x = math.cos(angle) * BULLET_SPEED
+        bullet.change_y = math.sin(angle) * BULLET_SPEED
 
         # Add the bullet to the appropriate lists
         self.all_sprites_list.append(bullet)
