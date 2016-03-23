@@ -21,11 +21,11 @@ script:
   - sphinx-build -b html doc/source doc/build/html
   - coverage run --source=arcade setup.py test
 
-deploy:
-  provider: pypi
-  user: $USERNAME
-  password: $PASSWORD
-  distributions: "bdist_wheel"
+# deploy:
+#   provider: pypi
+#   user: $USERNAME
+#   password: $PASSWORD
+#   distributions: "bdist_wheel"
 
 after_success:
   - coveralls
