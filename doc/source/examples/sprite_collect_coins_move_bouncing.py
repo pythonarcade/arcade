@@ -16,10 +16,13 @@ SCREEN_HEIGHT = 600
 window = None
 
 class Coin(arcade.Sprite):
+    """
+    This class represents the coins on our screen. It is a child class of
+    the arcade library's "Sprite" class.
+    """
 
     def __init__(self, filename, sprite_scaling):
-        """ Constructor. Pass in the color of the block,
-        and its x and y position. """
+        """ Constructor. """
         # Call the parent class (Sprite) constructor
         super().__init__(filename, sprite_scaling)
 

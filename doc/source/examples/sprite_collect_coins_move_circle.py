@@ -7,6 +7,7 @@ Artwork from http://kenney.nl
 """
 import random
 import arcade
+import math
 
 SPRITE_SCALING = 0.5
 
@@ -21,21 +22,34 @@ class Coin(arcade.Sprite):
     the arcade library's "Sprite" class.
     """
 
-    def reset_pos(self):
+    def __init__(self, filename, sprite_scaling):
+        """ Constructor. """
+        # Call the parent class (Sprite) constructor
+        super().__init__(filename, sprite_scaling)
 
-        # Reset the coin to a random spot above the screen
-        self.center_y = random.randrange(SCREEN_HEIGHT + 20, SCREEN_HEIGHT + 100)
-        self.center_x = random.randrange(SCREEN_WIDTH)
+        # Current angle in radians
+        self.angle = 0
+
+        # How far away from the center to orbit, in pixels
+        self.radius = 0
+
+        # How fast to orbit, in radians per frame
+        self.speed = 0.008
+
+        # Set the center of the point we will orbit around
+        self.circle_center_x = 0
+        self.circle_center_y = 0
+
 
     def update(self):
 
-        # Move the coin
-        self.center_y -= 1
+        """ Update the ball's position. """
+        # Calculate a new x, y
+        self.center_x = self.radius * math.sin(self.angle) + self.circle_center_x
+        self.center_y = self.radius * math.cos(self.angle) + self.circle_center_y
 
-        # See if the coin has fallen off the bottom of the screen.
-        # If so, reset it.
-        if self.top < 0:
-            self.reset_pos()
+        # Increase the angle in prep for the next round.
+        self.angle += self.speed
 
 class MyApplication(arcade.Window):
     """ Main application class. """
@@ -59,9 +73,15 @@ class MyApplication(arcade.Window):
             # Create the coin instance
             coin = Coin("images/coin_01.png", SPRITE_SCALING / 3)
 
-            # Position the coin
-            coin.center_x = random.randrange(SCREEN_WIDTH)
-            coin.center_y = random.randrange(SCREEN_HEIGHT)
+            # Position the center of the circle the coin will orbit
+            coin.circle_center_x = random.randrange(SCREEN_WIDTH)
+            coin.circle_center_y = random.randrange(SCREEN_HEIGHT)
+
+            # Random radius from 10 to 200
+            coin.radius = random.randrange(10, 200)
+
+            # Random start angle from 0 to 2pi
+            coin.angle = random.random() * 2 * math.pi
 
             # Add the coin to the lists
             self.all_sprites_list.append(coin)
@@ -109,7 +129,7 @@ class MyApplication(arcade.Window):
 
         # Loop through each colliding sprite, remove it, and add to the score.
         for coin in hit_list:
-            coin.reset_pos()
+            coin.kill()
             self.score += 1
 
 
