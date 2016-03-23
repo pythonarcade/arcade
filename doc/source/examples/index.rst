@@ -12,3 +12,6 @@ Example Code
    shapes
    move_mouse
    move_keyboard
+   sprite_collect_coins
+   sprite_collect_coins_move_down
+   sprite_collect_coins_move_bouncing

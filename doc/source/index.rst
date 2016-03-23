@@ -18,7 +18,7 @@ Documentation
 .. toctree::
    :maxdepth: 4
 
-   examples
+   examples/index
    installation
    arcade
    quick_index

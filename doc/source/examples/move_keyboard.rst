@@ -1,4 +1,4 @@
-.. _example-drawing-primitives:
+.. _example-move-keyboard:
 
 User control: Keyboard
 ======================

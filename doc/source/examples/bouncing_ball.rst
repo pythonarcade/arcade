@@ -1,4 +1,4 @@
-.. _example-bouncing-rectangle:
+.. _example-bouncing-ball:
 
 Animation: Bouncing ball
 ========================
