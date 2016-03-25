@@ -15,6 +15,7 @@ SCREEN_HEIGHT = 600
 
 window = None
 
+
 class Coin(arcade.Sprite):
     """
     This class represents the coins on our screen. It is a child class of
@@ -67,7 +68,8 @@ class MyApplication(arcade.Window):
 
         # Set up the player
         self.score = 0
-        self.player_sprite = arcade.Sprite("images/character.png", SPRITE_SCALING)
+        self.player_sprite = arcade.Sprite("images/character.png",
+                                           SPRITE_SCALING)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 70
         self.all_sprites_list.append(self.player_sprite)
@@ -78,19 +80,20 @@ class MyApplication(arcade.Window):
             coin = Coin("images/coin_01.png", SPRITE_SCALING / 3)
 
             # Specify the boundaries for where a coin can be.
-            # Take into account
-            # that we are specifying a center x and y for the coin, and the coin
-            # has a size. So we can't have 0, 0 as the position because 3/4 of
-            # the coin would be off-screen. We have to start at half the width
-            # of the coin.
+            # Take into account that we are specifying a center x and y for the
+            # coin, and the coin has a size. So we can't have 0, 0 as the
+            # position because 3/4 of the coin would be off-screen. We have to
+            # start at half the width of the coin.
             coin.left_boundary = coin.width // 2
             coin.right_boundary = SCREEN_WIDTH - coin.width // 2
             coin.bottom_boundary = coin.height // 2
             coin.top_boundary = SCREEN_HEIGHT - coin.height // 2
 
             # Create a random starting point for the coin.
-            coin.center_x = random.randint(coin.left_boundary, coin.right_boundary)
-            coin.center_y = random.randint(coin.bottom_boundary, coin.top_boundary)
+            coin.center_x = random.randint(coin.left_boundary,
+                                           coin.right_boundary)
+            coin.center_y = random.randint(coin.bottom_boundary,
+                                           coin.top_boundary)
 
             # Create a random speed and direction.
             # Note it is possible to get 0, 0 and have a coin not move at all.

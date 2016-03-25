@@ -18,10 +18,12 @@ BULLET_SPEED = 5
 
 window = None
 
+
 class Bullet(arcade.Sprite):
     def update(self):
         self.center_x += self.change_x
         self.center_y += self.change_y
+
 
 class MyApplication(arcade.Window):
     """ Main application class. """
@@ -36,7 +38,8 @@ class MyApplication(arcade.Window):
 
         # Set up the player
         self.score = 0
-        self.player_sprite = arcade.Sprite("images/character.png", SPRITE_SCALING)
+        self.player_sprite = arcade.Sprite("images/character.png",
+                                           SPRITE_SCALING)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 70
         self.all_sprites_list.append(self.player_sprite)
@@ -94,10 +97,11 @@ class MyApplication(arcade.Window):
         # and end points. This is the angle the bullet will travel.
         x_diff = dest_x - start_x
         y_diff = dest_y - start_y
-        angle = math.atan2(y_diff, x_diff);
+        angle = math.atan2(y_diff, x_diff)
         print("Bullet angle: {:.2f}".format(bullet.angle))
 
-        # Angle the bullet sprite so it doesn't look like it is flying sideways.
+        # Angle the bullet sprite so it doesn't look like it is flying
+        # sideways.
         bullet.angle = math.degrees(angle)
 
         # Taking into account the angle, calculate our change_x
@@ -120,7 +124,8 @@ class MyApplication(arcade.Window):
         for bullet in self.bullet_list:
 
             # Check this bullet to see if it hit a coin
-            hit_list = arcade.check_for_collision_with_list(bullet, self.coin_list)
+            hit_list = arcade.check_for_collision_with_list(bullet,
+                                                            self.coin_list)
 
             # If it did, get rid of the bullet
             if len(hit_list) > 0:

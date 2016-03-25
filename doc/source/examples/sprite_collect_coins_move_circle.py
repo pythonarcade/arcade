@@ -16,6 +16,7 @@ SCREEN_HEIGHT = 600
 
 window = None
 
+
 class Coin(arcade.Sprite):
     """
     This class represents the coins on our screen. It is a child class of
@@ -40,16 +41,18 @@ class Coin(arcade.Sprite):
         self.circle_center_x = 0
         self.circle_center_y = 0
 
-
     def update(self):
 
         """ Update the ball's position. """
         # Calculate a new x, y
-        self.center_x = self.radius * math.sin(self.angle) + self.circle_center_x
-        self.center_y = self.radius * math.cos(self.angle) + self.circle_center_y
+        self.center_x = self.radius * math.sin(self.angle) \
+            + self.circle_center_x
+        self.center_y = self.radius * math.cos(self.angle) \
+            + self.circle_center_y
 
         # Increase the angle in prep for the next round.
         self.angle += self.speed
+
 
 class MyApplication(arcade.Window):
     """ Main application class. """
@@ -63,7 +66,8 @@ class MyApplication(arcade.Window):
 
         # Set up the player
         self.score = 0
-        self.player_sprite = arcade.Sprite("images/character.png", SPRITE_SCALING)
+        self.player_sprite = arcade.Sprite("images/character.png",
+                                           SPRITE_SCALING)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 70
         self.all_sprites_list.append(self.player_sprite)

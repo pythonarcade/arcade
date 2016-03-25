@@ -10,6 +10,7 @@ Example Code
    bouncing_ball
    drawing_with_loops
    shapes
+   starting_template
    move_mouse
    move_keyboard
    sprite_collect_coins
@@ -18,3 +19,6 @@ Example Code
    sprite_collect_coins_move_circle
    sprite_bullets
    sprite_bullets_aimed
+   sprite_move_walls
+   sprite_move_scrolling
+   asteroid_smasher
