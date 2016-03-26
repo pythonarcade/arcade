@@ -2,10 +2,12 @@ import math
 
 # http://gamedevelopment.tutsplus.com/tutorials/how-to-create-a-custom-2d-physics-engine-the-basics-and-impulse-resolution--gamedev-6331
 
+
 class Vector:
     def __init__(self, x, y):
         self.x = x
         self.y = y
+
 
 class Circle:
     def __init__(self, position, radius):
@@ -24,12 +26,14 @@ class Circle:
 
     y = property(_get_y)
 
+
 class AABB:
     def __init__(self, min, max):
         self.min = min
         self.max = max
 
-def AABBvsAABB( a, b ):
+
+def AABBvsAABB(a, b):
     # Exit with no intersection if found separated along an axis
     if(a.max.x < b.min.x or a.min.x > b.max.x):
         return False
@@ -55,11 +59,10 @@ def distance(a, b):
     return math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2)
 
 
-
 def circle_vs_circle_unoptimized(a, b):
-  r = a.radius + b.radius
-  print(r, distance(a.position, b.position))
-  return r < distance(a.position, b.position)
+    r = a.radius + b.radius
+    print(r, distance(a.position, b.position))
+    return r < distance(a.position, b.position)
 
 
 def circle_vs_circle_optimized(a, b):

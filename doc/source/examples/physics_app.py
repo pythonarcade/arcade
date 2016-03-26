@@ -2,6 +2,7 @@ import numpy
 import arcade
 import timeit
 
+
 def setup_a(object_list):
     # a = arcade.Circle([600, 300], [0, -0.]), .5, 3, 15, arcade.color.RED)
     # object_list.append(a)
@@ -46,6 +47,7 @@ def setup_b(object_list):
             a = arcade.AABB([x, y, 15, 15], [0, 0], .5, 1, arcade.color.MELLOW_APRICOT)
             object_list.append(a)
 
+
 class MyApplication(arcade.Window):
     """ Main application class. """
 
@@ -63,8 +65,6 @@ class MyApplication(arcade.Window):
         arcade.start_render()
         for a in self.object_list:
             a.draw()
-
-
 
     def animate(self, x):
         """ Move everything """
@@ -94,8 +94,8 @@ class MyApplication(arcade.Window):
 
                 if collided:
                     really_collided = arcade.resolve_collision(m)
-                    #if really_collided:
-                        #arcade.play_sound(self.hit_sound)
+                    # if really_collided:
+                        # arcade.play_sound(self.hit_sound)
 
         elapsed = timeit.default_timer() - start_time
         # print("Time: {}".format(elapsed))
