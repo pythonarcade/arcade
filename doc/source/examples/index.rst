@@ -21,4 +21,5 @@ Example Code
    sprite_bullets_aimed
    sprite_move_walls
    sprite_move_scrolling
+   instruction_and_game_over_screens
    asteroid_smasher
