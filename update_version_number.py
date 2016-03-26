@@ -16,6 +16,7 @@ f.write(version_info_string)
 
 f.close()
 
+
 def update_file(filename):
     f = open(filename, 'r')
 

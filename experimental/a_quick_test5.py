@@ -16,10 +16,12 @@ SCREEN_HEIGHT = 500
 RECT_WIDTH = 50
 RECT_HEIGHT = 50
 
+
 class Shape():
     def __init__(self):
         self.x = 0
         self.y = 0
+
 
 class VertexBuffer():
     """ Class to hold vertex buffer info. """
@@ -31,9 +33,10 @@ class VertexBuffer():
 def add_rect(rect_list, x, y, width, height, color):
     """ Create a vertex buffer for a rectangle. """
     rect_list.extend([-width / 2, -height / 2,
-            width / 2, -height / 2,
-            width / 2, height / 2,
-            -width / 2, height / 2])
+                     width / 2, -height / 2,
+                     width / 2, height / 2,
+                     -width / 2, height / 2])
+
 
 def create_vbo_for_rects(v2f):
     vbo_id = GL.GLuint()
@@ -43,7 +46,8 @@ def create_vbo_for_rects(v2f):
     data2 = (GL.GLfloat*len(v2f))(*v2f)
 
     GL.glBindBuffer(GL.GL_ARRAY_BUFFER, vbo_id)
-    GL.glBufferData(GL.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2, GL.GL_STATIC_DRAW)
+    GL.glBufferData(GL.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2,
+                    GL.GL_STATIC_DRAW)
 
     shape = VertexBuffer(vbo_id, len(v2f)//2)
     return shape
@@ -130,9 +134,7 @@ class MyApplication():
             shape = self.shape_list[i]
             GL.glLoadIdentity()
             GL.glTranslatef(shape.x, shape.y, 0)
-            GL.glDrawArrays(GL.GL_QUADS,
-                      i * 8 ,
-                      8)
+            GL.glDrawArrays(GL.GL_QUADS, i * 8, 8)
         # GL.glDrawArrays(GL.GL_QUADS,
         #           0,
         #           self.rect_vbo.size)

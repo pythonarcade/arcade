@@ -13,9 +13,9 @@ class SpriteList():
     >>> arcade.open_window("Sprite Example", 600, 600)
     >>> scale = 1
     >>> meteor_list = arcade.SpriteList()
+    >>> filename = "doc/source/examples/images/meteorGrey_big1.png"
     >>> for i in range(100):
-    ...     meteor = arcade.Sprite("doc/source/examples/images/meteorGrey_big1.png", \
-scale)
+    ...     meteor = arcade.Sprite(filename, scale)
     ...     meteor.center_x = random.random() * 2 - 1
     ...     meteor.center_y = random.random() * 2 - 1
     ...     meteor_list.append(meteor)
@@ -83,8 +83,8 @@ class Sprite():
     >>> arcade.open_window("Sprite Example", 800, 600)
     >>> scale = 1
     >>> empty_sprite = arcade.Sprite()
-    >>> ship_sprite = arcade.Sprite("doc/source/examples/images/playerShip1_orange.png", \
-scale)
+    >>> filename = "doc/source/examples/images/playerShip1_orange.png"
+    >>> ship_sprite = arcade.Sprite(filename, scale)
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
     >>> ship_sprite.draw()
@@ -363,13 +363,13 @@ class PlatformerSpriteSheetSprite(Sprite):
     ... [390 + ltrim, 1290 + top_trim, 128 - ltrim - rtrim, 256 - top_trim],
     ... [390 + ltrim, 516 + top_trim, 128 - ltrim - rtrim, 256 - top_trim],
     ... [390 + ltrim, 258 + top_trim, 128 - ltrim - rtrim, 256 - top_trim]]
-    >>> texture_info_list = arcade.load_textures(\
-"doc/source/examples/images/spritesheet_complete.png", image_location_list)
+    >>> filename = "doc/source/examples/images/spritesheet_complete.png"
+    >>> texture_info_list = arcade.load_textures(filename, image_location_list)
     >>> for texture_info in texture_info_list:
     ...     texture = texture_info
     ...     player.append_texture(texture)
     >>> texture_info_list = arcade.load_textures(\
-"doc/source/examples/images/spritesheet_complete.png", image_location_list, True)
+filename, image_location_list, True)
     >>> for texture_info in texture_info_list:
     ...     texture = texture_info
     ...     player.append_texture(texture)

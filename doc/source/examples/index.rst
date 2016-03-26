@@ -25,28 +25,5 @@ Example Code
    sprite_move_scrolling
    instruction_and_game_over_screens
    asteroid_smasher
+   examples_to_do
 
-Examples to do:
----------------
-
-- Text rotate
-- Animating snow
-- Move game controller
-- Joystick calls
-- Make sounds
-- Background music
-- Array backed grid
-- Recursive examples
-- Rotating sprites
-- Sprite animations
-- Sprite explosions
-- Destroy all sprites with a property
-- See if there are any sprites with a property
-- See if all items have a property
-- Move sprite with game controller
-- Pong
-- Centipede
-- Move between rooms
-- Platformer
-- Moving platforms
-- Physics engine

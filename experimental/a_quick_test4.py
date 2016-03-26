@@ -4,12 +4,14 @@ import pyglet
 from pyglet.gl import *
 from ctypes import pointer, sizeof
 
+
 class VertexBuffer():
     def __init__(self, vbo_id, size, width, height,):
         self.vbo_id = vbo_id
         self.size = size
         self.width = width
         self.height = height
+
 
 def create_rect(width, height):
     data = [0, 0,
@@ -30,6 +32,7 @@ def create_rect(width, height):
     shape = VertexBuffer(vbo_id, len(v2f)//2, width, height)
     return shape
 
+
 def render_rect_filled(shape, x, y, angle=0):
     glBindBuffer(GL_ARRAY_BUFFER, shape.vbo_id)
     glVertexPointer(2, GL_FLOAT, 0, 0)
@@ -49,6 +52,7 @@ glClearColor(0.2, 0.4, 0.5, 1.0)
 
 glEnableClientState(GL_VERTEX_ARRAY)
 
+
 @window.event
 def on_draw():
     glClear(GL_COLOR_BUFFER_BIT)
@@ -57,7 +61,6 @@ def on_draw():
     render_rect_filled(shape, 0, 0, 0)
 
 shape = create_rect(50, 50)
-
 
 
 pyglet.app.run()

@@ -6,6 +6,7 @@ MOUSE_BUTTON_LEFT = 1
 MOUSE_BUTTON_MIDDLE = 2
 MOUSE_BUTTON_RIGHT = 4
 
+
 class Window(pyglet.window.Window):
     """
     Window class
@@ -25,7 +26,8 @@ class Window(pyglet.window.Window):
         Move everything.
 
         Args:
-            :dt (float): Time interval since the last time the function was called.
+            :dt (float): Time interval since the last time the function was
+            called.
 
         """
         pass

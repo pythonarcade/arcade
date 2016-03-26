@@ -27,9 +27,9 @@ class VertexBuffer():
 def create_rect(width, height, color):
     """ Create a vertex buffer for a rectangle. """
     v2f = [-width / 2, -height / 2,
-            width / 2, -height / 2,
-            width / 2, height / 2,
-            -width / 2, height / 2]
+           width / 2, -height / 2,
+           width / 2, height / 2,
+           -width / 2, height / 2]
 
     vbo_id = GL.GLuint()
 
@@ -38,11 +38,11 @@ def create_rect(width, height, color):
     data2 = (GL.GLfloat*len(v2f))(*v2f)
 
     GL.glBindBuffer(GL.GL_ARRAY_BUFFER, vbo_id)
-    GL.glBufferData(GL.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2, GL.GL_STATIC_DRAW)
+    GL.glBufferData(GL.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2,
+                    GL.GL_STATIC_DRAW)
 
     shape = VertexBuffer(vbo_id, len(v2f)//2, width, height, color)
     return shape
-
 
 
 def render_rect_filled(vbo_id, shape, offset):
@@ -70,21 +70,22 @@ class Rectangle():
         self.delta_x = delta_x
         self.delta_y = delta_y
         self.color = color
-        #self.vbo = create_rect(self.width, self.height, self.color)
+        # self.vbo = create_rect(self.width, self.height, self.color)
 
     def move(self):
         self.x += self.delta_x
         self.y += self.delta_y
+
 
 def create_rects(rect_list):
     """ Create a vertex buffer for a set of rectangles. """
 
     v2f = []
     for shape in rect_list:
-        v2f.extend ([-shape.width / 2, -shape.height / 2,
-                shape.width / 2, -shape.height / 2,
-                shape.width / 2, shape.height / 2,
-                -shape.width / 2, shape.height / 2])
+        v2f.extend([-shape.width / 2, -shape.height / 2,
+                   shape.width / 2, -shape.height / 2,
+                   shape.width / 2, shape.height / 2,
+                   -shape.width / 2, shape.height / 2])
 
     vbo_id = GL.GLuint()
 
@@ -93,7 +94,8 @@ def create_rects(rect_list):
     data2 = (GL.GLfloat*len(v2f))(*v2f)
 
     GL.glBindBuffer(GL.GL_ARRAY_BUFFER, vbo_id)
-    GL.glBufferData(GL.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2, GL.GL_STATIC_DRAW)
+    GL.glBufferData(GL.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2,
+                    GL.GL_STATIC_DRAW)
 
     shape = VertexBuffer(vbo_id, len(v2f)//2)
     return shape
@@ -124,7 +126,8 @@ class MyApplication():
             blue = random.randrange(256)
             alpha = random.randrange(256)
             shape_type = random.randrange(2)
-            shape = Rectangle(x, y, width, height, d_x, d_y, (red, green, blue))
+            shape = Rectangle(x, y, width, height, d_x, d_y,
+                              (red, green, blue))
             self.shape_list.append(shape)
 
         self.vbo = create_rects(self.shape_list)

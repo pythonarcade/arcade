@@ -43,15 +43,16 @@ class Rectangle():
         self.x += self.delta_x
         self.y += self.delta_y
 
+
 def create_rects(rect_list):
     """ Create a vertex buffer for a set of rectangles. """
 
     v2f = []
     for shape in rect_list:
-        v2f.extend ([-shape.width / 2, -shape.height / 2,
-                shape.width / 2, -shape.height / 2,
-                shape.width / 2, shape.height / 2,
-                -shape.width / 2, shape.height / 2])
+        v2f.extend([-shape.width / 2, -shape.height / 2,
+                   shape.width / 2, -shape.height / 2,
+                   shape.width / 2, shape.height / 2,
+                   -shape.width / 2, shape.height / 2])
 
     vbo_id = GL.GLuint()
 
@@ -60,7 +61,8 @@ def create_rects(rect_list):
     data2 = (GL.GLfloat*len(v2f))(*v2f)
 
     GL.glBindBuffer(GL.GL_ARRAY_BUFFER, vbo_id)
-    GL.glBufferData(GL.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2, GL.GL_STATIC_DRAW)
+    GL.glBufferData(GL.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2,
+                    GL.GL_STATIC_DRAW)
 
     return vbo_id
 
@@ -90,7 +92,8 @@ class MyApplication():
             blue = random.randrange(256)
             alpha = random.randrange(256)
             shape_type = random.randrange(2)
-            shape = Rectangle(x, y, width, height, d_x, d_y, (red, green, blue))
+            shape = Rectangle(x, y, width, height, d_x, d_y,
+                              (red, green, blue))
             self.shape_list.append(shape)
 
         self.vertex_vbo_id = create_rects(self.shape_list)
@@ -114,7 +117,6 @@ class MyApplication():
         GL.glDisable(GL.GL_BLEND)
         GL.glBindBuffer(GL.GL_ARRAY_BUFFER, self.vertex_vbo_id)
         GL.glVertexPointer(2, GL.GL_FLOAT, 0, 0)
-
 
         offset = 0
         for shape in self.shape_list:

@@ -30,9 +30,9 @@ class VertexBuffer():
 def create_rect(width, height, color):
     """ Create a vertex buffer for a rectangle. """
     v2f = [-width / 2, -height / 2,
-            width / 2, -height / 2,
-            width / 2, height / 2,
-            -width / 2, height / 2]
+           width / 2, -height / 2,
+           width / 2, height / 2,
+           -width / 2, height / 2]
 
     vbo_id = GL.GLuint()
 
@@ -41,7 +41,8 @@ def create_rect(width, height, color):
     data2 = (GL.GLfloat*len(v2f))(*v2f)
 
     GL.glBindBuffer(GL.GL_ARRAY_BUFFER, vbo_id)
-    GL.glBufferData(GL.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2, GL.GL_STATIC_DRAW)
+    GL.glBufferData(GL.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2,
+                    GL.GL_STATIC_DRAW)
 
     shape = VertexBuffer(vbo_id, len(v2f)//2, width, height, color)
     return shape
@@ -107,7 +108,8 @@ class MyApplication():
             blue = random.randrange(256)
             alpha = random.randrange(256)
             shape_type = random.randrange(2)
-            shape = Rectangle(x, y, width, height, d_x, d_y, (red, green, blue))
+            shape = Rectangle(x, y, width, height, d_x, d_y,
+                              (red, green, blue))
             self.shape_list.append(shape)
 
     def animate(self, dt):
