@@ -11,7 +11,7 @@ RECT_WIDTH = 50
 RECT_HEIGHT = 50
 
 
-def draw(dt):
+def on_draw(delta_time):
     """ Use this function to draw everything to the screen. """
 
     # Start the render. This must happen before any drawing
@@ -48,7 +48,7 @@ arcade.open_window("Drawing Example", SCREEN_WIDTH, SCREEN_HEIGHT)
 arcade.set_background_color(arcade.color.WHITE)
 
 # Tell the computer to call the draw command at the specified interval.
-arcade.schedule(draw, 1 / 80)
+arcade.schedule(on_draw, 1 / 80)
 
 # Run the program
 arcade.run()

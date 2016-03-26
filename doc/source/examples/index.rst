@@ -11,6 +11,7 @@ Example Code
    drawing_with_loops
    shapes
    starting_template
+   timer
    move_mouse
    move_keyboard
    sprite_collect_coins
