@@ -3,7 +3,6 @@ Examples to-do list
 
 These are examples we need, that haven't been created.
 
-- Drawing complex grids with nested functions
 - Text rotate
 - Animating snow
 - Move game controller
@@ -19,7 +18,6 @@ These are examples we need, that haven't been created.
 - See if there are any sprites with a property
 - See if all items have a property
 - Move sprite with game controller
-- Load from a tmx or similar
 - Pong
 - Centipede
 - Move between rooms

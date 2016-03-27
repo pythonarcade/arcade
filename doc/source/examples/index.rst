@@ -10,6 +10,7 @@ Example Code
    bouncing_ball
    radar_sweep
    drawing_with_loops
+   nested_loops
    shapes
    starting_template
    timer
@@ -23,6 +24,7 @@ Example Code
    sprite_bullets_aimed
    sprite_move_walls
    sprite_move_scrolling
+   sprite_tiled_map
    instruction_and_game_over_screens
    asteroid_smasher
    examples_to_do

@@ -2,8 +2,11 @@ import pyglet
 
 
 def load_sound_library():
-    # Special code for Windows so we grab the proper avbin from our directory.
-    # Otherwise hope the correct package is installed.
+    """
+    Special code for Windows so we grab the proper avbin from our directory.
+    Otherwise hope the correct package is installed.
+    """
+
     import os
     appveyor = not os.environ.get('APPVEYOR') is None
     if os.name == "nt":
