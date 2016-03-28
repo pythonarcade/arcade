@@ -387,11 +387,15 @@ filename, image_location_list, True)
     >>> player.change_x = -10 #Left
     >>> player.change_y = 0.0
     >>> player.update()
+    >>> player.go_left()
+    >>> player.stop_left()
     >>> player.update()
     >>> player.face_right()
     >>> player.change_x = 10 # Right
     >>> player.change_y = 0.0
     >>> player.update()
+    >>> player.go_right()
+    >>> player.stop_right()
     >>> player.update()
     >>> player.stop_right()
     >>> player.change_x = 0 # Stop
