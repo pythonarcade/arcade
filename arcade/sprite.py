@@ -28,6 +28,8 @@ class SpriteList():
     >>> arcade.start_render()
     >>> meteor_list.draw()
     >>> arcade.finish_render()
+    >>> for meteor in meteor_list:
+    ...     meteor.kill()
     >>> arcade.quick_run(0.25)
     """
     def __init__(self):
@@ -329,17 +331,12 @@ arcade.Sprite("doc/source/examples/images/playerShip1_orange.png", scale)
         self.angle += self.change_angle
 
     def kill(self):
-        """ Remove the sprite from all sprite lists. """
+        """
+        Remove the sprite from all sprite lists.
+        """
         for sprite_list in self.sprite_lists:
             if self in sprite_list:
                 sprite_list.remove(self)
-
-
-class TurningSprite(Sprite):
-    """ Sprite that sets its angle to the direction it is traveling in. """
-    def update(self):
-        super().update()
-        self.angle = math.degrees(math.atan2(self.change_y, self.change_x))
 
 
 class PlatformerSpriteSheetSprite(Sprite):
@@ -348,7 +345,7 @@ class PlatformerSpriteSheetSprite(Sprite):
 
     >>> import arcade
     >>> arcade.open_window("Sprite Example", 800, 600)
-    >>> player = PlatformerSpriteSheetSprite()
+    >>> player = arcade.PlatformerSpriteSheetSprite()
     >>> top_trim = 100
     >>> ltrim = 2
     >>> rtrim = 2
@@ -377,17 +374,25 @@ filename, image_location_list, True)
     >>> player.set_left_stand_textures([11])
     >>> player.set_right_stand_textures([4])
     >>> player.texture_change_distance = 5
+    >>> player.speed = 10
     >>> player.set_position(5, 5)
     >>> player.jump()
     >>> player.change_x = 10 # Jump
     >>> player.change_y = 1
     >>> player.update()
+    >>> player.go_left()
+    >>> player.update()
+    >>> player.update()
+    >>> player.update()
+    >>> player.stop_left()
     >>> player.update()
     >>> player.face_left()
+    >>> player.update()
     >>> player.change_x = -10 #Left
     >>> player.change_y = 0.0
     >>> player.update()
     >>> player.go_left()
+    >>> player.update()
     >>> player.stop_left()
     >>> player.update()
     >>> player.face_right()
@@ -395,12 +400,13 @@ filename, image_location_list, True)
     >>> player.change_y = 0.0
     >>> player.update()
     >>> player.go_right()
+    >>> player.update()
+    >>> player.update()
     >>> player.stop_right()
     >>> player.update()
     >>> player.stop_right()
     >>> player.change_x = 0 # Stop
     >>> player.change_y = 0.0
-    >>> player.update()
     >>> player.update()
     >>> player.kill()
     >>> arcade.quick_run(0.25)
@@ -421,13 +427,14 @@ filename, image_location_list, True)
         self.jump_speed = 10
         self.cur_texture_index = 0
         self.texture_change_distance = 0
-        self.speed = 0.003
+        self.speed = 5
 
     def update(self):
         """
         Logic for selecting the proper texture to use.
         """
-
+        super().update()
+        # print("Update change_x={} change_y={}".format(self.change_x, self.change_y))
         if self.change_y == 0.0:
             if self.change_x < 0:
                 if abs(self.last_change_x - self.center_x) > \
