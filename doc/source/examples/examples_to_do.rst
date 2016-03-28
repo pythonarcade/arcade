@@ -9,7 +9,6 @@ These are examples we need, that haven't been created.
 - Joystick calls
 - Make sounds
 - Background music
-- Array backed grid
 - Recursive examples
 - Rotating sprites
 - Sprite animations

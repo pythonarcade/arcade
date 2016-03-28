@@ -134,9 +134,6 @@ class Sprite():
         self.sprite_lists = []
         self.transparent = True
 
-        # Physics
-        self.apply_gravity = False
-
     def append_texture(self, texture):
         self.textures.append(texture)
 

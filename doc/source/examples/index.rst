@@ -26,6 +26,7 @@ Example Code
    sprite_move_scrolling
    sprite_tiled_map
    instruction_and_game_over_screens
+   array_backed_grid
    asteroid_smasher
    examples_to_do
 

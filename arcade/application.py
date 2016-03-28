@@ -26,8 +26,9 @@ class Window(pyglet.window.Window):
         Move everything.
 
         Args:
-            :dt (float): Time interval since the last time the function was
-            called.
+            :dt (float): Time interval since the last time the function was \
+called.
+
         """
         pass
 
