@@ -1,50 +1,53 @@
 import numpy
 import arcade
 import timeit
+from arcade.color import *
+
 
 def setup_a(object_list):
-    # a = arcade.Circle([600, 300], [0, -0.]), .5, 3, 15, arcade.color.RED)
+    # a = arcade.Circle([600, 300], [0, -0.]), .5, 3, 15, RED)
     # object_list.append(a)
 
-    a = arcade.AABB([590, 200, 20, 20], [0, 0], .5, 3, arcade.color.ALABAMA_CRIMSON)
+    a = arcade.AABB([590, 200, 20, 20], [0, 0], .5, 3, ALABAMA_CRIMSON)
     object_list.append(a)
 
-    # a = AABB([550, 200, 20, 20], [0, 0], .5, 3, arcade.color.ALABAMA_CRIMSON)
+    # a = AABB([550, 200, 20, 20], [0, 0], .5, 3, ALABAMA_CRIMSON)
     # object_list.append(a)
 
-    a = arcade.Circle([600, 50], [0, 1], .5, 3, 10, arcade.color.RED)
+    a = arcade.Circle([600, 50], [0, 1], .5, 3, 10, RED)
     object_list.append(a)
 
-    a = arcade.Circle([600, 450], [0, -1], .5, 3, 10, arcade.color.RED)
+    a = arcade.Circle([600, 450], [0, -1], .5, 3, 10, RED)
     object_list.append(a)
 
 
 def setup_b(object_list):
 
-    a = arcade.Circle([390, 400], [0.5, -2], .5, 3, 15, arcade.color.RED)
+    a = arcade.Circle([390, 400], [0.5, -2], .5, 3, 15, RED)
     object_list.append(a)
 
     for x in range(300, 500, 25):
         for y in range(250, 320, 25):
-            a = arcade.Circle([x, y], [0, 0], .5, .5, 10, arcade.color.AZURE)
+            a = arcade.Circle([x, y], [0, 0], .5, .5, 10, AZURE)
             object_list.append(a)
 
-    a = arcade.Circle([400, 150], [0, 0], .5, 2, 20, arcade.color.BANGLADESH_GREEN)
+    a = arcade.Circle([400, 150], [0, 0], .5, 2, 20, BANGLADESH_GREEN)
     object_list.append(a)
-    a = arcade.Circle([370, 120], [0, 0], .5, 2, 20, arcade.color.BANGLADESH_GREEN)
+    a = arcade.Circle([370, 120], [0, 0], .5, 2, 20, BANGLADESH_GREEN)
     object_list.append(a)
-    a = arcade.Circle([430, 120], [0, 0], .5, 2, 20, arcade.color.BANGLADESH_GREEN)
+    a = arcade.Circle([430, 120], [0, 0], .5, 2, 20, BANGLADESH_GREEN)
     object_list.append(a)
-    a = arcade.Circle([400, 90], [0, 0], .5, 2, 20, arcade.color.BANGLADESH_GREEN)
+    a = arcade.Circle([400, 90], [0, 0], .5, 2, 20, BANGLADESH_GREEN)
     object_list.append(a)
 
-    a = arcade.Circle([0, 350], [2, -3], .5, 3, 10, arcade.color.ALABAMA_CRIMSON)
+    a = arcade.Circle([0, 350], [2, -3], .5, 3, 10, ALABAMA_CRIMSON)
     object_list.append(a)
 
     for x in range(50, 200, 20):
         for y in range(150, 200, 20):
-            a = arcade.AABB([x, y, 15, 15], [0, 0], .5, 1, arcade.color.MELLOW_APRICOT)
+            a = arcade.AABB([x, y, 15, 15], [0, 0], .5, 1, MELLOW_APRICOT)
             object_list.append(a)
+
 
 class MyApplication(arcade.Window):
     """ Main application class. """
@@ -63,8 +66,6 @@ class MyApplication(arcade.Window):
         arcade.start_render()
         for a in self.object_list:
             a.draw()
-
-
 
     def animate(self, x):
         """ Move everything """
@@ -94,8 +95,6 @@ class MyApplication(arcade.Window):
 
                 if collided:
                     really_collided = arcade.resolve_collision(m)
-                    #if really_collided:
-                        #arcade.play_sound(self.hit_sound)
 
         elapsed = timeit.default_timer() - start_time
         # print("Time: {}".format(elapsed))

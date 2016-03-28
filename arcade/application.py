@@ -6,6 +6,7 @@ MOUSE_BUTTON_LEFT = 1
 MOUSE_BUTTON_MIDDLE = 2
 MOUSE_BUTTON_RIGHT = 4
 
+
 class Window(pyglet.window.Window):
     """
     Window class
@@ -25,12 +26,16 @@ class Window(pyglet.window.Window):
         Move everything.
 
         Args:
-            :dt (float): Time interval since the last time the function was called.
+            :dt (float): Time interval since the last time the function was \
+called.
 
         """
         pass
 
     def set_update_rate(self, rate):
+        """
+        Set how often the screen should be updated.
+        """
         pyglet.clock.schedule_interval(self.animate, rate)
 
     def on_mouse_motion(self, x, y, dx, dy):

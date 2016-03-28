@@ -15,6 +15,7 @@ SCREEN_HEIGHT = 600
 
 window = None
 
+
 class Coin(arcade.Sprite):
     """
     This class represents the coins on our screen. It is a child class of
@@ -24,7 +25,8 @@ class Coin(arcade.Sprite):
     def reset_pos(self):
 
         # Reset the coin to a random spot above the screen
-        self.center_y = random.randrange(SCREEN_HEIGHT + 20, SCREEN_HEIGHT + 100)
+        self.center_y = random.randrange(SCREEN_HEIGHT + 20,
+                                         SCREEN_HEIGHT + 100)
         self.center_x = random.randrange(SCREEN_WIDTH)
 
     def update(self):
@@ -36,6 +38,7 @@ class Coin(arcade.Sprite):
         # If so, reset it.
         if self.top < 0:
             self.reset_pos()
+
 
 class MyApplication(arcade.Window):
     """ Main application class. """
@@ -49,7 +52,8 @@ class MyApplication(arcade.Window):
 
         # Set up the player
         self.score = 0
-        self.player_sprite = arcade.Sprite("images/character.png", SPRITE_SCALING)
+        self.player_sprite = arcade.Sprite("images/character.png",
+                                           SPRITE_SCALING)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 70
         self.all_sprites_list.append(self.player_sprite)

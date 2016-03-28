@@ -25,7 +25,8 @@ def trim_image(image):
     """
     Returns an image with extra whitespace cropped out.
 
-    >>> source_image = PIL.Image.open("doc/source/examples/images/playerShip1_orange.png")
+    >>> name = "doc/source/examples/images/playerShip1_orange.png"
+    >>> source_image = PIL.Image.open(name)
     >>> cropped_image = trim_image(source_image)
     >>> print(source_image.height, cropped_image.height)
     75 75
@@ -780,7 +781,6 @@ arcade.color.BRITISH_RACING_GREEN, 2)
         GL.glRotatef(angle, 0, 0, 1)
     GL.glTranslatef(width / 2, height / 2, 0)
 
-
     # Set line width
     GL.glLineWidth(line_width)
 
@@ -838,7 +838,7 @@ def draw_rect_filled(x, y, width, height, color, angle=0):
     GL.glTranslatef(x, y, 0)
     if angle:
         GL.glRotatef(angle, 0, 0, 1)
-    GL.glTranslatef( -width / 2, height / 2, 0)
+    GL.glTranslatef(-width / 2, height / 2, 0)
 
     GL.glBegin(GL.GL_QUADS)
     GL.glVertex3f(0, 0, 0.5)
@@ -987,8 +987,8 @@ def load_texture(file_name, x=0, y=0, width=0, height=0):
 
     >>> import arcade
     >>> arcade.open_window("Drawing Example", 800, 600)
-    >>> texture = load_texture("doc/source/examples/images/meteorGrey_big1.png", \
-1, 1, 50, 50)
+    >>> name = "doc/source/examples/images/meteorGrey_big1.png"
+    >>> texture = load_texture(name, 1, 1, 50, 50)
     >>> arcade.close_window()
     """
     source_image = PIL.Image.open(file_name)
@@ -1078,7 +1078,8 @@ def draw_texture_rect(x, y, width, height, texture,
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
     >>> arcade.draw_text("draw_bitmap", 483, 3, arcade.color.BLACK, 12)
-    >>> texture = arcade.load_texture("doc/source/examples/images/playerShip1_orange.png")
+    >>> name = "doc/source/examples/images/playerShip1_orange.png"
+    >>> texture = arcade.load_texture(name)
     >>> scale = .6
     >>> arcade.draw_texture_rect(540, 120, scale * texture.width, \
 scale * texture.height, texture, 0)
@@ -1127,6 +1128,7 @@ class VertexBuffer():
         self.height = height
         self.color = color
 
+
 def create_rect(width, height, color):
     data = [-width / 2, -height / 2,
             width / 2, -height / 2,
@@ -1141,15 +1143,18 @@ def create_rect(width, height, color):
     data2 = (GL.GLfloat*len(v2f))(*v2f)
 
     GL.glBindBuffer(GL.GL_ARRAY_BUFFER, vbo_id)
-    GL.glBufferData(GL.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2, GL.GL_STATIC_DRAW)
+    GL.glBufferData(GL.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2,
+                    GL.GL_STATIC_DRAW)
 
     shape = VertexBuffer(vbo_id, len(v2f)//2, width, height, color)
     return shape
 
+
 def render_rect_filled(shape, x, y, color, angle=0):
     # Set color
     if len(color) == 4:
-        GL.glColor4ub(shape.color[0], shape.color[1], shape.color[2], shape.color[3])
+        GL.glColor4ub(shape.color[0], shape.color[1], shape.color[2],
+                      shape.color[3])
         GL.glEnable(GL.GL_BLEND)
         GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
     elif len(color) == 3:
@@ -1165,6 +1170,7 @@ def render_rect_filled(shape, x, y, color, angle=0):
         GL.glRotatef(angle, 0, 0, 1)
 
     GL.glDrawArrays(GL.GL_QUADS, 0, shape.size)
+
 
 def create_ellipse(width, height, color, num_segments=64):
     data = []
@@ -1185,15 +1191,18 @@ def create_ellipse(width, height, color, num_segments=64):
     data2 = (GL.GLfloat*len(v2f))(*v2f)
 
     GL.glBindBuffer(GL.GL_ARRAY_BUFFER, vbo_id)
-    GL.glBufferData(GL.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2, GL.GL_STATIC_DRAW)
+    GL.glBufferData(GL.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2,
+                    GL.GL_STATIC_DRAW)
 
     shape = VertexBuffer(vbo_id, len(v2f)//2, width, height, color)
     return shape
 
+
 def render_ellipse_filled(shape, x, y, color, angle=0):
     # Set color
     if len(color) == 4:
-        GL.glColor4ub(shape.color[0], shape.color[1], shape.color[2], shape.color[3])
+        GL.glColor4ub(shape.color[0], shape.color[1], shape.color[2],
+                      shape.color[3])
         GL.glEnable(GL.GL_BLEND)
         GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
     elif len(color) == 3:

@@ -17,9 +17,11 @@ BULLET_SPEED = 5
 
 window = None
 
+
 class Bullet(arcade.Sprite):
     def update(self):
         self.center_y += BULLET_SPEED
+
 
 class MyApplication(arcade.Window):
     """ Main application class. """
@@ -34,7 +36,8 @@ class MyApplication(arcade.Window):
 
         # Set up the player
         self.score = 0
-        self.player_sprite = arcade.Sprite("images/character.png", SPRITE_SCALING)
+        self.player_sprite = arcade.Sprite("images/character.png",
+                                           SPRITE_SCALING)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 70
         self.all_sprites_list.append(self.player_sprite)
@@ -109,7 +112,8 @@ class MyApplication(arcade.Window):
         for bullet in self.bullet_list:
 
             # Check this bullet to see if it hit a coin
-            hit_list = arcade.check_for_collision_with_list(bullet, self.coin_list)
+            hit_list = arcade.check_for_collision_with_list(bullet,
+                                                            self.coin_list)
 
             # If it did, get rid of the bullet
             if len(hit_list) > 0:
