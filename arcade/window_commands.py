@@ -31,11 +31,17 @@ def pause(seconds):
 
 
 def get_window():
+    """
+    Return a handle to the current window.
+    """
     global _window
     return _window
 
 
 def set_window(window):
+    """
+    Set a handle to the current window.
+    """
     global _window
     _window = window
 
@@ -98,6 +104,9 @@ def open_window(window_title, width, height):
 
 
 def close_window():
+    """
+    Closes the current window, and then runs garbage collection.
+    """
     global _window
 
     _window.close()
@@ -157,6 +166,7 @@ def start_render():
     """ Get set up to render. """
     GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
     GL.glMatrixMode(GL.GL_MODELVIEW)
+    GL.glEnableClientState(GL.GL_VERTEX_ARRAY)
 
 
 def set_background_color(color):
@@ -181,3 +191,11 @@ def set_background_color(color):
     """
 
     GL.glClearColor(color[0]/255, color[1]/255, color[2]/255, 1)
+
+
+def schedule(function_pointer, interval):
+    """
+    Schedule a function to be automatically called every _interval_
+    seconds.
+    """
+    pyglet.clock.schedule_interval(function_pointer, interval)

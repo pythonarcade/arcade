@@ -30,7 +30,8 @@ def trim_image(image):
     """
     Returns an image with extra whitespace cropped out.
 
-    >>> source_image = PIL.Image.open("examples/images/playerShip1_orange.png")
+    >>> name = "doc/source/examples/images/playerShip1_orange.png"
+    >>> source_image = PIL.Image.open(name)
     >>> cropped_image = trim_image(source_image)
     >>> print(source_image.height, cropped_image.height)
     75 75
@@ -1306,7 +1307,10 @@ arcade.color.BRITISH_RACING_GREEN, 2)
     GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
 
     GL.glLoadIdentity()
-    GL.glRotatef(angle, 0, 0, 1)
+    GL.glTranslatef(x + width / 2, y + height / 2, 0)
+    if angle:
+        GL.glRotatef(angle, 0, 0, 1)
+    GL.glTranslatef(width / 2, height / 2, 0)
 
     # Set line width
     GL.glLineWidth(line_width)
@@ -1318,10 +1322,10 @@ arcade.color.BRITISH_RACING_GREEN, 2)
         GL.glColor4ub(color[0], color[1], color[2], 255)
 
     GL.glBegin(GL.GL_LINE_LOOP)
-    GL.glVertex3f(x, y, 0.5)
-    GL.glVertex3f(x + width, y, 0.5)
-    GL.glVertex3f(x + width, y - height, 0.5)
-    GL.glVertex3f(x, y - height, 0.5)
+    GL.glVertex3f(0, 0, 0.5)
+    GL.glVertex3f(width, 0, 0.5)
+    GL.glVertex3f(width, 0 - height, 0.5)
+    GL.glVertex3f(0, 0 - height, 0.5)
     GL.glEnd()
 
 
@@ -1362,15 +1366,16 @@ def draw_rectangle_filled(x, y, width, height, color, angle=0):
         GL.glColor4ub(color[0], color[1], color[2], 255)
 
     GL.glLoadIdentity()
-
+    GL.glTranslatef(x, y, 0)
     if angle:
         GL.glRotatef(angle, 0, 0, 1)
+    GL.glTranslatef(-width / 2, height / 2, 0)
 
     GL.glBegin(GL.GL_QUADS)
-    GL.glVertex3f(x, y, 0.5)
-    GL.glVertex3f(x + width, y, 0.5)
-    GL.glVertex3f(x + width, y - height, 0.5)
-    GL.glVertex3f(x, y - height, 0.5)
+    GL.glVertex3f(0, 0, 0.5)
+    GL.glVertex3f(width, 0, 0.5)
+    GL.glVertex3f(width, 0 - height, 0.5)
+    GL.glVertex3f(0, 0 - height, 0.5)
     GL.glEnd()
 
 
@@ -1428,7 +1433,7 @@ def load_textures(file_name, image_location_list,
     ... [390 + ltrim, 516 + top_trim, 128 - ltrim - rtrim, 256 - top_trim],
     ... [390 + ltrim, 258 + top_trim, 128 - ltrim - rtrim, 256 - top_trim]]
     >>> texture_info_list = arcade.load_textures( \
-"examples/images/spritesheet_complete.png", image_location_list)
+"doc/source/examples/images/spritesheet_complete.png", image_location_list)
     >>> arcade.close_window()
     """
     source_image = PIL.Image.open(file_name)
@@ -1513,8 +1518,8 @@ def load_texture(file_name, x=0, y=0, width=0, height=0):
 
     >>> import arcade
     >>> arcade.open_window("Drawing Example", 800, 600)
-    >>> texture = load_texture("examples/images/meteorGrey_big1.png", \
-1, 1, 50, 50)
+    >>> name = "doc/source/examples/images/meteorGrey_big1.png"
+    >>> texture = load_texture(name, 1, 1, 50, 50)
     >>> arcade.close_window()
     """
     source_image = PIL.Image.open(file_name)
@@ -1604,7 +1609,8 @@ def draw_texture_rectangle(x, y, width, height, texture,
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
     >>> arcade.draw_text("draw_bitmap", 483, 3, arcade.color.BLACK, 12)
-    >>> texture = arcade.load_texture("examples/images/playerShip1_orange.png")
+    >>> name = "doc/source/examples/images/playerShip1_orange.png"
+    >>> texture = arcade.load_texture(name)
     >>> scale = .6
     >>> arcade.draw_texture_rect(540, 120, scale * texture.width, \
 scale * texture.height, texture, 0)
@@ -1645,9 +1651,107 @@ scale * texture.height, texture, 90)
     GL.glEnd()
 
 
-def _test():
-    import doctest
-    doctest.testmod()
+class VertexBuffer():
+    def __init__(self, vbo_id, size, width, height, color):
+        self.vbo_id = vbo_id
+        self.size = size
+        self.width = width
+        self.height = height
+        self.color = color
+
+
+def create_rect(width, height, color):
+    data = [-width / 2, -height / 2,
+            width / 2, -height / 2,
+            width / 2, height / 2,
+            -width / 2, height / 2]
+
+    vbo_id = GL.GLuint()
+
+    GL.glGenBuffers(1, ctypes.pointer(vbo_id))
+
+    v2f = data
+    data2 = (GL.GLfloat*len(v2f))(*v2f)
+
+    GL.glBindBuffer(GL.GL_ARRAY_BUFFER, vbo_id)
+    GL.glBufferData(GL.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2,
+                    GL.GL_STATIC_DRAW)
+
+    shape = VertexBuffer(vbo_id, len(v2f)//2, width, height, color)
+    return shape
+
+
+def render_rect_filled(shape, x, y, color, angle=0):
+    # Set color
+    if len(color) == 4:
+        GL.glColor4ub(shape.color[0], shape.color[1], shape.color[2],
+                      shape.color[3])
+        GL.glEnable(GL.GL_BLEND)
+        GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
+    elif len(color) == 3:
+        GL.glDisable(GL.GL_BLEND)
+        GL.glColor4ub(shape.color[0], shape.color[1], shape.color[2], 255)
+
+    GL.glBindBuffer(GL.GL_ARRAY_BUFFER, shape.vbo_id)
+    GL.glVertexPointer(2, GL.GL_FLOAT, 0, 0)
+
+    GL.glLoadIdentity()
+    GL.glTranslatef(x + shape.width / 2, y + shape.height / 2, 0)
+    if angle != 0:
+        GL.glRotatef(angle, 0, 0, 1)
+
+    GL.glDrawArrays(GL.GL_QUADS, 0, shape.size)
+
+
+def create_ellipse(width, height, color, num_segments=64):
+    data = []
+
+    for i in range(num_segments + 1):
+        theta = 2.0 * 3.1415926 * i / num_segments
+
+        x = width * math.cos(theta)
+        y = height * math.sin(theta)
+
+        data.extend([x, y])
+
+    vbo_id = GL.GLuint()
+
+    GL.glGenBuffers(1, ctypes.pointer(vbo_id))
+
+    v2f = data
+    data2 = (GL.GLfloat*len(v2f))(*v2f)
+
+    GL.glBindBuffer(GL.GL_ARRAY_BUFFER, vbo_id)
+    GL.glBufferData(GL.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2,
+                    GL.GL_STATIC_DRAW)
+
+    shape = VertexBuffer(vbo_id, len(v2f)//2, width, height, color)
+    return shape
+
+
+def render_ellipse_filled(shape, x, y, color, angle=0):
+    # Set color
+    if len(color) == 4:
+        GL.glColor4ub(shape.color[0], shape.color[1], shape.color[2],
+                      shape.color[3])
+        GL.glEnable(GL.GL_BLEND)
+        GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
+    elif len(color) == 3:
+        GL.glDisable(GL.GL_BLEND)
+        GL.glColor4ub(shape.color[0], shape.color[1], shape.color[2], 255)
+
+    GL.glBindBuffer(GL.GL_ARRAY_BUFFER, shape.vbo_id)
+    GL.glVertexPointer(2, GL.GL_FLOAT, 0, 0)
+
+    GL.glLoadIdentity()
+    GL.glTranslatef(x, y, 0)
+    if angle:
+        GL.glRotatef(angle, 0, 0, 1)
+
+    GL.glDrawArrays(GL.GL_TRIANGLE_FAN, 0, shape.size)
+# def _test():
+#     import doctest
+#     doctest.testmod()
 
 if __name__ == "__main__":
     _test()

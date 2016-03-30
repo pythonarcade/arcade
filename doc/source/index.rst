@@ -6,11 +6,29 @@
 The Arcade Python Package
 =========================
 
-|build-status-travis| |build-status-appveyor| |docs| |coverage|
+|build-status-travis| |build-status-appveyor| |coverage|
 
-Arcade is an easy-to-learn Python library for creating 2d video games. The API is designed to allow progressive functionality as you learn to code. To make images, you do not need to learn to define functions. To make animations, you don't need to understand classes. But once you do understand classes, it is easy to put together classic video games.
+Arcade is an easy-to-learn Python library for creating 2d video games. The API
+is designed to allow progressive functionality as you learn to code.
+
+If Python is already installed, The arcade library can be installed from a
+terminal window by typing:
+
+.. code-block:: bash
+
+   pip install arcade
+
+or
+
+.. code-block:: bash
+
+   pip3 install arcade
 
 The source is available on GitHub: https://github.com/pvcraven/arcade
+
+A compiled version of the package is available on PyPi: https://pypi.python.org/pypi/arcade
+
+The list of current issues is on GitHub: https://github.com/pvcraven/arcade/issues
 
 Documentation
 -------------
@@ -18,7 +36,7 @@ Documentation
 .. toctree::
    :maxdepth: 4
 
-   examples
+   examples/index
    installation
    arcade
    quick_index
@@ -36,11 +54,6 @@ Documentation
     :target: https://ci.appveyor.com/project/pvcraven/arcade-ekjdf
     :alt: build status
     :scale: 100%
-
-.. |docs| image:: https://readthedocs.org/projects/arcade/badge/?version=latest
-    :alt: Documentation Status
-    :scale: 100%
-    :target: https://arcade.readthedocs.org/en/latest/?badge=latest
 
 .. |coverage| image:: https://coveralls.io/repos/pvcraven/arcade/badge.svg?branch=master&service=github
     :alt: Test Coverage Status

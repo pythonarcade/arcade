@@ -1,50 +1,56 @@
 import pyglet
 
+
 def load_sound_library():
-	# Special code for Windows so we grab the proper avbin from our directory.
-	# Otherwise hope the correct package is installed.
-	import os
-	appveyor = not os.environ.get('APPVEYOR') is None
-	if os.name == "nt":
+    """
+    Special code for Windows so we grab the proper avbin from our directory.
+    Otherwise hope the correct package is installed.
+    """
 
-		import sys
-		is64bit = sys.maxsize > 2**32
+    import os
+    appveyor = not os.environ.get('APPVEYOR') is None
+    if os.name == "nt":
 
-		import site
-		packages = site.getsitepackages()
+        import sys
+        is64bit = sys.maxsize > 2**32
 
-		if appveyor:
-			if is64bit:
-				path = "Win64/avbin"
-			else:
-				path = "Win32/avbin"
+        import site
+        packages = site.getsitepackages()
 
-		else:
-			if is64bit:
-				path = packages[0] + "/lib/site-packages/arcade/Win64/avbin"
-			else:
-				path = packages[0] + "/lib/site-packages/arcade/Win32/avbin"
-	else:
-		path = "avbin"
+        if appveyor:
+            if is64bit:
+                path = "Win64/avbin"
+            else:
+                path = "Win32/avbin"
 
-	pyglet.lib.load_library(path)
-	pyglet.have_avbin=True
+        else:
+            if is64bit:
+                path = packages[0] + "/lib/site-packages/arcade/Win64/avbin"
+            else:
+                path = packages[0] + "/lib/site-packages/arcade/Win32/avbin"
+    else:
+        path = "avbin"
+
+    pyglet.lib.load_library(path)
+    pyglet.have_avbin = True
 
 load_sound_library()
 
-def load_sound(filename):
-	"""
-	Load a sound and get it ready to play.
 
-	>>> import arcade
-	>>> my_sound = arcade.load_sound("examples/sounds/laser1.ogg")
-	>>> arcade.play_sound(my_sound)
-	"""
-	source = pyglet.media.load(filename, streaming=False)
-	return source
+def load_sound(filename):
+    """
+    Load a sound and get it ready to play.
+
+    >>> import arcade
+    >>> my_sound = arcade.load_sound("doc/source/examples/sounds/laser1.ogg")
+    >>> arcade.play_sound(my_sound)
+    """
+    source = pyglet.media.load(filename, streaming=False)
+    return source
+
 
 def play_sound(sound):
-	"""
-	Play a previously loaded sound.
-	"""
-	sound.play()
+    """
+    Play a previously loaded sound.
+    """
+    sound.play()

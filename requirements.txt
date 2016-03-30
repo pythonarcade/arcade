@@ -2,3 +2,4 @@ Pyglet
 Pillow
 PyOpenGL
 mock
+numpy

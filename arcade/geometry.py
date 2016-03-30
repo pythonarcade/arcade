@@ -90,17 +90,15 @@ def check_for_collision(sprite1, sprite2):
 
     >>> import arcade
     >>> scale = 1
-    >>> sprite_1 = arcade.Sprite("examples/images/meteorGrey_big1.png", \
-scale)
+    >>> filename = "doc/source/examples/images/meteorGrey_big1.png"
+    >>> sprite_1 = arcade.Sprite(filename, scale)
     >>> sprite_1.center_x = 0
     >>> sprite_1.center_y = 0
-    >>> sprite_2 = arcade.Sprite("examples/images/meteorGrey_big1.png", \
-scale)
+    >>> sprite_2 = arcade.Sprite(filename, scale)
     >>> sprite_2.center_x = 40
     >>> sprite_2.center_y = 40
     >>> result = check_for_collision(sprite_1, sprite_2)
-    >>> sprite_3 = arcade.Sprite("examples/images/meteorGrey_big1.png", \
-scale)
+    >>> sprite_3 = arcade.Sprite(filename, scale)
     >>> sprite_3.center_x = 100
     >>> sprite_3.center_y = 100
     >>> result_1 = check_for_collision(sprite_1, sprite_2)
@@ -119,17 +117,15 @@ def check_for_collision_with_list(sprite1, sprite_list):
     >>> import arcade
     >>> scale = 1
     >>> sprite_list = arcade.SpriteList()
-    >>> main_sprite = arcade.Sprite("examples/images/meteorGrey_big1.png", \
-scale)
+    >>> filename = "doc/source/examples/images/meteorGrey_big1.png"
+    >>> main_sprite = arcade.Sprite(filename, scale)
     >>> main_sprite.center_x = 0
     >>> main_sprite.center_y = 0
-    >>> sprite = arcade.Sprite("examples/images/meteorGrey_big1.png", \
-scale)
+    >>> sprite = arcade.Sprite(filename, scale)
     >>> sprite.center_x = 40
     >>> sprite.center_y = 40
     >>> sprite_list.append(sprite)
-    >>> sprite = arcade.Sprite("examples/images/meteorGrey_big1.png", \
-scale)
+    >>> sprite = arcade.Sprite(filename, scale)
     >>> sprite.center_x = 100
     >>> sprite.center_y = 100
     >>> sprite_list.append(sprite)

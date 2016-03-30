@@ -12,7 +12,7 @@ environment:
 
 
 install:
-  - "%PYTHON%\\Scripts\\pip.exe install wheel twine pillow pyglet coverage coveralls"
+  - "%PYTHON%\\Scripts\\pip.exe install wheel twine pillow pyglet coverage coveralls numpy"
 
 build_script:
   - "%PYTHON%\\python.exe setup.py build"
@@ -27,6 +27,6 @@ artifacts:
   - path: dist\*
 
 on_success:
-  - "%PYTHON%\\Scripts\\coverage report"
-  - "%PYTHON%\\Scripts\\coveralls"
+#  - "%PYTHON%\\Scripts\\coverage report"
+#  - "%PYTHON%\\Scripts\\coveralls"
   - "%PYTHON%/Scripts/twine upload -u %USER% -p %PASS% -r pypi dist/*"

@@ -4,6 +4,7 @@ from unittest import TextTestRunner
 
 import arcade
 
+
 def load_tests(loader=None, tests=None, pattern=None):
     suite = TestSuite()
     suite.addTests(DocTestSuite('arcade.draw_commands'))
