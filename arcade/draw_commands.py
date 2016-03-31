@@ -57,7 +57,7 @@ def draw_arc_filled(center_x, center_y,
          RGBA format.
         :start_angle (float): start angle of the arc in degrees.
         :end_angle (float): end angle of the arc in degrees.
-        :angle (float): angle the arc is tilted.
+        :tilt_angle (float): angle the arc is tilted.
         :num_segments (int): number of line segments that would make up the
          whole ellipse that this arc is part of. Higher is better quality and
          slower render time.
@@ -89,7 +89,6 @@ arcade.color.BOTTLE_GREEN, 90, 360, 45)
     GL.glLoadIdentity()
     GL.glTranslatef(center_x, center_y, 0)
     GL.glRotatef(tilt_angle, 0, 0, 1)
-    GL.glRotatef(angle, 0, 0, 1)
 
     # Set color
     if len(color) == 4:
@@ -387,8 +386,8 @@ def draw_standard_circle(center_x, center_y, color, size, filled, adjustment = 0
     adjustment = A customizable adjustment to the size of the standard circle. Can be positive or negative or can be entirely ignored.
     filled = If the circle is an outline or is a solid color expressed with words like "filled" or "solid" and "outline" or "hollow".
     color = The color of the circle.
-    center_x = The center's x coordenent.
-    center_y = The center's y coordenent.
+    center_x = The center's x coordinate.
+    center_y = The center's y coordinate.
     
     Example:
     
@@ -396,7 +395,7 @@ def draw_standard_circle(center_x, center_y, color, size, filled, adjustment = 0
     >>> arcade.open_window("Drawing Example", 800, 600)
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
-    >>> arcade.draw_standard_circle(small, solid, blue, 500, 200) #Draws a small solid blue circle at (500, 200)
+    >>> arcade.draw_standard_circle(500, 200, arcade.color.BLUE, "small", "solid") #Draws a small solid blue circle at (500, 200)
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
     """
@@ -1294,7 +1293,7 @@ def draw_rectangle_outline(x, y, width, height, color, line_width=1, angle=0):
     >>> arcade.open_window("Drawing Example", 800, 600)
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
-    >>> arcade.draw_rect_outline(278, 150, 45, 105, \
+    >>> arcade.draw_rectangle_outline(278, 150, 45, 105, \
 arcade.color.BRITISH_RACING_GREEN, 2)
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
@@ -1348,7 +1347,7 @@ def draw_rectangle_filled(x, y, width, height, color, angle=0):
     >>> arcade.open_window("Drawing Example", 800, 600)
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
-    >>> arcade.draw_rect_filled(390, 150, 45, 105, arcade.color.BLUSH)
+    >>> arcade.draw_rectangle_filled(390, 150, 45, 105, arcade.color.BLUSH)
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
     """
@@ -1612,9 +1611,9 @@ def draw_texture_rectangle(x, y, width, height, texture,
     >>> name = "doc/source/examples/images/playerShip1_orange.png"
     >>> texture = arcade.load_texture(name)
     >>> scale = .6
-    >>> arcade.draw_texture_rect(540, 120, scale * texture.width, \
+    >>> arcade.draw_texture_rectangle(540, 120, scale * texture.width, \
 scale * texture.height, texture, 0)
-    >>> arcade.draw_texture_rect(540, 60, scale * texture.width, \
+    >>> arcade.draw_texture_rectangle(540, 60, scale * texture.width, \
 scale * texture.height, texture, 90)
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
