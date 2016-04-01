@@ -118,7 +118,7 @@ class Sprite():
     >>> ship_sprite.kill()
     >>> arcade.quick_run(0.25)
     """
-    def __init__(self, filename=None, scale=0, x=0, y=0, width=0, height=0):
+    def __init__(self, filename=None, scale=1, x=0, y=0, width=0, height=0):
         """
         Create a new sprite.
 
@@ -178,6 +178,9 @@ class Sprite():
         self.cur_texture_index = texture_no
         self.width = self.textures[texture_no].width * self.scale
         self.height = self.textures[texture_no].height * self.scale
+
+    def get_texture(self):
+        return self.cur_texture_index
 
     def set_position(self, center_x, center_y):
         """
@@ -350,6 +353,8 @@ arcade.Sprite("doc/source/examples/images/playerShip1_orange.png", scale)
         """
         if type(texture) is Texture:
             self._texture = texture
+            self.width = texture.width
+            self.height = texture.height
         else:
             raise SystemError("Can't set the texture to something that is " +
                               "not an instance of the Texture class.")
@@ -364,14 +369,18 @@ arcade.Sprite("doc/source/examples/images/playerShip1_orange.png", scale)
         self.sprite_lists.append(new_list)
 
     def draw(self):
-        """ Draw the sprite. """
+        """
+        Draw the sprite.
+        """
         draw_texture_rect(self.center_x, self.center_y,
                           self.width, self.height,
                           self.texture, self.angle, self.alpha,
                           self.transparent)
 
     def update(self):
-        """ Update the sprite. """
+        """
+        Update the sprite.
+        """
         self.center_x += self.change_x
         self.center_y += self.change_y
         self.angle += self.change_angle
