@@ -313,8 +313,8 @@ def draw_circle_filled(center_x, center_y, radius, color, num_segments=128):
     Draw a filled-in circle.
 
     Args:
-        :cx (float): x position that is the center of the circle.
-        :cy (float): y position that is the center of the circle.
+        :center_x (float): x position that is the center of the circle.
+        :center_y (float): y position that is the center of the circle.
         :radius (float): width of the circle.
         :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
@@ -341,19 +341,94 @@ def draw_circle_filled(center_x, center_y, radius, color, num_segments=128):
     
     
 def draw_small_filled_circle(center_x, center_y, color):
-    # Draws a circle with a default small radius
+    """
+    Draws a cirlce with a default small radius.
+
+    Args:
+        :center_x (float): x position that is the center of the circle.
+        :center_y (float): y position that is the center of the circle.
+        :radius (float): width of the circle.
+        :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
+         RGBA format.
+        :num_segments (int): number of triangle segments that make up this
+         circle. Higher is better quality, but slower render time.
+    Returns:
+        None
+    Raises:
+        None
+
+    Example:
+
+    >>> import arcade
+    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.set_background_color(arcade.color.WHITE)
+    >>> arcade.start_render()
+    >>> arcade.draw_small_filled_circle(420, 285, arcade.color.BLUE)
+    >>> arcade.finish_render()
+    >>> arcade.quick_run(0.25)
+    """    
     radius = 10
     
     draw_circle_filled(center_x, center_y, radius, color)
     
 def draw_medium_filled_circle(center_x, center_y, color):
-    # Draws a circle with a default medium radius
+    """
+    Draws a cirlce with a default medium radius.
+
+    Args:
+        :center_x (float): x position that is the center of the circle.
+        :center_y (float): y position that is the center of the circle.
+        :radius (float): width of the circle.
+        :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
+         RGBA format.
+        :num_segments (int): number of triangle segments that make up this
+         circle. Higher is better quality, but slower render time.
+    Returns:
+        None
+    Raises:
+        None
+
+    Example:
+
+    >>> import arcade
+    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.set_background_color(arcade.color.WHITE)
+    >>> arcade.start_render()
+    >>> arcade.draw_medium_filled_circle(420, 285, arcade.color.RED)
+    >>> arcade.finish_render()
+    >>> arcade.quick_run(0.25)
+    """     
     radius = 25
     
     draw_circle_filled(center_x, center_y, radius, color)
 
 def draw_large_filled_circle(center_x, center_y, color):
-    # Draws a circle with a default large radius
+    """
+    Draws a cirlce with a default large radius.
+
+    Args:
+        :center_x (float): x position that is the center of the circle.
+        :center_y (float): y position that is the center of the circle.
+        :radius (float): width of the circle.
+        :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
+         RGBA format.
+        :num_segments (int): number of triangle segments that make up this
+         circle. Higher is better quality, but slower render time.
+    Returns:
+        None
+    Raises:
+        None
+
+    Example:
+
+    >>> import arcade
+    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.set_background_color(arcade.color.WHITE)
+    >>> arcade.start_render()
+    >>> arcade.draw_large_filled_circle(420, 285, arcade.color.PURPLE)
+    >>> arcade.finish_render()
+    >>> arcade.quick_run(0.25)
+    """     
     radius = 40
     
     draw_circle_filled(center_x, center_y, radius, color)
@@ -577,15 +652,15 @@ def draw_oval(center_x, center_y, width, height, color, border_width=0, angle=0)
         
 
 # draw a custom oval that is filled
-def draw_oval_filled_custom(center_x, center_y, width, height, color, angle=0):
+def draw_oval_filled(center_x, center_y, width, height, color, angle=0):
     
     draw_ellipse_filled(center_x, center_y, width, height, color, angle)
 
 # draw a custom oval outline
-def draw_oval_outline_custom(center_x, center_y, width, height, color, border_width=5, angle=0):
+def draw_oval_outline(center_x, center_y, width, height, color, border_width=5, angle=0):
 
     if border_width <= 0:
-        draw_ellipse_filled(center_x, center_y, width, height, color, angle)
+        print("Error: Border width must be greater than 0. Use the draw_oval_filled function to create a filled oval.")
     else:
         draw_ellipse_outline(center_x, center_y, width, height, color, border_width, angle)
 
@@ -651,97 +726,6 @@ def draw_described_oval_outline(center_x, center_y, width, height, color, border
 
     if width != -1 and height != -1:
         draw_oval_outline_custom(center_x, center_y, width, height, color, border_width, angle)
-    
-
-# draw a generic oval that is filled
-def draw_oval_filled(center_x, center_y, size, color, angle=0):
-    if size.lower() == "huge" or size.lower() == "h":
-        draw_oval_filled_custom(center_x, center_y, 300, 150, color, angle=0)
-    elif size.lower() == "large" or size.lower() == "l" or size.lower() == "big" or size.lower() == "b" or size.lower() == "max":
-        draw_oval_filled_custom(center_x, center_y, 200, 100, color, angle=0)
-    elif size.lower() == "medium" or size.lower() == "m" or size.lower() == "mid":
-        draw_oval_filled_custom(center_x, center_y, 100, 50, color, angle=0)
-    elif size.lower() == "small" or size.lower() == "s" or size.lower() == "min":
-        draw_oval_filled_custom(center_x, center_y, 50, 25, color, angle=0)
-    elif size.lower() == "tiny" or size.lower() == "t":
-        draw_oval_filled_custom(center_x, center_y, 25, 12.5, color, angle=0)
-
-# drsw a generic oval outline
-def draw_oval_outline(center_x, center_y, size, color, angle=0):
-    if size.lower() == "huge" or size.lower() == "h":
-        draw_oval_outline_custom(center_x, center_y, 300, 150, color, 5, angle=0)
-    elif size.lower() == "large" or size.lower() == "l" or size.lower() == "big" or size.lower() == "b" or size.lower() == "max":
-        draw_oval_outline_custom(center_x, center_y, 200, 100, color, 5, angle=0)
-    elif size.lower() == "medium" or size.lower() == "m" or size.lower() == "mid":
-        draw_oval_outline_custom(center_x, center_y, 100, 50, color, 5, angle=0)
-    elif size.lower() == "small" or size.lower() == "s" or size.lower() == "min":
-        draw_oval_outline_custom(center_x, center_y, 50, 25, color, 5, angle=0)
-    elif size.lower() == "tiny" or size.lower() == "t":
-        draw_oval_outline_custom(center_x, center_y, 25, 12.5, color, 5, angle=0)
-
-# set of functions that draw generic ovals that are filled
-def draw_huge_oval_filled(center_x, center_y, color, angle=0):
-    draw_oval_filled_custom(center_x, center_y, 300, 150, color, angle)
-
-def draw_large_oval_filled(center_x, center_y, color, angle=0):
-    draw_oval_filled_custom(center_x, center_y, 200, 100, color, angle)
-
-def draw_medium_oval_filled(center_x, center_y, color, angle=0):
-    draw_oval_filled_custom(center_x, center_y, 100, 50, color, angle)
-
-def draw_small_oval_filled(center_x, center_y, color, angle=0):
-    draw_oval_filled_custom(center_x, center_y, 50, 25, color, angle)
-
-def draw_tiny_oval_filled(center_x, center_y, color, angle=0):
-    draw_oval_filled_custom(center_x, center_y, 25, 12.5, color, angle)
-
-# set of functions that draw generic oval outlines
-def draw_huge_oval_outline(center_x, center_y, color, angle=0):
-    draw_oval_outline_custom(center_x, center_y, 300, 150, color, 5, angle)
-
-def draw_large_oval_outline(center_x, center_y, color, angle=0):
-    draw_oval_outline_custom(center_x, center_y, 200, 100, color, 5, angle)
-
-def draw_medium_oval_outline(center_x, center_y, color, angle=0):
-    draw_oval_outline_custom(center_x, center_y, 100, 50, color, 5, angle)
-
-def draw_small_oval_outline(center_x, center_y, color, angle=0):
-    draw_oval_outline_custom(center_x, center_y, 50, 25, color, 5, angle)
-
-def draw_tiny_oval_outline(center_x, center_y, color, angle=0):
-    draw_oval_outline_custom(center_x, center_y, 25, 12.5, color, 5, angle)
-
-# set of functions for drawing ovals of varying sizes with specified fill or outline
-def draw_huge_oval(center_x, center_y, color, fill = True, angle=0):
-    if fill == True:
-        draw_oval_filled_custom(center_x, center_y, 300, 150, color, angle)
-    else:
-        draw_oval_outline_custom(center_x, center_y, 300, 150, color, 5, angle)
-
-def draw_large_oval(center_x, center_y, color, fill = True, angle=0):
-    if fill == True:
-        draw_oval_filled_custom(center_x, center_y, 200, 100, color, angle)
-    else:
-        draw_oval_outline_custom(center_x, center_y, 200, 100, color, 5, angle)
-
-def draw_medium_oval(center_x, center_y, color, fill = True, angle=0):
-    if fill == True:
-        draw_oval_filled_custom(center_x, center_y, 100, 50, color, angle)
-    else:
-        draw_oval_outline_custom(center_x, center_y, 100, 50, color, 5, angle)
-
-def draw_small_oval(center_x, center_y, color, fill = True, angle=0):
-    if fill == True:
-        draw_oval_filled_custom(center_x, center_y, 50, 25, color, angle)
-    else:
-        draw_oval_outline_custom(center_x, center_y, 50, 25, color, 5, angle)
-
-def draw_tiny_oval(center_x, center_y, color, fill = True, angle=0):
-    if fill == True:
-        draw_oval_filled_custom(center_x, center_y, 25, 12.5, color, angle)
-    else:
-        draw_oval_outline_custom(center_x, center_y, 25, 12.5, color, 5, angle)
-
     
 ##### END OVAL FUNCTIONS #####
 
