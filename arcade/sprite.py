@@ -118,7 +118,7 @@ class Sprite():
     >>> ship_sprite.kill()
     >>> arcade.quick_run(0.25)
     """
-    def __init__(self, filename=None, scale=0, x=0, y=0):
+    def __init__(self, filename=None, scale=0, x=0, y=0, width=0, height=0):
         """
         Create a new sprite.
 
@@ -131,6 +131,18 @@ class Sprite():
             height (float): Height of the sprite
 
         """
+
+        if width < 0:
+            raise SystemError("Width of image can't be less than zero.")
+
+        if height < 0:
+            raise SystemError("Height of image can't be less than zero.")
+
+        if width == 0 and height != 0:
+            raise SystemError("Width can't be zero.")
+
+        if height == 0 and width != 0:
+            raise SystemError("Height can't be zero.")
 
         if filename is not None:
             self.texture = load_texture(filename, x, y,
@@ -373,13 +385,13 @@ arcade.Sprite("doc/source/examples/images/playerShip1_orange.png", scale)
                 sprite_list.remove(self)
 
 
-class PlatformerSpriteSheetSprite(Sprite):
+class AnimatedSprite(Sprite):
     """
     Sprite for platformer games that supports animations.
 
     >>> import arcade
     >>> arcade.open_window("Sprite Example", 800, 600)
-    >>> player = arcade.PlatformerSpriteSheetSprite()
+    >>> player = arcade.AnimatedSprite()
     >>> top_trim = 100
     >>> ltrim = 2
     >>> rtrim = 2
