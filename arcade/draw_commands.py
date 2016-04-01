@@ -675,7 +675,7 @@ def draw_oval_filled(center_x, center_y, width, height, color, angle=0):
 def draw_oval_outline(center_x, center_y, width, height, color, border_width=5, angle=0):
 
     if border_width <= 0:
-        draw_ellipse_filled(center_x, center_y, width, height, color, angle)
+        print("Error: Border width must be greater than 0. Use the draw_oval_filled function to create a filled oval.")
     else:
         draw_ellipse_outline(center_x, center_y, width, height, color, border_width, angle)
 
