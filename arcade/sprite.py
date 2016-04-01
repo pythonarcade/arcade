@@ -6,7 +6,7 @@ class SpriteList():
     """
     List of sprites.
 
-    :Example:
+    :Unit Test:
 
     >>> import arcade
     >>> import random
@@ -79,36 +79,58 @@ class Sprite():
     """
     Class that represents a 'sprite' on-screen.
 
+    @attribute someArg: example argument
+
+    Attributes:
+        :scale:           blah blah x.
+        :center_x:        blah blah x.
+        :center_y:        blah blah x.
+        :angle:           blah blah x.
+        :change_x:        blah blah x.
+        :change_y:        blah blah x.
+        :change_angle:    blah blah x.
+        :alpha:           blah blah x.
+        :sprite_lists:     blah blah x.
+        :textures:         blah blah x.
+        :cur_texture_index: blah blah x.
+        :transparent:      blah blah x.
+
     :Example:
 
     >>> import arcade
     >>> arcade.open_window("Sprite Example", 800, 600)
-    >>> scale = 1
+    >>> SCALE = 1
+    >>> # Test creating an empty sprite
     >>> empty_sprite = arcade.Sprite()
+    >>> # Create a sprite with an image
     >>> filename = "doc/source/examples/images/playerShip1_orange.png"
-    >>> ship_sprite = arcade.Sprite(filename, scale)
+    >>> ship_sprite = arcade.Sprite(filename, SCALE)
+    >>> # Draw the sprite
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
     >>> ship_sprite.draw()
     >>> arcade.finish_render()
+    >>> # Move the sprite
     >>> ship_sprite.change_x = 1
     >>> ship_sprite.change_y = 1
     >>> ship_sprite.update() # Move/update the ship
-    >>> ship_sprite.kill() # Remove the ship
+    >>> # Remove the sprite
+    >>> ship_sprite.kill()
     >>> arcade.quick_run(0.25)
     """
-    def __init__(self, filename=None, scale=0, x=0, y=0, width=0, height=0):
-        if width < 0:
-            raise SystemError("Width of image can't be less than zero.")
+    def __init__(self, filename=None, scale=0, x=0, y=0):
+        """
+        Create a new sprite.
 
-        if height < 0:
-            raise SystemError("Height of image can't be less than zero.")
+        Args:
+            filename (str): Filename of an image that represents the sprite.
+            scale (float): Scale the image up or down. Scale of 1.0 is no-scaling.
+            x (float): Scale the image up or down. Scale of 1.0 is no-scaling.
+            y (float): Scale the image up or down. Scale of 1.0 is no-scaling.
+            width (float): Width of the sprite
+            height (float): Height of the sprite
 
-        if width == 0 and height != 0:
-            raise SystemError("Width can't be zero.")
-
-        if height == 0 and width != 0:
-            raise SystemError("Height can't be zero.")
+        """
 
         if filename is not None:
             self.texture = load_texture(filename, x, y,
@@ -183,7 +205,7 @@ class Sprite():
 
     def _get_bottom(self):
         """
-        The lowest y coordinate.
+        Return the y coordinate of the bottom of the sprite.
 
         >>> import arcade
         >>> arcade.open_window("Sprite Example", 800, 600)
@@ -202,7 +224,9 @@ arcade.Sprite("doc/source/examples/images/playerShip1_orange.png", scale)
         return min(points[0][1], points[1][1], points[2][1], points[3][1])
 
     def _set_bottom(self, amount):
-        """ The lowest y coordinate. """
+        """
+        Set the location of the sprite based on the bottom y coordinate.
+        """
         points = self.get_points()
         lowest = min(points[0][1], points[1][1], points[2][1], points[3][1])
         diff = lowest - amount
@@ -212,7 +236,7 @@ arcade.Sprite("doc/source/examples/images/playerShip1_orange.png", scale)
 
     def _get_top(self):
         """
-        The highest y coordinate.
+        Return the y coordinate of the top of the sprite.
 
         >>> import arcade
         >>> arcade.open_window("Sprite Example", 800, 600)
@@ -272,7 +296,7 @@ arcade.Sprite("doc/source/examples/images/playerShip1_orange.png", scale)
 
     def _get_right(self):
         """
-        Right-most coordinate
+        Return the x coordinate of the right-side of the sprite.
 
         :Example:
 
@@ -303,9 +327,15 @@ arcade.Sprite("doc/source/examples/images/playerShip1_orange.png", scale)
     right = property(_get_right, _set_right)
 
     def _get_texture(self):
+        """
+        Return the texture that the sprite uses.
+        """
         return self._texture
 
     def _set_texture(self, texture):
+        """
+        Set the current sprite texture.
+        """
         if type(texture) is Texture:
             self._texture = texture
         else:
@@ -315,6 +345,10 @@ arcade.Sprite("doc/source/examples/images/playerShip1_orange.png", scale)
     texture = property(_get_texture, _set_texture)
 
     def _register_sprite_list(self, new_list):
+        """
+        Register this sprite as belonging to a list. We will automatically
+        remove ourselves from the the list when kill() is called.
+        """
         self.sprite_lists.append(new_list)
 
     def draw(self):
