@@ -192,58 +192,51 @@ def draw_fancy_math_arc_outline(start_x, start_y, end_x, end_y, height, color, l
     temp_y = temp_y**2
     z = temp_x + temp_y
     distance = math.sqrt(z)
+    mid_x = (start_x + end_x)/2
+    mid_y = (start_y + end_y)/2
 
-    a = height
-    b = height
-    c = distance
-
-    square_c = c**2
-    square_c = square_c * -1
-
-    square_b = b**2
-
-    square_a = a**2
-
-    numerator = square_c + square_b + square_a
-    denominator = 2 * a * b
-
-    cosine = numerator / denominator
-
-    radian = math.acos(cosine)
-
-    angle = radian*(180/math.pi)
-    print(angle)
+##    a = height
+##    b = height
+##    c = distance
+##
+##    square_c = c**2
+##    square_c = square_c * -1
+##
+##    square_b = b**2
+##
+##    square_a = a**2
+##
+##    numerator = square_c + square_b + square_a
+##    denominator = 2 * a * b
+##
+##    cosine = numerator / denominator
+##
+##    radian = math.acos(cosine)
+##
+##    angle = radian*(180/math.pi)
+##    print(angle)
 
 
     h = height**2
 
-    cx = Symbol('cx')
-    cy = Symbol('cy')
-    center_vars = nsolve(((start_x-cx)**2 + (start_y-cy)**2-h,(end_x-cx)**2 + (end_y-cy)**2-h), (cx,cy), (-1,1))
-    print(center_vars)
-    center_x = center_vars[0]
-    center_y = center_vars[1]
-    print(center_x, center_y)
-    start_a = math.atan2(start_y-center_y,start_x-center_x)
-    end_a = math.atan2(end_y-center_y,end_x-center_x)
+##    cent_x = start_x - math.sqrt((distance**2) - (start_y**2) + (2 * start_y * cent_y) - (cent_y**2))
+##    cent_y = end_y - math.sqrt((distance**2) - (end_x**2) + (2 * end_x * cent_x) - (cent_x**2))
+##
+##    cent_x = start_x - math.sqrt((distance**2) - (start_y**2) + (2 * start_y * (end_y - math.sqrt((distance**2) - (end_x**2) + (2 * end_x * cent_x) - (cent_x**2)))) - (end_y - math.sqrt((distance**2) - (end_x**2) + (2 * end_x * cent_x) - (cent_x**2)))**2)
+
+    cent_x = (4*start_x**3-4*start_x**2*end_x-math.sqrt((-4*start_x**3+4*start_x**2*end_x-4*start_x*start_y**2+8*start_x*start_y*end_y-4*start_x*end_y**2+4*start_x*end_x**2-4*start_y**2*end_x+8*start_y*end_y*end_x-4*end_y**2*end_x-4*end_x**3)**2-4*(4*start_x**2-8*start_x*end_x+4*start_y**2-8*start_y*end_y+4*end_y**2+4*end_x**2)*(start_x**4+2*start_x**2*start_y**2-4*start_x**2*start_y*end_y+2*start_x**2*end_y**2-2*start_x**2*end_x**2-4*distance**2*start_y**2+8*distance**2*start_y*end_y-4*distance**2*end_y**2+start_y**4-4*start_y**3*end_y+6*start_y**2*end_y**2+2*start_y**2*end_x**2-4*start_y*end_y**3-4*start_y*end_y*end_x**2+end_y**4+2*end_y**2*end_x**2+end_x**4))+4*start_x*start_y**2-8*start_x*start_y*end_y+4*start_x*end_y**2-4*start_x*end_x**2+4*start_y**2*end_x-8*start_y*end_y*end_x+4*end_y**2*end_x+4*end_x**3)/(2*(4*start_x**2-8*start_x*end_x+4*start_y**2-8*start_y*end_y+4*end_y**2+4*end_x**2))
+    print(cent_x)
+    cent_y = end_y - math.sqrt((distance**2) - (end_x**2) + (2 * end_x * cent_x) - (cent_x**2))
+    print(cent_y)
+
+
+    start_a = math.atan2(start_y-cent_y,start_x-cent_x)
+    end_a = math.atan2(end_y-cent_y,end_x-cent_x)
     start_angle = start_a*(180/math.pi)
     end_angle = end_a*(180/math.pi)
     print(start_angle, end_angle)
-    if end_angle < 0:
-        end_angle *= -1
-    else:
-        end_angle = 180 - end_angle
-    if start_angle < 0:
-        start_angle *= -1
-    else:
-        start_angle = 180 - start_angle
-    if end_angle < start_angle:
-        temp = end_angle
-        end_angle = start_angle
-        start_angle = temp
-    print(start_angle, end_angle)
 
-    arcade.draw_arc_outline(center_x, center_y, distance, height, color, start_angle, end_angle, line_width, tilt_angle)
+    arcade.draw_arc_outline(cent_x, cent_y, distance, height, color, start_angle, end_angle, line_width, tilt_angle)
 
 def draw_fancy_math_arc_filled(start_x, start_y, end_x, end_y, height, color, tilt_angle=0):
     temp_x = end_x - start_x
@@ -252,58 +245,50 @@ def draw_fancy_math_arc_filled(start_x, start_y, end_x, end_y, height, color, ti
     temp_y = temp_y**2
     z = temp_x + temp_y
     distance = math.sqrt(z)
+    mid_x = (start_x + end_x)/2
+    mid_y = (start_y + end_y)/2
 
-    a = height
-    b = height
-    c = distance
-
-    square_c = c**2
-    square_c = square_c * -1
-
-    square_b = b**2
-
-    square_a = a**2
-
-    numerator = square_c + square_b + square_a
-    denominator = 2 * a * b
-
-    cosine = numerator / denominator
-
-    radian = math.acos(cosine)
-
-    angle = radian*(180/math.pi)
-    print(angle)
+##    a = height
+##    b = height
+##    c = distance
+##
+##    square_c = c**2
+##    square_c = square_c * -1
+##
+##    square_b = b**2
+##
+##    square_a = a**2
+##
+##    numerator = square_c + square_b + square_a
+##    denominator = 2 * a * b
+##
+##    cosine = numerator / denominator
+##
+##    radian = math.acos(cosine)
+##
+##    angle = radian*(180/math.pi)
+##    print(angle)
 
 
     h = height**2
 
-    cx = Symbol('cx')
-    cy = Symbol('cy')
-    center_vars = nsolve(((start_x-cx)**2 + (start_y-cy)**2-h,(end_x-cx)**2 + (end_y-cy)**2-h), (cx,cy), (-1,1))
-    print(center_vars)
-    center_x = center_vars[0]
-    center_y = center_vars[1]
-    print(center_x, center_y)
-    start_a = math.atan2(start_y-center_y,start_x-center_x)
-    end_a = math.atan2(end_y-center_y,end_x-center_x)
+##    cent_x = start_x - math.sqrt((distance**2) - (start_y**2) + (2 * start_y * cent_y) - (cent_y**2))
+##    cent_y = end_y - math.sqrt((distance**2) - (end_x**2) + (2 * end_x * cent_x) - (cent_x**2))
+##
+##    cent_x = start_x - math.sqrt((distance**2) - (start_y**2) + (2 * start_y * (end_y - math.sqrt((distance**2) - (end_x**2) + (2 * end_x * cent_x) - (cent_x**2)))) - (end_y - math.sqrt((distance**2) - (end_x**2) + (2 * end_x * cent_x) - (cent_x**2)))**2)
+
+    cent_x = (4*start_x**3-4*start_x**2*end_x-math.sqrt((-4*start_x**3+4*start_x**2*end_x-4*start_x*start_y**2+8*start_x*start_y*end_y-4*start_x*end_y**2+4*start_x*end_x**2-4*start_y**2*end_x+8*start_y*end_y*end_x-4*end_y**2*end_x-4*end_x**3)**2-4*(4*start_x**2-8*start_x*end_x+4*start_y**2-8*start_y*end_y+4*end_y**2+4*end_x**2)*(start_x**4+2*start_x**2*start_y**2-4*start_x**2*start_y*end_y+2*start_x**2*end_y**2-2*start_x**2*end_x**2-4*distance**2*start_y**2+8*distance**2*start_y*end_y-4*distance**2*end_y**2+start_y**4-4*start_y**3*end_y+6*start_y**2*end_y**2+2*start_y**2*end_x**2-4*start_y*end_y**3-4*start_y*end_y*end_x**2+end_y**4+2*end_y**2*end_x**2+end_x**4))+4*start_x*start_y**2-8*start_x*start_y*end_y+4*start_x*end_y**2-4*start_x*end_x**2+4*start_y**2*end_x-8*start_y*end_y*end_x+4*end_y**2*end_x+4*end_x**3)/(2*(4*start_x**2-8*start_x*end_x+4*start_y**2-8*start_y*end_y+4*end_y**2+4*end_x**2))
+    print(cent_x)
+    cent_y = end_y - math.sqrt((distance**2) - (end_x**2) + (2 * end_x * cent_x) - (cent_x**2))
+    print(cent_y)
+
+    start_a = math.atan2(start_y-cent_y,start_x-cent_x)
+    end_a = math.atan2(end_y-cent_y,end_x-cent_x)
     start_angle = start_a*(180/math.pi)
     end_angle = end_a*(180/math.pi)
     print(start_angle, end_angle)
-    if end_angle < 0:
-        end_angle *= -1
-    else:
-        end_angle = 180 - end_angle
-    if start_angle < 0:
-        start_angle *= -1
-    else:
-        start_angle = 180 - start_angle
-    if end_angle < start_angle:
-        temp = end_angle
-        end_angle = start_angle
-        start_angle = temp
-    print(start_angle, end_angle)
 
-    arcade.draw_arc_filled(center_x, center_y, distance, height, color, start_angle, end_angle, tilt_angle)
+    arcade.draw_arc_filled(cent_x, cent_y, distance, height, color, start_angle, end_angle, tilt_angle)
 
 def draw_parabola_filled(start_x, start_y, end_x, height, color, tilt_angle=0):
     cx = (start_x+end_x)/2
@@ -1271,6 +1256,20 @@ def draw_polygon_outline(point_list, color, line_width=1):
     for point in point_list:
         GL.glVertex3f(point[0], point[1], 0.5)
     GL.glEnd()
+
+def draw_triangle_filled(first_x, first_y, second_x, second_y, third_x, third_y, color):  
+    first_point = [first_x, first_y]
+    second_point = [second_x, second_y]
+    third_point = [third_x, third_y]
+    point_list = (first_point, second_point, third_point)
+    arcade.draw_polygon_filled(point_list, color)
+
+def draw_triangle_outline(first_x, first_y, second_x, second_y, third_x, third_y, color, line_width=1):    
+    first_point = [first_x, first_y]
+    second_point = [second_x, second_y]
+    third_point = [third_x, third_y]
+    point_list = (first_point, second_point, third_point)
+    arcade.draw_polygon_outline(point_list, color, line_width)
 
 
 def draw_rectangle_outline(x, y, width, height, color, line_width=1, angle=0):
