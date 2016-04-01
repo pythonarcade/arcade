@@ -39,6 +39,7 @@ def trim_image(image):
     bbox = image.getbbox()
     return image.crop(bbox)
 
+##### BEGIN ARC FUNCTIONS #####
 
 def draw_arc_filled(center_x, center_y,
                     width, height,
@@ -305,6 +306,10 @@ def draw_fancy_math_arc_filled(start_x, start_y, end_x, end_y, height, color, ti
 
     arcade.draw_arc_filled(center_x, center_y, distance, height, color, start_angle, end_angle, tilt_angle)
 
+##### END ARC FUNCTIONS #####
+
+##### BEGIN PARABOLA FUNCTIONS #####
+    
 def draw_parabola_filled(start_x, start_y, end_x, height, color, tilt_angle=0):
     cx = (start_x+end_x)/2
     cy = start_y + height
@@ -321,7 +326,9 @@ def draw_parabola_outline(start_x, start_y, end_x, height, color, line_width=5, 
     width = (start_x - end_x)
     arcade.draw_arc_outline(center_x, center_y, width, height, color, start_angle, end_angle, line_width, tilt_angle)
 
+##### END CIRCLE FUNCTIONS #####
 
+##### BEGIN CIRCLE FUNCTIONS #####
 
 def draw_circle_filled(center_x, center_y, radius, color, num_segments=128):
     """
@@ -656,6 +663,8 @@ def draw_ellipse_outline(center_x, center_y, width, height, color, line_width=1,
     GL.glEnd()
     GL.glLoadIdentity()
 
+##### END OVAL FUNCTIONS #####
+    
 ##### BEGIN OVAL FUNCTIONS #####
 
 # draw any oval with 1 function with max parameters
