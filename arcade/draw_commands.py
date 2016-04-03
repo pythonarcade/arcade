@@ -1668,14 +1668,9 @@ def draw_rectangle_filled(center_x, center_y, width, height, color, angle=0):
 
     GL.glLoadIdentity()
     GL.glTranslatef(center_x, center_y, 0)
-    if angle:def draw_rectangle(center_x, center_y, width, height, color, border_width = 0, angle=0):
-    if border_width <= 0:
-        draw_rectangle_filled(center_x, center_y, width, height, color, angle)
-    else:
-        draw_rectangle_outline(center_x, center_y, width, height, color, border_width, angle)
-
-
+    if angle:
         GL.glRotatef(angle, 0, 0, 1)
+        
     GL.glTranslatef(-width / 2, height / 2, 0)
 
     GL.glBegin(GL.GL_QUADS)
