@@ -7,7 +7,7 @@ def are_polygons_intersecting(poly_a, poly_b):
 
     Args:
         :poly_a (tuple): List of points that define the first polygon.
-        :poly_b (tuple): List of points that define the secpmd polygon.
+        :poly_b (tuple): List of points that define the second polygon.
     Returns:
         bool
     Raises:

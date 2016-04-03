@@ -15,9 +15,9 @@ class Texture():
         self.id = id
         self.width = width
         self.height = height
-        
+
 ##### BEGIN TEXTURE FUNCTIONS #####
-        
+
 def load_textures(file_name, image_location_list,
                   mirrored=False, flipped=False):
     """
@@ -367,7 +367,7 @@ def draw_fancy_math_arc_outline(start_x, start_y, end_x, end_y, height, color, l
         None
 
     Example:
-    
+
     >>> import arcade
     >>> arcade.open_window("Drawing Example", 800, 600)
     >>> arcade.set_background_color(arcade.color.WHITE)
@@ -377,7 +377,7 @@ def draw_fancy_math_arc_outline(start_x, start_y, end_x, end_y, height, color, l
     >>> arcade.draw_fancy_math_arc_outline(160, 160, 210, 210, 20, transparent_color)
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
-    """    
+    """
     temp_x = end_x - start_x
     temp_x = temp_x**2
     temp_y = end_y - start_y
@@ -416,7 +416,7 @@ def draw_fancy_math_arc_outline(start_x, start_y, end_x, end_y, height, color, l
 ##    cent_x = start_x - math.sqrt((distance**2) - (start_y**2) + (2 * start_y * (end_y - math.sqrt((distance**2) - (end_x**2) + (2 * end_x * cent_x) - (cent_x**2)))) - (end_y - math.sqrt((distance**2) - (end_x**2) + (2 * end_x * cent_x) - (cent_x**2)))**2)
 
     cent_x = (4*start_x**3-4*start_x**2*end_x-math.sqrt((-4*start_x**3+4*start_x**2*end_x-4*start_x*start_y**2+8*start_x*start_y*end_y-4*start_x*end_y**2+4*start_x*end_x**2-4*start_y**2*end_x+8*start_y*end_y*end_x-4*end_y**2*end_x-4*end_x**3)**2-4*(4*start_x**2-8*start_x*end_x+4*start_y**2-8*start_y*end_y+4*end_y**2+4*end_x**2)*(start_x**4+2*start_x**2*start_y**2-4*start_x**2*start_y*end_y+2*start_x**2*end_y**2-2*start_x**2*end_x**2-4*distance**2*start_y**2+8*distance**2*start_y*end_y-4*distance**2*end_y**2+start_y**4-4*start_y**3*end_y+6*start_y**2*end_y**2+2*start_y**2*end_x**2-4*start_y*end_y**3-4*start_y*end_y*end_x**2+end_y**4+2*end_y**2*end_x**2+end_x**4))+4*start_x*start_y**2-8*start_x*start_y*end_y+4*start_x*end_y**2-4*start_x*end_x**2+4*start_y**2*end_x-8*start_y*end_y*end_x+4*end_y**2*end_x+4*end_x**3)/(2*(4*start_x**2-8*start_x*end_x+4*start_y**2-8*start_y*end_y+4*end_y**2+4*end_x**2))
-    
+
     cent_y = end_y - math.sqrt((distance**2) - (end_x**2) + (2 * end_x * cent_x) - (cent_x**2))
 
 
@@ -455,7 +455,8 @@ def draw_fancy_math_arc_filled(start_x, start_y, end_x, end_y, height, color, ti
     >>> arcade.draw_fancy_math_arc_filled(160, 160, 210, 210, 20, transparent_color)
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
-    """        
+    """
+
     temp_x = end_x - start_x
     temp_x = temp_x**2
     temp_y = end_y - start_y
@@ -494,7 +495,7 @@ def draw_fancy_math_arc_filled(start_x, start_y, end_x, end_y, height, color, ti
 ##    cent_x = start_x - math.sqrt((distance**2) - (start_y**2) + (2 * start_y * (end_y - math.sqrt((distance**2) - (end_x**2) + (2 * end_x * cent_x) - (cent_x**2)))) - (end_y - math.sqrt((distance**2) - (end_x**2) + (2 * end_x * cent_x) - (cent_x**2)))**2)
 
     cent_x = (4*start_x**3-4*start_x**2*end_x-math.sqrt((-4*start_x**3+4*start_x**2*end_x-4*start_x*start_y**2+8*start_x*start_y*end_y-4*start_x*end_y**2+4*start_x*end_x**2-4*start_y**2*end_x+8*start_y*end_y*end_x-4*end_y**2*end_x-4*end_x**3)**2-4*(4*start_x**2-8*start_x*end_x+4*start_y**2-8*start_y*end_y+4*end_y**2+4*end_x**2)*(start_x**4+2*start_x**2*start_y**2-4*start_x**2*start_y*end_y+2*start_x**2*end_y**2-2*start_x**2*end_x**2-4*distance**2*start_y**2+8*distance**2*start_y*end_y-4*distance**2*end_y**2+start_y**4-4*start_y**3*end_y+6*start_y**2*end_y**2+2*start_y**2*end_x**2-4*start_y*end_y**3-4*start_y*end_y*end_x**2+end_y**4+2*end_y**2*end_x**2+end_x**4))+4*start_x*start_y**2-8*start_x*start_y*end_y+4*start_x*end_y**2-4*start_x*end_x**2+4*start_y**2*end_x-8*start_y*end_y*end_x+4*end_y**2*end_x+4*end_x**3)/(2*(4*start_x**2-8*start_x*end_x+4*start_y**2-8*start_y*end_y+4*end_y**2+4*end_x**2))
-    
+
     cent_y = end_y - math.sqrt((distance**2) - (end_x**2) + (2 * end_x * cent_x) - (cent_x**2))
 
     start_a = math.atan2(start_y-cent_y,start_x-cent_x)
@@ -507,7 +508,7 @@ def draw_fancy_math_arc_filled(start_x, start_y, end_x, end_y, height, color, ti
 ##### END ARC FUNCTIONS #####
 
 ##### BEGIN PARABOLA FUNCTIONS #####
-    
+
 def draw_parabola_filled(start_x, start_y, end_x, height, color, tilt_angle=0):
     """
     Draws a filled in parabola.
@@ -539,6 +540,10 @@ def draw_parabola_filled(start_x, start_y, end_x, height, color, tilt_angle=0):
     """     
     center_x = (start_x+end_x)/2
     center_y = start_y + height
+
+def draw_parabola_filled(start_x, start_y, end_x, height, color, tilt_angle=0):
+    cx = (start_x+end_x)/2
+    cy = start_y + height
     start_angle = 0
     end_angle = 180
     width = (start_x - end_x)
@@ -620,9 +625,9 @@ def draw_circle_filled(center_x, center_y, radius, color):
     """
     width = radius
     height = radius
-    draw_ellipse_filled(center_x, center_y, width, height, color) 
-    
-    
+    draw_ellipse_filled(center_x, center_y, width, height, color)
+
+
 def draw_small_filled_circle(center_x, center_y, color):
     """
     Draws a cirlce with a default small radius.
@@ -649,11 +654,11 @@ def draw_small_filled_circle(center_x, center_y, color):
     >>> arcade.draw_small_filled_circle(420, 285, arcade.color.BLUE)
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
-    """    
+    """
     radius = 10
-    
+
     draw_circle_filled(center_x, center_y, radius, color)
-    
+
 def draw_medium_filled_circle(center_x, center_y, color):
     """
     Draws a cirlce with a default medium radius.
@@ -680,9 +685,9 @@ def draw_medium_filled_circle(center_x, center_y, color):
     >>> arcade.draw_medium_filled_circle(420, 285, arcade.color.RED)
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
-    """     
+    """
     radius = 25
-    
+
     draw_circle_filled(center_x, center_y, radius, color)
 
 def draw_large_filled_circle(center_x, center_y, color):
@@ -711,18 +716,18 @@ def draw_large_filled_circle(center_x, center_y, color):
     >>> arcade.draw_large_filled_circle(420, 285, arcade.color.PURPLE)
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
-    """     
+    """
     radius = 40
-    
+
     draw_circle_filled(center_x, center_y, radius, color)
 
 def draw_standard_circle(center_x, center_y, color, size, filled, adjustment = 0):
     #Draws a general circle with a limited number of specifications
-    
-    """This function is meant to encapsule all of the different kinds of circles that a person might want drawn. 
+
+    """This function is meant to encapsule all of the different kinds of circles that a person might want drawn.
     The arguments are the circle's specifications given in an order that a person would use to describe what they want
     (i.e. "I want a 'large' 'solid 'red' circle at 'this spot'.)
-    
+
     The arguments are as such;
     size = The radius of the circle expressed in descriptive words like "small" or "s", "medium" or "m", or "large" or "l".
     adjustment = A customizable adjustment to the size of the standard circle. Can be positive or negative or can be entirely ignored.
@@ -730,9 +735,9 @@ def draw_standard_circle(center_x, center_y, color, size, filled, adjustment = 0
     color = The color of the circle.
     center_x = The center's x coordinate.
     center_y = The center's y coordinate.
-    
+
     Example:
-    
+
     >>> import arcade
     >>> arcade.open_window("Drawing Example", 800, 600)
     >>> arcade.set_background_color(arcade.color.WHITE)
@@ -744,17 +749,17 @@ def draw_standard_circle(center_x, center_y, color, size, filled, adjustment = 0
     #--size--
     if size.lower() == "small" or size.lower() == "s":
         radius = 10 + adjustment
-    
+
     elif size.lower() == "medium" or size.lower() == "m":
         radius = 25 + adjustment
-        
+
     elif size.lower() == "large" or size.lower() == "l":
         radius = 40 + adjustment
-     
+
     #--filled--
     if filled == "filled" or filled == "solid":
         draw_circle_filled(center_x, center_y, radius, color)
-         
+
     elif filled == "outline" or filled == "hollow":
         draw_circle_outline(center_x, center_y, radius, color)
 
@@ -797,11 +802,11 @@ def draw_circle(center_x, center_y, radius, color, border_width = 0):
         draw_circle_filled(center_x, center_y, radius, color)
     else:
         draw_circle_outline(center_x, center_y, radius, color, border_width)
-    
+
 ##### END CIRCLE FUNCTIONS #####
 
 ##### BEGIN ELLIPSE FUNCTIONS #####
-    
+
 def create_ellipse(width, height, color, num_segments=64):
     data = []
 
@@ -826,8 +831,8 @@ def create_ellipse(width, height, color, num_segments=64):
 
     shape = VertexBuffer(vbo_id, len(v2f)//2, width, height, color)
     return shape
-    
-    
+
+
 def render_ellipse_filled(shape, x, y, color, angle=0):
     # Set color
     if len(color) == 4:
@@ -838,17 +843,17 @@ def render_ellipse_filled(shape, x, y, color, angle=0):
     elif len(color) == 3:
         GL.glDisable(GL.GL_BLEND)
         GL.glColor4ub(shape.color[0], shape.color[1], shape.color[2], 255)
-    
+
     GL.glBindBuffer(GL.GL_ARRAY_BUFFER, shape.vbo_id)
     GL.glVertexPointer(2, GL.GL_FLOAT, 0, 0)
-    
+
     GL.glLoadIdentity()
     GL.glTranslatef(x, y, 0)
     if angle:
         GL.glRotatef(angle, 0, 0, 1)
-    
-    GL.glDrawArrays(GL.GL_TRIANGLE_FAN, 0, shape.size)    
-    
+
+    GL.glDrawArrays(GL.GL_TRIANGLE_FAN, 0, shape.size)
+
 def draw_ellipse_filled(center_x, center_y, width, height, color, angle=0):
     """
     Draw a filled in ellipse.
@@ -913,7 +918,6 @@ def draw_ellipse_filled(center_x, center_y, width, height, color, angle=0):
 
     GL.glEnd()
     GL.glLoadIdentity()
-
 
 def draw_ellipse_outline(center_x, center_y, width, height, color, line_width=1, angle=0):
     """
@@ -980,7 +984,7 @@ def draw_ellipse_outline(center_x, center_y, width, height, color, line_width=1,
     GL.glLoadIdentity()
 
 ##### END ELLIPSE FUNCTIONS #####
-    
+
 ##### BEGIN OVAL FUNCTIONS #####
 
 # draw any oval with 1 function with max parameters
@@ -1017,7 +1021,7 @@ def draw_oval(center_x, center_y, width, height, color, border_width=0, angle=0)
         draw_oval_filled(center_x, center_y, width, height, color, angle)
     else:
         draw_oval_outline(center_x, center_y, width, height, color, border_width, angle)
-        
+
 
 # draw a custom oval that is filled
 def draw_oval_filled(center_x, center_y, width, height, color, angle=0):
@@ -1144,8 +1148,7 @@ def draw_described_oval_filled(center_x, center_y, width, height, color, angle=0
         height = -1
 
     if width != -1 and height != -1:
-        draw_oval_filled_custom(center_x, center_y, width, height, color, angle)
-        
+        draw_oval_filled(center_x, center_y, width, height, color, angle)
 
 # draw a semi custom outlined oval using word descriptions for width and height
 def draw_described_oval_outline(center_x, center_y, width, height, color, border_width = 5, angle=0):
@@ -1190,7 +1193,7 @@ def draw_described_oval_outline(center_x, center_y, width, height, color, border
         width = 12.5
     else:
         width = -1
-        
+
     if height.lower() == "very tall" or height.lower() == "vt" or height.lower() == "huge" or height.lower() == "h":
         height = 200
     elif height.lower() == "tall" or height.lower() == "t" or height.lower() == "big" or height.lower() == "b" or height.lower() == "large" or height.lower() == "l" or height.lower() == "max":
@@ -1205,12 +1208,12 @@ def draw_described_oval_outline(center_x, center_y, width, height, color, border
         height = -1
 
     if width != -1 and height != -1:
-        draw_oval_outline_custom(center_x, center_y, width, height, color, border_width, angle)
-    
+        draw_oval_outline(center_x, center_y, width, height, color, border_width, angle)
+
 ##### END OVAL FUNCTIONS #####
 
 ##### BEGIN LINE FUNCTIONS #####
-        
+
 def draw_line(start_x, start_y, end_x, end_y, color, line_width=1):
     """
     Draw a line.
@@ -1312,7 +1315,7 @@ def draw_thin_line(start_x, start_y, end_x, end_y, color, line_width=.5):
     GL.glVertex3f(start_x, start_y, 0.5)
     GL.glVertex3f(end_x, end_y, 0.5)
     GL.glEnd()
-    
+
 def draw_medium_line(start_x, start_y, end_x, end_y, color, line_width=1):
     """
     Draw a medium thickness line.
@@ -1414,7 +1417,7 @@ def draw_thick_line(start_x, start_y, end_x, end_y, color, line_width=2):
     GL.glVertex3f(start_x, start_y, 0.5)
     GL.glVertex3f(end_x, end_y, 0.5)
     GL.glEnd()
-    
+
 def draw_line_strip(point_list, color, line_width=1):
     """
     Draw a line strip. A line strip is a set of continuously connected
@@ -1534,9 +1537,9 @@ def draw_lines(point_list, color, line_width=1):
     GL.glEnd()
 
 ##### END LINE FUNCTIONS #####
-    
+
 ##### BEGIN POINT FUNCTIONS #####
-    
+
 def draw_point(x, y, color, size):
     """
     Draw a point.
@@ -1624,9 +1627,9 @@ def draw_points(point_list, color, size):
     GL.glEnd()
 
 ##### END POINT FUNCTIONS #####
-    
+
 ##### BEGIN POLYGON FUNCTIONS #####
-    
+
 def draw_polygon_filled(point_list, color):
     """
     Draw a polygon that is filled in.
@@ -1725,14 +1728,14 @@ def draw_polygon_outline(point_list, color, line_width=1):
         GL.glVertex3f(point[0], point[1], 0.5)
     GL.glEnd()
 
-def draw_triangle_filled(first_x, first_y, second_x, second_y, third_x, third_y, color):  
+def draw_triangle_filled(first_x, first_y, second_x, second_y, third_x, third_y, color):
     first_point = [first_x, first_y]
     second_point = [second_x, second_y]
     third_point = [third_x, third_y]
     point_list = (first_point, second_point, third_point)
     arcade.draw_polygon_filled(point_list, color)
 
-def draw_triangle_outline(first_x, first_y, second_x, second_y, third_x, third_y, color, line_width=1):    
+def draw_triangle_outline(first_x, first_y, second_x, second_y, third_x, third_y, color, line_width=1):
     first_point = [first_x, first_y]
     second_point = [second_x, second_y]
     third_point = [third_x, third_y]
@@ -1740,9 +1743,9 @@ def draw_triangle_outline(first_x, first_y, second_x, second_y, third_x, third_y
     arcade.draw_polygon_outline(point_list, color, line_width)
 
 ##### END POLYGON FUNCTIONS #####
-    
+
 ##### BEGIN RECTANGLE FUNCTIONS #####
-    
+
 def create_rectangle(width, height, color):
     data = [-width / 2, -height / 2,
             width / 2, -height / 2,
@@ -1784,8 +1787,8 @@ def render_rectangle_filled(shape, center_x, center_y, color, angle=0):
         GL.glRotatef(angle, 0, 0, 1)
 
     GL.glDrawArrays(GL.GL_QUADS, 0, shape.size)
-    
-def draw_rectangle_outline(center_x, center_y, width, height, color, line_width=1, angle=0):
+
+def draw_rect_outline(x, y, width, height, color, line_width=1, angle=0):
     """
     Draw a rectangle outline.
 
@@ -1805,7 +1808,7 @@ def draw_rectangle_outline(center_x, center_y, width, height, color, line_width=
     >>> arcade.open_window("Drawing Example", 800, 600)
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
-    >>> arcade.draw_rectangle_outline(278, 150, 45, 105, \
+    >>> arcade.draw_rect_outline(278, 150, 45, 105, \
 arcade.color.BRITISH_RACING_GREEN, 2)
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
@@ -1818,7 +1821,7 @@ arcade.color.BRITISH_RACING_GREEN, 2)
     GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
 
     GL.glLoadIdentity()
-    GL.glTranslatef(center_x + width / 2, center_y + height / 2, 0)
+    GL.glTranslatef(x + width / 2, y + height / 2, 0)
     if angle:
         GL.glRotatef(angle, 0, 0, 1)
     GL.glTranslatef(width / 2, height / 2, 0)
@@ -1839,7 +1842,7 @@ arcade.color.BRITISH_RACING_GREEN, 2)
     GL.glVertex3f(0, 0 - height, 0.5)
     GL.glEnd()
 
-def draw_rectangle_filled(center_x, center_y, width, height, color, angle=0):
+def draw_rect_filled(x, y, width, height, color, angle=0):
     """
     Draw a filled-in rectangle.
 
@@ -1858,7 +1861,7 @@ def draw_rectangle_filled(center_x, center_y, width, height, color, angle=0):
     >>> arcade.open_window("Drawing Example", 800, 600)
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
-    >>> arcade.draw_rectangle_filled(390, 150, 45, 105, arcade.color.BLUSH)
+    >>> arcade.draw_rect_filled(390, 150, 45, 105, arcade.color.BLUSH)
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
     """
@@ -1876,7 +1879,8 @@ def draw_rectangle_filled(center_x, center_y, width, height, color, angle=0):
         GL.glColor4ub(color[0], color[1], color[2], 255)
 
     GL.glLoadIdentity()
-    GL.glTranslatef(center_x, center_y, 0)
+    GL.glTranslatef(x, y, 0)
+    GL.glTranslatef(x, y, 0)
     if angle:
         GL.glRotatef(angle, 0, 0, 1)
         
@@ -1960,11 +1964,11 @@ scale * texture.height, texture, 90)
     GL.glTexCoord2f(0, 1)
     GL.glVertex3f(-width/2, height/2, z)
     GL.glEnd()
-    
+
 ##### END RECTANGLE FUNCTIONS #####
 
 ##### BEGIN TEXT FUNCTIONS #####
-    
+
 def draw_text(text, x, y, color, size):
     """
     Draw text to the screen.
@@ -1998,7 +2002,7 @@ def draw_text(text, x, y, color, size):
     GL.glLoadIdentity()
 
     label.draw()
-    
+
 ##### END TEXT FUNCTIONS #####
 
 class VertexBuffer():
@@ -2015,24 +2019,24 @@ class VertexBuffer():
 import arcade.color
 
 class Shape():
-    
+
     def __init__(self, center_x, center_y, color = arcade.color.GREEN):
         self.color = color
         self.center_x = center_x
         self.center_y = center_y
 
-    def draw(self):   
+    def draw(self):
         print("Cannot draw an object of type Shape. Use the subclasses of Shape: Rectangle, etc.")
 
-    def move(self):   
+    def move(self):
         print("Cannot move an object of type Shape. Use the subclasses of Shape: Rectangle, etc.")
 
 class Rectangle(Shape):
-    
+
     def __init__(self, center_x, center_y, width, height, color = arcade.color.GREEN, border_width = 0, tilt_angle = 0):
-        
+
         super().__init__(center_x, center_y, color)
-        
+
         self.width = width
         self.height = height
         self.border_width = border_width
@@ -2057,7 +2061,7 @@ class Square(Rectangle):
 
 class Oval(Shape):
     def __init__(self, center_x, center_y, width, height, color = arcade.color.GREEN, border_width = 0, tilt_angle = 0):
-        
+
         super().__init__(center_x, center_y, color)
 
         self.width = width
@@ -2070,7 +2074,7 @@ class Oval(Shape):
 
 class Circle(Shape):
     def __init__(self, center_x, center_y, radius, color = arcade.color.GREEN, border_width = 0):
-        
+
         super().__init__(center_x, center_y, color)
 
         self.radius = radius
