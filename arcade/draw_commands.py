@@ -7,11 +7,6 @@ import pyglet
 import pyglet.gl as GL
 import pyglet.gl.glu as GLU
 
-from sympy import Symbol, nsolve
-import sympy
-import mpmath
-mpmath.mp.dps = 15
-
 class Texture():
     """
     Simple class that represents a texture
@@ -509,13 +504,19 @@ def draw_parabola_filled(start_x, start_y, end_x, height, color, tilt_angle=0):
     width = (start_x - end_x)
     draw_arc_filled(center_x, center_y, width, height, color, start_angle, end_angle, tilt_angle)
 
-def draw_parabola_outline(start_x, start_y, end_x, height, color, line_width=5, tilt_angle=0):
+def draw_parabola_outline(start_x, start_y, end_x, height, color, border_width=5, tilt_angle=0):
     cx = (start_x+end_x)/2
     cy = start_y + height
     start_angle = 0
     end_angle = 180
     width = (start_x - end_x)
-    draw_arc_outline(center_x, center_y, width, height, color, start_angle, end_angle, line_width, tilt_angle)
+    draw_arc_outline(center_x, center_y, width, height, color, start_angle, end_angle, border_width, tilt_angle)
+
+def draw_parabola(start_x, start_y, end_x, height, color, border_width = 0, tilt_angle = 0):
+    if border_width <= 0:
+        draw_arc_filled(center_x, center_y, width, height, color, start_angle, end_angle, tilt_angle)
+    else:
+        draw_arc_outline(center_x, center_y, width, height, color, start_angle, end_angle, border_width, tilt_angle)
 
 ##### END PARABOLA FUNCTIONS #####
 
@@ -1667,7 +1668,13 @@ def draw_rectangle_filled(center_x, center_y, width, height, color, angle=0):
 
     GL.glLoadIdentity()
     GL.glTranslatef(center_x, center_y, 0)
-    if angle:
+    if angle:def draw_rectangle(center_x, center_y, width, height, color, border_width = 0, angle=0):
+    if border_width <= 0:
+        draw_rectangle_filled(center_x, center_y, width, height, color, angle)
+    else:
+        draw_rectangle_outline(center_x, center_y, width, height, color, border_width, angle)
+
+
         GL.glRotatef(angle, 0, 0, 1)
     GL.glTranslatef(-width / 2, height / 2, 0)
 
@@ -1798,6 +1805,7 @@ class VertexBuffer():
         self.height = height
         self.color = color
 
+#### This stuff ideally goes in another folder ####
 #### OBJECTS ####
 
 import arcade.color
