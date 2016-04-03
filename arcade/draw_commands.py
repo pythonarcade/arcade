@@ -350,7 +350,8 @@ transparent_color, 90, 360)
 
 def draw_fancy_math_arc_outline(start_x, start_y, end_x, end_y, height, color, line_width=5, tilt_angle=0):
     """
-
+    Draws the outline of an arc.
+    
     Args:
         :start_x (float):
         :start_y (float):
@@ -428,7 +429,8 @@ def draw_fancy_math_arc_outline(start_x, start_y, end_x, end_y, height, color, l
 
 def draw_fancy_math_arc_filled(start_x, start_y, end_x, end_y, height, color, tilt_angle=0):
     """
-
+    Draws a filled in arc.
+    
     Args:
         :start_x (float):
         :start_y (float):
@@ -443,6 +445,16 @@ def draw_fancy_math_arc_filled(start_x, start_y, end_x, end_y, height, color, ti
         None
 
     Example:
+    
+    >>> import arcade
+    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.set_background_color(arcade.color.WHITE)
+    >>> arcade.start_render()
+    >>> arcade.draw_fancy_math_arc_filled(150, 150, 200, 200, 20, arcade.color.BRIGHT_MAROON, 10)
+    >>> transparent_color = (255, 0, 0, 127)
+    >>> arcade.draw_fancy_math_arc_filled(160, 160, 210, 210, 20, transparent_color)
+    >>> arcade.finish_render()
+    >>> arcade.quick_run(0.25)
     """        
     temp_x = end_x - start_x
     temp_x = temp_x**2
@@ -496,17 +508,74 @@ def draw_fancy_math_arc_filled(start_x, start_y, end_x, end_y, height, color, ti
 
 ##### BEGIN PARABOLA FUNCTIONS #####
     
-def draw_parabola_filled(start_x, start_y, end_x, height, color, tilt_angle=0):   
-    cx = (start_x+end_x)/2
-    cy = start_y + height
+def draw_parabola_filled(start_x, start_y, end_x, height, color, tilt_angle=0):
+    """
+    Draws a filled in parabola.
+    
+    Args:
+        :start_x (float):
+        :start_y (float):
+        :end_x (float):
+        :end_y (float):
+        :height (float):
+        :color (tuple):
+        :tile_angle (float):
+    Returns:
+        None
+    Raises:
+        None
+
+    Example:
+    
+    >>> import arcade
+    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.set_background_color(arcade.color.WHITE)
+    >>> arcade.start_render()
+    >>> arcade.draw_parabola_filled(150, 150, 200, 50, arcade.color.BOTTLE_GREEN)
+    >>> color = (255, 0, 0, 127)
+    >>> arcade.draw_parabola_filled(160, 160, 210, 50, color)
+    >>> arcade.finish_render()
+    >>> arcade.close_window()   
+    """     
+    center_x = (start_x+end_x)/2
+    center_y = start_y + height
     start_angle = 0
     end_angle = 180
     width = (start_x - end_x)
     draw_arc_filled(center_x, center_y, width, height, color, start_angle, end_angle, tilt_angle)
 
 def draw_parabola_outline(start_x, start_y, end_x, height, color, border_width=5, tilt_angle=0):
-    cx = (start_x+end_x)/2
-    cy = start_y + height
+    """
+    Draws the outline of a parabola.
+    
+    Args:
+        :start_x (float):
+        :start_y (float):
+        :end_x (float):
+        :end_y (float):
+        :height (float):
+        :color (tuple):
+        :border_width (float):
+        :tile_angle (float):
+    Returns:
+        None
+    Raises:
+        None
+
+    Example:
+    
+    >>> import arcade
+    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.set_background_color(arcade.color.WHITE)
+    >>> arcade.start_render()
+    >>> arcade.draw_parabola_outline(150, 150, 200, 50, arcade.color.BOTTLE_GREEN, 10, 15)
+    >>> color = (255, 0, 0, 127)
+    >>> arcade.draw_parabola_outline(160, 160, 210, 50, color, 20)
+    >>> arcade.finish_render()
+    >>> arcade.close_window()     
+    """     
+    center_x = (start_x+end_x)/2
+    center_y = start_y + height
     start_angle = 0
     end_angle = 180
     width = (start_x - end_x)
@@ -916,6 +985,34 @@ def draw_ellipse_outline(center_x, center_y, width, height, color, line_width=1,
 
 # draw any oval with 1 function with max parameters
 def draw_oval(center_x, center_y, width, height, color, border_width=0, angle=0):
+    """
+    Draws an oval.
+
+    Args:
+        :center_x (float):
+        :center_y (float):
+        :height (float):
+        :width (float):
+        :color (tuple):
+        :border_width (float):
+        :angle (float):
+    Returns:
+        None
+    Raises:
+        None
+
+    Example:
+
+    >>> import arcade
+    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.set_background_color(arcade.color.WHITE)
+    >>> arcade.start_render()
+    >>> arcade.draw_oval(150, 150, 20, 40, arcade.color.BRIGHT_MAROON)
+    >>> color = (255, 0, 0, 127)
+    >>> arcade.draw_oval(160, 160, 40, 20, color, 20)
+    >>> arcade.finish_render()
+    >>> arcade.close_window()
+    """    
     if border_width <= 0:
         draw_oval_filled(center_x, center_y, width, height, color, angle)
     else:
@@ -924,11 +1021,66 @@ def draw_oval(center_x, center_y, width, height, color, border_width=0, angle=0)
 
 # draw a custom oval that is filled
 def draw_oval_filled(center_x, center_y, width, height, color, angle=0):
+    """
+    Draw a filled oval.
+
+    Args:
+        :center_x (float):
+        :center_y (float):
+        :width (float):
+        :height (float):
+        :color (tuple):
+        :angle (float):
+    Returns:
+        None
+    Raises:
+        None
+
+    Example:
+
+    >>> import arcade
+    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.set_background_color(arcade.color.WHITE)
+    >>> arcade.start_render()
+    >>> arcade.draw_oval_filled(150, 150, 20, 40, arcade.color.BRIGHT_MAROON, 20)
+    >>> color = (255, 0, 0, 127)
+    >>> arcade.draw_oval_filled(160, 160, 40, 20, color, 45)
+    >>> arcade.finish_render()
+    >>> arcade.close_window()  
+    """    
     
     draw_ellipse_filled(center_x, center_y, width, height, color, angle)
 
 # draw a custom oval outline
 def draw_oval_outline(center_x, center_y, width, height, color, border_width=5, angle=0):
+    """
+    Draw the outline of an oval.
+
+    Args:
+        :center_x (float):
+        :center_y (float):
+        :width (float):
+        :height (float):
+        :color (tuple):
+        :border_width (float):
+        :angle (float): Angle in degrees to tilt the ellipse.
+    Returns:
+        None
+    Raises:
+        None
+
+    Example:
+
+    >>> import arcade
+    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.set_background_color(arcade.color.WHITE)
+    >>> arcade.start_render()
+    >>> arcade.draw_oval_outline(150, 150, 20, 40, arcade.color.BRIGHT_MAROON, 10, 20)
+    >>> color = (255, 0, 0, 127)
+    >>> arcade.draw_oval_outline(160, 160, 40, 20, color, 5, 0)
+    >>> arcade.finish_render()
+    >>> arcade.close_window()
+    """    
 
     if border_width <= 0:
         print("Error: Border width must be greater than 0. Use the draw_oval_filled function to create a filled oval.")
@@ -937,6 +1089,34 @@ def draw_oval_outline(center_x, center_y, width, height, color, border_width=5, 
 
 # draw a semi custom filled oval using word descriptions for width and height
 def draw_described_oval_filled(center_x, center_y, width, height, color, angle=0):
+    """
+    Draws a filled oval.
+
+    Args:
+        :center_x (float):
+        :center_y (float):
+        :width (float):
+        :height (float):
+        :color (tuple):
+        :angle (float):
+    Returns:
+        None
+    Raises:
+        None
+
+    Example:
+
+    >>> import arcade
+    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.set_background_color(arcade.color.WHITE)
+    >>> arcade.start_render()
+    >>> arcade.draw_described_oval_filled(150, 150, "medium", "vs", arcade.color.BRIGHT_MAROON)
+    >>> color = (255, 0, 0, 127)
+    >>> arcade.draw_described_oval_filled(160, 160, "skinny", "very tall", color, 20)
+    >>> arcade.finish_render()
+    >>> arcade.close_window()  
+    """
+    
     if width.lower() == "very fat" or width.lower() == "vf" or width.lower() == "huge" or width.lower() == "h":
         width = 200
     elif width.lower() == "fat" or width.lower() == "f" or width.lower() == "big" or width.lower() == "b" or height.lower() == "large" or height.lower() == "l" or height.lower() == "max":
@@ -969,6 +1149,35 @@ def draw_described_oval_filled(center_x, center_y, width, height, color, angle=0
 
 # draw a semi custom outlined oval using word descriptions for width and height
 def draw_described_oval_outline(center_x, center_y, width, height, color, border_width = 5, angle=0):
+    """
+    Draw the outline of an oval.
+
+    Args:
+        :center_x (float):
+        :center_y (float):
+        :width (float):
+        :height (float):
+        :color (tuple):
+        :border_width (float):
+        :angle (float):
+    Returns:
+        None
+    Raises:
+        None
+
+    Example:
+
+    >>> import arcade
+    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.set_background_color(arcade.color.WHITE)
+    >>> arcade.start_render()
+    >>> arcade.draw_described_oval_outline(150, 150, "fat", "t", arcade.color.BRIGHT_MAROON, 4, 10)
+    >>> color = (255, 0, 0, 127)
+    >>> arcade.draw_described_oval_outline(160, 160, "very skinny", "average", color, 20)
+    >>> arcade.finish_render()
+    >>> arcade.close_window()  
+    """
+    
     if width.lower() == "very fat" or width.lower() == "vf" or width.lower() == "huge" or width.lower() == "h":
         width = 200
     elif width.lower() == "fat" or width.lower() == "f" or width.lower() == "big" or width.lower() == "b" or height.lower() == "large" or height.lower() == "l" or height.lower() == "max":
