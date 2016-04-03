@@ -1,12 +1,9 @@
 import sys
 import math
 import ctypes
-
 import PIL.Image
 import PIL.ImageOps
-
 import pyglet
-
 import pyglet.gl as GL
 import pyglet.gl.glu as GLU
 
@@ -14,7 +11,6 @@ from sympy import Symbol, nsolve
 import sympy
 import mpmath
 mpmath.mp.dps = 15
-
 
 class Texture():
     """
@@ -24,7 +20,178 @@ class Texture():
         self.id = id
         self.width = width
         self.height = height
+        
+##### BEGIN TEXTURE FUNCTIONS #####
+        
+def load_textures(file_name, image_location_list,
+                  mirrored=False, flipped=False):
+    """
+    Load a set of textures off of a single image file.
 
+    >>> import arcade
+    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> top_trim = 100
+    >>> ltrim = 2
+    >>> rtrim = 2
+    >>> image_location_list = [
+    ... [520 + ltrim, 516 + top_trim, 128 - ltrim - rtrim, 256 - top_trim],
+    ... [520 + ltrim, 258 + top_trim, 128 - ltrim - rtrim, 256 - top_trim],
+    ... [520 + ltrim, 0 + top_trim, 128 - ltrim - rtrim, 256 - top_trim],
+    ... [390 + ltrim, 1548 + top_trim, 128 - ltrim - rtrim, 256 - top_trim],
+    ... [390 + ltrim, 1290 + top_trim, 128 - ltrim - rtrim, 256 - top_trim],
+    ... [390 + ltrim, 516 + top_trim, 128 - ltrim - rtrim, 256 - top_trim],
+    ... [390 + ltrim, 258 + top_trim, 128 - ltrim - rtrim, 256 - top_trim]]
+    >>> texture_info_list = arcade.load_textures( \
+"doc/source/examples/images/spritesheet_complete.png", image_location_list)
+    >>> arcade.close_window()
+    """
+    source_image = PIL.Image.open(file_name)
+
+    source_image_width, source_image_height = source_image.size
+    texture_info_list = []
+    for image_location in image_location_list:
+        x, y, width, height = image_location
+
+        if x > source_image_width:
+            raise SystemError("Can't load texture starting at an x of {} " +
+                              "when the image is only {} across."
+                              .format(x, source_image_width))
+        if y > source_image_height:
+            raise SystemError("Can't load texture starting at an y of {} " +
+                              "when the image is only {} high."
+                              .format(y, source_image_height))
+        if x + width > source_image_width:
+            raise SystemError("Can't load texture ending at an x of {} " +
+                              "when the image is only {} wide."
+                              .format(x + width, source_image_width))
+        if y + height > source_image_height:
+            raise SystemError("Can't load texture ending at an y of {} " +
+                              "when the image is only {} high."
+                              .format(y + height, source_image_height))
+
+        image = source_image.crop((x, y, x + width, y + height))
+        # image = _trim_image(image)
+
+        if mirrored:
+            image = PIL.ImageOps.mirror(image)
+
+        if flipped:
+            image = PIL.ImageOps.flip(image)
+
+        image_width, image_height = image.size
+        image_bytes = image.convert("RGBA").tobytes("raw", "RGBA", 0, -1)
+
+        texture = GL.GLuint(0)
+        GL.glGenTextures(1, ctypes.byref(texture))
+
+        GL.glBindTexture(GL.GL_TEXTURE_2D, texture)
+        GL.glPixelStorei(GL.GL_UNPACK_ALIGNMENT, 1)
+
+        # The code below should be enabled, but it freaks out
+        # during CI (AppVeyor).
+        # GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S,
+        #                    GL.GL_CLAMP_TO_BORDER)
+        # GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T,
+        #                    GL.GL_CLAMP_TO_BORDER)
+
+        # The code below should be disabled, but keeping it here for
+        # CI
+        GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S,
+                           GL.GL_REPEAT)
+        GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T,
+                           GL.GL_REPEAT)
+
+        GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER,
+                           GL.GL_LINEAR)
+        GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER,
+                           GL.GL_LINEAR_MIPMAP_LINEAR)
+        GLU.gluBuild2DMipmaps(GL.GL_TEXTURE_2D, GL.GL_RGBA,
+                              image_width, image_height,
+                              GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, image_bytes)
+
+        texture_info_list.append(Texture(texture, width, height))
+
+    return texture_info_list
+
+def load_texture(file_name, x=0, y=0, width=0, height=0):
+    """
+    Load image from disk and create a texture.
+
+    Args:
+        :filename (str): Name of the file to that holds the texture.
+    Returns:
+        Integer identifier for the new texture.
+    Raises:
+        None
+
+    >>> import arcade
+    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> name = "doc/source/examples/images/meteorGrey_big1.png"
+    >>> texture = load_texture(name, 1, 1, 50, 50)
+    >>> arcade.close_window()
+    """
+    source_image = PIL.Image.open(file_name)
+
+    source_image_width, source_image_height = source_image.size
+
+    if x != 0 or y != 0 or width != 0 or height != 0:
+        if x > source_image_width:
+            raise SystemError("Can't load texture starting at an x of {} " +
+                              "when the image is only {} across."
+                              .format(x, source_image_width))
+        if y > source_image_height:
+            raise SystemError("Can't load texture starting at an y of {} " +
+                              "when the image is only {} high."
+                              .format(y, source_image_height))
+        if x + width > source_image_width:
+            raise SystemError("Can't load texture ending at an x of {} " +
+                              "when the image is only {} wide."
+                              .format(x + width, source_image_width))
+        if y + height > source_image_height:
+            raise SystemError("Can't load texture ending at an y of {} " +
+                              "when the image is only {} high."
+                              .format(y + height, source_image_height))
+
+        image = source_image.crop((x, y, x + width, y + height))
+    else:
+        image = source_image
+
+    # image = _trim_image(image)
+
+    image_width, image_height = image.size
+    image_bytes = image.convert("RGBA").tobytes("raw", "RGBA", 0, -1)
+
+    texture = GL.GLuint(0)
+    GL.glGenTextures(1, ctypes.byref(texture))
+
+    GL.glBindTexture(GL.GL_TEXTURE_2D, texture)
+    GL.glPixelStorei(GL.GL_UNPACK_ALIGNMENT, 1)
+
+    # The code below should be enabled, but it freaks out
+    # during CI (AppVeyor).
+    # GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S,
+    #                    GL.GL_CLAMP_TO_BORDER)
+    # GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T,
+    #                    GL.GL_CLAMP_TO_BORDER)
+
+    # The code below should be disabled, but keeping it here for
+    # CI
+    GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S,
+                       GL.GL_REPEAT)
+    GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T,
+                       GL.GL_REPEAT)
+
+    GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER,
+                       GL.GL_LINEAR)
+    GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER,
+                       GL.GL_LINEAR_MIPMAP_LINEAR)
+    GLU.gluBuild2DMipmaps(GL.GL_TEXTURE_2D, GL.GL_RGBA,
+                          image_width, image_height,
+                          GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, image_bytes)
+
+    return Texture(texture, image_width, image_height)
+
+##### END TEXTURE FUNCTIONS #####
 
 def trim_image(image):
     """
@@ -39,6 +206,7 @@ def trim_image(image):
     bbox = image.getbbox()
     return image.crop(bbox)
 
+##### BEGIN ARC FUNCTIONS #####
 
 def draw_arc_filled(center_x, center_y,
                     width, height,
@@ -186,6 +354,24 @@ transparent_color, 90, 360)
     GL.glLoadIdentity()
 
 def draw_fancy_math_arc_outline(start_x, start_y, end_x, end_y, height, color, line_width=5, tilt_angle=0):
+    """
+
+    Args:
+        :start_x (float):
+        :start_y (float):
+        :end_x (float):
+        :end_y (float):
+        :height (float):
+        :color (tuple):
+        :line_width (float):
+        :tile_angle (float):
+    Returns:
+        None
+    Raises:
+        None
+
+    Example:
+    """    
     temp_x = end_x - start_x
     temp_x = temp_x**2
     temp_y = end_y - start_y
@@ -239,6 +425,23 @@ def draw_fancy_math_arc_outline(start_x, start_y, end_x, end_y, height, color, l
     arcade.draw_arc_outline(cent_x, cent_y, distance, height, color, start_angle, end_angle, line_width, tilt_angle)
 
 def draw_fancy_math_arc_filled(start_x, start_y, end_x, end_y, height, color, tilt_angle=0):
+    """
+
+    Args:
+        :start_x (float):
+        :start_y (float):
+        :end_x (float):
+        :end_y (float):
+        :height (float):
+        :color (tuple):
+        :tile_angle (float):
+    Returns:
+        None
+    Raises:
+        None
+
+    Example:
+    """        
     temp_x = end_x - start_x
     temp_x = temp_x**2
     temp_y = end_y - start_y
@@ -290,7 +493,11 @@ def draw_fancy_math_arc_filled(start_x, start_y, end_x, end_y, height, color, ti
 
     arcade.draw_arc_filled(cent_x, cent_y, distance, height, color, start_angle, end_angle, tilt_angle)
 
-def draw_parabola_filled(start_x, start_y, end_x, height, color, tilt_angle=0):
+##### END ARC FUNCTIONS #####
+
+##### BEGIN PARABOLA FUNCTIONS #####
+    
+def draw_parabola_filled(start_x, start_y, end_x, height, color, tilt_angle=0):   
     cx = (start_x+end_x)/2
     cy = start_y + height
     start_angle = 0
@@ -306,7 +513,9 @@ def draw_parabola_outline(start_x, start_y, end_x, height, color, line_width=5, 
     width = (start_x - end_x)
     arcade.draw_arc_outline(center_x, center_y, width, height, color, start_angle, end_angle, line_width, tilt_angle)
 
+##### END PARABOLA FUNCTIONS #####
 
+##### BEGIN CIRCLE FUNCTIONS #####
 
 def draw_circle_filled(center_x, center_y, radius, color, num_segments=128):
     """
@@ -433,7 +642,6 @@ def draw_large_filled_circle(center_x, center_y, color):
     
     draw_circle_filled(center_x, center_y, radius, color)
 
-
 def draw_standard_circle(center_x, center_y, color, size, filled, adjustment = 0):
     #Draws a general circle with a limited number of specifications
     
@@ -476,7 +684,6 @@ def draw_standard_circle(center_x, center_y, color, size, filled, adjustment = 0
     elif filled == "outline" or filled == "hollow":
         draw_circle_outline(center_x, center_y, radius, color)
 
-
 def draw_circle_outline(center_x, center_y, radius, color, line_width=1, num_segments=128):
     """
     Draw the outline of a circle.
@@ -509,8 +716,58 @@ def draw_circle_outline(center_x, center_y, radius, color, line_width=1, num_seg
     height = radius
     draw_ellipse_outline(center_x, center_y, width, height,
                          color, line_width, num_segments)
+    
+##### END CIRCLE FUNCTIONS #####
 
+##### BEGIN ELLIPSE FUNCTIONS #####
+    
+def create_ellipse(width, height, color, num_segments=64):
+    data = []
 
+    for i in range(num_segments + 1):
+        theta = 2.0 * 3.1415926 * i / num_segments
+
+        x = width * math.cos(theta)
+        y = height * math.sin(theta)
+
+        data.extend([x, y])
+
+    vbo_id = GL.GLuint()
+
+    GL.glGenBuffers(1, ctypes.pointer(vbo_id))
+
+    v2f = data
+    data2 = (GL.GLfloat*len(v2f))(*v2f)
+
+    GL.glBindBuffer(GL.GL_ARRAY_BUFFER, vbo_id)
+    GL.glBufferData(GL.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2,
+                    GL.GL_STATIC_DRAW)
+
+    shape = VertexBuffer(vbo_id, len(v2f)//2, width, height, color)
+    return shape
+    
+    
+def render_ellipse_filled(shape, x, y, color, angle=0):
+    # Set color
+    if len(color) == 4:
+        GL.glColor4ub(shape.color[0], shape.color[1], shape.color[2],
+                      shape.color[3])
+        GL.glEnable(GL.GL_BLEND)
+        GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
+    elif len(color) == 3:
+        GL.glDisable(GL.GL_BLEND)
+        GL.glColor4ub(shape.color[0], shape.color[1], shape.color[2], 255)
+    
+    GL.glBindBuffer(GL.GL_ARRAY_BUFFER, shape.vbo_id)
+    GL.glVertexPointer(2, GL.GL_FLOAT, 0, 0)
+    
+    GL.glLoadIdentity()
+    GL.glTranslatef(x, y, 0)
+    if angle:
+        GL.glRotatef(angle, 0, 0, 1)
+    
+    GL.glDrawArrays(GL.GL_TRIANGLE_FAN, 0, shape.size)    
+    
 def draw_ellipse_filled(center_x, center_y, width, height, color, angle=0):
     """
     Draw a filled in ellipse.
@@ -641,6 +898,8 @@ def draw_ellipse_outline(center_x, center_y, width, height, color, line_width=1,
     GL.glEnd()
     GL.glLoadIdentity()
 
+##### END ELLIPSE FUNCTIONS #####
+    
 ##### BEGIN OVAL FUNCTIONS #####
 
 # draw any oval with 1 function with max parameters
@@ -729,11 +988,11 @@ def draw_described_oval_outline(center_x, center_y, width, height, color, border
     
 ##### END OVAL FUNCTIONS #####
 
-
+##### BEGIN LINE FUNCTIONS #####
+        
 def draw_line(start_x, start_y, end_x, end_y, color, line_width=1):
     """
     Draw a line.
-
 
     Args:
         :start_x (float): x position of line starting point.
@@ -805,9 +1064,9 @@ def draw_thin_line(start_x, start_y, end_x, end_y, color, line_width=.5):
     >>> arcade.open_window("Drawing Example", 800, 600)
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
-    >>> arcade.draw_line(270, 495, 300, 450, arcade.color.WOOD_BROWN, 3)
+    >>> arcade.draw_thin_line(270, 495, 300, 450, arcade.color.WOOD_BROWN, 3)
     >>> color = (127, 0, 127, 127)
-    >>> arcade.draw_line(280, 495, 320, 450, color, 3)
+    >>> arcade.draw_thin_line(280, 495, 320, 450, color, 3)
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
     """
@@ -856,9 +1115,9 @@ def draw_medium_line(start_x, start_y, end_x, end_y, color, line_width=1):
     >>> arcade.open_window("Drawing Example", 800, 600)
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
-    >>> arcade.draw_line(270, 495, 300, 450, arcade.color.WOOD_BROWN, 3)
+    >>> arcade.draw_medium_line(270, 495, 300, 450, arcade.color.WOOD_BROWN, 3)
     >>> color = (127, 0, 127, 127)
-    >>> arcade.draw_line(280, 495, 320, 450, color, 3)
+    >>> arcade.draw_medium_line(280, 495, 320, 450, color, 3)
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
     """
@@ -907,9 +1166,9 @@ def draw_thick_line(start_x, start_y, end_x, end_y, color, line_width=2):
     >>> arcade.open_window("Drawing Example", 800, 600)
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
-    >>> arcade.draw_line(270, 495, 300, 450, arcade.color.WOOD_BROWN, 3)
+    >>> arcade.draw_thick_line(270, 495, 300, 450, arcade.color.WOOD_BROWN, 3)
     >>> color = (127, 0, 127, 127)
-    >>> arcade.draw_line(280, 495, 320, 450, color, 3)
+    >>> arcade.draw_thick_line(280, 495, 320, 450, color, 3)
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
     """
@@ -998,7 +1257,6 @@ def draw_line_strip(point_list, color, line_width=1):
         GL.glVertex3f(point[0], point[1], 0.5)
     GL.glEnd()
 
-
 def draw_lines(point_list, color, line_width=1):
     """
     Draw a set of lines.
@@ -1054,7 +1312,10 @@ def draw_lines(point_list, color, line_width=1):
         GL.glVertex3f(point[0], point[1], 0.5)
     GL.glEnd()
 
-
+##### END LINE FUNCTIONS #####
+    
+##### BEGIN POINT FUNCTIONS #####
+    
 def draw_point(x, y, color, size):
     """
     Draw a point.
@@ -1141,7 +1402,10 @@ def draw_points(point_list, color, size):
         GL.glVertex3f(point[0], point[1], 0.5)
     GL.glEnd()
 
-
+##### END POINT FUNCTIONS #####
+    
+##### BEGIN POLYGON FUNCTIONS #####
+    
 def draw_polygon_filled(point_list, color):
     """
     Draw a polygon that is filled in.
@@ -1188,7 +1452,6 @@ def draw_polygon_filled(point_list, color):
     for point in point_list:
         GL.glVertex3f(point[0], point[1], 0.5)
     GL.glEnd()
-
 
 def draw_polygon_outline(point_list, color, line_width=1):
     """
@@ -1241,6 +1504,7 @@ def draw_polygon_outline(point_list, color, line_width=1):
         GL.glVertex3f(point[0], point[1], 0.5)
     GL.glEnd()
 
+<<<<<<< HEAD
 def draw_triangle_filled(first_x, first_y, second_x, second_y, third_x, third_y, color):  
     first_point = [first_x, first_y]
     second_point = [second_x, second_y]
@@ -1255,7 +1519,53 @@ def draw_triangle_outline(first_x, first_y, second_x, second_y, third_x, third_y
     point_list = (first_point, second_point, third_point)
     arcade.draw_polygon_outline(point_list, color, line_width)
 
+=======
+##### END POLYGON FUNCTIONS #####
+    
+##### BEGIN RECTANGLE FUNCTIONS #####
+    
+def create_rectangle(width, height, color):
+    data = [-width / 2, -height / 2,
+            width / 2, -height / 2,
+            width / 2, height / 2,
+            -width / 2, height / 2]
 
+    vbo_id = GL.GLuint()
+
+    GL.glGenBuffers(1, ctypes.pointer(vbo_id))
+
+    v2f = data
+    data2 = (GL.GLfloat*len(v2f))(*v2f)
+
+    GL.glBindBuffer(GL.GL_ARRAY_BUFFER, vbo_id)
+    GL.glBufferData(GL.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2,
+                    GL.GL_STATIC_DRAW)
+
+    shape = VertexBuffer(vbo_id, len(v2f)//2, width, height, color)
+    return shape
+
+
+def render_rectangle_filled(shape, x, y, color, angle=0):
+    # Set color
+    if len(color) == 4:
+        GL.glColor4ub(shape.color[0], shape.color[1], shape.color[2],
+                      shape.color[3])
+        GL.glEnable(GL.GL_BLEND)
+        GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
+    elif len(color) == 3:
+        GL.glDisable(GL.GL_BLEND)
+        GL.glColor4ub(shape.color[0], shape.color[1], shape.color[2], 255)
+
+    GL.glBindBuffer(GL.GL_ARRAY_BUFFER, shape.vbo_id)
+    GL.glVertexPointer(2, GL.GL_FLOAT, 0, 0)
+
+    GL.glLoadIdentity()
+    GL.glTranslatef(x + shape.width / 2, y + shape.height / 2, 0)
+    if angle != 0:
+        GL.glRotatef(angle, 0, 0, 1)
+
+    GL.glDrawArrays(GL.GL_QUADS, 0, shape.size)
+    
 def draw_rectangle_outline(x, y, width, height, color, line_width=1, angle=0):
     """
     Draw a rectangle outline.
@@ -1310,7 +1620,6 @@ arcade.color.BRITISH_RACING_GREEN, 2)
     GL.glVertex3f(0, 0 - height, 0.5)
     GL.glEnd()
 
-
 def draw_rectangle_filled(x, y, width, height, color, angle=0):
     """
     Draw a filled-in rectangle.
@@ -1359,212 +1668,6 @@ def draw_rectangle_filled(x, y, width, height, color, angle=0):
     GL.glVertex3f(width, 0 - height, 0.5)
     GL.glVertex3f(0, 0 - height, 0.5)
     GL.glEnd()
-
-
-def draw_text(text, x, y, color, size):
-    """
-    Draw text to the screen.
-
-    Args:
-        :text (str): Text to display.
-        :x (float): x coordinate of top left text point.
-        :y (float): y coordinate of top left text point.
-        :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
-         RGBA format.
-
-    Example:
-
-    >>> import arcade
-    >>> arcade.open_window("Drawing Example", 800, 600)
-    >>> arcade.set_background_color(arcade.color.WHITE)
-    >>> arcade.start_render()
-    >>> arcade.draw_text("Text Example", 250, 300, arcade.color.BLACK, 10)
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
-    """
-
-    if len(color) == 3:
-        color = (color[0], color[1], color[2], 255)
-
-    label = pyglet.text.Label(text,
-                              font_name='Times New Roman',
-                              font_size=size,
-                              x=x, y=y,
-                              color=color)
-    GL.glLoadIdentity()
-
-    label.draw()
-
-
-def load_textures(file_name, image_location_list,
-                  mirrored=False, flipped=False):
-    """
-    Load a set of textures off of a single image file.
-
-    >>> import arcade
-    >>> arcade.open_window("Drawing Example", 800, 600)
-    >>> top_trim = 100
-    >>> ltrim = 2
-    >>> rtrim = 2
-    >>> image_location_list = [
-    ... [520 + ltrim, 516 + top_trim, 128 - ltrim - rtrim, 256 - top_trim],
-    ... [520 + ltrim, 258 + top_trim, 128 - ltrim - rtrim, 256 - top_trim],
-    ... [520 + ltrim, 0 + top_trim, 128 - ltrim - rtrim, 256 - top_trim],
-    ... [390 + ltrim, 1548 + top_trim, 128 - ltrim - rtrim, 256 - top_trim],
-    ... [390 + ltrim, 1290 + top_trim, 128 - ltrim - rtrim, 256 - top_trim],
-    ... [390 + ltrim, 516 + top_trim, 128 - ltrim - rtrim, 256 - top_trim],
-    ... [390 + ltrim, 258 + top_trim, 128 - ltrim - rtrim, 256 - top_trim]]
-    >>> texture_info_list = arcade.load_textures( \
-"doc/source/examples/images/spritesheet_complete.png", image_location_list)
-    >>> arcade.close_window()
-    """
-    source_image = PIL.Image.open(file_name)
-
-    source_image_width, source_image_height = source_image.size
-    texture_info_list = []
-    for image_location in image_location_list:
-        x, y, width, height = image_location
-
-        if x > source_image_width:
-            raise SystemError("Can't load texture starting at an x of {} " +
-                              "when the image is only {} across."
-                              .format(x, source_image_width))
-        if y > source_image_height:
-            raise SystemError("Can't load texture starting at an y of {} " +
-                              "when the image is only {} high."
-                              .format(y, source_image_height))
-        if x + width > source_image_width:
-            raise SystemError("Can't load texture ending at an x of {} " +
-                              "when the image is only {} wide."
-                              .format(x + width, source_image_width))
-        if y + height > source_image_height:
-            raise SystemError("Can't load texture ending at an y of {} " +
-                              "when the image is only {} high."
-                              .format(y + height, source_image_height))
-
-        image = source_image.crop((x, y, x + width, y + height))
-        # image = _trim_image(image)
-
-        if mirrored:
-            image = PIL.ImageOps.mirror(image)
-
-        if flipped:
-            image = PIL.ImageOps.flip(image)
-
-        image_width, image_height = image.size
-        image_bytes = image.convert("RGBA").tobytes("raw", "RGBA", 0, -1)
-
-        texture = GL.GLuint(0)
-        GL.glGenTextures(1, ctypes.byref(texture))
-
-        GL.glBindTexture(GL.GL_TEXTURE_2D, texture)
-        GL.glPixelStorei(GL.GL_UNPACK_ALIGNMENT, 1)
-
-        # The code below should be enabled, but it freaks out
-        # during CI (AppVeyor).
-        # GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S,
-        #                    GL.GL_CLAMP_TO_BORDER)
-        # GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T,
-        #                    GL.GL_CLAMP_TO_BORDER)
-
-        # The code below should be disabled, but keeping it here for
-        # CI
-        GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S,
-                           GL.GL_REPEAT)
-        GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T,
-                           GL.GL_REPEAT)
-
-        GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER,
-                           GL.GL_LINEAR)
-        GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER,
-                           GL.GL_LINEAR_MIPMAP_LINEAR)
-        GLU.gluBuild2DMipmaps(GL.GL_TEXTURE_2D, GL.GL_RGBA,
-                              image_width, image_height,
-                              GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, image_bytes)
-
-        texture_info_list.append(Texture(texture, width, height))
-
-    return texture_info_list
-
-
-def load_texture(file_name, x=0, y=0, width=0, height=0):
-    """
-    Load image from disk and create a texture.
-
-    Args:
-        :filename (str): Name of the file to that holds the texture.
-    Returns:
-        Integer identifier for the new texture.
-    Raises:
-        None
-
-    >>> import arcade
-    >>> arcade.open_window("Drawing Example", 800, 600)
-    >>> name = "doc/source/examples/images/meteorGrey_big1.png"
-    >>> texture = load_texture(name, 1, 1, 50, 50)
-    >>> arcade.close_window()
-    """
-    source_image = PIL.Image.open(file_name)
-
-    source_image_width, source_image_height = source_image.size
-
-    if x != 0 or y != 0 or width != 0 or height != 0:
-        if x > source_image_width:
-            raise SystemError("Can't load texture starting at an x of {} " +
-                              "when the image is only {} across."
-                              .format(x, source_image_width))
-        if y > source_image_height:
-            raise SystemError("Can't load texture starting at an y of {} " +
-                              "when the image is only {} high."
-                              .format(y, source_image_height))
-        if x + width > source_image_width:
-            raise SystemError("Can't load texture ending at an x of {} " +
-                              "when the image is only {} wide."
-                              .format(x + width, source_image_width))
-        if y + height > source_image_height:
-            raise SystemError("Can't load texture ending at an y of {} " +
-                              "when the image is only {} high."
-                              .format(y + height, source_image_height))
-
-        image = source_image.crop((x, y, x + width, y + height))
-    else:
-        image = source_image
-
-    # image = _trim_image(image)
-
-    image_width, image_height = image.size
-    image_bytes = image.convert("RGBA").tobytes("raw", "RGBA", 0, -1)
-
-    texture = GL.GLuint(0)
-    GL.glGenTextures(1, ctypes.byref(texture))
-
-    GL.glBindTexture(GL.GL_TEXTURE_2D, texture)
-    GL.glPixelStorei(GL.GL_UNPACK_ALIGNMENT, 1)
-
-    # The code below should be enabled, but it freaks out
-    # during CI (AppVeyor).
-    # GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S,
-    #                    GL.GL_CLAMP_TO_BORDER)
-    # GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T,
-    #                    GL.GL_CLAMP_TO_BORDER)
-
-    # The code below should be disabled, but keeping it here for
-    # CI
-    GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S,
-                       GL.GL_REPEAT)
-    GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T,
-                       GL.GL_REPEAT)
-
-    GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER,
-                       GL.GL_LINEAR)
-    GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER,
-                       GL.GL_LINEAR_MIPMAP_LINEAR)
-    GLU.gluBuild2DMipmaps(GL.GL_TEXTURE_2D, GL.GL_RGBA,
-                          image_width, image_height,
-                          GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, image_bytes)
-
-    return Texture(texture, image_width, image_height)
-
 
 def draw_texture_rectangle(x, y, width, height, texture,
                       angle=0, alpha=1, transparent=True):
@@ -1631,7 +1734,46 @@ scale * texture.height, texture, 90)
     GL.glTexCoord2f(0, 1)
     GL.glVertex3f(-width/2, height/2, z)
     GL.glEnd()
+    
+##### END RECTANGLE FUNCTIONS #####
 
+##### BEGIN TEXT FUNCTIONS #####
+    
+def draw_text(text, x, y, color, size):
+    """
+    Draw text to the screen.
+
+    Args:
+        :text (str): Text to display.
+        :x (float): x coordinate of top left text point.
+        :y (float): y coordinate of top left text point.
+        :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
+         RGBA format.
+
+    Example:
+
+    >>> import arcade
+    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.set_background_color(arcade.color.WHITE)
+    >>> arcade.start_render()
+    >>> arcade.draw_text("Text Example", 250, 300, arcade.color.BLACK, 10)
+    >>> arcade.finish_render()
+    >>> arcade.quick_run(0.25)
+    """
+
+    if len(color) == 3:
+        color = (color[0], color[1], color[2], 255)
+
+    label = pyglet.text.Label(text,
+                              font_name='Times New Roman',
+                              font_size=size,
+                              x=x, y=y,
+                              color=color)
+    GL.glLoadIdentity()
+
+    label.draw()
+    
+##### END TEXT FUNCTIONS #####
 
 class VertexBuffer():
     def __init__(self, vbo_id, size, width, height, color):
@@ -1640,97 +1782,7 @@ class VertexBuffer():
         self.width = width
         self.height = height
         self.color = color
-
-
-def create_rect(width, height, color):
-    data = [-width / 2, -height / 2,
-            width / 2, -height / 2,
-            width / 2, height / 2,
-            -width / 2, height / 2]
-
-    vbo_id = GL.GLuint()
-
-    GL.glGenBuffers(1, ctypes.pointer(vbo_id))
-
-    v2f = data
-    data2 = (GL.GLfloat*len(v2f))(*v2f)
-
-    GL.glBindBuffer(GL.GL_ARRAY_BUFFER, vbo_id)
-    GL.glBufferData(GL.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2,
-                    GL.GL_STATIC_DRAW)
-
-    shape = VertexBuffer(vbo_id, len(v2f)//2, width, height, color)
-    return shape
-
-
-def render_rect_filled(shape, x, y, color, angle=0):
-    # Set color
-    if len(color) == 4:
-        GL.glColor4ub(shape.color[0], shape.color[1], shape.color[2],
-                      shape.color[3])
-        GL.glEnable(GL.GL_BLEND)
-        GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
-    elif len(color) == 3:
-        GL.glDisable(GL.GL_BLEND)
-        GL.glColor4ub(shape.color[0], shape.color[1], shape.color[2], 255)
-
-    GL.glBindBuffer(GL.GL_ARRAY_BUFFER, shape.vbo_id)
-    GL.glVertexPointer(2, GL.GL_FLOAT, 0, 0)
-
-    GL.glLoadIdentity()
-    GL.glTranslatef(x + shape.width / 2, y + shape.height / 2, 0)
-    if angle != 0:
-        GL.glRotatef(angle, 0, 0, 1)
-
-    GL.glDrawArrays(GL.GL_QUADS, 0, shape.size)
-
-
-def create_ellipse(width, height, color, num_segments=64):
-    data = []
-
-    for i in range(num_segments + 1):
-        theta = 2.0 * 3.1415926 * i / num_segments
-
-        x = width * math.cos(theta)
-        y = height * math.sin(theta)
-
-        data.extend([x, y])
-
-    vbo_id = GL.GLuint()
-
-    GL.glGenBuffers(1, ctypes.pointer(vbo_id))
-
-    v2f = data
-    data2 = (GL.GLfloat*len(v2f))(*v2f)
-
-    GL.glBindBuffer(GL.GL_ARRAY_BUFFER, vbo_id)
-    GL.glBufferData(GL.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2,
-                    GL.GL_STATIC_DRAW)
-
-    shape = VertexBuffer(vbo_id, len(v2f)//2, width, height, color)
-    return shape
-
-
-def render_ellipse_filled(shape, x, y, color, angle=0):
-    # Set color
-    if len(color) == 4:
-        GL.glColor4ub(shape.color[0], shape.color[1], shape.color[2],
-                      shape.color[3])
-        GL.glEnable(GL.GL_BLEND)
-        GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
-    elif len(color) == 3:
-        GL.glDisable(GL.GL_BLEND)
-        GL.glColor4ub(shape.color[0], shape.color[1], shape.color[2], 255)
-
-    GL.glBindBuffer(GL.GL_ARRAY_BUFFER, shape.vbo_id)
-    GL.glVertexPointer(2, GL.GL_FLOAT, 0, 0)
-
-    GL.glLoadIdentity()
-    GL.glTranslatef(x, y, 0)
-    if angle:
-        GL.glRotatef(angle, 0, 0, 1)
-
-    GL.glDrawArrays(GL.GL_TRIANGLE_FAN, 0, shape.size)
+    
 # def _test():
 #     import doctest
 #     doctest.testmod()
