@@ -11,3 +11,5 @@ a_quick_test.py
 arcade.wpu
 .coverage
 doc/source/quick_index.rst
+doc/source/internal/blacklist.rst
+doc/source/internal/build.rst

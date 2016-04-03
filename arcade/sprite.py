@@ -391,13 +391,11 @@ arcade.Sprite("doc/source/examples/images/playerShip1_orange.png", scale)
         self.sprite_lists.append(new_list)
 
     def draw(self):
-        """
-        Draw the sprite.
-        """
-        draw_texture_rect(self.center_x, self.center_y,
-                          self.width, self.height,
-                          self.texture, self.angle, self.alpha,
-                          self.transparent)
+        """ Draw the sprite. """
+        draw_texture_rectangle(self.center_x, self.center_y,
+                               self.width, self.height,
+                               self.texture, self.angle, self.alpha,
+                               self.transparent)
 
     def update(self):
         """
