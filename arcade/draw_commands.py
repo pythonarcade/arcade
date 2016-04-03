@@ -532,7 +532,7 @@ def draw_parabola_outline(start_x, start_y, end_x, height, color, line_width=5, 
 
 ##### BEGIN CIRCLE FUNCTIONS #####
 
-def draw_circle_filled(center_x, center_y, radius, color, num_segments=128):
+def draw_circle_filled(center_x, center_y, radius, color):
     """
     Draw a filled-in circle.
 
@@ -555,13 +555,13 @@ def draw_circle_filled(center_x, center_y, radius, color, num_segments=128):
     >>> arcade.open_window("Drawing Example", 800, 600)
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
-    >>> arcade.draw_circle_filled(420, 285, 18, arcade.color.GREEN, 3)
+    >>> arcade.draw_circle_filled(420, 285, 18, arcade.color.GREEN)
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
     """
     width = radius
     height = radius
-    draw_ellipse_filled(center_x, center_y, width, height, color, num_segments) 
+    draw_ellipse_filled(center_x, center_y, width, height, color) 
     
     
 def draw_small_filled_circle(center_x, center_y, color):
@@ -699,7 +699,7 @@ def draw_standard_circle(center_x, center_y, color, size, filled, adjustment = 0
     elif filled == "outline" or filled == "hollow":
         draw_circle_outline(center_x, center_y, radius, color)
 
-def draw_circle_outline(center_x, center_y, radius, color, line_width=1, num_segments=128):
+def draw_circle_outline(center_x, center_y, radius, color, line_width=1):
     """
     Draw the outline of a circle.
 
@@ -727,10 +727,17 @@ def draw_circle_outline(center_x, center_y, radius, color, line_width=1, num_seg
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
     """
+    num_segments = 128
     width = radius
     height = radius
     draw_ellipse_outline(center_x, center_y, width, height,
-                         color, line_width, num_segments)
+                         color, line_width)
+
+def draw_circle(center_x, center_y, radius, color, border_width = 0):
+    if border_width <= 0:
+        draw_circle_filled(center_x, center_y, radius, color)
+    else:
+        draw_circle_outline(center_x, center_y, radius, color, border_width)
     
 ##### END CIRCLE FUNCTIONS #####
 
@@ -920,9 +927,9 @@ def draw_ellipse_outline(center_x, center_y, width, height, color, line_width=1,
 # draw any oval with 1 function with max parameters
 def draw_oval(center_x, center_y, width, height, color, border_width=0, angle=0):
     if border_width <= 0:
-        draw_oval_filled_custom(center_x, center_y, width, height, color, angle)
+        draw_oval_filled(center_x, center_y, width, height, color, angle)
     else:
-        draw_oval_outline_custom(center_x, center_y, width, height, color, border_width, angle)
+        draw_oval_outline(center_x, center_y, width, height, color, border_width, angle)
         
 
 # draw a custom oval that is filled
@@ -1544,7 +1551,7 @@ def create_rectangle(width, height, color):
     return shape
 
 
-def render_rectangle_filled(shape, x, y, color, angle=0):
+def render_rectangle_filled(shape, center_x, center_y, color, angle=0):
     # Set color
     if len(color) == 4:
         GL.glColor4ub(shape.color[0], shape.color[1], shape.color[2],
@@ -1559,13 +1566,13 @@ def render_rectangle_filled(shape, x, y, color, angle=0):
     GL.glVertexPointer(2, GL.GL_FLOAT, 0, 0)
 
     GL.glLoadIdentity()
-    GL.glTranslatef(x + shape.width / 2, y + shape.height / 2, 0)
+    GL.glTranslatef(center_x + shape.width / 2, center_y + shape.height / 2, 0)
     if angle != 0:
         GL.glRotatef(angle, 0, 0, 1)
 
     GL.glDrawArrays(GL.GL_QUADS, 0, shape.size)
     
-def draw_rectangle_outline(x, y, width, height, color, line_width=1, angle=0):
+def draw_rectangle_outline(center_x, center_y, width, height, color, line_width=1, angle=0):
     """
     Draw a rectangle outline.
 
@@ -1598,7 +1605,7 @@ arcade.color.BRITISH_RACING_GREEN, 2)
     GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
 
     GL.glLoadIdentity()
-    GL.glTranslatef(x + width / 2, y + height / 2, 0)
+    GL.glTranslatef(center_x + width / 2, center_y + height / 2, 0)
     if angle:
         GL.glRotatef(angle, 0, 0, 1)
     GL.glTranslatef(width / 2, height / 2, 0)
@@ -1619,7 +1626,7 @@ arcade.color.BRITISH_RACING_GREEN, 2)
     GL.glVertex3f(0, 0 - height, 0.5)
     GL.glEnd()
 
-def draw_rectangle_filled(x, y, width, height, color, angle=0):
+def draw_rectangle_filled(center_x, center_y, width, height, color, angle=0):
     """
     Draw a filled-in rectangle.
 
@@ -1656,7 +1663,7 @@ def draw_rectangle_filled(x, y, width, height, color, angle=0):
         GL.glColor4ub(color[0], color[1], color[2], 255)
 
     GL.glLoadIdentity()
-    GL.glTranslatef(x, y, 0)
+    GL.glTranslatef(center_x, center_y, 0)
     if angle:
         GL.glRotatef(angle, 0, 0, 1)
     GL.glTranslatef(-width / 2, height / 2, 0)
@@ -1667,6 +1674,12 @@ def draw_rectangle_filled(x, y, width, height, color, angle=0):
     GL.glVertex3f(width, 0 - height, 0.5)
     GL.glVertex3f(0, 0 - height, 0.5)
     GL.glEnd()
+
+def draw_rectangle(center_x, center_y, width, height, color, border_width = 0, angle=0):
+    if border_width <= 0:
+        draw_rectangle_filled(center_x, center_y, width, height, color, angle)
+    else:
+        draw_rectangle_outline(center_x, center_y, width, height, color, border_width, angle)
 
 def draw_texture_rectangle(x, y, width, height, texture,
                       angle=0, alpha=1, transparent=True):
@@ -1781,10 +1794,88 @@ class VertexBuffer():
         self.width = width
         self.height = height
         self.color = color
+
+#### OBJECTS ####
+
+import arcade.color
+
+class Shape():
     
+    def __init__(self, center_x, center_y, color = arcade.color.GREEN):
+        self.color = color
+        self.center_x = center_x
+        self.center_y = center_y
+
+    def draw(self):   
+        print("Cannot draw an object of type Shape. Use the subclasses of Shape: Rectangle, etc.")
+
+    def move(self):   
+        print("Cannot move an object of type Shape. Use the subclasses of Shape: Rectangle, etc.")
+
+class Rectangle(Shape):
+    
+    def __init__(self, center_x, center_y, width, height, color = arcade.color.GREEN, border_width = 0, tilt_angle = 0):
+        
+        super().__init__(center_x, center_y, color)
+        
+        self.width = width
+        self.height = height
+        self.border_width = border_width
+        self.tilt_angle = tilt_angle
+
+    def draw(self):
+        draw_rectangle(self.center_x, self.center_y, self.width, self.height, self.color, self.border_width, self.tilt_angle)
+
+    def move(self, x_movement, y_movement):
+        self.center_x += x_movement
+        self.center_y += y_movement
+
+class Square(Rectangle):
+    def __init__(self, center_x, center_y, width_and_height, color = arcade.color.GREEN, border_width = 0, tilt_angle = 0):
+
+        super().__init__(center_x, center_y, width_and_height, width_and_height, color, border_width, tilt_angle)
+
+        self.width_and_height = width_and_height
+
+    def draw(self):
+        draw_rectangle(self.center_x, self.center_y, self.width_and_height, self.width_and_height, self.color, self.border_width, self.tilt_angle)
+
+class Oval(Shape):
+    def __init__(self, center_x, center_y, width, height, color = arcade.color.GREEN, border_width = 0, tilt_angle = 0):
+        
+        super().__init__(center_x, center_y, color)
+
+        self.width = width
+        self.height = height
+        self.border_width = border_width
+        self.tilt_angle = tilt_angle
+
+    def draw(self):
+        draw_oval(self.center_x, self.center_y, self.width, self.height, self.color, self.border_width, self.tilt_angle)
+
+class Circle(Shape):
+    def __init__(self, center_x, center_y, radius, color = arcade.color.GREEN, border_width = 0):
+        
+        super().__init__(center_x, center_y, color)
+
+        self.radius = radius
+        self.border_width = border_width
+
+    def draw(self):
+        draw_circle(self.center_x, self.center_y, radius, self.color, self.border_width)
+
+
+def masterDraw(object):
+    object.draw()
+
+
+#### END OBJECTS ####
+
+
 # def _test():
 #     import doctest
 #     doctest.testmod()
 
-if __name__ == "__main__":
-    _test()
+
+##if __name__ == "__main__":
+##    _test()
