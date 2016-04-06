@@ -93,18 +93,18 @@ class MyApplication(arcade.Window):
         # Set up the player
         self.score = 0
         self.player_sprite = arcade.Sprite("images/character.png",
-                                           SPRITE_SCALING)
-        self.player_sprite.center_x = 70
+                                           0.4)
+        self.player_sprite.center_x = 64
         self.player_sprite.center_y = 270
         self.all_sprites_list.append(self.player_sprite)
 
         # -- Set up several columns of walls
         for x in range(200, 1650, 210):
-            for y in range(0, 1000, 73):
+            for y in range(0, 1000, 64):
                 # Randomly skip a box so the player can find a way through
                 if random.randrange(5) > 0:
-                    wall = arcade.Sprite("images/boxAlt.png",
-                                         SPRITE_SCALING * 2)
+                    wall = arcade.Sprite("images/boxCrate_double.png",
+                                         SPRITE_SCALING)
                     wall.center_x = x
                     wall.center_y = y
                     self.all_sprites_list.append(wall)

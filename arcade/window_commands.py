@@ -50,6 +50,10 @@ def set_viewport(left, right, bottom, top):
     """
     This sets what coordinates appear on the window.
 
+    Note: It is recommended to only set the viewport to integer values that
+    line up with the pixels on the screen. Otherwise if making a tiled game
+    the blocks may not line up well, creating rectangle artifacts.
+
     >>> import arcade
     >>> arcade.open_window("Drawing Example", 800, 600)
     >>> set_viewport(-1, 1, -1, 1)
@@ -69,7 +73,7 @@ def set_viewport(left, right, bottom, top):
     # GL.glViewport(0, 0, _window.height, _window.height)
     GL.glMatrixMode(GL.GL_PROJECTION)
     GL.glLoadIdentity()
-    GL.glOrtho(left, right, bottom, top, -1, 1)
+    GL.glOrtho(_left, _right, _bottom, _top, -1, 1)
     GL.glMatrixMode(GL.GL_MODELVIEW)
     GL.glLoadIdentity()
 
