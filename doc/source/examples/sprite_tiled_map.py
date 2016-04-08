@@ -131,7 +131,7 @@ class MyApplication(arcade.Window):
         self.score = 0
         self.player_sprite = arcade.Sprite("images/character.png",
                                            SPRITE_SCALING)
-        self.player_sprite.center_x = 70
+        self.player_sprite.center_x = 64
         self.player_sprite.center_y = 270
         self.all_sprites_list.append(self.player_sprite)
 
@@ -143,20 +143,20 @@ class MyApplication(arcade.Window):
                 if item == -1:
                     continue
                 elif item == 0:
-                    wall = arcade.Sprite("images/boxAlt.png",
-                                         SPRITE_SCALING * 2)
+                    wall = arcade.Sprite("images/boxCrate_double.png",
+                                         SPRITE_SCALING)
                 elif item == 1:
                     wall = arcade.Sprite("images/grassLeft.png",
-                                         SPRITE_SCALING * 2)
+                                         SPRITE_SCALING)
                 elif item == 2:
                     wall = arcade.Sprite("images/grassMid.png",
-                                         SPRITE_SCALING * 2)
+                                         SPRITE_SCALING)
                 elif item == 3:
                     wall = arcade.Sprite("images/grassRight.png",
-                                         SPRITE_SCALING * 2)
+                                         SPRITE_SCALING)
 
-                wall.right = column_index * 70
-                wall.top = (7 - row_index) * 70
+                wall.right = column_index * 64
+                wall.top = (7 - row_index) * 64
                 self.all_sprites_list.append(wall)
                 self.wall_list.append(wall)
 
@@ -219,7 +219,7 @@ class MyApplication(arcade.Window):
     def animate(self, delta_time):
         """ Movement and game logic """
 
-        if self.view_left + self.player_sprite.right >= 6200:
+        if self.view_left + self.player_sprite.right >= 5630:
             self.game_over = True
 
         # Call update on all sprites (The sprites don't do much in this

@@ -84,17 +84,17 @@ def load_textures(file_name, image_location_list,
 
         # The code below should be enabled, but it freaks out
         # during CI (AppVeyor).
-        # GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S,
-        #                    GL.GL_CLAMP_TO_BORDER)
-        # GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T,
-        #                    GL.GL_CLAMP_TO_BORDER)
+        GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S,
+                           GL.GL_CLAMP_TO_BORDER)
+        GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T,
+                           GL.GL_CLAMP_TO_BORDER)
 
         # The code below should be disabled, but keeping it here for
         # CI
-        GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S,
-                           GL.GL_REPEAT)
-        GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T,
-                           GL.GL_REPEAT)
+        # GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S,
+        #                    GL.GL_REPEAT)
+        # GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T,
+        #                    GL.GL_REPEAT)
 
         GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER,
                            GL.GL_LINEAR)

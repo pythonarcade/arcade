@@ -16,6 +16,9 @@ SCREEN_HEIGHT = 600
 VIEWPORT_MARGIN = 40
 RIGHT_MARGIN = 150
 
+# Right edge of the map in pixels
+END_OF_MAP = 5565
+
 # Physics
 MOVEMENT_SPEED = 5
 JUMP_SPEED = 14
@@ -140,13 +143,13 @@ class MyApplication(arcade.Window):
         self.score = 0
         self.player_sprite = arcade.Sprite("images/character.png",
                                            SPRITE_SCALING)
-        self.player_sprite.center_x = 70
+        self.player_sprite.center_x = 64
         self.player_sprite.center_y = 270
         self.all_sprites_list.append(self.player_sprite)
 
         map_array = get_map()
 
-        map_items = ["images/boxAlt.png",
+        map_items = ["images/boxCrate_double.png",
                      "images/grassCenter.png",
                      "images/grassCorner_left.png",
                      "images/grassCorner_right.png",
@@ -164,7 +167,7 @@ class MyApplication(arcade.Window):
                     continue
                 else:
                     wall = arcade.Sprite(map_items[item],
-                                         SPRITE_SCALING * 2)
+                                         SPRITE_SCALING)
 
                     # Change the collision polygon to be a ramp instead of
                     # a rectangle
@@ -177,8 +180,8 @@ class MyApplication(arcade.Window):
                                        (wall.width // 2, -wall.height // 2),
                                        (wall.width // 2, wall.height // 2))
 
-                wall.right = column_index * 70
-                wall.top = (7 - row_index) * 70
+                wall.right = column_index * 64
+                wall.top = (7 - row_index) * 64
                 self.all_sprites_list.append(wall)
                 self.wall_list.append(wall)
 
@@ -241,7 +244,7 @@ class MyApplication(arcade.Window):
     def animate(self, delta_time):
         """ Movement and game logic """
 
-        if self.view_left + self.player_sprite.right >= 6200:
+        if self.view_left + self.player_sprite.right >= END_OF_MAP:
             self.game_over = True
 
         # Call update on all sprites (The sprites don't do much in this
@@ -258,25 +261,25 @@ class MyApplication(arcade.Window):
         # Scroll left
         left_bndry = self.view_left + VIEWPORT_MARGIN
         if self.player_sprite.left < left_bndry:
-            self.view_left -= left_bndry - self.player_sprite.left
+            self.view_left -= int(left_bndry - self.player_sprite.left)
             changed = True
 
         # Scroll right
         right_bndry = self.view_left + SCREEN_WIDTH - RIGHT_MARGIN
         if self.player_sprite.right > right_bndry:
-            self.view_left += self.player_sprite.right - right_bndry
+            self.view_left += int(self.player_sprite.right - right_bndry)
             changed = True
 
         # Scroll up
         top_bndry = self.view_bottom + SCREEN_HEIGHT - VIEWPORT_MARGIN
         if self.player_sprite.top > top_bndry:
-            self.view_bottom += self.player_sprite.top - top_bndry
+            self.view_bottom += int(self.player_sprite.top - top_bndry)
             changed = True
 
         # Scroll down
         bottom_bndry = self.view_bottom + VIEWPORT_MARGIN
         if self.player_sprite.bottom < bottom_bndry:
-            self.view_bottom -= bottom_bndry - self.player_sprite.bottom
+            self.view_bottom -= int(bottom_bndry - self.player_sprite.bottom)
             changed = True
 
         # If we need to scroll, go ahead and do it.
