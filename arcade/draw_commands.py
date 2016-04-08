@@ -1735,12 +1735,20 @@ def draw_triangle_filled(first_x, first_y, second_x, second_y, third_x, third_y,
     point_list = (first_point, second_point, third_point)
     arcade.draw_polygon_filled(point_list, color)
 
-def draw_triangle_outline(first_x, first_y, second_x, second_y, third_x, third_y, color, line_width=1):
+def draw_triangle_outline(first_x, first_y, second_x, second_y, third_x, third_y, color, border_width=1):
     first_point = [first_x, first_y]
     second_point = [second_x, second_y]
     third_point = [third_x, third_y]
     point_list = (first_point, second_point, third_point)
     arcade.draw_polygon_outline(point_list, color, line_width)
+
+def draw_triangle(first_x, first_y, second_x, second_y, third_x, third_y, color, border_width=1):
+    if border_width <= 0:
+        draw_triangle_filled(first_x, first_y, second_x, second_y, third_x, third_y, color)
+    else:
+        draw_triangle_outline(first_x, first_y, second_x, second_y, third_x, third_y, color, border_width=1)
+
+
 
 ##### END POLYGON FUNCTIONS #####
 
