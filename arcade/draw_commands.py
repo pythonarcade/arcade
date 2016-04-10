@@ -108,7 +108,7 @@ def load_textures(file_name, image_location_list,
 
     return texture_info_list
 
-def load_texture(file_name, x=0, y=0, width=0, height=0):
+def load_texture(file_name, x=0, y=0, width=0, height=0, scale=1):
     """
     Load image from disk and create a texture.
 
@@ -183,6 +183,9 @@ def load_texture(file_name, x=0, y=0, width=0, height=0):
     GLU.gluBuild2DMipmaps(GL.GL_TEXTURE_2D, GL.GL_RGBA,
                           image_width, image_height,
                           GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, image_bytes)
+
+    image_width *= scale
+    image_height *= scale
 
     return Texture(texture, image_width, image_height)
 
