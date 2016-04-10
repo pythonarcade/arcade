@@ -40,10 +40,6 @@ load_sound_library()
 def load_sound(filename):
     """
     Load a sound and get it ready to play.
-
-    >>> import arcade
-    >>> my_sound = arcade.load_sound("doc/source/examples/sounds/laser1.ogg")
-    >>> arcade.play_sound(my_sound)
     """
     source = pyglet.media.load(filename, streaming=False)
     return source
