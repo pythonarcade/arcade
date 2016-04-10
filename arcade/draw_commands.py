@@ -638,8 +638,6 @@ def draw_small_filled_circle(center_x, center_y, color):
         :radius (float): width of the circle.
         :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
-        :num_segments (int): number of triangle segments that make up this
-         circle. Higher is better quality, but slower render time.
     Returns:
         None
     Raises:
