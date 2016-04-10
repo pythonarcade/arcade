@@ -809,7 +809,9 @@ def draw_circle(center_x, center_y, radius, color, border_width = 0):
 
 ##### BEGIN ELLIPSE FUNCTIONS #####
 
-def create_ellipse(width, height, color, num_segments=64):
+def create_ellipse(width, height, color):
+    num_segments=64
+    
     data = []
 
     for i in range(num_segments + 1):
@@ -984,6 +986,12 @@ def draw_ellipse_outline(center_x, center_y, width, height, color, line_width=1,
 
     GL.glEnd()
     GL.glLoadIdentity()
+
+def draw_ellipse(center_x, center_y, width, height, color, border_width = 0, tilt_angle = 0):
+    if border_width <= 0:
+        draw_ellipse_filled(center_x, center_y, width, height, color, tilt_angle)
+    else:
+        draw_ellipse_outline(center_x, center_y, width, height, color, border_width, tilt_angle)
 
 ##### END ELLIPSE FUNCTIONS #####
 
@@ -1216,7 +1224,7 @@ def draw_described_oval_outline(center_x, center_y, width, height, color, border
 
 ##### BEGIN LINE FUNCTIONS #####
 
-def draw_line(start_x, start_y, end_x, end_y, color, line_width=1):
+def draw_line(start_x, start_y, end_x, end_y, color, border_width = 1):
     """
     Draw a line.
 
