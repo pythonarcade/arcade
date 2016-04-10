@@ -348,6 +348,12 @@ transparent_color, 90, 360)
     GL.glEnd()
     GL.glLoadIdentity()
 
+def draw_arc(center_x, center_y, width, height, color, start_angle, end_angle, border_width = 0, tilt_angle = 0):
+    if border_width <= 0:
+        draw_arc_filled(center_x, center_y, width, height, color, start_angle, end_angle, tilt_angle)
+    else:
+        draw_arc_outline(center_x, center_y, width, height, color, start_angle, end_angle, border_width, tilt_angle)
+
 def draw_fancy_math_arc_outline(start_x, start_y, end_x, end_y, height, color, line_width=5, tilt_angle=0):
     """
     Draws the outline of an arc.
@@ -540,10 +546,6 @@ def draw_parabola_filled(start_x, start_y, end_x, height, color, tilt_angle=0):
     """     
     center_x = (start_x+end_x)/2
     center_y = start_y + height
-
-def draw_parabola_filled(start_x, start_y, end_x, height, color, tilt_angle=0):
-    cx = (start_x+end_x)/2
-    cy = start_y + height
     start_angle = 0
     end_angle = 180
     width = (start_x - end_x)
@@ -588,9 +590,9 @@ def draw_parabola_outline(start_x, start_y, end_x, height, color, border_width=5
 
 def draw_parabola(start_x, start_y, end_x, height, color, border_width = 0, tilt_angle = 0):
     if border_width <= 0:
-        draw_arc_filled(center_x, center_y, width, height, color, start_angle, end_angle, tilt_angle)
+        draw_parabola_filled(start_x, start_y, end_x, height, color, tilt_angle)
     else:
-        draw_arc_outline(center_x, center_y, width, height, color, start_angle, end_angle, border_width, tilt_angle)
+        draw_parabola_outline(start_x, start_y, end_x, height, color, border_width, tilt_angle)
 
 ##### END PARABOLA FUNCTIONS #####
 
@@ -1726,21 +1728,27 @@ def draw_polygon_outline(point_list, color, line_width=1):
         GL.glVertex3f(point[0], point[1], 0.5)
     GL.glEnd()
 
+def draw_polygon(point_list, color, border_width = 0):
+    if border_width <= 0:
+        draw_polygon_filled(point_list, color)
+    else:
+        draw_polygon_outline(point_list, color, border_width)
+
 def draw_triangle_filled(first_x, first_y, second_x, second_y, third_x, third_y, color):
     first_point = [first_x, first_y]
     second_point = [second_x, second_y]
     third_point = [third_x, third_y]
     point_list = (first_point, second_point, third_point)
-    arcade.draw_polygon_filled(point_list, color)
+    draw_polygon_filled(point_list, color)
 
 def draw_triangle_outline(first_x, first_y, second_x, second_y, third_x, third_y, color, border_width=1):
     first_point = [first_x, first_y]
     second_point = [second_x, second_y]
     third_point = [third_x, third_y]
     point_list = (first_point, second_point, third_point)
-    arcade.draw_polygon_outline(point_list, color, line_width)
+    draw_polygon_outline(point_list, color, line_width)
 
-def draw_triangle(first_x, first_y, second_x, second_y, third_x, third_y, color, border_width=1):
+def draw_triangle(first_x, first_y, second_x, second_y, third_x, third_y, color, border_width = 0):
     if border_width <= 0:
         draw_triangle_filled(first_x, first_y, second_x, second_y, third_x, third_y, color)
     else:
@@ -1794,7 +1802,7 @@ def render_rectangle_filled(shape, center_x, center_y, color, angle=0):
 
     GL.glDrawArrays(GL.GL_QUADS, 0, shape.size)
 
-def draw_rect_outline(x, y, width, height, color, line_width=1, angle=0):
+def draw_rectangle_outline(x, y, width, height, color, line_width=1, angle=0):
     """
     Draw a rectangle outline.
 
@@ -1814,7 +1822,7 @@ def draw_rect_outline(x, y, width, height, color, line_width=1, angle=0):
     >>> arcade.open_window("Drawing Example", 800, 600)
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
-    >>> arcade.draw_rect_outline(278, 150, 45, 105, \
+    >>> arcade.draw_rectangle_outline(278, 150, 45, 105, \
 arcade.color.BRITISH_RACING_GREEN, 2)
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
@@ -1848,7 +1856,7 @@ arcade.color.BRITISH_RACING_GREEN, 2)
     GL.glVertex3f(0, 0 - height, 0.5)
     GL.glEnd()
 
-def draw_rect_filled(x, y, width, height, color, angle=0):
+def draw_rectangle_filled(x, y, width, height, color, angle=0):
     """
     Draw a filled-in rectangle.
 
@@ -1867,7 +1875,7 @@ def draw_rect_filled(x, y, width, height, color, angle=0):
     >>> arcade.open_window("Drawing Example", 800, 600)
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
-    >>> arcade.draw_rect_filled(390, 150, 45, 105, arcade.color.BLUSH)
+    >>> arcade.draw_rectangle_filled(390, 150, 45, 105, arcade.color.BLUSH)
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
     """
@@ -2019,82 +2027,6 @@ class VertexBuffer():
         self.height = height
         self.color = color
 
-#### This stuff ideally goes in another folder ####
-#### OBJECTS ####
-
-import arcade.color
-
-class Shape():
-
-    def __init__(self, center_x, center_y, color = arcade.color.GREEN):
-        self.color = color
-        self.center_x = center_x
-        self.center_y = center_y
-
-    def draw(self):
-        print("Cannot draw an object of type Shape. Use the subclasses of Shape: Rectangle, etc.")
-
-    def move(self):
-        print("Cannot move an object of type Shape. Use the subclasses of Shape: Rectangle, etc.")
-
-class Rectangle(Shape):
-
-    def __init__(self, center_x, center_y, width, height, color = arcade.color.GREEN, border_width = 0, tilt_angle = 0):
-
-        super().__init__(center_x, center_y, color)
-
-        self.width = width
-        self.height = height
-        self.border_width = border_width
-        self.tilt_angle = tilt_angle
-
-    def draw(self):
-        draw_rectangle(self.center_x, self.center_y, self.width, self.height, self.color, self.border_width, self.tilt_angle)
-
-    def move(self, x_movement, y_movement):
-        self.center_x += x_movement
-        self.center_y += y_movement
-
-class Square(Rectangle):
-    def __init__(self, center_x, center_y, width_and_height, color = arcade.color.GREEN, border_width = 0, tilt_angle = 0):
-
-        super().__init__(center_x, center_y, width_and_height, width_and_height, color, border_width, tilt_angle)
-
-        self.width_and_height = width_and_height
-
-    def draw(self):
-        draw_rectangle(self.center_x, self.center_y, self.width_and_height, self.width_and_height, self.color, self.border_width, self.tilt_angle)
-
-class Oval(Shape):
-    def __init__(self, center_x, center_y, width, height, color = arcade.color.GREEN, border_width = 0, tilt_angle = 0):
-
-        super().__init__(center_x, center_y, color)
-
-        self.width = width
-        self.height = height
-        self.border_width = border_width
-        self.tilt_angle = tilt_angle
-
-    def draw(self):
-        draw_oval(self.center_x, self.center_y, self.width, self.height, self.color, self.border_width, self.tilt_angle)
-
-class Circle(Shape):
-    def __init__(self, center_x, center_y, radius, color = arcade.color.GREEN, border_width = 0):
-
-        super().__init__(center_x, center_y, color)
-
-        self.radius = radius
-        self.border_width = border_width
-
-    def draw(self):
-        draw_circle(self.center_x, self.center_y, radius, self.color, self.border_width)
-
-
-def masterDraw(object):
-    object.draw()
-
-
-#### END OBJECTS ####
 
 
 # def _test():
