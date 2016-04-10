@@ -19,9 +19,6 @@ class Shape():
     def draw(self):   
         print("Cannot draw an object of type Shape. Use the subclasses of Shape: Rectangle, etc.")
 
-    def move(self):   
-        print("Cannot move an object of type Shape. Use the subclasses of Shape: Rectangle, etc.")
-
     def update(self):        
         self.center_x += self.change_x
         self.center_y += self.change_y
@@ -97,6 +94,73 @@ class Text(Shape):
 
     def draw(self):
         draw_text(self.text, self.center_x, self.center_y, self.color, self.size)
+
+
+class Triangle():
+    def __init__(self, first_x, first_y, second_x, second_y, third_x, third_y, color = arcade.color.GREEN, border_width = 0):
+        self.first_x = first_x
+        self.first_y = first_y
+        self.second_x = second_x
+        self.second_y = second_y
+        self.third_x = third_x
+        self.third_y = third_y
+
+        self.color = color
+        self.border_width = border_width
+
+        self.change_x = 0
+        self.change_y = 0
+
+    def draw(self):
+        draw_triangle(self.first_x, self.first_y, self.second_x, self.second_y, self.third_x, self.third_y, self.color, self.border_width)
+
+    def update(self):
+        self.first_x += self.change_x
+        self.first_y += self.change_y
+        self.second_x += self.change_x
+        self.second_y += self.change_y
+        self.third_x += self.change_x
+        self.third_y += self.change_y
+
+class Polygon():
+    def __init__(self, point_list, color = arcade.color.GREEN, border_width = 0):
+        self.point_list = point_list
+        self.color = color
+        self.border_width = border_width
+
+        self.change_x = 0
+        self.change_y = 0
+
+    def draw(self):
+        draw_polygon(self.point_list, self.color, self.border_width)
+
+    def update(self):
+        for point in range(len(self.point_list)):
+            self.point_list[point][0] += self.change_x
+            self.point_list[point][1] += self.change_y
+
+class Parabola():
+    def __init__(self, start_x, start_y, end_x, height, color = arcade.color.GREEN, border_width = 0, tilt_angle = 0):
+        self.start_x = start_x
+        self.start_y = start_y
+        self.end_x = end_x
+        self.height = height
+        self.color = color
+        self.border_width = border_width
+        self.tilt_angle = tilt_angle
+
+        self.change_x = 0
+        self.change_y = 0
+        self.change_angle = 0
+
+    def draw(self):
+        draw_parabola(self.start_x, self.start_y, self.end_x, self.height, self.color, self.border_width, self.tilt_angle)
+
+    def update(self):
+        self.start_x += self.change_x
+        self.start_y += self.change_y
+        self.end_x += self.change_x
+        self.tilt_angle += self.change_angle
 
 def master_draw(object):
     object.draw()

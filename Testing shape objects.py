@@ -57,7 +57,21 @@ shapes.append(on_draw.point)
 on_draw.text = arcade.Text("Hello!!", 250, 300, 100, arcade.color.CHESTNUT)
 shapes.append(on_draw.text)
 
+on_draw.triangle = arcade.Triangle(40, 99, 100, 50, 55, 150, arcade.color.MAROON)
+on_draw.triangle.change_x = 2
+on_draw.triangle.change_y = 4
+shapes.append(on_draw.triangle)
 
+points = ([19, 24], [33,107], [15, 66], [100, 75], [100, 90])
+on_draw.polygon = arcade.Polygon(points, arcade.color.CYAN)
+on_draw.polygon.change_x = 6
+on_draw.polygon.change_y = 2
+shapes.append(on_draw.polygon)
+
+on_draw.parabola = arcade.Parabola(300, 450, 390, 50, arcade.color.INDIGO, 14)
+on_draw.parabola.change_y = -2
+on_draw.parabola.change_angle = 8
+shapes.append(on_draw.parabola)
 
 arcade.schedule(on_draw, 1 / 80)
 

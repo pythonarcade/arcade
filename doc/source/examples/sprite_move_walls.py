@@ -91,21 +91,21 @@ class MyApplication(arcade.Window):
         self.player_sprite = arcade.Sprite("images/character.png",
                                            SPRITE_SCALING)
         self.player_sprite.center_x = 50
-        self.player_sprite.center_y = 70
+        self.player_sprite.center_y = 64
         self.all_sprites_list.append(self.player_sprite)
 
         # -- Set up the walls
         # Create a row of boxes
-        for x in range(173, 650, 73):
-            wall = arcade.Sprite("images/boxAlt.png", SPRITE_SCALING * 2)
+        for x in range(173, 650, 64):
+            wall = arcade.Sprite("images/boxCrate_double.png", SPRITE_SCALING)
             wall.center_x = x
             wall.center_y = 200
             self.all_sprites_list.append(wall)
             self.wall_list.append(wall)
 
         # Create a column of boxes
-        for y in range(273, 500, 73):
-            wall = arcade.Sprite("images/boxAlt.png", SPRITE_SCALING * 2)
+        for y in range(273, 500, 64):
+            wall = arcade.Sprite("images/boxCrate_double.png", SPRITE_SCALING)
             wall.center_x = 465
             wall.center_y = y
             self.all_sprites_list.append(wall)

@@ -170,6 +170,8 @@ class Sprite():
         self.sprite_lists = []
         self.transparent = True
 
+        self._points = None
+
     def append_texture(self, texture):
         self.textures.append(texture)
 
@@ -189,34 +191,44 @@ class Sprite():
         self.center_x = center_x
         self.center_y = center_y
 
+    def set_points(self, points):
+        self._points = points
+
     def get_points(self):
         """
         Get the corner points for the rect that makes up the sprite.
         """
-        x1, y1 = rotate(self.center_x - self.width / 2,
-                        self.center_y - self.height / 2,
-                        self.center_x,
-                        self.center_y,
-                        self.angle)
-        x2, y2 = rotate(self.center_x + self.width / 2,
-                        self.center_y - self.height / 2,
-                        self.center_x,
-                        self.center_y,
-                        self.angle)
-        x3, y3 = rotate(self.center_x + self.width / 2,
-                        self.center_y + self.height / 2,
-                        self.center_x,
-                        self.center_y,
-                        self.angle)
-        x4, y4 = rotate(self.center_x - self.width / 2,
-                        self.center_y + self.height / 2,
-                        self.center_x,
-                        self.center_y,
-                        self.angle)
+        if self._points != None:
+            point_list = []
+            for i in range(len(self._points)):
+                point = (self._points[i][0]+ self.center_x, self._points[i][1]+ self.center_y)
+                point_list.append(point)
+            return point_list
+        else:
+            x1, y1 = rotate(self.center_x - self.width / 2,
+                            self.center_y - self.height / 2,
+                            self.center_x,
+                            self.center_y,
+                            self.angle)
+            x2, y2 = rotate(self.center_x + self.width / 2,
+                            self.center_y - self.height / 2,
+                            self.center_x,
+                            self.center_y,
+                            self.angle)
+            x3, y3 = rotate(self.center_x + self.width / 2,
+                            self.center_y + self.height / 2,
+                            self.center_x,
+                            self.center_y,
+                            self.angle)
+            x4, y4 = rotate(self.center_x - self.width / 2,
+                            self.center_y + self.height / 2,
+                            self.center_x,
+                            self.center_y,
+                            self.angle)
 
         return ((x1, y1), (x2, y2), (x3, y3), (x4, y4))
 
-    points = property(get_points)
+    points = property(get_points, set_points)
 
     def _get_bottom(self):
         """
@@ -236,14 +248,16 @@ arcade.Sprite("doc/source/examples/images/playerShip1_orange.png", scale)
         >>> arcade.quick_run(0.25)
         """
         points = self.get_points()
-        return min(points[0][1], points[1][1], points[2][1], points[3][1])
+        my_min = points[0][1]
+        for i in range(1, len(points)):
+            my_min = min(my_min, points[i][1])
+        return my_min
 
     def _set_bottom(self, amount):
         """
         Set the location of the sprite based on the bottom y coordinate.
         """
-        points = self.get_points()
-        lowest = min(points[0][1], points[1][1], points[2][1], points[3][1])
+        lowest = self._get_bottom()
         diff = lowest - amount
         self.center_y -= diff
 
@@ -267,12 +281,15 @@ arcade.Sprite("doc/source/examples/images/playerShip1_orange.png", scale)
         >>> arcade.quick_run(0.25)
         """
         points = self.get_points()
-        return max(points[0][1], points[1][1], points[2][1], points[3][1])
+        points = self.get_points()
+        my_max = points[0][1]
+        for i in range(1, len(points)):
+            my_max = max(my_max, points[i][1])
+        return my_max
 
     def _set_top(self, amount):
         """ The highest y coordinate. """
-        points = self.get_points()
-        highest = max(points[0][1], points[1][1], points[2][1], points[3][1])
+        highest = self._get_top()
         diff = highest - amount
         self.center_y -= diff
 
@@ -298,12 +315,15 @@ arcade.Sprite("doc/source/examples/images/playerShip1_orange.png", scale)
         >>> arcade.quick_run(0.25)
         """
         points = self.get_points()
-        return min(points[0][0], points[1][0], points[2][0], points[3][0])
+        points = self.get_points()
+        my_min = points[0][0]
+        for i in range(1, len(points)):
+            my_min = min(my_min, points[i][0])
+        return my_min
 
     def _set_left(self, amount):
         """ The left most x coordinate. """
-        points = self.get_points()
-        leftmost = min(points[0][0], points[1][0], points[2][0], points[3][0])
+        leftmost = self._get_left()
         diff = amount - leftmost
         self.center_x += diff
 
@@ -330,12 +350,14 @@ arcade.Sprite("doc/source/examples/images/playerShip1_orange.png", scale)
         """
 
         points = self.get_points()
-        return max(points[0][0], points[1][0], points[2][0], points[3][0])
+        my_max = points[0][0]
+        for i in range(1, len(points)):
+            my_max = max(my_max, points[i][0])
+        return my_max
 
     def _set_right(self, amount):
         """ The right most x coordinate. """
-        points = self.get_points()
-        rightmost = max(points[0][0], points[1][0], points[2][0], points[3][0])
+        rightmost = self._get_right()
         diff = rightmost - amount
         self.center_x -= diff
 

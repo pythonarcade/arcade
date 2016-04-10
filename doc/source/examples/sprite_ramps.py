@@ -16,6 +16,9 @@ SCREEN_HEIGHT = 600
 VIEWPORT_MARGIN = 40
 RIGHT_MARGIN = 150
 
+# Right edge of the map in pixels
+END_OF_MAP = 5565
+
 # Physics
 MOVEMENT_SPEED = 5
 JUMP_SPEED = 14
@@ -71,14 +74,23 @@ class PhysicsEngine():
 
         # If we hit a wall, move so the edges are at the same point
         if len(hit_list) > 0:
-            if self.player_sprite.change_x > 0:
+            change_x = self.player_sprite.change_x
+            if change_x > 0:
                 for item in hit_list:
-                    self.player_sprite.right = min(item.left,
-                                                   self.player_sprite.right)
-            elif self.player_sprite.change_x < 0:
+                    # See if we can "run up" a ramp
+                    self.player_sprite.center_y += change_x
+                    if arcade.check_for_collision(self.player_sprite, item):
+                        self.player_sprite.center_y -= change_x
+                        self.player_sprite.right = \
+                            min(item.left, self.player_sprite.right)
+            elif change_x < 0:
                 for item in hit_list:
-                    self.player_sprite.left = max(item.right,
-                                                  self.player_sprite.left)
+                    # See if we can "run up" a ramp
+                    self.player_sprite.center_y += change_x
+                    if arcade.check_for_collision(self.player_sprite, item):
+                        self.player_sprite.center_y -= change_x
+                        self.player_sprite.left = min(item.right,
+                                                      self.player_sprite.left)
             else:
                 print("Error, collision while player wasn't moving.")
 
@@ -98,15 +110,15 @@ class PhysicsEngine():
                                                  self.player_sprite.top)
             elif self.player_sprite.change_y < 0:
                 for item in hit_list:
-                    self.player_sprite.bottom = max(item.top,
-                                                    self.player_sprite.bottom)
+                    while arcade.check_for_collision(self.player_sprite, item):
+                        self.player_sprite.bottom += 0.5
             else:
                 print("Error, collision while player wasn't moving.")
             self.player_sprite.change_y = 0
 
 
 def get_map():
-    map_file = open("map.csv")
+    map_file = open("map_with_ramps_2.csv")
     map_array = []
     for line in map_file:
         line = line.strip()
@@ -137,23 +149,36 @@ class MyApplication(arcade.Window):
 
         map_array = get_map()
 
+        map_items = ["images/boxCrate_double.png",
+                     "images/grassCenter.png",
+                     "images/grassCorner_left.png",
+                     "images/grassCorner_right.png",
+                     "images/grassHill_left.png",
+                     "images/grassHill_right.png",
+                     "images/grassLeft.png",
+                     "images/grassMid.png",
+                     "images/grassRight.png",
+                     "images/stoneHalf.png"
+                     ]
         for row_index, row in enumerate(map_array):
             for column_index, item in enumerate(row):
 
                 if item == -1:
                     continue
-                elif item == 0:
-                    wall = arcade.Sprite("images/boxCrate_double.png",
+                else:
+                    wall = arcade.Sprite(map_items[item],
                                          SPRITE_SCALING)
-                elif item == 1:
-                    wall = arcade.Sprite("images/grassLeft.png",
-                                         SPRITE_SCALING)
-                elif item == 2:
-                    wall = arcade.Sprite("images/grassMid.png",
-                                         SPRITE_SCALING)
-                elif item == 3:
-                    wall = arcade.Sprite("images/grassRight.png",
-                                         SPRITE_SCALING)
+
+                    # Change the collision polygon to be a ramp instead of
+                    # a rectangle
+                    if item == 4:
+                        wall.points = ((-wall.width // 2, wall.height // 2),
+                                       (wall.width // 2, -wall.height // 2),
+                                       (-wall.width // 2, -wall.height // 2))
+                    elif item == 5:
+                        wall.points = ((-wall.width // 2, -wall.height // 2),
+                                       (wall.width // 2, -wall.height // 2),
+                                       (wall.width // 2, wall.height // 2))
 
                 wall.right = column_index * 64
                 wall.top = (7 - row_index) * 64
@@ -219,7 +244,7 @@ class MyApplication(arcade.Window):
     def animate(self, delta_time):
         """ Movement and game logic """
 
-        if self.view_left + self.player_sprite.right >= 5630:
+        if self.view_left + self.player_sprite.right >= END_OF_MAP:
             self.game_over = True
 
         # Call update on all sprites (The sprites don't do much in this
@@ -236,25 +261,25 @@ class MyApplication(arcade.Window):
         # Scroll left
         left_bndry = self.view_left + VIEWPORT_MARGIN
         if self.player_sprite.left < left_bndry:
-            self.view_left -= left_bndry - self.player_sprite.left
+            self.view_left -= int(left_bndry - self.player_sprite.left)
             changed = True
 
         # Scroll right
         right_bndry = self.view_left + SCREEN_WIDTH - RIGHT_MARGIN
         if self.player_sprite.right > right_bndry:
-            self.view_left += self.player_sprite.right - right_bndry
+            self.view_left += int(self.player_sprite.right - right_bndry)
             changed = True
 
         # Scroll up
         top_bndry = self.view_bottom + SCREEN_HEIGHT - VIEWPORT_MARGIN
         if self.player_sprite.top > top_bndry:
-            self.view_bottom += self.player_sprite.top - top_bndry
+            self.view_bottom += int(self.player_sprite.top - top_bndry)
             changed = True
 
         # Scroll down
         bottom_bndry = self.view_bottom + VIEWPORT_MARGIN
         if self.player_sprite.bottom < bottom_bndry:
-            self.view_bottom -= bottom_bndry - self.player_sprite.bottom
+            self.view_bottom -= int(bottom_bndry - self.player_sprite.bottom)
             changed = True
 
         # If we need to scroll, go ahead and do it.
