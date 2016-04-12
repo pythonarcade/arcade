@@ -9,4 +9,4 @@ from .physics_engines import *
 from .physics_engine_2d import *
 from .application import *
 from .sound import *
-#from .shape_objects import *
+from .shape_objects import *
