@@ -360,7 +360,7 @@ def draw_arc(center_x, center_y, width, height, color, start_angle, end_angle, b
 def draw_fancy_math_arc_outline(start_x, start_y, end_x, end_y, height, color, border_width=5, tilt_angle=0):
     """
     Draws the outline of an arc.
-    
+
     Args:
         :start_x (float):
         :start_y (float):
@@ -439,7 +439,7 @@ def draw_fancy_math_arc_outline(start_x, start_y, end_x, end_y, height, color, b
 def draw_fancy_math_arc_filled(start_x, start_y, end_x, end_y, height, color, tilt_angle=0):
     """
     Draws a filled in arc.
-    
+
     Args:
         :start_x (float):
         :start_y (float):
@@ -454,7 +454,7 @@ def draw_fancy_math_arc_filled(start_x, start_y, end_x, end_y, height, color, ti
         None
 
     Example:
-    
+
     >>> import arcade
     >>> arcade.open_window("Drawing Example", 800, 600)
     >>> arcade.set_background_color(arcade.color.WHITE)
@@ -521,7 +521,7 @@ def draw_fancy_math_arc_filled(start_x, start_y, end_x, end_y, height, color, ti
 def draw_parabola_filled(start_x, start_y, end_x, height, color, tilt_angle=0):
     """
     Draws a filled in parabola.
-    
+
     Args:
         :start_x (float):
         :start_y (float):
@@ -536,7 +536,7 @@ def draw_parabola_filled(start_x, start_y, end_x, height, color, tilt_angle=0):
         None
 
     Example:
-    
+
     >>> import arcade
     >>> arcade.open_window("Drawing Example", 800, 600)
     >>> arcade.set_background_color(arcade.color.WHITE)
@@ -545,8 +545,8 @@ def draw_parabola_filled(start_x, start_y, end_x, height, color, tilt_angle=0):
     >>> color = (255, 0, 0, 127)
     >>> arcade.draw_parabola_filled(160, 160, 210, 50, color)
     >>> arcade.finish_render()
-    >>> arcade.close_window()   
-    """     
+    >>> arcade.close_window()
+    """
     center_x = (start_x+end_x)/2
     center_y = start_y + height
     start_angle = 0
@@ -557,7 +557,7 @@ def draw_parabola_filled(start_x, start_y, end_x, height, color, tilt_angle=0):
 def draw_parabola_outline(start_x, start_y, end_x, height, color, border_width=5, tilt_angle=0):
     """
     Draws the outline of a parabola.
-    
+
     Args:
         :start_x (float):
         :start_y (float):
@@ -573,7 +573,7 @@ def draw_parabola_outline(start_x, start_y, end_x, height, color, border_width=5
         None
 
     Example:
-    
+
     >>> import arcade
     >>> arcade.open_window("Drawing Example", 800, 600)
     >>> arcade.set_background_color(arcade.color.WHITE)
@@ -582,8 +582,8 @@ def draw_parabola_outline(start_x, start_y, end_x, height, color, border_width=5
     >>> color = (255, 0, 0, 127)
     >>> arcade.draw_parabola_outline(160, 160, 210, 50, color, 20)
     >>> arcade.finish_render()
-    >>> arcade.close_window()     
-    """     
+    >>> arcade.close_window()
+    """
     center_x = (start_x+end_x)/2
     center_y = start_y + height
     start_angle = 0
@@ -812,7 +812,7 @@ def draw_circle(center_x, center_y, radius, color, border_width = 0):
 
 def create_ellipse(width, height, color):
     num_segments=64
-    
+
     data = []
 
     for i in range(num_segments + 1):
@@ -1027,7 +1027,7 @@ def draw_oval(center_x, center_y, width, height, color, border_width=0, angle=0)
     >>> arcade.draw_oval(160, 160, 40, 20, color, 20)
     >>> arcade.finish_render()
     >>> arcade.close_window()
-    """    
+    """
     if border_width <= 0:
         draw_oval_filled(center_x, center_y, width, height, color, angle)
     else:
@@ -1061,9 +1061,9 @@ def draw_oval_filled(center_x, center_y, width, height, color, angle=0):
     >>> color = (255, 0, 0, 127)
     >>> arcade.draw_oval_filled(160, 160, 40, 20, color, 45)
     >>> arcade.finish_render()
-    >>> arcade.close_window()  
-    """    
-    
+    >>> arcade.close_window()
+    """
+
     draw_ellipse_filled(center_x, center_y, width, height, color, angle)
 
 # draw a custom oval outline
@@ -1095,7 +1095,7 @@ def draw_oval_outline(center_x, center_y, width, height, color, border_width=5, 
     >>> arcade.draw_oval_outline(160, 160, 40, 20, color, 5, 0)
     >>> arcade.finish_render()
     >>> arcade.close_window()
-    """    
+    """
 
     if border_width <= 0:
         print("Error: Border width must be greater than 0. Use the draw_oval_filled function to create a filled oval.")
@@ -1129,9 +1129,9 @@ def draw_described_oval_filled(center_x, center_y, width, height, color, angle=0
     >>> color = (255, 0, 0, 127)
     >>> arcade.draw_described_oval_filled(160, 160, "skinny", "very tall", color, 20)
     >>> arcade.finish_render()
-    >>> arcade.close_window()  
+    >>> arcade.close_window()
     """
-    
+
     if width.lower() == "very fat" or width.lower() == "vf" or width.lower() == "huge" or width.lower() == "h":
         width = 200
     elif width.lower() == "fat" or width.lower() == "f" or width.lower() == "big" or width.lower() == "b" or height.lower() == "large" or height.lower() == "l" or height.lower() == "max":
@@ -1189,9 +1189,9 @@ def draw_described_oval_outline(center_x, center_y, width, height, color, border
     >>> color = (255, 0, 0, 127)
     >>> arcade.draw_described_oval_outline(160, 160, "very skinny", "average", color, 20)
     >>> arcade.finish_render()
-    >>> arcade.close_window()  
+    >>> arcade.close_window()
     """
-    
+
     if width.lower() == "very fat" or width.lower() == "vf" or width.lower() == "huge" or width.lower() == "h":
         width = 200
     elif width.lower() == "fat" or width.lower() == "f" or width.lower() == "big" or width.lower() == "b" or height.lower() == "large" or height.lower() == "l" or height.lower() == "max":
@@ -1225,11 +1225,7 @@ def draw_described_oval_outline(center_x, center_y, width, height, color, border
 
 ##### BEGIN LINE FUNCTIONS #####
 
-<<<<<<< HEAD
-def draw_line(start_x, start_y, end_x, end_y, color, border_width = 1):
-=======
 def draw_line(start_x, start_y, end_x, end_y, color, border_width=1):
->>>>>>> 3dd7b0dfbcd1ed56afa92a8cfec4692e8065726b
     """
     Draw a line.
 
@@ -1912,7 +1908,7 @@ def draw_rectangle_filled(x, y, width, height, color, angle=0):
     GL.glTranslatef(x, y, 0)
     if angle:
         GL.glRotatef(angle, 0, 0, 1)
-        
+
     GL.glTranslatef(-width / 2, height / 2, 0)
 
     GL.glBegin(GL.GL_QUADS)
