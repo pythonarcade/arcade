@@ -95,8 +95,38 @@ class PhysicsEnginePlatformer():
         Move everything and resolve collisions.
         """
 
-        # Add gravity
+        # --- Add gravity
         self.player_sprite.change_y -= self.gravity_constant
+
+        # --- Move in the y direction
+        self.player_sprite.center_y += self.player_sprite.change_y
+
+        # Check for wall hit
+        hit_list = \
+            arcade.check_for_collision_with_list(self.player_sprite,
+                                                 self.platforms)
+
+        # If we hit a wall, move so the edges are at the same point
+        if len(hit_list) > 0:
+            if self.player_sprite.change_y > 0:
+                for item in hit_list:
+                    self.player_sprite.top = min(item.bottom,
+                                                 self.player_sprite.top)
+            elif self.player_sprite.change_y < 0:
+                for item in hit_list:
+                    while arcade.check_for_collision(self.player_sprite, item):
+                        self.player_sprite.bottom += 0.5
+                    if item.change_x != 0:
+                        self.player_sprite.center_x += item.change_x
+            else:
+                # Collision while player wasn't moving, most likely
+                # moving platform.
+                if self.player_sprite.center_y >= item.center_y:
+                    self.player_sprite.bottom = item.top
+                else:
+                    self.player_sprite.top = item.bottom
+            self.player_sprite.change_y = min(0, hit_list[0].change_y)
+
 
         # --- Move in the x direction
         self.player_sprite.center_x += self.player_sprite.change_x
@@ -129,29 +159,6 @@ class PhysicsEnginePlatformer():
             else:
                 print("Error, collision while player wasn't moving.")
 
-        # --- Move in the y direction
-        self.player_sprite.center_y += self.player_sprite.change_y
-
-        # Check for wall hit
-        hit_list = \
-            arcade.check_for_collision_with_list(self.player_sprite,
-                                                 self.platforms)
-
-        # If we hit a wall, move so the edges are at the same point
-        if len(hit_list) > 0:
-            if self.player_sprite.change_y > 0:
-                for item in hit_list:
-                    self.player_sprite.top = min(item.bottom,
-                                                 self.player_sprite.top)
-            elif self.player_sprite.change_y < 0:
-                for item in hit_list:
-                    while arcade.check_for_collision(self.player_sprite, item):
-                        self.player_sprite.bottom += 0.5
-                    if item.change_x != 0:
-                        self.player_sprite.center_x += item.change_x
-            else:
-                print("Error, collision while player wasn't moving.")
-            self.player_sprite.change_y = 0
 
         for platform in self.platforms:
             if platform.change_x != 0 or platform.change_y != 0:
@@ -177,12 +184,12 @@ class PhysicsEnginePlatformer():
 
                 platform.center_y += platform.change_y
 
-                if platform.boundary_top != None and platform.top <= platform.boundary_top:
+                if platform.boundary_top != None and platform.top >= platform.boundary_top:
                     platform.top = platform.boundary_top
-                    if platform.change_y < 0:
+                    if platform.change_y > 0:
                         platform.change_y *= -1
 
-                if platform.boundary_bottom != None and platform.bottom >= platform.boundary_bottom:
+                if platform.boundary_bottom != None and platform.bottom <= platform.boundary_bottom:
                     platform.bottom = platform.boundary_bottom
-                    if platform.change_y > 0:
+                    if platform.change_y < 0:
                         platform.change_y *= -1

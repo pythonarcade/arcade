@@ -78,21 +78,49 @@ class MyApplication(arcade.Window):
                 self.wall_list.append(wall)
 
 
+        # Create platform side to side
         wall = arcade.Sprite("images/grassMid.png", SPRITE_SCALING)
         wall.center_y = 200
-        wall.center_x = 300
-        wall.boundary_left = 200
-        wall.boundary_right = 400
+        wall.center_x = 200
+        wall.boundary_left = 100
+        wall.boundary_right = 300
         wall.change_x = 1
 
         self.all_sprites_list.append(wall)
         self.wall_list.append(wall)
 
+        # Create platform side to side
+        wall = arcade.Sprite("images/grassMid.png", SPRITE_SCALING)
+        wall.center_y = 200
+        wall.center_x = 400
+        wall.boundary_left = 300
+        wall.boundary_right = 500
+        wall.change_x = -1
+
+        self.all_sprites_list.append(wall)
+        self.wall_list.append(wall)
+
+        # Create platform moving up and down
         wall = arcade.Sprite("images/grassMid.png", SPRITE_SCALING)
         wall.center_y = 300
-        wall.center_x = 450
-        wall.boundary_top = 200
+        wall.center_x = 400
+        wall.boundary_top = 500
+        wall.boundary_bottom = 300
+        wall.change_y = 1
+
+        self.all_sprites_list.append(wall)
+        self.wall_list.append(wall)
+
+        # Create platform moving diagonally
+        wall = arcade.Sprite("images/grassMid.png", SPRITE_SCALING)
+        wall.center_y = 500
+        wall.center_x = 600
+        wall.boundary_left = 500
+        wall.boundary_right = 700
+
+        wall.boundary_top = 600
         wall.boundary_bottom = 400
+        wall.change_x = 1
         wall.change_y = 1
 
         self.all_sprites_list.append(wall)
