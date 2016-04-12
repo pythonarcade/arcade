@@ -117,13 +117,14 @@ class PhysicsEnginePlatformer():
                         self.player_sprite.center_y -= change_x
                         self.player_sprite.right = \
                             min(item.left, self.player_sprite.right)
+
             elif change_x < 0:
                 for item in hit_list:
                     # See if we can "run up" a ramp
                     self.player_sprite.center_y += change_x
                     if arcade.check_for_collision(self.player_sprite, item):
                         self.player_sprite.center_y -= change_x
-                        self.player_sprite.left = min(item.right,
+                        self.player_sprite.left = max(item.right,
                                                       self.player_sprite.left)
             else:
                 print("Error, collision while player wasn't moving.")
@@ -146,6 +147,42 @@ class PhysicsEnginePlatformer():
                 for item in hit_list:
                     while arcade.check_for_collision(self.player_sprite, item):
                         self.player_sprite.bottom += 0.5
+                    if item.change_x != 0:
+                        self.player_sprite.center_x += item.change_x
             else:
                 print("Error, collision while player wasn't moving.")
             self.player_sprite.change_y = 0
+
+        for platform in self.platforms:
+            if platform.change_x != 0 or platform.change_y != 0:
+                platform.center_x += platform.change_x
+
+                if platform.boundary_left != None and platform.left <= platform.boundary_left:
+                    platform.left = platform.boundary_left
+                    if platform.change_x < 0:
+                        platform.change_x *= -1
+
+                if platform.boundary_right != None and platform.right >= platform.boundary_right:
+                    platform.right = platform.boundary_right
+                    if platform.change_x > 0:
+                        platform.change_x *= -1
+
+                if arcade.check_for_collision(self.player_sprite, platform):
+                    if platform.change_x < 0:
+                        original_location = self.player_sprite.right
+                        self.player_sprite.right = platform.left
+                    if platform.change_x > 0:
+                        original_location = self.player_sprite.left
+                        self.player_sprite.left = platform.right
+
+                platform.center_y += platform.change_y
+
+                if platform.boundary_top != None and platform.top <= platform.boundary_top:
+                    platform.top = platform.boundary_top
+                    if platform.change_y < 0:
+                        platform.change_y *= -1
+
+                if platform.boundary_bottom != None and platform.bottom >= platform.boundary_bottom:
+                    platform.bottom = platform.boundary_bottom
+                    if platform.change_y > 0:
+                        platform.change_y *= -1

@@ -177,6 +177,11 @@ class Sprite():
         self.change_y = 0
         self.change_angle = 0
 
+        self.boundary_left = None
+        self.boundary_right = None
+        self.boundary_top = None
+        self.boundary_bottom = None
+
         self.alpha = 1.0
         self.sprite_lists = []
         self.transparent = True
