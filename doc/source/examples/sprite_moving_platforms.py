@@ -23,6 +23,7 @@ GRAVITY = 0.5
 
 window = None
 
+
 def get_map():
     map_file = open("map.csv")
     map_array = []
@@ -33,6 +34,7 @@ def get_map():
             map_row[index] = int(item)
         map_array.append(map_row)
     return map_array
+
 
 class MyApplication(arcade.Window):
     """ Main application class. """
@@ -76,7 +78,6 @@ class MyApplication(arcade.Window):
                 wall.top = (7 - row_index) * 64
                 self.all_sprites_list.append(wall)
                 self.wall_list.append(wall)
-
 
         # Create platform side to side
         wall = arcade.Sprite("images/grassMid.png", SPRITE_SCALING)

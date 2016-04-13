@@ -135,9 +135,7 @@ class Sprite():
 
         Args:
             filename (str): Filename of an image that represents the sprite.
-            scale (float): Scale the image up or down. Scale of 1.0 is no-scaling.
-            x (float): Scale the image up or down. Scale of 1.0 is no-scaling.
-            y (float): Scale the image up or down. Scale of 1.0 is no-scaling.
+            scale (float): Scale the image up or down. Scale of 1.0 is none.
             width (float): Width of the sprite
             height (float): Height of the sprite
 
