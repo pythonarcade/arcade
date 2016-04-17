@@ -10,6 +10,7 @@ def on_draw(delta_time):
     # Draw shapes
     on_draw.rectangle.draw()
     on_draw.oval.draw()
+    on_draw.ellipse.draw()
     on_draw.circle.draw()
     on_draw.square.draw()
     arcade.draw_all(shapes)
@@ -17,6 +18,7 @@ def on_draw(delta_time):
     #update shape positions
     on_draw.rectangle.update()
     on_draw.oval.update()
+    on_draw.ellipse.update()
     on_draw.circle.update()
     on_draw.square.update()
     arcade.update_all(shapes)
@@ -31,6 +33,10 @@ on_draw.rectangle.change_y = 2
 on_draw.oval = arcade.Oval(250, 250, 50, 25, arcade.color.ORANGE)
 on_draw.oval.change_x = 1
 on_draw.oval.change_y = -1
+
+on_draw.ellipse = arcade.Ellipse(500, 0, 25, 50, arcade.color.COCONUT)
+on_draw.ellipse.change_y = 2
+on_draw.ellipse.change_angle = 15
 
 on_draw.circle = arcade.Circle(350, 250, 15, arcade.color.BLUE)
 on_draw.circle.change_x = 1
