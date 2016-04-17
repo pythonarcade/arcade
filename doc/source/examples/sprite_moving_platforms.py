@@ -16,9 +16,6 @@ SCREEN_HEIGHT = 600
 VIEWPORT_MARGIN = 40
 RIGHT_MARGIN = 150
 
-# Right edge of the map in pixels
-END_OF_MAP = 5565
-
 # Physics
 MOVEMENT_SPEED = 5
 JUMP_SPEED = 14
@@ -28,7 +25,7 @@ window = None
 
 
 def get_map():
-    map_file = open("map_with_ramps_2.csv")
+    map_file = open("map.csv")
     map_array = []
     for line in map_file:
         line = line.strip()
@@ -59,41 +56,76 @@ class MyApplication(arcade.Window):
 
         map_array = get_map()
 
-        map_items = ["images/boxCrate_double.png",
-                     "images/grassCenter.png",
-                     "images/grassCorner_left.png",
-                     "images/grassCorner_right.png",
-                     "images/grassHill_left.png",
-                     "images/grassHill_right.png",
-                     "images/grassLeft.png",
-                     "images/grassMid.png",
-                     "images/grassRight.png",
-                     "images/stoneHalf.png"
-                     ]
         for row_index, row in enumerate(map_array):
             for column_index, item in enumerate(row):
 
                 if item == -1:
                     continue
-                else:
-                    wall = arcade.Sprite(map_items[item],
+                elif item == 0:
+                    wall = arcade.Sprite("images/boxCrate_double.png",
                                          SPRITE_SCALING)
-
-                    # Change the collision polygon to be a ramp instead of
-                    # a rectangle
-                    if item == 4:
-                        wall.points = ((-wall.width // 2, wall.height // 2),
-                                       (wall.width // 2, -wall.height // 2),
-                                       (-wall.width // 2, -wall.height // 2))
-                    elif item == 5:
-                        wall.points = ((-wall.width // 2, -wall.height // 2),
-                                       (wall.width // 2, -wall.height // 2),
-                                       (wall.width // 2, wall.height // 2))
+                elif item == 1:
+                    wall = arcade.Sprite("images/grassLeft.png",
+                                         SPRITE_SCALING)
+                elif item == 2:
+                    wall = arcade.Sprite("images/grassMid.png",
+                                         SPRITE_SCALING)
+                elif item == 3:
+                    wall = arcade.Sprite("images/grassRight.png",
+                                         SPRITE_SCALING)
 
                 wall.right = column_index * 64
                 wall.top = (7 - row_index) * 64
                 self.all_sprites_list.append(wall)
                 self.wall_list.append(wall)
+
+        # Create platform side to side
+        wall = arcade.Sprite("images/grassMid.png", SPRITE_SCALING)
+        wall.center_y = 200
+        wall.center_x = 200
+        wall.boundary_left = 100
+        wall.boundary_right = 300
+        wall.change_x = 1
+
+        self.all_sprites_list.append(wall)
+        self.wall_list.append(wall)
+
+        # Create platform side to side
+        wall = arcade.Sprite("images/grassMid.png", SPRITE_SCALING)
+        wall.center_y = 200
+        wall.center_x = 400
+        wall.boundary_left = 300
+        wall.boundary_right = 500
+        wall.change_x = -1
+
+        self.all_sprites_list.append(wall)
+        self.wall_list.append(wall)
+
+        # Create platform moving up and down
+        wall = arcade.Sprite("images/grassMid.png", SPRITE_SCALING)
+        wall.center_y = 300
+        wall.center_x = 400
+        wall.boundary_top = 500
+        wall.boundary_bottom = 300
+        wall.change_y = 1
+
+        self.all_sprites_list.append(wall)
+        self.wall_list.append(wall)
+
+        # Create platform moving diagonally
+        wall = arcade.Sprite("images/grassMid.png", SPRITE_SCALING)
+        wall.center_y = 500
+        wall.center_x = 600
+        wall.boundary_left = 500
+        wall.boundary_right = 700
+
+        wall.boundary_top = 600
+        wall.boundary_bottom = 400
+        wall.change_x = 1
+        wall.change_y = 1
+
+        self.all_sprites_list.append(wall)
+        self.wall_list.append(wall)
 
         self.physics_engine = \
             arcade.PhysicsEnginePlatformer(self.player_sprite,
@@ -157,7 +189,7 @@ class MyApplication(arcade.Window):
     def animate(self, delta_time):
         """ Movement and game logic """
 
-        if self.view_left + self.player_sprite.right >= END_OF_MAP:
+        if self.view_left + self.player_sprite.right >= 5630:
             self.game_over = True
 
         # Call update on all sprites (The sprites don't do much in this
@@ -174,25 +206,25 @@ class MyApplication(arcade.Window):
         # Scroll left
         left_bndry = self.view_left + VIEWPORT_MARGIN
         if self.player_sprite.left < left_bndry:
-            self.view_left -= int(left_bndry - self.player_sprite.left)
+            self.view_left -= left_bndry - self.player_sprite.left
             changed = True
 
         # Scroll right
         right_bndry = self.view_left + SCREEN_WIDTH - RIGHT_MARGIN
         if self.player_sprite.right > right_bndry:
-            self.view_left += int(self.player_sprite.right - right_bndry)
+            self.view_left += self.player_sprite.right - right_bndry
             changed = True
 
         # Scroll up
         top_bndry = self.view_bottom + SCREEN_HEIGHT - VIEWPORT_MARGIN
         if self.player_sprite.top > top_bndry:
-            self.view_bottom += int(self.player_sprite.top - top_bndry)
+            self.view_bottom += self.player_sprite.top - top_bndry
             changed = True
 
         # Scroll down
         bottom_bndry = self.view_bottom + VIEWPORT_MARGIN
         if self.player_sprite.bottom < bottom_bndry:
-            self.view_bottom -= int(bottom_bndry - self.player_sprite.bottom)
+            self.view_bottom -= bottom_bndry - self.player_sprite.bottom
             changed = True
 
         # If we need to scroll, go ahead and do it.
