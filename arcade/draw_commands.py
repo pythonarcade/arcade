@@ -1147,39 +1147,40 @@ def draw_ellipse_outline(center_x, center_y,
     GL.glLoadIdentity()
 
 def draw_ellipse(center_x, center_y, width, height, color, border_width = 0, tilt_angle = 0):
+    """
+    Draws an oval.
+
+    Args:
+        :center_x (float):
+        :center_y (float):
+        :width (float):
+        :height (float):
+        :color (tuple):
+        :border_width (float):
+        :angle (float):
+    Returns:
+        None
+    Raises:
+        None
+
+    Example:
+
+    >>> import arcade
+    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.set_background_color(arcade.color.WHITE)
+    >>> arcade.start_render()
+    >>> arcade.draw_oval(150, 150, 20, 40, arcade.color.BRIGHT_MAROON)
+    >>> color = (255, 0, 0, 127)
+    >>> arcade.draw_oval(160, 160, 40, 20, color, 20)
+    >>> arcade.finish_render()
+    >>> arcade.close_window()
+    """ 
+
     if border_width <= 0:
         draw_ellipse_filled(center_x, center_y, width, height, color, tilt_angle)
     else:
         draw_ellipse_outline(center_x, center_y, width, height, color, border_width, tilt_angle)
         
-        """
-        Draws an oval.
-    
-        Args:
-            :center_x (float):
-            :center_y (float):
-            :width (float):
-            :height (float):
-            :color (tuple):
-            :border_width (float):
-            :angle (float):
-        Returns:
-            None
-        Raises:
-            None
-    
-        Example:
-    
-        >>> import arcade
-        >>> arcade.open_window("Drawing Example", 800, 600)
-        >>> arcade.set_background_color(arcade.color.WHITE)
-        >>> arcade.start_render()
-        >>> arcade.draw_oval(150, 150, 20, 40, arcade.color.BRIGHT_MAROON)
-        >>> color = (255, 0, 0, 127)
-        >>> arcade.draw_oval(160, 160, 40, 20, color, 20)
-        >>> arcade.finish_render()
-        >>> arcade.close_window()
-        """ 
 
 
 ##### END ELLIPSE FUNCTIONS #####
