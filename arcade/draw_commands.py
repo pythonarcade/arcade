@@ -240,7 +240,7 @@ arcade.color.BOTTLE_GREEN, 90, 360, 45)
     >>> color = (255, 0, 0, 127)
     >>> arcade.draw_arc_filled(150, 154, 15, 36, color, 90, 360, 45)
     >>> arcade.finish_render()
-    >>> arcade.close_window()
+    >>> arcade.quick_run(0.25)
     """
     num_segments = 128
     GL.glEnable(GL.GL_BLEND)
@@ -277,7 +277,7 @@ arcade.color.BOTTLE_GREEN, 90, 360, 45)
     GL.glLoadIdentity()
 
 
-def draw_arc_outline(center_x, center_y, width, height, color, start_angle, end_angle, line_width=1, tilt_angle=0):
+def draw_arc_outline(center_x, center_y, width, height, color, start_angle, end_angle, border_width=1, tilt_angle=0):
     """
     Draw the outside edge of an arc. Useful for drawing curved lines.
 
@@ -290,7 +290,7 @@ def draw_arc_outline(center_x, center_y, width, height, color, start_angle, end_
          RGBA format.
         :start_angle (float): start angle of the arc in degrees.
         :end_angle (float): end angle of the arc in degrees.
-        :line_width (float): width of line in pixels.
+        :border_width (float): width of line in pixels.
         :angle (float): angle the arc is tilted.
         :num_segments (int): number of line segments that would make up the
          whole ellipse that this arc is part of. Higher is better quality and
@@ -324,7 +324,7 @@ transparent_color, 90, 360)
     GL.glLoadIdentity()
     GL.glTranslatef(center_x, center_y, 0)
     GL.glRotatef(tilt_angle, 0, 0, 1)
-    GL.glLineWidth(line_width)
+    GL.glLineWidth(border_width)
 
     # Set color
     if len(color) == 4:
@@ -354,19 +354,30 @@ def draw_arc(center_x, center_y, width, height, color, start_angle, end_angle, b
     else:
         draw_arc_outline(center_x, center_y, width, height, color, start_angle, end_angle, border_width, tilt_angle)
 
-def draw_fancy_math_arc_outline(start_x, start_y, end_x, end_y, height, color, line_width=5, tilt_angle=0):
+def draw_fancy_math_arc_outline(start_x, start_y, end_x, end_y, height, color, border_width=5, tilt_angle=0):
     """
     Draws the outline of an arc.
     
     Args:
+<<<<<<< HEAD
+        :start_x (float): The starting x position of the arc
+        :start_y (float): The starting y position of the arc
+        :end_x (float): The end x position of the arc
+        :end_y (float): The end y position of the arc
+        :height (float): How tall the arc is
+        :color (tuple): What color the arc is
+        :line_width (float): Thickness of the arc
+        :tile_angle (float): The angle of the arcs tilt
+=======
         :start_x (float):
         :start_y (float):
         :end_x (float):
         :end_y (float):
         :height (float):
         :color (tuple):
-        :line_width (float):
+        :border_width (float):
         :tile_angle (float):
+>>>>>>> bbc4ebea93480bea5dc35ef2ce6d340abf6e576e
     Returns:
         None
     Raises:
@@ -431,20 +442,20 @@ def draw_fancy_math_arc_outline(start_x, start_y, end_x, end_y, height, color, l
     start_angle = start_a*(180/math.pi)
     end_angle = end_a*(180/math.pi)
 
-    draw_arc_outline(cent_x, cent_y, distance, height, color, start_angle, end_angle, line_width, tilt_angle)
+    draw_arc_outline(cent_x, cent_y, distance, height, color, start_angle, end_angle, border_width, tilt_angle)
 
 def draw_fancy_math_arc_filled(start_x, start_y, end_x, end_y, height, color, tilt_angle=0):
     """
     Draws a filled in arc.
     
     Args:
-        :start_x (float):
-        :start_y (float):
-        :end_x (float):
-        :end_y (float):
-        :height (float):
-        :color (tuple):
-        :tile_angle (float):
+        :start_x (float): The starting x position of the arc
+        :start_y (float): The starting y position of the arc
+        :end_x (float): The end x position of the arc
+        :end_y (float): The end y position of the arc
+        :height (float): How tall the arc is
+        :color (tuple): What color the arc is
+        :tile_angle (float): The angle of the arcs tilt
     Returns:
         None
     Raises:
@@ -520,13 +531,12 @@ def draw_parabola_filled(start_x, start_y, end_x, height, color, tilt_angle=0):
     Draws a filled in parabola.
     
     Args:
-        :start_x (float):
-        :start_y (float):
-        :end_x (float):
-        :end_y (float):
-        :height (float):
-        :color (tuple):
-        :tile_angle (float):
+        :start_x (float): The starting x position of the parabola
+        :start_y (float): The starting y position of the parabola
+        :end_x (float): The ending x position of the parabola
+        :height (float): The height of the parabola
+        :color (tuple): The color of the parabola
+        :tile_angle (float): The angle of the tilt of the parabola
     Returns:
         None
     Raises:
@@ -542,8 +552,8 @@ def draw_parabola_filled(start_x, start_y, end_x, height, color, tilt_angle=0):
     >>> color = (255, 0, 0, 127)
     >>> arcade.draw_parabola_filled(160, 160, 210, 50, color)
     >>> arcade.finish_render()
-    >>> arcade.close_window()   
-    """     
+    >>> arcade.quick_run(0.25)
+    """         
     center_x = (start_x+end_x)/2
     center_y = start_y + height
     start_angle = 0
@@ -556,14 +566,14 @@ def draw_parabola_outline(start_x, start_y, end_x, height, color, border_width=5
     Draws the outline of a parabola.
     
     Args:
-        :start_x (float):
-        :start_y (float):
-        :end_x (float):
-        :end_y (float):
-        :height (float):
-        :color (tuple):
-        :border_width (float):
-        :tile_angle (float):
+        :start_x (float): The starting x position of the parabola
+        :start_y (float): The starting y position of the parabola
+        :end_x (float): The ending x position of the parabola
+        :end_y (float): The ending y position of the parabola
+        :height (float): The height of the parabola
+        :color (tuple): The color of the parabola
+        :border_width (float): The thickness of the outline
+        :tile_angle (float): The angle of the tilt of the parabola
     Returns:
         None
     Raises:
@@ -579,7 +589,7 @@ def draw_parabola_outline(start_x, start_y, end_x, height, color, border_width=5
     >>> color = (255, 0, 0, 127)
     >>> arcade.draw_parabola_outline(160, 160, 210, 50, color, 20)
     >>> arcade.finish_render()
-    >>> arcade.close_window()     
+    >>> arcade.quick_run(0.25)
     """     
     center_x = (start_x+end_x)/2
     center_y = start_y + height
@@ -589,6 +599,34 @@ def draw_parabola_outline(start_x, start_y, end_x, height, color, border_width=5
     draw_arc_outline(center_x, center_y, width, height, color, start_angle, end_angle, border_width, tilt_angle)
 
 def draw_parabola(start_x, start_y, end_x, height, color, border_width = 0, tilt_angle = 0):
+    """
+    Draws the outline of a parabola.
+    
+    Args:
+        :start_x (float): The starting x position of the parabola
+        :start_y (float): The starting y position of the parabola
+        :end_x (float): The ending x position of the parabola
+        :height (float): The height of the parabola
+        :color (tuple): The color of the parabola
+        :border_width (float): The thickness of the outline
+        :tile_angle (float): The angle of the tilt of the parabola
+    Returns:
+        None
+    Raises:
+        None
+
+    Example:
+    
+    >>> import arcade
+    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.set_background_color(arcade.color.WHITE)
+    >>> arcade.start_render()
+    >>> arcade.draw_parabola(150, 150, 200, 50, arcade.color.BOTTLE_GREEN, 10, 15)
+    >>> color = (255, 0, 0, 127)
+    >>> arcade.draw_parabola(160, 160, 210, 50, color, 20)
+    >>> arcade.finish_render()
+    >>> arcade.quick_run(0.25)
+    """    
     if border_width <= 0:
         draw_parabola_filled(start_x, start_y, end_x, height, color, tilt_angle)
     else:
@@ -608,7 +646,6 @@ def draw_circle_filled(center_x, center_y, radius, color):
         :radius (float): width of the circle.
         :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
-        :num_segments (int): number of triangle segments that make up this
          circle. Higher is better quality, but slower render time.
     Returns:
         None
@@ -640,8 +677,10 @@ def draw_small_filled_circle(center_x, center_y, color):
         :radius (float): width of the circle.
         :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
-        :num_segments (int): number of triangle segments that make up this
+<<<<<<< HEAD
          circle. Higher is better quality, but slower render time.
+=======
+>>>>>>> bbc4ebea93480bea5dc35ef2ce6d340abf6e576e
     Returns:
         None
     Raises:
@@ -671,7 +710,6 @@ def draw_medium_filled_circle(center_x, center_y, color):
         :radius (float): width of the circle.
         :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
-        :num_segments (int): number of triangle segments that make up this
          circle. Higher is better quality, but slower render time.
     Returns:
         None
@@ -765,17 +803,17 @@ def draw_standard_circle(center_x, center_y, color, size, filled, adjustment = 0
     elif filled == "outline" or filled == "hollow":
         draw_circle_outline(center_x, center_y, radius, color)
 
-def draw_circle_outline(center_x, center_y, radius, color, line_width=1):
+def draw_circle_outline(center_x, center_y, radius, color, border_width=1):
     """
     Draw the outline of a circle.
 
     Args:
-        :cx (float): x position that is the center of the circle.
-        :cy (float): y position that is the center of the circle.
+        :center_x (float): x position that is the center of the circle.
+        :center_y (float): y position that is the center of the circle.
         :radius (float): width of the circle.
         :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
-        :line_width (float): Width of the circle outline in pixels.
+        :border_width (float): Width of the circle outline in pixels.
         :num_segments (int): number of triangle segments that make up this
          circle. Higher is better quality, but slower render time.
     Returns:
@@ -797,9 +835,34 @@ def draw_circle_outline(center_x, center_y, radius, color, line_width=1):
     width = radius
     height = radius
     draw_ellipse_outline(center_x, center_y, width, height,
-                         color, line_width)
+                         color, border_width)
 
 def draw_circle(center_x, center_y, radius, color, border_width = 0):
+    """
+    Draw the outline of a circle.
+
+    Args:
+        :center_x (float): x position that is the center of the circle.
+        :center_y (float): y position that is the center of the circle.
+        :radius (float): width of the circle.
+        :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
+         RGBA format.
+        :border_width (float): Width of the circle outline in pixels.
+    Returns:
+        None
+    Raises:
+        None
+
+    Example:
+
+    >>> import arcade
+    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.set_background_color(arcade.color.WHITE)
+    >>> arcade.start_render()
+    >>> arcade.draw_circle(300, 285, 18, arcade.color.WISTERIA, 3)
+    >>> arcade.finish_render()
+    >>> arcade.quick_run(0.25)
+    """    
     if border_width <= 0:
         draw_circle_filled(center_x, center_y, radius, color)
     else:
@@ -809,7 +872,36 @@ def draw_circle(center_x, center_y, radius, color, border_width = 0):
 
 ##### BEGIN ELLIPSE FUNCTIONS #####
 
+<<<<<<< HEAD
 def create_ellipse(width, height, color, num_segments=64):
+    """
+    Draw the outline of a circle.
+
+    Args:
+        :width (float): The width of the ellipse
+        :height (float): The height of the ellipse
+        :color (float): The color of the ellipse
+        :num_segments (int): The quality of the ellipse
+    Returns:
+        None
+    Raises:
+        None
+
+    Example:
+
+    >>> import arcade
+    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.set_background_color(arcade.color.WHITE)
+    >>> arcade.start_render()
+    >>> arcade.draw_ellipse(50, 50, arcade.color.WISTERIA)
+    >>> arcade.finish_render()
+    >>> arcade.quick_run(0.25)
+    """        
+=======
+def create_ellipse(width, height, color):
+    num_segments=64
+    
+>>>>>>> bbc4ebea93480bea5dc35ef2ce6d340abf6e576e
     data = []
 
     for i in range(num_segments + 1):
@@ -868,8 +960,6 @@ def draw_ellipse_filled(center_x, center_y, width, height, color, angle=0):
         :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
         :angle (float): Angle in degrees to tilt the ellipse.
-        :num_segments (int): number of triangle segments that make up this
-         circle. Higher is better quality, but slower render time.
     Returns:
         None
     Raises:
@@ -921,7 +1011,7 @@ def draw_ellipse_filled(center_x, center_y, width, height, color, angle=0):
     GL.glEnd()
     GL.glLoadIdentity()
 
-def draw_ellipse_outline(center_x, center_y, width, height, color, line_width=1, angle=0):
+def draw_ellipse_outline(center_x, center_y, width, height, color, border_width=1, angle=0):
     """
     Draw the outline of an ellipse.
 
@@ -932,10 +1022,8 @@ def draw_ellipse_outline(center_x, center_y, width, height, color, line_width=1,
         :width (float): width of the ellipse.
         :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
-        :line_width (float): Width of the circle outline in pixels.
+        :border_width (float): Width of the circle outline in pixels.
         :angle (float): Angle in degrees to tilt the ellipse.
-        :num_segments (int): number of triangle segments that make up this
-         circle. Higher is better quality, but slower render time.
     Returns:
         None
     Raises:
@@ -965,7 +1053,7 @@ def draw_ellipse_outline(center_x, center_y, width, height, color, line_width=1,
     GL.glLoadIdentity()
     GL.glTranslatef(center_x, center_y, 0)
     GL.glRotatef(angle, 0, 0, 1)
-    GL.glLineWidth(line_width)
+    GL.glLineWidth(border_width)
 
     # Set color
     if len(color) == 4:
@@ -985,6 +1073,12 @@ def draw_ellipse_outline(center_x, center_y, width, height, color, line_width=1,
     GL.glEnd()
     GL.glLoadIdentity()
 
+def draw_ellipse(center_x, center_y, width, height, color, border_width = 0, tilt_angle = 0):
+    if border_width <= 0:
+        draw_ellipse_filled(center_x, center_y, width, height, color, tilt_angle)
+    else:
+        draw_ellipse_outline(center_x, center_y, width, height, color, border_width, tilt_angle)
+
 ##### END ELLIPSE FUNCTIONS #####
 
 ##### BEGIN OVAL FUNCTIONS #####
@@ -995,13 +1089,13 @@ def draw_oval(center_x, center_y, width, height, color, border_width=0, angle=0)
     Draws an oval.
 
     Args:
-        :center_x (float):
-        :center_y (float):
-        :height (float):
-        :width (float):
-        :color (tuple):
-        :border_width (float):
-        :angle (float):
+        :center_x (float): The x position for the center of the oval
+        :center_y (float): The y position for the center of the oval
+        :width (float): The width of the oval
+        :height (float): The height of the oval
+        :color (tuple): The color of the oval
+        :border_width (float): The width of the outline (0 is filled)
+        :angle (float): The angle the oval is tilted
     Returns:
         None
     Raises:
@@ -1031,12 +1125,12 @@ def draw_oval_filled(center_x, center_y, width, height, color, angle=0):
     Draw a filled oval.
 
     Args:
-        :center_x (float):
-        :center_y (float):
-        :width (float):
-        :height (float):
-        :color (tuple):
-        :angle (float):
+        :center_x (float): The x position for the center of the oval
+        :center_y (float): The y position for the center of the oval
+        :width (float): The width of the oval
+        :height (float): The height of the oval
+        :color (tuple): The color of the oval
+        :angle (float): The angle the oval is tilted
     Returns:
         None
     Raises:
@@ -1052,7 +1146,7 @@ def draw_oval_filled(center_x, center_y, width, height, color, angle=0):
     >>> color = (255, 0, 0, 127)
     >>> arcade.draw_oval_filled(160, 160, 40, 20, color, 45)
     >>> arcade.finish_render()
-    >>> arcade.close_window()  
+    >>> arcade.quick_run(0.25)
     """    
     
     draw_ellipse_filled(center_x, center_y, width, height, color, angle)
@@ -1063,13 +1157,13 @@ def draw_oval_outline(center_x, center_y, width, height, color, border_width=5, 
     Draw the outline of an oval.
 
     Args:
-        :center_x (float):
-        :center_y (float):
-        :width (float):
-        :height (float):
-        :color (tuple):
-        :border_width (float):
-        :angle (float): Angle in degrees to tilt the ellipse.
+        :center_x (float): The x position for the center of the oval
+        :center_y (float): The y position for the center of the oval
+        :width (float): The width of the oval
+        :height (float): The height of the oval
+        :color (tuple): The color of the oval
+        :border_width (float): The width of the outline (0 is filled)
+        :angle (float): The angle the oval is tilted
     Returns:
         None
     Raises:
@@ -1085,7 +1179,7 @@ def draw_oval_outline(center_x, center_y, width, height, color, border_width=5, 
     >>> color = (255, 0, 0, 127)
     >>> arcade.draw_oval_outline(160, 160, 40, 20, color, 5, 0)
     >>> arcade.finish_render()
-    >>> arcade.close_window()
+    >>> arcade.quick_run(0.25)
     """    
 
     if border_width <= 0:
@@ -1099,12 +1193,12 @@ def draw_described_oval_filled(center_x, center_y, width, height, color, angle=0
     Draws a filled oval.
 
     Args:
-        :center_x (float):
-        :center_y (float):
-        :width (float):
-        :height (float):
-        :color (tuple):
-        :angle (float):
+        :center_x (float): The x position for the center of the oval
+        :center_y (float): The y position for the center of the oval
+        :width (float): The width of the oval
+        :height (float): The height of the oval
+        :color (tuple): The color of the oval
+        :angle (float): The angle the oval is tilted
     Returns:
         None
     Raises:
@@ -1120,7 +1214,7 @@ def draw_described_oval_filled(center_x, center_y, width, height, color, angle=0
     >>> color = (255, 0, 0, 127)
     >>> arcade.draw_described_oval_filled(160, 160, "skinny", "very tall", color, 20)
     >>> arcade.finish_render()
-    >>> arcade.close_window()  
+    >>> arcade.quick_run(0.25)
     """
     
     if width.lower() == "very fat" or width.lower() == "vf" or width.lower() == "huge" or width.lower() == "h":
@@ -1158,13 +1252,13 @@ def draw_described_oval_outline(center_x, center_y, width, height, color, border
     Draw the outline of an oval.
 
     Args:
-        :center_x (float):
-        :center_y (float):
-        :width (float):
-        :height (float):
-        :color (tuple):
-        :border_width (float):
-        :angle (float):
+        :center_x (float): The x position for the center of the oval
+        :center_y (float): The y position for the center of the oval
+        :width (float): The width of the oval
+        :height (float): The height of the oval
+        :color (tuple): The color of the oval
+        :border_width (float): The thickness of the border
+        :angle (float): The angle the oval is tilted
     Returns:
         None
     Raises:
@@ -1216,7 +1310,11 @@ def draw_described_oval_outline(center_x, center_y, width, height, color, border
 
 ##### BEGIN LINE FUNCTIONS #####
 
-def draw_line(start_x, start_y, end_x, end_y, color, line_width=1):
+<<<<<<< HEAD
+def draw_line(start_x, start_y, end_x, end_y, color, border_width = 1):
+=======
+def draw_line(start_x, start_y, end_x, end_y, color, border_width=1):
+>>>>>>> 3dd7b0dfbcd1ed56afa92a8cfec4692e8065726b
     """
     Draw a line.
 
@@ -1227,7 +1325,7 @@ def draw_line(start_x, start_y, end_x, end_y, color, line_width=1):
         :end_y (float): y position of line ending point.
         :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
-        :line_width (float): Width of the line in pixels.
+        :border_width (float): Width of the line in pixels.
     Returns:
         None
     Raises:
@@ -1254,7 +1352,7 @@ def draw_line(start_x, start_y, end_x, end_y, color, line_width=1):
     GL.glLoadIdentity()
 
     # Set line width
-    GL.glLineWidth(line_width)
+    GL.glLineWidth(border_width)
 
     # Set color
     if len(color) == 4:
@@ -1267,7 +1365,7 @@ def draw_line(start_x, start_y, end_x, end_y, color, line_width=1):
     GL.glVertex3f(end_x, end_y, 0.5)
     GL.glEnd()
 
-def draw_thin_line(start_x, start_y, end_x, end_y, color, line_width=.5):
+def draw_thin_line(start_x, start_y, end_x, end_y, color, border_width=.5):
     """
     Draw a thin line.
 
@@ -1278,7 +1376,7 @@ def draw_thin_line(start_x, start_y, end_x, end_y, color, line_width=.5):
         :end_y (float): y position of line ending point.
         :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
-        :line_width (float): Width of the line in pixels.
+        :border_width (float): Width of the line in pixels.
     Returns:
         None
     Raises:
@@ -1305,7 +1403,7 @@ def draw_thin_line(start_x, start_y, end_x, end_y, color, line_width=.5):
     GL.glLoadIdentity()
 
     # Set line width
-    GL.glLineWidth(line_width)
+    GL.glLineWidth(border_width)
 
     # Set color
     if len(color) == 4:
@@ -1318,7 +1416,7 @@ def draw_thin_line(start_x, start_y, end_x, end_y, color, line_width=.5):
     GL.glVertex3f(end_x, end_y, 0.5)
     GL.glEnd()
 
-def draw_medium_line(start_x, start_y, end_x, end_y, color, line_width=1):
+def draw_medium_line(start_x, start_y, end_x, end_y, color, border_width=1):
     """
     Draw a medium thickness line.
 
@@ -1329,7 +1427,7 @@ def draw_medium_line(start_x, start_y, end_x, end_y, color, line_width=1):
         :end_y (float): y position of line ending point.
         :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
-        :line_width (float): Width of the line in pixels.
+        :border_width (float): Width of the line in pixels.
     Returns:
         None
     Raises:
@@ -1356,7 +1454,7 @@ def draw_medium_line(start_x, start_y, end_x, end_y, color, line_width=1):
     GL.glLoadIdentity()
 
     # Set line width
-    GL.glLineWidth(line_width)
+    GL.glLineWidth(border_width)
 
     # Set color
     if len(color) == 4:
@@ -1369,7 +1467,7 @@ def draw_medium_line(start_x, start_y, end_x, end_y, color, line_width=1):
     GL.glVertex3f(end_x, end_y, 0.5)
     GL.glEnd()
 
-def draw_thick_line(start_x, start_y, end_x, end_y, color, line_width=2):
+def draw_thick_line(start_x, start_y, end_x, end_y, color, border_width=2):
     """
     Draw a thick line.
 
@@ -1380,7 +1478,7 @@ def draw_thick_line(start_x, start_y, end_x, end_y, color, line_width=2):
         :end_y (float): y position of line ending point.
         :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
-        :line_width (float): Width of the line in pixels.
+        :border_width (float): Width of the line in pixels.
     Returns:
         None
     Raises:
@@ -1407,7 +1505,7 @@ def draw_thick_line(start_x, start_y, end_x, end_y, color, line_width=2):
     GL.glLoadIdentity()
 
     # Set line width
-    GL.glLineWidth(line_width)
+    GL.glLineWidth(border_width)
 
     # Set color
     if len(color) == 4:
@@ -1420,7 +1518,7 @@ def draw_thick_line(start_x, start_y, end_x, end_y, color, line_width=2):
     GL.glVertex3f(end_x, end_y, 0.5)
     GL.glEnd()
 
-def draw_line_strip(point_list, color, line_width=1):
+def draw_line_strip(point_list, color, border_width=1):
     """
     Draw a line strip. A line strip is a set of continuously connected
     line segments.
@@ -1430,7 +1528,7 @@ def draw_line_strip(point_list, color, line_width=1):
          in a list. So it is a list of lists.
         :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
-        :line_width (float): Width of the line in pixels.
+        :border_width (float): Width of the line in pixels.
     Returns:
         None
     Raises:
@@ -1468,7 +1566,7 @@ def draw_line_strip(point_list, color, line_width=1):
     GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
 
     # Set line width
-    GL.glLineWidth(line_width)
+    GL.glLineWidth(border_width)
 
     GL.glLoadIdentity()
 
@@ -1483,7 +1581,7 @@ def draw_line_strip(point_list, color, line_width=1):
         GL.glVertex3f(point[0], point[1], 0.5)
     GL.glEnd()
 
-def draw_lines(point_list, color, line_width=1):
+def draw_lines(point_list, color, border_width=1):
     """
     Draw a set of lines.
 
@@ -1494,7 +1592,7 @@ def draw_lines(point_list, color, line_width=1):
          in a list. So it is a list of lists.
         :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
-        :line_width (float): Width of the line in pixels.
+        :border_width (float): Width of the line in pixels.
     Returns:
         None
     Raises:
@@ -1525,7 +1623,7 @@ def draw_lines(point_list, color, line_width=1):
     GL.glLoadIdentity()
 
     # Set line width
-    GL.glLineWidth(line_width)
+    GL.glLineWidth(border_width)
 
     # Set color
     if len(color) == 4:
@@ -1679,7 +1777,7 @@ def draw_polygon_filled(point_list, color):
         GL.glVertex3f(point[0], point[1], 0.5)
     GL.glEnd()
 
-def draw_polygon_outline(point_list, color, line_width=1):
+def draw_polygon_outline(point_list, color, border_width=1):
     """
     Draw a polygon outline. Also known as a "line loop."
 
@@ -1688,7 +1786,7 @@ def draw_polygon_outline(point_list, color, line_width=1):
          in a list. So it is a list of lists.
         :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
-        :line_width (float): Width of the line in pixels.
+        :border_width (float): Width of the line in pixels.
     Returns:
         None
     Raises:
@@ -1715,7 +1813,7 @@ def draw_polygon_outline(point_list, color, line_width=1):
     GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
 
     # Set line width
-    GL.glLineWidth(line_width)
+    GL.glLineWidth(border_width)
 
     GL.glLoadIdentity()
 
@@ -1748,7 +1846,7 @@ def draw_triangle_outline(first_x, first_y, second_x, second_y, third_x, third_y
     second_point = [second_x, second_y]
     third_point = [third_x, third_y]
     point_list = (first_point, second_point, third_point)
-    draw_polygon_outline(point_list, color, line_width)
+    draw_polygon_outline(point_list, color, border_width)
 
 def draw_triangle(first_x, first_y, second_x, second_y, third_x, third_y, color, border_width = 0):
     if border_width <= 0:
@@ -1804,7 +1902,7 @@ def render_rectangle_filled(shape, center_x, center_y, color, angle=0):
 
     GL.glDrawArrays(GL.GL_QUADS, 0, shape.size)
 
-def draw_rectangle_outline(x, y, width, height, color, line_width=1, angle=0):
+def draw_rectangle_outline(x, y, width, height, color, border_width=1, angle=0):
     """
     Draw a rectangle outline.
 
@@ -1815,7 +1913,7 @@ def draw_rectangle_outline(x, y, width, height, color, line_width=1, angle=0):
         :height (float): height of the rectangle.
         :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
-        :line_width (float): width of the lines, in pixels.
+        :border_width (float): width of the lines, in pixels.
         :angle (float): rotation of the rectangle. Defaults to zero.
 
     Example:
@@ -1843,7 +1941,7 @@ arcade.color.BRITISH_RACING_GREEN, 2)
     GL.glTranslatef(width / 2, height / 2, 0)
 
     # Set line width
-    GL.glLineWidth(line_width)
+    GL.glLineWidth(border_width)
 
     # Set color
     if len(color) == 4:
