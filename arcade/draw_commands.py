@@ -493,13 +493,13 @@ def draw_fancy_math_arc_filled(start_x, start_y, end_x, end_y, height, color, ti
     Draws a filled in arc.
 
     Args:
-        :start_x (float):
-        :start_y (float):
-        :end_x (float):
-        :end_y (float):
-        :height (float):
-        :color (tuple):
-        :tile_angle (float):
+        :start_x (float): The starting x position of the arc
+        :start_y (float): The starting y position of the arc
+        :end_x (float): The end x position of the arc
+        :end_y (float): The end y position of the arc
+        :height (float): How tall the arc is
+        :color (tuple): What color the arc is
+        :tile_angle (float): The angle of the arcs tilt
     Returns:
         None
     Raises:
@@ -606,14 +606,12 @@ def draw_parabola_filled(start_x, start_y, end_x, height, color, tilt_angle=0):
     Draws a filled in parabola.
 
     Args:
-        :cx (float): x position that is the center of the circle.
-        :cy (float): y position that is the center of the circle.
-        :radius (float): width of the circle.
-        :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
-         RGBA format.
-        :line_width (float): Width of the circle outline in pixels.
-        :num_segments (int): number of triangle segments that make up this
-         circle. Higher is better quality, but slower render time.
+        :start_x (float): The starting x position of the parabola
+        :start_y (float): The starting y position of the parabola
+        :end_x (float): The ending x position of the parabola
+        :height (float): The height of the parabola
+        :color (tuple): The color of the parabola
+        :tile_angle (float): The angle of the tilt of the parabola
     Returns:
         None
     Raises:
@@ -657,13 +655,13 @@ def draw_parabola_outline(start_x, start_y, end_x, height, color, border_width=5
     draw_ellipse_outline(cx, cy, width, height,
                          color, line_width, num_segments)
 
-def draw_ellipse_filled(cx, cy,
+def draw_ellipse_filled(center_x, center_y,
                         width, height,
                         color,
                         angle=0, num_segments=128):
-    if isinstance(cx, [int, float]) == false:
+    if isinstance(center_x, [int, float]) == false:
         raise TypeError("Value of parameter cx for draw_ellipse_filled not an integer or float.")
-    elif isinstance(cy, [int, float]) == false:
+    elif isinstance(center_y, [int, float]) == false:
         raise TypeError("Value of parameter cy for draw_ellipse_filled not an integer or float.")
     elif width <= 0:
         raise ValueError("Value of width parameter for draw_ellipse_filled needs to be greater than zero.")
@@ -673,8 +671,8 @@ def draw_ellipse_filled(cx, cy,
     Draw a filled in ellipse.
 
     Args:
-        :cx (float): x position that is the center of the circle.
-        :cy (float): y position that is the center of the circle.
+        :center_x (float): x position that is the center of the circle.
+        :center_y (float): y position that is the center of the circle.
         :height (float): height of the ellipse.
         :width (float): width of the ellipse.
         :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
@@ -711,6 +709,36 @@ def draw_parabola(start_x, start_y, end_x, height, color, border_width = 0, tilt
         draw_parabola_filled(start_x, start_y, end_x, height, color, tilt_angle)
     else:
         draw_parabola_outline(start_x, start_y, end_x, height, color, border_width, tilt_angle)
+        
+        """
+        Draws the outline of a parabola.
+        
+        Args:
+            :start_x (float): The starting x position of the parabola
+            :start_y (float): The starting y position of the parabola
+            :end_x (float): The ending x position of the parabola
+            :height (float): The height of the parabola
+            :color (tuple): The color of the parabola
+            :border_width (float): The thickness of the outline
+            :tile_angle (float): The angle of the tilt of the parabola
+        Returns:
+            None
+        Raises:
+            None
+    
+        Example:
+        
+        >>> import arcade
+        >>> arcade.open_window("Drawing Example", 800, 600)
+        >>> arcade.set_background_color(arcade.color.WHITE)
+        >>> arcade.start_render()
+        >>> arcade.draw_parabola(150, 150, 200, 50, arcade.color.BOTTLE_GREEN, 10, 15)
+        >>> color = (255, 0, 0, 127)
+        >>> arcade.draw_parabola(160, 160, 210, 50, color, 20)
+        >>> arcade.finish_render()
+        >>> arcade.quick_run(0.25)
+        """
+        
 
 ##### END PARABOLA FUNCTIONS #####
 
@@ -863,6 +891,7 @@ def draw_standard_circle(center_x, center_y, color, size, filled, adjustment = 0
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
     """
+
     #--size--
     if size.lower() == "small" or size.lower() == "s":
         radius = 10 + adjustment
@@ -924,7 +953,7 @@ def draw_circle(center_x, center_y, radius, color, border_width = 0):
 
 ##### BEGIN ELLIPSE FUNCTIONS #####
 
-def create_ellipse(width, height, color):
+def create_ellipse(width, height, color): #needs exapmle and args
     num_segments=64
 
     data = []
@@ -952,7 +981,7 @@ def create_ellipse(width, height, color):
     return shape
 
 
-def render_ellipse_filled(shape, x, y, color, angle=0):
+def render_ellipse_filled(shape, x, y, color, angle=0):# Needs example and args
     # Set color
     if len(color) == 4:
         GL.glColor4ub(shape.color[0], shape.color[1], shape.color[2],
@@ -973,7 +1002,7 @@ def render_ellipse_filled(shape, x, y, color, angle=0):
 
     GL.glDrawArrays(GL.GL_TRIANGLE_FAN, 0, shape.size)
 
-def draw_ellipse_filled(center_x, center_y, width, height, color, angle=0):
+def draw_ellipse_filled(center_x, center_y, width, height, color, angle=0): 
     """
     Draw a filled in ellipse.
 
@@ -1122,6 +1151,36 @@ def draw_ellipse(center_x, center_y, width, height, color, border_width = 0, til
         draw_ellipse_filled(center_x, center_y, width, height, color, tilt_angle)
     else:
         draw_ellipse_outline(center_x, center_y, width, height, color, border_width, tilt_angle)
+        
+        """
+        Draws an oval.
+    
+        Args:
+            :center_x (float):
+            :center_y (float):
+            :width (float):
+            :height (float):
+            :color (tuple):
+            :border_width (float):
+            :angle (float):
+        Returns:
+            None
+        Raises:
+            None
+    
+        Example:
+    
+        >>> import arcade
+        >>> arcade.open_window("Drawing Example", 800, 600)
+        >>> arcade.set_background_color(arcade.color.WHITE)
+        >>> arcade.start_render()
+        >>> arcade.draw_oval(150, 150, 20, 40, arcade.color.BRIGHT_MAROON)
+        >>> color = (255, 0, 0, 127)
+        >>> arcade.draw_oval(160, 160, 40, 20, color, 20)
+        >>> arcade.finish_render()
+        >>> arcade.close_window()
+        """ 
+
 
 ##### END ELLIPSE FUNCTIONS #####
 
@@ -1133,13 +1192,13 @@ def draw_oval(center_x, center_y, width, height, color, border_width=0, angle=0)
     Draws an oval.
 
     Args:
-        :center_x (float):
-        :center_y (float):
-        :height (float):
-        :width (float):
-        :color (tuple):
-        :border_width (float):
-        :angle (float):
+        :center_x (float): The x position for the center of the oval
+        :center_y (float): The y position for the center of the oval
+        :width (float): The width of the oval
+        :height (float): The height of the oval
+        :color (tuple): The color of the oval
+        :border_width (float): The width of the outline (0 is filled)
+        :angle (float): The angle the oval is tilted
     Returns:
         None
     Raises:
@@ -1156,7 +1215,9 @@ def draw_oval(center_x, center_y, width, height, color, border_width=0, angle=0)
     >>> arcade.draw_oval(160, 160, 40, 20, color, 20)
     >>> arcade.finish_render()
     >>> arcade.close_window()
-    """
+
+    """ 
+
     if border_width <= 0:
         draw_oval_filled(center_x, center_y, width, height, color, angle)
     else:
@@ -1169,12 +1230,12 @@ def draw_oval_filled(center_x, center_y, width, height, color, angle=0):
     Draw a filled oval.
 
     Args:
-        :center_x (float):
-        :center_y (float):
-        :width (float):
-        :height (float):
-        :color (tuple):
-        :angle (float):
+        :center_x (float): The x position for the center of the oval
+        :center_y (float): The y position for the center of the oval
+        :width (float): The width of the oval
+        :height (float): The height of the oval
+        :color (tuple): The color of the oval
+        :angle (float): The angle the oval is tilted
     Returns:
         None
     Raises:
@@ -1190,9 +1251,9 @@ def draw_oval_filled(center_x, center_y, width, height, color, angle=0):
     >>> color = (255, 0, 0, 127)
     >>> arcade.draw_oval_filled(160, 160, 40, 20, color, 45)
     >>> arcade.finish_render()
+    >>> arcade.quick_run(0.25) 
     >>> arcade.close_window()
     """
-
     draw_ellipse_filled(center_x, center_y, width, height, color, angle)
 
 # draw a custom oval outline
@@ -1237,12 +1298,12 @@ def draw_described_oval_filled(center_x, center_y, width, height, color, angle=0
     Draws a filled oval.
 
     Args:
-        :center_x (float):
-        :center_y (float):
-        :width (float):
-        :height (float):
-        :color (tuple):
-        :angle (float):
+        :center_x (float): The x position for the center of the oval
+        :center_y (float): The y position for the center of the oval
+        :width (float): The width of the oval
+        :height (float): The height of the oval
+        :color (tuple): The color of the oval
+        :angle (float): The angle the oval is tilted
     Returns:
         None
     Raises:
@@ -1258,9 +1319,10 @@ def draw_described_oval_filled(center_x, center_y, width, height, color, angle=0
     >>> color = (255, 0, 0, 127)
     >>> arcade.draw_described_oval_filled(160, 160, "skinny", "very tall", color, 20)
     >>> arcade.finish_render()
+    >>> arcade.quick_run(0.25)
     >>> arcade.close_window()
     """
-
+    
     if width.lower() == "very fat" or width.lower() == "vf" or width.lower() == "huge" or width.lower() == "h":
         width = 200
     elif width.lower() == "fat" or width.lower() == "f" or width.lower() == "big" or width.lower() == "b" or height.lower() == "large" or height.lower() == "l" or height.lower() == "max":
@@ -1296,13 +1358,13 @@ def draw_described_oval_outline(center_x, center_y, width, height, color, border
     Draw the outline of an oval.
 
     Args:
-        :center_x (float):
-        :center_y (float):
-        :width (float):
-        :height (float):
-        :color (tuple):
-        :border_width (float):
-        :angle (float):
+        :center_x (float): The x position for the center of the oval
+        :center_y (float): The y position for the center of the oval
+        :width (float): The width of the oval
+        :height (float): The height of the oval
+        :color (tuple): The color of the oval
+        :border_width (float): The thickness of the border
+        :angle (float): The angle the oval is tilted
     Returns:
         None
     Raises:
