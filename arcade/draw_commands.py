@@ -222,9 +222,9 @@ def draw_arc_filled(center_x, center_y,
                     angle=0, num_segments=128):
     
     if isinstance(center_x, [int, float]) == false:
-        raise TypeError("Value of parameter cx for draw_arc_filled not an integer or float.")
+        raise TypeError("Value of parameter center_x for draw_arc_filled not an integer or float.")
     elif isinstance(center_y, [int, float]) == false:
-        raise TypeError("Value of parameter cy for draw_arc_filled not an integer or float.")
+        raise TypeError("Value of parameter center_y for draw_arc_filled not an integer or float.")
     elif width <= 0:
         raise ValueError("Value of width parameter for draw_arc_filled needs to be greater than zero.")
     elif height <= 0:
@@ -237,8 +237,8 @@ def draw_arc_filled(center_x, center_y,
     Draw a filled in arc. Useful for drawing pie-wedges, or Pac-Man.
 
     Args:
-        :cx (float): x position that is the center of the arc.
-        :cy (float): y position that is the center of the arc.
+        :center_x (float): x position that is the center of the arc.
+        :center_y (float): y position that is the center of the arc.
         :width (float): width of the arc.
         :height (float): height of the arc.
         :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
@@ -275,7 +275,7 @@ arcade.color.BOTTLE_GREEN, 90, 360, 45)
     GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
 
     GL.glLoadIdentity()
-    GL.glTranslatef(cx, cy, 0)
+    GL.glTranslatef(center_x, center_y, 0)
     GL.glRotatef(angle, 0, 0, 1)
 
     # Set color
@@ -307,17 +307,17 @@ arcade.color.BOTTLE_GREEN, 90, 360, 45)
     GL.glLoadIdentity()
 
 
-def draw_arc_outline(cx, cy,
+def draw_arc_outline(center_x, center_y,
                      width, height,
                      color,
                      start_angle, end_angle,
                      line_width=1, angle=0, num_segments=128):
     
     #error handling for type checking
-    if isinstance(cx, [int, float]) == false:
-        raise TypeError("Value of parameter cx for draw_arc_outline not an integer or float.")
-    elif isinstance(cy, [int, float]) == false:
-        raise TypeError("Value of parameter cy for draw_arc_outline not an integer or float.")
+    if isinstance(center_x, [int, float]) == false:
+        raise TypeError("Value of parameter center_x for draw_arc_outline not an integer or float.")
+    elif isinstance(center_y, [int, float]) == false:
+        raise TypeError("Value of parameter center_y for draw_arc_outline not an integer or float.")
     elif width <= 0:
         raise ValueError("Attribute for width less than zero or not a number! Parameter must be a positive number.")
     elif height <= 0:
@@ -333,8 +333,8 @@ def draw_arc_outline(cx, cy,
     Draw the outside edge of an arc. Useful for drawing curved lines.
 
     Args:
-        :cx (float): x position that is the center of the arc.
-        :cy (float): y position that is the center of the arc.
+        :center_x (float): x position that is the center of the arc.
+        :center_y (float): y position that is the center of the arc.
         :width (float): width of the arc.
         :height (float): height of the arc.
         :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
@@ -373,7 +373,7 @@ transparent_color, 90, 360)
     GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
 
     GL.glLoadIdentity()
-    GL.glTranslatef(cx, cy, 0)
+    GL.glTranslatef(center_x, center_y, 0)
     GL.glRotatef(angle, 0, 0, 1)
     GL.glLineWidth(line_width)
 
@@ -407,9 +407,9 @@ transparent_color, 90, 360)
 def draw_circle_filled(center_x, center_y, radius, color, num_segments=128):
     #type checking
     if isinstance(center_x, [int, float]) == false:
-        raise TypeError("Value of parameter cx for draw_circle_filled not an integer or float.")
+        raise TypeError("Value of parameter center_x for draw_circle_filled not an integer or float.")
     elif isinstance(center_y, [int, float]) == false:
-        raise TypeError("Value of parameter cy for draw_circle_filled not an integer or float.")   
+        raise TypeError("Value of parameter center_y for draw_circle_filled not an integer or float.")   
     elif radius <= 0:
         raise ValueError("Attribute for circle radius less than or equal to zero, or not a number! Must supply positive number.")
         
@@ -488,7 +488,7 @@ def draw_circle_filled(center_x, center_y, radius, color, num_segments=128):
 
     draw_arc_outline(cent_x, cent_y, distance, height, color, start_angle, end_angle, border_width, tilt_angle)
 
-def draw_fancy_math_arc_filled(start_x, start_y, end_x, end_y, height, color, tilt_angle=0):
+def draw_fancenter_y_math_arc_filled(start_x, start_y, end_x, end_y, height, color, tilt_angle=0):
     """
     Draws a filled in arc.
 
@@ -511,9 +511,9 @@ def draw_fancy_math_arc_filled(start_x, start_y, end_x, end_y, height, color, ti
     >>> arcade.open_window("Drawing Example", 800, 600)
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
-    >>> arcade.draw_fancy_math_arc_filled(150, 150, 200, 200, 20, arcade.color.BRIGHT_MAROON, 10)
+    >>> arcade.draw_fancenter_y_math_arc_filled(150, 150, 200, 200, 20, arcade.color.BRIGHT_MAROON, 10)
     >>> transparent_color = (255, 0, 0, 127)
-    >>> arcade.draw_fancy_math_arc_filled(160, 160, 210, 210, 20, transparent_color)
+    >>> arcade.draw_fancenter_y_math_arc_filled(160, 160, 210, 210, 20, transparent_color)
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
     """
@@ -532,15 +532,15 @@ def draw_fancy_math_arc_filled(start_x, start_y, end_x, end_y, height, color, ti
     
     width = radius
     height = radius
-    draw_ellipse_filled(cx, cy, width, height, color, num_segments)
+    draw_ellipse_filled(center_x, center_y, width, height, color, num_segments)
 
 def draw_circle_outline(center_x, center_y, radius, color, line_width=1, num_segments=128):
     
     #type checking
     if isinstance(center_x, [int, float]) == false:
-        raise TypeError("Value of parameter cx for draw_circle_outline not an integer or float.")
+        raise TypeError("Value of parameter center_x for draw_circle_outline not an integer or float.")
     elif isinstance(center_y, [int, float]) == false:
-        raise TypeError("Value of parameter cy for draw_circle_outline not an integer or float.")   
+        raise TypeError("Value of parameter center_y for draw_circle_outline not an integer or float.")   
     elif radius <= 0:
         raise ValueError("Attribute for circle radius less than or equal to zero, or not a number! Must supply positive number.")
         
@@ -652,7 +652,7 @@ def draw_parabola_outline(start_x, start_y, end_x, height, color, border_width=5
     
     width = radius
     height = radius
-    draw_ellipse_outline(cx, cy, width, height,
+    draw_ellipse_outline(center_x, center_y, width, height,
                          color, line_width, num_segments)
 
 def draw_ellipse_filled(center_x, center_y,
@@ -660,9 +660,9 @@ def draw_ellipse_filled(center_x, center_y,
                         color,
                         angle=0, num_segments=128):
     if isinstance(center_x, [int, float]) == false:
-        raise TypeError("Value of parameter cx for draw_ellipse_filled not an integer or float.")
+        raise TypeError("Value of parameter center_x for draw_ellipse_filled not an integer or float.")
     elif isinstance(center_y, [int, float]) == false:
-        raise TypeError("Value of parameter cy for draw_ellipse_filled not an integer or float.")
+        raise TypeError("Value of parameter center_y for draw_ellipse_filled not an integer or float.")
     elif width <= 0:
         raise ValueError("Value of width parameter for draw_ellipse_filled needs to be greater than zero.")
     elif height <= 0:
@@ -914,8 +914,8 @@ def draw_circle_outline(center_x, center_y, radius, color, border_width=1):
     Draw the outline of a circle.
 
     Args:
-        :cx (float): x position that is the center of the circle.
-        :cy (float): y position that is the center of the circle.
+        :center_x (float): x position that is the center of the circle.
+        :center_y (float): y position that is the center of the circle.
         :radius (float): width of the circle.
         :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
@@ -1041,7 +1041,7 @@ def draw_ellipse_filled(center_x, center_y, width, height, color, angle=0):
     GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
 
     GL.glLoadIdentity()
-    GL.glTranslatef(cx, cy, 0)
+    GL.glTranslatef(center_x, center_y, 0)
     GL.glRotatef(angle, 0, 0, 1)
 
     # Set color
@@ -1070,13 +1070,13 @@ def draw_ellipse_filled(center_x, center_y, width, height, color, angle=0):
     GL.glLoadIdentity()
 
 
-def draw_ellipse_outline(cx, cy,
+def draw_ellipse_outline(center_x, center_y,
                          width, height,
                          color, line_width=1, angle=0, num_segments=128):
-    if isinstance(cx, [int, float]) == false:
-        raise TypeError("Value of parameter cx for draw_ellipse_outline not an integer or float.")
-    elif isinstance(cy, [int, float]) == false:
-        raise TypeError("Value of parameter cy for draw_ellipse_outline not an integer or float.")
+    if isinstance(center_x, [int, float]) == false:
+        raise TypeError("Value of parameter center_x for draw_ellipse_outline not an integer or float.")
+    elif isinstance(center_y, [int, float]) == false:
+        raise TypeError("Value of parameter center_y for draw_ellipse_outline not an integer or float.")
     elif width <= 0:
         raise ValueError("Value of width parameter for draw_ellipse_outline needs to be greater than zero.")
     elif height <= 0:
@@ -1085,8 +1085,8 @@ def draw_ellipse_outline(cx, cy,
     Draw the outline of an ellipse.
 
     Args:
-        :cx (float): x position that is the center of the circle.
-        :cy (float): y position that is the center of the circle.
+        :center_x (float): x position that is the center of the circle.
+        :center_y (float): y position that is the center of the circle.
         :height (float): height of the ellipse.
         :width (float): width of the ellipse.
         :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
@@ -1120,7 +1120,7 @@ def draw_ellipse_outline(cx, cy,
     GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
 
     GL.glLoadIdentity()
-    GL.glTranslatef(cx, cy, 0)
+    GL.glTranslatef(center_x, center_y, 0)
     GL.glRotatef(angle, 0, 0, 1)
     GL.glLineWidth(line_width)
 
@@ -1418,22 +1418,22 @@ def draw_described_oval_outline(center_x, center_y, width, height, color, border
 
 def draw_line(start_x, start_y, end_x, end_y, color, border_width=1):   
     if isinstance(start_x,[int,float]) == false:
-        raise TypeError("Attribute for x1 of line less than zero, or not a number! Parameter must be a positive number.")
+        raise TypeError("Attribute for start_x of line less than zero, or not a number! Parameter must be a positive number.")
     elif isinstance(end_x,[int,float]) == false:
-        raise TypeError("Attribute for x1 of line less than zero, or not a number! Parameter must be a positive number.")
+        raise TypeError("Attribute for start_x of line less than zero, or not a number! Parameter must be a positive number.")
     elif isinstance(start_y,[int,float]) == false:
-        raise TypeError("Attribute for x1 of line less than zero, or not a number! Parameter must be a positive number.")
+        raise TypeError("Attribute for start_x of line less than zero, or not a number! Parameter must be a positive number.")
     elif isinstance(end_y,[int,float]) == false:
-        raise TypeError("Attribute for x1 of line less than zero, or not a number! Parameter must be a positive number.")        
+        raise TypeError("Attribute for start_x of line less than zero, or not a number! Parameter must be a positive number.")        
     """
     Draw a line.
 
 
     Args:
-        :x1 (float): x position of line starting point.
-        :y1 (float): y position of line starting point.
-        :x2 (float): x position of line ending point.
-        :y2 (float): y position of line ending point.
+        :start_x (float): x position of line starting point.
+        :start_y (float): y position of line starting point.
+        :end_x (float): x position of line ending point.
+        :end_y (float): y position of line ending point.
         :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
         :line_width (float): Width of the line in pixels.
@@ -1475,8 +1475,8 @@ def draw_line(start_x, start_y, end_x, end_y, color, border_width=1):
     elif len(color) > 4:
         raise IOError("Attribute supplied as color for line not formatted properly. Syntax for a color is [1,2,3] or [1,2,3,4]")
     GL.glBegin(GL.GL_LINES)
-    GL.glVertex3f(x1, y1, 0.5)
-    GL.glVertex3f(x2, y2, 0.5)
+    GL.glVertex3f(start_x, start_y, 0.5)
+    GL.glVertex3f(end_x, end_y, 0.5)
     GL.glEnd()
 
 
@@ -2179,7 +2179,7 @@ def draw_texture_rect(x, y, width, height, texture,
         :height (float): height of the rectangle.
         :texture (int): identifier of texture returned from load_texture() call
         :angle (float): rotation of the rectangle. Defaults to zero.
-        :alpha (float): Transparency of image.
+        :alpha (float): Transparencenter_y of image.
     Returns:
         None
     Raises:
