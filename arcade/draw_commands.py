@@ -1222,7 +1222,8 @@ def draw_described_oval_outline(center_x, center_y, width, height, color, border
 
 ##### BEGIN LINE FUNCTIONS #####
 
-def draw_line(start_x, start_y, end_x, end_y, color, border_width = 1):
+
+def draw_line(start_x, start_y, end_x, end_y, color, border_width=1):
 
     """
     Draw a line.
