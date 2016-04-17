@@ -27,6 +27,7 @@ Example Code
    sprite_move_animation
    sprite_tiled_map
    sprite_ramps
+   sprite_moving_platforms
    instruction_and_game_over_screens
    array_backed_grid
    asteroid_smasher

@@ -3,10 +3,9 @@
 Sprites: Move with a sprite animation
 =====================================
 
-.. image:: sprite_animation.png
-    :width: 600px
-    :height: 600px
-    :align: center
-    :alt: Screenshot of using a moving with a sprite animation
+.. raw:: html
+
+    <iframe width="420" height="315" src="https://www.youtube.com/embed/O-Ru383B_1A" frameborder="0" allowfullscreen></iframe>
+
 
 .. literalinclude:: sprite_move_animation.py

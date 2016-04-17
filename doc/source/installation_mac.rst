@@ -17,18 +17,18 @@ To open terminal press the 'command' key + the space bar, and type 'terminal'.
 In the terminal, you will need to change to the Arcade directory.
 To do this, type "cd " and paste Arcade's address into the terminal after the space after 'cd' and then press enter.
 
-============================
+=============================
 Installing Arcade (Best Case)
-============================
+=============================
 To install Arcade, type "cat make.bat" into the terminal.
 
 If the installation was successful, then you will see a lot of things happening in the terminal and there will be several windows, briefly, popping up on the screen.
 
 If nothing really happens, then you may need to do a more manual installation.
 
-===================
+=================================
 Manual Installation (In Progress)
-===================
+=================================
 Python3 setup.py clean
 Python3 setup.py build
 pip3 install wheel sphinx pyglet pillow PyOpenGl Coveralls mock numpy
