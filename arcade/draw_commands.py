@@ -1087,12 +1087,9 @@ def draw_oval(center_x, center_y, width, height, color, border_width=0, angle=0)
     >>> arcade.draw_oval(160, 160, 40, 20, color, 20)
     >>> arcade.finish_render()
     >>> arcade.close_window()
-<<<<<<< HEAD
+
     """ 
 
-=======
-    """
->>>>>>> 4a09fa391dd3684f7e94535692ffeebabcd50b43
     if border_width <= 0:
         draw_oval_filled(center_x, center_y, width, height, color, angle)
     else:
@@ -1126,16 +1123,9 @@ def draw_oval_filled(center_x, center_y, width, height, color, angle=0):
     >>> color = (255, 0, 0, 127)
     >>> arcade.draw_oval_filled(160, 160, 40, 20, color, 45)
     >>> arcade.finish_render()
-<<<<<<< HEAD
-    >>> arcade.quick_run(0.25)
-    """    
-
-    
-=======
+    >>> arcade.quick_run(0.25) 
     >>> arcade.close_window()
     """
-
->>>>>>> 4a09fa391dd3684f7e94535692ffeebabcd50b43
     draw_ellipse_filled(center_x, center_y, width, height, color, angle)
 
 # draw a custom oval outline
@@ -1201,16 +1191,10 @@ def draw_described_oval_filled(center_x, center_y, width, height, color, angle=0
     >>> color = (255, 0, 0, 127)
     >>> arcade.draw_described_oval_filled(160, 160, "skinny", "very tall", color, 20)
     >>> arcade.finish_render()
-<<<<<<< HEAD
     >>> arcade.quick_run(0.25)
-    """
-
-    
-=======
     >>> arcade.close_window()
     """
-
->>>>>>> 4a09fa391dd3684f7e94535692ffeebabcd50b43
+    
     if width.lower() == "very fat" or width.lower() == "vf" or width.lower() == "huge" or width.lower() == "h":
         width = 200
     elif width.lower() == "fat" or width.lower() == "f" or width.lower() == "big" or width.lower() == "b" or height.lower() == "large" or height.lower() == "l" or height.lower() == "max":
@@ -1271,10 +1255,6 @@ def draw_described_oval_outline(center_x, center_y, width, height, color, border
     >>> arcade.close_window()
     """
 
-<<<<<<< HEAD
-    
-=======
->>>>>>> 4a09fa391dd3684f7e94535692ffeebabcd50b43
     if width.lower() == "very fat" or width.lower() == "vf" or width.lower() == "huge" or width.lower() == "h":
         width = 200
     elif width.lower() == "fat" or width.lower() == "f" or width.lower() == "big" or width.lower() == "b" or height.lower() == "large" or height.lower() == "l" or height.lower() == "max":
