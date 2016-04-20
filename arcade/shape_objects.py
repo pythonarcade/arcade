@@ -191,6 +191,28 @@ class Parabola():
         self.end_x += self.change_x
         self.tilt_angle += self.change_angle
 
+class Line():
+    def __init__(self, start_x, start_y, end_x, end_y, color = arcade.color.GREEN, width = 1):
+        self.start_x = start_x
+        self.start_y = start_y
+        self.end_x = end_x
+        self.end_y = end_y
+        self.color = color
+        self.width = width
+
+        self.change_x = 0
+        self.change_y = 0
+
+    def draw(self):
+        draw_line(start_x, start_y, end_x, end_y, color, width)
+
+    def update(self):
+        self.start_x += self.change_x
+        self.start_y += self.change_y
+        self.end_x += self.change_x
+        self.end_y += self.change_y
+        
+        
 def master_draw(object):
     object.draw()
 
