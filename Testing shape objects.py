@@ -79,9 +79,9 @@ on_draw.parabola.change_y = -2
 on_draw.parabola.change_angle = 8
 shapes.append(on_draw.parabola)
 
-on_draw.line = Line(20,100,400,150)
-on_draw.line.change_y = 2
-shapes.append(on_draw.line)
+##on_draw.line = Line(20,100,400,150)
+##on_draw.line.change_y = 2
+##shapes.append(on_draw.line)
 
 arcade.schedule(on_draw, 1 / 80)
 

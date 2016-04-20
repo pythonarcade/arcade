@@ -37,28 +37,30 @@ class Rectangle(Shape):
         self.tilt_angle = tilt_angle
 
     def draw(self):
+        """
+
+        >>> import arcade
+
+        >>> def on_draw(delta_time):
+            >>> arcade.start_render()
+            >>> on_draw.rectangle.draw()
+            >>> on_draw.rectangle.update()
+
+        >>> arcade.open_window("Drawing Example", 800, 600)
+        >>> arcade.set_background_color(arcade.color.WHITE)
+
+        >>> on_draw.rectangle = arcade.Rectangle(400 , 100, 35, 50, arcade.color.PURPLE)
+        >>> on_draw.rectangle.change_x = 3
+        >>> on_draw.rectangle.change_y = 2
+
+        >>> arcade.schedule(on_draw, 1 / 80)
+
+        >>> arcade.quick_run(10)
+
+        """
+        
         draw_rectangle(self.center_x, self.center_y, self.width, self.height, self.color, self.border_width, self.tilt_angle)
-    """
 
-    >>> import arcade
-
-    >>> def on_draw(delta_time):
-        >>> arcade.start_render()
-        >>> on_draw.rectangle.draw()
-        >>> on_draw.rectangle.update()
-
-    >>> arcade.open_window("Drawing Example", 800, 600)
-    >>> arcade.set_background_color(arcade.color.WHITE)
-
-    >>> on_draw.rectangle = arcade.Rectangle(400 , 100, 35, 50, arcade.color.PURPLE)
-    >>> on_draw.rectangle.change_x = 3
-    >>> on_draw.rectangle.change_y = 2
-
-    >>> arcade.schedule(on_draw, 1 / 80)
-
-    >>> arcade.quick_run(10)
-
-    """
 
 class Square(Rectangle):
     def __init__(self, center_x, center_y, width_and_height, color = arcade.color.GREEN, border_width = 0, tilt_angle = 0):

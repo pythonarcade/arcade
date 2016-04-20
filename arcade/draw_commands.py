@@ -1034,6 +1034,8 @@ def draw_ellipse_filled(center_x, center_y, width, height, color, angle=0):
     >>> arcade.quick_run(0.25)
     """
 
+    num_segments = 128
+
     GL.glEnable(GL.GL_BLEND)
     GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
     GL.glEnable(GL.GL_LINE_SMOOTH)
@@ -1112,6 +1114,8 @@ def draw_ellipse_outline(center_x, center_y,
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
     """
+
+    num_segments = 128
 
     GL.glEnable(GL.GL_BLEND)
     GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
