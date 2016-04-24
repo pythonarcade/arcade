@@ -7,17 +7,20 @@ FACE_UP = 3
 FACE_DOWN = 4
 
 
-def create_vbo(points):
+def set_vbo(vbo_id, points):
+    data2 = (GL.GLfloat*len(points))(*points)
+    GL.glBindBuffer(GL.GL_ARRAY_BUFFER, vbo_id)
+    GL.glBufferData(GL.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2,
+                    GL.GL_STATIC_DRAW)
+
+
+def create_vbo():
     vbo_id = GL.GLuint()
 
     GL.glGenBuffers(1, ctypes.pointer(vbo_id))
 
-    data2 = (GL.GLfloat*len(points))(*points)
-
-    GL.glBindBuffer(GL.GL_ARRAY_BUFFER, vbo_id)
-    GL.glBufferData(GL.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2,
-                    GL.GL_STATIC_DRAW)
     return vbo_id
+
 
 def create_rects(rect_list):
     """ Create a vertex buffer for a set of rectangles. """
@@ -29,21 +32,20 @@ def create_rects(rect_list):
                    shape.width / 2, shape.height / 2,
                    -shape.width / 2, shape.height / 2])
 
-    return create_vbo(v2f)
+    return v2f
 
 
 def render_rect_filled(shape, offset, texture_id, texture_coord_vbo):
     """ Render the shape at the right spot. """
     # Set color
     GL.glLoadIdentity()
-    GL.glTranslatef(shape.center_x + shape.width / 2, shape.center_y + shape.height / 2, 0)
+    GL.glTranslatef(shape.center_x, shape.center_y, 0)
 
     GL.glBindTexture(GL.GL_TEXTURE_2D, texture_id)
 
     GL.glTexCoordPointer(2, GL.GL_FLOAT, 0, texture_coord_vbo)
     GL.glDrawArrays(GL.GL_QUADS, offset, 4)
 
-texture_coord = [0.0,0.0,1.0,0.0,1.0,1.0,0.0,1.0] * 70
 
 def draw_rects(shape_list, vertex_vbo_id, texture_coord_vbo_id):
     GL.glEnable(GL.GL_BLEND)
@@ -66,9 +68,11 @@ def draw_rects(shape_list, vertex_vbo_id, texture_coord_vbo_id):
     offset = 0
     for shape in shape_list:
         texture_coord_vbo_id = None
-        render_rect_filled(shape, offset, shape.texture.id, texture_coord_vbo_id)
+        render_rect_filled(shape, offset,
+                           shape.texture.id, texture_coord_vbo_id)
 
         offset += 4
+
 
 class SpriteList():
     """
@@ -104,6 +108,7 @@ class SpriteList():
         self.sprite_list = []
         self.vertex_vbo_id = None
         self.texture_coord_vbo_id = None
+        self.vbo_dirty = True
 
     def append(self, item):
         """
@@ -111,12 +116,14 @@ class SpriteList():
         """
         self.sprite_list.append(item)
         item._register_sprite_list(self)
+        self.vbo_dirty = True
 
     def remove(self, item):
         """
         Remove a specific sprite from the list.
         """
         self.sprite_list.remove(item)
+        self.vbo_dirty = True
 
     def update(self):
         """
@@ -136,14 +143,24 @@ class SpriteList():
         """
         Call the draw() method on each sprite in the list.
         """
-        if self.vertex_vbo_id == None:
-            self.vertex_vbo_id = create_rects(self.sprite_list)
-            self.texture_coord_vbo_id = create_vbo([0.0,0.0,1.0,0.0,1.0,1.0,0.0,1.0] * len(self.sprite_list))
-            print("Setup VBO")
+        if self.vertex_vbo_id is None:
+            self.vbo_dirty = True
+            self.vertex_vbo_id = create_vbo()
+            self.texture_coord_vbo_id = create_vbo()
+            # print("Setup VBO")
 
-        fast = False
+        if self.vbo_dirty:
+            rects = create_rects(self.sprite_list)
+            set_vbo(self.vertex_vbo_id, rects)
+            set_vbo(self.texture_coord_vbo_id,
+                    [0, 0, 1, 0, 1, 1, 0, 1] * len(self.sprite_list))
+            self.vbo_dirty = False
+            # print("Upload new vbo data")
+
+        fast = True
         if fast:
-            draw_rects(self.sprite_list, self.vertex_vbo_id, self.texture_coord_vbo_id)
+            draw_rects(self.sprite_list, self.vertex_vbo_id,
+                       self.texture_coord_vbo_id)
         else:
             for sprite in self.sprite_list:
                 sprite.draw()
@@ -287,10 +304,11 @@ class Sprite():
         """
         Get the corner points for the rect that makes up the sprite.
         """
-        if self._points != None:
+        if self._points is not None:
             point_list = []
             for i in range(len(self._points)):
-                point = (self._points[i][0]+ self.center_x, self._points[i][1]+ self.center_y)
+                point = (self._points[i][0] + self.center_x,
+                         self._points[i][1] + self.center_y)
                 point_list.append(point)
             return point_list
         else:
@@ -598,7 +616,7 @@ filename, image_location_list, True)
         Logic for selecting the proper texture to use.
         """
         super().update()
-        # print("Update change_x={} change_y={}".format(self.change_x, self.change_y))
+
         if self.change_y == 0.0:
             if self.change_x < 0:
                 if abs(self.last_change_x - self.center_x) > \
@@ -680,6 +698,7 @@ filename, image_location_list, True)
     def jump(self):
         self.change_y = self.jump_speed
 
+
 class AnimatedTimeSprite(Sprite):
     """
     Sprite for platformer games that supports animations.
@@ -704,6 +723,7 @@ class AnimatedTimeSprite(Sprite):
                 self.cur_texture_index = 0
             self.texture = self.textures[self.cur_texture_index]
         self.frame += 1
+
 
 class AnimatedWalkingSprite(Sprite):
     """

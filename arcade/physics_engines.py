@@ -22,8 +22,8 @@ class PhysicsEngineSimple():
 
         # Check for wall hit
         hit_list = \
-            arcade.check_for_collision_with_list(self.player_sprite,
-                                                 self.walls)
+            check_for_collision_with_list(self.player_sprite,
+                                          self.walls)
 
         # If we hit a wall, move so the edges are at the same point
         if len(hit_list) > 0:
@@ -43,8 +43,8 @@ class PhysicsEngineSimple():
 
         # Check for wall hit
         hit_list = \
-            arcade.check_for_collision_with_list(self.player_sprite,
-                                                 self.walls)
+            check_for_collision_with_list(self.player_sprite,
+                                          self.walls)
 
         # If we hit a wall, move so the edges are at the same point
         if len(hit_list) > 0:
@@ -80,7 +80,7 @@ class PhysicsEnginePlatformer():
         # Check for wall hit
         hit_list = \
             check_for_collision_with_list(self.player_sprite,
-                                                 self.platforms)
+                                          self.platforms)
 
         result = False
 
@@ -104,7 +104,7 @@ class PhysicsEnginePlatformer():
         # Check for wall hit
         hit_list = \
             check_for_collision_with_list(self.player_sprite,
-                                                 self.platforms)
+                                          self.platforms)
 
         # If we hit a wall, move so the edges are at the same point
         if len(hit_list) > 0:
@@ -126,7 +126,6 @@ class PhysicsEnginePlatformer():
                 else:
                     self.player_sprite.top = item.bottom
             self.player_sprite.change_y = min(0, hit_list[0].change_y)
-
 
         # --- Move in the x direction
         self.player_sprite.center_x += self.player_sprite.change_x
@@ -159,17 +158,18 @@ class PhysicsEnginePlatformer():
             else:
                 print("Error, collision while player wasn't moving.")
 
-
         for platform in self.platforms:
             if platform.change_x != 0 or platform.change_y != 0:
                 platform.center_x += platform.change_x
 
-                if platform.boundary_left != None and platform.left <= platform.boundary_left:
+                if platform.boundary_left is not None \
+                        and platform.left <= platform.boundary_left:
                     platform.left = platform.boundary_left
                     if platform.change_x < 0:
                         platform.change_x *= -1
 
-                if platform.boundary_right != None and platform.right >= platform.boundary_right:
+                if platform.boundary_right is not None \
+                        and platform.right >= platform.boundary_right:
                     platform.right = platform.boundary_right
                     if platform.change_x > 0:
                         platform.change_x *= -1
@@ -184,12 +184,14 @@ class PhysicsEnginePlatformer():
 
                 platform.center_y += platform.change_y
 
-                if platform.boundary_top != None and platform.top >= platform.boundary_top:
+                if platform.boundary_top is not None \
+                        and platform.top >= platform.boundary_top:
                     platform.top = platform.boundary_top
                     if platform.change_y > 0:
                         platform.change_y *= -1
 
-                if platform.boundary_bottom != None and platform.bottom <= platform.boundary_bottom:
+                if platform.boundary_bottom is not None \
+                        and platform.bottom <= platform.boundary_bottom:
                     platform.bottom = platform.boundary_bottom
                     if platform.change_y < 0:
                         platform.change_y *= -1
