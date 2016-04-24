@@ -6,6 +6,70 @@ FACE_LEFT = 2
 FACE_UP = 3
 FACE_DOWN = 4
 
+
+def create_vbo(points):
+    vbo_id = GL.GLuint()
+
+    GL.glGenBuffers(1, ctypes.pointer(vbo_id))
+
+    data2 = (GL.GLfloat*len(points))(*points)
+
+    GL.glBindBuffer(GL.GL_ARRAY_BUFFER, vbo_id)
+    GL.glBufferData(GL.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2,
+                    GL.GL_STATIC_DRAW)
+    return vbo_id
+
+def create_rects(rect_list):
+    """ Create a vertex buffer for a set of rectangles. """
+
+    v2f = []
+    for shape in rect_list:
+        v2f.extend([-shape.width / 2, -shape.height / 2,
+                   shape.width / 2, -shape.height / 2,
+                   shape.width / 2, shape.height / 2,
+                   -shape.width / 2, shape.height / 2])
+
+    return create_vbo(v2f)
+
+
+def render_rect_filled(shape, offset, texture_id, texture_coord_vbo):
+    """ Render the shape at the right spot. """
+    # Set color
+    GL.glLoadIdentity()
+    GL.glTranslatef(shape.center_x + shape.width / 2, shape.center_y + shape.height / 2, 0)
+
+    GL.glBindTexture(GL.GL_TEXTURE_2D, texture_id)
+
+    GL.glTexCoordPointer(2, GL.GL_FLOAT, 0, texture_coord_vbo)
+    GL.glDrawArrays(GL.GL_QUADS, offset, 4)
+
+texture_coord = [0.0,0.0,1.0,0.0,1.0,1.0,0.0,1.0] * 70
+
+def draw_rects(shape_list, vertex_vbo_id, texture_coord_vbo_id):
+    GL.glEnable(GL.GL_BLEND)
+    GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
+    GL.glEnable(GL.GL_TEXTURE_2D)
+    GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
+    GL.glHint(GL.GL_PERSPECTIVE_CORRECTION_HINT, GL.GL_NICEST)
+    GL.glColor4f(1, 1, 1, 1)
+    # GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
+    # GL.glMatrixMode(GL.GL_MODELVIEW)
+    # GL.glDisable(GL.GL_BLEND)
+
+    GL.glBindBuffer(GL.GL_ARRAY_BUFFER, vertex_vbo_id)
+    GL.glEnableClientState(GL.GL_TEXTURE_COORD_ARRAY)
+    GL.glEnableClientState(GL.GL_VERTEX_ARRAY)
+    GL.glVertexPointer(2, GL.GL_FLOAT, 0, 0)
+
+    GL.glBindBuffer(GL.GL_ARRAY_BUFFER, texture_coord_vbo_id)
+
+    offset = 0
+    for shape in shape_list:
+        texture_coord_vbo_id = None
+        render_rect_filled(shape, offset, shape.texture.id, texture_coord_vbo_id)
+
+        offset += 4
+
 class SpriteList():
     """
     List of sprites.
@@ -38,6 +102,8 @@ class SpriteList():
     """
     def __init__(self):
         self.sprite_list = []
+        self.vertex_vbo_id = None
+        self.texture_coord_vbo_id = None
 
     def append(self, item):
         """
@@ -70,8 +136,17 @@ class SpriteList():
         """
         Call the draw() method on each sprite in the list.
         """
-        for sprite in self.sprite_list:
-            sprite.draw()
+        if self.vertex_vbo_id == None:
+            self.vertex_vbo_id = create_rects(self.sprite_list)
+            self.texture_coord_vbo_id = create_vbo([0.0,0.0,1.0,0.0,1.0,1.0,0.0,1.0] * len(self.sprite_list))
+            print("Setup VBO")
+
+        fast = False
+        if fast:
+            draw_rects(self.sprite_list, self.vertex_vbo_id, self.texture_coord_vbo_id)
+        else:
+            for sprite in self.sprite_list:
+                sprite.draw()
 
     def __len__(self):
         return len(self.sprite_list)
