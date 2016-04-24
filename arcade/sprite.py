@@ -259,9 +259,9 @@ class Sprite():
 
         self.cur_texture_index = 0
         self.scale = scale
-        self.center_x = 0
-        self.center_y = 0
-        self.angle = 0.0
+        self._center_x = 0
+        self._center_y = 0
+        self._angle = 0.0
 
         self.change_x = 0
         self.change_y = 0
@@ -277,6 +277,7 @@ class Sprite():
         self.transparent = True
 
         self._points = None
+        self._point_list_cache = None
 
     def append_texture(self, texture):
         self.textures.append(texture)
@@ -304,6 +305,9 @@ class Sprite():
         """
         Get the corner points for the rect that makes up the sprite.
         """
+        if self._point_list_cache is not None:
+            return self._point_list_cache
+
         if self._points is not None:
             point_list = []
             for i in range(len(self._points)):
@@ -333,7 +337,8 @@ class Sprite():
                             self.center_y,
                             self.angle)
 
-        return ((x1, y1), (x2, y2), (x3, y3), (x4, y4))
+        self._point_list_cache = ((x1, y1), (x2, y2), (x3, y3), (x4, y4))
+        return self._point_list_cache
 
     points = property(get_points, set_points)
 
@@ -401,6 +406,33 @@ arcade.Sprite("doc/source/examples/images/playerShip1_orange.png", scale)
         self.center_y -= diff
 
     top = property(_get_top, _set_top)
+
+    def _get_center_x(self):
+        return self._center_x
+
+    def _set_center_x(self, new_value):
+        self._center_x = new_value
+        self._point_list_cache = None
+
+    center_x = property(_get_center_x, _set_center_x)
+
+    def _get_center_y(self):
+        return self._center_y
+
+    def _set_center_y(self, new_value):
+        self._center_y = new_value
+        self._point_list_cache = None
+
+    center_y = property(_get_center_y, _set_center_y)
+
+    def _get_angle(self):
+        return self._angle
+
+    def _set_angle(self, new_value):
+        self._angle = new_value
+        self._point_list_cache = None
+
+    angle = property(_get_angle, _set_angle)
 
     def _get_left(self):
         """
