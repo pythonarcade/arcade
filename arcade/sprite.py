@@ -1,6 +1,10 @@
 from .draw_commands import *
 from .geometry import *
 
+FACE_RIGHT = 1
+FACE_LEFT = 2
+FACE_UP = 3
+FACE_DOWN = 4
 
 class SpriteList():
     """
@@ -54,6 +58,13 @@ class SpriteList():
         """
         for sprite in self.sprite_list:
             sprite.update()
+
+    def update_animation(self):
+        """
+        Call the update_animation() method on each sprite in the list.
+        """
+        for sprite in self.sprite_list:
+            sprite.update_animation()
 
     def draw(self):
         """
@@ -124,9 +135,7 @@ class Sprite():
 
         Args:
             filename (str): Filename of an image that represents the sprite.
-            scale (float): Scale the image up or down. Scale of 1.0 is no-scaling.
-            x (float): Scale the image up or down. Scale of 1.0 is no-scaling.
-            y (float): Scale the image up or down. Scale of 1.0 is no-scaling.
+            scale (float): Scale the image up or down. Scale of 1.0 is none.
             width (float): Width of the sprite
             height (float): Height of the sprite
 
@@ -165,6 +174,11 @@ class Sprite():
         self.change_x = 0
         self.change_y = 0
         self.change_angle = 0
+
+        self.boundary_left = None
+        self.boundary_right = None
+        self.boundary_top = None
+        self.boundary_bottom = None
 
         self.alpha = 1.0
         self.sprite_lists = []
@@ -590,3 +604,87 @@ filename, image_location_list, True)
 
     def jump(self):
         self.change_y = self.jump_speed
+
+class AnimatedTimeSprite(Sprite):
+    """
+    Sprite for platformer games that supports animations.
+    """
+    def __init__(self, scale=1, x=0, y=0):
+        super().__init__(scale=scale, x=x, y=y)
+        self.last_center_x = self.center_x
+        self.last_center_y = self.center_y
+        self.state = FACE_RIGHT
+        self.textures = None
+        self.cur_texture_index = 0
+        self.texture_change_frames = 5
+        self.frame = 0
+
+    def update_animation(self):
+        """
+        Logic for selecting the proper texture to use.
+        """
+        if self.frame % self.texture_change_frames == 0:
+            self.cur_texture_index += 1
+            if self.cur_texture_index >= len(self.textures):
+                self.cur_texture_index = 0
+            self.texture = self.textures[self.cur_texture_index]
+        self.frame += 1
+
+class AnimatedWalkingSprite(Sprite):
+    """
+    Sprite for platformer games that supports animations.
+    """
+    def __init__(self, scale=1, x=0, y=0):
+        super().__init__(scale=scale, x=x, y=y)
+        self.last_center_x = self.center_x
+        self.last_center_y = self.center_y
+        self.state = FACE_RIGHT
+        self.stand_right_textures = None
+        self.stand_left_textures = None
+        self.walk_left_textures = None
+        self.walk_right_textures = None
+        self.walk_up_walk_textures = None
+        self.walk_down_textures = None
+        self.cur_texture_index = 0
+        self.texture_change_distance = 20
+
+    def update_animation(self):
+        """
+        Logic for selecting the proper texture to use.
+        """
+
+        x1 = self.center_x
+        x2 = self.last_center_x
+        y1 = self.center_y
+        y2 = self.last_center_y
+        distance = math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
+
+        change_direction = False
+        if self.change_x > 0 and self.state == FACE_LEFT:
+            self.state = FACE_RIGHT
+            change_direction = True
+
+        elif self.change_x < 0 and self.state == FACE_RIGHT:
+            self.state = FACE_LEFT
+            change_direction = True
+
+        if self.change_x == 0 and self.change_y == 0:
+            if self.state == FACE_LEFT:
+                self.texture = self.stand_left_textures[0]
+            else:
+                self.texture = self.stand_right_textures[0]
+
+        elif change_direction or distance >= self.texture_change_distance:
+            self.last_center_x = self.center_x
+            self.last_center_y = self.center_y
+
+            if self.state == FACE_LEFT:
+                texture_list = self.walk_left_textures
+            else:
+                texture_list = self.walk_right_textures
+
+            self.cur_texture_index += 1
+            if self.cur_texture_index >= len(texture_list):
+                self.cur_texture_index = 0
+
+            self.texture = texture_list[self.cur_texture_index]

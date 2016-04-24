@@ -287,4 +287,3 @@ def update_all(list):
 >>> arcade.quick_run(10)
 
 """
-
