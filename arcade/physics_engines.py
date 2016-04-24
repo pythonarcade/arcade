@@ -79,7 +79,7 @@ class PhysicsEnginePlatformer():
 
         # Check for wall hit
         hit_list = \
-            arcade.check_for_collision_with_list(self.player_sprite,
+            check_for_collision_with_list(self.player_sprite,
                                                  self.platforms)
 
         result = False
@@ -103,7 +103,7 @@ class PhysicsEnginePlatformer():
 
         # Check for wall hit
         hit_list = \
-            arcade.check_for_collision_with_list(self.player_sprite,
+            check_for_collision_with_list(self.player_sprite,
                                                  self.platforms)
 
         # If we hit a wall, move so the edges are at the same point
@@ -114,7 +114,7 @@ class PhysicsEnginePlatformer():
                                                  self.player_sprite.top)
             elif self.player_sprite.change_y < 0:
                 for item in hit_list:
-                    while arcade.check_for_collision(self.player_sprite, item):
+                    while check_for_collision(self.player_sprite, item):
                         self.player_sprite.bottom += 0.5
                     if item.change_x != 0:
                         self.player_sprite.center_x += item.change_x
@@ -133,8 +133,8 @@ class PhysicsEnginePlatformer():
 
         # Check for wall hit
         hit_list = \
-            arcade.check_for_collision_with_list(self.player_sprite,
-                                                 self.platforms)
+            check_for_collision_with_list(self.player_sprite,
+                                          self.platforms)
 
         # If we hit a wall, move so the edges are at the same point
         if len(hit_list) > 0:
@@ -143,7 +143,7 @@ class PhysicsEnginePlatformer():
                 for item in hit_list:
                     # See if we can "run up" a ramp
                     self.player_sprite.center_y += change_x
-                    if arcade.check_for_collision(self.player_sprite, item):
+                    if check_for_collision(self.player_sprite, item):
                         self.player_sprite.center_y -= change_x
                         self.player_sprite.right = \
                             min(item.left, self.player_sprite.right)
@@ -151,8 +151,8 @@ class PhysicsEnginePlatformer():
             elif change_x < 0:
                 for item in hit_list:
                     # See if we can "run up" a ramp
-                    self.player_sprite.center_y += change_x
-                    if arcade.check_for_collision(self.player_sprite, item):
+                    self.player_sprite.center_y -= change_x
+                    if check_for_collision(self.player_sprite, item):
                         self.player_sprite.center_y -= change_x
                         self.player_sprite.left = max(item.right,
                                                       self.player_sprite.left)
