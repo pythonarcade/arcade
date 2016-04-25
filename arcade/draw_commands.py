@@ -895,11 +895,7 @@ def draw_ellipse_filled(center_x, center_y, width, height, color, angle=0):
     >>> arcade.quick_run(0.25)
     """
 
-<<<<<<< HEAD
-    num_segments = 128
-=======
     num_segments=128
->>>>>>> 5f6805474ab7b3f0d7db8d652ee6ff583622bacb
 
     GL.glEnable(GL.GL_BLEND)
     GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
@@ -965,11 +961,7 @@ def draw_ellipse_outline(center_x, center_y, width, height, color, border_width=
     >>> arcade.quick_run(0.25)
     """
 
-<<<<<<< HEAD
     num_segments = 128
-=======
-    num_segments=128
->>>>>>> 5f6805474ab7b3f0d7db8d652ee6ff583622bacb
 
     GL.glEnable(GL.GL_BLEND)
     GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
@@ -1236,21 +1228,8 @@ def draw_described_oval_outline(center_x, center_y, width, height, color, border
 ##### END OVAL FUNCTIONS #####
 
 ##### BEGIN LINE FUNCTIONS #####
-
-
-<<<<<<< HEAD
-def draw_line(start_x, start_y, end_x, end_y, color, width = 1):   
-    if isinstance(start_x,[int,float]) == false:
-        raise TypeError("Attribute for start_x of line less than zero, or not a number! Parameter must be a positive number.")
-    elif isinstance(end_x,[int,float]) == false:
-        raise TypeError("Attribute for start_x of line less than zero, or not a number! Parameter must be a positive number.")
-    elif isinstance(start_y,[int,float]) == false:
-        raise TypeError("Attribute for start_x of line less than zero, or not a number! Parameter must be a positive number.")
-    elif isinstance(end_y,[int,float]) == false:
-        raise TypeError("Attribute for start_x of line less than zero, or not a number! Parameter must be a positive number.")        
-=======
+      
 def draw_line(start_x, start_y, end_x, end_y, color, border_width=1):
->>>>>>> 5f6805474ab7b3f0d7db8d652ee6ff583622bacb
 
     """
     Draw a line.
