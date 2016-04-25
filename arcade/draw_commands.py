@@ -92,18 +92,18 @@ def load_textures(file_name, image_location_list,
         GL.glPixelStorei(GL.GL_UNPACK_ALIGNMENT, 1)
 
         # The code below should be enabled, but it freaks out
-        # during CI (AppVeyor). The alternative code doesn't
-        app_veyer = True
-        if not app_veyer:
-            GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S,
-                               GL.GL_CLAMP_TO_BORDER)
-            GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T,
-                               GL.GL_CLAMP_TO_BORDER)
-        else:
-            GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S,
-                               GL.GL_REPEAT)
-            GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T,
-                               GL.GL_REPEAT)
+        # during CI (AppVeyor).
+        GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S,
+                           GL.GL_CLAMP_TO_BORDER)
+        GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T,
+                           GL.GL_CLAMP_TO_BORDER)
+
+        # The code below should be disabled, but keeping it here for
+        # CI
+        # GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S,
+        #                    GL.GL_REPEAT)
+        # GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T,
+        #                    GL.GL_REPEAT)
 
         GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER,
                            GL.GL_LINEAR)
@@ -117,7 +117,7 @@ def load_textures(file_name, image_location_list,
 
     return texture_info_list
 
-def load_texture(file_name, x=0, y=0, width=0, height=0, scale=1):
+def load_texture(file_name, x=0, y=0, width=0, height=0):
     """
     Load image from disk and create a texture.
 
@@ -193,9 +193,6 @@ def load_texture(file_name, x=0, y=0, width=0, height=0, scale=1):
                           image_width, image_height,
                           GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, image_bytes)
 
-    image_width *= scale
-    image_height *= scale
-
     return Texture(texture, image_width, image_height)
 
 ##### END TEXTURE FUNCTIONS #####
@@ -204,35 +201,22 @@ def trim_image(image):
     """
     Returns an image with extra whitespace cropped out.
 
-    >>> source_image = PIL.Image.open("examples/images/playerShip1_orange.png")
+    >>> name = "doc/source/examples/images/playerShip1_orange.png"
+    >>> source_image = PIL.Image.open(name)
     >>> cropped_image = trim_image(source_image)
     >>> print(source_image.height, cropped_image.height)
     75 75
     """
-    try:
-        bbox = image.getbbox()
-        return image.crop(bbox)
-    except:
-        print("Error trimming image. Make sure image supplied to function is in specified directory. Image: "+ image)
+    bbox = image.getbbox()
+    return image.crop(bbox)
+
+##### BEGIN ARC FUNCTIONS #####
 
 def draw_arc_filled(center_x, center_y,
                     width, height,
                     color,
                     start_angle, end_angle,
-                    angle=0, num_segments=128):
-    
-    if isinstance(center_x, [int, float]) == false:
-        raise TypeError("Value of parameter center_x for draw_arc_filled not an integer or float.")
-    elif isinstance(center_y, [int, float]) == false:
-        raise TypeError("Value of parameter center_y for draw_arc_filled not an integer or float.")
-    elif width <= 0:
-        raise ValueError("Value of width parameter for draw_arc_filled needs to be greater than zero.")
-    elif height <= 0:
-        raise ValueError("Value of height parameter for draw_arc_filled needs to be greater than zero.")
-    elif start_angle < 1 or start_angle > 360:
-        raise ValueError("Value of start_angle parameter for draw_arc_filled needs to be at least one, but no more than 360.")    
-    elif end_angle < 1 or end_angle > 360:
-        raise ValueError("Value of end_angle parameter for draw_arc_filled needs to be at least one, but no more than 360")    
+                    tilt_angle=0):   
     """
     Draw a filled in arc. Useful for drawing pie-wedges, or Pac-Man.
 
@@ -245,7 +229,7 @@ def draw_arc_filled(center_x, center_y,
          RGBA format.
         :start_angle (float): start angle of the arc in degrees.
         :end_angle (float): end angle of the arc in degrees.
-        :angle (float): angle the arc is tilted.
+        :tilt_angle (float): angle the arc is tilted.
         :num_segments (int): number of line segments that would make up the
          whole ellipse that this arc is part of. Higher is better quality and
          slower render time.
@@ -267,7 +251,7 @@ arcade.color.BOTTLE_GREEN, 90, 360, 45)
     >>> arcade.finish_render()
     >>> arcade.close_window()
     """
-
+    num_segments = 128
     GL.glEnable(GL.GL_BLEND)
     GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
     GL.glEnable(GL.GL_LINE_SMOOTH)
@@ -276,19 +260,14 @@ arcade.color.BOTTLE_GREEN, 90, 360, 45)
 
     GL.glLoadIdentity()
     GL.glTranslatef(center_x, center_y, 0)
-    GL.glRotatef(angle, 0, 0, 1)
+    GL.glRotatef(tilt_angle, 0, 0, 1)
 
     # Set color
     if len(color) == 4:
         GL.glColor4ub(color[0], color[1], color[2], color[3])
     elif len(color) == 3:
         GL.glColor4ub(color[0], color[1], color[2], 255)
-    #Handle errors that occur otherwise
-    elif len(color) < 3:
-        raise IOError("Attribute supplied as color not formatted properly. Syntax for a color is [1,2,3] or [1,2,3,4]")
-    elif len(color) > 4:
-        raise IOError("Attribute supplied as color not formatted properly. Syntax for a color is [1,2,3] or [1,2,3,4]")    
-        
+
     GL.glBegin(GL.GL_TRIANGLE_FAN)
 
     start_segment = int(start_angle / 360 * num_segments)
@@ -307,28 +286,7 @@ arcade.color.BOTTLE_GREEN, 90, 360, 45)
     GL.glLoadIdentity()
 
 
-def draw_arc_outline(center_x, center_y,
-                     width, height,
-                     color,
-                     start_angle, end_angle,
-                     line_width=1, angle=0, num_segments=128):
-    
-    #error handling for type checking
-    if isinstance(center_x, [int, float]) == false:
-        raise TypeError("Value of parameter center_x for draw_arc_outline not an integer or float.")
-    elif isinstance(center_y, [int, float]) == false:
-        raise TypeError("Value of parameter center_y for draw_arc_outline not an integer or float.")
-    elif width <= 0:
-        raise ValueError("Attribute for width less than zero or not a number! Parameter must be a positive number.")
-    elif height <= 0:
-        raise ValueError("Attribute for height less than zero or not a number! Parameter must be a positive number.")
-    elif start_angle <= 0:
-        raise ValueError("Attribute for start_angle less than zero or not a number! Parameter must be a positive number.")
-    elif end_angle <= 0:
-        raise ValueError("Attribute for end_angle less than zero or not a number! Parameter must be a positive number.")   
-    
-    
-    
+def draw_arc_outline(center_x, center_y, width, height, color, start_angle, end_angle, border_width=1, tilt_angle=0):
     """
     Draw the outside edge of an arc. Useful for drawing curved lines.
 
@@ -341,7 +299,7 @@ def draw_arc_outline(center_x, center_y,
          RGBA format.
         :start_angle (float): start angle of the arc in degrees.
         :end_angle (float): end angle of the arc in degrees.
-        :line_width (float): width of line in pixels.
+        :border_width (float): width of line in pixels.
         :angle (float): angle the arc is tilted.
         :num_segments (int): number of line segments that would make up the
          whole ellipse that this arc is part of. Higher is better quality and
@@ -365,7 +323,7 @@ transparent_color, 90, 360)
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
     """
-
+    num_segments = 128
     GL.glEnable(GL.GL_BLEND)
     GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
     GL.glEnable(GL.GL_LINE_SMOOTH)
@@ -374,19 +332,15 @@ transparent_color, 90, 360)
 
     GL.glLoadIdentity()
     GL.glTranslatef(center_x, center_y, 0)
-    GL.glRotatef(angle, 0, 0, 1)
-    GL.glLineWidth(line_width)
+    GL.glRotatef(tilt_angle, 0, 0, 1)
+    GL.glLineWidth(border_width)
 
     # Set color
     if len(color) == 4:
         GL.glColor4ub(color[0], color[1], color[2], color[3])
     elif len(color) == 3:
         GL.glColor4ub(color[0], color[1], color[2], 255)
-    elif len(color) < 3:
-        raise IOError("Attribute supplied as color for arc outline not formatted properly. Syntax for a color is [1,2,3] or [1,2,3,4]")        
-    elif len(color) > 4:
-            raise IOError("Attribute supplied as color for arc outline not formatted properly. Syntax for a color is [1,2,3] or [1,2,3,4]")    
-        
+
     GL.glBegin(GL.GL_LINE_STRIP)
 
     start_segment = int(start_angle / 360 * num_segments)
@@ -403,27 +357,25 @@ transparent_color, 90, 360)
     GL.glEnd()
     GL.glLoadIdentity()
 
+def draw_arc(center_x, center_y, width, height, color, start_angle, end_angle, border_width = 0, tilt_angle = 0):
+    if border_width <= 0:
+        draw_arc_filled(center_x, center_y, width, height, color, start_angle, end_angle, tilt_angle)
+    else:
+        draw_arc_outline(center_x, center_y, width, height, color, start_angle, end_angle, border_width, tilt_angle)
 
-def draw_circle_filled(center_x, center_y, radius, color, num_segments=128):
-    #type checking
-    if isinstance(center_x, [int, float]) == false:
-        raise TypeError("Value of parameter center_x for draw_circle_filled not an integer or float.")
-    elif isinstance(center_y, [int, float]) == false:
-        raise TypeError("Value of parameter center_y for draw_circle_filled not an integer or float.")   
-    elif radius <= 0:
-        raise ValueError("Attribute for circle radius less than or equal to zero, or not a number! Must supply positive number.")
-        
+def draw_fancy_math_arc_outline(start_x, start_y, end_x, end_y, height, color, border_width=5, tilt_angle=0):
     """
-    Draws a filled-in circle.
-
+    Draws the outline of an arc.
+    
     Args:
-        :center_x (float): x position that is the center of the circle.
-        :center_y (float): y position that is the center of the circle.
-        :radius (float): width of the circle.
-        :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
-         RGBA format.
-        :num_segments (int): number of triangle segments that make up this
-         circle. Higher is better quality, but slower render time.
+        :start_x (float):
+        :start_y (float):
+        :end_x (float):
+        :end_y (float):
+        :height (float):
+        :color (tuple):
+        :border_width (float):
+        :tile_angle (float):
     Returns:
         None
     Raises:
@@ -435,7 +387,9 @@ def draw_circle_filled(center_x, center_y, radius, color, num_segments=128):
     >>> arcade.open_window("Drawing Example", 800, 600)
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
-    >>> arcade.draw_circle_filled(420, 285, 18, arcade.color.GREEN, 3)
+    >>> arcade.draw_fancy_math_arc_outline(150, 150, 200, 200, 20, arcade.color.BRIGHT_MAROON, 5, 10)
+    >>> transparent_color = (255, 0, 0, 127)
+    >>> arcade.draw_fancy_math_arc_outline(160, 160, 210, 210, 20, transparent_color)
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
     """
@@ -488,67 +442,36 @@ def draw_circle_filled(center_x, center_y, radius, color, num_segments=128):
 
     draw_arc_outline(cent_x, cent_y, distance, height, color, start_angle, end_angle, border_width, tilt_angle)
 
-def draw_fancenter_y_math_arc_filled(start_x, start_y, end_x, end_y, height, color, tilt_angle=0):
+def draw_fancy_math_arc_filled(start_x, start_y, end_x, end_y, height, color, tilt_angle=0):
     """
     Draws a filled in arc.
-
+    
     Args:
-        :start_x (float): The starting x position of the arc
-        :start_y (float): The starting y position of the arc
-        :end_x (float): The end x position of the arc
-        :end_y (float): The end y position of the arc
-        :height (float): How tall the arc is
-        :color (tuple): What color the arc is
-        :tile_angle (float): The angle of the arcs tilt
+        :start_x (float):
+        :start_y (float):
+        :end_x (float):
+        :end_y (float):
+        :height (float):
+        :color (tuple):
+        :tile_angle (float):
     Returns:
         None
     Raises:
         None
 
     Example:
-
+    
     >>> import arcade
     >>> arcade.open_window("Drawing Example", 800, 600)
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
-    >>> arcade.draw_fancenter_y_math_arc_filled(150, 150, 200, 200, 20, arcade.color.BRIGHT_MAROON, 10)
+    >>> arcade.draw_fancy_math_arc_filled(150, 150, 200, 200, 20, arcade.color.BRIGHT_MAROON, 10)
     >>> transparent_color = (255, 0, 0, 127)
-    >>> arcade.draw_fancenter_y_math_arc_filled(160, 160, 210, 210, 20, transparent_color)
+    >>> arcade.draw_fancy_math_arc_filled(160, 160, 210, 210, 20, transparent_color)
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
     """
-    
-    # Set color
-    if len(color) == 4:
-        GL.glColor4ub(color[0], color[1], color[2], color[3])
-    elif len(color) == 3:
-        GL.glColor4ub(color[0], color[1], color[2], 255)
-    elif len(color) < 3:
-        raise IOError("Attribute supplied as color for circle not formatted properly. Syntax for a color is [1,2,3] or [1,2,3,4]")
-    elif len(color) > 4:
-            raise IOError("Attribute supplied as color for circle not formatted properly. Syntax for a color is [1,2,3] or [1,2,3,4]")    
-            
-    #ok, good to go. Call function to actually draw circle.
-    
-    width = radius
-    height = radius
-    draw_ellipse_filled(center_x, center_y, width, height, color, num_segments)
 
-def draw_circle_outline(center_x, center_y, radius, color, line_width=1, num_segments=128):
-    
-    #type checking
-    if isinstance(center_x, [int, float]) == false:
-        raise TypeError("Value of parameter center_x for draw_circle_outline not an integer or float.")
-    elif isinstance(center_y, [int, float]) == false:
-        raise TypeError("Value of parameter center_y for draw_circle_outline not an integer or float.")   
-    elif radius <= 0:
-        raise ValueError("Attribute for circle radius less than or equal to zero, or not a number! Must supply positive number.")
-        
-    """
-    Draw the outline of a circle.
-
-    """
-    
     temp_x = end_x - start_x
     temp_x = temp_x**2
     temp_y = end_y - start_y
@@ -604,29 +527,32 @@ def draw_circle_outline(center_x, center_y, radius, color, line_width=1, num_seg
 def draw_parabola_filled(start_x, start_y, end_x, height, color, tilt_angle=0):
     """
     Draws a filled in parabola.
-
+    
     Args:
-        :start_x (float): The starting x position of the parabola
-        :start_y (float): The starting y position of the parabola
-        :end_x (float): The ending x position of the parabola
-        :height (float): The height of the parabola
-        :color (tuple): The color of the parabola
-        :tile_angle (float): The angle of the tilt of the parabola
+        :start_x (float):
+        :start_y (float):
+        :end_x (float):
+        :end_y (float):
+        :height (float):
+        :color (tuple):
+        :tile_angle (float):
     Returns:
         None
     Raises:
         None
 
     Example:
-
+    
     >>> import arcade
     >>> arcade.open_window("Drawing Example", 800, 600)
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
-    >>> arcade.draw_circle_outline(300, 285, 18, arcade.color.WISTERIA, 3)
+    >>> arcade.draw_parabola_filled(150, 150, 200, 50, arcade.color.BOTTLE_GREEN)
+    >>> color = (255, 0, 0, 127)
+    >>> arcade.draw_parabola_filled(160, 160, 210, 50, color)
     >>> arcade.finish_render()
-    >>> arcade.close_window()
-    """
+    >>> arcade.close_window()   
+    """     
     center_x = (start_x+end_x)/2
     center_y = start_y + height
     start_angle = 0
@@ -637,56 +563,23 @@ def draw_parabola_filled(start_x, start_y, end_x, height, color, tilt_angle=0):
 def draw_parabola_outline(start_x, start_y, end_x, height, color, border_width=5, tilt_angle=0):
     """
     Draws the outline of a parabola.
-    >>> arcade.quick_run(0.25)
-    """
-    # Set color
-    if len(color) == 4:
-        GL.glColor4ub(color[0], color[1], color[2], color[3])
-    elif len(color) == 3:
-        GL.glColor4ub(color[0], color[1], color[2], 255)
-    elif len(color) < 3:
-        raise IOError("Attribute supplied as color for unfilled circle not formatted properly. Syntax for a color is [1,2,3] or [1,2,3,4]")
-    elif len(color) > 4:
-            raise IOError("Attribute supplied as color for unfilled circle not formatted properly. Syntax for a color is [1,2,3] or [1,2,3,4]")              
-    #ok, good to go. Call function to actually draw circle.    
     
-    width = radius
-    height = radius
-    draw_ellipse_outline(center_x, center_y, width, height,
-                         color, line_width, num_segments)
-
-def draw_ellipse_filled(center_x, center_y,
-                        width, height,
-                        color,
-                        angle=0, num_segments=128):
-    if isinstance(center_x, [int, float]) == false:
-        raise TypeError("Value of parameter center_x for draw_ellipse_filled not an integer or float.")
-    elif isinstance(center_y, [int, float]) == false:
-        raise TypeError("Value of parameter center_y for draw_ellipse_filled not an integer or float.")
-    elif width <= 0:
-        raise ValueError("Value of width parameter for draw_ellipse_filled needs to be greater than zero.")
-    elif height <= 0:
-        raise ValueError("Value of height parameter for draw_ellipse_filled needs to be greater than zero.")    
-    """
-    Draw a filled in ellipse.
-
     Args:
-        :center_x (float): x position that is the center of the circle.
-        :center_y (float): y position that is the center of the circle.
-        :height (float): height of the ellipse.
-        :width (float): width of the ellipse.
-        :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
-         RGBA format.
-        :angle (float): Angle in degrees to tilt the ellipse.
-        :num_segments (int): number of triangle segments that make up this
-         circle. Higher is better quality, but slower render time.
+        :start_x (float):
+        :start_y (float):
+        :end_x (float):
+        :end_y (float):
+        :height (float):
+        :color (tuple):
+        :border_width (float):
+        :tile_angle (float):
     Returns:
         None
     Raises:
         None
 
     Example:
-
+    
     >>> import arcade
     >>> arcade.open_window("Drawing Example", 800, 600)
     >>> arcade.set_background_color(arcade.color.WHITE)
@@ -695,8 +588,8 @@ def draw_ellipse_filled(center_x, center_y,
     >>> color = (255, 0, 0, 127)
     >>> arcade.draw_parabola_outline(160, 160, 210, 50, color, 20)
     >>> arcade.finish_render()
-    >>> arcade.close_window()
-    """
+    >>> arcade.close_window()     
+    """     
     center_x = (start_x+end_x)/2
     center_y = start_y + height
     start_angle = 0
@@ -709,36 +602,6 @@ def draw_parabola(start_x, start_y, end_x, height, color, border_width = 0, tilt
         draw_parabola_filled(start_x, start_y, end_x, height, color, tilt_angle)
     else:
         draw_parabola_outline(start_x, start_y, end_x, height, color, border_width, tilt_angle)
-        
-        """
-        Draws the outline of a parabola.
-        
-        Args:
-            :start_x (float): The starting x position of the parabola
-            :start_y (float): The starting y position of the parabola
-            :end_x (float): The ending x position of the parabola
-            :height (float): The height of the parabola
-            :color (tuple): The color of the parabola
-            :border_width (float): The thickness of the outline
-            :tile_angle (float): The angle of the tilt of the parabola
-        Returns:
-            None
-        Raises:
-            None
-    
-        Example:
-        
-        >>> import arcade
-        >>> arcade.open_window("Drawing Example", 800, 600)
-        >>> arcade.set_background_color(arcade.color.WHITE)
-        >>> arcade.start_render()
-        >>> arcade.draw_parabola(150, 150, 200, 50, arcade.color.BOTTLE_GREEN, 10, 15)
-        >>> color = (255, 0, 0, 127)
-        >>> arcade.draw_parabola(160, 160, 210, 50, color, 20)
-        >>> arcade.finish_render()
-        >>> arcade.quick_run(0.25)
-        """
-        
 
 ##### END PARABOLA FUNCTIONS #####
 
@@ -774,6 +637,7 @@ def draw_circle_filled(center_x, center_y, radius, color):
     width = radius
     height = radius
     draw_ellipse_filled(center_x, center_y, width, height, color)
+
 
 def draw_small_filled_circle(center_x, center_y, color):
     """
@@ -891,7 +755,6 @@ def draw_standard_circle(center_x, center_y, color, size, filled, adjustment = 0
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
     """
-
     #--size--
     if size.lower() == "small" or size.lower() == "s":
         radius = 10 + adjustment
@@ -914,8 +777,8 @@ def draw_circle_outline(center_x, center_y, radius, color, border_width=1):
     Draw the outline of a circle.
 
     Args:
-        :center_x (float): x position that is the center of the circle.
-        :center_y (float): y position that is the center of the circle.
+        :cx (float): x position that is the center of the circle.
+        :cy (float): y position that is the center of the circle.
         :radius (float): width of the circle.
         :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
@@ -953,9 +816,9 @@ def draw_circle(center_x, center_y, radius, color, border_width = 0):
 
 ##### BEGIN ELLIPSE FUNCTIONS #####
 
-def create_ellipse(width, height, color): #needs exapmle and args
+def create_ellipse(width, height, color):
     num_segments=64
-
+    
     data = []
 
     for i in range(num_segments + 1):
@@ -981,7 +844,7 @@ def create_ellipse(width, height, color): #needs exapmle and args
     return shape
 
 
-def render_ellipse_filled(shape, x, y, color, angle=0):# Needs example and args
+def render_ellipse_filled(shape, x, y, color, angle=0):
     # Set color
     if len(color) == 4:
         GL.glColor4ub(shape.color[0], shape.color[1], shape.color[2],
@@ -1002,7 +865,7 @@ def render_ellipse_filled(shape, x, y, color, angle=0):# Needs example and args
 
     GL.glDrawArrays(GL.GL_TRIANGLE_FAN, 0, shape.size)
 
-def draw_ellipse_filled(center_x, center_y, width, height, color, angle=0): 
+def draw_ellipse_filled(center_x, center_y, width, height, color, angle=0):
     """
     Draw a filled in ellipse.
 
@@ -1034,7 +897,11 @@ def draw_ellipse_filled(center_x, center_y, width, height, color, angle=0):
     >>> arcade.quick_run(0.25)
     """
 
+<<<<<<< HEAD
     num_segments = 128
+=======
+    num_segments=128
+>>>>>>> 5f6805474ab7b3f0d7db8d652ee6ff583622bacb
 
     GL.glEnable(GL.GL_BLEND)
     GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
@@ -1051,11 +918,7 @@ def draw_ellipse_filled(center_x, center_y, width, height, color, angle=0):
         GL.glColor4ub(color[0], color[1], color[2], color[3])
     elif len(color) == 3:
         GL.glColor4ub(color[0], color[1], color[2], 255)
-    elif len(color) < 3:
-        raise IOError("Attribute supplied as color for ellipse not formatted properly. Syntax for a color is [1,2,3] or [1,2,3,4]")
-    elif len(color) > 4:
-        raise IOError("Attribute supplied as color for ellipse not formatted properly. Syntax for a color is [1,2,3] or [1,2,3,4]")    
-    
+
     GL.glBegin(GL.GL_TRIANGLE_FAN)
 
     GL.glVertex3f(0, 0, 0.5)
@@ -1071,18 +934,7 @@ def draw_ellipse_filled(center_x, center_y, width, height, color, angle=0):
     GL.glEnd()
     GL.glLoadIdentity()
 
-
-def draw_ellipse_outline(center_x, center_y,
-                         width, height,
-                         color, line_width=1, angle=0, num_segments=128):
-    if isinstance(center_x, [int, float]) == false:
-        raise TypeError("Value of parameter center_x for draw_ellipse_outline not an integer or float.")
-    elif isinstance(center_y, [int, float]) == false:
-        raise TypeError("Value of parameter center_y for draw_ellipse_outline not an integer or float.")
-    elif width <= 0:
-        raise ValueError("Value of width parameter for draw_ellipse_outline needs to be greater than zero.")
-    elif height <= 0:
-        raise ValueError("Value of height parameter for draw_ellipse_outline needs to be greater than zero.") 
+def draw_ellipse_outline(center_x, center_y, width, height, color, border_width=1, angle=0):
     """
     Draw the outline of an ellipse.
 
@@ -1093,7 +945,7 @@ def draw_ellipse_outline(center_x, center_y,
         :width (float): width of the ellipse.
         :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
-        :line_width (float): Width of the circle outline in pixels.
+        :border_width (float): Width of the circle outline in pixels.
         :angle (float): Angle in degrees to tilt the ellipse.
         :num_segments (int): number of triangle segments that make up this
          circle. Higher is better quality, but slower render time.
@@ -1115,7 +967,11 @@ def draw_ellipse_outline(center_x, center_y,
     >>> arcade.quick_run(0.25)
     """
 
+<<<<<<< HEAD
     num_segments = 128
+=======
+    num_segments=128
+>>>>>>> 5f6805474ab7b3f0d7db8d652ee6ff583622bacb
 
     GL.glEnable(GL.GL_BLEND)
     GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
@@ -1126,18 +982,14 @@ def draw_ellipse_outline(center_x, center_y,
     GL.glLoadIdentity()
     GL.glTranslatef(center_x, center_y, 0)
     GL.glRotatef(angle, 0, 0, 1)
-    GL.glLineWidth(line_width)
+    GL.glLineWidth(border_width)
 
     # Set color
     if len(color) == 4:
         GL.glColor4ub(color[0], color[1], color[2], color[3])
     elif len(color) == 3:
         GL.glColor4ub(color[0], color[1], color[2], 255)
-    elif len(color) < 3:
-        raise IOError("Attribute supplied as color for ellipse outline not formatted properly. Syntax for a color is [1,2,3] or [1,2,3,4]")
-    elif len(color) > 4:
-        raise IOError("Attribute supplied as color for ellipse outline not formatted properly. Syntax for a color is [1,2,3] or [1,2,3,4]")
-    
+
     GL.glBegin(GL.GL_LINE_LOOP)
     for i in range(num_segments):
         theta = 2.0 * 3.1415926 * i / num_segments
@@ -1151,14 +1003,25 @@ def draw_ellipse_outline(center_x, center_y,
     GL.glLoadIdentity()
 
 def draw_ellipse(center_x, center_y, width, height, color, border_width = 0, tilt_angle = 0):
+    if border_width <= 0:
+        draw_ellipse_filled(center_x, center_y, width, height, color, tilt_angle)
+    else:
+        draw_ellipse_outline(center_x, center_y, width, height, color, border_width, tilt_angle)
+
+##### END ELLIPSE FUNCTIONS #####
+
+##### BEGIN OVAL FUNCTIONS #####
+
+# draw any oval with 1 function with max parameters
+def draw_oval(center_x, center_y, width, height, color, border_width=0, angle=0):
     """
     Draws an oval.
 
     Args:
         :center_x (float):
         :center_y (float):
-        :width (float):
         :height (float):
+        :width (float):
         :color (tuple):
         :border_width (float):
         :angle (float):
@@ -1178,51 +1041,7 @@ def draw_ellipse(center_x, center_y, width, height, color, border_width = 0, til
     >>> arcade.draw_oval(160, 160, 40, 20, color, 20)
     >>> arcade.finish_render()
     >>> arcade.close_window()
-    """ 
-
-    if border_width <= 0:
-        draw_ellipse_filled(center_x, center_y, width, height, color, tilt_angle)
-    else:
-        draw_ellipse_outline(center_x, center_y, width, height, color, border_width, tilt_angle)
-        
-
-
-##### END ELLIPSE FUNCTIONS #####
-
-##### BEGIN OVAL FUNCTIONS #####
-
-# draw any oval with 1 function with max parameters
-def draw_oval(center_x, center_y, width, height, color, border_width=0, angle=0):
-    """
-    Draws an oval.
-
-    Args:
-        :center_x (float): The x position for the center of the oval
-        :center_y (float): The y position for the center of the oval
-        :width (float): The width of the oval
-        :height (float): The height of the oval
-        :color (tuple): The color of the oval
-        :border_width (float): The width of the outline (0 is filled)
-        :angle (float): The angle the oval is tilted
-    Returns:
-        None
-    Raises:
-        None
-
-    Example:
-
-    >>> import arcade
-    >>> arcade.open_window("Drawing Example", 800, 600)
-    >>> arcade.set_background_color(arcade.color.WHITE)
-    >>> arcade.start_render()
-    >>> arcade.draw_oval(150, 150, 20, 40, arcade.color.BRIGHT_MAROON)
-    >>> color = (255, 0, 0, 127)
-    >>> arcade.draw_oval(160, 160, 40, 20, color, 20)
-    >>> arcade.finish_render()
-    >>> arcade.close_window()
-
-    """ 
-
+    """    
     if border_width <= 0:
         draw_oval_filled(center_x, center_y, width, height, color, angle)
     else:
@@ -1235,12 +1054,12 @@ def draw_oval_filled(center_x, center_y, width, height, color, angle=0):
     Draw a filled oval.
 
     Args:
-        :center_x (float): The x position for the center of the oval
-        :center_y (float): The y position for the center of the oval
-        :width (float): The width of the oval
-        :height (float): The height of the oval
-        :color (tuple): The color of the oval
-        :angle (float): The angle the oval is tilted
+        :center_x (float):
+        :center_y (float):
+        :width (float):
+        :height (float):
+        :color (tuple):
+        :angle (float):
     Returns:
         None
     Raises:
@@ -1256,9 +1075,9 @@ def draw_oval_filled(center_x, center_y, width, height, color, angle=0):
     >>> color = (255, 0, 0, 127)
     >>> arcade.draw_oval_filled(160, 160, 40, 20, color, 45)
     >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25) 
-    >>> arcade.close_window()
-    """
+    >>> arcade.close_window()  
+    """    
+    
     draw_ellipse_filled(center_x, center_y, width, height, color, angle)
 
 # draw a custom oval outline
@@ -1290,7 +1109,7 @@ def draw_oval_outline(center_x, center_y, width, height, color, border_width=5, 
     >>> arcade.draw_oval_outline(160, 160, 40, 20, color, 5, 0)
     >>> arcade.finish_render()
     >>> arcade.close_window()
-    """
+    """    
 
     if border_width <= 0:
         print("Error: Border width must be greater than 0. Use the draw_oval_filled function to create a filled oval.")
@@ -1303,12 +1122,12 @@ def draw_described_oval_filled(center_x, center_y, width, height, color, angle=0
     Draws a filled oval.
 
     Args:
-        :center_x (float): The x position for the center of the oval
-        :center_y (float): The y position for the center of the oval
-        :width (float): The width of the oval
-        :height (float): The height of the oval
-        :color (tuple): The color of the oval
-        :angle (float): The angle the oval is tilted
+        :center_x (float):
+        :center_y (float):
+        :width (float):
+        :height (float):
+        :color (tuple):
+        :angle (float):
     Returns:
         None
     Raises:
@@ -1324,8 +1143,7 @@ def draw_described_oval_filled(center_x, center_y, width, height, color, angle=0
     >>> color = (255, 0, 0, 127)
     >>> arcade.draw_described_oval_filled(160, 160, "skinny", "very tall", color, 20)
     >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
-    >>> arcade.close_window()
+    >>> arcade.close_window()  
     """
     
     if width.lower() == "very fat" or width.lower() == "vf" or width.lower() == "huge" or width.lower() == "h":
@@ -1363,13 +1181,13 @@ def draw_described_oval_outline(center_x, center_y, width, height, color, border
     Draw the outline of an oval.
 
     Args:
-        :center_x (float): The x position for the center of the oval
-        :center_y (float): The y position for the center of the oval
-        :width (float): The width of the oval
-        :height (float): The height of the oval
-        :color (tuple): The color of the oval
-        :border_width (float): The thickness of the border
-        :angle (float): The angle the oval is tilted
+        :center_x (float):
+        :center_y (float):
+        :width (float):
+        :height (float):
+        :color (tuple):
+        :border_width (float):
+        :angle (float):
     Returns:
         None
     Raises:
@@ -1385,9 +1203,9 @@ def draw_described_oval_outline(center_x, center_y, width, height, color, border
     >>> color = (255, 0, 0, 127)
     >>> arcade.draw_described_oval_outline(160, 160, "very skinny", "average", color, 20)
     >>> arcade.finish_render()
-    >>> arcade.close_window()
+    >>> arcade.close_window()  
     """
-
+    
     if width.lower() == "very fat" or width.lower() == "vf" or width.lower() == "huge" or width.lower() == "h":
         width = 200
     elif width.lower() == "fat" or width.lower() == "f" or width.lower() == "big" or width.lower() == "b" or height.lower() == "large" or height.lower() == "l" or height.lower() == "max":
@@ -1422,6 +1240,7 @@ def draw_described_oval_outline(center_x, center_y, width, height, color, border
 ##### BEGIN LINE FUNCTIONS #####
 
 
+<<<<<<< HEAD
 def draw_line(start_x, start_y, end_x, end_y, color, width = 1):   
     if isinstance(start_x,[int,float]) == false:
         raise TypeError("Attribute for start_x of line less than zero, or not a number! Parameter must be a positive number.")
@@ -1431,10 +1250,12 @@ def draw_line(start_x, start_y, end_x, end_y, color, width = 1):
         raise TypeError("Attribute for start_x of line less than zero, or not a number! Parameter must be a positive number.")
     elif isinstance(end_y,[int,float]) == false:
         raise TypeError("Attribute for start_x of line less than zero, or not a number! Parameter must be a positive number.")        
+=======
+def draw_line(start_x, start_y, end_x, end_y, color, border_width=1):
+>>>>>>> 5f6805474ab7b3f0d7db8d652ee6ff583622bacb
 
     """
     Draw a line.
-
 
     Args:
         :start_x (float): x position of line starting point.
@@ -1443,7 +1264,7 @@ def draw_line(start_x, start_y, end_x, end_y, color, width = 1):
         :end_y (float): y position of line ending point.
         :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
-        :line_width (float): Width of the line in pixels.
+        :border_width (float): Width of the line in pixels.
     Returns:
         None
     Raises:
@@ -1470,26 +1291,173 @@ def draw_line(start_x, start_y, end_x, end_y, color, width = 1):
     GL.glLoadIdentity()
 
     # Set line width
-    GL.glLineWidth(line_width)
+    GL.glLineWidth(border_width)
 
     # Set color
     if len(color) == 4:
         GL.glColor4ub(color[0], color[1], color[2], color[3])
     elif len(color) == 3:
         GL.glColor4ub(color[0], color[1], color[2], 255)
-    elif len(color) < 3:
-        raise IOError("Attribute supplied as color for line not formatted properly. Syntax for a color is [1,2,3] or [1,2,3,4]")
-    elif len(color) > 4:
-        raise IOError("Attribute supplied as color for line not formatted properly. Syntax for a color is [1,2,3] or [1,2,3,4]")
+
     GL.glBegin(GL.GL_LINES)
     GL.glVertex3f(start_x, start_y, 0.5)
     GL.glVertex3f(end_x, end_y, 0.5)
     GL.glEnd()
 
+def draw_thin_line(start_x, start_y, end_x, end_y, color, border_width=.5):
+    """
+    Draw a thin line.
 
-def draw_line_strip(point_list, color, line_width=1):
-    if len(point_list) <= 0:
-        raise ValueError("Attribute point_list of line strip is empty. point_list is a tuple of numbers, takes numbers 0 and above.")
+    Args:
+        :start_x (float): x position of line starting point.
+        :start_y (float): y position of line starting point.
+        :end_x (float): x position of line ending point.
+        :end_y (float): y position of line ending point.
+        :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
+         RGBA format.
+        :border_width (float): Width of the line in pixels.
+    Returns:
+        None
+    Raises:
+        None
+
+    Example:
+
+    >>> import arcade
+    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.set_background_color(arcade.color.WHITE)
+    >>> arcade.start_render()
+    >>> arcade.draw_thin_line(270, 495, 300, 450, arcade.color.WOOD_BROWN, 3)
+    >>> color = (127, 0, 127, 127)
+    >>> arcade.draw_thin_line(280, 495, 320, 450, color, 3)
+    >>> arcade.finish_render()
+    >>> arcade.quick_run(0.25)
+    """
+    GL.glEnable(GL.GL_BLEND)
+    GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
+    GL.glEnable(GL.GL_LINE_SMOOTH)
+    GL.glHint(GL.GL_LINE_SMOOTH_HINT, GL.GL_NICEST)
+    GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
+
+    GL.glLoadIdentity()
+
+    # Set line width
+    GL.glLineWidth(border_width)
+
+    # Set color
+    if len(color) == 4:
+        GL.glColor4ub(color[0], color[1], color[2], color[3])
+    elif len(color) == 3:
+        GL.glColor4ub(color[0], color[1], color[2], 255)
+
+    GL.glBegin(GL.GL_LINES)
+    GL.glVertex3f(start_x, start_y, 0.5)
+    GL.glVertex3f(end_x, end_y, 0.5)
+    GL.glEnd()
+
+def draw_medium_line(start_x, start_y, end_x, end_y, color, border_width=1):
+    """
+    Draw a medium thickness line.
+
+    Args:
+        :start_x (float): x position of line starting point.
+        :start_y (float): y position of line starting point.
+        :end_x (float): x position of line ending point.
+        :end_y (float): y position of line ending point.
+        :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
+         RGBA format.
+        :border_width (float): Width of the line in pixels.
+    Returns:
+        None
+    Raises:
+        None
+
+    Example:
+
+    >>> import arcade
+    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.set_background_color(arcade.color.WHITE)
+    >>> arcade.start_render()
+    >>> arcade.draw_medium_line(270, 495, 300, 450, arcade.color.WOOD_BROWN, 3)
+    >>> color = (127, 0, 127, 127)
+    >>> arcade.draw_medium_line(280, 495, 320, 450, color, 3)
+    >>> arcade.finish_render()
+    >>> arcade.quick_run(0.25)
+    """
+    GL.glEnable(GL.GL_BLEND)
+    GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
+    GL.glEnable(GL.GL_LINE_SMOOTH)
+    GL.glHint(GL.GL_LINE_SMOOTH_HINT, GL.GL_NICEST)
+    GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
+
+    GL.glLoadIdentity()
+
+    # Set line width
+    GL.glLineWidth(border_width)
+
+    # Set color
+    if len(color) == 4:
+        GL.glColor4ub(color[0], color[1], color[2], color[3])
+    elif len(color) == 3:
+        GL.glColor4ub(color[0], color[1], color[2], 255)
+
+    GL.glBegin(GL.GL_LINES)
+    GL.glVertex3f(start_x, start_y, 0.5)
+    GL.glVertex3f(end_x, end_y, 0.5)
+    GL.glEnd()
+
+def draw_thick_line(start_x, start_y, end_x, end_y, color, border_width=2):
+    """
+    Draw a thick line.
+
+    Args:
+        :start_x (float): x position of line starting point.
+        :start_y (float): y position of line starting point.
+        :end_x (float): x position of line ending point.
+        :end_y (float): y position of line ending point.
+        :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
+         RGBA format.
+        :border_width (float): Width of the line in pixels.
+    Returns:
+        None
+    Raises:
+        None
+
+    Example:
+
+    >>> import arcade
+    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.set_background_color(arcade.color.WHITE)
+    >>> arcade.start_render()
+    >>> arcade.draw_thick_line(270, 495, 300, 450, arcade.color.WOOD_BROWN, 3)
+    >>> color = (127, 0, 127, 127)
+    >>> arcade.draw_thick_line(280, 495, 320, 450, color, 3)
+    >>> arcade.finish_render()
+    >>> arcade.quick_run(0.25)
+    """
+    GL.glEnable(GL.GL_BLEND)
+    GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
+    GL.glEnable(GL.GL_LINE_SMOOTH)
+    GL.glHint(GL.GL_LINE_SMOOTH_HINT, GL.GL_NICEST)
+    GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
+
+    GL.glLoadIdentity()
+
+    # Set line width
+    GL.glLineWidth(border_width)
+
+    # Set color
+    if len(color) == 4:
+        GL.glColor4ub(color[0], color[1], color[2], color[3])
+    elif len(color) == 3:
+        GL.glColor4ub(color[0], color[1], color[2], 255)
+
+    GL.glBegin(GL.GL_LINES)
+    GL.glVertex3f(start_x, start_y, 0.5)
+    GL.glVertex3f(end_x, end_y, 0.5)
+    GL.glEnd()
+
+def draw_line_strip(point_list, color, border_width=1):
     """
     Draw a line strip. A line strip is a set of continuously connected
     line segments.
@@ -1499,7 +1467,7 @@ def draw_line_strip(point_list, color, line_width=1):
          in a list. So it is a list of lists.
         :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
-        :line_width (float): Width of the line in pixels.
+        :border_width (float): Width of the line in pixels.
     Returns:
         None
     Raises:
@@ -1537,29 +1505,22 @@ def draw_line_strip(point_list, color, line_width=1):
     GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
 
     # Set line width
-    GL.glLineWidth(line_width)
+    GL.glLineWidth(border_width)
 
     GL.glLoadIdentity()
 
-     # Set color
+    # Set color
     if len(color) == 4:
         GL.glColor4ub(color[0], color[1], color[2], color[3])
     elif len(color) == 3:
         GL.glColor4ub(color[0], color[1], color[2], 255)
-    elif len(color) < 3:
-        raise IOError("Attribute supplied as color for line strip not formatted properly. Syntax for a color is [1,2,3] or [1,2,3,4]")
-    elif len(color) > 4:
-        raise IOError("Attribute supplied as color for line strip not formatted properly. Syntax for a color is [1,2,3] or [1,2,3,4]")
-    
+
     GL.glBegin(GL.GL_LINE_STRIP)
     for point in point_list:
         GL.glVertex3f(point[0], point[1], 0.5)
     GL.glEnd()
 
-
-def draw_lines(point_list, color, line_width=1):
-    if len(point_list) <= 0:
-        raise ValueError("Attribute point_list of draw_lines is empty. point_list is a tuple of numbers, takes numbers 0 and above.")    
+def draw_lines(point_list, color, border_width=1):
     """
     Draw a set of lines.
 
@@ -1570,7 +1531,7 @@ def draw_lines(point_list, color, line_width=1):
          in a list. So it is a list of lists.
         :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
-        :line_width (float): Width of the line in pixels.
+        :border_width (float): Width of the line in pixels.
     Returns:
         None
     Raises:
@@ -1601,30 +1562,24 @@ def draw_lines(point_list, color, line_width=1):
     GL.glLoadIdentity()
 
     # Set line width
-    GL.glLineWidth(line_width)
+    GL.glLineWidth(border_width)
 
     # Set color
     if len(color) == 4:
         GL.glColor4ub(color[0], color[1], color[2], color[3])
     elif len(color) == 3:
         GL.glColor4ub(color[0], color[1], color[2], 255)
-    elif len(color) < 3:
-        raise IOError("Attribute supplied as color for draw_lines not formatted properly. Syntax for a color is [1,2,3] or [1,2,3,4]")
-    elif len(color) > 4:
-        raise IOError("Attribute supplied as color for draw_lines not formatted properly. Syntax for a color is [1,2,3] or [1,2,3,4]")
-   
+
     GL.glBegin(GL.GL_LINES)
     for point in point_list:
         GL.glVertex3f(point[0], point[1], 0.5)
     GL.glEnd()
 
+##### END LINE FUNCTIONS #####
+
+##### BEGIN POINT FUNCTIONS #####
 
 def draw_point(x, y, color, size):
-    if isinstance(x,[int,float]) == false:
-        raise TypeError("Attribute for x of draw_points not a number! Parameter must be a positive number.")
-    elif isinstance(x,[int,float]) == false:
-        raise TypeError("Attribute for x of draw_points not a number! Parameter must be a positive number.")    
-    
     """
     Draw a point.
 
@@ -1655,26 +1610,16 @@ def draw_point(x, y, color, size):
     GL.glLoadIdentity()
 
     GL.glPointSize(size)
-    # Set color
     if len(color) == 4:
         GL.glColor4ub(color[0], color[1], color[2], color[3])
     elif len(color) == 3:
         GL.glColor4ub(color[0], color[1], color[2], 255)
-    elif len(color) < 3:
-        raise IOError("Attribute supplied as color for draw_point not formatted properly. Syntax for a color is [1,2,3] or [1,2,3,4]")
-    elif len(color) > 4:
-        raise IOError("Attribute supplied as color for draw_point not formatted properly. Syntax for a color is [1,2,3] or [1,2,3,4]")
-
     GL.glBegin(GL.GL_POINTS)
     GL.glVertex3f(x, y, 0.5)
     GL.glEnd()
 
 
 def draw_points(point_list, color, size):
-    if len(point_list) <= 0:
-        raise ValueError("Attribute point_list of draw_points is empty. point_list is a tuple of numbers, takes numbers 0 and above.")
-    if size <= 0:
-        raise ValueError("Attribute size of draw_points needs to be a number, and greater than zero.")
     """
     Draw a set of points.
 
@@ -1711,25 +1656,20 @@ def draw_points(point_list, color, size):
     GL.glLoadIdentity()
 
     GL.glPointSize(size)
-    # Set color
     if len(color) == 4:
         GL.glColor4ub(color[0], color[1], color[2], color[3])
     elif len(color) == 3:
         GL.glColor4ub(color[0], color[1], color[2], 255)
-    elif len(color) < 3:
-        raise IOError("Attribute supplied as color for draw_points not formatted properly. Syntax for a color is [1,2,3] or [1,2,3,4]")
-    elif len(color) > 4:
-        raise IOError("Attribute supplied as color for draw_points not formatted properly. Syntax for a color is [1,2,3] or [1,2,3,4]")
-
     GL.glBegin(GL.GL_POINTS)
     for point in point_list:
         GL.glVertex3f(point[0], point[1], 0.5)
     GL.glEnd()
 
+##### END POINT FUNCTIONS #####
+
+##### BEGIN POLYGON FUNCTIONS #####
 
 def draw_polygon_filled(point_list, color):
-    if len(point_list) <=0:
-        raise ValueError("Value point_list of draw_polygon_filled contains nothing. Takes numbers above 0.")
     """
     Draw a polygon that is filled in.
 
@@ -1765,25 +1705,18 @@ def draw_polygon_filled(point_list, color):
 
     GL.glLoadIdentity()
 
+    # Set color
     if len(color) == 4:
         GL.glColor4ub(color[0], color[1], color[2], color[3])
     elif len(color) == 3:
         GL.glColor4ub(color[0], color[1], color[2], 255)
-    elif len(color) < 3:
-        raise IOError("Attribute supplied as color for draw_points not formatted properly. Syntax for a color is [1,2,3] or [1,2,3,4]")
-    elif len(color) > 4:
-        raise IOError("Attribute supplied as color for draw_points not formatted properly. Syntax for a color is [1,2,3] or [1,2,3,4]")
 
     GL.glBegin(GL.GL_POLYGON)
     for point in point_list:
         GL.glVertex3f(point[0], point[1], 0.5)
     GL.glEnd()
 
-
-def draw_polygon_outline(point_list, color, line_width=1):
-    if len(point_list) <=0:
-        raise ValueError("Value point_list of draw_polygon_outline contains nothing. Takes numbers above 0.")
-    
+def draw_polygon_outline(point_list, color, border_width=1):
     """
     Draw a polygon outline. Also known as a "line loop."
 
@@ -1792,7 +1725,7 @@ def draw_polygon_outline(point_list, color, line_width=1):
          in a list. So it is a list of lists.
         :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
-        :line_width (float): Width of the line in pixels.
+        :border_width (float): Width of the line in pixels.
     Returns:
         None
     Raises:
@@ -1819,7 +1752,7 @@ def draw_polygon_outline(point_list, color, line_width=1):
     GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
 
     # Set line width
-    GL.glLineWidth(line_width)
+    GL.glLineWidth(border_width)
 
     GL.glLoadIdentity()
 
@@ -1834,17 +1767,81 @@ def draw_polygon_outline(point_list, color, line_width=1):
         GL.glVertex3f(point[0], point[1], 0.5)
     GL.glEnd()
 
+def draw_polygon(point_list, color, border_width = 0):
+    if border_width <= 0:
+        draw_polygon_filled(point_list, color)
+    else:
+        draw_polygon_outline(point_list, color, border_width)
 
-def draw_rect_outline(x, y, width, height, color, line_width=1, angle=0):
-    if isinstance(x, [int, float]) == false:
-        raise TypeError("Value of parameter x for draw_rect_outline not an integer or float.")
-    elif isinstance(y, [int, float]) == false:
-        raise TypeError("Value of parameter y for draw_rect_outline not an integer or float.")
-    elif width <= 0:
-        raise ValueError("Value of width parameter for draw_rect_outline needs to be greater than zero.")
-    elif height <= 0:
-        raise ValueError("Value of height parameter for draw_rect_outline needs to be greater than zero.")
-    
+def draw_triangle_filled(first_x, first_y, second_x, second_y, third_x, third_y, color):
+    first_point = [first_x, first_y]
+    second_point = [second_x, second_y]
+    third_point = [third_x, third_y]
+    point_list = (first_point, second_point, third_point)
+    draw_polygon_filled(point_list, color)
+
+def draw_triangle_outline(first_x, first_y, second_x, second_y, third_x, third_y, color, border_width=1):
+    first_point = [first_x, first_y]
+    second_point = [second_x, second_y]
+    third_point = [third_x, third_y]
+    point_list = (first_point, second_point, third_point)
+    draw_polygon_outline(point_list, color, border_width)
+
+def draw_triangle(first_x, first_y, second_x, second_y, third_x, third_y, color, border_width = 0):
+    if border_width <= 0:
+        draw_triangle_filled(first_x, first_y, second_x, second_y, third_x, third_y, color)
+    else:
+        draw_triangle_outline(first_x, first_y, second_x, second_y, third_x, third_y, color, border_width=1)
+
+
+
+##### END POLYGON FUNCTIONS #####
+
+##### BEGIN RECTANGLE FUNCTIONS #####
+
+def create_rectangle(width, height, color):
+    data = [-width / 2, -height / 2,
+            width / 2, -height / 2,
+            width / 2, height / 2,
+            -width / 2, height / 2]
+
+    vbo_id = GL.GLuint()
+
+    GL.glGenBuffers(1, ctypes.pointer(vbo_id))
+
+    v2f = data
+    data2 = (GL.GLfloat*len(v2f))(*v2f)
+
+    GL.glBindBuffer(GL.GL_ARRAY_BUFFER, vbo_id)
+    GL.glBufferData(GL.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2,
+                    GL.GL_STATIC_DRAW)
+
+    shape = VertexBuffer(vbo_id, len(v2f)//2, width, height, color)
+    return shape
+
+
+def render_rectangle_filled(shape, center_x, center_y, color, angle=0):
+    # Set color
+    if len(color) == 4:
+        GL.glColor4ub(shape.color[0], shape.color[1], shape.color[2],
+                      shape.color[3])
+        GL.glEnable(GL.GL_BLEND)
+        GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
+    elif len(color) == 3:
+        GL.glDisable(GL.GL_BLEND)
+        GL.glColor4ub(shape.color[0], shape.color[1], shape.color[2], 255)
+
+    GL.glBindBuffer(GL.GL_ARRAY_BUFFER, shape.vbo_id)
+    GL.glVertexPointer(2, GL.GL_FLOAT, 0, 0)
+
+    GL.glLoadIdentity()
+    GL.glTranslatef(center_x + shape.width / 2, center_y + shape.height / 2, 0)
+    if angle != 0:
+        GL.glRotatef(angle, 0, 0, 1)
+
+    GL.glDrawArrays(GL.GL_QUADS, 0, shape.size)
+
+def draw_rectangle_outline(x, y, width, height, color, border_width=1, angle=0):
     """
     Draw a rectangle outline.
 
@@ -1855,7 +1852,7 @@ def draw_rect_outline(x, y, width, height, color, line_width=1, angle=0):
         :height (float): height of the rectangle.
         :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
-        :line_width (float): width of the lines, in pixels.
+        :border_width (float): width of the lines, in pixels.
         :angle (float): rotation of the rectangle. Defaults to zero.
 
     Example:
@@ -1864,7 +1861,7 @@ def draw_rect_outline(x, y, width, height, color, line_width=1, angle=0):
     >>> arcade.open_window("Drawing Example", 800, 600)
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
-    >>> arcade.draw_rect_outline(278, 150, 45, 105, \
+    >>> arcade.draw_rectangle_outline(278, 150, 45, 105, \
 arcade.color.BRITISH_RACING_GREEN, 2)
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
@@ -1877,10 +1874,13 @@ arcade.color.BRITISH_RACING_GREEN, 2)
     GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
 
     GL.glLoadIdentity()
-    GL.glRotatef(angle, 0, 0, 1)
+    GL.glTranslatef(x + width / 2, y + height / 2, 0)
+    if angle:
+        GL.glRotatef(angle, 0, 0, 1)
+    GL.glTranslatef(width / 2, height / 2, 0)
 
     # Set line width
-    GL.glLineWidth(line_width)
+    GL.glLineWidth(border_width)
 
     # Set color
     if len(color) == 4:
@@ -1889,22 +1889,13 @@ arcade.color.BRITISH_RACING_GREEN, 2)
         GL.glColor4ub(color[0], color[1], color[2], 255)
 
     GL.glBegin(GL.GL_LINE_LOOP)
-    GL.glVertex3f(x, y, 0.5)
-    GL.glVertex3f(x + width, y, 0.5)
-    GL.glVertex3f(x + width, y - height, 0.5)
-    GL.glVertex3f(x, y - height, 0.5)
+    GL.glVertex3f(0, 0, 0.5)
+    GL.glVertex3f(width, 0, 0.5)
+    GL.glVertex3f(width, 0 - height, 0.5)
+    GL.glVertex3f(0, 0 - height, 0.5)
     GL.glEnd()
 
-
-def draw_rect_filled(x, y, width, height, color, angle=0):
-    if isinstance(x, [int, float]) == false:
-        raise TypeError("Value of parameter x for draw_rect_filled not an integer or float.")
-    elif isinstance(y, [int, float]) == false:
-        raise TypeError("Value of parameter y for draw_rect_filled not an integer or float.")
-    elif width <= 0:
-        raise ValueError("Value of width parameter for draw_rect_filled needs to be greater than zero.")
-    elif height <= 0:
-        raise ValueError("Value of height parameter for draw_rect_filled needs to be greater than zero.")
+def draw_rectangle_filled(x, y, width, height, color, angle=0):
     """
     Draw a filled-in rectangle.
 
@@ -1923,7 +1914,7 @@ def draw_rect_filled(x, y, width, height, color, angle=0):
     >>> arcade.open_window("Drawing Example", 800, 600)
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
-    >>> arcade.draw_rect_filled(390, 150, 45, 105, arcade.color.BLUSH)
+    >>> arcade.draw_rectangle_filled(390, 150, 45, 105, arcade.color.BLUSH)
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
     """
@@ -1941,241 +1932,28 @@ def draw_rect_filled(x, y, width, height, color, angle=0):
         GL.glColor4ub(color[0], color[1], color[2], 255)
 
     GL.glLoadIdentity()
-
+    GL.glTranslatef(x, y, 0)
+    GL.glTranslatef(x, y, 0)
     if angle:
         GL.glRotatef(angle, 0, 0, 1)
-
+        
     GL.glTranslatef(-width / 2, height / 2, 0)
 
     GL.glBegin(GL.GL_QUADS)
-    GL.glVertex3f(x, y, 0.5)
-    GL.glVertex3f(x + width, y, 0.5)
-    GL.glVertex3f(x + width, y - height, 0.5)
-    GL.glVertex3f(x, y - height, 0.5)
+    GL.glVertex3f(0, 0, 0.5)
+    GL.glVertex3f(width, 0, 0.5)
+    GL.glVertex3f(width, 0 - height, 0.5)
+    GL.glVertex3f(0, 0 - height, 0.5)
     GL.glEnd()
 
-
-def draw_text(text, x, y, color, size):
-    if isinstance(x, [int, float]) == false:
-        raise TypeError("Value of parameter x for draw_rect_filled not an integer or float.")
-    elif isinstance(y, [int, float]) == false:
-        raise TypeError("Value of parameter y for draw_rect_filled not an integer or float.")
-    elif size <= 0:
-        raise ValueError("Value of width parameter for draw_rect_filled needs to be greater than zero.")
-    """
-    Draw text to the screen.
-
-    Args:
-        :text (str): Text to display.
-        :x (float): x coordinate of top left text point.
-        :y (float): y coordinate of top left text point.
-        :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
-         RGBA format.
-
-    Example:
-
-    >>> import arcade
-    >>> arcade.open_window("Drawing Example", 800, 600)
-    >>> arcade.set_background_color(arcade.color.WHITE)
-    >>> arcade.start_render()
-    >>> arcade.draw_text("Text Example", 250, 300, arcade.color.BLACK, 10)
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
-    """
-
-    if len(color) == 3:
-        color = (color[0], color[1], color[2], 255)
-
-    label = pyglet.text.Label(text,
-                              font_name='Times New Roman',
-                              font_size=size,
-                              x=x, y=y,
-                              color=color)
-    GL.glLoadIdentity()
-
-    label.draw()
-
-
-def load_textures(file_name, image_location_list,
-                  mirrored=False, flipped=False):
-    """
-    Load a set of textures off of a single image file.
-
-    >>> import arcade
-    >>> arcade.open_window("Drawing Example", 800, 600)
-    >>> top_trim = 100
-    >>> ltrim = 2
-    >>> rtrim = 2
-    >>> image_location_list = [
-    ... [520 + ltrim, 516 + top_trim, 128 - ltrim - rtrim, 256 - top_trim],
-    ... [520 + ltrim, 258 + top_trim, 128 - ltrim - rtrim, 256 - top_trim],
-    ... [520 + ltrim, 0 + top_trim, 128 - ltrim - rtrim, 256 - top_trim],
-    ... [390 + ltrim, 1548 + top_trim, 128 - ltrim - rtrim, 256 - top_trim],
-    ... [390 + ltrim, 1290 + top_trim, 128 - ltrim - rtrim, 256 - top_trim],
-    ... [390 + ltrim, 516 + top_trim, 128 - ltrim - rtrim, 256 - top_trim],
-    ... [390 + ltrim, 258 + top_trim, 128 - ltrim - rtrim, 256 - top_trim]]
-    >>> texture_info_list = arcade.load_textures( \
-"examples/images/spritesheet_complete.png", image_location_list)
-    >>> arcade.close_window()
-    """
-    source_image = PIL.Image.open(file_name)
-
-    source_image_width, source_image_height = source_image.size
-    texture_info_list = []
-    for image_location in image_location_list:
-        x, y, width, height = image_location
-
-        if x > source_image_width:
-            raise SystemError("Can't load texture starting at an x of {} " +
-                              "when the image is only {} across."
-                              .format(x, source_image_width))
-        if y > source_image_height:
-            raise SystemError("Can't load texture starting at an y of {} " +
-                              "when the image is only {} high."
-                              .format(y, source_image_height))
-        if x + width > source_image_width:
-            raise SystemError("Can't load texture ending at an x of {} " +
-                              "when the image is only {} wide."
-                              .format(x + width, source_image_width))
-        if y + height > source_image_height:
-            raise SystemError("Can't load texture ending at an y of {} " +
-                              "when the image is only {} high."
-                              .format(y + height, source_image_height))
-
-        image = source_image.crop((x, y, x + width, y + height))
-        # image = _trim_image(image)
-
-        if mirrored:
-            image = PIL.ImageOps.mirror(image)
-
-        if flipped:
-            image = PIL.ImageOps.flip(image)
-
-        image_width, image_height = image.size
-        image_bytes = image.convert("RGBA").tobytes("raw", "RGBA", 0, -1)
-
-        texture = GL.GLuint(0)
-        GL.glGenTextures(1, ctypes.byref(texture))
-
-        GL.glBindTexture(GL.GL_TEXTURE_2D, texture)
-        GL.glPixelStorei(GL.GL_UNPACK_ALIGNMENT, 1)
-
-        # The code below should be enabled, but it freaks out
-        # during CI (AppVeyor).
-        # GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S,
-        #                    GL.GL_CLAMP_TO_BORDER)
-        # GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T,
-        #                    GL.GL_CLAMP_TO_BORDER)
-
-        # The code below should be disabled, but keeping it here for
-        # CI
-        GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S,
-                           GL.GL_REPEAT)
-        GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T,
-                           GL.GL_REPEAT)
-
-        GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER,
-                           GL.GL_LINEAR)
-        GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER,
-                           GL.GL_LINEAR_MIPMAP_LINEAR)
-        GLU.gluBuild2DMipmaps(GL.GL_TEXTURE_2D, GL.GL_RGBA,
-                              image_width, image_height,
-                              GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, image_bytes)
-
-        texture_info_list.append(Texture(texture, width, height))
-
-    return texture_info_list
-
-
-def load_texture(file_name, x=0, y=0, width=0, height=0):
-    """
-    Load image from disk and create a texture.
-
-    Args:
-        :filename (str): Name of the file to that holds the texture.
-    Returns:
-        Integer identifier for the new texture.
-    Raises:
-        None
-
-    >>> import arcade
-    >>> arcade.open_window("Drawing Example", 800, 600)
-    >>> texture = load_texture("examples/images/meteorGrey_big1.png", \
-1, 1, 50, 50)
-    >>> arcade.close_window()
-    """
-    source_image = PIL.Image.open(file_name)
-
-    source_image_width, source_image_height = source_image.size
-
-    if x != 0 or y != 0 or width != 0 or height != 0:
-        if x > source_image_width:
-            raise SystemError("Can't load texture starting at an x of {} " +
-                              "when the image is only {} across."
-                              .format(x, source_image_width))
-        if y > source_image_height:
-            raise SystemError("Can't load texture starting at an y of {} " +
-                              "when the image is only {} high."
-                              .format(y, source_image_height))
-        if x + width > source_image_width:
-            raise SystemError("Can't load texture ending at an x of {} " +
-                              "when the image is only {} wide."
-                              .format(x + width, source_image_width))
-        if y + height > source_image_height:
-            raise SystemError("Can't load texture ending at an y of {} " +
-                              "when the image is only {} high."
-                              .format(y + height, source_image_height))
-
-        image = source_image.crop((x, y, x + width, y + height))
+def draw_rectangle(center_x, center_y, width, height, color, border_width = 0, angle=0):
+    if border_width <= 0:
+        draw_rectangle_filled(center_x, center_y, width, height, color, angle)
     else:
-        image = source_image
+        draw_rectangle_outline(center_x, center_y, width, height, color, border_width, angle)
 
-    # image = _trim_image(image)
-
-    image_width, image_height = image.size
-    image_bytes = image.convert("RGBA").tobytes("raw", "RGBA", 0, -1)
-
-    texture = GL.GLuint(0)
-    GL.glGenTextures(1, ctypes.byref(texture))
-
-    GL.glBindTexture(GL.GL_TEXTURE_2D, texture)
-    GL.glPixelStorei(GL.GL_UNPACK_ALIGNMENT, 1)
-
-    # The code below should be enabled, but it freaks out
-    # during CI (AppVeyor).
-    # GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S,
-    #                    GL.GL_CLAMP_TO_BORDER)
-    # GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T,
-    #                    GL.GL_CLAMP_TO_BORDER)
-
-    # The code below should be disabled, but keeping it here for
-    # CI
-    GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S,
-                       GL.GL_REPEAT)
-    GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T,
-                       GL.GL_REPEAT)
-
-    GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER,
-                       GL.GL_LINEAR)
-    GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER,
-                       GL.GL_LINEAR_MIPMAP_LINEAR)
-    GLU.gluBuild2DMipmaps(GL.GL_TEXTURE_2D, GL.GL_RGBA,
-                          image_width, image_height,
-                          GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, image_bytes)
-
-    return Texture(texture, image_width, image_height)
-
-
-def draw_texture_rect(x, y, width, height, texture,
+def draw_texture_rectangle(x, y, width, height, texture,
                       angle=0, alpha=1, transparent=True):
-    if isinstance(x, [int, float]) == false:
-        raise TypeError("Value of parameter x for draw_texture_rect not an integer or float.")
-    elif isinstance(y, [int, float]) == false:
-        raise TypeError("Value of parameter y for draw_texture_rect not an integer or float.")
-    elif width <= 0:
-        raise ValueError("Value of width parameter for draw_texture_rect needs to be greater than zero.")
-    elif height <= 0:
-        raise ValueError("Value of height parameter for draw_texture_rect needs to be greater than zero.")
     """
     Draw a textured rectangle on-screen.
 
@@ -2186,7 +1964,7 @@ def draw_texture_rect(x, y, width, height, texture,
         :height (float): height of the rectangle.
         :texture (int): identifier of texture returned from load_texture() call
         :angle (float): rotation of the rectangle. Defaults to zero.
-        :alpha (float): Transparencenter_y of image.
+        :alpha (float): Transparency of image.
     Returns:
         None
     Raises:
@@ -2199,11 +1977,12 @@ def draw_texture_rect(x, y, width, height, texture,
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
     >>> arcade.draw_text("draw_bitmap", 483, 3, arcade.color.BLACK, 12)
-    >>> texture = arcade.load_texture("examples/images/playerShip1_orange.png")
+    >>> name = "doc/source/examples/images/playerShip1_orange.png"
+    >>> texture = arcade.load_texture(name)
     >>> scale = .6
-    >>> arcade.draw_texture_rect(540, 120, scale * texture.width, \
+    >>> arcade.draw_texture_rectangle(540, 120, scale * texture.width, \
 scale * texture.height, texture, 0)
-    >>> arcade.draw_texture_rect(540, 60, scale * texture.width, \
+    >>> arcade.draw_texture_rectangle(540, 60, scale * texture.width, \
 scale * texture.height, texture, 90)
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
@@ -2239,10 +2018,60 @@ scale * texture.height, texture, 90)
     GL.glVertex3f(-width/2, height/2, z)
     GL.glEnd()
 
+##### END RECTANGLE FUNCTIONS #####
 
-def _test():
-    import doctest
-    doctest.testmod()
+##### BEGIN TEXT FUNCTIONS #####
+
+def draw_text(text, x, y, color, size):
+    """
+    Draw text to the screen.
+
+    Args:
+        :text (str): Text to display.
+        :x (float): x coordinate of top left text point.
+        :y (float): y coordinate of top left text point.
+        :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
+         RGBA format.
+
+    Example:
+
+    >>> import arcade
+    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.set_background_color(arcade.color.WHITE)
+    >>> arcade.start_render()
+    >>> arcade.draw_text("Text Example", 250, 300, arcade.color.BLACK, 10)
+    >>> arcade.finish_render()
+    >>> arcade.quick_run(0.25)
+    """
+
+    if len(color) == 3:
+        color = (color[0], color[1], color[2], 255)
+
+    label = pyglet.text.Label(text,
+                              font_name='Times New Roman',
+                              font_size=size,
+                              x=x, y=y,
+                              color=color)
+    GL.glLoadIdentity()
+
+    label.draw()
+
+##### END TEXT FUNCTIONS #####
+
+class VertexBuffer():
+    def __init__(self, vbo_id, size, width, height, color):
+        self.vbo_id = vbo_id
+        self.size = size
+        self.width = width
+        self.height = height
+        self.color = color
+
+
+
+# def _test():
+#     import doctest
+#     doctest.testmod()
+
 
 if __name__ == "__main__":
     _test()
