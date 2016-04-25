@@ -11,7 +11,16 @@ class Texture():
     """
     Simple class that represents a texture
     """
+    
     def __init__(self, id, width, height):
+        #Check values before attempting to create Texture object
+        if self.height <= 0:
+            raise ValueError("Height entered is less than zero. Height must be a positive number. Texture id: " + self.id)
+            
+        if self.width <= 0:
+            raise ValueError("Width entered is less than zero. Width must be a positive number. Texture id: " + self.id)
+        
+        #Values seem to be clear, create object   
         self.id = id
         self.width = width
         self.height = height
@@ -952,7 +961,7 @@ def draw_ellipse_outline(center_x, center_y, width, height, color, border_width=
     >>> arcade.quick_run(0.25)
     """
 
-    num_segments=128
+    num_segments = 128
 
     GL.glEnable(GL.GL_BLEND)
     GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
@@ -1219,8 +1228,7 @@ def draw_described_oval_outline(center_x, center_y, width, height, color, border
 ##### END OVAL FUNCTIONS #####
 
 ##### BEGIN LINE FUNCTIONS #####
-
-
+      
 def draw_line(start_x, start_y, end_x, end_y, color, border_width=1):
 
     """
