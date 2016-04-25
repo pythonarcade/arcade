@@ -34,7 +34,7 @@ class Rectangle():
 
     def draw(self):
         """ Draw our rectangle """
-        arcade.draw_rect_filled(self.x, self.y, self.width, self.height,
+        arcade.draw_rectangle_filled(self.x, self.y, self.width, self.height,
                                 self.color, self.angle)
 
 

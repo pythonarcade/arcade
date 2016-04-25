@@ -48,7 +48,7 @@ class Ellipse(Shape):
 class Rectangle(Shape):
 
     def draw(self):
-        arcade.draw_rect_filled(self.x, self.y, self.width, self.height,
+        arcade.draw_rectangle_filled(self.x, self.y, self.width, self.height,
                                 self.color, self.angle)
 
 
