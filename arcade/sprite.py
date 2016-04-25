@@ -87,10 +87,10 @@ class SpriteList():
     >>> meteor_list = arcade.SpriteList()
     >>> filename = "doc/source/examples/images/meteorGrey_big1.png"
     >>> for i in range(100):
-    ...     meteor = arcade.Sprite(filename, scale)
-    ...     meteor.center_x = random.random() * 2 - 1
-    ...     meteor.center_y = random.random() * 2 - 1
-    ...     meteor_list.append(meteor)
+    >>>     meteor = arcade.Sprite(filename, scale)
+    >>>     meteor.center_x = random.random() * 2 - 1
+    >>>     meteor.center_y = random.random() * 2 - 1
+    >>>     meteor_list.append(meteor)
     >>> meteor_list.remove(meteor) # Remove last meteor, just to test
     >>> m = meteor_list.pop() # Remove another meteor, just to test
     >>> meteor_list.update() # Call update on all items
@@ -101,7 +101,7 @@ class SpriteList():
     >>> meteor_list.draw()
     >>> arcade.finish_render()
     >>> for meteor in meteor_list:
-    ...     meteor.kill()
+    >>>     meteor.kill()
     >>> arcade.quick_run(0.25)
     """
     def __init__(self):
@@ -532,23 +532,23 @@ class AnimatedSprite(Sprite):
     >>> ltrim = 2
     >>> rtrim = 2
     >>> image_location_list = [
-    ... [520 + ltrim, 516 + top_trim, 128 - ltrim - rtrim, 256 - top_trim],
-    ... [520 + ltrim, 258 + top_trim, 128 - ltrim - rtrim, 256 - top_trim],
-    ... [520 + ltrim, 0 + top_trim, 128 - ltrim - rtrim, 256 - top_trim],
-    ... [390 + ltrim, 1548 + top_trim, 128 - ltrim - rtrim, 256 - top_trim],
-    ... [390 + ltrim, 1290 + top_trim, 128 - ltrim - rtrim, 256 - top_trim],
-    ... [390 + ltrim, 516 + top_trim, 128 - ltrim - rtrim, 256 - top_trim],
-    ... [390 + ltrim, 258 + top_trim, 128 - ltrim - rtrim, 256 - top_trim]]
+    >>> [520 + ltrim, 516 + top_trim, 128 - ltrim - rtrim, 256 - top_trim],
+    >>> [520 + ltrim, 258 + top_trim, 128 - ltrim - rtrim, 256 - top_trim],
+    >>> [520 + ltrim, 0 + top_trim, 128 - ltrim - rtrim, 256 - top_trim],
+    >>> [390 + ltrim, 1548 + top_trim, 128 - ltrim - rtrim, 256 - top_trim],
+    >>> [390 + ltrim, 1290 + top_trim, 128 - ltrim - rtrim, 256 - top_trim],
+    >>> [390 + ltrim, 516 + top_trim, 128 - ltrim - rtrim, 256 - top_trim],
+    >>> [390 + ltrim, 258 + top_trim, 128 - ltrim - rtrim, 256 - top_trim]]
     >>> filename = "doc/source/examples/images/spritesheet_complete.png"
     >>> texture_info_list = arcade.load_textures(filename, image_location_list)
     >>> for texture_info in texture_info_list:
-    ...     texture = texture_info
-    ...     player.append_texture(texture)
+    >>>     texture = texture_info
+    >>>     player.append_texture(texture)
     >>> texture_info_list = arcade.load_textures(\
 filename, image_location_list, True)
     >>> for texture_info in texture_info_list:
-    ...     texture = texture_info
-    ...     player.append_texture(texture)
+    >>>     texture = texture_info
+    >>>     player.append_texture(texture)
     >>> player.set_left_walk_textures([12, 13])
     >>> player.set_right_walk_textures([5, 6])
     >>> player.set_left_jump_textures([10])
