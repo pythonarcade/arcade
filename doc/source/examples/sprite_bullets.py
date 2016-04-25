@@ -41,6 +41,10 @@ class MyApplication(arcade.Window):
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 70
         self.all_sprites_list.append(self.player_sprite)
+        
+        #Load sounds
+        self.gun_sound = arcade.sound.load_sound("sounds/laser1.ogg")
+        self.hit_sound = arcade.sound.load_sound("sounds/phaseJump1.ogg")
 
         for i in range(50):
 
@@ -86,6 +90,8 @@ class MyApplication(arcade.Window):
         """
         Called whenever the mouse moves.
         """
+        #Gunshot sound
+        arcade.sound.play_sound(self.gun_sound)
         # Create a bullet
         bullet = Bullet("images/laserBlue01.png", SPRITE_SCALING * 1.5)
 
@@ -123,6 +129,9 @@ class MyApplication(arcade.Window):
             for coin in hit_list:
                 coin.kill()
                 self.score += 1
+                
+                #Hit Sound
+                arcade.sound.play_sound(self.hit_sound)
 
             # If the bullet flies off-screen, remove it.
             if bullet.bottom > SCREEN_HEIGHT:
