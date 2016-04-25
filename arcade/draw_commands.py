@@ -207,7 +207,7 @@ def draw_arc_filled(center_x, center_y,
                     width, height,
                     color,
                     start_angle, end_angle,
-                    tilt_angle=0):
+                    tilt_angle=0):   
     """
     Draw a filled in arc. Useful for drawing pie-wedges, or Pac-Man.
 
