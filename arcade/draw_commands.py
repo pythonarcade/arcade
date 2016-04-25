@@ -125,6 +125,11 @@ def load_texture(file_name, x=0, y=0, width=0, height=0, scale=1):
     >>> texture = load_texture(name, 1, 1, 50, 50)
     >>> arcade.close_window()
     """
+
+    # See if we already loadede this file, and we can just use a cached version.
+    if file_name in load_texture.texture_cache:
+        return load_texture.texture_cache[file_name]
+
     source_image = PIL.Image.open(file_name)
 
     source_image_width, source_image_height = source_image.size
@@ -187,7 +192,11 @@ def load_texture(file_name, x=0, y=0, width=0, height=0, scale=1):
     image_width *= scale
     image_height *= scale
 
+    result = Texture(texture, image_width, image_height)
+    load_texture.texture_cache[file_name] = result
     return Texture(texture, image_width, image_height)
+
+load_texture.texture_cache= dict()
 
 ##### END TEXTURE FUNCTIONS #####
 
