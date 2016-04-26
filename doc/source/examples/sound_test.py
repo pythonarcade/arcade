@@ -12,12 +12,6 @@ window = None
 class MyApplication(arcade.Window):
     """Main sound test class"""
     
-    def __init__(self):
-        self.setup()    
-        
-        #Load sound to be played
-        self.loaded_sound = arcade.sound.load_sound("sounds/laser1.ogg")
-    
     def setup(self):
         
         #Set background color to black
@@ -37,9 +31,11 @@ class MyApplication(arcade.Window):
     def on_mouse_press(self, x, y, button, modifiers):
         """Plays sound on key press"""
         
-        #loaded_sound = arcade.sound.load_sound("laser1.ogg")
+        #Load sound
+        loaded_sound = arcade.sound.load_sound("sounds/laser1.ogg")
         
-        arcade.sound.play_sound(self.loaded_sound)
+        #Play Sound
+        arcade.sound.play_sound(loaded_sound)
         
     def animate(self, delta_time):
         """animations"""
@@ -48,7 +44,7 @@ class MyApplication(arcade.Window):
         
         
 window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
-#window.setup
+window.setup
 
 
 arcade.run()
