@@ -117,7 +117,7 @@ def load_textures(file_name, image_location_list,
 
     return texture_info_list
 
-def load_texture(file_name, x=0, y=0, width=0, height=0):
+def load_texture(file_name, x=0, y=0, width=0, height=0, scale=1):
     """
     Load image from disk and create a texture.
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
 
-BUILD = 31
+BUILD = 32
 VERSION = "0.0.6"
 RELEASE = VERSION + "a" + str(BUILD)
