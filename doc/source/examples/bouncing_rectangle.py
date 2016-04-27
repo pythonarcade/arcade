@@ -19,7 +19,7 @@ def on_draw(delta_time):
     arcade.start_render()
 
     # Draw our rectangle
-    arcade.draw_rect_filled(on_draw.x, on_draw.y,
+    arcade.draw_rectangle_filled(on_draw.x, on_draw.y,
                             RECT_WIDTH, RECT_HEIGHT,
                             arcade.color.BLACK)
 

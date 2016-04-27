@@ -11,7 +11,16 @@ class Texture():
     """
     Simple class that represents a texture
     """
+
     def __init__(self, id, width, height):
+        #Check values before attempting to create Texture object
+        if height <= 0:
+            raise ValueError("Height entered is less than zero. Height must be a positive number. Texture id: " + self.id)
+
+        if width <= 0:
+            raise ValueError("Width entered is less than zero. Width must be a positive number. Texture id: " + self.id)
+
+        #Values seem to be clear, create object
         self.id = id
         self.width = width
         self.height = height
@@ -83,18 +92,18 @@ def load_textures(file_name, image_location_list,
         GL.glPixelStorei(GL.GL_UNPACK_ALIGNMENT, 1)
 
         # The code below should be enabled, but it freaks out
-        # during CI (AppVeyor). The alternative code doesn't
-        app_veyer = True
-        if not app_veyer:
-            GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S,
-                               GL.GL_CLAMP_TO_BORDER)
-            GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T,
-                               GL.GL_CLAMP_TO_BORDER)
-        else:
-            GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S,
-                               GL.GL_REPEAT)
-            GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T,
-                               GL.GL_REPEAT)
+        # during CI (AppVeyor).
+        GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S,
+                           GL.GL_CLAMP_TO_BORDER)
+        GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T,
+                           GL.GL_CLAMP_TO_BORDER)
+
+        # The code below should be disabled, but keeping it here for
+        # CI
+        # GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S,
+        #                    GL.GL_REPEAT)
+        # GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T,
+        #                    GL.GL_REPEAT)
 
         GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER,
                            GL.GL_LINEAR)
@@ -108,7 +117,7 @@ def load_textures(file_name, image_location_list,
 
     return texture_info_list
 
-def load_texture(file_name, x=0, y=0, width=0, height=0, scale=1):
+def load_texture(file_name, x=0, y=0, width=0, height=0):
     """
     Load image from disk and create a texture.
 
@@ -194,7 +203,7 @@ def load_texture(file_name, x=0, y=0, width=0, height=0, scale=1):
 
     result = Texture(texture, image_width, image_height)
     load_texture.texture_cache[file_name] = result
-    return Texture(texture, image_width, image_height)
+    return result
 
 load_texture.texture_cache= dict()
 
@@ -366,19 +375,21 @@ def draw_arc(center_x, center_y, width, height, color, start_angle, end_angle, b
     else:
         draw_arc_outline(center_x, center_y, width, height, color, start_angle, end_angle, border_width, tilt_angle)
 
-def draw_fancy_math_arc_outline(start_x, start_y, end_x, end_y, height, color, border_width=5, tilt_angle=0):
+# these advanced arc functions are not fully functional, they sort of work. Feel free to modify the math we used
+
+def draw_advanced_arc_outline(start_x, start_y, end_x, end_y, height, color, border_width=5, tilt_angle=0):
     """
     Draws the outline of an arc.
 
     Args:
-        :start_x (float):
-        :start_y (float):
-        :end_x (float):
-        :end_y (float):
-        :height (float):
-        :color (tuple):
-        :border_width (float):
-        :tile_angle (float):
+        :start_x (float): The starting x position of the arc
+        :start_y (float): The starting y position of the arc
+        :end_x (float): The end x position of the arc
+        :end_y (float): The end y position of the arc
+        :height (float): How tall the arc is
+        :color (tuple): What color the arc is
+        :border_width (float): The width of the arc
+        :tile_angle (float): The angle of the arcs tilt
     Returns:
         None
     Raises:
@@ -390,9 +401,9 @@ def draw_fancy_math_arc_outline(start_x, start_y, end_x, end_y, height, color, b
     >>> arcade.open_window("Drawing Example", 800, 600)
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
-    >>> arcade.draw_fancy_math_arc_outline(150, 150, 200, 200, 20, arcade.color.BRIGHT_MAROON, 5, 10)
+    >>> arcade.draw_advanced_arc_outline(150, 150, 200, 200, 20, arcade.color.BRIGHT_MAROON, 5, 10)
     >>> transparent_color = (255, 0, 0, 127)
-    >>> arcade.draw_fancy_math_arc_outline(160, 160, 210, 210, 20, transparent_color)
+    >>> arcade.draw_advanced_arc_outline(160, 160, 210, 210, 20, transparent_color)
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
     """
@@ -445,18 +456,18 @@ def draw_fancy_math_arc_outline(start_x, start_y, end_x, end_y, height, color, b
 
     draw_arc_outline(cent_x, cent_y, distance, height, color, start_angle, end_angle, border_width, tilt_angle)
 
-def draw_fancy_math_arc_filled(start_x, start_y, end_x, end_y, height, color, tilt_angle=0):
+def draw_advanced_arc_filled(start_x, start_y, end_x, end_y, height, color, tilt_angle=0):
     """
     Draws a filled in arc.
 
     Args:
-        :start_x (float):
-        :start_y (float):
-        :end_x (float):
-        :end_y (float):
-        :height (float):
-        :color (tuple):
-        :tile_angle (float):
+        :start_x (float): The starting x position of the arc
+        :start_y (float): The starting y position of the arc
+        :end_x (float): The end x position of the arc
+        :end_y (float): The end y position of the arc
+        :height (float): How tall the arc is
+        :color (tuple): What color the arc is
+        :tile_angle (float): The angle of the arcs tilt
     Returns:
         None
     Raises:
@@ -468,9 +479,9 @@ def draw_fancy_math_arc_filled(start_x, start_y, end_x, end_y, height, color, ti
     >>> arcade.open_window("Drawing Example", 800, 600)
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
-    >>> arcade.draw_fancy_math_arc_filled(150, 150, 200, 200, 20, arcade.color.BRIGHT_MAROON, 10)
+    >>> arcade.draw_advanced_arc_filled(150, 150, 200, 200, 20, arcade.color.BRIGHT_MAROON, 10)
     >>> transparent_color = (255, 0, 0, 127)
-    >>> arcade.draw_fancy_math_arc_filled(160, 160, 210, 210, 20, transparent_color)
+    >>> arcade.draw_advanced_arc_filled(160, 160, 210, 210, 20, transparent_color)
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
     """
@@ -532,13 +543,12 @@ def draw_parabola_filled(start_x, start_y, end_x, height, color, tilt_angle=0):
     Draws a filled in parabola.
 
     Args:
-        :start_x (float):
-        :start_y (float):
-        :end_x (float):
-        :end_y (float):
-        :height (float):
-        :color (tuple):
-        :tile_angle (float):
+        :start_x (float): The starting x position of the parabola
+        :start_y (float): The starting y position of the parabola
+        :end_x (float): The ending x position of the parabola
+        :height (float): The height of the parabola
+        :color (tuple): The color of the parabola
+        :tile_angle (float): The angle of the tilt of the parabola
     Returns:
         None
     Raises:
@@ -568,14 +578,13 @@ def draw_parabola_outline(start_x, start_y, end_x, height, color, border_width=5
     Draws the outline of a parabola.
 
     Args:
-        :start_x (float):
-        :start_y (float):
-        :end_x (float):
-        :end_y (float):
-        :height (float):
-        :color (tuple):
-        :border_width (float):
-        :tile_angle (float):
+        :start_x (float): The starting x position of the parabola
+        :start_y (float): The starting y position of the parabola
+        :end_x (float): The ending x position of the parabola
+        :height (float): The height of the parabola
+        :color (tuple): The color of the parabola
+        :border_width (float): The width of the parabola
+        :tile_angle (float): The angle of the tilt of the parabola
     Returns:
         None
     Raises:
@@ -868,7 +877,7 @@ def render_ellipse_filled(shape, x, y, color, angle=0):
 
     GL.glDrawArrays(GL.GL_TRIANGLE_FAN, 0, shape.size)
 
-def draw_ellipse_filled(center_x, center_y, width, height, color, angle=0):
+def draw_ellipse_filled(center_x, center_y, width, height, color, tilt_angle=0):
     """
     Draw a filled in ellipse.
 
@@ -910,7 +919,7 @@ def draw_ellipse_filled(center_x, center_y, width, height, color, angle=0):
 
     GL.glLoadIdentity()
     GL.glTranslatef(center_x, center_y, 0)
-    GL.glRotatef(angle, 0, 0, 1)
+    GL.glRotatef(tilt_angle, 0, 0, 1)
 
     # Set color
     if len(color) == 4:
@@ -933,7 +942,7 @@ def draw_ellipse_filled(center_x, center_y, width, height, color, angle=0):
     GL.glEnd()
     GL.glLoadIdentity()
 
-def draw_ellipse_outline(center_x, center_y, width, height, color, border_width=1, angle=0):
+def draw_ellipse_outline(center_x, center_y, width, height, color, border_width=1, tilt_angle=0):
     """
     Draw the outline of an ellipse.
 
@@ -945,7 +954,7 @@ def draw_ellipse_outline(center_x, center_y, width, height, color, border_width=
         :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
         :border_width (float): Width of the circle outline in pixels.
-        :angle (float): Angle in degrees to tilt the ellipse.
+        :tilt_angle (float): Angle in degrees to tilt the ellipse.
         :num_segments (int): number of triangle segments that make up this
          circle. Higher is better quality, but slower render time.
     Returns:
@@ -966,7 +975,7 @@ def draw_ellipse_outline(center_x, center_y, width, height, color, border_width=
     >>> arcade.quick_run(0.25)
     """
 
-    num_segments=128
+    num_segments = 128
 
     GL.glEnable(GL.GL_BLEND)
     GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
@@ -976,7 +985,7 @@ def draw_ellipse_outline(center_x, center_y, width, height, color, border_width=
 
     GL.glLoadIdentity()
     GL.glTranslatef(center_x, center_y, 0)
-    GL.glRotatef(angle, 0, 0, 1)
+    GL.glRotatef(tilt_angle, 0, 0, 1)
     GL.glLineWidth(border_width)
 
     # Set color
@@ -1008,18 +1017,18 @@ def draw_ellipse(center_x, center_y, width, height, color, border_width = 0, til
 ##### BEGIN OVAL FUNCTIONS #####
 
 # draw any oval with 1 function with max parameters
-def draw_oval(center_x, center_y, width, height, color, border_width=0, angle=0):
+def draw_oval(center_x, center_y, width, height, color, border_width=0, tilt_angle=0):
     """
     Draws an oval.
 
     Args:
-        :center_x (float):
-        :center_y (float):
-        :height (float):
-        :width (float):
-        :color (tuple):
-        :border_width (float):
-        :angle (float):
+        :center_x (float): The x position for the center of the oval
+        :center_y (float): The y position for the center of the oval
+        :width (float): The width of the oval
+        :height (float): The height of the oval
+        :color (tuple): The color of the oval
+        :border_width (float): The width of the outline (0 is filled)
+        :angle (float): The angle the oval is tilted
     Returns:
         None
     Raises:
@@ -1038,23 +1047,23 @@ def draw_oval(center_x, center_y, width, height, color, border_width=0, angle=0)
     >>> arcade.close_window()
     """
     if border_width <= 0:
-        draw_oval_filled(center_x, center_y, width, height, color, angle)
+        draw_oval_filled(center_x, center_y, width, height, color, tilt_angle)
     else:
-        draw_oval_outline(center_x, center_y, width, height, color, border_width, angle)
+        draw_oval_outline(center_x, center_y, width, height, color, border_width, tilt_angle)
 
 
 # draw a custom oval that is filled
-def draw_oval_filled(center_x, center_y, width, height, color, angle=0):
+def draw_oval_filled(center_x, center_y, width, height, color, tilt_angle=0):
     """
     Draw a filled oval.
 
     Args:
-        :center_x (float):
-        :center_y (float):
-        :width (float):
-        :height (float):
-        :color (tuple):
-        :angle (float):
+        :center_x (float): The x position for the center of the oval
+        :center_y (float): The y position for the center of the oval
+        :width (float): The width of the oval
+        :height (float): The height of the oval
+        :color (tuple): The color of the oval
+        :angle (float): The angle the oval is tilted
     Returns:
         None
     Raises:
@@ -1073,7 +1082,7 @@ def draw_oval_filled(center_x, center_y, width, height, color, angle=0):
     >>> arcade.close_window()
     """
 
-    draw_ellipse_filled(center_x, center_y, width, height, color, angle)
+    draw_ellipse_filled(center_x, center_y, width, height, color, tilt_angle)
 
 # draw a custom oval outline
 def draw_oval_outline(center_x, center_y, width, height, color, border_width=5, angle=0):
@@ -1081,13 +1090,13 @@ def draw_oval_outline(center_x, center_y, width, height, color, border_width=5, 
     Draw the outline of an oval.
 
     Args:
-        :center_x (float):
-        :center_y (float):
-        :width (float):
-        :height (float):
-        :color (tuple):
-        :border_width (float):
-        :angle (float): Angle in degrees to tilt the ellipse.
+        :center_x (float): The x position for the center of the oval
+        :center_y (float): The y position for the center of the oval
+        :width (float): The width of the oval
+        :height (float): The height of the oval
+        :color (tuple): The color of the oval
+        :border_width (float): The width of the outline
+        :angle (float): The angle the oval is tilted
     Returns:
         None
     Raises:
@@ -1109,20 +1118,20 @@ def draw_oval_outline(center_x, center_y, width, height, color, border_width=5, 
     if border_width <= 0:
         print("Error: Border width must be greater than 0. Use the draw_oval_filled function to create a filled oval.")
     else:
-        draw_ellipse_outline(center_x, center_y, width, height, color, border_width, angle)
+        draw_ellipse_outline(center_x, center_y, width, height, color, border_width)
 
 # draw a semi custom filled oval using word descriptions for width and height
-def draw_described_oval_filled(center_x, center_y, width, height, color, angle=0):
+def draw_described_oval_filled(center_x, center_y, width, height, color, tilt_angle=0):
     """
     Draws a filled oval.
 
     Args:
-        :center_x (float):
-        :center_y (float):
-        :width (float):
-        :height (float):
-        :color (tuple):
-        :angle (float):
+        :center_x (float): The x position for the center of the oval
+        :center_y (float): The y position for the center of the oval
+        :width (float): The width of the oval
+        :height (float): The height of the oval
+        :color (tuple): The color of the oval
+        :angle (float): The angle the oval is tilted
     Returns:
         None
     Raises:
@@ -1168,21 +1177,21 @@ def draw_described_oval_filled(center_x, center_y, width, height, color, angle=0
         height = -1
 
     if width != -1 and height != -1:
-        draw_oval_filled(center_x, center_y, width, height, color, angle)
+        draw_oval_filled(center_x, center_y, width, height, color, tilt_angle)
 
 # draw a semi custom outlined oval using word descriptions for width and height
-def draw_described_oval_outline(center_x, center_y, width, height, color, border_width = 5, angle=0):
+def draw_described_oval_outline(center_x, center_y, width, height, color, border_width = 5, tilt_angle=0):
     """
     Draw the outline of an oval.
 
     Args:
-        :center_x (float):
-        :center_y (float):
-        :width (float):
-        :height (float):
-        :color (tuple):
-        :border_width (float):
-        :angle (float):
+        :center_x (float): The x position for the center of the oval
+        :center_y (float): The y position for the center of the oval
+        :width (float): The width of the oval
+        :height (float): The height of the oval
+        :color (tuple): The color of the oval
+        :border_width (float): The thickness of the border
+        :angle (float): The angle the oval is tilted
     Returns:
         None
     Raises:
@@ -1228,13 +1237,14 @@ def draw_described_oval_outline(center_x, center_y, width, height, color, border
         height = -1
 
     if width != -1 and height != -1:
-        draw_oval_outline(center_x, center_y, width, height, color, border_width, angle)
+        draw_oval_outline(center_x, center_y, width, height, color, border_width, tilt_angle)
 
 ##### END OVAL FUNCTIONS #####
 
 ##### BEGIN LINE FUNCTIONS #####
 
 def draw_line(start_x, start_y, end_x, end_y, color, border_width=1):
+
     """
     Draw a line.
 
@@ -1801,7 +1811,7 @@ def create_rectangle(width, height, color):
     return shape
 
 
-def render_rectangle_filled(shape, center_x, center_y, color, angle=0):
+def render_rectangle_filled(shape, center_x, center_y, color, tilt_angle=0):
     # Set color
     if len(color) == 4:
         GL.glColor4ub(shape.color[0], shape.color[1], shape.color[2],
@@ -1817,12 +1827,12 @@ def render_rectangle_filled(shape, center_x, center_y, color, angle=0):
 
     GL.glLoadIdentity()
     GL.glTranslatef(center_x + shape.width / 2, center_y + shape.height / 2, 0)
-    if angle != 0:
-        GL.glRotatef(angle, 0, 0, 1)
+    if tilt_angle != 0:
+        GL.glRotatef(tilt_angle, 0, 0, 1)
 
     GL.glDrawArrays(GL.GL_QUADS, 0, shape.size)
 
-def draw_rectangle_outline(x, y, width, height, color, border_width=1, angle=0):
+def draw_rectangle_outline(x, y, width, height, color, border_width=1, tilt_angle=0):
     """
     Draw a rectangle outline.
 
@@ -1856,8 +1866,8 @@ arcade.color.BRITISH_RACING_GREEN, 2)
 
     GL.glLoadIdentity()
     GL.glTranslatef(x + width / 2, y + height / 2, 0)
-    if angle:
-        GL.glRotatef(angle, 0, 0, 1)
+    if tilt_angle:
+        GL.glRotatef(tilt_angle, 0, 0, 1)
     GL.glTranslatef(width / 2, height / 2, 0)
 
     # Set line width
@@ -1876,7 +1886,7 @@ arcade.color.BRITISH_RACING_GREEN, 2)
     GL.glVertex3f(0, 0 - height, 0.5)
     GL.glEnd()
 
-def draw_rectangle_filled(x, y, width, height, color, angle=0):
+def draw_rectangle_filled(x, y, width, height, color, tilt_angle=0):
     """
     Draw a filled-in rectangle.
 
@@ -1915,8 +1925,8 @@ def draw_rectangle_filled(x, y, width, height, color, angle=0):
     GL.glLoadIdentity()
     GL.glTranslatef(x, y, 0)
     GL.glTranslatef(x, y, 0)
-    if angle:
-        GL.glRotatef(angle, 0, 0, 1)
+    if tilt_angle:
+        GL.glRotatef(tilt_angle, 0, 0, 1)
 
     GL.glTranslatef(-width / 2, height / 2, 0)
 
@@ -1927,11 +1937,11 @@ def draw_rectangle_filled(x, y, width, height, color, angle=0):
     GL.glVertex3f(0, 0 - height, 0.5)
     GL.glEnd()
 
-def draw_rectangle(center_x, center_y, width, height, color, border_width = 0, angle=0):
+def draw_rectangle(center_x, center_y, width, height, color, border_width = 0, tilt_angle=0):
     if border_width <= 0:
-        draw_rectangle_filled(center_x, center_y, width, height, color, angle)
+        draw_rectangle_filled(center_x, center_y, width, height, color, tilt_angle)
     else:
-        draw_rectangle_outline(center_x, center_y, width, height, color, border_width, angle)
+        draw_rectangle_outline(center_x, center_y, width, height, color, border_width, tilt_angle)
 
 def draw_texture_rectangle(x, y, width, height, texture,
                       angle=0, alpha=1, transparent=True):
@@ -2046,8 +2056,6 @@ class VertexBuffer():
         self.width = width
         self.height = height
         self.color = color
-
-
 
 # def _test():
 #     import doctest
