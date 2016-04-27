@@ -32,7 +32,16 @@ Manual Installation (In Progress)
 Python3 setup.py clean
 Python3 setup.py build
 pip3 install wheel sphinx pyglet pillow PyOpenGl Coveralls mock numpy
+(Install AVbin)
 sphinx-build -b html doc/source doc/build/html
 coverage run --source arcade setup.py test
 
+================
+Installing AVbin
+================
+After you install pyglet, you will need to download and install AVbin. It is also possible that if you encounter issues with using sound, you may need to re-install AVbin.
+
+To download AVbin, go to: https://avbin.github.io/AVbin/Download.html and click the AVbin 10 for OSX link.
+
+To install AVbin, open the AVbin 10 that you downloaded and follow the instructions in the installer.
 

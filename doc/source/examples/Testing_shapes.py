@@ -79,9 +79,17 @@ on_draw.parabola.change_y = -2
 on_draw.parabola.change_angle = 8
 shapes.append(on_draw.parabola)
 
-##on_draw.line = Line(20,100,400,150)
-##on_draw.line.change_y = 2
-##shapes.append(on_draw.line)
+on_draw.line = arcade.Line(0, 0, 800, 800, arcade.color.AMAZON, 3)
+on_draw.line.change_y = -2
+shapes.append(on_draw.line)
+
+on_draw.Arc = arcade.Arc(250, 250, 75, 100, arcade.color.BRICK_RED, 0, 180, 0, 0)
+on_draw.Arc.change_x = 0.5
+on_draw.Arc.change_y = 0.5
+on_draw.Arc.change_start_angle = .2
+on_draw.Arc.change_end_angle = -.1
+on_draw.Arc.change_tilt_angle = 3
+shapes.append(on_draw.Arc)
 
 arcade.schedule(on_draw, 1 / 80)
 
