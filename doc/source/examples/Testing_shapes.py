@@ -1,5 +1,6 @@
 import arcade
 
+
 def on_draw(delta_time):
     """ Use this function to draw everything to the screen. """
 
@@ -15,7 +16,7 @@ def on_draw(delta_time):
     on_draw.square.draw()
     arcade.draw_all(shapes)
 
-    #update shape positions
+    # update shape positions
     on_draw.rectangle.update()
     on_draw.oval.update()
     on_draw.ellipse.update()
@@ -26,7 +27,7 @@ def on_draw(delta_time):
 arcade.open_window("Drawing Example", 800, 600)
 arcade.set_background_color(arcade.color.WHITE)
 
-on_draw.rectangle = arcade.Rectangle(400 , 100, 35, 50, arcade.color.PURPLE)
+on_draw.rectangle = arcade.Rectangle(400, 100, 35, 50, arcade.color.PURPLE)
 on_draw.rectangle.change_x = 3
 on_draw.rectangle.change_y = 2
 
@@ -47,11 +48,13 @@ on_draw.square.change_angle = 20
 on_draw.m_circle = arcade.Circle(700, 550, 18, arcade.color.CORNFLOWER_BLUE)
 on_draw.m_circle.change_x = -2
 
-on_draw.m_rectangle = arcade.Rectangle(400, 300, 27, 18, arcade.color.KOMBU_GREEN)
+on_draw.m_rectangle = arcade.Rectangle(400, 300, 27, 18,
+                                       arcade.color.KOMBU_GREEN)
 on_draw.m_rectangle.change_x = 3
 on_draw.m_rectangle.change_y = -3
 
-on_draw.m_square = arcade.Square(50, 50, 27, arcade.color.LANGUID_LAVENDER, 6, 45)
+on_draw.m_square = arcade.Square(50, 50, 27,
+                                 arcade.color.LANGUID_LAVENDER, 6, 45)
 on_draw.m_square.change_y = 5
 
 shapes = [on_draw.m_square, on_draw.m_rectangle, on_draw.m_circle]
@@ -63,12 +66,13 @@ shapes.append(on_draw.point)
 on_draw.text = arcade.Text("Hello!!", 250, 300, 100, arcade.color.CHESTNUT)
 shapes.append(on_draw.text)
 
-on_draw.triangle = arcade.Triangle(40, 99, 100, 50, 55, 150, arcade.color.MAROON)
+on_draw.triangle = arcade.Triangle(40, 99, 100, 50, 55, 150,
+                                   arcade.color.MAROON)
 on_draw.triangle.change_x = 2
 on_draw.triangle.change_y = 4
 shapes.append(on_draw.triangle)
 
-points = ([19, 24], [33,107], [15, 66], [100, 75], [100, 90])
+points = ([19, 24], [33, 107], [15, 66], [100, 75], [100, 90])
 on_draw.polygon = arcade.Polygon(points, arcade.color.CYAN)
 on_draw.polygon.change_x = 6
 on_draw.polygon.change_y = 2
@@ -83,7 +87,8 @@ on_draw.line = arcade.Line(0, 0, 800, 800, arcade.color.AMAZON, 3)
 on_draw.line.change_y = -2
 shapes.append(on_draw.line)
 
-on_draw.Arc = arcade.Arc(250, 250, 75, 100, arcade.color.BRICK_RED, 0, 180, 0, 0)
+on_draw.Arc = arcade.Arc(250, 250, 75, 100,
+                         arcade.color.BRICK_RED, 0, 180, 0, 0)
 on_draw.Arc.change_x = 0.5
 on_draw.Arc.change_y = 0.5
 on_draw.Arc.change_start_angle = .2
@@ -95,8 +100,5 @@ arcade.schedule(on_draw, 1 / 80)
 
 arcade.run()
 
-#unnecssary if drawing with on_draw
-#arcade.finish_render()
-
-
-
+# unnecssary if drawing with on_draw
+# arcade.finish_render()

@@ -17,13 +17,13 @@ def draw_background():
     """
     # Draw the sky in the top two-thirds
     arcade.draw_rectangle_filled(0, SCREEN_HEIGHT - 1,
-                            SCREEN_WIDTH - 1, SCREEN_HEIGHT * 2 / 3,
-                            arcade.color.SKY_BLUE)
+                                 SCREEN_WIDTH - 1, SCREEN_HEIGHT * 2 / 3,
+                                 arcade.color.SKY_BLUE)
 
     # Draw the ground in the bottom third
     arcade.draw_rectangle_filled(0, SCREEN_HEIGHT / 3,
-                            SCREEN_WIDTH - 1, SCREEN_HEIGHT / 3,
-                            arcade.color.DARK_SPRING_GREEN)
+                                 SCREEN_WIDTH - 1, SCREEN_HEIGHT / 3,
+                                 arcade.color.DARK_SPRING_GREEN)
 
 
 def draw_bird(x, y):
@@ -39,7 +39,8 @@ def draw_pine_tree(x, y):
     This function draws a pine tree at the specified location.
     """
     # Draw the trunk
-    arcade.draw_rectangle_filled(x + 30, y - 100, 20, 40, arcade.color.DARK_BROWN)
+    arcade.draw_rectangle_filled(x + 30, y - 100, 20, 40,
+                                 arcade.color.DARK_BROWN)
 
     # Draw the triangle on top of the trunk
     point_list = ((x + 40, y),

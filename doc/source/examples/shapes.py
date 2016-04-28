@@ -49,7 +49,7 @@ class Rectangle(Shape):
 
     def draw(self):
         arcade.draw_rectangle_filled(self.x, self.y, self.width, self.height,
-                                self.color, self.angle)
+                                     self.color, self.angle)
 
 
 class MyApplication(arcade.Window):

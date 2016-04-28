@@ -81,13 +81,17 @@ class MyApplication(arcade.Window):
                 b = self.object_list[j]
                 m = arcade.Manifold(a, b, 0, 0)
 
-                if isinstance(a, arcade.Circle) and isinstance(b, arcade.Circle):
+                if isinstance(a, arcade.Circle) \
+                        and isinstance(b, arcade.Circle):
                     collided = arcade.circle_vs_circle(m)
-                elif isinstance(a, arcade.AABB) and isinstance(b, arcade.AABB):
+                elif isinstance(a, arcade.AABB) \
+                        and isinstance(b, arcade.AABB):
                     collided = arcade.aabb_vs_aabb(m)
-                elif isinstance(a, arcade.AABB) and isinstance(b, arcade.Circle):
+                elif isinstance(a, arcade.AABB) \
+                        and isinstance(b, arcade.Circle):
                     collided = aabb_vs_circle(m)
-                elif isinstance(a, arcade.Circle) and isinstance(b, arcade.AABB):
+                elif isinstance(a, arcade.Circle) \
+                        and isinstance(b, arcade.AABB):
                     m = arcade.Manifold(b, a, 0, 0)
                     collided = arcade.aabb_vs_circle(m)
                 else:

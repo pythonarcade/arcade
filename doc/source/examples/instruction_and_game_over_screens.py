@@ -75,8 +75,8 @@ class MyApplication(arcade.Window):
         texture = arcade.load_texture("images/instructions_{}.png"
                                       .format(page))
         arcade.draw_texture_rectangle(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2,
-                                 texture.width,
-                                 texture.height, texture, 0)
+                                      texture.width,
+                                      texture.height, texture, 0)
 
     def draw_game(self):
         """

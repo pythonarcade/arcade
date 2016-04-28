@@ -41,6 +41,9 @@ def render_rect_filled(shape, offset, texture_id, texture_coord_vbo):
     GL.glLoadIdentity()
     GL.glTranslatef(shape.center_x, shape.center_y, 0)
 
+    if shape.angle != 0:
+        GL.glRotatef(shape.angle, 0, 0, 1)
+
     GL.glBindTexture(GL.GL_TEXTURE_2D, texture_id)
 
     GL.glTexCoordPointer(2, GL.GL_FLOAT, 0, texture_coord_vbo)

@@ -20,8 +20,8 @@ def on_draw(delta_time):
 
     # Draw our rectangle
     arcade.draw_rectangle_filled(on_draw.x, on_draw.y,
-                            RECT_WIDTH, RECT_HEIGHT,
-                            arcade.color.BLACK)
+                                 RECT_WIDTH, RECT_HEIGHT,
+                                 arcade.color.BLACK)
 
     # Modify rectangles position based on the delta
     # vector. (Delta means change. You can also think
@@ -30,9 +30,11 @@ def on_draw(delta_time):
     on_draw.y += on_draw.delta_y
 
     # Figure out if we hit the edge and need to reverse.
-    if on_draw.x < RECT_WIDTH // 2 or on_draw.x > SCREEN_WIDTH - RECT_WIDTH // 2:
+    if on_draw.x < RECT_WIDTH // 2 \
+            or on_draw.x > SCREEN_WIDTH - RECT_WIDTH // 2:
         on_draw.delta_x *= -1
-    if on_draw.y < RECT_HEIGHT // 2 or on_draw.y > SCREEN_HEIGHT - RECT_HEIGHT // 2:
+    if on_draw.y < RECT_HEIGHT // 2 \
+            or on_draw.y > SCREEN_HEIGHT - RECT_HEIGHT // 2:
         on_draw.delta_y *= -1
 
 # These are function-specific variables. Before we
