@@ -13,7 +13,7 @@ SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
 COIN_SCALE = 0.5
-COINT_COUNT = 50
+COIN_COUNT = 50
 
 MOVEMENT_SPEED = 5
 
@@ -60,7 +60,7 @@ class MyApplication(arcade.Window):
 
         self.all_sprites_list.append(self.player)
 
-        for i in range(COINT_COUNT):
+        for i in range(COIN_COUNT):
             coin = arcade.AnimatedTimeSprite(scale=0.5)
             coin.center_x = random.randrange(SCREEN_WIDTH)
             coin.center_y = random.randrange(SCREEN_HEIGHT)

@@ -70,11 +70,14 @@ def draw_rects(shape_list, vertex_vbo_id, texture_coord_vbo_id):
 
     offset = 0
     for shape in shape_list:
-        texture_coord_vbo_id = None
-        render_rect_filled(shape, offset,
-                           shape.texture.id, texture_coord_vbo_id)
+        if shape.can_cache:
+            texture_coord_vbo_id = None
+            render_rect_filled(shape, offset,
+                               shape.texture.id, texture_coord_vbo_id)
 
-        offset += 4
+            offset += 4
+        else:
+            shape.draw()
 
 
 class SpriteList():
@@ -279,6 +282,7 @@ class Sprite():
         self.sprite_lists = []
         self.transparent = True
 
+        self.can_cache = True
         self._points = None
         self._point_list_cache = None
 
@@ -308,7 +312,7 @@ class Sprite():
         """
         Get the corner points for the rect that makes up the sprite.
         """
-        if self._point_list_cache is not None:
+        if self._point_list_cache is not None and self.can_cache:
             return self._point_list_cache
 
         if self._points is not None:
@@ -317,6 +321,7 @@ class Sprite():
                 point = (self._points[i][0] + self.center_x,
                          self._points[i][1] + self.center_y)
                 point_list.append(point)
+            self._point_list_cache = point_list
             return point_list
         else:
             x1, y1 = rotate(self.center_x - self.width / 2,
@@ -547,6 +552,13 @@ arcade.Sprite("doc/source/examples/images/playerShip1_orange.png", scale)
         self.center_y += self.change_y
         self.angle += self.change_angle
 
+    def update_animation(self):
+        """
+        Override this to add code that will change
+        what image is shown, so the sprite can be
+        animated.
+        """
+        pass
     def kill(self):
         """
         Remove the sprite from all sprite lists.
@@ -645,6 +657,7 @@ filename, image_location_list, True)
         self.cur_texture_index = 0
         self.texture_change_distance = 0
         self.speed = 5
+        self.can_cache = False
 
     def update(self):
         """
@@ -747,6 +760,7 @@ class AnimatedTimeSprite(Sprite):
         self.cur_texture_index = 0
         self.texture_change_frames = 5
         self.frame = 0
+        self.can_cache = False
 
     def update_animation(self):
         """
@@ -777,6 +791,7 @@ class AnimatedWalkingSprite(Sprite):
         self.walk_down_textures = None
         self.cur_texture_index = 0
         self.texture_change_distance = 20
+        self.can_cache = False
 
     def update_animation(self):
         """
