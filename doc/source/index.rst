@@ -1,15 +1,9 @@
-.. Arcade documentation master file, created by
-   sphinx-quickstart on Mon Dec 28 23:02:22 2015.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
 The Arcade Python Package
 =========================
 
-|build-status-travis| |build-status-appveyor| |coverage|
-
-Arcade is an easy-to-learn Python library for creating 2d video games. The API
-is designed to allow progressive functionality as you learn to code.
+Arcade is an easy-to-learn Python library for creating 2D video games. It is
+ideal for people learning to program, or developers that want to code a 2D
+game without learning a complex framework.
 
 If Python is already installed, The arcade library can be installed from a
 terminal window by typing:
@@ -30,14 +24,30 @@ A compiled version of the package is available on PyPi: https://pypi.python.org/
 
 The list of current issues is on GitHub: https://github.com/pvcraven/arcade/issues
 
-Documentation
--------------
+The status of the build is here: |build-status-travis| |build-status-appveyor| |coverage|
+
+Examples
+--------
 
 .. toctree::
    :maxdepth: 4
 
    examples/index
+
+Installation
+------------
+
+.. toctree::
+   :maxdepth: 4
+
    installation
+
+API Documentation
+-----------------
+
+.. toctree::
+   :maxdepth: 4
+
    arcade
    quick_index
 

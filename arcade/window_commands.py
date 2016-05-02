@@ -110,6 +110,15 @@ def open_window(window_title, width, height):
 def close_window():
     """
     Closes the current window, and then runs garbage collection.
+
+    Args:
+        None
+    Returns:
+        None
+    Raises:
+        None
+
+    Example:
     """
     global _window
 
@@ -125,6 +134,8 @@ def close_window():
 def finish_render():
     """
     Swap buffers and display what has been drawn.
+    If programs use derive from the Window class, this function is
+    automatically called.
 
     Args:
         None
@@ -149,7 +160,18 @@ def finish_render():
 
 
 def run():
-    """ Run the main loop. """
+    """
+    Run the main loop.
+
+    Args:
+        None
+    Returns:
+        None
+    Raises:
+        None
+
+    Example:
+    """
     pyglet.app.run()
 
 
@@ -158,8 +180,19 @@ def _close(dt):
 
 
 def quick_run(time_to_pause):
-    """ Only run the app for the specified time in seconds.
-    Useful for testing. """
+    """
+    Only run the app for the specified time in seconds.
+    Useful for testing.
+
+    Args:
+        :time_to_pause: Number of seconds to pause before automatically closing.
+    Returns:
+        None
+    Raises:
+        None
+
+    Example:
+    """
     # pyglet.clock.schedule_once(_close, time_to_pause)
     # pyglet.app.run()
     pause(time_to_pause)
@@ -167,7 +200,17 @@ def quick_run(time_to_pause):
 
 
 def start_render():
-    """ Get set up to render. """
+    """
+    Get set up to render. Required to be called before drawing anything to the
+    screen.
+
+    Args:
+        None
+    Returns:
+        None
+    Raises:
+        None
+    """
     GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
     GL.glMatrixMode(GL.GL_MODELVIEW)
     GL.glEnableClientState(GL.GL_VERTEX_ARRAY)
@@ -199,7 +242,15 @@ def set_background_color(color):
 
 def schedule(function_pointer, interval):
     """
-    Schedule a function to be automatically called every _interval_
+    Schedule a function to be automatically called every ``interval``
     seconds.
+
+    Args:
+        :function_pointer: Pointer to the function to be called.
+        :interval: Interval to call the function.
+    Returns:
+        None
+    Raises:
+        None
     """
     pyglet.clock.schedule_interval(function_pointer, interval)

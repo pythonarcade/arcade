@@ -10,11 +10,20 @@ import pyglet.gl.glu as GLU
 
 class Texture():
     """
-    Simple class that represents a texture
+    Simple class that represents a texture.
+    Usually created by the ``load_texture`` command.
     """
 
     def __init__(self, id, width, height):
-        #Check values before attempting to create Texture object
+        """
+        Args:
+            :id (str): Id of the texture.
+            :width (int): Width of the texture.
+            :height (int): Height of the texture.
+        Raises:
+            :ValueError:
+        """
+        # Check values before attempting to create Texture object
         if height < 0:
             raise ValueError("Height entered is less than zero. Height must be "
                              "a positive number. Texture id: " + self.id)
@@ -23,7 +32,7 @@ class Texture():
             raise ValueError("Width entered is less than zero. Width must be a "
                              "positive number. Texture id: " + self.id)
 
-        #Values seem to be clear, create object
+        # Values seem to be clear, create object
         self.id = id
         self.width = width
         self.height = height
@@ -33,6 +42,17 @@ def load_textures(file_name, image_location_list,
                   mirrored=False, flipped=False):
     """
     Load a set of textures off of a single image file.
+
+    Args:
+        :file_name: Name of the file.
+        :image_location_list: List of image locations. Each location should be
+         a list of four numbers. ``[x, y, width, height]``.
+        :mirrored=False: If set to true, the image is mirrored left to right.
+        :flipped=False: If set to true, the image is flipped upside down.
+    Returns:
+        :list: List of textures loaded.
+    Raises:
+        :SystemError:
 
     >>> import arcade
     >>> arcade.open_window("Drawing Example", 800, 600)
@@ -300,7 +320,8 @@ arcade.color.BOTTLE_GREEN, 90, 360, 45)
     GL.glLoadIdentity()
 
 
-def draw_arc_outline(center_x, center_y, width, height, color, start_angle, end_angle, border_width=1, tilt_angle=0):
+def draw_arc_outline(center_x, center_y, width, height, color, start_angle,
+                     end_angle, border_width=1, tilt_angle=0):
     """
     Draw the outside edge of an arc. Useful for drawing curved lines.
 
@@ -371,16 +392,7 @@ transparent_color, 90, 360)
     GL.glEnd()
     GL.glLoadIdentity()
 
-def draw_arc(center_x, center_y, width, height, color, start_angle,
-             end_angle, border_width = 0, tilt_angle = 0):
-    if border_width <= 0:
-        draw_arc_filled(center_x, center_y, width, height, color, start_angle,
-                        end_angle, tilt_angle)
-    else:
-        draw_arc_outline(center_x, center_y, width, height, color, start_angle,
-                         end_angle, border_width, tilt_angle)
-
-# these advanced arc functions are not fully functional, they sort of work.
+# These advanced arc functions are not fully functional, they sort of work.
 # Feel free to modify the math we used
 
 def draw_advanced_arc_outline(start_x, start_y, end_x, end_y, height, color,
@@ -670,144 +682,6 @@ def draw_circle_filled(center_x, center_y, radius, color):
     draw_ellipse_filled(center_x, center_y, width, height, color)
 
 
-def draw_small_filled_circle(center_x, center_y, color):
-    """
-    Draws a cirlce with a default small radius.
-
-    Args:
-        :center_x (float): x position that is the center of the circle.
-        :center_y (float): y position that is the center of the circle.
-        :radius (float): width of the circle.
-        :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
-         RGBA format.
-    Returns:
-        None
-    Raises:
-        None
-
-    Example:
-
-    >>> import arcade
-    >>> arcade.open_window("Drawing Example", 800, 600)
-    >>> arcade.set_background_color(arcade.color.WHITE)
-    >>> arcade.start_render()
-    >>> arcade.draw_small_filled_circle(420, 285, arcade.color.BLUE)
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
-    """
-    radius = 10
-
-    draw_circle_filled(center_x, center_y, radius, color)
-
-def draw_medium_filled_circle(center_x, center_y, color):
-    """
-    Draws a cirlce with a default medium radius.
-
-    Args:
-        :center_x (float): x position that is the center of the circle.
-        :center_y (float): y position that is the center of the circle.
-        :radius (float): width of the circle.
-        :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
-         RGBA format.
-        :num_segments (int): number of triangle segments that make up this
-         circle. Higher is better quality, but slower render time.
-    Returns:
-        None
-    Raises:
-        None
-
-    Example:
-
-    >>> import arcade
-    >>> arcade.open_window("Drawing Example", 800, 600)
-    >>> arcade.set_background_color(arcade.color.WHITE)
-    >>> arcade.start_render()
-    >>> arcade.draw_medium_filled_circle(420, 285, arcade.color.RED)
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
-    """
-    radius = 25
-
-    draw_circle_filled(center_x, center_y, radius, color)
-
-def draw_large_filled_circle(center_x, center_y, color):
-    """
-    Draws a cirlce with a default large radius.
-
-    Args:
-        :center_x (float): x position that is the center of the circle.
-        :center_y (float): y position that is the center of the circle.
-        :radius (float): width of the circle.
-        :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
-         RGBA format.
-        :num_segments (int): number of triangle segments that make up this
-         circle. Higher is better quality, but slower render time.
-    Returns:
-        None
-    Raises:
-        None
-
-    Example:
-
-    >>> import arcade
-    >>> arcade.open_window("Drawing Example", 800, 600)
-    >>> arcade.set_background_color(arcade.color.WHITE)
-    >>> arcade.start_render()
-    >>> arcade.draw_large_filled_circle(420, 285, arcade.color.PURPLE)
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
-    """
-    radius = 40
-
-    draw_circle_filled(center_x, center_y, radius, color)
-
-def draw_standard_circle(center_x, center_y, color, size, filled, adjustment=0):
-    #Draws a general circle with a limited number of specifications
-
-    """This function is meant to encapsulate all of the different kinds of
-    circles that a person might want drawn.
-    The arguments are the circle's specifications given in an order that a
-    person would use to describe what they want
-    (i.e. "I want a 'large' 'solid 'red' circle at 'this spot'.)
-
-    The arguments are as such;
-    size = The radius of the circle expressed in descriptive words like "small"
-     or "s", "medium" or "m", or "large" or "l".
-    adjustment = A customizable adjustment to the size of the standard circle.
-    Can be positive or negative or can be entirely ignored.
-    filled = If the circle is an outline or is a solid color expressed with
-    words like "filled" or "solid" and "outline" or "hollow".
-    color = The color of the circle.
-    center_x = The center's x coordinate.
-    center_y = The center's y coordinate.
-
-    Example:
-
-    >>> import arcade
-    >>> arcade.open_window("Drawing Example", 800, 600)
-    >>> arcade.set_background_color(arcade.color.WHITE)
-    >>> arcade.start_render()
-    >>> arcade.draw_standard_circle(500, 200, arcade.color.BLUE, "small", "solid") #Draws a small solid blue circle at (500, 200)
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
-    """
-    # --size--
-    if size.lower() == "small" or size.lower() == "s":
-        radius = 10 + adjustment
-
-    elif size.lower() == "medium" or size.lower() == "m":
-        radius = 25 + adjustment
-
-    elif size.lower() == "large" or size.lower() == "l":
-        radius = 40 + adjustment
-
-    # --filled--
-    if filled == "filled" or filled == "solid":
-        draw_circle_filled(center_x, center_y, radius, color)
-
-    elif filled == "outline" or filled == "hollow":
-        draw_circle_outline(center_x, center_y, radius, color)
-
 def draw_circle_outline(center_x, center_y, radius, color, border_width=1):
     """
     Draw the outline of a circle.
@@ -842,17 +716,18 @@ def draw_circle_outline(center_x, center_y, radius, color, border_width=1):
     draw_ellipse_outline(center_x, center_y, width, height,
                          color, border_width)
 
-def draw_circle(center_x, center_y, radius, color, border_width = 0):
-    if border_width <= 0:
-        draw_circle_filled(center_x, center_y, radius, color)
-    else:
-        draw_circle_outline(center_x, center_y, radius, color, border_width)
+
 
 # --- END CIRCLE FUNCTIONS # # #
 
 # --- BEGIN ELLIPSE FUNCTIONS # # #
 
 def create_ellipse(width, height, color):
+    """
+    This creates an ellipse vertex buffer object (VBO). It can later be
+    drawn with ``render_ellipse_filled``. This method of drawing an ellipse
+    is much faster than calling ``draw_ellipse_filled`` each frame.
+    """
     num_segments=64
 
     data = []
@@ -881,6 +756,9 @@ def create_ellipse(width, height, color):
 
 
 def render_ellipse_filled(shape, x, y, color, angle=0):
+    """
+    Render an ellipse previously created with the ``create_ellipse`` function.
+    """
     # Set color
     if len(color) == 4:
         GL.glColor4ub(shape.color[0], shape.color[1], shape.color[2],
@@ -1040,270 +918,6 @@ def draw_ellipse(center_x, center_y, width, height, color, border_width = 0, til
 
 # --- END ELLIPSE FUNCTIONS # # #
 
-# --- BEGIN OVAL FUNCTIONS # # #
-
-# draw any oval with 1 function with max parameters
-def draw_oval(center_x, center_y, width, height, color, border_width=0, tilt_angle=0):
-    """
-    Draws an oval.
-
-    Args:
-        :center_x (float): The x position for the center of the oval
-        :center_y (float): The y position for the center of the oval
-        :width (float): The width of the oval
-        :height (float): The height of the oval
-        :color (tuple): The color of the oval
-        :border_width (float): The width of the outline (0 is filled)
-        :angle (float): The angle the oval is tilted
-    Returns:
-        None
-    Raises:
-        None
-
-    Example:
-
-    >>> import arcade
-    >>> arcade.open_window("Drawing Example", 800, 600)
-    >>> arcade.set_background_color(arcade.color.WHITE)
-    >>> arcade.start_render()
-    >>> arcade.draw_oval(150, 150, 20, 40, arcade.color.BRIGHT_MAROON)
-    >>> color = (255, 0, 0, 127)
-    >>> arcade.draw_oval(160, 160, 40, 20, color, 20)
-    >>> arcade.finish_render()
-    >>> arcade.close_window()
-    """
-    if border_width <= 0:
-        draw_oval_filled(center_x, center_y, width, height, color, tilt_angle)
-    else:
-        draw_oval_outline(center_x, center_y, width, height, color, border_width, tilt_angle)
-
-
-# draw a custom oval that is filled
-def draw_oval_filled(center_x, center_y, width, height, color, tilt_angle=0):
-    """
-    Draw a filled oval.
-
-    Args:
-        :center_x (float): The x position for the center of the oval
-        :center_y (float): The y position for the center of the oval
-        :width (float): The width of the oval
-        :height (float): The height of the oval
-        :color (tuple): The color of the oval
-        :angle (float): The angle the oval is tilted
-    Returns:
-        None
-    Raises:
-        None
-
-    Example:
-
-    >>> import arcade
-    >>> arcade.open_window("Drawing Example", 800, 600)
-    >>> arcade.set_background_color(arcade.color.WHITE)
-    >>> arcade.start_render()
-    >>> arcade.draw_oval_filled(150, 150, 20, 40, arcade.color.BRIGHT_MAROON, 20)
-    >>> color = (255, 0, 0, 127)
-    >>> arcade.draw_oval_filled(160, 160, 40, 20, color, 45)
-    >>> arcade.finish_render()
-    >>> arcade.close_window()
-    """
-
-    draw_ellipse_filled(center_x, center_y, width, height, color, tilt_angle)
-
-# draw a custom oval outline
-def draw_oval_outline(center_x, center_y, width, height, color, border_width=5, angle=0):
-    """
-    Draw the outline of an oval.
-
-    Args:
-        :center_x (float): The x position for the center of the oval
-        :center_y (float): The y position for the center of the oval
-        :width (float): The width of the oval
-        :height (float): The height of the oval
-        :color (tuple): The color of the oval
-        :border_width (float): The width of the outline
-        :angle (float): The angle the oval is tilted
-    Returns:
-        None
-    Raises:
-        None
-
-    Example:
-
-    >>> import arcade
-    >>> arcade.open_window("Drawing Example", 800, 600)
-    >>> arcade.set_background_color(arcade.color.WHITE)
-    >>> arcade.start_render()
-    >>> arcade.draw_oval_outline(150, 150, 20, 40, arcade.color.BRIGHT_MAROON, 10, 20)
-    >>> color = (255, 0, 0, 127)
-    >>> arcade.draw_oval_outline(160, 160, 40, 20, color, 5, 0)
-    >>> arcade.finish_render()
-    >>> arcade.close_window()
-    """
-
-    if border_width <= 0:
-        print("Error: Border width must be greater than 0. Use the draw_oval_filled function to create a filled oval.")
-    else:
-        draw_ellipse_outline(center_x, center_y, width, height, color, border_width)
-
-# draw a semi custom filled oval using word descriptions for width and height
-def draw_described_oval_filled(center_x, center_y, width, height, color, tilt_angle=0):
-    """
-    Draws a filled oval.
-
-    Args:
-        :center_x (float): The x position for the center of the oval
-        :center_y (float): The y position for the center of the oval
-        :width (float): The width of the oval
-        :height (float): The height of the oval
-        :color (tuple): The color of the oval
-        :angle (float): The angle the oval is tilted
-    Returns:
-        None
-    Raises:
-        None
-
-    Example:
-
-    >>> import arcade
-    >>> arcade.open_window("Drawing Example", 800, 600)
-    >>> arcade.set_background_color(arcade.color.WHITE)
-    >>> arcade.start_render()
-    >>> arcade.draw_described_oval_filled(150, 150, "medium", "vs", arcade.color.BRIGHT_MAROON)
-    >>> color = (255, 0, 0, 127)
-    >>> arcade.draw_described_oval_filled(160, 160, "skinny", "very tall", color, 20)
-    >>> arcade.finish_render()
-    >>> arcade.close_window()
-    """
-
-    if width.lower() == "very fat" or width.lower() == "vf" or width.lower() == "huge" or width.lower() == "h":
-        width = 200
-    elif width.lower() == "fat" or width.lower() == "f" or width.lower() == "big" or width.lower() == "b" or height.lower() == "large" or height.lower() == "l" or height.lower() == "max":
-        width = 100
-    elif width.lower() == "medium" or width.lower() == "m" or width.lower() == "average" or width.lower() == "a" or height.lower() == "mid":
-        width = 50
-    elif width.lower() == "skinny" or width.lower() == "s" or width.lower() == "small" or height.lower() == "min":
-        width = 25
-    elif width.lower() == "very skinny" or width.lower() == "vs" or width.lower() == "tiny" or width.lower() == "t":
-        width = 12.5
-    else:
-        width = -1
-
-    if height.lower() == "very tall" or height.lower() == "vt" or height.lower() == "huge" or height.lower() == "h":
-        height = 200
-    elif height.lower() == "tall" or height.lower() == "t" or height.lower() == "big" or height.lower() == "b" or height.lower() == "large" or height.lower() == "l" or height.lower() == "max":
-        height = 100
-    elif height.lower() == "medium" or height.lower() == "m" or height.lower() == "average" or height.lower() == "a" or height.lower() == "mid":
-        height = 50
-    elif height.lower() == "short" or height.lower() == "s" or height.lower() == "small" or height.lower() == "min":
-        height = 25
-    elif height.lower() == "very short" or height.lower() == "vs" or height.lower() == "tiny" or height.lower() == "t":
-        height = 12.5
-    else:
-        height = -1
-
-    if width != -1 and height != -1:
-        draw_oval_filled(center_x, center_y, width, height, color, tilt_angle)
-
-# draw a semi custom outlined oval using word descriptions for width and height
-def draw_described_oval_outline(center_x, center_y, width, height, color, border_width = 5, tilt_angle=0):
-    """
-    Draw the outline of an oval.
-
-    Args:
-        :center_x (float): The x position for the center of the oval
-        :center_y (float): The y position for the center of the oval
-        :width (float): The width of the oval
-        :height (float): The height of the oval
-        :color (tuple): The color of the oval
-        :border_width (float): The thickness of the border
-        :angle (float): The angle the oval is tilted
-    Returns:
-        None
-    Raises:
-        None
-
-    Example:
-
-    >>> import arcade
-    >>> arcade.open_window("Drawing Example", 800, 600)
-    >>> arcade.set_background_color(arcade.color.WHITE)
-    >>> arcade.start_render()
-    >>> arcade.draw_described_oval_outline(150, 150, "fat", "t", arcade.color.BRIGHT_MAROON, 4, 10)
-    >>> color = (255, 0, 0, 127)
-    >>> arcade.draw_described_oval_outline(160, 160, "very skinny", "average", color, 20)
-    >>> arcade.finish_render()
-    >>> arcade.close_window()
-    """
-
-    if width.lower() == "very fat" \
-            or width.lower() == "vf" \
-            or width.lower() == "huge" \
-            or width.lower() == "h":
-        width = 200
-    elif width.lower() == "fat" \
-            or width.lower() == "f" \
-            or width.lower() == "big" \
-            or width.lower() == "b" \
-            or height.lower() == "large" \
-            or height.lower() == "l" or height.lower() == "max":
-        width = 100
-    elif width.lower() == "medium" \
-            or width.lower() == "m" \
-            or width.lower() == "average" \
-            or width.lower() == "a" \
-            or height.lower() == "mid":
-        width = 50
-    elif width.lower() == "skinny" \
-            or width.lower() == "s" \
-            or width.lower() == "small" \
-            or height.lower() == "min":
-        width = 25
-    elif width.lower() == "very skinny" \
-            or width.lower() == "vs" \
-            or width.lower() == "tiny" \
-            or width.lower() == "t":
-        width = 12.5
-    else:
-        width = -1
-
-    if height.lower() == "very tall" \
-            or height.lower() == "vt" \
-            or height.lower() == "huge" \
-            or height.lower() == "h":
-        height = 200
-    elif height.lower() == "tall" \
-            or height.lower() == "t" \
-            or height.lower() == "big" \
-            or height.lower() == "b" \
-            or height.lower() == "large" \
-            or height.lower() == "l" \
-            or height.lower() == "max":
-        height = 100
-    elif height.lower() == "medium" \
-            or height.lower() == "m" \
-            or height.lower() == "average" \
-            or height.lower() == "a" \
-            or height.lower() == "mid":
-        height = 50
-    elif height.lower() == "short" \
-            or height.lower() == "s" \
-            or height.lower() == "small" \
-            or height.lower() == "min":
-        height = 25
-    elif height.lower() == "very short" \
-            or height.lower() == "vs" \
-            or height.lower() == "tiny" \
-            or height.lower() == "t":
-        height = 12.5
-    else:
-        height = -1
-
-    if width != -1 and height != -1:
-        draw_oval_outline(center_x, center_y, width, height, color,
-                          border_width, tilt_angle)
-
-# --- END OVAL FUNCTIONS # # #
 
 # --- BEGIN LINE FUNCTIONS # # #
 
@@ -1360,160 +974,6 @@ def draw_line(start_x, start_y, end_x, end_y, color, border_width=1):
     GL.glEnd()
 
 
-def draw_thin_line(start_x, start_y, end_x, end_y, color, border_width=.5):
-    """
-    Draw a thin line.
-
-    Args:
-        :start_x (float): x position of line starting point.
-        :start_y (float): y position of line starting point.
-        :end_x (float): x position of line ending point.
-        :end_y (float): y position of line ending point.
-        :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
-         RGBA format.
-        :border_width (float): Width of the line in pixels.
-    Returns:
-        None
-    Raises:
-        None
-
-    Example:
-
-    >>> import arcade
-    >>> arcade.open_window("Drawing Example", 800, 600)
-    >>> arcade.set_background_color(arcade.color.WHITE)
-    >>> arcade.start_render()
-    >>> arcade.draw_thin_line(270, 495, 300, 450, arcade.color.WOOD_BROWN, 3)
-    >>> color = (127, 0, 127, 127)
-    >>> arcade.draw_thin_line(280, 495, 320, 450, color, 3)
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
-    """
-    GL.glEnable(GL.GL_BLEND)
-    GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
-    GL.glEnable(GL.GL_LINE_SMOOTH)
-    GL.glHint(GL.GL_LINE_SMOOTH_HINT, GL.GL_NICEST)
-    GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
-
-    GL.glLoadIdentity()
-
-    # Set line width
-    GL.glLineWidth(border_width)
-
-    # Set color
-    if len(color) == 4:
-        GL.glColor4ub(color[0], color[1], color[2], color[3])
-    elif len(color) == 3:
-        GL.glColor4ub(color[0], color[1], color[2], 255)
-
-    GL.glBegin(GL.GL_LINES)
-    GL.glVertex3f(start_x, start_y, 0.5)
-    GL.glVertex3f(end_x, end_y, 0.5)
-    GL.glEnd()
-
-
-def draw_medium_line(start_x, start_y, end_x, end_y, color, border_width=1):
-    """
-    Draw a medium thickness line.
-
-    Args:
-        :start_x (float): x position of line starting point.
-        :start_y (float): y position of line starting point.
-        :end_x (float): x position of line ending point.
-        :end_y (float): y position of line ending point.
-        :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
-         RGBA format.
-        :border_width (float): Width of the line in pixels.
-    Returns:
-        None
-    Raises:
-        None
-
-    Example:
-
-    >>> import arcade
-    >>> arcade.open_window("Drawing Example", 800, 600)
-    >>> arcade.set_background_color(arcade.color.WHITE)
-    >>> arcade.start_render()
-    >>> arcade.draw_medium_line(270, 495, 300, 450, arcade.color.WOOD_BROWN, 3)
-    >>> color = (127, 0, 127, 127)
-    >>> arcade.draw_medium_line(280, 495, 320, 450, color, 3)
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
-    """
-    GL.glEnable(GL.GL_BLEND)
-    GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
-    GL.glEnable(GL.GL_LINE_SMOOTH)
-    GL.glHint(GL.GL_LINE_SMOOTH_HINT, GL.GL_NICEST)
-    GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
-
-    GL.glLoadIdentity()
-
-    # Set line width
-    GL.glLineWidth(border_width)
-
-    # Set color
-    if len(color) == 4:
-        GL.glColor4ub(color[0], color[1], color[2], color[3])
-    elif len(color) == 3:
-        GL.glColor4ub(color[0], color[1], color[2], 255)
-
-    GL.glBegin(GL.GL_LINES)
-    GL.glVertex3f(start_x, start_y, 0.5)
-    GL.glVertex3f(end_x, end_y, 0.5)
-    GL.glEnd()
-
-
-def draw_thick_line(start_x, start_y, end_x, end_y, color, border_width=2):
-    """
-    Draw a thick line.
-
-    Args:
-        :start_x (float): x position of line starting point.
-        :start_y (float): y position of line starting point.
-        :end_x (float): x position of line ending point.
-        :end_y (float): y position of line ending point.
-        :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
-         RGBA format.
-        :border_width (float): Width of the line in pixels.
-    Returns:
-        None
-    Raises:
-        None
-
-    Example:
-
-    >>> import arcade
-    >>> arcade.open_window("Drawing Example", 800, 600)
-    >>> arcade.set_background_color(arcade.color.WHITE)
-    >>> arcade.start_render()
-    >>> arcade.draw_thick_line(270, 495, 300, 450, arcade.color.WOOD_BROWN, 3)
-    >>> color = (127, 0, 127, 127)
-    >>> arcade.draw_thick_line(280, 495, 320, 450, color, 3)
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
-    """
-    GL.glEnable(GL.GL_BLEND)
-    GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
-    GL.glEnable(GL.GL_LINE_SMOOTH)
-    GL.glHint(GL.GL_LINE_SMOOTH_HINT, GL.GL_NICEST)
-    GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
-
-    GL.glLoadIdentity()
-
-    # Set line width
-    GL.glLineWidth(border_width)
-
-    # Set color
-    if len(color) == 4:
-        GL.glColor4ub(color[0], color[1], color[2], color[3])
-    elif len(color) == 3:
-        GL.glColor4ub(color[0], color[1], color[2], 255)
-
-    GL.glBegin(GL.GL_LINES)
-    GL.glVertex3f(start_x, start_y, 0.5)
-    GL.glVertex3f(end_x, end_y, 0.5)
-    GL.glEnd()
 
 
 def draw_line_strip(point_list, color, border_width=1):
@@ -2144,6 +1604,12 @@ def draw_text(text, x, y, color, size):
 
 
 class VertexBuffer():
+    """
+    This class represents a
+    `vertex buffer object`_.
+
+    .. _vertex buffer object: https://en.wikipedia.org/wiki/Vertex_Buffer_Object
+    """
     def __init__(self, vbo_id, size, width, height, color):
         self.vbo_id = vbo_id
         self.size = size
