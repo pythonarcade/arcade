@@ -149,7 +149,7 @@ class SpriteList():
         """
         Call the draw() method on each sprite in the list.
         """
-        if self.vertex_vbo_id is None:
+        if fast and self.vertex_vbo_id is None:
             self.vbo_dirty = True
             self.vertex_vbo_id = create_vbo()
             self.texture_coord_vbo_id = create_vbo()
