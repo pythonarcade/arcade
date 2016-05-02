@@ -155,7 +155,7 @@ class SpriteList():
             self.texture_coord_vbo_id = create_vbo()
             # print("Setup VBO")
 
-        if self.vbo_dirty:
+        if fast and self.vbo_dirty:
             rects = create_rects(self.sprite_list)
             set_vbo(self.vertex_vbo_id, rects)
             set_vbo(self.texture_coord_vbo_id,
