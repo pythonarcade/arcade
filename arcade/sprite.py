@@ -104,7 +104,7 @@ class SpriteList():
     98
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
-    >>> meteor_list.draw()
+    >>> meteor_list.draw(fast=False)
     >>> arcade.finish_render()
     >>> for meteor in meteor_list:
     ...     meteor.kill()
@@ -145,7 +145,7 @@ class SpriteList():
         for sprite in self.sprite_list:
             sprite.update_animation()
 
-    def draw(self):
+    def draw(self, fast=True):
         """
         Call the draw() method on each sprite in the list.
         """
@@ -163,7 +163,6 @@ class SpriteList():
             self.vbo_dirty = False
             # print("Upload new vbo data")
 
-        fast = True
         if fast:
             draw_rects(self.sprite_list, self.vertex_vbo_id,
                        self.texture_coord_vbo_id)
