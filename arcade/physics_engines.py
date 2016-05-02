@@ -174,7 +174,7 @@ class PhysicsEnginePlatformer():
                     if platform.change_x > 0:
                         platform.change_x *= -1
 
-                if arcade.check_for_collision(self.player_sprite, platform):
+                if check_for_collision(self.player_sprite, platform):
                     if platform.change_x < 0:
                         original_location = self.player_sprite.right
                         self.player_sprite.right = platform.left

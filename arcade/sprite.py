@@ -312,7 +312,7 @@ class Sprite():
         """
         Get the corner points for the rect that makes up the sprite.
         """
-        if self._point_list_cache is not None and self.can_cache:
+        if self._point_list_cache is not None:
             return self._point_list_cache
 
         if self._points is not None:
@@ -419,8 +419,9 @@ arcade.Sprite("doc/source/examples/images/playerShip1_orange.png", scale)
         return self._center_x
 
     def _set_center_x(self, new_value):
-        self._center_x = new_value
-        self._point_list_cache = None
+        if new_value != self._center_x:
+            self._center_x = new_value
+            self._point_list_cache = None
 
     center_x = property(_get_center_x, _set_center_x)
 
@@ -428,8 +429,9 @@ arcade.Sprite("doc/source/examples/images/playerShip1_orange.png", scale)
         return self._center_y
 
     def _set_center_y(self, new_value):
-        self._center_y = new_value
-        self._point_list_cache = None
+        if new_value != self._center_y:
+            self._center_y = new_value
+            self._point_list_cache = None
 
     center_y = property(_get_center_y, _set_center_y)
 
@@ -437,8 +439,9 @@ arcade.Sprite("doc/source/examples/images/playerShip1_orange.png", scale)
         return self._angle
 
     def _set_angle(self, new_value):
-        self._angle = new_value
-        self._point_list_cache = None
+        if new_value != self._angle:
+            self._angle = new_value
+            self._point_list_cache = None
 
     angle = property(_get_angle, _set_angle)
 
