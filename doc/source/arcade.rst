@@ -1,3 +1,5 @@
+.. _arcade-api:
+
 Arcade Package API
 ==================
 

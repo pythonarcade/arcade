@@ -15,8 +15,8 @@ version that begins with 3.
 Step 2: Install The Arcade Library
 ----------------------------------
 
-THE EASY WAY
-^^^^^^^^^^^^
+Option 1: The Easy Way
+^^^^^^^^^^^^^^^^^^^^^^
 
 Click the Window button in the lower left of your screen (or hit the window
 button on your keyboard) and type ``run``. Then hit enter.
@@ -30,8 +30,8 @@ Next, type ``pip install arcade`` at the command prompt:
 .. image:: images/pip_install_arcade_windows.png
 
 
-THE HARD WAY
-^^^^^^^^^^^^
+Option 2: The Hard Way
+^^^^^^^^^^^^^^^^^^^^^^
 
 If you successfully installed Arcade the easy way, skip this section. If
 you'd rather download the Arcade library directly off PyPi you can at:
@@ -42,7 +42,10 @@ Or you can get the source code for the library from GitHub:
 
 https://github.com/pvcraven/arcade
 
-Step 3: Install A Development Environment
+If you are picking "the hard way" we assume you will know
+how to take it from here.
+
+Step 3: Install a Development Environment
 -----------------------------------------
 
 Get and set up one of these development environments:
@@ -54,7 +57,7 @@ Get and set up one of these development environments:
    time later.
    Anaconda_ is a great Sublime_ plug-in for doing Python development.
 #. Wing_ (costs money) or `Wing 101`_ (free but less powerful)
-#. Or pick your own environment
+#. Or pick your own environment!
 
 .. _PyCharm: https://www.jetbrains.com/pycharm/
 .. _Sublime: https://www.sublimetext.com/

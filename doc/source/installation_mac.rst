@@ -41,7 +41,7 @@ After this, type:
 ``sudo pip install numpy pillow pyglet arcade``
 
 Installing AVbin
-================
+----------------
 
 For sound, Arcade relies on a library called AVbin. This needs to be installed
 next.
@@ -54,7 +54,7 @@ downloaded file in your Finder. Control-Click the file and select "Open". Then
 click past the warning and install it anyway.
 
 Installing PyCharm
-==================
+------------------
 
 Go to JetBrains and download PyCharm for the Mac. The Community edition
 is fine:
