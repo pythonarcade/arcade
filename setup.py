@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
-BUILD = 38
+BUILD = 39
 VERSION = "0.0.6"
-RELEASE = VERSION + "a" + str(BUILD)
+RELEASE = VERSION + "b" + str(BUILD)
 
 import os
 import sys
