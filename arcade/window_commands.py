@@ -33,6 +33,13 @@ def pause(seconds):
 def get_window():
     """
     Return a handle to the current window.
+
+    Args:
+        None
+    Returns:
+        :window: Handle to the current window.
+    Raises:
+        None
     """
     global _window
     return _window
@@ -41,6 +48,13 @@ def get_window():
 def set_window(window):
     """
     Set a handle to the current window.
+
+    Args:
+        :window: Handle to the current window.
+    Returns:
+        None
+    Raises:
+        None
     """
     global _window
     _window = window
@@ -48,11 +62,30 @@ def set_window(window):
 
 def set_viewport(left, right, bottom, top):
     """
-    This sets what coordinates appear on the window.
+    This sets what coordinates the window will cover.
 
-    Note: It is recommended to only set the viewport to integer values that
+    By default, the lower left coordinate will be (0, 0) and the top y
+    coordinate will be the height of the window in pixels, and the right x
+    coordinate will be the width of the window in pixels.
+
+    If a program is making a game where the user scrolls around a larger
+    world, this command can help out.
+
+    Note: It is recommended to only set the view port to integer values that
     line up with the pixels on the screen. Otherwise if making a tiled game
     the blocks may not line up well, creating rectangle artifacts.
+
+    Args:
+        :left: Left-most (smallest) x value.
+        :right: Right-most (largest) x value.
+        :bottom: Bottom (smallest) y value.
+        :top: Top (largest) y value.
+    Returns:
+        None
+    Raises:
+        None
+
+    :Example:
 
     >>> import arcade
     >>> arcade.open_window("Drawing Example", 800, 600)
@@ -83,9 +116,9 @@ def open_window(window_title, width, height):
     This function opens a window.
 
     Args:
-        :window_title (str): Title of the window.
-        :width (int): Width of the window.
-        :height (int): Height of the window.
+        :window_title: Title of the window.
+        :width: Width of the window.
+        :height: Height of the window.
     Returns:
         None
     Raises:
@@ -133,7 +166,7 @@ def close_window():
 
 def finish_render():
     """
-    Swap buffers and display what has been drawn.
+    Swap buffers and displays what has been drawn.
     If programs use derive from the Window class, this function is
     automatically called.
 
@@ -185,7 +218,8 @@ def quick_run(time_to_pause):
     Useful for testing.
 
     Args:
-        :time_to_pause: Number of seconds to pause before automatically closing.
+        :time_to_pause: Number of seconds to pause before automatically
+         closing.
     Returns:
         None
     Raises:

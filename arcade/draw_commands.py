@@ -10,8 +10,8 @@ import pyglet.gl.glu as GLU
 
 class Texture():
     """
-    Simple class that represents a texture.
-    Usually created by the ``load_texture`` command.
+    Class that represents a texture.
+    Usually created by the ``load_texture`` or ``load_textures`` commands.
     """
 
     def __init__(self, id, width, height):
@@ -25,12 +25,12 @@ class Texture():
         """
         # Check values before attempting to create Texture object
         if height < 0:
-            raise ValueError("Height entered is less than zero. Height must be "
-                             "a positive number. Texture id: " + self.id)
+            raise ValueError("Height entered is less than zero. Height must "
+                             "be a positive number. Texture id: " + self.id)
 
         if width < 0:
-            raise ValueError("Width entered is less than zero. Width must be a "
-                             "positive number. Texture id: " + self.id)
+            raise ValueError("Width entered is less than zero. Width must be "
+                             "a positive number. Texture id: " + self.id)
 
         # Values seem to be clear, create object
         self.id = id
@@ -138,6 +138,7 @@ def load_textures(file_name, image_location_list,
 
     return texture_info_list
 
+
 def load_texture(file_name, x=0, y=0, width=0, height=0, scale=1):
     """
     Load image from disk and create a texture.
@@ -156,7 +157,7 @@ def load_texture(file_name, x=0, y=0, width=0, height=0, scale=1):
     >>> arcade.close_window()
     """
 
-    # See if we already loadede this file, and we can just use a cached version.
+    # See if we already loaded this file, and we can just use a cached version.
     if file_name in load_texture.texture_cache:
         return load_texture.texture_cache[file_name]
 
@@ -225,7 +226,7 @@ def load_texture(file_name, x=0, y=0, width=0, height=0, scale=1):
     load_texture.texture_cache[file_name] = result
     return result
 
-load_texture.texture_cache= dict()
+load_texture.texture_cache = dict()
 
 # --- END TEXTURE FUNCTIONS # # #
 
@@ -392,175 +393,8 @@ transparent_color, 90, 360)
     GL.glEnd()
     GL.glLoadIdentity()
 
-# These advanced arc functions are not fully functional, they sort of work.
-# Feel free to modify the math we used
-
-def draw_advanced_arc_outline(start_x, start_y, end_x, end_y, height, color,
-                              border_width=1, tilt_angle=0):
-    """
-    Draws the outline of an arc.
-
-    Args:
-        :start_x (float): The starting x position of the arc
-        :start_y (float): The starting y position of the arc
-        :end_x (float): The end x position of the arc
-        :end_y (float): The end y position of the arc
-        :height (float): How tall the arc is
-        :color (tuple): What color the arc is
-        :border_width (float): The width of the arc
-        :tile_angle (float): The angle of the arcs tilt
-    Returns:
-        None
-    Raises:
-        None
-
-    Example:
-
-    >>> import arcade
-    >>> arcade.open_window("Drawing Example", 800, 600)
-    >>> arcade.set_background_color(arcade.color.WHITE)
-    >>> arcade.start_render()
-    >>> arcade.draw_advanced_arc_outline(150, 150, 200, 200, 20, \
-arcade.color.BRIGHT_MAROON, 5, 10)
-    >>> transparent_color = (255, 0, 0, 127)
-    >>> arcade.draw_advanced_arc_outline(160, 160, 210, 210, 20, \
-transparent_color)
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
-    """
-    temp_x = end_x - start_x
-    temp_x = temp_x**2
-    temp_y = end_y - start_y
-    temp_y = temp_y**2
-    z = temp_x + temp_y
-    distance = math.sqrt(z)
-    mid_x = (start_x + end_x)/2
-    mid_y = (start_y + end_y)/2
-
-#     a = height
-#     b = height
-#     c = distance
-#
-#     square_c = c**2
-#     square_c = square_c * -1
-#
-#     square_b = b**2
-#
-#     square_a = a**2
-#
-#     numerator = square_c + square_b + square_a
-#     denominator = 2 * a * b
-#
-#     cosine = numerator / denominator
-#
-#     radian = math.acos(cosine)
-#
-#     angle = radian*(180/math.pi)
-
-
-    h = height**2
-
-#     cent_x = start_x - math.sqrt((distance**2) - (start_y**2) + (2 * start_y * cent_y) - (cent_y**2))
-#     cent_y = end_y - math.sqrt((distance**2) - (end_x**2) + (2 * end_x * cent_x) - (cent_x**2))
-#
-#     cent_x = start_x - math.sqrt((distance**2) - (start_y**2) + (2 * start_y * (end_y - math.sqrt((distance**2) - (end_x**2) + (2 * end_x * cent_x) - (cent_x**2)))) - (end_y - math.sqrt((distance**2) - (end_x**2) + (2 * end_x * cent_x) - (cent_x**2)))**2)
-
-    cent_x = (4*start_x**3-4*start_x**2*end_x-math.sqrt((-4*start_x**3+4*start_x**2*end_x-4*start_x*start_y**2+8*start_x*start_y*end_y-4*start_x*end_y**2+4*start_x*end_x**2-4*start_y**2*end_x+8*start_y*end_y*end_x-4*end_y**2*end_x-4*end_x**3)**2-4*(4*start_x**2-8*start_x*end_x+4*start_y**2-8*start_y*end_y+4*end_y**2+4*end_x**2)*(start_x**4+2*start_x**2*start_y**2-4*start_x**2*start_y*end_y+2*start_x**2*end_y**2-2*start_x**2*end_x**2-4*distance**2*start_y**2+8*distance**2*start_y*end_y-4*distance**2*end_y**2+start_y**4-4*start_y**3*end_y+6*start_y**2*end_y**2+2*start_y**2*end_x**2-4*start_y*end_y**3-4*start_y*end_y*end_x**2+end_y**4+2*end_y**2*end_x**2+end_x**4))+4*start_x*start_y**2-8*start_x*start_y*end_y+4*start_x*end_y**2-4*start_x*end_x**2+4*start_y**2*end_x-8*start_y*end_y*end_x+4*end_y**2*end_x+4*end_x**3)/(2*(4*start_x**2-8*start_x*end_x+4*start_y**2-8*start_y*end_y+4*end_y**2+4*end_x**2))
-
-    cent_y = end_y - math.sqrt((distance**2) - (end_x**2) + (2 * end_x * cent_x) - (cent_x**2))
-
-
-    start_a = math.atan2(start_y-cent_y,start_x-cent_x)
-    end_a = math.atan2(end_y-cent_y,end_x-cent_x)
-    start_angle = start_a*(180/math.pi)
-    end_angle = end_a*(180/math.pi)
-
-    draw_arc_outline(cent_x, cent_y, distance, height, color, start_angle,
-                     end_angle, border_width, tilt_angle)
-
-def draw_advanced_arc_filled(start_x, start_y, end_x, end_y, height, color,
-                             tilt_angle=0):
-    """
-    Draws a filled in arc.
-
-    Args:
-        :start_x (float): The starting x position of the arc
-        :start_y (float): The starting y position of the arc
-        :end_x (float): The end x position of the arc
-        :end_y (float): The end y position of the arc
-        :height (float): How tall the arc is
-        :color (tuple): What color the arc is
-        :tile_angle (float): The angle of the arcs tilt
-    Returns:
-        None
-    Raises:
-        None
-
-    Example:
-
-    >>> import arcade
-    >>> arcade.open_window("Drawing Example", 800, 600)
-    >>> arcade.set_background_color(arcade.color.WHITE)
-    >>> arcade.start_render()
-    >>> arcade.draw_advanced_arc_filled(150, 150, 200, 200, 20, \
-arcade.color.BRIGHT_MAROON, 10)
-    >>> transparent_color = (255, 0, 0, 127)
-    >>> arcade.draw_advanced_arc_filled(160, 160, 210, 210, 20, \
-transparent_color)
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
-    """
-
-    temp_x = end_x - start_x
-    temp_x = temp_x**2
-    temp_y = end_y - start_y
-    temp_y = temp_y**2
-    z = temp_x + temp_y
-    distance = math.sqrt(z)
-    mid_x = (start_x + end_x)/2
-    mid_y = (start_y + end_y)/2
-
-#     a = height
-#     b = height
-#     c = distance
-#
-#     square_c = c**2
-#     square_c = square_c * -1
-#
-#     square_b = b**2
-#
-#     square_a = a**2
-#
-#     numerator = square_c + square_b + square_a
-#     denominator = 2 * a * b
-#
-#     cosine = numerator / denominator
-#
-#     radian = math.acos(cosine)
-#
-#     angle = radian*(180/math.pi)
-
-
-    h = height**2
-
-#     cent_x = start_x - math.sqrt((distance**2) - (start_y**2) + (2 * start_y * cent_y) - (cent_y**2))
-#     cent_y = end_y - math.sqrt((distance**2) - (end_x**2) + (2 * end_x * cent_x) - (cent_x**2))
-#
-#     cent_x = start_x - math.sqrt((distance**2) - (start_y**2) + (2 * start_y * (end_y - math.sqrt((distance**2) - (end_x**2) + (2 * end_x * cent_x) - (cent_x**2)))) - (end_y - math.sqrt((distance**2) - (end_x**2) + (2 * end_x * cent_x) - (cent_x**2)))**2)
-
-    cent_x = (4*start_x**3-4*start_x**2*end_x-math.sqrt((-4*start_x**3+4*start_x**2*end_x-4*start_x*start_y**2+8*start_x*start_y*end_y-4*start_x*end_y**2+4*start_x*end_x**2-4*start_y**2*end_x+8*start_y*end_y*end_x-4*end_y**2*end_x-4*end_x**3)**2-4*(4*start_x**2-8*start_x*end_x+4*start_y**2-8*start_y*end_y+4*end_y**2+4*end_x**2)*(start_x**4+2*start_x**2*start_y**2-4*start_x**2*start_y*end_y+2*start_x**2*end_y**2-2*start_x**2*end_x**2-4*distance**2*start_y**2+8*distance**2*start_y*end_y-4*distance**2*end_y**2+start_y**4-4*start_y**3*end_y+6*start_y**2*end_y**2+2*start_y**2*end_x**2-4*start_y*end_y**3-4*start_y*end_y*end_x**2+end_y**4+2*end_y**2*end_x**2+end_x**4))+4*start_x*start_y**2-8*start_x*start_y*end_y+4*start_x*end_y**2-4*start_x*end_x**2+4*start_y**2*end_x-8*start_y*end_y*end_x+4*end_y**2*end_x+4*end_x**3)/(2*(4*start_x**2-8*start_x*end_x+4*start_y**2-8*start_y*end_y+4*end_y**2+4*end_x**2))
-
-    cent_y = end_y - math.sqrt((distance**2) - (end_x**2) + (2 * end_x * cent_x) - (cent_x**2))
-
-    start_a = math.atan2(start_y-cent_y,start_x-cent_x)
-    end_a = math.atan2(end_y-cent_y,end_x-cent_x)
-    start_angle = start_a*(180/math.pi)
-    end_angle = end_a*(180/math.pi)
-
-    draw_arc_filled(cent_x, cent_y, distance, height, color, start_angle,
-                    end_angle, tilt_angle)
-
 # --- END ARC FUNCTIONS # # #
+
 
 # --- BEGIN PARABOLA FUNCTIONS # # #
 
@@ -586,7 +420,8 @@ def draw_parabola_filled(start_x, start_y, end_x, height, color, tilt_angle=0):
     >>> arcade.open_window("Drawing Example", 800, 600)
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
-    >>> arcade.draw_parabola_filled(150, 150, 200, 50, arcade.color.BOTTLE_GREEN)
+    >>> arcade.draw_parabola_filled(150, 150, 200, 50, \
+arcade.color.BOTTLE_GREEN)
     >>> color = (255, 0, 0, 127)
     >>> arcade.draw_parabola_filled(160, 160, 210, 50, color)
     >>> arcade.finish_render()
@@ -599,6 +434,7 @@ def draw_parabola_filled(start_x, start_y, end_x, height, color, tilt_angle=0):
     width = (start_x - end_x)
     draw_arc_filled(center_x, center_y, width, height, color,
                     start_angle, end_angle, tilt_angle)
+
 
 def draw_parabola_outline(start_x, start_y, end_x, height, color,
                           border_width=1, tilt_angle=0):
@@ -624,7 +460,8 @@ def draw_parabola_outline(start_x, start_y, end_x, height, color,
     >>> arcade.open_window("Drawing Example", 800, 600)
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
-    >>> arcade.draw_parabola_outline(150, 150, 200, 50, arcade.color.BOTTLE_GREEN, 10, 15)
+    >>> arcade.draw_parabola_outline(150, 150, 200, 50, \
+arcade.color.BOTTLE_GREEN, 10, 15)
     >>> color = (255, 0, 0, 127)
     >>> arcade.draw_parabola_outline(160, 160, 210, 50, color, 20)
     >>> arcade.finish_render()
@@ -638,15 +475,8 @@ def draw_parabola_outline(start_x, start_y, end_x, height, color,
     draw_arc_outline(center_x, center_y, width, height, color,
                      start_angle, end_angle, border_width, tilt_angle)
 
-def draw_parabola(start_x, start_y, end_x, height, color,
-                  border_width=0, tilt_angle=0):
-    if border_width <= 0:
-        draw_parabola_filled(start_x, start_y, end_x, height, color, tilt_angle)
-    else:
-        draw_parabola_outline(start_x, start_y, end_x, height, color,
-                              border_width, tilt_angle)
-
 # --- END PARABOLA FUNCTIONS # # #
+
 
 # --- BEGIN CIRCLE FUNCTIONS # # #
 
@@ -716,9 +546,8 @@ def draw_circle_outline(center_x, center_y, radius, color, border_width=1):
     draw_ellipse_outline(center_x, center_y, width, height,
                          color, border_width)
 
-
-
 # --- END CIRCLE FUNCTIONS # # #
+
 
 # --- BEGIN ELLIPSE FUNCTIONS # # #
 
@@ -728,7 +557,7 @@ def create_ellipse(width, height, color):
     drawn with ``render_ellipse_filled``. This method of drawing an ellipse
     is much faster than calling ``draw_ellipse_filled`` each frame.
     """
-    num_segments=64
+    num_segments = 64
 
     data = []
 
@@ -779,7 +608,9 @@ def render_ellipse_filled(shape, x, y, color, angle=0):
 
     GL.glDrawArrays(GL.GL_TRIANGLE_FAN, 0, shape.size)
 
-def draw_ellipse_filled(center_x, center_y, width, height, color, tilt_angle=0):
+
+def draw_ellipse_filled(center_x, center_y,
+                        width, height, color, tilt_angle=0):
     """
     Draw a filled in ellipse.
 
@@ -811,7 +642,7 @@ def draw_ellipse_filled(center_x, center_y, width, height, color, tilt_angle=0):
     >>> arcade.quick_run(0.25)
     """
 
-    num_segments=128
+    num_segments = 128
 
     GL.glEnable(GL.GL_BLEND)
     GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
@@ -966,8 +797,6 @@ def draw_line(start_x, start_y, end_x, end_y, color, border_width=1):
     GL.glVertex3f(start_x, start_y, 0.5)
     GL.glVertex3f(end_x, end_y, 0.5)
     GL.glEnd()
-
-
 
 
 def draw_line_strip(point_list, color, border_width=1):
@@ -1285,16 +1114,12 @@ def draw_polygon_outline(point_list, color, border_width=1):
     GL.glEnd()
 
 
-def draw_polygon(point_list, color, border_width = 0):
-    if border_width <= 0:
-        draw_polygon_filled(point_list, color)
-    else:
-        draw_polygon_outline(point_list, color, border_width)
-
-
 def draw_triangle_filled(first_x, first_y,
                          second_x, second_y,
                          third_x, third_y, color):
+    """
+    Draw a filled in triangle.
+    """
     first_point = [first_x, first_y]
     second_point = [second_x, second_y]
     third_point = [third_x, third_y]
@@ -1305,29 +1130,26 @@ def draw_triangle_filled(first_x, first_y,
 def draw_triangle_outline(first_x, first_y,
                           second_x, second_y,
                           third_x, third_y, color, border_width=1):
+    """
+    Draw a the outline of a triangle.
+    """
     first_point = [first_x, first_y]
     second_point = [second_x, second_y]
     third_point = [third_x, third_y]
     point_list = (first_point, second_point, third_point)
     draw_polygon_outline(point_list, color, border_width)
 
-
-def draw_triangle(first_x, first_y,
-                  second_x, second_y,
-                  third_x, third_y, color, border_width = 0):
-    if border_width <= 0:
-        draw_triangle_filled(first_x, first_y, second_x, second_y,
-                             third_x, third_y, color)
-    else:
-        draw_triangle_outline(first_x, first_y, second_x, second_y,
-                              third_x, third_y, color, border_width=1)
-
 # --- END POLYGON FUNCTIONS # # #
+
 
 # --- BEGIN RECTANGLE FUNCTIONS # # #
 
-
 def create_rectangle(width, height, color):
+    """
+    This function creates a rectangle using a vertex buffer object.
+    Creating the rectangle, and then later drawing it with ``render_rectangle``
+    is faster than calling ``draw_rectangle``.
+    """
     data = [-width / 2, -height / 2,
             width / 2, -height / 2,
             width / 2, height / 2,
@@ -1535,7 +1357,7 @@ scale * texture.height, texture, 90)
     GL.glHint(GL.GL_PERSPECTIVE_CORRECTION_HINT, GL.GL_NICEST)
 
     GL.glLoadIdentity()
-    GL.glTranslatef(x, y, 0)
+    GL.glTranslatef(center_x, center_y, 0)
     if angle != 0:
         GL.glRotatef(angle, 0, 0, 1)
 
@@ -1588,7 +1410,7 @@ def draw_text(text, start_x, start_y, color, size):
     label = pyglet.text.Label(text,
                               font_name='Times New Roman',
                               font_size=size,
-                              x=x, y=y,
+                              x=start_x, y=start_y,
                               color=color)
     GL.glLoadIdentity()
 
@@ -1602,7 +1424,8 @@ class VertexBuffer():
     This class represents a
     `vertex buffer object`_.
 
-    .. _vertex buffer object: https://en.wikipedia.org/wiki/Vertex_Buffer_Object
+    .. _vertex buffer object:
+       https://en.wikipedia.org/wiki/Vertex_Buffer_Object
     """
     def __init__(self, vbo_id, size, width, height, color):
         self.vbo_id = vbo_id

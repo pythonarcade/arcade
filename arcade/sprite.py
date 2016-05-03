@@ -7,14 +7,14 @@ FACE_UP = 3
 FACE_DOWN = 4
 
 
-def set_vbo(vbo_id, points):
+def _set_vbo(vbo_id, points):
     data2 = (GL.GLfloat*len(points))(*points)
     GL.glBindBuffer(GL.GL_ARRAY_BUFFER, vbo_id)
     GL.glBufferData(GL.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2,
                     GL.GL_STATIC_DRAW)
 
 
-def create_vbo():
+def _create_vbo():
     vbo_id = GL.GLuint()
 
     GL.glGenBuffers(1, ctypes.pointer(vbo_id))
@@ -22,7 +22,7 @@ def create_vbo():
     return vbo_id
 
 
-def create_rects(rect_list):
+def _create_rects(rect_list):
     """ Create a vertex buffer for a set of rectangles. """
 
     v2f = []
@@ -35,7 +35,7 @@ def create_rects(rect_list):
     return v2f
 
 
-def render_rect_filled(shape, offset, texture_id, texture_coord_vbo):
+def _render_rect_filled(shape, offset, texture_id, texture_coord_vbo):
     """ Render the shape at the right spot. """
     # Set color
     GL.glLoadIdentity()
@@ -50,7 +50,7 @@ def render_rect_filled(shape, offset, texture_id, texture_coord_vbo):
     GL.glDrawArrays(GL.GL_QUADS, offset, 4)
 
 
-def draw_rects(shape_list, vertex_vbo_id, texture_coord_vbo_id):
+def _draw_rects(shape_list, vertex_vbo_id, texture_coord_vbo_id):
     GL.glEnable(GL.GL_BLEND)
     GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
     GL.glEnable(GL.GL_TEXTURE_2D)
@@ -72,8 +72,8 @@ def draw_rects(shape_list, vertex_vbo_id, texture_coord_vbo_id):
     for shape in shape_list:
         if shape.can_cache:
             texture_coord_vbo_id = None
-            render_rect_filled(shape, offset,
-                               shape.texture.id, texture_coord_vbo_id)
+            _render_rect_filled(shape, offset,
+                                shape.texture.id, texture_coord_vbo_id)
 
             offset += 4
         else:
@@ -151,21 +151,21 @@ class SpriteList():
         """
         if fast and self.vertex_vbo_id is None:
             self.vbo_dirty = True
-            self.vertex_vbo_id = create_vbo()
-            self.texture_coord_vbo_id = create_vbo()
+            self.vertex_vbo_id = _create_vbo()
+            self.texture_coord_vbo_id = _create_vbo()
             # print("Setup VBO")
 
         if fast and self.vbo_dirty:
-            rects = create_rects(self.sprite_list)
-            set_vbo(self.vertex_vbo_id, rects)
-            set_vbo(self.texture_coord_vbo_id,
-                    [0, 0, 1, 0, 1, 1, 0, 1] * len(self.sprite_list))
+            rects = _create_rects(self.sprite_list)
+            _set_vbo(self.vertex_vbo_id, rects)
+            _set_vbo(self.texture_coord_vbo_id,
+                     [0, 0, 1, 0, 1, 1, 0, 1] * len(self.sprite_list))
             self.vbo_dirty = False
             # print("Upload new vbo data")
 
         if fast:
-            draw_rects(self.sprite_list, self.vertex_vbo_id,
-                       self.texture_coord_vbo_id)
+            _draw_rects(self.sprite_list, self.vertex_vbo_id,
+                        self.texture_coord_vbo_id)
         else:
             for sprite in self.sprite_list:
                 sprite.draw()
@@ -561,6 +561,7 @@ arcade.Sprite("doc/source/examples/images/playerShip1_orange.png", scale)
         animated.
         """
         pass
+
     def kill(self):
         """
         Remove the sprite from all sprite lists.

@@ -25,19 +25,31 @@ def list_functions(filename, output_file):
 
 def list_classes(filename, output_file):
     file_pointer = open(filename)
-    file_text = file_pointer.read()
-    my_re = re.compile("\nclass ([A-Za-z]+)")
-    functions = my_re.findall(file_text)
-    functions.sort()
+    class_re = re.compile("^class ([A-Za-z]+[^:]*)")
+    method_re = re.compile("^    def ([a-z][^:]*)|^    def (__init__[^:]*)")
+    remove_self_re = re.compile(r"self(, )?")
     first = True
-    for function in functions:
-        if first:
-            first = False
-            output_file.write("Classes\n")
-            output_file.write("^^^^^^^\n")
-        output_file.write("- ")
-        output_file.write(function)
-        output_file.write("\n")
+
+    for line in file_pointer:
+
+        class_names = class_re.findall(line)
+        if len(class_names) > 0:
+            if first:
+                first = False
+                output_file.write("Classes\n")
+                output_file.write("^^^^^^^\n")
+            output_file.write("- ")
+            output_file.write(class_names[0])
+            output_file.write("\n")
+
+        method_names = method_re.findall(line)
+        for name in method_names:
+            name = ''.join(name)
+            output_file.write("    - ")
+            name = remove_self_re.sub("", name)
+            output_file.write(name)
+            output_file.write("\n")
+
     if not first:
         output_file.write("\n")
 
@@ -60,6 +72,12 @@ def main():
     output_file.write("\n")
     list_classes("../../arcade/draw_commands.py", output_file)
     list_functions("../../arcade/draw_commands.py", output_file)
+
+    output_file.write("Shape Objects Module\n")
+    output_file.write("--------------------\n")
+    output_file.write("\n")
+    list_classes("../../arcade/shape_objects.py", output_file)
+    list_functions("../../arcade/shape_objects.py", output_file)
 
     output_file.write("Geometry Module\n")
     output_file.write("---------------\n")

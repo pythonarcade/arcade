@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-BUILD = 36
+BUILD = 37
 VERSION = "0.0.6"
 RELEASE = VERSION + "a" + str(BUILD)
 
@@ -26,7 +26,8 @@ import datetime
 
 sys.path.insert(0, os.path.abspath('../..'))
 
-# From http://stackoverflow.com/questions/12772927/specifying-an-online-image-in-sphinx-restructuredtext-format
+# From
+# http://stackoverflow.com/questions/12772927/specifying-an-online-image-in-sphinx-restructuredtext-format
 import sphinx.environment
 from docutils.utils import get_source_line
 

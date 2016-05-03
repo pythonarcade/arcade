@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-BUILD = 36
+BUILD = 37
 VERSION = "0.0.6"
 RELEASE = VERSION + "a" + str(BUILD)
 
@@ -34,9 +34,9 @@ if __name__ == "__main__":
           url="http://arcade.academy",
           download_url="http://arcade.academy",
           packages=["arcade",
-                       "arcade.key",
-                       "arcade.color"
-                   ],
+                    "arcade.key",
+                    "arcade.color"
+                    ],
           classifiers=[
               "Development Status :: 1 - Planning",
               "Intended Audience :: Developers",
