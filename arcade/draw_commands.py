@@ -396,7 +396,7 @@ transparent_color, 90, 360)
 # Feel free to modify the math we used
 
 def draw_advanced_arc_outline(start_x, start_y, end_x, end_y, height, color,
-                              border_width=5, tilt_angle=0):
+                              border_width=1, tilt_angle=0):
     """
     Draws the outline of an arc.
 
@@ -601,7 +601,7 @@ def draw_parabola_filled(start_x, start_y, end_x, height, color, tilt_angle=0):
                     start_angle, end_angle, tilt_angle)
 
 def draw_parabola_outline(start_x, start_y, end_x, height, color,
-                          border_width=5, tilt_angle=0):
+                          border_width=1, tilt_angle=0):
     """
     Draws the outline of a parabola.
 
@@ -909,12 +909,6 @@ def draw_ellipse_outline(center_x, center_y, width, height, color,
 
     GL.glEnd()
     GL.glLoadIdentity()
-
-def draw_ellipse(center_x, center_y, width, height, color, border_width = 0, tilt_angle = 0):
-    if border_width <= 0:
-        draw_ellipse_filled(center_x, center_y, width, height, color, tilt_angle)
-    else:
-        draw_ellipse_outline(center_x, center_y, width, height, color, border_width, tilt_angle)
 
 # --- END ELLIPSE FUNCTIONS # # #
 
@@ -1494,14 +1488,14 @@ def draw_rectangle(center_x, center_y, width, height, color, border_width=0,
                                border_width, tilt_angle)
 
 
-def draw_texture_rectangle(x, y, width, height, texture,
+def draw_texture_rectangle(center_x, center_y, width, height, texture,
                            angle=0, alpha=1, transparent=True):
     """
     Draw a textured rectangle on-screen.
 
     Args:
-        :x (float): x coordinate of top left rectangle point.
-        :y (float): y coordinate of top left rectangle point.
+        :center_x (float): x coordinate of rectangle center.
+        :center_y (float): y coordinate of rectangle center.
         :width (float): width of the rectangle.
         :height (float): height of the rectangle.
         :texture (int): identifier of texture returned from load_texture() call
@@ -1566,14 +1560,14 @@ scale * texture.height, texture, 90)
 # --- BEGIN TEXT FUNCTIONS # # #
 
 
-def draw_text(text, x, y, color, size):
+def draw_text(text, start_x, start_y, color, size):
     """
     Draw text to the screen.
 
     Args:
         :text (str): Text to display.
-        :x (float): x coordinate of top left text point.
-        :y (float): y coordinate of top left text point.
+        :start_x (float): x coordinate of top left text point.
+        :start_y (float): y coordinate of top left text point.
         :color (tuple): color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
 

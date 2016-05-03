@@ -4,11 +4,14 @@ import re
 def list_functions(filename, output_file):
     file_pointer = open(filename)
     file_text = file_pointer.read()
-    my_re = re.compile("\ndef ([a-z][a-z_]*)")
+    my_re = re.compile("\ndef ([a-z][^:]*)")
     functions = my_re.findall(file_text)
     functions.sort()
     first = True
+
+    cr_re = re.compile(r"\n *")
     for function in functions:
+        function = cr_re.sub(" ", function)
         if first:
             first = False
             output_file.write("Functions\n")
@@ -45,41 +48,44 @@ def main():
     output_file.write("===========\n")
     output_file.write("\n")
 
-    output_file.write("Window\n")
-    output_file.write("------\n")
+    output_file.write("Window Module\n")
+    output_file.write("-------------\n")
     output_file.write("\n")
     list_classes("../../arcade/window_commands.py", output_file)
     list_functions("../../arcade/window_commands.py", output_file)
     output_file.write("\n")
 
-    output_file.write("Drawing\n")
-    output_file.write("-------\n")
+    output_file.write("Drawing Module\n")
+    output_file.write("--------------\n")
     output_file.write("\n")
     list_classes("../../arcade/draw_commands.py", output_file)
     list_functions("../../arcade/draw_commands.py", output_file)
 
-    output_file.write("Geometry\n")
-    output_file.write("--------\n")
+    output_file.write("Geometry Module\n")
+    output_file.write("---------------\n")
     output_file.write("\n")
     list_classes("../../arcade/geometry.py", output_file)
     list_functions("../../arcade/geometry.py", output_file)
 
-    output_file.write("Sprite\n")
-    output_file.write("------\n")
+    output_file.write("Sprite Module\n")
+    output_file.write("-------------\n")
     output_file.write("\n")
     list_classes("../../arcade/sprite.py", output_file)
     list_functions("../../arcade/sprite.py", output_file)
 
-    output_file.write("Physics Engines\n")
-    output_file.write("---------------\n")
+    output_file.write("Physics Engines Module\n")
+    output_file.write("----------------------\n")
     output_file.write("\n")
     list_classes("../../arcade/physics_engines.py", output_file)
     list_functions("../../arcade/physics_engines.py", output_file)
 
-    output_file.write("Application\n")
-    output_file.write("-----------\n")
+    output_file.write("Application Module\n")
+    output_file.write("------------------\n")
     output_file.write("\n")
     list_classes("../../arcade/application.py", output_file)
     list_functions("../../arcade/application.py", output_file)
 
     output_file.close()
+
+if __name__ == '__main__':
+    main()
