@@ -97,7 +97,7 @@ arcade.draw_circle_outline(300, 285, 18, arcade.color.WISTERIA, 3)
 
 # Draw a filled in circle
 arcade.draw_text("draw_circle_filled", 363, 207, arcade.color.BLACK, 10)
-arcade.draw_circle_filled(420, 285, 18, arcade.color.GREEN, 3)
+arcade.draw_circle_filled(420, 285, 18, arcade.color.GREEN)
 
 # Draw an ellipse outline, and another one rotated
 arcade.draw_text("draw_ellipse_outline", 483, 207, arcade.color.BLACK, 10)
@@ -120,21 +120,21 @@ arcade.draw_arc_filled(150, 144, 15, 36,
 
 # Draw an rectangle outline
 arcade.draw_text("draw_rect", 243, 3, arcade.color.BLACK, 10)
-arcade.draw_rect_outline(278, 150, 45, 105,
-                         arcade.color.BRITISH_RACING_GREEN, 2)
+arcade.draw_rectangle_outline(295, 100, 45, 105,
+                              arcade.color.BRITISH_RACING_GREEN)
 
 # Draw a filled in rectangle
 arcade.draw_text("draw_filled_rect", 363, 3, arcade.color.BLACK, 10)
-arcade.draw_rect_filled(390, 150, 45, 105, arcade.color.BLUSH)
+arcade.draw_rectangle_filled(420, 100, 45, 105, arcade.color.BLUSH)
 
 # Load and draw an image to the screen
 arcade.draw_text("draw_bitmap", 483, 3, arcade.color.BLACK, 12)
 texture = arcade.load_texture("images/playerShip1_orange.png")
 scale = .6
-arcade.draw_texture_rect(540, 120, scale * texture.width,
-                         scale * texture.height, texture, 0)
-arcade.draw_texture_rect(540, 60, scale * texture.width,
-                         scale * texture.height, texture, 90)
+arcade.draw_texture_rectangle(540, 120, scale * texture.width,
+                              scale * texture.height, texture, 0)
+arcade.draw_texture_rectangle(540, 60, scale * texture.width,
+                              scale * texture.height, texture, 90)
 
 # Finish the render.
 # Nothing will be drawn without this.

@@ -188,8 +188,8 @@ class Sprite():
     Class that represents a 'sprite' on-screen.
 
     Attributes:
-        :scale: Scale the sprite. Default is 1. Setting to 0.5 would halve the \
-    width and height.
+        :scale: Scale the sprite. Default is 1. Setting to 0.5 would halve \
+the width and height.
         :center_x: x coordinate of the sprite's center.
         :center_y: y coordinate of the sprite's center.
         :angle: Angle at which the sprite is drawn. 0 is default, 180 is \
