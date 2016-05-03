@@ -1114,28 +1114,54 @@ def draw_polygon_outline(point_list, color, border_width=1):
     GL.glEnd()
 
 
-def draw_triangle_filled(first_x, first_y,
-                         second_x, second_y,
-                         third_x, third_y, color):
+def draw_triangle_filled(x1, y1,
+                         x2, y2,
+                         x3, y3, color):
     """
     Draw a filled in triangle.
+
+    Args:
+        :x1: x value of first coordinate.
+        :y1: y value of first coordinate.
+        :x2: x value of second coordinate.
+        :y2: y value of second coordinate.
+        :x3: x value of third coordinate.
+        :y3: y value of third coordinate.
+        :y3: Color of triangle.
+    Returns:
+        None
+    Raises:
+        None
     """
-    first_point = [first_x, first_y]
-    second_point = [second_x, second_y]
-    third_point = [third_x, third_y]
+    first_point = [x1, y1]
+    second_point = [x2, y2]
+    third_point = [x3, y3]
     point_list = (first_point, second_point, third_point)
     draw_polygon_filled(point_list, color)
 
 
-def draw_triangle_outline(first_x, first_y,
-                          second_x, second_y,
-                          third_x, third_y, color, border_width=1):
+def draw_triangle_outline(x1, y1,
+                          x2, y2,
+                          x3, y3, color, border_width=1):
     """
     Draw a the outline of a triangle.
+
+    Args:
+        :x1: x value of first coordinate.
+        :y1: y value of first coordinate.
+        :x2: x value of second coordinate.
+        :y2: y value of second coordinate.
+        :x3: x value of third coordinate.
+        :y3: y value of third coordinate.
+        :y3: Color of triangle.
+    Returns:
+        None
+    Raises:
+        None
     """
-    first_point = [first_x, first_y]
-    second_point = [second_x, second_y]
-    third_point = [third_x, third_y]
+    first_point = [x1, y1]
+    second_point = [x2, y2]
+    third_point = [x3, y3]
     point_list = (first_point, second_point, third_point)
     draw_polygon_outline(point_list, color, border_width)
 
