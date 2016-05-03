@@ -1,47 +1,68 @@
 Installation on the Mac
 =======================
 
-==============
-Finding Arcade
-==============
-Go to where you saved Arcade on your computer and open it in a window and select any random file in the folder.
-At the top of the window, click on the gear and select the 'Get Info' option.
-In the new window that opened, in the section called 'General Settings', you will find a 'Where:' section.
-Copy the location.
+The Mac has a "terminal" window where a user can type in commands. This is how
+computers used to be operated before we had graphics. It is still very useful.
+To start the Mac's terminal, go to the Finder and open up your applications.
+Inside of applications is a folder called Utilities. The Terminal program is in
+there.
 
-============================================
-Getting to Terminal and the Arcade Directory
-============================================
-To open terminal press the 'command' key + the space bar, and type 'terminal'.
+.. image:: images/run_mac_terminal.png
 
-In the terminal, you will need to change to the Arcade directory.
-To do this, type "cd " and paste Arcade's address into the terminal after the space after 'cd' and then press enter.
+At this point you need to choose to use version 3.x of Python (recommended) or
+use version 2.x. Pick one of the two, and follow the instructions below.
 
-=============================
-Installing Arcade (Best Case)
-=============================
-To install Arcade, type "cat make.bat" into the terminal.
+Option 1: Use Python 3.x
+------------------------
 
-If the installation was successful, then you will see a lot of things happening in the terminal and there will be several windows, briefly, popping up on the screen.
+Download and install Python 3.x from the official Python website:
 
-If nothing really happens, then you may need to do a more manual installation.
+https://www.python.org/downloads/
 
-=================================
-Manual Installation (In Progress)
-=================================
-Python3 setup.py clean
-Python3 setup.py build
-pip3 install wheel sphinx pyglet pillow PyOpenGl Coveralls mock numpy
-(Install AVbin)
-sphinx-build -b html doc/source doc/build/html
-coverage run --source arcade setup.py test
+Start the Terminal application. This must be done AFTER you finish installing
+Python, or next command won't work. In the Terminal window type:
 
-================
+``sudo pip3 install numpy pillow pyglet arcade``
+
+This will install the Arcade library and the libraries it depends on.
+
+Option 2: Use Python 2.x
+------------------------
+
+Start the Terminal program.
+
+At the terminal, type ``sudo easy_install pip``. The computer will ask for
+your password, and then install a command called ``pip``.
+
+.. image:: images/easyinstall_pip.png
+
+After this, type:
+
+``sudo pip install numpy pillow pyglet arcade``
+
 Installing AVbin
 ================
-After you install pyglet, you will need to download and install AVbin. It is also possible that if you encounter issues with using sound, you may need to re-install AVbin.
 
-To download AVbin, go to: https://avbin.github.io/AVbin/Download.html and click the AVbin 10 for OSX link.
+For sound, Arcade relies on a library called AVbin. This needs to be installed
+next.
 
-To install AVbin, open the AVbin 10 that you downloaded and follow the instructions in the installer.
+To download AVbin, go to: https://avbin.github.io/AVbin/Download.html and click
+the AVbin 10 for OSX link. Download and install.
 
+If your security setting prevent you from running the installer, find the
+downloaded file in your Finder. Control-Click the file and select "Open". Then
+click past the warning and install it anyway.
+
+Installing PyCharm
+==================
+
+Go to JetBrains and download PyCharm for the Mac. The Community edition
+is fine:
+
+https://www.jetbrains.com/pycharm/download/
+
+Because the Mac often has multiple versions of Python installed on it, when
+cerating a project make sure to select version 2.7 or version 3.5 (recommended)
+depending on what version of Python you want to create.
+
+.. image:: images/pycharm_mac_select_python.png

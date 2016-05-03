@@ -1,39 +1,63 @@
 Installation on Windows
 =======================
 
-First you will need the address of your Arcade library in your computer. To find this, go to where you saved Arcade and open it in a file explorer window. 
-At the top of the window will be the address bar, copy or memorize the address. 
+Step 1: Install Python
+----------------------
 
-To install Arcade, press the "windows key" + "R", this will open a window with a dialog box. Type "cmd" in the box and press enter or click the "OK" button. This will open your command line. 
+Install Python from the official Python website:
 
-At this point you will need to change to your Arcade directory. To do this type: cd (the address of arcade)
-If you copied the address then after you type 'cd ' then right click the window and select paste. (Note: "ctrl" + "v" does not generally work for command line.
+https://www.python.org/downloads/
 
-once you are in the correct directory, type 'make.bat'. You will know if it works if a lot of windows pop up on the screen.
-Most errors that will be encountered during installation will occur here. If installation fails, you may need to install wheel.
+The website gives you the option of downloading two different versions:
+Version 3.x.x or version 2.x.x. If you aren't sure which you want, pick the
+version that begins with 3.
 
-================
-Installing Wheel
-================
-To install wheel type 'pip install wheel'. If you encounter an error that says:
-'pip" is not recognized as an internal or external command, operable program or batch file.
-Then this means that Python was not added to your path. 
-(This mean that your computer does not know to look at Python's Scripts folder to find the 'pip' command)
+Step 2: Install The Arcade Library
+----------------------------------
 
-===========================
-Add Python Scripts to Path
-===========================
-To add Python to the path, you will first need to find your Python folder. If it was installed in the default location, then look in your C: drive in explorer. 
-when you find your version of Python, open it and find the Scripts folder inside. When you get to the Scripts folder, copy the address in the address bar.
+THE EASY WAY
+^^^^^^^^^^^^
 
-To customize path, right click the bottom right-hand corner of your screen and select the System option.
-In the System window there is an option for advanced system settings, open it.
-In the System Properties window you should be in the 'Advanced' tab. There should also be a button that says "Environment Variables" that you will need to open.
-The Path variable will be in a list of system variables. Find it and select Edit when you have Path highlighted.
-Go to the end of the text in the Variable value dialog box. Type a ';' at the end and then paste the address of your Scripts folder.
-Select OK on the menus and exit out of your System window. Because you changed the path, you will need to close command line and re-open it again. 
+Click the Window button in the lower left of your screen (or hit the window
+button on your keyboard) and type ``run``. Then hit enter.
 
-================================
-After Adding Scripts to Path
-================================
-Return to the directory where your Arcade is and type "make.bat" again.	if more things happen in the console than before, but you are still not seeing the group of windows that pop up, search though the information that got written into the console. If you can find an error message like the one before saying that "Python is not recognized as an internal command", then you will need to add Python to the path as well. Follow the same instructions from the "add Python Scripts to path" but with the address for the python folder itself.
+Type ``cmd`` and hit enter.
+
+.. image:: images/run_command_prompt.png
+
+Next, type ``pip install arcade`` at the command prompt:
+
+.. image:: images/pip_install_arcade_windows.png
+
+
+THE HARD WAY
+^^^^^^^^^^^^
+
+If you successfully installed Arcade the easy way, skip this section. If
+you'd rather download the Arcade library directly off PyPi you can at:
+
+https://pypi.python.org/pypi/arcade
+
+Or you can get the source code for the library from GitHub:
+
+https://github.com/pvcraven/arcade
+
+Step 3: Install A Development Environment
+-----------------------------------------
+
+Get and set up one of these development environments:
+
+#. PyCharm_. Arguably the most popular option. But with so many features it can
+   be overwhelming when getting started.
+#. Sublime_. This is more complex to set up for Python, but by far my favorite
+   editor. Spend 20 minutes to watch tutorial videos and you will save a lot of
+   time later.
+   Anaconda_ is a great Sublime_ plug-in for doing Python development.
+#. Wing_ (costs money) or `Wing 101`_ (free but less powerful)
+#. Or pick your own environment
+
+.. _PyCharm: https://www.jetbrains.com/pycharm/
+.. _Sublime: https://www.sublimetext.com/
+.. _Wing: https://wingware.com/
+.. _Wing 101: http://wingware.com/downloads/wingide-101
+.. _Anaconda: http://damnwidget.github.io/anaconda/
