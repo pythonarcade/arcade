@@ -3,6 +3,8 @@ Example "Arcade" library code.
 
 This example shows the drawing primitives and
 how they are used.
+It does not assume the programmer knows how to define functions or classes
+yet.
 """
 
 # Library imports

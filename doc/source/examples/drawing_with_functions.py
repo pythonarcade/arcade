@@ -2,6 +2,7 @@
 Example "Arcade" library code.
 
 This example shows how to use functions to draw a scene.
+It does not assume that the programmer knows how to use classes yet.
 """
 
 # Library imports

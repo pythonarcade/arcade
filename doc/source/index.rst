@@ -12,6 +12,7 @@ game without learning a complex framework.
 * `GitHub Source Code for Arcade`_
 * `Arcade on PyPi`_
 * `GitHub Arcade Issue List`_
+* `Reddit Discussion Group`_
 
 The status of the build is here: |build-status-travis| |build-status-appveyor| |coverage|
 
@@ -62,3 +63,4 @@ API Documentation
 .. _GitHub Source Code for Arcade: https://github.com/pvcraven/arcade
 .. _GitHub Arcade Issue List: https://github.com/pvcraven/arcade/issues
 .. _Arcade on PyPi: https://pypi.python.org/pypi/arcade
+.. _Reddit Discussion Group: https://www.reddit.com/r/pythonarcade/
