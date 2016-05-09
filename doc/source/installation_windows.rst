@@ -12,18 +12,42 @@ The website gives you the option of downloading two different versions:
 Version 3.x.x or version 2.x.x. If you aren't sure which you want, pick the
 version that begins with 3.
 
+When installing Python, make sure to customize the installation and add
+Python to the path:
+
+.. image:: images/setup_windows_1.png
+    :width: 400px
+
+The defaults on the next screen are fine:
+
+.. image:: images/setup_windows_2.png
+    :width: 400px
+
+Then install Python for all users:
+
+.. image:: images/setup_windows_3.png
+    :width: 400px
+
+A video of the installation is below:
+
 .. raw:: html
 
-    <iframe width="560" height="315" src="https://www.youtube.com/embed/KbA6zbUXXP4" frameborder="0" allowfullscreen></iframe>
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/KbA6zbUXXP4" frameborder="0" allowfullscreen></iframe><p>
+
 
 Step 2: Install The Arcade Library
 ----------------------------------
 
-THE EASY WAY
-^^^^^^^^^^^^
+Install Arcade The Easy Way
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Click the Window button in the lower left of your screen (or hit the window
-button on your keyboard) and type ``run``. Then hit enter.
+button on your keyboard) and start typing ``command prompt``.
+
+Don't just run the Command Prompt, but instead right-click on it and run as
+administrator.
+
+.. image:: images/setup_windows_4.png
 
 Type ``cmd`` and hit enter.
 
@@ -33,12 +57,14 @@ Next, type ``pip install arcade`` at the command prompt:
 
 .. image:: images/pip_install_arcade_windows.png
 
+The video below steps through the process:
+
 .. raw:: html
 
-    <iframe width="560" height="315" src="https://www.youtube.com/embed/6ZU8kNoATRo" frameborder="0" allowfullscreen></iframe>
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/6ZU8kNoATRo" frameborder="0" allowfullscreen></iframe><p>
 
-THE HARD WAY
-^^^^^^^^^^^^
+Install Arcade The Hard Way
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If you successfully installed Arcade the easy way, skip this section. If
 you'd rather download the Arcade library directly off PyPi you can at:
