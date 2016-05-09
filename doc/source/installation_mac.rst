@@ -38,7 +38,7 @@ your password, and then install a command called ``pip``.
 
 After this, type:
 
-``sudo pip install numpy pillow pyglet arcade``
+``sudo pip install arcade``
 
 Installing AVbin
 ----------------
