@@ -5,24 +5,14 @@ Arcade is an easy-to-learn Python library for creating 2D video games. It is
 ideal for people learning to program, or developers that want to code a 2D
 game without learning a complex framework.
 
-If Python is already installed, The arcade library can be installed from a
-terminal window by typing:
-
-.. code-block:: bash
-
-   pip install arcade
-
-or
-
-.. code-block:: bash
-
-   pip3 install arcade
-
-The source is available on GitHub: https://github.com/pvcraven/arcade
-
-A compiled version of the package is available on PyPi: https://pypi.python.org/pypi/arcade
-
-The list of current issues is on GitHub: https://github.com/pvcraven/arcade/issues
+* :ref:`installation-instructions`
+* :ref:`example-code`
+* :ref:`arcade-api`
+* :ref:`quick-index`
+* `GitHub Source Code for Arcade`_
+* `Arcade on PyPi`_
+* `GitHub Arcade Issue List`_
+* `Reddit Discussion Group`_
 
 The status of the build is here: |build-status-travis| |build-status-appveyor| |coverage|
 
@@ -69,3 +59,8 @@ API Documentation
     :alt: Test Coverage Status
     :scale: 100%
     :target: https://coveralls.io/github/pvcraven/arcade?branch=master
+
+.. _GitHub Source Code for Arcade: https://github.com/pvcraven/arcade
+.. _GitHub Arcade Issue List: https://github.com/pvcraven/arcade/issues
+.. _Arcade on PyPi: https://pypi.python.org/pypi/arcade
+.. _Reddit Discussion Group: https://www.reddit.com/r/pythonarcade/

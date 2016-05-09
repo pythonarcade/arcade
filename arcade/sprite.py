@@ -187,21 +187,22 @@ class Sprite():
     """
     Class that represents a 'sprite' on-screen.
 
-    @attribute someArg: example argument
-
     Attributes:
-        :scale:           blah blah x.
-        :center_x:        blah blah x.
-        :center_y:        blah blah x.
-        :angle:           blah blah x.
-        :change_x:        blah blah x.
-        :change_y:        blah blah x.
-        :change_angle:    blah blah x.
-        :alpha:           blah blah x.
-        :sprite_lists:     blah blah x.
-        :textures:         blah blah x.
-        :cur_texture_index: blah blah x.
-        :transparent:      blah blah x.
+        :scale: Scale the sprite. Default is 1. Setting to 0.5 would halve \
+the width and height.
+        :center_x: x coordinate of the sprite's center.
+        :center_y: y coordinate of the sprite's center.
+        :angle: Angle at which the sprite is drawn. 0 is default, 180 is \
+upside-down.
+        :change_x: Movement vector, in the x direction.
+        :change_y: Movement vector, in the y direction.
+        :change_angle: Change in rotation.
+        :alpha: Transparency. 1 is solid, 0 is fully transparent \
+    (invisible).
+        :transparent: Set to True if this sprite can be transparent.
+        :sprite_lists: List of all the sprite lists this sprite is part of.
+        :textures: List of textures associated with this sprite.
+        :cur_texture_index: Index of current texture being used.
 
     :Example:
 

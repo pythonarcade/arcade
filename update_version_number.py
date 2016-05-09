@@ -10,7 +10,7 @@ version_info_string = """#!/usr/bin/env python
 
 BUILD = {}
 VERSION = "{}"
-RELEASE = VERSION + "a" + str(BUILD)
+RELEASE = VERSION + "r" + str(BUILD)
 """.format(BUILD, VERSION)
 f.write(version_info_string)
 
