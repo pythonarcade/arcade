@@ -33,6 +33,11 @@ if __name__ == "__main__":
           license="MIT",
           url="http://arcade.academy",
           download_url="http://arcade.academy",
+          install_requires=[
+          'pyglet',
+          'pillow',
+          'numpy'
+          ],
           packages=["arcade",
                     "arcade.key",
                     "arcade.color"
