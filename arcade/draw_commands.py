@@ -56,19 +56,13 @@ def load_textures(file_name, image_location_list,
 
     >>> import arcade
     >>> arcade.open_window("Drawing Example", 800, 600)
-    >>> top_trim = 100
-    >>> ltrim = 2
-    >>> rtrim = 2
-    >>> image_location_list = [
-    ... [520 + ltrim, 516 + top_trim, 128 - ltrim - rtrim, 256 - top_trim],
-    ... [520 + ltrim, 258 + top_trim, 128 - ltrim - rtrim, 256 - top_trim],
-    ... [520 + ltrim, 0 + top_trim, 128 - ltrim - rtrim, 256 - top_trim],
-    ... [390 + ltrim, 1548 + top_trim, 128 - ltrim - rtrim, 256 - top_trim],
-    ... [390 + ltrim, 1290 + top_trim, 128 - ltrim - rtrim, 256 - top_trim],
-    ... [390 + ltrim, 516 + top_trim, 128 - ltrim - rtrim, 256 - top_trim],
-    ... [390 + ltrim, 258 + top_trim, 128 - ltrim - rtrim, 256 - top_trim]]
+    >>> image_location_list = [[591, 5, 64, 93],
+    ...                        [655, 10, 75, 88],
+    ...                        [730, 7, 54, 91],
+    ...                        [784, 3, 59, 95],
+    ...                        [843, 6, 56, 92]]
     >>> texture_info_list = arcade.load_textures( \
-"doc/source/examples/images/spritesheet_complete.png", image_location_list)
+"doc/source/examples/images/character_sheet.png", image_location_list)
     >>> arcade.close_window()
     """
     source_image = PIL.Image.open(file_name)
