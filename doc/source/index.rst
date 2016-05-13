@@ -41,8 +41,17 @@ API Documentation
 
    arcade
    quick_index
-   how_to_compile
+
+How to Contribute
+-----------------
+
+.. toctree::
+   :maxdepth: 1
+
    how_to_contribute
+   directory_structure
+   how_to_compile
+   how_to_submit_changes
 
 .. automodule:: arcade
 
