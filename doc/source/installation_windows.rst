@@ -1,6 +1,9 @@
 Installation on Windows
 =======================
 
+To develop with the Arcade library, we need to install Python, then install
+Arcade, and finally install a development environment.
+
 Step 1: Install Python
 ----------------------
 
@@ -48,10 +51,12 @@ Don't just run the Command Prompt, but instead right-click on it and run as
 administrator.
 
 .. image:: images/setup_windows_4.png
+    :width: 350px
 
 Next, type ``pip install arcade`` at the command prompt:
 
 .. image:: images/pip_install_arcade_windows.png
+    :width: 450px
 
 The video below steps through the process:
 
