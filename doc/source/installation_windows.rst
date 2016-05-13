@@ -49,10 +49,6 @@ administrator.
 
 .. image:: images/setup_windows_4.png
 
-Type ``cmd`` and hit enter.
-
-.. image:: images/run_command_prompt.png
-
 Next, type ``pip install arcade`` at the command prompt:
 
 .. image:: images/pip_install_arcade_windows.png

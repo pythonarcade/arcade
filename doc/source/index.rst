@@ -13,6 +13,7 @@ game without learning a complex framework.
 * `Arcade on PyPi`_
 * `GitHub Arcade Issue List`_
 * `Reddit Discussion Group`_
+* :ref:`how-to-contribute`
 
 The status of the build is here: |build-status-travis| |build-status-appveyor| |coverage|
 
@@ -40,6 +41,8 @@ API Documentation
 
    arcade
    quick_index
+   how_to_compile
+   how_to_contribute
 
 .. automodule:: arcade
 
