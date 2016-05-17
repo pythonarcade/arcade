@@ -27,11 +27,12 @@ Directory Structure
 +------------------------+----------------------------------------------------+
 | \\doc\\source\\images  | Images used in the documentation.                  |
 +------------------------+----------------------------------------------------+
-| \\tests                | Unit tests. Most unit tests are part of the        |
-|                        | docstrings.                                        |
-+------------------------+----------------------------------------------------+
 | \\doc\\build\\html     | After making the documentation, all the HTML code  |
 |                        | goes here. Look at this in a web browser to see    |
 |                        | what the documentation will look like.             |
 +------------------------+----------------------------------------------------+
+| \\tests                | Unit tests. Most unit tests are part of the        |
+|                        | docstrings.                                        |
++------------------------+----------------------------------------------------+
 
+Also see :ref:`how-to-compile`.

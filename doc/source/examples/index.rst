@@ -3,6 +3,22 @@
 Example Code
 ============
 
+The example code here starts out simple and gets more complex. The example code
+progresses through these topics:
+
+* How to call functions
+* How to create functions
+* How use function callbacks and static function variables
+* How to make loops
+* How to use nested loops
+* How to create classes
+* How to allow the user to control items on the screen
+* How to use sprites
+* How to use a two-dimensional list
+
+Example list
+^^^^^^^^^^^^
+
 .. toctree::
    :maxdepth: 3
 
