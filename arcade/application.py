@@ -19,7 +19,8 @@ class Window(pyglet.window.Window):
     def __init__(self, width, height, title='Arcade Window'):
         # This is nicer, but Python 3.x only
         # super().__init__(width=width, height=height, caption=title)
-        pyglet.window.Window.__init__(self, width=width, height=height, caption=title)
+        pyglet.window.Window.__init__(self, width=width, height=height,
+                                      caption=title)
 
         self.set_update_rate(1/80)
         # set_viewport(0, self.width, 0, self.height)

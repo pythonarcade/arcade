@@ -1,37 +1,29 @@
 """
 Example "Arcade" library code.
 
-This example shows the drawing primitives and
-how they are used.
+This example shows the drawing primitives and how they are used.
 It does not assume the programmer knows how to define functions or classes
 yet.
 """
 
 # Library imports
-import math
 import arcade
-import time
 
-# Open the window and set the background
+# Open the window. Set the window title and dimensions (width and height)
 arcade.open_window("Drawing Example", 600, 600)
 
+# Set the background color to white
 arcade.set_background_color(arcade.color.WHITE)
 
 # Start the render process. This must be done before any drawing commands.
 arcade.start_render()
 
-arcade.draw_line(120, 0, 120, 600, arcade.color.BLACK, 2)
-
 # Draw a grid
-x = 120
-while x < 800:
+for x in range(120, 800, 120):
     arcade.draw_line(x, 0, x, 600, arcade.color.BLACK, 2)
-    x += 120
 
-y = 200
-while y < 500:
+for y in range(200, 500, 200):
     arcade.draw_line(0, y, 800, y, arcade.color.BLACK, 2)
-    y += 200
 
 # Draw a point
 arcade.draw_text("draw_point", 3, 405, arcade.color.BLACK, 12)

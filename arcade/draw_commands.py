@@ -8,6 +8,7 @@ import pyglet
 import pyglet.gl as GL
 import pyglet.gl.glu as GLU
 
+
 class Texture():
     """
     Class that represents a texture.
