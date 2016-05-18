@@ -9,6 +9,9 @@ environment:
     - PYTHON: "C:\\Python35"
       PYTHON_VERSION: "3.5.0"
       PYTHON_ARCH: "32"
+    - PYTHON: "C:\\Python27"
+      PYTHON_VERSION: "2.7.11"
+      PYTHON_ARCH: "32"
 
 
 install:
@@ -29,4 +32,4 @@ artifacts:
 on_success:
 #  - "%PYTHON%\\Scripts\\coverage report"
 #  - "%PYTHON%\\Scripts\\coveralls"
-  - "%PYTHON%/Scripts/twine upload -u %USER% -p %PASS% -r pypi dist/*"
+#  - "%PYTHON%/Scripts/twine upload -u %USER% -p %PASS% -r pypi dist/*"
