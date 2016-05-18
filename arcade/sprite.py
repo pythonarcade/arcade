@@ -1,3 +1,4 @@
+from __future__ import print_function
 from .draw_commands import *
 from .geometry import *
 
@@ -356,13 +357,13 @@ upside-down.
 
         >>> import arcade
         >>> arcade.open_window("Sprite Example", 800, 600)
-        >>> scale = 1
+        >>> scale = 1.0
         >>> ship_sprite = \
 arcade.Sprite("doc/source/examples/images/playerShip1_orange.png", scale)
-        >>> ship_sprite.center_y = 0
+        >>> ship_sprite.center_y = 0.0
         >>> print(ship_sprite.bottom)
         -37.5
-        >>> ship_sprite.bottom = 1
+        >>> ship_sprite.bottom = 1.0
         >>> print(ship_sprite.bottom)
         1.0
         >>> arcade.quick_run(0.25)
@@ -389,13 +390,13 @@ arcade.Sprite("doc/source/examples/images/playerShip1_orange.png", scale)
 
         >>> import arcade
         >>> arcade.open_window("Sprite Example", 800, 600)
-        >>> scale = 1
+        >>> scale = 1.0
         >>> ship_sprite = \
 arcade.Sprite("doc/source/examples/images/playerShip1_orange.png", scale)
-        >>> ship_sprite.center_y = 0
+        >>> ship_sprite.center_y = 0.0
         >>> print(ship_sprite.top)
         37.5
-        >>> ship_sprite.top = 1
+        >>> ship_sprite.top = 1.0
         >>> print(ship_sprite.top)
         1.0
         >>> arcade.quick_run(0.25)
@@ -453,13 +454,13 @@ arcade.Sprite("doc/source/examples/images/playerShip1_orange.png", scale)
 
         >>> import arcade
         >>> arcade.open_window("Sprite Example", 800, 600)
-        >>> scale = 1
+        >>> scale = 1.0
         >>> ship_sprite = \
 arcade.Sprite("doc/source/examples/images/playerShip1_orange.png", scale)
-        >>> ship_sprite.center_x = 0
+        >>> ship_sprite.center_x = 0.0
         >>> print(ship_sprite.left)
         -49.5
-        >>> ship_sprite.left = 1
+        >>> ship_sprite.left = 1.0
         >>> print(ship_sprite.left)
         1.0
         >>> arcade.quick_run(0.25)
@@ -487,13 +488,13 @@ arcade.Sprite("doc/source/examples/images/playerShip1_orange.png", scale)
 
         >>> import arcade
         >>> arcade.open_window("Sprite Example", 800, 600)
-        >>> scale = 1
+        >>> scale = 1.0
         >>> ship_sprite = \
 arcade.Sprite("doc/source/examples/images/playerShip1_orange.png", scale)
-        >>> ship_sprite.center_x = 0
+        >>> ship_sprite.center_x = 0.0
         >>> print(ship_sprite.right)
         49.5
-        >>> ship_sprite.right = 1
+        >>> ship_sprite.right = 1.0
         >>> print(ship_sprite.right)
         1.0
         >>> arcade.quick_run(0.25)

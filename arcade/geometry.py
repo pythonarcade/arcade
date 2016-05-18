@@ -1,3 +1,4 @@
+from __future__ import print_function
 import math
 
 
@@ -65,8 +66,8 @@ def rotate(x, y, cx, cy, angle):
     Rotate a point around a center.
 
     >>> x, y = rotate(1, 1, 0, 0, 90)
-    >>> print(round(x), round(y))
-    -1 1
+    >>> print("x = {:.1f}, y = {:.1f}".format(x, y))
+    x = -1.0, y = 1.0
     """
     tempX = x - cx
     tempY = y - cy
