@@ -4,25 +4,36 @@ Example "Arcade" library code.
 This example shows the drawing primitives and how they are used.
 It does not assume the programmer knows how to define functions or classes
 yet.
+
+API documentation for the draw commands can be found here:
+https://pythonhosted.org/arcade/arcade.html#module-arcade.draw_commands
 """
 
-# Library imports
+# Import the Arcade library. If this fails, then try following the instructions
+# for how to install arcade:
+# https://pythonhosted.org/arcade/installation.html
 import arcade
 
 # Open the window. Set the window title and dimensions (width and height)
 arcade.open_window("Drawing Example", 600, 600)
 
 # Set the background color to white
+# For a list of named colors see
+# https://pythonhosted.org/arcade/arcade.color.html
+# Colors can also be specified in (red, green, blue) format and
+# (red, green, blue, alpha) format.
 arcade.set_background_color(arcade.color.WHITE)
 
 # Start the render process. This must be done before any drawing commands.
 arcade.start_render()
 
 # Draw a grid
-for x in range(120, 800, 120):
+# Draw vertical lines every 120 pixels
+for x in range(0, 601, 120):
     arcade.draw_line(x, 0, x, 600, arcade.color.BLACK, 2)
 
-for y in range(200, 500, 200):
+# Draw horizontal lines every 200 pixels
+for y in range(0, 601, 200):
     arcade.draw_line(0, y, 800, y, arcade.color.BLACK, 2)
 
 # Draw a point
@@ -114,21 +125,25 @@ arcade.draw_arc_filled(150, 144, 15, 36,
 
 # Draw an rectangle outline
 arcade.draw_text("draw_rect", 243, 3, arcade.color.BLACK, 10)
-arcade.draw_rectangle_outline(295, 100, 45, 105,
+arcade.draw_rectangle_outline(295, 100, 45, 65,
                               arcade.color.BRITISH_RACING_GREEN)
+arcade.draw_rectangle_outline(295, 160, 20, 45,
+                              arcade.color.BRITISH_RACING_GREEN, 3, 45)
 
 # Draw a filled in rectangle
 arcade.draw_text("draw_filled_rect", 363, 3, arcade.color.BLACK, 10)
-arcade.draw_rectangle_filled(420, 100, 45, 105, arcade.color.BLUSH)
+arcade.draw_rectangle_filled(420, 100, 45, 65, arcade.color.BLUSH)
+arcade.draw_rectangle_filled(420, 160, 20, 40, arcade.color.BLUSH, 45)
 
 # Load and draw an image to the screen
+# Image from kenney.nl asset pack #1
 arcade.draw_text("draw_bitmap", 483, 3, arcade.color.BLACK, 12)
 texture = arcade.load_texture("images/playerShip1_orange.png")
 scale = .6
 arcade.draw_texture_rectangle(540, 120, scale * texture.width,
                               scale * texture.height, texture, 0)
 arcade.draw_texture_rectangle(540, 60, scale * texture.width,
-                              scale * texture.height, texture, 90)
+                              scale * texture.height, texture, 45)
 
 # Finish the render.
 # Nothing will be drawn without this.
