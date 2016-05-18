@@ -6,6 +6,9 @@ How to Compile
 Windows
 ^^^^^^^
 
+Create your own fork of the repository, and then clone it on your
+computer.
+
 From the base directory, there are three batch files that can be run:
 
 * ``make`` - This compiles the source, installs the package on the local
@@ -22,3 +25,21 @@ Just make sure not to check in your test code.
 
 There aren't UNIX build scripts yet, but by looking at the batch files you
 could likely come up with some shell files that would work.
+
+Linux
+^^^^^
+
+Create your own fork of the repository, and then clone it on your
+computer.
+
+Prep your system by downloading needed packages:
+
+``sudo apt-get install python-dev``
+
+``sudo pip3 install wheel sphinx coveralls sphinx_rtd_theme pyglet numpy``
+
+Then, from the terminal you can run any of the following scripts:
+
+* ``sudo make.sh`` - Compile, install, make documentation, and run unit tests.
+* ``sudo makefast.sh`` - Compile, install.
+* ``makedoc.sh`` - Make documentation.
