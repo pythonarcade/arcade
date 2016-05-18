@@ -229,6 +229,7 @@ def trim_image(image):
     """
     Returns an image with extra whitespace cropped out.
 
+    >>> from __future__ import print_function
     >>> name = "doc/source/examples/images/playerShip1_orange.png"
     >>> source_image = PIL.Image.open(name)
     >>> cropped_image = trim_image(source_image)
