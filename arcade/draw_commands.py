@@ -1271,7 +1271,7 @@ arcade.color.BRITISH_RACING_GREEN, 2)
     GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
 
     GL.glLoadIdentity()
-    GL.glTranslatef(x, y, 0)
+    GL.glTranslatef(center_x, center_y, 0)
     if tilt_angle:
         GL.glRotatef(tilt_angle, 0, 0, 1)
 
