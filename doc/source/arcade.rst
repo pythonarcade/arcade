@@ -14,6 +14,8 @@ Window Commands Module
     :undoc-members:
     :show-inheritance:
 
+.. _drawing-primitives:
+
 Draw Commands Module
 ^^^^^^^^^^^^^^^^^^^^
 

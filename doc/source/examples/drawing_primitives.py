@@ -7,6 +7,9 @@ yet.
 
 API documentation for the draw commands can be found here:
 https://pythonhosted.org/arcade/arcade.html#module-arcade.draw_commands
+
+A video explaining this example can be found here:
+https://vimeo.com/167158158
 """
 
 # Import the Arcade library. If this fails, then try following the instructions
