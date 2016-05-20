@@ -1205,8 +1205,40 @@ def render_rectangle_filled(shape, center_x, center_y, color, tilt_angle=0):
     GL.glDrawArrays(GL.GL_QUADS, 0, shape.size)
 
 
-def draw_rectangle_outline(x, y, width, height, color, border_width=1,
-                           tilt_angle=0):
+def draw_lrtb_rectangle_outline(left, right, top, bottom, color,
+                                border_width=1):
+    """
+    Draw a rectangle by specifying left, right, top, and bottom edges.
+    """
+    if left > right:
+        raise AttributeError("Left coordinate must be less than or equal to "
+                             "the right coordinate")
+
+    if bottom > right:
+        raise AttributeError("Bottom coordinate must be less than or equal to "
+                             "the top coordinate")
+
+    center_x = (left + right) / 2
+    center_y = (top + bottom) / 2
+    width = right - left
+    height = top - bottom
+    draw_rectangle_outline(center_x, center_y, width, height, color,
+                           border_width)
+
+
+def draw_xywh_rectangle_outline(top_left_x, top_left_y, width, height, color,
+                                border_width=1):
+    """
+    Draw a rectangle by specifying left, right, top, and bottom edges.
+    """
+    center_x = top_left_x + (width / 2)
+    center_y = top_left_y + (height / 2)
+    draw_rectangle_outline(center_x, center_y, width, height, color,
+                           border_width)
+
+
+def draw_rectangle_outline(center_x, center_y, width, height, color,
+                           border_width=1, tilt_angle=0):
     """
     Draw a rectangle outline.
 
@@ -1239,7 +1271,7 @@ arcade.color.BRITISH_RACING_GREEN, 2)
     GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
 
     GL.glLoadIdentity()
-    GL.glTranslatef(x, y, 0)
+    GL.glTranslatef(center_x, center_y, 0)
     if tilt_angle:
         GL.glRotatef(tilt_angle, 0, 0, 1)
 
@@ -1260,7 +1292,37 @@ arcade.color.BRITISH_RACING_GREEN, 2)
     GL.glEnd()
 
 
-def draw_rectangle_filled(x, y, width, height, color, tilt_angle=0):
+def draw_lrtb_rectangle_filled(left, right, top, bottom, color):
+    """
+    Draw a rectangle by specifying left, right, top, and bottom edges.
+    """
+    if left > right:
+        raise AttributeError("Left coordinate {} must be less than or equal "
+                             "to the right coordinate {}.".format(left, right))
+
+    if bottom > top:
+        raise AttributeError("Bottom coordinate {} must be less than or equal "
+                             "to the top coordinate {}".format(bottom, top))
+
+    center_x = (left + right) / 2
+    center_y = (top + bottom) / 2
+    width = right - left
+    height = top - bottom
+    draw_rectangle_filled(center_x, center_y, width, height, color)
+
+
+def draw_xywh_rectangle_filled(top_left_x, top_left_y, width, height, color,
+                               border_width=1):
+    """
+    Draw a rectangle by specifying left, right, top, and bottom edges.
+    """
+    center_x = top_left_x + (width / 2)
+    center_y = top_left_y + (height / 2)
+    draw_rectangle_filled(center_x, center_y, width, height, color)
+
+
+def draw_rectangle_filled(center_x, center_y, width, height, color,
+                          tilt_angle=0):
     """
     Draw a filled-in rectangle.
 
@@ -1297,7 +1359,7 @@ def draw_rectangle_filled(x, y, width, height, color, tilt_angle=0):
         GL.glColor4ub(color[0], color[1], color[2], 255)
 
     GL.glLoadIdentity()
-    GL.glTranslatef(x, y, 0)
+    GL.glTranslatef(center_x, center_y, 0)
     if tilt_angle:
         GL.glRotatef(tilt_angle, 0, 0, 1)
 

@@ -1,6 +1,11 @@
 The Arcade Python Package
 =========================
 
+.. raw:: html
+
+    <iframe src="https://player.vimeo.com/video/167449640?byline=0&portrait=0" width="640" height="480" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+    <p><a href="https://vimeo.com/167449640">The Python Arcade Library Overview</a></p>
+
 Arcade is an easy-to-learn Python library for creating 2D video games. It is
 ideal for people learning to program, or developers that want to code a 2D
 game without learning a complex framework.
