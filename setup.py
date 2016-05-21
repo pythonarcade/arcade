@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-BUILD = 48
+BUILD = 49
 VERSION = "0.0.6"
 RELEASE = VERSION + "r" + str(BUILD)
 
@@ -43,11 +43,12 @@ if __name__ == "__main__":
                     "arcade.color"
                     ],
           classifiers=[
-              "Development Status :: 1 - Planning",
+              "Development Status :: 3 - Alpha",
               "Intended Audience :: Developers",
               "License :: OSI Approved :: MIT License",
               "Operating System :: OS Independent",
               "Programming Language :: Python",
+              "Programming Language :: Python :: 2.7",
               "Programming Language :: Python :: 3.5",
               "Programming Language :: Python :: Implementation :: CPython",
               "Topic :: Software Development :: Libraries :: Python Modules",
