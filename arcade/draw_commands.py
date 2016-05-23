@@ -13,6 +13,12 @@ class Texture():
     """
     Class that represents a texture.
     Usually created by the ``load_texture`` or ``load_textures`` commands.
+
+    Attributes:
+        :id: ID of the texture as assigned by OpenGL
+        :width: Width of the texture image in pixels
+        :height: Height of the texture image in pixels
+
     """
 
     def __init__(self, id, width, height):
@@ -1114,7 +1120,7 @@ def draw_triangle_filled(x1, y1,
         :y2: y value of second coordinate.
         :x3: x value of third coordinate.
         :y3: y value of third coordinate.
-        :y3: Color of triangle.
+        :color: Color of triangle.
     Returns:
         None
     Raises:
@@ -1140,7 +1146,8 @@ def draw_triangle_outline(x1, y1,
         :y2: y value of second coordinate.
         :x3: x value of third coordinate.
         :y3: y value of third coordinate.
-        :y3: Color of triangle.
+        :color: Color of triangle.
+        :border_width: Width of the border in pixels. Defaults to 1.
     Returns:
         None
     Raises:
@@ -1184,6 +1191,9 @@ def create_rectangle(width, height, color):
 
 
 def render_rectangle_filled(shape, center_x, center_y, color, tilt_angle=0):
+    """
+    Render a rectangle previously created by the ``create_rectangle`` command.
+    """
     # Set color
     if len(color) == 4:
         GL.glColor4ub(shape.color[0], shape.color[1], shape.color[2],
@@ -1209,6 +1219,18 @@ def draw_lrtb_rectangle_outline(left, right, top, bottom, color,
                                 border_width=1):
     """
     Draw a rectangle by specifying left, right, top, and bottom edges.
+
+    Args:
+        :left: The x coordinate of the left edge of the rectangle.
+        :right: The x coordinate of the right edge of the rectangle.
+        :top: The y coordinate of the top of the rectangle.
+        :bottom: The y coordinate of the rectangle bottom.
+        :color: The color of the rectangle.
+        :border_width: The width of the border in pixels. Defaults to one.
+    Returns:
+        None
+    Raises:
+        :AttributeErrror: Raised if left > right or top < bottom.
     """
     if left > right:
         raise AttributeError("Left coordinate must be less than or equal to "
@@ -1230,6 +1252,19 @@ def draw_xywh_rectangle_outline(top_left_x, top_left_y, width, height, color,
                                 border_width=1):
     """
     Draw a rectangle by specifying left, right, top, and bottom edges.
+
+    Args:
+        :top_left_x: The x coordinate of the left edge of the rectangle.
+        :top_left_y: The y coordinate of the top of the rectangle.
+        :width: The width of the rectangle.
+        :height: The height of the rectangle.
+        :color: The color of the rectangle.
+        :border_width: The width of the border in pixels. Defaults to one.
+    Returns:
+        None
+    Raises:
+        None
+
     """
     center_x = top_left_x + (width / 2)
     center_y = top_left_y + (height / 2)
@@ -1251,6 +1286,10 @@ def draw_rectangle_outline(center_x, center_y, width, height, color,
          RGBA format.
         :border_width: width of the lines, in pixels.
         :angle: rotation of the rectangle. Defaults to zero.
+    Returns:
+        None
+    Raises:
+        None
 
     Example:
 
@@ -1295,6 +1334,18 @@ arcade.color.BRITISH_RACING_GREEN, 2)
 def draw_lrtb_rectangle_filled(left, right, top, bottom, color):
     """
     Draw a rectangle by specifying left, right, top, and bottom edges.
+
+    Args:
+        :left: The x coordinate of the left edge of the rectangle.
+        :right: The x coordinate of the right edge of the rectangle.
+        :top: The y coordinate of the top of the rectangle.
+        :bottom: The y coordinate of the rectangle bottom.
+        :color: The color of the rectangle.
+        :border_width: The width of the border in pixels. Defaults to one.
+    Returns:
+        None
+    Raises:
+        :AttributeErrror: Raised if left > right or top < bottom.
     """
     if left > right:
         raise AttributeError("Left coordinate {} must be less than or equal "
@@ -1315,6 +1366,19 @@ def draw_xywh_rectangle_filled(top_left_x, top_left_y, width, height, color,
                                border_width=1):
     """
     Draw a rectangle by specifying left, right, top, and bottom edges.
+
+    Args:
+        :top_left_x: The x coordinate of the left edge of the rectangle.
+        :top_left_y: The y coordinate of the top of the rectangle.
+        :width: The width of the rectangle.
+        :height: The height of the rectangle.
+        :color: The color of the rectangle.
+        :border_width: The width of the border in pixels. Defaults to one.
+    Returns:
+        None
+    Raises:
+        None
+
     """
     center_x = top_left_x + (width / 2)
     center_y = top_left_y + (height / 2)
@@ -1369,16 +1433,6 @@ def draw_rectangle_filled(center_x, center_y, width, height, color,
     GL.glVertex3f(width // 2, height // 2, 0.5)
     GL.glVertex3f(-width // 2, height // 2, 0.5)
     GL.glEnd()
-
-
-def draw_rectangle(center_x, center_y, width, height, color, border_width=0,
-                   tilt_angle=0):
-    if border_width <= 0:
-        draw_rectangle_filled(center_x, center_y, width, height, color,
-                              tilt_angle)
-    else:
-        draw_rectangle_outline(center_x, center_y, width, height, color,
-                               border_width, tilt_angle)
 
 
 def draw_texture_rectangle(center_x, center_y, width, height, texture,
@@ -1495,6 +1549,14 @@ class VertexBuffer():
     This class represents a
     `vertex buffer object`_.
 
+    Attributes:
+        :vbo_id: ID of the vertex buffer as assigned by OpenGL
+        :size:
+        :width:
+        :height:
+        :color:
+
+
     .. _vertex buffer object:
        https://en.wikipedia.org/wiki/Vertex_Buffer_Object
     """
@@ -1504,11 +1566,3 @@ class VertexBuffer():
         self.width = width
         self.height = height
         self.color = color
-
-# def _test():
-#     import doctest
-#     doctest.testmod()
-
-
-if __name__ == "__main__":
-    _test()

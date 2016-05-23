@@ -23,6 +23,10 @@ def pause(seconds):
     """
     Pause for the specified number of seconds.
 
+    :param float seconds: Time interval to pause in seconds.
+    :return: None
+    :raises: None
+
     >>> import arcade
     >>> arcade.pause(0.25) # Pause 1/2 second
 
@@ -214,8 +218,9 @@ def _close(dt):
 
 def quick_run(time_to_pause):
     """
-    Only run the app for the specified time in seconds.
-    Useful for testing.
+    Only run the application for the specified time in seconds.
+    Useful for unit testing or continuous integration (CI) testing
+    where there is no user interaction.
 
     Args:
         :time_to_pause: Number of seconds to pause before automatically
