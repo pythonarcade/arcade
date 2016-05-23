@@ -38,12 +38,10 @@ def get_window():
     """
     Return a handle to the current window.
 
-    Args:
-        None
-    Returns:
-        :window: Handle to the current window.
-    Raises:
-        None
+    :param: None
+    :return window: Handle to the current window.
+    :raises: None
+
     """
     global _window
     return _window
@@ -148,12 +146,9 @@ def close_window():
     """
     Closes the current window, and then runs garbage collection.
 
-    Args:
-        None
-    Returns:
-        None
-    Raises:
-        None
+    :param: None
+    :return: None
+    :raises: None
 
     Example:
     """
