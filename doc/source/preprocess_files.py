@@ -20,7 +20,7 @@ def list_functions(filename, output_file):
             output_file.write("Functions\n")
             output_file.write("^^^^^^^^^\n")
         output_file.write("- ")
-        output_file.write(":func:`arcade."+file_split[1]+"."+function+"`")
+        output_file.write(":func:`~arcade."+file_split[1]+"."+function+"`")
         output_file.write("\n")
     if not first:
         output_file.write("\n")
@@ -28,7 +28,10 @@ def list_functions(filename, output_file):
 
 def list_classes(filename, output_file):
     file_pointer = open(filename)
-    class_re = re.compile("^class ([A-Za-z]+[^:]*)")
+    file_split = filename.replace("/",".")
+    file_split = file_split.split(".")
+
+    class_re = re.compile("^class ([A-Za-z]+[^\(]*)")
     method_re = re.compile("^    def ([a-z][^:]*)|^    def (__init__[^:]*)")
     remove_self_re = re.compile(r"self(, )?")
     first = True
@@ -42,7 +45,7 @@ def list_classes(filename, output_file):
                 output_file.write("Classes\n")
                 output_file.write("^^^^^^^\n")
             output_file.write("- ")
-            output_file.write(class_names[0])
+            output_file.write(":class:`~arcade."+file_split[1]+"."+class_names[0]+"`")
             output_file.write("\n")
 
         method_names = method_re.findall(line)
