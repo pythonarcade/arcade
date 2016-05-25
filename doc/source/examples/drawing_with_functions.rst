@@ -6,14 +6,16 @@ Functions: Drawing with functions
 This example shows how to define functions that draw objects. Such as
 ``draw_tree(x, y)`` and ``draw_bird(x, y)``.
 
-There is an `explanation video`_ for this example.
+.. raw:: html
 
-.. image:: drawing_with_functions.png
-    :width: 600px
-    :height: 600px
-    :align: center
-    :alt: Screenshot of drawing with functions example program
+    <iframe src="https://player.vimeo.com/video/167296062?byline=0" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+    <p><a href="https://vimeo.com/167296062">Drawing with Functions</a> from <a href="https://vimeo.com/user6672093">Paul Vincent Craven</a> on <a href="https://vimeo.com">Vimeo</a>.</p>
+
+.. .. image:: drawing_with_functions.png
+..     :width: 600px
+..     :height: 600px
+..     :align: center
+..     :alt: Screenshot of drawing with functions example program
 
 .. literalinclude:: drawing_with_functions.py
 
-.. _explanation video: https://vimeo.com/167296062

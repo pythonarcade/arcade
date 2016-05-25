@@ -1,21 +1,28 @@
-""" This simple animation example shows how to bounce a rectangle
-on the screen. """
+"""
+This simple animation example shows how to bounce a rectangle
+on the screen.
+"""
 
 import arcade
 
-# Set up the constants
-SCREEN_WIDTH = 800
+# --- Set up the constants
+
+# Size of the screen
+SCREEN_WIDTH = 600
 SCREEN_HEIGHT = 600
 
+# Size of the rectangle
 RECT_WIDTH = 50
 RECT_HEIGHT = 50
 
 
 def on_draw(delta_time):
-    """ Use this function to draw everything to the screen. """
+    """
+    Use this function to draw everything to the screen.
+    """
 
     # Start the render. This must happen before any drawing
-    # commands. We do NOT need an stop render command.
+    # commands. We do NOT need a stop render command.
     arcade.start_render()
 
     # Draw our rectangle
@@ -37,13 +44,19 @@ def on_draw(delta_time):
             or on_draw.y > SCREEN_HEIGHT - RECT_HEIGHT // 2:
         on_draw.delta_y *= -1
 
-# These are function-specific variables. Before we
-# use them in our function, we need to give them initial
-# values.
-on_draw.x = 100
-on_draw.y = 50
-on_draw.delta_x = 3
-on_draw.delta_y = 2
+# Below are function-specific variables. Before we use them
+# in our function, we need to give them initial values. Then
+# the values will persist between function calls.
+#
+# In other languages, we'd declare the variables as 'static' inside the
+# function to get that same functionality.
+#
+# Later on, we'll use 'classes' to track position and velocity for multiple
+# objects.
+on_draw.x = 100      # Initial x position
+on_draw.y = 50       # Initial y position
+on_draw.delta_x = 3  # Initial change in x
+on_draw.delta_y = 2  # Initial change in y
 
 # Open up our window
 arcade.open_window("Drawing Example", SCREEN_WIDTH, SCREEN_HEIGHT)

@@ -1,9 +1,13 @@
-""" Bounce a ball on the screen, using gravity. """
+"""
+Bounce a ball on the screen, using gravity.
+"""
 
 import arcade
 
-# Set up the constants
-SCREEN_WIDTH = 800
+# --- Set up the constants
+
+# Size of the screen
+SCREEN_WIDTH = 600
 SCREEN_HEIGHT = 600
 
 # Size of the circle.
@@ -16,8 +20,10 @@ GRAVITY_CONSTANT = 0.3
 BOUNCINESS = 0.9
 
 
-def draw(dt):
-    """ Use this function to draw everything to the screen. """
+def draw(delta_time):
+    """
+    Use this function to draw everything to the screen.
+    """
 
     # Start the render. This must happen before any drawing
     # commands. We do NOT need an stop render command.
@@ -52,9 +58,15 @@ def draw(dt):
         else:
             draw.delta_y *= -BOUNCINESS / 2
 
-# These are function-specific variables. Before we
-# use them in our function, we need to give them initial
-# values.
+# Below are function-specific variables. Before we use them
+# in our function, we need to give them initial values. Then
+# the values will persist between function calls.
+#
+# In other languages, we'd declare the variables as 'static' inside the
+# function to get that same functionality.
+#
+# Later on, we'll use 'classes' to track position and velocity for multiple
+# objects.
 draw.x = CIRCLE_RADIUS
 draw.y = SCREEN_HEIGHT - CIRCLE_RADIUS
 draw.delta_x = 2

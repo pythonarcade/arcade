@@ -44,17 +44,24 @@ class MyApplication(arcade.Window):
         """
         pass
 
-    def on_key_press(self, symbol, modifiers):
+    def on_key_press(self, key, key_modifiers):
         """
         Called whenever a key on the keyboard is pressed.
-        """
-        pass
 
-    def on_key_release(self, symbol, modifiers):
+        For a full list of keys, see:
+        http://pythonhosted.org/arcade/arcade.key.html
+        """
+        if key == arcade.key.SPACE and key_modifiers & arcade.key.MOD_SHIFT:
+            print("You pressed shift-space")
+        elif key == arcade.key.SPACE:
+            print("You pressed the space bar.")
+
+    def on_key_release(self, key, key_modifiers):
         """
         Called whenever the user lets off a previously pressed key.
         """
-        pass
+        if key == arcade.key.SPACE:
+            print("You stopped pressing the space bar.")
 
     def on_mouse_motion(self, x, y, dx, dy):
         """

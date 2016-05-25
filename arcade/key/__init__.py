@@ -1,3 +1,6 @@
+# Key modifiers
+# Done in powers of two, so you can do a bit-wise 'and' to detect
+# multiple modifiers.
 MOD_SHIFT = 1
 MOD_CTRL = 2
 MOD_ALT = 4
@@ -8,6 +11,8 @@ MOD_COMMAND = 64
 MOD_OPTION = 128
 MOD_SCROLLLOCK = 256
 MOD_ACCEL = 2
+
+# Keys
 BACKSPACE = 65288
 TAB = 65289
 LINEFEED = 65290
