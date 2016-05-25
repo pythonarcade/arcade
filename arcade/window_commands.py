@@ -23,6 +23,10 @@ def pause(seconds):
     """
     Pause for the specified number of seconds.
 
+    :param float seconds: Time interval to pause in seconds.
+    :return: None
+    :raises: None
+
     >>> import arcade
     >>> arcade.pause(0.25) # Pause 1/2 second
 
@@ -34,12 +38,10 @@ def get_window():
     """
     Return a handle to the current window.
 
-    Args:
-        None
-    Returns:
-        :window: Handle to the current window.
-    Raises:
-        None
+    :param: None
+    :return window: Handle to the current window.
+    :raises: None
+
     """
     global _window
     return _window
@@ -144,12 +146,9 @@ def close_window():
     """
     Closes the current window, and then runs garbage collection.
 
-    Args:
-        None
-    Returns:
-        None
-    Raises:
-        None
+    :param: None
+    :return: None
+    :raises: None
 
     Example:
     """
@@ -214,8 +213,9 @@ def _close(dt):
 
 def quick_run(time_to_pause):
     """
-    Only run the app for the specified time in seconds.
-    Useful for testing.
+    Only run the application for the specified time in seconds.
+    Useful for unit testing or continuous integration (CI) testing
+    where there is no user interaction.
 
     Args:
         :time_to_pause: Number of seconds to pause before automatically

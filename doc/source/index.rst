@@ -65,16 +65,13 @@ How to Contribute
 .. |build-status-travis| image:: https://travis-ci.org/pvcraven/arcade.svg
     :target: https://travis-ci.org/pvcraven/arcade
     :alt: build status
-    :scale: 100%
 
 .. |build-status-appveyor| image:: https://ci.appveyor.com/api/projects/status/github/pvcraven/arcade
     :target: https://ci.appveyor.com/project/pvcraven/arcade-ekjdf
     :alt: build status
-    :scale: 100%
 
 .. |coverage| image:: https://coveralls.io/repos/pvcraven/arcade/badge.svg?branch=master&service=github
     :alt: Test Coverage Status
-    :scale: 100%
     :target: https://coveralls.io/github/pvcraven/arcade?branch=master
 
 .. _GitHub Source Code for Arcade: https://github.com/pvcraven/arcade
