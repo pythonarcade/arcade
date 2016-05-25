@@ -7,14 +7,7 @@ This example shows how to use the :ref:`drawing-primitives`. It is a good place
 to start for new programmers because they do not need to know how to define
 functions or classes before drawing images.
 
-There is also an `explanation video`_ for this example.
+.. raw:: html
 
-.. image:: drawing_primitives.png
-    :width: 600px
-    :height: 600px
-    :align: center
-    :alt: Screenshot of drawing primitives example program
-
-.. literalinclude:: drawing_primitives.py
-
-.. _explanation video: https://vimeo.com/167158158
+    <iframe src="https://player.vimeo.com/video/167158158?byline=0&portrait=0" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+    <p><a href="https://vimeo.com/167158158">Drawing Primitives</a> from <a href="https://vimeo.com/user6672093">Paul Vincent Craven</a> on <a href="https://vimeo.com">Vimeo</a>.</p>

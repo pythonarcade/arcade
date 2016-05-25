@@ -7,7 +7,6 @@ These are examples we need, that haven't been created.
 - Animating snow
 - Move game controller
 - Joystick calls
-- Make sounds
 - Background music
 - Recursive examples
 - Rotating sprites
@@ -20,6 +19,4 @@ These are examples we need, that haven't been created.
 - Pong
 - Centipede
 - Move between rooms
-- Platformer
-- Moving platforms
 - Physics engine

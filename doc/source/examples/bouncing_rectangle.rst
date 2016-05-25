@@ -4,11 +4,17 @@ Animation: Bouncing rectangle
 =============================
 
 This shows how to animate an image. It does not use classes, but it does use
-function variables. If a student knows how to use classes, that is a better
-way of persisting the values between frames.
+function variables.
+
+If you are familiar with classes, see some of the following examples as well:
+
+* :ref:`example-starting-template`
+* :ref:`example-shapes`
+* :ref:`example-sprite-collect-coins-move_down`
 
 .. raw:: html
 
-    <iframe width="420" height="315" src="https://www.youtube.com/embed/sBx5Hc_h_to" frameborder="0" allowfullscreen></iframe>
+    <iframe src="https://player.vimeo.com/video/168063840?byline=0&portrait=0" width="640" height="480" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+    <p><a href="https://vimeo.com/168063840">Bouncing Rectangle Example</a> from <a href="https://vimeo.com/user6672093">Paul Vincent Craven</a> on <a href="https://vimeo.com">Vimeo</a>.</p>
 
 .. literalinclude:: bouncing_rectangle.py

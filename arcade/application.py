@@ -63,3 +63,6 @@ called.
 
     def on_key_release(self, symbol, modifiers):
         pass
+
+    def on_draw(self):
+        pass
