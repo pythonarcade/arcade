@@ -1,3 +1,7 @@
+"""
+This module contains commands for basic graphics drawing commands.
+(Drawing primitives.)
+"""
 from __future__ import print_function
 import sys
 import math
@@ -21,10 +25,10 @@ class Texture():
 
     """
 
-    def __init__(self, id, width, height):
+    def __init__(self, texture_id, width, height):
         """
         Args:
-            :id (str): Id of the texture.
+            :texture_id (str): Id of the texture.
             :width (int): Width of the texture.
             :height (int): Height of the texture.
         Raises:
@@ -33,14 +37,14 @@ class Texture():
         # Check values before attempting to create Texture object
         if height < 0:
             raise ValueError("Height entered is less than zero. Height must "
-                             "be a positive number. Texture id: " + self.id)
+                             "be a positive number.")
 
         if width < 0:
             raise ValueError("Width entered is less than zero. Width must be "
-                             "a positive number. Texture id: " + self.id)
+                             "a positive number.")
 
         # Values seem to be clear, create object
-        self.id = id
+        self.texture_id = texture_id
         self.width = width
         self.height = height
 
@@ -80,19 +84,19 @@ def load_textures(file_name, image_location_list,
         x, y, width, height = image_location
 
         if x > source_image_width:
-            raise SystemError("Can't load texture starting at an x of {} " +
+            raise SystemError("Can't load texture starting at an x of {} "
                               "when the image is only {} across."
                               .format(x, source_image_width))
         if y > source_image_height:
-            raise SystemError("Can't load texture starting at an y of {} " +
+            raise SystemError("Can't load texture starting at an y of {} "
                               "when the image is only {} high."
                               .format(y, source_image_height))
         if x + width > source_image_width:
-            raise SystemError("Can't load texture ending at an x of {} " +
+            raise SystemError("Can't load texture ending at an x of {} "
                               "when the image is only {} wide."
                               .format(x + width, source_image_width))
         if y + height > source_image_height:
-            raise SystemError("Can't load texture ending at an y of {} " +
+            raise SystemError("Can't load texture ending at an y of {} "
                               "when the image is only {} high."
                               .format(y + height, source_image_height))
 
@@ -168,19 +172,19 @@ def load_texture(file_name, x=0, y=0, width=0, height=0, scale=1):
 
     if x != 0 or y != 0 or width != 0 or height != 0:
         if x > source_image_width:
-            raise SystemError("Can't load texture starting at an x of {} " +
+            raise SystemError("Can't load texture starting at an x of {} "
                               "when the image is only {} across."
                               .format(x, source_image_width))
         if y > source_image_height:
-            raise SystemError("Can't load texture starting at an y of {} " +
+            raise SystemError("Can't load texture starting at an y of {} "
                               "when the image is only {} high."
                               .format(y, source_image_height))
         if x + width > source_image_width:
-            raise SystemError("Can't load texture ending at an x of {} " +
+            raise SystemError("Can't load texture ending at an x of {} "
                               "when the image is only {} wide."
                               .format(x + width, source_image_width))
         if y + height > source_image_height:
-            raise SystemError("Can't load texture ending at an y of {} " +
+            raise SystemError("Can't load texture ending at an y of {} "
                               "when the image is only {} high."
                               .format(y + height, source_image_height))
 
@@ -1362,8 +1366,7 @@ def draw_lrtb_rectangle_filled(left, right, top, bottom, color):
     draw_rectangle_filled(center_x, center_y, width, height, color)
 
 
-def draw_xywh_rectangle_filled(top_left_x, top_left_y, width, height, color,
-                               border_width=1):
+def draw_xywh_rectangle_filled(top_left_x, top_left_y, width, height, color):
     """
     Draw a rectangle by specifying left, right, top, and bottom edges.
 
@@ -1489,7 +1492,7 @@ scale * texture.height, texture, 90)
     GL.glColor4f(1, 1, 1, alpha)
     z = 0.5
 
-    GL.glBindTexture(GL.GL_TEXTURE_2D, texture.id)
+    GL.glBindTexture(GL.GL_TEXTURE_2D, texture.texture_id)
     GL.glBegin(GL.GL_POLYGON)
     GL.glNormal3f(0.0, 0.0, 1.0)
     GL.glTexCoord2f(0, 0)

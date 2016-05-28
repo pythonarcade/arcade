@@ -1,3 +1,7 @@
+"""
+Functions for calculating geometry.
+"""
+
 from __future__ import print_function
 import math
 
@@ -37,25 +41,25 @@ def are_polygons_intersecting(poly_a, poly_b):
             normal = (projection_2[1] - projection_1[1],
                       projection_1[0] - projection_2[0])
 
-            minA, maxA, minB, maxB = (None,) * 4
+            min_a, max_a, min_b, max_b = (None,) * 4
 
             for p in poly_a:
                 projected = normal[0] * p[0] + normal[1] * p[1]
 
-                if not minA or projected < minA:
-                    minA = projected
-                if not maxA or projected > maxA:
-                    maxA = projected
+                if not min_a or projected < min_a:
+                    min_a = projected
+                if not max_a or projected > max_a:
+                    max_a = projected
 
             for p in poly_b:
                 projected = normal[0] * p[0] + normal[1] * p[1]
 
-                if not minB or projected < minB:
-                    minB = projected
-                if not maxB or projected > maxB:
-                    maxB = projected
+                if not min_b or projected < min_b:
+                    min_b = projected
+                if not max_b or projected > max_b:
+                    max_b = projected
 
-            if maxA <= minB or maxB <= minA:
+            if max_a <= min_b or max_b <= min_a:
                 return False
 
     return True
@@ -69,18 +73,18 @@ def rotate(x, y, cx, cy, angle):
     >>> print("x = {:.1f}, y = {:.1f}".format(x, y))
     x = -1.0, y = 1.0
     """
-    tempX = x - cx
-    tempY = y - cy
+    temp_x = x - cx
+    temp_y = y - cy
 
     # now apply rotation
-    rotatedX = tempX * math.cos(math.radians(angle)) - \
-        tempY * math.sin(math.radians(angle))
-    rotatedY = tempX * math.sin(math.radians(angle)) + \
-        tempY * math.cos(math.radians(angle))
+    rotated_x = temp_x * math.cos(math.radians(angle)) - \
+        temp_y * math.sin(math.radians(angle))
+    rotated_y = temp_x * math.sin(math.radians(angle)) + \
+        temp_y * math.cos(math.radians(angle))
 
     # translate back
-    x = rotatedX + cx
-    y = rotatedY + cy
+    x = rotated_x + cx
+    y = rotated_y + cy
 
     return x, y
 

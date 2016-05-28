@@ -1,4 +1,8 @@
-import random
+"""
+Attempt at a 2D physics engine.
+
+This part needs a lot of work.
+"""
 import arcade
 
 import math
@@ -13,6 +17,9 @@ import numpy
 
 
 class PhysicsObject:
+    """
+    Base object to represent something we apply physics on.
+    """
     def __init__(self, position, velocity, restitution, mass):
         self.velocity = velocity
         self.restitution = restitution
@@ -30,18 +37,27 @@ class PhysicsObject:
     y = property(_get_y)
 
 
-class Circle(PhysicsObject):
+class PhysicsCircle(PhysicsObject):
+    """
+    A physics object, which is a circle.
+    """
     def __init__(self, position, velocity, restitution, mass, radius, color):
         super().__init__(position, velocity, restitution, mass)
         self.radius = radius
         self.color = color
 
     def draw(self):
+        """
+        Draw the rectangle
+        """
         arcade.draw_circle_filled(self.position[0], self.position[1],
                                   self.radius, self.color)
 
 
-class AABB(PhysicsObject):
+class PhysicsAABB(PhysicsObject):
+    """
+    Axis-aligned bounding box. In English, a non-rotating rectangle.
+    """
     def __init__(self, rect, velocity, restitution, mass, color):
         super().__init__([rect[0], rect[1]], velocity, restitution, mass)
         self.color = color
@@ -49,19 +65,19 @@ class AABB(PhysicsObject):
         self.height = rect[3]
 
     def draw(self):
-        arcade.draw_rect_filled(self.position[0], self.position[1], self.width,
+        arcade.draw_rectangle_filled(self.position[0], self.position[1], self.width,
                                 self.height, self.color)
 
-    def _get_min(self):
-        return Vector(self.position.x, self.position.y)
+    # def _get_min(self):
+    #     return Vector(self.position.x, self.position.y)
 
-    min = property(_get_min)
+    # min = property(_get_min)
 
-    def _get_max(self):
-        return Vector(self.position.x + self.width,
-                      self.position.y + self.height)
+    # def _get_max(self):
+    #     return Vector(self.position.x + self.width,
+    #                   self.position.y + self.height)
 
-    max = property(_get_max)
+    # max = property(_get_max)
 
 
 def distanceA(a, b):
@@ -81,6 +97,9 @@ class Manifold:
 
 
 def circle_vs_circle(m):
+    """
+    Process two circles that collide.
+    """
     n = numpy.subtract(m.b.position.data, m.a.position.data)
     r = m.a.radius + m.b.radius
     r *= r
@@ -106,6 +125,9 @@ def circle_vs_circle(m):
 
 
 def resolve_collision(m):
+    """
+    Process two colliding objects.
+    """
     # Calculate relative velocity
     rv = numpy.subtract(m.b.velocity, m.a.velocity)
 
@@ -141,6 +163,9 @@ def resolve_collision(m):
 
 
 def aabb_vs_aabb(m):
+    """
+    Process two AABB objects that collide
+    """
     n = numpy.subtract(m.b.position, m.a.position)
 
     abox = m.a
@@ -185,10 +210,16 @@ def aabb_vs_aabb(m):
 
 
 def clamp(a, min_value, max_value):
+    """
+    Clamp a between two values.
+    """
     return max(min(a, max_value), min_value)
 
 
 def magnitude(v):
+    """
+    Get the magnitude of a vector.
+    """
     return math.sqrt(sum(v[i]*v[i] for i in range(len(v))))
 
 

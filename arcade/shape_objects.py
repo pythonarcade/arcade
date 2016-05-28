@@ -39,8 +39,8 @@ class Rectangle(Shape):
         self.tilt_angle = tilt_angle
 
     def draw(self):
-        draw_rectangle(self.center_x, self.center_y, self.width, self.height,
-                       self.color, self.border_width, self.tilt_angle)
+        draw_rectangle_filled(self.center_x, self.center_y, self.width, self.height,
+                              self.color, self.tilt_angle)
 
 
 class Square(Rectangle):
@@ -53,41 +53,27 @@ class Square(Rectangle):
         self.width_and_height = width_and_height
 
     def draw(self):
-        draw_rectangle(self.center_x, self.center_y, self.width_and_height,
-                       self.width_and_height, self.color, self.border_width,
-                       self.tilt_angle)
+        draw_rectangle_filled(self.center_x, self.center_y, self.width_and_height,
+                              self.width_and_height, self.color, self.tilt_angle)
 
 
-class Oval(Shape):
+class Ellipse(Shape):
+    """ Class that represents an Ellipse. """
+
     def __init__(self, center_x, center_y, width, height,
                  color=arcade.color.GREEN, border_width=0, tilt_angle=0):
 
-        super().__init__(center_x, center_y, color)
-
+        super().__init__(center_x, center_y, color, tilt_angle)
         self.width = width
         self.height = height
-        self.border_width = border_width
-        self.tilt_angle = tilt_angle
 
     def draw(self):
-        draw_oval(self.center_x, self.center_y, self.width, self.height,
-                  self.color, self.border_width, self.tilt_angle)
-
-
-class Ellipse(Oval):
-
-    def __init__(self, center_x, center_y, width, height,
-                 color=arcade.color.GREEN, border_width=0, tilt_angle=0):
-
-        super().__init__(center_x, center_y, width, height, color,
-                         border_width, tilt_angle)
-
-    def draw(self):
-        draw_ellipse(self.center_x, self.center_y, self.width, self.height,
-                     self.color, self.border_width, self.tilt_angle)
+        draw_ellipse_filled(self.center_x, self.center_y, self.width, self.height,
+                            self.color, self.tilt_angle)
 
 
 class Circle(Shape):
+    """ Class that represents an Circle. """
 
     def __init__(self, center_x, center_y, radius,
                  color=arcade.color.GREEN, border_width=0):
@@ -98,11 +84,11 @@ class Circle(Shape):
         self.border_width = border_width
 
     def draw(self):
-        draw_circle(self.center_x, self.center_y, self.radius, self.color,
-                    self.border_width)
+        draw_circle_filled(self.center_x, self.center_y, self.radius, self.color)
 
 
 class Point(Shape):
+    """ Class that represents an Point. """
 
     def __init__(self, center_x, center_y, size, color=arcade.color.GREEN):
 
@@ -115,6 +101,7 @@ class Point(Shape):
 
 
 class Text(Shape):
+    """ Class that represents a text label. """
 
     def __init__(self, text, center_x, center_y, size,
                  color=arcade.color.GREEN):
@@ -130,6 +117,7 @@ class Text(Shape):
 
 
 class Triangle():
+    """ Class that represents a triangle. """
 
     def __init__(self, first_x, first_y, second_x, second_y, third_x, third_y,
                  color=arcade.color.GREEN, border_width=0):
@@ -144,19 +132,11 @@ class Triangle():
         self.border_width = border_width
 
     def draw(self):
-        draw_triangle(self.first_x, self.first_y,
-                      self.second_x, self.second_y,
-                      self.third_x, self.third_y,
-                      self.color,
-                      self.border_width)
-
-    def update(self):
-        self.first_x += self.change_x
-        self.first_y += self.change_y
-        self.second_x += self.change_x
-        self.second_y += self.change_y
-        self.third_x += self.change_x
-        self.third_y += self.change_y
+        draw_triangle_filled(self.first_x, self.first_y,
+                             self.second_x, self.second_y,
+                             self.third_x, self.third_y,
+                             self.color,
+                             self.border_width)
 
 
 class Polygon():
@@ -170,12 +150,12 @@ class Polygon():
         self.change_y = 0
 
     def draw(self):
-        draw_polygon(self.point_list, self.color, self.border_width)
+        draw_polygon_filled(self.point_list, self.color)
 
     def update(self):
-        for point in range(len(self.point_list)):
-            self.point_list[point][0] += self.change_x
-            self.point_list[point][1] += self.change_y
+        for point in self.point_list:
+            point[0] += self.change_x
+            point[1] += self.change_y
 
 
 class Parabola():
@@ -193,33 +173,6 @@ class Parabola():
         self.change_x = 0
         self.change_y = 0
         self.change_tilt_angle = 0
-
-    def draw(self):
-        """
-        #>>> import arcade
-        #>>> def on_draw(delta_time):
-        #>>>     arcade.start_render()
-        #>>>     on_draw.parabola.draw()
-        #>>>     on_draw.parabola.update()
-
-        #>>> arcade.open_window("Drawing Example", 800, 600)
-        #>>> arcade.set_background_color(arcade.color.WHITE)
-
-        #>>> on_draw.parabola = arcade.Parabola(300, 450, 390, 50, \
-arcade.color.INDIGO, 14)
-        #>>> on_draw.parabola.change_y = -2
-        #>>> on_draw.parabola.change_angle = 8
-        #>>> arcade.schedule(on_draw, 1 / 80)
-        #>>> arcade.quick_run(10)
-        """
-        draw_parabola(self.start_x, self.start_y, self.end_x, self.height,
-                      self.color, self.border_width, self.tilt_angle)
-
-    def update(self):
-        self.start_x += self.change_x
-        self.start_y += self.change_y
-        self.end_x += self.change_x
-        self.tilt_angle += self.change_tilt_angle
 
 
 class Line():
@@ -268,9 +221,9 @@ class Arc():
         self.change_end_angle = 0
 
     def draw(self):
-        draw_arc(self.center_x, self.center_y, self.width, self.height,
-                 self.color, self.start_angle, self.end_angle,
-                 self.border_width, self.tilt_angle)
+        draw_arc_outline(self.center_x, self.center_y, self.width, self.height,
+                         self.color, self.start_angle, self.end_angle,
+                         self.border_width, self.tilt_angle)
 
     def update(self):
         self.center_x += self.change_x
@@ -280,15 +233,15 @@ class Arc():
         self.end_angle += self.change_end_angle
 
 
-def master_draw(object):
-    object.draw()
+def master_draw(shape_object):
+    shape_object.draw()
 
 
-def draw_all(list):
-    for item in list:
+def draw_all(shape_list):
+    for item in shape_list:
         item.draw()
 
 
-def update_all(list):
-    for item in list:
+def update_all(shape_list):
+    for item in shape_list:
         item.update()

@@ -1,3 +1,6 @@
+"""
+This module manages all of the code around Sprites.
+"""
 from __future__ import print_function
 from .draw_commands import *
 from .geometry import *
@@ -9,6 +12,10 @@ FACE_DOWN = 4
 
 
 def _set_vbo(vbo_id, points):
+    """
+    Given a vertex buffer id, this sets the vertexes to be
+    part of that buffer.
+    """
     data2 = (GL.GLfloat*len(points))(*points)
     GL.glBindBuffer(GL.GL_ARRAY_BUFFER, vbo_id)
     GL.glBufferData(GL.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2,
@@ -16,6 +23,9 @@ def _set_vbo(vbo_id, points):
 
 
 def _create_vbo():
+    """
+    This creates a new vertex buffer id.
+    """
     vbo_id = GL.GLuint()
 
     GL.glGenBuffers(1, ctypes.pointer(vbo_id))
@@ -24,7 +34,9 @@ def _create_vbo():
 
 
 def _create_rects(rect_list):
-    """ Create a vertex buffer for a set of rectangles. """
+    """
+    Create a vertex buffer for a set of rectangles.
+    """
 
     v2f = []
     for shape in rect_list:
@@ -37,7 +49,9 @@ def _create_rects(rect_list):
 
 
 def _render_rect_filled(shape, offset, texture_id, texture_coord_vbo):
-    """ Render the shape at the right spot. """
+    """
+    Render the rectangle at the right spot.
+    """
     # Set color
     GL.glLoadIdentity()
     GL.glTranslatef(shape.center_x, shape.center_y, 0)
@@ -52,6 +66,10 @@ def _render_rect_filled(shape, offset, texture_id, texture_coord_vbo):
 
 
 def _draw_rects(shape_list, vertex_vbo_id, texture_coord_vbo_id):
+    """
+    Draw a set of rectangles using vertex buffers. This is more efficient
+    than drawing them individually.
+    """
     GL.glEnable(GL.GL_BLEND)
     GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
     GL.glEnable(GL.GL_TEXTURE_2D)
@@ -112,9 +130,18 @@ class SpriteList():
     >>> arcade.quick_run(0.25)
     """
     def __init__(self):
+        """
+        Initialize the sprite list
+        """
+        # List of sprites in the sprite list
         self.sprite_list = []
+        # List of vertex buffers that go with the sprites
         self.vertex_vbo_id = None
+        # List of texture coordinate buffers (map textures to coordinages)
+        # that go with this list.
         self.texture_coord_vbo_id = None
+        # Set to True if we add/remove items. This way we can regenerate
+        # the buffers.
         self.vbo_dirty = True
 
     def append(self, item):
@@ -150,12 +177,17 @@ class SpriteList():
         """
         Call the draw() method on each sprite in the list.
         """
+        # Run this if we are running 'fast' with vertex buffers
+        # and we haven't yet created vertex buffers.
         if fast and self.vertex_vbo_id is None:
             self.vbo_dirty = True
             self.vertex_vbo_id = _create_vbo()
             self.texture_coord_vbo_id = _create_vbo()
             # print("Setup VBO")
 
+        # Run this if we are running 'fast' and we added or
+        # removed sprites, and thus need to recreate our buffer
+        # objects.
         if fast and self.vbo_dirty:
             rects = _create_rects(self.sprite_list)
             _set_vbo(self.vertex_vbo_id, rects)
@@ -164,6 +196,8 @@ class SpriteList():
             self.vbo_dirty = False
             # print("Upload new vbo data")
 
+        # If we run fast, use vertex buffers. Otherwise do it the
+        # super slow way.
         if fast:
             _draw_rects(self.sprite_list, self.vertex_vbo_id,
                         self.texture_coord_vbo_id)
@@ -172,9 +206,11 @@ class SpriteList():
                 sprite.draw()
 
     def __len__(self):
+        """ Return the length of the sprite list. """
         return len(self.sprite_list)
 
     def __iter__(self):
+        """ Return an iterable object of sprites. """
         return iter(self.sprite_list)
 
     def pop(self):
@@ -288,15 +324,28 @@ upside-down.
         self._point_list_cache = None
 
     def append_texture(self, texture):
+        """
+        Appends a new texture to the list of textures that can be
+        applied to this sprite.
+        """
         self.textures.append(texture)
 
     def set_texture(self, texture_no):
+        """
+        Assuming 'texture' is a list of textures, this sets
+        which texture index should be displayed. It also resets
+        the width and height based on the scale of the texture.
+        """
         self.texture = self.textures[texture_no]
         self.cur_texture_index = texture_no
         self.width = self.textures[texture_no].width * self.scale
         self.height = self.textures[texture_no].height * self.scale
 
     def get_texture(self):
+        """
+        This returns the index of which texture is being
+        displayed.
+        """
         return self.cur_texture_index
 
     def set_position(self, center_x, center_y):
@@ -417,9 +466,11 @@ arcade.Sprite("doc/source/examples/images/playerShip1_orange.png", scale)
     top = property(_get_top, _set_top)
 
     def _get_center_x(self):
+        """ Get the center x coordinate of the sprite. """
         return self._center_x
 
     def _set_center_x(self, new_value):
+        """ Set the center x coordinate of the sprite. """
         if new_value != self._center_x:
             self._center_x = new_value
             self._point_list_cache = None
@@ -427,9 +478,11 @@ arcade.Sprite("doc/source/examples/images/playerShip1_orange.png", scale)
     center_x = property(_get_center_x, _set_center_x)
 
     def _get_center_y(self):
+        """ Get the center y coordinate of the sprite. """
         return self._center_y
 
     def _set_center_y(self, new_value):
+        """ Set the center y coordinate of the sprite. """
         if new_value != self._center_y:
             self._center_y = new_value
             self._point_list_cache = None
@@ -437,9 +490,11 @@ arcade.Sprite("doc/source/examples/images/playerShip1_orange.png", scale)
     center_y = property(_get_center_y, _set_center_y)
 
     def _get_angle(self):
+        """ Get the angle of the sprite's rotation. """
         return self._angle
 
     def _set_angle(self, new_value):
+        """ Set the angle of the sprite's rotation. """
         if new_value != self._angle:
             self._angle = new_value
             self._point_list_cache = None
@@ -524,7 +579,7 @@ arcade.Sprite("doc/source/examples/images/playerShip1_orange.png", scale)
         """
         Set the current sprite texture.
         """
-        if type(texture) is Texture:
+        if isinstance(texture, Texture):
             self._texture = texture
             self.width = texture.width
             self.height = texture.height

@@ -1,3 +1,8 @@
+"""
+The main window class that all object-oriented applications should
+derive from.
+"""
+
 from .window_commands import *
 
 import pyglet
@@ -25,7 +30,7 @@ class Window(pyglet.window.Window):
         self.set_update_rate(1/80)
         # set_viewport(0, self.width, 0, self.height)
 
-    def animate(self, dt):
+    def animate(self, delta_time):
         """
         Move everything.
 

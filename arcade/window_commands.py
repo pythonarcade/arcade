@@ -207,7 +207,7 @@ def run():
     pyglet.app.run()
 
 
-def _close(dt):
+def _close():
     close_window()
 
 

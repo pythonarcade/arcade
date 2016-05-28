@@ -1,3 +1,7 @@
+"""
+Physics engines for top-down or platformers.
+"""
+
 from .sprite import *
 from .geometry import *
 
@@ -73,7 +77,11 @@ class PhysicsEnginePlatformer():
         self.gravity_constant = gravity_constant
 
     def can_jump(self):
-
+        """
+        Method that looks to see if there is a floor under
+        the player_sprite. If there is a floor, the player can jump
+        and we return a True.
+        """
         # --- Move in the y direction
         self.player_sprite.center_y -= 2
 

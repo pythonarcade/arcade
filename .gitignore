@@ -13,3 +13,4 @@ arcade.wpu
 doc/source/quick_index.rst
 doc/source/internal/blacklist.rst
 doc/source/internal/build.rst
+pylint.html

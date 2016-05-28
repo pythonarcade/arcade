@@ -1,3 +1,8 @@
+"""
+The Arcade Library
+
+A Python simple, easy to use module for creating 2D games.
+"""
 import arcade.key
 import arcade.color
 
