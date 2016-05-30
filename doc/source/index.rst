@@ -1,4 +1,4 @@
-The Arcade Python Package
+The Python Arcade Library
 =========================
 
 .. raw:: html
@@ -10,15 +10,24 @@ Arcade is an easy-to-learn Python library for creating 2D video games. It is
 ideal for people learning to program, or developers that want to code a 2D
 game without learning a complex framework.
 
+Learn about it:
+
 * :ref:`installation-instructions`
 * :ref:`example-code`
 * :ref:`arcade-api`
 * :ref:`quick-index`
-* `GitHub Source Code for Arcade`_
 * `Arcade on PyPi`_
+
+Give feedback:
+
 * `GitHub Arcade Issue List`_
 * `Reddit Discussion Group`_
+* Email: paul.craven@simpson.edu
+
+Contribute to the development:
+
 * :ref:`how-to-contribute`
+* `GitHub Source Code for Arcade`_
 
 The status of the build is here: |build-status-travis| |build-status-appveyor| |coverage|
 
