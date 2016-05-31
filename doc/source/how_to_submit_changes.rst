@@ -1,10 +1,21 @@
 .. _how-to-submit-changes:
 
+Philosophy of Arcade
+====================
+
+Only advanced features should require advanced knowledge.
+
+Think about how your change would fit into a curriculum.
+Don't force all users to learn an advanced topic to get anything done.
+See :ref:`suggested-curriculum`.
+
+
 How to Submit Changes
 =====================
 
 First, you should open up an issue or enhancement request on
 the `Github Issue List`_.
+
 
 Next, `create your own fork`_ of the Arcade library. Follow the
 above instructions on how to build the code.

@@ -11,6 +11,7 @@ ideal for people learning to program, or developers that want to code a 2D
 game without learning a complex framework.
 
 Learn about it:
+^^^^^^^^^^^^^^^
 
 * :ref:`installation-instructions`
 * :ref:`example-code`
@@ -18,13 +19,20 @@ Learn about it:
 * :ref:`quick-index`
 * `Arcade on PyPi`_
 
+Teach it:
+^^^^^^^^^
+
+* :ref:`suggested-curriculum`
+
 Give feedback:
+^^^^^^^^^^^^^^
 
 * `GitHub Arcade Issue List`_
 * `Reddit Discussion Group`_
 * Email: paul.craven@simpson.edu
 
 Contribute to the development:
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 * :ref:`how-to-contribute`
 * `GitHub Source Code for Arcade`_
@@ -66,6 +74,7 @@ How to Contribute
    directory_structure
    how_to_compile
    how_to_submit_changes
+
 
 .. automodule:: arcade
 
