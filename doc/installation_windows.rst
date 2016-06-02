@@ -12,8 +12,8 @@ Install Python from the official Python website:
 https://www.python.org/downloads/
 
 The website gives you the option of downloading two different versions:
-Version 3.x.x or version 2.x.x. If you aren't sure which you want, pick the
-version that begins with 3.
+Version 3.x.x or version 2.x.x. The Arcade library requires Python
+beginning with 3.x.x.
 
 When installing Python, make sure to customize the installation and add
 Python to the path:

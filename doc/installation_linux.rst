@@ -9,13 +9,6 @@ Python 3.x
 	sudo pip3 install arcade
 
 
-Python 2.x
-----------
-.. code-block:: bash
-
-	sudo apt-get install libavbin-dev libavbin0 python2.7-dev python-pip libjpeg-dev zlib1g-dev
-	sudo pip install arcade
-
 Issues with avbin?
 ------------------
 
