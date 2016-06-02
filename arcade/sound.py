@@ -1,9 +1,6 @@
 import pyglet
 
 
-_sound_library_loaded = False
-
-
 def load_sound_library():
     """
     Special code for Windows so we grab the proper avbin from our directory.
@@ -11,8 +8,8 @@ def load_sound_library():
     """
 
     #lazy loading
-    if not _sound_library_loaded:
-        _sound_library_loaded = True
+    if not load_sound_library._sound_library_loaded:
+        load_sound_library._sound_library_loaded = True
     else:
         return
 
@@ -43,6 +40,8 @@ def load_sound_library():
     pyglet.lib.load_library(path)
     pyglet.have_avbin = True
 
+# Initialize static function variable
+load_sound_library._sound_library_loaded = False
 
 def load_sound(filename):
     """
