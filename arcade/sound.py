@@ -13,27 +13,25 @@ def load_sound_library():
     else:
         return
 
+    import platform
+    system = platform.system()
+
     import os
     appveyor = not os.environ.get('APPVEYOR') is None
-    if os.name == "nt":
 
-        import sys
-        is64bit = sys.maxsize > 2**32
+    from distutils.sysconfig import get_python_lib
+    python_lib = get_python_lib()
 
-        import site
-        packages = site.getsitepackages()
-
+    if system == "Windows":
         if appveyor:
-            if is64bit:
-                path = "Win64/avbin"
-            else:
-                path = "Win32/avbin"
-
+            path = "avbin"
         else:
-            if is64bit:
-                path = packages[0] + "/lib/site-packages/arcade/Win64/avbin"
-            else:
-                path = packages[0] + "/lib/site-packages/arcade/Win32/avbin"
+            import sys
+            is_64_bit = sys.maxsize > 2**32
+            arch = 'x64' if is_64_bit else 'x86'
+            path = python_lib + "/lib/site-packages/arcade/avbin-win32-" + arch
+    elif system == 'Darwin':
+        path = python_lib + '/lib/site-packages/arcade/libavbin.10.dylib'
     else:
         path = "avbin"
 
