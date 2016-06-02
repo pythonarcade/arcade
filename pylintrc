@@ -1,4 +1,5 @@
 [MESSAGES CONTROL]
+max-module-lines=2000
 # Disable the following PyLint messages:
 # R0903 - Not enough public methods
 # W0105 - String statement has no effect # often used for after-line doc
