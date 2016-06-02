@@ -4,7 +4,8 @@ BUILD = 1
 VERSION = "0.9.9"
 RELEASE = VERSION + "b" + str(BUILD)
 
-import os
+from os import path
+import platform
 import sys
 import distutils.sysconfig
 from setuptools import setup
@@ -17,11 +18,19 @@ if __name__ == "__main__":
         VERSION = VERSION.replace("-beta", "b")
         VERSION = VERSION.replace("-rc", "r")
 
-    fname = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                         "README.rst")
-    readme = open(fname, "r")
-    long_desc = readme.read()
-    readme.close()
+    fname = path.join(path.dirname(path.abspath(__file__)), "README.rst")
+    with open(fname, "r") as f:
+        long_desc = f.read()
+
+    system = platform.system()
+    is_64_bit = sys.maxsize > 2**32
+    if system == 'Windows':
+        if is_64_bit:
+            avbin = 'avbin-win32-x64.dll'
+        else:  # 32-bit
+            avbin = 'avbin-win32-x86.dll'
+    elif system == 'Darwin':
+        avbin = 'lib/libavbin.10.dylib'
 
     setup(
           name="arcade",
@@ -53,6 +62,5 @@ if __name__ == "__main__":
               "Topic :: Software Development :: Libraries :: Python Modules",
               ],
           test_suite="tests",
-          data_files=[("Lib/site-packages/arcade/Win32", ["Win32/avbin.dll"]),
-                      ("Lib/site-packages/arcade/Win64", ["Win64/avbin.dll"])],
+          data_files=[("lib/site-packages/arcade", [avbin])]
          )
