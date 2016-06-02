@@ -3,8 +3,6 @@ The main window class that all object-oriented applications should
 derive from.
 """
 
-from .window_commands import *
-
 import pyglet
 
 MOUSE_BUTTON_LEFT = 1
