@@ -1,7 +1,6 @@
 """
 This module manages all of the code around Sprites.
 """
-from __future__ import print_function
 from .draw_commands import *
 from .geometry import *
 
