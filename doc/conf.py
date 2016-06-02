@@ -2,7 +2,7 @@
 
 BUILD = 1
 VERSION = "0.9.9"
-RELEASE = VERSION + "beta" + str(BUILD)
+RELEASE = VERSION + "b" + str(BUILD)
 
 # -*- coding: utf-8 -*-
 #
