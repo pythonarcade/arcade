@@ -2,14 +2,19 @@
 This submodule has functions that control creating and managing windows.
 """
 
+import gc
 import sys
 import time
-import gc
 
 import pyglet
 
 import pyglet.gl as GL
 import pyglet.gl.glu as GLU
+
+from numbers import Number
+from typing import Callable
+from typing import Iterable
+from typing import Union
 
 _left = -1
 _right = 1
@@ -19,7 +24,7 @@ _top = 1
 _window = None
 
 
-def pause(seconds):
+def pause(seconds: Number):
     """
     Pause for the specified number of seconds.
 
@@ -34,7 +39,7 @@ def pause(seconds):
     time.sleep(seconds)
 
 
-def get_window():
+def get_window() -> Union[pyglet.window.Window, None]:
     """
     Return a handle to the current window.
 
@@ -47,7 +52,7 @@ def get_window():
     return _window
 
 
-def set_window(window):
+def set_window(window: pyglet.window.Window):
     """
     Set a handle to the current window.
 
@@ -62,7 +67,7 @@ def set_window(window):
     _window = window
 
 
-def set_viewport(left, right, bottom, top):
+def set_viewport(left: Number, right: Number, bottom: Number, top: Number):
     """
     This sets what coordinates the window will cover.
 
@@ -113,7 +118,7 @@ def set_viewport(left, right, bottom, top):
     GL.glLoadIdentity()
 
 
-def open_window(window_title, width, height):
+def open_window(window_title: str, width: Number, height: Number):
     """
     This function opens a window.
 
@@ -211,7 +216,7 @@ def _close():
     close_window()
 
 
-def quick_run(time_to_pause):
+def quick_run(time_to_pause: Number):
     """
     Only run the application for the specified time in seconds.
     Useful for unit testing or continuous integration (CI) testing
@@ -250,7 +255,7 @@ def start_render():
     GL.glEnableClientState(GL.GL_VERTEX_ARRAY)
 
 
-def set_background_color(color):
+def set_background_color(color: Iterable[Number]):
     """
     This specifies the background color of the window.
 
@@ -274,7 +279,7 @@ def set_background_color(color):
     GL.glClearColor(color[0]/255, color[1]/255, color[2]/255, 1)
 
 
-def schedule(function_pointer, interval):
+def schedule(function_pointer: Callable, interval: Number):
     """
     Schedule a function to be automatically called every ``interval``
     seconds.
