@@ -5,222 +5,14 @@ from __future__ import print_function
 from .draw_commands import *
 from .geometry import *
 
+from numbers import Number
+from typing import Iterable
+from typing import List
+
 FACE_RIGHT = 1
 FACE_LEFT = 2
 FACE_UP = 3
 FACE_DOWN = 4
-
-
-def _set_vbo(vbo_id, points):
-    """
-    Given a vertex buffer id, this sets the vertexes to be
-    part of that buffer.
-    """
-    data2 = (GL.GLfloat*len(points))(*points)
-    GL.glBindBuffer(GL.GL_ARRAY_BUFFER, vbo_id)
-    GL.glBufferData(GL.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2,
-                    GL.GL_STATIC_DRAW)
-
-
-def _create_vbo():
-    """
-    This creates a new vertex buffer id.
-    """
-    vbo_id = GL.GLuint()
-
-    GL.glGenBuffers(1, ctypes.pointer(vbo_id))
-
-    return vbo_id
-
-
-def _create_rects(rect_list):
-    """
-    Create a vertex buffer for a set of rectangles.
-    """
-
-    v2f = []
-    for shape in rect_list:
-        v2f.extend([-shape.width / 2, -shape.height / 2,
-                   shape.width / 2, -shape.height / 2,
-                   shape.width / 2, shape.height / 2,
-                   -shape.width / 2, shape.height / 2])
-
-    return v2f
-
-
-def _render_rect_filled(shape, offset, texture_id, texture_coord_vbo):
-    """
-    Render the rectangle at the right spot.
-    """
-    # Set color
-    GL.glLoadIdentity()
-    GL.glTranslatef(shape.center_x, shape.center_y, 0)
-
-    if shape.angle != 0:
-        GL.glRotatef(shape.angle, 0, 0, 1)
-
-    GL.glBindTexture(GL.GL_TEXTURE_2D, texture_id)
-
-    GL.glTexCoordPointer(2, GL.GL_FLOAT, 0, texture_coord_vbo)
-    GL.glDrawArrays(GL.GL_QUADS, offset, 4)
-
-
-def _draw_rects(shape_list, vertex_vbo_id, texture_coord_vbo_id):
-    """
-    Draw a set of rectangles using vertex buffers. This is more efficient
-    than drawing them individually.
-    """
-    GL.glEnable(GL.GL_BLEND)
-    GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
-    GL.glEnable(GL.GL_TEXTURE_2D)
-    GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
-    GL.glHint(GL.GL_PERSPECTIVE_CORRECTION_HINT, GL.GL_NICEST)
-
-    # GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
-    # GL.glMatrixMode(GL.GL_MODELVIEW)
-    # GL.glDisable(GL.GL_BLEND)
-
-    GL.glBindBuffer(GL.GL_ARRAY_BUFFER, vertex_vbo_id)
-    GL.glEnableClientState(GL.GL_TEXTURE_COORD_ARRAY)
-    GL.glEnableClientState(GL.GL_VERTEX_ARRAY)
-    GL.glVertexPointer(2, GL.GL_FLOAT, 0, 0)
-
-    GL.glBindBuffer(GL.GL_ARRAY_BUFFER, texture_coord_vbo_id)
-
-    offset = 0
-    for shape in shape_list:
-        if shape.can_cache:
-            texture_coord_vbo_id = None
-
-            GL.glColor4f(1, 1, 1, shape.alpha)
-
-            _render_rect_filled(shape, offset,
-                                shape.texture.texture_id, texture_coord_vbo_id)
-
-            offset += 4
-        else:
-            shape.draw()
-
-
-class SpriteList():
-    """
-    List of sprites.
-
-    :Unit Test:
-
-    >>> import arcade
-    >>> import random
-    >>> arcade.open_window("Sprite Example", 600, 600)
-    >>> scale = 1
-    >>> meteor_list = arcade.SpriteList()
-    >>> filename = "examples/images/meteorGrey_big1.png"
-    >>> for i in range(100):
-    ...     meteor = arcade.Sprite(filename, scale)
-    ...     meteor.center_x = random.random() * 2 - 1
-    ...     meteor.center_y = random.random() * 2 - 1
-    ...     meteor_list.append(meteor)
-    >>> meteor_list.remove(meteor) # Remove last meteor, just to test
-    >>> m = meteor_list.pop() # Remove another meteor, just to test
-    >>> meteor_list.update() # Call update on all items
-    >>> print(len(meteor_list))
-    98
-    >>> arcade.set_background_color(arcade.color.WHITE)
-    >>> arcade.start_render()
-    >>> meteor_list.draw(fast=False)
-    >>> arcade.finish_render()
-    >>> for meteor in meteor_list:
-    ...     meteor.kill()
-    >>> arcade.quick_run(0.25)
-    """
-    def __init__(self):
-        """
-        Initialize the sprite list
-        """
-        # List of sprites in the sprite list
-        self.sprite_list = []
-        # List of vertex buffers that go with the sprites
-        self.vertex_vbo_id = None
-        # List of texture coordinate buffers (map textures to coordinages)
-        # that go with this list.
-        self.texture_coord_vbo_id = None
-        # Set to True if we add/remove items. This way we can regenerate
-        # the buffers.
-        self.vbo_dirty = True
-
-    def append(self, item):
-        """
-        Add a new sprite to the list.
-        """
-        self.sprite_list.append(item)
-        item._register_sprite_list(self)
-        self.vbo_dirty = True
-
-    def remove(self, item):
-        """
-        Remove a specific sprite from the list.
-        """
-        self.sprite_list.remove(item)
-        self.vbo_dirty = True
-
-    def update(self):
-        """
-        Call the update() method on each sprite in the list.
-        """
-        for sprite in self.sprite_list:
-            sprite.update()
-
-    def update_animation(self):
-        """
-        Call the update_animation() method on each sprite in the list.
-        """
-        for sprite in self.sprite_list:
-            sprite.update_animation()
-
-    def draw(self, fast=True):
-        """
-        Call the draw() method on each sprite in the list.
-        """
-        # Run this if we are running 'fast' with vertex buffers
-        # and we haven't yet created vertex buffers.
-        if fast and self.vertex_vbo_id is None:
-            self.vbo_dirty = True
-            self.vertex_vbo_id = _create_vbo()
-            self.texture_coord_vbo_id = _create_vbo()
-            # print("Setup VBO")
-
-        # Run this if we are running 'fast' and we added or
-        # removed sprites, and thus need to recreate our buffer
-        # objects.
-        if fast and self.vbo_dirty:
-            rects = _create_rects(self.sprite_list)
-            _set_vbo(self.vertex_vbo_id, rects)
-            _set_vbo(self.texture_coord_vbo_id,
-                     [0, 0, 1, 0, 1, 1, 0, 1] * len(self.sprite_list))
-            self.vbo_dirty = False
-            # print("Upload new vbo data")
-
-        # If we run fast, use vertex buffers. Otherwise do it the
-        # super slow way.
-        if fast:
-            _draw_rects(self.sprite_list, self.vertex_vbo_id,
-                        self.texture_coord_vbo_id)
-        else:
-            for sprite in self.sprite_list:
-                sprite.draw()
-
-    def __len__(self):
-        """ Return the length of the sprite list. """
-        return len(self.sprite_list)
-
-    def __iter__(self):
-        """ Return an iterable object of sprites. """
-        return iter(self.sprite_list)
-
-    def pop(self):
-        """
-        Pop off the last sprite in the list.
-        """
-        return self.sprite_list.pop()
 
 
 class Sprite():
@@ -267,7 +59,8 @@ upside-down.
     >>> ship_sprite.kill()
     >>> arcade.quick_run(0.25)
     """
-    def __init__(self, filename=None, scale=1, x=0, y=0, width=0, height=0):
+    def __init__(self, filename: str = None, scale: Number = 1, x: Number = 0, 
+                 y: Number = 0, width: Number = 0, height: Number = 0):
         """
         Create a new sprite.
 
@@ -326,14 +119,14 @@ upside-down.
         self._points = None
         self._point_list_cache = None
 
-    def append_texture(self, texture):
+    def append_texture(self, texture: Texture):
         """
         Appends a new texture to the list of textures that can be
         applied to this sprite.
         """
         self.textures.append(texture)
 
-    def set_texture(self, texture_no):
+    def set_texture(self, texture_no: int):
         """
         Assuming 'texture' is a list of textures, this sets
         which texture index should be displayed. It also resets
@@ -344,24 +137,24 @@ upside-down.
         self.width = self.textures[texture_no].width * self.scale
         self.height = self.textures[texture_no].height * self.scale
 
-    def get_texture(self):
+    def get_texture(self) -> int:
         """
         This returns the index of which texture is being
         displayed.
         """
         return self.cur_texture_index
 
-    def set_position(self, center_x, center_y):
+    def set_position(self, center_x: Number, center_y: Number):
         """
         Set a sprite's position
         """
         self.center_x = center_x
         self.center_y = center_y
 
-    def set_points(self, points):
+    def set_points(self, points: Iterable[Iterable[Number]]):
         self._points = points
 
-    def get_points(self):
+    def get_points(self) -> Iterable[Iterable[Number]]:
         """
         Get the corner points for the rect that makes up the sprite.
         """
@@ -403,7 +196,7 @@ upside-down.
 
     points = property(get_points, set_points)
 
-    def _get_bottom(self):
+    def _get_bottom(self) -> Number:
         """
         Return the y coordinate of the bottom of the sprite.
 
@@ -426,7 +219,7 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
             my_min = min(my_min, points[i][1])
         return my_min
 
-    def _set_bottom(self, amount):
+    def _set_bottom(self, amount: Number):
         """
         Set the location of the sprite based on the bottom y coordinate.
         """
@@ -436,7 +229,7 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
 
     bottom = property(_get_bottom, _set_bottom)
 
-    def _get_top(self):
+    def _get_top(self) -> Number:
         """
         Return the y coordinate of the top of the sprite.
 
@@ -460,7 +253,7 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
             my_max = max(my_max, points[i][1])
         return my_max
 
-    def _set_top(self, amount):
+    def _set_top(self, amount: Number):
         """ The highest y coordinate. """
         highest = self._get_top()
         diff = highest - amount
@@ -468,11 +261,11 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
 
     top = property(_get_top, _set_top)
 
-    def _get_center_x(self):
+    def _get_center_x(self) -> Number:
         """ Get the center x coordinate of the sprite. """
         return self._center_x
 
-    def _set_center_x(self, new_value):
+    def _set_center_x(self, new_value: Number):
         """ Set the center x coordinate of the sprite. """
         if new_value != self._center_x:
             self._center_x = new_value
@@ -480,11 +273,11 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
 
     center_x = property(_get_center_x, _set_center_x)
 
-    def _get_center_y(self):
+    def _get_center_y(self) -> Number:
         """ Get the center y coordinate of the sprite. """
         return self._center_y
 
-    def _set_center_y(self, new_value):
+    def _set_center_y(self, new_value: Number):
         """ Set the center y coordinate of the sprite. """
         if new_value != self._center_y:
             self._center_y = new_value
@@ -492,11 +285,11 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
 
     center_y = property(_get_center_y, _set_center_y)
 
-    def _get_angle(self):
+    def _get_angle(self) -> Number:
         """ Get the angle of the sprite's rotation. """
         return self._angle
 
-    def _set_angle(self, new_value):
+    def _set_angle(self, new_value: Number):
         """ Set the angle of the sprite's rotation. """
         if new_value != self._angle:
             self._angle = new_value
@@ -504,7 +297,7 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
 
     angle = property(_get_angle, _set_angle)
 
-    def _get_left(self):
+    def _get_left(self) -> Number:
         """
         Left-most coordinate.
 
@@ -530,7 +323,7 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
             my_min = min(my_min, points[i][0])
         return my_min
 
-    def _set_left(self, amount):
+    def _set_left(self, amount: Number):
         """ The left most x coordinate. """
         leftmost = self._get_left()
         diff = amount - leftmost
@@ -538,7 +331,7 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
 
     left = property(_get_left, _set_left)
 
-    def _get_right(self):
+    def _get_right(self) -> Number:
         """
         Return the x coordinate of the right-side of the sprite.
 
@@ -564,7 +357,7 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
             my_max = max(my_max, points[i][0])
         return my_max
 
-    def _set_right(self, amount):
+    def _set_right(self, amount: Number):
         """ The right most x coordinate. """
         rightmost = self._get_right()
         diff = rightmost - amount
@@ -572,13 +365,13 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
 
     right = property(_get_right, _set_right)
 
-    def _get_texture(self):
+    def _get_texture(self) -> Texture:
         """
         Return the texture that the sprite uses.
         """
         return self._texture
 
-    def _set_texture(self, texture):
+    def _set_texture(self, texture: Texture):
         """
         Set the current sprite texture.
         """
@@ -592,7 +385,7 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
 
     texture = property(_get_texture, _set_texture)
 
-    def _register_sprite_list(self, new_list):
+    def _register_sprite_list(self, new_list: List['Sprite']):
         """
         Register this sprite as belonging to a list. We will automatically
         remove ourselves from the the list when kill() is called.
@@ -631,11 +424,132 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
                 sprite_list.remove(self)
 
 
+class SpriteList():
+    """
+    List of sprites.
+
+    :Unit Test:
+
+    >>> import arcade
+    >>> import random
+    >>> arcade.open_window("Sprite Example", 600, 600)
+    >>> scale = 1
+    >>> meteor_list = arcade.SpriteList()
+    >>> filename = "examples/images/meteorGrey_big1.png"
+    >>> for i in range(100):
+    ...     meteor = arcade.Sprite(filename, scale)
+    ...     meteor.center_x = random.random() * 2 - 1
+    ...     meteor.center_y = random.random() * 2 - 1
+    ...     meteor_list.append(meteor)
+    >>> meteor_list.remove(meteor) # Remove last meteor, just to test
+    >>> m = meteor_list.pop() # Remove another meteor, just to test
+    >>> meteor_list.update() # Call update on all items
+    >>> print(len(meteor_list))
+    98
+    >>> arcade.set_background_color(arcade.color.WHITE)
+    >>> arcade.start_render()
+    >>> meteor_list.draw(fast=False)
+    >>> arcade.finish_render()
+    >>> for meteor in meteor_list:
+    ...     meteor.kill()
+    >>> arcade.quick_run(0.25)
+    """
+    def __init__(self):
+        """
+        Initialize the sprite list
+        """
+        # List of sprites in the sprite list
+        self.sprite_list = []
+        # List of vertex buffers that go with the sprites
+        self.vertex_vbo_id = None
+        # List of texture coordinate buffers (map textures to coordinages)
+        # that go with this list.
+        self.texture_coord_vbo_id = None
+        # Set to True if we add/remove items. This way we can regenerate
+        # the buffers.
+        self.vbo_dirty = True
+
+    def append(self, item: Sprite):
+        """
+        Add a new sprite to the list.
+        """
+        self.sprite_list.append(item)
+        item._register_sprite_list(self)
+        self.vbo_dirty = True
+
+    def remove(self, item: Sprite):
+        """
+        Remove a specific sprite from the list.
+        """
+        self.sprite_list.remove(item)
+        self.vbo_dirty = True
+
+    def update(self):
+        """
+        Call the update() method on each sprite in the list.
+        """
+        for sprite in self.sprite_list:
+            sprite.update()
+
+    def update_animation(self):
+        """
+        Call the update_animation() method on each sprite in the list.
+        """
+        for sprite in self.sprite_list:
+            sprite.update_animation()
+
+    def draw(self, fast: bool = True):
+        """
+        Call the draw() method on each sprite in the list.
+        """
+        # Run this if we are running 'fast' with vertex buffers
+        # and we haven't yet created vertex buffers.
+        if fast and self.vertex_vbo_id is None:
+            self.vbo_dirty = True
+            self.vertex_vbo_id = _create_vbo()
+            self.texture_coord_vbo_id = _create_vbo()
+            # print("Setup VBO")
+
+        # Run this if we are running 'fast' and we added or
+        # removed sprites, and thus need to recreate our buffer
+        # objects.
+        if fast and self.vbo_dirty:
+            rects = _create_rects(self.sprite_list)
+            _set_vbo(self.vertex_vbo_id, rects)
+            _set_vbo(self.texture_coord_vbo_id,
+                     [0, 0, 1, 0, 1, 1, 0, 1] * len(self.sprite_list))
+            self.vbo_dirty = False
+            # print("Upload new vbo data")
+
+        # If we run fast, use vertex buffers. Otherwise do it the
+        # super slow way.
+        if fast:
+            _draw_rects(self.sprite_list, self.vertex_vbo_id,
+                        self.texture_coord_vbo_id)
+        else:
+            for sprite in self.sprite_list:
+                sprite.draw()
+
+    def __len__(self) -> int:
+        """ Return the length of the sprite list. """
+        return len(self.sprite_list)
+
+    def __iter__(self) -> Iterable[Sprite]:
+        """ Return an iterable object of sprites. """
+        return iter(self.sprite_list)
+
+    def pop(self) -> Sprite:
+        """
+        Pop off the last sprite in the list.
+        """
+        return self.sprite_list.pop()
+
+
 class AnimatedTimeSprite(Sprite):
     """
     Sprite for platformer games that supports animations.
     """
-    def __init__(self, scale=1, x=0, y=0):
+    def __init__(self, scale: Number = 1, x: Number = 0, y: Number = 0):
         super().__init__(scale=scale, x=x, y=y)
         self.last_center_x = self.center_x
         self.last_center_y = self.center_y
@@ -662,7 +576,7 @@ class AnimatedWalkingSprite(Sprite):
     """
     Sprite for platformer games that supports animations.
     """
-    def __init__(self, scale=1, x=0, y=0):
+    def __init__(self, scale: Number = 1, x: Number = 0, y: Number = 0):
         super().__init__(scale=scale, x=x, y=y)
         self.last_center_x = self.center_x
         self.last_center_y = self.center_y
@@ -717,3 +631,96 @@ class AnimatedWalkingSprite(Sprite):
                 self.cur_texture_index = 0
 
             self.texture = texture_list[self.cur_texture_index]
+
+
+def _set_vbo(vbo_id: GL.GLuint, points: List[Number]):
+    """
+    Given a vertex buffer id, this sets the vertexes to be
+    part of that buffer.
+    """
+    data2 = (GL.GLfloat*len(points))(*points)
+    GL.glBindBuffer(GL.GL_ARRAY_BUFFER, vbo_id)
+    GL.glBufferData(GL.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2,
+                    GL.GL_STATIC_DRAW)
+
+
+def _create_vbo() -> GL.GLuint:
+    """
+    This creates a new vertex buffer id.
+    """
+    vbo_id = GL.GLuint()
+
+    GL.glGenBuffers(1, ctypes.pointer(vbo_id))
+
+    return vbo_id
+
+
+def _create_rects(rect_list: Iterable[Sprite]) -> List[Number]:
+    """
+    Create a vertex buffer for a set of rectangles.
+    """
+
+    v2f = []
+    for shape in rect_list:
+        v2f.extend([-shape.width / 2, -shape.height / 2,
+                   shape.width / 2, -shape.height / 2,
+                   shape.width / 2, shape.height / 2,
+                   -shape.width / 2, shape.height / 2])
+
+    return v2f
+
+
+def _render_rect_filled(shape: Sprite, offset: int, texture_id: str, 
+                        texture_coord_vbo: GL.GLuint):
+    """
+    Render the rectangle at the right spot.
+    """
+    # Set color
+    GL.glLoadIdentity()
+    GL.glTranslatef(shape.center_x, shape.center_y, 0)
+
+    if shape.angle != 0:
+        GL.glRotatef(shape.angle, 0, 0, 1)
+
+    GL.glBindTexture(GL.GL_TEXTURE_2D, texture_id)
+
+    GL.glTexCoordPointer(2, GL.GL_FLOAT, 0, texture_coord_vbo)
+    GL.glDrawArrays(GL.GL_QUADS, offset, 4)
+
+
+def _draw_rects(shape_list: Iterable[Sprite], vertex_vbo_id: GL.GLuint, 
+                texture_coord_vbo_id: GL.GLuint):
+    """
+    Draw a set of rectangles using vertex buffers. This is more efficient
+    than drawing them individually.
+    """
+    GL.glEnable(GL.GL_BLEND)
+    GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
+    GL.glEnable(GL.GL_TEXTURE_2D)
+    GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
+    GL.glHint(GL.GL_PERSPECTIVE_CORRECTION_HINT, GL.GL_NICEST)
+
+    # GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
+    # GL.glMatrixMode(GL.GL_MODELVIEW)
+    # GL.glDisable(GL.GL_BLEND)
+
+    GL.glBindBuffer(GL.GL_ARRAY_BUFFER, vertex_vbo_id)
+    GL.glEnableClientState(GL.GL_TEXTURE_COORD_ARRAY)
+    GL.glEnableClientState(GL.GL_VERTEX_ARRAY)
+    GL.glVertexPointer(2, GL.GL_FLOAT, 0, 0)
+
+    GL.glBindBuffer(GL.GL_ARRAY_BUFFER, texture_coord_vbo_id)
+
+    offset = 0
+    for shape in shape_list:
+        if shape.can_cache:
+            texture_coord_vbo_id = None
+
+            GL.glColor4f(1, 1, 1, shape.alpha)
+
+            _render_rect_filled(shape, offset,
+                                shape.texture.texture_id, texture_coord_vbo_id)
+
+            offset += 4
+        else:
+            shape.draw()
