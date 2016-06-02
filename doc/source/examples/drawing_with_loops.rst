@@ -9,4 +9,4 @@ Loops: Drawing with loops
     :align: center
     :alt: Screenshot of drawing with loops example program
 
-.. literalinclude:: drawing_with_loops.py
+.. literalinclude:: ../../../examples/drawing_with_loops.py

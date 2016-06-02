@@ -9,4 +9,4 @@ Sprites: Move with walls
     :align: center
     :alt: Screenshot of using sprites to detect wall collisions
 
-.. literalinclude:: sprite_move_walls.py
+.. literalinclude:: ../../../examples/sprite_move_walls.py

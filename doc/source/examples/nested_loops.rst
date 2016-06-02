@@ -12,7 +12,7 @@ Box
     :align: center
     :alt: Screenshot of nested loops
 
-.. literalinclude:: nested_loops_box.py
+.. literalinclude:: ../../../examples/nested_loops_box.py
 
 Top left triangle
 -----------------
@@ -23,7 +23,7 @@ Top left triangle
     :align: center
     :alt: Screenshot of nested loops
 
-.. literalinclude:: nested_loops_top_left_triangle.py
+.. literalinclude:: ../../../examples/nested_loops_top_left_triangle.py
 
 Top right triangle
 ------------------
@@ -34,7 +34,7 @@ Top right triangle
     :align: center
     :alt: Screenshot of nested loops
 
-.. literalinclude:: nested_loops_top_right_triangle.py
+.. literalinclude:: ../../../examples/nested_loops_top_right_triangle.py
 
 Bottom left triangle
 --------------------
@@ -45,7 +45,7 @@ Bottom left triangle
     :align: center
     :alt: Screenshot of nested loops
 
-.. literalinclude:: nested_loops_bottom_left_triangle.py
+.. literalinclude:: ../../../examples/nested_loops_bottom_left_triangle.py
 
 Bottom right triangle
 ---------------------
@@ -56,4 +56,4 @@ Bottom right triangle
     :align: center
     :alt: Screenshot of nested loops
 
-.. literalinclude:: nested_loops_bottom_right_triangle.py
+.. literalinclude:: ../../../examples/nested_loops_bottom_right_triangle.py

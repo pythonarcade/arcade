@@ -9,4 +9,4 @@ Classes: Timer
     :align: center
     :alt: Screenshot of running a timer
 
-.. literalinclude:: timer.py
+.. literalinclude:: ../../../examples/timer.py

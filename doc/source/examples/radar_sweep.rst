@@ -9,4 +9,4 @@ Animation: Radar Sweep
     :align: center
     :alt: Screenshot of radar sweep example
 
-.. literalinclude:: radar_sweep.py
+.. literalinclude:: ../../../examples/radar_sweep.py

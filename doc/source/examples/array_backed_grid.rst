@@ -9,4 +9,4 @@ Array-Backed Grid
     :align: center
     :alt: Screenshot of a program that shows an array backed grid.
 
-.. literalinclude:: array_backed_grid.py
+.. literalinclude:: ../../../examples/array_backed_grid.py

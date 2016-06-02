@@ -9,4 +9,4 @@ Sprites: Shoot bullets upwards
     :align: center
     :alt: Screenshot of using sprites to shoot things
 
-.. literalinclude:: sprite_bullets.py
+.. literalinclude:: ../../../examples/sprite_bullets.py

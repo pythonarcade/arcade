@@ -9,4 +9,4 @@ Sprites: Work with a tiled map
     :align: center
     :alt: Screenshot of using a larger map exported by tiled in a csv format.
 
-.. literalinclude:: sprite_tiled_map.py
+.. literalinclude:: ../../../examples/sprite_tiled_map.py

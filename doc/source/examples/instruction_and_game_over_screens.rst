@@ -9,4 +9,4 @@ Sprites: Instruction and Game Over Screens
     :align: center
     :alt: Screenshot of game over screen
 
-.. literalinclude:: instruction_and_game_over_screens.py
+.. literalinclude:: ../../../examples/instruction_and_game_over_screens.py

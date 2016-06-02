@@ -9,4 +9,4 @@ Sprites: Move with a scrolling screen
     :align: center
     :alt: Screenshot of using a scrolling window
 
-.. literalinclude:: sprite_move_scrolling.py
+.. literalinclude:: ../../../examples/sprite_move_scrolling.py
