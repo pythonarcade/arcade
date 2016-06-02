@@ -61,7 +61,7 @@ def list_classes(filename, output_file):
 
 
 def main():
-    output_file = open("doc/source/quick_index.rst", "w")
+    output_file = open("doc/quick_index.rst", "w")
 
     output_file.write(".. _quick-index:\n\n")
 

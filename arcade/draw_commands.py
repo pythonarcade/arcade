@@ -73,7 +73,7 @@ def load_textures(file_name, image_location_list,
     ...                        [784, 3, 59, 95],
     ...                        [843, 6, 56, 92]]
     >>> texture_info_list = arcade.load_textures( \
-"doc/source/examples/images/character_sheet.png", image_location_list)
+"examples/images/character_sheet.png", image_location_list)
     >>> arcade.close_window()
     """
     source_image = PIL.Image.open(file_name)
@@ -157,7 +157,7 @@ def load_texture(file_name, x=0, y=0, width=0, height=0, scale=1):
 
     >>> import arcade
     >>> arcade.open_window("Drawing Example", 800, 600)
-    >>> name = "doc/source/examples/images/meteorGrey_big1.png"
+    >>> name = "examples/images/meteorGrey_big1.png"
     >>> texture = load_texture(name, 1, 1, 50, 50)
     >>> arcade.close_window()
     """
@@ -240,7 +240,7 @@ def trim_image(image):
     """
     Returns an image with extra whitespace cropped out.
 
-    >>> name = "doc/source/examples/images/playerShip1_orange.png"
+    >>> name = "examples/images/playerShip1_orange.png"
     >>> source_image = PIL.Image.open(name)
     >>> cropped_image = trim_image(source_image)
     >>> print(source_image.height, cropped_image.height)
@@ -1463,7 +1463,7 @@ def draw_texture_rectangle(center_x, center_y, width, height, texture,
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
     >>> arcade.draw_text("draw_bitmap", 483, 3, arcade.color.BLACK, 12)
-    >>> name = "doc/source/examples/images/playerShip1_orange.png"
+    >>> name = "examples/images/playerShip1_orange.png"
     >>> texture = arcade.load_texture(name)
     >>> scale = .6
     >>> arcade.draw_texture_rectangle(540, 120, scale * texture.width, \

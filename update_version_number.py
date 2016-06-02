@@ -35,4 +35,4 @@ def update_file(filename):
     f.close()
 
 update_file('setup.py')
-update_file('doc/source/conf.py')
+update_file('doc/conf.py')
