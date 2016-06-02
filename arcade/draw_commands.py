@@ -1281,7 +1281,6 @@ def render_rectangle_filled(shape, center_x, center_y, color, tilt_angle=0):
     GL.glDrawArrays(GL.GL_QUADS, 0, shape.size)
 
 
-# pylint: too-many-arguments
 def draw_lrtb_rectangle_outline(left, right, top, bottom, color,
                                 border_width=1):
     """
