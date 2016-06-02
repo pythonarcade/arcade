@@ -18,12 +18,12 @@ def draw_background():
     This function draws the background. Specifically, the sky and ground.
     """
     # Draw the sky in the top two-thirds
-    arcade.draw_rectangle_filled(0, SCREEN_HEIGHT - 1,
+    arcade.draw_rectangle_filled(SCREEN_WIDTH / 2, SCREEN_HEIGHT * 2 / 3,
                                  SCREEN_WIDTH - 1, SCREEN_HEIGHT * 2 / 3,
                                  arcade.color.SKY_BLUE)
 
     # Draw the ground in the bottom third
-    arcade.draw_rectangle_filled(0, SCREEN_HEIGHT / 3,
+    arcade.draw_rectangle_filled(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 6,
                                  SCREEN_WIDTH - 1, SCREEN_HEIGHT / 3,
                                  arcade.color.DARK_SPRING_GREEN)
 
@@ -36,18 +36,24 @@ def draw_bird(x, y):
     arcade.draw_arc_outline(x + 40, y, 20, 20, arcade.color.BLACK, 90, 180)
 
 
-def draw_pine_tree(x, y):
+def draw_pine_tree(center_x, center_y):
     """
     This function draws a pine tree at the specified location.
+
+    Args:
+      :center_x: x position of the tree center.
+      :center_y: y position of the tree trunk center.
     """
-    # Draw the trunk
-    arcade.draw_rectangle_filled(x + 30, y - 100, 20, 40,
-                                 arcade.color.DARK_BROWN)
+    # Draw the trunkcenter_x
+    arcade.draw_rectangle_filled(center_x, center_y, 20, 40, 
+        arcade.color.DARK_BROWN)
+
+    tree_bottom_y = center_y + 20
 
     # Draw the triangle on top of the trunk
-    point_list = ((x + 40, y),
-                  (x, y - 100),
-                  (x + 80, y - 100))
+    point_list = ((center_x - 40, tree_bottom_y),
+                  (center_x, tree_bottom_y + 100),
+                  (center_x + 40, tree_bottom_y))
 
     arcade.draw_polygon_filled(point_list, arcade.color.DARK_GREEN)
 
@@ -58,7 +64,7 @@ def main():
     """
 
     # Open the window
-    arcade.open_window("Drawing With Loops", 600, 600)
+    arcade.open_window("Drawing With Loops", SCREEN_WIDTH, SCREEN_HEIGHT)
 
     # Start the render process. This must be done before any drawing commands.
     arcade.start_render()
@@ -73,18 +79,18 @@ def main():
 
         # Any random y from in the top 2/3 of the screen.
         # No birds on the ground.
-        y = random.randrange(SCREEN_HEIGHT / 3, SCREEN_HEIGHT)
+        y = random.randrange(SCREEN_HEIGHT / 3, SCREEN_HEIGHT - 20)
 
         # Draw the bird.
         draw_bird(x, y)
 
     # Draw the top row of trees
-    for x in range(5, SCREEN_WIDTH, 90):
-        draw_pine_tree(x, 320)
+    for x in range(45, SCREEN_WIDTH, 90):
+        draw_pine_tree(x, SCREEN_HEIGHT / 3)
 
     # Draw the bottom row of trees
-    for x in range(25, SCREEN_WIDTH, 90):
-        draw_pine_tree(x, 200)
+    for x in range(65, SCREEN_WIDTH, 90):
+        draw_pine_tree(x, (SCREEN_HEIGHT / 3) - 120)
 
     # Finish the render.
     # Nothing will be drawn without this.
