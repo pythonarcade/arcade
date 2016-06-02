@@ -92,7 +92,7 @@ def _draw_rects(shape_list, vertex_vbo_id, texture_coord_vbo_id):
         if shape.can_cache:
             texture_coord_vbo_id = None
             _render_rect_filled(shape, offset,
-                                shape.texture.id, texture_coord_vbo_id)
+                                shape.texture.texture_id, texture_coord_vbo_id)
 
             offset += 4
         else:
