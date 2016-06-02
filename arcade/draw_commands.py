@@ -33,6 +33,15 @@ class Texture():
             :height (int): Height of the texture.
         Raises:
             :ValueError:
+
+        >>> Texture(0, 10, -10)
+        Traceback (most recent call last):
+        ...
+        ValueError: Height entered is less than zero. Height must be a positive number.
+        >>> Texture(0, -10, 10)
+        Traceback (most recent call last):
+        ...
+        ValueError: Width entered is less than zero. Width must be a positive number.
         """
         # Check values before attempting to create Texture object
         if height < 0:
@@ -72,9 +81,50 @@ def load_textures(file_name, image_location_list,
     ...                        [730, 7, 54, 91],
     ...                        [784, 3, 59, 95],
     ...                        [843, 6, 56, 92]]
-    >>> texture_info_list = arcade.load_textures( \
+    >>> texture_info_list = arcade.load_textures(\
 "examples/images/character_sheet.png", image_location_list)
+    >>> image_location_list = [[5600, 0, 0, 0]]
+
+    >>> texture_info_list = arcade.load_textures(\
+"examples/images/character_sheet.png", image_location_list)
+    Traceback (most recent call last):
+    ...
+    ValueError: Texture has a width of 0, must be > 0.
+
+    >>> image_location_list = [[2000, 0, 20, 20]]
+    >>> texture_info_list = arcade.load_textures(\
+"examples/images/character_sheet.png", image_location_list)
+    Traceback (most recent call last):
+    ...
+    ValueError: Can't load texture starting at an x of 2000 when the image is only 1377 across.
+
+    >>> image_location_list = [[500, 500, 20, 20]]
+    >>> texture_info_list = arcade.load_textures(\
+"examples/images/character_sheet.png", image_location_list)
+    Traceback (most recent call last):
+    ...
+    ValueError: Can't load texture starting at an y of 500 when the image is only 98 high.
+
+    >>> image_location_list = [[1300, 0, 100, 20]]
+    >>> texture_info_list = arcade.load_textures(\
+"examples/images/character_sheet.png", image_location_list)
+    Traceback (most recent call last):
+    ...
+    ValueError: Can't load texture ending at an x of 1400 when the image is only 1377 wide.
+
+    >>> image_location_list = [[500, 50, 50, 50]]
+    >>> texture_info_list = arcade.load_textures(\
+"examples/images/character_sheet.png", image_location_list)
+    Traceback (most recent call last):
+    ...
+    ValueError: Can't load texture ending at an y of 100 when the image is only 98 high.
+
+    >>> image_location_list = [[0, 0, 50, 50]]
+    >>> texture_info_list = arcade.load_textures(\
+"examples/images/character_sheet.png", image_location_list, mirrored=True, flipped=True)
+
     >>> arcade.close_window()
+
     """
     source_image = PIL.Image.open(file_name)
 
@@ -83,22 +133,25 @@ def load_textures(file_name, image_location_list,
     for image_location in image_location_list:
         x, y, width, height = image_location
 
+        if width <= 0:
+            raise ValueError("Texture has a width of {}, must be > 0."
+                             .format(width))
         if x > source_image_width:
-            raise SystemError("Can't load texture starting at an x of {} "
-                              "when the image is only {} across."
-                              .format(x, source_image_width))
+            raise ValueError("Can't load texture starting at an x of {} "
+                             "when the image is only {} across."
+                             .format(x, source_image_width))
         if y > source_image_height:
-            raise SystemError("Can't load texture starting at an y of {} "
-                              "when the image is only {} high."
-                              .format(y, source_image_height))
+            raise ValueError("Can't load texture starting at an y of {} "
+                             "when the image is only {} high."
+                             .format(y, source_image_height))
         if x + width > source_image_width:
-            raise SystemError("Can't load texture ending at an x of {} "
-                              "when the image is only {} wide."
-                              .format(x + width, source_image_width))
+            raise ValueError("Can't load texture ending at an x of {} "
+                             "when the image is only {} wide."
+                             .format(x + width, source_image_width))
         if y + height > source_image_height:
-            raise SystemError("Can't load texture ending at an y of {} "
-                              "when the image is only {} high."
-                              .format(y + height, source_image_height))
+            raise ValueError("Can't load texture ending at an y of {} "
+                             "when the image is only {} high."
+                             .format(y + height, source_image_height))
 
         image = source_image.crop((x, y, x + width, y + height))
         # image = _trim_image(image)
