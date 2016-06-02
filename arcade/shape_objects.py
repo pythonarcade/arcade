@@ -3,7 +3,7 @@ from .draw_commands import *
 import arcade.color
 
 
-class Shape():
+class Shape:
 
     def __init__(self, center_x, center_y, color=arcade.color.GREEN,
                  tilt_angle=0):
@@ -61,7 +61,7 @@ class Ellipse(Shape):
     """ Class that represents an Ellipse. """
 
     def __init__(self, center_x, center_y, width, height,
-                 color=arcade.color.GREEN, border_width=0, tilt_angle=0):
+                 color=arcade.color.GREEN, tilt_angle=0):
 
         super().__init__(center_x, center_y, color, tilt_angle)
         self.width = width
