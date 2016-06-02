@@ -11,3 +11,14 @@ functions or classes before drawing images.
 
     <iframe src="https://player.vimeo.com/video/167158158?byline=0&portrait=0" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
     <p><a href="https://vimeo.com/167158158">Drawing Primitives</a> from <a href="https://vimeo.com/user6672093">Paul Vincent Craven</a> on <a href="https://vimeo.com">Vimeo</a>.</p>
+
+.. .. image:: drawing_with_primitives.png
+..     :width: 600px
+..     :height: 600px
+..     :align: center
+..     :alt: Screenshot of drawing with functions example program
+
+
+
+.. literalinclude:: ../../examples/drawing_primitives.py
+

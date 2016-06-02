@@ -9,4 +9,4 @@ Sprites: Collect blocks that are moving in a circle
     :align: center
     :alt: Screenshot of using sprites to collect coins
 
-.. literalinclude:: ../../../examples/sprite_collect_coins_move_circle.py
+.. literalinclude:: ../../examples/sprite_collect_coins_move_circle.py

@@ -9,4 +9,4 @@ User control: Mouse
     :align: center
     :alt: Screenshot of mouse example program
 
-.. literalinclude:: ../../../examples/move_mouse.py
+.. literalinclude:: ../../examples/move_mouse.py

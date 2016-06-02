@@ -9,4 +9,4 @@ User control: Keyboard
     :align: center
     :alt: Screenshot of keyboard example program
 
-.. literalinclude:: ../../../examples/move_keyboard.py
+.. literalinclude:: ../../examples/move_keyboard.py

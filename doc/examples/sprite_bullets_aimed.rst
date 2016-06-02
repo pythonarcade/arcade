@@ -9,4 +9,4 @@ Sprites: Aim and shoot bullets
     :align: center
     :alt: Screenshot of using sprites to shoot things
 
-.. literalinclude:: ../../../examples/sprite_bullets_aimed.py
+.. literalinclude:: ../../examples/sprite_bullets_aimed.py

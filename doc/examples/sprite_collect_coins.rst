@@ -9,4 +9,4 @@ Sprites: Collect blocks
     :align: center
     :alt: Screenshot of using sprites to collect coins
 
-.. literalinclude:: ../../../examples/sprite_collect_coins.py
+.. literalinclude:: ../../examples/sprite_collect_coins.py

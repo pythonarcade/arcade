@@ -78,7 +78,7 @@ How to Contribute
 
 .. automodule:: arcade
 
-.. include:: ../../license.rst
+.. include:: ../license.rst
 
 .. |build-status-travis| image:: https://travis-ci.org/pvcraven/arcade.svg
     :target: https://travis-ci.org/pvcraven/arcade

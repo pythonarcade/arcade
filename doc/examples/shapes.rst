@@ -9,4 +9,4 @@ Classes: Shapes
     :align: center
     :alt: Screenshot of Shapes example program
 
-.. literalinclude:: ../../../examples/shapes.py
+.. literalinclude:: ../../examples/shapes.py
