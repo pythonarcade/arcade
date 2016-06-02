@@ -4,6 +4,7 @@ This module contains commands for basic graphics drawing commands.
 """
 # pylint: disable=too-many-arguments, too-many-locals, too-few-public-methods
 
+from __future__ import print_function
 import math
 import ctypes
 import PIL.Image
@@ -1281,6 +1282,7 @@ def render_rectangle_filled(shape, center_x, center_y, color, tilt_angle=0):
     GL.glDrawArrays(GL.GL_QUADS, 0, shape.size)
 
 
+# pylint: too-many-arguments
 def draw_lrtb_rectangle_outline(left, right, top, bottom, color,
                                 border_width=1):
     """
