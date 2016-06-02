@@ -1394,8 +1394,8 @@ def draw_rectangle_filled(center_x, center_y, width, height, color,
     Draw a filled-in rectangle.
 
     Args:
-        :x: x coordinate of top left rectangle point.
-        :y: y coordinate of top left rectangle point.
+        :center_x: x coordinate of rectangle center.
+        :center_y: y coordinate of rectangle center.
         :width: width of the rectangle.
         :height: height of the rectangle.
         :color: color, specified in a list of 3 or 4 bytes in RGB or
