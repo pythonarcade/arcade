@@ -27,8 +27,9 @@ def load_sound_library():
             path = "avbin"
         else:
             import sys
-            path = python_lib + "/lib/site-packages/arcade/avbin-win32-" + \
-                'x64' if sys.maxsize > 2**32 else 'x86'
+            is_64_bit = sys.maxsize > 2**32
+            arch = 'x64' if is_64_bit else 'x86'
+            path = python_lib + "/lib/site-packages/arcade/avbin-win32-" + arch
     elif system == 'Darwin':
         path = python_lib + '/lib/site-packages/arcade/libavbin.10.dylib'
     else:
