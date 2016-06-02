@@ -1,12 +1,13 @@
 """
 Physics engines for top-down or platformers.
 """
+# pylint: disable=too-many-arguments, too-many-locals, too-few-public-methods
 
-from .sprite import *
-from .geometry import *
+from .geometry import check_for_collision_with_list
+from .geometry import check_for_collision
 
 
-class PhysicsEngineSimple():
+class PhysicsEngineSimple:
     """
     This class will move everything, and take care of collisions.
     """
@@ -129,12 +130,15 @@ class PhysicsEnginePlatformer:
                     if item.change_x != 0:
                         self.player_sprite.center_x += item.change_x
             else:
+                pass
+                # TODO: The code below can't execute, as "item" doesn't
+                # exist. In theory, this condition should never be arrived at.
                 # Collision while player wasn't moving, most likely
                 # moving platform.
-                if self.player_sprite.center_y >= item.center_y:
-                    self.player_sprite.bottom = item.top
-                else:
-                    self.player_sprite.top = item.bottom
+                # if self.player_sprite.center_y >= item.center_y:
+                #     self.player_sprite.bottom = item.top
+                # else:
+                #     self.player_sprite.top = item.bottom
             self.player_sprite.change_y = min(0, hit_list[0].change_y)
 
         # --- Move in the x direction
