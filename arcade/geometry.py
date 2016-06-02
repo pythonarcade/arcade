@@ -2,7 +2,6 @@
 Functions for calculating geometry.
 """
 
-from __future__ import print_function
 import math
 
 

@@ -4,7 +4,6 @@ This module contains commands for basic graphics drawing commands.
 """
 # pylint: disable=too-many-arguments, too-many-locals, too-few-public-methods
 
-from __future__ import print_function
 import math
 import ctypes
 import PIL.Image
