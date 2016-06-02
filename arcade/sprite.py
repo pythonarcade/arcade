@@ -75,7 +75,7 @@ def _draw_rects(shape_list, vertex_vbo_id, texture_coord_vbo_id):
     GL.glEnable(GL.GL_TEXTURE_2D)
     GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
     GL.glHint(GL.GL_PERSPECTIVE_CORRECTION_HINT, GL.GL_NICEST)
-    GL.glColor4f(1, 1, 1, 1)
+
     # GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
     # GL.glMatrixMode(GL.GL_MODELVIEW)
     # GL.glDisable(GL.GL_BLEND)
@@ -91,6 +91,9 @@ def _draw_rects(shape_list, vertex_vbo_id, texture_coord_vbo_id):
     for shape in shape_list:
         if shape.can_cache:
             texture_coord_vbo_id = None
+
+            GL.glColor4f(1, 1, 1, shape.alpha)
+
             _render_rect_filled(shape, offset,
                                 shape.texture.texture_id, texture_coord_vbo_id)
 
