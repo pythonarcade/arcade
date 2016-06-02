@@ -10,6 +10,7 @@ class PhysicsEngineSimple():
     """
     This class will move everything, and take care of collisions.
     """
+
     def __init__(self, player_sprite, walls):
         """
         Constructor.
@@ -64,10 +65,11 @@ class PhysicsEngineSimple():
                 print("Error, collision while player wasn't moving.")
 
 
-class PhysicsEnginePlatformer():
+class PhysicsEnginePlatformer:
     """
     This class will move everything, and take care of collisions.
     """
+
     def __init__(self, player_sprite, platforms, gravity_constant=0.5):
         """
         Constructor.
@@ -184,10 +186,8 @@ class PhysicsEnginePlatformer():
 
                 if check_for_collision(self.player_sprite, platform):
                     if platform.change_x < 0:
-                        original_location = self.player_sprite.right
                         self.player_sprite.right = platform.left
                     if platform.change_x > 0:
-                        original_location = self.player_sprite.left
                         self.player_sprite.left = platform.right
 
                 platform.center_y += platform.change_y
