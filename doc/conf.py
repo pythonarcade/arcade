@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
-BUILD = 50
-VERSION = "0.0.6"
-RELEASE = VERSION + "r" + str(BUILD)
+BUILD = 1
+VERSION = "0.9.9"
+RELEASE = VERSION + "beta" + str(BUILD)
 
 # -*- coding: utf-8 -*-
 #
