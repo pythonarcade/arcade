@@ -3,7 +3,6 @@ This submodule has functions that control creating and managing windows.
 """
 
 import gc
-import sys
 import time
 
 import pyglet
