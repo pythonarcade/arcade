@@ -116,7 +116,7 @@ class Text(Shape):
                   self.size)
 
 
-class Triangle():
+class Triangle:
     """ Class that represents a triangle. """
 
     def __init__(self, first_x, first_y, second_x, second_y, third_x, third_y,
@@ -135,8 +135,7 @@ class Triangle():
         draw_triangle_filled(self.first_x, self.first_y,
                              self.second_x, self.second_y,
                              self.third_x, self.third_y,
-                             self.color,
-                             self.border_width)
+                             self.color)
 
 
 class Polygon():
