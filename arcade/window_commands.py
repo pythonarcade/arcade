@@ -39,7 +39,7 @@ def pause(seconds: Number):
     time.sleep(seconds)
 
 
-def get_window() -> Union(pyglet.window.Window, None):
+def get_window() -> Union[pyglet.window.Window, None]:
     """
     Return a handle to the current window.
 
