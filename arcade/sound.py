@@ -1,3 +1,9 @@
+"""
+
+Small abstraction around the sound library.
+
+"""
+
 import pyglet
 
 
