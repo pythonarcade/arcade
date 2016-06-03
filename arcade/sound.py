@@ -5,6 +5,7 @@ Small abstraction around the sound library.
 """
 
 import pyglet
+import typing
 
 
 def load_sound_library():
@@ -55,7 +56,7 @@ def load_sound_library():
 # Initialize static function variable
 load_sound_library._sound_library_loaded = False
 
-def load_sound(filename):
+def load_sound(filename: str) -> typing.Any:
     """
     Load a sound and get it ready to play.
     """
@@ -65,7 +66,7 @@ def load_sound(filename):
     return source
 
 
-def play_sound(sound):
+def play_sound(sound: typing.Any):
     """
     Play a previously loaded sound.
     """

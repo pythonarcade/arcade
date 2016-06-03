@@ -7,9 +7,9 @@ import ctypes
 import math
 import pyglet.gl as GL
 
-from arcade.geometry import rotate
 from arcade.draw_commands import load_texture
 from arcade.draw_commands import draw_texture_rectangle
+from arcade.draw_commands import Texture
 from arcade.draw_commands import Texture
 
 from numbers import Number
@@ -391,26 +391,26 @@ upside-down.
             self._point_list_cache = point_list
             return point_list
         else:
-            x1, y1 = rotate(self.center_x - self.width / 2,
-                            self.center_y - self.height / 2,
-                            self.center_x,
-                            self.center_y,
-                            self.angle)
-            x2, y2 = rotate(self.center_x + self.width / 2,
-                            self.center_y - self.height / 2,
-                            self.center_x,
-                            self.center_y,
-                            self.angle)
-            x3, y3 = rotate(self.center_x + self.width / 2,
-                            self.center_y + self.height / 2,
-                            self.center_x,
-                            self.center_y,
-                            self.angle)
-            x4, y4 = rotate(self.center_x - self.width / 2,
-                            self.center_y + self.height / 2,
-                            self.center_x,
-                            self.center_y,
-                            self.angle)
+            x1, y1 = _rotate(self.center_x - self.width / 2,
+                             self.center_y - self.height / 2,
+                             self.center_x,
+                             self.center_y,
+                             self.angle)
+            x2, y2 = _rotate(self.center_x + self.width / 2,
+                             self.center_y - self.height / 2,
+                             self.center_x,
+                             self.center_y,
+                             self.angle)
+            x3, y3 = _rotate(self.center_x + self.width / 2,
+                             self.center_y + self.height / 2,
+                             self.center_x,
+                             self.center_y,
+                             self.angle)
+            x4, y4 = _rotate(self.center_x - self.width / 2,
+                             self.center_y + self.height / 2,
+                             self.center_x,
+                             self.center_y,
+                             self.angle)
 
         self._point_list_cache = ((x1, y1), (x2, y2), (x3, y3), (x4, y4))
         return self._point_list_cache
@@ -852,6 +852,31 @@ class AnimatedWalkingSprite(Sprite):
                 self.cur_texture_index = 0
 
             self.texture = texture_list[self.cur_texture_index]
+
+
+def _rotate(x: Number, y: Number, cx: Number, cy: Number, 
+            angle: Number) -> Iterable[Number]:
+    """
+    Rotate a point around a center.
+
+    >>> x, y = rotate(1, 1, 0, 0, 90)
+    >>> print("x = {:.1f}, y = {:.1f}".format(x, y))
+    x = -1.0, y = 1.0
+    """
+    temp_x = x - cx
+    temp_y = y - cy
+
+    # now apply rotation
+    rotated_x = temp_x * math.cos(math.radians(angle)) - \
+        temp_y * math.sin(math.radians(angle))
+    rotated_y = temp_x * math.sin(math.radians(angle)) + \
+        temp_y * math.cos(math.radians(angle))
+
+    # translate back
+    x = rotated_x + cx
+    y = rotated_y + cy
+
+    return x, y
 
 
 def _set_vbo(vbo_id: GL.GLuint, points: List[Number]):
