@@ -66,11 +66,10 @@ class PhysicsEngineSimple:
                 print("Error, collision while player wasn't moving.")
 
 
-class PhysicsEnginePlatformer:
+class PhysicsEnginePlatformer():
     """
     This class will move everything, and take care of collisions.
     """
-
     def __init__(self, player_sprite, platforms, gravity_constant=0.5):
         """
         Constructor.
@@ -131,8 +130,6 @@ class PhysicsEnginePlatformer:
                         self.player_sprite.center_x += item.change_x
             else:
                 pass
-                # TODO: The code below can't execute, as "item" doesn't
-                # exist. In theory, this condition should never be arrived at.
                 # Collision while player wasn't moving, most likely
                 # moving platform.
                 # if self.player_sprite.center_y >= item.center_y:
