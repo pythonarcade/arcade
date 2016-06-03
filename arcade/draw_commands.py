@@ -214,12 +214,10 @@ def load_textures(file_name: str,
         GL.glBindTexture(GL.GL_TEXTURE_2D, texture)
         GL.glPixelStorei(GL.GL_UNPACK_ALIGNMENT, 1)
 
-        # Appveyor work-around
-        appveyor = True
         GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S,
-                           GL.GL_CLAMP_TO_BORDER)
+                           GL.GL_REPEAT)
         GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T,
-                           GL.GL_CLAMP_TO_BORDER)
+                           GL.GL_REPEAT)
 
         GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER,
                            GL.GL_LINEAR)
@@ -684,7 +682,7 @@ def create_ellipse(width: Number, height: Number,
 
     Note: THis can't be unit tested on appveyor because its support for OpenGL is
     poor.
-    
+
     import arcade
     arcade.open_window("Drawing Example", 800, 600)
     arcade.set_background_color(arcade.color.WHITE)
