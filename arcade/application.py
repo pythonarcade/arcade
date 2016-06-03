@@ -5,8 +5,6 @@ derive from.
 
 import pyglet
 
-from numbers import Number
-from typing import Any
 
 MOUSE_BUTTON_LEFT = 1
 MOUSE_BUTTON_MIDDLE = 2
@@ -22,7 +20,7 @@ class Window(pyglet.window.Window):
     >>> window.animate(0.25)
     >>> window.close()
     """
-    def __init__(self, width: Number, height: Number, 
+    def __init__(self, width: float, height: float, 
                  title: str = 'Arcade Window'):
         # This is nicer, but Python 3.x only
         # super().__init__(width=width, height=height, caption=title)
@@ -32,7 +30,7 @@ class Window(pyglet.window.Window):
         self.set_update_rate(1/80)
         # set_viewport(0, self.width, 0, self.height)
 
-    def animate(self, delta_time: Number):
+    def animate(self, delta_time: float):
         """
         Move everything.
 
@@ -43,25 +41,25 @@ called.
         """
         pass
 
-    def set_update_rate(self, rate: Number):
+    def set_update_rate(self, rate: float):
         """
         Set how often the screen should be updated.
         """
         pyglet.clock.schedule_interval(self.animate, rate)
 
-    def on_mouse_motion(self, x: Number, y: Number, dx: Number, dy: Number):
+    def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
         """ Override this function to add mouse functionality. """
         pass
 
-    def on_mouse_press(self, x: Number, y: Number, button: int, modifiers: int):
+    def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
         """ Override this function to add mouse button functionality. """
         pass
 
-    def on_mouse_drag(self, x: Number, y: Number, dx: Number, dy: Number):
+    def on_mouse_drag(self, x: float, y: float, dx: float, dy: float):
         """ Override this function to add mouse button functionality. """
         self.on_mouse_motion(x, y, dx, dy)
 
-    def on_mouse_release(self, x: Number, y: Number, button: int, 
+    def on_mouse_release(self, x: float, y: float, button: int, 
                          modifiers: int):
         """ Override this function to add mouse button functionality. """
         pass
