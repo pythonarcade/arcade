@@ -10,11 +10,9 @@ import pyglet.gl as GL
 from arcade.draw_commands import load_texture
 from arcade.draw_commands import draw_texture_rectangle
 from arcade.draw_commands import Texture
-from arcade.draw_commands import Texture
 
 from numbers import Number
-from typing import Iterable
-from typing import List
+from typing import Iterable, List, Sized
 
 FACE_RIGHT = 1
 FACE_LEFT = 2
@@ -67,12 +65,12 @@ upside-down.
     >>> arcade.quick_run(0.25)
     """
 
-    def __init__(self,
-                 filename: str = None,
-                 scale: Number = 1,
-                 image_x: Number = 0, image_y: Number = 0,
-                 image_width: Number = 0, image_height: Number = 0,
-                 center_x: Number = 0, center_y: Number = 0):
+    def __init__(self, 
+                 filename: str = None, 
+                 scale: float = 1,
+                 image_x: float = 0, image_y: float = 0,
+                 image_width: float = 0, image_height: float = 0,
+                 center_x: float = 0, center_y: float = 0):
         """
         Create a new sprite.
 
@@ -160,17 +158,17 @@ upside-down.
         """
         return self.cur_texture_index
 
-    def set_position(self, center_x: Number, center_y: Number):
+    def set_position(self, center_x: float, center_y: float):
         """
         Set a sprite's position
         """
         self.center_x = center_x
         self.center_y = center_y
 
-    def set_points(self, points: Iterable[Iterable[Number]]):
+    def set_points(self, points: Sized[Sized[float]]):
         self._points = points
 
-    def get_points(self) -> Iterable[Iterable[Number]]:
+    def get_points(self) -> Sized[Iterable[float]]:
         """
         Get the corner points for the rect that makes up the sprite.
         """
@@ -212,7 +210,7 @@ upside-down.
 
     points = property(get_points, set_points)
 
-    def _get_bottom(self) -> Number:
+    def _get_bottom(self) -> float:
         """
         Return the y coordinate of the bottom of the sprite.
 
@@ -235,7 +233,7 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
             my_min = min(my_min, points[point][1])
         return my_min
 
-    def _set_bottom(self, amount: Number):
+    def _set_bottom(self, amount: float):
         """
         Set the location of the sprite based on the bottom y coordinate.
         """
@@ -245,7 +243,7 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
 
     bottom = property(_get_bottom, _set_bottom)
 
-    def _get_top(self) -> Number:
+    def _get_top(self) -> float:
         """
         Return the y coordinate of the top of the sprite.
 
@@ -268,7 +266,7 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
             my_max = max(my_max, points[i][1])
         return my_max
 
-    def _set_top(self, amount: Number):
+    def _set_top(self, amount: float):
         """ The highest y coordinate. """
         highest = self._get_top()
         diff = highest - amount
@@ -276,11 +274,11 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
 
     top = property(_get_top, _set_top)
 
-    def _get_center_x(self) -> Number:
+    def _get_center_x(self) -> float:
         """ Get the center x coordinate of the sprite. """
         return self._center_x
 
-    def _set_center_x(self, new_value: Number):
+    def _set_center_x(self, new_value: float):
         """ Set the center x coordinate of the sprite. """
         if new_value != self._center_x:
             self._center_x = new_value
@@ -288,11 +286,11 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
 
     center_x = property(_get_center_x, _set_center_x)
 
-    def _get_center_y(self) -> Number:
+    def _get_center_y(self) -> float:
         """ Get the center y coordinate of the sprite. """
         return self._center_y
 
-    def _set_center_y(self, new_value: Number):
+    def _set_center_y(self, new_value: float):
         """ Set the center y coordinate of the sprite. """
         if new_value != self._center_y:
             self._center_y = new_value
@@ -300,11 +298,11 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
 
     center_y = property(_get_center_y, _set_center_y)
 
-    def _get_angle(self) -> Number:
+    def _get_angle(self) -> float:
         """ Get the angle of the sprite's rotation. """
         return self._angle
 
-    def _set_angle(self, new_value: Number):
+    def _set_angle(self, new_value: float):
         """ Set the angle of the sprite's rotation. """
         if new_value != self._angle:
             self._angle = new_value
@@ -337,7 +335,7 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
             my_min = min(my_min, points[i][0])
         return my_min
 
-    def _set_left(self, amount: Number):
+    def _set_left(self, amount: float):
         """ The left most x coordinate. """
         leftmost = self._get_left()
         diff = amount - leftmost
@@ -345,7 +343,7 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
 
     left = property(_get_left, _set_left)
 
-    def _get_right(self) -> Number:
+    def _get_right(self) -> float:
         """
         Return the x coordinate of the right-side of the sprite.
 
@@ -371,7 +369,7 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
             my_max = max(my_max, points[point][0])
         return my_max
 
-    def _set_right(self, amount: Number):
+    def _set_right(self, amount: float):
         """ The right most x coordinate. """
         rightmost = self._get_right()
         diff = rightmost - amount
@@ -399,7 +397,7 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
 
     texture = property(_get_texture, _set_texture)
 
-    def _register_sprite_list(self, new_list: List['Sprite']):
+    def _register_sprite_list(self, new_list: SpriteList):
         """
         Register this sprite as belonging to a list. We will automatically
         remove ourselves from the the list when kill() is called.
@@ -568,7 +566,7 @@ class AnimatedTimeSprite(Sprite):
                  image_x: float=0, image_y: float=0,
                  center_x: float=0, center_y: float=0):
 
-        super().__init__(scale=scale, image_x=image_x, image_y=image_y,
+        super().__init__(scale=scale, image_x=image_x, image_y=image_y, 
                          center_x=center_x, center_y=center_y)
         self.last_center_x = self.center_x
         self.last_center_y = self.center_y
@@ -655,8 +653,8 @@ class AnimatedWalkingSprite(Sprite):
             self.texture = texture_list[self.cur_texture_index]
 
 
-def _rotate(x: Number, y: Number, cx: Number, cy: Number,
-            angle: Number) -> Iterable[Number]:
+def _rotate(x: float, y: float, cx: float, cy: float,
+            angle: float) -> Iterable[Number]:
     """
     Rotate a point around a center.
 
@@ -680,12 +678,15 @@ def _rotate(x: Number, y: Number, cx: Number, cy: Number,
     return x, y
 
 
-def _set_vbo(vbo_id: GL.GLuint, points: List[Number]):
+def _set_vbo(vbo_id: GL.GLuint, points: List[float]):
     """
     Given a vertex buffer id, this sets the vertexes to be
     part of that buffer.
     """
-    data2 = (GL.GLfloat*len(points))(*points)
+
+    # todo what does it do?
+    data2 = (GL.GLfloat*len(points)) (*points)
+
     GL.glBindBuffer(GL.GL_ARRAY_BUFFER, vbo_id)
     GL.glBufferData(GL.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2,
                     GL.GL_STATIC_DRAW)
@@ -702,7 +703,7 @@ def _create_vbo() -> GL.GLuint:
     return vbo_id
 
 
-def _create_rects(rect_list: Iterable[Sprite]) -> List[Number]:
+def _create_rects(rect_list: Iterable[Sprite]) -> List[float]:
     """
     Create a vertex buffer for a set of rectangles.
     """
