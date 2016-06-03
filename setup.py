@@ -26,9 +26,9 @@ if __name__ == "__main__":
     is_64_bit = sys.maxsize > 2**32
     if system == 'Windows':
         if is_64_bit:
-            avbin = 'avbin-win32-x64.dll'
+            avbin = 'lib/avbin-win32-x64.dll'
         else:  # 32-bit
-            avbin = 'avbin-win32-x86.dll'
+            avbin = 'lib/avbin-win32-x86.dll'
     elif system == 'Darwin':
         avbin = 'lib/libavbin.10.dylib'
 
