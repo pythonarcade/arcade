@@ -777,9 +777,9 @@ class AnimatedTimeSprite(Sprite):
     Sprite for platformer games that supports animations.
     """
 
-    def __init__(self, scale: Number = 1, x: Number = 0, y: Number = 0):
+    def __init__(self, scale: Number = 1, image_x: Number = 0, image_y: Number = 0):
 
-        super().__init__(scale=scale, x=x, y=y)
+        super().__init__(scale=scale, image_x=image_x, image_y=image_y)
         self.last_center_x = self.center_x
         self.last_center_y = self.center_y
         self.state = FACE_RIGHT
@@ -805,8 +805,8 @@ class AnimatedWalkingSprite(Sprite):
     """
     Sprite for platformer games that supports animations.
     """
-    def __init__(self, scale: Number = 1, x: Number = 0, y: Number = 0):
-        super().__init__(scale=scale, x=x, y=y)
+    def __init__(self, scale: Number = 1, image_x: Number = 0, image_y: Number = 0):
+        super().__init__(scale=scale, image_x=image_x, image_y=image_y)
         self.last_center_x = self.center_x
         self.last_center_y = self.center_y
         self.state = FACE_RIGHT
