@@ -104,8 +104,8 @@ def check_for_collision(sprite1, sprite2):
     >>> sprite_2.center_y = 40
     >>> result = check_for_collision(sprite_1, sprite_2)
     >>> sprite_3 = arcade.Sprite(filename, scale)
-    >>> sprite_3.center_x = 80
-    >>> sprite_3.center_y = 80
+    >>> sprite_3.center_x = 90
+    >>> sprite_3.center_y = 90
     >>> result_1 = check_for_collision(sprite_1, sprite_2)
     >>> result_2 = check_for_collision(sprite_2, sprite_3)
     >>> result_3 = check_for_collision(sprite_1, sprite_3)
