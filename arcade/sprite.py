@@ -7,10 +7,10 @@ import ctypes
 import math
 import pyglet.gl as GL
 
-from .geometry import rotate
-from .draw_commands import load_texture
-from .draw_commands import draw_texture_rectangle
-from .draw_commands import Texture
+from arcade.geometry import rotate
+from arcade.draw_commands import load_texture
+from arcade.draw_commands import draw_texture_rectangle
+from arcade.draw_commands import Texture
 
 FACE_RIGHT = 1
 FACE_LEFT = 2
