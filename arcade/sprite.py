@@ -12,7 +12,7 @@ from arcade.draw_commands import draw_texture_rectangle
 from arcade.draw_commands import Texture
 
 from numbers import Number
-from typing import Iterable, List, Sized
+from typing import Iterable, List, Sequence
 
 FACE_RIGHT = 1
 FACE_LEFT = 2
@@ -165,10 +165,10 @@ upside-down.
         self.center_x = center_x
         self.center_y = center_y
 
-    def set_points(self, points: Sized[Sized[float]]):
+    def set_points(self, points: Sequence[Sequence[float]]):
         self._points = points
 
-    def get_points(self) -> Sized[Iterable[float]]:
+    def get_points(self) -> Sequence[Iterable[float]]:
         """
         Get the corner points for the rect that makes up the sprite.
         """
@@ -397,7 +397,7 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
 
     texture = property(_get_texture, _set_texture)
 
-    def _register_sprite_list(self, new_list: SpriteList):
+    def _register_sprite_list(self, new_list):
         """
         Register this sprite as belonging to a list. We will automatically
         remove ourselves from the the list when kill() is called.

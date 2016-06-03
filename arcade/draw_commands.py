@@ -12,7 +12,7 @@ import pyglet
 import pyglet.gl as GL
 from pyglet.gl import glu as GLU
 
-from typing import Any, Iterable, Sized, List
+from typing import Any, Iterable, Sequence, List
 
 
 class Texture:
@@ -80,7 +80,7 @@ class VertexBuffer:
     >>> x = VertexBuffer(0, 10, 10, 10, arcade.color.AERO_BLUE)
     """
     def __init__(self, vbo_id: GL.GLuint, size: float, width: float,
-                 height: float, color: Sized[float]):
+                 height: float, color: Sequence[float]):
         self.vbo_id = vbo_id
         self.size = size
         self.width = width
@@ -88,7 +88,7 @@ class VertexBuffer:
         self.color = color
 
 
-def make_transparent_color(color: Iterable[float], transparency: float):
+def make_transparent_color(color: Sequence[float], transparency: float):
     """
     Given a RGB color, along with an alpha, returns a RGBA color tuple.
     """
@@ -365,7 +365,7 @@ def trim_image(image: Any) -> Any:
 
 def draw_arc_filled(center_x: float, center_y: float,
                     width: float, height: float,
-                    color: Sized[float],
+                    color: Sequence[float],
                     start_angle: float, end_angle: float,
                     tilt_angle: float = 0):
     """
@@ -435,7 +435,7 @@ arcade.color.BOTTLE_GREEN, 90, 360, 45)
 
 
 def draw_arc_outline(center_x: float, center_y: float, width: float,
-                     height: float, color: Sized[float],
+                     height: float, color: Sequence[float],
                      start_angle: float, end_angle: float,
                      border_width: float = 1, tilt_angle: float = 0):
     """
@@ -512,7 +512,7 @@ transparent_color, 90, 360)
 # --- BEGIN PARABOLA FUNCTIONS # # #
 
 def draw_parabola_filled(start_x: float, start_y: float, end_x: float,
-                         height: float, color: Iterable[float],
+                         height: float, color: Sequence[float],
                          tilt_angle: float = 0):
     """
     Draws a filled in parabola.
@@ -552,7 +552,7 @@ arcade.color.BOTTLE_GREEN)
 
 
 def draw_parabola_outline(start_x: float, start_y: float, end_x: float,
-                          height: float, color: Iterable[float],
+                          height: float, color: Sequence[float],
                           border_width: float = 1, tilt_angle: float = 0):
     """
     Draws the outline of a parabola.
@@ -598,7 +598,7 @@ arcade.color.BOTTLE_GREEN, 10, 15)
 # --- BEGIN CIRCLE FUNCTIONS # # #
 
 def draw_circle_filled(center_x: float, center_y: float, radius: float,
-                       color: Iterable[float]):
+                       color: Sequence[float]):
     """
     Draw a filled-in circle.
 
@@ -631,7 +631,7 @@ def draw_circle_filled(center_x: float, center_y: float, radius: float,
 
 
 def draw_circle_outline(center_x: float, center_y: float, radius: float,
-                        color: Iterable[float], border_width: float = 1):
+                        color: Sequence[float], border_width: float = 1):
     """
     Draw the outline of a circle.
 
@@ -671,7 +671,7 @@ def draw_circle_outline(center_x: float, center_y: float, radius: float,
 # --- BEGIN ELLIPSE FUNCTIONS # # #
 
 def create_ellipse(width: float, height: float,
-                   color: Iterable[float]) -> VertexBuffer:
+                   color: Sequence[float]) -> VertexBuffer:
     """
     This creates an ellipse vertex buffer object (VBO). It can later be
     drawn with ``render_ellipse_filled``. This method of drawing an ellipse
@@ -748,7 +748,7 @@ def render_ellipse_filled(shape: VertexBuffer, center_x: float,
 
 
 def draw_ellipse_filled(center_x: float, center_y: float,
-                        width: float, height: float, color: float,
+                        width: float, height: float, color: Sequence[float],
                         tilt_angle: float = 0):
     """
     Draw a filled in ellipse.
@@ -816,7 +816,7 @@ def draw_ellipse_filled(center_x: float, center_y: float,
 
 
 def draw_ellipse_outline(center_x: float, center_y: float, width: float,
-                         height: float, color: Iterable[float],
+                         height: float, color: Sequence[float],
                          border_width: float = 1, tilt_angle: float = 0):
     """
     Draw the outline of an ellipse.
@@ -886,7 +886,7 @@ def draw_ellipse_outline(center_x: float, center_y: float, width: float,
 # --- BEGIN LINE FUNCTIONS # # #
 
 def draw_line(start_x: float, start_y: float, end_x: float, end_y: float,
-              color: Iterable[float], border_width: float = 1):
+              color: Sequence[float], border_width: float = 1):
     """
     Draw a line.
 
