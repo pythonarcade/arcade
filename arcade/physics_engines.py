@@ -5,12 +5,15 @@ Physics engines for top-down or platformers.
 from .sprite import *
 from .geometry import *
 
+from numbers import Number
+from typing import Iterable
+
 
 class PhysicsEngineSimple():
     """
     This class will move everything, and take care of collisions.
     """
-    def __init__(self, player_sprite, walls):
+    def __init__(self, player_sprite: Sprite, walls: SpriteList):
         """
         Constructor.
         """
@@ -68,7 +71,8 @@ class PhysicsEnginePlatformer():
     """
     This class will move everything, and take care of collisions.
     """
-    def __init__(self, player_sprite, platforms, gravity_constant=0.5):
+    def __init__(self, player_sprite: Sprite, platforms: SpriteList, 
+                 gravity_constant: Number = 0.5):
         """
         Constructor.
         """
@@ -76,7 +80,7 @@ class PhysicsEnginePlatformer():
         self.platforms = platforms
         self.gravity_constant = gravity_constant
 
-    def can_jump(self):
+    def can_jump(self) -> bool:
         """
         Method that looks to see if there is a floor under
         the player_sprite. If there is a floor, the player can jump

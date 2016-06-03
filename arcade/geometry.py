@@ -5,8 +5,14 @@ Functions for calculating geometry.
 from __future__ import print_function
 import math
 
+from .sprite import Sprite, SpriteList
 
-def are_polygons_intersecting(poly_a, poly_b):
+from numbers import Number
+from typing import Iterable
+
+
+def are_polygons_intersecting(poly_a: Iterable[Iterable[Number]], 
+                              poly_b: Iterable[Iterable[Number]]) -> bool:
     """
     Return True if two polygons intersect.
 
@@ -65,31 +71,7 @@ def are_polygons_intersecting(poly_a, poly_b):
     return True
 
 
-def rotate(x, y, cx, cy, angle):
-    """
-    Rotate a point around a center.
-
-    >>> x, y = rotate(1, 1, 0, 0, 90)
-    >>> print("x = {:.1f}, y = {:.1f}".format(x, y))
-    x = -1.0, y = 1.0
-    """
-    temp_x = x - cx
-    temp_y = y - cy
-
-    # now apply rotation
-    rotated_x = temp_x * math.cos(math.radians(angle)) - \
-        temp_y * math.sin(math.radians(angle))
-    rotated_y = temp_x * math.sin(math.radians(angle)) + \
-        temp_y * math.cos(math.radians(angle))
-
-    # translate back
-    x = rotated_x + cx
-    y = rotated_y + cy
-
-    return x, y
-
-
-def check_for_collision(sprite1, sprite2):
+def check_for_collision(sprite1: Sprite, sprite2: Sprite) -> bool:
     """
     Check for a collision between two sprites.
 
@@ -115,7 +97,8 @@ def check_for_collision(sprite1, sprite2):
     return are_polygons_intersecting(sprite1.points, sprite2.points)
 
 
-def check_for_collision_with_list(sprite1, sprite_list):
+def check_for_collision_with_list(sprite1: Sprite, 
+                                  sprite_list: SpriteList) -> Iterable[Sprite]:
     """
     Check for a collision between a sprite, and a list of sprites.
 

@@ -2,11 +2,15 @@ from .draw_commands import *
 
 import arcade.color
 
+from numbers import Number
+from typing import Iterable
+
 
 class Shape():
 
-    def __init__(self, center_x, center_y, color=arcade.color.GREEN,
-                 tilt_angle=0):
+    def __init__(self, center_x: Number, center_y: Number, 
+                 color: Iterable[Number] = arcade.color.GREEN, 
+                 tilt_angle: Number = 0):
         self.color = color
         self.center_x = center_x
         self.center_y = center_y
@@ -28,8 +32,9 @@ class Shape():
 
 class Rectangle(Shape):
 
-    def __init__(self, center_x, center_y, width, height,
-                 color=arcade.color.GREEN, border_width=0, tilt_angle=0):
+    def __init__(self, center_x: Number, center_y: Number, width: Number, 
+                 height: Number, color: Iterable[Number] = arcade.color.GREEN, 
+                 border_width: Number = 0, tilt_angle: Number = 0):
 
         super().__init__(center_x, center_y, color)
 
@@ -44,8 +49,10 @@ class Rectangle(Shape):
 
 
 class Square(Rectangle):
-    def __init__(self, center_x, center_y, width_and_height,
-                 color=arcade.color.GREEN, border_width=0, tilt_angle=0):
+    def __init__(self, center_x: Number, center_y: Number, 
+                 width_and_height: Number,
+                 color: Iterable[Number] = arcade.color.GREEN, 
+                 border_width: Number = 0, tilt_angle: Number = 0):
 
         super().__init__(center_x, center_y, width_and_height,
                          width_and_height, color, border_width, tilt_angle)
@@ -60,8 +67,9 @@ class Square(Rectangle):
 class Ellipse(Shape):
     """ Class that represents an Ellipse. """
 
-    def __init__(self, center_x, center_y, width, height,
-                 color=arcade.color.GREEN, border_width=0, tilt_angle=0):
+    def __init__(self, center_x: Number, center_y: Number, width: Number, 
+                 height: Number, color: Iterable[Number] = arcade.color.GREEN, 
+                 border_width: Number = 0, tilt_angle: Number = 0):
 
         super().__init__(center_x, center_y, color, tilt_angle)
         self.width = width
@@ -75,8 +83,9 @@ class Ellipse(Shape):
 class Circle(Shape):
     """ Class that represents an Circle. """
 
-    def __init__(self, center_x, center_y, radius,
-                 color=arcade.color.GREEN, border_width=0):
+    def __init__(self, center_x: Number, center_y: Number, radius: Number,
+                 color: Iterable[Number] = arcade.color.GREEN, 
+                 border_width: Number = 0):
 
         super().__init__(center_x, center_y, color)
 
@@ -90,7 +99,8 @@ class Circle(Shape):
 class Point(Shape):
     """ Class that represents an Point. """
 
-    def __init__(self, center_x, center_y, size, color=arcade.color.GREEN):
+    def __init__(self, center_x: Number, center_y: Number, size: Number, 
+                 color: Iterable[Number] = arcade.color.GREEN):
 
         super().__init__(center_x, center_y, color)
 
@@ -103,8 +113,8 @@ class Point(Shape):
 class Text(Shape):
     """ Class that represents a text label. """
 
-    def __init__(self, text, center_x, center_y, size,
-                 color=arcade.color.GREEN):
+    def __init__(self, text: str, center_x: Number, center_y: Number, 
+                 size: Number, color: Iterable[Number] = arcade.color.GREEN):
 
         super().__init__(center_x, center_y, color)
 
@@ -119,8 +129,10 @@ class Text(Shape):
 class Triangle():
     """ Class that represents a triangle. """
 
-    def __init__(self, first_x, first_y, second_x, second_y, third_x, third_y,
-                 color=arcade.color.GREEN, border_width=0):
+    def __init__(self, first_x: Number, first_y: Number, second_x: Number, 
+                 second_y: Number, third_x: Number, third_y: Number,
+                 color: Iterable[Number] = arcade.color.GREEN, 
+                 border_width: Number = 0):
         self.first_x = first_x
         self.first_y = first_y
         self.second_x = second_x
@@ -141,7 +153,9 @@ class Triangle():
 
 class Polygon():
 
-    def __init__(self, point_list, color=arcade.color.GREEN, border_width=0):
+    def __init__(self, point_list: Iterable[Iterable[Number]], 
+                 color: Iterable[Number] = arcade.color.GREEN, 
+                 border_width: Number = 0):
         self.point_list = point_list
         self.color = color
         self.border_width = border_width
@@ -160,8 +174,10 @@ class Polygon():
 
 class Parabola():
 
-    def __init__(self, start_x, start_y, end_x, height,
-                 color=arcade.color.GREEN, border_width=0, tilt_angle=0):
+    def __init__(self, start_x: Number, start_y: Number, end_x: Number, 
+                 height: Number,
+                 color: Iterable[Number] = arcade.color.GREEN, 
+                 border_width: Number = 0, tilt_angle: Number = 0):
         self.start_x = start_x
         self.start_y = start_y
         self.end_x = end_x
@@ -177,8 +193,10 @@ class Parabola():
 
 class Line():
 
-    def __init__(self, start_x, start_y, end_x, end_y,
-                 color=arcade.color.GREEN, width=1):
+    def __init__(self, start_x: Number, start_y: Number, end_x: Number, 
+                 end_y: Number,
+                 color: Iterable[Number] = arcade.color.GREEN, 
+                 width: Number = 1):
         self.start_x = start_x
         self.start_y = start_y
         self.end_x = end_x
@@ -201,9 +219,10 @@ class Line():
 
 
 class Arc():
-    def __init__(self, center_x, center_y, width, height,
-                 color=arcade.color.GREEN, start_angle=0, end_angle=180,
-                 border_width=0, tilt_angle=0):
+    def __init__(self, center_x: Number, center_y: Number, width: Number, 
+                 height: Number, color: Iterable[Number] = arcade.color.GREEN, 
+                 start_angle: Number = 0, end_angle: Number = 180,
+                 border_width: Number = 0, tilt_angle: Number = 0):
         self.center_x = center_x
         self.center_y = center_y
         self.width = width
@@ -233,15 +252,15 @@ class Arc():
         self.end_angle += self.change_end_angle
 
 
-def master_draw(shape_object):
+def master_draw(shape_object: Shape):
     shape_object.draw()
 
 
-def draw_all(shape_list):
+def draw_all(shape_list: Iterable[Shape]):
     for item in shape_list:
         item.draw()
 
 
-def update_all(shape_list):
+def update_all(shape_list: Iterable[Shape]):
     for item in shape_list:
         item.update()
