@@ -1682,7 +1682,12 @@ scale * texture.height, texture, 90)
     GL.glVertex3f(-width / 2, height / 2, z)
     GL.glEnd()
 
-
+def draw_xywh_rectangle_textured(top_left_x: float, top_left_y: float,
+                                 width: float, height: float,
+                                 texture: Texture):
+    center_x = top_left_x + (width / 2)
+    center_y = top_left_y + (height / 2)
+    draw_texture_rectangle(center_x, center_y, width, height, texture)
 # --- END RECTANGLE FUNCTIONS # # #
 
 # --- BEGIN TEXT FUNCTIONS # # #
