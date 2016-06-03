@@ -28,7 +28,7 @@ from arcade.draw_commands import draw_arc_outline
 
 class Shape:
 
-    def __init__(self, center_x: Number, center_y: Number, 
+    def __init__(self, center_x: Number, center_y: Number,
                  color: Iterable[Number] = GREEN, tilt_angle: Number = 0):
         self.color = color
         self.center_x = center_x
@@ -51,8 +51,8 @@ class Shape:
 
 class Rectangle(Shape):
 
-    def __init__(self, center_x: Number, center_y: Number, width: Number, 
-                 height: Number, color: Iterable[Number] = GREEN, 
+    def __init__(self, center_x: Number, center_y: Number, width: Number,
+                 height: Number, color: Iterable[Number] = GREEN,
                  border_width: Number = 0, tilt_angle: Number = 0):
 
         super().__init__(center_x, center_y, color)
@@ -68,9 +68,9 @@ class Rectangle(Shape):
 
 
 class Square(Rectangle):
-    def __init__(self, center_x: Number, center_y: Number, 
+    def __init__(self, center_x: Number, center_y: Number,
                  width_and_height: Number,
-                 color: Iterable[Number] = GREEN, 
+                 color: Iterable[Number] = GREEN,
                  border_width: Number = 0, tilt_angle: Number = 0):
 
         super().__init__(center_x, center_y, width_and_height,
@@ -86,8 +86,8 @@ class Square(Rectangle):
 class Ellipse(Shape):
     """ Class that represents an Ellipse. """
 
-    def __init__(self, center_x: Number, center_y: Number, width: Number, 
-                 height: Number, color: Iterable[Number] = GREEN, 
+    def __init__(self, center_x: Number, center_y: Number, width: Number,
+                 height: Number, color: Iterable[Number] = GREEN,
                  border_width: Number = 0, tilt_angle: Number = 0):
 
         super().__init__(center_x, center_y, color, tilt_angle)
@@ -103,7 +103,7 @@ class Circle(Shape):
     """ Class that represents an Circle. """
 
     def __init__(self, center_x: Number, center_y: Number, radius: Number,
-                 color: Iterable[Number] = GREEN, 
+                 color: Iterable[Number] = GREEN,
                  border_width: Number = 0):
 
         super().__init__(center_x, center_y, color)
@@ -118,7 +118,7 @@ class Circle(Shape):
 class Point(Shape):
     """ Class that represents an Point. """
 
-    def __init__(self, center_x: Number, center_y: Number, size: Number, 
+    def __init__(self, center_x: Number, center_y: Number, size: Number,
                  color: Iterable[Number] = GREEN):
 
         super().__init__(center_x, center_y, color)
@@ -132,7 +132,7 @@ class Point(Shape):
 class Text(Shape):
     """ Class that represents a text label. """
 
-    def __init__(self, text: str, center_x: Number, center_y: Number, 
+    def __init__(self, text: str, center_x: Number, center_y: Number,
                  size: Number, color: Iterable[Number] = GREEN):
 
         super().__init__(center_x, center_y, color)
@@ -148,9 +148,9 @@ class Text(Shape):
 class Triangle:
     """ Class that represents a triangle. """
 
-    def __init__(self, first_x: Number, first_y: Number, second_x: Number, 
+    def __init__(self, first_x: Number, first_y: Number, second_x: Number,
                  second_y: Number, third_x: Number, third_y: Number,
-                 color: Iterable[Number] = GREEN, 
+                 color: Iterable[Number] = GREEN,
                  border_width: Number = 0):
         self.first_x = first_x
         self.first_y = first_y
@@ -171,8 +171,8 @@ class Triangle:
 
 class Polygon:
 
-    def __init__(self, point_list: Iterable[Iterable[Number]], 
-                 color: Iterable[Number] = GREEN, 
+    def __init__(self, point_list: Iterable[Iterable[Number]],
+                 color: Iterable[Number] = GREEN,
                  border_width: Number = 0):
         self.point_list = point_list
         self.color = color
@@ -192,9 +192,9 @@ class Polygon:
 
 class Parabola:
 
-    def __init__(self, start_x: Number, start_y: Number, end_x: Number, 
+    def __init__(self, start_x: Number, start_y: Number, end_x: Number,
                  height: Number,
-                 color: Iterable[Number] = GREEN, 
+                 color: Iterable[Number] = GREEN,
                  border_width: Number = 0, tilt_angle: Number = 0):
         self.start_x = start_x
         self.start_y = start_y
@@ -211,9 +211,9 @@ class Parabola:
 
 class Line:
 
-    def __init__(self, start_x: Number, start_y: Number, end_x: Number, 
+    def __init__(self, start_x: Number, start_y: Number, end_x: Number,
                  end_y: Number,
-                 color: Iterable[Number] = GREEN, 
+                 color: Iterable[Number] = GREEN,
                  width: Number = 1):
         self.start_x = start_x
         self.start_y = start_y
@@ -237,8 +237,8 @@ class Line:
 
 
 class Arc:
-    def __init__(self, center_x: Number, center_y: Number, width: Number, 
-                 height: Number, color: Iterable[Number] = GREEN, 
+    def __init__(self, center_x: Number, center_y: Number, width: Number,
+                 height: Number, color: Iterable[Number] = GREEN,
                  start_angle: Number = 0, end_angle: Number = 180,
                  border_width: Number = 0, tilt_angle: Number = 0):
         self.center_x = center_x

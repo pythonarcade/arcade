@@ -22,7 +22,7 @@ class Window(pyglet.window.Window):
     >>> window.animate(0.25)
     >>> window.close()
     """
-    def __init__(self, width: Number, height: Number, 
+    def __init__(self, width: Number, height: Number,
                  title: str = 'Arcade Window'):
         # This is nicer, but Python 3.x only
         # super().__init__(width=width, height=height, caption=title)
@@ -61,7 +61,7 @@ called.
         """ Override this function to add mouse button functionality. """
         self.on_mouse_motion(x, y, dx, dy)
 
-    def on_mouse_release(self, x: Number, y: Number, button: int, 
+    def on_mouse_release(self, x: Number, y: Number, button: int,
                          modifiers: int):
         """ Override this function to add mouse button functionality. """
         pass

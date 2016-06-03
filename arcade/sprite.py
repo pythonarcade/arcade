@@ -67,9 +67,9 @@ upside-down.
     >>> arcade.quick_run(0.25)
     """
 
-    def __init__(self, 
-                 filename: str = None, 
-                 scale: Number = 1, 
+    def __init__(self,
+                 filename: str = None,
+                 scale: Number = 1,
                  image_x: Number = 0, image_y: Number = 0,
                  image_width: Number = 0, image_height: Number = 0,
                  center_x: Number = 0, center_y: Number = 0):
@@ -564,11 +564,11 @@ class AnimatedTimeSprite(Sprite):
     Sprite for platformer games that supports animations.
     """
 
-    def __init__(self, scale: float=1, 
+    def __init__(self, scale: float=1,
                  image_x: float=0, image_y: float=0,
                  center_x: float=0, center_y: float=0):
 
-        super().__init__(scale=scale, image_x=image_x, image_y=image_y, 
+        super().__init__(scale=scale, image_x=image_x, image_y=image_y,
                          center_x=center_x, center_y=center_y)
         self.last_center_x = self.center_x
         self.last_center_y = self.center_y
@@ -595,7 +595,7 @@ class AnimatedWalkingSprite(Sprite):
     """
     Sprite for platformer games that supports animations.
     """
-    def __init__(self, scale: float=1, 
+    def __init__(self, scale: float=1,
                  image_x: float=0, image_y: float=0,
                  center_x: float=0, center_y: float=0):
         super().__init__(scale=scale, image_x=image_x, image_y=image_y,
