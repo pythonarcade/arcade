@@ -7,6 +7,9 @@ from .window_commands import *
 
 import pyglet
 
+from numbers import Number
+from typing import Any
+
 MOUSE_BUTTON_LEFT = 1
 MOUSE_BUTTON_MIDDLE = 2
 MOUSE_BUTTON_RIGHT = 4
@@ -21,7 +24,8 @@ class Window(pyglet.window.Window):
     >>> window.animate(0.25)
     >>> window.close()
     """
-    def __init__(self, width, height, title='Arcade Window'):
+    def __init__(self, width: Number, height: Number, 
+                 title: str = 'Arcade Window'):
         # This is nicer, but Python 3.x only
         # super().__init__(width=width, height=height, caption=title)
         pyglet.window.Window.__init__(self, width=width, height=height,
@@ -30,7 +34,7 @@ class Window(pyglet.window.Window):
         self.set_update_rate(1/80)
         # set_viewport(0, self.width, 0, self.height)
 
-    def animate(self, delta_time):
+    def animate(self, delta_time: Number):
         """
         Move everything.
 
@@ -41,32 +45,34 @@ called.
         """
         pass
 
-    def set_update_rate(self, rate):
+    def set_update_rate(self, rate: Number):
         """
         Set how often the screen should be updated.
         """
         pyglet.clock.schedule_interval(self.animate, rate)
 
-    def on_mouse_motion(self, x, y, dx, dy):
+    def on_mouse_motion(self, x: Number, y: Number, dx: Number, dy: Number):
         """ Override this function to add mouse functionality. """
         pass
 
-    def on_mouse_press(self, x, y, button, modifiers):
+    def on_mouse_press(self, x: Number, y: Number, button: int, modifiers: int):
         """ Override this function to add mouse button functionality. """
         pass
 
-    def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
+    def on_mouse_drag(self, x: Number, y: Number, dx: Number, dy: Number, 
+                      buttons: int, modifiers: int):
         """ Override this function to add mouse button functionality. """
         self.on_mouse_motion(x, y, dx, dy)
 
-    def on_mouse_release(self, x, y, button, modifiers):
+    def on_mouse_release(self, x: Number, y: Number, button: int, 
+                         modifiers: int):
         """ Override this function to add mouse button functionality. """
         pass
 
-    def on_key_press(self, symbol, modifiers):
+    def on_key_press(self, symbol: int, modifiers: int):
         pass
 
-    def on_key_release(self, symbol, modifiers):
+    def on_key_release(self, symbol: int, modifiers: int):
         pass
 
     def on_draw(self):
