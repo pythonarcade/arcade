@@ -280,34 +280,42 @@ upside-down.
     >>> arcade.quick_run(0.25)
     """
 
-    def __init__(self, filename: str = None, scale: Number = 1, x: Number = 0,
-                 y: Number = 0, width: Number = 0, height: Number = 0):
+    def __init__(self, 
+                 filename: str = None, 
+                 scale: Number = 1, 
+                 image_x: Number = 0, image_y: Number = 0,
+                 image_width: Number = 0, image_height: Number = 0,
+                 center_x: Number = 0, center_y: Number = 0):
         """
         Create a new sprite.
 
         Args:
             filename (str): Filename of an image that represents the sprite.
             scale (float): Scale the image up or down. Scale of 1.0 is none.
-            width (float): Width of the sprite
-            height (float): Height of the sprite
+            image_x (float): Scale the image up or down. Scale of 1.0 is none.
+            image_y (float): Scale the image up or down. Scale of 1.0 is none.
+            image_width (float): Width of the sprite
+            image_height (float): Height of the sprite
+            center_x (float): Location of the sprite
+            center_y (float): Location of the sprite
 
         """
 
-        if width < 0:
+        if image_width < 0:
             raise SystemError("Width of image can't be less than zero.")
 
-        if height < 0:
+        if image_height < 0:
             raise SystemError("Height of image can't be less than zero.")
 
-        if width == 0 and height != 0:
+        if image_width == 0 and image_height != 0:
             raise SystemError("Width can't be zero.")
 
-        if height == 0 and width != 0:
+        if image_height == 0 and image_width != 0:
             raise SystemError("Height can't be zero.")
 
         if filename is not None:
-            self.texture = load_texture(filename, x, y,
-                                        width, height)
+            self.texture = load_texture(filename, image_x, image_y,
+                                        image_width, image_height)
 
             self.textures = [self.texture]
             self.width = self.texture.width * scale
@@ -319,8 +327,8 @@ upside-down.
 
         self.cur_texture_index = 0
         self.scale = scale
-        self._center_x = 0
-        self._center_y = 0
+        self._center_x = center_x
+        self._center_y = center_y
         self._angle = 0.0
 
         self.change_x = 0
