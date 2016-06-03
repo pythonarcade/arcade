@@ -1674,5 +1674,7 @@ def draw_text(text: str, start_x: Number, start_y: Number,
     label.draw()
 
 
+
 # --- END TEXT FUNCTIONS # # #
+
 

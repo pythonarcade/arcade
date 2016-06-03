@@ -10,6 +10,7 @@ import pyglet.gl as GL
 from arcade.draw_commands import load_texture
 from arcade.draw_commands import draw_texture_rectangle
 from arcade.draw_commands import Texture
+from arcade.draw_commands import Texture
 
 from numbers import Number
 from typing import Iterable

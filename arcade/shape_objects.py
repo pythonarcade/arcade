@@ -7,6 +7,13 @@ Various shapes for arcade games.
 
 from numbers import Number
 from typing import Iterable
+from arcade.draw_commands import draw_ellipse_filled
+from arcade.draw_commands import draw_circle_filled
+from arcade.draw_commands import draw_point, draw_text
+from arcade.draw_commands import draw_triangle_filled
+from arcade.draw_commands import draw_polygon_filled
+from arcade.draw_commands import draw_line
+from arcade.draw_commands import draw_arc_outline
 
 from arcade.color import GREEN
 from arcade.draw_commands import draw_rectangle_filled
