@@ -91,6 +91,14 @@ class VertexBuffer:
         self.color = color
 
 
+def make_transparent_color(color: Iterable[Number], transparency: Number):
+    """
+    Given a RGB color, along with an alpha, returns a RGBA color tuple.
+    """
+    return (color[0], color[1], color[2], transparency)
+
+
+
 def load_textures(file_name: str,
                   image_location_list: Iterable[Iterable[Number]],
                   mirrored: bool = False,
@@ -1026,6 +1034,16 @@ def draw_lines(point_list: Iterable[Iterable[Number]],
 (390, 510), \
 (450, 510))
     >>> arcade.draw_lines(point_list, arcade.color.BLUE, 3)
+
+    >>> arcade.start_render()
+    >>> point_list = ((390, 450), \
+(550, 450), \
+(490, 480), \
+(550, 480), \
+(490, 510), \
+(550, 510))
+    >>> arcade.draw_lines(point_list, (0, 0, 255, 127), 3)
+
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
     """
@@ -1079,6 +1097,7 @@ def draw_point(x: Number, y: Number, color: Iterable[Number], size: Number):
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
     >>> arcade.draw_point(60, 495, arcade.color.RED, 10)
+    >>> arcade.draw_point(70, 495, (255, 0, 0, 127), 10)
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
     """
@@ -1126,6 +1145,7 @@ def draw_points(point_list: Iterable[Iterable[Number]],
 (195, 480), \
 (195, 465))
     >>> arcade.draw_points(point_list, arcade.color.ZAFFRE, 10)
+    >>> arcade.draw_points(point_list, make_transparent_color(arcade.color.ZAFFRE, 127), 10)
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
     """
