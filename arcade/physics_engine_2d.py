@@ -9,6 +9,9 @@ import numpy
 import arcade
 
 
+from numbers import Number
+from typing import Iterable
+
 # Adapted from this tutorial:
 # http://gamedevelopment.tutsplus.com/tutorials/how-to-create-a-custom-2d-physics-engine-the-basics-and-impulse-resolution--gamedev-6331
 # The tutorial has a lot of mistakes in the code, which is kind of annoying.
@@ -22,18 +25,19 @@ class PhysicsObject:
     Base object to represent something we apply physics on.
     """
 
-    def __init__(self, position, velocity, restitution, mass):
+    def __init__(self, position: Iterable[Number], velocity: Number, 
+                 restitution: Number, mass: Number):
         self.velocity = velocity
         self.restitution = restitution
         self.mass = mass
         self.position = position  # Vector
 
-    def _get_x(self):
+    def _get_x(self) -> Number:
         return self.position[0]
 
     x = property(_get_x)
 
-    def _get_y(self):
+    def _get_y(self) -> Number:
         return self.position[1]
 
     y = property(_get_y)
@@ -44,7 +48,9 @@ class PhysicsCircle(PhysicsObject):
     A physics object, which is a circle.
     """
 
-    def __init__(self, position, velocity, restitution, mass, radius, color):
+    def __init__(self, position: Iterable[Number], velocity: Number, 
+                 restitution: Number, mass: Number, radius: Number, 
+                 color: Iterable[Number]):
         super().__init__(position, velocity, restitution, mass)
         self.radius = radius
         self.color = color
@@ -62,7 +68,8 @@ class PhysicsAABB(PhysicsObject):
     Axis-aligned bounding box. In English, a non-rotating rectangle.
     """
 
-    def __init__(self, rect, velocity, restitution, mass, color):
+    def __init__(self, rect: Iterable[Number], velocity: Number, 
+                 restitution: Number, mass: Number, color: Iterable[Number]):
         super().__init__([rect[0], rect[1]], velocity, restitution, mass)
         self.color = color
         self.width = rect[2]
@@ -85,14 +92,15 @@ class PhysicsAABB(PhysicsObject):
         # max = property(_get_max)
 
 
-def distanceA(a, b):  # pylint: disable=invalid-name
+def distanceA(a: Number, b: Number) -> Number:  # pylint: disable=invalid-name
     """ Use square root to calc distance """
     return math.sqrt((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2)
 
 
 class Manifold:
-    def __init__(self, a, b, penetration, normal):  # pylint: disable=invalid-name
-        self.a = a
+    def __init__(self, a: PhysicsObject, b: PhysicsObject, penetration: Number,  # pylint: disable=invalid-name
+                 normal: Number):
+        self.a = a1
         self.b = b
         self.penetration = penetration
         self.normal = normal
@@ -102,7 +110,7 @@ class Manifold:
                                                     self.normal)
 
 
-def circle_vs_circle(m):
+def circle_vs_circle(m: Manifold) -> bool:
     """
     Process two circles that collide.
     """
@@ -130,7 +138,7 @@ def circle_vs_circle(m):
         return True
 
 
-def resolve_collision(m):
+def resolve_collision(m: Manifold) -> bool:
     """
     Process two colliding objects.
     """
@@ -168,7 +176,7 @@ def resolve_collision(m):
     return True
 
 
-def aabb_vs_aabb(m):
+def aabb_vs_aabb(m: Manifold) -> bool:
     """
     Process two AABB objects that collide
     """
@@ -215,42 +223,42 @@ def aabb_vs_aabb(m):
     return False
 
 
-def clamp(a, min_value, max_value):
+def clamp(a: Number, min_value: Number, max_value: Number) -> Number:
     """
     Clamp a between two values.
     """
     return max(min(a, max_value), min_value)
 
 
-def magnitude(v):
+def magnitude(v: Iterable[Number]) -> Number:
     """
     Get the magnitude of a vector.
     """
     return math.sqrt(sum(v[i] * v[i] for i in range(len(v))))
 
 
-def add(u, v):
+def add(u: Iterable[Number], v: Iterable[Number]) -> Iterable[Number]:
     return [u[i] + v[i] for i in range(len(u))]
 
 
-def sub(u, v):
+def sub(u: Iterable[Number], v: Iterable[Number]) ->Iterable[Number]:
     return [u[i] - v[i] for i in range(len(u))]
 
 
-def neg(u):
+def neg(u: Iterable[Number]) -> Iterable[Number]:
     return [-u[i] for i in range(len(u))]
 
 
-def dot(u, v):
+def dot(u: Iterable[Number], v: Iterable[Number]) -> Number:
     return sum(u[i] * v[i] for i in range(len(u)))
 
 
-def normalize(v):
+def normalize(v: Iterable[Number]) -> Iterable[Number]:
     vmag = magnitude(v)
     return [v[i] / vmag for i in range(len(v))]
 
 
-def aabb_vs_circle(m):
+def aabb_vs_circle(m: Manifold) -> bool:
     x_extent = m.a.width / 2
     y_extent = m.a.height / 2
 
