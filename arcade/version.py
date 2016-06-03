@@ -5,5 +5,5 @@ Various constants.
 
 """
 BUILD = 50
-VERSION = "0.0.6"
-RELEASE = VERSION + "r" + str(BUILD)
+VERSION = "0.9.9"
+RELEASE = VERSION + "b" + str(BUILD)
