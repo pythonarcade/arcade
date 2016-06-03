@@ -5,6 +5,8 @@ Physics engines for top-down or platformers.
 
 from arcade.geometry import check_for_collision_with_list
 from arcade.geometry import check_for_collision
+from arcade.sprite import Sprite
+from arcade.sprite import SpriteList
 
 from numbers import Number
 from typing import Iterable

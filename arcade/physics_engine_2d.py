@@ -92,13 +92,13 @@ class PhysicsAABB(PhysicsObject):
         # max = property(_get_max)
 
 
-def distanceA(a: Number, b: Number) -> Number:    # pylint: disable=invalid-name
+def distanceA(a: Number, b: Number) -> Number:  # pylint: disable=invalid-name
     """ Use square root to calc distance """
     return math.sqrt((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2)
 
 
 class Manifold:
-    def __init__(self, a: PhysicsObject, b: PhysicsObject, penetration: Number,    pylint: disable=invalid-name
+    def __init__(self, a: PhysicsObject, b: PhysicsObject, penetration: Number,  # pylint: disable=invalid-name
                  normal: Number):
         self.a = a1
         self.b = b

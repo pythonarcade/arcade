@@ -22,8 +22,7 @@ from arcade.draw_commands import draw_arc_outline
 class Shape:
 
     def __init__(self, center_x: Number, center_y: Number, 
-                 color: Iterable[Number] = arcade.color.GREEN, 
-                 tilt_angle: Number = 0):
+                 color: Iterable[Number] = GREEN, tilt_angle: Number = 0):
         self.color = color
         self.center_x = center_x
         self.center_y = center_y
