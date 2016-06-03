@@ -3,8 +3,6 @@ The main window class that all object-oriented applications should
 derive from.
 """
 
-from .window_commands import *
-
 import pyglet
 
 MOUSE_BUTTON_LEFT = 1
@@ -55,7 +53,7 @@ called.
         """ Override this function to add mouse button functionality. """
         pass
 
-    def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
+    def on_mouse_drag(self, x, y, dx, dy):
         """ Override this function to add mouse button functionality. """
         self.on_mouse_motion(x, y, dx, dy)
 

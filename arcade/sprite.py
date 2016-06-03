@@ -1,9 +1,16 @@
 """
 This module manages all of the code around Sprites.
 """
-from __future__ import print_function
-from .draw_commands import *
-from .geometry import *
+# pylint: disable=too-many-arguments, too-many-locals, too-few-public-methods
+
+import ctypes
+import math
+import pyglet.gl as GL
+
+from arcade.geometry import rotate
+from arcade.draw_commands import load_texture
+from arcade.draw_commands import draw_texture_rectangle
+from arcade.draw_commands import Texture
 
 FACE_RIGHT = 1
 FACE_LEFT = 2
@@ -16,7 +23,7 @@ def _set_vbo(vbo_id, points):
     Given a vertex buffer id, this sets the vertexes to be
     part of that buffer.
     """
-    data2 = (GL.GLfloat*len(points))(*points)
+    data2 = (GL.GLfloat * len(points))(*points)
     GL.glBindBuffer(GL.GL_ARRAY_BUFFER, vbo_id)
     GL.glBufferData(GL.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2,
                     GL.GL_STATIC_DRAW)
@@ -41,9 +48,9 @@ def _create_rects(rect_list):
     v2f = []
     for shape in rect_list:
         v2f.extend([-shape.width / 2, -shape.height / 2,
-                   shape.width / 2, -shape.height / 2,
-                   shape.width / 2, shape.height / 2,
-                   -shape.width / 2, shape.height / 2])
+                    shape.width / 2, -shape.height / 2,
+                    shape.width / 2, shape.height / 2,
+                    -shape.width / 2, shape.height / 2])
 
     return v2f
 
@@ -132,6 +139,7 @@ class SpriteList():
     ...     meteor.kill()
     >>> arcade.quick_run(0.25)
     """
+
     def __init__(self):
         """
         Initialize the sprite list
@@ -223,7 +231,7 @@ class SpriteList():
         return self.sprite_list.pop()
 
 
-class Sprite():
+class Sprite:
     """
     Class that represents a 'sprite' on-screen.
 
@@ -267,6 +275,7 @@ upside-down.
     >>> ship_sprite.kill()
     >>> arcade.quick_run(0.25)
     """
+
     def __init__(self, filename=None, scale=1, x=0, y=0, width=0, height=0):
         """
         Create a new sprite.
@@ -370,9 +379,9 @@ upside-down.
 
         if self._points is not None:
             point_list = []
-            for i in range(len(self._points)):
-                point = (self._points[i][0] + self.center_x,
-                         self._points[i][1] + self.center_y)
+            for point in range(len(self._points)):
+                point = (self._points[point][0] + self.center_x,
+                         self._points[point][1] + self.center_y)
                 point_list.append(point)
             self._point_list_cache = point_list
             return point_list
@@ -422,8 +431,8 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
         """
         points = self.get_points()
         my_min = points[0][1]
-        for i in range(1, len(points)):
-            my_min = min(my_min, points[i][1])
+        for point in range(1, len(points)):
+            my_min = min(my_min, points[point][1])
         return my_min
 
     def _set_bottom(self, amount):
@@ -453,7 +462,6 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
         1.0
         >>> arcade.quick_run(0.25)
         """
-        points = self.get_points()
         points = self.get_points()
         my_max = points[0][1]
         for i in range(1, len(points)):
@@ -524,7 +532,6 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
         >>> arcade.quick_run(0.25)
         """
         points = self.get_points()
-        points = self.get_points()
         my_min = points[0][0]
         for i in range(1, len(points)):
             my_min = min(my_min, points[i][0])
@@ -560,8 +567,8 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
 
         points = self.get_points()
         my_max = points[0][0]
-        for i in range(1, len(points)):
-            my_max = max(my_max, points[i][0])
+        for point in range(1, len(points)):
+            my_max = max(my_max, points[point][0])
         return my_max
 
     def _set_right(self, amount):
@@ -635,6 +642,7 @@ class AnimatedTimeSprite(Sprite):
     """
     Sprite for platformer games that supports animations.
     """
+
     def __init__(self, scale=1, x=0, y=0):
         super().__init__(scale=scale, x=x, y=y)
         self.last_center_x = self.center_x
@@ -662,6 +670,7 @@ class AnimatedWalkingSprite(Sprite):
     """
     Sprite for platformer games that supports animations.
     """
+
     def __init__(self, scale=1, x=0, y=0):
         super().__init__(scale=scale, x=x, y=y)
         self.last_center_x = self.center_x

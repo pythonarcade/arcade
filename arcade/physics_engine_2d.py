@@ -3,10 +3,11 @@ Attempt at a 2D physics engine.
 
 This part needs a lot of work.
 """
-import arcade
-
+# pylint: disable=too-many-arguments, too-many-locals, too-few-public-methods
 import math
 import numpy
+import arcade
+
 
 # Adapted from this tutorial:
 # http://gamedevelopment.tutsplus.com/tutorials/how-to-create-a-custom-2d-physics-engine-the-basics-and-impulse-resolution--gamedev-6331
@@ -20,6 +21,7 @@ class PhysicsObject:
     """
     Base object to represent something we apply physics on.
     """
+
     def __init__(self, position, velocity, restitution, mass):
         self.velocity = velocity
         self.restitution = restitution
@@ -41,6 +43,7 @@ class PhysicsCircle(PhysicsObject):
     """
     A physics object, which is a circle.
     """
+
     def __init__(self, position, velocity, restitution, mass, radius, color):
         super().__init__(position, velocity, restitution, mass)
         self.radius = radius
@@ -58,6 +61,7 @@ class PhysicsAABB(PhysicsObject):
     """
     Axis-aligned bounding box. In English, a non-rotating rectangle.
     """
+
     def __init__(self, rect, velocity, restitution, mass, color):
         super().__init__([rect[0], rect[1]], velocity, restitution, mass)
         self.color = color
@@ -65,27 +69,29 @@ class PhysicsAABB(PhysicsObject):
         self.height = rect[3]
 
     def draw(self):
+        """ Draw a rectangle """
         arcade.draw_rectangle_filled(self.position[0], self.position[1], self.width,
-                                self.height, self.color)
+                                     self.height, self.color)
 
-    # def _get_min(self):
-    #     return Vector(self.position.x, self.position.y)
+        # def _get_min(self):
+        #     return Vector(self.position.x, self.position.y)
 
-    # min = property(_get_min)
+        # min = property(_get_min)
 
-    # def _get_max(self):
-    #     return Vector(self.position.x + self.width,
-    #                   self.position.y + self.height)
+        # def _get_max(self):
+        #     return Vector(self.position.x + self.width,
+        #                   self.position.y + self.height)
 
-    # max = property(_get_max)
+        # max = property(_get_max)
 
 
-def distanceA(a, b):
+def distanceA(a, b):  # pylint: disable=invalid-name
+    """ Use square root to calc distance """
     return math.sqrt((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2)
 
 
 class Manifold:
-    def __init__(self, a, b, penetration, normal):
+    def __init__(self, a, b, penetration, normal):  # pylint: disable=invalid-name
         self.a = a
         self.b = b
         self.penetration = penetration
@@ -220,15 +226,15 @@ def magnitude(v):
     """
     Get the magnitude of a vector.
     """
-    return math.sqrt(sum(v[i]*v[i] for i in range(len(v))))
+    return math.sqrt(sum(v[i] * v[i] for i in range(len(v))))
 
 
 def add(u, v):
-    return [u[i]+v[i] for i in range(len(u))]
+    return [u[i] + v[i] for i in range(len(u))]
 
 
 def sub(u, v):
-    return [u[i]-v[i] for i in range(len(u))]
+    return [u[i] - v[i] for i in range(len(u))]
 
 
 def neg(u):
@@ -236,12 +242,12 @@ def neg(u):
 
 
 def dot(u, v):
-    return sum(u[i]*v[i] for i in range(len(u)))
+    return sum(u[i] * v[i] for i in range(len(u)))
 
 
 def normalize(v):
     vmag = magnitude(v)
-    return [v[i]/vmag for i in range(len(v))]
+    return [v[i] / vmag for i in range(len(v))]
 
 
 def aabb_vs_circle(m):

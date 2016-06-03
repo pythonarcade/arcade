@@ -3,13 +3,11 @@ This submodule has functions that control creating and managing windows.
 """
 
 import gc
-import sys
 import time
 
 import pyglet
 
 import pyglet.gl as GL
-import pyglet.gl.glu as GLU
 
 from numbers import Number
 from typing import Callable
