@@ -1,8 +1,8 @@
 """
 Functions for calculating geometry.
 """
+# pylint: disable=consider-using-enumerate
 
-from __future__ import print_function
 import math
 
 
@@ -24,9 +24,9 @@ def are_polygons_intersecting(poly_a, poly_b):
     >>> poly1 = ((0.1, 0.1), (0.2, 0.1), (0.2, 0.2), (0.1, 0.2))
     >>> poly2 = ((0.15, 0.1), (0.25, 0.1), (0.25, 0.25), (0.15, 0.25))
     >>> poly3 = ((0.3, 0.1), (0.4, 0.1), (0.4, 0.2), (0.3, 0.2))
-    >>> test1 = arcade.are_polygons_intersecting(poly1, poly2)
-    >>> test2 = arcade.are_polygons_intersecting(poly2, poly3)
-    >>> test3 = arcade.are_polygons_intersecting(poly1, poly3)
+    >>> test1 = arcade.geometry.are_polygons_intersecting(poly1, poly2)
+    >>> test2 = arcade.geometry.are_polygons_intersecting(poly2, poly3)
+    >>> test3 = arcade.geometry.are_polygons_intersecting(poly1, poly3)
     >>> print(test1, test2, test3)
     True False False
 
@@ -43,16 +43,16 @@ def are_polygons_intersecting(poly_a, poly_b):
 
             min_a, max_a, min_b, max_b = (None,) * 4
 
-            for p in poly_a:
-                projected = normal[0] * p[0] + normal[1] * p[1]
+            for poly in poly_a:
+                projected = normal[0] * poly[0] + normal[1] * poly[1]
 
                 if not min_a or projected < min_a:
                     min_a = projected
                 if not max_a or projected > max_a:
                     max_a = projected
 
-            for p in poly_b:
-                projected = normal[0] * p[0] + normal[1] * p[1]
+            for poly in poly_b:
+                projected = normal[0] * poly[0] + normal[1] * poly[1]
 
                 if not min_b or projected < min_b:
                     min_b = projected
