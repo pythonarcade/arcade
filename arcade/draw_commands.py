@@ -78,19 +78,22 @@ class VertexBuffer:
 
     .. _vertex buffer object:
        https://en.wikipedia.org/wiki/Vertex_Buffer_Object
+
+    >>> import arcade
+    >>> x = VertexBuffer(0, 10, 10, 10, arcade.color.AERO_BLUE)
     """
-    def __init__(self, vbo_id: GL.GLuint, size: Number, width: Number, 
+    def __init__(self, vbo_id: GL.GLuint, size: Number, width: Number,
                  height: Number, color: Iterable[Number]):
         self.vbo_id = vbo_id
         self.size = size
         self.width = width
         self.height = height
         self.color = color
-        
 
-def load_textures(file_name: str, 
+
+def load_textures(file_name: str,
                   image_location_list: Iterable[Iterable[Number]],
-                  mirrored: bool = False, 
+                  mirrored: bool = False,
                   flipped: bool = False) -> List['Texture']:
     """
     Load a set of textures off of a single image file.
@@ -223,8 +226,8 @@ def load_textures(file_name: str,
     return texture_info_list
 
 
-def load_texture(file_name: str, x: Number = 0, y: Number = 0, 
-                 width: Number = 0, height: Number = 0, 
+def load_texture(file_name: str, x: Number = 0, y: Number = 0,
+                 width: Number = 0, height: Number = 0,
                  scale: Number = 1) -> Texture:
     """
     Load image from disk and create a texture.
@@ -256,6 +259,16 @@ def load_texture(file_name: str, x: Number = 0, y: Number = 0,
     Traceback (most recent call last):
     ...
     ValueError: Can't load texture ending at an y of 100 when the image is only 84 high.
+
+    >>> texture = load_texture(name, 1, 150, 50, 50)
+    Traceback (most recent call last):
+    ...
+    ValueError: Can't load texture starting at an y of 150 when the image is only 84 high.
+
+    >>> texture = load_texture(name, 0, 0, 400, 50)
+    Traceback (most recent call last):
+    ...
+    ValueError: Can't load texture ending at an x of 400 when the image is only 101 wide.
 
     >>> arcade.close_window()
     """
@@ -302,18 +315,10 @@ def load_texture(file_name: str, x: Number = 0, y: Number = 0,
     GL.glBindTexture(GL.GL_TEXTURE_2D, texture)
     GL.glPixelStorei(GL.GL_UNPACK_ALIGNMENT, 1)
 
-    # Appveyor work-around
-    appveyor = True
-    if not appveyor:
-        GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S,
-                           GL.GL_CLAMP_TO_BORDER)
-        GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T,
-                           GL.GL_CLAMP_TO_BORDER)
-    else:
-        GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S,
-                           GL.GL_REPEAT)
-        GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T,
-                           GL.GL_REPEAT)
+    GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S,
+                       GL.GL_REPEAT)
+    GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T,
+                       GL.GL_REPEAT)
 
     GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER,
                        GL.GL_LINEAR)
@@ -426,9 +431,9 @@ arcade.color.BOTTLE_GREEN, 90, 360, 45)
     GL.glLoadIdentity()
 
 
-def draw_arc_outline(center_x: Number, center_y: Number, width: Number, 
-                     height: Number, color: Iterable[Number], 
-                     start_angle: Number, end_angle: Number, 
+def draw_arc_outline(center_x: Number, center_y: Number, width: Number,
+                     height: Number, color: Iterable[Number],
+                     start_angle: Number, end_angle: Number,
                      border_width: Number = 1, tilt_angle: Number = 0):
     """
     Draw the outside edge of an arc. Useful for drawing curved lines.
@@ -503,8 +508,8 @@ transparent_color, 90, 360)
 
 # --- BEGIN PARABOLA FUNCTIONS # # #
 
-def draw_parabola_filled(start_x: Number, start_y: Number, end_x: Number, 
-                         height: Number, color: Iterable[Number], 
+def draw_parabola_filled(start_x: Number, start_y: Number, end_x: Number,
+                         height: Number, color: Iterable[Number],
                          tilt_angle: Number = 0):
     """
     Draws a filled in parabola.
@@ -543,7 +548,7 @@ arcade.color.BOTTLE_GREEN)
                     start_angle, end_angle, tilt_angle)
 
 
-def draw_parabola_outline(start_x: Number, start_y: Number, end_x: Number, 
+def draw_parabola_outline(start_x: Number, start_y: Number, end_x: Number,
                           height: Number, color: Iterable[Number],
                           border_width: Number = 1, tilt_angle: Number = 0):
     """
@@ -589,7 +594,7 @@ arcade.color.BOTTLE_GREEN, 10, 15)
 
 # --- BEGIN CIRCLE FUNCTIONS # # #
 
-def draw_circle_filled(center_x: Number, center_y: Number, radius: Number, 
+def draw_circle_filled(center_x: Number, center_y: Number, radius: Number,
                        color: Iterable[Number]):
     """
     Draw a filled-in circle.
@@ -622,7 +627,7 @@ def draw_circle_filled(center_x: Number, center_y: Number, radius: Number,
     draw_ellipse_filled(center_x, center_y, width, height, color)
 
 
-def draw_circle_outline(center_x: Number, center_y: Number, radius: Number, 
+def draw_circle_outline(center_x: Number, center_y: Number, radius: Number,
                         color: Iterable[Number], border_width: Number = 1):
     """
     Draw the outline of a circle.
@@ -662,12 +667,24 @@ def draw_circle_outline(center_x: Number, center_y: Number, radius: Number,
 
 # --- BEGIN ELLIPSE FUNCTIONS # # #
 
-def create_ellipse(width: Number, height: Number, 
+def create_ellipse(width: Number, height: Number,
                    color: Iterable[Number]) -> VertexBuffer:
     """
     This creates an ellipse vertex buffer object (VBO). It can later be
     drawn with ``render_ellipse_filled``. This method of drawing an ellipse
     is much faster than calling ``draw_ellipse_filled`` each frame.
+
+    >>> import arcade
+    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.set_background_color(arcade.color.WHITE)
+    >>> arcade.start_render()
+    >>> ellipse_a = arcade.create_ellipse(100, 100, arcade.color.RED)
+    >>> ellipse_b = arcade.create_ellipse(100, 100, (0, 255, 0, 127))
+    >>> render_ellipse_filled(ellipse_a, 200, 200, 45)
+    >>> render_ellipse_filled(ellipse_b, 250, 250, 45)
+    >>> arcade.finish_render()
+    >>> arcade.quick_run(0.25)
+
     """
     num_segments = 64
 
@@ -696,19 +713,18 @@ def create_ellipse(width: Number, height: Number,
     return shape
 
 
-def render_ellipse_filled(shape: VertexBuffer, center_x: Number, 
-                          center_y: Number, color: Iterable[Number], 
-                          angle: Number = 0):
+def render_ellipse_filled(shape: VertexBuffer, center_x: Number,
+                          center_y: Number, angle: Number = 0):
     """
     Render an ellipse previously created with the ``create_ellipse`` function.
     """
     # Set color
-    if len(color) == 4:
+    if len(shape.color) == 4:
         GL.glColor4ub(shape.color[0], shape.color[1], shape.color[2],
                       shape.color[3])
         GL.glEnable(GL.GL_BLEND)
         GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
-    elif len(color) == 3:
+    elif len(shape.color) == 3:
         GL.glDisable(GL.GL_BLEND)
         GL.glColor4ub(shape.color[0], shape.color[1], shape.color[2], 255)
 
@@ -724,7 +740,7 @@ def render_ellipse_filled(shape: VertexBuffer, center_x: Number,
 
 
 def draw_ellipse_filled(center_x: Number, center_y: Number,
-                        width: Number, height: Number, color: Number, 
+                        width: Number, height: Number, color: Number,
                         tilt_angle: Number = 0):
     """
     Draw a filled in ellipse.
@@ -791,7 +807,7 @@ def draw_ellipse_filled(center_x: Number, center_y: Number,
     GL.glLoadIdentity()
 
 
-def draw_ellipse_outline(center_x: Number, center_y: Number, width: Number, 
+def draw_ellipse_outline(center_x: Number, center_y: Number, width: Number,
                          height: Number, color: Iterable[Number],
                          border_width: Number = 1, tilt_angle: Number = 0):
     """
@@ -861,7 +877,7 @@ def draw_ellipse_outline(center_x: Number, center_y: Number, width: Number,
 
 # --- BEGIN LINE FUNCTIONS # # #
 
-def draw_line(start_x: Number, start_y: Number, end_x: Number, end_y: Number, 
+def draw_line(start_x: Number, start_y: Number, end_x: Number, end_y: Number,
               color: Iterable[Number], border_width: Number = 1):
     """
     Draw a line.
@@ -914,7 +930,7 @@ def draw_line(start_x: Number, start_y: Number, end_x: Number, end_y: Number,
     GL.glEnd()
 
 
-def draw_line_strip(point_list: Iterable[Iterable[Number]], 
+def draw_line_strip(point_list: Iterable[Iterable[Number]],
                     color: Iterable[Number], border_width: Number = 1):
     """
     Draw a line strip. A line strip is a set of continuously connected
@@ -979,7 +995,7 @@ def draw_line_strip(point_list: Iterable[Iterable[Number]],
     GL.glEnd()
 
 
-def draw_lines(point_list: Iterable[Iterable[Number]], 
+def draw_lines(point_list: Iterable[Iterable[Number]],
                color: Iterable[Number], border_width: Number = 1):
     """
     Draw a set of lines.
@@ -1081,7 +1097,7 @@ def draw_point(x: Number, y: Number, color: Iterable[Number], size: Number):
     GL.glEnd()
 
 
-def draw_points(point_list: Iterable[Iterable[Number]], 
+def draw_points(point_list: Iterable[Iterable[Number]],
                 color: Iterable[Number], size: Number = 1):
     """
     Draw a set of points.
@@ -1134,7 +1150,7 @@ def draw_points(point_list: Iterable[Iterable[Number]],
 # --- BEGIN POLYGON FUNCTIONS # # #
 
 
-def draw_polygon_filled(point_list: Iterable[Iterable[Number]], 
+def draw_polygon_filled(point_list: Iterable[Iterable[Number]],
                         color: Iterable[Number]):
     """
     Draw a polygon that is filled in.
@@ -1183,7 +1199,7 @@ def draw_polygon_filled(point_list: Iterable[Iterable[Number]],
     GL.glEnd()
 
 
-def draw_polygon_outline(point_list: Iterable[Iterable[Number]], 
+def draw_polygon_outline(point_list: Iterable[Iterable[Number]],
                          color: Iterable[Number], border_width: Number = 1):
     """
     Draw a polygon outline. Also known as a "line loop."
@@ -1265,7 +1281,7 @@ def draw_triangle_filled(x1: Number, y1: Number,
 
 def draw_triangle_outline(x1: Number, y1: Number,
                           x2: Number, y2: Number,
-                          x3: Number, y3: Number, color: Iterable[Number], 
+                          x3: Number, y3: Number, color: Iterable[Number],
                           border_width: Number = 1):
     """
     Draw a the outline of a triangle.
@@ -1296,7 +1312,7 @@ def draw_triangle_outline(x1: Number, y1: Number,
 
 # --- BEGIN RECTANGLE FUNCTIONS # # #
 
-def create_rectangle(width: Number, height: Number, 
+def create_rectangle(width: Number, height: Number,
                      color: Iterable[Number]) -> VertexBuffer:
     """
     This function creates a rectangle using a vertex buffer object.
@@ -1323,8 +1339,8 @@ def create_rectangle(width: Number, height: Number,
     return shape
 
 
-def render_rectangle_filled(shape: VertexBuffer, center_x: Number, 
-                            center_y: Number, color: Iterable[Number], 
+def render_rectangle_filled(shape: VertexBuffer, center_x: Number,
+                            center_y: Number, color: Iterable[Number],
                             tilt_angle: Number = 0):
     """
     Render a rectangle previously created by the ``create_rectangle`` command.
@@ -1350,7 +1366,7 @@ def render_rectangle_filled(shape: VertexBuffer, center_x: Number,
     GL.glDrawArrays(GL.GL_QUADS, 0, shape.size)
 
 
-def draw_lrtb_rectangle_outline(left: Number, right: Number, top: Number, 
+def draw_lrtb_rectangle_outline(left: Number, right: Number, top: Number,
                                 bottom: Number, color: Iterable[Number],
                                 border_width: Number = 1):
     """
@@ -1384,9 +1400,9 @@ def draw_lrtb_rectangle_outline(left: Number, right: Number, top: Number,
                            border_width)
 
 
-def draw_xywh_rectangle_outline(top_left_x: Number, top_left_y: Number, 
-                                width: Number, height: Number, 
-                                color: Iterable[Number], 
+def draw_xywh_rectangle_outline(top_left_x: Number, top_left_y: Number,
+                                width: Number, height: Number,
+                                color: Iterable[Number],
                                 border_width: Number = 1):
     """
     Draw a rectangle by specifying left, right, top, and bottom edges.
@@ -1410,7 +1426,7 @@ def draw_xywh_rectangle_outline(top_left_x: Number, top_left_y: Number,
                            border_width)
 
 
-def draw_rectangle_outline(center_x: Number, center_y: Number, width: Number, 
+def draw_rectangle_outline(center_x: Number, center_y: Number, width: Number,
                            height: Number, color: Iterable[Number],
                            border_width: Number = 1, tilt_angle: Number = 0):
     """
@@ -1470,7 +1486,7 @@ arcade.color.BRITISH_RACING_GREEN, 2)
     GL.glEnd()
 
 
-def draw_lrtb_rectangle_filled(left: Number, right: Number, top: Number, 
+def draw_lrtb_rectangle_filled(left: Number, right: Number, top: Number,
                                bottom: Number, color: Iterable[Number]):
     """
     Draw a rectangle by specifying left, right, top, and bottom edges.
@@ -1502,8 +1518,8 @@ def draw_lrtb_rectangle_filled(left: Number, right: Number, top: Number,
     draw_rectangle_filled(center_x, center_y, width, height, color)
 
 
-def draw_xywh_rectangle_filled(top_left_x: Number, top_left_y: Number, 
-                               width: Number, height: Number, 
+def draw_xywh_rectangle_filled(top_left_x: Number, top_left_y: Number,
+                               width: Number, height: Number,
                                color: Iterable[Number]):
     """
     Draw a rectangle by specifying left, right, top, and bottom edges.
@@ -1526,7 +1542,7 @@ def draw_xywh_rectangle_filled(top_left_x: Number, top_left_y: Number,
     draw_rectangle_filled(center_x, center_y, width, height, color)
 
 
-def draw_rectangle_filled(center_x: Number, center_y: Number, width: Number, 
+def draw_rectangle_filled(center_x: Number, center_y: Number, width: Number,
                           height: Number, color: Iterable[Number],
                           tilt_angle: Number = 0):
     """
@@ -1577,8 +1593,8 @@ def draw_rectangle_filled(center_x: Number, center_y: Number, width: Number,
     GL.glEnd()
 
 
-def draw_texture_rectangle(center_x: Number, center_y: Number, width: Number, 
-                           height: Number, texture: Texture, angle: Number = 0, 
+def draw_texture_rectangle(center_x: Number, center_y: Number, width: Number,
+                           height: Number, texture: Texture, angle: Number = 0,
                            alpha: Number = 1, transparent: bool = True):
     """
     Draw a textured rectangle on-screen.
@@ -1651,7 +1667,7 @@ scale * texture.height, texture, 90)
 # --- BEGIN TEXT FUNCTIONS # # #
 
 
-def draw_text(text: str, start_x: Number, start_y: Number, 
+def draw_text(text: str, start_x: Number, start_y: Number,
               color: Iterable[Number], size: Number):
     """
     Draw text to the screen.

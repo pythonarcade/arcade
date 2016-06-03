@@ -854,12 +854,12 @@ class AnimatedWalkingSprite(Sprite):
             self.texture = texture_list[self.cur_texture_index]
 
 
-def _rotate(x: Number, y: Number, cx: Number, cy: Number, 
+def _rotate(x: Number, y: Number, cx: Number, cy: Number,
             angle: Number) -> Iterable[Number]:
     """
     Rotate a point around a center.
 
-    >>> x, y = rotate(1, 1, 0, 0, 90)
+    >>> x, y = _rotate(1, 1, 0, 0, 90)
     >>> print("x = {:.1f}, y = {:.1f}".format(x, y))
     x = -1.0, y = 1.0
     """
