@@ -1,3 +1,9 @@
+"""
+
+Small abstraction around the sound library.
+
+"""
+
 import pyglet
 import typing
 
@@ -16,7 +22,10 @@ def load_sound_library():
 
     import os
     appveyor = not os.environ.get('APPVEYOR') is None
-    if os.name == "nt":
+
+    import platform
+    system = platform.system()
+    if system == 'Windows':
 
         import sys
         is64bit = sys.maxsize > 2**32
@@ -35,6 +44,9 @@ def load_sound_library():
                 path = packages[0] + "/lib/site-packages/arcade/Win64/avbin"
             else:
                 path = packages[0] + "/lib/site-packages/arcade/Win32/avbin"
+    elif system == 'Darwin':
+        from distutils.sysconfig import get_python_lib
+        path = get_python_lib() + '/lib/site-packages/arcade/lib/libavbin.10.dylib'
     else:
         path = "avbin"
 

@@ -3,10 +3,11 @@ Attempt at a 2D physics engine.
 
 This part needs a lot of work.
 """
-import arcade
-
+# pylint: disable=too-many-arguments, too-many-locals, too-few-public-methods
 import math
 import numpy
+import arcade
+
 
 from numbers import Number
 from typing import Iterable
@@ -23,6 +24,7 @@ class PhysicsObject:
     """
     Base object to represent something we apply physics on.
     """
+
     def __init__(self, position: Iterable[Number], velocity: Number, 
                  restitution: Number, mass: Number):
         self.velocity = velocity
@@ -45,6 +47,7 @@ class PhysicsCircle(PhysicsObject):
     """
     A physics object, which is a circle.
     """
+
     def __init__(self, position: Iterable[Number], velocity: Number, 
                  restitution: Number, mass: Number, radius: Number, 
                  color: Iterable[Number]):
@@ -64,6 +67,7 @@ class PhysicsAABB(PhysicsObject):
     """
     Axis-aligned bounding box. In English, a non-rotating rectangle.
     """
+
     def __init__(self, rect: Iterable[Number], velocity: Number, 
                  restitution: Number, mass: Number, color: Iterable[Number]):
         super().__init__([rect[0], rect[1]], velocity, restitution, mass)
@@ -72,27 +76,29 @@ class PhysicsAABB(PhysicsObject):
         self.height = rect[3]
 
     def draw(self):
+        """ Draw a rectangle """
         arcade.draw_rectangle_filled(self.position[0], self.position[1], self.width,
-                                self.height, self.color)
+                                     self.height, self.color)
 
-    # def _get_min(self):
-    #     return Vector(self.position.x, self.position.y)
+        # def _get_min(self):
+        #     return Vector(self.position.x, self.position.y)
 
-    # min = property(_get_min)
+        # min = property(_get_min)
 
-    # def _get_max(self):
-    #     return Vector(self.position.x + self.width,
-    #                   self.position.y + self.height)
+        # def _get_max(self):
+        #     return Vector(self.position.x + self.width,
+        #                   self.position.y + self.height)
 
-    # max = property(_get_max)
+        # max = property(_get_max)
 
 
-def distanceA(a: Number, b: Number) -> Number:
+def distanceA(a: Number, b: Number) -> Number:    # pylint: disable=invalid-name
+    """ Use square root to calc distance """
     return math.sqrt((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2)
 
 
 class Manifold:
-    def __init__(self, a: PhysicsObject, b: PhysicsObject, penetration: Number, 
+    def __init__(self, a: PhysicsObject, b: PhysicsObject, penetration: Number,    pylint: disable=invalid-name
                  normal: Number):
         self.a = a1
         self.b = b
@@ -228,15 +234,15 @@ def magnitude(v: Iterable[Number]) -> Number:
     """
     Get the magnitude of a vector.
     """
-    return math.sqrt(sum(v[i]*v[i] for i in range(len(v))))
+    return math.sqrt(sum(v[i] * v[i] for i in range(len(v))))
 
 
 def add(u: Iterable[Number], v: Iterable[Number]) -> Iterable[Number]:
-    return [u[i]+v[i] for i in range(len(u))]
+    return [u[i] + v[i] for i in range(len(u))]
 
 
 def sub(u: Iterable[Number], v: Iterable[Number]) ->Iterable[Number]:
-    return [u[i]-v[i] for i in range(len(u))]
+    return [u[i] - v[i] for i in range(len(u))]
 
 
 def neg(u: Iterable[Number]) -> Iterable[Number]:
@@ -244,12 +250,12 @@ def neg(u: Iterable[Number]) -> Iterable[Number]:
 
 
 def dot(u: Iterable[Number], v: Iterable[Number]) -> Number:
-    return sum(u[i]*v[i] for i in range(len(u)))
+    return sum(u[i] * v[i] for i in range(len(u)))
 
 
 def normalize(v: Iterable[Number]) -> Iterable[Number]:
     vmag = magnitude(v)
-    return [v[i]/vmag for i in range(len(v))]
+    return [v[i] / vmag for i in range(len(v))]
 
 
 def aabb_vs_circle(m: Manifold) -> bool:

@@ -3,8 +3,6 @@ The main window class that all object-oriented applications should
 derive from.
 """
 
-from .window_commands import *
-
 import pyglet
 
 from numbers import Number
@@ -59,8 +57,7 @@ called.
         """ Override this function to add mouse button functionality. """
         pass
 
-    def on_mouse_drag(self, x: Number, y: Number, dx: Number, dy: Number, 
-                      buttons: int, modifiers: int):
+    def on_mouse_drag(self, x: Number, y: Number, dx: Number, dy: Number):
         """ Override this function to add mouse button functionality. """
         self.on_mouse_motion(x, y, dx, dy)
 

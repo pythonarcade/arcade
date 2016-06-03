@@ -2,15 +2,15 @@
 This module contains commands for basic graphics drawing commands.
 (Drawing primitives.)
 """
-from __future__ import print_function
-import sys
+# pylint: disable=too-many-arguments, too-many-locals, too-few-public-methods
+
 import math
 import ctypes
 import PIL.Image
 import PIL.ImageOps
 import pyglet
 import pyglet.gl as GL
-import pyglet.gl.glu as GLU
+from pyglet.gl import glu as GLU
 
 from numbers import Number
 from typing import Any
@@ -18,7 +18,7 @@ from typing import Iterable
 from typing import List
 
 
-class Texture():
+class Texture:
     """
     Class that represents a texture.
     Usually created by the ``load_texture`` or ``load_textures`` commands.
@@ -63,7 +63,7 @@ class Texture():
         self.height = height
 
 
-class VertexBuffer():
+class VertexBuffer:
     """
     This class represents a
     `vertex buffer object`_.
@@ -205,16 +205,10 @@ def load_textures(file_name: str,
 
         # Appveyor work-around
         appveyor = True
-        if not appveyor:
-            GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S,
-                               GL.GL_CLAMP_TO_BORDER)
-            GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T,
-                               GL.GL_CLAMP_TO_BORDER)
-        else:
-            GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S,
-                               GL.GL_REPEAT)
-            GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T,
-                               GL.GL_REPEAT)
+        GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S,
+                           GL.GL_CLAMP_TO_BORDER)
+        GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T,
+                           GL.GL_CLAMP_TO_BORDER)
 
         GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER,
                            GL.GL_LINEAR)
@@ -323,7 +317,9 @@ def load_texture(file_name: str, x: Number = 0, y: Number = 0,
     load_texture.texture_cache[file_name] = result
     return result
 
+
 load_texture.texture_cache = dict()
+
 
 # --- END TEXTURE FUNCTIONS # # #
 
@@ -341,6 +337,7 @@ def trim_image(image: Any) -> Any:
     """
     bbox = image.getbbox()
     return image.crop(bbox)
+
 
 # --- BEGIN ARC FUNCTIONS # # #
 
@@ -404,8 +401,8 @@ arcade.color.BOTTLE_GREEN, 90, 360, 45)
     end_segment = int(end_angle / 360 * num_segments)
     GL.glVertex3f(0, 0, 0.5)
 
-    for i in range(start_segment, end_segment + 1):
-        theta = 2.0 * 3.1415926 * i / num_segments
+    for segment in range(start_segment, end_segment + 1):
+        theta = 2.0 * 3.1415926 * segment / num_segments
 
         x = width * math.cos(theta)
         y = height * math.sin(theta)
@@ -476,8 +473,8 @@ transparent_color, 90, 360)
     start_segment = int(start_angle / 360 * num_segments)
     end_segment = int(end_angle / 360 * num_segments)
 
-    for i in range(start_segment, end_segment + 1):
-        theta = 2.0 * 3.1415926 * i / num_segments
+    for segment in range(start_segment, end_segment + 1):
+        theta = 2.0 * 3.1415926 * segment / num_segments
 
         x = width * math.cos(theta)
         y = height * math.sin(theta)
@@ -486,6 +483,7 @@ transparent_color, 90, 360)
 
     GL.glEnd()
     GL.glLoadIdentity()
+
 
 # --- END ARC FUNCTIONS # # #
 
@@ -523,7 +521,7 @@ arcade.color.BOTTLE_GREEN)
     >>> arcade.finish_render()
     >>> arcade.close_window()
     """
-    center_x = (start_x+end_x)/2
+    center_x = (start_x + end_x) / 2
     center_y = start_y + height
     start_angle = 0
     end_angle = 180
@@ -564,13 +562,14 @@ arcade.color.BOTTLE_GREEN, 10, 15)
     >>> arcade.finish_render()
     >>> arcade.close_window()
     """
-    center_x = (start_x+end_x)/2
+    center_x = (start_x + end_x) / 2
     center_y = start_y + height
     start_angle = 0
     end_angle = 180
     width = (start_x - end_x)
     draw_arc_outline(center_x, center_y, width, height, color,
                      start_angle, end_angle, border_width, tilt_angle)
+
 
 # --- END PARABOLA FUNCTIONS # # #
 
@@ -639,11 +638,11 @@ def draw_circle_outline(center_x: Number, center_y: Number, radius: Number,
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
     """
-    num_segments = 128
     width = radius
     height = radius
     draw_ellipse_outline(center_x, center_y, width, height,
                          color, border_width)
+
 
 # --- END CIRCLE FUNCTIONS # # #
 
@@ -661,8 +660,8 @@ def create_ellipse(width: Number, height: Number,
 
     data = []
 
-    for i in range(num_segments + 1):
-        theta = 2.0 * 3.1415926 * i / num_segments
+    for segment in range(num_segments + 1):
+        theta = 2.0 * 3.1415926 * segment / num_segments
 
         x = width * math.cos(theta)
         y = height * math.sin(theta)
@@ -674,13 +673,13 @@ def create_ellipse(width: Number, height: Number,
     GL.glGenBuffers(1, ctypes.pointer(vbo_id))
 
     v2f = data
-    data2 = (GL.GLfloat*len(v2f))(*v2f)
+    data2 = (GL.GLfloat * len(v2f))(*v2f)
 
     GL.glBindBuffer(GL.GL_ARRAY_BUFFER, vbo_id)
     GL.glBufferData(GL.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2,
                     GL.GL_STATIC_DRAW)
 
-    shape = VertexBuffer(vbo_id, len(v2f)//2, width, height, color)
+    shape = VertexBuffer(vbo_id, len(v2f) // 2, width, height, color)
     return shape
 
 
@@ -767,8 +766,8 @@ def draw_ellipse_filled(center_x: Number, center_y: Number,
 
     GL.glVertex3f(0, 0, 0.5)
 
-    for i in range(num_segments + 1):
-        theta = 2.0 * 3.1415926 * i / num_segments
+    for segment in range(num_segments + 1):
+        theta = 2.0 * 3.1415926 * segment / num_segments
 
         x = width * math.cos(theta)
         y = height * math.sin(theta)
@@ -832,8 +831,8 @@ def draw_ellipse_outline(center_x: Number, center_y: Number, width: Number,
         GL.glColor4ub(color[0], color[1], color[2], 255)
 
     GL.glBegin(GL.GL_LINE_LOOP)
-    for i in range(num_segments):
-        theta = 2.0 * 3.1415926 * i / num_segments
+    for segment in range(num_segments):
+        theta = 2.0 * 3.1415926 * segment / num_segments
 
         x = width * math.cos(theta)
         y = height * math.sin(theta)
@@ -843,6 +842,7 @@ def draw_ellipse_outline(center_x: Number, center_y: Number, width: Number,
     GL.glEnd()
     GL.glLoadIdentity()
 
+
 # --- END ELLIPSE FUNCTIONS # # #
 
 
@@ -850,7 +850,6 @@ def draw_ellipse_outline(center_x: Number, center_y: Number, width: Number,
 
 def draw_line(start_x: Number, start_y: Number, end_x: Number, end_y: Number, 
               color: Iterable[Number], border_width: Number = 1):
-
     """
     Draw a line.
 
@@ -1023,6 +1022,7 @@ def draw_lines(point_list: Iterable[Iterable[Number]],
         GL.glVertex3f(point[0], point[1], 0.5)
     GL.glEnd()
 
+
 # --- END LINE FUNCTIONS # # #
 
 # --- BEGIN POINT FUNCTIONS # # #
@@ -1114,6 +1114,7 @@ def draw_points(point_list: Iterable[Iterable[Number]],
     for point in point_list:
         GL.glVertex3f(point[0], point[1], 0.5)
     GL.glEnd()
+
 
 # --- END POINT FUNCTIONS # # #
 
@@ -1241,6 +1242,7 @@ def draw_triangle_filled(x1: Number, y1: Number,
     Raises:
         None
     """
+
     first_point = [x1, y1]
     second_point = [x2, y2]
     third_point = [x3, y3]
@@ -1275,6 +1277,7 @@ def draw_triangle_outline(x1: Number, y1: Number,
     point_list = (first_point, second_point, third_point)
     draw_polygon_outline(point_list, color, border_width)
 
+
 # --- END POLYGON FUNCTIONS # # #
 
 
@@ -1297,13 +1300,13 @@ def create_rectangle(width: Number, height: Number,
     GL.glGenBuffers(1, ctypes.pointer(vbo_id))
 
     v2f = data
-    data2 = (GL.GLfloat*len(v2f))(*v2f)
+    data2 = (GL.GLfloat * len(v2f))(*v2f)
 
     GL.glBindBuffer(GL.GL_ARRAY_BUFFER, vbo_id)
     GL.glBufferData(GL.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2,
                     GL.GL_STATIC_DRAW)
 
-    shape = VertexBuffer(vbo_id, len(v2f)//2, width, height, color)
+    shape = VertexBuffer(vbo_id, len(v2f) // 2, width, height, color)
     return shape
 
 
@@ -1614,20 +1617,21 @@ scale * texture.height, texture, 90)
         GL.glRotatef(angle, 0, 0, 1)
 
     GL.glColor4f(1, 1, 1, alpha)
-    z = 0.5
+    z = 0.5  # pylint: disable=invalid-name
 
     GL.glBindTexture(GL.GL_TEXTURE_2D, texture.texture_id)
     GL.glBegin(GL.GL_POLYGON)
     GL.glNormal3f(0.0, 0.0, 1.0)
     GL.glTexCoord2f(0, 0)
-    GL.glVertex3f(-width/2, -height/2, z)
+    GL.glVertex3f(-width / 2, -height / 2, z)
     GL.glTexCoord2f(1, 0)
-    GL.glVertex3f(width/2, -height/2, z)
+    GL.glVertex3f(width / 2, -height / 2, z)
     GL.glTexCoord2f(1, 1)
-    GL.glVertex3f(width/2, height/2, z)
+    GL.glVertex3f(width / 2, height / 2, z)
     GL.glTexCoord2f(0, 1)
-    GL.glVertex3f(-width/2, height/2, z)
+    GL.glVertex3f(-width / 2, height / 2, z)
     GL.glEnd()
+
 
 # --- END RECTANGLE FUNCTIONS # # #
 
@@ -1669,4 +1673,6 @@ def draw_text(text: str, start_x: Number, start_y: Number,
 
     label.draw()
 
+
 # --- END TEXT FUNCTIONS # # #
+

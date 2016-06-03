@@ -1,18 +1,20 @@
 """
 Physics engines for top-down or platformers.
 """
+# pylint: disable=too-many-arguments, too-many-locals, too-few-public-methods
 
-from .sprite import *
-from .geometry import *
+from arcade.geometry import check_for_collision_with_list
+from arcade.geometry import check_for_collision
 
 from numbers import Number
 from typing import Iterable
 
 
-class PhysicsEngineSimple():
+class PhysicsEngineSimple:
     """
     This class will move everything, and take care of collisions.
     """
+
     def __init__(self, player_sprite: Sprite, walls: SpriteList):
         """
         Constructor.
@@ -67,10 +69,11 @@ class PhysicsEngineSimple():
                 print("Error, collision while player wasn't moving.")
 
 
-class PhysicsEnginePlatformer():
+class PhysicsEnginePlatformer:
     """
     This class will move everything, and take care of collisions.
     """
+
     def __init__(self, player_sprite: Sprite, platforms: SpriteList, 
                  gravity_constant: Number = 0.5):
         """
@@ -131,12 +134,15 @@ class PhysicsEnginePlatformer():
                     if item.change_x != 0:
                         self.player_sprite.center_x += item.change_x
             else:
+                pass
+                # TODO: The code below can't execute, as "item" doesn't
+                # exist. In theory, this condition should never be arrived at.
                 # Collision while player wasn't moving, most likely
                 # moving platform.
-                if self.player_sprite.center_y >= item.center_y:
-                    self.player_sprite.bottom = item.top
-                else:
-                    self.player_sprite.top = item.bottom
+                # if self.player_sprite.center_y >= item.center_y:
+                #     self.player_sprite.bottom = item.top
+                # else:
+                #     self.player_sprite.top = item.bottom
             self.player_sprite.change_y = min(0, hit_list[0].change_y)
 
         # --- Move in the x direction
@@ -188,10 +194,8 @@ class PhysicsEnginePlatformer():
 
                 if check_for_collision(self.player_sprite, platform):
                     if platform.change_x < 0:
-                        original_location = self.player_sprite.right
                         self.player_sprite.right = platform.left
                     if platform.change_x > 0:
-                        original_location = self.player_sprite.left
                         self.player_sprite.left = platform.right
 
                 platform.center_y += platform.change_y
