@@ -25,7 +25,7 @@ class PhysicsObject:
     Base object to represent something we apply physics on.
     """
 
-    def __init__(self, position: Iterable[Number], velocity: Number, 
+    def __init__(self, position: Iterable[Number], velocity: Number,
                  restitution: Number, mass: Number):
         self.velocity = velocity
         self.restitution = restitution
@@ -48,8 +48,8 @@ class PhysicsCircle(PhysicsObject):
     A physics object, which is a circle.
     """
 
-    def __init__(self, position: Iterable[Number], velocity: Number, 
-                 restitution: Number, mass: Number, radius: Number, 
+    def __init__(self, position: Iterable[Number], velocity: Number,
+                 restitution: Number, mass: Number, radius: Number,
                  color: Iterable[Number]):
         super().__init__(position, velocity, restitution, mass)
         self.radius = radius
@@ -68,7 +68,7 @@ class PhysicsAABB(PhysicsObject):
     Axis-aligned bounding box. In English, a non-rotating rectangle.
     """
 
-    def __init__(self, rect: Iterable[Number], velocity: Number, 
+    def __init__(self, rect: Iterable[Number], velocity: Number,
                  restitution: Number, mass: Number, color: Iterable[Number]):
         super().__init__([rect[0], rect[1]], velocity, restitution, mass)
         self.color = color

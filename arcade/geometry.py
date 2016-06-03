@@ -11,7 +11,7 @@ from numbers import Number
 from typing import Iterable
 
 
-def are_polygons_intersecting(poly_a: Iterable[Iterable[Number]], 
+def are_polygons_intersecting(poly_a: Iterable[Iterable[Number]],
                               poly_b: Iterable[Iterable[Number]]) -> bool:
     """
     Return True if two polygons intersect.
@@ -97,7 +97,7 @@ def check_for_collision(sprite1: Sprite, sprite2: Sprite) -> bool:
     return are_polygons_intersecting(sprite1.points, sprite2.points)
 
 
-def check_for_collision_with_list(sprite1: Sprite, 
+def check_for_collision_with_list(sprite1: Sprite,
                                   sprite_list: SpriteList) -> Iterable[Sprite]:
     """
     Check for a collision between a sprite, and a list of sprites.

@@ -1726,5 +1726,3 @@ def draw_text(text: str, start_x: float, start_y: float,
 
 
 # --- END TEXT FUNCTIONS # # #
-
-
