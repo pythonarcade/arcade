@@ -1,68 +1,45 @@
 Installation on the Mac
 =======================
 
-The Mac has a "terminal" window where a user can type in commands. This is how
-computers used to be operated before we had graphics. It is still very useful.
-To start the Mac's terminal, go to the Finder and open up your applications.
-Inside of applications is a folder called Utilities. The Terminal program is in
-there.
+1. Go to the `Python website 
+   <https://www.python.org/downloads/release/python-351/>`_ and download the
+   "Mac OS X 64-bit / 32-bit installer".  Find the file in your Download folder
+   and double-click it to install
 
-.. image:: images/run_mac_terminal.png
+2. All (most?) computers have a terminal window where a user can type commands 
+   and interact directly with the computer, without any windows or GUI 
+   applications popping up.  To start the terminal, open Spotlight 
+   (Command + Space) and type "Terminal" (without the quotes), then press 
+   enter.
 
-At this point you need to choose to use version 3.x of Python (recommended) or
-use version 2.x. Pick one of the two, and follow the instructions below.
+3. Install virtualenv.  This allows you to install Python packages without
+   affecting the system-wide Python installation.  Run the following command
+   in your terminal.
 
-Option 1: Use Python 3.x
-------------------------
+``sudo pip3 install virtualenv``
 
-Download and install Python 3.x from the official Python website:
+4. Use virtualenv to create a virtual environment specifically for your project
+   by running the following command in your terminal.
 
-https://www.python.org/downloads/
+``virtualenv ~/.virtualenvs/arcade``
 
-Start the Terminal application. This must be done AFTER you finish installing
-Python, or next command won't work. In the Terminal window type:
+5. Activate the virtualenv you just created.  (You may need to do this each
+   time you open a new terminal window.  It is possible to make the terminal do
+   this for you each time you open a new window, but that is beyond the scope
+   of these instructions.)
 
-``sudo pip3 install numpy pillow pyglet arcade``
+``source ~/.virtualenvs/arcade/bin/activate``
 
-This will install the Arcade library and the libraries it depends on.
+6. Install the Python Arcade Library, by running the following command
 
-Option 2: Use Python 2.x
-------------------------
+``pip install arcade``
 
-Start the Terminal program.
+7. Download the community edition of PyCharm for the Mac from the `Jetbrains
+   website <https://www.jetbrains.com/pycharm/download/>`_. Double click on the
+   file you downloaded to install it.
 
-At the terminal, type ``sudo easy_install pip``. The computer will ask for
-your password, and then install a command called ``pip``.
-
-.. image:: images/easyinstall_pip.png
-
-After this, type:
-
-``sudo pip install arcade``
-
-Installing AVbin
-----------------
-
-For sound, Arcade relies on a library called AVbin. This needs to be installed
-next.
-
-To download AVbin, go to: https://avbin.github.io/AVbin/Download.html and click
-the AVbin 10 for OSX link. Download and install.
-
-If your security setting prevent you from running the installer, find the
-downloaded file in your Finder. Control-Click the file and select "Open". Then
-click past the warning and install it anyway.
-
-Installing PyCharm
-------------------
-
-Go to JetBrains and download PyCharm for the Mac. The Community edition
-is fine:
-
-https://www.jetbrains.com/pycharm/download/
-
-Because the Mac often has multiple versions of Python installed on it, when
-cerating a project make sure to select version 2.7 or version 3.5 (recommended)
-depending on what version of Python you want to create.
+8. Create a new project in PyCharm. Because the Mac often has multiple versions
+   of Python installed on it, when creating a project make sure to select 
+   version 3.5.
 
 .. image:: images/pycharm_mac_select_python.png
