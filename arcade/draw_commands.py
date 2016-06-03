@@ -682,16 +682,19 @@ def create_ellipse(width: Number, height: Number,
     drawn with ``render_ellipse_filled``. This method of drawing an ellipse
     is much faster than calling ``draw_ellipse_filled`` each frame.
 
-    >>> import arcade
-    >>> arcade.open_window("Drawing Example", 800, 600)
-    >>> arcade.set_background_color(arcade.color.WHITE)
-    >>> arcade.start_render()
-    >>> ellipse_a = arcade.create_ellipse(100, 100, arcade.color.RED)
-    >>> ellipse_b = arcade.create_ellipse(100, 100, (0, 255, 0, 127))
-    >>> render_ellipse_filled(ellipse_a, 200, 200, 45)
-    >>> render_ellipse_filled(ellipse_b, 250, 250, 45)
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
+    Note: THis can't be unit tested on appveyor because its support for OpenGL is
+    poor.
+    
+    import arcade
+    arcade.open_window("Drawing Example", 800, 600)
+    arcade.set_background_color(arcade.color.WHITE)
+    arcade.start_render()
+    ellipse_a = arcade.create_ellipse(100, 100, arcade.color.RED)
+    ellipse_b = arcade.create_ellipse(100, 100, (0, 255, 0, 127))
+    render_ellipse_filled(ellipse_a, 200, 200, 45)
+    render_ellipse_filled(ellipse_b, 250, 250, 45)
+    arcade.finish_render()
+    arcade.quick_run(0.25)
 
     """
     num_segments = 64
@@ -1196,6 +1199,7 @@ def draw_polygon_filled(point_list: Iterable[Iterable[Number]],
 (165, 300), \
 (150, 300))
     >>> arcade.draw_polygon_filled(point_list, arcade.color.SPANISH_VIOLET)
+    >>> arcade.draw_polygon_filled(point_list, make_transparent_color(arcade.color.SPANISH_VIOLET, 127))
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
     """
