@@ -17,8 +17,8 @@ from arcade.draw_commands import draw_triangle_filled
 from arcade.draw_commands import draw_polygon_filled
 from arcade.draw_commands import draw_line
 from arcade.draw_commands import draw_arc_outline
-from arcade.types import Color
-from arcade.types import PointList
+from arcade.arcade_types import Color
+from arcade.arcade_types import PointList
 
 
 class Shape:

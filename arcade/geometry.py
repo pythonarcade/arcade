@@ -5,7 +5,7 @@ Functions for calculating geometry.
 
 from arcade.sprite import Sprite, SpriteList
 from typing import Iterable
-from arcade.types import PointList
+from arcade.arcade_types import PointList
 
 
 def are_polygons_intersecting(poly_a: PointList,

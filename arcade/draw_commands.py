@@ -16,8 +16,8 @@ from pyglet.gl import glu as glu
 from typing import Any, Iterable, Sequence
 from typing import List
 
-from arcade.types import Color
-from arcade.types import PointList
+from arcade.arcade_types import Color
+from arcade.arcade_types import PointList
 
 
 class Texture:
