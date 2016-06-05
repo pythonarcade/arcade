@@ -9,6 +9,7 @@ import arcade.color
 from arcade.version import *
 from arcade.window_commands import *
 from arcade.draw_commands import *
+from arcade.geometry import *
 from arcade.sprite import *
 from arcade.physics_engines import *
 from arcade.physics_engine_2d import *

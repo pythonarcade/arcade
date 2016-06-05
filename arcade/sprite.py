@@ -5,7 +5,7 @@ This module manages all of the code around Sprites.
 
 import ctypes
 import math
-import pyglet.gl as GL
+import pyglet.gl as gl
 
 from arcade.draw_commands import load_texture
 from arcade.draw_commands import draw_texture_rectangle
@@ -168,7 +168,7 @@ upside-down.
     def set_points(self, points: Sequence[Sequence[float]]):
         self._points = points
 
-    def get_points(self) -> Sequence[Iterable[float]]:
+    def get_points(self) -> List[List[float]]:
         """
         Get the corner points for the rect that makes up the sprite.
         """
@@ -678,27 +678,27 @@ def _rotate(x: float, y: float, cx: float, cy: float,
     return x, y
 
 
-def _set_vbo(vbo_id: GL.GLuint, points: List[float]):
+def _set_vbo(vbo_id: gl.GLuint, points: List[float]):
     """
     Given a vertex buffer id, this sets the vertexes to be
     part of that buffer.
     """
 
     # todo what does it do?
-    data2 = (GL.GLfloat*len(points)) (*points)
+    data2 = (gl.GLfloat*len(points))(*points)
 
-    GL.glBindBuffer(GL.GL_ARRAY_BUFFER, vbo_id)
-    GL.glBufferData(GL.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2,
-                    GL.GL_STATIC_DRAW)
+    gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vbo_id)
+    gl.glBufferData(gl.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2,
+                    gl.GL_STATIC_DRAW)
 
 
-def _create_vbo() -> GL.GLuint:
+def _create_vbo() -> gl.GLuint:
     """
     This creates a new vertex buffer id.
     """
-    vbo_id = GL.GLuint()
+    vbo_id = gl.GLuint()
 
-    GL.glGenBuffers(1, ctypes.pointer(vbo_id))
+    gl.glGenBuffers(1, ctypes.pointer(vbo_id))
 
     return vbo_id
 
@@ -719,52 +719,52 @@ def _create_rects(rect_list: Iterable[Sprite]) -> List[float]:
 
 
 def _render_rect_filled(shape: Sprite, offset: int, texture_id: str,
-                        texture_coord_vbo: GL.GLuint):
+                        texture_coord_vbo: gl.GLuint):
     """
     Render the rectangle at the right spot.
     """
     # Set color
-    GL.glLoadIdentity()
-    GL.glTranslatef(shape.center_x, shape.center_y, 0)
+    gl.glLoadIdentity()
+    gl.glTranslatef(shape.center_x, shape.center_y, 0)
 
     if shape.angle != 0:
-        GL.glRotatef(shape.angle, 0, 0, 1)
+        gl.glRotatef(shape.angle, 0, 0, 1)
 
-    GL.glBindTexture(GL.GL_TEXTURE_2D, texture_id)
+    gl.glBindTexture(gl.GL_TEXTURE_2D, texture_id)
 
-    GL.glTexCoordPointer(2, GL.GL_FLOAT, 0, texture_coord_vbo)
-    GL.glDrawArrays(GL.GL_QUADS, offset, 4)
+    gl.glTexCoordPointer(2, gl.GL_FLOAT, 0, texture_coord_vbo)
+    gl.glDrawArrays(gl.GL_QUADS, offset, 4)
 
 
-def _draw_rects(shape_list: Iterable[Sprite], vertex_vbo_id: GL.GLuint,
-                texture_coord_vbo_id: GL.GLuint):
+def _draw_rects(shape_list: Iterable[Sprite], vertex_vbo_id: gl.GLuint,
+                texture_coord_vbo_id: gl.GLuint):
     """
     Draw a set of rectangles using vertex buffers. This is more efficient
     than drawing them individually.
     """
-    GL.glEnable(GL.GL_BLEND)
-    GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
-    GL.glEnable(GL.GL_TEXTURE_2D)
-    GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
-    GL.glHint(GL.GL_PERSPECTIVE_CORRECTION_HINT, GL.GL_NICEST)
+    gl.glEnable(gl.GL_BLEND)
+    gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
+    gl.glEnable(gl.GL_TEXTURE_2D)
+    gl.glHint(gl.GL_POLYGON_SMOOTH_HINT, gl.GL_NICEST)
+    gl.glHint(gl.GL_PERSPECTIVE_CORRECTION_HINT, gl.GL_NICEST)
 
-    # GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
-    # GL.glMatrixMode(GL.GL_MODELVIEW)
-    # GL.glDisable(GL.GL_BLEND)
+    # gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
+    # gl.glMatrixMode(gl.GL_MODELVIEW)
+    # gl.glDisable(gl.GL_BLEND)
 
-    GL.glBindBuffer(GL.GL_ARRAY_BUFFER, vertex_vbo_id)
-    GL.glEnableClientState(GL.GL_TEXTURE_COORD_ARRAY)
-    GL.glEnableClientState(GL.GL_VERTEX_ARRAY)
-    GL.glVertexPointer(2, GL.GL_FLOAT, 0, 0)
+    gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vertex_vbo_id)
+    gl.glEnableClientState(gl.GL_TEXTURE_COORD_ARRAY)
+    gl.glEnableClientState(gl.GL_VERTEX_ARRAY)
+    gl.glVertexPointer(2, gl.GL_FLOAT, 0, 0)
 
-    GL.glBindBuffer(GL.GL_ARRAY_BUFFER, texture_coord_vbo_id)
+    gl.glBindBuffer(gl.GL_ARRAY_BUFFER, texture_coord_vbo_id)
 
     offset = 0
     for shape in shape_list:
         if shape.can_cache:
             texture_coord_vbo_id = None
 
-            GL.glColor4f(1, 1, 1, shape.alpha)
+            gl.glColor4f(1, 1, 1, shape.alpha)
 
             _render_rect_filled(shape, offset,
                                 shape.texture.texture_id, texture_coord_vbo_id)

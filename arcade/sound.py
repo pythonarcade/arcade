@@ -14,7 +14,7 @@ def load_sound_library():
     Otherwise hope the correct package is installed.
     """
 
-    #lazy loading
+    # lazy loading
     if not load_sound_library._sound_library_loaded:
         load_sound_library._sound_library_loaded = True
     else:
@@ -55,6 +55,7 @@ def load_sound_library():
 
 # Initialize static function variable
 load_sound_library._sound_library_loaded = False
+
 
 def load_sound(filename: str) -> typing.Any:
     """
