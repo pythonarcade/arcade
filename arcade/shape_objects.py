@@ -21,7 +21,7 @@ from arcade.arcade_types import Color
 from arcade.arcade_types import PointList
 
 
-class Shape:
+class Shape():
 
     def __init__(self, center_x: float, center_y: float,
                  color: Color = GREEN, tilt_angle: float = 0):
@@ -151,7 +151,7 @@ class Text(Shape):
                   self.size)
 
 
-class Triangle:
+class Triangle():
     """ Class that represents a triangle. """
 
     def __init__(self, first_x: float, first_y: float, second_x: float,
@@ -175,7 +175,7 @@ class Triangle:
                              self.color)
 
 
-class Polygon:
+class Polygon():
 
     def __init__(self, point_list: PointList,
                  color: Color = GREEN,
@@ -196,7 +196,7 @@ class Polygon:
             point[1] += self.change_y
 
 
-class Parabola:
+class Parabola():
 
     def __init__(self, start_x: float, start_y: float, end_x: float,
                  height: float,
@@ -215,7 +215,7 @@ class Parabola:
         self.change_tilt_angle = 0
 
 
-class Line:
+class Line():
 
     def __init__(self, start_x: float, start_y: float, end_x: float,
                  end_y: float,
@@ -242,7 +242,7 @@ class Line:
         self.end_y += self.change_y
 
 
-class Arc:
+class Arc():
     def __init__(self, center_x: float, center_y: float, width: float,
                  height: float, color: Color = GREEN,
                  start_angle: float = 0, end_angle: float = 180,

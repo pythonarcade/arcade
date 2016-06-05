@@ -12,7 +12,7 @@ from numbers import Number
 from typing import Iterable
 
 
-class PhysicsEngineSimple:
+class PhysicsEngineSimple():
     """
     This class will move everything, and take care of collisions.
     """
@@ -71,7 +71,7 @@ class PhysicsEngineSimple:
                 print("Error, collision while player wasn't moving.")
 
 
-class PhysicsEnginePlatformer:
+class PhysicsEnginePlatformer():
     """
     This class will move everything, and take care of collisions.
     """

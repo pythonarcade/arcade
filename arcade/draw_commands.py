@@ -20,7 +20,7 @@ from arcade.arcade_types import Color
 from arcade.arcade_types import PointList
 
 
-class Texture:
+class Texture():
     """
     Class that represents a texture.
     Usually created by the ``load_texture`` or ``load_textures`` commands.
@@ -65,7 +65,7 @@ class Texture:
         self.height = height
 
 
-class VertexBuffer:
+class VertexBuffer():
     """
     This class represents a
     `vertex buffer object`_.
