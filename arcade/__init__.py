@@ -16,3 +16,4 @@ from arcade.physics_engine_2d import *
 from arcade.application import *
 from arcade.sound import *
 from arcade.shape_objects import *
+from arcade.types import *

@@ -3,14 +3,13 @@ Functions for calculating geometry.
 """
 # pylint: disable=consider-using-enumerate
 
-from .sprite import Sprite, SpriteList
-
-from numbers import Number
+from arcade.sprite import Sprite, SpriteList
 from typing import Iterable
+from arcade.types import PointList
 
 
-def are_polygons_intersecting(poly_a: Iterable[Iterable[Number]],
-                              poly_b: Iterable[Iterable[Number]]) -> bool:
+def are_polygons_intersecting(poly_a: PointList,
+                              poly_b: PointList) -> bool:
     """
     Return True if two polygons intersect.
 

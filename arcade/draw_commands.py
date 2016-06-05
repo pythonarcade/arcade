@@ -10,9 +10,14 @@ import PIL.Image
 import PIL.ImageOps
 import pyglet
 import pyglet.gl as gl
-from pyglet.gl import glu as GLU
+from pyglet.gl import glu as glu
 
-from typing import Any, Iterable, Sequence, List
+
+from typing import Any, Iterable, Sequence
+from typing import List
+
+from arcade.types import Color
+from arcade.types import PointList
 
 
 class Texture:
@@ -27,7 +32,7 @@ class Texture:
 
     """
 
-    def __init__(self, texture_id: str, width: float, height: float):
+    def __init__(self, texture_id: int, width: float, height: float):
         """
         Args:
             :texture_id (str): Id of the texture.
@@ -80,7 +85,7 @@ class VertexBuffer:
     >>> x = VertexBuffer(0, 10, 10, 10, arcade.color.AERO_BLUE)
     """
     def __init__(self, vbo_id: gl.GLuint, size: float, width: float,
-                 height: float, color: Sequence[float]):
+                 height: float, color: Color):
         self.vbo_id = vbo_id
         self.size = size
         self.width = width
@@ -92,8 +97,7 @@ def make_transparent_color(color: Sequence[float], transparency: float):
     """
     Given a RGB color, along with an alpha, returns a RGBA color tuple.
     """
-    return (color[0], color[1], color[2], transparency)
-
+    return color[0], color[1], color[2], transparency
 
 
 def load_textures(file_name: str,
@@ -220,7 +224,7 @@ def load_textures(file_name: str,
                            gl.GL_LINEAR)
         gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER,
                            gl.GL_LINEAR_MIPMAP_LINEAR)
-        GLU.gluBuild2DMipmaps(gl.GL_TEXTURE_2D, gl.GL_RGBA,
+        glu.gluBuild2DMipmaps(gl.GL_TEXTURE_2D, gl.GL_RGBA,
                               image_width, image_height,
                               gl.GL_RGBA, gl.GL_UNSIGNED_BYTE, image_bytes)
 
@@ -327,7 +331,7 @@ def load_texture(file_name: str, x: float = 0, y: float = 0,
                        gl.GL_LINEAR)
     gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER,
                        gl.GL_LINEAR_MIPMAP_LINEAR)
-    GLU.gluBuild2DMipmaps(gl.GL_TEXTURE_2D, gl.GL_RGBA,
+    glu.gluBuild2DMipmaps(gl.GL_TEXTURE_2D, gl.GL_RGBA,
                           image_width, image_height,
                           gl.GL_RGBA, gl.GL_UNSIGNED_BYTE, image_bytes)
 
@@ -365,7 +369,7 @@ def trim_image(image: Any) -> Any:
 
 def draw_arc_filled(center_x: float, center_y: float,
                     width: float, height: float,
-                    color: Sequence[float],
+                    color: Color,
                     start_angle: float, end_angle: float,
                     tilt_angle: float = 0):
     """
@@ -435,7 +439,7 @@ arcade.color.BOTTLE_GREEN, 90, 360, 45)
 
 
 def draw_arc_outline(center_x: float, center_y: float, width: float,
-                     height: float, color: Sequence[float],
+                     height: float, color: Color,
                      start_angle: float, end_angle: float,
                      border_width: float = 1, tilt_angle: float = 0):
     """
@@ -512,7 +516,7 @@ transparent_color, 90, 360)
 # --- BEGIN PARABOLA FUNCTIONS # # #
 
 def draw_parabola_filled(start_x: float, start_y: float, end_x: float,
-                         height: float, color: Sequence[float],
+                         height: float, color: Color,
                          tilt_angle: float = 0):
     """
     Draws a filled in parabola.
@@ -552,7 +556,7 @@ arcade.color.BOTTLE_GREEN)
 
 
 def draw_parabola_outline(start_x: float, start_y: float, end_x: float,
-                          height: float, color: Sequence[float],
+                          height: float, color: Color,
                           border_width: float = 1, tilt_angle: float = 0):
     """
     Draws the outline of a parabola.
@@ -598,7 +602,7 @@ arcade.color.BOTTLE_GREEN, 10, 15)
 # --- BEGIN CIRCLE FUNCTIONS # # #
 
 def draw_circle_filled(center_x: float, center_y: float, radius: float,
-                       color: Sequence[float]):
+                       color: Color):
     """
     Draw a filled-in circle.
 
@@ -631,7 +635,7 @@ def draw_circle_filled(center_x: float, center_y: float, radius: float,
 
 
 def draw_circle_outline(center_x: float, center_y: float, radius: float,
-                        color: Sequence[float], border_width: float = 1):
+                        color: Color, border_width: float = 1):
     """
     Draw the outline of a circle.
 
@@ -671,13 +675,13 @@ def draw_circle_outline(center_x: float, center_y: float, radius: float,
 # --- BEGIN ELLIPSE FUNCTIONS # # #
 
 def create_ellipse(width: float, height: float,
-                   color: Sequence[float]) -> VertexBuffer:
+                   color: Color) -> VertexBuffer:
     """
     This creates an ellipse vertex buffer object (VBO). It can later be
     drawn with ``render_ellipse_filled``. This method of drawing an ellipse
     is much faster than calling ``draw_ellipse_filled`` each frame.
 
-    Note: THis can't be unit tested on appveyor because its support for OpenGL is
+    Note: THis can't be unit tested on Appveyor because its support for OpenGL is
     poor.
 
     import arcade
@@ -748,7 +752,7 @@ def render_ellipse_filled(shape: VertexBuffer, center_x: float,
 
 
 def draw_ellipse_filled(center_x: float, center_y: float,
-                        width: float, height: float, color: Sequence[float],
+                        width: float, height: float, color: Color,
                         tilt_angle: float = 0):
     """
     Draw a filled in ellipse.
@@ -816,7 +820,7 @@ def draw_ellipse_filled(center_x: float, center_y: float,
 
 
 def draw_ellipse_outline(center_x: float, center_y: float, width: float,
-                         height: float, color: Sequence[float],
+                         height: float, color: Color,
                          border_width: float = 1, tilt_angle: float = 0):
     """
     Draw the outline of an ellipse.
@@ -886,7 +890,7 @@ def draw_ellipse_outline(center_x: float, center_y: float, width: float,
 # --- BEGIN LINE FUNCTIONS # # #
 
 def draw_line(start_x: float, start_y: float, end_x: float, end_y: float,
-              color: Sequence[float], border_width: float = 1):
+              color: Color, border_width: float = 1):
     """
     Draw a line.
 
@@ -938,8 +942,8 @@ def draw_line(start_x: float, start_y: float, end_x: float, end_y: float,
     gl.glEnd()
 
 
-def draw_line_strip(point_list: Iterable[Iterable[float]],
-                    color: Iterable[float], border_width: float = 1):
+def draw_line_strip(point_list: PointList,
+                    color: Color, border_width: float = 1):
     """
     Draw a line strip. A line strip is a set of continuously connected
     line segments.
@@ -1003,8 +1007,8 @@ def draw_line_strip(point_list: Iterable[Iterable[float]],
     gl.glEnd()
 
 
-def draw_lines(point_list: Iterable[Iterable[float]],
-               color: Iterable[float], border_width: float = 1):
+def draw_lines(point_list: PointList,
+               color: Color, border_width: float = 1):
     """
     Draw a set of lines.
 
@@ -1075,7 +1079,7 @@ def draw_lines(point_list: Iterable[Iterable[float]],
 # --- BEGIN POINT FUNCTIONS # # #
 
 
-def draw_point(x: float, y: float, color: Iterable[float], size: float):
+def draw_point(x: float, y: float, color: Color, size: float):
     """
     Draw a point.
 
@@ -1116,8 +1120,8 @@ def draw_point(x: float, y: float, color: Iterable[float], size: float):
     gl.glEnd()
 
 
-def draw_points(point_list: Iterable[Iterable[float]],
-                color: Iterable[float], size: float = 1):
+def draw_points(point_list: PointList,
+                color: Color, size: float = 1):
     """
     Draw a set of points.
 
@@ -1171,7 +1175,7 @@ def draw_points(point_list: Iterable[Iterable[float]],
 
 
 def draw_polygon_filled(point_list: Iterable[Iterable[float]],
-                        color: Iterable[float]):
+                        color: Color):
     """
     Draw a polygon that is filled in.
 
@@ -1220,8 +1224,8 @@ def draw_polygon_filled(point_list: Iterable[Iterable[float]],
     gl.glEnd()
 
 
-def draw_polygon_outline(point_list: Iterable[Iterable[float]],
-                         color: Iterable[float], border_width: float = 1):
+def draw_polygon_outline(point_list: PointList,
+                         color: Color, border_width: float = 1):
     """
     Draw a polygon outline. Also known as a "line loop."
 
@@ -1275,7 +1279,7 @@ def draw_polygon_outline(point_list: Iterable[Iterable[float]],
 
 def draw_triangle_filled(x1: float, y1: float,
                          x2: float, y2: float,
-                         x3: float, y3: float, color: Iterable[float]):
+                         x3: float, y3: float, color: Color):
     """
     Draw a filled in triangle.
 
@@ -1302,7 +1306,7 @@ def draw_triangle_filled(x1: float, y1: float,
 
 def draw_triangle_outline(x1: float, y1: float,
                           x2: float, y2: float,
-                          x3: float, y3: float, color: Iterable[float],
+                          x3: float, y3: float, color: Color,
                           border_width: float = 1):
     """
     Draw a the outline of a triangle.
@@ -1334,7 +1338,7 @@ def draw_triangle_outline(x1: float, y1: float,
 # --- BEGIN RECTANGLE FUNCTIONS # # #
 
 def create_rectangle(width: float, height: float,
-                     color: Iterable[float]) -> VertexBuffer:
+                     color: Color) -> VertexBuffer:
     """
     This function creates a rectangle using a vertex buffer object.
     Creating the rectangle, and then later drawing it with ``render_rectangle``
@@ -1361,7 +1365,7 @@ def create_rectangle(width: float, height: float,
 
 
 def render_rectangle_filled(shape: VertexBuffer, center_x: float,
-                            center_y: float, color: Iterable[float],
+                            center_y: float, color: Color,
                             tilt_angle: float = 0):
     """
     Render a rectangle previously created by the ``create_rectangle`` command.
@@ -1388,7 +1392,7 @@ def render_rectangle_filled(shape: VertexBuffer, center_x: float,
 
 
 def draw_lrtb_rectangle_outline(left: float, right: float, top: float,
-                                bottom: float, color: Iterable[float],
+                                bottom: float, color: Color,
                                 border_width: float = 1):
     """
     Draw a rectangle by specifying left, right, top, and bottom edges.
@@ -1423,7 +1427,7 @@ def draw_lrtb_rectangle_outline(left: float, right: float, top: float,
 
 def draw_xywh_rectangle_outline(top_left_x: float, top_left_y: float,
                                 width: float, height: float,
-                                color: Iterable[float],
+                                color: Color,
                                 border_width: float = 1):
     """
     Draw a rectangle by specifying left, right, top, and bottom edges.
@@ -1448,7 +1452,7 @@ def draw_xywh_rectangle_outline(top_left_x: float, top_left_y: float,
 
 
 def draw_rectangle_outline(center_x: float, center_y: float, width: float,
-                           height: float, color: Iterable[float],
+                           height: float, color: Color,
                            border_width: float = 1, tilt_angle: float = 0):
     """
     Draw a rectangle outline.
@@ -1508,7 +1512,7 @@ arcade.color.BRITISH_RACING_GREEN, 2)
 
 
 def draw_lrtb_rectangle_filled(left: float, right: float, top: float,
-                               bottom: float, color: Iterable[float]):
+                               bottom: float, color: Color):
     """
     Draw a rectangle by specifying left, right, top, and bottom edges.
 
@@ -1541,7 +1545,7 @@ def draw_lrtb_rectangle_filled(left: float, right: float, top: float,
 
 def draw_xywh_rectangle_filled(top_left_x: float, top_left_y: float,
                                width: float, height: float,
-                               color: Iterable[float]):
+                               color: Color):
     """
     Draw a rectangle by specifying left, right, top, and bottom edges.
 
@@ -1564,7 +1568,7 @@ def draw_xywh_rectangle_filled(top_left_x: float, top_left_y: float,
 
 
 def draw_rectangle_filled(center_x: float, center_y: float, width: float,
-                          height: float, color: Iterable[float],
+                          height: float, color: Color,
                           tilt_angle: float = 0):
     """
     Draw a filled-in rectangle.
@@ -1682,6 +1686,7 @@ scale * texture.height, texture, 90)
     gl.glVertex3f(-width / 2, height / 2, z)
     gl.glEnd()
 
+
 def draw_xywh_rectangle_textured(top_left_x: float, top_left_y: float,
                                  width: float, height: float,
                                  texture: Texture):
@@ -1694,7 +1699,7 @@ def draw_xywh_rectangle_textured(top_left_x: float, top_left_y: float,
 
 
 def draw_text(text: str, start_x: float, start_y: float,
-              color: Iterable[float], size: float):
+              color: Color, size: float):
     """
     Draw text to the screen.
 
@@ -1727,7 +1732,5 @@ def draw_text(text: str, start_x: float, start_y: float,
     gl.glLoadIdentity()
 
     label.draw()
-
-
 
 # --- END TEXT FUNCTIONS # # #

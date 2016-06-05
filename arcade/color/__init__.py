@@ -1,5 +1,5 @@
 """
-This module predefines several colors.
+This module pre-defines several colors.
 """
 AERO_BLUE = (201, 255, 229)
 AFRICAN_VIOLET = (178, 132, 190)
