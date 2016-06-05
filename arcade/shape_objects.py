@@ -139,7 +139,7 @@ class Text(Shape):
     """ Class that represents a text label. """
 
     def __init__(self, text: str, center_x: float, center_y: float,
-                 size: float, color: Iterable[Number] = GREEN):
+                 size: float, color: Color = GREEN):
 
         super().__init__(center_x, center_y, color)
 
@@ -156,7 +156,7 @@ class Triangle:
 
     def __init__(self, first_x: float, first_y: float, second_x: float,
                  second_y: float, third_x: float, third_y: float,
-                 color: Iterable[int] = GREEN,
+                 color: Color = GREEN,
                  border_width: float = 0):
         self.first_x = first_x
         self.first_y = first_y

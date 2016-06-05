@@ -1174,7 +1174,7 @@ def draw_points(point_list: PointList,
 # --- BEGIN POLYGON FUNCTIONS # # #
 
 
-def draw_polygon_filled(point_list: Iterable[Iterable[float]],
+def draw_polygon_filled(point_list: PointList,
                         color: Color):
     """
     Draw a polygon that is filled in.
@@ -1297,9 +1297,9 @@ def draw_triangle_filled(x1: float, y1: float,
         None
     """
 
-    first_point = [x1, y1]
-    second_point = [x2, y2]
-    third_point = [x3, y3]
+    first_point = (x1, y1)
+    second_point = (x2, y2)
+    third_point = (x3, y3)
     point_list = (first_point, second_point, third_point)
     draw_polygon_filled(point_list, color)
 
