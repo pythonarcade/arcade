@@ -66,11 +66,11 @@ upside-down.
     """
 
     def __init__(self, 
-                 filename: str = None, 
-                 scale: float = 1,
-                 image_x: float = 0, image_y: float = 0,
-                 image_width: float = 0, image_height: float = 0,
-                 center_x: float = 0, center_y: float = 0):
+                 filename: str=None,
+                 scale: float=1,
+                 image_x: float=0, image_y: float=0,
+                 image_width: float=0, image_height: float=0,
+                 center_x: float=0, center_y: float=0):
         """
         Create a new sprite.
 
@@ -510,7 +510,7 @@ class SpriteList():
         for sprite in self.sprite_list:
             sprite.update_animation()
 
-    def draw(self, fast: bool = True):
+    def draw(self, fast: bool=True):
         """
         Call the draw() method on each sprite in the list.
         """

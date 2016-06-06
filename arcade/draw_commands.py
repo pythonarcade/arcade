@@ -93,7 +93,7 @@ class VertexBuffer():
         self.color = color
 
 
-def make_transparent_color(color: Sequence[float], transparency: float):
+def make_transparent_color(color: Color, transparency: float):
     """
     Given a RGB color, along with an alpha, returns a RGBA color tuple.
     """
@@ -101,9 +101,9 @@ def make_transparent_color(color: Sequence[float], transparency: float):
 
 
 def load_textures(file_name: str,
-                  image_location_list: Iterable[Iterable[float]],
-                  mirrored: bool = False,
-                  flipped: bool = False) -> List['Texture']:
+                  image_location_list: PointList,
+                  mirrored: bool=False,
+                  flipped: bool=False) -> List['Texture']:
     """
     Load a set of textures off of a single image file.
 
@@ -233,9 +233,9 @@ def load_textures(file_name: str,
     return texture_info_list
 
 
-def load_texture(file_name: str, x: float = 0, y: float = 0,
-                 width: float = 0, height: float = 0,
-                 scale: float = 1) -> Texture:
+def load_texture(file_name: str, x: float=0, y: float=0,
+                 width: float=0, height: float=0,
+                 scale: float=1) -> Texture:
     """
     Load image from disk and create a texture.
 
@@ -371,7 +371,7 @@ def draw_arc_filled(center_x: float, center_y: float,
                     width: float, height: float,
                     color: Color,
                     start_angle: float, end_angle: float,
-                    tilt_angle: float = 0):
+                    tilt_angle: float=0):
     """
     Draw a filled in arc. Useful for drawing pie-wedges, or Pac-Man.
 
@@ -441,7 +441,7 @@ arcade.color.BOTTLE_GREEN, 90, 360, 45)
 def draw_arc_outline(center_x: float, center_y: float, width: float,
                      height: float, color: Color,
                      start_angle: float, end_angle: float,
-                     border_width: float = 1, tilt_angle: float = 0):
+                     border_width: float=1, tilt_angle: float=0):
     """
     Draw the outside edge of an arc. Useful for drawing curved lines.
 
@@ -517,7 +517,7 @@ transparent_color, 90, 360)
 
 def draw_parabola_filled(start_x: float, start_y: float, end_x: float,
                          height: float, color: Color,
-                         tilt_angle: float = 0):
+                         tilt_angle: float=0):
     """
     Draws a filled in parabola.
 
@@ -557,7 +557,7 @@ arcade.color.BOTTLE_GREEN)
 
 def draw_parabola_outline(start_x: float, start_y: float, end_x: float,
                           height: float, color: Color,
-                          border_width: float = 1, tilt_angle: float = 0):
+                          border_width: float=1, tilt_angle: float=0):
     """
     Draws the outline of a parabola.
 
@@ -726,7 +726,7 @@ def create_ellipse(width: float, height: float,
 
 
 def render_ellipse_filled(shape: VertexBuffer, center_x: float,
-                          center_y: float, angle: float = 0):
+                          center_y: float, angle: float=0):
     """
     Render an ellipse previously created with the ``create_ellipse`` function.
     """
@@ -753,7 +753,7 @@ def render_ellipse_filled(shape: VertexBuffer, center_x: float,
 
 def draw_ellipse_filled(center_x: float, center_y: float,
                         width: float, height: float, color: Color,
-                        tilt_angle: float = 0):
+                        tilt_angle: float=0):
     """
     Draw a filled in ellipse.
 
@@ -821,7 +821,7 @@ def draw_ellipse_filled(center_x: float, center_y: float,
 
 def draw_ellipse_outline(center_x: float, center_y: float, width: float,
                          height: float, color: Color,
-                         border_width: float = 1, tilt_angle: float = 0):
+                         border_width: float=1, tilt_angle: float=0):
     """
     Draw the outline of an ellipse.
 
@@ -890,7 +890,7 @@ def draw_ellipse_outline(center_x: float, center_y: float, width: float,
 # --- BEGIN LINE FUNCTIONS # # #
 
 def draw_line(start_x: float, start_y: float, end_x: float, end_y: float,
-              color: Color, border_width: float = 1):
+              color: Color, border_width: float=1):
     """
     Draw a line.
 
@@ -943,7 +943,7 @@ def draw_line(start_x: float, start_y: float, end_x: float, end_y: float,
 
 
 def draw_line_strip(point_list: PointList,
-                    color: Color, border_width: float = 1):
+                    color: Color, border_width: float=1):
     """
     Draw a line strip. A line strip is a set of continuously connected
     line segments.
@@ -1008,7 +1008,7 @@ def draw_line_strip(point_list: PointList,
 
 
 def draw_lines(point_list: PointList,
-               color: Color, border_width: float = 1):
+               color: Color, border_width: float=1):
     """
     Draw a set of lines.
 
@@ -1121,7 +1121,7 @@ def draw_point(x: float, y: float, color: Color, size: float):
 
 
 def draw_points(point_list: PointList,
-                color: Color, size: float = 1):
+                color: Color, size: float=1):
     """
     Draw a set of points.
 
@@ -1200,7 +1200,8 @@ def draw_polygon_filled(point_list: PointList,
 (165, 300), \
 (150, 300))
     >>> arcade.draw_polygon_filled(point_list, arcade.color.SPANISH_VIOLET)
-    >>> arcade.draw_polygon_filled(point_list, make_transparent_color(arcade.color.SPANISH_VIOLET, 127))
+    >>> arcade.draw_polygon_filled(point_list, \
+make_transparent_color(arcade.color.SPANISH_VIOLET, 127))
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
     """
@@ -1225,7 +1226,7 @@ def draw_polygon_filled(point_list: PointList,
 
 
 def draw_polygon_outline(point_list: PointList,
-                         color: Color, border_width: float = 1):
+                         color: Color, border_width: float=1):
     """
     Draw a polygon outline. Also known as a "line loop."
 
@@ -1307,7 +1308,7 @@ def draw_triangle_filled(x1: float, y1: float,
 def draw_triangle_outline(x1: float, y1: float,
                           x2: float, y2: float,
                           x3: float, y3: float, color: Color,
-                          border_width: float = 1):
+                          border_width: float=1):
     """
     Draw a the outline of a triangle.
 
@@ -1366,7 +1367,7 @@ def create_rectangle(width: float, height: float,
 
 def render_rectangle_filled(shape: VertexBuffer, center_x: float,
                             center_y: float, color: Color,
-                            tilt_angle: float = 0):
+                            tilt_angle: float=0):
     """
     Render a rectangle previously created by the ``create_rectangle`` command.
     """
@@ -1393,7 +1394,7 @@ def render_rectangle_filled(shape: VertexBuffer, center_x: float,
 
 def draw_lrtb_rectangle_outline(left: float, right: float, top: float,
                                 bottom: float, color: Color,
-                                border_width: float = 1):
+                                border_width: float=1):
     """
     Draw a rectangle by specifying left, right, top, and bottom edges.
 
@@ -1428,7 +1429,7 @@ def draw_lrtb_rectangle_outline(left: float, right: float, top: float,
 def draw_xywh_rectangle_outline(top_left_x: float, top_left_y: float,
                                 width: float, height: float,
                                 color: Color,
-                                border_width: float = 1):
+                                border_width: float=1):
     """
     Draw a rectangle by specifying left, right, top, and bottom edges.
 
@@ -1453,7 +1454,7 @@ def draw_xywh_rectangle_outline(top_left_x: float, top_left_y: float,
 
 def draw_rectangle_outline(center_x: float, center_y: float, width: float,
                            height: float, color: Color,
-                           border_width: float = 1, tilt_angle: float = 0):
+                           border_width: float=1, tilt_angle: float=0):
     """
     Draw a rectangle outline.
 
@@ -1569,7 +1570,7 @@ def draw_xywh_rectangle_filled(top_left_x: float, top_left_y: float,
 
 def draw_rectangle_filled(center_x: float, center_y: float, width: float,
                           height: float, color: Color,
-                          tilt_angle: float = 0):
+                          tilt_angle: float=0):
     """
     Draw a filled-in rectangle.
 
@@ -1619,8 +1620,8 @@ def draw_rectangle_filled(center_x: float, center_y: float, width: float,
 
 
 def draw_texture_rectangle(center_x: float, center_y: float, width: float,
-                           height: float, texture: Texture, angle: float = 0,
-                           alpha: float = 1, transparent: bool = True):
+                           height: float, texture: Texture, angle: float=0,
+                           alpha: float=1, transparent: bool=True):
     """
     Draw a textured rectangle on-screen.
 

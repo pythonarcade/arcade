@@ -1,3 +1,6 @@
+"""
+Module specifying data custom types used for type hinting.
+"""
 from typing import Tuple
 from typing import List
 from typing import Union

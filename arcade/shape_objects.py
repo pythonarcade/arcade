@@ -244,9 +244,9 @@ class Line():
 
 class Arc():
     def __init__(self, center_x: float, center_y: float, width: float,
-                 height: float, color: Color = GREEN,
-                 start_angle: float = 0, end_angle: float = 180,
-                 border_width: float = 0, tilt_angle: float = 0):
+                 height: float, color: Color=GREEN,
+                 start_angle: float=0, end_angle: float=180,
+                 border_width: float=0, tilt_angle: float=0):
         self.center_x = center_x
         self.center_y = center_y
         self.width = width

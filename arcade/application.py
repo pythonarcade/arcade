@@ -21,7 +21,7 @@ class Window(pyglet.window.Window):
     >>> window.close()
     """
     def __init__(self, width: float, height: float,
-                 title: str = 'Arcade Window'):
+                 title: str='Arcade Window'):
         # This is nicer, but Python 3.x only
         # super().__init__(width=width, height=height, caption=title)
         pyglet.window.Window.__init__(self, width=width, height=height,
