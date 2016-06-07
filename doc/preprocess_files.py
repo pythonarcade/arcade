@@ -31,7 +31,7 @@ def list_classes(filename, output_file):
     file_split = filename.replace("/",".")
     file_split = file_split.split(".")
 
-    class_re = re.compile("^class ([A-Za-z]+[^\(]*)")
+    class_re = re.compile("^class ([A-Za-z]+[^\(:]*)")
     method_re = re.compile("^    def ([a-z][^:]*)|^    def (__init__[^:]*)")
     remove_self_re = re.compile(r"self(, )?")
     first = True

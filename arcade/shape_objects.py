@@ -5,7 +5,6 @@ Various shapes for arcade games.
 """
 # pylint: disable=too-many-arguments, too-many-locals, too-few-public-methods
 
-from numbers import Number
 from typing import Iterable
 
 from arcade.color import GREEN
@@ -21,7 +20,7 @@ from arcade.arcade_types import Color
 from arcade.arcade_types import PointList
 
 
-class Shape():
+class Shape:
 
     def __init__(self, center_x: float, center_y: float,
                  color: Color = GREEN, tilt_angle: float = 0):
@@ -151,13 +150,16 @@ class Text(Shape):
                   self.size)
 
 
-class Triangle():
+class Triangle(Shape):
     """ Class that represents a triangle. """
 
     def __init__(self, first_x: float, first_y: float, second_x: float,
                  second_y: float, third_x: float, third_y: float,
                  color: Color = GREEN,
                  border_width: float = 0):
+        center_x = (first_x + second_x + third_x) / 3
+        center_y = (first_y + second_y + third_y) / 3
+        super().__init__(center_x, center_y, color)
         self.first_x = first_x
         self.first_y = first_y
         self.second_x = second_x
@@ -175,11 +177,19 @@ class Triangle():
                              self.color)
 
 
-class Polygon():
+class Polygon(Shape):
 
     def __init__(self, point_list: PointList,
                  color: Color = GREEN,
                  border_width: float = 0):
+
+        total_x = 0
+        total_y = 0
+        for point in point_list:
+            total_x += point[0]
+            total_y += point[1]
+        super().__init__(total_x / len(point_list), total_y / len(point_list), color)
+
         self.point_list = point_list
         self.color = color
         self.border_width = border_width
@@ -196,12 +206,13 @@ class Polygon():
             point[1] += self.change_y
 
 
-class Parabola():
+class Parabola(Shape):
 
     def __init__(self, start_x: float, start_y: float, end_x: float,
                  height: float,
                  color: Color = GREEN,
                  border_width: float = 0, tilt_angle: float = 0):
+        super().__init__((start_x + end_x) / 2, (start_y + height) / 2, color)
         self.start_x = start_x
         self.start_y = start_y
         self.end_x = end_x
@@ -215,12 +226,13 @@ class Parabola():
         self.change_tilt_angle = 0
 
 
-class Line():
+class Line(Shape):
 
     def __init__(self, start_x: float, start_y: float, end_x: float,
                  end_y: float,
                  color: Color = GREEN,
                  width: float = 1):
+        super().__init__((start_x + end_x) / 2, (start_y + end_y) / 2, color)
         self.start_x = start_x
         self.start_y = start_y
         self.end_x = end_x
@@ -242,11 +254,13 @@ class Line():
         self.end_y += self.change_y
 
 
-class Arc():
+class Arc(Shape):
     def __init__(self, center_x: float, center_y: float, width: float,
                  height: float, color: Color=GREEN,
                  start_angle: float=0, end_angle: float=180,
                  border_width: float=0, tilt_angle: float=0):
+
+        super().__init__(center_x, center_y, color)
         self.center_x = center_x
         self.center_y = center_y
         self.width = width

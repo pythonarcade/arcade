@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
-BUILD = 1
+BUILD = 51
 VERSION = "0.9.9"
-RELEASE = VERSION + "b" + str(BUILD)
+RELEASE = VERSION + "r" + str(BUILD)
 
 from os import path
 import sys

@@ -1,9 +1,5 @@
 #!/usr/bin/env python
-"""
 
-Various constants.
-
-"""
-BUILD = 50
+BUILD = 51
 VERSION = "0.9.9"
-RELEASE = VERSION + "b" + str(BUILD)
+RELEASE = VERSION + "r" + str(BUILD)

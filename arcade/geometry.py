@@ -4,7 +4,7 @@ Functions for calculating geometry.
 # pylint: disable=consider-using-enumerate
 
 from arcade.sprite import Sprite, SpriteList
-from typing import Iterable
+from typing import List
 from arcade.arcade_types import PointList
 
 
@@ -95,7 +95,7 @@ def check_for_collision(sprite1: Sprite, sprite2: Sprite) -> bool:
 
 
 def check_for_collision_with_list(sprite1: Sprite,
-                                  sprite_list: SpriteList) -> Iterable[Sprite]:
+                                  sprite_list: SpriteList) -> List[Sprite]:
     """
     Check for a collision between a sprite, and a list of sprites.
 

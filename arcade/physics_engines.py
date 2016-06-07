@@ -8,11 +8,8 @@ from arcade.geometry import check_for_collision
 from arcade.sprite import Sprite
 from arcade.sprite import SpriteList
 
-from numbers import Number
-from typing import Iterable
 
-
-class PhysicsEngineSimple():
+class PhysicsEngineSimple:
     """
     This class will move everything, and take care of collisions.
     """
@@ -71,13 +68,13 @@ class PhysicsEngineSimple():
                 print("Error, collision while player wasn't moving.")
 
 
-class PhysicsEnginePlatformer():
+class PhysicsEnginePlatformer:
     """
     This class will move everything, and take care of collisions.
     """
 
     def __init__(self, player_sprite: Sprite, platforms: SpriteList, 
-                 gravity_constant: Number = 0.5):
+                 gravity_constant: float = 0.5):
         """
         Constructor.
         """

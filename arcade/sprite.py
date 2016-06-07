@@ -20,7 +20,7 @@ FACE_UP = 3
 FACE_DOWN = 4
 
 
-class Sprite():
+class Sprite:
     """
     Class that represents a 'sprite' on-screen.
 
@@ -436,7 +436,7 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
                 sprite_list.remove(self)
 
 
-class SpriteList():
+class SpriteList:
     """
     List of sprites.
 

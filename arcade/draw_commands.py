@@ -65,7 +65,7 @@ class Texture():
         self.height = height
 
 
-class VertexBuffer():
+class VertexBuffer:
     """
     This class represents a
     `vertex buffer object`_.
