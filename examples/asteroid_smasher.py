@@ -11,8 +11,13 @@ import math
 import arcade
 
 SCALE = 1
-
-window = None
+OFFSCREEN_SPACE = 300
+SCREEN_WIDTH = 800
+SCREEN_HEIGHT = 640
+LEFT_LIMIT = -OFFSCREEN_SPACE
+RIGHT_LIMIT = SCREEN_WIDTH + OFFSCREEN_SPACE
+BOTTOM_LIMIT = -OFFSCREEN_SPACE
+TOP_LIMIT = SCREEN_HEIGHT + OFFSCREEN_SPACE
 
 
 class TurningSprite(arcade.Sprite):
@@ -40,6 +45,7 @@ class ShipSprite(arcade.Sprite):
         self.speed = 0
         self.max_speed = 4
         self.drag = 0.05
+        self.respawning = 0
 
         # Mark that we are respawning.
         self.respawn()
@@ -51,8 +57,8 @@ class ShipSprite(arcade.Sprite):
         """
         # If we are in the middle of respawning, this is non-zero.
         self.respawning = 1
-        self.center_x = window.width / 2
-        self.center_y = window.height / 2
+        self.center_x = SCREEN_WIDTH / 2
+        self.center_y = SCREEN_HEIGHT / 2
         self.angle = 0
 
     def update(self):
@@ -97,14 +103,14 @@ class AsteroidSprite(arcade.Sprite):
     def update(self):
         """ Move the asteroid around. """
         super().update()
-        if self.center_x < -window.width // 2:
-            self.center_x = window.width + (window.width // 2)
-        if self.center_x > window.width + (window.width // 2):
-            self.center_x = -window.width // 2
-        if self.center_y > window.height + (window.height // 2):
-            self.center_y = -window.height // 2
-        if self.center_y < -window.height // 2:
-            self.center_y = window.height + (window.height // 2)
+        if self.center_x < -LEFT_LIMIT:
+            self.center_x = RIGHT_LIMIT
+        if self.center_x > RIGHT_LIMIT:
+            self.center_x = LEFT_LIMIT
+        if self.center_y > TOP_LIMIT:
+            self.center_y = BOTTOM_LIMIT
+        if self.center_y < BOTTOM_LIMIT:
+            self.center_y = TOP_LIMIT
 
 
 class BulletSprite(TurningSprite):
@@ -124,6 +130,27 @@ class BulletSprite(TurningSprite):
 
 class MyApplication(arcade.Window):
     """ Main application class. """
+
+    def __init__(self):
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT)
+
+        self.frame_count = 0
+
+        self.game_over = False
+
+        # Sprite lists
+        self.all_sprites_list = None
+        self.asteroid_list = None
+        self.bullet_list = None
+        self.ship_life_list = None
+
+        # Set up the player
+        self.score = 0
+        self.player_sprite = None
+        self.lives = 3
+
+        # Sounds
+        self.laser_sound = arcade.load_sound("sounds/laser1.ogg")
 
     def setup(self):
         """ Set up the game and initialize the variables. """
@@ -162,8 +189,8 @@ class MyApplication(arcade.Window):
             image_no = random.randrange(4)
             enemy_sprite = AsteroidSprite(image_list[image_no], SCALE)
 
-            enemy_sprite.center_y = random.randrange(window.width)
-            enemy_sprite.center_x = random.randrange(window.height)
+            enemy_sprite.center_y = random.randrange(BOTTOM_LIMIT, TOP_LIMIT)
+            enemy_sprite.center_x = random.randrange(LEFT_LIMIT, RIGHT_LIMIT)
 
             enemy_sprite.change_x = random.random() * 2 - 1
             enemy_sprite.change_y = random.random() * 2 - 1
@@ -172,9 +199,6 @@ class MyApplication(arcade.Window):
             enemy_sprite.size = 4
             self.all_sprites_list.append(enemy_sprite)
             self.asteroid_list.append(enemy_sprite)
-
-        # Sounds
-        self.laser_sound = arcade.load_sound("sounds/laser1.ogg")
 
     def on_draw(self):
         """
@@ -339,7 +363,14 @@ class MyApplication(arcade.Window):
                         print("Game over")
 
 
-window = MyApplication(1400, 1000)
-window.setup()
+class Application:
+    def __init__(self):
+        self.window = None
 
-arcade.run()
+    def run(self):
+        self.window.setup()
+        self.window = MyApplication()
+        arcade.run()
+
+my_application = Application()
+my_application.run()
