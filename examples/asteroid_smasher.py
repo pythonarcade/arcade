@@ -12,8 +12,8 @@ import arcade
 
 SCALE = 1
 OFFSCREEN_SPACE = 300
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 640
+SCREEN_WIDTH = 1024
+SCREEN_HEIGHT = 600
 LEFT_LIMIT = -OFFSCREEN_SPACE
 RIGHT_LIMIT = SCREEN_WIDTH + OFFSCREEN_SPACE
 BOTTOM_LIMIT = -OFFSCREEN_SPACE
@@ -100,17 +100,25 @@ class ShipSprite(arcade.Sprite):
 class AsteroidSprite(arcade.Sprite):
     """ Sprite that represents an asteroid. """
 
+    def __init__(self, image_file_name, scale):
+        super().__init__(image_file_name, scale=scale)
+        self.size = 0
+
     def update(self):
         """ Move the asteroid around. """
         super().update()
-        if self.center_x < -LEFT_LIMIT:
+        if self.center_x < LEFT_LIMIT:
             self.center_x = RIGHT_LIMIT
+            print("Left")
         if self.center_x > RIGHT_LIMIT:
             self.center_x = LEFT_LIMIT
+            print("Right")
         if self.center_y > TOP_LIMIT:
             self.center_y = BOTTOM_LIMIT
+            print("Bottom")
         if self.center_y < BOTTOM_LIMIT:
             self.center_y = TOP_LIMIT
+            print("Top")
 
 
 class BulletSprite(TurningSprite):
@@ -128,7 +136,7 @@ class BulletSprite(TurningSprite):
             self.kill()
 
 
-class MyApplication(arcade.Window):
+class MyWindow(arcade.Window):
     """ Main application class. """
 
     def __init__(self):
@@ -260,7 +268,7 @@ class MyApplication(arcade.Window):
         elif symbol == arcade.key.DOWN:
             self.player_sprite.thrust = 0
 
-    def split_asteroid(self, asteroid):
+    def split_asteroid(self, asteroid: AsteroidSprite):
         """ Split an asteroid into chunks. """
         x = asteroid.center_x
         y = asteroid.center_y
@@ -339,8 +347,7 @@ class MyApplication(arcade.Window):
 
             for bullet in self.bullet_list:
                 asteroids = \
-                    arcade.check_for_collision_with_list(bullet,
-                                                         self.asteroid_list)
+                    arcade.check_for_collision_with_list(bullet, self.asteroid_list)
                 for asteroid in asteroids:
                     self.split_asteroid(asteroid)
                     asteroid.kill()
@@ -368,8 +375,8 @@ class Application:
         self.window = None
 
     def run(self):
+        self.window = MyWindow()
         self.window.setup()
-        self.window = MyApplication()
         arcade.run()
 
 my_application = Application()
