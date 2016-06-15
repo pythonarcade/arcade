@@ -9,13 +9,18 @@ import ctypes
 import PIL.Image
 import PIL.ImageOps
 import pyglet
-import pyglet.gl as GL
-from pyglet.gl import glu as GLU
-
-from typing import Any, Iterable, Sequence, List
+import pyglet.gl as gl
+from pyglet.gl import glu as glu
 
 
-class Texture:
+from typing import Any, Iterable, Sequence
+from typing import List
+
+from arcade.arcade_types import Color
+from arcade.arcade_types import PointList
+
+
+class Texture():
     """
     Class that represents a texture.
     Usually created by the ``load_texture`` or ``load_textures`` commands.
@@ -27,7 +32,7 @@ class Texture:
 
     """
 
-    def __init__(self, texture_id: str, width: float, height: float):
+    def __init__(self, texture_id: int, width: float, height: float):
         """
         Args:
             :texture_id (str): Id of the texture.
@@ -36,11 +41,11 @@ class Texture:
         Raises:
             :ValueError:
 
-        >>> Texture(0, 10, -10)
+        >>> texture_id = Texture(0, 10, -10)
         Traceback (most recent call last):
         ...
         ValueError: Height entered is less than zero. Height must be a positive float.
-        >>> Texture(0, -10, 10)
+        >>> texture_id = Texture(0, -10, 10)
         Traceback (most recent call last):
         ...
         ValueError: Width entered is less than zero. Width must be a positive float.
@@ -79,8 +84,8 @@ class VertexBuffer:
     >>> import arcade
     >>> x = VertexBuffer(0, 10, 10, 10, arcade.color.AERO_BLUE)
     """
-    def __init__(self, vbo_id: GL.GLuint, size: float, width: float,
-                 height: float, color: Sequence[float]):
+    def __init__(self, vbo_id: gl.GLuint, size: float, width: float,
+                 height: float, color: Color):
         self.vbo_id = vbo_id
         self.size = size
         self.width = width
@@ -88,18 +93,17 @@ class VertexBuffer:
         self.color = color
 
 
-def make_transparent_color(color: Sequence[float], transparency: float):
+def make_transparent_color(color: Color, transparency: float):
     """
     Given a RGB color, along with an alpha, returns a RGBA color tuple.
     """
-    return (color[0], color[1], color[2], transparency)
-
+    return color[0], color[1], color[2], transparency
 
 
 def load_textures(file_name: str,
-                  image_location_list: Iterable[Iterable[float]],
-                  mirrored: bool = False,
-                  flipped: bool = False) -> List['Texture']:
+                  image_location_list: PointList,
+                  mirrored: bool=False,
+                  flipped: bool=False) -> List['Texture']:
     """
     Load a set of textures off of a single image file.
 
@@ -205,33 +209,33 @@ def load_textures(file_name: str,
         image_width, image_height = image.size
         image_bytes = image.convert("RGBA").tobytes("raw", "RGBA", 0, -1)
 
-        texture = GL.GLuint(0)
-        GL.glGenTextures(1, ctypes.byref(texture))
+        texture = gl.GLuint(0)
+        gl.glGenTextures(1, ctypes.byref(texture))
 
-        GL.glBindTexture(GL.GL_TEXTURE_2D, texture)
-        GL.glPixelStorei(GL.GL_UNPACK_ALIGNMENT, 1)
+        gl.glBindTexture(gl.GL_TEXTURE_2D, texture)
+        gl.glPixelStorei(gl.GL_UNPACK_ALIGNMENT, 1)
 
-        GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S,
-                           GL.GL_REPEAT)
-        GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T,
-                           GL.GL_REPEAT)
+        gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_S,
+                           gl.GL_REPEAT)
+        gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_T,
+                           gl.GL_REPEAT)
 
-        GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER,
-                           GL.GL_LINEAR)
-        GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER,
-                           GL.GL_LINEAR_MIPMAP_LINEAR)
-        GLU.gluBuild2DMipmaps(GL.GL_TEXTURE_2D, GL.GL_RGBA,
+        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER,
+                           gl.GL_LINEAR)
+        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER,
+                           gl.GL_LINEAR_MIPMAP_LINEAR)
+        glu.gluBuild2DMipmaps(gl.GL_TEXTURE_2D, gl.GL_RGBA,
                               image_width, image_height,
-                              GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, image_bytes)
+                              gl.GL_RGBA, gl.GL_UNSIGNED_BYTE, image_bytes)
 
         texture_info_list.append(Texture(texture, width, height))
 
     return texture_info_list
 
 
-def load_texture(file_name: str, x: float = 0, y: float = 0,
-                 width: float = 0, height: float = 0,
-                 scale: float = 1) -> Texture:
+def load_texture(file_name: str, x: float=0, y: float=0,
+                 width: float=0, height: float=0,
+                 scale: float=1) -> Texture:
     """
     Load image from disk and create a texture.
 
@@ -312,24 +316,24 @@ def load_texture(file_name: str, x: float = 0, y: float = 0,
     image_width, image_height = image.size
     image_bytes = image.convert("RGBA").tobytes("raw", "RGBA", 0, -1)
 
-    texture = GL.GLuint(0)
-    GL.glGenTextures(1, ctypes.byref(texture))
+    texture = gl.GLuint(0)
+    gl.glGenTextures(1, ctypes.byref(texture))
 
-    GL.glBindTexture(GL.GL_TEXTURE_2D, texture)
-    GL.glPixelStorei(GL.GL_UNPACK_ALIGNMENT, 1)
+    gl.glBindTexture(gl.GL_TEXTURE_2D, texture)
+    gl.glPixelStorei(gl.GL_UNPACK_ALIGNMENT, 1)
 
-    GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S,
-                       GL.GL_REPEAT)
-    GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T,
-                       GL.GL_REPEAT)
+    gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_S,
+                       gl.GL_REPEAT)
+    gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_T,
+                       gl.GL_REPEAT)
 
-    GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER,
-                       GL.GL_LINEAR)
-    GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER,
-                       GL.GL_LINEAR_MIPMAP_LINEAR)
-    GLU.gluBuild2DMipmaps(GL.GL_TEXTURE_2D, GL.GL_RGBA,
+    gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER,
+                       gl.GL_LINEAR)
+    gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER,
+                       gl.GL_LINEAR_MIPMAP_LINEAR)
+    glu.gluBuild2DMipmaps(gl.GL_TEXTURE_2D, gl.GL_RGBA,
                           image_width, image_height,
-                          GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, image_bytes)
+                          gl.GL_RGBA, gl.GL_UNSIGNED_BYTE, image_bytes)
 
     image_width *= scale
     image_height *= scale
@@ -365,9 +369,9 @@ def trim_image(image: Any) -> Any:
 
 def draw_arc_filled(center_x: float, center_y: float,
                     width: float, height: float,
-                    color: Sequence[float],
+                    color: Color,
                     start_angle: float, end_angle: float,
-                    tilt_angle: float = 0):
+                    tilt_angle: float=0):
     """
     Draw a filled in arc. Useful for drawing pie-wedges, or Pac-Man.
 
@@ -400,27 +404,27 @@ arcade.color.BOTTLE_GREEN, 90, 360, 45)
     >>> arcade.close_window()
     """
     num_segments = 128
-    GL.glEnable(GL.GL_BLEND)
-    GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
-    GL.glEnable(GL.GL_LINE_SMOOTH)
-    GL.glHint(GL.GL_LINE_SMOOTH_HINT, GL.GL_NICEST)
-    GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
+    gl.glEnable(gl.GL_BLEND)
+    gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
+    gl.glEnable(gl.GL_LINE_SMOOTH)
+    gl.glHint(gl.GL_LINE_SMOOTH_HINT, gl.GL_NICEST)
+    gl.glHint(gl.GL_POLYGON_SMOOTH_HINT, gl.GL_NICEST)
 
-    GL.glLoadIdentity()
-    GL.glTranslatef(center_x, center_y, 0)
-    GL.glRotatef(tilt_angle, 0, 0, 1)
+    gl.glLoadIdentity()
+    gl.glTranslatef(center_x, center_y, 0)
+    gl.glRotatef(tilt_angle, 0, 0, 1)
 
     # Set color
     if len(color) == 4:
-        GL.glColor4ub(color[0], color[1], color[2], color[3])
+        gl.glColor4ub(color[0], color[1], color[2], color[3])
     elif len(color) == 3:
-        GL.glColor4ub(color[0], color[1], color[2], 255)
+        gl.glColor4ub(color[0], color[1], color[2], 255)
 
-    GL.glBegin(GL.GL_TRIANGLE_FAN)
+    gl.glBegin(gl.GL_TRIANGLE_FAN)
 
     start_segment = int(start_angle / 360 * num_segments)
     end_segment = int(end_angle / 360 * num_segments)
-    GL.glVertex3f(0, 0, 0.5)
+    gl.glVertex3f(0, 0, 0.5)
 
     for segment in range(start_segment, end_segment + 1):
         theta = 2.0 * 3.1415926 * segment / num_segments
@@ -428,16 +432,16 @@ arcade.color.BOTTLE_GREEN, 90, 360, 45)
         x = width * math.cos(theta)
         y = height * math.sin(theta)
 
-        GL.glVertex3f(x, y, 0.5)
+        gl.glVertex3f(x, y, 0.5)
 
-    GL.glEnd()
-    GL.glLoadIdentity()
+    gl.glEnd()
+    gl.glLoadIdentity()
 
 
 def draw_arc_outline(center_x: float, center_y: float, width: float,
-                     height: float, color: Sequence[float],
+                     height: float, color: Color,
                      start_angle: float, end_angle: float,
-                     border_width: float = 1, tilt_angle: float = 0):
+                     border_width: float=1, tilt_angle: float=0):
     """
     Draw the outside edge of an arc. Useful for drawing curved lines.
 
@@ -472,24 +476,24 @@ transparent_color, 90, 360)
     >>> arcade.quick_run(0.25)
     """
     num_segments = 128
-    GL.glEnable(GL.GL_BLEND)
-    GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
-    GL.glEnable(GL.GL_LINE_SMOOTH)
-    GL.glHint(GL.GL_LINE_SMOOTH_HINT, GL.GL_NICEST)
-    GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
+    gl.glEnable(gl.GL_BLEND)
+    gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
+    gl.glEnable(gl.GL_LINE_SMOOTH)
+    gl.glHint(gl.GL_LINE_SMOOTH_HINT, gl.GL_NICEST)
+    gl.glHint(gl.GL_POLYGON_SMOOTH_HINT, gl.GL_NICEST)
 
-    GL.glLoadIdentity()
-    GL.glTranslatef(center_x, center_y, 0)
-    GL.glRotatef(tilt_angle, 0, 0, 1)
-    GL.glLineWidth(border_width)
+    gl.glLoadIdentity()
+    gl.glTranslatef(center_x, center_y, 0)
+    gl.glRotatef(tilt_angle, 0, 0, 1)
+    gl.glLineWidth(border_width)
 
     # Set color
     if len(color) == 4:
-        GL.glColor4ub(color[0], color[1], color[2], color[3])
+        gl.glColor4ub(color[0], color[1], color[2], color[3])
     elif len(color) == 3:
-        GL.glColor4ub(color[0], color[1], color[2], 255)
+        gl.glColor4ub(color[0], color[1], color[2], 255)
 
-    GL.glBegin(GL.GL_LINE_STRIP)
+    gl.glBegin(gl.GL_LINE_STRIP)
 
     start_segment = int(start_angle / 360 * num_segments)
     end_segment = int(end_angle / 360 * num_segments)
@@ -500,10 +504,10 @@ transparent_color, 90, 360)
         x = width * math.cos(theta)
         y = height * math.sin(theta)
 
-        GL.glVertex3f(x, y, 0.5)
+        gl.glVertex3f(x, y, 0.5)
 
-    GL.glEnd()
-    GL.glLoadIdentity()
+    gl.glEnd()
+    gl.glLoadIdentity()
 
 
 # --- END ARC FUNCTIONS # # #
@@ -512,8 +516,8 @@ transparent_color, 90, 360)
 # --- BEGIN PARABOLA FUNCTIONS # # #
 
 def draw_parabola_filled(start_x: float, start_y: float, end_x: float,
-                         height: float, color: Sequence[float],
-                         tilt_angle: float = 0):
+                         height: float, color: Color,
+                         tilt_angle: float=0):
     """
     Draws a filled in parabola.
 
@@ -552,8 +556,8 @@ arcade.color.BOTTLE_GREEN)
 
 
 def draw_parabola_outline(start_x: float, start_y: float, end_x: float,
-                          height: float, color: Sequence[float],
-                          border_width: float = 1, tilt_angle: float = 0):
+                          height: float, color: Color,
+                          border_width: float=1, tilt_angle: float=0):
     """
     Draws the outline of a parabola.
 
@@ -598,7 +602,7 @@ arcade.color.BOTTLE_GREEN, 10, 15)
 # --- BEGIN CIRCLE FUNCTIONS # # #
 
 def draw_circle_filled(center_x: float, center_y: float, radius: float,
-                       color: Sequence[float]):
+                       color: Color):
     """
     Draw a filled-in circle.
 
@@ -631,7 +635,7 @@ def draw_circle_filled(center_x: float, center_y: float, radius: float,
 
 
 def draw_circle_outline(center_x: float, center_y: float, radius: float,
-                        color: Sequence[float], border_width: float = 1):
+                        color: Color, border_width: float = 1):
     """
     Draw the outline of a circle.
 
@@ -671,13 +675,13 @@ def draw_circle_outline(center_x: float, center_y: float, radius: float,
 # --- BEGIN ELLIPSE FUNCTIONS # # #
 
 def create_ellipse(width: float, height: float,
-                   color: Sequence[float]) -> VertexBuffer:
+                   color: Color) -> VertexBuffer:
     """
     This creates an ellipse vertex buffer object (VBO). It can later be
     drawn with ``render_ellipse_filled``. This method of drawing an ellipse
     is much faster than calling ``draw_ellipse_filled`` each frame.
 
-    Note: THis can't be unit tested on appveyor because its support for OpenGL is
+    Note: THis can't be unit tested on Appveyor because its support for OpenGL is
     poor.
 
     import arcade
@@ -704,52 +708,52 @@ def create_ellipse(width: float, height: float,
 
         data.extend([x, y])
 
-    vbo_id = GL.GLuint()
+    vbo_id = gl.GLuint()
 
-    GL.glGenBuffers(1, ctypes.pointer(vbo_id))
+    gl.glGenBuffers(1, ctypes.pointer(vbo_id))
 
     v2f = data
 
     # todo: What does it do?
-    data2 = (GL.GLfloat * len(v2f))(*v2f)
+    data2 = (gl.GLfloat * len(v2f))(*v2f)
 
-    GL.glBindBuffer(GL.GL_ARRAY_BUFFER, vbo_id)
-    GL.glBufferData(GL.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2,
-                    GL.GL_STATIC_DRAW)
+    gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vbo_id)
+    gl.glBufferData(gl.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2,
+                    gl.GL_STATIC_DRAW)
 
     shape = VertexBuffer(vbo_id, len(v2f) // 2, width, height, color)
     return shape
 
 
 def render_ellipse_filled(shape: VertexBuffer, center_x: float,
-                          center_y: float, angle: float = 0):
+                          center_y: float, angle: float=0):
     """
     Render an ellipse previously created with the ``create_ellipse`` function.
     """
     # Set color
     if len(shape.color) == 4:
-        GL.glColor4ub(shape.color[0], shape.color[1], shape.color[2],
+        gl.glColor4ub(shape.color[0], shape.color[1], shape.color[2],
                       shape.color[3])
-        GL.glEnable(GL.GL_BLEND)
-        GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
+        gl.glEnable(gl.GL_BLEND)
+        gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
     elif len(shape.color) == 3:
-        GL.glDisable(GL.GL_BLEND)
-        GL.glColor4ub(shape.color[0], shape.color[1], shape.color[2], 255)
+        gl.glDisable(gl.GL_BLEND)
+        gl.glColor4ub(shape.color[0], shape.color[1], shape.color[2], 255)
 
-    GL.glBindBuffer(GL.GL_ARRAY_BUFFER, shape.vbo_id)
-    GL.glVertexPointer(2, GL.GL_FLOAT, 0, 0)
+    gl.glBindBuffer(gl.GL_ARRAY_BUFFER, shape.vbo_id)
+    gl.glVertexPointer(2, gl.GL_FLOAT, 0, 0)
 
-    GL.glLoadIdentity()
-    GL.glTranslatef(center_x, center_y, 0)
+    gl.glLoadIdentity()
+    gl.glTranslatef(center_x, center_y, 0)
     if angle:
-        GL.glRotatef(angle, 0, 0, 1)
+        gl.glRotatef(angle, 0, 0, 1)
 
-    GL.glDrawArrays(GL.GL_TRIANGLE_FAN, 0, shape.size)
+    gl.glDrawArrays(gl.GL_TRIANGLE_FAN, 0, shape.size)
 
 
 def draw_ellipse_filled(center_x: float, center_y: float,
-                        width: float, height: float, color: Sequence[float],
-                        tilt_angle: float = 0):
+                        width: float, height: float, color: Color,
+                        tilt_angle: float=0):
     """
     Draw a filled in ellipse.
 
@@ -783,25 +787,25 @@ def draw_ellipse_filled(center_x: float, center_y: float,
 
     num_segments = 128
 
-    GL.glEnable(GL.GL_BLEND)
-    GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
-    GL.glEnable(GL.GL_LINE_SMOOTH)
-    GL.glHint(GL.GL_LINE_SMOOTH_HINT, GL.GL_NICEST)
-    GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
+    gl.glEnable(gl.GL_BLEND)
+    gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
+    gl.glEnable(gl.GL_LINE_SMOOTH)
+    gl.glHint(gl.GL_LINE_SMOOTH_HINT, gl.GL_NICEST)
+    gl.glHint(gl.GL_POLYGON_SMOOTH_HINT, gl.GL_NICEST)
 
-    GL.glLoadIdentity()
-    GL.glTranslatef(center_x, center_y, 0)
-    GL.glRotatef(tilt_angle, 0, 0, 1)
+    gl.glLoadIdentity()
+    gl.glTranslatef(center_x, center_y, 0)
+    gl.glRotatef(tilt_angle, 0, 0, 1)
 
     # Set color
     if len(color) == 4:
-        GL.glColor4ub(color[0], color[1], color[2], color[3])
+        gl.glColor4ub(color[0], color[1], color[2], color[3])
     elif len(color) == 3:
-        GL.glColor4ub(color[0], color[1], color[2], 255)
+        gl.glColor4ub(color[0], color[1], color[2], 255)
 
-    GL.glBegin(GL.GL_TRIANGLE_FAN)
+    gl.glBegin(gl.GL_TRIANGLE_FAN)
 
-    GL.glVertex3f(0, 0, 0.5)
+    gl.glVertex3f(0, 0, 0.5)
 
     for segment in range(num_segments + 1):
         theta = 2.0 * 3.1415926 * segment / num_segments
@@ -809,15 +813,15 @@ def draw_ellipse_filled(center_x: float, center_y: float,
         x = width * math.cos(theta)
         y = height * math.sin(theta)
 
-        GL.glVertex3f(x, y, 0.5)
+        gl.glVertex3f(x, y, 0.5)
 
-    GL.glEnd()
-    GL.glLoadIdentity()
+    gl.glEnd()
+    gl.glLoadIdentity()
 
 
 def draw_ellipse_outline(center_x: float, center_y: float, width: float,
-                         height: float, color: Sequence[float],
-                         border_width: float = 1, tilt_angle: float = 0):
+                         height: float, color: Color,
+                         border_width: float=1, tilt_angle: float=0):
     """
     Draw the outline of an ellipse.
 
@@ -850,34 +854,34 @@ def draw_ellipse_outline(center_x: float, center_y: float, width: float,
 
     num_segments = 128
 
-    GL.glEnable(GL.GL_BLEND)
-    GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
-    GL.glEnable(GL.GL_LINE_SMOOTH)
-    GL.glHint(GL.GL_LINE_SMOOTH_HINT, GL.GL_NICEST)
-    GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
+    gl.glEnable(gl.GL_BLEND)
+    gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
+    gl.glEnable(gl.GL_LINE_SMOOTH)
+    gl.glHint(gl.GL_LINE_SMOOTH_HINT, gl.GL_NICEST)
+    gl.glHint(gl.GL_POLYGON_SMOOTH_HINT, gl.GL_NICEST)
 
-    GL.glLoadIdentity()
-    GL.glTranslatef(center_x, center_y, 0)
-    GL.glRotatef(tilt_angle, 0, 0, 1)
-    GL.glLineWidth(border_width)
+    gl.glLoadIdentity()
+    gl.glTranslatef(center_x, center_y, 0)
+    gl.glRotatef(tilt_angle, 0, 0, 1)
+    gl.glLineWidth(border_width)
 
     # Set color
     if len(color) == 4:
-        GL.glColor4ub(color[0], color[1], color[2], color[3])
+        gl.glColor4ub(color[0], color[1], color[2], color[3])
     elif len(color) == 3:
-        GL.glColor4ub(color[0], color[1], color[2], 255)
+        gl.glColor4ub(color[0], color[1], color[2], 255)
 
-    GL.glBegin(GL.GL_LINE_LOOP)
+    gl.glBegin(gl.GL_LINE_LOOP)
     for segment in range(num_segments):
         theta = 2.0 * 3.1415926 * segment / num_segments
 
         x = width * math.cos(theta)
         y = height * math.sin(theta)
 
-        GL.glVertex3f(x, y, 0.5)
+        gl.glVertex3f(x, y, 0.5)
 
-    GL.glEnd()
-    GL.glLoadIdentity()
+    gl.glEnd()
+    gl.glLoadIdentity()
 
 
 # --- END ELLIPSE FUNCTIONS # # #
@@ -886,7 +890,7 @@ def draw_ellipse_outline(center_x: float, center_y: float, width: float,
 # --- BEGIN LINE FUNCTIONS # # #
 
 def draw_line(start_x: float, start_y: float, end_x: float, end_y: float,
-              color: Sequence[float], border_width: float = 1):
+              color: Color, border_width: float=1):
     """
     Draw a line.
 
@@ -915,31 +919,31 @@ def draw_line(start_x: float, start_y: float, end_x: float, end_y: float,
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
     """
-    GL.glEnable(GL.GL_BLEND)
-    GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
-    GL.glEnable(GL.GL_LINE_SMOOTH)
-    GL.glHint(GL.GL_LINE_SMOOTH_HINT, GL.GL_NICEST)
-    GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
+    gl.glEnable(gl.GL_BLEND)
+    gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
+    gl.glEnable(gl.GL_LINE_SMOOTH)
+    gl.glHint(gl.GL_LINE_SMOOTH_HINT, gl.GL_NICEST)
+    gl.glHint(gl.GL_POLYGON_SMOOTH_HINT, gl.GL_NICEST)
 
-    GL.glLoadIdentity()
+    gl.glLoadIdentity()
 
     # Set line width
-    GL.glLineWidth(border_width)
+    gl.glLineWidth(border_width)
 
     # Set color
     if len(color) == 4:
-        GL.glColor4ub(color[0], color[1], color[2], color[3])
+        gl.glColor4ub(color[0], color[1], color[2], color[3])
     elif len(color) == 3:
-        GL.glColor4ub(color[0], color[1], color[2], 255)
+        gl.glColor4ub(color[0], color[1], color[2], 255)
 
-    GL.glBegin(GL.GL_LINES)
-    GL.glVertex3f(start_x, start_y, 0.5)
-    GL.glVertex3f(end_x, end_y, 0.5)
-    GL.glEnd()
+    gl.glBegin(gl.GL_LINES)
+    gl.glVertex3f(start_x, start_y, 0.5)
+    gl.glVertex3f(end_x, end_y, 0.5)
+    gl.glEnd()
 
 
-def draw_line_strip(point_list: Iterable[Iterable[float]],
-                    color: Iterable[float], border_width: float = 1):
+def draw_line_strip(point_list: PointList,
+                    color: Color, border_width: float=1):
     """
     Draw a line strip. A line strip is a set of continuously connected
     line segments.
@@ -980,31 +984,31 @@ def draw_line_strip(point_list: Iterable[Iterable[float]],
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
     """
-    GL.glEnable(GL.GL_BLEND)
-    GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
-    GL.glEnable(GL.GL_LINE_SMOOTH)
-    GL.glHint(GL.GL_LINE_SMOOTH_HINT, GL.GL_NICEST)
-    GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
+    gl.glEnable(gl.GL_BLEND)
+    gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
+    gl.glEnable(gl.GL_LINE_SMOOTH)
+    gl.glHint(gl.GL_LINE_SMOOTH_HINT, gl.GL_NICEST)
+    gl.glHint(gl.GL_POLYGON_SMOOTH_HINT, gl.GL_NICEST)
 
     # Set line width
-    GL.glLineWidth(border_width)
+    gl.glLineWidth(border_width)
 
-    GL.glLoadIdentity()
+    gl.glLoadIdentity()
 
     # Set color
     if len(color) == 4:
-        GL.glColor4ub(color[0], color[1], color[2], color[3])
+        gl.glColor4ub(color[0], color[1], color[2], color[3])
     elif len(color) == 3:
-        GL.glColor4ub(color[0], color[1], color[2], 255)
+        gl.glColor4ub(color[0], color[1], color[2], 255)
 
-    GL.glBegin(GL.GL_LINE_STRIP)
+    gl.glBegin(gl.GL_LINE_STRIP)
     for point in point_list:
-        GL.glVertex3f(point[0], point[1], 0.5)
-    GL.glEnd()
+        gl.glVertex3f(point[0], point[1], 0.5)
+    gl.glEnd()
 
 
-def draw_lines(point_list: Iterable[Iterable[float]],
-               color: Iterable[float], border_width: float = 1):
+def draw_lines(point_list: PointList,
+               color: Color, border_width: float=1):
     """
     Draw a set of lines.
 
@@ -1047,27 +1051,27 @@ def draw_lines(point_list: Iterable[Iterable[float]],
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
     """
-    GL.glEnable(GL.GL_BLEND)
-    GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
-    GL.glEnable(GL.GL_LINE_SMOOTH)
-    GL.glHint(GL.GL_LINE_SMOOTH_HINT, GL.GL_NICEST)
-    GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
+    gl.glEnable(gl.GL_BLEND)
+    gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
+    gl.glEnable(gl.GL_LINE_SMOOTH)
+    gl.glHint(gl.GL_LINE_SMOOTH_HINT, gl.GL_NICEST)
+    gl.glHint(gl.GL_POLYGON_SMOOTH_HINT, gl.GL_NICEST)
 
-    GL.glLoadIdentity()
+    gl.glLoadIdentity()
 
     # Set line width
-    GL.glLineWidth(border_width)
+    gl.glLineWidth(border_width)
 
     # Set color
     if len(color) == 4:
-        GL.glColor4ub(color[0], color[1], color[2], color[3])
+        gl.glColor4ub(color[0], color[1], color[2], color[3])
     elif len(color) == 3:
-        GL.glColor4ub(color[0], color[1], color[2], 255)
+        gl.glColor4ub(color[0], color[1], color[2], 255)
 
-    GL.glBegin(GL.GL_LINES)
+    gl.glBegin(gl.GL_LINES)
     for point in point_list:
-        GL.glVertex3f(point[0], point[1], 0.5)
-    GL.glEnd()
+        gl.glVertex3f(point[0], point[1], 0.5)
+    gl.glEnd()
 
 
 # --- END LINE FUNCTIONS # # #
@@ -1075,7 +1079,7 @@ def draw_lines(point_list: Iterable[Iterable[float]],
 # --- BEGIN POINT FUNCTIONS # # #
 
 
-def draw_point(x: float, y: float, color: Iterable[float], size: float):
+def draw_point(x: float, y: float, color: Color, size: float):
     """
     Draw a point.
 
@@ -1101,23 +1105,23 @@ def draw_point(x: float, y: float, color: Iterable[float], size: float):
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
     """
-    GL.glEnable(GL.GL_BLEND)
-    GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
+    gl.glEnable(gl.GL_BLEND)
+    gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
 
-    GL.glLoadIdentity()
+    gl.glLoadIdentity()
 
-    GL.glPointSize(size)
+    gl.glPointSize(size)
     if len(color) == 4:
-        GL.glColor4ub(color[0], color[1], color[2], color[3])
+        gl.glColor4ub(color[0], color[1], color[2], color[3])
     elif len(color) == 3:
-        GL.glColor4ub(color[0], color[1], color[2], 255)
-    GL.glBegin(GL.GL_POINTS)
-    GL.glVertex3f(x, y, 0.5)
-    GL.glEnd()
+        gl.glColor4ub(color[0], color[1], color[2], 255)
+    gl.glBegin(gl.GL_POINTS)
+    gl.glVertex3f(x, y, 0.5)
+    gl.glEnd()
 
 
-def draw_points(point_list: Iterable[Iterable[float]],
-                color: Iterable[float], size: float = 1):
+def draw_points(point_list: PointList,
+                color: Color, size: float=1):
     """
     Draw a set of points.
 
@@ -1149,20 +1153,20 @@ def draw_points(point_list: Iterable[Iterable[float]],
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
     """
-    GL.glEnable(GL.GL_BLEND)
-    GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
+    gl.glEnable(gl.GL_BLEND)
+    gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
 
-    GL.glLoadIdentity()
+    gl.glLoadIdentity()
 
-    GL.glPointSize(size)
+    gl.glPointSize(size)
     if len(color) == 4:
-        GL.glColor4ub(color[0], color[1], color[2], color[3])
+        gl.glColor4ub(color[0], color[1], color[2], color[3])
     elif len(color) == 3:
-        GL.glColor4ub(color[0], color[1], color[2], 255)
-    GL.glBegin(GL.GL_POINTS)
+        gl.glColor4ub(color[0], color[1], color[2], 255)
+    gl.glBegin(gl.GL_POINTS)
     for point in point_list:
-        GL.glVertex3f(point[0], point[1], 0.5)
-    GL.glEnd()
+        gl.glVertex3f(point[0], point[1], 0.5)
+    gl.glEnd()
 
 
 # --- END POINT FUNCTIONS # # #
@@ -1170,8 +1174,8 @@ def draw_points(point_list: Iterable[Iterable[float]],
 # --- BEGIN POLYGON FUNCTIONS # # #
 
 
-def draw_polygon_filled(point_list: Iterable[Iterable[float]],
-                        color: Iterable[float]):
+def draw_polygon_filled(point_list: PointList,
+                        color: Color):
     """
     Draw a polygon that is filled in.
 
@@ -1196,32 +1200,33 @@ def draw_polygon_filled(point_list: Iterable[Iterable[float]],
 (165, 300), \
 (150, 300))
     >>> arcade.draw_polygon_filled(point_list, arcade.color.SPANISH_VIOLET)
-    >>> arcade.draw_polygon_filled(point_list, make_transparent_color(arcade.color.SPANISH_VIOLET, 127))
+    >>> arcade.draw_polygon_filled(point_list, \
+make_transparent_color(arcade.color.SPANISH_VIOLET, 127))
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
     """
-    GL.glEnable(GL.GL_BLEND)
-    GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
-    GL.glEnable(GL.GL_LINE_SMOOTH)
-    GL.glHint(GL.GL_LINE_SMOOTH_HINT, GL.GL_NICEST)
-    GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
+    gl.glEnable(gl.GL_BLEND)
+    gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
+    gl.glEnable(gl.GL_LINE_SMOOTH)
+    gl.glHint(gl.GL_LINE_SMOOTH_HINT, gl.GL_NICEST)
+    gl.glHint(gl.GL_POLYGON_SMOOTH_HINT, gl.GL_NICEST)
 
-    GL.glLoadIdentity()
+    gl.glLoadIdentity()
 
     # Set color
     if len(color) == 4:
-        GL.glColor4ub(color[0], color[1], color[2], color[3])
+        gl.glColor4ub(color[0], color[1], color[2], color[3])
     elif len(color) == 3:
-        GL.glColor4ub(color[0], color[1], color[2], 255)
+        gl.glColor4ub(color[0], color[1], color[2], 255)
 
-    GL.glBegin(GL.GL_POLYGON)
+    gl.glBegin(gl.GL_POLYGON)
     for point in point_list:
-        GL.glVertex3f(point[0], point[1], 0.5)
-    GL.glEnd()
+        gl.glVertex3f(point[0], point[1], 0.5)
+    gl.glEnd()
 
 
-def draw_polygon_outline(point_list: Iterable[Iterable[float]],
-                         color: Iterable[float], border_width: float = 1):
+def draw_polygon_outline(point_list: PointList,
+                         color: Color, border_width: float=1):
     """
     Draw a polygon outline. Also known as a "line loop."
 
@@ -1250,32 +1255,32 @@ def draw_polygon_outline(point_list: Iterable[Iterable[float]],
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
     """
-    GL.glEnable(GL.GL_BLEND)
-    GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
-    GL.glEnable(GL.GL_LINE_SMOOTH)
-    GL.glHint(GL.GL_LINE_SMOOTH_HINT, GL.GL_NICEST)
-    GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
+    gl.glEnable(gl.GL_BLEND)
+    gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
+    gl.glEnable(gl.GL_LINE_SMOOTH)
+    gl.glHint(gl.GL_LINE_SMOOTH_HINT, gl.GL_NICEST)
+    gl.glHint(gl.GL_POLYGON_SMOOTH_HINT, gl.GL_NICEST)
 
     # Set line width
-    GL.glLineWidth(border_width)
+    gl.glLineWidth(border_width)
 
-    GL.glLoadIdentity()
+    gl.glLoadIdentity()
 
     # Set color
     if len(color) == 4:
-        GL.glColor4ub(color[0], color[1], color[2], color[3])
+        gl.glColor4ub(color[0], color[1], color[2], color[3])
     elif len(color) == 3:
-        GL.glColor4ub(color[0], color[1], color[2], 255)
+        gl.glColor4ub(color[0], color[1], color[2], 255)
 
-    GL.glBegin(GL.GL_LINE_LOOP)
+    gl.glBegin(gl.GL_LINE_LOOP)
     for point in point_list:
-        GL.glVertex3f(point[0], point[1], 0.5)
-    GL.glEnd()
+        gl.glVertex3f(point[0], point[1], 0.5)
+    gl.glEnd()
 
 
 def draw_triangle_filled(x1: float, y1: float,
                          x2: float, y2: float,
-                         x3: float, y3: float, color: Iterable[float]):
+                         x3: float, y3: float, color: Color):
     """
     Draw a filled in triangle.
 
@@ -1293,17 +1298,17 @@ def draw_triangle_filled(x1: float, y1: float,
         None
     """
 
-    first_point = [x1, y1]
-    second_point = [x2, y2]
-    third_point = [x3, y3]
+    first_point = (x1, y1)
+    second_point = (x2, y2)
+    third_point = (x3, y3)
     point_list = (first_point, second_point, third_point)
     draw_polygon_filled(point_list, color)
 
 
 def draw_triangle_outline(x1: float, y1: float,
                           x2: float, y2: float,
-                          x3: float, y3: float, color: Iterable[float],
-                          border_width: float = 1):
+                          x3: float, y3: float, color: Color,
+                          border_width: float=1):
     """
     Draw a the outline of a triangle.
 
@@ -1334,7 +1339,7 @@ def draw_triangle_outline(x1: float, y1: float,
 # --- BEGIN RECTANGLE FUNCTIONS # # #
 
 def create_rectangle(width: float, height: float,
-                     color: Iterable[float]) -> VertexBuffer:
+                     color: Color) -> VertexBuffer:
     """
     This function creates a rectangle using a vertex buffer object.
     Creating the rectangle, and then later drawing it with ``render_rectangle``
@@ -1345,51 +1350,51 @@ def create_rectangle(width: float, height: float,
             width / 2, height / 2,
             -width / 2, height / 2]
 
-    vbo_id = GL.GLuint()
+    vbo_id = gl.GLuint()
 
-    GL.glGenBuffers(1, ctypes.pointer(vbo_id))
+    gl.glGenBuffers(1, ctypes.pointer(vbo_id))
 
     v2f = data
-    data2 = (GL.GLfloat * len(v2f))(*v2f)
+    data2 = (gl.GLfloat * len(v2f))(*v2f)
 
-    GL.glBindBuffer(GL.GL_ARRAY_BUFFER, vbo_id)
-    GL.glBufferData(GL.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2,
-                    GL.GL_STATIC_DRAW)
+    gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vbo_id)
+    gl.glBufferData(gl.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2,
+                    gl.GL_STATIC_DRAW)
 
     shape = VertexBuffer(vbo_id, len(v2f) // 2, width, height, color)
     return shape
 
 
 def render_rectangle_filled(shape: VertexBuffer, center_x: float,
-                            center_y: float, color: Iterable[float],
-                            tilt_angle: float = 0):
+                            center_y: float, color: Color,
+                            tilt_angle: float=0):
     """
     Render a rectangle previously created by the ``create_rectangle`` command.
     """
     # Set color
     if len(color) == 4:
-        GL.glColor4ub(shape.color[0], shape.color[1], shape.color[2],
+        gl.glColor4ub(shape.color[0], shape.color[1], shape.color[2],
                       shape.color[3])
-        GL.glEnable(GL.GL_BLEND)
-        GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
+        gl.glEnable(gl.GL_BLEND)
+        gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
     elif len(color) == 3:
-        GL.glDisable(GL.GL_BLEND)
-        GL.glColor4ub(shape.color[0], shape.color[1], shape.color[2], 255)
+        gl.glDisable(gl.GL_BLEND)
+        gl.glColor4ub(shape.color[0], shape.color[1], shape.color[2], 255)
 
-    GL.glBindBuffer(GL.GL_ARRAY_BUFFER, shape.vbo_id)
-    GL.glVertexPointer(2, GL.GL_FLOAT, 0, 0)
+    gl.glBindBuffer(gl.GL_ARRAY_BUFFER, shape.vbo_id)
+    gl.glVertexPointer(2, gl.GL_FLOAT, 0, 0)
 
-    GL.glLoadIdentity()
-    GL.glTranslatef(center_x + shape.width / 2, center_y + shape.height / 2, 0)
+    gl.glLoadIdentity()
+    gl.glTranslatef(center_x + shape.width / 2, center_y + shape.height / 2, 0)
     if tilt_angle != 0:
-        GL.glRotatef(tilt_angle, 0, 0, 1)
+        gl.glRotatef(tilt_angle, 0, 0, 1)
 
-    GL.glDrawArrays(GL.GL_QUADS, 0, shape.size)
+    gl.glDrawArrays(gl.GL_QUADS, 0, shape.size)
 
 
 def draw_lrtb_rectangle_outline(left: float, right: float, top: float,
-                                bottom: float, color: Iterable[float],
-                                border_width: float = 1):
+                                bottom: float, color: Color,
+                                border_width: float=1):
     """
     Draw a rectangle by specifying left, right, top, and bottom edges.
 
@@ -1423,8 +1428,8 @@ def draw_lrtb_rectangle_outline(left: float, right: float, top: float,
 
 def draw_xywh_rectangle_outline(top_left_x: float, top_left_y: float,
                                 width: float, height: float,
-                                color: Iterable[float],
-                                border_width: float = 1):
+                                color: Color,
+                                border_width: float=1):
     """
     Draw a rectangle by specifying left, right, top, and bottom edges.
 
@@ -1448,8 +1453,8 @@ def draw_xywh_rectangle_outline(top_left_x: float, top_left_y: float,
 
 
 def draw_rectangle_outline(center_x: float, center_y: float, width: float,
-                           height: float, color: Iterable[float],
-                           border_width: float = 1, tilt_angle: float = 0):
+                           height: float, color: Color,
+                           border_width: float=1, tilt_angle: float=0):
     """
     Draw a rectangle outline.
 
@@ -1479,36 +1484,36 @@ arcade.color.BRITISH_RACING_GREEN, 2)
     >>> arcade.quick_run(0.25)
     """
 
-    GL.glEnable(GL.GL_BLEND)
-    GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
-    GL.glEnable(GL.GL_LINE_SMOOTH)
-    GL.glHint(GL.GL_LINE_SMOOTH_HINT, GL.GL_NICEST)
-    GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
+    gl.glEnable(gl.GL_BLEND)
+    gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
+    gl.glEnable(gl.GL_LINE_SMOOTH)
+    gl.glHint(gl.GL_LINE_SMOOTH_HINT, gl.GL_NICEST)
+    gl.glHint(gl.GL_POLYGON_SMOOTH_HINT, gl.GL_NICEST)
 
-    GL.glLoadIdentity()
-    GL.glTranslatef(center_x, center_y, 0)
+    gl.glLoadIdentity()
+    gl.glTranslatef(center_x, center_y, 0)
     if tilt_angle:
-        GL.glRotatef(tilt_angle, 0, 0, 1)
+        gl.glRotatef(tilt_angle, 0, 0, 1)
 
     # Set line width
-    GL.glLineWidth(border_width)
+    gl.glLineWidth(border_width)
 
     # Set color
     if len(color) == 4:
-        GL.glColor4ub(color[0], color[1], color[2], color[3])
+        gl.glColor4ub(color[0], color[1], color[2], color[3])
     elif len(color) == 3:
-        GL.glColor4ub(color[0], color[1], color[2], 255)
+        gl.glColor4ub(color[0], color[1], color[2], 255)
 
-    GL.glBegin(GL.GL_LINE_LOOP)
-    GL.glVertex3f(-width // 2, -height // 2, 0.5)
-    GL.glVertex3f(width // 2, -height // 2, 0.5)
-    GL.glVertex3f(width // 2, height // 2, 0.5)
-    GL.glVertex3f(-width // 2, height // 2, 0.5)
-    GL.glEnd()
+    gl.glBegin(gl.GL_LINE_LOOP)
+    gl.glVertex3f(-width // 2, -height // 2, 0.5)
+    gl.glVertex3f(width // 2, -height // 2, 0.5)
+    gl.glVertex3f(width // 2, height // 2, 0.5)
+    gl.glVertex3f(-width // 2, height // 2, 0.5)
+    gl.glEnd()
 
 
 def draw_lrtb_rectangle_filled(left: float, right: float, top: float,
-                               bottom: float, color: Iterable[float]):
+                               bottom: float, color: Color):
     """
     Draw a rectangle by specifying left, right, top, and bottom edges.
 
@@ -1541,7 +1546,7 @@ def draw_lrtb_rectangle_filled(left: float, right: float, top: float,
 
 def draw_xywh_rectangle_filled(top_left_x: float, top_left_y: float,
                                width: float, height: float,
-                               color: Iterable[float]):
+                               color: Color):
     """
     Draw a rectangle by specifying left, right, top, and bottom edges.
 
@@ -1564,8 +1569,8 @@ def draw_xywh_rectangle_filled(top_left_x: float, top_left_y: float,
 
 
 def draw_rectangle_filled(center_x: float, center_y: float, width: float,
-                          height: float, color: Iterable[float],
-                          tilt_angle: float = 0):
+                          height: float, color: Color,
+                          tilt_angle: float=0):
     """
     Draw a filled-in rectangle.
 
@@ -1589,34 +1594,34 @@ def draw_rectangle_filled(center_x: float, center_y: float, width: float,
     >>> arcade.quick_run(0.25)
     """
 
-    GL.glEnable(GL.GL_BLEND)
-    GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
-    GL.glEnable(GL.GL_LINE_SMOOTH)
-    GL.glHint(GL.GL_LINE_SMOOTH_HINT, GL.GL_NICEST)
-    GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
+    gl.glEnable(gl.GL_BLEND)
+    gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
+    gl.glEnable(gl.GL_LINE_SMOOTH)
+    gl.glHint(gl.GL_LINE_SMOOTH_HINT, gl.GL_NICEST)
+    gl.glHint(gl.GL_POLYGON_SMOOTH_HINT, gl.GL_NICEST)
 
     # Set color
     if len(color) == 4:
-        GL.glColor4ub(color[0], color[1], color[2], color[3])
+        gl.glColor4ub(color[0], color[1], color[2], color[3])
     elif len(color) == 3:
-        GL.glColor4ub(color[0], color[1], color[2], 255)
+        gl.glColor4ub(color[0], color[1], color[2], 255)
 
-    GL.glLoadIdentity()
-    GL.glTranslatef(center_x, center_y, 0)
+    gl.glLoadIdentity()
+    gl.glTranslatef(center_x, center_y, 0)
     if tilt_angle:
-        GL.glRotatef(tilt_angle, 0, 0, 1)
+        gl.glRotatef(tilt_angle, 0, 0, 1)
 
-    GL.glBegin(GL.GL_QUADS)
-    GL.glVertex3f(-width // 2, -height // 2, 0.5)
-    GL.glVertex3f(width // 2, -height // 2, 0.5)
-    GL.glVertex3f(width // 2, height // 2, 0.5)
-    GL.glVertex3f(-width // 2, height // 2, 0.5)
-    GL.glEnd()
+    gl.glBegin(gl.GL_QUADS)
+    gl.glVertex3f(-width // 2, -height // 2, 0.5)
+    gl.glVertex3f(width // 2, -height // 2, 0.5)
+    gl.glVertex3f(width // 2, height // 2, 0.5)
+    gl.glVertex3f(-width // 2, height // 2, 0.5)
+    gl.glEnd()
 
 
 def draw_texture_rectangle(center_x: float, center_y: float, width: float,
-                           height: float, texture: Texture, angle: float = 0,
-                           alpha: float = 1, transparent: bool = True):
+                           height: float, texture: Texture, angle: float=0,
+                           alpha: float=1, transparent: bool=True):
     """
     Draw a textured rectangle on-screen.
 
@@ -1652,35 +1657,36 @@ scale * texture.height, texture, 90)
     """
 
     if transparent:
-        GL.glEnable(GL.GL_BLEND)
-        GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
+        gl.glEnable(gl.GL_BLEND)
+        gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
     else:
-        GL.glDisable(GL.GL_BLEND)
+        gl.glDisable(gl.GL_BLEND)
 
-    GL.glEnable(GL.GL_TEXTURE_2D)
-    GL.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST)
-    GL.glHint(GL.GL_PERSPECTIVE_CORRECTION_HINT, GL.GL_NICEST)
+    gl.glEnable(gl.GL_TEXTURE_2D)
+    gl.glHint(gl.GL_POLYGON_SMOOTH_HINT, gl.GL_NICEST)
+    gl.glHint(gl.GL_PERSPECTIVE_CORRECTION_HINT, gl.GL_NICEST)
 
-    GL.glLoadIdentity()
-    GL.glTranslatef(center_x, center_y, 0)
+    gl.glLoadIdentity()
+    gl.glTranslatef(center_x, center_y, 0)
     if angle != 0:
-        GL.glRotatef(angle, 0, 0, 1)
+        gl.glRotatef(angle, 0, 0, 1)
 
-    GL.glColor4f(1, 1, 1, alpha)
+    gl.glColor4f(1, 1, 1, alpha)
     z = 0.5  # pylint: disable=invalid-name
 
-    GL.glBindTexture(GL.GL_TEXTURE_2D, texture.texture_id)
-    GL.glBegin(GL.GL_POLYGON)
-    GL.glNormal3f(0.0, 0.0, 1.0)
-    GL.glTexCoord2f(0, 0)
-    GL.glVertex3f(-width / 2, -height / 2, z)
-    GL.glTexCoord2f(1, 0)
-    GL.glVertex3f(width / 2, -height / 2, z)
-    GL.glTexCoord2f(1, 1)
-    GL.glVertex3f(width / 2, height / 2, z)
-    GL.glTexCoord2f(0, 1)
-    GL.glVertex3f(-width / 2, height / 2, z)
-    GL.glEnd()
+    gl.glBindTexture(gl.GL_TEXTURE_2D, texture.texture_id)
+    gl.glBegin(gl.GL_POLYGON)
+    gl.glNormal3f(0.0, 0.0, 1.0)
+    gl.glTexCoord2f(0, 0)
+    gl.glVertex3f(-width / 2, -height / 2, z)
+    gl.glTexCoord2f(1, 0)
+    gl.glVertex3f(width / 2, -height / 2, z)
+    gl.glTexCoord2f(1, 1)
+    gl.glVertex3f(width / 2, height / 2, z)
+    gl.glTexCoord2f(0, 1)
+    gl.glVertex3f(-width / 2, height / 2, z)
+    gl.glEnd()
+
 
 def draw_xywh_rectangle_textured(top_left_x: float, top_left_y: float,
                                  width: float, height: float,
@@ -1694,7 +1700,7 @@ def draw_xywh_rectangle_textured(top_left_x: float, top_left_y: float,
 
 
 def draw_text(text: str, start_x: float, start_y: float,
-              color: Iterable[float], size: float):
+              color: Color, size: float):
     """
     Draw text to the screen.
 
@@ -1724,10 +1730,8 @@ def draw_text(text: str, start_x: float, start_y: float,
                               font_size=size,
                               x=start_x, y=start_y,
                               color=color)
-    GL.glLoadIdentity()
+    gl.glLoadIdentity()
 
     label.draw()
-
-
 
 # --- END TEXT FUNCTIONS # # #

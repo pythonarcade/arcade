@@ -3,16 +3,13 @@ Functions for calculating geometry.
 """
 # pylint: disable=consider-using-enumerate
 
-import math
-
-from .sprite import Sprite, SpriteList
-
-from numbers import Number
-from typing import Iterable
+from arcade.sprite import Sprite, SpriteList
+from typing import List
+from arcade.arcade_types import PointList
 
 
-def are_polygons_intersecting(poly_a: Iterable[Iterable[Number]],
-                              poly_b: Iterable[Iterable[Number]]) -> bool:
+def are_polygons_intersecting(poly_a: PointList,
+                              poly_b: PointList) -> bool:
     """
     Return True if two polygons intersect.
 
@@ -30,9 +27,9 @@ def are_polygons_intersecting(poly_a: Iterable[Iterable[Number]],
     >>> poly1 = ((0.1, 0.1), (0.2, 0.1), (0.2, 0.2), (0.1, 0.2))
     >>> poly2 = ((0.15, 0.1), (0.25, 0.1), (0.25, 0.25), (0.15, 0.25))
     >>> poly3 = ((0.3, 0.1), (0.4, 0.1), (0.4, 0.2), (0.3, 0.2))
-    >>> test1 = arcade.geometry.are_polygons_intersecting(poly1, poly2)
-    >>> test2 = arcade.geometry.are_polygons_intersecting(poly2, poly3)
-    >>> test3 = arcade.geometry.are_polygons_intersecting(poly1, poly3)
+    >>> test1 = arcade.are_polygons_intersecting(poly1, poly2)
+    >>> test2 = arcade.are_polygons_intersecting(poly2, poly3)
+    >>> test3 = arcade.are_polygons_intersecting(poly1, poly3)
     >>> print(test1, test2, test3)
     True False False
 
@@ -98,7 +95,7 @@ def check_for_collision(sprite1: Sprite, sprite2: Sprite) -> bool:
 
 
 def check_for_collision_with_list(sprite1: Sprite,
-                                  sprite_list: SpriteList) -> Iterable[Sprite]:
+                                  sprite_list: SpriteList) -> List[Sprite]:
     """
     Check for a collision between a sprite, and a list of sprites.
 

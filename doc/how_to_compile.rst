@@ -6,6 +6,10 @@ How to Compile
 Windows
 ^^^^^^^
 
+Prep your system by getting needed Python packages:
+
+``pip install wheel sphinx coveralls sphinx_rtd_theme pyglet numpy``
+
 Create your own fork of the repository, and then clone it on your
 computer.
 
@@ -22,9 +26,6 @@ Note: Placing test programs in the root of the project folder will pull from the
 source code in the arcade library, rather than the library installed in the
 Python interpreter. This is helpful because you can avoid the compile step.
 Just make sure not to check in your test code.
-
-There aren't UNIX build scripts yet, but by looking at the batch files you
-could likely come up with some shell files that would work.
 
 Linux
 ^^^^^

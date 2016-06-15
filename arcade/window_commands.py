@@ -7,11 +7,11 @@ import time
 
 import pyglet
 
-import pyglet.gl as GL
+import pyglet.gl as gl
 
 from numbers import Number
 from typing import Callable
-from typing import Iterable
+from typing import List
 from typing import Union
 
 _left = -1
@@ -108,12 +108,12 @@ def set_viewport(left: Number, right: Number, bottom: Number, top: Number):
     _bottom = bottom
     _top = top
 
-    # GL.glViewport(0, 0, _window.height, _window.height)
-    GL.glMatrixMode(GL.GL_PROJECTION)
-    GL.glLoadIdentity()
-    GL.glOrtho(_left, _right, _bottom, _top, -1, 1)
-    GL.glMatrixMode(GL.GL_MODELVIEW)
-    GL.glLoadIdentity()
+    # gl.glViewport(0, 0, _window.height, _window.height)
+    gl.glMatrixMode(gl.GL_PROJECTION)
+    gl.glLoadIdentity()
+    gl.glOrtho(_left, _right, _bottom, _top, -1, 1)
+    gl.glMatrixMode(gl.GL_MODELVIEW)
+    gl.glLoadIdentity()
 
 
 def open_window(window_title: str, width: Number, height: Number):
@@ -172,13 +172,6 @@ def finish_render():
     If programs use derive from the Window class, this function is
     automatically called.
 
-    Args:
-        None
-    Returns:
-        None
-    Raises:
-        None
-
     Example:
 
     >>> import arcade
@@ -197,13 +190,6 @@ def finish_render():
 def run():
     """
     Run the main loop.
-
-    Args:
-        None
-    Returns:
-        None
-    Raises:
-        None
 
     Example:
     """
@@ -240,20 +226,13 @@ def start_render():
     """
     Get set up to render. Required to be called before drawing anything to the
     screen.
-
-    Args:
-        None
-    Returns:
-        None
-    Raises:
-        None
     """
-    GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
-    GL.glMatrixMode(GL.GL_MODELVIEW)
-    GL.glEnableClientState(GL.GL_VERTEX_ARRAY)
+    gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
+    gl.glMatrixMode(gl.GL_MODELVIEW)
+    gl.glEnableClientState(gl.GL_VERTEX_ARRAY)
 
 
-def set_background_color(color: Iterable[Number]):
+def set_background_color(color: List[int]):
     """
     This specifies the background color of the window.
 
@@ -274,7 +253,7 @@ def set_background_color(color: Iterable[Number]):
     >>> arcade.quick_run(0.25)
     """
 
-    GL.glClearColor(color[0]/255, color[1]/255, color[2]/255, 1)
+    gl.glClearColor(color[0]/255, color[1]/255, color[2]/255, 1)
 
 
 def schedule(function_pointer: Callable, interval: Number):

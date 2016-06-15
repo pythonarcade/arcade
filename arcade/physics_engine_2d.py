@@ -8,9 +8,10 @@ import math
 import numpy
 import arcade
 
-
 from numbers import Number
-from typing import Iterable
+from typing import List
+from arcade.arcade_types import Color
+from arcade.arcade_types import Point
 
 # Adapted from this tutorial:
 # http://gamedevelopment.tutsplus.com/tutorials/how-to-create-a-custom-2d-physics-engine-the-basics-and-impulse-resolution--gamedev-6331
@@ -25,19 +26,19 @@ class PhysicsObject:
     Base object to represent something we apply physics on.
     """
 
-    def __init__(self, position: Iterable[Number], velocity: Number,
-                 restitution: Number, mass: Number):
+    def __init__(self, position: List[float], velocity: float,
+                 restitution: float, mass: float):
         self.velocity = velocity
         self.restitution = restitution
         self.mass = mass
         self.position = position  # Vector
 
-    def _get_x(self) -> Number:
+    def _get_x(self) -> float:
         return self.position[0]
 
     x = property(_get_x)
 
-    def _get_y(self) -> Number:
+    def _get_y(self) -> float:
         return self.position[1]
 
     y = property(_get_y)
@@ -48,9 +49,9 @@ class PhysicsCircle(PhysicsObject):
     A physics object, which is a circle.
     """
 
-    def __init__(self, position: Iterable[Number], velocity: Number,
-                 restitution: Number, mass: Number, radius: Number,
-                 color: Iterable[Number]):
+    def __init__(self, position: List[float], velocity: float,
+                 restitution: float, mass: float, radius: float,
+                 color: Color):
         super().__init__(position, velocity, restitution, mass)
         self.radius = radius
         self.color = color
@@ -68,8 +69,8 @@ class PhysicsAABB(PhysicsObject):
     Axis-aligned bounding box. In English, a non-rotating rectangle.
     """
 
-    def __init__(self, rect: Iterable[Number], velocity: Number,
-                 restitution: Number, mass: Number, color: Iterable[Number]):
+    def __init__(self, rect: List[float], velocity: float,
+                 restitution: float, mass: float, color: Color):
         super().__init__([rect[0], rect[1]], velocity, restitution, mass)
         self.color = color
         self.width = rect[2]
@@ -92,15 +93,15 @@ class PhysicsAABB(PhysicsObject):
         # max = property(_get_max)
 
 
-def distanceA(a: Number, b: Number) -> Number:  # pylint: disable=invalid-name
+def distanceA(a: Point, b: Point) -> float:  # pylint: disable=invalid-name
     """ Use square root to calc distance """
     return math.sqrt((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2)
 
 
 class Manifold:
-    def __init__(self, a: PhysicsObject, b: PhysicsObject, penetration: Number,  # pylint: disable=invalid-name
-                 normal: Number):
-        self.a = a1
+    def __init__(self, a: PhysicsObject, b: PhysicsObject, penetration: float,  # pylint: disable=invalid-name
+                 normal: float):
+        self.a = a
         self.b = b
         self.penetration = penetration
         self.normal = normal
@@ -223,37 +224,37 @@ def aabb_vs_aabb(m: Manifold) -> bool:
     return False
 
 
-def clamp(a: Number, min_value: Number, max_value: Number) -> Number:
+def clamp(a: float, min_value: float, max_value: float) -> float:
     """
     Clamp a between two values.
     """
     return max(min(a, max_value), min_value)
 
 
-def magnitude(v: Iterable[Number]) -> Number:
+def magnitude(v: List[float]) -> float:
     """
     Get the magnitude of a vector.
     """
     return math.sqrt(sum(v[i] * v[i] for i in range(len(v))))
 
 
-def add(u: Iterable[Number], v: Iterable[Number]) -> Iterable[Number]:
+def add(u: List[float], v: List[float]) -> List[float]:
     return [u[i] + v[i] for i in range(len(u))]
 
 
-def sub(u: Iterable[Number], v: Iterable[Number]) ->Iterable[Number]:
+def sub(u: List[float], v: List[float]) ->List[float]:
     return [u[i] - v[i] for i in range(len(u))]
 
 
-def neg(u: Iterable[Number]) -> Iterable[Number]:
+def neg(u: List[float]) -> List[Number]:
     return [-u[i] for i in range(len(u))]
 
 
-def dot(u: Iterable[Number], v: Iterable[Number]) -> Number:
+def dot(u: List[float], v: List[float]) -> Number:
     return sum(u[i] * v[i] for i in range(len(u)))
 
 
-def normalize(v: Iterable[Number]) -> Iterable[Number]:
+def normalize(v: List[float]) -> List[float]:
     vmag = magnitude(v)
     return [v[i] / vmag for i in range(len(v))]
 
