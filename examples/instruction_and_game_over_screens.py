@@ -14,8 +14,8 @@ SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
 # These numbers represent "states" that the game can be in.
-INSTRUCTIONS_PAGE_1 = 0
-INSTRUCTIONS_PAGE_2 = 1
+INSTRUCTIONS_PAGE_0 = 0
+INSTRUCTIONS_PAGE_1 = 1
 GAME_RUNNING = 2
 GAME_OVER = 3
 
@@ -34,7 +34,21 @@ class MyApplication(arcade.Window):
         arcade.set_background_color(arcade.color.AMAZON)
 
         # Start 'state' will be showing the first page of instructions.
-        self.current_state = INSTRUCTIONS_PAGE_1
+        self.current_state = INSTRUCTIONS_PAGE_0
+
+        self.all_sprites_list = None
+        self.coin_list = None
+
+        # Set up the player
+        self.score = 0
+        self.player_sprite = None
+
+        self.instructions = []
+        texture = arcade.load_texture("images/instructions_0.png")
+        self.instructions.append(texture)
+
+        texture = arcade.load_texture("images/instructions_1.png")
+        self.instructions.append(texture)
 
     def setup(self):
         """
@@ -68,15 +82,14 @@ class MyApplication(arcade.Window):
         # Don't show the mouse cursor
         self.set_mouse_visible(False)
 
-    def draw_instructions_page(self, page):
+    def draw_instructions_page(self, page_number):
         """
         Draw an instruction page. Load the page as an image.
         """
-        texture = arcade.load_texture("images/instructions_{}.png"
-                                      .format(page))
+        page_texture = self.instructions[page_number]
         arcade.draw_texture_rectangle(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2,
-                                      texture.width,
-                                      texture.height, texture, 0)
+                                      page_texture.width,
+                                      page_texture.height, page_texture, 0)
 
     def draw_game(self):
         """
@@ -107,11 +120,11 @@ class MyApplication(arcade.Window):
         # This command has to happen before we start drawing
         arcade.start_render()
 
-        if self.current_state == INSTRUCTIONS_PAGE_1:
-            self.draw_instructions_page(1)
+        if self.current_state == INSTRUCTIONS_PAGE_0:
+            self.draw_instructions_page(0)
 
-        elif self.current_state == INSTRUCTIONS_PAGE_2:
-            self.draw_instructions_page(2)
+        elif self.current_state == INSTRUCTIONS_PAGE_1:
+            self.draw_instructions_page(1)
 
         elif self.current_state == GAME_RUNNING:
             self.draw_game()
@@ -126,10 +139,10 @@ class MyApplication(arcade.Window):
         """
 
         # Change states as needed.
-        if self.current_state == INSTRUCTIONS_PAGE_1:
+        if self.current_state == INSTRUCTIONS_PAGE_0:
             # Next page of instructions.
-            self.current_state = INSTRUCTIONS_PAGE_2
-        elif self.current_state == INSTRUCTIONS_PAGE_2:
+            self.current_state = INSTRUCTIONS_PAGE_1
+        elif self.current_state == INSTRUCTIONS_PAGE_1:
             # Start the game
             self.setup()
             self.current_state = GAME_RUNNING

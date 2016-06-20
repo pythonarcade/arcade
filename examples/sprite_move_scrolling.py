@@ -19,11 +19,28 @@ VIEWPORT_MARGIN = 40
 
 MOVEMENT_SPEED = 5
 
-window = None
-
 
 class MyApplication(arcade.Window):
     """ Main application class. """
+
+    def __init__(self, width, height):
+        """
+        Initializer
+        :param width:
+        :param height:
+        """
+        super().__init__(width, height)
+        # Sprite lists
+        self.all_sprites_list = None
+        self.coin_list = None
+
+        # Set up the player
+        self.score = 0
+        self.player_sprite = None
+        self.wall_list = None
+        self.physics_engine = None
+        self.view_bottom = 0
+        self.view_left = 0
 
     def setup(self):
         """ Set up the game and initialize the variables. """

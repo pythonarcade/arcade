@@ -55,7 +55,7 @@ called.
         """ Override this function to add mouse button functionality. """
         pass
 
-    def on_mouse_drag(self, x: float, y: float, dx: float, dy: float):
+    def on_mouse_drag(self, x: float, y: float, dx: float, dy: float, buttons: int, modifiers: int):
         """ Override this function to add mouse button functionality. """
         self.on_mouse_motion(x, y, dx, dy)
 

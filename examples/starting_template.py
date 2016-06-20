@@ -23,14 +23,15 @@ class MyApplication(arcade.Window):
     with your own code. Don't leave 'pass' in this program.
     """
 
-    def setup(self):
-        """
-        Set up the application.
-        """
-        arcade.set_background_color(arcade.color.WHITE)
+    def __init__(self, width, height):
+        super().__init__(width, height)
+
         self.ball_x_position = BALL_RADIUS
         self.ball_x_pixels_per_second = 70
 
+        arcade.set_background_color(arcade.color.WHITE)
+
+        # Note:
         # You can change how often the animate() method is called by using the
         # set_update_rate() method in the parent class.
         # The default is once every 1/80 of a second.
@@ -114,6 +115,5 @@ class MyApplication(arcade.Window):
         pass
 
 window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
-window.setup()
 
 arcade.run()

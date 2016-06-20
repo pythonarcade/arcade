@@ -12,15 +12,13 @@ import pyglet
 import pyglet.gl as gl
 from pyglet.gl import glu as glu
 
-
-from typing import Any, Iterable, Sequence
 from typing import List
 
 from arcade.arcade_types import Color
 from arcade.arcade_types import PointList
 
 
-class Texture():
+class Texture:
     """
     Class that represents a texture.
     Usually created by the ``load_texture`` or ``load_textures`` commands.
@@ -349,8 +347,7 @@ load_texture.texture_cache = dict()
 # --- END TEXTURE FUNCTIONS # # #
 
 
-# TODO: Find a better type than Any to describe the image object.
-def trim_image(image: Any) -> Any:
+def trim_image(image: PIL.Image) -> PIL.Image:
     """
     Returns an image with extra whitespace cropped out.
 

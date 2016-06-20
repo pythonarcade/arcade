@@ -22,10 +22,11 @@ class MyApplication(arcade.Window):
     Main application class.
     """
 
-    def setup(self):
+    def __init__(self, width, height):
         """
         Set up the application.
         """
+        super().__init__(width, height)
         # Create a 2 dimensional array. A two dimensional
         # array is simply a list of lists.
         self.grid = []
@@ -78,6 +79,5 @@ class MyApplication(arcade.Window):
 
 
 window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
-window.setup()
 
 arcade.run()

@@ -62,6 +62,11 @@ upside-down.
     >>> ship_sprite.update() # Move/update the ship
     >>> # Remove the sprite
     >>> ship_sprite.kill()
+    >>> ship_sprite = arcade.Sprite(filename, SCALE)
+    Traceback (most recent call last):
+    ...
+    ValueError: Height entered is less than zero. Height must be a positive float.
+
     >>> arcade.quick_run(0.25)
     """
 

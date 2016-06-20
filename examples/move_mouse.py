@@ -4,7 +4,6 @@ handle mouse clicks.
 """
 
 import arcade
-import random
 
 # Set up the constants
 SCREEN_WIDTH = 800
@@ -14,7 +13,7 @@ RECT_WIDTH = 50
 RECT_HEIGHT = 50
 
 
-class Rectangle():
+class Rectangle:
     """ Class to represent a rectangle on the screen """
 
     def __init__(self, x, y, width, height, angle, color):
@@ -40,6 +39,10 @@ class Rectangle():
 
 class MyApplication(arcade.Window):
     """ Main application class. """
+    def __init__(self, width, height):
+        super().__init__(width, height, title="Keyboard control")
+        self.player = None
+        self.left_down = False
 
     def setup(self):
         """ Set up the game and initialize the variables. """
@@ -89,8 +92,7 @@ class MyApplication(arcade.Window):
 
 
 def main():
-    window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT,
-                           title="Mouse control")
+    window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
     window.setup()
     arcade.run()
 

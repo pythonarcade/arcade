@@ -5,7 +5,6 @@ Simple program to show basic sprite usage.
 
 Artwork from http://kenney.nl
 """
-import random
 import arcade
 
 SPRITE_SCALING = 0.5
@@ -15,11 +14,26 @@ SCREEN_HEIGHT = 600
 
 MOVEMENT_SPEED = 5
 
-window = None
-
 
 class MyApplication(arcade.Window):
     """ Main application class. """
+
+    def __init__(self, width, height):
+        """
+        Initializer
+        :param width:
+        :param height:
+        """
+        super().__init__(width, height)
+        # Sprite lists
+        self.all_sprites_list = None
+        self.coin_list = None
+
+        # Set up the player
+        self.score = 0
+        self.player_sprite = None
+        self.wall_list = None
+        self.physics_engine = None
 
     def setup(self):
         """ Set up the game and initialize the variables. """

@@ -93,7 +93,7 @@ class PhysicsAABB(PhysicsObject):
         # max = property(_get_max)
 
 
-def distanceA(a: Point, b: Point) -> float:  # pylint: disable=invalid-name
+def distance_a(a: Point, b: Point) -> float:  # pylint: disable=invalid-name
     """ Use square root to calc distance """
     return math.sqrt((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2)
 
@@ -122,7 +122,7 @@ def circle_vs_circle(m: Manifold) -> bool:
     if r < (m.a.x - m.b.x) ** 2 + (m.a.y - m.b.y) ** 2:
         return False
 
-    d = distanceA(m.a.position.data, m.b.position.data)
+    d = distance_a(m.a.position.data, m.b.position.data)
 
     if d != 0:
         # Distance is difference between radius and distance
@@ -186,15 +186,15 @@ def aabb_vs_aabb(m: Manifold) -> bool:
     abox = m.a
     bbox = m.b
 
-    a_extent = (abox.width) / 2
-    b_extent = (bbox.width) / 2
+    a_extent = abox.width / 2
+    b_extent = bbox.width / 2
 
     x_overlap = a_extent + b_extent - abs(n[0])
 
     if x_overlap > 0:
         # Calculate half extents along x axis for each object
-        a_extent = (abox.height) / 2
-        b_extent = (bbox.height) / 2
+        a_extent = abox.height / 2
+        b_extent = bbox.height / 2
 
         # Calculate overlap on y axis
         y_overlap = a_extent + b_extent - abs(n[1])
@@ -266,23 +266,23 @@ def aabb_vs_circle(m: Manifold) -> bool:
     a_center = [m.a.x + x_extent, m.a.y - y_extent]
     b_center = m.b.position
 
-    closestX = clamp(b_center[0],
-                     m.a.position[0], m.a.position[0] + m.a.width)
-    closestY = clamp(b_center[1],
-                     m.a.position[1] - m.a.height, m.a.position[1])
+    closest_x = clamp(b_center[0],
+                      m.a.position[0], m.a.position[0] + m.a.width)
+    closest_y = clamp(b_center[1],
+                      m.a.position[1] - m.a.height, m.a.position[1])
 
     # Calculate the distance between the circle's center and this closest point
-    distanceX = b_center[0] - closestX
-    distanceY = b_center[1] - closestY
+    distance_x = b_center[0] - closest_x
+    distance_y = b_center[1] - closest_y
 
     # If the distance is less than the circle's radius, an intersection occurs
-    distanceSquared = (distanceX * distanceX) + (distanceY * distanceY)
+    distanceSquared = (distance_x * distance_x) + (distance_y * distance_y)
     collision = distanceSquared < (m.b.radius * m.b.radius)
     if not collision:
         return False
 
     # print("Bang")
-    d = distanceA(a_center, b_center)
+    d = distance_a(a_center, b_center)
     # print(d)
 
     if d == 0:

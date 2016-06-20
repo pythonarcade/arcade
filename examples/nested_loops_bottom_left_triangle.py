@@ -5,9 +5,7 @@ Showing how to do nested loops.
 """
 
 # Library imports
-import math
 import arcade
-import time
 
 COLUMN_SPACING = 60
 ROW_SPACING = 40

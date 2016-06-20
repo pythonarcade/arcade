@@ -45,8 +45,8 @@ def draw_pine_tree(center_x, center_y):
       :center_y: y position of the tree trunk center.
     """
     # Draw the trunkcenter_x
-    arcade.draw_rectangle_filled(center_x, center_y, 20, 40, 
-        arcade.color.DARK_BROWN)
+    arcade.draw_rectangle_filled(center_x, center_y, 20, 40,
+                                 arcade.color.DARK_BROWN)
 
     tree_bottom_y = center_y + 20
 
