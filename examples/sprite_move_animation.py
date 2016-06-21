@@ -17,7 +17,7 @@ COIN_COUNT = 50
 MOVEMENT_SPEED = 5
 
 
-class MyApplication(arcade.Window):
+class MyAppWindow(arcade.Window):
     """ Main application class. """
 
     def __init__(self, width, height):
@@ -27,15 +27,7 @@ class MyApplication(arcade.Window):
         :param height:
         """
         super().__init__(width, height)
-        # Sprite lists
-        self.all_sprites_list = None
-        self.coin_list = None
 
-        # Set up the player
-        self.score = 0
-        self.player = None
-
-    def setup(self):
         """ Set up the game and initialize the variables. """
 
         # Sprite lists
@@ -150,7 +142,10 @@ class MyApplication(arcade.Window):
             self.score += 1
 
 
-window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
-window.setup()
+def main():
+    MyAppWindow(SCREEN_WIDTH, SCREEN_HEIGHT)
+    arcade.run()
 
-arcade.run()
+
+if __name__ == "__main__":
+    main()

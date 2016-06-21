@@ -58,6 +58,7 @@ def draw(delta_time):
         else:
             draw.delta_y *= -BOUNCINESS / 2
 
+
 # Below are function-specific variables. Before we use them
 # in our function, we need to give them initial values. Then
 # the values will persist between function calls.
@@ -72,15 +73,21 @@ draw.y = SCREEN_HEIGHT - CIRCLE_RADIUS
 draw.delta_x = 2
 draw.delta_y = 0
 
-# Open up our window
-arcade.open_window("Bouncing Ball", SCREEN_WIDTH, SCREEN_HEIGHT)
-arcade.set_background_color(arcade.color.WHITE)
 
-# Tell the computer to call the draw command at the specified interval.
-arcade.schedule(draw, 1 / 80)
+def main():
+    # Open up our window
+    arcade.open_window("Bouncing Ball", SCREEN_WIDTH, SCREEN_HEIGHT)
+    arcade.set_background_color(arcade.color.WHITE)
 
-# Run the program
-arcade.run()
+    # Tell the computer to call the draw command at the specified interval.
+    arcade.schedule(draw, 1 / 80)
 
-# When done running the program, close the window.
-arcade.close_window()
+    # Run the program
+    arcade.run()
+
+    # When done running the program, close the window.
+    arcade.close_window()
+
+
+if __name__ == "__main__":
+    main()

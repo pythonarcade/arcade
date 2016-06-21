@@ -160,7 +160,7 @@ class MyWindow(arcade.Window):
         # Sounds
         self.laser_sound = arcade.load_sound("sounds/laser1.ogg")
 
-    def setup(self):
+    def start_new_game(self):
         """ Set up the game and initialize the variables. """
 
         self.frame_count = 0
@@ -370,14 +370,11 @@ class MyWindow(arcade.Window):
                         print("Game over")
 
 
-class Application:
-    def __init__(self):
-        self.window = None
+def main():
+    window = MyWindow()
+    window.start_new_game()
+    arcade.run()
 
-    def run(self):
-        self.window = MyWindow()
-        self.window.setup()
-        arcade.run()
 
-my_application = Application()
-my_application.run()
+if __name__ == "__main__":
+    main()

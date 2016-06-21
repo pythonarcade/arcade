@@ -15,18 +15,18 @@ SCREEN_HEIGHT = 600
 
 BULLET_SPEED = 5
 
-window = None
-
 
 class Bullet(arcade.Sprite):
     def update(self):
         self.center_y += BULLET_SPEED
 
 
-class MyApplication(arcade.Window):
+class MyAppWindow(arcade.Window):
     """ Main application class. """
 
-    def setup(self):
+    def __init__(self):
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Sprites and Bullets Demo")
+
         """ Set up the game and initialize the variables. """
 
         # Sprite lists
@@ -138,7 +138,10 @@ class MyApplication(arcade.Window):
                 bullet.kill()
 
 
-window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
-window.setup()
+def main():
+    MyAppWindow()
+    arcade.run()
 
-arcade.run()
+
+if __name__ == "__main__":
+    main()

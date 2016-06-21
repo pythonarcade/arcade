@@ -20,7 +20,7 @@ GAME_RUNNING = 2
 GAME_OVER = 3
 
 
-class MyApplication(arcade.Window):
+class MyAppWindow(arcade.Window):
     """
     Main application class.
     """
@@ -187,6 +187,6 @@ class MyApplication(arcade.Window):
                 self.set_mouse_visible(True)
 
 
-window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
+window = MyAppWindow(SCREEN_WIDTH, SCREEN_HEIGHT)
 
 arcade.run()

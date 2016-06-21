@@ -38,7 +38,7 @@ class Coin(arcade.Sprite):
             self.reset_pos()
 
 
-class MyApplication(arcade.Window):
+class MyAppWindow(arcade.Window):
     """ Main application class. """
 
     def __init__(self, width, height):
@@ -56,7 +56,7 @@ class MyApplication(arcade.Window):
         self.score = 0
         self.player_sprite = None
 
-    def setup(self):
+    def start_new_game(self):
         """ Set up the game and initialize the variables. """
 
         # Sprite lists
@@ -130,7 +130,11 @@ class MyApplication(arcade.Window):
             self.score += 1
 
 
-window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
-window.setup()
+def main():
+    window = MyAppWindow(SCREEN_WIDTH, SCREEN_HEIGHT)
+    window.start_new_game()
+    arcade.run()
 
-arcade.run()
+
+if __name__ == "__main__":
+    main()
