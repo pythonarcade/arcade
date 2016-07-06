@@ -2,4 +2,4 @@
 
 BUILD = 51
 VERSION = "0.9.9"
-RELEASE = VERSION + "r" + str(BUILD)
+RELEASE = VERSION + "post" + str(BUILD)

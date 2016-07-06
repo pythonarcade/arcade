@@ -1,5 +1,6 @@
 """
-This submodule has functions that control creating and managing windows.
+This submodule has functions that control opening, closing, rendering, and otherwise managing windows.
+It also has commands for scheduling pauses and scheduling interval functions.
 """
 
 import gc
@@ -24,7 +25,7 @@ _window = None
 
 def pause(seconds: Number):
     """
-    Pause for the specified number of seconds.
+    Pause for the specified number of seconds. This is a convenience function that just calls time.sleep()
 
     :param float seconds: Time interval to pause in seconds.
     :return: None
@@ -118,7 +119,10 @@ def set_viewport(left: Number, right: Number, bottom: Number, top: Number):
 
 def open_window(window_title: str, width: Number, height: Number):
     """
-    This function opens a window.
+    This function opens a window. For ease-of-use we assume there will only be one window, and the
+    programmer does not need to keep a handle to the window. This isn't the best architecture, because
+    the window handle is stored in a global, but it makes things easier for programmers if they don't
+    have to track a window pointer.
 
     Args:
         :window_title: Title of the window.
@@ -147,13 +151,14 @@ def open_window(window_title: str, width: Number, height: Number):
 
 def close_window():
     """
-    Closes the current window, and then runs garbage collection.
+    Closes the current window, and then runs garbage collection. The garbage collection
+    is necessary to prevent crashing when opening/closing windows rapidly (usually during
+    unit tests).
 
     :param: None
     :return: None
     :raises: None
 
-    Example:
     """
     global _window
 
@@ -190,14 +195,10 @@ def finish_render():
 def run():
     """
     Run the main loop.
-
-    Example:
+    After the window has been set up, and the event hooks are in place, this is usually one of the last
+    commands on the main program.
     """
     pyglet.app.run()
-
-
-def _close():
-    close_window()
 
 
 def quick_run(time_to_pause: Number):
@@ -216,8 +217,6 @@ def quick_run(time_to_pause: Number):
 
     Example:
     """
-    # pyglet.clock.schedule_once(_close, time_to_pause)
-    # pyglet.app.run()
     pause(time_to_pause)
     close_window()
 

@@ -82,12 +82,6 @@ def main():
     list_classes("arcade/draw_commands.py", output_file)
     list_functions("arcade/draw_commands.py", output_file)
 
-    output_file.write("Shape Objects Module\n")
-    output_file.write("--------------------\n")
-    output_file.write("\n")
-    list_classes("arcade/shape_objects.py", output_file)
-    list_functions("arcade/shape_objects.py", output_file)
-
     output_file.write("Geometry Module\n")
     output_file.write("---------------\n")
     output_file.write("\n")
