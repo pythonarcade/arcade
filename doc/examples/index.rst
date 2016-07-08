@@ -24,6 +24,7 @@ Example list
 
    drawing_primitives
    drawing_with_functions
+   drawing_text
    bouncing_rectangle
    bouncing_ball
    radar_sweep

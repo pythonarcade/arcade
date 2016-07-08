@@ -18,6 +18,7 @@ Learn about it:
 * :ref:`arcade-api`
 * :ref:`quick-index`
 * `Arcade on PyPi`_
+* :ref:`pygame-comparison`
 
 Teach it:
 ^^^^^^^^^

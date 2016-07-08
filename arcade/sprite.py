@@ -62,7 +62,7 @@ upside-down.
     >>> ship_sprite.update() # Move/update the ship
     >>> # Remove the sprite
     >>> ship_sprite.kill()
-    >>> ship_sprite = arcade.Sprite(filename, SCALE)
+    >>> ship_sprite = arcade.Sprite(filename, SCALE, image_height=-1)
     Traceback (most recent call last):
     ...
     ValueError: Height entered is less than zero. Height must be a positive float.
@@ -92,16 +92,16 @@ upside-down.
         """
 
         if image_width < 0:
-            raise SystemError("Width of image can't be less than zero.")
+            raise ValueError("Width of image can't be less than zero.")
 
         if image_height < 0:
-            raise SystemError("Height of image can't be less than zero.")
+            raise ValueError("Height entered is less than zero. Height must be a positive float.")
 
         if image_width == 0 and image_height != 0:
-            raise SystemError("Width can't be zero.")
+            raise ValueError("Width can't be zero.")
 
         if image_height == 0 and image_width != 0:
-            raise SystemError("Height can't be zero.")
+            raise ValueError("Height can't be zero.")
 
         if filename is not None:
             self.texture = load_texture(filename, image_x, image_y,

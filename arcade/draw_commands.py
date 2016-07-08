@@ -16,6 +16,7 @@ from typing import List
 
 from arcade.arcade_types import Color
 from arcade.arcade_types import PointList
+import arcade.color
 
 
 class Texture:
@@ -1696,8 +1697,19 @@ def draw_xywh_rectangle_textured(top_left_x: float, top_left_y: float,
 # --- BEGIN TEXT FUNCTIONS # # #
 
 
-def draw_text(text: str, start_x: float, start_y: float,
-              color: Color, size: float):
+def draw_text(text: str,
+              start_x: float, start_y: float,
+              color: Color,
+              font_size: float=12,
+              width: int=2000,
+              align="left",
+              font_name=['Calibri','Arial'],
+              bold: bool=False,
+              italic: bool=False,
+              anchor_x="left",
+              anchor_y="baseline",
+              rotation=0
+              ):
     """
     Draw text to the screen.
 
@@ -1723,12 +1735,23 @@ def draw_text(text: str, start_x: float, start_y: float,
         color = (color[0], color[1], color[2], 255)
 
     label = pyglet.text.Label(text,
-                              font_name='Times New Roman',
-                              font_size=size,
-                              x=start_x, y=start_y,
-                              color=color)
+                              font_name=font_name,
+                              font_size=font_size,
+                              x=0, y=0,
+                              color=color,
+                              multiline=True,
+                              width=width,
+                              align=align,
+                              anchor_x=anchor_x,
+                              anchor_y=anchor_y,
+                              bold=bold,
+                              italic=italic)
     gl.glLoadIdentity()
+    gl.glTranslatef(start_x, start_y, 0)
+    gl.glRotatef(rotation, 0, 0, 1)
 
     label.draw()
+
+
 
 # --- END TEXT FUNCTIONS # # #
