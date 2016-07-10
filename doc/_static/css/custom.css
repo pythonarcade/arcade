@@ -1,0 +1,6 @@
+
+/* By default table cells don't wrap in RTD style.
+   This makes them wrap again. */
+.wy-table-responsive table td {
+    white-space: normal;
+}

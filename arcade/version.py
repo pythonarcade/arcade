@@ -1,2 +1,5 @@
-VERSION = "0.0.3"
-RELEASE = "0.0.3a11"
+#!/usr/bin/env python
+
+BUILD = 53
+VERSION = "0.9.9"
+RELEASE = VERSION + "r" + str(BUILD)

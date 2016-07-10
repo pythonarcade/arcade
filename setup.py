@@ -1,9 +1,12 @@
 #!/usr/bin/env python
-import os
+
+BUILD = 53
+VERSION = "0.9.9"
+RELEASE = VERSION + "r" + str(BUILD)
+
+from os import path
 import sys
-import distutils.sysconfig
 from setuptools import setup
-from arcade import RELEASE
 
 if __name__ == "__main__":
 
@@ -13,36 +16,41 @@ if __name__ == "__main__":
         VERSION = VERSION.replace("-beta", "b")
         VERSION = VERSION.replace("-rc", "r")
 
-    fname = os.path.join(os.path.dirname(os.path.abspath(__file__)), "README.rst")
-    readme = open(fname, "r")
-    long_desc = readme.read()
-    readme.close()
+    fname = path.join(path.dirname(path.abspath(__file__)), "README.rst")
+    with open(fname, "r") as f:
+        long_desc = f.read()
 
-    setupdata = {
-        "name":  "arcade",
-        "version": RELEASE,
-        "description": "Arcade Game Development Library",
-        "long_description": long_desc,
-        "author": "Paul Vincent Craven",
-        "author_email": "paul.craven@simpson.edu",
-        "license": "Public Domain / zlib",
-        "url": "http://arcade.academy",
-        "download_url": "http://arcade.academy",
-        "packages": ["arcade",
-                     "arcade.key",
-                     "arcade.color"
-                     ],
-        "classifiers": [
-            "Development Status :: 1 - Planning",
-            "Intended Audience :: Developers",
-            "License :: Public Domain",
-            "License :: OSI Approved :: zlib/libpng License",
-            "Operating System :: OS Independent",
-            "Programming Language :: Python",
-            "Programming Language :: Python :: 3.5",
-            "Programming Language :: Python :: Implementation :: CPython",
-            "Topic :: Software Development :: Libraries :: Python Modules",
-            ],
-        "test_suite": "tests",
-        }
-    setup(**setupdata)
+    setup(
+          name="arcade",
+          version=RELEASE,
+          description="Arcade Game Development Library",
+          long_description=long_desc,
+          author="Paul Vincent Craven",
+          author_email="paul.craven@simpson.edu",
+          license="MIT",
+          url="http://arcade.academy",
+          download_url="http://arcade.academy",
+          install_requires=[
+          'pyglet',
+          'pillow',
+          'numpy'
+          ],
+          packages=["arcade",
+                    "arcade.key",
+                    "arcade.color"
+                    ],
+          classifiers=[
+              "Development Status :: 3 - Alpha",
+              "Intended Audience :: Developers",
+              "License :: OSI Approved :: MIT License",
+              "Operating System :: OS Independent",
+              "Programming Language :: Python",
+              "Programming Language :: Python :: 3.5",
+              "Programming Language :: Python :: Implementation :: CPython",
+              "Topic :: Software Development :: Libraries :: Python Modules",
+              ],
+          test_suite="tests",
+          data_files=[("Lib/site-packages/arcade/Win32", ["Win32/avbin.dll"]),
+                      ("Lib/site-packages/arcade/Win64", ["Win64/avbin.dll"]),
+                      ('lib/site-packages/arcade/lib',   ['lib/libavbin.10.dylib'])]
+         )

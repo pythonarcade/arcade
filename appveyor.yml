@@ -3,31 +3,30 @@ environment:
     secure: "ni4lUD07eVM5LR2qdot9b/eJZTf89cl0st/9/9wRcaw="
   USER:
     secure: "vqkRNxewT2z/PD+0VquHTA=="
-
+  COVERALLS_REPO_TOKEN:
+    secure: rAutnXmt6Uqrtbi7shwIii97qFj0dxwjhRRno6vlqL+Oa/StGUo2oZW8J8g0VVwx
   matrix:
-    - PYTHON: "C:\\Python35-x64"
+    - PYTHON: "C:\\Python35"
       PYTHON_VERSION: "3.5.0"
-      PYTHON_ARCH: "64"
-      PYOPENGL_LINK: "https://bitbucket.org/pcraven/arcade/downloads/PyOpenGL-3.1.1b1-cp35-none-win_amd64.whl"
-      PYOPENGL_ACCL_LINK: "https://bitbucket.org/pcraven/arcade/downloads/PyOpenGL_accelerate-3.1.1a1-cp35-none-win_amd64.whl"
-      PYOPENGL: "PyOpenGL-3.1.1b1-cp35-none-win_amd64.whl"
-      PYOPENGL_ACCL: "PyOpenGL_accelerate-3.1.1a1-cp35-none-win_amd64.whl"
+      PYTHON_ARCH: "32"
 
 
 install:
-  - "%PYTHON%\\Scripts\\pip.exe install wheel twine pillow"
-  - appveyor DownloadFile %PYOPENGL_LINK%
-  - "%PYTHON%\\Scripts\\pip.exe install %PYOPENGL%"
-  - appveyor DownloadFile %PYOPENGL_ACCL_LINK%
-  - "%PYTHON%\\Scripts\\pip.exe install %PYOPENGL_ACCL%"
+  - "%PYTHON%\\Scripts\\pip.exe install wheel twine pillow pyglet coverage coveralls numpy"
 
 build_script:
   - "%PYTHON%\\python.exe setup.py build"
+
 test_script:
-  - "%PYTHON%\\python.exe setup.py test"
+  - "%PYTHON%\\Scripts\\coverage run --source=arcade setup.py test"
+
 deploy_script:
-  - "%PYTHON%\\python.exe setup.py sdist bdist_wheel bdist bdist_wininst bdist_egg"
+  - "%PYTHON%\\python.exe setup.py sdist bdist bdist_wheel bdist_wininst bdist_egg"
+
 artifacts:
   - path: dist\*
+
 on_success:
-  - "%PYTHON%/Scripts/twine upload -u %USER% -p %PASS% -r pypi dist/*"
+#  - "%PYTHON%\\Scripts\\coverage report"
+#  - "%PYTHON%\\Scripts\\coveralls"
+#  - "%PYTHON%/Scripts/twine upload -u %USER% -p %PASS% -r pypi dist/*"

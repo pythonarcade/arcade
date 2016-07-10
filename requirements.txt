@@ -1,2 +1,3 @@
-PyOpenGL
+Pyglet
 Pillow
+numpy

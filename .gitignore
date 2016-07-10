@@ -9,3 +9,10 @@ build/
 a_quick_test.py
 *.wpr
 arcade.wpu
+.coverage
+doc/quick_index.rst
+doc/internal/blacklist.rst
+doc/internal/build.rst
+pylint.html
+doc/source/quick_index.rst
+.idea/
