@@ -12,6 +12,7 @@ from numbers import Number
 from typing import List
 from arcade.arcade_types import Color
 from arcade.arcade_types import Point
+from arcade import Sprite
 
 # Adapted from this tutorial:
 # http://gamedevelopment.tutsplus.com/tutorials/how-to-create-a-custom-2d-physics-engine-the-basics-and-impulse-resolution--gamedev-6331
@@ -21,27 +22,37 @@ from arcade.arcade_types import Point
 # http://higherorderfun.com/blog/2012/05/20/the-guide-to-implementing-2d-platformers/
 
 
-class PhysicsObject:
+class PhysicsObject(Sprite):
     """
     Base object to represent something we apply physics on.
     """
 
-    def __init__(self, position: List[float], velocity: float,
-                 restitution: float, mass: float):
+    def __init__(self,
+                 filename: str,
+                 position: [float, float],
+                 width: int,
+                 height: int,
+                 velocity: float,
+                 restitution: float,
+                 mass: float):
+
+        super().__init__(filename)
         self.velocity = velocity
         self.restitution = restitution
         self.mass = mass
-        self.position = position  # Vector
+        self.position = position
+        self.width = width
+        self.height = height
+        self.frozen = True
+        self.freeze_check()
 
-    def _get_x(self) -> float:
-        return self.position[0]
-
-    x = property(_get_x)
-
-    def _get_y(self) -> float:
-        return self.position[1]
-
-    y = property(_get_y)
+    def freeze_check(self):
+        if abs(self.velocity[0]) < 0.1 and abs(self.velocity[1]) < 0.1:
+            #self.velocity[0] = 0
+            #self.velocity[1] = 0
+            self.frozen = True
+        else:
+            self.frozen = False
 
 
 class PhysicsCircle(PhysicsObject):
@@ -49,19 +60,17 @@ class PhysicsCircle(PhysicsObject):
     A physics object, which is a circle.
     """
 
-    def __init__(self, position: List[float], velocity: float,
-                 restitution: float, mass: float, radius: float,
-                 color: Color):
-        super().__init__(position, velocity, restitution, mass)
+    def __init__(self,
+                 filename,
+                 position: List[float],
+                 velocity: List[float],
+                 restitution: float,
+                 mass: float,
+                 radius: float):
         self.radius = radius
-        self.color = color
-
-    def draw(self):
-        """
-        Draw the rectangle
-        """
-        arcade.draw_circle_filled(self.position[0], self.position[1],
-                                  self.radius, self.color)
+        self.width = radius * 2
+        self.height = radius * 2
+        super().__init__(filename, position, self.width, self.height, velocity, restitution, mass)
 
 
 class PhysicsAABB(PhysicsObject):
@@ -69,28 +78,15 @@ class PhysicsAABB(PhysicsObject):
     Axis-aligned bounding box. In English, a non-rotating rectangle.
     """
 
-    def __init__(self, rect: List[float], velocity: float,
-                 restitution: float, mass: float, color: Color):
-        super().__init__([rect[0], rect[1]], velocity, restitution, mass)
-        self.color = color
-        self.width = rect[2]
-        self.height = rect[3]
-
-    def draw(self):
-        """ Draw a rectangle """
-        arcade.draw_rectangle_filled(self.position[0], self.position[1], self.width,
-                                     self.height, self.color)
-
-        # def _get_min(self):
-        #     return Vector(self.position.x, self.position.y)
-
-        # min = property(_get_min)
-
-        # def _get_max(self):
-        #     return Vector(self.position.x + self.width,
-        #                   self.position.y + self.height)
-
-        # max = property(_get_max)
+    def __init__(self,
+                 filename: str,
+                 position: List[float],
+                 width: float,
+                 height: float,
+                 velocity: float,
+                 restitution: float,
+                 mass: float):
+        super().__init__(filename, position, width, height, velocity, restitution, mass)
 
 
 def distance_a(a: Point, b: Point) -> float:  # pylint: disable=invalid-name
@@ -99,30 +95,29 @@ def distance_a(a: Point, b: Point) -> float:  # pylint: disable=invalid-name
 
 
 class Manifold:
-    def __init__(self, a: PhysicsObject, b: PhysicsObject, penetration: float,  # pylint: disable=invalid-name
+    def __init__(self,
+                 a: PhysicsObject,
+                 b: PhysicsObject,
+                 penetration: float,  # pylint: disable=invalid-name
                  normal: float):
         self.a = a
         self.b = b
         self.penetration = penetration
         self.normal = normal
 
-    def __str__(self):
-        return "Penetration: {}, Normal: {}".format(self.penetration,
-                                                    self.normal)
-
 
 def circle_vs_circle(m: Manifold) -> bool:
     """
     Process two circles that collide.
     """
-    n = numpy.subtract(m.b.position.data, m.a.position.data)
+    n = numpy.subtract(m.b.position, m.a.position)
     r = m.a.radius + m.b.radius
     r *= r
 
-    if r < (m.a.x - m.b.x) ** 2 + (m.a.y - m.b.y) ** 2:
+    if r < (m.a.center_x - m.b.center_x) ** 2 + (m.a.center_y - m.b.center_y) ** 2:
         return False
 
-    d = distance_a(m.a.position.data, m.b.position.data)
+    d = distance_a(m.a.position, m.b.position)
 
     if d != 0:
         # Distance is difference between radius and distance
@@ -181,6 +176,16 @@ def aabb_vs_aabb(m: Manifold) -> bool:
     """
     Process two AABB objects that collide
     """
+    # Fast check
+    if m.a.position[0] + m.a.width / 2 < m.b.position[0] - m.b.width / 2:
+        return False
+    if m.a.position[0] - m.a.width / 2 > m.b.position[0] + m.b.width / 2:
+        return False
+    if m.a.position[1] + m.a.height / 2 < m.b.position[1] - m.b.height / 2:
+        return False
+    if m.a.position[1] - m.a.height / 2 > m.b.position[1] + m.b.height / 2:
+        return False
+
     n = numpy.subtract(m.b.position, m.a.position)
 
     abox = m.a
@@ -260,16 +265,25 @@ def normalize(v: List[float]) -> List[float]:
 
 
 def aabb_vs_circle(m: Manifold) -> bool:
-    x_extent = m.a.width / 2
-    y_extent = m.a.height / 2
 
-    a_center = [m.a.x + x_extent, m.a.y - y_extent]
+    if m.a.center_x + m.a.width < m.b.center_x - m.b.width:
+        return False
+    if m.a.center_x - m.a.width > m.b.center_x + m.b.width:
+        return False
+    if m.a.center_y + m.a.height < m.b.center_y - m.b.height:
+        return False
+    if m.a.center_y - m.a.height > m.b.center_y + m.b.height:
+        return False
+
+    a_center = m.a.position
     b_center = m.b.position
 
     closest_x = clamp(b_center[0],
-                      m.a.position[0], m.a.position[0] + m.a.width)
+                      m.a.position[0] - m.a.width / 2,
+                      m.a.position[0] + m.a.width / 2)
     closest_y = clamp(b_center[1],
-                      m.a.position[1] - m.a.height, m.a.position[1])
+                      m.a.position[1] - m.a.height / 2,
+                      m.a.position[1] + m.a.height / 2)
 
     # Calculate the distance between the circle's center and this closest point
     distance_x = b_center[0] - closest_x
@@ -294,3 +308,53 @@ def aabb_vs_circle(m: Manifold) -> bool:
         m.normal = neg(normalize(sub(a_center, b_center)))
 
         return collision
+
+def process_2d_physics_movement(object_list, drag=0):
+    for a in object_list:
+        if not a.frozen:
+            a.center_x += a.velocity[0]
+            a.center_y += a.velocity[1]
+            if a.velocity[0] > 0:
+                a.velocity[0] -= drag * a.velocity[0] * a.velocity[0]
+            elif a.velocity[0] < 0:
+                a.velocity[0] += drag * a.velocity[0] * a.velocity[0]
+            if a.velocity[1] > 0:
+                a.velocity[1] -= drag * a.velocity[1] * a.velocity[1]
+            elif a.velocity[1] < 0:
+                a.velocity[1] += drag * a.velocity[1] * a.velocity[1]
+
+        a.velocity[0] += a.force[0]
+        a.velocity[1] += a.force[1]
+        a.freeze_check()
+
+def process_2d_physics_collisions(object_list, drag=0):
+    count = 0
+    for i in range(len(object_list)):
+        for j in range(i + 1, len(object_list)):
+            a = object_list[i]
+            b = object_list[j]
+            if not a.frozen or not b.frozen:
+                count += 1
+                m = arcade.Manifold(a, b, 0, 0)
+
+                if isinstance(a, arcade.PhysicsCircle) \
+                        and isinstance(b, arcade.PhysicsCircle):
+                    collided = arcade.circle_vs_circle(m)
+                elif isinstance(a, arcade.PhysicsAABB) \
+                        and isinstance(b, arcade.PhysicsAABB):
+                    collided = arcade.aabb_vs_aabb(m)
+                elif isinstance(a, arcade.PhysicsAABB) \
+                        and isinstance(b, arcade.PhysicsCircle):
+                    collided = aabb_vs_circle(m)
+                elif isinstance(a, arcade.PhysicsCircle) \
+                        and isinstance(b, arcade.PhysicsAABB):
+                    m = arcade.Manifold(b, a, 0, 0)
+                    collided = arcade.aabb_vs_circle(m)
+                else:
+                    collided = False
+
+                if collided:
+                    really_collided = arcade.resolve_collision(m)
+                    if really_collided:
+                        b.frozen = False
+    print(count)
