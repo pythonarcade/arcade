@@ -47,8 +47,11 @@ def load_sound_library():
     elif system == 'Darwin':
         from distutils.sysconfig import get_python_lib
         path = get_python_lib() + '/lib/site-packages/arcade/lib/libavbin.10.dylib'
+        pyglet.options['audio'] = ('openal', 'pulse', 'silent')
+
     else:
         path = "avbin"
+        pyglet.options['audio'] = ('openal', 'pulse', 'silent')
 
     pyglet.lib.load_library(path)
     pyglet.have_avbin = True
