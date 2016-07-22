@@ -29,22 +29,22 @@ class PhysicsObject(Sprite):
     def __init__(self,
                  filename: str,
                  position: [float, float],
-                 width: float,
-                 height: float,
+                 size: [float, float],
                  velocity: [float, float],
                  restitution: float,
                  mass: float,
-                 drag: float = 0):
+                 drag: float):
 
         super().__init__(filename)
         self.velocity = velocity
         self.restitution = restitution
         self.mass = mass
         self.position = position
-        self.width = width
-        self.height = height
+        self.width = size[0]
+        self.height = size[1]
         self.frozen = True
         self.drag = drag
+        self.static = False
         self.freeze_check()
 
     def freeze_check(self):
@@ -55,45 +55,42 @@ class PhysicsObject(Sprite):
 
 
 class PhysicsCircle(PhysicsObject):
+
     """
     A physics object, which is a circle.
     """
-
     def __init__(self,
                  filename,
                  position: List[float],
+                 radius: float,
                  velocity: List[float],
                  restitution: float,
                  mass: float,
-                 radius: float,
-                 drag: float=0):
+                 drag: float):
+        super().__init__(filename, position, [radius * 2, radius * 2], velocity, restitution, mass, drag)
         self.radius = radius
-        self.width = radius * 2
-        self.height = radius * 2
-        super().__init__(filename, position, self.width, self.height, velocity, restitution, mass, drag)
 
 
 class PhysicsAABB(PhysicsObject):
+
     """
     Axis-aligned bounding box. In English, a non-rotating rectangle.
     """
-
     def __init__(self,
                  filename: str,
                  position: List[float],
-                 width: float,
-                 height: float,
+                 size: [float, float],
                  velocity: List[float],
                  restitution: float,
                  mass: float,
-                 drag: float=0):
-        super().__init__(filename, position, width, height, velocity, restitution, mass, drag)
+                 drag: float):
+        super().__init__(filename, position, size, velocity, restitution, mass, drag)
+
 
 
 def distance_a(a: Point, b: Point) -> float:  # pylint: disable=invalid-name
     """ Use square root to calc distance """
     return math.sqrt((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2)
-
 
 class Manifold:
     def __init__(self,
@@ -115,7 +112,9 @@ def circle_vs_circle(m: Manifold) -> bool:
     r = m.a.radius + m.b.radius
     r *= r
 
-    if r < (m.a.center_x - m.b.center_x) ** 2 + (m.a.center_y - m.b.center_y) ** 2:
+    x_diff = m.a.center_x - m.b.center_x
+    y_diff = m.a.center_y - m.b.center_y
+    if r < x_diff * x_diff + y_diff * y_diff:
         return False
 
     d = distance_a(m.a.position, m.b.position)
@@ -163,10 +162,12 @@ def resolve_collision(m: Manifold) -> bool:
     impulse = numpy.multiply(j, m.normal)
 
     # print("Before: ", m.a.velocity, m.b.velocity)
-    m.a.velocity = numpy.subtract(m.a.velocity,
-                                  numpy.multiply(1 / m.a.mass, impulse))
-    m.b.velocity = numpy.add(m.b.velocity,
-                             numpy.multiply(1 / m.b.mass, impulse))
+    if not m.a.static:
+        m.a.velocity = numpy.subtract(m.a.velocity,
+                                      numpy.multiply(1 / m.a.mass, impulse))
+    if not m.b.static:
+        m.b.velocity = numpy.add(m.b.velocity,
+                                 numpy.multiply(1 / m.b.mass, impulse))
     # print("After:  ", m.a.velocity, m.b.velocity)
     # print("  Normal:  ", m.normal)
 
@@ -307,26 +308,30 @@ def aabb_vs_circle(m: Manifold) -> bool:
         return True
     else:
         m.normal = neg(normalize(sub(a_center, b_center)))
-
         return collision
 
 
-def process_2d_physics_movement(object_list):
+def process_2d_physics_movement(object_list, gravity=0):
     for a in object_list:
         if not a.frozen:
+            if not a.static:
+                a.velocity[1] -= gravity
             a.center_x += a.velocity[0]
             a.center_y += a.velocity[1]
-            if a.velocity[0] > 0:
-                a.velocity[0] -= a.drag * a.velocity[0] * a.velocity[0]
-            elif a.velocity[0] < 0:
-                a.velocity[0] += a.drag * a.velocity[0] * a.velocity[0]
-            if a.velocity[1] > 0:
-                a.velocity[1] -= a.drag * a.velocity[1] * a.velocity[1]
-            elif a.velocity[1] < 0:
-                a.velocity[1] += a.drag * a.velocity[1] * a.velocity[1]
+            if not a.static:
+                if a.velocity[0] > 0:
+                    a.velocity[0] -= a.drag * a.velocity[0] * a.velocity[0]
+                elif a.velocity[0] < 0:
+                    a.velocity[0] += a.drag * a.velocity[0] * a.velocity[0]
+                if a.velocity[1] > 0:
+                    a.velocity[1] -= a.drag * a.velocity[1] * a.velocity[1]
+                elif a.velocity[1] < 0:
+                    a.velocity[1] += a.drag * a.velocity[1] * a.velocity[1]
 
-        a.velocity[0] += a.force[0]
-        a.velocity[1] += a.force[1]
+        if not a.static:
+            a.velocity[0] += a.force[0]
+            a.velocity[1] += a.force[1]
+
         a.freeze_check()
 
 

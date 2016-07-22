@@ -8,7 +8,7 @@ def create_boxes(object_list, start_x, start_y, width, height):
     spacing = 20
     for x in range(start_x, start_x + width * spacing, spacing):
         for y in range(start_y, start_y + height * spacing, spacing):
-            a = arcade.PhysicsAABB("images/boxCrate_double.png", [x, y], 15, 15, [0, 0], .4, 1, drag=0.25)
+            a = arcade.PhysicsAABB("images/boxCrate_double.png", [x, y], [15, 15], [0, 0], .4, 1, 0.25)
             object_list.append(a)
 
 
@@ -16,7 +16,7 @@ def create_circles(object_list, start_x, start_y, width, height):
     spacing = 20
     for x in range(start_x, start_x + width * spacing, spacing):
         for y in range(start_y, start_y + height * spacing, spacing):
-            a = arcade.PhysicsCircle("images/coin_01.png", [x, y], [0, 0], .1, 1, 9, drag=0.15)
+            a = arcade.PhysicsCircle("images/coin_01.png", [x, y], 9, [0, 0], .1, 1, 0.15)
             object_list.append(a)
 
 
@@ -30,18 +30,18 @@ class MyApplication(arcade.Window):
         self.time = 0
         arcade.set_background_color(arcade.color.DARK_SLATE_GRAY)
 
-        self.player = arcade.PhysicsAABB("images/character.png", [390, 400], 79 / 2, 125 / 2, [0, 0], .7, 3, drag=0.4)
+        self.player = arcade.PhysicsAABB("images/character.png", [390, 400], [79 / 2, 125 / 2], [0, 0], .7, 3, 0.4)
         self.object_list.append(self.player)
 
         create_circles(self.object_list, 300, 300, 5, 2)
 
-        a = arcade.PhysicsCircle("images/meteorGrey_med1.png", [400, 150], [0, 0], .8, 2, 20, drag=0.1)
+        a = arcade.PhysicsCircle("images/meteorGrey_med1.png", [400, 150], 20, [0, 0], .8, 2, 0.1)
         self.object_list.append(a)
-        a = arcade.PhysicsCircle("images/meteorGrey_med2.png", [370, 120], [0, 0], .8, 2, 20, drag=0.1)
+        a = arcade.PhysicsCircle("images/meteorGrey_med2.png", [370, 120], 20, [0, 0], .8, 2, 0.1)
         self.object_list.append(a)
-        a = arcade.PhysicsCircle("images/meteorGrey_med1.png", [430, 120], [0, 0], .8, 2, 20, drag=0.1)
+        a = arcade.PhysicsCircle("images/meteorGrey_med1.png", [430, 120], 20, [0, 0], .8, 2, 0.1)
         self.object_list.append(a)
-        a = arcade.PhysicsCircle("images/meteorGrey_med1.png", [400, 90], [0, 0], .8, 2, 20, drag=0.1)
+        a = arcade.PhysicsCircle("images/meteorGrey_med1.png", [400, 90], 20, [0, 0], .8, 2, 0.1)
         self.object_list.append(a)
 
         create_boxes(self.object_list, 150, 250, 2, 20)
