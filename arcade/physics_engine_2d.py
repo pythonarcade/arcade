@@ -10,7 +10,6 @@ import arcade
 
 from numbers import Number
 from typing import List
-from arcade.arcade_types import Color
 from arcade.arcade_types import Point
 from arcade import Sprite
 
@@ -30,11 +29,12 @@ class PhysicsObject(Sprite):
     def __init__(self,
                  filename: str,
                  position: [float, float],
-                 width: int,
-                 height: int,
-                 velocity: float,
+                 width: float,
+                 height: float,
+                 velocity: [float, float],
                  restitution: float,
-                 mass: float):
+                 mass: float,
+                 drag: float = 0):
 
         super().__init__(filename)
         self.velocity = velocity
@@ -44,12 +44,11 @@ class PhysicsObject(Sprite):
         self.width = width
         self.height = height
         self.frozen = True
+        self.drag = drag
         self.freeze_check()
 
     def freeze_check(self):
         if abs(self.velocity[0]) < 0.1 and abs(self.velocity[1]) < 0.1:
-            #self.velocity[0] = 0
-            #self.velocity[1] = 0
             self.frozen = True
         else:
             self.frozen = False
@@ -66,11 +65,12 @@ class PhysicsCircle(PhysicsObject):
                  velocity: List[float],
                  restitution: float,
                  mass: float,
-                 radius: float):
+                 radius: float,
+                 drag: float=0):
         self.radius = radius
         self.width = radius * 2
         self.height = radius * 2
-        super().__init__(filename, position, self.width, self.height, velocity, restitution, mass)
+        super().__init__(filename, position, self.width, self.height, velocity, restitution, mass, drag)
 
 
 class PhysicsAABB(PhysicsObject):
@@ -83,10 +83,11 @@ class PhysicsAABB(PhysicsObject):
                  position: List[float],
                  width: float,
                  height: float,
-                 velocity: float,
+                 velocity: List[float],
                  restitution: float,
-                 mass: float):
-        super().__init__(filename, position, width, height, velocity, restitution, mass)
+                 mass: float,
+                 drag: float=0):
+        super().__init__(filename, position, width, height, velocity, restitution, mass, drag)
 
 
 def distance_a(a: Point, b: Point) -> float:  # pylint: disable=invalid-name
@@ -290,8 +291,8 @@ def aabb_vs_circle(m: Manifold) -> bool:
     distance_y = b_center[1] - closest_y
 
     # If the distance is less than the circle's radius, an intersection occurs
-    distanceSquared = (distance_x * distance_x) + (distance_y * distance_y)
-    collision = distanceSquared < (m.b.radius * m.b.radius)
+    distance_squared = (distance_x * distance_x) + (distance_y * distance_y)
+    collision = distance_squared < (m.b.radius * m.b.radius)
     if not collision:
         return False
 
@@ -309,25 +310,27 @@ def aabb_vs_circle(m: Manifold) -> bool:
 
         return collision
 
-def process_2d_physics_movement(object_list, drag=0):
+
+def process_2d_physics_movement(object_list):
     for a in object_list:
         if not a.frozen:
             a.center_x += a.velocity[0]
             a.center_y += a.velocity[1]
             if a.velocity[0] > 0:
-                a.velocity[0] -= drag * a.velocity[0] * a.velocity[0]
+                a.velocity[0] -= a.drag * a.velocity[0] * a.velocity[0]
             elif a.velocity[0] < 0:
-                a.velocity[0] += drag * a.velocity[0] * a.velocity[0]
+                a.velocity[0] += a.drag * a.velocity[0] * a.velocity[0]
             if a.velocity[1] > 0:
-                a.velocity[1] -= drag * a.velocity[1] * a.velocity[1]
+                a.velocity[1] -= a.drag * a.velocity[1] * a.velocity[1]
             elif a.velocity[1] < 0:
-                a.velocity[1] += drag * a.velocity[1] * a.velocity[1]
+                a.velocity[1] += a.drag * a.velocity[1] * a.velocity[1]
 
         a.velocity[0] += a.force[0]
         a.velocity[1] += a.force[1]
         a.freeze_check()
 
-def process_2d_physics_collisions(object_list, drag=0):
+
+def process_2d_physics_collisions(object_list):
     count = 0
     for i in range(len(object_list)):
         for j in range(i + 1, len(object_list)):
@@ -357,4 +360,4 @@ def process_2d_physics_collisions(object_list, drag=0):
                     really_collided = arcade.resolve_collision(m)
                     if really_collided:
                         b.frozen = False
-    print(count)
+    # print(count)
