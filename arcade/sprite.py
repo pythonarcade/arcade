@@ -117,12 +117,10 @@ upside-down.
 
         self.cur_texture_index = 0
         self.scale = scale
-        self._center_x = center_x
-        self._center_y = center_y
+        self.position = [center_x, center_y]
         self._angle = 0.0
 
-        self.change_x = 0
-        self.change_y = 0
+        self.velocity = [0, 0]
         self.change_angle = 0
 
         self.boundary_left = None
@@ -137,6 +135,8 @@ upside-down.
         self.can_cache = True
         self._points = None
         self._point_list_cache = None
+
+        self.force = [0, 0]
 
     def append_texture(self, texture: Texture):
         """
@@ -281,27 +281,50 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
 
     def _get_center_x(self) -> float:
         """ Get the center x coordinate of the sprite. """
-        return self._center_x
+        return self.position[0]
 
     def _set_center_x(self, new_value: float):
         """ Set the center x coordinate of the sprite. """
-        if new_value != self._center_x:
-            self._center_x = new_value
+        if new_value != self.position[0]:
+            self.position[0] = new_value
             self._point_list_cache = None
 
     center_x = property(_get_center_x, _set_center_x)
 
     def _get_center_y(self) -> float:
         """ Get the center y coordinate of the sprite. """
-        return self._center_y
+        return self.position[1]
 
     def _set_center_y(self, new_value: float):
         """ Set the center y coordinate of the sprite. """
-        if new_value != self._center_y:
-            self._center_y = new_value
+        if new_value != self.position[1]:
+            self.position[1] = new_value
             self._point_list_cache = None
 
     center_y = property(_get_center_y, _set_center_y)
+
+
+    def _get_change_x(self) -> float:
+        """ Get the velocity in the x plane of the sprite. """
+        return self.velocity[0]
+
+    def _set_change_x(self, new_value: float):
+        """ Set the velocity in the x plane of the sprite. """
+        self.velocity[0] = new_value
+
+    change_x = property(_get_change_x, _set_change_x)
+
+    def _get_change_y(self) -> float:
+        """ Get the velocity in the y plane of the sprite. """
+        return self.velocity[1]
+
+    def _set_change_y(self, new_value: float):
+        """ Set the velocity in the y plane of the sprite. """
+        self.velocity[1] = new_value
+
+    change_y = property(_get_change_y, _set_change_y)
+
+
 
     def _get_angle(self) -> float:
         """ Get the angle of the sprite's rotation. """
@@ -554,6 +577,9 @@ class SpriteList:
     def __iter__(self) -> Iterable[Sprite]:
         """ Return an iterable object of sprites. """
         return iter(self.sprite_list)
+
+    def __getitem__(self, i):
+        return self.sprite_list[i]
 
     def pop(self) -> Sprite:
         """

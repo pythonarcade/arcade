@@ -20,4 +20,5 @@ from arcade.sound import *
 from arcade.sprite import *
 from arcade.version import *
 from arcade.window_commands import *
+from arcade.physics_engine_2d import *
 
