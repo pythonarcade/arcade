@@ -70,7 +70,7 @@ upside-down.
     >>> arcade.quick_run(0.25)
     """
 
-    def __init__(self, 
+    def __init__(self,
                  filename: str=None,
                  scale: float=1,
                  image_x: float=0, image_y: float=0,
@@ -597,7 +597,7 @@ class AnimatedTimeSprite(Sprite):
                  image_x: float=0, image_y: float=0,
                  center_x: float=0, center_y: float=0):
 
-        super().__init__(scale=scale, image_x=image_x, image_y=image_y, 
+        super().__init__(scale=scale, image_x=image_x, image_y=image_y,
                          center_x=center_x, center_y=center_y)
         self.last_center_x = self.center_x
         self.last_center_y = self.center_y
@@ -652,30 +652,48 @@ class AnimatedWalkingSprite(Sprite):
         y1 = self.center_y
         y2 = self.last_center_y
         distance = math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
+        texture_list = []
 
         change_direction = False
-        if self.change_x > 0 and self.state == FACE_LEFT:
+        if self.change_x > 0 and self.state != FACE_RIGHT:
             self.state = FACE_RIGHT
             change_direction = True
 
-        elif self.change_x < 0 and self.state == FACE_RIGHT:
+        elif self.change_x < 0 and self.state != FACE_LEFT:
             self.state = FACE_LEFT
+            change_direction = True
+
+        elif self.change_y < 0 and self.state != FACE_DOWN:
+            self.state = FACE_DOWN
+            change_direction = True
+
+        elif self.change_y > 0 and self.state != FACE_UP:
+            self.state = FACE_UP
             change_direction = True
 
         if self.change_x == 0 and self.change_y == 0:
             if self.state == FACE_LEFT:
                 self.texture = self.stand_left_textures[0]
-            else:
+            elif self.state == FACE_RIGHT:
                 self.texture = self.stand_right_textures[0]
+            elif self.state == FACE_UP:
+                self.texture = self.walk_up_walk_textures[0]
+            elif self.state == FACE_DOWN:
+                self.texture = self.walk_down_textures[0]
 
         elif change_direction or distance >= self.texture_change_distance:
             self.last_center_x = self.center_x
             self.last_center_y = self.center_y
 
+            #todo: fix the annoying vibration if moving diagonally
             if self.state == FACE_LEFT:
                 texture_list = self.walk_left_textures
-            else:
+            elif self.state == FACE_RIGHT:
                 texture_list = self.walk_right_textures
+            elif self.state == FACE_UP:
+                texture_list = self.walk_up_walk_textures
+            elif self.state == FACE_DOWN:
+                texture_list = self.walk_down_textures
 
             self.cur_texture_index += 1
             if self.cur_texture_index >= len(texture_list):
