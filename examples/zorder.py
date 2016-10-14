@@ -22,25 +22,25 @@ class MyApplication(arcade.Window):
 
         # Set up the player
         self.score = 0
-        self.player_sprite = arcade.Sprite("examples/images/playerShip1_orange.png", SCALE)
+        self.player_sprite = arcade.Sprite("images/playerShip1_orange.png", SCALE)
         self.player_sprite.center_x = 200
         self.player_sprite.center_y = 200
         self.all_sprites_list.append(self.player_sprite)
 
         # Make the asteroids
-        enemy_sprite = arcade.Sprite("examples/images/meteorGrey_big1.png", SCALE)
+        enemy_sprite = arcade.Sprite("images/meteorGrey_big1.png", SCALE)
         enemy_sprite.center_y = 200
         enemy_sprite.center_x =  150
         enemy_sprite.size = 4
         self.all_sprites_list.append(enemy_sprite)
 
-        enemy_sprite = arcade.Sprite("examples/images/meteorGrey_big2.png", SCALE)
+        enemy_sprite = arcade.Sprite("images/meteorGrey_big2.png", SCALE)
         enemy_sprite.center_y = 200
         enemy_sprite.center_x =  250
         enemy_sprite.size = 4
         self.all_sprites_list.append(enemy_sprite)
 
-        enemy_sprite = arcade.Sprite("examples/images/meteorGrey_big3.png", SCALE)
+        enemy_sprite = arcade.Sprite("images/meteorGrey_big3.png", SCALE)
         enemy_sprite.center_y = 150
         enemy_sprite.center_x = 200
         enemy_sprite.size = 4
