@@ -646,7 +646,6 @@ class AnimatedWalkingSprite(Sprite):
         """
         Logic for selecting the proper texture to use.
         """
-
         x1 = self.center_x
         x2 = self.last_center_x
         y1 = self.center_y
@@ -655,19 +654,16 @@ class AnimatedWalkingSprite(Sprite):
         texture_list = []
 
         change_direction = False
-        if self.change_x > 0 and self.state != FACE_RIGHT:
+        if self.change_x > 0 and self.change_y == 0 and self.state != FACE_RIGHT:
             self.state = FACE_RIGHT
             change_direction = True
-
-        elif self.change_x < 0 and self.state != FACE_LEFT:
+        elif self.change_x < 0 and self.change_y == 0 and self.state != FACE_LEFT:
             self.state = FACE_LEFT
             change_direction = True
-
-        elif self.change_y < 0 and self.state != FACE_DOWN:
+        elif self.change_y < 0 and self.change_x == 0 and self.state != FACE_DOWN:
             self.state = FACE_DOWN
             change_direction = True
-
-        elif self.change_y > 0 and self.state != FACE_UP:
+        elif self.change_y > 0 and self.change_x == 0 and self.state != FACE_UP:
             self.state = FACE_UP
             change_direction = True
 
@@ -680,11 +676,9 @@ class AnimatedWalkingSprite(Sprite):
                 self.texture = self.walk_up_walk_textures[0]
             elif self.state == FACE_DOWN:
                 self.texture = self.walk_down_textures[0]
-
         elif change_direction or distance >= self.texture_change_distance:
             self.last_center_x = self.center_x
             self.last_center_y = self.center_y
-
             #todo: fix the annoying vibration if moving diagonally
             if self.state == FACE_LEFT:
                 texture_list = self.walk_left_textures
