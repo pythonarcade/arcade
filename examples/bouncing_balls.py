@@ -1,5 +1,6 @@
 """
-Bounce a balls on the screen.
+Bounce balls on the screen.
+Spawn a new ball for each mouse-click.
 """
 
 import arcade
@@ -126,6 +127,7 @@ class MyAppWindow(arcade.Window):
         """
         ball = make_ball()
         self.ball_list.append(ball)
+
 
 def main():
     MyAppWindow()
