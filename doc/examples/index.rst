@@ -27,6 +27,7 @@ Example list
    drawing_text
    bouncing_rectangle
    bouncing_ball
+   bouncing_balls
    radar_sweep
    drawing_with_loops
    nested_loops
