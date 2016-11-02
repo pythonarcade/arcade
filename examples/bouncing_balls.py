@@ -48,35 +48,6 @@ def make_ball():
 
     return ball
 
-def draw(delta_time):
-    """
-    Use this function to draw everything to the screen.
-    """
-
-    # Start the render. This must happen before any drawing
-    # commands. We do NOT need an stop render command.
-    arcade.start_render()
-
-    # Draw our rectangle
-    arcade.draw_circle_filled(draw.x, draw.y, CIRCLE_RADIUS,
-                              arcade.color.BLACK)
-
-    # Modify rectangles position based on the delta
-    # vector. (Delta means change. You can also think
-    # of this as our speed and direction.)
-    draw.x += draw.delta_x
-    draw.y += draw.delta_y
-
-    # Figure out if we hit the left or right edge and need to reverse.
-    if draw.x < CIRCLE_RADIUS and draw.delta_x < 0:
-        draw.delta_x *= -1
-    elif draw.x > SCREEN_WIDTH - CIRCLE_RADIUS and draw.delta_x > 0:
-        draw.delta_x *= -1
-
-    # See if we hit the bottom
-    if draw.y < CIRCLE_RADIUS and draw.delta_y < 0:
-        draw.delta_y *= -1
-
 
 class MyAppWindow(arcade.Window):
     """ Main application class. """
@@ -86,7 +57,6 @@ class MyAppWindow(arcade.Window):
         self.ball_list = []
         ball = make_ball()
         self.ball_list.append(ball)
-
 
     def on_draw(self):
         """
