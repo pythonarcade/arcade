@@ -679,7 +679,7 @@ class AnimatedWalkingSprite(Sprite):
         elif change_direction or distance >= self.texture_change_distance:
             self.last_center_x = self.center_x
             self.last_center_y = self.center_y
-            #todo: fix the annoying vibration if moving diagonally
+
             if self.state == FACE_LEFT:
                 texture_list = self.walk_left_textures
             elif self.state == FACE_RIGHT:
