@@ -1702,7 +1702,7 @@ def draw_text(text: str,
               font_size: float=12,
               width: int=2000,
               align="left",
-              font_name=['Calibri','Arial'],
+              font_name=('Calibri', 'Arial'),
               bold: bool=False,
               italic: bool=False,
               anchor_x="left",
@@ -1750,7 +1750,6 @@ def draw_text(text: str,
     gl.glRotatef(rotation, 0, 0, 1)
 
     label.draw()
-
 
 
 # --- END TEXT FUNCTIONS # # #
