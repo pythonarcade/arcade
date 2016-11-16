@@ -1293,6 +1293,13 @@ def draw_triangle_filled(x1: float, y1: float,
         None
     Raises:
         None
+
+    >>> import arcade
+    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.start_render()
+    >>> arcade.draw_triangle_filled(1, 2, 3, 4, 5, 6, arcade.color.BLACK)
+    >>> arcade.finish_render()
+    >>> arcade.quick_run(0.25)
     """
 
     first_point = (x1, y1)
@@ -1322,6 +1329,14 @@ def draw_triangle_outline(x1: float, y1: float,
         None
     Raises:
         None
+
+    >>> import arcade
+    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.start_render()
+    >>> arcade.draw_triangle_outline(1, 2, 3, 4, 5, 6, arcade.color.BLACK, 5)
+    >>> arcade.finish_render()
+    >>> arcade.quick_run(0.25)
+
     """
     first_point = [x1, y1]
     second_point = [x2, y2]
@@ -1341,6 +1356,13 @@ def create_rectangle(width: float, height: float,
     This function creates a rectangle using a vertex buffer object.
     Creating the rectangle, and then later drawing it with ``render_rectangle``
     is faster than calling ``draw_rectangle``.
+
+    >>> import arcade
+    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.start_render()
+    >>> shape = arcade.create_rectangle(100, 100, arcade.color.BLACK)
+    >>> arcade.finish_render()
+    >>> arcade.quick_run(0.25)
     """
     data = [-width / 2, -height / 2,
             width / 2, -height / 2,
@@ -1368,6 +1390,7 @@ def render_rectangle_filled(shape: VertexBuffer, center_x: float,
     """
     Render a rectangle previously created by the ``create_rectangle`` command.
     """
+
     # Set color
     if len(color) == 4:
         gl.glColor4ub(shape.color[0], shape.color[1], shape.color[2],
@@ -1406,7 +1429,26 @@ def draw_lrtb_rectangle_outline(left: float, right: float, top: float,
         None
     Raises:
         :AttributeErrror: Raised if left > right or top < bottom.
+
+    >>> import arcade
+    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.start_render()
+    >>> arcade.draw_lrtb_rectangle_outline(100, 100, 100, 100, \
+        arcade.color.BLACK, 5)
+    >>> arcade.draw_lrtb_rectangle_outline(190, 180, 100, 100, \
+        arcade.color.BLACK, 5)
+    Traceback (most recent call last):
+        ...
+    AttributeError: Left coordinate must be less than or equal to the right coordinate
+    >>> arcade.draw_lrtb_rectangle_outline(170, 180, 100, 200, \
+        arcade.color.BLACK, 5)
+    Traceback (most recent call last):
+        ...
+    AttributeError: Bottom coordinate must be less than or equal to the top coordinate
+    >>> arcade.finish_render()
+    >>> arcade.quick_run(0.25)
     """
+
     if left > right:
         raise AttributeError("Left coordinate must be less than or equal to "
                              "the right coordinate")
@@ -1442,6 +1484,12 @@ def draw_xywh_rectangle_outline(top_left_x: float, top_left_y: float,
     Raises:
         None
 
+    >>> import arcade
+    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.start_render()
+    >>> arcade.draw_xywh_rectangle_outline(1, 2, 10, 10, arcade.color.BLACK, 5)
+    >>> arcade.finish_render()
+    >>> arcade.quick_run(0.25)
     """
     center_x = top_left_x + (width / 2)
     center_y = top_left_y + (height / 2)
@@ -1477,6 +1525,9 @@ def draw_rectangle_outline(center_x: float, center_y: float, width: float,
     >>> arcade.start_render()
     >>> arcade.draw_rectangle_outline(278, 150, 45, 105, \
 arcade.color.BRITISH_RACING_GREEN, 2)
+    >>> arcade.draw_rectangle_outline(278, 150, 45, 105, (100, 200, 100, 255))
+    >>> arcade.draw_rectangle_outline(278, 150, 45, 105, \
+arcade.color.BRITISH_RACING_GREEN, 5, 45)
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
     """
@@ -1525,10 +1576,24 @@ def draw_lrtb_rectangle_filled(left: float, right: float, top: float,
         None
     Raises:
         :AttributeErrror: Raised if left > right or top < bottom.
+    >>> import arcade
+    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.start_render()
+    >>> arcade.draw_lrtb_rectangle_filled(1, 2, 3, 1, arcade.color.BLACK)
+    >>> arcade.draw_lrtb_rectangle_filled(2, 1, 3, 1, arcade.color.BLACK)
+    Traceback (most recent call last):
+        ...
+    AttributeError: Left coordinate 2 must be less than or equal to the right coordinate 1
+    >>> arcade.draw_lrtb_rectangle_filled(1, 2, 3, 4, arcade.color.BLACK)
+    Traceback (most recent call last):
+        ...
+    AttributeError: Bottom coordinate 4 must be less than or equal to the top coordinate 3
+    >>> arcade.finish_render()
+    >>> arcade.quick_run(0.25)
     """
     if left > right:
         raise AttributeError("Left coordinate {} must be less than or equal "
-                             "to the right coordinate {}.".format(left, right))
+                             "to the right coordinate {}".format(left, right))
 
     if bottom > top:
         raise AttributeError("Bottom coordinate {} must be less than or equal "
@@ -1559,7 +1624,14 @@ def draw_xywh_rectangle_filled(top_left_x: float, top_left_y: float,
     Raises:
         None
 
+    >>> import arcade
+    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.start_render()
+    >>> arcade.draw_xywh_rectangle_filled(1, 2, 3, 4, arcade.color.BLACK)
+    >>> arcade.finish_render()
+    >>> arcade.quick_run(0.25)
     """
+
     center_x = top_left_x + (width / 2)
     center_y = top_left_y + (height / 2)
     draw_rectangle_filled(center_x, center_y, width, height, color)
@@ -1649,6 +1721,8 @@ def draw_texture_rectangle(center_x: float, center_y: float, width: float,
 scale * texture.height, texture, 0)
     >>> arcade.draw_texture_rectangle(540, 60, scale * texture.width, \
 scale * texture.height, texture, 90)
+    >>> arcade.draw_texture_rectangle(540, 60, scale * texture.width, \
+scale * texture.height, texture, 90, 1, False)
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
     """
@@ -1688,6 +1762,17 @@ scale * texture.height, texture, 90)
 def draw_xywh_rectangle_textured(top_left_x: float, top_left_y: float,
                                  width: float, height: float,
                                  texture: Texture):
+    """
+    >>> import arcade
+    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.start_render()
+    >>> name = "examples/images/meteorGrey_big1.png"
+    >>> texture1 = load_texture(name, 1, 1, 50, 50)
+    >>> arcade.draw_xywh_rectangle_textured(1, 2, 10, 10, texture1)
+    >>> arcade.finish_render()
+    >>> arcade.quick_run(0.25)
+    """
+
     center_x = top_left_x + (width / 2)
     center_y = top_left_y + (height / 2)
     draw_texture_rectangle(center_x, center_y, width, height, texture)
@@ -1726,6 +1811,7 @@ def draw_text(text: str,
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
     >>> arcade.draw_text("Text Example", 250, 300, arcade.color.BLACK, 10)
+    >>> arcade.draw_text("Text Example", 250, 300, (0, 0, 0, 100), 10)
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
     """
