@@ -16,7 +16,6 @@ from typing import List
 
 from arcade.arcade_types import Color
 from arcade.arcade_types import PointList
-import arcade.color
 
 
 class Texture:
