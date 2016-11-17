@@ -9,8 +9,8 @@ FLIPPER_UP = 1
 class MyApplication(arcade.Window):
     """ Main application class. """
 
-    def __init__(self, width, height):
-        super().__init__(width, height)
+    def __init__(self, width, height, resizable):
+        super().__init__(width, height, resizable=resizable)
         self.sprite_list = arcade.SpriteList()
 
         self.left_flipper_list = arcade.SpriteList()
@@ -178,6 +178,6 @@ class MyApplication(arcade.Window):
         elif key == arcade.key.RIGHT:
             self.right_flipper_state = NO_FLIPPER
 
-window = MyApplication(800, 1000)
-
+window = MyApplication(800, 1000, resizable=False)
+window.set_size(700, 700)
 arcade.run()

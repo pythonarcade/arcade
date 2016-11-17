@@ -2,9 +2,9 @@
 The main window class that all object-oriented applications should
 derive from.
 """
+from typing import Tuple
 
 import pyglet
-
 
 MOUSE_BUTTON_LEFT = 1
 MOUSE_BUTTON_MIDDLE = 2
@@ -16,15 +16,24 @@ class Window(pyglet.window.Window):
     Window class
 
     >>> import arcade
-    >>> window = arcade.Window(800, 600)
-    >>> window.animate(0.25)
-    >>> window.close()
+    >>> window1 = arcade.Window(800, 600)
+    >>> window1.resizable
+    False
+    >>> window1.animate(0.25)
+    >>> window1.close()
+    >>> window2 = arcade.Window(800, 600, resizable=True)
+    >>> window2.resizable
+    True
+    >>> window2.close()
     """
-    def __init__(self, width: float, height: float,
-                 title: str='Arcade Window'):
-        super().__init__(width=width, height=height, caption=title)
 
-        self.set_update_rate(1/80)
+    def __init__(self, width: float, height: float,
+                 title: str = 'Arcade Window',
+                 resizable: bool = False):
+        super().__init__(width=width, height=height, caption=title,
+                         resizable=resizable)
+
+        self.set_update_rate(1 / 80)
         # set_viewport(0, self.width, 0, self.height)
 
     def animate(self, delta_time: float):
@@ -69,3 +78,77 @@ called.
 
     def on_draw(self):
         pass
+
+    def on_resize(self):
+        pass
+
+    def set_minimum_size(self, width: float, height: float):
+        """ Wrap the Pyglet window call to set minimum size
+
+        Args:
+            :width: width in pixels.
+            :height: height in pixels.
+        Returns:
+            None
+        Raises:
+            ValueError
+
+        Example:
+
+        >>> import arcade
+        >>> window1 = arcade.Window(200, 100, resizable=True)
+        >>> window1.set_minimum_size(200, 200)
+        >>> window1.close()
+        >>> window2 = arcade.Window(200, 100, resizable=False)
+        >>> window2.set_minimum_size(200, 200)
+        Traceback (most recent call last):
+        ...
+        ValueError: Cannot set min size on non-resizable window
+        >>> window2.close()
+        """
+
+        if self.resizable:
+            super().set_minimum_size(width, height)
+        else:
+            raise ValueError('Cannot set min size on non-resizable window')
+
+    def set_maximum_size(self, width: float, height: float):
+        """ Wrap the Pyglet window call to set maximum size
+
+        Args:
+            :width: width in pixels.
+            :height: height in pixels.
+        Returns:
+            None
+        Raises:
+            ValueError
+
+        Example:
+
+        >>> import arcade
+        >>> window1 = arcade.Window(200, 100, resizable=True)
+        >>> window1.set_maximum_size(200, 200)
+        >>> window1.close()
+        >>> window2 = arcade.Window(200, 100, resizable=False)
+        >>> window2.set_maximum_size(200, 200)
+        Traceback (most recent call last):
+        ...
+        ValueError: Cannot set max size on non-resizable window
+        >>> window2.close()
+
+        """
+
+        if self.resizable:
+            super().set_maximum_size(width, height)
+        else:
+            raise ValueError('Cannot set max size on non-resizable window')
+
+    def set_size(self, width: float, height: float):
+        """ Ignore the resizable flag and set the size """
+
+        super().set_size(width, height)
+
+    def get_location(self) -> Tuple[int, int]:
+        """ Return the X/Y coordinates of the window """
+
+        return super().get_location()
