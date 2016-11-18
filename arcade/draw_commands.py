@@ -1576,6 +1576,7 @@ def draw_lrtb_rectangle_filled(left: float, right: float, top: float,
         None
     Raises:
         :AttributeErrror: Raised if left > right or top < bottom.
+
     >>> import arcade
     >>> arcade.open_window("Drawing Example", 800, 600)
     >>> arcade.start_render()
