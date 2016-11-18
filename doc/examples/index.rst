@@ -27,6 +27,7 @@ Example list
    drawing_text
    bouncing_rectangle
    bouncing_ball
+   bouncing_balls
    radar_sweep
    drawing_with_loops
    nested_loops
@@ -36,6 +37,7 @@ Example list
    move_mouse
    move_keyboard
    sprite_collect_coins
+   sprite_change_coins
    sprite_collect_coins_move_down
    sprite_collect_coins_move_bouncing
    sprite_collect_coins_move_circle

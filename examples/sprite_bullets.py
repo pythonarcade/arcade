@@ -88,7 +88,7 @@ class MyAppWindow(arcade.Window):
 
     def on_mouse_press(self, x, y, button, modifiers):
         """
-        Called whenever the mouse moves.
+        Called whenever the mouse button is clicked.
         """
         # Gunshot sound
         arcade.sound.play_sound(self.gun_sound)

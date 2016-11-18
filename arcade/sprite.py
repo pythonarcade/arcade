@@ -70,7 +70,7 @@ upside-down.
     >>> arcade.quick_run(0.25)
     """
 
-    def __init__(self, 
+    def __init__(self,
                  filename: str=None,
                  scale: float=1,
                  image_x: float=0, image_y: float=0,
@@ -597,7 +597,7 @@ class AnimatedTimeSprite(Sprite):
                  image_x: float=0, image_y: float=0,
                  center_x: float=0, center_y: float=0):
 
-        super().__init__(scale=scale, image_x=image_x, image_y=image_y, 
+        super().__init__(scale=scale, image_x=image_x, image_y=image_y,
                          center_x=center_x, center_y=center_y)
         self.last_center_x = self.center_x
         self.last_center_y = self.center_y
@@ -646,36 +646,48 @@ class AnimatedWalkingSprite(Sprite):
         """
         Logic for selecting the proper texture to use.
         """
-
         x1 = self.center_x
         x2 = self.last_center_x
         y1 = self.center_y
         y2 = self.last_center_y
         distance = math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
+        texture_list = []
 
         change_direction = False
-        if self.change_x > 0 and self.state == FACE_LEFT:
+        if self.change_x > 0 and self.change_y == 0 and self.state != FACE_RIGHT:
             self.state = FACE_RIGHT
             change_direction = True
-
-        elif self.change_x < 0 and self.state == FACE_RIGHT:
+        elif self.change_x < 0 and self.change_y == 0 and self.state != FACE_LEFT:
             self.state = FACE_LEFT
+            change_direction = True
+        elif self.change_y < 0 and self.change_x == 0 and self.state != FACE_DOWN:
+            self.state = FACE_DOWN
+            change_direction = True
+        elif self.change_y > 0 and self.change_x == 0 and self.state != FACE_UP:
+            self.state = FACE_UP
             change_direction = True
 
         if self.change_x == 0 and self.change_y == 0:
             if self.state == FACE_LEFT:
                 self.texture = self.stand_left_textures[0]
-            else:
+            elif self.state == FACE_RIGHT:
                 self.texture = self.stand_right_textures[0]
-
+            elif self.state == FACE_UP:
+                self.texture = self.walk_up_walk_textures[0]
+            elif self.state == FACE_DOWN:
+                self.texture = self.walk_down_textures[0]
         elif change_direction or distance >= self.texture_change_distance:
             self.last_center_x = self.center_x
             self.last_center_y = self.center_y
 
             if self.state == FACE_LEFT:
                 texture_list = self.walk_left_textures
-            else:
+            elif self.state == FACE_RIGHT:
                 texture_list = self.walk_right_textures
+            elif self.state == FACE_UP:
+                texture_list = self.walk_up_walk_textures
+            elif self.state == FACE_DOWN:
+                texture_list = self.walk_down_textures
 
             self.cur_texture_index += 1
             if self.cur_texture_index >= len(texture_list):
@@ -775,7 +787,7 @@ def _draw_rects(shape_list: Iterable[Sprite], vertex_vbo_id: gl.GLuint,
     """
     gl.glEnable(gl.GL_BLEND)
     gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-    gl.glEnable(gl.GL_TEXTURE_2D)
+    gl.glEnable(gl.GL_TEXTURE_2D) # As soon as this happens, can't use drawing commands
     gl.glHint(gl.GL_POLYGON_SMOOTH_HINT, gl.GL_NICEST)
     gl.glHint(gl.GL_PERSPECTIVE_CORRECTION_HINT, gl.GL_NICEST)
 
@@ -803,3 +815,4 @@ def _draw_rects(shape_list: Iterable[Sprite], vertex_vbo_id: gl.GLuint,
             offset += 4
         else:
             shape.draw()
+    gl.glDisable(gl.GL_TEXTURE_2D)
