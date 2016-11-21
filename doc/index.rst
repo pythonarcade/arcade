@@ -55,11 +55,6 @@ Learn about it:
 * `Arcade on PyPi`_
 * :ref:`pygame-comparison`
 
-Teach it:
-^^^^^^^^^
-
-* :ref:`suggested-curriculum`
-
 Give feedback:
 ^^^^^^^^^^^^^^
 
@@ -111,6 +106,14 @@ How to Contribute
    how_to_compile
    how_to_submit_changes
 
+More Information
+----------------
+
+.. toctree::
+   :maxdepth: 1
+
+   pygame_comparison.rst
+   suggested_curriculum.rst
 
 .. automodule:: arcade
 

@@ -2,7 +2,7 @@ Installation on Linux
 =====================
 
 Ubuntu 16.04 Instructions
------------------
+-------------------------
 
 We will use a virtual python environment to install arcade.
 
