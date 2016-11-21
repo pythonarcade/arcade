@@ -1,4 +1,4 @@
-.. _example-sprite-collect-coins:
+.. _example-sprite-change-coins:
 
 Sprites: Change coins
 =====================

@@ -3,6 +3,41 @@ The Python Arcade Library
 
 .. raw:: html
 
+    <table style="width:100%;">
+      <tr>
+        <td>
+          <img style="width:50px;" src="_static/character.png"><br/>
+          <h2><a href="examples/index.html">Examples</a></h2>
+          <ul>
+          <li><a href="examples/drawing_primitives.html">Drawing Primitives</a></li>
+          <li><a href="examples/bouncing_rectangle.html">Bouncing Rectangle</a></li>
+          <li><a href="examples/asteroid_smasher.html">Asteroid Smasher</a></li>
+          </ul>
+        </td>
+        <td>
+          <img style="width:78px;" src="_static/download.svg"><br/>
+          <h2><a href="installation.html">Installation</a></h2>
+          <ul>
+          <li><a href="installation_windows.html">Windows</a></li>
+          <li><a href="installation_mac.html">Mac</a></li>
+          <li><a href="installation_linux.html">Linux</a></li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <img style="width:78px;" src="_static/ereader.svg"><br/>
+          <h2><a href="quick_index.html">Quick API Index</a></h2>
+        </td>
+        <td>
+          <img style="width:78px;" src="_static/weixin-logo.svg"><br/>
+          <h2><a href="pygame_comparison.html">Pygame Comparison</a></h2>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+.. raw:: html
+
     <iframe src="https://player.vimeo.com/video/167449640?byline=0&portrait=0" width="640" height="480" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
     <p><a href="https://vimeo.com/167449640">The Python Arcade Library Overview</a></p>
 
