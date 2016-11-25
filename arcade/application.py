@@ -15,16 +15,6 @@ class Window(pyglet.window.Window):
     """
     Window class
 
-    >>> import arcade
-    >>> window1 = arcade.Window(800, 600)
-    >>> window1.resizable
-    False
-    >>> window1.animate(0.25)
-    >>> window1.close()
-    >>> window2 = arcade.Window(800, 600, resizable=True)
-    >>> window2.resizable
-    True
-    >>> window2.close()
     """
 
     def __init__(self, width: float, height: float,
@@ -96,15 +86,9 @@ called.
         Example:
 
         >>> import arcade
-        >>> window1 = arcade.Window(200, 100, resizable=True)
-        >>> window1.set_minimum_size(200, 200)
-        >>> window1.close()
-        >>> window2 = arcade.Window(200, 100, resizable=False)
-        >>> window2.set_minimum_size(200, 200)
-        Traceback (most recent call last):
-        ...
-        ValueError: Cannot set min size on non-resizable window
-        >>> window2.close()
+        >>> window = arcade.Window(200, 100, resizable=True)
+        >>> window.set_minimum_size(200, 200)
+        >>> window.close()
         """
 
         if self.resizable:
@@ -126,15 +110,9 @@ called.
         Example:
 
         >>> import arcade
-        >>> window1 = arcade.Window(200, 100, resizable=True)
-        >>> window1.set_maximum_size(200, 200)
-        >>> window1.close()
-        >>> window2 = arcade.Window(200, 100, resizable=False)
-        >>> window2.set_maximum_size(200, 200)
-        Traceback (most recent call last):
-        ...
-        ValueError: Cannot set max size on non-resizable window
-        >>> window2.close()
+        >>> window = arcade.Window(200, 100, resizable=True)
+        >>> window.set_maximum_size(200, 200)
+        >>> window.close()
 
         """
 
