@@ -79,7 +79,7 @@ called.
     def on_draw(self):
         pass
 
-    def on_resize(self):
+    def on_resize(self, width: int, height: int):
         pass
 
     def set_minimum_size(self, width: float, height: float):
