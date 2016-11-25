@@ -72,7 +72,7 @@ called.
     def on_resize(self, width: int, height: int):
         pass
 
-    def set_minimum_size(self, width: float, height: float):
+    def set_min_size(self, width: float, height: float):
         """ Wrap the Pyglet window call to set minimum size
 
         Args:
@@ -87,7 +87,7 @@ called.
 
         >>> import arcade
         >>> window = arcade.Window(200, 100, resizable=True)
-        >>> window.set_minimum_size(200, 200)
+        >>> window.set_min_size(200, 200)
         >>> window.close()
         """
 
@@ -96,7 +96,7 @@ called.
         else:
             raise ValueError('Cannot set min size on non-resizable window')
 
-    def set_maximum_size(self, width: float, height: float):
+    def set_max_size(self, width: float, height: float):
         """ Wrap the Pyglet window call to set maximum size
 
         Args:
@@ -111,7 +111,7 @@ called.
 
         >>> import arcade
         >>> window = arcade.Window(200, 100, resizable=True)
-        >>> window.set_maximum_size(200, 200)
+        >>> window.set_max_size(200, 200)
         >>> window.close()
 
         """
