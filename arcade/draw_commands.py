@@ -1356,13 +1356,6 @@ def create_rectangle(width: float, height: float,
     This function creates a rectangle using a vertex buffer object.
     Creating the rectangle, and then later drawing it with ``render_rectangle``
     is faster than calling ``draw_rectangle``.
-
-    >>> import arcade
-    >>> arcade.open_window("Drawing Example", 800, 600)
-    >>> arcade.start_render()
-    >>> shape = arcade.create_rectangle(100, 100, arcade.color.BLACK)
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
     """
     data = [-width / 2, -height / 2,
             width / 2, -height / 2,
