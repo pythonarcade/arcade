@@ -636,7 +636,7 @@ class AnimatedWalkingSprite(Sprite):
         self.stand_left_textures = None
         self.walk_left_textures = None
         self.walk_right_textures = None
-        self.walk_up_walk_textures = None
+        self.walk_up_textures = None
         self.walk_down_textures = None
         self.cur_texture_index = 0
         self.texture_change_distance = 20
@@ -673,7 +673,7 @@ class AnimatedWalkingSprite(Sprite):
             elif self.state == FACE_RIGHT:
                 self.texture = self.stand_right_textures[0]
             elif self.state == FACE_UP:
-                self.texture = self.walk_up_walk_textures[0]
+                self.texture = self.walk_up_textures[0]
             elif self.state == FACE_DOWN:
                 self.texture = self.walk_down_textures[0]
         elif change_direction or distance >= self.texture_change_distance:
@@ -685,7 +685,7 @@ class AnimatedWalkingSprite(Sprite):
             elif self.state == FACE_RIGHT:
                 texture_list = self.walk_right_textures
             elif self.state == FACE_UP:
-                texture_list = self.walk_up_walk_textures
+                texture_list = self.walk_up_textures
             elif self.state == FACE_DOWN:
                 texture_list = self.walk_down_textures
 
