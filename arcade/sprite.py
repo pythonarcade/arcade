@@ -616,7 +616,7 @@ class AnimatedTimeSprite(Sprite):
             self.cur_texture_index += 1
             if self.cur_texture_index >= len(self.textures):
                 self.cur_texture_index = 0
-            self.texture = self.textures[self.cur_texture_index]
+            self.set_texture(self.cur_texture_index)
         self.frame += 1
 
 
@@ -694,6 +694,9 @@ class AnimatedWalkingSprite(Sprite):
                 self.cur_texture_index = 0
 
             self.texture = texture_list[self.cur_texture_index]
+
+        self.width = self.texture.width * self.scale
+        self.height = self.texture.height * self.scale
 
 
 def _rotate(x: float, y: float, cx: float, cy: float,
