@@ -117,7 +117,7 @@ def set_viewport(left: Number, right: Number, bottom: Number, top: Number):
     gl.glLoadIdentity()
 
 
-def open_window(window_title: str, width: Number, height: Number):
+def open_window(window_title: str, width: Number, height: Number, resizable: bool = False):
     """
     This function opens a window. For ease-of-use we assume there will only be one window, and the
     programmer does not need to keep a handle to the window. This isn't the best architecture, because
@@ -128,6 +128,7 @@ def open_window(window_title: str, width: Number, height: Number):
         :window_title: Title of the window.
         :width: Width of the window.
         :height: Height of the window.
+        :resizable: Whether the window can be user-resizable.
     Returns:
         None
     Raises:
@@ -142,7 +143,8 @@ def open_window(window_title: str, width: Number, height: Number):
     global _window
 
     window = pyglet.window.Window(width=width, height=height,
-                                  caption=window_title)
+                                  caption=window_title,
+                                  resizable=resizable)
     set_viewport(0, width, 0, height)
     window.invalid = False
 
