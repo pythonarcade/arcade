@@ -1,7 +1,3 @@
-import arcade
-
-
-
 """
 This simple animation example shows how to move an item with the keyboard.
 """
@@ -17,6 +13,7 @@ RECT_HEIGHT = 50
 
 MOVEMENT_MULTIPLIER = 5
 DEAD_ZONE = 0.05
+
 
 class Rectangle:
     """ Class to represent a rectangle on the screen """
@@ -43,7 +40,10 @@ class Rectangle:
         joysticks = arcade.get_joysticks()
         if joysticks:
             self.joystick = joysticks[0]
-        self.joystick.open()
+            self.joystick.open()
+        else:
+            print("There are no Joysticks")
+            self.joystick = None
 
     def draw(self):
         """ Draw our rectangle """
@@ -53,15 +53,19 @@ class Rectangle:
     def move(self):
         """ Move our rectangle """
 
-        self.delta_x = self.joystick.x * MOVEMENT_MULTIPLIER
-        # Set a "dead zone" to prevent drive from a centered joystick
-        if abs(self.delta_x) < DEAD_ZONE:
-            self.delta_x = 0
+        # Grab the position of the joystick
+        # This will be between -1.0 and +1.0
 
-        self.delta_y = -self.joystick.y * MOVEMENT_MULTIPLIER
-        # Set a "dead zone" to prevent drive from a centered joystick
-        if abs(self.delta_y) < DEAD_ZONE:
-            self.delta_y = 0
+        if self.joystick:
+            self.delta_x = self.joystick.x * MOVEMENT_MULTIPLIER
+            # Set a "dead zone" to prevent drive from a centered joystick
+            if abs(self.delta_x) < DEAD_ZONE:
+                self.delta_x = 0
+
+            self.delta_y = -self.joystick.y * MOVEMENT_MULTIPLIER
+            # Set a "dead zone" to prevent drive from a centered joystick
+            if abs(self.delta_y) < DEAD_ZONE:
+                self.delta_y = 0
 
         # Move left/right
         self.x += self.delta_x
@@ -114,6 +118,7 @@ class MyApplication(arcade.Window):
         arcade.start_render()
 
         self.player.draw()
+
 
 def main():
     window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
