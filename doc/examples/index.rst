@@ -36,6 +36,8 @@ Example list
    timer
    move_mouse
    move_keyboard
+   move_joystick
+   joystick
    sprite_collect_coins
    sprite_change_coins
    sprite_collect_coins_move_down
