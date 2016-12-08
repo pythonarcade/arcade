@@ -1,3 +1,2 @@
 [run]
 source = arcade
-omit = env36, build, doc, examples, experimental, tests, Win32, Win64
