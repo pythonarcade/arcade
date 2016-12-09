@@ -1751,6 +1751,7 @@ scale * texture.height, texture, 90, 1, False)
     gl.glTexCoord2f(0, 1)
     gl.glVertex3f(-width / 2, height / 2, z)
     gl.glEnd()
+    gl.glDisable(gl.GL_TEXTURE_2D)
 
 
 def draw_xywh_rectangle_textured(top_left_x: float, top_left_y: float,
