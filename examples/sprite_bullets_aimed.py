@@ -28,7 +28,9 @@ class Bullet(arcade.Sprite):
 class MyApplication(arcade.Window):
     """ Main application class. """
 
-    def setup(self):
+    def __init__(self, screen_width, screen_height):
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Sprites and Bullets Demo")
+
         """ Set up the game and initialize the variables. """
 
         # Sprite lists
@@ -50,8 +52,8 @@ class MyApplication(arcade.Window):
             coin = arcade.Sprite("images/coin_01.png", SPRITE_SCALING / 3)
 
             # Position the coin
-            coin.center_x = random.randrange(SCREEN_WIDTH)
-            coin.center_y = random.randrange(120, SCREEN_HEIGHT)
+            coin.center_x = random.randrange(screen_width)
+            coin.center_y = random.randrange(120, screen_height)
 
             # Add the coin to the lists
             self.all_sprites_list.append(coin)
@@ -141,7 +143,10 @@ class MyApplication(arcade.Window):
                 bullet.kill()
 
 
-window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
-window.setup()
+def main():
+    MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
+    arcade.run()
 
-arcade.run()
+
+if __name__ == "__main__":
+    main()
