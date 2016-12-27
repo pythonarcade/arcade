@@ -154,7 +154,7 @@ class MyAppWindow(arcade.Window):
 
     def on_key_press(self, key, modifiers):
         """
-        Called whenever the mouse moves.
+        Called whenever a key is pressed down.
         """
         if key == arcade.key.UP:
             if self.physics_engine.can_jump():
@@ -166,7 +166,7 @@ class MyAppWindow(arcade.Window):
 
     def on_key_release(self, key, modifiers):
         """
-        Called when the user presses a mouse button.
+        Called when the user releases a key.
         """
         if key == arcade.key.LEFT or key == arcade.key.RIGHT:
             self.player_sprite.change_x = 0
