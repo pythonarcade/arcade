@@ -32,6 +32,7 @@ Example list
    drawing_with_loops
    nested_loops
    shapes
+   snow
    starting_template
    timer
    move_mouse
@@ -55,4 +56,3 @@ Example list
    array_backed_grid
    asteroid_smasher
    examples_to_do
-

@@ -12,14 +12,21 @@ import arcade
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
-class Snowflake():
+
+class Snowflake:
     """
     Each instance of this class represents a single snowflake.
     Based on drawing filled-circles.
     """
-    def reset_pos(self): # Reset flake to random position above screen
+    def __init__(self):
+        self.x = 0
+        self.y = 0
+
+    def reset_pos(self):
+        # Reset flake to random position above screen
         self.y = random.randrange(SCREEN_HEIGHT, SCREEN_HEIGHT + 100)
         self.x = random.randrange(SCREEN_WIDTH)
+
 
 class MyAppWindow(arcade.Window):
     """ Main application class. """
@@ -52,7 +59,6 @@ class MyAppWindow(arcade.Window):
             snowflake.size = random.randrange(4)
             snowflake.speed = random.randrange(20, 40)
             snowflake.angle = random.uniform(math.pi, math.pi * 2)
-
 
             # Add snowflake to snowflake list
             self.snowflake_list.append(snowflake)
