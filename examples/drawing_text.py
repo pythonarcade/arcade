@@ -77,7 +77,7 @@ class MyApplication(arcade.Window):
         start_y = 150
         start_x = 20
         arcade.draw_point(start_x, start_y, arcade.color.BLUE, 5)
-        arcade.draw_text("Sidewarys text", start_x, start_y, arcade.color.BLACK, 14,
+        arcade.draw_text("Sideways text", start_x, start_y, arcade.color.BLACK, 14,
                          width=200, align="center",
                          anchor_x="center", anchor_y="center", rotation=90.0)
 
