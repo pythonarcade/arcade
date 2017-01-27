@@ -1446,7 +1446,7 @@ def draw_lrtb_rectangle_outline(left: float, right: float, top: float,
         raise AttributeError("Left coordinate must be less than or equal to "
                              "the right coordinate")
 
-    if bottom > right:
+    if bottom > top:
         raise AttributeError("Bottom coordinate must be less than or equal to "
                              "the top coordinate")
 
