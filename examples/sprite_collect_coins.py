@@ -25,14 +25,24 @@ class MyApplication(arcade.Window):
         :param width:
         :param height:
         """
+        
+        # Call the parent class initializer
         super().__init__(width, height)
-        # Sprite lists
+
+        # Variables that will hold sprite lists
         self.all_sprites_list = None
         self.coin_list = None
 
-        # Set up the player
-        self.score = 0
+        # Set up the player info
         self.player_sprite = None
+        self.score = 0
+
+        # Don't show the mouse cursor
+        self.set_mouse_visible(False)
+
+        # Set the background color
+        arcade.set_background_color(arcade.color.AMAZON)
+
 
     def setup(self):
         """ Set up the game and initialize the variables. """
@@ -61,12 +71,6 @@ class MyApplication(arcade.Window):
             # Add the coin to the lists
             self.all_sprites_list.append(coin)
             self.coin_list.append(coin)
-
-        # Don't show the mouse cursor
-        self.set_mouse_visible(False)
-
-        # Set the background color
-        arcade.set_background_color(arcade.color.AMAZON)
 
     def on_draw(self):
         """
