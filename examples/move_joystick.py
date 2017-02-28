@@ -1,5 +1,6 @@
 """
-This simple animation example shows how to move an item with the keyboard.
+This simple animation example shows how to move an item with the joystick
+and game-pad.
 """
 
 import arcade
