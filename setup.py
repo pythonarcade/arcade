@@ -50,7 +50,7 @@ if __name__ == "__main__":
               "Topic :: Software Development :: Libraries :: Python Modules",
               ],
           test_suite="tests",
-          data_files=[("Lib/site-packages/arcade/Win32", ["Win32/avbin.dll"]),
-                      ("Lib/site-packages/arcade/Win64", ["Win64/avbin.dll"]),
-                      ('lib/site-packages/arcade/lib',   ['lib/libavbin.10.dylib'])]
+          data_files=[("lib/site-packages/arcade/Win32", ["Win32/avbin.dll"]),
+                      ("lib/site-packages/arcade/Win64", ["Win64/avbin.dll"]),
+                      ("lib/site-packages/arcade/MacOS", ["lib/libavbin.10.dylib"])]
          )
