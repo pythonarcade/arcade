@@ -2,7 +2,7 @@
 
 BUILD = 1
 VERSION = "1.0.1"
-RELEASE = VERSION + "post" + str(BUILD)
+RELEASE = VERSION + ".post" + str(BUILD)
 
 from os import path
 import sys
@@ -40,12 +40,12 @@ if __name__ == "__main__":
                     "arcade.color"
                     ],
           classifiers=[
-              "Development Status :: 3 - Alpha",
+              "Development Status :: 4 - Beta",
               "Intended Audience :: Developers",
               "License :: OSI Approved :: MIT License",
               "Operating System :: OS Independent",
               "Programming Language :: Python",
-              "Programming Language :: Python :: 3.5",
+              "Programming Language :: Python :: 3",
               "Programming Language :: Python :: Implementation :: CPython",
               "Topic :: Software Development :: Libraries :: Python Modules",
               ],
