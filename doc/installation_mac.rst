@@ -2,15 +2,16 @@ Installation on the Mac
 =======================
 
 1. Go to the `Python website 
-   <https://www.python.org/downloads/release/python-351/>`_ and download the
-   "Mac OS X 64-bit / 32-bit installer".  Find the file in your Download folder
-   and double-click it to install
+   <https://www.python.org/downloads/>`_ and download the
+   Mac version that starts with a 3, rather than the one that starts with a
+   Click on the download and install the program. 
 
-2. All (most?) computers have a terminal window where a user can type commands 
+2. MacOS computers have a terminal window where a user can type commands 
    and interact directly with the computer, without any windows or GUI 
    applications popping up.  To start the terminal, open Spotlight 
    (Command + Space) and type "Terminal" (without the quotes), then press 
-   enter.
+   enter. You can also locate the Terminal program by looking in the "Utilities"
+   folder under your "Applications" folder.
 
 3. Install virtualenv.  This allows you to install Python packages without
    affecting the system-wide Python installation.  Run the following command
