@@ -52,5 +52,5 @@ if __name__ == "__main__":
           test_suite="tests",
           data_files=[("lib/site-packages/arcade/Win32", ["Win32/avbin.dll"]),
                       ("lib/site-packages/arcade/Win64", ["Win64/avbin.dll"]),
-                      ("lib/site-packages/arcade/MacOS", ["lib/libavbin.10.dylib"])]
+                      ("lib/python3.6/site-packages/lib/site-packages/arcade/lib", ["lib/libavbin.10.dylib"])]
          )
