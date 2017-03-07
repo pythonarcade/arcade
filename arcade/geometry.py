@@ -91,6 +91,10 @@ def check_for_collision(sprite1: Sprite, sprite2: Sprite) -> bool:
     >>> print(result_1, result_2, result_3)
     True True False
     """
+    if not isinstance(sprite1, Sprite):
+        raise TypeError("Parameter 1 is not an instance of the Sprite class.")
+    if not isinstance(sprite2, Sprite):
+        raise TypeError("Parameter 2 is not an instance of the Sprite class.")
     return are_polygons_intersecting(sprite1.points, sprite2.points)
 
 
@@ -119,6 +123,10 @@ sprite_list)
     >>> print(len(collision_list))
     1
     """
+    if not isinstance(sprite1, Sprite):
+        raise TypeError("Parameter 1 is not an instance of the Sprite class.")
+    if not isinstance(sprite_list, SpriteList):
+        raise TypeError("Parameter 2 is not a SpriteList.")
     collision_list = []
     for sprite2 in sprite_list:
         if sprite1 is not sprite2:
