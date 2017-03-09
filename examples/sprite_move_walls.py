@@ -21,8 +21,6 @@ class MyApplication(arcade.Window):
     def __init__(self, width, height):
         """
         Initializer
-        :param width:
-        :param height:
         """
         super().__init__(width, height)
         # Sprite lists
@@ -84,13 +82,9 @@ class MyApplication(arcade.Window):
         # Draw all the sprites.
         self.all_sprites_list.draw()
 
-        # Put the text on the screen.
-        output = "Score: {}".format(self.score)
-        arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
-
     def on_key_press(self, key, modifiers):
         """
-        Called whenever the mouse moves.
+        Called whenever a key is pressed.
         """
         if key == arcade.key.UP:
             self.player_sprite.change_y = MOVEMENT_SPEED
@@ -103,7 +97,7 @@ class MyApplication(arcade.Window):
 
     def on_key_release(self, key, modifiers):
         """
-        Called when the user presses a mouse button.
+        Called when the user releases a key.
         """
         if key == arcade.key.UP or key == arcade.key.DOWN:
             self.player_sprite.change_y = 0
