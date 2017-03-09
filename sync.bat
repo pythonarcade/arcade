@@ -1,0 +1,1 @@
+aws s3 sync doc/build/html s3://craven-arcade
