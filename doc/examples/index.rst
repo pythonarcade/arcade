@@ -39,6 +39,7 @@ Example list
    move_keyboard
    move_joystick
    joystick
+   sprite_move_keyboard
    sprite_collect_coins
    sprite_change_coins
    sprite_collect_coins_move_down
