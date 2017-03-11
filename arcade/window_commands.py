@@ -145,7 +145,7 @@ def open_window(window_title: str, width: Number, height: Number, resizable: boo
     window = pyglet.window.Window(width=width, height=height,
                                   caption=window_title,
                                   resizable=resizable)
-    set_viewport(0, width, 0, height)
+    set_viewport(0, width - 1, 0, height - 1)
     window.invalid = False
 
     _window = window
