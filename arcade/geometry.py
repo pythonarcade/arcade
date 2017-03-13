@@ -7,6 +7,7 @@ from arcade.sprite import Sprite, SpriteList
 from typing import List
 from arcade.arcade_types import PointList
 
+PRECISION = 2
 
 def are_polygons_intersecting(poly_a: PointList,
                               poly_b: PointList) -> bool:
@@ -49,20 +50,20 @@ def are_polygons_intersecting(poly_a: PointList,
             for poly in poly_a:
                 projected = normal[0] * poly[0] + normal[1] * poly[1]
 
-                if not min_a or projected < min_a:
+                if not min_a or round(projected, PRECISION) < round(min_a, PRECISION):
                     min_a = projected
-                if not max_a or projected > max_a:
+                if not max_a or round(projected, PRECISION) > round(max_a, PRECISION):
                     max_a = projected
 
             for poly in poly_b:
                 projected = normal[0] * poly[0] + normal[1] * poly[1]
 
-                if not min_b or projected < min_b:
+                if not min_b or round(projected, PRECISION) < round(min_b, PRECISION):
                     min_b = projected
-                if not max_b or projected > max_b:
+                if not max_b or round(projected, PRECISION) > round(max_b, PRECISION):
                     max_b = projected
 
-            if max_a <= min_b or max_b <= min_a:
+            if round(max_a, PRECISION) <= round(min_b, PRECISION) or round(max_b, PRECISION) <= round(min_a, PRECISION):
                 return False
 
     return True
