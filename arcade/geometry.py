@@ -53,17 +53,17 @@ def are_polygons_intersecting(poly_a: PointList,
             for poly in poly_a:
                 projected = round(normal[0] * poly[0] + normal[1] * poly[1], 2)
 
-                if not min_a or projected < min_a:
+                if min_a == None or projected < min_a:
                     min_a = projected
-                if not max_a or projected > max_a:
+                if max_a == None or projected > max_a:
                     max_a = projected
 
             for poly in poly_b:
                 projected = round(normal[0] * poly[0] + normal[1] * poly[1], 2)
 
-                if not min_b or projected < min_b:
+                if min_b == None or projected < min_b:
                     min_b = projected
-                if not max_b or projected > max_b:
+                if max_b == None or projected > max_b:
                     max_b = projected
 
             if max_a <= min_b or max_b <= min_a:
