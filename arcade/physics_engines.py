@@ -169,9 +169,10 @@ class PhysicsEnginePlatformer:
                     # See if we can "run up" a ramp
                     self.player_sprite.center_y -= change_x
                     if check_for_collision(self.player_sprite, item):
-                        self.player_sprite.center_y -= change_x
+                        self.player_sprite.center_y += change_x
                         self.player_sprite.left = max(item.right,
                                                       self.player_sprite.left)
+
             else:
                 print("Error, collision while player wasn't moving.")
 

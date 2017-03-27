@@ -131,6 +131,7 @@ upside-down.
         self.alpha = 1.0
         self.sprite_lists = []
         self.transparent = True
+        self._collision_radius = None
 
         self.can_cache = True
         self._points = None
@@ -214,6 +215,16 @@ upside-down.
         return self._point_list_cache
 
     points = property(get_points, set_points)
+
+    def _set_collision_radius(self, collision_radius):
+        self._collision_radius = collision_radius
+
+    def _get_collision_radius(self):
+        if not self._collision_radius:
+            self._collision_radius = max(self.width, self.height)
+        return self._collision_radius
+
+    collision_radius = property(_get_collision_radius, _set_collision_radius)
 
     def _get_bottom(self) -> float:
         """
@@ -303,7 +314,6 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
 
     center_y = property(_get_center_y, _set_center_y)
 
-
     def _get_change_x(self) -> float:
         """ Get the velocity in the x plane of the sprite. """
         return self.velocity[0]
@@ -323,8 +333,6 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
         self.velocity[1] = new_value
 
     change_y = property(_get_change_y, _set_change_y)
-
-
 
     def _get_angle(self) -> float:
         """ Get the angle of the sprite's rotation. """
