@@ -1,7 +1,8 @@
 """
 Load a map stored in csv format, as exported by the program 'Tiled.'
 
-Artwork from http://kenney.nl
+Artwork from: http://kenney.nl
+Tiled available from: http://www.mapeditor.org/
 """
 import arcade
 
@@ -21,8 +22,12 @@ JUMP_SPEED = 14
 GRAVITY = 0.5
 
 
-def get_map():
-    map_file = open("map.csv")
+def get_map(filename):
+    """
+    This function loads an array based on a map stored as a list of
+    numbers separated by commas.
+    """
+    map_file = open()
     map_array = []
     for line in map_file:
         line = line.strip()
@@ -39,8 +44,6 @@ class MyApplication(arcade.Window):
     def __init__(self, width, height):
         """
         Initializer
-        :param width:
-        :param height:
         """
         super().__init__(width, height)
         # Sprite lists
@@ -67,15 +70,24 @@ class MyApplication(arcade.Window):
         self.score = 0
         self.player_sprite = arcade.Sprite("images/character.png",
                                            SPRITE_SCALING)
+
+        # Starting position of the player
         self.player_sprite.center_x = 64
         self.player_sprite.center_y = 270
         self.all_sprites_list.append(self.player_sprite)
 
-        map_array = get_map()
+        # Get a 2D array made of numbers based on the map
+        map_array = get_map("map.csv")
 
         for row_index, row in enumerate(map_array):
             for column_index, item in enumerate(row):
 
+                # For this map, the numbers represent:
+                # -1 = empty
+                # 0  = box
+                # 1  = grass left edge
+                # 2  = grass middle
+                # 3  = grass right edge
                 if item == -1:
                     continue
                 elif item == 0:
@@ -104,7 +116,7 @@ class MyApplication(arcade.Window):
         # Set the background color
         arcade.set_background_color(arcade.color.AMAZON)
 
-        # Set the viewport boundaries
+        # Set the view port boundaries
         # These numbers set where we have 'scrolled' to.
         self.view_left = 0
         self.view_bottom = 0
@@ -123,7 +135,7 @@ class MyApplication(arcade.Window):
         self.all_sprites_list.draw()
 
         # Put the text on the screen.
-        # Adjust the text position based on the viewport so that we don't
+        # Adjust the text position based on the view port so that we don't
         # scroll the text too.
         distance = self.view_left + self.player_sprite.right
         output = "Distance: {}".format(distance)
@@ -168,7 +180,7 @@ class MyApplication(arcade.Window):
 
         # --- Manage Scrolling ---
 
-        # Track if we need to change the viewport
+        # Track if we need to change the view port
 
         changed = False
 
