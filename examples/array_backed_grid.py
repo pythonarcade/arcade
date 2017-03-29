@@ -6,15 +6,21 @@ grid on-screen.
 """
 import arcade
 
-SCREEN_WIDTH = 255
-SCREEN_HEIGHT = 255
+# Set how many rows and columns we will have
+ROW_COUNT = 10
+COLUMN_COUNT = 10
 
 # This sets the WIDTH and HEIGHT of each grid location
 WIDTH = 20
 HEIGHT = 20
 
 # This sets the margin between each cell
+# and on the edges of the screen.
 MARGIN = 5
+
+# Do the math to figure out oiur screen dimensions
+SCREEN_WIDTH = (WIDTH + MARGIN) * COLUMN_COUNT + MARGIN
+SCREEN_HEIGHT = (HEIGHT + MARGIN) * ROW_COUNT + MARGIN
 
 
 class MyApplication(arcade.Window):
@@ -30,11 +36,11 @@ class MyApplication(arcade.Window):
         # Create a 2 dimensional array. A two dimensional
         # array is simply a list of lists.
         self.grid = []
-        for row in range(10):
+        for row in range(ROW_COUNT):
             # Add an empty array that will hold each cell
             # in this row
             self.grid.append([])
-            for column in range(10):
+            for column in range(COLUMN_COUNT):
                 self.grid[row].append(0)  # Append a cell
 
         arcade.set_background_color(arcade.color.BLACK)
@@ -48,8 +54,8 @@ class MyApplication(arcade.Window):
         arcade.start_render()
 
         # Draw the grid
-        for row in range(10):
-            for column in range(10):
+        for row in range(ROW_COUNT):
+            for column in range(COLUMN_COUNT):
                 # Figure out what color to draw the box
                 if self.grid[row][column] == 1:
                     color = arcade.color.GREEN
@@ -72,10 +78,18 @@ class MyApplication(arcade.Window):
         column = x // (WIDTH + MARGIN)
         row = y // (HEIGHT + MARGIN)
 
-        # Set that location to one
-        self.grid[row][column] = 1
         print("Click coordinates: ({}, {}). Grid coordinates: ({}, {})"
               .format(x, y, row, column))
+
+        # Make sure we are on-grid. It is possible to click in the upper right
+        # corner in the margin and go to a grid location that doesn't exist
+        if row < ROW_COUNT and column < COLUMN_COUNT:
+
+            # Flip the location between 1 and 0.
+            if self.grid[row][column] == 0:
+                self.grid[row][column] = 1
+            else:
+                self.grid[row][column] = 0
 
 
 window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
