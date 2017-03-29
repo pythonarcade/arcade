@@ -41,6 +41,7 @@ Example list
    joystick
    sprite_move_keyboard
    sprite_collect_coins
+   sprite_collect_coins_background
    sprite_change_coins
    sprite_collect_coins_move_down
    sprite_collect_coins_move_bouncing
