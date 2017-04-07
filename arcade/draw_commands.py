@@ -101,7 +101,8 @@ def make_transparent_color(color: Color, transparency: float):
 def load_textures(file_name: str,
                   image_location_list: PointList,
                   mirrored: bool=False,
-                  flipped: bool=False) -> List['Texture']:
+                  flipped: bool=False,
+                  scale: float=1) -> List['Texture']:
     """
     Load a set of textures off of a single image file.
 
@@ -226,6 +227,9 @@ def load_textures(file_name: str,
                               image_width, image_height,
                               gl.GL_RGBA, gl.GL_UNSIGNED_BYTE, image_bytes)
 
+        image_width *= scale
+        image_height *= scale
+
         texture_info_list.append(Texture(texture, width, height))
 
     return texture_info_list
@@ -233,6 +237,8 @@ def load_textures(file_name: str,
 
 def load_texture(file_name: str, x: float=0, y: float=0,
                  width: float=0, height: float=0,
+                 mirrored: bool = False,
+                 flipped: bool = False,
                  scale: float=1) -> Texture:
     """
     Load image from disk and create a texture.
@@ -310,6 +316,11 @@ def load_texture(file_name: str, x: float=0, y: float=0,
         image = source_image
 
     # image = _trim_image(image)
+    if mirrored:
+        image = PIL.ImageOps.mirror(image)
+
+    if flipped:
+        image = PIL.ImageOps.flip(image)
 
     image_width, image_height = image.size
     image_bytes = image.convert("RGBA").tobytes("raw", "RGBA", 0, -1)
