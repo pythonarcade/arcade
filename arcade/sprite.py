@@ -690,12 +690,21 @@ class AnimatedWalkingSprite(Sprite):
 
             if self.state == FACE_LEFT:
                 texture_list = self.walk_left_textures
+                if texture_list == None or len(texture_list) == 0:
+                    raise RuntimeError("update_animation was called on a sprite that doesn't have a list of walk left textures.")
             elif self.state == FACE_RIGHT:
                 texture_list = self.walk_right_textures
+                if texture_list == None or len(texture_list) == 0:
+                    raise RuntimeError("update_animation was called on a sprite that doesn't have a list of walk right textures.")
             elif self.state == FACE_UP:
                 texture_list = self.walk_up_textures
+                if texture_list == None or len(texture_list) == 0:
+                    raise RuntimeError("update_animation was called on a sprite that doesn't have a list of walk up textures.")
             elif self.state == FACE_DOWN:
                 texture_list = self.walk_down_textures
+                if texture_list == None or len(texture_list) == 0:
+                    raise RuntimeError(
+                        "update_animation was called on a sprite that doesn't have a list of walk down textures.")
 
             self.cur_texture_index += 1
             if self.cur_texture_index >= len(texture_list):
