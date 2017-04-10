@@ -662,16 +662,16 @@ class AnimatedWalkingSprite(Sprite):
         texture_list = []
 
         change_direction = False
-        if self.change_x > 0 and self.change_y == 0 and self.state != FACE_RIGHT and len(self.walk_right_textures) > 0:
+        if self.change_x > 0 and self.change_y == 0 and self.state != FACE_RIGHT and self.walk_right_textures and len(self.walk_right_textures) > 0:
             self.state = FACE_RIGHT
             change_direction = True
-        elif self.change_x < 0 and self.change_y == 0 and self.state != FACE_LEFT and len(self.walk_left_textures) > 0:
+        elif self.change_x < 0 and self.change_y == 0 and self.state != FACE_LEFT and self.walk_left_textures and len(self.walk_left_textures) > 0:
             self.state = FACE_LEFT
             change_direction = True
-        elif self.change_y < 0 and self.change_x == 0 and self.state != FACE_DOWN and len(self.walk_down_textures) > 0:
+        elif self.change_y < 0 and self.change_x == 0 and self.state != FACE_DOWN and self.walk_down_textures and len(self.walk_down_textures) > 0:
             self.state = FACE_DOWN
             change_direction = True
-        elif self.change_y > 0 and self.change_x == 0 and self.state != FACE_UP and len(self.walk_up_textures) > 0:
+        elif self.change_y > 0 and self.change_x == 0 and self.state != FACE_UP and self.walk_up_textures and (self.walk_up_textures) > 0:
             self.state = FACE_UP
             change_direction = True
 
