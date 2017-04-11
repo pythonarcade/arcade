@@ -285,7 +285,7 @@ def load_texture(file_name: str, x: float=0, y: float=0,
     """
 
     # See if we already loaded this file, and we can just use a cached version.
-    cache_name = "{}{}{}{}{}{}".format(file_name, x, y, width, height, scale)
+    cache_name = "{}{}{}{}{}{}{}{}".format(file_name, x, y, width, height, scale, flipped, mirrored)
     if cache_name in load_texture.texture_cache:
         return load_texture.texture_cache[cache_name]
 
