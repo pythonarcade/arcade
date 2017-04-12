@@ -112,6 +112,7 @@ upside-down.
             self.height = self.texture.height * scale
         else:
             self.textures = []
+            self._texture = None
             self.width = 0
             self.height = 0
 
@@ -648,7 +649,6 @@ class AnimatedWalkingSprite(Sprite):
         self.walk_down_textures = None
         self.cur_texture_index = 0
         self.texture_change_distance = 20
-        self.can_cache = False
 
     def update_animation(self):
         """
