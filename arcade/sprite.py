@@ -138,6 +138,9 @@ upside-down.
         self._points = None
         self._point_list_cache = None
 
+        self._last_center_x = 0
+        self._last_center_y = 0
+
         self.force = [0, 0]
 
     def append_texture(self, texture: Texture):
@@ -559,6 +562,12 @@ class SpriteList:
             self.texture_coord_vbo_id = _create_vbo()
             # print("Setup VBO")
 
+        for sprite in self.sprite_list:
+            if sprite.center_x != sprite._last_center_x or sprite.center_y != sprite._last_center_y:
+                self.vbo_dirty = True
+                sprite._last_center_x = sprite.center_x
+                sprite._last_center_y = sprite.center_y
+
         # Run this if we are running 'fast' and we added or
         # removed sprites, and thus need to recreate our buffer
         # objects.
@@ -773,30 +782,35 @@ def _create_rects(rect_list: Iterable[Sprite]) -> List[float]:
 
     v2f = []
     for shape in rect_list:
-        v2f.extend([-shape.width / 2, -shape.height / 2,
-                   shape.width / 2, -shape.height / 2,
-                   shape.width / 2, shape.height / 2,
-                   -shape.width / 2, shape.height / 2])
+        # v2f.extend([-shape.width / 2, -shape.height / 2,
+        #            shape.width / 2, -shape.height / 2,
+        #            shape.width / 2, shape.height / 2,
+        #            -shape.width / 2, shape.height / 2])
+        v2f.extend([-shape.width / 2 + shape.center_x, -shape.height / 2 + shape.center_y,
+                   shape.width / 2 + shape.center_x, -shape.height / 2 + shape.center_y,
+                   shape.width / 2 + shape.center_x, shape.height / 2 + shape.center_y,
+                   -shape.width / 2 + shape.center_x, shape.height / 2 + shape.center_y])
+
 
     return v2f
 
 
-def _render_rect_filled(shape: Sprite, offset: int, texture_id: str,
-                        texture_coord_vbo: gl.GLuint):
+def _render_rect_filled(offset: int, texture_id: str,
+                        texture_coord_vbo: gl.GLuint, batch_count):
     """
     Render the rectangle at the right spot.
     """
     # Set color
-    gl.glLoadIdentity()
-    gl.glTranslatef(shape.center_x, shape.center_y, 0)
+    # gl.glLoadIdentity()
+    # gl.glTranslatef(shape.center_x, shape.center_y, 0)
 
-    if shape.angle != 0:
-        gl.glRotatef(shape.angle, 0, 0, 1)
+    # if shape.angle != 0:
+    #     gl.glRotatef(shape.angle, 0, 0, 1)
 
     gl.glBindTexture(gl.GL_TEXTURE_2D, texture_id)
 
     gl.glTexCoordPointer(2, gl.GL_FLOAT, 0, texture_coord_vbo)
-    gl.glDrawArrays(gl.GL_QUADS, offset, 4)
+    gl.glDrawArrays(gl.GL_QUADS, offset, batch_count)
 
 
 def _draw_rects(shape_list: Iterable[Sprite], vertex_vbo_id: gl.GLuint,
@@ -827,16 +841,40 @@ def _draw_rects(shape_list: Iterable[Sprite], vertex_vbo_id: gl.GLuint,
     gl.glBindBuffer(gl.GL_ARRAY_BUFFER, texture_coord_vbo_id)
 
     offset = 0
+
+    last_alpha = shape_list[0].alpha
+    gl.glColor4f(1, 1, 1, last_alpha)
+
+    last_texture_id = None
+    batch_count = 0
+    batch_offset = 0
+
+    texture_coord_vbo_id = None
     for shape in shape_list:
-        if shape.can_cache:
-            texture_coord_vbo_id = None
 
-            gl.glColor4f(1, 1, 1, shape.alpha)
-
-            _render_rect_filled(shape, offset,
-                                shape.texture.texture_id, texture_coord_vbo_id)
-
-            offset += 4
+        if shape.texture.texture_id == last_texture_id:
+            batch_count += 4
         else:
-            shape.draw()
+            if batch_count > 0:
+                _render_rect_filled(batch_offset,
+                                    last_texture_id,
+                                    texture_coord_vbo_id,
+                                    batch_count)
+                #print(f"Batch count: {batch_count}")
+            batch_count = 0
+            batch_offset = offset
+            last_texture_id = shape.texture.texture_id
+
+        offset += 4
+
+    _render_rect_filled(batch_offset,
+                        last_texture_id,
+                        texture_coord_vbo_id,
+                        batch_count)
+        # if last_alpha != shape.alpha:
+        #     gl.glColor4f(1, 1, 1, shape.alpha)
+        #     last_alpha = shape.alpha
+
+
+
     gl.glDisable(gl.GL_TEXTURE_2D)
