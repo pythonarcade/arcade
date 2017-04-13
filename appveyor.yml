@@ -6,13 +6,13 @@ environment:
   COVERALLS_REPO_TOKEN:
     secure: rAutnXmt6Uqrtbi7shwIii97qFj0dxwjhRRno6vlqL+Oa/StGUo2oZW8J8g0VVwx
   matrix:
-    - PYTHON: "C:\\Python35"
-      PYTHON_VERSION: "3.5.0"
+    - PYTHON: "C:\\Python36"
+      PYTHON_VERSION: "3.6.0"
       PYTHON_ARCH: "32"
 
 
 install:
-  - "%PYTHON%\\Scripts\\pip.exe install wheel twine pillow pyglet coverage coveralls numpy"
+  - "%PYTHON%\\Scripts\\pip.exe install wheel twine pillow pyglet coverage coveralls"
 
 build_script:
   - "%PYTHON%\\python.exe setup.py build sdist bdist bdist_wheel"
