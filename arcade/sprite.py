@@ -230,6 +230,9 @@ upside-down.
 
     collision_radius = property(_get_collision_radius, _set_collision_radius)
 
+    def __lt__(self, other):
+        return self.texture.texture_id.value < other.texture.texture_id.value
+
     def _get_bottom(self) -> float:
         """
         Return the y coordinate of the bottom of the sprite.
@@ -572,6 +575,7 @@ class SpriteList:
         # removed sprites, and thus need to recreate our buffer
         # objects.
         if fast and self.vbo_dirty:
+            self.sprite_list.sort()
             rects = _create_rects(self.sprite_list)
             _set_vbo(self.vertex_vbo_id, rects)
             _set_vbo(self.texture_coord_vbo_id,
@@ -786,10 +790,26 @@ def _create_rects(rect_list: Iterable[Sprite]) -> List[float]:
         #            shape.width / 2, -shape.height / 2,
         #            shape.width / 2, shape.height / 2,
         #            -shape.width / 2, shape.height / 2])
-        v2f.extend([-shape.width / 2 + shape.center_x, -shape.height / 2 + shape.center_y,
-                   shape.width / 2 + shape.center_x, -shape.height / 2 + shape.center_y,
-                   shape.width / 2 + shape.center_x, shape.height / 2 + shape.center_y,
-                   -shape.width / 2 + shape.center_x, shape.height / 2 + shape.center_y])
+        x1 = -shape.width / 2 + shape.center_x
+        x2 = shape.width / 2 + shape.center_x
+        y1 = -shape.height / 2 + shape.center_y
+        y2 = shape.height / 2 + shape.center_y
+
+        p1 = x1, y1
+        p2 = x2, y1
+        p3 = x2, y2
+        p4 = x1, y2
+
+        if shape.angle:
+            p1 = _rotate(p1[0], p1[1], shape.center_x, shape.center_y, shape.angle)
+            p2 = _rotate(p2[0], p2[1], shape.center_x, shape.center_y, shape.angle)
+            p3 = _rotate(p3[0], p3[1], shape.center_x, shape.center_y, shape.angle)
+            p4 = _rotate(p4[0], p4[1], shape.center_x, shape.center_y, shape.angle)
+
+        v2f.extend([p1[0], p1[1],
+                   p2[0], p2[1],
+                   p3[0], p3[1],
+                   p4[0], p4[1]])
 
 
     return v2f
@@ -845,28 +865,38 @@ def _draw_rects(shape_list: Iterable[Sprite], vertex_vbo_id: gl.GLuint,
     last_alpha = shape_list[0].alpha
     gl.glColor4f(1, 1, 1, last_alpha)
 
+    # Ideally, we want to draw these in "batches."
+    # We seek to find groups of squares with the same texture. Then draw
+    # them all at once.
+
     last_texture_id = None
+    last_alpha = 1
     batch_count = 0
     batch_offset = 0
-
     texture_coord_vbo_id = None
+
     for shape in shape_list:
 
-        if shape.texture.texture_id == last_texture_id:
-            batch_count += 4
-        else:
+        if shape.texture.texture_id != last_texture_id or shape.alpha != last_alpha:
+            # Ok, if the 'if' triggered above, we are now looking at a different
+            # texture than we looked at with the last loop. So draw the last
+            # "batch" of squares. We'll start a new batch with the current
+            # square but not draw it yet
             if batch_count > 0:
+                gl.glColor4f(1, 1, 1, last_alpha)
                 _render_rect_filled(batch_offset,
                                     last_texture_id,
                                     texture_coord_vbo_id,
                                     batch_count)
-                #print(f"Batch count: {batch_count}")
             batch_count = 0
             batch_offset = offset
             last_texture_id = shape.texture.texture_id
+            last_alpha = shape.alpha
 
+        batch_count += 4
         offset += 4
 
+    # Draw the last batch.
     _render_rect_filled(batch_offset,
                         last_texture_id,
                         texture_coord_vbo_id,
