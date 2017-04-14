@@ -51,7 +51,7 @@ def are_polygons_intersecting(poly_a: PointList,
             min_a, max_a, min_b, max_b = (None,) * 4
 
             for poly in poly_a:
-                projected = round(normal[0] * poly[0] + normal[1] * poly[1], 2)
+                projected = normal[0] * poly[0] + normal[1] * poly[1]
 
                 if min_a == None or projected < min_a:
                     min_a = projected
@@ -59,7 +59,7 @@ def are_polygons_intersecting(poly_a: PointList,
                     max_a = projected
 
             for poly in poly_b:
-                projected = round(normal[0] * poly[0] + normal[1] * poly[1], 2)
+                projected = normal[0] * poly[0] + normal[1] * poly[1]
 
                 if min_b == None or projected < min_b:
                     min_b = projected
@@ -95,23 +95,30 @@ def check_for_collision(sprite1: Sprite, sprite2: Sprite) -> bool:
     >>> print(result_1, result_2, result_3)
     True True False
     """
-    if not isinstance(sprite1, Sprite):
-        raise TypeError("Parameter 1 is not an instance of the Sprite class.")
-    if not isinstance(sprite2, Sprite):
-        raise TypeError("Parameter 2 is not an instance of the Sprite class.")
+    # if not isinstance(sprite1, Sprite):
+    #     raise TypeError("Parameter 1 is not an instance of the Sprite class.")
+    # if not isinstance(sprite2, Sprite):
+    #     raise TypeError("Parameter 2 is not an instance of the Sprite class.")
 
     collision_radius_sum = sprite1.collision_radius + sprite2.collision_radius
 
-    diff_x = abs(sprite1.center_x - sprite2.center_x)
+    diff_x = sprite1.position[0] - sprite2.position[0]
+    diff_x2 = diff_x * diff_x
 
-    if diff_x > collision_radius_sum:
-        return False
-    diff_y = abs(sprite2.center_y - sprite2.center_y)
-    if diff_y > collision_radius_sum:
+    if diff_x2 > collision_radius_sum * collision_radius_sum:
         return False
 
-    distance = math.sqrt(diff_x * diff_x + diff_y + diff_y)
-    if distance > collision_radius_sum:
+    diff_y = sprite1.position[1] - sprite2.position[1]
+    diff_y2 = diff_y * diff_y
+    if diff_y2 > collision_radius_sum * collision_radius_sum:
+        return False
+
+    # distance = math.sqrt(diff_x * diff_x + diff_y * diff_y)
+    # if distance > collision_radius_sum:
+    #     return False
+
+    distance = diff_x2 + diff_y2
+    if distance > collision_radius_sum * collision_radius_sum:
         return False
 
     return are_polygons_intersecting(sprite1.points, sprite2.points)
