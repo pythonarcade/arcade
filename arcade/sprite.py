@@ -839,6 +839,10 @@ def _draw_rects(shape_list: Iterable[Sprite], vertex_vbo_id: gl.GLuint,
     Draw a set of rectangles using vertex buffers. This is more efficient
     than drawing them individually.
     """
+
+    if len(shape_list) == 0:
+        return
+
     gl.glEnable(gl.GL_BLEND)
     gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
     gl.glEnable(gl.GL_TEXTURE_2D) # As soon as this happens, can't use drawing commands
@@ -897,15 +901,11 @@ def _draw_rects(shape_list: Iterable[Sprite], vertex_vbo_id: gl.GLuint,
         batch_count += 4
         offset += 4
 
-    # Draw the last batch.
+    # Draw the last batch, if it exists
     _render_rect_filled(batch_offset,
                         last_texture_id,
                         texture_coord_vbo_id,
                         batch_count)
-        # if last_alpha != shape.alpha:
-        #     gl.glColor4f(1, 1, 1, shape.alpha)
-        #     last_alpha = shape.alpha
-
 
 
     gl.glDisable(gl.GL_TEXTURE_2D)
