@@ -864,6 +864,7 @@ def _draw_rects(shape_list: Iterable[Sprite], vertex_vbo_id: gl.GLuint,
 
     last_alpha = shape_list[0].alpha
     gl.glColor4f(1, 1, 1, last_alpha)
+    gl.glLoadIdentity()
 
     # Ideally, we want to draw these in "batches."
     # We seek to find groups of squares with the same texture. Then draw
