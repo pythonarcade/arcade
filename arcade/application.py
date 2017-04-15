@@ -88,7 +88,7 @@ called.
         >>> window.close()
         """
 
-        if self.resizable:
+        if self._resizable:
             super().set_minimum_size(width, height)
         else:
             raise ValueError('Cannot set min size on non-resizable window')
@@ -113,7 +113,7 @@ called.
 
         """
 
-        if self.resizable:
+        if self._resizable:
             super().set_maximum_size(width, height)
         else:
             raise ValueError('Cannot set max size on non-resizable window')
