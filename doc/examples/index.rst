@@ -40,6 +40,7 @@ Example list
    move_joystick
    joystick
    sprite_move_keyboard
+   sprite_face_left_or_right
    sprite_collect_coins
    sprite_collect_coins_background
    sprite_change_coins
