@@ -132,8 +132,8 @@ class PhysicsEnginePlatformer:
                 for item in hit_list:
                     while check_for_collision(self.player_sprite, item):
                         self.player_sprite.bottom = item.top
-                    # if item.change_x != 0:
-                    #     self.player_sprite.center_x += item.change_x
+                    if item.change_x != 0:
+                        self.player_sprite.center_x += item.change_x
                 # print(f"Spot Y ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
             else:
                 pass
