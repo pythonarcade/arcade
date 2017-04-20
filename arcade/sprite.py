@@ -382,7 +382,7 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
         """ The left most x coordinate. """
         leftmost = self._get_left()
         diff = amount - leftmost
-        self.center_x += int(round(diff,0))
+        self.center_x += diff
 
     left = property(_get_left, _set_left)
 
@@ -416,7 +416,7 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
         """ The right most x coordinate. """
         rightmost = self._get_right()
         diff = rightmost - amount
-        self.center_x -= int(round(diff,0))
+        self.center_x -= diff
 
     right = property(_get_right, _set_right)
 
