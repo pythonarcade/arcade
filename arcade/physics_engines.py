@@ -73,7 +73,7 @@ class PhysicsEnginePlatformer:
     This class will move everything, and take care of collisions.
     """
 
-    def __init__(self, player_sprite: Sprite, platforms: SpriteList, 
+    def __init__(self, player_sprite: Sprite, platforms: SpriteList,
                  gravity_constant: float = 0.5):
         """
         Constructor.
@@ -108,6 +108,7 @@ class PhysicsEnginePlatformer:
         """
         Move everything and resolve collisions.
         """
+        # print(f"Spot A ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
 
         # --- Add gravity
         self.player_sprite.change_y -= self.gravity_constant
@@ -126,12 +127,14 @@ class PhysicsEnginePlatformer:
                 for item in hit_list:
                     self.player_sprite.top = min(item.bottom,
                                                  self.player_sprite.top)
+                # print(f"Spot X ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
             elif self.player_sprite.change_y < 0:
                 for item in hit_list:
                     while check_for_collision(self.player_sprite, item):
-                        self.player_sprite.bottom += 0.5
-                    if item.change_x != 0:
-                        self.player_sprite.center_x += item.change_x
+                        self.player_sprite.bottom = item.top
+                    # if item.change_x != 0:
+                    #     self.player_sprite.center_x += item.change_x
+                # print(f"Spot Y ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
             else:
                 pass
                 # TODO: The code below can't execute, as "item" doesn't
@@ -144,37 +147,61 @@ class PhysicsEnginePlatformer:
                 #     self.player_sprite.top = item.bottom
             self.player_sprite.change_y = min(0, hit_list[0].change_y)
 
+        # print(f"Spot B ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
+        self.player_sprite.center_y = round(self.player_sprite.center_y, 2)
+        # print(f"Spot Q ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
+
+
         # --- Move in the x direction
         self.player_sprite.center_x += self.player_sprite.change_x
 
-        # Check for wall hit
-        hit_list = \
-            check_for_collision_with_list(self.player_sprite,
-                                          self.platforms)
+        check_again = True
+        while check_again:
+            check_again = False
+            # Check for wall hit
+            hit_list = \
+                check_for_collision_with_list(self.player_sprite,
+                                              self.platforms)
 
-        # If we hit a wall, move so the edges are at the same point
-        if len(hit_list) > 0:
-            change_x = self.player_sprite.change_x
-            if change_x > 0:
-                for item in hit_list:
-                    # See if we can "run up" a ramp
-                    self.player_sprite.center_y += change_x
-                    if check_for_collision(self.player_sprite, item):
-                        self.player_sprite.center_y -= change_x
-                        self.player_sprite.right = \
-                            min(item.left, self.player_sprite.right)
-
-            elif change_x < 0:
-                for item in hit_list:
-                    # See if we can "run up" a ramp
-                    self.player_sprite.center_y -= change_x
-                    if check_for_collision(self.player_sprite, item):
+            # If we hit a wall, move so the edges are at the same point
+            if len(hit_list) > 0:
+                change_x = self.player_sprite.change_x
+                if change_x > 0:
+                    for item in hit_list:
+                        # print(f"Spot 1 ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
+                        # See if we can "run up" a ramp
                         self.player_sprite.center_y += change_x
-                        self.player_sprite.left = max(item.right,
-                                                      self.player_sprite.left)
+                        if len(check_for_collision_with_list(self.player_sprite, self.platforms)) > 0:
+                            self.player_sprite.center_y -= change_x
+                            self.player_sprite.right = \
+                                min(item.left, self.player_sprite.right)
+                            # print(f"Spot R ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
+                            check_again = True
+                            break
+                        # else:
+                            # print("Run up ok 1")
+                        # print(f"Spot 2 ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
 
-            else:
-                print("Error, collision while player wasn't moving.")
+                elif change_x < 0:
+                    for item in hit_list:
+                        # See if we can "run up" a ramp
+                        # print(f"Spot 3 ({self.player_sprite.center_x}, {self.player_sprite.center_y}) {item.right} - {self.player_sprite.left}")
+                        self.player_sprite.center_y -= change_x
+                        if len(check_for_collision_with_list(self.player_sprite, self.platforms)) > 0:
+                            # Can't run up the ramp, reverse
+                            self.player_sprite.center_y += change_x
+                            self.player_sprite.left = max(item.right,
+                                                          self.player_sprite.left)
+                            # print(f"Reverse 1 {item.right}, {self.player_sprite.left}")
+                            # Ok, if we were shoved back to the right, we need to check this whole thing again.
+                            check_again = True
+                            break
+                        # print(f"Spot 4 ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
+
+                else:
+                    print("Error, collision while player wasn't moving.")
+
+            # print(f"Spot E ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
 
         for platform in self.platforms:
             if platform.change_x != 0 or platform.change_y != 0:
@@ -211,3 +238,7 @@ class PhysicsEnginePlatformer:
                     platform.bottom = platform.boundary_bottom
                     if platform.change_y < 0:
                         platform.change_y *= -1
+
+        self.player_sprite.center_x = round(self.player_sprite.center_x, 2)
+        # print(f"Spot C ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
+        # print()
