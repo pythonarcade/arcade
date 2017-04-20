@@ -22,3 +22,4 @@ These are examples we need, that haven't been created.
 - Move between rooms
 - Physics engine
 - Enemies that shoot randomly
+- Enemies that follow the user
