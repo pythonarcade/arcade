@@ -1,7 +1,7 @@
 .. _example-sprite-moving-platforms:
 
-Sprites: Moving Platforms
-=========================
+Moving Platforms
+================
 
 .. raw:: html
 

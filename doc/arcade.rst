@@ -40,14 +40,6 @@ Geometry Module
     :undoc-members:
     :show-inheritance:
 
-Shape Objects Module
-^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: arcade.shape_objects
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 Sprite Module
 ^^^^^^^^^^^^^
 

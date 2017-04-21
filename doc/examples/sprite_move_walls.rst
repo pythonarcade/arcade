@@ -1,7 +1,7 @@
 .. _example-sprite-move-walls:
 
-Sprites: Move with walls
-========================
+Move with walls
+===============
 
 .. image:: sprite_move_walls.png
     :width: 600px

@@ -1,7 +1,7 @@
 .. _example-sprite-change-coins:
 
-Sprites: Change coins
-=====================
+Change coins
+============
 
 .. image:: sprite_change_coins.png
     :width: 600px

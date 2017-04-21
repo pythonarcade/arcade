@@ -1,7 +1,7 @@
 .. _example-sprite-tiled-map:
 
-Sprites: Work with a tiled map
-==============================
+Work with a tiled map
+=====================
 
 .. image:: sprite_tiled_map.png
     :width: 600px

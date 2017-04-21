@@ -1,7 +1,7 @@
 .. _example-sprite-collect-coins-move-circle:
 
-Sprites: Collect blocks that are moving in a circle
-===================================================
+Collect Coins that are Moving in a Circle
+=========================================
 
 .. image:: sprite_collect_coins_move_circle.png
     :width: 600px

@@ -1,7 +1,7 @@
 .. _example-sprite-collect-coins:
 
-Sprites: Collect blocks
-=======================
+Collect Coins - Mouse
+=====================
 
 .. image:: sprite_collect_coins.png
     :width: 600px

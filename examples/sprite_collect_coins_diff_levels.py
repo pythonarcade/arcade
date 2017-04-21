@@ -14,17 +14,41 @@ SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
 
+class FallingCoin(arcade.Sprite):
+    """ Simple sprite that falls down """
+
+    def update(self):
+        """ Move the coin """
+
+        # Fall down
+        self.center_y -= 2
+
+        # Did we go off the screen? If so, pop back to the top.
+        if self.top < 0:
+            self.bottom = SCREEN_HEIGHT
+
+
+class RisingCoin(arcade.Sprite):
+    """ Simple sprite that falls up """
+
+    def update(self):
+        """ Move the coin """
+
+        # Move up
+        self.center_y += 2
+
+        # Did we go off the screen? If so, pop back to the bottom.
+        if self.bottom > SCREEN_HEIGHT:
+            self.top = 0
+
+
 class MyApplication(arcade.Window):
     """
     Main application class.
     """
 
     def __init__(self, width, height):
-        """
-        Initializer
-        :param width:
-        :param height:
-        """
+        """ Initialize """
 
         # Call the parent class initializer
         super().__init__(width, height)
@@ -44,22 +68,8 @@ class MyApplication(arcade.Window):
         arcade.set_background_color(arcade.color.AMAZON)
 
 
-    def setup(self):
-        """ Set up the game and initialize the variables. """
-
-        # Sprite lists
-        self.all_sprites_list = arcade.SpriteList()
-        self.coin_list = arcade.SpriteList()
-
-        # Set up the player
-        self.score = 0
-        self.player_sprite = arcade.Sprite("images/character.png",
-                                           SPRITE_SCALING)
-        self.player_sprite.center_x = 50
-        self.player_sprite.center_y = 50
-        self.all_sprites_list.append(self.player_sprite)
-
-        for i in range(50):
+    def level_1(self):
+        for i in range(20):
 
             # Create the coin instance
             coin = arcade.Sprite("images/coin_01.png", SPRITE_SCALING / 3)
@@ -71,6 +81,53 @@ class MyApplication(arcade.Window):
             # Add the coin to the lists
             self.all_sprites_list.append(coin)
             self.coin_list.append(coin)
+
+    def level_2(self):
+        for i in range(30):
+
+            # Create the coin instance
+            coin = FallingCoin("images/gold_1.png", SPRITE_SCALING / 2)
+
+            # Position the coin
+            coin.center_x = random.randrange(SCREEN_WIDTH)
+            coin.center_y = random.randrange(SCREEN_HEIGHT, SCREEN_HEIGHT * 2)
+
+            # Add the coin to the lists
+            self.all_sprites_list.append(coin)
+            self.coin_list.append(coin)
+
+    def level_3(self):
+        for i in range(30):
+
+            # Create the coin instance
+            coin = RisingCoin("images/gold_1.png", SPRITE_SCALING / 2)
+
+            # Position the coin
+            coin.center_x = random.randrange(SCREEN_WIDTH)
+            coin.center_y = random.randrange(-SCREEN_HEIGHT, 0)
+
+            # Add the coin to the lists
+            self.all_sprites_list.append(coin)
+            self.coin_list.append(coin)
+
+    def setup(self):
+        """ Set up the game and initialize the variables. """
+
+        self.score = 0
+        self.level = 1
+
+        # Sprite lists
+        self.all_sprites_list = arcade.SpriteList()
+        self.coin_list = arcade.SpriteList()
+
+        # Set up the player
+        self.player_sprite = arcade.Sprite("images/character.png",
+                                           SPRITE_SCALING)
+        self.player_sprite.center_x = 50
+        self.player_sprite.center_y = 50
+        self.all_sprites_list.append(self.player_sprite)
+
+        self.level_1()
 
     def on_draw(self):
         """
@@ -85,8 +142,12 @@ class MyApplication(arcade.Window):
         self.coin_list.draw()
 
         # Put the text on the screen.
-        output = "Score: {}".format(self.score)
+        output = f"Score: {self.score}"
         arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
+
+        output = f"Level: {self.level}"
+        arcade.draw_text(output, 10, 35, arcade.color.WHITE, 14)
+
 
     def on_mouse_motion(self, x, y, dx, dy):
         """
@@ -111,6 +172,15 @@ class MyApplication(arcade.Window):
         for coin in hit_list:
             coin.kill()
             self.score += 1
+
+        # See if we should go to level 2
+        if len(self.coin_list) == 0 and self.level == 1:
+            self.level += 1
+            self.level_2()
+        # See if we should go to level 3
+        elif len(self.coin_list) == 0 and self.level == 2:
+            self.level += 1
+            self.level_3()
 
 
 window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)

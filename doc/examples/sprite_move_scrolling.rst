@@ -1,7 +1,7 @@
 .. _example-sprite-move-scrolling:
 
-Sprites: Move with a scrolling screen
-=====================================
+Move with a scrolling screen
+============================
 
 .. image:: sprite_move_scrolling.png
     :width: 600px

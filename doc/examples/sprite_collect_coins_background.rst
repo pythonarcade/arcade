@@ -1,7 +1,7 @@
 .. _example-sprite-collect-coins:
 
-Sprites: Using a Background Image
-=================================
+Using a Background Image
+========================
 
 .. image:: sprite_collect_coins_background.png
     :width: 600px

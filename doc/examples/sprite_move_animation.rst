@@ -1,7 +1,7 @@
 .. _example-sprite-move-animation:
 
-Sprites: Move with a sprite animation
-=====================================
+Move with a sprite animation
+============================
 
 .. raw:: html
 

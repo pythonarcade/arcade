@@ -1,7 +1,7 @@
 .. _example-sprite-collect-coins-move_down:
 
-Sprites: Collect blocks moving down
-===================================
+Collect Coins Moving Down
+=========================
 
 .. image:: sprite_collect_coins_move_down.png
     :width: 600px

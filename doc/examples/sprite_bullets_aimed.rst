@@ -1,7 +1,7 @@
 .. _example-sprite-bullets-aimed:
 
-Sprites: Aim and shoot bullets
-==============================
+Aim and Shoot Bullets
+=====================
 
 .. image:: sprite_bullets_aimed.png
     :width: 600px

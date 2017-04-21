@@ -3,21 +3,8 @@
 Example Code
 ============
 
-The example code here starts out simple and gets more complex. The example code
-progresses through these topics:
-
-* How to call functions
-* How to create functions
-* How use function callbacks and static function variables
-* How to make loops
-* How to use nested loops
-* How to create classes
-* How to allow the user to control items on the screen
-* How to use sprites
-* How to use a two-dimensional list
-
-Example list
-^^^^^^^^^^^^
+Drawing
+-------
 
 .. toctree::
    :maxdepth: 3
@@ -25,6 +12,15 @@ Example list
    drawing_primitives
    drawing_with_functions
    drawing_text
+   starting_template
+   array_backed_grid
+
+Animation
+---------
+.. toctree::
+   :maxdepth: 3
+
+
    bouncing_rectangle
    bouncing_ball
    bouncing_balls
@@ -33,29 +29,80 @@ Example list
    nested_loops
    shapes
    snow
-   starting_template
    timer
+
+User Control
+------------
+
+.. toctree::
+   :maxdepth: 3
+
    move_mouse
    move_keyboard
    move_joystick
    joystick
+
+Sprites
+-------
+
+Player Movement
+^^^^^^^^^^^^^^^
+
+.. toctree::
+   :maxdepth: 3
+
+   sprite_collect_coins
    sprite_move_keyboard
    sprite_face_left_or_right
-   sprite_collect_coins
-   sprite_collect_coins_background
-   sprite_change_coins
+   sprite_move_joystick
+
+Sprite Movement
+^^^^^^^^^^^^^^^
+
+.. toctree::
+   :maxdepth: 3
+
    sprite_collect_coins_move_down
    sprite_collect_coins_move_bouncing
    sprite_collect_coins_move_circle
+
+Levels
+^^^^^^
+
+.. toctree::
+   :maxdepth: 3
+
+   sprite_collect_coins_diff_levels
+
+Bullets
+^^^^^^^
+.. toctree::
+   :maxdepth: 3
+
    sprite_bullets
    sprite_bullets_aimed
+
+Platformers
+^^^^^^^^^^^
+.. toctree::
+   :maxdepth: 3
+
    sprite_move_walls
    sprite_move_scrolling
    sprite_move_animation
    sprite_tiled_map
    sprite_ramps
    sprite_moving_platforms
+
+
+Other
+-----
+
+.. toctree::
+   :maxdepth: 3
+
+   sprite_collect_coins_background
+   sprite_change_coins
    instruction_and_game_over_screens
-   array_backed_grid
    asteroid_smasher
    examples_to_do

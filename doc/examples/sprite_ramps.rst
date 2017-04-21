@@ -1,7 +1,7 @@
 .. _example-sprite-ramps:
 
-Sprites: Ramps
-==============
+Ramps
+=====
 
 .. raw:: html
 

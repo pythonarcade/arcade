@@ -1,7 +1,7 @@
 .. _example-sprite-collect-coins-move-bouncing:
 
-Sprites: Collect blocks that are bouncing
-=========================================
+Collect Coins that are Bouncing
+===============================
 
 .. image:: sprite_collect_coins_move_bouncing.png
     :width: 600px
