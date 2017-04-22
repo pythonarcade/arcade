@@ -1,7 +1,9 @@
-.. _example-drawing-with-functions:
+:orphan:
 
-Functions: Drawing with functions
-=================================
+.. _drawing_with_functions:
+
+Drawing with Functions
+======================
 
 This example shows how to define functions that draw objects. Such as
 ``draw_tree(x, y)`` and ``draw_bird(x, y)``.

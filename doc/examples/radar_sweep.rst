@@ -1,7 +1,7 @@
-.. _example-radar-sweep:
+.. _radar_sweep:
 
-Animation: Radar Sweep
-======================
+Radar Sweep
+===========
 
 .. image:: radar_sweep.png
     :width: 600px

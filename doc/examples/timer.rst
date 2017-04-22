@@ -1,7 +1,7 @@
 .. _example-timer:
 
-Classes: Timer
-==============
+On-Screen Timer
+===============
 
 .. image:: timer.png
     :width: 600px

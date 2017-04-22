@@ -4,3 +4,14 @@
 .wy-table-responsive table td {
     white-space: normal;
 }
+#drawing,#animation {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+}
+h1 {
+	width: 100%;
+}
+h2 {
+	width: 100%;
+}

@@ -13,7 +13,7 @@ SCREEN_HEIGHT = 600
 CENTER_X = SCREEN_WIDTH // 2
 CENTER_Y = SCREEN_HEIGHT // 2
 RADIANS_PER_FRAME = 0.02
-SWEEP_LENGTH = 150
+SWEEP_LENGTH = 250
 
 
 def on_draw(delta_time):
@@ -31,11 +31,11 @@ def on_draw(delta_time):
     arcade.start_render()
 
     # Draw the radar line
-    arcade.draw_line(CENTER_X, CENTER_Y, x, y, arcade.color.OLIVE, 2)
+    arcade.draw_line(CENTER_X, CENTER_Y, x, y, arcade.color.OLIVE, 4)
 
     # Draw the outline of the radar
     arcade.draw_circle_outline(CENTER_X, CENTER_Y, SWEEP_LENGTH,
-                               arcade.color.DARK_GREEN, 3)
+                               arcade.color.DARK_GREEN, 10)
 
 # These are function-specific variables. Before we
 # use them in our function, we need to give them initial

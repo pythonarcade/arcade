@@ -1,4 +1,4 @@
-.. _example-sprite-move-keyboard:
+.. _example-sprite-move-left-or-right:
 
 Sprite: Face Left or Right
 ==========================

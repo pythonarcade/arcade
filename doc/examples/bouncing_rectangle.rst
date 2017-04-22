@@ -1,7 +1,9 @@
-.. _example-bouncing-rectangle:
+:orphan:
 
-Animation: Bouncing rectangle
-=============================
+.. _bouncing_rectangle:
+
+Bouncing Rectangle
+==================
 
 This shows how to animate an image. It does not use classes, but it does use
 function variables.

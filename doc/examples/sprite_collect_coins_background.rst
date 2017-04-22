@@ -1,4 +1,4 @@
-.. _example-sprite-collect-coins:
+.. _example-sprite-collect-coins-background:
 
 Using a Background Image
 ========================

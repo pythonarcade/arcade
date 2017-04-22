@@ -1,7 +1,7 @@
 .. _example-drawing-with-loops:
 
-Loops: Drawing with loops
-=========================
+Drawing with Loops
+==================
 
 .. image:: drawing_with_loops.png
     :width: 600px

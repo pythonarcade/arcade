@@ -1,9 +1,11 @@
-.. _example-drawing-primitives:
+:orphan:
 
-Drawing: Drawing primitives
-===========================
+.. _drawing_primitives:
 
-This example shows how to use the :ref:`drawing-primitives`. It is a good place
+Drawing Primitives
+==================
+
+This example shows how to use the :ref:`drawing-commands`. It is a good place
 to start for new programmers because they do not need to know how to define
 functions or classes before drawing images.
 

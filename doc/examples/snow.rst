@@ -1,6 +1,6 @@
 .. _example-snow:
 
-Arrays: Snow
+Falling Snow
 ============
 
 .. image:: snow.png

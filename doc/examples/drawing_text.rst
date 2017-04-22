@@ -1,7 +1,9 @@
-.. _example-text:
+:orphan:
 
-Drawing: Text
-=============
+.. _drawing_text:
+
+Drawing Text
+============
 
 .. image:: drawing_text.png
     :width: 500px

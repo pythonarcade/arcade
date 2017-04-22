@@ -1,10 +1,14 @@
-.. _example-bouncing-ball:
+:orphan:
 
-Animation: Bouncing ball
-========================
+.. _bouncing_ball:
 
-.. raw:: html
+Bouncing Ball with Gravity
+==========================
 
-    <iframe width="420" height="315" src="https://www.youtube.com/embed/wlFY0BQGYm4" frameborder="0" allowfullscreen></iframe>
+.. image:: bouncing_ball.png
+    :width: 600px
+    :height: 600px
+    :align: center
+    :alt: Screen shot of bouncing ball
 
 .. literalinclude:: ../../examples/bouncing_ball.py

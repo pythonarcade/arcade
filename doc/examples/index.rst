@@ -6,24 +6,54 @@ Example Code
 Drawing
 -------
 
-.. toctree::
-   :maxdepth: 3
+.. figure:: thumbs/drawing_primitives.png
+   :figwidth: 174px
 
-   drawing_primitives
-   drawing_with_functions
-   drawing_text
-   starting_template
-   array_backed_grid
+   :ref:`drawing_primitives`
+
+.. figure:: thumbs/drawing_with_functions.png
+   :figwidth: 174px
+
+   :ref:`drawing_with_functions`
+
+.. figure:: thumbs/drawing_text.png
+   :figwidth: 174px
+
+   :ref:`drawing_text`
+
+.. figure:: thumbs/array_backed_grid.png
+   :figwidth: 174px
+
+   :ref:`array_backed_grid`
+
 
 Animation
 ---------
+
+.. figure:: thumbs/bouncing_rectangle.png
+   :figwidth: 174px
+
+   :ref:`bouncing_rectangle`
+
+.. figure:: thumbs/bouncing_ball.png
+   :figwidth: 174px
+
+   :ref:`bouncing_ball`
+
+.. figure:: thumbs/bouncing_balls.png
+   :figwidth: 174px
+
+   :ref:`bouncing_balls`
+
+.. figure:: thumbs/radar_sweep.png
+   :figwidth: 174px
+
+   :ref:`radar_sweep`
+
+
 .. toctree::
    :maxdepth: 3
 
-
-   bouncing_rectangle
-   bouncing_ball
-   bouncing_balls
    radar_sweep
    drawing_with_loops
    nested_loops
@@ -101,6 +131,7 @@ Other
 .. toctree::
    :maxdepth: 3
 
+   starting_template
    sprite_collect_coins_background
    sprite_change_coins
    instruction_and_game_over_screens
