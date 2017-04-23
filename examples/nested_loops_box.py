@@ -7,13 +7,13 @@ Showing how to do nested loops.
 # Library imports
 import arcade
 
-COLUMN_SPACING = 60
-ROW_SPACING = 40
-
-TEXT_SIZE = 12
+COLUMN_SPACING = 20
+ROW_SPACING = 20
+LEFT_MARGIN = 110
+BOTTOM_MARGIN = 110
 
 # Open the window and set the background
-arcade.open_window("Complex Loops - Box", 600, 400)
+arcade.open_window("Complex Loops - Box", 400, 400)
 
 arcade.set_background_color(arcade.color.WHITE)
 
@@ -25,13 +25,11 @@ for row in range(10):
     # Loop for each column
     for column in range(10):
         # Calculate our location
-        x = column * COLUMN_SPACING
-        y = row * ROW_SPACING
+        x = column * COLUMN_SPACING + LEFT_MARGIN
+        y = row * ROW_SPACING + BOTTOM_MARGIN
 
         # Draw the item
-        arcade.draw_text("({}, {})".format(column, row),
-                         x, y,
-                         arcade.color.BLACK, TEXT_SIZE)
+        arcade.draw_circle_filled(x, y, 7, arcade.color.AO)
 
 # Finish the render.
 arcade.finish_render()

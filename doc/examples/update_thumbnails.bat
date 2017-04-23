@@ -1,0 +1,1 @@
+mogrify -resize 200x200 -extent 200x200 -background transparent -path thumbs *.png

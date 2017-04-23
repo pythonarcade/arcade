@@ -7,22 +7,22 @@ Drawing
 -------
 
 .. figure:: thumbs/drawing_primitives.png
-   :figwidth: 174px
+   :figwidth: 170px
 
    :ref:`drawing_primitives`
 
 .. figure:: thumbs/drawing_with_functions.png
-   :figwidth: 174px
+   :figwidth: 170px
 
    :ref:`drawing_with_functions`
 
 .. figure:: thumbs/drawing_text.png
-   :figwidth: 174px
+   :figwidth: 170px
 
    :ref:`drawing_text`
 
 .. figure:: thumbs/array_backed_grid.png
-   :figwidth: 174px
+   :figwidth: 170px
 
    :ref:`array_backed_grid`
 
@@ -31,35 +31,71 @@ Animation
 ---------
 
 .. figure:: thumbs/bouncing_rectangle.png
-   :figwidth: 174px
+   :figwidth: 170px
 
    :ref:`bouncing_rectangle`
 
 .. figure:: thumbs/bouncing_ball.png
-   :figwidth: 174px
+   :figwidth: 170px
 
    :ref:`bouncing_ball`
 
 .. figure:: thumbs/bouncing_balls.png
-   :figwidth: 174px
+   :figwidth: 170px
 
    :ref:`bouncing_balls`
 
 .. figure:: thumbs/radar_sweep.png
-   :figwidth: 174px
+   :figwidth: 170px
 
    :ref:`radar_sweep`
 
+Drawing with Loops
+------------------
+
+.. figure:: thumbs/drawing_with_loops.png
+   :figwidth: 170px
+
+   :ref:`drawing_with_loops`
+
+.. figure:: thumbs/nested_loops_box.png
+   :figwidth: 170px
+
+   :ref:`nested_loops_box`
+
+.. figure:: thumbs/nested_loops_bottom_left_triangle.png
+   :figwidth: 170px
+
+   :ref:`nested_loops_bottom_left_triangle`
+
+.. figure:: thumbs/nested_loops_top_right_triangle.png
+   :figwidth: 170px
+
+   :ref:`nested_loops_top_right_triangle`
+
+.. figure:: thumbs/nested_loops_top_left_triangle.png
+   :figwidth: 170px
+
+   :ref:`nested_loops_bottom_left_triangle`
+
+.. figure:: thumbs/nested_loops_top_right_triangle.png
+   :figwidth: 170px
+
+   :ref:`nested_loops_top_right_triangle`
+
+.. figure:: thumbs/shapes.png
+   :figwidth: 170px
+
+   :ref:`shapes`
+
+.. figure:: thumbs/snow.png
+   :figwidth: 170px
+
+   :ref:`snow`
 
 .. toctree::
    :maxdepth: 3
 
-   radar_sweep
-   drawing_with_loops
-   nested_loops
-   shapes
-   snow
-   timer
 
 User Control
 ------------
@@ -132,6 +168,7 @@ Other
    :maxdepth: 3
 
    starting_template
+   timer
    sprite_collect_coins_background
    sprite_change_coins
    instruction_and_game_over_screens

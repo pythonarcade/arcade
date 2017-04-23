@@ -1,4 +1,6 @@
-.. _example-snow:
+:orphan:
+
+.. _snow:
 
 Falling Snow
 ============
@@ -7,6 +9,6 @@ Falling Snow
     :width: 600px
     :height: 600px
     :align: center
-    :alt: Screenshot of using using an array for snow
+    :alt: Screen shot of using using an array for snow
 
 .. literalinclude:: ../../examples/snow.py

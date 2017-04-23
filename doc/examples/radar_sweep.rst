@@ -1,3 +1,5 @@
+:orphan:
+
 .. _radar_sweep:
 
 Radar Sweep

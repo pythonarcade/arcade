@@ -11,7 +11,7 @@ function variables.
 If you are familiar with classes, see some of the following examples as well:
 
 * :ref:`example-starting-template`
-* :ref:`example-shapes`
+* :ref:`shapes`
 * :ref:`example-sprite-collect-coins-move_down`
 
 .. raw:: html

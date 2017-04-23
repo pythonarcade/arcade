@@ -1,7 +1,9 @@
-.. _example-shapes:
+:orphan:
 
-Classes: Shapes
-=========================
+.. _shapes:
+
+Drawing Shapes with Classes
+===========================
 
 .. image:: shapes.png
     :width: 600px

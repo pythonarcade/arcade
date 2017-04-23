@@ -1,4 +1,6 @@
-.. _example-drawing-with-loops:
+:orphan:
+
+.. _drawing_with_loops:
 
 Drawing with Loops
 ==================
@@ -7,6 +9,6 @@ Drawing with Loops
     :width: 600px
     :height: 600px
     :align: center
-    :alt: Screenshot of drawing with loops example program
+    :alt: Screen shot of drawing with loops example program
 
 .. literalinclude:: ../../examples/drawing_with_loops.py
