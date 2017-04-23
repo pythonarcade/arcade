@@ -1,3 +1,5 @@
+:orphan:
+
 .. _example-sprite-change-coins:
 
 Change coins

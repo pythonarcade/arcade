@@ -1,4 +1,6 @@
-.. _example-sprite-move-keyboard:
+:orphan:
+
+.. _sprite_move_keyboard:
 
 Collect Coins - Keyboard
 ========================

@@ -1,4 +1,6 @@
-.. _example-sprite-move-joystick:
+:orphan:
+
+.. _sprite_move_joystick:
 
 Collect Coins - Joystick
 ========================

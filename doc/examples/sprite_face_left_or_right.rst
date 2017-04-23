@@ -1,4 +1,6 @@
-.. _example-sprite-move-left-or-right:
+:orphan:
+
+.. _sprite_face_left_or_right:
 
 Sprite: Face Left or Right
 ==========================

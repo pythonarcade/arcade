@@ -4,10 +4,13 @@
 .wy-table-responsive table td {
     white-space: normal;
 }
-#drawing,#animation,#drawing-with-loops {
+#drawing,#animation,#drawing-with-loops,#player-movement,#platformers {
 	display: flex;
 	flex-direction: row;
 	flex-wrap: wrap;
+}
+h1, h2, h3 {
+	width: 100%;
 }
 .figure {
 	margin-left: 2px;

@@ -1,3 +1,5 @@
+:orphan:
+
 .. _example-sprite-collect-coins-diff-levels:
 
 Different Levels

@@ -110,13 +110,26 @@ Sprites
 Player Movement
 ^^^^^^^^^^^^^^^
 
-.. toctree::
-   :maxdepth: 3
+.. figure:: thumbs/sprite_collect_coins.png
+   :figwidth: 170px
 
-   sprite_collect_coins
-   sprite_move_keyboard
-   sprite_face_left_or_right
-   sprite_move_joystick
+   :ref:`sprite_collect_coins`
+
+.. figure:: thumbs/sprite_collect_coins.png
+   :figwidth: 170px
+
+   :ref:`sprite_move_keyboard`
+
+.. figure:: thumbs/sprite_face_left_or_right.png
+   :figwidth: 170px
+
+   :ref:`sprite_face_left_or_right`
+
+.. figure:: thumbs/sprite_collect_coins.png
+   :figwidth: 170px
+
+   :ref:`sprite_move_joystick`
+
 
 Sprite Movement
 ^^^^^^^^^^^^^^^
@@ -146,15 +159,36 @@ Bullets
 
 Platformers
 ^^^^^^^^^^^
-.. toctree::
-   :maxdepth: 3
 
-   sprite_move_walls
-   sprite_move_scrolling
-   sprite_move_animation
-   sprite_tiled_map
-   sprite_ramps
-   sprite_moving_platforms
+.. figure:: thumbs/sprite_move_walls.png
+   :figwidth: 170px
+
+   :ref:`sprite_move_walls`
+
+.. figure:: thumbs/sprite_move_scrolling.png
+   :figwidth: 170px
+
+   :ref:`sprite_move_scrolling`
+
+.. figure:: thumbs/sprite_move_animation.png
+   :figwidth: 170px
+
+   :ref:`sprite_move_animation`
+
+.. figure:: thumbs/sprite_tiled_map.png
+   :figwidth: 170px
+
+   :ref:`sprite_tiled_map`
+
+.. figure:: thumbs/sprite_ramps.png
+   :figwidth: 170px
+
+   :ref:`sprite_ramps`
+
+.. figure:: thumbs/sprite_moving_platforms.png
+   :figwidth: 170px
+
+   :ref:`sprite_moving_platforms`
 
 
 Other

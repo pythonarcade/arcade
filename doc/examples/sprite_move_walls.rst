@@ -1,6 +1,8 @@
-.. _example-sprite-move-walls:
+:orphan:
 
-Move with walls
+.. _sprite_move_walls:
+
+Move with Walls
 ===============
 
 .. image:: sprite_move_walls.png

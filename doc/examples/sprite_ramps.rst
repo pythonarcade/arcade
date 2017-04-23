@@ -1,4 +1,6 @@
-.. _example-sprite-ramps:
+:orphan:
+
+.. _sprite_ramps:
 
 Ramps
 =====

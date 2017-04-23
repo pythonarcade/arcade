@@ -1,4 +1,6 @@
-.. _example-sprite-collect-coins:
+:orphan:
+
+.. _sprite_collect_coins:
 
 Collect Coins - Mouse
 =====================

@@ -1,6 +1,8 @@
-.. _example-sprite-move-scrolling:
+:orphan:
 
-Move with a scrolling screen
+.. _sprite_move_scrolling:
+
+Move with a Scrolling Screen
 ============================
 
 .. image:: sprite_move_scrolling.png

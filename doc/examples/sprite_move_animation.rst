@@ -1,6 +1,8 @@
-.. _example-sprite-move-animation:
+:orphan:
 
-Move with a sprite animation
+.. _sprite_move_animation:
+
+Move with a Sprite Animation
 ============================
 
 .. raw:: html

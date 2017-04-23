@@ -1,4 +1,6 @@
-.. _example-sprite-tiled-map:
+:orphan:
+
+.. _sprite_tiled_map:
 
 Work with a tiled map
 =====================

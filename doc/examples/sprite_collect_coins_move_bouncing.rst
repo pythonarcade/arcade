@@ -1,3 +1,5 @@
+:orphan:
+
 .. _example-sprite-collect-coins-move-bouncing:
 
 Collect Coins that are Bouncing
