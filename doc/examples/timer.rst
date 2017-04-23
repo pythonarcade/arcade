@@ -1,4 +1,4 @@
-.. _example-timer:
+.. _timer:
 
 On-Screen Timer
 ===============

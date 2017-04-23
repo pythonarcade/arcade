@@ -1,4 +1,6 @@
-.. _example-sprite-bullets:
+:orphan:
+
+.. _sprite_bullets:
 
 Shoot Bullets Upwards
 =====================

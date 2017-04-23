@@ -7,6 +7,11 @@ Small abstraction around the sound library.
 import pyglet
 import typing
 
+pyglet.lib.load_library('C:/Program Files/Python36/Lib/site-packages/arcade/Win32/avbin')
+pyglet.have_avbin=True
+pyglet.debug_lib=True
+pyglet.debug_trace=True
+
 
 def load_sound_library():
     """

@@ -1,6 +1,6 @@
 :orphan:
 
-.. _example-sprite-collect-coins-background:
+.. _sprite_collect_coins_background:
 
 Using a Background Image
 ========================

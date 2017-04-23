@@ -151,11 +151,16 @@ Levels
 
 Bullets
 ^^^^^^^
-.. toctree::
-   :maxdepth: 3
 
-   sprite_bullets
-   sprite_bullets_aimed
+.. figure:: thumbs/sprite_bullets.png
+   :figwidth: 170px
+
+   :ref:`sprite_bullets`
+
+.. figure:: thumbs/sprite_bullets_aimed.png
+   :figwidth: 170px
+
+   :ref:`sprite_bullets_aimed`
 
 Platformers
 ^^^^^^^^^^^
@@ -194,13 +199,32 @@ Platformers
 Other
 -----
 
+.. figure:: thumbs/sprite_collect_coins_background.png
+   :figwidth: 170px
+
+   :ref:`sprite_collect_coins_background`
+
+.. figure:: thumbs/timer.png
+   :figwidth: 170px
+
+   :ref:`timer`
+
+.. figure:: thumbs/sprite_change_coins.png
+   :figwidth: 170px
+
+   :ref:`sprite_change_coins`
+
+.. figure:: thumbs/asteroid_smasher.png
+   :figwidth: 170px
+
+   :ref:`asteroid_smasher`
+
+
+
+
 .. toctree::
    :maxdepth: 3
 
    starting_template
-   timer
-   sprite_collect_coins_background
-   sprite_change_coins
    instruction_and_game_over_screens
-   asteroid_smasher
    examples_to_do

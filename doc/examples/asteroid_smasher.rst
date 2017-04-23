@@ -1,3 +1,7 @@
+:orphan:
+
+.. _asteroid_smasher:
+
 Full example: Asteroid Smasher
 ==============================
 

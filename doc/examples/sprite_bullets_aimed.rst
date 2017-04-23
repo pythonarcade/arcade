@@ -1,6 +1,6 @@
 :orphan:
 
-.. _example-sprite-bullets-aimed:
+.. _sprite_bullets_aimed:
 
 Aim and Shoot Bullets
 =====================

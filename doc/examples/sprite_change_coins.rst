@@ -1,6 +1,6 @@
 :orphan:
 
-.. _example-sprite-change-coins:
+.. _sprite_change_coins:
 
 Change coins
 ============
