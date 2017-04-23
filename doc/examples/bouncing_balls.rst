@@ -12,3 +12,5 @@ Multiple Bouncing Balls
     :alt: Screen shot of bouncing balls
 
 .. literalinclude:: ../../examples/bouncing_balls.py
+    :caption: bouncing_balls.py
+    :linenos:

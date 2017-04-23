@@ -12,3 +12,5 @@ Drawing Text
     :alt: Screenshot of drawing text
 
 .. literalinclude:: ../../examples/drawing_text.py
+    :caption: drawing_text.py
+    :linenos:

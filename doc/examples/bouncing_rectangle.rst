@@ -20,3 +20,5 @@ If you are familiar with classes, see some of the following examples as well:
     <p><a href="https://vimeo.com/168063840">Bouncing Rectangle Example</a> from <a href="https://vimeo.com/user6672093">Paul Vincent Craven</a> on <a href="https://vimeo.com">Vimeo</a>.</p>
 
 .. literalinclude:: ../../examples/bouncing_rectangle.py
+    :caption: bouncing_rectangle.py
+    :linenos:

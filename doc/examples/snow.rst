@@ -12,3 +12,5 @@ Falling Snow
     :alt: Screen shot of using using an array for snow
 
 .. literalinclude:: ../../examples/snow.py
+    :caption: snow.py
+    :linenos:

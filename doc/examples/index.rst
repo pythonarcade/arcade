@@ -93,10 +93,6 @@ Drawing with Loops
 
    :ref:`snow`
 
-.. toctree::
-   :maxdepth: 3
-
-
 User Control
 ------------
 

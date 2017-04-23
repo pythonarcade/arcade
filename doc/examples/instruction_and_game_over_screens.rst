@@ -10,3 +10,5 @@ Sprites: Instruction and Game Over Screens
     :alt: Screenshot of game over screen
 
 .. literalinclude:: ../../examples/instruction_and_game_over_screens.py
+    :caption: instruction_and_game_over_screens.py
+    :linenos:

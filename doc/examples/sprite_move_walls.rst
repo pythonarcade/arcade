@@ -10,3 +10,5 @@ Move with walls
     :alt: Screenshot of using sprites to detect wall collisions
 
 .. literalinclude:: ../../examples/sprite_move_walls.py
+    :caption: sprite_move_walls.py
+    :linenos:

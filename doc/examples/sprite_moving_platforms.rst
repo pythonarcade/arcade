@@ -9,3 +9,5 @@ Moving Platforms
 
 
 .. literalinclude:: ../../examples/sprite_moving_platforms.py
+    :caption: sprite_moving_platforms.py
+    :linenos:

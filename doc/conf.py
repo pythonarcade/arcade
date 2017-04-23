@@ -73,7 +73,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'Arcade'
-copyright = '2016, Paul Vincent Craven'
+copyright = '2017, Paul Vincent Craven'
 author = 'Paul Vincent Craven'
 
 # The version info for the project you're documenting, acts as replacement for

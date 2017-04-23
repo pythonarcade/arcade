@@ -10,3 +10,5 @@ Work with a tiled map
     :alt: Screenshot of using a larger map exported by tiled in a csv format.
 
 .. literalinclude:: ../../examples/sprite_tiled_map.py
+    :caption: sprite_tiled_map.py
+    :linenos:

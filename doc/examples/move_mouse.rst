@@ -10,3 +10,5 @@ User control: Mouse
     :alt: Screenshot of mouse example program
 
 .. literalinclude:: ../../examples/move_mouse.py
+    :caption: move_mouse.py
+    :linenos:

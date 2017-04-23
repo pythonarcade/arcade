@@ -12,3 +12,5 @@ Radar Sweep
     :alt: Screenshot of radar sweep example
 
 .. literalinclude:: ../../examples/radar_sweep.py
+    :caption: radar_sweep.py
+    :linenos:

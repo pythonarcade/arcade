@@ -12,3 +12,5 @@ Array-Backed Grid
     :alt: Screenshot of a program that shows an array backed grid.
 
 .. literalinclude:: ../../examples/array_backed_grid.py
+    :caption: array_backed_grid.py
+    :linenos:

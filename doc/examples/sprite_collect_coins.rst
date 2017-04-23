@@ -10,3 +10,5 @@ Collect Coins - Mouse
     :alt: Screenshot of using sprites to collect coins
 
 .. literalinclude:: ../../examples/sprite_collect_coins.py
+    :caption: sprite_collect_coins.py
+    :linenos:

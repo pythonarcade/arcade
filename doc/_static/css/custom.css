@@ -13,9 +13,6 @@
 	margin-left: 2px;
 	margin-right: 2px;
 }
-h1 {
-	width: 100%;
-}
-h2 {
-	width: 100%;
+.rst-content .highlight>pre {
+    line-height: 1.5;
 }

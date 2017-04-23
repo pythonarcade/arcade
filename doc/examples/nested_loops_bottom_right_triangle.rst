@@ -12,3 +12,5 @@ Bottom Right Triangle
     :alt: Draw a triangle with nested loops.
 
 .. literalinclude:: ../../examples/nested_loops_bottom_right_triangle.py
+    :caption: nested_loops_bottom_right_triangle.py
+    :linenos:

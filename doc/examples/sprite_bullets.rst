@@ -10,3 +10,5 @@ Shoot Bullets Upwards
     :alt: Screenshot of using sprites to shoot things
 
 .. literalinclude:: ../../examples/sprite_bullets.py
+    :caption: sprite_bullets.py
+    :linenos:

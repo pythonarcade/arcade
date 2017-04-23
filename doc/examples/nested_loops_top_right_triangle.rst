@@ -12,3 +12,5 @@ Top Right Triangle
     :alt: Draw a triangle with nested loops.
 
 .. literalinclude:: ../../examples/nested_loops_top_right_triangle.py
+    :caption: nested_loops_top_right_triangle.py
+    :linenos:

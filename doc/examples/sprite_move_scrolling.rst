@@ -7,6 +7,8 @@ Move with a scrolling screen
     :width: 600px
     :height: 600px
     :align: center
-    :alt: Screenshot of using a scrolling window
+    :alt: Screen shot of using a scrolling window
 
 .. literalinclude:: ../../examples/sprite_move_scrolling.py
+    :caption: sprite_move_scrolling.py
+    :linenos:

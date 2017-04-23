@@ -12,3 +12,5 @@ Draw a Box with Nested Loops
     :alt: Screenshot of a program that shows an box with nested loops.
 
 .. literalinclude:: ../../examples/nested_loops_box.py
+    :caption: nested_loops_box.py
+    :linenos:

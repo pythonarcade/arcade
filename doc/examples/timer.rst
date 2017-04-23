@@ -10,3 +10,5 @@ On-Screen Timer
     :alt: Screenshot of running a timer
 
 .. literalinclude:: ../../examples/timer.py
+    :caption: timer.py
+    :linenos:

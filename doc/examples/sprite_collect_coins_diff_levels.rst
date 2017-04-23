@@ -10,3 +10,5 @@ Different Levels
     :alt: Screenshot of using sprites to collect coins
 
 .. literalinclude:: ../../examples/sprite_collect_coins_diff_levels.py
+    :caption: sprite_collect_coins_diff_levels.py
+    :linenos:

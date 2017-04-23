@@ -9,3 +9,5 @@ Classes: Starting Template
     <p><a href="https://vimeo.com/168051968">Starting Template for the Arcade Library</a> from <a href="https://vimeo.com/user6672093">Paul Vincent Craven</a> on <a href="https://vimeo.com">Vimeo</a>.</p>
 
 .. literalinclude:: ../../examples/starting_template.py
+    :caption: starting_template.py
+    :linenos:

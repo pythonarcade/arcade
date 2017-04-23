@@ -10,3 +10,5 @@ Collect Coins Moving Down
     :alt: Screenshot of using sprites to collect coins
 
 .. literalinclude:: ../../examples/sprite_collect_coins_move_down.py
+    :caption: sprite_collect_coins_move_down.py
+    :linenos:

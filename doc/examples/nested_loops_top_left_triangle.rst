@@ -12,3 +12,5 @@ Top Left Triangle
     :alt: Draw a triangle with nested loops.
 
 .. literalinclude:: ../../examples/nested_loops_top_left_triangle.py
+    :caption: nested_loops_top_left_triangle.py
+    :linenos:

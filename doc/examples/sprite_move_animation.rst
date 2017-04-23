@@ -9,3 +9,5 @@ Move with a sprite animation
 
 
 .. literalinclude:: ../../examples/sprite_move_animation.py
+    :caption: sprite_move_animation.py
+    :linenos:

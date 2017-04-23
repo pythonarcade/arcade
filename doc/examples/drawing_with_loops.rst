@@ -12,3 +12,5 @@ Drawing with Loops
     :alt: Screen shot of drawing with loops example program
 
 .. literalinclude:: ../../examples/drawing_with_loops.py
+    :caption: drawing_with_loops.py
+    :linenos:
