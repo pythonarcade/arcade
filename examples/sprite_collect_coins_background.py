@@ -29,6 +29,9 @@ class MyApplication(arcade.Window):
         # Call the parent class initializer
         super().__init__(width, height)
 
+        # Background image will be stored in this variable
+        self.background = None
+
         # Variables that will hold sprite lists
         self.all_sprites_list = None
         self.coin_list = None
@@ -42,7 +45,6 @@ class MyApplication(arcade.Window):
 
         # Set the background color
         arcade.set_background_color(arcade.color.AMAZON)
-
 
     def setup(self):
         """ Set up the game and initialize the variables. """

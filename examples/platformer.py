@@ -1,5 +1,3 @@
-import random
-import math
 import arcade
 import copy
 

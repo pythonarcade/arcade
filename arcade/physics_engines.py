@@ -151,7 +151,6 @@ class PhysicsEnginePlatformer:
         self.player_sprite.center_y = round(self.player_sprite.center_y, 2)
         # print(f"Spot Q ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
 
-
         # --- Move in the x direction
         self.player_sprite.center_x += self.player_sprite.change_x
 

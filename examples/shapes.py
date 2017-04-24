@@ -18,7 +18,7 @@ RECT_WIDTH = 50
 RECT_HEIGHT = 50
 
 
-class Shape():
+class Shape:
 
     def __init__(self, x, y, width, height, angle, delta_x, delta_y,
                  delta_angle, color):
@@ -54,6 +54,10 @@ class Rectangle(Shape):
 
 class MyApplication(arcade.Window):
     """ Main application class. """
+
+    def __init__(self):
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, title="Shapes!")
+        self.shape_list = None
 
     def setup(self):
         """ Set up the game and initialize the variables. """
@@ -100,7 +104,7 @@ class MyApplication(arcade.Window):
         for shape in self.shape_list:
             shape.draw()
 
-window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT, title="Shapes!")
+window = MyApplication()
 window.setup()
 
 arcade.run()

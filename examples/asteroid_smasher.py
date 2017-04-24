@@ -10,9 +10,9 @@ import random
 import math
 import arcade
 
-SCALE = 1
+SCALE = 0.5
 OFFSCREEN_SPACE = 300
-SCREEN_WIDTH = 1024
+SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 LEFT_LIMIT = -OFFSCREEN_SPACE
 RIGHT_LIMIT = SCREEN_WIDTH + OFFSCREEN_SPACE
@@ -109,16 +109,12 @@ class AsteroidSprite(arcade.Sprite):
         super().update()
         if self.center_x < LEFT_LIMIT:
             self.center_x = RIGHT_LIMIT
-            print("Left")
         if self.center_x > RIGHT_LIMIT:
             self.center_x = LEFT_LIMIT
-            print("Right")
         if self.center_y > TOP_LIMIT:
             self.center_y = BOTTOM_LIMIT
-            print("Bottom")
         if self.center_y < BOTTOM_LIMIT:
             self.center_y = TOP_LIMIT
-            print("Top")
 
 
 class BulletSprite(TurningSprite):
@@ -339,8 +335,6 @@ class MyWindow(arcade.Window):
         """ Move everything """
 
         self.frame_count += 1
-        if self.frame_count % 60 == 0:
-            print(self.frame_count)
 
         if not self.game_over:
             self.all_sprites_list.update()

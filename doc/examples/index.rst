@@ -171,6 +171,22 @@ Bullets
 
    :ref:`sprite_bullets_aimed`
 
+.. figure:: thumbs/sprite_bullets_periodic.png
+   :figwidth: 170px
+
+   :ref:`sprite_bullets_periodic`
+
+.. figure:: thumbs/sprite_bullets_random.png
+   :figwidth: 170px
+
+   :ref:`sprite_bullets_random`
+
+.. figure:: thumbs/sprite_bullets_enemy_aims.png
+   :figwidth: 170px
+
+   :ref:`sprite_bullets_enemy_aims`
+
+
 Platformers
 ^^^^^^^^^^^
 
@@ -234,6 +250,11 @@ Other
    :figwidth: 170px
 
    :ref:`asteroid_smasher`
+
+.. figure:: thumbs/instruction_and_game_over_screens.png
+   :figwidth: 170px
+
+   :ref:`instruction_and_game_over_screens`
 
 
 

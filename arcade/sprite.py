@@ -703,19 +703,19 @@ class AnimatedWalkingSprite(Sprite):
 
             if self.state == FACE_LEFT:
                 texture_list = self.walk_left_textures
-                if texture_list == None or len(texture_list) == 0:
+                if texture_list is None or len(texture_list) == 0:
                     raise RuntimeError("update_animation was called on a sprite that doesn't have a list of walk left textures.")
             elif self.state == FACE_RIGHT:
                 texture_list = self.walk_right_textures
-                if texture_list == None or len(texture_list) == 0:
+                if texture_list is None or len(texture_list) == 0:
                     raise RuntimeError("update_animation was called on a sprite that doesn't have a list of walk right textures.")
             elif self.state == FACE_UP:
                 texture_list = self.walk_up_textures
-                if texture_list == None or len(texture_list) == 0:
+                if texture_list is None or len(texture_list) == 0:
                     raise RuntimeError("update_animation was called on a sprite that doesn't have a list of walk up textures.")
             elif self.state == FACE_DOWN:
                 texture_list = self.walk_down_textures
-                if texture_list == None or len(texture_list) == 0:
+                if texture_list is None or len(texture_list) == 0:
                     raise RuntimeError(
                         "update_animation was called on a sprite that doesn't have a list of walk down textures.")
 
@@ -814,7 +814,6 @@ def _create_rects(rect_list: Iterable[Sprite]) -> List[float]:
 
     return v2f
 
-
 def _render_rect_filled(offset: int, texture_id: str,
                         texture_coord_vbo: gl.GLuint, batch_count):
     """
@@ -845,7 +844,7 @@ def _draw_rects(shape_list: Iterable[Sprite], vertex_vbo_id: gl.GLuint,
 
     gl.glEnable(gl.GL_BLEND)
     gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-    gl.glEnable(gl.GL_TEXTURE_2D) # As soon as this happens, can't use drawing commands
+    gl.glEnable(gl.GL_TEXTURE_2D)  # As soon as this happens, can't use drawing commands
     gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_S, gl.GL_CLAMP_TO_EDGE)
     gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_T, gl.GL_CLAMP_TO_EDGE)
     gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_NEAREST)
@@ -906,6 +905,5 @@ def _draw_rects(shape_list: Iterable[Sprite], vertex_vbo_id: gl.GLuint,
                         last_texture_id,
                         texture_coord_vbo_id,
                         batch_count)
-
 
     gl.glDisable(gl.GL_TEXTURE_2D)

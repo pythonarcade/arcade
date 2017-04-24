@@ -6,7 +6,6 @@ Simple program to show basic sprite usage.
 
 Artwork from http://kenney.nl
 """
-import random
 import arcade
 
 SPRITE_SCALING = 0.5
@@ -50,6 +49,7 @@ class Player(arcade.Sprite):
         elif self.top > SCREEN_HEIGHT - 1:
             self.top = SCREEN_HEIGHT - 1
 
+
 class MyApplication(arcade.Window):
     """
     Main application class.
@@ -73,7 +73,6 @@ class MyApplication(arcade.Window):
         # Set the background color
         arcade.set_background_color(arcade.color.AMAZON)
 
-
     def setup(self):
         """ Set up the game and initialize the variables. """
 
@@ -86,7 +85,6 @@ class MyApplication(arcade.Window):
         self.player_sprite.center_x = SCREEN_WIDTH / 2
         self.player_sprite.center_y = SCREEN_HEIGHT / 2
         self.all_sprites_list.append(self.player_sprite)
-
 
     def on_draw(self):
         """
