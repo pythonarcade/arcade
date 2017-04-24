@@ -2,7 +2,6 @@
 Show how to have enemies shoot bullets aimed at the player.
 """
 import arcade
-import random
 import math
 
 SCREEN_WIDTH = 800

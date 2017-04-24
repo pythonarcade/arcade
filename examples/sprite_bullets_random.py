@@ -73,8 +73,6 @@ class MyApplication(arcade.Window):
 
         self.bullet_list.update()
 
-
-
     def on_mouse_motion(self, x, y, delta_x, delta_y):
         """
         Called whenever the mouse moves.
