@@ -1,7 +1,9 @@
-.. _example-instruction-and-game-over-screens:
+:orphan:
 
-Sprites: Instruction and Game Over Screens
-==========================================
+.. _instruction_and_game_over_screens:
+
+Instruction and Game Over Screens
+=================================
 
 .. image:: instruction_and_game_over_screens.png
     :width: 600px

@@ -1,6 +1,6 @@
 :orphan:
 
-.. _example-sprite-collect-coins-move-bouncing:
+.. _sprite_collect_coins_move_bouncing:
 
 Collect Coins that are Bouncing
 ===============================

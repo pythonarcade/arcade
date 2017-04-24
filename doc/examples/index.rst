@@ -134,12 +134,21 @@ Player Movement
 Sprite Movement
 ^^^^^^^^^^^^^^^
 
-.. toctree::
-   :maxdepth: 3
+.. figure:: thumbs/sprite_collect_coins_move_down.png
+   :figwidth: 170px
 
-   sprite_collect_coins_move_down
-   sprite_collect_coins_move_bouncing
-   sprite_collect_coins_move_circle
+   :ref:`sprite_collect_coins_move_down`
+
+.. figure:: thumbs/sprite_collect_coins_move_bouncing.png
+   :figwidth: 170px
+
+   :ref:`sprite_collect_coins_move_bouncing`
+
+.. figure:: thumbs/sprite_collect_coins_move_circle.png
+   :figwidth: 170px
+
+   :ref:`sprite_collect_coins_move_circle`
+
 
 Levels
 ^^^^^^
@@ -214,6 +223,13 @@ Other
 
    :ref:`sprite_change_coins`
 
+.. figure:: thumbs/instruction_and_game_over_screens.png
+   :figwidth: 170px
+
+   :ref:`instruction_and_game_over_screens`
+
+
+
 .. figure:: thumbs/asteroid_smasher.png
    :figwidth: 170px
 
@@ -226,5 +242,4 @@ Other
    :maxdepth: 3
 
    starting_template
-   instruction_and_game_over_screens
    examples_to_do

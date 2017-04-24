@@ -1,6 +1,6 @@
 :orphan:
 
-.. _example-sprite-collect-coins-move_down:
+.. _sprite_collect_coins_move_down:
 
 Collect Coins Moving Down
 =========================
