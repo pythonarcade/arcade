@@ -1,4 +1,4 @@
-.. _example-starting-template:
+.. _starting_template:
 
 Classes: Starting Template
 ==========================
