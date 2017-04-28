@@ -115,7 +115,7 @@ class MyApplication(arcade.Window):
         self.all_sprites_list.append(bullet)
         self.bullet_list.append(bullet)
 
-    def animate(self, delta_time):
+    def update(self, delta_time):
         """ Movement and game logic """
 
         # Call update on all sprites (The sprites don't do much in this

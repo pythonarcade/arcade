@@ -82,7 +82,7 @@ class MyAppWindow(arcade.Window):
             arcade.draw_circle_filled(snowflake.x, snowflake.y,
                                       snowflake.size, arcade.color.WHITE)
 
-    def animate(self, delta_time):
+    def update(self, delta_time):
         """
         All the logic to move, and the game logic goes here.
         """

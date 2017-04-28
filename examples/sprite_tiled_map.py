@@ -167,7 +167,7 @@ class MyApplication(arcade.Window):
         if key == arcade.key.LEFT or key == arcade.key.RIGHT:
             self.player_sprite.change_x = 0
 
-    def animate(self, delta_time):
+    def update(self, delta_time):
         """ Movement and game logic """
 
         if self.view_left + self.player_sprite.right >= 5630:

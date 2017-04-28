@@ -23,7 +23,7 @@ class MyApplication(arcade.Window):
         self.text_angle = 0
         self.time_elapsed = 0
 
-    def animate(self, delta_time):
+    def update(self, delta_time):
         self.text_angle += 1
         self.time_elapsed += delta_time
 

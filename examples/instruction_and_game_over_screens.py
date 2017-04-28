@@ -160,7 +160,7 @@ class MyAppWindow(arcade.Window):
             self.player_sprite.center_x = x
             self.player_sprite.center_y = y
 
-    def animate(self, delta_time):
+    def update(self, delta_time):
         """ Movement and game logic """
 
         # Only move and do things if the game is running.

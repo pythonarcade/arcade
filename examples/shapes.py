@@ -89,7 +89,7 @@ class MyApplication(arcade.Window):
                                 d_angle, (red, green, blue, alpha))
             self.shape_list.append(shape)
 
-    def animate(self, dt):
+    def update(self, dt):
         """ Move everything """
 
         for shape in self.shape_list:

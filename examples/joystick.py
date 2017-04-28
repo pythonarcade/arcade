@@ -55,7 +55,7 @@ class MyApplication(arcade.Window):
         self.player = Rectangle(x, y, width, height, angle, color)
         self.left_down = False
 
-    def animate(self, dt):
+    def update(self, dt):
         # Grab the position of the joystick
         # This will be between -1.0 and +1.0
 

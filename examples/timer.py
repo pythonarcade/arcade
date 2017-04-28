@@ -36,7 +36,7 @@ class MyApplication(arcade.Window):
         output = "Time: {:02d}:{:02d}".format(minutes, seconds)
         arcade.draw_text(output, 300, 300, arcade.color.BLACK, 30)
 
-    def animate(self, delta_time):
+    def update(self, delta_time):
         """
         All the logic to move, and the game logic goes here.
         """

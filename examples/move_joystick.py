@@ -108,7 +108,7 @@ class MyApplication(arcade.Window):
         self.player = Rectangle(x, y, width, height, angle, color)
         self.left_down = False
 
-    def animate(self, dt):
+    def update(self, dt):
         """ Move everything """
         self.player.move()
 
