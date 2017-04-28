@@ -1743,24 +1743,41 @@ scale * texture.height, texture, 90, 1, False)
     gl.glHint(gl.GL_PERSPECTIVE_CORRECTION_HINT, gl.GL_NICEST)
 
     gl.glLoadIdentity()
-    gl.glTranslatef(center_x, center_y, 0)
-    if angle != 0:
-        gl.glRotatef(angle, 0, 0, 1)
+    #gl.glTranslatef(center_x, center_y, 0)
+    #if angle != 0:
+    #    gl.glRotatef(angle, 0, 0, 1)
 
     gl.glColor4f(1, 1, 1, alpha)
     z = 0.5  # pylint: disable=invalid-name
+
+    x1 = -width / 2 + center_x
+    x2 = width / 2 + center_x
+    y1 = -height / 2 + center_y
+    y2 = height / 2 + center_y
+
+    p1 = x1, y1
+    p2 = x2, y1
+    p3 = x2, y2
+    p4 = x1, y2
+
+    if angle:
+        p1 = _rotate(p1[0], p1[1], center_x, center_y, angle)
+        p2 = _rotate(p2[0], p2[1], center_x, center_y, angle)
+        p3 = _rotate(p3[0], p3[1], center_x, center_y, angle)
+        p4 = _rotate(p4[0], p4[1], center_x, center_y, angle)
+
 
     gl.glBindTexture(gl.GL_TEXTURE_2D, texture.texture_id)
     gl.glBegin(gl.GL_POLYGON)
     gl.glNormal3f(0.0, 0.0, 1.0)
     gl.glTexCoord2f(0, 0)
-    gl.glVertex3f(-width / 2, -height / 2, z)
+    gl.glVertex3f(p1[0], p1[1], z)
     gl.glTexCoord2f(1, 0)
-    gl.glVertex3f(width / 2, -height / 2, z)
+    gl.glVertex3f(p2[0], p2[1], z)
     gl.glTexCoord2f(1, 1)
-    gl.glVertex3f(width / 2, height / 2, z)
+    gl.glVertex3f(p3[0], p3[1], z)
     gl.glTexCoord2f(0, 1)
-    gl.glVertex3f(-width / 2, height / 2, z)
+    gl.glVertex3f(p4[0], p4[1], z)
     gl.glEnd()
     gl.glDisable(gl.GL_TEXTURE_2D)
 

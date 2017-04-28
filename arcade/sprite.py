@@ -523,6 +523,8 @@ class SpriteList:
         # Set to True if we add/remove items. This way we can regenerate
         # the buffers.
         self.vbo_dirty = True
+        self.change_x = 0
+        self.change_y = 0
 
     def append(self, item: Sprite):
         """
@@ -553,6 +555,31 @@ class SpriteList:
         for sprite in self.sprite_list:
             sprite.update_animation()
 
+    def move(self, change_x: float, change_y: float):
+
+        dirty = self.vbo_dirty
+        if not dirty:
+            # gl.glLoadIdentity()
+            # gl.glLoadMatrix(self.vertex_vbo_id)
+            # gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self.vertex_vbo_id)
+            # gl.glEnableClientState(gl.GL_TEXTURE_COORD_ARRAY)
+            # gl.glEnableClientState(gl.GL_VERTEX_ARRAY)
+            # gl.glVertexPointer(2, gl.GL_FLOAT, 0, 0)
+
+            # gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self.texture_coord_vbo_id)
+
+            # gl.glTranslatef(change_x, change_y, 0)
+            self.change_x += change_x
+            self.change_y += change_y
+
+        for sprite in self.sprite_list:
+            sprite.center_x += change_x
+            sprite._last_center_x += change_x
+            sprite.center_y += change_y
+            sprite._last_center_y += change_y
+
+        self.vbo_dirty = dirty
+
     def draw(self, fast: bool=True):
         """
         Call the draw() method on each sprite in the list.
@@ -581,13 +608,14 @@ class SpriteList:
             _set_vbo(self.texture_coord_vbo_id,
                      [0, 0, 1, 0, 1, 1, 0, 1] * len(self.sprite_list))
             self.vbo_dirty = False
-            # print("Upload new vbo data")
+            self.change_x = 0
+            self.change_y = 0
 
         # If we run fast, use vertex buffers. Otherwise do it the
         # super slow way.
         if fast:
             _draw_rects(self.sprite_list, self.vertex_vbo_id,
-                        self.texture_coord_vbo_id)
+                        self.texture_coord_vbo_id, self.change_x, self.change_y)
         else:
             for sprite in self.sprite_list:
                 sprite.draw()
@@ -820,7 +848,7 @@ def _render_rect_filled(offset: int, texture_id: str,
     Render the rectangle at the right spot.
     """
     # Set color
-    # gl.glLoadIdentity()
+    #gl.glLoadIdentity()
     # gl.glTranslatef(shape.center_x, shape.center_y, 0)
 
     # if shape.angle != 0:
@@ -833,7 +861,7 @@ def _render_rect_filled(offset: int, texture_id: str,
 
 
 def _draw_rects(shape_list: Iterable[Sprite], vertex_vbo_id: gl.GLuint,
-                texture_coord_vbo_id: gl.GLuint):
+                texture_coord_vbo_id: gl.GLuint, change_x: float, change_y: float):
     """
     Draw a set of rectangles using vertex buffers. This is more efficient
     than drawing them individually.
@@ -863,11 +891,13 @@ def _draw_rects(shape_list: Iterable[Sprite], vertex_vbo_id: gl.GLuint,
 
     gl.glBindBuffer(gl.GL_ARRAY_BUFFER, texture_coord_vbo_id)
 
-    offset = 0
 
     last_alpha = shape_list[0].alpha
     gl.glColor4f(1, 1, 1, last_alpha)
     gl.glLoadIdentity()
+
+    # gl.glLoadIdentity()
+    gl.glTranslatef(change_x, change_y, 0)
 
     # Ideally, we want to draw these in "batches."
     # We seek to find groups of squares with the same texture. Then draw
@@ -876,9 +906,9 @@ def _draw_rects(shape_list: Iterable[Sprite], vertex_vbo_id: gl.GLuint,
     last_texture_id = None
     last_alpha = 1
     batch_count = 0
+    offset = 0
     batch_offset = 0
     texture_coord_vbo_id = None
-
     for shape in shape_list:
 
         if shape.texture.texture_id != last_texture_id or shape.alpha != last_alpha:
