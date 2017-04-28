@@ -64,7 +64,7 @@ def main():
     """
 
     # Open the window
-    arcade.open_window("Drawing With Functions", SCREEN_WIDTH, SCREEN_HEIGHT)
+    arcade.open_window(SCREEN_WIDTH, SCREEN_HEIGHT, "Drawing With Functions")
 
     # Start the render process. This must be done before any drawing commands.
     arcade.start_render()

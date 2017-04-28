@@ -94,7 +94,7 @@ def set_viewport(left: Number, right: Number, bottom: Number, top: Number):
     :Example:
 
     >>> import arcade
-    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.open_window(800,600,"Drawing Example")
     >>> set_viewport(-1, 1, -1, 1)
     >>> arcade.quick_run(0.25)
 
@@ -117,7 +117,7 @@ def set_viewport(left: Number, right: Number, bottom: Number, top: Number):
     gl.glLoadIdentity()
 
 
-def open_window(window_title: str, width: Number, height: Number, resizable: bool = False):
+def open_window(width: Number, height: Number, window_title: str, resizable: bool = False):
     """
     This function opens a window. For ease-of-use we assume there will only be one window, and the
     programmer does not need to keep a handle to the window. This isn't the best architecture, because
@@ -137,7 +137,7 @@ def open_window(window_title: str, width: Number, height: Number, resizable: boo
     Example:
 
     >>> import arcade
-    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.open_window(800,600,"Drawing Example")
     >>> arcade.quick_run(0.25)
     """
     global _window
@@ -182,7 +182,7 @@ def finish_render():
     Example:
 
     >>> import arcade
-    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.open_window(800,600,"Drawing Example")
     >>> arcade.set_background_color(arcade.color.RED)
     >>> arcade.start_render()
     >>> # All the drawing commands go here
@@ -247,7 +247,7 @@ def set_background_color(color: List[int]):
     Example:
 
     >>> import arcade
-    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.open_window(800,600,"Drawing Example")
     >>> arcade.set_background_color(arcade.color.RED)
     >>> arcade.start_render()
     >>> arcade.finish_render()

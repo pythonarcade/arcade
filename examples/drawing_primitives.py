@@ -18,7 +18,7 @@ https://vimeo.com/167158158
 import arcade
 
 # Open the window. Set the window title and dimensions (width and height)
-arcade.open_window("Drawing Example", 600, 600)
+arcade.open_window(600, 600, "Drawing Example")
 
 # Set the background color to white
 # For a list of named colors see

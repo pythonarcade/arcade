@@ -118,7 +118,7 @@ def load_textures(file_name: str,
         :SystemError:
 
     >>> import arcade
-    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.open_window(800,600,"Drawing Example")
     >>> image_location_list = [[591, 5, 64, 93],
     ...                        [655, 10, 75, 88],
     ...                        [730, 7, 54, 91],
@@ -256,7 +256,7 @@ def load_texture(file_name: str, x: float=0, y: float=0,
         None
 
     >>> import arcade
-    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.open_window(800,600,"Drawing Example")
     >>> name = "examples/images/meteorGrey_big1.png"
     >>> texture1 = load_texture(name, 1, 1, 50, 50)
     >>> texture2 = load_texture(name, 1, 1, 50, 50)
@@ -401,7 +401,7 @@ def draw_arc_filled(center_x: float, center_y: float,
     Example:
 
     >>> import arcade
-    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.open_window(800,600,"Drawing Example")
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
     >>> arcade.draw_arc_filled(150, 144, 15, 36, \
@@ -472,7 +472,7 @@ def draw_arc_outline(center_x: float, center_y: float, width: float,
     Example:
 
     >>> import arcade
-    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.open_window(800,600,"Drawing Example")
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
     >>> arcade.draw_arc_outline(150, 81, 15, 36, \
@@ -544,7 +544,7 @@ def draw_parabola_filled(start_x: float, start_y: float, end_x: float,
     Example:
 
     >>> import arcade
-    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.open_window(800,600,"Drawing Example")
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
     >>> arcade.draw_parabola_filled(150, 150, 200, 50, \
@@ -585,7 +585,7 @@ def draw_parabola_outline(start_x: float, start_y: float, end_x: float,
     Example:
 
     >>> import arcade
-    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.open_window(800,600,"Drawing Example")
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
     >>> arcade.draw_parabola_outline(150, 150, 200, 50, \
@@ -630,7 +630,7 @@ def draw_circle_filled(center_x: float, center_y: float, radius: float,
     Example:
 
     >>> import arcade
-    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.open_window(800,600,"Drawing Example")
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
     >>> arcade.draw_circle_filled(420, 285, 18, arcade.color.GREEN)
@@ -664,7 +664,7 @@ def draw_circle_outline(center_x: float, center_y: float, radius: float,
     Example:
 
     >>> import arcade
-    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.open_window(800,600,"Drawing Example")
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
     >>> arcade.draw_circle_outline(300, 285, 18, arcade.color.WISTERIA, 3)
@@ -783,7 +783,7 @@ def draw_ellipse_filled(center_x: float, center_y: float,
     Example:
 
     >>> import arcade
-    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.open_window(800,600,"Drawing Example")
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
     >>> arcade.draw_ellipse_filled(60, 81, 15, 36, arcade.color.AMBER)
@@ -850,7 +850,7 @@ def draw_ellipse_outline(center_x: float, center_y: float, width: float,
     Example:
 
     >>> import arcade
-    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.open_window(800,600,"Drawing Example")
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
     >>> arcade.draw_ellipse_outline(540, 273, 15, 36, arcade.color.AMBER, 3)
@@ -918,7 +918,7 @@ def draw_line(start_x: float, start_y: float, end_x: float, end_y: float,
     Example:
 
     >>> import arcade
-    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.open_window(800,600,"Drawing Example")
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
     >>> arcade.draw_line(270, 495, 300, 450, arcade.color.WOOD_BROWN, 3)
@@ -970,7 +970,7 @@ def draw_line_strip(point_list: PointList,
     Example:
 
     >>> import arcade
-    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.open_window(800,600,"Drawing Example")
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
     >>> point_list = ((510, 450), \
@@ -1036,7 +1036,7 @@ def draw_lines(point_list: PointList,
     Example:
 
     >>> import arcade
-    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.open_window(800,600,"Drawing Example")
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
     >>> point_list = ((390, 450), \
@@ -1105,7 +1105,7 @@ def draw_point(x: float, y: float, color: Color, size: float):
     Example:
 
     >>> import arcade
-    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.open_window(800,600,"Drawing Example")
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
     >>> arcade.draw_point(60, 495, arcade.color.RED, 10)
@@ -1147,7 +1147,7 @@ def draw_points(point_list: PointList,
     Example:
 
     >>> import arcade
-    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.open_window(800,600,"Drawing Example")
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
     >>> point_list = ((165, 495), \
@@ -1198,7 +1198,7 @@ def draw_polygon_filled(point_list: PointList,
         None
 
     >>> import arcade
-    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.open_window(800,600,"Drawing Example")
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
     >>> point_list = ((150, 240), \
@@ -1250,7 +1250,7 @@ def draw_polygon_outline(point_list: PointList,
         None
 
     >>> import arcade
-    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.open_window(800,600,"Drawing Example")
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
     >>> point_list = ((30, 240), \
@@ -1306,7 +1306,7 @@ def draw_triangle_filled(x1: float, y1: float,
         None
 
     >>> import arcade
-    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.open_window(800,600,"Drawing Example")
     >>> arcade.start_render()
     >>> arcade.draw_triangle_filled(1, 2, 3, 4, 5, 6, arcade.color.BLACK)
     >>> arcade.finish_render()
@@ -1342,7 +1342,7 @@ def draw_triangle_outline(x1: float, y1: float,
         None
 
     >>> import arcade
-    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.open_window(800,600,"Drawing Example")
     >>> arcade.start_render()
     >>> arcade.draw_triangle_outline(1, 2, 3, 4, 5, 6, arcade.color.BLACK, 5)
     >>> arcade.finish_render()
@@ -1435,7 +1435,7 @@ def draw_lrtb_rectangle_outline(left: float, right: float, top: float,
         :AttributeErrror: Raised if left > right or top < bottom.
 
     >>> import arcade
-    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.open_window(800,600,"Drawing Example")
     >>> arcade.start_render()
     >>> arcade.draw_lrtb_rectangle_outline(100, 100, 100, 100, \
         arcade.color.BLACK, 5)
@@ -1489,7 +1489,7 @@ def draw_xywh_rectangle_outline(top_left_x: float, top_left_y: float,
         None
 
     >>> import arcade
-    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.open_window(800,600,"Drawing Example")
     >>> arcade.start_render()
     >>> arcade.draw_xywh_rectangle_outline(1, 2, 10, 10, arcade.color.BLACK, 5)
     >>> arcade.finish_render()
@@ -1524,7 +1524,7 @@ def draw_rectangle_outline(center_x: float, center_y: float, width: float,
     Example:
 
     >>> import arcade
-    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.open_window(800,600,"Drawing Example")
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
     >>> arcade.draw_rectangle_outline(278, 150, 45, 105, \
@@ -1582,7 +1582,7 @@ def draw_lrtb_rectangle_filled(left: float, right: float, top: float,
         :AttributeErrror: Raised if left > right or top < bottom.
 
     >>> import arcade
-    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.open_window(800,600,"Drawing Example")
     >>> arcade.start_render()
     >>> arcade.draw_lrtb_rectangle_filled(1, 2, 3, 1, arcade.color.BLACK)
     >>> arcade.draw_lrtb_rectangle_filled(2, 1, 3, 1, arcade.color.BLACK)
@@ -1630,7 +1630,7 @@ def draw_xywh_rectangle_filled(top_left_x: float, top_left_y: float,
         None
 
     >>> import arcade
-    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.open_window(800,600,"Drawing Example")
     >>> arcade.start_render()
     >>> arcade.draw_xywh_rectangle_filled(1, 2, 3, 4, arcade.color.BLACK)
     >>> arcade.finish_render()
@@ -1660,7 +1660,7 @@ def draw_rectangle_filled(center_x: float, center_y: float, width: float,
     Example:
 
     >>> import arcade
-    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.open_window(800,600,"Drawing Example")
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
     >>> arcade.draw_rectangle_filled(390, 150, 45, 105, arcade.color.BLUSH)
@@ -1715,7 +1715,7 @@ def draw_texture_rectangle(center_x: float, center_y: float, width: float,
     :Example:
 
     >>> import arcade
-    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.open_window(800,600,"Drawing Example")
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
     >>> arcade.draw_text("draw_bitmap", 483, 3, arcade.color.BLACK, 12)
@@ -1770,7 +1770,7 @@ def draw_xywh_rectangle_textured(top_left_x: float, top_left_y: float,
                                  texture: Texture):
     """
     >>> import arcade
-    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.open_window(800,600,"Drawing Example")
     >>> arcade.start_render()
     >>> name = "examples/images/meteorGrey_big1.png"
     >>> texture1 = load_texture(name, 1, 1, 50, 50)
@@ -1813,7 +1813,7 @@ def draw_text(text: str,
     Example:
 
     >>> import arcade
-    >>> arcade.open_window("Drawing Example", 800, 600)
+    >>> arcade.open_window(800,600,"Drawing Example")
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
     >>> arcade.draw_text("Text Example", 250, 300, arcade.color.BLACK, 10)

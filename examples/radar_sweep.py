@@ -43,7 +43,7 @@ def on_draw(delta_time):
 on_draw.angle = 0
 
 # Open up our window
-arcade.open_window("Radar Sweep Example", SCREEN_WIDTH, SCREEN_HEIGHT)
+arcade.open_window(SCREEN_WIDTH, SCREEN_HEIGHT, "Radar Sweep Example")
 arcade.set_background_color(arcade.color.BLACK)
 
 # Tell the computer to call the draw command at the specified interval.

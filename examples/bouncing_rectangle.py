@@ -75,7 +75,7 @@ on_draw.delta_y = 130  # Initial change in y
 
 def main():
     # Open up our window
-    arcade.open_window("Bouncing Rectangle Example", SCREEN_WIDTH, SCREEN_HEIGHT)
+    arcade.open_window(SCREEN_WIDTH, SCREEN_HEIGHT, "Bouncing Rectangle Example")
     arcade.set_background_color(arcade.color.WHITE)
 
     # Tell the computer to call the draw command at the specified interval.
