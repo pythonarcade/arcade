@@ -1803,6 +1803,46 @@ def draw_xywh_rectangle_textured(top_left_x: float, top_left_y: float,
 
 # --- BEGIN TEXT FUNCTIONS # # #
 
+def create_text(text: str,
+              color: Color,
+              font_size: float=12,
+              width: int=2000,
+              align="left",
+              font_name=('Calibri', 'Arial'),
+              bold: bool=False,
+              italic: bool=False,
+              anchor_x="left",
+              anchor_y="baseline"):
+    """
+    Create text to be rendered later. This operation takes a while, so it is
+    better to hold it between frames when the text does not change.
+    """
+    if len(color) == 3:
+        color = (color[0], color[1], color[2], 255)
+
+    label = pyglet.text.Label(text,
+                              font_name=font_name,
+                              font_size=font_size,
+                              x=0, y=0,
+                              color=color,
+                              multiline=True,
+                              width=width,
+                              align=align,
+                              anchor_x=anchor_x,
+                              anchor_y=anchor_y,
+                              bold=bold,
+                              italic=italic)
+
+    return label
+
+def render_text(text: pyglet.text.Label, start_x: float, start_y: float, rotation=0):
+    """ Render text created by the create_text function. """
+    gl.glLoadIdentity()
+    gl.glTranslatef(start_x, start_y, 0)
+    if rotation:
+        gl.glRotatef(rotation, 0, 0, 1)
+
+    text.draw()
 
 def draw_text(text: str,
               start_x: float, start_y: float,
@@ -1818,7 +1858,8 @@ def draw_text(text: str,
               rotation=0
               ):
     """
-    Draw text to the screen.
+    Draw text to the screen. Using this function is slow. It is better to use
+    create_text and render_text.
 
     Args:
         :text: Text to display.
@@ -1856,9 +1897,10 @@ def draw_text(text: str,
                               italic=italic)
     gl.glLoadIdentity()
     gl.glTranslatef(start_x, start_y, 0)
-    gl.glRotatef(rotation, 0, 0, 1)
+    if rotation:
+        gl.glRotatef(rotation, 0, 0, 1)
 
     label.draw()
-
+    return label
 
 # --- END TEXT FUNCTIONS # # #
