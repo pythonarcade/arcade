@@ -18,6 +18,7 @@ class MyApplication(arcade.Window):
         Set up the application.
         """
         self.total_time = 0.0
+        self.timer_text = None
         arcade.set_background_color(arcade.color.WHITE)
 
     def on_draw(self):
@@ -33,8 +34,16 @@ class MyApplication(arcade.Window):
         # Calculate seconds by using a modulus (remainder)
         seconds = int(self.total_time) % 60
 
-        output = "Time: {:02d}:{:02d}".format(minutes, seconds)
-        arcade.draw_text(output, 300, 300, arcade.color.BLACK, 30)
+        # Figure out our output
+        output = f"Time: {minutes:02d}:{seconds:02d}"
+
+        # See if the output is the same as last frame. If not, generate a new
+        # text object.
+        if not self.timer_text or self.timer_text.text != output:
+            self.timer_text = arcade.create_text(output, arcade.color.BLACK, 30)
+
+        # Output the timer text.
+        arcade.render_text(self.timer_text, 300, 300)
 
     def update(self, delta_time):
         """

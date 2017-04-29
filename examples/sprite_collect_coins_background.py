@@ -20,11 +20,7 @@ class MyApplication(arcade.Window):
     """
 
     def __init__(self, width, height):
-        """
-        Initializer
-        :param width:
-        :param height:
-        """
+        """ Initializer """
         
         # Call the parent class initializer
         super().__init__(width, height)
@@ -39,6 +35,7 @@ class MyApplication(arcade.Window):
         # Set up the player info
         self.player_sprite = None
         self.score = 0
+        self.score_text = None
 
         # Don't show the mouse cursor
         self.set_mouse_visible(False)
@@ -60,8 +57,7 @@ class MyApplication(arcade.Window):
 
         # Set up the player
         self.score = 0
-        self.player_sprite = arcade.Sprite("images/character.png",
-                                           SPRITE_SCALING)
+        self.player_sprite = arcade.Sprite("images/character.png", SPRITE_SCALING)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 50
         self.all_sprites_list.append(self.player_sprite)
@@ -88,14 +84,21 @@ class MyApplication(arcade.Window):
         arcade.start_render()
 
         # Draw the background texture
-        arcade.draw_texture_rectangle(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, SCREEN_WIDTH, SCREEN_HEIGHT, self.background)
+        arcade.draw_texture_rectangle(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2,
+                                      SCREEN_WIDTH, SCREEN_HEIGHT, self.background)
 
         # Draw all the sprites.
-        self.all_sprites_list.draw()
+        self.coin_list.draw()
+        self.player_sprite.draw()
 
         # Put the text on the screen.
-        output = "Score: {}".format(self.score)
-        arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
+        output = f"Score: {self.score}"
+
+        # Is this the same text as last frame? If not, set up a new text object
+        if not self.score_text or output != self.score_text.text:
+            self.score_text = arcade.create_text(output, arcade.color.WHITE, 14)
+        # Render the text
+        arcade.render_text(self.score_text, 10, 20)
 
     def on_mouse_motion(self, x, y, dx, dy):
         """
@@ -112,9 +115,7 @@ class MyApplication(arcade.Window):
         self.all_sprites_list.update()
 
         # Generate a list of all sprites that collided with the player.
-        hit_list = \
-            arcade.check_for_collision_with_list(self.player_sprite,
-                                                 self.coin_list)
+        hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.coin_list)
 
         # Loop through each colliding sprite, remove it, and add to the score.
         for coin in hit_list:
@@ -122,7 +123,11 @@ class MyApplication(arcade.Window):
             self.score += 1
 
 
-window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
-window.setup()
+def main():
+    """ Main method """
+    window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
+    window.setup()
+    arcade.run()
 
-arcade.run()
+if __name__ == "__main__":
+    main()

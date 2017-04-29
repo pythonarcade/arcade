@@ -114,6 +114,11 @@ class MyApplication(arcade.Window):
         """
         pass
 
-window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
 
-arcade.run()
+def main():
+    """ Main method """
+    MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
+    arcade.run()
+
+if __name__ == "__main__":
+    main()

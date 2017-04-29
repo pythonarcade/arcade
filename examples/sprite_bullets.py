@@ -36,6 +36,7 @@ class MyAppWindow(arcade.Window):
 
         # Set up the player
         self.score = 0
+        self.score_text = None
         self.player_sprite = arcade.Sprite("images/character.png",
                                            SPRITE_SCALING)
         self.player_sprite.center_x = 50
@@ -74,11 +75,18 @@ class MyAppWindow(arcade.Window):
         arcade.start_render()
 
         # Draw all the sprites.
-        self.all_sprites_list.draw()
+        self.coin_list.draw()
+        self.bullet_list.draw()
+        self.player_sprite.draw()
 
         # Put the text on the screen.
-        output = "Score: {}".format(self.score)
-        arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
+        output = f"Score: {self.score}"
+
+        # Is this the same text as last frame? If not, set up a new text object
+        if not self.score_text or output != self.score_text.text:
+            self.score_text = arcade.create_text(output, arcade.color.WHITE, 14)
+        # Render the text
+        arcade.render_text(self.score_text, 10, 20)
 
     def on_mouse_motion(self, x, y, dx, dy):
         """

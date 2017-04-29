@@ -41,14 +41,13 @@ def get_map(filename):
 class MyApplication(arcade.Window):
     """ Main application class. """
 
-    def __init__(self, width, height):
+    def __init__(self):
         """
         Initializer
         """
-        super().__init__(width, height)
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT)
         # Sprite lists
         self.all_sprites_list = None
-        self.coin_list = None
 
         # Set up the player
         self.score = 0
@@ -59,6 +58,9 @@ class MyApplication(arcade.Window):
         self.view_bottom = 0
         self.game_over = False
 
+        self.game_over_text = None
+        self.distance_text = None
+
     def setup(self):
         """ Set up the game and initialize the variables. """
 
@@ -67,7 +69,6 @@ class MyApplication(arcade.Window):
         self.wall_list = arcade.SpriteList()
 
         # Set up the player
-        self.score = 0
         self.player_sprite = arcade.Sprite("images/character.png",
                                            SPRITE_SCALING)
 
@@ -91,17 +92,13 @@ class MyApplication(arcade.Window):
                 if item == -1:
                     continue
                 elif item == 0:
-                    wall = arcade.Sprite("images/boxCrate_double.png",
-                                         SPRITE_SCALING)
+                    wall = arcade.Sprite("images/boxCrate_double.png", SPRITE_SCALING)
                 elif item == 1:
-                    wall = arcade.Sprite("images/grassLeft.png",
-                                         SPRITE_SCALING)
+                    wall = arcade.Sprite("images/grassLeft.png", SPRITE_SCALING)
                 elif item == 2:
-                    wall = arcade.Sprite("images/grassMid.png",
-                                         SPRITE_SCALING)
+                    wall = arcade.Sprite("images/grassMid.png", SPRITE_SCALING)
                 elif item == 3:
-                    wall = arcade.Sprite("images/grassRight.png",
-                                         SPRITE_SCALING)
+                    wall = arcade.Sprite("images/grassRight.png", SPRITE_SCALING)
 
                 wall.right = column_index * 64
                 wall.top = (7 - row_index) * 64
@@ -122,6 +119,8 @@ class MyApplication(arcade.Window):
         self.view_bottom = 0
 
         self.game_over = False
+        self.game_over_text = arcade.create_text("Game Over", arcade.color.WHITE, 30)
+        self.distance_text = None
 
     def on_draw(self):
         """
@@ -132,21 +131,21 @@ class MyApplication(arcade.Window):
         arcade.start_render()
 
         # Draw all the sprites.
-        self.all_sprites_list.draw()
+        self.player_sprite.draw()
+        self.wall_list.draw()
 
         # Put the text on the screen.
         # Adjust the text position based on the view port so that we don't
         # scroll the text too.
         distance = self.view_left + self.player_sprite.right
-        output = "Distance: {}".format(distance)
-        arcade.draw_text(output, self.view_left + 10, self.view_bottom + 20,
-                         arcade.color.WHITE, 14)
+        output = f"Distance: {distance}"
+        if not self.distance_text or output != self.distance_text.text:
+            self.distance_text = arcade.create_text(output, arcade.color.WHITE, 14)
+
+        arcade.render_text(self.distance_text, self.view_left + 10, self.view_bottom + 20,)
 
         if self.game_over:
-            output = "Game Over"
-            arcade.draw_text(output, self.view_left + 200,
-                             self.view_bottom + 200,
-                             arcade.color.WHITE, 30)
+            arcade.render_text(self.game_over_text, self.view_left + 200, self.view_bottom + 200)
 
     def on_key_press(self, key, modifiers):
         """
@@ -216,7 +215,11 @@ class MyApplication(arcade.Window):
                                 SCREEN_HEIGHT + self.view_bottom)
 
 
-window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
-window.setup()
+def main():
+    window = MyApplication()
+    window.setup()
+    arcade.run()
 
-arcade.run()
+
+if __name__ == "__main__":
+    main()
