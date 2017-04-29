@@ -29,13 +29,6 @@ class Coin(arcade.Sprite):
 
     def update(self):
 
-        # Move the coin
-        # This is not an efficient way to move all the coins the same direction
-        # and speed. This forces all the coin information to be reloaded to the
-        # GPU. It would be better to just translate all the coins in one operation.
-        # A better way is shown in # sprite_collect_coins_move_down_improved.py
-        self.center_y -= 1
-
         # See if the coin has fallen off the bottom of the screen.
         # If so, reset it.
         if self.top < 0:
@@ -103,11 +96,12 @@ class MyAppWindow(arcade.Window):
         arcade.start_render()
 
         # Draw all the sprites.
-        self.all_sprites_list.draw()
+        self.player_sprite.draw()
+        self.coin_list.draw()
 
         # Put the text on the screen.
-        output = "Score: {}".format(self.score)
-        arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
+        # output = "Score: {}".format(self.score)
+        # arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
 
     def on_mouse_motion(self, x, y, dx, dy):
         """
@@ -121,7 +115,9 @@ class MyAppWindow(arcade.Window):
 
         # Call update on all sprites (The sprites don't do much in this
         # example though.)
-        self.all_sprites_list.update()
+        self.player_sprite.update()
+        self.coin_list.update()
+        self.coin_list.move(0, -1)
 
         # Generate a list of all sprites that collided with the player.
         hit_list = \
