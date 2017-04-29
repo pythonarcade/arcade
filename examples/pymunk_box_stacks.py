@@ -46,6 +46,11 @@ class MyApplication(arcade.Window):
         # Used for dragging shapes aruond with the mouse
         self.shape_being_dragged = None
         self.last_mouse_position = 0, 0
+        
+        self.processing_time_text = None
+        self.draw_time_text = None
+        self.draw_time = 0
+        self.processing_time = 0
 
         # Create the floor
         floor_height = 80
@@ -93,9 +98,17 @@ class MyApplication(arcade.Window):
             arcade.draw_line(pv1.x, pv1.y, pv2.x, pv2.y, arcade.color.WHITE, 2)
 
         # Display timings
-        draw_time = timeit.default_timer() - draw_start_time
-        arcade.draw_text("Processing time: {:.3f}".format(self.time), 20, SCREEN_HEIGHT - 20, arcade.color.BLACK, 12)
-        arcade.draw_text("Drawing time: {:.3f}".format(draw_time), 20, SCREEN_HEIGHT - 40, arcade.color.BLACK, 12)
+        output = f"Processing time: {self.processing_time:.3f}"
+        if not self.processing_time_text or output != self.processing_time_text.text:
+            self.processing_time_text = arcade.create_text(output, arcade.color.WHITE, 12)
+        arcade.render_text(self.processing_time_text, 20, SCREEN_HEIGHT - 20)
+
+        output = f"Drawing time: {self.draw_time:.3f}"
+        if not self.draw_time_text or output != self.draw_time_text.text:
+            self.draw_time_text = arcade.create_text(output, arcade.color.WHITE, 12)
+        arcade.render_text(self.draw_time_text, 20, SCREEN_HEIGHT - 40)
+        
+        self.draw_time = timeit.default_timer() - draw_start_time
 
     def on_mouse_press(self, x, y, button, modifiers):
         if button == 1:
@@ -168,7 +181,7 @@ class MyApplication(arcade.Window):
             sprite.angle = math.degrees(sprite.pymunk_shape.body.angle)
 
         # Save the time it took to do this.
-        self.time = timeit.default_timer() - start_time
+        self.processing_time = timeit.default_timer() - start_time
 
 window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
 

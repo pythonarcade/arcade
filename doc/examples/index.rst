@@ -220,6 +220,19 @@ Platformers
 
    :ref:`sprite_moving_platforms`
 
+PyMunk
+------
+
+.. figure:: thumbs/pymunk_box_stacks.png
+   :figwidth: 170px
+
+   :ref:`pymunk_box_stacks`
+
+.. figure:: thumbs/pymunk_pegboard.png
+   :figwidth: 170px
+
+   :ref:`pymunk_pegboard`
+
 
 Other
 -----

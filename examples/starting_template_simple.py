@@ -14,6 +14,10 @@ class MyApplication(arcade.Window):
 
         arcade.set_background_color(arcade.color.WHITE)
 
+    def setup(self):
+        """ Set up the game here. Call this function to restart the game. """
+        pass
+
     def on_draw(self):
         """
         Render the screen.
@@ -30,7 +34,8 @@ class MyApplication(arcade.Window):
 
 def main():
     """ Main method """
-    MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
+    window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
+    window.setup()
     arcade.run()
 
 if __name__ == "__main__":

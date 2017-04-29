@@ -87,7 +87,8 @@ class MyApplication(arcade.Window):
         arcade.start_render()
 
         # Draw all the sprites.
-        self.all_sprites_list.draw()
+        self.wall_list.draw()
+        self.player_sprite.draw()
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """

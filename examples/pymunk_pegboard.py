@@ -15,21 +15,26 @@ class CircleSprite(arcade.Sprite):
         self.height = pymunk_shape.radius * 2
         self.pymunk_shape = pymunk_shape
 
+
 class MyApplication(arcade.Window):
     """ Main application class. """
 
     def __init__(self, width, height):
         super().__init__(width, height)
-        self.sprite_list = arcade.SpriteList()
+        self.peg_list = arcade.SpriteList()
         self.ball_list = arcade.SpriteList()
         arcade.set_background_color(arcade.color.DARK_SLATE_GRAY)
+
+        self.processing_time_text = None
+        self.draw_time_text = None
+        self.draw_time = 0
+        self.processing_time = 0
 
         # -- Pymunk
         self.space = pymunk.Space()
         self.space.gravity = (0.0, -900.0)
 
-        ## Balls
-        # self.balls = []
+
         self.static_lines = []
 
         self.ticks_to_next_ball = 10
@@ -65,7 +70,7 @@ class MyApplication(arcade.Window):
                 self.space.add(body, shape)
 
                 sprite = CircleSprite("images/bumper.png", shape)
-                self.sprite_list.append(sprite)
+                self.peg_list.append(sprite)
 
     def on_draw(self):
         """
@@ -76,7 +81,8 @@ class MyApplication(arcade.Window):
         arcade.start_render()
 
         draw_start_time = timeit.default_timer()
-        self.sprite_list.draw()
+        self.peg_list.draw()
+        self.ball_list.draw()
 
         for line in self.static_lines:
             body = line.body
@@ -85,9 +91,18 @@ class MyApplication(arcade.Window):
             pv2 = body.position + line.b.rotated(body.angle)
             arcade.draw_line(pv1.x, pv1.y, pv2.x, pv2.y, arcade.color.WHITE, 2)
 
-        draw_time = timeit.default_timer() - draw_start_time
-        arcade.draw_text("Processing time: {:.3f}".format(self.time), 20, SCREEN_HEIGHT - 20, arcade.color.BLACK, 12)
-        arcade.draw_text("Drawing time: {:.3f}".format(draw_time), 20, SCREEN_HEIGHT - 40, arcade.color.BLACK, 12)
+        # Display timings
+        output = f"Processing time: {self.processing_time:.3f}"
+        if not self.processing_time_text or output != self.processing_time_text.text:
+            self.processing_time_text = arcade.create_text(output, arcade.color.WHITE, 12)
+        arcade.render_text(self.processing_time_text, 20, SCREEN_HEIGHT - 20)
+
+        output = f"Drawing time: {self.draw_time:.3f}"
+        if not self.draw_time_text or output != self.draw_time_text.text:
+            self.draw_time_text = arcade.create_text(output, arcade.color.WHITE, 12)
+        arcade.render_text(self.draw_time_text, 20, SCREEN_HEIGHT - 40)
+
+        self.draw_time = timeit.default_timer() - draw_start_time
 
     def update(self, delta_time):
         start_time = timeit.default_timer()
@@ -107,7 +122,6 @@ class MyApplication(arcade.Window):
             self.space.add(body, shape)
 
             sprite = CircleSprite("images/coin_01.png", shape)
-            self.sprite_list.append(sprite)
             self.ball_list.append(sprite)
 
         # Check for balls that fall off the screen
