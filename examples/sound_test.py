@@ -38,7 +38,7 @@ class MyApplication(arcade.Window):
         # Play Sound
         arcade.sound.play_sound(loaded_sound)
 
-    def animate(self, delta_time):
+    def update(self, delta_time):
         """animations"""
 
 window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)

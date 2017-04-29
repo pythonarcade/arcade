@@ -228,7 +228,7 @@ class MyApplication(arcade.Window):
         elif key == arcade.key.RIGHT:
             self.player_sprite.stop_right()
 
-    def animate(self, x):
+    def update(self, x):
 
         self.physics_engine.update()
 

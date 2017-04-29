@@ -46,7 +46,7 @@ class MyApplication(arcade.Window):
 
         self.all_sprites_list.draw()
 
-    def animate(self, delta_time):
+    def update(self, delta_time):
         """All the logic to move, and the game logic goes here. """
 
         self.frame_count += 1

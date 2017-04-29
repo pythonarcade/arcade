@@ -12,7 +12,7 @@ def on_draw(delta_time):
     arcade.draw_all(shapes)
 
 
-arcade.open_window("Drawing Example", 800, 600)
+arcade.open_window(800, 600, "Drawing Example")
 
 # sets the background color
 arcade.set_background_color(arcade.color.SKY_BLUE)

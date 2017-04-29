@@ -54,7 +54,7 @@ class MyApplication(arcade.Window):
         arcade.draw_text("This is a simple template to start your game.",
                          10, SCREEN_HEIGHT // 2, arcade.color.BLACK, 20)
 
-    def animate(self, delta_time):
+    def update(self, delta_time):
         """
         All the logic to move, and the game logic goes here.
         """

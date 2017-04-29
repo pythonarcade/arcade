@@ -141,7 +141,7 @@ class MyApplication(arcade.Window):
             self.shape_being_dragged.shape.body.position = self.last_mouse_position
             self.shape_being_dragged.shape.body.velocity = dx * 20, dy * 20
 
-    def animate(self, delta_time):
+    def update(self, delta_time):
         start_time = timeit.default_timer()
 
         # Check for balls that fall off the screen

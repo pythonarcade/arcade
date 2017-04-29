@@ -125,7 +125,7 @@ class MyAppWindow(arcade.Window):
         elif key == arcade.key.LEFT or key == arcade.key.RIGHT:
             self.player.change_x = 0
 
-    def animate(self, delta_time):
+    def update(self, delta_time):
         """ Movement and game logic """
 
         self.all_sprites_list.update()

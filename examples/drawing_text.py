@@ -32,7 +32,7 @@ class MyApplication(arcade.Window):
         self.t8 = arcade.create_text("Time elapsed: {:5.1f}".format(self.time_elapsed), arcade.color.BLACK, 14)
 
 
-    def animate(self, delta_time):
+    def update(self, delta_time):
         self.text_angle += 1
         self.time_elapsed += delta_time
 

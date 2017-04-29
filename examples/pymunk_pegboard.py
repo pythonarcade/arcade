@@ -89,7 +89,7 @@ class MyApplication(arcade.Window):
         arcade.draw_text("Processing time: {:.3f}".format(self.time), 20, SCREEN_HEIGHT - 20, arcade.color.BLACK, 12)
         arcade.draw_text("Drawing time: {:.3f}".format(draw_time), 20, SCREEN_HEIGHT - 40, arcade.color.BLACK, 12)
 
-    def animate(self, delta_time):
+    def update(self, delta_time):
         start_time = timeit.default_timer()
 
         self.ticks_to_next_ball -= 1

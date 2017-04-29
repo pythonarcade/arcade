@@ -26,7 +26,7 @@ class Window(pyglet.window.Window):
         self.set_update_rate(1 / 80)
         # set_viewport(0, self.width, 0, self.height)
 
-    def animate(self, delta_time: float):
+    def update(self, delta_time: float):
         """
         Move everything.
 
@@ -41,7 +41,7 @@ called.
         """
         Set how often the screen should be updated.
         """
-        pyglet.clock.schedule_interval(self.animate, rate)
+        pyglet.clock.schedule_interval(self.update, rate)
 
     def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
         """ Override this function to add mouse functionality. """

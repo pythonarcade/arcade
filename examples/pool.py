@@ -55,7 +55,7 @@ class MyApplication(arcade.Window):
         start_y = 10
         arcade.draw_text("Processing time: {:.3f}".format(self.time), start_x, start_y, arcade.color.BLACK, 12)
 
-    def animate(self, x):
+    def update(self, x):
         """ Move everything """
 
         start_time = timeit.default_timer()

@@ -76,7 +76,7 @@ draw.delta_y = 0
 
 def main():
     # Open up our window
-    arcade.open_window("Bouncing Ball", SCREEN_WIDTH, SCREEN_HEIGHT)
+    arcade.open_window(SCREEN_WIDTH, SCREEN_HEIGHT, "Bouncing Ball")
     arcade.set_background_color(arcade.color.WHITE)
 
     # Tell the computer to call the draw command at the specified interval.

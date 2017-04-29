@@ -44,7 +44,7 @@ upside-down.
     :Example:
 
     >>> import arcade
-    >>> arcade.open_window("Sprite Example", 800, 600)
+    >>> arcade.open_window(800,600,"Sprite Example")
     >>> SCALE = 1
     >>> # Test creating an empty sprite
     >>> empty_sprite = arcade.Sprite()
@@ -238,7 +238,7 @@ upside-down.
         Return the y coordinate of the bottom of the sprite.
 
         >>> import arcade
-        >>> arcade.open_window("Sprite Example", 800, 600)
+        >>> arcade.open_window(800,600,"Sprite Example")
         >>> scale = 1.0
         >>> ship_sprite = \
 arcade.Sprite("examples/images/playerShip1_orange.png", scale)
@@ -271,7 +271,7 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
         Return the y coordinate of the top of the sprite.
 
         >>> import arcade
-        >>> arcade.open_window("Sprite Example", 800, 600)
+        >>> arcade.open_window(800,600,"Sprite Example")
         >>> scale = 1.0
         >>> ship_sprite = \
 arcade.Sprite("examples/images/playerShip1_orange.png", scale)
@@ -360,7 +360,7 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
         :Example:
 
         >>> import arcade
-        >>> arcade.open_window("Sprite Example", 800, 600)
+        >>> arcade.open_window(800,600,"Sprite Example")
         >>> scale = 1.0
         >>> ship_sprite = \
 arcade.Sprite("examples/images/playerShip1_orange.png", scale)
@@ -393,7 +393,7 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
         :Example:
 
         >>> import arcade
-        >>> arcade.open_window("Sprite Example", 800, 600)
+        >>> arcade.open_window(800,600,"Sprite Example")
         >>> scale = 1.0
         >>> ship_sprite = \
 arcade.Sprite("examples/images/playerShip1_orange.png", scale)
@@ -487,7 +487,7 @@ class SpriteList:
 
     >>> import arcade
     >>> import random
-    >>> arcade.open_window("Sprite Example", 600, 600)
+    >>> arcade.open_window(600,600,"Sprite Example")
     >>> scale = 1
     >>> meteor_list = arcade.SpriteList()
     >>> filename = "examples/images/meteorGrey_big1.png"

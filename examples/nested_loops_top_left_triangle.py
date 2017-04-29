@@ -13,7 +13,7 @@ LEFT_MARGIN = 110
 BOTTOM_MARGIN = 110
 
 # Open the window and set the background
-arcade.open_window("Complex Loops - Top Left Triangle", 400, 400)
+arcade.open_window(400, 400, "Complex Loops - Top Left Triangle")
 
 arcade.set_background_color(arcade.color.WHITE)
 

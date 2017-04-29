@@ -338,7 +338,7 @@ class MyWindow(arcade.Window):
                 self.all_sprites_list.append(enemy_sprite)
                 self.asteroid_list.append(enemy_sprite)
 
-    def animate(self, x):
+    def update(self, x):
         """ Move everything """
 
         self.frame_count += 1
