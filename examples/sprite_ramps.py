@@ -136,7 +136,8 @@ class MyAppWindow(arcade.Window):
         arcade.start_render()
 
         # Draw all the sprites.
-        self.all_sprites_list.draw()
+        self.wall_list.draw()
+        self.player_sprite.draw()
 
         # Put the text on the screen.
         # Adjust the text position based on the viewport so that we don't

@@ -132,7 +132,11 @@ class MyApplication(arcade.Window):
             self.player_sprite.change_x = 0
 
 
-window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
-window.setup()
+def main():
+    """ Main method """
+    window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
+    window.setup()
+    arcade.run()
 
-arcade.run()
+if __name__ == "__main__":
+    main()

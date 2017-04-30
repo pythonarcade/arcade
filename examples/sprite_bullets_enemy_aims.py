@@ -18,6 +18,12 @@ class MyApplication(arcade.Window):
 
         self.frame_count = 0
 
+        self.all_sprites_list = None
+        self.enemy_list = None
+        self.bullet_list = None
+        self.player = None
+
+    def setup(self):
         self.all_sprites_list = arcade.SpriteList()
         self.enemy_list = arcade.SpriteList()
         self.bullet_list = arcade.SpriteList()
@@ -44,7 +50,9 @@ class MyApplication(arcade.Window):
 
         arcade.start_render()
 
-        self.all_sprites_list.draw()
+        self.enemy_list.draw()
+        self.bullet_list.draw()
+        self.player.draw()
 
     def update(self, delta_time):
         """All the logic to move, and the game logic goes here. """
@@ -108,6 +116,11 @@ class MyApplication(arcade.Window):
         self.player.center_y = y
 
 
-window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
+def main():
+    """ Main method """
+    window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
+    window.setup()
+    arcade.run()
 
-arcade.run()
+if __name__ == "__main__":
+    main()

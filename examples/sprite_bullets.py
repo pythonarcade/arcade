@@ -37,8 +37,7 @@ class MyAppWindow(arcade.Window):
         # Set up the player
         self.score = 0
         self.score_text = None
-        self.player_sprite = arcade.Sprite("images/character.png",
-                                           SPRITE_SCALING)
+        self.player_sprite = arcade.Sprite("images/character.png", SPRITE_SCALING)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 70
         self.all_sprites_list.append(self.player_sprite)

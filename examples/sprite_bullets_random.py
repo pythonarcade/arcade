@@ -17,7 +17,13 @@ class MyApplication(arcade.Window):
         arcade.set_background_color(arcade.color.BLACK)
 
         self.frame_count = 0
+        self.all_sprites_list = None
+        self.enemy_list = None
+        self.bullet_list = None
 
+        self.player = None
+
+    def setup(self):
         self.all_sprites_list = arcade.SpriteList()
         self.enemy_list = arcade.SpriteList()
         self.bullet_list = arcade.SpriteList()
@@ -44,7 +50,10 @@ class MyApplication(arcade.Window):
 
         arcade.start_render()
 
-        self.all_sprites_list.draw()
+        self.enemy_list.draw()
+        self.bullet_list.draw()
+        self.player.draw()
+
         # Draw the text
         arcade.draw_text("This is a simple template to start your game.",
                          10, SCREEN_HEIGHT // 2, arcade.color.BLACK, 20)
@@ -74,13 +83,16 @@ class MyApplication(arcade.Window):
         self.bullet_list.update()
 
     def on_mouse_motion(self, x, y, delta_x, delta_y):
-        """
-        Called whenever the mouse moves.
-        """
+        """ Called whenever the mouse moves. """
         self.player.center_x = x
         self.player.center_y = 20
 
 
-window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
+def main():
+    """ Main method """
+    window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
+    window.setup()
+    arcade.run()
 
-arcade.run()
+if __name__ == "__main__":
+    main()

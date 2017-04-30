@@ -116,7 +116,8 @@ class MyApplication(arcade.Window):
 
 def main():
     """ Main method """
-    MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
+    window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
+    window.setup()
     arcade.run()
 
 if __name__ == "__main__":
