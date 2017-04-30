@@ -2,6 +2,7 @@ from doctest import DocTestSuite
 from unittest import TestSuite
 from unittest import TextTestRunner
 
+
 import arcade
 
 
