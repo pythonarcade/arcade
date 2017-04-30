@@ -10,9 +10,9 @@ import pyglet.gl as gl
 from arcade.draw_commands import load_texture
 from arcade.draw_commands import draw_texture_rectangle
 from arcade.draw_commands import Texture
+from arcade.draw_commands import rotate_point
 
-from numbers import Number
-from typing import Iterable, List, Sequence
+from typing import Iterable, List, Sequence, Tuple
 
 FACE_RIGHT = 1
 FACE_LEFT = 2
@@ -138,8 +138,9 @@ upside-down.
         self._points = None
         self._point_list_cache = None
 
-        self._last_center_x = 0
-        self._last_center_y = 0
+        self.last_center_x = 0
+        self.last_center_y = 0
+        self.last_angle = 0
 
         self.force = [0, 0]
 
@@ -178,7 +179,7 @@ upside-down.
     def set_points(self, points: Sequence[Sequence[float]]):
         self._points = points
 
-    def get_points(self) -> List[List[float]]:
+    def get_points(self) -> Tuple[Tuple[float, float]]:
         """
         Get the corner points for the rect that makes up the sprite.
         """
@@ -191,32 +192,32 @@ upside-down.
                 point = (self._points[point][0] + self.center_x,
                          self._points[point][1] + self.center_y)
                 point_list.append(point)
-            self._point_list_cache = point_list
+            self._point_list_cache = tuple(point_list)
             return point_list
         else:
-            x1, y1 = _rotate(self.center_x - self.width / 2,
-                             self.center_y - self.height / 2,
-                             self.center_x,
-                             self.center_y,
-                             self.angle)
-            x2, y2 = _rotate(self.center_x + self.width / 2,
-                             self.center_y - self.height / 2,
-                             self.center_x,
-                             self.center_y,
-                             self.angle)
-            x3, y3 = _rotate(self.center_x + self.width / 2,
-                             self.center_y + self.height / 2,
-                             self.center_x,
-                             self.center_y,
-                             self.angle)
-            x4, y4 = _rotate(self.center_x - self.width / 2,
-                             self.center_y + self.height / 2,
-                             self.center_x,
-                             self.center_y,
-                             self.angle)
+            x1, y1 = rotate_point(self.center_x - self.width / 2,
+                                  self.center_y - self.height / 2,
+                                  self.center_x,
+                                  self.center_y,
+                                  self.angle)
+            x2, y2 = rotate_point(self.center_x + self.width / 2,
+                                  self.center_y - self.height / 2,
+                                  self.center_x,
+                                  self.center_y,
+                                  self.angle)
+            x3, y3 = rotate_point(self.center_x + self.width / 2,
+                                  self.center_y + self.height / 2,
+                                  self.center_x,
+                                  self.center_y,
+                                  self.angle)
+            x4, y4 = rotate_point(self.center_x - self.width / 2,
+                                  self.center_y + self.height / 2,
+                                  self.center_x,
+                                  self.center_y,
+                                  self.angle)
 
-        self._point_list_cache = ((x1, y1), (x2, y2), (x3, y3), (x4, y4))
-        return self._point_list_cache
+            self._point_list_cache = ((x1, y1), (x2, y2), (x3, y3), (x4, y4))
+            return self._point_list_cache
 
     points = property(get_points, set_points)
 
@@ -353,7 +354,7 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
 
     angle = property(_get_angle, _set_angle)
 
-    def _get_left(self) -> Number:
+    def _get_left(self) -> float:
         """
         Left-most coordinate.
 
@@ -440,7 +441,7 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
 
     texture = property(_get_texture, _set_texture)
 
-    def _register_sprite_list(self, new_list):
+    def register_sprite_list(self, new_list):
         """
         Register this sprite as belonging to a list. We will automatically
         remove ourselves from the the list when kill() is called.
@@ -531,7 +532,7 @@ class SpriteList:
         Add a new sprite to the list.
         """
         self.sprite_list.append(item)
-        item._register_sprite_list(self)
+        item.register_sprite_list(self)
         self.vbo_dirty = True
 
     def remove(self, item: Sprite):
@@ -574,9 +575,9 @@ class SpriteList:
 
         for sprite in self.sprite_list:
             sprite.center_x += change_x
-            sprite._last_center_x += change_x
+            sprite.last_center_x += change_x
             sprite.center_y += change_y
-            sprite._last_center_y += change_y
+            sprite.last_center_y += change_y
 
         self.vbo_dirty = dirty
 
@@ -593,10 +594,13 @@ class SpriteList:
             # print("Setup VBO")
 
         for sprite in self.sprite_list:
-            if sprite.center_x != sprite._last_center_x or sprite.center_y != sprite._last_center_y:
+            if sprite.center_x != sprite.last_center_x \
+                    or sprite.center_y != sprite.last_center_y \
+                    or sprite.rotation != sprite.last_rotation:
                 self.vbo_dirty = True
-                sprite._last_center_x = sprite.center_x
-                sprite._last_center_y = sprite.center_y
+                sprite.last_center_x = sprite.center_x
+                sprite.last_center_y = sprite.center_y
+                sprite.last_angle = sprite.angle
 
         # Run this if we are running 'fast' and we added or
         # removed sprites, and thus need to recreate our buffer
@@ -703,16 +707,23 @@ class AnimatedWalkingSprite(Sprite):
         texture_list = []
 
         change_direction = False
-        if self.change_x > 0 and self.change_y == 0 and self.state != FACE_RIGHT and self.walk_right_textures and len(self.walk_right_textures) > 0:
+        if self.change_x > 0 \
+                and self.change_y == 0 \
+                and self.state != FACE_RIGHT \
+                and self.walk_right_textures \
+                and len(self.walk_right_textures) > 0:
             self.state = FACE_RIGHT
             change_direction = True
-        elif self.change_x < 0 and self.change_y == 0 and self.state != FACE_LEFT and self.walk_left_textures and len(self.walk_left_textures) > 0:
+        elif self.change_x < 0 and self.change_y == 0 and self.state != FACE_LEFT \
+                and self.walk_left_textures and len(self.walk_left_textures) > 0:
             self.state = FACE_LEFT
             change_direction = True
-        elif self.change_y < 0 and self.change_x == 0 and self.state != FACE_DOWN and self.walk_down_textures and len(self.walk_down_textures) > 0:
+        elif self.change_y < 0 and self.change_x == 0 and self.state != FACE_DOWN \
+                and self.walk_down_textures and len(self.walk_down_textures) > 0:
             self.state = FACE_DOWN
             change_direction = True
-        elif self.change_y > 0 and self.change_x == 0 and self.state != FACE_UP and self.walk_up_textures and (self.walk_up_textures) > 0:
+        elif self.change_y > 0 and self.change_x == 0 and self.state != FACE_UP \
+                and self.walk_up_textures and len(self.walk_up_textures) > 0:
             self.state = FACE_UP
             change_direction = True
 
@@ -732,15 +743,18 @@ class AnimatedWalkingSprite(Sprite):
             if self.state == FACE_LEFT:
                 texture_list = self.walk_left_textures
                 if texture_list is None or len(texture_list) == 0:
-                    raise RuntimeError("update_animation was called on a sprite that doesn't have a list of walk left textures.")
+                    raise RuntimeError("update_animation was called on a sprite that doesn't have a "
+                                       "list of walk left textures.")
             elif self.state == FACE_RIGHT:
                 texture_list = self.walk_right_textures
                 if texture_list is None or len(texture_list) == 0:
-                    raise RuntimeError("update_animation was called on a sprite that doesn't have a list of walk right textures.")
+                    raise RuntimeError("update_animation was called on a sprite that doesn't have a list of "
+                                       "walk right textures.")
             elif self.state == FACE_UP:
                 texture_list = self.walk_up_textures
                 if texture_list is None or len(texture_list) == 0:
-                    raise RuntimeError("update_animation was called on a sprite that doesn't have a list of walk up textures.")
+                    raise RuntimeError("update_animation was called on a sprite that doesn't have a list of "
+                                       "walk up textures.")
             elif self.state == FACE_DOWN:
                 texture_list = self.walk_down_textures
                 if texture_list is None or len(texture_list) == 0:
@@ -757,43 +771,16 @@ class AnimatedWalkingSprite(Sprite):
         self.height = self.texture.height * self.scale
 
 
-def _rotate(x: float, y: float, cx: float, cy: float,
-            angle: float) -> Iterable[Number]:
-    """
-    Rotate a point around a center.
-
-    >>> x, y = _rotate(1, 1, 0, 0, 90)
-    >>> print("x = {:.1f}, y = {:.1f}".format(x, y))
-    x = -1.0, y = 1.0
-    """
-    temp_x = x - cx
-    temp_y = y - cy
-
-    # now apply rotation
-    rotated_x = temp_x * math.cos(math.radians(angle)) - \
-        temp_y * math.sin(math.radians(angle))
-    rotated_y = temp_x * math.sin(math.radians(angle)) + \
-        temp_y * math.cos(math.radians(angle))
-
-    # translate back
-    x = rotated_x + cx
-    y = rotated_y + cy
-
-    return x, y
-
-
 def _set_vbo(vbo_id: gl.GLuint, points: List[float]):
     """
     Given a vertex buffer id, this sets the vertexes to be
     part of that buffer.
     """
 
-    # todo what does it do?
-    data2 = (gl.GLfloat*len(points))(*points)
+    data2 = gl.GLfloat * ctypes.c_float(len(points))
 
     gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vbo_id)
-    gl.glBufferData(gl.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2,
-                    gl.GL_STATIC_DRAW)
+    gl.glBufferData(gl.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2, gl.GL_STATIC_DRAW)
 
 
 def _create_vbo() -> gl.GLuint:
@@ -829,18 +816,18 @@ def _create_rects(rect_list: Iterable[Sprite]) -> List[float]:
         p4 = x1, y2
 
         if shape.angle:
-            p1 = _rotate(p1[0], p1[1], shape.center_x, shape.center_y, shape.angle)
-            p2 = _rotate(p2[0], p2[1], shape.center_x, shape.center_y, shape.angle)
-            p3 = _rotate(p3[0], p3[1], shape.center_x, shape.center_y, shape.angle)
-            p4 = _rotate(p4[0], p4[1], shape.center_x, shape.center_y, shape.angle)
+            p1 = rotate_point(p1[0], p1[1], shape.center_x, shape.center_y, shape.angle)
+            p2 = rotate_point(p2[0], p2[1], shape.center_x, shape.center_y, shape.angle)
+            p3 = rotate_point(p3[0], p3[1], shape.center_x, shape.center_y, shape.angle)
+            p4 = rotate_point(p4[0], p4[1], shape.center_x, shape.center_y, shape.angle)
 
         v2f.extend([p1[0], p1[1],
                    p2[0], p2[1],
                    p3[0], p3[1],
                    p4[0], p4[1]])
 
-
     return v2f
+
 
 def _render_rect_filled(offset: int, texture_id: str,
                         texture_coord_vbo: gl.GLuint, batch_count):
@@ -848,7 +835,7 @@ def _render_rect_filled(offset: int, texture_id: str,
     Render the rectangle at the right spot.
     """
     # Set color
-    #gl.glLoadIdentity()
+    # gl.glLoadIdentity()
     # gl.glTranslatef(shape.center_x, shape.center_y, 0)
 
     # if shape.angle != 0:
@@ -860,7 +847,7 @@ def _render_rect_filled(offset: int, texture_id: str,
     gl.glDrawArrays(gl.GL_QUADS, offset, batch_count)
 
 
-def _draw_rects(shape_list: Iterable[Sprite], vertex_vbo_id: gl.GLuint,
+def _draw_rects(shape_list: List[Sprite], vertex_vbo_id: gl.GLuint,
                 texture_coord_vbo_id: gl.GLuint, change_x: float, change_y: float):
     """
     Draw a set of rectangles using vertex buffers. This is more efficient
@@ -890,7 +877,6 @@ def _draw_rects(shape_list: Iterable[Sprite], vertex_vbo_id: gl.GLuint,
     gl.glVertexPointer(2, gl.GL_FLOAT, 0, 0)
 
     gl.glBindBuffer(gl.GL_ARRAY_BUFFER, texture_coord_vbo_id)
-
 
     last_alpha = shape_list[0].alpha
     gl.glColor4f(1, 1, 1, last_alpha)

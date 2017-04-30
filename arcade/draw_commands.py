@@ -11,11 +11,34 @@ import PIL.ImageOps
 import pyglet
 import pyglet.gl as gl
 from pyglet.gl import glu as glu
-
 from typing import List
-
 from arcade.arcade_types import Color
 from arcade.arcade_types import PointList
+
+
+def rotate_point(x: float, y: float, cx: float, cy: float,
+                 angle: float) -> (float, float):
+    """
+    Rotate a point around a center.
+
+    >>> x, y = rotate_point(1, 1, 0, 0, 90)
+    >>> print("x = {:.1f}, y = {:.1f}".format(x, y))
+    x = -1.0, y = 1.0
+    """
+    temp_x = x - cx
+    temp_y = y - cy
+
+    # now apply rotation
+    rotated_x = temp_x * math.cos(math.radians(angle)) - \
+        temp_y * math.sin(math.radians(angle))
+    rotated_y = temp_x * math.sin(math.radians(angle)) + \
+        temp_y * math.cos(math.radians(angle))
+
+    # translate back
+    x = rotated_x + cx
+    y = rotated_y + cy
+
+    return x, y
 
 
 class Texture:
@@ -722,8 +745,7 @@ def create_ellipse(width: float, height: float,
 
     v2f = data
 
-    # todo: What does it do?
-    data2 = (gl.GLfloat * len(v2f))(*v2f)
+    data2 = gl.GLfloat * ctypes.c_float(len(v2f))
 
     gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vbo_id)
     gl.glBufferData(gl.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2,
@@ -1378,7 +1400,7 @@ def create_rectangle(width: float, height: float,
     gl.glGenBuffers(1, ctypes.pointer(vbo_id))
 
     v2f = data
-    data2 = (gl.GLfloat * len(v2f))(*v2f)
+    data2 = gl.GLfloat * ctypes.c_float(len(v2f))
 
     gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vbo_id)
     gl.glBufferData(gl.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2,
@@ -1743,9 +1765,6 @@ scale * texture.height, texture, 90, 1, False)
     gl.glHint(gl.GL_PERSPECTIVE_CORRECTION_HINT, gl.GL_NICEST)
 
     gl.glLoadIdentity()
-    #gl.glTranslatef(center_x, center_y, 0)
-    #if angle != 0:
-    #    gl.glRotatef(angle, 0, 0, 1)
 
     gl.glColor4f(1, 1, 1, alpha)
     z = 0.5  # pylint: disable=invalid-name
@@ -1761,11 +1780,10 @@ scale * texture.height, texture, 90, 1, False)
     p4 = x1, y2
 
     if angle:
-        p1 = _rotate(p1[0], p1[1], center_x, center_y, angle)
-        p2 = _rotate(p2[0], p2[1], center_x, center_y, angle)
-        p3 = _rotate(p3[0], p3[1], center_x, center_y, angle)
-        p4 = _rotate(p4[0], p4[1], center_x, center_y, angle)
-
+        p1 = rotate_point(p1[0], p1[1], center_x, center_y, angle)
+        p2 = rotate_point(p2[0], p2[1], center_x, center_y, angle)
+        p3 = rotate_point(p3[0], p3[1], center_x, center_y, angle)
+        p4 = rotate_point(p4[0], p4[1], center_x, center_y, angle)
 
     gl.glBindTexture(gl.GL_TEXTURE_2D, texture.texture_id)
     gl.glBegin(gl.GL_POLYGON)
@@ -1803,16 +1821,17 @@ def draw_xywh_rectangle_textured(top_left_x: float, top_left_y: float,
 
 # --- BEGIN TEXT FUNCTIONS # # #
 
+
 def create_text(text: str,
-              color: Color,
-              font_size: float=12,
-              width: int=2000,
-              align="left",
-              font_name=('Calibri', 'Arial'),
-              bold: bool=False,
-              italic: bool=False,
-              anchor_x="left",
-              anchor_y="baseline"):
+                color: Color,
+                font_size: float=12,
+                width: int=2000,
+                align="left",
+                font_name=('Calibri', 'Arial'),
+                bold: bool=False,
+                italic: bool=False,
+                anchor_x="left",
+                anchor_y="baseline"):
     """
     Create text to be rendered later. This operation takes a while, so it is
     better to hold it between frames when the text does not change.
@@ -1835,6 +1854,7 @@ def create_text(text: str,
 
     return label
 
+
 def render_text(text: pyglet.text.Label, start_x: float, start_y: float, rotation=0):
     """ Render text created by the create_text function. """
     gl.glLoadIdentity()
@@ -1843,6 +1863,7 @@ def render_text(text: pyglet.text.Label, start_x: float, start_y: float, rotatio
         gl.glRotatef(rotation, 0, 0, 1)
 
     text.draw()
+
 
 def draw_text(text: str,
               start_x: float, start_y: float,
@@ -1901,6 +1922,5 @@ def draw_text(text: str,
         gl.glRotatef(rotation, 0, 0, 1)
 
     label.draw()
-    return label
 
 # --- END TEXT FUNCTIONS # # #
