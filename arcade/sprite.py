@@ -59,6 +59,7 @@ upside-down.
     >>> # Move the sprite
     >>> ship_sprite.change_x = 1
     >>> ship_sprite.change_y = 1
+    >>> ship_sprite.angle = 45
     >>> ship_sprite.update() # Move/update the ship
     >>> # Remove the sprite
     >>> ship_sprite.kill()
@@ -569,6 +570,7 @@ class SpriteList:
     >>> meteor_list.draw(fast=False)
     >>> if 'APPVEYOR' not in os.environ or os.environ['APPVEYOR'] != 'TRUE':
     ...     meteor_list.draw()
+    >>> meteor_list.move(0, -1)
     >>> arcade.finish_render()
     >>> for meteor in meteor_list:
     ...     meteor.kill()
