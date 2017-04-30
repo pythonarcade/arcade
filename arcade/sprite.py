@@ -153,8 +153,8 @@ upside-down.
         self._points = None
         self._point_list_cache = None
 
-        self.last_center_x = 0
-        self.last_center_y = 0
+        self.last_center_x = self.center_x
+        self.last_center_y = self.center_y
         self.last_angle = 0
 
         self.force = [0, 0]
@@ -342,6 +342,7 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
         >>> ship_sprite.top = 1.0
         >>> print(ship_sprite.top)
         1.0
+        >>> ship_sprite.angle = 90
         >>> arcade.quick_run(0.25)
         """
         points = self.get_points()
@@ -548,6 +549,7 @@ class SpriteList:
 
     >>> import arcade
     >>> import random
+    >>> import os
     >>> arcade.open_window(600,600,"Sprite Example")
     >>> scale = 1
     >>> meteor_list = arcade.SpriteList()
@@ -565,7 +567,8 @@ class SpriteList:
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
     >>> meteor_list.draw(fast=False)
-    >>> meteor_list.draw()
+    >>> if 'APPVEYOR' not in os.environ or os.environ['APPVEYOR'] != 'TRUE':
+    ...     meteor_list.draw()
     >>> arcade.finish_render()
     >>> for meteor in meteor_list:
     ...     meteor.kill()
@@ -706,6 +709,12 @@ class SpriteList:
 class AnimatedTimeSprite(Sprite):
     """
     Sprite for platformer games that supports animations.
+
+    >>> import arcade
+    >>> my_sprite = AnimatedTimeSprite()
+    >>> my_texture = Texture(1, 10, 10)
+    >>> my_sprite.append_texture(my_texture)
+    >>> my_sprite.update_animation()
     """
 
     def __init__(self, scale: float=1,
@@ -714,10 +723,7 @@ class AnimatedTimeSprite(Sprite):
 
         super().__init__(scale=scale, image_x=image_x, image_y=image_y,
                          center_x=center_x, center_y=center_y)
-        self.last_center_x = self.center_x
-        self.last_center_y = self.center_y
         self.state = FACE_RIGHT
-        self.textures = None
         self.cur_texture_index = 0
         self.texture_change_frames = 5
         self.frame = 0
@@ -738,14 +744,17 @@ class AnimatedTimeSprite(Sprite):
 class AnimatedWalkingSprite(Sprite):
     """
     Sprite for platformer games that supports animations.
+    >>> my_sprite = AnimatedWalkingSprite()
+    >>> my_texture1 = Texture(1, 10, 10)
+    >>> my_texture2 = Texture(1, 10, 10)
+    >>> my_sprite.stand_right_textures = my_texture1, my_texture2
+    >>> my_sprite.update_animation()
     """
     def __init__(self, scale: float=1,
                  image_x: float=0, image_y: float=0,
                  center_x: float=0, center_y: float=0):
         super().__init__(scale=scale, image_x=image_x, image_y=image_y,
                          center_x=center_x, center_y=center_y)
-        self.last_center_x = self.center_x
-        self.last_center_y = self.center_y
         self.state = FACE_RIGHT
         self.stand_right_textures = None
         self.stand_left_textures = None
