@@ -14,6 +14,7 @@ def load_tests(loader=None, tests=None, pattern=None):
     suite.addTests(DocTestSuite('arcade.sprite'))
     suite.addTests(DocTestSuite('arcade.application'))
     suite.addTests(DocTestSuite('arcade.sound'))
+    suite.addTests(DocTestSuite('arcade.physics_engines'))
     return suite
 
 if __name__ == '__main__':
