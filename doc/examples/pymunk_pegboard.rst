@@ -14,7 +14,7 @@ This uses the Pymunk physics engine to simulate balls falling on a pegboard.
     :align: center
     :alt: Screenshot of pegboard example.
 
-.. literalinclude:: ../../examples/pybmunk_pegboard.py
+.. literalinclude:: ../../examples/pymunk_pegboard.py
     :caption: pybmunk_pegboard.py
     :linenos:
 
