@@ -67,6 +67,21 @@ upside-down.
     ...
     ValueError: Height entered is less than zero. Height must be a positive float.
 
+    >>> ship_sprite = arcade.Sprite(filename, SCALE, image_width=-1)
+    Traceback (most recent call last):
+    ...
+    ValueError: Width of image can't be less than zero.
+
+    >>> ship_sprite = arcade.Sprite(filename, SCALE, image_width=0, image_height=1)
+    Traceback (most recent call last):
+    ...
+    ValueError: Width can't be zero.
+
+    >>> ship_sprite = arcade.Sprite(filename, SCALE, image_height=0, image_width=1)
+    Traceback (most recent call last):
+    ...
+    ValueError: Height can't be zero.
+
     >>> arcade.quick_run(0.25)
     """
 
@@ -148,6 +163,11 @@ upside-down.
         """
         Appends a new texture to the list of textures that can be
         applied to this sprite.
+        
+        >>> import arcade
+        >>> empty_sprite = arcade.Sprite()
+        >>> my_texture = Texture(1, 10, 10)
+        >>> empty_sprite.append_texture(my_texture)
         """
         self.textures.append(texture)
 
@@ -156,6 +176,11 @@ upside-down.
         Assuming 'texture' is a list of textures, this sets
         which texture index should be displayed. It also resets
         the width and height based on the scale of the texture.
+        >>> import arcade
+        >>> empty_sprite = arcade.Sprite()
+        >>> my_texture = Texture(1, 10, 10)
+        >>> empty_sprite.append_texture(my_texture)
+        >>> empty_sprite.set_texture(0)
         """
         self.texture = self.textures[texture_no]
         self.cur_texture_index = texture_no
@@ -166,22 +191,44 @@ upside-down.
         """
         This returns the index of which texture is being
         displayed.
+        >>> import arcade
+        >>> empty_sprite = arcade.Sprite()
+        >>> my_texture = Texture(1, 10, 10)
+        >>> empty_sprite.append_texture(my_texture)
+        >>> empty_sprite.get_texture()
+        0
         """
         return self.cur_texture_index
 
     def set_position(self, center_x: float, center_y: float):
         """
         Set a sprite's position
+        >>> import arcade
+        >>> empty_sprite = arcade.Sprite()
+        >>> empty_sprite.set_position(10, 10)
         """
         self.center_x = center_x
         self.center_y = center_y
 
     def set_points(self, points: Sequence[Sequence[float]]):
+        """
+        Set a sprite's position
+        >>> import arcade
+        >>> empty_sprite = arcade.Sprite()
+        >>> my_points = (0,0),(1,1),(0,1),(1,0)
+        >>> empty_sprite.set_points(my_points)
+        """
         self._points = points
 
     def get_points(self) -> Tuple[Tuple[float, float]]:
         """
         Get the corner points for the rect that makes up the sprite.
+        >>> import arcade
+        >>> empty_sprite = arcade.Sprite()
+        >>> my_points = (0,0),(1,1),(0,1),(1,0)
+        >>> empty_sprite.set_points(my_points)
+        >>> empty_sprite.get_points()
+        ((0, 0), (1, 1), (0, 1), (1, 0))
         """
         if self._point_list_cache is not None:
             return self._point_list_cache
@@ -193,7 +240,7 @@ upside-down.
                          self._points[point][1] + self.center_y)
                 point_list.append(point)
             self._point_list_cache = tuple(point_list)
-            return point_list
+            return self._point_list_cache
         else:
             x1, y1 = rotate_point(self.center_x - self.width / 2,
                                   self.center_y - self.height / 2,
@@ -222,9 +269,22 @@ upside-down.
     points = property(get_points, set_points)
 
     def _set_collision_radius(self, collision_radius):
+        """
+        >>> import arcade
+        >>> empty_sprite = arcade.Sprite()
+        >>> empty_sprite.collision_radius = 5
+        """
         self._collision_radius = collision_radius
 
     def _get_collision_radius(self):
+        """
+        >>> import arcade
+        >>> empty_sprite = arcade.Sprite()
+        >>> empty_sprite.width = 3
+        >>> empty_sprite.height = 4
+        >>> empty_sprite.collision_radius
+        4
+        """
         if not self._collision_radius:
             self._collision_radius = max(self.width, self.height)
         return self._collision_radius
@@ -505,6 +565,7 @@ class SpriteList:
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
     >>> meteor_list.draw(fast=False)
+    >>> meteor_list.draw()
     >>> arcade.finish_render()
     >>> for meteor in meteor_list:
     ...     meteor.kill()
@@ -596,7 +657,7 @@ class SpriteList:
         for sprite in self.sprite_list:
             if sprite.center_x != sprite.last_center_x \
                     or sprite.center_y != sprite.last_center_y \
-                    or sprite.rotation != sprite.last_rotation:
+                    or sprite.angle != sprite.last_angle:
                 self.vbo_dirty = True
                 sprite.last_center_x = sprite.center_x
                 sprite.last_center_y = sprite.center_y
@@ -777,7 +838,7 @@ def _set_vbo(vbo_id: gl.GLuint, points: List[float]):
     part of that buffer.
     """
 
-    data2 = gl.GLfloat * ctypes.c_float(len(points))
+    data2 = (gl.GLfloat * len(points))(*points)
 
     gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vbo_id)
     gl.glBufferData(gl.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2, gl.GL_STATIC_DRAW)
