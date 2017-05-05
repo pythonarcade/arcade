@@ -1,6 +1,6 @@
 :orphan:
 
-.. pybmunk_pegboard:
+.. _pymunk_pegboard:
 
 Pymunk Physics Engine - Pegboard
 ================================

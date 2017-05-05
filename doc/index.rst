@@ -7,7 +7,7 @@ The Python Arcade Library
       <tr>
         <td>
           <img style="width:50px;" src="_static/character.png"><br/>
-          <h2><a href="examples/index.html">Examples</a></h2>
+          <h2><a href="examples/index.html">Example Code</a></h2>
           <ul>
           <li><a href="examples/drawing_primitives.html">Drawing Primitives</a></li>
           <li><a href="examples/bouncing_rectangle.html">Bouncing Rectangle</a></li>
@@ -32,6 +32,14 @@ The Python Arcade Library
         <td>
           <img style="width:78px;" src="_static/weixin-logo.svg"><br/>
           <h2><a href="pygame_comparison.html">Pygame Comparison</a></h2>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <img style="width:78px;" src="_static/sample_games.svg"><br/>
+          <h2><a href="sample_games.html">Example Games</a></h2>
+        </td>
+        <td>
         </td>
       </tr>
     </table>
@@ -77,6 +85,7 @@ Examples
    :maxdepth: 4
 
    examples/index
+   sample_games
 
 Installation
 ------------
