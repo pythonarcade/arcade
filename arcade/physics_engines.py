@@ -14,7 +14,7 @@ class PhysicsEngineSimple:
     This class will move everything, and take care of collisions.
     
     >>> import arcade
-    >>> player = Sprite()
+    >>> player = arcade.Sprite()
     >>> player.change_y = -1
     >>> player.change_x = -1
     >>> walls = SpriteList()
@@ -82,11 +82,11 @@ class PhysicsEnginePlatformer:
     """
     This class will move everything, and take care of collisions.
     >>> import arcade
-    >>> player = Sprite()
+    >>> player = arcade.Sprite()
     >>> player.change_y = -1
     >>> player.change_x = -1    
     >>> walls = SpriteList()
-    >>> wall = Sprite()
+    >>> wall = arcade.Sprite()
     >>> walls.append(wall)
     >>> engine = PhysicsEnginePlatformer(player, walls)
     >>> engine.can_jump()
@@ -207,7 +207,6 @@ class PhysicsEnginePlatformer:
                 elif change_x < 0:
                     for item in hit_list:
                         # See if we can "run up" a ramp
-                        # print(f"Spot 3 ({self.player_sprite.center_x}, {self.player_sprite.center_y}) {item.right} - {self.player_sprite.left}")
                         self.player_sprite.center_y -= change_x
                         if len(check_for_collision_with_list(self.player_sprite, self.platforms)) > 0:
                             # Can't run up the ramp, reverse
