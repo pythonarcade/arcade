@@ -1,5 +1,5 @@
-Sample Games
-============
+Sample Games Made With The Arcade Library
+=========================================
 
 Have a sample game you'd like to share here? E-mail
 paul@cravenfamily.com.
@@ -43,4 +43,21 @@ These games were created by first-semester programming students.
 
 .. raw:: html
 
-	<iframe width="560" height="315" src="https://www.youtube.com/embed/pymhs2zTGjY" frameborder="0" allowfullscreen></iframe>
+	<iframe width="560" height="315" src="https://www.youtube.com/embed/pymhs2zTGjY" frameborder="0" allowfullscreen></iframe>\
+
+.. raw:: html
+
+	<iframe width="560" height="315" src="https://www.youtube.com/embed/_yLNYDVeQ5g" frameborder="0" allowfullscreen></iframe>
+
+.. raw:: html
+
+	<iframe width="560" height="315" src="https://www.youtube.com/embed/TPm-SMJ5cwg" frameborder="0" allowfullscreen></iframe>
+
+.. raw:: html
+
+	<iframe width="560" height="315" src="https://www.youtube.com/embed/Q65Sc8SLHho" frameborder="0" allowfullscreen></iframe>
+
+.. raw:: html
+
+	<iframe width="560" height="315" src="https://www.youtube.com/embed/Kog417X313Y" frameborder="0" allowfullscreen></iframe>
+
