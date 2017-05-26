@@ -14,6 +14,7 @@ import arcade.key
 from arcade.application import *
 from arcade.arcade_types import *
 from arcade.draw_commands import *
+from arcade.buffered_draw_commands import *
 from arcade.geometry import *
 from arcade.physics_engines import *
 from arcade.sound import *

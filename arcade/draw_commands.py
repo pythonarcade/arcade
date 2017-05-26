@@ -85,35 +85,6 @@ class Texture:
         self.width = width
         self.height = height
 
-
-class VertexBuffer:
-    """
-    This class represents a
-    `vertex buffer object`_.
-
-    Attributes:
-        :vbo_id: ID of the vertex buffer as assigned by OpenGL
-        :size:
-        :width:
-        :height:
-        :color:
-
-
-    .. _vertex buffer object:
-       https://en.wikipedia.org/wiki/Vertex_Buffer_Object
-
-    >>> import arcade
-    >>> x = VertexBuffer(0, 10, 10, 10, arcade.color.AERO_BLUE)
-    """
-    def __init__(self, vbo_id: gl.GLuint, size: float, width: float,
-                 height: float, color: Color):
-        self.vbo_id = vbo_id
-        self.size = size
-        self.width = width
-        self.height = height
-        self.color = color
-
-
 def make_transparent_color(color: Color, transparency: float):
     """
     Given a RGB color, along with an alpha, returns a RGBA color tuple.
@@ -705,85 +676,9 @@ def draw_circle_outline(center_x: float, center_y: float, radius: float,
 
 # --- BEGIN ELLIPSE FUNCTIONS # # #
 
-def create_ellipse(width: float, height: float,
-                   color: Color) -> VertexBuffer:
-    """
-    This creates an ellipse vertex buffer object (VBO). It can later be
-    drawn with ``render_ellipse_filled``. This method of drawing an ellipse
-    is much faster than calling ``draw_ellipse_filled`` each frame.
-
-    Note: THis can't be unit tested on Appveyor because its support for OpenGL is
-    poor.
-
-    import arcade
-    arcade.open_window("Drawing Example", 800, 600)
-    arcade.set_background_color(arcade.color.WHITE)
-    arcade.start_render()
-    ellipse_a = arcade.create_ellipse(100, 100, arcade.color.RED)
-    ellipse_b = arcade.create_ellipse(100, 100, (0, 255, 0, 127))
-    render_ellipse_filled(ellipse_a, 200, 200, 45)
-    render_ellipse_filled(ellipse_b, 250, 250, 45)
-    arcade.finish_render()
-    arcade.quick_run(0.25)
-
-    """
-    num_segments = 64
-
-    data = []
-
-    for segment in range(num_segments + 1):
-        theta = 2.0 * 3.1415926 * segment / num_segments
-
-        x = width * math.cos(theta)
-        y = height * math.sin(theta)
-
-        data.extend([x, y])
-
-    vbo_id = gl.GLuint()
-
-    gl.glGenBuffers(1, ctypes.pointer(vbo_id))
-
-    v2f = data
-
-    data2 = gl.GLfloat * ctypes.c_float(len(v2f))
-
-    gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vbo_id)
-    gl.glBufferData(gl.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2,
-                    gl.GL_STATIC_DRAW)
-
-    shape = VertexBuffer(vbo_id, len(v2f) // 2, width, height, color)
-    return shape
-
-
-def render_ellipse_filled(shape: VertexBuffer, center_x: float,
-                          center_y: float, angle: float=0):
-    """
-    Render an ellipse previously created with the ``create_ellipse`` function.
-    """
-    # Set color
-    if len(shape.color) == 4:
-        gl.glColor4ub(shape.color[0], shape.color[1], shape.color[2],
-                      shape.color[3])
-        gl.glEnable(gl.GL_BLEND)
-        gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-    elif len(shape.color) == 3:
-        gl.glDisable(gl.GL_BLEND)
-        gl.glColor4ub(shape.color[0], shape.color[1], shape.color[2], 255)
-
-    gl.glBindBuffer(gl.GL_ARRAY_BUFFER, shape.vbo_id)
-    gl.glVertexPointer(2, gl.GL_FLOAT, 0, 0)
-
-    gl.glLoadIdentity()
-    gl.glTranslatef(center_x, center_y, 0)
-    if angle:
-        gl.glRotatef(angle, 0, 0, 1)
-
-    gl.glDrawArrays(gl.GL_TRIANGLE_FAN, 0, shape.size)
-
-
 def draw_ellipse_filled(center_x: float, center_y: float,
                         width: float, height: float, color: Color,
-                        tilt_angle: float=0):
+                        tilt_angle: float=0, num_segments=128):
     """
     Draw a filled in ellipse.
 
@@ -814,8 +709,6 @@ def draw_ellipse_filled(center_x: float, center_y: float,
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
     """
-
-    num_segments = 128
 
     gl.glEnable(gl.GL_BLEND)
     gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
@@ -1383,59 +1276,6 @@ def draw_triangle_outline(x1: float, y1: float,
 
 # --- BEGIN RECTANGLE FUNCTIONS # # #
 
-def create_rectangle(width: float, height: float,
-                     color: Color) -> VertexBuffer:
-    """
-    This function creates a rectangle using a vertex buffer object.
-    Creating the rectangle, and then later drawing it with ``render_rectangle``
-    is faster than calling ``draw_rectangle``.
-    """
-    data = [-width / 2, -height / 2,
-            width / 2, -height / 2,
-            width / 2, height / 2,
-            -width / 2, height / 2]
-
-    vbo_id = gl.GLuint()
-
-    gl.glGenBuffers(1, ctypes.pointer(vbo_id))
-
-    v2f = data
-    data2 = gl.GLfloat * ctypes.c_float(len(v2f))
-
-    gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vbo_id)
-    gl.glBufferData(gl.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2,
-                    gl.GL_STATIC_DRAW)
-
-    shape = VertexBuffer(vbo_id, len(v2f) // 2, width, height, color)
-    return shape
-
-
-def render_rectangle_filled(shape: VertexBuffer, center_x: float,
-                            center_y: float, color: Color,
-                            tilt_angle: float=0):
-    """
-    Render a rectangle previously created by the ``create_rectangle`` command.
-    """
-
-    # Set color
-    if len(color) == 4:
-        gl.glColor4ub(shape.color[0], shape.color[1], shape.color[2],
-                      shape.color[3])
-        gl.glEnable(gl.GL_BLEND)
-        gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-    elif len(color) == 3:
-        gl.glDisable(gl.GL_BLEND)
-        gl.glColor4ub(shape.color[0], shape.color[1], shape.color[2], 255)
-
-    gl.glBindBuffer(gl.GL_ARRAY_BUFFER, shape.vbo_id)
-    gl.glVertexPointer(2, gl.GL_FLOAT, 0, 0)
-
-    gl.glLoadIdentity()
-    gl.glTranslatef(center_x + shape.width / 2, center_y + shape.height / 2, 0)
-    if tilt_angle != 0:
-        gl.glRotatef(tilt_angle, 0, 0, 1)
-
-    gl.glDrawArrays(gl.GL_QUADS, 0, shape.size)
 
 
 def draw_lrtb_rectangle_outline(left: float, right: float, top: float,
