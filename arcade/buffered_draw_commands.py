@@ -3,9 +3,9 @@ import ctypes
 import pyglet.gl as gl
 
 from typing import Iterable
-from pyglet.gl import glu as glu
 from arcade.arcade_types import Color
 from arcade.draw_commands import rotate_point
+
 
 class VertexBuffer:
     """
@@ -23,8 +23,6 @@ class VertexBuffer:
     .. _vertex buffer object:
        https://en.wikipedia.org/wiki/Vertex_Buffer_Object
 
-    >>> import arcade
-    >>> x = VertexBuffer(0, 10, 10, 10)
     """
     def __init__(self, vbo_id: gl.GLuint, size: float, draw_mode: int):
         self.vbo_id = vbo_id
@@ -33,15 +31,18 @@ class VertexBuffer:
         self.color = None
         self.line_width = 0
 
+
 def create_rectangle_filled(center_x: float, center_y: float, width: float,
-                     height: float, color: Color,
-                     tilt_angle: float=0) -> VertexBuffer:
+                            height: float, color: Color,
+                            tilt_angle: float=0) -> VertexBuffer:
+
     border_width = 0
     return create_rectangle(center_x, center_y, width, height, color, border_width, tilt_angle)
 
+
 def create_rectangle_outline(center_x: float, center_y: float, width: float,
-                     height: float, color: Color,
-                     border_width: float=1, tilt_angle: float=0) -> VertexBuffer:
+                             height: float, color: Color,
+                             border_width: float=1, tilt_angle: float=0) -> VertexBuffer:
 
     return create_rectangle(center_x, center_y, width, height, color, border_width, tilt_angle, filled=False)
 
@@ -67,7 +68,6 @@ def create_rectangle(center_x: float, center_y: float, width: float,
     x4 = -width / 2 + center_x
     y4 = height / 2 + center_y
 
-    print(tilt_angle)
     if tilt_angle:
         x1, y1 = rotate_point(x1, y1, center_x, center_y, tilt_angle)
         x2, y2 = rotate_point(x2, y2, center_x, center_y, tilt_angle)
@@ -88,8 +88,7 @@ def create_rectangle(center_x: float, center_y: float, width: float,
     # (gl.GLfloat * len(data)) creates an array of GLfloats, one for each number
     # (*data) initalizes the list with the floats. *data turns the list into a
     # tuple.
-    data2 = (gl.GLfloat * len(data)) (*data)
-
+    data2 = (gl.GLfloat * len(data))(*data)
 
     gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vbo_id)
     gl.glBufferData(gl.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2,
@@ -102,27 +101,29 @@ def create_rectangle(center_x: float, center_y: float, width: float,
     shape = VertexBuffer(vbo_id, len(data) // 2, shape_mode)
 
     shape.color = color
+    shape.line_width = border_width
     return shape
 
 
-
 def create_ellipse_filled(center_x: float, center_y: float,
-                   width: float, height: float, color: Color,
-                   tilt_angle: float=0, num_segments=128) -> VertexBuffer:
+                          width: float, height: float, color: Color,
+                          tilt_angle: float=0, num_segments=128) -> VertexBuffer:
 
     border_width = 0
     return create_ellipse(center_x, center_y, width, height, color, border_width, tilt_angle, num_segments, True)
 
+
 def create_ellipse_outline(center_x: float, center_y: float,
-                   width: float, height: float, color: Color,
-                   border_width: float=1,
-                   tilt_angle: float=0, num_segments=128) -> VertexBuffer:
+                           width: float, height: float, color: Color,
+                           border_width: float=1,
+                           tilt_angle: float=0, num_segments=128) -> VertexBuffer:
 
     return create_ellipse(center_x, center_y, width, height, color, border_width, tilt_angle, num_segments, False)
 
+
 def create_ellipse(center_x: float, center_y: float,
                    width: float, height: float, color: Color,
-                   border_width=0,
+                   border_width: float=0,
                    tilt_angle: float=0, num_segments=128,
                    filled=True) -> VertexBuffer:
 
@@ -137,8 +138,8 @@ def create_ellipse(center_x: float, center_y: float,
     >>> import arcade
     >>> arcade.open_window(800,600,"Drawing Example")
     >>> arcade.start_render()
-    >>> rect = arcade.create_ellipse(50, 50)
-    >>> arcade.render_ellipse_filled(rect, 0, 0, arcade.color.RED, 45)
+    >>> rect = arcade.create_ellipse(50, 50, 20, 20, arcade.color.RED, 2, 45)
+    >>> arcade.render(rect)
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
 
@@ -183,12 +184,13 @@ def create_ellipse(center_x: float, center_y: float,
     shape.line_width = border_width
     return shape
 
+
 def render(shape: VertexBuffer, reload_identity=True):
     """
     Render an ellipse previously created with the ``create_ellipse`` function.
     """
     # Set color
-    if shape.color == None:
+    if shape.color is None:
         raise ValueError("Error: Color parameter not set.")
     if len(shape.color) == 4:
         gl.glColor4ub(shape.color[0], shape.color[1], shape.color[2],
@@ -210,7 +212,27 @@ def render(shape: VertexBuffer, reload_identity=True):
 
     gl.glDrawArrays(shape.draw_mode, 0, shape.size)
 
+
 class ShapeList:
+    """
+    
+    >>> import arcade
+    >>> arcade.open_window(800,600,"Drawing Example")
+    >>> my_list = ShapeList()
+    >>> my_shape = arcade.create_ellipse_outline(50, 50, 20, 20, arcade.color.RED, 45)
+    >>> my_list.append(my_shape)
+    >>> my_shape = arcade.create_ellipse_filled(50, 50, 20, 20, arcade.color.RED, 2, 45)
+    >>> my_list.append(my_shape)
+    >>> my_shape = arcade.create_rectangle_filled(250, 50, 20, 20, arcade.color.RED, 45)
+    >>> my_list.append(my_shape)
+    >>> my_shape = arcade.create_rectangle_outline(450, 50, 20, 20, arcade.color.RED, 2, 45)
+    >>> my_list.append(my_shape)
+    >>> arcade.start_render()
+    >>> my_list.draw()
+    >>> arcade.finish_render()
+    >>> arcade.quick_run(0.25)
+    
+    """
     def __init__(self):
         """
         Initialize the sprite list
@@ -249,7 +271,7 @@ class ShapeList:
     def __getitem__(self, i):
         return self.shape_list[i]
 
-    def draw(self, fast: bool=True):
+    def draw(self):
 
         gl.glVertexPointer(2, gl.GL_FLOAT, 0, 0)
         gl.glLoadIdentity()
