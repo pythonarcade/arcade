@@ -3,9 +3,10 @@ import ctypes
 import pyglet.gl as gl
 
 from typing import Iterable
-from pyglet.gl import glu as glu
+# from pyglet.gl import glu as glu
 from arcade.arcade_types import Color
 from arcade.draw_commands import rotate_point
+
 
 class VertexBuffer:
     """
@@ -24,7 +25,7 @@ class VertexBuffer:
        https://en.wikipedia.org/wiki/Vertex_Buffer_Object
 
     >>> import arcade
-    >>> x = VertexBuffer(0, 10, 10, 10)
+    >>> x = arcade.VertexBuffer(0, 10, 10, 10)
     """
     def __init__(self, vbo_id: gl.GLuint, size: float, draw_mode: int):
         self.vbo_id = vbo_id
@@ -33,15 +34,17 @@ class VertexBuffer:
         self.color = None
         self.line_width = 0
 
+
 def create_rectangle_filled(center_x: float, center_y: float, width: float,
-                     height: float, color: Color,
-                     tilt_angle: float=0) -> VertexBuffer:
+                            height: float, color: Color,
+                            tilt_angle: float=0) -> VertexBuffer:
     border_width = 0
     return create_rectangle(center_x, center_y, width, height, color, border_width, tilt_angle)
 
+
 def create_rectangle_outline(center_x: float, center_y: float, width: float,
-                     height: float, color: Color,
-                     border_width: float=1, tilt_angle: float=0) -> VertexBuffer:
+                             height: float, color: Color,
+                             border_width: float=1, tilt_angle: float=0) -> VertexBuffer:
 
     return create_rectangle(center_x, center_y, width, height, color, border_width, tilt_angle, filled=False)
 
@@ -67,7 +70,6 @@ def create_rectangle(center_x: float, center_y: float, width: float,
     x4 = -width / 2 + center_x
     y4 = height / 2 + center_y
 
-    print(tilt_angle)
     if tilt_angle:
         x1, y1 = rotate_point(x1, y1, center_x, center_y, tilt_angle)
         x2, y2 = rotate_point(x2, y2, center_x, center_y, tilt_angle)
@@ -79,6 +81,7 @@ def create_rectangle(center_x: float, center_y: float, width: float,
             x3, y3,
             x4, y4]
 
+    print(data)
     vbo_id = gl.GLuint()
 
     gl.glGenBuffers(1, ctypes.pointer(vbo_id))
@@ -89,7 +92,6 @@ def create_rectangle(center_x: float, center_y: float, width: float,
     # (*data) initalizes the list with the floats. *data turns the list into a
     # tuple.
     data2 = (gl.GLfloat * len(data)) (*data)
-
 
     gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vbo_id)
     gl.glBufferData(gl.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2,
@@ -105,20 +107,21 @@ def create_rectangle(center_x: float, center_y: float, width: float,
     return shape
 
 
-
 def create_ellipse_filled(center_x: float, center_y: float,
-                   width: float, height: float, color: Color,
-                   tilt_angle: float=0, num_segments=128) -> VertexBuffer:
+                          width: float, height: float, color: Color,
+                          tilt_angle: float=0, num_segments=128) -> VertexBuffer:
 
     border_width = 0
     return create_ellipse(center_x, center_y, width, height, color, border_width, tilt_angle, num_segments, True)
 
+
 def create_ellipse_outline(center_x: float, center_y: float,
-                   width: float, height: float, color: Color,
-                   border_width: float=1,
-                   tilt_angle: float=0, num_segments=128) -> VertexBuffer:
+                           width: float, height: float, color: Color,
+                           border_width: float=1,
+                           tilt_angle: float=0, num_segments=128) -> VertexBuffer:
 
     return create_ellipse(center_x, center_y, width, height, color, border_width, tilt_angle, num_segments, False)
+
 
 def create_ellipse(center_x: float, center_y: float,
                    width: float, height: float, color: Color,
@@ -190,23 +193,11 @@ def render(shape: VertexBuffer, reload_identity=True):
     # Set color
     if shape.color == None:
         raise ValueError("Error: Color parameter not set.")
-    if len(shape.color) == 4:
-        gl.glColor4ub(shape.color[0], shape.color[1], shape.color[2],
-                      shape.color[3])
-        gl.glEnable(gl.GL_BLEND)
-        gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-    elif len(shape.color) == 3:
-        gl.glDisable(gl.GL_BLEND)
-        gl.glColor4ub(shape.color[0], shape.color[1], shape.color[2], 255)
 
+
+    gl.glLoadIdentity()
+    gl.glVertexPointer(2, gl.GL_FLOAT, 0, 0)
     gl.glBindBuffer(gl.GL_ARRAY_BUFFER, shape.vbo_id)
-
-    if shape.line_width:
-        gl.glLineWidth(shape.line_width)
-
-    if reload_identity:
-        gl.glVertexPointer(2, gl.GL_FLOAT, 0, 0)
-        gl.glLoadIdentity()
 
     gl.glDrawArrays(shape.draw_mode, 0, shape.size)
 
@@ -258,5 +249,24 @@ class ShapeList:
         if self.angle:
             gl.glRotatef(self.angle, 0, 0, 1)
 
+        last_color = None
+        last_line_width = None
+
         for shape in self.shape_list:
+            #if last_color is None or last_color != shape.color:
+                last_color = shape.color
+                if len(shape.color) == 4:
+                    gl.glColor4ub(shape.color[0], shape.color[1], shape.color[2],
+                                  shape.color[3])
+                    gl.glEnable(gl.GL_BLEND)
+                    gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
+                elif len(shape.color) == 3:
+                    gl.glDisable(gl.GL_BLEND)
+                    gl.glColor4ub(shape.color[0], shape.color[1], shape.color[2], 255)
+
+            #if last_line_width is None or last_line_width == shape.line_width:
+                last_line_width = shape.line_width
+                if shape.line_width:
+                    gl.glLineWidth(shape.line_width)
+
             render(shape, False)
