@@ -1,6 +1,5 @@
 import arcade
 import pymunk
-import random
 import timeit
 import math
 
@@ -46,7 +45,7 @@ class MyApplication(arcade.Window):
         # Used for dragging shapes aruond with the mouse
         self.shape_being_dragged = None
         self.last_mouse_position = 0, 0
-        
+
         self.processing_time_text = None
         self.draw_time_text = None
         self.draw_time = 0
@@ -67,10 +66,10 @@ class MyApplication(arcade.Window):
                 mass = 12.0
                 moment = pymunk.moment_for_box(mass, (size, size))
                 body = pymunk.Body(mass, moment)
-                body.position = pymunk.Vec2d(300 + x*50, (floor_height + size / 2) + y * (size +.01))
+                body.position = pymunk.Vec2d(300 + x*50, (floor_height + size / 2) + y * (size + .01))
                 shape = pymunk.Poly.create_box(body, (size, size))
                 shape.friction = 0.3
-                self.space.add(body,shape)
+                self.space.add(body, shape)
 
                 sprite = BoxSprite(shape, "images/boxCrate_double.png", width=size, height=size)
                 self.sprite_list.append(sprite)
@@ -107,15 +106,8 @@ class MyApplication(arcade.Window):
         if not self.draw_time_text or output != self.draw_time_text.text:
             self.draw_time_text = arcade.create_text(output, arcade.color.WHITE, 12)
         arcade.render_text(self.draw_time_text, 20, SCREEN_HEIGHT - 40)
-        
-        self.draw_time = timeit.default_timer() - draw_start_time
 
-    def on_mouse_press(self, x, y, button, modifiers):
-        if button == 1:
-            # If a user clicks on a shape, pick it up
-            shape_list = self.space.point_query((x, y), 1, pymunk.ShapeFilter())
-            if len(shape_list) > 0:
-                self.shape_being_dragged = shape_list[0]
+        self.draw_time = timeit.default_timer() - draw_start_time
 
     def on_mouse_press(self, x, y, button, modifiers):
         if button == 1:
@@ -148,7 +140,7 @@ class MyApplication(arcade.Window):
             self.shape_being_dragged = None
 
     def on_mouse_motion(self, x, y, dx, dy):
-        if self.shape_being_dragged != None:
+        if self.shape_being_dragged is not None:
             # If we are holding an object, move it with the mouse
             self.last_mouse_position = x, y
             self.shape_being_dragged.shape.body.position = self.last_mouse_position
@@ -170,7 +162,7 @@ class MyApplication(arcade.Window):
 
         # If we are dragging an object, make sure it stays with the mouse. Otherwise
         # gravity will drag it down.
-        if self.shape_being_dragged != None:
+        if self.shape_being_dragged is not None:
             self.shape_being_dragged.shape.body.position = self.last_mouse_position
             self.shape_being_dragged.shape.body.velocity = 0, 0
 

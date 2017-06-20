@@ -3,7 +3,6 @@ import ctypes
 import pyglet.gl as gl
 
 from typing import Iterable
-# from pyglet.gl import glu as glu
 from arcade.arcade_types import Color
 from arcade.draw_commands import rotate_point
 
@@ -24,8 +23,6 @@ class VertexBuffer:
     .. _vertex buffer object:
        https://en.wikipedia.org/wiki/Vertex_Buffer_Object
 
-    >>> import arcade
-    >>> x = arcade.VertexBuffer(0, 10, 10, 10)
     """
     def __init__(self, vbo_id: gl.GLuint, size: float, draw_mode: int):
         self.vbo_id = vbo_id
@@ -38,6 +35,7 @@ class VertexBuffer:
 def create_rectangle_filled(center_x: float, center_y: float, width: float,
                             height: float, color: Color,
                             tilt_angle: float=0) -> VertexBuffer:
+
     border_width = 0
     return create_rectangle(center_x, center_y, width, height, color, border_width, tilt_angle)
 
@@ -81,7 +79,7 @@ def create_rectangle(center_x: float, center_y: float, width: float,
             x3, y3,
             x4, y4]
 
-    print(data)
+    # print(data)
     vbo_id = gl.GLuint()
 
     gl.glGenBuffers(1, ctypes.pointer(vbo_id))
@@ -104,6 +102,7 @@ def create_rectangle(center_x: float, center_y: float, width: float,
     shape = VertexBuffer(vbo_id, len(data) // 2, shape_mode)
 
     shape.color = color
+    shape.line_width = border_width
     return shape
 
 
@@ -125,7 +124,7 @@ def create_ellipse_outline(center_x: float, center_y: float,
 
 def create_ellipse(center_x: float, center_y: float,
                    width: float, height: float, color: Color,
-                   border_width=0,
+                   border_width: float=0,
                    tilt_angle: float=0, num_segments=128,
                    filled=True) -> VertexBuffer:
 
@@ -140,8 +139,8 @@ def create_ellipse(center_x: float, center_y: float,
     >>> import arcade
     >>> arcade.open_window(800,600,"Drawing Example")
     >>> arcade.start_render()
-    >>> rect = arcade.create_ellipse(50, 50)
-    >>> arcade.render_ellipse_filled(rect, 0, 0, arcade.color.RED, 45)
+    >>> rect = arcade.create_ellipse(50, 50, 20, 20, arcade.color.RED, 2, 45)
+    >>> arcade.render(rect)
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
 
@@ -186,12 +185,13 @@ def create_ellipse(center_x: float, center_y: float,
     shape.line_width = border_width
     return shape
 
+
 def render(shape: VertexBuffer, reload_identity=True):
     """
     Render an ellipse previously created with the ``create_ellipse`` function.
     """
     # Set color
-    if shape.color == None:
+    if shape.color is None:
         raise ValueError("Error: Color parameter not set.")
 
 
@@ -201,7 +201,27 @@ def render(shape: VertexBuffer, reload_identity=True):
 
     gl.glDrawArrays(shape.draw_mode, 0, shape.size)
 
+
 class ShapeList:
+    """
+
+    >>> import arcade
+    >>> arcade.open_window(800,600,"Drawing Example")
+    >>> my_list = ShapeList()
+    >>> my_shape = arcade.create_ellipse_outline(50, 50, 20, 20, arcade.color.RED, 45)
+    >>> my_list.append(my_shape)
+    >>> my_shape = arcade.create_ellipse_filled(50, 50, 20, 20, arcade.color.RED, 2, 45)
+    >>> my_list.append(my_shape)
+    >>> my_shape = arcade.create_rectangle_filled(250, 50, 20, 20, arcade.color.RED, 45)
+    >>> my_list.append(my_shape)
+    >>> my_shape = arcade.create_rectangle_outline(450, 50, 20, 20, arcade.color.RED, 2, 45)
+    >>> my_list.append(my_shape)
+    >>> arcade.start_render()
+    >>> my_list.draw()
+    >>> arcade.finish_render()
+    >>> arcade.quick_run(0.25)
+
+    """
     def __init__(self):
         """
         Initialize the sprite list
@@ -240,7 +260,7 @@ class ShapeList:
     def __getitem__(self, i):
         return self.shape_list[i]
 
-    def draw(self, fast: bool=True):
+    def draw(self):
 
         gl.glVertexPointer(2, gl.GL_FLOAT, 0, 0)
         gl.glLoadIdentity()
@@ -254,19 +274,19 @@ class ShapeList:
 
         for shape in self.shape_list:
             #if last_color is None or last_color != shape.color:
-                last_color = shape.color
-                if len(shape.color) == 4:
-                    gl.glColor4ub(shape.color[0], shape.color[1], shape.color[2],
-                                  shape.color[3])
-                    gl.glEnable(gl.GL_BLEND)
-                    gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-                elif len(shape.color) == 3:
-                    gl.glDisable(gl.GL_BLEND)
-                    gl.glColor4ub(shape.color[0], shape.color[1], shape.color[2], 255)
+            last_color = shape.color
+            if len(shape.color) == 4:
+                gl.glColor4ub(shape.color[0], shape.color[1], shape.color[2],
+                              shape.color[3])
+                gl.glEnable(gl.GL_BLEND)
+                gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
+            elif len(shape.color) == 3:
+                gl.glDisable(gl.GL_BLEND)
+                gl.glColor4ub(shape.color[0], shape.color[1], shape.color[2], 255)
 
             #if last_line_width is None or last_line_width == shape.line_width:
-                last_line_width = shape.line_width
-                if shape.line_width:
-                    gl.glLineWidth(shape.line_width)
+            last_line_width = shape.line_width
+            if shape.line_width:
+                gl.glLineWidth(shape.line_width)
 
             render(shape, False)

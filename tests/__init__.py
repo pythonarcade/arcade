@@ -9,6 +9,7 @@ import arcade
 def load_tests(loader=None, tests=None, pattern=None):
     suite = TestSuite()
     suite.addTests(DocTestSuite('arcade.draw_commands'))
+    suite.addTests(DocTestSuite('arcade.buffered_draw_commands'))
     suite.addTests(DocTestSuite('arcade.window_commands'))
     suite.addTests(DocTestSuite('arcade.geometry'))
     suite.addTests(DocTestSuite('arcade.sprite'))

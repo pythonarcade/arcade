@@ -34,7 +34,6 @@ class MyApplication(arcade.Window):
         self.space = pymunk.Space()
         self.space.gravity = (0.0, -900.0)
 
-
         self.static_lines = []
 
         self.ticks_to_next_ball = 10
@@ -118,7 +117,7 @@ class MyApplication(arcade.Window):
             y = SCREEN_HEIGHT
             body.position = x, y
             shape = pymunk.Circle(body, radius, pymunk.Vec2d(0, 0))
-            shape.friction=0.3
+            shape.friction = 0.3
             self.space.add(body, shape)
 
             sprite = CircleSprite("images/coin_01.png", shape)
