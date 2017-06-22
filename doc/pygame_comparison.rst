@@ -19,7 +19,7 @@ Features that the Arcade Library has that Pygame does not:
 * API documentation for the commands is better. Many commands include unit tests
   right in the documentation.
 * Command names are consistent. For example, to add to a sprite list you use the
-  add() method, like any other list in Python. Pygame uses append().
+  ``append()`` method, like any other list in Python. Pygame uses ``add()``.
 * Parameter and command names are clearer. For example, open_window instead of
   set_mode.
 * Less boiler-plate code than Pygame.
@@ -37,7 +37,7 @@ Features that Pygame has that the Arcade Library does not:
 
 * Python 2 support
 * Does not require OpenGL
-* Supports older hardware like cameras, cdroms, MIDI
+* Supports hardware like cameras, cdroms, MIDI
 * Has better support for pixel manipulation in a memory buffer that isn't
   displayed on screen.
 
