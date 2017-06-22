@@ -12,7 +12,13 @@ from arcade.draw_commands import draw_texture_rectangle
 from arcade.draw_commands import Texture
 from arcade.draw_commands import rotate_point
 
-from typing import Iterable, List, Sequence, Tuple
+from typing import Iterable
+from typing import TypeVar
+from typing import Generic
+
+from typing import List
+from typing import Sequence
+from typing import Tuple
 
 FACE_RIGHT = 1
 FACE_LEFT = 2
@@ -541,8 +547,10 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
             if self in sprite_list:
                 sprite_list.remove(self)
 
+T = TypeVar('T', bound=Sprite)
 
-class SpriteList:
+
+class SpriteList(Generic[T]):
     """
     List of sprites.
 
@@ -593,7 +601,7 @@ class SpriteList:
         self.change_x = 0
         self.change_y = 0
 
-    def append(self, item: Sprite):
+    def append(self, item: T):
         """
         Add a new sprite to the list.
         """
@@ -601,7 +609,7 @@ class SpriteList:
         item.register_sprite_list(self)
         self.vbo_dirty = True
 
-    def remove(self, item: Sprite):
+    def remove(self, item: T):
         """
         Remove a specific sprite from the list.
         """
@@ -694,7 +702,7 @@ class SpriteList:
         """ Return the length of the sprite list. """
         return len(self.sprite_list)
 
-    def __iter__(self) -> Iterable[Sprite]:
+    def __iter__(self) -> Iterable[T]:
         """ Return an iterable object of sprites. """
         return iter(self.sprite_list)
 
@@ -713,8 +721,8 @@ class AnimatedTimeSprite(Sprite):
     Sprite for platformer games that supports animations.
 
     >>> import arcade
-    >>> my_sprite = AnimatedTimeSprite()
-    >>> my_texture = Texture(1, 10, 10)
+    >>> my_sprite = arcade.AnimatedTimeSprite()
+    >>> my_texture = arcade.Texture(1, 10, 10)
     >>> my_sprite.append_texture(my_texture)
     >>> my_sprite.update_animation()
     """

@@ -3,6 +3,9 @@ import ctypes
 import pyglet.gl as gl
 
 from typing import Iterable
+from typing import TypeVar
+from typing import Generic
+
 from arcade.arcade_types import Color
 from arcade.draw_commands import rotate_point
 
@@ -89,7 +92,7 @@ def create_rectangle(center_x: float, center_y: float, width: float,
     # (gl.GLfloat * len(data)) creates an array of GLfloats, one for each number
     # (*data) initalizes the list with the floats. *data turns the list into a
     # tuple.
-    data2 = (gl.GLfloat * len(data)) (*data)
+    data2 = (gl.GLfloat * len(data))(*data)
 
     gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vbo_id)
     gl.glBufferData(gl.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2,
@@ -169,7 +172,7 @@ def create_ellipse(center_x: float, center_y: float,
     # (gl.GLfloat * len(data)) creates an array of GLfloats, one for each number
     # (*data) initalizes the list with the floats. *data turns the list into a
     # tuple.
-    data2 = (gl.GLfloat * len(data)) (*data)
+    data2 = (gl.GLfloat * len(data))(*data)
 
     gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vbo_id)
     gl.glBufferData(gl.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2,
@@ -186,14 +189,13 @@ def create_ellipse(center_x: float, center_y: float,
     return shape
 
 
-def render(shape: VertexBuffer, reload_identity=True):
+def render(shape: VertexBuffer):
     """
     Render an ellipse previously created with the ``create_ellipse`` function.
     """
     # Set color
     if shape.color is None:
         raise ValueError("Error: Color parameter not set.")
-
 
     gl.glLoadIdentity()
     gl.glVertexPointer(2, gl.GL_FLOAT, 0, 0)
@@ -202,7 +204,10 @@ def render(shape: VertexBuffer, reload_identity=True):
     gl.glDrawArrays(shape.draw_mode, 0, shape.size)
 
 
-class ShapeList:
+T = TypeVar('T', bound=VertexBuffer)
+
+
+class ShapeList(Generic[T]):
     """
 
     >>> import arcade
@@ -233,13 +238,13 @@ class ShapeList:
         self.tilt_angle = 0
         self.angle = 0
 
-    def append(self, item: VertexBuffer):
+    def append(self, item: T):
         """
         Add a new shape to the list.
         """
         self.shape_list.append(item)
 
-    def remove(self, item: VertexBuffer):
+    def remove(self, item: T):
         """
         Remove a specific shape from the list.
         """
@@ -253,7 +258,7 @@ class ShapeList:
         """ Return the length of the sprite list. """
         return len(self.shape_list)
 
-    def __iter__(self) -> Iterable[VertexBuffer]:
+    def __iter__(self) -> Iterable[T]:
         """ Return an iterable object of sprites. """
         return iter(self.shape_list)
 
@@ -273,20 +278,20 @@ class ShapeList:
         last_line_width = None
 
         for shape in self.shape_list:
-            #if last_color is None or last_color != shape.color:
-            last_color = shape.color
-            if len(shape.color) == 4:
-                gl.glColor4ub(shape.color[0], shape.color[1], shape.color[2],
-                              shape.color[3])
-                gl.glEnable(gl.GL_BLEND)
-                gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-            elif len(shape.color) == 3:
-                gl.glDisable(gl.GL_BLEND)
-                gl.glColor4ub(shape.color[0], shape.color[1], shape.color[2], 255)
+            if last_color is None or last_color != shape.color:
+                last_color = shape.color
+                if len(shape.color) == 4:
+                    gl.glColor4ub(shape.color[0], shape.color[1], shape.color[2],
+                                  shape.color[3])
+                    gl.glEnable(gl.GL_BLEND)
+                    gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
+                elif len(shape.color) == 3:
+                    gl.glDisable(gl.GL_BLEND)
+                    gl.glColor4ub(shape.color[0], shape.color[1], shape.color[2], 255)
 
-            #if last_line_width is None or last_line_width == shape.line_width:
-            last_line_width = shape.line_width
-            if shape.line_width:
-                gl.glLineWidth(shape.line_width)
+            if last_line_width is None or last_line_width == shape.line_width:
+                last_line_width = shape.line_width
+                if shape.line_width:
+                    gl.glLineWidth(shape.line_width)
 
-            render(shape, False)
+            render(shape)

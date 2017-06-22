@@ -48,7 +48,7 @@ class MyApplication(arcade.Window):
 
                 x = (MARGIN + WIDTH) * column + MARGIN + WIDTH // 2
                 y = (MARGIN + HEIGHT) * row + MARGIN + HEIGHT // 2
-                print(x,y)
+
                 current_rect = arcade.create_rectangle_filled(x, y, WIDTH, HEIGHT, arcade.color.WHITE)
                 self.shape_list.append(current_rect)
 
