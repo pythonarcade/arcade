@@ -774,15 +774,17 @@ class AnimatedWalkingSprite(Sprite):
         self.walk_down_textures = None
         self.cur_texture_index = 0
         self.texture_change_distance = 20
+        self.last_texture_change_center_x = 0
+        self.last_texture_change_center_y = 0
 
     def update_animation(self):
         """
         Logic for selecting the proper texture to use.
         """
         x1 = self.center_x
-        x2 = self.last_center_x
+        x2 = self.last_texture_change_center_x
         y1 = self.center_y
-        y2 = self.last_center_y
+        y2 = self.last_texture_change_center_y
         distance = math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
         texture_list = []
 
@@ -816,9 +818,10 @@ class AnimatedWalkingSprite(Sprite):
                 self.texture = self.walk_up_textures[0]
             elif self.state == FACE_DOWN:
                 self.texture = self.walk_down_textures[0]
+
         elif change_direction or distance >= self.texture_change_distance:
-            self.last_center_x = self.center_x
-            self.last_center_y = self.center_y
+            self.last_texture_change_center_x = self.center_x
+            self.last_texture_change_center_y = self.center_y
 
             if self.state == FACE_LEFT:
                 texture_list = self.walk_left_textures
@@ -849,6 +852,7 @@ class AnimatedWalkingSprite(Sprite):
 
         self.width = self.texture.width * self.scale
         self.height = self.texture.height * self.scale
+        print(f"Update animation, {self.cur_texture_index}, {distance}")
 
 
 def _set_vbo(vbo_id: gl.GLuint, points: List[float]):
