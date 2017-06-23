@@ -48,21 +48,24 @@ class MyApplication(arcade.Window):
 
         filename = "images/character_sheet.png"
 
-        image_location_list = [[0, 6, 59, 92]]
-        self.player.stand_right_textures = \
-            arcade.load_textures(filename, image_location_list, False)
-        self.player.stand_left_textures = \
-            arcade.load_textures(filename, image_location_list, True)
+        self.player.stand_right_textures = []
+        self.player.stand_right_textures.append(arcade.load_texture("images/character_sprites/character0.png"))
+        self.player.stand_left_textures = []
+        self.player.stand_left_textures.append(arcade.load_texture("images/character_sprites/character0.png", mirrored=True))
 
-        image_location_list = [[591, 5, 64, 93],
-                               [655, 10, 75, 88],
-                               [730, 7, 54, 91],
-                               [784, 3, 59, 95],
-                               [843, 6, 56, 92]]
-        self.player.walk_right_textures = \
-            arcade.load_textures(filename, image_location_list, False)
-        self.player.walk_left_textures = \
-            arcade.load_textures(filename, image_location_list, True)
+        self.player.walk_right_textures = []
+
+        self.player.walk_right_textures.append(arcade.load_texture("images/character_sprites/characterw0.png"))
+        self.player.walk_right_textures.append(arcade.load_texture("images/character_sprites/characterw1.png"))
+        self.player.walk_right_textures.append(arcade.load_texture("images/character_sprites/characterw2.png"))
+        self.player.walk_right_textures.append(arcade.load_texture("images/character_sprites/characterw3.png"))
+
+        self.player.walk_left_textures = []
+
+        self.player.walk_left_textures.append(arcade.load_texture("images/character_sprites/characterw0.png", mirrored=True))
+        self.player.walk_left_textures.append(arcade.load_texture("images/character_sprites/characterw1.png", mirrored=True))
+        self.player.walk_left_textures.append(arcade.load_texture("images/character_sprites/characterw2.png", mirrored=True))
+        self.player.walk_left_textures.append(arcade.load_texture("images/character_sprites/characterw3.png", mirrored=True))
 
         self.player.texture_change_distance = 20
 
@@ -77,18 +80,12 @@ class MyApplication(arcade.Window):
             coin.center_x = random.randrange(SCREEN_WIDTH)
             coin.center_y = random.randrange(SCREEN_HEIGHT)
             coin.textures = []
-            coin.textures.append(arcade.load_texture("images/gold_1.png",
-                                                     scale=COIN_SCALE))
-            coin.textures.append(arcade.load_texture("images/gold_2.png",
-                                                     scale=COIN_SCALE))
-            coin.textures.append(arcade.load_texture("images/gold_3.png",
-                                                     scale=COIN_SCALE))
-            coin.textures.append(arcade.load_texture("images/gold_4.png",
-                                                     scale=COIN_SCALE))
-            coin.textures.append(arcade.load_texture("images/gold_3.png",
-                                                     scale=COIN_SCALE))
-            coin.textures.append(arcade.load_texture("images/gold_2.png",
-                                                     scale=COIN_SCALE))
+            coin.textures.append(arcade.load_texture("images/gold_1.png", scale=COIN_SCALE))
+            coin.textures.append(arcade.load_texture("images/gold_2.png", scale=COIN_SCALE))
+            coin.textures.append(arcade.load_texture("images/gold_3.png", scale=COIN_SCALE))
+            coin.textures.append(arcade.load_texture("images/gold_4.png", scale=COIN_SCALE))
+            coin.textures.append(arcade.load_texture("images/gold_3.png", scale=COIN_SCALE))
+            coin.textures.append(arcade.load_texture("images/gold_2.png", scale=COIN_SCALE))
             coin.cur_texture_index = random.randrange(len(coin.textures))
             self.coin_list.append(coin)
             self.all_sprites_list.append(coin)
