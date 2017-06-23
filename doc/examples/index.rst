@@ -237,6 +237,11 @@ PyMunk
 Other
 -----
 
+.. figure:: thumbs/resizable_window.png
+   :figwidth: 170px
+
+   :ref:`resizable_window`
+
 .. figure:: thumbs/sprite_collect_coins_background.png
    :figwidth: 170px
 
@@ -256,8 +261,6 @@ Other
    :figwidth: 170px
 
    :ref:`instruction_and_game_over_screens`
-
-
 
 .. figure:: thumbs/asteroid_smasher.png
    :figwidth: 170px
