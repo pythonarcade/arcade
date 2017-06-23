@@ -69,6 +69,9 @@ called.
     def on_draw(self):
         pass
 
+    def on_resize(self, width, height):
+        super().on_resize(width, height)
+
     def set_min_size(self, width: float, height: float):
         """ Wrap the Pyglet window call to set minimum size
 
