@@ -1,4 +1,6 @@
-.. _resizable-window:
+:orphan:
+
+.. _resizable_window:
 
 Resizable Window
 ================
