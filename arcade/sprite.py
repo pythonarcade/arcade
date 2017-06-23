@@ -170,7 +170,7 @@ upside-down.
         """
         Appends a new texture to the list of textures that can be
         applied to this sprite.
-        
+
         >>> import arcade
         >>> empty_sprite = arcade.Sprite()
         >>> my_texture = Texture(1, 10, 10)
@@ -852,7 +852,6 @@ class AnimatedWalkingSprite(Sprite):
 
         self.width = self.texture.width * self.scale
         self.height = self.texture.height * self.scale
-        print(f"Update animation, {self.cur_texture_index}, {distance}")
 
 
 def _set_vbo(vbo_id: gl.GLuint, points: List[float]):
