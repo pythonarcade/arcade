@@ -5,9 +5,9 @@
 Move with a Sprite Animation
 ============================
 
-.. raw:: html
-
-    <iframe width="420" height="315" src="https://www.youtube.com/embed/O-Ru383B_1A" frameborder="0" allowfullscreen></iframe>
+.. image:: sprite_move_animation.gif
+    :align: center
+    :alt: GIF animation of animated walking character.
 
 
 .. literalinclude:: ../../examples/sprite_move_animation.py
