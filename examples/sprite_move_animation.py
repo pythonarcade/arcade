@@ -76,9 +76,11 @@ class MyApplication(arcade.Window):
         self.all_sprites_list.append(self.player)
 
         for i in range(COIN_COUNT):
-            coin = arcade.AnimatedTimeSprite(scale=0.5)
+            # coin = arcade.AnimatedTimeSprite(scale=0.5)
+            coin = arcade.Sprite("images/gold_1.png", scale=0.3)
             coin.center_x = random.randrange(SCREEN_WIDTH)
             coin.center_y = random.randrange(SCREEN_HEIGHT)
+            """
             coin.textures = []
             coin.textures.append(arcade.load_texture("images/gold_1.png", scale=COIN_SCALE))
             coin.textures.append(arcade.load_texture("images/gold_2.png", scale=COIN_SCALE))
@@ -87,8 +89,10 @@ class MyApplication(arcade.Window):
             coin.textures.append(arcade.load_texture("images/gold_3.png", scale=COIN_SCALE))
             coin.textures.append(arcade.load_texture("images/gold_2.png", scale=COIN_SCALE))
             coin.cur_texture_index = random.randrange(len(coin.textures))
+            """
             self.coin_list.append(coin)
             self.all_sprites_list.append(coin)
+
 
         # Set the background color
         arcade.set_background_color(arcade.color.AMAZON)
