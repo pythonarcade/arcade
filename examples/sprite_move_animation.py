@@ -46,27 +46,35 @@ class MyApplication(arcade.Window):
         self.score = 0
         self.player = arcade.AnimatedWalkingSprite()
 
-        filename = "images/character_sheet.png"
-
         character_scale = 0.75
         self.player.stand_right_textures = []
-        self.player.stand_right_textures.append(arcade.load_texture("images/character_sprites/character0.png", scale=character_scale))
+        self.player.stand_right_textures.append(arcade.load_texture("images/character_sprites/character0.png",
+                                                                    scale=character_scale))
         self.player.stand_left_textures = []
-        self.player.stand_left_textures.append(arcade.load_texture("images/character_sprites/character0.png", scale=character_scale, mirrored=True))
+        self.player.stand_left_textures.append(arcade.load_texture("images/character_sprites/character0.png",
+                                                                   scale=character_scale, mirrored=True))
 
         self.player.walk_right_textures = []
 
-        self.player.walk_right_textures.append(arcade.load_texture("images/character_sprites/characterw0.png", scale=character_scale))
-        self.player.walk_right_textures.append(arcade.load_texture("images/character_sprites/characterw1.png", scale=character_scale))
-        self.player.walk_right_textures.append(arcade.load_texture("images/character_sprites/characterw2.png", scale=character_scale))
-        self.player.walk_right_textures.append(arcade.load_texture("images/character_sprites/characterw3.png", scale=character_scale))
+        self.player.walk_right_textures.append(arcade.load_texture("images/character_sprites/characterw0.png",
+                                                                   scale=character_scale))
+        self.player.walk_right_textures.append(arcade.load_texture("images/character_sprites/characterw1.png",
+                                                                   scale=character_scale))
+        self.player.walk_right_textures.append(arcade.load_texture("images/character_sprites/characterw2.png",
+                                                                   scale=character_scale))
+        self.player.walk_right_textures.append(arcade.load_texture("images/character_sprites/characterw3.png",
+                                                                   scale=character_scale))
 
         self.player.walk_left_textures = []
 
-        self.player.walk_left_textures.append(arcade.load_texture("images/character_sprites/characterw0.png", scale=character_scale, mirrored=True))
-        self.player.walk_left_textures.append(arcade.load_texture("images/character_sprites/characterw1.png", scale=character_scale, mirrored=True))
-        self.player.walk_left_textures.append(arcade.load_texture("images/character_sprites/characterw2.png", scale=character_scale, mirrored=True))
-        self.player.walk_left_textures.append(arcade.load_texture("images/character_sprites/characterw3.png", scale=character_scale, mirrored=True))
+        self.player.walk_left_textures.append(arcade.load_texture("images/character_sprites/characterw0.png",
+                                                                  scale=character_scale, mirrored=True))
+        self.player.walk_left_textures.append(arcade.load_texture("images/character_sprites/characterw1.png",
+                                                                  scale=character_scale, mirrored=True))
+        self.player.walk_left_textures.append(arcade.load_texture("images/character_sprites/characterw2.png",
+                                                                  scale=character_scale, mirrored=True))
+        self.player.walk_left_textures.append(arcade.load_texture("images/character_sprites/characterw3.png",
+                                                                  scale=character_scale, mirrored=True))
 
         self.player.texture_change_distance = 20
 
@@ -92,7 +100,6 @@ class MyApplication(arcade.Window):
 
             self.coin_list.append(coin)
             self.all_sprites_list.append(coin)
-
 
         # Set the background color
         arcade.set_background_color(arcade.color.AMAZON)
