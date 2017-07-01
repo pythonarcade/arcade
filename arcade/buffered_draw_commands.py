@@ -35,6 +35,36 @@ class VertexBuffer:
         self.line_width = 0
 
 
+def create_line(start_x: float, start_y: float, end_x: float, end_y: float,
+                color: Color, border_width: float=1):
+
+    data = [start_x, start_y,
+            end_x, end_y]
+
+    # print(data)
+    vbo_id = gl.GLuint()
+
+    gl.glGenBuffers(1, ctypes.pointer(vbo_id))
+
+    # Create a buffer with the data
+    # This line of code is a bit strange.
+    # (gl.GLfloat * len(data)) creates an array of GLfloats, one for each number
+    # (*data) initalizes the list with the floats. *data turns the list into a
+    # tuple.
+    data2 = (gl.GLfloat * len(data))(*data)
+
+    gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vbo_id)
+    gl.glBufferData(gl.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2,
+                    gl.GL_STATIC_DRAW)
+
+    shape_mode = gl.GL_LINES
+    shape = VertexBuffer(vbo_id, len(data) // 2, shape_mode)
+
+    shape.color = color
+    shape.line_width = border_width
+    return shape
+
+
 def create_rectangle_filled(center_x: float, center_y: float, width: float,
                             height: float, color: Color,
                             tilt_angle: float=0) -> VertexBuffer:
@@ -197,7 +227,7 @@ def render(shape: VertexBuffer):
     if shape.color is None:
         raise ValueError("Error: Color parameter not set.")
 
-    gl.glLoadIdentity()
+    #gl.glLoadIdentity()
     gl.glVertexPointer(2, gl.GL_FLOAT, 0, 0)
     gl.glBindBuffer(gl.GL_ARRAY_BUFFER, shape.vbo_id)
 
@@ -235,7 +265,8 @@ class ShapeList(Generic[T]):
         self.shape_list = []
         self.change_x = 0
         self.change_y = 0
-        self.tilt_angle = 0
+        self.center_x = 0
+        self.center_y = 0
         self.angle = 0
 
     def append(self, item: T):
@@ -251,8 +282,8 @@ class ShapeList(Generic[T]):
         self.shape_list.remove(item)
 
     def move(self, change_x: float, change_y: float):
-        self.change_x += change_x
-        self.change_y += change_y
+        self.center_x += change_x
+        self.center_y += change_y
 
     def __len__(self) -> int:
         """ Return the length of the sprite list. """
@@ -270,7 +301,7 @@ class ShapeList(Generic[T]):
         gl.glVertexPointer(2, gl.GL_FLOAT, 0, 0)
         gl.glLoadIdentity()
 
-        gl.glTranslatef(self.change_x, self.change_y, 0)
+        gl.glTranslatef(self.center_x, self.center_y, 0)
         if self.angle:
             gl.glRotatef(self.angle, 0, 0, 1)
 

@@ -31,8 +31,7 @@ class Window(pyglet.window.Window):
         Move everything.
 
         Args:
-            :dt (float): Time interval since the last time the function was \
-called.
+            :dt (float): Time interval since the last time the function was called.
 
         """
         pass
@@ -59,6 +58,15 @@ called.
                          modifiers: int):
         """ Override this function to add mouse button functionality. """
         pass
+
+    def on_mouse_scroll(self, scroll_x: int, scroll_y: int):
+        """ User moves the scroll wheel. """
+        super().on_mouse_scroll(scroll_x, scroll_y)
+
+    def set_mouse_visible(self, visible=True):
+        """ If true, user can see the mouse cursor while it is over the window. Set false,
+        the mouse is not visible. Default is true. """
+        super().set_mouse_visible(visible)
 
     def on_key_press(self, symbol: int, modifiers: int):
         pass
@@ -130,3 +138,7 @@ called.
         """ Return the X/Y coordinates of the window """
 
         return super().get_location()
+
+    def set_visible(self, visible=True):
+        """ Set if the window is visible or not. Normally, a program's window is visible.  """
+        super().set_visible(visible)
