@@ -23,10 +23,25 @@ class MyApplication(arcade.Window):
         super().__init__(width, height)
 
         self.shape_list = arcade.ShapeList()
+
+        """
         my_line = arcade.create_line(-100, 0, 100, 0, arcade.color.PURPLE, 10)
         self.shape_list.append(my_line)
         my_line = arcade.create_line(0, -100, 0, 100, arcade.color.PURPLE_MOUNTAIN_MAJESTY, 10)
         self.shape_list.append(my_line)
+        """
+        point_list = ((0, 50),
+                      (10, 10),
+                      (50, 0),
+                      (10, -10),
+                      (0, -50),
+                      (-10, -10),
+                      (-50, 0),
+                      (-10, 10),
+                      (0, 50))
+        my_line_strip = arcade.create_line_strip(point_list, arcade.color.RED, 5)
+        self.shape_list.append(my_line_strip)
+
         self.shape_list.center_x = 100
         self.shape_list.center_y = 100
 

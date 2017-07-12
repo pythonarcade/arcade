@@ -3,6 +3,9 @@ The main window class that all object-oriented applications should
 derive from.
 """
 from typing import Tuple
+from numbers import Number
+
+from arcade.window_commands import set_viewport
 
 import pyglet
 
@@ -61,7 +64,7 @@ class Window(pyglet.window.Window):
 
     def on_mouse_scroll(self, scroll_x: int, scroll_y: int):
         """ User moves the scroll wheel. """
-        super().on_mouse_scroll(scroll_x, scroll_y)
+        pass
 
     def set_mouse_visible(self, visible=True):
         """ If true, user can see the mouse cursor while it is over the window. Set false,
@@ -142,3 +145,6 @@ class Window(pyglet.window.Window):
     def set_visible(self, visible=True):
         """ Set if the window is visible or not. Normally, a program's window is visible.  """
         super().set_visible(visible)
+
+    def set_viewport(self, left: Number, right: Number, bottom: Number, top: Number):
+        set_viewport(left, right, bottom, top)

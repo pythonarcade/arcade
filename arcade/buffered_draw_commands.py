@@ -8,6 +8,7 @@ from typing import Generic
 
 from arcade.arcade_types import Color
 from arcade.draw_commands import rotate_point
+from arcade.arcade_types import PointList
 
 
 class VertexBuffer:
@@ -64,6 +65,46 @@ def create_line(start_x: float, start_y: float, end_x: float, end_y: float,
     shape.line_width = border_width
     return shape
 
+def create_line_generic(draw_type: int,
+                        point_list: PointList,
+                        color: Color, border_width: float=1):
+    data = []
+    for point in point_list:
+        data.append(point[0])
+        data.append(point[1])
+
+    vbo_id = gl.GLuint()
+
+    gl.glGenBuffers(1, ctypes.pointer(vbo_id))
+
+    # Create a buffer with the data
+    # This line of code is a bit strange.
+    # (gl.GLfloat * len(data)) creates an array of GLfloats, one for each number
+    # (*data) initalizes the list with the floats. *data turns the list into a
+    # tuple.
+    data2 = (gl.GLfloat * len(data))(*data)
+
+    gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vbo_id)
+    gl.glBufferData(gl.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2,
+                    gl.GL_STATIC_DRAW)
+
+    shape = VertexBuffer(vbo_id, len(data) // 2, draw_type)
+
+    shape.color = color
+    shape.line_width = border_width
+    return shape
+
+def create_line_strip(point_list: PointList,
+                      color: Color, border_width: float=1):
+    return create_line_generic(gl.GL_LINE_STRIP, point_list, color, border_width)
+
+def create_line_loop(point_list: PointList,
+                      color: Color, border_width: float=1):
+    return create_line_generic(gl.GL_LINE_LOOP, point_list, color, border_width)
+
+def create_polygon(point_list: PointList,
+                      color: Color, border_width: float=1):
+    return create_line_generic(gl.GL_POLYGON, point_list, color, border_width)
 
 def create_rectangle_filled(center_x: float, center_y: float, width: float,
                             height: float, color: Color,
