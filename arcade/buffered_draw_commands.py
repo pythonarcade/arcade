@@ -278,12 +278,12 @@ def render(shape: VertexBuffer):
 T = TypeVar('T', bound=VertexBuffer)
 
 
-class ShapeList(Generic[T]):
+class ShapeElementList(Generic[T]):
     """
 
     >>> import arcade
     >>> arcade.open_window(800,600,"Drawing Example")
-    >>> my_list = ShapeList()
+    >>> my_list = ShapeElementList()
     >>> my_shape = arcade.create_ellipse_outline(50, 50, 20, 20, arcade.color.RED, 45)
     >>> my_list.append(my_shape)
     >>> my_shape = arcade.create_ellipse_filled(50, 50, 20, 20, arcade.color.RED, 2, 45)

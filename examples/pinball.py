@@ -45,6 +45,8 @@ class Box(Shape):
 class Poly(Shape):
     def __init__(self, x, y, angle, vertices):
         self.graphic_shape = arcade.create_polygon(vertices, arcade.color.WHITE, 1)
+        self.graphic_shape.center_x = x
+        self.graphic_shape.center_y = y
         self.body = pymunk.Body(body_type=pymunk.Body.STATIC)
 
         self.body.position = pymunk.Vec2d(x, y)
@@ -68,8 +70,8 @@ class MyApplication(arcade.Window):
         self.set_location(20, 20)
         arcade.set_background_color(arcade.color.BLACK)
 
-        self.shape_list = arcade.ShapeList()
-
+        self.board_shape_element_list = arcade.ShapeElementList()
+        self.left_flipper = arcade.ShapeElementList()
         self.balls = []
 
         # -- Pymunk --
@@ -91,7 +93,7 @@ class MyApplication(arcade.Window):
                     width = float(parameters[4])
                     height = float(parameters[5])
                     my_shape = Box(width, height, x, y, angle=angle)
-                    self.shape_list.append(my_shape.graphic_shape)
+                    self.board_shape_element_list.append(my_shape.graphic_shape)
                     self.space.add(my_shape.pymunk_shape)
 
                 if parameters[0] == "Poly":
@@ -107,22 +109,26 @@ class MyApplication(arcade.Window):
                         y = float(parameters[i * 2 + 2])
                         vertices.append((x, y))
 
-                    my_shape = Poly(vertices)
-                    self.shape_list.append(my_shape.graphic_shape)
+                    my_shape = Poly(0, 0, 0, vertices)
+                    self.board_shape_element_list.append(my_shape.graphic_shape)
                     self.space.add(my_shape.pymunk_shape)
                     print("Poly")
 
-            except:
+            except Exception as e:
                 print(f"Error parsing line {line_number}: '{line}'")
+                print(e)
                 return
 
 
-        # vertices = [(20, -20), (-120, 0), (20, 20)]
-        # mass = 100
-        # moment = pymunk.moment_for_poly(mass, vertices)
+        vertices = [(2, -2), (-12, 0), (2, 2)]
+        #vertices = [(3, 3), (5, 3), (5, 5)]
 
-        # # right flipper
-        # graphic_shape = arcade.create_polygon(vertices, arcade.color.WHITE, 1)
+        mass = 100
+        moment = pymunk.moment_for_poly(mass, vertices)
+
+        # right flipper
+        left_flipper = Poly(5, 0, 0, vertices)
+        self.left_flipper.append(left_flipper.graphic_shape)
         #
         # r_flipper_body = pymunk.Body(mass, moment)
         # r_flipper_body.position = 450, 100
@@ -155,7 +161,9 @@ class MyApplication(arcade.Window):
         # This command has to happen before we start drawing
         arcade.start_render()
 
-        self.shape_list.draw()
+        self.board_shape_element_list.draw()
+        self.left_flipper.draw()
+
         for ball in self.balls:
             arcade.draw_circle_filled(ball.position.x, ball.position.y, BALL_RADIUS, arcade.color.WHITE)
 

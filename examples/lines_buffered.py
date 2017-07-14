@@ -22,7 +22,7 @@ class MyApplication(arcade.Window):
         """
         super().__init__(width, height)
 
-        self.shape_list = arcade.ShapeList()
+        self.shape_list = arcade.ShapeElementList()
 
         """
         my_line = arcade.create_line(-100, 0, 100, 0, arcade.color.PURPLE, 10)
