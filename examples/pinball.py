@@ -127,8 +127,12 @@ class MyApplication(arcade.Window):
         moment = pymunk.moment_for_poly(mass, vertices)
 
         # right flipper
-        left_flipper = Poly(5, 0, 0, vertices)
-        self.left_flipper.append(left_flipper.graphic_shape)
+        self.left_flipper = Poly(0, 0, 0, vertices)
+        self.left_flipper_shape = arcade.ShapeElementList()
+        self.left_flipper_shape.append(self.left_flipper.graphic_shape)
+        self.left_flipper_shape.center_x = 15
+        self.left_flipper_shape.center_y = 5
+        #self.left_flipper.append(left_flipper.graphic_shape)
         #
         # r_flipper_body = pymunk.Body(mass, moment)
         # r_flipper_body.position = 450, 100
@@ -146,9 +150,9 @@ class MyApplication(arcade.Window):
 
     def on_resize(self, width, height):
         super().on_resize(width, height)
-        prefered_height = 55 * width // 29
-        if height != prefered_height:
-            self.set_size(width, prefered_height)
+        preferred_height = 55 * width // 29
+        if height != preferred_height:
+            self.set_size(width, preferred_height)
         else:
             self.set_viewport(0, 29, 0, 55)
         print(f"Resize {width} {height}")
@@ -162,7 +166,7 @@ class MyApplication(arcade.Window):
         arcade.start_render()
 
         self.board_shape_element_list.draw()
-        self.left_flipper.draw()
+        self.left_flipper_shape.draw()
 
         for ball in self.balls:
             arcade.draw_circle_filled(ball.position.x, ball.position.y, BALL_RADIUS, arcade.color.WHITE)
