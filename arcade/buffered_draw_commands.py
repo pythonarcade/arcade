@@ -65,6 +65,7 @@ def create_line(start_x: float, start_y: float, end_x: float, end_y: float,
     shape.line_width = border_width
     return shape
 
+
 def create_line_generic(draw_type: int,
                         point_list: PointList,
                         color: Color, border_width: float=1):
@@ -94,17 +95,21 @@ def create_line_generic(draw_type: int,
     shape.line_width = border_width
     return shape
 
+
 def create_line_strip(point_list: PointList,
                       color: Color, border_width: float=1):
     return create_line_generic(gl.GL_LINE_STRIP, point_list, color, border_width)
 
+
 def create_line_loop(point_list: PointList,
-                      color: Color, border_width: float=1):
+                     color: Color, border_width: float=1):
     return create_line_generic(gl.GL_LINE_LOOP, point_list, color, border_width)
 
+
 def create_polygon(point_list: PointList,
-                      color: Color, border_width: float=1):
+                   color: Color, border_width: float=1):
     return create_line_generic(gl.GL_POLYGON, point_list, color, border_width)
+
 
 def create_rectangle_filled(center_x: float, center_y: float, width: float,
                             height: float, color: Color,
@@ -262,13 +267,13 @@ def create_ellipse(center_x: float, center_y: float,
 
 def render(shape: VertexBuffer):
     """
-    Render an ellipse previously created with the ``create_ellipse`` function.
+    Render an shape previously created with a ``create`` function.
     """
     # Set color
     if shape.color is None:
         raise ValueError("Error: Color parameter not set.")
 
-    #gl.glLoadIdentity()
+    # gl.glLoadIdentity()
     gl.glVertexPointer(2, gl.GL_FLOAT, 0, 0)
     gl.glBindBuffer(gl.GL_ARRAY_BUFFER, shape.vbo_id)
 
@@ -350,16 +355,17 @@ class ShapeElementList(Generic[T]):
         last_line_width = None
 
         for shape in self.shape_list:
-            if last_color is None or last_color != shape.color:
-                last_color = shape.color
-                if len(shape.color) == 4:
-                    gl.glColor4ub(shape.color[0], shape.color[1], shape.color[2],
-                                  shape.color[3])
-                    gl.glEnable(gl.GL_BLEND)
-                    gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-                elif len(shape.color) == 3:
-                    gl.glDisable(gl.GL_BLEND)
-                    gl.glColor4ub(shape.color[0], shape.color[1], shape.color[2], 255)
+            # if last_color is None or last_color != shape.color:
+            #   last_color = shape.color
+
+            if len(shape.color) == 4:
+                gl.glColor4ub(shape.color[0], shape.color[1], shape.color[2],
+                              shape.color[3])
+                gl.glEnable(gl.GL_BLEND)
+                gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
+            elif len(shape.color) == 3:
+                gl.glDisable(gl.GL_BLEND)
+                gl.glColor4ub(shape.color[0], shape.color[1], shape.color[2], 255)
 
             if last_line_width is None or last_line_width == shape.line_width:
                 last_line_width = shape.line_width
