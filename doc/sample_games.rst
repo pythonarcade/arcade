@@ -4,6 +4,15 @@ Sample Games Made With The Arcade Library
 Have a sample game you'd like to share here? E-mail
 paul@cravenfamily.com.
 
+GitHub Projects
+---------------
+
+.. image:: images/PyOverheadGame.png
+
+PyOverheadGame_, a 2D overhead game where you go through several rooms and pick up keys and other objects.
+
+.. _PyOverheadGame: https://github.com/albertz/PyOverheadGame
+
 Games from Simpson College Spring 2017 CMSC 150 Course
 ------------------------------------------------------
 
