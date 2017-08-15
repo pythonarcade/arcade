@@ -7,6 +7,7 @@ grid on-screen.
 import arcade
 import pymunk
 import math
+import random
 
 # Do the math to figure out oiur screen dimensions
 SCREEN_WIDTH = 390
@@ -120,8 +121,35 @@ class MyApplication(arcade.Window):
                 return
 
 
-        vertices = [(2, -2), (-12, 0), (2, 2)]
-        #vertices = [(3, 3), (5, 3), (5, 5)]
+        vertices = [(-0.5, -0.5), (3, 0), (-0.5, 0.5)]
+
+        mass = 10
+        moment = pymunk.moment_for_poly(mass, vertices)
+
+        # right flipper
+        self.right_flipper_poly = arcade.create_polygon(vertices, arcade.color.WHITE, 1)
+        self.right_flipper_shape_list = arcade.ShapeElementList()
+        self.right_flipper_shape_list.append(self.right_flipper_poly)
+        self.right_flipper_shape_list.center_x = 2
+        self.right_flipper_shape_list.center_y = 2
+
+        self.right_flipper_body = pymunk.Body(mass, moment)
+        self.right_flipper_body.position = pymunk.Vec2d(self.right_flipper_shape_list.center_x, self.right_flipper_shape_list.center_y)
+        self.right_flipper_pymunk_shape = pymunk.Poly(self.right_flipper_body, vertices)
+        self.space.add(self.right_flipper_body, self.right_flipper_pymunk_shape)
+
+        r_flipper_joint_body = pymunk.Body(body_type=pymunk.Body.KINEMATIC)
+        r_flipper_joint_body.position = pymunk.Vec2d(self.right_flipper_shape_list.center_x, self.right_flipper_shape_list.center_y)
+        
+        j = pymunk.PinJoint(self.right_flipper_body, r_flipper_joint_body, (0, 0), (5,5))
+        #s = pymunk.DampedRotarySpring(self.right_flipper.body, r_flipper_joint_body, 0, 500, 110)
+        #self.space.add(j, s)
+        self.space.add(j, r_flipper_joint_body)
+
+        print("X1", self.right_flipper_shape_list.center_x, self.right_flipper_shape_list.center_y)
+        print("X2", self.right_flipper_body.position.x, self.right_flipper_body.position.y)
+        """
+        vertices = [(0.5, -0.5), (-3, 0), (0.5, 0.5)]
 
         mass = 100
         moment = pymunk.moment_for_poly(mass, vertices)
@@ -130,8 +158,9 @@ class MyApplication(arcade.Window):
         self.left_flipper = Poly(0, 0, 0, vertices)
         self.left_flipper_shape = arcade.ShapeElementList()
         self.left_flipper_shape.append(self.left_flipper.graphic_shape)
-        self.left_flipper_shape.center_x = 15
-        self.left_flipper_shape.center_y = 5
+        self.left_flipper_shape.center_x = 12
+        self.left_flipper_shape.center_y = 1
+        """
         #self.left_flipper.append(left_flipper.graphic_shape)
         #
         # r_flipper_body = pymunk.Body(mass, moment)
@@ -143,8 +172,6 @@ class MyApplication(arcade.Window):
         # r_flipper_joint_body = pymunk.Body(body_type=pymunk.Body.KINEMATIC)
         # r_flipper_joint_body.position = r_flipper_body.position
         #
-        # j = pymunk.PinJoint(r_flipper_body, r_flipper_joint_body, (0, 0), (0, 0))
-        # s = pymunk.DampedRotarySpring(r_flipper_body, r_flipper_joint_body, 0.15, 20000000, 900000)
         # self.space.add(j, s)
 
 
@@ -166,7 +193,14 @@ class MyApplication(arcade.Window):
         arcade.start_render()
 
         self.board_shape_element_list.draw()
-        self.left_flipper_shape.draw()
+        #self.left_flipper_shape.draw()
+
+        self.right_flipper_shape_list.center_x = self.right_flipper_body.position.x
+        self.right_flipper_shape_list.center_y = self.right_flipper_body.position.y
+        self.right_flipper_shape_list.angle = self.right_flipper_body.angle
+        print(self.right_flipper_shape_list.center_x, self.right_flipper_shape_list.center_y, self.right_flipper_shape_list.angle)
+        #self.right_flipper_shape.center_y += 1
+        self.right_flipper_shape_list.draw()
 
         for ball in self.balls:
             arcade.draw_circle_filled(ball.position.x, ball.position.y, BALL_RADIUS, arcade.color.WHITE)
@@ -190,20 +224,24 @@ class MyApplication(arcade.Window):
 
     def on_key_press(self, symbol: int, modifiers: int):
         if symbol == arcade.key.SPACE:
-            mass = 0.2
+            mass = 1
             radius = BALL_RADIUS
-            moment = pymunk.moment_for_circle(mass, 0, radius)
-            body = pymunk.Body(mass, moment)
-            body.position = pymunk.Vec2d(27, 3)
+            for x_position in range(0, 28, 1):
+                moment = pymunk.moment_for_circle(mass, 0, radius)
+                body = pymunk.Body(mass, moment)
+                # x_position = random.randrange(2, 27)
+                body.position = pymunk.Vec2d(x_position, 3)
 
-            shape = pymunk.Circle(body, radius, pymunk.Vec2d(0, 0))
-            shape.friction = 0.05
-            shape.elasticity = 0.9
+                shape = pymunk.Circle(body, radius, pymunk.Vec2d(0, 0))
+                shape.friction = 0.15
+                shape.elasticity = 0.9
 
-            self.space.add(body, shape)
-            self.balls.append(body)
+                self.space.add(body, shape)
+                self.balls.append(body)
 
-            body.apply_impulse_at_local_point((0, 9))
+                body.apply_impulse_at_local_point((0, 6))
+        elif symbol == arcade.key.F:
+            self.right_flipper.body.apply_impulse_at_local_point((0, 100), (40, 0))
 
 window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
 
