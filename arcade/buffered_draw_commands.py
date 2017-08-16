@@ -274,7 +274,7 @@ def render(shape: VertexBuffer):
         raise ValueError("Error: Color parameter not set.")
 
     # gl.glLoadIdentity()
-    gl.glVertexPointer(2, gl.GL_FLOAT, 0, 0)
+    # gl.glVertexPointer(2, gl.GL_FLOAT, 0, 0)
     gl.glBindBuffer(gl.GL_ARRAY_BUFFER, shape.vbo_id)
 
     gl.glDrawArrays(shape.draw_mode, 0, shape.size)
@@ -358,6 +358,13 @@ class ShapeElementList(Generic[T]):
             # if last_color is None or last_color != shape.color:
             #   last_color = shape.color
 
+            if last_line_width is None or last_line_width == shape.line_width:
+                last_line_width = shape.line_width
+                if shape.line_width:
+                    gl.glLineWidth(shape.line_width)
+
+            render(shape)
+
             if len(shape.color) == 4:
                 gl.glColor4ub(shape.color[0], shape.color[1], shape.color[2],
                               shape.color[3])
@@ -367,9 +374,3 @@ class ShapeElementList(Generic[T]):
                 gl.glDisable(gl.GL_BLEND)
                 gl.glColor4ub(shape.color[0], shape.color[1], shape.color[2], 255)
 
-            if last_line_width is None or last_line_width == shape.line_width:
-                last_line_width = shape.line_width
-                if shape.line_width:
-                    gl.glLineWidth(shape.line_width)
-
-            render(shape)
