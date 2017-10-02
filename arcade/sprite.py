@@ -684,7 +684,7 @@ class AnimatedWalkingSprite(Sprite):
         elif self.change_y < 0 and self.change_x == 0 and self.state != FACE_DOWN and self.walk_down_textures and len(self.walk_down_textures) > 0:
             self.state = FACE_DOWN
             change_direction = True
-        elif self.change_y > 0 and self.change_x == 0 and self.state != FACE_UP and self.walk_up_textures and (self.walk_up_textures) > 0:
+        elif self.change_y > 0 and self.change_x == 0 and self.state != FACE_UP and self.walk_up_textures and len(self.walk_up_textures) > 0:
             self.state = FACE_UP
             change_direction = True
 
@@ -748,8 +748,8 @@ def _rotate(x: float, y: float, cx: float, cy: float,
         temp_y * math.cos(math.radians(angle))
 
     # translate back
-    x = rotated_x + cx
-    y = rotated_y + cy
+    x = round(rotated_x + cx)
+    y = round(rotated_y + cy)
 
     return x, y
 
