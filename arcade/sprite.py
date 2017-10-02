@@ -3,6 +3,7 @@ This module manages all of the code around Sprites.
 """
 # pylint: disable=too-many-arguments, too-many-locals, too-few-public-methods
 
+import arcade.geometry
 import ctypes
 import math
 import pyglet.gl as gl
@@ -748,8 +749,8 @@ def _rotate(x: float, y: float, cx: float, cy: float,
         temp_y * math.cos(math.radians(angle))
 
     # translate back
-    x = round(rotated_x + cx)
-    y = round(rotated_y + cy)
+    x = round(rotated_x + cx, arcade.geometry.PRECISION)
+    y = round(rotated_y + cy, arcade.geometry.PRECISION)
 
     return x, y
 
