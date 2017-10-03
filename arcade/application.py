@@ -17,13 +17,14 @@ class Window(pyglet.window.Window):
 
     """
 
-    def __init__(self, width: float, height: float,
-                 title: str = 'Arcade Window',
+    def __init__(self, width: float = 800, height: float = 600,
+                 title: str = 'Arcade Window', fullscreen: bool = False,
                  resizable: bool = False):
         super().__init__(width=width, height=height, caption=title,
                          resizable=resizable)
 
         self.set_update_rate(1 / 80)
+        super().set_fullscreen(fullscreen)
         # set_viewport(0, self.width, 0, self.height)
 
     def update(self, delta_time: float):
