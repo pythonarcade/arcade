@@ -8,7 +8,10 @@ Artwork from http://kenney.nl
 import random
 import arcade
 
-SPRITE_SCALING = 0.5
+SPRITE_SCALING_PLAYER = 0.5
+SPRITE_SCALING_COIN = 0.2
+SPRITE_SCALING_LASER = 0.8
+COIN_COUNT = 50
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -25,7 +28,30 @@ class MyAppWindow(arcade.Window):
     """ Main application class. """
 
     def __init__(self):
+        """ Initializer """
+        # Call the parent class initializer
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Sprites and Bullets Demo")
+
+        # Variables that will hold sprite lists
+        self.all_sprites_list = None
+        self.coin_list = None
+        self.bullet_list = None
+
+        # Set up the player info
+        self.player_sprite = None
+        self.score = 0
+        self.score_text = None
+
+        # Don't show the mouse cursor
+        self.set_mouse_visible(False)
+
+        # Load sounds. Sounds from kenney.nl
+        self.gun_sound = arcade.sound.load_sound("sounds/laser1.ogg")
+        self.hit_sound = arcade.sound.load_sound("sounds/phaseJump1.ogg")
+
+        arcade.set_background_color(arcade.color.AMAZON)
+
+    def setup(self):
 
         """ Set up the game and initialize the variables. """
 
@@ -36,20 +62,19 @@ class MyAppWindow(arcade.Window):
 
         # Set up the player
         self.score = 0
-        self.score_text = None
-        self.player_sprite = arcade.Sprite("images/character.png", SPRITE_SCALING)
+
+        # Image from kenney.nl
+        self.player_sprite = arcade.Sprite("images/character.png", SPRITE_SCALING_PLAYER)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 70
         self.all_sprites_list.append(self.player_sprite)
 
-        # Load sounds
-        self.gun_sound = arcade.sound.load_sound("sounds/laser1.ogg")
-        self.hit_sound = arcade.sound.load_sound("sounds/phaseJump1.ogg")
-
-        for i in range(50):
+        # Create the coins
+        for i in range(COIN_COUNT):
 
             # Create the coin instance
-            coin = arcade.Sprite("images/coin_01.png", SPRITE_SCALING / 3)
+            # Coin image from kenney.nl
+            coin = arcade.Sprite("images/coin_01.png", SPRITE_SCALING_COIN)
 
             # Position the coin
             coin.center_x = random.randrange(SCREEN_WIDTH)
@@ -58,9 +83,6 @@ class MyAppWindow(arcade.Window):
             # Add the coin to the lists
             self.all_sprites_list.append(coin)
             self.coin_list.append(coin)
-
-        # Don't show the mouse cursor
-        self.set_mouse_visible(False)
 
         # Set the background color
         arcade.set_background_color(arcade.color.AMAZON)
@@ -100,7 +122,7 @@ class MyAppWindow(arcade.Window):
         # Gunshot sound
         arcade.sound.play_sound(self.gun_sound)
         # Create a bullet
-        bullet = Bullet("images/laserBlue01.png", SPRITE_SCALING * 1.5)
+        bullet = Bullet("images/laserBlue01.png", SPRITE_SCALING_LASER)
 
         # The image points to the right, and we want it to point up. So
         # rotate it.
@@ -146,7 +168,8 @@ class MyAppWindow(arcade.Window):
 
 
 def main():
-    MyAppWindow()
+    window = MyAppWindow()
+    window.setup()
     arcade.run()
 
 

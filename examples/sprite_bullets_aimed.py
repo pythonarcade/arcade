@@ -9,7 +9,10 @@ import random
 import arcade
 import math
 
-SPRITE_SCALING = 0.5
+SPRITE_SCALING_PLAYER = 0.5
+SPRITE_SCALING_COIN = 0.2
+SPRITE_SCALING_LASER = 0.8
+COIN_COUNT = 50
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -28,8 +31,28 @@ class Bullet(arcade.Sprite):
 class MyApplication(arcade.Window):
     """ Main application class. """
 
-    def __init__(self, screen_width, screen_height):
+    def __init__(self):
+        """ Initializer """
+        # Call the parent class initializer
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Sprites and Bullets Demo")
+
+        # Variables that will hold sprite lists
+        self.all_sprites_list = None
+        self.coin_list = None
+        self.bullet_list = None
+
+        # Set up the player info
+        self.player_sprite = None
+        self.score = 0
+        self.score_text = None
+
+        # Load sounds. Sounds from kenney.nl
+        self.gun_sound = arcade.sound.load_sound("sounds/laser1.ogg")
+        self.hit_sound = arcade.sound.load_sound("sounds/phaseJump1.ogg")
+
+        arcade.set_background_color(arcade.color.AMAZON)
+
+    def setup(self):
 
         """ Set up the game and initialize the variables. """
 
@@ -40,20 +63,23 @@ class MyApplication(arcade.Window):
 
         # Set up the player
         self.score = 0
-        self.player_sprite = arcade.Sprite("images/character.png",
-                                           SPRITE_SCALING)
+
+        # Image from kenney.nl
+        self.player_sprite = arcade.Sprite("images/character.png", SPRITE_SCALING_PLAYER)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 70
         self.all_sprites_list.append(self.player_sprite)
 
-        for i in range(50):
+        # Create the coins
+        for i in range(COIN_COUNT):
 
             # Create the coin instance
-            coin = arcade.Sprite("images/coin_01.png", SPRITE_SCALING / 3)
+            # Coin image from kenney.nl
+            coin = arcade.Sprite("images/coin_01.png", SPRITE_SCALING_COIN)
 
             # Position the coin
-            coin.center_x = random.randrange(screen_width)
-            coin.center_y = random.randrange(120, screen_height)
+            coin.center_x = random.randrange(SCREEN_WIDTH)
+            coin.center_y = random.randrange(120, SCREEN_HEIGHT)
 
             # Add the coin to the lists
             self.all_sprites_list.append(coin)
@@ -82,7 +108,7 @@ class MyApplication(arcade.Window):
         Called whenever the mouse moves.
         """
         # Create a bullet
-        bullet = Bullet("images/laserBlue01.png", SPRITE_SCALING * 1.5)
+        bullet = Bullet("images/laserBlue01.png", SPRITE_SCALING_LASER)
 
         # Position the bullet at the player's current location
         start_x = self.player_sprite.center_x
@@ -100,11 +126,11 @@ class MyApplication(arcade.Window):
         x_diff = dest_x - start_x
         y_diff = dest_y - start_y
         angle = math.atan2(y_diff, x_diff)
-        print("Bullet angle: {:.2f}".format(bullet.angle))
 
         # Angle the bullet sprite so it doesn't look like it is flying
         # sideways.
         bullet.angle = math.degrees(angle)
+        print("Bullet angle: {:.2f}".format(bullet.angle))
 
         # Taking into account the angle, calculate our change_x
         # and change_y. Velocity is how fast the bullet travels.
@@ -144,7 +170,8 @@ class MyApplication(arcade.Window):
 
 
 def main():
-    MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
+    window = MyApplication()
+    window.setup()
     arcade.run()
 
 
