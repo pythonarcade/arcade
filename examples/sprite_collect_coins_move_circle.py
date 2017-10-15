@@ -5,6 +5,7 @@ Simple program to show basic sprite usage.
 
 Artwork from http://kenney.nl
 """
+
 import random
 import arcade
 import math
@@ -16,10 +17,6 @@ SCREEN_HEIGHT = 600
 
 
 class Coin(arcade.Sprite):
-    """
-    This class represents the coins on our screen. It is a child class of
-    the arcade library's "Sprite" class.
-    """
 
     def __init__(self, filename, sprite_scaling):
         """ Constructor. """
@@ -27,13 +24,13 @@ class Coin(arcade.Sprite):
         super().__init__(filename, sprite_scaling)
 
         # Current angle in radians
-        self.angle = 0
+        self.circle_angle = 0
 
         # How far away from the center to orbit, in pixels
-        self.radius = 0
+        self.circle_radius = 0
 
         # How fast to orbit, in radians per frame
-        self.speed = 0.008
+        self.circle_speed = 0.008
 
         # Set the center of the point we will orbit around
         self.circle_center_x = 0
@@ -43,24 +40,20 @@ class Coin(arcade.Sprite):
 
         """ Update the ball's position. """
         # Calculate a new x, y
-        self.center_x = self.radius * math.sin(self.angle) \
+        self.center_x = self.circle_radius * math.sin(self.circle_angle) \
             + self.circle_center_x
-        self.center_y = self.radius * math.cos(self.angle) \
+        self.center_y = self.circle_radius * math.cos(self.circle_angle) \
             + self.circle_center_y
 
         # Increase the angle in prep for the next round.
-        self.angle += self.speed
+        self.circle_angle += self.circle_speed
 
 
-class MyApplication(arcade.Window):
+class MyAppWindow(arcade.Window):
     """ Main application class. """
 
     def __init__(self, width, height):
-        """
-        Initializer
-        :param width:
-        :param height:
-        """
+
         super().__init__(width, height)
         # Sprite lists
         self.all_sprites_list = None
@@ -70,7 +63,7 @@ class MyApplication(arcade.Window):
         self.score = 0
         self.player_sprite = None
 
-    def setup(self):
+    def start_new_game(self):
         """ Set up the game and initialize the variables. """
 
         # Sprite lists
@@ -79,7 +72,8 @@ class MyApplication(arcade.Window):
 
         # Set up the player
         self.score = 0
-        self.player_sprite = arcade.Sprite("images/character.png",
+        # Character image from kenney.nl
+        self.player_sprite = arcade.Sprite("character.png",
                                            SPRITE_SCALING)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 70
@@ -88,17 +82,18 @@ class MyApplication(arcade.Window):
         for i in range(50):
 
             # Create the coin instance
-            coin = Coin("images/coin_01.png", SPRITE_SCALING / 3)
+            # Coin image from kenney.nl
+            coin = Coin("coin_01.png", SPRITE_SCALING / 3)
 
             # Position the center of the circle the coin will orbit
             coin.circle_center_x = random.randrange(SCREEN_WIDTH)
             coin.circle_center_y = random.randrange(SCREEN_HEIGHT)
 
             # Random radius from 10 to 200
-            coin.radius = random.randrange(10, 200)
+            coin.circle_radius = random.randrange(10, 200)
 
             # Random start angle from 0 to 2pi
-            coin.angle = random.random() * 2 * math.pi
+            coin.circle_angle = random.random() * 2 * math.pi
 
             # Add the coin to the lists
             self.all_sprites_list.append(coin)
@@ -111,9 +106,6 @@ class MyApplication(arcade.Window):
         arcade.set_background_color(arcade.color.AMAZON)
 
     def on_draw(self):
-        """
-        Render the screen.
-        """
 
         # This command has to happen before we start drawing
         arcade.start_render()
@@ -122,13 +114,10 @@ class MyApplication(arcade.Window):
         self.all_sprites_list.draw()
 
         # Put the text on the screen.
-        output = "Score: {}".format(self.score)
+        output = "Score: " + str(self.score)
         arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
 
     def on_mouse_motion(self, x, y, dx, dy):
-        """
-        Called whenever the mouse moves.
-        """
         self.player_sprite.center_x = x
         self.player_sprite.center_y = y
 
@@ -140,17 +129,20 @@ class MyApplication(arcade.Window):
         self.all_sprites_list.update()
 
         # Generate a list of all sprites that collided with the player.
-        hit_list = \
-            arcade.check_for_collision_with_list(self.player_sprite,
-                                                 self.coin_list)
+        hit_list = arcade.check_for_collision_with_list(self.player_sprite,
+                                                        self.coin_list)
 
         # Loop through each colliding sprite, remove it, and add to the score.
         for coin in hit_list:
-            coin.kill()
             self.score += 1
+            coin.kill()
 
 
-window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
-window.setup()
+def main():
+    window = MyAppWindow(SCREEN_WIDTH, SCREEN_HEIGHT)
+    window.start_new_game()
+    arcade.run()
 
-arcade.run()
+
+if __name__ == "__main__":
+    main()
