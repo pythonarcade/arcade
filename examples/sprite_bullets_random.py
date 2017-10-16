@@ -8,11 +8,11 @@ SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
 
-class MyApplication(arcade.Window):
+class MyWindow(arcade.Window):
     """ Main application class """
 
-    def __init__(self, width, height):
-        super().__init__(width, height)
+    def __init__(self):
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT)
 
         arcade.set_background_color(arcade.color.BLACK)
 
@@ -45,9 +45,6 @@ class MyApplication(arcade.Window):
         arcade.start_render()
 
         self.all_sprites_list.draw()
-        # Draw the text
-        arcade.draw_text("This is a simple template to start your game.",
-                         10, SCREEN_HEIGHT // 2, arcade.color.BLACK, 20)
 
     def update(self, delta_time):
         """All the logic to move, and the game logic goes here. """
@@ -81,6 +78,10 @@ class MyApplication(arcade.Window):
         self.player.center_y = 20
 
 
-window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
+def main():
+    MyWindow()
+    arcade.run()
 
-arcade.run()
+
+if __name__ == "__main__":
+    main()

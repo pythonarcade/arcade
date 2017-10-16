@@ -8,11 +8,12 @@ SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 BULLET_SPEED = 4
 
-class MyApplication(arcade.Window):
+
+class MyWindow(arcade.Window):
     """ Main application class """
 
-    def __init__(self, width, height):
-        super().__init__(width, height)
+    def __init__(self):
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT)
 
         arcade.set_background_color(arcade.color.BLACK)
 
@@ -76,7 +77,7 @@ class MyApplication(arcade.Window):
             # Set the enemy to face the player.
             enemy.angle = math.degrees(angle)-90
 
-            # Shoot every 60 frames change of shooting each frame
+            # Shoot every 60 frames
             if self.frame_count % 60 == 0:
                 bullet = arcade.Sprite("images/laserBlue01.png")
                 bullet.center_x = start_x
@@ -100,14 +101,16 @@ class MyApplication(arcade.Window):
 
         self.bullet_list.update()
 
-
-
     def on_mouse_motion(self, x, y, delta_x, delta_y):
         """Called whenever the mouse moves. """
         self.player.center_x = x
         self.player.center_y = y
 
 
-window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
+def main():
+    MyWindow()
+    arcade.run()
 
-arcade.run()
+
+if __name__ == "__main__":
+    main()

@@ -25,7 +25,7 @@ class Bullet(arcade.Sprite):
         self.center_y += self.change_y
 
 
-class MyApplication(arcade.Window):
+class MyWindow(arcade.Window):
     """ Main application class. """
 
     def __init__(self, screen_width, screen_height):
@@ -126,8 +126,7 @@ class MyApplication(arcade.Window):
         for bullet in self.bullet_list:
 
             # Check this bullet to see if it hit a coin
-            hit_list = arcade.check_for_collision_with_list(bullet,
-                                                            self.coin_list)
+            hit_list = arcade.check_for_collision_with_list(bullet, self.coin_list)
 
             # If it did, get rid of the bullet
             if len(hit_list) > 0:
@@ -144,7 +143,7 @@ class MyApplication(arcade.Window):
 
 
 def main():
-    MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
+    MyWindow(SCREEN_WIDTH, SCREEN_HEIGHT)
     arcade.run()
 
 

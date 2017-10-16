@@ -22,7 +22,7 @@ class Bullet(arcade.Sprite):
         self.center_y += self.change_y
 
 
-class MyAppWindow(arcade.Window):
+class MyWindow(arcade.Window):
     """ Main application class. """
 
     def __init__(self):
@@ -145,7 +145,7 @@ class MyAppWindow(arcade.Window):
 
 
 def main():
-    MyAppWindow()
+    MyWindow()
     arcade.run()
 
 
