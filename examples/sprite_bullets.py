@@ -18,7 +18,8 @@ BULLET_SPEED = 5
 
 class Bullet(arcade.Sprite):
     def update(self):
-        self.center_y += BULLET_SPEED
+        self.center_x += self.change_x
+        self.center_y += self.change_y
 
 
 class MyAppWindow(arcade.Window):
@@ -53,7 +54,7 @@ class MyAppWindow(arcade.Window):
 
             # Position the coin
             coin.center_x = random.randrange(SCREEN_WIDTH)
-            coin.center_y = random.randrange(120, SCREEN_HEIGHT)
+            coin.center_y = random.randrange(150, SCREEN_HEIGHT)
 
             # Add the coin to the lists
             self.all_sprites_list.append(coin)
@@ -77,8 +78,8 @@ class MyAppWindow(arcade.Window):
         self.all_sprites_list.draw()
 
         # Put the text on the screen.
-        output = "Score: {}".format(self.score)
-        arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
+        output = f"Score: {self.score}"
+        arcade.draw_text(output, 10, 20, arcade.color.BLACK, 16)
 
     def on_mouse_motion(self, x, y, dx, dy):
         """
@@ -99,9 +100,14 @@ class MyAppWindow(arcade.Window):
         # rotate it.
         bullet.angle = 90
 
-        # Position the bullet
+        # Position the bullet to where the player is on the x axis
         bullet.center_x = self.player_sprite.center_x
+
+        # Put the bottom of the bullet at the top of the player sprite
         bullet.bottom = self.player_sprite.top
+
+        # Make the bullet move up
+        bullet.change_y = BULLET_SPEED
 
         # Add the bullet to the appropriate lists
         self.all_sprites_list.append(bullet)
