@@ -5,29 +5,26 @@ Simple program to show basic sprite usage.
 
 Artwork from http://kenney.nl
 """
+
 import random
 import arcade
 
-SPRITE_SCALING = 0.5
+# --- Constants ---
+SPRITE_SCALING_PLAYER = 0.5
+SPRITE_SCALING_COIN = 0.2
+COIN_COUNT = 50
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
 
-class MyApplication(arcade.Window):
-    """
-    Main application class.
-    """
+class MyWindow(arcade.Window):
+    """ Our custom Window Class"""
 
-    def __init__(self, width, height):
-        """
-        Initializer
-        :param width:
-        :param height:
-        """
-
+    def __init__(self):
+        """ Initializer """
         # Call the parent class initializer
-        super().__init__(width, height)
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Sprite Example")
 
         # Variables that will hold sprite lists
         self.all_sprites_list = None
@@ -40,9 +37,7 @@ class MyApplication(arcade.Window):
         # Don't show the mouse cursor
         self.set_mouse_visible(False)
 
-        # Set the background color
         arcade.set_background_color(arcade.color.AMAZON)
-
 
     def setup(self):
         """ Set up the game and initialize the variables. """
@@ -51,18 +46,22 @@ class MyApplication(arcade.Window):
         self.all_sprites_list = arcade.SpriteList()
         self.coin_list = arcade.SpriteList()
 
-        # Set up the player
+        # Score
         self.score = 0
-        self.player_sprite = arcade.Sprite("images/character.png",
-                                           SPRITE_SCALING)
+
+        # Set up the player
+        # Character image from kenney.nl
+        self.player_sprite = arcade.Sprite("images/character.png", SPRITE_SCALING_PLAYER)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 50
         self.all_sprites_list.append(self.player_sprite)
 
-        for i in range(50):
+        # Create the coins
+        for i in range(COIN_COUNT):
 
             # Create the coin instance
-            coin = arcade.Sprite("images/coin_01.png", SPRITE_SCALING / 3)
+            # Coin image from kenney.nl
+            coin = arcade.Sprite("images/coin_01.png", SPRITE_SCALING_COIN)
 
             # Position the coin
             coin.center_x = random.randrange(SCREEN_WIDTH)
@@ -73,25 +72,18 @@ class MyApplication(arcade.Window):
             self.coin_list.append(coin)
 
     def on_draw(self):
-        """
-        Render the screen.
-        """
-
-        # This command has to happen before we start drawing
+        """ Draw everything """
         arcade.start_render()
-
-        # Draw all the sprites.
-        self.player_sprite.draw()
-        self.coin_list.draw()
+        self.all_sprites_list.draw()
 
         # Put the text on the screen.
-        output = "Score: {}".format(self.score)
+        output = f"Score: {self.score}"
         arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
 
     def on_mouse_motion(self, x, y, dx, dy):
-        """
-        Called whenever the mouse moves.
-        """
+        """ Handle Mouse Motion """
+
+        # Move the center of the player sprite to match the mouse x, y
         self.player_sprite.center_x = x
         self.player_sprite.center_y = y
 
@@ -103,9 +95,8 @@ class MyApplication(arcade.Window):
         self.all_sprites_list.update()
 
         # Generate a list of all sprites that collided with the player.
-        hit_list = \
-            arcade.check_for_collision_with_list(self.player_sprite,
-                                                 self.coin_list)
+        hit_list = arcade.check_for_collision_with_list(self.player_sprite,
+                                                        self.coin_list)
 
         # Loop through each colliding sprite, remove it, and add to the score.
         for coin in hit_list:
@@ -113,7 +104,10 @@ class MyApplication(arcade.Window):
             self.score += 1
 
 
-window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
-window.setup()
+def main():
+    window = MyWindow()
+    window.setup()
+    arcade.run()
 
-arcade.run()
+
+main()
