@@ -1,5 +1,5 @@
 """
-This simple animation example shows how to move an item with the keyboard.
+This simple animation example shows how to move an item with the joystick.
 """
 
 import arcade
@@ -20,7 +20,7 @@ class MyApplication(arcade.Window):
     Main application class.
     """
     def __init__(self, width, height):
-        super().__init__(width, height, title="Keyboard control")
+        super().__init__(width, height, title="joystick control")
         self.player = None
         self.left_down = False
 
