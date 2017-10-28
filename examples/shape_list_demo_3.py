@@ -19,23 +19,19 @@ def make_star_field(star_count):
         radius = random.randrange(1, 4)
         brightness = random.randrange(127, 256)
         color = (brightness, brightness, brightness)
-        shape = arcade.create_ellipse_filled(x, y, radius, radius, color)
+        shape = arcade.create_ellipse_filled(x, y, radius, radius, color, num_segments=8)
         shape_list.append(shape)
 
     return shape_list
 
 
-def make_skyline(width, skyline_height, skyline_color):
+def make_skyline(width, skyline_height, skyline_color,
+                 gap_chance = 0.70, window_chance=0.30, light_on_chance=0.5,
+                 window_color=(255, 255, 200), window_margin=3, window_gap=2,
+                 cap_chance=0.20):
     """ Make a skyline """
 
     shape_list = arcade.ShapeElementList()
-
-    gap_chance = 0.70
-    window_chance = 0.30
-    light_on_chance = 0.5
-    window_color = (255, 255, 200)
-    window_margin = 3
-    window_gap = 2
 
     # Add the "base" that we build the buildings on
     shape = arcade.create_rectangle_filled(width / 2, skyline_height / 2, width, skyline_height, skyline_color)
@@ -60,6 +56,17 @@ def make_skyline(width, skyline_height, skyline_color):
         shape = arcade.create_rectangle_filled(building_center_x, building_center_y,
                                                building_width, building_height, skyline_color)
         shape_list.append(shape)
+
+        if random.random() < cap_chance:
+            x1 = building_center_x - building_width / 2
+            x2 = building_center_x + building_width / 2
+            x3 = building_center_x
+
+            y1 = y2 = building_center_y + building_height / 2
+            y3 = y1 + building_width / 2
+
+            shape = arcade.create_polygon([[x1, y1], [x2, y2], [x3, y3]], skyline_color)
+            shape_list.append(shape)
 
         # See if we should have some windows
         if random.random() < window_chance:
@@ -96,11 +103,11 @@ class MyWindow(arcade.Window):
     def __init__(self):
         """ Initializer """
         # Call the parent class initializer
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Shape Demo")
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Skyline Using Buffered Shapes")
 
         self.stars = make_star_field(150)
-        self.skyline1 = make_skyline(SCREEN_WIDTH, 250, (80, 80, 80))
-        self.skyline2 = make_skyline(SCREEN_WIDTH, 150, (50, 50, 50))
+        self.skyline1 = make_skyline(SCREEN_WIDTH * 5, 250, (80, 80, 80))
+        self.skyline2 = make_skyline(SCREEN_WIDTH * 5, 150, (50, 50, 50))
 
         arcade.set_background_color(arcade.color.BLACK)
 
@@ -121,7 +128,9 @@ class MyWindow(arcade.Window):
 
     def update(self, delta_time):
         """ Movement and game logic """
-        pass
+        self.skyline1.center_x -= 0.5
+        self.skyline2.center_x -= 1
+        print(delta_time)
 
 
 
