@@ -12,8 +12,8 @@ import pyglet.gl as gl
 
 from numbers import Number
 from typing import Callable
-from typing import List
 from typing import Union
+from arcade.arcade_types import Color
 
 _left = -1
 _right = 1
@@ -233,7 +233,7 @@ def start_render():
     gl.glEnableClientState(gl.GL_VERTEX_ARRAY)
 
 
-def set_background_color(color: List[int]):
+def set_background_color(color: Color):
     """
     This specifies the background color of the window.
 

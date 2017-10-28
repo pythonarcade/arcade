@@ -7,14 +7,16 @@ SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
 
-class MyApplication(arcade.Window):
+class MyWindow(arcade.Window):
     """ Main application class """
 
-    def __init__(self, width, height):
-        super().__init__(width, height)
+    def __init__(self):
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT)
 
         arcade.set_background_color(arcade.color.BLACK)
 
+        # --- Keep track of a frame count.
+        # --- This is important for doing things every x frames
         self.frame_count = 0
 
         self.all_sprites_list = arcade.SpriteList()
@@ -44,16 +46,16 @@ class MyApplication(arcade.Window):
         arcade.start_render()
 
         self.all_sprites_list.draw()
-        # Draw the text
-        arcade.draw_text("This is a simple template to start your game.",
-                         10, SCREEN_HEIGHT // 2, arcade.color.BLACK, 20)
 
     def update(self, delta_time):
         """All the logic to move, and the game logic goes here. """
 
+        # --- Add one to the frame count
         self.frame_count += 1
 
         for enemy in self.enemy_list:
+
+            # --- Use the modulus to trigger doing something every 120 frames
             if self.frame_count % 120 == 0:
                 bullet = arcade.Sprite("images/laserBlue01.png")
                 bullet.center_x = enemy.center_x
@@ -78,6 +80,10 @@ class MyApplication(arcade.Window):
         self.player.center_y = 20
 
 
-window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
+def main():
+    MyWindow()
+    arcade.run()
 
-arcade.run()
+
+if __name__ == "__main__":
+    main()
