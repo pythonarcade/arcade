@@ -273,12 +273,37 @@ def render(shape: VertexBuffer):
     if shape.color is None:
         raise ValueError("Error: Color parameter not set.")
 
-    # gl.glLoadIdentity()
-    # gl.glVertexPointer(2, gl.GL_FLOAT, 0, 0)
+    gl.glLoadIdentity()
     gl.glBindBuffer(gl.GL_ARRAY_BUFFER, shape.vbo_id)
+    gl.glVertexPointer(2, gl.GL_FLOAT, 0, 0)
+
+    if shape.line_width:
+        gl.glLineWidth(shape.line_width)
+
+    if len(shape.color) == 4:
+        gl.glColor4ub(shape.color[0], shape.color[1], shape.color[2],
+                      shape.color[3])
+        gl.glEnable(gl.GL_BLEND)
+        gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
+    elif len(shape.color) == 3:
+        gl.glDisable(gl.GL_BLEND)
+        gl.glColor4ub(shape.color[0], shape.color[1], shape.color[2], 255)
 
     gl.glDrawArrays(shape.draw_mode, 0, shape.size)
 
+
+def stripped_render(shape: VertexBuffer):
+    """
+    Render an shape previously created with a ``create`` function.
+    """
+
+    gl.glBindBuffer(gl.GL_ARRAY_BUFFER, shape.vbo_id)
+    gl.glVertexPointer(2, gl.GL_FLOAT, 0, 0)
+
+    # if shape.line_width:
+    #     gl.glLineWidth(shape.line_width)
+
+    gl.glDrawArrays(shape.draw_mode, 0, shape.size)
 
 T = TypeVar('T', bound=VertexBuffer)
 
@@ -355,15 +380,12 @@ class ShapeElementList(Generic[T]):
         last_line_width = None
 
         for shape in self.shape_list:
-            # if last_color is None or last_color != shape.color:
-            #   last_color = shape.color
+            if last_color is None or last_color != shape.color:
+                last_color = shape.color
 
-            if last_line_width is None or last_line_width == shape.line_width:
+            if shape.line_width and last_line_width != shape.line_width:
                 last_line_width = shape.line_width
-                if shape.line_width:
-                    gl.glLineWidth(shape.line_width)
-
-            render(shape)
+                gl.glLineWidth(shape.line_width)
 
             if len(shape.color) == 4:
                 gl.glColor4ub(shape.color[0], shape.color[1], shape.color[2],
@@ -374,3 +396,4 @@ class ShapeElementList(Generic[T]):
                 gl.glDisable(gl.GL_BLEND)
                 gl.glColor4ub(shape.color[0], shape.color[1], shape.color[2], 255)
 
+            stripped_render(shape)
