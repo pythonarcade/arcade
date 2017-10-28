@@ -108,6 +108,10 @@ def create_line_loop(point_list: PointList,
 
 def create_polygon(point_list: PointList,
                    color: Color, border_width: float=1):
+    """
+    Draw a convex polygon. This will NOT draw a concave polygon.
+    Because of this, you might not want to user this function.
+    """
     return create_line_generic(gl.GL_POLYGON, point_list, color, border_width)
 
 
