@@ -208,7 +208,7 @@ def create_ellipse_outline(center_x: float, center_y: float,
 def create_ellipse(center_x: float, center_y: float,
                    width: float, height: float, color: Color,
                    border_width: float=0,
-                   tilt_angle: float=0, num_segments=128,
+                   tilt_angle: float=0, num_segments=32,
                    filled=True) -> VertexBuffer:
 
     """
@@ -303,11 +303,8 @@ def stripped_render(shape: VertexBuffer):
 
     gl.glBindBuffer(gl.GL_ARRAY_BUFFER, shape.vbo_id)
     gl.glVertexPointer(2, gl.GL_FLOAT, 0, 0)
-
-    # if shape.line_width:
-    #     gl.glLineWidth(shape.line_width)
-
     gl.glDrawArrays(shape.draw_mode, 0, shape.size)
+
 
 T = TypeVar('T', bound=VertexBuffer)
 
@@ -387,17 +384,17 @@ class ShapeElementList(Generic[T]):
             if last_color is None or last_color != shape.color:
                 last_color = shape.color
 
+                if len(shape.color) == 4:
+                    gl.glColor4ub(shape.color[0], shape.color[1], shape.color[2],
+                                  shape.color[3])
+                    gl.glEnable(gl.GL_BLEND)
+                    gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
+                elif len(shape.color) == 3:
+                    gl.glDisable(gl.GL_BLEND)
+                    gl.glColor4ub(shape.color[0], shape.color[1], shape.color[2], 255)
+
             if shape.line_width and last_line_width != shape.line_width:
                 last_line_width = shape.line_width
                 gl.glLineWidth(shape.line_width)
-
-            if len(shape.color) == 4:
-                gl.glColor4ub(shape.color[0], shape.color[1], shape.color[2],
-                              shape.color[3])
-                gl.glEnable(gl.GL_BLEND)
-                gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-            elif len(shape.color) == 3:
-                gl.glDisable(gl.GL_BLEND)
-                gl.glColor4ub(shape.color[0], shape.color[1], shape.color[2], 255)
 
             stripped_render(shape)
