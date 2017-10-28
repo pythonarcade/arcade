@@ -1,11 +1,6 @@
 """
-Sprite Bullets
-
-Simple program to show basic sprite usage.
-
-Artwork from http://kenney.nl
+Simple program showing how to use a shape list to create a more complex shape out of basic ones.
 """
-import random
 import arcade
 
 SCREEN_WIDTH = 800
@@ -13,14 +8,14 @@ SCREEN_HEIGHT = 600
 
 
 def make_person(head_radius,
-        chest_height,
-        chest_width,
-        leg_width,
-        leg_height,
-        arm_width,
-        arm_length,
-        arm_gap,
-        shoulder_height):
+                chest_height,
+                chest_width,
+                leg_width,
+                leg_height,
+                arm_width,
+                arm_length,
+                arm_gap,
+                shoulder_height):
 
     shape_list = arcade.ShapeElementList()
 
@@ -90,7 +85,6 @@ class MyAppWindow(arcade.Window):
         arm_gap = 10
         shoulder_height = 15
 
-
         self.shape_list = make_person(head_radius,
                                       chest_height,
                                       chest_width,
@@ -107,8 +101,6 @@ class MyAppWindow(arcade.Window):
 
         """ Set up the game and initialize the variables. """
 
-
-
     def on_draw(self):
         """
         Render the screen.
@@ -119,14 +111,11 @@ class MyAppWindow(arcade.Window):
 
         self.shape_list.draw()
 
-
-
     def update(self, delta_time):
         """ Movement and game logic """
         self.shape_list.center_x += 1
         self.shape_list.center_y += 1
         self.shape_list.angle += .1
-
 
 
 def main():

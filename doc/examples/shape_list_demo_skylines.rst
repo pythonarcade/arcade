@@ -1,0 +1,16 @@
+:orphan:
+
+.. _shape_list_demo_skylines:
+
+Shape List - Skylines
+=====================
+
+.. image:: shape_list_demo_skylines.png
+    :width: 600px
+    :height: 600px
+    :align: center
+    :alt: Screenshot of using shape list to create a moving skyline
+
+.. literalinclude:: ../../examples/shape_list_demo_skylines.py
+    :caption: shape_list_demo_skylines.py
+    :linenos:

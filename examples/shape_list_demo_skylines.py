@@ -130,7 +130,6 @@ class MyWindow(arcade.Window):
         """ Movement and game logic """
         self.skyline1.center_x -= 0.5
         self.skyline2.center_x -= 1
-        print(delta_time)
 
 
 

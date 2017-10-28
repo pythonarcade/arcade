@@ -233,6 +233,19 @@ PyMunk
 
    :ref:`pymunk_pegboard`
 
+Shape Lists
+-----------
+
+.. figure:: thumbs/shape_list_demo_skylines.png
+   :figwidth: 170px
+
+   :ref:`shape_list_demo_skylines`
+
+.. figure:: thumbs/shape_list_demo_person.png
+   :figwidth: 170px
+
+   :ref:`shape_list_demo_person`
+
 
 Other
 -----
