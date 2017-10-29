@@ -28,8 +28,9 @@ class VertexBuffer:
        https://en.wikipedia.org/wiki/Vertex_Buffer_Object
 
     """
-    def __init__(self, vbo_id: gl.GLuint, size: float, draw_mode: int):
-        self.vbo_id = vbo_id
+    def __init__(self, vbo_vertex_id: gl.GLuint, size: float, draw_mode: int, vbo_color_id: gl.GLuint=None):
+        self.vbo_vertex_id = vbo_vertex_id
+        self.vbo_color_id = vbo_color_id
         self.size = size
         self.draw_mode = draw_mode
         self.color = None
@@ -130,15 +131,9 @@ def create_rectangle_outline(center_x: float, center_y: float, width: float,
     return create_rectangle(center_x, center_y, width, height, color, border_width, tilt_angle, filled=False)
 
 
-def create_rectangle(center_x: float, center_y: float, width: float,
-                     height: float, color: Color,
-                     border_width: float=0, tilt_angle: float=0,
-                     filled=True) -> VertexBuffer:
-    """
-    This function creates a rectangle using a vertex buffer object.
-    Creating the rectangle, and then later drawing it with ``render_rectangle``
-    is faster than calling ``draw_rectangle``.
-    """
+def get_rectangle_points(center_x: float, center_y: float, width: float,
+                         height: float, tilt_angle: float=0):
+
     x1 = -width / 2 + center_x
     y1 = -height / 2 + center_y
 
@@ -161,6 +156,21 @@ def create_rectangle(center_x: float, center_y: float, width: float,
             x2, y2,
             x3, y3,
             x4, y4]
+
+    return data
+
+
+def create_rectangle(center_x: float, center_y: float, width: float,
+                     height: float, color: Color,
+                     border_width: float=0, tilt_angle: float=0,
+                     filled=True) -> VertexBuffer:
+    """
+    This function creates a rectangle using a vertex buffer object.
+    Creating the rectangle, and then later drawing it with ``render_rectangle``
+    is faster than calling ``draw_rectangle``.
+    """
+
+    data = get_rectangle_points(center_x, center_y, width, height, tilt_angle)
 
     # print(data)
     vbo_id = gl.GLuint()
@@ -186,6 +196,38 @@ def create_rectangle(center_x: float, center_y: float, width: float,
 
     shape.color = color
     shape.line_width = border_width
+    return shape
+
+
+def create_filled_rectangles(point_list, color: Color) -> VertexBuffer:
+    """
+    This function creates multiple rectangle/quads using a vertex buffer object.
+    Creating the rectangles, and then later drawing it with ``render``
+    is faster than calling ``draw_rectangle``.
+    """
+
+    data = point_list
+
+    # print(data)
+    vbo_id = gl.GLuint()
+
+    gl.glGenBuffers(1, ctypes.pointer(vbo_id))
+
+    # Create a buffer with the data
+    # This line of code is a bit strange.
+    # (gl.GLfloat * len(data)) creates an array of GLfloats, one for each number
+    # (*data) initalizes the list with the floats. *data turns the list into a
+    # tuple.
+    data2 = (gl.GLfloat * len(data))(*data)
+
+    gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vbo_id)
+    gl.glBufferData(gl.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2,
+                    gl.GL_STATIC_DRAW)
+
+    shape_mode = gl.GL_QUADS
+    shape = VertexBuffer(vbo_id, len(data) // 2, shape_mode)
+
+    shape.color = color
     return shape
 
 
@@ -220,7 +262,7 @@ def create_ellipse(center_x: float, center_y: float,
     poor.
 
     >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
+    >>> arcade.open_window(800, 600, "Drawing Example")
     >>> arcade.start_render()
     >>> rect = arcade.create_ellipse(50, 50, 20, 20, arcade.color.RED, 2, 45)
     >>> arcade.render(rect)
@@ -278,7 +320,7 @@ def render(shape: VertexBuffer):
         raise ValueError("Error: Color parameter not set.")
 
     gl.glLoadIdentity()
-    gl.glBindBuffer(gl.GL_ARRAY_BUFFER, shape.vbo_id)
+    gl.glBindBuffer(gl.GL_ARRAY_BUFFER, shape.vbo_vertex_id)
     gl.glVertexPointer(2, gl.GL_FLOAT, 0, 0)
 
     if shape.line_width:
@@ -301,10 +343,21 @@ def stripped_render(shape: VertexBuffer):
     Render an shape previously created with a ``create`` function.
     """
 
-    gl.glBindBuffer(gl.GL_ARRAY_BUFFER, shape.vbo_id)
+    gl.glBindBuffer(gl.GL_ARRAY_BUFFER, shape.vbo_vertex_id)
     gl.glVertexPointer(2, gl.GL_FLOAT, 0, 0)
     gl.glDrawArrays(shape.draw_mode, 0, shape.size)
 
+
+def stripped_render_with_colors(shape: VertexBuffer):
+    """
+    Render an shape previously created with a ``create`` function.
+    """
+
+    gl.glBindBuffer(gl.GL_ARRAY_BUFFER, shape.vbo_id)
+    gl.glVertexPointer(2, gl.GL_FLOAT, 0, None)
+    gl.glBindBuffer(gl.GL_ARRAY_BUFFER, shape.vbo_color_id)
+    gl.glColorPointer(4, gl.GL_FLOAT, 0, None)
+    gl.glDrawArrays(shape.draw_mode, 0, shape.size)
 
 T = TypeVar('T', bound=VertexBuffer)
 
@@ -370,7 +423,9 @@ class ShapeElementList(Generic[T]):
 
     def draw(self):
 
-        gl.glVertexPointer(2, gl.GL_FLOAT, 0, 0)
+        # gl.glClear(gl.GL_COLOR_BUFFER_BIT)
+        gl.glEnableClientState(gl.GL_VERTEX_ARRAY)
+        # gl.glEnableClientState(gl.GL_COLOR_ARRAY)
         gl.glLoadIdentity()
 
         gl.glTranslatef(self.center_x, self.center_y, 0)
