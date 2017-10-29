@@ -3,8 +3,9 @@ City Scape Generator
 """
 import random
 import arcade
+import time
 
-SCREEN_WIDTH = 800
+SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 600
 
 
@@ -19,7 +20,7 @@ def make_star_field(star_count):
         radius = random.randrange(1, 4)
         brightness = random.randrange(127, 256)
         color = (brightness, brightness, brightness)
-        shape = arcade.create_ellipse_filled(x, y, radius, radius, color, num_segments=8)
+        shape = arcade.create_rectangle_filled(x, y, radius, radius, color)
         shape_list.append(shape)
 
     return shape_list
@@ -38,6 +39,10 @@ def make_skyline(width, skyline_height, skyline_color,
     shape_list.append(shape)
 
     building_center_x = 0
+
+    window_points = []
+    building_points = []
+
     while building_center_x < width:
 
         # Is there a gap between the buildings?
@@ -52,10 +57,27 @@ def make_skyline(width, skyline_height, skyline_color,
         building_center_x += gap_width + (building_width / 2)
         building_center_y = skyline_height + (building_height / 2)
 
+        x1 = building_center_x - building_width / 2
+        x2 = building_center_x + building_width / 2
+        y1 = skyline_height
+        y2 = skyline_height + building_height
+
+        building_points.append(x1)
+        building_points.append(y1)
+
+        building_points.append(x1)
+        building_points.append(y2)
+
+        building_points.append(x2)
+        building_points.append(y2)
+
+        building_points.append(x2)
+        building_points.append(y1)
+
         # Add building to the list
-        shape = arcade.create_rectangle_filled(building_center_x, building_center_y,
-                                               building_width, building_height, skyline_color)
-        shape_list.append(shape)
+        # shape = arcade.create_rectangle_filled(building_center_x, building_center_y,
+        #                                        building_width, building_height, skyline_color)
+        # shape_list.append(shape)
 
         if random.random() < cap_chance:
             x1 = building_center_x - building_width / 2
@@ -86,13 +108,31 @@ def make_skyline(width, skyline_height, skyline_color,
             for row in range(window_rows):
                 for column in range(window_columns):
                     if random.random() < light_on_chance:
-                        window_y = building_base_y + row * window_height + window_height / 2
-                        window_x = building_left_x + column * (window_width + window_gap) + window_width / 2 + window_margin
-                        shape = arcade.create_rectangle_filled(window_x, window_y,
-                                                               window_width, window_height * 0.8, window_color)
-                        shape_list.append(shape)
+                        x1 = building_left_x + column * (window_width + window_gap) + window_margin
+                        x2 = building_left_x + column * (window_width + window_gap) + window_width + window_margin
+                        y1 = building_base_y + row * window_height
+                        y2 = building_base_y + row * window_height + window_height * .8
+
+                        window_points.append(x1)
+                        window_points.append(y1)
+
+                        window_points.append(x1)
+                        window_points.append(y2)
+
+                        window_points.append(x2)
+                        window_points.append(y2)
+
+                        window_points.append(x2)
+                        window_points.append(y1)
 
         building_center_x += (building_width / 2)
+
+    shape = arcade.create_filled_rectangles(building_points, skyline_color)
+    shape_list.append(shape)
+
+    shape = arcade.create_filled_rectangles(window_points, window_color)
+    shape_list.append(shape)
+
 
     return shape_list
 
@@ -120,11 +160,17 @@ class MyWindow(arcade.Window):
         """
 
         # This command has to happen before we start drawing
+
+        start_time = int(round(time.time() * 1000))
         arcade.start_render()
 
         self.stars.draw()
         self.skyline1.draw()
         self.skyline2.draw()
+        end_time = int(round(time.time() * 1000))
+        total_time = end_time - start_time
+
+        print(f"Time: {total_time}")
 
     def update(self, delta_time):
         """ Movement and game logic """
