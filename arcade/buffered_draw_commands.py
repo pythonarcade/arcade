@@ -231,6 +231,37 @@ def create_filled_rectangles(point_list, color: Color) -> VertexBuffer:
     return shape
 
 
+def create_filled_rectangles_with_colors(point_list, color_list) -> VertexBuffer:
+    """
+    This function creates multiple rectangle/quads using a vertex buffer object.
+    Creating the rectangles, and then later drawing it with ``render``
+    is faster than calling ``draw_rectangle``.
+    """
+
+    data = point_list
+
+    # print(data)
+    vbo_id = gl.GLuint()
+
+    gl.glGenBuffers(1, ctypes.pointer(vbo_id))
+
+    # Create a buffer with the data
+    # This line of code is a bit strange.
+    # (gl.GLfloat * len(data)) creates an array of GLfloats, one for each number
+    # (*data) initalizes the list with the floats. *data turns the list into a
+    # tuple.
+    data2 = (gl.GLfloat * len(data))(*data)
+
+    gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vbo_id)
+    gl.glBufferData(gl.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2,
+                    gl.GL_STATIC_DRAW)
+
+    shape_mode = gl.GL_QUADS
+    shape = VertexBuffer(vbo_id, len(data) // 2, shape_mode)
+
+    shape.color = color
+    return shape
+
 def create_ellipse_filled(center_x: float, center_y: float,
                           width: float, height: float, color: Color,
                           tilt_angle: float=0, num_segments=128) -> VertexBuffer:
@@ -353,7 +384,7 @@ def stripped_render_with_colors(shape: VertexBuffer):
     Render an shape previously created with a ``create`` function.
     """
 
-    gl.glBindBuffer(gl.GL_ARRAY_BUFFER, shape.vbo_id)
+    gl.glBindBuffer(gl.GL_ARRAY_BUFFER, shape.vbo_vertex_id)
     gl.glVertexPointer(2, gl.GL_FLOAT, 0, None)
     gl.glBindBuffer(gl.GL_ARRAY_BUFFER, shape.vbo_color_id)
     gl.glColorPointer(4, gl.GL_FLOAT, 0, None)
@@ -425,7 +456,6 @@ class ShapeElementList(Generic[T]):
 
         # gl.glClear(gl.GL_COLOR_BUFFER_BIT)
         gl.glEnableClientState(gl.GL_VERTEX_ARRAY)
-        # gl.glEnableClientState(gl.GL_COLOR_ARRAY)
         gl.glLoadIdentity()
 
         gl.glTranslatef(self.center_x, self.center_y, 0)
@@ -436,20 +466,27 @@ class ShapeElementList(Generic[T]):
         last_line_width = None
 
         for shape in self.shape_list:
-            if last_color is None or last_color != shape.color:
-                last_color = shape.color
+            if shape.vbo_color_id is not None:
+                gl.glEnableClientState(gl.GL_COLOR_ARRAY)
+            else:
+                gl.glDisableClientState(gl.GL_COLOR_ARRAY)
+                if last_color is None or last_color != shape.color:
+                    last_color = shape.color
 
-                if len(shape.color) == 4:
-                    gl.glColor4ub(shape.color[0], shape.color[1], shape.color[2],
-                                  shape.color[3])
-                    gl.glEnable(gl.GL_BLEND)
-                    gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-                elif len(shape.color) == 3:
-                    gl.glDisable(gl.GL_BLEND)
-                    gl.glColor4ub(shape.color[0], shape.color[1], shape.color[2], 255)
+                    if len(shape.color) == 4:
+                        gl.glColor4ub(shape.color[0], shape.color[1], shape.color[2],
+                                      shape.color[3])
+                        gl.glEnable(gl.GL_BLEND)
+                        gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
+                    elif len(shape.color) == 3:
+                        gl.glDisable(gl.GL_BLEND)
+                        gl.glColor4ub(shape.color[0], shape.color[1], shape.color[2], 255)
 
             if shape.line_width and last_line_width != shape.line_width:
                 last_line_width = shape.line_width
                 gl.glLineWidth(shape.line_width)
 
-            stripped_render(shape)
+            if shape.vbo_color_id is None:
+                stripped_render(shape)
+            else:
+                stripped_render_with_colors(shape)
