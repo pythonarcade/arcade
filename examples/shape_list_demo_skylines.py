@@ -40,8 +40,8 @@ def make_skyline(width, skyline_height, skyline_color,
 
     building_center_x = 0
 
-    window_points = []
-    building_points = []
+    skyline_point_list = []
+    color_list = []
 
     while building_center_x < width:
 
@@ -62,34 +62,31 @@ def make_skyline(width, skyline_height, skyline_color,
         y1 = skyline_height
         y2 = skyline_height + building_height
 
-        building_points.append(x1)
-        building_points.append(y1)
+        skyline_point_list.append(x1)
+        skyline_point_list.append(y1)
 
-        building_points.append(x1)
-        building_points.append(y2)
+        skyline_point_list.append(x1)
+        skyline_point_list.append(y2)
 
-        building_points.append(x2)
-        building_points.append(y2)
+        skyline_point_list.append(x2)
+        skyline_point_list.append(y2)
 
-        building_points.append(x2)
-        building_points.append(y1)
+        skyline_point_list.append(x2)
+        skyline_point_list.append(y1)
+        color_list.extend([skyline_color[0] / 255,  skyline_color[1] / 255, skyline_color[2] / 255, 1] * 4)
 
-        # Add building to the list
-        # shape = arcade.create_rectangle_filled(building_center_x, building_center_y,
-        #                                        building_width, building_height, skyline_color)
-        # shape_list.append(shape)
 
-        if random.random() < cap_chance:
-            x1 = building_center_x - building_width / 2
-            x2 = building_center_x + building_width / 2
-            x3 = building_center_x
-
-            y1 = y2 = building_center_y + building_height / 2
-            y3 = y1 + building_width / 2
-
-            shape = arcade.create_polygon([[x1, y1], [x2, y2], [x3, y3]], skyline_color)
-            shape_list.append(shape)
-
+        # if random.random() < cap_chance:
+        #     x1 = building_center_x - building_width / 2
+        #     x2 = building_center_x + building_width / 2
+        #     x3 = building_center_x
+        #
+        #     y1 = y2 = building_center_y + building_height / 2
+        #     y3 = y1 + building_width / 2
+        #
+        #     shape = arcade.create_polygon([[x1, y1], [x2, y2], [x3, y3]], skyline_color)
+        #     shape_list.append(shape)
+        #
         # See if we should have some windows
         if random.random() < window_chance:
             # Yes windows! How many windows?
@@ -113,26 +110,24 @@ def make_skyline(width, skyline_height, skyline_color,
                         y1 = building_base_y + row * window_height
                         y2 = building_base_y + row * window_height + window_height * .8
 
-                        window_points.append(x1)
-                        window_points.append(y1)
+                        skyline_point_list.append(x1)
+                        skyline_point_list.append(y1)
 
-                        window_points.append(x1)
-                        window_points.append(y2)
+                        skyline_point_list.append(x1)
+                        skyline_point_list.append(y2)
 
-                        window_points.append(x2)
-                        window_points.append(y2)
+                        skyline_point_list.append(x2)
+                        skyline_point_list.append(y2)
 
-                        window_points.append(x2)
-                        window_points.append(y1)
+                        skyline_point_list.append(x2)
+                        skyline_point_list.append(y1)
+                        color_list.extend([window_color[0] / 255, window_color[1] / 255, window_color[2] / 255, 1] * 4)
 
         building_center_x += (building_width / 2)
 
-    shape = arcade.create_filled_rectangles(building_points, skyline_color)
+    shape = arcade.create_filled_rectangles_with_colors(skyline_point_list, color_list)
+    print(f"XXX {shape.vbo_color_id}")
     shape_list.append(shape)
-
-    shape = arcade.create_filled_rectangles(window_points, window_color)
-    shape_list.append(shape)
-
 
     return shape_list
 

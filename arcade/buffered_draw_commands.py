@@ -238,28 +238,33 @@ def create_filled_rectangles_with_colors(point_list, color_list) -> VertexBuffer
     is faster than calling ``draw_rectangle``.
     """
 
-    data = point_list
+    print(point_list)
+    print(color_list)
+    vbo_vertex_id = gl.GLuint()
 
-    # print(data)
-    vbo_id = gl.GLuint()
-
-    gl.glGenBuffers(1, ctypes.pointer(vbo_id))
+    gl.glGenBuffers(1, ctypes.pointer(vbo_vertex_id))
 
     # Create a buffer with the data
     # This line of code is a bit strange.
     # (gl.GLfloat * len(data)) creates an array of GLfloats, one for each number
     # (*data) initalizes the list with the floats. *data turns the list into a
     # tuple.
-    data2 = (gl.GLfloat * len(data))(*data)
+    gl_point_list = (gl.GLfloat * len(point_list))(*point_list)
 
-    gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vbo_id)
-    gl.glBufferData(gl.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2,
-                    gl.GL_STATIC_DRAW)
+    gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vbo_vertex_id)
+    gl.glBufferData(gl.GL_ARRAY_BUFFER, ctypes.sizeof(gl_point_list), gl_point_list, gl.GL_STATIC_DRAW)
+
+    # Colors
+    vbo_color_id = gl.GLuint()
+    gl.glGenBuffers(1, ctypes.pointer(vbo_color_id))
+
+    gl_color_list = (gl.GLfloat * len(color_list))(*color_list)
+    gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vbo_color_id)
+    gl.glBufferData(gl.GL_ARRAY_BUFFER, ctypes.sizeof(gl_color_list), gl_color_list, gl.GL_STATIC_DRAW)
 
     shape_mode = gl.GL_QUADS
-    shape = VertexBuffer(vbo_id, len(data) // 2, shape_mode)
+    shape = VertexBuffer(vbo_vertex_id, len(point_list) // 2, shape_mode, vbo_color_id=vbo_color_id)
 
-    shape.color = color
     return shape
 
 def create_ellipse_filled(center_x: float, center_y: float,
@@ -490,3 +495,4 @@ class ShapeElementList(Generic[T]):
                 stripped_render(shape)
             else:
                 stripped_render_with_colors(shape)
+
