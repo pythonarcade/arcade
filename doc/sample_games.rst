@@ -13,6 +13,12 @@ PyOverheadGame_, a 2D overhead game where you go through several rooms and pick 
 
 .. _PyOverheadGame: https://github.com/albertz/PyOverheadGame
 
+.. image:: images/blake.png
+
+Dungeon_, explore a maze picking up arrows and coins.
+
+.. _Dungeon: https://github.com/BlakeDalmas/Python
+
 Games from Simpson College Spring 2017 CMSC 150 Course
 ------------------------------------------------------
 
