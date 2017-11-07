@@ -43,7 +43,9 @@ class Window(pyglet.window.Window):
     def set_update_rate(self, rate: float):
         """
         Set how often the screen should be updated.
+        For example, self.set_update_rate(1 / 20) will set the update rate to 60 fps
         """
+        pyglet.clock.unschedule(self.update)
         pyglet.clock.schedule_interval(self.update, rate)
 
     def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
