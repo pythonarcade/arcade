@@ -174,7 +174,7 @@ class MyApplication(arcade.Window):
         # Adjust the text position based on the viewport so that we don't
         # scroll the text too.
         distance = self.view_left + self.player_sprite.right
-        output = "Distance: {}".format(distance)
+        output = f"Distance: {distance}"
         arcade.draw_text(output, self.view_left + 10, self.view_bottom + 20,
                          arcade.color.WHITE, 14)
 

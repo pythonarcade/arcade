@@ -1277,7 +1277,6 @@ def draw_triangle_outline(x1: float, y1: float,
 # --- BEGIN RECTANGLE FUNCTIONS # # #
 
 
-
 def draw_lrtb_rectangle_outline(left: float, right: float, top: float,
                                 bottom: float, color: Color,
                                 border_width: float=1):
@@ -1741,26 +1740,21 @@ def draw_text(text: str,
     >>> arcade.quick_run(0.25)
     """
 
-    if len(color) == 3:
-        color = (color[0], color[1], color[2], 255)
+    if text in draw_text.cache:
+        # TODO: Include other parameters in key
+        label = draw_text.cache[text]
+    else:
+        label = create_text(text, color, font_size, width, align, font_name, bold, italic)
+        draw_text.cache[text] = label
 
-    label = pyglet.text.Label(text,
-                              font_name=font_name,
-                              font_size=font_size,
-                              x=0, y=0,
-                              color=color,
-                              multiline=True,
-                              width=width,
-                              align=align,
-                              anchor_x=anchor_x,
-                              anchor_y=anchor_y,
-                              bold=bold,
-                              italic=italic)
     gl.glLoadIdentity()
     gl.glTranslatef(start_x, start_y, 0)
     if rotation:
         gl.glRotatef(rotation, 0, 0, 1)
 
     label.draw()
+
+
+draw_text.cache = {}
 
 # --- END TEXT FUNCTIONS # # #
