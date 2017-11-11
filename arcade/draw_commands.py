@@ -1678,7 +1678,7 @@ def create_text(text: str,
     if len(color) == 3:
         color = (color[0], color[1], color[2], 255)
 
-    label = pyglet.text.Label(text,
+    text = pyglet.text.Label(text,
                               font_name=font_name,
                               font_size=font_size,
                               x=0, y=0,
@@ -1691,7 +1691,7 @@ def create_text(text: str,
                               bold=bold,
                               italic=italic)
 
-    return label
+    return text
 
 
 def render_text(text: pyglet.text.Label, start_x: float, start_y: float, rotation=0):
@@ -1718,8 +1718,6 @@ def draw_text(text: str,
               rotation=0
               ):
     """
-    Draw text to the screen. Using this function is slow. It is better to use
-    create_text and render_text.
 
     Args:
         :text: Text to display.
@@ -1731,7 +1729,7 @@ def draw_text(text: str,
     Example:
 
     >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
+    >>> arcade.open_window(800, 600, "Drawing Example")
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
     >>> arcade.draw_text("Text Example", 250, 300, arcade.color.BLACK, 10)
@@ -1740,12 +1738,12 @@ def draw_text(text: str,
     >>> arcade.quick_run(0.25)
     """
 
-    if text in draw_text.cache:
-        # TODO: Include other parameters in key
-        label = draw_text.cache[text]
+    key = f"{text}{color}{font_size}{width}{align}{font_name}{bold}{italic}"
+    if key in draw_text.cache:
+        label = draw_text.cache[key]
     else:
-        label = create_text(text, color, font_size, width, align, font_name, bold, italic)
-        draw_text.cache[text] = label
+        label = create_text(text, color=color, font_size=font_size, width=width, align=align, anchor_x=anchor_x, anchor_y=anchor_y, font_name=font_name, bold=bold, italic=italic)
+        draw_text.cache[key] = label
 
     gl.glLoadIdentity()
     gl.glTranslatef(start_x, start_y, 0)

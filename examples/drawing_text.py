@@ -10,10 +10,6 @@ SCREEN_HEIGHT = 500
 class MyApplication(arcade.Window):
     """
     Main application class.
-
-    NOTE: Go ahead and delete the methods you don't need.
-    If you do need a method, delete the 'pass' and replace it
-    with your own code. Don't leave 'pass' in this program.
     """
 
     def __init__(self, width, height):
@@ -21,16 +17,7 @@ class MyApplication(arcade.Window):
 
         arcade.set_background_color(arcade.color.WHITE)
         self.text_angle = 0
-        self.time_elapsed = 0
-        self.t1 = arcade.create_text("Simple line of text in 12 point", arcade.color.BLACK, 12)
-        self.t2 = arcade.create_text("Text anchored 'top' and 'left'.", arcade.color.BLACK, 12, anchor_x="left", anchor_y="top")
-        self.t3 = arcade.create_text("14 point multi\nline\ntext", arcade.color.BLACK, 14, anchor_y="top")
-        self.t4 = arcade.create_text("Set of text\nthat\nis centered.", arcade.color.BLACK, 14, width=200, align="center", anchor_y="top")
-        self.t5 = arcade.create_text("Text centered on\na point", arcade.color.BLACK, 14, width=200, align="center", anchor_x="center", anchor_y="center")
-        self.t6 = arcade.create_text("Text rotated on\na point", arcade.color.BLACK, 14, width=200, align="center", anchor_x="center", anchor_y="center")
-        self.t7 = arcade.create_text("Sideways text", arcade.color.BLACK, 14, width=200, align="center", anchor_x="center", anchor_y="center")
-        self.t8 = arcade.create_text("Time elapsed: {:5.1f}".format(self.time_elapsed), arcade.color.BLACK, 14)
-
+        self.time_elapsed = 0.0
 
     def update(self, delta_time):
         self.text_angle += 1
@@ -50,49 +37,58 @@ class MyApplication(arcade.Window):
         start_x = 50
         start_y = 450
         arcade.draw_point(start_x, start_y, arcade.color.BLUE, 5)
-        cache = False
 
-        arcade.render_text(self.t1, start_x, start_y)
+        arcade.draw_text("Simple line of text in 12 point", start_x, start_y, arcade.color.BLACK, 12, )
 
         arcade.draw_point(start_x, start_y, arcade.color.BLUE, 5)
         start_x = 50
         start_y = 400
-        arcade.render_text(self.t2, start_x, start_y)
+        arcade.draw_text("Text anchored 'top' and 'left'.",
+                         start_x, start_y, arcade.color.BLACK, 12, anchor_x="left", anchor_y="top")
 
         start_y = 350
         arcade.draw_point(start_x, start_y, arcade.color.BLUE, 5)
-        arcade.render_text(self.t3, start_x, start_y)
+        arcade.draw_text("14 point multi\nline\ntext",
+                         start_x, start_y, arcade.color.BLACK, 14, anchor_y="top")
 
         start_y = 450
         start_x = 300
         arcade.draw_point(start_x, start_y, arcade.color.BLUE, 5)
-        arcade.render_text(self.t4, start_x, start_y)
-
+        arcade.draw_text("Set of text\nthat\nis centered.",
+                         start_x, start_y, arcade.color.BLACK, 14, width=200, align="center", anchor_y="top")
 
         start_y = 250
         start_x = 300
         arcade.draw_point(start_x, start_y, arcade.color.BLUE, 5)
-        arcade.render_text(self.t5, start_x, start_y)
+        arcade.draw_text("Text centered on\na point",
+                         start_x, start_y, arcade.color.BLACK, 14, width=200, align="center",
+                         anchor_x="center", anchor_y="center")
 
         start_y = 150
         start_x = 300
         arcade.draw_point(start_x, start_y, arcade.color.BLUE, 5)
-        arcade.render_text(self.t6, start_x, start_y, rotation=self.text_angle)
+        arcade.draw_text("Text rotated on\na point", start_x, start_y,
+                         arcade.color.BLACK, 14, width=200, align="center", anchor_x="center",
+                         anchor_y="center", rotation=self.text_angle)
 
         start_y = 150
         start_x = 20
         arcade.draw_point(start_x, start_y, arcade.color.BLUE, 5)
-        arcade.render_text(self.t7, start_x, start_y, rotation=90.0)
+        arcade.draw_text("Sideways text", start_x, start_y,
+                         arcade.color.BLACK, 14, width=200, align="center",
+                         anchor_x="center", anchor_y="center", rotation=90.0)
 
         start_y = 20
         start_x = 50
         arcade.draw_point(start_x, start_y, arcade.color.BLUE, 5)
-        text = "Time elapsed: {:5.1f}".format(self.time_elapsed)
-        if text != self.t8.text:
-            self.t8 = arcade.create_text(text, arcade.color.BLACK, 14)
-        arcade.render_text(self.t8, start_x, start_y)
+        arcade.draw_text(f"Time elapsed: {self.time_elapsed:7.1f}",
+                         start_x, start_y, arcade.color.BLACK, 14)
 
 
-window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
+def main():
+    MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
 
-arcade.run()
+    arcade.run()
+
+
+main()
