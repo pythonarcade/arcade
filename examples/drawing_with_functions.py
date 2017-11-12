@@ -84,5 +84,6 @@ def main():
     # Keep the window up until someone closes it.
     arcade.run()
 
+
 if __name__ == "__main__":
     main()

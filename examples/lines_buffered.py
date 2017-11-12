@@ -61,8 +61,13 @@ class MyApplication(arcade.Window):
         self.shape_list.angle += 1
         self.shape_list.center_x += 1
         self.shape_list.center_y += 1
-        #print(self.shape_list.angle)
+        # print(self.shape_list.angle)
 
-window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
 
-arcade.run()
+def main():
+    MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
+    arcade.run()
+
+
+if __name__ == "__main__":
+    main()

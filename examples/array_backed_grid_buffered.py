@@ -73,8 +73,7 @@ class MyApplication(arcade.Window):
         column = x // (WIDTH + MARGIN)
         row = y // (HEIGHT + MARGIN)
 
-        print("Click coordinates: ({}, {}). Grid coordinates: ({}, {})"
-              .format(x, y, row, column))
+        print(f"Click coordinates: ({x}, {y}). Grid coordinates: ({row}, {column})")
 
         # Make sure we are on-grid. It is possible to click in the upper right
         # corner in the margin and go to a grid location that doesn't exist
@@ -87,6 +86,11 @@ class MyApplication(arcade.Window):
                 self.grid[row][column] = 0
 
 
-window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
+def main():
 
-arcade.run()
+    MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
+    arcade.run()
+
+
+if __name__ == "__main__":
+    main()

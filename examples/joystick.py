@@ -139,4 +139,6 @@ class Rectangle:
         if self.y > SCREEN_HEIGHT - (RECT_HEIGHT // 2):
             self.y = SCREEN_HEIGHT - (RECT_HEIGHT // 2)
 
-main()
+
+if __name__ == "__main__":
+    main()

@@ -5,7 +5,7 @@ Simple program to show basic sprite usage.
 
 Artwork from http://kenney.nl
 """
-import random
+
 import arcade
 
 SPRITE_SCALING = 0.5
@@ -13,7 +13,7 @@ SPRITE_SCALING = 0.5
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
-MOVEMENT_MULTIPLIER = 5
+MOVEMENT_SPEED = 5
 DEAD_ZONE = 0.05
 
 
@@ -32,12 +32,12 @@ class Player(arcade.Sprite):
 
     def update(self):
         if self.joystick:
-            self.change_x = self.joystick.x * MOVEMENT_MULTIPLIER
+            self.change_x = self.joystick.x * MOVEMENT_SPEED
             # Set a "dead zone" to prevent drive from a centered joystick
             if abs(self.change_x) < DEAD_ZONE:
                 self.change_x = 0
 
-            self.change_y = -self.joystick.y * MOVEMENT_MULTIPLIER
+            self.change_y = -self.joystick.y * MOVEMENT_SPEED
             # Set a "dead zone" to prevent drive from a centered joystick
             if abs(self.change_y) < DEAD_ZONE:
                 self.change_y = 0
@@ -54,6 +54,7 @@ class Player(arcade.Sprite):
             self.bottom = 0
         elif self.top > SCREEN_HEIGHT - 1:
             self.top = SCREEN_HEIGHT - 1
+
 
 class MyApplication(arcade.Window):
     """
@@ -78,7 +79,6 @@ class MyApplication(arcade.Window):
         # Set the background color
         arcade.set_background_color(arcade.color.AMAZON)
 
-
     def setup(self):
         """ Set up the game and initialize the variables. """
 
@@ -91,7 +91,6 @@ class MyApplication(arcade.Window):
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 50
         self.all_sprites_list.append(self.player_sprite)
-
 
     def on_draw(self):
         """
@@ -137,6 +136,7 @@ def main():
     window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
     window.setup()
     arcade.run()
+
 
 if __name__ == "__main__":
     main()

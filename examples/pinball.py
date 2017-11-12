@@ -243,6 +243,12 @@ class MyApplication(arcade.Window):
         elif symbol == arcade.key.F:
             self.right_flipper.body.apply_impulse_at_local_point((0, 100), (40, 0))
 
-window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
 
-arcade.run()
+def main():
+    window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
+    arcade.run()
+
+
+if __name__ == "__main__":
+    main()
+

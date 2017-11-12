@@ -187,6 +187,10 @@ class MyAppWindow(arcade.Window):
                 self.set_mouse_visible(True)
 
 
-window = MyAppWindow(SCREEN_WIDTH, SCREEN_HEIGHT)
+def main():
+    MyAppWindow(SCREEN_WIDTH, SCREEN_HEIGHT)
+    arcade.run()
 
-arcade.run()
+
+if __name__ == "__main__":
+    main()

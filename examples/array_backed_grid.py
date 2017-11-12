@@ -7,8 +7,8 @@ grid on-screen.
 import arcade
 
 # Set how many rows and columns we will have
-ROW_COUNT = 10
-COLUMN_COUNT = 10
+ROW_COUNT = 15
+COLUMN_COUNT = 15
 
 # This sets the WIDTH and HEIGHT of each grid location
 WIDTH = 30
@@ -18,7 +18,7 @@ HEIGHT = 30
 # and on the edges of the screen.
 MARGIN = 5
 
-# Do the math to figure out our screen dimensions
+# Do the math to figure out oiur screen dimensions
 SCREEN_WIDTH = (WIDTH + MARGIN) * COLUMN_COUNT + MARGIN
 SCREEN_HEIGHT = (HEIGHT + MARGIN) * ROW_COUNT + MARGIN
 
@@ -32,7 +32,9 @@ class MyApplication(arcade.Window):
         """
         Set up the application.
         """
+
         super().__init__(width, height)
+
         # Create a 2 dimensional array. A two dimensional
         # array is simply a list of lists.
         self.grid = []
@@ -78,8 +80,7 @@ class MyApplication(arcade.Window):
         column = x // (WIDTH + MARGIN)
         row = y // (HEIGHT + MARGIN)
 
-        print("Click coordinates: ({}, {}). Grid coordinates: ({}, {})"
-              .format(x, y, row, column))
+        print(f"Click coordinates: ({x}, {y}). Grid coordinates: ({row}, {column})")
 
         # Make sure we are on-grid. It is possible to click in the upper right
         # corner in the margin and go to a grid location that doesn't exist
@@ -92,6 +93,11 @@ class MyApplication(arcade.Window):
                 self.grid[row][column] = 0
 
 
-window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
+def main():
 
-arcade.run()
+    MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
+    arcade.run()
+
+
+if __name__ == "__main__":
+    main()

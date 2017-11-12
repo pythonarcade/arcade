@@ -59,4 +59,6 @@ def main():
     MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
     arcade.run()
 
-main()
+
+if __name__ == "__main__":
+    main()
