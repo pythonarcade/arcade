@@ -1,3 +1,11 @@
+"""
+Drawing commands that use the VBOs.
+
+This module contains commands for basic graphics drawing commands,
+but uses Vertex Buffer Objects. This keeps the vertices loaded on
+the graphics card for much faster render times.
+"""
+
 import math
 import ctypes
 import pyglet.gl as gl
@@ -13,8 +21,8 @@ from arcade.arcade_types import PointList
 
 class VertexBuffer:
     """
-    This class represents a
-    `vertex buffer object`_.
+    This class represents a `vertex buffer object`_ for internal library use. Clients
+    of the library probably don't need to use this.
 
     Attributes:
         :vbo_id: ID of the vertex buffer as assigned by OpenGL
@@ -39,7 +47,21 @@ class VertexBuffer:
 
 def create_line(start_x: float, start_y: float, end_x: float, end_y: float,
                 color: Color, border_width: float=1):
+    """
+    Create a line to be rendered later. This works faster than draw_line because
+    the vertexes are only loaded to the graphics card once, rather than each frame.
 
+    :Example:
+
+    >>> import arcade
+    >>> arcade.open_window(800,600,"Drawing Example")
+    >>> arcade.start_render()
+    >>> line1 = arcade.create_line(0, 0, 100, 100, (255, 0, 0), 2)
+    >>> arcade.render(line1)
+    >>> arcade.finish_render()
+    >>> arcade.quick_run(0.25)
+
+    """
     data = [start_x, start_y,
             end_x, end_y]
 
@@ -70,6 +92,10 @@ def create_line(start_x: float, start_y: float, end_x: float, end_y: float,
 def create_line_generic(draw_type: int,
                         point_list: PointList,
                         color: Color, border_width: float=1):
+    """
+    This function is used by ``create_line_strip`` and ``create_line_loop``,
+    just changing the OpenGL type for the line drawing.
+    """
     data = []
     for point in point_list:
         data.append(point[0])
@@ -99,11 +125,42 @@ def create_line_generic(draw_type: int,
 
 def create_line_strip(point_list: PointList,
                       color: Color, border_width: float=1):
+    """
+    Create a multi-point line to be rendered later. This works faster than draw_line because
+    the vertexes are only loaded to the graphics card once, rather than each frame.
+
+    :Example:
+
+    >>> import arcade
+    >>> arcade.open_window(800,600,"Drawing Example")
+    >>> arcade.start_render()
+    >>> point_list = [[0, 0], [100, 100], [50, 0]]
+    >>> line1 = arcade.create_line_strip(point_list, (255, 0, 0), 2)
+    >>> arcade.render(line1)
+    >>> arcade.finish_render()
+    >>> arcade.quick_run(0.25)
+
+    """
     return create_line_generic(gl.GL_LINE_STRIP, point_list, color, border_width)
 
 
 def create_line_loop(point_list: PointList,
                      color: Color, border_width: float=1):
+    """
+    Create a multi-point line loop to be rendered later. This works faster than draw_line because
+    the vertexes are only loaded to the graphics card once, rather than each frame.
+
+    :Example:
+
+    >>> import arcade
+    >>> arcade.open_window(800,600,"Drawing Example")
+    >>> arcade.start_render()
+    >>> point_list = [[0, 0], [100, 100], [50, 0]]
+    >>> line1 = arcade.create_line_loop(point_list, (255, 0, 0), 2)
+    >>> arcade.render(line1)
+    >>> arcade.finish_render()
+    >>> arcade.quick_run(0.25)
+    """
     return create_line_generic(gl.GL_LINE_LOOP, point_list, color, border_width)
 
 
@@ -111,7 +168,17 @@ def create_polygon(point_list: PointList,
                    color: Color, border_width: float=1):
     """
     Draw a convex polygon. This will NOT draw a concave polygon.
-    Because of this, you might not want to user this function.
+    Because of this, you might not want to use this function.
+
+
+    >>> import arcade
+    >>> arcade.open_window(800,600,"Drawing Example")
+    >>> arcade.start_render()
+    >>> point_list = [[0, 0], [100, 100], [50, 0]]
+    >>> line1 = arcade.create_polygon(point_list, (255, 0, 0), 2)
+    >>> arcade.render(line1)
+    >>> arcade.finish_render()
+    >>> arcade.quick_run(0.25)
     """
     return create_line_generic(gl.GL_POLYGON, point_list, color, border_width)
 
@@ -119,6 +186,9 @@ def create_polygon(point_list: PointList,
 def create_rectangle_filled(center_x: float, center_y: float, width: float,
                             height: float, color: Color,
                             tilt_angle: float=0) -> VertexBuffer:
+    """
+    Create a filled rectangle.
+    """
 
     border_width = 0
     return create_rectangle(center_x, center_y, width, height, color, border_width, tilt_angle)
@@ -127,13 +197,18 @@ def create_rectangle_filled(center_x: float, center_y: float, width: float,
 def create_rectangle_outline(center_x: float, center_y: float, width: float,
                              height: float, color: Color,
                              border_width: float=1, tilt_angle: float=0) -> VertexBuffer:
-
+    """
+    Create a rectangle outline.
+    """
     return create_rectangle(center_x, center_y, width, height, color, border_width, tilt_angle, filled=False)
 
 
 def get_rectangle_points(center_x: float, center_y: float, width: float,
                          height: float, tilt_angle: float=0):
-
+    """
+    Utility function that will return all four coordinate points of a
+    rectangle given the x, y center, width, height, and rotation.
+    """
     x1 = -width / 2 + center_x
     y1 = -height / 2 + center_y
 
@@ -168,6 +243,13 @@ def create_rectangle(center_x: float, center_y: float, width: float,
     This function creates a rectangle using a vertex buffer object.
     Creating the rectangle, and then later drawing it with ``render_rectangle``
     is faster than calling ``draw_rectangle``.
+
+    >>> import arcade
+    >>> arcade.open_window(800,600,"Drawing Example")
+    >>> my_rect = arcade.create_rectangle(200, 200, 50, 50, (0, 255, 0), 3, 45)
+    >>> arcade.render(my_rect)
+    >>> arcade.finish_render()
+    >>> arcade.quick_run(0.25)
     """
 
     data = get_rectangle_points(center_x, center_y, width, height, tilt_angle)
@@ -204,6 +286,14 @@ def create_filled_rectangles(point_list, color: Color) -> VertexBuffer:
     This function creates multiple rectangle/quads using a vertex buffer object.
     Creating the rectangles, and then later drawing it with ``render``
     is faster than calling ``draw_rectangle``.
+
+    >>> import arcade
+    >>> arcade.open_window(800,600,"Drawing Example")
+    >>> point_list = [0, 0, 100, 0, 100, 100, 0, 100]
+    >>> my_rect = arcade.create_filled_rectangles(point_list, (0, 255, 0))
+    >>> arcade.render(my_rect)
+    >>> arcade.finish_render()
+    >>> arcade.quick_run(0.25)
     """
 
     data = point_list
@@ -236,10 +326,20 @@ def create_filled_rectangles_with_colors(point_list, color_list) -> VertexBuffer
     This function creates multiple rectangle/quads using a vertex buffer object.
     Creating the rectangles, and then later drawing it with ``render``
     is faster than calling ``draw_rectangle``.
+
+    >>> import arcade
+    >>> arcade.open_window(800,600,"Drawing Example")
+    >>> point_list = [0, 0, 100, 0, 100, 100, 0, 100]
+    >>> color_list = [0, 255, 0]
+    >>> my_shape = arcade.create_filled_rectangles_with_colors(point_list, color_list)
+    >>> my_shape_list = ShapeElementList()
+    >>> my_shape_list.append(my_shape)
+    >>> my_shape_list.draw()
+    >>> arcade.finish_render()
+    >>> arcade.quick_run(0.25)
+
     """
 
-    print(point_list)
-    print(color_list)
     vbo_vertex_id = gl.GLuint()
 
     gl.glGenBuffers(1, ctypes.pointer(vbo_vertex_id))
@@ -267,9 +367,20 @@ def create_filled_rectangles_with_colors(point_list, color_list) -> VertexBuffer
 
     return shape
 
+
 def create_ellipse_filled(center_x: float, center_y: float,
                           width: float, height: float, color: Color,
                           tilt_angle: float=0, num_segments=128) -> VertexBuffer:
+    """
+    Create a filled ellipse. Or circle if you use the same width and height.
+
+    >>> import arcade
+    >>> arcade.open_window(800,600,"Drawing Example")
+    >>> my_shape = arcade.create_ellipse_filled(300, 300, 50, 100, (0, 255, 255, 64), 45, 64)
+    >>> arcade.render(my_shape)
+    >>> arcade.finish_render()
+    >>> arcade.quick_run(0.25)
+    """
 
     border_width = 0
     return create_ellipse(center_x, center_y, width, height, color, border_width, tilt_angle, num_segments, True)
@@ -279,6 +390,16 @@ def create_ellipse_outline(center_x: float, center_y: float,
                            width: float, height: float, color: Color,
                            border_width: float=1,
                            tilt_angle: float=0, num_segments=128) -> VertexBuffer:
+    """
+    Create an outline of an ellipse.
+
+    >>> import arcade
+    >>> arcade.open_window(800,600,"Drawing Example")
+    >>> my_shape = arcade.create_ellipse_outline(300, 300, 50, 100, (0, 255, 255), 45, 64)
+    >>> arcade.render(my_shape)
+    >>> arcade.finish_render()
+    >>> arcade.quick_run(0.25)
+    """
 
     return create_ellipse(center_x, center_y, width, height, color, border_width, tilt_angle, num_segments, False)
 
@@ -294,7 +415,7 @@ def create_ellipse(center_x: float, center_y: float,
     drawn with ``render_ellipse_filled``. This method of drawing an ellipse
     is much faster than calling ``draw_ellipse_filled`` each frame.
 
-    Note: THis can't be unit tested on Appveyor because its support for OpenGL is
+    Note: This can't be unit tested on Appveyor because its support for OpenGL is
     poor.
 
     >>> import arcade
@@ -377,6 +498,7 @@ def render(shape: VertexBuffer):
 def stripped_render(shape: VertexBuffer):
     """
     Render an shape previously created with a ``create`` function.
+    Used by ``ShapeElementList.draw()`` for drawing several shapes in a batch.
     """
 
     gl.glBindBuffer(gl.GL_ARRAY_BUFFER, shape.vbo_vertex_id)
@@ -387,6 +509,8 @@ def stripped_render(shape: VertexBuffer):
 def stripped_render_with_colors(shape: VertexBuffer):
     """
     Render an shape previously created with a ``create`` function.
+    Used by ``ShapeElementList.draw()`` for drawing several shapes in a batch.
+    This version also assumes there is a color list as part of the VBO.
     """
 
     gl.glBindBuffer(gl.GL_ARRAY_BUFFER, shape.vbo_vertex_id)
@@ -395,11 +519,16 @@ def stripped_render_with_colors(shape: VertexBuffer):
     gl.glColorPointer(4, gl.GL_FLOAT, 0, None)
     gl.glDrawArrays(shape.draw_mode, 0, shape.size)
 
+
 T = TypeVar('T', bound=VertexBuffer)
 
 
 class ShapeElementList(Generic[T]):
     """
+    A program can put multiple drawimg primitives in a ShapeElementList, and then
+    move and draw them as one. Do this when you want to create a more complex object
+    out of simpler primitives. This also speeds rendering as all objects are drawn
+    in one operation.
 
     >>> import arcade
     >>> arcade.open_window(800,600,"Drawing Example")
@@ -410,8 +539,9 @@ class ShapeElementList(Generic[T]):
     >>> my_list.append(my_shape)
     >>> my_shape = arcade.create_rectangle_filled(250, 50, 20, 20, arcade.color.RED, 45)
     >>> my_list.append(my_shape)
-    >>> my_shape = arcade.create_rectangle_outline(450, 50, 20, 20, arcade.color.RED, 2, 45)
+    >>> my_shape = arcade.create_rectangle_outline(450, 50, 20, 20, (127, 0, 27, 127), 2, 45)
     >>> my_list.append(my_shape)
+    >>> my_list.move(5, 5)
     >>> arcade.start_render()
     >>> my_list.draw()
     >>> arcade.finish_render()
@@ -443,6 +573,11 @@ class ShapeElementList(Generic[T]):
         self.shape_list.remove(item)
 
     def move(self, change_x: float, change_y: float):
+        """
+        Move all the shapes ion the list
+        :param change_x: Amount to move on the x axis
+        :param change_y: Amount to move on the y axis
+        """
         self.center_x += change_x
         self.center_y += change_y
 
@@ -458,7 +593,9 @@ class ShapeElementList(Generic[T]):
         return self.shape_list[i]
 
     def draw(self):
-
+        """
+        Draw everything in the list.
+        """
         # gl.glClear(gl.GL_COLOR_BUFFER_BIT)
         gl.glEnableClientState(gl.GL_VERTEX_ARRAY)
         gl.glLoadIdentity()
@@ -495,4 +632,3 @@ class ShapeElementList(Generic[T]):
                 stripped_render(shape)
             else:
                 stripped_render_with_colors(shape)
-

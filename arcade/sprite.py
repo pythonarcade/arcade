@@ -183,6 +183,7 @@ upside-down.
         Assuming 'texture' is a list of textures, this sets
         which texture index should be displayed. It also resets
         the width and height based on the scale of the texture.
+
         >>> import arcade
         >>> empty_sprite = arcade.Sprite()
         >>> my_texture = Texture(1, 10, 10)
@@ -198,6 +199,7 @@ upside-down.
         """
         This returns the index of which texture is being
         displayed.
+
         >>> import arcade
         >>> empty_sprite = arcade.Sprite()
         >>> my_texture = Texture(1, 10, 10)
@@ -210,6 +212,7 @@ upside-down.
     def set_position(self, center_x: float, center_y: float):
         """
         Set a sprite's position
+
         >>> import arcade
         >>> empty_sprite = arcade.Sprite()
         >>> empty_sprite.set_position(10, 10)
@@ -220,6 +223,7 @@ upside-down.
     def set_points(self, points: Sequence[Sequence[float]]):
         """
         Set a sprite's position
+
         >>> import arcade
         >>> empty_sprite = arcade.Sprite()
         >>> my_points = (0,0),(1,1),(0,1),(1,0)
@@ -230,6 +234,7 @@ upside-down.
     def get_points(self) -> Tuple[Tuple[float, float]]:
         """
         Get the corner points for the rect that makes up the sprite.
+
         >>> import arcade
         >>> empty_sprite = arcade.Sprite()
         >>> my_points = (0,0),(1,1),(0,1),(1,0)
@@ -754,6 +759,7 @@ class AnimatedTimeSprite(Sprite):
 class AnimatedWalkingSprite(Sprite):
     """
     Sprite for platformer games that supports animations.
+
     >>> my_sprite = AnimatedWalkingSprite()
     >>> my_texture1 = Texture(1, 10, 10)
     >>> my_texture2 = Texture(1, 10, 10)

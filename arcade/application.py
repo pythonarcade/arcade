@@ -18,6 +18,20 @@ class Window(pyglet.window.Window):
     """
     Window class
 
+    >>> import arcade
+    >>> window = arcade.Window(200, 100, resizable=True)
+    >>> window.set_update_rate(1/20)
+    >>> window.set_mouse_visible(True)
+    >>> window.on_mouse_motion(0, 0, 0, 0)
+    >>> window.on_mouse_press(0, 0, 0, 0)
+    >>> window.on_mouse_release(0, 0, 0, 0)
+    >>> window.on_key_press(0, 0)
+    >>> window.on_key_repress(0, 0)
+    >>> window.on_mouse_drag(0, 0, 1, 1, 1, 0)
+    >>> window.on_mouse_scroll(1, 1)
+    >>> window.update(1/20)
+    >>> window.close()
+
     """
 
     def __init__(self, width: float = 800, height: float = 600,
@@ -75,15 +89,20 @@ class Window(pyglet.window.Window):
         super().set_mouse_visible(visible)
 
     def on_key_press(self, symbol: int, modifiers: int):
+        """ Override this function to add key press functionality. """
         pass
 
     def on_key_release(self, symbol: int, modifiers: int):
+        """ Override this function to add key release functionality. """
         pass
 
     def on_draw(self):
+        """ Override this function to add your custom drawing code. """
         pass
 
     def on_resize(self, width, height):
+        """ Override this function to add custom code to be called any time the window
+        is resized. """
         super().on_resize(width, height)
 
     def set_min_size(self, width: float, height: float):
@@ -92,10 +111,6 @@ class Window(pyglet.window.Window):
         Args:
             :width: width in pixels.
             :height: height in pixels.
-        Returns:
-            None
-        Raises:
-            ValueError
 
         Example:
 
@@ -150,4 +165,6 @@ class Window(pyglet.window.Window):
         super().set_visible(visible)
 
     def set_viewport(self, left: Number, right: Number, bottom: Number, top: Number):
+        """ Set the viewport. (What coordinates we can see.
+        Used to scale and/or scroll the screen.) """
         set_viewport(left, right, bottom, top)

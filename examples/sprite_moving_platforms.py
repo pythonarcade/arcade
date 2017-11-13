@@ -7,18 +7,20 @@ import arcade
 
 SPRITE_SCALING = 0.5
 
-SCREEN_WIDTH = 800
+SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 600
+SPRITE_PIXEL_SIZE = 128
+GRID_PIXEL_SIZE = (SPRITE_PIXEL_SIZE * SPRITE_SCALING)
 
 # How many pixels to keep as a minimum margin between the character
 # and the edge of the screen.
-VIEWPORT_MARGIN = 40
-RIGHT_MARGIN = 150
+VIEWPORT_MARGIN = SPRITE_PIXEL_SIZE * SPRITE_SCALING
+RIGHT_MARGIN = 4 * SPRITE_PIXEL_SIZE * SPRITE_SCALING
 
 # Physics
-MOVEMENT_SPEED = 5
-JUMP_SPEED = 14
-GRAVITY = 0.5
+MOVEMENT_SPEED = 10 * SPRITE_SCALING
+JUMP_SPEED = 28 * SPRITE_SCALING
+GRAVITY = .9 * SPRITE_SCALING
 
 
 def get_map():
@@ -50,7 +52,9 @@ class MyApplication(arcade.Window):
         # Set up the player
         self.score = 0
         self.player_sprite = None
-        self.wall_list = None
+        self.all_wall_list = None
+        self.static_wall_list = None
+        self.moving_wall_list = None
         self.physics_engine = None
         self.view_left = 0
         self.view_bottom = 0
@@ -61,14 +65,15 @@ class MyApplication(arcade.Window):
 
         # Sprite lists
         self.all_sprites_list = arcade.SpriteList()
-        self.wall_list = arcade.SpriteList()
+        self.all_wall_list = arcade.SpriteList()
+        self.static_wall_list = arcade.SpriteList()
+        self.moving_wall_list = arcade.SpriteList()
 
         # Set up the player
         self.score = 0
-        self.player_sprite = arcade.Sprite("images/character.png",
-                                           SPRITE_SCALING)
-        self.player_sprite.center_x = 64
-        self.player_sprite.center_y = 270
+        self.player_sprite = arcade.Sprite("images/character.png", SPRITE_SCALING)
+        self.player_sprite.center_x = 2 * GRID_PIXEL_SIZE
+        self.player_sprite.center_y = 3 * GRID_PIXEL_SIZE
         self.all_sprites_list.append(self.player_sprite)
 
         map_array = get_map()
@@ -79,74 +84,75 @@ class MyApplication(arcade.Window):
                 if item == -1:
                     continue
                 elif item == 0:
-                    wall = arcade.Sprite("images/boxCrate_double.png",
-                                         SPRITE_SCALING)
+                    wall = arcade.Sprite("images/boxCrate_double.png", SPRITE_SCALING)
                 elif item == 1:
-                    wall = arcade.Sprite("images/grassLeft.png",
-                                         SPRITE_SCALING)
+                    wall = arcade.Sprite("images/grassLeft.png", SPRITE_SCALING)
                 elif item == 2:
-                    wall = arcade.Sprite("images/grassMid.png",
-                                         SPRITE_SCALING)
+                    wall = arcade.Sprite("images/grassMid.png", SPRITE_SCALING)
                 elif item == 3:
-                    wall = arcade.Sprite("images/grassRight.png",
-                                         SPRITE_SCALING)
+                    wall = arcade.Sprite("images/grassRight.png", SPRITE_SCALING)
 
-                wall.right = column_index * 64
-                wall.top = (7 - row_index) * 64
+                wall.left = column_index * GRID_PIXEL_SIZE
+                wall.top = (7 - row_index) * GRID_PIXEL_SIZE
                 self.all_sprites_list.append(wall)
-                self.wall_list.append(wall)
+                self.all_wall_list.append(wall)
+                self.static_wall_list.append(wall)
 
         # Create platform side to side
         wall = arcade.Sprite("images/grassMid.png", SPRITE_SCALING)
-        wall.center_y = 200
-        wall.center_x = 200
-        wall.boundary_left = 100
-        wall.boundary_right = 300
-        wall.change_x = 1
+        wall.center_y = 3 * GRID_PIXEL_SIZE
+        wall.center_x = 3 * GRID_PIXEL_SIZE
+        wall.boundary_left = 2 * GRID_PIXEL_SIZE
+        wall.boundary_right = 5 * GRID_PIXEL_SIZE
+        wall.change_x = 2 * SPRITE_SCALING
 
         self.all_sprites_list.append(wall)
-        self.wall_list.append(wall)
+        self.all_wall_list.append(wall)
+        self.moving_wall_list.append(wall)
 
         # Create platform side to side
         wall = arcade.Sprite("images/grassMid.png", SPRITE_SCALING)
-        wall.center_y = 200
-        wall.center_x = 400
-        wall.boundary_left = 300
-        wall.boundary_right = 500
-        wall.change_x = -1
+        wall.center_y = 3 * GRID_PIXEL_SIZE
+        wall.center_x = 7 * GRID_PIXEL_SIZE
+        wall.boundary_left = 5 * GRID_PIXEL_SIZE
+        wall.boundary_right = 9 * GRID_PIXEL_SIZE
+        wall.change_x = -2 * SPRITE_SCALING
 
         self.all_sprites_list.append(wall)
-        self.wall_list.append(wall)
+        self.all_wall_list.append(wall)
+        self.moving_wall_list.append(wall)
 
         # Create platform moving up and down
         wall = arcade.Sprite("images/grassMid.png", SPRITE_SCALING)
-        wall.center_y = 300
-        wall.center_x = 400
-        wall.boundary_top = 500
-        wall.boundary_bottom = 300
-        wall.change_y = 1
+        wall.center_y = 5 * GRID_PIXEL_SIZE
+        wall.center_x = 5 * GRID_PIXEL_SIZE
+        wall.boundary_top = 8 * GRID_PIXEL_SIZE
+        wall.boundary_bottom = 4 * GRID_PIXEL_SIZE
+        wall.change_y = 2 * SPRITE_SCALING
 
         self.all_sprites_list.append(wall)
-        self.wall_list.append(wall)
+        self.all_wall_list.append(wall)
+        self.moving_wall_list.append(wall)
 
         # Create platform moving diagonally
         wall = arcade.Sprite("images/grassMid.png", SPRITE_SCALING)
-        wall.center_y = 500
-        wall.center_x = 600
-        wall.boundary_left = 500
-        wall.boundary_right = 700
+        wall.center_y = 5 * GRID_PIXEL_SIZE
+        wall.center_x = 8 * GRID_PIXEL_SIZE
+        wall.boundary_left = 7 * GRID_PIXEL_SIZE
+        wall.boundary_right = 9 * GRID_PIXEL_SIZE
 
-        wall.boundary_top = 600
-        wall.boundary_bottom = 400
-        wall.change_x = 1
-        wall.change_y = 1
+        wall.boundary_top = 8 * GRID_PIXEL_SIZE
+        wall.boundary_bottom = 4 * GRID_PIXEL_SIZE
+        wall.change_x = 2 * SPRITE_SCALING
+        wall.change_y = 2 * SPRITE_SCALING
 
         self.all_sprites_list.append(wall)
-        self.wall_list.append(wall)
+        self.all_wall_list.append(wall)
+        self.moving_wall_list.append(wall)
 
         self.physics_engine = \
             arcade.PhysicsEnginePlatformer(self.player_sprite,
-                                           self.wall_list,
+                                           self.all_wall_list,
                                            gravity_constant=GRAVITY)
 
         # Set the background color
@@ -167,8 +173,10 @@ class MyApplication(arcade.Window):
         # This command has to happen before we start drawing
         arcade.start_render()
 
-        # Draw all the sprites.
-        self.all_sprites_list.draw()
+        # Draw the sprites.
+        self.static_wall_list.draw()
+        self.moving_wall_list.draw()
+        self.player_sprite.draw()
 
         # Put the text on the screen.
         # Adjust the text position based on the viewport so that we don't
@@ -209,8 +217,7 @@ class MyApplication(arcade.Window):
         if self.view_left + self.player_sprite.right >= 5630:
             self.game_over = True
 
-        # Call update on all sprites (The sprites don't do much in this
-        # example though.)
+        # Call update on all sprites
         if not self.game_over:
             self.physics_engine.update()
 
@@ -221,27 +228,27 @@ class MyApplication(arcade.Window):
         changed = False
 
         # Scroll left
-        left_bndry = self.view_left + VIEWPORT_MARGIN
-        if self.player_sprite.left < left_bndry:
-            self.view_left -= left_bndry - self.player_sprite.left
+        left_boundary = self.view_left + VIEWPORT_MARGIN
+        if self.player_sprite.left < left_boundary:
+            self.view_left -= left_boundary - self.player_sprite.left
             changed = True
 
         # Scroll right
-        right_bndry = self.view_left + SCREEN_WIDTH - RIGHT_MARGIN
-        if self.player_sprite.right > right_bndry:
-            self.view_left += self.player_sprite.right - right_bndry
+        right_boundary = self.view_left + SCREEN_WIDTH - RIGHT_MARGIN
+        if self.player_sprite.right > right_boundary:
+            self.view_left += self.player_sprite.right - right_boundary
             changed = True
 
         # Scroll up
-        top_bndry = self.view_bottom + SCREEN_HEIGHT - VIEWPORT_MARGIN
-        if self.player_sprite.top > top_bndry:
-            self.view_bottom += self.player_sprite.top - top_bndry
+        top_boundary = self.view_bottom + SCREEN_HEIGHT - VIEWPORT_MARGIN
+        if self.player_sprite.top > top_boundary:
+            self.view_bottom += self.player_sprite.top - top_boundary
             changed = True
 
         # Scroll down
-        bottom_bndry = self.view_bottom + VIEWPORT_MARGIN
-        if self.player_sprite.bottom < bottom_bndry:
-            self.view_bottom -= bottom_bndry - self.player_sprite.bottom
+        bottom_boundary = self.view_bottom + VIEWPORT_MARGIN
+        if self.player_sprite.bottom < bottom_boundary:
+            self.view_bottom -= bottom_boundary - self.player_sprite.bottom
             changed = True
 
         # If we need to scroll, go ahead and do it.

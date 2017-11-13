@@ -58,9 +58,6 @@ class MyApplication(arcade.Window):
         self.view_bottom = 0
         self.game_over = False
 
-        self.game_over_text = None
-        self.distance_text = None
-
     def setup(self):
         """ Set up the game and initialize the variables. """
 
@@ -119,8 +116,6 @@ class MyApplication(arcade.Window):
         self.view_bottom = 0
 
         self.game_over = False
-        self.game_over_text = arcade.create_text("Game Over", arcade.color.WHITE, 30)
-        self.distance_text = None
 
     def on_draw(self):
         """
@@ -139,13 +134,10 @@ class MyApplication(arcade.Window):
         # scroll the text too.
         distance = self.view_left + self.player_sprite.right
         output = f"Distance: {distance}"
-        if not self.distance_text or output != self.distance_text.text:
-            self.distance_text = arcade.create_text(output, arcade.color.WHITE, 14)
-
-        arcade.render_text(self.distance_text, self.view_left + 10, self.view_bottom + 20,)
+        arcade.draw_text(output, self.view_left + 10, self.view_bottom + 20, arcade.color.WHITE, 14)
 
         if self.game_over:
-            arcade.render_text(self.game_over_text, self.view_left + 200, self.view_bottom + 200)
+            arcade.draw_text("Game Over", self.view_left + 200, self.view_bottom + 200, arcade.color.WHITE, 30)
 
     def on_key_press(self, key, modifiers):
         """
