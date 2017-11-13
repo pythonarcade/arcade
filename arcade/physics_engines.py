@@ -138,9 +138,7 @@ class PhysicsEnginePlatformer:
         self.player_sprite.center_y += self.player_sprite.change_y
 
         # Check for wall hit
-        hit_list = \
-            check_for_collision_with_list(self.player_sprite,
-                                          self.platforms)
+        hit_list = check_for_collision_with_list(self.player_sprite, self.platforms)
 
         # If we hit a wall, move so the edges are at the same point
         if len(hit_list) > 0:
@@ -153,7 +151,7 @@ class PhysicsEnginePlatformer:
                 for item in hit_list:
                     while check_for_collision(self.player_sprite, item):
                         # self.player_sprite.bottom = item.top <- Doesn't work for ramps
-                        self.player_sprite.bottom += 1
+                        self.player_sprite.bottom += 0.5
 
                     if item.change_x != 0:
                         self.player_sprite.center_x += item.change_x
@@ -168,7 +166,7 @@ class PhysicsEnginePlatformer:
                 #     self.player_sprite.bottom = item.top
                 # else:
                 #     self.player_sprite.top = item.bottom
-            self.player_sprite.change_y = min(0, hit_list[0].change_y)
+            self.player_sprite.change_y = min(0.0, hit_list[0].change_y)
 
         # print(f"Spot B ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
         self.player_sprite.center_y = round(self.player_sprite.center_y, 2)
@@ -181,9 +179,7 @@ class PhysicsEnginePlatformer:
         while check_again:
             check_again = False
             # Check for wall hit
-            hit_list = \
-                check_for_collision_with_list(self.player_sprite,
-                                              self.platforms)
+            hit_list = check_for_collision_with_list(self.player_sprite, self.platforms)
 
             # If we hit a wall, move so the edges are at the same point
             if len(hit_list) > 0:
@@ -195,8 +191,7 @@ class PhysicsEnginePlatformer:
                         self.player_sprite.center_y += change_x
                         if len(check_for_collision_with_list(self.player_sprite, self.platforms)) > 0:
                             self.player_sprite.center_y -= change_x
-                            self.player_sprite.right = \
-                                min(item.left, self.player_sprite.right)
+                            self.player_sprite.right = min(item.left, self.player_sprite.right)
                             # print(f"Spot R ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
                             check_again = True
                             break
@@ -211,8 +206,7 @@ class PhysicsEnginePlatformer:
                         if len(check_for_collision_with_list(self.player_sprite, self.platforms)) > 0:
                             # Can't run up the ramp, reverse
                             self.player_sprite.center_y += change_x
-                            self.player_sprite.left = max(item.right,
-                                                          self.player_sprite.left)
+                            self.player_sprite.left = max(item.right, self.player_sprite.left)
                             # print(f"Reverse 1 {item.right}, {self.player_sprite.left}")
                             # Ok, if we were shoved back to the right, we need to check this whole thing again.
                             check_again = True
@@ -260,6 +254,6 @@ class PhysicsEnginePlatformer:
                     if platform.change_y < 0:
                         platform.change_y *= -1
 
-        self.player_sprite.center_x = round(self.player_sprite.center_x, 2)
+        # self.player_sprite.center_x = round(self.player_sprite.center_x, 2)
         # print(f"Spot C ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
         # print()
