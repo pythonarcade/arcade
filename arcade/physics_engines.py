@@ -87,6 +87,8 @@ class PhysicsEnginePlatformer:
     >>> player.change_x = -1    
     >>> walls = SpriteList()
     >>> wall = arcade.Sprite()
+    >>> wall.change_x = 1
+    >>> wall.change_y = 1
     >>> walls.append(wall)
     >>> engine = PhysicsEnginePlatformer(player, walls)
     >>> engine.can_jump()

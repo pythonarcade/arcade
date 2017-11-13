@@ -1674,6 +1674,16 @@ def create_text(text: str,
     """
     Create text to be rendered later. This operation takes a while, so it is
     better to hold it between frames when the text does not change.
+
+    >>> import arcade
+    >>> arcade.open_window(800, 600, "Drawing Example")
+    >>> arcade.set_background_color(arcade.color.WHITE)
+    >>> arcade.start_render()
+    >>> my_text = arcade.create_text("Text Example", arcade.color.BLACK, 10)
+    >>> arcade.render_text(my_text, 250, 300, 45)
+    >>> arcade.finish_render()
+    >>> arcade.quick_run(0.25)
+
     """
     if len(color) == 3:
         color = (color[0], color[1], color[2], 255)
@@ -1695,7 +1705,10 @@ def create_text(text: str,
 
 
 def render_text(text: pyglet.text.Label, start_x: float, start_y: float, rotation=0):
-    """ Render text created by the create_text function. """
+    """
+    Render text created by the create_text function.
+
+    """
     gl.glLoadIdentity()
     gl.glTranslatef(start_x, start_y, 0)
     if rotation:
