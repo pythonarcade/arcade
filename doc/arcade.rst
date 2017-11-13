@@ -3,6 +3,11 @@
 Arcade Package API
 ==================
 
+This page documents the Application Programming Interface (API)
+for the Python Arcade library.
+
+For example code, see :ref:`example-code`.
+
 Submodules
 ----------
 
@@ -20,6 +25,14 @@ Draw Commands Module
 ^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: arcade.draw_commands
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+Buffered Draw Commands Module
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: arcade.buffered_draw_commands
     :members:
     :undoc-members:
     :show-inheritance:

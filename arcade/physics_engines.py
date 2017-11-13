@@ -81,6 +81,7 @@ class PhysicsEngineSimple:
 class PhysicsEnginePlatformer:
     """
     This class will move everything, and take care of collisions.
+
     >>> import arcade
     >>> player = arcade.Sprite()
     >>> player.change_y = -1

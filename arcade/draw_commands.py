@@ -1,6 +1,10 @@
 """
 This module contains commands for basic graphics drawing commands.
 (Drawing primitives.)
+
+Many of these commands are slow, because they load everything to the
+graphics card each time a shape is drawn. For faster drawing, see the
+Buffered Draw Commands.
 """
 # pylint: disable=too-many-arguments, too-many-locals, too-few-public-methods
 

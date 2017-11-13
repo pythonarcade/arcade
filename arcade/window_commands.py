@@ -28,8 +28,6 @@ def pause(seconds: Number):
     Pause for the specified number of seconds. This is a convenience function that just calls time.sleep()
 
     :param float seconds: Time interval to pause in seconds.
-    :return: None
-    :raises: None
 
     >>> import arcade
     >>> arcade.pause(0.25) # Pause 1/2 second
@@ -57,10 +55,6 @@ def set_window(window: pyglet.window.Window):
 
     Args:
         :window: Handle to the current window.
-    Returns:
-        None
-    Raises:
-        None
     """
     global _window
     _window = window
@@ -129,10 +123,6 @@ def open_window(width: Number, height: Number, window_title: str, resizable: boo
         :width: Width of the window.
         :height: Height of the window.
         :resizable: Whether the window can be user-resizable.
-    Returns:
-        None
-    Raises:
-        None
 
     Example:
 
@@ -156,11 +146,6 @@ def close_window():
     Closes the current window, and then runs garbage collection. The garbage collection
     is necessary to prevent crashing when opening/closing windows rapidly (usually during
     unit tests).
-
-    :param: None
-    :return: None
-    :raises: None
-
     """
     global _window
 
@@ -178,8 +163,6 @@ def finish_render():
     Swap buffers and displays what has been drawn.
     If programs use derive from the Window class, this function is
     automatically called.
-
-    Example:
 
     >>> import arcade
     >>> arcade.open_window(800,600,"Drawing Example")
@@ -212,12 +195,7 @@ def quick_run(time_to_pause: Number):
     Args:
         :time_to_pause: Number of seconds to pause before automatically
          closing.
-    Returns:
-        None
-    Raises:
-        None
 
-    Example:
     """
     pause(time_to_pause)
     close_window()
