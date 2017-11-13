@@ -20,12 +20,6 @@ class MyApplication(arcade.Window):
 
         arcade.set_background_color(arcade.color.WHITE)
 
-        # Create some text labels for our coordinates
-        self.label_list = []
-        for y in range(START, END, STEP):
-            my_text = arcade.create_text(f"{y}", arcade.color.BLACK, 12, anchor_x="left", anchor_y="bottom")
-            self.label_list.append(my_text)
-
     def on_resize(self, width, height):
         """ This method is automatically called when the window is resized. """
 
@@ -44,14 +38,14 @@ class MyApplication(arcade.Window):
         i = 0
         for y in range(START, END, STEP):
             arcade.draw_point(0, y, arcade.color.BLUE, 5)
-            arcade.render_text(self.label_list[i], 5, y)
+            arcade.draw_text(f"{y}", 5, y, arcade.color.BLACK, 12, anchor_x="left", anchor_y="bottom")
             i += 1
 
         # Draw the x labels.
         i = 1
         for x in range(START + STEP, END, STEP):
             arcade.draw_point(x, 0, arcade.color.BLUE, 5)
-            arcade.render_text(self.label_list[i], x, 5)
+            arcade.draw_text(f"{x}", x, 5, arcade.color.BLACK, 12, anchor_x="left", anchor_y="bottom")
             i += 1
 
 

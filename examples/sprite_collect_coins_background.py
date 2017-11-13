@@ -91,14 +91,8 @@ class MyApplication(arcade.Window):
         self.coin_list.draw()
         self.player_sprite.draw()
 
-        # Put the text on the screen.
-        output = f"Score: {self.score}"
-
-        # Is this the same text as last frame? If not, set up a new text object
-        if not self.score_text or output != self.score_text.text:
-            self.score_text = arcade.create_text(output, arcade.color.WHITE, 14)
         # Render the text
-        arcade.render_text(self.score_text, 10, 20)
+        arcade.draw_text(f"Score: {self.score}", 10, 20, arcade.color.WHITE, 14)
 
     def on_mouse_motion(self, x, y, dx, dy):
         """
@@ -128,6 +122,7 @@ def main():
     window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
     window.setup()
     arcade.run()
+
 
 if __name__ == "__main__":
     main()

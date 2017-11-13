@@ -8,18 +8,21 @@ SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
 
-class MyApplication(arcade.Window):
+class MyWindow(arcade.Window):
     """
     Main application class.
     """
+
+    def __init__(self):
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT)
+        self.total_time = 0.0
 
     def setup(self):
         """
         Set up the application.
         """
-        self.total_time = 0.0
-        self.timer_text = None
         arcade.set_background_color(arcade.color.WHITE)
+        self.total_time = 0.0
 
     def on_draw(self):
         """ Use this function to draw everything to the screen. """
@@ -37,13 +40,8 @@ class MyApplication(arcade.Window):
         # Figure out our output
         output = f"Time: {minutes:02d}:{seconds:02d}"
 
-        # See if the output is the same as last frame. If not, generate a new
-        # text object.
-        if not self.timer_text or self.timer_text.text != output:
-            self.timer_text = arcade.create_text(output, arcade.color.BLACK, 30)
-
         # Output the timer text.
-        arcade.render_text(self.timer_text, 300, 300)
+        arcade.draw_text(output, 300, 300, arcade.color.BLACK, 30)
 
     def update(self, delta_time):
         """
@@ -52,7 +50,11 @@ class MyApplication(arcade.Window):
         self.total_time += delta_time
 
 
-window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
-window.setup()
+def main():
+    window = MyWindow()
+    window.setup()
+    arcade.run()
 
-arcade.run()
+
+if __name__ == "__main__":
+    main()

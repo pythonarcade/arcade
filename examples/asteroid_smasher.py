@@ -156,9 +156,6 @@ class MyWindow(arcade.Window):
         # Sounds
         self.laser_sound = arcade.load_sound("sounds/laser1.ogg")
 
-        self.score_text = None
-        self.asteroid_text = None
-
     def start_new_game(self):
         """ Set up the game and initialize the variables. """
 
@@ -220,14 +217,10 @@ class MyWindow(arcade.Window):
 
         # Put the text on the screen.
         output = f"Score: {self.score}"
-        if not self.score_text or output != self.score_text.text:
-            self.score_text = arcade.create_text(output, arcade.color.WHITE, 14)
-        arcade.render_text(self.score_text, 10, 70)
+        arcade.draw_text(output, 10, 70, arcade.color.WHITE, 14)
 
-        output = "Asteroid Count: {}".format(len(self.asteroid_list))
-        if not self.asteroid_text or output != self.asteroid_text.text:
-            self.asteroid_text = arcade.create_text(output, arcade.color.WHITE, 14)
-        arcade.render_text(self.asteroid_text, 10, 50)
+        output = f"Asteroid Count: {len(self.asteroid_list)}"
+        arcade.draw_text(output, 10, 50, arcade.color.WHITE, 14)
 
     def on_key_press(self, symbol, modifiers):
         """ Called whenever a key is pressed. """

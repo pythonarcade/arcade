@@ -25,10 +25,9 @@ class MyApplication(arcade.Window):
         self.ball_list = arcade.SpriteList()
         arcade.set_background_color(arcade.color.DARK_SLATE_GRAY)
 
-        self.processing_time_text = None
-        self.draw_time_text = None
         self.draw_time = 0
         self.processing_time = 0
+        self.time = 0
 
         # -- Pymunk
         self.space = pymunk.Space()
@@ -92,14 +91,10 @@ class MyApplication(arcade.Window):
 
         # Display timings
         output = f"Processing time: {self.processing_time:.3f}"
-        if not self.processing_time_text or output != self.processing_time_text.text:
-            self.processing_time_text = arcade.create_text(output, arcade.color.WHITE, 12)
-        arcade.render_text(self.processing_time_text, 20, SCREEN_HEIGHT - 20)
+        arcade.draw_text(output, 20, SCREEN_HEIGHT - 20, arcade.color.WHITE, 12)
 
         output = f"Drawing time: {self.draw_time:.3f}"
-        if not self.draw_time_text or output != self.draw_time_text.text:
-            self.draw_time_text = arcade.create_text(output, arcade.color.WHITE, 12)
-        arcade.render_text(self.draw_time_text, 20, SCREEN_HEIGHT - 40)
+        arcade.draw_text(output, 20, SCREEN_HEIGHT - 40, arcade.color.WHITE, 12)
 
         self.draw_time = timeit.default_timer() - draw_start_time
 
@@ -142,6 +137,12 @@ class MyApplication(arcade.Window):
 
         self.time = timeit.default_timer() - start_time
 
-window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
 
-arcade.run()
+def main():
+    MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
+
+    arcade.run()
+
+
+if __name__ == "__main__":
+    main()
