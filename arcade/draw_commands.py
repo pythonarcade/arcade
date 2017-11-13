@@ -85,6 +85,7 @@ class Texture:
         self.width = width
         self.height = height
 
+
 def make_transparent_color(color: Color, transparency: float):
     """
     Given a RGB color, along with an alpha, returns a RGBA color tuple.
@@ -150,15 +151,14 @@ def load_textures(file_name: str,
     ValueError: Can't load texture ending at an x of 1400 when the image is only 1377 wide.
 
     >>> image_location_list = [[500, 50, 50, 50]]
-    >>> texture_info_list = arcade.load_textures(\
-"examples/images/character_sheet.png", image_location_list)
+    >>> texture_info_list = arcade.load_textures("examples/images/character_sheet.png", image_location_list)
     Traceback (most recent call last):
     ...
     ValueError: Can't load texture ending at an y of 100 when the image is only 98 high.
 
     >>> image_location_list = [[0, 0, 50, 50]]
-    >>> texture_info_list = arcade.load_textures(\
-"examples/images/character_sheet.png", image_location_list, mirrored=True, flipped=True)
+    >>> texture_info_list = arcade.load_textures("examples/images/character_sheet.png",
+    image_location_list, mirrored=True, flipped=True)
 
     >>> arcade.close_window()
 
@@ -1679,17 +1679,17 @@ def create_text(text: str,
         color = (color[0], color[1], color[2], 255)
 
     text = pyglet.text.Label(text,
-                              font_name=font_name,
-                              font_size=font_size,
-                              x=0, y=0,
-                              color=color,
-                              multiline=True,
-                              width=width,
-                              align=align,
-                              anchor_x=anchor_x,
-                              anchor_y=anchor_y,
-                              bold=bold,
-                              italic=italic)
+                             font_name=font_name,
+                             font_size=font_size,
+                             x=0, y=0,
+                             color=color,
+                             multiline=True,
+                             width=width,
+                             align=align,
+                             anchor_x=anchor_x,
+                             anchor_y=anchor_y,
+                             bold=bold,
+                             italic=italic)
 
     return text
 
@@ -1738,11 +1738,16 @@ def draw_text(text: str,
     >>> arcade.quick_run(0.25)
     """
 
+    # If the cache gets too large, dump it and start over.
+    if len(draw_text.cache) > 5000:
+        draw_text.cache = {}
+
     key = f"{text}{color}{font_size}{width}{align}{font_name}{bold}{italic}"
     if key in draw_text.cache:
         label = draw_text.cache[key]
     else:
-        label = create_text(text, color=color, font_size=font_size, width=width, align=align, anchor_x=anchor_x, anchor_y=anchor_y, font_name=font_name, bold=bold, italic=italic)
+        label = create_text(text, color=color, font_size=font_size, width=width, align=align,
+                            anchor_x=anchor_x, anchor_y=anchor_y, font_name=font_name, bold=bold, italic=italic)
         draw_text.cache[key] = label
 
     gl.glLoadIdentity()
