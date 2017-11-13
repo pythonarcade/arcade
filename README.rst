@@ -7,5 +7,5 @@ It is ideal for beginning programmers, or programmers who want to create
 
 Arcade is built on top of Pyglet and OpenGL.
 
-For full documentation see http://pythonhosted.org/arcade/
+For full documentation see http://arcade.academy
 
