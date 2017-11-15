@@ -26,7 +26,7 @@ class Window(pyglet.window.Window):
     >>> window.on_mouse_press(0, 0, 0, 0)
     >>> window.on_mouse_release(0, 0, 0, 0)
     >>> window.on_key_press(0, 0)
-    >>> window.on_key_repress(0, 0)
+    >>> window.on_key_release(0, 0)
     >>> window.on_mouse_drag(0, 0, 1, 1, 1, 0)
     >>> window.on_mouse_scroll(1, 1)
     >>> window.update(1/20)

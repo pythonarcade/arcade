@@ -156,8 +156,7 @@ def load_textures(file_name: str,
     ValueError: Can't load texture ending at an y of 100 when the image is only 98 high.
 
     >>> image_location_list = [[0, 0, 50, 50]]
-    >>> texture_info_list = arcade.load_textures("examples/images/character_sheet.png",
-    image_location_list, mirrored=True, flipped=True)
+    >>> texture_info_list = arcade.load_textures("examples/images/character_sheet.png", image_location_list, mirrored=True, flipped=True)
 
     >>> arcade.close_window()
 
