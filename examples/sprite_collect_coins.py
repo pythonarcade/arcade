@@ -51,7 +51,7 @@ class MyWindow(arcade.Window):
 
         # Set up the player
         # Character image from kenney.nl
-        self.player_sprite = arcade.Sprite("character.png", SPRITE_SCALING_PLAYER)
+        self.player_sprite = arcade.Sprite("images/character.png", SPRITE_SCALING_PLAYER)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 50
         self.all_sprites_list.append(self.player_sprite)
@@ -61,7 +61,7 @@ class MyWindow(arcade.Window):
 
             # Create the coin instance
             # Coin image from kenney.nl
-            coin = arcade.Sprite("coin_01.png", SPRITE_SCALING_COIN)
+            coin = arcade.Sprite("images/coin_01.png", SPRITE_SCALING_COIN)
 
             # Position the coin
             coin.center_x = random.randrange(SCREEN_WIDTH)
@@ -72,8 +72,36 @@ class MyWindow(arcade.Window):
             self.coin_list.append(coin)
 
     def on_draw(self):
+        """ Draw everything """
         arcade.start_render()
         self.all_sprites_list.draw()
+
+        # Put the text on the screen.
+        output = f"Score: {self.score}"
+        arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
+
+    def on_mouse_motion(self, x, y, dx, dy):
+        """ Handle Mouse Motion """
+
+        # Move the center of the player sprite to match the mouse x, y
+        self.player_sprite.center_x = x
+        self.player_sprite.center_y = y
+
+    def update(self, delta_time):
+        """ Movement and game logic """
+
+        # Call update on all sprites (The sprites don't do much in this
+        # example though.)
+        self.all_sprites_list.update()
+
+        # Generate a list of all sprites that collided with the player.
+        hit_list = arcade.check_for_collision_with_list(self.player_sprite,
+                                                        self.coin_list)
+
+        # Loop through each colliding sprite, remove it, and add to the score.
+        for coin in hit_list:
+            coin.kill()
+            self.score += 1
 
 
 def main():
@@ -82,5 +110,4 @@ def main():
     arcade.run()
 
 
-if __name__ == "__main__":
-    main()
+main()
