@@ -282,6 +282,14 @@ upside-down.
 
     def _set_collision_radius(self, collision_radius):
         """
+        Set the collision radius.
+        Note: Final collision checking is done via geometry that was
+        set in get_points/set_points. These points are used in the
+        check_for_collision function. This collision_radius variable
+        is used as a "pre-check." We do a super-fast check with
+        collision_radius and see if the sprites are close. If they are,
+        then we look at the geometry and figure if they really are colliding.
+
         >>> import arcade
         >>> empty_sprite = arcade.Sprite()
         >>> empty_sprite.collision_radius = 5
@@ -290,6 +298,14 @@ upside-down.
 
     def _get_collision_radius(self):
         """
+        Get the collision radius.
+        Note: Final collision checking is done via geometry that was
+        set in get_points/set_points. These points are used in the
+        check_for_collision function. This collision_radius variable
+        is used as a "pre-check." We do a super-fast check with
+        collision_radius and see if the sprites are close. If they are,
+        then we look at the geometry and figure if they really are colliding.
+
         >>> import arcade
         >>> empty_sprite = arcade.Sprite()
         >>> empty_sprite.width = 3
@@ -551,6 +567,7 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
         for sprite_list in self.sprite_lists:
             if self in sprite_list:
                 sprite_list.remove(self)
+
 
 T = TypeVar('T', bound=Sprite)
 
@@ -984,6 +1001,7 @@ def _draw_rects(shape_list: List[Sprite], vertex_vbo_id: gl.GLuint,
     offset = 0
     batch_offset = 0
     texture_coord_vbo_id = None
+
     for shape in shape_list:
 
         if shape.texture.texture_id != last_texture_id or shape.alpha != last_alpha:
@@ -997,6 +1015,7 @@ def _draw_rects(shape_list: List[Sprite], vertex_vbo_id: gl.GLuint,
                                     last_texture_id,
                                     texture_coord_vbo_id,
                                     batch_count)
+
             batch_count = 0
             batch_offset = offset
             last_texture_id = shape.texture.texture_id
