@@ -280,17 +280,15 @@ Other
 
    :ref:`asteroid_smasher`
 
-.. figure:: thumbs/instruction_and_game_over_screens.png
-   :figwidth: 170px
-
-   :ref:`instruction_and_game_over_screens`
-
 .. figure:: thumbs/recursive_maze.png
    :figwidth: 170px
 
    :ref:`recursive_maze`
 
+.. figure:: thumbs/maze_depth_first.png
+   :figwidth: 170px
 
+   :ref:`depth_first_maze`
 
 
 .. toctree::
