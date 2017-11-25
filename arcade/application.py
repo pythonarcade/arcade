@@ -28,8 +28,12 @@ class Window(pyglet.window.Window):
     >>> window.on_key_press(0, 0)
     >>> window.on_key_release(0, 0)
     >>> window.on_mouse_drag(0, 0, 1, 1, 1, 0)
-    >>> window.on_mouse_scroll(1, 1)
+    >>> window.on_mouse_scroll(1, 1, 1, 1)
+    >>> window.on_draw()
+    >>> window.on_resize(500, 500)
+    >>> window.set_size(500, 500)
     >>> window.update(1/20)
+    >>> window.set_visible(True)
     >>> window.close()
 
     """
@@ -79,7 +83,7 @@ class Window(pyglet.window.Window):
         """ Override this function to add mouse button functionality. """
         pass
 
-    def on_mouse_scroll(self, scroll_x: int, scroll_y: int):
+    def on_mouse_scroll(self, x: int, y: int, scroll_x: int, scroll_y: int):
         """ User moves the scroll wheel. """
         pass
 
