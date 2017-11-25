@@ -285,6 +285,11 @@ Other
 
    :ref:`instruction_and_game_over_screens`
 
+.. figure:: thumbs/recursive_maze.png
+   :figwidth: 170px
+
+   :ref:`recursive_maze`
+
 
 
 
