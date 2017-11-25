@@ -18,6 +18,7 @@ from pyglet.gl import glu as glu
 from typing import List
 from arcade.arcade_types import Color
 from arcade.arcade_types import PointList
+from arcade.geometry import PRECISION
 
 
 def rotate_point(x: float, y: float, cx: float, cy: float,
@@ -39,8 +40,8 @@ def rotate_point(x: float, y: float, cx: float, cy: float,
         temp_y * math.cos(math.radians(angle))
 
     # translate back
-    x = rotated_x + cx
-    y = rotated_y + cy
+    x = round(rotated_x + cx, PRECISION)
+    y = round(rotated_y + cy, PRECISION)
 
     return x, y
 
