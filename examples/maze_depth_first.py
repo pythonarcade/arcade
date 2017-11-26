@@ -1,5 +1,8 @@
 """
-Create a maze using a recursive method.
+Create a maze using a depth-first search maze generation algorithm.
+For more information on this algorithm see:
+http://www.algosome.com/articles/maze-generation-depth-first.html
+...or search up some other examples.
 
 Artwork from http://kenney.nl
 """

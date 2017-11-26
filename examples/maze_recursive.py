@@ -1,5 +1,8 @@
 """
-Create a maze using a recursive method.
+Create a maze using a recursive division method.
+
+For more information on the algorithm, see "Recursive Division Method"
+at https://en.wikipedia.org/wiki/Maze_generation_algorithm
 
 Artwork from http://kenney.nl
 """
