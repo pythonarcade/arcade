@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 BUILD = 0
-VERSION = "1.2.1"
+VERSION = "1.2.2"
 RELEASE = VERSION + "." + str(BUILD)
 
 from os import path
