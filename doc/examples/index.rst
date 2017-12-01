@@ -220,6 +220,12 @@ Platformers
 
    :ref:`sprite_moving_platforms`
 
+.. figure:: thumbs/sprite_enemies_in_platformer.png
+   :figwidth: 170px
+
+   :ref:`sprite_enemies_in_platformer`
+
+
 PyMunk
 ------
 
