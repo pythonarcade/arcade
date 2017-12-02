@@ -6,6 +6,7 @@ from typing import Tuple
 from numbers import Number
 
 from arcade.window_commands import set_viewport
+from arcade.window_commands import get_viewport
 
 import pyglet
 
@@ -178,3 +179,8 @@ class Window(pyglet.window.Window):
         """ Set the viewport. (What coordinates we can see.
         Used to scale and/or scroll the screen.) """
         set_viewport(left, right, bottom, top)
+
+    def get_viewport(self) -> (float, float, float, float):
+        """ Set the viewport. (What coordinates we can see.
+        Used to scale and/or scroll the screen.) """
+        return get_viewport()
