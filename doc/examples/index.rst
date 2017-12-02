@@ -261,6 +261,12 @@ Other
 
    :ref:`resizable_window`
 
+.. figure:: thumbs/full_screen_example.png
+   :figwidth: 170px
+
+   :ref:`full_screen_example`
+
+
 .. figure:: thumbs/sprite_collect_coins_background.png
    :figwidth: 170px
 
