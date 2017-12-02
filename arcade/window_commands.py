@@ -111,6 +111,11 @@ def set_viewport(left: Number, right: Number, bottom: Number, top: Number):
     gl.glLoadIdentity()
 
 
+def get_viewport() -> (float, float, float, float):
+    """ Get the current viewport settings. """
+    return _left, _right, _bottom, _top
+
+
 def open_window(width: Number, height: Number, window_title: str, resizable: bool = False):
     """
     This function opens a window. For ease-of-use we assume there will only be one window, and the
