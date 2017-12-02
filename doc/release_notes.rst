@@ -8,6 +8,8 @@ Release Notes
 Version 1.2.2
 -------------
 
+Released 2017-December-02.
+
 Bug Fixes
 ~~~~~~~~~
 
