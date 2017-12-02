@@ -160,6 +160,11 @@ class Window(pyglet.window.Window):
 
         super().set_size(width, height)
 
+    def get_size(self):
+        """ Get the size of the window. """
+
+        return super().get_size()
+
     def get_location(self) -> Tuple[int, int]:
         """ Return the X/Y coordinates of the window """
 
