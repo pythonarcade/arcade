@@ -40,6 +40,12 @@ The Python Arcade Library
           <h2><a href="sample_games.html">Example Games</a></h2>
         </td>
         <td>
+          <img style="width:78px;" src="_static/code.svg"><br/>
+          <h2>Source Code</h2>
+          <ul>
+            <li><a href="https://github.com/pvcraven/arcade">GitHub</a></li>
+            <li><a href="release_notes.html">Release Notes</a></li>
+          </ul>
         </td>
       </tr>
     </table>
