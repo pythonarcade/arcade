@@ -9,7 +9,7 @@ This uses the Pymunk physics engine to manage stacks of boxes. The user
 can interact with the boxes using the mouse.
 
 
-.. image:: pymunk_box_stacks.png:
+.. image:: pymunk_box_stacks.png
     :width: 600px
     :height: 600px
     :align: center

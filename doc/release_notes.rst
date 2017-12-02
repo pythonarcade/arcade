@@ -18,6 +18,7 @@ Bug Fixes
 
 Enhancements
 ~~~~~~~~~~~~
+* `Issue 147 <https://github.com/pvcraven/arcade/issues/147>`_: Fix bug building documentation where two image files where specified incorrectly
 * `Issue 146 <https://github.com/pvcraven/arcade/issues/146>`_: Add release notes to documentation
 * `Issue 144 <https://github.com/pvcraven/arcade/issues/144>`_: Add code to get window and viewport dimensions
 * `Issue 139 <https://github.com/pvcraven/arcade/issues/139>`_: Add documentation on what ``collision_radius`` is
