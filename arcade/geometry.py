@@ -94,11 +94,17 @@ def check_for_collision(sprite1: Sprite, sprite2: Sprite) -> bool:
     >>> print(result_1, result_2, result_3)
     True True False
     """
-    # if not isinstance(sprite1, Sprite):
-    #     raise TypeError("Parameter 1 is not an instance of the Sprite class.")
-    # if not isinstance(sprite2, Sprite):
-    #     raise TypeError("Parameter 2 is not an instance of the Sprite class.")
+    if not isinstance(sprite1, Sprite):
+        raise TypeError("Parameter 1 is not an instance of the Sprite class.")
+    if isinstance(sprite2, SpriteList):
+        raise TypeError("Parameter 2 is a instance of the SpriteList instead of a required Sprite. See if you meant to call check_for_collision_with_list instead of check_for_collision.")
+    elif not isinstance(sprite2, Sprite):
+        raise TypeError("Parameter 2 is not an instance of the Sprite class.")
 
+    return _check_for_collision(sprite1, sprite2)
+
+
+def _check_for_collision(sprite1: Sprite, sprite2: Sprite) -> bool:
     collision_radius_sum = sprite1.collision_radius + sprite2.collision_radius
 
     diff_x = sprite1.position[0] - sprite2.position[0]
@@ -143,8 +149,7 @@ def check_for_collision_with_list(sprite1: Sprite,
     >>> sprite.center_x = 100
     >>> sprite.center_y = 100
     >>> sprite_list.append(sprite)
-    >>> collision_list = arcade.check_for_collision_with_list(main_sprite, \
-sprite_list)
+    >>> collision_list = arcade.check_for_collision_with_list(main_sprite, sprite_list)
     >>> print(len(collision_list))
     1
     """
@@ -155,6 +160,6 @@ sprite_list)
     collision_list = []
     for sprite2 in sprite_list:
         if sprite1 is not sprite2:
-            if check_for_collision(sprite1, sprite2):
+            if _check_for_collision(sprite1, sprite2):
                 collision_list.append(sprite2)
     return collision_list
