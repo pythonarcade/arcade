@@ -2,8 +2,8 @@
 
 .. _example-sprite-collect-coins-diff-levels:
 
-Different Levels
-================
+Different Levels of Clearing Coins
+==================================
 
 .. image:: sprite_collect_coins_diff_levels.gif
     :width: 600px

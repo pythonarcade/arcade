@@ -153,7 +153,7 @@ Sprite Movement
 Levels
 ^^^^^^
 
-.. figure:: thumbs/sprite_collect_coins_diff_levels.gif
+.. figure:: thumbs/sprite_collect_coins_diff_levels.png
    :figwidth: 170px
 
    :ref:`example-sprite-collect-coins-diff-levels`
