@@ -1,4 +1,4 @@
-### --- Bug Reports
+## Bug Report
 
 ### Actual behavior:
 
@@ -7,14 +7,14 @@
 ### Steps to reproduce/example code:
 
 
-### --- Enhancement requests:
+## Enhancement request:
 
 ### What should be added/changed?
 
 ### What would it help with?
 
 
-### --- Documentation requests:
+## Documentation request:
 
 ### What documentation needs to change? 
 
