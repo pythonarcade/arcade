@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 BUILD = 0
-VERSION = "1.2.2"
+VERSION = "1.2.3"
 RELEASE = VERSION + "." + str(BUILD)
 
 # -*- coding: utf-8 -*-
