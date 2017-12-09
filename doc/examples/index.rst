@@ -153,10 +153,17 @@ Sprite Movement
 Levels
 ^^^^^^
 
-.. toctree::
-   :maxdepth: 3
+.. figure:: thumbs/sprite_collect_coins_diff_levels.gif
+   :figwidth: 170px
 
-   sprite_collect_coins_diff_levels
+   :ref:`example-sprite-collect-coins-diff-levels`
+
+.. figure:: thumbs/sprite_rooms.png
+   :figwidth: 170px
+
+   :ref:`sprite_rooms`
+
+
 
 Bullets
 ^^^^^^^
