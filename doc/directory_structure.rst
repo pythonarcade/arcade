@@ -31,6 +31,8 @@ Directory Structure
 |                        | goes here. Look at this in a web browser to see    |
 |                        | what the documentation will look like.             |
 +------------------------+----------------------------------------------------+
+| \\examples             | Example code showing how to use Arcade.            |
++------------------------+----------------------------------------------------+
 | \\tests                | Unit tests. Most unit tests are part of the        |
 |                        | docstrings.                                        |
 +------------------------+----------------------------------------------------+
