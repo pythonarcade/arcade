@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+# This is supposed to automatically update the version number.
+# Not sure it actually works.
+
 from arcade import *
 
 BUILD += 1
@@ -35,4 +38,5 @@ def update_file(filename):
     f.close()
 
 update_file('setup.py')
+update_file('arcade/version.py')
 update_file('doc/conf.py')
