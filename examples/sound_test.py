@@ -10,7 +10,7 @@ SCREEN_HEIGHT = 600
 window = None
 
 
-class MyWindow(arcade.Window):
+class MyGame(arcade.Window):
     """ Main sound test class """
 
     def setup(self):
@@ -43,7 +43,7 @@ class MyWindow(arcade.Window):
 
 
 def main():
-    window = MyWindow()
+    window = MyGame()
     window.setup()
     arcade.run()
 

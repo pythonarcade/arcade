@@ -47,7 +47,7 @@ class Coin(arcade.Sprite):
             self.change_y *= -1
 
 
-class MyWindow(arcade.Window):
+class MyGame(arcade.Window):
     """ Our custom Window Class"""
 
     def __init__(self):
@@ -136,7 +136,7 @@ class MyWindow(arcade.Window):
 
 
 def main():
-    window = MyWindow()
+    window = MyGame()
     window.setup()
     arcade.run()
 

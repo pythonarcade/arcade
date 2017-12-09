@@ -20,7 +20,7 @@ VIEWPORT_MARGIN = 40
 MOVEMENT_SPEED = 5
 
 
-class MyWindow(arcade.Window):
+class MyGame(arcade.Window):
     """ Main application class. """
 
     def __init__(self):
@@ -90,7 +90,7 @@ class MyWindow(arcade.Window):
 
 def main():
     """ Main method """
-    MyWindow()
+    MyGame()
     arcade.run()
 
 

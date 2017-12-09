@@ -132,7 +132,7 @@ class BulletSprite(TurningSprite):
             self.kill()
 
 
-class MyWindow(arcade.Window):
+class MyGame(arcade.Window):
     """ Main application class. """
 
     def __init__(self):
@@ -365,7 +365,7 @@ class MyWindow(arcade.Window):
 
 
 def main():
-    window = MyWindow()
+    window = MyGame()
     window.start_new_game()
     arcade.run()
 

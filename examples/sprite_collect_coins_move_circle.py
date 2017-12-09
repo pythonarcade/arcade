@@ -49,7 +49,7 @@ class Coin(arcade.Sprite):
         self.circle_angle += self.circle_speed
 
 
-class MyWindow(arcade.Window):
+class MyGame(arcade.Window):
     """ Main application class. """
 
     def __init__(self, width, height):
@@ -139,7 +139,7 @@ class MyWindow(arcade.Window):
 
 
 def main():
-    window = MyWindow(SCREEN_WIDTH, SCREEN_HEIGHT)
+    window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT)
     window.start_new_game()
     arcade.run()
 
