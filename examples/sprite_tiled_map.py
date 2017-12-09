@@ -38,7 +38,7 @@ def get_map(filename):
     return map_array
 
 
-class MyApplication(arcade.Window):
+class MyWindow(arcade.Window):
     """ Main application class. """
 
     def __init__(self):
@@ -208,7 +208,7 @@ class MyApplication(arcade.Window):
 
 
 def main():
-    window = MyApplication()
+    window = MyWindow()
     window.setup()
     arcade.run()
 

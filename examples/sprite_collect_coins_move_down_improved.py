@@ -35,7 +35,7 @@ class Coin(arcade.Sprite):
             self.reset_pos()
 
 
-class MyAppWindow(arcade.Window):
+class MyWindow(arcade.Window):
     """ Main application class. """
 
     def __init__(self, width, height):
@@ -131,7 +131,7 @@ class MyAppWindow(arcade.Window):
 
 
 def main():
-    window = MyAppWindow(SCREEN_WIDTH, SCREEN_HEIGHT)
+    window = MyWindow(SCREEN_WIDTH, SCREEN_HEIGHT)
     window.start_new_game()
     arcade.run()
 

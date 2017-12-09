@@ -4,7 +4,7 @@ SCREEN_WIDTH = 500
 SCREEN_HEIGHT = 600
 
 
-class MyApplication(arcade.Window):
+class MyWindow(arcade.Window):
     """
     Main application class.
     """
@@ -34,7 +34,7 @@ class MyApplication(arcade.Window):
 
 def main():
     """ Main method """
-    window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
+    window = MyWindow(SCREEN_WIDTH, SCREEN_HEIGHT)
     window.setup()
     arcade.run()
 

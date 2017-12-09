@@ -24,7 +24,7 @@ JUMP_SPEED = 14
 GRAVITY = 0.5
 
 
-class MyApplication(arcade.Window):
+class MyWindow(arcade.Window):
     """ Main application class. """
 
     def __init__(self):
@@ -174,7 +174,7 @@ class MyApplication(arcade.Window):
 
 
 def main():
-    window = MyApplication()
+    window = MyWindow()
     window.setup()
     arcade.run()
 

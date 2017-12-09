@@ -14,7 +14,7 @@ SCREEN_HEIGHT = 600
 BALL_RADIUS = 20
 
 
-class MyApplication(arcade.Window):
+class MyWindow(arcade.Window):
     """
     Main application class.
 
@@ -117,7 +117,7 @@ class MyApplication(arcade.Window):
 
 def main():
     """ Main method """
-    MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
+    MyWindow(SCREEN_WIDTH, SCREEN_HEIGHT)
     arcade.run()
 
 if __name__ == "__main__":

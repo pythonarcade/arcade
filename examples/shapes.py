@@ -59,7 +59,7 @@ class Rectangle(Shape):
                                      self.color, self.angle)
 
 
-class MyApplication(arcade.Window):
+class MyWindow(arcade.Window):
     """ Main application class. """
 
     def __init__(self):
@@ -111,7 +111,12 @@ class MyApplication(arcade.Window):
         for shape in self.shape_list:
             shape.draw()
 
-window = MyApplication()
-window.setup()
 
-arcade.run()
+def main():
+    window = MyWindow()
+    window.setup()
+    arcade.run()
+
+
+if __name__ == "__main__":
+    main()

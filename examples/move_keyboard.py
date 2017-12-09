@@ -64,7 +64,7 @@ class Rectangle:
             self.y = SCREEN_HEIGHT - (RECT_HEIGHT // 2)
 
 
-class MyApplication(arcade.Window):
+class MyWindow(arcade.Window):
     """
     Main application class.
     """
@@ -120,7 +120,7 @@ class MyApplication(arcade.Window):
 
 
 def main():
-    window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
+    window = MyWindow(SCREEN_WIDTH, SCREEN_HEIGHT)
     window.setup()
     arcade.run()
 

@@ -56,7 +56,7 @@ class Player(arcade.Sprite):
             self.top = SCREEN_HEIGHT - 1
 
 
-class MyApplication(arcade.Window):
+class MyWindow(arcade.Window):
     """
     Main application class.
     """
@@ -133,7 +133,7 @@ class MyApplication(arcade.Window):
 
 def main():
     """ Main method """
-    window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
+    window = MyWindow(SCREEN_WIDTH, SCREEN_HEIGHT)
     window.setup()
     arcade.run()
 

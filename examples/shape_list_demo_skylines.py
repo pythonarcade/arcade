@@ -173,7 +173,6 @@ class MyWindow(arcade.Window):
         self.skyline2.center_x -= 1
 
 
-
 def main():
     window = MyWindow()
     window.setup()

@@ -22,7 +22,7 @@ class Collectable(arcade.Sprite):
         self.changed = False
 
 
-class MyApplication(arcade.Window):
+class MyWindow(arcade.Window):
     """
     Main application class.a
     """
@@ -123,7 +123,11 @@ class MyApplication(arcade.Window):
                 self.score += 1
 
 
-window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
-window.setup()
+def main():
+    """ Main method """
+    window = MyWindow(SCREEN_WIDTH, SCREEN_HEIGHT)
+    window.setup()
+    arcade.run()
 
-arcade.run()
+if __name__ == "__main__":
+    main()

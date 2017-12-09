@@ -42,7 +42,7 @@ class RisingCoin(arcade.Sprite):
             self.top = 0
 
 
-class MyApplication(arcade.Window):
+class MyWindow(arcade.Window):
     """
     Main application class.
     """
@@ -61,12 +61,13 @@ class MyApplication(arcade.Window):
         self.player_sprite = None
         self.score = 0
 
+        self.level = 1
+
         # Don't show the mouse cursor
         self.set_mouse_visible(False)
 
         # Set the background color
         arcade.set_background_color(arcade.color.AMAZON)
-
 
     def level_1(self):
         for i in range(20):
@@ -148,7 +149,6 @@ class MyApplication(arcade.Window):
         output = f"Level: {self.level}"
         arcade.draw_text(output, 10, 35, arcade.color.WHITE, 14)
 
-
     def on_mouse_motion(self, x, y, dx, dy):
         """
         Called whenever the mouse moves.
@@ -183,7 +183,12 @@ class MyApplication(arcade.Window):
             self.level_3()
 
 
-window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
-window.setup()
+def main():
+    """ Main method """
+    window = MyWindow(SCREEN_WIDTH, SCREEN_HEIGHT)
+    window.setup()
+    arcade.run()
 
-arcade.run()
+
+if __name__ == "__main__":
+    main()

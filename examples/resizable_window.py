@@ -10,7 +10,7 @@ END = 2000
 STEP = 50
 
 
-class MyApplication(arcade.Window):
+class MyWindow(arcade.Window):
     """
     Main application class.
     """
@@ -50,7 +50,7 @@ class MyApplication(arcade.Window):
 
 
 def main():
-    MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
+    MyWindow(SCREEN_WIDTH, SCREEN_HEIGHT)
     arcade.run()
 
 

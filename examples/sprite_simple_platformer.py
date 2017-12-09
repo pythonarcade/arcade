@@ -23,7 +23,7 @@ JUMP_SPEED = 14
 GRAVITY = 0.5
 
 
-class MyApplication(arcade.Window):
+class MyWindow(arcade.Window):
     """ Main application class. """
 
     def __init__(self):
@@ -87,7 +87,6 @@ class MyApplication(arcade.Window):
         self.player_sprite.draw()
         self.wall_list.draw()
 
-
     def on_key_press(self, key, modifiers):
         """
         Called whenever the mouse moves.
@@ -115,9 +114,8 @@ class MyApplication(arcade.Window):
             self.physics_engine.update()
 
 
-
 def main():
-    window = MyApplication()
+    window = MyWindow()
     window.setup()
     arcade.run()
 

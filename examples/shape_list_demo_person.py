@@ -65,7 +65,7 @@ def make_person(head_radius,
     return shape_list
 
 
-class MyAppWindow(arcade.Window):
+class MyWindow(arcade.Window):
     """ Main application class. """
 
     def __init__(self):
@@ -119,7 +119,7 @@ class MyAppWindow(arcade.Window):
 
 
 def main():
-    window = MyAppWindow()
+    window = MyWindow()
     window.setup()
     arcade.run()
 

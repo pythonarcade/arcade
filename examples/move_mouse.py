@@ -37,7 +37,7 @@ class Rectangle:
                                      self.color, self.angle)
 
 
-class MyApplication(arcade.Window):
+class MyWindow(arcade.Window):
     """ Main application class. """
     def __init__(self, width, height):
         super().__init__(width, height, title="Keyboard control")
@@ -92,7 +92,7 @@ class MyApplication(arcade.Window):
 
 
 def main():
-    window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
+    window = MyWindow(SCREEN_WIDTH, SCREEN_HEIGHT)
     window.setup()
     arcade.run()
 

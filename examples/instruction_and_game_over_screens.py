@@ -20,7 +20,7 @@ GAME_RUNNING = 2
 GAME_OVER = 3
 
 
-class MyAppWindow(arcade.Window):
+class MyWindow(arcade.Window):
     """
     Main application class.
     """
@@ -99,7 +99,7 @@ class MyAppWindow(arcade.Window):
         self.all_sprites_list.draw()
 
         # Put the text on the screen.
-        output = "Score: {}".format(self.score)
+        output = f"Score: {self.score}"
         arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
 
     def draw_game_over(self):
@@ -170,9 +170,7 @@ class MyAppWindow(arcade.Window):
             self.all_sprites_list.update()
 
             # Generate a list of all sprites that collided with the player.
-            hit_list = \
-                arcade.check_for_collision_with_list(self.player_sprite,
-                                                     self.coin_list)
+            hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.coin_list)
 
             # Loop through each colliding sprite, remove it, and add to the
             # score.
@@ -188,7 +186,7 @@ class MyAppWindow(arcade.Window):
 
 
 def main():
-    MyAppWindow(SCREEN_WIDTH, SCREEN_HEIGHT)
+    MyWindow(SCREEN_WIDTH, SCREEN_HEIGHT)
     arcade.run()
 
 

@@ -10,7 +10,7 @@ SCREEN_HEIGHT = 600
 window = None
 
 
-class MyApplication(arcade.Window):
+class MyWindow(arcade.Window):
     """ Main sound test class """
 
     def setup(self):
@@ -41,7 +41,12 @@ class MyApplication(arcade.Window):
     def update(self, delta_time):
         """animations"""
 
-window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
-window.setup
 
-arcade.run()
+def main():
+    window = MyWindow()
+    window.setup()
+    arcade.run()
+
+
+if __name__ == "__main__":
+    main()

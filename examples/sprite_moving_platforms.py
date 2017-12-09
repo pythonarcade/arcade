@@ -35,7 +35,7 @@ def get_map():
     return map_array
 
 
-class MyApplication(arcade.Window):
+class MyWindow(arcade.Window):
     """ Main application class. """
 
     def __init__(self, width, height):
@@ -261,7 +261,7 @@ class MyApplication(arcade.Window):
 
 def main():
     """ Main method """
-    window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
+    window = MyWindow(SCREEN_WIDTH, SCREEN_HEIGHT)
     window.setup()
     arcade.run()
 

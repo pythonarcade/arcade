@@ -129,7 +129,7 @@ def make_maze_recursion(maze_width, maze_height):
     return maze
 
 
-class MyApplication(arcade.Window):
+class MyWindow(arcade.Window):
     """ Main application class. """
 
     def __init__(self, width, height):
@@ -282,7 +282,7 @@ class MyApplication(arcade.Window):
 
 def main():
     """ Main method """
-    window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
+    window = MyWindow(SCREEN_WIDTH, SCREEN_HEIGHT)
     window.setup()
     arcade.run()
 

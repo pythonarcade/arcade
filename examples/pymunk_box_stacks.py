@@ -27,7 +27,7 @@ class BoxSprite(PhysicsSprite):
         self.height = height
 
 
-class MyApplication(arcade.Window):
+class MyWindow(arcade.Window):
     """ Main application class. """
 
     def __init__(self, width, height):
@@ -171,7 +171,7 @@ class MyApplication(arcade.Window):
 
 
 def main():
-    MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
+    MyWindow(SCREEN_WIDTH, SCREEN_HEIGHT)
 
     arcade.run()
 
