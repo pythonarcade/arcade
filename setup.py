@@ -36,7 +36,8 @@ if __name__ == "__main__":
           ],
           packages=["arcade",
                     "arcade.key",
-                    "arcade.color"
+                    "arcade.color",
+                    "arcade.examples"
                     ],
           classifiers=[
               "Development Status :: 5 - Production/Stable",

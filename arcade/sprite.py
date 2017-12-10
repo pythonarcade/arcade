@@ -55,7 +55,7 @@ upside-down.
     >>> # Test creating an empty sprite
     >>> empty_sprite = arcade.Sprite()
     >>> # Create a sprite with an image
-    >>> filename = "examples/images/playerShip1_orange.png"
+    >>> filename = "arcade/examples/images/playerShip1_orange.png"
     >>> ship_sprite = arcade.Sprite(filename, SCALE)
     >>> # Draw the sprite
     >>> arcade.set_background_color(arcade.color.WHITE)
@@ -330,7 +330,7 @@ upside-down.
         >>> arcade.open_window(800,600,"Sprite Example")
         >>> scale = 1.0
         >>> ship_sprite = \
-arcade.Sprite("examples/images/playerShip1_orange.png", scale)
+arcade.Sprite("arcade/examples/images/playerShip1_orange.png", scale)
         >>> ship_sprite.center_y = 0.0
         >>> print(ship_sprite.bottom)
         -37.5
@@ -363,7 +363,7 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
         >>> arcade.open_window(800,600,"Sprite Example")
         >>> scale = 1.0
         >>> ship_sprite = \
-arcade.Sprite("examples/images/playerShip1_orange.png", scale)
+arcade.Sprite("arcade/examples/images/playerShip1_orange.png", scale)
         >>> ship_sprite.center_y = 0.0
         >>> print(ship_sprite.top)
         37.5
@@ -453,7 +453,7 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
         >>> arcade.open_window(800,600,"Sprite Example")
         >>> scale = 1.0
         >>> ship_sprite = \
-arcade.Sprite("examples/images/playerShip1_orange.png", scale)
+arcade.Sprite("arcade/examples/images/playerShip1_orange.png", scale)
         >>> ship_sprite.center_x = 0.0
         >>> print(ship_sprite.left)
         -49.5
@@ -486,7 +486,7 @@ arcade.Sprite("examples/images/playerShip1_orange.png", scale)
         >>> arcade.open_window(800,600,"Sprite Example")
         >>> scale = 1.0
         >>> ship_sprite = \
-arcade.Sprite("examples/images/playerShip1_orange.png", scale)
+arcade.Sprite("arcade/examples/images/playerShip1_orange.png", scale)
         >>> ship_sprite.center_x = 0.0
         >>> print(ship_sprite.right)
         49.5
@@ -584,7 +584,7 @@ class SpriteList(Generic[T]):
     >>> arcade.open_window(600,600,"Sprite Example")
     >>> scale = 1
     >>> meteor_list = arcade.SpriteList()
-    >>> filename = "examples/images/meteorGrey_big1.png"
+    >>> filename = "arcade/examples/images/meteorGrey_big1.png"
     >>> for i in range(100):
     ...     meteor = arcade.Sprite(filename, scale)
     ...     meteor.center_x = random.random() * 2 - 1

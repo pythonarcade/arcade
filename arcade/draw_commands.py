@@ -124,40 +124,40 @@ def load_textures(file_name: str,
     ...                        [730, 7, 54, 91],
     ...                        [784, 3, 59, 95],
     ...                        [843, 6, 56, 92]]
-    >>> texture_info_list = arcade.load_textures("examples/images/character_sheet.png", image_location_list)
+    >>> texture_info_list = arcade.load_textures("arcade/examples/images/character_sheet.png", image_location_list)
     >>> image_location_list = [[5600, 0, 0, 0]]
 
-    >>> texture_info_list = arcade.load_textures("examples/images/character_sheet.png", image_location_list)
+    >>> texture_info_list = arcade.load_textures("arcade/examples/images/character_sheet.png", image_location_list)
     Traceback (most recent call last):
     ...
     ValueError: Texture has a width of 0, must be > 0.
 
     >>> image_location_list = [[2000, 0, 20, 20]]
-    >>> texture_info_list = arcade.load_textures("examples/images/character_sheet.png", image_location_list)
+    >>> texture_info_list = arcade.load_textures("arcade/examples/images/character_sheet.png", image_location_list)
     Traceback (most recent call last):
     ...
     ValueError: Can't load texture starting at an x of 2000 when the image is only 1377 across.
 
     >>> image_location_list = [[500, 500, 20, 20]]
-    >>> texture_info_list = arcade.load_textures("examples/images/character_sheet.png", image_location_list)
+    >>> texture_info_list = arcade.load_textures("arcade/examples/images/character_sheet.png", image_location_list)
     Traceback (most recent call last):
     ...
     ValueError: Can't load texture starting at an y of 500 when the image is only 98 high.
 
     >>> image_location_list = [[1300, 0, 100, 20]]
-    >>> texture_info_list = arcade.load_textures("examples/images/character_sheet.png", image_location_list)
+    >>> texture_info_list = arcade.load_textures("arcade/examples/images/character_sheet.png", image_location_list)
     Traceback (most recent call last):
     ...
     ValueError: Can't load texture ending at an x of 1400 when the image is only 1377 wide.
 
     >>> image_location_list = [[500, 50, 50, 50]]
-    >>> texture_info_list = arcade.load_textures("examples/images/character_sheet.png", image_location_list)
+    >>> texture_info_list = arcade.load_textures("arcade/examples/images/character_sheet.png", image_location_list)
     Traceback (most recent call last):
     ...
     ValueError: Can't load texture ending at an y of 100 when the image is only 98 high.
 
     >>> image_location_list = [[0, 0, 50, 50]]
-    >>> texture_info_list = arcade.load_textures("examples/images/character_sheet.png", image_location_list, mirrored=True, flipped=True)
+    >>> texture_info_list = arcade.load_textures("arcade/examples/images/character_sheet.png", image_location_list, mirrored=True, flipped=True)
 
     >>> arcade.close_window()
 
@@ -250,7 +250,7 @@ def load_texture(file_name: str, x: float=0, y: float=0,
 
     >>> import arcade
     >>> arcade.open_window(800,600,"Drawing Example")
-    >>> name = "examples/images/meteorGrey_big1.png"
+    >>> name = "arcade/examples/images/meteorGrey_big1.png"
     >>> texture1 = load_texture(name, 1, 1, 50, 50)
     >>> texture2 = load_texture(name, 1, 1, 50, 50)
 
@@ -355,7 +355,7 @@ def trim_image(image: PIL.Image) -> PIL.Image:
     """
     Returns an image with extra whitespace cropped out.
 
-    >>> name = "examples/images/playerShip1_orange.png"
+    >>> name = "arcade/examples/images/playerShip1_orange.png"
     >>> source_image = PIL.Image.open(name)
     >>> cropped_image = trim_image(source_image)
     >>> print(source_image.height, cropped_image.height)
@@ -1579,7 +1579,7 @@ def draw_texture_rectangle(center_x: float, center_y: float, width: float,
     >>> arcade.set_background_color(arcade.color.WHITE)
     >>> arcade.start_render()
     >>> arcade.draw_text("draw_bitmap", 483, 3, arcade.color.BLACK, 12)
-    >>> name = "examples/images/playerShip1_orange.png"
+    >>> name = "arcade/examples/images/playerShip1_orange.png"
     >>> texture = arcade.load_texture(name)
     >>> scale = .6
     >>> arcade.draw_texture_rectangle(540, 120, scale * texture.width, \
@@ -1645,7 +1645,7 @@ def draw_xywh_rectangle_textured(top_left_x: float, top_left_y: float,
     >>> import arcade
     >>> arcade.open_window(800,600,"Drawing Example")
     >>> arcade.start_render()
-    >>> name = "examples/images/meteorGrey_big1.png"
+    >>> name = "arcade/examples/images/meteorGrey_big1.png"
     >>> texture1 = load_texture(name, 1, 1, 50, 50)
     >>> arcade.draw_xywh_rectangle_textured(1, 2, 10, 10, texture1)
     >>> arcade.finish_render()

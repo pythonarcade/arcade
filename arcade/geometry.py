@@ -77,7 +77,7 @@ def check_for_collision(sprite1: Sprite, sprite2: Sprite) -> bool:
 
     >>> import arcade
     >>> scale = 1
-    >>> filename = "examples/images/meteorGrey_big1.png"
+    >>> filename = "arcade/examples/images/meteorGrey_big1.png"
     >>> sprite_1 = arcade.Sprite(filename, scale)
     >>> sprite_1.center_x = 0
     >>> sprite_1.center_y = 0
@@ -137,7 +137,7 @@ def check_for_collision_with_list(sprite1: Sprite,
     >>> import arcade
     >>> scale = 1
     >>> sprite_list = arcade.SpriteList()
-    >>> filename = "examples/images/meteorGrey_big1.png"
+    >>> filename = "arcade/examples/images/meteorGrey_big1.png"
     >>> main_sprite = arcade.Sprite(filename, scale)
     >>> main_sprite.center_x = 0
     >>> main_sprite.center_y = 0
