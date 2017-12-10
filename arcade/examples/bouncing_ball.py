@@ -1,5 +1,8 @@
 """
 Bounce a ball on the screen, using gravity.
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.bouncing_ball
 """
 
 import arcade

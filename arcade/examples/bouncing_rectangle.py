@@ -13,6 +13,10 @@ Or look through the examples showing how to use Sprites.
 
 A video walk-through of this example is available at:
 https://vimeo.com/168063840
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.bouncing_rectangle
+
 """
 
 import arcade

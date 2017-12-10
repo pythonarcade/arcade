@@ -10,12 +10,23 @@ https://pythonhosted.org/arcade/arcade.html#module-arcade.draw_commands
 
 A video explaining this example can be found here:
 https://vimeo.com/167158158
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.drawing_primitives
 """
 
 # Import the Arcade library. If this fails, then try following the instructions
 # for how to install arcade:
 # https://pythonhosted.org/arcade/installation.html
 import arcade
+import os
+
+# Set the working directory (where we expect to find files) to the same
+# directory this .py file is in. You can leave this out of your own
+# code, but it is needed to easily run the examples using "python -m"
+# as mentioned at the top of this program.
+file_path = os.path.dirname(os.path.abspath(__file__))
+os.chdir(file_path)
 
 # Open the window. Set the window title and dimensions (width and height)
 arcade.open_window(600, 600, "Drawing Example")

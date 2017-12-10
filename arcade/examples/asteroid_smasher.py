@@ -5,10 +5,14 @@ Shoot space rocks in this demo program created with
 Python and the Arcade library.
 
 Artwork from http://kenney.nl
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.asteroid_smasher
 """
 import random
 import math
 import arcade
+import os
 
 SCALE = 0.5
 OFFSCREEN_SPACE = 300
@@ -137,6 +141,13 @@ class MyGame(arcade.Window):
 
     def __init__(self):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT)
+
+        # Set the working directory (where we expect to find files) to the same
+        # directory this .py file is in. You can leave this out of your own
+        # code, but it is needed to easily run the examples using "python -m"
+        # as mentioned at the top of this program.
+        file_path = os.path.dirname(os.path.abspath(__file__))
+        os.chdir(file_path)
 
         self.frame_count = 0
 

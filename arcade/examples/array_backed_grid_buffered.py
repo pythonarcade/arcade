@@ -3,6 +3,11 @@ Array Backed Grid
 
 Show how to use a two-dimensional list/array to back the display of a
 grid on-screen.
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.array_backed_grid_buffered
+
+TODO: This code doesn't work properly, and isn't currently listed in the examples.
 """
 import arcade
 

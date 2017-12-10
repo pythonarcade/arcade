@@ -1,6 +1,9 @@
 """
 Bounce balls on the screen.
 Spawn a new ball for each mouse-click.
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.bouncing_balls
 """
 
 import arcade
