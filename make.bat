@@ -32,7 +32,7 @@ sphinx-build -b html doc doc/build/html
 
 rem Run tests and do code coverage
 coverage run --source arcade setup.py test
-coverage report -m
+coverage report --omit=arcade/examples/* -m
 
 GOTO end
 
