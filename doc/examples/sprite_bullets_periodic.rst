@@ -11,6 +11,6 @@ Have Enemies Periodically Shoot
     :align: center
     :alt: Screenshot of using sprites to shoot things
 
-.. literalinclude:: ../../examples/sprite_bullets_periodic.py
+.. literalinclude:: ../../arcade/examples/sprite_bullets_periodic.py
     :caption: sprite_bullets_periodic.py
     :linenos:

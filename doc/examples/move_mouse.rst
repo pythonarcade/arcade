@@ -9,6 +9,6 @@ User control: Mouse
     :align: center
     :alt: Screenshot of mouse example program
 
-.. literalinclude:: ../../examples/move_mouse.py
+.. literalinclude:: ../../arcade/examples/move_mouse.py
     :caption: move_mouse.py
     :linenos:

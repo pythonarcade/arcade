@@ -11,6 +11,6 @@ Have Enemies Randomly Shoot
     :align: center
     :alt: Screenshot of using sprites to shoot things
 
-.. literalinclude:: ../../examples/sprite_bullets_random.py
+.. literalinclude:: ../../arcade/examples/sprite_bullets_random.py
     :caption: sprite_bullets_random.py
     :linenos:

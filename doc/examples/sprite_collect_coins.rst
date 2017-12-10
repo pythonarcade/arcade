@@ -11,6 +11,6 @@ Collect Coins - Mouse
     :align: center
     :alt: Screenshot of using sprites to collect coins
 
-.. literalinclude:: ../../examples/sprite_collect_coins.py
+.. literalinclude:: ../../arcade/examples/sprite_collect_coins.py
     :caption: sprite_collect_coins.py
     :linenos:

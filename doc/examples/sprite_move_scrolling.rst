@@ -11,6 +11,6 @@ Move with a Scrolling Screen
     :align: center
     :alt: Screen shot of using a scrolling window
 
-.. literalinclude:: ../../examples/sprite_move_scrolling.py
+.. literalinclude:: ../../arcade/examples/sprite_move_scrolling.py
     :caption: sprite_move_scrolling.py
     :linenos:

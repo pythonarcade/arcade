@@ -11,6 +11,6 @@ Collect Coins that are Bouncing
     :align: center
     :alt: Screenshot of using sprites to collect coins
 
-.. literalinclude:: ../../examples/sprite_collect_coins_move_bouncing.py
+.. literalinclude:: ../../arcade/examples/sprite_collect_coins_move_bouncing.py
     :caption: sprite_collect_coins_move_bouncing.py
     :linenos:

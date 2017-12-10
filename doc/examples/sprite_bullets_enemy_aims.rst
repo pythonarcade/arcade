@@ -11,6 +11,6 @@ Have Enemies Aim at Player
     :align: center
     :alt: Screen shot of using sprites to shoot things
 
-.. literalinclude:: ../../examples/sprite_bullets_enemy_aims.py
+.. literalinclude:: ../../arcade/examples/sprite_bullets_enemy_aims.py
     :caption: sprite_bullets_enemy_aims.py
     :linenos:

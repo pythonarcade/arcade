@@ -11,6 +11,6 @@ Shape List - Person
     :align: center
     :alt: Screenshot of using shape list to create a person
 
-.. literalinclude:: ../../examples/shape_list_demo_person.py
+.. literalinclude:: ../../arcade/examples/shape_list_demo_person.py
     :caption: shape_list_demo_person.py
     :linenos:

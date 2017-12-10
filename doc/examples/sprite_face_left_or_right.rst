@@ -6,6 +6,6 @@ Sprite: Face Left or Right
 ==========================
 
 
-.. literalinclude:: ../../examples/sprite_face_left_or_right.py
+.. literalinclude:: ../../arcade/examples/sprite_face_left_or_right.py
     :caption: sprite_face_left_or_right.py
     :linenos:

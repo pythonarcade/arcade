@@ -11,6 +11,6 @@ Shoot Bullets Upwards
     :align: center
     :alt: Screenshot of using sprites to shoot things
 
-.. literalinclude:: ../../examples/sprite_bullets.py
+.. literalinclude:: ../../arcade/examples/sprite_bullets.py
     :caption: sprite_bullets.py
     :linenos:

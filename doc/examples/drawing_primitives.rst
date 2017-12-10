@@ -22,7 +22,7 @@ functions or classes before drawing images.
 
 
 
-.. literalinclude:: ../../examples/drawing_primitives.py
+.. literalinclude:: ../../arcade/examples/drawing_primitives.py
     :caption: drawing_primitives.py
     :linenos:
 

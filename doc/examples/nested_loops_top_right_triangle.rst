@@ -11,6 +11,6 @@ Top Right Triangle
     :align: center
     :alt: Draw a triangle with nested loops.
 
-.. literalinclude:: ../../examples/nested_loops_top_right_triangle.py
+.. literalinclude:: ../../arcade/examples/nested_loops_top_right_triangle.py
     :caption: nested_loops_top_right_triangle.py
     :linenos:

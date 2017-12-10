@@ -11,6 +11,6 @@ Instruction and Game Over Screens
     :align: center
     :alt: Screenshot of game over screen
 
-.. literalinclude:: ../../examples/instruction_and_game_over_screens.py
+.. literalinclude:: ../../arcade/examples/instruction_and_game_over_screens.py
     :caption: instruction_and_game_over_screens.py
     :linenos:

@@ -19,7 +19,7 @@ This example shows how to define functions that draw objects. Such as
 ..     :align: center
 ..     :alt: Screenshot of drawing with functions example program
 
-.. literalinclude:: ../../examples/drawing_with_functions.py
+.. literalinclude:: ../../arcade/examples/drawing_with_functions.py
     :caption: drawing_with_functions.py
     :linenos:
 

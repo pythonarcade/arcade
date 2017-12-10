@@ -10,6 +10,6 @@ Move with a Sprite Animation
     :alt: GIF animation of animated walking character.
 
 
-.. literalinclude:: ../../examples/sprite_move_animation.py
+.. literalinclude:: ../../arcade/examples/sprite_move_animation.py
     :caption: sprite_move_animation.py
     :linenos:

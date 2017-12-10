@@ -11,6 +11,6 @@ Collect Coins that are Moving in a Circle
     :align: center
     :alt: Screenshot of using sprites to collect coins
 
-.. literalinclude:: ../../examples/sprite_collect_coins_move_circle.py
+.. literalinclude:: ../../arcade/examples/sprite_collect_coins_move_circle.py
     :caption: sprite_collect_coins_move_circle.py
     :linenos:

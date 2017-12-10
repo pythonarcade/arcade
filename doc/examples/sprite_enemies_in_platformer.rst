@@ -9,6 +9,6 @@ Platformer With Enemies
     :align: center
 
 
-.. literalinclude:: ../../examples/sprite_enemies_in_platformer.py
+.. literalinclude:: ../../arcade/examples/sprite_enemies_in_platformer.py
     :caption: sprite_enemies_in_platformer.py
     :linenos:

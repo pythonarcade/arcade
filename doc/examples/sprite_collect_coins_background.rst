@@ -11,6 +11,6 @@ Using a Background Image
     :align: center
     :alt: Screenshot of using sprites to collect coins and a background image
 
-.. literalinclude:: ../../examples/sprite_collect_coins_background.py
+.. literalinclude:: ../../arcade/examples/sprite_collect_coins_background.py
     :caption: sprite_collect_coins_background.py
     :linenos:

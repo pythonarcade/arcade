@@ -11,6 +11,6 @@ Work with a tiled map
     :align: center
     :alt: Screenshot of using a larger map exported by tiled in a csv format.
 
-.. literalinclude:: ../../examples/sprite_tiled_map.py
+.. literalinclude:: ../../arcade/examples/sprite_tiled_map.py
     :caption: sprite_tiled_map.py
     :linenos:

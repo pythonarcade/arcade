@@ -11,6 +11,6 @@ Multiple Bouncing Balls
     :align: center
     :alt: Screen shot of bouncing balls
 
-.. literalinclude:: ../../examples/bouncing_balls.py
+.. literalinclude:: ../../arcade/examples/bouncing_balls.py
     :caption: bouncing_balls.py
     :linenos:

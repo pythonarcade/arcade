@@ -11,6 +11,6 @@ Radar Sweep
     :align: center
     :alt: Screenshot of radar sweep example
 
-.. literalinclude:: ../../examples/radar_sweep.py
+.. literalinclude:: ../../arcade/examples/radar_sweep.py
     :caption: radar_sweep.py
     :linenos:

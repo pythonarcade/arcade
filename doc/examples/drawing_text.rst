@@ -11,6 +11,6 @@ Drawing Text
     :align: center
     :alt: Screenshot of drawing text
 
-.. literalinclude:: ../../examples/drawing_text.py
+.. literalinclude:: ../../arcade/examples/drawing_text.py
     :caption: drawing_text.py
     :linenos:

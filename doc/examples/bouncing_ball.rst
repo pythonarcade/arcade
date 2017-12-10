@@ -11,6 +11,6 @@ Bouncing Ball with Gravity
     :align: center
     :alt: Screen shot of bouncing ball
 
-.. literalinclude:: ../../examples/bouncing_ball.py
+.. literalinclude:: ../../arcade/examples/bouncing_ball.py
     :caption: bouncing_ball.py
     :linenos:

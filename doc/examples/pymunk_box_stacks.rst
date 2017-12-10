@@ -15,7 +15,7 @@ can interact with the boxes using the mouse.
     :align: center
     :alt: Screen shot of stacks of boxes.
 
-.. literalinclude:: ../../examples/pymunk_box_stacks.py
+.. literalinclude:: ../../arcade/examples/pymunk_box_stacks.py
     :caption: pymunk_box_stacks.py
     :linenos:
 

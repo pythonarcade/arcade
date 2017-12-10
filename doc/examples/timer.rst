@@ -11,6 +11,6 @@ On-Screen Timer
     :align: center
     :alt: Screenshot of running a timer
 
-.. literalinclude:: ../../examples/timer.py
+.. literalinclude:: ../../arcade/examples/timer.py
     :caption: timer.py
     :linenos:

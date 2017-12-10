@@ -11,6 +11,6 @@ Shape List - Skylines
     :align: center
     :alt: Screenshot of using shape list to create a moving skyline
 
-.. literalinclude:: ../../examples/shape_list_demo_skylines.py
+.. literalinclude:: ../../arcade/examples/shape_list_demo_skylines.py
     :caption: shape_list_demo_skylines.py
     :linenos:

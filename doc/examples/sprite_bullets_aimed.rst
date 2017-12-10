@@ -11,6 +11,6 @@ Aim and Shoot Bullets
     :align: center
     :alt: Screenshot of using sprites to shoot things
 
-.. literalinclude:: ../../examples/sprite_bullets_aimed.py
+.. literalinclude:: ../../arcade/examples/sprite_bullets_aimed.py
     :caption: sprite_bullets_aimed.py
     :linenos:

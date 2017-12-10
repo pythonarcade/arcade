@@ -11,6 +11,6 @@ Moving Between Different Rooms
     :align: center
     :alt: Screenshot of moving between rooms with sprites
 
-.. literalinclude:: ../../examples/sprite_rooms.py
+.. literalinclude:: ../../arcade/examples/sprite_rooms.py
     :caption: sprite_rooms.py
     :linenos:

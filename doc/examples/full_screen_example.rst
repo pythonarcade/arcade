@@ -11,6 +11,6 @@ Full Screen Example
     :align: center
     :alt: Screenshot of a program demoing how to use full-screen
 
-.. literalinclude:: ../../examples/full_screen_example.py
+.. literalinclude:: ../../arcade/examples/full_screen_example.py
     :caption: full_screen_example.py
     :linenos:

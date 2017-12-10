@@ -11,6 +11,6 @@ Creating a Recursive Maze
     :align: center
     :alt: Screen shot of a maze created by recursion
 
-.. literalinclude:: ../../examples/maze_recursive.py
+.. literalinclude:: ../../arcade/examples/maze_recursive.py
     :caption: maze_recursive.py
     :linenos:

@@ -11,6 +11,6 @@ Drawing Shapes with Classes
     :align: center
     :alt: Screenshot of Shapes example program
 
-.. literalinclude:: ../../examples/shapes.py
+.. literalinclude:: ../../arcade/examples/shapes.py
     :caption: shapes.py
     :linenos:

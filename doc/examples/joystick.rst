@@ -3,6 +3,6 @@
 Full Joystick Example
 =====================
 
-.. literalinclude:: ../../examples/joystick.py
+.. literalinclude:: ../../arcade/examples/joystick.py
     :caption: joystick.py
     :linenos:

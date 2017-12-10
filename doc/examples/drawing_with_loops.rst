@@ -11,6 +11,6 @@ Drawing with Loops
     :align: center
     :alt: Screen shot of drawing with loops example program
 
-.. literalinclude:: ../../examples/drawing_with_loops.py
+.. literalinclude:: ../../arcade/examples/drawing_with_loops.py
     :caption: drawing_with_loops.py
     :linenos:

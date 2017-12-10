@@ -11,6 +11,6 @@ Resizable Window
     :align: center
     :alt: Screenshot of resizable window
 
-.. literalinclude:: ../../examples/resizable_window.py
+.. literalinclude:: ../../arcade/examples/resizable_window.py
     :caption: resizable_window.py
     :linenos:
