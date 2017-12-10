@@ -43,6 +43,10 @@ class MyGame(arcade.Window):
         self.score = 0
         self.player_sprite = None
 
+        # STEP 1: Put each instruction page in an image. Make sure the image
+        # matches the dimensions of the window, or it will stretch and look
+        # ugly. You can also do something similar if you want a page between
+        # each level.
         self.instructions = []
         texture = arcade.load_texture("images/instructions_0.png")
         self.instructions.append(texture)
@@ -60,8 +64,7 @@ class MyGame(arcade.Window):
 
         # Set up the player
         self.score = 0
-        self.player_sprite = arcade.Sprite("images/character.png",
-                                           SPRITE_SCALING)
+        self.player_sprite = arcade.Sprite("images/character.png", SPRITE_SCALING)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 50
         self.all_sprites_list.append(self.player_sprite)
@@ -82,6 +85,7 @@ class MyGame(arcade.Window):
         # Don't show the mouse cursor
         self.set_mouse_visible(False)
 
+    # STEP 2: Add this function.
     def draw_instructions_page(self, page_number):
         """
         Draw an instruction page. Load the page as an image.
@@ -91,6 +95,21 @@ class MyGame(arcade.Window):
                                       page_texture.width,
                                       page_texture.height, page_texture, 0)
 
+
+    # STEP 3: Add this function
+    def draw_game_over(self):
+        """
+        Draw "Game over" across the screen.
+        """
+        output = "Game Over"
+        arcade.draw_text(output, 240, 400, arcade.color.WHITE, 54)
+
+        output = "Click to restart"
+        arcade.draw_text(output, 310, 300, arcade.color.WHITE, 24)
+
+    # STEP 4: Take the drawing code you currently have in your
+    # on_draw method AFTER the start_render call and MOVE to a new
+    # method called draw_game.
     def draw_game(self):
         """
         Draw all the sprites, along with the score.
@@ -102,16 +121,8 @@ class MyGame(arcade.Window):
         output = f"Score: {self.score}"
         arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
 
-    def draw_game_over(self):
-        """
-        Draw "Game over" across the screen.
-        """
-        output = "Game Over"
-        arcade.draw_text(output, 240, 400, arcade.color.WHITE, 54)
-
-        output = "Click to restart"
-        arcade.draw_text(output, 310, 300, arcade.color.WHITE, 24)
-
+    # STEP 5: Update the on_draw function to look like this. Adjust according
+    # to the number of instruction pages you have.
     def on_draw(self):
         """
         Render the screen.
@@ -133,6 +144,8 @@ class MyGame(arcade.Window):
             self.draw_game()
             self.draw_game_over()
 
+    # STEP 6: Do something like adding this to your on_mouse_press to flip
+    # between instruction pages.
     def on_mouse_press(self, x, y, button, modifiers):
         """
         Called when the user presses a mouse button.
@@ -160,6 +173,7 @@ class MyGame(arcade.Window):
             self.player_sprite.center_x = x
             self.player_sprite.center_y = y
 
+    # STEP 7: Only update if the game state is GAME_RUNNING like below:
     def update(self, delta_time):
         """ Movement and game logic """
 
