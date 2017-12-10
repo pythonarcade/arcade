@@ -20,7 +20,7 @@ install:
 script:
   - python doc/preprocess_files.py
   - sphinx-build -b html doc doc/build/html
-  - coverage run --source=arcade setup.py test
+  - coverage run --omit=arcade/examples/* --source=arcade setup.py test
 
 # deploy:
 #   provider: pypi
