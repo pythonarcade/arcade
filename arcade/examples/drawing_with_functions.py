@@ -6,6 +6,9 @@ It does not assume that the programmer knows how to use classes yet.
 
 A video walk-through of this code is available at:
 https://vimeo.com/167296062
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.drawing_with_functions
 """
 
 # Library imports
