@@ -10,8 +10,8 @@ import sys
 if sys.version_info[0] < 3 or (sys.version_info[0] == 3 and sys.version_info[1] < 6):
     sys.exit("The Arcade Library requires Python 3.6 or higher.")
 
-import arcade.color
-import arcade.key
+from arcade import color
+from arcade import key
 from arcade.application import *
 from arcade.arcade_types import *
 from arcade.draw_commands import *
