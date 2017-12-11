@@ -1,5 +1,8 @@
 """
 Example showing how handle screen resizing.
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.resizable_window
 """
 import arcade
 

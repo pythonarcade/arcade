@@ -1,8 +1,26 @@
+"""
+Use Pymunk physics engine.
+
+For more info on Pymunk see:
+http://www.pymunk.org/en/latest/
+
+To install pymunk:
+pip install pymunk
+
+Artwork from http://kenney.nl
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.pymunk_pegboard
+
+Click and drag with the mouse to move the boxes.
+"""
+
 import arcade
 import pymunk
 import random
 import timeit
 import math
+import os
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 800
@@ -21,6 +39,14 @@ class MyGame(arcade.Window):
 
     def __init__(self, width, height):
         super().__init__(width, height)
+
+        # Set the working directory (where we expect to find files) to the same
+        # directory this .py file is in. You can leave this out of your own
+        # code, but it is needed to easily run the examples using "python -m"
+        # as mentioned at the top of this program.
+        file_path = os.path.dirname(os.path.abspath(__file__))
+        os.chdir(file_path)
+
         self.peg_list = arcade.SpriteList()
         self.ball_list = arcade.SpriteList()
         arcade.set_background_color(arcade.color.DARK_SLATE_GRAY)

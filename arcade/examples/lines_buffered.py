@@ -3,6 +3,9 @@ Array Backed Grid
 
 Show how to use a two-dimensional list/array to back the display of a
 grid on-screen.
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.lines_buffered
 """
 import arcade
 
@@ -11,7 +14,7 @@ SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
 
-class MyApplication(arcade.Window):
+class MyGame(arcade.Window):
     """
     Main application class.
     """
@@ -24,12 +27,6 @@ class MyApplication(arcade.Window):
 
         self.shape_list = arcade.ShapeElementList()
 
-        """
-        my_line = arcade.create_line(-100, 0, 100, 0, arcade.color.PURPLE, 10)
-        self.shape_list.append(my_line)
-        my_line = arcade.create_line(0, -100, 0, 100, arcade.color.PURPLE_MOUNTAIN_MAJESTY, 10)
-        self.shape_list.append(my_line)
-        """
         point_list = ((0, 50),
                       (10, 10),
                       (50, 0),
@@ -61,11 +58,10 @@ class MyApplication(arcade.Window):
         self.shape_list.angle += 1
         self.shape_list.center_x += 1
         self.shape_list.center_y += 1
-        # print(self.shape_list.angle)
 
 
 def main():
-    MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
+    MyGame(SCREEN_WIDTH, SCREEN_HEIGHT)
     arcade.run()
 
 

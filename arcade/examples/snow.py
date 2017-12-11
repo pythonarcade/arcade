@@ -3,6 +3,9 @@ Simple Snow
 Based primarily on: https://pythonhosted.org/arcade/examples/sprite_collect_coins_move_down.html
 
 Contributed to Python Arcade Library by Nicholas Hartunian
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.snow
 """
 
 import random

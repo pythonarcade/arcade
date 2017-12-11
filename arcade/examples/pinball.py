@@ -8,6 +8,7 @@ import arcade
 import pymunk
 import math
 import random
+import os
 
 # Do the math to figure out oiur screen dimensions
 SCREEN_WIDTH = 390
@@ -68,6 +69,14 @@ class MyApplication(arcade.Window):
         Set up the application.
         """
         super().__init__(width, height, resizable=True)
+
+        # Set the working directory (where we expect to find files) to the same
+        # directory this .py file is in. You can leave this out of your own
+        # code, but it is needed to easily run the examples using "python -m"
+        # as mentioned at the top of this program.
+        file_path = os.path.dirname(os.path.abspath(__file__))
+        os.chdir(file_path)
+
         self.set_location(20, 20)
         arcade.set_background_color(arcade.color.BLACK)
 
@@ -140,7 +149,7 @@ class MyApplication(arcade.Window):
 
         r_flipper_joint_body = pymunk.Body(body_type=pymunk.Body.KINEMATIC)
         r_flipper_joint_body.position = pymunk.Vec2d(self.right_flipper_shape_list.center_x, self.right_flipper_shape_list.center_y)
-        
+
         j = pymunk.PinJoint(self.right_flipper_body, r_flipper_joint_body, (0, 0), (5,5))
         #s = pymunk.DampedRotarySpring(self.right_flipper.body, r_flipper_joint_body, 0, 500, 110)
         #self.space.add(j, s)

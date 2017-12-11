@@ -1,17 +1,20 @@
 """
 This simple animation example shows how to use classes to animate
-multple objects on the screen at the same time.
+multiple objects on the screen at the same time.
 
-Because this is redraws the shapes from scratch each frame, this is slow
+Because this is redraws the shapes from scratch each frame, this is SLOW
 and inefficient.
 
-Using buffered drawing commands (Vertex Buffer Objects)
-is a bit more complex, but faster.
+Using buffered drawing commands (Vertex Buffer Objects) is a bit more complex,
+but faster.
 
 See http://arcade.academy/examples/index.html#shape-lists for some examples.
 
 Also, any Sprite class put in a SpriteList and drawn with the SpriteList will
 be drawn using Vertex Buffer Objects for better performance.
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.shapes
 """
 
 import arcade
@@ -24,6 +27,7 @@ SCREEN_HEIGHT = 600
 RECT_WIDTH = 50
 RECT_HEIGHT = 50
 
+NUMBER_OF_SHAPES = 200
 
 class Shape:
 
@@ -70,7 +74,7 @@ class MyGame(arcade.Window):
         """ Set up the game and initialize the variables. """
         self.shape_list = []
 
-        for i in range(100):
+        for i in range(NUMBER_OF_SHAPES):
             x = random.randrange(0, SCREEN_WIDTH)
             y = random.randrange(0, SCREEN_HEIGHT)
             width = random.randrange(10, 30)

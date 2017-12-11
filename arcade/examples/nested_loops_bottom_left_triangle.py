@@ -2,6 +2,9 @@
 Example "Arcade" library code.
 
 Showing how to do nested loops.
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.nested_loops_bottom_left_triangle
 """
 
 # Library imports

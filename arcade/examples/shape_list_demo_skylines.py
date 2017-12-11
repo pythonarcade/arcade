@@ -1,5 +1,8 @@
 """
 City Scape Generator
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.shape_list_skylines
 """
 import random
 import arcade
@@ -76,17 +79,17 @@ def make_skyline(width, skyline_height, skyline_color,
         color_list.extend([skyline_color[0] / 255,  skyline_color[1] / 255, skyline_color[2] / 255, 1] * 4)
 
 
-        # if random.random() < cap_chance:
-        #     x1 = building_center_x - building_width / 2
-        #     x2 = building_center_x + building_width / 2
-        #     x3 = building_center_x
-        #
-        #     y1 = y2 = building_center_y + building_height / 2
-        #     y3 = y1 + building_width / 2
-        #
-        #     shape = arcade.create_polygon([[x1, y1], [x2, y2], [x3, y3]], skyline_color)
-        #     shape_list.append(shape)
-        #
+        if random.random() < cap_chance:
+            x1 = building_center_x - building_width / 2
+            x2 = building_center_x + building_width / 2
+            x3 = building_center_x
+
+            y1 = y2 = building_center_y + building_height / 2
+            y3 = y1 + building_width / 2
+
+            shape = arcade.create_polygon([[x1, y1], [x2, y2], [x3, y3]], skyline_color)
+            shape_list.append(shape)
+
         # See if we should have some windows
         if random.random() < window_chance:
             # Yes windows! How many windows?
@@ -126,7 +129,6 @@ def make_skyline(width, skyline_height, skyline_color,
         building_center_x += (building_width / 2)
 
     shape = arcade.create_filled_rectangles_with_colors(skyline_point_list, color_list)
-    print(f"XXX {shape.vbo_color_id}")
     shape_list.append(shape)
 
     return shape_list
@@ -165,7 +167,7 @@ class MyGame(arcade.Window):
         end_time = int(round(time.time() * 1000))
         total_time = end_time - start_time
 
-        print(f"Time: {total_time}")
+        arcade.draw_text(f"Time: {total_time}", 10, 10, arcade.color.WHITE)
 
     def update(self, delta_time):
         """ Movement and game logic """

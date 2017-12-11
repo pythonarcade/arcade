@@ -1,6 +1,9 @@
 """
 This simple animation example shows how to move an item with the joystick
 and game-pad.
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.move_joystick
 """
 
 import arcade

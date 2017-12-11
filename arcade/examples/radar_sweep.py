@@ -1,5 +1,8 @@
 """
 This animation example shows how perform a radar sweep animation.
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.radar_sweep
 """
 
 import arcade
@@ -37,20 +40,28 @@ def on_draw(delta_time):
     arcade.draw_circle_outline(CENTER_X, CENTER_Y, SWEEP_LENGTH,
                                arcade.color.DARK_GREEN, 10)
 
-# These are function-specific variables. Before we
+
+# This is a function-specific variable. Before we
 # use them in our function, we need to give them initial
 # values.
 on_draw.angle = 0
 
-# Open up our window
-arcade.open_window(SCREEN_WIDTH, SCREEN_HEIGHT, "Radar Sweep Example")
-arcade.set_background_color(arcade.color.BLACK)
 
-# Tell the computer to call the draw command at the specified interval.
-arcade.schedule(on_draw, 1 / 80)
+def main():
 
-# Run the program
-arcade.run()
+    # Open up our window
+    arcade.open_window(SCREEN_WIDTH, SCREEN_HEIGHT, "Radar Sweep Example")
+    arcade.set_background_color(arcade.color.BLACK)
 
-# When done running the program, close the window.
-arcade.close_window()
+    # Tell the computer to call the draw command at the specified interval.
+    arcade.schedule(on_draw, 1 / 80)
+
+    # Run the program
+    arcade.run()
+
+    # When done running the program, close the window.
+    arcade.close_window()
+
+
+if __name__ == "__main__":
+    main()

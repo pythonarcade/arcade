@@ -1,5 +1,8 @@
 """
 This simple animation example shows how to move an item with the keyboard.
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.move_keyboard
 """
 
 import arcade

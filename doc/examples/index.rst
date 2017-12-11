@@ -236,6 +236,11 @@ Platformers
 PyMunk
 ------
 
+.. figure:: thumbs/lines_buffered.png
+   :figwidth: 170px
+
+   :ref:`lines_buffered`
+
 .. figure:: thumbs/pymunk_box_stacks.png
    :figwidth: 170px
 

@@ -5,10 +5,14 @@ http://www.algosome.com/articles/maze-generation-depth-first.html
 ...or search up some other examples.
 
 Artwork from http://kenney.nl
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.maze_depth_first
 """
 import random
 import arcade
 import timeit
+import os
 
 NATIVE_SPRITE_SIZE = 128
 SPRITE_SCALING = 0.25
@@ -84,6 +88,14 @@ class MyGame(arcade.Window):
         Initializer
         """
         super().__init__(width, height)
+
+        # Set the working directory (where we expect to find files) to the same
+        # directory this .py file is in. You can leave this out of your own
+        # code, but it is needed to easily run the examples using "python -m"
+        # as mentioned at the top of this program.
+        file_path = os.path.dirname(os.path.abspath(__file__))
+        os.chdir(file_path)
+
         # Sprite lists
         self.all_sprites_list = None
         self.coin_list = None
