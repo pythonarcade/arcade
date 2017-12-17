@@ -109,6 +109,7 @@ API Documentation
 
    arcade
    quick_index
+   performance_tips
 
 How to Contribute
 -----------------
