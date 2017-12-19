@@ -4,10 +4,15 @@ Sprite Bullets
 Simple program to show basic sprite usage.
 
 Artwork from http://kenney.nl
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.sprite_bullets_aimed
 """
+
 import random
 import arcade
 import math
+import os
 
 SPRITE_SCALING_PLAYER = 0.5
 SPRITE_SCALING_COIN = 0.2
@@ -35,6 +40,13 @@ class MyApplication(arcade.Window):
         """ Initializer """
         # Call the parent class initializer
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Sprites and Bullets Demo")
+
+        # Set the working directory (where we expect to find files) to the same
+        # directory this .py file is in. You can leave this out of your own
+        # code, but it is needed to easily run the examples using "python -m"
+        # as mentioned at the top of this program.
+        file_path = os.path.dirname(os.path.abspath(__file__))
+        os.chdir(file_path)
 
         # Variables that will hold sprite lists
         self.all_sprites_list = None

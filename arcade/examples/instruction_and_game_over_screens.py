@@ -3,10 +3,15 @@ This program shows how to:
   * Have one or more instruction screens
   * Show a 'Game over' text and halt the game
   * Allow the user to restart the game
+
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.instruction_and_game_over_screens
 """
 
 import arcade
 import random
+import os
 
 SPRITE_SCALING = 0.5
 
@@ -29,6 +34,13 @@ class MyGame(arcade.Window):
         """ Constructor """
         # Call the parent constructor. Required and must be the first line.
         super().__init__(screen_width, screen_height)
+
+        # Set the working directory (where we expect to find files) to the same
+        # directory this .py file is in. You can leave this out of your own
+        # code, but it is needed to easily run the examples using "python -m"
+        # as mentioned at the top of this program.
+        file_path = os.path.dirname(os.path.abspath(__file__))
+        os.chdir(file_path)
 
         # Set the background color
         arcade.set_background_color(arcade.color.AMAZON)

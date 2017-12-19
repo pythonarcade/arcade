@@ -6,6 +6,9 @@ template.
 
 A walk-through of this code is available at:
 https://vimeo.com/168051968
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.sprite_starting_template
 """
 import arcade
 
@@ -119,6 +122,7 @@ def main():
     """ Main method """
     MyGame(SCREEN_WIDTH, SCREEN_HEIGHT)
     arcade.run()
+
 
 if __name__ == "__main__":
     main()
