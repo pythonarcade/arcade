@@ -18,74 +18,11 @@ Click and drag with the mouse to move the boxes.
 import arcade
 import pymunk
 import timeit
-import math
 import os
 
-SCREEN_WIDTH = 1200
-SCREEN_HEIGHT = 800
-DEFAULT_FRICTION = 0.2
-DEFAULT_MASS = 1
-GRAVITY = (0.0, -900.0)
-PLAYER_MOVE_FORCE = 700
-PLAYER_JUMP_IMPULSE = 600
-SPRITE_SIZE = 64
-
-class PymunkSprite(arcade.Sprite):
-
-    def __init__(self,
-                 filename,
-                 center_x=0,
-                 center_y=0,
-                 scale=1,
-                 mass=DEFAULT_MASS,
-                 moment=None,
-                 friction=DEFAULT_FRICTION,
-                 body_type=pymunk.Body.DYNAMIC):
-
-        super().__init__(filename, scale=scale, center_x=center_x, center_y=center_y)
-
-        width = self.texture.width * scale
-        height = self.texture.height * scale
-
-        if moment is None:
-            moment = pymunk.moment_for_box(mass, (width, height))
-
-        self.body = pymunk.Body(mass, moment, body_type=body_type)
-        self.body.position = pymunk.Vec2d(center_x, center_y)
-
-        self.shape = pymunk.Poly.create_box(self.body, (width, height))
-        self.shape.friction = friction
-
-
-def check_grounding(player):
-    grounding = {
-        'normal': pymunk.Vec2d.zero(),
-        'penetration': pymunk.Vec2d.zero(),
-        'impulse': pymunk.Vec2d.zero(),
-        'position': pymunk.Vec2d.zero(),
-        'body': None
-    }
-
-    def f(arbiter):
-        n = -arbiter.contact_point_set.normal
-        if n.y > grounding['normal'].y:
-            grounding['normal'] = n
-            grounding['penetration'] = -arbiter.contact_point_set.points[0].distance
-            grounding['body'] = arbiter.shapes[1].body
-            grounding['impulse'] = arbiter.total_impulse
-            grounding['position'] = arbiter.contact_point_set.points[0].point_b
-
-    player.body.each_arbiter(f)
-
-    return grounding
-
-
-def create_floor(space, sprite_list):
-    for x in range(-1000, 2000, SPRITE_SIZE):
-        y = SPRITE_SIZE / 2
-        sprite = PymunkSprite("images/grassMid.png", x, y, scale=0.5, body_type=pymunk.Body.STATIC)
-        sprite_list.append(sprite)
-        space.add(sprite.body, sprite.shape)
+from constants import *
+from physics_utility import *
+from create_level import create_level_1
 
 class MyGame(arcade.Window):
     """ Main application class. """
@@ -109,7 +46,6 @@ class MyGame(arcade.Window):
         # Lists of sprites or lines
         self.dynamic_sprite_list = arcade.SpriteList()
         self.static_sprite_list = arcade.SpriteList()
-        self.static_lines = []
 
         # Used for dragging shapes around with the mouse
         self.shape_being_dragged = None
@@ -120,36 +56,17 @@ class MyGame(arcade.Window):
 
         self.force = (0, 0)
 
-        # Create the floor
-        floor_height = 64
+        # Set the viewport boundaries
+        # These numbers set where we have 'scrolled' to.
+        self.view_left = 0
+        self.view_bottom = 0
 
-        size = 64
-
-        create_floor(self.space, self.static_sprite_list)
-
-        for x in range(200, 600, size):
-            y = size * 3
-            sprite = PymunkSprite("images/grassMid.png", x, y, scale=0.5, body_type=pymunk.Body.STATIC)
-            self.dynamic_sprite_list.append(sprite)
-            self.space.add(sprite.body, sprite.shape)
-
-
-        # Create the stacks of boxes
-
-        for column in range(6):
-            for row in range(column):
-                x = 600 + column * size
-                y = (floor_height + size / 2) + row * size
-                sprite = PymunkSprite("images/boxCrate_double.png", x, y, scale=0.5, friction=0.4)
-                self.dynamic_sprite_list.append(sprite)
-                self.space.add(sprite.body, sprite.shape)
-
-
+        create_level_1(self.space, self.static_sprite_list, self.dynamic_sprite_list)
 
         # Create player
         x = 50
-        y = (floor_height + size / 2)
-        self.player = PymunkSprite("images/character.png", x, y, scale=0.5, moment=pymunk.inf, mass=1)
+        y = (SPRITE_SIZE + SPRITE_SIZE / 2)
+        self.player = PymunkSprite("../images/character.png", x, y, scale=0.5, moment=pymunk.inf, mass=1)
         self.dynamic_sprite_list.append(self.player)
         self.space.add(self.player.body, self.player.shape)
 
@@ -169,47 +86,25 @@ class MyGame(arcade.Window):
         self.static_sprite_list.draw()
         self.dynamic_sprite_list.draw()
 
-        # Draw the lines that aren't sprites
-        for line in self.static_lines:
-            body = line.body
-
-            pv1 = body.position + line.a.rotated(body.angle)
-            pv2 = body.position + line.b.rotated(body.angle)
-            arcade.draw_line(pv1.x, pv1.y, pv2.x, pv2.y, arcade.color.WHITE, 2)
-
         # Display timings
         output = f"Processing time: {self.processing_time:.3f}"
-        arcade.draw_text(output, 20, SCREEN_HEIGHT - 20, arcade.color.WHITE, 12)
+        arcade.draw_text(output, 20 + self.view_left, SCREEN_HEIGHT - 20 + self.view_bottom, arcade.color.WHITE, 12)
 
         output = f"Drawing time: {self.draw_time:.3f}"
-        arcade.draw_text(output, 20, SCREEN_HEIGHT - 40, arcade.color.WHITE, 12)
+        arcade.draw_text(output, 20 + self.view_left, SCREEN_HEIGHT - 40 + self.view_bottom, arcade.color.WHITE, 12)
 
         self.draw_time = timeit.default_timer() - draw_start_time
 
     def on_mouse_press(self, x, y, button, modifiers):
         if button == 1:
-            self.last_mouse_position = x, y
+            self.last_mouse_position = (x + self.view_left, y + self.view_bottom)
             # See if we clicked on anything
-            shape_list = self.space.point_query((x, y), 1, pymunk.ShapeFilter())
+            shape_list = self.space.point_query(self.last_mouse_position, 1, pymunk.ShapeFilter())
 
             # If we did, remember what we clicked on
             if len(shape_list) > 0:
                 self.shape_being_dragged = shape_list[0]
 
-        elif button == 4:
-            # With right mouse button, shoot a heavy coin fast.
-            mass = 60
-            radius = 10
-            inertia = pymunk.moment_for_circle(mass, 0, radius, (0, 0))
-            body = pymunk.Body(mass, inertia)
-            body.position = x, y
-            body.velocity = 2000, 0
-            shape = pymunk.Circle(body, radius, pymunk.Vec2d(0, 0))
-            shape.friction = 0
-            self.space.add(body, shape)
-
-            sprite = CircleSprite(shape, "images/coin_01.png")
-            self.sprite_list.append(sprite)
 
     def on_mouse_release(self, x, y, button, modifiers):
         if button == 1:
@@ -219,9 +114,47 @@ class MyGame(arcade.Window):
     def on_mouse_motion(self, x, y, dx, dy):
         if self.shape_being_dragged is not None:
             # If we are holding an object, move it with the mouse
-            self.last_mouse_position = x, y
+            self.last_mouse_position =  (x + self.view_left, y + self.view_bottom)
             self.shape_being_dragged.shape.body.position = self.last_mouse_position
             self.shape_being_dragged.shape.body.velocity = dx * 20, dy * 20
+
+    def scroll_viewport(self):
+        # --- Manage Scrolling ---
+
+        # Track if we need to change the viewport
+
+        changed = False
+
+        # Scroll left
+        left_bndry = self.view_left + VIEWPORT_MARGIN
+        if self.player.left < left_bndry:
+            self.view_left -= left_bndry - self.player.left
+            changed = True
+
+        # Scroll right
+        right_bndry = self.view_left + SCREEN_WIDTH - VIEWPORT_MARGIN
+        if self.player.right > right_bndry:
+            self.view_left += self.player.right - right_bndry
+            changed = True
+
+        # Scroll up
+        top_bndry = self.view_bottom + SCREEN_HEIGHT - VIEWPORT_MARGIN
+        if self.player.top > top_bndry:
+            self.view_bottom += self.player.top - top_bndry
+            changed = True
+
+        # Scroll down
+        bottom_bndry = self.view_bottom + VIEWPORT_MARGIN
+        if self.player.bottom < bottom_bndry:
+            self.view_bottom -= bottom_bndry - self.player.bottom
+            changed = True
+
+        if changed:
+            arcade.set_viewport(self.view_left,
+                                SCREEN_WIDTH + self.view_left,
+                                self.view_bottom,
+                                SCREEN_HEIGHT + self.view_bottom)
+
 
     def update(self, delta_time):
         start_time = timeit.default_timer()
@@ -249,12 +182,9 @@ class MyGame(arcade.Window):
             self.shape_being_dragged.shape.body.position = self.last_mouse_position
             self.shape_being_dragged.shape.body.velocity = 0, 0
 
-        # Move sprites to where physics objects are
-        for sprite in self.dynamic_sprite_list:
-            sprite.center_x = sprite.shape.body.position.x
-            sprite.center_y = sprite.shape.body.position.y
-            sprite.angle = math.degrees(sprite.shape.body.angle)
+        resync_physics_sprites(self.dynamic_sprite_list)
 
+        self.scroll_viewport()
 
         # Save the time it took to do this.
         self.processing_time = timeit.default_timer() - start_time
@@ -270,14 +200,8 @@ class MyGame(arcade.Window):
             self.player.shape.friction = 0
         elif symbol == arcade.key.UP:
             # find out if player is standing on ground
-
             grounding = check_grounding(self.player)
-            well_grounded = False
             if grounding['body'] != None and abs(grounding['normal'].x / grounding['normal'].y) < self.player.shape.friction:
-                well_grounded = True
-            print(grounding['body'], grounding['position'])
-
-            if well_grounded:
                 self.player.body.apply_impulse_at_local_point((0, PLAYER_JUMP_IMPULSE))
 
     def on_key_release(self, symbol: int, modifiers: int):
