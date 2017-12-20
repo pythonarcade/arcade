@@ -78,7 +78,7 @@ class ArcadeWindow(arcade.Window):
                     func(key, key_modifiers)
 
 
-class arcadeapi(arcade.Window):
+class decorator(arcade.Window):
     registry = dict(
         setup=[],
         update=[],
