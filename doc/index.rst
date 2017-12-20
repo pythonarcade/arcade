@@ -28,10 +28,18 @@ The Python Arcade Library
         <td>
           <img style="width:78px;" src="_static/ereader.svg"><br/>
           <h2><a href="quick_index.html">Quick API Index</a></h2>
+          <ul>
+          <li><a href="arcade.html">Full Arcade API Docs</a></li>
+          <li><a href="http://arcade-book.readthedocs.io/en/latest/">Learn to Program with Arcade</a> (book)</li>
+          </ul>
         </td>
         <td>
           <img style="width:78px;" src="_static/weixin-logo.svg"><br/>
           <h2><a href="pygame_comparison.html">Pygame Comparison</a></h2>
+          <ul>
+            <li><a href="performance_tips.html">Performance Tips</a></li>
+            <li><a href="https://www.reddit.com/r/pythonarcade/">Reddit /r/pythonarcade</a></li>
+          </ul>
         </td>
       </tr>
       <tr>
