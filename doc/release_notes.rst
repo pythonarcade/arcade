@@ -1,5 +1,11 @@
 :orphan:
 
+Future Release Planning
+=======================
+
+* `Release 1.3 <https://github.com/pvcraven/arcade/projects/2>`_
+* `Release 1.2.4 <https://github.com/pvcraven/arcade/projects/3>`_
+
 .. _release_notes:
 
 Release Notes
