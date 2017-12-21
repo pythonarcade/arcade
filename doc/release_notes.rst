@@ -5,6 +5,32 @@
 Release Notes
 =============
 
+Version 1.2.3
+-------------
+
+Bug Fixes
+~~~~~~~~~
+
+* `Issue 44 <https://github.com/pvcraven/arcade/issues/44>`_: Improve wildcard imports
+* `Issue 150 <https://github.com/pvcraven/arcade/issues/150>`_: "Shapes" example refers to chapter that does not exist
+* `Issue 157 <https://github.com/pvcraven/arcade/issues/157>`_: Different levels example documentation hook is messed up.
+* `Issue 160 <https://github.com/pvcraven/arcade/issues/160>`_: sprite_collect_coins example fails to run
+* `Issue 163 <https://github.com/pvcraven/arcade/issues/163>`_: Some examples aren't loading images
+
+Enhancements
+~~~~~~~~~~~~
+
+* `Issue 84 <https://github.com/pvcraven/arcade/issues/84>`_: Allow quick running via -m
+* `Issue 149 <https://github.com/pvcraven/arcade/issues/149>`_: Need better error message with check_for_collision
+* `Issue 151 <https://github.com/pvcraven/arcade/issues/151>`_: Need example showing how to go between rooms
+* `Issue 152 <https://github.com/pvcraven/arcade/issues/152>`_: Standardize name of main class in examples
+* `Issue 154 <https://github.com/pvcraven/arcade/issues/154>`_: Improve GitHub compatiblity
+* `Issue 155 <https://github.com/pvcraven/arcade/issues/155>`_: Improve readme documentation
+* `Issue 156 <https://github.com/pvcraven/arcade/issues/156>`_: Clean up root folder
+* `Issue 162 <https://github.com/pvcraven/arcade/issues/162>`_: Add documentation with performance tips
+* `Issue 164 <https://github.com/pvcraven/arcade/issues/164>`_: Create option for a static sprite list where we don't check to see if things moved.
+* `Issue 165 <https://github.com/pvcraven/arcade/issues/165>`_: Improve error message with physics engine
+
 Version 1.2.2
 -------------
 

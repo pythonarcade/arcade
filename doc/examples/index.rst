@@ -264,6 +264,25 @@ Shape Lists
 
    :ref:`shape_list_demo_person`
 
+Stress Tests
+------------
+
+.. figure:: thumbs/stress_test_simple.png
+   :figwidth: 170px
+
+   :ref:`stress_test_simple`
+
+.. figure:: thumbs/stress_test_draw_moving.png
+   :figwidth: 170px
+
+   :ref:`stress_test_draw_moving`
+
+.. figure:: thumbs/stress_test_collision.png
+   :figwidth: 170px
+
+   :ref:`stress_test_collision`
+
+
 
 Other
 -----
