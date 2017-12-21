@@ -161,6 +161,8 @@ class MyGame(arcade.Window):
 
         self.player.body.apply_force_at_local_point(self.force, (0, 0))
 
+        check_collision(self.player)
+
         grounding = check_grounding(self.player)
         if self.force[0] and grounding and grounding['body']:
             grounding['body'].apply_force_at_world_point((-self.force[0],0), grounding['position'])

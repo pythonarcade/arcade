@@ -53,6 +53,24 @@ def check_grounding(player):
 
     return grounding
 
+def check_collision(player):
+    grounding = {
+        'normal': pymunk.Vec2d.zero(),
+        'penetration': pymunk.Vec2d.zero(),
+        'impulse': pymunk.Vec2d.zero(),
+        'position': pymunk.Vec2d.zero(),
+        'body': None
+    }
+
+    def f(arbiter):
+
+        n = -arbiter.contact_point_set.normal
+        print(n)
+
+    player.body.each_arbiter(f)
+
+    return grounding
+
 def resync_physics_sprites(sprite_list):
     # Move sprites to where physics objects are
     for sprite in sprite_list:
