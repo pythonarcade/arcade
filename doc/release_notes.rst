@@ -11,6 +11,8 @@ Future Release Planning
 Release Notes
 =============
 
+Released 2017-December-20.
+
 Version 1.2.3
 -------------
 
