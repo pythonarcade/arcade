@@ -18,7 +18,7 @@ MOVEMENT_MULTIPLIER = 5
 DEAD_ZONE = 0.05
 
 
-class MyApplication(arcade.Window):
+class MyGame(arcade.Window):
     """
     Main application class.
     """
@@ -85,12 +85,6 @@ class MyApplication(arcade.Window):
         self.player.draw()
 
 
-def main():
-    window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
-    window.setup()
-    arcade.run()
-
-
 class Rectangle:
 
     """ Class to represent a rectangle on the screen """
@@ -141,6 +135,12 @@ class Rectangle:
             self.y = RECT_HEIGHT // 2
         if self.y > SCREEN_HEIGHT - (RECT_HEIGHT // 2):
             self.y = SCREEN_HEIGHT - (RECT_HEIGHT // 2)
+
+
+def main():
+    window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT)
+    window.setup()
+    arcade.run()
 
 
 if __name__ == "__main__":
