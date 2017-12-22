@@ -119,14 +119,13 @@ class PhysicsEnginePlatformer:
         hit_list = \
             check_for_collision_with_list(self.player_sprite,
                                           self.platforms)
-
-        result = False
+        
+        self.player_sprite.center_y += 2
 
         if len(hit_list) > 0:
-            result = True
-
-        self.player_sprite.center_y += 2
-        return result
+            return True
+        else:
+            return result
 
     def update(self):
         """
