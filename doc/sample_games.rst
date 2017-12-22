@@ -7,6 +7,14 @@ paul@cravenfamily.com.
 GitHub Projects
 ---------------
 
+.. raw:: html
+
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/4yRxBYXP_Eo" frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen></iframe>
+
+`The Great Skeleton War`_, an intense tower defense game, where there's always something new to discover.
+
+.. _The Great Skeleton War: https://github.com/BlakeDalmas/Python/tree/master/The%20Great%20Skeleton%20War
+
 .. image:: images/PyOverheadGame.png
 
 PyOverheadGame_, a 2D overhead game where you go through several rooms and pick up keys and other objects.
@@ -17,7 +25,7 @@ PyOverheadGame_, a 2D overhead game where you go through several rooms and pick 
 
 Dungeon_, explore a maze picking up arrows and coins.
 
-.. _Dungeon: https://github.com/BlakeDalmas/Python
+.. _Dungeon: https://github.com/BlakeDalmas/Python/tree/master/Dungeon%20Game
 
 Games from Simpson College Spring 2017 CMSC 150 Course
 ------------------------------------------------------
