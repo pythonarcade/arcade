@@ -125,7 +125,7 @@ class PhysicsEnginePlatformer:
         if len(hit_list) > 0:
             return True
         else:
-            return result
+            return False
 
     def update(self):
         """
