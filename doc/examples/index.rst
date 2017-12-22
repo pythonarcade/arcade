@@ -267,10 +267,10 @@ Shape Lists
 Stress Tests
 ------------
 
-.. figure:: thumbs/stress_test_simple.png
+.. figure:: thumbs/stress_test_draw_simple.png
    :figwidth: 170px
 
-   :ref:`stress_test_simple`
+   :ref:`stress_test_draw_simple`
 
 .. figure:: thumbs/stress_test_draw_moving.png
    :figwidth: 170px
