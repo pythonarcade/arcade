@@ -656,9 +656,7 @@ class SpriteList(Generic[T]):
             sprite.update_animation()
 
     def move(self, change_x: float, change_y: float):
-
-        dirty = self.vbo_dirty
-        if not dirty:
+        if not self.vbo_dirty:
             # gl.glLoadIdentity()
             # gl.glLoadMatrix(self.vertex_vbo_id)
             # gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self.vertex_vbo_id)
@@ -677,8 +675,6 @@ class SpriteList(Generic[T]):
             sprite.last_center_x += change_x
             sprite.center_y += change_y
             sprite.last_center_y += change_y
-
-        self.vbo_dirty = dirty
 
     def draw(self, fast: bool=True):
         """
