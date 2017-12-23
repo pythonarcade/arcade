@@ -45,7 +45,7 @@ class Window(pyglet.window.Window):
         super().__init__(width=width, height=height, caption=title,
                          resizable=resizable)
 
-        self.set_update_rate(1 / 80)
+        self.set_update_rate(1 / 60)
         super().set_fullscreen(fullscreen)
         self.invalid = False
         # set_viewport(0, self.width, 0, self.height)

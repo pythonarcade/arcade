@@ -11,10 +11,20 @@ Future Release Planning
 Release Notes
 =============
 
-Released 2017-December-20.
+Version 1.2.4
+-------------
+
+Unreleased development version
+
+Bug Fixes
+~~~~~~~~~
+
+* `Issue 170 <https://github.com/pvcraven/arcade/issues/170>`_: Unusually high CPU
 
 Version 1.2.3
 -------------
+
+Released 2017-December-20.
 
 Bug Fixes
 ~~~~~~~~~
