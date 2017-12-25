@@ -656,20 +656,6 @@ class SpriteList(Generic[T]):
             sprite.update_animation()
 
     def move(self, change_x: float, change_y: float):
-        if not self.vbo_dirty:
-            # gl.glLoadIdentity()
-            # gl.glLoadMatrix(self.vertex_vbo_id)
-            # gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self.vertex_vbo_id)
-            # gl.glEnableClientState(gl.GL_TEXTURE_COORD_ARRAY)
-            # gl.glEnableClientState(gl.GL_VERTEX_ARRAY)
-            # gl.glVertexPointer(2, gl.GL_FLOAT, 0, 0)
-
-            # gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self.texture_coord_vbo_id)
-
-            # gl.glTranslatef(change_x, change_y, 0)
-            self.change_x += change_x
-            self.change_y += change_y
-
         for sprite in self.sprite_list:
             sprite.center_x += change_x
             sprite.last_center_x += change_x
