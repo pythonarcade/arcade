@@ -86,7 +86,6 @@ class MyGame(arcade.Window):
         # Start timing how long this takes
         draw_start_time = timeit.default_timer()
 
-
         arcade.start_render()
         self.all_sprites_list.draw()
 
@@ -100,7 +99,6 @@ class MyGame(arcade.Window):
         fps = 1 / (self.draw_time + self.processing_time)
         output = f"Max FPS: {fps:3.1f}"
         arcade.draw_text(output, 20, SCREEN_HEIGHT - 60, arcade.color.BLACK, 16)
-
 
         self.draw_time = timeit.default_timer() - draw_start_time
 
@@ -133,11 +131,13 @@ class MyGame(arcade.Window):
         # Save the time it took to do this.
         self.processing_time = timeit.default_timer() - start_time
 
+
 def main():
     """ Main method """
     window = MyGame()
     window.setup()
     arcade.run()
+
 
 if __name__ == "__main__":
     main()

@@ -52,7 +52,7 @@ def make_ball():
     return ball
 
 
-class MyAppWindow(arcade.Window):
+class MyGame(arcade.Window):
     """ Main application class. """
 
     def __init__(self):
@@ -103,7 +103,7 @@ class MyAppWindow(arcade.Window):
 
 
 def main():
-    MyAppWindow()
+    MyGame()
     arcade.run()
 
 
