@@ -13,33 +13,16 @@ Installation on the Mac
    enter. You can also locate the Terminal program by looking in the "Utilities"
    folder under your "Applications" folder.
 
-3. Install virtualenv.  This allows you to install Python packages without
-   affecting the system-wide Python installation.  Run the following command
-   in your terminal.
+3. Install the Python Arcade Library, (along with a library called PyObjC)
+   by running the following command
 
-``sudo pip3 install virtualenv``
+``pip3 install PyObjC arcade``
 
-4. Use virtualenv to create a virtual environment specifically for your project
-   by running the following command in your terminal.
-
-``virtualenv ~/.virtualenvs/arcade``
-
-5. Activate the virtualenv you just created.  (You may need to do this each
-   time you open a new terminal window.  It is possible to make the terminal do
-   this for you each time you open a new window, but that is beyond the scope
-   of these instructions.)
-
-``source ~/.virtualenvs/arcade/bin/activate``
-
-6. Install the Python Arcade Library, by running the following command
-
-``pip install arcade``
-
-7. Download the community edition of PyCharm for the Mac from the `Jetbrains
+4. Download the community edition of PyCharm for the Mac from the `Jetbrains
    website <https://www.jetbrains.com/pycharm/download/>`_. Double click on the
    file you downloaded to install it.
 
-8. Create a new project in PyCharm. Because the Mac often has multiple versions
+5. Create a new project in PyCharm. Because the Mac often has multiple versions
    of Python installed on it, when creating a project make sure to select
    version 3.6.
 
