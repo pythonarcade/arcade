@@ -33,7 +33,7 @@ class MyGame(arcade.Window):
         """Plays sound on key press"""
 
         # Load sound
-        loaded_sound = arcade.sound.load_sound("sounds/laser1.ogg")
+        loaded_sound = arcade.sound.load_sound("sounds/laser1.wav")
 
         # Play Sound
         arcade.sound.play_sound(loaded_sound)
