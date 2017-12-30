@@ -11,10 +11,26 @@ Future Release Planning
 Release Notes
 =============
 
+Version 1.2.5
+-------------
+
+Released 2017-December-29.
+
+Bug Fixes
+~~~~~~~~~
+
+* `Issue 173 <https://github.com/pvcraven/arcade/issues/173>`_: JPGs not included in examples
+
+Enhancements
+~~~~~~~~~~~~
+
+* `Issue 171 <https://github.com/pvcraven/arcade/issues/171>`_: Clean up sprite list code
+
+
 Version 1.2.4
 -------------
 
-Unreleased development version
+Released 2017-December-23.
 
 Bug Fixes
 ~~~~~~~~~
