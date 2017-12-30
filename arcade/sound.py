@@ -10,7 +10,7 @@ import typing
 class PlaysoundException(Exception):
     pass
 
-def _playsoundWin(sound, block = False):
+def _playsoundWin(sound):
     '''
     Utilizes windll.winmm. Tested and known to work with MP3 and WAVE on
     Windows 7 with Python 2.7. Probably works with more file formats.
@@ -22,7 +22,6 @@ def _playsoundWin(sound, block = False):
     '''
     from ctypes import c_buffer, windll
     from random import random
-    from time   import sleep
     from sys    import getfilesystemencoding
 
     def winCommand(*command):
@@ -39,15 +38,12 @@ def _playsoundWin(sound, block = False):
         return buf.value
 
     alias = 'playsound_' + str(random())
-    winCommand('open "' + sound + '" alias', alias)
-    winCommand('set', alias, 'time format milliseconds')
-    durationInMS = winCommand('status', alias, 'length')
-    winCommand('play', alias, 'from 0 to', durationInMS.decode())
+    winCommand(f'open "{sound}" alias {alias}')
+    winCommand(f'set {alias} time format milliseconds')
+    durationInMS = winCommand(f'status {alias} length')
+    winCommand(f'play {alias} from 0 to {durationInMS.decode()}')
 
-    if block:
-        sleep(float(durationInMS) / 1000.0)
-
-def _playsoundOSX(sound, block = False):
+def _playsoundOSX(sound):
     '''
     Utilizes AppKit.NSSound. Tested and known to work with MP3 and WAVE on
     OS X 10.11 with Python 2.7. Probably works with anything QuickTime supports.
@@ -72,18 +68,11 @@ def _playsoundOSX(sound, block = False):
         raise IOError('Unable to load sound named: ' + sound)
     nssound.play()
 
-    if block:
-        sleep(nssound.duration())
-
-def _playsoundNix(sound, block=False):
+def _playsoundNix(sound):
     """Play a sound using GStreamer.
     Inspired by this:
     https://gstreamer.freedesktop.org/documentation/tutorials/playback/playbin-usage.html
     """
-    if not block:
-        raise NotImplementedError(
-            "block=False cannot be used on this platform yet")
-
     # pathname2url escapes non-URL-safe characters
     import os
     try:
