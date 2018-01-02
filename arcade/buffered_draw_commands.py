@@ -164,6 +164,72 @@ def create_line_loop(point_list: PointList,
     return create_line_generic(gl.GL_LINE_LOOP, point_list, color, border_width)
 
 
+def create_lines(point_list: PointList,
+                     color: Color, border_width: float=1):
+    """
+    Create a multi-point line loop to be rendered later. This works faster than draw_line because
+    the vertexes are only loaded to the graphics card once, rather than each frame.
+
+    :Example:
+
+    >>> import arcade
+    >>> arcade.open_window(800,600,"Drawing Example")
+    >>> arcade.start_render()
+    >>> point_list = [[0, 0], [100, 100], [50, 0]]
+    >>> line1 = arcade.create_line_loop(point_list, (255, 0, 0), 2)
+    >>> arcade.render(line1)
+    >>> arcade.finish_render()
+    >>> arcade.quick_run(0.25)
+    """
+    return create_line_generic(gl.GL_LINES, point_list, color, border_width)
+
+
+def create_lines_with_colors(point_list: PointList, color_list, border_width: float = 1) -> VertexBuffer:
+    shape_mode = gl.GL_LINES
+    number_points = len(point_list)
+
+    vertex_data = []
+    for point in point_list:
+        vertex_data.append(point[0])
+        vertex_data.append(point[1])
+
+    color_data = []
+    for color in color_list:
+        color_data.append(color[0] / 255.)
+        color_data.append(color[1] / 255.)
+        color_data.append(color[2] / 255.)
+        if len(color) == 3:
+            color_data.append(1.0)
+        else:
+            color_data.append(color[3] / 255.)
+
+    vbo_vertex_id = gl.GLuint()
+
+    gl.glGenBuffers(1, ctypes.pointer(vbo_vertex_id))
+
+    # Create a buffer with the data
+    # This line of code is a bit strange.
+    # (gl.GLfloat * len(data)) creates an array of GLfloats, one for each number
+    # (*data) initalizes the list with the floats. *data turns the list into a
+    # tuple.
+    data2 = (gl.GLfloat * len(vertex_data))(*vertex_data)
+
+    gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vbo_vertex_id)
+    gl.glBufferData(gl.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2,
+                    gl.GL_STATIC_DRAW)
+
+    # Colors
+    vbo_color_id = gl.GLuint()
+    gl.glGenBuffers(1, ctypes.pointer(vbo_color_id))
+
+    gl_color_list = (gl.GLfloat * len(color_data))(*color_data)
+    gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vbo_color_id)
+    gl.glBufferData(gl.GL_ARRAY_BUFFER, ctypes.sizeof(gl_color_list), gl_color_list, gl.GL_STATIC_DRAW)
+
+    shape = VertexBuffer(vbo_vertex_id, number_points, shape_mode, vbo_color_id=vbo_color_id)
+    shape.line_width = border_width
+    return shape
+
 def create_polygon(point_list: PointList,
                    color: Color, border_width: float=1):
     """
@@ -340,6 +406,24 @@ def create_filled_rectangles_with_colors(point_list, color_list) -> VertexBuffer
 
     """
 
+    shape_mode = gl.GL_QUADS
+    number_points = len(point_list)
+
+    vertex_data = []
+    for point in point_list:
+        vertex_data.append(point[0])
+        vertex_data.append(point[1])
+
+    color_data = []
+    for color in color_list:
+        color_data.append(color[0] / 255.)
+        color_data.append(color[1] / 255.)
+        color_data.append(color[2] / 255.)
+        if len(color) == 3:
+            color_data.append(1.0)
+        else:
+            color_data.append(color[3] / 255.)
+
     vbo_vertex_id = gl.GLuint()
 
     gl.glGenBuffers(1, ctypes.pointer(vbo_vertex_id))
@@ -349,22 +433,21 @@ def create_filled_rectangles_with_colors(point_list, color_list) -> VertexBuffer
     # (gl.GLfloat * len(data)) creates an array of GLfloats, one for each number
     # (*data) initalizes the list with the floats. *data turns the list into a
     # tuple.
-    gl_point_list = (gl.GLfloat * len(point_list))(*point_list)
+    data2 = (gl.GLfloat * len(vertex_data))(*vertex_data)
 
     gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vbo_vertex_id)
-    gl.glBufferData(gl.GL_ARRAY_BUFFER, ctypes.sizeof(gl_point_list), gl_point_list, gl.GL_STATIC_DRAW)
+    gl.glBufferData(gl.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2,
+                    gl.GL_STATIC_DRAW)
 
     # Colors
     vbo_color_id = gl.GLuint()
     gl.glGenBuffers(1, ctypes.pointer(vbo_color_id))
 
-    gl_color_list = (gl.GLfloat * len(color_list))(*color_list)
+    gl_color_list = (gl.GLfloat * len(color_data))(*color_data)
     gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vbo_color_id)
     gl.glBufferData(gl.GL_ARRAY_BUFFER, ctypes.sizeof(gl_color_list), gl_color_list, gl.GL_STATIC_DRAW)
 
-    shape_mode = gl.GL_QUADS
-    shape = VertexBuffer(vbo_vertex_id, len(point_list) // 2, shape_mode, vbo_color_id=vbo_color_id)
-
+    shape = VertexBuffer(vbo_vertex_id, number_points, shape_mode, vbo_color_id=vbo_color_id)
     return shape
 
 
