@@ -165,7 +165,7 @@ class MyGame(arcade.Window):
         self.lives = 3
 
         # Sounds
-        self.laser_sound = arcade.load_sound("sounds/laser1.ogg")
+        self.laser_sound = arcade.load_sound("sounds/laser1.wav")
 
     def start_new_game(self):
         """ Set up the game and initialize the variables. """
