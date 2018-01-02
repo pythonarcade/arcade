@@ -1,8 +1,12 @@
 """
 Example "Arcade" library code.
 
+Create a random mountain range.
+Original idea and some code from:
+https://bitesofcode.wordpress.com/2016/12/23/landscape-generation-using-midpoint-displacement/
+
 If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.decorator_drawing_example_02
+python -m arcade.examples.mountains_midpoint_displacement
 """
 
 # Library imports
@@ -66,6 +70,7 @@ def midpoint_displacement(start, end, roughness, vertical_displacement=None,
         iteration += 1
     return points
 
+
 def fix_points(points):
     last_y = None
     last_x = None
@@ -92,25 +97,31 @@ def fix_points(points):
             last_x = x
             last_y = y
 
+    x1 = last_x
+    x2 = SCREEN_WIDTH
+    y1 = last_y
+    y2 = last_y
+
+    new_list.append((x1, 0))
+    new_list.append((x1, y1))
+    new_list.append((x2, y2))
+    new_list.append((x2, 0))
+
     return new_list
 
-def create_mountain_range(height_min, height_max, color_start, color_end):
+
+def create_mountain_range(start, end, roughness, vertical_displacement, num_of_iterations, color_start):
 
     shape_list = arcade.ShapeElementList()
 
-    layer_1 = midpoint_displacement([0, 100], [SCREEN_WIDTH, 200], 1.4, 20, 16)
-    print(len(layer_1))
-    # print(layer_1[:1000])
+    layer_1 = midpoint_displacement(start, end, roughness, vertical_displacement, num_of_iterations)
     layer_1 = fix_points(layer_1)
-    print(len(layer_1))
-    # print(layer_1)
 
-    color_list = [arcade.color.BLACK] * len(layer_1)
+    color_list = [color_start] * len(layer_1)
     lines = arcade.create_filled_rectangles_with_colors(layer_1, color_list)
     shape_list.append(lines)
 
     return shape_list
-
 
 
 @arcade.decorator.init
@@ -124,19 +135,26 @@ def setup(window):
 
     background = arcade.ShapeElementList()
 
+    color1 = (195, 157, 224)
+    color2 = (240, 203, 163)
     points = (0, 0), (SCREEN_WIDTH, 0), (SCREEN_WIDTH, SCREEN_HEIGHT), (0, SCREEN_HEIGHT)
-    colors = (arcade.color.SKY_BLUE, arcade.color.SKY_BLUE, arcade.color.BLUE, arcade.color.BLUE)
+    colors = (color1, color1, color2, color2)
     rect = arcade.create_filled_rectangles_with_colors(points, colors)
 
     background.append(rect)
     window.mountains.append(background)
 
-    color_start = arcade.color.BLACK
-    color_end = arcade.color.BLACK
-    min_y = 0
-    max_y = 120
-    mountain_range = create_mountain_range(min_y, max_y, color_start, color_end)
-    window.mountains.append(mountain_range)
+    layer_4 = create_mountain_range([0, 350], [SCREEN_WIDTH, 320], 0.9, 250, 8, (158, 98, 204))
+    window.mountains.append(layer_4)
+
+    layer_3 = create_mountain_range([0, 270], [SCREEN_WIDTH, 190], 1, 120, 9, (130, 79, 138))
+    window.mountains.append(layer_3)
+
+    layer_2 = create_mountain_range([0, 180], [SCREEN_WIDTH, 80], 1.2, 30, 12, (68, 28, 99))
+    window.mountains.append(layer_2)
+
+    layer_1 = create_mountain_range([250, 0], [SCREEN_WIDTH, 200], 1.4, 20, 12, (49, 7, 82))
+    window.mountains.append(layer_1)
 
 
 @arcade.decorator.draw

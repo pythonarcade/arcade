@@ -1,8 +1,11 @@
 """
 Example "Arcade" library code.
 
+Idea and algorithm from:
+https://hackernoon.com/a-procedural-landscape-experiment-4efe1826906f
+
 If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.decorator_drawing_example_02
+python -m arcade.examples.mountains_random_walk
 """
 
 # Library imports
@@ -51,6 +54,7 @@ def create_mountain_range(height_min, height_max, color_start, color_end):
 
     return shape_list
 
+
 def create_line_strip():
     shape_list = arcade.ShapeElementList()
 
@@ -61,9 +65,8 @@ def create_line_strip():
 
     shape_list.append(line_strip)
 
-
-
     return shape_list
+
 
 @arcade.decorator.init
 def setup(window):
