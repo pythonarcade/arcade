@@ -282,6 +282,13 @@ Stress Tests
 
    :ref:`stress_test_collision`
 
+Decorators
+----------
+
+.. figure:: thumbs/decorator_drawing_example.png
+   :figwidth: 170px
+
+   :ref:`decorator_drawing_example`
 
 
 Other
