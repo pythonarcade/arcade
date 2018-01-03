@@ -690,6 +690,12 @@ class ShapeElementList(Generic[T]):
         last_color = None
         last_line_width = None
 
+        gl.glEnable(gl.GL_BLEND)
+        gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
+        gl.glEnable(gl.GL_LINE_SMOOTH)
+        gl.glHint(gl.GL_LINE_SMOOTH_HINT, gl.GL_NICEST)
+        gl.glHint(gl.GL_POLYGON_SMOOTH_HINT, gl.GL_NICEST)
+
         for shape in self.shape_list:
             if shape.vbo_color_id is not None:
                 gl.glEnableClientState(gl.GL_COLOR_ARRAY)
