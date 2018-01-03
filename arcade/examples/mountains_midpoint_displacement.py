@@ -118,7 +118,7 @@ def create_mountain_range(start, end, roughness, vertical_displacement, num_of_i
     layer_1 = fix_points(layer_1)
 
     color_list = [color_start] * len(layer_1)
-    lines = arcade.create_filled_rectangles_with_colors(layer_1, color_list)
+    lines = arcade.create_rectangles_filled_with_colors(layer_1, color_list)
     shape_list.append(lines)
 
     return shape_list
@@ -139,7 +139,7 @@ def setup(window):
     color2 = (240, 203, 163)
     points = (0, 0), (SCREEN_WIDTH, 0), (SCREEN_WIDTH, SCREEN_HEIGHT), (0, SCREEN_HEIGHT)
     colors = (color1, color1, color2, color2)
-    rect = arcade.create_filled_rectangles_with_colors(points, colors)
+    rect = arcade.create_rectangles_filled_with_colors(points, colors)
 
     background.append(rect)
     window.mountains.append(background)

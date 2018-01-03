@@ -120,7 +120,7 @@ def make_skyline(width, skyline_height, skyline_color,
 
         building_center_x += (building_width / 2)
 
-    shape = arcade.create_filled_rectangles_with_colors(skyline_point_list, color_list)
+    shape = arcade.create_rectangles_filled_with_colors(skyline_point_list, color_list)
     shape_list.append(shape)
 
     return shape_list
