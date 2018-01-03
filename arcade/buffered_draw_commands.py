@@ -446,8 +446,8 @@ def create_rectangles_filled_with_colors(point_list, color_list) -> VertexBuffer
 
     >>> import arcade
     >>> arcade.open_window(800,600,"Drawing Example")
-    >>> point_list = [0, 0, 100, 0, 100, 100, 0, 100]
-    >>> color_list = [0, 255, 0]
+    >>> point_list = [(0, 0), (100, 0), (100, 100), (0, 100)]
+    >>> color_list = [arcade.color.RED, arcade.color.BLUE, arcade.color.GREEN, arcade.color.AFRICAN_VIOLET]
     >>> my_shape = arcade.create_rectangles_filled_with_colors(point_list, color_list)
     >>> my_shape_list = ShapeElementList()
     >>> my_shape_list.append(my_shape)
