@@ -175,8 +175,8 @@ def create_lines(point_list: PointList,
     >>> import arcade
     >>> arcade.open_window(800,600,"Drawing Example")
     >>> arcade.start_render()
-    >>> point_list = [[0, 0], [100, 100], [50, 0]]
-    >>> line1 = arcade.create_line_loop(point_list, (255, 0, 0), 2)
+    >>> point_list = [[0, 0], [100, 100], [50, 0], [50, 100]]
+    >>> line1 = arcade.create_lines(point_list, (255, 0, 0), 2)
     >>> arcade.render(line1)
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
@@ -467,6 +467,16 @@ def create_triangles_filled_with_colors(point_list, color_list) -> VertexBuffer:
     Creating the rectangles, and then later drawing it with ``render``
     is faster than calling ``draw_rectangle``.
 
+    >>> import arcade
+    >>> arcade.open_window(800,600,"Drawing Example")
+    >>> point_list = [(0, 0), (100, 0), (100, 100)]
+    >>> color_list = [arcade.color.RED, arcade.color.BLUE, arcade.color.GREEN]
+    >>> my_shape = arcade.create_triangles_filled_with_colors(point_list, color_list)
+    >>> my_shape_list = ShapeElementList()
+    >>> my_shape_list.append(my_shape)
+    >>> my_shape_list.draw()
+    >>> arcade.finish_render()
+    >>> arcade.quick_run(0.25)
     """
 
     shape_mode = gl.GL_TRIANGLES
@@ -579,6 +589,16 @@ def create_ellipse_filled_with_colors(center_x: float, center_y: float,
                                       tilt_angle: float=0, num_segments=32) -> VertexBuffer:
 
     """
+    >>> import arcade
+    >>> arcade.open_window(800,600,"Drawing Example")
+    >>> point_list = [(0, 0), (100, 0), (100, 100)]
+    >>> color_list = [arcade.color.RED, arcade.color.BLUE, arcade.color.GREEN]
+    >>> my_shape = arcade.create_ellipse_filled_with_colors(100, 100, 50, 50, arcade.color.AFRICAN_VIOLET, arcade.color.ALABAMA_CRIMSON, tilt_angle=45)
+    >>> my_shape_list = ShapeElementList()
+    >>> my_shape_list.append(my_shape)
+    >>> my_shape_list.draw()
+    >>> arcade.finish_render()
+    >>> arcade.quick_run(0.25)
     """
     # Create an array with the vertex data
     vertex_data = []
@@ -702,6 +722,8 @@ class ShapeElementList(Generic[T]):
     >>> my_shape = arcade.create_rectangle_filled(250, 50, 20, 20, arcade.color.RED, 45)
     >>> my_list.append(my_shape)
     >>> my_shape = arcade.create_rectangle_outline(450, 50, 20, 20, (127, 0, 27, 127), 2, 45)
+    >>> my_list.append(my_shape)
+    >>> my_shape = arcade.create_lines_with_colors(([0, 400], [700, 400]), ((127, 0, 27, 127), arcade.color.GREEN), 2)
     >>> my_list.append(my_shape)
     >>> my_list.move(5, 5)
     >>> arcade.start_render()

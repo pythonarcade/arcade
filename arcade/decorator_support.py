@@ -79,6 +79,19 @@ class ArcadeWindow(arcade.Window):
 
 
 class decorator(arcade.Window):
+    """
+    >>> import arcade
+    >>> my_decorator = decorator()
+    >>> def f():
+    ...    pass
+    >>> my_decorator.init(f) == f
+    True
+    >>> my_decorator.draw(f) == f
+    True
+    >>> my_decorator.setup(800, 600, "Test Window", arcade.color.WHITE)
+    """
+
+
     registry = dict(
         setup=[],
         update=[],
@@ -141,10 +154,10 @@ class decorator(arcade.Window):
         else:
             arcade.draw_circle_filled(*args, **kwargs)
 
-    @classmethod
-    def run(cls, width: int = 600, height: int = 400,
-            title='Arcade Demo',
-            background_color=arcade.color.WHEAT):
+    def setup(cls, width: int, height: int,
+            title,
+            background_color):
+
         cls.registry['window'] = ArcadeWindow(
             cls.registry, width, height,
             title=title,
@@ -155,4 +168,10 @@ class decorator(arcade.Window):
         if game_class:
             cls.registry['game'] = game_class(cls.registry['window'])
         cls.registry['window'].setup()
+
+    @classmethod
+    def run(cls, width: int = 600, height: int = 400,
+            title='Arcade Demo',
+            background_color=arcade.color.WHEAT):
+        cls.setup(width, height, title, background_color)
         arcade.run()
