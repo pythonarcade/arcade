@@ -1,5 +1,7 @@
 from inspect import signature
 
+from arcade_types import Color
+
 import arcade
 
 
@@ -91,7 +93,6 @@ class decorator(arcade.Window):
     >>> my_decorator.setup(800, 600, "Test Window", arcade.color.WHITE)
     """
 
-
     registry = dict(
         setup=[],
         update=[],
@@ -133,6 +134,7 @@ class decorator(arcade.Window):
     color = arcade.color
     key = arcade.key
 
+    """
     @classmethod
     def draw_text(cls, *args, **kwargs):
         # Imperative mode means no event-handler functions, simplest
@@ -153,11 +155,12 @@ class decorator(arcade.Window):
             )
         else:
             arcade.draw_circle_filled(*args, **kwargs)
+    """
 
+    @classmethod
     def setup(cls, width: int, height: int,
-            title,
-            background_color):
-
+              title: str,
+              background_color: Color):
         cls.registry['window'] = ArcadeWindow(
             cls.registry, width, height,
             title=title,
@@ -167,11 +170,11 @@ class decorator(arcade.Window):
         game_class = cls.registry.get('game_class')
         if game_class:
             cls.registry['game'] = game_class(cls.registry['window'])
-        cls.registry['window'].setup()
+            cls.registry['window'].setup()
 
     @classmethod
     def run(cls, width: int = 600, height: int = 400,
-            title='Arcade Demo',
-            background_color=arcade.color.WHEAT):
+            title: str = 'Arcade Demo',
+            background_color: Color = arcade.color.WHEAT):
         cls.setup(width, height, title, background_color)
         arcade.run()
