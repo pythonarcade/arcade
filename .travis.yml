@@ -11,7 +11,7 @@ before_script:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
   - sleep 3 # give xvfb some time to start
-  - pip install sphinx coverage coveralls sphinx_rtd_theme gi
+  - pip install sphinx coverage coveralls sphinx_rtd_theme PyGObject
   - sudo apt-get install libavbin-dev libavbin0
 
 install:
