@@ -181,6 +181,5 @@ class Window(pyglet.window.Window):
         set_viewport(left, right, bottom, top)
 
     def get_viewport(self) -> (float, float, float, float):
-        """ Set the viewport. (What coordinates we can see.
-        Used to scale and/or scroll the screen.) """
+        """ Get the viewport. (What coordinates we can see.) """
         return get_viewport()
