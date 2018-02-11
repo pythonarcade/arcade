@@ -77,8 +77,6 @@ class MyGame(arcade.Window):
         # Call the parent class initializer
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Shape Demo")
 
-        self.shape_list = arcade.ShapeElementList()
-
         head_radius = 30
         chest_height = 110
         chest_width = 70

@@ -1,38 +1,33 @@
 Installation on Linux
 =====================
 
-Ubuntu 16.04 Instructions
--------------------------
+Ubuntu Instructions
+-------------------
 
-We will use a virtual python environment to install arcade.
+The Arcade library is Python 3.6+ only. Most versions of Linux come with
+Python 2.x. You'll need to install Python 3 and use it instead of the
+built-in Python 2.x. (Usually on Linux and Mac, you can type ``python3``
+instead of ``python`` once installed. Same with ``pip3`` instead of
+``pip`` to install packages to Python 3.x)
 
-.. code-block:: bash
-
-    apt update && sudo apt install -y python3-dev python3-pip libjpeg-dev zlib1g-dev
-    sudo pip3 install virtualenv virtualenvwrapper
-    virtualenv ~/.virtualenvs/arcade -p python3
-    source ~/.virtualenvs/arcade/bin/activate
-    pip install arcade
-
-In order for sound to work we need to install avbin from here:
-https://github.com/AVbin/AVbin/downloads
-
-Download the AVbin 11-alpha4 version.
-Be sure to download the correct architecture.
+Install Python 3 and some image dependencies:
 
 .. code-block:: bash
 
-    cd Download/Location
-    chmod +x install-avbin-linux-x86-64-v11alpha4 #You may have a different architecture
-    sudo ./install-avbin-linux-x86-64-v11alpha4
+    apt update && sudo apt install -y python3-dev python3-pip libjpeg-dev zlib1g-dev python-gst-1.0
 
-Issues with avbin?
-------------------
-
-The libavbin items help with sound.
-There is an issue getting this library on newer versions of Ubuntu.
-
+Check that you have at least Python 3.6 with:
 
 .. code-block:: bash
 
-    sudo apt-get install -y libasound2
+    python3 -V
+
+If you have version 3.5, you'll need to find instructions on how to install
+3.6 or higher on your distribution instead of 3.5. Starting with Ubuntu 17,
+3.6 should come by default.
+
+If you everything worked, you should be ready to install Arcade:
+.. code-block:: bash
+
+    sudo pip3 install arcade
+

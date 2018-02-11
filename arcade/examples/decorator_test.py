@@ -36,6 +36,7 @@ def draw_some_text(window):
     arcade.draw_text("This is some text.", 10, window.height // 2, arcade.color.BLACK, 20)
 
 
+
 @arcade.decorator.key_press
 def press_space(key, key_modifiers):
     if key == arcade.key.SPACE:
