@@ -1,6 +1,6 @@
 from inspect import signature
 
-from arcade_types import Color
+from arcade.arcade_types import Color
 
 import arcade
 
