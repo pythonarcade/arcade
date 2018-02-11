@@ -11,6 +11,19 @@ Future Release Planning
 Release Notes
 =============
 
+Version 1.3.0
+-------------
+
+Released 2018-February-11.
+
+Enhancements
+~~~~~~~~~~~~
+
+* `Issue 126 <https://github.com/pvcraven/arcade/issues/126>`_: Initial support for decorators.
+* `Issue 167 <https://github.com/pvcraven/arcade/issues/167>`_: Improve audio support.
+* `Issue 169 <https://github.com/pvcraven/arcade/issues/169>`_: Code cleanup in SpriteList.move()
+* `Issue 174 <https://github.com/pvcraven/arcade/issues/174>`_: Support for gradients.
+
 Version 1.2.5
 -------------
 
@@ -25,6 +38,7 @@ Enhancements
 ~~~~~~~~~~~~
 
 * `Issue 171 <https://github.com/pvcraven/arcade/issues/171>`_: Clean up sprite list code
+
 
 
 Version 1.2.4
