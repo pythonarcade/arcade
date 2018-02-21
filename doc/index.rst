@@ -28,6 +28,11 @@ The Python Arcade Library
         <td>
           <img style="width:78px;" src="_static/ereader.svg"><br/>
           <h2><a href="quick_index.html">Quick API Index</a></h2>
+          <ul>
+          <li><a href="quick_index.html#drawing-module">Drawing Functions</a></li>
+          <li><a href="quick_index.html#application-module">Window Class</a></li>
+          <li><a href="quick_index.html#sprite-module">Sprites</a></li>
+          </ul>
         </td>
         <td>
           <img style="width:78px;" src="_static/weixin-logo.svg"><br/>
