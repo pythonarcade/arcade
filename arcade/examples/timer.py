@@ -1,7 +1,10 @@
 """
 Show a timer on-screen.
 
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.timer
 """
+
 import arcade
 
 SCREEN_WIDTH = 800

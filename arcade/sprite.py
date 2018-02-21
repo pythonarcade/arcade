@@ -606,7 +606,7 @@ class SpriteList(Generic[T]):
     ...     meteor.kill()
     >>> arcade.quick_run(0.25)
     """
-    def __init__(self):
+    def __init__(self, is_static=False):
         """
         Initialize the sprite list
         """
@@ -622,6 +622,9 @@ class SpriteList(Generic[T]):
         self.vbo_dirty = True
         self.change_x = 0
         self.change_y = 0
+        self.is_static = is_static
+        self.sorted_by_x = None
+        self.sorted_by_y = None
 
     def append(self, item: T):
         """
@@ -653,29 +656,11 @@ class SpriteList(Generic[T]):
             sprite.update_animation()
 
     def move(self, change_x: float, change_y: float):
-
-        dirty = self.vbo_dirty
-        if not dirty:
-            # gl.glLoadIdentity()
-            # gl.glLoadMatrix(self.vertex_vbo_id)
-            # gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self.vertex_vbo_id)
-            # gl.glEnableClientState(gl.GL_TEXTURE_COORD_ARRAY)
-            # gl.glEnableClientState(gl.GL_VERTEX_ARRAY)
-            # gl.glVertexPointer(2, gl.GL_FLOAT, 0, 0)
-
-            # gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self.texture_coord_vbo_id)
-
-            # gl.glTranslatef(change_x, change_y, 0)
-            self.change_x += change_x
-            self.change_y += change_y
-
         for sprite in self.sprite_list:
             sprite.center_x += change_x
             sprite.last_center_x += change_x
             sprite.center_y += change_y
             sprite.last_center_y += change_y
-
-        self.vbo_dirty = dirty
 
     def draw(self, fast: bool=True):
         """
@@ -689,14 +674,16 @@ class SpriteList(Generic[T]):
             self.texture_coord_vbo_id = _create_vbo()
             # print("Setup VBO")
 
-        for sprite in self.sprite_list:
-            if sprite.center_x != sprite.last_center_x \
-                    or sprite.center_y != sprite.last_center_y \
-                    or sprite.angle != sprite.last_angle:
-                self.vbo_dirty = True
-                sprite.last_center_x = sprite.center_x
-                sprite.last_center_y = sprite.center_y
-                sprite.last_angle = sprite.angle
+        if not self.is_static:
+            # See if any of the sprites moved, and we need to regenerate the VBOs.
+            for sprite in self.sprite_list:
+                if sprite.center_x != sprite.last_center_x \
+                        or sprite.center_y != sprite.last_center_y \
+                        or sprite.angle != sprite.last_angle:
+                    self.vbo_dirty = True
+                    sprite.last_center_x = sprite.center_x
+                    sprite.last_center_y = sprite.center_y
+                    sprite.last_angle = sprite.angle
 
         # Run this if we are running 'fast' and we added or
         # removed sprites, and thus need to recreate our buffer

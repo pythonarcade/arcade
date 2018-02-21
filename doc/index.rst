@@ -32,11 +32,17 @@ The Python Arcade Library
           <li><a href="quick_index.html#drawing-module">Drawing Functions</a></li>
           <li><a href="quick_index.html#application-module">Window Class</a></li>
           <li><a href="quick_index.html#sprite-module">Sprites</a></li>
+          <li><a href="arcade.html">Full Arcade API Docs</a></li>
+          <li><a href="http://arcade-book.readthedocs.io/en/latest/">Learn to Program with Arcade</a> (book)</li>
           </ul>
         </td>
         <td>
           <img style="width:78px;" src="_static/weixin-logo.svg"><br/>
           <h2><a href="pygame_comparison.html">Pygame Comparison</a></h2>
+          <ul>
+            <li><a href="performance_tips.html">Performance Tips</a></li>
+            <li><a href="https://www.reddit.com/r/pythonarcade/">Reddit /r/pythonarcade</a></li>
+          </ul>
         </td>
       </tr>
       <tr>
@@ -114,6 +120,7 @@ API Documentation
 
    arcade
    quick_index
+   performance_tips
 
 How to Contribute
 -----------------

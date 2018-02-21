@@ -23,3 +23,4 @@ from arcade.sprite import *
 from arcade.version import *
 from arcade.window_commands import *
 from arcade.joysticks import *
+from arcade.decorator_support import decorator

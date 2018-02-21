@@ -12,7 +12,7 @@ from arcade.sprite import SpriteList
 class PhysicsEngineSimple:
     """
     This class will move everything, and take care of collisions.
-    
+
     >>> import arcade
     >>> player = arcade.Sprite()
     >>> player.change_y = -1
@@ -85,7 +85,7 @@ class PhysicsEnginePlatformer:
     >>> import arcade
     >>> player = arcade.Sprite()
     >>> player.change_y = -1
-    >>> player.change_x = -1    
+    >>> player.change_x = -1
     >>> walls = SpriteList()
     >>> wall = arcade.Sprite()
     >>> wall.change_x = 1
@@ -94,7 +94,7 @@ class PhysicsEnginePlatformer:
     >>> engine = PhysicsEnginePlatformer(player, walls)
     >>> engine.can_jump()
     False
-    >>> engine.update()    
+    >>> engine.update()
     """
 
     def __init__(self, player_sprite: Sprite, platforms: SpriteList,
@@ -119,14 +119,13 @@ class PhysicsEnginePlatformer:
         hit_list = \
             check_for_collision_with_list(self.player_sprite,
                                           self.platforms)
-
-        result = False
+        
+        self.player_sprite.center_y += 2
 
         if len(hit_list) > 0:
-            result = True
-
-        self.player_sprite.center_y += 2
-        return result
+            return True
+        else:
+            return False
 
     def update(self):
         """
@@ -217,7 +216,7 @@ class PhysicsEnginePlatformer:
                         # print(f"Spot 4 ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
 
                 else:
-                    print("Error, collision while player wasn't moving.")
+                    print("Error, collision while player wasn't moving.\nMake sure you aren't calling multiple updates, like a physics engine update and an all sprites list update.")
 
             # print(f"Spot E ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
 
