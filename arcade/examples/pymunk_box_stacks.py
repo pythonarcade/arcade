@@ -130,7 +130,7 @@ class MyGame(arcade.Window):
         self.draw_time = timeit.default_timer() - draw_start_time
 
     def on_mouse_press(self, x, y, button, modifiers):
-        if button == 1:
+        if button == arcade.MOUSE_BUTTON_LEFT:
             self.last_mouse_position = x, y
             # See if we clicked on anything
             shape_list = self.space.point_query((x, y), 1, pymunk.ShapeFilter())
@@ -139,7 +139,7 @@ class MyGame(arcade.Window):
             if len(shape_list) > 0:
                 self.shape_being_dragged = shape_list[0]
 
-        elif button == 4:
+        elif button == arcade.MOUSE_BUTTON_RIGHT:
             # With right mouse button, shoot a heavy coin fast.
             mass = 60
             radius = 10
@@ -155,7 +155,7 @@ class MyGame(arcade.Window):
             self.sprite_list.append(sprite)
 
     def on_mouse_release(self, x, y, button, modifiers):
-        if button == 1:
+        if button == arcade.MOUSE_BUTTON_LEFT:
             # Release the item we are holding (if any)
             self.shape_being_dragged = None
 
