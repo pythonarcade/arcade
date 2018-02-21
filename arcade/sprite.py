@@ -31,21 +31,35 @@ class Sprite:
     Class that represents a 'sprite' on-screen.
 
     Attributes:
-        :scale: Scale the sprite. Default is 1. Setting to 0.5 would halve \
-the width and height.
-        :center_x: x coordinate of the sprite's center.
-        :center_y: y coordinate of the sprite's center.
-        :angle: Angle at which the sprite is drawn. 0 is default, 180 is \
-upside-down.
+        :alpha: Transparency of sprite. 0 is invisible, 1 is opaque.
+        :angle: Rotation angle in degrees or sprite.
+        :boundary_left: Used in movement. Left boundary of moving sprite.
+        :boundary_right: Used in movement. Right boundary of moving sprite.
+        :boundary_top: Used in movement. Top boundary of moving sprite.
+        :boundary_bottom: Used in movement. Bottom boundary of moving sprite.
+        :bottom: Set/query the sprite location by using the bottom coordinate. This will be the 'y' of the bottom of the sprite.
+        :center_x: X location of the center of the sprite
+        :center_y: Y location of the center of the sprite
         :change_x: Movement vector, in the x direction.
         :change_y: Movement vector, in the y direction.
         :change_angle: Change in rotation.
-        :alpha: Transparency. 1 is solid, 0 is fully transparent \
-    (invisible).
-        :transparent: Set to True if this sprite can be transparent.
-        :sprite_lists: List of all the sprite lists this sprite is part of.
-        :textures: List of textures associated with this sprite.
+        :collision_radius: Used as a fast-check to see if this item is close enough to another item. If this check works, we do a slower more accurate check.
         :cur_texture_index: Index of current texture being used.
+        :filename: Filename of an image that represents the sprite.
+        :image_width: Width of the sprite
+        :image_height: Height of the sprite
+        :left: Set/query the sprite location by using the left coordinate. This will be the 'x' of the left of the sprite.
+        :position: A list with the (x, y) of where the sprite is.
+        :right: Set/query the sprite location by using the right coordinate. This will be the 'y=x' of the right of the sprite.
+        :scale: Scale the image up or down. Scale of 1.0 is original size, 0.5 is 1/2 height and width.
+        :sprite_lists: List of all the sprite lists this sprite is part of.
+        :transparent: Set to True if this sprite can be transparent.
+        :top: Set/query the sprite location by using the top coordinate. This will be the 'y' of the top of the sprite.
+        :texture: `Texture` class with the current texture.
+        :textures: List of textures associated with this sprite.
+        :velocity: Change in x, y expressed as a list. (0, 0) would be not moving.
+
+    It is common to over-ride the `update` method and provide mechanics on movement or other sprite updates.
 
     :Example:
 
