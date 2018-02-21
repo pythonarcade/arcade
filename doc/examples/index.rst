@@ -202,6 +202,11 @@ Platformers
 
    :ref:`sprite_move_walls`
 
+.. figure:: thumbs/sprite_no_coins_on_walls.png
+   :figwidth: 170px
+
+   :ref:`sprite_no_coins_on_walls`
+
 .. figure:: thumbs/sprite_move_scrolling.png
    :figwidth: 170px
 
