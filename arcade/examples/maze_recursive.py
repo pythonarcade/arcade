@@ -150,23 +150,28 @@ class MyGame(arcade.Window):
         os.chdir(file_path)
 
         # Sprite lists
-        self.all_sprites_list = None
-        self.coin_list = None
+        self.player_list = None
+        self.wall_list = None
 
-        # Set up the player
+        # Player info
         self.score = 0
         self.player_sprite = None
-        self.wall_list = None
+
+        # Physics engine
         self.physics_engine = None
+
+        # Used to scroll
         self.view_bottom = 0
         self.view_left = 0
+
+        # Time to process
         self.processing_time = 0
 
     def setup(self):
         """ Set up the game and initialize the variables. """
 
         # Sprite lists
-        self.all_sprites_list = arcade.SpriteList()
+        self.player_list = arcade.SpriteList()
         self.wall_list = arcade.SpriteList()
 
         # Set up the player
@@ -174,7 +179,7 @@ class MyGame(arcade.Window):
         self.player_sprite = arcade.Sprite("images/character.png", SPRITE_SCALING)
         self.player_sprite.center_x = SPRITE_SIZE
         self.player_sprite.center_y = SPRITE_SIZE
-        self.all_sprites_list.append(self.player_sprite)
+        self.player_list.append(self.player_sprite)
 
         maze = make_maze_recursion(MAZE_WIDTH, MAZE_HEIGHT)
 
@@ -185,7 +190,6 @@ class MyGame(arcade.Window):
                     wall = arcade.Sprite("images/boxCrate_double.png", SPRITE_SCALING)
                     wall.center_x = column * SPRITE_SIZE
                     wall.center_y = row * SPRITE_SIZE
-                    self.all_sprites_list.append(wall)
                     self.wall_list.append(wall)
 
         self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.wall_list)
@@ -212,7 +216,7 @@ class MyGame(arcade.Window):
 
         # Draw all the sprites.
         self.wall_list.draw()
-        self.player_sprite.draw()
+        self.player_list.draw()
 
         draw_time = timeit.default_timer() - draw_start_time
 

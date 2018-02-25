@@ -44,7 +44,7 @@ class MyGame(arcade.Window):
         os.chdir(file_path)
 
         # Variables that will hold sprite lists
-        self.all_sprites_list = None
+        self.player_list = None
         self.coin_list = None
         self.bullet_list = None
 
@@ -66,7 +66,7 @@ class MyGame(arcade.Window):
         """ Set up the game and initialize the variables. """
 
         # Sprite lists
-        self.all_sprites_list = arcade.SpriteList()
+        self.player_list = arcade.SpriteList()
         self.coin_list = arcade.SpriteList()
         self.bullet_list = arcade.SpriteList()
 
@@ -77,7 +77,7 @@ class MyGame(arcade.Window):
         self.player_sprite = arcade.Sprite("images/character.png", SPRITE_SCALING_PLAYER)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 70
-        self.all_sprites_list.append(self.player_sprite)
+        self.player_list.append(self.player_sprite)
 
         # Create the coins
         for i in range(COIN_COUNT):
@@ -91,7 +91,6 @@ class MyGame(arcade.Window):
             coin.center_y = random.randrange(120, SCREEN_HEIGHT)
 
             # Add the coin to the lists
-            self.all_sprites_list.append(coin)
             self.coin_list.append(coin)
 
         # Set the background color
@@ -137,15 +136,13 @@ class MyGame(arcade.Window):
         bullet.bottom = self.player_sprite.top
 
         # Add the bullet to the appropriate lists
-        self.all_sprites_list.append(bullet)
         self.bullet_list.append(bullet)
 
     def update(self, delta_time):
         """ Movement and game logic """
 
-        # Call update on all sprites (The sprites don't do much in this
-        # example though.)
-        self.all_sprites_list.update()
+        # Call update on bullet sprites
+        self.bullet_list.update()
 
         # Loop through each bullet
         for bullet in self.bullet_list:

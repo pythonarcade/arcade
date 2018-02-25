@@ -180,6 +180,17 @@ Sprite Movement
 
    :ref:`sprite_collect_rotating`
 
+.. figure:: thumbs/sprite_follow_simple.png
+   :figwidth: 170px
+
+   :ref:`sprite_follow_simple_2`
+
+.. figure:: thumbs/sprite_follow_simple_2.png
+   :figwidth: 170px
+
+   :ref:`sprite_follow_simple_2`
+
+
 
 Levels
 ^^^^^^
