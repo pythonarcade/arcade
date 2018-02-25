@@ -1,4 +1,6 @@
-.. _example-move-mouse:
+:orphan:
+
+.. _move_mouse:
 
 User control: Mouse
 ===================

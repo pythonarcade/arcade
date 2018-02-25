@@ -3,6 +3,15 @@
 Example Code
 ============
 
+Starting Templates
+------------------
+
+.. figure:: thumbs/starting_template.png
+   :figwidth: 170px
+
+   :ref:`starting_template`
+
+
 Drawing
 -------
 
@@ -96,19 +105,36 @@ Drawing with Loops
 User Control
 ------------
 
-.. toctree::
-   :maxdepth: 3
+These show how to move non-sprite items. For Sprites, see :ref:`sprite_player_movement`.
 
-   move_mouse
-   move_keyboard
-   move_joystick
-   joystick
+.. figure:: thumbs/move_mouse.png
+   :figwidth: 170px
+
+   :ref:`move_mouse`
+
+.. figure:: thumbs/move_keyboard.png
+   :figwidth: 170px
+
+   :ref:`move_keyboard`
+
+.. figure:: thumbs/move_joystick.png
+   :figwidth: 170px
+
+   :ref:`move_joystick`
+
+.. figure:: thumbs/joystick.png
+   :figwidth: 170px
+
+   :ref:`joystick`
+
 
 Sprites
 -------
 
-Player Movement
-^^^^^^^^^^^^^^^
+.. _sprite_player_movement:
+
+Sprite Player Movement
+^^^^^^^^^^^^^^^^^^^^^^
 
 .. figure:: thumbs/sprite_collect_coins.png
    :figwidth: 170px
@@ -148,6 +174,11 @@ Sprite Movement
    :figwidth: 170px
 
    :ref:`sprite_collect_coins_move_circle`
+
+.. figure:: thumbs/sprite_collect_rotating.png
+   :figwidth: 170px
+
+   :ref:`sprite_collect_rotating`
 
 
 Levels
@@ -355,5 +386,4 @@ Other
 .. toctree::
    :maxdepth: 3
 
-   starting_template
    examples_to_do

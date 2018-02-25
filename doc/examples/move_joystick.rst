@@ -1,4 +1,6 @@
-.. _example-move-joystick:
+:orphan:
+
+.. _move_joystick:
 
 User control: Joystick
 ======================

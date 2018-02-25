@@ -22,6 +22,16 @@ SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
 
+class Coin(arcade.Sprite):
+
+    def update(self):
+
+        # Rotate the coin.
+        # The arcade.Sprite class has an "angle" attribute that controls
+        # the sprite rotation. Change this, and the sprite rotates.
+        self.angle += self.change_angle
+
+
 class MyGame(arcade.Window):
     """ Our custom Window Class"""
 
@@ -77,6 +87,10 @@ class MyGame(arcade.Window):
             # Position the coin
             coin.center_x = random.randrange(SCREEN_WIDTH)
             coin.center_y = random.randrange(SCREEN_HEIGHT)
+
+            # Set up the initial angle, and the "spin"
+            coin.angle = random.randrange(360)
+            coin.change_angle = random.randrange(-5, 6)
 
             # Add the coin to the lists
             self.coin_list.append(coin)

@@ -1,4 +1,6 @@
-.. _example-joystick:
+:orphan:
+
+.. _joystick:
 
 Full Joystick Example
 =====================

@@ -1,4 +1,6 @@
-.. _example-move-keyboard:
+:orphan:
+
+.. _move_keyboard:
 
 User control: Keyboard
 ======================
