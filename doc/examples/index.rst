@@ -293,6 +293,12 @@ PyMunk
 
    :ref:`pymunk_pegboard`
 
+.. figure:: thumbs/pymunk_platformer.png
+   :figwidth: 170px
+
+   :ref:`pymunk_platformer`
+
+
 Shape Lists
 -----------
 
