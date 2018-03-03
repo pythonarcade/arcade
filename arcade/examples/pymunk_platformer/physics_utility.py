@@ -32,6 +32,7 @@ class PymunkSprite(arcade.Sprite):
 
 
 def check_grounding(player):
+    """ See if the player is on the ground. Used to see if we can jump. """
     grounding = {
         'normal': pymunk.Vec2d.zero(),
         'penetration': pymunk.Vec2d.zero(),
@@ -53,26 +54,10 @@ def check_grounding(player):
 
     return grounding
 
-def check_collision(player):
-    grounding = {
-        'normal': pymunk.Vec2d.zero(),
-        'penetration': pymunk.Vec2d.zero(),
-        'impulse': pymunk.Vec2d.zero(),
-        'position': pymunk.Vec2d.zero(),
-        'body': None
-    }
 
-    def f(arbiter):
-
-        n = -arbiter.contact_point_set.normal
-        print(n)
-
-    player.body.each_arbiter(f)
-
-    return grounding
 
 def resync_physics_sprites(sprite_list):
-    # Move sprites to where physics objects are
+    """ Move sprites to where physics objects are """
     for sprite in sprite_list:
         sprite.center_x = sprite.shape.body.position.x
         sprite.center_y = sprite.shape.body.position.y

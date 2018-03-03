@@ -10,19 +10,17 @@ pip install pymunk
 Artwork from http://kenney.nl
 
 If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.pymunk_box_stacks
+python -m arcade.examples.pymunk_platformer.main_window
 
 Click and drag with the mouse to move the boxes.
 """
 
-import arcade
-import pymunk
 import timeit
 import os
 
-from constants import *
 from physics_utility import *
 from create_level import create_level_1
+
 
 class MyGame(arcade.Window):
     """ Main application class. """
@@ -43,7 +41,10 @@ class MyGame(arcade.Window):
         self.space = pymunk.Space()
         self.space.gravity = GRAVITY
 
-        # Lists of sprites or lines
+        # Physics joint used for grabbing items
+        self.grab_joint = None
+
+        # Lists of sprites
         self.dynamic_sprite_list = arcade.SpriteList()
         self.static_sprite_list = arcade.SpriteList()
 
@@ -51,9 +52,11 @@ class MyGame(arcade.Window):
         self.shape_being_dragged = None
         self.last_mouse_position = 0, 0
 
+        # Draw and processing timings
         self.draw_time = 0
         self.processing_time = 0
 
+        # Current force applied to the player for movement by keyboard
         self.force = (0, 0)
 
         # Set the viewport boundaries
@@ -70,11 +73,8 @@ class MyGame(arcade.Window):
         self.dynamic_sprite_list.append(self.player)
         self.space.add(self.player.body, self.player.shape)
 
-
     def on_draw(self):
-        """
-        Render the screen.
-        """
+        """ Render the screen. """
 
         # This command has to happen before we start drawing
         arcade.start_render()
@@ -93,36 +93,50 @@ class MyGame(arcade.Window):
         output = f"Drawing time: {self.draw_time:.3f}"
         arcade.draw_text(output, 20 + self.view_left, SCREEN_HEIGHT - 40 + self.view_bottom, arcade.color.WHITE, 12)
 
+        # Display instructions
+        output = "Use the mouse to move boxes, space to punch, hold G to grab an item to the right."
+        arcade.draw_text(output, 20 + self.view_left, SCREEN_HEIGHT - 60 + self.view_bottom, arcade.color.WHITE, 12)
+
         self.draw_time = timeit.default_timer() - draw_start_time
 
     def on_mouse_press(self, x, y, button, modifiers):
-        if button == 1:
+        """ Handle mouse down events """
+
+        if button == arcade.MOUSE_BUTTON_LEFT:
+
+            # Store where the mouse is clicked. Adjust accordingly if we've
+            # scrolled the viewport.
             self.last_mouse_position = (x + self.view_left, y + self.view_bottom)
-            # See if we clicked on anything
+
+            # See if we clicked on any physics object
             shape_list = self.space.point_query(self.last_mouse_position, 1, pymunk.ShapeFilter())
 
             # If we did, remember what we clicked on
             if len(shape_list) > 0:
                 self.shape_being_dragged = shape_list[0]
 
-
     def on_mouse_release(self, x, y, button, modifiers):
-        if button == 1:
+        """ Handle mouse up events """
+
+        if button == arcade.MOUSE_BUTTON_LEFT:
+
             # Release the item we are holding (if any)
             self.shape_being_dragged = None
 
     def on_mouse_motion(self, x, y, dx, dy):
+        """ Handle mouse motion events """
+
         if self.shape_being_dragged is not None:
+            
             # If we are holding an object, move it with the mouse
-            self.last_mouse_position =  (x + self.view_left, y + self.view_bottom)
+            self.last_mouse_position = (x + self.view_left, y + self.view_bottom)
             self.shape_being_dragged.shape.body.position = self.last_mouse_position
             self.shape_being_dragged.shape.body.velocity = dx * 20, dy * 20
 
     def scroll_viewport(self):
-        # --- Manage Scrolling ---
+        """ Manage scrolling of the viewport. """
 
-        # Track if we need to change the viewport
-
+        # Flipped to true if we need to scroll
         changed = False
 
         # Scroll left
@@ -155,24 +169,33 @@ class MyGame(arcade.Window):
                                 self.view_bottom,
                                 SCREEN_HEIGHT + self.view_bottom)
 
-
     def update(self, delta_time):
+        """ Update the sprites """
+
+        # Keep track of how long this function takes.
         start_time = timeit.default_timer()
 
+        # If we have force to apply to the player (from hitting the arrow
+        # keys), apply it.
         self.player.body.apply_force_at_local_point(self.force, (0, 0))
 
-        check_collision(self.player)
+        # check_collision(self.player)
 
+        # See if the player is standing on an item.
+        # If she is, apply opposite force to the item below her.
+        # So if she moves left, the box below her will have
+        # a force to move to the right.
         grounding = check_grounding(self.player)
         if self.force[0] and grounding and grounding['body']:
-            grounding['body'].apply_force_at_world_point((-self.force[0],0), grounding['position'])
+            grounding['body'].apply_force_at_world_point((-self.force[0], 0), grounding['position'])
 
-        # Check for balls that fall off the screen
+        # Check for sprites that fall off the screen.
+        # If so, get rid of them.
         for sprite in self.dynamic_sprite_list:
             if sprite.shape.body.position.y < 0:
-                # Remove balls from physics space
+                # Remove sprites from physics space
                 self.space.remove(sprite.shape, sprite.shape.body)
-                # Remove balls from physics list
+                # Remove sprites from physics list
                 sprite.kill()
 
         # Update physics
@@ -184,35 +207,87 @@ class MyGame(arcade.Window):
             self.shape_being_dragged.shape.body.position = self.last_mouse_position
             self.shape_being_dragged.shape.body.velocity = 0, 0
 
+        # Resync the sprites to the physics objects that shadow them
         resync_physics_sprites(self.dynamic_sprite_list)
 
+        # Scroll the viewport if needed
         self.scroll_viewport()
 
         # Save the time it took to do this.
         self.processing_time = timeit.default_timer() - start_time
 
+    def punch(self):
+        # --- Punch left
+        # See if we have a physics object to our right
+        self.check_point = (self.player.right + 10, self.player.center_y)
+        shape_list = self.space.point_query(self.check_point, 1, pymunk.ShapeFilter())
 
+        # Apply force to any object to our right
+        for shape in shape_list:
+            shape.shape.body.apply_impulse_at_world_point((PLAYER_PUNCH_IMPULSE, PLAYER_PUNCH_IMPULSE),
+                                                          self.check_point)
+
+        # --- Punch right
+        # See if we have a physics object to our left
+        self.check_point = (self.player.left - 10, self.player.center_y)
+        shape_list = self.space.point_query(self.check_point, 1, pymunk.ShapeFilter())
+
+        # Apply force to any object to our right
+        for shape in shape_list:
+            shape.shape.body.apply_impulse_at_world_point((-PLAYER_PUNCH_IMPULSE, PLAYER_PUNCH_IMPULSE),
+                                                          self.check_point)
+
+    def grab(self):
+        """ Grab something """
+        # See if we have a physics object to our right
+        self.check_point = (self.player.right + 10, self.player.center_y)
+        shape_list = self.space.point_query(self.check_point, 1, pymunk.ShapeFilter())
+
+        # Create a joint for an item to our right
+        for shape in shape_list:
+            self.grab_joint = pymunk.PinJoint(self.player.shape.body, shape.shape.body)
+            self.space.add(self.grab_joint)
+
+    def let_go(self):
+        """ Let go of whatever we are holding """
+        if self.grab_joint:
+            self.space.remove(self.grab_joint)
+            self.grab_joint = None
 
     def on_key_press(self, symbol: int, modifiers: int):
+        """ Handle keyboard presses. """
         if symbol == arcade.key.RIGHT:
+            # Add force to the player, and set the player friction to zero
             self.force = (PLAYER_MOVE_FORCE, 0)
             self.player.shape.friction = 0
         elif symbol == arcade.key.LEFT:
+            # Add force to the player, and set the player friction to zero
             self.force = (-PLAYER_MOVE_FORCE, 0)
             self.player.shape.friction = 0
         elif symbol == arcade.key.UP:
             # find out if player is standing on ground
             grounding = check_grounding(self.player)
             if grounding['body'] != None and abs(grounding['normal'].x / grounding['normal'].y) < self.player.shape.friction:
+                # She is! Go ahead and jump
                 self.player.body.apply_impulse_at_local_point((0, PLAYER_JUMP_IMPULSE))
+        elif symbol == arcade.key.SPACE:
+            self.punch()
+        elif symbol == arcade.key.G:
+            self.grab()
+
 
     def on_key_release(self, symbol: int, modifiers: int):
+        """ Handle keyboard releases. """
         if symbol == arcade.key.RIGHT:
+            # Remove force from the player, and set the player friction to a high number so she stops
             self.force = (0, 0)
             self.player.shape.friction = 15
         elif symbol == arcade.key.LEFT:
+            # Remove force from the player, and set the player friction to a high number so she stops
             self.force = (0, 0)
             self.player.shape.friction = 15
+        elif symbol == arcade.key.G:
+            self.let_go()
 
 
 def main():
