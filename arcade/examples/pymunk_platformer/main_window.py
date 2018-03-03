@@ -18,8 +18,8 @@ Click and drag with the mouse to move the boxes.
 import timeit
 import os
 
-from physics_utility import *
-from create_level import create_level_1
+from arcade.examples.pymunk_platformer.physics_utility import *
+from arcade.examples.pymunk_platformer.create_level import create_level_1
 
 
 class MyGame(arcade.Window):
@@ -127,7 +127,7 @@ class MyGame(arcade.Window):
         """ Handle mouse motion events """
 
         if self.shape_being_dragged is not None:
-            
+
             # If we are holding an object, move it with the mouse
             self.last_mouse_position = (x + self.view_left, y + self.view_bottom)
             self.shape_being_dragged.shape.body.position = self.last_mouse_position

@@ -2,10 +2,13 @@ import arcade
 import pymunk
 import math
 
-from constants import *
+from arcade.examples.pymunk_platformer.constants import *
 
 class PymunkSprite(arcade.Sprite):
-
+    """
+    We need a Sprite and a Pymunk physics object. This class blends them
+    together.
+    """
     def __init__(self,
                  filename,
                  center_x=0,
@@ -53,7 +56,6 @@ def check_grounding(player):
     player.body.each_arbiter(f)
 
     return grounding
-
 
 
 def resync_physics_sprites(sprite_list):
