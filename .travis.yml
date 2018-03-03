@@ -12,7 +12,7 @@ before_script:
   - "sh -e /etc/init.d/xvfb start"
   - sleep 3 # give xvfb some time to start
   - sudo apt-get install libgirepository1.0-dev
-  - pip install sphinx coverage coveralls sphinx_rtd_theme setuptools PyGObject
+  - pip install sphinx coverage coveralls sphinx_rtd_theme setuptools
 
 install:
   - pip install -r requirements.txt
