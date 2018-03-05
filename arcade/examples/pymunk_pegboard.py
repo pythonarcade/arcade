@@ -153,7 +153,10 @@ class MyGame(arcade.Window):
                 ball.kill()
 
         # Update physics
-        self.space.step(1 / 80.0)
+        # Use a constant time step, don't use delta_time
+        # See "Game loop / moving time forward"
+        # http://www.pymunk.org/en/latest/overview.html#game-loop-moving-time-forward
+        self.space.step(1 / 60.0)
 
         # Move sprites to where physics objects are
         for ball in self.ball_list:

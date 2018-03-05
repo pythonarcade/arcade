@@ -178,7 +178,10 @@ class MyGame(arcade.Window):
                 sprite.kill()
 
         # Update physics
-        self.space.step(1 / 80.0)
+        # Use a constant time step, don't use delta_time
+        # See "Game loop / moving time forward"
+        # http://www.pymunk.org/en/latest/overview.html#game-loop-moving-time-forward
+        self.space.step(1 / 60.0)
 
         # If we are dragging an object, make sure it stays with the mouse. Otherwise
         # gravity will drag it down.
