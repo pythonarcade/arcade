@@ -1,8 +1,12 @@
 import arcade
+from arcade.examples.pymunk_platformer.constants import (
+    DEFAULT_FRICTION,
+    DEFAULT_MASS,
+)
+
 import pymunk
 import math
 
-from arcade.examples.pymunk_platformer.constants import *
 
 class PymunkSprite(arcade.Sprite):
     """
