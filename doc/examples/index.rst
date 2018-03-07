@@ -299,8 +299,13 @@ PyMunk
    :ref:`pymunk_platformer`
 
 
-Shape Lists
------------
+ShapeElementLists
+-----------------
+
+.. figure:: thumbs/shape_list_demo.png
+   :figwidth: 170px
+
+   :ref:`shape_list_demo`
 
 .. figure:: thumbs/lines_buffered.png
    :figwidth: 170px
