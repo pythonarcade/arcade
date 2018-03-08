@@ -10,7 +10,7 @@ The Python Arcade Library
           <h2><a href="examples/index.html">Example Code</a></h2>
           <ul>
           <li><a href="examples/drawing_primitives.html">Drawing Primitives</a></li>
-          <li><a href="examples/bouncing_rectangle.html">Bouncing Rectangle</a></li>
+          <li><a href="examples/sprite_collect_coins.html">Collect Coins</a></li>
           <li><a href="examples/asteroid_smasher.html">Asteroid Smasher</a></li>
           </ul>
         </td>
