@@ -184,7 +184,19 @@ def create_lines(point_list: PointList,
     return create_line_generic(gl.GL_LINES, point_list, color, line_width)
 
 
-def _fix_color_data(original_color_data):
+def _fix_color(color):
+    new_color_data = []
+    new_color_data.append(color[0] / 255.)
+    new_color_data.append(color[1] / 255.)
+    new_color_data.append(color[2] / 255.)
+    if len(color) == 3:
+        new_color_data.append(1.0)
+    else:
+        new_color_data.append(color[3] / 255.)
+    return new_color_data
+
+
+def _fix_color_list(original_color_data):
     new_color_data = []
     for color in original_color_data:
         new_color_data.append(color[0] / 255.)
@@ -206,7 +218,7 @@ def create_lines_with_colors(point_list: PointList, color_list, line_width: floa
         vertex_data.append(point[0])
         vertex_data.append(point[1])
 
-    color_data = _fix_color_data(color_list)
+    color_data = _fix_color_list(color_list)
 
     vbo_vertex_id = gl.GLuint()
 
@@ -348,7 +360,15 @@ def create_rectangle(center_x: float, center_y: float, width: float,
         shape_mode = gl.GL_LINE_LOOP
     shape = VertexBuffer(vbo_id, len(data) // 2, shape_mode)
 
-    shape.color = color
+    # Colors
+    shape.vbo_color_id = gl.GLuint()
+    gl.glGenBuffers(1, ctypes.pointer(shape.vbo_color_id))
+
+    color_data = _fix_color_list( (color, color, color, color) )
+    gl_color_list = (gl.GLfloat * len(color_data))(*color_data)
+    gl.glBindBuffer(gl.GL_ARRAY_BUFFER, shape.vbo_color_id)
+    gl.glBufferData(gl.GL_ARRAY_BUFFER, ctypes.sizeof(gl_color_list), gl_color_list, gl.GL_STATIC_DRAW)
+
     shape.line_width = border_width
     return shape
 
@@ -637,7 +657,7 @@ def create_ellipse_filled_with_colors(center_x: float, center_y: float,
     # shape_mode = gl.GL_LINE_LOOP
 
     # Colors
-    color_data = _fix_color_data(color_data)
+    color_data = _fix_color_list(color_data)
     vbo_color_id = gl.GLuint()
     gl.glGenBuffers(1, ctypes.pointer(vbo_color_id))
 
