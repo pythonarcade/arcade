@@ -1,5 +1,10 @@
 """
+This demo shows the speed of drawing a full grid of squares using no buffering.
 
+For me this takes about 0.850 seconds per frame.
+
+It is slow because we load all the points and all the colors to the card every
+time.
 """
 
 import arcade
@@ -8,6 +13,9 @@ import timeit
 SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 800
 
+SQUARE_WIDTH = 5
+SQUARE_HEIGHT = 5
+SQUARE_SPACING = 10
 
 class MyGame(arcade.Window):
     """ Main application class. """
@@ -30,11 +38,12 @@ class MyGame(arcade.Window):
         # Start timing how long this takes
         draw_start_time = timeit.default_timer()
 
-        SPACING = 10
-        for x in range(0, SCREEN_WIDTH, SPACING):
-            for y in range(0, SCREEN_HEIGHT, SPACING):
-                arcade.draw_rectangle_filled(x, y, 5, 5, arcade.color.DARK_BLUE)
+        # --- Draw all the rectangles
+        for x in range(0, SCREEN_WIDTH, SQUARE_SPACING):
+            for y in range(0, SCREEN_HEIGHT, SQUARE_SPACING):
+                arcade.draw_rectangle_filled(x, y, SQUARE_WIDTH, SQUARE_HEIGHT, arcade.color.DARK_BLUE)
 
+        # Print the timing
         output = f"Drawing time: {self.draw_time:.3f} seconds per frame."
         arcade.draw_text(output, 20, SCREEN_HEIGHT - 40, arcade.color.WHITE, 18)
 

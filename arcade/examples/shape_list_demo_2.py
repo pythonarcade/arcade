@@ -1,5 +1,13 @@
 """
+This demo shows using buffered rectangles to draw a grid of squares on the
+screen.
 
+For me this starts at 0.500 seconds and goes down to 0.220 seconds after the
+graphics card figures out some optimizations.
+
+It is faster than demo 1 because we aren't loading the vertices and color
+to the card again and again. It isn't very fast because we are still sending
+individual draw commands to the graphics card for each square.
 """
 
 import arcade
@@ -7,6 +15,10 @@ import timeit
 
 SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 800
+
+SQUARE_WIDTH = 5
+SQUARE_HEIGHT = 5
+SQUARE_SPACING = 10
 
 
 class MyGame(arcade.Window):
@@ -22,11 +34,12 @@ class MyGame(arcade.Window):
 
 
     def setup(self):
-        SPACING = 10
+        # --- Create the vertex buffers objects for each square before we do
+        # any drawing.
         self.shape_list = arcade.ShapeElementList()
-        for x in range(0, SCREEN_WIDTH, SPACING):
-            for y in range(0, SCREEN_HEIGHT, SPACING):
-                shape = arcade.create_rectangle_filled(x, y, 5, 5, arcade.color.DARK_BLUE)
+        for x in range(0, SCREEN_WIDTH, SQUARE_SPACING):
+            for y in range(0, SCREEN_HEIGHT, SQUARE_SPACING):
+                shape = arcade.create_rectangle_filled(x, y, SQUARE_WIDTH, SQUARE_HEIGHT, arcade.color.DARK_BLUE)
                 self.shape_list.append(shape)
 
 
@@ -41,6 +54,7 @@ class MyGame(arcade.Window):
         # Start timing how long this takes
         draw_start_time = timeit.default_timer()
 
+        # --- Draw all the rectangles
         self.shape_list.draw()
 
         output = f"Drawing time: {self.draw_time:.3f} seconds per frame."
