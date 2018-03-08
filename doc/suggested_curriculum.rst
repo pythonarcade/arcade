@@ -14,9 +14,12 @@ with drawing commands, they should
 not have to know about defining functions, classes, or using decorators,
 or any other advanced programming topic.
 
+If you are looking for an on-line textbook to get ideas from, see:
+
+http://arcade-book.readthedocs.io/
+
 Below is a rough list of common first-course items to teach,
 and the order they could be taught in.
-
 
 Stage 1:
 --------
