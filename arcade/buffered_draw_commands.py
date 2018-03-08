@@ -184,18 +184,6 @@ def create_lines(point_list: PointList,
     return create_line_generic(gl.GL_LINES, point_list, color, line_width)
 
 
-def _fix_color(color):
-    new_color_data = []
-    new_color_data.append(color[0] / 255.)
-    new_color_data.append(color[1] / 255.)
-    new_color_data.append(color[2] / 255.)
-    if len(color) == 3:
-        new_color_data.append(1.0)
-    else:
-        new_color_data.append(color[3] / 255.)
-    return new_color_data
-
-
 def _fix_color_list(original_color_data):
     new_color_data = []
     for color in original_color_data:
