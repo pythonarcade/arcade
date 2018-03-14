@@ -1,7 +1,9 @@
 """
 This code creates the layout of level one.
 """
-from arcade.examples.pymunk_platformer.physics_utility import *
+from arcade.examples.pymunk_platformer.physics_utility import (
+    PymunkSprite,
+)
 
 def create_floor(space, sprite_list):
     """ Create a bunch of blocks for the floor. """
