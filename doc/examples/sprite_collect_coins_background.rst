@@ -14,3 +14,4 @@ Using a Background Image
 .. literalinclude:: ../../arcade/examples/sprite_collect_coins_background.py
     :caption: sprite_collect_coins_background.py
     :linenos:
+    :emphasize-lines: 39-40, 60-63, 97-99
