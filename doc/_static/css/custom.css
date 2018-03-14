@@ -4,7 +4,7 @@
 .wy-table-responsive table td {
     white-space: normal;
 }
-#drawing,#animation,#drawing-with-loops,#sprite-player-movement,#platformers,#bullets,#levels,#sprite-movement,#user-control,#other,#pymunk,#shape-lists,#stress-tests {
+#drawing,#animation,#drawing-with-loops,#sprite-player-movement,#platformers,#bullets,#levels,#sprite-movement,#user-control,#other,#pymunk,#shapeelementlists,#stress-tests {
 	display: flex;
 	flex-direction: row;
 	flex-wrap: wrap;
