@@ -318,6 +318,7 @@ def create_rectangle(center_x: float, center_y: float, width: float,
 
     >>> import arcade
     >>> arcade.open_window(800,600,"Drawing Example")
+    >>> arcade.start_render()
     >>> my_rect = arcade.create_rectangle(200, 200, 50, 50, (0, 255, 0), 3, 45)
     >>> arcade.render(my_rect)
     >>> arcade.finish_render()
@@ -356,7 +357,7 @@ def create_rectangle(center_x: float, center_y: float, width: float,
     gl_color_list = (gl.GLfloat * len(color_data))(*color_data)
     gl.glBindBuffer(gl.GL_ARRAY_BUFFER, shape.vbo_color_id)
     gl.glBufferData(gl.GL_ARRAY_BUFFER, ctypes.sizeof(gl_color_list), gl_color_list, gl.GL_STATIC_DRAW)
-
+    shape.color = color
     shape.line_width = border_width
     return shape
 
