@@ -12,7 +12,7 @@ before_script:
   - "sh -e /etc/init.d/xvfb start"
   - sleep 3 # give xvfb some time to start
   - sudo apt-get install python3-gi python-gobject
-  - pip install sphinx coverage coveralls sphinx_rtd_theme setuptools vext
+  - pip install sphinx coverage coveralls sphinx_rtd_theme setuptools vext vext.gi
 
 install:
   - pip install -r requirements.txt
