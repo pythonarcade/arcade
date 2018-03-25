@@ -35,6 +35,7 @@ VIEWPORT_MARGIN = 300
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 600
 
+MERGE_SPRITES = True
 
 def create_grid(width, height):
     """ Create a two-dimensional grid of specified size. """
@@ -118,13 +119,40 @@ class MyGame(arcade.Window):
             self.grid = do_simulation_step(self.grid)
 
         # Create sprites based on 2D grid
-        for row in range(GRID_HEIGHT):
-            for column in range(GRID_WIDTH):
-                if self.grid[row][column] == 1:
-                    wall = arcade.Sprite("images/grassCenter.png", SPRITE_SCALING)
-                    wall.center_x = column * SPRITE_SIZE + SPRITE_SIZE / 2
+
+        if not MERGE_SPRITES:
+            for row in range(GRID_HEIGHT):
+                for column in range(GRID_WIDTH):
+                    if self.grid[row][column] == 1:
+                        wall = arcade.Sprite("images/grassCenter.png", SPRITE_SCALING)
+                        wall.center_x = column * SPRITE_SIZE + SPRITE_SIZE / 2
+                        wall.center_y = row * SPRITE_SIZE + SPRITE_SIZE / 2
+                        self.wall_list.append(wall)
+        else:
+
+            for row in range(GRID_HEIGHT):
+                column = 0
+                while column < len(self.grid):
+                    while column < len(self.grid) and self.grid[row][column] == 0:
+                        column += 1
+                    start_column = column
+                    while column < len(self.grid) and self.grid[row][column] == 1:
+                        column += 1
+                    end_column = column - 1
+
+                    column_count = end_column - start_column + 1
+                    column_mid = (start_column + end_column) / 2
+
+                    wall = arcade.Sprite("images/grassCenter.png", SPRITE_SCALING,
+                                         repeat_count_x=column_count)
+                    wall.center_x = column_mid * SPRITE_SIZE + SPRITE_SIZE / 2
                     wall.center_y = row * SPRITE_SIZE + SPRITE_SIZE / 2
+                    wall.width = SPRITE_SIZE * column_count
                     self.wall_list.append(wall)
+
+                #     print(f"{start_column}-{end_column}, ", end="")
+                # print()
+
 
         # Set up the player
         self.player_sprite = arcade.Sprite("images/character.png", SPRITE_SCALING)
@@ -161,13 +189,19 @@ class MyGame(arcade.Window):
         output = f"Sprite Count: {sprite_count}"
         arcade.draw_text(output,
                          self.view_left + 20,
-                         WINDOW_HEIGHT - 40 + self.view_bottom,
+                         WINDOW_HEIGHT - 20 + self.view_bottom,
                          arcade.color.WHITE, 16)
 
         output = f"Drawing time: {self.draw_time:.3f}"
         arcade.draw_text(output,
                          self.view_left + 20,
-                         WINDOW_HEIGHT - 20 + self.view_bottom,
+                         WINDOW_HEIGHT - 40 + self.view_bottom,
+                         arcade.color.WHITE, 16)
+
+        output = f"Processing time: {self.processing_time:.3f}"
+        arcade.draw_text(output,
+                         self.view_left + 20,
+                         WINDOW_HEIGHT - 60 + self.view_bottom,
                          arcade.color.WHITE, 16)
 
         self.draw_time = timeit.default_timer() - draw_start_time
@@ -195,6 +229,8 @@ class MyGame(arcade.Window):
 
     def update(self, delta_time):
         """ Movement and game logic """
+
+        start_time = timeit.default_timer()
 
         # Call update on all sprites (The sprites don't do much in this
         # example though.)
@@ -235,6 +271,9 @@ class MyGame(arcade.Window):
                                 WINDOW_WIDTH + self.view_left,
                                 self.view_bottom,
                                 WINDOW_HEIGHT + self.view_bottom)
+
+        # Save the time it took to do this.
+        self.processing_time = timeit.default_timer() - start_time
 
 
 def main():
