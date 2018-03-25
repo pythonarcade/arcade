@@ -279,6 +279,29 @@ Platformers
 
    :ref:`sprite_enemies_in_platformer`
 
+Procedural Generation
+---------------------
+
+.. figure:: thumbs/recursive_maze.png
+   :figwidth: 170px
+
+   :ref:`recursive_maze`
+
+.. figure:: thumbs/maze_depth_first.png
+   :figwidth: 170px
+
+   :ref:`depth_first_maze`
+
+.. figure:: thumbs/procedural_caves_cellular.png
+   :figwidth: 170px
+
+   :ref:`procedural_caves_cellular`
+
+.. figure:: thumbs/procedural_caves_bsp.png
+   :figwidth: 170px
+
+   :ref:`procedural_caves_bsp`
+
 
 PyMunk
 ------
@@ -393,21 +416,6 @@ Other
    :figwidth: 170px
 
    :ref:`asteroid_smasher`
-
-.. figure:: thumbs/recursive_maze.png
-   :figwidth: 170px
-
-   :ref:`recursive_maze`
-
-.. figure:: thumbs/maze_depth_first.png
-   :figwidth: 170px
-
-   :ref:`depth_first_maze`
-
-.. figure:: thumbs/procedural_caves.png
-   :figwidth: 170px
-
-   :ref:`procedural_caves`
 
 
 
