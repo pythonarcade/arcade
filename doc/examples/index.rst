@@ -404,6 +404,12 @@ Other
 
    :ref:`depth_first_maze`
 
+.. figure:: thumbs/procedural_caves.png
+   :figwidth: 170px
+
+   :ref:`procedural_caves`
+
+
 
 .. toctree::
    :maxdepth: 3
