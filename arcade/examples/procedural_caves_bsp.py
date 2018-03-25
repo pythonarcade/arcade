@@ -40,14 +40,6 @@ WINDOW_HEIGHT = 600
 MERGE_SPRITES = True
 
 
-class DungeonSqr:
-    def __init__(self, sqr):
-        self.sqr = sqr
-
-    def get_ch(self):
-        return self.sqr
-
-
 class Room:
     def __init__(self, r, c, h, w):
         self.row = r
@@ -68,7 +60,7 @@ class RLDungeonGenerator:
         for h in range(self.height):
             row = []
             for w in range(self.width):
-                row.append(DungeonSqr('#'))
+                row.append('#')
 
             self.dungeon.append(row)
 
@@ -128,7 +120,7 @@ class RLDungeonGenerator:
             self.rooms.append(Room(room_start_row, room_start_col, room_height, room_width))
             for r in range(room_start_row, room_start_row + room_height):
                 for c in range(room_start_col, room_start_col + room_width):
-                    self.dungeon[r][c] = DungeonSqr('.')
+                    self.dungeon[r][c] = '.'
 
     def are_rooms_adjacent(self, room1, room2):
         adj_rows = []
@@ -160,13 +152,13 @@ class RLDungeonGenerator:
                 start_col = room2[0].col + room2[0].width
                 end_col = room1.col
             for c in range(start_col, end_col):
-                self.dungeon[row][c] = DungeonSqr('.')
+                self.dungeon[row][c] = '.'
 
             if end_col - start_col >= 4:
-                self.dungeon[row][start_col] = DungeonSqr('+')
-                self.dungeon[row][end_col - 1] = DungeonSqr('+')
+                self.dungeon[row][start_col] = '+'
+                self.dungeon[row][end_col - 1] = '+'
             elif start_col == end_col - 1:
-                self.dungeon[row][start_col] = DungeonSqr('+')
+                self.dungeon[row][start_col] = '+'
         else:
             col = random.choice(room2[1])
             # Figure out which room is above the other
@@ -178,13 +170,13 @@ class RLDungeonGenerator:
                 end_row = room1.row
 
             for r in range(start_row, end_row):
-                self.dungeon[r][col] = DungeonSqr('.')
+                self.dungeon[r][col] = '.'
 
             if end_row - start_row >= 4:
-                self.dungeon[start_row][col] = DungeonSqr('+')
-                self.dungeon[end_row - 1][col] = DungeonSqr('+')
+                self.dungeon[start_row][col] = '+'
+                self.dungeon[end_row - 1][col] = '+'
             elif start_row == end_row - 1:
-                self.dungeon[start_row][col] = DungeonSqr('+')
+                self.dungeon[start_row][col] = '+'
 
     # Find two nearby rooms that are in difference groups, draw
     # a corridor between them and merge the groups
@@ -293,10 +285,10 @@ class MyGame(arcade.Window):
             for row in range(dg.height):
                 column = 0
                 while column < dg.width:
-                    while column < dg.width and dg.dungeon[row][column].sqr != '#':
+                    while column < dg.width and dg.dungeon[row][column] != '#':
                         column += 1
                     start_column = column
-                    while column < dg.width and dg.dungeon[row][column].sqr == '#':
+                    while column < dg.width and dg.dungeon[row][column] == '#':
                         column += 1
                     end_column = column - 1
 
