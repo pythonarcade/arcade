@@ -1,5 +1,6 @@
 """
-This example procedurally develops a random cave based on BSP
+This example procedurally develops a random cave based on
+Binary Space Partitioning (BSP)
 
 For more information, see:
 http://roguebasin.roguelikedevelopment.org/index.php?title=Basic_BSP_Dungeon_generation
@@ -14,8 +15,8 @@ import math
 # Sprite scaling. Make this larger, like 0.5 to zoom in and add
 # 'mystery' to what you can see. Make it smaller, like 0.1 to see
 # more of the map.
-WALL_SPRITE_SCALING = 0.5
-PLAYER_SPRITE_SCALING = 0.4
+WALL_SPRITE_SCALING = 0.125
+PLAYER_SPRITE_SCALING = 0.125
 
 WALL_SPRITE_SIZE = 128 * WALL_SPRITE_SCALING
 
