@@ -1555,7 +1555,8 @@ def draw_rectangle_filled(center_x: float, center_y: float, width: float,
 
 def draw_texture_rectangle(center_x: float, center_y: float, width: float,
                            height: float, texture: Texture, angle: float=0,
-                           alpha: float=1, transparent: bool=True):
+                           alpha: float=1, transparent: bool=True,
+                           repeat_count_x=1, repeat_count_y=1):
     """
     Draw a textured rectangle on-screen.
 
@@ -1628,11 +1629,11 @@ scale * texture.height, texture, 90, 1, False)
     gl.glNormal3f(0.0, 0.0, 1.0)
     gl.glTexCoord2f(0, 0)
     gl.glVertex3f(p1[0], p1[1], z)
-    gl.glTexCoord2f(1, 0)
+    gl.glTexCoord2f(repeat_count_x, 0)
     gl.glVertex3f(p2[0], p2[1], z)
-    gl.glTexCoord2f(1, 1)
+    gl.glTexCoord2f(repeat_count_x, repeat_count_y)
     gl.glVertex3f(p3[0], p3[1], z)
-    gl.glTexCoord2f(0, 1)
+    gl.glTexCoord2f(0, repeat_count_y)
     gl.glVertex3f(p4[0], p4[1], z)
     gl.glEnd()
     gl.glDisable(gl.GL_TEXTURE_2D)

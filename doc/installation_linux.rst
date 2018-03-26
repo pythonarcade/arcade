@@ -27,6 +27,7 @@ If you have version 3.5, you'll need to find instructions on how to install
 3.6 should come by default.
 
 If you everything worked, you should be ready to install Arcade:
+
 .. code-block:: bash
 
     sudo pip3 install arcade

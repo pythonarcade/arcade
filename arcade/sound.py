@@ -10,8 +10,14 @@ import typing
 class PlaysoundException(Exception):
     pass
 
-def _playsoundWin(sound):
+
+def _load_sound_win(sound):
+    """
+    Play a sound on Windows
+    """
+
     '''
+    Original comment from source
     Utilizes windll.winmm. Tested and known to work with MP3 and WAVE on
     Windows 7 with Python 2.7. Probably works with more file formats.
     Probably works on Windows XP thru Windows 10. Probably works with all
@@ -21,8 +27,8 @@ def _playsoundWin(sound):
     I never would have tried using windll.winmm without seeing his code.
     '''
     from ctypes import c_buffer, windll
-    from random import random
-    from sys    import getfilesystemencoding
+    from sys import getfilesystemencoding
+    import uuid
 
     def winCommand(*command):
         buf = c_buffer(255)
@@ -37,11 +43,35 @@ def _playsoundWin(sound):
             raise PlaysoundException(exceptionMessage)
         return buf.value
 
-    alias = 'playsound_' + str(random())
+    alias = str(uuid.uuid4())
     winCommand(f'open "{sound}" alias {alias}')
     winCommand(f'set {alias} time format milliseconds')
     durationInMS = winCommand(f'status {alias} length')
-    winCommand(f'play {alias} from 0 to {durationInMS.decode()}')
+    return f'play {alias} from 0 to {durationInMS.decode()}'
+
+
+def _play_sound_win(sound):
+    """
+    Play a sound on Windows
+    """
+
+    from ctypes import c_buffer, windll
+    from sys import getfilesystemencoding
+
+    def winCommand(*command):
+        buf = c_buffer(255)
+        command = ' '.join(command).encode(getfilesystemencoding())
+        errorCode = int(windll.winmm.mciSendStringA(command, buf, 254, 0))
+        if errorCode:
+            errorBuffer = c_buffer(255)
+            windll.winmm.mciGetErrorStringA(errorCode, errorBuffer, 254)
+            exceptionMessage = ('\n    Error ' + str(errorCode) + ' for command:'
+                                '\n        ' + command.decode() +
+                                '\n    ' + errorBuffer.value.decode())
+            raise PlaysoundException(exceptionMessage)
+        return buf.value
+
+    winCommand(sound)
 
 def _playsoundOSX(sound):
     import NSURL
@@ -97,21 +127,7 @@ def _playsoundNix(sound):
     # except:
     #     print("Error playing sound.")
 
-
-from platform import system
-system = system()
-
-if system == 'Windows':
-    play_sound = _playsoundWin
-elif system == 'Darwin':
-    play_sound = _playsoundOSX
-else:
-    play_sound = _playsoundNix
-
-del system
-
-
-def load_sound(filename: str) -> typing.Any:
+def _load_sound_other(filename: str) -> typing.Any:
     """
     Ok, this doesn't do anything yet.
 
@@ -120,3 +136,21 @@ def load_sound(filename: str) -> typing.Any:
     >>> arcade.play_sound(my_sound)
     """
     return filename
+
+from platform import system
+system = system()
+
+if system == 'Windows':
+    play_sound = _play_sound_win
+    load_sound = _load_sound_win
+elif system == 'Darwin':
+    play_sound = _playsoundOSX
+    load_sound = _load_sound_other
+else:
+    play_sound = _playsoundNix
+    load_sound = _load_sound_other
+
+del system
+
+
+

@@ -317,7 +317,7 @@ def create_rectangle(center_x: float, center_y: float, width: float,
     is faster than calling ``draw_rectangle``.
 
     >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
+    >>> arcade.open_window(800, 600, "Drawing Example")
     >>> arcade.start_render()
     >>> my_rect = arcade.create_rectangle(200, 200, 50, 50, (0, 255, 0), 3, 45)
     >>> arcade.render(my_rect)

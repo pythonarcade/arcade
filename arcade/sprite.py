@@ -111,7 +111,8 @@ class Sprite:
                  scale: float=1,
                  image_x: float=0, image_y: float=0,
                  image_width: float=0, image_height: float=0,
-                 center_x: float=0, center_y: float=0):
+                 center_x: float=0, center_y: float=0,
+                 repeat_count_x=1, repeat_count_y=1):
         """
         Create a new sprite.
 
@@ -179,6 +180,9 @@ class Sprite:
         self.last_angle = 0
 
         self.force = [0, 0]
+
+        self.repeat_count_x = repeat_count_x
+        self.repeat_count_y = repeat_count_y
 
     def append_texture(self, texture: Texture):
         """
@@ -556,7 +560,9 @@ arcade.Sprite("arcade/examples/images/playerShip1_orange.png", scale)
         draw_texture_rectangle(self.center_x, self.center_y,
                                self.width, self.height,
                                self.texture, self.angle, self.alpha,
-                               self.transparent)
+                               self.transparent,
+                               repeat_count_x=self.repeat_count_x,
+                               repeat_count_y=self.repeat_count_y)
 
     def update(self):
         """
@@ -706,8 +712,13 @@ class SpriteList(Generic[T]):
             self.sprite_list.sort()
             rects = _create_rects(self.sprite_list)
             _set_vbo(self.vertex_vbo_id, rects)
-            _set_vbo(self.texture_coord_vbo_id,
-                     [0, 0, 1, 0, 1, 1, 0, 1] * len(self.sprite_list))
+            vbo_list = []
+            for sprite in self.sprite_list:
+                vbo_list.extend([0, 0,
+                                 sprite.repeat_count_x, 0,
+                                 sprite.repeat_count_x, sprite.repeat_count_y,
+                                 0, sprite.repeat_count_y])
+            _set_vbo(self.texture_coord_vbo_id, vbo_list)
             self.vbo_dirty = False
             self.change_x = 0
             self.change_y = 0
@@ -967,8 +978,8 @@ def _draw_rects(shape_list: List[Sprite], vertex_vbo_id: gl.GLuint,
     gl.glEnable(gl.GL_BLEND)
     gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
     gl.glEnable(gl.GL_TEXTURE_2D)  # As soon as this happens, can't use drawing commands
-    gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_S, gl.GL_CLAMP_TO_EDGE)
-    gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_T, gl.GL_CLAMP_TO_EDGE)
+    # gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_S, gl.GL_CLAMP_TO_EDGE)
+    # gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_T, gl.GL_CLAMP_TO_EDGE)
     gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_NEAREST)
     gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_NEAREST)
     gl.glHint(gl.GL_POLYGON_SMOOTH_HINT, gl.GL_NICEST)
