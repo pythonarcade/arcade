@@ -5,7 +5,7 @@
 Pymunk Platformer
 =================
 
-This example uses both the Arcade library and the "Pymunk" library to demo full
+This example uses both the Arcade library and the `PyMunk <http://www.pymunk.org/>`_ library to demo full
 2D physics in a platformer.
 
 Video
