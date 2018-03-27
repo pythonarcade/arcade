@@ -235,6 +235,11 @@ Bullets
 
    :ref:`sprite_bullets_enemy_aims`
 
+.. figure:: thumbs/sprite_explosion.png
+   :figwidth: 170px
+
+   :ref:`sprite_explosion`
+
 
 Platformers
 ^^^^^^^^^^^
@@ -282,7 +287,7 @@ Platformers
 Procedural Generation
 ---------------------
 
-.. figure:: thumbs/recursive_maze.png
+.. figure:: thumbs/maze_recursive.png
    :figwidth: 170px
 
    :ref:`recursive_maze`

@@ -5,6 +5,41 @@
 Release Notes
 =============
 
+Version 1.3.1
+-------------
+
+New Features
+~~~~~~~~~~~~
+
+* Update ``create_rectangle`` code so that it uses color buffers to improve performance
+* `Issue 185 <https://github.com/pvcraven/arcade/issues/185>`_: Add support for repeating textures
+* `Issue 186 <https://github.com/pvcraven/arcade/issues/186>`_: Add support for repeating textures on Sprites
+* Work on improving sound support
+
+Updated Documentation
+~~~~~~~~~~~~~~~~~~~~~
+* Update quick-links on homepage of http://arcade.academy
+* Update Sprite class documentation
+* Update copyright date to 2018
+
+Updated Examples
+~~~~~~~~~~~~~~~~
+
+* Update PyMunk example code to use keyboard constants rather than hard-coded values
+* New sample code showing how to avoid placing coins on walls when randomly placing them
+* Improve listing/organization of sample code
+* Work at improving sample code, specifically try to avoid using ``all_sprites_list``
+* Add PyMunk platformer sample code
+* Unsuccessful work at getting TravisCI builds to work
+* Add new sample for using shape lists
+* Create sample code showing difference in speed when using ShapeLists.
+* `Issue 182 <https://github.com/pvcraven/arcade/issues/182>`_: Use explicit imports in sample PyMunk code
+* Improve sample code for using a graphic background
+* Improve collect coins example
+* New sample code for creating caves using cellular automata
+* New sample code for creating caves using Binary Space Partitioning
+* New sample code for explosions
+
 Version 1.3.0
 -------------
 
