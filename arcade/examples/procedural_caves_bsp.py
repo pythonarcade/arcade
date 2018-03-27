@@ -270,9 +270,9 @@ class MyGame(arcade.Window):
         dg.generate_map()
 
         # Create sprites based on 2D grid
-
         if not MERGE_SPRITES:
-
+            # This is the simple-to-understand method. Each grid location
+            # is a sprite.
             for row in range(dg.height):
                 for column in range(dg.width):
                     value = dg.dungeon[row][column]
@@ -282,6 +282,10 @@ class MyGame(arcade.Window):
                         wall.center_y = row * WALL_SPRITE_SIZE + WALL_SPRITE_SIZE / 2
                         self.wall_list.append(wall)
         else:
+            # This uses new Arcade 1.3.1 features, that allow me to create a
+            # larger sprite with a repeating texture. So if there are multiple
+            # cells in a row with a wall, we merge them into one sprite, with a
+            # repeating texture for each cell. This reduces our sprite count.
             for row in range(dg.height):
                 column = 0
                 while column < dg.width:
@@ -302,16 +306,18 @@ class MyGame(arcade.Window):
                     wall.width = WALL_SPRITE_SIZE * column_count
                     self.wall_list.append(wall)
 
-        # Set up the player
-        self.player_sprite = arcade.Sprite("images/character.png", PLAYER_SPRITE_SCALING)
-        self.player_list.append(self.player_sprite)
-
+        # Randomly place the player. If we are in a wall, repeat until we aren't.
         placed = False
         while not placed:
+
+            # Randomly position
             self.player_sprite.center_x = random.randrange(AREA_WIDTH)
             self.player_sprite.center_y = random.randrange(AREA_HEIGHT)
+
+            # Are we in a wall?
             walls_hit = arcade.check_for_collision_with_list(self.player_sprite, self.wall_list)
             if len(walls_hit) == 0:
+                # Not in a wall! Success!
                 placed = True
 
         self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite,
