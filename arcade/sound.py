@@ -73,19 +73,24 @@ def _play_sound_win(sound):
 
     winCommand(sound)
 
-def _playsoundOSX(sound):
-    import NSURL
-    import NSSound
-
-    if '://' in sound:
-        url = NSURL.URLWithString_(sound)  # don't think this works
+def _loadsoundOSX(filename):
+    import Cocoa
+    if '://' in filename:
+        url = Cocoa.NSURL.URLWithString_(filename)  # don't think this works
     else:
-        if not sound.startswith('/'):
+        if not filename.startswith('/'):
             from os import getcwd
-            sound = getcwd() + '/' + sound
-        url = NSURL.fileURLWithPath_(sound)  # this seems to work
+            sound = getcwd() + '/' + filename
+        url = Cocoa.NSURL.fileURLWithPath_(sound)  # this seems to work
 
-    nssound = NSSound.alloc().initWithContentsOfURL_byReference_(url, True)
+    nssound = Cocoa.NSSound.alloc().initWithContentsOfURL_byReference_(url, True)
+    return nssound
+
+
+def _playsoundOSX(nssound):
+    nssound.stop()
+    nssound.play()
+
 
 def _playsoundNix(sound):
     """Play a sound using GStreamer.
@@ -137,6 +142,7 @@ def _load_sound_other(filename: str) -> typing.Any:
     """
     return filename
 
+
 from platform import system
 system = system()
 
@@ -145,7 +151,7 @@ if system == 'Windows':
     load_sound = _load_sound_win
 elif system == 'Darwin':
     play_sound = _playsoundOSX
-    load_sound = _load_sound_other
+    load_sound = _loadsoundOSX
 else:
     play_sound = _playsoundNix
     load_sound = _load_sound_other
