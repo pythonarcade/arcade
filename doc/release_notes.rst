@@ -8,12 +8,16 @@ Release Notes
 Version 1.3.1
 -------------
 
+Released 2018-Mar-31
+
 New Features
 ~~~~~~~~~~~~
 
 * Update ``create_rectangle`` code so that it uses color buffers to improve performance
 * `Issue 185 <https://github.com/pvcraven/arcade/issues/185>`_: Add support for repeating textures
 * `Issue 186 <https://github.com/pvcraven/arcade/issues/186>`_: Add support for repeating textures on Sprites
+* `Issue 184 <https://github.com/pvcraven/arcade/issues/184>`_: Improve sound support
+* `Issue 180 <https://github.com/pvcraven/arcade/issues/180>`_: Improve sound support
 * Work on improving sound support
 
 Updated Documentation
