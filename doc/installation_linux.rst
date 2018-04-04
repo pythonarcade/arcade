@@ -24,7 +24,8 @@ Check that you have at least Python 3.6 with:
 
 If you have version 3.5, you'll need to find instructions on how to install
 3.6 or higher on your distribution instead of 3.5. Starting with Ubuntu 17,
-3.6 should come by default.
+3.6 should come by default. Linux Mint still uses 3.5.
+`Python 3.6.4 Installation Instructions for Mint <https://tecadmin.net/install-python-3-6-ubuntu-linuxmint/>`_.
 
 If you everything worked, you should be ready to install Arcade:
 
