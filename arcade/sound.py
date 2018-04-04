@@ -5,7 +5,6 @@ From https://github.com/TaylorSMarks/playsound/blob/master/playsound.py
 """
 
 import typing
-from platform import system
 
 
 class PlaysoundException(Exception):
@@ -31,24 +30,24 @@ def _load_sound_win(sound):
     from sys import getfilesystemencoding
     import uuid
 
-    def win_command(*command):
+    def winCommand(*command):
         buf = c_buffer(255)
         command = ' '.join(command).encode(getfilesystemencoding())
-        error_code = int(windll.winmm.mciSendStringA(command, buf, 254, 0))
-        if error_code:
-            error_buffer = c_buffer(255)
-            windll.winmm.mciGetErrorStringA(error_code, error_buffer, 254)
-            exception_message = ('\n    Error ' + str(error_code) + ' for command:'
-                                 '\n        ' + command.decode() +
-                                 '\n    ' + error_buffer.value.decode())
-            raise PlaysoundException(exception_message)
+        errorCode = int(windll.winmm.mciSendStringA(command, buf, 254, 0))
+        if errorCode:
+            errorBuffer = c_buffer(255)
+            windll.winmm.mciGetErrorStringA(errorCode, errorBuffer, 254)
+            exceptionMessage = ('\n    Error ' + str(errorCode) + ' for command:'
+                                '\n        ' + command.decode() +
+                                '\n    ' + errorBuffer.value.decode())
+            raise PlaysoundException(exceptionMessage)
         return buf.value
 
     alias = str(uuid.uuid4())
-    win_command(f'open "{sound}" alias {alias}')
-    win_command(f'set {alias} time format milliseconds')
-    duration_in_ms = win_command(f'status {alias} length')
-    return f'play {alias} from 0 to {duration_in_ms.decode()}'
+    winCommand(f'open "{sound}" alias {alias}')
+    winCommand(f'set {alias} time format milliseconds')
+    durationInMS = winCommand(f'status {alias} length')
+    return f'play {alias} from 0 to {durationInMS.decode()}'
 
 
 def _play_sound_win(sound):
@@ -59,38 +58,41 @@ def _play_sound_win(sound):
     from ctypes import c_buffer, windll
     from sys import getfilesystemencoding
 
-    def win_command(*command):
+    def winCommand(*command):
         buf = c_buffer(255)
         command = ' '.join(command).encode(getfilesystemencoding())
-        error_code = int(windll.winmm.mciSendStringA(command, buf, 254, 0))
-        if error_code:
-            error_buffer = c_buffer(255)
-            windll.winmm.mciGetErrorStringA(error_code, error_buffer, 254)
-            exception_message = ('\n    Error ' + str(error_code) + ' for command:'
-                                 '\n        ' + command.decode() +
-                                 '\n    ' + error_buffer.value.decode())
-            raise PlaysoundException(exception_message)
+        errorCode = int(windll.winmm.mciSendStringA(command, buf, 254, 0))
+        if errorCode:
+            errorBuffer = c_buffer(255)
+            windll.winmm.mciGetErrorStringA(errorCode, errorBuffer, 254)
+            exceptionMessage = ('\n    Error ' + str(errorCode) + ' for command:'
+                                '\n        ' + command.decode() +
+                                '\n    ' + errorBuffer.value.decode())
+            raise PlaysoundException(exceptionMessage)
         return buf.value
 
-    win_command(sound)
+    winCommand(sound)
 
-
-def _playsound_osx(sound):
-    import NSURL
-    import NSSound
-    from Foundation import *
-    if '://' in sound:
-        url = NSURL.URLWithString_(sound)  # don't think this works
+def _loadsoundOSX(filename):
+    import Cocoa
+    if '://' in filename:
+        url = Cocoa.NSURL.URLWithString_(filename)  # don't think this works
     else:
-        if not sound.startswith('/'):
+        if not filename.startswith('/'):
             from os import getcwd
-            sound = getcwd() + '/' + sound
-        url = NSURL.fileURLWithPath_(sound)  # this seems to work
+            sound = getcwd() + '/' + filename
+        url = Cocoa.NSURL.fileURLWithPath_(sound)  # this seems to work
 
-    nssound = NSSound.alloc().initWithContentsOfURL_byReference_(url, True)
+    nssound = Cocoa.NSSound.alloc().initWithContentsOfURL_byReference_(url, True)
+    return nssound
 
 
-def _playsound_unix(sound):
+def _playsoundOSX(nssound):
+    nssound.stop()
+    nssound.play()
+
+
+def _playsoundNix(sound):
     """Play a sound using GStreamer.
     Inspired by this:
     https://gstreamer.freedesktop.org/documentation/tutorials/playback/playbin-usage.html
@@ -130,7 +132,6 @@ def _playsound_unix(sound):
     # except:
     #     print("Error playing sound.")
 
-
 def _load_sound_other(filename: str) -> typing.Any:
     """
     Ok, this doesn't do anything yet.
@@ -142,16 +143,20 @@ def _load_sound_other(filename: str) -> typing.Any:
     return filename
 
 
-system_type = system()
+from platform import system
+system = system()
 
-if system_type == 'Windows':
+if system == 'Windows':
     play_sound = _play_sound_win
     load_sound = _load_sound_win
-elif system_type == 'Darwin':
-    play_sound = _playsound_osx
-    load_sound = _load_sound_other
+elif system == 'Darwin':
+    play_sound = _playsoundOSX
+    load_sound = _loadsoundOSX
 else:
-    play_sound = _playsound_unix
+    play_sound = _playsoundNix
     load_sound = _load_sound_other
 
-del system_type
+del system
+
+
+

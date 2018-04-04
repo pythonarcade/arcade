@@ -284,6 +284,14 @@ Platformers
 
    :ref:`sprite_enemies_in_platformer`
 
+Graphical User Interface
+------------------------
+
+.. figure:: thumbs/gui_text_button.png
+   :figwidth: 170px
+
+   :ref:`gui_text_button`
+
 Procedural Generation
 ---------------------
 
