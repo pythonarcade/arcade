@@ -5,6 +5,7 @@ From https://github.com/TaylorSMarks/playsound/blob/master/playsound.py
 """
 
 import typing
+from platform import system
 
 
 class PlaysoundException(Exception):
@@ -30,24 +31,24 @@ def _load_sound_win(sound):
     from sys import getfilesystemencoding
     import uuid
 
-    def winCommand(*command):
+    def win_command(*command):
         buf = c_buffer(255)
         command = ' '.join(command).encode(getfilesystemencoding())
-        errorCode = int(windll.winmm.mciSendStringA(command, buf, 254, 0))
-        if errorCode:
-            errorBuffer = c_buffer(255)
-            windll.winmm.mciGetErrorStringA(errorCode, errorBuffer, 254)
-            exceptionMessage = ('\n    Error ' + str(errorCode) + ' for command:'
-                                '\n        ' + command.decode() +
-                                '\n    ' + errorBuffer.value.decode())
-            raise PlaysoundException(exceptionMessage)
+        error_code = int(windll.winmm.mciSendStringA(command, buf, 254, 0))
+        if error_code:
+            error_buffer = c_buffer(255)
+            windll.winmm.mciGetErrorStringA(error_code, error_buffer, 254)
+            exception_message = ('\n    Error ' + str(error_code) + ' for command:'
+                                 '\n        ' + command.decode() +
+                                 '\n    ' + error_buffer.value.decode())
+            raise PlaysoundException(exception_message)
         return buf.value
 
     alias = str(uuid.uuid4())
-    winCommand(f'open "{sound}" alias {alias}')
-    winCommand(f'set {alias} time format milliseconds')
-    durationInMS = winCommand(f'status {alias} length')
-    return f'play {alias} from 0 to {durationInMS.decode()}'
+    win_command(f'open "{sound}" alias {alias}')
+    win_command(f'set {alias} time format milliseconds')
+    duration_in_ms = win_command(f'status {alias} length')
+    return f'play {alias} from 0 to {duration_in_ms.decode()}'
 
 
 def _play_sound_win(sound):
@@ -58,25 +59,26 @@ def _play_sound_win(sound):
     from ctypes import c_buffer, windll
     from sys import getfilesystemencoding
 
-    def winCommand(*command):
+    def win_command(*command):
         buf = c_buffer(255)
         command = ' '.join(command).encode(getfilesystemencoding())
-        errorCode = int(windll.winmm.mciSendStringA(command, buf, 254, 0))
-        if errorCode:
-            errorBuffer = c_buffer(255)
-            windll.winmm.mciGetErrorStringA(errorCode, errorBuffer, 254)
-            exceptionMessage = ('\n    Error ' + str(errorCode) + ' for command:'
-                                '\n        ' + command.decode() +
-                                '\n    ' + errorBuffer.value.decode())
-            raise PlaysoundException(exceptionMessage)
+        error_code = int(windll.winmm.mciSendStringA(command, buf, 254, 0))
+        if error_code:
+            error_buffer = c_buffer(255)
+            windll.winmm.mciGetErrorStringA(error_code, error_buffer, 254)
+            exception_message = ('\n    Error ' + str(error_code) + ' for command:'
+                                 '\n        ' + command.decode() +
+                                 '\n    ' + error_buffer.value.decode())
+            raise PlaysoundException(exception_message)
         return buf.value
 
-    winCommand(sound)
+    win_command(sound)
 
-def _playsoundOSX(sound):
+
+def _playsound_osx(sound):
     import NSURL
     import NSSound
-
+    from Foundation import *
     if '://' in sound:
         url = NSURL.URLWithString_(sound)  # don't think this works
     else:
@@ -87,7 +89,8 @@ def _playsoundOSX(sound):
 
     nssound = NSSound.alloc().initWithContentsOfURL_byReference_(url, True)
 
-def _playsoundNix(sound):
+
+def _playsound_unix(sound):
     """Play a sound using GStreamer.
     Inspired by this:
     https://gstreamer.freedesktop.org/documentation/tutorials/playback/playbin-usage.html
@@ -127,6 +130,7 @@ def _playsoundNix(sound):
     # except:
     #     print("Error playing sound.")
 
+
 def _load_sound_other(filename: str) -> typing.Any:
     """
     Ok, this doesn't do anything yet.
@@ -137,20 +141,17 @@ def _load_sound_other(filename: str) -> typing.Any:
     """
     return filename
 
-from platform import system
-system = system()
 
-if system == 'Windows':
+system_type = system()
+
+if system_type == 'Windows':
     play_sound = _play_sound_win
     load_sound = _load_sound_win
-elif system == 'Darwin':
-    play_sound = _playsoundOSX
+elif system_type == 'Darwin':
+    play_sound = _playsound_osx
     load_sound = _load_sound_other
 else:
-    play_sound = _playsoundNix
+    play_sound = _playsound_unix
     load_sound = _load_sound_other
 
-del system
-
-
-
+del system_type
