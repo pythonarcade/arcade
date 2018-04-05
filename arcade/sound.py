@@ -30,7 +30,7 @@ def _load_sound_win(sound):
     from sys import getfilesystemencoding
     import uuid
 
-    def winCommand(*command):
+    def win_command(*command):
         buf = c_buffer(255)
         command = ' '.join(command).encode(getfilesystemencoding())
         errorCode = int(windll.winmm.mciSendStringA(command, buf, 254, 0))
@@ -44,9 +44,9 @@ def _load_sound_win(sound):
         return buf.value
 
     alias = str(uuid.uuid4())
-    winCommand(f'open "{sound}" alias {alias}')
-    winCommand(f'set {alias} time format milliseconds')
-    durationInMS = winCommand(f'status {alias} length')
+    win_command(f'open "{sound}" alias {alias}')
+    win_command(f'set {alias} time format milliseconds')
+    durationInMS = win_command(f'status {alias} length')
     return f'play {alias} from 0 to {durationInMS.decode()}'
 
 
@@ -58,7 +58,7 @@ def _play_sound_win(sound):
     from ctypes import c_buffer, windll
     from sys import getfilesystemencoding
 
-    def winCommand(*command):
+    def win_command(*command):
         buf = c_buffer(255)
         command = ' '.join(command).encode(getfilesystemencoding())
         errorCode = int(windll.winmm.mciSendStringA(command, buf, 254, 0))
@@ -71,9 +71,9 @@ def _play_sound_win(sound):
             raise PlaysoundException(exceptionMessage)
         return buf.value
 
-    winCommand(sound)
+    win_command(sound)
 
-def _loadsoundOSX(filename):
+def _loadsound_osx(filename):
     import Cocoa
     if '://' in filename:
         url = Cocoa.NSURL.URLWithString_(filename)  # don't think this works
@@ -87,12 +87,15 @@ def _loadsoundOSX(filename):
     return nssound
 
 
-def _playsoundOSX(nssound):
-    nssound.stop()
-    nssound.play()
+def _playsound_osx(nssound):
+    if not nssound.isPlaying():
+        nssound.play()
+    else:
+        # Already playing. Make a copy and play that.
+        nssound.copy().play()
 
 
-def _playsoundNix(sound):
+def _playsound_unix(sound):
     """Play a sound using GStreamer.
     Inspired by this:
     https://gstreamer.freedesktop.org/documentation/tutorials/playback/playbin-usage.html
@@ -150,10 +153,10 @@ if system == 'Windows':
     play_sound = _play_sound_win
     load_sound = _load_sound_win
 elif system == 'Darwin':
-    play_sound = _playsoundOSX
-    load_sound = _loadsoundOSX
+    play_sound = _playsound_osx
+    load_sound = _loadsound_osx
 else:
-    play_sound = _playsoundNix
+    play_sound = _playsound_unix
     load_sound = _load_sound_other
 
 del system
