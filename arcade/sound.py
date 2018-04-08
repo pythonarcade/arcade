@@ -11,6 +11,10 @@ class PlaysoundException(Exception):
     pass
 
 
+def _shellquote(s):
+    return "'" + s.replace("'", "'\\''") + "'"
+
+
 def _load_sound_win(sound):
     """
     Play a sound on Windows
@@ -96,44 +100,27 @@ def _playsound_osx(nssound):
 
 
 def _playsound_unix(sound):
-    """Play a sound using GStreamer.
-    Inspired by this:
-    https://gstreamer.freedesktop.org/documentation/tutorials/playback/playbin-usage.html
-    """
-    # pathname2url escapes non-URL-safe characters
-
-    # try:
+    import threading
+    import subprocess
     import os
-    try:
-        from urllib.request import pathname2url
-    except ImportError:
-        # python 2
-        from urllib import pathname2url
 
-    import gi
-    gi.require_version('Gst', '1.0')
-    from gi.repository import Gst
+    def popen_and_call(popen_args, on_exit=None):
+        def run_in_thread(popen_args, onExit):
+            dev_null = open(os.devnull, 'wb')
+            proc = subprocess.Popen(popen_args, stdout=dev_null, stderr=dev_null)
+            proc.wait()
+            if on_exit is not None:
+                on_exit()
+            return
 
-    Gst.init(None)
+        thread = threading.Thread(target=run_in_thread, args=(popen_args, on_exit))
+        thread.start()
+        # returns immediately after the thread starts
+        return thread
 
-    playbin = Gst.ElementFactory.make('playbin', 'playbin')
-    if sound.startswith(('http://', 'https://')):
-        playbin.props.uri = sound
-    else:
-        playbin.props.uri = 'file://' + pathname2url(os.path.abspath(sound))
+    my_command = ("ffplay", "-nodisp", "-autoexit", sound)
+    popen_and_call(my_command)
 
-    set_result = playbin.set_state(Gst.State.PLAYING)
-    if set_result != Gst.StateChangeReturn.ASYNC:
-        raise PlaysoundException(
-            "playbin.set_state returned " + repr(set_result))
-
-    # FIXME: use some other bus method than poll() with block=False
-    # https://lazka.github.io/pgi-docs/#Gst-1.0/classes/Bus.html
-    bus = playbin.get_bus()
-    bus.poll(Gst.MessageType.EOS, Gst.CLOCK_TIME_NONE)
-    playbin.set_state(Gst.State.NULL)
-    # except:
-    #     print("Error playing sound.")
 
 def _load_sound_other(filename: str) -> typing.Any:
     """
