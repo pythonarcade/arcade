@@ -15,8 +15,8 @@ import math
 # Sprite scaling. Make this larger, like 0.5 to zoom in and add
 # 'mystery' to what you can see. Make it smaller, like 0.1 to see
 # more of the map.
-WALL_SPRITE_SCALING = 0.125
-PLAYER_SPRITE_SCALING = 0.125
+WALL_SPRITE_SCALING = 0.25
+PLAYER_SPRITE_SCALING = 0.20
 
 WALL_SPRITE_SIZE = 128 * WALL_SPRITE_SCALING
 
@@ -305,6 +305,10 @@ class MyGame(arcade.Window):
                     wall.center_y = row * WALL_SPRITE_SIZE + WALL_SPRITE_SIZE / 2
                     wall.width = WALL_SPRITE_SIZE * column_count
                     self.wall_list.append(wall)
+
+        # Set up the player
+        self.player_sprite = arcade.Sprite("images/character.png", PLAYER_SPRITE_SCALING)
+        self.player_list.append(self.player_sprite)
 
         # Randomly place the player. If we are in a wall, repeat until we aren't.
         placed = False

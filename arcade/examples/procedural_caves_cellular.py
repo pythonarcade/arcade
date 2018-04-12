@@ -157,6 +157,10 @@ class MyGame(arcade.Window):
                     wall.width = SPRITE_SIZE * column_count
                     self.wall_list.append(wall)
 
+        # Set up the player
+        self.player_sprite = arcade.Sprite("images/character.png", SPRITE_SCALING)
+        self.player_list.append(self.player_sprite)
+
         # Randomly place the player. If we are in a wall, repeat until we aren't.
         placed = False
         while not placed:
