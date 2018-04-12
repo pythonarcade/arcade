@@ -1,9 +1,9 @@
 """
 Functions for calculating geometry.
 """
-# pylint: disable=consider-using-enumerate
 
-from arcade.sprite import Sprite, SpriteList
+from arcade.sprite import Sprite
+from arcade.sprite_list import SpriteList
 from typing import List
 from arcade.arcade_types import PointList
 
@@ -157,8 +157,15 @@ def check_for_collision_with_list(sprite1: Sprite,
         raise TypeError("Parameter 1 is not an instance of the Sprite class.")
     if not isinstance(sprite_list, SpriteList):
         raise TypeError("Parameter 2 is not a SpriteList.")
+
+    if sprite_list.use_spatial_hash:
+        sprite_list_to_check = sprite_list.spatial_hash.get_objects_for_box(sprite1)
+        checks_saved = len(sprite_list) - len(sprite_list_to_check)
+    else:
+        sprite_list_to_check = sprite_list
+
     collision_list = []
-    for sprite2 in sprite_list:
+    for sprite2 in sprite_list_to_check:
         if sprite1 is not sprite2:
             if _check_for_collision(sprite1, sprite2):
                 collision_list.append(sprite2)

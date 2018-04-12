@@ -16,8 +16,8 @@ SPRITE_SCALING = 0.125
 SPRITE_SIZE = 128 * SPRITE_SCALING
 
 # How big the grid is
-GRID_WIDTH = 150
-GRID_HEIGHT = 100
+GRID_WIDTH = 60
+GRID_HEIGHT = 30
 
 # Parameters for cellular automata
 CHANCE_TO_START_ALIVE = 0.4
@@ -47,8 +47,10 @@ def create_grid(width, height):
 
 def initialize_grid(grid):
     """ Randomly set grid locations to on/off based on chance. """
-    for row in range(len(grid)):
-        for column in range(len(grid[row])):
+    height = len(grid)
+    width = len(grid[0])
+    for row in range(height):
+        for column in range(width):
             if random.random() <= CHANCE_TO_START_ALIVE:
                 grid[row][column] = 1
 
@@ -108,11 +110,13 @@ class MyGame(arcade.Window):
         self.view_bottom = 0
         self.view_left = 0
         self.draw_time = 0
+        self.physics_engine = None
 
         arcade.set_background_color(arcade.color.BLACK)
 
     def setup(self):
         self.wall_list = arcade.SpriteList()
+        self.wall_list.use_spatial_hash = True
         self.player_list = arcade.SpriteList()
 
         # Create cave system using a 2D grid
@@ -139,11 +143,11 @@ class MyGame(arcade.Window):
             # repeating texture for each cell. This reduces our sprite count.
             for row in range(GRID_HEIGHT):
                 column = 0
-                while column < len(self.grid):
-                    while column < len(self.grid) and self.grid[row][column] == 0:
+                while column < GRID_WIDTH:
+                    while column < GRID_WIDTH and self.grid[row][column] == 0:
                         column += 1
                     start_column = column
-                    while column < len(self.grid) and self.grid[row][column] == 1:
+                    while column < GRID_WIDTH and self.grid[row][column] == 1:
                         column += 1
                     end_column = column - 1
 
@@ -166,8 +170,10 @@ class MyGame(arcade.Window):
         while not placed:
 
             # Randomly position
-            self.player_sprite.center_x = random.randrange(GRID_WIDTH * SPRITE_SIZE)
-            self.player_sprite.center_y = random.randrange(GRID_HEIGHT * SPRITE_SIZE)
+            max_x = GRID_WIDTH * SPRITE_SIZE
+            max_y = GRID_HEIGHT * SPRITE_SIZE
+            self.player_sprite.center_x = random.randrange(max_x)
+            self.player_sprite.center_y = random.randrange(max_y)
 
             # Are we in a wall?
             walls_hit = arcade.check_for_collision_with_list(self.player_sprite, self.wall_list)
@@ -239,6 +245,7 @@ class MyGame(arcade.Window):
     def update(self, delta_time):
         """ Movement and game logic """
 
+        print(self.player_sprite.center_x, self.player_sprite.center_y)
         start_time = timeit.default_timer()
 
         # Call update on all sprites (The sprites don't do much in this

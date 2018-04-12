@@ -20,6 +20,7 @@ from arcade.geometry import *
 from arcade.physics_engines import *
 from arcade.sound import *
 from arcade.sprite import *
+from arcade.sprite_list import *
 from arcade.version import *
 from arcade.window_commands import *
 from arcade.joysticks import *
