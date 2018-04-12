@@ -18,7 +18,7 @@ import timeit
 SPRITE_SCALING_COIN = 0.09
 SPRITE_NATIVE_SIZE = 128
 SPRITE_SIZE = int(SPRITE_NATIVE_SIZE * SPRITE_SCALING_COIN)
-COIN_COUNT = 100000
+COIN_COUNT = 10000
 
 SPRITE_SCALING_PLAYER = 1
 
@@ -126,8 +126,8 @@ class MyGame(arcade.Window):
 
         hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.coin_list)
         self.coins_hit = len(hit_list)
-        for coin in hit_list:
-            coin.kill()
+        # for coin in hit_list:
+        #     coin.kill()
 
         # Save the time it took to do this.
         self.processing_time = timeit.default_timer() - start_time

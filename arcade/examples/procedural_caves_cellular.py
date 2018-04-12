@@ -16,8 +16,8 @@ SPRITE_SCALING = 0.125
 SPRITE_SIZE = 128 * SPRITE_SCALING
 
 # How big the grid is
-GRID_WIDTH = 60
-GRID_HEIGHT = 30
+GRID_WIDTH = 400
+GRID_HEIGHT = 300
 
 # Parameters for cellular automata
 CHANCE_TO_START_ALIVE = 0.4
@@ -245,7 +245,6 @@ class MyGame(arcade.Window):
     def update(self, delta_time):
         """ Movement and game logic """
 
-        print(self.player_sprite.center_x, self.player_sprite.center_y)
         start_time = timeit.default_timer()
 
         # Call update on all sprites (The sprites don't do much in this

@@ -198,6 +198,26 @@ class SpatialHash:
                 # append to each intersecting cell
                 self.contents.setdefault((i, j), []).append(new_object)
 
+    def remove_object(self, new_object: Sprite):
+        # Get the corners
+        min_x = new_object.left
+        max_x = new_object.right
+        min_y = new_object.bottom
+        max_y = new_object.top
+
+        min_point = (min_x, min_y)
+        max_point = (max_x, max_y)
+
+        # hash the minimum and maximum points
+        min_point, max_point = self._hash(min_point), self._hash(max_point)
+
+        # iterate over the rectangular region
+        for i in range(min_point[0], max_point[0] + 1):
+            for j in range(min_point[1], max_point[1] + 1):
+                bucket = self.contents.setdefault((i, j), [])
+                bucket.remove(new_object)
+
+
     def get_objects_for_box(self, check_object: Sprite):
         # Get the corners
         min_x = check_object.left
@@ -298,7 +318,7 @@ class SpriteList(Generic[T]):
         self.sprite_list.remove(item)
         self.vbo_dirty = True
         if self.use_spatial_hash:
-            raise Exception("Not supported")
+            self.spatial_hash.remove_object(item)
 
     def update(self):
         """
