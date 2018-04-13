@@ -157,7 +157,7 @@ class Sprite:
 
         self.cur_texture_index = 0
         self.scale = scale
-        self.position = [center_x, center_y]
+        self._position = [center_x, center_y]
         self._angle = 0.0
 
         self.velocity = [0, 0]
@@ -272,7 +272,6 @@ class Sprite:
                          self._points[point][1] + self.center_y)
                 point_list.append(point)
             self._point_list_cache = tuple(point_list)
-            return self._point_list_cache
         else:
             x1, y1 = rotate_point(self.center_x - self.width / 2,
                                   self.center_y - self.height / 2,
@@ -296,9 +295,23 @@ class Sprite:
                                   self.angle)
 
             self._point_list_cache = ((x1, y1), (x2, y2), (x3, y3), (x4, y4))
-            return self._point_list_cache
+
+        self.add_spatial_hashes()
+        print("A")
+        return self._point_list_cache
 
     points = property(get_points, set_points)
+
+    def get_position(self):
+        return self._position[0], self._position[1]
+
+    def set_position(self, new_position: (float, float)):
+        self.clear_spatial_hashes()
+        self._position[0] = new_position[0]
+        self._position[1] = new_position[1]
+        self._point_list_cache = None
+
+    position = property(get_position, set_position)
 
     def _set_collision_radius(self, collision_radius):
         """
@@ -341,6 +354,15 @@ class Sprite:
 
     def __lt__(self, other):
         return self.texture.texture_id.value < other.texture.texture_id.value
+
+    def clear_spatial_hashes(self):
+        for sprite_list in self.sprite_lists:
+            sprite_list.spatial_hash.remove_object(self)
+
+    def add_spatial_hashes(self):
+        for sprite_list in self.sprite_lists:
+            sprite_list.spatial_hash.insert_object_for_box(self)
+            print("B")
 
     def _get_bottom(self) -> float:
         """
@@ -409,24 +431,27 @@ arcade.Sprite("arcade/examples/images/playerShip1_orange.png", scale)
 
     def _get_center_x(self) -> float:
         """ Get the center x coordinate of the sprite. """
-        return self.position[0]
+        return self._position[0]
 
     def _set_center_x(self, new_value: float):
         """ Set the center x coordinate of the sprite. """
-        if new_value != self.position[0]:
-            self.position[0] = new_value
+        if new_value != self._position[0]:
+            self.clear_spatial_hashes()
+            self._position[0] = new_value
             self._point_list_cache = None
+
 
     center_x = property(_get_center_x, _set_center_x)
 
     def _get_center_y(self) -> float:
         """ Get the center y coordinate of the sprite. """
-        return self.position[1]
+        return self._position[1]
 
     def _set_center_y(self, new_value: float):
         """ Set the center y coordinate of the sprite. """
-        if new_value != self.position[1]:
-            self.position[1] = new_value
+        if new_value != self._position[1]:
+            self.clear_spatial_hashes()
+            self._position[1] = new_value
             self._point_list_cache = None
 
     center_y = property(_get_center_y, _set_center_y)
@@ -458,6 +483,7 @@ arcade.Sprite("arcade/examples/images/playerShip1_orange.png", scale)
     def _set_angle(self, new_value: float):
         """ Set the angle of the sprite's rotation. """
         if new_value != self._angle:
+            self.clear_spatial_hashes()
             self._angle = new_value
             self._point_list_cache = None
 
@@ -589,9 +615,6 @@ arcade.Sprite("arcade/examples/images/playerShip1_orange.png", scale)
         for sprite_list in self.sprite_lists:
             if self in sprite_list:
                 sprite_list.remove(self)
-
-
-
 
 
 class AnimatedTimeSprite(Sprite):
@@ -731,5 +754,3 @@ class AnimatedWalkingSprite(Sprite):
 
         self.width = self.texture.width * self.scale
         self.height = self.texture.height * self.scale
-
-

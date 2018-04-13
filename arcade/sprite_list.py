@@ -279,7 +279,7 @@ class SpriteList(Generic[T]):
     >>> arcade.quick_run(0.25)
     """
 
-    def __init__(self, is_static=False):
+    def __init__(self, is_static=False, use_spatial_hash=True, spatial_hash_cell_size=128):
         """
         Initialize the sprite list
         """
@@ -298,8 +298,8 @@ class SpriteList(Generic[T]):
         self.is_static = is_static
         self.sorted_by_x = None
         self.sorted_by_y = None
-        self.spatial_hash = SpatialHash(cell_size=60)
-        self.use_spatial_hash = False
+        self.spatial_hash = SpatialHash(cell_size=spatial_hash_cell_size)
+        self.use_spatial_hash = use_spatial_hash
 
     def append(self, item: T):
         """
@@ -310,6 +310,11 @@ class SpriteList(Generic[T]):
         self.vbo_dirty = True
         if self.use_spatial_hash:
             self.spatial_hash.insert_object_for_box(item)
+
+    def recalculate_spatial_hash(self, item: T):
+        if self.use_spatial_hash:
+            self.spatial_hash.remove_object(item)
+            self.spatial_hash.append_object(item)
 
     def remove(self, item: T):
         """
