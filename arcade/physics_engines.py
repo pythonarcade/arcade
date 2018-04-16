@@ -28,6 +28,8 @@ class PhysicsEngineSimple:
         """
         Constructor.
         """
+        assert(isinstance(player_sprite, Sprite))
+        assert(isinstance(walls, SpriteList))
         self.player_sprite = player_sprite
         self.walls = walls
 
@@ -119,7 +121,7 @@ class PhysicsEnginePlatformer:
         hit_list = \
             check_for_collision_with_list(self.player_sprite,
                                           self.platforms)
-        
+
         self.player_sprite.center_y += 2
 
         if len(hit_list) > 0:
