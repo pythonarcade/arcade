@@ -16,3 +16,4 @@ doc/source/quick_index.rst
 doc/examples/thumbs/
 pylint.html
 .idea/
+venv/
