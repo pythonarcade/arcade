@@ -356,7 +356,11 @@ class Sprite:
 
     def clear_spatial_hashes(self):
         for sprite_list in self.sprite_lists:
-            sprite_list.spatial_hash.remove_object(self)
+            if sprite_list.use_spatial_hash and sprite_list.spatial_hash is not None:
+                try:
+                    sprite_list.spatial_hash.remove_object(self)
+                except:
+                    print("Warning, attempt to remove item from spatial hash that doesn't exist in the hash.")
 
     def add_spatial_hashes(self):
         for sprite_list in self.sprite_lists:
