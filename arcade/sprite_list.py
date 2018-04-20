@@ -188,6 +188,7 @@ class SpatialHash:
 
         min_point = (min_x, min_y)
         max_point = (max_x, max_y)
+        print(f"Insert hashes for {new_object.tag} ({min_x}, {min_y}), ({max_x}, {max_y})")
 
         # hash the minimum and maximum points
         min_point, max_point = self._hash(min_point), self._hash(max_point)
@@ -197,6 +198,7 @@ class SpatialHash:
             for j in range(min_point[1], max_point[1] + 1):
                 # append to each intersecting cell
                 self.contents.setdefault((i, j), []).append(new_object)
+                print(f"  ({i}, {j})")
 
     def remove_object(self, new_object: Sprite):
         # Get the corners
@@ -210,13 +212,14 @@ class SpatialHash:
 
         # hash the minimum and maximum points
         min_point, max_point = self._hash(min_point), self._hash(max_point)
+        print(f"Remove hashes for {new_object.tag} ({min_x}, {min_y}), ({max_x}, {max_y})")
 
         # iterate over the rectangular region
         for i in range(min_point[0], max_point[0] + 1):
             for j in range(min_point[1], max_point[1] + 1):
                 bucket = self.contents.setdefault((i, j), [])
+                print(f"  ({i}, {j})")
                 bucket.remove(new_object)
-
 
     def get_objects_for_box(self, check_object: Sprite):
         # Get the corners
@@ -308,8 +311,8 @@ class SpriteList(Generic[T]):
         self.sprite_list.append(item)
         item.register_sprite_list(self)
         self.vbo_dirty = True
-        if self.use_spatial_hash:
-            self.spatial_hash.insert_object_for_box(item)
+        # if self.use_spatial_hash:
+        #     self.spatial_hash.insert_object_for_box(item)
 
     def recalculate_spatial_hash(self, item: T):
         if self.use_spatial_hash:
