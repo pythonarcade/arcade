@@ -63,8 +63,8 @@ class MyGame(arcade.Window):
         os.chdir(file_path)
 
         # Variables that will hold sprite lists
-        self.all_sprites_list = None
-        self.coin_list = None
+        self.player_sprite_list = None
+        self.coin_sprite_list = None
 
         # Set up the player info
         self.player_sprite = None
@@ -79,8 +79,8 @@ class MyGame(arcade.Window):
         """ Set up the game and initialize the variables. """
 
         # Sprite lists
-        self.all_sprites_list = arcade.SpriteList()
-        self.coin_list = arcade.SpriteList()
+        self.player_sprite_list = arcade.SpriteList()
+        self.coin_sprite_list = arcade.SpriteList()
 
         # Score
         self.score = 0
@@ -90,7 +90,7 @@ class MyGame(arcade.Window):
         self.player_sprite = arcade.Sprite("images/character.png", SPRITE_SCALING_PLAYER)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 50
-        self.all_sprites_list.append(self.player_sprite)
+        self.player_sprite_list.append(self.player_sprite)
 
         # Create the coins
         for i in range(COIN_COUNT):
@@ -104,13 +104,13 @@ class MyGame(arcade.Window):
             coin.center_y = random.randrange(SCREEN_HEIGHT)
 
             # Add the coin to the lists
-            self.all_sprites_list.append(coin)
-            self.coin_list.append(coin)
+            self.coin_sprite_list.append(coin)
 
     def on_draw(self):
         """ Draw everything """
         arcade.start_render()
-        self.all_sprites_list.draw()
+        self.coin_sprite_list.draw()
+        self.player_sprite_list.draw()
 
         # Put the text on the screen.
         output = f"Score: {self.score}"
@@ -128,11 +128,11 @@ class MyGame(arcade.Window):
 
         # Call update on all sprites (The sprites don't do much in this
         # example though.)
-        self.all_sprites_list.update()
+        self.coin_sprite_list.update()
 
         # Generate a list of all sprites that collided with the player.
         hit_list = arcade.check_for_collision_with_list(self.player_sprite,
-                                                        self.coin_list)
+                                                        self.coin_sprite_list)
 
         # Loop through each colliding sprite, remove it, and add to the score.
         for coin in hit_list:
