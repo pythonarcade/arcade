@@ -8,6 +8,7 @@ import ctypes
 import pyglet.gl as gl
 
 from arcade.sprite import Sprite
+from arcade.sprite import get_distance_between_sprites
 from arcade.draw_commands import rotate_point
 
 
@@ -217,7 +218,6 @@ class SpatialHash:
                 bucket = self.contents.setdefault((i, j), [])
                 bucket.remove(new_object)
 
-
     def get_objects_for_box(self, check_object: Sprite):
         # Get the corners
         min_x = check_object.left
@@ -412,3 +412,20 @@ class SpriteList(Generic[T]):
         Pop off the last sprite in the list.
         """
         return self.sprite_list.pop()
+
+
+def get_closest_sprite(sprite1: Sprite, sprite_list: SpriteList) -> (Sprite, float):
+    """
+    Given a Sprite and SpriteList, returns the closest sprite, and its distance.
+    """
+    if len(sprite_list) == 0:
+        return None
+
+    min_pos = 0
+    min_distance = get_distance_between_sprites(sprite1, sprite_list[min_pos])
+    for i in range(1, len(sprite_list)):
+        distance = get_distance_between_sprites(sprite1, sprite_list[i])
+        if distance < min_distance:
+            min_pos = i
+            min_distance = distance
+    return sprite_list[min_pos], min_distance
