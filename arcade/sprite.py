@@ -14,11 +14,6 @@ from arcade.draw_commands import draw_texture_rectangle
 from arcade.draw_commands import Texture
 from arcade.draw_commands import rotate_point
 
-from typing import Iterable
-from typing import TypeVar
-from typing import Generic
-
-from typing import List
 from typing import Sequence
 from typing import Tuple
 
@@ -756,3 +751,11 @@ class AnimatedWalkingSprite(Sprite):
 
         self.width = self.texture.width * self.scale
         self.height = self.texture.height * self.scale
+
+
+def get_distance_between_sprites(sprite1:Sprite, sprite2:Sprite) -> float:
+    """
+    Returns the distance between the two given sprites
+    """
+    distance = math.sqrt((sprite1.center_x - sprite2.center_x) ** 2 + (sprite1.center_y - sprite2.center_y) ** 2)
+    return distance
