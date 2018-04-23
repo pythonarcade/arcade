@@ -29,49 +29,18 @@ def _play_sound_win(sound):
     player.play()
 
 
-def _loadsound_osx(filename):
-    import Cocoa
-    if '://' in filename:
-        url = Cocoa.NSURL.URLWithString_(filename)  # don't think this works
-    else:
-        if not filename.startswith('/'):
-            from os import getcwd
-            sound = getcwd() + '/' + filename
-        url = Cocoa.NSURL.fileURLWithPath_(sound)  # this seems to work
-
-    nssound = Cocoa.NSSound.alloc().initWithContentsOfURL_byReference_(url, True)
-    return nssound
+def _loadsound_osx(sound):
+    return sound
 
 
-def _playsound_osx(nssound):
-    if not nssound.isPlaying():
-        nssound.play()
-    else:
-        # Already playing. Make a copy and play that.
-        nssound.copy().play()
+def _playsound_osx(sound):
+    player = pyglet.media.load(sound)
+    player.play()
 
 
 def _playsound_unix(sound):
-    import threading
-    import subprocess
-    import os
-
-    def popen_and_call(popen_args, on_exit=None):
-        def run_in_thread(popen_args, on_exit):
-            dev_null = open(os.devnull, 'wb')
-            proc = subprocess.Popen(popen_args, stdout=dev_null, stderr=dev_null)
-            proc.wait()
-            if on_exit is not None:
-                on_exit()
-            return
-
-        thread = threading.Thread(target=run_in_thread, args=(popen_args, on_exit))
-        thread.start()
-        # returns immediately after the thread starts
-        return thread
-
-    my_command = ("ffplay", "-nodisp", "-autoexit", sound)
-    popen_and_call(my_command)
+    player = pyglet.media.load(sound)
+    player.play()
 
 
 def _load_sound_other(filename: str) -> typing.Any:
