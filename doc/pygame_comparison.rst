@@ -30,6 +30,8 @@ Features that the Arcade Library has that Pygame does not:
 * Runs on top of OpenGL and Pyglet, rather than the old SDL1 library.
 * With the use of sprite lists, uses the acceleration of the graphics card to
   improve performance.
+* Easily scale and rotate sprites and graphics.
+* Images with transparency are transparent by default. No extra code needed.
 * Lots of :ref:`example-code`.
 
 

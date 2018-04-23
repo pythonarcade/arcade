@@ -4,11 +4,9 @@ Sound library.
 From https://github.com/TaylorSMarks/playsound/blob/master/playsound.py
 """
 
+from platform import system
 import typing
-
-
-class PlaysoundException(Exception):
-    pass
+import pyglet
 
 
 def _shellquote(s):
@@ -17,65 +15,19 @@ def _shellquote(s):
 
 def _load_sound_win(sound):
     """
-    Play a sound on Windows
+    Load a sound on Windows
     """
 
-    '''
-    Original comment from source
-    Utilizes windll.winmm. Tested and known to work with MP3 and WAVE on
-    Windows 7 with Python 2.7. Probably works with more file formats.
-    Probably works on Windows XP thru Windows 10. Probably works with all
-    versions of Python.
-    Inspired by (but not copied from) Michael Gundlach <gundlach@gmail.com>'s mp3play:
-    https://github.com/michaelgundlach/mp3play
-    I never would have tried using windll.winmm without seeing his code.
-    '''
-    from ctypes import c_buffer, windll
-    from sys import getfilesystemencoding
-    import uuid
-
-    def win_command(*command):
-        buf = c_buffer(255)
-        command = ' '.join(command).encode(getfilesystemencoding())
-        errorCode = int(windll.winmm.mciSendStringA(command, buf, 254, 0))
-        if errorCode:
-            errorBuffer = c_buffer(255)
-            windll.winmm.mciGetErrorStringA(errorCode, errorBuffer, 254)
-            exceptionMessage = ('\n    Error ' + str(errorCode) + ' for command:'
-                                '\n        ' + command.decode() +
-                                '\n    ' + errorBuffer.value.decode())
-            raise PlaysoundException(exceptionMessage)
-        return buf.value
-
-    alias = str(uuid.uuid4())
-    win_command(f'open "{sound}" alias {alias}')
-    win_command(f'set {alias} time format milliseconds')
-    durationInMS = win_command(f'status {alias} length')
-    return f'play {alias} from 0 to {durationInMS.decode()}'
+    return sound
 
 
 def _play_sound_win(sound):
     """
     Play a sound on Windows
     """
+    player = pyglet.media.load(sound)
+    player.play()
 
-    from ctypes import c_buffer, windll
-    from sys import getfilesystemencoding
-
-    def win_command(*command):
-        buf = c_buffer(255)
-        command = ' '.join(command).encode(getfilesystemencoding())
-        errorCode = int(windll.winmm.mciSendStringA(command, buf, 254, 0))
-        if errorCode:
-            errorBuffer = c_buffer(255)
-            windll.winmm.mciGetErrorStringA(errorCode, errorBuffer, 254)
-            exceptionMessage = ('\n    Error ' + str(errorCode) + ' for command:'
-                                '\n        ' + command.decode() +
-                                '\n    ' + errorBuffer.value.decode())
-            raise PlaysoundException(exceptionMessage)
-        return buf.value
-
-    win_command(sound)
 
 def _loadsound_osx(filename):
     import Cocoa
@@ -105,7 +57,7 @@ def _playsound_unix(sound):
     import os
 
     def popen_and_call(popen_args, on_exit=None):
-        def run_in_thread(popen_args, onExit):
+        def run_in_thread(popen_args, on_exit):
             dev_null = open(os.devnull, 'wb')
             proc = subprocess.Popen(popen_args, stdout=dev_null, stderr=dev_null)
             proc.wait()
@@ -133,7 +85,6 @@ def _load_sound_other(filename: str) -> typing.Any:
     return filename
 
 
-from platform import system
 system = system()
 
 if system == 'Windows':
