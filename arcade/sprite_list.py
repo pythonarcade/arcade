@@ -193,6 +193,8 @@ class SpatialHash:
         # hash the minimum and maximum points
         min_point, max_point = self._hash(min_point), self._hash(max_point)
 
+        # print("Add: ", min_point, max_point)
+
         # iterate over the rectangular region
         for i in range(min_point[0], max_point[0] + 1):
             for j in range(min_point[1], max_point[1] + 1):
@@ -211,12 +213,16 @@ class SpatialHash:
 
         # hash the minimum and maximum points
         min_point, max_point = self._hash(min_point), self._hash(max_point)
+        # print("Remove: ", min_point, max_point)
 
         # iterate over the rectangular region
         for i in range(min_point[0], max_point[0] + 1):
             for j in range(min_point[1], max_point[1] + 1):
                 bucket = self.contents.setdefault((i, j), [])
-                bucket.remove(new_object)
+                try:
+                    bucket.remove(new_object)
+                except:
+                    print("Warning, tried to remove item from spatial hash that wasn't there.")
 
     def get_objects_for_box(self, check_object: Sprite):
         # Get the corners
@@ -279,7 +285,7 @@ class SpriteList(Generic[T]):
     >>> arcade.quick_run(0.25)
     """
 
-    def __init__(self, is_static=False, use_spatial_hash=False, spatial_hash_cell_size=128):
+    def __init__(self, is_static=False, use_spatial_hash=True, spatial_hash_cell_size=128):
         """
         Initialize the sprite list
         """
@@ -308,8 +314,6 @@ class SpriteList(Generic[T]):
         self.sprite_list.append(item)
         item.register_sprite_list(self)
         self.vbo_dirty = True
-        if self.use_spatial_hash:
-            self.spatial_hash.insert_object_for_box(item)
 
     def recalculate_spatial_hash(self, item: T):
         if self.use_spatial_hash:
