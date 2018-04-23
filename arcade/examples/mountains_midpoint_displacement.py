@@ -124,13 +124,13 @@ def create_mountain_range(start, end, roughness, vertical_displacement, num_of_i
     return shape_list
 
 
-@arcade.decorator.init
+@arcade.decorator.setup
 def setup(window):
     """
     This, and any function with the arcade.decorator.init decorator,
     is run automatically on start-up.
     """
-
+    print("Hi")
     window.mountains = []
 
     background = arcade.ShapeElementList()
