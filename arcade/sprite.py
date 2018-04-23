@@ -359,7 +359,8 @@ class Sprite:
 
     def add_spatial_hashes(self):
         for sprite_list in self.sprite_lists:
-            sprite_list.spatial_hash.insert_object_for_box(self)
+            if sprite_list.use_spatial_hash:
+                sprite_list.spatial_hash.insert_object_for_box(self)
 
     def _get_bottom(self) -> float:
         """
