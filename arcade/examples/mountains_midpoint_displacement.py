@@ -12,7 +12,6 @@ python -m arcade.examples.mountains_midpoint_displacement
 # Library imports
 import arcade
 import random
-import pyglet
 import bisect
 
 SCREEN_WIDTH = 1200
@@ -130,7 +129,6 @@ def setup(window):
     This, and any function with the arcade.decorator.init decorator,
     is run automatically on start-up.
     """
-    print("Hi")
     window.mountains = []
 
     background = arcade.ShapeElementList()
@@ -144,10 +142,10 @@ def setup(window):
     background.append(rect)
     window.mountains.append(background)
 
-    layer_4 = create_mountain_range([0, 350], [SCREEN_WIDTH, 320], 0.9, 250, 8, (158, 98, 204))
+    layer_4 = create_mountain_range([0, 350], [SCREEN_WIDTH, 320], 1.1, 250, 8, (158, 98, 204))
     window.mountains.append(layer_4)
 
-    layer_3 = create_mountain_range([0, 270], [SCREEN_WIDTH, 190], 1, 120, 9, (130, 79, 138))
+    layer_3 = create_mountain_range([0, 270], [SCREEN_WIDTH, 190], 1.1, 120, 9, (130, 79, 138))
     window.mountains.append(layer_3)
 
     layer_2 = create_mountain_range([0, 180], [SCREEN_WIDTH, 80], 1.2, 30, 12, (68, 28, 99))
@@ -174,5 +172,6 @@ def draw(window):
 
 
 if __name__ == "__main__":
-    arcade.decorator.run(SCREEN_WIDTH, SCREEN_HEIGHT, title="Drawing With Decorators", background_color=arcade.color.WHITE)
-
+    arcade.decorator.run(SCREEN_WIDTH, SCREEN_HEIGHT,
+                         title="Drawing With Decorators",
+                         background_color=arcade.color.WHITE)
