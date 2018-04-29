@@ -27,6 +27,10 @@ Dungeon_, explore a maze picking up arrows and coins.
 
 .. _Dungeon: https://github.com/BlakeDalmas/Python/tree/master/Dungeon%20Game
 
+`Two Worlds`_, a castle adventure with a dungeon and caverns underneath it.
+
+.. _Two Worlds: https://github.com/pvcraven/two_worlds
+
 Games from Simpson College Spring 2017 CMSC 150 Course
 ------------------------------------------------------
 
