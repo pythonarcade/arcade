@@ -390,6 +390,11 @@ Decorators
 
    :ref:`decorator_drawing_example`
 
+.. figure:: thumbs/mountains_midpoint_displacement.png
+   :figwidth: 170px
+
+   :ref:`mountains_midpoint_displacement`
+
 
 Other
 -----
