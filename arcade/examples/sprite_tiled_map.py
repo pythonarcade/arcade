@@ -15,6 +15,8 @@ SPRITE_SCALING = 0.5
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
+SPRITE_PIXEL_SIZE = 128
+GRID_PIXEL_SIZE = (SPRITE_PIXEL_SIZE * SPRITE_SCALING)
 
 # How many pixels to keep as a minimum margin between the character
 # and the edge of the screen.
@@ -90,6 +92,9 @@ class MyGame(arcade.Window):
         # Get a 2D array made of numbers based on the map
         map_array = get_map("map.csv")
 
+        # Right edge of the map in pixels
+        self.end_of_map = len(map_array[0]) * GRID_PIXEL_SIZE
+
         for row_index, row in enumerate(map_array):
             for column_index, item in enumerate(row):
 
@@ -145,7 +150,7 @@ class MyGame(arcade.Window):
         # Put the text on the screen.
         # Adjust the text position based on the view port so that we don't
         # scroll the text too.
-        distance = self.view_left + self.player_sprite.right
+        distance = self.player_sprite.right
         output = f"Distance: {distance}"
         arcade.draw_text(output, self.view_left + 10, self.view_bottom + 20, arcade.color.WHITE, 14)
 
@@ -174,7 +179,7 @@ class MyGame(arcade.Window):
     def update(self, delta_time):
         """ Movement and game logic """
 
-        if self.view_left + self.player_sprite.right >= 5630:
+        if self.player_sprite.right >= self.end_of_map:
             self.game_over = True
 
         # Call update on all sprites (The sprites don't do much in this
