@@ -130,6 +130,8 @@ class MyGame(arcade.Window):
         bullet.center_y = start_y
 
         # Get from the mouse the destination location for the bullet
+        # IMPORTANT! If you have a scrolling screen, you will also need
+        # to add in self.view_bottom and self.view_left.
         dest_x = x
         dest_y = y
 

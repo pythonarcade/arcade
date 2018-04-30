@@ -116,8 +116,13 @@ class decorator(arcade.Window):
         return original_function
 
     @classmethod
-    def animate(cls, original_function):
+    def update(cls, original_function):
         cls.registry['update'].append(original_function)
+        return original_function
+
+    @classmethod
+    def setup(cls, original_function):
+        cls.registry['setup'].append(original_function)
         return original_function
 
     @classmethod
@@ -134,37 +139,16 @@ class decorator(arcade.Window):
     color = arcade.color
     key = arcade.key
 
-    """
     @classmethod
-    def draw_text(cls, *args, **kwargs):
-        # Imperative mode means no event-handler functions, simplest
-        # possible mode. Detect this by seeing if run has been called. If
-        # not, then defer this drawing.
-        if cls.registry['window'] is None:
-            cls.registry['deferred_drawing'].append(
-                dict(cmd='draw_text', args=args, kwargs=kwargs)
-            )
-        else:
-            arcade.draw_text(*args, **kwargs)
-
-    @classmethod
-    def draw_circle_filled(cls, *args, **kwargs):
-        if cls.registry['window'] is None:
-            cls.registry['deferred_drawing'].append(
-                dict(cmd='draw_circle_filled', args=args, kwargs=kwargs)
-            )
-        else:
-            arcade.draw_circle_filled(*args, **kwargs)
-    """
-
-    @classmethod
-    def setup(cls, width: int, height: int,
+    def init(cls, width: int, height: int,
               title: str,
               background_color: Color):
-        cls.registry['window'] = ArcadeWindow(
+        window = ArcadeWindow(
             cls.registry, width, height,
             title=title,
             background_color=background_color)
+
+        cls.registry['window'] = window
 
         # If a game is registered, instantiate it
         game_class = cls.registry.get('game_class')
@@ -172,9 +156,12 @@ class decorator(arcade.Window):
             cls.registry['game'] = game_class(cls.registry['window'])
             cls.registry['window'].setup()
 
+        for setup_function in cls.registry['setup']:
+            setup_function(window)
+
     @classmethod
-    def run(cls, width: int = 600, height: int = 400,
-            title: str = 'Arcade Demo',
+    def run(cls, width: int=600, height: int=400,
+            title: str='Arcade',
             background_color: Color = arcade.color.WHEAT):
-        cls.setup(width, height, title, background_color)
+        cls.init(width, height, title, background_color)
         arcade.run()

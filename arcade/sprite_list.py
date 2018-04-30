@@ -8,6 +8,7 @@ import ctypes
 import pyglet.gl as gl
 
 from arcade.sprite import Sprite
+from arcade.sprite import get_distance_between_sprites
 from arcade.draw_commands import rotate_point
 
 
@@ -188,17 +189,17 @@ class SpatialHash:
 
         min_point = (min_x, min_y)
         max_point = (max_x, max_y)
-        print(f"Insert hashes for {new_object.tag} ({min_x}, {min_y}), ({max_x}, {max_y})")
 
         # hash the minimum and maximum points
         min_point, max_point = self._hash(min_point), self._hash(max_point)
+
+        # print("Add: ", min_point, max_point)
 
         # iterate over the rectangular region
         for i in range(min_point[0], max_point[0] + 1):
             for j in range(min_point[1], max_point[1] + 1):
                 # append to each intersecting cell
                 self.contents.setdefault((i, j), []).append(new_object)
-                print(f"  ({i}, {j})")
 
     def remove_object(self, new_object: Sprite):
         # Get the corners
@@ -212,14 +213,16 @@ class SpatialHash:
 
         # hash the minimum and maximum points
         min_point, max_point = self._hash(min_point), self._hash(max_point)
-        print(f"Remove hashes for {new_object.tag} ({min_x}, {min_y}), ({max_x}, {max_y})")
+        # print("Remove: ", min_point, max_point)
 
         # iterate over the rectangular region
         for i in range(min_point[0], max_point[0] + 1):
             for j in range(min_point[1], max_point[1] + 1):
                 bucket = self.contents.setdefault((i, j), [])
-                print(f"  ({i}, {j})")
-                bucket.remove(new_object)
+                try:
+                    bucket.remove(new_object)
+                except:
+                    print("Warning, tried to remove item from spatial hash that wasn't there.")
 
     def get_objects_for_box(self, check_object: Sprite):
         # Get the corners
@@ -282,7 +285,7 @@ class SpriteList(Generic[T]):
     >>> arcade.quick_run(0.25)
     """
 
-    def __init__(self, is_static=False, use_spatial_hash=False, spatial_hash_cell_size=128):
+    def __init__(self, is_static=False, use_spatial_hash=True, spatial_hash_cell_size=128):
         """
         Initialize the sprite list
         """
@@ -311,8 +314,6 @@ class SpriteList(Generic[T]):
         self.sprite_list.append(item)
         item.register_sprite_list(self)
         self.vbo_dirty = True
-        # if self.use_spatial_hash:
-        #     self.spatial_hash.insert_object_for_box(item)
 
     def recalculate_spatial_hash(self, item: T):
         if self.use_spatial_hash:
@@ -415,3 +416,20 @@ class SpriteList(Generic[T]):
         Pop off the last sprite in the list.
         """
         return self.sprite_list.pop()
+
+
+def get_closest_sprite(sprite1: Sprite, sprite_list: SpriteList) -> (Sprite, float):
+    """
+    Given a Sprite and SpriteList, returns the closest sprite, and its distance.
+    """
+    if len(sprite_list) == 0:
+        return None
+
+    min_pos = 0
+    min_distance = get_distance_between_sprites(sprite1, sprite_list[min_pos])
+    for i in range(1, len(sprite_list)):
+        distance = get_distance_between_sprites(sprite1, sprite_list[i])
+        if distance < min_distance:
+            min_pos = i
+            min_distance = distance
+    return sprite_list[min_pos], min_distance

@@ -75,7 +75,7 @@ def draw_trees(window):
         draw_pine_tree(x, (SCREEN_HEIGHT / 3) - 120)
 
 
-@arcade.decorator.init
+@arcade.decorator.setup
 def create_birds(window):
     """
     This, and any function with the arcade.decorator.init decorator,
@@ -89,7 +89,7 @@ def create_birds(window):
         window.bird_list.append([x, y])
 
 
-@arcade.decorator.animate
+@arcade.decorator.update
 def animate_birds(window, delta_time):
     """
     This is run every 1/60 of a second or so. Do not draw anything

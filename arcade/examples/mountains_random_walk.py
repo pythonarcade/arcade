@@ -68,7 +68,7 @@ def create_line_strip():
     return shape_list
 
 
-@arcade.decorator.init
+@arcade.decorator.setup
 def setup(window):
     """
     This, and any function with the arcade.decorator.init decorator,
