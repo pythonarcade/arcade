@@ -297,7 +297,6 @@ class Sprite:
             self._point_list_cache = ((x1, y1), (x2, y2), (x3, y3), (x4, y4))
 
         self.add_spatial_hashes()
-        print("A")
         return self._point_list_cache
 
     points = property(get_points, set_points)
@@ -357,12 +356,15 @@ class Sprite:
 
     def clear_spatial_hashes(self):
         for sprite_list in self.sprite_lists:
-            sprite_list.spatial_hash.remove_object(self)
+            if sprite_list.use_spatial_hash and sprite_list.spatial_hash is not None:
+                try:
+                    sprite_list.spatial_hash.remove_object(self)
+                except:
+                    print("Warning, attempt to remove item from spatial hash that doesn't exist in the hash.")
 
     def add_spatial_hashes(self):
         for sprite_list in self.sprite_lists:
             sprite_list.spatial_hash.insert_object_for_box(self)
-            print("B")
 
     def _get_bottom(self) -> float:
         """

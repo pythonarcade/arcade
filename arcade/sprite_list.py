@@ -282,7 +282,7 @@ class SpriteList(Generic[T]):
     >>> arcade.quick_run(0.25)
     """
 
-    def __init__(self, is_static=False, use_spatial_hash=True, spatial_hash_cell_size=128):
+    def __init__(self, is_static=False, use_spatial_hash=False, spatial_hash_cell_size=128):
         """
         Initialize the sprite list
         """

@@ -17,3 +17,4 @@ doc/examples/thumbs/
 pylint.html
 .idea/
 test*.py
+venv/
