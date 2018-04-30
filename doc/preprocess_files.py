@@ -1,8 +1,23 @@
+"""
+Quick Index Generator
+
+Generate quick API indexes in Restructured Text Format for Sphinx documentation.
+"""
+
 import re
 import os
 
 
 def list_functions(filename, output_file):
+    """
+    Use a regular expression to output all the functions in a file
+    Args:
+        filename:
+        output_file:
+
+    Returns:
+
+    """
     file_pointer = open(filename)
     file_split = filename.replace("/",".")
     file_split = file_split.split(".")
@@ -29,6 +44,15 @@ def list_functions(filename, output_file):
 
 
 def list_classes(filename, output_file):
+    """
+    Use regular expressions to output all the classes and methods in a file
+    Args:
+        filename:
+        output_file:
+
+    Returns:
+
+    """
     file_pointer = open(filename)
     file_split = filename.replace("/",".")
     file_split = file_split.split(".")
