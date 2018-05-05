@@ -15,6 +15,11 @@ Starting Templates
 Drawing
 -------
 
+.. figure:: thumbs/happy_face.png
+   :figwidth: 170px
+
+   :ref:`happy_face`
+
 .. figure:: thumbs/drawing_primitives.png
    :figwidth: 170px
 
