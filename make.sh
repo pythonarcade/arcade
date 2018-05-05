@@ -8,7 +8,7 @@ python3 setup.py bdist_wheel
 pip3 uninstall -y arcade
 for file in dist/*
 do
-  pip install $file
+  pip3 install $file
 done
 python3 doc/preprocess_files.py
 sphinx-build -b html doc doc/build/html
