@@ -81,17 +81,6 @@ class ArcadeWindow(arcade.Window):
 
 
 class decorator(arcade.Window):
-    """
-    >>> import arcade
-    >>> my_decorator = decorator()
-    >>> def f():
-    ...    pass
-    >>> my_decorator.init(f) == f
-    True
-    >>> my_decorator.draw(f) == f
-    True
-    >>> my_decorator.setup(800, 600, "Test Window", arcade.color.WHITE)
-    """
 
     registry = dict(
         setup=[],
