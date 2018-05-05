@@ -16,4 +16,5 @@ doc/source/quick_index.rst
 doc/examples/thumbs/
 pylint.html
 .idea/
+test*.py
 venv/
