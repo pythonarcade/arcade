@@ -57,6 +57,7 @@ def _load_sound_library():
     pyglet.lib.load_library(path)
     pyglet.have_avbin = True
 
+
 # Initialize static function variable
 _load_sound_library._sound_library_loaded = False
 
@@ -81,13 +82,38 @@ def _play_sound_win(sound):
     player.play()
 
 
-def _loadsound_osx(sound):
-    return sound
+def _loadsound_osx(filename):
+    try:
+        import Cocoa
+    except ImportError:
+        print("Unable to import Cocoa. Try running 'pip3 install PyObjC' from the terminal.")
+        return
+
+    if filename.endswith(".ogg"):
+        print("Warning: .ogg (Ogg Vorbis) files are not compatible with the Mac on the Arcade library.")
+        return None
+
+    if '://' in filename:
+        url = Cocoa.NSURL.URLWithString_(filename)  # don't think this works
+    else:
+        if not filename.startswith('/'):
+            from os import getcwd
+            sound = getcwd() + '/' + filename
+        url = Cocoa.NSURL.fileURLWithPath_(sound)  # this seems to work
+
+    nssound = Cocoa.NSSound.alloc().initWithContentsOfURL_byReference_(url, True)
+    return nssound
 
 
-def _playsound_osx(sound):
-    player = pyglet.media.load(sound)
-    player.play()
+def _playsound_osx(nssound):
+    if nssound is None:
+        print("Unable to play sound, sound passed in is 'None'.")
+        return
+    if not nssound.isPlaying():
+        nssound.play()
+    else:
+        # Already playing. Make a copy and play that.
+        nssound.copy().play()
 
 
 def _playsound_unix(sound):
