@@ -1,5 +1,8 @@
 language: python
 
+virtualenv:
+  system_site_packages: true
+  
 python:
   - "3.6"
 
@@ -11,7 +14,7 @@ before_script:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
   - sleep 3 # give xvfb some time to start
-  - sudo apt-get install python3-gi python-gst-1.0
+  - sudo apt-get install python3-gi python3-gi-cairo python-gst-1.0
   - pip install sphinx coverage coveralls sphinx_rtd_theme setuptools
 
 install:
