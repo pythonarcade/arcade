@@ -33,3 +33,5 @@ If you everything worked, you should be ready to install Arcade:
 
     sudo pip3 install arcade
 
+Note: For sound support Arcade uses the gstreamer package. This installs only
+via ``apt-get`` and doesn't support virtual environments well at all.
