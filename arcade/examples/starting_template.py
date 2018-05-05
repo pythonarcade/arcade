@@ -58,7 +58,7 @@ class MyGame(arcade.Window):
         Called whenever a key on the keyboard is pressed.
 
         For a full list of keys, see:
-        http://arcade.academy/arcade.color.html
+        http://arcade.academy/arcade.key.html
         """
         pass
 
