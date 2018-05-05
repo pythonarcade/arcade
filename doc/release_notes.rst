@@ -5,6 +5,49 @@
 Release Notes
 =============
 
+Version 1.3.3
+-------------
+
+Released 2018-May-05
+
+New Features
+~~~~~~~~~~~~
+
+* `Issue 184 <https://github.com/pvcraven/arcade/issues/184>`_: For sound, wav, mp3, and ogg should work on Linux and Windows. wav and mp3 should work on Mac.
+
+Updated Examples
+~~~~~~~~~~~~~~~~
+
+* Add happy face drawing example
+
+Version 1.3.2
+-------------
+
+Released 2018-Apr-20
+
+New Features
+~~~~~~~~~~~~
+
+`Issue 189 <https://github.com/pvcraven/arcade/issues/189>`_: Add spatial hashing for faster collision detection
+`Issue 191 <https://github.com/pvcraven/arcade/issues/191>`_: Add function to get the distance between two sprites
+`Issue 192 <https://github.com/pvcraven/arcade/issues/192>`_: Add function to get closest sprite in a list to another sprite
+`Issue 193 <https://github.com/pvcraven/arcade/issues/193>`_: Improve decorator support
+
+Updated Documentation
+~~~~~~~~~~~~~~~~~~~~~
+
+* Link the class methods in the quick index to class method documentation
+* Add mountain midpoint displacement example
+* Improve CSS
+* Add "Two Worlds" example game
+
+Updated Examples
+~~~~~~~~~~~~~~~~
+
+* Update ``sprite_collect_coints_move_down.py`` to not use ``all_sprites_list``
+* Update ``sprite_bullets_aimed.py`` to add a warning about how to manage text on a scrolling screen
+`Issue 194 <https://github.com/pvcraven/arcade/issues/194>`_: Fix for calculating distance traveled in scrolling examples
+
 Version 1.3.1
 -------------
 
