@@ -46,7 +46,7 @@ Updated Examples
 
 * Update ``sprite_collect_coints_move_down.py`` to not use ``all_sprites_list``
 * Update ``sprite_bullets_aimed.py`` to add a warning about how to manage text on a scrolling screen
-`Issue 194 <https://github.com/pvcraven/arcade/issues/194>`_: Fix for calculating distance traveled in scrolling examples
+* `Issue 194 <https://github.com/pvcraven/arcade/issues/194>`_: Fix for calculating distance traveled in scrolling examples
 
 Version 1.3.1
 -------------
