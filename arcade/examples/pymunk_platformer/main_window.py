@@ -17,6 +17,8 @@ Click and drag with the mouse to move the boxes.
 
 import timeit
 import os
+import arcade
+import pymunk
 
 from arcade.examples.pymunk_platformer.create_level import create_level_1
 from arcade.examples.pymunk_platformer.physics_utility import (
@@ -25,6 +27,7 @@ from arcade.examples.pymunk_platformer.physics_utility import (
     resync_physics_sprites,
 )
 
+from constants import *
 
 class MyGame(arcade.Window):
     """ Main application class. """
