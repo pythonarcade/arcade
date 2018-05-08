@@ -1,6 +1,10 @@
 The Python Arcade Library
 =========================
 
+Follow along with the [PyCon 2018 presentation](https://us.pycon.org/2018/schedule/presentation/100/) on Arcade:
+
+https://slides.com/paulcraven/pycon_2018/live
+
 .. raw:: html
 
     <table style="width:100%;">
