@@ -377,7 +377,7 @@ class SpriteList(Generic[T]):
         # removed sprites, and thus need to recreate our buffer
         # objects.
         if fast and self.vbo_dirty:
-            self.sprite_list.sort()
+            # self.sprite_list.sort()
             rects = _create_rects(self.sprite_list)
             _set_vbo(self.vertex_vbo_id, rects)
             vbo_list = []
