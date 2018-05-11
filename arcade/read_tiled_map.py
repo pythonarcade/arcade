@@ -7,6 +7,7 @@ class TiledMap:
 
     def __init__(self):
         self.global_tile_set = {}
+        self.layers_int_data = {}
         self.layers = {}
         self.version = None
         self.orientation = None
@@ -28,7 +29,14 @@ class Tile:
         self.source = None
 
 
-def read_tiled_map(filename):
+class GridLocation:
+    def __init__(self):
+        self.tile = None
+        self.center_x = 0
+        self.center_y = 0
+
+
+def read_tiled_map(filename: str) -> TiledMap:
 
     # Create a map to store this stuff in
     my_map = TiledMap()
@@ -45,7 +53,14 @@ def read_tiled_map(filename):
     my_map.height = int(map_tag.attrib["height"])
     my_map.tilewidth = int(map_tag.attrib["tilewidth"])
     my_map.tileheight = int(map_tag.attrib["tileheight"])
-    my_map.backgroundcolor = map_tag.attrib["backgroundcolor"]
+    backgroundcolor_string = map_tag.attrib["backgroundcolor"]
+    red_hex = "0x" + backgroundcolor_string[1:3]
+    green_hex = "0x" + backgroundcolor_string[3:5]
+    blue_hex = "0x" + backgroundcolor_string[5:7]
+    red = int(red_hex, 16)
+    green = int(green_hex, 16)
+    blue = int(blue_hex, 16)
+    my_map.backgroundcolor = (red, green, blue)
     my_map.nextobjectid = map_tag.attrib["nextobjectid"]
 
     # Grab all the tilesets
@@ -80,7 +95,7 @@ def read_tiled_map(filename):
     layer_tag_list = map_tag.findall('./layer')
     for layer_tag in layer_tag_list:
         layer_width = int(layer_tag.attrib['width'])
-        layer_grid = [[]]
+        layer_grid_ints = [[]]
 
         # Unzip and unencode each layer
         data = layer_tag.find("data")
@@ -99,11 +114,37 @@ def read_tiled_map(filename):
             if byte_count % 4 == 0:
                 byte_count = 0
                 int_count += 1
-                layer_grid[row_count].append(int_value)
+                layer_grid_ints[row_count].append(int_value)
                 int_value = 0
                 if int_count % layer_width == 0:
                     row_count += 1
-                    layer_grid.append([])
-        layer_grid.pop()
-        my_map.layers[layer_tag.attrib["name"]] = layer_grid
-        return my_map
+                    layer_grid_ints.append([])
+        layer_grid_ints.pop()
+        my_map.layers_int_data[layer_tag.attrib["name"]] = layer_grid_ints
+
+        layer_grid_objs = []
+        for row_index, row in enumerate(layer_grid_ints):
+            layer_grid_objs.append([])
+            for column_index, column in enumerate(row):
+                grid_location = GridLocation()
+                if layer_grid_ints[row_index][column_index] != 0:
+                    key = str(layer_grid_ints[row_index][column_index])
+                    grid_location.tile = my_map.global_tile_set[key]
+
+                    if my_map.renderorder == "right-down":
+                        adjusted_row_index = my_map.height - row_index - 1
+                    else:
+                        adjusted_row_index = row_index
+
+                    if my_map.orientation == "orthogonal":
+                        grid_location.center_x = column_index * my_map.tilewidth + my_map.tilewidth // 2
+                        grid_location.center_y = adjusted_row_index * my_map.tileheight + my_map.tilewidth // 2
+                    else:
+                        grid_location.center_x = (column_index - adjusted_row_index) * (my_map.tilewidth // 2)
+                        grid_location.center_y = (column_index + adjusted_row_index) * (my_map.tileheight // 2)
+
+                layer_grid_objs[row_index].append(grid_location)
+
+        my_map.layers[layer_tag.attrib["name"]] = layer_grid_objs
+
+    return my_map
