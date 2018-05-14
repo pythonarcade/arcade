@@ -19,5 +19,4 @@ pylint.html
 
 env
 .pytest_cache
-test*.py
 venv/
