@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 BUILD = 0
-VERSION = "1.3.3"
+VERSION = "1.3.4"
 RELEASE = VERSION
 
 from os import path
