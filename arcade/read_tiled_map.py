@@ -140,8 +140,10 @@ def read_tiled_map(filename: str) -> TiledMap:
                         grid_location.center_x = column_index * my_map.tilewidth + my_map.tilewidth // 2
                         grid_location.center_y = adjusted_row_index * my_map.tileheight + my_map.tilewidth // 2
                     else:
-                        grid_location.center_x = (column_index - adjusted_row_index) * (my_map.tilewidth // 2)
-                        grid_location.center_y = (column_index + adjusted_row_index) * (my_map.tileheight // 2)
+                        grid_location.center_x = (column_index - row_index) * (my_map.tilewidth // 2)
+                        grid_location.center_y = (column_index + row_index) * (my_map.tileheight // 2)
+                        if my_map.renderorder == "right-down":
+                            grid_location.center_y = my_map.tileheight * my_map.height // 2 - grid_location.center_y
 
                 layer_grid_objs[row_index].append(grid_location)
 
