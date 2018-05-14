@@ -17,9 +17,6 @@ before_script:
 install:
   - pip install -r requirements.txt
 
-virtualenv:
-  system_site_packages: true
-
 script:
   - python doc/preprocess_files.py
   - sphinx-build -b html doc doc/build/html
