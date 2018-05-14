@@ -126,6 +126,15 @@ API Documentation
    quick_index
    performance_tips
 
+Distribution
+------------
+
+.. toctree::
+   :maxdepth: 4
+
+   distribute_macos
+
+
 How to Contribute
 -----------------
 
