@@ -42,4 +42,3 @@ Prep your system by downloading needed packages:
 Then, from the terminal you can run any of the following scripts:
 
 * ``sudo ./make.sh`` - Compile, install, make documentation, and run unit tests.
-
