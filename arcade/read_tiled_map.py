@@ -2,6 +2,8 @@ import xml.etree.ElementTree as etree
 import base64
 import zlib
 
+from arcade.isometric import isometric_grid_to_screen
+
 
 class TiledMap:
 
@@ -53,14 +55,15 @@ def read_tiled_map(filename: str) -> TiledMap:
     my_map.height = int(map_tag.attrib["height"])
     my_map.tilewidth = int(map_tag.attrib["tilewidth"])
     my_map.tileheight = int(map_tag.attrib["tileheight"])
-    backgroundcolor_string = map_tag.attrib["backgroundcolor"]
-    red_hex = "0x" + backgroundcolor_string[1:3]
-    green_hex = "0x" + backgroundcolor_string[3:5]
-    blue_hex = "0x" + backgroundcolor_string[5:7]
-    red = int(red_hex, 16)
-    green = int(green_hex, 16)
-    blue = int(blue_hex, 16)
-    my_map.backgroundcolor = (red, green, blue)
+    if "backgroundcolor" in map_tag.attrib:
+        backgroundcolor_string = map_tag.attrib["backgroundcolor"]
+        red_hex = "0x" + backgroundcolor_string[1:3]
+        green_hex = "0x" + backgroundcolor_string[3:5]
+        blue_hex = "0x" + backgroundcolor_string[5:7]
+        red = int(red_hex, 16)
+        green = int(green_hex, 16)
+        blue = int(blue_hex, 16)
+        my_map.backgroundcolor = (red, green, blue)
     my_map.nextobjectid = map_tag.attrib["nextobjectid"]
 
     # Grab all the tilesets
@@ -140,8 +143,8 @@ def read_tiled_map(filename: str) -> TiledMap:
                         grid_location.center_x = column_index * my_map.tilewidth + my_map.tilewidth // 2
                         grid_location.center_y = adjusted_row_index * my_map.tileheight + my_map.tilewidth // 2
                     else:
-                        grid_location.center_x = (column_index - adjusted_row_index) * (my_map.tilewidth // 2)
-                        grid_location.center_y = (column_index + adjusted_row_index) * (my_map.tileheight // 2)
+                        grid_location.center_x,  grid_location.center_y = isometric_grid_to_screen(column_index, row_index, my_map.width, my_map.height, my_map.tilewidth, my_map.tileheight)
+
 
                 layer_grid_objs[row_index].append(grid_location)
 
