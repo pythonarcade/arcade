@@ -160,10 +160,8 @@ def _load_sound_other(filename: str) -> typing.Any:
     """
     Ok, this doesn't do anything yet.
 
-    >>> import arcade
-    >>> my_sound = arcade.load_sound("arcade/examples/sounds/rockHit2.wav")
-    >>> arcade.play_sound(my_sound)
     """
+
     return filename
 
 
