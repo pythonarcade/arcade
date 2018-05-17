@@ -27,7 +27,6 @@ pip uninstall -y arcade
 for /r %%i in (dist\*) do pip install "%%i"
 
 rem Build the documentation
-python doc/preprocess_files.py
 sphinx-build -b html doc doc/build/html
 
 rem Run tests and do code coverage
@@ -41,7 +40,6 @@ rem -- Make the documentation
 :makedoc
 
 rmdir /s /q "doc\build"
-python doc/preprocess_files.py
 sphinx-build -n -b html doc doc/build/html
 
 GOTO end
