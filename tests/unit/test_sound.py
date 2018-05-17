@@ -3,7 +3,7 @@ import pytest
 
 def test_import(mock_window):
     import arcade
-    assert 'loadsound' in arcade.load_sound.__name__
+    assert 'load' in arcade.load_sound.__name__
 
 
 @pytest.mark.not_ci
