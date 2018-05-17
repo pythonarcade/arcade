@@ -21,7 +21,7 @@ install:
 script:
   - python doc/preprocess_files.py
   - sphinx-build -b html doc doc/build/html
-  - pytest --cov=arcade arcade tests
+  - pytest --cov=arcade -m 'not not_ci' tests arcade
 
 # deploy:
 #   provider: pypi
