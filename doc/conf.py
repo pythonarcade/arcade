@@ -1,5 +1,11 @@
 #!/usr/bin/env python
 
+# Run the generate quick API index script
+import runpy
+
+
+runpy.run_path('preprocess_files.py', run_name='__main__')
+
 BUILD = 0
 VERSION = "1.3.4"
 RELEASE = VERSION
