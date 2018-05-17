@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 # Run the generate quick API index script
+# Then generate thumbnails if they do not exist
 import runpy
 
 

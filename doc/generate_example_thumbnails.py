@@ -18,6 +18,7 @@ def generate_thumbnails():
 
     os.chdir('examples')
     os.system(command + ' -resize 200x158 -extent 200x158 -background transparent -path thumbs *.png')
+    # Do we want animated thumbnails?
     # os.system(command + ' -resize 200x158 -extent 200x158 -background transparent -path thumbs *.gif')
 
 if __name__ == '__main__':
