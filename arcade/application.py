@@ -52,6 +52,16 @@ class Window(pyglet.window.Window):
 
     def update(self, delta_time: float):
         """
+        Move everything. For better consistency in naming, use ``on_update`` instead.
+
+        Args:
+            :dt (float): Time interval since the last time the function was called.
+
+        """
+        pass
+
+    def on_update(self, delta_time: float):
+        """
         Move everything.
 
         Args:
@@ -67,6 +77,8 @@ class Window(pyglet.window.Window):
         """
         pyglet.clock.unschedule(self.update)
         pyglet.clock.schedule_interval(self.update, rate)
+        pyglet.clock.unschedule(self.on_update)
+        pyglet.clock.schedule_interval(self.on_update, rate)
 
     def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
         """ Override this function to add mouse functionality. """
