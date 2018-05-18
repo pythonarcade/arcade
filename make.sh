@@ -10,7 +10,6 @@ for file in dist/*
 do
   pip3 install $file
 done
-python3 doc/preprocess_files.py
 sphinx-build -b html doc doc/build/html
 coverage run --source arcade setup.py test
 coverage report -m
