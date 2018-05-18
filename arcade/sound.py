@@ -127,6 +127,11 @@ def _playsound_unix(sound):
     """
     # pathname2url escapes non-URL-safe characters
 
+    if sound.endswith(".wav"):
+        my_sound = pyglet.media.load(sound)
+        my_sound.play()
+        return
+
     import os
     from urllib.request import pathname2url
 
