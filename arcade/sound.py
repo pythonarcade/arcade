@@ -102,8 +102,8 @@ def _loadsound_osx(filename):
     else:
         if not filename.startswith('/'):
             from os import getcwd
-            sound = getcwd() + '/' + filename
-        url = Cocoa.NSURL.fileURLWithPath_(sound)  # this seems to work
+            filename = getcwd() + '/' + filename
+        url = Cocoa.NSURL.fileURLWithPath_(filename)  # this seems to work
 
     nssound = Cocoa.NSSound.alloc().initWithContentsOfURL_byReference_(url, True)
     return nssound
