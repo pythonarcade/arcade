@@ -12,8 +12,8 @@ TODO: This code doesn't work properly, and isn't currently listed in the example
 import arcade
 
 # Set how many rows and columns we will have
-ROW_COUNT = 10
-COLUMN_COUNT = 10
+ROW_COUNT = 15
+COLUMN_COUNT = 15
 
 # This sets the WIDTH and HEIGHT of each grid location
 WIDTH = 30
@@ -39,7 +39,7 @@ class MyGame(arcade.Window):
         """
         super().__init__(width, height)
 
-        self.shape_list = arcade.ShapeElementList()
+        self.shape_list = None
 
         # Create a 2 dimensional array. A two dimensional
         # array is simply a list of lists.
@@ -51,13 +51,23 @@ class MyGame(arcade.Window):
             for column in range(COLUMN_COUNT):
                 self.grid[row].append(0)  # Append a cell
 
+        arcade.set_background_color(arcade.color.BLACK)
+        self.recreate_grid()
+
+    def recreate_grid(self):
+        self.shape_list = arcade.ShapeElementList()
+        for row in range(ROW_COUNT):
+            for column in range(COLUMN_COUNT):
+                if self.grid[row][column] == 0:
+                    color = arcade.color.WHITE
+                else:
+                    color = arcade.color.GREEN
+
                 x = (MARGIN + WIDTH) * column + MARGIN + WIDTH // 2
                 y = (MARGIN + HEIGHT) * row + MARGIN + HEIGHT // 2
 
-                current_rect = arcade.create_rectangle_filled(x, y, WIDTH, HEIGHT, arcade.color.WHITE)
+                current_rect = arcade.create_rectangle_filled(x, y, WIDTH, HEIGHT, color)
                 self.shape_list.append(current_rect)
-
-        arcade.set_background_color(arcade.color.BLACK)
 
     def on_draw(self):
         """
@@ -89,6 +99,8 @@ class MyGame(arcade.Window):
                 self.grid[row][column] = 1
             else:
                 self.grid[row][column] = 0
+
+        self.recreate_grid()
 
 
 def main():
