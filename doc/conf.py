@@ -3,7 +3,8 @@
 # Run the generate quick API index script
 # Then generate thumbnails if they do not exist
 import runpy
-
+import sys
+import os
 
 runpy.run_path('preprocess_files.py', run_name='__main__')
 runpy.run_path('generate_example_thumbnails.py', run_name='__main__')
@@ -27,25 +28,7 @@ RELEASE = VERSION
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-import sys
-import os
-import shlex
-import time
-import datetime
-
 sys.path.insert(0, os.path.abspath('../..'))
-
-# From
-# http://stackoverflow.com/questions/12772927/specifying-an-online-image-in-sphinx-restructuredtext-format
-import sphinx.environment
-from docutils.utils import get_source_line
-
-
-# def _warn_node(self, msg, node):
-#     if not msg.startswith('nonlocal image URI found:'):
-#         self._warnfunc(msg, '%s:%s' % get_source_line(node))
-
-# sphinx.environment.BuildEnvironment.warn_node = _warn_node
 
 # -- General configuration ------------------------------------------------
 
