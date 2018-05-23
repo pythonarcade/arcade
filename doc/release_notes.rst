@@ -148,7 +148,7 @@ Enhancements
 * `Issue 149 <https://github.com/pvcraven/arcade/issues/149>`_: Need better error message with check_for_collision
 * `Issue 151 <https://github.com/pvcraven/arcade/issues/151>`_: Need example showing how to go between rooms
 * `Issue 152 <https://github.com/pvcraven/arcade/issues/152>`_: Standardize name of main class in examples
-* `Issue 154 <https://github.com/pvcraven/arcade/issues/154>`_: Improve GitHub compatiblity
+* `Issue 154 <https://github.com/pvcraven/arcade/issues/154>`_: Improve GitHub compatibility
 * `Issue 155 <https://github.com/pvcraven/arcade/issues/155>`_: Improve readme documentation
 * `Issue 156 <https://github.com/pvcraven/arcade/issues/156>`_: Clean up root folder
 * `Issue 162 <https://github.com/pvcraven/arcade/issues/162>`_: Add documentation with performance tips
