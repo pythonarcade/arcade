@@ -1,0 +1,10 @@
+Pygame
+wav
+ogg
+readme
+Appveyor
+Ubuntu
+platformer
+platformers
+docstrings
+automata
