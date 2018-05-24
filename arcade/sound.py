@@ -126,10 +126,8 @@ def _playsound_unix(sound):
     https://gstreamer.freedesktop.org/documentation/tutorials/playback/playbin-usage.html
     """
     # pathname2url escapes non-URL-safe characters
-
-    if sound.endswith(".wav"):
-        my_sound = pyglet.media.load(sound)
-        my_sound.play()
+    if isinstance(sound, pyglet.media.sources.riff.WaveSource):
+        sound.play()
         return
 
     import os
@@ -161,6 +159,14 @@ def _playsound_unix(sound):
     #     print("Error playing sound.")
 
 
+def _load_sound_unix(filename: str) -> typing.Any:
+    if filename.endswith(".wav"):
+        my_sound = pyglet.media.load(filename)
+        return my_sound
+    else:
+        return filename
+
+
 def _load_sound_other(filename: str) -> typing.Any:
     """
     Ok, this doesn't do anything yet.
@@ -183,7 +189,7 @@ elif system == 'Darwin':
     load_sound = _loadsound_osx
 else:
     play_sound = _playsound_unix
-    load_sound = _load_sound_other
+    load_sound = _load_sound_unix
 
 del system
 
