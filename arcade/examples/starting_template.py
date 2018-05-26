@@ -5,7 +5,7 @@ Once you have learned how to use classes, you can begin your program with this
 template.
 
 If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.sprite_starting_template
+python -m arcade.examples.starting_template
 """
 import arcade
 
