@@ -1,3 +1,3 @@
-magick mogrify -resize 200x158 -extent 200x158 -background transparent -path thumbs *.png
-magick mogrify -resize 200x158 -extent 200x158 -background transparent -path thumbs *.gif
+magick mogrify -resize 170x170 -extent 170x170 -background transparent -path thumbs *.png
+rem magick mogrify -resize 170x170 -extent 170x170 -background transparent -path thumbs *.gif
 

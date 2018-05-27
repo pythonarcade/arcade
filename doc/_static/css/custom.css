@@ -39,10 +39,3 @@ div[class^='highlight'] pre {
     overflow: auto;
     color: #404040;
 }
-#example-code .rst-content img {
-    display: block;
-    max-width: 170px;
-    max-height: 150px;
-    width: auto;
-    height: auto;
-}
