@@ -7,6 +7,7 @@ from numbers import Number
 
 from arcade.window_commands import set_viewport
 from arcade.window_commands import get_viewport
+from arcade.window_commands import set_window
 
 import pyglet
 
@@ -48,6 +49,7 @@ class Window(pyglet.window.Window):
         self.set_update_rate(1 / 60)
         super().set_fullscreen(fullscreen)
         self.invalid = False
+        set_window(self)
         # set_viewport(0, self.width, 0, self.height)
 
     def update(self, delta_time: float):
