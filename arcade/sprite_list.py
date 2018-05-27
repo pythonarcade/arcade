@@ -346,9 +346,7 @@ class SpriteList(Generic[T]):
     def move(self, change_x: float, change_y: float):
         for sprite in self.sprite_list:
             sprite.center_x += change_x
-            sprite.last_center_x += change_x
             sprite.center_y += change_y
-            sprite.last_center_y += change_y
 
     def draw(self, fast: bool = True):
         """
