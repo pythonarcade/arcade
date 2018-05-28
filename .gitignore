@@ -18,3 +18,4 @@ pylint.html
 .idea/
 test*.py
 venv/
+.pytest_cache/
