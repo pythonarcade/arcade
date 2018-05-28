@@ -8,7 +8,7 @@ Release Notes
 Version 1.3.4
 -------------
 
-Released ?
+Released 28-May-2018
 
 New Features
 ~~~~~~~~~~~~
