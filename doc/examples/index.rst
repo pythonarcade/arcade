@@ -40,6 +40,11 @@ Drawing
 
    :ref:`array_backed_grid`
 
+.. figure:: thumbs/array_backed_grid.png
+   :figwidth: 170px
+
+   :ref:`array_backed_grid_buffered`
+
 
 Animation
 ---------
