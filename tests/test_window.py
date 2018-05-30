@@ -25,7 +25,7 @@
 #         import arcade
 #         window = arcade.Window(200, 100, resizable=False)
 #         self.assertRaises(ValueError, window.set_max_size, 200, 200)
-#         window.close()
+#         window.close() j
 #
 #     # def test_set_size_location(self):
 #     #     import arcade
