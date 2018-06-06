@@ -186,6 +186,153 @@ def _load_sound_other(filename: str) -> typing.Any:
     """
     return filename
 
+class _Player:
+    """
+    Creates a media player from which a user can play audio. This audio can be played on a loop, paused, queued up,
+    skipped and the volume changed.
+
+        TODO: Need better music to play for testing
+
+    Use:
+
+        >>> player = arcade.Player()
+        >>> player.load_dir("arcade/examples/sounds/")
+        >>> m = player.music
+        >>> player.add(m[0])
+        >>> player.play()
+
+    Or:
+
+        >>> player = arcade.Player()
+        >>> player.load_file("arcade/examples/sounds/rockHit2.wav")
+        >>> m = player.music
+        >>> player.add(m[0])
+        >>> player.play()
+    """
+
+    def __init__(self):
+        self._player = pyglet.media.Player()
+        self._loop = True
+        self._player.EOS_LOOP = self._loop
+
+        self._current = None
+
+        self._music = dict()
+
+    @property
+    def player(self) -> typing.Type[pyglet.media.Player]:
+        """
+        Get the player object from the class so it can be worked on directly.
+        :return: pyglet.media.Player object
+        """
+        return self._player
+
+    @property
+    def playing(self) -> bool:
+        """
+        Checks if the player is currently playing music.
+        :return: True/False to indicate if playing
+        """
+        return self._player.playing
+
+    @property
+    def loop(self) -> bool:
+        """
+        Checks the looping status of the player.
+        :return: True/False to indicate if looping
+        """
+        return self._loop
+
+    @property
+    def music(self) -> typing.List:
+        """
+        Gives the user a list of all available loaded media files by name so they can be immediatly used
+        by the player to add a music file to the queue.
+        """
+        return list(self._music.keys())
+
+    def play(self) -> typing.NoReturn:
+        """
+        Starts to play the music in the queue, will not go to the next song if looping is enabled.
+        """
+        self._player.play()
+
+    def stop(self) -> typing.NoReturn:
+        """
+        Stops the player from playing music.
+        """
+        self._player.pause()
+
+    def next(self) -> typing.NoReturn:
+        """
+        Plays the next song in the queue even if looping is enabled.
+        """
+        if self.playing:
+            self._player.next_source()
+        else:
+            raise UserWarning("Failed to play as current state is not playing music.")
+
+    def add(self, music: str) -> typing.NoReturn:
+        """
+        Add a music file to the queue to be played by the player.
+        As it is a queue it is first in first out, so the first song in will be played then the secon
+        """
+        if music in self._music:
+            self._player.queue(self._music[music])
+        else:
+            raise UserWarning("Failed to load music, does not {} exist in loaded music.".format(music))
+
+    def volume(self, volume: int) -> typing.NoReturn:
+        """
+        Allows for the volume to be changed on the music played.
+
+        :param volume: Int from 0-100 to adjust the volume
+        """
+        self._player.volume = volume / 100
+
+    def clear(self) -> typing.NoReturn:
+        """
+        Resets the player.
+        """
+        self._player = pyglet.media.Player()
+
+    def looping(self, loop: bool) -> typing.NoReturn:
+        """
+        Changes if looping is enabled.
+        :param loop: True/False
+        """
+        self._loop = loop
+        self._player.EOS_LOOP = pyglet.media.SourceGroup.loop if self._loop else self._loop
+        return list(self._music.keys())
+
+    def load_dir(self, dir: str) -> typing.NoReturn:
+        """
+        Given a directory path loads all media files from the directory. Assumes all files are acceptable by
+        pyglet media.
+        :param dir: Directory path
+        """
+        if not os.path.exists(dir):
+            raise FileExistsError("Directory does not exist.")
+        if not self._music:
+            self._music = {".".join(name.split(".")[0:-1]): pyglet.media.load(os.path.join(dir, name))
+                           for name in os.listdir(dir)}
+        else:
+            for name in os.listdir(location):
+                n_ = ".".join(name.split(".")[0:-1])
+                self._music[n_] = pyglet.media.load(os.path.join(dir, name))
+
+    def load_file(self, file: str) -> typing.NoReturn:
+        """
+        Loads a file to be used by the player.
+
+        :param file: Location of file to be loaded
+        """
+        name = ".".join(file.split(".")[0:-1])
+        if not self._music:
+            self._music = {"{}".format(name): pyglet.media.load(file=file)}
+        else:
+            self._music["{}".format(name): pyglet.media.load(file=file)]
+
 
 system = system()
 
@@ -199,6 +346,8 @@ elif system == 'Darwin':
 else:
     play_sound = _playsound_unix
     load_sound = _load_sound_unix
+    
+Player = _Player
 
 del system
 
