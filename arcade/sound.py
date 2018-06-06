@@ -195,6 +195,7 @@ class _Player:
 
     Use:
 
+        >>> import arcade
         >>> player = arcade.Player()
         >>> player.load_dir("arcade/examples/sounds/")
         >>> m = player.music
@@ -202,7 +203,8 @@ class _Player:
         >>> player.play()
 
     Or:
-
+    
+        >>> import arcade
         >>> player = arcade.Player()
         >>> player.load_file("arcade/examples/sounds/rockHit2.wav")
         >>> m = player.music
