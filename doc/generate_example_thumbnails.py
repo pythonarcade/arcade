@@ -1,4 +1,6 @@
-import os, sys
+import pathlib, os
+
+from PIL import Image
 
 def main():
     if not os.path.exists('examples/thumbs'):
@@ -11,15 +13,13 @@ def main():
 def generate_thumbnails():
     print('Generating thumbnails')
 
-    if sys.platform == 'linux':
-        command = 'mogrify'
-    else:
-        command = 'magick mogrify'
+    size = 200, 158
 
-    os.chdir('examples')
-    os.system(command + ' -resize 200x158 -extent 200x158 -background transparent -path thumbs *.png')
-    # Do we want animated thumbnails?
-    # os.system(command + ' -resize 200x158 -extent 200x158 -background transparent -path thumbs *.gif')
+    for infile in pathlib.Path('.').glob('examples/*.png'):
+        im = Image.open(infile)
+        im.thumbnail(size)
+        im.save('examples/thumbs/' + infile.name)
+
 
 if __name__ == '__main__':
     main()
