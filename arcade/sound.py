@@ -361,7 +361,7 @@ class _Player:
         elif music not in self._music.keys():
             raise UserWarning("Music file indicated does not exisit in the player.")
         else:
-            if type(self._music[music]) is not pyglet.media.Player:
+            if type(self._music[music]) is pyglet.media.Player:
                 self._music[music].volume = volume
 
     def clear(self) -> typing.NoReturn:
