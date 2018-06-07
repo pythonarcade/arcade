@@ -133,6 +133,12 @@ def main():
     list_classes("../arcade/sprite.py", output_file)
     list_functions("../arcade/sprite.py", output_file)
 
+    output_file.write("Sprite List Module\n")
+    output_file.write("------------------\n")
+    output_file.write("\n")
+    list_classes("../arcade/sprite_list.py", output_file)
+    list_functions("../arcade/sprite_list.py", output_file)
+
     output_file.write("Physics Engines Module\n")
     output_file.write("----------------------\n")
     output_file.write("\n")

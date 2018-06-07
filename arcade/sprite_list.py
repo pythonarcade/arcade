@@ -1,3 +1,8 @@
+"""
+This module provides functionality to manage Sprites.
+
+"""
+
 from typing import Iterable
 from typing import TypeVar
 from typing import Generic
@@ -170,6 +175,8 @@ def _draw_rects(shape_list: List[Sprite], vertex_vbo_id: gl.GLuint,
 
 class SpatialHash:
     """
+    Structure for fast collision checking.
+
     See: https://www.gamedev.net/articles/programming/general-and-gameplay-programming/spatial-hashing-r2697/
     """
 
@@ -181,6 +188,9 @@ class SpatialHash:
         return int(point[0] / self.cell_size), int(point[1] / self.cell_size)
 
     def insert_object_for_box(self, new_object: Sprite):
+        """
+        Insert a sprite.
+        """
         # Get the corners
         min_x = new_object.left
         max_x = new_object.right
@@ -202,6 +212,9 @@ class SpatialHash:
                 self.contents.setdefault((i, j), []).append(new_object)
 
     def remove_object(self, new_object: Sprite):
+        """
+        Remove a Sprite.
+        """
         # Get the corners
         min_x = new_object.left
         max_x = new_object.right
@@ -224,7 +237,10 @@ class SpatialHash:
                 except:
                     print("Warning, tried to remove item from spatial hash that wasn't there.")
 
-    def get_objects_for_box(self, check_object: Sprite):
+    def get_objects_for_box(self, check_object: Sprite) -> List[Sprite]:
+        """
+        Returns colliding Sprites.
+        """
         # Get the corners
         min_x = check_object.left
         max_x = check_object.right
@@ -344,6 +360,9 @@ class SpriteList(Generic[T]):
             sprite.update_animation()
 
     def move(self, change_x: float, change_y: float):
+        """
+        Moves all contained Sprites.
+        """
         for sprite in self.sprite_list:
             sprite.center_x += change_x
             sprite.center_y += change_y

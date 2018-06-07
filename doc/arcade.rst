@@ -61,6 +61,14 @@ Sprite Module
     :undoc-members:
     :show-inheritance:
 
+Sprite List Module
+^^^^^^^^^^^^^^^^^^
+
+.. automodule:: arcade.sprite_list
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Physics Engines Module
 ^^^^^^^^^^^^^^^^^^^^^^
 
