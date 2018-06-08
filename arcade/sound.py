@@ -38,36 +38,43 @@ def _load_sound_library():
         import site
         if hasattr(site, 'getsitepackages'):
             packages = site.getsitepackages()
+            user_packages = site.getuserbase()
 
             if appveyor:
                 if is64bit:
-                    path = "Win64/avbin"
+                    path_global = "Win64/avbin"
                 else:
-                    path = "Win32/avbin"
+                    path_global = "Win32/avbin"
 
             else:
                 if is64bit:
-                    path = packages[0] + "/lib/site-packages/arcade/Win64/avbin"
+                    path_global = packages[0] + "/lib/site-packages/arcade/Win64/avbin"
+                    path_user = user_packages + "/lib/site-packages/arcade/Win64/avbin"
                 else:
-                    path = packages[0] + "/lib/site-packages/arcade/Win32/avbin"
+                    path_global = packages[0] + "/lib/site-packages/arcade/Win32/avbin"
+                    path_user = user_packages + "/lib/site-packages/arcade/Win32/avbin"
 
         else:
             if is64bit:
-                path = "Win64/avbin"
+                path_global = "Win64/avbin"
             else:
-                path = "Win32/avbin"
+                path_global = "Win32/avbin"
 
 
     elif system == 'Darwin':
         from distutils.sysconfig import get_python_lib
-        path = get_python_lib() + '/lib/site-packages/arcade/lib/libavbin.10.dylib'
+        path_global = get_python_lib() + '/lib/site-packages/arcade/lib/libavbin.10.dylib'
         pyglet.options['audio'] = ('openal', 'pulse', 'silent')
 
     else:
-        path = "avbin"
+        path_global = "avbin"
         pyglet.options['audio'] = ('openal', 'pulse', 'silent')
 
-    pyglet.lib.load_library(path)
+    try:
+        pyglet.lib.load_library(path_user)
+    except ImportError:
+        pyglet.lib.load_library(path_global)
+
     pyglet.have_avbin = True
 
 
