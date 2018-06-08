@@ -1,4 +1,5 @@
 import pathlib
+from itertools import chain
 
 from PIL import Image
 
@@ -7,10 +8,12 @@ def main():
     input_path = pathlib.Path('examples/')
     output_path = pathlib.Path('examples/thumbs/')
 
-    input_files = input_path.glob('*.png')
+    png_input_files = input_path.glob('*.png')
+    gif_input_files = input_path.glob('*.gif')
+
     modified_files = []
 
-    for input_file in input_files:
+    for input_file in chain(png_input_files, gif_input_files):
         if out_of_date(input_file, output_path):
             modified_files.append(input_file)
 
