@@ -1,24 +1,44 @@
-import pathlib, os
+import pathlib
 
 from PIL import Image
 
+
 def main():
-    if not os.path.exists('examples/thumbs'):
-        os.makedirs('examples/thumbs')
-        generate_thumbnails()
+    input_path = pathlib.Path('examples/')
+    output_path = pathlib.Path('examples/thumbs/')
+
+    input_files = input_path.glob('*.png')
+    modified_files = []
+
+    for input_file in input_files:
+        if out_of_date(input_file, output_path):
+            modified_files.append(input_file)
+
+    generate_thumbnails(modified_files, output_path)
+
+
+def out_of_date(input_file, output_path):
+    output_file = output_path / input_file.name
+
+    if not output_file.exists():
+        return True
+
+    if input_file.stat().st_mtime > output_file.stat().st_mtime:
+        return True
     else:
-        print('Thumbnails already exist, skipping generation')
+        return False
 
 
-def generate_thumbnails():
-    print('Generating thumbnails')
-
+def generate_thumbnails(input_files, output_path):
     size = 200, 158
 
-    for infile in pathlib.Path('.').glob('examples/*.png'):
-        im = Image.open(infile)
+    output_path.mkdir(exist_ok=True)
+
+    for input_file in input_files:
+        print('Generating thumbnail: ' + input_file.name)
+        im = Image.open(input_file)
         im.thumbnail(size)
-        im.save('examples/thumbs/' + infile.name)
+        im.save(output_path / input_file.name)
 
 
 if __name__ == '__main__':
