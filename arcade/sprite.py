@@ -14,6 +14,7 @@ from arcade.draw_commands import draw_texture_rectangle
 from arcade.draw_commands import Texture
 from arcade.draw_commands import rotate_point
 
+from typing import List
 from typing import Sequence
 from typing import Tuple
 
@@ -192,6 +193,13 @@ class Sprite:
         >>> empty_sprite.append_texture(my_texture)
         """
         self.textures.append(texture)
+
+    def append_textures(self, textures: List[Texture]):
+        """
+        Extends current list of textures that can be applied to this
+        sprite.
+        """
+        self.textures.extend(textures)
 
     def set_texture(self, texture_no: int):
         """
