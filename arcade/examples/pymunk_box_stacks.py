@@ -68,7 +68,7 @@ class MyGame(arcade.Window):
         self.sprite_list = arcade.SpriteList()
         self.static_lines = []
 
-        # Used for dragging shapes aruond with the mouse
+        # Used for dragging shapes around with the mouse
         self.shape_being_dragged = None
         self.last_mouse_position = 0, 0
 
