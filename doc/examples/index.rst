@@ -205,7 +205,7 @@ Sprite Movement
 Levels
 ^^^^^^
 
-.. figure:: thumbs/sprite_collect_coins_diff_levels.png
+.. figure:: thumbs/sprite_collect_coins_diff_levels.gif
    :figwidth: 170px
 
    :ref:`example-sprite-collect-coins-diff-levels`
@@ -269,7 +269,7 @@ Platformers
 
    :ref:`sprite_move_scrolling`
 
-.. figure:: thumbs/sprite_move_animation.png
+.. figure:: thumbs/sprite_move_animation.gif
    :figwidth: 170px
 
    :ref:`sprite_move_animation`
