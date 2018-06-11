@@ -345,6 +345,15 @@ PyMunk
    :ref:`pymunk_platformer`
 
 
+Isometric Examples
+------------------
+
+.. figure:: thumbs/isometric_example.png
+   :figwidth: 170px
+
+   :ref:`isometric_example`
+
+
 ShapeElementLists
 -----------------
 

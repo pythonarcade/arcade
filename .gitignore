@@ -16,7 +16,7 @@ doc/source/quick_index.rst
 doc/examples/thumbs/
 pylint.html
 .idea/
-
 env
-.pytest_cache
+test*.py
 venv/
+.pytest_cache/

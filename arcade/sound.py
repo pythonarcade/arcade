@@ -36,19 +36,28 @@ def _load_sound_library():
         is64bit = sys.maxsize > 2**32
 
         import site
-        packages = site.getsitepackages()
+        if hasattr(site, 'getsitepackages'):
+            packages = site.getsitepackages()
 
-        if appveyor:
+            if appveyor:
+                if is64bit:
+                    path = "Win64/avbin"
+                else:
+                    path = "Win32/avbin"
+
+            else:
+                if is64bit:
+                    path = packages[0] + "/lib/site-packages/arcade/Win64/avbin"
+                else:
+                    path = packages[0] + "/lib/site-packages/arcade/Win32/avbin"
+
+        else:
             if is64bit:
                 path = "Win64/avbin"
             else:
                 path = "Win32/avbin"
 
-        else:
-            if is64bit:
-                path = packages[0] + "/lib/site-packages/arcade/Win64/avbin"
-            else:
-                path = packages[0] + "/lib/site-packages/arcade/Win32/avbin"
+
     elif system == 'Darwin':
         from distutils.sysconfig import get_python_lib
         path = get_python_lib() + '/lib/site-packages/arcade/lib/libavbin.10.dylib'
@@ -102,8 +111,8 @@ def _loadsound_osx(filename):
     else:
         if not filename.startswith('/'):
             from os import getcwd
-            sound = getcwd() + '/' + filename
-        url = Cocoa.NSURL.fileURLWithPath_(sound)  # this seems to work
+            filename = getcwd() + '/' + filename
+        url = Cocoa.NSURL.fileURLWithPath_(filename)  # this seems to work
 
     nssound = Cocoa.NSSound.alloc().initWithContentsOfURL_byReference_(url, True)
     return nssound
@@ -126,6 +135,9 @@ def _playsound_unix(sound):
     https://gstreamer.freedesktop.org/documentation/tutorials/playback/playbin-usage.html
     """
     # pathname2url escapes non-URL-safe characters
+    if isinstance(sound, pyglet.media.sources.riff.WaveSource):
+        sound.play()
+        return
 
     import os
     from urllib.request import pathname2url
@@ -156,6 +168,14 @@ def _playsound_unix(sound):
     #     print("Error playing sound.")
 
 
+def _load_sound_unix(filename: str) -> typing.Any:
+    if filename.endswith(".wav"):
+        my_sound = pyglet.media.load(filename)
+        return my_sound
+    else:
+        return filename
+
+
 def _load_sound_other(filename: str) -> typing.Any:
     """
     Ok, this doesn't do anything yet.
@@ -176,7 +196,7 @@ elif system == 'Darwin':
     load_sound = _loadsound_osx
 else:
     play_sound = _playsound_unix
-    load_sound = _load_sound_other
+    load_sound = _load_sound_unix
 
 del system
 

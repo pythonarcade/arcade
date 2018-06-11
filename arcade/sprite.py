@@ -299,12 +299,6 @@ class Sprite:
     def get_position(self):
         return self._position[0], self._position[1]
 
-    def set_position(self, new_position: (float, float)):
-        self.clear_spatial_hashes()
-        self._position[0] = new_position[0]
-        self._position[1] = new_position[1]
-        self._point_list_cache = None
-
     position = property(get_position, set_position)
 
     def _set_collision_radius(self, collision_radius):

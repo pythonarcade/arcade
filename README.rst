@@ -35,7 +35,7 @@ Documentation
 Latest Release
 --------------
 
-Latest version is 1.3.3 released on 2018-05-05.
+Latest version is 1.3.4 released on 2018-05-28.
 
 Release notes: http://arcade.academy/release_notes.html
 
