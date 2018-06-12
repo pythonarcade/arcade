@@ -136,14 +136,20 @@ def _playsound_osx(nssound):
         nssound.copy().play()
 
 
+players = []
+MAX_PLAYERS = 5
 def _playsound_unix(sound):
     """Play a sound using GStreamer.
     Inspired by this:
     https://gstreamer.freedesktop.org/documentation/tutorials/playback/playbin-usage.html
     """
     # pathname2url escapes non-URL-safe characters
-    if isinstance(sound, pyglet.media.sources.riff.WaveSource):
-        sound.play()
+    global players
+    if isinstance(sound, pyglet.media.sources.base.StaticSource):
+        while len(players) >= MAX_PLAYERS:
+            p = players.pop(0)
+            p.delete()
+        players.append(sound.play())
         return
 
     import os
@@ -177,7 +183,7 @@ def _playsound_unix(sound):
 
 def _load_sound_unix(filename: str) -> typing.Any:
     if filename.endswith(".wav"):
-        my_sound = pyglet.media.load(filename)
+        my_sound = pyglet.media.StaticSource(pyglet.media.load(filename))
         return my_sound
     else:
         return filename
@@ -206,6 +212,3 @@ else:
     load_sound = _load_sound_unix
 
 del system
-
-
-
