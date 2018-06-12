@@ -55,6 +55,7 @@ if __name__ == "__main__":
           package_data={'arcade': ['examples/images/*.png',
                                    'examples/images/character_sprites/*.png',
                                    'examples/images/explosion/*.png',
+                                   'examples/images/isometric_dungeon/*.png',
                                    'examples/images/*.jpg',
                                    'examples/sounds/*']},
           data_files=[("lib/site-packages/arcade/Win32", ["Win32/avbin.dll"]),

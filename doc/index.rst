@@ -52,6 +52,9 @@ The Python Arcade Library
         <td>
           <img style="width:78px;" src="_static/sample_games.svg"><br/>
           <h2><a href="sample_games.html">Example Games</a></h2>
+          <ul>
+            <li><a href="examples/pyinstaller.html">Distributing games with PyInstaller</a></li>
+          </ul>
         </td>
         <td>
           <img style="width:78px;" src="_static/code.svg"><br/>
