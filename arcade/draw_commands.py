@@ -1329,7 +1329,7 @@ def draw_lrtb_rectangle_outline(left: float, right: float, top: float,
                            border_width)
 
 
-def draw_xywh_rectangle_outline(top_left_x: float, top_left_y: float,
+def draw_xywh_rectangle_outline(bottom_left_x: float, bottom_left_y: float,
                                 width: float, height: float,
                                 color: Color,
                                 border_width: float=1):
@@ -1337,8 +1337,8 @@ def draw_xywh_rectangle_outline(top_left_x: float, top_left_y: float,
     Draw a rectangle by specifying left, right, top, and bottom edges.
 
     Args:
-        :top_left_x: The x coordinate of the left edge of the rectangle.
-        :top_left_y: The y coordinate of the top of the rectangle.
+        :bottom_left_x: The x coordinate of the left edge of the rectangle.
+        :bottom_left_y: The y coordinate of the top of the rectangle.
         :width: The width of the rectangle.
         :height: The height of the rectangle.
         :color: The color of the rectangle.
@@ -1355,8 +1355,8 @@ def draw_xywh_rectangle_outline(top_left_x: float, top_left_y: float,
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
     """
-    center_x = top_left_x + (width / 2)
-    center_y = top_left_y + (height / 2)
+    center_x = bottom_left_x + (width / 2)
+    center_y = bottom_left_y + (height / 2)
     draw_rectangle_outline(center_x, center_y, width, height, color,
                            border_width)
 
@@ -1471,15 +1471,15 @@ def draw_lrtb_rectangle_filled(left: float, right: float, top: float,
     draw_rectangle_filled(center_x, center_y, width, height, color)
 
 
-def draw_xywh_rectangle_filled(top_left_x: float, top_left_y: float,
+def draw_xywh_rectangle_filled(bottom_left_x: float, bottom_left_y: float,
                                width: float, height: float,
                                color: Color):
     """
     Draw a rectangle by specifying left, right, top, and bottom edges.
 
     Args:
-        :top_left_x: The x coordinate of the left edge of the rectangle.
-        :top_left_y: The y coordinate of the top of the rectangle.
+        :bottom_left_x: The x coordinate of the left edge of the rectangle.
+        :bottom_left_y: The y coordinate of the top of the rectangle.
         :width: The width of the rectangle.
         :height: The height of the rectangle.
         :color: The color of the rectangle.
@@ -1497,8 +1497,8 @@ def draw_xywh_rectangle_filled(top_left_x: float, top_left_y: float,
     >>> arcade.quick_run(0.25)
     """
 
-    center_x = top_left_x + (width / 2)
-    center_y = top_left_y + (height / 2)
+    center_x = bottom_left_x + (width / 2)
+    center_y = bottom_left_y + (height / 2)
     draw_rectangle_filled(center_x, center_y, width, height, color)
 
 
@@ -1639,7 +1639,7 @@ scale * texture.height, texture, 90, 1, False)
     gl.glDisable(gl.GL_TEXTURE_2D)
 
 
-def draw_xywh_rectangle_textured(top_left_x: float, top_left_y: float,
+def draw_xywh_rectangle_textured(bottom_left_x: float, bottom_left_y: float,
                                  width: float, height: float,
                                  texture: Texture):
     """
@@ -1653,8 +1653,8 @@ def draw_xywh_rectangle_textured(top_left_x: float, top_left_y: float,
     >>> arcade.quick_run(0.25)
     """
 
-    center_x = top_left_x + (width / 2)
-    center_y = top_left_y + (height / 2)
+    center_x = bottom_left_x + (width / 2)
+    center_y = bottom_left_y + (height / 2)
     draw_texture_rectangle(center_x, center_y, width, height, texture)
 # --- END RECTANGLE FUNCTIONS # # #
 
