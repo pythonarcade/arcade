@@ -8,14 +8,16 @@ Buffered Draw Commands.
 """
 # pylint: disable=too-many-arguments, too-many-locals, too-few-public-methods
 
-import math
 import ctypes
+import math
+from typing import List
+
 import PIL.Image
 import PIL.ImageOps
 import pyglet
 import pyglet.gl as gl
 from pyglet.gl import glu as glu
-from typing import List
+
 from arcade.arcade_types import Color
 from arcade.arcade_types import PointList
 
@@ -34,9 +36,9 @@ def rotate_point(x: float, y: float, cx: float, cy: float,
 
     # now apply rotation
     rotated_x = temp_x * math.cos(math.radians(angle)) - \
-        temp_y * math.sin(math.radians(angle))
+                temp_y * math.sin(math.radians(angle))
     rotated_y = temp_x * math.sin(math.radians(angle)) + \
-        temp_y * math.cos(math.radians(angle))
+                temp_y * math.cos(math.radians(angle))
 
     # translate back
     ROUNDING_PRECISION = 2
@@ -230,8 +232,8 @@ def load_textures(file_name: str,
 
 def load_texture(file_name: str, x: float=0, y: float=0,
                  width: float=0, height: float=0,
-                 mirrored: bool = False,
-                 flipped: bool = False,
+                 mirrored: bool=False,
+                 flipped: bool=False,
                  scale: float=1) -> Texture:
     """
     Load image from disk and create a texture.
@@ -636,7 +638,7 @@ def draw_circle_filled(center_x: float, center_y: float, radius: float,
 
 
 def draw_circle_outline(center_x: float, center_y: float, radius: float,
-                        color: Color, border_width: float = 1):
+                        color: Color, border_width: float=1):
     """
     Draw the outline of a circle.
 
@@ -1334,11 +1336,11 @@ def draw_xywh_rectangle_outline(bottom_left_x: float, bottom_left_y: float,
                                 color: Color,
                                 border_width: float=1):
     """
-    Draw a rectangle by specifying left, right, top, and bottom edges.
+    Draw a rectangle extending from bottom left to top right
 
     Args:
         :bottom_left_x: The x coordinate of the left edge of the rectangle.
-        :bottom_left_y: The y coordinate of the top of the rectangle.
+        :bottom_left_y: The y coordinate of the bottom of the rectangle.
         :width: The width of the rectangle.
         :height: The height of the rectangle.
         :color: The color of the rectangle.
@@ -1475,15 +1477,14 @@ def draw_xywh_rectangle_filled(bottom_left_x: float, bottom_left_y: float,
                                width: float, height: float,
                                color: Color):
     """
-    Draw a rectangle by specifying left, right, top, and bottom edges.
+    Draw a filled rectangle extending from bottom left to top right
 
     Args:
         :bottom_left_x: The x coordinate of the left edge of the rectangle.
-        :bottom_left_y: The y coordinate of the top of the rectangle.
+        :bottom_left_y: The y coordinate of the bottom of the rectangle.
         :width: The width of the rectangle.
         :height: The height of the rectangle.
         :color: The color of the rectangle.
-        :border_width: The width of the border in pixels. Defaults to one.
     Returns:
         None
     Raises:
@@ -1641,8 +1642,25 @@ scale * texture.height, texture, 90, 1, False)
 
 def draw_xywh_rectangle_textured(bottom_left_x: float, bottom_left_y: float,
                                  width: float, height: float,
-                                 texture: Texture):
+                                 texture: Texture, angle: float=0,
+                                 alpha: float=1, transparent: bool=True,
+                                 repeat_count_x=1, repeat_count_y=1):
     """
+    Draw a texture extending from bottom left to top right.
+
+    Args:
+        :bottom_left_x: The x coordinate of the left edge of the rectangle.
+        :bottom_left_y: The y coordinate of the bottom of the rectangle.
+        :width: The width of the rectangle.
+        :height: The height of the rectangle.
+        :texture: identifier of texture returned from load_texture() call
+        :angle: rotation of the rectangle. Defaults to zero.
+        :alpha: Transparency of image.
+    Returns:
+        None
+    Raises:
+        None
+
     >>> import arcade
     >>> arcade.open_window(800,600,"Drawing Example")
     >>> arcade.start_render()
@@ -1655,7 +1673,10 @@ def draw_xywh_rectangle_textured(bottom_left_x: float, bottom_left_y: float,
 
     center_x = bottom_left_x + (width / 2)
     center_y = bottom_left_y + (height / 2)
-    draw_texture_rectangle(center_x, center_y, width, height, texture)
+    draw_texture_rectangle(center_x, center_y, width, height, texture, angle, alpha, transparent, repeat_count_x,
+                           repeat_count_y)
+
+
 # --- END RECTANGLE FUNCTIONS # # #
 
 # --- BEGIN TEXT FUNCTIONS # # #
