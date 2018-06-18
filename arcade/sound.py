@@ -219,31 +219,28 @@ del system
 class _Player:
     """
     Creates a media player from which a user can play audio. The player can handle multiple background tracks at once,
-    and because of this
-
-        TODO: Need better music to play for testing
-
+    and because of this.
+    
+    This player is restricted by os aracde.play_sound, if arcade.play_sound cannot load a data type this player
+    will not function for that file. If a file cannot be loaded for your specific platform it should raise a
+    warning telling the specific error.
+    
     Use:
-        >>> import arcade
-        >>> player = arcade.Player()
-        >>> player.load_dir("arcade/examples/sounds/")
-        >>> m = player.music
-        >>> player.play(m[0])
-
-    Or:
-        >>> import arcade
-        >>> player = arcade.Player()
-        >>> player.load_file("arcade/examples/sounds/rockHit2.wav")
-        >>> m = player.music
-        >>> player.play(m[0])
-
-    Looping can be disabled as follows
-        >>> import arcade
-        >>> player = arcade.Player()
-        >>> player.load_file("arcade/examples/sounds/rockHit2.wav")
-        >>> player.looping(False)  # Bool val passed to tell it to loop or not
-        >>> m = player.music
-        >>> player.play(m[0])
+        >>> test = False
+        >>> if test:
+        ...     import arcade
+        ...     loc = os.path.dirname(__file__)
+        ...     player = arcade.Player()
+        ...     player.load_dir(os.path.join(loc, "examples", "sounds"))
+        ...     m = player.music
+        ...     player.play(m[0])
+    
+    Note:
+        All sound files can be acceswed with the file name minus the extension.
+        Example:
+            file = "awav.wav"
+            # file name is awav to use
+            player.play("awav")
     """
 
     def __init__(self):
@@ -253,6 +250,11 @@ class _Player:
         self._pause_others_on_play = True
 
         self._music = dict()
+
+    def __check_os__(self):
+        import sys
+        if "win" in sys.version:
+            pass
 
     @property
     def player(self) -> typing.Type[pyglet.media.Player]:
@@ -418,10 +420,9 @@ class _Player:
         """
         name = ".".join(file.split(".")[0:-1])
         if not self._music:
-            self._music = {"{}".format(name): load_sound(os.path.join(name))}
+            self._music = {"{}".format(name): load_sound(file)}
         else:
-            self._music["{}".format(name): load_sound(os.path.join(name))]
-
+            self._music["{}".format(name): load_sound(file)]
 
 
 Player = _Player
