@@ -251,11 +251,6 @@ class _Player:
 
         self._music = dict()
 
-    def __check_os__(self):
-        import sys
-        if "win" in sys.version:
-            pass
-
     @property
     def player(self) -> typing.Type[pyglet.media.Player]:
         """
