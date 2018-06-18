@@ -297,7 +297,7 @@ class _Player:
     @resume_on_play.setter
     def resume_on_play(self, val: bool) -> typing.NoReturn:
         """
-        Set the resume on play, True will acause the player to resume at the last point in the track, False will
+        Set the resume on play, True will cause the player to resume at the last point in the track, False will
         reset the track from the beginning.
         :param val: True/False to set resume on play
         """
