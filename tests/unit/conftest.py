@@ -1,9 +1,10 @@
 import sys
+
 import pytest
 
 
 class MockWindow:
-    ''' Replace the pyglet base class with something we control '''
+    """ Replace the pyglet base class with something we control """
 
     def __init__(self, *args, **kwargs):
         self.height = kwargs['height']
