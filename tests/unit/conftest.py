@@ -1,9 +1,10 @@
 import sys
+
 import pytest
 
 
 class MockWindow:
-    ''' Replace the pyglet base class with something we control '''
+    """ Replace the pyglet base class with something we control """
 
     def __init__(self, *args, **kwargs):
         self.height = kwargs['height']
@@ -26,7 +27,4 @@ def mock_window(monkeypatch):
 
 @pytest.fixture
 def pyglet_clock(mocker):
-    mocker.patch('pyglet.clock.unschedule')
-    mocker.patch('pyglet.clock.schedule_interval')
-    from pyglet import clock
-    return clock
+    yield mocker.patch('pyglet.clock')

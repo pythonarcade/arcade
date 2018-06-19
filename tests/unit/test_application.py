@@ -23,20 +23,20 @@ def test_initializes_defaults(mocker, mock_window):
 
 def test_update(mock_window):
     w = mock_window()
-    assert None is w.update(1.1111)
+    assert None is w.on_update(1.1111)
 
 
 def test_set_update_rate_constructor(mock_window, pyglet_clock):
     w = mock_window()
-    pyglet_clock.unschedule.assert_called_once_with(w.update)
-    pyglet_clock.schedule_interval.assert_called_once_with(w.update, 1 / 60)
+    pyglet_clock.unschedule.assert_called_with(w.on_update)
+    pyglet_clock.schedule_interval.assert_called_with(w.on_update, 1 / 60)
 
 
 def test_set_update_rate(mock_window, pyglet_clock):
     w = mock_window()
     w.set_update_rate(1 / 2)
-    pyglet_clock.unschedule.assert_called_with(w.update, )
-    pyglet_clock.schedule_interval.assert_called_with(w.update, 0.5)
+    pyglet_clock.unschedule.assert_called_with(w.on_update, )
+    pyglet_clock.schedule_interval.assert_called_with(w.on_update, 0.5)
 
 
 def test_on_mouse_motion(mock_window):
