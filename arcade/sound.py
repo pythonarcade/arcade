@@ -140,6 +140,8 @@ def _playsound_osx(nssound):
 
 players = []
 MAX_PLAYERS = 5
+
+
 def _playsound_unix(sound):
     """Play a sound using GStreamer.
     Inspired by this:
@@ -220,11 +222,11 @@ class _Player:
     """
     Creates a media player from which a user can play audio. The player can handle multiple background tracks at once,
     and because of this.
-    
+
     This player is restricted by os aracde.play_sound, if arcade.play_sound cannot load a data type this player
     will not function for that file. If a file cannot be loaded for your specific platform it should raise a
     warning telling the specific error.
-    
+
     Use:
         >>> test = False
         >>> if test:
@@ -234,7 +236,7 @@ class _Player:
         ...     player.load_dir(os.path.join(loc, "examples", "sounds"))
         ...     m = player.music
         ...     player.play(m[0])
-    
+
     Note:
         All sound files can be acceswed with the file name minus the extension.
         Example:
@@ -320,14 +322,20 @@ class _Player:
     def play(self, music: str) -> typing.NoReturn:
         """
         Starts to play the music in the queue, will not go to the next song if looping is not enabled.
+
+            TODO: If pyglet version 1.3.2 is no longer used the pyglet.media.SourceGroup can
+                be replaced by player.loop = True/False to enable looping functionality.
         """
         if music in self._music:
             if self._pause_others_on_play:
                 self.stop()
             if type(self._music[music]) is not pyglet.media.Player:
                 m = pyglet.media.StaticSource(self._music[music])
+                s = pyglet.media.SourceGroup(m.audio_format, None)
+                s.queue(m)
+                s.loop = self.loop
                 self._music[music] = pyglet.media.Player()
-                self._music[music].queue(m)
+                self._music[music].queue(s)
                 self._music[music].play()
             else:
                 self._music[music].play()
@@ -356,7 +364,7 @@ class _Player:
         else:
             raise UserWarning("Failed to load music, does not {} exist in loaded music.".format(music))
 
-    def volume(self, volume: int, music: str="") -> typing.NoReturn:
+    def volume(self, volume: int, music: str = "") -> typing.NoReturn:
         """
         Allows for the volume to be changed on the music played.
 
@@ -384,12 +392,16 @@ class _Player:
         Changes if looping is enabled.
         :param loop: True/False
 
-            TODO: FIx
+            TODO: Version 1.3.2 of pyglet is used if 1.4+ is moved to this will have to change
+                pyglet 1.3.2 player does not support looping in the on_eos function as it should.
+                It only prints out a debug messag if debugging is enabled. Use of the pyglet.media.SourceGroup
+                is required for looping.
         """
         self._loop = loop
         for player in self._music:
-            if type(player) is pyglet.media.Player:
-                player.EOS_LOOP = pyglet.media.SourceGroup.loop if self._loop else pyglet.media.SourceGroup.next
+            if type(self._music[player]) is pyglet.media.Player:
+                self._music[player].source.loop = self._loop
+
 
     def load_dir(self, dir_: str) -> typing.NoReturn:
         """
