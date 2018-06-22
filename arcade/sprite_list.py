@@ -40,9 +40,9 @@ class VertexBuffer(OpenGLBuffer):
 
     def bind(self):
         gl.glEnableClientState(self.type)
-        gl.glBindBuffer(self.type, self.id)
+        gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self.id)
         gl.glVertexPointer(2, gl.GL_FLOAT, 0, 0)
-        gl.glBufferData(self.type, ctypes.sizeof(self.data_ptr), self.data_ptr, gl.GL_STATIC_DRAW)
+        # gl.glBufferData(self.type, ctypes.sizeof(self.data_ptr), self.data_ptr, gl.GL_STATIC_DRAW)
 
 
 class ColorBuffer(OpenGLBuffer):
@@ -137,7 +137,7 @@ def _render_rect_filled(offset: int, texture_id: str,
     gl.glDrawArrays(gl.GL_QUADS, offset, batch_count)
 
 
-def _draw_rects(shape_list: List[Sprite], vertex_vbo_id: gl.GLuint,
+def _draw_rects(shape_list: List[Sprite], vertex_buffer: VertexBuffer,
                 texture_coord_vbo_id: gl.GLuint, change_x: float, change_y: float):
     """
     Draw a set of rectangles using vertex buffers. This is more efficient
@@ -150,21 +150,15 @@ def _draw_rects(shape_list: List[Sprite], vertex_vbo_id: gl.GLuint,
     gl.glEnable(gl.GL_BLEND)
     gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
     gl.glEnable(gl.GL_TEXTURE_2D)  # As soon as this happens, can't use drawing commands
-    # gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_S, gl.GL_CLAMP_TO_EDGE)
-    # gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_T, gl.GL_CLAMP_TO_EDGE)
     gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_NEAREST)
     gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_NEAREST)
     gl.glHint(gl.GL_POLYGON_SMOOTH_HINT, gl.GL_NICEST)
     gl.glHint(gl.GL_PERSPECTIVE_CORRECTION_HINT, gl.GL_NICEST)
 
-    # gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
-    # gl.glMatrixMode(gl.GL_MODELVIEW)
-    # gl.glDisable(gl.GL_BLEND)
 
-    gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vertex_vbo_id)
+    vertex_buffer.bind()
+
     gl.glEnableClientState(gl.GL_TEXTURE_COORD_ARRAY)
-    # gl.glEnableClientState(gl.GL_VERTEX_ARRAY)
-    gl.glVertexPointer(2, gl.GL_FLOAT, 0, 0)
 
     gl.glBindBuffer(gl.GL_ARRAY_BUFFER, texture_coord_vbo_id)
 
@@ -172,7 +166,6 @@ def _draw_rects(shape_list: List[Sprite], vertex_vbo_id: gl.GLuint,
     gl.glColor4f(1, 1, 1, last_alpha)
     gl.glLoadIdentity()
 
-    # gl.glLoadIdentity()
     gl.glTranslatef(change_x, change_y, 0)
 
     # Ideally, we want to draw these in "batches."
@@ -463,7 +456,7 @@ class SpriteList(Generic[T]):
         # If we run fast, use vertex buffers. Otherwise do it the
         # super slow way.
         if fast:
-            _draw_rects(self.sprite_list, self.vertex_buffer.id,
+            _draw_rects(self.sprite_list, self.vertex_buffer,
                         self.texture_coord_vbo_id, self.change_x, self.change_y)
         else:
             for sprite in self.sprite_list:
