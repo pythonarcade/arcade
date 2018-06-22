@@ -31,7 +31,7 @@ class OpenGLBuffer:
         pass
 
     def unbind(self):
-        gl.glBindBuffer(gl.GL_ARRAY_BUFFER, 0)
+        pass
 
 
 class VertexBuffer(OpenGLBuffer):
@@ -45,10 +45,13 @@ class VertexBuffer(OpenGLBuffer):
 
 
 class ColorBuffer(OpenGLBuffer):
+    def __init__(self, data):
+        super().__init__(gl.GL_COLOR_ARRAY, data)
+
     def bind(self):
         gl.glEnableClientState(self.type)
-        gl.glBindBuffer(self.type, self.id)
-        gl.glColorPointer(2, gl.GL_FLOAT, 0, 0)
+        gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self.id)
+        gl.glColorPointer(4, gl.GL_FLOAT, 0, 0)
 
 
 class TextureCoordBuffer(OpenGLBuffer):
@@ -91,10 +94,6 @@ def _create_rects(rect_list: Iterable[Sprite]) -> List[float]:
 
     v2f = []
     for shape in rect_list:
-        # v2f.extend([-shape.width / 2, -shape.height / 2,
-        #            shape.width / 2, -shape.height / 2,
-        #            shape.width / 2, shape.height / 2,
-        #            -shape.width / 2, shape.height / 2])
         x1 = -shape.width / 2 + shape.center_x
         x2 = shape.width / 2 + shape.center_x
         y1 = -shape.height / 2 + shape.center_y
@@ -138,7 +137,9 @@ def _render_rect_filled(offset: int, texture_id: str,
 
 
 def _draw_rects(shape_list: List[Sprite], vertex_buffer: VertexBuffer,
-                texture_coord_buffer: TextureCoordBuffer, change_x: float, change_y: float):
+                texture_coord_buffer: TextureCoordBuffer,
+                color_buffer: ColorBuffer,
+                change_x: float, change_y: float):
     """
     Draw a set of rectangles using vertex buffers. This is more efficient
     than drawing them individually.
@@ -148,21 +149,18 @@ def _draw_rects(shape_list: List[Sprite], vertex_buffer: VertexBuffer,
         return
 
     gl.glEnable(gl.GL_BLEND)
-    gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
     gl.glEnable(gl.GL_TEXTURE_2D)  # As soon as this happens, can't use drawing commands
+    gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
     gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_NEAREST)
     gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_NEAREST)
     gl.glHint(gl.GL_POLYGON_SMOOTH_HINT, gl.GL_NICEST)
     gl.glHint(gl.GL_PERSPECTIVE_CORRECTION_HINT, gl.GL_NICEST)
 
-
     vertex_buffer.bind()
+    color_buffer.bind()
     texture_coord_buffer.bind()
 
-    last_alpha = shape_list[0].alpha
-    gl.glColor4f(1, 1, 1, last_alpha)
     gl.glLoadIdentity()
-
     gl.glTranslatef(change_x, change_y, 0)
 
     # Ideally, we want to draw these in "batches."
@@ -170,7 +168,6 @@ def _draw_rects(shape_list: List[Sprite], vertex_buffer: VertexBuffer,
     # them all at once.
 
     last_texture_id = None
-    last_alpha = 1
     batch_count = 0
     offset = 0
     batch_offset = 0
@@ -178,13 +175,12 @@ def _draw_rects(shape_list: List[Sprite], vertex_buffer: VertexBuffer,
 
     for shape in shape_list:
 
-        if shape.texture.texture_id != last_texture_id or shape.alpha != last_alpha:
+        if shape.texture.texture_id != last_texture_id:
             # Ok, if the 'if' triggered above, we are now looking at a different
             # texture than we looked at with the last loop. So draw the last
             # "batch" of squares. We'll start a new batch with the current
             # square but not draw it yet
             if batch_count > 0:
-                gl.glColor4f(1, 1, 1, last_alpha)
                 _render_rect_filled(batch_offset,
                                     last_texture_id,
                                     texture_coord_vbo_id,
@@ -193,7 +189,6 @@ def _draw_rects(shape_list: List[Sprite], vertex_buffer: VertexBuffer,
             batch_count = 0
             batch_offset = offset
             last_texture_id = shape.texture.texture_id
-            last_alpha = shape.alpha
 
         batch_count += 4
         offset += 4
@@ -205,7 +200,6 @@ def _draw_rects(shape_list: List[Sprite], vertex_buffer: VertexBuffer,
                         batch_count)
 
     gl.glDisable(gl.GL_TEXTURE_2D)
-
 
 class SpatialHash:
     """
@@ -444,6 +438,15 @@ class SpriteList(Generic[T]):
                                  0, sprite.repeat_count_y])
             self.texture_coord_buffer = TextureCoordBuffer(vbo_list)
 
+            color_list = []
+            # Loop for each sprite
+            for sprite in self.sprite_list:
+                # There are four corners for each sprite, so they all get a color
+                for i in range(4):
+                    color_list.extend([1.0, 1.0, 1.0, sprite.alpha])
+
+            self.color_buffer = ColorBuffer(color_list)
+
             self.vbo_dirty = False
             self.change_x = 0
             self.change_y = 0
@@ -452,7 +455,9 @@ class SpriteList(Generic[T]):
         # super slow way.
         if fast:
             _draw_rects(self.sprite_list, self.vertex_buffer,
-                        self.texture_coord_buffer, self.change_x, self.change_y)
+                        self.texture_coord_buffer,
+                        self.color_buffer,
+                        self.change_x, self.change_y)
         else:
             for sprite in self.sprite_list:
                 sprite.draw()
