@@ -17,6 +17,50 @@ from arcade.sprite import get_distance_between_sprites
 from arcade.draw_commands import rotate_point
 
 
+class OpenGLBuffer:
+    def __init__(self, type, data):
+        self.type = type
+        self.data = data
+        self.id = gl.GLuint()
+        gl.glGenBuffers(1, ctypes.pointer(self.id))
+        self.data_ptr = (gl.GLfloat * len(data))(*data)
+        gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self.id)
+        gl.glBufferData(gl.GL_ARRAY_BUFFER, ctypes.sizeof(self.data_ptr), self.data_ptr, gl.GL_STATIC_DRAW)
+
+    def bind(self):
+        pass
+
+    def unbind(self):
+        gl.glBindBuffer(gl.GL_ARRAY_BUFFER, 0)
+
+
+class VertexBuffer(OpenGLBuffer):
+    def __init__(self, data):
+        super().__init__(gl.GL_VERTEX_ARRAY, data)
+
+    def bind(self):
+        gl.glEnableClientState(self.type)
+        gl.glBindBuffer(self.type, self.id)
+        gl.glVertexPointer(2, gl.GL_FLOAT, 0, 0)
+        gl.glBufferData(self.type, ctypes.sizeof(self.data_ptr), self.data_ptr, gl.GL_STATIC_DRAW)
+
+
+class ColorBuffer(OpenGLBuffer):
+    def bind(self):
+        gl.glEnableClientState(self.type)
+        gl.glBindBuffer(self.type, self.id)
+        gl.glColorPointer(2, gl.GL_FLOAT, 0, 0)
+        gl.glBufferData(self.type, ctypes.sizeof(self.data_ptr), self.data_ptr, gl.GL_STATIC_DRAW)
+
+
+class TextureCoordBuffer(OpenGLBuffer):
+    def bind(self):
+        gl.glEnableClientState(self.type)
+        gl.glBindBuffer(self.type, self.id)
+        gl.glTexCoordPointer(2, gl.GL_FLOAT, 0, 0)
+        gl.glBufferData(self.type, ctypes.sizeof(self.data_ptr), self.data_ptr, gl.GL_STATIC_DRAW)
+
+
 def _set_vbo(vbo_id: gl.GLuint, points: List[float]):
     """
     Given a vertex buffer id, this sets the vertexes to be
@@ -119,7 +163,7 @@ def _draw_rects(shape_list: List[Sprite], vertex_vbo_id: gl.GLuint,
 
     gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vertex_vbo_id)
     gl.glEnableClientState(gl.GL_TEXTURE_COORD_ARRAY)
-    gl.glEnableClientState(gl.GL_VERTEX_ARRAY)
+    # gl.glEnableClientState(gl.GL_VERTEX_ARRAY)
     gl.glVertexPointer(2, gl.GL_FLOAT, 0, 0)
 
     gl.glBindBuffer(gl.GL_ARRAY_BUFFER, texture_coord_vbo_id)
@@ -307,9 +351,11 @@ class SpriteList(Generic[T]):
         """
         # List of sprites in the sprite list
         self.sprite_list = []
+
         # List of vertex buffers that go with the sprites
-        self.vertex_vbo_id = None
-        # List of texture coordinate buffers (map textures to coordinages)
+        self.vertex_buffer = None
+
+        # List of texture coordinate buffers (map textures to coordinates)
         # that go with this list.
         self.texture_coord_vbo_id = None
         # Set to True if we add/remove items. This way we can regenerate
@@ -373,9 +419,12 @@ class SpriteList(Generic[T]):
         """
         # Run this if we are running 'fast' with vertex buffers
         # and we haven't yet created vertex buffers.
-        if fast and self.vertex_vbo_id is None:
+        if fast and self.vertex_buffer is None:
+
             self.vbo_dirty = True
-            self.vertex_vbo_id = _create_vbo()
+            # self.vertex_vbo_id = _create_vbo()
+
+
             self.texture_coord_vbo_id = _create_vbo()
             # print("Setup VBO")
 
@@ -395,8 +444,11 @@ class SpriteList(Generic[T]):
         # objects.
         if fast and self.vbo_dirty:
             # self.sprite_list.sort()
+
             rects = _create_rects(self.sprite_list)
-            _set_vbo(self.vertex_vbo_id, rects)
+
+            self.vertex_buffer = VertexBuffer(rects)
+            # _set_vbo(self.vertex_buffer.id, rects)
             vbo_list = []
             for sprite in self.sprite_list:
                 vbo_list.extend([0, 0,
@@ -411,7 +463,7 @@ class SpriteList(Generic[T]):
         # If we run fast, use vertex buffers. Otherwise do it the
         # super slow way.
         if fast:
-            _draw_rects(self.sprite_list, self.vertex_vbo_id,
+            _draw_rects(self.sprite_list, self.vertex_buffer.id,
                         self.texture_coord_vbo_id, self.change_x, self.change_y)
         else:
             for sprite in self.sprite_list:
