@@ -199,6 +199,7 @@ def _draw_rects(shape_list: List[Sprite], vertex_buffer: VertexBuffer,
                         texture_coord_vbo_id,
                         batch_count)
 
+    # Must do this, or drawing commands won't work.
     gl.glDisable(gl.GL_TEXTURE_2D)
 
 class SpatialHash:
