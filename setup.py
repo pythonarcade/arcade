@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 
-BUILD = 0
-VERSION = "1.3.4"
-RELEASE = VERSION
-
 from os import path
 import sys
 from setuptools import setup
+
+BUILD = 0
+VERSION = "1.3.4"
+RELEASE = VERSION
 
 if __name__ == "__main__":
 
@@ -31,8 +31,8 @@ if __name__ == "__main__":
           url="http://arcade.academy",
           download_url="http://arcade.academy",
           install_requires=[
-          'pyglet',
-          'pillow'
+            'pyglet',
+            'pillow'
           ],
           packages=["arcade",
                     "arcade.key",
