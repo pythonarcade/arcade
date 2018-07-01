@@ -607,6 +607,7 @@ arcade.Sprite("arcade/examples/images/playerShip1_orange.png", scale)
         for sprite_list in self.sprite_lists:
             if self in sprite_list:
                 sprite_list.remove(self)
+        self.sprite_lists.clear()
 
 
 class AnimatedTimeSprite(Sprite):
