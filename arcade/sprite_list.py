@@ -615,7 +615,10 @@ class SpriteList2(Generic[T]):
                 array_of_texture_names.append(sprite.texture_name)
                 image = Image.open(sprite.texture_name)
                 array_of_images.append(image)
-            array_of_sizes.append(image.size)
+            size_h = sprite.height / 2
+            size_w = sprite.width / 2
+            print(f"{size_w} {size_h}")
+            array_of_sizes.append([size_w, size_h])
 
         # Get their sizes
         widths, heights = zip(*(i.size for i in array_of_images))
@@ -691,8 +694,8 @@ class SpriteList2(Generic[T]):
             self.pos_angle_scale[i, 0] = sprite.center_x
             self.pos_angle_scale[i, 1] = sprite.center_y
             self.pos_angle_scale[i, 3] = math.radians(sprite.angle)
-            self.pos_angle_scale[i, 4] = (sprite.width * 2) * sprite.scale
-            self.pos_angle_scale[i, 5] = (sprite.height * 2) * sprite.scale
+            self.pos_angle_scale[i, 4] = sprite.width / 2
+            self.pos_angle_scale[i, 5] = sprite.height / 2
 
     def draw(self):
 
