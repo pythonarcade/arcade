@@ -151,6 +151,8 @@ class Sprite:
             self.height = 0
 
         self.cur_texture_index = 0
+        self.texture_name = filename
+
         self.scale = scale
         self._position = [center_x, center_y]
         self._angle = 0.0

@@ -50,7 +50,7 @@ class Window(pyglet.window.Window):
         super().set_fullscreen(fullscreen)
         self.invalid = False
         set_window(self)
-        # set_viewport(0, self.width, 0, self.height)
+        set_viewport(0, self.width, 0, self.height)
 
     def update(self, delta_time: float):
         """

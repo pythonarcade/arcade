@@ -4,6 +4,7 @@ Functions for calculating geometry.
 
 from arcade.sprite import Sprite
 from arcade.sprite_list import SpriteList
+from arcade.sprite_list import SpriteList2
 from typing import List
 from arcade.arcade_types import PointList
 
@@ -155,8 +156,8 @@ def check_for_collision_with_list(sprite1: Sprite,
     """
     if not isinstance(sprite1, Sprite):
         raise TypeError("Parameter 1 is not an instance of the Sprite class.")
-    if not isinstance(sprite_list, SpriteList):
-        raise TypeError("Parameter 2 is not a SpriteList.")
+    if not isinstance(sprite_list, SpriteList) and not isinstance(sprite_list, SpriteList2):
+        raise TypeError(f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList.")
 
     if sprite_list.use_spatial_hash:
         sprite_list_to_check = sprite_list.spatial_hash.get_objects_for_box(sprite1)

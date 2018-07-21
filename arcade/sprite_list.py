@@ -12,9 +12,57 @@ import ctypes
 
 import pyglet.gl as gl
 
+import math
+import moderngl
+import numpy as np
+
+from PIL import Image
+
 from arcade.sprite import Sprite
 from arcade.sprite import get_distance_between_sprites
 from arcade.draw_commands import rotate_point
+from arcade.window_commands import get_opengl_context
+from arcade.window_commands import get_projection
+
+VERTEX_SHADER = """
+#version 330
+uniform mat4 Projection;
+in vec2 in_vert;
+in vec2 in_texture;
+in vec3 in_pos;
+in float in_angle;
+in vec2 in_scale;
+in vec4 in_sub_tex_coords;
+out vec2 v_texture;
+void main() {
+    mat2 rotate = mat2(
+                cos(in_angle), sin(in_angle),
+                -sin(in_angle), cos(in_angle)
+            );
+    vec3 pos;
+    pos = in_pos + vec3(rotate * (in_vert * in_scale), 0.);
+    gl_Position = Projection * vec4(pos, 1.0);
+
+    vec2 tex_offset = in_sub_tex_coords.xy;
+    vec2 tex_size = in_sub_tex_coords.zw;
+
+    v_texture = (in_texture * tex_size + tex_offset) * vec2(1, -1);
+}
+"""
+
+FRAGMENT_SHADER = """
+#version 330
+uniform sampler2D Texture;
+in vec2 v_texture;
+out vec4 f_color;
+void main() {
+    vec4 basecolor = texture(Texture, v_texture);
+    if (basecolor.a == 0.0){
+        discard;
+    }
+    f_color = basecolor;
+}
+"""
 
 
 class OpenGLBuffer:
@@ -201,6 +249,7 @@ def _draw_rects(shape_list: List[Sprite], vertex_buffer: VertexBuffer,
 
     # Must do this, or drawing commands won't work.
     gl.glDisable(gl.GL_TEXTURE_2D)
+
 
 class SpatialHash:
     """
@@ -478,6 +527,200 @@ class SpriteList(Generic[T]):
         """
         Pop off the last sprite in the list.
         """
+        return self.sprite_list.pop()
+
+
+class SpriteList2(Generic[T]):
+
+    next_texture_id = 0
+
+    def __init__(self, use_spatial_hash=True, spatial_hash_cell_size=128):
+        """
+        Initialize the sprite list
+        """
+        # List of sprites in the sprite list
+        self.sprite_list = []
+
+        # Used in drawing optimization via OpenGL
+        self.program = None
+        self.pos_angle_scale = None
+        self.pos_angle_scale_buf = None
+        self.texture_id = None
+        self.vao = None
+
+        # Used in collision detection optimization
+        self.spatial_hash = SpatialHash(cell_size=spatial_hash_cell_size)
+        self.use_spatial_hash = use_spatial_hash
+
+    def append(self, item: T):
+        """
+        Add a new sprite to the list.
+        """
+        self.sprite_list.append(item)
+        item.register_sprite_list(self)
+        self.prog = None
+
+    def recalculate_spatial_hash(self, item: T):
+        if self.use_spatial_hash:
+            self.spatial_hash.remove_object(item)
+            self.spatial_hash.append_object(item)
+
+    def remove(self, item: T):
+        """
+        Remove a specific sprite from the list.
+        """
+        self.sprite_list.remove(item)
+        self.program = None
+        if self.use_spatial_hash:
+            self.spatial_hash.remove_object(item)
+
+    def update(self):
+        """
+        Call the update() method on each sprite in the list.
+        """
+        for sprite in self.sprite_list:
+            sprite.update()
+
+    def update_animation(self):
+        """
+        Call the update_animation() method on each sprite in the list.
+        """
+        for sprite in self.sprite_list:
+            sprite.update_animation()
+
+    def move(self, change_x: float, change_y: float):
+        """
+        Moves all contained Sprites.
+        """
+        for sprite in self.sprite_list:
+            sprite.center_x += change_x
+            sprite.center_y += change_y
+
+    def calculate_sprite_buffer(self):
+        if self.program is None:
+            self.program = get_opengl_context().program(vertex_shader=VERTEX_SHADER, fragment_shader=FRAGMENT_SHADER)
+
+        # Loop through each sprite and grab its position, and the texture it will be using.
+        array_of_positions = []
+        array_of_texture_names = []
+        array_of_images = []
+        array_of_sizes = []
+
+        for sprite in self.sprite_list:
+            array_of_positions.append([sprite.center_x, sprite.center_y, 0])
+            if sprite.texture_name in array_of_texture_names:
+                index = array_of_texture_names.index(sprite.texture_name)
+                image = array_of_images[index]
+            else:
+                array_of_texture_names.append(sprite.texture_name)
+                image = Image.open(sprite.texture_name)
+                array_of_images.append(image)
+            array_of_sizes.append(image.size)
+
+        # Get their sizes
+        widths, heights = zip(*(i.size for i in array_of_images))
+
+        # Figure out what size a composate would be
+        total_width = sum(widths)
+        max_height = max(heights)
+
+        # Make the composite image
+        new_image = Image.new('RGBA', (total_width, max_height))
+
+        x_offset = 0
+        for image in array_of_images:
+            new_image.paste(image, (x_offset, 0))
+            x_offset += image.size[0]
+
+        # Create a texture out the composite image
+        texture = get_opengl_context().texture((new_image.width, new_image.height), 4, np.asarray(new_image))
+        if self.texture_id is None:
+            self.texture_id = SpriteList2.next_texture_id
+            SpriteList2.next_texture_id += 1
+
+        texture.use(self.texture_id)
+
+        # Create a list with the coordinates of all the unique textures
+        tex_coords = []
+        start_x = 0.0
+        for image in array_of_images:
+            end_x = start_x + (image.width / total_width)
+            normalized_width = image.width / total_width
+            normalized_height = image.height / max_height
+            tex_coords.append([start_x, 0.0, normalized_width, normalized_height])
+            start_x = end_x
+
+        # Go through each sprite and pull from the coordinate list, the proper
+        # coordinates for that sprite's image.
+        array_of_sub_tex_coords = []
+        for sprite in self.sprite_list:
+            index = array_of_texture_names.index(sprite.texture_name)
+            array_of_sub_tex_coords.append(tex_coords[index])
+
+        # Create numpy array with info on location and such
+        np_array_positions = np.array(array_of_positions).astype('f4')
+
+        # np_array_angles = (np.random.rand(INSTANCES, 1) * 2 * np.pi).astype('f4')
+        np_array_angles = np.tile(np.array(0, dtype=np.float32), (len(self.sprite_list), 1))
+        np_array_sizes = np.array(array_of_sizes).astype('f4')
+        np_sub_tex_coords = np.array(array_of_sub_tex_coords).astype('f4')
+        self.pos_angle_scale = np.hstack((np_array_positions, np_array_angles, np_array_sizes, np_sub_tex_coords))
+        self.pos_angle_scale_buf = get_opengl_context().buffer(self.pos_angle_scale.tobytes())
+
+        vertices = np.array([
+            #  x,    y,   u,   v
+            -1.0, -1.0, 0.0, 0.0,
+            -1.0, 1.0, 0.0, 1.0,
+            1.0, -1.0, 1.0, 0.0,
+            1.0, 1.0, 1.0, 1.0,
+        ], dtype=np.float32
+        )
+        vbo_buf = get_opengl_context().buffer(vertices.tobytes())
+
+        vao_content = [
+            (vbo_buf, '2f 2f', 'in_vert', 'in_texture'),
+            (self.pos_angle_scale_buf, '3f 1f 2f 4f/i', 'in_pos', 'in_angle', 'in_scale', 'in_sub_tex_coords')
+        ]
+
+        self.vao = get_opengl_context().vertex_array(self.program, vao_content)
+
+        self.update_positions()
+
+    def update_positions(self):
+        for i, sprite in enumerate(self.sprite_list):
+            self.pos_angle_scale[i, 0] = sprite.center_x
+            self.pos_angle_scale[i, 1] = sprite.center_y
+            self.pos_angle_scale[i, 3] = math.radians(sprite.angle)
+            self.pos_angle_scale[i, 4] = (sprite.width * 2) * sprite.scale
+            self.pos_angle_scale[i, 5] = (sprite.height * 2) * sprite.scale
+
+    def draw(self):
+
+        if self.program is None:
+            self.calculate_sprite_buffer()
+
+        self.program['Texture'].value = self.texture_id
+        self.program['Projection'].write(get_projection().tobytes())
+        self.pos_angle_scale_buf.write(self.pos_angle_scale.tobytes())
+        self.vao.render(moderngl.TRIANGLE_STRIP, instances=len(self.sprite_list))
+        self.pos_angle_scale_buf.orphan()
+
+    def __len__(self) -> int:
+        """ Return the length of the sprite list. """
+        return len(self.sprite_list)
+
+    def __iter__(self) -> Iterable[T]:
+        """ Return an iterable object of sprites. """
+        return iter(self.sprite_list)
+
+    def __getitem__(self, i):
+        return self.sprite_list[i]
+
+    def pop(self) -> Sprite:
+        """
+        Pop off the last sprite in the list.
+        """
+        self.program = None
         return self.sprite_list.pop()
 
 

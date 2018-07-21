@@ -9,6 +9,8 @@ import time
 import pyglet
 
 import pyglet.gl as gl
+import moderngl
+import numpy as np
 
 from numbers import Number
 from typing import Callable
@@ -21,6 +23,72 @@ _bottom = -1
 _top = 1
 
 _window = None
+
+_opengl_context = moderngl.create_context()
+_projection = None
+
+
+def get_projection():
+    return _projection
+
+
+def get_opengl_context():
+    return _opengl_context
+
+
+def create_orthogonal_projection(
+        left,
+        right,
+        bottom,
+        top,
+        near,
+        far,
+        dtype=None
+):
+    """Creates an orthogonal projection matrix.
+    :param float left: The left of the near plane relative to the plane's centre.
+    :param float right: The right of the near plane relative to the plane's centre.
+    :param float top: The top of the near plane relative to the plane's centre.
+    :param float bottom: The bottom of the near plane relative to the plane's centre.
+    :param float near: The distance of the near plane from the camera's origin.
+        It is recommended that the near plane is set to 1.0 or above to avoid rendering issues
+        at close range.
+    :param float far: The distance of the far plane from the camera's origin.
+    :param dtype:
+    :rtype: numpy.array
+    :return: A projection matrix representing the specified orthogonal perspective.
+    .. seealso:: http://msdn.microsoft.com/en-us/library/dd373965(v=vs.85).aspx
+    """
+
+    """
+    A 0 0 Tx
+    0 B 0 Ty
+    0 0 C Tz
+    0 0 0 1
+    A = 2 / (right - left)
+    B = 2 / (top - bottom)
+    C = -2 / (far - near)
+    Tx = (right + left) / (right - left)
+    Ty = (top + bottom) / (top - bottom)
+    Tz = (far + near) / (far - near)
+    """
+    rml = right - left
+    tmb = top - bottom
+    fmn = far - near
+
+    a = 2. / rml
+    b = 2. / tmb
+    c = -2. / fmn
+    tx = -(right + left) / rml
+    ty = -(top + bottom) / tmb
+    tz = -(far + near) / fmn
+
+    return np.array((
+        (a, 0., 0., 0.),
+        (0., b, 0., 0.),
+        (0., 0., c, 0.),
+        (tx, ty, tz, 1.),
+    ), dtype=dtype)
 
 
 def pause(seconds: Number):
@@ -97,18 +165,23 @@ def set_viewport(left: Number, right: Number, bottom: Number, top: Number):
     global _right
     global _bottom
     global _top
+    global _projection
 
     _left = left
     _right = right
     _bottom = bottom
     _top = top
 
-    # gl.glViewport(0, 0, _window.height, _window.height)
+    gl.glViewport(0, 0, _window.height, _window.height)
     gl.glMatrixMode(gl.GL_PROJECTION)
     gl.glLoadIdentity()
     gl.glOrtho(_left, _right, _bottom, _top, -1, 1)
     gl.glMatrixMode(gl.GL_MODELVIEW)
     gl.glLoadIdentity()
+
+    _projection = create_orthogonal_projection(left=_left, right=_right,
+                                              bottom=_bottom, top=_top,
+                                              near=-1000, far=100, dtype=np.float32)
 
 
 def get_viewport() -> (float, float, float, float):
