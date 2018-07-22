@@ -20,6 +20,7 @@ from PIL import Image
 
 from arcade.sprite import Sprite
 from arcade.sprite import get_distance_between_sprites
+
 from arcade.draw_commands import rotate_point
 from arcade.window_commands import get_opengl_context
 from arcade.window_commands import get_projection
@@ -597,6 +598,10 @@ class SpriteList2(Generic[T]):
             sprite.center_y += change_y
 
     def calculate_sprite_buffer(self):
+
+        if len(self.sprite_list) == 0:
+            return
+
         if self.program is None:
             self.program = get_opengl_context().program(vertex_shader=VERTEX_SHADER, fragment_shader=FRAGMENT_SHADER)
 
@@ -617,7 +622,6 @@ class SpriteList2(Generic[T]):
                 array_of_images.append(image)
             size_h = sprite.height / 2
             size_w = sprite.width / 2
-            print(f"{size_w} {size_h}")
             array_of_sizes.append([size_w, size_h])
 
         # Get their sizes
@@ -697,7 +701,19 @@ class SpriteList2(Generic[T]):
             self.pos_angle_scale[i, 4] = sprite.width / 2
             self.pos_angle_scale[i, 5] = sprite.height / 2
 
+    def update_position(self, sprite):
+        i = self.sprite_list.index(sprite)
+
+        self.pos_angle_scale[i, 0] = sprite.center_x
+        self.pos_angle_scale[i, 1] = sprite.center_y
+        self.pos_angle_scale[i, 3] = math.radians(sprite.angle)
+        self.pos_angle_scale[i, 4] = sprite.width / 2
+        self.pos_angle_scale[i, 5] = sprite.height / 2
+
     def draw(self):
+
+        if len(self.sprite_list) == 0:
+            return
 
         if self.program is None:
             self.calculate_sprite_buffer()
