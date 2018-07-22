@@ -718,6 +718,11 @@ class SpriteList2(Generic[T]):
         if self.program is None:
             self.calculate_sprite_buffer()
 
+        gl.glEnable(gl.GL_BLEND)
+        gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
+        gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_NEAREST)
+        gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_NEAREST)
+
         self.program['Texture'].value = self.texture_id
         self.program['Projection'].write(get_projection().tobytes())
         self.pos_angle_scale_buf.write(self.pos_angle_scale.tobytes())
