@@ -562,6 +562,8 @@ class SpriteList2(Generic[T]):
         self.sprite_list.append(item)
         item.register_sprite_list(self)
         self.prog = None
+        if self.use_spatial_hash:
+            self.spatial_hash.insert_object_for_box(item)
 
     def recalculate_spatial_hash(self, item: T):
         if self.use_spatial_hash:
