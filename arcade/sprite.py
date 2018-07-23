@@ -151,6 +151,7 @@ class Sprite:
             self.height = 0
 
         self.cur_texture_index = 0
+        self.image = None
         self.texture_name = filename
 
         self.scale = scale

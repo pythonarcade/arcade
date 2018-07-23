@@ -533,7 +533,7 @@ class SpriteList(Generic[T]):
 
 class SpriteList2(Generic[T]):
 
-    next_texture_id = 0
+    next_texture_id = 100
 
     def __init__(self, use_spatial_hash=True, spatial_hash_cell_size=128):
         """
@@ -613,12 +613,13 @@ class SpriteList2(Generic[T]):
 
         for sprite in self.sprite_list:
             array_of_positions.append([sprite.center_x, sprite.center_y, 0])
-            if sprite.texture_name in array_of_texture_names:
-                index = array_of_texture_names.index(sprite.texture_name)
-                image = array_of_images[index]
-            else:
-                array_of_texture_names.append(sprite.texture_name)
-                image = Image.open(sprite.texture_name)
+            if sprite.texture_name not in array_of_texture_names:
+                if sprite.image is not None:
+                    array_of_texture_names.append(sprite.texture_name)
+                    image = sprite.image
+                else:
+                    array_of_texture_names.append(sprite.texture_name)
+                    image = Image.open(sprite.texture_name)
                 array_of_images.append(image)
             size_h = sprite.height / 2
             size_w = sprite.width / 2
@@ -640,12 +641,12 @@ class SpriteList2(Generic[T]):
             x_offset += image.size[0]
 
         # Create a texture out the composite image
-        texture = get_opengl_context().texture((new_image.width, new_image.height), 4, np.asarray(new_image))
+        self.texture = get_opengl_context().texture((new_image.width, new_image.height), 4, np.asarray(new_image))
         if self.texture_id is None:
             self.texture_id = SpriteList2.next_texture_id
             SpriteList2.next_texture_id += 1
 
-        texture.use(self.texture_id)
+        self.texture.use(self.texture_id)
 
         # Create a list with the coordinates of all the unique textures
         tex_coords = []
@@ -717,6 +718,8 @@ class SpriteList2(Generic[T]):
 
         if self.program is None:
             self.calculate_sprite_buffer()
+
+        self.texture.use(self.texture_id)
 
         gl.glEnable(gl.GL_BLEND)
         gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)

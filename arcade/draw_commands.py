@@ -21,7 +21,6 @@ from pyglet.gl import glu as glu
 from arcade.arcade_types import Color
 from arcade.arcade_types import PointList
 
-
 def rotate_point(x: float, y: float, cx: float, cy: float,
                  angle: float) -> (float, float):
     """
@@ -1679,119 +1678,6 @@ def draw_xywh_rectangle_textured(bottom_left_x: float, bottom_left_y: float,
 
 # --- END RECTANGLE FUNCTIONS # # #
 
-# --- BEGIN TEXT FUNCTIONS # # #
 
-
-def create_text(text: str,
-                color: Color,
-                font_size: float=12,
-                width: int=2000,
-                align="left",
-                font_name=('Calibri', 'Arial'),
-                bold: bool=False,
-                italic: bool=False,
-                anchor_x="left",
-                anchor_y="baseline"):
-    """
-    Create text to be rendered later. This operation takes a while, so it is
-    better to hold it between frames when the text does not change.
-
-    >>> import arcade
-    >>> arcade.open_window(800, 600, "Drawing Example")
-    >>> arcade.set_background_color(arcade.color.WHITE)
-    >>> arcade.start_render()
-    >>> my_text = arcade.create_text("Text Example", arcade.color.BLACK, 10)
-    >>> arcade.render_text(my_text, 250, 300, 45)
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
-
-    """
-    if len(color) == 3:
-        color = (color[0], color[1], color[2], 255)
-
-    text = pyglet.text.Label(text,
-                             font_name=font_name,
-                             font_size=font_size,
-                             x=0, y=0,
-                             color=color,
-                             multiline=True,
-                             width=width,
-                             align=align,
-                             anchor_x=anchor_x,
-                             anchor_y=anchor_y,
-                             bold=bold,
-                             italic=italic)
-
-    return text
-
-
-def render_text(text: pyglet.text.Label, start_x: float, start_y: float, rotation=0):
-    """
-    Render text created by the create_text function.
-
-    """
-    gl.glLoadIdentity()
-    gl.glTranslatef(start_x, start_y, 0)
-    if rotation:
-        gl.glRotatef(rotation, 0, 0, 1)
-
-    text.draw()
-
-
-def draw_text(text: str,
-              start_x: float, start_y: float,
-              color: Color,
-              font_size: float=12,
-              width: int=2000,
-              align="left",
-              font_name=('Calibri', 'Arial'),
-              bold: bool=False,
-              italic: bool=False,
-              anchor_x="left",
-              anchor_y="baseline",
-              rotation=0
-              ):
-    """
-
-    Args:
-        :text: Text to display.
-        :start_x: x coordinate of top left text point.
-        :start_y: y coordinate of top left text point.
-        :color: color, specified in a list of 3 or 4 bytes in RGB or
-         RGBA format.
-
-    Example:
-
-    >>> import arcade
-    >>> arcade.open_window(800, 600, "Drawing Example")
-    >>> arcade.set_background_color(arcade.color.WHITE)
-    >>> arcade.start_render()
-    >>> arcade.draw_text("Text Example", 250, 300, arcade.color.BLACK, 10)
-    >>> arcade.draw_text("Text Example", 250, 300, (0, 0, 0, 100), 10)
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
-    """
-
-    # If the cache gets too large, dump it and start over.
-    if len(draw_text.cache) > 5000:
-        draw_text.cache = {}
-
-    key = f"{text}{color}{font_size}{width}{align}{font_name}{bold}{italic}"
-    if key in draw_text.cache:
-        label = draw_text.cache[key]
-    else:
-        label = create_text(text, color=color, font_size=font_size, width=width, align=align,
-                            anchor_x=anchor_x, anchor_y=anchor_y, font_name=font_name, bold=bold, italic=italic)
-        draw_text.cache[key] = label
-
-    gl.glLoadIdentity()
-    gl.glTranslatef(start_x, start_y, 0)
-    if rotation:
-        gl.glRotatef(rotation, 0, 0, 1)
-
-    label.draw()
-
-
-draw_text.cache = {}
 
 # --- END TEXT FUNCTIONS # # #
