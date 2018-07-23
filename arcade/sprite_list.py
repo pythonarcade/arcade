@@ -695,6 +695,10 @@ class SpriteList2(Generic[T]):
         self.update_positions()
 
     def update_positions(self):
+
+        if self.program is None:
+            return
+
         for i, sprite in enumerate(self.sprite_list):
             self.pos_angle_scale[i, 0] = sprite.center_x
             self.pos_angle_scale[i, 1] = sprite.center_y
@@ -703,6 +707,10 @@ class SpriteList2(Generic[T]):
             self.pos_angle_scale[i, 5] = sprite.height / 2
 
     def update_position(self, sprite):
+
+        if self.program is None:
+            return
+
         i = self.sprite_list.index(sprite)
 
         self.pos_angle_scale[i, 0] = sprite.center_x
@@ -750,6 +758,8 @@ class SpriteList2(Generic[T]):
         self.program = None
         return self.sprite_list.pop()
 
+
+SpriteList = SpriteList2
 
 def get_closest_sprite(sprite1: Sprite, sprite_list: SpriteList) -> (Sprite, float):
     """
