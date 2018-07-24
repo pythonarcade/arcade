@@ -53,23 +53,30 @@ def draw_text(text: str,
     if len(draw_text.cache) > 5000:
         draw_text.cache = {}
 
+    font_size *= 15
+
     key = f"{text}{color}{font_size}{width}{align}{font_name}{bold}{italic}"
     if key in draw_text.cache:
         label = draw_text.cache[key]
+        text_sprite = label.text_sprite_list[0]
+        text_sprite.center_x = start_x + text_sprite.width / 2
+        text_sprite.center_y = start_y
+        label.text_sprite_list.update_positions()
     else:
 
         label = Text()
         # font = PIL.ImageFont.truetype(font_name + ".ttf", font_size)
 
-        font_name = "arial.ttf"
+        font_name = "calibri.ttf"
 
-        font = PIL.ImageFont.truetype(font_name, int(font_size * 1.5))
+        font = PIL.ImageFont.truetype(font_name, int(font_size))
 
         image_size = font.getsize(text)
 
         image = PIL.Image.new("RGBA", image_size)
         draw = PIL.ImageDraw.Draw(image)
         draw.text((0, 0), text, font=font)
+        image = image.resize((image_size[0] // 10, image_size[1] // 10), PIL.Image.ANTIALIAS)
 
         text_sprite = Sprite()
         text_sprite.image = image
