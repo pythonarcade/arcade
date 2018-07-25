@@ -537,7 +537,7 @@ class SpriteList2(Generic[T]):
 
     next_texture_id = 100
 
-    def __init__(self, use_spatial_hash=True, spatial_hash_cell_size=128):
+    def __init__(self, use_spatial_hash=True, spatial_hash_cell_size=128, is_static=False):
         """
         Initialize the sprite list
         """
