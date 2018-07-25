@@ -86,7 +86,7 @@ def draw_text(text: str,
         text_sprite.texture_name = key
         text_sprite.width = image.width
         text_sprite.height = image.height
-        text_sprite.center_x = start_x + image_size[0] / 2
+        text_sprite.center_x = start_x + text_sprite.width / 2
         text_sprite.center_y = start_y
         label.text_sprite_list = SpriteList2()
         label.text_sprite_list.append(text_sprite)
