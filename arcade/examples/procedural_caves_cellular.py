@@ -37,7 +37,7 @@ WINDOW_HEIGHT = 600
 
 # If true, rather than each block being a separate sprite, blocks on rows
 # will be merged into one sprite.
-MERGE_SPRITES = True
+MERGE_SPRITES = False
 
 
 def create_grid(width, height):
@@ -100,8 +100,8 @@ class MyGame(arcade.Window):
     Main application class.
     """
 
-    def __init__(self, width, height):
-        super().__init__(width, height)
+    def __init__(self):
+        super().__init__(WINDOW_WIDTH, WINDOW_HEIGHT, resizable=True)
 
         self.grid = None
         self.wall_list = None
@@ -204,19 +204,19 @@ class MyGame(arcade.Window):
         output = f"Sprite Count: {sprite_count}"
         arcade.draw_text(output,
                          self.view_left + 20,
-                         WINDOW_HEIGHT - 20 + self.view_bottom,
+                         self.height - 20 + self.view_bottom,
                          arcade.color.WHITE, 16)
 
         output = f"Drawing time: {self.draw_time:.3f}"
         arcade.draw_text(output,
                          self.view_left + 20,
-                         WINDOW_HEIGHT - 40 + self.view_bottom,
+                         self.height - 40 + self.view_bottom,
                          arcade.color.WHITE, 16)
 
         output = f"Processing time: {self.processing_time:.3f}"
         arcade.draw_text(output,
                          self.view_left + 20,
-                         WINDOW_HEIGHT - 60 + self.view_bottom,
+                         self.height - 60 + self.view_bottom,
                          arcade.color.WHITE, 16)
 
         self.draw_time = timeit.default_timer() - draw_start_time
@@ -241,6 +241,13 @@ class MyGame(arcade.Window):
             self.player_sprite.change_y = 0
         elif key == arcade.key.LEFT or key == arcade.key.RIGHT:
             self.player_sprite.change_x = 0
+
+    def on_resize(self, width, height):
+
+        arcade.set_viewport(self.view_left,
+                            self.width + self.view_left,
+                            self.view_bottom,
+                            self.height + self.view_bottom)
 
     def update(self, delta_time):
         """ Movement and game logic """
@@ -283,16 +290,16 @@ class MyGame(arcade.Window):
 
         if changed:
             arcade.set_viewport(self.view_left,
-                                WINDOW_WIDTH + self.view_left,
+                                self.width + self.view_left,
                                 self.view_bottom,
-                                WINDOW_HEIGHT + self.view_bottom)
+                                self.height + self.view_bottom)
 
         # Save the time it took to do this.
         self.processing_time = timeit.default_timer() - start_time
 
 
 def main():
-    game = MyGame(WINDOW_WIDTH, WINDOW_HEIGHT)
+    game = MyGame()
     game.setup()
     arcade.run()
 
