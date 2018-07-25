@@ -172,12 +172,12 @@ def set_viewport(left: Number, right: Number, bottom: Number, top: Number):
     _bottom = bottom
     _top = top
 
-    gl.glViewport(0, 0, _window.height, _window.height)
-    gl.glMatrixMode(gl.GL_PROJECTION)
-    gl.glLoadIdentity()
-    gl.glOrtho(_left, _right, _bottom, _top, -1, 1)
-    gl.glMatrixMode(gl.GL_MODELVIEW)
-    gl.glLoadIdentity()
+    gl.glViewport(0, 0, _window.width, _window.height)
+    # gl.glMatrixMode(gl.GL_PROJECTION)
+    # gl.glLoadIdentity()
+    # gl.glOrtho(_left, _right, _bottom, _top, -1, 1)
+    # gl.glMatrixMode(gl.GL_MODELVIEW)
+    # gl.glLoadIdentity()
 
     _projection = create_orthogonal_projection(left=_left, right=_right,
                                               bottom=_bottom, top=_top,
