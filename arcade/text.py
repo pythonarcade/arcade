@@ -49,11 +49,14 @@ def draw_text(text: str,
     >>> arcade.quick_run(0.25)
     """
 
+    scale_up = 5
+    scale_down = 4
+
     # If the cache gets too large, dump it and start over.
     if len(draw_text.cache) > 5000:
         draw_text.cache = {}
 
-    font_size *= 15
+    font_size *= scale_up
 
     key = f"{text}{color}{font_size}{width}{align}{font_name}{bold}{italic}"
     if key in draw_text.cache:
@@ -76,7 +79,7 @@ def draw_text(text: str,
         image = PIL.Image.new("RGBA", image_size)
         draw = PIL.ImageDraw.Draw(image)
         draw.text((0, 0), text, font=font)
-        image = image.resize((image_size[0] // 10, image_size[1] // 10), PIL.Image.ANTIALIAS)
+        image = image.resize((image_size[0] // scale_down, image_size[1] // scale_down), PIL.Image.ANTIALIAS)
 
         text_sprite = Sprite()
         text_sprite.image = image
