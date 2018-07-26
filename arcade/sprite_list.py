@@ -284,21 +284,28 @@ class SpatialHash:
 
         # print("Add: ", min_point, max_point)
 
+
         # iterate over the rectangular region
         for i in range(min_point[0], max_point[0] + 1):
             for j in range(min_point[1], max_point[1] + 1):
                 # append to each intersecting cell
-                self.contents.setdefault((i, j), []).append(new_object)
+                bucket = self.contents.setdefault((i, j), [])
+                if new_object in bucket:
+                    # print(f"Error, {new_object.guid} already in ({i}, {j}) bucket. ")
+                    pass
+                else:
+                    bucket.append(new_object)
+                    # print(f"Adding {new_object.guid} to ({i}, {j}) bucket.")
 
-    def remove_object(self, new_object: Sprite):
+    def remove_object(self, sprite_to_delete: Sprite):
         """
         Remove a Sprite.
         """
         # Get the corners
-        min_x = new_object.left
-        max_x = new_object.right
-        min_y = new_object.bottom
-        max_y = new_object.top
+        min_x = sprite_to_delete.left
+        max_x = sprite_to_delete.right
+        min_y = sprite_to_delete.bottom
+        max_y = sprite_to_delete.top
 
         min_point = (min_x, min_y)
         max_point = (max_x, max_y)
@@ -312,7 +319,11 @@ class SpatialHash:
             for j in range(min_point[1], max_point[1] + 1):
                 bucket = self.contents.setdefault((i, j), [])
                 try:
-                    bucket.remove(new_object)
+                    # print("Before: ", self.contents.setdefault((i, j), []))
+                    bucket.remove(sprite_to_delete)
+                    # print(f"Removing {sprite_to_delete} {sprite_to_delete.guid} from ({i}, {j}) bucket.")
+                    # print("After:", self.contents.setdefault((i, j), []))
+
                 except:
                     print("Warning, tried to remove item from spatial hash that wasn't there.")
 
@@ -337,7 +348,10 @@ class SpatialHash:
         for i in range(min_point[0], max_point[0] + 1):
             for j in range(min_point[1], max_point[1] + 1):
                 # append to each intersecting cell
-                close_by_sprites.extend(self.contents.setdefault((i, j), []))
+                new_items = self.contents.setdefault((i, j), [])
+                # for item in new_items:
+                #     print(f"Found {item.guid} in {i}, {j}")
+                close_by_sprites.extend(new_items)
 
         return close_by_sprites
 
@@ -561,7 +575,7 @@ class SpriteList2(Generic[T]):
         """
         self.sprite_list.append(item)
         item.register_sprite_list(self)
-        self.prog = None
+        self.program = None
         if self.use_spatial_hash:
             self.spatial_hash.insert_object_for_box(item)
 
@@ -769,6 +783,7 @@ class SpriteList2(Generic[T]):
 
 
 SpriteList = SpriteList2
+
 
 def get_closest_sprite(sprite1: Sprite, sprite_list: SpriteList) -> (Sprite, float):
     """
