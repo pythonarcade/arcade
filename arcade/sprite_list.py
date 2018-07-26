@@ -535,7 +535,7 @@ class SpriteList(Generic[T]):
 
 class SpriteList2(Generic[T]):
 
-    next_texture_id = 100
+    next_texture_id = 0
 
     def __init__(self, use_spatial_hash=True, spatial_hash_cell_size=128, is_static=False):
         """
@@ -648,7 +648,12 @@ class SpriteList2(Generic[T]):
         self.texture = get_opengl_context().texture((new_image.width, new_image.height), 4, np.asarray(new_image))
         if self.texture_id is None:
             self.texture_id = SpriteList2.next_texture_id
-            SpriteList2.next_texture_id += 1
+
+            # self.texture = get_opengl_context().texture((new_image.width, new_image.height), 4, np.asarray(new_image))
+            # self.texture_id = 100
+
+            # print(f"Using texture id: {self.texture_id}")
+            # SpriteList2.next_texture_id += 1
 
         self.texture.use(self.texture_id)
 
