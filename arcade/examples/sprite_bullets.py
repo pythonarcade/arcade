@@ -107,7 +107,7 @@ class MyGame(arcade.Window):
         # Draw all the sprites.
         self.coin_list.draw()
         self.bullet_list.draw()
-        self.player_sprite.draw()
+        self.player_list.draw()
 
         # Render the text
         arcade.draw_text(f"Score: {self.score}", 10, 20, arcade.color.WHITE, 14)
