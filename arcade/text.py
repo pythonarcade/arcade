@@ -5,7 +5,7 @@ import PIL.ImageDraw
 import PIL.ImageFont
 
 from sprite import Sprite
-from arcade_types import  Color
+from arcade_types import Color
 from sprite_list import SpriteList2
 
 
