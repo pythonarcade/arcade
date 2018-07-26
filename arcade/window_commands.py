@@ -172,12 +172,15 @@ def set_viewport(left: Number, right: Number, bottom: Number, top: Number):
     _bottom = bottom
     _top = top
 
+    # Needed for sprites
     gl.glViewport(0, 0, _window.width, _window.height)
-    # gl.glMatrixMode(gl.GL_PROJECTION)
-    # gl.glLoadIdentity()
-    # gl.glOrtho(_left, _right, _bottom, _top, -1, 1)
-    # gl.glMatrixMode(gl.GL_MODELVIEW)
-    # gl.glLoadIdentity()
+
+    # Needed for drawing
+    gl.glMatrixMode(gl.GL_PROJECTION)
+    gl.glLoadIdentity()
+    gl.glOrtho(_left, _right, _bottom, _top, -1, 1)
+    gl.glMatrixMode(gl.GL_MODELVIEW)
+    gl.glLoadIdentity()
 
     _projection = create_orthogonal_projection(left=_left, right=_right,
                                               bottom=_bottom, top=_top,
@@ -213,10 +216,10 @@ def open_window(width: Number, height: Number, window_title: str, resizable: boo
     window = pyglet.window.Window(width=width, height=height,
                                   caption=window_title,
                                   resizable=resizable)
+    _window = window
+
     set_viewport(0, width - 1, 0, height - 1)
     window.invalid = False
-
-    _window = window
 
 
 def close_window():
