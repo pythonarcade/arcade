@@ -565,6 +565,9 @@ class SpriteList2(Generic[T]):
         self.texture_id = None
         self.vao = None
 
+        self.array_of_texture_names = []
+        self.array_of_images = []
+
         # Used in collision detection optimization
         self.spatial_hash = SpatialHash(cell_size=spatial_hash_cell_size)
         self.use_spatial_hash = use_spatial_hash
@@ -625,67 +628,93 @@ class SpriteList2(Generic[T]):
 
         # Loop through each sprite and grab its position, and the texture it will be using.
         array_of_positions = []
-        array_of_texture_names = []
-        array_of_images = []
         array_of_sizes = []
 
         for sprite in self.sprite_list:
             array_of_positions.append([sprite.center_x, sprite.center_y, 0])
-            if sprite.texture_name not in array_of_texture_names:
-                if sprite.image is not None:
-                    array_of_texture_names.append(sprite.texture_name)
-                    image = sprite.image
-                else:
-                    array_of_texture_names.append(sprite.texture_name)
-                    image = Image.open(sprite.texture_name)
-                array_of_images.append(image)
+
             size_h = sprite.height / 2
             size_w = sprite.width / 2
             array_of_sizes.append([size_w, size_h])
 
-        # Get their sizes
-        widths, heights = zip(*(i.size for i in array_of_images))
+        new_array_of_texture_names = []
+        new_array_of_images = []
+        new_texture = False
 
-        # Figure out what size a composate would be
+        # print()
+        # print("New texture start: ", new_texture)
+        for sprite in self.sprite_list:
+            if sprite.texture_name not in self.array_of_texture_names:
+                new_texture = True
+                # print("New because of ", sprite.texture_name)
+
+            if sprite.texture_name not in new_array_of_texture_names:
+                if sprite.image is not None:
+                    new_array_of_texture_names.append(sprite.texture_name)
+                    image = sprite.image
+                else:
+                    new_array_of_texture_names.append(sprite.texture_name)
+                    image = Image.open(sprite.texture_name)
+                new_array_of_images.append(image)
+
+        # print("New texture end: ", new_texture)
+        # print(new_array_of_texture_names)
+        # print(self.array_of_texture_names)
+        # print()
+
+        if new_texture:
+            self.array_of_texture_names = new_array_of_texture_names
+            self.array_of_images = new_array_of_images
+
+        # Get their sizes
+        widths, heights = zip(*(i.size for i in self.array_of_images))
+
+        # Figure out what size a composite would be
         total_width = sum(widths)
         max_height = max(heights)
 
-        # Make the composite image
-        new_image = Image.new('RGBA', (total_width, max_height))
+        if new_texture:
+            # Make the composite image
+            new_image = Image.new('RGBA', (total_width, max_height))
 
-        x_offset = 0
-        for image in array_of_images:
-            new_image.paste(image, (x_offset, 0))
-            x_offset += image.size[0]
+            x_offset = 0
+            for image in self.array_of_images:
+                new_image.paste(image, (x_offset, 0))
+                x_offset += image.size[0]
 
-        # Create a texture out the composite image
-        self.texture = get_opengl_context().texture((new_image.width, new_image.height), 4, np.asarray(new_image))
-        if self.texture_id is None:
-            self.texture_id = SpriteList2.next_texture_id
+            # Create a texture out the composite image
+            self.texture = get_opengl_context().texture((new_image.width, new_image.height), 4, np.asarray(new_image))
+            if self.texture_id is None:
+                self.texture_id = SpriteList2.next_texture_id
 
-            # self.texture = get_opengl_context().texture((new_image.width, new_image.height), 4, np.asarray(new_image))
-            # self.texture_id = 100
+                # self.texture = get_opengl_context().texture((new_image.width, new_image.height), 4, np.asarray(new_image))
+                # self.texture_id = 100
 
-            # print(f"Using texture id: {self.texture_id}")
+                # print(f"Using texture id: {self.texture_id}")
+
+            # self.texture_id = SpriteList2.next_texture_id
             # SpriteList2.next_texture_id += 1
+            # new_image.save(f"temp_{self.texture_id}.png")
+            # print(f"Save temp_{self.texture_id}.png")
 
         self.texture.use(self.texture_id)
 
         # Create a list with the coordinates of all the unique textures
         tex_coords = []
         start_x = 0.0
-        for image in array_of_images:
+        for image in self.array_of_images:
             end_x = start_x + (image.width / total_width)
             normalized_width = image.width / total_width
+            start_height = 1 - (image.height / max_height)
             normalized_height = image.height / max_height
-            tex_coords.append([start_x, 0.0, normalized_width, normalized_height])
+            tex_coords.append([start_x, start_height, normalized_width, normalized_height])
             start_x = end_x
 
         # Go through each sprite and pull from the coordinate list, the proper
         # coordinates for that sprite's image.
         array_of_sub_tex_coords = []
         for sprite in self.sprite_list:
-            index = array_of_texture_names.index(sprite.texture_name)
+            index = self.array_of_texture_names.index(sprite.texture_name)
             array_of_sub_tex_coords.append(tex_coords[index])
 
         # Create numpy array with info on location and such
