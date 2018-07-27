@@ -276,12 +276,17 @@ class SpatialHash:
         min_y = new_object.bottom
         max_y = new_object.top
 
+        # print(f"New - Center: ({new_object.center_x}, {new_object.center_y}), Angle: {new_object.angle}, Left: {new_object.left}, Right {new_object.right}")
+
         min_point = (min_x, min_y)
         max_point = (max_x, max_y)
+
+        # print(f"Add 1: {min_point} {max_point}")
 
         # hash the minimum and maximum points
         min_point, max_point = self._hash(min_point), self._hash(max_point)
 
+        # print(f"Add 2: {min_point} {max_point}")
         # print("Add: ", min_point, max_point)
 
 
@@ -295,7 +300,7 @@ class SpatialHash:
                     pass
                 else:
                     bucket.append(new_object)
-                    # print(f"Adding {new_object.guid} to ({i}, {j}) bucket.")
+                    # print(f"Adding {new_object.guid} to ({i}, {j}) bucket. {new_object._position} {min_point} {max_point}")
 
     def remove_object(self, sprite_to_delete: Sprite):
         """
@@ -307,11 +312,17 @@ class SpatialHash:
         min_y = sprite_to_delete.bottom
         max_y = sprite_to_delete.top
 
+        # print(f"Del - Center: ({sprite_to_delete.center_x}, {sprite_to_delete.center_y}), Angle: {sprite_to_delete.angle}, Left: {sprite_to_delete.left}, Right {sprite_to_delete.right}")
+
         min_point = (min_x, min_y)
         max_point = (max_x, max_y)
 
+        # print(f"Remove 1: {min_point} {max_point}")
+
         # hash the minimum and maximum points
         min_point, max_point = self._hash(min_point), self._hash(max_point)
+
+        # print(f"Remove 2: {min_point} {max_point}")
         # print("Remove: ", min_point, max_point)
 
         # iterate over the rectangular region
@@ -321,11 +332,11 @@ class SpatialHash:
                 try:
                     # print("Before: ", self.contents.setdefault((i, j), []))
                     bucket.remove(sprite_to_delete)
-                    # print(f"Removing {sprite_to_delete} {sprite_to_delete.guid} from ({i}, {j}) bucket.")
+                    # print(f"Removing {sprite_to_delete.guid} from ({i}, {j}) bucket. {sprite_to_delete._position} {min_point} {max_point}")
                     # print("After:", self.contents.setdefault((i, j), []))
 
                 except:
-                    print("Warning, tried to remove item from spatial hash that wasn't there.")
+                    print(f"Warning, tried to remove item {sprite_to_delete.guid} from spatial hash {i} {j} when it wasn't there. {sprite_to_delete._position} {min_point} {max_point}")
 
     def get_objects_for_box(self, check_object: Sprite) -> List[Sprite]:
         """
@@ -347,6 +358,7 @@ class SpatialHash:
         # iterate over the rectangular region
         for i in range(min_point[0], max_point[0] + 1):
             for j in range(min_point[1], max_point[1] + 1):
+                # print(f"Checking {i}, {j}")
                 # append to each intersecting cell
                 new_items = self.contents.setdefault((i, j), [])
                 # for item in new_items:
@@ -563,6 +575,7 @@ class SpriteList2(Generic[T]):
         self.pos_angle_scale = None
         self.pos_angle_scale_buf = None
         self.texture_id = None
+        self.texture = None
         self.vao = None
 
         self.array_of_texture_names = []
@@ -674,6 +687,10 @@ class SpriteList2(Generic[T]):
         max_height = max(heights)
 
         if new_texture:
+
+            if self.texture is not None:
+                self.texture.release()
+
             # Make the composite image
             new_image = Image.new('RGBA', (total_width, max_height))
 
@@ -697,7 +714,8 @@ class SpriteList2(Generic[T]):
             # new_image.save(f"temp_{self.texture_id}.png")
             # print(f"Save temp_{self.texture_id}.png")
 
-        self.texture.use(self.texture_id)
+        texture_unit = 0
+        self.texture.use(texture_unit)
 
         # Create a list with the coordinates of all the unique textures
         tex_coords = []
