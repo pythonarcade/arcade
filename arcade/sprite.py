@@ -769,7 +769,7 @@ class AnimatedWalkingSprite(Sprite):
         self.height = self.texture.height * self.scale
 
 
-def get_distance_between_sprites(sprite1:Sprite, sprite2:Sprite) -> float:
+def get_distance_between_sprites(sprite1: Sprite, sprite2: Sprite) -> float:
     """
     Returns the distance between the two given sprites
     """
