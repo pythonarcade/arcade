@@ -28,32 +28,30 @@ class MyGame(arcade.Window):
         arcade.set_background_color(arcade.color.BLACK)
 
         self.frame_count = 0
-        self.all_sprites_list = None
+        self.player_list = None
         self.enemy_list = None
         self.bullet_list = None
 
         self.player = None
 
     def setup(self):
-        self.all_sprites_list = arcade.SpriteList()
+        self.player_list = arcade.SpriteList()
         self.enemy_list = arcade.SpriteList()
         self.bullet_list = arcade.SpriteList()
 
         self.player = arcade.Sprite("images/playerShip1_orange.png", 0.5)
-        self.all_sprites_list.append(self.player)
+        self.player_list.append(self.player)
 
         enemy = arcade.Sprite("images/playerShip1_green.png", 0.5)
         enemy.center_x = 120
         enemy.center_y = SCREEN_HEIGHT - enemy.height
         enemy.angle = 180
-        self.all_sprites_list.append(enemy)
         self.enemy_list.append(enemy)
 
         enemy = arcade.Sprite("images/playerShip1_green.png", 0.5)
         enemy.center_x = SCREEN_WIDTH - 120
         enemy.center_y = SCREEN_HEIGHT - enemy.height
         enemy.angle = 180
-        self.all_sprites_list.append(enemy)
         self.enemy_list.append(enemy)
 
     def on_draw(self):
@@ -63,11 +61,7 @@ class MyGame(arcade.Window):
 
         self.enemy_list.draw()
         self.bullet_list.draw()
-        self.player.draw()
-
-        # Draw the text
-        arcade.draw_text("This is a simple template to start your game.",
-                         10, SCREEN_HEIGHT // 2, arcade.color.BLACK, 20)
+        self.player_list.draw()
 
     def update(self, delta_time):
         """All the logic to move, and the game logic goes here. """
@@ -84,7 +78,6 @@ class MyGame(arcade.Window):
                 bullet.top = enemy.bottom
                 bullet.change_y = -2
                 self.bullet_list.append(bullet)
-                self.all_sprites_list.append(bullet)
 
         # Get rid of the bullet when it flies off-screen
         for bullet in self.bullet_list:

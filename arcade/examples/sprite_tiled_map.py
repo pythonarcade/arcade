@@ -62,12 +62,13 @@ class MyGame(arcade.Window):
         os.chdir(file_path)
 
         # Sprite lists
-        self.all_sprites_list = None
+        self.wall_list = None
+        self.player_list = None
 
         # Set up the player
         self.score = 0
         self.player_sprite = None
-        self.wall_list = None
+
         self.physics_engine = None
         self.view_left = 0
         self.view_bottom = 0
@@ -77,17 +78,16 @@ class MyGame(arcade.Window):
         """ Set up the game and initialize the variables. """
 
         # Sprite lists
-        self.all_sprites_list = arcade.SpriteList()
+        self.player_list = arcade.SpriteList()
         self.wall_list = arcade.SpriteList()
 
         # Set up the player
-        self.player_sprite = arcade.Sprite("images/character.png",
-                                           SPRITE_SCALING)
+        self.player_sprite = arcade.Sprite("images/character.png", SPRITE_SCALING)
 
         # Starting position of the player
         self.player_sprite.center_x = 64
         self.player_sprite.center_y = 270
-        self.all_sprites_list.append(self.player_sprite)
+        self.player_list.append(self.player_sprite)
 
         # Get a 2D array made of numbers based on the map
         map_array = get_map("map.csv")
@@ -117,7 +117,6 @@ class MyGame(arcade.Window):
 
                 wall.right = column_index * 64
                 wall.top = (7 - row_index) * 64
-                self.all_sprites_list.append(wall)
                 self.wall_list.append(wall)
 
         self.physics_engine = \
@@ -144,7 +143,7 @@ class MyGame(arcade.Window):
         arcade.start_render()
 
         # Draw all the sprites.
-        self.player_sprite.draw()
+        self.player_list.draw()
         self.wall_list.draw()
 
         # Put the text on the screen.

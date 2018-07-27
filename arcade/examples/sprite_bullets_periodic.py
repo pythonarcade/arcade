@@ -30,25 +30,23 @@ class MyGame(arcade.Window):
         # --- This is important for doing things every x frames
         self.frame_count = 0
 
-        self.all_sprites_list = arcade.SpriteList()
+        self.player_list = arcade.SpriteList()
         self.enemy_list = arcade.SpriteList()
         self.bullet_list = arcade.SpriteList()
 
         self.player = arcade.Sprite("images/playerShip1_orange.png", 0.5)
-        self.all_sprites_list.append(self.player)
+        self.player_list.append(self.player)
 
         enemy = arcade.Sprite("images/playerShip1_green.png", 0.5)
         enemy.center_x = 120
         enemy.center_y = SCREEN_HEIGHT - enemy.height
         enemy.angle = 180
-        self.all_sprites_list.append(enemy)
         self.enemy_list.append(enemy)
 
         enemy = arcade.Sprite("images/playerShip1_green.png", 0.5)
         enemy.center_x = SCREEN_WIDTH - 120
         enemy.center_y = SCREEN_HEIGHT - enemy.height
         enemy.angle = 180
-        self.all_sprites_list.append(enemy)
         self.enemy_list.append(enemy)
 
     def on_draw(self):
@@ -56,7 +54,9 @@ class MyGame(arcade.Window):
 
         arcade.start_render()
 
-        self.all_sprites_list.draw()
+        self.enemy_list.draw()
+        self.bullet_list.draw()
+        self.player_list.draw()
 
     def update(self, delta_time):
         """All the logic to move, and the game logic goes here. """
@@ -74,7 +74,6 @@ class MyGame(arcade.Window):
                 bullet.top = enemy.bottom
                 bullet.change_y = -2
                 self.bullet_list.append(bullet)
-                self.all_sprites_list.append(bullet)
 
         # Get rid of the bullet when it flies off-screen
         for bullet in self.bullet_list:
