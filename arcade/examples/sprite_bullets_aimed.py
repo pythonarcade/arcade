@@ -178,7 +178,7 @@ class MyGame(arcade.Window):
                 self.score += 1
 
             # If the bullet flies off-screen, remove it.
-            if bullet.bottom > SCREEN_HEIGHT:
+            if bullet.bottom > self.width or bullet.top < 0 or bullet.right < 0 or bullet.left > self.width:
                 bullet.kill()
 
 
