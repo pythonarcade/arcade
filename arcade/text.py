@@ -4,9 +4,9 @@ import PIL.Image
 import PIL.ImageDraw
 import PIL.ImageFont
 
-from sprite import Sprite
-from arcade_types import Color
-from sprite_list import SpriteList2
+from arcade.sprite import Sprite
+from arcade.arcade_types import Color
+from arcade.sprite_list import SpriteList2
 
 
 class Text:
@@ -49,8 +49,8 @@ def draw_text(text: str,
     >>> arcade.quick_run(0.25)
     """
 
-    scale_up = 5
-    scale_down = 4
+    scale_up = 10
+    scale_down = 10
 
     # If the cache gets too large, dump it and start over.
     if len(draw_text.cache) > 5000:
@@ -78,8 +78,8 @@ def draw_text(text: str,
 
         image = PIL.Image.new("RGBA", image_size)
         draw = PIL.ImageDraw.Draw(image)
-        draw.text((0, 0), text, font=font)
-        image = image.resize((image_size[0] // scale_down, image_size[1] // scale_down), PIL.Image.ANTIALIAS)
+        draw.text((0, 0), text, color, font=font)
+        image = image.resize((image_size[0] // scale_down, image_size[1] // scale_down), resample=PIL.Image.LANCZOS)
 
         text_sprite = Sprite()
         text_sprite.image = image
