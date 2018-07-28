@@ -14,12 +14,34 @@ from typing import List
 
 import PIL.Image
 import PIL.ImageOps
-import pyglet
+import numpy as np
 import pyglet.gl as gl
+import moderngl
+from arcade.window_commands import get_projection
+
 from pyglet.gl import glu as glu
+from arcade.window_commands import get_opengl_context
 
 from arcade.arcade_types import Color
 from arcade.arcade_types import PointList
+
+
+def get_four_byte_color(color: Color):
+    if len(color) == 4:
+        return color
+    elif len(color) == 3:
+        return (color[0], color[1], color[2], 255)
+    else:
+        raise ValueError("This isn't a 3 or 4 byte color")
+
+def get_four_float_color(color: Color):
+    if len(color) == 4:
+        return (color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255)
+    elif len(color) == 3:
+        return (color[0] / 255, color[1] / 255, color[2] / 255, 1.0)
+    else:
+        raise ValueError("This isn't a 3 or 4 byte color")
+
 
 def rotate_point(x: float, y: float, cx: float, cy: float,
                  angle: float) -> (float, float):
@@ -842,27 +864,66 @@ def draw_line(start_x: float, start_y: float, end_x: float, end_y: float,
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
     """
+
+    program = get_opengl_context().program(
+        vertex_shader='''
+            #version 330
+            uniform mat4 Projection;
+            in vec2 in_vert;
+            in vec4 in_color;
+            out vec4 v_color;
+            void main() {
+               gl_Position = Projection * vec4(in_vert, 0.0, 1.0);
+               v_color = in_color;
+            }
+        ''',
+        fragment_shader='''
+            #version 330
+            in vec4 v_color;
+            out vec4 f_color;
+            void main() {
+                f_color = v_color;
+            }
+        ''',
+    )
+
+    # 2 triangles sharing the head vertex (0,0)
+    vertices = np.array([
+        [start_x, start_y],
+        [end_x, end_y]
+    ]).astype('f4')
+
+    color = get_four_float_color(color)
+    colors = np.array([
+        color,
+        color
+    ]).astype('f4')
+
+    stacked_data = np.hstack((vertices, colors))
+
+    # Indices are given to specify the order of drawing
+    indices = np.array([0, 1])
+
+    vbo = get_opengl_context().buffer(stacked_data.astype('f4').tobytes())
+    ibo = get_opengl_context().buffer(indices.astype('i4').tobytes())
+
+    vao_content = [
+        # 2 floats are assigned to the 'in' variable named 'in_vert' in the shader code
+        (vbo, '2f 4f', 'in_vert', 'in_color')
+    ]
+
+    vao = get_opengl_context().vertex_array(program, vao_content, ibo)
+
+    program['Projection'].write(get_projection().tobytes())
+
+    get_opengl_context().line_width = border_width
+
     gl.glEnable(gl.GL_BLEND)
     gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-    gl.glEnable(gl.GL_LINE_SMOOTH)
-    gl.glHint(gl.GL_LINE_SMOOTH_HINT, gl.GL_NICEST)
-    gl.glHint(gl.GL_POLYGON_SMOOTH_HINT, gl.GL_NICEST)
+    # get_opengl_context().enable(moderngl.BLEND)
+    # get_opengl_context().blend_func( (moderngl.SRC_ALPHA, moderngl.ONE_MINUS_SRC_ALPHA) )
 
-    gl.glLoadIdentity()
-
-    # Set line width
-    gl.glLineWidth(border_width)
-
-    # Set color
-    if len(color) == 4:
-        gl.glColor4ub(color[0], color[1], color[2], color[3])
-    elif len(color) == 3:
-        gl.glColor4ub(color[0], color[1], color[2], 255)
-
-    gl.glBegin(gl.GL_LINES)
-    gl.glVertex3f(start_x, start_y, 0.5)
-    gl.glVertex3f(end_x, end_y, 0.5)
-    gl.glEnd()
+    vao.render(mode=moderngl.LINE_STRIP)
 
 
 def draw_line_strip(point_list: PointList,

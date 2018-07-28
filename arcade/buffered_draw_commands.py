@@ -9,15 +9,19 @@ the graphics card for much faster render times.
 import math
 import ctypes
 import pyglet.gl as gl
+import numpy as np
+import moderngl
 
 from typing import Iterable
 from typing import TypeVar
 from typing import Generic
+from arcade.window_commands import get_opengl_context
 
 from arcade.arcade_types import Color
 from arcade.draw_commands import rotate_point
 from arcade.arcade_types import PointList
-
+from arcade.draw_commands import get_four_float_color
+from arcade.draw_commands import get_projection
 
 class VertexBuffer:
     """
@@ -44,6 +48,22 @@ class VertexBuffer:
         self.color = None
         self.line_width = 0
 
+class Shape2:
+    def __init__(self):
+        self.vao = None
+        self.mode = None
+        self.line_width = 1
+
+    def draw(self):
+        # program['Projection'].write(get_projection().tobytes())
+
+        get_opengl_context().line_width = self.line_width
+
+        gl.glEnable(gl.GL_BLEND)
+        gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
+
+        self.vao.render(mode=self.mode)
+
 
 def create_line(start_x: float, start_y: float, end_x: float, end_y: float,
                 color: Color, line_width: float=1):
@@ -62,31 +82,79 @@ def create_line(start_x: float, start_y: float, end_x: float, end_y: float,
     >>> arcade.quick_run(0.25)
 
     """
-    data = [start_x, start_y,
-            end_x, end_y]
 
-    # print(data)
-    vbo_id = gl.GLuint()
+    program = get_opengl_context().program(
+        vertex_shader='''
+            #version 330
+            uniform mat4 Projection;
+            in vec2 in_vert;
+            in vec4 in_color;
+            out vec4 v_color;
+            void main() {
+               gl_Position = Projection * vec4(in_vert, 0.0, 1.0);
+               v_color = in_color;
+            }
+        ''',
+        fragment_shader='''
+            #version 330
+            in vec4 v_color;
+            out vec4 f_color;
+            void main() {
+                f_color = v_color;
+            }
+        ''',
+    )
 
-    gl.glGenBuffers(1, ctypes.pointer(vbo_id))
+    # 2 triangles sharing the head vertex (0,0)
+    vertices = np.array([
+        [start_x, start_y],
+        [end_x, end_y],
+        [500, 100],
+        [0, 800]
+    ]).astype('f4')
 
-    # Create a buffer with the data
-    # This line of code is a bit strange.
-    # (gl.GLfloat * len(data)) creates an array of GLfloats, one for each number
-    # (*data) initalizes the list with the floats. *data turns the list into a
-    # tuple.
-    data2 = (gl.GLfloat * len(data))(*data)
+    color = get_four_float_color(color)
+    colors = np.array([
+        color,
+        color,
+        color,
+        color,
+    ]).astype('f4')
 
-    gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vbo_id)
-    gl.glBufferData(gl.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2,
-                    gl.GL_STATIC_DRAW)
+    stacked_data = np.hstack((vertices, colors))
 
-    shape_mode = gl.GL_LINES
-    shape = VertexBuffer(vbo_id, len(data) // 2, shape_mode)
+    # Indices are given to specify the order of drawing
+    # TODO: Use 16 bits instead?
+    indices = np.array([0, 1, 2 ** 32 - 1, 2, 3], dtype=np.uint32)
 
-    shape.color = color
+    vbo = get_opengl_context().buffer(stacked_data.astype('f4').tobytes())
+    ibo = get_opengl_context().buffer(indices.tobytes())
+    gl.glEnable(gl.GL_PRIMITIVE_RESTART)
+    gl.glPrimitiveRestartIndex(2 ** 32 - 1)
+
+    vao_content = [
+        # 2 floats are assigned to the 'in' variable named 'in_vert' in the shader code
+        (vbo, '2f 4f', 'in_vert', 'in_color')
+    ]
+
+    vao = get_opengl_context().vertex_array(program, vao_content, ibo)
+
+    program['Projection'].write(get_projection().tobytes())
+
+    shape = Shape2()
+    shape.vao = vao
+    shape.mode = moderngl.LINE_STRIP
     shape.line_width = line_width
+
     return shape
+    # get_opengl_context().line_width = line_width
+    #
+    # gl.glEnable(gl.GL_BLEND)
+    # gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
+    # get_opengl_context().enable(moderngl.BLEND)
+    # get_opengl_context().blend_func( (moderngl.SRC_ALPHA, moderngl.ONE_MINUS_SRC_ALPHA) )
+
+    # vao.render(mode=moderngl.LINE_STRIP)
 
 
 def create_line_generic(draw_type: int,

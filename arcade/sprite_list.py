@@ -760,6 +760,7 @@ class SpriteList2(Generic[T]):
             (self.pos_angle_scale_buf, '3f 1f 2f 4f/i', 'in_pos', 'in_angle', 'in_scale', 'in_sub_tex_coords')
         ]
 
+        # Can add buffer to index vertices
         self.vao = get_opengl_context().vertex_array(self.program, vao_content)
 
         self.update_positions()
