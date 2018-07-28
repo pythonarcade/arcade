@@ -1124,7 +1124,7 @@ make_transparent_color(arcade.color.SPANISH_VIOLET, 127))
 
 
 def draw_polygon_outline(point_list: PointList,
-                         color: Color, border_width: float=1):
+                         color: Color, line_width: float=1):
     """
     Draw a polygon outline. Also known as a "line loop."
 
@@ -1138,42 +1138,8 @@ def draw_polygon_outline(point_list: PointList,
         None
     Raises:
         None
-
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
-    >>> arcade.set_background_color(arcade.color.WHITE)
-    >>> arcade.start_render()
-    >>> point_list = ((30, 240), \
-(45, 240), \
-(60, 255), \
-(60, 285), \
-(45, 300), \
-(30, 300))
-    >>> arcade.draw_polygon_outline(point_list, arcade.color.SPANISH_VIOLET, 3)
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
     """
-    gl.glEnable(gl.GL_BLEND)
-    gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-    gl.glEnable(gl.GL_LINE_SMOOTH)
-    gl.glHint(gl.GL_LINE_SMOOTH_HINT, gl.GL_NICEST)
-    gl.glHint(gl.GL_POLYGON_SMOOTH_HINT, gl.GL_NICEST)
-
-    # Set line width
-    gl.glLineWidth(border_width)
-
-    gl.glLoadIdentity()
-
-    # Set color
-    if len(color) == 4:
-        gl.glColor4ub(color[0], color[1], color[2], color[3])
-    elif len(color) == 3:
-        gl.glColor4ub(color[0], color[1], color[2], 255)
-
-    gl.glBegin(gl.GL_LINE_LOOP)
-    for point in point_list:
-        gl.glVertex3f(point[0], point[1], 0.5)
-    gl.glEnd()
+    _generic_draw_line_strip(point_list, color, line_width, gl.GL_LINE_LOOP)
 
 
 def draw_triangle_filled(x1: float, y1: float,
@@ -1356,48 +1322,20 @@ def draw_rectangle_outline(center_x: float, center_y: float, width: float,
         None
     Raises:
         None
-
-    Example:
-
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
-    >>> arcade.set_background_color(arcade.color.WHITE)
-    >>> arcade.start_render()
-    >>> arcade.draw_rectangle_outline(278, 150, 45, 105, \
-arcade.color.BRITISH_RACING_GREEN, 2)
-    >>> arcade.draw_rectangle_outline(278, 150, 45, 105, (100, 200, 100, 255))
-    >>> arcade.draw_rectangle_outline(278, 150, 45, 105, \
-arcade.color.BRITISH_RACING_GREEN, 5, 45)
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
     """
 
-    gl.glEnable(gl.GL_BLEND)
-    gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-    gl.glEnable(gl.GL_LINE_SMOOTH)
-    gl.glHint(gl.GL_LINE_SMOOTH_HINT, gl.GL_NICEST)
-    gl.glHint(gl.GL_POLYGON_SMOOTH_HINT, gl.GL_NICEST)
+    p1 = -width // 2 + center_x, -height // 2 + center_y
+    p2 = width // 2 + center_x, -height // 2 + center_y
+    p3 = width // 2 + center_x, height // 2 + center_y
+    p4 = -width // 2 + center_x, height // 2 + center_y
 
-    gl.glLoadIdentity()
-    gl.glTranslatef(center_x, center_y, 0)
-    if tilt_angle:
-        gl.glRotatef(tilt_angle, 0, 0, 1)
+    if tilt_angle != 0:
+        p1 = rotate_point(p1[0], p1[1], center_x, center_y, tilt_angle)
+        p2 = rotate_point(p2[0], p2[1], center_x, center_y, tilt_angle)
+        p3 = rotate_point(p3[0], p3[1], center_x, center_y, tilt_angle)
+        p4 = rotate_point(p4[0], p4[1], center_x, center_y, tilt_angle)
 
-    # Set line width
-    gl.glLineWidth(border_width)
-
-    # Set color
-    if len(color) == 4:
-        gl.glColor4ub(color[0], color[1], color[2], color[3])
-    elif len(color) == 3:
-        gl.glColor4ub(color[0], color[1], color[2], 255)
-
-    gl.glBegin(gl.GL_LINE_LOOP)
-    gl.glVertex3f(-width // 2, -height // 2, 0.5)
-    gl.glVertex3f(width // 2, -height // 2, 0.5)
-    gl.glVertex3f(width // 2, height // 2, 0.5)
-    gl.glVertex3f(-width // 2, height // 2, 0.5)
-    gl.glEnd()
+    _generic_draw_line_strip((p1, p2, p3, p4), color, border_width, gl.GL_LINE_LOOP)
 
 
 def draw_lrtb_rectangle_filled(left: float, right: float, top: float,
