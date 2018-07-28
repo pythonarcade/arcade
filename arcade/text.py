@@ -63,7 +63,7 @@ def draw_text(text: str,
         label = draw_text.cache[key]
         text_sprite = label.text_sprite_list[0]
         text_sprite.center_x = start_x + text_sprite.width / 2
-        text_sprite.center_y = start_y
+        text_sprite.center_y = start_y + text_sprite.height / 2
         label.text_sprite_list.update_positions()
     else:
 
@@ -87,7 +87,7 @@ def draw_text(text: str,
         text_sprite.width = image.width
         text_sprite.height = image.height
         text_sprite.center_x = start_x + text_sprite.width / 2
-        text_sprite.center_y = start_y
+        text_sprite.center_y = start_y + text_sprite.height / 2
         label.text_sprite_list = SpriteList2()
         label.text_sprite_list.append(text_sprite)
 
