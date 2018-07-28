@@ -4,9 +4,9 @@ import PIL.Image
 import PIL.ImageDraw
 import PIL.ImageFont
 
-from sprite import Sprite
-from arcade_types import Color
-from sprite_list import SpriteList2
+from arcade.sprite import Sprite
+from arcade.arcade_types import Color
+from arcade.sprite_list import SpriteList2
 
 
 class Text:
