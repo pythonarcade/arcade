@@ -10,20 +10,41 @@ Buffered Draw Commands.
 
 import ctypes
 import math
-from typing import List
-
 import PIL.Image
 import PIL.ImageOps
 import numpy as np
-import pyglet.gl as gl
 import moderngl
-from arcade.window_commands import get_projection
 
+import pyglet.gl as gl
 from pyglet.gl import glu as glu
-from arcade.window_commands import get_opengl_context
 
+from typing import List
+
+from arcade.window_commands import get_projection
+from arcade.window_commands import get_opengl_context
 from arcade.arcade_types import Color
 from arcade.arcade_types import PointList
+
+line_vertex_shader = '''
+    #version 330
+    uniform mat4 Projection;
+    in vec2 in_vert;
+    in vec4 in_color;
+    out vec4 v_color;
+    void main() {
+       gl_Position = Projection * vec4(in_vert, 0.0, 1.0);
+       v_color = in_color;
+    }
+'''
+
+line_fragment_shader = '''
+    #version 330
+    in vec4 v_color;
+    out vec4 f_color;
+    void main() {
+        f_color = v_color;
+    }
+'''
 
 
 def get_four_byte_color(color: Color):
@@ -33,6 +54,7 @@ def get_four_byte_color(color: Color):
         return (color[0], color[1], color[2], 255)
     else:
         raise ValueError("This isn't a 3 or 4 byte color")
+
 
 def get_four_float_color(color: Color):
     if len(color) == 4:
@@ -62,9 +84,9 @@ def rotate_point(x: float, y: float, cx: float, cy: float,
                 temp_y * math.cos(math.radians(angle))
 
     # translate back
-    ROUNDING_PRECISION = 2
-    x = round(rotated_x + cx, ROUNDING_PRECISION)
-    y = round(rotated_y + cy, ROUNDING_PRECISION)
+    rounding_precision = 2
+    x = round(rotated_x + cx, rounding_precision)
+    y = round(rotated_y + cy, rounding_precision)
 
     return x, y
 
@@ -834,100 +856,8 @@ def draw_ellipse_outline(center_x: float, center_y: float, width: float,
 
 # --- BEGIN LINE FUNCTIONS # # #
 
-def draw_line(start_x: float, start_y: float, end_x: float, end_y: float,
-              color: Color, border_width: float=1):
-    """
-    Draw a line.
-
-    Args:
-        :start_x: x position of line starting point.
-        :start_y: y position of line starting point.
-        :end_x: x position of line ending point.
-        :end_y: y position of line ending point.
-        :color: color, specified in a list of 3 or 4 bytes in RGB or
-         RGBA format.
-        :border_width: Width of the line in pixels.
-    Returns:
-        None
-    Raises:
-        None
-
-    Example:
-
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
-    >>> arcade.set_background_color(arcade.color.WHITE)
-    >>> arcade.start_render()
-    >>> arcade.draw_line(270, 495, 300, 450, arcade.color.WOOD_BROWN, 3)
-    >>> color = (127, 0, 127, 127)
-    >>> arcade.draw_line(280, 495, 320, 450, color, 3)
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
-    """
-
-    program = get_opengl_context().program(
-        vertex_shader='''
-            #version 330
-            uniform mat4 Projection;
-            in vec2 in_vert;
-            in vec4 in_color;
-            out vec4 v_color;
-            void main() {
-               gl_Position = Projection * vec4(in_vert, 0.0, 1.0);
-               v_color = in_color;
-            }
-        ''',
-        fragment_shader='''
-            #version 330
-            in vec4 v_color;
-            out vec4 f_color;
-            void main() {
-                f_color = v_color;
-            }
-        ''',
-    )
-
-    # 2 triangles sharing the head vertex (0,0)
-    vertices = np.array([
-        [start_x, start_y],
-        [end_x, end_y]
-    ]).astype('f4')
-
-    color = get_four_float_color(color)
-    colors = np.array([
-        color,
-        color
-    ]).astype('f4')
-
-    stacked_data = np.hstack((vertices, colors))
-
-    # Indices are given to specify the order of drawing
-    indices = np.array([0, 1])
-
-    vbo = get_opengl_context().buffer(stacked_data.astype('f4').tobytes())
-    ibo = get_opengl_context().buffer(indices.astype('i4').tobytes())
-
-    vao_content = [
-        # 2 floats are assigned to the 'in' variable named 'in_vert' in the shader code
-        (vbo, '2f 4f', 'in_vert', 'in_color')
-    ]
-
-    vao = get_opengl_context().vertex_array(program, vao_content, ibo)
-
-    program['Projection'].write(get_projection().tobytes())
-
-    get_opengl_context().line_width = border_width
-
-    gl.glEnable(gl.GL_BLEND)
-    gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-    # get_opengl_context().enable(moderngl.BLEND)
-    # get_opengl_context().blend_func( (moderngl.SRC_ALPHA, moderngl.ONE_MINUS_SRC_ALPHA) )
-
-    vao.render(mode=moderngl.LINE_STRIP)
-
-
 def draw_line_strip(point_list: PointList,
-                    color: Color, border_width: float=1):
+                    color: Color, line_width: float=1):
     """
     Draw a line strip. A line strip is a set of continuously connected
     line segments.
@@ -968,27 +898,75 @@ def draw_line_strip(point_list: PointList,
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
     """
+    program = get_opengl_context().program(
+        vertex_shader=line_vertex_shader,
+        fragment_shader=line_fragment_shader,
+    )
+
+    # 2 triangles sharing the head vertex (0,0)
+    vertices = np.array(point_list).astype('f4')
+
+    color = get_four_float_color(color)
+    color_list = [color] * len(point_list)
+    colors = np.array(color_list).astype('f4')
+
+    stacked_data = np.hstack((vertices, colors))
+
+    # Indices are given to specify the order of drawing
+    indices = np.array([n for n in range(len(vertices))])
+
+    vbo = get_opengl_context().buffer(stacked_data.astype('f4').tobytes())
+    ibo = get_opengl_context().buffer(indices.astype('i4').tobytes())
+
+    vao_content = [
+        (vbo, '2f 4f', 'in_vert', 'in_color')
+    ]
+
+    vao = get_opengl_context().vertex_array(program, vao_content, ibo)
+
+    program['Projection'].write(get_projection().tobytes())
+
+    get_opengl_context().line_width = line_width
+
     gl.glEnable(gl.GL_BLEND)
     gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-    gl.glEnable(gl.GL_LINE_SMOOTH)
-    gl.glHint(gl.GL_LINE_SMOOTH_HINT, gl.GL_NICEST)
-    gl.glHint(gl.GL_POLYGON_SMOOTH_HINT, gl.GL_NICEST)
 
-    # Set line width
-    gl.glLineWidth(border_width)
+    vao.render(mode=moderngl.LINE_STRIP)
 
-    gl.glLoadIdentity()
 
-    # Set color
-    if len(color) == 4:
-        gl.glColor4ub(color[0], color[1], color[2], color[3])
-    elif len(color) == 3:
-        gl.glColor4ub(color[0], color[1], color[2], 255)
+def draw_line(start_x: float, start_y: float, end_x: float, end_y: float,
+              color: Color, line_width: float=1):
+    """
+    Draw a line.
 
-    gl.glBegin(gl.GL_LINE_STRIP)
-    for point in point_list:
-        gl.glVertex3f(point[0], point[1], 0.5)
-    gl.glEnd()
+    Args:
+        :start_x: x position of line starting point.
+        :start_y: y position of line starting point.
+        :end_x: x position of line ending point.
+        :end_y: y position of line ending point.
+        :color: color, specified in a list of 3 or 4 bytes in RGB or
+         RGBA format.
+        :border_width: Width of the line in pixels.
+    Returns:
+        None
+    Raises:
+        None
+
+    Example:
+
+    >>> import arcade
+    >>> arcade.open_window(800,600,"Drawing Example")
+    >>> arcade.set_background_color(arcade.color.WHITE)
+    >>> arcade.start_render()
+    >>> arcade.draw_line(270, 495, 300, 450, arcade.color.WOOD_BROWN, 3)
+    >>> color = (127, 0, 127, 127)
+    >>> arcade.draw_line(280, 495, 320, 450, color, 3)
+    >>> arcade.finish_render()
+    >>> arcade.quick_run(0.25)
+    """
+
+    points = (start_x, start_y), (end_x, end_y)
+    draw_line_strip(points, color, line_width)
 
 
 def draw_lines(point_list: PointList,
