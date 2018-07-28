@@ -856,8 +856,10 @@ def draw_ellipse_outline(center_x: float, center_y: float, width: float,
 
 # --- BEGIN LINE FUNCTIONS # # #
 
-def draw_line_strip(point_list: PointList,
-                    color: Color, line_width: float=1):
+def _generic_draw_line_strip(point_list: PointList,
+                             color: Color,
+                             line_width: float=1,
+                             mode: int=moderngl.LINE_STRIP):
     """
     Draw a line strip. A line strip is a set of continuously connected
     line segments.
@@ -872,31 +874,6 @@ def draw_line_strip(point_list: PointList,
         None
     Raises:
         None
-
-    Example:
-
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
-    >>> arcade.set_background_color(arcade.color.WHITE)
-    >>> arcade.start_render()
-    >>> point_list = ((510, 450), \
-(570, 450), \
-(510, 480), \
-(570, 480), \
-(510, 510), \
-(570, 510))
-    >>> arcade.draw_line_strip(point_list, arcade.color.TROPICAL_RAIN_FOREST, \
-3)
-    >>> color = (127, 0, 127, 127)
-    >>> point_list = ((510, 455), \
-(570, 455), \
-(510, 485), \
-(570, 485), \
-(510, 515), \
-(570, 515))
-    >>> arcade.draw_line_strip(point_list, color, 3)
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
     """
     program = get_opengl_context().program(
         vertex_shader=line_vertex_shader,
@@ -931,7 +908,20 @@ def draw_line_strip(point_list: PointList,
     gl.glEnable(gl.GL_BLEND)
     gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
 
-    vao.render(mode=moderngl.LINE_STRIP)
+    vao.render(mode=mode)
+
+
+def draw_line_strip(point_list: PointList,
+                    color: Color, line_width: float=1):
+    """
+    Draw a multi-point line.
+
+    Args:
+        point_list:
+        color:
+        line_width:
+    """
+    _generic_draw_line_strip(point_list, color, line_width, gl.GL_LINE_STRIP)
 
 
 def draw_line(start_x: float, start_y: float, end_x: float, end_y: float,
@@ -952,17 +942,6 @@ def draw_line(start_x: float, start_y: float, end_x: float, end_y: float,
     Raises:
         None
 
-    Example:
-
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
-    >>> arcade.set_background_color(arcade.color.WHITE)
-    >>> arcade.start_render()
-    >>> arcade.draw_line(270, 495, 300, 450, arcade.color.WOOD_BROWN, 3)
-    >>> color = (127, 0, 127, 127)
-    >>> arcade.draw_line(280, 495, 320, 450, color, 3)
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
     """
 
     points = (start_x, start_y), (end_x, end_y)
@@ -970,7 +949,8 @@ def draw_line(start_x: float, start_y: float, end_x: float, end_y: float,
 
 
 def draw_lines(point_list: PointList,
-               color: Color, border_width: float=1):
+               color: Color,
+               line_width: float=1):
     """
     Draw a set of lines.
 
@@ -986,54 +966,10 @@ def draw_lines(point_list: PointList,
         None
     Raises:
         None
-
-    Example:
-
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
-    >>> arcade.set_background_color(arcade.color.WHITE)
-    >>> arcade.start_render()
-    >>> point_list = ((390, 450), \
-(450, 450), \
-(390, 480), \
-(450, 480), \
-(390, 510), \
-(450, 510))
-    >>> arcade.draw_lines(point_list, arcade.color.BLUE, 3)
-
-    >>> arcade.start_render()
-    >>> point_list = ((390, 450), \
-(550, 450), \
-(490, 480), \
-(550, 480), \
-(490, 510), \
-(550, 510))
-    >>> arcade.draw_lines(point_list, (0, 0, 255, 127), 3)
-
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
     """
-    gl.glEnable(gl.GL_BLEND)
-    gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-    gl.glEnable(gl.GL_LINE_SMOOTH)
-    gl.glHint(gl.GL_LINE_SMOOTH_HINT, gl.GL_NICEST)
-    gl.glHint(gl.GL_POLYGON_SMOOTH_HINT, gl.GL_NICEST)
 
-    gl.glLoadIdentity()
+    _generic_draw_line_strip(point_list, color, line_width, gl.GL_LINES)
 
-    # Set line width
-    gl.glLineWidth(border_width)
-
-    # Set color
-    if len(color) == 4:
-        gl.glColor4ub(color[0], color[1], color[2], color[3])
-    elif len(color) == 3:
-        gl.glColor4ub(color[0], color[1], color[2], 255)
-
-    gl.glBegin(gl.GL_LINES)
-    for point in point_list:
-        gl.glVertex3f(point[0], point[1], 0.5)
-    gl.glEnd()
 
 
 # --- END LINE FUNCTIONS # # #
