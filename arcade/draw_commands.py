@@ -417,7 +417,8 @@ def draw_arc_filled(center_x: float, center_y: float,
                     width: float, height: float,
                     color: Color,
                     start_angle: float, end_angle: float,
-                    tilt_angle: float=0):
+                    tilt_angle: float=0,
+                    num_segments: int=128):
     """
     Draw a filled in arc. Useful for drawing pie-wedges, or Pac-Man.
 
@@ -435,21 +436,33 @@ def draw_arc_filled(center_x: float, center_y: float,
         None
     Raises:
         None
-
-    Example:
-
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
-    >>> arcade.set_background_color(arcade.color.WHITE)
-    >>> arcade.start_render()
-    >>> arcade.draw_arc_filled(150, 144, 15, 36, \
-arcade.color.BOTTLE_GREEN, 90, 360, 45)
-    >>> color = (255, 0, 0, 127)
-    >>> arcade.draw_arc_filled(150, 154, 15, 36, color, 90, 360, 45)
-    >>> arcade.finish_render()
-    >>> arcade.close_window()
     """
-    num_segments = 128
+    unrotated_point_list = [[0, 0]]
+
+    start_segment = int(start_angle / 360 * num_segments)
+    end_segment = int(end_angle / 360 * num_segments)
+
+    for segment in range(start_segment, end_segment + 1):
+        theta = 2.0 * 3.1415926 * segment / num_segments
+
+        x = width * math.cos(theta)
+        y = height * math.sin(theta)
+
+        unrotated_point_list.append((x, y))
+
+    if tilt_angle == 0:
+        uncentered_point_list = unrotated_point_list
+    else:
+        uncentered_point_list = []
+        for point in unrotated_point_list:
+            uncentered_point_list.append(rotate_point(point[0], point[1], 0, 0, tilt_angle))
+
+    point_list = []
+    for point in uncentered_point_list:
+        point_list.append((point[0] + center_x, point[1] + center_y))
+
+    _generic_draw_line_strip(point_list, color, 1, gl.GL_TRIANGLE_FAN)
+    """
     gl.glEnable(gl.GL_BLEND)
     gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
     gl.glEnable(gl.GL_LINE_SMOOTH)
@@ -482,12 +495,13 @@ arcade.color.BOTTLE_GREEN, 90, 360, 45)
 
     gl.glEnd()
     gl.glLoadIdentity()
-
+    """
 
 def draw_arc_outline(center_x: float, center_y: float, width: float,
                      height: float, color: Color,
                      start_angle: float, end_angle: float,
-                     border_width: float=1, tilt_angle: float=0):
+                     border_width: float=1, tilt_angle: float=0,
+                     num_segments: int=128):
     """
     Draw the outside edge of an arc. Useful for drawing curved lines.
 
@@ -506,40 +520,8 @@ def draw_arc_outline(center_x: float, center_y: float, width: float,
         None
     Raises:
         None
-
-    Example:
-
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
-    >>> arcade.set_background_color(arcade.color.WHITE)
-    >>> arcade.start_render()
-    >>> arcade.draw_arc_outline(150, 81, 15, 36, \
-arcade.color.BRIGHT_MAROON, 90, 360)
-    >>> transparent_color = (255, 0, 0, 127)
-    >>> arcade.draw_arc_outline(150, 71, 15, 36, \
-transparent_color, 90, 360)
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
     """
-    num_segments = 128
-    gl.glEnable(gl.GL_BLEND)
-    gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-    gl.glEnable(gl.GL_LINE_SMOOTH)
-    gl.glHint(gl.GL_LINE_SMOOTH_HINT, gl.GL_NICEST)
-    gl.glHint(gl.GL_POLYGON_SMOOTH_HINT, gl.GL_NICEST)
-
-    gl.glLoadIdentity()
-    gl.glTranslatef(center_x, center_y, 0)
-    gl.glRotatef(tilt_angle, 0, 0, 1)
-    gl.glLineWidth(border_width)
-
-    # Set color
-    if len(color) == 4:
-        gl.glColor4ub(color[0], color[1], color[2], color[3])
-    elif len(color) == 3:
-        gl.glColor4ub(color[0], color[1], color[2], 255)
-
-    gl.glBegin(gl.GL_LINE_STRIP)
+    unrotated_point_list = []
 
     start_segment = int(start_angle / 360 * num_segments)
     end_segment = int(end_angle / 360 * num_segments)
@@ -550,10 +532,20 @@ transparent_color, 90, 360)
         x = width * math.cos(theta)
         y = height * math.sin(theta)
 
-        gl.glVertex3f(x, y, 0.5)
+        unrotated_point_list.append((x, y))
 
-    gl.glEnd()
-    gl.glLoadIdentity()
+    if tilt_angle == 0:
+        uncentered_point_list = unrotated_point_list
+    else:
+        uncentered_point_list = []
+        for point in unrotated_point_list:
+            uncentered_point_list.append(rotate_point(point[0], point[1], 0, 0, tilt_angle))
+
+    point_list = []
+    for point in uncentered_point_list:
+        point_list.append((point[0] + center_x, point[1] + center_y))
+
+    _generic_draw_line_strip(point_list, color, border_width, gl.GL_LINE_STRIP)
 
 
 # --- END ARC FUNCTIONS # # #
@@ -754,41 +746,34 @@ def draw_ellipse_filled(center_x: float, center_y: float,
     >>> arcade.quick_run(0.25)
     """
 
-    gl.glEnable(gl.GL_BLEND)
-    gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-    gl.glEnable(gl.GL_LINE_SMOOTH)
-    gl.glHint(gl.GL_LINE_SMOOTH_HINT, gl.GL_NICEST)
-    gl.glHint(gl.GL_POLYGON_SMOOTH_HINT, gl.GL_NICEST)
+    unrotated_point_list = []
 
-    gl.glLoadIdentity()
-    gl.glTranslatef(center_x, center_y, 0)
-    gl.glRotatef(tilt_angle, 0, 0, 1)
-
-    # Set color
-    if len(color) == 4:
-        gl.glColor4ub(color[0], color[1], color[2], color[3])
-    elif len(color) == 3:
-        gl.glColor4ub(color[0], color[1], color[2], 255)
-
-    gl.glBegin(gl.GL_TRIANGLE_FAN)
-
-    gl.glVertex3f(0, 0, 0.5)
-
-    for segment in range(num_segments + 1):
+    for segment in range(num_segments):
         theta = 2.0 * 3.1415926 * segment / num_segments
 
         x = width * math.cos(theta)
         y = height * math.sin(theta)
 
-        gl.glVertex3f(x, y, 0.5)
+        unrotated_point_list.append((x, y))
 
-    gl.glEnd()
-    gl.glLoadIdentity()
+    if tilt_angle == 0:
+        uncentered_point_list = unrotated_point_list
+    else:
+        uncentered_point_list = []
+        for point in unrotated_point_list:
+            uncentered_point_list.append(rotate_point(point[0], point[1], 0, 0, tilt_angle))
+
+    point_list = []
+    for point in uncentered_point_list:
+        point_list.append((point[0] + center_x, point[1] + center_y))
+
+    _generic_draw_line_strip(point_list, color, 1, gl.GL_TRIANGLE_FAN)
 
 
 def draw_ellipse_outline(center_x: float, center_y: float, width: float,
                          height: float, color: Color,
-                         border_width: float=1, tilt_angle: float=0):
+                         border_width: float=1, tilt_angle: float=0,
+                         num_segments=128):
     """
     Draw the outline of an ellipse.
 
@@ -807,7 +792,6 @@ def draw_ellipse_outline(center_x: float, center_y: float, width: float,
         None
     """
 
-    num_segments = 128
     unrotated_point_list = []
 
     for segment in range(num_segments):
@@ -821,7 +805,6 @@ def draw_ellipse_outline(center_x: float, center_y: float, width: float,
     if tilt_angle == 0:
         uncentered_point_list = unrotated_point_list
     else:
-        print("A")
         uncentered_point_list = []
         for point in unrotated_point_list:
             uncentered_point_list.append(rotate_point(point[0], point[1], 0, 0, tilt_angle))
@@ -888,6 +871,9 @@ def _generic_draw_line_strip(point_list: PointList,
 
     gl.glEnable(gl.GL_BLEND)
     gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
+    gl.glEnable(gl.GL_LINE_SMOOTH)
+    gl.glHint(gl.GL_LINE_SMOOTH_HINT, gl.GL_NICEST)
+    gl.glHint(gl.GL_POLYGON_SMOOTH_HINT, gl.GL_NICEST)
 
     vao.render(mode=mode)
 
@@ -972,31 +958,9 @@ def draw_point(x: float, y: float, color: Color, size: float):
         None
     Raises:
         None
-
-    Example:
-
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
-    >>> arcade.set_background_color(arcade.color.WHITE)
-    >>> arcade.start_render()
-    >>> arcade.draw_point(60, 495, arcade.color.RED, 10)
-    >>> arcade.draw_point(70, 495, (255, 0, 0, 127), 10)
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
     """
-    gl.glEnable(gl.GL_BLEND)
-    gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-
-    gl.glLoadIdentity()
-
-    gl.glPointSize(size)
-    if len(color) == 4:
-        gl.glColor4ub(color[0], color[1], color[2], color[3])
-    elif len(color) == 3:
-        gl.glColor4ub(color[0], color[1], color[2], 255)
-    gl.glBegin(gl.GL_POINTS)
-    gl.glVertex3f(x, y, 0.5)
-    gl.glEnd()
+    point_list = [(x, y)]
+    _generic_draw_line_strip(point_list, color, size, gl.GL_POINTS)
 
 
 def draw_points(point_list: PointList,
@@ -1014,38 +978,8 @@ def draw_points(point_list: PointList,
         None
     Raises:
         None
-
-    Example:
-
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
-    >>> arcade.set_background_color(arcade.color.WHITE)
-    >>> arcade.start_render()
-    >>> point_list = ((165, 495), \
-(165, 480), \
-(165, 465), \
-(195, 495), \
-(195, 480), \
-(195, 465))
-    >>> arcade.draw_points(point_list, arcade.color.ZAFFRE, 10)
-    >>> arcade.draw_points(point_list, make_transparent_color(arcade.color.ZAFFRE, 127), 10)
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
     """
-    gl.glEnable(gl.GL_BLEND)
-    gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-
-    gl.glLoadIdentity()
-
-    gl.glPointSize(size)
-    if len(color) == 4:
-        gl.glColor4ub(color[0], color[1], color[2], color[3])
-    elif len(color) == 3:
-        gl.glColor4ub(color[0], color[1], color[2], 255)
-    gl.glBegin(gl.GL_POINTS)
-    for point in point_list:
-        gl.glVertex3f(point[0], point[1], 0.5)
-    gl.glEnd()
+    _generic_draw_line_strip(point_list, color, size, gl.GL_POINTS)
 
 
 # --- END POINT FUNCTIONS # # #
@@ -1067,41 +1001,9 @@ def draw_polygon_filled(point_list: PointList,
         None
     Raises:
         None
-
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
-    >>> arcade.set_background_color(arcade.color.WHITE)
-    >>> arcade.start_render()
-    >>> point_list = ((150, 240), \
-(165, 240), \
-(180, 255), \
-(180, 285), \
-(165, 300), \
-(150, 300))
-    >>> arcade.draw_polygon_filled(point_list, arcade.color.SPANISH_VIOLET)
-    >>> arcade.draw_polygon_filled(point_list, \
-make_transparent_color(arcade.color.SPANISH_VIOLET, 127))
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
     """
-    gl.glEnable(gl.GL_BLEND)
-    gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-    gl.glEnable(gl.GL_LINE_SMOOTH)
-    gl.glHint(gl.GL_LINE_SMOOTH_HINT, gl.GL_NICEST)
-    gl.glHint(gl.GL_POLYGON_SMOOTH_HINT, gl.GL_NICEST)
 
-    gl.glLoadIdentity()
-
-    # Set color
-    if len(color) == 4:
-        gl.glColor4ub(color[0], color[1], color[2], color[3])
-    elif len(color) == 3:
-        gl.glColor4ub(color[0], color[1], color[2], 255)
-
-    gl.glBegin(gl.GL_POLYGON)
-    for point in point_list:
-        gl.glVertex3f(point[0], point[1], 0.5)
-    gl.glEnd()
+    _generic_draw_line_strip(point_list, color, 1, gl.GL_POLYGON)
 
 
 def draw_polygon_outline(point_list: PointList,
@@ -1422,29 +1324,18 @@ def draw_rectangle_filled(center_x: float, center_y: float, width: float,
     >>> arcade.quick_run(0.25)
     """
 
-    gl.glEnable(gl.GL_BLEND)
-    gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-    gl.glEnable(gl.GL_LINE_SMOOTH)
-    gl.glHint(gl.GL_LINE_SMOOTH_HINT, gl.GL_NICEST)
-    gl.glHint(gl.GL_POLYGON_SMOOTH_HINT, gl.GL_NICEST)
+    p1 = -width // 2 + center_x, -height // 2 + center_y
+    p2 = width // 2 + center_x, -height // 2 + center_y
+    p3 = width // 2 + center_x, height // 2 + center_y
+    p4 = -width // 2 + center_x, height // 2 + center_y
 
-    # Set color
-    if len(color) == 4:
-        gl.glColor4ub(color[0], color[1], color[2], color[3])
-    elif len(color) == 3:
-        gl.glColor4ub(color[0], color[1], color[2], 255)
+    if tilt_angle != 0:
+        p1 = rotate_point(p1[0], p1[1], center_x, center_y, tilt_angle)
+        p2 = rotate_point(p2[0], p2[1], center_x, center_y, tilt_angle)
+        p3 = rotate_point(p3[0], p3[1], center_x, center_y, tilt_angle)
+        p4 = rotate_point(p4[0], p4[1], center_x, center_y, tilt_angle)
 
-    gl.glLoadIdentity()
-    gl.glTranslatef(center_x, center_y, 0)
-    if tilt_angle:
-        gl.glRotatef(tilt_angle, 0, 0, 1)
-
-    gl.glBegin(gl.GL_QUADS)
-    gl.glVertex3f(-width // 2, -height // 2, 0.5)
-    gl.glVertex3f(width // 2, -height // 2, 0.5)
-    gl.glVertex3f(width // 2, height // 2, 0.5)
-    gl.glVertex3f(-width // 2, height // 2, 0.5)
-    gl.glEnd()
+    _generic_draw_line_strip((p1, p2, p3, p4), color, 1, gl.GL_QUADS)
 
 
 def draw_texture_rectangle(center_x: float, center_y: float, width: float,
