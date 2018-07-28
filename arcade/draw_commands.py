@@ -805,51 +805,32 @@ def draw_ellipse_outline(center_x: float, center_y: float, width: float,
         None
     Raises:
         None
-
-    Example:
-
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
-    >>> arcade.set_background_color(arcade.color.WHITE)
-    >>> arcade.start_render()
-    >>> arcade.draw_ellipse_outline(540, 273, 15, 36, arcade.color.AMBER, 3)
-    >>> color = (127, 0, 127, 127)
-    >>> arcade.draw_ellipse_outline(540, 336, 15, 36, color, 3, 45)
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
     """
 
     num_segments = 128
+    unrotated_point_list = []
 
-    gl.glEnable(gl.GL_BLEND)
-    gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-    gl.glEnable(gl.GL_LINE_SMOOTH)
-    gl.glHint(gl.GL_LINE_SMOOTH_HINT, gl.GL_NICEST)
-    gl.glHint(gl.GL_POLYGON_SMOOTH_HINT, gl.GL_NICEST)
-
-    gl.glLoadIdentity()
-    gl.glTranslatef(center_x, center_y, 0)
-    gl.glRotatef(tilt_angle, 0, 0, 1)
-    gl.glLineWidth(border_width)
-
-    # Set color
-    if len(color) == 4:
-        gl.glColor4ub(color[0], color[1], color[2], color[3])
-    elif len(color) == 3:
-        gl.glColor4ub(color[0], color[1], color[2], 255)
-
-    gl.glBegin(gl.GL_LINE_LOOP)
     for segment in range(num_segments):
         theta = 2.0 * 3.1415926 * segment / num_segments
 
         x = width * math.cos(theta)
         y = height * math.sin(theta)
 
-        gl.glVertex3f(x, y, 0.5)
+        unrotated_point_list.append((x, y))
 
-    gl.glEnd()
-    gl.glLoadIdentity()
+    if tilt_angle == 0:
+        uncentered_point_list = unrotated_point_list
+    else:
+        print("A")
+        uncentered_point_list = []
+        for point in unrotated_point_list:
+            uncentered_point_list.append(rotate_point(point[0], point[1], 0, 0, tilt_angle))
 
+    point_list = []
+    for point in uncentered_point_list:
+        point_list.append((point[0] + center_x, point[1] + center_y))
+
+    _generic_draw_line_strip(point_list, color, border_width, gl.GL_LINE_LOOP)
 
 # --- END ELLIPSE FUNCTIONS # # #
 
