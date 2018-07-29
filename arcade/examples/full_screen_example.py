@@ -42,8 +42,6 @@ class MyGame(arcade.Window):
         file_path = os.path.dirname(os.path.abspath(__file__))
         os.chdir(file_path)
 
-        self.is_full_screen = True
-
         # This will get the size of the window, and set the viewport to match.
         # So if the window is 1000x1000, then so will our viewport. If
         # you want something different, then use those coordinates instead.
@@ -81,8 +79,7 @@ class MyGame(arcade.Window):
         """Called whenever a key is pressed. """
         if key == arcade.key.F:
             # User hits f. Flip between full and not full screen.
-            self.is_full_screen = not self.is_full_screen
-            self.set_fullscreen(self.is_full_screen)
+            self.set_fullscreen(not self.fullscreen)
 
             # Get the window coordinates. Match viewport to window coordinates
             # so there is a one-to-one mapping.
@@ -91,8 +88,7 @@ class MyGame(arcade.Window):
 
         if key == arcade.key.S:
             # User hits s. Flip between full and not full screen.
-            self.is_full_screen = not self.is_full_screen
-            self.set_fullscreen(self.is_full_screen)
+            self.set_fullscreen(not self.fullscreen)
 
             # Instead of a one-to-one mapping, stretch/squash window to match the
             # constants. This does NOT respect aspect ratio. You'd need to
