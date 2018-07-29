@@ -261,9 +261,6 @@ def load_textures(file_name: str,
                            gl.GL_LINEAR)
         gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER,
                            gl.GL_LINEAR_MIPMAP_LINEAR)
-        glu.gluBuild2DMipmaps(gl.GL_TEXTURE_2D, gl.GL_RGBA,
-                              image_width, image_height,
-                              gl.GL_RGBA, gl.GL_UNSIGNED_BYTE, image_bytes)
 
         image_width *= scale
         image_height *= scale
@@ -496,6 +493,7 @@ def draw_arc_filled(center_x: float, center_y: float,
     gl.glEnd()
     gl.glLoadIdentity()
     """
+
 
 def draw_arc_outline(center_x: float, center_y: float, width: float,
                      height: float, color: Color,
@@ -939,7 +937,6 @@ def draw_lines(point_list: PointList,
 
 
 
-# --- END LINE FUNCTIONS # # #
 
 # --- BEGIN POINT FUNCTIONS # # #
 
@@ -1462,7 +1459,6 @@ def draw_xywh_rectangle_textured(bottom_left_x: float, bottom_left_y: float,
 
 
 # --- END RECTANGLE FUNCTIONS # # #
-
 
 
 # --- END TEXT FUNCTIONS # # #
