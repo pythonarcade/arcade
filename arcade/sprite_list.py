@@ -289,7 +289,9 @@ class SpatialHash:
                 # append to each intersecting cell
                 close_by_sprites.extend(self.contents.setdefault((i, j), []))
 
-        return close_by_sprites
+        # Prevent duplicate collision checks on sprites hashed to more tha one
+        # cell
+        return list(set(close_by_sprites))
 
 
 T = TypeVar('T', bound=Sprite)
