@@ -24,6 +24,8 @@ from arcade.window_commands import get_projection
 from arcade.window_commands import get_opengl_context
 from arcade.arcade_types import Color
 from arcade.arcade_types import PointList
+from arcade import shader
+
 
 line_vertex_shader = '''
     #version 330
@@ -837,12 +839,11 @@ def _generic_draw_line_strip(point_list: PointList,
     Raises:
         None
     """
-    program = get_opengl_context().program(
+    program = shader.program(
         vertex_shader=line_vertex_shader,
         fragment_shader=line_fragment_shader,
     )
 
-    # 2 triangles sharing the head vertex (0,0)
     vertices = np.array(point_list).astype('f4')
 
     color = get_four_float_color(color)
@@ -852,28 +853,29 @@ def _generic_draw_line_strip(point_list: PointList,
     stacked_data = np.hstack((vertices, colors))
 
     # Indices are given to specify the order of drawing
-    indices = np.array([n for n in range(len(vertices))])
+    indices = np.arange(len(vertices))
 
-    vbo = get_opengl_context().buffer(stacked_data.astype('f4').tobytes())
-    ibo = get_opengl_context().buffer(indices.astype('i4').tobytes())
+    vbo = shader.buffer(stacked_data.astype('f4').tobytes())
+    ibo = shader.buffer(indices.astype('i4').tobytes())
 
     vao_content = [
         (vbo, '2f 4f', 'in_vert', 'in_color')
     ]
 
-    vao = get_opengl_context().vertex_array(program, vao_content, ibo)
+    vao = shader.vertex_array(program, vao_content, ibo)
+    with vao:
+        program['Projection'] = get_projection().flatten()
 
-    program['Projection'].write(get_projection().tobytes())
+        gl.glLineWidth(line_width)
+        gl.glPointSize(line_width)
 
-    get_opengl_context().line_width = line_width
+        gl.glEnable(gl.GL_BLEND)
+        gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
+        gl.glEnable(gl.GL_LINE_SMOOTH)
+        gl.glHint(gl.GL_LINE_SMOOTH_HINT, gl.GL_NICEST)
+        gl.glHint(gl.GL_POLYGON_SMOOTH_HINT, gl.GL_NICEST)
 
-    gl.glEnable(gl.GL_BLEND)
-    gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-    gl.glEnable(gl.GL_LINE_SMOOTH)
-    gl.glHint(gl.GL_LINE_SMOOTH_HINT, gl.GL_NICEST)
-    gl.glHint(gl.GL_POLYGON_SMOOTH_HINT, gl.GL_NICEST)
-
-    vao.render(mode=mode)
+        vao.render(mode=mode)
 
 
 def draw_line_strip(point_list: PointList,
@@ -1320,7 +1322,6 @@ def draw_rectangle_filled(center_x: float, center_y: float, width: float,
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
     """
-
     p1 = -width // 2 + center_x, -height // 2 + center_y
     p2 = width // 2 + center_x, -height // 2 + center_y
     p3 = width // 2 + center_x, height // 2 + center_y
@@ -1332,7 +1333,7 @@ def draw_rectangle_filled(center_x: float, center_y: float, width: float,
         p3 = rotate_point(p3[0], p3[1], center_x, center_y, tilt_angle)
         p4 = rotate_point(p4[0], p4[1], center_x, center_y, tilt_angle)
 
-    _generic_draw_line_strip((p1, p2, p3, p4), color, 1, gl.GL_QUADS)
+    _generic_draw_line_strip((p1, p2, p4, p3), color, 1, gl.GL_TRIANGLE_STRIP)
 
 
 def draw_texture_rectangle(center_x: float, center_y: float, width: float,

@@ -24,6 +24,7 @@ from arcade.sprite import get_distance_between_sprites
 from arcade.draw_commands import rotate_point
 from arcade.window_commands import get_opengl_context
 from arcade.window_commands import get_projection
+from arcade import shader
 
 VERTEX_SHADER = """
 #version 330
@@ -637,7 +638,10 @@ class SpriteList2(Generic[T]):
             return
 
         if self.program is None:
-            self.program = get_opengl_context().program(vertex_shader=VERTEX_SHADER, fragment_shader=FRAGMENT_SHADER)
+            self.program = shader.program(
+                vertex_shader=VERTEX_SHADER,
+                fragment_shader=FRAGMENT_SHADER
+            )
 
         # Loop through each sprite and grab its position, and the texture it will be using.
         array_of_positions = []
@@ -678,6 +682,7 @@ class SpriteList2(Generic[T]):
         if new_texture:
             self.array_of_texture_names = new_array_of_texture_names
             self.array_of_images = new_array_of_images
+            # print(f"New Texture Atlas with names {self.array_of_texture_names}")
 
         # Get their sizes
         widths, heights = zip(*(i.size for i in self.array_of_images))
@@ -700,7 +705,12 @@ class SpriteList2(Generic[T]):
                 x_offset += image.size[0]
 
             # Create a texture out the composite image
-            self.texture = get_opengl_context().texture((new_image.width, new_image.height), 4, np.asarray(new_image))
+            self.texture = shader.texture(
+                (new_image.width, new_image.height),
+                4,
+                np.asarray(new_image)
+            )
+
             if self.texture_id is None:
                 self.texture_id = SpriteList2.next_texture_id
 
@@ -714,8 +724,8 @@ class SpriteList2(Generic[T]):
             # new_image.save(f"temp_{self.texture_id}.png")
             # print(f"Save temp_{self.texture_id}.png")
 
-        texture_unit = 0
-        self.texture.use(texture_unit)
+        # texture_unit = 0
+        # self.texture.use(texture_unit)
 
         # Create a list with the coordinates of all the unique textures
         tex_coords = []
@@ -743,7 +753,7 @@ class SpriteList2(Generic[T]):
         np_array_sizes = np.array(array_of_sizes).astype('f4')
         np_sub_tex_coords = np.array(array_of_sub_tex_coords).astype('f4')
         self.pos_angle_scale = np.hstack((np_array_positions, np_array_angles, np_array_sizes, np_sub_tex_coords))
-        self.pos_angle_scale_buf = get_opengl_context().buffer(self.pos_angle_scale.tobytes())
+        self.pos_angle_scale_buf = shader.buffer(self.pos_angle_scale.tobytes())
 
         vertices = np.array([
             #  x,    y,   u,   v
@@ -753,15 +763,15 @@ class SpriteList2(Generic[T]):
             1.0, 1.0, 1.0, 1.0,
         ], dtype=np.float32
         )
-        vbo_buf = get_opengl_context().buffer(vertices.tobytes())
+        self.vbo_buf = shader.buffer(vertices.tobytes())
 
         vao_content = [
-            (vbo_buf, '2f 2f', 'in_vert', 'in_texture'),
+            (self.vbo_buf, '2f 2f', 'in_vert', 'in_texture'),
             (self.pos_angle_scale_buf, '3f 1f 2f 4f/i', 'in_pos', 'in_angle', 'in_scale', 'in_sub_tex_coords')
         ]
 
         # Can add buffer to index vertices
-        self.vao = get_opengl_context().vertex_array(self.program, vao_content)
+        self.vao = shader.vertex_array(self.program, vao_content)
 
         self.update_positions()
 
@@ -798,18 +808,19 @@ class SpriteList2(Generic[T]):
         if self.program is None:
             self.calculate_sprite_buffer()
 
-        self.texture.use(self.texture_id)
+        self.texture.use(0)
 
         gl.glEnable(gl.GL_BLEND)
         gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-        gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_NEAREST)
-        gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_NEAREST)
+        # gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_NEAREST)
+        # gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_NEAREST)
 
-        self.program['Texture'].value = self.texture_id
-        self.program['Projection'].write(get_projection().tobytes())
-        self.pos_angle_scale_buf.write(self.pos_angle_scale.tobytes())
-        self.vao.render(moderngl.TRIANGLE_STRIP, instances=len(self.sprite_list))
-        self.pos_angle_scale_buf.orphan()
+        with self.vao:
+            self.program['Texture'] = self.texture_id
+            self.program['Projection'] = get_projection().flatten()
+            self.pos_angle_scale_buf.write(self.pos_angle_scale.tobytes())
+            self.vao.render(gl.GL_TRIANGLE_STRIP, instances=len(self.sprite_list))
+            self.pos_angle_scale_buf.orphan()
 
     def __len__(self) -> int:
         """ Return the length of the sprite list. """
