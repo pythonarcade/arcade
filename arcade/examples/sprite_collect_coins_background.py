@@ -40,7 +40,7 @@ class MyGame(arcade.Window):
         self.background = None
 
         # Variables that will hold sprite lists
-        self.all_sprites_list = None
+        self.player_list = None
         self.coin_list = None
 
         # Set up the player info
@@ -63,7 +63,7 @@ class MyGame(arcade.Window):
         self.background = arcade.load_texture("images/background.jpg")
 
         # Sprite lists
-        self.all_sprites_list = arcade.SpriteList()
+        self.player_list = arcade.SpriteList()
         self.coin_list = arcade.SpriteList()
 
         # Set up the player
@@ -71,7 +71,7 @@ class MyGame(arcade.Window):
         self.player_sprite = arcade.Sprite("images/character.png", SPRITE_SCALING)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 50
-        self.all_sprites_list.append(self.player_sprite)
+        self.player_list.append(self.player_sprite)
 
         for i in range(50):
 
@@ -83,7 +83,6 @@ class MyGame(arcade.Window):
             coin.center_y = random.randrange(SCREEN_HEIGHT)
 
             # Add the coin to the lists
-            self.all_sprites_list.append(coin)
             self.coin_list.append(coin)
 
     def on_draw(self):
@@ -100,7 +99,7 @@ class MyGame(arcade.Window):
 
         # Draw all the sprites.
         self.coin_list.draw()
-        self.player_sprite.draw()
+        self.player_list.draw()
 
         # Render the text
         arcade.draw_text(f"Score: {self.score}", 10, 20, arcade.color.WHITE, 14)
@@ -115,9 +114,9 @@ class MyGame(arcade.Window):
     def update(self, delta_time):
         """ Movement and game logic """
 
-        # Call update on all sprites (The sprites don't do much in this
+        # Call update on the coin sprites (The sprites don't do much in this
         # example though.)
-        self.all_sprites_list.update()
+        self.coin_list.update()
 
         # Generate a list of all sprites that collided with the player.
         hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.coin_list)
