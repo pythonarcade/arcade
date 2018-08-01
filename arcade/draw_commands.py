@@ -21,7 +21,6 @@ from pyglet.gl import glu as glu
 from typing import List
 
 from arcade.window_commands import get_projection
-from arcade.window_commands import get_opengl_context
 from arcade.arcade_types import Color
 from arcade.arcade_types import PointList
 from arcade import shader
@@ -53,16 +52,16 @@ def get_four_byte_color(color: Color):
     if len(color) == 4:
         return color
     elif len(color) == 3:
-        return (color[0], color[1], color[2], 255)
+        return color[0], color[1], color[2], 255
     else:
         raise ValueError("This isn't a 3 or 4 byte color")
 
 
 def get_four_float_color(color: Color):
     if len(color) == 4:
-        return (color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255)
+        return color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255
     elif len(color) == 3:
-        return (color[0] / 255, color[1] / 255, color[2] / 255, 1.0)
+        return color[0] / 255, color[1] / 255, color[2] / 255, 1.0
     else:
         raise ValueError("This isn't a 3 or 4 byte color")
 
@@ -80,10 +79,8 @@ def rotate_point(x: float, y: float, cx: float, cy: float,
     temp_y = y - cy
 
     # now apply rotation
-    rotated_x = temp_x * math.cos(math.radians(angle)) - \
-                temp_y * math.sin(math.radians(angle))
-    rotated_y = temp_x * math.sin(math.radians(angle)) + \
-                temp_y * math.cos(math.radians(angle))
+    rotated_x = temp_x * math.cos(math.radians(angle)) - temp_y * math.sin(math.radians(angle))
+    rotated_y = temp_x * math.sin(math.radians(angle)) + temp_y * math.cos(math.radians(angle))
 
     # translate back
     rounding_precision = 2
@@ -936,8 +933,6 @@ def draw_lines(point_list: PointList,
     """
 
     _generic_draw_line_strip(point_list, color, line_width, gl.GL_LINES)
-
-
 
 
 # --- BEGIN POINT FUNCTIONS # # #
