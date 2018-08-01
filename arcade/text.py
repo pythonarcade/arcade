@@ -50,7 +50,7 @@ def draw_text(text: str,
     """
 
     scale_up = 10
-    scale_down = 10
+    scale_down = 8
 
     # If the cache gets too large, dump it and start over.
     if len(draw_text.cache) > 5000:
@@ -70,9 +70,38 @@ def draw_text(text: str,
         label = Text()
         # font = PIL.ImageFont.truetype(font_name + ".ttf", font_size)
 
-        font_name = "calibri.ttf"
+        font = None
+        if isinstance(font_name, str):
+            try:
+                font = PIL.ImageFont.truetype(font_name, int(font_size))
+            except:
+                pass
 
-        font = PIL.ImageFont.truetype(font_name, int(font_size))
+            if font is None:
+                try:
+                    font = PIL.ImageFont.truetype(font_name + ".ttf", int(font_size))
+                except:
+                    pass
+
+        if font is not None:
+            for font_string_name in font_name:
+                try:
+                    font = PIL.ImageFont.truetype(font_name, int(font_size))
+                except:
+                    pass
+
+                if font is None:
+                    try:
+                        font = PIL.ImageFont.truetype(font_name + ".ttf", int(font_size))
+                    except:
+                        pass
+
+                if font is not None:
+                    break
+
+        if font is None:
+            font_name = "arial.ttf"
+            font = PIL.ImageFont.truetype(font_name, int(font_size))
 
         image_size = font.getsize(text)
 
@@ -88,6 +117,7 @@ def draw_text(text: str,
         text_sprite.height = image.height
         text_sprite.center_x = start_x + text_sprite.width / 2
         text_sprite.center_y = start_y + text_sprite.height / 2
+        text_sprite.angle = rotation
         label.text_sprite_list = SpriteList2()
         label.text_sprite_list.append(text_sprite)
 
