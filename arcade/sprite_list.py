@@ -8,12 +8,9 @@ from typing import TypeVar
 from typing import Generic
 from typing import List
 
-import ctypes
-
 import pyglet.gl as gl
 
 import math
-import moderngl
 import numpy as np
 
 from PIL import Image
@@ -22,7 +19,6 @@ from arcade.sprite import Sprite
 from arcade.sprite import get_distance_between_sprites
 
 from arcade.draw_commands import rotate_point
-from arcade.window_commands import get_opengl_context
 from arcade.window_commands import get_projection
 from arcade import shader
 
@@ -67,76 +63,6 @@ void main() {
 """
 
 
-class OpenGLBuffer:
-    def __init__(self, type, data):
-        self.type = type
-        self.data = data
-        self.id = gl.GLuint()
-        gl.glGenBuffers(1, ctypes.pointer(self.id))
-        self.data_ptr = (gl.GLfloat * len(data))(*data)
-        gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self.id)
-        gl.glBufferData(gl.GL_ARRAY_BUFFER, ctypes.sizeof(self.data_ptr), self.data_ptr, gl.GL_STATIC_DRAW)
-
-    def bind(self):
-        pass
-
-    def unbind(self):
-        pass
-
-
-class VertexBuffer(OpenGLBuffer):
-    def __init__(self, data):
-        super().__init__(gl.GL_VERTEX_ARRAY, data)
-
-    def bind(self):
-        gl.glEnableClientState(self.type)
-        gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self.id)
-        gl.glVertexPointer(2, gl.GL_FLOAT, 0, 0)
-
-
-class ColorBuffer(OpenGLBuffer):
-    def __init__(self, data):
-        super().__init__(gl.GL_COLOR_ARRAY, data)
-
-    def bind(self):
-        gl.glEnableClientState(self.type)
-        gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self.id)
-        gl.glColorPointer(4, gl.GL_FLOAT, 0, 0)
-
-
-class TextureCoordBuffer(OpenGLBuffer):
-    def __init__(self, data):
-        super().__init__(gl.GL_TEXTURE_COORD_ARRAY, data)
-
-    def bind(self):
-        gl.glEnableClientState(self.type)
-        gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self.id)
-        gl.glTexCoordPointer(2, gl.GL_FLOAT, 0, 0)
-
-
-def _set_vbo(vbo_id: gl.GLuint, points: List[float]):
-    """
-    Given a vertex buffer id, this sets the vertexes to be
-    part of that buffer.
-    """
-
-    data2 = (gl.GLfloat * len(points))(*points)
-
-    gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vbo_id)
-    gl.glBufferData(gl.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2, gl.GL_STATIC_DRAW)
-
-
-def _create_vbo() -> gl.GLuint:
-    """
-    This creates a new vertex buffer id.
-    """
-    vbo_id = gl.GLuint()
-
-    gl.glGenBuffers(1, ctypes.pointer(vbo_id))
-
-    return vbo_id
-
-
 def _create_rects(rect_list: Iterable[Sprite]) -> List[float]:
     """
     Create a vertex buffer for a set of rectangles.
@@ -168,91 +94,6 @@ def _create_rects(rect_list: Iterable[Sprite]) -> List[float]:
     return v2f
 
 
-def _render_rect_filled(offset: int, texture_id: str,
-                        texture_coord_vbo: gl.GLuint, batch_count):
-    """
-    Render the rectangle at the right spot.
-    """
-    # Set color
-    # gl.glLoadIdentity()
-    # gl.glTranslatef(shape.center_x, shape.center_y, 0)
-
-    # if shape.angle != 0:
-    #     gl.glRotatef(shape.angle, 0, 0, 1)
-
-    gl.glBindTexture(gl.GL_TEXTURE_2D, texture_id)
-
-    gl.glTexCoordPointer(2, gl.GL_FLOAT, 0, texture_coord_vbo)
-    gl.glDrawArrays(gl.GL_QUADS, offset, batch_count)
-
-
-def _draw_rects(shape_list: List[Sprite], vertex_buffer: VertexBuffer,
-                texture_coord_buffer: TextureCoordBuffer,
-                color_buffer: ColorBuffer,
-                change_x: float, change_y: float):
-    """
-    Draw a set of rectangles using vertex buffers. This is more efficient
-    than drawing them individually.
-    """
-
-    if len(shape_list) == 0:
-        return
-
-    gl.glEnable(gl.GL_BLEND)
-    gl.glEnable(gl.GL_TEXTURE_2D)  # As soon as this happens, can't use drawing commands
-    gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-    gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_NEAREST)
-    gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_NEAREST)
-    gl.glHint(gl.GL_POLYGON_SMOOTH_HINT, gl.GL_NICEST)
-    gl.glHint(gl.GL_PERSPECTIVE_CORRECTION_HINT, gl.GL_NICEST)
-
-    vertex_buffer.bind()
-    color_buffer.bind()
-    texture_coord_buffer.bind()
-
-    gl.glLoadIdentity()
-    gl.glTranslatef(change_x, change_y, 0)
-
-    # Ideally, we want to draw these in "batches."
-    # We seek to find groups of squares with the same texture. Then draw
-    # them all at once.
-
-    last_texture_id = None
-    batch_count = 0
-    offset = 0
-    batch_offset = 0
-    texture_coord_vbo_id = None
-
-    for shape in shape_list:
-
-        if shape.texture.texture_id != last_texture_id:
-            # Ok, if the 'if' triggered above, we are now looking at a different
-            # texture than we looked at with the last loop. So draw the last
-            # "batch" of squares. We'll start a new batch with the current
-            # square but not draw it yet
-            if batch_count > 0:
-                _render_rect_filled(batch_offset,
-                                    last_texture_id,
-                                    texture_coord_vbo_id,
-                                    batch_count)
-
-            batch_count = 0
-            batch_offset = offset
-            last_texture_id = shape.texture.texture_id
-
-        batch_count += 4
-        offset += 4
-
-    # Draw the last batch, if it exists
-    _render_rect_filled(batch_offset,
-                        last_texture_id,
-                        texture_coord_vbo_id,
-                        batch_count)
-
-    # Must do this, or drawing commands won't work.
-    gl.glDisable(gl.GL_TEXTURE_2D)
-
-
 class SpatialHash:
     """
     Structure for fast collision checking.
@@ -277,7 +118,8 @@ class SpatialHash:
         min_y = new_object.bottom
         max_y = new_object.top
 
-        # print(f"New - Center: ({new_object.center_x}, {new_object.center_y}), Angle: {new_object.angle}, Left: {new_object.left}, Right {new_object.right}")
+        # print(f"New - Center: ({new_object.center_x}, {new_object.center_y}), Angle: {new_object.angle}, "
+        #       f"Left: {new_object.left}, Right {new_object.right}")
 
         min_point = (min_x, min_y)
         max_point = (max_x, max_y)
@@ -290,7 +132,6 @@ class SpatialHash:
         # print(f"Add 2: {min_point} {max_point}")
         # print("Add: ", min_point, max_point)
 
-
         # iterate over the rectangular region
         for i in range(min_point[0], max_point[0] + 1):
             for j in range(min_point[1], max_point[1] + 1):
@@ -301,7 +142,8 @@ class SpatialHash:
                     pass
                 else:
                     bucket.append(new_object)
-                    # print(f"Adding {new_object.guid} to ({i}, {j}) bucket. {new_object._position} {min_point} {max_point}")
+                    # print(f"Adding {new_object.guid} to ({i}, {j}) bucket. "
+                    #       f"{new_object._position} {min_point} {max_point}")
 
     def remove_object(self, sprite_to_delete: Sprite):
         """
@@ -313,7 +155,8 @@ class SpatialHash:
         min_y = sprite_to_delete.bottom
         max_y = sprite_to_delete.top
 
-        # print(f"Del - Center: ({sprite_to_delete.center_x}, {sprite_to_delete.center_y}), Angle: {sprite_to_delete.angle}, Left: {sprite_to_delete.left}, Right {sprite_to_delete.right}")
+        # print(f"Del - Center: ({sprite_to_delete.center_x}, {sprite_to_delete.center_y}), "
+        #       f"Angle: {sprite_to_delete.angle}, Left: {sprite_to_delete.left}, Right {sprite_to_delete.right}")
 
         min_point = (min_x, min_y)
         max_point = (max_x, max_y)
@@ -331,13 +174,13 @@ class SpatialHash:
             for j in range(min_point[1], max_point[1] + 1):
                 bucket = self.contents.setdefault((i, j), [])
                 try:
-                    # print("Before: ", self.contents.setdefault((i, j), []))
                     bucket.remove(sprite_to_delete)
-                    # print(f"Removing {sprite_to_delete.guid} from ({i}, {j}) bucket. {sprite_to_delete._position} {min_point} {max_point}")
-                    # print("After:", self.contents.setdefault((i, j), []))
+                    # print(f"Removing {sprite_to_delete.guid} from ({i}, {j}) bucket. {sprite_to_delete._position} "
+                    #       f"{min_point} {max_point}")
 
-                except:
-                    print(f"Warning, tried to remove item {sprite_to_delete.guid} from spatial hash {i} {j} when it wasn't there. {sprite_to_delete._position} {min_point} {max_point}")
+                except ValueError:
+                    print(f"Warning, tried to remove item {sprite_to_delete.guid} from spatial hash {i} {j} when "
+                          f"it wasn't there. {min_point} {max_point}")
 
     def get_objects_for_box(self, check_object: Sprite) -> List[Sprite]:
         """
@@ -373,198 +216,10 @@ T = TypeVar('T', bound=Sprite)
 
 
 class SpriteList(Generic[T]):
-    """
-    List of sprites.
-
-    :Unit Test:
-
-    >>> import arcade
-    >>> import random
-    >>> import os
-    >>> arcade.open_window(600,600,"Sprite Example")
-    >>> scale = 1
-    >>> meteor_list = arcade.SpriteList()
-    >>> filename = "arcade/examples/images/meteorGrey_big1.png"
-    >>> for i in range(100):
-    ...     meteor = arcade.Sprite(filename, scale)
-    ...     meteor.center_x = random.random() * 2 - 1
-    ...     meteor.center_y = random.random() * 2 - 1
-    ...     meteor_list.append(meteor)
-    >>> meteor_list.remove(meteor) # Remove last meteor, just to test
-    >>> m = meteor_list.pop() # Remove another meteor, just to test
-    >>> meteor_list.update() # Call update on all items
-    >>> print(len(meteor_list))
-    98
-    >>> arcade.set_background_color(arcade.color.WHITE)
-    >>> arcade.start_render()
-    >>> meteor_list.draw(fast=False)
-    >>> if 'APPVEYOR' not in os.environ or os.environ['APPVEYOR'] != 'TRUE':
-    ...     meteor_list.draw()
-    >>> meteor_list.move(0, -1)
-    >>> arcade.finish_render()
-    >>> for meteor in meteor_list:
-    ...     meteor.kill()
-    >>> arcade.quick_run(0.25)
-    """
-
-    def __init__(self, is_static=False, use_spatial_hash=True, spatial_hash_cell_size=128):
-        """
-        Initialize the sprite list
-        """
-        # List of sprites in the sprite list
-        self.sprite_list = []
-
-        # List of vertex buffers that go with the sprites
-        self.vertex_buffer = None
-        self.texture_coord_buffer = None
-
-        # List of texture coordinate buffers (map textures to coordinates)
-        # that go with this list.
-        # self.texture_coord_vbo_id = None
-        # Set to True if we add/remove items. This way we can regenerate
-        # the buffers.
-        self.vbo_dirty = True
-        self.change_x = 0
-        self.change_y = 0
-        self.is_static = is_static
-        self.sorted_by_x = None
-        self.sorted_by_y = None
-        self.spatial_hash = SpatialHash(cell_size=spatial_hash_cell_size)
-        self.use_spatial_hash = use_spatial_hash
-
-    def append(self, item: T):
-        """
-        Add a new sprite to the list.
-        """
-        self.sprite_list.append(item)
-        item.register_sprite_list(self)
-        self.vbo_dirty = True
-        if self.use_spatial_hash:
-            self.spatial_hash.insert_object_for_box(item)
-
-    def recalculate_spatial_hash(self, item: T):
-        if self.use_spatial_hash:
-            self.spatial_hash.remove_object(item)
-            self.spatial_hash.append_object(item)
-
-    def remove(self, item: T):
-        """
-        Remove a specific sprite from the list.
-        """
-        self.sprite_list.remove(item)
-        self.vbo_dirty = True
-        if self.use_spatial_hash:
-            self.spatial_hash.remove_object(item)
-
-    def update(self):
-        """
-        Call the update() method on each sprite in the list.
-        """
-        for sprite in self.sprite_list:
-            sprite.update()
-
-    def update_animation(self):
-        """
-        Call the update_animation() method on each sprite in the list.
-        """
-        for sprite in self.sprite_list:
-            sprite.update_animation()
-
-    def move(self, change_x: float, change_y: float):
-        """
-        Moves all contained Sprites.
-        """
-        for sprite in self.sprite_list:
-            sprite.center_x += change_x
-            sprite.center_y += change_y
-
-    def draw(self, fast: bool = True):
-        """
-        Call the draw() method on each sprite in the list.
-        """
-        # Run this if we are running 'fast' with vertex buffers
-        # and we haven't yet created vertex buffers.
-        if fast and self.vertex_buffer is None:
-            self.vbo_dirty = True
-
-        if not self.is_static:
-            # See if any of the sprites moved, and we need to regenerate the VBOs.
-            for sprite in self.sprite_list:
-                if sprite.center_x != sprite.last_center_x \
-                        or sprite.center_y != sprite.last_center_y \
-                        or sprite.angle != sprite.last_angle:
-                    self.vbo_dirty = True
-                    sprite.last_center_x = sprite.center_x
-                    sprite.last_center_y = sprite.center_y
-                    sprite.last_angle = sprite.angle
-
-        # Run this if we are running 'fast' and we added or
-        # removed sprites, and thus need to recreate our buffer
-        # objects.
-        if fast and self.vbo_dirty:
-            # self.sprite_list.sort()
-
-            # Set up vertices
-            rects = _create_rects(self.sprite_list)
-            self.vertex_buffer = VertexBuffer(rects)
-
-            # Set up coordinates for how the texture maps to the coordinates
-            # (Which is the same for each quad, but whatever.)
-            vbo_list = []
-            for sprite in self.sprite_list:
-                vbo_list.extend([0, 0,
-                                 sprite.repeat_count_x, 0,
-                                 sprite.repeat_count_x, sprite.repeat_count_y,
-                                 0, sprite.repeat_count_y])
-            self.texture_coord_buffer = TextureCoordBuffer(vbo_list)
-
-            color_list = []
-            # Loop for each sprite
-            for sprite in self.sprite_list:
-                # There are four corners for each sprite, so they all get a color
-                for i in range(4):
-                    color_list.extend([1.0, 1.0, 1.0, sprite.alpha])
-
-            self.color_buffer = ColorBuffer(color_list)
-
-            self.vbo_dirty = False
-            self.change_x = 0
-            self.change_y = 0
-
-        # If we run fast, use vertex buffers. Otherwise do it the
-        # super slow way.
-        if fast:
-            _draw_rects(self.sprite_list, self.vertex_buffer,
-                        self.texture_coord_buffer,
-                        self.color_buffer,
-                        self.change_x, self.change_y)
-        else:
-            for sprite in self.sprite_list:
-                sprite.draw()
-
-    def __len__(self) -> int:
-        """ Return the length of the sprite list. """
-        return len(self.sprite_list)
-
-    def __iter__(self) -> Iterable[T]:
-        """ Return an iterable object of sprites. """
-        return iter(self.sprite_list)
-
-    def __getitem__(self, i):
-        return self.sprite_list[i]
-
-    def pop(self) -> Sprite:
-        """
-        Pop off the last sprite in the list.
-        """
-        return self.sprite_list.pop()
-
-
-class SpriteList2(Generic[T]):
 
     next_texture_id = 0
 
-    def __init__(self, use_spatial_hash=True, spatial_hash_cell_size=128, is_static=False):
+    def __init__(self, use_spatial_hash=True, spatial_hash_cell_size=128):
         """
         Initialize the sprite list
         """
@@ -578,6 +233,7 @@ class SpriteList2(Generic[T]):
         self.texture_id = None
         self.texture = None
         self.vao = None
+        self.vbo_buf = None
 
         self.array_of_texture_names = []
         self.array_of_images = []
@@ -599,7 +255,7 @@ class SpriteList2(Generic[T]):
     def recalculate_spatial_hash(self, item: T):
         if self.use_spatial_hash:
             self.spatial_hash.remove_object(item)
-            self.spatial_hash.append_object(item)
+            self.spatial_hash.insert_object_for_box(item)
 
     def remove(self, item: T):
         """
@@ -712,9 +368,10 @@ class SpriteList2(Generic[T]):
             )
 
             if self.texture_id is None:
-                self.texture_id = SpriteList2.next_texture_id
+                self.texture_id = SpriteList.next_texture_id
 
-                # self.texture = get_opengl_context().texture((new_image.width, new_image.height), 4, np.asarray(new_image))
+                # self.texture = get_opengl_context().texture((new_image.width, new_image.height), 4,
+                #                                             np.asarray(new_image))
                 # self.texture_id = 100
 
                 # print(f"Using texture id: {self.texture_id}")
@@ -839,9 +496,6 @@ class SpriteList2(Generic[T]):
         """
         self.program = None
         return self.sprite_list.pop()
-
-
-SpriteList = SpriteList2
 
 
 def get_closest_sprite(sprite1: Sprite, sprite_list: SpriteList) -> (Sprite, float):

@@ -357,7 +357,7 @@ def load_texture(file_name: str, x: float=0, y: float=0,
         image = PIL.ImageOps.flip(image)
 
     image_width, image_height = image.size
-    image_bytes = image.convert("RGBA").tobytes("raw", "RGBA", 0, -1)
+    # image_bytes = image.convert("RGBA").tobytes("raw", "RGBA", 0, -1)
 
     texture = gl.GLuint(0)
     gl.glGenTextures(1, ctypes.byref(texture))
@@ -374,9 +374,9 @@ def load_texture(file_name: str, x: float=0, y: float=0,
                        gl.GL_LINEAR)
     gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER,
                        gl.GL_LINEAR_MIPMAP_LINEAR)
-    glu.gluBuild2DMipmaps(gl.GL_TEXTURE_2D, gl.GL_RGBA,
-                          image_width, image_height,
-                          gl.GL_RGBA, gl.GL_UNSIGNED_BYTE, image_bytes)
+    # glu.gluBuild2DMipmaps(gl.GL_TEXTURE_2D, gl.GL_RGBA,
+    #                       image_width, image_height,
+    #                       gl.GL_RGBA, gl.GL_UNSIGNED_BYTE, image_bytes)
 
     image_width *= scale
     image_height *= scale
@@ -458,40 +458,6 @@ def draw_arc_filled(center_x: float, center_y: float,
         point_list.append((point[0] + center_x, point[1] + center_y))
 
     _generic_draw_line_strip(point_list, color, 1, gl.GL_TRIANGLE_FAN)
-    """
-    gl.glEnable(gl.GL_BLEND)
-    gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-    gl.glEnable(gl.GL_LINE_SMOOTH)
-    gl.glHint(gl.GL_LINE_SMOOTH_HINT, gl.GL_NICEST)
-    gl.glHint(gl.GL_POLYGON_SMOOTH_HINT, gl.GL_NICEST)
-
-    gl.glLoadIdentity()
-    gl.glTranslatef(center_x, center_y, 0)
-    gl.glRotatef(tilt_angle, 0, 0, 1)
-
-    # Set color
-    if len(color) == 4:
-        gl.glColor4ub(color[0], color[1], color[2], color[3])
-    elif len(color) == 3:
-        gl.glColor4ub(color[0], color[1], color[2], 255)
-
-    gl.glBegin(gl.GL_TRIANGLE_FAN)
-
-    start_segment = int(start_angle / 360 * num_segments)
-    end_segment = int(end_angle / 360 * num_segments)
-    gl.glVertex3f(0, 0, 0.5)
-
-    for segment in range(start_segment, end_segment + 1):
-        theta = 2.0 * 3.1415926 * segment / num_segments
-
-        x = width * math.cos(theta)
-        y = height * math.sin(theta)
-
-        gl.glVertex3f(x, y, 0.5)
-
-    gl.glEnd()
-    gl.glLoadIdentity()
-    """
 
 
 def draw_arc_outline(center_x: float, center_y: float, width: float,
