@@ -6,6 +6,7 @@ IF "%~1"=="" GOTO printdoc
 IF "%~1"=="full" GOTO makefull
 IF "%~1"=="fast" GOTO makefast
 IF "%~1"=="doc" GOTO makedoc
+IF "%~1"=="spelling" GOTO spelling
 IF "%~1"=="deploy_pypi" GOTO deploy_pypi
 IF "%~1"=="deploy_docs" GOTO deploy_docs
 GOTO printdoc
@@ -27,7 +28,6 @@ pip uninstall -y arcade
 for /r %%i in (dist\*) do pip install "%%i"
 
 rem Build the documentation
-python doc/preprocess_files.py
 sphinx-build -b html doc doc/build/html
 
 rem Run tests and do code coverage
@@ -41,10 +41,19 @@ rem -- Make the documentation
 :makedoc
 
 rmdir /s /q "doc\build"
-python doc/preprocess_files.py
 sphinx-build -n -b html doc doc/build/html
 
 GOTO end
+
+rem -- Make the documentation
+
+:spelling
+
+rmdir /s /q "doc\build"
+sphinx-build -n -b spelling doc doc/build/html
+
+GOTO end
+
 
 rem == This does a fast build and install, but no unit tests
 

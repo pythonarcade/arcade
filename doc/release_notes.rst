@@ -5,6 +5,38 @@
 Release Notes
 =============
 
+Version 1.3.4
+-------------
+
+Released 28-May-2018
+
+New Features
+~~~~~~~~~~~~
+
+* `Issue 197 <https://github.com/pvcraven/arcade/issues/197>`_: Add new set of color names that match CSS color names
+* `Issue 203 <https://github.com/pvcraven/arcade/issues/203>`_: Add on_update as alternative to update
+* Add ability to read .tmx files.
+
+Bug Fixes
+~~~~~~~~~
+
+* `Issue 159 <https://github.com/pvcraven/arcade/issues/159>`_: Fix array backed grid buffer example
+* `Issue 177 <https://github.com/pvcraven/arcade/issues/177>`_: Kind of fix issue with gi sound library
+* `Issue 180 <https://github.com/pvcraven/arcade/issues/180>`_: Fix up API docs with sound
+* `Issue 198 <https://github.com/pvcraven/arcade/issues/198>`_: Add start of isometric tile support
+* `Issue 210 <https://github.com/pvcraven/arcade/issues/210>`_: Fix bug in MacOS sound handling
+* `Issue 213 <https://github.com/pvcraven/arcade/issues/213>`_: Update code with gi streamer
+* `Issue 214 <https://github.com/pvcraven/arcade/issues/214>`_: Fix issue with missing images in animated sprites
+* `Issue 216 <https://github.com/pvcraven/arcade/issues/216>`_: Fix bug with venv
+* `Issue 222 <https://github.com/pvcraven/arcade/issues/222>`_: Fix get_window when using a Window class
+
+Documentation
+~~~~~~~~~~~~~
+
+* `Issue 217 <https://github.com/pvcraven/arcade/issues/217>`_: Fix typo in doc string
+* `Issue 198 <https://github.com/pvcraven/arcade/issues/198>`_: Add example showing start of isometric tile support
+
+
 Version 1.3.3
 -------------
 
@@ -148,7 +180,7 @@ Enhancements
 * `Issue 149 <https://github.com/pvcraven/arcade/issues/149>`_: Need better error message with check_for_collision
 * `Issue 151 <https://github.com/pvcraven/arcade/issues/151>`_: Need example showing how to go between rooms
 * `Issue 152 <https://github.com/pvcraven/arcade/issues/152>`_: Standardize name of main class in examples
-* `Issue 154 <https://github.com/pvcraven/arcade/issues/154>`_: Improve GitHub compatiblity
+* `Issue 154 <https://github.com/pvcraven/arcade/issues/154>`_: Improve GitHub compatibility
 * `Issue 155 <https://github.com/pvcraven/arcade/issues/155>`_: Improve readme documentation
 * `Issue 156 <https://github.com/pvcraven/arcade/issues/156>`_: Clean up root folder
 * `Issue 162 <https://github.com/pvcraven/arcade/issues/162>`_: Add documentation with performance tips

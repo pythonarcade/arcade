@@ -40,6 +40,11 @@ Drawing
 
    :ref:`array_backed_grid`
 
+.. figure:: thumbs/array_backed_grid.png
+   :figwidth: 170px
+
+   :ref:`array_backed_grid_buffered`
+
 
 Animation
 ---------
@@ -200,7 +205,7 @@ Sprite Movement
 Levels
 ^^^^^^
 
-.. figure:: thumbs/sprite_collect_coins_diff_levels.png
+.. figure:: thumbs/sprite_collect_coins_diff_levels.gif
    :figwidth: 170px
 
    :ref:`example-sprite-collect-coins-diff-levels`
@@ -264,7 +269,7 @@ Platformers
 
    :ref:`sprite_move_scrolling`
 
-.. figure:: thumbs/sprite_move_animation.png
+.. figure:: thumbs/sprite_move_animation.gif
    :figwidth: 170px
 
    :ref:`sprite_move_animation`
@@ -338,6 +343,15 @@ PyMunk
    :figwidth: 170px
 
    :ref:`pymunk_platformer`
+
+
+Isometric Examples
+------------------
+
+.. figure:: thumbs/isometric_example.png
+   :figwidth: 170px
+
+   :ref:`isometric_example`
 
 
 ShapeElementLists

@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 
-BUILD = 0
-VERSION = "1.3.4"
-RELEASE = VERSION
-
 from os import path
 import sys
 from setuptools import setup
+
+BUILD = 0
+VERSION = "1.3.4"
+RELEASE = VERSION
 
 if __name__ == "__main__":
 
@@ -31,8 +31,8 @@ if __name__ == "__main__":
           url="http://arcade.academy",
           download_url="http://arcade.academy",
           install_requires=[
-          'pyglet',
-          'pillow'
+            'pyglet',
+            'pillow'
           ],
           packages=["arcade",
                     "arcade.key",
@@ -52,7 +52,14 @@ if __name__ == "__main__":
               "Topic :: Software Development :: Libraries :: Python Modules",
               ],
           test_suite="tests",
-          package_data={'arcade': ['examples/images/*.png', 'examples/images/*.jpg', 'examples/sounds/*']},
+          package_data={'arcade': ['examples/images/*.png',
+                                   'examples/images/character_sprites/*.png',
+                                   'examples/images/explosion/*.png',
+                                   'examples/images/isometric_dungeon/*.png',
+                                   'examples/images/*.jpg',
+                                   'examples/*.csv',
+                                   'examples/*.tmx',
+                                   'examples/sounds/*']},
           data_files=[("lib/site-packages/arcade/Win32", ["Win32/avbin.dll"]),
                       ("lib/site-packages/arcade/Win64", ["Win64/avbin.dll"]),
                       ("lib/python3.6/site-packages/lib/site-packages/arcade/lib", ["lib/libavbin.10.dylib"])]

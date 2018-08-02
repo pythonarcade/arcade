@@ -1,3 +1,8 @@
+"""
+This module provides functionality to manage Sprites.
+
+"""
+
 from typing import Iterable
 from typing import TypeVar
 from typing import Generic
@@ -10,6 +15,53 @@ import pyglet.gl as gl
 from arcade.sprite import Sprite
 from arcade.sprite import get_distance_between_sprites
 from arcade.draw_commands import rotate_point
+
+
+class OpenGLBuffer:
+    def __init__(self, type, data):
+        self.type = type
+        self.data = data
+        self.id = gl.GLuint()
+        gl.glGenBuffers(1, ctypes.pointer(self.id))
+        self.data_ptr = (gl.GLfloat * len(data))(*data)
+        gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self.id)
+        gl.glBufferData(gl.GL_ARRAY_BUFFER, ctypes.sizeof(self.data_ptr), self.data_ptr, gl.GL_STATIC_DRAW)
+
+    def bind(self):
+        pass
+
+    def unbind(self):
+        pass
+
+
+class VertexBuffer(OpenGLBuffer):
+    def __init__(self, data):
+        super().__init__(gl.GL_VERTEX_ARRAY, data)
+
+    def bind(self):
+        gl.glEnableClientState(self.type)
+        gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self.id)
+        gl.glVertexPointer(2, gl.GL_FLOAT, 0, 0)
+
+
+class ColorBuffer(OpenGLBuffer):
+    def __init__(self, data):
+        super().__init__(gl.GL_COLOR_ARRAY, data)
+
+    def bind(self):
+        gl.glEnableClientState(self.type)
+        gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self.id)
+        gl.glColorPointer(4, gl.GL_FLOAT, 0, 0)
+
+
+class TextureCoordBuffer(OpenGLBuffer):
+    def __init__(self, data):
+        super().__init__(gl.GL_TEXTURE_COORD_ARRAY, data)
+
+    def bind(self):
+        gl.glEnableClientState(self.type)
+        gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self.id)
+        gl.glTexCoordPointer(2, gl.GL_FLOAT, 0, 0)
 
 
 def _set_vbo(vbo_id: gl.GLuint, points: List[float]):
@@ -42,10 +94,6 @@ def _create_rects(rect_list: Iterable[Sprite]) -> List[float]:
 
     v2f = []
     for shape in rect_list:
-        # v2f.extend([-shape.width / 2, -shape.height / 2,
-        #            shape.width / 2, -shape.height / 2,
-        #            shape.width / 2, shape.height / 2,
-        #            -shape.width / 2, shape.height / 2])
         x1 = -shape.width / 2 + shape.center_x
         x2 = shape.width / 2 + shape.center_x
         y1 = -shape.height / 2 + shape.center_y
@@ -88,8 +136,10 @@ def _render_rect_filled(offset: int, texture_id: str,
     gl.glDrawArrays(gl.GL_QUADS, offset, batch_count)
 
 
-def _draw_rects(shape_list: List[Sprite], vertex_vbo_id: gl.GLuint,
-                texture_coord_vbo_id: gl.GLuint, change_x: float, change_y: float):
+def _draw_rects(shape_list: List[Sprite], vertex_buffer: VertexBuffer,
+                texture_coord_buffer: TextureCoordBuffer,
+                color_buffer: ColorBuffer,
+                change_x: float, change_y: float):
     """
     Draw a set of rectangles using vertex buffers. This is more efficient
     than drawing them individually.
@@ -99,31 +149,18 @@ def _draw_rects(shape_list: List[Sprite], vertex_vbo_id: gl.GLuint,
         return
 
     gl.glEnable(gl.GL_BLEND)
-    gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
     gl.glEnable(gl.GL_TEXTURE_2D)  # As soon as this happens, can't use drawing commands
-    # gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_S, gl.GL_CLAMP_TO_EDGE)
-    # gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_T, gl.GL_CLAMP_TO_EDGE)
+    gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
     gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_NEAREST)
     gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_NEAREST)
     gl.glHint(gl.GL_POLYGON_SMOOTH_HINT, gl.GL_NICEST)
     gl.glHint(gl.GL_PERSPECTIVE_CORRECTION_HINT, gl.GL_NICEST)
 
-    # gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
-    # gl.glMatrixMode(gl.GL_MODELVIEW)
-    # gl.glDisable(gl.GL_BLEND)
+    vertex_buffer.bind()
+    color_buffer.bind()
+    texture_coord_buffer.bind()
 
-    gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vertex_vbo_id)
-    gl.glEnableClientState(gl.GL_TEXTURE_COORD_ARRAY)
-    gl.glEnableClientState(gl.GL_VERTEX_ARRAY)
-    gl.glVertexPointer(2, gl.GL_FLOAT, 0, 0)
-
-    gl.glBindBuffer(gl.GL_ARRAY_BUFFER, texture_coord_vbo_id)
-
-    last_alpha = shape_list[0].alpha
-    gl.glColor4f(1, 1, 1, last_alpha)
     gl.glLoadIdentity()
-
-    # gl.glLoadIdentity()
     gl.glTranslatef(change_x, change_y, 0)
 
     # Ideally, we want to draw these in "batches."
@@ -131,7 +168,6 @@ def _draw_rects(shape_list: List[Sprite], vertex_vbo_id: gl.GLuint,
     # them all at once.
 
     last_texture_id = None
-    last_alpha = 1
     batch_count = 0
     offset = 0
     batch_offset = 0
@@ -139,13 +175,12 @@ def _draw_rects(shape_list: List[Sprite], vertex_vbo_id: gl.GLuint,
 
     for shape in shape_list:
 
-        if shape.texture.texture_id != last_texture_id or shape.alpha != last_alpha:
+        if shape.texture.texture_id != last_texture_id:
             # Ok, if the 'if' triggered above, we are now looking at a different
             # texture than we looked at with the last loop. So draw the last
             # "batch" of squares. We'll start a new batch with the current
             # square but not draw it yet
             if batch_count > 0:
-                gl.glColor4f(1, 1, 1, last_alpha)
                 _render_rect_filled(batch_offset,
                                     last_texture_id,
                                     texture_coord_vbo_id,
@@ -154,7 +189,6 @@ def _draw_rects(shape_list: List[Sprite], vertex_vbo_id: gl.GLuint,
             batch_count = 0
             batch_offset = offset
             last_texture_id = shape.texture.texture_id
-            last_alpha = shape.alpha
 
         batch_count += 4
         offset += 4
@@ -165,11 +199,13 @@ def _draw_rects(shape_list: List[Sprite], vertex_vbo_id: gl.GLuint,
                         texture_coord_vbo_id,
                         batch_count)
 
+    # Must do this, or drawing commands won't work.
     gl.glDisable(gl.GL_TEXTURE_2D)
-
 
 class SpatialHash:
     """
+    Structure for fast collision checking.
+
     See: https://www.gamedev.net/articles/programming/general-and-gameplay-programming/spatial-hashing-r2697/
     """
 
@@ -181,6 +217,9 @@ class SpatialHash:
         return int(point[0] / self.cell_size), int(point[1] / self.cell_size)
 
     def insert_object_for_box(self, new_object: Sprite):
+        """
+        Insert a sprite.
+        """
         # Get the corners
         min_x = new_object.left
         max_x = new_object.right
@@ -202,6 +241,9 @@ class SpatialHash:
                 self.contents.setdefault((i, j), []).append(new_object)
 
     def remove_object(self, new_object: Sprite):
+        """
+        Remove a Sprite.
+        """
         # Get the corners
         min_x = new_object.left
         max_x = new_object.right
@@ -224,7 +266,10 @@ class SpatialHash:
                 except:
                     print("Warning, tried to remove item from spatial hash that wasn't there.")
 
-    def get_objects_for_box(self, check_object: Sprite):
+    def get_objects_for_box(self, check_object: Sprite) -> List[Sprite]:
+        """
+        Returns colliding Sprites.
+        """
         # Get the corners
         min_x = check_object.left
         max_x = check_object.right
@@ -291,11 +336,14 @@ class SpriteList(Generic[T]):
         """
         # List of sprites in the sprite list
         self.sprite_list = []
+
         # List of vertex buffers that go with the sprites
-        self.vertex_vbo_id = None
-        # List of texture coordinate buffers (map textures to coordinages)
+        self.vertex_buffer = None
+        self.texture_coord_buffer = None
+
+        # List of texture coordinate buffers (map textures to coordinates)
         # that go with this list.
-        self.texture_coord_vbo_id = None
+        # self.texture_coord_vbo_id = None
         # Set to True if we add/remove items. This way we can regenerate
         # the buffers.
         self.vbo_dirty = True
@@ -314,6 +362,8 @@ class SpriteList(Generic[T]):
         self.sprite_list.append(item)
         item.register_sprite_list(self)
         self.vbo_dirty = True
+        if self.use_spatial_hash:
+            self.spatial_hash.insert_object_for_box(item)
 
     def recalculate_spatial_hash(self, item: T):
         if self.use_spatial_hash:
@@ -344,11 +394,12 @@ class SpriteList(Generic[T]):
             sprite.update_animation()
 
     def move(self, change_x: float, change_y: float):
+        """
+        Moves all contained Sprites.
+        """
         for sprite in self.sprite_list:
             sprite.center_x += change_x
-            sprite.last_center_x += change_x
             sprite.center_y += change_y
-            sprite.last_center_y += change_y
 
     def draw(self, fast: bool = True):
         """
@@ -356,11 +407,8 @@ class SpriteList(Generic[T]):
         """
         # Run this if we are running 'fast' with vertex buffers
         # and we haven't yet created vertex buffers.
-        if fast and self.vertex_vbo_id is None:
+        if fast and self.vertex_buffer is None:
             self.vbo_dirty = True
-            self.vertex_vbo_id = _create_vbo()
-            self.texture_coord_vbo_id = _create_vbo()
-            # print("Setup VBO")
 
         if not self.is_static:
             # See if any of the sprites moved, and we need to regenerate the VBOs.
@@ -378,15 +426,30 @@ class SpriteList(Generic[T]):
         # objects.
         if fast and self.vbo_dirty:
             # self.sprite_list.sort()
+
+            # Set up vertices
             rects = _create_rects(self.sprite_list)
-            _set_vbo(self.vertex_vbo_id, rects)
+            self.vertex_buffer = VertexBuffer(rects)
+
+            # Set up coordinates for how the texture maps to the coordinates
+            # (Which is the same for each quad, but whatever.)
             vbo_list = []
             for sprite in self.sprite_list:
                 vbo_list.extend([0, 0,
                                  sprite.repeat_count_x, 0,
                                  sprite.repeat_count_x, sprite.repeat_count_y,
                                  0, sprite.repeat_count_y])
-            _set_vbo(self.texture_coord_vbo_id, vbo_list)
+            self.texture_coord_buffer = TextureCoordBuffer(vbo_list)
+
+            color_list = []
+            # Loop for each sprite
+            for sprite in self.sprite_list:
+                # There are four corners for each sprite, so they all get a color
+                for i in range(4):
+                    color_list.extend([1.0, 1.0, 1.0, sprite.alpha])
+
+            self.color_buffer = ColorBuffer(color_list)
+
             self.vbo_dirty = False
             self.change_x = 0
             self.change_y = 0
@@ -394,8 +457,10 @@ class SpriteList(Generic[T]):
         # If we run fast, use vertex buffers. Otherwise do it the
         # super slow way.
         if fast:
-            _draw_rects(self.sprite_list, self.vertex_vbo_id,
-                        self.texture_coord_vbo_id, self.change_x, self.change_y)
+            _draw_rects(self.sprite_list, self.vertex_buffer,
+                        self.texture_coord_buffer,
+                        self.color_buffer,
+                        self.change_x, self.change_y)
         else:
             for sprite in self.sprite_list:
                 sprite.draw()

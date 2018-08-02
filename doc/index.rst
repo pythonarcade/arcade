@@ -1,10 +1,6 @@
 The Python Arcade Library
 =========================
 
-Follow along with the `PyCon 2018 presentation <https://us.pycon.org/2018/schedule/presentation/100/>`_ on Arcade:
-
-https://slides.com/paulcraven/pycon_2018/live
-
 .. raw:: html
 
     <table style="width:100%;">
@@ -42,9 +38,12 @@ https://slides.com/paulcraven/pycon_2018/live
         </td>
         <td>
           <img style="width:78px;" src="_static/weixin-logo.svg"><br/>
-          <h2><a href="pygame_comparison.html">Pygame Comparison</a></h2>
+          <h2>More Info</h2>
           <ul>
+            <li><a href="diversity.html">Diversity</a></li>
+            <li><a href="pygame_comparison.html">Pygame Comparison</a></li>
             <li><a href="performance_tips.html">Performance Tips</a></li>
+            <li><a href="https://youtu.be/DAWHMHMPVHU">PyCon 2018 Talk</a></li>
             <li><a href="https://www.reddit.com/r/pythonarcade/">Reddit /r/pythonarcade</a></li>
           </ul>
         </td>
@@ -53,6 +52,9 @@ https://slides.com/paulcraven/pycon_2018/live
         <td>
           <img style="width:78px;" src="_static/sample_games.svg"><br/>
           <h2><a href="sample_games.html">Example Games</a></h2>
+          <ul>
+            <li><a href="examples/pyinstaller.html">Distributing games with PyInstaller</a></li>
+          </ul>
         </td>
         <td>
           <img style="width:78px;" src="_static/code.svg"><br/>
@@ -126,6 +128,15 @@ API Documentation
    quick_index
    performance_tips
 
+Distribution
+------------
+
+.. toctree::
+   :maxdepth: 4
+
+   distribute_macos
+
+
 How to Contribute
 -----------------
 
@@ -136,6 +147,7 @@ How to Contribute
    directory_structure
    how_to_compile
    how_to_submit_changes
+   diversity
 
 More Information
 ----------------

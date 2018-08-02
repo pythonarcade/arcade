@@ -164,8 +164,6 @@ def check_for_collision_with_list(sprite1: Sprite,
     else:
         sprite_list_to_check = sprite_list
 
-    sprite_list_to_check = sprite_list
-
     collision_list = []
     for sprite2 in sprite_list_to_check:
         if sprite1 is not sprite2:

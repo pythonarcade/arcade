@@ -16,11 +16,12 @@ before_script:
 
 install:
   - pip install -r requirements.txt
+  - pip install -r dev_requirements.txt
 
 script:
-  - python doc/preprocess_files.py
   - sphinx-build -b html doc doc/build/html
-  - coverage run --omit=arcade/examples/* --source=arcade setup.py test
+  - pytest --cov=arcade -m 'not not_ci' tests # Can't yet run these together
+  - pytest --cov=arcade -m 'not not_ci' arcade
 
 # deploy:
 #   provider: pypi
