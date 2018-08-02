@@ -58,7 +58,7 @@ def draw_text(text: str,
 
     font_size *= scale_up
 
-    key = f"{text}{color}{font_size}{width}{align}{font_name}{bold}{italic}"
+    key = f"{text}{color}{font_size}{width}{align}{font_name}{bold}{italic}{rotation}"
     if key in draw_text.cache:
         label = draw_text.cache[key]
         text_sprite = label.text_sprite_list[0]
