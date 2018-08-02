@@ -11,8 +11,8 @@ from arcade.sprite_list import SpriteList2
 
 class Text:
     def __init__(self):
-        size = (0, 0)
-        text_sprite_list = None
+        self.size = (0, 0)
+        self.text_sprite_list = None
 
 
 def draw_text(text: str,
@@ -26,7 +26,7 @@ def draw_text(text: str,
               italic: bool=False,
               anchor_x="left",
               anchor_y="baseline",
-              rotation=0
+              rotation: float=0
               ):
     """
 
