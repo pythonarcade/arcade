@@ -19,7 +19,7 @@ def draw_text(text: str,
               start_x: float, start_y: float,
               color: Color,
               font_size: float=12,
-              width: int=2000,
+              width: int=0,
               align="left",
               font_name=('Calibri', 'Arial'),
               bold: bool=False,
@@ -104,11 +104,18 @@ def draw_text(text: str,
             font = PIL.ImageFont.truetype(font_name, int(font_size))
 
         image_size = font.getsize(text)
+        height = image_size[1]
+        start_x = 0
+        if width == 0:
+            start_x = (width - image_size[0]) // 2
+            width = image_size[0] * scale_up
+        else:
+            width *= scale_up
 
         image = PIL.Image.new("RGBA", image_size)
         draw = PIL.ImageDraw.Draw(image)
-        draw.text((0, 0), text, color, font=font)
-        image = image.resize((image_size[0] // scale_down, image_size[1] // scale_down), resample=PIL.Image.LANCZOS)
+        draw.text((start_x, 0), text, color, font=font)
+        image = image.resize((width // scale_down, height // scale_down), resample=PIL.Image.LANCZOS)
 
         text_sprite = Sprite()
         text_sprite.image = image
