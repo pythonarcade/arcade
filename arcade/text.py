@@ -48,8 +48,9 @@ def draw_text(text: str,
     >>> arcade.quick_run(0.25)
     """
 
-    scale_up = 10
-    scale_down = 8
+    font_size *= 1.25
+    scale_up = 5
+    scale_down = 5
 
     # If the cache gets too large, dump it and start over.
     if len(draw_text.cache) > 5000:
@@ -102,23 +103,26 @@ def draw_text(text: str,
             font_name = "arial.ttf"
             font = PIL.ImageFont.truetype(font_name, int(font_size))
 
-        image_size = font.getsize(text)
-        height = image_size[1]
+        text_image_size = font.getsize(text)
+        text_height = text_image_size[1]
+        text_width = text_image_size[0]
         start_x = 0
-        width = image_size[0]
 
-        # if width != 0:
-        #     if align == "center":
-        #         start_x = (width - image_size[0]) // 2
-        #     else:
-        #         start_x = 0
-        #
-        #     width *= scale_up
+        if width == 0:
+            width = text_image_size[0]
+        else:
+            if align == "center":
+                field_width = width * scale_up
+                text_image_size = field_width, text_height
+                start_x = (field_width - text_width) // 2
+                width = field_width
+            else:
+                start_x = 0
 
-        image = PIL.Image.new("RGBA", image_size)
+        image = PIL.Image.new("RGBA", text_image_size)
         draw = PIL.ImageDraw.Draw(image)
         draw.text((start_x, 0), text, color, font=font)
-        image = image.resize((width // scale_down, height // scale_down), resample=PIL.Image.LANCZOS)
+        image = image.resize((width // scale_down, text_height // scale_down), resample=PIL.Image.LANCZOS)
 
         text_sprite = Sprite()
         text_sprite.image = image
