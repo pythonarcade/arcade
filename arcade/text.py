@@ -48,15 +48,19 @@ def draw_text(text: str,
     >>> arcade.quick_run(0.25)
     """
 
+    # Scale the font up, so it matches with the sizes of the old code back
+    # when pyglet drew the text.
     font_size *= 1.25
+
+    # Text isn't anti-aliased, so we'll draw big, and then shrink
     scale_up = 5
     scale_down = 5
+
+    font_size *= scale_up
 
     # If the cache gets too large, dump it and start over.
     if len(draw_text.cache) > 5000:
         draw_text.cache = {}
-
-    font_size *= scale_up
 
     key = f"{text}{color}{font_size}{width}{align}{font_name}{bold}{italic}{rotation}"
     if key in draw_text.cache:
@@ -68,9 +72,11 @@ def draw_text(text: str,
     else:
 
         label = Text()
-        # font = PIL.ImageFont.truetype(font_name + ".ttf", font_size)
 
+        # Figure out the font to use
         font = None
+
+        # Font was specified with a string
         if isinstance(font_name, str):
             try:
                 font = PIL.ImageFont.truetype(font_name, int(font_size))
@@ -83,6 +89,7 @@ def draw_text(text: str,
                 except:
                     pass
 
+        # We were instead given a list of font names, in order of preference
         if font is not None:
             for font_string_name in font_name:
                 try:
@@ -99,19 +106,34 @@ def draw_text(text: str,
                 if font is not None:
                     break
 
+        # Default font if no font
         if font is None:
             font_name = "arial.ttf"
             font = PIL.ImageFont.truetype(font_name, int(font_size))
 
-        text_image_size = font.getsize(text)
+        # This is stupid. We have to have an image to figure out what size
+        # the text will be when we draw it. Of course, we don't know how big
+        # to make the image. Catch-22. So we just make a small image we'll trash
+        text_image_size = (10, 10)
+        image = PIL.Image.new("RGBA", text_image_size)
+        draw = PIL.ImageDraw.Draw(image)
+
+        # Get size the text will be
+        text_image_size = draw.multiline_textsize(text, font=font)
+
+        # Create image of proper size
         text_height = text_image_size[1]
         text_width = text_image_size[0]
-        start_x = 0
+        print(f"Width/height: {text_width}, {text_height}")
 
+
+        start_x = 0
         if width == 0:
             width = text_image_size[0]
         else:
+            # Wait! We were given a field width.
             if align == "center":
+                # Center text on given field width
                 field_width = width * scale_up
                 text_image_size = field_width, text_height
                 start_x = (field_width - text_width) // 2
@@ -119,9 +141,14 @@ def draw_text(text: str,
             else:
                 start_x = 0
 
+        # If we draw a y at 0, then the text is drawn with a baseline of 0,
+        # cutting off letters that drop below the baseline. This shoves it
+        # up a bit.
+        start_y = - font_size * scale_up * 0.03
+        print("Creating image", text_image_size)
         image = PIL.Image.new("RGBA", text_image_size)
         draw = PIL.ImageDraw.Draw(image)
-        draw.text((start_x, 0), text, color, font=font)
+        draw.multiline_text((start_x, start_y), text, color, align=align, font=font)
         image = image.resize((width // scale_down, text_height // scale_down), resample=PIL.Image.LANCZOS)
 
         text_sprite = Sprite()
