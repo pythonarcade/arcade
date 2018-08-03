@@ -27,6 +27,7 @@ def draw_text(text: str,
               anchor_y="baseline",
               rotation: float=0
               ):
+
     """
 
     Args:
@@ -62,15 +63,33 @@ def draw_text(text: str,
     if len(draw_text.cache) > 5000:
         draw_text.cache = {}
 
-    key = f"{text}{color}{font_size}{width}{align}{font_name}{bold}{italic}{rotation}"
+    key = f"{text}{color}{font_size}{width}{align}{font_name}{bold}{italic}"
     if key in draw_text.cache:
         label = draw_text.cache[key]
         text_sprite = label.text_sprite_list[0]
-        text_sprite.center_x = start_x + text_sprite.width / 2
-        text_sprite.center_y = start_y + text_sprite.height / 2
+
+        if anchor_x == "left":
+            text_sprite.center_x = start_x + text_sprite.width / 2
+        elif anchor_x == "center":
+            text_sprite.center_x = start_x
+        elif anchor_x == "right":
+            text_sprite.right = start_x
+        else:
+            raise ValueError(f"anchor_x should be 'left', 'center', or 'right'. Not '{anchor_x}'")
+
+        if anchor_y == "top":
+            text_sprite.center_y = start_y - text_sprite.height / 2
+        elif anchor_y == "center":
+            text_sprite.center_y = start_y
+        elif anchor_y == "bottom" or anchor_y == "baseline":
+            text_sprite.bottom = start_y
+        else:
+            raise ValueError(f"anchor_x should be 'left', 'center', or 'right'. Not '{anchor_y}'")
+
+        text_sprite.angle = rotation
+
         label.text_sprite_list.update_positions()
     else:
-
         label = Text()
 
         # Figure out the font to use
@@ -80,27 +99,27 @@ def draw_text(text: str,
         if isinstance(font_name, str):
             try:
                 font = PIL.ImageFont.truetype(font_name, int(font_size))
-            except:
+            except OSError:
                 pass
 
             if font is None:
                 try:
                     font = PIL.ImageFont.truetype(font_name + ".ttf", int(font_size))
-                except:
+                except OSError:
                     pass
 
         # We were instead given a list of font names, in order of preference
         if font is not None:
             for font_string_name in font_name:
                 try:
-                    font = PIL.ImageFont.truetype(font_name, int(font_size))
-                except:
+                    font = PIL.ImageFont.truetype(font_string_name, int(font_size))
+                except OSError:
                     pass
 
                 if font is None:
                     try:
-                        font = PIL.ImageFont.truetype(font_name + ".ttf", int(font_size))
-                    except:
+                        font = PIL.ImageFont.truetype(font_string_name + ".ttf", int(font_size))
+                    except OSError:
                         pass
 
                 if font is not None:
@@ -124,10 +143,8 @@ def draw_text(text: str,
         # Create image of proper size
         text_height = text_image_size[1]
         text_width = text_image_size[0]
-        print(f"Width/height: {text_width}, {text_height}")
 
-
-        start_x = 0
+        image_start_x = 0
         if width == 0:
             width = text_image_size[0]
         else:
@@ -136,19 +153,18 @@ def draw_text(text: str,
                 # Center text on given field width
                 field_width = width * scale_up
                 text_image_size = field_width, text_height
-                start_x = (field_width - text_width) // 2
+                image_start_x = (field_width - text_width) // 2
                 width = field_width
             else:
-                start_x = 0
+                image_start_x = 0
 
         # If we draw a y at 0, then the text is drawn with a baseline of 0,
         # cutting off letters that drop below the baseline. This shoves it
         # up a bit.
-        start_y = - font_size * scale_up * 0.03
-        print("Creating image", text_image_size)
+        image_start_y = - font_size * scale_up * 0.03
         image = PIL.Image.new("RGBA", text_image_size)
         draw = PIL.ImageDraw.Draw(image)
-        draw.multiline_text((start_x, start_y), text, color, align=align, font=font)
+        draw.multiline_text((image_start_x, image_start_y), text, color, align=align, font=font)
         image = image.resize((width // scale_down, text_height // scale_down), resample=PIL.Image.LANCZOS)
 
         text_sprite = Sprite()
@@ -156,8 +172,26 @@ def draw_text(text: str,
         text_sprite.texture_name = key
         text_sprite.width = image.width
         text_sprite.height = image.height
-        text_sprite.center_x = start_x + text_sprite.width / 2
-        text_sprite.center_y = start_y + text_sprite.height / 2
+
+        if anchor_x == "left":
+            text_sprite.center_x = start_x + text_sprite.width / 2
+        elif anchor_x == "center":
+            text_sprite.center_x = start_x
+        elif anchor_x == "right":
+            text_sprite.right = start_x
+        else:
+            raise ValueError(f"anchor_x should be 'left', 'center', or 'right'. Not '{anchor_x}'")
+
+        if anchor_y == "top":
+            text_sprite.center_y = start_y + text_sprite.height / 2
+        elif anchor_y == "center":
+            text_sprite.center_y = start_y
+        elif anchor_y == "bottom" or anchor_y == "baseline":
+            text_sprite.bottom = start_y
+        else:
+            raise ValueError(f"anchor_x should be 'left', 'center', or 'right'. Not '{anchor_y}'")
+
+        text_sprite.angle = rotation
 
         from arcade.sprite_list import SpriteList
         label.text_sprite_list = SpriteList()
