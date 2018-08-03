@@ -376,8 +376,8 @@ class SpriteList(Generic[T]):
 
                 # print(f"Using texture id: {self.texture_id}")
 
-            # self.texture_id = SpriteList2.next_texture_id
-            # SpriteList2.next_texture_id += 1
+            # self.texture_id = SpriteList.next_texture_id
+            # SpriteList.next_texture_id += 1
             # new_image.save(f"temp_{self.texture_id}.png")
             # print(f"Save temp_{self.texture_id}.png")
 

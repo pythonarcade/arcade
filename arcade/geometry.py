@@ -156,7 +156,7 @@ def check_for_collision_with_list(sprite1: Sprite,
     """
     if not isinstance(sprite1, Sprite):
         raise TypeError("Parameter 1 is not an instance of the Sprite class.")
-    if not isinstance(sprite_list, SpriteList) and not isinstance(sprite_list, SpriteList2):
+    if not isinstance(sprite_list, SpriteList):
         raise TypeError(f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList.")
 
     if sprite_list.use_spatial_hash:

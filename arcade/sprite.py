@@ -487,15 +487,14 @@ arcade.Sprite("arcade/examples/images/playerShip1_orange.png", scale)
     def _set_angle(self, new_value: float):
         """ Set the angle of the sprite's rotation. """
         if new_value != self._angle:
-            from arcade.sprite_list import SpriteList2
+            from arcade.sprite_list import SpriteList
             self.clear_spatial_hashes()
             self._angle = new_value
             self._point_list_cache = None
             self.add_spatial_hashes()
 
             for sprite_list in self.sprite_lists:
-                if isinstance(sprite_list, SpriteList2):
-                    sprite_list.update_position(self)
+                sprite_list.update_position(self)
 
     angle = property(_get_angle, _set_angle)
 
