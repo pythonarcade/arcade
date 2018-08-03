@@ -4,7 +4,6 @@ Functions for calculating geometry.
 
 from arcade.sprite import Sprite
 from arcade.sprite_list import SpriteList
-from arcade.sprite_list import SpriteList2
 from typing import List
 from arcade.arcade_types import PointList
 

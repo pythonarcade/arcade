@@ -431,15 +431,14 @@ arcade.Sprite("arcade/examples/images/playerShip1_orange.png", scale)
     def _set_center_x(self, new_value: float):
         """ Set the center x coordinate of the sprite. """
         if new_value != self._position[0]:
-            from arcade.sprite_list import SpriteList2
+            from arcade.sprite_list import SpriteList
             self.clear_spatial_hashes()
             self._point_list_cache = None
             self._position[0] = new_value
             self.add_spatial_hashes()
 
             for sprite_list in self.sprite_lists:
-                if isinstance(sprite_list, SpriteList2):
-                    sprite_list.update_position(self)
+                sprite_list.update_position(self)
 
 
     center_x = property(_get_center_x, _set_center_x)
@@ -451,15 +450,13 @@ arcade.Sprite("arcade/examples/images/playerShip1_orange.png", scale)
     def _set_center_y(self, new_value: float):
         """ Set the center y coordinate of the sprite. """
         if new_value != self._position[1]:
-            from arcade.sprite_list import SpriteList2
             self.clear_spatial_hashes()
             self._point_list_cache = None
             self._position[1] = new_value
             self.add_spatial_hashes()
 
             for sprite_list in self.sprite_lists:
-                if isinstance(sprite_list, SpriteList2):
-                    sprite_list.update_position(self)
+                sprite_list.update_position(self)
 
     center_y = property(_get_center_y, _set_center_y)
 
