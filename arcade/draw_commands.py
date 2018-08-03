@@ -16,7 +16,6 @@ import numpy as np
 import moderngl
 
 import pyglet.gl as gl
-from pyglet.gl import glu as glu
 
 from typing import List
 
@@ -160,51 +159,6 @@ def load_textures(file_name: str,
         :list: List of textures loaded.
     Raises:
         :SystemError:
-
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
-    >>> image_location_list = [[591, 5, 64, 93],
-    ...                        [655, 10, 75, 88],
-    ...                        [730, 7, 54, 91],
-    ...                        [784, 3, 59, 95],
-    ...                        [843, 6, 56, 92]]
-    >>> texture_info_list = arcade.load_textures("arcade/examples/images/character_sheet.png", image_location_list)
-    >>> image_location_list = [[5600, 0, 0, 0]]
-
-    >>> texture_info_list = arcade.load_textures("arcade/examples/images/character_sheet.png", image_location_list)
-    Traceback (most recent call last):
-    ...
-    ValueError: Texture has a width of 0, must be > 0.
-
-    >>> image_location_list = [[2000, 0, 20, 20]]
-    >>> texture_info_list = arcade.load_textures("arcade/examples/images/character_sheet.png", image_location_list)
-    Traceback (most recent call last):
-    ...
-    ValueError: Can't load texture starting at an x of 2000 when the image is only 1377 across.
-
-    >>> image_location_list = [[500, 500, 20, 20]]
-    >>> texture_info_list = arcade.load_textures("arcade/examples/images/character_sheet.png", image_location_list)
-    Traceback (most recent call last):
-    ...
-    ValueError: Can't load texture starting at an y of 500 when the image is only 98 high.
-
-    >>> image_location_list = [[1300, 0, 100, 20]]
-    >>> texture_info_list = arcade.load_textures("arcade/examples/images/character_sheet.png", image_location_list)
-    Traceback (most recent call last):
-    ...
-    ValueError: Can't load texture ending at an x of 1400 when the image is only 1377 wide.
-
-    >>> image_location_list = [[500, 50, 50, 50]]
-    >>> texture_info_list = arcade.load_textures("arcade/examples/images/character_sheet.png", image_location_list)
-    Traceback (most recent call last):
-    ...
-    ValueError: Can't load texture ending at an y of 100 when the image is only 98 high.
-
-    >>> image_location_list = [[0, 0, 50, 50]]
-    >>> texture_info_list = arcade.load_textures("arcade/examples/images/character_sheet.png", image_location_list, mirrored=True, flipped=True)
-
-    >>> arcade.close_window()
-
     """
     source_image = PIL.Image.open(file_name)
 
@@ -243,7 +197,6 @@ def load_textures(file_name: str,
             image = PIL.ImageOps.flip(image)
 
         image_width, image_height = image.size
-        image_bytes = image.convert("RGBA").tobytes("raw", "RGBA", 0, -1)
 
         texture = gl.GLuint(0)
         gl.glGenTextures(1, ctypes.byref(texture))
@@ -251,13 +204,10 @@ def load_textures(file_name: str,
         gl.glBindTexture(gl.GL_TEXTURE_2D, texture)
         gl.glPixelStorei(gl.GL_UNPACK_ALIGNMENT, 1)
 
-        gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_S,
-                           gl.GL_REPEAT)
-        gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_T,
-                           gl.GL_REPEAT)
+        gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_S, gl.GL_REPEAT)
+        gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_T, gl.GL_REPEAT)
 
-        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER,
-                           gl.GL_LINEAR)
+        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR)
         gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER,
                            gl.GL_LINEAR_MIPMAP_LINEAR)
 

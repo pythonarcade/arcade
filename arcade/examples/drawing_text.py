@@ -40,8 +40,12 @@ class MyGame(arcade.Window):
         start_x = 50
         start_y = 450
         arcade.draw_point(start_x, start_y, arcade.color.BLUE, 5)
-
         arcade.draw_text("Simple line of text in 12 point", start_x, start_y, arcade.color.BLACK, 12)
+
+        start_x = 50
+        start_y = 150
+        arcade.draw_point(start_x, start_y, arcade.color.BLUE, 5)
+        arcade.draw_text("Garamond Text", start_x, start_y, arcade.color.BLACK, 15, font_name='GARA')
 
         start_x = 50
         start_y = 400

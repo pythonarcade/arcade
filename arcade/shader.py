@@ -347,8 +347,7 @@ class VertexArray:
         glUseProgram(self.program)
 
     def __exit__(self, exception_type, exception_value, traceback):
-        # glUseProgram(0)
-        pass
+        glUseProgram(0)
 
     def _enable_attrib(self, buffer: Buffer, fmts: str, *attributes: str):
         if fmts.endswith("/i"):

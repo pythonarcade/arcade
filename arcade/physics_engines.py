@@ -218,7 +218,9 @@ class PhysicsEnginePlatformer:
                         # print(f"Spot 4 ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
 
                 else:
-                    print("Error, collision while player wasn't moving.\nMake sure you aren't calling multiple updates, like a physics engine update and an all sprites list update.")
+                    print("Error, collision while player wasn't moving.\n"
+                          "Make sure you aren't calling multiple updates, like "
+                          "a physics engine update and an all sprites list update.")
 
             # print(f"Spot E ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
 
