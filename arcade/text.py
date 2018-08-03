@@ -6,7 +6,6 @@ import PIL.ImageFont
 
 from arcade.sprite import Sprite
 from arcade.arcade_types import Color
-from arcade.sprite_list import SpriteList2
 
 
 class Text:
@@ -106,11 +105,15 @@ def draw_text(text: str,
         image_size = font.getsize(text)
         height = image_size[1]
         start_x = 0
-        if width == 0:
-            start_x = (width - image_size[0]) // 2
-            width = image_size[0] * scale_up
-        else:
-            width *= scale_up
+        width = image_size[0]
+
+        # if width != 0:
+        #     if align == "center":
+        #         start_x = (width - image_size[0]) // 2
+        #     else:
+        #         start_x = 0
+        #
+        #     width *= scale_up
 
         image = PIL.Image.new("RGBA", image_size)
         draw = PIL.ImageDraw.Draw(image)
@@ -124,8 +127,9 @@ def draw_text(text: str,
         text_sprite.height = image.height
         text_sprite.center_x = start_x + text_sprite.width / 2
         text_sprite.center_y = start_y + text_sprite.height / 2
-        text_sprite.angle = rotation
-        label.text_sprite_list = SpriteList2()
+
+        from arcade.sprite_list import SpriteList
+        label.text_sprite_list = SpriteList()
         label.text_sprite_list.append(text_sprite)
 
         draw_text.cache[key] = label
