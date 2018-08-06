@@ -288,6 +288,10 @@ class SpriteList(Generic[T]):
             sprite.center_x += change_x
             sprite.center_y += change_y
 
+    def preload_textures(self, texture_names):
+        self.array_of_texture_names.extend(texture_names)
+        self.array_of_images = None
+
     def calculate_sprite_buffer(self):
 
         if len(self.sprite_list) == 0:
@@ -313,6 +317,8 @@ class SpriteList(Generic[T]):
         new_array_of_texture_names = []
         new_array_of_images = []
         new_texture = False
+        if self.array_of_images is None:
+            new_texture = True
 
         # print()
         # print("New texture start: ", new_texture)
@@ -322,7 +328,7 @@ class SpriteList(Generic[T]):
             name_of_texture_to_check = sprite.texture_name
             if name_of_texture_to_check not in self.array_of_texture_names:
                 new_texture = True
-                print("New because of ", name_of_texture_to_check)
+                # print("New because of ", name_of_texture_to_check)
 
             if name_of_texture_to_check not in new_array_of_texture_names:
                 if sprite.image is not None:
@@ -349,7 +355,7 @@ class SpriteList(Generic[T]):
             self.array_of_texture_names =  new_array_of_texture_names
 
             self.array_of_images = new_array_of_images
-            print(f"New Texture Atlas with names {self.array_of_texture_names}")
+            # print(f"New Texture Atlas with names {self.array_of_texture_names}")
 
         # Get their sizes
         widths, heights = zip(*(i.size for i in self.array_of_images))

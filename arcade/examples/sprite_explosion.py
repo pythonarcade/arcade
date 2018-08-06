@@ -49,20 +49,11 @@ class Explosion(arcade.Sprite):
         # Update to the next frame of the animation. If we are at the end
         # of our frames, then delete this sprite.
         self.current_texture += 1
-        if self.current_texture < len(Explosion.explosion_textures):
-            self.texture = Explosion.explosion_textures[self.current_texture]
+        if self.current_texture < EXPLOSION_TEXTURE_COUNT:
+            texture_name = f"images/explosion/explosion{self.current_texture:04d}.png"
+            self.texture = arcade.load_texture(texture_name)
         else:
             self.kill()
-
-
-# Pre-load the animation frames. We don't do this in the __init__ because it
-# takes too long and would cause the game to pause.
-for i in range(EXPLOSION_TEXTURE_COUNT):
-    # Files from http://www.explosiongenerator.com are numbered sequentially.
-    # This code loads all of the explosion0000.png to explosion0270.png files
-    # that are part of this explosion.
-    texture = arcade.load_texture(f"images/explosion/explosion{i:04d}.png")
-    Explosion.explosion_textures.append(texture)
 
 
 class MyGame(arcade.Window):
@@ -108,6 +99,18 @@ class MyGame(arcade.Window):
         self.coin_list = arcade.SpriteList()
         self.bullet_list = arcade.SpriteList()
         self.explosions_list = arcade.SpriteList()
+
+        # Pre-load the animation frames. We don't do this in the __init__ because it
+        # takes too long and would cause the game to pause.
+        explosion_texture_list = []
+        for i in range(EXPLOSION_TEXTURE_COUNT):
+            # Files from http://www.explosiongenerator.com are numbered sequentially.
+            # This code loads all of the explosion0000.png to explosion0270.png files
+            # that are part of this explosion.
+            texture_name = f"images/explosion/explosion{i:04d}.png"
+            explosion_texture_list.append(texture_name)
+
+        self.explosions_list.preload_textures(explosion_texture_list)
 
         # Set up the player
         self.score = 0
