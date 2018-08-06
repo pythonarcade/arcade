@@ -316,18 +316,21 @@ class SpriteList(Generic[T]):
 
         # print()
         # print("New texture start: ", new_texture)
-        for sprite in self.sprite_list:
-            if sprite.texture_name not in self.array_of_texture_names:
-                new_texture = True
-                # print("New because of ", sprite.texture_name)
 
-            if sprite.texture_name not in new_array_of_texture_names:
+        for sprite in self.sprite_list:
+
+            name_of_texture_to_check = sprite.texture_name
+            if name_of_texture_to_check not in self.array_of_texture_names:
+                new_texture = True
+                print("New because of ", name_of_texture_to_check)
+
+            if name_of_texture_to_check not in new_array_of_texture_names:
                 if sprite.image is not None:
-                    new_array_of_texture_names.append(sprite.texture_name)
+                    new_array_of_texture_names.append(name_of_texture_to_check)
                     image = sprite.image
                 else:
-                    new_array_of_texture_names.append(sprite.texture_name)
-                    image = Image.open(sprite.texture_name)
+                    new_array_of_texture_names.append(name_of_texture_to_check)
+                    image = Image.open(name_of_texture_to_check)
                 new_array_of_images.append(image)
 
         # print("New texture end: ", new_texture)
@@ -336,9 +339,17 @@ class SpriteList(Generic[T]):
         # print()
 
         if new_texture:
-            self.array_of_texture_names = new_array_of_texture_names
+            # Add back in any old textures. Chances are we'll need them.
+            for old_texture_name in self.array_of_texture_names:
+                if old_texture_name not in new_array_of_texture_names:
+                    new_array_of_texture_names.append(old_texture_name)
+                    image = Image.open(old_texture_name)
+                    new_array_of_images.append(image)
+
+            self.array_of_texture_names =  new_array_of_texture_names
+
             self.array_of_images = new_array_of_images
-            # print(f"New Texture Atlas with names {self.array_of_texture_names}")
+            print(f"New Texture Atlas with names {self.array_of_texture_names}")
 
         # Get their sizes
         widths, heights = zip(*(i.size for i in self.array_of_images))
@@ -443,6 +454,12 @@ class SpriteList(Generic[T]):
             self.pos_angle_scale[i, 3] = math.radians(sprite.angle)
             self.pos_angle_scale[i, 4] = sprite.width / 2
             self.pos_angle_scale[i, 5] = sprite.height / 2
+
+    def update_texture(self, sprite):
+        if self.program is None:
+            return
+
+        self.calculate_sprite_buffer()
 
     def update_position(self, sprite):
 

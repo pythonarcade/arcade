@@ -137,6 +137,8 @@ class Sprite:
         if image_height == 0 and image_width != 0:
             raise ValueError("Height can't be zero.")
 
+        self.sprite_lists = []
+
         if filename is not None:
             self.texture = load_texture(filename, image_x, image_y,
                                         image_width, image_height)
@@ -167,7 +169,6 @@ class Sprite:
         self.boundary_bottom = None
 
         self.alpha = 1.0
-        self.sprite_lists = []
         self.transparent = True
         self._collision_radius = None
 
@@ -351,7 +352,7 @@ class Sprite:
             if sprite_list.use_spatial_hash and sprite_list.spatial_hash is not None:
                 try:
                     sprite_list.spatial_hash.remove_object(self)
-                except:
+                except ValueError:
                     print("Warning, attempt to remove item from spatial hash that doesn't exist in the hash.")
 
     def add_spatial_hashes(self):
@@ -439,7 +440,6 @@ arcade.Sprite("arcade/examples/images/playerShip1_orange.png", scale)
 
             for sprite_list in self.sprite_lists:
                 sprite_list.update_position(self)
-
 
     center_x = property(_get_center_x, _set_center_x)
 
@@ -579,6 +579,9 @@ arcade.Sprite("arcade/examples/images/playerShip1_orange.png", scale)
             self._texture = texture
             self.width = texture.width
             self.height = texture.height
+            self.texture_name = texture.texture_name
+            for sprite_list in self.sprite_lists:
+                sprite_list.update_texture(self)
         else:
             raise SystemError("Can't set the texture to something that is " +
                               "not an instance of the Texture class.")

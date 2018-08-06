@@ -101,7 +101,7 @@ class Texture:
 
     """
 
-    def __init__(self, texture_id: int, width: float, height: float):
+    def __init__(self, texture_id: int, width: float, height: float, file_name: str):
         """
         Args:
             :texture_id (str): Id of the texture.
@@ -132,6 +132,7 @@ class Texture:
         self.texture_id = texture_id
         self.width = width
         self.height = height
+        self.texture_name = file_name
 
 
 def make_transparent_color(color: Color, transparency: float):
@@ -331,7 +332,7 @@ def load_texture(file_name: str, x: float=0, y: float=0,
     image_width *= scale
     image_height *= scale
 
-    result = Texture(texture, image_width, image_height)
+    result = Texture(texture, image_width, image_height, file_name)
     load_texture.texture_cache[cache_name] = result
     return result
 

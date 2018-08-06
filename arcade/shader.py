@@ -431,10 +431,14 @@ class Texture:
         glBindTexture(GL_TEXTURE_2D, self.texture_id)
         glPixelStorei(GL_PACK_ALIGNMENT, 1)
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1)
-        glTexImage2D(
-            GL_TEXTURE_2D, 0, sized_format, self.width, self.height, 0,
-            self.format, GL_UNSIGNED_BYTE, data.ctypes.data_as(c_void_p)
-        )
+        try:
+            glTexImage2D(
+                GL_TEXTURE_2D, 0, sized_format, self.width, self.height, 0,
+                self.format, GL_UNSIGNED_BYTE, data.ctypes.data_as(c_void_p)
+            )
+        except GLException as e:
+            raise GLException(f"Unable to create texture. {GL_MAX_TEXTURE_SIZE} {size}")
+
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
         weakref.finalize(self, glDeleteTextures, 1, byref(texture_id))

@@ -23,7 +23,7 @@ SCREEN_HEIGHT = 600
 
 BULLET_SPEED = 5
 
-EXPLOSION_TEXTURE_COUNT = 270
+EXPLOSION_TEXTURE_COUNT = 60
 
 
 class Bullet(arcade.Sprite):
@@ -94,8 +94,8 @@ class MyGame(arcade.Window):
         self.set_mouse_visible(False)
 
         # Load sounds. Sounds from kenney.nl
-        self.gun_sound = arcade.sound.load_sound("sounds/laser1.wav")
-        self.hit_sound = arcade.sound.load_sound("sounds/phaseJump1.wav")
+        # self.gun_sound = arcade.sound.load_sound("sounds/laser1.wav")
+        # self.hit_sound = arcade.sound.load_sound("sounds/phaseJump1.wav")
 
         arcade.set_background_color(arcade.color.AMAZON)
 
@@ -119,7 +119,7 @@ class MyGame(arcade.Window):
         self.player_list.append(self.player_sprite)
 
         # Create the coins
-        for i in range(COIN_COUNT):
+        for coin_index in range(COIN_COUNT):
 
             # Create the coin instance
             # Coin image from kenney.nl
@@ -146,7 +146,7 @@ class MyGame(arcade.Window):
         # Draw all the sprites.
         self.coin_list.draw()
         self.bullet_list.draw()
-        self.player_sprite.draw()
+        self.player_list.draw()
         self.explosions_list.draw()
 
         # Render the text
@@ -164,7 +164,7 @@ class MyGame(arcade.Window):
         """
 
         # Gunshot sound
-        arcade.sound.play_sound(self.gun_sound)
+        # arcade.sound.play_sound(self.gun_sound)
 
         # Create a bullet
         bullet = Bullet("images/laserBlue01.png", SPRITE_SCALING_LASER)
@@ -208,7 +208,7 @@ class MyGame(arcade.Window):
                 self.score += 1
 
                 # Hit Sound
-                arcade.sound.play_sound(self.hit_sound)
+                # arcade.sound.play_sound(self.hit_sound)
 
             # If the bullet flies off-screen, remove it.
             if bullet.bottom > SCREEN_HEIGHT:
