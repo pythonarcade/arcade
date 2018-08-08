@@ -241,7 +241,10 @@ class SpriteList(Generic[T]):
         self.sprite_list = []
 
         # Used in drawing optimization via OpenGL
-        self.program = None
+        self.program = shader.program(
+            vertex_shader=VERTEX_SHADER,
+            fragment_shader=FRAGMENT_SHADER
+        )
         self.sprite_data = None
         self.sprite_data_buf = None
         self.texture_id = None
@@ -262,7 +265,7 @@ class SpriteList(Generic[T]):
         """
         self.sprite_list.append(item)
         item.register_sprite_list(self)
-        self.program = None
+        self.vao = None
         if self.use_spatial_hash:
             self.spatial_hash.insert_object_for_box(item)
 
@@ -276,7 +279,7 @@ class SpriteList(Generic[T]):
         Remove a specific sprite from the list.
         """
         self.sprite_list.remove(item)
-        self.program = None
+        self.vao = None
         if self.use_spatial_hash:
             self.spatial_hash.remove_object(item)
 
@@ -310,12 +313,6 @@ class SpriteList(Generic[T]):
 
         if len(self.sprite_list) == 0:
             return
-
-        if self.program is None:
-            self.program = shader.program(
-                vertex_shader=VERTEX_SHADER,
-                fragment_shader=FRAGMENT_SHADER
-            )
 
         # Loop through each sprite and grab its position, and the texture it will be using.
         array_of_positions = []
@@ -482,7 +479,7 @@ class SpriteList(Generic[T]):
 
     def update_positions(self):
 
-        if self.program is None:
+        if self.vao is None:
             return
 
         for i, sprite in enumerate(self.sprite_list):
@@ -492,14 +489,14 @@ class SpriteList(Generic[T]):
             self.sprite_data[i]['color'] = sprite.color + (sprite.alpha, )
 
     def update_texture(self, sprite):
-        if self.program is None:
+        if self.vao is None:
             return
 
         self.calculate_sprite_buffer()
 
     def update_position(self, sprite):
 
-        if self.program is None:
+        if self.vao is None:
             return
 
         i = self.sprite_list.index(sprite)
@@ -514,7 +511,7 @@ class SpriteList(Generic[T]):
         if len(self.sprite_list) == 0:
             return
 
-        if self.program is None:
+        if self.vao is None:
             self.calculate_sprite_buffer()
 
         self.texture.use(0)
