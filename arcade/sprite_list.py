@@ -31,7 +31,7 @@ in vec2 in_vert;
 in vec2 in_texture;
 
 // per instance
-in vec3 in_pos;
+in vec2 in_pos;
 in float in_angle;
 in vec2 in_scale;
 in vec4 in_sub_tex_coords;
@@ -45,9 +45,9 @@ void main() {
                 cos(in_angle), sin(in_angle),
                 -sin(in_angle), cos(in_angle)
             );
-    vec3 pos;
-    pos = in_pos + vec3(rotate * (in_vert * in_scale), 0.);
-    gl_Position = Projection * vec4(pos, 1.0);
+    vec2 pos;
+    pos = in_pos + vec2(rotate * (in_vert * in_scale));
+    gl_Position = Projection * vec4(pos, 0.0, 1.0);
 
     vec2 tex_offset = in_sub_tex_coords.xy;
     vec2 tex_size = in_sub_tex_coords.zw;
@@ -323,7 +323,7 @@ class SpriteList(Generic[T]):
         array_of_colors = []
 
         for sprite in self.sprite_list:
-            array_of_positions.append([sprite.center_x, sprite.center_y, 0])
+            array_of_positions.append([sprite.center_x, sprite.center_y])
 
             size_h = sprite.height / 2
             size_w = sprite.width / 2
@@ -436,7 +436,7 @@ class SpriteList(Generic[T]):
             array_of_sub_tex_coords.append(tex_coords[index])
 
         # Create numpy array with info on location and such
-        buffer_type = np.dtype([('position', '3f4'), ('angle', 'f4'), ('size', '2f4'),
+        buffer_type = np.dtype([('position', '2f4'), ('angle', 'f4'), ('size', '2f4'),
                                 ('sub_tex_coords', '4f4'), ('color', '4B')])
         self.sprite_data = np.zeros(len(self.sprite_list), dtype=buffer_type)
         self.sprite_data['position'] = array_of_positions
@@ -469,7 +469,7 @@ class SpriteList(Generic[T]):
         )
         pos_angle_scale_buf_desc = shader.BufferDescription(
             self.sprite_data_buf,
-            '3f 1f 2f 4f 4B',
+            '2f 1f 2f 4f 4B',
             ('in_pos', 'in_angle', 'in_scale', 'in_sub_tex_coords', 'in_color'),
             normalized=['in_color'], instanced=True)
 
@@ -486,7 +486,7 @@ class SpriteList(Generic[T]):
             return
 
         for i, sprite in enumerate(self.sprite_list):
-            self.sprite_data[i]['position'] = [sprite.center_x, sprite.center_y, 0]
+            self.sprite_data[i]['position'] = [sprite.center_x, sprite.center_y]
             self.sprite_data[i]['angle'] = math.radians(sprite.angle)
             self.sprite_data[i]['size'] = [sprite.width / 2, sprite.height / 2]
             self.sprite_data[i]['color'] = sprite.color + (sprite.alpha, )
@@ -504,7 +504,7 @@ class SpriteList(Generic[T]):
 
         i = self.sprite_list.index(sprite)
 
-        self.sprite_data[i]['position'] = [sprite.center_x, sprite.center_y, 0]
+        self.sprite_data[i]['position'] = [sprite.center_x, sprite.center_y]
         self.sprite_data[i]['angle'] = math.radians(sprite.angle)
         self.sprite_data[i]['size'] = [sprite.width / 2, sprite.height / 2]
         self.sprite_data[i]['color'] = sprite.color + (sprite.alpha, )
