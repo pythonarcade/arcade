@@ -13,6 +13,7 @@ from arcade.draw_commands import load_texture
 from arcade.draw_commands import draw_texture_rectangle
 from arcade.draw_commands import Texture
 from arcade.draw_commands import rotate_point
+from arcade.arcade_types import RGB
 
 from typing import Sequence
 from typing import Tuple
@@ -28,7 +29,7 @@ class Sprite:
     Class that represents a 'sprite' on-screen.
 
     Attributes:
-        :alpha: Transparency of sprite. 0 is invisible, 1 is opaque.
+        :alpha: Transparency of sprite. 0 is invisible, 255 is opaque.
         :angle: Rotation angle in degrees or sprite.
         :boundary_left: Used in movement. Left boundary of moving sprite.
         :boundary_right: Used in movement. Right boundary of moving sprite.
@@ -168,9 +169,10 @@ class Sprite:
         self.boundary_top = None
         self.boundary_bottom = None
 
-        self.alpha = 1.0
+        self.alpha = 255
         self.transparent = True
         self._collision_radius = None
+        self._color = (255, 255, 255)
 
         self.can_cache = True
         self._points = None
@@ -588,6 +590,22 @@ arcade.Sprite("arcade/examples/images/playerShip1_orange.png", scale)
 
     texture = property(_get_texture, _set_texture)
 
+    def _get_color(self) -> RGB:
+        """
+        Return the RGB color associated with the sprite.
+        """
+        return self._color
+
+    def _set_color(self, color: RGB):
+        """
+        Set the current sprite color as a RGB value
+        """
+        self._color = color
+        for sprite_list in self.sprite_lists:
+            sprite_list.update_color(self)
+
+    color = property(_get_color, _set_color)
+
     def register_sprite_list(self, new_list):
         """
         Register this sprite as belonging to a list. We will automatically
@@ -599,7 +617,7 @@ arcade.Sprite("arcade/examples/images/playerShip1_orange.png", scale)
         """ Draw the sprite. """
         draw_texture_rectangle(self.center_x, self.center_y,
                                self.width, self.height,
-                               self.texture, self.angle, self.alpha,
+                               self.texture, self.angle, self.alpha / 255,  # TODO: review this function
                                self.transparent,
                                repeat_count_x=self.repeat_count_x,
                                repeat_count_y=self.repeat_count_y)

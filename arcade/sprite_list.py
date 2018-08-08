@@ -25,13 +25,21 @@ from arcade import shader
 VERTEX_SHADER = """
 #version 330
 uniform mat4 Projection;
+
+// per vertex
 in vec2 in_vert;
 in vec2 in_texture;
+
+// per instance
 in vec3 in_pos;
 in float in_angle;
 in vec2 in_scale;
 in vec4 in_sub_tex_coords;
+in vec4 in_color;
+
 out vec2 v_texture;
+out vec4 v_color;
+
 void main() {
     mat2 rotate = mat2(
                 cos(in_angle), sin(in_angle),
@@ -45,16 +53,22 @@ void main() {
     vec2 tex_size = in_sub_tex_coords.zw;
 
     v_texture = (in_texture * tex_size + tex_offset) * vec2(1, -1);
+    v_color = in_color;
 }
 """
 
 FRAGMENT_SHADER = """
 #version 330
 uniform sampler2D Texture;
+
 in vec2 v_texture;
+in vec4 v_color;
+
 out vec4 f_color;
+
 void main() {
     vec4 basecolor = texture(Texture, v_texture);
+    basecolor = basecolor * v_color;
     if (basecolor.a == 0.0){
         discard;
     }
@@ -228,8 +242,8 @@ class SpriteList(Generic[T]):
 
         # Used in drawing optimization via OpenGL
         self.program = None
-        self.pos_angle_scale = None
-        self.pos_angle_scale_buf = None
+        self.sprite_data = None
+        self.sprite_data_buf = None
         self.texture_id = None
         self.texture = None
         self.vao = None
@@ -306,6 +320,7 @@ class SpriteList(Generic[T]):
         # Loop through each sprite and grab its position, and the texture it will be using.
         array_of_positions = []
         array_of_sizes = []
+        array_of_colors = []
 
         for sprite in self.sprite_list:
             array_of_positions.append([sprite.center_x, sprite.center_y, 0])
@@ -313,6 +328,7 @@ class SpriteList(Generic[T]):
             size_h = sprite.height / 2
             size_w = sprite.width / 2
             array_of_sizes.append([size_w, size_h])
+            array_of_colors.append(sprite.color + (sprite.alpha, ))
 
         new_array_of_texture_names = []
         new_array_of_images = []
@@ -352,7 +368,7 @@ class SpriteList(Generic[T]):
                     image = Image.open(old_texture_name)
                     new_array_of_images.append(image)
 
-            self.array_of_texture_names =  new_array_of_texture_names
+            self.array_of_texture_names = new_array_of_texture_names
 
             self.array_of_images = new_array_of_images
             # print(f"New Texture Atlas with names {self.array_of_texture_names}")
@@ -420,14 +436,22 @@ class SpriteList(Generic[T]):
             array_of_sub_tex_coords.append(tex_coords[index])
 
         # Create numpy array with info on location and such
-        np_array_positions = np.array(array_of_positions).astype('f4')
+        buffer_type = np.dtype([('position', '3f4'), ('angle', 'f4'), ('size', '2f4'),
+                                ('sub_tex_coords', '4f4'), ('color', '4B')])
+        self.sprite_data = np.zeros(len(self.sprite_list), dtype=buffer_type)
+        self.sprite_data['position'] = array_of_positions
+        self.sprite_data['angle'] = np.tile(
+            np.array(0, dtype=np.float32),
+            (len(self.sprite_list))
+        )
+        self.sprite_data['size'] = array_of_sizes
+        self.sprite_data['sub_tex_coords'] = array_of_sub_tex_coords
+        self.sprite_data['color'] = array_of_colors
 
-        # np_array_angles = (np.random.rand(INSTANCES, 1) * 2 * np.pi).astype('f4')
-        np_array_angles = np.tile(np.array(0, dtype=np.float32), (len(self.sprite_list), 1))
-        np_array_sizes = np.array(array_of_sizes).astype('f4')
-        np_sub_tex_coords = np.array(array_of_sub_tex_coords).astype('f4')
-        self.pos_angle_scale = np.hstack((np_array_positions, np_array_angles, np_array_sizes, np_sub_tex_coords))
-        self.pos_angle_scale_buf = shader.buffer(self.pos_angle_scale.tobytes())
+        self.sprite_data_buf = shader.buffer(
+            self.sprite_data.tobytes(),
+            usage='stream'
+        )
 
         vertices = np.array([
             #  x,    y,   u,   v
@@ -438,11 +462,18 @@ class SpriteList(Generic[T]):
         ], dtype=np.float32
         )
         self.vbo_buf = shader.buffer(vertices.tobytes())
+        vbo_buf_desc = shader.BufferDescription(
+            self.vbo_buf,
+            '2f 2f',
+            ('in_vert', 'in_texture')
+        )
+        pos_angle_scale_buf_desc = shader.BufferDescription(
+            self.sprite_data_buf,
+            '3f 1f 2f 4f 4B',
+            ('in_pos', 'in_angle', 'in_scale', 'in_sub_tex_coords', 'in_color'),
+            normalized=['in_color'], instanced=True)
 
-        vao_content = [
-            (self.vbo_buf, '2f 2f', 'in_vert', 'in_texture'),
-            (self.pos_angle_scale_buf, '3f 1f 2f 4f/i', 'in_pos', 'in_angle', 'in_scale', 'in_sub_tex_coords')
-        ]
+        vao_content = [vbo_buf_desc, pos_angle_scale_buf_desc]
 
         # Can add buffer to index vertices
         self.vao = shader.vertex_array(self.program, vao_content)
@@ -455,11 +486,10 @@ class SpriteList(Generic[T]):
             return
 
         for i, sprite in enumerate(self.sprite_list):
-            self.pos_angle_scale[i, 0] = sprite.center_x
-            self.pos_angle_scale[i, 1] = sprite.center_y
-            self.pos_angle_scale[i, 3] = math.radians(sprite.angle)
-            self.pos_angle_scale[i, 4] = sprite.width / 2
-            self.pos_angle_scale[i, 5] = sprite.height / 2
+            self.sprite_data[i]['position'] = [sprite.center_x, sprite.center_y, 0]
+            self.sprite_data[i]['angle'] = math.radians(sprite.angle)
+            self.sprite_data[i]['size'] = [sprite.width / 2, sprite.height / 2]
+            self.sprite_data[i]['color'] = sprite.color + (sprite.alpha, )
 
     def update_texture(self, sprite):
         if self.program is None:
@@ -474,11 +504,10 @@ class SpriteList(Generic[T]):
 
         i = self.sprite_list.index(sprite)
 
-        self.pos_angle_scale[i, 0] = sprite.center_x
-        self.pos_angle_scale[i, 1] = sprite.center_y
-        self.pos_angle_scale[i, 3] = math.radians(sprite.angle)
-        self.pos_angle_scale[i, 4] = sprite.width / 2
-        self.pos_angle_scale[i, 5] = sprite.height / 2
+        self.sprite_data[i]['position'] = [sprite.center_x, sprite.center_y, 0]
+        self.sprite_data[i]['angle'] = math.radians(sprite.angle)
+        self.sprite_data[i]['size'] = [sprite.width / 2, sprite.height / 2]
+        self.sprite_data[i]['color'] = sprite.color + (sprite.alpha, )
 
     def draw(self):
 
@@ -498,9 +527,9 @@ class SpriteList(Generic[T]):
         with self.vao:
             self.program['Texture'] = self.texture_id
             self.program['Projection'] = get_projection().flatten()
-            self.pos_angle_scale_buf.write(self.pos_angle_scale.tobytes())
+            self.sprite_data_buf.write(self.sprite_data.tobytes())
             self.vao.render(gl.GL_TRIANGLE_STRIP, instances=len(self.sprite_list))
-            self.pos_angle_scale_buf.orphan()
+            self.sprite_data_buf.orphan()
 
     def __len__(self) -> int:
         """ Return the length of the sprite list. """

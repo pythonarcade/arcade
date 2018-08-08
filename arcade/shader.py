@@ -4,7 +4,8 @@
 from ctypes import *
 from collections import namedtuple
 import weakref
-from typing import Type, Tuple
+import struct
+from typing import Type, Tuple, Iterable, Set
 
 from pyglet.gl import *
 import numpy as np
@@ -246,7 +247,13 @@ class Buffer:
 
     The buffer knows its id `buffer_id` and its `size` in bytes.
     """
-    def __init__(self, data: bytes, dynamic: bool=False):
+    usages = {
+        'static': GL_STATIC_DRAW,
+        'dynamic': GL_DYNAMIC_DRAW,
+        'stream': GL_STREAM_DRAW
+    }
+
+    def __init__(self, data: bytes, usage: str='static'):
         self.buffer_id = buffer_id = GLuint()
         self.size = len(data)
 
@@ -255,7 +262,7 @@ class Buffer:
             raise ShaderException("Cannot create Buffer object.")
 
         glBindBuffer(GL_ARRAY_BUFFER, self.buffer_id)
-        self.usage = GL_DYNAMIC_DRAW if dynamic else GL_STATIC_DRAW
+        self.usage = Buffer.usages[usage]
         glBufferData(GL_ARRAY_BUFFER, self.size, data, self.usage)
         weakref.finalize(self, glDeleteBuffers, 1, byref(buffer_id))
 
@@ -277,10 +284,73 @@ class Buffer:
         glBufferData(GL_ARRAY_BUFFER, self.size, None, self.usage)
 
 
-def buffer(data: bytes, dynamic: bool=False) -> Buffer:
+def buffer(data: bytes, usage: str='static') -> Buffer:
     """Create a new OpenGL Buffer object.
     """
-    return Buffer(data, dynamic)
+    return Buffer(data, usage)
+
+
+class BufferDescription:
+    """Vertex Buffer Object description, allowing easy use with VAOs.
+
+    This class provides a Buffer object with a description of its content, allowing
+    a VertexArray object to correctly enable its shader attributes with the
+    vertex Buffer object.
+
+    The formats is a string providing the number and type of each attribute. Currently
+    we only support f (float), i (integer) and B (unsigned byte).
+
+    `normalized` enumerates the attributes which must have their values normalized.
+    This is useful for instance for colors attributes given as unsigned byte and
+    normalized to floats with values between 0.0 and 1.0.
+
+    `instanced` allows this buffer to be used as instanced buffer. Each value will
+    be used once for the whole geometry. The geometry will be repeated a number of
+    times equal to the number of items in the Buffer.
+    """
+    GL_TYPES_ENUM = {
+        'B': GL_UNSIGNED_BYTE,
+        'f': GL_FLOAT,
+        'i': GL_INT,
+    }
+    GL_TYPES = {
+        'B': GLubyte,
+        'f': GLfloat,
+        'i': GLint,
+    }
+
+    def __init__(self,
+                 buffer: Buffer,
+                 formats: str,
+                 attributes: Iterable[str],
+                 normalized: Iterable[str]=None,
+                 instanced: bool=False):
+        self.buffer = buffer
+        self.attributes = list(attributes)
+        self.normalized = set() if normalized is None else set(normalized)
+        self.instanced = instanced
+
+        if self.normalized > set(self.attributes):
+            raise ShaderException("Normalized attribute not found in attributes.")
+
+        formats = formats.split(" ")
+
+        if len(formats) != len(self.attributes):
+            raise ShaderException(
+                f"Different lengths of formats ({len(formats)}) and "
+                f"attributes ({len(self.attributes)})"
+            )
+
+        self.formats = []
+        for i, fmt in enumerate(formats):
+            size, type_ = fmt
+            if size not in ('1234') or type_ not in 'fiB':
+                raise ShaderException("Wrong format {fmt}.")
+            size = int(size)
+            gl_type_enum = BufferDescription.GL_TYPES_ENUM[type_]
+            gl_type = BufferDescription.GL_TYPES[type_]
+            attribsize = size * sizeof(gl_type)
+            self.formats.append((size, attribsize, gl_type_enum))
 
 
 class VertexArray:
@@ -311,17 +381,11 @@ class VertexArray:
         vao['MyUniform'] = value
         vao.render
     """
-    GL_TYPES_ENUM = {
-        'f': GL_FLOAT,
-        'i': GL_INT,
-    }
-    GL_TYPES = {
-        'f': GLfloat,
-        'i': GLint,
-    }
 
-    def __init__(self, program: Program, content, index_buffer: Buffer=None):
-        # Did not succedd at making a sexy Type for content
+    def __init__(self,
+                 program: Program,
+                 content: Iterable[BufferDescription],
+                 index_buffer: Buffer=None):
         self.program = program.prog_id
         self.vao = vao = GLuint()
         self.num_vertices = -1
@@ -330,8 +394,8 @@ class VertexArray:
         glGenVertexArrays(1, byref(self.vao))
         glBindVertexArray(self.vao)
 
-        for buffer_attribs in content:
-            self._enable_attrib(*buffer_attribs)
+        for buffer_desc in content:
+            self._enable_attrib(buffer_desc)
 
         if self.ibo is not None:
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.ibo.buffer_id)
@@ -349,34 +413,11 @@ class VertexArray:
     def __exit__(self, exception_type, exception_value, traceback):
         glUseProgram(0)
 
-    def _enable_attrib(self, buffer: Buffer, fmts: str, *attributes: str):
-        if fmts.endswith("/i"):
-            fmts = fmts[:-2]
-            instancing = True
-        else:
-            instancing = False
+    def _enable_attrib(self, buf_desc: BufferDescription):
+        buffer = buf_desc.buffer
+        stride = sum(attribsize for _, attribsize, _ in buf_desc.formats)
 
-        fmts = fmts.split(" ")
-
-        if len(fmts) != len(attributes):
-            raise ShaderException(
-                f"Different lengths of formats ({len(fmts)}) and "
-                f"attributes ({len(attributes)})"
-            )
-
-        stride = 0
-        for i, fmt in enumerate(fmts):
-            size, type_ = fmt
-            if size not in ('1234') or type_ not in 'fid':
-                raise ShaderException("Wrong format {fmt}.")
-            size = int(size)
-            gl_type_enum = VertexArray.GL_TYPES_ENUM[type_]
-            gl_type = VertexArray.GL_TYPES[type_]
-            attribsize = size * sizeof(gl_type)
-            stride += attribsize
-            fmts[i] = (size, attribsize, gl_type_enum)
-
-        if instancing:
+        if buf_desc.instanced:
             if self.num_vertices == -1:
                 raise ShaderException(
                     "The first vertex attribute cannot be a per instance attribute."
@@ -387,17 +428,17 @@ class VertexArray:
 
         glBindBuffer(GL_ARRAY_BUFFER, buffer.buffer_id)
         offset = 0
-        for (size, attribsize, gl_type_enum), attrib in zip(fmts, attributes):
+        for (size, attribsize, gl_type_enum), attrib in zip(buf_desc.formats, buf_desc.attributes):
             loc = glGetAttribLocation(self.program, attrib.encode('utf-8'))
             if loc == -1:
                 raise ShaderException(f"Attribute {attrib} not found in shader program")
-
+            normalized = GL_TRUE if attrib in buf_desc.normalized else GL_FALSE
             glVertexAttribPointer(
                 loc, size, gl_type_enum,
-                GL_FALSE, stride, c_void_p(offset)
+                normalized, stride, c_void_p(offset)
             )
             # print(f"{attrib} of size {size} with stride {stride} and offset {offset}")
-            if instancing:
+            if buf_desc.instanced:
                 glVertexAttribDivisor(loc, 1)
             offset += attribsize
             glEnableVertexAttribArray(loc)
