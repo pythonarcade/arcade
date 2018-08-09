@@ -169,8 +169,7 @@ class Sprite:
         self.boundary_top = None
         self.boundary_bottom = None
 
-        self.alpha = 255
-        self.transparent = True
+        self._alpha = 255
         self._collision_radius = None
         self._color = (255, 255, 255)
 
@@ -602,10 +601,25 @@ arcade.Sprite("arcade/examples/images/playerShip1_orange.png", scale)
         """
         self._color = color
         for sprite_list in self.sprite_lists:
-            sprite_list.update_color(self)
+            sprite_list.update_position(self)
 
     color = property(_get_color, _set_color)
 
+    def _get_alpha(self) -> RGB:
+        """
+        Return the RGB color associated with the sprite.
+        """
+        return self._alpha
+
+    def _set_alpha(self, alpha: RGB):
+        """
+        Set the current sprite color as a RGB value
+        """
+        self._alpha = alpha
+        for sprite_list in self.sprite_lists:
+            sprite_list.update_position(self)
+
+    alpha = property(_get_alpha, _set_alpha)
     def register_sprite_list(self, new_list):
         """
         Register this sprite as belonging to a list. We will automatically
@@ -617,7 +631,7 @@ arcade.Sprite("arcade/examples/images/playerShip1_orange.png", scale)
         """ Draw the sprite. """
         draw_texture_rectangle(self.center_x, self.center_y,
                                self.width, self.height,
-                               self.texture, self.angle, self.alpha / 255,  # TODO: review this function
+                               self.texture, self.angle, self.alpha,  # TODO: review this function
                                self.transparent,
                                repeat_count_x=self.repeat_count_x,
                                repeat_count_y=self.repeat_count_y)

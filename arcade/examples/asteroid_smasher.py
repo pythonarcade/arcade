@@ -72,10 +72,10 @@ class ShipSprite(arcade.Sprite):
         """
         if self.respawning:
             self.respawning += 1
-            self.alpha = self.respawning / 500.0
+            self.alpha = self.respawning
             if self.respawning > 250:
                 self.respawning = 0
-                self.alpha = 1
+                self.alpha = 255
         if self.speed > 0:
             self.speed -= self.drag
             if self.speed < 0:
