@@ -757,26 +757,25 @@ def _generic_draw_line_strip(point_list: PointList,
         vertex_shader=line_vertex_shader,
         fragment_shader=line_fragment_shader,
     )
+    buffer_type = np.dtype([('vertex', '2f4'), ('color', '4B')])
+    data = np.zeros(len(point_list), dtype=buffer_type)
 
-    vertices = np.array(point_list).astype('f4')
+    data['vertex'] = point_list
 
-    color = get_four_float_color(color)
-    color_list = [color] * len(point_list)
-    colors = np.array(color_list).astype('f4')
+    color = get_four_byte_color(color)
+    data['color'] = color
 
-    stacked_data = np.hstack((vertices, colors))
+    vbo = shader.buffer(data.tobytes())
+    vbo_desc = shader.BufferDescription(
+        vbo,
+        '2f 4B',
+        ('in_vert', 'in_color'),
+        normalized=['in_color']
+    )
 
-    # Indices are given to specify the order of drawing
-    indices = np.arange(len(vertices))
+    vao_content = [vbo_desc]
 
-    vbo = shader.buffer(stacked_data.astype('f4').tobytes())
-    ibo = shader.buffer(indices.astype('i4').tobytes())
-
-    vao_content = [
-        (vbo, '2f 4f', 'in_vert', 'in_color')
-    ]
-
-    vao = shader.vertex_array(program, vao_content, ibo)
+    vao = shader.vertex_array(program, vao_content)
     with vao:
         program['Projection'] = get_projection().flatten()
 
