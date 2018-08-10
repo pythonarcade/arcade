@@ -828,18 +828,27 @@ class ShapeElementList(Generic[T]):
         self.shape_list = []
         self.change_x = 0
         self.change_y = 0
-        self.center_x = 0
-        self.center_y = 0
-        self.angle = 0
+        self._center_x = 0
+        self._center_y = 0
+        self._angle = 0
         self.program = shader.program(
             vertex_shader='''
                 #version 330
                 uniform mat4 Projection;
+                uniform vec2 Position;
+                uniform float Angle;
+
                 in vec2 in_vert;
                 in vec4 in_color;
+
                 out vec4 v_color;
                 void main() {
-                   gl_Position = Projection * vec4(in_vert, 0.0, 1.0);
+                    float angle = radians(Angle);
+                    mat2 rotate = mat2(
+                        cos(angle), sin(angle),
+                        -sin(angle), cos(angle)
+                    );
+                   gl_Position = Projection * vec4(Position + (rotate * in_vert), 0.0, 1.0);
                    v_color = in_color;
                 }
             ''',
@@ -864,6 +873,8 @@ class ShapeElementList(Generic[T]):
         vao = shader.vertex_array(self.program, vao_content)
         with vao:
             self.program['Projection'] = get_projection().flatten()
+            self.program['Position'] = [self.center_x, self.center_y]
+            self.program['Angle'] = self.angle
         self.shapes = dict()
         self.shape = Shape2()
         self.shape.vao = vao
@@ -873,19 +884,21 @@ class ShapeElementList(Generic[T]):
         self.shape.mode = gl.GL_LINE_STRIP
         self.shape.line_width = 5
 
+        self.dirty = False
+
     def append(self, item: T):
         """
         Add a new shape to the list.
         """
         self.shape_list.append(item)
-        self._refresh_shape()
+        self.dirty = True
 
     def remove(self, item: T):
         """
         Remove a specific shape from the list.
         """
         self.shape_list.remove(item)
-        self._refresh_shape()
+        self.dirty = True
 
     def _refresh_shape(self):
         # Create a buffer large enough to hold all the shapes buffers
@@ -930,6 +943,7 @@ class ShapeElementList(Generic[T]):
         self.shape.vao = vao
         self.shape.vbo = vbo
         self.shape.ibo = ibo
+        self.dirty = False
 
     def move(self, change_x: float, change_y: float):
         """
@@ -955,4 +969,42 @@ class ShapeElementList(Generic[T]):
         """
         Draw everything in the list.
         """
+        if self.dirty:
+            self._refresh_shape()
         self.shape.draw()
+
+    def _get_center_x(self) -> float:
+        """Get the center x coordinate of the ShapeElementList."""
+        return self._center_x
+
+    def _set_center_x(self, value: float):
+        """Set the center x coordinate of the ShapeElementList."""
+        self._center_x = value
+        with self.shape.vao:
+            self.program['Position'] = [self._center_x, self._center_y]
+
+    center_x = property(_get_center_x, _set_center_x)
+
+    def _get_center_y(self) -> float:
+        """Get the center y coordinate of the ShapeElementList."""
+        return self._center_y
+
+    def _set_center_y(self, value: float):
+        """Set the center y coordinate of the ShapeElementList."""
+        self._center_y = value
+        with self.shape.vao:
+            self.program['Position'] = [self._center_x, self._center_y]
+
+    center_y = property(_get_center_y, _set_center_y)
+
+    def _get_angle(self) -> float:
+        """Get the angle of the ShapeElementList in degrees."""
+        return self._angle
+
+    def _set_angle(self, value: float):
+        """Set the angle of the ShapeElementList in degrees."""
+        self._angle = value
+        with self.shape.vao:
+            self.program['Angle'] = self._angle
+
+    angle = property(_get_angle, _set_angle)

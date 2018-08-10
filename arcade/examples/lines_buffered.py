@@ -42,16 +42,17 @@ class MyGame(arcade.Window):
             if not color.startswith("__")
         ]
         for i in range(200):
-            x = random.randrange(SCREEN_WIDTH)
-            y = random.randrange(SCREEN_HEIGHT)
+            x = SCREEN_WIDTH // 2 - random.randrange(SCREEN_WIDTH)
+            y = SCREEN_HEIGHT // 2 - random.randrange(SCREEN_HEIGHT)
             color = random.choice(colors)
             points = [(px + x, py + y) for px, py in point_list]
 
             my_line_strip = arcade.create_line_strip(points, color, 5)
             self.shape_list.append(my_line_strip)
 
-        self.shape_list.center_x = 100
-        self.shape_list.center_y = 100
+        self.shape_list.center_x = SCREEN_WIDTH // 2
+        self.shape_list.center_y = SCREEN_HEIGHT // 2
+        self.shape_list.angle = 0
 
         arcade.set_background_color(arcade.color.BLACK)
 
@@ -59,17 +60,15 @@ class MyGame(arcade.Window):
         """
         Render the screen.
         """
-
         # This command has to happen before we start drawing
         arcade.start_render()
 
         self.shape_list.draw()
 
     def update(self, delta_time):
-        return
         self.shape_list.angle += 1
-        self.shape_list.center_x += 1
-        self.shape_list.center_y += 1
+        self.shape_list.center_x += 0.1
+        self.shape_list.center_y += 0.1
 
 
 def main():
