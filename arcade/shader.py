@@ -266,6 +266,15 @@ class Buffer:
         glBufferData(GL_ARRAY_BUFFER, self.size, data, self.usage)
         weakref.finalize(self, glDeleteBuffers, 1, byref(buffer_id))
 
+    @classmethod
+    def create_with_size(cls, size: int, usage: str='static'):
+        """Create an empty Buffer storage of the given size."""
+        buffer = Buffer(b"", usage=usage)
+        glBindBuffer(GL_ARRAY_BUFFER, buffer.buffer_id)
+        glBufferData(GL_ARRAY_BUFFER, size, None, Buffer.usages[usage])
+        buffer.size = size
+        return buffer
+
     def release(self):
         if self.buffer_id.value != 0:
             glDeleteBuffers(1, byref(self.buffer_id))
@@ -282,6 +291,12 @@ class Buffer:
     def orphan(self):
         glBindBuffer(GL_ARRAY_BUFFER, self.buffer_id)
         glBufferData(GL_ARRAY_BUFFER, self.size, None, self.usage)
+
+    def _read(self, size):
+        "Debug method to read data from the buffer."
+        ptr = glMapBufferRange(GL_ARRAY_BUFFER, GLintptr(0), size, GL_MAP_READ_BIT)
+        print(f"Reading back from buffer:\n{string_at(ptr, size=size)}")
+        glUnmapBuffer(GL_ARRAY_BUFFER)
 
 
 def buffer(data: bytes, usage: str='static') -> Buffer:

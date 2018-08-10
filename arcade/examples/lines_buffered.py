@@ -8,6 +8,7 @@ If Python and Arcade are installed, this example can be run from the command lin
 python -m arcade.examples.lines_buffered
 """
 import arcade
+import random
 
 # Do the math to figure out oiur screen dimensions
 SCREEN_WIDTH = 800
@@ -26,7 +27,6 @@ class MyGame(arcade.Window):
         super().__init__(width, height)
 
         self.shape_list = arcade.ShapeElementList()
-
         point_list = ((0, 50),
                       (10, 10),
                       (50, 0),
@@ -36,8 +36,19 @@ class MyGame(arcade.Window):
                       (-50, 0),
                       (-10, 10),
                       (0, 50))
-        my_line_strip = arcade.create_line_strip(point_list, arcade.color.RED, 5)
-        self.shape_list.append(my_line_strip)
+        colors = [
+            getattr(arcade.color, color)
+            for color in dir(arcade.color)
+            if not color.startswith("__")
+        ]
+        for i in range(200):
+            x = random.randrange(SCREEN_WIDTH)
+            y = random.randrange(SCREEN_HEIGHT)
+            color = random.choice(colors)
+            points = [(px + x, py + y) for px, py in point_list]
+
+            my_line_strip = arcade.create_line_strip(points, color, 5)
+            self.shape_list.append(my_line_strip)
 
         self.shape_list.center_x = 100
         self.shape_list.center_y = 100
@@ -55,6 +66,7 @@ class MyGame(arcade.Window):
         self.shape_list.draw()
 
     def update(self, delta_time):
+        return
         self.shape_list.angle += 1
         self.shape_list.center_x += 1
         self.shape_list.center_y += 1

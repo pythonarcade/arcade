@@ -7,6 +7,7 @@ the graphics card for much faster render times.
 """
 
 import math
+import itertools
 import ctypes
 import pyglet.gl as gl
 import numpy as np
@@ -68,8 +69,8 @@ class Shape2:
             gl.glEnable(gl.GL_LINE_SMOOTH)
             gl.glHint(gl.GL_LINE_SMOOTH_HINT, gl.GL_NICEST)
             gl.glHint(gl.GL_POLYGON_SMOOTH_HINT, gl.GL_NICEST)
-            # gl.glEnable(gl.GL_PRIMITIVE_RESTART)
-            # gl.glPrimitiveRestartIndex(2 ** 32 - 1)
+            gl.glEnable(gl.GL_PRIMITIVE_RESTART)
+            gl.glPrimitiveRestartIndex(2 ** 32 - 1)
 
             self.vao.render(mode=self.mode)
 
@@ -830,18 +831,105 @@ class ShapeElementList(Generic[T]):
         self.center_x = 0
         self.center_y = 0
         self.angle = 0
+        self.program = shader.program(
+            vertex_shader='''
+                #version 330
+                uniform mat4 Projection;
+                in vec2 in_vert;
+                in vec4 in_color;
+                out vec4 v_color;
+                void main() {
+                   gl_Position = Projection * vec4(in_vert, 0.0, 1.0);
+                   v_color = in_color;
+                }
+            ''',
+            fragment_shader='''
+                #version 330
+                in vec4 v_color;
+                out vec4 f_color;
+                void main() {
+                    f_color = v_color;
+                }
+            ''',
+        )
+        vbo = shader.buffer(b'')
+        vao_content = [
+            shader.BufferDescription(
+                vbo,
+                '2f 4B',
+                ('in_vert', 'in_color'),
+                normalized=['in_color']
+            )
+        ]
+        vao = shader.vertex_array(self.program, vao_content)
+        with vao:
+            self.program['Projection'] = get_projection().flatten()
+        self.shapes = dict()
+        self.shape = Shape2()
+        self.shape.vao = vao
+        self.shape.vbo = vbo
+        self.shape.program = self.program
+        # To modifiy obviously!
+        self.shape.mode = gl.GL_LINE_STRIP
+        self.shape.line_width = 5
 
     def append(self, item: T):
         """
         Add a new shape to the list.
         """
         self.shape_list.append(item)
+        self._refresh_shape()
 
     def remove(self, item: T):
         """
         Remove a specific shape from the list.
         """
         self.shape_list.remove(item)
+        self._refresh_shape()
+
+    def _refresh_shape(self):
+        # Create a buffer large enough to hold all the shapes buffers
+        total_vbo_bytes = sum(s.vbo.size for s in self.shape_list)
+        vbo = shader.Buffer.create_with_size(total_vbo_bytes)
+        offset = 0
+        gl.glBindBuffer(gl.GL_COPY_WRITE_BUFFER, vbo.buffer_id)
+        # Copy all the shapes buffer in our own vbo
+        for shape in self.shape_list:
+            gl.glBindBuffer(gl.GL_COPY_READ_BUFFER, shape.vbo.buffer_id)
+            gl.glCopyBufferSubData(
+                gl.GL_COPY_READ_BUFFER,
+                gl.GL_COPY_WRITE_BUFFER,
+                gl.GLintptr(0),
+                gl.GLintptr(offset),
+                shape.vbo.size)
+            offset += shape.vbo.size
+
+        # Create an index buffer objet. It should count starting from 0. We need to
+        # use a reset_idx to indicate that a new shape will start.
+        reset_idx = 2 ** 32 - 1
+        indices = []
+        counter = itertools.count()
+        for shape in self.shape_list:
+            indices.extend(itertools.islice(counter, shape.vao.num_vertices))
+            indices.append(reset_idx)
+        del indices[-1]
+        indices = np.array(indices)
+        ibo = shader.Buffer(indices.astype('i4').tobytes())
+
+        vao_content = [
+            shader.BufferDescription(
+                vbo,
+                '2f 4B',
+                ('in_vert', 'in_color'),
+                normalized=['in_color']
+            )
+        ]
+        vao = shader.vertex_array(self.shape.program, vao_content, ibo)
+        with vao:
+            self.shape.program['Projection'] = get_projection().flatten()
+        self.shape.vao = vao
+        self.shape.vbo = vbo
+        self.shape.ibo = ibo
 
     def move(self, change_x: float, change_y: float):
         """
@@ -867,46 +955,4 @@ class ShapeElementList(Generic[T]):
         """
         Draw everything in the list.
         """
-        # gl.glClear(gl.GL_COLOR_BUFFER_BIT)
-        gl.glEnableClientState(gl.GL_VERTEX_ARRAY)
-        gl.glLoadIdentity()
-
-        gl.glTranslatef(self.center_x, self.center_y, 0)
-        if self.angle:
-            gl.glRotatef(self.angle, 0, 0, 1)
-
-        last_color = None
-        last_line_width = None
-
-        gl.glEnable(gl.GL_BLEND)
-        gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-        gl.glEnable(gl.GL_LINE_SMOOTH)
-        gl.glHint(gl.GL_LINE_SMOOTH_HINT, gl.GL_NICEST)
-        gl.glHint(gl.GL_POLYGON_SMOOTH_HINT, gl.GL_NICEST)
-
-        for shape in self.shape_list:
-            if shape.vbo_color_id is not None:
-                gl.glEnableClientState(gl.GL_COLOR_ARRAY)
-            else:
-                gl.glDisableClientState(gl.GL_COLOR_ARRAY)
-                if last_color is None or last_color != shape.color:
-                    last_color = shape.color
-
-                    if len(shape.color) == 4:
-                        gl.glColor4ub(shape.color[0], shape.color[1], shape.color[2],
-                                      shape.color[3])
-                        gl.glEnable(gl.GL_BLEND)
-                        gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-                    elif len(shape.color) == 3:
-                        gl.glDisable(gl.GL_BLEND)
-                        gl.glColor4ub(shape.color[0], shape.color[1], shape.color[2], 255)
-
-            if shape.line_width and last_line_width != shape.line_width:
-                last_line_width = shape.line_width
-                gl.glLineWidth(shape.line_width)
-
-            if shape.vbo_color_id is None:
-                stripped_render(shape)
-            else:
-                stripped_render_with_colors(shape)
-
+        self.shape.draw()
