@@ -145,6 +145,12 @@ class Program:
 
         uniform.setter(value)
 
+    def __enter__(self):
+        glUseProgram(self.prog_id)
+
+    def __exit__(self, exception_type, exception_value, traceback):
+        glUseProgram(0)
+
     def get_num_active(self, variable_type: GLenum) -> int:
         """Get the number of active variables of the passed GL type.
 
@@ -294,6 +300,7 @@ class Buffer:
 
     def _read(self, size):
         "Debug method to read data from the buffer."
+        glBindBuffer(GL_ARRAY_BUFFER, self.buffer_id)
         ptr = glMapBufferRange(GL_ARRAY_BUFFER, GLintptr(0), size, GL_MAP_READ_BIT)
         print(f"Reading back from buffer:\n{string_at(ptr, size=size)}")
         glUnmapBuffer(GL_ARRAY_BUFFER)

@@ -8,6 +8,7 @@ the graphics card for much faster render times.
 
 import math
 import itertools
+from collections import defaultdict
 import ctypes
 import pyglet.gl as gl
 import numpy as np
@@ -481,52 +482,58 @@ def create_filled_rectangles(point_list, color: Color) -> VertexBuffer:
     return shape
 
 
-def _create_filled_with_colors(point_list, color_list, shape_mode):
-    number_points = len(point_list)
+def _create_filled_with_colors(point_list, color_list, shape_mode) -> Shape2:
+    program = shader.program(
+        vertex_shader='''
+            #version 330
+            uniform mat4 Projection;
+            in vec2 in_vert;
+            in vec4 in_color;
+            out vec4 v_color;
+            void main() {
+               gl_Position = Projection * vec4(in_vert, 0.0, 1.0);
+               v_color = in_color;
+            }
+        ''',
+        fragment_shader='''
+            #version 330
+            in vec4 v_color;
+            out vec4 f_color;
+            void main() {
+                f_color = v_color;
+            }
+        ''',
+    )
 
-    vertex_data = []
-    for point in point_list:
-        vertex_data.append(point[0])
-        vertex_data.append(point[1])
+    buffer_type = np.dtype([('vertex', '2f4'), ('color', '4B')])
+    data = np.zeros(len(point_list), dtype=buffer_type)
+    data['vertex'] = point_list
+    data['color'] = [get_four_byte_color(color) for color in color_list]
 
-    color_data = []
-    for color in color_list:
-        color_data.append(color[0] / 255.)
-        color_data.append(color[1] / 255.)
-        color_data.append(color[2] / 255.)
-        if len(color) == 3:
-            color_data.append(1.0)
-        else:
-            color_data.append(color[3] / 255.)
+    vbo = shader.buffer(data.tobytes())
+    vao_content = [
+        shader.BufferDescription(
+            vbo,
+            '2f 4B',
+            ('in_vert', 'in_color'),
+            normalized=['in_color']
+        )
+    ]
 
-    vbo_vertex_id = gl.GLuint()
+    vao = shader.vertex_array(program, vao_content)
+    with vao:
+        program['Projection'] = get_projection().flatten()
 
-    gl.glGenBuffers(1, ctypes.pointer(vbo_vertex_id))
-
-    # Create a buffer with the data
-    # This line of code is a bit strange.
-    # (gl.GLfloat * len(data)) creates an array of GLfloats, one for each number
-    # (*data) initalizes the list with the floats. *data turns the list into a
-    # tuple.
-    data2 = (gl.GLfloat * len(vertex_data))(*vertex_data)
-
-    gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vbo_vertex_id)
-    gl.glBufferData(gl.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2,
-                    gl.GL_STATIC_DRAW)
-
-    # Colors
-    vbo_color_id = gl.GLuint()
-    gl.glGenBuffers(1, ctypes.pointer(vbo_color_id))
-
-    gl_color_list = (gl.GLfloat * len(color_data))(*color_data)
-    gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vbo_color_id)
-    gl.glBufferData(gl.GL_ARRAY_BUFFER, ctypes.sizeof(gl_color_list), gl_color_list, gl.GL_STATIC_DRAW)
-
-    shape = VertexBuffer(vbo_vertex_id, number_points, shape_mode, vbo_color_id=vbo_color_id)
+    shape = Shape2()
+    shape.vao = vao
+    shape.vbo = vbo
+    shape.program = program
+    shape.mode = shape_mode
+    shape.line_width = 1
     return shape
 
 
-def create_rectangles_filled_with_colors(point_list, color_list) -> VertexBuffer:
+def create_rectangles_filled_with_colors(point_list, color_list) -> Shape2:
     """
     This function creates multiple rectangle/quads using a vertex buffer object.
     Creating the rectangles, and then later drawing it with ``render``
@@ -545,11 +552,12 @@ def create_rectangles_filled_with_colors(point_list, color_list) -> VertexBuffer
 
     """
 
-    shape_mode = gl.GL_QUADS
+    shape_mode = gl.GL_TRIANGLE_STRIP
+    point_list[-2:] = reversed(point_list[-2:])
     return _create_filled_with_colors(point_list, color_list, shape_mode)
 
 
-def create_triangles_filled_with_colors(point_list, color_list) -> VertexBuffer:
+def create_triangles_filled_with_colors(point_list, color_list) -> Shape2:
     """
     This function creates multiple rectangle/quads using a vertex buffer object.
     Creating the rectangles, and then later drawing it with ``render``
@@ -567,7 +575,7 @@ def create_triangles_filled_with_colors(point_list, color_list) -> VertexBuffer:
     >>> arcade.quick_run(0.25)
     """
 
-    shape_mode = gl.GL_TRIANGLES
+    shape_mode = gl.GL_TRIANGLE_STRIP
     return _create_filled_with_colors(point_list, color_list, shape_mode)
 
 
@@ -790,7 +798,7 @@ def stripped_render_with_colors(shape: VertexBuffer):
     gl.glDrawArrays(shape.draw_mode, 0, shape.size)
 
 
-T = TypeVar('T', bound=VertexBuffer)
+T = TypeVar('T', bound=Shape2)
 
 
 class ShapeElementList(Generic[T]):
@@ -861,53 +869,37 @@ class ShapeElementList(Generic[T]):
                 }
             ''',
         )
-        vbo = shader.buffer(b'')
-        vao_content = [
-            shader.BufferDescription(
-                vbo,
-                '2f 4B',
-                ('in_vert', 'in_color'),
-                normalized=['in_color']
-            )
-        ]
-        vao = shader.vertex_array(self.program, vao_content)
-        with vao:
-            self.program['Projection'] = get_projection().flatten()
-            self.program['Position'] = [self.center_x, self.center_y]
-            self.program['Angle'] = self.angle
-        self.shapes = dict()
-        self.shape = Shape2()
-        self.shape.vao = vao
-        self.shape.vbo = vbo
-        self.shape.program = self.program
-        # To modifiy obviously!
-        self.shape.mode = gl.GL_LINE_STRIP
-        self.shape.line_width = 5
-
-        self.dirty = False
+        # Could do much better using just one vbo and glDrawElementsBaseVertex
+        self.batches = defaultdict(_Batch)
+        self.dirties = set()
 
     def append(self, item: T):
         """
         Add a new shape to the list.
         """
         self.shape_list.append(item)
-        self.dirty = True
+        group = (item.mode, item.line_width)
+        self.batches[group].items.append(item)
+        self.dirties.add(group)
 
     def remove(self, item: T):
         """
         Remove a specific shape from the list.
         """
         self.shape_list.remove(item)
-        self.dirty = True
+        group = (item.mode, item.line_width)
+        self.batches[group].items.remove(item)
+        self.dirties.add(group)
 
-    def _refresh_shape(self):
+    def _refresh_shape(self, group):
         # Create a buffer large enough to hold all the shapes buffers
-        total_vbo_bytes = sum(s.vbo.size for s in self.shape_list)
+        batch = self.batches[group]
+        total_vbo_bytes = sum(s.vbo.size for s in batch.items)
         vbo = shader.Buffer.create_with_size(total_vbo_bytes)
         offset = 0
         gl.glBindBuffer(gl.GL_COPY_WRITE_BUFFER, vbo.buffer_id)
         # Copy all the shapes buffer in our own vbo
-        for shape in self.shape_list:
+        for shape in batch.items:
             gl.glBindBuffer(gl.GL_COPY_READ_BUFFER, shape.vbo.buffer_id)
             gl.glCopyBufferSubData(
                 gl.GL_COPY_READ_BUFFER,
@@ -922,7 +914,7 @@ class ShapeElementList(Generic[T]):
         reset_idx = 2 ** 32 - 1
         indices = []
         counter = itertools.count()
-        for shape in self.shape_list:
+        for shape in batch.items:
             indices.extend(itertools.islice(counter, shape.vao.num_vertices))
             indices.append(reset_idx)
         del indices[-1]
@@ -937,13 +929,19 @@ class ShapeElementList(Generic[T]):
                 normalized=['in_color']
             )
         ]
-        vao = shader.vertex_array(self.shape.program, vao_content, ibo)
-        with vao:
-            self.shape.program['Projection'] = get_projection().flatten()
-        self.shape.vao = vao
-        self.shape.vbo = vbo
-        self.shape.ibo = ibo
-        self.dirty = False
+        vao = shader.vertex_array(self.program, vao_content, ibo)
+        with self.program:
+            self.program['Projection'] = get_projection().flatten()
+            self.program['Position'] = [self.center_x, self.center_y]
+            self.program['Angle'] = self.angle
+
+        batch.shape.vao = vao
+        batch.shape.vbo = vbo
+        batch.shape.ibo = ibo
+        batch.shape.program = self.program
+        mode, line_width = group
+        batch.shape.mode = mode
+        batch.shape.line_width = line_width
 
     def move(self, change_x: float, change_y: float):
         """
@@ -969,9 +967,11 @@ class ShapeElementList(Generic[T]):
         """
         Draw everything in the list.
         """
-        if self.dirty:
-            self._refresh_shape()
-        self.shape.draw()
+        for group in self.dirties:
+            self._refresh_shape(group)
+        self.dirties.clear()
+        for batch in self.batches.values():
+            batch.shape.draw()
 
     def _get_center_x(self) -> float:
         """Get the center x coordinate of the ShapeElementList."""
@@ -980,7 +980,7 @@ class ShapeElementList(Generic[T]):
     def _set_center_x(self, value: float):
         """Set the center x coordinate of the ShapeElementList."""
         self._center_x = value
-        with self.shape.vao:
+        with self.program:
             self.program['Position'] = [self._center_x, self._center_y]
 
     center_x = property(_get_center_x, _set_center_x)
@@ -992,7 +992,7 @@ class ShapeElementList(Generic[T]):
     def _set_center_y(self, value: float):
         """Set the center y coordinate of the ShapeElementList."""
         self._center_y = value
-        with self.shape.vao:
+        with self.program:
             self.program['Position'] = [self._center_x, self._center_y]
 
     center_y = property(_get_center_y, _set_center_y)
@@ -1004,7 +1004,13 @@ class ShapeElementList(Generic[T]):
     def _set_angle(self, value: float):
         """Set the angle of the ShapeElementList in degrees."""
         self._angle = value
-        with self.shape.vao:
+        with self.program:
             self.program['Angle'] = self._angle
 
     angle = property(_get_angle, _set_angle)
+
+
+class _Batch(Generic[T]):
+    def __init__(self):
+        self.shape = Shape2()
+        self.items = []
