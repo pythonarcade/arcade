@@ -259,7 +259,8 @@ def create_line_loop(point_list: PointList,
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
     """
-    return create_line_generic(point_list, color, gl.GL_LINE_LOOP, line_width)
+    point_list = list(point_list) + [point_list[0]]
+    return create_line_generic(point_list, color, gl.GL_LINE_STRIP, line_width)
 
 
 def create_lines(point_list: PointList,
@@ -311,31 +312,41 @@ def create_polygon(point_list: PointList,
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
     """
-    return create_line_generic(point_list, color, gl.GL_POLYGON, border_width)
+    # We assume points were given in order, either clockwise or counter clockwise.
+    # Polygon is assumed to be monotone.
+    # To fill the polygon, we start by one vertex, and we chain triangle strips
+    # alternating with vertices to the left and vertices to the right of the
+    # initial vertex.
+    half = len(point_list) // 2
+    interleaved = itertools.chain.from_iterable(
+        itertools.zip_longest(point_list[:half], reversed(point_list[half:]))
+    )
+    point_list = [p for p in interleaved if p is not None]
+    return create_line_generic(point_list, color, gl.GL_TRIANGLE_STRIP, border_width)
 
 
 def create_rectangle_filled(center_x: float, center_y: float, width: float,
                             height: float, color: Color,
-                            tilt_angle: float=0) -> VertexBuffer:
+                            tilt_angle: float=0) -> Shape:
     """
     Create a filled rectangle.
     """
-
-    border_width = 0
-    return create_rectangle(center_x, center_y, width, height, color, border_width, tilt_angle)
+    return create_rectangle(center_x, center_y, width, height,
+                            color, tilt_angle=tilt_angle)
 
 
 def create_rectangle_outline(center_x: float, center_y: float, width: float,
                              height: float, color: Color,
-                             border_width: float=1, tilt_angle: float=0) -> VertexBuffer:
+                             border_width: float=1, tilt_angle: float=0) -> Shape:
     """
     Create a rectangle outline.
     """
-    return create_rectangle(center_x, center_y, width, height, color, border_width, tilt_angle, filled=False)
+    return create_rectangle(center_x, center_y, width, height,
+                            color, border_width, tilt_angle, filled=False)
 
 
 def get_rectangle_points(center_x: float, center_y: float, width: float,
-                         height: float, tilt_angle: float=0):
+                         height: float, tilt_angle: float=0) -> PointList:
     """
     Utility function that will return all four coordinate points of a
     rectangle given the x, y center, width, height, and rotation.
@@ -343,14 +354,14 @@ def get_rectangle_points(center_x: float, center_y: float, width: float,
     x1 = -width / 2 + center_x
     y1 = -height / 2 + center_y
 
-    x2 = width / 2 + center_x
-    y2 = -height / 2 + center_y
+    x2 = -width / 2 + center_x
+    y2 = height / 2 + center_y
 
     x3 = width / 2 + center_x
     y3 = height / 2 + center_y
 
-    x4 = -width / 2 + center_x
-    y4 = height / 2 + center_y
+    x4 = width / 2 + center_x
+    y4 = -height / 2 + center_y
 
     if tilt_angle:
         x1, y1 = rotate_point(x1, y1, center_x, center_y, tilt_angle)
@@ -358,18 +369,18 @@ def get_rectangle_points(center_x: float, center_y: float, width: float,
         x3, y3 = rotate_point(x3, y3, center_x, center_y, tilt_angle)
         x4, y4 = rotate_point(x4, y4, center_x, center_y, tilt_angle)
 
-    data = [x1, y1,
-            x2, y2,
-            x3, y3,
-            x4, y4]
+    data = [(x1, y1),
+            (x2, y2),
+            (x3, y3),
+            (x4, y4)]
 
     return data
 
 
 def create_rectangle(center_x: float, center_y: float, width: float,
                      height: float, color: Color,
-                     border_width: float=0, tilt_angle: float=0,
-                     filled=True) -> VertexBuffer:
+                     border_width: float=1, tilt_angle: float=0,
+                     filled=True) -> Shape:
     """
     This function creates a rectangle using a vertex buffer object.
     Creating the rectangle, and then later drawing it with ``render_rectangle``
@@ -383,85 +394,60 @@ def create_rectangle(center_x: float, center_y: float, width: float,
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
     """
-
     data = get_rectangle_points(center_x, center_y, width, height, tilt_angle)
 
-    # print(data)
-    vbo_id = gl.GLuint()
-
-    gl.glGenBuffers(1, ctypes.pointer(vbo_id))
-
-    # Create a buffer with the data
-    # This line of code is a bit strange.
-    # (gl.GLfloat * len(data)) creates an array of GLfloats, one for each number
-    # (*data) initalizes the list with the floats. *data turns the list into a
-    # tuple.
-    data2 = (gl.GLfloat * len(data))(*data)
-
-    gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vbo_id)
-    gl.glBufferData(gl.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2,
-                    gl.GL_STATIC_DRAW)
-
     if filled:
-        shape_mode = gl.GL_QUADS
+        shape_mode = gl.GL_TRIANGLE_STRIP
+        data[-2:] = reversed(data[-2:])
     else:
-        shape_mode = gl.GL_LINE_LOOP
-    shape = VertexBuffer(vbo_id, len(data) // 2, shape_mode)
-
-    # Colors
-    shape.vbo_color_id = gl.GLuint()
-    gl.glGenBuffers(1, ctypes.pointer(shape.vbo_color_id))
-
-    color_data = _fix_color_list( (color, color, color, color) )
-    gl_color_list = (gl.GLfloat * len(color_data))(*color_data)
-    gl.glBindBuffer(gl.GL_ARRAY_BUFFER, shape.vbo_color_id)
-    gl.glBufferData(gl.GL_ARRAY_BUFFER, ctypes.sizeof(gl_color_list), gl_color_list, gl.GL_STATIC_DRAW)
-    shape.color = color
-    shape.line_width = border_width
+        shape_mode = gl.GL_LINE_STRIP
+        data.append(data[0])
+    shape = create_line_generic(data, color, shape_mode, border_width)
     return shape
 
+# Seems that ShapeElementList would be a better tool for this
 
-def create_filled_rectangles(point_list, color: Color) -> VertexBuffer:
-    """
-    This function creates multiple rectangle/quads using a vertex buffer object.
-    Creating the rectangles, and then later drawing it with ``render``
-    is faster than calling ``draw_rectangle``.
+# def create_filled_rectangles(point_list, color: Color) -> Shape:
+#     """
+#     This function creates multiple rectangle/quads using a vertex buffer object.
+#     Creating the rectangles, and then later drawing it with ``render``
+#     is faster than calling ``draw_rectangle``.
 
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
-    >>> point_list = [0, 0, 100, 0, 100, 100, 0, 100]
-    >>> my_rect = arcade.create_filled_rectangles(point_list, (0, 255, 0))
-    >>> arcade.render(my_rect)
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
-    """
+#     >>> import arcade
+#     >>> arcade.open_window(800,600,"Drawing Example")
+#     >>> point_list = [0, 0, 100, 0, 100, 100, 0, 100]
+#     >>> my_rect = arcade.create_filled_rectangles(point_list, (0, 255, 0))
+#     >>> arcade.render(my_rect)
+#     >>> arcade.finish_render()
+#     >>> arcade.quick_run(0.25)
+#     """
 
-    data = point_list
+#     data = point_list
 
-    # print(data)
-    vbo_id = gl.GLuint()
+#     # print(data)
+#     vbo_id = gl.GLuint()
 
-    gl.glGenBuffers(1, ctypes.pointer(vbo_id))
+#     gl.glGenBuffers(1, ctypes.pointer(vbo_id))
 
-    # Create a buffer with the data
-    # This line of code is a bit strange.
-    # (gl.GLfloat * len(data)) creates an array of GLfloats, one for each number
-    # (*data) initalizes the list with the floats. *data turns the list into a
-    # tuple.
-    data2 = (gl.GLfloat * len(data))(*data)
+#     # Create a buffer with the data
+#     # This line of code is a bit strange.
+#     # (gl.GLfloat * len(data)) creates an array of GLfloats, one for each number
+#     # (*data) initalizes the list with the floats. *data turns the list into a
+#     # tuple.
+#     data2 = (gl.GLfloat * len(data))(*data)
 
-    gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vbo_id)
-    gl.glBufferData(gl.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2,
-                    gl.GL_STATIC_DRAW)
+#     gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vbo_id)
+#     gl.glBufferData(gl.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2,
+#                     gl.GL_STATIC_DRAW)
 
-    shape_mode = gl.GL_QUADS
-    shape = VertexBuffer(vbo_id, len(data) // 2, shape_mode)
+#     shape_mode = gl.GL_QUADS
+#     shape = VertexBuffer(vbo_id, len(data) // 2, shape_mode)
 
-    shape.color = color
-    return shape
+#     shape.color = color
+#     return shape
 
 
-def create_rectangles_filled_with_colors(point_list, color_list) -> Shape:
+def create_rectangle_filled_with_colors(point_list, color_list) -> Shape:
     """
     This function creates multiple rectangle/quads using a vertex buffer object.
     Creating the rectangles, and then later drawing it with ``render``
@@ -471,7 +457,7 @@ def create_rectangles_filled_with_colors(point_list, color_list) -> Shape:
     >>> arcade.open_window(800,600,"Drawing Example")
     >>> point_list = [(0, 0), (100, 0), (100, 100), (0, 100)]
     >>> color_list = [arcade.color.RED, arcade.color.BLUE, arcade.color.GREEN, arcade.color.AFRICAN_VIOLET]
-    >>> my_shape = arcade.create_rectangles_filled_with_colors(point_list, color_list)
+    >>> my_shape = arcade.create_rectangle_filled_with_colors(point_list, color_list)
     >>> my_shape_list = ShapeElementList()
     >>> my_shape_list.append(my_shape)
     >>> my_shape_list.draw()
@@ -482,6 +468,7 @@ def create_rectangles_filled_with_colors(point_list, color_list) -> Shape:
 
     shape_mode = gl.GL_TRIANGLE_STRIP
     point_list[-2:] = reversed(point_list[-2:])
+    color_list[-2:] = reversed(color_list[-2:])
     return create_line_generic_with_colors(point_list, color_list, shape_mode)
 
 
@@ -509,7 +496,7 @@ def create_triangles_filled_with_colors(point_list, color_list) -> Shape:
 
 def create_ellipse_filled(center_x: float, center_y: float,
                           width: float, height: float, color: Color,
-                          tilt_angle: float=0, num_segments=128) -> VertexBuffer:
+                          tilt_angle: float=0, num_segments=128) -> Shape:
     """
     Create a filled ellipse. Or circle if you use the same width and height.
 
@@ -521,14 +508,15 @@ def create_ellipse_filled(center_x: float, center_y: float,
     >>> arcade.quick_run(0.25)
     """
 
-    border_width = 0
-    return create_ellipse(center_x, center_y, width, height, color, border_width, tilt_angle, num_segments, True)
+    border_width = 1
+    return create_ellipse(center_x, center_y, width, height, color,
+                          border_width, tilt_angle, num_segments, filled=True)
 
 
 def create_ellipse_outline(center_x: float, center_y: float,
                            width: float, height: float, color: Color,
                            border_width: float=1,
-                           tilt_angle: float=0, num_segments=128) -> VertexBuffer:
+                           tilt_angle: float=0, num_segments=128) -> Shape:
     """
     Create an outline of an ellipse.
 
@@ -540,14 +528,15 @@ def create_ellipse_outline(center_x: float, center_y: float,
     >>> arcade.quick_run(0.25)
     """
 
-    return create_ellipse(center_x, center_y, width, height, color, border_width, tilt_angle, num_segments, False)
+    return create_ellipse(center_x, center_y, width, height, color,
+                          border_width, tilt_angle, num_segments, filled=False)
 
 
 def create_ellipse(center_x: float, center_y: float,
                    width: float, height: float, color: Color,
-                   border_width: float=0,
+                   border_width: float=1,
                    tilt_angle: float=0, num_segments=32,
-                   filled=True) -> VertexBuffer:
+                   filled=True) -> Shape:
 
     """
     This creates an ellipse vertex buffer object (VBO). It can later be
@@ -566,8 +555,8 @@ def create_ellipse(center_x: float, center_y: float,
     >>> arcade.quick_run(0.25)
 
     """
-    # Create an array with the vertex data
-    data = []
+    # Create an array with the vertex point_list
+    point_list = []
 
     for segment in range(num_segments + 1):
         theta = 2.0 * 3.1415926 * segment / num_segments
@@ -578,33 +567,20 @@ def create_ellipse(center_x: float, center_y: float,
         if tilt_angle:
             x, y = rotate_point(x, y, center_x, center_y, tilt_angle)
 
-        data.extend([x, y])
-
-    # Create an id for our vertex buffer
-    vbo_id = gl.GLuint()
-
-    gl.glGenBuffers(1, ctypes.pointer(vbo_id))
-
-    # Create a buffer with the data
-    # This line of code is a bit strange.
-    # (gl.GLfloat * len(data)) creates an array of GLfloats, one for each number
-    # (*data) initalizes the list with the floats. *data turns the list into a
-    # tuple.
-    data2 = (gl.GLfloat * len(data))(*data)
-
-    gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vbo_id)
-    gl.glBufferData(gl.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2,
-                    gl.GL_STATIC_DRAW)
+        point_list.append((x, y))
 
     if filled:
-        shape_mode = gl.GL_TRIANGLE_FAN
+        half = len(point_list) // 2
+        interleaved = itertools.chain.from_iterable(
+            itertools.zip_longest(point_list[:half], reversed(point_list[half:]))
+        )
+        point_list = [p for p in interleaved if p is not None]
+        shape_mode = gl.GL_TRIANGLE_STRIP
     else:
-        shape_mode = gl.GL_LINE_LOOP
+        point_list.append(point_list[0])
+        shape_mode = gl.GL_LINE_STRIP
 
-    shape = VertexBuffer(vbo_id, len(data) // 2, shape_mode)
-    shape.color = color
-    shape.line_width = border_width
-    return shape
+    return create_line_generic(point_list, color, shape_mode, border_width)
 
 
 def create_ellipse_filled_with_colors(center_x: float, center_y: float,

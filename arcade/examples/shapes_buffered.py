@@ -1,8 +1,7 @@
 """
 Shapes buffered in ShapeElementList
 
-Show how to use a ShapeElementList to display multiple shapes
-on-screen.
+Show how to use a ShapeElementList to display multiple shapes on-screen.
 
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.lines_buffered
@@ -74,11 +73,23 @@ class MyGame(arcade.Window):
             x = SCREEN_WIDTH // 2 - random.randrange(SCREEN_WIDTH - 50)
             y = SCREEN_HEIGHT // 2 - random.randrange(SCREEN_HEIGHT - 50)
             points = [(px + x, py + y) for px, py in point_list]
-            rect_filled = arcade.create_rectangles_filled_with_colors(
+            rect_filled = arcade.create_rectangle_filled_with_colors(
                 points,
                 random.sample(colors, 4)
             )
             self.shape_list.append(rect_filled)
+
+        point_list = ((100, 100),
+                      (50, 150),
+                      (100, 200),
+                      (200, 200),
+                      (250, 150),
+                      (200, 100))
+        poly = arcade.create_polygon(point_list, (255, 10, 10), 5)
+        self.shape_list.append(poly)
+
+        ellipse = arcade.create_ellipse(20, 30, 50, 20, (230, 230, 0))
+        self.shape_list.append(ellipse)
 
         arcade.set_background_color(arcade.color.BLACK)
 
