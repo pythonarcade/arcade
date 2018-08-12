@@ -5,7 +5,12 @@ import numpy as np
 from ctypes import POINTER
 from arcade.buffered_draw_commands import (
     create_line,
-    create_line_generic_with_colors
+    create_line_generic_with_colors,
+    create_line_generic,
+    create_line_strip,
+    create_line_loop,
+    create_lines,
+    create_polygon,
 )
 
 
@@ -16,7 +21,7 @@ def set_projection():
     )
 
 
-buffer_type = np.dtype([('vertex', '2f4'), ('color', '4B')])
+buffer_type = np.dtype([("vertex", "2f4"), ("color", "4B")])
 
 
 def get_data_from_vbo(vbo, count, stride):
@@ -37,8 +42,8 @@ def test_create_line():
 
     data = get_data_from_vbo(line.vbo, 2, 12)
     expected = np.zeros(2, dtype=buffer_type)
-    expected['vertex'] = [10, 20], [30, 40]
-    expected['color'] = [100, 110, 120, 255], [100, 110, 120, 255]
+    expected["vertex"] = [10, 20], [30, 40]
+    expected["color"] = [100, 110, 120, 255], [100, 110, 120, 255]
     np.testing.assert_array_equal(data, expected)
 
 
@@ -54,8 +59,86 @@ def test_create_line_generic_with_colors():
 
     data = get_data_from_vbo(line.vbo, 3, 12)
     expected = np.zeros(3, dtype=buffer_type)
-    expected['vertex'] = [(10, 20), (30, 40), (50, 60)]
-    expected['color'] = [(100, 110, 120, 255),
+    expected["vertex"] = [(10, 20), (30, 40), (50, 60)]
+    expected["color"] = [(100, 110, 120, 255),
                          (130, 140, 150, 255),
                          (160, 170, 180, 255)]
     np.testing.assert_array_equal(data, expected)
+
+
+def test_create_line_generic(mocker):
+    mock = mocker.patch("arcade.buffered_draw_commands.create_line_generic_with_colors")
+    create_line_generic(
+        point_list=[(10, 20), (30, 40), (50, 60)],
+        color=(100, 110, 120),
+        shape_mode=gl.GL_LINE_STRIP,
+        line_width=2
+    )
+    mock.assert_called_with(
+        [(10, 20), (30, 40), (50, 60)],
+        [(100, 110, 120, 255), (100, 110, 120, 255), (100, 110, 120, 255)],
+        gl.GL_LINE_STRIP,
+        2
+    )
+
+
+def test_create_line_strip(mocker):
+    mock = mocker.patch("arcade.buffered_draw_commands.create_line_generic_with_colors")
+    create_line_strip(
+        point_list=[(10, 20), (30, 40), (50, 60)],
+        color=(100, 110, 120),
+        line_width=2
+    )
+    mock.assert_called_with(
+        [(10, 20), (30, 40), (50, 60)],
+        [(100, 110, 120, 255), (100, 110, 120, 255), (100, 110, 120, 255)],
+        gl.GL_LINE_STRIP,
+        2
+    )
+
+
+def test_create_line_loop(mocker):
+    mock = mocker.patch("arcade.buffered_draw_commands.create_line_generic_with_colors")
+    create_line_loop(
+        point_list=[(10, 20), (30, 40), (50, 60)],
+        color=(100, 110, 120),
+        line_width=2
+    )
+    mock.assert_called_with(
+        [(10, 20), (30, 40), (50, 60)],
+        [(100, 110, 120, 255), (100, 110, 120, 255), (100, 110, 120, 255)],
+        gl.GL_LINE_LOOP,
+        2
+    )
+
+
+def test_create_lines(mocker):
+    mock = mocker.patch("arcade.buffered_draw_commands.create_line_generic_with_colors")
+    create_lines(
+        point_list=[(10, 20), (30, 40), (50, 60), (70, 80)],
+        color=(100, 110, 120),
+        line_width=2
+    )
+    mock.assert_called_with(
+        [(10, 20), (30, 40), (50, 60), (70, 80)],
+        [(100, 110, 120, 255), (100, 110, 120, 255),
+         (100, 110, 120, 255), (100, 110, 120, 255)],
+        gl.GL_LINES,
+        2
+    )
+
+
+def test_create_polygon(mocker):
+    mock = mocker.patch("arcade.buffered_draw_commands.create_line_generic_with_colors")
+    create_polygon(
+        point_list=[(10, 20), (30, 40), (50, 60), (70, 80)],
+        color=(100, 110, 120),
+        border_width=2
+    )
+    mock.assert_called_with(
+        [(10, 20), (30, 40), (50, 60), (70, 80)],
+        [(100, 110, 120, 255), (100, 110, 120, 255),
+         (100, 110, 120, 255), (100, 110, 120, 255)],
+        gl.GL_POLYGON,
+        2
+    )

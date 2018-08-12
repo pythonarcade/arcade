@@ -259,7 +259,7 @@ def create_line_loop(point_list: PointList,
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
     """
-    return create_line_generic(point_list, color, gl.GL_LINE_LOOP,line_width)
+    return create_line_generic(point_list, color, gl.GL_LINE_LOOP, line_width)
 
 
 def create_lines(point_list: PointList,
@@ -282,7 +282,7 @@ def create_lines(point_list: PointList,
     return create_line_generic(point_list, color, gl.GL_LINES, line_width)
 
 
-def _fix_color_list(original_color_data):
+def _fix_color_list(original_color_data):  # TODO: delete this function. Useless now.
     new_color_data = []
     for color in original_color_data:
         new_color_data.append(color[0] / 255.)
