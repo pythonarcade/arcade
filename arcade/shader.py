@@ -4,8 +4,7 @@
 from ctypes import *
 from collections import namedtuple
 import weakref
-import struct
-from typing import Type, Tuple, Iterable, Set
+from typing import Type, Tuple, Iterable
 
 from pyglet.gl import *
 import numpy as np

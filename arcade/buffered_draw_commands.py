@@ -51,7 +51,7 @@ class VertexBuffer:
         self.line_width = 0
 
 
-class Shape2:
+class Shape:
     def __init__(self):
         self.vao = None
         self.vbo = None
@@ -77,7 +77,7 @@ class Shape2:
 
 
 def create_line(start_x: float, start_y: float, end_x: float, end_y: float,
-                color: Color, line_width: float=1):
+                color: Color, line_width: float=1) -> Shape:
     """
     Create a line to be rendered later. This works faster than draw_line because
     the vertexes are only loaded to the graphics card once, rather than each frame.
@@ -135,7 +135,7 @@ def create_line(start_x: float, start_y: float, end_x: float, end_y: float,
     with vao:
         program['Projection'] = get_projection().flatten()
 
-    shape = Shape2()
+    shape = Shape()
     shape.vao = vao
     shape.vbo = vbo
     shape.program = program
@@ -145,9 +145,10 @@ def create_line(start_x: float, start_y: float, end_x: float, end_y: float,
     return shape
 
 
-def create_line_generic(draw_type: int,
-                        point_list: PointList,
-                        color: Color, line_width: float=1):
+def create_line_generic_with_colors(point_list: PointList,
+                                    color_list: Iterable[Color],
+                                    shape_mode: int,
+                                    line_width: float=1) -> Shape:
     """
     This function is used by ``create_line_strip`` and ``create_line_loop``,
     just changing the OpenGL type for the line drawing.
@@ -177,7 +178,7 @@ def create_line_generic(draw_type: int,
     buffer_type = np.dtype([('vertex', '2f4'), ('color', '4B')])
     data = np.zeros(len(point_list), dtype=buffer_type)
     data['vertex'] = point_list
-    data['color'] = get_four_byte_color(color)
+    data['color'] = [get_four_byte_color(color) for color in color_list]
 
     vbo = shader.buffer(data.tobytes())
     vao_content = [
@@ -193,12 +194,29 @@ def create_line_generic(draw_type: int,
     with vao:
         program['Projection'] = get_projection().flatten()
 
-    shape = Shape2()
+    shape = Shape()
     shape.vao = vao
     shape.vbo = vbo
     shape.program = program
-    shape.mode = draw_type
+    shape.mode = shape_mode
     shape.line_width = line_width
+
+    return shape
+
+
+def create_line_generic(point_list: PointList,
+                        color: Color,
+                        shape_mode: int, line_width: float=1) -> Shape:
+    """
+    This function is used by ``create_line_strip`` and ``create_line_loop``,
+    just changing the OpenGL type for the line drawing.
+    """
+    colors = [get_four_byte_color(color)] * len(point_list)
+    shape = create_line_generic_with_colors(
+        point_list,
+        colors,
+        shape_mode,
+        line_width)
 
     return shape
 
@@ -221,7 +239,7 @@ def create_line_strip(point_list: PointList,
     >>> arcade.quick_run(0.25)
 
     """
-    return create_line_generic(gl.GL_LINE_STRIP, point_list, color, line_width)
+    return create_line_generic(point_list, color, gl.GL_LINE_STRIP, line_width)
 
 
 def create_line_loop(point_list: PointList,
@@ -241,7 +259,7 @@ def create_line_loop(point_list: PointList,
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
     """
-    return create_line_generic(gl.GL_LINE_LOOP, point_list, color, line_width)
+    return create_line_generic(point_list, color, gl.GL_LINE_LOOP,line_width)
 
 
 def create_lines(point_list: PointList,
@@ -261,7 +279,7 @@ def create_lines(point_list: PointList,
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
     """
-    return create_line_generic(gl.GL_LINES, point_list, color, line_width)
+    return create_line_generic(point_list, color, gl.GL_LINES, line_width)
 
 
 def _fix_color_list(original_color_data):
@@ -275,45 +293,6 @@ def _fix_color_list(original_color_data):
         else:
             new_color_data.append(color[3] / 255.)
     return new_color_data
-
-
-def create_lines_with_colors(point_list: PointList, color_list, line_width: float = 1) -> VertexBuffer:
-    shape_mode = gl.GL_LINES
-    number_points = len(point_list)
-
-    vertex_data = []
-    for point in point_list:
-        vertex_data.append(point[0])
-        vertex_data.append(point[1])
-
-    color_data = _fix_color_list(color_list)
-
-    vbo_vertex_id = gl.GLuint()
-
-    gl.glGenBuffers(1, ctypes.pointer(vbo_vertex_id))
-
-    # Create a buffer with the data
-    # This line of code is a bit strange.
-    # (gl.GLfloat * len(data)) creates an array of GLfloats, one for each number
-    # (*data) initalizes the list with the floats. *data turns the list into a
-    # tuple.
-    data2 = (gl.GLfloat * len(vertex_data))(*vertex_data)
-
-    gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vbo_vertex_id)
-    gl.glBufferData(gl.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2,
-                    gl.GL_STATIC_DRAW)
-
-    # Colors
-    vbo_color_id = gl.GLuint()
-    gl.glGenBuffers(1, ctypes.pointer(vbo_color_id))
-
-    gl_color_list = (gl.GLfloat * len(color_data))(*color_data)
-    gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vbo_color_id)
-    gl.glBufferData(gl.GL_ARRAY_BUFFER, ctypes.sizeof(gl_color_list), gl_color_list, gl.GL_STATIC_DRAW)
-
-    shape = VertexBuffer(vbo_vertex_id, number_points, shape_mode, vbo_color_id=vbo_color_id)
-    shape.line_width = line_width
-    return shape
 
 
 def create_polygon(point_list: PointList,
@@ -332,7 +311,7 @@ def create_polygon(point_list: PointList,
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
     """
-    return create_line_generic(gl.GL_POLYGON, point_list, color, border_width)
+    return create_line_generic(point_list, color, gl.GL_POLYGON, border_width)
 
 
 def create_rectangle_filled(center_x: float, center_y: float, width: float,
@@ -482,58 +461,7 @@ def create_filled_rectangles(point_list, color: Color) -> VertexBuffer:
     return shape
 
 
-def _create_filled_with_colors(point_list, color_list, shape_mode) -> Shape2:
-    program = shader.program(
-        vertex_shader='''
-            #version 330
-            uniform mat4 Projection;
-            in vec2 in_vert;
-            in vec4 in_color;
-            out vec4 v_color;
-            void main() {
-               gl_Position = Projection * vec4(in_vert, 0.0, 1.0);
-               v_color = in_color;
-            }
-        ''',
-        fragment_shader='''
-            #version 330
-            in vec4 v_color;
-            out vec4 f_color;
-            void main() {
-                f_color = v_color;
-            }
-        ''',
-    )
-
-    buffer_type = np.dtype([('vertex', '2f4'), ('color', '4B')])
-    data = np.zeros(len(point_list), dtype=buffer_type)
-    data['vertex'] = point_list
-    data['color'] = [get_four_byte_color(color) for color in color_list]
-
-    vbo = shader.buffer(data.tobytes())
-    vao_content = [
-        shader.BufferDescription(
-            vbo,
-            '2f 4B',
-            ('in_vert', 'in_color'),
-            normalized=['in_color']
-        )
-    ]
-
-    vao = shader.vertex_array(program, vao_content)
-    with vao:
-        program['Projection'] = get_projection().flatten()
-
-    shape = Shape2()
-    shape.vao = vao
-    shape.vbo = vbo
-    shape.program = program
-    shape.mode = shape_mode
-    shape.line_width = 1
-    return shape
-
-
-def create_rectangles_filled_with_colors(point_list, color_list) -> Shape2:
+def create_rectangles_filled_with_colors(point_list, color_list) -> Shape:
     """
     This function creates multiple rectangle/quads using a vertex buffer object.
     Creating the rectangles, and then later drawing it with ``render``
@@ -554,10 +482,10 @@ def create_rectangles_filled_with_colors(point_list, color_list) -> Shape2:
 
     shape_mode = gl.GL_TRIANGLE_STRIP
     point_list[-2:] = reversed(point_list[-2:])
-    return _create_filled_with_colors(point_list, color_list, shape_mode)
+    return create_line_generic_with_colors(point_list, color_list, shape_mode)
 
 
-def create_triangles_filled_with_colors(point_list, color_list) -> Shape2:
+def create_triangles_filled_with_colors(point_list, color_list) -> Shape:
     """
     This function creates multiple rectangle/quads using a vertex buffer object.
     Creating the rectangles, and then later drawing it with ``render``
@@ -576,7 +504,7 @@ def create_triangles_filled_with_colors(point_list, color_list) -> Shape2:
     """
 
     shape_mode = gl.GL_TRIANGLE_STRIP
-    return _create_filled_with_colors(point_list, color_list, shape_mode)
+    return create_line_generic_with_colors(point_list, color_list, shape_mode)
 
 
 def create_ellipse_filled(center_x: float, center_y: float,
@@ -798,7 +726,7 @@ def stripped_render_with_colors(shape: VertexBuffer):
     gl.glDrawArrays(shape.draw_mode, 0, shape.size)
 
 
-T = TypeVar('T', bound=Shape2)
+T = TypeVar('T', bound=Shape)
 
 
 class ShapeElementList(Generic[T]):
@@ -1012,5 +940,5 @@ class ShapeElementList(Generic[T]):
 
 class _Batch(Generic[T]):
     def __init__(self):
-        self.shape = Shape2()
+        self.shape = Shape()
         self.items = []
