@@ -78,8 +78,10 @@ class MyGame(arcade.Window):
         self.processing_time = 0
         self.draw_time = 0
         self.program_start_time = timeit.default_timer()
-        self.sprite_count_data = []
-        self.fps_data = []
+        self.sprite_count_list = []
+        self.fps_list = []
+        self.processing_time_list = []
+        self.drawing_time_list = []
         self.last_fps_reading = 0
         self.fps = FPSCounter()
 
@@ -120,7 +122,7 @@ class MyGame(arcade.Window):
         self.coin_list.draw()
 
         # Display info on sprites
-        output = f"Sprite count: {COIN_COUNT}"
+        output = f"Sprite count: {len(self.coin_list)}"
         arcade.draw_text(output, 20, SCREEN_HEIGHT - 20, arcade.color.BLACK, 16)
 
         # Display timings
@@ -160,9 +162,11 @@ class MyGame(arcade.Window):
                 if total_program_time % 2 == 1:
                     self.add_coins()
                 else:
-                    print(f"{total_program_time}, {len(self.coin_list)}, {self.fps.get_fps():.1f}")
-                    self.sprite_count_data.append(len(self.coin_list))
-                    self.fps_data.append(round(self.fps.get_fps(),1))
+                    print(f"{total_program_time}, {len(self.coin_list)}, {self.fps.get_fps():.1f}, {self.processing_time:.4f}, {self.draw_time:.4f}")
+                    self.sprite_count_list.append(len(self.coin_list))
+                    self.fps_list.append(round(self.fps.get_fps(), 1))
+                    self.processing_time_list.append(self.processing_time)
+                    self.drawing_time_list.append(self.draw_time)
 
         # Save the time it took to do this.
         self.processing_time = timeit.default_timer() - start_time
@@ -176,16 +180,25 @@ def main():
     window = MyGame()
     window.setup()
     arcade.run()
-    x = [1, 2, 3, 4]
-    y = [1, 3, 8, 4]
 
-    plt.plot(window.sprite_count_data, window.fps_data)
+    # Plot our results
+    plt.plot(window.sprite_count_list, window.processing_time_list, label="Processing Time")
+    plt.plot(window.sprite_count_list, window.drawing_time_list, label="Drawing Time")
+
+    plt.legend(loc='upper left', shadow=True, fontsize='x-large')
+
+    plt.ylabel('Time')
+    plt.xlabel('Sprite Count')
+
+    plt.show()
+
+    # Plot our results
+    plt.plot(window.sprite_count_list, window.fps_list)
 
     plt.ylabel('FPS')
     plt.xlabel('Sprite Count')
 
     plt.show()
-
 
 if __name__ == "__main__":
     main()
