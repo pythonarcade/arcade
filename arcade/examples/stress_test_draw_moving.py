@@ -13,15 +13,45 @@ import random
 import arcade
 import os
 import timeit
+import time
+import collections
 
 # --- Constants ---
-SPRITE_SCALING_COIN = 0.09
+SPRITE_SCALING_COIN = 0.11
 SPRITE_NATIVE_SIZE = 128
 SPRITE_SIZE = int(SPRITE_NATIVE_SIZE * SPRITE_SCALING_COIN)
-COIN_COUNT = 200
+COIN_COUNT = 800
 
-SCREEN_WIDTH = 1200
-SCREEN_HEIGHT = 700
+SCREEN_WIDTH = 1800
+SCREEN_HEIGHT = 1000
+
+
+class FPSCounter:
+    def __init__(self):
+        self.time = time.perf_counter()
+        self.frame_times = collections.deque(maxlen=60)
+
+    def tick(self):
+        t1 = time.perf_counter()
+        dt = t1 - self.time
+        self.time = t1
+        self.frame_times.append(dt)
+
+    def get_fps(self):
+        total_time = sum(self.frame_times)
+        if total_time == 0:
+            return 0
+        else:
+            return len(self.frame_times) / sum(self.frame_times)
+
+
+class Coin(arcade.Sprite):
+
+    def update(self):
+        """
+        Update the sprite.
+        """
+        self.set_position(self.center_x + self.change_x, self.center_y + self.change_y)
 
 
 class MyGame(arcade.Window):
@@ -30,7 +60,7 @@ class MyGame(arcade.Window):
     def __init__(self):
         """ Initializer """
         # Call the parent class initializer
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Sprite Example")
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Moving Sprite Stress Test")
 
         # Set the working directory (where we expect to find files) to the same
         # directory this .py file is in. You can leave this out of your own
@@ -44,6 +74,7 @@ class MyGame(arcade.Window):
 
         self.processing_time = 0
         self.draw_time = 0
+        self.fps = FPSCounter()
 
         arcade.set_background_color(arcade.color.AMAZON)
 
@@ -58,7 +89,7 @@ class MyGame(arcade.Window):
 
             # Create the coin instance
             # Coin image from kenney.nl
-            coin = arcade.Sprite("images/coin_01.png", SPRITE_SCALING_COIN)
+            coin = Coin("images/coin_01.png", SPRITE_SCALING_COIN)
 
             # Position the coin
             coin.center_x = random.randrange(SPRITE_SIZE, SCREEN_WIDTH - SPRITE_SIZE)
@@ -79,16 +110,20 @@ class MyGame(arcade.Window):
         arcade.start_render()
         self.coin_list.draw()
 
-        # Display timings
-        output = f"Processing time: {self.processing_time:.3f}"
+        # Display info on sprites
+        output = f"Sprite count: {COIN_COUNT}"
         arcade.draw_text(output, 20, SCREEN_HEIGHT - 20, arcade.color.BLACK, 16)
 
-        output = f"Drawing time: {self.draw_time:.3f}"
+        # Display timings
+        output = f"Processing time: {self.processing_time:.3f}"
         arcade.draw_text(output, 20, SCREEN_HEIGHT - 40, arcade.color.BLACK, 16)
 
-        fps = 1 / (self.draw_time + self.processing_time)
-        output = f"Max FPS: {fps:3.0f}"
+        output = f"Drawing time: {self.draw_time:.3f}"
         arcade.draw_text(output, 20, SCREEN_HEIGHT - 60, arcade.color.BLACK, 16)
+
+        fps = self.fps.get_fps()
+        output = f"FPS: {fps:3.0f}"
+        arcade.draw_text(output, 20, SCREEN_HEIGHT - 80, arcade.color.BLACK, 16)
 
         self.draw_time = timeit.default_timer() - draw_start_time
 
@@ -120,6 +155,7 @@ class MyGame(arcade.Window):
 
         # Save the time it took to do this.
         self.processing_time = timeit.default_timer() - start_time
+        self.fps.tick()
 
 
 def main():

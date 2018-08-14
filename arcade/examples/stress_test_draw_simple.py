@@ -13,13 +13,34 @@ import random
 import arcade
 import os
 import timeit
+import time
+import collections
 
 # --- Constants ---
 SPRITE_SCALING_COIN = 0.09
 COIN_COUNT = 200000
 
-SCREEN_WIDTH = 1400
+SCREEN_WIDTH = 1800
 SCREEN_HEIGHT = 1000
+
+
+class FPSCounter:
+    def __init__(self):
+        self.time = time.perf_counter()
+        self.frame_times = collections.deque(maxlen=60)
+
+    def tick(self):
+        t1 = time.perf_counter()
+        dt = t1 - self.time
+        self.time = t1
+        self.frame_times.append(dt)
+
+    def get_fps(self):
+        total_time = sum(self.frame_times)
+        if total_time == 0:
+            return 0
+        else:
+            return len(self.frame_times) / sum(self.frame_times)
 
 
 class MyGame(arcade.Window):
@@ -28,7 +49,7 @@ class MyGame(arcade.Window):
     def __init__(self):
         """ Initializer """
         # Call the parent class initializer
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Sprite Example")
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Static Sprite Stress Test")
 
         # Set the working directory (where we expect to find files) to the same
         # directory this .py file is in. You can leave this out of your own
@@ -42,6 +63,7 @@ class MyGame(arcade.Window):
 
         self.processing_time = 0
         self.draw_time = 0
+        self.fps = FPSCounter()
 
         arcade.set_background_color(arcade.color.AMAZON)
 
@@ -72,18 +94,24 @@ class MyGame(arcade.Window):
         draw_start_time = timeit.default_timer()
 
         arcade.start_render()
+
+        # Display sprites
         self.coin_list.draw()
+
+        # Display info on sprites
+        output = f"Sprite count: {COIN_COUNT:,}"
+        arcade.draw_text(output, 20, SCREEN_HEIGHT - 20, arcade.color.BLACK, 16)
 
         # Display timings
         output = f"Drawing time: {self.draw_time:.3f}"
         arcade.draw_text(output, 20, SCREEN_HEIGHT - 40, arcade.color.BLACK, 16)
 
-        if self.draw_time > 0:
-            fps = 1 / (self.draw_time + self.processing_time)
-            output = f"Max FPS: {fps:3.0f}"
-            arcade.draw_text(output, 20, SCREEN_HEIGHT - 60, arcade.color.BLACK, 16)
+        fps = self.fps.get_fps()
+        output = f"FPS: {fps:3.0f}"
+        arcade.draw_text(output, 20, SCREEN_HEIGHT - 60, arcade.color.BLACK, 16)
 
         self.draw_time = timeit.default_timer() - draw_start_time
+        self.fps.tick()
 
 
 def main():
