@@ -283,7 +283,7 @@ def create_lines(point_list: PointList,
     return create_line_generic(point_list, color, gl.GL_LINES, line_width)
 
 
-def _fix_color_list(original_color_data):  # TODO: delete this function. Useless now.
+def _fix_color_list(original_color_data):  # TODO: delete this function. Useless now. OK to delete
     new_color_data = []
     for color in original_color_data:
         new_color_data.append(color[0] / 255.)
@@ -558,7 +558,7 @@ def create_ellipse(center_x: float, center_y: float,
     # Create an array with the vertex point_list
     point_list = []
 
-    for segment in range(num_segments + 1):
+    for segment in range(num_segments):
         theta = 2.0 * 3.1415926 * segment / num_segments
 
         x = width * math.cos(theta) + center_x
@@ -586,7 +586,7 @@ def create_ellipse(center_x: float, center_y: float,
 def create_ellipse_filled_with_colors(center_x: float, center_y: float,
                                       width: float, height: float,
                                       outside_color: Color, inside_color: Color,
-                                      tilt_angle: float=0, num_segments=32) -> VertexBuffer:
+                                      tilt_angle: float=0, num_segments=32) -> Shape:
 
     """
     >>> import arcade
@@ -601,11 +601,11 @@ def create_ellipse_filled_with_colors(center_x: float, center_y: float,
     >>> arcade.quick_run(0.25)
     """
     # Create an array with the vertex data
-    vertex_data = []
-    color_data = []
-    vertex_data.extend((center_x, center_y))
-    color_data.append((inside_color))
-    for segment in range(num_segments + 1):
+    # Create an array with the vertex point_list
+    point_list = []
+
+    point_list.append((center_x, center_y))
+    for segment in range(num_segments):
         theta = 2.0 * 3.1415926 * segment / num_segments
 
         x = width * math.cos(theta) + center_x
@@ -614,40 +614,11 @@ def create_ellipse_filled_with_colors(center_x: float, center_y: float,
         if tilt_angle:
             x, y = rotate_point(x, y, center_x, center_y, tilt_angle)
 
-        vertex_data.extend([x, y])
-        color_data.append((outside_color))
+        point_list.append((x, y))
+    point_list.append(point_list[1])
 
-    # Create an id for our vertex buffer
-    vbo_vertex_id = gl.GLuint()
-
-    gl.glGenBuffers(1, ctypes.pointer(vbo_vertex_id))
-
-    # Create a buffer with the data
-    # This line of code is a bit strange.
-    # (gl.GLfloat * len(data)) creates an array of GLfloats, one for each number
-    # (*data) initalizes the list with the floats. *data turns the list into a
-    # tuple.
-    data2 = (gl.GLfloat * len(vertex_data))(*vertex_data)
-
-    gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vbo_vertex_id)
-    gl.glBufferData(gl.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2,
-                    gl.GL_STATIC_DRAW)
-
-    shape_mode = gl.GL_TRIANGLE_FAN
-    # shape_mode = gl.GL_LINE_LOOP
-
-    # Colors
-    color_data = _fix_color_list(color_data)
-    vbo_color_id = gl.GLuint()
-    gl.glGenBuffers(1, ctypes.pointer(vbo_color_id))
-
-    gl_color_list = (gl.GLfloat * len(color_data))(*color_data)
-    gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vbo_color_id)
-    gl.glBufferData(gl.GL_ARRAY_BUFFER, ctypes.sizeof(gl_color_list), gl_color_list, gl.GL_STATIC_DRAW)
-
-    shape = VertexBuffer(vbo_vertex_id, len(vertex_data) // 2, shape_mode, vbo_color_id=vbo_color_id)
-
-    return shape
+    color_list = [inside_color] + [outside_color] * (num_segments + 1)
+    return create_line_generic_with_colors(point_list, color_list, gl.GL_TRIANGLE_FAN)
 
 
 def render(shape: VertexBuffer):
@@ -674,31 +645,6 @@ def render(shape: VertexBuffer):
         gl.glDisable(gl.GL_BLEND)
         gl.glColor4ub(shape.color[0], shape.color[1], shape.color[2], 255)
 
-    gl.glDrawArrays(shape.draw_mode, 0, shape.size)
-
-
-def stripped_render(shape: VertexBuffer):
-    """
-    Render an shape previously created with a ``create`` function.
-    Used by ``ShapeElementList.draw()`` for drawing several shapes in a batch.
-    """
-
-    gl.glBindBuffer(gl.GL_ARRAY_BUFFER, shape.vbo_vertex_id)
-    gl.glVertexPointer(2, gl.GL_FLOAT, 0, 0)
-    gl.glDrawArrays(shape.draw_mode, 0, shape.size)
-
-
-def stripped_render_with_colors(shape: VertexBuffer):
-    """
-    Render an shape previously created with a ``create`` function.
-    Used by ``ShapeElementList.draw()`` for drawing several shapes in a batch.
-    This version also assumes there is a color list as part of the VBO.
-    """
-
-    gl.glBindBuffer(gl.GL_ARRAY_BUFFER, shape.vbo_vertex_id)
-    gl.glVertexPointer(2, gl.GL_FLOAT, 0, None)
-    gl.glBindBuffer(gl.GL_ARRAY_BUFFER, shape.vbo_color_id)
-    gl.glColorPointer(4, gl.GL_FLOAT, 0, None)
     gl.glDrawArrays(shape.draw_mode, 0, shape.size)
 
 

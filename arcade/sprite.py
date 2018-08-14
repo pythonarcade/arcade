@@ -444,7 +444,6 @@ arcade.Sprite("arcade/examples/images/playerShip1_orange.png", scale)
     def _set_center_x(self, new_value: float):
         """ Set the center x coordinate of the sprite. """
         if new_value != self._position[0]:
-            from arcade.sprite_list import SpriteList
             self.clear_spatial_hashes()
             self._point_list_cache = None
             self._position[0] = new_value
@@ -499,7 +498,6 @@ arcade.Sprite("arcade/examples/images/playerShip1_orange.png", scale)
     def _set_angle(self, new_value: float):
         """ Set the angle of the sprite's rotation. """
         if new_value != self._angle:
-            from arcade.sprite_list import SpriteList
             self.clear_spatial_hashes()
             self._angle = new_value
             self._point_list_cache = None
@@ -631,6 +629,7 @@ arcade.Sprite("arcade/examples/images/playerShip1_orange.png", scale)
             sprite_list.update_position(self)
 
     alpha = property(_get_alpha, _set_alpha)
+
     def register_sprite_list(self, new_list):
         """
         Register this sprite as belonging to a list. We will automatically

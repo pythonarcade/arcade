@@ -239,6 +239,7 @@ class SpriteList(Generic[T]):
         """
         # List of sprites in the sprite list
         self.sprite_list = []
+        self.sprite_idx = dict()
 
         # Used in drawing optimization via OpenGL
         self.program = shader.program(
@@ -263,7 +264,9 @@ class SpriteList(Generic[T]):
         """
         Add a new sprite to the list.
         """
+        idx = len(self.sprite_list)
         self.sprite_list.append(item)
+        self.sprite_idx[item] = idx
         item.register_sprite_list(self)
         self.vao = None
         if self.use_spatial_hash:
@@ -279,6 +282,7 @@ class SpriteList(Generic[T]):
         Remove a specific sprite from the list.
         """
         self.sprite_list.remove(item)
+        del self.sprite_idx[item]
         self.vao = None
         if self.use_spatial_hash:
             self.spatial_hash.remove_object(item)
@@ -437,10 +441,7 @@ class SpriteList(Generic[T]):
                                 ('sub_tex_coords', '4f4'), ('color', '4B')])
         self.sprite_data = np.zeros(len(self.sprite_list), dtype=buffer_type)
         self.sprite_data['position'] = array_of_positions
-        self.sprite_data['angle'] = np.tile(
-            np.array(0, dtype=np.float32),
-            (len(self.sprite_list))
-        )
+        self.sprite_data['angle'] = 0
         self.sprite_data['size'] = array_of_sizes
         self.sprite_data['sub_tex_coords'] = array_of_sub_tex_coords
         self.sprite_data['color'] = array_of_colors
@@ -499,7 +500,7 @@ class SpriteList(Generic[T]):
         if self.vao is None:
             return
 
-        i = self.sprite_list.index(sprite)
+        i = self.sprite_idx[sprite]
 
         self.sprite_data[i]['position'] = [sprite.center_x, sprite.center_y]
         self.sprite_data[i]['angle'] = math.radians(sprite.angle)
