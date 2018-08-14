@@ -133,7 +133,7 @@ class Meteor(arcade.Sprite):
 
 def report(dt):
     pr.disable()
-    with open("sprite_list_stress_stats.txt", "w") as f:
+    with open("stress_sprite_list_stats.txt", "w") as f:
         sortby = 'tottime'
         ps = pstats.Stats(pr, stream=f).sort_stats(sortby)
         ps.print_stats()
