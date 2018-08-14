@@ -650,8 +650,7 @@ arcade.Sprite("arcade/examples/images/playerShip1_orange.png", scale)
         """
         Update the sprite.
         """
-        self.center_x += self.change_x
-        self.center_y += self.change_y
+        self.set_position(self.center_x + self.change_x, self.center_y + self.change_y)
         self.angle += self.change_angle
 
     def update_animation(self):
