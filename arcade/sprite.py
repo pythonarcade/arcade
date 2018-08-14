@@ -238,6 +238,17 @@ class Sprite:
         >>> empty_sprite = arcade.Sprite()
         >>> empty_sprite.set_position(10, 10)
         """
+        if center_x != self._position[0] or center_y != self._position[1]:
+            from arcade.sprite_list import SpriteList
+            self.clear_spatial_hashes()
+            self._point_list_cache = None
+            self._position[0] = center_x
+            self._position[1] = center_y
+            self.add_spatial_hashes()
+
+            for sprite_list in self.sprite_lists:
+                sprite_list.update_position(self)
+
         self.center_x = center_x
         self.center_y = center_y
 
