@@ -16,6 +16,8 @@ import timeit
 import time
 import collections
 
+import pyglet.gl as gl
+
 # --- Constants ---
 SPRITE_SCALING_COIN = 0.09
 COIN_COUNT = 200000
@@ -49,7 +51,7 @@ class MyGame(arcade.Window):
     def __init__(self):
         """ Initializer """
         # Call the parent class initializer
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Static Sprite Stress Test")
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Static Sprite Stress Test", resizable=True)
 
         # Set the working directory (where we expect to find files) to the same
         # directory this .py file is in. You can leave this out of your own
@@ -70,6 +72,8 @@ class MyGame(arcade.Window):
     def setup(self):
         """ Set up the game and initialize the variables. """
 
+        print('OpenGL version:', self.context.get_info().get_version())
+        print("Creating sprites")
         # Sprite lists
         self.coin_list = arcade.SpriteList(use_spatial_hash=False)
 
@@ -87,8 +91,15 @@ class MyGame(arcade.Window):
             # Add the coin to the lists
             self.coin_list.append(coin)
 
+        print("Done creating sprites")
+
     def on_draw(self):
         """ Draw everything """
+
+        # import ctypes
+        # data = (ctypes.c_int * 4)()
+        # gl.glGetIntegerv(gl.GL_VIEWPORT, ctypes.byref(data))
+        # print(data[0], data[1], data[2], data[3])
 
         # Start timing how long this takes
         draw_start_time = timeit.default_timer()
@@ -113,12 +124,15 @@ class MyGame(arcade.Window):
         self.draw_time = timeit.default_timer() - draw_start_time
         self.fps.tick()
 
+        gl.glFlush()
+
 
 def main():
     """ Main method """
     window = MyGame()
     window.setup()
     arcade.run()
+
 
 if __name__ == "__main__":
     main()

@@ -247,7 +247,7 @@ class Sprite:
             self.add_spatial_hashes()
 
             for sprite_list in self.sprite_lists:
-                sprite_list.update_position(self)
+                sprite_list.update_location(self)
 
         self.center_x = center_x
         self.center_y = center_y
@@ -504,7 +504,7 @@ arcade.Sprite("arcade/examples/images/playerShip1_orange.png", scale)
             self.add_spatial_hashes()
 
             for sprite_list in self.sprite_lists:
-                sprite_list.update_position(self)
+                sprite_list.update_angle(self)
 
     angle = property(_get_angle, _set_angle)
 

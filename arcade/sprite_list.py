@@ -507,6 +507,24 @@ class SpriteList(Generic[T]):
         self.sprite_data[i]['size'] = [sprite.width / 2, sprite.height / 2]
         self.sprite_data[i]['color'] = sprite.color + (sprite.alpha, )
 
+    def update_location(self, sprite):
+
+        if self.vao is None:
+            return
+
+        i = self.sprite_idx[sprite]
+
+        self.sprite_data[i]['position'] = [sprite.center_x, sprite.center_y]
+
+    def update_angle(self, sprite):
+
+        if self.vao is None:
+            return
+
+        i = self.sprite_idx[sprite]
+
+        self.sprite_data[i]['angle'] = math.radians(sprite.angle)
+
     def draw(self):
 
         if len(self.sprite_list) == 0:

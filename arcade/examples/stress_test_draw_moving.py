@@ -15,12 +15,15 @@ import os
 import timeit
 import time
 import collections
+import pyglet.gl as gl
+import matplotlib.pyplot as plt
+
 
 # --- Constants ---
 SPRITE_SCALING_COIN = 0.11
 SPRITE_NATIVE_SIZE = 128
 SPRITE_SIZE = int(SPRITE_NATIVE_SIZE * SPRITE_SCALING_COIN)
-COIN_COUNT = 800
+COIN_COUNT = 100
 
 SCREEN_WIDTH = 1800
 SCREEN_HEIGHT = 1000
@@ -74,19 +77,18 @@ class MyGame(arcade.Window):
 
         self.processing_time = 0
         self.draw_time = 0
+        self.program_start_time = timeit.default_timer()
+        self.sprite_count_data = []
+        self.fps_data = []
+        self.last_fps_reading = 0
         self.fps = FPSCounter()
 
         arcade.set_background_color(arcade.color.AMAZON)
 
-    def setup(self):
-        """ Set up the game and initialize the variables. """
-
-        # Sprite lists
-        self.coin_list = arcade.SpriteList(use_spatial_hash=False)
+    def add_coins(self):
 
         # Create the coins
         for i in range(COIN_COUNT):
-
             # Create the coin instance
             # Coin image from kenney.nl
             coin = Coin("images/coin_01.png", SPRITE_SCALING_COIN)
@@ -100,6 +102,13 @@ class MyGame(arcade.Window):
 
             # Add the coin to the lists
             self.coin_list.append(coin)
+
+    def setup(self):
+        """ Set up the game and initialize the variables. """
+
+        # Sprite lists
+        self.coin_list = arcade.SpriteList(use_spatial_hash=False)
+
 
     def on_draw(self):
         """ Draw everything """
@@ -129,33 +138,37 @@ class MyGame(arcade.Window):
 
     def update(self, delta_time):
         start_time = timeit.default_timer()
+
         self.coin_list.update()
+
         for sprite in self.coin_list:
-
-            # Using left/right/top/bottom can be 10 times slower than position[0]
-            # for x, and position[1] for y.
-
-            # if sprite.left < 0:
-            #     sprite.change_x *= -1
-            # if sprite.right > SCREEN_WIDTH:
-            #     sprite.change_x *= -1
-            # if sprite.bottom < 0:
-            #     sprite.change_y *= -1
-            # if sprite.top > SCREEN_HEIGHT:
-            #     sprite.change_y *= -1
 
             if sprite.position[0] < 0:
                 sprite.change_x *= -1
-            if sprite.position[0] > SCREEN_WIDTH:
+            elif sprite.position[0] > SCREEN_WIDTH:
                 sprite.change_x *= -1
             if sprite.position[1] < 0:
                 sprite.change_y *= -1
-            if sprite.position[1] > SCREEN_HEIGHT:
+            elif sprite.position[1] > SCREEN_HEIGHT:
                 sprite.change_y *= -1
+
+        total_program_time = int(timeit.default_timer() - self.program_start_time)
+        if total_program_time > self.last_fps_reading:
+            self.last_fps_reading = total_program_time
+            # Add on odd seconds, report on even seconds
+            if total_program_time > 5:
+                if total_program_time % 2 == 1:
+                    self.add_coins()
+                else:
+                    print(f"{total_program_time}, {len(self.coin_list)}, {self.fps.get_fps():.1f}")
+                    self.sprite_count_data.append(len(self.coin_list))
+                    self.fps_data.append(round(self.fps.get_fps(),1))
 
         # Save the time it took to do this.
         self.processing_time = timeit.default_timer() - start_time
         self.fps.tick()
+
+        gl.glFlush()
 
 
 def main():
@@ -163,6 +176,15 @@ def main():
     window = MyGame()
     window.setup()
     arcade.run()
+    x = [1, 2, 3, 4]
+    y = [1, 3, 8, 4]
+
+    plt.plot(window.sprite_count_data, window.fps_data)
+
+    plt.ylabel('FPS')
+    plt.xlabel('Sprite Count')
+
+    plt.show()
 
 
 if __name__ == "__main__":

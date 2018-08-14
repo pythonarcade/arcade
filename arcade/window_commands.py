@@ -24,15 +24,17 @@ _top = 1
 
 _window = None
 
-_opengl_context = moderngl.create_context()
 _projection = None
-
+_opengl_context = None
 
 def get_projection():
     return _projection
 
 
 def get_opengl_context():
+    global _opengl_context
+    if _opengl_context is None:
+        _opengl_context = moderngl.create_context()
     return _opengl_context
 
 
@@ -176,11 +178,11 @@ def set_viewport(left: Number, right: Number, bottom: Number, top: Number):
     gl.glViewport(0, 0, _window.width, _window.height)
 
     # Needed for drawing
-    gl.glMatrixMode(gl.GL_PROJECTION)
-    gl.glLoadIdentity()
-    gl.glOrtho(_left, _right, _bottom, _top, -1, 1)
-    gl.glMatrixMode(gl.GL_MODELVIEW)
-    gl.glLoadIdentity()
+    # gl.glMatrixMode(gl.GL_PROJECTION)
+    # gl.glLoadIdentity()
+    # gl.glOrtho(_left, _right, _bottom, _top, -1, 1)
+    # gl.glMatrixMode(gl.GL_MODELVIEW)
+    # gl.glLoadIdentity()
 
     _projection = create_orthogonal_projection(left=_left, right=_right,
                                               bottom=_bottom, top=_top,
@@ -288,8 +290,8 @@ def start_render():
     screen.
     """
     gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
-    gl.glMatrixMode(gl.GL_MODELVIEW)
-    gl.glEnableClientState(gl.GL_VERTEX_ARRAY)
+    # gl.glMatrixMode(gl.GL_MODELVIEW)
+    # gl.glEnableClientState(gl.GL_VERTEX_ARRAY)
 
 
 def set_background_color(color: Color):
