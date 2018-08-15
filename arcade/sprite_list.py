@@ -233,7 +233,7 @@ class SpriteList(Generic[T]):
 
     next_texture_id = 0
 
-    def __init__(self, use_spatial_hash=True, spatial_hash_cell_size=128):
+    def __init__(self, use_spatial_hash=True, spatial_hash_cell_size=128, is_static=False):
         """
         Initialize the sprite list
         """
@@ -259,6 +259,7 @@ class SpriteList(Generic[T]):
         # Used in collision detection optimization
         self.spatial_hash = SpatialHash(cell_size=spatial_hash_cell_size)
         self.use_spatial_hash = use_spatial_hash
+        self.is_static = is_static
 
     def append(self, item: T):
         """
@@ -322,10 +323,11 @@ class SpriteList(Generic[T]):
         array_of_positions = []
         array_of_sizes = []
         array_of_colors = []
+        array_of_angles = []
 
         for sprite in self.sprite_list:
             array_of_positions.append([sprite.center_x, sprite.center_y])
-
+            array_of_angles.append(sprite.angle)
             size_h = sprite.height / 2
             size_w = sprite.width / 2
             array_of_sizes.append([size_w, size_h])
@@ -404,20 +406,6 @@ class SpriteList(Generic[T]):
             if self.texture_id is None:
                 self.texture_id = SpriteList.next_texture_id
 
-                # self.texture = get_opengl_context().texture((new_image.width, new_image.height), 4,
-                #                                             np.asarray(new_image))
-                # self.texture_id = 100
-
-                # print(f"Using texture id: {self.texture_id}")
-
-            # self.texture_id = SpriteList.next_texture_id
-            # SpriteList.next_texture_id += 1
-            # new_image.save(f"temp_{self.texture_id}.png")
-            # print(f"Save temp_{self.texture_id}.png")
-
-        # texture_unit = 0
-        # self.texture.use(texture_unit)
-
         # Create a list with the coordinates of all the unique textures
         tex_coords = []
         start_x = 0.0
@@ -441,14 +429,19 @@ class SpriteList(Generic[T]):
                                 ('sub_tex_coords', '4f4'), ('color', '4B')])
         self.sprite_data = np.zeros(len(self.sprite_list), dtype=buffer_type)
         self.sprite_data['position'] = array_of_positions
-        self.sprite_data['angle'] = 0
+        self.sprite_data['angle'] = array_of_angles
         self.sprite_data['size'] = array_of_sizes
         self.sprite_data['sub_tex_coords'] = array_of_sub_tex_coords
         self.sprite_data['color'] = array_of_colors
 
+        if self.is_static:
+            usage = 'static'
+        else:
+            usage = 'stream'
+
         self.sprite_data_buf = shader.buffer(
             self.sprite_data.tobytes(),
-            usage='stream'
+            usage=usage
         )
 
         vertices = np.array([
@@ -475,8 +468,6 @@ class SpriteList(Generic[T]):
 
         # Can add buffer to index vertices
         self.vao = shader.vertex_array(self.program, vao_content)
-
-        self.update_positions()
 
     def update_positions(self):
 
@@ -543,9 +534,14 @@ class SpriteList(Generic[T]):
         with self.vao:
             self.program['Texture'] = self.texture_id
             self.program['Projection'] = get_projection().flatten()
-            self.sprite_data_buf.write(self.sprite_data.tobytes())
+
+            if not self.is_static:
+                self.sprite_data_buf.write(self.sprite_data.tobytes())
+
             self.vao.render(gl.GL_TRIANGLE_STRIP, instances=len(self.sprite_list))
-            self.sprite_data_buf.orphan()
+
+            if not self.is_static:
+                self.sprite_data_buf.orphan()
 
     def __len__(self) -> int:
         """ Return the length of the sprite list. """

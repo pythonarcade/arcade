@@ -15,12 +15,12 @@ import os
 import timeit
 import time
 import collections
-
 import pyglet.gl as gl
+import matplotlib.pyplot as plt
 
 # --- Constants ---
 SPRITE_SCALING_COIN = 0.09
-COIN_COUNT = 200000
+COIN_COUNT_INCREMENT = 15000
 
 SCREEN_WIDTH = 1800
 SCREEN_HEIGHT = 1000
@@ -51,7 +51,7 @@ class MyGame(arcade.Window):
     def __init__(self):
         """ Initializer """
         # Call the parent class initializer
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Static Sprite Stress Test", resizable=True)
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Static Sprite Stress Test")
 
         # Set the working directory (where we expect to find files) to the same
         # directory this .py file is in. You can leave this out of your own
@@ -65,21 +65,20 @@ class MyGame(arcade.Window):
 
         self.processing_time = 0
         self.draw_time = 0
+        self.program_start_time = timeit.default_timer()
+        self.sprite_count_list = []
+        self.fps_list = []
+        self.processing_time_list = []
+        self.drawing_time_list = []
+        self.last_fps_reading = 0
         self.fps = FPSCounter()
 
         arcade.set_background_color(arcade.color.AMAZON)
 
-    def setup(self):
-        """ Set up the game and initialize the variables. """
-
-        print('OpenGL version:', self.context.get_info().get_version())
-        print("Creating sprites")
-        # Sprite lists
-        self.coin_list = arcade.SpriteList(use_spatial_hash=False)
+    def add_coins(self):
 
         # Create the coins
-        for i in range(COIN_COUNT):
-
+        for i in range(COIN_COUNT_INCREMENT):
             # Create the coin instance
             # Coin image from kenney.nl
             coin = arcade.Sprite("images/coin_01.png", SPRITE_SCALING_COIN)
@@ -91,7 +90,11 @@ class MyGame(arcade.Window):
             # Add the coin to the lists
             self.coin_list.append(coin)
 
-        print("Done creating sprites")
+    def setup(self):
+        """ Set up the game and initialize the variables. """
+
+        # Sprite lists
+        self.coin_list = arcade.SpriteList(use_spatial_hash=False, is_static=True)
 
     def on_draw(self):
         """ Draw everything """
@@ -110,7 +113,7 @@ class MyGame(arcade.Window):
         self.coin_list.draw()
 
         # Display info on sprites
-        output = f"Sprite count: {COIN_COUNT:,}"
+        output = f"Sprite count: {len(self.coin_list):,}"
         arcade.draw_text(output, 20, SCREEN_HEIGHT - 20, arcade.color.BLACK, 16)
 
         # Display timings
@@ -126,12 +129,61 @@ class MyGame(arcade.Window):
 
         gl.glFlush()
 
+    def update(self, delta_time):
+
+        # Total time program has been running
+        total_program_time = int(timeit.default_timer() - self.program_start_time)
+
+        # Print out stats, or add more sprites
+        if total_program_time > self.last_fps_reading:
+            self.last_fps_reading = total_program_time
+
+            # It takes the program a while to "warm up", so the first
+            # few seconds our readings will be off. So wait some time
+            # before taking readings
+            if total_program_time > 5:
+
+                # We want the program to run for a while before taking
+                # timing measurements. We don't want the time it takes
+                # to add new sprites to be part of that measurement. So
+                # make sure we have a clear second of nothing but
+                # running the sprites, and not adding the sprites.
+                if total_program_time % 5 == 1:
+
+                    # Take timings
+                    print(f"{total_program_time}, {len(self.coin_list)}, {self.fps.get_fps():.1f}, {self.processing_time:.4f}, {self.draw_time:.4f}")
+                    self.sprite_count_list.append(len(self.coin_list))
+                    self.fps_list.append(round(self.fps.get_fps(), 1))
+                    self.processing_time_list.append(self.processing_time)
+                    self.drawing_time_list.append(self.draw_time)
+
+                    # Now add the coins
+                    self.add_coins()
+
 
 def main():
     """ Main method """
     window = MyGame()
     window.setup()
     arcade.run()
+
+    # Plot our results
+    plt.plot(window.sprite_count_list, window.drawing_time_list, label="Drawing Time")
+
+    plt.legend(loc='upper left', shadow=True, fontsize='x-large')
+
+    plt.ylabel('Time')
+    plt.xlabel('Sprite Count')
+
+    plt.show()
+
+    # Plot our results
+    plt.plot(window.sprite_count_list, window.fps_list)
+
+    plt.ylabel('FPS')
+    plt.xlabel('Sprite Count')
+
+    plt.show()
 
 
 if __name__ == "__main__":

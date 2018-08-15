@@ -18,12 +18,11 @@ import collections
 import pyglet.gl as gl
 import matplotlib.pyplot as plt
 
-
 # --- Constants ---
-SPRITE_SCALING_COIN = 0.11
+SPRITE_SCALING_COIN = 0.09
 SPRITE_NATIVE_SIZE = 128
 SPRITE_SIZE = int(SPRITE_NATIVE_SIZE * SPRITE_SCALING_COIN)
-COIN_COUNT = 100
+COIN_COUNT_INCREMENT = 100
 
 SCREEN_WIDTH = 1800
 SCREEN_HEIGHT = 1000
@@ -90,7 +89,7 @@ class MyGame(arcade.Window):
     def add_coins(self):
 
         # Create the coins
-        for i in range(COIN_COUNT):
+        for i in range(COIN_COUNT_INCREMENT):
             # Create the coin instance
             # Coin image from kenney.nl
             coin = Coin("images/coin_01.png", SPRITE_SCALING_COIN)
@@ -122,7 +121,7 @@ class MyGame(arcade.Window):
         self.coin_list.draw()
 
         # Display info on sprites
-        output = f"Sprite count: {len(self.coin_list)}"
+        output = f"Sprite count: {len(self.coin_list):,}"
         arcade.draw_text(output, 20, SCREEN_HEIGHT - 20, arcade.color.BLACK, 16)
 
         # Display timings
@@ -137,6 +136,7 @@ class MyGame(arcade.Window):
         arcade.draw_text(output, 20, SCREEN_HEIGHT - 80, arcade.color.BLACK, 16)
 
         self.draw_time = timeit.default_timer() - draw_start_time
+        self.fps.tick()
 
         gl.glFlush()
 
@@ -159,7 +159,6 @@ class MyGame(arcade.Window):
 
         # Save the time it took to do this.
         self.processing_time = timeit.default_timer() - start_time
-        self.fps.tick()
 
         # Total time program has been running
         total_program_time = int(timeit.default_timer() - self.program_start_time)
@@ -167,16 +166,28 @@ class MyGame(arcade.Window):
         # Print out stats, or add more sprites
         if total_program_time > self.last_fps_reading:
             self.last_fps_reading = total_program_time
-            # Add on odd seconds, report on even seconds
+
+            # It takes the program a while to "warm up", so the first
+            # few seconds our readings will be off. So wait some time
+            # before taking readings
             if total_program_time > 5:
+
+                # We want the program to run for a while before taking
+                # timing measurements. We don't want the time it takes
+                # to add new sprites to be part of that measurement. So
+                # make sure we have a clear second of nothing but
+                # running the sprites, and not adding the sprites.
                 if total_program_time % 2 == 1:
-                    self.add_coins()
-                else:
+
+                    # Take timings
                     print(f"{total_program_time}, {len(self.coin_list)}, {self.fps.get_fps():.1f}, {self.processing_time:.4f}, {self.draw_time:.4f}")
                     self.sprite_count_list.append(len(self.coin_list))
                     self.fps_list.append(round(self.fps.get_fps(), 1))
                     self.processing_time_list.append(self.processing_time)
                     self.drawing_time_list.append(self.draw_time)
+
+                    # Now add the coins
+                    self.add_coins()
 
 
 def main():
