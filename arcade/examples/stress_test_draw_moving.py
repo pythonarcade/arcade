@@ -54,7 +54,7 @@ class Coin(arcade.Sprite):
         """
         Update the sprite.
         """
-        self.set_position(self.center_x + self.change_x, self.center_y + self.change_y)
+        self.position = (self.center_x + self.change_x, self.center_y + self.change_y)
 
 
 class MyGame(arcade.Window):
@@ -138,7 +138,10 @@ class MyGame(arcade.Window):
 
         self.draw_time = timeit.default_timer() - draw_start_time
 
+        gl.glFlush()
+
     def update(self, delta_time):
+        # Start update timer
         start_time = timeit.default_timer()
 
         self.coin_list.update()
@@ -154,7 +157,14 @@ class MyGame(arcade.Window):
             elif sprite.position[1] > SCREEN_HEIGHT:
                 sprite.change_y *= -1
 
+        # Save the time it took to do this.
+        self.processing_time = timeit.default_timer() - start_time
+        self.fps.tick()
+
+        # Total time program has been running
         total_program_time = int(timeit.default_timer() - self.program_start_time)
+
+        # Print out stats, or add more sprites
         if total_program_time > self.last_fps_reading:
             self.last_fps_reading = total_program_time
             # Add on odd seconds, report on even seconds
@@ -167,12 +177,6 @@ class MyGame(arcade.Window):
                     self.fps_list.append(round(self.fps.get_fps(), 1))
                     self.processing_time_list.append(self.processing_time)
                     self.drawing_time_list.append(self.draw_time)
-
-        # Save the time it took to do this.
-        self.processing_time = timeit.default_timer() - start_time
-        self.fps.tick()
-
-        gl.glFlush()
 
 
 def main():

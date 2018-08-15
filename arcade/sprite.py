@@ -230,6 +230,23 @@ class Sprite:
         """
         return self.cur_texture_index
 
+    def _get_position(self) -> (float, float):
+        """ Get the center x coordinate of the sprite. """
+        return (self._position[0], self._position[1])
+
+    def _set_position(self, new_value: (float, float)):
+        """ Set the center x coordinate of the sprite. """
+        self.clear_spatial_hashes()
+        self._point_list_cache = None
+        self._position[0] = new_value[0]
+        self._position[1] = new_value[1]
+        self.add_spatial_hashes()
+
+        for sprite_list in self.sprite_lists:
+            sprite_list.update_location(self)
+
+    position = property(_get_position, _set_position)
+
     def set_position(self, center_x: float, center_y: float):
         """
         Set a sprite's position
@@ -248,9 +265,6 @@ class Sprite:
 
             for sprite_list in self.sprite_lists:
                 sprite_list.update_location(self)
-
-        self.center_x = center_x
-        self.center_y = center_y
 
     def set_points(self, points: Sequence[Sequence[float]]):
         """
@@ -311,11 +325,6 @@ class Sprite:
         return self._point_list_cache
 
     points = property(get_points, set_points)
-
-    def get_position(self):
-        return self._position[0], self._position[1]
-
-    position = property(get_position, set_position)
 
     def _set_collision_radius(self, collision_radius):
         """
