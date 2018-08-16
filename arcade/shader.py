@@ -91,7 +91,7 @@ def _create_setter_func(location, gl_setter, c_array, length, count, ptr, is_mat
 Uniform = namedtuple('Uniform', 'getter, setter')
 ShaderCode = str
 ShaderType = GLuint
-Shader = Type(Tuple[ShaderCode, ShaderType])
+Shader = type(Tuple[ShaderCode, ShaderType])
 
 
 class Program:
