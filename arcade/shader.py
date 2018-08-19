@@ -121,7 +121,13 @@ class Program:
 
         self._uniforms = {}
         self._introspect_uniforms()
-        weakref.finalize(self, glDeleteProgram, prog_id)
+        weakref.finalize(self, Program._delete, shaders_id, prog_id)
+
+    @staticmethod
+    def _delete(shaders_id, prog_id):
+        for shader_id in shaders_id:
+            glDetachShader(prog_id, shader_id)
+        glDeleteProgram(prog_id)
 
     def release(self):
         if self.prog_id != 0:
@@ -503,12 +509,12 @@ class Texture:
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
-        weakref.finalize(self, glDeleteTextures, 1, byref(texture_id))
+        weakref.finalize(self, Texture.release, texture_id)
 
-    def release(self):
-        if self.texture_id.value != 0:
-            glDeleteTextures(1, byref(self.texture_id))
-            self.texture_id.value = 0
+    @staticmethod
+    def release(texture_id):
+        if texture_id.value != 0:
+            glDeleteTextures(1, byref(texture_id))
 
     def use(self, texture_unit: int=0):
         glActiveTexture(GL_TEXTURE0 + texture_unit)
