@@ -58,14 +58,15 @@ class MyGame(arcade.Window):
 
         # Sprite lists
         self.all_sprites_list = None
+        self.all_wall_list = None
+        self.static_wall_list = None
+        self.moving_wall_list = None
+        self.player_list = None
         self.coin_list = None
 
         # Set up the player
         self.score = 0
         self.player_sprite = None
-        self.all_wall_list = None
-        self.static_wall_list = None
-        self.moving_wall_list = None
         self.physics_engine = None
         self.view_left = 0
         self.view_bottom = 0
@@ -79,13 +80,14 @@ class MyGame(arcade.Window):
         self.all_wall_list = arcade.SpriteList()
         self.static_wall_list = arcade.SpriteList()
         self.moving_wall_list = arcade.SpriteList()
+        self.player_list = arcade.SpriteList()
 
         # Set up the player
         self.score = 0
         self.player_sprite = arcade.Sprite("images/character.png", SPRITE_SCALING)
         self.player_sprite.center_x = 2 * GRID_PIXEL_SIZE
         self.player_sprite.center_y = 3 * GRID_PIXEL_SIZE
-        self.all_sprites_list.append(self.player_sprite)
+        self.player_list.append(self.player_sprite)
 
         map_array = get_map()
 
@@ -190,7 +192,7 @@ class MyGame(arcade.Window):
         # Draw the sprites.
         self.static_wall_list.draw()
         self.moving_wall_list.draw()
-        self.player_sprite.draw()
+        self.player_list.draw()
 
         # Put the text on the screen.
         # Adjust the text position based on the viewport so that we don't

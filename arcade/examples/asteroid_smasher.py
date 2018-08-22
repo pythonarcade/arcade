@@ -14,6 +14,7 @@ import math
 import arcade
 import os
 
+STARTING_ASTEROID_COUNT = 3
 SCALE = 0.5
 OFFSCREEN_SPACE = 300
 SCREEN_WIDTH = 800
@@ -71,10 +72,10 @@ class ShipSprite(arcade.Sprite):
         """
         if self.respawning:
             self.respawning += 1
-            self.alpha = self.respawning / 500.0
+            self.alpha = self.respawning
             if self.respawning > 250:
                 self.respawning = 0
-                self.alpha = 1
+                self.alpha = 255
         if self.speed > 0:
             self.speed -= self.drag
             if self.speed < 0:
@@ -200,9 +201,10 @@ class MyGame(arcade.Window):
                       "images/meteorGrey_big2.png",
                       "images/meteorGrey_big3.png",
                       "images/meteorGrey_big4.png")
-        for i in range(3):
+        for i in range(STARTING_ASTEROID_COUNT):
             image_no = random.randrange(4)
             enemy_sprite = AsteroidSprite(image_list[image_no], SCALE)
+            enemy_sprite.guid = "Asteroid"
 
             enemy_sprite.center_y = random.randrange(BOTTOM_LIMIT, TOP_LIMIT)
             enemy_sprite.center_x = random.randrange(LEFT_LIMIT, RIGHT_LIMIT)
@@ -228,16 +230,17 @@ class MyGame(arcade.Window):
 
         # Put the text on the screen.
         output = f"Score: {self.score}"
-        arcade.draw_text(output, 10, 70, arcade.color.WHITE, 14)
+        arcade.draw_text(output, 10, 70, arcade.color.WHITE, 13)
 
         output = f"Asteroid Count: {len(self.asteroid_list)}"
-        arcade.draw_text(output, 10, 50, arcade.color.WHITE, 14)
+        arcade.draw_text(output, 10, 50, arcade.color.WHITE, 13)
 
     def on_key_press(self, symbol, modifiers):
         """ Called whenever a key is pressed. """
         # Shoot if the player hit the space bar and we aren't respawning.
         if not self.player_sprite.respawning and symbol == arcade.key.SPACE:
             bullet_sprite = BulletSprite("images/laserBlue01.png", SCALE)
+            bullet_sprite.guid = "Bullet"
 
             bullet_speed = 13
             bullet_sprite.change_y = \
@@ -253,7 +256,7 @@ class MyGame(arcade.Window):
             self.all_sprites_list.append(bullet_sprite)
             self.bullet_list.append(bullet_sprite)
 
-            arcade.play_sound(self.laser_sound)
+            # arcade.play_sound(self.laser_sound)
 
         if symbol == arcade.key.LEFT:
             self.player_sprite.change_angle = 3
@@ -351,17 +354,22 @@ class MyGame(arcade.Window):
             self.all_sprites_list.update()
 
             for bullet in self.bullet_list:
-                asteroids = \
-                    arcade.check_for_collision_with_list(bullet, self.asteroid_list)
+                self.asteroid_list.use_spatial_hash = False
+                asteroids_plain = arcade.check_for_collision_with_list(bullet, self.asteroid_list)
+                self.asteroid_list.use_spatial_hash = True
+                asteroids_spatial = arcade.check_for_collision_with_list(bullet, self.asteroid_list)
+                if len(asteroids_plain) != len(asteroids_spatial):
+                    print("ERROR")
+
+                asteroids = asteroids_spatial
+
                 for asteroid in asteroids:
                     self.split_asteroid(asteroid)
                     asteroid.kill()
                     bullet.kill()
 
             if not self.player_sprite.respawning:
-                asteroids = \
-                    arcade.check_for_collision_with_list(self.player_sprite,
-                                                         self.asteroid_list)
+                asteroids = arcade.check_for_collision_with_list(self.player_sprite, self.asteroid_list)
                 if len(asteroids) > 0:
                     if self.lives > 0:
                         self.lives -= 1

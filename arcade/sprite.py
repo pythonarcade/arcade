@@ -13,6 +13,7 @@ from arcade.draw_commands import load_texture
 from arcade.draw_commands import draw_texture_rectangle
 from arcade.draw_commands import Texture
 from arcade.draw_commands import rotate_point
+from arcade.arcade_types import RGB
 
 from typing import Sequence
 from typing import Tuple
@@ -28,7 +29,7 @@ class Sprite:
     Class that represents a 'sprite' on-screen.
 
     Attributes:
-        :alpha: Transparency of sprite. 0 is invisible, 1 is opaque.
+        :alpha: Transparency of sprite. 0 is invisible, 255 is opaque.
         :angle: Rotation angle in degrees or sprite.
         :boundary_left: Used in movement. Left boundary of moving sprite.
         :boundary_right: Used in movement. Right boundary of moving sprite.
@@ -137,6 +138,8 @@ class Sprite:
         if image_height == 0 and image_width != 0:
             raise ValueError("Height can't be zero.")
 
+        self.sprite_lists = []
+
         if filename is not None:
             self.texture = load_texture(filename, image_x, image_y,
                                         image_width, image_height)
@@ -151,6 +154,9 @@ class Sprite:
             self.height = 0
 
         self.cur_texture_index = 0
+        self.image = None
+        self.texture_name = filename
+
         self.scale = scale
         self._position = [center_x, center_y]
         self._angle = 0.0
@@ -163,10 +169,9 @@ class Sprite:
         self.boundary_top = None
         self.boundary_bottom = None
 
-        self.alpha = 1.0
-        self.sprite_lists = []
-        self.transparent = True
+        self._alpha = 255
         self._collision_radius = None
+        self._color = (255, 255, 255)
 
         self.can_cache = True
         self._points = None
@@ -177,6 +182,7 @@ class Sprite:
         self.last_angle = 0
 
         self.force = [0, 0]
+        self.guid = None
 
         self.repeat_count_x = repeat_count_x
         self.repeat_count_y = repeat_count_y
@@ -224,6 +230,23 @@ class Sprite:
         """
         return self.cur_texture_index
 
+    def _get_position(self) -> (float, float):
+        """ Get the center x coordinate of the sprite. """
+        return (self._position[0], self._position[1])
+
+    def _set_position(self, new_value: (float, float)):
+        """ Set the center x coordinate of the sprite. """
+        self.clear_spatial_hashes()
+        self._point_list_cache = None
+        self._position[0] = new_value[0]
+        self._position[1] = new_value[1]
+        self.add_spatial_hashes()
+
+        for sprite_list in self.sprite_lists:
+            sprite_list.update_location(self)
+
+    position = property(_get_position, _set_position)
+
     def set_position(self, center_x: float, center_y: float):
         """
         Set a sprite's position
@@ -232,8 +255,16 @@ class Sprite:
         >>> empty_sprite = arcade.Sprite()
         >>> empty_sprite.set_position(10, 10)
         """
-        self.center_x = center_x
-        self.center_y = center_y
+        if center_x != self._position[0] or center_y != self._position[1]:
+            from arcade.sprite_list import SpriteList
+            self.clear_spatial_hashes()
+            self._point_list_cache = None
+            self._position[0] = center_x
+            self._position[1] = center_y
+            self.add_spatial_hashes()
+
+            for sprite_list in self.sprite_lists:
+                sprite_list.update_location(self)
 
     def set_points(self, points: Sequence[Sequence[float]]):
         """
@@ -291,15 +322,9 @@ class Sprite:
 
             self._point_list_cache = ((x1, y1), (x2, y2), (x3, y3), (x4, y4))
 
-        self.add_spatial_hashes()
         return self._point_list_cache
 
     points = property(get_points, set_points)
-
-    def get_position(self):
-        return self._position[0], self._position[1]
-
-    position = property(get_position, set_position)
 
     def _set_collision_radius(self, collision_radius):
         """
@@ -348,7 +373,7 @@ class Sprite:
             if sprite_list.use_spatial_hash and sprite_list.spatial_hash is not None:
                 try:
                     sprite_list.spatial_hash.remove_object(self)
-                except:
+                except ValueError:
                     print("Warning, attempt to remove item from spatial hash that doesn't exist in the hash.")
 
     def add_spatial_hashes(self):
@@ -429,9 +454,12 @@ arcade.Sprite("arcade/examples/images/playerShip1_orange.png", scale)
         """ Set the center x coordinate of the sprite. """
         if new_value != self._position[0]:
             self.clear_spatial_hashes()
-            self._position[0] = new_value
             self._point_list_cache = None
+            self._position[0] = new_value
+            self.add_spatial_hashes()
 
+            for sprite_list in self.sprite_lists:
+                sprite_list.update_position(self)
 
     center_x = property(_get_center_x, _set_center_x)
 
@@ -443,8 +471,12 @@ arcade.Sprite("arcade/examples/images/playerShip1_orange.png", scale)
         """ Set the center y coordinate of the sprite. """
         if new_value != self._position[1]:
             self.clear_spatial_hashes()
-            self._position[1] = new_value
             self._point_list_cache = None
+            self._position[1] = new_value
+            self.add_spatial_hashes()
+
+            for sprite_list in self.sprite_lists:
+                sprite_list.update_position(self)
 
     center_y = property(_get_center_y, _set_center_y)
 
@@ -478,6 +510,10 @@ arcade.Sprite("arcade/examples/images/playerShip1_orange.png", scale)
             self.clear_spatial_hashes()
             self._angle = new_value
             self._point_list_cache = None
+            self.add_spatial_hashes()
+
+            for sprite_list in self.sprite_lists:
+                sprite_list.update_angle(self)
 
     angle = property(_get_angle, _set_angle)
 
@@ -562,11 +598,46 @@ arcade.Sprite("arcade/examples/images/playerShip1_orange.png", scale)
             self._texture = texture
             self.width = texture.width
             self.height = texture.height
+            self.texture_name = texture.texture_name
+            for sprite_list in self.sprite_lists:
+                sprite_list.update_texture(self)
         else:
             raise SystemError("Can't set the texture to something that is " +
                               "not an instance of the Texture class.")
 
     texture = property(_get_texture, _set_texture)
+
+    def _get_color(self) -> RGB:
+        """
+        Return the RGB color associated with the sprite.
+        """
+        return self._color
+
+    def _set_color(self, color: RGB):
+        """
+        Set the current sprite color as a RGB value
+        """
+        self._color = color
+        for sprite_list in self.sprite_lists:
+            sprite_list.update_position(self)
+
+    color = property(_get_color, _set_color)
+
+    def _get_alpha(self) -> RGB:
+        """
+        Return the RGB color associated with the sprite.
+        """
+        return self._alpha
+
+    def _set_alpha(self, alpha: RGB):
+        """
+        Set the current sprite color as a RGB value
+        """
+        self._alpha = alpha
+        for sprite_list in self.sprite_lists:
+            sprite_list.update_position(self)
+
+    alpha = property(_get_alpha, _set_alpha)
 
     def register_sprite_list(self, new_list):
         """
@@ -579,7 +650,7 @@ arcade.Sprite("arcade/examples/images/playerShip1_orange.png", scale)
         """ Draw the sprite. """
         draw_texture_rectangle(self.center_x, self.center_y,
                                self.width, self.height,
-                               self.texture, self.angle, self.alpha,
+                               self.texture, self.angle, self.alpha,  # TODO: review this function
                                self.transparent,
                                repeat_count_x=self.repeat_count_x,
                                repeat_count_y=self.repeat_count_y)
@@ -588,8 +659,7 @@ arcade.Sprite("arcade/examples/images/playerShip1_orange.png", scale)
         """
         Update the sprite.
         """
-        self.center_x += self.change_x
-        self.center_y += self.change_y
+        self.set_position(self.center_x + self.change_x, self.center_y + self.change_y)
         self.angle += self.change_angle
 
     def update_animation(self):
@@ -749,7 +819,7 @@ class AnimatedWalkingSprite(Sprite):
         self.height = self.texture.height * self.scale
 
 
-def get_distance_between_sprites(sprite1:Sprite, sprite2:Sprite) -> float:
+def get_distance_between_sprites(sprite1: Sprite, sprite2: Sprite) -> float:
     """
     Returns the distance between the two given sprites
     """

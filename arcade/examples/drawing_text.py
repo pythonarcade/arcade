@@ -40,12 +40,16 @@ class MyGame(arcade.Window):
         start_x = 50
         start_y = 450
         arcade.draw_point(start_x, start_y, arcade.color.BLUE, 5)
+        arcade.draw_text("Simple line of text in 12 point", start_x, start_y, arcade.color.BLACK, 12)
 
-        arcade.draw_text("Simple line of text in 12 point", start_x, start_y, arcade.color.BLACK, 12, )
-
+        start_x = 50
+        start_y = 150
         arcade.draw_point(start_x, start_y, arcade.color.BLUE, 5)
+        arcade.draw_text("Garamond Text", start_x, start_y, arcade.color.BLACK, 15, font_name='GARA')
+
         start_x = 50
         start_y = 400
+        arcade.draw_point(start_x, start_y, arcade.color.BLUE, 5)
         arcade.draw_text("Text anchored 'top' and 'left'.",
                          start_x, start_y, arcade.color.BLACK, 12, anchor_x="left", anchor_y="top")
 
@@ -56,9 +60,14 @@ class MyGame(arcade.Window):
 
         start_y = 450
         start_x = 300
+        width = 200
+        height = 20
         arcade.draw_point(start_x, start_y, arcade.color.BLUE, 5)
-        arcade.draw_text("Set of text\nthat\nis centered.",
-                         start_x, start_y, arcade.color.BLACK, 14, width=200, align="center", anchor_y="top")
+        arcade.draw_lrtb_rectangle_outline(start_x, start_x + width,
+                                           start_y + height, start_y,
+                                           arcade.color.BLUE, 1)
+        arcade.draw_text("Centered Text.",
+                         start_x, start_y, arcade.color.BLACK, 14, width=200, align="center")
 
         start_y = 250
         start_x = 300

@@ -46,12 +46,13 @@ class MyGame(arcade.Window):
         os.chdir(file_path)
 
         # Sprite lists
-        self.all_sprites_list = None
+        self.player_list = None
+        self.wall_list = None
 
         # Set up the player
         self.score = 0
         self.player_sprite = None
-        self.wall_list = None
+
         self.physics_engine = None
         self.view_left = 0
         self.view_bottom = 0
@@ -61,7 +62,7 @@ class MyGame(arcade.Window):
         """ Set up the game and initialize the variables. """
 
         # Sprite lists
-        self.all_sprites_list = arcade.SpriteList()
+        self.player_list = arcade.SpriteList()
         self.wall_list = arcade.SpriteList()
 
         # Set up the player
@@ -71,7 +72,7 @@ class MyGame(arcade.Window):
         # Starting position of the player
         self.player_sprite.center_x = 64
         self.player_sprite.center_y = 270
-        self.all_sprites_list.append(self.player_sprite)
+        self.player_list.append(self.player_sprite)
 
         # Draw the walls on the bottom
         for x in range(0, SCREEN_WIDTH, int(SPRITE_NATIVE_SIZE * SPRITE_SCALING)):
@@ -79,7 +80,6 @@ class MyGame(arcade.Window):
 
             wall.bottom = 0
             wall.left = x
-            self.all_sprites_list.append(wall)
             self.wall_list.append(wall)
 
         self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
@@ -98,7 +98,7 @@ class MyGame(arcade.Window):
         arcade.start_render()
 
         # Draw all the sprites.
-        self.player_sprite.draw()
+        self.player_list.draw()
         self.wall_list.draw()
 
     def on_key_press(self, key, modifiers):

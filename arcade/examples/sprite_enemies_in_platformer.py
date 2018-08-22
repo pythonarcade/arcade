@@ -48,6 +48,7 @@ class MyGame(arcade.Window):
         # Sprite lists
         self.wall_list = None
         self.enemy_list = None
+        self.player_list = None
 
         # Set up the player
         self.score = 0
@@ -63,6 +64,7 @@ class MyGame(arcade.Window):
         # Sprite lists
         self.wall_list = arcade.SpriteList()
         self.enemy_list = arcade.SpriteList()
+        self.player_list = arcade.SpriteList()
 
         # Draw the walls on the bottom
         for x in range(0, SCREEN_WIDTH, SPRITE_SIZE):
@@ -112,6 +114,7 @@ class MyGame(arcade.Window):
 
         # -- Set up the player
         self.player_sprite = arcade.Sprite("images/character.png", SPRITE_SCALING)
+        self.player_list.append(self.player_sprite)
 
         # Starting position of the player
         self.player_sprite.center_x = 64
@@ -133,7 +136,7 @@ class MyGame(arcade.Window):
         arcade.start_render()
 
         # Draw all the sprites.
-        self.player_sprite.draw()
+        self.player_list.draw()
         self.wall_list.draw()
         self.enemy_list.draw()
 

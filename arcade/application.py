@@ -10,6 +10,7 @@ from arcade.window_commands import get_viewport
 from arcade.window_commands import set_window
 
 import pyglet
+import pyglet.gl as gl
 
 MOUSE_BUTTON_LEFT = 1
 MOUSE_BUTTON_MIDDLE = 2
@@ -43,14 +44,15 @@ class Window(pyglet.window.Window):
     def __init__(self, width: float = 800, height: float = 600,
                  title: str = 'Arcade Window', fullscreen: bool = False,
                  resizable: bool = False):
+        config = pyglet.gl.Config(major_version=3, minor_version=3)
         super().__init__(width=width, height=height, caption=title,
-                         resizable=resizable)
+                         resizable=resizable, config=config)
 
         self.set_update_rate(1 / 60)
         super().set_fullscreen(fullscreen)
         self.invalid = False
         set_window(self)
-        # set_viewport(0, self.width, 0, self.height)
+        set_viewport(0, self.width, 0, self.height)
 
     def update(self, delta_time: float):
         """
@@ -123,7 +125,10 @@ class Window(pyglet.window.Window):
     def on_resize(self, width, height):
         """ Override this function to add custom code to be called any time the window
         is resized. """
-        super().on_resize(width, height)
+        viewport = self.get_viewport_size()
+        width = max(1, viewport[0])
+        height = max(1, viewport[1])
+        gl.glViewport(0, 0, width, height)
 
     def set_min_size(self, width: float, height: float):
         """ Wrap the Pyglet window call to set minimum size

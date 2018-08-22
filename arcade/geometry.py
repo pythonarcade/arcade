@@ -97,7 +97,8 @@ def check_for_collision(sprite1: Sprite, sprite2: Sprite) -> bool:
     if not isinstance(sprite1, Sprite):
         raise TypeError("Parameter 1 is not an instance of the Sprite class.")
     if isinstance(sprite2, SpriteList):
-        raise TypeError("Parameter 2 is a instance of the SpriteList instead of a required Sprite. See if you meant to call check_for_collision_with_list instead of check_for_collision.")
+        raise TypeError("Parameter 2 is a instance of the SpriteList instead of a required Sprite. See if you meant to "
+                        "call check_for_collision_with_list instead of check_for_collision.")
     elif not isinstance(sprite2, Sprite):
         raise TypeError("Parameter 2 is not an instance of the Sprite class.")
 
@@ -156,7 +157,7 @@ def check_for_collision_with_list(sprite1: Sprite,
     if not isinstance(sprite1, Sprite):
         raise TypeError("Parameter 1 is not an instance of the Sprite class.")
     if not isinstance(sprite_list, SpriteList):
-        raise TypeError("Parameter 2 is not a SpriteList.")
+        raise TypeError(f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList.")
 
     if sprite_list.use_spatial_hash:
         sprite_list_to_check = sprite_list.spatial_hash.get_objects_for_box(sprite1)
@@ -166,7 +167,7 @@ def check_for_collision_with_list(sprite1: Sprite,
 
     collision_list = []
     for sprite2 in sprite_list_to_check:
-        if sprite1 is not sprite2:
+        if sprite1 is not sprite2 and sprite2 not in collision_list:
             if _check_for_collision(sprite1, sprite2):
                 collision_list.append(sprite2)
     return collision_list

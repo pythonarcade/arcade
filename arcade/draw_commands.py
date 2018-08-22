@@ -10,16 +10,59 @@ Buffered Draw Commands.
 
 import ctypes
 import math
-from typing import List
-
 import PIL.Image
 import PIL.ImageOps
-import pyglet
-import pyglet.gl as gl
-from pyglet.gl import glu as glu
+import numpy as np
+import moderngl
 
+import pyglet.gl as gl
+
+from typing import List
+
+from arcade.window_commands import get_projection
 from arcade.arcade_types import Color
 from arcade.arcade_types import PointList
+from arcade import shader
+
+
+line_vertex_shader = '''
+    #version 330
+    uniform mat4 Projection;
+    in vec2 in_vert;
+    in vec4 in_color;
+    out vec4 v_color;
+    void main() {
+       gl_Position = Projection * vec4(in_vert, 0.0, 1.0);
+       v_color = in_color;
+    }
+'''
+
+line_fragment_shader = '''
+    #version 330
+    in vec4 v_color;
+    out vec4 f_color;
+    void main() {
+        f_color = v_color;
+    }
+'''
+
+
+def get_four_byte_color(color: Color):
+    if len(color) == 4:
+        return color
+    elif len(color) == 3:
+        return color[0], color[1], color[2], 255
+    else:
+        raise ValueError("This isn't a 3 or 4 byte color")
+
+
+def get_four_float_color(color: Color):
+    if len(color) == 4:
+        return color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255
+    elif len(color) == 3:
+        return color[0] / 255, color[1] / 255, color[2] / 255, 1.0
+    else:
+        raise ValueError("This isn't a 3 or 4 byte color")
 
 
 def rotate_point(x: float, y: float, cx: float, cy: float,
@@ -35,15 +78,13 @@ def rotate_point(x: float, y: float, cx: float, cy: float,
     temp_y = y - cy
 
     # now apply rotation
-    rotated_x = temp_x * math.cos(math.radians(angle)) - \
-                temp_y * math.sin(math.radians(angle))
-    rotated_y = temp_x * math.sin(math.radians(angle)) + \
-                temp_y * math.cos(math.radians(angle))
+    rotated_x = temp_x * math.cos(math.radians(angle)) - temp_y * math.sin(math.radians(angle))
+    rotated_y = temp_x * math.sin(math.radians(angle)) + temp_y * math.cos(math.radians(angle))
 
     # translate back
-    ROUNDING_PRECISION = 2
-    x = round(rotated_x + cx, ROUNDING_PRECISION)
-    y = round(rotated_y + cy, ROUNDING_PRECISION)
+    rounding_precision = 2
+    x = round(rotated_x + cx, rounding_precision)
+    y = round(rotated_y + cy, rounding_precision)
 
     return x, y
 
@@ -60,7 +101,7 @@ class Texture:
 
     """
 
-    def __init__(self, texture_id: int, width: float, height: float):
+    def __init__(self, texture_id: int, width: float, height: float, file_name: str):
         """
         Args:
             :texture_id (str): Id of the texture.
@@ -91,6 +132,7 @@ class Texture:
         self.texture_id = texture_id
         self.width = width
         self.height = height
+        self.texture_name = file_name
 
 
 def make_transparent_color(color: Color, transparency: float):
@@ -118,51 +160,6 @@ def load_textures(file_name: str,
         :list: List of textures loaded.
     Raises:
         :SystemError:
-
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
-    >>> image_location_list = [[591, 5, 64, 93],
-    ...                        [655, 10, 75, 88],
-    ...                        [730, 7, 54, 91],
-    ...                        [784, 3, 59, 95],
-    ...                        [843, 6, 56, 92]]
-    >>> texture_info_list = arcade.load_textures("arcade/examples/images/character_sheet.png", image_location_list)
-    >>> image_location_list = [[5600, 0, 0, 0]]
-
-    >>> texture_info_list = arcade.load_textures("arcade/examples/images/character_sheet.png", image_location_list)
-    Traceback (most recent call last):
-    ...
-    ValueError: Texture has a width of 0, must be > 0.
-
-    >>> image_location_list = [[2000, 0, 20, 20]]
-    >>> texture_info_list = arcade.load_textures("arcade/examples/images/character_sheet.png", image_location_list)
-    Traceback (most recent call last):
-    ...
-    ValueError: Can't load texture starting at an x of 2000 when the image is only 1377 across.
-
-    >>> image_location_list = [[500, 500, 20, 20]]
-    >>> texture_info_list = arcade.load_textures("arcade/examples/images/character_sheet.png", image_location_list)
-    Traceback (most recent call last):
-    ...
-    ValueError: Can't load texture starting at an y of 500 when the image is only 98 high.
-
-    >>> image_location_list = [[1300, 0, 100, 20]]
-    >>> texture_info_list = arcade.load_textures("arcade/examples/images/character_sheet.png", image_location_list)
-    Traceback (most recent call last):
-    ...
-    ValueError: Can't load texture ending at an x of 1400 when the image is only 1377 wide.
-
-    >>> image_location_list = [[500, 50, 50, 50]]
-    >>> texture_info_list = arcade.load_textures("arcade/examples/images/character_sheet.png", image_location_list)
-    Traceback (most recent call last):
-    ...
-    ValueError: Can't load texture ending at an y of 100 when the image is only 98 high.
-
-    >>> image_location_list = [[0, 0, 50, 50]]
-    >>> texture_info_list = arcade.load_textures("arcade/examples/images/character_sheet.png", image_location_list, mirrored=True, flipped=True)
-
-    >>> arcade.close_window()
-
     """
     source_image = PIL.Image.open(file_name)
 
@@ -201,7 +198,6 @@ def load_textures(file_name: str,
             image = PIL.ImageOps.flip(image)
 
         image_width, image_height = image.size
-        image_bytes = image.convert("RGBA").tobytes("raw", "RGBA", 0, -1)
 
         texture = gl.GLuint(0)
         gl.glGenTextures(1, ctypes.byref(texture))
@@ -209,18 +205,12 @@ def load_textures(file_name: str,
         gl.glBindTexture(gl.GL_TEXTURE_2D, texture)
         gl.glPixelStorei(gl.GL_UNPACK_ALIGNMENT, 1)
 
-        gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_S,
-                           gl.GL_REPEAT)
-        gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_T,
-                           gl.GL_REPEAT)
+        gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_S, gl.GL_REPEAT)
+        gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_T, gl.GL_REPEAT)
 
-        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER,
-                           gl.GL_LINEAR)
+        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR)
         gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER,
                            gl.GL_LINEAR_MIPMAP_LINEAR)
-        glu.gluBuild2DMipmaps(gl.GL_TEXTURE_2D, gl.GL_RGBA,
-                              image_width, image_height,
-                              gl.GL_RGBA, gl.GL_UNSIGNED_BYTE, image_bytes)
 
         image_width *= scale
         image_height *= scale
@@ -318,7 +308,7 @@ def load_texture(file_name: str, x: float=0, y: float=0,
         image = PIL.ImageOps.flip(image)
 
     image_width, image_height = image.size
-    image_bytes = image.convert("RGBA").tobytes("raw", "RGBA", 0, -1)
+    # image_bytes = image.convert("RGBA").tobytes("raw", "RGBA", 0, -1)
 
     texture = gl.GLuint(0)
     gl.glGenTextures(1, ctypes.byref(texture))
@@ -335,14 +325,14 @@ def load_texture(file_name: str, x: float=0, y: float=0,
                        gl.GL_LINEAR)
     gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER,
                        gl.GL_LINEAR_MIPMAP_LINEAR)
-    glu.gluBuild2DMipmaps(gl.GL_TEXTURE_2D, gl.GL_RGBA,
-                          image_width, image_height,
-                          gl.GL_RGBA, gl.GL_UNSIGNED_BYTE, image_bytes)
+    # glu.gluBuild2DMipmaps(gl.GL_TEXTURE_2D, gl.GL_RGBA,
+    #                       image_width, image_height,
+    #                       gl.GL_RGBA, gl.GL_UNSIGNED_BYTE, image_bytes)
 
     image_width *= scale
     image_height *= scale
 
-    result = Texture(texture, image_width, image_height)
+    result = Texture(texture, image_width, image_height, file_name)
     load_texture.texture_cache[cache_name] = result
     return result
 
@@ -374,7 +364,8 @@ def draw_arc_filled(center_x: float, center_y: float,
                     width: float, height: float,
                     color: Color,
                     start_angle: float, end_angle: float,
-                    tilt_angle: float=0):
+                    tilt_angle: float=0,
+                    num_segments: int=128):
     """
     Draw a filled in arc. Useful for drawing pie-wedges, or Pac-Man.
 
@@ -392,42 +383,11 @@ def draw_arc_filled(center_x: float, center_y: float,
         None
     Raises:
         None
-
-    Example:
-
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
-    >>> arcade.set_background_color(arcade.color.WHITE)
-    >>> arcade.start_render()
-    >>> arcade.draw_arc_filled(150, 144, 15, 36, \
-arcade.color.BOTTLE_GREEN, 90, 360, 45)
-    >>> color = (255, 0, 0, 127)
-    >>> arcade.draw_arc_filled(150, 154, 15, 36, color, 90, 360, 45)
-    >>> arcade.finish_render()
-    >>> arcade.close_window()
     """
-    num_segments = 128
-    gl.glEnable(gl.GL_BLEND)
-    gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-    gl.glEnable(gl.GL_LINE_SMOOTH)
-    gl.glHint(gl.GL_LINE_SMOOTH_HINT, gl.GL_NICEST)
-    gl.glHint(gl.GL_POLYGON_SMOOTH_HINT, gl.GL_NICEST)
-
-    gl.glLoadIdentity()
-    gl.glTranslatef(center_x, center_y, 0)
-    gl.glRotatef(tilt_angle, 0, 0, 1)
-
-    # Set color
-    if len(color) == 4:
-        gl.glColor4ub(color[0], color[1], color[2], color[3])
-    elif len(color) == 3:
-        gl.glColor4ub(color[0], color[1], color[2], 255)
-
-    gl.glBegin(gl.GL_TRIANGLE_FAN)
+    unrotated_point_list = [[0, 0]]
 
     start_segment = int(start_angle / 360 * num_segments)
     end_segment = int(end_angle / 360 * num_segments)
-    gl.glVertex3f(0, 0, 0.5)
 
     for segment in range(start_segment, end_segment + 1):
         theta = 2.0 * 3.1415926 * segment / num_segments
@@ -435,16 +395,27 @@ arcade.color.BOTTLE_GREEN, 90, 360, 45)
         x = width * math.cos(theta)
         y = height * math.sin(theta)
 
-        gl.glVertex3f(x, y, 0.5)
+        unrotated_point_list.append((x, y))
 
-    gl.glEnd()
-    gl.glLoadIdentity()
+    if tilt_angle == 0:
+        uncentered_point_list = unrotated_point_list
+    else:
+        uncentered_point_list = []
+        for point in unrotated_point_list:
+            uncentered_point_list.append(rotate_point(point[0], point[1], 0, 0, tilt_angle))
+
+    point_list = []
+    for point in uncentered_point_list:
+        point_list.append((point[0] + center_x, point[1] + center_y))
+
+    _generic_draw_line_strip(point_list, color, 1, gl.GL_TRIANGLE_FAN)
 
 
 def draw_arc_outline(center_x: float, center_y: float, width: float,
                      height: float, color: Color,
                      start_angle: float, end_angle: float,
-                     border_width: float=1, tilt_angle: float=0):
+                     border_width: float=1, tilt_angle: float=0,
+                     num_segments: int=128):
     """
     Draw the outside edge of an arc. Useful for drawing curved lines.
 
@@ -463,54 +434,32 @@ def draw_arc_outline(center_x: float, center_y: float, width: float,
         None
     Raises:
         None
-
-    Example:
-
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
-    >>> arcade.set_background_color(arcade.color.WHITE)
-    >>> arcade.start_render()
-    >>> arcade.draw_arc_outline(150, 81, 15, 36, \
-arcade.color.BRIGHT_MAROON, 90, 360)
-    >>> transparent_color = (255, 0, 0, 127)
-    >>> arcade.draw_arc_outline(150, 71, 15, 36, \
-transparent_color, 90, 360)
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
     """
-    num_segments = 128
-    gl.glEnable(gl.GL_BLEND)
-    gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-    gl.glEnable(gl.GL_LINE_SMOOTH)
-    gl.glHint(gl.GL_LINE_SMOOTH_HINT, gl.GL_NICEST)
-    gl.glHint(gl.GL_POLYGON_SMOOTH_HINT, gl.GL_NICEST)
-
-    gl.glLoadIdentity()
-    gl.glTranslatef(center_x, center_y, 0)
-    gl.glRotatef(tilt_angle, 0, 0, 1)
-    gl.glLineWidth(border_width)
-
-    # Set color
-    if len(color) == 4:
-        gl.glColor4ub(color[0], color[1], color[2], color[3])
-    elif len(color) == 3:
-        gl.glColor4ub(color[0], color[1], color[2], 255)
-
-    gl.glBegin(gl.GL_LINE_STRIP)
+    unrotated_point_list = []
 
     start_segment = int(start_angle / 360 * num_segments)
     end_segment = int(end_angle / 360 * num_segments)
 
     for segment in range(start_segment, end_segment + 1):
-        theta = 2.0 * 3.1415926 * segment / num_segments
+        theta = 2.0 * math.pi * segment / num_segments
 
         x = width * math.cos(theta)
         y = height * math.sin(theta)
 
-        gl.glVertex3f(x, y, 0.5)
+        unrotated_point_list.append((x, y))
 
-    gl.glEnd()
-    gl.glLoadIdentity()
+    if tilt_angle == 0:
+        uncentered_point_list = unrotated_point_list
+    else:
+        uncentered_point_list = []
+        for point in unrotated_point_list:
+            uncentered_point_list.append(rotate_point(point[0], point[1], 0, 0, tilt_angle))
+
+    point_list = []
+    for point in uncentered_point_list:
+        point_list.append((point[0] + center_x, point[1] + center_y))
+
+    _generic_draw_line_strip(point_list, color, border_width, gl.GL_LINE_STRIP)
 
 
 # --- END ARC FUNCTIONS # # #
@@ -711,41 +660,34 @@ def draw_ellipse_filled(center_x: float, center_y: float,
     >>> arcade.quick_run(0.25)
     """
 
-    gl.glEnable(gl.GL_BLEND)
-    gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-    gl.glEnable(gl.GL_LINE_SMOOTH)
-    gl.glHint(gl.GL_LINE_SMOOTH_HINT, gl.GL_NICEST)
-    gl.glHint(gl.GL_POLYGON_SMOOTH_HINT, gl.GL_NICEST)
+    unrotated_point_list = []
 
-    gl.glLoadIdentity()
-    gl.glTranslatef(center_x, center_y, 0)
-    gl.glRotatef(tilt_angle, 0, 0, 1)
-
-    # Set color
-    if len(color) == 4:
-        gl.glColor4ub(color[0], color[1], color[2], color[3])
-    elif len(color) == 3:
-        gl.glColor4ub(color[0], color[1], color[2], 255)
-
-    gl.glBegin(gl.GL_TRIANGLE_FAN)
-
-    gl.glVertex3f(0, 0, 0.5)
-
-    for segment in range(num_segments + 1):
+    for segment in range(num_segments):
         theta = 2.0 * 3.1415926 * segment / num_segments
 
         x = width * math.cos(theta)
         y = height * math.sin(theta)
 
-        gl.glVertex3f(x, y, 0.5)
+        unrotated_point_list.append((x, y))
 
-    gl.glEnd()
-    gl.glLoadIdentity()
+    if tilt_angle == 0:
+        uncentered_point_list = unrotated_point_list
+    else:
+        uncentered_point_list = []
+        for point in unrotated_point_list:
+            uncentered_point_list.append(rotate_point(point[0], point[1], 0, 0, tilt_angle))
+
+    point_list = []
+    for point in uncentered_point_list:
+        point_list.append((point[0] + center_x, point[1] + center_y))
+
+    _generic_draw_line_strip(point_list, color, 1, gl.GL_TRIANGLE_FAN)
 
 
 def draw_ellipse_outline(center_x: float, center_y: float, width: float,
                          height: float, color: Color,
-                         border_width: float=1, tilt_angle: float=0):
+                         border_width: float=1, tilt_angle: float=0,
+                         num_segments=128):
     """
     Draw the outline of an ellipse.
 
@@ -762,59 +704,108 @@ def draw_ellipse_outline(center_x: float, center_y: float, width: float,
         None
     Raises:
         None
-
-    Example:
-
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
-    >>> arcade.set_background_color(arcade.color.WHITE)
-    >>> arcade.start_render()
-    >>> arcade.draw_ellipse_outline(540, 273, 15, 36, arcade.color.AMBER, 3)
-    >>> color = (127, 0, 127, 127)
-    >>> arcade.draw_ellipse_outline(540, 336, 15, 36, color, 3, 45)
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
     """
 
-    num_segments = 128
+    unrotated_point_list = []
 
-    gl.glEnable(gl.GL_BLEND)
-    gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-    gl.glEnable(gl.GL_LINE_SMOOTH)
-    gl.glHint(gl.GL_LINE_SMOOTH_HINT, gl.GL_NICEST)
-    gl.glHint(gl.GL_POLYGON_SMOOTH_HINT, gl.GL_NICEST)
-
-    gl.glLoadIdentity()
-    gl.glTranslatef(center_x, center_y, 0)
-    gl.glRotatef(tilt_angle, 0, 0, 1)
-    gl.glLineWidth(border_width)
-
-    # Set color
-    if len(color) == 4:
-        gl.glColor4ub(color[0], color[1], color[2], color[3])
-    elif len(color) == 3:
-        gl.glColor4ub(color[0], color[1], color[2], 255)
-
-    gl.glBegin(gl.GL_LINE_LOOP)
     for segment in range(num_segments):
         theta = 2.0 * 3.1415926 * segment / num_segments
 
         x = width * math.cos(theta)
         y = height * math.sin(theta)
 
-        gl.glVertex3f(x, y, 0.5)
+        unrotated_point_list.append((x, y))
 
-    gl.glEnd()
-    gl.glLoadIdentity()
+    if tilt_angle == 0:
+        uncentered_point_list = unrotated_point_list
+    else:
+        uncentered_point_list = []
+        for point in unrotated_point_list:
+            uncentered_point_list.append(rotate_point(point[0], point[1], 0, 0, tilt_angle))
 
+    point_list = []
+    for point in uncentered_point_list:
+        point_list.append((point[0] + center_x, point[1] + center_y))
+
+    _generic_draw_line_strip(point_list, color, border_width, gl.GL_LINE_LOOP)
 
 # --- END ELLIPSE FUNCTIONS # # #
 
 
 # --- BEGIN LINE FUNCTIONS # # #
 
+def _generic_draw_line_strip(point_list: PointList,
+                             color: Color,
+                             line_width: float=1,
+                             mode: int=moderngl.LINE_STRIP):
+    """
+    Draw a line strip. A line strip is a set of continuously connected
+    line segments.
+
+    Args:
+        :point_list: List of points making up the line. Each point is
+         in a list. So it is a list of lists.
+        :color: color, specified in a list of 3 or 4 bytes in RGB or
+         RGBA format.
+        :border_width: Width of the line in pixels.
+    Returns:
+        None
+    Raises:
+        None
+    """
+    program = shader.program(
+        vertex_shader=line_vertex_shader,
+        fragment_shader=line_fragment_shader,
+    )
+    buffer_type = np.dtype([('vertex', '2f4'), ('color', '4B')])
+    data = np.zeros(len(point_list), dtype=buffer_type)
+
+    data['vertex'] = point_list
+
+    color = get_four_byte_color(color)
+    data['color'] = color
+
+    vbo = shader.buffer(data.tobytes())
+    vbo_desc = shader.BufferDescription(
+        vbo,
+        '2f 4B',
+        ('in_vert', 'in_color'),
+        normalized=['in_color']
+    )
+
+    vao_content = [vbo_desc]
+
+    vao = shader.vertex_array(program, vao_content)
+    with vao:
+        program['Projection'] = get_projection().flatten()
+
+        gl.glLineWidth(line_width)
+        gl.glPointSize(line_width)
+
+        gl.glEnable(gl.GL_BLEND)
+        gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
+        gl.glEnable(gl.GL_LINE_SMOOTH)
+        gl.glHint(gl.GL_LINE_SMOOTH_HINT, gl.GL_NICEST)
+        gl.glHint(gl.GL_POLYGON_SMOOTH_HINT, gl.GL_NICEST)
+
+        vao.render(mode=mode)
+
+
+def draw_line_strip(point_list: PointList,
+                    color: Color, line_width: float=1):
+    """
+    Draw a multi-point line.
+
+    Args:
+        point_list:
+        color:
+        line_width:
+    """
+    _generic_draw_line_strip(point_list, color, line_width, gl.GL_LINE_STRIP)
+
+
 def draw_line(start_x: float, start_y: float, end_x: float, end_y: float,
-              color: Color, border_width: float=1):
+              color: Color, line_width: float=1):
     """
     Draw a line.
 
@@ -831,108 +822,15 @@ def draw_line(start_x: float, start_y: float, end_x: float, end_y: float,
     Raises:
         None
 
-    Example:
-
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
-    >>> arcade.set_background_color(arcade.color.WHITE)
-    >>> arcade.start_render()
-    >>> arcade.draw_line(270, 495, 300, 450, arcade.color.WOOD_BROWN, 3)
-    >>> color = (127, 0, 127, 127)
-    >>> arcade.draw_line(280, 495, 320, 450, color, 3)
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
     """
-    gl.glEnable(gl.GL_BLEND)
-    gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-    gl.glEnable(gl.GL_LINE_SMOOTH)
-    gl.glHint(gl.GL_LINE_SMOOTH_HINT, gl.GL_NICEST)
-    gl.glHint(gl.GL_POLYGON_SMOOTH_HINT, gl.GL_NICEST)
 
-    gl.glLoadIdentity()
-
-    # Set line width
-    gl.glLineWidth(border_width)
-
-    # Set color
-    if len(color) == 4:
-        gl.glColor4ub(color[0], color[1], color[2], color[3])
-    elif len(color) == 3:
-        gl.glColor4ub(color[0], color[1], color[2], 255)
-
-    gl.glBegin(gl.GL_LINES)
-    gl.glVertex3f(start_x, start_y, 0.5)
-    gl.glVertex3f(end_x, end_y, 0.5)
-    gl.glEnd()
-
-
-def draw_line_strip(point_list: PointList,
-                    color: Color, border_width: float=1):
-    """
-    Draw a line strip. A line strip is a set of continuously connected
-    line segments.
-
-    Args:
-        :point_list: List of points making up the line. Each point is
-         in a list. So it is a list of lists.
-        :color: color, specified in a list of 3 or 4 bytes in RGB or
-         RGBA format.
-        :border_width: Width of the line in pixels.
-    Returns:
-        None
-    Raises:
-        None
-
-    Example:
-
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
-    >>> arcade.set_background_color(arcade.color.WHITE)
-    >>> arcade.start_render()
-    >>> point_list = ((510, 450), \
-(570, 450), \
-(510, 480), \
-(570, 480), \
-(510, 510), \
-(570, 510))
-    >>> arcade.draw_line_strip(point_list, arcade.color.TROPICAL_RAIN_FOREST, \
-3)
-    >>> color = (127, 0, 127, 127)
-    >>> point_list = ((510, 455), \
-(570, 455), \
-(510, 485), \
-(570, 485), \
-(510, 515), \
-(570, 515))
-    >>> arcade.draw_line_strip(point_list, color, 3)
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
-    """
-    gl.glEnable(gl.GL_BLEND)
-    gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-    gl.glEnable(gl.GL_LINE_SMOOTH)
-    gl.glHint(gl.GL_LINE_SMOOTH_HINT, gl.GL_NICEST)
-    gl.glHint(gl.GL_POLYGON_SMOOTH_HINT, gl.GL_NICEST)
-
-    # Set line width
-    gl.glLineWidth(border_width)
-
-    gl.glLoadIdentity()
-
-    # Set color
-    if len(color) == 4:
-        gl.glColor4ub(color[0], color[1], color[2], color[3])
-    elif len(color) == 3:
-        gl.glColor4ub(color[0], color[1], color[2], 255)
-
-    gl.glBegin(gl.GL_LINE_STRIP)
-    for point in point_list:
-        gl.glVertex3f(point[0], point[1], 0.5)
-    gl.glEnd()
+    points = (start_x, start_y), (end_x, end_y)
+    draw_line_strip(points, color, line_width)
 
 
 def draw_lines(point_list: PointList,
-               color: Color, border_width: float=1):
+               color: Color,
+               line_width: float=1):
     """
     Draw a set of lines.
 
@@ -948,57 +846,10 @@ def draw_lines(point_list: PointList,
         None
     Raises:
         None
-
-    Example:
-
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
-    >>> arcade.set_background_color(arcade.color.WHITE)
-    >>> arcade.start_render()
-    >>> point_list = ((390, 450), \
-(450, 450), \
-(390, 480), \
-(450, 480), \
-(390, 510), \
-(450, 510))
-    >>> arcade.draw_lines(point_list, arcade.color.BLUE, 3)
-
-    >>> arcade.start_render()
-    >>> point_list = ((390, 450), \
-(550, 450), \
-(490, 480), \
-(550, 480), \
-(490, 510), \
-(550, 510))
-    >>> arcade.draw_lines(point_list, (0, 0, 255, 127), 3)
-
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
     """
-    gl.glEnable(gl.GL_BLEND)
-    gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-    gl.glEnable(gl.GL_LINE_SMOOTH)
-    gl.glHint(gl.GL_LINE_SMOOTH_HINT, gl.GL_NICEST)
-    gl.glHint(gl.GL_POLYGON_SMOOTH_HINT, gl.GL_NICEST)
 
-    gl.glLoadIdentity()
+    _generic_draw_line_strip(point_list, color, line_width, gl.GL_LINES)
 
-    # Set line width
-    gl.glLineWidth(border_width)
-
-    # Set color
-    if len(color) == 4:
-        gl.glColor4ub(color[0], color[1], color[2], color[3])
-    elif len(color) == 3:
-        gl.glColor4ub(color[0], color[1], color[2], 255)
-
-    gl.glBegin(gl.GL_LINES)
-    for point in point_list:
-        gl.glVertex3f(point[0], point[1], 0.5)
-    gl.glEnd()
-
-
-# --- END LINE FUNCTIONS # # #
 
 # --- BEGIN POINT FUNCTIONS # # #
 
@@ -1017,31 +868,9 @@ def draw_point(x: float, y: float, color: Color, size: float):
         None
     Raises:
         None
-
-    Example:
-
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
-    >>> arcade.set_background_color(arcade.color.WHITE)
-    >>> arcade.start_render()
-    >>> arcade.draw_point(60, 495, arcade.color.RED, 10)
-    >>> arcade.draw_point(70, 495, (255, 0, 0, 127), 10)
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
     """
-    gl.glEnable(gl.GL_BLEND)
-    gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-
-    gl.glLoadIdentity()
-
-    gl.glPointSize(size)
-    if len(color) == 4:
-        gl.glColor4ub(color[0], color[1], color[2], color[3])
-    elif len(color) == 3:
-        gl.glColor4ub(color[0], color[1], color[2], 255)
-    gl.glBegin(gl.GL_POINTS)
-    gl.glVertex3f(x, y, 0.5)
-    gl.glEnd()
+    point_list = [(x, y)]
+    _generic_draw_line_strip(point_list, color, size, gl.GL_POINTS)
 
 
 def draw_points(point_list: PointList,
@@ -1059,38 +888,8 @@ def draw_points(point_list: PointList,
         None
     Raises:
         None
-
-    Example:
-
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
-    >>> arcade.set_background_color(arcade.color.WHITE)
-    >>> arcade.start_render()
-    >>> point_list = ((165, 495), \
-(165, 480), \
-(165, 465), \
-(195, 495), \
-(195, 480), \
-(195, 465))
-    >>> arcade.draw_points(point_list, arcade.color.ZAFFRE, 10)
-    >>> arcade.draw_points(point_list, make_transparent_color(arcade.color.ZAFFRE, 127), 10)
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
     """
-    gl.glEnable(gl.GL_BLEND)
-    gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-
-    gl.glLoadIdentity()
-
-    gl.glPointSize(size)
-    if len(color) == 4:
-        gl.glColor4ub(color[0], color[1], color[2], color[3])
-    elif len(color) == 3:
-        gl.glColor4ub(color[0], color[1], color[2], 255)
-    gl.glBegin(gl.GL_POINTS)
-    for point in point_list:
-        gl.glVertex3f(point[0], point[1], 0.5)
-    gl.glEnd()
+    _generic_draw_line_strip(point_list, color, size, gl.GL_POINTS)
 
 
 # --- END POINT FUNCTIONS # # #
@@ -1112,45 +911,13 @@ def draw_polygon_filled(point_list: PointList,
         None
     Raises:
         None
-
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
-    >>> arcade.set_background_color(arcade.color.WHITE)
-    >>> arcade.start_render()
-    >>> point_list = ((150, 240), \
-(165, 240), \
-(180, 255), \
-(180, 285), \
-(165, 300), \
-(150, 300))
-    >>> arcade.draw_polygon_filled(point_list, arcade.color.SPANISH_VIOLET)
-    >>> arcade.draw_polygon_filled(point_list, \
-make_transparent_color(arcade.color.SPANISH_VIOLET, 127))
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
     """
-    gl.glEnable(gl.GL_BLEND)
-    gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-    gl.glEnable(gl.GL_LINE_SMOOTH)
-    gl.glHint(gl.GL_LINE_SMOOTH_HINT, gl.GL_NICEST)
-    gl.glHint(gl.GL_POLYGON_SMOOTH_HINT, gl.GL_NICEST)
 
-    gl.glLoadIdentity()
-
-    # Set color
-    if len(color) == 4:
-        gl.glColor4ub(color[0], color[1], color[2], color[3])
-    elif len(color) == 3:
-        gl.glColor4ub(color[0], color[1], color[2], 255)
-
-    gl.glBegin(gl.GL_POLYGON)
-    for point in point_list:
-        gl.glVertex3f(point[0], point[1], 0.5)
-    gl.glEnd()
+    _generic_draw_line_strip(point_list, color, 1, gl.GL_POLYGON)
 
 
 def draw_polygon_outline(point_list: PointList,
-                         color: Color, border_width: float=1):
+                         color: Color, line_width: float=1):
     """
     Draw a polygon outline. Also known as a "line loop."
 
@@ -1164,42 +931,8 @@ def draw_polygon_outline(point_list: PointList,
         None
     Raises:
         None
-
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
-    >>> arcade.set_background_color(arcade.color.WHITE)
-    >>> arcade.start_render()
-    >>> point_list = ((30, 240), \
-(45, 240), \
-(60, 255), \
-(60, 285), \
-(45, 300), \
-(30, 300))
-    >>> arcade.draw_polygon_outline(point_list, arcade.color.SPANISH_VIOLET, 3)
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
     """
-    gl.glEnable(gl.GL_BLEND)
-    gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-    gl.glEnable(gl.GL_LINE_SMOOTH)
-    gl.glHint(gl.GL_LINE_SMOOTH_HINT, gl.GL_NICEST)
-    gl.glHint(gl.GL_POLYGON_SMOOTH_HINT, gl.GL_NICEST)
-
-    # Set line width
-    gl.glLineWidth(border_width)
-
-    gl.glLoadIdentity()
-
-    # Set color
-    if len(color) == 4:
-        gl.glColor4ub(color[0], color[1], color[2], color[3])
-    elif len(color) == 3:
-        gl.glColor4ub(color[0], color[1], color[2], 255)
-
-    gl.glBegin(gl.GL_LINE_LOOP)
-    for point in point_list:
-        gl.glVertex3f(point[0], point[1], 0.5)
-    gl.glEnd()
+    _generic_draw_line_strip(point_list, color, line_width, gl.GL_LINE_LOOP)
 
 
 def draw_triangle_filled(x1: float, y1: float,
@@ -1382,48 +1115,20 @@ def draw_rectangle_outline(center_x: float, center_y: float, width: float,
         None
     Raises:
         None
-
-    Example:
-
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
-    >>> arcade.set_background_color(arcade.color.WHITE)
-    >>> arcade.start_render()
-    >>> arcade.draw_rectangle_outline(278, 150, 45, 105, \
-arcade.color.BRITISH_RACING_GREEN, 2)
-    >>> arcade.draw_rectangle_outline(278, 150, 45, 105, (100, 200, 100, 255))
-    >>> arcade.draw_rectangle_outline(278, 150, 45, 105, \
-arcade.color.BRITISH_RACING_GREEN, 5, 45)
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
     """
 
-    gl.glEnable(gl.GL_BLEND)
-    gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-    gl.glEnable(gl.GL_LINE_SMOOTH)
-    gl.glHint(gl.GL_LINE_SMOOTH_HINT, gl.GL_NICEST)
-    gl.glHint(gl.GL_POLYGON_SMOOTH_HINT, gl.GL_NICEST)
+    p1 = -width // 2 + center_x, -height // 2 + center_y
+    p2 = width // 2 + center_x, -height // 2 + center_y
+    p3 = width // 2 + center_x, height // 2 + center_y
+    p4 = -width // 2 + center_x, height // 2 + center_y
 
-    gl.glLoadIdentity()
-    gl.glTranslatef(center_x, center_y, 0)
-    if tilt_angle:
-        gl.glRotatef(tilt_angle, 0, 0, 1)
+    if tilt_angle != 0:
+        p1 = rotate_point(p1[0], p1[1], center_x, center_y, tilt_angle)
+        p2 = rotate_point(p2[0], p2[1], center_x, center_y, tilt_angle)
+        p3 = rotate_point(p3[0], p3[1], center_x, center_y, tilt_angle)
+        p4 = rotate_point(p4[0], p4[1], center_x, center_y, tilt_angle)
 
-    # Set line width
-    gl.glLineWidth(border_width)
-
-    # Set color
-    if len(color) == 4:
-        gl.glColor4ub(color[0], color[1], color[2], color[3])
-    elif len(color) == 3:
-        gl.glColor4ub(color[0], color[1], color[2], 255)
-
-    gl.glBegin(gl.GL_LINE_LOOP)
-    gl.glVertex3f(-width // 2, -height // 2, 0.5)
-    gl.glVertex3f(width // 2, -height // 2, 0.5)
-    gl.glVertex3f(width // 2, height // 2, 0.5)
-    gl.glVertex3f(-width // 2, height // 2, 0.5)
-    gl.glEnd()
+    _generic_draw_line_strip((p1, p2, p3, p4), color, border_width, gl.GL_LINE_LOOP)
 
 
 def draw_lrtb_rectangle_filled(left: float, right: float, top: float,
@@ -1528,30 +1233,18 @@ def draw_rectangle_filled(center_x: float, center_y: float, width: float,
     >>> arcade.finish_render()
     >>> arcade.quick_run(0.25)
     """
+    p1 = -width // 2 + center_x, -height // 2 + center_y
+    p2 = width // 2 + center_x, -height // 2 + center_y
+    p3 = width // 2 + center_x, height // 2 + center_y
+    p4 = -width // 2 + center_x, height // 2 + center_y
 
-    gl.glEnable(gl.GL_BLEND)
-    gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-    gl.glEnable(gl.GL_LINE_SMOOTH)
-    gl.glHint(gl.GL_LINE_SMOOTH_HINT, gl.GL_NICEST)
-    gl.glHint(gl.GL_POLYGON_SMOOTH_HINT, gl.GL_NICEST)
+    if tilt_angle != 0:
+        p1 = rotate_point(p1[0], p1[1], center_x, center_y, tilt_angle)
+        p2 = rotate_point(p2[0], p2[1], center_x, center_y, tilt_angle)
+        p3 = rotate_point(p3[0], p3[1], center_x, center_y, tilt_angle)
+        p4 = rotate_point(p4[0], p4[1], center_x, center_y, tilt_angle)
 
-    # Set color
-    if len(color) == 4:
-        gl.glColor4ub(color[0], color[1], color[2], color[3])
-    elif len(color) == 3:
-        gl.glColor4ub(color[0], color[1], color[2], 255)
-
-    gl.glLoadIdentity()
-    gl.glTranslatef(center_x, center_y, 0)
-    if tilt_angle:
-        gl.glRotatef(tilt_angle, 0, 0, 1)
-
-    gl.glBegin(gl.GL_QUADS)
-    gl.glVertex3f(-width // 2, -height // 2, 0.5)
-    gl.glVertex3f(width // 2, -height // 2, 0.5)
-    gl.glVertex3f(width // 2, height // 2, 0.5)
-    gl.glVertex3f(-width // 2, height // 2, 0.5)
-    gl.glEnd()
+    _generic_draw_line_strip((p1, p2, p4, p3), color, 1, gl.GL_TRIANGLE_STRIP)
 
 
 def draw_texture_rectangle(center_x: float, center_y: float, width: float,
@@ -1679,119 +1372,5 @@ def draw_xywh_rectangle_textured(bottom_left_x: float, bottom_left_y: float,
 
 # --- END RECTANGLE FUNCTIONS # # #
 
-# --- BEGIN TEXT FUNCTIONS # # #
-
-
-def create_text(text: str,
-                color: Color,
-                font_size: float=12,
-                width: int=2000,
-                align="left",
-                font_name=('Calibri', 'Arial'),
-                bold: bool=False,
-                italic: bool=False,
-                anchor_x="left",
-                anchor_y="baseline"):
-    """
-    Create text to be rendered later. This operation takes a while, so it is
-    better to hold it between frames when the text does not change.
-
-    >>> import arcade
-    >>> arcade.open_window(800, 600, "Drawing Example")
-    >>> arcade.set_background_color(arcade.color.WHITE)
-    >>> arcade.start_render()
-    >>> my_text = arcade.create_text("Text Example", arcade.color.BLACK, 10)
-    >>> arcade.render_text(my_text, 250, 300, 45)
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
-
-    """
-    if len(color) == 3:
-        color = (color[0], color[1], color[2], 255)
-
-    text = pyglet.text.Label(text,
-                             font_name=font_name,
-                             font_size=font_size,
-                             x=0, y=0,
-                             color=color,
-                             multiline=True,
-                             width=width,
-                             align=align,
-                             anchor_x=anchor_x,
-                             anchor_y=anchor_y,
-                             bold=bold,
-                             italic=italic)
-
-    return text
-
-
-def render_text(text: pyglet.text.Label, start_x: float, start_y: float, rotation=0):
-    """
-    Render text created by the create_text function.
-
-    """
-    gl.glLoadIdentity()
-    gl.glTranslatef(start_x, start_y, 0)
-    if rotation:
-        gl.glRotatef(rotation, 0, 0, 1)
-
-    text.draw()
-
-
-def draw_text(text: str,
-              start_x: float, start_y: float,
-              color: Color,
-              font_size: float=12,
-              width: int=2000,
-              align="left",
-              font_name=('Calibri', 'Arial'),
-              bold: bool=False,
-              italic: bool=False,
-              anchor_x="left",
-              anchor_y="baseline",
-              rotation=0
-              ):
-    """
-
-    Args:
-        :text: Text to display.
-        :start_x: x coordinate of top left text point.
-        :start_y: y coordinate of top left text point.
-        :color: color, specified in a list of 3 or 4 bytes in RGB or
-         RGBA format.
-
-    Example:
-
-    >>> import arcade
-    >>> arcade.open_window(800, 600, "Drawing Example")
-    >>> arcade.set_background_color(arcade.color.WHITE)
-    >>> arcade.start_render()
-    >>> arcade.draw_text("Text Example", 250, 300, arcade.color.BLACK, 10)
-    >>> arcade.draw_text("Text Example", 250, 300, (0, 0, 0, 100), 10)
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
-    """
-
-    # If the cache gets too large, dump it and start over.
-    if len(draw_text.cache) > 5000:
-        draw_text.cache = {}
-
-    key = f"{text}{color}{font_size}{width}{align}{font_name}{bold}{italic}"
-    if key in draw_text.cache:
-        label = draw_text.cache[key]
-    else:
-        label = create_text(text, color=color, font_size=font_size, width=width, align=align,
-                            anchor_x=anchor_x, anchor_y=anchor_y, font_name=font_name, bold=bold, italic=italic)
-        draw_text.cache[key] = label
-
-    gl.glLoadIdentity()
-    gl.glTranslatef(start_x, start_y, 0)
-    if rotation:
-        gl.glRotatef(rotation, 0, 0, 1)
-
-    label.draw()
-
-
-draw_text.cache = {}
 
 # --- END TEXT FUNCTIONS # # #

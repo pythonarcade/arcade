@@ -23,7 +23,7 @@ SCREEN_HEIGHT = 600
 
 BULLET_SPEED = 5
 
-EXPLOSION_TEXTURE_COUNT = 270
+EXPLOSION_TEXTURE_COUNT = 60
 
 
 class Bullet(arcade.Sprite):
@@ -49,20 +49,11 @@ class Explosion(arcade.Sprite):
         # Update to the next frame of the animation. If we are at the end
         # of our frames, then delete this sprite.
         self.current_texture += 1
-        if self.current_texture < len(Explosion.explosion_textures):
-            self.texture = Explosion.explosion_textures[self.current_texture]
+        if self.current_texture < EXPLOSION_TEXTURE_COUNT:
+            texture_name = f"images/explosion/explosion{self.current_texture:04d}.png"
+            self.texture = arcade.load_texture(texture_name)
         else:
             self.kill()
-
-
-# Pre-load the animation frames. We don't do this in the __init__ because it
-# takes too long and would cause the game to pause.
-for i in range(EXPLOSION_TEXTURE_COUNT):
-    # Files from http://www.explosiongenerator.com are numbered sequentially.
-    # This code loads all of the explosion0000.png to explosion0270.png files
-    # that are part of this explosion.
-    texture = arcade.load_texture(f"images/explosion/explosion{i:04d}.png")
-    Explosion.explosion_textures.append(texture)
 
 
 class MyGame(arcade.Window):
@@ -94,8 +85,8 @@ class MyGame(arcade.Window):
         self.set_mouse_visible(False)
 
         # Load sounds. Sounds from kenney.nl
-        self.gun_sound = arcade.sound.load_sound("sounds/laser1.wav")
-        self.hit_sound = arcade.sound.load_sound("sounds/phaseJump1.wav")
+        # self.gun_sound = arcade.sound.load_sound("sounds/laser1.wav")
+        # self.hit_sound = arcade.sound.load_sound("sounds/phaseJump1.wav")
 
         arcade.set_background_color(arcade.color.AMAZON)
 
@@ -109,6 +100,18 @@ class MyGame(arcade.Window):
         self.bullet_list = arcade.SpriteList()
         self.explosions_list = arcade.SpriteList()
 
+        # Pre-load the animation frames. We don't do this in the __init__ because it
+        # takes too long and would cause the game to pause.
+        explosion_texture_list = []
+        for i in range(EXPLOSION_TEXTURE_COUNT):
+            # Files from http://www.explosiongenerator.com are numbered sequentially.
+            # This code loads all of the explosion0000.png to explosion0270.png files
+            # that are part of this explosion.
+            texture_name = f"images/explosion/explosion{i:04d}.png"
+            explosion_texture_list.append(texture_name)
+
+        self.explosions_list.preload_textures(explosion_texture_list)
+
         # Set up the player
         self.score = 0
 
@@ -119,7 +122,7 @@ class MyGame(arcade.Window):
         self.player_list.append(self.player_sprite)
 
         # Create the coins
-        for i in range(COIN_COUNT):
+        for coin_index in range(COIN_COUNT):
 
             # Create the coin instance
             # Coin image from kenney.nl
@@ -146,7 +149,7 @@ class MyGame(arcade.Window):
         # Draw all the sprites.
         self.coin_list.draw()
         self.bullet_list.draw()
-        self.player_sprite.draw()
+        self.player_list.draw()
         self.explosions_list.draw()
 
         # Render the text
@@ -164,7 +167,7 @@ class MyGame(arcade.Window):
         """
 
         # Gunshot sound
-        arcade.sound.play_sound(self.gun_sound)
+        # arcade.sound.play_sound(self.gun_sound)
 
         # Create a bullet
         bullet = Bullet("images/laserBlue01.png", SPRITE_SCALING_LASER)
@@ -208,7 +211,7 @@ class MyGame(arcade.Window):
                 self.score += 1
 
                 # Hit Sound
-                arcade.sound.play_sound(self.hit_sound)
+                # arcade.sound.play_sound(self.hit_sound)
 
             # If the bullet flies off-screen, remove it.
             if bullet.bottom > SCREEN_HEIGHT:
