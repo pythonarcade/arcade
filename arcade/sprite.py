@@ -343,11 +343,13 @@ class Sprite:
     def __lt__(self, other):
         return self.texture.texture_id.value < other.texture.texture_id.value
 
-    def clear_spatial_hashes(self):
+    def update_spatial_hashes(self):
+        """Update this sprite's spatial hash for any that in which it has been
+        included."""
         for sprite_list in self.sprite_lists:
             if sprite_list.use_spatial_hash and sprite_list.spatial_hash is not None:
                 try:
-                    sprite_list.spatial_hash.remove_object(self)
+                    sprite_list.recalculate_spatial_hash(self)
                 except:
                     print("Warning, attempt to remove item from spatial hash that doesn't exist in the hash.")
 
@@ -428,7 +430,7 @@ arcade.Sprite("arcade/examples/images/playerShip1_orange.png", scale)
     def _set_center_x(self, new_value: float):
         """ Set the center x coordinate of the sprite. """
         if new_value != self._position[0]:
-            self.clear_spatial_hashes()
+            self.update_spatial_hashes()
             self._position[0] = new_value
             self._point_list_cache = None
 
@@ -442,7 +444,7 @@ arcade.Sprite("arcade/examples/images/playerShip1_orange.png", scale)
     def _set_center_y(self, new_value: float):
         """ Set the center y coordinate of the sprite. """
         if new_value != self._position[1]:
-            self.clear_spatial_hashes()
+            self.update_spatial_hashes()
             self._position[1] = new_value
             self._point_list_cache = None
 
@@ -475,7 +477,7 @@ arcade.Sprite("arcade/examples/images/playerShip1_orange.png", scale)
     def _set_angle(self, new_value: float):
         """ Set the angle of the sprite's rotation. """
         if new_value != self._angle:
-            self.clear_spatial_hashes()
+            self.update_spatial_hashes()
             self._angle = new_value
             self._point_list_cache = None
 

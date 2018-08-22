@@ -289,7 +289,9 @@ class SpatialHash:
                 # append to each intersecting cell
                 close_by_sprites.extend(self.contents.setdefault((i, j), []))
 
-        return close_by_sprites
+        # Prevent duplicate collision checks on sprites hashed to more tha one
+        # cell
+        return list(set(close_by_sprites))
 
 
 T = TypeVar('T', bound=Sprite)
@@ -368,7 +370,7 @@ class SpriteList(Generic[T]):
     def recalculate_spatial_hash(self, item: T):
         if self.use_spatial_hash:
             self.spatial_hash.remove_object(item)
-            self.spatial_hash.append_object(item)
+            self.spatial_hash.insert_object_for_box(item)
 
     def remove(self, item: T):
         """
