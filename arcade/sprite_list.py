@@ -283,7 +283,12 @@ class SpriteList(Generic[T]):
         Remove a specific sprite from the list.
         """
         self.sprite_list.remove(item)
-        del self.sprite_idx[item]
+
+        # Rebuild index list
+        self.sprite_idx[item] = dict()
+        for idx, sprite in enumerate(self.sprite_list):
+            self.sprite_idx[sprite] = idx
+
         self.vao = None
         if self.use_spatial_hash:
             self.spatial_hash.remove_object(item)
@@ -327,7 +332,7 @@ class SpriteList(Generic[T]):
 
         for sprite in self.sprite_list:
             array_of_positions.append([sprite.center_x, sprite.center_y])
-            array_of_angles.append(sprite.angle)
+            array_of_angles.append(math.radians(sprite.angle))
             size_h = sprite.height / 2
             size_w = sprite.width / 2
             array_of_sizes.append([size_w, size_h])
@@ -385,8 +390,9 @@ class SpriteList(Generic[T]):
 
         if new_texture:
 
-            if self.texture is not None:
-                self.texture.release()
+            # TODO: This code isn't valid, but I think some releasing might be in order.
+            # if self.texture is not None:
+            #     shader.Texture.release(self.texture_id)
 
             # Make the composite image
             new_image = Image.new('RGBA', (total_width, max_height))
