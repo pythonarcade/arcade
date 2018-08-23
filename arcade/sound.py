@@ -33,43 +33,79 @@ def _load_sound_library():
     if system == 'Windows':
 
         import sys
-        is64bit = sys.maxsize > 2**32
+        is64bit = sys.maxsize > 2 ** 32
 
         import site
         if hasattr(site, 'getsitepackages'):
             packages = site.getsitepackages()
+            user_packages = site.getuserbase()
 
             if appveyor:
                 if is64bit:
-                    path = "Win64/avbin"
+                    path_global = "Win64/avbin"
                 else:
-                    path = "Win32/avbin"
+                    path_global = "Win32/avbin"
 
             else:
                 if is64bit:
-                    path = packages[0] + "/lib/site-packages/arcade/Win64/avbin"
+                    path_global = packages[0] + "/lib/site-packages/arcade/Win64/avbin"
+                    path_user = user_packages + "/lib/site-packages/arcade/Win64/avbin"
                 else:
-                    path = packages[0] + "/lib/site-packages/arcade/Win32/avbin"
+                    path_global = packages[0] + "/lib/site-packages/arcade/Win32/avbin"
+                    path_user = user_packages + "/lib/site-packages/arcade/Win32/avbin"
 
         else:
             if is64bit:
-                path = "Win64/avbin"
+                path_global = "Win64/avbin"
             else:
-                path = "Win32/avbin"
+                path_global = "Win32/avbin"
 
 
     elif system == 'Darwin':
         from distutils.sysconfig import get_python_lib
-        path = get_python_lib() + '/lib/site-packages/arcade/lib/libavbin.10.dylib'
+        path_global = get_python_lib() + '/lib/site-packages/arcade/lib/libavbin.10.dylib'
         pyglet.options['audio'] = ('openal', 'pulse', 'silent')
 
     else:
-        path = "avbin"
+        path_global = "avbin"
         pyglet.options['audio'] = ('openal', 'pulse', 'silent')
 
-    pyglet.lib.load_library(path)
-    pyglet.have_avbin = True
+    pyglet.have_avbin = False
+    try:
+        pyglet.lib.load_library(path_user)
+        pyglet.have_avbin = True
+    except ImportError:
+        pass
 
+    if not pyglet.have_avbin:
+        try:
+            pyglet.lib.load_library(path_global)
+            pyglet.have_avbin = True
+        except ImportError:
+            pass
+
+    if not pyglet.have_avbin:
+        # Try loading like its never been installed, from current directory.
+        try:
+            import platform
+            mysys = platform.architecture()
+            print(mysys)
+            post = "avbin"
+            if mysys[0] == '32bit':
+                post = "/../Win32/avbin"
+            elif mysys[1] == '64bit':
+                post = "/../Win64/avbin"
+
+            import os
+            dir_path = os.path.dirname(os.path.realpath(__file__)) + post
+            print(dir_path)
+            pyglet.lib.load_library(dir_path)
+            pyglet.have_avbin = True
+        except ImportError:
+            pass
+
+    if not pyglet.have_avbin:
+        print("Warning - Unable to load sound library.")
 
 # Initialize static function variable
 _load_sound_library._sound_library_loaded = False
