@@ -44,7 +44,8 @@ class Window(pyglet.window.Window):
     def __init__(self, width: float = 800, height: float = 600,
                  title: str = 'Arcade Window', fullscreen: bool = False,
                  resizable: bool = False):
-        config = pyglet.gl.Config(major_version=3, minor_version=3)
+        config = pyglet.gl.Config(major_version=3, minor_version=3, double_buffer=True)
+
         super().__init__(width=width, height=height, caption=title,
                          resizable=resizable, config=config)
 
