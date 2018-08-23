@@ -89,7 +89,6 @@ def _load_sound_library():
         try:
             import platform
             mysys = platform.architecture()
-            print(mysys)
             post = "avbin"
             if mysys[0] == '32bit':
                 post = "/../Win32/avbin"
@@ -98,7 +97,6 @@ def _load_sound_library():
 
             import os
             dir_path = os.path.dirname(os.path.realpath(__file__)) + post
-            print(dir_path)
             pyglet.lib.load_library(dir_path)
             pyglet.have_avbin = True
         except ImportError:
