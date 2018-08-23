@@ -441,7 +441,7 @@ def draw_arc_outline(center_x: float, center_y: float, width: float,
     end_segment = int(end_angle / 360 * num_segments)
 
     for segment in range(start_segment, end_segment + 1):
-        theta = 2.0 * 3.1415926 * segment / num_segments
+        theta = 2.0 * math.pi * segment / num_segments
 
         x = width * math.cos(theta)
         y = height * math.sin(theta)

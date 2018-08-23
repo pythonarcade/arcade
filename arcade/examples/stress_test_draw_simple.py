@@ -99,11 +99,6 @@ class MyGame(arcade.Window):
     def on_draw(self):
         """ Draw everything """
 
-        # import ctypes
-        # data = (ctypes.c_int * 4)()
-        # gl.glGetIntegerv(gl.GL_VIEWPORT, ctypes.byref(data))
-        # print(data[0], data[1], data[2], data[3])
-
         # Start timing how long this takes
         draw_start_time = timeit.default_timer()
 
