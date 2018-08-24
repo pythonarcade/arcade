@@ -5,6 +5,13 @@
 Release Notes
 =============
 
+Version 1.3.5
+-------------
+
+Released 08-23-2018
+
+Bug fixes for spatial hashing and sound.
+
 Version 1.3.4
 -------------
 
@@ -132,11 +139,6 @@ Enhancements
 * `Issue 169 <https://github.com/pvcraven/arcade/issues/169>`_: Code cleanup in SpriteList.move()
 * `Issue 174 <https://github.com/pvcraven/arcade/issues/174>`_: Support for gradients.
 
-Version 1.2.5
--------------
-
-Released 2017-December-29.
-
 Bug Fixes
 ~~~~~~~~~
 
@@ -147,7 +149,12 @@ Enhancements
 
 * `Issue 171 <https://github.com/pvcraven/arcade/issues/171>`_: Clean up sprite list code
 
+Version 1.2.5
+-------------
 
+Released 2018-August-23
+
+Includes bug fixes for sound and spatial hashing.
 
 Version 1.2.4
 -------------
