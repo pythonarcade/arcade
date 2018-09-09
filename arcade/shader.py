@@ -7,6 +7,8 @@ import weakref
 from typing import Type, Tuple, Iterable
 
 from pyglet.gl import *
+from pyglet import gl
+
 import numpy as np
 
 
@@ -125,6 +127,12 @@ class Program:
 
     @staticmethod
     def _delete(shaders_id, prog_id):
+        # Check to see if the context was already cleaned up from program
+        # shut down. If so, we don't need to delete the shaders.
+        context = gl.current_context
+        if context is None:
+            return
+
         for shader_id in shaders_id:
             glDetachShader(prog_id, shader_id)
         glDeleteProgram(prog_id)
@@ -304,7 +312,8 @@ class Buffer:
         glBufferData(GL_ARRAY_BUFFER, self.size, None, self.usage)
 
     def _read(self, size):
-        "Debug method to read data from the buffer."
+        """ Debug method to read data from the buffer. """
+
         glBindBuffer(GL_ARRAY_BUFFER, self.buffer_id)
         ptr = glMapBufferRange(GL_ARRAY_BUFFER, GLintptr(0), size, GL_MAP_READ_BIT)
         print(f"Reading back from buffer:\n{string_at(ptr, size=size)}")
@@ -513,6 +522,12 @@ class Texture:
 
     @staticmethod
     def release(texture_id):
+
+        # If we have no context, then the textures are already gone.
+        context = gl.current_context
+        if context is None:
+            return
+
         if texture_id.value != 0:
             glDeleteTextures(1, byref(texture_id))
 
