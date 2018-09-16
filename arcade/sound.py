@@ -92,7 +92,7 @@ def _load_sound_library():
             post = "avbin"
             if mysys[0] == '32bit':
                 post = "/../Win32/avbin"
-            elif mysys[1] == '64bit':
+            elif mysys[0] == '64bit':
                 post = "/../Win64/avbin"
 
             import os
