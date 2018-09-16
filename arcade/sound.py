@@ -29,8 +29,9 @@ def _load_sound_library():
     appveyor = not os.environ.get('APPVEYOR') is None
 
     import platform
-    system = platform.system()
-    if system == 'Windows':
+    path_user = ""
+    my_system = platform.system()
+    if my_system == 'Windows':
 
         import sys
         is64bit = sys.maxsize > 2 ** 32
@@ -60,8 +61,7 @@ def _load_sound_library():
             else:
                 path_global = "Win32/avbin"
 
-
-    elif system == 'Darwin':
+    elif my_system == 'Darwin':
         from distutils.sysconfig import get_python_lib
         path_global = get_python_lib() + '/lib/site-packages/arcade/lib/libavbin.10.dylib'
         pyglet.options['audio'] = ('openal', 'pulse', 'silent')
@@ -235,6 +235,3 @@ else:
     load_sound = _load_sound_unix
 
 del system
-
-
-
