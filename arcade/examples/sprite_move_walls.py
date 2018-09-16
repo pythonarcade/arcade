@@ -37,20 +37,20 @@ class MyGame(arcade.Window):
         os.chdir(file_path)
 
         # Sprite lists
-        self.all_sprites_list = None
         self.coin_list = None
+        self.wall_list = None
+        self.player_list = None
 
         # Set up the player
         self.score = 0
         self.player_sprite = None
-        self.wall_list = None
         self.physics_engine = None
 
     def setup(self):
         """ Set up the game and initialize the variables. """
 
         # Sprite lists
-        self.all_sprites_list = arcade.SpriteList()
+        self.player_list = arcade.SpriteList()
         self.wall_list = arcade.SpriteList()
 
         # Set up the player
@@ -59,7 +59,7 @@ class MyGame(arcade.Window):
                                            SPRITE_SCALING)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 64
-        self.all_sprites_list.append(self.player_sprite)
+        self.player_list.append(self.player_sprite)
 
         # -- Set up the walls
         # Create a row of boxes
@@ -67,7 +67,6 @@ class MyGame(arcade.Window):
             wall = arcade.Sprite("images/boxCrate_double.png", SPRITE_SCALING)
             wall.center_x = x
             wall.center_y = 200
-            self.all_sprites_list.append(wall)
             self.wall_list.append(wall)
 
         # Create a column of boxes
@@ -75,7 +74,6 @@ class MyGame(arcade.Window):
             wall = arcade.Sprite("images/boxCrate_double.png", SPRITE_SCALING)
             wall.center_x = 465
             wall.center_y = y
-            self.all_sprites_list.append(wall)
             self.wall_list.append(wall)
 
         self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite,
@@ -94,7 +92,7 @@ class MyGame(arcade.Window):
 
         # Draw all the sprites.
         self.wall_list.draw()
-        self.player_sprite.draw()
+        self.player_list.draw()
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
