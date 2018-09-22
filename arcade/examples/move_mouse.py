@@ -43,7 +43,7 @@ class Rectangle:
 class MyGame(arcade.Window):
     """ Main application class. """
     def __init__(self, width, height):
-        super().__init__(width, height, title="Keyboard control")
+        super().__init__(width, height, title="Mouse control")
         self.player = None
         self.left_down = False
 
