@@ -465,13 +465,22 @@ def draw_arc_outline(center_x: float, center_y: float, width: float,
     start_segment = int(start_angle / 360 * num_segments)
     end_segment = int(end_angle / 360 * num_segments)
 
+    inside_width = width - border_width / 2
+    outside_width = width + border_width / 2
+    inside_height = height - border_width / 2
+    outside_height = height + border_width / 2
+
     for segment in range(start_segment, end_segment + 1):
         theta = 2.0 * math.pi * segment / num_segments
 
-        x = width * math.cos(theta)
-        y = height * math.sin(theta)
+        x1 = inside_width * math.cos(theta)
+        y1 = inside_height * math.sin(theta)
 
-        unrotated_point_list.append((x, y))
+        x2 = outside_width * math.cos(theta)
+        y2 = outside_height * math.sin(theta)
+
+        unrotated_point_list.append((x1, y1))
+        unrotated_point_list.append((x2, y2))
 
     if tilt_angle == 0:
         uncentered_point_list = unrotated_point_list
@@ -484,7 +493,7 @@ def draw_arc_outline(center_x: float, center_y: float, width: float,
     for point in uncentered_point_list:
         point_list.append((point[0] + center_x, point[1] + center_y))
 
-    _generic_draw_line_strip(point_list, color, border_width, gl.GL_LINE_STRIP)
+    _generic_draw_line_strip(point_list, color, 1, gl.GL_TRIANGLE_STRIP)
 
 
 # --- END ARC FUNCTIONS # # #
