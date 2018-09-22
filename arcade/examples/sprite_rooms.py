@@ -145,6 +145,7 @@ class MyGame(arcade.Window):
         self.rooms = None
         self.score = 0
         self.player_sprite = None
+        self.player_list = None
         self.physics_engine = None
 
     def setup(self):
@@ -154,6 +155,8 @@ class MyGame(arcade.Window):
         self.player_sprite = arcade.Sprite("images/character.png", SPRITE_SCALING)
         self.player_sprite.center_x = 100
         self.player_sprite.center_y = 100
+        self.player_list = arcade.SpriteList()
+        self.player_list.append(self.player_sprite)
 
         # Our list of rooms
         self.rooms = []
@@ -189,7 +192,7 @@ class MyGame(arcade.Window):
         # If you have coins or monsters, then copy and modify the line
         # above for each list.
 
-        self.player_sprite.draw()
+        self.player_list.draw()
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
