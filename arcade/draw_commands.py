@@ -175,6 +175,15 @@ def load_textures(file_name: str,
     """
     Load a set of textures off of a single image file.
 
+    Note, if the code is to load only part of the image, the given x, y
+    coordinates will start with the origin (0, 0) in the upper left of the
+    image. When drawing, Arcade uses (0, 0)
+    in the lower left corner when drawing. Be careful about this reversal.
+
+    For a longer explanation of why computers sometimes start in the upper
+    left, see:
+    http://programarcadegames.com/index.php?chapter=introduction_to_graphics&lang=en#section_5
+
     Args:
         :file_name: Name of the file.
         :image_location_list: List of image locations. Each location should be
@@ -252,6 +261,15 @@ def load_texture(file_name: str, x: float=0, y: float=0,
                  scale: float=1) -> Texture:
     """
     Load image from disk and create a texture.
+
+    Note, if the code is to load only part of the image, the given x, y
+    coordinates will start with the origin (0, 0) in the upper left of the
+    image. When drawing, Arcade uses (0, 0)
+    in the lower left corner when drawing. Be careful about this reversal.
+
+    For a longer explanation of why computers sometimes start in the upper
+    left, see:
+    http://programarcadegames.com/index.php?chapter=introduction_to_graphics&lang=en#section_5
 
     Args:
         :filename (str): Name of the file to that holds the texture.
