@@ -133,7 +133,32 @@ class Texture:
         self.width = width
         self.height = height
         self.texture_name = file_name
+        self._sprite = None
+        self._sprite_list = None
 
+    def draw(self, center_x: float, center_y: float, width: float,
+             height: float, angle: float=0,
+             alpha: float=1, transparent: bool=True,
+             repeat_count_x=1, repeat_count_y=1):
+
+        from arcade.sprite import Sprite
+        from arcade.sprite_list import SpriteList
+
+        if self._sprite == None:
+            self._sprite = Sprite()
+            self._sprite.texture = self
+            self._sprite.textures = [self]
+
+            self._sprite_list = SpriteList()
+            self._sprite_list.append(self._sprite)
+
+        self._sprite.center_x = center_x
+        self._sprite.center_y = center_y
+        self._sprite.width = width
+        self._sprite.height = height
+        self._sprite.angle = angle
+
+        self._sprite_list.draw()
 
 def make_transparent_color(color: Color, transparency: float):
     """
@@ -215,7 +240,7 @@ def load_textures(file_name: str,
         image_width *= scale
         image_height *= scale
 
-        texture_info_list.append(Texture(texture, width, height))
+        texture_info_list.append(Texture(texture, width, height, image_location))
 
     return texture_info_list
 
@@ -1287,50 +1312,9 @@ scale * texture.height, texture, 90, 1, False)
     >>> arcade.quick_run(0.25)
     """
 
-    if transparent:
-        gl.glEnable(gl.GL_BLEND)
-        gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-    else:
-        gl.glDisable(gl.GL_BLEND)
-
-    gl.glEnable(gl.GL_TEXTURE_2D)
-    gl.glHint(gl.GL_POLYGON_SMOOTH_HINT, gl.GL_NICEST)
-    gl.glHint(gl.GL_PERSPECTIVE_CORRECTION_HINT, gl.GL_NICEST)
-
-    gl.glLoadIdentity()
-
-    gl.glColor4f(1, 1, 1, alpha)
-    z = 0.5  # pylint: disable=invalid-name
-
-    x1 = -width / 2 + center_x
-    x2 = width / 2 + center_x
-    y1 = -height / 2 + center_y
-    y2 = height / 2 + center_y
-
-    p1 = x1, y1
-    p2 = x2, y1
-    p3 = x2, y2
-    p4 = x1, y2
-
-    if angle:
-        p1 = rotate_point(p1[0], p1[1], center_x, center_y, angle)
-        p2 = rotate_point(p2[0], p2[1], center_x, center_y, angle)
-        p3 = rotate_point(p3[0], p3[1], center_x, center_y, angle)
-        p4 = rotate_point(p4[0], p4[1], center_x, center_y, angle)
-
-    gl.glBindTexture(gl.GL_TEXTURE_2D, texture.texture_id)
-    gl.glBegin(gl.GL_POLYGON)
-    gl.glNormal3f(0.0, 0.0, 1.0)
-    gl.glTexCoord2f(0, 0)
-    gl.glVertex3f(p1[0], p1[1], z)
-    gl.glTexCoord2f(repeat_count_x, 0)
-    gl.glVertex3f(p2[0], p2[1], z)
-    gl.glTexCoord2f(repeat_count_x, repeat_count_y)
-    gl.glVertex3f(p3[0], p3[1], z)
-    gl.glTexCoord2f(0, repeat_count_y)
-    gl.glVertex3f(p4[0], p4[1], z)
-    gl.glEnd()
-    gl.glDisable(gl.GL_TEXTURE_2D)
+    texture.draw(center_x, center_y, width,
+                 height, angle, alpha,
+                 repeat_count_x, repeat_count_y)
 
 
 def draw_xywh_rectangle_textured(bottom_left_x: float, bottom_left_y: float,
