@@ -133,7 +133,32 @@ class Texture:
         self.width = width
         self.height = height
         self.texture_name = file_name
+        self._sprite = None
+        self._sprite_list = None
 
+    def draw(self, center_x: float, center_y: float, width: float,
+             height: float, angle: float=0,
+             alpha: float=1, transparent: bool=True,
+             repeat_count_x=1, repeat_count_y=1):
+
+        from arcade.sprite import Sprite
+        from arcade.sprite_list import SpriteList
+
+        if self._sprite == None:
+            self._sprite = Sprite()
+            self._sprite.texture = self
+            self._sprite.textures = [self]
+
+            self._sprite_list = SpriteList()
+            self._sprite_list.append(self._sprite)
+
+        self._sprite.center_x = center_x
+        self._sprite.center_y = center_y
+        self._sprite.width = width
+        self._sprite.height = height
+        self._sprite.angle = angle
+
+        self._sprite_list.draw()
 
 def make_transparent_color(color: Color, transparency: float):
     """
@@ -149,6 +174,15 @@ def load_textures(file_name: str,
                   scale: float=1) -> List['Texture']:
     """
     Load a set of textures off of a single image file.
+
+    Note, if the code is to load only part of the image, the given x, y
+    coordinates will start with the origin (0, 0) in the upper left of the
+    image. When drawing, Arcade uses (0, 0)
+    in the lower left corner when drawing. Be careful about this reversal.
+
+    For a longer explanation of why computers sometimes start in the upper
+    left, see:
+    http://programarcadegames.com/index.php?chapter=introduction_to_graphics&lang=en#section_5
 
     Args:
         :file_name: Name of the file.
@@ -215,7 +249,7 @@ def load_textures(file_name: str,
         image_width *= scale
         image_height *= scale
 
-        texture_info_list.append(Texture(texture, width, height))
+        texture_info_list.append(Texture(texture, width, height, image_location))
 
     return texture_info_list
 
@@ -227,6 +261,15 @@ def load_texture(file_name: str, x: float=0, y: float=0,
                  scale: float=1) -> Texture:
     """
     Load image from disk and create a texture.
+
+    Note, if the code is to load only part of the image, the given x, y
+    coordinates will start with the origin (0, 0) in the upper left of the
+    image. When drawing, Arcade uses (0, 0)
+    in the lower left corner when drawing. Be careful about this reversal.
+
+    For a longer explanation of why computers sometimes start in the upper
+    left, see:
+    http://programarcadegames.com/index.php?chapter=introduction_to_graphics&lang=en#section_5
 
     Args:
         :filename (str): Name of the file to that holds the texture.
@@ -440,13 +483,22 @@ def draw_arc_outline(center_x: float, center_y: float, width: float,
     start_segment = int(start_angle / 360 * num_segments)
     end_segment = int(end_angle / 360 * num_segments)
 
+    inside_width = width - border_width / 2
+    outside_width = width + border_width / 2
+    inside_height = height - border_width / 2
+    outside_height = height + border_width / 2
+
     for segment in range(start_segment, end_segment + 1):
         theta = 2.0 * math.pi * segment / num_segments
 
-        x = width * math.cos(theta)
-        y = height * math.sin(theta)
+        x1 = inside_width * math.cos(theta)
+        y1 = inside_height * math.sin(theta)
 
-        unrotated_point_list.append((x, y))
+        x2 = outside_width * math.cos(theta)
+        y2 = outside_height * math.sin(theta)
+
+        unrotated_point_list.append((x1, y1))
+        unrotated_point_list.append((x2, y2))
 
     if tilt_angle == 0:
         uncentered_point_list = unrotated_point_list
@@ -459,7 +511,7 @@ def draw_arc_outline(center_x: float, center_y: float, width: float,
     for point in uncentered_point_list:
         point_list.append((point[0] + center_x, point[1] + center_y))
 
-    _generic_draw_line_strip(point_list, color, border_width, gl.GL_LINE_STRIP)
+    _generic_draw_line_strip(point_list, color, 1, gl.GL_TRIANGLE_STRIP)
 
 
 # --- END ARC FUNCTIONS # # #
@@ -1287,50 +1339,9 @@ scale * texture.height, texture, 90, 1, False)
     >>> arcade.quick_run(0.25)
     """
 
-    if transparent:
-        gl.glEnable(gl.GL_BLEND)
-        gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-    else:
-        gl.glDisable(gl.GL_BLEND)
-
-    gl.glEnable(gl.GL_TEXTURE_2D)
-    gl.glHint(gl.GL_POLYGON_SMOOTH_HINT, gl.GL_NICEST)
-    gl.glHint(gl.GL_PERSPECTIVE_CORRECTION_HINT, gl.GL_NICEST)
-
-    gl.glLoadIdentity()
-
-    gl.glColor4f(1, 1, 1, alpha)
-    z = 0.5  # pylint: disable=invalid-name
-
-    x1 = -width / 2 + center_x
-    x2 = width / 2 + center_x
-    y1 = -height / 2 + center_y
-    y2 = height / 2 + center_y
-
-    p1 = x1, y1
-    p2 = x2, y1
-    p3 = x2, y2
-    p4 = x1, y2
-
-    if angle:
-        p1 = rotate_point(p1[0], p1[1], center_x, center_y, angle)
-        p2 = rotate_point(p2[0], p2[1], center_x, center_y, angle)
-        p3 = rotate_point(p3[0], p3[1], center_x, center_y, angle)
-        p4 = rotate_point(p4[0], p4[1], center_x, center_y, angle)
-
-    gl.glBindTexture(gl.GL_TEXTURE_2D, texture.texture_id)
-    gl.glBegin(gl.GL_POLYGON)
-    gl.glNormal3f(0.0, 0.0, 1.0)
-    gl.glTexCoord2f(0, 0)
-    gl.glVertex3f(p1[0], p1[1], z)
-    gl.glTexCoord2f(repeat_count_x, 0)
-    gl.glVertex3f(p2[0], p2[1], z)
-    gl.glTexCoord2f(repeat_count_x, repeat_count_y)
-    gl.glVertex3f(p3[0], p3[1], z)
-    gl.glTexCoord2f(0, repeat_count_y)
-    gl.glVertex3f(p4[0], p4[1], z)
-    gl.glEnd()
-    gl.glDisable(gl.GL_TEXTURE_2D)
+    texture.draw(center_x, center_y, width,
+                 height, angle, alpha,
+                 repeat_count_x, repeat_count_y)
 
 
 def draw_xywh_rectangle_textured(bottom_left_x: float, bottom_left_y: float,

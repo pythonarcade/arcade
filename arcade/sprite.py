@@ -648,6 +648,11 @@ arcade.Sprite("arcade/examples/images/playerShip1_orange.png", scale)
 
     def draw(self):
         """ Draw the sprite. """
+        if self._alpha != 255:
+            transparent = False
+        else:
+            transparent = True
+
         draw_texture_rectangle(self.center_x, self.center_y,
                                self.width, self.height,
                                self.texture, self.angle, self.alpha,  # TODO: review this function
