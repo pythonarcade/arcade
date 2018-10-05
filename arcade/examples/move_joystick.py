@@ -8,125 +8,102 @@ python -m arcade.examples.move_joystick
 
 import arcade
 
-# Set up the constants
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
-
-RECT_WIDTH = 50
-RECT_HEIGHT = 50
-
-MOVEMENT_MULTIPLIER = 5
-DEAD_ZONE = 0.05
+SCREEN_WIDTH = 640
+SCREEN_HEIGHT = 480
+MOVEMENT_SPEED = 5
+DEAD_ZONE = 0.02
 
 
-class Rectangle:
-    """ Class to represent a rectangle on the screen """
+class Ball:
+    def __init__(self, position_x, position_y, change_x, change_y, radius, color):
 
-    def __init__(self, x, y, width, height, angle, color):
-        """ Initialize our rectangle variables """
-
-        # Position
-        self.x = x
-        self.y = y
-
-        # Vector
-        self.delta_x = 0
-        self.delta_y = 0
-
-        # Size and rotation
-        self.width = width
-        self.height = height
-        self.angle = angle
-
-        # Color
+        # Take the parameters of the init function above, and create instance variables out of them.
+        self.position_x = position_x
+        self.position_y = position_y
+        self.change_x = change_x
+        self.change_y = change_y
+        self.radius = radius
         self.color = color
 
+    def draw(self):
+        """ Draw the balls with the instance variables we have. """
+        arcade.draw_circle_filled(self.position_x, self.position_y, self.radius, self.color)
+
+    def update(self):
+        # Move the ball
+        self.position_y += self.change_y
+        self.position_x += self.change_x
+
+        # See if the ball hit the edge of the screen. If so, change direction
+        if self.position_x < self.radius:
+            self.position_x = self.radius
+
+        if self.position_x > SCREEN_WIDTH - self.radius:
+            self.position_x = SCREEN_WIDTH - self.radius
+
+        if self.position_y < self.radius:
+            self.position_y = self.radius
+
+        if self.position_y > SCREEN_HEIGHT - self.radius:
+            self.position_y = SCREEN_HEIGHT - self.radius
+
+
+class MyGame(arcade.Window):
+
+    def __init__(self, width, height, title):
+
+        # Call the parent class's init function
+        super().__init__(width, height, title)
+
+        # Make the mouse disappear when it is over the window.
+        # So we just see our object, not the pointer.
+        self.set_mouse_visible(False)
+
+        arcade.set_background_color(arcade.color.ASH_GREY)
+
+        # Create our ball
+        self.ball = Ball(50, 50, 0, 0, 15, arcade.color.AUBURN)
+
+        # Get a list of all the game controllers that are plugged in
         joysticks = arcade.get_joysticks()
+
+        # If we have a game controller plugged in, grab it and
+        # make an instance variable out of it.
         if joysticks:
             self.joystick = joysticks[0]
             self.joystick.open()
         else:
-            print("There are no Joysticks")
+            print("There are no joysticks.")
             self.joystick = None
 
-    def draw(self):
-        """ Draw our rectangle """
-        arcade.draw_rectangle_filled(self.x, self.y, self.width, self.height,
-                                     self.color, self.angle)
-
-    def move(self):
-        """ Move our rectangle """
-
-        # Grab the position of the joystick
-        # This will be between -1.0 and +1.0
-
-        if self.joystick:
-            self.delta_x = self.joystick.x * MOVEMENT_MULTIPLIER
-            # Set a "dead zone" to prevent drive from a centered joystick
-            if abs(self.delta_x) < DEAD_ZONE:
-                self.delta_x = 0
-
-            self.delta_y = -self.joystick.y * MOVEMENT_MULTIPLIER
-            # Set a "dead zone" to prevent drive from a centered joystick
-            if abs(self.delta_y) < DEAD_ZONE:
-                self.delta_y = 0
-
-        # Move left/right
-        self.x += self.delta_x
-
-        # See if we've gone beyond the border. If so, reset our position
-        # back to the border.
-        if self.x < RECT_WIDTH // 2:
-            self.x = RECT_WIDTH // 2
-        if self.x > SCREEN_WIDTH - (RECT_WIDTH // 2):
-            self.x = SCREEN_WIDTH - (RECT_WIDTH // 2)
-
-        # Move up/down
-        self.y += self.delta_y
-
-        # Check top and bottom boundaries
-        if self.y < RECT_HEIGHT // 2:
-            self.y = RECT_HEIGHT // 2
-        if self.y > SCREEN_HEIGHT - (RECT_HEIGHT // 2):
-            self.y = SCREEN_HEIGHT - (RECT_HEIGHT // 2)
-
-
-class MyGame(arcade.Window):
-    """
-    Main application class.
-    """
-    def __init__(self, width, height):
-        super().__init__(width, height, title="Joystick control")
-        self.player = None
-        self.left_down = False
-
-    def setup(self):
-        """ Set up the game and initialize the variables. """
-        width = RECT_WIDTH
-        height = RECT_HEIGHT
-        x = SCREEN_WIDTH // 2
-        y = SCREEN_HEIGHT // 2
-        angle = 0
-        color = arcade.color.WHITE
-        self.player = Rectangle(x, y, width, height, angle, color)
-        self.left_down = False
-
-    def update(self, dt):
-        """ Move everything """
-        self.player.move()
-
     def on_draw(self):
-        """
-        Render the screen.
-        """
-        arcade.start_render()
 
-        self.player.draw()
+        """ Called whenever we need to draw the window. """
+        arcade.start_render()
+        self.ball.draw()
+
+    def update(self, delta_time):
+
+        # Update the position according to the game controller
+        if self.joystick:
+
+            # Set a "dead zone" to prevent drive from a centered joystick
+            if abs(self.joystick.x) < DEAD_ZONE:
+                self.ball.change_x = 0
+            else:
+                self.ball.change_x = self.joystick.x * MOVEMENT_SPEED
+
+            # Set a "dead zone" to prevent drive from a centered joystick
+            if abs(self.joystick.y) < DEAD_ZONE:
+                self.ball.change_y = 0
+            else:
+                self.ball.change_y = -self.joystick.y * MOVEMENT_SPEED
+
+        self.ball.update()
 
 
 def main():
-    window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT)
-    window.setup()
+    window = MyGame(640, 480, "Drawing Example")
     arcade.run()
 
 
