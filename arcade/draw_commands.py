@@ -1381,7 +1381,13 @@ def draw_xywh_rectangle_textured(bottom_left_x: float, bottom_left_y: float,
                            repeat_count_y)
 
 
-# --- END RECTANGLE FUNCTIONS # # #
-
-
-# --- END TEXT FUNCTIONS # # #
+def get_pixel(x: int, y: int):
+    """
+    Given an x, y, will return RGB color value of that point.
+    """
+    a = (gl.GLubyte * 3)(0)
+    gl.glReadPixels(x, y, 1, 1, gl.GL_RGB, gl.GL_UNSIGNED_BYTE, a)
+    red = a[0]
+    green = a[1]
+    blue = a[2]
+    return (red, green, blue)
