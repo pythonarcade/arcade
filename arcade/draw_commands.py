@@ -48,7 +48,14 @@ line_fragment_shader = '''
 '''
 
 
-def get_four_byte_color(color: Color):
+def get_four_byte_color(color: Color) -> Color:
+    """
+    Given a RGB list, it will return RGBA.
+    Given a RGBA list, it will return the same RGBA.
+
+    :param color: Color
+    :return: color: Color
+    """
     if len(color) == 4:
         return color
     elif len(color) == 3:
@@ -57,7 +64,14 @@ def get_four_byte_color(color: Color):
         raise ValueError("This isn't a 3 or 4 byte color")
 
 
-def get_four_float_color(color: Color):
+def get_four_float_color(color: Color) -> (float, float, float, float):
+    """
+    Given a 3 or 4 RGB/RGBA color where each color goes 0-255, this
+    returns a RGBA list where each item is a scaled float from 0 to 1.
+
+    :param color:
+    :return:
+    """
     if len(color) == 4:
         return color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255
     elif len(color) == 3:
@@ -66,10 +80,24 @@ def get_four_float_color(color: Color):
         raise ValueError("This isn't a 3 or 4 byte color")
 
 
+def make_transparent_color(color: Color, transparency: float):
+    """
+    Given a RGB color, along with an alpha, returns a RGBA color tuple.
+    """
+    return color[0], color[1], color[2], transparency
+
+
 def rotate_point(x: float, y: float, cx: float, cy: float,
                  angle: float) -> (float, float):
     """
     Rotate a point around a center.
+
+    :param x: x value of the point you want to rotate
+    :param y: y value of the point you want to rotate
+    :param cx: x value of the center point you want to rotate around
+    :param cy: y value of the center point you want to rotate around
+    :param angle: Angle, in degrees, to rotate
+    :return: Return rotated (x, y) pair
 
     >>> x, y = rotate_point(1, 1, 0, 0, 90)
     >>> print("x = {:.1f}, y = {:.1f}".format(x, y))
@@ -160,13 +188,6 @@ class Texture:
         self._sprite.angle = angle
 
         self._sprite_list.draw()
-
-def make_transparent_color(color: Color, transparency: float):
-    """
-    Given a RGB color, along with an alpha, returns a RGBA color tuple.
-    """
-    return color[0], color[1], color[2], transparency
-
 
 def load_textures(file_name: str,
                   image_location_list: PointList,
