@@ -5,6 +5,14 @@
 Release Notes
 =============
 
+Version 1.3.6
+-------------
+
+Released 2018-10-10
+
+* Bux fix for spatial hashing
+* Implement commands for getting a pixel, and image from screen
+
 Version 1.3.5
 -------------
 

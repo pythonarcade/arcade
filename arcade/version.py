@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
 BUILD = 0
-VERSION = "1.3.5"
+VERSION = "1.3.6"
 RELEASE = VERSION
 
