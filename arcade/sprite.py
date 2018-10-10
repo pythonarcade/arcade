@@ -291,7 +291,6 @@ class Sprite:
 
             self._point_list_cache = ((x1, y1), (x2, y2), (x3, y3), (x4, y4))
 
-        self.add_spatial_hashes()
         return self._point_list_cache
 
     points = property(get_points, set_points)
@@ -479,6 +478,7 @@ arcade.Sprite("arcade/examples/images/playerShip1_orange.png", scale)
             self.clear_spatial_hashes()
             self._angle = new_value
             self._point_list_cache = None
+            self.add_spatial_hashes()
 
     angle = property(_get_angle, _set_angle)
 
@@ -608,6 +608,7 @@ arcade.Sprite("arcade/examples/images/playerShip1_orange.png", scale)
         for sprite_list in self.sprite_lists:
             if self in sprite_list:
                 sprite_list.remove(self)
+        self.sprite_lists.clear()
 
 
 class AnimatedTimeSprite(Sprite):
