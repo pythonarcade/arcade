@@ -1774,3 +1774,41 @@ def draw_text(text: str,
 draw_text.cache = {}
 
 # --- END TEXT FUNCTIONS # # #
+
+def get_pixel(x: int, y: int):
+    """
+    Given an x, y, will return RGB color value of that point.
+    """
+    a = (gl.GLubyte * 3)(0)
+    gl.glReadPixels(x, y, 1, 1, gl.GL_RGB, gl.GL_UNSIGNED_BYTE, a)
+    red = a[0]
+    green = a[1]
+    blue = a[2]
+    return (red, green, blue)
+
+
+def get_image(x=0, y=0, width=None, height=None):
+    """
+    Get an image from the screen.
+    You can save the image like:
+
+    image = get_image()
+    image.save('screenshot.png', 'PNG')
+    """
+
+    # Get the dimensions
+    window = get_window()
+    if width is None:
+        width = window.width - x
+    if height is None:
+        height = window.height - y
+
+    # Create an image buffer
+    image_buffer = (gl.GLubyte * (4 * width * height))(0)
+
+    gl.glReadPixels(x, y, width, height, gl.GL_RGBA, gl.GL_UNSIGNED_BYTE, image_buffer)
+    image = PIL.Image.frombytes("RGBA", (width, height), image_buffer)
+    image = PIL.ImageOps.flip(image)
+
+    # image.save('glutout.png', 'PNG')
+    return image
