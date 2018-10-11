@@ -55,7 +55,10 @@ class Sprite:
         :last_center_y:
         :last_angle:
         :left: Set/query the sprite location by using the left coordinate. This will be the 'x' of the left of the sprite.
-        :points:
+        :points: Points, in relation to the center of the sprite, that are used
+        for collision detection. Arcade defaults to creating points for a rectangle
+        that encompass the image. If you are creating a ramp or making better
+        hit-boxes, you can custom-set these.
         :point_list_cache:
         :position: A list with the (x, y) of where the sprite is.
         :repeat_count_x:
@@ -73,19 +76,12 @@ class Sprite:
         :width:
 
     Methods:
-
         :add_spatial_hashing:
         :append_texture:
         :clear_spatial_hashing:
         :draw:
-        :get_points:
-        :get_position:
-        :get_texture:
         :kill:
         :register_sprite_list:
-        :set_position:
-        :set_texture:
-        :set_points:
         :update:
         :update_animation:
 

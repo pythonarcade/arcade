@@ -53,8 +53,8 @@ def create_orthogonal_projection(
     :param float top: The top of the near plane relative to the plane's centre.
     :param float bottom: The bottom of the near plane relative to the plane's centre.
     :param float near: The distance of the near plane from the camera's origin.
-        It is recommended that the near plane is set to 1.0 or above to avoid rendering issues
-        at close range.
+    It is recommended that the near plane is set to 1.0 or above to avoid
+    rendering issues at close range.
     :param float far: The distance of the far plane from the camera's origin.
     :param dtype:
     :rtype: numpy.array
@@ -62,18 +62,6 @@ def create_orthogonal_projection(
     .. seealso:: http://msdn.microsoft.com/en-us/library/dd373965(v=vs.85).aspx
     """
 
-    """
-    A 0 0 Tx
-    0 B 0 Ty
-    0 0 C Tz
-    0 0 0 1
-    A = 2 / (right - left)
-    B = 2 / (top - bottom)
-    C = -2 / (far - near)
-    Tx = (right + left) / (right - left)
-    Ty = (top + bottom) / (top - bottom)
-    Tz = (far + near) / (far - near)
-    """
     rml = right - left
     tmb = top - bottom
     fmn = far - near
