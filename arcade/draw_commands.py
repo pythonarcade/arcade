@@ -16,6 +16,7 @@ import pyglet
 import pyglet.gl as gl
 from pyglet.gl import glu as glu
 from typing import List
+from arcade.window_commands import get_window
 from arcade.arcade_types import Color
 from arcade.arcade_types import PointList
 
@@ -1792,7 +1793,7 @@ def get_image(x=0, y=0, width=None, height=None):
     Get an image from the screen.
     You can save the image like:
 
-    image = get_image()
+    image = arcade.get_image()
     image.save('screenshot.png', 'PNG')
     """
 
