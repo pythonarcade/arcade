@@ -23,11 +23,6 @@ SCREEN_HEIGHT = 600
 BULLET_SPEED = 5
 
 
-class Bullet(arcade.Sprite):
-    def update(self):
-        self.center_y += BULLET_SPEED
-
-
 class MyGame(arcade.Window):
     """ Main application class. """
 
@@ -125,11 +120,14 @@ class MyGame(arcade.Window):
         # Gunshot sound
         arcade.sound.play_sound(self.gun_sound)
         # Create a bullet
-        bullet = Bullet("images/laserBlue01.png", SPRITE_SCALING_LASER)
+        bullet = arcade.Sprite("images/laserBlue01.png", SPRITE_SCALING_LASER)
 
         # The image points to the right, and we want it to point up. So
         # rotate it.
         bullet.angle = 90
+
+        # Give the bullet a speed
+        bullet.change_y = BULLET_SPEED
 
         # Position the bullet
         bullet.center_x = self.player_sprite.center_x
@@ -148,8 +146,7 @@ class MyGame(arcade.Window):
         for bullet in self.bullet_list:
 
             # Check this bullet to see if it hit a coin
-            hit_list = arcade.check_for_collision_with_list(bullet,
-                                                            self.coin_list)
+            hit_list = arcade.check_for_collision_with_list(bullet, self.coin_list)
 
             # If it did, get rid of the bullet
             if len(hit_list) > 0:

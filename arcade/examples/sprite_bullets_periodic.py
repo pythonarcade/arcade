@@ -34,15 +34,18 @@ class MyGame(arcade.Window):
         self.enemy_list = arcade.SpriteList()
         self.bullet_list = arcade.SpriteList()
 
+        # Add player ship
         self.player = arcade.Sprite("images/playerShip1_orange.png", 0.5)
         self.player_list.append(self.player)
 
+        # Add top-left enemy ship
         enemy = arcade.Sprite("images/playerShip1_green.png", 0.5)
         enemy.center_x = 120
         enemy.center_y = SCREEN_HEIGHT - enemy.height
         enemy.angle = 180
         self.enemy_list.append(enemy)
 
+        # Add top-right enemy ship
         enemy = arcade.Sprite("images/playerShip1_green.png", 0.5)
         enemy.center_x = SCREEN_WIDTH - 120
         enemy.center_y = SCREEN_HEIGHT - enemy.height
@@ -64,6 +67,7 @@ class MyGame(arcade.Window):
         # --- Add one to the frame count
         self.frame_count += 1
 
+        # Loop through each enemy that we have
         for enemy in self.enemy_list:
 
             # --- Use the modulus to trigger doing something every 120 frames

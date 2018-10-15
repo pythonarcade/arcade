@@ -26,11 +26,6 @@ BULLET_SPEED = 5
 EXPLOSION_TEXTURE_COUNT = 60
 
 
-class Bullet(arcade.Sprite):
-    def update(self):
-        self.center_y += BULLET_SPEED
-
-
 class Explosion(arcade.Sprite):
     """ This class creates an explosion animation """
 
@@ -170,11 +165,14 @@ class MyGame(arcade.Window):
         # arcade.sound.play_sound(self.gun_sound)
 
         # Create a bullet
-        bullet = Bullet("images/laserBlue01.png", SPRITE_SCALING_LASER)
+        bullet = arcade.Sprite("images/laserBlue01.png", SPRITE_SCALING_LASER)
 
         # The image points to the right, and we want it to point up. So
         # rotate it.
         bullet.angle = 90
+
+        # Give it a speed
+        bullet.change_y = BULLET_SPEED
 
         # Position the bullet
         bullet.center_x = self.player_sprite.center_x
