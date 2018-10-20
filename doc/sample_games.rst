@@ -7,6 +7,9 @@ paul@cravenfamily.com.
 GitHub Projects
 ---------------
 
+The Great Skeleton War
+~~~~~~~~~~~~~~~~~~~~~~
+
 .. raw:: html
 
     <iframe width="560" height="315" src="https://www.youtube.com/embed/4yRxBYXP_Eo" frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen></iframe>
@@ -15,7 +18,21 @@ GitHub Projects
 
 .. _The Great Skeleton War: https://github.com/BlakeDalmas/Python/tree/master/The%20Great%20Skeleton%20War
 
+FlapPy Bird
+~~~~~~~~~~~
+
+.. image:: https://camo.githubusercontent.com/f0e9f79d083289e7385a9af79231ba9cc07a10dd/68747470733a2f2f692e706f7374696d672e63632f665678394b736b672f53637265656e5f53686f745f323031382d30392d32375f61745f31322e31312e31395f414d2e706e67
+
+`FlapPy-Bird`_ - A bird-game clone.
+
+
+
+.. _FlapPy-Bird: https://github.com/iJohnMaged/FlapPy-Bird
+
 .. image:: images/PyOverheadGame.png
+
+PyOverheadGame
+~~~~~~~~~~~~~~
 
 PyOverheadGame_, a 2D overhead game where you go through several rooms and pick up keys and other objects.
 
@@ -23,9 +40,15 @@ PyOverheadGame_, a 2D overhead game where you go through several rooms and pick 
 
 .. image:: images/blake.png
 
+Dungeon
+~~~~~~~
+
 Dungeon_, explore a maze picking up arrows and coins.
 
 .. _Dungeon: https://github.com/BlakeDalmas/Python/tree/master/Dungeon%20Game
+
+Two Worlds
+~~~~~~~~~~
 
 `Two Worlds`_, a castle adventure with a dungeon and caverns underneath it.
 
