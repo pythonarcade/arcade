@@ -185,12 +185,12 @@ class Window(pyglet.window.Window):
         """ Get the viewport. (What coordinates we can see.) """
         return get_viewport()
 
-    def test(self):
+    def test(self, frames=10):
         """
         Used by unit test cases. Runs the event loop twice.
         :return:
         """
-        for i in range(10):
+        for i in range(frames):
             self.switch_to()
             self.dispatch_events()
             self.dispatch_event('on_draw')
