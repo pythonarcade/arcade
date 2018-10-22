@@ -20,25 +20,6 @@ MOUSE_BUTTON_RIGHT = 4
 class Window(pyglet.window.Window):
     """
     Window class
-
-    >>> import arcade
-    >>> window = arcade.Window(200, 100, resizable=True)
-    >>> window.set_update_rate(1/20)
-    >>> window.set_mouse_visible(True)
-    >>> window.on_mouse_motion(0, 0, 0, 0)
-    >>> window.on_mouse_press(0, 0, 0, 0)
-    >>> window.on_mouse_release(0, 0, 0, 0)
-    >>> window.on_key_press(0, 0)
-    >>> window.on_key_release(0, 0)
-    >>> window.on_mouse_drag(0, 0, 1, 1, 1, 0)
-    >>> window.on_mouse_scroll(1, 1, 1, 1)
-    >>> window.on_draw()
-    >>> window.on_resize(500, 500)
-    >>> window.set_size(500, 500)
-    >>> window.update(1/20)
-    >>> window.set_visible(True)
-    >>> window.close()
-
     """
 
     def __init__(self, width: float = 800, height: float = 600,
@@ -203,3 +184,15 @@ class Window(pyglet.window.Window):
     def get_viewport(self) -> (float, float, float, float):
         """ Get the viewport. (What coordinates we can see.) """
         return get_viewport()
+
+    def test(self):
+        """
+        Used by unit test cases. Runs the event loop twice.
+        :return:
+        """
+        for i in range(10):
+            self.switch_to()
+            self.dispatch_events()
+            self.dispatch_event('on_draw')
+            self.flip()
+            self.update(1/60)

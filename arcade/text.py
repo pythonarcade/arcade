@@ -21,7 +21,7 @@ def draw_text(text: str,
               font_size: float=12,
               width: int=0,
               align="left",
-              font_name=('Calibri', 'Arial'),
+              font_name=('calibri', 'arial'),
               bold: bool=False,
               italic: bool=False,
               anchor_x="left",
@@ -38,16 +38,6 @@ def draw_text(text: str,
         :color: color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
 
-    Example:
-
-    >>> import arcade
-    >>> arcade.open_window(800, 600, "Drawing Example")
-    >>> arcade.set_background_color(arcade.color.WHITE)
-    >>> arcade.start_render()
-    >>> arcade.draw_text("Text Example", 250, 300, arcade.color.BLACK, 10)
-    >>> arcade.draw_text("Text Example", 250, 300, (0, 0, 0, 100), 10)
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
     """
 
     # Scale the font up, so it matches with the sizes of the old code back
@@ -101,26 +91,33 @@ def draw_text(text: str,
             try:
                 font = PIL.ImageFont.truetype(font_name, int(font_size))
             except OSError:
+                # print(f"1 Can't find font: {font_name}")
                 pass
 
             if font is None:
                 try:
-                    font = PIL.ImageFont.truetype(font_name + ".ttf", int(font_size))
+                    temp_font_name = f"{font_name}.ttf"
+                    font = PIL.ImageFont.truetype(temp_font_name, int(font_size))
                 except OSError:
+                    # print(f"2 Can't find font: {temp_font_name}")
                     pass
 
         # We were instead given a list of font names, in order of preference
-        if font is not None:
+        else:
             for font_string_name in font_name:
                 try:
                     font = PIL.ImageFont.truetype(font_string_name, int(font_size))
+                    # print(f"3 Found font: {font_string_name}")
                 except OSError:
+                    # print(f"3 Can't find font: {font_string_name}")
                     pass
 
                 if font is None:
                     try:
-                        font = PIL.ImageFont.truetype(font_string_name + ".ttf", int(font_size))
+                        temp_font_name = f"{font_name}.ttf"
+                        font = PIL.ImageFont.truetype(temp_font_name, int(font_size))
                     except OSError:
+                        # print(f"4 Can't find font: {temp_font_name}")
                         pass
 
                 if font is not None:
@@ -136,6 +133,7 @@ def draw_text(text: str,
                     font = PIL.ImageFont.truetype(font_string_name, int(font_size))
                     break
                 except OSError:
+                    # print(f"5 Can't find font: {font_string_name}")
                     pass
 
         # This is stupid. We have to have an image to figure out what size
