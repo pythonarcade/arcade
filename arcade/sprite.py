@@ -29,8 +29,9 @@ class Sprite:
 
     Attributes:
         :alpha: Transparency of sprite. 0 is invisible, 255 is opaque.
-        :angle: Rotation angle in degrees or sprite.
-        :bottom: Set/query the sprite location by using the bottom coordinate. This will be the 'y' of the bottom of the sprite.
+        :angle: Rotation angle in degrees.
+        :bottom: Set/query the sprite location by using the bottom coordinate. \
+        This will be the 'y' of the bottom of the sprite.
         :boundary_left: Used in movement. Left boundary of moving sprite.
         :boundary_right: Used in movement. Right boundary of moving sprite.
         :boundary_top: Used in movement. Top boundary of moving sprite.
@@ -40,50 +41,37 @@ class Sprite:
         :change_x: Movement vector, in the x direction.
         :change_y: Movement vector, in the y direction.
         :change_angle: Change in rotation.
-        :collision_radius: Used as a fast-check to see if this item is close enough to another item. If this check works, we do a slower more accurate check.
-        :color:
-        :can_cache:
-        :collision_radius: Used as a fast-check to see if this item is close enough to another item. If this check works, we do a slower more accurate check.
+        :color: Color tint the sprite
+        :collision_radius: Used as a fast-check to see if this item is close \
+        enough to another item. If this check works, we do a slower more accurate check.
         :cur_texture_index: Index of current texture being used.
-        :guid:
-        :height:
-        :force:
-        :image:
-        :image_width: Width of the sprite
-        :image_height: Height of the sprite
-        :last_center_x:
-        :last_center_y:
-        :last_angle:
-        :left: Set/query the sprite location by using the left coordinate. This will be the 'x' of the left of the sprite.
-        :points: Points, in relation to the center of the sprite, that are used
-        for collision detection. Arcade defaults to creating points for a rectangle
-        that encompass the image. If you are creating a ramp or making better
+        :guid: Unique identifier for the sprite. Useful when debugging.
+        :height: Height of the sprite.
+        :force: Force being applied to the sprite. Useful when used with Pymunk \
+        for physics.
+        :left: Set/query the sprite location by using the left coordinate. This \
+        will be the 'x' of the left of the sprite.
+        :points: Points, in relation to the center of the sprite, that are used \
+        for collision detection. Arcade defaults to creating points for a rectangle \
+        that encompass the image. If you are creating a ramp or making better \
         hit-boxes, you can custom-set these.
         :point_list_cache:
         :position: A list with the (x, y) of where the sprite is.
         :repeat_count_x:
         :repeat_count_y:
-        :right: Set/query the sprite location by using the right coordinate. This will be the 'y=x' of the right of the sprite.
+        :right: Set/query the sprite location by using the right coordinate. \
+        This will be the 'y=x' of the right of the sprite.
         :sprite_lists: List of all the sprite lists this sprite is part of.
         :textures:
         :texture: `Texture` class with the current texture.
         :textures: List of textures associated with this sprite.
-        :texture_name:
-        :top: Set/query the sprite location by using the top coordinate. This will be the 'y' of the top of the sprite.
+        :top: Set/query the sprite location by using the top coordinate. This \
+        will be the 'y' of the top of the sprite.
         :transparent: Set to True if this sprite can be transparent.
-        :scale: Scale the image up or down. Scale of 1.0 is original size, 0.5 is 1/2 height and width.
+        :scale: Scale the image up or down. Scale of 1.0 is original size, 0.5 \
+        is 1/2 height and width.
         :velocity: Change in x, y expressed as a list. (0, 0) would be not moving.
         :width:
-
-    Methods:
-        :add_spatial_hashing:
-        :append_texture:
-        :clear_spatial_hashing:
-        :draw:
-        :kill:
-        :register_sprite_list:
-        :update:
-        :update_animation:
 
     It is common to over-ride the `update` method and provide mechanics on movement or other sprite updates.
 
@@ -182,8 +170,6 @@ class Sprite:
             self.height = 0
 
         self.cur_texture_index = 0
-        self.image = None
-        self.texture_name = filename
 
         self.scale = scale
         self._position = [center_x, center_y]
@@ -201,13 +187,8 @@ class Sprite:
         self._collision_radius = None
         self._color = (255, 255, 255)
 
-        self.can_cache = True
         self._points = None
         self._point_list_cache = None
-
-        self.last_center_x = self.center_x
-        self.last_center_y = self.center_y
-        self.last_angle = 0
 
         self.force = [0, 0]
         self.guid = None
@@ -626,7 +607,6 @@ arcade.Sprite("arcade/examples/images/playerShip1_orange.png", scale)
             self._texture = texture
             self.width = texture.width
             self.height = texture.height
-            self.texture_name = texture.texture_name
             for sprite_list in self.sprite_lists:
                 sprite_list.update_texture(self)
         else:
@@ -703,7 +683,7 @@ arcade.Sprite("arcade/examples/images/playerShip1_orange.png", scale)
         """
         pass
 
-    def kill(self):
+    def remove_from_sprite_lists(self):
         """
         Remove the sprite from all sprite lists.
         """
@@ -711,6 +691,12 @@ arcade.Sprite("arcade/examples/images/playerShip1_orange.png", scale)
             if self in sprite_list:
                 sprite_list.remove(self)
         self.sprite_lists.clear()
+
+    def kill(self):
+        """
+        Alias of `remove_from_sprite_lists`
+        """
+        self.remove_from_sprite_lists()
 
 
 class AnimatedTimeSprite(Sprite):
@@ -734,7 +720,6 @@ class AnimatedTimeSprite(Sprite):
         self.cur_texture_index = 0
         self.texture_change_frames = 5
         self.frame = 0
-        self.can_cache = False
 
     def update_animation(self):
         """

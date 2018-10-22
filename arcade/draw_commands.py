@@ -130,70 +130,21 @@ class Texture:
 
     """
 
-    def __init__(self, texture_id: int, width: float, height: float, file_name: str):
-        """
-        Args:
-            :texture_id (str): Id of the texture.
-            :width (int): Width of the texture.
-            :height (int): Height of the texture.
-        Raises:
-            :ValueError:
+    def __init__(self, name, image=None):
+        self.name = name
+        self.image = image
+        if image:
+            self.width = image.width
+            self.height = image.height
+        else:
+            self.width = 0
+            self.height = 0
 
-        >>> texture_id = Texture(0, 10, -10)
-        Traceback (most recent call last):
-        ...
-        ValueError: Height entered is less than zero. Height must be a positive float.
-        >>> texture_id = Texture(0, -10, 10)
-        Traceback (most recent call last):
-        ...
-        ValueError: Width entered is less than zero. Width must be a positive float.
-        """
-        # Check values before attempting to create Texture object
-        if height < 0:
-            raise ValueError("Height entered is less than zero. Height must "
-                             "be a positive float.")
-
-        if width < 0:
-            raise ValueError("Width entered is less than zero. Width must be "
-                             "a positive float.")
-
-        # Values seem to be clear, create object
-        self.texture_id = texture_id
-        self.width = width
-        self.height = height
-        self.texture_name = file_name
-        self._sprite = None
-        self._sprite_list = None
-
-    def draw(self, center_x: float, center_y: float, width: float,
-             height: float, angle: float=0,
-             alpha: float=1, transparent: bool=True,
-             repeat_count_x=1, repeat_count_y=1):
-
-        from arcade.sprite import Sprite
-        from arcade.sprite_list import SpriteList
-
-        if self._sprite == None:
-            self._sprite = Sprite()
-            self._sprite.texture = self
-            self._sprite.textures = [self]
-
-            self._sprite_list = SpriteList()
-            self._sprite_list.append(self._sprite)
-
-        self._sprite.center_x = center_x
-        self._sprite.center_y = center_y
-        self._sprite.width = width
-        self._sprite.height = height
-        self._sprite.angle = angle
-
-        self._sprite_list.draw()
 
 def load_textures(file_name: str,
                   image_location_list: PointList,
                   mirrored: bool=False,
-                  flipped: bool=False,
-                  scale: float=1) -> List['Texture']:
+                  flipped: bool=False) -> List['Texture']:
     """
     Load a set of textures off of a single image file.
 
@@ -253,25 +204,7 @@ def load_textures(file_name: str,
         if flipped:
             image = PIL.ImageOps.flip(image)
 
-        image_width, image_height = image.size
-
-        texture = gl.GLuint(0)
-        gl.glGenTextures(1, ctypes.byref(texture))
-
-        gl.glBindTexture(gl.GL_TEXTURE_2D, texture)
-        gl.glPixelStorei(gl.GL_UNPACK_ALIGNMENT, 1)
-
-        gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_S, gl.GL_REPEAT)
-        gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_T, gl.GL_REPEAT)
-
-        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR)
-        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER,
-                           gl.GL_LINEAR_MIPMAP_LINEAR)
-
-        image_width *= scale
-        image_height *= scale
-
-        texture_info_list.append(Texture(texture, width, height, image_location))
+        texture_info_list.append(Texture(image=image))
 
     return texture_info_list
 
@@ -372,32 +305,8 @@ def load_texture(file_name: str, x: float=0, y: float=0,
     if flipped:
         image = PIL.ImageOps.flip(image)
 
-    image_width, image_height = image.size
-    # image_bytes = image.convert("RGBA").tobytes("raw", "RGBA", 0, -1)
 
-    texture = gl.GLuint(0)
-    gl.glGenTextures(1, ctypes.byref(texture))
-
-    gl.glBindTexture(gl.GL_TEXTURE_2D, texture)
-    gl.glPixelStorei(gl.GL_UNPACK_ALIGNMENT, 1)
-
-    gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_S,
-                       gl.GL_REPEAT)
-    gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_T,
-                       gl.GL_REPEAT)
-
-    gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER,
-                       gl.GL_LINEAR)
-    gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER,
-                       gl.GL_LINEAR_MIPMAP_LINEAR)
-    # glu.gluBuild2DMipmaps(gl.GL_TEXTURE_2D, gl.GL_RGBA,
-    #                       image_width, image_height,
-    #                       gl.GL_RGBA, gl.GL_UNSIGNED_BYTE, image_bytes)
-
-    image_width *= scale
-    image_height *= scale
-
-    result = Texture(texture, image_width, image_height, file_name)
+    result = Texture(cache_name, image)
     load_texture.texture_cache[cache_name] = result
     return result
 

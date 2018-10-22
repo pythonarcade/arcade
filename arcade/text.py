@@ -6,6 +6,7 @@ import PIL.ImageFont
 
 from arcade.sprite import Sprite
 from arcade.arcade_types import Color
+from arcade.draw_commands import Texture
 
 
 class Text:
@@ -175,6 +176,9 @@ def draw_text(text: str,
         image = image.resize((width // scale_down, text_height // scale_down), resample=PIL.Image.LANCZOS)
 
         text_sprite = Sprite()
+        text_sprite.texture = Texture(key )
+        text_sprite.texture.image = image
+
         text_sprite.image = image
         text_sprite.texture_name = key
         text_sprite.width = image.width

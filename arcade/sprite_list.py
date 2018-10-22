@@ -349,18 +349,14 @@ class SpriteList(Generic[T]):
 
         for sprite in self.sprite_list:
 
-            name_of_texture_to_check = sprite.texture_name
+            name_of_texture_to_check = sprite.texture.name
             if name_of_texture_to_check not in self.array_of_texture_names:
                 new_texture = True
                 # print("New because of ", name_of_texture_to_check)
 
             if name_of_texture_to_check not in new_array_of_texture_names:
-                if sprite.image is not None:
-                    new_array_of_texture_names.append(name_of_texture_to_check)
-                    image = sprite.image
-                else:
-                    new_array_of_texture_names.append(name_of_texture_to_check)
-                    image = Image.open(name_of_texture_to_check)
+                new_array_of_texture_names.append(name_of_texture_to_check)
+                image = sprite.texture.image
                 new_array_of_images.append(image)
 
         # print("New texture end: ", new_texture)
@@ -370,10 +366,10 @@ class SpriteList(Generic[T]):
 
         if new_texture:
             # Add back in any old textures. Chances are we'll need them.
-            for old_texture_name in self.array_of_texture_names:
+            for index, old_texture_name in enumerate(self.array_of_texture_names):
                 if old_texture_name not in new_array_of_texture_names:
                     new_array_of_texture_names.append(old_texture_name)
-                    image = Image.open(old_texture_name)
+                    image = self.array_of_images[index]
                     new_array_of_images.append(image)
 
             self.array_of_texture_names = new_array_of_texture_names
@@ -427,7 +423,7 @@ class SpriteList(Generic[T]):
         # coordinates for that sprite's image.
         array_of_sub_tex_coords = []
         for sprite in self.sprite_list:
-            index = self.array_of_texture_names.index(sprite.texture_name)
+            index = self.array_of_texture_names.index(sprite.texture.name)
             array_of_sub_tex_coords.append(tex_coords[index])
 
         # Create numpy array with info on location and such
