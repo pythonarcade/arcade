@@ -161,13 +161,13 @@ class Sprite:
                                         image_width, image_height)
 
             self.textures = [self.texture]
-            self.width = self.texture.width * scale
-            self.height = self.texture.height * scale
+            self._width = self.texture.width * scale
+            self._height = self.texture.height * scale
         else:
             self.textures = []
             self._texture = None
-            self.width = 0
-            self.height = 0
+            self._width = 0
+            self._height = 0
 
         self.cur_texture_index = 0
 
@@ -455,6 +455,41 @@ arcade.Sprite("arcade/examples/images/playerShip1_orange.png", scale)
 
     top = property(_get_top, _set_top)
 
+    def _get_width(self) -> float:
+        """ Get the center x coordinate of the sprite. """
+        return self._width
+
+    def _set_width(self, new_value: float):
+        """ Set the center x coordinate of the sprite. """
+        if new_value != self._width:
+            self.clear_spatial_hashes()
+            self._point_list_cache = None
+            self._width = new_value
+            self.add_spatial_hashes()
+
+            for sprite_list in self.sprite_lists:
+                sprite_list.update_position(self)
+
+    width = property(_get_width, _set_width)
+
+    def _get_height(self) -> float:
+        """ Get the center x coordinate of the sprite. """
+        return self._height
+
+    def _set_height(self, new_value: float):
+        """ Set the center x coordinate of the sprite. """
+        if new_value != self._height:
+            self.clear_spatial_hashes()
+            self._point_list_cache = None
+            self._height = new_value
+            self.add_spatial_hashes()
+
+            for sprite_list in self.sprite_lists:
+                sprite_list.update_position(self)
+
+    height = property(_get_height, _set_height)
+
+
     def _get_center_x(self) -> float:
         """ Get the center x coordinate of the sprite. """
         return self._position[0]
@@ -604,11 +639,15 @@ arcade.Sprite("arcade/examples/images/playerShip1_orange.png", scale)
         Set the current sprite texture.
         """
         if isinstance(texture, Texture):
+            self.clear_spatial_hashes()
+            self._point_list_cache = None
             self._texture = texture
-            self.width = texture.width
-            self.height = texture.height
+            self._width = texture.width
+            self._height = texture.height
+            self.add_spatial_hashes()
             for sprite_list in self.sprite_lists:
                 sprite_list.update_texture(self)
+
         else:
             raise SystemError("Can't set the texture to something that is " +
                               "not an instance of the Texture class.")
