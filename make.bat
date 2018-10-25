@@ -4,12 +4,18 @@ rem Build script for Windows
 
 IF "%~1"=="" GOTO printdoc
 IF "%~1"=="full" GOTO makefull
+IF "%~1"=="test" GOTO test
 IF "%~1"=="fast" GOTO makefast
 IF "%~1"=="doc" GOTO makedoc
 IF "%~1"=="spelling" GOTO spelling
 IF "%~1"=="deploy_pypi" GOTO deploy_pypi
 IF "%~1"=="deploy_docs" GOTO deploy_docs
 GOTO printdoc
+
+:test
+
+coverage run --source arcade setup.py test
+GOTO end
 
 :makefull
 rem -- This builds the project, installs it, and runs unit tests

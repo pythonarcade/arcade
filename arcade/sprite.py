@@ -55,69 +55,26 @@ class Sprite:
         for collision detection. Arcade defaults to creating points for a rectangle \
         that encompass the image. If you are creating a ramp or making better \
         hit-boxes, you can custom-set these.
-        :point_list_cache:
         :position: A list with the (x, y) of where the sprite is.
         :repeat_count_x:
         :repeat_count_y:
         :right: Set/query the sprite location by using the right coordinate. \
         This will be the 'y=x' of the right of the sprite.
         :sprite_lists: List of all the sprite lists this sprite is part of.
-        :textures:
         :texture: `Texture` class with the current texture.
         :textures: List of textures associated with this sprite.
         :top: Set/query the sprite location by using the top coordinate. This \
         will be the 'y' of the top of the sprite.
-        :transparent: Set to True if this sprite can be transparent.
         :scale: Scale the image up or down. Scale of 1.0 is original size, 0.5 \
         is 1/2 height and width.
         :velocity: Change in x, y expressed as a list. (0, 0) would be not moving.
-        :width:
+        :width: Width of the sprite
 
-    It is common to over-ride the `update` method and provide mechanics on movement or other sprite updates.
+    It is common to over-ride the `update` method and provide mechanics on
+    movement or other sprite updates.
 
     :Example:
 
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Sprite Example")
-    >>> SCALE = 1
-    >>> # Test creating an empty sprite
-    >>> empty_sprite = arcade.Sprite()
-    >>> # Create a sprite with an image
-    >>> filename = "arcade/examples/images/playerShip1_orange.png"
-    >>> ship_sprite = arcade.Sprite(filename, SCALE)
-    >>> # Draw the sprite
-    >>> arcade.set_background_color(arcade.color.WHITE)
-    >>> arcade.start_render()
-    >>> ship_sprite.draw()
-    >>> arcade.finish_render()
-    >>> # Move the sprite
-    >>> ship_sprite.change_x = 1
-    >>> ship_sprite.change_y = 1
-    >>> ship_sprite.angle = 45
-    >>> ship_sprite.update() # Move/update the ship
-    >>> # Remove the sprite
-    >>> ship_sprite.kill()
-    >>> ship_sprite = arcade.Sprite(filename, SCALE, image_height=-1)
-    Traceback (most recent call last):
-    ...
-    ValueError: Height entered is less than zero. Height must be a positive float.
-
-    >>> ship_sprite = arcade.Sprite(filename, SCALE, image_width=-1)
-    Traceback (most recent call last):
-    ...
-    ValueError: Width of image can't be less than zero.
-
-    >>> ship_sprite = arcade.Sprite(filename, SCALE, image_width=0, image_height=1)
-    Traceback (most recent call last):
-    ...
-    ValueError: Width can't be zero.
-
-    >>> ship_sprite = arcade.Sprite(filename, SCALE, image_height=0, image_width=1)
-    Traceback (most recent call last):
-    ...
-    ValueError: Height can't be zero.
-
-    >>> arcade.quick_run(0.25)
     """
 
     def __init__(self,

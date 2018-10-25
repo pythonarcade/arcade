@@ -1,4 +1,6 @@
 Pyglet
 Pillow
 numpy
+coverage
+pytest
 moderngl
