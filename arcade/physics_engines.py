@@ -12,16 +12,6 @@ from arcade.sprite_list import SpriteList
 class PhysicsEngineSimple:
     """
     This class will move everything, and take care of collisions.
-
-    >>> import arcade
-    >>> player = arcade.Sprite()
-    >>> player.change_y = -1
-    >>> player.change_x = -1
-    >>> walls = SpriteList()
-    >>> wall = Sprite()
-    >>> walls.append(wall)
-    >>> engine = PhysicsEngineSimple(player, walls)
-    >>> engine.update()
     """
 
     def __init__(self, player_sprite: Sprite, walls: SpriteList):
@@ -83,20 +73,6 @@ class PhysicsEngineSimple:
 class PhysicsEnginePlatformer:
     """
     This class will move everything, and take care of collisions.
-
-    >>> import arcade
-    >>> player = arcade.Sprite()
-    >>> player.change_y = -1
-    >>> player.change_x = -1
-    >>> walls = SpriteList()
-    >>> wall = arcade.Sprite()
-    >>> wall.change_x = 1
-    >>> wall.change_y = 1
-    >>> walls.append(wall)
-    >>> engine = PhysicsEnginePlatformer(player, walls)
-    >>> engine.can_jump()
-    False
-    >>> engine.update()
     """
 
     def __init__(self, player_sprite: Sprite, platforms: SpriteList,

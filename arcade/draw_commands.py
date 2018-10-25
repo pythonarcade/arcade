@@ -99,9 +99,6 @@ def rotate_point(x: float, y: float, cx: float, cy: float,
     :param angle: Angle, in degrees, to rotate
     :return: Return rotated (x, y) pair
 
-    >>> x, y = rotate_point(1, 1, 0, 0, 90)
-    >>> print("x = {:.1f}, y = {:.1f}".format(x, y))
-    x = -1.0, y = 1.0
     """
     temp_x = x - cx
     temp_y = y - cy
@@ -139,6 +136,33 @@ class Texture:
         else:
             self.width = 0
             self.height = 0
+
+        self._sprite = None
+
+
+    def draw(self, center_x: float, center_y: float, width: float,
+             height: float, angle: float=0,
+             alpha: float=1, transparent: bool=True,
+             repeat_count_x=1, repeat_count_y=1):
+
+        from arcade.sprite import Sprite
+        from arcade.sprite_list import SpriteList
+
+        if self._sprite == None:
+            self._sprite = Sprite()
+            self._sprite.texture = self
+            self._sprite.textures = [self]
+
+            self._sprite_list = SpriteList()
+            self._sprite_list.append(self._sprite)
+
+        self._sprite.center_x = center_x
+        self._sprite.center_y = center_y
+        self._sprite.width = width
+        self._sprite.height = height
+        self._sprite.angle = angle
+
+        self._sprite_list.draw()
 
 
 def load_textures(file_name: str,
@@ -238,33 +262,6 @@ def load_texture(file_name: str, x: float=0, y: float=0,
     Raises:
         None
 
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
-    >>> name = "arcade/examples/images/meteorGrey_big1.png"
-    >>> texture1 = load_texture(name, 1, 1, 50, 50)
-    >>> texture2 = load_texture(name, 1, 1, 50, 50)
-
-    >>> texture = load_texture(name, 200, 1, 50, 50)
-    Traceback (most recent call last):
-    ...
-    ValueError: Can't load texture starting at an x of 200 when the image is only 101 across.
-
-    >>> texture = load_texture(name, 1, 50, 50, 50)
-    Traceback (most recent call last):
-    ...
-    ValueError: Can't load texture ending at an y of 100 when the image is only 84 high.
-
-    >>> texture = load_texture(name, 1, 150, 50, 50)
-    Traceback (most recent call last):
-    ...
-    ValueError: Can't load texture starting at an y of 150 when the image is only 84 high.
-
-    >>> texture = load_texture(name, 0, 0, 400, 50)
-    Traceback (most recent call last):
-    ...
-    ValueError: Can't load texture ending at an x of 400 when the image is only 101 wide.
-
-    >>> arcade.close_window()
     """
 
     # See if we already loaded this file, and we can just use a cached version.
@@ -320,12 +317,6 @@ load_texture.texture_cache = dict()
 def trim_image(image: PIL.Image) -> PIL.Image:
     """
     Returns an image with extra whitespace cropped out.
-
-    >>> name = "arcade/examples/images/playerShip1_orange.png"
-    >>> source_image = PIL.Image.open(name)
-    >>> cropped_image = trim_image(source_image)
-    >>> print(source_image.height, cropped_image.height)
-    75 75
     """
     bbox = image.getbbox()
     return image.crop(bbox)
@@ -553,16 +544,6 @@ def draw_circle_filled(center_x: float, center_y: float, radius: float,
         None
     Raises:
         None
-
-    Example:
-
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
-    >>> arcade.set_background_color(arcade.color.WHITE)
-    >>> arcade.start_render()
-    >>> arcade.draw_circle_filled(420, 285, 18, arcade.color.GREEN)
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
     """
     width = radius
     height = radius
@@ -587,16 +568,6 @@ def draw_circle_outline(center_x: float, center_y: float, radius: float,
         None
     Raises:
         None
-
-    Example:
-
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
-    >>> arcade.set_background_color(arcade.color.WHITE)
-    >>> arcade.start_render()
-    >>> arcade.draw_circle_outline(300, 285, 18, arcade.color.WISTERIA, 3)
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
     """
     width = radius
     height = radius
@@ -629,18 +600,6 @@ def draw_ellipse_filled(center_x: float, center_y: float,
         None
     Raises:
         None
-
-    Example:
-
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
-    >>> arcade.set_background_color(arcade.color.WHITE)
-    >>> arcade.start_render()
-    >>> arcade.draw_ellipse_filled(60, 81, 15, 36, arcade.color.AMBER)
-    >>> color = (127, 0, 127, 127)
-    >>> arcade.draw_ellipse_filled(60, 144, 15, 36, color, 45)
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
     """
 
     unrotated_point_list = []
@@ -972,14 +931,6 @@ def draw_triangle_outline(x1: float, y1: float,
         None
     Raises:
         None
-
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
-    >>> arcade.start_render()
-    >>> arcade.draw_triangle_outline(1, 2, 3, 4, 5, 6, arcade.color.BLACK, 5)
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
-
     """
     first_point = [x1, y1]
     second_point = [x2, y2]
@@ -1012,23 +963,6 @@ def draw_lrtb_rectangle_outline(left: float, right: float, top: float,
     Raises:
         :AttributeErrror: Raised if left > right or top < bottom.
 
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
-    >>> arcade.start_render()
-    >>> arcade.draw_lrtb_rectangle_outline(100, 100, 100, 100, \
-        arcade.color.BLACK, 5)
-    >>> arcade.draw_lrtb_rectangle_outline(190, 180, 100, 100, \
-        arcade.color.BLACK, 5)
-    Traceback (most recent call last):
-        ...
-    AttributeError: Left coordinate must be less than or equal to the right coordinate
-    >>> arcade.draw_lrtb_rectangle_outline(170, 180, 100, 200, \
-        arcade.color.BLACK, 5)
-    Traceback (most recent call last):
-        ...
-    AttributeError: Bottom coordinate must be less than or equal to the top coordinate
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
     """
 
     if left > right:
@@ -1066,12 +1000,6 @@ def draw_xywh_rectangle_outline(bottom_left_x: float, bottom_left_y: float,
     Raises:
         None
 
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
-    >>> arcade.start_render()
-    >>> arcade.draw_xywh_rectangle_outline(1, 2, 10, 10, arcade.color.BLACK, 5)
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
     """
     center_x = bottom_left_x + (width / 2)
     center_y = bottom_left_y + (height / 2)
@@ -1131,20 +1059,6 @@ def draw_lrtb_rectangle_filled(left: float, right: float, top: float,
     Raises:
         :AttributeErrror: Raised if left > right or top < bottom.
 
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
-    >>> arcade.start_render()
-    >>> arcade.draw_lrtb_rectangle_filled(1, 2, 3, 1, arcade.color.BLACK)
-    >>> arcade.draw_lrtb_rectangle_filled(2, 1, 3, 1, arcade.color.BLACK)
-    Traceback (most recent call last):
-        ...
-    AttributeError: Left coordinate 2 must be less than or equal to the right coordinate 1
-    >>> arcade.draw_lrtb_rectangle_filled(1, 2, 3, 4, arcade.color.BLACK)
-    Traceback (most recent call last):
-        ...
-    AttributeError: Bottom coordinate 4 must be less than or equal to the top coordinate 3
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
     """
     if left > right:
         raise AttributeError("Left coordinate {} must be less than or equal "
@@ -1178,12 +1092,6 @@ def draw_xywh_rectangle_filled(bottom_left_x: float, bottom_left_y: float,
     Raises:
         None
 
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
-    >>> arcade.start_render()
-    >>> arcade.draw_xywh_rectangle_filled(1, 2, 3, 4, arcade.color.BLACK)
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
     """
 
     center_x = bottom_left_x + (width / 2)
@@ -1206,15 +1114,6 @@ def draw_rectangle_filled(center_x: float, center_y: float, width: float,
          RGBA format.
         :angle: rotation of the rectangle. Defaults to zero.
 
-    Example:
-
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
-    >>> arcade.set_background_color(arcade.color.WHITE)
-    >>> arcade.start_render()
-    >>> arcade.draw_rectangle_filled(390, 150, 45, 105, arcade.color.BLUSH)
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
     """
     p1 = -width // 2 + center_x, -height // 2 + center_y
     p2 = width // 2 + center_x, -height // 2 + center_y
@@ -1250,24 +1149,6 @@ def draw_texture_rectangle(center_x: float, center_y: float, width: float,
     Raises:
         None
 
-    :Example:
-
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
-    >>> arcade.set_background_color(arcade.color.WHITE)
-    >>> arcade.start_render()
-    >>> arcade.draw_text("draw_bitmap", 483, 3, arcade.color.BLACK, 12)
-    >>> name = "arcade/examples/images/playerShip1_orange.png"
-    >>> texture = arcade.load_texture(name)
-    >>> scale = .6
-    >>> arcade.draw_texture_rectangle(540, 120, scale * texture.width, \
-scale * texture.height, texture, 0)
-    >>> arcade.draw_texture_rectangle(540, 60, scale * texture.width, \
-scale * texture.height, texture, 90)
-    >>> arcade.draw_texture_rectangle(540, 60, scale * texture.width, \
-scale * texture.height, texture, 90, 1, False)
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
     """
 
     texture.draw(center_x, center_y, width,
@@ -1295,15 +1176,6 @@ def draw_xywh_rectangle_textured(bottom_left_x: float, bottom_left_y: float,
         None
     Raises:
         None
-
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
-    >>> arcade.start_render()
-    >>> name = "arcade/examples/images/meteorGrey_big1.png"
-    >>> texture1 = load_texture(name, 1, 1, 50, 50)
-    >>> arcade.draw_xywh_rectangle_textured(1, 2, 10, 10, texture1)
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
     """
 
     center_x = bottom_left_x + (width / 2)
