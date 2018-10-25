@@ -14,9 +14,6 @@ def test_window():
     p = arcade.get_projection()
     assert p is not None
 
-    c = arcade.get_opengl_context()
-    assert c is not None
-
     v = arcade.get_viewport()
     assert v[0] == 0
     assert v[1] == width - 1

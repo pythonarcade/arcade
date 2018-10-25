@@ -9,7 +9,6 @@ import time
 import pyglet
 
 import pyglet.gl as gl
-import moderngl
 import numpy as np
 
 from numbers import Number
@@ -29,13 +28,6 @@ _opengl_context = None
 
 def get_projection():
     return _projection
-
-
-def get_opengl_context():
-    global _opengl_context
-    if _opengl_context is None:
-        _opengl_context = moderngl.create_context()
-    return _opengl_context
 
 
 def create_orthogonal_projection(

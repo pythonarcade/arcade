@@ -13,7 +13,6 @@ import math
 import PIL.Image
 import PIL.ImageOps
 import numpy as np
-import moderngl
 
 import pyglet.gl as gl
 
@@ -679,7 +678,7 @@ def draw_ellipse_outline(center_x: float, center_y: float, width: float,
 def _generic_draw_line_strip(point_list: PointList,
                              color: Color,
                              line_width: float=1,
-                             mode: int=moderngl.LINE_STRIP):
+                             mode: int=gl.GL_LINE_STRIP):
     """
     Draw a line strip. A line strip is a set of continuously connected
     line segments.
