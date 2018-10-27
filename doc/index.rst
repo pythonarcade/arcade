@@ -53,6 +53,7 @@ The Python Arcade Library
           <img style="width:78px;" src="_static/sample_games.svg"><br/>
           <h2><a href="sample_games.html">Example Games</a></h2>
           <ul>
+            <li><a href="instructions_gameshell.html">GameShell (Hand-held like a GameBoy)</a></li>
             <li><a href="examples/pyinstaller.html">Distributing games with PyInstaller</a></li>
           </ul>
         </td>
@@ -135,6 +136,7 @@ Distribution
    :maxdepth: 4
 
    distribute_macos
+   instructions_gameshell
 
 
 How to Contribute

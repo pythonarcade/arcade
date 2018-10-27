@@ -454,7 +454,10 @@ Other
 
    :ref:`asteroid_smasher`
 
+.. figure:: thumbs/gameshell1.jpg
+   :figwidth: 170px
 
+   :ref:`gameshell`
 
 .. toctree::
    :maxdepth: 3

@@ -1,26 +1,34 @@
+.. _gameshell:
+
 GameShell
 =========
 
+GameShell is a retro hand-held gaming console. If you liked the GameBoy, you'll
+probably like GameShell. It is a small "Clockwork Pi" computer with a
+320x240 screen, battery, speakers, and gaming keypad.
 
-Shell to GameShell
+Best of all, you can run Arcade games on it!
 
-code-block:: bash
+.. image:: examples/gameshell1.jpg
+    :width: 400px
 
-    touch ~/apps/launcher/Menu/GameShell/my_arcade_game.sh
-    echo "python ~/games/my_arcade_game/my_arcade_game.py" > ~/apps/launcher/Menu/GameShell/my_arcade_game.sh
-    cd ~/apps/launcher/Menu/GameShell/
-    chmod a+x my_arcade_game.sh
+You need to assemble the GameShell. At least, the one I was sent needed
+assembly. It was an easy snap-together process that didn't take long.
+I do recommend using a file or some sandpaper to get off
+the extra plastic.
 
+.. image:: examples/gameshell2.jpg
 
-Reboot:
+For more info about the GameShell see:
 
-code-block:: bash
+* `GameShell Kickstarter <https://www.kickstarter.com/projects/954662076/gameshell-redefine-retro-game-console>`_
+* `Clockwork Pi website <https://www.clockworkpi.com/>`_
 
-    sudo reboot
+To learn how to get a game up and going using Arcade, see:
 
+* `GameShell Template for Arcade Library <https://github.com/pvcraven/gameshell_template>`_
 
-To undo:
+At the time of this writing, I haven't gotten sound to work yet.
 
-code-block:: bash
-
-    rm ~/apps/launcher/Menu/GameShell/my_arcade_game.sh
+**Disclaimer:** I was sent a free GameShell to get the Arcade library up and
+running.
