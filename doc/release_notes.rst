@@ -5,6 +5,14 @@
 Release Notes
 =============
 
+Version 1.3.7
+-------------
+
+Released 2018-10-28
+
+* Fix for `Issue 275 <https://github.com/pvcraven/arcade/issues/275>`_ where sprites can get blurry.
+
+
 Version 1.3.6
 -------------
 

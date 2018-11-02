@@ -214,7 +214,7 @@ def load_textures(file_name: str,
                            gl.GL_REPEAT)
 
         gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER,
-                           gl.GL_LINEAR)
+                           gl.GL_NEAREST)
         gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER,
                            gl.GL_LINEAR_MIPMAP_LINEAR)
         glu.gluBuild2DMipmaps(gl.GL_TEXTURE_2D, gl.GL_RGBA,
@@ -331,7 +331,7 @@ def load_texture(file_name: str, x: float=0, y: float=0,
                        gl.GL_REPEAT)
 
     gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER,
-                       gl.GL_LINEAR)
+                       gl.GL_NEAREST)
     gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER,
                        gl.GL_LINEAR_MIPMAP_LINEAR)
     glu.gluBuild2DMipmaps(gl.GL_TEXTURE_2D, gl.GL_RGBA,

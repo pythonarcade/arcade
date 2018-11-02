@@ -30,6 +30,8 @@ def _load_sound_library():
 
     import platform
     system = platform.system()
+    path_user = None
+
     if system == 'Windows':
 
         import sys
@@ -72,8 +74,9 @@ def _load_sound_library():
 
     pyglet.have_avbin = False
     try:
-        pyglet.lib.load_library(path_user)
-        pyglet.have_avbin = True
+        if path_user is not None:
+            pyglet.lib.load_library(path_user)
+            pyglet.have_avbin = True
     except ImportError:
         pass
 
