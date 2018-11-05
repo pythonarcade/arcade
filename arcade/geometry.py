@@ -22,19 +22,6 @@ def are_polygons_intersecting(poly_a: PointList,
         bool
     Raises:
         None
-
-    :Example:
-
-    >>> import arcade
-    >>> poly1 = ((0.1, 0.1), (0.2, 0.1), (0.2, 0.2), (0.1, 0.2))
-    >>> poly2 = ((0.15, 0.1), (0.25, 0.1), (0.25, 0.25), (0.15, 0.25))
-    >>> poly3 = ((0.3, 0.1), (0.4, 0.1), (0.4, 0.2), (0.3, 0.2))
-    >>> test1 = arcade.are_polygons_intersecting(poly1, poly2)
-    >>> test2 = arcade.are_polygons_intersecting(poly2, poly3)
-    >>> test3 = arcade.are_polygons_intersecting(poly1, poly3)
-    >>> print(test1, test2, test3)
-    True False False
-
     """
 
     for polygon in (poly_a, poly_b):
@@ -74,25 +61,6 @@ def are_polygons_intersecting(poly_a: PointList,
 def check_for_collision(sprite1: Sprite, sprite2: Sprite) -> bool:
     """
     Check for a collision between two sprites.
-
-    >>> import arcade
-    >>> scale = 1
-    >>> filename = "arcade/examples/images/meteorGrey_big1.png"
-    >>> sprite_1 = arcade.Sprite(filename, scale)
-    >>> sprite_1.center_x = 0
-    >>> sprite_1.center_y = 0
-    >>> sprite_2 = arcade.Sprite(filename, scale)
-    >>> sprite_2.center_x = 40
-    >>> sprite_2.center_y = 40
-    >>> result = check_for_collision(sprite_1, sprite_2)
-    >>> sprite_3 = arcade.Sprite(filename, scale)
-    >>> sprite_3.center_x = 90
-    >>> sprite_3.center_y = 90
-    >>> result_1 = check_for_collision(sprite_1, sprite_2)
-    >>> result_2 = check_for_collision(sprite_2, sprite_3)
-    >>> result_3 = check_for_collision(sprite_1, sprite_3)
-    >>> print(result_1, result_2, result_3)
-    True True False
     """
     if not isinstance(sprite1, Sprite):
         raise TypeError("Parameter 1 is not an instance of the Sprite class.")
@@ -134,25 +102,6 @@ def check_for_collision_with_list(sprite1: Sprite,
                                   sprite_list: SpriteList) -> List[Sprite]:
     """
     Check for a collision between a sprite, and a list of sprites.
-
-    >>> import arcade
-    >>> scale = 1
-    >>> sprite_list = arcade.SpriteList()
-    >>> filename = "arcade/examples/images/meteorGrey_big1.png"
-    >>> main_sprite = arcade.Sprite(filename, scale)
-    >>> main_sprite.center_x = 0
-    >>> main_sprite.center_y = 0
-    >>> sprite = arcade.Sprite(filename, scale)
-    >>> sprite.center_x = 40
-    >>> sprite.center_y = 40
-    >>> sprite_list.append(sprite)
-    >>> sprite = arcade.Sprite(filename, scale)
-    >>> sprite.center_x = 100
-    >>> sprite.center_y = 100
-    >>> sprite_list.append(sprite)
-    >>> collision_list = arcade.check_for_collision_with_list(main_sprite, sprite_list)
-    >>> print(len(collision_list))
-    1
     """
     if not isinstance(sprite1, Sprite):
         raise TypeError("Parameter 1 is not an instance of the Sprite class.")

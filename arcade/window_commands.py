@@ -78,10 +78,6 @@ def pause(seconds: Number):
     Pause for the specified number of seconds. This is a convenience function that just calls time.sleep()
 
     :param float seconds: Time interval to pause in seconds.
-
-    >>> import arcade
-    >>> arcade.pause(0.25) # Pause 1/2 second
-
     """
     time.sleep(seconds)
 
@@ -134,14 +130,6 @@ def set_viewport(left: Number, right: Number, bottom: Number, top: Number):
         None
     Raises:
         None
-
-    :Example:
-
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
-    >>> set_viewport(-1, 1, -1, 1)
-    >>> arcade.quick_run(0.25)
-
     """
     global _left
     global _right
@@ -186,12 +174,6 @@ def open_window(width: Number, height: Number, window_title: str, resizable: boo
         :width: Width of the window.
         :height: Height of the window.
         :resizable: Whether the window can be user-resizable.
-
-    Example:
-
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
-    >>> arcade.quick_run(0.25)
     """
     global _window
 
@@ -226,14 +208,6 @@ def finish_render():
     Swap buffers and displays what has been drawn.
     If programs use derive from the Window class, this function is
     automatically called.
-
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
-    >>> arcade.set_background_color(arcade.color.RED)
-    >>> arcade.start_render()
-    >>> # All the drawing commands go here
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
     """
     global _window
 

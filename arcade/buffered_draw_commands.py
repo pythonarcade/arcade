@@ -81,17 +81,6 @@ def create_line(start_x: float, start_y: float, end_x: float, end_y: float,
     """
     Create a line to be rendered later. This works faster than draw_line because
     the vertexes are only loaded to the graphics card once, rather than each frame.
-
-    :Example:
-
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
-    >>> arcade.start_render()
-    >>> line1 = arcade.create_line(0, 0, 100, 100, (255, 0, 0), 2)
-    >>> arcade.render(line1)
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
-
     """
 
     program = shader.program(
@@ -226,18 +215,6 @@ def create_line_strip(point_list: PointList,
     """
     Create a multi-point line to be rendered later. This works faster than draw_line because
     the vertexes are only loaded to the graphics card once, rather than each frame.
-
-    :Example:
-
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
-    >>> arcade.start_render()
-    >>> point_list = [[0, 0], [100, 100], [50, 0]]
-    >>> line1 = arcade.create_line_strip(point_list, (255, 0, 0), 2)
-    >>> arcade.render(line1)
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
-
     """
     return create_line_generic(point_list, color, gl.GL_LINE_STRIP, line_width)
 
@@ -247,17 +224,6 @@ def create_line_loop(point_list: PointList,
     """
     Create a multi-point line loop to be rendered later. This works faster than draw_line because
     the vertexes are only loaded to the graphics card once, rather than each frame.
-
-    :Example:
-
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
-    >>> arcade.start_render()
-    >>> point_list = [[0, 0], [100, 100], [50, 0]]
-    >>> line1 = arcade.create_line_loop(point_list, (255, 0, 0), 2)
-    >>> arcade.render(line1)
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
     """
     point_list = list(point_list) + [point_list[0]]
     return create_line_generic(point_list, color, gl.GL_LINE_STRIP, line_width)
@@ -268,17 +234,6 @@ def create_lines(point_list: PointList,
     """
     Create a multi-point line loop to be rendered later. This works faster than draw_line because
     the vertexes are only loaded to the graphics card once, rather than each frame.
-
-    :Example:
-
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
-    >>> arcade.start_render()
-    >>> point_list = [[0, 0], [100, 100], [50, 0], [50, 100]]
-    >>> line1 = arcade.create_lines(point_list, (255, 0, 0), 2)
-    >>> arcade.render(line1)
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
     """
     return create_line_generic(point_list, color, gl.GL_LINES, line_width)
 
@@ -301,16 +256,6 @@ def create_polygon(point_list: PointList,
     """
     Draw a convex polygon. This will NOT draw a concave polygon.
     Because of this, you might not want to use this function.
-
-
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
-    >>> arcade.start_render()
-    >>> point_list = [[0, 0], [100, 100], [50, 0]]
-    >>> line1 = arcade.create_polygon(point_list, (255, 0, 0), 2)
-    >>> arcade.render(line1)
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
     """
     # We assume points were given in order, either clockwise or counter clockwise.
     # Polygon is assumed to be monotone.
@@ -385,14 +330,6 @@ def create_rectangle(center_x: float, center_y: float, width: float,
     This function creates a rectangle using a vertex buffer object.
     Creating the rectangle, and then later drawing it with ``render_rectangle``
     is faster than calling ``draw_rectangle``.
-
-    >>> import arcade
-    >>> arcade.open_window(800, 600, "Drawing Example")
-    >>> arcade.start_render()
-    >>> my_rect = arcade.create_rectangle(200, 200, 50, 50, (0, 255, 0), 3, 45)
-    >>> arcade.render(my_rect)
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
     """
     data = get_rectangle_points(center_x, center_y, width, height, tilt_angle)
 
@@ -452,18 +389,6 @@ def create_rectangle_filled_with_colors(point_list, color_list) -> Shape:
     This function creates multiple rectangle/quads using a vertex buffer object.
     Creating the rectangles, and then later drawing it with ``render``
     is faster than calling ``draw_rectangle``.
-
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
-    >>> point_list = [(0, 0), (100, 0), (100, 100), (0, 100)]
-    >>> color_list = [arcade.color.RED, arcade.color.BLUE, arcade.color.GREEN, arcade.color.AFRICAN_VIOLET]
-    >>> my_shape = arcade.create_rectangle_filled_with_colors(point_list, color_list)
-    >>> my_shape_list = ShapeElementList()
-    >>> my_shape_list.append(my_shape)
-    >>> my_shape_list.draw()
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
-
     """
 
     shape_mode = gl.GL_TRIANGLE_STRIP
@@ -477,17 +402,6 @@ def create_triangles_filled_with_colors(point_list, color_list) -> Shape:
     This function creates multiple rectangle/quads using a vertex buffer object.
     Creating the rectangles, and then later drawing it with ``render``
     is faster than calling ``draw_rectangle``.
-
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
-    >>> point_list = [(0, 0), (100, 0), (100, 100)]
-    >>> color_list = [arcade.color.RED, arcade.color.BLUE, arcade.color.GREEN]
-    >>> my_shape = arcade.create_triangles_filled_with_colors(point_list, color_list)
-    >>> my_shape_list = ShapeElementList()
-    >>> my_shape_list.append(my_shape)
-    >>> my_shape_list.draw()
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
     """
 
     shape_mode = gl.GL_TRIANGLE_STRIP
@@ -499,13 +413,6 @@ def create_ellipse_filled(center_x: float, center_y: float,
                           tilt_angle: float=0, num_segments=128) -> Shape:
     """
     Create a filled ellipse. Or circle if you use the same width and height.
-
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
-    >>> my_shape = arcade.create_ellipse_filled(300, 300, 50, 100, (0, 255, 255, 64), 45, 64)
-    >>> arcade.render(my_shape)
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
     """
 
     border_width = 1
@@ -519,13 +426,6 @@ def create_ellipse_outline(center_x: float, center_y: float,
                            tilt_angle: float=0, num_segments=128) -> Shape:
     """
     Create an outline of an ellipse.
-
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
-    >>> my_shape = arcade.create_ellipse_outline(300, 300, 50, 100, (0, 255, 255), 45, 64)
-    >>> arcade.render(my_shape)
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
     """
 
     return create_ellipse(center_x, center_y, width, height, color,
@@ -545,15 +445,6 @@ def create_ellipse(center_x: float, center_y: float,
 
     Note: This can't be unit tested on Appveyor because its support for OpenGL is
     poor.
-
-    >>> import arcade
-    >>> arcade.open_window(800, 600, "Drawing Example")
-    >>> arcade.start_render()
-    >>> rect = arcade.create_ellipse(50, 50, 20, 20, arcade.color.RED, 2, 45)
-    >>> arcade.render(rect)
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
-
     """
     # Create an array with the vertex point_list
     point_list = []
@@ -589,16 +480,7 @@ def create_ellipse_filled_with_colors(center_x: float, center_y: float,
                                       tilt_angle: float=0, num_segments=32) -> Shape:
 
     """
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
-    >>> point_list = [(0, 0), (100, 0), (100, 100)]
-    >>> color_list = [arcade.color.RED, arcade.color.BLUE, arcade.color.GREEN]
-    >>> my_shape = arcade.create_ellipse_filled_with_colors(100, 100, 50, 50, arcade.color.AFRICAN_VIOLET, arcade.color.ALABAMA_CRIMSON, tilt_angle=45)
-    >>> my_shape_list = ShapeElementList()
-    >>> my_shape_list.append(my_shape)
-    >>> my_shape_list.draw()
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
+    Draw an ellipse, and specify inside/outside color. Used for doing gradients.
     """
     # Create an array with the vertex data
     # Create an array with the vertex point_list
@@ -653,30 +535,10 @@ T = TypeVar('T', bound=Shape)
 
 class ShapeElementList(Generic[T]):
     """
-    A program can put multiple drawimg primitives in a ShapeElementList, and then
+    A program can put multiple drawing primitives in a ShapeElementList, and then
     move and draw them as one. Do this when you want to create a more complex object
     out of simpler primitives. This also speeds rendering as all objects are drawn
     in one operation.
-
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
-    >>> my_list = ShapeElementList()
-    >>> my_shape = arcade.create_ellipse_outline(50, 50, 20, 20, arcade.color.RED, 45)
-    >>> my_list.append(my_shape)
-    >>> my_shape = arcade.create_ellipse_filled(50, 50, 20, 20, arcade.color.RED, 2, 45)
-    >>> my_list.append(my_shape)
-    >>> my_shape = arcade.create_rectangle_filled(250, 50, 20, 20, arcade.color.RED, 45)
-    >>> my_list.append(my_shape)
-    >>> my_shape = arcade.create_rectangle_outline(450, 50, 20, 20, (127, 0, 27, 127), 2, 45)
-    >>> my_list.append(my_shape)
-    >>> my_shape = arcade.create_lines_with_colors(([0, 400], [700, 400]), ((127, 0, 27, 127), arcade.color.GREEN), 2)
-    >>> my_list.append(my_shape)
-    >>> my_list.move(5, 5)
-    >>> arcade.start_render()
-    >>> my_list.draw()
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
-
     """
     def __init__(self):
         """

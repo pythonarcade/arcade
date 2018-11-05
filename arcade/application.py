@@ -145,13 +145,6 @@ class Window(pyglet.window.Window):
         Args:
             :width: width in pixels.
             :height: height in pixels.
-
-        Example:
-
-        >>> import arcade
-        >>> window = arcade.Window(200, 100, resizable=True)
-        >>> window.set_min_size(200, 200)
-        >>> window.close()
         """
 
         if self._resizable:
