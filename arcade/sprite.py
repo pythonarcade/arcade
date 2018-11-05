@@ -165,37 +165,6 @@ class Sprite:
         """
         self.textures.append(texture)
 
-    def set_texture(self, texture_no: int):
-        """
-        Assuming 'texture' is a list of textures, this sets
-        which texture index should be displayed. It also resets
-        the width and height based on the scale of the texture.
-
-        >>> import arcade
-        >>> empty_sprite = arcade.Sprite()
-        >>> my_texture = Texture(1, 10, 10)
-        >>> empty_sprite.append_texture(my_texture)
-        >>> empty_sprite.set_texture(0)
-        """
-        self.texture = self.textures[texture_no]
-        self.cur_texture_index = texture_no
-        self.width = self.textures[texture_no].width * self.scale
-        self.height = self.textures[texture_no].height * self.scale
-
-    def get_texture(self) -> int:
-        """
-        This returns the index of which texture is being
-        displayed.
-
-        >>> import arcade
-        >>> empty_sprite = arcade.Sprite()
-        >>> my_texture = Texture(1, 10, 10)
-        >>> empty_sprite.append_texture(my_texture)
-        >>> empty_sprite.get_texture()
-        0
-        """
-        return self.cur_texture_index
-
     def _get_position(self) -> (float, float):
         """ Get the center x coordinate of the sprite. """
         return (self._position[0], self._position[1])
@@ -585,13 +554,13 @@ arcade.Sprite("arcade/examples/images/playerShip1_orange.png", scale)
 
     right = property(_get_right, _set_right)
 
-    def _get_texture(self) -> Texture:
+    def get_texture(self) -> Texture:
         """
         Return the texture that the sprite uses.
         """
         return self._texture
 
-    def _set_texture(self, texture: Texture):
+    def set_texture(self, texture: Texture):
         """
         Set the current sprite texture.
         """
@@ -599,8 +568,8 @@ arcade.Sprite("arcade/examples/images/playerShip1_orange.png", scale)
             self.clear_spatial_hashes()
             self._point_list_cache = None
             self._texture = texture
-            self._width = texture.width
-            self._height = texture.height
+            self._width = texture.width * texture.scale
+            self._height = texture.height * texture.scale
             self.add_spatial_hashes()
             for sprite_list in self.sprite_lists:
                 sprite_list.update_texture(self)
@@ -609,7 +578,7 @@ arcade.Sprite("arcade/examples/images/playerShip1_orange.png", scale)
             raise SystemError("Can't set the texture to something that is " +
                               "not an instance of the Texture class.")
 
-    texture = property(_get_texture, _set_texture)
+    texture = property(get_texture, set_texture)
 
     def _get_color(self) -> RGB:
         """

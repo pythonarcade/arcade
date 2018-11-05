@@ -129,6 +129,7 @@ class Texture:
     def __init__(self, name, image=None):
         self.name = name
         self.image = image
+        self.scale = 1
         if image:
             self.width = image.width
             self.height = image.height
@@ -304,6 +305,7 @@ def load_texture(file_name: str, x: float=0, y: float=0,
 
     result = Texture(cache_name, image)
     load_texture.texture_cache[cache_name] = result
+    result.scale = scale
     return result
 
 
