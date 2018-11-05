@@ -157,11 +157,6 @@ class Sprite:
         """
         Appends a new texture to the list of textures that can be
         applied to this sprite.
-
-        >>> import arcade
-        >>> empty_sprite = arcade.Sprite()
-        >>> my_texture = Texture(1, 10, 10)
-        >>> empty_sprite.append_texture(my_texture)
         """
         self.textures.append(texture)
 
@@ -185,10 +180,6 @@ class Sprite:
     def set_position(self, center_x: float, center_y: float):
         """
         Set a sprite's position
-
-        >>> import arcade
-        >>> empty_sprite = arcade.Sprite()
-        >>> empty_sprite.set_position(10, 10)
         """
         if center_x != self._position[0] or center_y != self._position[1]:
             from arcade.sprite_list import SpriteList
@@ -204,24 +195,12 @@ class Sprite:
     def set_points(self, points: Sequence[Sequence[float]]):
         """
         Set a sprite's position
-
-        >>> import arcade
-        >>> empty_sprite = arcade.Sprite()
-        >>> my_points = (0,0),(1,1),(0,1),(1,0)
-        >>> empty_sprite.set_points(my_points)
         """
         self._points = points
 
     def get_points(self) -> Tuple[Tuple[float, float]]:
         """
         Get the corner points for the rect that makes up the sprite.
-
-        >>> import arcade
-        >>> empty_sprite = arcade.Sprite()
-        >>> my_points = (0,0),(1,1),(0,1),(1,0)
-        >>> empty_sprite.set_points(my_points)
-        >>> empty_sprite.get_points()
-        ((0, 0), (1, 1), (0, 1), (1, 0))
         """
         if self._point_list_cache is not None:
             return self._point_list_cache
@@ -270,10 +249,6 @@ class Sprite:
         is used as a "pre-check." We do a super-fast check with
         collision_radius and see if the sprites are close. If they are,
         then we look at the geometry and figure if they really are colliding.
-
-        >>> import arcade
-        >>> empty_sprite = arcade.Sprite()
-        >>> empty_sprite.collision_radius = 5
         """
         self._collision_radius = collision_radius
 
@@ -286,13 +261,6 @@ class Sprite:
         is used as a "pre-check." We do a super-fast check with
         collision_radius and see if the sprites are close. If they are,
         then we look at the geometry and figure if they really are colliding.
-
-        >>> import arcade
-        >>> empty_sprite = arcade.Sprite()
-        >>> empty_sprite.width = 3
-        >>> empty_sprite.height = 4
-        >>> empty_sprite.collision_radius
-        4
         """
         if not self._collision_radius:
             self._collision_radius = max(self.width, self.height)
@@ -319,19 +287,6 @@ class Sprite:
     def _get_bottom(self) -> float:
         """
         Return the y coordinate of the bottom of the sprite.
-
-        >>> import arcade
-        >>> arcade.open_window(800,600,"Sprite Example")
-        >>> scale = 1.0
-        >>> ship_sprite = \
-arcade.Sprite("arcade/examples/images/playerShip1_orange.png", scale)
-        >>> ship_sprite.center_y = 0.0
-        >>> print(ship_sprite.bottom)
-        -37.5
-        >>> ship_sprite.bottom = 1.0
-        >>> print(ship_sprite.bottom)
-        1.0
-        >>> arcade.quick_run(0.25)
         """
         points = self.get_points()
         my_min = points[0][1]
@@ -352,20 +307,6 @@ arcade.Sprite("arcade/examples/images/playerShip1_orange.png", scale)
     def _get_top(self) -> float:
         """
         Return the y coordinate of the top of the sprite.
-
-        >>> import arcade
-        >>> arcade.open_window(800,600,"Sprite Example")
-        >>> scale = 1.0
-        >>> ship_sprite = \
-arcade.Sprite("arcade/examples/images/playerShip1_orange.png", scale)
-        >>> ship_sprite.center_y = 0.0
-        >>> print(ship_sprite.top)
-        37.5
-        >>> ship_sprite.top = 1.0
-        >>> print(ship_sprite.top)
-        1.0
-        >>> ship_sprite.angle = 90
-        >>> arcade.quick_run(0.25)
         """
         points = self.get_points()
         my_max = points[0][1]
@@ -490,21 +431,6 @@ arcade.Sprite("arcade/examples/images/playerShip1_orange.png", scale)
     def _get_left(self) -> float:
         """
         Left-most coordinate.
-
-        :Example:
-
-        >>> import arcade
-        >>> arcade.open_window(800,600,"Sprite Example")
-        >>> scale = 1.0
-        >>> ship_sprite = \
-arcade.Sprite("arcade/examples/images/playerShip1_orange.png", scale)
-        >>> ship_sprite.center_x = 0.0
-        >>> print(ship_sprite.left)
-        -49.5
-        >>> ship_sprite.left = 1.0
-        >>> print(ship_sprite.left)
-        1.0
-        >>> arcade.quick_run(0.25)
         """
         points = self.get_points()
         my_min = points[0][0]
@@ -523,21 +449,6 @@ arcade.Sprite("arcade/examples/images/playerShip1_orange.png", scale)
     def _get_right(self) -> float:
         """
         Return the x coordinate of the right-side of the sprite.
-
-        :Example:
-
-        >>> import arcade
-        >>> arcade.open_window(800,600,"Sprite Example")
-        >>> scale = 1.0
-        >>> ship_sprite = \
-arcade.Sprite("arcade/examples/images/playerShip1_orange.png", scale)
-        >>> ship_sprite.center_x = 0.0
-        >>> print(ship_sprite.right)
-        49.5
-        >>> ship_sprite.right = 1.0
-        >>> print(ship_sprite.right)
-        1.0
-        >>> arcade.quick_run(0.25)
         """
 
         points = self.get_points()
@@ -667,12 +578,6 @@ arcade.Sprite("arcade/examples/images/playerShip1_orange.png", scale)
 class AnimatedTimeSprite(Sprite):
     """
     Sprite for platformer games that supports animations.
-
-    >>> import arcade
-    >>> my_sprite = arcade.AnimatedTimeSprite()
-    >>> my_texture = arcade.Texture(1, 10, 10)
-    >>> my_sprite.append_texture(my_texture)
-    >>> my_sprite.update_animation()
     """
 
     def __init__(self, scale: float=1,
@@ -701,12 +606,6 @@ class AnimatedTimeSprite(Sprite):
 class AnimatedWalkingSprite(Sprite):
     """
     Sprite for platformer games that supports animations.
-
-    >>> my_sprite = AnimatedWalkingSprite()
-    >>> my_texture1 = Texture(1, 10, 10)
-    >>> my_texture2 = Texture(1, 10, 10)
-    >>> my_sprite.stand_right_textures = my_texture1, my_texture2
-    >>> my_sprite.update_animation()
     """
     def __init__(self, scale: float=1,
                  image_x: float=0, image_y: float=0,
