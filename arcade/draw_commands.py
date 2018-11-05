@@ -1132,7 +1132,7 @@ def draw_rectangle_filled(center_x: float, center_y: float, width: float,
 
 def draw_texture_rectangle(center_x: float, center_y: float, width: float,
                            height: float, texture: Texture, angle: float=0,
-                           alpha: float=1, transparent: bool=True,
+                           alpha: float=1,
                            repeat_count_x=1, repeat_count_y=1):
     """
     Draw a textured rectangle on-screen.

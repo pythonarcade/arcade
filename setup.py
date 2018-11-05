@@ -31,8 +31,9 @@ if __name__ == "__main__":
           url="http://arcade.academy",
           download_url="http://arcade.academy",
           install_requires=[
-            'pyglet',
-            'pillow'
+            'pyglet==1.4.0b1',
+            'pillow',
+            'numpy'
           ],
           packages=["arcade",
                     "arcade.key",

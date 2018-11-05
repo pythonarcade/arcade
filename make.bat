@@ -4,6 +4,7 @@ rem Build script for Windows
 
 IF "%~1"=="" GOTO printdoc
 IF "%~1"=="full" GOTO makefull
+IF "%~1"=="dist" GOTO makedist
 IF "%~1"=="test" GOTO test
 IF "%~1"=="fast" GOTO makefast
 IF "%~1"=="doc" GOTO makedoc
@@ -16,6 +17,18 @@ GOTO printdoc
 
 coverage run --source arcade setup.py test
 GOTO end
+
+:makedist
+rem -- This builds the project, installs it, and runs unit tests
+
+rem Clean out old builds
+rmdir /s /q "doc\build"
+del /q dist\*.*
+python setup.py clean
+
+rem Build the python
+python setup.py build
+python setup.py bdist_wheel
 
 :makefull
 rem -- This builds the project, installs it, and runs unit tests
@@ -95,6 +108,8 @@ rem -- Print documentation
 
 :printdoc
 
+echo make test        - Runs the tests
+echo make dist        - Make the distributables
 echo make full        - Builds the project, installs it, builds
 echo                    documentation, runs unit tests.
 echo make doc           Builds the documentation. Documentation

@@ -66,7 +66,7 @@ class MyGame(arcade.Window):
         os.chdir(file_path)
 
         # Variables that will hold sprite lists
-        self.all_sprites_list = None
+        self.player_list = None
         self.coin_list = None
 
         # Set up the player info
@@ -92,7 +92,6 @@ class MyGame(arcade.Window):
             coin.center_y = random.randrange(SCREEN_HEIGHT)
 
             # Add the coin to the lists
-            self.all_sprites_list.append(coin)
             self.coin_list.append(coin)
 
     def level_2(self):
@@ -106,7 +105,6 @@ class MyGame(arcade.Window):
             coin.center_y = random.randrange(SCREEN_HEIGHT, SCREEN_HEIGHT * 2)
 
             # Add the coin to the lists
-            self.all_sprites_list.append(coin)
             self.coin_list.append(coin)
 
     def level_3(self):
@@ -120,7 +118,6 @@ class MyGame(arcade.Window):
             coin.center_y = random.randrange(-SCREEN_HEIGHT, 0)
 
             # Add the coin to the lists
-            self.all_sprites_list.append(coin)
             self.coin_list.append(coin)
 
     def setup(self):
@@ -130,7 +127,7 @@ class MyGame(arcade.Window):
         self.level = 1
 
         # Sprite lists
-        self.all_sprites_list = arcade.SpriteList()
+        self.player_list = arcade.SpriteList()
         self.coin_list = arcade.SpriteList()
 
         # Set up the player
@@ -138,7 +135,7 @@ class MyGame(arcade.Window):
                                            SPRITE_SCALING)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 50
-        self.all_sprites_list.append(self.player_sprite)
+        self.player_list.append(self.player_sprite)
 
         self.level_1()
 
@@ -156,10 +153,10 @@ class MyGame(arcade.Window):
 
         # Put the text on the screen.
         output = f"Score: {self.score}"
-        arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
+        arcade.draw_text(output, 10, 20, arcade.color.WHITE, 15)
 
         output = f"Level: {self.level}"
-        arcade.draw_text(output, 10, 35, arcade.color.WHITE, 14)
+        arcade.draw_text(output, 10, 35, arcade.color.WHITE, 15)
 
     def on_mouse_motion(self, x, y, dx, dy):
         """
@@ -173,12 +170,10 @@ class MyGame(arcade.Window):
 
         # Call update on all sprites (The sprites don't do much in this
         # example though.)
-        self.all_sprites_list.update()
+        self.coin_list.update()
 
         # Generate a list of all sprites that collided with the player.
-        hit_list = \
-            arcade.check_for_collision_with_list(self.player_sprite,
-                                                 self.coin_list)
+        hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.coin_list)
 
         # Loop through each colliding sprite, remove it, and add to the score.
         for coin in hit_list:

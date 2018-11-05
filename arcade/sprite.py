@@ -540,7 +540,6 @@ class Sprite:
         draw_texture_rectangle(self.center_x, self.center_y,
                                self.width, self.height,
                                self.texture, self.angle, self.alpha,  # TODO: review this function
-                               self.transparent,
                                repeat_count_x=self.repeat_count_x,
                                repeat_count_y=self.repeat_count_y)
 
