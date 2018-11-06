@@ -167,7 +167,7 @@ def draw_text(text: str,
         # If we draw a y at 0, then the text is drawn with a baseline of 0,
         # cutting off letters that drop below the baseline. This shoves it
         # up a bit.
-        image_start_y = - font_size * scale_up * 0.03
+        image_start_y = - font_size * scale_up * 0.02
         image = PIL.Image.new("RGBA", text_image_size)
         draw = PIL.ImageDraw.Draw(image)
         draw.multiline_text((image_start_x, image_start_y), text, color, align=align, font=font)
