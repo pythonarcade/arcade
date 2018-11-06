@@ -19,16 +19,22 @@ class MyTestWindow(arcade.Window):
 
         self.character_list = arcade.SpriteList()
         self.character_sprite = arcade.Sprite("../../arcade/examples/images/character.png", CHARACTER_SCALING)
-        self.character_sprite.center_x = 50
-        self.character_sprite.center_y = 50
+        self.character_sprite.center_x = 250
+        self.character_sprite.center_y = 250
         self.character_sprite.change_x = 5
         self.character_sprite.change_y = 5
         self.character_list.append(self.character_sprite)
 
         self.wall_list = arcade.SpriteList()
+
         sprite = arcade.Sprite("../../arcade/examples/images/boxCrate_double.png", CHARACTER_SCALING)
-        sprite.position = (130, 130)
+        sprite.position = (330, 330)
         sprite.angle = 90
+        self.wall_list.append(sprite)
+
+        sprite = arcade.Sprite("../../arcade/examples/images/boxCrate_double.png", CHARACTER_SCALING)
+        sprite.position = (170, 170)
+        sprite.angle = 45
         self.wall_list.append(sprite)
 
         self.physics_engine = arcade.PhysicsEngineSimple(self.character_sprite, self.wall_list)
@@ -41,8 +47,14 @@ class MyTestWindow(arcade.Window):
     def update(self, delta_time):
         self.physics_engine.update()
 
+    def switch(self):
+        self.character_sprite.change_x = -5
+        self.character_sprite.change_y = -5
+
 
 def test_main():
     window = MyTestWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Test Text")
-    window.test()
+    window.test(10)
+    window.switch()
+    window.test(20)
     window.close()
