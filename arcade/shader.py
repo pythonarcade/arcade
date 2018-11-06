@@ -283,7 +283,7 @@ class Buffer:
         glBindBuffer(GL_ARRAY_BUFFER, self.buffer_id)
         self.usage = Buffer.usages[usage]
         glBufferData(GL_ARRAY_BUFFER, self.size, data, self.usage)
-        weakref.finalize(self, glDeleteBuffers, 1, byref(buffer_id))
+        weakref.finalize(self, Buffer.release, buffer_id)
 
     @classmethod
     def create_with_size(cls, size: int, usage: str='static'):
@@ -294,10 +294,16 @@ class Buffer:
         buffer.size = size
         return buffer
 
-    def release(self):
-        if self.buffer_id.value != 0:
-            glDeleteBuffers(1, byref(self.buffer_id))
-            self.buffer_id.value = 0
+    @staticmethod
+    def release(buffer_id):
+
+        # If we have no context, then we are shutting down, so skip this
+        if gl.current_context is None:
+            return
+
+        if buffer_id.value != 0:
+            glDeleteBuffers(1, byref(buffer_id))
+            buffer_id.value = 0
 
     def write(self, data: bytes, offset: int=0):
         glBindBuffer(GL_ARRAY_BUFFER, self.buffer_id)
@@ -435,12 +441,17 @@ class VertexArray:
 
         if self.ibo is not None:
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.ibo.buffer_id)
-        weakref.finalize(self, glDeleteVertexArrays, 1, byref(vao))
+        weakref.finalize(self, VertexArray.release, vao)
 
-    def release(self):
-        if self.vao.value != 0:
-            glDeleteVertexArrays(1, byref(self.vao))
-            self.vao.value = 0
+    @staticmethod
+    def release(vao):
+        # If we have no context, then we are shutting down, so skip this
+        if gl.current_context is None:
+            return
+
+        if vao.value != 0:
+            glDeleteVertexArrays(1, byref(vao))
+            vao.value = 0
 
     def __enter__(self):
         glBindVertexArray(self.vao)
@@ -522,10 +533,8 @@ class Texture:
 
     @staticmethod
     def release(texture_id):
-
-        # If we have no context, then the textures are already gone.
-        context = gl.current_context
-        if context is None:
+        # If we have no context, then we are shutting down, so skip this
+        if gl.current_context is None:
             return
 
         if texture_id.value != 0:
