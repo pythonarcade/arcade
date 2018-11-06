@@ -44,7 +44,6 @@ class MyTestWindow(arcade.Window):
             coin.remove_from_sprite_lists()
 
 
-def test_text():
-    window = MyTestWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Test Text")
-    window.test()
-    # arcade.run()
+# def test_sprite():
+#     window = MyTestWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Test Text")
+#     window.test()

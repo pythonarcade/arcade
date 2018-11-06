@@ -158,6 +158,5 @@ class MyGame(arcade.Window):
 def test_main():
     """ Main method """
     window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT)
-    window.test(10)
-    # arcade.run()
-
+    window.test()
+    window.close()

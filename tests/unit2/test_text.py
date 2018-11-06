@@ -58,7 +58,7 @@ class MyTestWindow(arcade.Window):
         arcade.draw_text("Different font", current_x, current_y, arcade.color.BLACK, 12, font_name=font_name)
 
 
-def test_text():
+def test_main():
     window = MyTestWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Test Text")
     window.test()
-    # arcade.run()
+    window.close()

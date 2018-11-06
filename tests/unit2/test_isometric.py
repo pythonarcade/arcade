@@ -119,9 +119,10 @@ class MyGame(arcade.Window):
         self.wall_list.draw()
         self.lines.draw()
 
+
 def test_main():
     """ Main method """
     window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT)
     window.setup()
     window.test()
-
+    window.close()
