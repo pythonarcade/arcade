@@ -18,32 +18,6 @@ MOUSE_BUTTON_MIDDLE = 2
 MOUSE_BUTTON_RIGHT = 4
 
 
-# ---- Start Monkey Patch
-def patched_destroy(self):
-    """Release the context.
-
-    The context will not be useable after being destroyed.  Each platform
-    has its own convention for releasing the context and the buffer(s)
-    that depend on it in the correct order; this should never be called
-    by an application.
-    """
-
-    # Patch - Remove this
-    # self.detach()
-
-    if gl.current_context is self:
-        # Patch - Remove this
-        # gl.current_context = None
-        gl_info.remove_active_context()
-
-        # Switch back to shadow context.
-        if gl._shadow_window is not None:
-            gl._shadow_window.switch_to()
-
-pyglet.gl.Context.destroy = patched_destroy
-# --- End Monkey Patch
-
-
 class Window(pyglet.window.Window):
     """
     Window class
