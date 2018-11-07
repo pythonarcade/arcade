@@ -238,19 +238,6 @@ def create_lines(point_list: PointList,
     return create_line_generic(point_list, color, gl.GL_LINES, line_width)
 
 
-def _fix_color_list(original_color_data):  # TODO: delete this function. Useless now. OK to delete
-    new_color_data = []
-    for color in original_color_data:
-        new_color_data.append(color[0] / 255.)
-        new_color_data.append(color[1] / 255.)
-        new_color_data.append(color[2] / 255.)
-        if len(color) == 3:
-            new_color_data.append(1.0)
-        else:
-            new_color_data.append(color[3] / 255.)
-    return new_color_data
-
-
 def create_polygon(point_list: PointList,
                    color: Color, border_width: float=1):
     """
@@ -392,9 +379,9 @@ def create_rectangle_filled_with_colors(point_list, color_list) -> Shape:
     """
 
     shape_mode = gl.GL_TRIANGLE_STRIP
-    point_list[-2:] = reversed(point_list[-2:])
-    color_list[-2:] = reversed(color_list[-2:])
-    return create_line_generic_with_colors(point_list, color_list, shape_mode)
+    new_point_list = [point_list[0], point_list[1], point_list[3], point_list[2]]
+    new_color_list = [color_list[0], color_list[1], color_list[3], color_list[2]]
+    return create_line_generic_with_colors(new_point_list, new_color_list, shape_mode)
 
 
 def create_triangles_filled_with_colors(point_list, color_list) -> Shape:
