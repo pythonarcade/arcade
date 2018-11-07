@@ -53,21 +53,21 @@ class MyGame(arcade.Window):
         shape = arcade.create_lines_with_colors(points, colors, line_width=5)
         self.shapes.append(shape)
 
-        # # Triangle
-        # color1 = (215, 214, 165)
-        # color2 = (219, 166, 123)
-        # color3 = (165, 92, 85)
-        # points = (SCREEN_WIDTH // 2, 500), (SCREEN_WIDTH // 2 - 100, 400), (SCREEN_WIDTH // 2 + 100, 400)
-        # colors = (color1, color2, color3)
-        # shape = arcade.create_triangles_filled_with_colors(points, colors)
-        # self.shapes.append(shape)
-        #
-        # # Ellipse, gradient between center and outside
-        # color1 = (69, 137, 133, 127)
-        # color2 = (7, 67, 88, 127)
-        # shape = arcade.create_ellipse_filled_with_colors(SCREEN_WIDTH // 2, 350, 50, 50,
-        #                                                  inside_color=color1, outside_color=color2)
-        # self.shapes.append(shape)
+        # Triangle
+        color1 = (215, 214, 165)
+        color2 = (219, 166, 123)
+        color3 = (165, 92, 85)
+        points = (SCREEN_WIDTH // 2, 500), (SCREEN_WIDTH // 2 - 100, 400), (SCREEN_WIDTH // 2 + 100, 400)
+        colors = (color1, color2, color3)
+        shape = arcade.create_triangles_filled_with_colors(points, colors)
+        self.shapes.append(shape)
+
+        # Ellipse, gradient between center and outside
+        color1 = (69, 137, 133, 127)
+        color2 = (7, 67, 88, 127)
+        shape = arcade.create_ellipse_filled_with_colors(SCREEN_WIDTH // 2, 350, 50, 50,
+                                                         inside_color=color1, outside_color=color2)
+        self.shapes.append(shape)
 
     def on_draw(self):
         """

@@ -193,6 +193,7 @@ def create_line_generic_with_colors(point_list: PointList,
     return shape
 
 
+
 def create_line_generic(point_list: PointList,
                         color: Color,
                         shape_mode: int, line_width: float=1) -> Shape:
@@ -236,6 +237,11 @@ def create_lines(point_list: PointList,
     the vertexes are only loaded to the graphics card once, rather than each frame.
     """
     return create_line_generic(point_list, color, gl.GL_LINES, line_width)
+
+def create_lines_with_colors(point_list: PointList,
+                             color_list: Iterable[Color],
+                             line_width: float=1):
+    return create_line_generic_with_colors(point_list, color_list, gl.GL_LINES, line_width)
 
 
 def create_polygon(point_list: PointList,
@@ -328,47 +334,6 @@ def create_rectangle(center_x: float, center_y: float, width: float,
         data.append(data[0])
     shape = create_line_generic(data, color, shape_mode, border_width)
     return shape
-
-# Seems that ShapeElementList would be a better tool for this
-
-# def create_filled_rectangles(point_list, color: Color) -> Shape:
-#     """
-#     This function creates multiple rectangle/quads using a vertex buffer object.
-#     Creating the rectangles, and then later drawing it with ``render``
-#     is faster than calling ``draw_rectangle``.
-
-#     >>> import arcade
-#     >>> arcade.open_window(800,600,"Drawing Example")
-#     >>> point_list = [0, 0, 100, 0, 100, 100, 0, 100]
-#     >>> my_rect = arcade.create_filled_rectangles(point_list, (0, 255, 0))
-#     >>> arcade.render(my_rect)
-#     >>> arcade.finish_render()
-#     >>> arcade.quick_run(0.25)
-#     """
-
-#     data = point_list
-
-#     # print(data)
-#     vbo_id = gl.GLuint()
-
-#     gl.glGenBuffers(1, ctypes.pointer(vbo_id))
-
-#     # Create a buffer with the data
-#     # This line of code is a bit strange.
-#     # (gl.GLfloat * len(data)) creates an array of GLfloats, one for each number
-#     # (*data) initalizes the list with the floats. *data turns the list into a
-#     # tuple.
-#     data2 = (gl.GLfloat * len(data))(*data)
-
-#     gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vbo_id)
-#     gl.glBufferData(gl.GL_ARRAY_BUFFER, ctypes.sizeof(data2), data2,
-#                     gl.GL_STATIC_DRAW)
-
-#     shape_mode = gl.GL_QUADS
-#     shape = VertexBuffer(vbo_id, len(data) // 2, shape_mode)
-
-#     shape.color = color
-#     return shape
 
 
 def create_rectangle_filled_with_colors(point_list, color_list) -> Shape:
