@@ -137,7 +137,7 @@ def setup(window):
     color2 = (240, 203, 163)
     points = (0, 0), (SCREEN_WIDTH, 0), (SCREEN_WIDTH, SCREEN_HEIGHT), (0, SCREEN_HEIGHT)
     colors = (color1, color1, color2, color2)
-    rect = arcade.create_rectangles_filled_with_colors(points, colors)
+    rect = arcade.create_rectangle_filled_with_colors(points, colors)
 
     background.append(rect)
     window.mountains.append(background)
