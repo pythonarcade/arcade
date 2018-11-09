@@ -167,8 +167,8 @@ Sprite Player Movement
    :ref:`sprite_move_joystick`
 
 
-Sprite Movement
-^^^^^^^^^^^^^^^
+Sprite Non-Player Movement
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. figure:: thumbs/sprite_collect_coins_move_down.png
    :figwidth: 170px
