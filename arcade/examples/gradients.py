@@ -5,7 +5,7 @@ python -m arcade.examples.gradients
 """
 import arcade
 
-# Do the math to figure out oiur screen dimensions
+# Do the math to figure out our screen dimensions
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
