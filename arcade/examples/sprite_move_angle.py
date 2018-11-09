@@ -1,16 +1,6 @@
-"""
-Sprite Move With Keyboard
-
-Simple program to show basic sprite usage.
-
-Artwork from http://kenney.nl
-
-If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.sprite_move_keyboard
-"""
-
 import arcade
 import os
+import math
 
 SPRITE_SCALING = 0.5
 
@@ -18,23 +8,31 @@ SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
 MOVEMENT_SPEED = 5
+ANGLE_SPEED = 5
 
 
 class Player(arcade.Sprite):
+    """ Player class """
+
+    def __init__(self, image, scale):
+        """ Set up the player """
+
+        # Call the parent init
+        super().__init__(image, scale)
+
+        # Create a variable to hold our speed. 'angle' is created by the parent
+        self.speed = 0
 
     def update(self):
-        self.center_x += self.change_x
-        self.center_y += self.change_y
+        # Convert angle in degrees to radians.
+        angle_rad = math.radians(self.angle)
 
-        if self.left < 0:
-            self.left = 0
-        elif self.right > SCREEN_WIDTH - 1:
-            self.right = SCREEN_WIDTH - 1
+        # Rotate the ship
+        self.angle += self.change_angle
 
-        if self.bottom < 0:
-            self.bottom = 0
-        elif self.top > SCREEN_HEIGHT - 1:
-            self.top = SCREEN_HEIGHT - 1
+        # Use math to find our change based on our speed and angle
+        self.center_x += -self.speed * math.sin(angle_rad)
+        self.center_y += self.speed * math.cos(angle_rad)
 
 
 class MyGame(arcade.Window):
@@ -65,7 +63,7 @@ class MyGame(arcade.Window):
         self.score = 0
 
         # Set the background color
-        arcade.set_background_color(arcade.color.AMAZON)
+        arcade.set_background_color(arcade.color.BLACK)
 
     def setup(self):
         """ Set up the game and initialize the variables. """
@@ -75,9 +73,9 @@ class MyGame(arcade.Window):
 
         # Set up the player
         self.score = 0
-        self.player_sprite = Player("images/character.png", SPRITE_SCALING)
-        self.player_sprite.center_x = 50
-        self.player_sprite.center_y = 50
+        self.player_sprite = Player("images/playerShip1_orange.png", SPRITE_SCALING)
+        self.player_sprite.center_x = SCREEN_WIDTH / 2
+        self.player_sprite.center_y = SCREEN_HEIGHT / 2
         self.player_list.append(self.player_sprite)
 
     def on_draw(self):
@@ -101,22 +99,25 @@ class MyGame(arcade.Window):
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
 
+        # Forward/back
         if key == arcade.key.UP:
-            self.player_sprite.change_y = MOVEMENT_SPEED
+            self.player_sprite.speed = MOVEMENT_SPEED
         elif key == arcade.key.DOWN:
-            self.player_sprite.change_y = -MOVEMENT_SPEED
+            self.player_sprite.speed = -MOVEMENT_SPEED
+
+        # Rotate left/right
         elif key == arcade.key.LEFT:
-            self.player_sprite.change_x = -MOVEMENT_SPEED
+            self.player_sprite.change_angle = ANGLE_SPEED
         elif key == arcade.key.RIGHT:
-            self.player_sprite.change_x = MOVEMENT_SPEED
+            self.player_sprite.change_angle = -ANGLE_SPEED
 
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key. """
 
         if key == arcade.key.UP or key == arcade.key.DOWN:
-            self.player_sprite.change_y = 0
+            self.player_sprite.speed = 0
         elif key == arcade.key.LEFT or key == arcade.key.RIGHT:
-            self.player_sprite.change_x = 0
+            self.player_sprite.change_angle = 0
 
 
 def main():
