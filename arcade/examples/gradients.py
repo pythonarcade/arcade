@@ -33,7 +33,7 @@ class MyGame(arcade.Window):
         color2 = (219, 166, 123)
         points = (0, 0), (SCREEN_WIDTH, 0), (SCREEN_WIDTH, SCREEN_HEIGHT), (0, SCREEN_HEIGHT)
         colors = (color1, color1, color2, color2)
-        rect = arcade.create_rectangles_filled_with_colors(points, colors)
+        rect = arcade.create_rectangle_filled_with_colors(points, colors)
         self.shapes.append(rect)
 
         # Another rectangle, but in this case the color doesn't change. Just the
@@ -42,7 +42,7 @@ class MyGame(arcade.Window):
         color2 = (165, 92, 85, 0)
         points = (100, 100), (SCREEN_WIDTH - 100, 100), (SCREEN_WIDTH - 100, 300), (100, 300)
         colors = (color2, color1, color1, color2)
-        rect = arcade.create_rectangles_filled_with_colors(points, colors)
+        rect = arcade.create_rectangle_filled_with_colors(points, colors)
         self.shapes.append(rect)
 
         # Two lines
