@@ -166,6 +166,11 @@ Sprite Player Movement
 
    :ref:`sprite_move_joystick`
 
+.. figure:: thumbs/sprite_move_angle.png
+   :figwidth: 170px
+
+   :ref:`sprite_move_angle`
+
 
 Sprite Movement
 ^^^^^^^^^^^^^^^
