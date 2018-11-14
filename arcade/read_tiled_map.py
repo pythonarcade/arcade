@@ -103,51 +103,64 @@ def read_tiled_map(filename: str) -> TiledMap:
         # Unzip and unencode each layer
         data = layer_tag.find("data")
         data_text = data.text.strip()
-        unencoded_data = base64.b64decode(data_text)
-        unzipped_data = zlib.decompress(unencoded_data)
+        encoding = data.attrib['encoding']
+        if 'compression' in data.attrib:
+            compression = data.attrib['compression']
+        else:
+            compression = None
 
-        # Turn bytes into 4-byte integers
-        byte_count = 0
-        int_count = 0
-        int_value = 0
-        row_count = 0
-        for byte in unzipped_data:
-            int_value += byte << (byte_count * 8)
-            byte_count += 1
-            if byte_count % 4 == 0:
-                byte_count = 0
-                int_count += 1
-                layer_grid_ints[row_count].append(int_value)
-                int_value = 0
-                if int_count % layer_width == 0:
-                    row_count += 1
-                    layer_grid_ints.append([])
-        layer_grid_ints.pop()
-        my_map.layers_int_data[layer_tag.attrib["name"]] = layer_grid_ints
+        if encoding == "csv":
+            raise ValueError(f"Unsupported Data Type: {encoding}")
+        elif encoding == "base64":
 
-        layer_grid_objs = []
-        for row_index, row in enumerate(layer_grid_ints):
-            layer_grid_objs.append([])
-            for column_index, column in enumerate(row):
-                grid_location = GridLocation()
-                if layer_grid_ints[row_index][column_index] != 0:
-                    key = str(layer_grid_ints[row_index][column_index])
-                    grid_location.tile = my_map.global_tile_set[key]
+            unencoded_data = base64.b64decode(data_text)
+            if compression == "zlib":
+                unzipped_data = zlib.decompress(unencoded_data)
+            else:
+                unzipped_data = unencoded_data
 
-                    if my_map.renderorder == "right-down":
-                        adjusted_row_index = my_map.height - row_index - 1
-                    else:
-                        adjusted_row_index = row_index
+            # Turn bytes into 4-byte integers
+            byte_count = 0
+            int_count = 0
+            int_value = 0
+            row_count = 0
+            for byte in unzipped_data:
+                int_value += byte << (byte_count * 8)
+                byte_count += 1
+                if byte_count % 4 == 0:
+                    byte_count = 0
+                    int_count += 1
+                    layer_grid_ints[row_count].append(int_value)
+                    int_value = 0
+                    if int_count % layer_width == 0:
+                        row_count += 1
+                        layer_grid_ints.append([])
+            layer_grid_ints.pop()
+            my_map.layers_int_data[layer_tag.attrib["name"]] = layer_grid_ints
 
-                    if my_map.orientation == "orthogonal":
-                        grid_location.center_x = column_index * my_map.tilewidth + my_map.tilewidth // 2
-                        grid_location.center_y = adjusted_row_index * my_map.tileheight + my_map.tilewidth // 2
-                    else:
-                        grid_location.center_x,  grid_location.center_y = isometric_grid_to_screen(column_index, row_index, my_map.width, my_map.height, my_map.tilewidth, my_map.tileheight)
+            layer_grid_objs = []
+            for row_index, row in enumerate(layer_grid_ints):
+                layer_grid_objs.append([])
+                for column_index, column in enumerate(row):
+                    grid_location = GridLocation()
+                    if layer_grid_ints[row_index][column_index] != 0:
+                        key = str(layer_grid_ints[row_index][column_index])
+                        grid_location.tile = my_map.global_tile_set[key]
+
+                        if my_map.renderorder == "right-down":
+                            adjusted_row_index = my_map.height - row_index - 1
+                        else:
+                            adjusted_row_index = row_index
+
+                        if my_map.orientation == "orthogonal":
+                            grid_location.center_x = column_index * my_map.tilewidth + my_map.tilewidth // 2
+                            grid_location.center_y = adjusted_row_index * my_map.tileheight + my_map.tilewidth // 2
+                        else:
+                            grid_location.center_x,  grid_location.center_y = isometric_grid_to_screen(column_index, row_index, my_map.width, my_map.height, my_map.tilewidth, my_map.tileheight)
 
 
-                layer_grid_objs[row_index].append(grid_location)
+                    layer_grid_objs[row_index].append(grid_location)
 
-        my_map.layers[layer_tag.attrib["name"]] = layer_grid_objs
+            my_map.layers[layer_tag.attrib["name"]] = layer_grid_objs
 
     return my_map
