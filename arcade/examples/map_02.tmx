@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" tiledversion="1.1.6" orientation="orthogonal" renderorder="right-down" width="50" height="7" tilewidth="128" tileheight="128" infinite="0" backgroundcolor="#326683" nextobjectid="1">
+ <tileset firstgid="1" name="Examples" tilewidth="128" tileheight="128" tilecount="6" columns="0">
+  <tile id="0">
+   <image width="128" height="128" source="images/boxCrate_double.png"/>
+  </tile>
+  <tile id="1">
+   <image width="128" height="128" source="images/grassLeft.png"/>
+  </tile>
+  <tile id="2">
+   <image width="128" height="128" source="images/grassMid.png"/>
+  </tile>
+  <tile id="3">
+   <image width="128" height="128" source="images/grassRight.png"/>
+  </tile>
+  <tile id="4">
+   <image width="128" height="73" source="images/stoneHalf.png"/>
+  </tile>
+  <tile id="5">
+   <image width="128" height="128" source="images/coin_01.png"/>
+  </tile>
+ </tileset>
+ <layer name="Obstructions" width="50" height="7">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgegHGgHUAlMNz9wQTEzEDMQke3UAKGe3wMNQBLP0MZg9I+AGs0AKU=
+  </data>
+ </layer>
+ <layer name="Coins" width="50" height="7">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFQwGwIeFRMApGwdAGAEnQABM=
+  </data>
+ </layer>
+</map>
