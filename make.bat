@@ -19,10 +19,8 @@ coverage run --source arcade setup.py test
 GOTO end
 
 :makedist
-rem -- This builds the project, installs it, and runs unit tests
 
 rem Clean out old builds
-rmdir /s /q "doc\build"
 del /q dist\*.*
 python setup.py clean
 

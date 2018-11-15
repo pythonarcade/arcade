@@ -117,7 +117,7 @@ def create_mountain_range(start, end, roughness, vertical_displacement, num_of_i
     layer_1 = fix_points(layer_1)
 
     color_list = [color_start] * len(layer_1)
-    lines = arcade.create_rectangles_filled_with_colors(layer_1, color_list)
+    lines = arcade.create_rectangle_filled_with_colors(layer_1, color_list)
     shape_list.append(lines)
 
     return shape_list

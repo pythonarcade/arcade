@@ -129,12 +129,12 @@ class Program:
     def _delete(shaders_id, prog_id):
         # Check to see if the context was already cleaned up from program
         # shut down. If so, we don't need to delete the shaders.
-        context = gl.current_context
-        if context is None:
+        if gl.current_context is None:
             return
 
         for shader_id in shaders_id:
             glDetachShader(prog_id, shader_id)
+
         glDeleteProgram(prog_id)
 
     def release(self):

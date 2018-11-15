@@ -1,637 +1,165 @@
-"""Utilities for dealing with Shaders in OpenGL 3.3+.
-"""
-
-from ctypes import *
-from collections import namedtuple
-import weakref
-from typing import Type, Tuple, Iterable
-
-from pyglet.gl import *
-from pyglet import gl
-
-import numpy as np
-
-_left = -1
-_right = 1
-_bottom = -1
-_top = 1
-
-_window = None
-
-_projection = None
-_opengl_context = None
-
-def get_projection():
-    return _projection
-
-def get_four_byte_color(color):
-    """
-    Given a RGB list, it will return RGBA.
-    Given a RGBA list, it will return the same RGBA.
-
-    :param color: Color
-    :return: color: Color
-    """
-    if len(color) == 4:
-        return color
-    elif len(color) == 3:
-        return color[0], color[1], color[2], 255
-    else:
-        raise ValueError("This isn't a 3 or 4 byte color")
-
-class ShaderException(Exception):
-    pass
-
-
-# Thank you Benjamin Moran for writing part of this code!
-# https://bitbucket.org/HigashiNoKaze/pyglet/src/shaders/pyglet/graphics/shader.py
-
-_uniform_getters = {
-    GLint: glGetUniformiv,
-    GLfloat: glGetUniformfv,
-}
-
-_uniform_setters = {
-    # uniform type: (gl_type, setter, length, count)
-    GL_INT: (GLint, glUniform1iv, 1, 1),
-    GL_INT_VEC2: (GLint, glUniform2iv, 2, 1),
-    GL_INT_VEC3: (GLint, glUniform3iv, 3, 1),
-    GL_INT_VEC4: (GLint, glUniform4iv, 4, 1),
-
-    GL_FLOAT: (GLfloat, glUniform1fv, 1, 1),
-    GL_FLOAT_VEC2: (GLfloat, glUniform2fv, 2, 1),
-    GL_FLOAT_VEC3: (GLfloat, glUniform3fv, 3, 1),
-    GL_FLOAT_VEC4: (GLfloat, glUniform4fv, 4, 1),
-
-    GL_SAMPLER_2D: (GLint, glUniform1iv, 1, 1),
-
-    GL_FLOAT_MAT2: (GLfloat, glUniformMatrix2fv, 4, 1),
-    GL_FLOAT_MAT3: (GLfloat, glUniformMatrix3fv, 6, 1),
-    GL_FLOAT_MAT4: (GLfloat, glUniformMatrix4fv, 16, 1),
-
-    # TODO: test/implement these:
-    # GL_FLOAT_MAT2x3: glUniformMatrix2x3fv,
-    # GL_FLOAT_MAT2x4: glUniformMatrix2x4fv,
-    #
-    # GL_FLOAT_MAT3x2: glUniformMatrix3x2fv,
-    # GL_FLOAT_MAT3x4: glUniformMatrix3x4fv,
-    #
-    # GL_FLOAT_MAT4x2: glUniformMatrix4x2fv,
-    # GL_FLOAT_MAT4x3: glUniformMatrix4x3fv,
-}
-
-
-def _create_getter_func(program_id, location, gl_getter, c_array, length):
-
-    if length == 1:
-        def getter_func():
-            gl_getter(program_id, location, c_array)
-            return c_array[0]
-    else:
-        def getter_func():
-            gl_getter(program_id, location, c_array)
-            return c_array[:]
-
-    return getter_func
-
-
-def _create_setter_func(location, gl_setter, c_array, length, count, ptr, is_matrix):
-
-    if is_matrix:
-        def setter_func(value):
-            c_array[:] = value
-            gl_setter(location, count, GL_FALSE, ptr)
-
-    elif length == 1 and count == 1:
-        def setter_func(value):
-            c_array[0] = value
-            gl_setter(location, count, ptr)
-    elif length > 1 and count == 1:
-        def setter_func(values):
-            c_array[:] = values
-            gl_setter(location, count, ptr)
-
-    else:
-        raise NotImplementedError("Uniform type not yet supported.")
-
-    return setter_func
-
-
-Uniform = namedtuple('Uniform', 'getter, setter')
-ShaderCode = str
-ShaderType = GLuint
-Shader = type(Tuple[ShaderCode, ShaderType])
-
-
-class Program:
-    """Compiled and linked shader program.
-
-    Access Uniforms via the [] operator.
-    Example:
-        program['MyUniform'] = value
-    For Matrices, pass the flatten array.
-    Example:
-        matrix = np.array([[...]])
-        program['MyMatrix'] = matrix.flatten()
-    """
-    def __init__(self, *shaders: Shader):
-        self.prog_id = prog_id = glCreateProgram()
-        shaders_id = []
-        for shader_code, shader_type in shaders:
-            shader = compile_shader(shader_code, shader_type)
-            glAttachShader(self.prog_id, shader)
-            shaders_id.append(shader)
-
-        glLinkProgram(self.prog_id)
-
-        for shader in shaders_id:
-            # Flag shaders for deletion. Will only be deleted once detached from program.
-            glDeleteShader(shader)
-
-        self._uniforms = {}
-        self._introspect_uniforms()
-        weakref.finalize(self, Program._delete, shaders_id, prog_id)
-
-    @staticmethod
-    def _delete(shaders_id, prog_id):
-        # Check to see if the context was already cleaned up from program
-        # shut down. If so, we don't need to delete the shaders.
-        context = gl.current_context
-        if context is None:
-            return
-
-        for shader_id in shaders_id:
-            glDetachShader(prog_id, shader_id)
-        glDeleteProgram(prog_id)
-
-    def release(self):
-        if self.prog_id != 0:
-            glDeleteProgram(self.prog_id)
-            self.prog_id = 0
-
-    def __getitem__(self, item):
-        try:
-            uniform = self._uniforms[item]
-        except KeyError:
-            raise ShaderException(f"Uniform with the name `{item}` was not found.")
-
-        return uniform.getter()
-
-    def __setitem__(self, key, value):
-        try:
-            uniform = self._uniforms[key]
-        except KeyError:
-            raise ShaderException(f"Uniform with the name `{key}` was not found.")
-
-        uniform.setter(value)
-
-    def __enter__(self):
-        glUseProgram(self.prog_id)
-
-    def __exit__(self, exception_type, exception_value, traceback):
-        glUseProgram(0)
-
-    def get_num_active(self, variable_type: GLenum) -> int:
-        """Get the number of active variables of the passed GL type.
-
-        variable_type can be GL_ACTIVE_ATTRIBUTES, GL_ACTIVE_UNIFORMS, etc.
-        """
-        num_active = GLint(0)
-        glGetProgramiv(self.prog_id, variable_type, byref(num_active))
-        return num_active.value
-
-    def _introspect_uniforms(self):
-        for index in range(self.get_num_active(GL_ACTIVE_UNIFORMS)):
-            uniform_name, u_type, u_size = self.query_uniform(index)
-            loc = glGetUniformLocation(self.prog_id, uniform_name.encode('utf-8'))
-
-            if loc == -1:      # Skip uniforms that may be in Uniform Blocks
-                continue
-
-            try:
-                gl_type, gl_setter, length, count = _uniform_setters[u_type]
-            except KeyError:
-                raise ShaderException(f"Unsupported Uniform type {u_type}")
-
-            gl_getter = _uniform_getters[gl_type]
-
-            is_matrix = u_type in (GL_FLOAT_MAT2, GL_FLOAT_MAT3, GL_FLOAT_MAT4)
-
-            # Create persistant mini c_array for getters and setters:
-            c_array = (gl_type * length)()
-            ptr = cast(c_array, POINTER(gl_type))
-
-            # Create custom dedicated getters and setters for each uniform:
-            getter = _create_getter_func(self.prog_id, loc, gl_getter, c_array, length)
-            setter = _create_setter_func(loc, gl_setter, c_array, length, count, ptr, is_matrix)
-
-            # print(f"Found uniform: {uniform_name}, type: {u_type}, size: {u_size}, "
-            #       f"location: {loc}, length: {length}, count: {count}")
-
-            self._uniforms[uniform_name] = Uniform(getter, setter)
-
-    def query_uniform(self, index: int) -> Tuple[str, int, int]:
-        """Retrieve Uniform information at given location.
-
-        Returns the name, the type as a GLenum (GL_FLOAT, ...) and the size. Size is
-        greater than 1 only for Uniform arrays, like an array of floats or an array
-        of Matrices.
-        """
-        usize = GLint()
-        utype = GLenum()
-        buf_size = 192
-        uname = create_string_buffer(buf_size)
-        glGetActiveUniform(self.prog_id, index, buf_size, None, usize, utype, uname)
-        return uname.value.decode(), utype.value, usize.value
-
-
-def program(vertex_shader: str, fragment_shader: str) -> Program:
-    """Create a new program given the vertex_shader and fragment shader code.
-    """
-    return Program(
-        (vertex_shader, GL_VERTEX_SHADER),
-        (fragment_shader, GL_FRAGMENT_SHADER)
-    )
-
-
-def compile_shader(source: str, shader_type: GLenum) -> GLuint:
-    """Compile the shader code of the given type.
-
-    `shader_type` could be GL_VERTEX_SHADER, GL_FRAGMENT_SHADER, ...
-
-    Returns the shader id as a GLuint
-    """
-    shader = glCreateShader(shader_type)
-    source = source.encode('utf-8')
-    # Turn the source code string into an array of c_char_p arrays.
-    strings = byref(
-        cast(
-            c_char_p(source),
-            POINTER(c_char)
-        )
-    )
-    # Make an array with the strings lengths
-    lengths = pointer(c_int(len(source)))
-    glShaderSource(shader, 1, strings, lengths)
-    glCompileShader(shader)
-    result = c_int()
-    glGetShaderiv(shader, GL_COMPILE_STATUS, byref(result))
-    if result.value == GL_FALSE:
-        msg = create_string_buffer(512)
-        length = c_int()
-        glGetShaderInfoLog(shader, 512, byref(length), msg)
-        raise ShaderException(
-            f"Shader compile failure ({result.value}): {msg.value.decode('utf-8')}")
-    return shader
-
-
-class Buffer:
-    """OpenGL Buffer object of type GL_ARRAY_BUFFER.
-
-    Apparently it's possible to initialize a GL_ELEMENT_ARRAY_BUFFER with
-    GL_ARRAY_BUFFER, provided we later on bind to it with the right type.
-
-    The buffer knows its id `buffer_id` and its `size` in bytes.
-    """
-    usages = {
-        'static': GL_STATIC_DRAW,
-        'dynamic': GL_DYNAMIC_DRAW,
-        'stream': GL_STREAM_DRAW
-    }
-
-    def __init__(self, data: bytes, usage: str='static'):
-        self.buffer_id = buffer_id = GLuint()
-        self.size = len(data)
-
-        glGenBuffers(1, byref(self.buffer_id))
-        if self.buffer_id.value == 0:
-            raise ShaderException("Cannot create Buffer object.")
-
-        glBindBuffer(GL_ARRAY_BUFFER, self.buffer_id)
-        self.usage = Buffer.usages[usage]
-        glBufferData(GL_ARRAY_BUFFER, self.size, data, self.usage)
-        weakref.finalize(self, glDeleteBuffers, 1, byref(buffer_id))
-
-    @classmethod
-    def create_with_size(cls, size: int, usage: str='static'):
-        """Create an empty Buffer storage of the given size."""
-        buffer = Buffer(b"", usage=usage)
-        glBindBuffer(GL_ARRAY_BUFFER, buffer.buffer_id)
-        glBufferData(GL_ARRAY_BUFFER, size, None, Buffer.usages[usage])
-        buffer.size = size
-        return buffer
-
-    def release(self):
-        if self.buffer_id.value != 0:
-            glDeleteBuffers(1, byref(self.buffer_id))
-            self.buffer_id.value = 0
-
-    def write(self, data: bytes, offset: int=0):
-        glBindBuffer(GL_ARRAY_BUFFER, self.buffer_id)
-        glBufferSubData(GL_ARRAY_BUFFER, GLintptr(offset), len(data), data)
-        # print(f"Writing data:\n{data[:60]}")
-        # ptr = glMapBufferRange(GL_ARRAY_BUFFER, GLintptr(0), 20, GL_MAP_READ_BIT)
-        # print(f"Reading back from buffer:\n{string_at(ptr, size=60)}")
-        # glUnmapBuffer(GL_ARRAY_BUFFER)
-
-    def orphan(self):
-        glBindBuffer(GL_ARRAY_BUFFER, self.buffer_id)
-        glBufferData(GL_ARRAY_BUFFER, self.size, None, self.usage)
-
-    def _read(self, size):
-        """ Debug method to read data from the buffer. """
-
-        glBindBuffer(GL_ARRAY_BUFFER, self.buffer_id)
-        ptr = glMapBufferRange(GL_ARRAY_BUFFER, GLintptr(0), size, GL_MAP_READ_BIT)
-        print(f"Reading back from buffer:\n{string_at(ptr, size=size)}")
-        glUnmapBuffer(GL_ARRAY_BUFFER)
-
-
-def buffer(data: bytes, usage: str='static') -> Buffer:
-    """Create a new OpenGL Buffer object.
-    """
-    return Buffer(data, usage)
-
-
-class BufferDescription:
-    """Vertex Buffer Object description, allowing easy use with VAOs.
-
-    This class provides a Buffer object with a description of its content, allowing
-    a VertexArray object to correctly enable its shader attributes with the
-    vertex Buffer object.
-
-    The formats is a string providing the number and type of each attribute. Currently
-    we only support f (float), i (integer) and B (unsigned byte).
-
-    `normalized` enumerates the attributes which must have their values normalized.
-    This is useful for instance for colors attributes given as unsigned byte and
-    normalized to floats with values between 0.0 and 1.0.
-
-    `instanced` allows this buffer to be used as instanced buffer. Each value will
-    be used once for the whole geometry. The geometry will be repeated a number of
-    times equal to the number of items in the Buffer.
-    """
-    GL_TYPES_ENUM = {
-        'B': GL_UNSIGNED_BYTE,
-        'f': GL_FLOAT,
-        'i': GL_INT,
-    }
-    GL_TYPES = {
-        'B': GLubyte,
-        'f': GLfloat,
-        'i': GLint,
-    }
-
-    def __init__(self,
-                 buffer: Buffer,
-                 formats: str,
-                 attributes: Iterable[str],
-                 normalized: Iterable[str]=None,
-                 instanced: bool=False):
-        self.buffer = buffer
-        self.attributes = list(attributes)
-        self.normalized = set() if normalized is None else set(normalized)
-        self.instanced = instanced
-
-        if self.normalized > set(self.attributes):
-            raise ShaderException("Normalized attribute not found in attributes.")
-
-        formats = formats.split(" ")
-
-        if len(formats) != len(self.attributes):
-            raise ShaderException(
-                f"Different lengths of formats ({len(formats)}) and "
-                f"attributes ({len(self.attributes)})"
-            )
-
-        self.formats = []
-        for i, fmt in enumerate(formats):
-            size, type_ = fmt
-            if size not in ('1234') or type_ not in 'fiB':
-                raise ShaderException("Wrong format {fmt}.")
-            size = int(size)
-            gl_type_enum = BufferDescription.GL_TYPES_ENUM[type_]
-            gl_type = BufferDescription.GL_TYPES[type_]
-            attribsize = size * sizeof(gl_type)
-            self.formats.append((size, attribsize, gl_type_enum))
-
-
-class VertexArray:
-    """Vertex Array Object (VAO) is holding all the different OpenGL objects
-    together.
-
-    A VAO is the glue between a Shader program and buffers data.
-
-    Buffer information is provided through a list of tuples `content`
-    content = [
-        (buffer, 'format str', 'attrib1', 'attrib2', ...),
-    ]
-    The first item is a Buffer object. Then comes a format string providing information
-    about the count and type of data in the buffer. Type can be `f` for floats or `i`
-    for integers. Count can be 1, 2, 3 or 4.
-    Finally comes the strings representing the attributes found in the shader.
-
-    Example:
-        Providing a buffer with data of interleaved positions (x, y) and colors
-        (r, g, b, a):
-        content = [(buffer, '2f 4f', 'in_pos', 'in_color')]
-
-    You can use the VAO as a context manager. This is required for setting Uniform
-    variables or for rendering.
-
-    vao = VertexArrax(...)
-    with vao:
-        vao['MyUniform'] = value
-        vao.render
-    """
-
-    def __init__(self,
-                 program: Program,
-                 content: Iterable[BufferDescription],
-                 index_buffer: Buffer=None):
-        self.program = program.prog_id
-        self.vao = vao = GLuint()
-        self.num_vertices = -1
-        self.ibo = index_buffer
-
-        glGenVertexArrays(1, byref(self.vao))
-        glBindVertexArray(self.vao)
-
-        for buffer_desc in content:
-            self._enable_attrib(buffer_desc)
-
-        if self.ibo is not None:
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.ibo.buffer_id)
-        weakref.finalize(self, glDeleteVertexArrays, 1, byref(vao))
-
-    def release(self):
-        if self.vao.value != 0:
-            glDeleteVertexArrays(1, byref(self.vao))
-            self.vao.value = 0
-
-    def __enter__(self):
-        glBindVertexArray(self.vao)
-        glUseProgram(self.program)
-
-    def __exit__(self, exception_type, exception_value, traceback):
-        glUseProgram(0)
-
-    def _enable_attrib(self, buf_desc: BufferDescription):
-        buffer = buf_desc.buffer
-        stride = sum(attribsize for _, attribsize, _ in buf_desc.formats)
-
-        if buf_desc.instanced:
-            if self.num_vertices == -1:
-                raise ShaderException(
-                    "The first vertex attribute cannot be a per instance attribute."
-                )
-        else:
-            self.num_vertices = max(self.num_vertices, buffer.size // stride)
-            # print(f"Number of vertices: {self.num_vertices}")
-
-        glBindBuffer(GL_ARRAY_BUFFER, buffer.buffer_id)
-        offset = 0
-        for (size, attribsize, gl_type_enum), attrib in zip(buf_desc.formats, buf_desc.attributes):
-            loc = glGetAttribLocation(self.program, attrib.encode('utf-8'))
-            if loc == -1:
-                raise ShaderException(f"Attribute {attrib} not found in shader program")
-            normalized = GL_TRUE if attrib in buf_desc.normalized else GL_FALSE
-            glVertexAttribPointer(
-                loc, size, gl_type_enum,
-                normalized, stride, c_void_p(offset)
-            )
-            # print(f"{attrib} of size {size} with stride {stride} and offset {offset}")
-            if buf_desc.instanced:
-                glVertexAttribDivisor(loc, 1)
-            offset += attribsize
-            glEnableVertexAttribArray(loc)
-
-    def render(self, mode: GLuint, instances: int=1):
-        if self.ibo is not None:
-            count = self.ibo.size // 4
-            glDrawElementsInstanced(mode, count, GL_UNSIGNED_INT, None, instances)
-        else:
-            glDrawArraysInstanced(mode, 0, self.num_vertices, instances)
-
-
-def vertex_array(program: GLuint, content, index_buffer=None):
-    """Create a new Vertex Array.
-    """
-    return VertexArray(program, content, index_buffer)
-
-
-class Texture:
-    def __init__(self, size: Tuple[int, int], component: int, data: np.array):
-        self.width, self.height = size
-        sized_format = (GL_R8, GL_RG8, GL_RGB8, GL_RGBA8)[component - 1]
-        self.format = (GL_R, GL_RG, GL_RGB, GL_RGBA)[component - 1]
-        glActiveTexture(GL_TEXTURE0 + 0)  # If we need other texture unit...
-        self.texture_id = texture_id = GLuint()
-        glGenTextures(1, byref(self.texture_id))
-
-        if self.texture_id.value == 0:
-            raise ShaderException("Cannot create Texture.")
-
-        glBindTexture(GL_TEXTURE_2D, self.texture_id)
-        glPixelStorei(GL_PACK_ALIGNMENT, 1)
-        glPixelStorei(GL_UNPACK_ALIGNMENT, 1)
-        try:
-            glTexImage2D(
-                GL_TEXTURE_2D, 0, sized_format, self.width, self.height, 0,
-                self.format, GL_UNSIGNED_BYTE, data.ctypes.data_as(c_void_p)
-            )
-        except GLException as e:
-            raise GLException(f"Unable to create texture. {GL_MAX_TEXTURE_SIZE} {size}")
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
-        weakref.finalize(self, Texture.release, texture_id)
-
-    @staticmethod
-    def release(texture_id):
-
-        # If we have no context, then the textures are already gone.
-        context = gl.current_context
-        if context is None:
-            return
-
-        if texture_id.value != 0:
-            glDeleteTextures(1, byref(texture_id))
-
-    def use(self, texture_unit: int=0):
-        glActiveTexture(GL_TEXTURE0 + texture_unit)
-        glBindTexture(GL_TEXTURE_2D, self.texture_id)
-
-
-def texture(size: Tuple[int, int], component: int, data: np.array) -> Texture:
-    return Texture(size, component, data)
-
-
-def create_line(start_x: float, start_y: float, end_x: float, end_y: float,
-                color, line_width: float=1):
-    """
-    Create a line to be rendered later. This works faster than draw_line because
-    the vertexes are only loaded to the graphics card once, rather than each frame.
-    """
-
-    my_program = program(
-        vertex_shader='''
-            #version 330
-            uniform mat4 Projection;
-            in vec2 in_vert;
-            in vec4 in_color;
-            out vec4 v_color;
-            void main() {
-               gl_Position = Projection * vec4(in_vert, 0.0, 1.0);
-               v_color = in_color;
-            }
-        ''',
-        fragment_shader='''
-            #version 330
-            in vec4 v_color;
-            out vec4 f_color;
-            void main() {
-                f_color = v_color;
-            }
-        ''',
-    )
-
-    buffer_type = np.dtype([('vertex', '2f4'), ('color', '4B')])
-    data = np.zeros(2, dtype=buffer_type)
-    data['vertex'] = (start_x, start_y), (end_x, end_y)
-    data['color'] = get_four_byte_color(color)
-
-    vbo = buffer(data.tobytes())
-    vao_content = [
-        BufferDescription(
-            vbo,
-            '2f 4B',
-            ('in_vert', 'in_color'),
-            normalized=['in_color']
-        )
-    ]
-
-    vao = vertex_array(my_program, vao_content)
-    with vao:
-        program['Projection'] = get_projection().flatten()
-
-    shape = Shape()
-    shape.vao = vao
-    shape.vbo = vbo
-    shape.program = my_program
-    shape.mode = gl.GL_LINE_STRIP
-    shape.line_width = line_width
-
-    return shape
-
-
 import arcade
-window = arcade.open_window(800, 600, "Test")
+import os
 
-arcade.start_render()
-line = create_line(0, 0, 500, 500, arcade.color.BLUE, 5)
-line.draw()
 
-arcade.finish_render()
+SCREEN_WIDTH = 750
+SCREEN_HEIGHT = 600
 
-arcade.run()
+class MyGame(arcade.Window):
+    """ Main application class. """
+
+    def __init__(self, width, height):
+        """
+        Initializer
+        """
+        super().__init__(width, height)
+
+        # Set the working directory (where we expect to find files) to the same
+        # directory this .py file is in. You can leave this out of your own
+        # code, but it is needed to easily run the examples using "python -m"
+        # as mentioned at the top of this program.
+        file_path = os.path.dirname(os.path.abspath(__file__))
+        os.chdir(f"{file_path}\\arcade\\examples")
+
+        arcade.set_background_color(arcade.color.WHITE)
+
+
+    def on_draw(self):
+        """
+        Render the screen.
+        """
+
+        # Start the render process. This must be done before any drawing commands.
+        arcade.start_render()
+
+        # Draw a grid
+        # Draw vertical lines every 120 pixels
+        for x in range(0, 601, 120):
+            arcade.draw_line(x, 0, x, 600, arcade.color.BLACK, 2)
+
+        # Draw horizontal lines every 200 pixels
+        for y in range(0, 601, 200):
+            arcade.draw_line(0, y, 800, y, arcade.color.BLACK, 2)
+
+        # Draw a point
+        arcade.draw_text("draw_point", 3, 405, arcade.color.BLACK, 12)
+        arcade.draw_point(60, 495, arcade.color.RED, 10)
+
+        # Draw a set of points
+        arcade.draw_text("draw_points", 123, 405, arcade.color.BLACK, 12)
+        point_list = ((165, 495),
+                      (165, 480),
+                      (165, 465),
+                      (195, 495),
+                      (195, 480),
+                      (195, 465))
+        arcade.draw_points(point_list, arcade.color.ZAFFRE, 10)
+
+        # Draw a line
+        arcade.draw_text("draw_line", 243, 405, arcade.color.BLACK, 12)
+        arcade.draw_line(270, 495, 300, 450, arcade.color.WOOD_BROWN, 3)
+
+        # Draw a set of lines
+        arcade.draw_text("draw_lines", 363, 405, arcade.color.BLACK, 12)
+        point_list = ((390, 450),
+                      (450, 450),
+                      (390, 480),
+                      (450, 480),
+                      (390, 510),
+                      (450, 510)
+                      )
+        arcade.draw_lines(point_list, arcade.color.BLUE, 3)
+
+        # Draw a line strip
+        arcade.draw_text("draw_line_strip", 483, 405, arcade.color.BLACK, 12)
+        point_list = ((510, 450),
+                      (570, 450),
+                      (510, 480),
+                      (570, 480),
+                      (510, 510),
+                      (570, 510)
+                      )
+        arcade.draw_line_strip(point_list, arcade.color.TROPICAL_RAIN_FOREST, 3)
+
+        # Draw a polygon
+        arcade.draw_text("draw_polygon_outline", 3, 207, arcade.color.BLACK, 9)
+        point_list = ((30, 240),
+                      (45, 240),
+                      (60, 255),
+                      (60, 285),
+                      (45, 300),
+                      (30, 300))
+        arcade.draw_polygon_outline(point_list, arcade.color.SPANISH_VIOLET, 3)
+
+        # Draw a filled in polygon
+        arcade.draw_text("draw_polygon_filled", 123, 207, arcade.color.BLACK, 9)
+        point_list = ((150, 240),
+                      (165, 240),
+                      (180, 255),
+                      (180, 285),
+                      (165, 300),
+                      (150, 300))
+        arcade.draw_polygon_filled(point_list, arcade.color.SPANISH_VIOLET)
+
+        # Draw an outline of a circle
+        arcade.draw_text("draw_circle_outline", 243, 207, arcade.color.BLACK, 10)
+        arcade.draw_circle_outline(300, 285, 18, arcade.color.WISTERIA, 3)
+
+        # Draw a filled in circle
+        arcade.draw_text("draw_circle_filled", 363, 207, arcade.color.BLACK, 10)
+        arcade.draw_circle_filled(420, 285, 18, arcade.color.GREEN)
+
+        # Draw an ellipse outline, and another one rotated
+        arcade.draw_text("draw_ellipse_outline", 483, 207, arcade.color.BLACK, 10)
+        arcade.draw_ellipse_outline(540, 273, 15, 36, arcade.color.AMBER, 3)
+        arcade.draw_ellipse_outline(540, 336, 15, 36,
+                                    arcade.color.BLACK_BEAN, 3, 45)
+
+        # Draw a filled ellipse, and another one rotated
+        arcade.draw_text("draw_ellipse_filled", 3, 3, arcade.color.BLACK, 10)
+        arcade.draw_ellipse_filled(60, 81, 15, 36, arcade.color.AMBER)
+        arcade.draw_ellipse_filled(60, 144, 15, 36,
+                                   arcade.color.BLACK_BEAN, 45)
+
+        # Draw an arc, and another one rotated
+        arcade.draw_text("draw_arc/filled_arc", 123, 3, arcade.color.BLACK, 10)
+        arcade.draw_arc_outline(150, 81, 15, 36,
+                                arcade.color.BRIGHT_MAROON, 90, 360)
+        arcade.draw_arc_filled(150, 144, 15, 36,
+                               arcade.color.BOTTLE_GREEN, 90, 360, 45)
+
+        # Draw an rectangle outline
+        arcade.draw_text("draw_rect", 243, 3, arcade.color.BLACK, 10)
+        arcade.draw_rectangle_outline(295, 100, 45, 65,
+                                      arcade.color.BRITISH_RACING_GREEN)
+        arcade.draw_rectangle_outline(295, 160, 20, 45,
+                                      arcade.color.BRITISH_RACING_GREEN, 3, 45)
+
+        # Draw a filled in rectangle
+        arcade.draw_text("draw_filled_rect", 363, 3, arcade.color.BLACK, 10)
+        arcade.draw_rectangle_filled(420, 100, 45, 65, arcade.color.BLUSH)
+        arcade.draw_rectangle_filled(420, 160, 20, 40, arcade.color.BLUSH, 45)
+
+        # Load and draw an image to the screen
+        # Image from kenney.nl asset pack #1
+        arcade.draw_text("draw_bitmap", 483, 3, arcade.color.BLACK, 12)
+        texture = arcade.load_texture("images/playerShip1_orange.png")
+        scale = .6
+        arcade.draw_texture_rectangle(540, 120, scale * texture.width,
+                                      scale * texture.height, texture, 0)
+        arcade.draw_texture_rectangle(540, 60, scale * texture.width,
+                                      scale * texture.height, texture, 45)
+
+        color = arcade.get_pixel(100, 100)
+        assert color == (255, 255, 255)
+
+        image = arcade.get_image()
+
+def main():
+    """ Main method """
+    window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT)
+    # window.test()
+    # window.close()
+    arcade.run()
+
+main()
