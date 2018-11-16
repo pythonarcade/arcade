@@ -5,7 +5,7 @@ Artwork from: http://kenney.nl
 Tiled available from: http://www.mapeditor.org/
 
 If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.sprite_tiled_map
+python -m arcade.examples.sprite_csv_map
 """
 
 import arcade
@@ -29,6 +29,22 @@ JUMP_SPEED = 14
 GRAVITY = 0.5
 
 
+def get_map(filename):
+    """
+    This function loads an array based on a map stored as a list of
+    numbers separated by commas.
+    """
+    map_file = open(filename)
+    map_array = []
+    for line in map_file:
+        line = line.strip()
+        map_row = line.split(",")
+        for index, item in enumerate(map_row):
+            map_row[index] = int(item)
+        map_array.append(map_row)
+    return map_array
+
+
 class MyGame(arcade.Window):
     """ Main application class. """
 
@@ -48,7 +64,6 @@ class MyGame(arcade.Window):
         # Sprite lists
         self.wall_list = None
         self.player_list = None
-        self.coin_list = None
 
         # Set up the player
         self.score = 0
@@ -59,28 +74,12 @@ class MyGame(arcade.Window):
         self.view_bottom = 0
         self.game_over = False
 
-    def generate_sprites(self, map, layer_name, sprite_list, scaling):
-        map_array = map.layers_int_data[layer_name]
-
-        # Loop through the layer and add in the wall list
-        for row_index, row in enumerate(map_array):
-            for column_index, item in enumerate(row):
-                if str(item) in map.global_tile_set:
-                    tile_info = map.global_tile_set[str(item)]
-                    filename = tile_info.source
-
-                    wall = arcade.Sprite(filename, scaling)
-                    wall.right = column_index * 64
-                    wall.top = (map.height - row_index) * 64
-                    sprite_list.append(wall)
-
     def setup(self):
         """ Set up the game and initialize the variables. """
 
         # Sprite lists
         self.player_list = arcade.SpriteList()
         self.wall_list = arcade.SpriteList()
-        self.coin_list = arcade.SpriteList()
 
         # Set up the player
         self.player_sprite = arcade.Sprite("images/character.png", SPRITE_SCALING)
@@ -90,31 +89,43 @@ class MyGame(arcade.Window):
         self.player_sprite.center_y = 270
         self.player_list.append(self.player_sprite)
 
-        # Read in the tiled map
-        map = arcade.read_tiled_map("map_02.tmx")
+        # Get a 2D array made of numbers based on the map
+        map_array = get_map("map.csv")
 
-        # --- Walls ---
-        # Grab the layer of items we can't move through
-        map_array = map.layers_int_data['Obstructions']
-
-        # Calculate the right edge of the map in pixels
+        # Right edge of the map in pixels
         self.end_of_map = len(map_array[0]) * GRID_PIXEL_SIZE
 
-        self.generate_sprites(map, 'Obstructions', self.wall_list, SPRITE_SCALING)
+        for row_index, row in enumerate(map_array):
+            for column_index, item in enumerate(row):
+
+                # For this map, the numbers represent:
+                # -1 = empty
+                # 0  = box
+                # 1  = grass left edge
+                # 2  = grass middle
+                # 3  = grass right edge
+                if item == -1:
+                    continue
+                elif item == 0:
+                    wall = arcade.Sprite("images/boxCrate_double.png", SPRITE_SCALING)
+                elif item == 1:
+                    wall = arcade.Sprite("images/grassLeft.png", SPRITE_SCALING)
+                elif item == 2:
+                    wall = arcade.Sprite("images/grassMid.png", SPRITE_SCALING)
+                elif item == 3:
+                    wall = arcade.Sprite("images/grassRight.png", SPRITE_SCALING)
+
+                wall.right = column_index * 64
+                wall.top = (7 - row_index) * 64
+                self.wall_list.append(wall)
 
         self.physics_engine = \
             arcade.PhysicsEnginePlatformer(self.player_sprite,
                                            self.wall_list,
                                            gravity_constant=GRAVITY)
 
-        # --- Coins ---
-        map_array = map.layers_int_data['Coins']
-        self.generate_sprites(map, 'Coins', self.coin_list, SPRITE_SCALING)
-
-        # --- Other stuff
         # Set the background color
-        if map.backgroundcolor:
-            arcade.set_background_color(map.backgroundcolor)
+        arcade.set_background_color(arcade.color.AMAZON)
 
         # Set the view port boundaries
         # These numbers set where we have 'scrolled' to.
@@ -134,7 +145,6 @@ class MyGame(arcade.Window):
         # Draw all the sprites.
         self.player_list.draw()
         self.wall_list.draw()
-        self.coin_list.draw()
 
         # Put the text on the screen.
         # Adjust the text position based on the view port so that we don't

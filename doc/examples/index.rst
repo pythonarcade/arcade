@@ -284,6 +284,11 @@ Platformers
 
    :ref:`sprite_move_animation`
 
+.. figure:: thumbs/sprite_csv_map.png
+   :figwidth: 170px
+
+   :ref:`sprite_csv_map`
+
 .. figure:: thumbs/sprite_tiled_map.png
    :figwidth: 170px
 
