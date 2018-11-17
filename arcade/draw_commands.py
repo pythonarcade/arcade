@@ -896,20 +896,13 @@ def draw_triangle_filled(x1: float, y1: float,
         None
     Raises:
         None
-
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
-    >>> arcade.start_render()
-    >>> arcade.draw_triangle_filled(1, 2, 3, 4, 5, 6, arcade.color.BLACK)
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
     """
 
     first_point = (x1, y1)
     second_point = (x2, y2)
     third_point = (x3, y3)
     point_list = (first_point, second_point, third_point)
-    draw_polygon_filled(point_list, color)
+    _generic_draw_line_strip(point_list, color, 1, gl.GL_TRIANGLES)
 
 
 def draw_triangle_outline(x1: float, y1: float,
