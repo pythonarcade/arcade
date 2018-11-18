@@ -8,7 +8,6 @@ Buffered Draw Commands.
 """
 # pylint: disable=too-many-arguments, too-many-locals, too-few-public-methods
 
-import ctypes
 import math
 import PIL.Image
 import PIL.ImageOps
@@ -23,6 +22,7 @@ from arcade.window_commands import get_window
 from arcade.arcade_types import Color
 from arcade.arcade_types import PointList
 from arcade import shader
+from arcade.earclip import earclip
 
 
 line_vertex_shader = '''
@@ -301,7 +301,6 @@ def load_texture(file_name: str, x: float=0, y: float=0,
 
     if flipped:
         image = PIL.ImageOps.flip(image)
-
 
     result = Texture(cache_name, image)
     load_texture.texture_cache[cache_name] = result
@@ -856,7 +855,9 @@ def draw_polygon_filled(point_list: PointList,
         None
     """
 
-    _generic_draw_line_strip(point_list, color, 1, gl.GL_POLYGON)
+    triangle_points = earclip(point_list)
+    flattened_list = [i for g in triangle_points for i in g]
+    _generic_draw_line_strip(flattened_list, color, 1, gl.GL_TRIANGLES)
 
 
 def draw_polygon_outline(point_list: PointList,
