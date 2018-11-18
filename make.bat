@@ -28,6 +28,8 @@ rem Build the python
 python setup.py build
 python setup.py bdist_wheel
 
+GOTO end
+
 :makefull
 rem -- This builds the project, installs it, and runs unit tests
 
