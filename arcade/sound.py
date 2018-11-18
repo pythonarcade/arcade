@@ -35,31 +35,28 @@ def _load_sound_library():
 
         import sys
         is64bit = sys.maxsize > 2 ** 32
-
+        
         import site
+        user_packages=""
         if hasattr(site, 'getsitepackages'):
             packages = site.getsitepackages()
             user_packages = site.getuserbase()
 
-            if appveyor:
-                if is64bit:
-                    path_global = "Win64/avbin"
-                else:
-                    path_global = "Win32/avbin"
-
-            else:
-                if is64bit:
-                    path_global = packages[0] + "/lib/site-packages/arcade/Win64/avbin"
-                    path_user = user_packages + "/lib/site-packages/arcade/Win64/avbin"
-                else:
-                    path_global = packages[0] + "/lib/site-packages/arcade/Win32/avbin"
-                    path_user = user_packages + "/lib/site-packages/arcade/Win32/avbin"
-
-        else:
+        from distutils.sysconfig import get_python_lib
+        site_pkg_path = get_python_lib()
+        if appveyor:
             if is64bit:
                 path_global = "Win64/avbin"
             else:
                 path_global = "Win32/avbin"
+
+        else:
+            if is64bit:
+                path_global = os.path.join(site_pkg_path, r"arcade\Win64\avbin")
+                path_user = user_packages + "/lib/site-packages/arcade/Win64/avbin"
+            else:
+                path_global = os.path.join(site_pkg_path, r"arcade\Win32\avbin")
+                path_user = user_packages + "/lib/site-packages/arcade/Win64/avbin"
 
     elif my_system == 'Darwin':
         from distutils.sysconfig import get_python_lib
