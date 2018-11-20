@@ -1,5 +1,5 @@
 """
-Load a map stored in csv format, as exported by the program 'Tiled.'
+Load a Tiled map file
 
 Artwork from: http://kenney.nl
 Tiled available from: http://www.mapeditor.org/
@@ -21,8 +21,10 @@ GRID_PIXEL_SIZE = (SPRITE_PIXEL_SIZE * SPRITE_SCALING)
 
 # How many pixels to keep as a minimum margin between the character
 # and the edge of the screen.
-VIEWPORT_MARGIN = 60
-RIGHT_MARGIN = 150
+VIEWPORT_MARGIN_TOP = 60
+VIEWPORT_MARGIN_BOTTOM = 60
+VIEWPORT_RIGHT_MARGIN = 270
+VIEWPORT_LEFT_MARGIN = 270
 
 # Physics
 MOVEMENT_SPEED = 5
@@ -63,27 +65,11 @@ class MyGame(arcade.Window):
         self.frame_count = 0
         self.fps_message = None
 
-    def generate_sprites(self, map, layer_name, sprite_list, scaling):
-        map_array = map.layers_int_data[layer_name]
-
-        # Loop through the layer and add in the wall list
-        for row_index, row in enumerate(map_array):
-            for column_index, item in enumerate(row):
-                if str(item) in map.global_tile_set:
-                    tile_info = map.global_tile_set[str(item)]
-                    filename = tile_info.source
-
-                    wall = arcade.Sprite(filename, scaling)
-                    wall.right = column_index * 64
-                    wall.top = (map.height - row_index) * 64
-                    sprite_list.append(wall)
-
     def setup(self):
         """ Set up the game and initialize the variables. """
 
         # Sprite lists
         self.player_list = arcade.SpriteList()
-        self.wall_list = arcade.SpriteList()
         self.coin_list = arcade.SpriteList()
 
         # Set up the player
@@ -95,16 +81,16 @@ class MyGame(arcade.Window):
         self.player_list.append(self.player_sprite)
 
         # Read in the tiled map
-        map = arcade.read_tiled_map("map_02.tmx")
+        my_map = arcade.read_tiled_map("map_02.tmx", SPRITE_SCALING)
 
         # --- Walls ---
         # Grab the layer of items we can't move through
-        map_array = map.layers_int_data['Obstructions']
+        map_array = my_map.layers_int_data['Obstructions']
 
-        # Calculate the right edge of the map in pixels
+        # Calculate the right edge of the my_map in pixels
         self.end_of_map = len(map_array[0]) * GRID_PIXEL_SIZE
 
-        self.generate_sprites(map, 'Obstructions', self.wall_list, SPRITE_SCALING)
+        self.wall_list = arcade.generate_sprites(my_map, 'Obstructions', SPRITE_SCALING)
 
         self.physics_engine = \
             arcade.PhysicsEnginePlatformer(self.player_sprite,
@@ -112,12 +98,12 @@ class MyGame(arcade.Window):
                                            gravity_constant=GRAVITY)
 
         # --- Coins ---
-        self.generate_sprites(map, 'Coins', self.coin_list, SPRITE_SCALING)
+        self.coin_list = arcade.generate_sprites(my_map, 'Coins', SPRITE_SCALING)
 
         # --- Other stuff
         # Set the background color
-        if map.backgroundcolor:
-            arcade.set_background_color(map.backgroundcolor)
+        if my_map.backgroundcolor:
+            arcade.set_background_color(my_map.backgroundcolor)
 
         # Set the view port boundaries
         # These numbers set where we have 'scrolled' to.
@@ -203,25 +189,25 @@ class MyGame(arcade.Window):
         changed = False
 
         # Scroll left
-        left_bndry = self.view_left + VIEWPORT_MARGIN
+        left_bndry = self.view_left + VIEWPORT_LEFT_MARGIN
         if self.player_sprite.left < left_bndry:
             self.view_left -= left_bndry - self.player_sprite.left
             changed = True
 
         # Scroll right
-        right_bndry = self.view_left + SCREEN_WIDTH - RIGHT_MARGIN
+        right_bndry = self.view_left + SCREEN_WIDTH - VIEWPORT_RIGHT_MARGIN
         if self.player_sprite.right > right_bndry:
             self.view_left += self.player_sprite.right - right_bndry
             changed = True
 
         # Scroll up
-        top_bndry = self.view_bottom + SCREEN_HEIGHT - VIEWPORT_MARGIN
+        top_bndry = self.view_bottom + SCREEN_HEIGHT - VIEWPORT_MARGIN_TOP
         if self.player_sprite.top > top_bndry:
             self.view_bottom += self.player_sprite.top - top_bndry
             changed = True
 
         # Scroll down
-        bottom_bndry = self.view_bottom + VIEWPORT_MARGIN
+        bottom_bndry = self.view_bottom + VIEWPORT_MARGIN_BOTTOM
         if self.player_sprite.bottom < bottom_bndry:
             self.view_bottom -= bottom_bndry - self.player_sprite.bottom
             changed = True

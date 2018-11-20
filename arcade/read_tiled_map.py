@@ -4,7 +4,8 @@ import zlib
 import gzip
 
 from arcade.isometric import isometric_grid_to_screen
-
+from arcade import Sprite
+from arcade import SpriteList
 
 class TiledMap:
 
@@ -30,6 +31,7 @@ class Tile:
         self.width = 0
         self.height = 0
         self.source = None
+        self.points = None
 
 
 class GridLocation:
@@ -84,7 +86,16 @@ def _process_base64_encoding(data_text, compression, layer_width):
     layer_grid_ints.pop()
     return layer_grid_ints
 
-def read_tiled_map(filename: str) -> TiledMap:
+def parse_points(point_text: str):
+    result = []
+    point_list = point_text.split(" ")
+    for point in point_list:
+        z = point.split(",")
+        result.append([round(float(z[0])), round(float(z[1]))])
+
+    return result
+
+def read_tiled_map(filename: str, scaling) -> TiledMap:
     """
     Given a filename, this will read in a tiled map, and return
     a TiledMap object.
@@ -148,6 +159,28 @@ def read_tiled_map(filename: str) -> TiledMap:
             my_map.global_tile_set[key] = my_tile
             firstgid += 1
 
+            objectgroup = tile_tag.find("objectgroup")
+            if objectgroup:
+                object = objectgroup.find("object")
+                if object:
+                    offset_x = round(float(object.attrib['x']))
+                    offset_y = round(float(object.attrib['y']))
+                    polygon = object.find("polygon")
+                    if polygon is not None:
+                        point_list = parse_points(polygon.attrib['points'])
+                        for point in point_list:
+                            point[0] += offset_x
+                            point[1] += offset_y
+                            point[1] = my_tile.height - point[1]
+                            point[0] -= my_tile.width // 2
+                            point[1] -= my_tile.height // 2
+                            point[0] *= scaling
+                            point[1] *= scaling
+                            point[0] = int(point[0])
+                            point[1] = int(point[1])
+
+                        my_tile.points = point_list
+
     # --- Map Data ---
 
     # Grab each layer
@@ -199,3 +232,24 @@ def read_tiled_map(filename: str) -> TiledMap:
         my_map.layers[layer_tag.attrib["name"]] = layer_grid_objs
 
     return my_map
+
+def generate_sprites(map, layer_name, scaling):
+    sprite_list = SpriteList()
+
+    map_array = map.layers_int_data[layer_name]
+
+    # Loop through the layer and add in the wall list
+    for row_index, row in enumerate(map_array):
+        for column_index, item in enumerate(row):
+            if str(item) in map.global_tile_set:
+                tile_info = map.global_tile_set[str(item)]
+                filename = tile_info.source
+
+                my_sprite = Sprite(filename, scaling)
+                my_sprite.right = column_index * my_sprite.width
+                my_sprite.top = (map.height - row_index) * my_sprite.height
+                if tile_info.points is not None:
+                    my_sprite.set_points(tile_info.points)
+                sprite_list.append(my_sprite)
+
+    return sprite_list

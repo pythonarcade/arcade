@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.2.0" orientation="orthogonal" renderorder="right-down" width="50" height="9" tilewidth="128" tileheight="128" infinite="0" backgroundcolor="#326683" nextlayerid="6" nextobjectid="9">
- <tileset firstgid="1" name="Examples" tilewidth="128" tileheight="128" tilecount="6" columns="0">
+<map version="1.0" tiledversion="1.1.5" orientation="orthogonal" renderorder="right-down" width="50" height="9" tilewidth="128" tileheight="128" infinite="0" backgroundcolor="#326683" nextobjectid="9">
+ <tileset firstgid="1" name="Examples" tilewidth="128" tileheight="128" tilecount="11" columns="0">
   <tile id="0">
    <image width="128" height="128" source="images/boxCrate_double.png"/>
   </tile>
@@ -15,25 +15,55 @@
   </tile>
   <tile id="4">
    <image width="128" height="73" source="images/stoneHalf.png"/>
+   <objectgroup draworder="index">
+    <object id="1" x="0.454545" y="10.3636">
+     <polygon points="0,0 10,-10 117,-10 127,0 127,52 117,62 10,62.0909 0,52"/>
+    </object>
+   </objectgroup>
   </tile>
   <tile id="5">
    <image width="128" height="128" source="images/coin_01.png"/>
   </tile>
+  <tile id="6">
+   <image width="128" height="128" source="images/grassCorner_left.png"/>
+  </tile>
+  <tile id="7">
+   <image width="128" height="128" source="images/grassCorner_right.png"/>
+  </tile>
+  <tile id="8">
+   <image width="128" height="128" source="images/grassHill_left.png"/>
+   <objectgroup draworder="index">
+    <object id="1" x="0.545455" y="0.363636">
+     <polygon points="0,0 0,127 127,127"/>
+    </object>
+   </objectgroup>
+  </tile>
+  <tile id="9">
+   <image width="128" height="128" source="images/grassHill_right.png"/>
+   <objectgroup draworder="index">
+    <object id="2" x="0.363636" y="127.182">
+     <polygon points="0,0 127,-126.727 127.364,0.545455"/>
+    </object>
+   </objectgroup>
+  </tile>
+  <tile id="10">
+   <image width="128" height="128" source="images/grassCenter.png"/>
+  </tile>
  </tileset>
- <layer id="4" name="Obstructions" width="50" height="9">
+ <layer name="Obstructions" width="50" height="9">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,4,0,0,0,0,0,0,0,0,5,0,0,0,0,0,0,0,
 1,0,0,0,0,0,0,0,0,0,0,0,2,3,4,0,0,2,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,4,0,0,0,0,0,0,0,0,0,0,
 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,4,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-1,0,0,0,0,0,2,3,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,3,4,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,
-1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,
-1,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,
-2,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,4
+1,0,0,0,0,0,2,3,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,3,4,0,0,0,0,0,0,1,1,0,0,0,0,10,3,3,3,9,0,0,0,0,
+1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,10,8,11,11,11,7,9,0,0,0,
+1,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,10,8,11,11,11,11,11,7,9,0,0,
+2,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,8,11,11,11,11,11,11,11,7,3,4
 </data>
  </layer>
- <layer id="5" name="Coins" width="50" height="9">
+ <layer name="Coins" width="50" height="9">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
