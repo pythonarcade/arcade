@@ -7,7 +7,6 @@ Moving Between Different Rooms
 
 .. image:: sprite_rooms.png
     :width: 600px
-    :height: 600px
     :align: center
     :alt: Screenshot of moving between rooms with sprites
 

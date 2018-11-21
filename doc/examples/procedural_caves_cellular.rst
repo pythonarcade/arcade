@@ -7,7 +7,6 @@ Procedural Caves - Cellular Automata
 
 .. image:: procedural_caves_cellular.png
     :width: 600px
-    :height: 600px
     :align: center
     :alt: Screen shot of cellular automata to generate caves
 

@@ -7,7 +7,6 @@ Sprites That Follow The Player 2
 
 .. image:: sprite_follow_simple_2.png
     :width: 600px
-    :height: 600px
     :align: center
     :alt: Screen shot of using sprites to collect coins
 

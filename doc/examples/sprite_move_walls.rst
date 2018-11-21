@@ -7,7 +7,6 @@ Move with Walls
 
 .. image:: sprite_move_walls.png
     :width: 600px
-    :height: 600px
     :align: center
     :alt: Screenshot of using sprites to detect wall collisions
 

@@ -7,7 +7,6 @@ Shape List - Person
 
 .. image:: shape_list_demo_person.png
     :width: 600px
-    :height: 600px
     :align: center
     :alt: Screenshot of using shape list to create a person
 

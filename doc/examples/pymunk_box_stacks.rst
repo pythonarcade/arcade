@@ -11,7 +11,6 @@ can interact with the boxes using the mouse.
 
 .. image:: pymunk_box_stacks.png
     :width: 600px
-    :height: 600px
     :align: center
     :alt: Screen shot of stacks of boxes.
 

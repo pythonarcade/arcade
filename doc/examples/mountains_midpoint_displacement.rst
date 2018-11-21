@@ -7,7 +7,6 @@ Mountains Midpoint Displacement
 
 .. image:: mountains_midpoint_displacement.png
     :width: 600px
-    :height: 600px
     :align: center
     :alt: Screen shot of a mountains created by midpoint displacement
 

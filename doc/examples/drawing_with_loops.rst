@@ -7,7 +7,6 @@ Drawing with Loops
 
 .. image:: drawing_with_loops.png
     :width: 600px
-    :height: 600px
     :align: center
     :alt: Screen shot of drawing with loops example program
 

@@ -7,7 +7,6 @@ Drawing Shapes with Classes
 
 .. image:: shapes.png
     :width: 600px
-    :height: 600px
     :align: center
     :alt: Screenshot of Shapes example program
 

@@ -7,7 +7,6 @@ Collect Coins - Mouse
 
 .. image:: sprite_collect_coins.png
     :width: 600px
-    :height: 600px
     :align: center
     :alt: Screen shot of using sprites to collect coins
 

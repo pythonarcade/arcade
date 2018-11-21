@@ -7,7 +7,6 @@ Aim and Shoot Bullets
 
 .. image:: sprite_bullets_aimed.png
     :width: 600px
-    :height: 600px
     :align: center
     :alt: Screenshot of using sprites to shoot things
 

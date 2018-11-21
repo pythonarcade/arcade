@@ -7,7 +7,6 @@ Move with a Scrolling Screen
 
 .. image:: sprite_move_scrolling.png
     :width: 600px
-    :height: 600px
     :align: center
     :alt: Screen shot of using a scrolling window
 

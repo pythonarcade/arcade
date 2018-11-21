@@ -13,7 +13,6 @@ These are three examples:
 
 .. image:: shape_list_demo.png
     :width: 600px
-    :height: 600px
     :align: center
     :alt: Screenshot of using shape list to make rectangles
 

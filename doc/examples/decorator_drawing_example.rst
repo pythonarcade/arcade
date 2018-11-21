@@ -7,7 +7,6 @@ Drawing With Decoractors
 
 .. image:: decorator_drawing_example.png
     :width: 600px
-    :height: 600px
     :align: center
     :alt: Screenshot of a drawing example
 

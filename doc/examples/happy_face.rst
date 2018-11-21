@@ -8,11 +8,10 @@ Happy Face
 This example shows how to use the :ref:`drawing-commands`.
 
 
-.. .. image:: happy_face.png
-..     :width: 600px
-..     :height: 600px
-..     :align: center
-..     :alt: Screenshot of drawing example program
+.. image:: happy_face.png
+    :width: 600px
+    :align: center
+    :alt: Screenshot of drawing example program
 
 
 

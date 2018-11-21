@@ -7,7 +7,6 @@ Text Buttons
 
 .. image:: gui_text_button.png
     :width: 600px
-    :height: 600px
     :align: center
     :alt: Screen shot of a program using buttons
 

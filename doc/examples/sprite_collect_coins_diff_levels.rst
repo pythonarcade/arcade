@@ -7,7 +7,6 @@ Different Levels of Clearing Coins
 
 .. image:: sprite_collect_coins_diff_levels.gif
     :width: 600px
-    :height: 600px
     :align: center
     :alt: Screenshot of using sprites to collect coins
 

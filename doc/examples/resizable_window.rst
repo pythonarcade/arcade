@@ -7,7 +7,6 @@ Resizable Window
 
 .. image:: resizable_window.png
     :width: 600px
-    :height: 600px
     :align: center
     :alt: Screenshot of resizable window
 

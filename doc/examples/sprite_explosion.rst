@@ -7,7 +7,6 @@ Sprite Explosions
 
 .. image:: sprite_explosion.png
     :width: 600px
-    :height: 600px
     :align: center
     :alt: Screenshot of using sprites to shoot things
 

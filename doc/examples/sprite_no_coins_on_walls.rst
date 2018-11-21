@@ -7,7 +7,6 @@ Place Coins Away From Walls And Other Coins
 
 .. image:: sprite_no_coins_on_walls.png
     :width: 600px
-    :height: 600px
     :align: center
     :alt: Screenshot of using sprites to collect coins. But no coins on walls or each other
 

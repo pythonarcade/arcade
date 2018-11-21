@@ -7,7 +7,6 @@ Procedural Caves - Binary Space Partitioning
 
 .. image:: procedural_caves_bsp.png
     :width: 600px
-    :height: 600px
     :align: center
     :alt: Screen shot of using Binary Space Partitioning to generate caves
 

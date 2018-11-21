@@ -7,7 +7,6 @@ Draw Stationary Sprites Stress Test
 
 .. image:: stress_test_draw_simple.png
     :width: 600px
-    :height: 600px
     :align: center
     :alt: Screenshot of stress test example
 

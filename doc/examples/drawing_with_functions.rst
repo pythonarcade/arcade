@@ -15,7 +15,6 @@ This example shows how to define functions that draw objects. Such as
 
 .. .. image:: drawing_with_functions.png
 ..     :width: 600px
-..     :height: 600px
 ..     :align: center
 ..     :alt: Screenshot of drawing with functions example program
 

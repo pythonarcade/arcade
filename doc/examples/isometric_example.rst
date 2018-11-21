@@ -7,7 +7,6 @@ Isometric Example
 
 .. image:: isometric_example.png
     :width: 600px
-    :height: 600px
     :align: center
     :alt: Screenshot of an isometric dungeon
 

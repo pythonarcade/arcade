@@ -16,7 +16,6 @@ functions or classes before drawing images.
 
 .. .. image:: drawing_with_primitives.png
 ..     :width: 600px
-..     :height: 600px
 ..     :align: center
 ..     :alt: Screenshot of drawing with functions example program
 

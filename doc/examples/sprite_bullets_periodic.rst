@@ -7,7 +7,6 @@ Have Enemies Periodically Shoot
 
 .. image:: sprite_bullets_periodic.png
     :width: 600px
-    :height: 600px
     :align: center
     :alt: Screenshot of using sprites to shoot things
 

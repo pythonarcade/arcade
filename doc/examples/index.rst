@@ -35,15 +35,6 @@ Drawing
 
    :ref:`drawing_text`
 
-.. figure:: thumbs/array_backed_grid.png
-   :figwidth: 170px
-
-   :ref:`array_backed_grid`
-
-.. figure:: thumbs/array_backed_grid.png
-   :figwidth: 170px
-
-   :ref:`array_backed_grid_buffered`
 
 
 Animation
@@ -316,6 +307,26 @@ Graphical User Interface
    :figwidth: 170px
 
    :ref:`gui_text_button`
+
+Grid Based Games
+----------------
+
+
+.. figure:: thumbs/array_backed_grid.png
+   :figwidth: 170px
+
+   :ref:`array_backed_grid`
+
+.. figure:: thumbs/array_backed_grid.png
+   :figwidth: 170px
+
+   :ref:`array_backed_grid_buffered`
+.. figure:: thumbs/tetris.png
+   :figwidth: 170px
+
+   :ref:`tetris`
+
+
 
 Procedural Generation
 ---------------------
