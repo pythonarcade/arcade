@@ -7,6 +7,7 @@ from arcade.isometric import isometric_grid_to_screen
 from arcade import Sprite
 from arcade import SpriteList
 
+
 class TiledMap:
 
     def __init__(self):
@@ -39,6 +40,7 @@ class GridLocation:
         self.tile = None
         self.center_x = 0
         self.center_y = 0
+
 
 def _process_csv_encoding(data_text):
     layer_grid_ints = []
@@ -86,6 +88,7 @@ def _process_base64_encoding(data_text, compression, layer_width):
     layer_grid_ints.pop()
     return layer_grid_ints
 
+
 def parse_points(point_text: str):
     result = []
     point_list = point_text.split(" ")
@@ -94,6 +97,7 @@ def parse_points(point_text: str):
         result.append([round(float(z[0])), round(float(z[1]))])
 
     return result
+
 
 def read_tiled_map(filename: str, scaling) -> TiledMap:
     """
@@ -169,11 +173,11 @@ def read_tiled_map(filename: str, scaling) -> TiledMap:
 
             objectgroup = tile_tag.find("objectgroup")
             if objectgroup:
-                object = objectgroup.find("object")
-                if object:
-                    offset_x = round(float(object.attrib['x']))
-                    offset_y = round(float(object.attrib['y']))
-                    polygon = object.find("polygon")
+                my_object = objectgroup.find("object")
+                if my_object:
+                    offset_x = round(float(my_object.attrib['x']))
+                    offset_y = round(float(my_object.attrib['y']))
+                    polygon = my_object.find("polygon")
                     if polygon is not None:
                         point_list = parse_points(polygon.attrib['points'])
                         for point in point_list:
@@ -209,6 +213,9 @@ def read_tiled_map(filename: str, scaling) -> TiledMap:
             layer_grid_ints = _process_csv_encoding(data_text)
         elif encoding == "base64":
             layer_grid_ints = _process_base64_encoding(data_text, compression, layer_width)
+        else:
+            print(f"Error, unexpected encoding: {encoding}.")
+            break
 
         # Great, we have a grid of ints. Save that according to the layer name
         my_map.layers_int_data[layer_tag.attrib["name"]] = layer_grid_ints
@@ -232,8 +239,12 @@ def read_tiled_map(filename: str, scaling) -> TiledMap:
                         grid_location.center_x = column_index * my_map.tilewidth + my_map.tilewidth // 2
                         grid_location.center_y = adjusted_row_index * my_map.tileheight + my_map.tilewidth // 2
                     else:
-                        grid_location.center_x,  grid_location.center_y = isometric_grid_to_screen(column_index, row_index, my_map.width, my_map.height, my_map.tilewidth, my_map.tileheight)
-
+                        grid_location.center_x,  grid_location.center_y = isometric_grid_to_screen(column_index,
+                                                                                                   row_index,
+                                                                                                   my_map.width,
+                                                                                                   my_map.height,
+                                                                                                   my_map.tilewidth,
+                                                                                                   my_map.tileheight)
 
                 layer_grid_objs[row_index].append(grid_location)
 
@@ -241,25 +252,26 @@ def read_tiled_map(filename: str, scaling) -> TiledMap:
 
     return my_map
 
-def generate_sprites(map, layer_name, scaling):
+
+def generate_sprites(map_object, layer_name, scaling):
     sprite_list = SpriteList()
 
-    if not layer_name in map.layers_int_data:
+    if layer_name not in map_object.layers_int_data:
         print(f"Warning, no layer named '{layer_name}'.")
         return sprite_list
-    
-    map_array = map.layers_int_data[layer_name]
+
+    map_array = map_object.layers_int_data[layer_name]
 
     # Loop through the layer and add in the wall list
     for row_index, row in enumerate(map_array):
         for column_index, item in enumerate(row):
-            if str(item) in map.global_tile_set:
-                tile_info = map.global_tile_set[str(item)]
+            if str(item) in map_object.global_tile_set:
+                tile_info = map_object.global_tile_set[str(item)]
                 filename = tile_info.source
 
                 my_sprite = Sprite(filename, scaling)
-                my_sprite.right = column_index * (map.tilewidth * scaling)
-                my_sprite.top = (map.height - row_index) * (map.tileheight * scaling)
+                my_sprite.right = column_index * (map_object.tilewidth * scaling)
+                my_sprite.top = (map_object.height - row_index) * (map_object.tileheight * scaling)
 
                 if tile_info.points is not None:
                     my_sprite.set_points(tile_info.points)
