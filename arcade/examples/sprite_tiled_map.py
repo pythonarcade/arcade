@@ -81,7 +81,7 @@ class MyGame(arcade.Window):
         self.player_list.append(self.player_sprite)
 
         # Read in the tiled map
-        my_map = arcade.read_tiled_map("map_02.tmx", SPRITE_SCALING)
+        my_map = arcade.read_tiled_map("map_with_custom_hitboxes.tmx", SPRITE_SCALING)
 
         # --- Walls ---
         # Grab the layer of items we can't move through
