@@ -141,9 +141,17 @@ def read_tiled_map(filename: str, scaling) -> TiledMap:
     # Loop through each tileset
     for tileset_tag in tileset_tag_list:
         firstgid = int(tileset_tag.attrib["firstgid"])
+        if "source" in tileset_tag.attrib:
+            source = tileset_tag.attrib["source"]
+            tileset_tree = etree.parse(source)
 
-        # Grab each tile
-        tile_tag_list = tileset_tag.findall("tile")
+            # Root node should be 'map'
+            tileset_root = tileset_tree.getroot()
+            tile_tag_list = tileset_root.findall("tile")
+        else:
+
+            # Grab each tile
+            tile_tag_list = tileset_tag.findall("tile")
 
         # Loop through each tile
         for tile_tag in tile_tag_list:
@@ -236,6 +244,10 @@ def read_tiled_map(filename: str, scaling) -> TiledMap:
 def generate_sprites(map, layer_name, scaling):
     sprite_list = SpriteList()
 
+    if not layer_name in map.layers_int_data:
+        print(f"Warning, no layer named '{layer_name}'.")
+        return sprite_list
+    
     map_array = map.layers_int_data[layer_name]
 
     # Loop through the layer and add in the wall list
@@ -246,10 +258,13 @@ def generate_sprites(map, layer_name, scaling):
                 filename = tile_info.source
 
                 my_sprite = Sprite(filename, scaling)
-                my_sprite.right = column_index * my_sprite.width
-                my_sprite.top = (map.height - row_index) * my_sprite.height
+                my_sprite.right = column_index * (map.tilewidth * scaling)
+                my_sprite.top = (map.height - row_index) * (map.tileheight * scaling)
+
                 if tile_info.points is not None:
                     my_sprite.set_points(tile_info.points)
                 sprite_list.append(my_sprite)
+            elif item != 0:
+                print(f"Warning, could not find {item} image to load.")
 
     return sprite_list
