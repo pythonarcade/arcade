@@ -69,7 +69,7 @@ class MyGame(arcade.Window):
         self.floor_list = arcade.SpriteList()
         self.objects_list = arcade.SpriteList()
 
-        self.my_map = arcade.read_tiled_map('dungeon.tmx')
+        self.my_map = arcade.read_tiled_map('dungeon.tmx', SPRITE_SCALING)
 
         # Set up the player
         self.player_sprite = arcade.Sprite("images/character.png", 0.4)
