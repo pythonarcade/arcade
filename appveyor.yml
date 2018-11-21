@@ -12,7 +12,7 @@ environment:
 
 
 install:
-  - "%PYTHON%\\Scripts\\pip.exe install wheel twine pillow pyglet coverage coveralls"
+  - "%PYTHON%\\Scripts\\pip.exe install wheel twine pillow pyglet coverage coveralls pytest"
 
 build_script:
   - "%PYTHON%\\python.exe setup.py build sdist bdist bdist_wheel"
