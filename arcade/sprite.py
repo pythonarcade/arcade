@@ -598,7 +598,7 @@ class AnimatedTimeSprite(Sprite):
             self.cur_texture_index += 1
             if self.cur_texture_index >= len(self.textures):
                 self.cur_texture_index = 0
-            self.set_texture(self.cur_texture_index)
+            self.set_texture(self.textures[self.cur_texture_index])
         self.frame += 1
 
 
