@@ -1,3 +1,4 @@
 Pyglet==1.4.0b1
 Pillow
 numpy
+pyglet-ffmpeg
