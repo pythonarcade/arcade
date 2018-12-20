@@ -114,12 +114,12 @@ class Sprite:
         self.sprite_lists = []
 
         if filename is not None:
-            self.texture = load_texture(filename, image_x, image_y,
-                                        image_width, image_height)
+            self._texture = load_texture(filename, image_x, image_y,
+                                         image_width, image_height)
 
-            self.textures = [self.texture]
-            self._width = self.texture.width * scale
-            self._height = self.texture.height * scale
+            self.textures = [self._texture]
+            self._width = self._texture.width * scale
+            self._height = self._texture.height * scale
         else:
             self.textures = []
             self._texture = None
@@ -465,31 +465,45 @@ class Sprite:
 
     right = property(_get_right, _set_right)
 
-    def get_texture(self) -> Texture:
-        """
-        Return the texture that the sprite uses.
-        """
-        return self._texture
+    def set_texture(self, texture_no: int):
+        if self.textures[texture_no] == self._texture:
+            return
 
-    def set_texture(self, texture: Texture):
-        """
-        Set the current sprite texture.
-        """
-        if isinstance(texture, Texture):
-            self.clear_spatial_hashes()
-            self._point_list_cache = None
-            self._texture = texture
-            self._width = texture.width * texture.scale
-            self._height = texture.height * texture.scale
-            self.add_spatial_hashes()
-            for sprite_list in self.sprite_lists:
-                sprite_list.update_texture(self)
+        texture = self.textures[texture_no]
+        self.clear_spatial_hashes()
+        self._point_list_cache = None
+        self._texture = texture
+        self._width = texture.width * texture.scale
+        self._height = texture.height * texture.scale
+        self.add_spatial_hashes()
+        for sprite_list in self.sprite_lists:
+            sprite_list.update_texture(self)
 
-        else:
-            raise SystemError("Can't set the texture to something that is " +
-                              "not an instance of the Texture class.")
-
-    texture = property(get_texture, set_texture)
+    # def get_texture(self) -> Texture:
+    #     """
+    #     Return the texture that the sprite uses.
+    #     """
+    #     return self._texture
+    #
+    # def set_texture(self, texture: Texture):
+    #     """
+    #     Set the current sprite texture.
+    #     """
+    #     if isinstance(texture, Texture):
+    #         self.clear_spatial_hashes()
+    #         self._point_list_cache = None
+    #         self._texture = texture
+    #         self._width = texture.width * texture.scale
+    #         self._height = texture.height * texture.scale
+    #         self.add_spatial_hashes()
+    #         for sprite_list in self.sprite_lists:
+    #             sprite_list.update_texture(self)
+    #
+    #     else:
+    #         raise SystemError("Can't set the texture to something that is " +
+    #                           "not an instance of the Texture class.")
+    #
+    # texture = property(get_texture, set_texture)
 
     def _get_color(self) -> RGB:
         """
@@ -539,7 +553,7 @@ class Sprite:
 
         draw_texture_rectangle(self.center_x, self.center_y,
                                self.width, self.height,
-                               self.texture, self.angle, self.alpha,  # TODO: review this function
+                               self._texture, self.angle, self.alpha,  # TODO: review this function
                                repeat_count_x=self.repeat_count_x,
                                repeat_count_y=self.repeat_count_y)
 

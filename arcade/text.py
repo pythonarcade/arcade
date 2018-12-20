@@ -19,7 +19,7 @@ class CreateText:
                  text: str,
                  color: Color,
                  font_size: float = 12,
-                 width: int = 2000,
+                 width: int = 20,
                  align="left",
                  font_name=('Calibri', 'Arial'),
                  bold: bool = False,
@@ -38,12 +38,12 @@ class CreateText:
         self.italic = italic
         self.anchor_x = anchor_x
         self.anchor_y = anchor_y
-        self.rotation = rotation
+
 
 def create_text(text: str,
                 color: Color,
                 font_size: float=12,
-                width: int=2000,
+                width: int=0,
                 align="left",
                 font_name=('Calibri', 'Arial'),
                 bold: bool=False,
@@ -54,6 +54,21 @@ def create_text(text: str,
 
     my_text = CreateText(text, color, font_size, width, align, font_name, bold, italic, anchor_x, anchor_y, rotation)
     return my_text
+
+
+def render_text(text: CreateText, start_x: float, start_y: float):
+    draw_text(text.text,
+              start_x,
+              start_y,
+              text.color,
+              text.font_size,
+              text.width,
+              text.align,
+              text.font_name,
+              text.bold,
+              text.italic,
+              text.anchor_x,
+              text.anchor_y)
 
 def draw_text(text: str,
               start_x: float, start_y: float,
@@ -210,12 +225,17 @@ def draw_text(text: str,
         image_start_y = - font_size * scale_up * 0.02
         image = PIL.Image.new("RGBA", text_image_size)
         draw = PIL.ImageDraw.Draw(image)
+
+        # Convert to tuple if needed, because the multiline_text does not take a
+        # list for a color
+        if isinstance(color, list):
+            color = tuple(color)
         draw.multiline_text((image_start_x, image_start_y), text, color, align=align, font=font)
         image = image.resize((width // scale_down, text_height // scale_down), resample=PIL.Image.LANCZOS)
 
         text_sprite = Sprite()
-        text_sprite.texture = Texture(key )
-        text_sprite.texture.image = image
+        text_sprite._texture = Texture(key )
+        text_sprite._texture.image = image
 
         text_sprite.image = image
         text_sprite.texture_name = key

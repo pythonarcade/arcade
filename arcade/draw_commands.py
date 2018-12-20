@@ -150,7 +150,7 @@ class Texture:
 
         if self._sprite == None:
             self._sprite = Sprite()
-            self._sprite.texture = self
+            self._sprite._texture = self
             self._sprite.textures = [self]
 
             self._sprite_list = SpriteList()
