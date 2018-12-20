@@ -60,10 +60,10 @@ Released 2018-Apr-20
 New Features
 ~~~~~~~~~~~~
 
-`Issue 189 <https://github.com/pvcraven/arcade/issues/189>`_: Add spatial hashing for faster collision detection
-`Issue 191 <https://github.com/pvcraven/arcade/issues/191>`_: Add function to get the distance between two sprites
-`Issue 192 <https://github.com/pvcraven/arcade/issues/192>`_: Add function to get closest sprite in a list to another sprite
-`Issue 193 <https://github.com/pvcraven/arcade/issues/193>`_: Improve decorator support
+* `Issue 189 <https://github.com/pvcraven/arcade/issues/189>`_: Add spatial hashing for faster collision detection
+* `Issue 191 <https://github.com/pvcraven/arcade/issues/191>`_: Add function to get the distance between two sprites
+* `Issue 192 <https://github.com/pvcraven/arcade/issues/192>`_: Add function to get closest sprite in a list to another sprite
+* `Issue 193 <https://github.com/pvcraven/arcade/issues/193>`_: Improve decorator support
 
 Updated Documentation
 ~~~~~~~~~~~~~~~~~~~~~
