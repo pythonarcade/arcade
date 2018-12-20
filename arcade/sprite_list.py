@@ -242,10 +242,8 @@ class SpriteList(Generic[T]):
         self.sprite_idx = dict()
 
         # Used in drawing optimization via OpenGL
-        self.program = shader.program(
-            vertex_shader=VERTEX_SHADER,
-            fragment_shader=FRAGMENT_SHADER
-        )
+        self.program = None
+
         self.sprite_data = None
         self.sprite_data_buf = None
         self.texture_id = None
@@ -519,6 +517,13 @@ class SpriteList(Generic[T]):
         self.sprite_data[i]['angle'] = math.radians(sprite.angle)
 
     def draw(self):
+
+        if self.program is None:
+            # Used in drawing optimization via OpenGL
+            self.program = shader.program(
+                vertex_shader=VERTEX_SHADER,
+                fragment_shader=FRAGMENT_SHADER
+            )
 
         if len(self.sprite_list) == 0:
             return
