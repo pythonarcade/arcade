@@ -272,7 +272,7 @@ class Buffer:
         'stream': GL_STREAM_DRAW
     }
 
-    def __init__(self, data: bytes, usage: str='static'):
+    def __init__(self, data: bytes, usage: str = 'static'):
         self.buffer_id = buffer_id = GLuint()
         self.size = len(data)
 
@@ -286,9 +286,9 @@ class Buffer:
         weakref.finalize(self, Buffer.release, buffer_id)
 
     @classmethod
-    def create_with_size(cls, size: int, usage: str='static'):
+    def create_with_size(cls, size: int, usage: str = 'static'):
         """Create an empty Buffer storage of the given size."""
-        buffer = Buffer(b"", usage=usage)
+        buffer = Buffer(b"", usage = usage)
         glBindBuffer(GL_ARRAY_BUFFER, buffer.buffer_id)
         glBufferData(GL_ARRAY_BUFFER, size, None, Buffer.usages[usage])
         buffer.size = size
@@ -305,7 +305,7 @@ class Buffer:
             glDeleteBuffers(1, byref(buffer_id))
             buffer_id.value = 0
 
-    def write(self, data: bytes, offset: int=0):
+    def write(self, data: bytes, offset: int = 0):
         glBindBuffer(GL_ARRAY_BUFFER, self.buffer_id)
         glBufferSubData(GL_ARRAY_BUFFER, GLintptr(offset), len(data), data)
         # print(f"Writing data:\n{data[:60]}")
@@ -326,7 +326,7 @@ class Buffer:
         glUnmapBuffer(GL_ARRAY_BUFFER)
 
 
-def buffer(data: bytes, usage: str='static') -> Buffer:
+def buffer(data: bytes, usage: str = 'static') -> Buffer:
     """Create a new OpenGL Buffer object.
     """
     return Buffer(data, usage)
@@ -365,8 +365,8 @@ class BufferDescription:
                  buffer: Buffer,
                  formats: str,
                  attributes: Iterable[str],
-                 normalized: Iterable[str]=None,
-                 instanced: bool=False):
+                 normalized: Iterable[str] = None,
+                 instanced: bool = False):
         self.buffer = buffer
         self.attributes = list(attributes)
         self.normalized = set() if normalized is None else set(normalized)
@@ -427,7 +427,7 @@ class VertexArray:
     def __init__(self,
                  program: Program,
                  content: Iterable[BufferDescription],
-                 index_buffer: Buffer=None):
+                 index_buffer: Buffer = None):
         self.program = program.prog_id
         self.vao = vao = GLuint()
         self.num_vertices = -1
@@ -490,7 +490,7 @@ class VertexArray:
             offset += attribsize
             glEnableVertexAttribArray(loc)
 
-    def render(self, mode: GLuint, instances: int=1):
+    def render(self, mode: GLuint, instances: int = 1):
         if self.ibo is not None:
             count = self.ibo.size // 4
             glDrawElementsInstanced(mode, count, GL_UNSIGNED_INT, None, instances)
@@ -498,7 +498,7 @@ class VertexArray:
             glDrawArraysInstanced(mode, 0, self.num_vertices, instances)
 
 
-def vertex_array(program: GLuint, content, index_buffer=None):
+def vertex_array(program: GLuint, content, index_buffer = None):
     """Create a new Vertex Array.
     """
     return VertexArray(program, content, index_buffer)
@@ -540,7 +540,7 @@ class Texture:
         if texture_id.value != 0:
             glDeleteTextures(1, byref(texture_id))
 
-    def use(self, texture_unit: int=0):
+    def use(self, texture_unit: int = 0):
         glActiveTexture(GL_TEXTURE0 + texture_unit)
         glBindTexture(GL_TEXTURE_2D, self.texture_id)
 
