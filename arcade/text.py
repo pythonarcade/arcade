@@ -14,6 +14,46 @@ class Text:
         self.size = (0, 0)
         self.text_sprite_list = None
 
+class CreateText:
+    def __init__(self,
+                 text: str,
+                 color: Color,
+                 font_size: float = 12,
+                 width: int = 2000,
+                 align="left",
+                 font_name=('Calibri', 'Arial'),
+                 bold: bool = False,
+                 italic: bool = False,
+                 anchor_x="left",
+                 anchor_y="baseline",
+                 rotation=0
+                 ):
+        self.text = text
+        self.color = color
+        self.font_size = font_size
+        self.width = width
+        self.align = align
+        self.font_name = font_name
+        self.bold = bold
+        self.italic = italic
+        self.anchor_x = anchor_x
+        self.anchor_y = anchor_y
+        self.rotation = rotation
+
+def create_text(text: str,
+                color: Color,
+                font_size: float=12,
+                width: int=2000,
+                align="left",
+                font_name=('Calibri', 'Arial'),
+                bold: bool=False,
+                italic: bool=False,
+                anchor_x="left",
+                anchor_y="baseline",
+                rotation=0):
+
+    my_text = CreateText(text, color, font_size, width, align, font_name, bold, italic, anchor_x, anchor_y, rotation)
+    return my_text
 
 def draw_text(text: str,
               start_x: float, start_y: float,

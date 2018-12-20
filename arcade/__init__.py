@@ -31,3 +31,4 @@ from arcade.decorator_support import decorator
 from arcade.read_tiled_map import *
 from arcade.isometric import *
 from arcade.text import draw_text
+from arcade.text import create_text
