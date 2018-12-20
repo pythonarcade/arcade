@@ -32,21 +32,20 @@ class Explosion(arcade.Sprite):
     # Static variable that holds all the explosion textures
     explosion_textures = []
 
-    def __init__(self):
+    def __init__(self, texture_list):
         super().__init__("images/explosion/explosion0000.png")
 
         # Start at the first frame
         self.current_texture = 0
-        self.texture = self.textures[self.current_texture]
+        self.textures = texture_list
 
     def update(self):
 
         # Update to the next frame of the animation. If we are at the end
         # of our frames, then delete this sprite.
         self.current_texture += 1
-        if self.current_texture < EXPLOSION_TEXTURE_COUNT:
-            texture_name = f"images/explosion/explosion{self.current_texture:04d}.png"
-            self.texture = arcade.load_texture(texture_name)
+        if self.current_texture < len(self.textures):
+            self.set_texture(self.current_texture)
         else:
             self.kill()
 
@@ -97,15 +96,17 @@ class MyGame(arcade.Window):
 
         # Pre-load the animation frames. We don't do this in the __init__ because it
         # takes too long and would cause the game to pause.
-        explosion_texture_list = []
+        self.explosion_texture_list = []
+
         for i in range(EXPLOSION_TEXTURE_COUNT):
             # Files from http://www.explosiongenerator.com are numbered sequentially.
             # This code loads all of the explosion0000.png to explosion0270.png files
             # that are part of this explosion.
             texture_name = f"images/explosion/explosion{i:04d}.png"
-            explosion_texture_list.append(texture_name)
 
-        self.explosions_list.preload_textures(explosion_texture_list)
+            self.explosion_texture_list.append(arcade.load_texture(texture_name))
+
+        # self.explosions_list.preload_textures(self.explosion_texture_list)
 
         # Set up the player
         self.score = 0
@@ -192,12 +193,11 @@ class MyGame(arcade.Window):
         for bullet in self.bullet_list:
 
             # Check this bullet to see if it hit a coin
-            hit_list = arcade.check_for_collision_with_list(bullet,
-                                                            self.coin_list)
+            hit_list = arcade.check_for_collision_with_list(bullet, self.coin_list)
 
             # If it did, get rid of the bullet
             if len(hit_list) > 0:
-                explosion = Explosion()
+                explosion = Explosion(self.explosion_texture_list)
                 explosion.center_x = hit_list[0].center_x
                 explosion.center_y = hit_list[0].center_y
                 self.explosions_list.append(explosion)

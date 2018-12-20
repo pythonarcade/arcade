@@ -125,7 +125,7 @@ class MyGame(arcade.Window):
         self.all_sprites_list.draw()
 
         # Put the text on the screen.
-        output = "Score: {}".format(self.score)
+        output = f"Score: {self.score}"
         arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
 
     def on_key_press(self, key, modifiers):
@@ -157,9 +157,7 @@ class MyGame(arcade.Window):
         self.all_sprites_list.update_animation()
 
         # Generate a list of all sprites that collided with the player.
-        hit_list = \
-            arcade.check_for_collision_with_list(self.player,
-                                                 self.coin_list)
+        hit_list = arcade.check_for_collision_with_list(self.player, self.coin_list)
 
         # Loop through each colliding sprite, remove it, and add to the score.
         for coin in hit_list:

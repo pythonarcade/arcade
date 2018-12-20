@@ -612,7 +612,7 @@ class AnimatedTimeSprite(Sprite):
             self.cur_texture_index += 1
             if self.cur_texture_index >= len(self.textures):
                 self.cur_texture_index = 0
-            self.set_texture(self.textures[self.cur_texture_index])
+            self.set_texture(self.cur_texture_index)
         self.frame += 1
 
 
@@ -671,13 +671,13 @@ class AnimatedWalkingSprite(Sprite):
 
         if self.change_x == 0 and self.change_y == 0:
             if self.state == FACE_LEFT:
-                self.texture = self.stand_left_textures[0]
+                self._texture = self.stand_left_textures[0]
             elif self.state == FACE_RIGHT:
-                self.texture = self.stand_right_textures[0]
+                self._texture = self.stand_right_textures[0]
             elif self.state == FACE_UP:
-                self.texture = self.walk_up_textures[0]
+                self._texture = self.walk_up_textures[0]
             elif self.state == FACE_DOWN:
-                self.texture = self.walk_down_textures[0]
+                self._texture = self.walk_down_textures[0]
 
         elif change_direction or distance >= self.texture_change_distance:
             self.last_texture_change_center_x = self.center_x
@@ -708,10 +708,10 @@ class AnimatedWalkingSprite(Sprite):
             if self.cur_texture_index >= len(texture_list):
                 self.cur_texture_index = 0
 
-            self.texture = texture_list[self.cur_texture_index]
+            self._texture = texture_list[self.cur_texture_index]
 
-        self.width = self.texture.width * self.scale
-        self.height = self.texture.height * self.scale
+        self.width = self._texture.width * self.scale
+        self.height = self._texture.height * self.scale
 
 
 def get_distance_between_sprites(sprite1: Sprite, sprite2: Sprite) -> float:
