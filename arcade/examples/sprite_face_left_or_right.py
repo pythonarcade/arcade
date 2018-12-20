@@ -20,6 +20,8 @@ SCREEN_HEIGHT = 600
 
 MOVEMENT_SPEED = 5
 
+TEXTURE_LEFT = 0
+TEXTURE_RIGHT = 1
 
 class Player(arcade.Sprite):
 
@@ -28,11 +30,13 @@ class Player(arcade.Sprite):
 
         # Load a left facing texture and a right facing texture.
         # mirrored=True will mirror the image we load.
-        self.texture_left = arcade.load_texture("images/character.png", mirrored=True, scale=SPRITE_SCALING)
-        self.texture_right = arcade.load_texture("images/character.png", scale=SPRITE_SCALING)
+        texture = arcade.load_texture("images/character.png", mirrored=True, scale=SPRITE_SCALING)
+        self.textures.append(texture)
+        texture = arcade.load_texture("images/character.png", scale=SPRITE_SCALING)
+        self.textures.append(texture)
 
         # By default, face right.
-        self.texture = self.texture_right
+        self.set_texture(TEXTURE_RIGHT)
 
     def update(self):
         self.center_x += self.change_x
@@ -40,9 +44,9 @@ class Player(arcade.Sprite):
 
         # Figure out if we should face left or right
         if self.change_x < 0:
-            self.texture = self.texture_left
+            self.set_texture(TEXTURE_LEFT)
         if self.change_x > 0:
-            self.texture = self.texture_right
+            self.set_texture(TEXTURE_RIGHT)
 
         if self.left < 0:
             self.left = 0
