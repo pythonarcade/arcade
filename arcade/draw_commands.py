@@ -148,7 +148,7 @@ class Texture:
         from arcade.sprite import Sprite
         from arcade.sprite_list import SpriteList
 
-        if self._sprite == None:
+        if self._sprite is None:
             self._sprite = Sprite()
             self._sprite._texture = self
             self._sprite.textures = [self]
@@ -167,8 +167,8 @@ class Texture:
 
 def load_textures(file_name: str,
                   image_location_list: PointList,
-                  mirrored: bool=False,
-                  flipped: bool=False) -> List['Texture']:
+                  mirrored: bool = False,
+                  flipped: bool = False) -> List['Texture']:
     """
     Load a set of textures off of a single image file.
 
@@ -233,11 +233,11 @@ def load_textures(file_name: str,
     return texture_info_list
 
 
-def load_texture(file_name: str, x: float=0, y: float=0,
-                 width: float=0, height: float=0,
-                 mirrored: bool=False,
-                 flipped: bool=False,
-                 scale: float=1) -> Texture:
+def load_texture(file_name: str, x: float = 0, y: float = 0,
+                 width: float = 0, height: float = 0,
+                 mirrored: bool = False,
+                 flipped: bool = False,
+                 scale: float = 1) -> Texture:
     """
     Load image from disk and create a texture.
 
@@ -329,8 +329,8 @@ def draw_arc_filled(center_x: float, center_y: float,
                     width: float, height: float,
                     color: Color,
                     start_angle: float, end_angle: float,
-                    tilt_angle: float=0,
-                    num_segments: int=128):
+                    tilt_angle: float = 0,
+                    num_segments: int = 128):
     """
     Draw a filled in arc. Useful for drawing pie-wedges, or Pac-Man.
 
@@ -379,8 +379,8 @@ def draw_arc_filled(center_x: float, center_y: float,
 def draw_arc_outline(center_x: float, center_y: float, width: float,
                      height: float, color: Color,
                      start_angle: float, end_angle: float,
-                     border_width: float=1, tilt_angle: float=0,
-                     num_segments: int=128):
+                     border_width: float = 1, tilt_angle: float = 0,
+                     num_segments: int = 128):
     """
     Draw the outside edge of an arc. Useful for drawing curved lines.
 
@@ -443,7 +443,7 @@ def draw_arc_outline(center_x: float, center_y: float, width: float,
 
 def draw_parabola_filled(start_x: float, start_y: float, end_x: float,
                          height: float, color: Color,
-                         tilt_angle: float=0):
+                         tilt_angle: float = 0):
     """
     Draws a filled in parabola.
 
@@ -483,7 +483,7 @@ arcade.color.BOTTLE_GREEN)
 
 def draw_parabola_outline(start_x: float, start_y: float, end_x: float,
                           height: float, color: Color,
-                          border_width: float=1, tilt_angle: float=0):
+                          border_width: float = 1, tilt_angle: float = 0):
     """
     Draws the outline of a parabola.
 
@@ -551,7 +551,7 @@ def draw_circle_filled(center_x: float, center_y: float, radius: float,
 
 
 def draw_circle_outline(center_x: float, center_y: float, radius: float,
-                        color: Color, border_width: float=1):
+                        color: Color, border_width: float = 1):
     """
     Draw the outline of a circle.
 
@@ -582,7 +582,7 @@ def draw_circle_outline(center_x: float, center_y: float, radius: float,
 
 def draw_ellipse_filled(center_x: float, center_y: float,
                         width: float, height: float, color: Color,
-                        tilt_angle: float=0, num_segments=128):
+                        tilt_angle: float = 0, num_segments = 128):
     """
     Draw a filled in ellipse.
 
@@ -628,8 +628,8 @@ def draw_ellipse_filled(center_x: float, center_y: float,
 
 def draw_ellipse_outline(center_x: float, center_y: float, width: float,
                          height: float, color: Color,
-                         border_width: float=1, tilt_angle: float=0,
-                         num_segments=128):
+                         border_width: float = 1, tilt_angle: float = 0,
+                         num_segments = 128):
     """
     Draw the outline of an ellipse.
 
@@ -678,8 +678,8 @@ def draw_ellipse_outline(center_x: float, center_y: float, width: float,
 
 def _generic_draw_line_strip(point_list: PointList,
                              color: Color,
-                             line_width: float=1,
-                             mode: int=gl.GL_LINE_STRIP):
+                             line_width: float = 1,
+                             mode: int = gl.GL_LINE_STRIP):
     """
     Draw a line strip. A line strip is a set of continuously connected
     line segments.
@@ -734,7 +734,7 @@ def _generic_draw_line_strip(point_list: PointList,
 
 
 def draw_line_strip(point_list: PointList,
-                    color: Color, line_width: float=1):
+                    color: Color, line_width: float = 1):
     """
     Draw a multi-point line.
 
@@ -816,7 +816,7 @@ def draw_point(x: float, y: float, color: Color, size: float):
 
 
 def draw_points(point_list: PointList,
-                color: Color, size: float=1):
+                color: Color, size: float = 1):
     """
     Draw a set of points.
 
@@ -909,7 +909,7 @@ def draw_triangle_filled(x1: float, y1: float,
 def draw_triangle_outline(x1: float, y1: float,
                           x2: float, y2: float,
                           x3: float, y3: float, color: Color,
-                          border_width: float=1):
+                          border_width: float = 1):
     """
     Draw a the outline of a triangle.
 
@@ -942,7 +942,7 @@ def draw_triangle_outline(x1: float, y1: float,
 
 def draw_lrtb_rectangle_outline(left: float, right: float, top: float,
                                 bottom: float, color: Color,
-                                border_width: float=1):
+                                border_width: float = 1):
     """
     Draw a rectangle by specifying left, right, top, and bottom edges.
 
@@ -979,7 +979,7 @@ def draw_lrtb_rectangle_outline(left: float, right: float, top: float,
 def draw_xywh_rectangle_outline(bottom_left_x: float, bottom_left_y: float,
                                 width: float, height: float,
                                 color: Color,
-                                border_width: float=1):
+                                border_width: float = 1):
     """
     Draw a rectangle extending from bottom left to top right
 
