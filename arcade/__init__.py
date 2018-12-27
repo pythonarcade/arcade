@@ -28,6 +28,7 @@ from arcade.version import *
 from arcade.window_commands import *
 from arcade.joysticks import *
 from arcade.decorator_support import decorator
+from arcade.decorator_alternative import *
 from arcade.read_tiled_map import *
 from arcade.isometric import *
 from arcade.text import draw_text
