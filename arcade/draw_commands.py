@@ -720,7 +720,7 @@ def _generic_draw_line_strip(point_list: PointList,
     vao = shader.vertex_array(program, vao_content)
     with vao:
         program['Projection'] = get_projection().flatten()
-
+        print(f"Line width: {line_width}")
         gl.glLineWidth(line_width)
         gl.glPointSize(line_width)
 
@@ -811,8 +811,24 @@ def draw_point(x: float, y: float, color: Color, size: float):
     Raises:
         None
     """
-    point_list = [(x, y)]
-    _generic_draw_line_strip(point_list, color, size, gl.GL_POINTS)
+    if size == 1:
+        point_list = [(x, y)]
+        _generic_draw_line_strip(point_list, color, size, gl.GL_POINTS)
+    else:
+        point_list = _get_points_for_points((x, y), size)
+        _generic_draw_line_strip(point_list, color, 1, gl.GL_TRIANGLE_STRIP)
+
+
+def _get_points_for_points(point_list, size):
+    new_point_list = []
+    hs = size / 2
+    for point in point_list:
+        x = point[0]
+        y = point[1]
+        new_point_list.append((x - hs, y - hs))
+        new_point_list.append((x + hs, y - hs))
+        new_point_list.append((x + hs, y + hs))
+    return new_point_list
 
 
 def draw_points(point_list: PointList,
@@ -831,7 +847,11 @@ def draw_points(point_list: PointList,
     Raises:
         None
     """
-    _generic_draw_line_strip(point_list, color, size, gl.GL_POINTS)
+    if size == 1:
+        _generic_draw_line_strip(point_list, color, size, gl.GL_POINTS)
+    else:
+        new_point_list = _get_points_for_points(point_list, size)
+        _generic_draw_line_strip(new_point_list, color, size, gl.GL_TRIANGLES)
 
 
 # --- END POINT FUNCTIONS # # #
