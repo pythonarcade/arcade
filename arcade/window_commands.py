@@ -177,9 +177,12 @@ def open_window(width: Number, height: Number, window_title: str, resizable: boo
     """
     global _window
 
+    config = pyglet.gl.Config(major_version=3, minor_version=3, double_buffer=True)
+
     window = pyglet.window.Window(width=width, height=height,
                                   caption=window_title,
-                                  resizable=resizable)
+                                  resizable=resizable,
+                                  config=config)
     _window = window
 
     set_viewport(0, width - 1, 0, height - 1)
