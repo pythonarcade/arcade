@@ -5,6 +5,40 @@
 Release Notes
 =============
 
+Version 2.0.0
+-------------
+
+Currently in beta
+
+Lots of improvements in 2.0.0. Too many to list, but the two main improvements:
+
+* Using shaders for sprites, making this one of the fastest sprite implementations
+  for Python.
+* Using ffmpeg for sound.
+
+Version 1.3.7
+-------------
+
+Released 2018-10-28
+
+* Fix for `Issue 275 <https://github.com/pvcraven/arcade/issues/275>`_ where sprites can get blurry.
+
+
+Version 1.3.6
+-------------
+
+Released 2018-10-10
+
+* Bux fix for spatial hashing
+* Implement commands for getting a pixel, and image from screen
+
+Version 1.3.5
+-------------
+
+Released 08-23-2018
+
+Bug fixes for spatial hashing and sound.
+
 Version 1.3.4
 -------------
 
@@ -60,10 +94,10 @@ Released 2018-Apr-20
 New Features
 ~~~~~~~~~~~~
 
-`Issue 189 <https://github.com/pvcraven/arcade/issues/189>`_: Add spatial hashing for faster collision detection
-`Issue 191 <https://github.com/pvcraven/arcade/issues/191>`_: Add function to get the distance between two sprites
-`Issue 192 <https://github.com/pvcraven/arcade/issues/192>`_: Add function to get closest sprite in a list to another sprite
-`Issue 193 <https://github.com/pvcraven/arcade/issues/193>`_: Improve decorator support
+* `Issue 189 <https://github.com/pvcraven/arcade/issues/189>`_: Add spatial hashing for faster collision detection
+* `Issue 191 <https://github.com/pvcraven/arcade/issues/191>`_: Add function to get the distance between two sprites
+* `Issue 192 <https://github.com/pvcraven/arcade/issues/192>`_: Add function to get closest sprite in a list to another sprite
+* `Issue 193 <https://github.com/pvcraven/arcade/issues/193>`_: Improve decorator support
 
 Updated Documentation
 ~~~~~~~~~~~~~~~~~~~~~

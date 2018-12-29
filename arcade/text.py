@@ -10,23 +10,84 @@ from arcade.draw_commands import Texture
 
 
 class Text:
+    """ Class used for managing text. """
     def __init__(self):
         self.size = (0, 0)
         self.text_sprite_list = None
 
 
+class CreateText:
+    """ Class used for managing text """
+    def __init__(self,
+                 text: str,
+                 color: Color,
+                 font_size: float = 12,
+                 width: int = 20,
+                 align="left",
+                 font_name=('Calibri', 'Arial'),
+                 bold: bool = False,
+                 italic: bool = False,
+                 anchor_x="left",
+                 anchor_y="baseline",
+                 ):
+
+        self.text = text
+        self.color = color
+        self.font_size = font_size
+        self.width = width
+        self.align = align
+        self.font_name = font_name
+        self.bold = bold
+        self.italic = italic
+        self.anchor_x = anchor_x
+        self.anchor_y = anchor_y
+
+
+def create_text(text: str,
+                color: Color,
+                font_size: float = 12,
+                width: int = 0,
+                align="left",
+                font_name = ('Calibri', 'Arial'),
+                bold: bool = False,
+                italic: bool = False,
+                anchor_x: str = "left",
+                anchor_y: str = "baseline",
+                rotation = 0):
+    """ Depricated. Two step text drawing for backwards compatibility. """
+
+    my_text = CreateText(text, color, font_size, width, align, font_name, bold, italic, anchor_x, anchor_y, rotation)
+    return my_text
+
+
+def render_text(text: CreateText, start_x: float, start_y: float):
+    """ Depricated. Two step text drawing for backwards compatibility. """
+    draw_text(text.text,
+              start_x,
+              start_y,
+              text.color,
+              text.font_size,
+              text.width,
+              text.align,
+              text.font_name,
+              text.bold,
+              text.italic,
+              text.anchor_x,
+              text.anchor_y)
+
+
 def draw_text(text: str,
               start_x: float, start_y: float,
               color: Color,
-              font_size: float=12,
-              width: int=0,
-              align="left",
+              font_size: float = 12,
+              width: int = 0,
+              align: str = "left",
               font_name=('calibri', 'arial'),
-              bold: bool=False,
-              italic: bool=False,
-              anchor_x="left",
-              anchor_y="baseline",
-              rotation: float=0
+              bold: bool = False,
+              italic: bool = False,
+              anchor_x: str = "left",
+              anchor_y: str = "baseline",
+              rotation: float = 0
               ):
 
     """
@@ -41,7 +102,7 @@ def draw_text(text: str,
     """
 
     # Scale the font up, so it matches with the sizes of the old code back
-    # when pyglet drew the text.
+    # when Pyglet drew the text.
     font_size *= 1.25
 
     # Text isn't anti-aliased, so we'll draw big, and then shrink
@@ -170,12 +231,17 @@ def draw_text(text: str,
         image_start_y = - font_size * scale_up * 0.02
         image = PIL.Image.new("RGBA", text_image_size)
         draw = PIL.ImageDraw.Draw(image)
+
+        # Convert to tuple if needed, because the multiline_text does not take a
+        # list for a color
+        if isinstance(color, list):
+            color = tuple(color)
         draw.multiline_text((image_start_x, image_start_y), text, color, align=align, font=font)
         image = image.resize((width // scale_down, text_height // scale_down), resample=PIL.Image.LANCZOS)
 
         text_sprite = Sprite()
-        text_sprite.texture = Texture(key )
-        text_sprite.texture.image = image
+        text_sprite._texture = Texture(key)
+        text_sprite._texture.image = image
 
         text_sprite.image = image
         text_sprite.texture_name = key

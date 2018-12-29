@@ -253,7 +253,7 @@ def read_tiled_map(filename: str, scaling) -> TiledMap:
     return my_map
 
 
-def generate_sprites(map_object, layer_name, scaling):
+def generate_sprites(map_object, layer_name, scaling, base_directory=""):
     sprite_list = SpriteList()
 
     if layer_name not in map_object.layers_int_data:
@@ -267,7 +267,7 @@ def generate_sprites(map_object, layer_name, scaling):
         for column_index, item in enumerate(row):
             if str(item) in map_object.global_tile_set:
                 tile_info = map_object.global_tile_set[str(item)]
-                filename = tile_info.source
+                filename = base_directory + tile_info.source
 
                 my_sprite = Sprite(filename, scaling)
                 my_sprite.right = column_index * (map_object.tilewidth * scaling)

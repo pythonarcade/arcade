@@ -242,14 +242,12 @@ class SpriteList(Generic[T]):
         self.sprite_idx = dict()
 
         # Used in drawing optimization via OpenGL
-        self.program = shader.program(
-            vertex_shader=VERTEX_SHADER,
-            fragment_shader=FRAGMENT_SHADER
-        )
+        self.program = None
+
         self.sprite_data = None
         self.sprite_data_buf = None
         self.texture_id = None
-        self.texture = None
+        self._texture = None
         self.vao = None
         self.vbo_buf = None
 
@@ -349,14 +347,14 @@ class SpriteList(Generic[T]):
 
         for sprite in self.sprite_list:
 
-            name_of_texture_to_check = sprite.texture.name
+            name_of_texture_to_check = sprite._texture.name
             if name_of_texture_to_check not in self.array_of_texture_names:
                 new_texture = True
                 # print("New because of ", name_of_texture_to_check)
 
             if name_of_texture_to_check not in new_array_of_texture_names:
                 new_array_of_texture_names.append(name_of_texture_to_check)
-                image = sprite.texture.image
+                image = sprite._texture.image
                 new_array_of_images.append(image)
 
         # print("New texture end: ", new_texture)
@@ -399,10 +397,10 @@ class SpriteList(Generic[T]):
                 x_offset += image.size[0]
 
             # Create a texture out the composite image
-            self.texture = shader.texture(
-                (new_image.width, new_image.height),
-                4,
-                np.asarray(new_image)
+            self._texture = shader.texture(
+                 (new_image.width, new_image.height),
+                 4,
+                 np.asarray(new_image)
             )
 
             if self.texture_id is None:
@@ -423,7 +421,7 @@ class SpriteList(Generic[T]):
         # coordinates for that sprite's image.
         array_of_sub_tex_coords = []
         for sprite in self.sprite_list:
-            index = self.array_of_texture_names.index(sprite.texture.name)
+            index = self.array_of_texture_names.index(sprite._texture.name)
             array_of_sub_tex_coords.append(tex_coords[index])
 
         # Create numpy array with info on location and such
@@ -520,13 +518,20 @@ class SpriteList(Generic[T]):
 
     def draw(self):
 
+        if self.program is None:
+            # Used in drawing optimization via OpenGL
+            self.program = shader.program(
+                vertex_shader=VERTEX_SHADER,
+                fragment_shader=FRAGMENT_SHADER
+            )
+
         if len(self.sprite_list) == 0:
             return
 
         if self.vao is None:
             self.calculate_sprite_buffer()
 
-        self.texture.use(0)
+        self._texture.use(0)
 
         gl.glEnable(gl.GL_BLEND)
         gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)

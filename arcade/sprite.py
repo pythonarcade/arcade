@@ -114,12 +114,12 @@ class Sprite:
         self.sprite_lists = []
 
         if filename is not None:
-            self.texture = load_texture(filename, image_x, image_y,
-                                        image_width, image_height)
+            self._texture = load_texture(filename, image_x, image_y,
+                                         image_width, image_height)
 
-            self.textures = [self.texture]
-            self._width = self.texture.width * scale
-            self._height = self.texture.height * scale
+            self.textures = [self._texture]
+            self._width = self._texture.width * scale
+            self._height = self._texture.height * scale
         else:
             self.textures = []
             self._texture = None
@@ -465,31 +465,45 @@ class Sprite:
 
     right = property(_get_right, _set_right)
 
-    def get_texture(self) -> Texture:
-        """
-        Return the texture that the sprite uses.
-        """
-        return self._texture
+    def set_texture(self, texture_no: int):
+        if self.textures[texture_no] == self._texture:
+            return
 
-    def set_texture(self, texture: Texture):
-        """
-        Set the current sprite texture.
-        """
-        if isinstance(texture, Texture):
-            self.clear_spatial_hashes()
-            self._point_list_cache = None
-            self._texture = texture
-            self._width = texture.width * texture.scale
-            self._height = texture.height * texture.scale
-            self.add_spatial_hashes()
-            for sprite_list in self.sprite_lists:
-                sprite_list.update_texture(self)
+        texture = self.textures[texture_no]
+        self.clear_spatial_hashes()
+        self._point_list_cache = None
+        self._texture = texture
+        self._width = texture.width * texture.scale
+        self._height = texture.height * texture.scale
+        self.add_spatial_hashes()
+        for sprite_list in self.sprite_lists:
+            sprite_list.update_texture(self)
 
-        else:
-            raise SystemError("Can't set the texture to something that is " +
-                              "not an instance of the Texture class.")
-
-    texture = property(get_texture, set_texture)
+    # def get_texture(self) -> Texture:
+    #     """
+    #     Return the texture that the sprite uses.
+    #     """
+    #     return self._texture
+    #
+    # def set_texture(self, texture: Texture):
+    #     """
+    #     Set the current sprite texture.
+    #     """
+    #     if isinstance(texture, Texture):
+    #         self.clear_spatial_hashes()
+    #         self._point_list_cache = None
+    #         self._texture = texture
+    #         self._width = texture.width * texture.scale
+    #         self._height = texture.height * texture.scale
+    #         self.add_spatial_hashes()
+    #         for sprite_list in self.sprite_lists:
+    #             sprite_list.update_texture(self)
+    #
+    #     else:
+    #         raise SystemError("Can't set the texture to something that is " +
+    #                           "not an instance of the Texture class.")
+    #
+    # texture = property(get_texture, set_texture)
 
     def _get_color(self) -> RGB:
         """
@@ -539,7 +553,7 @@ class Sprite:
 
         draw_texture_rectangle(self.center_x, self.center_y,
                                self.width, self.height,
-                               self.texture, self.angle, self.alpha,  # TODO: review this function
+                               self._texture, self.angle, self.alpha,  # TODO: review this function
                                repeat_count_x=self.repeat_count_x,
                                repeat_count_y=self.repeat_count_y)
 
@@ -657,13 +671,13 @@ class AnimatedWalkingSprite(Sprite):
 
         if self.change_x == 0 and self.change_y == 0:
             if self.state == FACE_LEFT:
-                self.texture = self.stand_left_textures[0]
+                self._texture = self.stand_left_textures[0]
             elif self.state == FACE_RIGHT:
-                self.texture = self.stand_right_textures[0]
+                self._texture = self.stand_right_textures[0]
             elif self.state == FACE_UP:
-                self.texture = self.walk_up_textures[0]
+                self._texture = self.walk_up_textures[0]
             elif self.state == FACE_DOWN:
-                self.texture = self.walk_down_textures[0]
+                self._texture = self.walk_down_textures[0]
 
         elif change_direction or distance >= self.texture_change_distance:
             self.last_texture_change_center_x = self.center_x
@@ -694,10 +708,10 @@ class AnimatedWalkingSprite(Sprite):
             if self.cur_texture_index >= len(texture_list):
                 self.cur_texture_index = 0
 
-            self.texture = texture_list[self.cur_texture_index]
+            self._texture = texture_list[self.cur_texture_index]
 
-        self.width = self.texture.width * self.scale
-        self.height = self.texture.height * self.scale
+        self.width = self._texture.width * self.scale
+        self.height = self._texture.height * self.scale
 
 
 def get_distance_between_sprites(sprite1: Sprite, sprite2: Sprite) -> float:
