@@ -26,6 +26,7 @@ _window = None
 _projection = None
 _opengl_context = None
 
+
 def get_projection():
     return _projection
 
@@ -153,40 +154,13 @@ def set_viewport(left: Number, right: Number, bottom: Number, top: Number):
     # gl.glLoadIdentity()
 
     _projection = create_orthogonal_projection(left=_left, right=_right,
-                                              bottom=_bottom, top=_top,
-                                              near=-1000, far=100, dtype=np.float32)
+                                               bottom=_bottom, top=_top,
+                                               near=-1000, far=100, dtype=np.float32)
 
 
 def get_viewport() -> (float, float, float, float):
     """ Get the current viewport settings. """
     return _left, _right, _bottom, _top
-
-
-def open_window(width: Number, height: Number, window_title: str, resizable: bool = False):
-    """
-    This function opens a window. For ease-of-use we assume there will only be one window, and the
-    programmer does not need to keep a handle to the window. This isn't the best architecture, because
-    the window handle is stored in a global, but it makes things easier for programmers if they don't
-    have to track a window pointer.
-
-    Args:
-        :window_title: Title of the window.
-        :width: Width of the window.
-        :height: Height of the window.
-        :resizable: Whether the window can be user-resizable.
-    """
-    global _window
-
-    config = pyglet.gl.Config(major_version=3, minor_version=3, double_buffer=True)
-
-    window = pyglet.window.Window(width=width, height=height,
-                                  caption=window_title,
-                                  resizable=resizable,
-                                  config=config)
-    _window = window
-
-    set_viewport(0, width - 1, 0, height - 1)
-    window.invalid = False
 
 
 def close_window():
@@ -262,14 +236,6 @@ def set_background_color(color: Color):
     Raises:
         None
 
-    Example:
-
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
-    >>> arcade.set_background_color(arcade.color.RED)
-    >>> arcade.start_render()
-    >>> arcade.finish_render()
-    >>> arcade.quick_run(0.25)
     """
 
     gl.glClearColor(color[0]/255, color[1]/255, color[2]/255, 1)

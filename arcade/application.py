@@ -25,13 +25,14 @@ class Window(pyglet.window.Window):
 
     def __init__(self, width: float = 800, height: float = 600,
                  title: str = 'Arcade Window', fullscreen: bool = False,
-                 resizable: bool = False):
+                 resizable: bool = False, update_rate=1/60):
         config = pyglet.gl.Config(major_version=3, minor_version=3, double_buffer=True)
 
         super().__init__(width=width, height=height, caption=title,
                          resizable=resizable, config=config)
 
-        self.set_update_rate(1 / 60)
+        if update_rate:
+            self.set_update_rate(update_rate)
         super().set_fullscreen(fullscreen)
         self.invalid = False
         set_window(self)
@@ -137,13 +138,6 @@ class Window(pyglet.window.Window):
         Raises:
             ValueError
 
-        Example:
-
-        >>> import arcade
-        >>> window = arcade.Window(200, 100, resizable=True)
-        >>> window.set_max_size(200, 200)
-        >>> window.close()
-
         """
 
         if self._resizable:
@@ -190,3 +184,22 @@ class Window(pyglet.window.Window):
             self.dispatch_event('on_draw')
             self.flip()
             self.update(1/60)
+
+
+def open_window(width: Number, height: Number, window_title: str, resizable: bool = False):
+    """
+    This function opens a window. For ease-of-use we assume there will only be one window, and the
+    programmer does not need to keep a handle to the window. This isn't the best architecture, because
+    the window handle is stored in a global, but it makes things easier for programmers if they don't
+    have to track a window pointer.
+
+    Args:
+        :window_title: Title of the window.
+        :width: Width of the window.
+        :height: Height of the window.
+        :resizable: Whether the window can be user-resizable.
+    """
+
+    global _window
+    _window = Window(width, height, window_title, resizable, update_rate=None)
+    return _window

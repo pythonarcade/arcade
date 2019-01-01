@@ -459,18 +459,6 @@ def draw_parabola_filled(start_x: float, start_y: float, end_x: float,
     Raises:
         None
 
-    Example:
-
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
-    >>> arcade.set_background_color(arcade.color.WHITE)
-    >>> arcade.start_render()
-    >>> arcade.draw_parabola_filled(150, 150, 200, 50, \
-arcade.color.BOTTLE_GREEN)
-    >>> color = (255, 0, 0, 127)
-    >>> arcade.draw_parabola_filled(160, 160, 210, 50, color)
-    >>> arcade.finish_render()
-    >>> arcade.close_window()
     """
     center_x = (start_x + end_x) / 2
     center_y = start_y + height
@@ -500,18 +488,6 @@ def draw_parabola_outline(start_x: float, start_y: float, end_x: float,
     Raises:
         None
 
-    Example:
-
-    >>> import arcade
-    >>> arcade.open_window(800,600,"Drawing Example")
-    >>> arcade.set_background_color(arcade.color.WHITE)
-    >>> arcade.start_render()
-    >>> arcade.draw_parabola_outline(150, 150, 200, 50, \
-arcade.color.BOTTLE_GREEN, 10, 15)
-    >>> color = (255, 0, 0, 127)
-    >>> arcade.draw_parabola_outline(160, 160, 210, 50, color, 20)
-    >>> arcade.finish_render()
-    >>> arcade.close_window()
     """
     center_x = (start_x + end_x) / 2
     center_y = start_y + height
@@ -582,7 +558,7 @@ def draw_circle_outline(center_x: float, center_y: float, radius: float,
 
 def draw_ellipse_filled(center_x: float, center_y: float,
                         width: float, height: float, color: Color,
-                        tilt_angle: float = 0, num_segments = 128):
+                        tilt_angle: float = 0, num_segments: int = 128):
     """
     Draw a filled in ellipse.
 
@@ -648,28 +624,65 @@ def draw_ellipse_outline(center_x: float, center_y: float, width: float,
         None
     """
 
-    unrotated_point_list = []
+    if border_width == 1:
+        unrotated_point_list = []
 
-    for segment in range(num_segments):
-        theta = 2.0 * 3.1415926 * segment / num_segments
+        for segment in range(num_segments):
+            theta = 2.0 * 3.1415926 * segment / num_segments
 
-        x = width * math.cos(theta)
-        y = height * math.sin(theta)
+            x = width * math.cos(theta)
+            y = height * math.sin(theta)
 
-        unrotated_point_list.append((x, y))
+            unrotated_point_list.append((x, y))
 
-    if tilt_angle == 0:
-        uncentered_point_list = unrotated_point_list
+        if tilt_angle == 0:
+            uncentered_point_list = unrotated_point_list
+        else:
+            uncentered_point_list = []
+            for point in unrotated_point_list:
+                uncentered_point_list.append(rotate_point(point[0], point[1], 0, 0, tilt_angle))
+
+        point_list = []
+        for point in uncentered_point_list:
+            point_list.append((point[0] + center_x, point[1] + center_y))
+
+        _generic_draw_line_strip(point_list, color, border_width, gl.GL_LINE_LOOP)
     else:
-        uncentered_point_list = []
-        for point in unrotated_point_list:
-            uncentered_point_list.append(rotate_point(point[0], point[1], 0, 0, tilt_angle))
 
-    point_list = []
-    for point in uncentered_point_list:
-        point_list.append((point[0] + center_x, point[1] + center_y))
+        unrotated_point_list = []
 
-    _generic_draw_line_strip(point_list, color, border_width, gl.GL_LINE_LOOP)
+        start_segment = 0
+        end_segment = num_segments
+
+        inside_width = width - border_width / 2
+        outside_width = width + border_width / 2
+        inside_height = height - border_width / 2
+        outside_height = height + border_width / 2
+
+        for segment in range(start_segment, end_segment + 1):
+            theta = 2.0 * math.pi * segment / num_segments
+
+            x1 = inside_width * math.cos(theta)
+            y1 = inside_height * math.sin(theta)
+
+            x2 = outside_width * math.cos(theta)
+            y2 = outside_height * math.sin(theta)
+
+            unrotated_point_list.append((x1, y1))
+            unrotated_point_list.append((x2, y2))
+
+        if tilt_angle == 0:
+            uncentered_point_list = unrotated_point_list
+        else:
+            uncentered_point_list = []
+            for point in unrotated_point_list:
+                uncentered_point_list.append(rotate_point(point[0], point[1], 0, 0, tilt_angle))
+
+        point_list = []
+        for point in uncentered_point_list:
+            point_list.append((point[0] + center_x, point[1] + center_y))
+
+        _generic_draw_line_strip(point_list, color, 1, gl.GL_TRIANGLE_STRIP)
 
 # --- END ELLIPSE FUNCTIONS # # #
 
@@ -720,7 +733,6 @@ def _generic_draw_line_strip(point_list: PointList,
     vao = shader.vertex_array(program, vao_content)
     with vao:
         program['Projection'] = get_projection().flatten()
-        print(f"Line width: {line_width}")
         gl.glLineWidth(line_width)
         gl.glPointSize(line_width)
 
@@ -743,7 +755,15 @@ def draw_line_strip(point_list: PointList,
         color:
         line_width:
     """
-    _generic_draw_line_strip(point_list, color, line_width, gl.GL_LINE_STRIP)
+    if line_width == 1:
+        _generic_draw_line_strip(point_list, color, line_width, gl.GL_LINE_STRIP)
+    else:
+        # This needs a lot of improvement
+        last_point = None
+        for point in point_list:
+            if last_point is not None:
+                draw_line(last_point[0], last_point[1], point[0], point[1], color, line_width)
+            last_point = point
 
 
 def draw_line(start_x: float, start_y: float, end_x: float, end_y: float,
@@ -767,7 +787,26 @@ def draw_line(start_x: float, start_y: float, end_x: float, end_y: float,
     """
 
     points = (start_x, start_y), (end_x, end_y)
-    draw_line_strip(points, color, line_width)
+    if line_width == 1:
+        draw_line_strip(points, color, line_width)
+    else:
+        vector_x = start_x - end_x
+        vector_y = start_y - end_y
+        perpendicular_x = vector_y
+        perpendicular_y = -vector_x
+        length = math.sqrt(vector_x * vector_x + vector_y * vector_y)
+        normal_x = perpendicular_x / length
+        normal_y = perpendicular_y / length
+        r1_x = start_x + normal_x * line_width / 2
+        r1_y = start_y + normal_y * line_width / 2
+        r2_x = start_x - normal_x * line_width / 2
+        r2_y = start_y - normal_y * line_width / 2
+        r3_x = end_x + normal_x * line_width / 2
+        r3_y = end_y + normal_y * line_width / 2
+        r4_x = end_x - normal_x * line_width / 2
+        r4_y = end_y - normal_y * line_width / 2
+        points = (r1_x, r1_y), (r2_x, r2_y), (r4_x, r4_y), (r3_x, r3_y)
+        draw_polygon_filled(points, color)
 
 
 def draw_lines(point_list: PointList,
@@ -790,7 +829,16 @@ def draw_lines(point_list: PointList,
         None
     """
 
-    _generic_draw_line_strip(point_list, color, line_width, gl.GL_LINES)
+    if line_width == 1:
+        _generic_draw_line_strip(point_list, color, line_width, gl.GL_LINES)
+    else:
+        # This needs a lot of improvement
+        last_point = None
+        for point in point_list:
+            if last_point is not None:
+                draw_line(last_point[0], last_point[1], point[0], point[1], color, line_width)
+                last_point = None
+            last_point = point
 
 
 # --- BEGIN POINT FUNCTIONS # # #
@@ -815,8 +863,7 @@ def draw_point(x: float, y: float, color: Color, size: float):
         point_list = [(x, y)]
         _generic_draw_line_strip(point_list, color, size, gl.GL_POINTS)
     else:
-        point_list = _get_points_for_points((x, y), size)
-        _generic_draw_line_strip(point_list, color, 1, gl.GL_TRIANGLE_STRIP)
+        draw_rectangle_filled(x, y, size / 2, size / 2, color)
 
 
 def _get_points_for_points(point_list, size):
@@ -851,7 +898,7 @@ def draw_points(point_list: PointList,
         _generic_draw_line_strip(point_list, color, size, gl.GL_POINTS)
     else:
         new_point_list = _get_points_for_points(point_list, size)
-        _generic_draw_line_strip(new_point_list, color, size, gl.GL_TRIANGLES)
+        _generic_draw_line_strip(new_point_list, color, 1, gl.GL_TRIANGLES)
 
 
 # --- END POINT FUNCTIONS # # #
@@ -896,7 +943,9 @@ def draw_polygon_outline(point_list: PointList,
     Raises:
         None
     """
-    _generic_draw_line_strip(point_list, color, line_width, gl.GL_LINE_LOOP)
+    if line_width == 1:
+        _generic_draw_line_strip(point_list, color, line_width, gl.GL_LINE_LOOP)
+
 
 
 def draw_triangle_filled(x1: float, y1: float,
@@ -1043,18 +1092,46 @@ def draw_rectangle_outline(center_x: float, center_y: float, width: float,
         None
     """
 
-    p1 = -width // 2 + center_x, -height // 2 + center_y
-    p2 = width // 2 + center_x, -height // 2 + center_y
-    p3 = width // 2 + center_x, height // 2 + center_y
-    p4 = -width // 2 + center_x, height // 2 + center_y
+    if border_width == 1:
+        p1 = -width // 2 + center_x, -height // 2 + center_y
+        p2 = width // 2 + center_x, -height // 2 + center_y
+        p3 = width // 2 + center_x, height // 2 + center_y
+        p4 = -width // 2 + center_x, height // 2 + center_y
 
-    if tilt_angle != 0:
-        p1 = rotate_point(p1[0], p1[1], center_x, center_y, tilt_angle)
-        p2 = rotate_point(p2[0], p2[1], center_x, center_y, tilt_angle)
-        p3 = rotate_point(p3[0], p3[1], center_x, center_y, tilt_angle)
-        p4 = rotate_point(p4[0], p4[1], center_x, center_y, tilt_angle)
+        if tilt_angle != 0:
+            p1 = rotate_point(p1[0], p1[1], center_x, center_y, tilt_angle)
+            p2 = rotate_point(p2[0], p2[1], center_x, center_y, tilt_angle)
+            p3 = rotate_point(p3[0], p3[1], center_x, center_y, tilt_angle)
+            p4 = rotate_point(p4[0], p4[1], center_x, center_y, tilt_angle)
 
-    _generic_draw_line_strip((p1, p2, p3, p4), color, border_width, gl.GL_LINE_LOOP)
+        _generic_draw_line_strip((p1, p2, p3, p4), color, border_width, gl.GL_LINE_LOOP)
+    else:
+        inside_width = width - border_width / 2
+        inside_height = height - border_width / 2
+        outside_width = width + border_width / 2
+        outside_height = height + border_width / 2
+
+        i_lb = -inside_width // 2 + center_x, -inside_height // 2 + center_y
+        i_rb = inside_width // 2 + center_x, -inside_height // 2 + center_y
+        i_rt = inside_width // 2 + center_x, inside_height // 2 + center_y
+        i_lt = -inside_width // 2 + center_x, inside_height // 2 + center_y
+
+        o_lb = -outside_width // 2 + center_x, -outside_height // 2 + center_y
+        o_rb = outside_width // 2 + center_x, -outside_height // 2 + center_y
+        o_rt = outside_width // 2 + center_x, outside_height // 2 + center_y
+        o_lt = -outside_width // 2 + center_x, outside_height // 2 + center_y
+
+        point_list = o_lt, i_lt, o_rt, i_rt, o_rb, i_rb, o_lb, i_lb, o_lt, i_lt
+
+        if tilt_angle != 0:
+            point_list_2 = []
+            for point in point_list:
+                new_point = rotate_point(point[0], point[1], center_x, center_y, tilt_angle)
+                point_list_2.append(new_point)
+            point_list = point_list_2
+
+        _generic_draw_line_strip(point_list, color, 1, gl.GL_TRIANGLE_STRIP)
+
 
 
 def draw_lrtb_rectangle_filled(left: float, right: float, top: float,
