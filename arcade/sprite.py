@@ -13,10 +13,12 @@ from arcade.draw_commands import load_texture
 from arcade.draw_commands import draw_texture_rectangle
 from arcade.draw_commands import Texture
 from arcade.draw_commands import rotate_point
-from arcade.arcade_types import RGB
+from arcade.arcade_types import RGB, Vector
 
 from typing import Sequence
 from typing import Tuple
+
+from pymunk.vec2d import Vec2d
 
 FACE_RIGHT = 1
 FACE_LEFT = 2
@@ -55,7 +57,7 @@ class Sprite:
         for collision detection. Arcade defaults to creating points for a rectangle \
         that encompass the image. If you are creating a ramp or making better \
         hit-boxes, you can custom-set these.
-        :position: A list with the (x, y) of where the sprite is.
+        :position: A vector pymunk.Vec2d(x, y) of where the sprite is.
         :repeat_count_x:
         :repeat_count_y:
         :right: Set/query the sprite location by using the right coordinate. \
@@ -67,7 +69,7 @@ class Sprite:
         will be the 'y' of the top of the sprite.
         :scale: Scale the image up or down. Scale of 1.0 is original size, 0.5 \
         is 1/2 height and width.
-        :velocity: Change in x, y expressed as a list. (0, 0) would be not moving.
+        :velocity: Change in x, y expressed as a pymunk.Vec2d. Vec2d(0, 0) would be not moving.
         :width: Width of the sprite
 
     It is common to over-ride the `update` method and provide mechanics on
@@ -129,10 +131,10 @@ class Sprite:
         self.cur_texture_index = 0
 
         self.scale = scale
-        self._position = [center_x, center_y]
+        self._position = Vec2d(center_x, center_y)
         self._angle = 0.0
 
-        self.velocity = [0, 0]
+        self._velocity = Vec2d(0, 0)
         self.change_angle = 0
 
         self.boundary_left = None
@@ -160,37 +162,33 @@ class Sprite:
         """
         self.textures.append(texture)
 
-    def _get_position(self) -> (float, float):
-        """ Get the center x coordinate of the sprite. """
-        return (self._position[0], self._position[1])
+    @property
+    def position(self) -> Vector:
+        """ Get the center coordinate of the sprite. """
+        return self._position
 
-    def _set_position(self, new_value: (float, float)):
+    @position.setter
+    def position(self, vector: Vector):
         """ Set the center x coordinate of the sprite. """
-        self.clear_spatial_hashes()
-        self._point_list_cache = None
-        self._position[0] = new_value[0]
-        self._position[1] = new_value[1]
-        self.add_spatial_hashes()
-
-        for sprite_list in self.sprite_lists:
-            sprite_list.update_location(self)
-
-    position = property(_get_position, _set_position)
-
-    def set_position(self, center_x: float, center_y: float):
-        """
-        Set a sprite's position
-        """
-        if center_x != self._position[0] or center_y != self._position[1]:
-            from arcade.sprite_list import SpriteList
+        new_vector = Vec2d(*vector)
+        if new_vector != self._position:
             self.clear_spatial_hashes()
             self._point_list_cache = None
-            self._position[0] = center_x
-            self._position[1] = center_y
+            self._position = new_vector
             self.add_spatial_hashes()
 
             for sprite_list in self.sprite_lists:
                 sprite_list.update_location(self)
+
+    @property
+    def velocity(self) -> Vector:
+        """Get the velocity of the sprite"""
+        return self._velocity
+
+    @velocity.setter
+    def velocity(self, vector: Vector):
+        """Set the velocity of the sprite"""
+        self._velocity = Vec2d(*vector)
 
     def set_points(self, points: Sequence[Sequence[float]]):
         """
@@ -356,60 +354,59 @@ class Sprite:
 
     height = property(_get_height, _set_height)
 
-
-    def _get_center_x(self) -> float:
+    @property
+    def center_x(self) -> float:
         """ Get the center x coordinate of the sprite. """
-        return self._position[0]
+        return self._position.x
 
-    def _set_center_x(self, new_value: float):
+    @center_x.setter
+    def center_x(self, new_value: float):
         """ Set the center x coordinate of the sprite. """
-        if new_value != self._position[0]:
+        if new_value != self._position.x:
             self.clear_spatial_hashes()
             self._point_list_cache = None
-            self._position[0] = new_value
+            self._position.x = new_value
             self.add_spatial_hashes()
 
             for sprite_list in self.sprite_lists:
                 sprite_list.update_position(self)
 
-    center_x = property(_get_center_x, _set_center_x)
-
-    def _get_center_y(self) -> float:
+    @property
+    def center_y(self) -> float:
         """ Get the center y coordinate of the sprite. """
-        return self._position[1]
+        return self._position.y
 
-    def _set_center_y(self, new_value: float):
+    @center_y.setter
+    def center_y(self, new_value: float):
         """ Set the center y coordinate of the sprite. """
-        if new_value != self._position[1]:
+        if new_value != self._position.y:
             self.clear_spatial_hashes()
             self._point_list_cache = None
-            self._position[1] = new_value
+            self._position.y = new_value
             self.add_spatial_hashes()
 
             for sprite_list in self.sprite_lists:
                 sprite_list.update_position(self)
 
-    center_y = property(_get_center_y, _set_center_y)
-
-    def _get_change_x(self) -> float:
+    @property
+    def change_x(self) -> float:
         """ Get the velocity in the x plane of the sprite. """
-        return self.velocity[0]
+        return self._velocity.x
 
-    def _set_change_x(self, new_value: float):
+    @change_x.setter
+    def change_x(self, new_value: float):
         """ Set the velocity in the x plane of the sprite. """
-        self.velocity[0] = new_value
+        self._velocity.x = new_value
 
-    change_x = property(_get_change_x, _set_change_x)
-
-    def _get_change_y(self) -> float:
+    @property
+    def change_y(self) -> float:
         """ Get the velocity in the y plane of the sprite. """
-        return self.velocity[1]
+        return self._velocity.y
 
-    def _set_change_y(self, new_value: float):
+    @change_y.setter
+    def change_y(self, new_value: float):
         """ Set the velocity in the y plane of the sprite. """
-        self.velocity[1] = new_value
-
-    change_y = property(_get_change_y, _set_change_y)
+        self._velocity.y = new_value
 
     def _get_angle(self) -> float:
         """ Get the angle of the sprite's rotation. """
@@ -561,7 +558,7 @@ class Sprite:
         """
         Update the sprite.
         """
-        self.set_position(self.center_x + self.change_x, self.center_y + self.change_y)
+        self.position += self.velocity
         self.angle += self.change_angle
 
     def update_animation(self):

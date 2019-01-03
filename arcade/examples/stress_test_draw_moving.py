@@ -148,13 +148,13 @@ class MyGame(arcade.Window):
 
         for sprite in self.coin_list:
 
-            if sprite.position[0] < 0:
+            if sprite.position.x < 0:
                 sprite.change_x *= -1
-            elif sprite.position[0] > SCREEN_WIDTH:
+            elif sprite.position.x > SCREEN_WIDTH:
                 sprite.change_x *= -1
-            if sprite.position[1] < 0:
+            if sprite.position.y < 0:
                 sprite.change_y *= -1
-            elif sprite.position[1] > SCREEN_HEIGHT:
+            elif sprite.position.y > SCREEN_HEIGHT:
                 sprite.change_y *= -1
 
         # Save the time it took to do this.
