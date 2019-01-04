@@ -171,7 +171,7 @@ class Sprite:
     def position(self, vector: Vector):
         """ Set the center x coordinate of the sprite. """
         new_vector = Vec2d(*vector)
-        if new_vector != self._position:
+        if new_vector != self._position or self._velocity.get_length_sqrd() > 0.001**2:
             self.clear_spatial_hashes()
             self._point_list_cache = None
             self._position = new_vector
