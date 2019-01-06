@@ -156,7 +156,6 @@ def set_viewport(left: Number, right: Number, bottom: Number, top: Number):
     _top = top
 
     # Needed for sprites
-    print(_window.width, _window.height)
     if _scaling is None:
         _scaling = get_scaling_factor(_window)
     gl.glViewport(0, 0, _window.width * _scaling, _window.height * _scaling)
