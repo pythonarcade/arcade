@@ -20,6 +20,7 @@ _left = -1
 _right = 1
 _bottom = -1
 _top = 1
+_scaling = None
 
 _window = None
 
@@ -106,6 +107,16 @@ def set_window(window: pyglet.window.Window):
     global _window
     _window = window
 
+def get_scaling_factor(window):
+    from pyglet import compat_platform
+    if compat_platform == 'darwin':
+        from pyglet.libs.darwin.cocoapy import NSMakeRect
+        view = window.context._nscontext.view()
+        content_rect = NSMakeRect(0, 0, window._width, window._height)  # Get size, possibly scaled
+        bounds = view.convertRectFromBacking_(content_rect)  # Convert to actual pixel sizes
+        return int(content_rect.size.width / bounds.size.width)
+    else:
+        return 1
 
 def set_viewport(left: Number, right: Number, bottom: Number, top: Number):
     """
@@ -137,6 +148,7 @@ def set_viewport(left: Number, right: Number, bottom: Number, top: Number):
     global _bottom
     global _top
     global _projection
+    global _scaling
 
     _left = left
     _right = right
@@ -144,7 +156,10 @@ def set_viewport(left: Number, right: Number, bottom: Number, top: Number):
     _top = top
 
     # Needed for sprites
-    gl.glViewport(0, 0, _window.width, _window.height)
+    print(_window.width, _window.height)
+    if _scaling is None:
+        _scaling = get_scaling_factor(_window)
+    gl.glViewport(0, 0, _window.width * _scaling, _window.height * _scaling)
 
     # Needed for drawing
     # gl.glMatrixMode(gl.GL_PROJECTION)
