@@ -195,14 +195,7 @@ class Sprite:
     @center_x.setter
     def center_x(self, new_value: float):
         """ Set the center x coordinate of the sprite. """
-        if new_value != self._position.x:
-            self.clear_spatial_hashes()
-            self._point_list_cache = None
-            self._position.x = new_value
-            self.add_spatial_hashes()
-
-            for sprite_list in self.sprite_lists:
-                sprite_list.update_position(self)
+        self.position = new_value, self._position.y
 
     @property
     def center_y(self) -> float:
@@ -212,14 +205,7 @@ class Sprite:
     @center_y.setter
     def center_y(self, new_value: float):
         """ Set the center y coordinate of the sprite. """
-        if new_value != self._position.y:
-            self.clear_spatial_hashes()
-            self._point_list_cache = None
-            self._position.y = new_value
-            self.add_spatial_hashes()
-
-            for sprite_list in self.sprite_lists:
-                sprite_list.update_position(self)
+        self.position = self._position.x, new_value
 
     @property
     def velocity(self) -> Vector:
