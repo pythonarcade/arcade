@@ -34,11 +34,10 @@ class Window(pyglet.window.Window):
         if update_rate:
             from pyglet import compat_platform
             if compat_platform == 'darwin':
-                max_rate = 1 / 30
-            else:
-                max_rate = 1 / 60
+                # Set vsync to false, or we'll be limited to a 1/30 sec update rate possibly
+                self.context.set_vsync(False)
 
-            self.set_update_rate(max(update_rate, max_rate))
+            self.set_update_rate(1/60)
 
         super().set_fullscreen(fullscreen)
         self.invalid = False
