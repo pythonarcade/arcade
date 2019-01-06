@@ -132,6 +132,12 @@ class Sprite:
 
         self.scale = scale
         self._position = Vec2d(center_x, center_y)
+        self._position_cached = Vec2d(self._position)
+        """Vec2d: stores a copy of the sprite's previous location.
+        
+        Vec2d.__iadd__() and other in-place methods will change the vector before the property setter 
+        can determine if it needs to re-calculate the spatial hash."""
+
         self._angle = 0.0
 
         self._velocity = Vec2d(0, 0)
@@ -171,10 +177,11 @@ class Sprite:
     def position(self, vector: Vector):
         """ Set the center x coordinate of the sprite. """
         new_vector = Vec2d(*vector)
-        if new_vector != self._position or self._velocity.get_length_sqrd() > 0.001**2:
+        if new_vector != self._position_cached:
             self.clear_spatial_hashes()
             self._point_list_cache = None
             self._position = new_vector
+            self._position_cached = Vec2d(self._position)
             self.add_spatial_hashes()
 
             for sprite_list in self.sprite_lists:
