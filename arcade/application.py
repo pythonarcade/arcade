@@ -32,7 +32,14 @@ class Window(pyglet.window.Window):
                          resizable=resizable, config=config)
 
         if update_rate:
-            self.set_update_rate(update_rate)
+            from pyglet import compat_platform
+            if compat_platform == 'darwin':
+                max_rate = 1 / 30
+            else:
+                max_rate = 1 / 60
+
+            self.set_update_rate(max(update_rate, max_rate))
+
         super().set_fullscreen(fullscreen)
         self.invalid = False
         set_window(self)
