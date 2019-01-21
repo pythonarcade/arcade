@@ -285,6 +285,12 @@ Platformers
 
    :ref:`sprite_tiled_map`
 
+.. figure:: thumbs/sprite_tiled_map_with_levels.png
+   :figwidth: 170px
+
+   :ref:`sprite_tiled_map_with_levels`
+
+
 .. figure:: thumbs/sprite_ramps.png
    :figwidth: 170px
 
