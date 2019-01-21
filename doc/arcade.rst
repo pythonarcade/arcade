@@ -91,4 +91,5 @@ Arcade Subpackages
 .. toctree::
 
     arcade.key
+    arcade.csscolor
     arcade.color
