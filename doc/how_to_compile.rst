@@ -6,21 +6,24 @@ How to Compile
 Windows
 ^^^^^^^
 
-Prep your system by getting needed Python packages:
+Prep your system by getting the needed Python packages:
 
-``pip install wheel sphinx coveralls sphinx_rtd_theme pyglet numpy``
+``pip install wheel sphinx coveralls sphinx_rtd_theme pyglet pyglet_ffmpeg numpy pytest pillow``
 
 Create your own fork of the repository, and then clone it on your
 computer.
 
-From the base directory, there are three batch files that can be run:
+From the base directory, there is a "make" batch file that can be run
+with a number of different arguments, some of them listed here:
 
-* ``make`` - This compiles the source, installs the package on the local
+* ``make full`` - This compiles the source, installs the package on the local
   computer, compiles the documentation, and runs all the unit tests.
-* ``makedoc`` - This compiles the documentation. Resulting documentation will
+* ``make doc`` - This compiles the documentation. Resulting documentation will
   be in ``doc/build/html``.
-* ``makefast`` - This compiles and installs the source code. It does not
+* ``make fast`` - This compiles and installs the source code. It does not
   create the documentation or run any unit tests.
+* ``make test`` - This runs the tests.
+* ``make`` - Displays all the arguments "make" supports.
 
 Note: Placing test programs in the root of the project folder will pull from the
 source code in the arcade library, rather than the library installed in the
@@ -33,11 +36,11 @@ Linux
 Create your own fork of the repository, and then clone it on your
 computer.
 
-Prep your system by downloading needed packages:
+Prep your system by downloading the needed packages:
 
 ``sudo apt-get install python-dev``
 
-``sudo pip3 install wheel sphinx coveralls sphinx_rtd_theme pyglet numpy``
+``sudo pip3 install wheel sphinx coveralls sphinx_rtd_theme pyglet pyglet_ffmpeg numpy pytest pillow``
 
 Then, from the terminal you can run any of the following scripts:
 
