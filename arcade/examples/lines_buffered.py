@@ -1,8 +1,5 @@
 """
-Array Backed Grid
-
-Show how to use a two-dimensional list/array to back the display of a
-grid on-screen.
+Using a Vertex Buffer Object With Lines
 
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.lines_buffered
@@ -10,21 +7,21 @@ python -m arcade.examples.lines_buffered
 import arcade
 import random
 
-# Do the math to figure out oiur screen dimensions
+# Do the math to figure out our screen dimensions
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
-
+SCREEN_TITLE = "Vertex Buffer Object With Lines Example"
 
 class MyGame(arcade.Window):
     """
     Main application class.
     """
 
-    def __init__(self, width, height):
+    def __init__(self, width, height, title):
         """
         Set up the application.
         """
-        super().__init__(width, height)
+        super().__init__(width, height, title)
 
         self.shape_list = arcade.ShapeElementList()
         point_list = ((0, 50),
@@ -72,7 +69,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    MyGame(SCREEN_WIDTH, SCREEN_HEIGHT)
+    MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     arcade.run()
 
 

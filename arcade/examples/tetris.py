@@ -4,6 +4,8 @@ Tetris
 Tetris clone, with some ideas from silvasur's code:
 https://gist.github.com/silvasur/565419/d9de6a84e7da000797ac681976442073045c74a4
 
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.tetris
 """
 import arcade
 import random
@@ -24,6 +26,7 @@ MARGIN = 5
 # Do the math to figure out our screen dimensions
 SCREEN_WIDTH = (WIDTH + MARGIN) * COLUMN_COUNT + MARGIN
 SCREEN_HEIGHT = (HEIGHT + MARGIN) * ROW_COUNT + MARGIN
+SCREEN_TITLE = "Tetris"
 
 colors = [
           (0,   0,   0  ),
@@ -117,10 +120,10 @@ def new_board():
 class MyGame(arcade.Window):
     """ Main application class. """
 
-    def __init__(self, width, height):
+    def __init__(self, width, height, title):
         """ Set up the application. """
 
-        super().__init__(width, height)
+        super().__init__(width, height, title)
 
         arcade.set_background_color(arcade.color.WHITE)
 
@@ -262,7 +265,7 @@ class MyGame(arcade.Window):
 
 def main():
     """ Create the game window, setup, run """
-    my_game = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT)
+    my_game = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     my_game.setup()
     arcade.run()
 

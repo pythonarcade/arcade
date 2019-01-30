@@ -1,6 +1,7 @@
 # Size of the window
 SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 800
+SCREEN_TITLE = 'Pymunk Platformer'
 
 # Default friction used for sprites, unless otherwise specified
 DEFAULT_FRICTION = 0.2

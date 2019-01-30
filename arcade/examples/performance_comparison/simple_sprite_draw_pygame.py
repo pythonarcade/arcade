@@ -9,7 +9,6 @@ If Python and Arcade are installed, this example can be run from the command lin
 python -m arcade.examples.performance_comparison.simple_sprite_draw_pygame
 """
 
-import os
 import timeit
 import pygame
 
@@ -17,6 +16,7 @@ import pygame
 
 SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 700
+SCREEN_TITLE = "Pygame Sprite Stress Test"
 
 
 # This class represents the ball
@@ -30,7 +30,7 @@ class Block(pygame.sprite.Sprite):
 
         # Set background color to be transparent. Adjust to WHITE if your
         # background is WHITE.
-        self.image.set_colorkey(pygame.color.black)
+        self.image.set_colorkey(pygame.Color("black"))
 
         self.rect = self.image.get_rect()
 
@@ -42,6 +42,7 @@ def main():
 
     # Set the height and width of the screen
     screen = pygame.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT])
+    pygame.display.set_caption(SCREEN_TITLE)
 
     # Sprite list
     all_sprites_list = pygame.sprite.Group()
@@ -80,7 +81,7 @@ def main():
         draw_start_time = timeit.default_timer()
 
         # Clear the screen
-        screen.fill(pygame.color.white)
+        screen.fill(pygame.Color("white"))
 
         # Draw all the spites
         all_sprites_list.draw(screen)
@@ -89,7 +90,7 @@ def main():
 
         sprite_count = len(all_sprites_list)
         output = f"Drawing time: {draw_time:.4f} for {sprite_count} sprites."
-        text = font.render(output, True, pygame.color.white)
+        text = font.render(output, True, pygame.Color("white"))
         screen.blit(text, [20, SCREEN_HEIGHT - 40])
 
         pygame.display.flip()

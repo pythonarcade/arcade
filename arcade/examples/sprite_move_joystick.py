@@ -1,5 +1,5 @@
 """
-Sprite Move With Joystick
+Move Sprite with Joystick
 
 Simple program to show basic sprite usage.
 
@@ -16,6 +16,7 @@ SPRITE_SCALING = 0.5
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
+SCREEN_TITLE = "Move Sprite with Joystick Example"
 
 MOVEMENT_SPEED = 5
 DEAD_ZONE = 0.05
@@ -65,7 +66,7 @@ class MyGame(arcade.Window):
     Main application class.
     """
 
-    def __init__(self, width, height):
+    def __init__(self, width, height, title):
         """
         Initializer
         """
@@ -78,7 +79,7 @@ class MyGame(arcade.Window):
         os.chdir(file_path)
 
         # Call the parent class initializer
-        super().__init__(width, height)
+        super().__init__(width, height, title)
 
         # Variables that will hold sprite lists
         self.all_sprites_list = None
@@ -144,7 +145,7 @@ class MyGame(arcade.Window):
 
 def main():
     """ Main method """
-    window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT)
+    window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     window.setup()
     arcade.run()
 

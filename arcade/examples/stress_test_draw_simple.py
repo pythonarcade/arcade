@@ -24,6 +24,7 @@ COIN_COUNT_INCREMENT = 15000
 
 SCREEN_WIDTH = 1800
 SCREEN_HEIGHT = 1000
+SCREEN_TITLE = "Static Sprite Stress Test"
 
 
 class FPSCounter:
@@ -51,7 +52,7 @@ class MyGame(arcade.Window):
     def __init__(self):
         """ Initializer """
         # Call the parent class initializer
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Static Sprite Stress Test")
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
         # Set the working directory (where we expect to find files) to the same
         # directory this .py file is in. You can leave this out of your own

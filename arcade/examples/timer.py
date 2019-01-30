@@ -9,6 +9,7 @@ import arcade
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
+SCREEN_TITLE = "Timer Example"
 
 
 class MyGame(arcade.Window):
@@ -17,7 +18,7 @@ class MyGame(arcade.Window):
     """
 
     def __init__(self):
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT)
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
         self.total_time = 0.0
 
     def setup(self):

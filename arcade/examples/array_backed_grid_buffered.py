@@ -23,21 +23,21 @@ HEIGHT = 30
 # and on the edges of the screen.
 MARGIN = 5
 
-# Do the math to figure out oiur screen dimensions
+# Do the math to figure out our screen dimensions
 SCREEN_WIDTH = (WIDTH + MARGIN) * COLUMN_COUNT + MARGIN
 SCREEN_HEIGHT = (HEIGHT + MARGIN) * ROW_COUNT + MARGIN
-
+SCREEN_TITLE = "Array Backed Grid Buffered Example"
 
 class MyGame(arcade.Window):
     """
     Main application class.
     """
 
-    def __init__(self, width, height):
+    def __init__(self, width, height, title):
         """
         Set up the application.
         """
-        super().__init__(width, height)
+        super().__init__(width, height, title)
 
         self.shape_list = None
 
@@ -104,7 +104,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    MyGame(SCREEN_WIDTH, SCREEN_HEIGHT)
+    MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     arcade.run()
 
 

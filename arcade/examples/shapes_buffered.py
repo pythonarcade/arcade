@@ -4,7 +4,7 @@ Shapes buffered in ShapeElementList
 Show how to use a ShapeElementList to display multiple shapes on-screen.
 
 If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.lines_buffered
+python -m arcade.examples.shapes_buffered
 """
 import arcade
 import random
@@ -12,6 +12,7 @@ import random
 # Do the math to figure out our screen dimensions
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
+SCREEN_TITLE = "Buffered Shapes"
 
 
 class MyGame(arcade.Window):
@@ -19,11 +20,11 @@ class MyGame(arcade.Window):
     Main application class.
     """
 
-    def __init__(self, width, height):
+    def __init__(self, width, height, title):
         """
         Set up the application.
         """
-        super().__init__(width, height)
+        super().__init__(width, height, title)
 
         self.shape_list = arcade.ShapeElementList()
         self.shape_list.center_x = SCREEN_WIDTH // 2
@@ -109,7 +110,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    MyGame(SCREEN_WIDTH, SCREEN_HEIGHT)
+    MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     arcade.run()
 
 

@@ -19,6 +19,7 @@ SCALE = 0.5
 OFFSCREEN_SPACE = 300
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
+SCREEN_TITLE = "Asteroid Smasher"
 LEFT_LIMIT = -OFFSCREEN_SPACE
 RIGHT_LIMIT = SCREEN_WIDTH + OFFSCREEN_SPACE
 BOTTOM_LIMIT = -OFFSCREEN_SPACE
@@ -141,7 +142,7 @@ class MyGame(arcade.Window):
     """ Main application class. """
 
     def __init__(self):
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT)
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
         # Set the working directory (where we expect to find files) to the same
         # directory this .py file is in. You can leave this out of your own

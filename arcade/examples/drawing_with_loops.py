@@ -14,6 +14,7 @@ import random
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
+SCREEN_TITLE = "Drawing With Loops Example"
 
 
 def draw_background():
@@ -67,7 +68,7 @@ def main():
     """
 
     # Open the window
-    arcade.open_window(SCREEN_WIDTH, SCREEN_HEIGHT, "Drawing With Loops")
+    arcade.open_window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
     # Start the render process. This must be done before any drawing commands.
     arcade.start_render()

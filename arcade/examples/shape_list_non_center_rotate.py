@@ -1,7 +1,14 @@
+"""
+Shape List Non-center Rotation Demo
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.shape_list_non_center_rotate
+"""
 import arcade
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
+SCREEN_TITLE = "Shape List Non-center Rotation Demo"
 
 
 def make_shape():
@@ -26,7 +33,7 @@ class MyGame(arcade.Window):
 
     def __init__(self):
         # Call the parent class initializer
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Shape Demo")
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
         self.shape_list = make_shape()
 
@@ -53,7 +60,6 @@ class MyGame(arcade.Window):
 
 def main():
     window = MyGame()
-    window.setup()
     arcade.run()
 
 

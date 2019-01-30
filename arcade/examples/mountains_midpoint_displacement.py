@@ -1,5 +1,5 @@
 """
-Example "Arcade" library code.
+Mountains Midpoint Displacement
 
 Create a random mountain range.
 Original idea and some code from:
@@ -16,6 +16,7 @@ import bisect
 
 SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 700
+SCREEN_TITLE = "Mountains Midpoint Displacement Example"
 
 
 # Iterative midpoint vertical displacement
@@ -173,5 +174,5 @@ def draw(window):
 
 if __name__ == "__main__":
     arcade.decorator.run(SCREEN_WIDTH, SCREEN_HEIGHT,
-                         title="Drawing With Decorators",
+                         title=SCREEN_TITLE,
                          background_color=arcade.color.WHITE)

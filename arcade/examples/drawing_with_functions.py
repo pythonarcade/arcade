@@ -17,7 +17,7 @@ import arcade
 # Constants - variables that do not change
 SCREEN_WIDTH = 600
 SCREEN_HEIGHT = 600
-
+SCREEN_TITLE = "Drawing With Functions Example"
 
 def draw_background():
     """
@@ -67,7 +67,7 @@ def main():
     """
 
     # Open the window
-    arcade.open_window(SCREEN_WIDTH, SCREEN_HEIGHT, "Drawing With Functions")
+    arcade.open_window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
     # Start the render process. This must be done before any drawing commands.
     arcade.start_render()

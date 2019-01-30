@@ -10,6 +10,7 @@ import arcade
 
 SCREEN_WIDTH = 640
 SCREEN_HEIGHT = 480
+SCREEN_TITLE = "Move Joystick Example"
 MOVEMENT_SPEED = 5
 DEAD_ZONE = 0.02
 
@@ -103,7 +104,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    window = MyGame(640, 480, "Drawing Example")
+    window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     arcade.run()
 
 
