@@ -1325,8 +1325,11 @@ def get_image(x=0, y=0, width=None, height=None):
     Get an image from the screen.
     You can save the image like:
 
-    image = get_image()
-    image.save('screenshot.png', 'PNG')
+    .. highlight:: python
+    .. code-block:: python
+
+        image = get_image()
+        image.save('screenshot.png', 'PNG')
     """
 
     # Get the dimensions

@@ -42,17 +42,19 @@ def create_orthogonal_projection(
         dtype=None
 ):
     """Creates an orthogonal projection matrix.
+
     :param float left: The left of the near plane relative to the plane's centre.
     :param float right: The right of the near plane relative to the plane's centre.
     :param float top: The top of the near plane relative to the plane's centre.
     :param float bottom: The bottom of the near plane relative to the plane's centre.
     :param float near: The distance of the near plane from the camera's origin.
-    It is recommended that the near plane is set to 1.0 or above to avoid
-    rendering issues at close range.
+                       It is recommended that the near plane is set to 1.0 or above to avoid
+                       rendering issues at close range.
     :param float far: The distance of the far plane from the camera's origin.
     :param dtype:
     :rtype: numpy.array
     :return: A projection matrix representing the specified orthogonal perspective.
+
     .. seealso:: http://msdn.microsoft.com/en-us/library/dd373965(v=vs.85).aspx
     """
 
