@@ -8,6 +8,7 @@ import arcade
 
 SCREEN_WIDTH = 500
 SCREEN_HEIGHT = 500
+SCREEN_TITLE = "Resizing Window Example"
 START = 0
 END = 2000
 STEP = 50
@@ -18,8 +19,8 @@ class MyGame(arcade.Window):
     Main application class.
     """
 
-    def __init__(self, width, height):
-        super().__init__(width, height, title="Resizing Window Example", resizable=True)
+    def __init__(self, width, height, title):
+        super().__init__(width, height, title, resizable=True)
 
         arcade.set_background_color(arcade.color.WHITE)
 
@@ -53,7 +54,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    MyGame(SCREEN_WIDTH, SCREEN_HEIGHT)
+    MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     arcade.run()
 
 

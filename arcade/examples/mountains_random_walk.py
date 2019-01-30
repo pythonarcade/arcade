@@ -1,5 +1,5 @@
 """
-Example "Arcade" library code.
+Mountains Random Walk
 
 Idea and algorithm from:
 https://hackernoon.com/a-procedural-landscape-experiment-4efe1826906f
@@ -15,6 +15,7 @@ import pyglet
 
 SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 700
+SCREEN_TITLE = "Mountains Random Walk Example"
 
 
 def create_mountain_range(height_min, height_max, color_start, color_end):
@@ -112,5 +113,5 @@ def draw(window):
 
 
 if __name__ == "__main__":
-    arcade.decorator.run(SCREEN_WIDTH, SCREEN_HEIGHT, title="Drawing With Decorators", background_color=arcade.color.WHITE)
+    arcade.decorator.run(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, background_color=arcade.color.WHITE)
 

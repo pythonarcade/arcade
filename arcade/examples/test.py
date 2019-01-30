@@ -1,5 +1,8 @@
 """This is an example on how the autogeometry can be used for deformable
 terrain.
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.test
 """
 __docformat__ = "reStructuredText"
 

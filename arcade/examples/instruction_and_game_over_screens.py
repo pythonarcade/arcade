@@ -17,6 +17,7 @@ SPRITE_SCALING = 0.5
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
+SCREEN_TITLE = "Instruction and Game Over Screens Example"
 
 # These numbers represent "states" that the game can be in.
 INSTRUCTIONS_PAGE_0 = 0
@@ -30,10 +31,10 @@ class MyGame(arcade.Window):
     Main application class.
     """
 
-    def __init__(self, screen_width, screen_height):
+    def __init__(self, screen_width, screen_height, title):
         """ Constructor """
         # Call the parent constructor. Required and must be the first line.
-        super().__init__(screen_width, screen_height)
+        super().__init__(screen_width, screen_height, title)
 
         # Set the working directory (where we expect to find files) to the same
         # directory this .py file is in. You can leave this out of your own
@@ -213,7 +214,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    MyGame(SCREEN_WIDTH, SCREEN_HEIGHT)
+    MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     arcade.run()
 
 

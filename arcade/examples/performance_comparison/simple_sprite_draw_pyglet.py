@@ -16,6 +16,7 @@ import timeit
 
 SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 700
+SCREEN_TITLE = "Pyglet Sprite Stress Test"
 
 
 class MyGame(pyglet.window.Window):
@@ -25,7 +26,7 @@ class MyGame(pyglet.window.Window):
         """ Initializer """
 
         # Call the parent class initializer
-        super().__init__(height=SCREEN_HEIGHT, width=SCREEN_WIDTH)
+        super().__init__(height=SCREEN_HEIGHT, width=SCREEN_WIDTH, caption=SCREEN_TITLE)
 
         self.draw_time = 0
 

@@ -3,11 +3,15 @@ This example procedurally develops a random cave based on cellular automata.
 
 For more information, see:
 https://gamedevelopment.tutsplus.com/tutorials/generate-random-cave-levels-using-cellular-automata--gamedev-9664
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.procedural_caves_cellular
 """
 
 import random
 import arcade
 import timeit
+import os
 
 # Sprite scaling. Make this larger, like 0.5 to zoom in and add
 # 'mystery' to what you can see. Make it smaller, like 0.1 to see
@@ -34,7 +38,7 @@ VIEWPORT_MARGIN = 300
 # How big the window is
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 600
-
+WINDOW_TITLE = "Procedural Caves Cellular Automata Example"
 # If true, rather than each block being a separate sprite, blocks on rows
 # will be merged into one sprite.
 MERGE_SPRITES = False
@@ -101,7 +105,14 @@ class MyGame(arcade.Window):
     """
 
     def __init__(self):
-        super().__init__(WINDOW_WIDTH, WINDOW_HEIGHT, resizable=True)
+        super().__init__(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, resizable=True)
+
+        # Set the working directory (where we expect to find files) to the same
+        # directory this .py file is in. You can leave this out of your own
+        # code, but it is needed to easily run the examples using "python -m"
+        # as mentioned at the top of this program.
+        file_path = os.path.dirname(os.path.abspath(__file__))
+        os.chdir(file_path)
 
         self.grid = None
         self.wall_list = None

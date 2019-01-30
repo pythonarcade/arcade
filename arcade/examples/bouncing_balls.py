@@ -14,7 +14,7 @@ import random
 # Size of the screen
 SCREEN_WIDTH = 600
 SCREEN_HEIGHT = 600
-
+SCREEN_TITLE = "Bouncing Balls Example"
 
 class Ball:
     """
@@ -56,7 +56,7 @@ class MyGame(arcade.Window):
     """ Main application class. """
 
     def __init__(self):
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Bouncing Balls Demo")
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
         self.ball_list = []
         ball = make_ball()
         self.ball_list.append(ball)

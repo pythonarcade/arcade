@@ -1,5 +1,5 @@
 """
-Sprite Collect Coins
+Sprite Collect Coins Moving Down
 
 Simple program to show basic sprite usage.
 
@@ -20,6 +20,7 @@ COIN_COUNT = 50
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
+SCREEN_TITLE = "Sprite Collect Coins Moving Down Example"
 
 
 class Coin(arcade.Sprite):
@@ -53,7 +54,7 @@ class MyGame(arcade.Window):
         """ Initializer """
 
         # Call the parent class initializer
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Sprite Example")
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
         # Set the working directory (where we expect to find files) to the same
         # directory this .py file is in. You can leave this out of your own

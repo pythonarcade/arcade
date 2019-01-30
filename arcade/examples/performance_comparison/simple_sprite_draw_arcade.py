@@ -16,7 +16,7 @@ import timeit
 
 SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 700
-
+SCREEN_TITLE = "Simple Sprite Stress Test"
 
 class MyGame(arcade.Window):
     """ Our custom Window Class"""
@@ -25,7 +25,7 @@ class MyGame(arcade.Window):
         """ Initializer """
 
         # Call the parent class initializer
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Sprite Example")
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
         self.draw_time = 0
 

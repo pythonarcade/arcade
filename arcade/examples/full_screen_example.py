@@ -16,6 +16,7 @@ SPRITE_SCALING = 0.5
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
+SCREEN_TITLE = "Full Screen Example"
 
 # How many pixels to keep as a minimum margin between the character
 # and the edge of the screen.
@@ -33,7 +34,7 @@ class MyGame(arcade.Window):
         """
         # Open a window in full screen mode. Remove fullscreen=True if
         # you don't want to start this way.
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, fullscreen=True)
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, fullscreen=True)
 
         # Set the working directory (where we expect to find files) to the same
         # directory this .py file is in. You can leave this out of your own

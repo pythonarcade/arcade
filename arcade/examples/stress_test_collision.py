@@ -1,12 +1,12 @@
 """
-Sprite Stress Test
+Sprite Collision Stress Test
 
 Simple program to test how fast we can draw sprites that aren't moving
 
 Artwork from http://kenney.nl
 
 If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.stress_test_draw_simple
+python -m arcade.examples.stress_test_collision
 """
 
 import random
@@ -24,6 +24,7 @@ SPRITE_SCALING_PLAYER = 1
 
 SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 700
+SCREEN_TITLE = "Sprite Collision Stress Test"
 
 
 class MyGame(arcade.Window):
@@ -32,7 +33,7 @@ class MyGame(arcade.Window):
     def __init__(self):
         """ Initializer """
         # Call the parent class initializer
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Sprite Example")
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
         # Set the working directory (where we expect to find files) to the same
         # directory this .py file is in. You can leave this out of your own

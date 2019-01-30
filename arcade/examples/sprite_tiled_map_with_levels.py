@@ -1,6 +1,5 @@
-
 """
-Load a Tiled map file
+Load a Tiled map file with Levels
 
 Artwork from: http://kenney.nl
 Tiled available from: http://www.mapeditor.org/
@@ -17,6 +16,7 @@ SPRITE_SCALING = 0.5
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
+SCREEN_TITLE = "Sprite Tiled Map with Levels Example"
 SPRITE_PIXEL_SIZE = 128
 GRID_PIXEL_SIZE = (SPRITE_PIXEL_SIZE * SPRITE_SCALING)
 
@@ -40,7 +40,7 @@ class MyGame(arcade.Window):
         """
         Initializer
         """
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT)
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
         # Set the working directory (where we expect to find files) to the same
         # directory this .py file is in. You can leave this out of your own

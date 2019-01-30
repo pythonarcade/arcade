@@ -5,12 +5,16 @@ Binary Space Partitioning (BSP)
 For more information, see:
 http://roguebasin.roguelikedevelopment.org/index.php?title=Basic_BSP_Dungeon_generation
 https://github.com/DanaL/RLDungeonGenerator
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.procedural_caves_bsp
 """
 
 import random
 import arcade
 import timeit
 import math
+import os
 
 # Sprite scaling. Make this larger, like 0.5 to zoom in and add
 # 'mystery' to what you can see. Make it smaller, like 0.1 to see
@@ -36,6 +40,7 @@ VIEWPORT_MARGIN = 300
 # How big the window is
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 600
+WINDOW_TITLE = "Procedural Caves BSP Example"
 
 MERGE_SPRITES = True
 
@@ -245,8 +250,15 @@ class MyGame(arcade.Window):
     Main application class.
     """
 
-    def __init__(self, width, height):
-        super().__init__(width, height)
+    def __init__(self, width, height, title):
+        super().__init__(width, height, title)
+
+        # Set the working directory (where we expect to find files) to the same
+        # directory this .py file is in. You can leave this out of your own
+        # code, but it is needed to easily run the examples using "python -m"
+        # as mentioned at the top of this program.
+        file_path = os.path.dirname(os.path.abspath(__file__))
+        os.chdir(file_path)
 
         self.grid = None
         self.wall_list = None
@@ -434,7 +446,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    game = MyGame(WINDOW_WIDTH, WINDOW_HEIGHT)
+    game = MyGame(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
     game.setup()
     arcade.run()
 

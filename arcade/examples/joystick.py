@@ -10,6 +10,7 @@ import arcade
 # Set up the constants
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
+SCREEN_TITLE = "Joystick Control Example"
 
 RECT_WIDTH = 50
 RECT_HEIGHT = 50
@@ -22,8 +23,8 @@ class MyGame(arcade.Window):
     """
     Main application class.
     """
-    def __init__(self, width, height):
-        super().__init__(width, height, title="joystick control")
+    def __init__(self, width, height, title):
+        super().__init__(width, height, title)
         self.player = None
         self.left_down = False
 
@@ -138,7 +139,7 @@ class Rectangle:
 
 
 def main():
-    window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT)
+    window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     window.setup()
     arcade.run()
 

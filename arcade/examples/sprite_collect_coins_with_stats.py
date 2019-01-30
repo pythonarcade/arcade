@@ -1,12 +1,12 @@
 """
-Sprite Collect Coins
+Sprite Collect Coins with Stats
 
 Simple program to show basic sprite usage.
 
 Artwork from http://kenney.nl
 
 If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.sprite_collect_coins
+python -m arcade.examples.sprite_collect_coins_with_stats
 """
 
 import random
@@ -21,6 +21,7 @@ COIN_COUNT = 50
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
+SCREEN_TITLE = "Sprite Collect Coins with Stats Example"
 
 
 class MyGame(arcade.Window):
@@ -29,7 +30,7 @@ class MyGame(arcade.Window):
     def __init__(self):
         """ Initializer """
         # Call the parent class initializer
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Sprite Example")
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
         # Set the working directory (where we expect to find files) to the same
         # directory this .py file is in. You can leave this out of your own
