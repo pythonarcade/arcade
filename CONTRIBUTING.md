@@ -24,13 +24,14 @@ is in the codebase.
 Improve Test Cases
 ------------------
 
-Improving code covereage, and making better test case examples is appreciated.
+Improving code coverage, and making better test case examples is appreciated.
 
 How to Build
 ------------
 
 In the root directory of the project, you should be able to type:
 
-`make`
+* `make full` (for Windows)
+* `sudo ./make.sh` (for Linux)
 
 This will build the project, install it, and run all of the tests.

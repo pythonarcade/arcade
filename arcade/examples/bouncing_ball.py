@@ -12,6 +12,7 @@ import arcade
 # Size of the screen
 SCREEN_WIDTH = 600
 SCREEN_HEIGHT = 600
+SCREEN_TITLE = "Bouncing Ball Example"
 
 # Size of the circle.
 CIRCLE_RADIUS = 20
@@ -79,7 +80,7 @@ draw.delta_y = 0
 
 def main():
     # Open up our window
-    arcade.open_window(SCREEN_WIDTH, SCREEN_HEIGHT, "Bouncing Ball")
+    arcade.open_window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     arcade.set_background_color(arcade.color.WHITE)
 
     # Tell the computer to call the draw command at the specified interval.

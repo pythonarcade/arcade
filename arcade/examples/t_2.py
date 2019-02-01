@@ -4,7 +4,7 @@ class MyGame(arcade.Window):
     """ Our custom Window Class"""
 
     def __init__(self):
-        super().__init__(800, 600, "Moving Sprite Stress Test")
+        super().__init__(800, 600, "t_2")
 
         self.coin_list = arcade.SpriteList()
 

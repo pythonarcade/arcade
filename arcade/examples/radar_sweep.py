@@ -11,6 +11,7 @@ import math
 # Set up the constants
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
+SCREEN_TITLE = "Radar Sweep Example"
 
 # These constants control the particulars about the radar
 CENTER_X = SCREEN_WIDTH // 2
@@ -50,7 +51,7 @@ on_draw.angle = 0
 def main():
 
     # Open up our window
-    arcade.open_window(SCREEN_WIDTH, SCREEN_HEIGHT, "Radar Sweep Example")
+    arcade.open_window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     arcade.set_background_color(arcade.color.BLACK)
 
     # Tell the computer to call the draw command at the specified interval.

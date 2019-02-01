@@ -1,5 +1,8 @@
 """ Test for sound in Arcade.
 (May only work for windows at current time)
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.sound_test
 """
 
 import arcade
@@ -8,6 +11,7 @@ import os
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
+SCREEN_TITLE = "Sound Test Example"
 
 window = None
 
@@ -18,7 +22,7 @@ class MyGame(arcade.Window):
     def __init__(self):
         """ Initializer """
         # Call the parent class initializer
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Sprites and Bullets Demo")
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
         # Set the working directory (where we expect to find files) to the same
         # directory this .py file is in. You can leave this out of your own

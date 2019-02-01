@@ -7,6 +7,9 @@ We then draw all the squares with one drawing command.
 
 This runs in about 0.000 seconds for me. It is much more complex in code
 than the prior two examples, but the pay-off in speed is huge.
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.shape_list_demo_3
 """
 
 import arcade
@@ -14,6 +17,7 @@ import timeit
 
 SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 800
+SCREEN_TITLE = "Shape List Demo 3"
 
 HALF_SQUARE_WIDTH = 2.5
 HALF_SQUARE_HEIGHT = 2.5
@@ -23,8 +27,8 @@ SQUARE_SPACING = 10
 class MyGame(arcade.Window):
     """ Main application class. """
 
-    def __init__(self, width, height):
-        super().__init__(width, height)
+    def __init__(self, width, height, title):
+        super().__init__(width, height, title)
 
         arcade.set_background_color(arcade.color.DARK_SLATE_GRAY)
 
@@ -91,7 +95,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT)
+    window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     window.setup()
     arcade.run()
 

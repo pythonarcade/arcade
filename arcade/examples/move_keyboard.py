@@ -9,6 +9,7 @@ import arcade
 
 SCREEN_WIDTH = 640
 SCREEN_HEIGHT = 480
+SCREEN_TITLE = "Move Keyboard Example"
 MOVEMENT_SPEED = 3
 
 
@@ -90,7 +91,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    window = MyGame(640, 480, "Drawing Example")
+    window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     arcade.run()
 
 

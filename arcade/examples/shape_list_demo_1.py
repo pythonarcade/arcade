@@ -5,6 +5,9 @@ For me this takes about 0.850 seconds per frame.
 
 It is slow because we load all the points and all the colors to the card every
 time.
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.shape_list_demo_1
 """
 
 import arcade
@@ -12,6 +15,7 @@ import timeit
 
 SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 800
+SCREEN_TITLE = "Shape List Demo 1"
 
 SQUARE_WIDTH = 5
 SQUARE_HEIGHT = 5
@@ -20,8 +24,8 @@ SQUARE_SPACING = 10
 class MyGame(arcade.Window):
     """ Main application class. """
 
-    def __init__(self, width, height):
-        super().__init__(width, height)
+    def __init__(self, width, height, title):
+        super().__init__(width, height, title)
 
         arcade.set_background_color(arcade.color.DARK_SLATE_GRAY)
 
@@ -52,7 +56,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    MyGame(SCREEN_WIDTH, SCREEN_HEIGHT)
+    MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
     arcade.run()
 

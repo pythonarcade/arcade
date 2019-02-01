@@ -23,7 +23,7 @@ import os
 
 SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 800
-
+SCREEN_TITLE = "Pymunk Box Stacks Example"
 
 class PhysicsSprite(arcade.Sprite):
     def __init__(self, pymunk_shape, filename):
@@ -48,8 +48,8 @@ class BoxSprite(PhysicsSprite):
 class MyGame(arcade.Window):
     """ Main application class. """
 
-    def __init__(self, width, height):
-        super().__init__(width, height)
+    def __init__(self, width, height, title):
+        super().__init__(width, height, title)
 
         # Set the working directory (where we expect to find files) to the same
         # directory this .py file is in. You can leave this out of your own
@@ -200,7 +200,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    MyGame(SCREEN_WIDTH, SCREEN_HEIGHT)
+    MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
     arcade.run()
 

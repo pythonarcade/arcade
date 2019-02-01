@@ -1,8 +1,8 @@
 """
-Array Backed Grid
+Pinball
 
-Show how to use a two-dimensional list/array to back the display of a
-grid on-screen.
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.pinball
 """
 import arcade
 import pymunk
@@ -10,9 +10,10 @@ import math
 import random
 import os
 
-# Do the math to figure out oiur screen dimensions
+# Do the math to figure out our screen dimensions
 SCREEN_WIDTH = 390
 SCREEN_HEIGHT = 732
+SCREEN_TITLE = "Pinball"
 BALL_RADIUS = 0.53
 
 class Shape:
@@ -64,11 +65,11 @@ class MyApplication(arcade.Window):
     Main application class.
     """
 
-    def __init__(self, width, height):
+    def __init__(self, width, height, title):
         """
         Set up the application.
         """
-        super().__init__(width, height, resizable=True)
+        super().__init__(width, height, title, resizable=True)
 
         # Set the working directory (where we expect to find files) to the same
         # directory this .py file is in. You can leave this out of your own
@@ -254,7 +255,7 @@ class MyApplication(arcade.Window):
 
 
 def main():
-    window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
+    window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     arcade.run()
 
 

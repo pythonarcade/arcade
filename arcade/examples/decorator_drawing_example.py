@@ -11,6 +11,7 @@ import random
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
+SCREEN_TITLE = "Drawing With Decorators Example"
 
 
 def draw_background(window):
@@ -118,5 +119,5 @@ def draw(window):
 
 
 if __name__ == "__main__":
-    arcade.decorator.run(SCREEN_WIDTH, SCREEN_HEIGHT, title="Drawing With Decorators")
+    arcade.decorator.run(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 

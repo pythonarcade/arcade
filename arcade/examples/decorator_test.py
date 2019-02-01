@@ -1,3 +1,10 @@
+"""
+Decorator Test
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.decorator_test
+"""
+
 import arcade
 
 
@@ -8,12 +15,12 @@ class Ball:
         self.radius = radius
 
 
-@arcade.decorator.init
+@arcade.decorator.setup
 def setup_my_game(window):
     window.ball: Ball = Ball()
 
 
-@arcade.decorator.animate
+@arcade.decorator.update
 def move_ball(window, delta_time):
     window.ball.x_position += window.ball.velocity * delta_time
 
@@ -44,4 +51,4 @@ def press_space(key, key_modifiers):
 
 
 if __name__ == "__main__":
-    arcade.decorator.run(700, 600, background_color=arcade.color.MAHOGANY)
+    arcade.decorator.run(700, 600, "Decorator Test", background_color=arcade.color.MAHOGANY)

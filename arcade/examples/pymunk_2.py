@@ -1,3 +1,9 @@
+"""
+Pymunk 2
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.pymunk_2
+"""
 import arcade
 import pymunk
 import timeit
@@ -5,6 +11,7 @@ import math
 
 SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 800
+SCREEN_TITLE = "Pymunk 2 Example"
 
 """
 Key bindings:
@@ -46,8 +53,8 @@ class BoxSprite(PhysicsSprite):
 class MyApplication(arcade.Window):
     """ Main application class. """
 
-    def __init__(self, width, height):
-        super().__init__(width, height)
+    def __init__(self, width, height, title):
+        super().__init__(width, height, title)
         arcade.set_background_color(arcade.color.DARK_SLATE_GRAY)
 
         # -- Pymunk
@@ -299,6 +306,6 @@ class MyApplication(arcade.Window):
         # Save the time it took to do this.
         self.processing_time = timeit.default_timer() - start_time
 
-window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT)
+window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
 arcade.run()

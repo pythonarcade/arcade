@@ -10,6 +10,7 @@ import time
 
 SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 600
+SCREEN_TITLE = "Skyline Using Buffered Shapes"
 
 
 def make_star_field(star_count):
@@ -132,7 +133,7 @@ class MyGame(arcade.Window):
     def __init__(self):
         """ Initializer """
         # Call the parent class initializer
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Skyline Using Buffered Shapes")
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
         self.stars = make_star_field(150)
         self.skyline1 = make_skyline(SCREEN_WIDTH * 5, 250, (80, 80, 80))

@@ -1,5 +1,5 @@
 """
-Sprite Bullets
+Sprite Explosion
 
 Simple program to show basic sprite usage.
 
@@ -7,7 +7,7 @@ Artwork from http://kenney.nl
 Explosion graphics from http://www.explosiongenerator.com/
 
 If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.sprite_explosions
+python -m arcade.examples.sprite_explosion
 """
 import random
 import arcade
@@ -20,6 +20,7 @@ COIN_COUNT = 50
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
+SCREEN_TITLE = "Sprite Explosion Example"
 
 BULLET_SPEED = 5
 
@@ -56,7 +57,7 @@ class MyGame(arcade.Window):
     def __init__(self):
         """ Initializer """
         # Call the parent class initializer
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Sprites and Bullets Demo")
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
         # Set the working directory (where we expect to find files) to the same
         # directory this .py file is in. You can leave this out of your own

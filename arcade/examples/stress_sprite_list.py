@@ -1,10 +1,10 @@
 """
-Sprite List Stress Test
+SpriteList Stress Test
 
 Simple program using SpriteList.
 
 If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.sprite_collect_coins
+python -m arcade.examples.stress_sprite_list
 """
 
 import random
@@ -24,7 +24,7 @@ METEOR_COUNT = 500
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
-
+SCREEN_TITLE = "SpriteList Stress Test"
 
 
 class FPSCounter:
@@ -48,7 +48,7 @@ class MyGame(arcade.Window):
     def __init__(self):
         """ Initializer """
         # Call the parent class initializer
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "SpriteList Stress Test")
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
         # Set the working directory (where we expect to find files) to the same
         # directory this .py file is in. You can leave this out of your own

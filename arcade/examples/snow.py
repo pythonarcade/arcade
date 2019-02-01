@@ -14,6 +14,7 @@ import arcade
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
+SCREEN_TITLE = "Snow"
 
 
 class Snowflake:
@@ -34,14 +35,14 @@ class Snowflake:
 class MyGame(arcade.Window):
     """ Main application class. """
 
-    def __init__(self, width, height):
+    def __init__(self, width, height, title):
         """
         Initializer
         :param width:
         :param height:
         """
         # Calls "__init__" of parent class (arcade.Window) to setup screen
-        super().__init__(width, height)
+        super().__init__(width, height, title)
 
         # Sprite lists
         self.snowflake_list = None
@@ -104,7 +105,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT)
+    window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     window.start_snowfall()
     arcade.run()
 

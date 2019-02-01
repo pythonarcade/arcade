@@ -1,11 +1,8 @@
 """
-Array Backed Grid
-
-Show how to use a two-dimensional list/array to back the display of a
-grid on-screen.
+Perlin Noise 1
 
 If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.array_backed_grid_buffered
+python -m arcade.examples.perlin_noise_1
 
 TODO: This code doesn't work properly, and isn't currently listed in the examples.
 """
@@ -25,9 +22,10 @@ HEIGHT = 10
 # and on the edges of the screen.
 MARGIN = 2
 
-# Do the math to figure out oiur screen dimensions
+# Do the math to figure out our screen dimensions
 SCREEN_WIDTH = (WIDTH + MARGIN) * COLUMN_COUNT + MARGIN
 SCREEN_HEIGHT = (HEIGHT + MARGIN) * ROW_COUNT + MARGIN
+SCREEN_TITLE = "Perlin Noise 1 Example"
 
 # Perlin noise generator from:
 # https://stackoverflow.com/questions/42147776/producing-2d-perlin-noise-with-numpy
@@ -77,11 +75,11 @@ class MyGame(arcade.Window):
     Main application class.
     """
 
-    def __init__(self, width, height):
+    def __init__(self, width, height, title):
         """
         Set up the application.
         """
-        super().__init__(width, height)
+        super().__init__(width, height, title)
 
         self.shape_list = None
 
@@ -151,7 +149,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    MyGame(SCREEN_WIDTH, SCREEN_HEIGHT)
+    MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     arcade.run()
 
 

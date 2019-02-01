@@ -23,6 +23,7 @@ import random
 # Set up the constants
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
+SCREEN_TITLE = "Shapes!"
 
 RECT_WIDTH = 50
 RECT_HEIGHT = 50
@@ -67,7 +68,7 @@ class MyGame(arcade.Window):
     """ Main application class. """
 
     def __init__(self):
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, title="Shapes!")
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
         self.shape_list = None
 
     def setup(self):

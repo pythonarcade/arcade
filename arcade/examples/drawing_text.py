@@ -8,15 +8,15 @@ import arcade
 
 SCREEN_WIDTH = 500
 SCREEN_HEIGHT = 500
-
+SCREEN_TITLE = "Drawing Text Example"
 
 class MyGame(arcade.Window):
     """
     Main application class.
     """
 
-    def __init__(self, width, height):
-        super().__init__(width, height, title="Drawing Text Example")
+    def __init__(self, width, height, title):
+        super().__init__(width, height, title)
 
         arcade.set_background_color(arcade.color.WHITE)
         self.text_angle = 0
@@ -98,7 +98,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    MyGame(SCREEN_WIDTH, SCREEN_HEIGHT)
+    MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     arcade.run()
 
 

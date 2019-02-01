@@ -17,7 +17,7 @@ You can submit changes with a "pull request." With a pull request you ask
 that another repository (in this case the Arcade library) "pull" your
 changes into the main code base.
 
-If you aren't familiar with how to do pull requests,
+If you aren't familiar with how to do pull requests, the
 `Stack Overflow discussion on pull requests`_ is good.
 
 There are two Continuous Integration machines building changes to
