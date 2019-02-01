@@ -86,7 +86,6 @@ class MyGame(arcade.Window):
 
         # Set up the player info
         self.player_sprite = None
-        self.score = 0
 
         # Set the background color
         arcade.set_background_color(arcade.color.AMAZON)
@@ -98,7 +97,6 @@ class MyGame(arcade.Window):
         self.all_sprites_list = arcade.SpriteList()
 
         # Set up the player
-        self.score = 0
         self.player_sprite = Player("images/character.png", SPRITE_SCALING)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 50

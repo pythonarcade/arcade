@@ -51,7 +51,6 @@ class MyGame(arcade.Window):
         self.wall_list = None
 
         # Set up the player
-        self.score = 0
         self.player_sprite = None
 
         self.physics_engine = None

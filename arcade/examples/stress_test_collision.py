@@ -48,7 +48,6 @@ class MyGame(arcade.Window):
 
         # Set up the player info
         self.player_sprite = None
-        self.score = 0
 
         self.processing_time = 0
         self.draw_time = 0

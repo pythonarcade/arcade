@@ -52,7 +52,6 @@ class MyGame(arcade.Window):
         self.player_list = None
 
         # Set up the player
-        self.score = 0
         self.player_sprite = None
         self.physics_engine = None
         self.view_left = 0

@@ -144,7 +144,6 @@ class MyGame(arcade.Window):
 
         # Set up the player
         self.rooms = None
-        self.score = 0
         self.player_sprite = None
         self.player_list = None
         self.physics_engine = None
@@ -152,7 +151,6 @@ class MyGame(arcade.Window):
     def setup(self):
         """ Set up the game and initialize the variables. """
         # Set up the player
-        self.score = 0
         self.player_sprite = arcade.Sprite("images/character.png", SPRITE_SCALING)
         self.player_sprite.center_x = 100
         self.player_sprite.center_y = 100
