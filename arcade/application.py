@@ -192,7 +192,7 @@ class Window(pyglet.window.Window):
             self.update(1/60)
 
 
-def open_window(width: Number, height: Number, window_title: str, resizable: bool = False):
+def open_window(width: Number, height: Number, window_title: str, resizable: bool = False) -> pyglet.window.Window:
     """
     This function opens a window. For ease-of-use we assume there will only be one window, and the
     programmer does not need to keep a handle to the window. This isn't the best architecture, because
@@ -204,6 +204,9 @@ def open_window(width: Number, height: Number, window_title: str, resizable: boo
         :width: Width of the window.
         :height: Height of the window.
         :resizable: Whether the window can be user-resizable.
+
+    Returns:
+        pyglet.window.Window
     """
 
     global _window
