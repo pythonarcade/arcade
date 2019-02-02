@@ -81,30 +81,36 @@ class MyGame(arcade.Window):
         self.player_sprite.center_y = 270
         self.player_list.append(self.player_sprite)
 
+        platforms_layer_name = 'Platforms'
+        coins_layer_name = 'Coins'
+        map_name = "map.tmx"
+
         # Read in the tiled map
-        my_map = arcade.read_tiled_map("map_with_custom_hitboxes.tmx", SPRITE_SCALING)
+        my_map = arcade.read_tiled_map(map_name, SPRITE_SCALING)
 
         # --- Walls ---
         # Grab the layer of items we can't move through
-        map_array = my_map.layers_int_data['Obstructions']
+        map_array = my_map.layers_int_data[platforms_layer_name]
 
         # Calculate the right edge of the my_map in pixels
         self.end_of_map = len(map_array[0]) * GRID_PIXEL_SIZE
 
-        self.wall_list = arcade.generate_sprites(my_map, 'Obstructions', SPRITE_SCALING)
-
-        self.physics_engine = \
-            arcade.PhysicsEnginePlatformer(self.player_sprite,
-                                           self.wall_list,
-                                           gravity_constant=GRAVITY)
+        # --- Platforms ---
+        self.wall_list = arcade.generate_sprites(my_map, platforms_layer_name, SPRITE_SCALING)
 
         # --- Coins ---
-        self.coin_list = arcade.generate_sprites(my_map, 'Coins', SPRITE_SCALING)
+        self.coin_list = arcade.generate_sprites(my_map, coins_layer_name, SPRITE_SCALING)
 
         # --- Other stuff
         # Set the background color
         if my_map.backgroundcolor:
             arcade.set_background_color(my_map.backgroundcolor)
+
+        # Keep player from running through the wall_list layer
+        self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
+                                                             self.wall_list,
+                                                             gravity_constant=GRAVITY)
+
 
         # Set the view port boundaries
         # These numbers set where we have 'scrolled' to.
