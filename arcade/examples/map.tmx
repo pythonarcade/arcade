@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.2.0" orientation="orthogonal" renderorder="right-down" width="50" height="7" tilewidth="128" tileheight="128" infinite="0" nextlayerid="2" nextobjectid="1">
+<map version="1.2" tiledversion="1.2.2" orientation="orthogonal" renderorder="right-down" width="50" height="7" tilewidth="128" tileheight="128" infinite="0" backgroundcolor="#187bd8" nextlayerid="2" nextobjectid="1">
  <tileset firstgid="1" name="my_tileset" tilewidth="128" tileheight="128" tilecount="4" columns="0">
   <grid orientation="orthogonal" width="1" height="1"/>
   <tile id="0">
-   <image width="128" height="128" source="boxCrate_double.png"/>
+   <image width="128" height="128" source="images/boxCrate_double.png"/>
   </tile>
   <tile id="1">
-   <image width="128" height="128" source="grassLeft.png"/>
+   <image width="128" height="128" source="images/grassLeft.png"/>
   </tile>
   <tile id="2">
-   <image width="128" height="128" source="grassMid.png"/>
+   <image width="128" height="128" source="images/grassMid.png"/>
   </tile>
   <tile id="3">
-   <image width="128" height="128" source="grassRight.png"/>
+   <image width="128" height="128" source="images/grassRight.png"/>
   </tile>
  </tileset>
  <layer id="1" name="Tile Layer 1" width="50" height="7">
