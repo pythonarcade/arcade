@@ -87,19 +87,24 @@ class TestVector(unittest.TestCase):
         v1 -= (3, 7)
         self.assertEqual([-10, -16], v1, "Should isub lists.")
 
-    def test_mult_by_single_value(self):
+    def test_mult_by_scalar(self):
         v1 = arcade.Vector(1, 3)
         v2 = v1 * 5
         self.assertIsNot(v1, v2)
         self.assertEqual((5, 15), v2, "Should return new vector, each property multiplied.")
 
-    def test_mult_by_iterable(self):
+    def test_mult_by_vector(self):
         v1 = arcade.Vector(1, 3)
         v2 = (2, 3)
         v3 = v1 * v2
         self.assertIsNot(v1, v3)
         self.assertIsNot(v2, v3)
         self.assertEqual((2, 9), v3)
+
+    def test_rmul(self):
+        v1 = arcade.Vector(3, 5)
+        v2 = 5 * v1
+        self.assertEqual(arcade.Vector(15, 25), v2, "Should right-multiply by a number.")
 
     def test_imul(self):
         v = arcade.Vector(5, 7)
@@ -113,7 +118,34 @@ class TestVector(unittest.TestCase):
         v *= 2
         self.assertEqual((40, 126), v)
 
-    # TODO: test div and idiv
+    def test_div_with_scalar(self):
+        v1 = arcade.Vector(10, 10)
+        v2 = v1 / 2
+        self.assertEqual((5, 5), v2, "Should divide by a single number.")
+
+    def test_div_with_vector(self):
+        v1 = arcade.Vector(10, 10)
+        v2 = arcade.Vector(2, 5)
+        v3 = v1 / v2
+        self.assertEqual((5, 2), v3, "Should divide by another vector.")
+
+    def test_rdiv(self):
+        v1 = arcade.Vector(2, 3)
+        v2 = 18 / v1
+        self.assertEqual(arcade.Vector(9, 6), v2, "Should right-divide a number.")
+
+    def test_idiv(self):
+        v1 = arcade.Vector(25, 15)
+        old_v1 = v1
+        v1 /= 5
+        self.assertEqual((5, 3), v1, "Should divide in-place with scalar.")
+        self.assertIs(old_v1, v1, "Should not return a new Vector object for idiv.")
+        # TODO: consider inplace consequences with arcade spatial hash reset
+
+        v1 = arcade.Vector(50, 50)
+        v2 = arcade.Vector(5, 10)
+        v1 /= v2
+        self.assertEqual((10, 5), v1, "Should divide in-place with other vector.")
 
     def test_vector_is_splattable(self):
         self.v2.x = 5
@@ -131,19 +163,31 @@ class TestVector(unittest.TestCase):
         self.assertEqual(0, arcade.Vector().magnitude)
         self.assertEqual(5, arcade.Vector(3, 4).magnitude)
 
-    # TODO: test set magnitude?
+    def test_normalize(self):
+        v1 = arcade.Vector(-8, 6)
+        v1.normalize()
+        self.assertEqual((-0.8, 0.6), v1, "Should normalize in-place.")
 
-    def test_normalize_static(self):
-        v1 = arcade.Vector(5, 5)
-        v2 = arcade.Vector.normalize(v1)
-        self.assertEqual((1, 1), v2)
-        self.assertIsNot(v1, v2)
-        self.assertEqual((1, 0.5), arcade.Vector.normalize((2, 1)))
-        self.assertEqual((0.5, 1), arcade.Vector.normalize((1, 2)))
-        self.assertEqual((-1, 0), arcade.Vector.normalize((-4, 0)))
-        self.assertEqual((0, 0), arcade.Vector.normalize((0, 0)))
-        self.assertEqual((1, 0), arcade.Vector.normalize((0.5, 0)))
-        self.assertEqual((1, -1), arcade.Vector.normalize((0.5, -0.5)))
+        v1 = arcade.Vector(0, 0)
+        v1.normalize()
+        self.assertEqual((0, 0), v1, "Should handle division by zero error.")
+
+    def test_shoot_lazer_toward_player(self):
+        """Useful for directing lazer bolts toward a point."""
+        enemy_pos = arcade.Vector(50, 50)
+        player_pos = arcade.Vector(100, 100)
+
+        lazer_speed = 5  # px/frame
+        lazer_velocity = (player_pos - enemy_pos).normalize() * lazer_speed
+        self.assertEqual(5, lazer_velocity.magnitude, "Should set speed to 5.")
+        self.assertEqual(45, lazer_velocity.heading, "Should be traveling toward player.")
+
+    # def test_shoot_lazer_from_player_at_same_heading(self):
+    #     player = arcade.Sprite()
+    #     player.angle = 20
+    #
+    #     lazer_speed = 5  # px/frame
+    #     lazer_velocity = arcade.Vector.from_angle(player.angle) * lazer_speed
 
     def test_heading_radians(self):
         self.assertEqual(pi / 2, arcade.Vector(0, 1).heading_radians)

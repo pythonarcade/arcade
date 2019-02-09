@@ -11,6 +11,19 @@ class Vector:
         self.x = x
         self.y = y
 
+    # TODO: add __copy__ medhod
+
+    def normalize(self) -> 'Vector':
+        """Normalizes Vector magnitude scaled to 1.0"""
+        mag = self.magnitude
+
+        try:
+            self.x = self.x / mag
+            self.y = self.y / mag
+        except ZeroDivisionError:
+            pass
+        return self
+
     @property
     def magnitude_sq(self):
         return self.x**2 + self.y**2
@@ -19,6 +32,10 @@ class Vector:
     def magnitude(self):
         return math.sqrt(self.magnitude_sq)
 
+    # TODO: implement set_magnitude?
+    # TODO: implement limit
+    # TODO: implement static from_angle and from_angle_radians
+
     @property
     def heading_radians(self) -> float:
         return math.atan2(self.y, self.x)
@@ -26,18 +43,6 @@ class Vector:
     @property
     def heading(self) -> float:
         return math.degrees(self.heading_radians)
-
-    @staticmethod
-    def normalize(vector: Union['Vector', Point]) -> 'Vector':
-        """Returns a Vector whose magnitude is scaled to 1.0"""
-        x, y = vector
-        try:
-            return Vector(
-                x/max(abs(x), abs(y)),
-                y/max(abs(x), abs(y))
-            )
-        except ZeroDivisionError:
-            return Vector(0, 0)
 
     def __str__(self) -> str:
         return self.__repr__()
@@ -72,17 +77,40 @@ class Vector:
         self.y -= other[1]
         return self
 
-    def __mul__(self, value: Union['Vector', Point, float]) -> 'Vector':
+    def __mul__(self, other: Union['Vector', Point, float]) -> 'Vector':
         try:
-            return Vector(self.x * value[0], self.y * value[1])
+            return Vector(self.x * other[0], self.y * other[1])
         except TypeError:
-            return Vector(self.x*value, self.y*value)
+            return Vector(self.x * other, self.y * other)
 
-    def __imul__(self, value: Union['Vector', Point, float]) -> 'Vector':
+    __rmul__ = __mul__
+
+    def __imul__(self, other: Union['Vector', Point, float]) -> 'Vector':
         try:
-            self.x *= value[0]
-            self.y *= value[1]
+            self.x *= other[0]
+            self.y *= other[1]
         except TypeError:
-            self.x *= value
-            self.y *= value
+            self.x *= other
+            self.y *= other
         return self
+
+    def __truediv__(self, other: Union['Vector', Point, float]) -> 'Vector':
+        try:
+            return Vector(self.x / other[0], self.y / other[1])
+        except TypeError:
+            return Vector(self.x / other, self.y / other)
+
+    def __itruediv__(self, other):
+        try:
+            self.x /= other[0]
+            self.y /= other[1]
+        except TypeError:
+            self.x /= other
+            self.y /= other
+        return self
+
+    def __rtruediv__(self, other):
+        try:
+            return Vector(other[0] / self.x, other[1] / self.y)
+        except TypeError:
+            return Vector(other / self.x, other / self.y)
