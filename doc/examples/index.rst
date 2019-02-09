@@ -201,7 +201,13 @@ Sprite Non-Player Movement
 
    :ref:`sprite_follow_simple_2`
 
+Other Sprite Stuff
+^^^^^^^^^^^^^^^^^^
 
+.. figure:: thumbs/sprite_properties.png
+   :figwidth: 170px
+
+   :ref:`sprite_properties`
 
 Levels
 ^^^^^^
