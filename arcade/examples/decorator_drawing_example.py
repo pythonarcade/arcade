@@ -13,8 +13,52 @@ SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 SCREEN_TITLE = "Drawing With Decorators Example"
 
+window = arcade.open_window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
-def draw_background(window):
+bird_list = []
+
+
+def setup():
+    create_birds()
+    arcade.schedule(update, 1 / 60)
+    arcade.run()
+
+
+def create_birds():
+    for bird_count in range(10):
+        x = random.randrange(SCREEN_WIDTH)
+        y = random.randrange(SCREEN_HEIGHT/2, SCREEN_HEIGHT)
+        bird_list.append([x, y])
+
+
+def update(delta_time):
+    """
+    This is run every 1/60 of a second or so. Do not draw anything
+    in this function.
+    """
+    change_y = 0.3
+
+    for bird in bird_list:
+        bird[0] += change_y
+        if bird[0] > SCREEN_WIDTH + 20:
+            bird[0] = -20
+
+
+@window.event
+def on_draw():
+    """
+    This is called every time we need to update our screen. About 60
+    times per second.
+
+    Just draw things in this function, don't update where they are.
+    """
+    # Call our drawing functions.
+    draw_background()
+    draw_birds()
+    draw_trees()
+
+
+def draw_background():
     """
     This function draws the background. Specifically, the sky and ground.
     """
@@ -29,12 +73,29 @@ def draw_background(window):
                                  arcade.color.DARK_SPRING_GREEN)
 
 
+def draw_birds():
+    for bird in bird_list:
+        # Draw the bird.
+        draw_bird(bird[0], bird[1])
+
+
 def draw_bird(x, y):
     """
     Draw a bird using a couple arcs.
     """
     arcade.draw_arc_outline(x, y, 20, 20, arcade.color.BLACK, 0, 90)
     arcade.draw_arc_outline(x + 40, y, 20, 20, arcade.color.BLACK, 90, 180)
+
+
+def draw_trees():
+
+    # Draw the top row of trees
+    for x in range(45, SCREEN_WIDTH, 90):
+        draw_pine_tree(x, SCREEN_HEIGHT / 3)
+
+    # Draw the bottom row of trees
+    for x in range(65, SCREEN_WIDTH, 90):
+        draw_pine_tree(x, (SCREEN_HEIGHT / 3) - 120)
 
 
 def draw_pine_tree(center_x, center_y):
@@ -58,66 +119,6 @@ def draw_pine_tree(center_x, center_y):
     arcade.draw_polygon_filled(point_list, arcade.color.DARK_GREEN)
 
 
-def draw_birds(window):    # Loop to draw ten birds in random locations.
-    for bird in window.bird_list:
-
-        # Draw the bird.
-        draw_bird(bird[0], bird[1])
-
-
-def draw_trees(window):
-
-    # Draw the top row of trees
-    for x in range(45, SCREEN_WIDTH, 90):
-        draw_pine_tree(x, SCREEN_HEIGHT / 3)
-
-    # Draw the bottom row of trees
-    for x in range(65, SCREEN_WIDTH, 90):
-        draw_pine_tree(x, (SCREEN_HEIGHT / 3) - 120)
-
-
-@arcade.decorator.setup
-def create_birds(window):
-    """
-    This, and any function with the arcade.decorator.init decorator,
-    is run automatically on start-up.
-    """
-
-    window.bird_list = []
-    for bird_count in range(10):
-        x = random.randrange(SCREEN_WIDTH)
-        y = random.randrange(SCREEN_HEIGHT / 2, SCREEN_HEIGHT)
-        window.bird_list.append([x, y])
-
-
-@arcade.decorator.update
-def animate_birds(window, delta_time):
-    """
-    This is run every 1/60 of a second or so. Do not draw anything
-    in this function.
-    """
-    change_y = 0.3
-
-    for bird in window.bird_list:
-        bird[0] += change_y
-        if bird[0] > SCREEN_WIDTH + 20:
-            bird[0] = -20
-
-
-@arcade.decorator.draw
-def draw(window):
-    """
-    This is called everytime we need to update our screen. About 60
-    times per second.
-
-    Just draw things in this function, don't update where they are.
-    """
-    # Call our drawing functions.
-    draw_background(window)
-    draw_birds(window)
-    draw_trees(window)
-
-
 if __name__ == "__main__":
-    arcade.decorator.run(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    setup()
 
