@@ -167,7 +167,7 @@ def read_tiled_map(filename: str, scaling) -> TiledMap:
             my_tile.width = int(image.attrib["width"])
             my_tile.height = int(image.attrib["height"])
             my_tile.source = image.attrib["source"]
-            key = str(firstgid)
+            key = str(int(my_tile.local_id) + 1)
             my_map.global_tile_set[key] = my_tile
             firstgid += 1
 
@@ -228,23 +228,27 @@ def read_tiled_map(filename: str, scaling) -> TiledMap:
                 grid_location = GridLocation()
                 if layer_grid_ints[row_index][column_index] != 0:
                     key = str(layer_grid_ints[row_index][column_index])
-                    grid_location.tile = my_map.global_tile_set[key]
 
-                    if my_map.renderorder == "right-down":
-                        adjusted_row_index = my_map.height - row_index - 1
+                    if not key in my_map.global_tile_set:
+                        print(f"Warning, tried to load '{key}' and it is not in the tileset.")
                     else:
-                        adjusted_row_index = row_index
+                        grid_location.tile = my_map.global_tile_set[key]
 
-                    if my_map.orientation == "orthogonal":
-                        grid_location.center_x = column_index * my_map.tilewidth + my_map.tilewidth // 2
-                        grid_location.center_y = adjusted_row_index * my_map.tileheight + my_map.tilewidth // 2
-                    else:
-                        grid_location.center_x,  grid_location.center_y = isometric_grid_to_screen(column_index,
-                                                                                                   row_index,
-                                                                                                   my_map.width,
-                                                                                                   my_map.height,
-                                                                                                   my_map.tilewidth,
-                                                                                                   my_map.tileheight)
+                        if my_map.renderorder == "right-down":
+                            adjusted_row_index = my_map.height - row_index - 1
+                        else:
+                            adjusted_row_index = row_index
+
+                        if my_map.orientation == "orthogonal":
+                            grid_location.center_x = column_index * my_map.tilewidth + my_map.tilewidth // 2
+                            grid_location.center_y = adjusted_row_index * my_map.tileheight + my_map.tilewidth // 2
+                        else:
+                            grid_location.center_x,  grid_location.center_y = isometric_grid_to_screen(column_index,
+                                                                                                       row_index,
+                                                                                                       my_map.width,
+                                                                                                       my_map.height,
+                                                                                                       my_map.tilewidth,
+                                                                                                       my_map.tileheight)
 
                 layer_grid_objs[row_index].append(grid_location)
 

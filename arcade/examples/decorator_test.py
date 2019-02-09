@@ -9,46 +9,67 @@ import arcade
 
 
 class Ball:
-    def __init__(self, radius=20, velocity=70, initial_x=20):
+    def __init__(self, radius=20, velocity=20, initial_x=20):
         self.x_position = initial_x
         self.velocity = velocity
         self.radius = radius
 
 
-@arcade.decorator.setup
-def setup_my_game(window):
-    window.ball: Ball = Ball()
+WIDTH = 700
+HEIGHT = 600
+window = arcade.open_window(WIDTH, HEIGHT, "Decorator Test")
+
+ball = Ball()
 
 
-@arcade.decorator.update
-def move_ball(window, delta_time):
-    window.ball.x_position += window.ball.velocity * delta_time
+def setup():
+    arcade.set_background_color(arcade.color.MAHOGANY)
+    arcade.schedule(update, 1/60)
+    arcade.run()
+
+
+def update(delta_time):
+    move_ball()
+
+
+def move_ball():
+    global ball
+    ball.x_position += ball.velocity
 
     # Did the ball hit the right side of the screen while moving right?
-    if window.ball.x_position > window.width - window.ball.radius and window.ball.velocity > 0:
-        window.ball.velocity *= -1
+    if ball.x_position > WIDTH - ball.radius and ball.velocity > 0:
+        ball.velocity *= -1
 
     # Did the ball hit the left side of the screen while moving left?
-    if window.ball.x_position < window.ball.radius and window.ball.velocity < 0:
-        window.ball.velocity *= -1
+    if ball.x_position < ball.radius and ball.velocity < 0:
+        ball.velocity *= -1
 
 
-@arcade.decorator.draw
-def draw_the_ball(window):
-    arcade.draw_circle_filled(window.ball.x_position, window.height // 2, window.ball.radius, arcade.color.GREEN)
+@window.event
+def on_draw():
+    arcade.start_render()
+    draw_the_ball()
+    draw_some_text()
 
 
-@arcade.decorator.draw
-def draw_some_text(window):
-    arcade.draw_text("This is some text.", 10, window.height // 2, arcade.color.BLACK, 20)
+def draw_the_ball():
+    arcade.draw_circle_filled(ball.x_position, HEIGHT // 2, ball.radius, arcade.color.GREEN)
 
 
+def draw_some_text():
+    arcade.draw_text("This is some text.", 10, HEIGHT // 2, arcade.color.BLACK, 20)
 
-@arcade.decorator.key_press
-def press_space(key, key_modifiers):
+
+@window.event
+def on_key_press(key, modifiers):
     if key == arcade.key.SPACE:
         print("You pressed the space bar.")
 
 
+@window.event
+def on_mouse_press(x, y, button, modifiers):
+    print(f"on_mouse_press - x: {x}, y: {y}, button: {button}, modifiers: {modifiers}")
+
+
 if __name__ == "__main__":
-    arcade.decorator.run(700, 600, "Decorator Test", background_color=arcade.color.MAHOGANY)
+    setup()
