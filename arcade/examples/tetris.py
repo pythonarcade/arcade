@@ -138,7 +138,7 @@ class MyGame(arcade.Window):
         Randomly grab a new stone and set the stone location to the top.
         If we immediately collide, then game-over.
         """
-        self.stone = tetris_shapes[random.randrange(len(tetris_shapes))]
+        self.stone = random.choice(tetris_shapes)
         self.stone_x = int(COLUMN_COUNT / 2 - len(self.stone[0]) / 2)
         self.stone_y = 0
 
@@ -152,13 +152,16 @@ class MyGame(arcade.Window):
         for row in range(len(self.board)):
             for column in range(len(self.board[0])):
                 sprite = arcade.Sprite()
-                sprite.texture = texture_list[self.board[row][column]]
+                for texture in texture_list:
+                    sprite.append_texture(texture)
+                sprite.set_texture(0)
                 sprite.center_x = (MARGIN + WIDTH) * column + MARGIN + WIDTH // 2
                 sprite.center_y = SCREEN_HEIGHT - (MARGIN + HEIGHT) * row + MARGIN + HEIGHT // 2
 
                 self.board_sprite_list.append(sprite)
 
         self.new_stone()
+        self.update_board()
 
     def drop(self):
         """
@@ -250,9 +253,8 @@ class MyGame(arcade.Window):
         for row in range(len(self.board)):
             for column in range(len(self.board[0])):
                 v = self.board[row][column]
-                t = texture_list[v]
                 i = row * COLUMN_COUNT + column
-                self.board_sprite_list[i].texture = t
+                self.board_sprite_list[i].set_texture(v)
 
     def on_draw(self):
         """ Render the screen. """
