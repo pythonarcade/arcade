@@ -18,6 +18,16 @@ The Great Skeleton War
 
 .. _The Great Skeleton War: https://github.com/BlakeDalmas/Python/tree/master/The%20Great%20Skeleton%20War
 
+Space Typer
+~~~~~~~~~~~
+
+.. image:: images/space_typer.png
+
+`Space Typer`_ - A typing game
+
+.. _Space Typer: https://github.com/thecodeah/space-typer
+
+
 FlapPy Bird
 ~~~~~~~~~~~
 
@@ -29,19 +39,21 @@ FlapPy Bird
 
 .. _FlapPy-Bird: https://github.com/iJohnMaged/FlapPy-Bird
 
-.. image:: images/PyOverheadGame.png
 
 PyOverheadGame
 ~~~~~~~~~~~~~~
+
+.. image:: images/PyOverheadGame.png
 
 PyOverheadGame_, a 2D overhead game where you go through several rooms and pick up keys and other objects.
 
 .. _PyOverheadGame: https://github.com/albertz/PyOverheadGame
 
-.. image:: images/blake.png
 
 Dungeon
 ~~~~~~~
+
+.. image:: images/blake.png
 
 Dungeon_, explore a maze picking up arrows and coins.
 
