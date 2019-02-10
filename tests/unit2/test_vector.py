@@ -1,5 +1,5 @@
 import unittest
-from math import pi
+from math import pi, sqrt
 
 import arcade
 
@@ -163,6 +163,16 @@ class TestVector(unittest.TestCase):
         self.assertEqual(0, arcade.Vector().magnitude)
         self.assertEqual(5, arcade.Vector(3, 4).magnitude)
 
+    def test_magnitude_property_setter_works_for_positive_numbers(self):
+        v = arcade.Vector(6, 8)
+        v.magnitude = 5
+        self.assertEqual((3, 4), v, "Should set magnitude.")
+
+    def test_magnitude_property_setter_raises_value_error_for_negative_values(self):
+        v = arcade.Vector(1, 1)
+        with self.assertRaises(ValueError):
+            v.magnitude = -4
+
     def test_normalize(self):
         v1 = arcade.Vector(-8, 6)
         v1.normalize()
@@ -182,12 +192,45 @@ class TestVector(unittest.TestCase):
         self.assertEqual(5, lazer_velocity.magnitude, "Should set speed to 5.")
         self.assertEqual(45, lazer_velocity.heading, "Should be traveling toward player.")
 
-    # def test_shoot_lazer_from_player_at_same_heading(self):
-    #     player = arcade.Sprite()
-    #     player.angle = 20
-    #
-    #     lazer_speed = 5  # px/frame
-    #     lazer_velocity = arcade.Vector.from_angle(player.angle) * lazer_speed
+    def test_rotate_radians(self):
+        v = arcade.Vector(1, 0)
+        v.rotate_radians(pi/4)
+        self.assertEqual(sqrt(0.5), v.x)
+        self.assertEqual(sqrt(0.5), v.y)
+        v.rotate_radians(3*pi/4)
+        self.assertAlmostEqual(-1, v.x, places=10, msg="Should be rotated 180 degrees.")
+        self.assertAlmostEqual(0, v.y, places=10, msg="Should be rotated 180 degrees.")
+
+    def test_rotate(self):
+        v = arcade.Vector(0, -1)
+        v.rotate(90)
+        self.assertAlmostEqual(1, v.x, places=10, msg="Should rotate to 0 degrees.")
+        self.assertAlmostEqual(0, v.y, places=10, msg="Should rotate to 0 degrees.")
+
+    def test_from_angle(self):
+        angle = 45
+        v1 = arcade.Vector.from_angle(angle)
+        self.assertEqual(45, v1.heading, "Should have heading of 45 degrees.")
+        self.assertEqual(1, v1.magnitude, "Should have magnitude of 1.")
+        self.assertEqual(sqrt(0.5), v1.x)
+
+    def test_from_angle_radians(self):
+        angle = pi
+        v = arcade.Vector.from_angle_radians(angle)
+        self.assertAlmostEqual(-1, v.x, places=10, msg="Should return Vector with heading at 180 degrees.")
+        self.assertAlmostEqual(0, v.y, places=10, msg="Should return Vector with heading at 180 degrees.")
+
+    def test_shoot_lazer_from_player_at_same_heading(self):
+        player = arcade.Sprite()
+        player.angle = 20
+
+        lazer_speed = 5  # px/frame
+        lazer_velocity = arcade.Vector.from_angle(player.angle) * lazer_speed
+        self.assertAlmostEqual(player.angle,
+                               lazer_velocity.heading,
+                               places=10,
+                               msg="Should have same heading as player.")
+        self.assertAlmostEqual(lazer_speed, lazer_velocity.magnitude, places=10, msg="Should have a mag of 5.")
 
     def test_heading_radians(self):
         self.assertEqual(pi / 2, arcade.Vector(0, 1).heading_radians)
@@ -203,13 +246,34 @@ class TestVector(unittest.TestCase):
         self.assertEqual(180, arcade.Vector(-1, 0).heading)
         self.assertEqual(-135, arcade.Vector(-1, -1).heading)
 
-    # test limit
+    def test_limit_does_not_clip_under_limit(self):
+        v = arcade.Vector(3, 4)
+        v.limit(6)
+        self.assertEqual(5, v.magnitude, "Should not clip magnitude under limit.")
 
+    def test_limit_clips_over_limit(self):
+        v = arcade.Vector(6, 8)
+        v.limit(5)
+        self.assertEqual((3, 4), v, "Should clip magnitude if above limit.")
 
+    def test_limit_raises_value_error_with_negative_limit(self):
+        v = arcade.Vector(1, 1)
+        with self.assertRaises(ValueError):
+            v.limit(-3)
 
+    def test_diagonal_movement_speed_limited(self):
+        max_speed = 5
+        position = arcade.Vector(0, 0)
+        velocity = arcade.Vector(0, 0)
 
+        # simulate moving up and right for 10 frames
+        for _ in range(10):
+            velocity.x += 1
+            velocity.y += 1
+            velocity.limit(max_speed)
+            self.assertGreaterEqual(max_speed, velocity.magnitude, "Should not allow velocity to exceed max_speed.")
 
-
+            position += velocity
 
 
 if __name__ == '__main__':

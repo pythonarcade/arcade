@@ -13,6 +13,30 @@ class Vector:
 
     # TODO: add __copy__ medhod
 
+    @property
+    def magnitude_sq(self) -> float:
+        return self.x**2 + self.y**2
+
+    @property
+    def magnitude(self) -> float:
+        return math.sqrt(self.magnitude_sq)
+
+    @magnitude.setter
+    def magnitude(self, value: float):
+        if value < 0:
+            raise ValueError("Magnitudes cannot be negative.")
+        self.normalize()
+        self.x *= value
+        self.y *= value
+
+    @property
+    def heading_radians(self) -> float:
+        return math.atan2(self.y, self.x)
+
+    @property
+    def heading(self) -> float:
+        return math.degrees(self.heading_radians)
+
     def normalize(self) -> 'Vector':
         """Normalizes Vector magnitude scaled to 1.0"""
         mag = self.magnitude
@@ -24,25 +48,37 @@ class Vector:
             pass
         return self
 
-    @property
-    def magnitude_sq(self):
-        return self.x**2 + self.y**2
+    def rotate_radians(self, radians: float):
+        x, y = self
+        self.x = x * math.cos(radians) - y * math.sin(radians)
+        self.y = x * math.sin(radians) + y * math.cos(radians)
+        return self
 
-    @property
-    def magnitude(self):
-        return math.sqrt(self.magnitude_sq)
+    def rotate(self, degrees: float):
+        """Rotates Vector in degrees"""
+        return self.rotate_radians(math.radians(degrees))
 
-    # TODO: implement set_magnitude?
-    # TODO: implement limit
-    # TODO: implement static from_angle and from_angle_radians
+    def limit(self, magnitude_limit: float):
+        if self.magnitude > magnitude_limit:
+            self.magnitude = magnitude_limit
+        return self
 
-    @property
-    def heading_radians(self) -> float:
-        return math.atan2(self.y, self.x)
+    @staticmethod
+    def from_angle_radians(radians: float) -> 'Vector':
+        v = Vector(1, 0)
+        v.rotate_radians(radians)
+        return v
 
-    @property
-    def heading(self) -> float:
-        return math.degrees(self.heading_radians)
+    @staticmethod
+    def from_angle(degrees: float) -> 'Vector':
+        """Get a new Vector object pointed toward a particular angle.
+        Args:
+            degrees: Angle in degrees
+
+        Returns:
+            Normalized Vector with heading matching angle.
+        """
+        return Vector.from_angle_radians(math.radians(degrees))
 
     def __str__(self) -> str:
         return self.__repr__()
