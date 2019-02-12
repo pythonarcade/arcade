@@ -11,6 +11,7 @@ import arcade
 import random
 import math
 import os
+import pprint
 
 SCREEN_WIDTH = 1024
 SCREEN_HEIGHT = 768
@@ -22,6 +23,49 @@ ENEMY_SPAWN_INTERVAL = 1
 ENEMY_SPEED = 1
 JOY_DEADZONE = 0.2
 
+
+def dump_obj(obj):
+    for key in sorted(vars(obj)):
+        val = getattr(obj, key)
+        print("{:30} = {} ({})".format(key, val, type(val).__name__))
+
+def dump_joystick(joy):
+    print("========== {}".format(joy))
+    print("x       {}".format(joy.x))
+    print("y       {}".format(joy.y))
+    print("z       {}".format(joy.z))
+    print("rx      {}".format(joy.rx))
+    print("ry      {}".format(joy.ry))
+    print("rz      {}".format(joy.rz))
+    print("hat_x   {}".format(joy.hat_x))
+    print("hat_y   {}".format(joy.hat_y))
+    print("buttons {}".format(joy.buttons))
+    print("========== Extra joy")
+    dump_obj(joy)
+    print("========== Extra joy.device")
+    dump_obj(joy.device)
+    print("========== pprint joy")
+    pprint.pprint(joy)
+    print("========== pprint joy.device")
+    pprint.pprint(joy.device)
+
+def dump_joystick_state(ticks, joy):
+    # print("{:5.2f} {:5.2f} {:>20} {:5}_".format(1.234567, -8.2757272903, "hello", str(True)))
+    fmt_str = "{:6d} "
+    num_fmts = ["{:5.2f}"] * 6
+    fmt_str += " ".join(num_fmts)
+    fmt_str += " {:2d} {:2d} {}"
+    buttons = " ".join(["{:5}".format(str(b)) for b in joy.buttons])
+    print(fmt_str.format(ticks,
+                         joy.x,
+                         joy.y,
+                         joy.z,
+                         joy.rx,
+                         joy.ry,
+                         joy.rz,
+                         joy.hat_x,
+                         joy.hat_y,
+                         buttons))
 
 def get_joy_position(x, y):
     """Given position of joystick axes, return (x, y, angle_in_degrees).
@@ -82,19 +126,26 @@ class MyGame(arcade.Window):
         arcade.set_background_color(arcade.color.DARK_MIDNIGHT_BLUE)
         self.game_over = False
         self.score = 0
+        self.tick = 0
         self.bullet_cooldown = 0
         self.player = Player("images/playerShip2_orange.png")
         self.bullet_list = arcade.SpriteList()
         self.enemy_list = arcade.SpriteList()
         self.joy = None
         joys = arcade.get_joysticks()
+        for joy in joys:
+            dump_joystick(joy)
         if joys:
             self.joy = joys[0]
             self.joy.open()
             print("Using joystick controls: {}".format(self.joy.device))
+            arcade.window_commands.schedule(self.debug_joy_state, 0.1)
         if not self.joy:
             print("No joystick present, using keyboard controls")
         arcade.window_commands.schedule(self.spawn_enemy, ENEMY_SPAWN_INTERVAL)
+
+    def debug_joy_state(self, delta_time):
+        dump_joystick_state(self.tick, self.joy)
 
     def spawn_enemy(self, elapsed):
         if self.game_over:
@@ -104,6 +155,7 @@ class MyGame(arcade.Window):
         self.enemy_list.append(Enemy(x, y))
 
     def update(self, delta_time):
+        self.tick += 1
         if self.game_over:
             return
 
@@ -118,7 +170,8 @@ class MyGame(arcade.Window):
             if move_angle:
                 self.player.change_x = move_x * MOVEMENT_SPEED
                 self.player.change_y = move_y * MOVEMENT_SPEED
-                self.player.angle = move_angle
+                # An angle of "0" means "right", but the player's image is drawn in the "up" direction. So an offset is needed.
+                self.player.angle = move_angle - 90
             else:
                 self.player.change_x = 0
                 self.player.change_y = 0
@@ -237,9 +290,14 @@ class MyGame(arcade.Window):
         self.enemy_list.draw()
         self.player.draw()
 
-        # Put the text on the screen.
+        # Put the score on the screen.
         output = f"Score: {self.score}"
         arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
+
+        # Game over message
+        if self.game_over:
+            arcade.draw_text("Game Over", SCREEN_WIDTH/2, SCREEN_HEIGHT/2, arcade.color.WHITE, 100, width=SCREEN_WIDTH,
+                             align="center", anchor_x="center", anchor_y="center")
 
 
 if __name__ == "__main__":
