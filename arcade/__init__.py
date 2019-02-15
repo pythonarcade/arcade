@@ -16,10 +16,14 @@ from arcade import color
 from arcade import key
 from arcade.application import *
 from arcade.arcade_types import *
+from arcade.utils import *
 from arcade.draw_commands import *
 from arcade.buffered_draw_commands import *
 from arcade.geometry import *
 from arcade.physics_engines import *
+from arcade.emitter import *
+from arcade.emitter_simple import *
+from arcade.particle import *
 from arcade.sound import *
 from arcade.sprite import *
 from arcade.sprite_list import *
@@ -31,3 +35,4 @@ from arcade.isometric import *
 from arcade.text import draw_text
 from arcade.text import create_text
 from arcade.text import render_text
+from arcade.examples.frametime_plotter import *
