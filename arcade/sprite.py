@@ -370,7 +370,7 @@ class Sprite:
             self.add_spatial_hashes()
 
             for sprite_list in self.sprite_lists:
-                sprite_list.update_position(self)
+                sprite_list.update_location(self)
 
     center_x = property(_get_center_x, _set_center_x)
 
@@ -387,7 +387,7 @@ class Sprite:
             self.add_spatial_hashes()
 
             for sprite_list in self.sprite_lists:
-                sprite_list.update_position(self)
+                sprite_list.update_location(self)
 
     center_y = property(_get_center_y, _set_center_y)
 
