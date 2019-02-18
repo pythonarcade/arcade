@@ -33,7 +33,8 @@ if __name__ == "__main__":
           install_requires=[
             'pyglet==1.4.0b1',
             'pillow',
-            'numpy'
+            'numpy',
+            'pyglet-ffmpeg'
           ],
           packages=["arcade",
                     "arcade.key",
