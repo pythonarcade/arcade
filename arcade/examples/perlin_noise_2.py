@@ -83,25 +83,27 @@ class MyGame(arcade.Window):
         self.background_list = None
         arcade.set_background_color(arcade.color.BLACK)
 
+        self.grid = None
         self.recreate_grid()
 
     def recreate_grid(self):
         lin = np.linspace(0, 5, ROW_COUNT, endpoint=False)
         y, x = np.meshgrid(lin, lin)
-        grid = (perlin(x, y, seed=0))
-        grid *= 255
-        grid += 128
+        self.grid = (perlin(x, y, seed=0))
+        self.grid *= 255
+        self.grid += 128
 
         for row in range(ROW_COUNT):
             for column in range(COLUMN_COUNT):
-                print(f"{grid[row][column]:7.1f} ", end="")
+                print(f"{self.grid[row][column]:7.1f} ", end="")
             print()
 
-        im = Image.fromarray(np.uint8(grid), "L")
+        im = Image.fromarray(np.uint8(self.grid), "L")
         background_sprite = arcade.Sprite()
         background_sprite.center_x = SCREEN_WIDTH / 2
         background_sprite.center_y = SCREEN_HEIGHT / 2
-        background_sprite.texture = arcade.Texture(im)
+        background_sprite.append_texture(arcade.Texture("dynamic noise image", im))
+        background_sprite.set_texture(0)
 
         self.background_list = arcade.SpriteList()
         self.background_list.append(background_sprite)

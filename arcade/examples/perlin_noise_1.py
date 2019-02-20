@@ -85,25 +85,26 @@ class MyGame(arcade.Window):
 
         arcade.set_background_color(arcade.color.BLACK)
 
+        self.grid = None
         self.recreate_grid()
 
     def recreate_grid(self):
         lin = np.linspace(0, 5, ROW_COUNT, endpoint=False)
         y, x = np.meshgrid(lin, lin)
-        grid = (perlin(x, y, seed=0))
+        self.grid = (perlin(x, y, seed=0))
 
-        grid *= 255
-        grid += 128
+        self.grid *= 255
+        self.grid += 128
 
         for row in range(ROW_COUNT):
             for column in range(COLUMN_COUNT):
-                print(f"{grid[row][column]:5.2f} ", end="")
+                print(f"{self.grid[row][column]:5.2f} ", end="")
             print()
 
         self.shape_list = arcade.ShapeElementList()
         for row in range(ROW_COUNT):
             for column in range(COLUMN_COUNT):
-                color = grid[row][column], 0, 0
+                color = self.grid[row][column], 0, 0
 
                 x = (MARGIN + WIDTH) * column + MARGIN + WIDTH // 2
                 y = (MARGIN + HEIGHT) * row + MARGIN + HEIGHT // 2
@@ -111,7 +112,7 @@ class MyGame(arcade.Window):
                 current_rect = arcade.create_rectangle_filled(x, y, WIDTH, HEIGHT, color)
                 self.shape_list.append(current_rect)
 
-        im = Image.fromarray(np.uint8(grid), "L")
+        im = Image.fromarray(np.uint8(self.grid), "L")
         im.save("test.png")
 
     def on_draw(self):
