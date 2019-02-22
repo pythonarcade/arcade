@@ -264,12 +264,20 @@ def load_texture(file_name: str, x: float = 0, y: float = 0,
 
     """
 
-    # See if we already loaded this file, and we can just use a cached version.
+    # See if we already loaded this texture, and we can just use a cached version.
     cache_name = "{}{}{}{}{}{}{}{}".format(file_name, x, y, width, height, scale, flipped, mirrored)
     if cache_name in load_texture.texture_cache:
         return load_texture.texture_cache[cache_name]
 
-    source_image = PIL.Image.open(file_name)
+    # See if we already loaded this texture file, and we can just use a cached version.
+    cache_file_name = "{}".format(file_name)
+    if cache_file_name in load_texture.texture_cache:
+        texture = load_texture.texture_cache[cache_file_name]
+        source_image = texture.image
+    else:
+        source_image = PIL.Image.open(file_name)
+        result = Texture(cache_file_name, source_image)
+        load_texture.texture_cache[cache_file_name] = result
 
     source_image_width, source_image_height = source_image.size
 
