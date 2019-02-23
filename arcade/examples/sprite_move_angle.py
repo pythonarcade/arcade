@@ -71,7 +71,6 @@ class MyGame(arcade.Window):
 
         # Set up the player info
         self.player_sprite = None
-        self.score = 0
 
         # Set the background color
         arcade.set_background_color(arcade.color.BLACK)
@@ -83,7 +82,6 @@ class MyGame(arcade.Window):
         self.player_list = arcade.SpriteList()
 
         # Set up the player
-        self.score = 0
         self.player_sprite = Player("images/playerShip1_orange.png", SPRITE_SCALING)
         self.player_sprite.center_x = SCREEN_WIDTH / 2
         self.player_sprite.center_y = SCREEN_HEIGHT / 2

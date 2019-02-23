@@ -68,7 +68,6 @@ class MyGame(arcade.Window):
         self.coin_list = None
 
         # Set up the player
-        self.score = 0
         self.player_sprite = None
         self.physics_engine = None
         self.view_left = 0
@@ -86,7 +85,6 @@ class MyGame(arcade.Window):
         self.player_list = arcade.SpriteList()
 
         # Set up the player
-        self.score = 0
         self.player_sprite = arcade.Sprite("images/character.png", SPRITE_SCALING)
         self.player_sprite.center_x = 2 * GRID_PIXEL_SIZE
         self.player_sprite.center_y = 3 * GRID_PIXEL_SIZE
