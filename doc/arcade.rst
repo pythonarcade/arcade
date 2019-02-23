@@ -8,6 +8,8 @@ for the Python Arcade library.
 
 For example code, see :ref:`example-code`.
 
+.. contents:: Table of Contents
+
 Submodules
 ----------
 

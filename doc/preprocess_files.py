@@ -101,6 +101,8 @@ def main():
     output_file.write("Quick API Index\n")
     output_file.write("===============\n")
     output_file.write("\n")
+    output_file.write(".. contents:: Table of Contents\n")
+    output_file.write("\n")
 
     output_file.write("Window Module\n")
     output_file.write("-------------\n")

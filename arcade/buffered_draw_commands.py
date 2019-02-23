@@ -1,5 +1,5 @@
 """
-Drawing commands that use the VBOs.
+Drawing commands that use vertex buffer objects (VBOs).
 
 This module contains commands for basic graphics drawing commands,
 but uses Vertex Buffer Objects. This keeps the vertices loaded on
