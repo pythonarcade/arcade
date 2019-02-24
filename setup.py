@@ -56,6 +56,8 @@ if __name__ == "__main__":
                                    'examples/images/character_sprites/*.png',
                                    'examples/images/explosion/*.png',
                                    'examples/images/*.jpg',
+                                   'examples/*.csv',
+                                   'examples/*.tmx',
                                    'examples/sounds/*']},
           data_files=[("lib/site-packages/arcade/Win32", ["Win32/avbin.dll"]),
                       ("lib/site-packages/arcade/Win64", ["Win64/avbin.dll"]),
