@@ -120,6 +120,7 @@ class Sprite:
             self.textures = [self._texture]
             self._width = self._texture.width * scale
             self._height = self._texture.height * scale
+            self._texture.scale = scale
         else:
             self.textures = []
             self._texture = None
