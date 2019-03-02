@@ -117,6 +117,12 @@ def main():
     list_classes("../arcade/draw_commands.py", output_file)
     list_functions("../arcade/draw_commands.py", output_file)
 
+    output_file.write("Text Module\n")
+    output_file.write("-----------\n")
+    output_file.write("\n")
+    list_classes("../arcade/text.py", output_file)
+    list_functions("../arcade/text.py", output_file)
+
     output_file.write("Buffered Drawing Module\n")
     output_file.write("-----------------------\n")
     output_file.write("\n")
