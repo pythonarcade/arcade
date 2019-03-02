@@ -118,7 +118,8 @@ class Window(pyglet.window.Window):
         viewport = self.get_viewport_size()
         width = max(1, viewport[0])
         height = max(1, viewport[1])
-        gl.glViewport(0, 0, width, height)
+        original_viewport = self.get_viewport()
+        self.set_viewport(original_viewport[0], original_viewport[0] + width, original_viewport[2], original_viewport[2] + height)
 
     def set_min_size(self, width: float, height: float):
         """ Wrap the Pyglet window call to set minimum size
