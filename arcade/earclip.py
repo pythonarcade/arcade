@@ -13,11 +13,7 @@ def earclip(polygon):
     polygon is expected to be an array of 2-tuples of the cartesian points of the polygon
     For a polygon with n points it will return n-2 triangles.
     The triangles are returned as an array of 3-tuples where each item in the tuple is a 2-tuple of the cartesian point.
-    e.g
-    >>> polygon = [(0,1), (-1, 0), (0, -1), (1, 0)]
-    >>> triangles = tripy.earclip(polygon)
-    >>> triangles
-    [((1, 0), (0, 1), (-1, 0)), ((1, 0), (-1, 0), (0, -1))]
+
     Implementation Reference:
         - https://www.geometrictools.com/Documentation/TriangulationByEarClipping.pdf
     """

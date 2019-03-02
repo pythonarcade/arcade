@@ -52,9 +52,13 @@ def get_four_byte_color(color: Color) -> Color:
     Given a RGB list, it will return RGBA.
     Given a RGBA list, it will return the same RGBA.
 
-    :param color: Color
-    :return: color: Color
+    Args:
+        color: Three or four byte tuple
+
+    Returns:
+        return: Four byte tuple
     """
+
     if len(color) == 4:
         return color
     elif len(color) == 3:
@@ -120,7 +124,9 @@ class Texture:
     Usually created by the ``load_texture`` or ``load_textures`` commands.
 
     Attributes:
-        :id: ID of the texture as assigned by OpenGL
+        :name:
+        :image:
+        :scale:
         :width: Width of the texture image in pixels
         :height: Height of the texture image in pixels
 
@@ -144,6 +150,22 @@ class Texture:
              height: float, angle: float=0,
              alpha: float=1, transparent: bool=True,
              repeat_count_x=1, repeat_count_y=1):
+        """
+
+        Args:
+            center_x:
+            center_y:
+            width:
+            height:
+            angle:
+            alpha: Currently unused.
+            transparent:  Currently unused.
+            repeat_count_x: Currently unused.
+            repeat_count_y:  Currently unused.
+
+        Returns:
+
+        """
 
         from arcade.sprite import Sprite
         from arcade.sprite_list import SpriteList

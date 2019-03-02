@@ -89,17 +89,28 @@ def draw_text(text: str,
               anchor_y: str = "baseline",
               rotation: float = 0
               ):
-
     """
 
     Args:
-        :text: Text to display.
-        :start_x: x coordinate of top left text point.
-        :start_y: y coordinate of top left text point.
-        :color: color, specified in a list of 3 or 4 bytes in RGB or
-         RGBA format.
+        text: Text to draw
+        start_x:
+        start_y:
+        color:
+        font_size:
+        width:
+        align:
+        font_name:
+        bold:
+        italic:
+        anchor_x:
+        anchor_y:
+        rotation:
+
+    Returns:
 
     """
+
+
 
     # Scale the font up, so it matches with the sizes of the old code back
     # when Pyglet drew the text.

@@ -29,6 +29,12 @@ _opengl_context = None
 
 
 def get_projection():
+    """
+    Returns the current projection.
+
+    Returns: Numpy array with projection.
+
+    """
     return _projection
 
 
@@ -41,7 +47,8 @@ def create_orthogonal_projection(
         far,
         dtype=None
 ):
-    """Creates an orthogonal projection matrix.
+    """Creates an orthogonal projection matrix. Used internally with the
+       OpenGL shaders.
 
     :param float left: The left of the near plane relative to the plane's centre.
     :param float right: The right of the near plane relative to the plane's centre.
@@ -110,6 +117,17 @@ def set_window(window: pyglet.window.Window):
     _window = window
 
 def get_scaling_factor(window):
+    """
+    Tries to get the scaling factor of the given Window. Currently works
+    on MacOS only. Useful in figuring out what's going on with Retina and
+    high-res displays.
+
+    Args:
+        window:
+
+    Returns:
+
+    """
     from pyglet import compat_platform
     if compat_platform == 'darwin':
         from pyglet.libs.darwin.cocoapy import NSMakeRect
@@ -175,7 +193,12 @@ def set_viewport(left: Number, right: Number, bottom: Number, top: Number):
 
 
 def get_viewport() -> (float, float, float, float):
-    """ Get the current viewport settings. """
+    """
+    Get the current viewport settings.
+
+    Returns: Tuple of floats, with left, right, bottom, top
+
+    """
     return _left, _right, _bottom, _top
 
 
