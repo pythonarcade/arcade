@@ -1202,8 +1202,8 @@ def draw_lrtb_rectangle_filled(left: float, right: float, top: float,
 
     center_x = (left + right) / 2
     center_y = (top + bottom) / 2
-    width = right - left
-    height = top - bottom
+    width = right - left + 1
+    height = top - bottom + 1
     draw_rectangle_filled(center_x, center_y, width, height, color)
 
 
