@@ -1146,20 +1146,15 @@ def draw_rectangle_outline(center_x: float, center_y: float, width: float,
 
         _generic_draw_line_strip((p1, p2, p3, p4), color, border_width, gl.GL_LINE_LOOP)
     else:
-        inside_width = width - border_width / 2
-        inside_height = height - border_width / 2
-        outside_width = width + border_width / 2
-        outside_height = height + border_width / 2
+        i_lb = center_x - width / 2 + border_width / 2, center_y - height / 2 + border_width / 2
+        i_rb = center_x + width / 2 - border_width / 2, center_y - height / 2 + border_width / 2
+        i_rt = center_x + width / 2 - border_width / 2, center_y + height / 2 - border_width / 2
+        i_lt = center_x - width / 2 + border_width / 2, center_y + height / 2 - border_width / 2
 
-        i_lb = -inside_width // 2 + center_x, -inside_height // 2 + center_y
-        i_rb = inside_width // 2 + center_x, -inside_height // 2 + center_y
-        i_rt = inside_width // 2 + center_x, inside_height // 2 + center_y
-        i_lt = -inside_width // 2 + center_x, inside_height // 2 + center_y
-
-        o_lb = -outside_width // 2 + center_x, -outside_height // 2 + center_y
-        o_rb = outside_width // 2 + center_x, -outside_height // 2 + center_y
-        o_rt = outside_width // 2 + center_x, outside_height // 2 + center_y
-        o_lt = -outside_width // 2 + center_x, outside_height // 2 + center_y
+        o_lb = center_x - width / 2 - border_width / 2, center_y - height / 2 - border_width / 2
+        o_rb = center_x + width / 2 + border_width / 2, center_y - height / 2 - border_width / 2
+        o_rt = center_x + width / 2 + border_width / 2, center_y + height / 2 + border_width / 2
+        o_lt = center_x - width / 2 - border_width / 2, center_y + height / 2 + border_width / 2
 
         point_list = o_lt, i_lt, o_rt, i_rt, o_rb, i_rb, o_lb, i_lb, o_lt, i_lt
 
