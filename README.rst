@@ -35,7 +35,7 @@ Latest version is 1.3.7 released on 2018-11-01.
 
 Release notes: http://arcade.academy/release_notes.html
 
-Beta version is 2.0.0b4 released 2019-02-02.
+Beta version is 2.0.0b5 released 2019-03-02.
 
 Games Using Arcade
 ------------------
