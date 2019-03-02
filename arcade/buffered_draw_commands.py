@@ -81,6 +81,17 @@ def create_line(start_x: float, start_y: float, end_x: float, end_y: float,
     """
     Create a line to be rendered later. This works faster than draw_line because
     the vertexes are only loaded to the graphics card once, rather than each frame.
+
+    Args:
+        start_x:
+        start_y:
+        end_x:
+        end_y:
+        color:
+        line_width:
+
+    Returns: Shape
+
     """
 
     program = shader.program(
@@ -141,6 +152,14 @@ def create_line_generic_with_colors(point_list: PointList,
     """
     This function is used by ``create_line_strip`` and ``create_line_loop``,
     just changing the OpenGL type for the line drawing.
+
+    Args:
+        point_list:
+        color_list:
+        shape_mode:
+        line_width:
+
+    Returns: Shape
     """
     program = shader.program(
         vertex_shader='''
@@ -268,6 +287,17 @@ def create_rectangle_filled(center_x: float, center_y: float, width: float,
                             tilt_angle: float=0) -> Shape:
     """
     Create a filled rectangle.
+
+    Args:
+        center_x:
+        center_y:
+        width:
+        height:
+        color:
+        tilt_angle:
+
+    Returns:
+
     """
     return create_rectangle(center_x, center_y, width, height,
                             color, tilt_angle=tilt_angle)
