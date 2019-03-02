@@ -843,12 +843,9 @@ def draw_line(start_x: float, start_y: float, end_x: float, end_y: float,
     """
 
     points = (start_x, start_y), (end_x, end_y)
-    if line_width == 1:
-        draw_line_strip(points, color, line_width)
-    else:
-        points = _get_points_for_thick_line(start_x, start_y, end_x, end_y, line_width)
-        triangle_point_list = points[1], points[0], points[2], points[3]
-        _generic_draw_line_strip(triangle_point_list, color, 1, gl.GL_TRIANGLE_STRIP)
+    points = _get_points_for_thick_line(start_x, start_y, end_x, end_y, line_width)
+    triangle_point_list = points[1], points[0], points[2], points[3]
+    _generic_draw_line_strip(triangle_point_list, color, 1, gl.GL_TRIANGLE_STRIP)
 
 
 def draw_lines(point_list: PointList,
@@ -871,20 +868,17 @@ def draw_lines(point_list: PointList,
         None
     """
 
-    if line_width == 1:
-        _generic_draw_line_strip(point_list, color, line_width, gl.GL_LINES)
-    else:
-        triangle_point_list = []
-        last_point = None
-        for point in point_list:
-            if last_point is not None:
-                points = _get_points_for_thick_line(last_point[0], last_point[1], point[0], point[1], line_width)
-                reordered_points = points[1], points[0], points[2], points[0], points[2], points[3]
-                triangle_point_list.extend(reordered_points)
-                _generic_draw_line_strip(triangle_point_list, color, 1, gl.GL_TRIANGLES)
-                last_point = None
-            else:
-                last_point = point
+    triangle_point_list = []
+    last_point = None
+    for point in point_list:
+        if last_point is not None:
+            points = _get_points_for_thick_line(last_point[0], last_point[1], point[0], point[1], line_width)
+            reordered_points = points[1], points[0], points[2], points[0], points[2], points[3]
+            triangle_point_list.extend(reordered_points)
+            _generic_draw_line_strip(triangle_point_list, color, 1, gl.GL_TRIANGLES)
+            last_point = None
+        else:
+            last_point = point
 
 
 # --- BEGIN POINT FUNCTIONS # # #
@@ -905,11 +899,7 @@ def draw_point(x: float, y: float, color: Color, size: float):
     Raises:
         None
     """
-    if size == 1:
-        point_list = [(x, y)]
-        _generic_draw_line_strip(point_list, color, size, gl.GL_POINTS)
-    else:
-        draw_rectangle_filled(x, y, size / 2, size / 2, color)
+    draw_rectangle_filled(x, y, size / 2, size / 2, color)
 
 
 def _get_points_for_points(point_list, size):
@@ -940,11 +930,8 @@ def draw_points(point_list: PointList,
     Raises:
         None
     """
-    if size == 1:
-        _generic_draw_line_strip(point_list, color, size, gl.GL_POINTS)
-    else:
-        new_point_list = _get_points_for_points(point_list, size)
-        _generic_draw_line_strip(new_point_list, color, 1, gl.GL_TRIANGLES)
+    new_point_list = _get_points_for_points(point_list, size)
+    _generic_draw_line_strip(new_point_list, color, 1, gl.GL_TRIANGLES)
 
 
 # --- END POINT FUNCTIONS # # #
@@ -989,25 +976,22 @@ def draw_polygon_outline(point_list: PointList,
     Raises:
         None
     """
-    if line_width == 1:
-        _generic_draw_line_strip(point_list, color, line_width, gl.GL_LINE_LOOP)
-    else:
-        new_point_list = [point for point in point_list]
-        new_point_list.append(point_list[0])
+    new_point_list = [point for point in point_list]
+    new_point_list.append(point_list[0])
 
-        triangle_point_list = []
-        # This needs a lot of improvement
-        last_point = None
-        for point in new_point_list:
-            if last_point is not None:
-                points = _get_points_for_thick_line(last_point[0], last_point[1], point[0], point[1], line_width)
-                reordered_points = points[1], points[0], points[2], points[3]
-                triangle_point_list.extend(reordered_points)
-            last_point = point
+    triangle_point_list = []
+    # This needs a lot of improvement
+    last_point = None
+    for point in new_point_list:
+        if last_point is not None:
+            points = _get_points_for_thick_line(last_point[0], last_point[1], point[0], point[1], line_width)
+            reordered_points = points[1], points[0], points[2], points[3]
+            triangle_point_list.extend(reordered_points)
+        last_point = point
 
-        points = _get_points_for_thick_line(new_point_list[0][0], new_point_list[0][1], new_point_list[1][0], new_point_list[1][1], line_width)
-        triangle_point_list.append(points[1])
-        _generic_draw_line_strip(triangle_point_list, color, 1, gl.GL_TRIANGLE_STRIP)
+    points = _get_points_for_thick_line(new_point_list[0][0], new_point_list[0][1], new_point_list[1][0], new_point_list[1][1], line_width)
+    triangle_point_list.append(points[1])
+    _generic_draw_line_strip(triangle_point_list, color, 1, gl.GL_TRIANGLE_STRIP)
 
 
 def draw_triangle_filled(x1: float, y1: float,
@@ -1154,46 +1138,26 @@ def draw_rectangle_outline(center_x: float, center_y: float, width: float,
         None
     """
 
-    if border_width == 1:
-        p1 = -width // 2 + center_x, -height // 2 + center_y
-        p2 = width // 2 + center_x, -height // 2 + center_y
-        p3 = width // 2 + center_x, height // 2 + center_y
-        p4 = -width // 2 + center_x, height // 2 + center_y
+    i_lb = center_x - width / 2 + border_width / 2, center_y - height / 2 + border_width / 2
+    i_rb = center_x + width / 2 - border_width / 2, center_y - height / 2 + border_width / 2
+    i_rt = center_x + width / 2 - border_width / 2, center_y + height / 2 - border_width / 2
+    i_lt = center_x - width / 2 + border_width / 2, center_y + height / 2 - border_width / 2
 
-        if tilt_angle != 0:
-            p1 = rotate_point(p1[0], p1[1], center_x, center_y, tilt_angle)
-            p2 = rotate_point(p2[0], p2[1], center_x, center_y, tilt_angle)
-            p3 = rotate_point(p3[0], p3[1], center_x, center_y, tilt_angle)
-            p4 = rotate_point(p4[0], p4[1], center_x, center_y, tilt_angle)
+    o_lb = center_x - width / 2 - border_width / 2, center_y - height / 2 - border_width / 2
+    o_rb = center_x + width / 2 + border_width / 2, center_y - height / 2 - border_width / 2
+    o_rt = center_x + width / 2 + border_width / 2, center_y + height / 2 + border_width / 2
+    o_lt = center_x - width / 2 - border_width / 2, center_y + height / 2 + border_width / 2
 
-        _generic_draw_line_strip((p1, p2, p3, p4), color, border_width, gl.GL_LINE_LOOP)
-    else:
-        inside_width = width - border_width / 2
-        inside_height = height - border_width / 2
-        outside_width = width + border_width / 2
-        outside_height = height + border_width / 2
+    point_list = o_lt, i_lt, o_rt, i_rt, o_rb, i_rb, o_lb, i_lb, o_lt, i_lt
 
-        i_lb = -inside_width // 2 + center_x, -inside_height // 2 + center_y
-        i_rb = inside_width // 2 + center_x, -inside_height // 2 + center_y
-        i_rt = inside_width // 2 + center_x, inside_height // 2 + center_y
-        i_lt = -inside_width // 2 + center_x, inside_height // 2 + center_y
+    if tilt_angle != 0:
+        point_list_2 = []
+        for point in point_list:
+            new_point = rotate_point(point[0], point[1], center_x, center_y, tilt_angle)
+            point_list_2.append(new_point)
+        point_list = point_list_2
 
-        o_lb = -outside_width // 2 + center_x, -outside_height // 2 + center_y
-        o_rb = outside_width // 2 + center_x, -outside_height // 2 + center_y
-        o_rt = outside_width // 2 + center_x, outside_height // 2 + center_y
-        o_lt = -outside_width // 2 + center_x, outside_height // 2 + center_y
-
-        point_list = o_lt, i_lt, o_rt, i_rt, o_rb, i_rb, o_lb, i_lb, o_lt, i_lt
-
-        if tilt_angle != 0:
-            point_list_2 = []
-            for point in point_list:
-                new_point = rotate_point(point[0], point[1], center_x, center_y, tilt_angle)
-                point_list_2.append(new_point)
-            point_list = point_list_2
-
-        _generic_draw_line_strip(point_list, color, 1, gl.GL_TRIANGLE_STRIP)
-
+    _generic_draw_line_strip(point_list, color, 1, gl.GL_TRIANGLE_STRIP)
 
 
 def draw_lrtb_rectangle_filled(left: float, right: float, top: float,
@@ -1224,8 +1188,8 @@ def draw_lrtb_rectangle_filled(left: float, right: float, top: float,
 
     center_x = (left + right) / 2
     center_y = (top + bottom) / 2
-    width = right - left
-    height = top - bottom
+    width = right - left + 1
+    height = top - bottom + 1
     draw_rectangle_filled(center_x, center_y, width, height, color)
 
 
