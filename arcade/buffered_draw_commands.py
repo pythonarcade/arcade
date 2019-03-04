@@ -235,6 +235,14 @@ def create_line_strip(point_list: PointList,
     """
     Create a multi-point line to be rendered later. This works faster than draw_line because
     the vertexes are only loaded to the graphics card once, rather than each frame.
+
+    Args:
+        point_list:
+        color:
+        line_width:
+
+    Returns:
+
     """
     return create_line_generic(point_list, color, gl.GL_LINE_STRIP, line_width)
 
@@ -244,6 +252,14 @@ def create_line_loop(point_list: PointList,
     """
     Create a multi-point line loop to be rendered later. This works faster than draw_line because
     the vertexes are only loaded to the graphics card once, rather than each frame.
+
+    Args:
+        point_list:
+        color:
+        line_width:
+
+    Returns:
+
     """
     point_list = list(point_list) + [point_list[0]]
     return create_line_generic(point_list, color, gl.GL_LINE_STRIP, line_width)
@@ -254,6 +270,14 @@ def create_lines(point_list: PointList,
     """
     Create a multi-point line loop to be rendered later. This works faster than draw_line because
     the vertexes are only loaded to the graphics card once, rather than each frame.
+
+    Args:
+        point_list:
+        color:
+        line_width:
+
+    Returns:
+
     """
     return create_line_generic(point_list, color, gl.GL_LINES, line_width)
 
@@ -268,6 +292,14 @@ def create_polygon(point_list: PointList,
     """
     Draw a convex polygon. This will NOT draw a concave polygon.
     Because of this, you might not want to use this function.
+
+    Args:
+        point_list:
+        color:
+        border_width:
+
+    Returns:
+
     """
     # We assume points were given in order, either clockwise or counter clockwise.
     # Polygon is assumed to be monotone.
@@ -308,6 +340,18 @@ def create_rectangle_outline(center_x: float, center_y: float, width: float,
                              border_width: float=1, tilt_angle: float=0) -> Shape:
     """
     Create a rectangle outline.
+
+    Args:
+        center_x:
+        center_y:
+        width:
+        height:
+        color:
+        border_width:
+        tilt_angle:
+
+    Returns:
+
     """
     return create_rectangle(center_x, center_y, width, height,
                             color, border_width, tilt_angle, filled=False)
@@ -318,6 +362,16 @@ def get_rectangle_points(center_x: float, center_y: float, width: float,
     """
     Utility function that will return all four coordinate points of a
     rectangle given the x, y center, width, height, and rotation.
+
+    Args:
+        center_x:
+        center_y:
+        width:
+        height:
+        tilt_angle:
+
+    Returns:
+
     """
     x1 = -width / 2 + center_x
     y1 = -height / 2 + center_y
@@ -353,6 +407,19 @@ def create_rectangle(center_x: float, center_y: float, width: float,
     This function creates a rectangle using a vertex buffer object.
     Creating the rectangle, and then later drawing it with ``render_rectangle``
     is faster than calling ``draw_rectangle``.
+
+    Args:
+        center_x:
+        center_y:
+        width:
+        height:
+        color:
+        border_width:
+        tilt_angle:
+        filled:
+
+    Returns:
+
     """
     data = get_rectangle_points(center_x, center_y, width, height, tilt_angle)
 
@@ -460,10 +527,23 @@ def create_ellipse_filled_with_colors(center_x: float, center_y: float,
                                       width: float, height: float,
                                       outside_color: Color, inside_color: Color,
                                       tilt_angle: float=0, num_segments=32) -> Shape:
-
     """
     Draw an ellipse, and specify inside/outside color. Used for doing gradients.
+
+    Args:
+        center_x:
+        center_y:
+        width:
+        height:
+        outside_color:
+        inside_color:
+        tilt_angle:
+        num_segments:
+
+    Returns:
+
     """
+
     # Create an array with the vertex data
     # Create an array with the vertex point_list
     point_list = []
@@ -488,6 +568,12 @@ def create_ellipse_filled_with_colors(center_x: float, center_y: float,
 def render(shape: VertexBuffer):
     """
     Render an shape previously created with a ``create`` function.
+
+    Args:
+        shape:
+
+    Returns:
+
     """
     # Set color
     if shape.color is None:

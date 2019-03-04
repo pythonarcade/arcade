@@ -47,8 +47,9 @@ def create_orthogonal_projection(
         far,
         dtype=None
 ):
-    """Creates an orthogonal projection matrix. Used internally with the
-       OpenGL shaders.
+    """
+    Creates an orthogonal projection matrix. Used internally with the
+    OpenGL shaders.
 
     :param float left: The left of the near plane relative to the plane's centre.
     :param float right: The right of the near plane relative to the plane's centre.
@@ -123,7 +124,7 @@ def get_scaling_factor(window):
     high-res displays.
 
     Args:
-        window:
+        window: Handle to window we want to get scaling factor of.
 
     Returns:
 
@@ -196,7 +197,8 @@ def get_viewport() -> (float, float, float, float):
     """
     Get the current viewport settings.
 
-    Returns: Tuple of floats, with left, right, bottom, top
+    Returns:
+        Tuple of floats, with left, right, bottom, top
 
     """
     return _left, _right, _bottom, _top
@@ -207,6 +209,9 @@ def close_window():
     Closes the current window, and then runs garbage collection. The garbage collection
     is necessary to prevent crashing when opening/closing windows rapidly (usually during
     unit tests).
+
+    Returns:
+       None
     """
     global _window
 
@@ -272,8 +277,6 @@ def set_background_color(color: Color):
         :color (tuple): List of 3 or 4 bytes in RGB/RGBA format.
     Returns:
         None
-    Raises:
-        None
 
     """
 
@@ -289,8 +292,6 @@ def schedule(function_pointer: Callable, interval: Number):
         :function_pointer: Pointer to the function to be called.
         :interval: Interval to call the function.
     Returns:
-        None
-    Raises:
         None
     """
     pyglet.clock.schedule_interval(function_pointer, interval)

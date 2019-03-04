@@ -73,8 +73,6 @@ class Sprite:
     It is common to over-ride the `update` method and provide mechanics on
     movement or other sprite updates.
 
-    :Example:
-
     """
 
     def __init__(self,
@@ -158,15 +156,34 @@ class Sprite:
         """
         Appends a new texture to the list of textures that can be
         applied to this sprite.
+
+        Args:
+            texture:
+
+        Returns:
+
         """
         self.textures.append(texture)
 
     def _get_position(self) -> (float, float):
-        """ Get the center x coordinate of the sprite. """
+        """
+        Get the center x coordinate of the sprite.
+
+        Returns:
+            (width, height)
+        """
         return (self._position[0], self._position[1])
 
     def _set_position(self, new_value: (float, float)):
-        """ Set the center x coordinate of the sprite. """
+        """
+        Set the center x coordinate of the sprite.
+
+        Args:
+            new_value:
+
+        Returns:
+
+        """
         self.clear_spatial_hashes()
         self._point_list_cache = None
         self._position[0] = new_value[0]
@@ -480,32 +497,6 @@ class Sprite:
         for sprite_list in self.sprite_lists:
             sprite_list.update_texture(self)
 
-    # def get_texture(self) -> Texture:
-    #     """
-    #     Return the texture that the sprite uses.
-    #     """
-    #     return self._texture
-    #
-    # def set_texture(self, texture: Texture):
-    #     """
-    #     Set the current sprite texture.
-    #     """
-    #     if isinstance(texture, Texture):
-    #         self.clear_spatial_hashes()
-    #         self._point_list_cache = None
-    #         self._texture = texture
-    #         self._width = texture.width * texture.scale
-    #         self._height = texture.height * texture.scale
-    #         self.add_spatial_hashes()
-    #         for sprite_list in self.sprite_lists:
-    #             sprite_list.update_texture(self)
-    #
-    #     else:
-    #         raise SystemError("Can't set the texture to something that is " +
-    #                           "not an instance of the Texture class.")
-    #
-    # texture = property(get_texture, set_texture)
-
     def _get_color(self) -> RGB:
         """
         Return the RGB color associated with the sprite.
@@ -524,13 +515,13 @@ class Sprite:
 
     def _get_alpha(self) -> RGB:
         """
-        Return the RGB color associated with the sprite.
+        Return the alpha associated with the sprite.
         """
         return self._alpha
 
     def _set_alpha(self, alpha: RGB):
         """
-        Set the current sprite color as a RGB value
+        Set the current sprite color as a value
         """
         self._alpha = alpha
         for sprite_list in self.sprite_lists:

@@ -39,6 +39,14 @@ Buffered Draw Commands Module
     :undoc-members:
     :show-inheritance:
 
+Text Module
+^^^^^^^^^^^
+
+.. automodule:: arcade.text
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Application Class Module
 ^^^^^^^^^^^^^^^^^^^^^^^^
 

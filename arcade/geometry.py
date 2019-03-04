@@ -61,6 +61,13 @@ def are_polygons_intersecting(poly_a: PointList,
 def check_for_collision(sprite1: Sprite, sprite2: Sprite) -> bool:
     """
     Check for a collision between two sprites.
+
+    Args:
+        sprite1:
+        sprite2:
+
+    Returns:
+        boolean
     """
     if not isinstance(sprite1, Sprite):
         raise TypeError("Parameter 1 is not an instance of the Sprite class.")
@@ -74,6 +81,15 @@ def check_for_collision(sprite1: Sprite, sprite2: Sprite) -> bool:
 
 
 def _check_for_collision(sprite1: Sprite, sprite2: Sprite) -> bool:
+    """
+
+    Args:
+        sprite1:
+        sprite2:
+
+    Returns:
+
+    """
     collision_radius_sum = sprite1.collision_radius + sprite2.collision_radius
 
     diff_x = sprite1.position[0] - sprite2.position[0]
@@ -102,6 +118,13 @@ def check_for_collision_with_list(sprite1: Sprite,
                                   sprite_list: SpriteList) -> List[Sprite]:
     """
     Check for a collision between a sprite, and a list of sprites.
+
+    Args:
+        sprite1:
+        sprite_list:
+
+    Returns:
+        List of sprites colliding, or an empty list.
     """
     if not isinstance(sprite1, Sprite):
         raise TypeError("Parameter 1 is not an instance of the Sprite class.")
