@@ -275,7 +275,7 @@ def draw_text(text: str,
         elif anchor_y == "bottom" or anchor_y == "baseline":
             text_sprite.bottom = start_y
         else:
-            raise ValueError(f"anchor_x should be 'left', 'center', or 'right'. Not '{anchor_y}'")
+            raise ValueError(f"anchor_x should be 'top', 'center', 'bottom', or 'baseline'. Not '{anchor_y}'")
 
         text_sprite.angle = rotation
 
