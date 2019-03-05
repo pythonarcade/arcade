@@ -494,6 +494,7 @@ Other
 
 .. figure:: gameshell1.jpg
    :figwidth: 170px
+   :width: 170px
 
    :ref:`gameshell`
 
