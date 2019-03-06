@@ -1,5 +1,5 @@
 import platform
-if platform.system() == 'darwin':
+if platform.system() == 'Darwin':
 
     from pyglet.window.cocoa import *
 
