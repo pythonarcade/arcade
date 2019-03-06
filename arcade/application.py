@@ -10,8 +10,8 @@ from arcade.window_commands import get_viewport
 from arcade.window_commands import set_window
 
 import pyglet
-import pyglet.gl as gl
-from pyglet.gl import gl_info
+from arcade.monkey_patch_pyglet import *
+
 
 MOUSE_BUTTON_LEFT = 1
 MOUSE_BUTTON_MIDDLE = 2
