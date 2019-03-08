@@ -529,10 +529,6 @@ class Sprite:
 
     def draw(self):
         """ Draw the sprite. """
-        if self._alpha != 255:
-            transparent = False
-        else:
-            transparent = True
 
         draw_texture_rectangle(self.center_x, self.center_y,
                                self.width, self.height,
