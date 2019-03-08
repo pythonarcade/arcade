@@ -54,7 +54,7 @@ class Coin(arcade.Sprite):
         """
         Update the sprite.
         """
-        self.position = (self.center_x + self.change_x, self.center_y + self.change_y)
+        self.position = (self.position[0] + self.change_x, self.position[1] + self.change_y)
 
 
 class MyGame(arcade.Window):
@@ -138,8 +138,6 @@ class MyGame(arcade.Window):
 
         self.draw_time = timeit.default_timer() - draw_start_time
         self.fps.tick()
-
-        gl.glFlush()
 
     def update(self, delta_time):
         # Start update timer
