@@ -23,7 +23,7 @@ SPRITE_SCALING_COIN = 0.09
 SPRITE_SCALING_PLAYER = 0.5
 SPRITE_NATIVE_SIZE = 128
 SPRITE_SIZE = int(SPRITE_NATIVE_SIZE * SPRITE_SCALING_COIN)
-COIN_COUNT_INCREMENT = 200
+COIN_COUNT_INCREMENT = 500
 
 SCREEN_WIDTH = 1800
 SCREEN_HEIGHT = 1000
@@ -100,7 +100,7 @@ class MyGame(arcade.Window):
         """ Set up the game and initialize the variables. """
 
         # Sprite lists
-        self.coin_list = arcade.SpriteList()
+        self.coin_list = arcade.SpriteList(use_spatial_hash=True)
         self.player_list = arcade.SpriteList()
         self.player = arcade.Sprite("images/character.png", SPRITE_SCALING_PLAYER)
         self.player.center_x = random.randrange(SCREEN_WIDTH)
