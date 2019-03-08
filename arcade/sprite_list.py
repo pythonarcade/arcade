@@ -505,7 +505,7 @@ class SpriteList(Generic[T]):
 
         i = self.sprite_idx[sprite]
 
-        self.sprite_data[i]['position'] = [sprite.center_x, sprite.center_y]
+        self.sprite_data[i]['position'] = sprite.position
 
     def update_angle(self, sprite):
 
@@ -513,7 +513,6 @@ class SpriteList(Generic[T]):
             return
 
         i = self.sprite_idx[sprite]
-
         self.sprite_data[i]['angle'] = math.radians(sprite.angle)
 
     def draw(self):

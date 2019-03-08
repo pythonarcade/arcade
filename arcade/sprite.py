@@ -172,7 +172,7 @@ class Sprite:
         Returns:
             (width, height)
         """
-        return (self._position[0], self._position[1])
+        return self._position
 
     def _set_position(self, new_value: (float, float)):
         """
@@ -184,14 +184,14 @@ class Sprite:
         Returns:
 
         """
-        self.clear_spatial_hashes()
-        self._point_list_cache = None
-        self._position[0] = new_value[0]
-        self._position[1] = new_value[1]
-        self.add_spatial_hashes()
+        if new_value[0] != self._position[0] or new_value[1] != self._position[1]:
+            self.clear_spatial_hashes()
+            self._point_list_cache = None
+            self._position = new_value
+            self.add_spatial_hashes()
 
-        for sprite_list in self.sprite_lists:
-            sprite_list.update_location(self)
+            for sprite_list in self.sprite_lists:
+                sprite_list.update_location(self)
 
     position = property(_get_position, _set_position)
 
@@ -199,16 +199,7 @@ class Sprite:
         """
         Set a sprite's position
         """
-        if center_x != self._position[0] or center_y != self._position[1]:
-            from arcade.sprite_list import SpriteList
-            self.clear_spatial_hashes()
-            self._point_list_cache = None
-            self._position[0] = center_x
-            self._position[1] = center_y
-            self.add_spatial_hashes()
-
-            for sprite_list in self.sprite_lists:
-                sprite_list.update_location(self)
+        self._set_position(self, (center_x, center_y))
 
     def set_points(self, points: Sequence[Sequence[float]]):
         """
