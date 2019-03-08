@@ -122,6 +122,9 @@ class SpatialHash:
     def _hash(self, point):
         return int(point[0] / self.cell_size), int(point[1] / self.cell_size)
 
+    def reset(self):
+        self.contents = {}
+
     def insert_object_for_box(self, new_object: Sprite):
         """
         Insert a sprite.
@@ -233,9 +236,16 @@ class SpriteList(Generic[T]):
 
     next_texture_id = 0
 
-    def __init__(self, use_spatial_hash=True, spatial_hash_cell_size=128, is_static=False):
+    def __init__(self, use_spatial_hash=False, spatial_hash_cell_size=128, is_static=False):
         """
         Initialize the sprite list
+
+        :param use_spatial_hash: If set to True, this will make moving a sprite
+               in the SpriteList slower, but it will speed up collision detection
+               with items in the SpriteList. Great for doing collision detection
+               with walls/platforms.
+        :param spatial_hash_cell_size:
+        :param is_static: Speeds drawing if this list won't change.
         """
         # List of sprites in the sprite list
         self.sprite_list = []
@@ -255,9 +265,12 @@ class SpriteList(Generic[T]):
         self.array_of_images = []
 
         # Used in collision detection optimization
-        self.spatial_hash = SpatialHash(cell_size=spatial_hash_cell_size)
-        self.use_spatial_hash = use_spatial_hash
         self.is_static = is_static
+        self.use_spatial_hash = use_spatial_hash
+        if use_spatial_hash:
+            self.spatial_hash = SpatialHash(cell_size=spatial_hash_cell_size)
+        else:
+            self.spatial_hash = None
 
     def append(self, item: T):
         """
@@ -275,6 +288,12 @@ class SpriteList(Generic[T]):
         if self.use_spatial_hash:
             self.spatial_hash.remove_object(item)
             self.spatial_hash.insert_object_for_box(item)
+
+    def recalculate_spatial_hashes(self):
+        if self.use_spatial_hash:
+            self.spatial_hash.reset()
+            for sprite in self.sprite_list:
+                self.spatial_hash.insert_object_for_box(sprite)
 
     def remove(self, item: T):
         """
