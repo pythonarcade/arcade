@@ -137,9 +137,13 @@ def check_for_collision_with_list(sprite1: Sprite,
     else:
         sprite_list_to_check = sprite_list
 
-    collision_list = []
-    for sprite2 in sprite_list_to_check:
-        if sprite1 is not sprite2 and sprite2 not in collision_list:
-            if _check_for_collision(sprite1, sprite2):
-                collision_list.append(sprite2)
+    collision_list = [sprite2
+                      for sprite2 in sprite_list_to_check
+                        if sprite1 is not sprite2 and _check_for_collision(sprite1, sprite2)]
+
+    # collision_list = []
+    # for sprite2 in sprite_list_to_check:
+    #     if sprite1 is not sprite2 and sprite2 not in collision_list:
+    #         if _check_for_collision(sprite1, sprite2):
+    #             collision_list.append(sprite2)
     return collision_list
