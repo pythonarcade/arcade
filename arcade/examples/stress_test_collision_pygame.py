@@ -7,11 +7,10 @@ http://simpson.edu/computer-science/
 
 import pygame
 import random
+import os
 import time
 import timeit
 import collections
-import os
-import matplotlib.pyplot as plt
 
 # Define some colors
 BLACK = (0, 0, 0)
@@ -24,6 +23,9 @@ SPRITE_SCALING_PLAYER = 0.5
 SPRITE_NATIVE_SIZE = 128
 SPRITE_SIZE = int(SPRITE_NATIVE_SIZE * SPRITE_SCALING_COIN)
 COIN_COUNT_INCREMENT = 500
+
+STOP_COUNT = 12000
+RESULTS_FILE = "stress_test_collision_pygame.csv"
 
 SCREEN_WIDTH = 1800
 SCREEN_HEIGHT = 1000
@@ -154,6 +156,9 @@ class MyGame:
 
         self.font = pygame.font.SysFont('Calibri', 25, True, False)
 
+        # Open file to save timings
+        self.results_file = open(RESULTS_FILE, "w")
+
     def add_coins(self):
 
         # Create the coins
@@ -248,7 +253,14 @@ class MyGame:
                 if total_program_time % 2 == 1:
 
                     # Take timings
-                    print(f"{total_program_time}, {len(self.coin_list)}, {self.fps.get_fps():.1f}, {self.processing_time:.4f}, {self.draw_time:.4f}")
+                    output = f"{total_program_time}, {len(self.coin_list)}, {self.fps.get_fps():.1f}, {self.processing_time:.4f}, {self.draw_time:.4f}\n"
+                    print(output, end="")
+                    self.results_file.write(output)
+
+                    if len(self.coin_list) >= STOP_COUNT:
+                        pygame.event.post(pygame.event.Event(pygame.QUIT))
+                        return
+
                     self.sprite_count_list.append(len(self.coin_list))
                     self.fps_list.append(round(self.fps.get_fps(), 1))
                     self.processing_time_list.append(self.processing_time)
@@ -278,26 +290,6 @@ def main():
         clock.tick(60)
 
     pygame.quit()
-
-    # Plot our results
-    plt.plot(window.sprite_count_list, window.processing_time_list, label="Processing Time")
-    plt.plot(window.sprite_count_list, window.drawing_time_list, label="Drawing Time")
-
-    plt.legend(loc='upper left', shadow=True, fontsize='x-large')
-
-    plt.ylabel('Time')
-    plt.xlabel('Sprite Count')
-
-    plt.show()
-
-    # Plot our results
-    plt.plot(window.sprite_count_list, window.fps_list)
-
-    plt.ylabel('FPS')
-    plt.xlabel('Sprite Count')
-
-    plt.show()
-
 
 
 main()

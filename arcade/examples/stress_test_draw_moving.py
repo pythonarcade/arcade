@@ -15,14 +15,16 @@ import os
 import timeit
 import time
 import collections
-import pyglet.gl as gl
-import matplotlib.pyplot as plt
+import pyglet
 
 # --- Constants ---
 SPRITE_SCALING_COIN = 0.09
 SPRITE_NATIVE_SIZE = 128
 SPRITE_SIZE = int(SPRITE_NATIVE_SIZE * SPRITE_SCALING_COIN)
 COIN_COUNT_INCREMENT = 100
+
+STOP_COUNT = 6000
+RESULTS_FILE = "stress_test_draw_moving.csv"
 
 SCREEN_WIDTH = 1800
 SCREEN_HEIGHT = 1000
@@ -86,6 +88,9 @@ class MyGame(arcade.Window):
         self.fps = FPSCounter()
 
         arcade.set_background_color(arcade.color.AMAZON)
+
+        # Open file to save timings
+        self.results_file = open(RESULTS_FILE, "w")
 
     def add_coins(self):
 
@@ -179,7 +184,14 @@ class MyGame(arcade.Window):
                 if total_program_time % 2 == 1:
 
                     # Take timings
-                    print(f"{total_program_time}, {len(self.coin_list)}, {self.fps.get_fps():.1f}, {self.processing_time:.4f}, {self.draw_time:.4f}")
+                    output = f"{total_program_time}, {len(self.coin_list)}, {self.fps.get_fps():.1f}, {self.processing_time:.4f}, {self.draw_time:.4f}\n"
+
+                    self.results_file.write(output)
+                    print(output, end="")
+                    if len(self.coin_list) >= STOP_COUNT:
+                        pyglet.app.exit()
+                        return
+
                     self.sprite_count_list.append(len(self.coin_list))
                     self.fps_list.append(round(self.fps.get_fps(), 1))
                     self.processing_time_list.append(self.processing_time)
@@ -195,24 +207,6 @@ def main():
     window.setup()
     arcade.run()
 
-    # Plot our results
-    plt.plot(window.sprite_count_list, window.processing_time_list, label="Processing Time")
-    plt.plot(window.sprite_count_list, window.drawing_time_list, label="Drawing Time")
-
-    plt.legend(loc='upper left', shadow=True, fontsize='x-large')
-
-    plt.ylabel('Time')
-    plt.xlabel('Sprite Count')
-
-    plt.show()
-
-    # Plot our results
-    plt.plot(window.sprite_count_list, window.fps_list)
-
-    plt.ylabel('FPS')
-    plt.xlabel('Sprite Count')
-
-    plt.show()
 
 if __name__ == "__main__":
     main()

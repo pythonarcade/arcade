@@ -1,17 +1,20 @@
 """
-Sample Python/Pygame Programs
-Simpson College Computer Science
-http://programarcadegames.com/
-http://simpson.edu/computer-science/
+Moving Sprite Stress Test
+
+Simple program to test how fast we can draw sprites that are moving
+
+Artwork from http://kenney.nl
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.stress_test_draw_moving_pygame
 """
 
 import pygame
 import random
-import time
-import timeit
-import collections
 import os
-import matplotlib.pyplot as plt
+import timeit
+import time
+import collections
 
 # Define some colors
 BLACK = (0, 0, 0)
@@ -23,6 +26,9 @@ SPRITE_SCALING_COIN = 0.09
 SPRITE_NATIVE_SIZE = 128
 SPRITE_SIZE = int(SPRITE_NATIVE_SIZE * SPRITE_SCALING_COIN)
 COIN_COUNT_INCREMENT = 100
+
+STOP_COUNT = 6000
+RESULTS_FILE = "stress_test_draw_moving_pygame.csv"
 
 SCREEN_WIDTH = 1800
 SCREEN_HEIGHT = 1000
@@ -120,6 +126,9 @@ class MyGame:
 
         self.font = pygame.font.SysFont('Calibri', 25, True, False)
 
+        # Open file to save timings
+        self.results_file = open(RESULTS_FILE, "w")
+
     def add_coins(self):
 
         # Create the coins
@@ -211,7 +220,14 @@ class MyGame:
                 if total_program_time % 2 == 1:
 
                     # Take timings
-                    print(f"{total_program_time}, {len(self.coin_list)}, {self.fps.get_fps():.1f}, {self.processing_time:.4f}, {self.draw_time:.4f}")
+                    output = f"{total_program_time}, {len(self.coin_list)}, {self.fps.get_fps():.1f}, {self.processing_time:.4f}, {self.draw_time:.4f}\n"
+                    print(output, end="")
+                    self.results_file.write(output)
+
+                    if len(self.coin_list) >= STOP_COUNT:
+                        pygame.event.post(pygame.event.Event(pygame.QUIT))
+                        return
+
                     self.sprite_count_list.append(len(self.coin_list))
                     self.fps_list.append(round(self.fps.get_fps(), 1))
                     self.processing_time_list.append(self.processing_time)
@@ -260,70 +276,6 @@ def main():
     plt.xlabel('Sprite Count')
 
     plt.show()
-#
-#
-#
-# def main():
-#     # Initialize Pygame
-#     pygame.init()
-#
-#     # Set the height and width of the screen
-#     screen_width = SCREEN_WIDTH
-#     screen_height = SCREEN_HEIGHT
-#     screen = pygame.display.set_mode([screen_width, screen_height])
-#
-#     # This is a list of 'sprites.' Each block in the program is
-#     # added to this list. The list is managed by a class called 'Group.'
-#     block_list = pygame.sprite.Group()
-#
-#     # This is a list of every sprite. All blocks and the player block as well.
-#     all_sprites_list = pygame.sprite.Group()
-#
-#
-#
-#     # Loop until the user clicks the close button.
-#     done = False
-#
-#     # Used to manage how fast the screen updates
-#     clock = pygame.time.Clock()
-#
-#     # -------- Main Program Loop -----------
-#     while not done:
-#         for event in pygame.event.get():
-#             if event.type == pygame.QUIT:
-#                 done = True
-#
-#         draw(screen, all_sprites_list)
-#
-#         # Calls update() method on every sprite in the list
-#         all_sprites_list.update()
-#
-#
-#         # Limit to 60 frames per second
-#         clock.tick(60)
-#
-#         # Go ahead and update the screen with what we've drawn.
-#         pygame.display.flip()
-#
-#         for i in range(50):
-#             # This represents a block
-#             block = Coin(BLACK, 20, 15)
-#
-#             # Set a random location for the block
-#             block.rect.x = random.randrange(screen_width)
-#             block.rect.y = random.randrange(screen_height)
-#
-#             block.change_x = random.randrange(-3, 4)
-#             block.change_y = random.randrange(-3, 4)
-#             block.left_boundary = 0
-#             block.top_boundary = 0
-#             block.right_boundary = screen_width
-#             block.bottom_boundary = screen_height
-#
-#             # Add the block to the list of objects
-#             block_list.add(block)
-#             all_sprites_list.add(block)
-#     pygame.quit()
 
 
 main()
