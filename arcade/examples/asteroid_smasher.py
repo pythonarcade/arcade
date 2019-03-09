@@ -355,9 +355,7 @@ class MyGame(arcade.Window):
             self.all_sprites_list.update()
 
             for bullet in self.bullet_list:
-                self.asteroid_list.use_spatial_hash = False
                 asteroids_plain = arcade.check_for_collision_with_list(bullet, self.asteroid_list)
-                self.asteroid_list.use_spatial_hash = True
                 asteroids_spatial = arcade.check_for_collision_with_list(bullet, self.asteroid_list)
                 if len(asteroids_plain) != len(asteroids_spatial):
                     print("ERROR")
