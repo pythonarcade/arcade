@@ -1,30 +1,35 @@
 """
-Sprite Stress Test
+Moving Sprite Stress Test
 
-Simple program to test how fast we can draw sprites that aren't moving
+Simple program to test how fast we can draw sprites that are moving
 
 Artwork from http://kenney.nl
 
 If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.stress_test_draw_simple
+python -m arcade.examples.stress_test_draw_moving
 """
 
-import random
 import arcade
+import random
 import os
 import timeit
 import time
 import collections
-import pyglet.gl as gl
-import matplotlib.pyplot as plt
+import pyglet
 
 # --- Constants ---
 SPRITE_SCALING_COIN = 0.09
-COIN_COUNT_INCREMENT = 15000
+SPRITE_SCALING_PLAYER = 0.5
+SPRITE_NATIVE_SIZE = 128
+SPRITE_SIZE = int(SPRITE_NATIVE_SIZE * SPRITE_SCALING_COIN)
+COIN_COUNT_INCREMENT = 500
+
+STOP_COUNT = 12000
+RESULTS_FILE = "stress_test_collision_arcade.csv"
 
 SCREEN_WIDTH = 1800
 SCREEN_HEIGHT = 1000
-SCREEN_TITLE = "Static Sprite Stress Test"
+SCREEN_TITLE = "Moving Sprite Stress Test"
 
 
 class FPSCounter:
@@ -63,6 +68,8 @@ class MyGame(arcade.Window):
 
         # Variables that will hold sprite lists
         self.coin_list = None
+        self.player_list = None
+        self.player = None
 
         self.processing_time = 0
         self.draw_time = 0
@@ -76,17 +83,20 @@ class MyGame(arcade.Window):
 
         arcade.set_background_color(arcade.color.AMAZON)
 
+        # Open file to save timings
+        self.results_file = open(RESULTS_FILE, "w")
+
     def add_coins(self):
 
         # Create the coins
         for i in range(COIN_COUNT_INCREMENT):
             # Create the coin instance
             # Coin image from kenney.nl
-            coin = arcade.Sprite("images/coin_01.png", SPRITE_SCALING_COIN)
+            coin = arcade.Sprite("../images/coin_01.png", SPRITE_SCALING_COIN)
 
             # Position the coin
-            coin.center_x = random.randrange(SCREEN_WIDTH)
-            coin.center_y = random.randrange(SCREEN_HEIGHT)
+            coin.center_x = random.randrange(SPRITE_SIZE, SCREEN_WIDTH - SPRITE_SIZE)
+            coin.center_y = random.randrange(SPRITE_SIZE, SCREEN_HEIGHT - SPRITE_SIZE)
 
             # Add the coin to the lists
             self.coin_list.append(coin)
@@ -95,7 +105,15 @@ class MyGame(arcade.Window):
         """ Set up the game and initialize the variables. """
 
         # Sprite lists
-        self.coin_list = arcade.SpriteList(use_spatial_hash=False, is_static=True)
+        self.coin_list = arcade.SpriteList(use_spatial_hash=False)
+        self.player_list = arcade.SpriteList()
+        self.player = arcade.Sprite("../images/character.png", SPRITE_SCALING_PLAYER)
+        self.player.center_x = random.randrange(SCREEN_WIDTH)
+        self.player.center_y = random.randrange(SCREEN_HEIGHT)
+        self.player.change_x = 3
+        self.player.change_y = 5
+        self.player_list.append(self.player)
+
 
     def on_draw(self):
         """ Draw everything """
@@ -104,28 +122,50 @@ class MyGame(arcade.Window):
         draw_start_time = timeit.default_timer()
 
         arcade.start_render()
-
-        # Display sprites
         self.coin_list.draw()
+        self.player_list.draw()
 
         # Display info on sprites
         output = f"Sprite count: {len(self.coin_list):,}"
         arcade.draw_text(output, 20, SCREEN_HEIGHT - 20, arcade.color.BLACK, 16)
 
         # Display timings
-        output = f"Drawing time: {self.draw_time:.3f}"
+        output = f"Processing time: {self.processing_time:.3f}"
         arcade.draw_text(output, 20, SCREEN_HEIGHT - 40, arcade.color.BLACK, 16)
+
+        output = f"Drawing time: {self.draw_time:.3f}"
+        arcade.draw_text(output, 20, SCREEN_HEIGHT - 60, arcade.color.BLACK, 16)
 
         fps = self.fps.get_fps()
         output = f"FPS: {fps:3.0f}"
-        arcade.draw_text(output, 20, SCREEN_HEIGHT - 60, arcade.color.BLACK, 16)
+        arcade.draw_text(output, 20, SCREEN_HEIGHT - 80, arcade.color.BLACK, 16)
 
         self.draw_time = timeit.default_timer() - draw_start_time
         self.fps.tick()
 
-        gl.glFlush()
-
     def update(self, delta_time):
+        # Start update timer
+
+        start_time = timeit.default_timer()
+
+        self.player_list.update()
+        if self.player.center_x < 0 and self.player.change_x < 0:
+            self.player.change_x *= -1
+        if self.player.center_y < 0 and self.player.change_y < 0:
+            self.player.change_y *= -1
+
+        if self.player.center_x > SCREEN_WIDTH and self.player.change_x > 0:
+            self.player.change_x *= -1
+        if self.player.center_y > SCREEN_HEIGHT and self.player.change_y > 0:
+            self.player.change_y *= -1
+
+        coin_hit_list = arcade.check_for_collision_with_list(self.player, self.coin_list)
+        for coin in coin_hit_list:
+            coin.center_x = random.randrange(SCREEN_WIDTH)
+            coin.center_y = random.randrange(SCREEN_HEIGHT)
+
+        # Save the time it took to do this.
+        self.processing_time = timeit.default_timer() - start_time
 
         # Total time program has been running
         total_program_time = int(timeit.default_timer() - self.program_start_time)
@@ -144,7 +184,15 @@ class MyGame(arcade.Window):
                 # to add new sprites to be part of that measurement. So
                 # make sure we have a clear second of nothing but
                 # running the sprites, and not adding the sprites.
-                if total_program_time % 5 == 1:
+                if total_program_time % 2 == 1:
+
+                    output = f"{total_program_time}, {len(self.coin_list)}, {self.fps.get_fps():.1f}, {self.processing_time:.4f}, {self.draw_time:.4f}\n"
+                    print(output, end="")
+                    self.results_file.write(output)
+
+                    if len(self.coin_list) >= STOP_COUNT:
+                        pyglet.app.exit()
+                        return
 
                     # Take timings
                     print(f"{total_program_time}, {len(self.coin_list)}, {self.fps.get_fps():.1f}, {self.processing_time:.4f}, {self.draw_time:.4f}")
@@ -162,24 +210,6 @@ def main():
     window = MyGame()
     window.setup()
     arcade.run()
-
-    # Plot our results
-    plt.plot(window.sprite_count_list, window.drawing_time_list, label="Drawing Time")
-
-    plt.legend(loc='upper left', shadow=True, fontsize='x-large')
-
-    plt.ylabel('Time')
-    plt.xlabel('Sprite Count')
-
-    plt.show()
-
-    # Plot our results
-    plt.plot(window.sprite_count_list, window.fps_list)
-
-    plt.ylabel('FPS')
-    plt.xlabel('Sprite Count')
-
-    plt.show()
 
 
 if __name__ == "__main__":
