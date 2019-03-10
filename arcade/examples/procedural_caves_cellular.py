@@ -126,8 +126,7 @@ class MyGame(arcade.Window):
         arcade.set_background_color(arcade.color.BLACK)
 
     def setup(self):
-        self.wall_list = arcade.SpriteList()
-        self.wall_list.use_spatial_hash = True
+        self.wall_list = arcade.SpriteList(use_spatial_hash=True)
         self.player_list = arcade.SpriteList()
 
         # Create cave system using a 2D grid
