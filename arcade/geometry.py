@@ -82,12 +82,13 @@ def check_for_collision(sprite1: Sprite, sprite2: Sprite) -> bool:
 
 def _check_for_collision(sprite1: Sprite, sprite2: Sprite) -> bool:
     """
+    Check for collision between two sprites.
 
     Args:
-        sprite1:
-        sprite2:
+        sprite1: Sprite 1
+        sprite2: Sprite 2
 
-    Returns:
+    Returns: Boolean
 
     """
     collision_radius_sum = sprite1.collision_radius + sprite2.collision_radius
@@ -102,10 +103,6 @@ def _check_for_collision(sprite1: Sprite, sprite2: Sprite) -> bool:
     diff_y2 = diff_y * diff_y
     if diff_y2 > collision_radius_sum * collision_radius_sum:
         return False
-
-    # distance = math.sqrt(diff_x * diff_x + diff_y * diff_y)
-    # if distance > collision_radius_sum:
-    #     return False
 
     distance = diff_x2 + diff_y2
     if distance > collision_radius_sum * collision_radius_sum:
