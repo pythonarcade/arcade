@@ -10,6 +10,6 @@ Collision Stress Test
     :align: center
     :alt: Screenshot of stress test example
 
-.. literalinclude:: ../../arcade/examples/stress_test_collision.py
+.. literalinclude:: ../../arcade/examples/perf_test/stress_test_collision.py
     :caption: stress_test_collision.py
     :linenos:

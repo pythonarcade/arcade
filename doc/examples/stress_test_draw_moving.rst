@@ -10,6 +10,6 @@ Draw Moving Sprites Stress Test
     :align: center
     :alt: Screenshot of stress test example
 
-.. literalinclude:: ../../arcade/examples/stress_test_draw_moving.py
+.. literalinclude:: ../../arcade/examples/perf_test/stress_test_draw_moving.py
     :caption: stress_test_draw_moving.py
     :linenos:

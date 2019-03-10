@@ -424,11 +424,6 @@ ShapeElementLists
 Stress Tests
 ------------
 
-.. figure:: thumbs/stress_test_draw_simple.png
-   :figwidth: 170px
-
-   :ref:`stress_test_draw_simple`
-
 .. figure:: thumbs/stress_test_draw_moving.png
    :figwidth: 170px
 
