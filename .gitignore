@@ -19,3 +19,4 @@ pylint.html
 env
 venv/
 .pytest_cache/
+arcade/examples/stress*.csv
