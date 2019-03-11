@@ -8,12 +8,11 @@ Release Notes
 Version 2.0.0
 -------------
 
-Currently in beta
+Released 2019-03-10
 
 Lots of improvements in 2.0.0. Too many to list, but the two main improvements:
 
-* Using shaders for sprites, making this one of the fastest sprite implementations
-  for Python.
+* Using shaders for sprites, making drawing sprites incredibly fast.
 * Using ffmpeg for sound.
 
 Version 1.3.7
