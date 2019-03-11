@@ -178,6 +178,8 @@ class MyGame(arcade.Window):
                 self.load_level(self.level)
                 self.player_sprite.center_x = 64
                 self.player_sprite.center_y = 64
+                self.player_sprite.change_x = 0
+                self.player_sprite.change_y = 0
             else:
                 self.game_over = True
 

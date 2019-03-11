@@ -78,7 +78,7 @@ class MyApplication(arcade.Window):
         self.processing_time = 0
         self.joints = []
 
-        self.mode = "Drag"
+        self.mode = "Make Box"
 
         # Create the floor
         self.floor_height = 80
@@ -116,23 +116,18 @@ class MyApplication(arcade.Window):
                 color = arcade.color.DARK_GREEN
             arcade.draw_line(joint.a.position.x, joint.a.position.y, joint.b.position.x, joint.b.position.y, color, 3)
 
+#arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
         # Display timings
         output = f"Processing time: {self.processing_time:.3f}"
-        if not self.processing_time_text or output != self.processing_time_text.text:
-            self.processing_time_text = arcade.create_text(output, arcade.color.WHITE, 12)
-        arcade.render_text(self.processing_time_text, 20, SCREEN_HEIGHT - 20)
+        arcade.draw_text(output, 20, SCREEN_HEIGHT - 20, arcade.color.WHITE)
 
         output = f"Drawing time: {self.draw_time:.3f}"
-        if not self.draw_time_text or output != self.draw_time_text.text:
-            self.draw_time_text = arcade.create_text(output, arcade.color.WHITE, 12)
-        arcade.render_text(self.draw_time_text, 20, SCREEN_HEIGHT - 40)
+        arcade.draw_text(output, 20, SCREEN_HEIGHT - 40, arcade.color.WHITE)
 
         self.draw_time = timeit.default_timer() - draw_start_time
 
         output = f"Mode: {self.mode}"
-        if not self.draw_mode_text or output != self.draw_mode_text.text:
-            self.draw_mode_text = arcade.create_text(output, arcade.color.WHITE, 12)
-        arcade.render_text(self.draw_mode_text, 20, SCREEN_HEIGHT - 60)
+        arcade.draw_text(output, 20, SCREEN_HEIGHT - 60, arcade.color.WHITE)
 
     def make_box(self, x, y):
         size = 45
