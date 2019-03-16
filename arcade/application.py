@@ -26,7 +26,8 @@ class Window(pyglet.window.Window):
 
     def __init__(self, width: float = 800, height: float = 600,
                  title: str = 'Arcade Window', fullscreen: bool = False,
-                 resizable: bool = False, update_rate=1/60):
+                 resizable: bool = False, update_rate=1/60,
+                 antialiasing=True):
         """
         Construct a new window
         Args:
@@ -37,14 +38,21 @@ class Window(pyglet.window.Window):
             resizable: Can the user resize the window?
             update_rate: How refuent to update the window.
         """
-        config = pyglet.gl.Config(major_version=3,
-                                  minor_version=3,
-                                  double_buffer=True,
-                                  sample_buffers=1,
-                                  samples=16)
-        print("Ok")
+        if antialiasing:
+            config = pyglet.gl.Config(major_version=3,
+                                      minor_version=3,
+                                      double_buffer=True,
+                                      sample_buffers=1,
+                                      samples=16)
+        else:
+            config = pyglet.gl.Config(major_version=3,
+                                      minor_version=3)
+
         super().__init__(width=width, height=height, caption=title,
                          resizable=resizable, config=config)
+
+        if antialiasing:
+            gl.glEnable(gl.GL_MULTISAMPLE_ARB)
 
         if update_rate:
             from pyglet import compat_platform

@@ -761,14 +761,6 @@ def _generic_draw_line_strip(point_list: PointList,
     vao = shader.vertex_array(program, vao_content)
     with vao:
         program['Projection'] = get_projection().flatten()
-        # gl.glLineWidth(line_width)
-        # gl.glPointSize(line_width)
-
-        gl.glEnable(gl.GL_BLEND)
-        gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-        gl.glEnable(gl.GL_LINE_SMOOTH)
-        gl.glHint(gl.GL_LINE_SMOOTH_HINT, gl.GL_NICEST)
-        gl.glHint(gl.GL_POLYGON_SMOOTH_HINT, gl.GL_NICEST)
 
         vao.render(mode=mode)
 
@@ -840,7 +832,7 @@ def draw_line(start_x: float, start_y: float, end_x: float, end_y: float,
 
     """
 
-    points = (start_x, start_y), (end_x, end_y)
+    # points = (start_x, start_y), (end_x, end_y)
     points = _get_points_for_thick_line(start_x, start_y, end_x, end_y, line_width)
     triangle_point_list = points[1], points[0], points[2], points[3]
     _generic_draw_line_strip(triangle_point_list, color, gl.GL_TRIANGLE_STRIP)
