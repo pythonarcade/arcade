@@ -101,7 +101,6 @@ def rotate_point(x: float, y: float, cx: float, cy: float,
     :param cy: y value of the center point you want to rotate around
     :param angle: Angle, in degrees, to rotate
     :return: Return rotated (x, y) pair
-
     """
     temp_x = x - cx
     temp_y = y - cy
@@ -403,7 +402,7 @@ def draw_arc_filled(center_x: float, center_y: float,
     for point in uncentered_point_list:
         point_list.append((point[0] + center_x, point[1] + center_y))
 
-    _generic_draw_line_strip(point_list, color, 1, gl.GL_TRIANGLE_FAN)
+    _generic_draw_line_strip(point_list, color, gl.GL_TRIANGLE_FAN)
 
 
 def draw_arc_outline(center_x: float, center_y: float, width: float,
@@ -463,7 +462,7 @@ def draw_arc_outline(center_x: float, center_y: float, width: float,
     for point in uncentered_point_list:
         point_list.append((point[0] + center_x, point[1] + center_y))
 
-    _generic_draw_line_strip(point_list, color, 1, gl.GL_TRIANGLE_STRIP)
+    _generic_draw_line_strip(point_list, color, gl.GL_TRIANGLE_STRIP)
 
 
 # --- END ARC FUNCTIONS # # #
@@ -629,7 +628,7 @@ def draw_ellipse_filled(center_x: float, center_y: float,
     for point in uncentered_point_list:
         point_list.append((point[0] + center_x, point[1] + center_y))
 
-    _generic_draw_line_strip(point_list, color, 1, gl.GL_TRIANGLE_FAN)
+    _generic_draw_line_strip(point_list, color, gl.GL_TRIANGLE_FAN)
 
 
 def draw_ellipse_outline(center_x: float, center_y: float, width: float,
@@ -712,7 +711,7 @@ def draw_ellipse_outline(center_x: float, center_y: float, width: float,
         for point in uncentered_point_list:
             point_list.append((point[0] + center_x, point[1] + center_y))
 
-        _generic_draw_line_strip(point_list, color, 1, gl.GL_TRIANGLE_STRIP)
+        _generic_draw_line_strip(point_list, color, gl.GL_TRIANGLE_STRIP)
 
 # --- END ELLIPSE FUNCTIONS # # #
 
@@ -721,7 +720,6 @@ def draw_ellipse_outline(center_x: float, center_y: float, width: float,
 
 def _generic_draw_line_strip(point_list: PointList,
                              color: Color,
-                             line_width: float = 1,
                              mode: int = gl.GL_LINE_STRIP):
     """
     Draw a line strip. A line strip is a set of continuously connected
@@ -763,8 +761,8 @@ def _generic_draw_line_strip(point_list: PointList,
     vao = shader.vertex_array(program, vao_content)
     with vao:
         program['Projection'] = get_projection().flatten()
-        gl.glLineWidth(line_width)
-        gl.glPointSize(line_width)
+        # gl.glLineWidth(line_width)
+        # gl.glPointSize(line_width)
 
         gl.glEnable(gl.GL_BLEND)
         gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
@@ -797,7 +795,7 @@ def draw_line_strip(point_list: PointList,
                 reordered_points = points[1], points[0], points[2], points[3]
                 triangle_point_list.extend(reordered_points)
             last_point = point
-        _generic_draw_line_strip(triangle_point_list, color, 1, gl.GL_TRIANGLE_STRIP)
+        _generic_draw_line_strip(triangle_point_list, color, gl.GL_TRIANGLE_STRIP)
 
 
 def _get_points_for_thick_line(start_x: float, start_y:
@@ -823,7 +821,7 @@ def _get_points_for_thick_line(start_x: float, start_y:
 
 
 def draw_line(start_x: float, start_y: float, end_x: float, end_y: float,
-              color: Color, line_width: float=1):
+              color: Color, line_width: float = 1):
     """
     Draw a line.
 
@@ -845,7 +843,7 @@ def draw_line(start_x: float, start_y: float, end_x: float, end_y: float,
     points = (start_x, start_y), (end_x, end_y)
     points = _get_points_for_thick_line(start_x, start_y, end_x, end_y, line_width)
     triangle_point_list = points[1], points[0], points[2], points[3]
-    _generic_draw_line_strip(triangle_point_list, color, 1, gl.GL_TRIANGLE_STRIP)
+    _generic_draw_line_strip(triangle_point_list, color, gl.GL_TRIANGLE_STRIP)
 
 
 def draw_lines(point_list: PointList,
@@ -875,7 +873,7 @@ def draw_lines(point_list: PointList,
             points = _get_points_for_thick_line(last_point[0], last_point[1], point[0], point[1], line_width)
             reordered_points = points[1], points[0], points[2], points[0], points[2], points[3]
             triangle_point_list.extend(reordered_points)
-            _generic_draw_line_strip(triangle_point_list, color, 1, gl.GL_TRIANGLES)
+            _generic_draw_line_strip(triangle_point_list, color, gl.GL_TRIANGLES)
             last_point = None
         else:
             last_point = point
@@ -931,7 +929,7 @@ def draw_points(point_list: PointList,
         None
     """
     new_point_list = _get_points_for_points(point_list, size)
-    _generic_draw_line_strip(new_point_list, color, 1, gl.GL_TRIANGLES)
+    _generic_draw_line_strip(new_point_list, color, gl.GL_TRIANGLES)
 
 
 # --- END POINT FUNCTIONS # # #
@@ -957,11 +955,11 @@ def draw_polygon_filled(point_list: PointList,
 
     triangle_points = earclip(point_list)
     flattened_list = [i for g in triangle_points for i in g]
-    _generic_draw_line_strip(flattened_list, color, 1, gl.GL_TRIANGLES)
+    _generic_draw_line_strip(flattened_list, color, gl.GL_TRIANGLES)
 
 
 def draw_polygon_outline(point_list: PointList,
-                         color: Color, line_width: float=1):
+                         color: Color, line_width: float = 1):
     """
     Draw a polygon outline. Also known as a "line loop."
 
@@ -991,7 +989,7 @@ def draw_polygon_outline(point_list: PointList,
 
     points = _get_points_for_thick_line(new_point_list[0][0], new_point_list[0][1], new_point_list[1][0], new_point_list[1][1], line_width)
     triangle_point_list.append(points[1])
-    _generic_draw_line_strip(triangle_point_list, color, 1, gl.GL_TRIANGLE_STRIP)
+    _generic_draw_line_strip(triangle_point_list, color, gl.GL_TRIANGLE_STRIP)
 
 
 def draw_triangle_filled(x1: float, y1: float,
@@ -1018,7 +1016,7 @@ def draw_triangle_filled(x1: float, y1: float,
     second_point = (x2, y2)
     third_point = (x3, y3)
     point_list = (first_point, second_point, third_point)
-    _generic_draw_line_strip(point_list, color, 1, gl.GL_TRIANGLES)
+    _generic_draw_line_strip(point_list, color, gl.GL_TRIANGLES)
 
 
 def draw_triangle_outline(x1: float, y1: float,
@@ -1119,7 +1117,7 @@ def draw_xywh_rectangle_outline(bottom_left_x: float, bottom_left_y: float,
 
 def draw_rectangle_outline(center_x: float, center_y: float, width: float,
                            height: float, color: Color,
-                           border_width: float=1, tilt_angle: float=0):
+                           border_width: float = 1, tilt_angle: float = 0):
     """
     Draw a rectangle outline.
 
@@ -1157,7 +1155,7 @@ def draw_rectangle_outline(center_x: float, center_y: float, width: float,
             point_list_2.append(new_point)
         point_list = point_list_2
 
-    _generic_draw_line_strip(point_list, color, 1, gl.GL_TRIANGLE_STRIP)
+    _generic_draw_line_strip(point_list, color, gl.GL_TRIANGLE_STRIP)
 
 
 def draw_lrtb_rectangle_filled(left: float, right: float, top: float,
@@ -1219,7 +1217,7 @@ def draw_xywh_rectangle_filled(bottom_left_x: float, bottom_left_y: float,
 
 def draw_rectangle_filled(center_x: float, center_y: float, width: float,
                           height: float, color: Color,
-                          tilt_angle: float=0):
+                          tilt_angle: float = 0):
     """
     Draw a filled-in rectangle.
 
@@ -1244,7 +1242,7 @@ def draw_rectangle_filled(center_x: float, center_y: float, width: float,
         p3 = rotate_point(p3[0], p3[1], center_x, center_y, tilt_angle)
         p4 = rotate_point(p4[0], p4[1], center_x, center_y, tilt_angle)
 
-    _generic_draw_line_strip((p1, p2, p4, p3), color, 1, gl.GL_TRIANGLE_STRIP)
+    _generic_draw_line_strip((p1, p2, p4, p3), color, gl.GL_TRIANGLE_STRIP)
 
 
 def draw_texture_rectangle(center_x: float, center_y: float, width: float,
