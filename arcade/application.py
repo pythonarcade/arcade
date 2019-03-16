@@ -37,8 +37,12 @@ class Window(pyglet.window.Window):
             resizable: Can the user resize the window?
             update_rate: How refuent to update the window.
         """
-        config = pyglet.gl.Config(major_version=3, minor_version=3, double_buffer=True)
-
+        config = pyglet.gl.Config(major_version=3,
+                                  minor_version=3,
+                                  double_buffer=True,
+                                  sample_buffers=1,
+                                  samples=16)
+        print("Ok")
         super().__init__(width=width, height=height, caption=title,
                          resizable=resizable, config=config)
 
