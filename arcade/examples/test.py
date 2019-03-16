@@ -1,54 +1,54 @@
-"""
-Starting Template Simple
+SCREEN_WIDTH = 640
+SCREEN_HEIGHT = 480
 
-Once you have learned how to use classes, you can begin your program with this
-template.
+import pyglet
+from pyglet.gl import *
+from pyglet import clock
+import time
 
-If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.starting_template_simple
-"""
-import arcade
+class MyGame(pyglet.window.Window):
 
-SCREEN_WIDTH = 500
-SCREEN_HEIGHT = 600
-SCREEN_TITLE = "Starting Template Simple"
+    def __init__(self, width, height):
+        config = Config(sample_buffers=1,
+                        samples=16,
+                        double_buffer=True)
 
-
-class MyGame(arcade.Window):
-    """
-    Main application class.
-    """
-
-    def __init__(self, width, height, title):
-        super().__init__(width, height, title, resizable=True)
-
-        arcade.set_background_color(arcade.color.BLACK)
-
-    def setup(self):
-        """ Set up the game here. Call this function to restart the game. """
-        pass
+        super().__init__(width, height,
+                         config=config)
+        glEnable(GL_MULTISAMPLE_ARB)
 
     def on_draw(self):
-        """
-        Render the screen.
-        """
+        print("Ok")
+        # arcade.start_render()
 
-        arcade.start_render()
+        size = self.height / 4
+        # glClear(GL_COLOR_BUFFER_BIT)
+        # glEnable(GL_BLEND)
+        # glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
-        arcade.draw_text("Hello There, how are you?", 10, 10, arcade.color.WHITE, 20)
+        glLoadIdentity()
+        glTranslatef(self.width/2, self.height/2, 0)
+        glRotatef(5, 0, 0, 1)
 
-    def on_mouse_press(self, x, y, button, key_modifiers):
-        """
-        Called when the user presses a mouse button.
-        """
-        pass
+        glColor3f(1, 0, 0)
+        glBegin(GL_QUADS)
+        glVertex2f(-size, -size)
+        glVertex2f(size, -size)
+        glVertex2f(size, size)
+        glVertex2f(-size, size)
+        glEnd()
+
 
 
 def main():
     """ Main method """
-    window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    window.setup()
-    arcade.run()
+    window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT)
+
+    # while True:
+    #     window.on_draw()
+    #     window.flip()
+    #     window.dispatch_events()
+    pyglet.app.run()
 
 
 if __name__ == "__main__":
