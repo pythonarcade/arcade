@@ -33,7 +33,9 @@ def chart_stress_test_draw_moving_pygame():
     plt.ylabel('Time')
     plt.xlabel('Sprite Count')
 
-    plt.show()
+    plt.savefig("chart_stress_test_draw_moving_pygame.svg")
+    # plt.show()
+    plt.clf()
 
 
 def chart_stress_test_draw_moving_arcade():
@@ -53,7 +55,9 @@ def chart_stress_test_draw_moving_arcade():
     plt.ylabel('Time')
     plt.xlabel('Sprite Count')
 
-    plt.show()
+    # plt.show()
+    plt.savefig("chart_stress_test_draw_moving_arcade.svg")
+    plt.clf()
 
 
 def chart_stress_test_draw_moving_draw_comparison():
@@ -74,7 +78,9 @@ def chart_stress_test_draw_moving_draw_comparison():
     plt.ylabel('Time')
     plt.xlabel('Sprite Count')
 
-    plt.show()
+    # plt.show()
+    plt.savefig("chart_stress_test_draw_moving_draw_comparison.svg")
+    plt.clf()
 
 
 def chart_stress_test_draw_moving_process_comparison():
@@ -95,7 +101,10 @@ def chart_stress_test_draw_moving_process_comparison():
     plt.ylabel('Time')
     plt.xlabel('Sprite Count')
 
-    plt.show()
+    # plt.show()
+    plt.savefig("chart_stress_test_draw_moving_process_comparison.svg")
+    plt.clf()
+
 
 def chart_stress_test_collision_comparison():
     r1 = read_results("stress_test_collision_arcade.csv")
@@ -118,7 +127,10 @@ def chart_stress_test_collision_comparison():
     plt.ylabel('Time')
     plt.xlabel('Sprite Count')
 
-    plt.show()
+    # plt.show()
+    plt.savefig("chart_stress_test_collision_comparison.svg")
+    plt.clf()
+
 
 def main():
     chart_stress_test_draw_moving_pygame()
