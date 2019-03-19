@@ -10,6 +10,7 @@ from arcade.window_commands import get_viewport
 from arcade.window_commands import set_window
 
 import pyglet
+import pyglet.gl as gl
 from arcade.monkey_patch_pyglet import *
 
 
@@ -242,7 +243,10 @@ class Window(pyglet.window.Window):
         # unscaled_viewport = self.get_viewport_size()
         # scaling = unscaled_viewport[0] / width
 
-        self.set_viewport(original_viewport[0], original_viewport[0] + width, original_viewport[2], original_viewport[2] + height)
+        self.set_viewport(original_viewport[0],
+                          original_viewport[0] + width,
+                          original_viewport[2],
+                          original_viewport[2] + height)
 
     def set_min_size(self, width: float, height: float):
         """ Wrap the Pyglet window call to set minimum size
