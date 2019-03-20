@@ -84,7 +84,7 @@ def chart_stress_test_draw_moving_draw_comparison():
 
 
 def chart_stress_test_draw_moving_process_comparison():
-    r1 = read_results("stress_test_draw_moving.csv")
+    r1 = read_results("stress_test_draw_moving_arcade.csv")
     r2 = read_results("stress_test_draw_moving_pygame.csv")
 
     sprite_count = [row[SPRITE_COUNT] for row in r1]
