@@ -1,12 +1,16 @@
-Performance
-===========
+.. _performance:
+
+Arcade Performance Information
+==============================
 
 Here are some various notes on Arcade's performance, and getting the most
 out of the library. I also make some notes on how performance compares against
 Pygame.
 
-Drawing Sprites
----------------
+.. _drawing_stationary_performance:
+
+Drawing Stationary Sprites
+--------------------------
 
 Drawing the sprites in a single SpriteList class is a very fast operation. You can
 put almost as many sprites into a SpriteList as you want (I've had over 400,000)
@@ -20,7 +24,13 @@ before you notice a slowdown. For many applications it is still enough.
 
 .. figure:: images/chart_stress_test_draw_moving_draw_comparison.svg
 
-    Figure 1,
+    Figure 1: Drawing Stress Test
+
+Figure 1 created was created by timing the **drawing** of:
+
+*  `stress_test_draw_moving_arcade.py <https://github.com/pvcraven/arcade/blob/master/arcade/examples/perf_test/stress_test_draw_moving_arcade.py>`_ - For Arcade timings
+*  `stress_test_draw_moving_pygame.py <https://github.com/pvcraven/arcade/blob/master/arcade/examples/perf_test/stress_test_draw_moving_pygame.py>`_ - For Pygame timings
+*  `stress_test_charts.py <https://github.com/pvcraven/arcade/blob/master/arcade/examples/perf_test/stress_test_charts.py>`_ - To generate the graphs
 
 Moving Sprites
 --------------
@@ -39,7 +49,16 @@ drawing speed is great.
 Hopefully we will soon find a way to improve moving sprite speed.
 
 
-.. image:: images/chart_stress_test_draw_moving_process_comparison.svg
+.. figure:: images/chart_stress_test_draw_moving_process_comparison.svg
+
+    Figure 2: Moving Sprite Stress Test
+
+Figure 2 created was timing the **movement** of:
+
+*  `stress_test_draw_moving_arcade.py <https://github.com/pvcraven/arcade/blob/master/arcade/examples/perf_test/stress_test_draw_moving_arcade.py>`_ - For Arcade timings
+*  `stress_test_draw_moving_pygame.py <https://github.com/pvcraven/arcade/blob/master/arcade/examples/perf_test/stress_test_draw_moving_pygame.py>`_ - For Pygame timings
+*  `stress_test_charts.py <https://github.com/pvcraven/arcade/blob/master/arcade/examples/perf_test/stress_test_charts.py>`_ - To generate the graphs
+
 
 Collision Detection
 -------------------
@@ -67,5 +86,13 @@ for collision detection. Arcade first checks the spatial hash, then a rough
 calculation based on sprite radius, then by the containing rect, and finally
 checks the polygon with the earclip algorithm.
 
-.. image:: images/chart_stress_test_collision_comparison.svg
+.. figure:: images/chart_stress_test_collision_comparison.svg
+
+    Figure 3: Stress test for collisions
+
+Figure 3 created was created by:
+
+*  `stress_test_collision_arcade.py <https://github.com/pvcraven/arcade/blob/master/arcade/examples/perf_test/stress_test_collision_arcade.py>`_ - For Arcade timings
+*  `stress_test_collision_pygame.py <https://github.com/pvcraven/arcade/blob/master/arcade/examples/perf_test/stress_test_collision_pygame.py>`_ - For Pygame timings
+*  `stress_test_charts.py <https://github.com/pvcraven/arcade/blob/master/arcade/examples/perf_test/stress_test_charts.py>`_ - To generate the graphs
 
