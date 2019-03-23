@@ -11,6 +11,7 @@ Buffered Draw Commands.
 import math
 import PIL.Image
 import PIL.ImageOps
+import PIL.ImageDraw
 import numpy as np
 
 import pyglet.gl as gl
@@ -23,6 +24,7 @@ from arcade.arcade_types import Color
 from arcade.arcade_types import PointList
 from arcade import shader
 from arcade.earclip import earclip
+from arcade.utils import *
 
 
 line_vertex_shader = '''
@@ -335,6 +337,86 @@ def load_texture(file_name: str, x: float = 0, y: float = 0,
     load_texture.texture_cache[cache_name] = result
     result.scale = scale
     return result
+
+
+def make_circle_texture(diameter: int, color: Color) -> Texture:
+    """
+    Return a Texture of a circle with given diameter and color
+
+    Args:
+        :diameter (int): Diameter of the circle and dimensions of the square Texture returned
+        :color (Color): Color of the circle
+    Returns:
+        A Texture object
+    Raises:
+        None
+    """
+    bg_color = (0, 0, 0, 0) # fully transparent
+    img = PIL.Image.new("RGBA", (diameter, diameter), bg_color)
+    draw = PIL.ImageDraw.Draw(img)
+    radius = int(diameter // 2)
+    center = radius # for readability
+    draw.ellipse((radius, radius, center+radius, center+radius), fill=color)
+    name = "{}:{}:{}".format("circle_texture", diameter, color) # name must be unique for caching
+    return Texture(name, img)
+
+def make_soft_circle_texture(diameter: int, color: Color, center_alpha: int=255, outer_alpha: int=0) -> Texture:
+    """
+    Return a Texture of a circle with given diameter, color, and alpha values at its center and edges
+
+    Args:
+        :diameter (int): Diameter of the circle and dimensions of the square Texture returned
+        :color (Color): Color of the circle
+        :center_alpha (int): alpha value of circle at its center
+        :outer_alpha (int): alpha value of circle at its edge
+    Returns:
+        A Texture object
+    Raises:
+        None
+    """
+    # TODO: create a rectangle and circle (and triangle? and arbitrary poly where clent passes in list of points?) particle?
+    bg_color = (0, 0, 0, 0) # fully transparent
+    img = PIL.Image.new("RGBA", (diameter, diameter), bg_color)
+    draw = PIL.ImageDraw.Draw(img)
+    max_radius = int(diameter // 2)
+    center = max_radius # for readability
+    for radius in range(max_radius, 0, -1):
+        alpha = int(lerp(center_alpha, outer_alpha, radius/max_radius))
+        clr = (color[0], color[1], color[2], alpha)
+        draw.ellipse((center-radius, center-radius, center+radius, center+radius), fill=clr)
+    name = "{}:{}:{}:{}:{}".format("soft_circle_texture", diameter, color, center_alpha, outer_alpha) # name must be unique for caching
+    return Texture(name, img)
+
+def make_soft_square_texture(size: int, color: Color, center_alpha: int=255, outer_alpha: int=0) -> Texture:
+    """
+    Return a Texture of a circle with given diameter and color, fading out at the edges.
+
+    Args:
+        :diameter (int): Diameter of the circle and dimensions of the square Texture returned
+        :color (Color): Color of the circle
+    Returns:
+        The new texture.
+    Raises:
+        None
+    """
+    bg_color = (0, 0, 0, 0) # fully transparent
+    img = PIL.Image.new("RGBA", (size, size), bg_color)
+    draw = PIL.ImageDraw.Draw(img)
+    half_size = int(size // 2)
+    for cur_size in range(0, half_size):
+        alpha = int(lerp(outer_alpha, center_alpha, cur_size/half_size))
+        clr = (color[0], color[1], color[2], alpha)
+        # draw.ellipse((center-radius, center-radius, center+radius, center+radius), fill=clr)
+        draw.rectangle((cur_size, cur_size, size-cur_size, size-cur_size), clr, None)
+    name = "{}:{}:{}:{}".format("gradientsquare", size, color, center_alpha, outer_alpha) # name must be unique for caching
+    return Texture(name, img)
+
+def _lerp_color(start_color: Color, end_color: Color, u: float) -> Color:
+    return (
+        int(lerp(start_color[0], end_color[0], u)),
+        int(lerp(start_color[1], end_color[1], u)),
+        int(lerp(start_color[2], end_color[2], u))
+    )
 
 
 load_texture.texture_cache = dict()
