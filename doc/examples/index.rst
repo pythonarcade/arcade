@@ -382,6 +382,23 @@ PyMunk
 
    :ref:`pymunk_platformer`
 
+Particle System
+---------------
+
+Proposal, currently in dev version. See:
+
+https://github.com/pvcraven/arcade/pull/334
+
+.. figure:: thumbs/particle_fireworks.png
+   :figwidth: 170px
+
+   :ref:`particle_fireworks`
+
+.. figure:: thumbs/particle_systems.png
+   :figwidth: 170px
+
+   :ref:`particle_systems`
+
 
 Isometric Examples
 ------------------
