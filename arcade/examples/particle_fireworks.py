@@ -326,11 +326,6 @@ class FireworksApp(arcade.Window):
         mid = SCREEN_WIDTH / 2
         arcade.draw_lrtb_rectangle_filled(mid-2, mid+2, SPINNER_HEIGHT, 10, arcade.color.DARK_BROWN)
 
-        counts = [e.get_count() for e in self.emitters]
-        arcade.draw_text("Emitter/Particle counts: {} / {}".format(len(self.emitters), sum(counts)),
-                         10, 10,
-                         arcade.color.WHITE, 12)
-
     def on_key_press(self, key, modifiers):
         if key == arcade.key.ESCAPE:
             arcade.close_window()
