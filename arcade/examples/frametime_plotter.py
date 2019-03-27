@@ -2,6 +2,7 @@
 Helper class to track length of time taken for each frame and draw a graph when application exits.
 Also able to add events at arbitrary times across the graph.
 """
+import time
 import matplotlib.pyplot as plt
 import statistics
 
@@ -12,6 +13,7 @@ class FrametimePlotter:
     def __init__(self):
         self.times = []
         self.events = []
+        self.start = time.perf_counter()
 
     def add_event(self, event_msg):
         self.events.append( (len(self.times), event_msg))
@@ -20,6 +22,7 @@ class FrametimePlotter:
         self.times.append(time_delta)
 
     def _show_stats(self):
+        end = time.perf_counter()
         print("Min   : {:.5f}".format(min(self.times)))
         print("Max   : {:.5f}".format(max(self.times)))
         print("Avg   : {:.5f}".format(statistics.mean(self.times)))
@@ -29,6 +32,11 @@ class FrametimePlotter:
         except statistics.StatisticsError as e:
             print("Mode  : {}".format(e))
         print("StdDev: {:.5f}".format(statistics.stdev(self.times)))
+        frame_count = len(self.times)
+        elapsed_time = end - self.start
+        print("Frame count: {}".format(frame_count))
+        print("Elapsed time: {:.5f}".format(elapsed_time))
+        print("FPS: {:.5f}".format(frame_count / elapsed_time))
 
     def show(self):
         self._show_stats()
