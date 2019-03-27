@@ -110,6 +110,7 @@ Examples
 
    examples/index
    sample_games
+   examples/platformer_tutorial/index
 
 Installation
 ------------
