@@ -13,6 +13,7 @@ if sys.version_info[0] < 3 or (sys.version_info[0] == 3 and sys.version_info[1] 
 import pyglet
 
 from arcade import color
+from arcade import csscolor
 from arcade import key
 from arcade.application import *
 from arcade.arcade_types import *
