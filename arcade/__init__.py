@@ -15,6 +15,7 @@ import pyglet
 pyglet.options['shadow_window'] = False
 
 from arcade import color
+from arcade import csscolor
 from arcade import key
 from arcade.application import *
 from arcade.arcade_types import *
