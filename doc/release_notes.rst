@@ -5,6 +5,14 @@
 Release Notes
 =============
 
+Version 2.0.1
+-------------
+
+Released 2019-03-23
+
+Added support for multi-sampling. Now lines will be anti-aliased. This can be
+turned off when creating the main window.
+
 Version 2.0.0
 -------------
 
