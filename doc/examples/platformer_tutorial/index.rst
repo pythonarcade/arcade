@@ -27,19 +27,57 @@ Audience
 
 Students will learn to create a 2D game using the Arcade library.
 
-Outline
--------
+Part One - Create a Platformer
+------------------------------
 
 Introduction to the Arcade library - 15 minutes
 
 45 minutes - Self-paced tutorial with different steps that cover how to:
 
+Installation
+~~~~~~~~~~~~
 * Make sure Python and the Arcade library are installed
-* Open a window
-* Put platform sprites on the screen
-* Add user and control the user
+* Download bundle with images from kenney.nl
+
+Open a Window
+~~~~~~~~~~~~~
+
+.. literalinclude:: ../../../arcade/examples/platform_tutorial/01_open_window.py
+    :caption: Open a Window
+    :linenos:
+
+Add Sprites To Game
+~~~~~~~~~~~~~~~~~~~
+
+.. literalinclude:: ../../../arcade/examples/platform_tutorial/02_draw_sprites.py
+    :caption: Place Sprites
+    :linenos:
+    :emphasize-lines: 11-14, 27-34, 39-43, 45-76, 84-87
+
+Add User Control
+~~~~~~~~~~~~~~~~
+
+.. literalinclude:: ../../../arcade/examples/platform_tutorial/03_user_control.py
+    :caption: Control User By Keyboard
+    :linenos:
+    :emphasize-lines: 16-17, 95-105, 107-117, 119-124
+
+Add Gravity
+~~~~~~~~~~~
+
+.. literalinclude:: ../../../arcade/examples/platform_tutorial/04_add_gravity.py
+    :caption: Add Gravity
+    :linenos:
+    :emphasize-lines: 18-19, 84-86, 102-104, 113-116
+
+
+
+* Add scrolling
 * Add coins layer for the player to pick up
 * Fast-paced users may also experiment with sound, background images, moving platforms, and ramps.
+
+Part Two - Use a Map Editor
+---------------------------
 
 15 minutes - Talk about using a map editor. Demo and point out the important parts.
 
@@ -51,6 +89,10 @@ Introduction to the Arcade library - 15 minutes
 * Edit the collision / hitbox of a tile
 * Add a sudden death layer (like lava)
 * Add enemies
+
+Part Three - Spruce It Up
+-------------------------
+
 
 15 minutes - Talk about additional items that could be added to the game
 
