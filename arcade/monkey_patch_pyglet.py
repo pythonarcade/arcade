@@ -1,3 +1,12 @@
+import pyglet
+import arcade
+import arcade.sound_wav_monkeypatch as mps
+
+pyglet.media.codecs.wave.get_decoders = mps.get_decoders
+pyglet.media.codecs.wave.WaveDecoder = mps.WaveDecoder
+pyglet.media.codecs.wave.WaveSource = mps.WaveSource
+
+# --- Mac OS ---
 import platform
 if platform.system() == 'Darwin':
 
