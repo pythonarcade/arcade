@@ -5,25 +5,24 @@ Particle - Object produced by an Emitter.  Often used in large quantity to produ
 from arcade.sprite import Sprite
 from arcade.draw_commands import Texture
 import arcade.utils
-from pymunk import Vec2d
+from arcade.arcade_types import Point, Vector
+from typing import Union
 
+FilenameOrTexture = Union[str, Texture]
 
 class Particle(Sprite):
     """Sprite that is emitted from an Emitter"""
     def __init__(
         self,
-        filename_or_texture: str,
-        vel: Vec2d,
-        pos: Vec2d = None,
+        filename_or_texture: FilenameOrTexture,
+        change_xy: Vector,
+        center_xy: Point = (0.0, 0.0),
         angle: float = 0,
         change_angle: float = 0,
         scale: float = 1.0,
         alpha: int = 255,
         mutation_callback = None
     ):
-        if pos is None:
-            pos = Vec2d.zero()
-
         if isinstance(filename_or_texture, Texture):
             super().__init__(None, scale=scale)
             self.append_texture(filename_or_texture)
@@ -31,10 +30,10 @@ class Particle(Sprite):
         else:
             super().__init__(filename_or_texture, scale=scale)
 
-        self.center_x = pos.x
-        self.center_y = pos.y
-        self.change_x = vel.x
-        self.change_y = vel.y
+        self.center_x = center_xy[0]
+        self.center_y = center_xy[1]
+        self.change_x = change_xy[0]
+        self.change_y = change_xy[1]
         self.angle = angle
         self.change_angle = change_angle
         self.alpha = alpha
@@ -58,16 +57,16 @@ class EternalParticle(Particle):
     """Particle that has no end to its life"""
     def __init__(
         self,
-        filename_or_texture: str,
-        vel: Vec2d,
-        pos: Vec2d = None,
+        filename_or_texture: FilenameOrTexture,
+        change_xy: Vector,
+        center_xy: Point = (0.0, 0.0),
         angle: float = 0,
         change_angle: float = 0,
         scale: float = 1.0,
         alpha: int = 255,
         mutation_callback=None
     ):
-        super().__init__(filename_or_texture, vel, pos, angle, change_angle, scale, alpha, mutation_callback)
+        super().__init__(filename_or_texture, change_xy, center_xy, angle, change_angle, scale, alpha, mutation_callback)
 
     def can_reap(self):
         """Determine if Particle can be deleted"""
@@ -78,17 +77,17 @@ class LifetimeParticle(Particle):
     """Particle that lives for a given amount of time and is then deleted"""
     def __init__(
         self,
-        filename_or_texture: str,
-        vel: Vec2d,
+        filename_or_texture: FilenameOrTexture,
+        change_xy: Vector,
         lifetime: float,
-        pos: Vec2d = None,
+        center_xy: Point = (0.0, 0.0),
         angle: float = 0,
         change_angle: float = 0,
         scale: float = 1.0,
         alpha: int = 255,
         mutation_callback = None
     ):
-        super().__init__(filename_or_texture, vel, pos, angle, change_angle, scale, alpha, mutation_callback)
+        super().__init__(filename_or_texture, change_xy, center_xy, angle, change_angle, scale, alpha, mutation_callback)
         self.lifetime_original = lifetime
         self.lifetime_elapsed = 0.0
 
@@ -106,10 +105,10 @@ class FadeParticle(LifetimeParticle):
     """Particle that animates its alpha between two values during its lifetime"""
     def __init__(
         self,
-        filename_or_texture: str,
-        vel: Vec2d,
+        filename_or_texture: FilenameOrTexture,
+        change_xy: Vector,
         lifetime: float,
-        pos: Vec2d = None,
+        center_xy: Point = (0.0, 0.0),
         angle: float = 0,
         change_angle: float = 0,
         scale: float = 1.0,
@@ -117,7 +116,7 @@ class FadeParticle(LifetimeParticle):
         end_alpha: int = 0,
         mutation_callback=None
     ):
-        super().__init__(filename_or_texture, vel, lifetime, pos, angle, change_angle, scale, start_alpha, mutation_callback)
+        super().__init__(filename_or_texture, change_xy, lifetime, center_xy, angle, change_angle, scale, start_alpha, mutation_callback)
         self.start_alpha = start_alpha
         self.end_alpha = end_alpha
 
