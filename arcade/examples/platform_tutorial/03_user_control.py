@@ -36,6 +36,9 @@ class MyGame(arcade.Window):
         # Separate variable that holds the player sprite
         self.player_sprite = None
 
+        # Our physics engine
+        self.physics_engine = None
+
         arcade.set_background_color(arcade.csscolor.CORNFLOWER_BLUE)
 
     def setup(self):

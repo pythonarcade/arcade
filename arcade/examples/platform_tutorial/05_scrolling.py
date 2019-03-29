@@ -18,6 +18,13 @@ PLAYER_MOVEMENT_SPEED = 5
 GRAVITY = 1
 PLAYER_JUMP_SPEED = 15
 
+# How many pixels to keep as a minimum margin between the character
+# and the edge of the screen.
+LEFT_VIEWPORT_MARGIN = 150
+RIGHT_VIEWPORT_MARGIN = 150
+BOTTOM_VIEWPORT_MARGIN = 50
+TOP_VIEWPORT_MARGIN = 100
+
 
 class MyGame(arcade.Window):
     """
@@ -41,10 +48,19 @@ class MyGame(arcade.Window):
         # Our physics engine
         self.physics_engine = None
 
+        # Used to keep track of our scrolling
+        self.view_bottom = 0
+        self.view_left = 0
+
         arcade.set_background_color(arcade.csscolor.CORNFLOWER_BLUE)
 
     def setup(self):
         """ Set up the game here. Call this function to restart the game. """
+
+        # Used to keep track of our scrolling
+        self.view_bottom = 0
+        self.view_left = 0
+
         # Create the Sprite lists
         self.player_list = arcade.SpriteList()
         self.wall_list = arcade.SpriteList()
@@ -124,6 +140,48 @@ class MyGame(arcade.Window):
         # Call update on all sprites (The sprites don't do much in this
         # example though.)
         self.physics_engine.update()
+
+        # --- Manage Scrolling ---
+
+        # Track if we need to change the viewport
+
+        changed = False
+
+        # Scroll left
+        left_boundry = self.view_left + LEFT_VIEWPORT_MARGIN
+        if self.player_sprite.left < left_boundry:
+            self.view_left -= left_boundry - self.player_sprite.left
+            changed = True
+
+        # Scroll right
+        right_boundry = self.view_left + SCREEN_WIDTH - RIGHT_VIEWPORT_MARGIN
+        if self.player_sprite.right > right_boundry:
+            self.view_left += self.player_sprite.right - right_boundry
+            changed = True
+
+        # Scroll up
+        top_boundry = self.view_bottom + SCREEN_HEIGHT - TOP_VIEWPORT_MARGIN
+        if self.player_sprite.top > top_boundry:
+            self.view_bottom += self.player_sprite.top - top_boundry
+            changed = True
+
+        # Scroll down
+        bottom_boundry = self.view_bottom + BOTTOM_VIEWPORT_MARGIN
+        if self.player_sprite.bottom < bottom_boundry:
+            self.view_bottom -= bottom_boundry - self.player_sprite.bottom
+            changed = True
+
+        if changed:
+            # Only scroll to integers. Otherwise we end up with pixels that
+            # don't line up on the screen
+            self.view_bottom = int(self.view_bottom)
+            self.view_left = int(self.view_left)
+
+            # Do the scrolling
+            arcade.set_viewport(self.view_left,
+                                SCREEN_WIDTH + self.view_left,
+                                self.view_bottom,
+                                SCREEN_HEIGHT + self.view_bottom)
 
 
 def main():

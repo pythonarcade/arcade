@@ -60,7 +60,7 @@ Add User Control
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/03_user_control.py
     :caption: Control User By Keyboard
     :linenos:
-    :emphasize-lines: 16-17, 95-105, 107-117, 119-124
+    :emphasize-lines: 16-17, 98-108, 110-120, 122-127
 
 Add Gravity
 ~~~~~~~~~~~
@@ -68,11 +68,17 @@ Add Gravity
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/04_add_gravity.py
     :caption: Add Gravity
     :linenos:
-    :emphasize-lines: 18-19, 84-86, 102-104, 113-116
+    :emphasize-lines: 18-19, 87-89, 105-107, 116-119
+
+Add Scrolling
+~~~~~~~~~~~~~
+
+.. literalinclude:: ../../../arcade/examples/platform_tutorial/05_scrolling.py
+    :caption: Add Scrolling
+    :linenos:
+    :emphasize-lines: 21-26, 51-53, 144-184
 
 
-
-* Add scrolling
 * Add coins layer for the player to pick up
 * Fast-paced users may also experiment with sound, background images, moving platforms, and ramps.
 
