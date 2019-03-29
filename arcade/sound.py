@@ -6,6 +6,7 @@ From https://github.com/TaylorSMarks/playsound/blob/master/playsound.py
 from platform import system
 import typing
 import pyglet
+from arcade.monkey_patch_pyglet import *
 
 class Sound:
 
