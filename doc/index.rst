@@ -12,6 +12,7 @@ The Python Arcade Library
           <li><a href="examples/drawing_primitives.html">Drawing Primitives</a></li>
           <li><a href="examples/sprite_collect_coins.html">Collect Coins</a></li>
           <li><a href="examples/asteroid_smasher.html">Asteroid Smasher</a></li>
+          <li><a href="examples/platform_tutorial/index.html">Platformer Tutorial</a></li>
           </ul>
         </td>
         <td>
@@ -100,8 +101,6 @@ Contribute to the development:
 * :ref:`how-to-contribute`
 * `GitHub Source Code for Arcade`_
 
-The status of the build is here: |build-status-travis| |build-status-appveyor| |coverage|
-
 Examples
 --------
 
@@ -109,8 +108,7 @@ Examples
    :maxdepth: 4
 
    examples/index
-   sample_games
-   examples/platformer_tutorial/index
+   examples/platform_tutorial/index
 
 Installation
 ------------
@@ -129,6 +127,14 @@ API Documentation
    arcade
    quick_index
    performance_tips
+
+Sample Games
+------------
+
+.. toctree::
+   :maxdepth: 4
+
+   sample_games
 
 Distribution
 ------------

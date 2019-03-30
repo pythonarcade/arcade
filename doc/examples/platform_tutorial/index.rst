@@ -1,9 +1,14 @@
 Build Your Own 2D Platformer Game
 =================================
 
-Use Python and the Arcade library to create your own 2D platformer.
-Learn to work with Sprites and the Tiled Map Editor to create your own games.
+*To be presented at the `2019 PyCon`_ in Cleveland, Ohio.*
+
+In this tutorial, use Python and the Arcade library to create your own 2D platformer.
+Learn to work with Sprites and the `Tiled Map Editor`_ to create your own games.
 Add coins, ramps, moving platforms, enemies, and more.
+
+.. _Tiled Map Editor: https://www.mapeditor.org/
+.. _Pycon 2019: https://us.pycon.org/2019/about/
 
 Audience
 --------
@@ -17,15 +22,11 @@ Audience
 
 2) Students should have enough Python for basic use of:
 
-* Conditionals (if)
-* Loops (for/while)
+* Conditionals (if statements)
+* Loops (for/while loops)
 * Functions
 * Classes
-* Iterating through lists
-
-3) What will students learn?
-
-Students will learn to create a 2D game using the Arcade library.
+* Being able to iterate through lists
 
 Outline
 -------
