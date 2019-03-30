@@ -37,11 +37,18 @@ Introduction to the Arcade library - 15 minutes
 
 Installation
 ~~~~~~~~~~~~
-* Make sure Python and the Arcade library are installed
-* Download bundle with images from kenney.nl
+* Make sure Python and the Arcade library are installed.
+* Make sure you are using Python 3.6 or greater.
+* Install Arcade with ``pip install arcade`` on Windows
+  or ``pip3 install arcade`` on Mac/Linux. Or install via a venv.
+* Download bundle with images and sounds from `kenney.nl`_
+
+.. _kenney.nl: https://kenney.nl/
 
 Open a Window
 ~~~~~~~~~~~~~
+
+`View on Github <https://github.com/pvcraven/arcade/blob/master/arcade/examples/platform_tutorial/01_open_window.py>`_
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/01_open_window.py
     :caption: Open a Window
@@ -63,6 +70,9 @@ Add User Control
     :linenos:
     :emphasize-lines: 16-17, 98-108, 110-120, 122-127
 
+If you are interested in a somewhat better method of keyboard control, see
+:ref:`sprite_move_keyboard_better`.
+
 Add Gravity
 ~~~~~~~~~~~
 
@@ -79,9 +89,31 @@ Add Scrolling
     :linenos:
     :emphasize-lines: 21-26, 51-53, 144-184
 
+Add Coins And Sound
+~~~~~~~~~~~~~~~~~~~
 
-* Add coins layer for the player to pick up
-* Fast-paced users may also experiment with sound, background images, moving platforms, and ramps.
+.. literalinclude:: ../../../arcade/examples/platform_tutorial/06_coins_and_sound.py
+    :caption: Add Coins and Sound
+    :linenos:
+    :emphasize-lines: 55-57, 71, 99-104, 128, 149-159
+
+Display The Score
+~~~~~~~~~~~~~~~~~
+
+.. literalinclude:: ../../../arcade/examples/platform_tutorial/07_score.py
+    :caption: Display The Score
+    :linenos:
+    :emphasize-lines: 55-56, 71-72, 128-131, 170-171
+
+Explore On Your Own
+~~~~~~~~~~~~~~~~~~~
+
+* Practice creating your own layout with different tiles.
+* Add background images. See :ref:`sprite_collect_coins_background`
+* Add moving platforms. See :ref:`sprite_moving_platforms`
+* Add ramps. See :ref:`sprite_ramps`
+* Change the character image based on the direction she is facing.
+  See :ref:`sprite_face_left_or_right`
 
 Part Two - Use a Map Editor
 ---------------------------
