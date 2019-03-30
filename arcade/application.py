@@ -53,7 +53,10 @@ class Window(pyglet.window.Window):
                          resizable=resizable, config=config)
 
         if antialiasing:
-            gl.glEnable(gl.GL_MULTISAMPLE_ARB)
+            try:
+                gl.glEnable(gl.GL_MULTISAMPLE_ARB)
+            except pyglet.gl.GLException:
+                print("Warning: Anti-aliasing not supported on this computer.")
 
         if update_rate:
             from pyglet import compat_platform
@@ -363,7 +366,8 @@ class Window(pyglet.window.Window):
             self.update(1/60)
 
 
-def open_window(width: Number, height: Number, window_title: str, resizable: bool = False) -> Window:
+def open_window(width: Number, height: Number, window_title: str, resizable: bool = False,
+                antialiasing=True) -> Window:
     """
     This function opens a window. For ease-of-use we assume there will only be one window, and the
     programmer does not need to keep a handle to the window. This isn't the best architecture, because
@@ -381,5 +385,6 @@ def open_window(width: Number, height: Number, window_title: str, resizable: boo
     """
 
     global _window
-    _window = Window(width, height, window_title, resizable, update_rate=None)
+    _window = Window(width, height, window_title, resizable, update_rate=None,
+                     antialiasing=antialiasing)
     return _window

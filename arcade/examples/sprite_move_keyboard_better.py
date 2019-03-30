@@ -115,8 +115,9 @@ class MyGame(arcade.Window):
         elif self.right_pressed and not self.left_pressed:
             self.player_sprite.change_x = MOVEMENT_SPEED
 
-        # Call update on all sprites (The sprites don't do much in this
-        # example though.)
+        # Call update to move the sprite
+        # If using a physics engine, call update on it instead of the sprite
+        # list.
         self.player_list.update()
 
     def on_key_press(self, key, modifiers):
