@@ -52,6 +52,13 @@ class MyGame(arcade.Window):
         self.view_bottom = 0
         self.view_left = 0
 
+        # Keep track of the score
+        self.score = 0
+
+        # Load sounds
+        self.collect_coin_sound = arcade.load_sound("sounds/coin1.wav")
+        self.jump_sound = arcade.load_sound("sounds/jump1.wav")
+
         arcade.set_background_color(arcade.csscolor.CORNFLOWER_BLUE)
 
     def setup(self):
@@ -60,6 +67,9 @@ class MyGame(arcade.Window):
         # Used to keep track of our scrolling
         self.view_bottom = 0
         self.view_left = 0
+
+        # Keep track of the score
+        self.score = 0
 
         # Create the Sprite lists
         self.player_list = arcade.SpriteList()
@@ -115,12 +125,18 @@ class MyGame(arcade.Window):
         self.coin_list.draw()
         self.player_list.draw()
 
+        # Draw our score on the screen, scrolling it with the viewport
+        score_text = f"Score: {self.score}"
+        arcade.draw_text(score_text, 10 + self.view_left, 10 + self.view_bottom,
+                         arcade.csscolor.WHITE, 18)
+
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
 
         if key == arcade.key.UP or key == arcade.key.W:
             if self.physics_engine.can_jump():
                 self.player_sprite.change_y = PLAYER_JUMP_SPEED
+                arcade.play_sound(self.jump_sound)
         elif key == arcade.key.LEFT or key == arcade.key.A:
             self.player_sprite.change_x = -PLAYER_MOVEMENT_SPEED
         elif key == arcade.key.RIGHT or key == arcade.key.D:
@@ -140,6 +156,19 @@ class MyGame(arcade.Window):
         # Call update on all sprites (The sprites don't do much in this
         # example though.)
         self.physics_engine.update()
+
+        # See if we hit any coins
+        coin_hit_list = arcade.check_for_collision_with_list(self.player_sprite,
+                                                             self.coin_list)
+
+        # Loop through each coin we hit (if any) and remove it
+        for coin in coin_hit_list:
+            # Remove the coin
+            coin.remove_from_sprite_lists()
+            # Play a sound
+            arcade.play_sound(self.collect_coin_sound)
+            # Add one to the score
+            self.score += 1
 
         # --- Manage Scrolling ---
 
