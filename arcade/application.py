@@ -47,7 +47,8 @@ class Window(pyglet.window.Window):
                                       samples=16)
         else:
             config = pyglet.gl.Config(major_version=3,
-                                      minor_version=3)
+                                      minor_version=3,
+                                      double_buffer=True)
 
         super().__init__(width=width, height=height, caption=title,
                          resizable=resizable, config=config)
