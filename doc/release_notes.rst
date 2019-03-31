@@ -5,6 +5,22 @@
 Release Notes
 =============
 
+Version 2.0.2
+-------------
+
+* Fix for loading a wav file `Issue 344 <https://github.com/pvcraven/arcade/issues/344>`_
+* Fix Linux only getting 30 fps `Issue 342 <https://github.com/pvcraven/arcade/issues/342>`_
+* Fix error on window creation `Issue 340 <https://github.com/pvcraven/arcade/issues/340>`_
+* Fix for graphics cards not supporting multi-sample `Issue 339 <https://github.com/pvcraven/arcade/issues/339>`_
+* Fix for set view error on mac `Issue 336 <https://github.com/pvcraven/arcade/issues/336>`_
+* Changing scale attribute on Sprite now dynamically changes sprite scale `Issue 331 <https://github.com/pvcraven/arcade/issues/331>`_
+
+Version 2.0.1
+-------------
+
+* Turn on multi-sampling so lines could be anti-aliased
+  `Issue 325 <https://github.com/pvcraven/arcade/issues/325>`_
+
 Version 2.0.0
 -------------
 
