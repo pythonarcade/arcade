@@ -12,6 +12,8 @@ SCREEN_TITLE = "Platformer"
 CHARACTER_SCALING = 0.75
 TILE_SCALING = 0.5
 COIN_SCALING = 0.5
+SPRITE_PIXEL_SIZE = 128
+GRID_PIXEL_SIZE = (SPRITE_PIXEL_SIZE * TILE_SCALING)
 
 # Movement speed of player, in pixels per frame
 PLAYER_MOVEMENT_SPEED = 5
@@ -82,32 +84,30 @@ class MyGame(arcade.Window):
         self.player_sprite.center_y = 96
         self.player_list.append(self.player_sprite)
 
-        # Create the ground
-        # This shows using a loop to place multiple sprites horizontally
-        for x in range(0, 1250, 64):
-            wall = arcade.Sprite("images/tiles/grassMid.png", TILE_SCALING)
-            wall.center_x = x
-            wall.center_y = 32
-            self.wall_list.append(wall)
+        platforms_layer_name = 'Platforms'
+        coins_layer_name = 'Coins'
+        map_name = "map.tmx"
 
-        # Put some crates on the ground
-        # This shows using a coordinate list to place sprites
-        coordinate_list = [[512, 96],
-                           [256, 96],
-                           [768, 96]]
+        # Read in the tiled map
+        my_map = arcade.read_tiled_map(map_name, TILE_SCALING)
 
-        for coordinate in coordinate_list:
-            # Add a crate on the ground
-            wall = arcade.Sprite("images/tiles/boxCrate_double.png", TILE_SCALING)
-            wall.position = coordinate
-            self.wall_list.append(wall)
+        # --- Walls ---
+        # Grab the layer of items we can't move through
+        map_array = my_map.layers_int_data[platforms_layer_name]
 
-        # Use a loop to place some coins for our character to pick up
-        for x in range(128, 1250, 256):
-            coin = arcade.Sprite("images/items/coinGold.png", COIN_SCALING)
-            coin.center_x = x
-            coin.center_y = 96
-            self.coin_list.append(coin)
+        # Calculate the right edge of the my_map in pixels
+        self.end_of_map = len(map_array[0]) * GRID_PIXEL_SIZE
+
+        # --- Platforms ---
+        self.wall_list = arcade.generate_sprites(my_map, platforms_layer_name, TILE_SCALING)
+
+        # --- Coins ---
+        self.coin_list = arcade.generate_sprites(my_map, coins_layer_name, TILE_SCALING)
+
+        # --- Other stuff
+        # Set the background color
+        if my_map.backgroundcolor:
+            arcade.set_background_color(my_map.backgroundcolor)
 
         # Create the 'physics engine'
         self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,

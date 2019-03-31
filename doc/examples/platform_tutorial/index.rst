@@ -114,9 +114,34 @@ Explore On Your Own
 * Add ramps. See :ref:`sprite_ramps`
 * Change the character image based on the direction she is facing.
   See :ref:`sprite_face_left_or_right`
+* Add instruction and game over screens. See :ref:`instruction_and_game_over_screens`
 
 Part Two - Use a Map Editor
 ---------------------------
+
+Download and install the `Tiled Map Editor`_. Think about donating, as it is
+a wonderful project.
+
+Open a new file:
+
+.. image:: new_file.png
+
+Save it as ``map.tmx``.
+
+Rename the layer "Platforms":
+
+.. image:: platforms.png
+
+Create a new tileset:
+
+.. image:: new_tileset.png
+
+.. image:: new_tileset_02.png
+
+.. image:: new_tileset_03.png
+
+.. image:: new_tileset_04.png
+
 
 15 minutes - Talk about using a map editor. Demo and point out the important parts.
 
@@ -128,6 +153,13 @@ Part Two - Use a Map Editor
 * Edit the collision / hitbox of a tile
 * Add a sudden death layer (like lava)
 * Add enemies
+
+Explore On Your Own
+~~~~~~~~~~~~~~~~~~~
+
+* Multiple levels
+* Insta-death layer
+* Make ramps
 
 Part Three - Spruce It Up
 -------------------------
