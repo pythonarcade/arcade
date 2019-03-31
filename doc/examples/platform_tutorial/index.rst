@@ -138,18 +138,21 @@ Create a new tileset:
 
 .. image:: new_tileset_02.png
 
+Once you create a new tile, adding tiles to the tileset isn't obvious. Click
+the wrench:
+
 .. image:: new_tileset_03.png
+
+Then click the 'plus' and add in your tiles
 
 .. image:: new_tileset_04.png
 
+.. literalinclude:: ../../../arcade/examples/platform_tutorial/08_load_map.py
+    :caption: Load a .tmx file from Tiled Map Editor
+    :linenos:
+    :emphasize-lines: 87-115
 
-15 minutes - Talk about using a map editor. Demo and point out the important parts.
 
-45 minutes - Self-paced tutorial with the following steps:
-
-* Install the Tiled map editor
-* Used the tiled map editor to create a map
-* Create a layer with coins to pick up
 * Edit the collision / hitbox of a tile
 * Add a sudden death layer (like lava)
 * Add enemies

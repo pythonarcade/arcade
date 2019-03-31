@@ -9,7 +9,7 @@ SCREEN_HEIGHT = 650
 SCREEN_TITLE = "Platformer"
 
 # Constants used to scale our sprites from their original size
-CHARACTER_SCALING = 0.75
+CHARACTER_SCALING = 1
 TILE_SCALING = 0.5
 COIN_SCALING = 0.5
 SPRITE_PIXEL_SIZE = 128
@@ -18,7 +18,7 @@ GRID_PIXEL_SIZE = (SPRITE_PIXEL_SIZE * TILE_SCALING)
 # Movement speed of player, in pixels per frame
 PLAYER_MOVEMENT_SPEED = 5
 GRAVITY = 1
-PLAYER_JUMP_SPEED = 15
+PLAYER_JUMP_SPEED = 20
 
 # How many pixels to keep as a minimum margin between the character
 # and the edge of the screen.
@@ -84,24 +84,29 @@ class MyGame(arcade.Window):
         self.player_sprite.center_y = 96
         self.player_list.append(self.player_sprite)
 
-        platforms_layer_name = 'Platforms'
-        coins_layer_name = 'Coins'
+        # --- Load in a map from the tiled editor ---
+
+        # Name of map file to load
         map_name = "map.tmx"
+        # Name of the layer in the file that has our platforms/walls
+        platforms_layer_name = 'Platforms'
+        # Name of the layer that has items for pick-up
+        coins_layer_name = 'Coins'
 
         # Read in the tiled map
         my_map = arcade.read_tiled_map(map_name, TILE_SCALING)
 
-        # --- Walls ---
+        # -- Walls
         # Grab the layer of items we can't move through
         map_array = my_map.layers_int_data[platforms_layer_name]
 
         # Calculate the right edge of the my_map in pixels
         self.end_of_map = len(map_array[0]) * GRID_PIXEL_SIZE
 
-        # --- Platforms ---
+        # -- Platforms
         self.wall_list = arcade.generate_sprites(my_map, platforms_layer_name, TILE_SCALING)
 
-        # --- Coins ---
+        # -- Coins
         self.coin_list = arcade.generate_sprites(my_map, coins_layer_name, TILE_SCALING)
 
         # --- Other stuff
