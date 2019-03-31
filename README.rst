@@ -31,7 +31,11 @@ Documentation
 Latest Release
 --------------
 
+<<<<<<< HEAD
 Latest version is 2.0.1 released 2019-03-23.
+=======
+Latest version is 2.0.2 released 2019-03-31.
+>>>>>>> 84bd5d8... Update release notes
 
 Release notes: http://arcade.academy/release_notes.html
 
