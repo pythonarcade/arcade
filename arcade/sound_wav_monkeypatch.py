@@ -72,7 +72,7 @@ class WaveSource(pyglet.media.StreamingSource):
         self._file.close()
 
     def get_audio_data(self, num_bytes, compensation_time=0.0):
-        num_frames = max(1, num_bytes / self._bytes_per_frame)
+        num_frames = max(1, num_bytes // self._bytes_per_frame)
 
         data = self._wave.readframes(num_frames)
         if not data:
