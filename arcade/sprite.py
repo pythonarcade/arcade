@@ -127,7 +127,7 @@ class Sprite:
 
         self.cur_texture_index = 0
 
-        self.scale = scale
+        self._scale = scale
         self._position = [center_x, center_y]
         self._angle = 0.0
 
@@ -332,11 +332,11 @@ class Sprite:
     top = property(_get_top, _set_top)
 
     def _get_width(self) -> float:
-        """ Get the center x coordinate of the sprite. """
+        """ Get the width of the sprite. """
         return self._width
 
     def _set_width(self, new_value: float):
-        """ Set the center x coordinate of the sprite. """
+        """ Set the width in pixels of the sprite. """
         if new_value != self._width:
             self.clear_spatial_hashes()
             self._point_list_cache = None
@@ -349,7 +349,7 @@ class Sprite:
     width = property(_get_width, _set_width)
 
     def _get_height(self) -> float:
-        """ Get the center x coordinate of the sprite. """
+        """ Get the height in pixels of the sprite. """
         return self._height
 
     def _set_height(self, new_value: float):
@@ -365,6 +365,24 @@ class Sprite:
 
     height = property(_get_height, _set_height)
 
+    def _get_scale(self) -> float:
+        """ Get the scale of the sprite. """
+        return self._scale
+
+    def _set_scale(self, new_value: float):
+        """ Set the center x coordinate of the sprite. """
+        if new_value != self._height:
+            self.clear_spatial_hashes()
+            self._point_list_cache = None
+            self._scale = new_value
+            self._width = self._texture.width * self._scale
+            self._height = self._texture.height *self._scale
+            self.add_spatial_hashes()
+
+            for sprite_list in self.sprite_lists:
+                sprite_list.update_position(self)
+
+    scale = property(_get_scale, _set_scale)
 
     def _get_center_x(self) -> float:
         """ Get the center x coordinate of the sprite. """
