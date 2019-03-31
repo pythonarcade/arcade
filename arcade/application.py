@@ -44,7 +44,7 @@ class Window(pyglet.window.Window):
                                       minor_version=3,
                                       double_buffer=True,
                                       sample_buffers=1,
-                                      samples=16)
+                                      samples=4)
         else:
             config = pyglet.gl.Config(major_version=3,
                                       minor_version=3,
