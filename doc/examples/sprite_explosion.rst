@@ -13,3 +13,5 @@ Sprite Explosions
 .. literalinclude:: ../../arcade/examples/sprite_explosion.py
     :caption: sprite_explosion.py
     :linenos:
+    :emphasize-lines: 27, 30-51, 82-93, 109, 149, 190, 200-203
+

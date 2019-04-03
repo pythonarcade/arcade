@@ -37,7 +37,7 @@ Introduction to the Arcade library - 15 minutes
 
 Installation
 ~~~~~~~~~~~~
-* Make sure Python and the Arcade library are installed.
+
 * Make sure you are using Python 3.6 or greater.
 * Install Arcade with ``pip install arcade`` on Windows
   or ``pip3 install arcade`` on Mac/Linux. Or install via a venv.
@@ -48,7 +48,7 @@ Installation
 Open a Window
 ~~~~~~~~~~~~~
 
-`View on Github <https://github.com/pvcraven/arcade/blob/master/arcade/examples/platform_tutorial/01_open_window.py>`_
+To begin with, let's open up a blank window.
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/01_open_window.py
     :caption: Open a Window
@@ -57,6 +57,16 @@ Open a Window
 Add Sprites To Game
 ~~~~~~~~~~~~~~~~~~~
 
+Sprites are objects that we can interact with on the screen. They are managed with the
+``Sprite`` class.
+
+Sprites are stored in a ``SpriteList``. The ``SpriteList`` class has a lot of OpenGL code
+behind it, allowing it to quickly draw all the sprites in a batch.
+
+In this version, we show three ways to add sprites. Manually create an individual sprite,
+create a lot of sprites in a loop, and via a list of coordinates. (Eventually, we'll show
+how to use a map editor.)
+
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/02_draw_sprites.py
     :caption: Place Sprites
     :linenos:
@@ -64,6 +74,10 @@ Add Sprites To Game
 
 Add User Control
 ~~~~~~~~~~~~~~~~
+
+This adds the ability to move the character around with the keyboard. It also
+shows how to use a simplified physics engine to keep the player from moving
+through walls.
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/03_user_control.py
     :caption: Control User By Keyboard
@@ -76,6 +90,9 @@ If you are interested in a somewhat better method of keyboard control, see
 Add Gravity
 ~~~~~~~~~~~
 
+If you are interested in a side view, rather than a top-down view, you
+probably want to add in gravity.
+
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/04_add_gravity.py
     :caption: Add Gravity
     :linenos:
@@ -83,6 +100,8 @@ Add Gravity
 
 Add Scrolling
 ~~~~~~~~~~~~~
+
+Let's not be limited to one screen. Let's scroll around a larger world.
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/05_scrolling.py
     :caption: Add Scrolling
@@ -92,6 +111,8 @@ Add Scrolling
 Add Coins And Sound
 ~~~~~~~~~~~~~~~~~~~
 
+A game needs some kind of goal. This adds coins to pick up and includes some sound.
+
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/06_coins_and_sound.py
     :caption: Add Coins and Sound
     :linenos:
@@ -99,6 +120,8 @@ Add Coins And Sound
 
 Display The Score
 ~~~~~~~~~~~~~~~~~
+
+Add in a score you your game.
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/07_score.py
     :caption: Display The Score
