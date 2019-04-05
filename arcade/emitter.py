@@ -4,9 +4,9 @@ Emitter - Invisible object that determines when Particles are emitted, actually 
 
 import arcade
 from arcade.particle import Particle
-from pymunk import Vec2d
 from typing import Callable
-
+from arcade.utils import _Vec2
+from arcade.arcade_types import Point, Vector
 
 ##########
 class EmitController:
@@ -98,29 +98,24 @@ class EmitterIntervalWithTime(EmitInterval):
         return self._lifetime <= 0
 
 
-
 ########## Emitter
 class Emitter:
     """Emits and manages Particles over their lifetime.  The foundational class in a particle system."""
     def __init__(
         self,
-        pos: Vec2d,
+        center_xy: Point,
         emit_controller: EmitController,
         particle_factory: Callable[["Emitter"], Particle],
-        vel: Vec2d = None,
+        change_xy: Vector = (0.0, 0.0),
         emit_done_cb: Callable[["Emitter"], None] = None,
         reap_cb: Callable[[], None] = None
     ):
         # Note Self-reference with type annotations: https://www.python.org/dev/peps/pep-0484/#the-problem-of-forward-declarations
-        if vel is None:
-            self.change_x = 0.0
-            self.change_y = 0.0
-        else:
-            self.change_x = vel.x
-            self.change_y = vel.y
+        self.change_x = change_xy[0]
+        self.change_y = change_xy[1]
 
-        self.center_x = pos.x
-        self.center_y = pos.y
+        self.center_x = center_xy[0]
+        self.center_y = center_xy[1]
         self.angle = 0.0
         self.change_angle = 0.0
         self.rate_factory = emit_controller
@@ -130,11 +125,14 @@ class Emitter:
         self._particles = arcade.SpriteList(use_spatial_hash=False)
 
     def _emit(self):
-        """Emit one particle. A particle's position is treated relative to the position of the emitter"""
+        """Emit one particle. A particle's initial position and velocity are relative to the position and angle of the emitter"""
         p = self.particle_factory(self)
-        p.center_x = self.center_x + p.center_x
-        p.center_y = self.center_y + p.center_y
-        vel = Vec2d(p.change_x, p.change_y).rotated_degrees(self.angle)
+        p.center_x += self.center_x
+        p.center_y += self.center_y
+
+        # given the velocity, rotate it by emitter's current angle
+        vel = _Vec2(p.change_x, p.change_y).rotated(self.angle)
+
         p.change_x = vel.x
         p.change_y = vel.y
         self._particles.append(p)
@@ -142,10 +140,10 @@ class Emitter:
     def get_count(self):
         return len(self._particles)
 
-    def get_pos(self) -> Vec2d:
-        """Get position of emitter as a Vec2d"""
+    def get_pos(self) -> Point:
+        """Get position of emitter"""
         # TODO: should this be a property so a method call isn't needed?
-        return Vec2d(self.center_x, self.center_y)
+        return self.center_x, self.center_y
 
     def update(self):
         # update emitter
