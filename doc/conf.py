@@ -389,3 +389,43 @@ epub_exclude_files = ['search.html']
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {'python': ('http://docs.python.org/3', None),
                        'numpy': ('http://docs.scipy.org/doc/numpy', None)}
+
+
+def post_process(app, exception):
+    try:
+        print('Pulling unused module names from API doc')
+        filename = 'build/html/arcade.html'
+        temp_filename = 'build/html/arcade_updated.html'
+        my_api_file = open(filename, encoding="utf8")
+        my_updated_api_file = open(temp_filename, 'w', encoding="utf8")
+
+        for line in my_api_file:
+            line = line.replace(".window_commands.", ".")
+            line = line.replace(".draw_commands.", "")
+            line = line.replace(".buffered_draw_commands.", ".")
+            line = line.replace(".text.", ".")
+            line = line.replace(".application.", ".")
+            line = line.replace(".geometry.", ".")
+            line = line.replace(".geometry.", ".")
+            line = line.replace(".sprite_list.", ".")
+            line = line.replace(".physics_engines.", ".")
+            line = line.replace(".sound.", ".")
+
+            my_updated_api_file.write(line)
+
+        my_api_file.close()
+        my_updated_api_file.close()
+
+        import os
+        os.remove(filename)
+        os.rename(temp_filename, filename)
+
+        print("Done")
+
+    except Exception as e:
+        import logging
+        logging.exception("Something bad happened.")
+        print("Error")
+
+def setup(app):
+    app.connect('build-finished', post_process)
