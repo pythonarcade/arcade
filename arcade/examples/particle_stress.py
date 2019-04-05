@@ -8,21 +8,21 @@ python -m arcade.examples.sprite_list_particle_fireworks
 """
 import os
 import arcade
-from pymunk import Vec2d
+from arcade.examples.frametime_plotter import FrametimePlotter
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 SCREEN_TITLE = "Particle stress test"
 TEXTURE = "images/pool_cue_ball.png"
 
+
 def make_emitter():
     return arcade.Emitter(
-        pos=Vec2d(SCREEN_WIDTH/2, SCREEN_HEIGHT/2),
-        # pos=Vec2d.zero(),
+        center_xy=(SCREEN_WIDTH/2, SCREEN_HEIGHT/2),
         emit_controller=arcade.EmitterIntervalWithTime(0.0004, 15.0),
         particle_factory=lambda emitter: arcade.LifetimeParticle(
             filename_or_texture=TEXTURE,
-            vel=arcade.rand_in_circle(Vec2d.zero(), 5.0),
+            change_xy=arcade.rand_in_circle((0.0, 0.0), 5.0),
             lifetime=1.0,
             scale=0.5,
             alpha=128
@@ -42,7 +42,7 @@ class MyGame(arcade.Window):
 
         self.emitter = make_emitter()
         arcade.set_background_color(arcade.color.BLACK)
-        self.frametime_plotter = arcade.FrametimePlotter()
+        self.frametime_plotter = FrametimePlotter()
 
     def update(self, delta_time):
         self.emitter.update()

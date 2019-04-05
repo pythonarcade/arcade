@@ -19,9 +19,22 @@
   </tile>
   <tile id="5">
    <image width="128" height="128" source="images/tiles/bridgeA.png"/>
+   <objectgroup draworder="index">
+    <object id="1" x="14.25" y="0">
+     <polygon points="0,0 -13.75,13.375 -13.625,32.5 -2.5,44.625 16.25,45.125 26.75,35.25 40.25,45.375 58.75,45.25 69.625,35.125 82.625,45.75 100.375,45.75 113.125,33.75 112.875,12.25 102.5,0.375 79,0.75 70.875,10.75 60.375,-0.125 36,0.625 27.75,13.875 15.375,0.5"/>
+    </object>
+    <object id="2" x="14.25" y="0">
+     <polygon points="0,0 -13.75,13.375 -13.625,32.5 -2.5,44.625 16.25,45.125 26.75,35.25 40.25,45.375 58.75,45.25 69.625,35.125 82.625,45.75 100.375,45.75 113.125,33.75 112.875,12.25 102.5,0.375 79,0.75 70.875,10.75 60.375,-0.125 36,0.625 27.75,13.875 15.375,0.5"/>
+    </object>
+   </objectgroup>
   </tile>
   <tile id="6">
    <image width="128" height="128" source="images/tiles/bridgeB.png"/>
+   <objectgroup draworder="index">
+    <object id="1" x="10.875" y="0">
+     <polygon points="0,0 -10.375,9.125 -10.25,27.25 -0.375,36.125 107.875,36.25 116.375,27.375 116.75,8.5 107,-0.125"/>
+    </object>
+   </objectgroup>
   </tile>
   <tile id="7">
    <image width="128" height="128" source="images/tiles/bush.png"/>
@@ -151,6 +164,11 @@
   </tile>
   <tile id="49">
    <image width="128" height="128" source="images/tiles/grassHill_right.png"/>
+   <objectgroup draworder="index">
+    <object id="1" x="0.625" y="127.5">
+     <polygon points="0,0 126.75,-127.125 127,0"/>
+    </object>
+   </objectgroup>
   </tile>
   <tile id="50">
    <image width="128" height="128" source="images/tiles/grassLeft.png"/>
@@ -370,6 +388,11 @@
   </tile>
   <tile id="122">
    <image width="128" height="128" source="images/tiles/snowHill_left.png"/>
+   <objectgroup draworder="index">
+    <object id="1" x="0.5" y="0.5">
+     <polygon points="0,0 0,126.875 127,127.125"/>
+    </object>
+   </objectgroup>
   </tile>
   <tile id="123">
    <image width="128" height="128" source="images/tiles/snowHill_right.png"/>
@@ -490,16 +513,21 @@
   </tile>
   <tile id="162">
    <image width="128" height="128" source="images/items/coinGold.png"/>
+   <objectgroup draworder="index">
+    <object id="1" x="31.875" y="56.375">
+     <polygon points="0,0 0.25,15.375 6.75,28.625 24.375,38.625 39.125,39.375 53.25,31.75 62.5,18.75 62.75,-2.25 53.75,-15.75 40.375,-23.875 22.375,-23.875 11.375,-17"/>
+    </object>
+   </objectgroup>
   </tile>
  </tileset>
  <layer id="1" name="Platforms" width="25" height="20">
   <data encoding="base64" compression="zlib">
-   eJxjYBgFo2AUjIJRMBSBFBBLA7HMANnPNETsYKSxHYxE2GEMxCY0xKZADAC+TwVv
+   eJxjYKAMsCNhWgBamUst83PR+LVAXAfE9RSaOxgByG8gf7EhYXL8ix5mtAYgN1bT2I58IC5lgIQFpfE/FNIQteNQCoilgVhmgM0YaoCa4UaqOUZAzESBvcSYr0MlOxjxmK9KBTsYsdiBbD4IGwOxCZUxsvkgDADk9hI/
   </data>
  </layer>
  <layer id="2" name="Coins" width="25" height="20">
   <data encoding="base64" compression="zlib">
-   eJxjYBgFo2AUjIJRMAqGHlhMB/NheCgAAP2bAo0=
+   eJxjYBi+YDGRYsMZjDT/0hoMhfAcrG4crO4a7GA03HADWofNYiQ8FAAAmrUHAg==
   </data>
  </layer>
 </map>

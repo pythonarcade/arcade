@@ -3,16 +3,16 @@
 Arcade Performance Information
 ==============================
 
-Here are some various notes on Arcade's performance, and getting the most
-out of the library. I also make some notes on how performance compares against
-Pygame.
+How does the Arcade library perform? Here are some benchmarks, and comparisons
+to PyGame 1.9.4, another very popular 2D Python library.
 
 .. _drawing_stationary_performance:
 
 Drawing Stationary Sprites
 --------------------------
 
-Drawing the sprites in a single SpriteList class is a very fast operation. You can
+Drawing the sprites contained in an Arcade :py:class:`arcade.sprite_list.SpriteList` class is a very fast
+operation. You can
 put almost as many sprites into a SpriteList as you want (I've had over 400,000)
 and still keep 60 fps.
 
@@ -46,8 +46,8 @@ array is much slower than changing a native Python value.
 If a game has a large map made out of mostly unmoving tiles, then the faster
 drawing speed is great.
 
-Hopefully we will soon find a way to improve moving sprite speed.
-
+Hopefully we will soon find a way to improve moving sprite speed. Using ctypes
+might be faster, or some additional native code.
 
 .. figure:: images/chart_stress_test_draw_moving_process_comparison.svg
 
