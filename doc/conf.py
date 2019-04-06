@@ -139,9 +139,6 @@ todo_include_todos = True
 html_theme = 'sphinx_rtd_theme'
 
 
-def setup(app):
-    app.add_stylesheet("css/custom.css")
-
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
@@ -391,25 +388,21 @@ intersphinx_mapping = {'python': ('http://docs.python.org/3', None),
                        'numpy': ('http://docs.scipy.org/doc/numpy', None)}
 
 
-def post_process(app, exception):
+def replace_in_file(filename, replace_list):
     try:
-        print('Pulling unused module names from API doc')
-        filename = 'build/html/arcade.html'
-        temp_filename = 'build/html/arcade_updated.html'
+        import os
+        file_path = os.path.dirname(os.path.abspath(__file__))
+        os.chdir(file_path)
+
+        temp_filename = filename + ".tmp"
         my_api_file = open(filename, encoding="utf8")
         my_updated_api_file = open(temp_filename, 'w', encoding="utf8")
 
         for line in my_api_file:
-            line = line.replace(".window_commands.", ".")
-            line = line.replace(".draw_commands.", "")
-            line = line.replace(".buffered_draw_commands.", ".")
-            line = line.replace(".text.", ".")
-            line = line.replace(".application.", ".")
-            line = line.replace(".geometry.", ".")
-            line = line.replace(".geometry.", ".")
-            line = line.replace(".sprite_list.", ".")
-            line = line.replace(".physics_engines.", ".")
-            line = line.replace(".sound.", ".")
+            for replacement in replace_list:
+                original_text = replacement[0]
+                new_text = replacement[1]
+            line = line.replace(original_text, new_text)
 
             my_updated_api_file.write(line)
 
@@ -420,12 +413,36 @@ def post_process(app, exception):
         os.remove(filename)
         os.rename(temp_filename, filename)
 
-        print("Done")
-
     except Exception as e:
         import logging
         logging.exception("Something bad happened.")
         print("Error")
 
+def post_process(app, exception):
+
+    # The API docs include the submodules the commands are in. This is confusing
+    # so let's remove them.
+    filename = 'build/html/arcade.html'
+    replace_list = []
+    replace_list.append([".window_commands.", "."])
+    replace_list.append([".draw_commands.", ""])
+    replace_list.append([".buffered_draw_commands.", "."])
+    replace_list.append([".text.", "."])
+    replace_list.append([".application.", "."])
+    replace_list.append([".geometry.", "."])
+    replace_list.append([".geometry.", "."])
+    replace_list.append([".sprite_list.", "."])
+    replace_list.append([".physics_engines.", "."])
+    replace_list.append([".sound.", "."])
+    replace_in_file(filename, replace_list)
+
+    # Figures have and align-center style I can't easily get rid of.
+    filename = 'build/html/examples/index.html'
+    replace_list = []
+    replace_list.append(["figure align-center", "figure"])
+    replace_in_file(filename, replace_list)
+
 def setup(app):
+    app.add_stylesheet("css/custom.css")
     app.connect('build-finished', post_process)
+
