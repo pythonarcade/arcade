@@ -110,7 +110,9 @@ def read_tiled_map(filename: str, scaling) -> TiledMap:
     Given a filename, this will read in a tiled map, and return
     a TiledMap object.
     Important: Tiles must be a "collection" of images and the tileset
-    must be embedded in the .tmx file.
+    must be embedded in the .tmx file. Hitboxes can be drawn around tiles
+    in the tileset editor, but only polygons are supported.
+    (This is a great area for PR's to improve things.)
     """
 
     # Create a map object to store this stuff in
