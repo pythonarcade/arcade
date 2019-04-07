@@ -398,12 +398,17 @@ def replace_in_file(filename, replace_list):
         my_api_file = open(filename, encoding="utf8")
         my_updated_api_file = open(temp_filename, 'w', encoding="utf8")
 
+        line_count = 0
+        fix_count = 0
         for line in my_api_file:
+            line_count += 1
             for replacement in replace_list:
                 original_text = replacement[0]
                 new_text = replacement[1]
-            line = line.replace(original_text, new_text)
-
+                new_line = line.replace(original_text, new_text)
+                if len(new_line) != len(line):
+                    line = new_line
+                    fix_count += 1
             my_updated_api_file.write(line)
 
         my_api_file.close()
@@ -412,6 +417,7 @@ def replace_in_file(filename, replace_list):
         import os
         os.remove(filename)
         os.rename(temp_filename, filename)
+        print(f"Done fixing {fix_count} lines out of {line_count} lines in {filename}")
 
     except Exception as e:
         import logging
@@ -422,18 +428,19 @@ def post_process(app, exception):
 
     # The API docs include the submodules the commands are in. This is confusing
     # so let's remove them.
-    filename = 'build/html/arcade.html'
     replace_list = []
     replace_list.append([".window_commands.", "."])
-    replace_list.append([".draw_commands.", ""])
+    replace_list.append([".draw_commands.", "."])
     replace_list.append([".buffered_draw_commands.", "."])
     replace_list.append([".text.", "."])
     replace_list.append([".application.", "."])
     replace_list.append([".geometry.", "."])
-    replace_list.append([".geometry.", "."])
     replace_list.append([".sprite_list.", "."])
     replace_list.append([".physics_engines.", "."])
     replace_list.append([".sound.", "."])
+    filename = 'build/html/arcade.html'
+    replace_in_file(filename, replace_list)
+    filename = 'build/html/quick_index.html'
     replace_in_file(filename, replace_list)
 
     # Figures have and align-center style I can't easily get rid of.

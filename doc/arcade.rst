@@ -95,6 +95,15 @@ Sound Module
     :undoc-members:
     :show-inheritance:
 
+Tiled Map Support Module
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: arcade.read_tiled_map
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
 Arcade Subpackages
 ------------------
 

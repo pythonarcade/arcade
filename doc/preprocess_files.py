@@ -159,6 +159,12 @@ def main():
     list_classes("../arcade/application.py", output_file)
     list_functions("../arcade/application.py", output_file)
 
+    output_file.write("Tiled Map Module\n")
+    output_file.write("----------------\n")
+    output_file.write("\n")
+    list_classes("../arcade/read_tiled_map.py", output_file)
+    list_functions("../arcade/read_tiled_map.py", output_file)
+
     output_file.close()
 
 if __name__ == '__main__':
