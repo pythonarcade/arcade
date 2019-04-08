@@ -1,8 +1,5 @@
 """
 This module pre-defines several colors.
-
-For a visual color chart, see:
-http://www.colorpicker.com/color-chart/
 """
 AERO_BLUE = (201, 255, 229)
 AFRICAN_VIOLET = (178, 132, 190)

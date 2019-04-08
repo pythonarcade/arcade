@@ -424,6 +424,39 @@ def replace_in_file(filename, replace_list):
         logging.exception("Something bad happened.")
         print("Error")
 
+def source_read(app, docname, source):
+
+    # print(f"  XXX Reading {docname}")
+
+    filename = None
+    if docname == "arcade.color":
+        filename = "../arcade/color/__init__.py"
+    elif docname == "arcade.csscolor":
+        filename = "../arcade/csscolor/__init__.py"
+
+    if filename:
+        import re
+        p = re.compile("^([A-Z_]+) = (\(.*\))")
+
+        print(source)
+        original_text = source[0]
+        append_text = "\n\n.. raw:: html\n\n"
+        append_text += "    <table>"
+        color_file = open(filename)
+
+        for line in color_file:
+            match = p.match(line)
+            if match:
+                append_text += "    <tr><td>"
+                append_text += match.group(1)
+                append_text += "</td><td>"
+                append_text += match.group(2)
+                append_text += f"<td style='width:80px;background-color:rgb{match.group(2)};'>&nbsp;</td>"
+                append_text += "    </td></tr>\n"
+        append_text += "    </table>"
+        source[0] = original_text + append_text
+
+
 def post_process(app, exception):
 
     # The API docs include the submodules the commands are in. This is confusing
@@ -449,7 +482,8 @@ def post_process(app, exception):
     replace_list.append(["figure align-center", "figure"])
     replace_in_file(filename, replace_list)
 
+
 def setup(app):
     app.add_stylesheet("css/custom.css")
     app.connect('build-finished', post_process)
-
+    app.connect('source-read', source_read)

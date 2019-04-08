@@ -1,6 +1,11 @@
 arcade.color package
 ====================
 
-These are colors you can use when drawing. See http://www.colorpicker.com/color-chart/ for visuals on these colors.
+These are named colors you can use when drawing.
 
-.. literalinclude:: ../arcade/color/__init__.py
+You can specify colors four ways:
+
+* Standard CSS color names: ``arcade.csscolor.RED``
+* Nonstandard color names (this package): ``arcade.color.RED``
+* Three-byte numbers: ``(255, 0, 0)``
+* Four-byte numbers (fourth byte is transparency. 0 transparent, 255 opaque): ``(255, 0, 0, 255)``
