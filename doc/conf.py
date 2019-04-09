@@ -427,6 +427,9 @@ def replace_in_file(filename, replace_list):
 def source_read(app, docname, source):
 
     # print(f"  XXX Reading {docname}")
+    import os
+    file_path = os.path.dirname(os.path.abspath(__file__))
+    os.chdir(file_path)
 
     filename = None
     if docname == "arcade.color":
@@ -438,7 +441,6 @@ def source_read(app, docname, source):
         import re
         p = re.compile("^([A-Z_]+) = (\(.*\))")
 
-        print(source)
         original_text = source[0]
         append_text = "\n\n.. raw:: html\n\n"
         append_text += "    <table>"

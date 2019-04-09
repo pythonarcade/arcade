@@ -10,11 +10,8 @@ For example code, see :ref:`example-code`.
 
 .. contents:: Table of Contents
 
-Submodules
-----------
-
-Window Commands Module
-^^^^^^^^^^^^^^^^^^^^^^
+Window Commands
+---------------
 
 .. automodule:: arcade.window_commands
     :members:
@@ -23,80 +20,80 @@ Window Commands Module
 
 .. _drawing-commands:
 
-Draw Commands Module
-^^^^^^^^^^^^^^^^^^^^
+Draw Commands
+-------------
 
 .. automodule:: arcade.draw_commands
     :members:
     :undoc-members:
     :show-inheritance:
 
-Buffered Draw Commands Module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Buffered Draw Commands
+----------------------
 
 .. automodule:: arcade.buffered_draw_commands
     :members:
     :undoc-members:
     :show-inheritance:
 
-Text Module
-^^^^^^^^^^^
+Text Drawing
+------------
 
 .. automodule:: arcade.text
     :members:
     :undoc-members:
     :show-inheritance:
 
-Application Class Module
-^^^^^^^^^^^^^^^^^^^^^^^^
+Window Class
+------------
 
 .. automodule:: arcade.application
     :members:
     :undoc-members:
     :show-inheritance:
 
-Geometry Module
-^^^^^^^^^^^^^^^
+Geometry Commands
+-----------------
 
 .. automodule:: arcade.geometry
     :members:
     :undoc-members:
     :show-inheritance:
 
-Sprite Module
-^^^^^^^^^^^^^
+Sprite Commands
+---------------
 
 .. automodule:: arcade.sprite
     :members:
     :undoc-members:
     :show-inheritance:
 
-Sprite List Module
-^^^^^^^^^^^^^^^^^^
+SpriteList Commands
+-------------------
 
 .. automodule:: arcade.sprite_list
     :members:
     :undoc-members:
     :show-inheritance:
 
-Physics Engines Module
-^^^^^^^^^^^^^^^^^^^^^^
+Physics Engines
+---------------
 
 .. automodule:: arcade.physics_engines
     :members:
     :undoc-members:
     :show-inheritance:
 
-Sound Module
-^^^^^^^^^^^^
+Sound Support
+-------------
 
 .. automodule:: arcade.sound
     :members:
     :undoc-members:
     :show-inheritance:
 
-Tiled Map Support Module
-^^^^^^^^^^^^^^^^^^^^^^^^
+Tiled Map Support
+-----------------
 
 .. automodule:: arcade.read_tiled_map
     :members:
@@ -104,8 +101,8 @@ Tiled Map Support Module
     :show-inheritance:
 
 
-Arcade Subpackages
-------------------
+Color and Keyboard Constants
+----------------------------
 
 .. toctree::
 

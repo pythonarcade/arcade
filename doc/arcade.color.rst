@@ -1,3 +1,5 @@
+.. _color:
+
 arcade.color package
 ====================
 
