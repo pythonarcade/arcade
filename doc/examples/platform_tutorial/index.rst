@@ -1,14 +1,15 @@
 Build Your Own 2D Platformer Game
 =================================
 
-*To be presented at the `2019 PyCon`_ in Cleveland, Ohio.*
+(To be presented at the `2019 PyCon`_ in Cleveland, Ohio.)
 
-In this tutorial, use Python and the Arcade library to create your own 2D platformer.
+In this tutorial, use Python 3.6+ and the Arcade_ library to create your own 2D platformer.
 Learn to work with Sprites and the `Tiled Map Editor`_ to create your own games.
 Add coins, ramps, moving platforms, enemies, and more.
 
 .. _Tiled Map Editor: https://www.mapeditor.org/
-.. _Pycon 2019: https://us.pycon.org/2019/about/
+.. _PyCon 2019: https://us.pycon.org/2019/about/
+.. _Arcade: http://arcade.academy
 
 Audience
 --------
@@ -37,7 +38,7 @@ Introduction to the Arcade library - 15 minutes
 
 Installation
 ~~~~~~~~~~~~
-
+* Make sure Python and the Arcade library are installed.
 * Make sure you are using Python 3.6 or greater.
 * Install Arcade with ``pip install arcade`` on Windows
   or ``pip3 install arcade`` on Mac/Linux. Or install via a venv.
@@ -48,8 +49,6 @@ Installation
 Open a Window
 ~~~~~~~~~~~~~
 
-To begin with, let's open up a blank window.
-
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/01_open_window.py
     :caption: Open a Window
     :linenos:
@@ -57,15 +56,13 @@ To begin with, let's open up a blank window.
 Add Sprites To Game
 ~~~~~~~~~~~~~~~~~~~
 
-Sprites are objects that we can interact with on the screen. They are managed with the
-``Sprite`` class.
+Sprites are the graphic items that you can interact with, such as players,
+coins, and objects the player can run into.
 
-Sprites are stored in a ``SpriteList``. The ``SpriteList`` class has a lot of OpenGL code
-behind it, allowing it to quickly draw all the sprites in a batch.
+All sprites go into a list. We manage the sprites by the list that they are in.
 
-In this version, we show three ways to add sprites. Manually create an individual sprite,
-create a lot of sprites in a loop, and via a list of coordinates. (Eventually, we'll show
-how to use a map editor.)
+* Documentation for :ref:`sprite-commands`
+* Documentation for :ref:`spritelist-commands`
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/02_draw_sprites.py
     :caption: Place Sprites
@@ -75,14 +72,17 @@ how to use a map editor.)
 Add User Control
 ~~~~~~~~~~~~~~~~
 
-This adds the ability to move the character around with the keyboard. It also
-shows how to use a simplified physics engine to keep the player from moving
-through walls.
+Now we need to be able to get the user to move around. We can do the by
+modifying the Sprite's velocity through the ``change_x`` and ``change_y``
+attributes, plus use a simple physics engine that keeps us from moving through
+walls.
+
+* Documentation for :ref:`physics-engines`
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/03_user_control.py
     :caption: Control User By Keyboard
     :linenos:
-    :emphasize-lines: 16-17, 98-108, 110-120, 122-127
+    :emphasize-lines: 16-17, 84-85, 98-108, 110-120, 122-127
 
 If you are interested in a somewhat better method of keyboard control, see
 :ref:`sprite_move_keyboard_better`.
@@ -90,8 +90,8 @@ If you are interested in a somewhat better method of keyboard control, see
 Add Gravity
 ~~~~~~~~~~~
 
-If you are interested in a side view, rather than a top-down view, you
-probably want to add in gravity.
+The example above works great for top-down, but what if it is a side view with
+jumping? We need to add gravity.
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/04_add_gravity.py
     :caption: Add Gravity
@@ -101,7 +101,8 @@ probably want to add in gravity.
 Add Scrolling
 ~~~~~~~~~~~~~
 
-Let's not be limited to one screen. Let's scroll around a larger world.
+We can have our window be a small viewport into a much larger world by adding
+scrolling.
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/05_scrolling.py
     :caption: Add Scrolling
@@ -111,8 +112,6 @@ Let's not be limited to one screen. Let's scroll around a larger world.
 Add Coins And Sound
 ~~~~~~~~~~~~~~~~~~~
 
-A game needs some kind of goal. This adds coins to pick up and includes some sound.
-
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/06_coins_and_sound.py
     :caption: Add Coins and Sound
     :linenos:
@@ -120,8 +119,6 @@ A game needs some kind of goal. This adds coins to pick up and includes some sou
 
 Display The Score
 ~~~~~~~~~~~~~~~~~
-
-Add in a score you your game.
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/07_score.py
     :caption: Display The Score

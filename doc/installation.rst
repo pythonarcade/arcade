@@ -15,4 +15,5 @@ Select the instructions for your platform:
    installation_windows
    installation_mac
    installation_linux
+   installation_from_source
 

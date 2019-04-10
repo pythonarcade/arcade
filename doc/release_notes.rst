@@ -5,6 +5,12 @@
 Release Notes
 =============
 
+Version 2.0.3
+-------------
+
+Version 2.0.2 was compiled off the wrong branch, so it had a bunch of untested
+code. 2.0.3 is what 2.0.2 was supposed to be.
+
 Version 2.0.2
 -------------
 

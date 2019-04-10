@@ -1,3 +1,7 @@
+"""
+Functions and classes for managing a map created in the "Tiled Map Editor"
+"""
+
 import xml.etree.ElementTree as etree
 import base64
 import zlib
@@ -9,7 +13,7 @@ from arcade import SpriteList
 
 
 class TiledMap:
-
+    """ This class holds a tiled map, and tile set from the map. """
     def __init__(self):
         self.global_tile_set = {}
         self.layers_int_data = {}
@@ -26,7 +30,7 @@ class TiledMap:
 
 
 class Tile:
-
+    """ This class represents an individual tile from a tileset. """
     def __init__(self):
         self.local_id = 0
         self.width = 0
@@ -36,6 +40,8 @@ class Tile:
 
 
 class GridLocation:
+    """ This represents a location on the grid. Contains the x/y of the
+    grid location, and the tile that is on it. """
     def __init__(self):
         self.tile = None
         self.center_x = 0
@@ -89,7 +95,7 @@ def _process_base64_encoding(data_text, compression, layer_width):
     return layer_grid_ints
 
 
-def parse_points(point_text: str):
+def _parse_points(point_text: str):
     result = []
     point_list = point_text.split(" ")
     for point in point_list:
@@ -103,6 +109,10 @@ def read_tiled_map(filename: str, scaling) -> TiledMap:
     """
     Given a filename, this will read in a tiled map, and return
     a TiledMap object.
+    Important: Tiles must be a "collection" of images and the tileset
+    must be embedded in the .tmx file. Hitboxes can be drawn around tiles
+    in the tileset editor, but only polygons are supported.
+    (This is a great area for PR's to improve things.)
     """
 
     # Create a map object to store this stuff in
@@ -179,7 +189,7 @@ def read_tiled_map(filename: str, scaling) -> TiledMap:
                     offset_y = round(float(my_object.attrib['y']))
                     polygon = my_object.find("polygon")
                     if polygon is not None:
-                        point_list = parse_points(polygon.attrib['points'])
+                        point_list = _parse_points(polygon.attrib['points'])
                         for point in point_list:
                             point[0] += offset_x
                             point[1] += offset_y
@@ -225,14 +235,14 @@ def read_tiled_map(filename: str, scaling) -> TiledMap:
         for row_index, row in enumerate(layer_grid_ints):
             layer_grid_objs.append([])
             for column_index, column in enumerate(row):
-                grid_location = GridLocation()
+                grid_loc = GridLocation()
                 if layer_grid_ints[row_index][column_index] != 0:
                     key = str(layer_grid_ints[row_index][column_index])
 
-                    if not key in my_map.global_tile_set:
+                    if key not in my_map.global_tile_set:
                         print(f"Warning, tried to load '{key}' and it is not in the tileset.")
                     else:
-                        grid_location.tile = my_map.global_tile_set[key]
+                        grid_loc.tile = my_map.global_tile_set[key]
 
                         if my_map.renderorder == "right-down":
                             adjusted_row_index = my_map.height - row_index - 1
@@ -240,17 +250,17 @@ def read_tiled_map(filename: str, scaling) -> TiledMap:
                             adjusted_row_index = row_index
 
                         if my_map.orientation == "orthogonal":
-                            grid_location.center_x = column_index * my_map.tilewidth + my_map.tilewidth // 2
-                            grid_location.center_y = adjusted_row_index * my_map.tileheight + my_map.tilewidth // 2
+                            grid_loc.center_x = column_index * my_map.tilewidth + my_map.tilewidth // 2
+                            grid_loc.center_y = adjusted_row_index * my_map.tileheight + my_map.tilewidth // 2
                         else:
-                            grid_location.center_x,  grid_location.center_y = isometric_grid_to_screen(column_index,
-                                                                                                       row_index,
-                                                                                                       my_map.width,
-                                                                                                       my_map.height,
-                                                                                                       my_map.tilewidth,
-                                                                                                       my_map.tileheight)
+                            grid_loc.center_x,  grid_loc.center_y = isometric_grid_to_screen(column_index,
+                                                                                             row_index,
+                                                                                             my_map.width,
+                                                                                             my_map.height,
+                                                                                             my_map.tilewidth,
+                                                                                             my_map.tileheight)
 
-                layer_grid_objs[row_index].append(grid_location)
+                layer_grid_objs[row_index].append(grid_loc)
 
         my_map.layers[layer_tag.attrib["name"]] = layer_grid_objs
 

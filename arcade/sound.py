@@ -1,6 +1,5 @@
 """
 Sound library.
-From https://github.com/TaylorSMarks/playsound/blob/master/playsound.py
 """
 
 from platform import system
