@@ -49,6 +49,19 @@ Installation
 Open a Window
 ~~~~~~~~~~~~~
 
+This example shows how to open a window. 
+Take some time and:
+
+* Change the screen size
+* Change the title
+* Change the background color
+
+  * :ref:`color`
+  * :ref:`csscolor`
+  
+It is possible to have a :ref:`resizable_window`, but there are more interesting things
+we can do in first.
+
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/01_open_window.py
     :caption: Open a Window
     :linenos:
@@ -63,6 +76,12 @@ All sprites go into a list. We manage the sprites by the list that they are in.
 
 * Documentation for :ref:`sprite-commands`
 * Documentation for :ref:`spritelist-commands`
+
+Take time to:
+
+* Put sprites in new positions
+* Use different images for sprites
+* Practice placing individually, via a loop, and by coordinates in a list.
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/02_draw_sprites.py
     :caption: Place Sprites
@@ -92,6 +111,8 @@ Add Gravity
 
 The example above works great for top-down, but what if it is a side view with
 jumping? We need to add gravity.
+
+Modify the example by changing the gravity and jump constants.
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/04_add_gravity.py
     :caption: Add Gravity
