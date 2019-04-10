@@ -757,7 +757,7 @@ def draw_ellipse_outline(center_x: float, center_y: float, width: float,
         for point in uncentered_point_list:
             point_list.append((point[0] + center_x, point[1] + center_y))
 
-        _generic_draw_line_strip(point_list, color, border_width, gl.GL_LINE_LOOP)
+        _generic_draw_line_strip(point_list, color, gl.GL_LINE_LOOP)
     else:
 
         unrotated_point_list = []
@@ -858,7 +858,7 @@ def draw_line_strip(point_list: PointList,
         line_width:
     """
     if line_width == 1:
-        _generic_draw_line_strip(point_list, color, line_width, gl.GL_LINE_STRIP)
+        _generic_draw_line_strip(point_list, color, gl.GL_LINE_STRIP)
     else:
         triangle_point_list = []
         # This needs a lot of improvement

@@ -80,6 +80,7 @@ class MyGame(arcade.Window):
                       (570, 510)
                       )
         arcade.draw_line_strip(point_list, arcade.color.TROPICAL_RAIN_FOREST, 3)
+        arcade.draw_line_strip(point_list, arcade.color.BEIGE)
 
         # Draw a polygon
         arcade.draw_text("draw_polygon_outline", 3, 207, arcade.color.BLACK, 9)
@@ -104,6 +105,7 @@ class MyGame(arcade.Window):
         # Draw an outline of a circle
         arcade.draw_text("draw_circle_outline", 243, 207, arcade.color.BLACK, 10)
         arcade.draw_circle_outline(300, 285, 18, arcade.color.WISTERIA, 3)
+        arcade.draw_circle_outline(350, 285, 18, arcade.color.WISTERIA)
 
         # Draw a filled in circle
         arcade.draw_text("draw_circle_filled", 363, 207, arcade.color.BLACK, 10)
