@@ -8,7 +8,7 @@ Learn to work with Sprites and the `Tiled Map Editor`_ to create your own games.
 Add coins, ramps, moving platforms, enemies, and more.
 
 .. _Tiled Map Editor: https://www.mapeditor.org/
-.. _PyCon 2019: https://us.pycon.org/2019/about/
+.. _2019 PyCon: https://us.pycon.org/2019/about/
 .. _Arcade: http://arcade.academy
 
 Audience
@@ -49,6 +49,19 @@ Installation
 Open a Window
 ~~~~~~~~~~~~~
 
+This example shows how to open a window. 
+Take some time and:
+
+* Change the screen size
+* Change the title
+* Change the background color
+
+  * :ref:`color`
+  * :ref:`csscolor`
+  
+It is possible to have a :ref:`resizable_window`, but there are more interesting things
+we can do in first.
+
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/01_open_window.py
     :caption: Open a Window
     :linenos:
@@ -63,6 +76,12 @@ All sprites go into a list. We manage the sprites by the list that they are in.
 
 * Documentation for :ref:`sprite-commands`
 * Documentation for :ref:`spritelist-commands`
+
+Take time to:
+
+* Put sprites in new positions
+* Use different images for sprites
+* Practice placing individually, via a loop, and by coordinates in a list.
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/02_draw_sprites.py
     :caption: Place Sprites
@@ -93,6 +112,8 @@ Add Gravity
 The example above works great for top-down, but what if it is a side view with
 jumping? We need to add gravity.
 
+Modify the example by changing the gravity and jump constants.
+
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/04_add_gravity.py
     :caption: Add Gravity
     :linenos:
@@ -104,6 +125,8 @@ Add Scrolling
 We can have our window be a small viewport into a much larger world by adding
 scrolling.
 
+Work at changing the margins to something that you like.
+
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/05_scrolling.py
     :caption: Add Scrolling
     :linenos:
@@ -111,6 +134,15 @@ scrolling.
 
 Add Coins And Sound
 ~~~~~~~~~~~~~~~~~~~
+
+Try adding more than just coins.
+
+Notice that any transparent "white-space" around the image counts as the hitbox.
+You can trim the space, or in the second section, we'll show you how to specity
+the hitbox.
+
+You could subclass the coin sprite and add an attribute for a score value. Then
+you could have coins worth one point, and gems worth 5, 10, and 15 points.
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/06_coins_and_sound.py
     :caption: Add Coins and Sound
