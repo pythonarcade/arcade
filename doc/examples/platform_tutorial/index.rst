@@ -8,7 +8,7 @@ Learn to work with Sprites and the `Tiled Map Editor`_ to create your own games.
 Add coins, ramps, moving platforms, enemies, and more.
 
 .. _Tiled Map Editor: https://www.mapeditor.org/
-.. _PyCon 2019: https://us.pycon.org/2019/about/
+.. _2019 PyCon: https://us.pycon.org/2019/about/
 .. _Arcade: http://arcade.academy
 
 Audience
@@ -125,6 +125,8 @@ Add Scrolling
 We can have our window be a small viewport into a much larger world by adding
 scrolling.
 
+Work at changing the margins to something that you like.
+
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/05_scrolling.py
     :caption: Add Scrolling
     :linenos:
@@ -132,6 +134,15 @@ scrolling.
 
 Add Coins And Sound
 ~~~~~~~~~~~~~~~~~~~
+
+Try adding more than just coins.
+
+Notice that any transparent "white-space" around the image counts as the hitbox.
+You can trim the space, or in the second section, we'll show you how to specity
+the hitbox.
+
+You could subclass the coin sprite and add an attribute for a score value. Then
+you could have coins worth one point, and gems worth 5, 10, and 15 points.
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/06_coins_and_sound.py
     :caption: Add Coins and Sound
