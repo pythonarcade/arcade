@@ -32,7 +32,7 @@ The Python Arcade Library
           <h2><a href="quick_index.html">Quick API Index</a></h2>
           <ul>
           <li><a href="arcade.html">Full Arcade API Docs</a></li>
-          <li><a href="quick_index.html#drawing-module">Drawing Functions</a></li>
+          <li><a href="quick_index.html#drawing-module">Drawing</a> - <a href="arcade.csscolor.html">CSS Colors</a></li>
           <li><a href="quick_index.html#application-module">Window Class</a></li>
           <li><a href="quick_index.html#sprite-module">Sprites</a></li>
           <li><a href="http://arcade-book.readthedocs.io/en/latest/">Learn to Program with Arcade</a> (book)</li>

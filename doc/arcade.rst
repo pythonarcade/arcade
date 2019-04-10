@@ -60,6 +60,8 @@ Geometry Commands
     :undoc-members:
     :show-inheritance:
 
+.. _sprite-commands:
+
 Sprite Commands
 ---------------
 
@@ -68,6 +70,8 @@ Sprite Commands
     :undoc-members:
     :show-inheritance:
 
+.. _spritelist-commands:
+
 SpriteList Commands
 -------------------
 
@@ -75,6 +79,8 @@ SpriteList Commands
     :members:
     :undoc-members:
     :show-inheritance:
+
+.. _physics-engines:
 
 Physics Engines
 ---------------
