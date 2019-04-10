@@ -10,7 +10,7 @@ runpy.run_path('preprocess_files.py', run_name='__main__')
 runpy.run_path('generate_example_thumbnails.py', run_name='__main__')
 
 BUILD = 0
-VERSION = "2.0.2b3"
+VERSION = "2.0.3"
 RELEASE = VERSION
 
 
@@ -138,9 +138,6 @@ todo_include_todos = True
 # a list of builtin themes.
 html_theme = 'sphinx_rtd_theme'
 
-
-def setup(app):
-    app.add_stylesheet("css/custom.css")
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -391,26 +388,27 @@ intersphinx_mapping = {'python': ('http://docs.python.org/3', None),
                        'numpy': ('http://docs.scipy.org/doc/numpy', None)}
 
 
-def post_process(app, exception):
+def replace_in_file(filename, replace_list):
     try:
-        print('Pulling unused module names from API doc')
-        filename = 'build/html/arcade.html'
-        temp_filename = 'build/html/arcade_updated.html'
+        import os
+        file_path = os.path.dirname(os.path.abspath(__file__))
+        os.chdir(file_path)
+
+        temp_filename = filename + ".tmp"
         my_api_file = open(filename, encoding="utf8")
         my_updated_api_file = open(temp_filename, 'w', encoding="utf8")
 
+        line_count = 0
+        fix_count = 0
         for line in my_api_file:
-            line = line.replace(".window_commands.", ".")
-            line = line.replace(".draw_commands.", "")
-            line = line.replace(".buffered_draw_commands.", ".")
-            line = line.replace(".text.", ".")
-            line = line.replace(".application.", ".")
-            line = line.replace(".geometry.", ".")
-            line = line.replace(".geometry.", ".")
-            line = line.replace(".sprite_list.", ".")
-            line = line.replace(".physics_engines.", ".")
-            line = line.replace(".sound.", ".")
-
+            line_count += 1
+            for replacement in replace_list:
+                original_text = replacement[0]
+                new_text = replacement[1]
+                new_line = line.replace(original_text, new_text)
+                if len(new_line) != len(line):
+                    line = new_line
+                    fix_count += 1
             my_updated_api_file.write(line)
 
         my_api_file.close()
@@ -419,13 +417,75 @@ def post_process(app, exception):
         import os
         os.remove(filename)
         os.rename(temp_filename, filename)
-
-        print("Done")
+        print(f"Done fixing {fix_count} lines out of {line_count} lines in {filename}")
 
     except Exception as e:
         import logging
         logging.exception("Something bad happened.")
         print("Error")
 
+def source_read(app, docname, source):
+
+    # print(f"  XXX Reading {docname}")
+    import os
+    file_path = os.path.dirname(os.path.abspath(__file__))
+    os.chdir(file_path)
+
+    filename = None
+    if docname == "arcade.color":
+        filename = "../arcade/color/__init__.py"
+    elif docname == "arcade.csscolor":
+        filename = "../arcade/csscolor/__init__.py"
+
+    if filename:
+        import re
+        p = re.compile("^([A-Z_]+) = (\(.*\))")
+
+        original_text = source[0]
+        append_text = "\n\n.. raw:: html\n\n"
+        append_text += "    <table>"
+        color_file = open(filename)
+
+        for line in color_file:
+            match = p.match(line)
+            if match:
+                append_text += "    <tr><td>"
+                append_text += match.group(1)
+                append_text += "</td><td>"
+                append_text += match.group(2)
+                append_text += f"<td style='width:80px;background-color:rgb{match.group(2)};'>&nbsp;</td>"
+                append_text += "    </td></tr>\n"
+        append_text += "    </table>"
+        source[0] = original_text + append_text
+
+
+def post_process(app, exception):
+
+    # The API docs include the submodules the commands are in. This is confusing
+    # so let's remove them.
+    replace_list = []
+    replace_list.append([".window_commands.", "."])
+    replace_list.append([".draw_commands.", "."])
+    replace_list.append([".buffered_draw_commands.", "."])
+    replace_list.append([".text.", "."])
+    replace_list.append([".application.", "."])
+    replace_list.append([".geometry.", "."])
+    replace_list.append([".sprite_list.", "."])
+    replace_list.append([".physics_engines.", "."])
+    replace_list.append([".sound.", "."])
+    filename = 'build/html/arcade.html'
+    replace_in_file(filename, replace_list)
+    filename = 'build/html/quick_index.html'
+    replace_in_file(filename, replace_list)
+
+    # Figures have and align-center style I can't easily get rid of.
+    filename = 'build/html/examples/index.html'
+    replace_list = []
+    replace_list.append(["figure align-center", "figure"])
+    replace_in_file(filename, replace_list)
+
+
 def setup(app):
+    app.add_stylesheet("css/custom.css")
     app.connect('build-finished', post_process)
+    app.connect('source-read', source_read)

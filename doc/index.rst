@@ -22,6 +22,7 @@ The Python Arcade Library
           <li><a href="installation_windows.html">Windows</a></li>
           <li><a href="installation_mac.html">Mac</a></li>
           <li><a href="installation_linux.html">Linux</a></li>
+          <li><a href="installation_from_source.html">Install From Source</a></li>
           </ul>
         </td>
       </tr>
@@ -30,10 +31,10 @@ The Python Arcade Library
           <img style="width:78px;" src="_static/ereader.svg"><br/>
           <h2><a href="quick_index.html">Quick API Index</a></h2>
           <ul>
-          <li><a href="quick_index.html#drawing-module">Drawing Functions</a></li>
+          <li><a href="arcade.html">Full Arcade API Docs</a></li>
+          <li><a href="quick_index.html#drawing-module">Drawing</a> - <a href="arcade.csscolor.html">CSS Colors</a></li>
           <li><a href="quick_index.html#application-module">Window Class</a></li>
           <li><a href="quick_index.html#sprite-module">Sprites</a></li>
-          <li><a href="arcade.html">Full Arcade API Docs</a></li>
           <li><a href="http://arcade-book.readthedocs.io/en/latest/">Learn to Program with Arcade</a> (book)</li>
           </ul>
         </td>
@@ -68,23 +69,39 @@ The Python Arcade Library
         </td>
       </tr>
     </table>
-    <p></p>
 .. raw:: html
 
-    <iframe src="https://player.vimeo.com/video/167449640?byline=0&portrait=0" width="640" height="480" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
-    <p><a href="https://vimeo.com/167449640">The Python Arcade Library Overview</a></p>
+    <div style="padding:56.25% 0 0 0;position:relative;"><iframe src="https://player.vimeo.com/video/167449640?byline=0&portrait=0" style="position:absolute;top:0;left:0;width:100%;height:100%;" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div><script src="https://player.vimeo.com/api/player.js"></script>
+    <p><a href="https://vimeo.com/167449640">Quick Arcade Library Introduction Video</a></p>
 
 Arcade is an easy-to-learn Python library for creating 2D video games. It is
 ideal for people learning to program, or developers that want to code a 2D
 game without learning a complex framework.
 
+
+.. toctree::
+   :maxdepth: 4
+
+   quick_index
+   arcade
+   installation
+   examples/index
+   examples/platform_tutorial/index
+   sample_games
+   performance_tips
+   how_to_contribute
+   directory_structure
+   how_to_compile
+   how_to_submit_changes
+   diversity
+   distribute_macos
+   instructions_gameshell
+   pygame_comparison.rst
+   suggested_curriculum.rst
+
 Learn about it:
 ^^^^^^^^^^^^^^^
 
-* :ref:`installation-instructions`
-* :ref:`example-code`
-* :ref:`arcade-api`
-* :ref:`quick-index`
 * `Arcade on PyPi`_
 * :ref:`pygame-comparison`
 
@@ -98,76 +115,7 @@ Give feedback:
 Contribute to the development:
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-* :ref:`how-to-contribute`
 * `GitHub Source Code for Arcade`_
-
-Examples
---------
-
-.. toctree::
-   :maxdepth: 4
-
-   examples/index
-   examples/platform_tutorial/index
-
-Installation
-------------
-
-.. toctree::
-   :maxdepth: 4
-
-   installation
-
-API Documentation
------------------
-
-.. toctree::
-   :maxdepth: 4
-
-   arcade
-   quick_index
-   performance_tips
-
-Sample Games
-------------
-
-.. toctree::
-   :maxdepth: 4
-
-   sample_games
-
-Distribution
-------------
-
-.. toctree::
-   :maxdepth: 4
-
-   distribute_macos
-   instructions_gameshell
-
-
-How to Contribute
------------------
-
-.. toctree::
-   :maxdepth: 1
-
-   how_to_contribute
-   directory_structure
-   how_to_compile
-   how_to_submit_changes
-   diversity
-
-More Information
-----------------
-
-.. toctree::
-   :maxdepth: 1
-
-   pygame_comparison.rst
-   suggested_curriculum.rst
-
-.. automodule:: arcade
 
 .. include:: ../license.rst
 

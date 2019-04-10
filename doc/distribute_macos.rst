@@ -3,7 +3,10 @@
 Building for MacOS
 ==================
 
-This page documents the process of building an Arcade game for MacOS using `Briefcase <https://briefcase.readthedocs.io/en/latest/>`_.
+*This page needs updating.*
+
+This page documents the process of building an Arcade game for MacOS
+using `Briefcase <https://briefcase.readthedocs.io/en/latest/>`_.
 
 Installation
 ------------

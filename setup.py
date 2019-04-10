@@ -5,7 +5,7 @@ import sys
 from setuptools import setup
 
 BUILD = 0
-VERSION = "2.0.2b3"
+VERSION = "2.0.3"
 RELEASE = VERSION
 
 if __name__ == "__main__":
@@ -62,7 +62,4 @@ if __name__ == "__main__":
                                    'examples/*.csv',
                                    'examples/*.tmx',
                                    'examples/sounds/*']},
-          data_files=[("lib/site-packages/arcade/Win32", ["Win32/avbin.dll"]),
-                      ("lib/site-packages/arcade/Win64", ["Win64/avbin.dll"]),
-                      ("lib/python3.6/site-packages/lib/site-packages/arcade/lib", ["lib/libavbin.10.dylib"])]
          )
