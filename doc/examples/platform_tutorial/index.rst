@@ -177,31 +177,58 @@ Explore On Your Own
 Part Two - Use a Map Editor
 ---------------------------
 
-Download and install the `Tiled Map Editor`_. Think about donating, as it is
-a wonderful project.
+For this part, we'll restart with a new program. Instead of placing our tiles
+by code, we'll use a map editor.
 
-Open a new file:
+Download and install the `Tiled Map Editor`_. (Think about donating, as it is
+a wonderful project.)
+
+Open a new file with options similar to these:
+
+* Orthogonal - This is a normal square-grid layout. It is the only version that
+  Arcade supports very well at this time.
+* Tile layer format - This selects how the data is stored inside the file. Any option works, but Base64
+  zlib compressed is the smallest.
+* Tile render order - Any of these should work. It simply specifies what order the tiles are
+  added. Right-down has tiles added left->right and top->down.
+* Map size - You can change this later, but this is your total grid size.
+* Tile size - the size, in pixels, of your tiles. Your tiles all need to be the same size.
+  Also, rendering works better if the tile size is a power of 2 (16, 32, 64, 128, 256)
 
 .. image:: new_file.png
    :size: 80%
 
 Save it as ``map.tmx``.
 
-Rename the layer "Platforms":
+Rename the layer "Platforms". We'll use layer names to load our data later. Eventually
+you might have layers for:
+
+* Platforms that you run into (or you can think of them as walls),
+* Coins or objects to pick up
+* Background objects that you don't interact with
+* Insta-death (like lava)
+* Ladders
+
+It is VERY easy to add items to the wrong layer.
 
 .. image:: platforms.png
    :size: 80%
 
-Create a new tileset:
+Before we can add anything to the layer we need to create a set of tiles.
+This isn't as obvious or intuitive as it should be. To create a new tileset
+click "New Tileset" in the window on the lower right:
 
 .. image:: new_tileset.png
    :size: 80%
 
+Right now, Arcade only supports a "collection of images" for a tileset.
+I find it convenient to embed the tileset in the map.
+
 .. image:: new_tileset_02.png
    :size: 80%
 
-Once you create a new tile, adding tiles to the tileset isn't obvious. Click
-the wrench:
+Once you create a new tile, the button to add tiles to the tileset is
+hard to find. Click the wrench:
 
 .. image:: new_tileset_03.png
 
@@ -214,13 +241,21 @@ in a floor and then see if you can get this program working. (Don't put
 in a lot of time designing a level until you are sure you can get it to
 load.)
 
+The program below assumes there are layers created by the tiled
+map editor for for "Platforms" and "Coins".
+
+
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/08_load_map.py
     :caption: Load a .tmx file from Tiled Map Editor
     :linenos:
     :emphasize-lines: 87-115
 
 
-* Edit the collision / hitbox of a tile
+You can edit the collision / hitbox of a tile to make ramps
+or platforms that only 
+
+.. image:: collision_editor.png
+
 * Add a sudden death layer (like lava)
 * Add enemies
 
