@@ -471,6 +471,7 @@ def post_process(app, exception):
     replace_list.append([".application.", "."])
     replace_list.append([".geometry.", "."])
     replace_list.append([".sprite_list.", "."])
+    replace_list.append([".sprite.", "."])
     replace_list.append([".physics_engines.", "."])
     replace_list.append([".sound.", "."])
     filename = 'build/html/arcade.html'
@@ -484,8 +485,7 @@ def post_process(app, exception):
     replace_list.append(["figure align-center", "figure"])
     replace_in_file(filename, replace_list)
 
-
 def setup(app):
     app.add_stylesheet("css/custom.css")
-    app.connect('build-finished', post_process)
     app.connect('source-read', source_read)
+    app.connect('build-finished', post_process)
