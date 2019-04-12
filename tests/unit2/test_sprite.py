@@ -47,3 +47,4 @@ class MyTestWindow(arcade.Window):
 def test_sprite():
     window = MyTestWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Test Text")
     window.test()
+    window.close()
