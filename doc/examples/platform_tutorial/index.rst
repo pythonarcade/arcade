@@ -11,24 +11,6 @@ Add coins, ramps, moving platforms, enemies, and more.
 .. _2019 PyCon: https://us.pycon.org/2019/about/
 .. _Arcade: http://arcade.academy
 
-Audience
---------
-
-1) Who is this tutorial for:
-
-* People learning to program and wanting something fun (video games) to create.
-* People interested in teaching programming
-* People wanting to use Python to create simple games
-* Hobbyist programmers who just want to write something fun
-
-2) Students should have enough Python for basic use of:
-
-* Conditionals (if statements)
-* Loops (for/while loops)
-* Functions
-* Classes
-* Being able to iterate through lists
-
 Part One - Create a Platformer
 ------------------------------
 
@@ -73,9 +55,17 @@ Sprites are the graphic items that you can interact with, such as players,
 coins, and objects the player can run into.
 
 All sprites go into a list. We manage the sprites by the list that they are in.
+There's a ``wall_list`` that will hold everything that we can't run into, and
+a ``coin_list`` for sprites we can pick up to get points. There's a ``player_list``
+which holds only the player.
 
-* Documentation for :ref:`sprite-commands`
-* Documentation for :ref:`spritelist-commands`
+* Documentation for the `Sprite class <../../arcade.html#arcade.Sprite>`_
+* Documentation for the `SpriteList class <../../arcade.html#arcade.SpriteList>`_
+
+It might seem logical to put code that creates the sprites in the ``__init__``
+method. Instead the program below puts it in the ``setup`` method. Why? Later
+on when you want to add "restart" functionality to the game, a simple call to
+``setup`` will allow you to restart.
 
 Take time to:
 
@@ -91,20 +81,29 @@ Take time to:
 Add User Control
 ~~~~~~~~~~~~~~~~
 
-Now we need to be able to get the user to move around. We can do the by
-modifying the Sprite's velocity through the ``change_x`` and ``change_y``
-attributes, plus use a simple physics engine that keeps us from moving through
-walls.
+Now we need to be able to get the user to move around. There are the main
+components to doing this:
 
-* Documentation for :ref:`physics-engines`
+* Each sprite has a ``center_x`` and ``center_y`` variable. Changing this will
+  change the location of the sprite.
+* Each sprite has a ``change_x`` and ``change_y`` variable. This can be used to
+  hold the velocity that the sprite is moving in. We adjust this based on what
+  key the user hits.
+* We can call ``update`` on the sprite list which will move all the sprites
+  according to their velocity. We can also use a (very) simple physics engine
+  called
+  `PhysicsEngineSimple class <../../arcade.html#arcade.PhysicsEngineSimple>`_
+  to move sprites, but keep  them from running through walls.
+
+If you are interested in a somewhat better, and someone more complex
+method of keyboard control, see
+:ref:`sprite_move_keyboard_better`.
+
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/03_user_control.py
     :caption: Control User By Keyboard
     :linenos:
     :emphasize-lines: 16-17, 84-85, 98-108, 110-120, 122-127
-
-If you are interested in a somewhat better method of keyboard control, see
-:ref:`sprite_move_keyboard_better`.
 
 Add Gravity
 ~~~~~~~~~~~
@@ -125,7 +124,7 @@ Add Scrolling
 We can have our window be a small viewport into a much larger world by adding
 scrolling.
 
-Work at changing the margins to something that you like.
+Work at changing the viewport margins to something that you like.
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/05_scrolling.py
     :caption: Add Scrolling
@@ -138,7 +137,7 @@ Add Coins And Sound
 Try adding more than just coins.
 
 Notice that any transparent "white-space" around the image counts as the hitbox.
-You can trim the space, or in the second section, we'll show you how to specity
+You can trim the space, or in the second section, we'll show you how to specify
 the hitbox.
 
 You could subclass the coin sprite and add an attribute for a score value. Then
@@ -151,6 +150,13 @@ you could have coins worth one point, and gems worth 5, 10, and 15 points.
 
 Display The Score
 ~~~~~~~~~~~~~~~~~
+
+Now we need to display the score on the screen.
+
+This is a bit more complex
+than just drawing the score at the same x, y location every time because
+we have to "scroll" the score right with the player if we have a scrolling
+screen. To do this, we just add in the ``view_bottom`` and ``view_left`` coordinates.
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/07_score.py
     :caption: Display The Score
@@ -177,18 +183,22 @@ a wonderful project.
 Open a new file:
 
 .. image:: new_file.png
+   :size: 80%
 
 Save it as ``map.tmx``.
 
 Rename the layer "Platforms":
 
 .. image:: platforms.png
+   :size: 80%
 
 Create a new tileset:
 
 .. image:: new_tileset.png
+   :size: 80%
 
 .. image:: new_tileset_02.png
+   :size: 80%
 
 Once you create a new tile, adding tiles to the tileset isn't obvious. Click
 the wrench:
@@ -198,6 +208,11 @@ the wrench:
 Then click the 'plus' and add in your tiles
 
 .. image:: new_tileset_04.png
+
+At this point you should be able to "paint" a level. At the very least, put
+in a floor and then see if you can get this program working. (Don't put
+in a lot of time designing a level until you are sure you can get it to
+load.)
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/08_load_map.py
     :caption: Load a .tmx file from Tiled Map Editor
