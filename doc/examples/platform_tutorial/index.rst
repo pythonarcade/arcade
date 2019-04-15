@@ -196,7 +196,7 @@ Open a new file with options similar to these:
   Also, rendering works better if the tile size is a power of 2 (16, 32, 64, 128, 256)
 
 .. image:: new_file.png
-   :size: 80%
+   :scale: 80%
 
 Save it as ``map.tmx``.
 
@@ -212,20 +212,20 @@ you might have layers for:
 It is VERY easy to add items to the wrong layer.
 
 .. image:: platforms.png
-   :size: 80%
+   :scale: 80%
 
 Before we can add anything to the layer we need to create a set of tiles.
 This isn't as obvious or intuitive as it should be. To create a new tileset
 click "New Tileset" in the window on the lower right:
 
 .. image:: new_tileset.png
-   :size: 80%
+   :scale: 80%
 
 Right now, Arcade only supports a "collection of images" for a tileset.
 I find it convenient to embed the tileset in the map.
 
 .. image:: new_tileset_02.png
-   :size: 80%
+   :scale: 80%
 
 Once you create a new tile, the button to add tiles to the tileset is
 hard to find. Click the wrench:
@@ -252,19 +252,20 @@ map editor for for "Platforms" and "Coins".
 
 
 You can edit the collision / hitbox of a tile to make ramps
-or platforms that only 
+or platforms that only cover a portion of the rectangle in the grid.
+
+To edit the hitbox, use the polygon tool (only) and draw a polygon around
+the item. You can hold down "CTRL" when positioning a point to get the exact
+corner of an item.
 
 .. image:: collision_editor.png
-
-* Add a sudden death layer (like lava)
-* Add enemies
 
 Explore On Your Own
 ~~~~~~~~~~~~~~~~~~~
 
-* Multiple levels
-* Insta-death layer
-* Make ramps
+* Add a sudden death layer (like lava)
+* :ref:`sprite_enemies_in_platformer`
+* :ref:`sprite_tiled_map_with_levels`
 
 Part Three - Spruce It Up
 -------------------------
