@@ -2,8 +2,8 @@
 
 .. _sprite_no_coins_on_walls:
 
-Place Coins Away From Walls And Other Coins
-===========================================
+Randomly Place Coins, But Away From Walls And Other Coins
+=========================================================
 
 .. image:: sprite_no_coins_on_walls.png
     :width: 600px

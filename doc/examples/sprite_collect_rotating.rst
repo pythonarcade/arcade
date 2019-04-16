@@ -2,8 +2,8 @@
 
 .. _sprite_collect_rotating:
 
-Collect Rotating Coins
-======================
+Animated Sprites
+================
 
 .. image:: sprite_collect_rotating.png
     :width: 600px

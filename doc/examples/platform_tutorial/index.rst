@@ -20,29 +20,30 @@ Introduction to the Arcade library - 15 minutes
 
 Installation
 ~~~~~~~~~~~~
-* Make sure Python and the Arcade library are installed.
-* Make sure you are using Python 3.6 or greater.
-* Install Arcade with ``pip install arcade`` on Windows
+* Make sure Python 3.6 or greater is instealled.
+* Make sure the Arcade library 2.0.4 or greater is installed.
+  Install Arcade with ``pip install arcade`` on Windows
   or ``pip3 install arcade`` on Mac/Linux. Or install via a venv.
-* Download bundle with images and sounds from `kenney.nl`_
+* `Download the bundle with code, images, and sounds <../../_static/platform_tutorial.zip>`_.
+  (Images are from `kenney.nl`_.)
 
 .. _kenney.nl: https://kenney.nl/
 
 Open a Window
 ~~~~~~~~~~~~~
 
-This example shows how to open a window. 
+This example shows how to open a window.
 Take some time and:
 
 * Change the screen size
 * Change the title
 * Change the background color
 
-  * :ref:`color`
-  * :ref:`csscolor`
-  
+  * Documentation for :ref:`color`
+  * Documentation for :ref:`csscolor`
+
 It is possible to have a :ref:`resizable_window`, but there are more interesting things
-we can do in first.
+we can do first.
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/01_open_window.py
     :caption: Open a Window
@@ -69,8 +70,8 @@ on when you want to add "restart" functionality to the game, a simple call to
 
 Take time to:
 
-* Put sprites in new positions
-* Use different images for sprites
+* Adjust the code and try putting sprites in new positions.
+* Use different images for sprites.
 * Practice placing individually, via a loop, and by coordinates in a list.
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/02_draw_sprites.py
@@ -134,24 +135,36 @@ Work at changing the viewport margins to something that you like.
 Add Coins And Sound
 ~~~~~~~~~~~~~~~~~~~
 
-Try adding more than just coins.
+The code below adds coins that we can collect. It also adds a sound to be played
+when the user hits a coin, or presses the jump button.
+
+We check to see if the user hits a coin by the ``arcade.check_for_collision_with_list``
+function. Just pass the player sprite, along with a ``SpriteList`` that holds
+the coins. The function returns a list of coins in contact with the player sprite.
+If no coins are in contact, the list is empty.
+
+The method ``Sprite.remove_from_sprite_lists`` will remove that sprite from all
+lists, and effectively the game.
 
 Notice that any transparent "white-space" around the image counts as the hitbox.
 You can trim the space, or in the second section, we'll show you how to specify
 the hitbox.
-
-You could subclass the coin sprite and add an attribute for a score value. Then
-you could have coins worth one point, and gems worth 5, 10, and 15 points.
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/06_coins_and_sound.py
     :caption: Add Coins and Sound
     :linenos:
     :emphasize-lines: 55-57, 71, 99-104, 128, 149-159
 
+Try adding more than just coins.
+
+You could subclass the coin sprite and add an attribute for a score value. Then
+you could have coins worth one point, and gems worth 5, 10, and 15 points.
+
 Display The Score
 ~~~~~~~~~~~~~~~~~
 
-Now we need to display the score on the screen.
+Now that we can collect coins and get points,
+we need a way to display the score on the screen.
 
 This is a bit more complex
 than just drawing the score at the same x, y location every time because
@@ -209,7 +222,8 @@ you might have layers for:
 * Insta-death (like lava)
 * Ladders
 
-It is VERY easy to add items to the wrong layer.
+Note, once you get multiple layers it is VERY easy to add items to the wrong
+layer.
 
 .. image:: platforms.png
    :scale: 80%
@@ -231,10 +245,12 @@ Once you create a new tile, the button to add tiles to the tileset is
 hard to find. Click the wrench:
 
 .. image:: new_tileset_03.png
+   :scale: 80%
 
 Then click the 'plus' and add in your tiles
 
 .. image:: new_tileset_04.png
+   :scale: 80%
 
 At this point you should be able to "paint" a level. At the very least, put
 in a floor and then see if you can get this program working. (Don't put
@@ -259,13 +275,7 @@ the item. You can hold down "CTRL" when positioning a point to get the exact
 corner of an item.
 
 .. image:: collision_editor.png
-
-Explore On Your Own
-~~~~~~~~~~~~~~~~~~~
-
-* Add a sudden death layer (like lava)
-* :ref:`sprite_enemies_in_platformer`
-* :ref:`sprite_tiled_map_with_levels`
+   :scale: 20%
 
 Part Three - Spruce It Up
 -------------------------
@@ -275,9 +285,18 @@ Part Three - Spruce It Up
 
 45 minutes - Self paced section where students can:
 
-* Continue their prior work or
-* Add explosions
-* Add animations
-* Add bullets (or something you can shoot)
-* Add multiple levels
+* Add a sudden death layer (like lava)
+* :ref:`sprite_enemies_in_platformer`
+* :ref:`sprite_tiled_map_with_levels`
+* :ref:`sprite_face_left_or_right`
+* :ref:`sprite_no_coins_on_walls`
+* Add :ref:`sprite_collect_rotating`
+* Bullets (or something you can shoot)
+
+  * :ref:`sprite_bullets`
+  * :ref:`sprite_bullets_aimed`
+  * :ref:`sprite_bullets_enemy_aims`
+
+* :ref:`sprite_tiled_map_with_levels`
+* Add :ref:`sprite_explosion`
 
