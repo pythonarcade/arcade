@@ -5,6 +5,11 @@
 Release Notes
 =============
 
+Version 2.0.4
+-------------
+
+* Fix for drawing with a border width of 1 `Issue 352 <https://github.com/pvcraven/arcade/issues/352>`_
+
 Version 2.0.3
 -------------
 
