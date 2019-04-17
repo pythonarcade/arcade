@@ -12,6 +12,7 @@ Select the instructions for your platform:
 .. toctree::
    :maxdepth: 1
 
+   venv_install/index
    installation_windows
    installation_mac
    installation_linux

@@ -20,10 +20,13 @@ Introduction to the Arcade library - 15 minutes
 
 Installation
 ~~~~~~~~~~~~
-* Make sure Python 3.6 or greater is instealled.
+* Make sure Python 3.6 or greater is installed. `Download here <https://www.python.org/downloads/>`_.
 * Make sure the Arcade library 2.0.4 or greater is installed.
-  Install Arcade with ``pip install arcade`` on Windows
-  or ``pip3 install arcade`` on Mac/Linux. Or install via a venv.
+
+  * :ref:`installation-instructions`.
+  * Install Arcade with ``pip install arcade`` on Windows
+    or ``pip3 install arcade`` on Mac/Linux. Or install via a venv.
+
 * `Download the bundle with code, images, and sounds <../../_static/platform_tutorial.zip>`_.
   (Images are from `kenney.nl`_.)
 
@@ -32,8 +35,11 @@ Installation
 Open a Window
 ~~~~~~~~~~~~~
 
-This example shows how to open a window.
-Take some time and:
+The example below opens up a blank window. Set up a project and get the code
+below working. (It is also in the zip file as
+``01_open_window.py``.)
+
+Once you get the code working, figure out how to:
 
 * Change the screen size
 * Change the title
@@ -42,22 +48,26 @@ Take some time and:
   * Documentation for :ref:`color`
   * Documentation for :ref:`csscolor`
 
-It is possible to have a :ref:`resizable_window`, but there are more interesting things
-we can do first.
+(It is possible to have a :ref:`resizable_window`, but there are more interesting
+things we can do first. Therefore we'll stick with a set-size window for this
+tutorial.)
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/01_open_window.py
-    :caption: Open a Window
+    :caption: 01_open_window.py - Open a Window
     :linenos:
 
 Add Sprites To Game
 ~~~~~~~~~~~~~~~~~~~
 
-Sprites are the graphic items that you can interact with, such as players,
-coins, and objects the player can run into.
+Once we have the window up and working, the next step is to put in some
+graphics.
+"Sprites" are the graphical items that you can interact with, such as player characters,
+coins, and walls. To work with sprites we'll use the ``Sprite`` class.
 
-All sprites go into a list. We manage the sprites by the list that they are in.
-There's a ``wall_list`` that will hold everything that we can't run into, and
-a ``coin_list`` for sprites we can pick up to get points. There's a ``player_list``
+All sprites go into a list. We manage groups of sprites by the list that they are in.
+In the example below there's a ``wall_list`` that will hold everything that the
+player character can't walk through, and
+a ``coin_list`` for sprites we can pick up to get points. There's also a ``player_list``
 which holds only the player.
 
 * Documentation for the `Sprite class <../../arcade.html#arcade.Sprite>`_
@@ -65,31 +75,33 @@ which holds only the player.
 
 It might seem logical to put code that creates the sprites in the ``__init__``
 method. Instead the program below puts it in the ``setup`` method. Why? Later
-on when you want to add "restart" functionality to the game, a simple call to
-``setup`` will allow you to restart.
+on we can easily add "restart/play again" functionality to the game. A simple call to
+``setup`` will reset everything.
 
-Take time to:
+Once the code example is up and working:
 
 * Adjust the code and try putting sprites in new positions.
-* Use different images for sprites.
+* Use different images for sprites (see the images folder).
 * Practice placing individually, via a loop, and by coordinates in a list.
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/02_draw_sprites.py
-    :caption: Place Sprites
+    :caption: 02_draw_sprites - Draw and Position Sprites
     :linenos:
     :emphasize-lines: 11-14, 27-34, 39-43, 45-76, 84-87
 
 Add User Control
 ~~~~~~~~~~~~~~~~
 
-Now we need to be able to get the user to move around. There are the main
-components to doing this:
+Now we need to be able to get the user to move around. Here how to do it:
 
-* Each sprite has a ``center_x`` and ``center_y`` variable. Changing this will
-  change the location of the sprite.
+* Each sprite has a ``center_x`` and ``center_y`` attributes. Changing this will
+  change the location of the sprite. (There are also attributes for top, bottom,
+  left, right, and angle that will move the sprite.)
 * Each sprite has a ``change_x`` and ``change_y`` variable. This can be used to
-  hold the velocity that the sprite is moving in. We adjust this based on what
-  key the user hits.
+  hold the velocity that the sprite is moving in. We will adjust these
+  this based on what key the user hits. If the user hits the right arrow key
+  we want a positive value for ``change_x``. If the value is 5, it will move
+  5 pixels per frame.
 * We can call ``update`` on the sprite list which will move all the sprites
   according to their velocity. We can also use a (very) simple physics engine
   called
@@ -97,12 +109,12 @@ components to doing this:
   to move sprites, but keep  them from running through walls.
 
 If you are interested in a somewhat better, and someone more complex
-method of keyboard control, see
-:ref:`sprite_move_keyboard_better`.
+method of keyboard control, see the
+:ref:`sprite_move_keyboard_better` example.
 
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/03_user_control.py
-    :caption: Control User By Keyboard
+    :caption: 03_user_control.py - Control User By Keyboard
     :linenos:
     :emphasize-lines: 16-17, 84-85, 98-108, 110-120, 122-127
 
@@ -112,10 +124,13 @@ Add Gravity
 The example above works great for top-down, but what if it is a side view with
 jumping? We need to add gravity.
 
-Modify the example by changing the gravity and jump constants.
+The example below will allow the user to jump and walk on platforms.
+You can change how the user jumps by changing the gravity and jump constants.
+Lower values for both will make for a more "floaty" character. Higher values make
+for a faster-paced game.
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/04_add_gravity.py
-    :caption: Add Gravity
+    :caption: 04_add_gravity.py - Add Gravity
     :linenos:
     :emphasize-lines: 18-19, 87-89, 105-107, 116-119
 
@@ -125,6 +140,8 @@ Add Scrolling
 We can have our window be a small viewport into a much larger world by adding
 scrolling.
 
+The viewport margins control how close you can get to the edge of the screen
+before the camera starts scrolling.
 Work at changing the viewport margins to something that you like.
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/05_scrolling.py
@@ -147,15 +164,16 @@ The method ``Sprite.remove_from_sprite_lists`` will remove that sprite from all
 lists, and effectively the game.
 
 Notice that any transparent "white-space" around the image counts as the hitbox.
-You can trim the space, or in the second section, we'll show you how to specify
-the hitbox.
+You can trim the space in a graphics editor, or in the second section,
+we'll show you how to specify the hitbox.
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/06_coins_and_sound.py
     :caption: Add Coins and Sound
     :linenos:
     :emphasize-lines: 55-57, 71, 99-104, 128, 149-159
 
-Try adding more than just coins.
+If you have extra time, try adding more than just coins. Also add gems or keys
+from the graphics provided.
 
 You could subclass the coin sprite and add an attribute for a score value. Then
 you could have coins worth one point, and gems worth 5, 10, and 15 points.
@@ -206,7 +224,8 @@ Open a new file with options similar to these:
   added. Right-down has tiles added left->right and top->down.
 * Map size - You can change this later, but this is your total grid size.
 * Tile size - the size, in pixels, of your tiles. Your tiles all need to be the same size.
-  Also, rendering works better if the tile size is a power of 2 (16, 32, 64, 128, 256)
+  Also, rendering works better if the tile size is a power of 2, such as
+  16, 32, 64, 128, and 256.
 
 .. image:: new_file.png
    :scale: 80%
