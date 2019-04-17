@@ -5,6 +5,12 @@
 Release Notes
 =============
 
+Version 2.0.5
+-------------
+
+* Issue if scale is set for a sprite that doesn't yet have a texture set. `Issue 354 <https://github.com/pvcraven/arcade/issues/354>`_
+* Fix for ``Sprite.set_position`` not working. `Issue 356 <https://github.com/pvcraven/arcade/issues/354>`_
+
 Version 2.0.4
 -------------
 
