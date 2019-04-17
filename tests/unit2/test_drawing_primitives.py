@@ -19,7 +19,8 @@ class MyGame(arcade.Window):
         # code, but it is needed to easily run the examples using "python -m"
         # as mentioned at the top of this program.
         file_path = os.path.dirname(os.path.abspath(__file__))
-        os.chdir(f"{file_path}\\..\\..\\arcade\\examples")
+        new_path = os.path.join(file_path, '..', '..', 'arcade', 'examples')
+        os.chdir(new_path)
 
         arcade.set_background_color(arcade.color.WHITE)
 
