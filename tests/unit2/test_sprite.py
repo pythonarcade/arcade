@@ -27,6 +27,7 @@ class MyTestWindow(arcade.Window):
         self.coin_list = arcade.SpriteList()
         sprite = arcade.Sprite("../../arcade/examples/images/coin_01.png", CHARACTER_SCALING)
         sprite.position = (130, 130)
+        sprite.set_position(130, 130)
         sprite.angle = 90
         self.coin_list.append(sprite)
 

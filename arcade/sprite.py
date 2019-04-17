@@ -199,7 +199,7 @@ class Sprite:
         """
         Set a sprite's position
         """
-        self._set_position(self, (center_x, center_y))
+        self._set_position((center_x, center_y))
 
     def set_points(self, points: Sequence[Sequence[float]]):
         """
