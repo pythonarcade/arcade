@@ -563,39 +563,6 @@ def create_ellipse_filled_with_colors(center_x: float, center_y: float,
     return create_line_generic_with_colors(point_list, color_list, gl.GL_TRIANGLE_FAN)
 
 
-def render(shape: VertexBuffer):
-    """
-    Render an shape previously created with a ``create`` function.
-
-    Args:
-        shape:
-
-    Returns:
-
-    """
-    # Set color
-    if shape.color is None:
-        raise ValueError("Error: Color parameter not set.")
-
-    gl.glLoadIdentity()
-    gl.glBindBuffer(gl.GL_ARRAY_BUFFER, shape.vbo_vertex_id)
-    gl.glVertexPointer(2, gl.GL_FLOAT, 0, 0)
-
-    if shape.line_width:
-        gl.glLineWidth(shape.line_width)
-
-    if len(shape.color) == 4:
-        gl.glColor4ub(shape.color[0], shape.color[1], shape.color[2],
-                      shape.color[3])
-        gl.glEnable(gl.GL_BLEND)
-        gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-    elif len(shape.color) == 3:
-        gl.glDisable(gl.GL_BLEND)
-        gl.glColor4ub(shape.color[0], shape.color[1], shape.color[2], 255)
-
-    gl.glDrawArrays(shape.draw_mode, 0, shape.size)
-
-
 T = TypeVar('T', bound=Shape)
 
 
