@@ -105,7 +105,7 @@ def _parse_points(point_text: str):
     return result
 
 
-def read_tiled_map(tmx_file: str, scaling, tsx_file=None: str) -> TiledMap:
+def read_tiled_map(tmx_file: str, scaling, tsx_file=None) -> TiledMap:
     """
     Given a tmx_file, this will read in a tiled map, and return
     a TiledMap object.
