@@ -5,6 +5,7 @@ SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 LINE_HEIGHT = 20
 CHARACTER_SCALING = 0.5
+COIN_SCALE = 0.25
 
 class MyTestWindow(arcade.Window):
 
@@ -62,11 +63,20 @@ class MyTestWindow(arcade.Window):
         self.character_list.append(self.player)
 
         self.coin_list = arcade.SpriteList()
-        sprite = arcade.Sprite("../../arcade/examples/images/coin_01.png", CHARACTER_SCALING)
-        sprite.position = (130, 130)
-        sprite.set_position(130, 130)
-        sprite.angle = 90
-        self.coin_list.append(sprite)
+
+        coin = arcade.AnimatedTimeSprite(scale=0.5)
+        coin.center_x = 500
+        coin.center_y = 500
+
+        coin.textures = []
+        coin.textures.append(arcade.load_texture("../../arcade/examples/images/gold_1.png", scale=COIN_SCALE))
+        coin.textures.append(arcade.load_texture("../../arcade/examples/images/gold_2.png", scale=COIN_SCALE))
+        coin.textures.append(arcade.load_texture("../../arcade/examples/images/gold_3.png", scale=COIN_SCALE))
+        coin.textures.append(arcade.load_texture("../../arcade/examples/images/gold_4.png", scale=COIN_SCALE))
+        coin.textures.append(arcade.load_texture("../../arcade/examples/images/gold_3.png", scale=COIN_SCALE))
+        coin.textures.append(arcade.load_texture("../../arcade/examples/images/gold_2.png", scale=COIN_SCALE))
+        coin.set_texture(0)
+        self.coin_list.append(coin)
 
     def on_draw(self):
         arcade.start_render()
@@ -77,7 +87,10 @@ class MyTestWindow(arcade.Window):
         self.frame_count += 1
         if self.frame_count == 70:
             self.player.change_x *= -1
+
         self.coin_list.update()
+        self.coin_list.update_animation()
+
         self.character_list.update()
         self.character_list.update_animation()
 
