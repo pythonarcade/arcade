@@ -23,6 +23,7 @@ FACE_LEFT = 2
 FACE_UP = 3
 FACE_DOWN = 4
 
+
 class Sprite:
     """
     Class that represents a 'sprite' on-screen.
@@ -278,7 +279,7 @@ class Sprite:
     collision_radius = property(_get_collision_radius, _set_collision_radius)
 
     def __lt__(self, other):
-        return self.texture.texture_id.value < other.texture.texture_id.value
+        return self._texture.texture_id.value < other.texture.texture_id.value
 
     def clear_spatial_hashes(self):
         for sprite_list in self.sprite_lists:
@@ -377,7 +378,7 @@ class Sprite:
             self._scale = new_value
             if self._texture:
                 self._width = self._texture.width * self._scale
-                self._height = self._texture.height *self._scale
+                self._height = self._texture.height * self._scale
             self.add_spatial_hashes()
 
             for sprite_list in self.sprite_lists:
@@ -494,6 +495,8 @@ class Sprite:
     right = property(_get_right, _set_right)
 
     def set_texture(self, texture_no: int):
+        """ Sets texture by texture id. Should be renamed but keeping
+        this for backwards compatability. """
         if self.textures[texture_no] == self._texture:
             return
 
@@ -506,6 +509,27 @@ class Sprite:
         self.add_spatial_hashes()
         for sprite_list in self.sprite_lists:
             sprite_list.update_texture(self)
+
+
+    def _set_texture2(self, texture: Texture):
+        """ Sets texture by texture id. Should be renamed but keeping
+        this for backwards compatability. """
+        if texture == self._texture:
+            return
+
+        self.clear_spatial_hashes()
+        self._point_list_cache = None
+        self._texture = texture
+        self._width = texture.width * texture.scale
+        self._height = texture.height * texture.scale
+        self.add_spatial_hashes()
+        for sprite_list in self.sprite_lists:
+            sprite_list.update_texture(self)
+
+    def _get_texture(self):
+        return self._texture
+
+    texture = property(_get_texture, _set_texture2)
 
     def _get_color(self) -> RGB:
         """
@@ -591,9 +615,9 @@ class AnimatedTimeSprite(Sprite):
     Sprite for platformer games that supports animations.
     """
 
-    def __init__(self, scale: float=1,
-                 image_x: float=0, image_y: float=0,
-                 center_x: float=0, center_y: float=0):
+    def __init__(self, scale: float = 1,
+                 image_x: float = 0, image_y: float = 0,
+                 center_x: float = 0, center_y: float = 0):
 
         super().__init__(scale=scale, image_x=image_x, image_y=image_y,
                          center_x=center_x, center_y=center_y)
@@ -618,9 +642,9 @@ class AnimatedWalkingSprite(Sprite):
     """
     Sprite for platformer games that supports animations.
     """
-    def __init__(self, scale: float=1,
-                 image_x: float=0, image_y: float=0,
-                 center_x: float=0, center_y: float=0):
+    def __init__(self, scale: float = 1,
+                 image_x: float = 0, image_y: float = 0,
+                 center_x: float = 0, center_y: float = 0):
         super().__init__(scale=scale, image_x=image_x, image_y=image_y,
                          center_x=center_x, center_y=center_y)
         self.state = FACE_RIGHT
@@ -669,13 +693,13 @@ class AnimatedWalkingSprite(Sprite):
 
         if self.change_x == 0 and self.change_y == 0:
             if self.state == FACE_LEFT:
-                self._texture = self.stand_left_textures[0]
+                self.texture = self.stand_left_textures[0]
             elif self.state == FACE_RIGHT:
-                self._texture = self.stand_right_textures[0]
+                self.texture = self.stand_right_textures[0]
             elif self.state == FACE_UP:
-                self._texture = self.walk_up_textures[0]
+                self.texture = self.walk_up_textures[0]
             elif self.state == FACE_DOWN:
-                self._texture = self.walk_down_textures[0]
+                self.texture = self.walk_down_textures[0]
 
         elif change_direction or distance >= self.texture_change_distance:
             self.last_texture_change_center_x = self.center_x
@@ -706,10 +730,13 @@ class AnimatedWalkingSprite(Sprite):
             if self.cur_texture_index >= len(texture_list):
                 self.cur_texture_index = 0
 
-            self._texture = texture_list[self.cur_texture_index]
+            self.texture = texture_list[self.cur_texture_index]
 
-        self.width = self._texture.width * self.scale
-        self.height = self._texture.height * self.scale
+        if self._texture is None:
+            print("Error, no texture set")
+        else:
+            self.width = self._texture.width * self.scale
+            self.height = self._texture.height * self.scale
 
 
 def get_distance_between_sprites(sprite1: Sprite, sprite2: Sprite) -> float:

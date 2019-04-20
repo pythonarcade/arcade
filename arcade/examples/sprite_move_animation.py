@@ -41,7 +41,7 @@ class MyGame(arcade.Window):
         """ Set up the game and initialize the variables. """
 
         # Sprite lists
-        self.all_sprites_list = None
+        self.player_list = None
         self.coin_list = None
 
         # Set up the player
@@ -49,7 +49,7 @@ class MyGame(arcade.Window):
         self.player = None
 
     def setup(self):
-        self.all_sprites_list = arcade.SpriteList()
+        self.player_list = arcade.SpriteList()
         self.coin_list = arcade.SpriteList()
 
         # Set up the player
@@ -92,7 +92,7 @@ class MyGame(arcade.Window):
         self.player.center_y = SCREEN_HEIGHT // 2
         self.player.scale = 0.8
 
-        self.all_sprites_list.append(self.player)
+        self.player_list.append(self.player)
 
         for i in range(COIN_COUNT):
             coin = arcade.AnimatedTimeSprite(scale=0.5)
@@ -109,7 +109,6 @@ class MyGame(arcade.Window):
             coin.cur_texture_index = random.randrange(len(coin.textures))
 
             self.coin_list.append(coin)
-            self.all_sprites_list.append(coin)
 
         # Set the background color
         arcade.set_background_color(arcade.color.AMAZON)
@@ -123,7 +122,8 @@ class MyGame(arcade.Window):
         arcade.start_render()
 
         # Draw all the sprites.
-        self.all_sprites_list.draw()
+        self.coin_list.draw()
+        self.player_list.draw()
 
         # Put the text on the screen.
         output = f"Score: {self.score}"
@@ -154,15 +154,17 @@ class MyGame(arcade.Window):
     def update(self, delta_time):
         """ Movement and game logic """
 
-        self.all_sprites_list.update()
-        self.all_sprites_list.update_animation()
+        self.coin_list.update()
+        self.coin_list.update_animation()
+        self.player_list.update()
+        self.player_list.update_animation()
 
         # Generate a list of all sprites that collided with the player.
         hit_list = arcade.check_for_collision_with_list(self.player, self.coin_list)
 
         # Loop through each colliding sprite, remove it, and add to the score.
         for coin in hit_list:
-            coin.kill()
+            coin.remove_from_sprite_lists()
             self.score += 1
 
 

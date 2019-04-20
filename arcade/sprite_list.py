@@ -1,5 +1,5 @@
 """
-This module provides functionality to manage Sprites.
+This module provides functionality to manage Sprites in a list.
 
 """
 
@@ -108,7 +108,7 @@ def _create_rects(rect_list: Iterable[Sprite]) -> List[float]:
     return v2f
 
 
-class SpatialHash:
+class _SpatialHash:
     """
     Structure for fast collision checking.
 
@@ -268,7 +268,7 @@ class SpriteList(Generic[T]):
         self.is_static = is_static
         self.use_spatial_hash = use_spatial_hash
         if use_spatial_hash:
-            self.spatial_hash = SpatialHash(cell_size=spatial_hash_cell_size)
+            self.spatial_hash = _SpatialHash(cell_size=spatial_hash_cell_size)
         else:
             self.spatial_hash = None
 
@@ -284,12 +284,13 @@ class SpriteList(Generic[T]):
         if self.use_spatial_hash:
             self.spatial_hash.insert_object_for_box(item)
 
-    def recalculate_spatial_hash(self, item: T):
+    def _recalculate_spatial_hash(self, item: T):
+        """ Recalculate the spatial hash for a particular item. """
         if self.use_spatial_hash:
             self.spatial_hash.remove_object(item)
             self.spatial_hash.insert_object_for_box(item)
 
-    def recalculate_spatial_hashes(self):
+    def _recalculate_spatial_hashes(self):
         if self.use_spatial_hash:
             self.spatial_hash.reset()
             for sprite in self.sprite_list:
@@ -333,10 +334,12 @@ class SpriteList(Generic[T]):
             sprite.center_y += change_y
 
     def preload_textures(self, texture_names):
+        """ Preload a set of textures that will be used for sprites in this
+        sprite list. """
         self.array_of_texture_names.extend(texture_names)
         self.array_of_images = None
 
-    def calculate_sprite_buffer(self):
+    def _calculate_sprite_buffer(self):
 
         if len(self.sprite_list) == 0:
             return
@@ -365,6 +368,9 @@ class SpriteList(Generic[T]):
         # print("New texture start: ", new_texture)
 
         for sprite in self.sprite_list:
+
+            if sprite._texture is None:
+                raise Exception("Error: Attempt to draw a sprite without a texture set.")
 
             name_of_texture_to_check = sprite._texture.name
             if name_of_texture_to_check not in self.array_of_texture_names:
@@ -488,7 +494,10 @@ class SpriteList(Generic[T]):
         # Can add buffer to index vertices
         self.vao = shader.vertex_array(self.program, vao_content)
 
-    def update_positions(self):
+    def _update_positions(self):
+        """ Called by the Sprite class to update position, angle, size and color
+        of all sprites in the list.
+        Necessary for batch drawing of items. """
 
         if self.vao is None:
             return
@@ -500,13 +509,17 @@ class SpriteList(Generic[T]):
             self.sprite_data[i]['color'] = sprite.color + (sprite.alpha, )
 
     def update_texture(self, sprite):
+        """ Make sure we update the texture for this sprite for the next batch
+        drawing"""
         if self.vao is None:
             return
 
-        self.calculate_sprite_buffer()
+        self._calculate_sprite_buffer()
 
     def update_position(self, sprite):
-
+        """ Called by the Sprite class to update position, angle, size and color
+        of the specified sprite.
+        Necessary for batch drawing of items. """
         if self.vao is None:
             return
 
@@ -518,7 +531,8 @@ class SpriteList(Generic[T]):
         self.sprite_data[i]['color'] = sprite.color + (sprite.alpha, )
 
     def update_location(self, sprite):
-
+        """ Called by the Sprite class to update the location in this sprite.
+        Necessary for batch drawing of items. """
         if self.vao is None:
             return
 
@@ -527,7 +541,8 @@ class SpriteList(Generic[T]):
         self.sprite_data[i]['position'] = sprite.position
 
     def update_angle(self, sprite):
-
+        """ Called by the Sprite class to update the angle in this sprite.
+        Necessary for batch drawing of items. """
         if self.vao is None:
             return
 
@@ -535,7 +550,7 @@ class SpriteList(Generic[T]):
         self.sprite_data[i]['angle'] = math.radians(sprite.angle)
 
     def draw(self):
-
+        """ Draw this list of sprites. """
         if self.program is None:
             # Used in drawing optimization via OpenGL
             self.program = shader.program(
@@ -547,7 +562,7 @@ class SpriteList(Generic[T]):
             return
 
         if self.vao is None:
-            self.calculate_sprite_buffer()
+            self._calculate_sprite_buffer()
 
         self._texture.use(0)
 

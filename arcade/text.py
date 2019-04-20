@@ -150,8 +150,6 @@ def draw_text(text: str,
             raise ValueError(f"anchor_x should be 'left', 'center', or 'right'. Not '{anchor_y}'")
 
         text_sprite.angle = rotation
-
-        label.text_sprite_list.update_positions()
     else:
         label = Text()
 

@@ -42,7 +42,7 @@ class MyTestWindow(arcade.Window):
 
         coin_hit_list = arcade.check_for_collision_with_list(self.character_sprite, self.coin_list)
         for coin in coin_hit_list:
-            coin.remove_from_sprite_lists()
+            coin.kill()
 
 
 def test_sprite():
