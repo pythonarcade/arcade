@@ -426,8 +426,36 @@ def create_rectangle(center_x: float, center_y: float, width: float,
         shape_mode = gl.GL_TRIANGLE_STRIP
         data[-2:] = reversed(data[-2:])
     else:
-        shape_mode = gl.GL_LINE_STRIP
-        data.append(data[0])
+
+        i_lb = center_x - width / 2 + border_width / 2, center_y - height / 2 + border_width / 2
+        i_rb = center_x + width / 2 - border_width / 2, center_y - height / 2 + border_width / 2
+        i_rt = center_x + width / 2 - border_width / 2, center_y + height / 2 - border_width / 2
+        i_lt = center_x - width / 2 + border_width / 2, center_y + height / 2 - border_width / 2
+
+        o_lb = center_x - width / 2 - border_width / 2, center_y - height / 2 - border_width / 2
+        o_rb = center_x + width / 2 + border_width / 2, center_y - height / 2 - border_width / 2
+        o_rt = center_x + width / 2 + border_width / 2, center_y + height / 2 + border_width / 2
+        o_lt = center_x - width / 2 - border_width / 2, center_y + height / 2 + border_width / 2
+
+        data = o_lt, i_lt, o_rt, i_rt, o_rb, i_rb, o_lb, i_lb, o_lt, i_lt
+
+        if tilt_angle != 0:
+            point_list_2 = []
+            for point in data:
+                new_point = rotate_point(point[0], point[1], center_x, center_y, tilt_angle)
+                point_list_2.append(new_point)
+            data = point_list_2
+
+        border_width = 1
+        shape_mode = gl.GL_TRIANGLE_STRIP
+
+        # _generic_draw_line_strip(point_list, color, gl.GL_TRIANGLE_STRIP)
+
+        # shape_mode = gl.GL_LINE_STRIP
+        # data.append(data[0])
+
+
+
     shape = create_line_generic(data, color, shape_mode, border_width)
     return shape
 
