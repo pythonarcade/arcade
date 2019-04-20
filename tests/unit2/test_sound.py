@@ -1,6 +1,8 @@
 import arcade
 import os
 
+import pytest
+
 from pathlib import Path
 
 SCREEN_WIDTH = 800
@@ -54,6 +56,7 @@ class MyGame(arcade.Window):
 
 
 
+@pytest.mark.xfail
 def test_main():
     """ Main method """
     window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT)
