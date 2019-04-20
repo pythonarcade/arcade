@@ -62,29 +62,33 @@ def list_classes(filename, output_file):
     # remove_self_re = re.compile(r"self(, )?")
     first = True
 
-    for line in file_pointer:
+    line_no = 0
+    try:
+        for line in file_pointer:
+            line_no += 1
 
-        class_names = class_re.findall(line)
-        if len(class_names) > 0:
-            if first:
-                first = False
-                output_file.write("Classes\n")
-                output_file.write("^^^^^^^\n")
-            output_file.write("- ")
-            module = file_split[4]
-            class_name = class_names[0]
-            output_file.write(f":class:`~arcade.{module}.{class_name}`")
+            class_names = class_re.findall(line)
+            if len(class_names) > 0:
+                if first:
+                    first = False
+                    output_file.write("Classes\n")
+                    output_file.write("^^^^^^^\n")
+                output_file.write("- ")
+                module = file_split[4]
+                class_name = class_names[0]
+                output_file.write(f":class:`~arcade.{module}.{class_name}`")
+                output_file.write("\n")
+
+            method_names = method_re.findall(line)
+            for method_name in method_names:
+                # method_name = name[2]
+                output_file.write(f"   - :func:`~arcade.{module}.{class_name}.{method_name}`\n")
+                # name = remove_self_re.sub("", name)
+
+        if not first:
             output_file.write("\n")
-
-        method_names = method_re.findall(line)
-        for method_name in method_names:
-            # method_name = name[2]
-            output_file.write(f"   - :func:`~arcade.{module}.{class_name}.{method_name}`\n")
-            # name = remove_self_re.sub("", name)
-
-    if not first:
-        output_file.write("\n")
-
+    except Exception as e:
+        print(f"Exception processing {filename} on line {line_no}: {e}")
 
 def main():
     # Set the working directory (where we expect to find files) to the same
