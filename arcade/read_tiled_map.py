@@ -105,10 +105,14 @@ def _parse_points(point_text: str):
     return result
 
 
-def read_tiled_map(filename: str, scaling) -> TiledMap:
+def read_tiled_map(tmx_file: str, scaling, tsx_file=None: str) -> TiledMap:
     """
-    Given a filename, this will read in a tiled map, and return
+    Given a tmx_file, this will read in a tiled map, and return
     a TiledMap object.
+
+    Given a tsx_file, the map will use it as the tileset.
+    If tsx_file is not specified, it will use the tileset specified
+    within the tmx_file.
 
     Important: Tiles must be a "collection" of images.
 
@@ -121,7 +125,7 @@ def read_tiled_map(filename: str, scaling) -> TiledMap:
     my_map = TiledMap()
 
     # Read in and parse the file
-    tree = etree.parse(filename)
+    tree = etree.parse(tmx_file)
 
     # Root node should be 'map'
     map_tag = tree.getroot()
@@ -157,9 +161,11 @@ def read_tiled_map(filename: str, scaling) -> TiledMap:
     # Loop through each tileset
     for tileset_tag in tileset_tag_list:
         firstgid = int(tileset_tag.attrib["firstgid"])
-        if "source" in tileset_tag.attrib:
-            source = tileset_tag.attrib["source"]
-            tileset_tree = etree.parse(source)
+        if tsx_file is not None or "source" in tileset_tag.attrib:
+            if tsx_file is not None:
+                tileset_tree = etree.parse(tsx_file)
+            else:
+                tileset_tree = etree.parse(tileset_tag.attrib["source"])
 
             # Root node should be 'map'
             tileset_root = tileset_tree.getroot()
@@ -283,9 +289,9 @@ def generate_sprites(map_object, layer_name, scaling, base_directory=""):
         for column_index, item in enumerate(row):
             if str(item) in map_object.global_tile_set:
                 tile_info = map_object.global_tile_set[str(item)]
-                filename = base_directory + tile_info.source
+                tmx_file = base_directory + tile_info.source
 
-                my_sprite = Sprite(filename, scaling)
+                my_sprite = Sprite(tmx_file, scaling)
                 my_sprite.right = column_index * (map_object.tilewidth * scaling)
                 my_sprite.top = (map_object.height - row_index) * (map_object.tileheight * scaling)
 
