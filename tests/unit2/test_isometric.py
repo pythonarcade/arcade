@@ -8,6 +8,8 @@ Tiles by Kenney: http://kenney.nl/assets/isometric-dungeon-tiles
 import arcade
 import os
 
+from pathlib import Path
+
 SPRITE_SCALING = 0.5
 
 SCREEN_WIDTH = 800
@@ -45,7 +47,7 @@ class MyGame(arcade.Window):
         # code, but it is needed to easily run the examples using "python -m"
         # as mentioned at the top of this program.
         file_path = os.path.dirname(os.path.abspath(__file__))
-        os.chdir(f"{file_path}\\..\\..\\arcade\\examples")
+        os.chdir(file_path / Path('../../arcade/examples'))
 
         # Sprite lists
         self.all_sprites_list = None
