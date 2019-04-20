@@ -16,7 +16,6 @@ def test_initializes_defaults(mocker, mock_window):
     assert 800 == w.width
     assert 'Arcade Window' == w.caption
     assert False is w._fullscreen
-    assert False is w.resizable
     w.set_update_rate.assert_called_once_with(1 / 60)
     assert False is w.invalid
 
