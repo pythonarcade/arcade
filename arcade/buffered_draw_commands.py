@@ -9,7 +9,6 @@ the graphics card for much faster render times.
 import math
 import itertools
 from collections import defaultdict
-import ctypes
 import pyglet.gl as gl
 import numpy as np
 
@@ -42,7 +41,7 @@ class VertexBuffer:
        https://en.wikipedia.org/wiki/Vertex_Buffer_Object
 
     """
-    def __init__(self, vbo_vertex_id: gl.GLuint, size: float, draw_mode: int, vbo_color_id: gl.GLuint=None):
+    def __init__(self, vbo_vertex_id: gl.GLuint, size: float, draw_mode: int, vbo_color_id: gl.GLuint = None):
         self.vbo_vertex_id = vbo_vertex_id
         self.vbo_color_id = vbo_color_id
         self.size = size
@@ -77,7 +76,7 @@ class Shape:
 
 
 def create_line(start_x: float, start_y: float, end_x: float, end_y: float,
-                color: Color, line_width: float=1) -> Shape:
+                color: Color, line_width: float = 1) -> Shape:
     """
     Create a line to be rendered later. This works faster than draw_line because
     the vertexes are only loaded to the graphics card once, rather than each frame.
@@ -148,7 +147,7 @@ def create_line(start_x: float, start_y: float, end_x: float, end_y: float,
 def create_line_generic_with_colors(point_list: PointList,
                                     color_list: Iterable[Color],
                                     shape_mode: int,
-                                    line_width: float=1) -> Shape:
+                                    line_width: float = 1) -> Shape:
     """
     This function is used by ``create_line_strip`` and ``create_line_loop``,
     just changing the OpenGL type for the line drawing.
@@ -212,10 +211,9 @@ def create_line_generic_with_colors(point_list: PointList,
     return shape
 
 
-
 def create_line_generic(point_list: PointList,
                         color: Color,
-                        shape_mode: int, line_width: float=1) -> Shape:
+                        shape_mode: int, line_width: float = 1) -> Shape:
     """
     This function is used by ``create_line_strip`` and ``create_line_loop``,
     just changing the OpenGL type for the line drawing.
@@ -231,7 +229,7 @@ def create_line_generic(point_list: PointList,
 
 
 def create_line_strip(point_list: PointList,
-                      color: Color, line_width: float=1):
+                      color: Color, line_width: float = 1):
     """
     Create a multi-point line to be rendered later. This works faster than draw_line because
     the vertexes are only loaded to the graphics card once, rather than each frame.
@@ -248,7 +246,7 @@ def create_line_strip(point_list: PointList,
 
 
 def create_line_loop(point_list: PointList,
-                     color: Color, line_width: float=1):
+                     color: Color, line_width: float = 1):
     """
     Create a multi-point line loop to be rendered later. This works faster than draw_line because
     the vertexes are only loaded to the graphics card once, rather than each frame.
@@ -266,7 +264,7 @@ def create_line_loop(point_list: PointList,
 
 
 def create_lines(point_list: PointList,
-                 color: Color, line_width: float=1):
+                 color: Color, line_width: float = 1):
     """
     Create a multi-point line loop to be rendered later. This works faster than draw_line because
     the vertexes are only loaded to the graphics card once, rather than each frame.
@@ -281,14 +279,15 @@ def create_lines(point_list: PointList,
     """
     return create_line_generic(point_list, color, gl.GL_LINES, line_width)
 
+
 def create_lines_with_colors(point_list: PointList,
                              color_list: Iterable[Color],
-                             line_width: float=1):
+                             line_width: float = 1):
     return create_line_generic_with_colors(point_list, color_list, gl.GL_LINES, line_width)
 
 
 def create_polygon(point_list: PointList,
-                   color: Color, border_width: float=1):
+                   color: Color, border_width: float = 1):
     """
     Draw a convex polygon. This will NOT draw a concave polygon.
     Because of this, you might not want to use this function.
@@ -316,7 +315,7 @@ def create_polygon(point_list: PointList,
 
 def create_rectangle_filled(center_x: float, center_y: float, width: float,
                             height: float, color: Color,
-                            tilt_angle: float=0) -> Shape:
+                            tilt_angle: float = 0) -> Shape:
     """
     Create a filled rectangle.
 
@@ -337,7 +336,7 @@ def create_rectangle_filled(center_x: float, center_y: float, width: float,
 
 def create_rectangle_outline(center_x: float, center_y: float, width: float,
                              height: float, color: Color,
-                             border_width: float=1, tilt_angle: float=0) -> Shape:
+                             border_width: float = 1, tilt_angle: float = 0) -> Shape:
     """
     Create a rectangle outline.
 
@@ -358,7 +357,7 @@ def create_rectangle_outline(center_x: float, center_y: float, width: float,
 
 
 def get_rectangle_points(center_x: float, center_y: float, width: float,
-                         height: float, tilt_angle: float=0) -> PointList:
+                         height: float, tilt_angle: float = 0) -> PointList:
     """
     Utility function that will return all four coordinate points of a
     rectangle given the x, y center, width, height, and rotation.
@@ -401,7 +400,7 @@ def get_rectangle_points(center_x: float, center_y: float, width: float,
 
 def create_rectangle(center_x: float, center_y: float, width: float,
                      height: float, color: Color,
-                     border_width: float=1, tilt_angle: float=0,
+                     border_width: float = 1, tilt_angle: float = 0,
                      filled=True) -> Shape:
     """
     This function creates a rectangle using a vertex buffer object.
@@ -459,7 +458,7 @@ def create_triangles_filled_with_colors(point_list, color_list) -> Shape:
 
 def create_ellipse_filled(center_x: float, center_y: float,
                           width: float, height: float, color: Color,
-                          tilt_angle: float=0, num_segments=128) -> Shape:
+                          tilt_angle: float = 0, num_segments: int = 128) -> Shape:
     """
     Create a filled ellipse. Or circle if you use the same width and height.
     """
@@ -471,8 +470,8 @@ def create_ellipse_filled(center_x: float, center_y: float,
 
 def create_ellipse_outline(center_x: float, center_y: float,
                            width: float, height: float, color: Color,
-                           border_width: float=1,
-                           tilt_angle: float=0, num_segments=128) -> Shape:
+                           border_width: float = 1,
+                           tilt_angle: float = 0, num_segments: int = 128) -> Shape:
     """
     Create an outline of an ellipse.
     """
@@ -483,8 +482,8 @@ def create_ellipse_outline(center_x: float, center_y: float,
 
 def create_ellipse(center_x: float, center_y: float,
                    width: float, height: float, color: Color,
-                   border_width: float=1,
-                   tilt_angle: float=0, num_segments=32,
+                   border_width: float = 1,
+                   tilt_angle: float = 0, num_segments: int = 32,
                    filled=True) -> Shape:
 
     """
@@ -526,7 +525,7 @@ def create_ellipse(center_x: float, center_y: float,
 def create_ellipse_filled_with_colors(center_x: float, center_y: float,
                                       width: float, height: float,
                                       outside_color: Color, inside_color: Color,
-                                      tilt_angle: float=0, num_segments=32) -> Shape:
+                                      tilt_angle: float = 0, num_segments: int = 32) -> Shape:
     """
     Draw an ellipse, and specify inside/outside color. Used for doing gradients.
 
@@ -546,9 +545,8 @@ def create_ellipse_filled_with_colors(center_x: float, center_y: float,
 
     # Create an array with the vertex data
     # Create an array with the vertex point_list
-    point_list = []
+    point_list = [(center_x, center_y)]
 
-    point_list.append((center_x, center_y))
     for segment in range(num_segments):
         theta = 2.0 * 3.1415926 * segment / num_segments
 
