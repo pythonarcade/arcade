@@ -11,26 +11,34 @@ Add coins, ramps, moving platforms, enemies, and more.
 .. _2019 PyCon: https://us.pycon.org/2019/about/
 .. _Arcade: http://arcade.academy
 
+The tutorial is divided into three parts:
+
+* Part One: Create a basic platformer
+* Part Two: Learn to use a map editor
+* Part Three: Add extra polish to the game
+
+
 Part One - Create a Platformer
 ------------------------------
 
-Introduction to the Arcade library - 15 minutes
 
-45 minutes - Self-paced tutorial with different steps that cover how to:
 
 Installation
 ~~~~~~~~~~~~
-* Make sure Python 3.6 or greater is installed. `Download here <https://www.python.org/downloads/>`_.
+* Make sure Python 3.6 or greater is installed. `Download Python here <https://www.python.org/downloads/>`_.
 * Make sure the Arcade library 2.0.4 or greater is installed.
 
   * :ref:`installation-instructions`.
   * Install Arcade with ``pip install arcade`` on Windows
     or ``pip3 install arcade`` on Mac/Linux. Or install via a venv.
 
-* `Download the bundle with code, images, and sounds <../../_static/platform_tutorial.zip>`_.
+* `Download this bundle with code, images, and sounds <../../_static/platform_tutorial.zip>`_.
   (Images are from `kenney.nl`_.)
 
 .. _kenney.nl: https://kenney.nl/
+
+
+
 
 Open a Window
 ~~~~~~~~~~~~~
