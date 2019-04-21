@@ -1,12 +1,11 @@
 import arcade
 import os
 
-import pytest
-
 from pathlib import Path
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
+
 
 class MyGame(arcade.Window):
     """ Main application class. """
@@ -45,7 +44,6 @@ class MyGame(arcade.Window):
             arcade.play_sound(self.laser_wav)
             print("Play ")
 
-
     def on_draw(self):
         """
         Render the screen.
@@ -55,8 +53,6 @@ class MyGame(arcade.Window):
         arcade.start_render()
 
 
-
-@pytest.mark.xfail
 def test_main():
     """ Main method """
     window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT)

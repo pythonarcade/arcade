@@ -31,7 +31,9 @@ class MyTestWindow(arcade.Window):
             sprite.center_y = 32
             self.wall_list.append(sprite)
 
-        self.physics_engine = arcade.PhysicsEnginePlatformer(self.character_sprite, self.wall_list, gravity_constant=GRAVITY)
+        self.physics_engine = arcade.PhysicsEnginePlatformer(self.character_sprite,
+                                                             self.wall_list,
+                                                             gravity_constant=GRAVITY)
 
     def on_draw(self):
         arcade.start_render()
