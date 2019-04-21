@@ -36,8 +36,8 @@ def _load_sound_library():
     else:
         return
 
-    import pyglet_ffmpeg
-    pyglet_ffmpeg.load_ffmpeg()
+    import pyglet_ffmpeg2
+    pyglet_ffmpeg2.load_ffmpeg()
 
 # Initialize static function variable
 _load_sound_library._sound_library_loaded = False
