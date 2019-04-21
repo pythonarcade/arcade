@@ -165,19 +165,21 @@ def read_tiled_map(tmx_file: str, scaling, tsx_file=None) -> TiledMap:
             if tsx_file is not None:
                 tileset_tree = etree.parse(tsx_file)
             else:
-                tileset_tree = etree.parse(tileset_tag.attrib["source"])
-
+                source = tileset_tag.attrib["source"]
+                try:
+                    tileset_tree = etree.parse(source)
+                except FileNotFoundError:
+                    source = Path(tmx_file).parent / Path(source)
+                    tileset_tree = etree.parse(source)
             # Root node should be 'map'
             tileset_root = tileset_tree.getroot()
             tile_tag_list = tileset_root.findall("tile")
         else:
-
             # Grab each tile
             tile_tag_list = tileset_tag.findall("tile")
 
         # Loop through each tile
         for tile_tag in tile_tag_list:
-
             # Make a tile object
             my_tile = Tile()
             image = tile_tag.find("image")
