@@ -21,6 +21,7 @@ from arcade.draw_commands import rotate_point
 from arcade.arcade_types import PointList
 from arcade.draw_commands import get_four_byte_color
 from arcade.draw_commands import get_projection
+from arcade.draw_commands import _get_points_for_thick_line
 from arcade import shader
 
 
@@ -62,6 +63,7 @@ class Shape:
         # program['Projection'].write(get_projection().tobytes())
 
         with self.vao:
+            assert(self.line_width == 1)
             gl.glLineWidth(self.line_width)
 
             gl.glEnable(gl.GL_BLEND)
@@ -93,53 +95,60 @@ def create_line(start_x: float, start_y: float, end_x: float, end_y: float,
 
     """
 
-    program = shader.program(
-        vertex_shader='''
-            #version 330
-            uniform mat4 Projection;
-            in vec2 in_vert;
-            in vec4 in_color;
-            out vec4 v_color;
-            void main() {
-               gl_Position = Projection * vec4(in_vert, 0.0, 1.0);
-               v_color = in_color;
-            }
-        ''',
-        fragment_shader='''
-            #version 330
-            in vec4 v_color;
-            out vec4 f_color;
-            void main() {
-                f_color = v_color;
-            }
-        ''',
-    )
-
-    buffer_type = np.dtype([('vertex', '2f4'), ('color', '4B')])
-    data = np.zeros(2, dtype=buffer_type)
-    data['vertex'] = (start_x, start_y), (end_x, end_y)
-    data['color'] = get_four_byte_color(color)
-
-    vbo = shader.buffer(data.tobytes())
-    vao_content = [
-        shader.BufferDescription(
-            vbo,
-            '2f 4B',
-            ('in_vert', 'in_color'),
-            normalized=['in_color']
-        )
-    ]
-
-    vao = shader.vertex_array(program, vao_content)
-    with vao:
-        program['Projection'] = get_projection().flatten()
-
-    shape = Shape()
-    shape.vao = vao
-    shape.vbo = vbo
-    shape.program = program
-    shape.mode = gl.GL_LINE_STRIP
-    shape.line_width = line_width
+    points = _get_points_for_thick_line(start_x, start_y, end_x, end_y, line_width)
+    color_list = [color, color, color, color]
+    triangle_point_list = points[1], points[0], points[2], points[3]
+    shape = create_triangles_filled_with_colors(triangle_point_list, color_list)
+    return shape
+    # _generic_draw_line_strip(triangle_point_list, color, gl.GL_TRIANGLE_STRIP)
+    #
+    # program = shader.program(
+    #     vertex_shader='''
+    #         #version 330
+    #         uniform mat4 Projection;
+    #         in vec2 in_vert;
+    #         in vec4 in_color;
+    #         out vec4 v_color;
+    #         void main() {
+    #            gl_Position = Projection * vec4(in_vert, 0.0, 1.0);
+    #            v_color = in_color;
+    #         }
+    #     ''',
+    #     fragment_shader='''
+    #         #version 330
+    #         in vec4 v_color;
+    #         out vec4 f_color;
+    #         void main() {
+    #             f_color = v_color;
+    #         }
+    #     ''',
+    # )
+    #
+    # buffer_type = np.dtype([('vertex', '2f4'), ('color', '4B')])
+    # data = np.zeros(2, dtype=buffer_type)
+    # data['vertex'] = (start_x, start_y), (end_x, end_y)
+    # data['color'] = get_four_byte_color(color)
+    #
+    # vbo = shader.buffer(data.tobytes())
+    # vao_content = [
+    #     shader.BufferDescription(
+    #         vbo,
+    #         '2f 4B',
+    #         ('in_vert', 'in_color'),
+    #         normalized=['in_color']
+    #     )
+    # ]
+    #
+    # vao = shader.vertex_array(program, vao_content)
+    # with vao:
+    #     program['Projection'] = get_projection().flatten()
+    #
+    # shape = Shape()
+    # shape.vao = vao
+    # shape.vbo = vbo
+    # shape.program = program
+    # shape.mode = gl.GL_LINE_STRIP
+    # shape.line_width = line_width
 
     return shape
 
