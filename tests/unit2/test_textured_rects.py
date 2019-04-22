@@ -40,5 +40,5 @@ class MyTestWindow(arcade.Window):
 
 def test_sprite():
     window = MyTestWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Test Textures")
-    window.test(200)
+    window.test()
     window.close()
