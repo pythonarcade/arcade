@@ -5,6 +5,13 @@
 Release Notes
 =============
 
+Version 2.0.7
+-------------
+
+* Last release improperly required pyglet-ffmpeg, updated to pyglet-ffmpeg2
+* Fix: The alpha value seems NOT work with draw_texture_rectangle `Issue 364 <https://github.com/pvcraven/arcade/issues/364>`_
+* Fix: draw_xywh_rectangle_textured error `Issue 363 <https://github.com/pvcraven/arcade/issues/363>`_
+
 Version 2.0.6
 -------------
 

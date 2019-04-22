@@ -10,7 +10,7 @@ runpy.run_path('preprocess_files.py', run_name='__main__')
 runpy.run_path('generate_example_thumbnails.py', run_name='__main__')
 
 BUILD = 0
-VERSION = "2.0.6"
+VERSION = "2.0.7"
 RELEASE = VERSION
 
 
