@@ -149,7 +149,7 @@ class Texture:
 
     def draw(self, center_x: float, center_y: float, width: float,
              height: float, angle: float=0,
-             alpha: float=1, transparent: bool=True,
+             alpha: int=255, transparent: bool=True,
              repeat_count_x=1, repeat_count_y=1):
         """
 
@@ -184,6 +184,7 @@ class Texture:
         self._sprite.width = width
         self._sprite.height = height
         self._sprite.angle = angle
+        self._sprite.alpha = alpha
 
         self._sprite_list.draw()
 
@@ -1321,7 +1322,7 @@ def draw_rectangle_filled(center_x: float, center_y: float, width: float,
 
 def draw_texture_rectangle(center_x: float, center_y: float, width: float,
                            height: float, texture: Texture, angle: float=0,
-                           alpha: float=1,
+                           alpha: int=255,
                            repeat_count_x=1, repeat_count_y=1):
     """
     Draw a textured rectangle on-screen.
@@ -1333,7 +1334,9 @@ def draw_texture_rectangle(center_x: float, center_y: float, width: float,
         :height: height of the rectangle.
         :texture: identifier of texture returned from load_texture() call
         :angle: rotation of the rectangle. Defaults to zero.
-        :alpha: Transparency of image.
+        :alpha: Transparency of image. 0 is fully transparent, 255 (default) is visible
+        :repeat_count_x: Unused for now
+        :repeat_count_y: Unused for now
     Returns:
         None
     Raises:
@@ -1349,7 +1352,7 @@ def draw_texture_rectangle(center_x: float, center_y: float, width: float,
 def draw_xywh_rectangle_textured(bottom_left_x: float, bottom_left_y: float,
                                  width: float, height: float,
                                  texture: Texture, angle: float=0,
-                                 alpha: float=1, transparent: bool=True,
+                                 alpha: int=255,
                                  repeat_count_x=1, repeat_count_y=1):
     """
     Draw a texture extending from bottom left to top right.
@@ -1361,7 +1364,7 @@ def draw_xywh_rectangle_textured(bottom_left_x: float, bottom_left_y: float,
         :height: The height of the rectangle.
         :texture: identifier of texture returned from load_texture() call
         :angle: rotation of the rectangle. Defaults to zero.
-        :alpha: Transparency of image.
+        :alpha: Transparency of image. 0 is fully transparent, 255 (default) is visible
     Returns:
         None
     Raises:
@@ -1370,8 +1373,10 @@ def draw_xywh_rectangle_textured(bottom_left_x: float, bottom_left_y: float,
 
     center_x = bottom_left_x + (width / 2)
     center_y = bottom_left_y + (height / 2)
-    draw_texture_rectangle(center_x, center_y, width, height, texture, angle, alpha, transparent, repeat_count_x,
-                           repeat_count_y)
+    draw_texture_rectangle(center_x, center_y,
+                           width, height,
+                           texture,
+                           angle=angle, alpha=alpha)
 
 
 def get_pixel(x: int, y: int):
