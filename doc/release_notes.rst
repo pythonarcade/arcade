@@ -5,6 +5,16 @@
 Release Notes
 =============
 
+Version 2.0.6
+-------------
+
+* Improve ffmpeg support. Think it works on MacOS and Windows now. `Issue 350 <https://github.com/pvcraven/arcade/issues/350>`_
+* Improve buffered drawing command support
+* Improve PEP-8 compliance
+* Fix for tiled map reader, `Issue 360 <https://github.com/pvcraven/arcade/issues/360>`_
+* Fix for animated sprites `Issue 359 <https://github.com/pvcraven/arcade/issues/359>`_
+* Remove unused avbin library for mac
+
 Version 2.0.5
 -------------
 
