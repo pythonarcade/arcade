@@ -18,6 +18,29 @@ The Great Skeleton War
 
 .. _The Great Skeleton War: https://github.com/BlakeDalmas/Python/tree/master/The%20Great%20Skeleton%20War
 
+Lixing Qiu Games
+~~~~~~~~~~~~~~~~
+
+.. figure:: images/eight_planet.gif
+    :width: 50%
+
+    An `Eight planet simulation <https://github.com/lixingqiu/eight_planet>`_
+
+.. figure:: images/midway.png
+    :width: 50%
+
+    `Midway Island War <https://github.com/lixingqiu/python3_arcade_midway_island_war_simple_simulate>`_
+
+.. figure:: images/angry_bird.gif
+    :width: 50%
+
+    `Angry Bird <https://github.com/lixingqiu/python_arcade_simple_angry_bird>`_
+
+.. figure:: images/octopus.gif
+    :width: 50%
+
+    `Octopus <https://github.com/lixingqiu/Python-arcade-Octopus-animation-demo>`_
+
 Space Typer
 ~~~~~~~~~~~
 
