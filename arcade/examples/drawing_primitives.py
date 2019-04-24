@@ -29,7 +29,7 @@ file_path = os.path.dirname(os.path.abspath(__file__))
 os.chdir(file_path)
 
 # Open the window. Set the window title and dimensions (width and height)
-# arcade.open_window(600, 600, "Drawing Primitives Example")
+arcade.open_window(600, 600, "Drawing Primitives Example")
 
 # Set the background color to white
 # For a list of named colors see
