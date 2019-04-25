@@ -86,7 +86,7 @@ class MyGame(arcade.Window):
                       (200, 200),
                       (250, 150),
                       (200, 100))
-        poly = arcade.create_polygon(point_list, (255, 10, 10), 5)
+        poly = arcade.create_polygon(point_list, (255, 10, 10))
         self.shape_list.append(poly)
 
         ellipse = arcade.create_ellipse(20, 30, 50, 20, (230, 230, 0))

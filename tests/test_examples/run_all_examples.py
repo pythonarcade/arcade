@@ -39,21 +39,14 @@ def run_examples(indices_in_range, index_skip_list):
         cmd = 'python -m ' + example
         subprocess.call(cmd, shell=True)
 
-if __name__ == "__main__":
+def all_examples():
     file_path = os.path.dirname(os.path.abspath(__file__))
     os.chdir(file_path)
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--range", nargs=2, metavar=("LO", "HI"),
-                        help="range of indexes, inclusive")
-    parser.add_argument("--skip", nargs="*", metavar="IDX",
-                        help="list of indexes to skip")
-    args = parser.parse_args()
-    if args.range is not None:
-        args.range = range(int(args.range[0]), int(args.range[1]) + 1)
-    if args.skip is not None:
-        args.skip = [int(i) for i in args.skip]
-
     os.environ['ARCADE_TEST'] = "TRUE"
 
-    run_examples(args.range, args.skip)
+    indices_in_range = None
+    index_skip_list = None
+    run_examples(indices_in_range, index_skip_list )
+
+all_examples()
