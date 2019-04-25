@@ -96,10 +96,10 @@ class MyGame(arcade.Window):
         self.grid *= 255
         self.grid += 128
 
-        for row in range(ROW_COUNT):
-            for column in range(COLUMN_COUNT):
-                print(f"{self.grid[row][column]:5.2f} ", end="")
-            print()
+        # for row in range(ROW_COUNT):
+        #     for column in range(COLUMN_COUNT):
+        #         print(f"{self.grid[row][column]:5.2f} ", end="")
+        #     print()
 
         self.shape_list = arcade.ShapeElementList()
         for row in range(ROW_COUNT):

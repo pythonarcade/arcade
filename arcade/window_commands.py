@@ -244,7 +244,7 @@ def run():
     commands on the main program.
     """
     if 'ARCADE_TEST' in os.environ and os.environ['ARCADE_TEST'].upper() == "TRUE":
-        print("Testing!!!")
+        # print("Testing!!!")
         window = get_window()
         if window:
             window.update(1/60)

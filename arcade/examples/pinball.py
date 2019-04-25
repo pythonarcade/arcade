@@ -156,8 +156,8 @@ class MyApplication(arcade.Window):
         #self.space.add(j, s)
         self.space.add(j, r_flipper_joint_body)
 
-        print("X1", self.right_flipper_shape_list.center_x, self.right_flipper_shape_list.center_y)
-        print("X2", self.right_flipper_body.position.x, self.right_flipper_body.position.y)
+        # print("X1", self.right_flipper_shape_list.center_x, self.right_flipper_shape_list.center_y)
+        # print("X2", self.right_flipper_body.position.x, self.right_flipper_body.position.y)
         """
         vertices = [(0.5, -0.5), (-3, 0), (0.5, 0.5)]
 

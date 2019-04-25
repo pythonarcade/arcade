@@ -8,9 +8,8 @@ import subprocess
 import argparse
 import os
 import glob
-import arcade
 
-EXAMPLE_SUBDIR = "."
+EXAMPLE_SUBDIR = "../../arcade/examples"
 
 def _get_short_name(fullpath):
     return os.path.splitext(os.path.basename(fullpath))[0]
@@ -35,7 +34,8 @@ def run_examples(indices_in_range, index_skip_list):
             continue
         if index_skip_list is not None and idx in index_skip_list:
             continue
-        print('%s %s (index #%d of %d)' % ('=' * 20, example, idx, len(examples) - 1))
+        print(f"=================== Example {idx+1:3} of {len(examples)}: {example}")
+        # print('%s %s (index #%d of %d)' % ('=' * 20, example, idx, len(examples) - 1))
         cmd = 'python -m ' + example
         subprocess.call(cmd, shell=True)
 
