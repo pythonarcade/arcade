@@ -18,8 +18,8 @@ The Great Skeleton War
 
 .. _The Great Skeleton War: https://github.com/BlakeDalmas/Python/tree/master/The%20Great%20Skeleton%20War
 
-Lixing Qiu Games
-~~~~~~~~~~~~~~~~
+lixingqiu Games
+~~~~~~~~~~~~~~~
 
 .. figure:: images/eight_planet.gif
     :width: 50%
