@@ -288,7 +288,7 @@ def create_lines_with_colors(point_list: PointList,
 
 
 def create_polygon(point_list: PointList,
-                   color: Color, border_width: float = 1):
+                   color: Color):
     """
     Draw a convex polygon. This will NOT draw a concave polygon.
     Because of this, you might not want to use this function.
@@ -311,7 +311,7 @@ def create_polygon(point_list: PointList,
         itertools.zip_longest(point_list[:half], reversed(point_list[half:]))
     )
     point_list = [p for p in interleaved if p is not None]
-    return create_line_generic(point_list, color, gl.GL_TRIANGLE_STRIP, border_width)
+    return create_line_generic(point_list, color, gl.GL_TRIANGLE_STRIP, 1)
 
 
 def create_rectangle_filled(center_x: float, center_y: float, width: float,
@@ -463,7 +463,7 @@ def create_rectangle(center_x: float, center_y: float, width: float,
 
 def create_rectangle_filled_with_colors(point_list, color_list) -> Shape:
     """
-    This function creates multiple rectangle/quads using a vertex buffer object.
+    This function creates one rectangle/quad using a vertex buffer object.
     Creating the rectangles, and then later drawing it with ``render``
     is faster than calling ``draw_rectangle``.
     """
@@ -473,6 +473,24 @@ def create_rectangle_filled_with_colors(point_list, color_list) -> Shape:
     new_color_list = [color_list[0], color_list[1], color_list[3], color_list[2]]
     return create_line_generic_with_colors(new_point_list, new_color_list, shape_mode)
 
+def create_rectangles_filled_with_colors(point_list, color_list) -> Shape:
+    """
+    This function creates multiple rectangle/quads using a vertex buffer object.
+    Creating the rectangles, and then later drawing it with ``render``
+    is faster than calling ``draw_rectangle``.
+    """
+
+    shape_mode = gl.GL_TRIANGLES
+    new_point_list = []
+    new_color_list = []
+    for i in range(0, len(point_list), 4):
+        new_point_list += [point_list[0 + i], point_list[1 + i], point_list[3 + i]]
+        new_point_list += [point_list[1 + i], point_list[3 + i], point_list[2 + i]]
+
+        new_color_list += [color_list[0 + i], color_list[1 + i], color_list[3 + i]]
+        new_color_list += [color_list[1 + i], color_list[3 + i], color_list[2 + i]]
+
+    return create_line_generic_with_colors(new_point_list, new_color_list, shape_mode)
 
 def create_triangles_filled_with_colors(point_list, color_list) -> Shape:
     """
