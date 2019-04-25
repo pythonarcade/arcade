@@ -45,33 +45,27 @@ The Arcade library is Python 3.6+ only. Currently (July 2018) Rasbian come with
 Python 3.5.x You'll need to install Python 3.6+ and use it instead of the
 built-in Python 3.5.x.
 
-To install Python 3.6+ first do:
+To install Python 3.7 first do:
 
 .. code-block:: bash
 
     sudo apt-get update
-    sudo apt-get install build-essential tk-dev libncurses5-dev libncursesw5-dev libreadline6-dev libdb5.3-dev libgdbm-dev libsqlite3-dev libssl-dev libbz2-dev libexpat1-dev liblzma-dev zlib1g-dev
-    sudo apt-get install libffi-dev
+    sudo apt-get install build-essential tk-dev libncurses5-dev libncursesw5-dev
+    sudo apt-get install libreadline6-dev libdb5.3-dev libgdbm-dev libsqlite3-dev
+    sudo apt-get install libssl-dev libbz2-dev libexpat1-dev liblzma-dev zlib1g-dev
+    sudo apt-get install libffi-dev python3-dev python3-pip libjpeg-dev zlib1g-dev
     cd Downloads
-    wget https://www.python.org/ftp/python/3.7.0/Python-3.7.0.tar.xz
-    tar xf Python-3.7.0.tar.xz
-    cd Python-3.7.0
+    wget https://www.python.org/ftp/python/3.7.3/Python-3.7.3.tar.xz
+    tar xf Python-3.7.3.tar.xz
+    cd Python-3.7.3
     ./configure
     make
     sudo make altinstall
 
 Now that Python3.7 (or whatever the latest version is) is installed, you must use it and not the default python3 from now on.
 
-Now install Arcade and the files it needs:
-
-.. code-block:: bash
-
-    sudo apt install -y python3-dev python3-pip libjpeg-dev zlib1g-dev python-gst-1.0
-
 If you everything worked, you should be ready to install Arcade:
 
 .. code-block:: bash
 
     sudo pip3.7 install arcade
-
-Note: For sound support Arcade uses the gstreamer package. This is already installed with Rasbian.
