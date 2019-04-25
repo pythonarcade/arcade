@@ -1,9 +1,0 @@
--e .
-pytest
-sphinx
-coverage
-coveralls
-sphinx_rtd_theme
-setuptools
-pytest-cov
-pytest-mock
