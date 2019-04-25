@@ -5,6 +5,7 @@ It also has commands for scheduling pauses and scheduling interval functions.
 
 import gc
 import time
+import os
 
 import pyglet
 import pyglet.gl as gl
@@ -242,7 +243,14 @@ def run():
     After the window has been set up, and the event hooks are in place, this is usually one of the last
     commands on the main program.
     """
-    pyglet.app.run()
+    if 'ARCADE_TEST' in os.environ and os.environ['ARCADE_TEST'].upper() == "TRUE":
+        print("Testing!!!")
+        window = get_window()
+        if window:
+            window.update(1/60)
+            window.on_draw()
+    else:
+        pyglet.app.run()
 
 
 def quick_run(time_to_pause: Number):

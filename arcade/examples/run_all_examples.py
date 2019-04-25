@@ -8,8 +8,9 @@ import subprocess
 import argparse
 import os
 import glob
+import arcade
 
-EXAMPLE_SUBDIR = "arcade/examples"
+EXAMPLE_SUBDIR = "."
 
 def _get_short_name(fullpath):
     return os.path.splitext(os.path.basename(fullpath))[0]
@@ -39,6 +40,9 @@ def run_examples(indices_in_range, index_skip_list):
         subprocess.call(cmd, shell=True)
 
 if __name__ == "__main__":
+    file_path = os.path.dirname(os.path.abspath(__file__))
+    os.chdir(file_path)
+
     parser = argparse.ArgumentParser()
     parser.add_argument("--range", nargs=2, metavar=("LO", "HI"),
                         help="range of indexes, inclusive")
@@ -49,4 +53,7 @@ if __name__ == "__main__":
         args.range = range(int(args.range[0]), int(args.range[1]) + 1)
     if args.skip is not None:
         args.skip = [int(i) for i in args.skip]
+
+    os.environ['ARCADE_TEST'] = "TRUE"
+
     run_examples(args.range, args.skip)
