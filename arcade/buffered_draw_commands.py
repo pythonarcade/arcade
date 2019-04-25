@@ -100,57 +100,6 @@ def create_line(start_x: float, start_y: float, end_x: float, end_y: float,
     triangle_point_list = points[1], points[0], points[2], points[3]
     shape = create_triangles_filled_with_colors(triangle_point_list, color_list)
     return shape
-    # _generic_draw_line_strip(triangle_point_list, color, gl.GL_TRIANGLE_STRIP)
-    #
-    # program = shader.program(
-    #     vertex_shader='''
-    #         #version 330
-    #         uniform mat4 Projection;
-    #         in vec2 in_vert;
-    #         in vec4 in_color;
-    #         out vec4 v_color;
-    #         void main() {
-    #            gl_Position = Projection * vec4(in_vert, 0.0, 1.0);
-    #            v_color = in_color;
-    #         }
-    #     ''',
-    #     fragment_shader='''
-    #         #version 330
-    #         in vec4 v_color;
-    #         out vec4 f_color;
-    #         void main() {
-    #             f_color = v_color;
-    #         }
-    #     ''',
-    # )
-    #
-    # buffer_type = np.dtype([('vertex', '2f4'), ('color', '4B')])
-    # data = np.zeros(2, dtype=buffer_type)
-    # data['vertex'] = (start_x, start_y), (end_x, end_y)
-    # data['color'] = get_four_byte_color(color)
-    #
-    # vbo = shader.buffer(data.tobytes())
-    # vao_content = [
-    #     shader.BufferDescription(
-    #         vbo,
-    #         '2f 4B',
-    #         ('in_vert', 'in_color'),
-    #         normalized=['in_color']
-    #     )
-    # ]
-    #
-    # vao = shader.vertex_array(program, vao_content)
-    # with vao:
-    #     program['Projection'] = get_projection().flatten()
-    #
-    # shape = Shape()
-    # shape.vao = vao
-    # shape.vbo = vbo
-    # shape.program = program
-    # shape.mode = gl.GL_LINE_STRIP
-    # shape.line_width = line_width
-
-    return shape
 
 
 def create_line_generic_with_colors(point_list: PointList,
@@ -292,7 +241,28 @@ def create_lines(point_list: PointList,
 def create_lines_with_colors(point_list: PointList,
                              color_list: Iterable[Color],
                              line_width: float = 1):
-    return create_line_generic_with_colors(point_list, color_list, gl.GL_LINES, line_width)
+
+    if line_width == 1:
+        return create_line_generic_with_colors(point_list, color_list, gl.GL_LINES, line_width)
+    else:
+
+        triangle_point_list = []
+        new_color_list = []
+        for i in range(1, len(point_list)):
+            start_x = point_list[i-1][0]
+            start_y = point_list[i-1][1]
+            end_x = point_list[i][0]
+            end_y = point_list[i][1]
+            color1 = color_list[i-1]
+            color2 = color_list[i]
+            points = _get_points_for_thick_line(start_x, start_y, end_x, end_y, line_width)
+            new_color_list += color1, color2, color1, color2
+            triangle_point_list += points[1], points[0], points[2], points[3]
+
+            shape = create_triangles_filled_with_colors(triangle_point_list, new_color_list)
+
+        return shape
+
 
 
 def create_polygon(point_list: PointList,
