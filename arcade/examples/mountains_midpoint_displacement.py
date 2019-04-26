@@ -118,61 +118,85 @@ def create_mountain_range(start, end, roughness, vertical_displacement, num_of_i
     layer_1 = fix_points(layer_1)
 
     color_list = [color_start] * len(layer_1)
-    lines = arcade.create_rectangle_filled_with_colors(layer_1, color_list)
+    lines = arcade.create_rectangles_filled_with_colors(layer_1, color_list)
+    print(layer_1)
     shape_list.append(lines)
 
     return shape_list
 
 
-@arcade.decorator.setup
-def setup(window):
+class MyGame(arcade.Window):
     """
-    This, and any function with the arcade.decorator.init decorator,
-    is run automatically on start-up.
+    Main application class.
     """
-    window.mountains = []
 
-    background = arcade.ShapeElementList()
+    def __init__(self, width, height, title):
+        super().__init__(width, height, title)
 
-    color1 = (195, 157, 224)
-    color2 = (240, 203, 163)
-    points = (0, 0), (SCREEN_WIDTH, 0), (SCREEN_WIDTH, SCREEN_HEIGHT), (0, SCREEN_HEIGHT)
-    colors = (color1, color1, color2, color2)
-    rect = arcade.create_rectangle_filled_with_colors(points, colors)
+        self.mountains = None
 
-    background.append(rect)
-    window.mountains.append(background)
+        arcade.set_background_color(arcade.color.WHITE)
 
-    layer_4 = create_mountain_range([0, 350], [SCREEN_WIDTH, 320], 1.1, 250, 8, (158, 98, 204))
-    window.mountains.append(layer_4)
+    def setup(self):
+        """
+        This, and any function with the arcade.decorator.init decorator,
+        is run automatically on start-up.
+        """
+        self.mountains = []
 
-    layer_3 = create_mountain_range([0, 270], [SCREEN_WIDTH, 190], 1.1, 120, 9, (130, 79, 138))
-    window.mountains.append(layer_3)
+        background = arcade.ShapeElementList()
 
-    layer_2 = create_mountain_range([0, 180], [SCREEN_WIDTH, 80], 1.2, 30, 12, (68, 28, 99))
-    window.mountains.append(layer_2)
+        color1 = (195, 157, 224)
+        color2 = (240, 203, 163)
+        points = (0, 0), (SCREEN_WIDTH, 0), (SCREEN_WIDTH, SCREEN_HEIGHT), (0, SCREEN_HEIGHT)
+        colors = (color1, color1, color2, color2)
+        rect = arcade.create_rectangle_filled_with_colors(points, colors)
 
-    layer_1 = create_mountain_range([250, 0], [SCREEN_WIDTH, 200], 1.4, 20, 12, (49, 7, 82))
-    window.mountains.append(layer_1)
+        background.append(rect)
+        self.mountains.append(background)
+
+        layer_4 = create_mountain_range([0, 350], [SCREEN_WIDTH, 320], 1.1, 250, 8, (158, 98, 204))
+        self.mountains.append(layer_4)
+
+        layer_3 = create_mountain_range([0, 270], [SCREEN_WIDTH, 190], 1.1, 120, 9, (130, 79, 138))
+        self.mountains.append(layer_3)
+
+        layer_2 = create_mountain_range([0, 180], [SCREEN_WIDTH, 80], 1.2, 30, 12, (68, 28, 99))
+        self.mountains.append(layer_2)
+
+        layer_1 = create_mountain_range([250, 0], [SCREEN_WIDTH, 200], 1.4, 20, 12, (49, 7, 82))
+        self.mountains.append(layer_1)
+
+    def on_draw(self):
+        """
+        Render the screen.
+        """
+
+        arcade.start_render()
+        """
+        This is called every time we need to update our screen. About 60
+        times per second.
+        
+        Just draw things in this function, don't update where they are.
+        """
+        # Call our drawing functions.
+
+        for mountain_range in self.mountains:
+            mountain_range.draw()
+
+    def on_mouse_press(self, x, y, button, key_modifiers):
+        """
+        Called when the user presses a mouse button.
+        """
+        pass
 
 
-@arcade.decorator.draw
-def draw(window):
-    """
-    This is called every time we need to update our screen. About 60
-    times per second.
-
-    Just draw things in this function, don't update where they are.
-    """
-    # Call our drawing functions.
-
-    for mountain_range in window.mountains:
-        mountain_range.draw()
-
-    # window.line_strip.draw()
+def main():
+    """ Main method """
+    window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    window.setup()
+    arcade.run()
 
 
 if __name__ == "__main__":
-    arcade.decorator.run(SCREEN_WIDTH, SCREEN_HEIGHT,
-                         title=SCREEN_TITLE,
-                         background_color=arcade.color.WHITE)
+    main()
