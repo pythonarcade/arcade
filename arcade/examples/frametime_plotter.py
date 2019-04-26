@@ -22,6 +22,8 @@ class FrametimePlotter:
         self.times.append(time_delta)
 
     def _show_stats(self):
+        if len(self.times) <= 1:
+            return
         end = time.perf_counter()
         print("Min   : {:.5f}".format(min(self.times)))
         print("Max   : {:.5f}".format(max(self.times)))
