@@ -11,7 +11,10 @@ import os
 if sys.version_info[0] < 3 or (sys.version_info[0] == 3 and sys.version_info[1] < 6):
     sys.exit("The Arcade Library requires Python 3.6 or higher.")
 
-import pyglet_ffmpeg2
+try:
+    import pyglet_ffmpeg2
+except Exception as e:
+    print("Unable to load the ffmpeg library. ", e)
 
 import pyglet
 

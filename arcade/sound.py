@@ -48,15 +48,26 @@ def load_sound(file_name: str):
     Load a sound
     """
 
-    sound = Sound(file_name)
-    return sound
+    try:
+        sound = Sound(file_name)
+        return sound
+    except Exception as e:
+        print("Unable to load {str}.", e)
+        return None
 
 
 def play_sound(sound):
     """
     Play a sound
     """
-    sound.play()
+    if sound is None:
+        print("Unable to play sound, no data passed in.")
+    elif isinstance(sound, str):
+        raise Exception("Error, passed in a string as a sound. Make sure to use load_sound first, and use that result in play_sound.")
+    try:
+        sound.play()
+    except Exception as e:
+        print("Error playing sound.", e)
 
 
 def stop_sound(sound: pyglet.media.Source):
