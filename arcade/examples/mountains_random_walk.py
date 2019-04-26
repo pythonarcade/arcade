@@ -11,7 +11,6 @@ python -m arcade.examples.mountains_random_walk
 # Library imports
 import arcade
 import random
-import pyglet
 
 SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 700
@@ -47,8 +46,8 @@ def create_mountain_range(height_min, height_max, color_start, color_end):
             height = height_min
             slope *= -1
 
-        line_point_list.extend( ((x, height), (x, 0)) )
-        line_color_list.extend( (color_start, color_end) )
+        line_point_list.extend(((x, height), (x, 0)))
+        line_color_list.extend((color_start, color_end))
 
     lines = arcade.create_lines_with_colors(line_point_list, line_color_list)
     shape_list.append(lines)
@@ -69,49 +68,63 @@ def create_line_strip():
     return shape_list
 
 
-@arcade.decorator.setup
-def setup(window):
+class MyGame(arcade.Window):
     """
-    This, and any function with the arcade.decorator.init decorator,
-    is run automatically on start-up.
+    Main application class.
     """
 
-    window.mountains = []
+    def __init__(self, width, height, title):
+        super().__init__(width, height, title)
 
-    background = arcade.ShapeElementList()
+        self.mountains = None
 
-    points = (0, 0), (SCREEN_WIDTH, 0), (SCREEN_WIDTH, SCREEN_HEIGHT), (0, SCREEN_HEIGHT)
-    colors = (arcade.color.SKY_BLUE, arcade.color.SKY_BLUE, arcade.color.BLUE, arcade.color.BLUE)
-    rect = arcade.create_rectangles_filled_with_colors(points, colors)
+        arcade.set_background_color(arcade.color.WHITE)
 
-    background.append(rect)
-    window.mountains.append(background)
+    def setup(self):
+        """
+        This, and any function with the arcade.decorator.init decorator,
+        is run automatically on start-up.
+        """
 
-    for i in range(1, 4):
-        color_start = (i * 10, i * 30, i * 10)
-        color_end = (i * 20, i * 40, i * 20)
-        min_y = 0 + 70 * (3-i)
-        max_y = 120 + 70 * (3-i)
-        mountain_range = create_mountain_range(min_y, max_y, color_start, color_end)
-        window.mountains.append(mountain_range)
+        self.mountains = []
+
+        background = arcade.ShapeElementList()
+
+        points = (0, 0), (SCREEN_WIDTH, 0), (SCREEN_WIDTH, SCREEN_HEIGHT), (0, SCREEN_HEIGHT)
+        colors = (arcade.color.SKY_BLUE, arcade.color.SKY_BLUE, arcade.color.BLUE, arcade.color.BLUE)
+        rect = arcade.create_rectangles_filled_with_colors(points, colors)
+
+        background.append(rect)
+        self.mountains.append(background)
+
+        for i in range(1, 4):
+            color_start = (i * 10, i * 30, i * 10)
+            color_end = (i * 20, i * 40, i * 20)
+            min_y = 0 + 70 * (3 - i)
+            max_y = 120 + 70 * (3 - i)
+            mountain_range = create_mountain_range(min_y, max_y, color_start, color_end)
+            self.mountains.append(mountain_range)
+
+    def on_draw(self):
+        """
+        This is called every time we need to update our screen. About 60
+        times per second.
+
+        Just draw things in this function, don't update where they are.
+        """
+        # Call our drawing functions.
+
+        arcade.start_render()
+        for mountain_range in self.mountains:
+            mountain_range.draw()
 
 
-@arcade.decorator.draw
-def draw(window):
-    """
-    This is called every time we need to update our screen. About 60
-    times per second.
-
-    Just draw things in this function, don't update where they are.
-    """
-    # Call our drawing functions.
-
-    for mountain_range in window.mountains:
-        mountain_range.draw()
-
-    # window.line_strip.draw()
+def main():
+    """ Main method """
+    window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    window.setup()
+    arcade.run()
 
 
 if __name__ == "__main__":
-    arcade.decorator.run(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, background_color=arcade.color.WHITE)
-
+    main()
