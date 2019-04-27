@@ -22,8 +22,6 @@ class FrametimePlotter:
         self.times.append(time_delta)
 
     def _show_stats(self):
-        if len(self.times) <= 1:
-            return
         end = time.perf_counter()
         print("Min   : {:.5f}".format(min(self.times)))
         print("Max   : {:.5f}".format(max(self.times)))
@@ -41,6 +39,8 @@ class FrametimePlotter:
         print("FPS: {:.5f}".format(frame_count / elapsed_time))
 
     def show(self):
+        if len(self.times) <= 1:
+            return
         self._show_stats()
         frame_idxs = range(0, len(self.times))
         event_idxs = [e[0] for e in self.events]
