@@ -5,6 +5,21 @@
 Release Notes
 =============
 
+Version 2.0.8
+-------------
+
+* Add example code from lixingque
+* Fix: Drawing primitives example broke in prior release `Issue 365 <https://github.com/pvcraven/arcade/issues/365>`_
+* Update: Improve automated testing of all code examples `Issue 326 <https://github.com/pvcraven/arcade/issues/326>`_
+* Update: raspberry pi instructions, although it still doesn't work yet
+* Fix: Some buffered draw commands not working `Issue 368 <https://github.com/pvcraven/arcade/issues/368>`_
+* Remove yml files for build environments that don't work because of OpenGL
+* Update requirement.txt files
+* Fix mountain examples
+* Better error handling when playing sounds
+* Remove a few unused example code files
+
+
 Version 2.0.7
 -------------
 
