@@ -11,7 +11,18 @@ IF "%~1"=="doc" GOTO makedoc
 IF "%~1"=="spelling" GOTO spelling
 IF "%~1"=="deploy_pypi" GOTO deploy_pypi
 IF "%~1"=="deploy_docs" GOTO deploy_docs
+IF "%~1"=="clean" GOTO clean
 GOTO printdoc
+
+:clean
+
+rmdir /S /Q arcade.egg-info
+rmdir /S /Q build
+rmdir /S /Q dist
+rmdir /S /Q .pytest_cache
+rmdir /S /Q doc\build
+
+GOTO end
 
 :test
 
