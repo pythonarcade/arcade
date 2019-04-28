@@ -29,7 +29,7 @@ class CreateText:
                  italic: bool = False,
                  anchor_x="left",
                  anchor_y="baseline",
-                 ):
+                 rotation=0):
 
         self.text = text
         self.color = color
@@ -41,6 +41,7 @@ class CreateText:
         self.italic = italic
         self.anchor_x = anchor_x
         self.anchor_y = anchor_y
+        self.rotation = rotation
 
 
 def create_text(text: str,
@@ -54,26 +55,33 @@ def create_text(text: str,
                 anchor_x: str = "left",
                 anchor_y: str = "baseline",
                 rotation = 0):
-    """ Depricated. Two step text drawing for backwards compatibility. """
+    """ Deprecated. Two step text drawing for backwards compatibility. """
 
+    import warnings
+    warnings.warn("create_text has been deprecated, please use draw_text instead.", DeprecationWarning)
     my_text = CreateText(text, color, font_size, width, align, font_name, bold, italic, anchor_x, anchor_y, rotation)
     return my_text
 
 
 def render_text(text: CreateText, start_x: float, start_y: float):
-    """ Depricated. Two step text drawing for backwards compatibility. """
+    """ Deprecated. Two step text drawing for backwards compatibility. """
+
+    import warnings
+    warnings.warn("render_text has been deprecated, please use draw_text instead.", DeprecationWarning)
+
     draw_text(text.text,
               start_x,
               start_y,
-              text.color,
-              text.font_size,
-              text.width,
-              text.align,
-              text.font_name,
-              text.bold,
-              text.italic,
-              text.anchor_x,
-              text.anchor_y)
+              color=text.color,
+              font_size=text.font_size,
+              width=text.width,
+              align=text.align,
+              font_name=text.font_name,
+              bold=text.bold,
+              italic=text.italic,
+              anchor_x=text.anchor_x,
+              anchor_y=text.anchor_y,
+              rotation=text.rotation)
 
 
 def draw_text(text: str,
