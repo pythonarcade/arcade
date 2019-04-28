@@ -22,3 +22,5 @@ venv/
 arcade/examples/stress*.csv
 stress_test*.csv
 test.py
+tests/test_examples/test.png
+arcade/examples/test.png
