@@ -13,24 +13,24 @@ Add coins, ramps, moving platforms, enemies, and more.
 
 The tutorial is divided into three parts:
 
-* Part One: Create a basic platformer
-* Part Two: Learn to use a map editor
-* Part Three: Add extra polish to the game
+* :ref:`platformer_part_one`
+* :ref:`platformer_part_two`
+* :ref:`platformer_part_three`
 
+.. _platformer_part_one:
 
 Part One - Create a Platformer
 ------------------------------
 
 
-
 Installation
 ~~~~~~~~~~~~
 * Make sure Python 3.6 or greater is installed. `Download Python here <https://www.python.org/downloads/>`_.
-* Make sure the Arcade library 2.0.4 or greater is installed.
+* Make sure the Arcade library 2.0.4 or greater is installed. (Current version is 2.0.8.)
 
   * :ref:`installation-instructions`.
   * Install Arcade with ``pip install arcade`` on Windows
-    or ``pip3 install arcade`` on Mac/Linux. Or install via a venv.
+    or ``pip3 install arcade`` on Mac/Linux. Or install by using a venv.
 
 * `Download this bundle with code, images, and sounds <../../_static/platform_tutorial.zip>`_.
   (Images are from `kenney.nl`_.)
@@ -213,6 +213,8 @@ Explore On Your Own
   See :ref:`sprite_face_left_or_right`
 * Add instruction and game over screens. See :ref:`instruction_and_game_over_screens`
 
+.. _platformer_part_two:
+
 Part Two - Use a Map Editor
 ---------------------------
 
@@ -303,6 +305,8 @@ corner of an item.
 
 .. image:: collision_editor.png
    :scale: 20%
+
+.. _platformer_part_three:
 
 Part Three - Spruce It Up
 -------------------------
