@@ -57,6 +57,10 @@ class MyTestWindow(arcade.Window):
         font_name = "comic"
         arcade.draw_text("Different font", current_x, current_y, arcade.color.BLACK, 12, font_name=font_name)
 
+        current_y -= LINE_HEIGHT
+        text = arcade.create_text("Create text", arcade.color.BLACK)
+        arcade.render_text(text, current_x, current_y)
+
 
 def test_main():
     window = MyTestWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Test Text")
