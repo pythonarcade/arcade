@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.2.3" orientation="orthogonal" renderorder="right-down" width="40" height="15" tilewidth="128" tileheight="128" infinite="0" backgroundcolor="#442045" nextlayerid="6" nextobjectid="1">
+<map version="1.2" tiledversion="1.2.3" orientation="orthogonal" renderorder="right-down" width="40" height="17" tilewidth="128" tileheight="128" infinite="0" backgroundcolor="#442045" nextlayerid="11" nextobjectid="1">
  <tileset firstgid="1" name="tileset" tilewidth="128" tileheight="128" tilecount="166" columns="0">
   <grid orientation="orthogonal" width="1" height="1"/>
   <tile id="0">
@@ -196,9 +196,19 @@
   </tile>
   <tile id="64">
    <image width="128" height="128" source="images/tiles/planetCliffAlt_left.png"/>
+   <objectgroup draworder="index">
+    <object id="1" x="10.9091" y="0.363636">
+     <polygon points="0,0 -10.7273,10.9091 -10.7273,42 107.455,121.818 117.091,127.636 117.091,-0.363636"/>
+    </object>
+   </objectgroup>
   </tile>
   <tile id="65">
    <image width="128" height="128" source="images/tiles/planetCliffAlt_right.png"/>
+   <objectgroup draworder="index">
+    <object id="1" x="0" y="0">
+     <polygon points="0,0 0,128 127.455,43.4545 127.636,10.1818 116.909,-0.181818"/>
+    </object>
+   </objectgroup>
   </tile>
   <tile id="66">
    <image width="128" height="128" source="images/tiles/planetCorner_left.png"/>
@@ -208,6 +218,11 @@
   </tile>
   <tile id="68">
    <image width="128" height="128" source="images/tiles/planetHalf.png"/>
+   <objectgroup draworder="index">
+    <object id="1" x="116.182" y="74.1818">
+     <polygon points="0,0 -104.909,0 -115.636,-12 -116,-62.5455 -106,-74 2.18182,-73.8182 10.9091,-63.0909 11.4545,-13.8182"/>
+    </object>
+   </objectgroup>
   </tile>
   <tile id="69">
    <image width="128" height="128" source="images/tiles/planetHalf_left.png"/>
@@ -220,9 +235,19 @@
   </tile>
   <tile id="72">
    <image width="128" height="128" source="images/tiles/planetHill_left.png"/>
+   <objectgroup draworder="index">
+    <object id="1" x="0" y="0">
+     <polygon points="0,0 128,128 0,128"/>
+    </object>
+   </objectgroup>
   </tile>
   <tile id="73">
    <image width="128" height="128" source="images/tiles/planetHill_right.png"/>
+   <objectgroup draworder="index">
+    <object id="1" x="128" y="0">
+     <polygon points="0,0 0,128 -128,128"/>
+    </object>
+   </objectgroup>
   </tile>
   <tile id="74">
    <image width="128" height="128" source="images/tiles/planetLeft.png"/>
@@ -521,29 +546,29 @@
    <image width="128" height="128" source="images/items/star.png"/>
   </tile>
  </tileset>
- <layer id="1" name="Platforms" width="40" height="15">
+ <layer id="6" name="Platforms" width="40" height="17">
   <data encoding="base64" compression="zlib">
-   eJxjYBgFo2AUjIJRMApGAQgUAHEhEBcNtENGAUHgDcQ+gxT7AjEA3C4NNA==
+   eJxjYBgFo2AUjILBA1xxsEcBKnAEYh8odiJC/WhYEgcKgLgQiIvwqBkNy8EBvBkQeYBSjA4oNc8XiG1HMUUYAGcUIUM=
   </data>
  </layer>
- <layer id="2" name="Coins" width="40" height="15">
+ <layer id="7" name="Coins" width="40" height="17">
   <data encoding="base64" compression="zlib">
-   eJxjYBgFo2AUjIJRMAroB1YMtANGAdXAaFziBgCsHgFR
+   eJxjYBgFo2DoghUD7YBRMGzBaNqiHRgN2+EDRuNyFNAKAAAbowKh
   </data>
  </layer>
- <layer id="5" name="Don't Touch" width="40" height="15">
+ <layer id="8" name="Don't Touch" width="40" height="17">
   <data encoding="base64" compression="zlib">
-   eJztwTEBAAAAwqD1T20JT6AAAHgaCWAAAQ==
+   eJxjYBgFo2AUjIJRMApGwSgYucAUDY+CgQcAVEcA1Q==
   </data>
  </layer>
- <layer id="3" name="Foreground" width="40" height="15">
+ <layer id="9" name="Foreground" width="40" height="17">
   <data encoding="base64" compression="zlib">
-   eJxjYBgFo2AUjIJRMApGwSggHqQMsDlJVLKflgAAEDcBKw==
+   eJxjYBgFo2AUjIJRMApGwSggHqQMsDlJVLJ/FAxeAACGBgEr
   </data>
  </layer>
- <layer id="4" name="Background" width="40" height="15">
+ <layer id="10" name="Background" width="40" height="17">
   <data encoding="base64" compression="zlib">
-   eJxjYBgFo2AUjIJRMApGwSjADfzorG84AAC0AACd
+   eJxjYBgFo2AUjIJRMApGwSjADfzorG8UjAIAeE8AnQ==
   </data>
  </layer>
 </map>
