@@ -25,19 +25,22 @@ Part One - Create a Platformer
 
 Installation
 ~~~~~~~~~~~~
-* Make sure Python 3.6 or greater is installed. `Download Python here <https://www.python.org/downloads/>`_.
-* Make sure the Arcade library 2.0.4 or greater is installed. (Current version is 2.0.8.)
-
-  * :ref:`installation-instructions`.
-  * Install Arcade with ``pip install arcade`` on Windows
-    or ``pip3 install arcade`` on Mac/Linux. Or install by using a venv.
-
+* Make sure Python 3.6 or greater is installed. `Download Python here <https://www.python.org/downloads/>`_
+  if you don't already have it.
 * `Download this bundle with code, images, and sounds <../../_static/platform_tutorial.zip>`_.
   (Images are from `kenney.nl`_.)
+  Your file structure should look like:
+
+.. image:: file_structure.png
+    :scale: 75%
+
+* Make sure the `Arcade library <https://pypi.org/project/arcade/>`_ 2.0.4 or greater is installed.
+
+  * Install Arcade with ``pip install arcade`` on Windows
+    or ``pip3 install arcade`` on Mac/Linux. Or install by using a venv.
+  * Here are the longer, official :ref:`installation-instructions`.
 
 .. _kenney.nl: https://kenney.nl/
-
-
 
 
 Open a Window
@@ -47,15 +50,6 @@ The example below opens up a blank window. Set up a project and get the code
 below working. (It is also in the zip file as
 ``01_open_window.py``.)
 
-Once you get the code working, figure out how to:
-
-* Change the screen size
-* Change the title
-* Change the background color
-
-  * Documentation for :ref:`color`
-  * Documentation for :ref:`csscolor`
-
 (It is possible to have a :ref:`resizable_window`, but there are more interesting
 things we can do first. Therefore we'll stick with a set-size window for this
 tutorial.)
@@ -63,6 +57,35 @@ tutorial.)
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/01_open_window.py
     :caption: 01_open_window.py - Open a Window
     :linenos:
+
+.. note::
+
+    Once you get the code working, figure out how to:
+
+    * Change the screen size
+    * Change the title
+    * Change the background color
+
+      * Documentation for :ref:`color`
+      * Documentation for :ref:`csscolor`
+
+
+Setup vs. Init
+~~~~~~~~~~~~~~
+
+In the next code example, we have both an ``__init__`` method and a
+``setup`` method that we will use for setting up our game.
+
+The ``__init__`` only sets up the variables, but doesn't create any class
+instances. They just default to 0 or ``None``. The ``setup`` actually creates
+the object instances, such as graphical sprites.
+
+There's a reason they are split into two.
+With a ``setup`` method split out, later
+on we can easily add "restart/play again" functionality to the game.
+A simple call to ``setup`` will reset everything.
+We can also add additional levels and have ``setup_level_1`` and ``setup_level_2``.
+
 
 Add Sprites To Game
 ~~~~~~~~~~~~~~~~~~~
@@ -72,7 +95,36 @@ graphics.
 "Sprites" are the graphical items that you can interact with, such as player characters,
 coins, and walls. To work with sprites we'll use the ``Sprite`` class.
 
-All sprites go into a list. We manage groups of sprites by the list that they are in.
+We create a sprite by creating an instance of the ``Sprite`` class:
+
+.. code-block::
+
+    self.player_sprite = arcade.Sprite("images/player_1/player_stand.png", CHARACTER_SCALING)
+
+Give the Sprite class reference to the image you want it to use, and (optionally)
+you can scale it up or down. If the second parameter is 0.5, and the the sprite
+is 128x128, then both width and height will be scaled down 50% for a 64x64
+sprite.
+
+Next, we need to tell *where* the sprite goes. You can use the attributes
+``center_x`` and ``center_y`` to position the sprite. You can also use ``top``,
+``bottom``, ``left``, and ``right`` to get or set the sprites location by an
+edge instead of the center. You can also use ``position`` attribute to set both the
+x and y at the same time.
+
+.. code-block::
+
+    self.player_sprite.center_x = 64
+    self.player_sprite.center_y = 106
+
+Finally, all instances of the ``Sprite`` class need to go in a ``SpriteList``
+class.
+
+.. code-block::
+
+    self.player_list.append(self.player_sprite)
+
+We manage groups of sprites by the list that they are in.
 In the example below there's a ``wall_list`` that will hold everything that the
 player character can't walk through, and
 a ``coin_list`` for sprites we can pick up to get points. There's also a ``player_list``
@@ -81,21 +133,23 @@ which holds only the player.
 * Documentation for the `Sprite class <../../arcade.html#arcade.Sprite>`_
 * Documentation for the `SpriteList class <../../arcade.html#arcade.SpriteList>`_
 
-It might seem logical to put code that creates the sprites in the ``__init__``
-method. Instead the program below puts it in the ``setup`` method. Why? Later
-on we can easily add "restart/play again" functionality to the game. A simple call to
-``setup`` will reset everything.
+Notice that the code creates ``Sprites`` three ways:
 
-Once the code example is up and working:
-
-* Adjust the code and try putting sprites in new positions.
-* Use different images for sprites (see the images folder).
-* Practice placing individually, via a loop, and by coordinates in a list.
+* Creating a ``Sprite`` class, positioning it, and adding it to
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/02_draw_sprites.py
     :caption: 02_draw_sprites - Draw and Position Sprites
     :linenos:
     :emphasize-lines: 11-14, 27-34, 39-43, 45-76, 84-87
+
+.. note::
+
+    Once the code example is up and working:
+
+    * Adjust the code and try putting sprites in new positions.
+    * Use different images for sprites (see the images folder).
+    * Practice placing individually, via a loop, and by coordinates in a list.
+
 
 Add User Control
 ~~~~~~~~~~~~~~~~
@@ -116,15 +170,17 @@ Now we need to be able to get the user to move around. Here how to do it:
   `PhysicsEngineSimple class <../../arcade.html#arcade.PhysicsEngineSimple>`_
   to move sprites, but keep  them from running through walls.
 
-If you are interested in a somewhat better, and someone more complex
-method of keyboard control, see the
-:ref:`sprite_move_keyboard_better` example.
-
-
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/03_user_control.py
     :caption: 03_user_control.py - Control User By Keyboard
     :linenos:
     :emphasize-lines: 16-17, 84-85, 98-108, 110-120, 122-127
+
+.. note::
+
+    If you are interested in a somewhat better, and someone more complex
+    method of keyboard control, see the differences between this and the
+    :ref:`sprite_move_keyboard_better` example.
+
 
 Add Gravity
 ~~~~~~~~~~~
@@ -133,14 +189,18 @@ The example above works great for top-down, but what if it is a side view with
 jumping? We need to add gravity.
 
 The example below will allow the user to jump and walk on platforms.
-You can change how the user jumps by changing the gravity and jump constants.
-Lower values for both will make for a more "floaty" character. Higher values make
-for a faster-paced game.
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/04_add_gravity.py
     :caption: 04_add_gravity.py - Add Gravity
     :linenos:
     :emphasize-lines: 18-19, 87-89, 105-107, 116-119
+
+.. note::
+
+    You can change how the user jumps by changing the gravity and jump constants.
+    Lower values for both will make for a more "floaty" character. Higher values make
+    for a faster-paced game.
+
 
 Add Scrolling
 ~~~~~~~~~~~~~
@@ -150,12 +210,16 @@ scrolling.
 
 The viewport margins control how close you can get to the edge of the screen
 before the camera starts scrolling.
-Work at changing the viewport margins to something that you like.
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/05_scrolling.py
     :caption: Add Scrolling
     :linenos:
     :emphasize-lines: 21-26, 51-53, 144-184
+
+.. note::
+
+    Work at changing the viewport margins to something that you like.
+
 
 Add Coins And Sound
 ~~~~~~~~~~~~~~~~~~~
@@ -180,11 +244,15 @@ we'll show you how to specify the hitbox.
     :linenos:
     :emphasize-lines: 55-57, 71, 99-104, 128, 149-159
 
-If you have extra time, try adding more than just coins. Also add gems or keys
-from the graphics provided.
+.. note::
 
-You could subclass the coin sprite and add an attribute for a score value. Then
-you could have coins worth one point, and gems worth 5, 10, and 15 points.
+    Spend time placing the coins where you would like them.
+    If you have extra time, try adding more than just coins. Also add gems or keys
+    from the graphics provided.
+
+    You could also subclass the coin sprite and add an attribute for a score
+    value. Then you could have coins worth one point, and gems worth 5, 10, and
+    15 points.
 
 Display The Score
 ~~~~~~~~~~~~~~~~~
@@ -202,6 +270,15 @@ screen. To do this, we just add in the ``view_bottom`` and ``view_left`` coordin
     :linenos:
     :emphasize-lines: 55-56, 71-72, 128-131, 170-171
 
+.. note::
+
+    You might also want to add:
+
+    * A count of how many coins are left to be collected.
+    * Number of lives left.
+    * A timer: :ref:`timer`
+    * This example shows how to add an FPS timer: :ref:`stress_test_draw_moving`
+
 Explore On Your Own
 ~~~~~~~~~~~~~~~~~~~
 
@@ -217,6 +294,9 @@ Explore On Your Own
 
 Part Two - Use a Map Editor
 ---------------------------
+
+Create a Map File
+~~~~~~~~~~~~~~~~~
 
 For this part, we'll restart with a new program. Instead of placing our tiles
 by code, we'll use a map editor.
@@ -245,17 +325,23 @@ Save it as ``map.tmx``.
 Rename the layer "Platforms". We'll use layer names to load our data later. Eventually
 you might have layers for:
 
-* Platforms that you run into (or you can think of them as walls),
+* Platforms that you run into (or you can think of them as walls)
 * Coins or objects to pick up
-* Background objects that you don't interact with
-* Insta-death (like lava)
+* Background objects that you don't interact with, but appear behind the player
+* Foreground objects that you don't interact with, but appear in front of the player
+* Insta-death blocks (like lava)
 * Ladders
 
-Note, once you get multiple layers it is VERY easy to add items to the wrong
-layer.
+.. Note::
+
+    Once you get multiple layers it is VERY easy to add items to the wrong
+    layer.
 
 .. image:: platforms.png
    :scale: 80%
+
+Create a Tileset
+~~~~~~~~~~~~~~~~
 
 Before we can add anything to the layer we need to create a set of tiles.
 This isn't as obvious or intuitive as it should be. To create a new tileset
@@ -281,6 +367,9 @@ Then click the 'plus' and add in your tiles
 .. image:: new_tileset_04.png
    :scale: 80%
 
+Draw a Level
+~~~~~~~~~~~~
+
 At this point you should be able to "paint" a level. At the very least, put
 in a floor and then see if you can get this program working. (Don't put
 in a lot of time designing a level until you are sure you can get it to
@@ -289,45 +378,62 @@ load.)
 The program below assumes there are layers created by the tiled
 map editor for for "Platforms" and "Coins".
 
+Test the Level
+~~~~~~~~~~~~~~
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/08_load_map.py
     :caption: Load a .tmx file from Tiled Map Editor
     :linenos:
     :emphasize-lines: 87-115
 
+.. note::
 
-You can edit the collision / hitbox of a tile to make ramps
-or platforms that only cover a portion of the rectangle in the grid.
+    You can set the **background color** of the map by selecting "Map...Map Properties".
+    Then click on the three dots to pull up a color picker.
 
-To edit the hitbox, use the polygon tool (only) and draw a polygon around
-the item. You can hold down "CTRL" when positioning a point to get the exact
-corner of an item.
+    You can edit the **hitbox** of a tile to make ramps
+    or platforms that only cover a portion of the rectangle in the grid.
 
-.. image:: collision_editor.png
-   :scale: 20%
+    To edit the hitbox, use the polygon tool (only) and draw a polygon around
+    the item. You can hold down "CTRL" when positioning a point to get the exact
+    corner of an item.
+
+    .. image:: collision_editor.png
+       :scale: 20%
 
 .. _platformer_part_three:
 
 Part Three - Spruce It Up
 -------------------------
 
+Multiple Levels and Other Layers
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-15 minutes - Talk about additional items that could be added to the game
+Here's an expanded example:
 
-45 minutes - Self paced section where students can:
+* This adds a foreground, background, and "Don't Touch" layer.
+* The player resets to the start if they fall off the map
+* The player resets to the start if they touch a block in the "Don't Touch" layer
+* If the player gets to the right side of the map, the program attempts to load another layer
 
-* Add a sudden death layer (like lava)
-* :ref:`sprite_enemies_in_platformer`
-* :ref:`sprite_tiled_map_with_levels`
-* :ref:`sprite_face_left_or_right`
-* :ref:`sprite_no_coins_on_walls`
-* Add :ref:`sprite_collect_rotating`
-* Bullets (or something you can shoot)
+.. literalinclude:: ../../../arcade/examples/platform_tutorial/09_endgame.py
+    :caption: Load a .tmx file from Tiled Map Editor
+    :linenos:
 
-  * :ref:`sprite_bullets`
-  * :ref:`sprite_bullets_aimed`
-  * :ref:`sprite_bullets_enemy_aims`
+.. note::
 
-* :ref:`sprite_tiled_map_with_levels`
-* Add :ref:`sprite_explosion`
+    * Add a sudden death layer (like lava)
+    * :ref:`sprite_enemies_in_platformer`
+    * :ref:`sprite_tiled_map_with_levels`
+    * :ref:`sprite_face_left_or_right`
+    * :ref:`sprite_no_coins_on_walls`
+    * Add :ref:`sprite_collect_rotating`
+    * Bullets (or something you can shoot)
+
+      * :ref:`sprite_bullets`
+      * :ref:`sprite_bullets_aimed`
+      * :ref:`sprite_bullets_enemy_aims`
+
+    * :ref:`sprite_tiled_map_with_levels`
+    * Add :ref:`sprite_explosion`
 
