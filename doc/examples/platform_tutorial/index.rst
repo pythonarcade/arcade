@@ -411,29 +411,34 @@ Multiple Levels and Other Layers
 
 Here's an expanded example:
 
-* This adds a foreground, background, and "Don't Touch" layer.
-* The player resets to the start if they fall off the map
-* The player resets to the start if they touch a block in the "Don't Touch" layer
+* This adds foreground, background, and "Don't Touch" layers.
+
+  * The background tiles appear behind the player
+  * The foreground appears in front of the player
+  * The Don't Touch layer will reset the player to the start (228-237)
+
+* The player resets to the start if they fall off the map (217-226)
 * If the player gets to the right side of the map, the program attempts to load another layer
 
+  * Add ``level`` attribute (69)
+  * Updated ``setup`` to load a file based on the level (76-152, specifically lines 76 and 113)
+  * Added end-of-map check(239-251)
+
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/09_endgame.py
-    :caption: Load a .tmx file from Tiled Map Editor
+    :caption: More Advanced Example
     :linenos:
 
 .. note::
 
-    * Add a sudden death layer (like lava)
+    What else might you want to do?
+
     * :ref:`sprite_enemies_in_platformer`
-    * :ref:`sprite_tiled_map_with_levels`
     * :ref:`sprite_face_left_or_right`
-    * :ref:`sprite_no_coins_on_walls`
-    * Add :ref:`sprite_collect_rotating`
     * Bullets (or something you can shoot)
 
       * :ref:`sprite_bullets`
       * :ref:`sprite_bullets_aimed`
       * :ref:`sprite_bullets_enemy_aims`
 
-    * :ref:`sprite_tiled_map_with_levels`
     * Add :ref:`sprite_explosion`
-
+    * Add :ref:`sprite_collect_rotating`
