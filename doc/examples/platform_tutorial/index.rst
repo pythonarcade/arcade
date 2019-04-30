@@ -441,4 +441,4 @@ Here's an expanded example:
       * :ref:`sprite_bullets_enemy_aims`
 
     * Add :ref:`sprite_explosion`
-    * Add :ref:`sprite_collect_rotating`
+    * Add :ref:`sprite_move_animation`
