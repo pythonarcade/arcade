@@ -10,7 +10,7 @@ pip install pymunk
 Artwork from http://kenney.nl
 
 If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.pymunk_box_stacks
+python -m arcade.examples.pymunk_test
 
 Click and drag with the mouse to move the boxes.
 """
@@ -21,9 +21,10 @@ import timeit
 import math
 import os
 
-SCREEN_WIDTH = 1200
+SCREEN_WIDTH = 1800
 SCREEN_HEIGHT = 800
-SCREEN_TITLE = "Pymunk Box Stacks Example"
+SCREEN_TITLE = "Pymunk test"
+
 
 class PhysicsSprite(arcade.Sprite):
     def __init__(self, pymunk_shape, filename):
@@ -62,6 +63,7 @@ class MyGame(arcade.Window):
 
         # -- Pymunk
         self.space = pymunk.Space()
+        self.space.iterations = 35
         self.space.gravity = (0.0, -900.0)
 
         # Lists of sprites or lines
@@ -84,16 +86,20 @@ class MyGame(arcade.Window):
         self.static_lines.append(shape)
 
         # Create the stacks of boxes
-        for x in range(6):
-            for y in range(12):
-                size = 45
-                mass = 12.0
+        for row in range(10):
+            for column in range(10):
+                size = 32
+                mass = 1.0
+                x = 500 + column * 32
+                y = (floor_height + size / 2) + row * size
                 moment = pymunk.moment_for_box(mass, (size, size))
                 body = pymunk.Body(mass, moment)
-                body.position = pymunk.Vec2d(300 + x*50, (floor_height + size / 2) + y * (size + .01))
+                body.position = pymunk.Vec2d(x, y)
                 shape = pymunk.Poly.create_box(body, (size, size))
-                shape.friction = 0.3
+                shape.elasticity = 0.2
+                shape.friction = 0.9
                 self.space.add(body, shape)
+                # body.sleep()
 
                 sprite = BoxSprite(shape, "images/boxCrate_double.png", width=size, height=size)
                 self.sprite_list.append(sprite)

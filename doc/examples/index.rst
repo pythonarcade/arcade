@@ -377,6 +377,11 @@ PyMunk
 
    :ref:`pymunk_pegboard`
 
+.. figure:: thumbs/pymunk_joint_builder.png
+   :figwidth: 170px
+
+   :ref:`pymunk_joint_builder`
+
 .. figure:: thumbs/pymunk_platformer.png
    :figwidth: 170px
 
@@ -484,6 +489,12 @@ Other
 
    :ref:`sprite_collect_coins_background`
 
+.. figure:: thumbs/sprite_collect_coins_with_stats.png
+   :figwidth: 170px
+
+   :ref:`sprite_collect_coins_with_stats`
+
+
 .. figure:: thumbs/timer.png
    :figwidth: 170px
 
@@ -509,8 +520,3 @@ Other
    :width: 170px
 
    :ref:`gameshell`
-
-.. toctree::
-   :maxdepth: 3
-
-   examples_to_do
