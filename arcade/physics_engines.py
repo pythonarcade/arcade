@@ -115,7 +115,7 @@ class PhysicsEnginePlatformer:
         
     def increment_jump_counter(self):
         """
-        Updates the jump counter for double-jump tracking
+        Updates the jump counter for multi-jump tracking
         """
         if self.allow_multi_jump:
             self.jumps_since_ground += 1
