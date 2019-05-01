@@ -8,7 +8,6 @@ Buffered Draw Commands.
 """
 # pylint: disable=too-many-arguments, too-many-locals, too-few-public-methods
 
-import math
 import PIL.Image
 import PIL.ImageOps
 import PIL.ImageDraw
@@ -54,11 +53,9 @@ def get_four_byte_color(color: Color) -> Color:
     Given a RGB list, it will return RGBA.
     Given a RGBA list, it will return the same RGBA.
 
-    Args:
-        color: Three or four byte tuple
+    :param Color color: Three or four byte tuple
 
-    Returns:
-        return: Four byte tuple
+    :returns:  return: Four byte RGBA tuple
     """
 
     if len(color) == 4:
@@ -74,8 +71,8 @@ def get_four_float_color(color: Color) -> (float, float, float, float):
     Given a 3 or 4 RGB/RGBA color where each color goes 0-255, this
     returns a RGBA list where each item is a scaled float from 0 to 1.
 
-    :param color:
-    :return:
+    :param Color color: Three or four byte tuple
+    :return: Four floats as a RGBA tuple
     """
     if len(color) == 4:
         return color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255
@@ -88,6 +85,9 @@ def get_four_float_color(color: Color) -> (float, float, float, float):
 def make_transparent_color(color: Color, transparency: float):
     """
     Given a RGB color, along with an alpha, returns a RGBA color tuple.
+
+    :param Color color: Three or four byte RGBA color
+    :param float transparency: Transparency
     """
     return color[0], color[1], color[2], transparency
 
@@ -103,6 +103,7 @@ def rotate_point(x: float, y: float, cx: float, cy: float,
     :param cy: y value of the center point you want to rotate around
     :param angle: Angle, in degrees, to rotate
     :return: Return rotated (x, y) pair
+    :rtype: (float, float)
     """
     temp_x = x - cx
     temp_y = y - cy
@@ -135,6 +136,7 @@ class Texture:
 
     def __init__(self, name, image=None):
         self.name = name
+        self.texture = None
         self.image = image
         self.scale = 1
         if image:
@@ -145,7 +147,6 @@ class Texture:
             self.height = 0
 
         self._sprite = None
-
 
     def draw(self, center_x: float, center_y: float, width: float,
              height: float, angle: float=0,
@@ -205,16 +206,14 @@ def load_textures(file_name: str,
     left, see:
     http://programarcadegames.com/index.php?chapter=introduction_to_graphics&lang=en#section_5
 
-    Args:
-        :file_name: Name of the file.
-        :image_location_list: List of image locations. Each location should be
-         a list of four floats. ``[x, y, width, height]``.
-        :mirrored=False: If set to true, the image is mirrored left to right.
-        :flipped=False: If set to true, the image is flipped upside down.
-    Returns:
-        :list: List of textures loaded.
-    Raises:
-        :SystemError:
+    :param str file_name: Name of the file.
+    :param PointList image_location_list: List of image locations. Each location should be
+           a list of four floats. ``[x, y, width, height]``.
+    :param bool mirrored: If set to true, the image is mirrored left to right.
+    :param bool flipped: If set to true, the image is flipped upside down.
+
+    :Returns: List of textures loaded.
+    :Raises: ValueError
     """
     source_image = PIL.Image.open(file_name)
 
@@ -274,17 +273,17 @@ def load_texture(file_name: str, x: float = 0, y: float = 0,
     left, see:
     http://programarcadegames.com/index.php?chapter=introduction_to_graphics&lang=en#section_5
 
-    Args:
-        :filename (str): Name of the file to that holds the texture.
-        :x (float): X position of the crop area of the texture.
-        :y (float): Y position of the crop area of the texture.
-        :width (float): Width of the crop area of the texture.
-        :height (float): Height of the crop area of the texture.
-        :scale (float): Scale factor to apply on the new texture.
-    Returns:
-        The new texture.
-    Raises:
-        None
+    :param str file_name: Name of the file to that holds the texture.
+    :param float x: X position of the crop area of the texture.
+    :param float y: Y position of the crop area of the texture.
+    :param float width: Width of the crop area of the texture.
+    :param float height: Height of the crop area of the texture.
+    :param bool mirrored: True if we mirror the image across the y axis
+    :param bool flipped: True if we flip the image across the x axis
+    :param float scale: Scale factor to apply on the new texture.
+
+    :Returns: The new texture.
+    :raises: None
 
     """
 
@@ -344,13 +343,10 @@ def make_circle_texture(diameter: int, color: Color) -> Texture:
     """
     Return a Texture of a circle with given diameter and color
 
-    Args:
-        :diameter (int): Diameter of the circle and dimensions of the square Texture returned
-        :color (Color): Color of the circle
-    Returns:
-        A Texture object
-    Raises:
-        None
+    :param int diameter: Diameter of the circle and dimensions of the square Texture returned
+    :param Color color: Color of the circle
+    :Returns: A Texture object
+    :Raises: None
     """
     bg_color = (0, 0, 0, 0) # fully transparent
     img = PIL.Image.new("RGBA", (diameter, diameter), bg_color)
@@ -360,6 +356,7 @@ def make_circle_texture(diameter: int, color: Color) -> Texture:
     draw.ellipse((radius, radius, center+radius, center+radius), fill=color)
     name = "{}:{}:{}".format("circle_texture", diameter, color) # name must be unique for caching
     return Texture(name, img)
+
 
 def make_soft_circle_texture(diameter: int, color: Color, center_alpha: int=255, outer_alpha: int=0) -> Texture:
     """
@@ -387,6 +384,7 @@ def make_soft_circle_texture(diameter: int, color: Color, center_alpha: int=255,
         draw.ellipse((center-radius, center-radius, center+radius, center+radius), fill=clr)
     name = "{}:{}:{}:{}:{}".format("soft_circle_texture", diameter, color, center_alpha, outer_alpha) # name must be unique for caching
     return Texture(name, img)
+
 
 def make_soft_square_texture(size: int, color: Color, center_alpha: int=255, outer_alpha: int=0) -> Texture:
     """
@@ -446,20 +444,15 @@ def draw_arc_filled(center_x: float, center_y: float,
     """
     Draw a filled in arc. Useful for drawing pie-wedges, or Pac-Man.
 
-    Args:
-        :center_x: x position that is the center of the arc.
-        :center_y: y position that is the center of the arc.
-        :width: width of the arc.
-        :height: height of the arc.
-        :color: color, specified in a list of 3 or 4 bytes in RGB or
+    :param float center_x: x position that is the center of the arc.
+    :param float center_y: y position that is the center of the arc.
+    :param float width: width of the arc.
+    :param float height: height of the arc.
+    :param Color color: color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
-        :start_angle: start angle of the arc in degrees.
-        :end_angle: end angle of the arc in degrees.
-        :tilt_angle: angle the arc is tilted.
-    Returns:
-        None
-    Raises:
-        None
+    :param float start_angle: start angle of the arc in degrees.
+    :param float end_angle: end angle of the arc in degrees.
+    :param float tilt_angle: angle the arc is tilted.
     """
     unrotated_point_list = [[0, 0]]
 
@@ -496,21 +489,18 @@ def draw_arc_outline(center_x: float, center_y: float, width: float,
     """
     Draw the outside edge of an arc. Useful for drawing curved lines.
 
-    Args:
-        :center_x: x position that is the center of the arc.
-        :center_y: y position that is the center of the arc.
-        :width: width of the arc.
-        :height: height of the arc.
-        :color: color, specified in a list of 3 or 4 bytes in RGB or
+    :param float center_x: x position that is the center of the arc.
+    :param float center_y: y position that is the center of the arc.
+    :param float width: width of the arc.
+    :param float height: height of the arc.
+    :param Color color: color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
-        :start_angle: start angle of the arc in degrees.
-        :end_angle: end angle of the arc in degrees.
-        :border_width: width of line in pixels.
-        :angle: angle the arc is tilted.
-    Returns:
-        None
-    Raises:
-        None
+    :param float start_angle: start angle of the arc in degrees.
+    :param float end_angle: end angle of the arc in degrees.
+    :param float border_width: width of line in pixels.
+    :param float tilt_angle: angle the arc is tilted.
+    :param int num_segments: float of triangle segments that make up this
+         circle. Higher is better quality, but slower render time.
     """
     unrotated_point_list = []
 
@@ -559,17 +549,12 @@ def draw_parabola_filled(start_x: float, start_y: float, end_x: float,
     """
     Draws a filled in parabola.
 
-    Args:
-        :start_x: The starting x position of the parabola
-        :start_y: The starting y position of the parabola
-        :end_x: The ending x position of the parabola
-        :height: The height of the parabola
-        :color: The color of the parabola
-        :tilt_angle: The angle of the tilt of the parabola
-    Returns:
-        None
-    Raises:
-        None
+    :param float start_x: The starting x position of the parabola
+    :param float start_y: The starting y position of the parabola
+    :param float end_x: The ending x position of the parabola
+    :param float height: The height of the parabola
+    :param Color color: The color of the parabola
+    :param float tilt_angle: The angle of the tilt of the parabola
 
     """
     center_x = (start_x + end_x) / 2
@@ -587,19 +572,13 @@ def draw_parabola_outline(start_x: float, start_y: float, end_x: float,
     """
     Draws the outline of a parabola.
 
-    Args:
-        :start_x: The starting x position of the parabola
-        :start_y: The starting y position of the parabola
-        :end_x: The ending x position of the parabola
-        :height: The height of the parabola
-        :color: The color of the parabola
-        :border_width: The width of the parabola
-        :tile_angle: The angle of the tilt of the parabola
-    Returns:
-        None
-    Raises:
-        None
-
+    :param float start_x: The starting x position of the parabola
+    :param float start_y: The starting y position of the parabola
+    :param float end_x: The ending x position of the parabola
+    :param float height: The height of the parabola
+    :param Color color: The color of the parabola
+    :param float border_width: The width of the parabola
+    :param float tilt_angle: The angle of the tilt of the parabola
     """
     center_x = (start_x + end_x) / 2
     center_y = start_y + height
@@ -616,51 +595,43 @@ def draw_parabola_outline(start_x: float, start_y: float, end_x: float,
 # --- BEGIN CIRCLE FUNCTIONS # # #
 
 def draw_circle_filled(center_x: float, center_y: float, radius: float,
-                       color: Color):
+                       color: Color,
+                       num_segments: int = 128):
     """
     Draw a filled-in circle.
 
-    Args:
-        :center_x: x position that is the center of the circle.
-        :center_y: y position that is the center of the circle.
-        :radius: width of the circle.
-        :color: color, specified in a list of 3 or 4 bytes in RGB or
+    :param float center_x: x position that is the center of the circle.
+    :param float center_y: y position that is the center of the circle.
+    :param float radius: width of the circle.
+    :param Color color: color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
-        :num_segments (int): float of triangle segments that make up this
+    :param int num_segments: float of triangle segments that make up this
          circle. Higher is better quality, but slower render time.
-    Returns:
-        None
-    Raises:
-        None
     """
     width = radius
     height = radius
-    draw_ellipse_filled(center_x, center_y, width, height, color)
+    draw_ellipse_filled(center_x, center_y, width, height, color, num_segments=num_segments)
 
 
 def draw_circle_outline(center_x: float, center_y: float, radius: float,
-                        color: Color, border_width: float = 1):
+                        color: Color, border_width: float = 1,
+                        num_segments: int = 128):
     """
     Draw the outline of a circle.
 
-    Args:
-        :center_x: x position that is the center of the circle.
-        :center_y: y position that is the center of the circle.
-        :radius: width of the circle.
-        :color: color, specified in a list of 3 or 4 bytes in RGB or
+    :param float center_x: x position that is the center of the circle.
+    :param float center_y: y position that is the center of the circle.
+    :param float radius: width of the circle.
+    :param Color color: color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
-        :border_width: Width of the circle outline in pixels.
-        :num_segments: float of triangle segments that make up this
+    :param float border_width: Width of the circle outline in pixels.
+    :param int num_segments: Int of triangle segments that make up this
          circle. Higher is better quality, but slower render time.
-    Returns:
-        None
-    Raises:
-        None
     """
     width = radius
     height = radius
     draw_ellipse_outline(center_x, center_y, width, height,
-                         color, border_width)
+                         color, border_width, num_segments=num_segments)
 
 
 # --- END CIRCLE FUNCTIONS # # #
@@ -674,20 +645,15 @@ def draw_ellipse_filled(center_x: float, center_y: float,
     """
     Draw a filled in ellipse.
 
-    Args:
-        :center_x: x position that is the center of the circle.
-        :center_y: y position that is the center of the circle.
-        :height: height of the ellipse.
-        :width: width of the ellipse.
-        :color: color, specified in a list of 3 or 4 bytes in RGB or
+    :param float center_x: x position that is the center of the circle.
+    :param float center_y: y position that is the center of the circle.
+    :param float height: height of the ellipse.
+    :param float width: width of the ellipse.
+    :param Color color: color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
-        :angle: Angle in degrees to tilt the ellipse.
-        :num_segments: float of triangle segments that make up this
+    :param float tilt_angle: Angle in degrees to tilt the ellipse.
+    :param int num_segments: float of triangle segments that make up this
          circle. Higher is better quality, but slower render time.
-    Returns:
-        None
-    Raises:
-        None
     """
 
     unrotated_point_list = []
@@ -721,19 +687,14 @@ def draw_ellipse_outline(center_x: float, center_y: float, width: float,
     """
     Draw the outline of an ellipse.
 
-    Args:
-        :center_x: x position that is the center of the circle.
-        :center_y: y position that is the center of the circle.
-        :height: height of the ellipse.
-        :width: width of the ellipse.
-        :color: color, specified in a list of 3 or 4 bytes in RGB or
+    :param float center_x: x position that is the center of the circle.
+    :param float center_y: y position that is the center of the circle.
+    :param float height: height of the ellipse.
+    :param float width: width of the ellipse.
+    :param Color color: color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
-        :border_width: Width of the circle outline in pixels.
-        :tilt_angle: Angle in degrees to tilt the ellipse.
-    Returns:
-        None
-    Raises:
-        None
+    :param float border_width: Width of the circle outline in pixels.
+    :param float tilt_angle: Angle in degrees to tilt the ellipse.
     """
 
     if border_width == 1:
@@ -808,16 +769,10 @@ def _generic_draw_line_strip(point_list: PointList,
     Draw a line strip. A line strip is a set of continuously connected
     line segments.
 
-    Args:
-        :point_list: List of points making up the line. Each point is
+    :param point_list: List of points making up the line. Each point is
          in a list. So it is a list of lists.
-        :color: color, specified in a list of 3 or 4 bytes in RGB or
+    :param Color color: color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
-        :border_width: Width of the line in pixels.
-    Returns:
-        None
-    Raises:
-        None
     """
     program = shader.program(
         vertex_shader=line_vertex_shader,
@@ -853,10 +808,9 @@ def draw_line_strip(point_list: PointList,
     """
     Draw a multi-point line.
 
-    Args:
-        point_list:
-        color:
-        line_width:
+    :param PointList point_list: List of x, y points that make up this strip
+    :param Color color: Color of line strip
+    :param float line_width: Width of the line
     """
     if line_width == 1:
         _generic_draw_line_strip(point_list, color, gl.GL_LINE_STRIP)
@@ -900,19 +854,13 @@ def draw_line(start_x: float, start_y: float, end_x: float, end_y: float,
     """
     Draw a line.
 
-    Args:
-        :start_x: x position of line starting point.
-        :start_y: y position of line starting point.
-        :end_x: x position of line ending point.
-        :end_y: y position of line ending point.
-        :color: color, specified in a list of 3 or 4 bytes in RGB or
+    :param float start_x: x position of line starting point.
+    :param float start_y: y position of line starting point.
+    :param float end_x: x position of line ending point.
+    :param float end_y: y position of line ending point.
+    :param Color color: color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
-        :border_width: Width of the line in pixels.
-    Returns:
-        None
-    Raises:
-        None
-
+    :param float line_width: Width of the line in pixels.
     """
 
     # points = (start_x, start_y), (end_x, end_y)
@@ -929,16 +877,11 @@ def draw_lines(point_list: PointList,
 
     Draw a line between each pair of points specified.
 
-    Args:
-        :point_list: List of points making up the lines. Each point is
+    :param PointList point_list: List of points making up the lines. Each point is
          in a list. So it is a list of lists.
-        :color: color, specified in a list of 3 or 4 bytes in RGB or
+    :param Color color: color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
-        :border_width: Width of the line in pixels.
-    Returns:
-        None
-    Raises:
-        None
+    :param float line_width: Width of the line in pixels.
     """
 
     triangle_point_list = []
@@ -961,16 +904,11 @@ def draw_point(x: float, y: float, color: Color, size: float):
     """
     Draw a point.
 
-    Args:
-        :x: x position of point.
-        :y: y position of point.
-        :color: color, specified in a list of 3 or 4 bytes in RGB or
+    :param float x: x position of point.
+    :param float y: y position of point.
+    :param Color color: color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
-        :size: Size of the point in pixels.
-    Returns:
-        None
-    Raises:
-        None
+    :param float size: Size of the point in pixels.
     """
     draw_rectangle_filled(x, y, size / 2, size / 2, color)
 
@@ -992,16 +930,11 @@ def draw_points(point_list: PointList,
     """
     Draw a set of points.
 
-    Args:
-        :point_list: List of points Each point is
+    :param PointList point_list: List of points Each point is
          in a list. So it is a list of lists.
-        :color: color, specified in a list of 3 or 4 bytes in RGB or
+    :param Color color: color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
-        :size: Size of the point in pixels.
-    Returns:
-        None
-    Raises:
-        None
+    :param float size: Size of the point in pixels.
     """
     new_point_list = _get_points_for_points(point_list, size)
     _generic_draw_line_strip(new_point_list, color, gl.GL_TRIANGLES)
@@ -1038,16 +971,11 @@ def draw_polygon_outline(point_list: PointList,
     """
     Draw a polygon outline. Also known as a "line loop."
 
-    Args:
-        :point_list: List of points making up the lines. Each point is
+    :param PointList point_list: List of points making up the lines. Each point is
          in a list. So it is a list of lists.
-        :color: color, specified in a list of 3 or 4 bytes in RGB or
+    :param Color color: color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
-        :border_width: Width of the line in pixels.
-    Returns:
-        None
-    Raises:
-        None
+    :param int line_width: Width of the line in pixels.
     """
     new_point_list = [point for point in point_list]
     new_point_list.append(point_list[0])
@@ -1073,18 +1001,13 @@ def draw_triangle_filled(x1: float, y1: float,
     """
     Draw a filled in triangle.
 
-    Args:
-        :x1: x value of first coordinate.
-        :y1: y value of first coordinate.
-        :x2: x value of second coordinate.
-        :y2: y value of second coordinate.
-        :x3: x value of third coordinate.
-        :y3: y value of third coordinate.
-        :color: Color of triangle.
-    Returns:
-        None
-    Raises:
-        None
+    :param float x1: x value of first coordinate.
+    :param float y1: y value of first coordinate.
+    :param float x2: x value of second coordinate.
+    :param float y2: y value of second coordinate.
+    :param float x3: x value of third coordinate.
+    :param float y3: y value of third coordinate.
+    :param Color color: Color of triangle.
     """
 
     first_point = (x1, y1)
@@ -1096,24 +1019,20 @@ def draw_triangle_filled(x1: float, y1: float,
 
 def draw_triangle_outline(x1: float, y1: float,
                           x2: float, y2: float,
-                          x3: float, y3: float, color: Color,
+                          x3: float, y3: float,
+                          color: Color,
                           border_width: float = 1):
     """
     Draw a the outline of a triangle.
 
-    Args:
-        :x1: x value of first coordinate.
-        :y1: y value of first coordinate.
-        :x2: x value of second coordinate.
-        :y2: y value of second coordinate.
-        :x3: x value of third coordinate.
-        :y3: y value of third coordinate.
-        :color: Color of triangle.
-        :border_width: Width of the border in pixels. Defaults to 1.
-    Returns:
-        None
-    Raises:
-        None
+    :param float x1: x value of first coordinate.
+    :param float y1: y value of first coordinate.
+    :param float x2: x value of second coordinate.
+    :param float y2: y value of second coordinate.
+    :param float x3: x value of third coordinate.
+    :param float y3: y value of third coordinate.
+    :param Color color: Color of triangle.
+    :param float border_width: Width of the border in pixels. Defaults to 1.
     """
     first_point = [x1, y1]
     second_point = [x2, y2]
@@ -1134,17 +1053,13 @@ def draw_lrtb_rectangle_outline(left: float, right: float, top: float,
     """
     Draw a rectangle by specifying left, right, top, and bottom edges.
 
-    Args:
-        :left: The x coordinate of the left edge of the rectangle.
-        :right: The x coordinate of the right edge of the rectangle.
-        :top: The y coordinate of the top of the rectangle.
-        :bottom: The y coordinate of the rectangle bottom.
-        :color: The color of the rectangle.
-        :border_width: The width of the border in pixels. Defaults to one.
-    Returns:
-        None
-    Raises:
-        :AttributeErrror: Raised if left > right or top < bottom.
+    :param float left: The x coordinate of the left edge of the rectangle.
+    :param float right: The x coordinate of the right edge of the rectangle.
+    :param float top: The y coordinate of the top of the rectangle.
+    :param float bottom: The y coordinate of the rectangle bottom.
+    :param Color color: The color of the rectangle.
+    :param float border_width: The width of the border in pixels. Defaults to one.
+    :Raises AttributeErrror: Raised if left > right or top < bottom.
 
     """
 
@@ -1171,18 +1086,12 @@ def draw_xywh_rectangle_outline(bottom_left_x: float, bottom_left_y: float,
     """
     Draw a rectangle extending from bottom left to top right
 
-    Args:
-        :bottom_left_x: The x coordinate of the left edge of the rectangle.
-        :bottom_left_y: The y coordinate of the bottom of the rectangle.
-        :width: The width of the rectangle.
-        :height: The height of the rectangle.
-        :color: The color of the rectangle.
-        :border_width: The width of the border in pixels. Defaults to one.
-    Returns:
-        None
-    Raises:
-        None
-
+    :param float bottom_left_x: The x coordinate of the left edge of the rectangle.
+    :param float bottom_left_y: The y coordinate of the bottom of the rectangle.
+    :param float width: The width of the rectangle.
+    :param float height: The height of the rectangle.
+    :param Color color: The color of the rectangle.
+    :param float border_width: The width of the border in pixels. Defaults to one.
     """
     center_x = bottom_left_x + (width / 2)
     center_y = bottom_left_y + (height / 2)
@@ -1196,19 +1105,14 @@ def draw_rectangle_outline(center_x: float, center_y: float, width: float,
     """
     Draw a rectangle outline.
 
-    Args:
-        :x: x coordinate of top left rectangle point.
-        :y: y coordinate of top left rectangle point.
-        :width: width of the rectangle.
-        :height: height of the rectangle.
-        :color: color, specified in a list of 3 or 4 bytes in RGB or
+    :param float center_x: x coordinate of top left rectangle point.
+    :param float center_y: y coordinate of top left rectangle point.
+    :param float width: width of the rectangle.
+    :param float height: height of the rectangle.
+    :param Color color: color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
-        :border_width: width of the lines, in pixels.
-        :angle: rotation of the rectangle. Defaults to zero.
-    Returns:
-        None
-    Raises:
-        None
+    :param float border_width: width of the lines, in pixels.
+    :param float tilt_angle: rotation of the rectangle. Defaults to zero.
     """
 
     i_lb = center_x - width / 2 + border_width / 2, center_y - height / 2 + border_width / 2
@@ -1234,21 +1138,17 @@ def draw_rectangle_outline(center_x: float, center_y: float, width: float,
 
 
 def draw_lrtb_rectangle_filled(left: float, right: float, top: float,
-                               bottom: float, color: Color):
+                               bottom: float, color: Color, border_width: int=1):
     """
     Draw a rectangle by specifying left, right, top, and bottom edges.
 
-    Args:
-        :left: The x coordinate of the left edge of the rectangle.
-        :right: The x coordinate of the right edge of the rectangle.
-        :top: The y coordinate of the top of the rectangle.
-        :bottom: The y coordinate of the rectangle bottom.
-        :color: The color of the rectangle.
-        :border_width: The width of the border in pixels. Defaults to one.
-    Returns:
-        None
-    Raises:
-        :AttributeErrror: Raised if left > right or top < bottom.
+    :param float left: The x coordinate of the left edge of the rectangle.
+    :param float right: The x coordinate of the right edge of the rectangle.
+    :param float top: The y coordinate of the top of the rectangle.
+    :param float bottom: The y coordinate of the rectangle bottom.
+    :param Color color: The color of the rectangle.
+    :param float border_width: The width of the border in pixels. Defaults to one.
+    :Raises AttributeError: Raised if left > right or top < bottom.
 
     """
     if left > right:
@@ -1263,7 +1163,7 @@ def draw_lrtb_rectangle_filled(left: float, right: float, top: float,
     center_y = (top + bottom) / 2
     width = right - left + 1
     height = top - bottom + 1
-    draw_rectangle_filled(center_x, center_y, width, height, color)
+    draw_rectangle_filled(center_x, center_y, width, height, color, border_width=border_width)
 
 
 def draw_xywh_rectangle_filled(bottom_left_x: float, bottom_left_y: float,
@@ -1272,17 +1172,11 @@ def draw_xywh_rectangle_filled(bottom_left_x: float, bottom_left_y: float,
     """
     Draw a filled rectangle extending from bottom left to top right
 
-    Args:
-        :bottom_left_x: The x coordinate of the left edge of the rectangle.
-        :bottom_left_y: The y coordinate of the bottom of the rectangle.
-        :width: The width of the rectangle.
-        :height: The height of the rectangle.
-        :color: The color of the rectangle.
-    Returns:
-        None
-    Raises:
-        None
-
+    :param float bottom_left_x: The x coordinate of the left edge of the rectangle.
+    :param float bottom_left_y: The y coordinate of the bottom of the rectangle.
+    :param float width: The width of the rectangle.
+    :param float height: The height of the rectangle.
+    :param Color color: The color of the rectangle.
     """
 
     center_x = bottom_left_x + (width / 2)
@@ -1296,15 +1190,13 @@ def draw_rectangle_filled(center_x: float, center_y: float, width: float,
     """
     Draw a filled-in rectangle.
 
-    Args:
-        :center_x: x coordinate of rectangle center.
-        :center_y: y coordinate of rectangle center.
-        :width: width of the rectangle.
-        :height: height of the rectangle.
-        :color: color, specified in a list of 3 or 4 bytes in RGB or
+    :param float center_x: x coordinate of rectangle center.
+    :param float center_y: y coordinate of rectangle center.
+    :param float width: width of the rectangle.
+    :param float height: height of the rectangle.
+    :param Color color: color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
-        :angle: rotation of the rectangle. Defaults to zero.
-
+    :param float tilt_angle: rotation of the rectangle. Defaults to zero.
     """
     p1 = -width // 2 + center_x, -height // 2 + center_y
     p2 = width // 2 + center_x, -height // 2 + center_y
@@ -1321,27 +1213,21 @@ def draw_rectangle_filled(center_x: float, center_y: float, width: float,
 
 
 def draw_texture_rectangle(center_x: float, center_y: float, width: float,
-                           height: float, texture: Texture, angle: float=0,
-                           alpha: int=255,
-                           repeat_count_x=1, repeat_count_y=1):
+                           height: float, texture: Texture, angle: float = 0,
+                           alpha: int = 255,
+                           repeat_count_x: int = 1, repeat_count_y: int = 1):
     """
     Draw a textured rectangle on-screen.
 
-    Args:
-        :center_x: x coordinate of rectangle center.
-        :center_y: y coordinate of rectangle center.
-        :width: width of the rectangle.
-        :height: height of the rectangle.
-        :texture: identifier of texture returned from load_texture() call
-        :angle: rotation of the rectangle. Defaults to zero.
-        :alpha: Transparency of image. 0 is fully transparent, 255 (default) is visible
-        :repeat_count_x: Unused for now
-        :repeat_count_y: Unused for now
-    Returns:
-        None
-    Raises:
-        None
-
+    :param float center_x: x coordinate of rectangle center.
+    :param float center_y: y coordinate of rectangle center.
+    :param float width: width of the rectangle.
+    :param float height: height of the rectangle.
+    :param int texture: identifier of texture returned from load_texture() call
+    :param float angle: rotation of the rectangle. Defaults to zero.
+    :param float alpha: Transparency of image. 0 is fully transparent, 255 (default) is visible
+    :param int repeat_count_x: Unused for now
+    :param int repeat_count_y: Unused for now
     """
 
     texture.draw(center_x, center_y, width,
@@ -1351,24 +1237,19 @@ def draw_texture_rectangle(center_x: float, center_y: float, width: float,
 
 def draw_xywh_rectangle_textured(bottom_left_x: float, bottom_left_y: float,
                                  width: float, height: float,
-                                 texture: Texture, angle: float=0,
-                                 alpha: int=255,
-                                 repeat_count_x=1, repeat_count_y=1):
+                                 texture: Texture, angle: float = 0,
+                                 alpha: int = 255,
+                                 repeat_count_x: int = 1, repeat_count_y: int = 1):
     """
     Draw a texture extending from bottom left to top right.
 
-    Args:
-        :bottom_left_x: The x coordinate of the left edge of the rectangle.
-        :bottom_left_y: The y coordinate of the bottom of the rectangle.
-        :width: The width of the rectangle.
-        :height: The height of the rectangle.
-        :texture: identifier of texture returned from load_texture() call
-        :angle: rotation of the rectangle. Defaults to zero.
-        :alpha: Transparency of image. 0 is fully transparent, 255 (default) is visible
-    Returns:
-        None
-    Raises:
-        None
+    :param float bottom_left_x: The x coordinate of the left edge of the rectangle.
+    :param float bottom_left_y: The y coordinate of the bottom of the rectangle.
+    :param float width: The width of the rectangle.
+    :param float height: The height of the rectangle.
+    :param int texture: identifier of texture returned from load_texture() call
+    :param float angle: rotation of the rectangle. Defaults to zero.
+    :param int alpha: Transparency of image. 0 is fully transparent, 255 (default) is visible
     """
 
     center_x = bottom_left_x + (width / 2)
@@ -1382,6 +1263,10 @@ def draw_xywh_rectangle_textured(bottom_left_x: float, bottom_left_y: float,
 def get_pixel(x: int, y: int):
     """
     Given an x, y, will return RGB color value of that point.
+
+    :param int x: x location
+    :param int y: y location
+    :returns: Color
     """
     a = (gl.GLubyte * 3)(0)
     gl.glReadPixels(x, y, 1, 1, gl.GL_RGB, gl.GL_UNSIGNED_BYTE, a)
@@ -1391,9 +1276,15 @@ def get_pixel(x: int, y: int):
     return (red, green, blue)
 
 
-def get_image(x=0, y=0, width=None, height=None):
+def get_image(x: int = 0, y: int = 0, width: int = None, height:int = None):
     """
     Get an image from the screen.
+
+    :param int x: Start (left) x location
+    :param int y: Start (top) y location
+    :param int width: Width of image. Leave blank for grabbing the 'rest' of the image
+    :param int height: Height of image. Leave blank for grabbing the 'rest' of the image
+
     You can save the image like:
 
     .. highlight:: python

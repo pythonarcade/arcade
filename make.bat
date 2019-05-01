@@ -6,8 +6,9 @@ IF "%~1"=="" GOTO printdoc
 IF "%~1"=="full" GOTO makefull
 IF "%~1"=="dist" GOTO makedist
 IF "%~1"=="test" GOTO test
+IF "%~1"=="testcov" GOTO test
 IF "%~1"=="fast" GOTO makefast
-IF "%~1"=="doc" GOTO makedoc
+IF "%~1"=="docs" GOTO makedoc
 IF "%~1"=="spelling" GOTO spelling
 IF "%~1"=="deploy_pypi" GOTO deploy_pypi
 IF "%~1"=="deploy_docs" GOTO deploy_docs
@@ -26,7 +27,12 @@ GOTO end
 
 :test
 
-coverage run --source arcade setup.py test
+pytest
+GOTO end
+
+:testcov
+
+pytest --cov=arcade
 GOTO end
 
 :makedist
@@ -120,10 +126,11 @@ rem -- Print documentation
 :printdoc
 
 echo make test        - Runs the tests
+echo make testcov     - Runs the tests with coverage
 echo make dist        - Make the distributables
 echo make full        - Builds the project, installs it, builds
 echo                    documentation, runs unit tests.
-echo make doc           Builds the documentation. Documentation
+echo make docs          Builds the documentation. Documentation
 echo                    will be in doc/build/html
 echo make fast        - Builds and installs the library WITHOUT unit
 echo                    tests.

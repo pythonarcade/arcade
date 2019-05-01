@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.2.3" orientation="orthogonal" renderorder="right-down" width="25" height="20" tilewidth="128" tileheight="128" infinite="0" nextlayerid="3" nextobjectid="1">
- <tileset firstgid="1" name="my_tiles" tilewidth="128" tileheight="128" tilecount="163" columns="0">
+<map version="1.2" tiledversion="1.2.2" orientation="orthogonal" renderorder="right-down" width="25" height="20" tilewidth="128" tileheight="128" infinite="0" nextlayerid="3" nextobjectid="1">
+ <tileset firstgid="1" name="my_tiles" tilewidth="128" tileheight="128" tilecount="149" columns="0">
   <grid orientation="orthogonal" width="1" height="1"/>
   <tile id="0">
    <image width="128" height="128" source="images/tiles/boxCrate.png"/>
@@ -41,9 +41,6 @@
   </tile>
   <tile id="8">
    <image width="128" height="128" source="images/tiles/cactus.png"/>
-  </tile>
-  <tile id="9">
-   <image width="128" height="128" source="images/tiles/chain.png"/>
   </tile>
   <tile id="10">
    <image width="128" height="128" source="images/tiles/dirt.png"/>
@@ -105,18 +102,6 @@
   <tile id="29">
    <image width="128" height="128" source="images/tiles/doorClosed_top.png"/>
   </tile>
-  <tile id="30">
-   <image width="128" height="128" source="images/tiles/doorOpen_mid.png"/>
-  </tile>
-  <tile id="31">
-   <image width="128" height="128" source="images/tiles/doorOpen_top.png"/>
-  </tile>
-  <tile id="32">
-   <image width="128" height="128" source="images/tiles/fence.png"/>
-  </tile>
-  <tile id="33">
-   <image width="128" height="128" source="images/tiles/fenceBroken.png"/>
-  </tile>
   <tile id="34">
    <image width="128" height="128" source="images/tiles/grass.png"/>
   </tile>
@@ -161,6 +146,11 @@
   </tile>
   <tile id="48">
    <image width="128" height="128" source="images/tiles/grassHill_left.png"/>
+   <objectgroup draworder="index">
+    <object id="1" x="0" y="0">
+     <polygon points="0,0 0,128 128,128"/>
+    </object>
+   </objectgroup>
   </tile>
   <tile id="49">
    <image width="128" height="128" source="images/tiles/grassHill_right.png"/>
@@ -204,10 +194,10 @@
    <image width="128" height="128" source="images/tiles/leverRight.png"/>
   </tile>
   <tile id="61">
-   <image width="128" height="128" source="images/tiles/lockBlue.png"/>
+   <image source="images/tiles/lockBlue.png"/>
   </tile>
   <tile id="62">
-   <image width="128" height="128" source="images/tiles/lockGreen.png"/>
+   <image source="images/tiles/lockGreen.png"/>
   </tile>
   <tile id="63">
    <image width="128" height="128" source="images/tiles/lockRed.png"/>
@@ -216,7 +206,7 @@
    <image width="128" height="128" source="images/tiles/lockYellow.png"/>
   </tile>
   <tile id="65">
-   <image width="128" height="128" source="images/tiles/mushroomBrown.png"/>
+   <image source="images/tiles/mushroomBrown.png"/>
   </tile>
   <tile id="66">
    <image width="128" height="128" source="images/tiles/mushroomRed.png"/>
@@ -463,12 +453,6 @@
   <tile id="145">
    <image width="128" height="128" source="images/tiles/stoneRight.png"/>
   </tile>
-  <tile id="146">
-   <image width="128" height="128" source="images/tiles/switchBlue.png"/>
-  </tile>
-  <tile id="147">
-   <image width="128" height="128" source="images/tiles/switchBlue_pressed.png"/>
-  </tile>
   <tile id="148">
    <image width="128" height="128" source="images/tiles/switchGreen.png"/>
   </tile>
@@ -481,21 +465,6 @@
   <tile id="151">
    <image width="128" height="128" source="images/tiles/switchRed_pressed.png"/>
   </tile>
-  <tile id="152">
-   <image width="128" height="128" source="images/tiles/switchYellow.png"/>
-  </tile>
-  <tile id="153">
-   <image width="128" height="128" source="images/tiles/switchYellow_pressed.png"/>
-  </tile>
-  <tile id="154">
-   <image width="128" height="128" source="images/tiles/torch1.png"/>
-  </tile>
-  <tile id="155">
-   <image width="128" height="128" source="images/tiles/torch2.png"/>
-  </tile>
-  <tile id="156">
-   <image width="128" height="128" source="images/tiles/torchOff.png"/>
-  </tile>
   <tile id="157">
    <image width="128" height="128" source="images/tiles/water.png"/>
   </tile>
@@ -504,12 +473,6 @@
   </tile>
   <tile id="159">
    <image width="128" height="128" source="images/tiles/waterTop_low.png"/>
-  </tile>
-  <tile id="160">
-   <image width="128" height="128" source="images/tiles/weight.png"/>
-  </tile>
-  <tile id="161">
-   <image width="128" height="128" source="images/tiles/weightAttached.png"/>
   </tile>
   <tile id="162">
    <image width="128" height="128" source="images/items/coinGold.png"/>

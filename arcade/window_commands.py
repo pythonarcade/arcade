@@ -34,7 +34,7 @@ def get_projection():
     """
     Returns the current projection.
 
-    Returns: Numpy array with projection.
+    :return: Numpy array with projection.
 
     """
     return _projection
@@ -62,8 +62,8 @@ def create_orthogonal_projection(
                        rendering issues at close range.
     :param float far: The distance of the far plane from the camera's origin.
     :param dtype:
-    :rtype: numpy.array
     :return: A projection matrix representing the specified orthogonal perspective.
+    :rtype: numpy.array
 
     .. seealso:: http://msdn.microsoft.com/en-us/library/dd373965(v=vs.85).aspx
     """
@@ -100,10 +100,7 @@ def get_window() -> Union[pyglet.window.Window, None]:
     """
     Return a handle to the current window.
 
-    :param: None
-    :return window: Handle to the current window.
-    :raises: None
-
+    :return: Handle to the current window.
     """
     global _window
     return _window
@@ -113,8 +110,7 @@ def set_window(window: pyglet.window.Window):
     """
     Set a handle to the current window.
 
-    Args:
-        :window: Handle to the current window.
+    :param Window window: Handle to the current window.
     """
     global _window
     _window = window
@@ -125,10 +121,10 @@ def get_scaling_factor(window):
     on MacOS only. Useful in figuring out what's going on with Retina and
     high-res displays.
 
-    Args:
-        window: Handle to window we want to get scaling factor of.
+    :param Window window: Handle to window we want to get scaling factor of.
 
-    Returns:
+    :return: Scaling factor. E.g., 2 would indicate scaled up twice.
+    :rtype: int
 
     """
     from pyglet import compat_platform
@@ -156,15 +152,10 @@ def set_viewport(left: Number, right: Number, bottom: Number, top: Number):
     line up with the pixels on the screen. Otherwise if making a tiled game
     the blocks may not line up well, creating rectangle artifacts.
 
-    Args:
-        :left: Left-most (smallest) x value.
-        :right: Right-most (largest) x value.
-        :bottom: Bottom (smallest) y value.
-        :top: Top (largest) y value.
-    Returns:
-        None
-    Raises:
-        None
+    :param Number left: Left-most (smallest) x value.
+    :param Number right: Right-most (largest) x value.
+    :param Number bottom: Bottom (smallest) y value.
+    :param Number top: Top (largest) y value.
     """
     global _left
     global _right
@@ -199,8 +190,7 @@ def get_viewport() -> (float, float, float, float):
     """
     Get the current viewport settings.
 
-    Returns:
-        Tuple of floats, with left, right, bottom, top
+    :return: Tuple of floats, with left, right, bottom, top
 
     """
     return _left, _right, _bottom, _top
@@ -211,9 +201,6 @@ def close_window():
     Closes the current window, and then runs garbage collection. The garbage collection
     is necessary to prevent crashing when opening/closing windows rapidly (usually during
     unit tests).
-
-    Returns:
-       None
     """
     global _window
 
@@ -259,8 +246,7 @@ def quick_run(time_to_pause: Number):
     Useful for unit testing or continuous integration (CI) testing
     where there is no user interaction.
 
-    Args:
-        :time_to_pause: Number of seconds to pause before automatically
+    :param Number time_to_pause: Number of seconds to pause before automatically
          closing.
 
     """
@@ -282,11 +268,7 @@ def set_background_color(color: Color):
     """
     This specifies the background color of the window.
 
-    Args:
-        :color (tuple): List of 3 or 4 bytes in RGB/RGBA format.
-    Returns:
-        None
-
+    :param Color color: List of 3 or 4 bytes in RGB/RGBA format.
     """
 
     gl.glClearColor(color[0]/255, color[1]/255, color[2]/255, 1)
@@ -297,10 +279,7 @@ def schedule(function_pointer: Callable, interval: Number):
     Schedule a function to be automatically called every ``interval``
     seconds.
 
-    Args:
-        :function_pointer: Pointer to the function to be called.
-        :interval: Interval to call the function.
-    Returns:
-        None
+    :param Callable function_pointer: Pointer to the function to be called.
+    :param Number interval: Interval to call the function.
     """
     pyglet.clock.schedule_interval(function_pointer, interval)

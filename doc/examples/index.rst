@@ -181,6 +181,12 @@ Sprite Non-Player Movement
 
    :ref:`sprite_collect_coins_move_bouncing`
 
+.. figure:: thumbs/sprite_bouncing_coins.png
+   :figwidth: 170px
+
+   :ref:`sprite_bouncing_coins`
+
+
 .. figure:: thumbs/sprite_collect_coins_move_circle.png
    :figwidth: 170px
 
@@ -363,6 +369,17 @@ Procedural Generation
 
    :ref:`procedural_caves_bsp`
 
+.. figure:: thumbs/mountains_midpoint_displacement.png
+   :figwidth: 170px
+
+   :ref:`mountains_midpoint_displacement`
+
+.. figure:: thumbs/mountains_random_walk.png
+   :figwidth: 170px
+
+   :ref:`mountains_random_walk`
+
+
 
 PyMunk
 ------
@@ -455,19 +472,6 @@ Stress Tests
    :figwidth: 170px
 
    :ref:`stress_test_collision`
-
-Decorators
-----------
-
-.. figure:: thumbs/decorator_drawing_example.png
-   :figwidth: 170px
-
-   :ref:`decorator_drawing_example`
-
-.. figure:: thumbs/mountains_midpoint_displacement.png
-   :figwidth: 170px
-
-   :ref:`mountains_midpoint_displacement`
 
 
 Other

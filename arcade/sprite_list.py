@@ -165,6 +165,8 @@ class _SpatialHash:
     def remove_object(self, sprite_to_delete: Sprite):
         """
         Remove a Sprite.
+
+        :param Sprite sprite_to_delete: Pointer to sprite to be removed.
         """
         # Get the corners
         min_x = sprite_to_delete.left
@@ -202,6 +204,14 @@ class _SpatialHash:
     def get_objects_for_box(self, check_object: Sprite) -> List[Sprite]:
         """
         Returns colliding Sprites.
+
+        :param Sprite check_object: Sprite we are checking to see if there are
+            other sprites in the same box(es)
+
+        :return: List of close-by sprites
+        :rtype: List
+
+
         """
         # Get the corners
         min_x = check_object.left
@@ -240,12 +250,12 @@ class SpriteList(Generic[T]):
         """
         Initialize the sprite list
 
-        :param use_spatial_hash: If set to True, this will make moving a sprite
+        :param bool use_spatial_hash: If set to True, this will make moving a sprite
                in the SpriteList slower, but it will speed up collision detection
                with items in the SpriteList. Great for doing collision detection
                with walls/platforms.
-        :param spatial_hash_cell_size:
-        :param is_static: Speeds drawing if this list won't change.
+        :param int spatial_hash_cell_size:
+        :param bool is_static: Speeds drawing if this list won't change.
         """
         # List of sprites in the sprite list
         self.sprite_list = []
@@ -275,6 +285,8 @@ class SpriteList(Generic[T]):
     def append(self, item: T):
         """
         Add a new sprite to the list.
+
+        :param Sprite item: Sprite to add to the list.
         """
         idx = len(self.sprite_list)
         self.sprite_list.append(item)
@@ -299,6 +311,7 @@ class SpriteList(Generic[T]):
     def remove(self, item: T):
         """
         Remove a specific sprite from the list.
+        :param Sprite item: Item to remove from the list
         """
         self.sprite_list.remove(item)
 
@@ -327,15 +340,22 @@ class SpriteList(Generic[T]):
 
     def move(self, change_x: float, change_y: float):
         """
-        Moves all contained Sprites.
+        Moves all Sprites in the list by the same amount.
+
+        :param float change_x: Amount to change all x values by
+        :param float change_y: Amount to change all y values by
         """
         for sprite in self.sprite_list:
             sprite.center_x += change_x
             sprite.center_y += change_y
 
     def preload_textures(self, texture_names):
-        """ Preload a set of textures that will be used for sprites in this
-        sprite list. """
+        """
+        Preload a set of textures that will be used for sprites in this
+        sprite list.
+
+        :param array texture_names: List of file names to load in as textures.
+        """
         self.array_of_texture_names.extend(texture_names)
         self.array_of_images = None
 
@@ -516,10 +536,14 @@ class SpriteList(Generic[T]):
 
         self._calculate_sprite_buffer()
 
-    def update_position(self, sprite):
-        """ Called by the Sprite class to update position, angle, size and color
+    def update_position(self, sprite: Sprite):
+        """
+        Called by the Sprite class to update position, angle, size and color
         of the specified sprite.
-        Necessary for batch drawing of items. """
+        Necessary for batch drawing of items.
+
+        :param Sprite sprite: Sprite to update.
+        """
         if self.vao is None:
             return
 
@@ -530,9 +554,13 @@ class SpriteList(Generic[T]):
         self.sprite_data[i]['size'] = [sprite.width / 2, sprite.height / 2]
         self.sprite_data[i]['color'] = sprite.color + (sprite.alpha, )
 
-    def update_location(self, sprite):
-        """ Called by the Sprite class to update the location in this sprite.
-        Necessary for batch drawing of items. """
+    def update_location(self, sprite: Sprite):
+        """
+        Called by the Sprite class to update the location in this sprite.
+        Necessary for batch drawing of items.
+
+        :param Sprite sprite: Sprite to update.
+        """
         if self.vao is None:
             return
 
@@ -540,9 +568,13 @@ class SpriteList(Generic[T]):
 
         self.sprite_data[i]['position'] = sprite.position
 
-    def update_angle(self, sprite):
-        """ Called by the Sprite class to update the angle in this sprite.
-        Necessary for batch drawing of items. """
+    def update_angle(self, sprite: Sprite):
+        """
+        Called by the Sprite class to update the angle in this sprite.
+        Necessary for batch drawing of items.
+
+        :param Sprite sprite: Sprite to update.
+        """
         if self.vao is None:
             return
 
@@ -602,17 +634,23 @@ class SpriteList(Generic[T]):
         return self.sprite_list.pop()
 
 
-def get_closest_sprite(sprite1: Sprite, sprite_list: SpriteList) -> (Sprite, float):
+def get_closest_sprite(sprite: Sprite, sprite_list: SpriteList) -> (Sprite, float):
     """
     Given a Sprite and SpriteList, returns the closest sprite, and its distance.
+
+    :param Sprite sprite: Target sprite
+    :param SpriteList sprite_list: List to search for closest sprite.
+
+    :return: Closest sprite.
+    :rtype: Sprite
     """
     if len(sprite_list) == 0:
         return None
 
     min_pos = 0
-    min_distance = get_distance_between_sprites(sprite1, sprite_list[min_pos])
+    min_distance = get_distance_between_sprites(sprite, sprite_list[min_pos])
     for i in range(1, len(sprite_list)):
-        distance = get_distance_between_sprites(sprite1, sprite_list[i])
+        distance = get_distance_between_sprites(sprite, sprite_list[i])
         if distance < min_distance:
             min_pos = i
             min_distance = distance

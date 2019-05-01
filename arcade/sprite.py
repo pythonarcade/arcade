@@ -57,8 +57,8 @@ class Sprite:
         that encompass the image. If you are creating a ramp or making better \
         hit-boxes, you can custom-set these.
         :position: A list with the (x, y) of where the sprite is.
-        :repeat_count_x:
-        :repeat_count_y:
+        :repeat_count_x: Unused
+        :repeat_count_y: Unused
         :right: Set/query the sprite location by using the right coordinate. \
         This will be the 'y=x' of the right of the sprite.
         :sprite_lists: List of all the sprite lists this sprite is part of.
@@ -158,10 +158,7 @@ class Sprite:
         Appends a new texture to the list of textures that can be
         applied to this sprite.
 
-        Args:
-            texture:
-
-        Returns:
+        :param Texture texture: Texture to add ot the list of available textures
 
         """
         self.textures.append(texture)
@@ -199,6 +196,9 @@ class Sprite:
     def set_position(self, center_x: float, center_y: float):
         """
         Set a sprite's position
+
+        :param float center_x: New x position of sprite
+        :param float center_y: New y position of sprite
         """
         self._set_position((center_x, center_y))
 
@@ -250,27 +250,32 @@ class Sprite:
 
     points = property(get_points, set_points)
 
-    def _set_collision_radius(self, collision_radius):
+    def _set_collision_radius(self, collision_radius: float):
         """
         Set the collision radius.
-        Note: Final collision checking is done via geometry that was
-        set in get_points/set_points. These points are used in the
-        check_for_collision function. This collision_radius variable
-        is used as a "pre-check." We do a super-fast check with
-        collision_radius and see if the sprites are close. If they are,
-        then we look at the geometry and figure if they really are colliding.
+
+        .. note:: Final collision checking is done via geometry that was
+            set in get_points/set_points. These points are used in the
+            check_for_collision function. This collision_radius variable
+            is used as a "pre-check." We do a super-fast check with
+            collision_radius and see if the sprites are close. If they are,
+            then we look at the geometry and figure if they really are colliding.
+
+        :param float collision_radius: Collision radius
         """
         self._collision_radius = collision_radius
 
     def _get_collision_radius(self):
         """
         Get the collision radius.
-        Note: Final collision checking is done via geometry that was
-        set in get_points/set_points. These points are used in the
-        check_for_collision function. This collision_radius variable
-        is used as a "pre-check." We do a super-fast check with
-        collision_radius and see if the sprites are close. If they are,
-        then we look at the geometry and figure if they really are colliding.
+
+        .. note:: Final collision checking is done via geometry that was
+            set in get_points/set_points. These points are used in the
+            check_for_collision function. This collision_radius variable
+            is used as a "pre-check." We do a super-fast check with
+            collision_radius and see if the sprites are close. If they are,
+            then we look at the geometry and figure if they really are colliding.
+
         """
         if not self._collision_radius:
             self._collision_radius = max(self.width, self.height)
@@ -282,6 +287,11 @@ class Sprite:
         return self._texture.texture_id.value < other.texture.texture_id.value
 
     def clear_spatial_hashes(self):
+        """
+        Search the sprite lists this sprite is a part of, and remove it
+        from any spatial hashes it is a part of.
+
+        """
         for sprite_list in self.sprite_lists:
             if sprite_list.use_spatial_hash and sprite_list.spatial_hash is not None:
                 try:
@@ -496,7 +506,7 @@ class Sprite:
 
     def set_texture(self, texture_no: int):
         """ Sets texture by texture id. Should be renamed but keeping
-        this for backwards compatability. """
+        this for backwards compatibility. """
         if self.textures[texture_no] == self._texture:
             return
 
@@ -510,10 +520,9 @@ class Sprite:
         for sprite_list in self.sprite_lists:
             sprite_list.update_texture(self)
 
-
     def _set_texture2(self, texture: Texture):
         """ Sets texture by texture id. Should be renamed but keeping
-        this for backwards compatability. """
+        this for backwards compatibility. """
         if texture == self._texture:
             return
 
@@ -741,7 +750,11 @@ class AnimatedWalkingSprite(Sprite):
 
 def get_distance_between_sprites(sprite1: Sprite, sprite2: Sprite) -> float:
     """
-    Returns the distance between the two given sprites
+    Returns the distance between the center of two given sprites
+    :param Sprite sprite1: Sprite one
+    :param Sprite sprite2: Sprite two
+    :return: Distance
+    :rtype: float
     """
     distance = math.sqrt((sprite1.center_x - sprite2.center_x) ** 2 + (sprite1.center_y - sprite2.center_y) ** 2)
     return distance

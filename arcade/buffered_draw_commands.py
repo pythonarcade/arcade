@@ -83,15 +83,14 @@ def create_line(start_x: float, start_y: float, end_x: float, end_y: float,
     Create a line to be rendered later. This works faster than draw_line because
     the vertexes are only loaded to the graphics card once, rather than each frame.
 
-    Args:
-        start_x:
-        start_y:
-        end_x:
-        end_y:
-        color:
-        line_width:
+    :param float start_x:
+    :param float start_y:
+    :param float end_x:
+    :param float end_y:
+    :param Color color:
+    :param float line_width:
 
-    Returns: Shape
+    :Returns Shape:
 
     """
 
@@ -110,13 +109,12 @@ def create_line_generic_with_colors(point_list: PointList,
     This function is used by ``create_line_strip`` and ``create_line_loop``,
     just changing the OpenGL type for the line drawing.
 
-    Args:
-        point_list:
-        color_list:
-        shape_mode:
-        line_width:
+    :param PointList point_list:
+    :param Iterable[Color] color_list:
+    :param float shape_mode:
+    :param float line_width:
 
-    Returns: Shape
+    :Returns Shape:
     """
     program = shader.program(
         vertex_shader='''
@@ -192,37 +190,32 @@ def create_line_strip(point_list: PointList,
     Create a multi-point line to be rendered later. This works faster than draw_line because
     the vertexes are only loaded to the graphics card once, rather than each frame.
 
-    Args:
-        point_list:
-        color:
-        line_width:
+    :param PointList point_list:
+    :param Color color:
+    :param PointList line_width:
 
-    Returns:
+    :Returns Shape:
 
     """
     if line_width == 1:
         return create_line_generic(point_list, color, gl.GL_LINE_STRIP, line_width)
     else:
-        if line_width == 1:
-            return create_line_generic_with_colors(point_list, color_list, gl.GL_LINES, line_width)
-        else:
+        triangle_point_list = []
+        new_color_list = []
+        for i in range(1, len(point_list)):
+            start_x = point_list[i - 1][0]
+            start_y = point_list[i - 1][1]
+            end_x = point_list[i][0]
+            end_y = point_list[i][1]
+            color1 = color
+            color2 = color
+            points = _get_points_for_thick_line(start_x, start_y, end_x, end_y, line_width)
+            new_color_list += color1, color2, color1, color2
+            triangle_point_list += points[1], points[0], points[2], points[3]
 
-            triangle_point_list = []
-            new_color_list = []
-            for i in range(1, len(point_list)):
-                start_x = point_list[i - 1][0]
-                start_y = point_list[i - 1][1]
-                end_x = point_list[i][0]
-                end_y = point_list[i][1]
-                color1 = color
-                color2 = color
-                points = _get_points_for_thick_line(start_x, start_y, end_x, end_y, line_width)
-                new_color_list += color1, color2, color1, color2
-                triangle_point_list += points[1], points[0], points[2], points[3]
+            shape = create_triangles_filled_with_colors(triangle_point_list, new_color_list)
 
-                shape = create_triangles_filled_with_colors(triangle_point_list, new_color_list)
-
-            return shape
+        return shape
 
 
 def create_line_loop(point_list: PointList,
@@ -231,12 +224,11 @@ def create_line_loop(point_list: PointList,
     Create a multi-point line loop to be rendered later. This works faster than draw_line because
     the vertexes are only loaded to the graphics card once, rather than each frame.
 
-    Args:
-        point_list:
-        color:
-        line_width:
+    :param PointList point_list:
+    :param Color color:
+    :param float line_width:
 
-    Returns:
+    :Returns Shape:
 
     """
     point_list = list(point_list) + [point_list[0]]
@@ -249,12 +241,11 @@ def create_lines(point_list: PointList,
     Create a multi-point line loop to be rendered later. This works faster than draw_line because
     the vertexes are only loaded to the graphics card once, rather than each frame.
 
-    Args:
-        point_list:
-        color:
-        line_width:
+    :param PointList point_list:
+    :param Color color:
+    :param float line_width:
 
-    Returns:
+    :Returns Shape:
 
     """
     return create_line_generic(point_list, color, gl.GL_LINES, line_width)
@@ -293,12 +284,10 @@ def create_polygon(point_list: PointList,
     Draw a convex polygon. This will NOT draw a concave polygon.
     Because of this, you might not want to use this function.
 
-    Args:
-        point_list:
-        color:
-        border_width:
+    :param PointList point_list:
+    :param color:
 
-    Returns:
+    :Returns Shape:
 
     """
     # We assume points were given in order, either clockwise or counter clockwise.
@@ -320,15 +309,14 @@ def create_rectangle_filled(center_x: float, center_y: float, width: float,
     """
     Create a filled rectangle.
 
-    Args:
-        center_x:
-        center_y:
-        width:
-        height:
-        color:
-        tilt_angle:
+    :param float center_x:
+    :param float center_y:
+    :param float width:
+    :param float height:
+    :param Color color:
+    :param float tilt_angle:
 
-    Returns:
+    :Returns Shape:
 
     """
     return create_rectangle(center_x, center_y, width, height,
@@ -576,17 +564,16 @@ def create_ellipse_filled_with_colors(center_x: float, center_y: float,
     """
     Draw an ellipse, and specify inside/outside color. Used for doing gradients.
 
-    Args:
-        center_x:
-        center_y:
-        width:
-        height:
-        outside_color:
-        inside_color:
-        tilt_angle:
-        num_segments:
+    :param float center_x:
+    :param float center_y:
+    :param float width:
+    :param float height:
+    :param Color outside_color:
+    :param float inside_color:
+    :param float tilt_angle:
+    :param int num_segments:
 
-    Returns:
+    :Returns Shape:
 
     """
 
