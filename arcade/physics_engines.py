@@ -110,10 +110,24 @@ class PhysicsEnginePlatformer:
             return False
     
     def enable_multi_jump(self, allowed_jumps: int):
+        """
+        Enables multi-jump.
+        allowed_jumps should include the initial jump.
+        (1 allows only a single jump, 2 enables double-jump, etc)
+
+        If you enable multi-jump, you MUST call increment_jump_counter()
+        every time the player jumps. Otherwise they can jump infinitely.
+        """
         self.allowed_jumps = allowed_jumps
         self.allow_multi_jump = True
     
     def disable_multi_jump(self):
+        """
+        Disables multi-jump.
+
+        Calling this function also removes the requirement to 
+        call increment_jump_counter() every time the player jumps.
+        """
         self.allow_multi_jump = False
         self.allowed_jumps = 1
         self.jumps_since_ground = 0
