@@ -52,6 +52,14 @@ Window Class
     :undoc-members:
     :show-inheritance:
 
+Game Controllers
+----------------
+
+.. automodule:: arcade.joysticks
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Geometry Commands
 -----------------
 

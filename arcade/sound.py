@@ -7,6 +7,7 @@ import typing
 import pyglet
 from arcade.monkey_patch_pyglet import *
 
+
 class Sound:
 
     def __init__(self, file_name: str):
@@ -19,6 +20,7 @@ class Sound:
             player.play()
         else:
             self.player.play()
+
 
 class PlaysoundException(Exception):
     pass
@@ -38,6 +40,7 @@ def _load_sound_library():
 
     import pyglet_ffmpeg2
     pyglet_ffmpeg2.load_ffmpeg()
+
 
 # Initialize static function variable
 _load_sound_library._sound_library_loaded = False
@@ -72,5 +75,6 @@ def play_sound(sound):
 
 def stop_sound(sound: pyglet.media.Source):
     sound.pause()
+
 
 _load_sound_library()

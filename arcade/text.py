@@ -99,26 +99,20 @@ def draw_text(text: str,
               ):
     """
 
-    Args:
-        text: Text to draw
-        start_x:
-        start_y:
-        color:
-        font_size:
-        width:
-        align:
-        font_name:
-        bold:
-        italic:
-        anchor_x:
-        anchor_y:
-        rotation:
-
-    Returns:
-
+    :param str text: Text to draw
+    :param float start_x:
+    :param float start_y:
+    :param Color color: Color of the text
+    :param float font_size: Size of the text
+    :param float width:
+    :param str align:
+    :param str font_name:
+    :param bool bold:
+    :param bool italic:
+    :param str anchor_x:
+    :param str anchor_y:
+    :param float rotation:
     """
-
-
 
     # Scale the font up, so it matches with the sizes of the old code back
     # when Pyglet drew the text.

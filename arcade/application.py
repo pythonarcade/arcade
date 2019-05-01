@@ -9,7 +9,6 @@ from arcade.window_commands import set_viewport
 from arcade.window_commands import get_viewport
 from arcade.window_commands import set_window
 
-import pyglet
 import pyglet.gl as gl
 from arcade.monkey_patch_pyglet import *
 
@@ -31,13 +30,13 @@ class Window(pyglet.window.Window):
                  antialiasing=True):
         """
         Construct a new window
-        Args:
-            width: Window width
-            height: Window height
-            title: Title (appears in title bar)
-            fullscreen: Should this be full screen?
-            resizable: Can the user resize the window?
-            update_rate: How refuent to update the window.
+
+        :param float width: Window width
+        :param float height: Window height
+        :param str title: Title (appears in title bar)
+        :param bool fullscreen: Should this be full screen?
+        :param bool resizable: Can the user resize the window?
+        :param float update_rate: How refuent to update the window.
         """
         if antialiasing:
             config = pyglet.gl.Config(major_version=3,
@@ -76,8 +75,7 @@ class Window(pyglet.window.Window):
         """
         Move everything. For better consistency in naming, use ``on_update`` instead.
 
-        Args:
-            :dt (float): Time interval since the last time the function was called.
+        :param float delta_time: Time interval since the last time the function was called.
 
         """
         pass
@@ -86,8 +84,7 @@ class Window(pyglet.window.Window):
         """
         Move everything. Perform collision checks. Do all the game logic here.
 
-        Args:
-            :dt (float): Time interval since the last time the function was called.
+        :param float delta_time: Time interval since the last time the function was called.
 
         """
         pass
@@ -96,6 +93,8 @@ class Window(pyglet.window.Window):
         """
         Set how often the screen should be updated.
         For example, self.set_update_rate(1 / 20) will set the update rate to 60 fps
+
+        :param float rate: Update frequency in seconds
         """
         pyglet.clock.unschedule(self.update)
         pyglet.clock.schedule_interval(self.update, rate)
@@ -106,14 +105,10 @@ class Window(pyglet.window.Window):
         """
         Override this function to add mouse functionality.
 
-        Args:
-            x: x position of mouse
-            y: y position of mouse
-            dx: Change in x since the last time this method was called
-            dy: Change in y since the last time this method was called
-
-        Returns:
-            None
+        :param float x: x position of mouse
+        :param float y: y position of mouse
+        :param float dx: Change in x since the last time this method was called
+        :param float dy: Change in y since the last time this method was called
         """
         pass
 
@@ -121,14 +116,10 @@ class Window(pyglet.window.Window):
         """
         Override this function to add mouse button functionality.
 
-        Args:
-            x: x position of the mouse
-            y: y position of the mouse
-            button: What button was hit. One of: arcade.MOUSE_BUTTON_LEFT, arcade.MOUSE_BUTTON_RIGHT, arcade.MOUSE_BUTTON_MIDDLE
-            modifiers: Shift/click, ctrl/click, etc.
-
-        Returns:
-            None
+        :param float x: x position of the mouse
+        :param float y: y position of the mouse
+        :param int button: What button was hit. One of: arcade.MOUSE_BUTTON_LEFT, arcade.MOUSE_BUTTON_RIGHT, arcade.MOUSE_BUTTON_MIDDLE
+        :param int modifiers: Shift/click, ctrl/click, etc.
         """
         pass
 
@@ -136,16 +127,12 @@ class Window(pyglet.window.Window):
         """
         Override this function to add mouse button functionality.
 
-        Args:
-            x: x position of mouse
-            y: y position of mouse
-            dx: Change in x since the last time this method was called
-            dy: Change in y since the last time this method was called
-            buttons: Which button is pressed
-            modifiers: Ctrl, shift, etc.
-
-        Returns:
-            None
+        :param float x: x position of mouse
+        :param float y: y position of mouse
+        :param float dx: Change in x since the last time this method was called
+        :param float dy: Change in y since the last time this method was called
+        :param int buttons: Which button is pressed
+        :param int modifiers: Ctrl, shift, etc.
         """
         self.on_mouse_motion(x, y, dx, dy)
 
@@ -154,14 +141,10 @@ class Window(pyglet.window.Window):
         """
         Override this function to add mouse button functionality.
 
-        Args:
-            x:
-            y:
-            button:
-            modifiers:
-
-        Returns:
-
+        :param float x:
+        :param float y:
+        :param int button:
+        :param int modifiers:
         """
 
         pass
@@ -170,27 +153,19 @@ class Window(pyglet.window.Window):
         """
         User moves the scroll wheel.
 
-        Args:
-            x:
-            y:
-            scroll_x:
-            scroll_y:
-
-        Returns:
-
+        :param int x:
+        :param int y:
+        :param int scroll_x:
+        :param int scroll_y:
         """
         pass
 
-    def set_mouse_visible(self, visible=True):
+    def set_mouse_visible(self, visible: bool=True):
         """
         If true, user can see the mouse cursor while it is over the window. Set false,
         the mouse is not visible. Default is true.
 
-        Args:
-            visible:
-
-        Returns:
-
+        :param bool visible:
         """
         super().set_mouse_visible(visible)
 
@@ -198,12 +173,8 @@ class Window(pyglet.window.Window):
         """
         Override this function to add key press functionality.
 
-        Args:
-            symbol:
-            modifiers:
-
-        Returns:
-
+        :param int symbol: Key that was hit
+        :param int modifiers: If it was shift/ctrl/alt
         """
         pass
 
@@ -211,21 +182,14 @@ class Window(pyglet.window.Window):
         """
         Override this function to add key release functionality.
 
-        Args:
-            symbol:
-            modifiers:
-
-        Returns:
-
+        :param int symbol: Key that was hit
+        :param int modifiers: If it was shift/ctrl/alt
         """
         pass
 
     def on_draw(self):
         """
         Override this function to add your custom drawing code.
-
-        Returns:
-            None
         """
 
         pass
@@ -235,12 +199,8 @@ class Window(pyglet.window.Window):
         Override this function to add custom code to be called any time the window
         is resized.
 
-        Args:
-            width:
-            height:
-
-        Returns:
-
+        :param float width: New width
+        :param float height: New height
         """
         original_viewport = self.get_viewport()
 
@@ -255,9 +215,8 @@ class Window(pyglet.window.Window):
     def set_min_size(self, width: float, height: float):
         """ Wrap the Pyglet window call to set minimum size
 
-        Args:
-            :width: width in pixels.
-            :height: height in pixels.
+        :param float width: width in pixels.
+        :param float height: height in pixels.
         """
 
         if self._resizable:
@@ -268,13 +227,9 @@ class Window(pyglet.window.Window):
     def set_max_size(self, width: float, height: float):
         """ Wrap the Pyglet window call to set maximum size
 
-        Args:
-            :width: width in pixels.
-            :height: height in pixels.
-        Returns:
-            None
-        Raises:
-            ValueError
+        :param float width: width in pixels.
+        :param float height: height in pixels.
+        :Raises ValueError:
 
         """
 
@@ -287,12 +242,8 @@ class Window(pyglet.window.Window):
         """
         Ignore the resizable flag and set the size
 
-        Args:
-            width:
-            height:
-
-        Returns:
-
+        :param float width:
+        :param float height:
         """
 
         super().set_size(width, height)
@@ -301,8 +252,7 @@ class Window(pyglet.window.Window):
         """
         Get the size of the window.
 
-        Returns:
-            (width, height)
+        :returns: (width, height)
         """
 
         return super().get_size()
@@ -311,8 +261,7 @@ class Window(pyglet.window.Window):
         """
         Return the X/Y coordinates of the window
 
-        Returns:
-
+        :returns: x, y of window location
         """
 
         return super().get_location()
@@ -321,11 +270,7 @@ class Window(pyglet.window.Window):
         """
         Set if the window is visible or not. Normally, a program's window is visible.
 
-        Args:
-            visible:
-
-        Returns:
-
+        :param bool visible:
         """
         super().set_visible(visible)
 
@@ -334,14 +279,10 @@ class Window(pyglet.window.Window):
         Set the viewport. (What coordinates we can see.
         Used to scale and/or scroll the screen.)
 
-        Args:
-            left:
-            right:
-            bottom:
-            top:
-
-        Returns:
-
+        :param Number left:
+        :param Number right:
+        :param Number bottom:
+        :param Number top:
         """
         set_viewport(left, right, bottom, top)
 
@@ -349,15 +290,11 @@ class Window(pyglet.window.Window):
         """ Get the viewport. (What coordinates we can see.) """
         return get_viewport()
 
-    def test(self, frames=10):
+    def test(self, frames: int = 10):
         """
         Used by unit test cases. Runs the event loop a few times and stops.
 
-        Args:
-            frames:
-
-        Returns:
-
+        :param int frames:
         """
         for i in range(frames):
             self.switch_to()
@@ -375,14 +312,14 @@ def open_window(width: Number, height: Number, window_title: str, resizable: boo
     the window handle is stored in a global, but it makes things easier for programmers if they don't
     have to track a window pointer.
 
-    Args:
-        :window_title: Title of the window.
-        :width: Width of the window.
-        :height: Height of the window.
-        :resizable: Whether the window can be user-resizable.
+    :param Number width: Width of the window.
+    :param Number height: Height of the window.
+    :param str window_title: Title of the window.
+    :param bool resizable: Whether the window can be user-resizable.
+    :param bool antialiasing: Smooth the graphics?
 
-    Returns:
-        arcade.Window
+    :returns: Handle to window
+    :rtype arcade.Window:
     """
 
     global _window

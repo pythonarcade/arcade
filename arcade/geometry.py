@@ -15,13 +15,11 @@ def are_polygons_intersecting(poly_a: PointList,
     """
     Return True if two polygons intersect.
 
-    Args:
-        :poly_a (tuple): List of points that define the first polygon.
-        :poly_b (tuple): List of points that define the second polygon.
-    Returns:
-        bool
-    Raises:
-        None
+    :param PointList poly_a: List of points that define the first polygon.
+    :param PointList poly_b: List of points that define the second polygon.
+    :Returns: True or false depending if polygons intersect
+
+    :rtype bool:
     """
 
     for polygon in (poly_a, poly_b):
@@ -62,12 +60,10 @@ def check_for_collision(sprite1: Sprite, sprite2: Sprite) -> bool:
     """
     Check for a collision between two sprites.
 
-    Args:
-        sprite1:
-        sprite2:
+    :param sprite1: First sprite
+    :param sprite2: Second sprite
 
-    Returns:
-        boolean
+    :Returns: True or False depending if the sprites intersect.
     """
     if not isinstance(sprite1, Sprite):
         raise TypeError("Parameter 1 is not an instance of the Sprite class.")
@@ -111,32 +107,30 @@ def _check_for_collision(sprite1: Sprite, sprite2: Sprite) -> bool:
     return are_polygons_intersecting(sprite1.points, sprite2.points)
 
 
-def check_for_collision_with_list(sprite1: Sprite,
+def check_for_collision_with_list(sprite: Sprite,
                                   sprite_list: SpriteList) -> List[Sprite]:
     """
     Check for a collision between a sprite, and a list of sprites.
 
-    Args:
-        sprite1:
-        sprite_list:
+    :param Sprite sprite: Sprite to check
+    :param SpriteList sprite_list: SpriteList to check against
 
-    Returns:
-        List of sprites colliding, or an empty list.
+    :returns: List of sprites colliding, or an empty list.
     """
-    if not isinstance(sprite1, Sprite):
+    if not isinstance(sprite, Sprite):
         raise TypeError("Parameter 1 is not an instance of the Sprite class.")
     if not isinstance(sprite_list, SpriteList):
         raise TypeError(f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList.")
 
     if sprite_list.use_spatial_hash:
-        sprite_list_to_check = sprite_list.spatial_hash.get_objects_for_box(sprite1)
+        sprite_list_to_check = sprite_list.spatial_hash.get_objects_for_box(sprite)
         # checks_saved = len(sprite_list) - len(sprite_list_to_check)
     else:
         sprite_list_to_check = sprite_list
 
     collision_list = [sprite2
                       for sprite2 in sprite_list_to_check
-                        if sprite1 is not sprite2 and _check_for_collision(sprite1, sprite2)]
+                      if sprite is not sprite2 and _check_for_collision(sprite, sprite2)]
 
     # collision_list = []
     # for sprite2 in sprite_list_to_check:
