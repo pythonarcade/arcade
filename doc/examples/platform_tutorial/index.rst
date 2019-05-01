@@ -272,7 +272,7 @@ we'll show you how to specify the hitbox.
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/06_coins_and_sound.py
     :caption: Add Coins and Sound
     :linenos:
-    :emphasize-lines: 55-57, 71, 99-104, 128, 149-159
+    :emphasize-lines: 55-57, 71, 99-104, 119, 128, 149-159
 
 .. note::
 

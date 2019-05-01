@@ -238,7 +238,6 @@ class MyGame(arcade.Window):
 
         # See if the user got to the end of the level
         if self.player_sprite.center_x >= self.end_of_map:
-            print("ADVANCE ****")
             # Advance to the next level
             self.level += 1
 
@@ -249,7 +248,6 @@ class MyGame(arcade.Window):
             self.view_left = 0
             self.view_bottom = 0
             changed_viewport = True
-
 
         # --- Manage Scrolling ---
 
