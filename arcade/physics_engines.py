@@ -103,8 +103,8 @@ class PhysicsEnginePlatformer:
 
         self.player_sprite.center_y += 2
 
-        if len(hit_list) > 0 or (self.allow_multi_jump == True and
-                                 self.jumps_since_ground < self.allowed_jumps):
+        if len(hit_list) > 0 or self.allow_multi_jump == True and\
+                                self.jumps_since_ground < self.allowed_jumps:
             return True
         else:
             return False
@@ -112,6 +112,11 @@ class PhysicsEnginePlatformer:
     def enable_multi_jump(self, allowed_jumps: int):
         self.allowed_jumps = allowed_jumps
         self.allow_multi_jump = True
+    
+    def disable_multi_jump(self):
+        self.allow_multi_jump = False
+        self.allowed_jumps = 1
+        self.jumps_since_ground = 0
         
     def increment_jump_counter(self):
         """
