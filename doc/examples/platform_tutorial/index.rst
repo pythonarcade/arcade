@@ -1,6 +1,9 @@
 Build Your Own 2D Platformer Game
 =================================
 
+.. image:: intro_screen.png
+    :width: 70%
+
 (To be presented at the `2019 PyCon`_ in Cleveland, Ohio.)
 
 In this tutorial, use Python 3.6+ and the Arcade_ library to create your own 2D platformer.
@@ -11,16 +14,25 @@ Add coins, ramps, moving platforms, enemies, and more.
 .. _2019 PyCon: https://us.pycon.org/2019/about/
 .. _Arcade: http://arcade.academy
 
-The tutorial is divided into three parts:
+The tutorial is divided into these parts:
 
 * :ref:`platformer_part_one`
 * :ref:`platformer_part_two`
 * :ref:`platformer_part_three`
+* :ref:`platformer_part_four`
+* :ref:`platformer_part_five`
+* :ref:`platformer_part_six`
+* :ref:`platformer_part_seven`
+* :ref:`platformer_part_eight`
+* :ref:`platformer_part_nine`
+
+At the end of each step, if you have time explore the items listed in the "Note".
+
 
 .. _platformer_part_one:
 
-Part One - Create a Platformer
-------------------------------
+Step 1 - Install and Open a Window
+----------------------------------
 
 
 Installation
@@ -69,6 +81,15 @@ tutorial.)
       * Documentation for :ref:`color`
       * Documentation for :ref:`csscolor`
 
+    * Read the documentation for the `Window <../../arcade.html#arcade.Window>`_ class.
+
+.. _platformer_part_two:
+
+Step 2 - Add Sprites
+--------------------
+
+.. image:: listing_02.png
+    :width: 70%
 
 Setup vs. Init
 ~~~~~~~~~~~~~~
@@ -115,7 +136,7 @@ x and y at the same time.
 .. code-block::
 
     self.player_sprite.center_x = 64
-    self.player_sprite.center_y = 106
+    self.player_sprite.center_y = 120
 
 Finally, all instances of the ``Sprite`` class need to go in a ``SpriteList``
 class.
@@ -135,12 +156,14 @@ which holds only the player.
 
 Notice that the code creates ``Sprites`` three ways:
 
-* Creating a ``Sprite`` class, positioning it, and adding it to
+* Creating a ``Sprite`` class, positioning it, adding it to the list
+* Create a series of sprites in a loop
+* Create a series of sprites using coordinates
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/02_draw_sprites.py
     :caption: 02_draw_sprites - Draw and Position Sprites
     :linenos:
-    :emphasize-lines: 11-14, 27-34, 39-43, 45-76, 84-87
+    :emphasize-lines: 11-14, 27-34, 39-43, 45-69, 77-80
 
 .. note::
 
@@ -150,9 +173,10 @@ Notice that the code creates ``Sprites`` three ways:
     * Use different images for sprites (see the images folder).
     * Practice placing individually, via a loop, and by coordinates in a list.
 
+.. _platformer_part_three:
 
-Add User Control
-~~~~~~~~~~~~~~~~
+Step 3 - Add User Control
+-------------------------
 
 Now we need to be able to get the user to move around. Here how to do it:
 
@@ -173,7 +197,7 @@ Now we need to be able to get the user to move around. Here how to do it:
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/03_user_control.py
     :caption: 03_user_control.py - Control User By Keyboard
     :linenos:
-    :emphasize-lines: 16-17, 84-85, 98-108, 110-120, 122-127
+    :emphasize-lines: 16-17, 77-78, 91-101, 103-113, 115-120
 
 .. note::
 
@@ -181,9 +205,10 @@ Now we need to be able to get the user to move around. Here how to do it:
     method of keyboard control, see the differences between this and the
     :ref:`sprite_move_keyboard_better` example.
 
+.. _platformer_part_four:
 
-Add Gravity
-~~~~~~~~~~~
+Step 4 - Add Gravity
+--------------------
 
 The example above works great for top-down, but what if it is a side view with
 jumping? We need to add gravity.
@@ -193,7 +218,7 @@ The example below will allow the user to jump and walk on platforms.
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/04_add_gravity.py
     :caption: 04_add_gravity.py - Add Gravity
     :linenos:
-    :emphasize-lines: 18-19, 87-89, 105-107, 116-119
+    :emphasize-lines: 18-19, 79-82, 98-101, 109-112
 
 .. note::
 
@@ -201,9 +226,10 @@ The example below will allow the user to jump and walk on platforms.
     Lower values for both will make for a more "floaty" character. Higher values make
     for a faster-paced game.
 
+.. _platformer_part_five:
 
-Add Scrolling
-~~~~~~~~~~~~~
+Step 5 - Add Scrolling
+----------------------
 
 We can have our window be a small viewport into a much larger world by adding
 scrolling.
@@ -214,15 +240,19 @@ before the camera starts scrolling.
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/05_scrolling.py
     :caption: Add Scrolling
     :linenos:
-    :emphasize-lines: 21-26, 51-53, 144-184
+    :emphasize-lines: 21-26, 51-53, 137-177
 
 .. note::
 
     Work at changing the viewport margins to something that you like.
 
+.. _platformer_part_six:
 
-Add Coins And Sound
-~~~~~~~~~~~~~~~~~~~
+Step 6 - Add Coins And Sound
+----------------------------
+
+.. image:: listing_06.png
+    :width: 70%
 
 The code below adds coins that we can collect. It also adds a sound to be played
 when the user hits a coin, or presses the jump button.
@@ -254,8 +284,10 @@ we'll show you how to specify the hitbox.
     value. Then you could have coins worth one point, and gems worth 5, 10, and
     15 points.
 
-Display The Score
-~~~~~~~~~~~~~~~~~
+.. _platformer_part_seven:
+
+Step 7 - Display The Score
+--------------------------
 
 Now that we can collect coins and get points,
 we need a way to display the score on the screen.
@@ -290,10 +322,13 @@ Explore On Your Own
   See :ref:`sprite_face_left_or_right`
 * Add instruction and game over screens. See :ref:`instruction_and_game_over_screens`
 
-.. _platformer_part_two:
+.. _platformer_part_eight:
 
-Part Two - Use a Map Editor
----------------------------
+Step 8 - Use a Map Editor
+-------------------------
+
+.. image:: use_tileset.png
+    :width: 70%
 
 Create a Map File
 ~~~~~~~~~~~~~~~~~
@@ -401,13 +436,10 @@ Test the Level
     .. image:: collision_editor.png
        :scale: 20%
 
-.. _platformer_part_three:
+.. _platformer_part_nine:
 
-Part Three - Spruce It Up
--------------------------
-
-Multiple Levels and Other Layers
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Step 9 - Multiple Levels and Other Layers
+-----------------------------------------
 
 Here's an expanded example:
 

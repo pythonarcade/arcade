@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.2.2" orientation="orthogonal" renderorder="right-down" width="25" height="20" tilewidth="128" tileheight="128" infinite="0" nextlayerid="3" nextobjectid="1">
- <tileset firstgid="1" name="my_tiles" tilewidth="128" tileheight="128" tilecount="149" columns="0">
+<map version="1.2" tiledversion="1.2.3" orientation="orthogonal" renderorder="right-down" width="25" height="20" tilewidth="128" tileheight="128" infinite="0" nextlayerid="3" nextobjectid="1">
+ <tileset firstgid="1" name="my_tiles" tilewidth="128" tileheight="128" tilecount="146" columns="0">
   <grid orientation="orthogonal" width="1" height="1"/>
   <tile id="0">
    <image width="128" height="128" source="images/tiles/boxCrate.png"/>
@@ -193,20 +193,11 @@
   <tile id="60">
    <image width="128" height="128" source="images/tiles/leverRight.png"/>
   </tile>
-  <tile id="61">
-   <image source="images/tiles/lockBlue.png"/>
-  </tile>
-  <tile id="62">
-   <image source="images/tiles/lockGreen.png"/>
-  </tile>
   <tile id="63">
    <image width="128" height="128" source="images/tiles/lockRed.png"/>
   </tile>
   <tile id="64">
    <image width="128" height="128" source="images/tiles/lockYellow.png"/>
-  </tile>
-  <tile id="65">
-   <image source="images/tiles/mushroomBrown.png"/>
   </tile>
   <tile id="66">
    <image width="128" height="128" source="images/tiles/mushroomRed.png"/>
