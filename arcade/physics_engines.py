@@ -85,7 +85,7 @@ class PhysicsEnginePlatformer:
         self.gravity_constant = gravity_constant
         self.jumps_since_ground = 0
         self.allowed_jumps = 1
-        self.support_multi_jump = False
+        self.allow_multi_jump = False
 
     def can_jump(self) -> bool:
         """
@@ -109,7 +109,7 @@ class PhysicsEnginePlatformer:
         else:
             return False
     
-    def allow_multi_jump(self, allowed_jumps: int):
+    def enable_multi_jump(self, allowed_jumps: int):
         self.allowed_jumps = allowed_jumps
         self.allow_multi_jump = True
         
