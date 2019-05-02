@@ -83,6 +83,9 @@ class PhysicsEnginePlatformer:
         self.player_sprite = player_sprite
         self.platforms = platforms
         self.gravity_constant = gravity_constant
+        self.jumps_since_ground = 0
+        self.allowed_jumps = 1
+        self.allow_multi_jump = False
 
     def can_jump(self) -> bool:
         """
@@ -100,10 +103,41 @@ class PhysicsEnginePlatformer:
 
         self.player_sprite.center_y += 2
 
-        if len(hit_list) > 0:
+        if len(hit_list) > 0 or self.allow_multi_jump == True and\
+                                self.jumps_since_ground < self.allowed_jumps:
             return True
         else:
             return False
+    
+    def enable_multi_jump(self, allowed_jumps: int):
+        """
+        Enables multi-jump.
+        allowed_jumps should include the initial jump.
+        (1 allows only a single jump, 2 enables double-jump, etc)
+
+        If you enable multi-jump, you MUST call increment_jump_counter()
+        every time the player jumps. Otherwise they can jump infinitely.
+        """
+        self.allowed_jumps = allowed_jumps
+        self.allow_multi_jump = True
+    
+    def disable_multi_jump(self):
+        """
+        Disables multi-jump.
+
+        Calling this function also removes the requirement to 
+        call increment_jump_counter() every time the player jumps.
+        """
+        self.allow_multi_jump = False
+        self.allowed_jumps = 1
+        self.jumps_since_ground = 0
+        
+    def increment_jump_counter(self):
+        """
+        Updates the jump counter for multi-jump tracking
+        """
+        if self.allow_multi_jump:
+            self.jumps_since_ground += 1
 
     def update(self):
         """
@@ -128,6 +162,8 @@ class PhysicsEnginePlatformer:
                                                  self.player_sprite.top)
                 # print(f"Spot X ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
             elif self.player_sprite.change_y < 0:
+                # Reset number of jumps
+                self.jumps_since_ground = 0
                 for item in hit_list:
                     while check_for_collision(self.player_sprite, item):
                         # self.player_sprite.bottom = item.top <- Doesn't work for ramps
