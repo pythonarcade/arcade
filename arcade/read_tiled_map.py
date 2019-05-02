@@ -105,7 +105,7 @@ def _parse_points(point_text: str):
     return result
 
 
-def read_tiled_map(tmx_file: str, scaling, tsx_file=None) -> TiledMap:
+def read_tiled_map(tmx_file: str, scaling: float = 1, tsx_file: str = None) -> TiledMap:
     """
     Given a tmx_file, this will read in a tiled map, and return
     a TiledMap object.
@@ -119,6 +119,13 @@ def read_tiled_map(tmx_file: str, scaling, tsx_file=None) -> TiledMap:
     Hitboxes can be drawn around tiles in the tileset editor,
     but only polygons are supported.
     (This is a great area for PR's to improve things.)
+
+    :param str tmx_file: String with name of our TMX file
+    :param float scaling: Scaling factor. 0.5 will half all widths and heights
+    :param str tsx_file: Tileset to use (can be specified in TMX file)
+
+    :returns: Map
+    :rtype: TiledMap
     """
 
     # Create a map object to store this stuff in
@@ -277,7 +284,17 @@ def read_tiled_map(tmx_file: str, scaling, tsx_file=None) -> TiledMap:
     return my_map
 
 
-def generate_sprites(map_object, layer_name, scaling, base_directory=""):
+def generate_sprites(map_object: TiledMap, layer_name: str, scaling: float, base_directory="") -> SpriteList:
+    """
+    Generate the sprites for a layer in a map.
+
+    :param TiledMap map_object: Map previously read in from read_tiled_map function
+    :param layer_name: Name of the layer we want to generate sprites from. Case sensitive.
+    :param scaling: Scaling factor.
+    :param base_directory: Directory to read images from. Defaults to current directory.
+    :return: List of sprites
+    :rtype: SpriteList
+    """
     sprite_list = SpriteList()
 
     if layer_name not in map_object.layers_int_data:

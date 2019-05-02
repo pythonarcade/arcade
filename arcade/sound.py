@@ -48,7 +48,13 @@ _load_sound_library._sound_library_loaded = False
 
 def load_sound(file_name: str):
     """
-    Load a sound
+    Load a sound. Support for .wav files. If ffmpeg is available, will work
+    with ogg and mp3 as well.
+
+    :param str file_name: Name of the sound file to load.
+
+    :returns: Sound object
+    :rtype: Sound
     """
 
     try:
@@ -59,9 +65,11 @@ def load_sound(file_name: str):
         return None
 
 
-def play_sound(sound):
+def play_sound(sound: Sound):
     """
-    Play a sound
+    Play a sound.
+
+    :param Sound sound: Sound loaded by load_sound. Do NOT use a string here for the filename.
     """
     if sound is None:
         print("Unable to play sound, no data passed in.")
@@ -74,6 +82,11 @@ def play_sound(sound):
 
 
 def stop_sound(sound: pyglet.media.Source):
+    """
+    Stop a sound that is currently playing.
+
+    :param sound:
+    """
     sound.pause()
 
 

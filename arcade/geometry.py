@@ -80,12 +80,10 @@ def _check_for_collision(sprite1: Sprite, sprite2: Sprite) -> bool:
     """
     Check for collision between two sprites.
 
-    Args:
-        sprite1: Sprite 1
-        sprite2: Sprite 2
+    :param Sprite sprite1: Sprite 1
+    :param Sprite sprite2: Sprite 2
 
-    Returns: Boolean
-
+    :returns: Boolean
     """
     collision_radius_sum = sprite1.collision_radius + sprite2.collision_radius
 
