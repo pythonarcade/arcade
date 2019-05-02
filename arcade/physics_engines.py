@@ -92,19 +92,22 @@ class PhysicsEnginePlatformer:
         Method that looks to see if there is a floor under
         the player_sprite. If there is a floor, the player can jump
         and we return a True.
+
+        :returns: True if there is a platform below us
+        :rtype: bool
         """
         # --- Move in the y direction
         self.player_sprite.center_y -= 2
 
         # Check for wall hit
-        hit_list = \
-            check_for_collision_with_list(self.player_sprite,
-                                          self.platforms)
+        hit_list = check_for_collision_with_list(self.player_sprite, self.platforms)
 
         self.player_sprite.center_y += 2
 
-        if len(hit_list) > 0 or self.allow_multi_jump == True and\
-                                self.jumps_since_ground < self.allowed_jumps:
+        if len(hit_list) > 0:
+            self.jumps_since_ground = 0
+
+        if len(hit_list) > 0 or self.allow_multi_jump and self.jumps_since_ground < self.allowed_jumps:
             return True
         else:
             return False
@@ -117,6 +120,8 @@ class PhysicsEnginePlatformer:
 
         If you enable multi-jump, you MUST call increment_jump_counter()
         every time the player jumps. Otherwise they can jump infinitely.
+
+        :param int allowed_jumps:
         """
         self.allowed_jumps = allowed_jumps
         self.allow_multi_jump = True
@@ -131,7 +136,11 @@ class PhysicsEnginePlatformer:
         self.allow_multi_jump = False
         self.allowed_jumps = 1
         self.jumps_since_ground = 0
-        
+
+    def jump(self, velocity: int):
+        self.player_sprite.change_y = velocity
+        self.increment_jump_counter()
+
     def increment_jump_counter(self):
         """
         Updates the jump counter for multi-jump tracking
@@ -163,7 +172,6 @@ class PhysicsEnginePlatformer:
                 # print(f"Spot X ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
             elif self.player_sprite.change_y < 0:
                 # Reset number of jumps
-                self.jumps_since_ground = 0
                 for item in hit_list:
                     while check_for_collision(self.player_sprite, item):
                         # self.player_sprite.bottom = item.top <- Doesn't work for ramps
