@@ -1138,7 +1138,7 @@ def draw_rectangle_outline(center_x: float, center_y: float, width: float,
 
 
 def draw_lrtb_rectangle_filled(left: float, right: float, top: float,
-                               bottom: float, color: Color, border_width: int=1):
+                               bottom: float, color: Color):
     """
     Draw a rectangle by specifying left, right, top, and bottom edges.
 
@@ -1147,7 +1147,6 @@ def draw_lrtb_rectangle_filled(left: float, right: float, top: float,
     :param float top: The y coordinate of the top of the rectangle.
     :param float bottom: The y coordinate of the rectangle bottom.
     :param Color color: The color of the rectangle.
-    :param float border_width: The width of the border in pixels. Defaults to one.
     :Raises AttributeError: Raised if left > right or top < bottom.
 
     """
@@ -1163,7 +1162,7 @@ def draw_lrtb_rectangle_filled(left: float, right: float, top: float,
     center_y = (top + bottom) / 2
     width = right - left + 1
     height = top - bottom + 1
-    draw_rectangle_filled(center_x, center_y, width, height, color, border_width=border_width)
+    draw_rectangle_filled(center_x, center_y, width, height, color)
 
 
 def draw_xywh_rectangle_filled(bottom_left_x: float, bottom_left_y: float,
