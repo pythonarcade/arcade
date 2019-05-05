@@ -21,6 +21,28 @@ from arcade.sprite import get_distance_between_sprites
 from arcade.draw_commands import rotate_point
 from arcade.window_commands import get_projection
 from arcade import shader
+import ctypes
+
+buffer_type = np.dtype([('position', '2f4'), ('angle', 'f4'), ('size', '2f4'),
+                        ('sub_tex_coords', '4f4'), ('color', '4B')])
+
+
+class BufferStruct(ctypes.Structure):
+    _fields_ = [("x", ctypes.c_float),
+                ("y", ctypes.c_float),
+                ("angle", ctypes.c_float),
+                ("size1", ctypes.c_float),
+                ("size2", ctypes.c_float),
+                ("subtext1", ctypes.c_float),
+                ("subtext2", ctypes.c_float),
+                ("subtext3", ctypes.c_float),
+                ("subtext4", ctypes.c_float),
+                ("color_red", ctypes.c_int8),
+                ("color_green", ctypes.c_int8),
+                ("color_blue", ctypes.c_int8),
+                ("color_alpha", ctypes.c_int8)
+                ]
+
 
 VERTEX_SHADER = """
 #version 330
@@ -472,12 +494,47 @@ class SpriteList(Generic[T]):
         # Create numpy array with info on location and such
         buffer_type = np.dtype([('position', '2f4'), ('angle', 'f4'), ('size', '2f4'),
                                 ('sub_tex_coords', '4f4'), ('color', '4B')])
-        self.sprite_data = np.zeros(len(self.sprite_list), dtype=buffer_type)
-        self.sprite_data['position'] = array_of_positions
-        self.sprite_data['angle'] = array_of_angles
-        self.sprite_data['size'] = array_of_sizes
-        self.sprite_data['sub_tex_coords'] = array_of_sub_tex_coords
-        self.sprite_data['color'] = array_of_colors
+
+        class BufferStruct(ctypes.Structure):
+            _fields_ = [("position", ctypes.c_float * 2),
+                        ("angle", ctypes.c_float),
+                        ("size", ctypes.c_float * 2),
+                        ("sub_tex_coords", ctypes.c_float * 4),
+                        ("color", ctypes.c_int8 * 4),
+                        ]
+
+        buffer_type_c = (BufferStruct * len(self.sprite_list))
+        self.sprite_data = buffer_type_c()
+        for i in range(len(self.sprite_list)):
+            self.sprite_data[i].position[0] = array_of_positions[i][0]
+            self.sprite_data[i].position[1] = array_of_positions[i][1]
+            self.sprite_data[i].angle = array_of_angles[i]
+            self.sprite_data[i].size[0] = array_of_sizes[i][0]
+            self.sprite_data[i].size[1] = array_of_sizes[i][1]
+            self.sprite_data[i].sub_tex_coords[0] = array_of_sub_tex_coords[i][0]
+            self.sprite_data[i].sub_tex_coords[1] = array_of_sub_tex_coords[i][1]
+            self.sprite_data[i].sub_tex_coords[2] = array_of_sub_tex_coords[i][2]
+            self.sprite_data[i].sub_tex_coords[3] = array_of_sub_tex_coords[i][3]
+            self.sprite_data[i].color = array_of_colors[i]
+
+        buffer = bytes(self.sprite_data)
+        # for item in buffer:
+        #     print(f"{item:02x} ", end="")
+        # print()
+
+        # self.sprite_data = np.zeros(len(self.sprite_list), dtype=buffer_type)
+        # self.sprite_data['position'] = array_of_positions
+        # self.sprite_data['angle'] = array_of_angles
+        # self.sprite_data['size'] = array_of_sizes
+        # self.sprite_data['sub_tex_coords'] = array_of_sub_tex_coords
+        # self.sprite_data['color'] = array_of_colors
+        #
+        # buffer = self.sprite_data.tobytes()
+        #
+        # for i in range(len(buffer)):
+        #     n = buffer[i]
+        #     print(f"{n:02x} ", end="")
+        # print()
 
         if self.is_static:
             usage = 'static'
@@ -485,7 +542,7 @@ class SpriteList(Generic[T]):
             usage = 'stream'
 
         self.sprite_data_buf = shader.buffer(
-            self.sprite_data.tobytes(),
+            buffer,
             usage=usage
         )
 
@@ -566,7 +623,8 @@ class SpriteList(Generic[T]):
 
         i = self.sprite_idx[sprite]
 
-        self.sprite_data[i]['position'] = sprite.position
+        self.sprite_data[i].position[0] = sprite.position[0]
+        self.sprite_data[i].position[1] = sprite.position[1]
 
     def update_angle(self, sprite: Sprite):
         """
@@ -608,7 +666,7 @@ class SpriteList(Generic[T]):
             self.program['Projection'] = get_projection().flatten()
 
             if not self.is_static:
-                self.sprite_data_buf.write(self.sprite_data.tobytes())
+                self.sprite_data_buf.write(bytes(self.sprite_data))
 
             self.vao.render(gl.GL_TRIANGLE_STRIP, instances=len(self.sprite_list))
 
