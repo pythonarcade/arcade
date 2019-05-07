@@ -31,6 +31,7 @@ class Sprite:
     Attributes:
         :alpha: Transparency of sprite. 0 is invisible, 255 is opaque.
         :angle: Rotation angle in degrees.
+        :radians: Rotation angle in radians.
         :bottom: Set/query the sprite location by using the bottom coordinate. \
         This will be the 'y' of the bottom of the sprite.
         :boundary_left: Used in movement. Left boundary of moving sprite.
