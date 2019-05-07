@@ -20,6 +20,8 @@ Drawing
 
    :ref:`happy_face`
 
+
+
 .. figure:: thumbs/drawing_primitives.png
    :figwidth: 170px
 
@@ -35,6 +37,10 @@ Drawing
 
    :ref:`drawing_text`
 
+.. figure:: thumbs/text_loc_example_translated.png
+   :figwidth: 170px
+
+   :ref:`text_loc_example`
 
 
 Animation
@@ -524,3 +530,4 @@ Other
    :width: 170px
 
    :ref:`gameshell`
+
