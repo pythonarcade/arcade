@@ -3,6 +3,7 @@
 *.wpr
 *.wpu
 *.pyc
+/.vscode/
 arcade.egg-info/
 arcade/__pycache__/
 dist/
