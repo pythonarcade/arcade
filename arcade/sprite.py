@@ -31,6 +31,7 @@ class Sprite:
     Attributes:
         :alpha: Transparency of sprite. 0 is invisible, 255 is opaque.
         :angle: Rotation angle in degrees.
+        :radians: Rotation angle in radians.
         :bottom: Set/query the sprite location by using the bottom coordinate. \
         This will be the 'y' of the bottom of the sprite.
         :boundary_left: Used in movement. Left boundary of moving sprite.
@@ -207,6 +208,39 @@ class Sprite:
         Set a sprite's position
         """
         self._points = points
+
+    def forward(self, speed: float=1.0):
+        """
+        Set a Sprite's postion to speed by its angle
+        :param speed: speed factor
+        """
+        self.change_x += math.cos(self.radians) * speed
+        self.change_y += math.sin(self.radians) * speed
+
+    def reverse(self, speed: float=1.0):
+        self.forward(-speed)
+
+    def strafe(self, speed: float=1.0):
+        """
+        Set a sprites position perpendicular to its angle by speed
+        :param speed: speed factor
+        """
+        self.change_x += -math.sin(self.radians) * speed
+        self.change_y += math.cos(self.radians) * speed
+
+    def turn_right(self, theta: float=90):
+        self.angle -= theta
+
+    def turn_left(self, theta: float=90):
+        self.angle += theta
+
+    def stop(self):
+        """
+        Stop the Sprite's motion
+        """
+        self.change_x = 0
+        self.change_y = 0
+        self.change_angle = 0
 
     def get_points(self) -> Tuple[Tuple[float, float]]:
         """
@@ -466,6 +500,21 @@ class Sprite:
                 sprite_list.update_angle(self)
 
     angle = property(_get_angle, _set_angle)
+
+    def _to_radians(self) -> float:
+        """
+        Converts the degrees representation of self.angle into radians.
+        :return: float
+        """
+        return self.angle / 180.0 * math.pi
+
+    def _from_radians(self, new_value: float):
+        """
+        Converts a radian value into degrees and stores it into angle.
+        """
+        self.angle = new_value * 180.0 / math.pi
+
+    radians = property(_to_radians, _from_radians)
 
     def _get_left(self) -> float:
         """
