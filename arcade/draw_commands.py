@@ -120,6 +120,48 @@ def rotate_point(x: float, y: float, cx: float, cy: float,
     return x, y
 
 
+def affine_transform(x: float, y: float, matrix: List[List]) -> (float, float):
+    """
+    Transform any positional vector by affine transformation.
+
+    We can forgo the final row of the matrix as it should always be [0, 0, 1]
+
+    Example: [[a, b, c], [d, e, f], [0, 0, 1]] * [x, y, 1] =
+        (ax + by + c, dx + ey + f)
+
+    :param x: x position
+    :param y: y position
+    :param matrix: transformation matrix to apply
+    :return:  Return transformed (x, y) pair
+    :rtype: (float, float)
+    """
+    return matrix[0][0] * x + matrix[0][1] * y + matrix[0][2], matrix[1][0] * x + matrix[1][1] * y + matrix[1][2]
+
+
+def affine_translate(x: float, y: float, tx: float, ty: float) -> (float, float):
+    """
+    Using affine transform, translate a point (x, y)
+    :param x: x position
+    :param y: y position
+    :param tx: translate in x
+    :param ty: translate in y
+    :return: Return translated (x, y) pair
+    """
+    return affine_transform(x, y, [[1, 0, tx], [0, 1, ty]])
+
+
+def affine_rotate(x: float, y: float, angle: float) -> (float, float):
+    """
+    Using affine transform, rotate a poit (x, y)
+    :param x: x position
+    :param y: y postion
+    :param angle: angle in degrees
+    :return: Return rotated (x, y) pair
+    """
+    angle = angle / 180.0 * math.pi
+    return affine_transform(x, y, [[math.cos(angle), -math.sin(angle), 0], [math.sin(angle), math.cos(angle), 0]])
+
+
 class Texture:
     """
     Class that represents a texture.
