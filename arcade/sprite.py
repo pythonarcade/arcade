@@ -186,7 +186,7 @@ class Sprite:
         if new_value[0] != self._position[0] or new_value[1] != self._position[1]:
             self.clear_spatial_hashes()
             self._point_list_cache = None
-            self._position = new_value
+            self._position[0], self._position[1] = new_value
             self.add_spatial_hashes()
 
             for sprite_list in self.sprite_lists:
