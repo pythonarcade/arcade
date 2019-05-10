@@ -211,7 +211,7 @@ class Sprite:
 
     def forward(self, speed: float=1.0):
         """
-        Set a Sprite's postion to speed by its angle
+        Set a Sprite's position to speed by its angle
         :param speed: speed factor
         """
         self.change_x += math.cos(self.radians) * speed
