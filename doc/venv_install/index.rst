@@ -11,7 +11,7 @@ Step 1: Select File...Settings
 
 .. image:: file_settings.png
 
-Step 2: Click "Python Interpreter". Then find the gear icon in the upper right.
+Step 2: Click "Project Interpreter". Then find the gear icon in the upper right.
 click on it and select "Add"
 
 .. image:: click_gear.png
