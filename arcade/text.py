@@ -198,6 +198,7 @@ def draw_text(text: str,
         # Default font if no font
         if font is None:
             font_names = ("arial.ttf",
+                          'NotoSans-Regular.ttf',
                           "/usr/share/fonts/truetype/freefont/FreeMono.ttf",
                           '/System/Library/Fonts/SFNSDisplay.ttf')
             for font_string_name in font_names:

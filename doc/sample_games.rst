@@ -18,6 +18,14 @@ The Great Skeleton War
 
 .. _The Great Skeleton War: https://github.com/BlakeDalmas/Python/tree/master/The%20Great%20Skeleton%20War
 
+Kayzee
+~~~~~~
+
+.. figure:: images/kayzee.gif
+    :width: 50%
+
+    An `Kayzee <https://github.com/wamiqurrehman093/Kayzee>`_
+
 lixingqiu Games
 ~~~~~~~~~~~~~~~
 

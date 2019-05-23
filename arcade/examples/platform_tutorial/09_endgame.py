@@ -28,7 +28,7 @@ BOTTOM_VIEWPORT_MARGIN = 150
 TOP_VIEWPORT_MARGIN = 100
 
 PLAYER_START_X = 64
-PLAYER_START_Y = 94
+PLAYER_START_Y = 225
 
 class MyGame(arcade.Window):
     """
@@ -193,7 +193,7 @@ class MyGame(arcade.Window):
 
     def update(self, delta_time):
         """ Movement and game logic """
-
+        
         # Call update on all sprites (The sprites don't do much in this
         # example though.)
         self.physics_engine.update()
@@ -227,6 +227,8 @@ class MyGame(arcade.Window):
 
         # Did the player touch something they should not?
         if arcade.check_for_collision_with_list(self.player_sprite, self.dont_touch_list):
+            self.player_sprite.change_x = 0
+            self.player_sprite.change_y = 0
             self.player_sprite.center_x = PLAYER_START_X
             self.player_sprite.center_y = PLAYER_START_Y
 

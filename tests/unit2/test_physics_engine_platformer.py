@@ -43,22 +43,24 @@ class MyTestWindow(arcade.Window):
     def update(self, delta_time):
         self.physics_engine.update()
 
-def test_multi_jump(window):
+
+def multi_jump(window):
     window.physics_engine.enable_multi_jump(2)
     window.physics_engine.jumps_since_ground = 0
-    assert window.physics_engine.can_jump() == True
+    assert window.physics_engine.can_jump() is True
     window.character_sprite.change_y = 15
     window.physics_engine.increment_jump_counter()
     window.test()
-    assert window.physics_engine.can_jump() == True
+    assert window.physics_engine.can_jump() is True
     window.character_sprite.change_y = 15
     window.physics_engine.increment_jump_counter()
     window.test()
-    assert window.physics_engine.can_jump() == False
+    assert window.physics_engine.can_jump() is False
     window.physics_engine.disable_multi_jump()
+
 
 def test_main():
     window = MyTestWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Test Text")
     window.test()
-    test_multi_jump(window)
+    multi_jump(window)
     window.close()

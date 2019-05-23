@@ -7,6 +7,8 @@ import base64
 import zlib
 import gzip
 
+from pathlib import Path
+
 from arcade.isometric import isometric_grid_to_screen
 from arcade import Sprite
 from arcade import SpriteList
@@ -204,6 +206,7 @@ def read_tiled_map(tmx_file: str, scaling: float = 1, tsx_file: str = None) -> T
                 if my_object:
                     offset_x = round(float(my_object.attrib['x']))
                     offset_y = round(float(my_object.attrib['y']))
+
                     polygon = my_object.find("polygon")
                     if polygon is not None:
                         point_list = _parse_points(polygon.attrib['points'])
@@ -217,6 +220,25 @@ def read_tiled_map(tmx_file: str, scaling: float = 1, tsx_file: str = None) -> T
                             point[1] *= scaling
                             point[0] = int(point[0])
                             point[1] = int(point[1])
+
+                        my_tile.points = point_list
+
+                    polygon = my_object.find("polyline")
+                    if polygon is not None:
+                        point_list = _parse_points(polygon.attrib['points'])
+                        for point in point_list:
+                            point[0] += offset_x
+                            point[1] += offset_y
+                            point[1] = my_tile.height - point[1]
+                            point[0] -= my_tile.width // 2
+                            point[1] -= my_tile.height // 2
+                            point[0] *= scaling
+                            point[1] *= scaling
+                            point[0] = int(point[0])
+                            point[1] = int(point[1])
+
+                        if point_list[0][0] != point_list[-1][0] or point_list[0][1] != point_list[-1][1]:
+                            point_list.append([point_list[0][0], point_list[0][1]])
 
                         my_tile.points = point_list
 

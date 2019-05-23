@@ -131,7 +131,7 @@ class MyGame(arcade.Window):
 
     def on_key_press(self, key, modifiers):
         """
-        Called whenever the mouse moves.
+        Called whenever a key is pressed.
         """
         if key == arcade.key.UP:
             self.player.change_y = MOVEMENT_SPEED
@@ -144,7 +144,7 @@ class MyGame(arcade.Window):
 
     def on_key_release(self, key, modifiers):
         """
-        Called when the user presses a mouse button.
+        Called when the user releases a key.
         """
         if key == arcade.key.UP or key == arcade.key.DOWN:
             self.player.change_y = 0

@@ -4,6 +4,12 @@ Array Backed Grid
 Show how to use a two-dimensional list/array to back the display of a
 grid on-screen.
 
+Note: Regular drawing commands are slow. Particularly when drawing a lot of
+items, like the rectangles in this example.
+
+For faster drawing, create the shapes and then draw them as a batch.
+See array_backed_grid_buffered.py
+
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.array_backed_grid
 """
