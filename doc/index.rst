@@ -46,6 +46,7 @@ The Python Arcade Library
             <li><a href="pygame_comparison.html">Pygame Comparison</a></li>
             <li><a href="performance_tips.html">Performance Tips</a></li>
             <li><a href="https://youtu.be/DAWHMHMPVHU">PyCon 2018 Talk</a></li>
+            <li><a href="https://youtu.be/Djtm1DzWSvo">PyCon 2019 Tutorial</a></li>
             <li><a href="https://www.reddit.com/r/pythonarcade/">Reddit /r/pythonarcade</a></li>
           </ul>
         </td>

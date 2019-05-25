@@ -4,7 +4,7 @@ Build Your Own 2D Platformer Game
 .. image:: intro_screen.png
     :width: 70%
 
-(To be presented at the `2019 PyCon`_ in Cleveland, Ohio.)
+(Presented at the `2019 PyCon`_ in Cleveland, Ohio. Here is the `video of the tutorial`_.)
 
 In this tutorial, use Python 3.6+ and the Arcade_ library to create your own 2D platformer.
 Learn to work with Sprites and the `Tiled Map Editor`_ to create your own games.
@@ -12,6 +12,7 @@ Add coins, ramps, moving platforms, enemies, and more.
 
 .. _Tiled Map Editor: https://www.mapeditor.org/
 .. _2019 PyCon: https://us.pycon.org/2019/about/
+.. _video of the tutorial: https://youtu.be/Djtm1DzWSvo
 .. _Arcade: http://arcade.academy
 
 The tutorial is divided into these parts:
