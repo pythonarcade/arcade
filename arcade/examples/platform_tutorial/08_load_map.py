@@ -80,7 +80,7 @@ class MyGame(arcade.Window):
 
         # Set up the player, specifically placing it at these coordinates.
         self.player_sprite = arcade.Sprite("images/player_1/player_stand.png", CHARACTER_SCALING)
-        self.player_sprite.center_x = 64
+        self.player_sprite.center_x = 128
         self.player_sprite.center_y = 96
         self.player_list.append(self.player_sprite)
 

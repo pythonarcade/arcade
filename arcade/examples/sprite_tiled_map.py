@@ -77,7 +77,7 @@ class MyGame(arcade.Window):
         self.player_sprite = arcade.Sprite("images/character.png", SPRITE_SCALING)
 
         # Starting position of the player
-        self.player_sprite.center_x = 64
+        self.player_sprite.center_x = 128
         self.player_sprite.center_y = 270
         self.player_list.append(self.player_sprite)
 

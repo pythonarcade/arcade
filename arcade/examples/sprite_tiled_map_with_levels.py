@@ -80,7 +80,7 @@ class MyGame(arcade.Window):
         self.player_sprite = arcade.Sprite("images/character.png", SPRITE_SCALING)
 
         # Starting position of the player
-        self.player_sprite.center_x = 64
+        self.player_sprite.center_x = 128
         self.player_sprite.center_y = 64
         self.player_list.append(self.player_sprite)
 
@@ -176,7 +176,7 @@ class MyGame(arcade.Window):
             if self.level < self.max_level:
                 self.level += 1
                 self.load_level(self.level)
-                self.player_sprite.center_x = 64
+                self.player_sprite.center_x = 128
                 self.player_sprite.center_y = 64
                 self.player_sprite.change_x = 0
                 self.player_sprite.change_y = 0
