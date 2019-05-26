@@ -21,10 +21,10 @@ The Great Skeleton War
 Kayzee
 ~~~~~~
 
-.. figure:: images/kayzee.gif
+.. figure:: images/kayzee.png
     :width: 50%
 
-    An `Kayzee <https://github.com/wamiqurrehman093/Kayzee>`_
+    `Kayzee Game <https://github.com/wamiqurrehman093/Kayzee>`_
 
 lixingqiu Games
 ~~~~~~~~~~~~~~~
