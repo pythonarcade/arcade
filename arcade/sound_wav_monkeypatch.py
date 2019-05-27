@@ -45,6 +45,8 @@ class WAVEFormatException(pyglet.media.exceptions.MediaFormatException):
 
 class WaveSource(pyglet.media.StreamingSource):
     def __init__(self, filename, file=None):
+        self._file = None
+
         if file is None:
             file = open(filename, 'rb')
 
@@ -69,7 +71,8 @@ class WaveSource(pyglet.media.StreamingSource):
         self._wave.rewind()
 
     def __del__(self):
-        self._file.close()
+        if self._file:
+            self._file.close()
 
     def get_audio_data(self, num_bytes, compensation_time=0.0):
         num_frames = max(1, num_bytes // self._bytes_per_frame)
