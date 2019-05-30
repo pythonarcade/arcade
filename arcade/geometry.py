@@ -6,6 +6,7 @@ from arcade.sprite import Sprite
 from arcade.sprite_list import SpriteList
 from typing import List
 from arcade.arcade_types import PointList
+from arcade.arcade_types import Point
 
 PRECISION = 2
 
@@ -135,4 +136,61 @@ def check_for_collision_with_list(sprite: Sprite,
     #     if sprite1 is not sprite2 and sprite2 not in collision_list:
     #         if _check_for_collision(sprite1, sprite2):
     #             collision_list.append(sprite2)
+    return collision_list
+
+
+def is_point_in_polygon(x, y, polygon_point_list):
+    """
+    Use ray-tracing to see if point is inside a polygon
+
+    Args:
+        x:
+        y:
+        polygon_point_list:
+
+    Returns: bool
+
+    """
+
+    n = len(polygon_point_list)
+    inside = False
+
+    p1x, p1y = polygon_point_list[0]
+    for i in range(n+1):
+        p2x, p2y = polygon_point_list[i % n]
+        if y > min(p1y, p2y):
+            if y <= max(p1y, p2y):
+                if x <= max(p1x, p2x):
+                    if p1y != p2y:
+                        xints = (y - p1y) * (p2x - p1x) / (p2y - p1y) + p1x
+                    if p1x == p2x or x <= xints:
+                        inside = not inside
+        p1x, p1y = p2x, p2y
+
+    return inside
+
+
+def get_sprites_at_point(point: Point,
+                         sprite_list: SpriteList) -> List[Sprite]:
+    """
+    Get a list of sprites at a particular point
+
+    :param Point point: Point to check
+    :param SpriteList sprite_list: SpriteList to check against
+
+    :returns: List of sprites colliding, or an empty list.
+    """
+    if not isinstance(sprite_list, SpriteList):
+        raise TypeError(f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList.")
+
+    if sprite_list.use_spatial_hash:
+        sprite_list_to_check = sprite_list.spatial_hash.get_objects_for_point(point)
+        # checks_saved = len(sprite_list) - len(sprite_list_to_check)
+    else:
+        sprite_list_to_check = sprite_list
+
+    collision_list = [sprite2
+                      for sprite2 in sprite_list_to_check
+                      if is_point_in_polygon(point[0], point[1], sprite2.points)]
+
     return collision_list
