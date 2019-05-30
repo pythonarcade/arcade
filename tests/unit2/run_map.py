@@ -83,28 +83,29 @@ class MyGame(arcade.Window):
 
         # Name of map file to load
         map_name = "test_data/test_map_2.tmx"
-        # Name of the layer in the file that has our platforms/walls
-        platforms_layer_name = 'Platforms'
 
         # Read in the tiled map
-        my_map = arcade.read_tiled_map2(map_name)
+        my_map = arcade.tilemap.read_tmx(map_name)
 
         # Set up the player, specifically placing it at these coordinates.
         self.player_sprite = arcade.Sprite(RESOURCE_DIR + "/images/player_1/player_stand.png", CHARACTER_SCALING)
-        self.player_sprite.center_x = 200
-        self.player_sprite.center_y = 200
+        self.player_sprite.center_x = 64
+        self.player_sprite.center_y = 64
         self.player_list.append(self.player_sprite)
-
-        # -- Walls
 
         # Calculate the right edge of the my_map in pixels
         self.end_of_map = my_map.map_size.width * GRID_PIXEL_SIZE
 
         # -- Platforms
-        self.wall_list = arcade.generate_sprites(my_map,
-                                                 platforms_layer_name,
-                                                 scaling=TILE_SCALING,
-                                                 base_directory="test_data")
+        self.wall_list = arcade.tilemap.generate_sprites_from_layer(my_map,
+                                                                    "Platforms",
+                                                                    scaling=TILE_SCALING,
+                                                                    base_directory="test_data")
+
+        self.coin_list = arcade.tilemap.generate_sprites_from_layer(my_map,
+                                                                    "Coins",
+                                                                    scaling=TILE_SCALING,
+                                                                    base_directory="test_data")
 
         # --- Other stuff
         # Set the background color
@@ -124,6 +125,7 @@ class MyGame(arcade.Window):
 
         # Draw our sprites
         self.wall_list.draw()
+        self.coin_list.draw()
         self.player_list.draw()
 
         # Draw our score on the screen, scrolling it with the viewport

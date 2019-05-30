@@ -7,7 +7,7 @@ from arcade import SpriteList
 import pytiled_parser
 
 
-def read_tiled_map2(tmx_file: str) -> pytiled_parser.objects.TileMap:
+def read_tmx(tmx_file: str) -> pytiled_parser.objects.TileMap:
     """
     Given a tmx_file, this will read in a tiled map, and return
     a TiledMap object.
@@ -23,8 +23,6 @@ def read_tiled_map2(tmx_file: str) -> pytiled_parser.objects.TileMap:
     (This is a great area for PR's to improve things.)
 
     :param str tmx_file: String with name of our TMX file
-    :param float scaling: Scaling factor. 0.5 will half all widths and heights
-    :param str tsx_file: Tileset to use (can be specified in TMX file)
 
     :returns: Map
     :rtype: TiledMap
@@ -38,8 +36,8 @@ def read_tiled_map2(tmx_file: str) -> pytiled_parser.objects.TileMap:
     return tile_map
 
 
-def get_layer(map_object: pytiled_parser.objects.TileMap,
-              layer_name: str):
+def get_tilemap_layer(map_object: pytiled_parser.objects.TileMap,
+                      layer_name: str):
 
     assert isinstance(map_object, pytiled_parser.objects.TileMap)
     assert isinstance(layer_name, str)
@@ -60,16 +58,16 @@ def get_tile(map_object: pytiled_parser.objects.TileMap, gid: int) -> pytiled_pa
     return None
 
 
-def generate_sprites(map_object: pytiled_parser.objects.TileMap,
-                     layer_name: str,
-                     scaling: float = 1,
-                     base_directory: str = "") -> SpriteList:
+def generate_sprites_from_layer(map_object: pytiled_parser.objects.TileMap,
+                                layer_name: str,
+                                scaling: float = 1,
+                                base_directory: str = "") -> SpriteList:
 
     if len(base_directory) > 0 and not base_directory.endswith("/"):
         base_directory += "/"
     sprite_list = SpriteList()
 
-    layer = get_layer(map_object, layer_name)
+    layer = get_tilemap_layer(map_object, layer_name)
     if layer is None:
         print(f"Warning, no layer named '{layer_name}'.")
         return sprite_list
