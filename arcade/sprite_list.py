@@ -536,6 +536,14 @@ class SpriteList(Generic[T]):
         # Can add buffer to index vertices
         self.vao = shader.vertex_array(self.program, vao_content)
 
+    def dump(self):
+        buffer = self.sprite_data.tobytes()
+        record_size = len(buffer) / len(self.sprite_list)
+        for i, char in enumerate(buffer):
+            if i % record_size == 0:
+                print()
+            print(f"{char:02x} ", end="")
+
     def _update_positions(self):
         """ Called by the Sprite class to update position, angle, size and color
         of all sprites in the list.
