@@ -193,7 +193,8 @@ class Texture:
 def load_textures(file_name: str,
                   image_location_list: PointList,
                   mirrored: bool = False,
-                  flipped: bool = False) -> List['Texture']:
+                  flipped: bool = False,
+                  scale: float = 1) -> List['Texture']:
     """
     Load a set of textures off of a single image file.
 
@@ -215,7 +216,15 @@ def load_textures(file_name: str,
     :Returns: List of textures loaded.
     :Raises: ValueError
     """
-    source_image = PIL.Image.open(file_name)
+    # See if we already loaded this texture file, and we can just use a cached version.
+    cache_file_name = "{}".format(file_name)
+    if cache_file_name in load_texture.texture_cache:
+        texture = load_texture.texture_cache[cache_file_name]
+        source_image = texture.image
+    else:
+        source_image = PIL.Image.open(file_name)
+        result = Texture(cache_file_name, source_image)
+        load_texture.texture_cache[cache_file_name] = result
 
     source_image_width, source_image_height = source_image.size
     texture_info_list = []
@@ -242,16 +251,23 @@ def load_textures(file_name: str,
                              "when the image is only {} high."
                              .format(y + height, source_image_height))
 
-        image = source_image.crop((x, y, x + width, y + height))
-        # image = _trim_image(image)
+        # See if we already loaded this texture, and we can just use a cached version.
+        cache_name = "{}{}{}{}{}{}{}{}".format(file_name, x, y, width, height, scale, flipped, mirrored)
+        if cache_name in load_texture.texture_cache:
+            result = load_texture.texture_cache[cache_name]
+        else:
+            image = source_image.crop((x, y, x + width, y + height))
+            # image = _trim_image(image)
 
-        if mirrored:
-            image = PIL.ImageOps.mirror(image)
+            if mirrored:
+                image = PIL.ImageOps.mirror(image)
 
-        if flipped:
-            image = PIL.ImageOps.flip(image)
-
-        texture_info_list.append(Texture(image=image))
+            if flipped:
+                image = PIL.ImageOps.flip(image)
+            result = Texture(cache_name, image)
+            load_texture.texture_cache[cache_name] = result
+            result.scale = scale
+        texture_info_list.append(result)
 
     return texture_info_list
 
