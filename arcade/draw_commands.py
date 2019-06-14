@@ -212,6 +212,8 @@ def load_textures(file_name: str,
            a list of four floats. ``[x, y, width, height]``.
     :param bool mirrored: If set to true, the image is mirrored left to right.
     :param bool flipped: If set to true, the image is flipped upside down.
+    :param float scale: Scale factor to apply on each new texture.
+
 
     :Returns: List of textures loaded.
     :Raises: ValueError
