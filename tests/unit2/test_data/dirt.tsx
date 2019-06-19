@@ -35,21 +35,21 @@
   <image width="128" height="128" source="../../../arcade/examples/platform_tutorial/images/tiles/dirtHalf_left.png"/>
   <objectgroup draworder="index">
    <object id="1" x="128" y="0">
-    <polygon points="0,0 -118.364,0.0909091 -127.818,9.54545 -127.818,62.1818 -116.909,73.8182 -0.181818,74.1818"/>
+    <polygon points="0,0 -118,0 -128,10 -128,62 -117,74 0,74"/>
    </object>
   </objectgroup>
  </tile>
  <tile id="11">
   <image width="128" height="128" source="../../../arcade/examples/platform_tutorial/images/tiles/dirtHalf_mid.png"/>
   <objectgroup draworder="index">
-   <object id="1" x="0" y="0" width="127.727" height="73.7273"/>
+   <object id="1" x="0" y="0" width="128" height="74"/>
   </objectgroup>
  </tile>
  <tile id="12">
   <image width="128" height="128" source="../../../arcade/examples/platform_tutorial/images/tiles/dirtHalf_right.png"/>
   <objectgroup draworder="index">
    <object id="2" x="0" y="0">
-    <polygon points="0,0 116.273,0.272727 127.091,10.0909 127.364,63 115.545,73.8182 -0.181818,73.4545"/>
+    <polygon points="0,0 116,0 127,10 127,63 116,734 0,74"/>
    </object>
   </objectgroup>
  </tile>

@@ -141,6 +141,8 @@ class Sprite:
         self.boundary_top = None
         self.boundary_bottom = None
 
+        self.properties = {}
+
         self._alpha = 255
         self._collision_radius = None
         self._color = (255, 255, 255)

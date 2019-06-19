@@ -31,7 +31,7 @@ def test_two():
     assert not map.infinite
     assert map.orientation == "orthogonal"
     assert map.render_order == 'left-up'
-    assert len(map.layers) == 2
+    assert len(map.layers) == 3
 
     platforms_list = arcade.tilemap.generate_sprites_from_layer(map, "Platforms", base_directory="test_data")
 
@@ -43,4 +43,11 @@ def test_two():
 
     dirt_list = arcade.tilemap.generate_sprites_from_layer(map, "Dirt", base_directory="test_data")
     first_sprite = dirt_list[0]
+    assert first_sprite is not None
+
+    coin_list = arcade.tilemap.generate_sprites_from_layer(map, "Coins", base_directory="test_data")
+    first_sprite = coin_list[0]
+    assert 'Points' in first_sprite.properties
+    assert first_sprite.properties['Points'] == '10'
+
     print(first_sprite)

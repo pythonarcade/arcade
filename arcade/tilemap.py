@@ -4,6 +4,7 @@ Functions and classes for managing a map created in the "Tiled Map Editor"
 
 from arcade import Sprite
 from arcade import SpriteList
+import math
 import pytiled_parser
 
 
@@ -92,11 +93,65 @@ def generate_sprites_from_layer(map_object: pytiled_parser.objects.TileMap,
             my_sprite.right = column_index * (map_object.tile_size[0] * scaling)
             my_sprite.top = (map_object.map_size.height - row_index - 1) * (map_object.tile_size[1] * scaling)
 
+
+            if tile.properties is not None and len(tile.properties) > 0:
+                for property in tile.properties:
+                    my_sprite.properties[property.name] = property.value
+
             # print(tile.image.source, my_sprite.center_x, my_sprite.center_y)
             if tile.hitboxes is not None and len(tile.hitboxes) > 0:
                 if len(tile.hitboxes) > 1:
                     print(f"Warning, only one hit box supported for tile with image {tile.image.source}.")
-                hitbox = tile.hitboxes[0]
+                for hitbox in tile.hitboxes:
+
+                    if hitbox.hitbox_type == "Rectangle":
+                        p1 = hitbox.x, hitbox.y
+                        p2 = hitbox.x + hitbox.width, hitbox.y
+                        p3 = hitbox.x + hitbox.width, hitbox.y + hitbox.height
+                        p4 = hitbox.x, hitbox.y + hitbox.height
+                        my_sprite.points = p1, p2, p3, p4
+
+                    elif hitbox.hitbox_type == "Polygon":
+                        points = []
+                        for point in hitbox.points:
+                            adj_x = point[0] + hitbox.x
+                            adj_y = point[1] + hitbox.y
+                            adj_point = [adj_x, adj_y]
+                            points.append(adj_point)
+                        my_sprite.points = points
+
+                    elif hitbox.hitbox_type == "Polyline":
+                        points = []
+                        for point in hitbox.points:
+                            adj_x = point[0] + hitbox.x
+                            adj_y = point[1] + hitbox.y
+                            adj_point = [adj_x, adj_y]
+                            points.append(adj_point)
+
+                        # See if we need to close the polyline
+                        if points[0][0] != points[-1][0] or points[0][1] != points[-1][1]:
+                            points.append(points[0])
+
+                        my_sprite.points = points
+
+                    elif hitbox.hitbox_type == "Ellipse":
+                        w = hitbox.width
+                        h = hitbox.height
+                        cx = hitbox.x + w / 2
+                        cy = hitbox.y + h / 2
+                        total_steps = 8
+                        points = []
+                        angles = [step / total_steps * 2 * math.pi for step in range(total_steps)]
+                        for angle in angles:
+                            x = w * math.cos(angle) + cx
+                            y = h * math.sin(angle) + cy
+                            point = x, y
+                            points.append(point)
+
+                        my_sprite.points = points
+
+                    else:
+                        print(f"Warning: Hitbox type {hitbox.hitbox_type} not supported.")
 
             sprite_list.append(my_sprite)
 
