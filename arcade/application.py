@@ -36,7 +36,8 @@ class Window(pyglet.window.Window):
         :param str title: Title (appears in title bar)
         :param bool fullscreen: Should this be full screen?
         :param bool resizable: Can the user resize the window?
-        :param float update_rate: How refuent to update the window.
+        :param float update_rate: How frequently to update the window.
+        :param bool antialiasing: Should OpenGL's anti-aliasing be enabled?
         """
         if antialiasing:
             config = pyglet.gl.Config(major_version=3,
@@ -63,8 +64,7 @@ class Window(pyglet.window.Window):
             if compat_platform == 'darwin' or compat_platform == 'linux':
                 # Set vsync to false, or we'll be limited to a 1/30 sec update rate possibly
                 self.context.set_vsync(False)
-
-            self.set_update_rate(1/60)
+            self.set_update_rate(update_rate)
 
         super().set_fullscreen(fullscreen)
         self.invalid = False
@@ -92,7 +92,7 @@ class Window(pyglet.window.Window):
     def set_update_rate(self, rate: float):
         """
         Set how often the screen should be updated.
-        For example, self.set_update_rate(1 / 20) will set the update rate to 60 fps
+        For example, self.set_update_rate(1 / 60) will set the update rate to 60 fps
 
         :param float rate: Update frequency in seconds
         """
