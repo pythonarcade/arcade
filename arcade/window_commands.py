@@ -7,7 +7,6 @@ import gc
 import time
 import os
 
-import pyglet
 import pyglet.gl as gl
 from arcade.monkey_patch_pyglet import *
 
@@ -115,6 +114,7 @@ def set_window(window: pyglet.window.Window):
     global _window
     _window = window
 
+
 def get_scaling_factor(window):
     """
     Tries to get the scaling factor of the given Window. Currently works
@@ -136,6 +136,7 @@ def get_scaling_factor(window):
         return int(content_rect.size.width / bounds.size.width)
     else:
         return 1
+
 
 def set_viewport(left: Number, right: Number, bottom: Number, top: Number):
     """

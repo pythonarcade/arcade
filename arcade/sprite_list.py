@@ -21,6 +21,7 @@ from arcade.sprite import get_distance_between_sprites
 from arcade.draw_commands import rotate_point
 from arcade.window_commands import get_projection
 from arcade import shader
+from arcade.arcade_types import Point
 
 VERTEX_SHADER = """
 #version 330
@@ -235,6 +236,27 @@ class _SpatialHash:
                 # for item in new_items:
                 #     print(f"Found {item.guid} in {i}, {j}")
                 close_by_sprites.extend(new_items)
+
+        return close_by_sprites
+
+    def get_objects_for_point(self, check_point: Point) -> List[Sprite]:
+        """
+        Returns Sprites at or close to a point.
+
+        :param Point check_point: Point we are checking to see if there are
+            other sprites in the same box(es)
+
+        :return: List of close-by sprites
+        :rtype: List
+
+
+        """
+
+        hash_point = self._hash(check_point)
+
+        close_by_sprites = []
+        new_items = self.contents.setdefault(hash_point, [])
+        close_by_sprites.extend(new_items)
 
         return close_by_sprites
 
@@ -513,6 +535,14 @@ class SpriteList(Generic[T]):
 
         # Can add buffer to index vertices
         self.vao = shader.vertex_array(self.program, vao_content)
+
+    def dump(self):
+        buffer = self.sprite_data.tobytes()
+        record_size = len(buffer) / len(self.sprite_list)
+        for i, char in enumerate(buffer):
+            if i % record_size == 0:
+                print()
+            print(f"{char:02x} ", end="")
 
     def _update_positions(self):
         """ Called by the Sprite class to update position, angle, size and color

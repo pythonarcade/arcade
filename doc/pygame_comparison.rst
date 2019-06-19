@@ -6,7 +6,7 @@ Pygame Comparison
 The Python Arcade Library has the same target audience as the well-known
 Pygame library. So how do they differ?
 
-Features that the Arcade Library:
+Features that the Arcade Library has:
 
 * Draws stationary sprites much faster. See :ref:`drawing_stationary_performance`
 * Supports Python 3 `type hinting`_.
