@@ -7,7 +7,7 @@ https://www.gamedev.net/articles/programming/general-and-gameplay-programming/sp
 
 
 import math
-
+import dataclasses
 
 from arcade.draw_commands import load_texture
 from arcade.draw_commands import draw_texture_rectangle
@@ -687,6 +687,39 @@ class AnimatedTimeSprite(Sprite):
         self.frame = 0
 
     def update_animation(self):
+        """
+        Logic for selecting the proper texture to use.
+        """
+        if self.frame % self.texture_change_frames == 0:
+            self.cur_texture_index += 1
+            if self.cur_texture_index >= len(self.textures):
+                self.cur_texture_index = 0
+            self.set_texture(self.cur_texture_index)
+        self.frame += 1
+
+
+@dataclasses.dataclass
+class AnimationKeyframe:
+    tile_id: int
+    duration: int
+    image: str
+
+
+class AnimatedTimeBasedSprite(Sprite):
+    """
+    Sprite for platformer games that supports animations.
+    """
+
+    def __init__(self, scale: float = 1,
+                 image_x: float = 0, image_y: float = 0,
+                 center_x: float = 0, center_y: float = 0):
+
+        super().__init__(scale=scale, image_x=image_x, image_y=image_y,
+                         center_x=center_x, center_y=center_y)
+        self.cur_frame = 0
+        self.frames = []
+
+    def update_animation(self, time):
         """
         Logic for selecting the proper texture to use.
         """
