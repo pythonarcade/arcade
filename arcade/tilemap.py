@@ -123,6 +123,10 @@ def generate_sprites_from_layer(map_object: pytiled_parser.objects.TileMap,
                     half_height = map_object.tile_size.height / 2
                     points = []
                     if hitbox.hitbox_type == "Rectangle":
+                        if hitbox.width is None or hitbox.height is None:
+                            print(f"Warning: Rectangle hitbox created for without a height or width for {tile.image.source}. Ignoring.")
+                            continue
+
                         p1 = [hitbox.x - half_width, half_height - hitbox.y]
                         p2 = [hitbox.x + hitbox.width - half_width, half_height - hitbox.y]
                         p3 = [hitbox.x + hitbox.width - half_width, half_height - (hitbox.y + hitbox.height)]
@@ -148,6 +152,9 @@ def generate_sprites_from_layer(map_object: pytiled_parser.objects.TileMap,
                             points.append(points[0])
 
                     elif hitbox.hitbox_type == "Ellipse":
+                        if hitbox.width is None or hitbox.height is None:
+                            print(f"Warning: Ellipse hitbox created for without a height or width for {tile.image.source}. Ignoring.")
+                            continue
                         w = hitbox.width / 2
                         h = hitbox.height / 2
                         cx = (hitbox.x + hitbox.width / 2) - half_width
@@ -168,7 +175,6 @@ def generate_sprites_from_layer(map_object: pytiled_parser.objects.TileMap,
                         point[0] *= scaling
                         point[1] *= scaling
                     my_sprite.points = points
-
 
             if tile.animation is not None:
                 key_frame_list = []

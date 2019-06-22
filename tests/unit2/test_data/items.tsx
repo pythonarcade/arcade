@@ -10,9 +10,6 @@
    <object id="2" x="32" y="32" width="64" height="64">
     <ellipse/>
    </object>
-   <object id="3" x="1.75" y="126">
-    <ellipse/>
-   </object>
   </objectgroup>
  </tile>
  <tile id="1">

@@ -37,9 +37,10 @@ def test_two():
 
     first_sprite = platforms_list[0]
     assert first_sprite is not None
+    assert first_sprite.center_x == -64
+    assert first_sprite.center_y == -64
     print(first_sprite.center_x, first_sprite.center_y)
     print(first_sprite.points)
-
 
     assert first_sprite.center_x == -64
     assert first_sprite.center_y == -64
@@ -50,6 +51,7 @@ def test_two():
 
     first_sprite = dirt_list[0]
     assert first_sprite is not None
+
     print(first_sprite.center_x, first_sprite.center_y)
     print(first_sprite.points)
 
@@ -73,4 +75,4 @@ def test_two():
     assert 'Points' in first_sprite.properties
     assert first_sprite.properties['Points'] == '10'
 
-    print(first_sprite)
+
