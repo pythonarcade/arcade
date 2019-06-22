@@ -100,13 +100,13 @@ def generate_sprites_from_layer(map_object: pytiled_parser.objects.TileMap,
             tmx_file = base_directory + tile.image.source
 
             if tile.animation:
-                my_sprite = AnimatedTimeSprite(tmx_file, scaling)
+                # my_sprite = AnimatedTimeSprite(tmx_file, scaling)
+                my_sprite = Sprite(tmx_file, scaling)
             else:
                 my_sprite = Sprite(tmx_file, scaling)
 
             my_sprite.right = column_index * (map_object.tile_size[0] * scaling)
             my_sprite.top = (map_object.map_size.height - row_index - 1) * (map_object.tile_size[1] * scaling)
-
 
             if tile.properties is not None and len(tile.properties) > 0:
                 for property in tile.properties:
@@ -116,29 +116,30 @@ def generate_sprites_from_layer(map_object: pytiled_parser.objects.TileMap,
             if tile.hitboxes is not None and len(tile.hitboxes) > 0:
                 if len(tile.hitboxes) > 1:
                     print(f"Warning, only one hit box supported for tile with image {tile.image.source}.")
+
                 for hitbox in tile.hitboxes:
 
+                    half_width = map_object.tile_size.width / 2
+                    half_height = map_object.tile_size.height / 2
+                    points = []
                     if hitbox.hitbox_type == "Rectangle":
-                        p1 = hitbox.x, hitbox.y
-                        p2 = hitbox.x + hitbox.width, hitbox.y
-                        p3 = hitbox.x + hitbox.width, hitbox.y + hitbox.height
-                        p4 = hitbox.x, hitbox.y + hitbox.height
-                        my_sprite.points = p1, p2, p3, p4
+                        p1 = [hitbox.x - half_width, half_height - hitbox.y]
+                        p2 = [hitbox.x + hitbox.width - half_width, half_height - hitbox.y]
+                        p3 = [hitbox.x + hitbox.width - half_width, half_height - (hitbox.y + hitbox.height)]
+                        p4 = [hitbox.x - half_width, half_height - (hitbox.y + hitbox.height)]
+                        points = [p4, p3, p2, p1]
 
                     elif hitbox.hitbox_type == "Polygon":
-                        points = []
                         for point in hitbox.points:
-                            adj_x = point[0] + hitbox.x
-                            adj_y = point[1] + hitbox.y
+                            adj_x = point[0] + hitbox.x - half_width
+                            adj_y = half_height - (point[1] + hitbox.y)
                             adj_point = [adj_x, adj_y]
                             points.append(adj_point)
-                        my_sprite.points = points
 
                     elif hitbox.hitbox_type == "Polyline":
-                        points = []
                         for point in hitbox.points:
-                            adj_x = point[0] + hitbox.x
-                            adj_y = point[1] + hitbox.y
+                            adj_x = point[0] + hitbox.x - half_width
+                            adj_y = half_height - (point[1] + hitbox.y)
                             adj_point = [adj_x, adj_y]
                             points.append(adj_point)
 
@@ -146,26 +147,28 @@ def generate_sprites_from_layer(map_object: pytiled_parser.objects.TileMap,
                         if points[0][0] != points[-1][0] or points[0][1] != points[-1][1]:
                             points.append(points[0])
 
-                        my_sprite.points = points
-
                     elif hitbox.hitbox_type == "Ellipse":
-                        w = hitbox.width
-                        h = hitbox.height
-                        cx = hitbox.x + w / 2
-                        cy = hitbox.y + h / 2
+                        w = hitbox.width / 2
+                        h = hitbox.height / 2
+                        cx = (hitbox.x + hitbox.width / 2) - half_width
+                        cy = map_object.tile_size.height - (hitbox.y + hitbox.height / 2) - half_height
                         total_steps = 8
-                        points = []
                         angles = [step / total_steps * 2 * math.pi for step in range(total_steps)]
                         for angle in angles:
                             x = w * math.cos(angle) + cx
                             y = h * math.sin(angle) + cy
-                            point = x, y
+                            point = [x, y]
                             points.append(point)
-
-                        my_sprite.points = points
 
                     else:
                         print(f"Warning: Hitbox type {hitbox.hitbox_type} not supported.")
+
+                    # Scale the points to our sprite scaling
+                    for point in points:
+                        point[0] *= scaling
+                        point[1] *= scaling
+                    my_sprite.points = points
+
 
             if tile.animation is not None:
                 key_frame_list = []

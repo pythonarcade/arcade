@@ -34,8 +34,8 @@
  <tile id="10">
   <image width="128" height="128" source="../../../arcade/examples/platform_tutorial/images/tiles/dirtHalf_left.png"/>
   <objectgroup draworder="index">
-   <object id="1" x="128" y="0">
-    <polygon points="0,0 -118,0 -128,10 -128,62 -117,74 0,74"/>
+   <object id="2" x="0" y="0">
+    <polygon points="0,0 128,0 128,74 0,74"/>
    </object>
   </objectgroup>
  </tile>
@@ -48,8 +48,8 @@
  <tile id="12">
   <image width="128" height="128" source="../../../arcade/examples/platform_tutorial/images/tiles/dirtHalf_right.png"/>
   <objectgroup draworder="index">
-   <object id="2" x="0" y="0">
-    <polygon points="0,0 116,0 127,10 127,63 116,734 0,74"/>
+   <object id="3" x="0" y="74">
+    <polygon points="0,0 128,0 128,-74 0,-74"/>
    </object>
   </objectgroup>
  </tile>

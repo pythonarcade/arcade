@@ -51,6 +51,9 @@
  </tile>
  <tile id="16">
   <image width="128" height="128" source="../../../arcade/examples/platform_tutorial/images/tiles/grassLeft.png"/>
+  <objectgroup draworder="index">
+   <object id="4" x="0" y="0" width="128" height="128"/>
+  </objectgroup>
  </tile>
  <tile id="17">
   <image width="128" height="128" source="../../../arcade/examples/platform_tutorial/images/tiles/grassMid.png"/>

@@ -7,7 +7,10 @@
   </properties>
   <image width="128" height="128" source="../../../arcade/examples/platform_tutorial/images/items/coinBronze.png"/>
   <objectgroup draworder="index">
-   <object id="2" x="32" y="32.5455" width="64.9091" height="64.3636">
+   <object id="2" x="32" y="32" width="64" height="64">
+    <ellipse/>
+   </object>
+   <object id="3" x="1.75" y="126">
     <ellipse/>
    </object>
   </objectgroup>
@@ -18,7 +21,7 @@
   </properties>
   <image width="128" height="128" source="../../../arcade/examples/platform_tutorial/images/items/coinGold.png"/>
   <objectgroup draworder="index">
-   <object id="1" x="31.0909" y="31.8182" width="64.7273" height="64">
+   <object id="1" x="32" y="32" width="64" height="64">
     <ellipse/>
    </object>
   </objectgroup>
@@ -29,7 +32,7 @@
   </properties>
   <image width="128" height="128" source="../../../arcade/examples/platform_tutorial/images/items/coinSilver.png"/>
   <objectgroup draworder="index">
-   <object id="1" x="32.5455" y="32.1818" width="62.7273" height="64.3636">
+   <object id="1" x="32" y="32" width="64" height="64">
     <ellipse/>
    </object>
   </objectgroup>
@@ -37,7 +40,7 @@
  <tile id="3">
   <image width="128" height="128" source="../../../arcade/examples/platform_tutorial/images/items/flagGreen_down.png"/>
   <objectgroup draworder="index">
-   <object id="1" x="0.545455" y="1.81818" width="32.7273" height="125.273"/>
+   <object id="1" x="0" y="0" width="32" height="128"/>
   </objectgroup>
  </tile>
  <tile id="4">

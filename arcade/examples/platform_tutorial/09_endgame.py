@@ -130,9 +130,6 @@ class MyGame(arcade.Window):
         # -- Platforms
         self.wall_list = arcade.generate_sprites(my_map, platforms_layer_name, TILE_SCALING)
 
-        # -- Platforms
-        self.wall_list = arcade.generate_sprites(my_map, platforms_layer_name, TILE_SCALING)
-
         # -- Coins
         self.coin_list = arcade.generate_sprites(my_map, coins_layer_name, TILE_SCALING)
 
@@ -193,7 +190,7 @@ class MyGame(arcade.Window):
 
     def update(self, delta_time):
         """ Movement and game logic """
-        
+
         # Call update on all sprites (The sprites don't do much in this
         # example though.)
         self.physics_engine.update()

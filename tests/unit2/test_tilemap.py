@@ -36,17 +36,40 @@ def test_two():
     platforms_list = arcade.tilemap.generate_sprites_from_layer(map, "Platforms", base_directory="test_data")
 
     first_sprite = platforms_list[0]
+    assert first_sprite is not None
+    print(first_sprite.center_x, first_sprite.center_y)
+    print(first_sprite.points)
+
+
     assert first_sprite.center_x == -64
     assert first_sprite.center_y == -64
     assert first_sprite.width == 128
     assert first_sprite.height == 128
 
     dirt_list = arcade.tilemap.generate_sprites_from_layer(map, "Dirt", base_directory="test_data")
+
     first_sprite = dirt_list[0]
     assert first_sprite is not None
+    print(first_sprite.center_x, first_sprite.center_y)
+    print(first_sprite.points)
+
+    first_sprite = dirt_list[1]
+    assert first_sprite is not None
+    print(first_sprite.center_x, first_sprite.center_y)
+    print(first_sprite.points)
+
+    first_sprite = dirt_list[2]
+    assert first_sprite is not None
+    print(first_sprite.center_x, first_sprite.center_y)
+    print(first_sprite.points)
+
 
     coin_list = arcade.tilemap.generate_sprites_from_layer(map, "Coins", base_directory="test_data")
     first_sprite = coin_list[0]
+    assert first_sprite is not None
+    print(first_sprite.center_x, first_sprite.center_y)
+    print(first_sprite.points)
+
     assert 'Points' in first_sprite.properties
     assert first_sprite.properties['Points'] == '10'
 
