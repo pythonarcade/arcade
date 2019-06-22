@@ -3,7 +3,7 @@ Functions and classes for managing a map created in the "Tiled Map Editor"
 """
 
 from arcade import Sprite
-from arcade import AnimatedTimeSprite
+from arcade import AnimatedTimeBasedSprite
 from arcade import AnimationKeyframe
 from arcade import SpriteList
 import math
@@ -57,15 +57,17 @@ def get_tile_by_gid(map_object: pytiled_parser.objects.TileMap, tile_gid: int) -
         for tile_key, tile in tileset.tiles.items():
             cur_tile_gid = tile.id + tileset_key
             if cur_tile_gid == tile_gid:
+                tile.tileset = tileset
                 return tile
     return None
 
 
-def get_tile_by_id(map_object: pytiled_parser.objects.TileMap, tile_id: int) -> pytiled_parser.objects.Tile:
-    for tileset_key, tileset in map_object.tile_sets.items():
-        for tile_key, tile in tileset.tiles.items():
-            if tile_id == tile.id:
-                return tile
+def get_tile_by_id(map_object: pytiled_parser.objects.TileMap, tileset: pytiled_parser.objects.TileSet, tile_id: int) -> pytiled_parser.objects.Tile:
+    for tileset_key, cur_tileset in map_object.tile_sets.items():
+        if cur_tileset is tileset:
+            for tile_key, tile in cur_tileset.tiles.items():
+                if tile_id == tile.id:
+                    return tile
     return None
 
 
@@ -101,7 +103,7 @@ def generate_sprites_from_layer(map_object: pytiled_parser.objects.TileMap,
 
             if tile.animation:
                 # my_sprite = AnimatedTimeSprite(tmx_file, scaling)
-                my_sprite = Sprite(tmx_file, scaling)
+                my_sprite = AnimatedTimeBasedSprite(tmx_file, scaling)
             else:
                 my_sprite = Sprite(tmx_file, scaling)
 
@@ -179,7 +181,7 @@ def generate_sprites_from_layer(map_object: pytiled_parser.objects.TileMap,
             if tile.animation is not None:
                 key_frame_list = []
                 for frame in tile.animation:
-                    frame_tile = get_tile_by_id(map_object, frame.tile_id)
+                    frame_tile = get_tile_by_id(map_object, tile.tileset, frame.tile_id)
                     key_frame = AnimationKeyframe(frame.tile_id, frame.duration, frame_tile.image)
                     key_frame_list.append(key_frame)
 

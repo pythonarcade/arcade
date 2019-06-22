@@ -710,26 +710,34 @@ class AnimatedTimeBasedSprite(Sprite):
     Sprite for platformer games that supports animations.
     """
 
-    def __init__(self, scale: float = 1,
-                 image_x: float = 0, image_y: float = 0,
-                 center_x: float = 0, center_y: float = 0):
+    def __init__(self,
+                 filename: str=None,
+                 scale: float=1,
+                 image_x: float=0, image_y: float=0,
+                 image_width: float=0, image_height: float=0,
+                 center_x: float=0, center_y: float=0,
+                 repeat_count_x=1, repeat_count_y=1):
 
-        super().__init__(scale=scale, image_x=image_x, image_y=image_y,
+        super().__init__(filename=filename, scale=scale, image_x=image_x, image_y=image_y,
+                         image_width=image_width, image_height=image_height,
                          center_x=center_x, center_y=center_y)
         self.cur_frame = 0
         self.frames = []
+        self.time_counter = 0.0
 
-    def update_animation(self, time):
+    def update_animation(self, time: float):
         """
         Logic for selecting the proper texture to use.
         """
-        if self.frame % self.texture_change_frames == 0:
-            self.cur_texture_index += 1
-            if self.cur_texture_index >= len(self.textures):
-                self.cur_texture_index = 0
-            self.set_texture(self.cur_texture_index)
-        self.frame += 1
-
+        self.time_counter += time
+        while self.time_counter > self.frames[self.cur_frame].duration / 1000.0:
+            self.time_counter -= self.frames[self.cur_frame].duration / 1000.0
+            self.cur_frame += 1
+            if self.cur_frame >= len(self.frames):
+                self.cur_frame = 0
+            source = self.frames[self.cur_frame].image.source
+            # print(f"Advance to frame {self.cur_frame}: {source}")
+            self.texture = load_texture(source, scale=self.scale)
 
 class AnimatedWalkingSprite(Sprite):
     """

@@ -17,6 +17,7 @@ from PIL import Image
 
 from arcade.sprite import Sprite
 from arcade.sprite import get_distance_between_sprites
+from arcade.sprite import AnimatedTimeBasedSprite
 
 from arcade.draw_commands import rotate_point
 from arcade.window_commands import get_projection
@@ -353,13 +354,6 @@ class SpriteList(Generic[T]):
         for sprite in self.sprite_list:
             sprite.update()
 
-    def update_animation(self):
-        """
-        Call the update_animation() method on each sprite in the list.
-        """
-        for sprite in self.sprite_list:
-            sprite.update_animation()
-
     def move(self, change_x: float, change_y: float):
         """
         Moves all Sprites in the list by the same amount.
@@ -662,6 +656,11 @@ class SpriteList(Generic[T]):
         """
         self.program = None
         return self.sprite_list.pop()
+
+    def update_animation(self, delta_time):
+        for sprite in self.sprite_list:
+            if isinstance(sprite, AnimatedTimeBasedSprite):
+                sprite.update_animation(delta_time)
 
 
 def get_closest_sprite(sprite: Sprite, sprite_list: SpriteList) -> (Sprite, float):
