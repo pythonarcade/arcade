@@ -31,6 +31,7 @@ TOP_VIEWPORT_MARGIN = 100
 PLAYER_START_X = 64
 PLAYER_START_Y = 256
 
+
 class MyGame(arcade.Window):
     """
     Main application class.
@@ -48,8 +49,8 @@ class MyGame(arcade.Window):
         # go into a list.
         self.coin_list = None
         self.wall_list = None
-        self.player_list = None
         self.background_list = None
+        self.player_list = None
 
         # Separate variable that holds the player sprite
         self.player_sprite = None
@@ -70,6 +71,11 @@ class MyGame(arcade.Window):
         # Level
         self.level = 1
 
+        # Load sounds
+        self.collect_coin_sound = arcade.load_sound("sounds/coin1.wav")
+        self.jump_sound = arcade.load_sound("sounds/jump1.wav")
+        self.game_over = arcade.load_sound("sounds/gameover1.wav")
+
     def setup(self, level):
         """ Set up the game here. Call this function to restart the game. """
 
@@ -82,14 +88,13 @@ class MyGame(arcade.Window):
 
         # Create the Sprite lists
         self.player_list = arcade.SpriteList()
-        self.foreground_list = arcade.SpriteList()
         self.background_list = arcade.SpriteList()
         self.wall_list = arcade.SpriteList()
         self.coin_list = arcade.SpriteList()
 
         # Set up the player, specifically placing it at these coordinates.
         # self.player_sprite = arcade.Sprite("images/player_1/player_stand.png", CHARACTER_SCALING)
-        self.player_sprite = arcade.Sprite("../../arcade/examples/platform_tutorial/images/player_1/player_stand.png")
+        self.player_sprite = arcade.Sprite("../../../arcade/examples/platform_tutorial/images/player_1/player_stand.png")
         self.player_sprite.center_x = PLAYER_START_X
         self.player_sprite.center_y = PLAYER_START_Y
         self.player_list.append(self.player_sprite)
@@ -104,7 +109,7 @@ class MyGame(arcade.Window):
         coins_layer_name = 'Coins'
 
         # Map name
-        map_name = f"test_data/test_map_3.tmx"
+        map_name = f"example_map.tmx"
         # Read in the tiled map
         my_map = arcade.tilemap.read_tmx(map_name)
 
@@ -112,18 +117,18 @@ class MyGame(arcade.Window):
         self.end_of_map = my_map.map_size.width * GRID_PIXEL_SIZE
 
         # -- Platforms
-        self.wall_list = arcade.tilemap.process_layer(my_map, platforms_layer_name, TILE_SCALING, base_directory="test_data")
+        self.wall_list = arcade.tilemap.process_layer(my_map, platforms_layer_name, TILE_SCALING)
 
         # -- Moving Platforms
-        moving_platforms_list = arcade.tilemap.process_layer(my_map, moving_platforms_layer_name, TILE_SCALING, base_directory="test_data")
+        moving_platforms_list = arcade.tilemap.process_layer(my_map, moving_platforms_layer_name, TILE_SCALING)
         for sprite in moving_platforms_list:
             self.wall_list.append(sprite)
 
-        # -- Background
-        self.background_list = arcade.tilemap.process_layer(my_map, "Background", TILE_SCALING, base_directory="test_data")
+        # -- Platforms
+        self.background_list = arcade.tilemap.process_layer(my_map, "Background", TILE_SCALING)
 
         # -- Coins
-        self.coin_list = arcade.tilemap.process_layer(my_map, coins_layer_name, TILE_SCALING, base_directory="test_data")
+        self.coin_list = arcade.tilemap.process_layer(my_map, coins_layer_name, TILE_SCALING)
 
         # --- Other stuff
         # Set the background color
@@ -143,6 +148,7 @@ class MyGame(arcade.Window):
 
         # Draw our sprites
         self.wall_list.draw()
+        self.background_list.draw()
         self.coin_list.draw()
         self.player_list.draw()
 
@@ -152,6 +158,7 @@ class MyGame(arcade.Window):
         if key == arcade.key.UP or key == arcade.key.W:
             if self.physics_engine.can_jump():
                 self.player_sprite.change_y = PLAYER_JUMP_SPEED
+                arcade.play_sound(self.jump_sound)
         elif key == arcade.key.LEFT or key == arcade.key.A:
             self.player_sprite.change_x = -PLAYER_MOVEMENT_SPEED
         elif key == arcade.key.RIGHT or key == arcade.key.D:
@@ -172,7 +179,19 @@ class MyGame(arcade.Window):
         # example though.)
         self.physics_engine.update()
         self.coin_list.update_animation(delta_time)
+        self.background_list.update_animation(delta_time)
+
         self.wall_list.update()
+        for wall in self.wall_list:
+
+            if wall.boundary_right and wall.right > wall.boundary_right and wall.change_x > 0:
+                wall.change_x *= -1
+            if wall.boundary_left and wall.left < wall.boundary_left and wall.change_x < 0:
+                wall.change_x *= -1
+            if wall.boundary_top and wall.top > wall.boundary_top and wall.change_y > 0:
+                wall.change_y *= -1
+            if wall.boundary_bottom and wall.bottom < wall.boundary_bottom and wall.change_y < 0:
+                wall.change_y *= -1
 
         # See if we hit any coins
         coin_hit_list = arcade.check_for_collision_with_list(self.player_sprite,
@@ -182,6 +201,7 @@ class MyGame(arcade.Window):
         for coin in coin_hit_list:
             # Remove the coin
             coin.remove_from_sprite_lists()
+            arcade.play_sound(self.collect_coin_sound)
 
         # Track if we need to change the viewport
         changed_viewport = False

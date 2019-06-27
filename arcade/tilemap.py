@@ -88,7 +88,7 @@ def _create_sprite_from_tile(map_object, tile: pytiled_parser.objects.Tile,
         for property in tile.properties:
             my_sprite.properties[property.name] = property.value
 
-    # print(tile.image.source, my_sprite.center_x, my_sprite.center_y)
+        # print(tile.image.source, my_sprite.center_x, my_sprite.center_y)
     if tile.hitboxes is not None and len(tile.hitboxes) > 0:
         if len(tile.hitboxes) > 1:
             print(f"Warning, only one hit box supported for tile with image {tile.image.source}.")
@@ -174,10 +174,29 @@ def _process_object_layer(map_object: pytiled_parser.objects.TileMap,
     for cur_object in layer.tiled_objects:
         tile = _get_tile_by_gid(map_object, cur_object.gid)
         my_sprite = _create_sprite_from_tile(map_object, tile, scaling=scaling,
-                                          base_directory=base_directory)
+                                             base_directory=base_directory)
 
         my_sprite.right = cur_object.location.x * scaling
         my_sprite.top = (map_object.map_size.height * map_object.tile_size[1] - cur_object.location.y) * scaling
+
+        if cur_object.properties is not None and 'change_x' in cur_object.properties:
+            my_sprite.change_x = float(cur_object.properties['change_x'])
+
+        if cur_object.properties is not None and 'change_y' in cur_object.properties:
+            my_sprite.change_y = float(cur_object.properties['change_y'])
+
+        if cur_object.properties is not None and 'boundary_bottom' in cur_object.properties:
+            my_sprite.boundary_bottom = float(cur_object.properties['boundary_bottom'])
+
+        if cur_object.properties is not None and 'boundary_top' in cur_object.properties:
+            my_sprite.boundary_top = float(cur_object.properties['boundary_top'])
+
+        if cur_object.properties is not None and 'boundary_left' in cur_object.properties:
+            my_sprite.boundary_left = float(cur_object.properties['boundary_left'])
+
+        if cur_object.properties is not None and 'boundary_right' in cur_object.properties:
+            my_sprite.boundary_right = float(cur_object.properties['boundary_right'])
+
 
         my_sprite.properties.update(cur_object.properties)
         # sprite.properties
