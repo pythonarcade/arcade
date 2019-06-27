@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset version="1.2" tiledversion="1.2.4" name="items" tilewidth="128" tileheight="128" tilecount="21" columns="0">
+<tileset version="1.2" tiledversion="1.2.4" name="items" tilewidth="128" tileheight="128" tilecount="24" columns="0">
  <grid orientation="orthogonal" width="1" height="1"/>
  <tile id="0">
   <properties>
@@ -41,6 +41,9 @@
   </objectgroup>
  </tile>
  <tile id="4">
+  <properties>
+   <property name="Points" value="25"/>
+  </properties>
   <image width="128" height="128" source="../../../arcade/examples/platform_tutorial/images/items/flagGreen1.png"/>
   <animation>
    <frame tileid="4" duration="500"/>
@@ -99,5 +102,18 @@
  </tile>
  <tile id="20">
   <image width="128" height="128" source="../../../arcade/examples/platform_tutorial/images/items/star.png"/>
+ </tile>
+ <tile id="21">
+  <image width="128" height="128" source="../../../arcade/examples/platform_tutorial/images/tiles/torch1.png"/>
+ </tile>
+ <tile id="22">
+  <image width="128" height="128" source="../../../arcade/examples/platform_tutorial/images/tiles/torch2.png"/>
+  <animation>
+   <frame tileid="21" duration="400"/>
+   <frame tileid="22" duration="400"/>
+  </animation>
+ </tile>
+ <tile id="23">
+  <image width="128" height="128" source="../../../arcade/examples/platform_tutorial/images/tiles/torchOff.png"/>
  </tile>
 </tileset>

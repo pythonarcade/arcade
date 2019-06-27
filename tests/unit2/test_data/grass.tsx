@@ -45,9 +45,19 @@
  </tile>
  <tile id="14">
   <image width="128" height="128" source="../../../arcade/examples/platform_tutorial/images/tiles/grassHill_left.png"/>
+  <objectgroup draworder="index">
+   <object id="1" x="0" y="0">
+    <polygon points="0,0 128,128 0,128"/>
+   </object>
+  </objectgroup>
  </tile>
  <tile id="15">
   <image width="128" height="128" source="../../../arcade/examples/platform_tutorial/images/tiles/grassHill_right.png"/>
+  <objectgroup draworder="index">
+   <object id="1" x="0" y="128">
+    <polygon points="0,0 128,-128 128,0"/>
+   </object>
+  </objectgroup>
  </tile>
  <tile id="16">
   <image width="128" height="128" source="../../../arcade/examples/platform_tutorial/images/tiles/grassLeft.png"/>

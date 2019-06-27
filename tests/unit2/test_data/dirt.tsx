@@ -30,6 +30,11 @@
  </tile>
  <tile id="9">
   <image width="128" height="128" source="../../../arcade/examples/platform_tutorial/images/tiles/dirtHalf.png"/>
+  <objectgroup draworder="index">
+   <object id="1" x="0" y="12">
+    <polygon points="0,0 10.7273,-11.6364 118.182,-11.8182 127.636,-1.81818 127.636,50.1818 116.727,61.4545 10.9091,61.6364 0.181818,49.6364"/>
+   </object>
+  </objectgroup>
  </tile>
  <tile id="10">
   <image width="128" height="128" source="../../../arcade/examples/platform_tutorial/images/tiles/dirtHalf_left.png"/>
