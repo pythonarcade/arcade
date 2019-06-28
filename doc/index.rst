@@ -13,6 +13,7 @@ The Python Arcade Library
           <li><a href="examples/sprite_collect_coins.html">Collect Coins</a></li>
           <li><a href="examples/asteroid_smasher.html">Asteroid Smasher</a></li>
           <li><a href="examples/platform_tutorial/index.html">Platformer Tutorial</a></li>
+          <li><a href="examples/updated_platformer_example.html">Preview of New Platformer Code</a></li>
           </ul>
         </td>
         <td>
