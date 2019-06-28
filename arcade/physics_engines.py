@@ -75,19 +75,35 @@ class PhysicsEnginePlatformer:
     This class will move everything, and take care of collisions.
     """
 
-    def __init__(self, player_sprite: Sprite, platforms: SpriteList,
-                 gravity_constant: float = 0.5):
+    def __init__(self,
+                 player_sprite: Sprite,
+                 platforms: SpriteList,
+                 gravity_constant: float = 0.5,
+                 ladders: SpriteList = None,
+                 ):
         """
         Constructor.
         """
+        if ladders is not None and not isinstance(ladders, SpriteList):
+            raise TypeError("Fourth parameter should be a SpriteList of ladders")
+
         self.player_sprite = player_sprite
         self.platforms = platforms
         self.gravity_constant = gravity_constant
         self.jumps_since_ground = 0
         self.allowed_jumps = 1
         self.allow_multi_jump = False
+        self.ladders = ladders
 
-    def can_jump(self) -> bool:
+    def is_on_ladder(self):
+        # Check for touching a ladder
+        if self.ladders:
+            hit_list = check_for_collision_with_list(self.player_sprite, self.ladders)
+            if len(hit_list) > 0:
+                return True
+        return False
+
+    def can_jump(self, y_distance=5) -> bool:
         """
         Method that looks to see if there is a floor under
         the player_sprite. If there is a floor, the player can jump
@@ -96,13 +112,18 @@ class PhysicsEnginePlatformer:
         :returns: True if there is a platform below us
         :rtype: bool
         """
-        # --- Move in the y direction
-        self.player_sprite.center_y -= 2
+
+        # Check for touching a ladder
+        if self.is_on_ladder():
+            return False
+
+        # Move down to see if we are on a platform
+        self.player_sprite.center_y -= y_distance
 
         # Check for wall hit
         hit_list = check_for_collision_with_list(self.player_sprite, self.platforms)
 
-        self.player_sprite.center_y += 2
+        self.player_sprite.center_y += y_distance
 
         if len(hit_list) > 0:
             self.jumps_since_ground = 0
@@ -111,7 +132,7 @@ class PhysicsEnginePlatformer:
             return True
         else:
             return False
-    
+
     def enable_multi_jump(self, allowed_jumps: int):
         """
         Enables multi-jump.
@@ -125,12 +146,12 @@ class PhysicsEnginePlatformer:
         """
         self.allowed_jumps = allowed_jumps
         self.allow_multi_jump = True
-    
+
     def disable_multi_jump(self):
         """
         Disables multi-jump.
 
-        Calling this function also removes the requirement to 
+        Calling this function also removes the requirement to
         call increment_jump_counter() every time the player jumps.
         """
         self.allow_multi_jump = False
@@ -154,8 +175,9 @@ class PhysicsEnginePlatformer:
         """
         # print(f"Spot A ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
 
-        # --- Add gravity
-        self.player_sprite.change_y -= self.gravity_constant
+        # --- Add gravity if we aren't on a ladder
+        if not self.is_on_ladder():
+            self.player_sprite.change_y -= self.gravity_constant
 
         # --- Move in the y direction
         self.player_sprite.center_y += self.player_sprite.change_y
