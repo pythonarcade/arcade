@@ -38,10 +38,14 @@ class MyGame(arcade.Window):
     """
 
     def __init__(self):
+        """
+        Initializer for the game
+        """
 
         # Call the parent class and set up the window
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
+        # Set the path to start with this program
         file_path = os.path.dirname(os.path.abspath(__file__))
         os.chdir(file_path)
 
@@ -50,12 +54,13 @@ class MyGame(arcade.Window):
         self.coin_list = None
         self.wall_list = None
         self.background_list = None
+        self.ladder_list = None
         self.player_list = None
 
         # Separate variable that holds the player sprite
         self.player_sprite = None
 
-        # Our physics engine
+        # Our 'physics' engine
         self.physics_engine = None
 
         # Used to keep track of our scrolling
@@ -65,18 +70,12 @@ class MyGame(arcade.Window):
         # Keep track of the score
         self.score = 0
 
-        # Where is the right edge of the map?
-        self.end_of_map = 0
-
-        # Level
-        self.level = 1
-
         # Load sounds
         self.collect_coin_sound = arcade.load_sound("sounds/coin1.wav")
         self.jump_sound = arcade.load_sound("sounds/jump1.wav")
         self.game_over = arcade.load_sound("sounds/gameover1.wav")
 
-    def setup(self, level):
+    def setup(self):
         """ Set up the game here. Call this function to restart the game. """
 
         # Used to keep track of our scrolling
@@ -124,8 +123,11 @@ class MyGame(arcade.Window):
         for sprite in moving_platforms_list:
             self.wall_list.append(sprite)
 
-        # -- Platforms
+        # -- Background objects
         self.background_list = arcade.tilemap.process_layer(my_map, "Background", TILE_SCALING)
+
+        # -- Background objects
+        self.ladder_list = arcade.tilemap.process_layer(my_map, "Ladders", TILE_SCALING)
 
         # -- Coins
         self.coin_list = arcade.tilemap.process_layer(my_map, coins_layer_name, TILE_SCALING)
@@ -138,7 +140,8 @@ class MyGame(arcade.Window):
         # Create the 'physics engine'
         self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
                                                              self.wall_list,
-                                                             GRAVITY)
+                                                             gravity_constant=GRAVITY,
+                                                             ladders=self.ladder_list)
 
     def on_draw(self):
         """ Render the screen. """
@@ -149,16 +152,27 @@ class MyGame(arcade.Window):
         # Draw our sprites
         self.wall_list.draw()
         self.background_list.draw()
+        self.ladder_list.draw()
         self.coin_list.draw()
         self.player_list.draw()
+
+        # Draw our score on the screen, scrolling it with the viewport
+        score_text = f"Score: {self.score}"
+        arcade.draw_text(score_text, 10 + self.view_left, 10 + self.view_bottom,
+                         arcade.csscolor.BLACK, 18)
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
 
         if key == arcade.key.UP or key == arcade.key.W:
-            if self.physics_engine.can_jump():
+            if self.physics_engine.is_on_ladder():
+                self.player_sprite.change_y = PLAYER_MOVEMENT_SPEED
+            elif self.physics_engine.can_jump():
                 self.player_sprite.change_y = PLAYER_JUMP_SPEED
                 arcade.play_sound(self.jump_sound)
+        elif key == arcade.key.DOWN or key == arcade.key.S:
+            if self.physics_engine.is_on_ladder():
+                self.player_sprite.change_y = -PLAYER_MOVEMENT_SPEED
         elif key == arcade.key.LEFT or key == arcade.key.A:
             self.player_sprite.change_x = -PLAYER_MOVEMENT_SPEED
         elif key == arcade.key.RIGHT or key == arcade.key.D:
@@ -167,7 +181,13 @@ class MyGame(arcade.Window):
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key. """
 
-        if key == arcade.key.LEFT or key == arcade.key.A:
+        if key == arcade.key.UP or key == arcade.key.W:
+            if self.physics_engine.is_on_ladder():
+                self.player_sprite.change_y = 0
+        elif key == arcade.key.DOWN or key == arcade.key.S:
+            if self.physics_engine.is_on_ladder():
+                self.player_sprite.change_y = 0
+        elif key == arcade.key.LEFT or key == arcade.key.A:
             self.player_sprite.change_x = 0
         elif key == arcade.key.RIGHT or key == arcade.key.D:
             self.player_sprite.change_x = 0
@@ -178,10 +198,15 @@ class MyGame(arcade.Window):
         # Call update on all sprites (The sprites don't do much in this
         # example though.)
         self.physics_engine.update()
+
+        # Update animations
         self.coin_list.update_animation(delta_time)
         self.background_list.update_animation(delta_time)
 
+        # Update walls, used with moving platforms
         self.wall_list.update()
+
+        # See if the wall hit a boundary and needs to reverse direction.
         for wall in self.wall_list:
 
             if wall.boundary_right and wall.right > wall.boundary_right and wall.change_x > 0:
@@ -199,6 +224,14 @@ class MyGame(arcade.Window):
 
         # Loop through each coin we hit (if any) and remove it
         for coin in coin_hit_list:
+
+            # Figure out how many points this coin is worth
+            if 'Points' not in coin.properties:
+                print("Warning, collected a coing without a Points property.")
+            else:
+                points = int(coin.properties['Points'])
+                self.score += points
+
             # Remove the coin
             coin.remove_from_sprite_lists()
             arcade.play_sound(self.collect_coin_sound)
@@ -248,7 +281,7 @@ class MyGame(arcade.Window):
 def main():
     """ Main method """
     window = MyGame()
-    window.setup(window.level)
+    window.setup()
     arcade.run()
 
 
