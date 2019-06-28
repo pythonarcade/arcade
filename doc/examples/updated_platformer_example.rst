@@ -5,8 +5,13 @@
 Updated Platformer Tutorial
 ===========================
 
-Hi, this is  I'm looking to get your feedback on the API and
-feature-set for creating platformer games using Python.
+.. raw:: html
+
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/0CiZ4xVPP6g" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+Hi, I'm looking to get your feedback on the API and the
+feature-set for these new library features
+for creating platformer games using Python.
 
 Link for feedback: https://github.com/pvcraven/arcade/issues/362
 
@@ -14,7 +19,7 @@ If you haven't heard of it, the `Arcade <http://arcade.academy>`_ library is an
 easy-to-use library cross-platform library for creating 2D games that uses
 OpenGL 3.3+ support for sprite drawing.
 
-Recently, Arcade added support for reading in maps created by the
+Recently, Arcade added support for reading in the "TMX" maps created by the
 `Tiled Map Editor`_.
 BUT, the support was incomplete. We are redoing the API, and I'd like to get
 it right this time. (Or at least pretty good.)
@@ -80,6 +85,9 @@ Non-platformer Work Being Done
 
 What Does The Code Look Like?
 -----------------------------
+
+The current source for the tmx code is available here:
+https://github.com/pvcraven/arcade/blob/tmx_update_try_2/arcade/tilemap.py
 
 Here's the code that runs the example and demos some of the features:
 
