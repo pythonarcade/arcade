@@ -15,8 +15,9 @@ from arcade.draw_commands import Texture
 from arcade.draw_commands import rotate_point
 from arcade.arcade_types import RGB
 
-from typing import Sequence
-from typing import Tuple
+from typing import Sequence, Tuple, Union
+
+Image = Union[str, Texture]
 
 FACE_RIGHT = 1
 FACE_LEFT = 2
@@ -78,48 +79,50 @@ class Sprite:
     """
 
     def __init__(self,
-                 filename: str=None,
+                 image: Image=None,
                  scale: float=1,
-                 image_x: float=0, image_y: float=0,
-                 image_width: float=0, image_height: float=0,
+                 width: float=0, height: float=0,
                  center_x: float=0, center_y: float=0,
                  repeat_count_x=1, repeat_count_y=1):
         """
         Create a new sprite.
 
         Args:
-            filename (str): Filename of an image that represents the sprite.
+            image (str or Texture): File name of an image or a Texture object.
             scale (float): Scale the image up or down. Scale of 1.0 is none.
-            image_x (float): Scale the image up or down. Scale of 1.0 is none.
-            image_y (float): Scale the image up or down. Scale of 1.0 is none.
-            image_width (float): Width of the sprite
-            image_height (float): Height of the sprite
+            width (float): Width of the sprite
+            height (float): Height of the sprite
             center_x (float): Location of the sprite
             center_y (float): Location of the sprite
 
         """
 
-        if image_width < 0:
+        if width < 0:
             raise ValueError("Width of image can't be less than zero.")
 
-        if image_height < 0:
+        if height < 0:
             raise ValueError("Height entered is less than zero. Height must be a positive float.")
 
-        if image_width == 0 and image_height != 0:
+        if width == 0 and height != 0:
             raise ValueError("Width can't be zero.")
 
-        if image_height == 0 and image_width != 0:
+        if height == 0 and width != 0:
             raise ValueError("Height can't be zero.")
 
         self.sprite_lists = []
 
-        if filename is not None:
-            self._texture = load_texture(filename, image_x, image_y,
-                                         image_width, image_height)
+        if image:
+            if type(image) is str:
+                self._texture = load_texture(file_name=image)
+            elif isinstance(image, Texture):
+                self._texture = image
+            else:
+                raise ValueError("Sprite image argument must be a "
+                                 "'str' or a Texture object")
 
             self.textures = [self._texture]
-            self._width = self._texture.width * scale
-            self._height = self._texture.height * scale
+            self._width = (width or self._texture.width) * scale
+            self._height = (height or self._texture.height) * scale
             self._texture.scale = scale
         else:
             self.textures = []
@@ -415,14 +418,15 @@ class Sprite:
         return self._scale
 
     def _set_scale(self, new_value: float):
-        """ Set the center x coordinate of the sprite. """
-        if new_value != self._height:
+        """ Set the scale of the sprite. """
+        if new_value != self._scale:
             self.clear_spatial_hashes()
             self._point_list_cache = None
             self._scale = new_value
             if self._texture:
-                self._width = self._texture.width * self._scale
-                self._height = self._texture.height * self._scale
+                # TODO: Condider: always a texture?
+                self._width *= self._scale
+                self._height *= self._scale
             self.add_spatial_hashes()
 
             for sprite_list in self.sprite_lists:
@@ -674,10 +678,10 @@ class AnimatedTimeSprite(Sprite):
     """
 
     def __init__(self, scale: float = 1,
-                 image_x: float = 0, image_y: float = 0,
+                 width: float = 0, height: float = 0,
                  center_x: float = 0, center_y: float = 0):
 
-        super().__init__(scale=scale, image_x=image_x, image_y=image_y,
+        super().__init__(scale=scale, width=width, height=height,
                          center_x=center_x, center_y=center_y)
         self.state = FACE_RIGHT
         self.cur_texture_index = 0
@@ -701,9 +705,9 @@ class AnimatedWalkingSprite(Sprite):
     Sprite for platformer games that supports animations.
     """
     def __init__(self, scale: float = 1,
-                 image_x: float = 0, image_y: float = 0,
+                 width: float = 0, height: float = 0,
                  center_x: float = 0, center_y: float = 0):
-        super().__init__(scale=scale, image_x=image_x, image_y=image_y,
+        super().__init__(scale=scale, width=width, height=height,
                          center_x=center_x, center_y=center_y)
         self.state = FACE_RIGHT
         self.stand_right_textures = None
