@@ -13,7 +13,8 @@ from arcade.draw_commands import load_texture
 from arcade.draw_commands import draw_texture_rectangle
 from arcade.draw_commands import Texture
 from arcade.draw_commands import rotate_point
-from arcade.arcade_types import RGB
+from arcade.arcade_types import Point, RGB
+from arcade.vector import Vector
 
 from typing import Sequence
 from typing import Tuple
@@ -795,6 +796,103 @@ class AnimatedWalkingSprite(Sprite):
         else:
             self.width = self._texture.width * self.scale
             self.height = self._texture.height * self.scale
+
+
+class VectorSprite(Sprite):
+    """
+    Extends Sprite.
+    Uses Vectors for Sprite.position and Sprite.velocity
+    with a minor processing cost.
+
+    Attributes:
+        :alpha: Transparency of sprite. 0 is invisible, 255 is opaque.
+        :angle: Rotation angle in degrees.
+        :radians: Rotation angle in radians.
+        :bottom: Set/query the sprite location by using the bottom coordinate. \
+        This will be the 'y' of the bottom of the sprite.
+        :boundary_left: Used in movement. Left boundary of moving sprite.
+        :boundary_right: Used in movement. Right boundary of moving sprite.
+        :boundary_top: Used in movement. Top boundary of moving sprite.
+        :boundary_bottom: Used in movement. Bottom boundary of moving sprite.
+        :center_x: X location of the center of the sprite
+        :center_y: Y location of the center of the sprite
+        :change_x: Movement vector, in the x direction.
+        :change_y: Movement vector, in the y direction.
+        :change_angle: Change in rotation.
+        :color: Color tint the sprite
+        :collision_radius: Used as a fast-check to see if this item is close \
+        enough to another item. If this check works, we do a slower more accurate check.
+        :cur_texture_index: Index of current texture being used.
+        :guid: Unique identifier for the sprite. Useful when debugging.
+        :height: Height of the sprite.
+        :force: Force being applied to the sprite. Useful when used with Pymunk \
+        for physics.
+        :left: Set/query the sprite location by using the left coordinate. This \
+        will be the 'x' of the left of the sprite.
+        :points: Points, in relation to the center of the sprite, that are used \
+        for collision detection. Arcade defaults to creating points for a rectangle \
+        that encompass the image. If you are creating a ramp or making better \
+        hit-boxes, you can custom-set these.
+        :position: A arcade.Vector with the (x, y) of where the sprite is.
+        :repeat_count_x: Unused
+        :repeat_count_y: Unused
+        :right: Set/query the sprite location by using the right coordinate. \
+        This will be the 'y=x' of the right of the sprite.
+        :sprite_lists: List of all the sprite lists this sprite is part of.
+        :texture: `Texture` class with the current texture.
+        :textures: List of textures associated with this sprite.
+        :top: Set/query the sprite location by using the top coordinate. This \
+        will be the 'y' of the top of the sprite.
+        :scale: Scale the image up or down. Scale of 1.0 is original size, 0.5 \
+        is 1/2 height and width.
+        :velocity: Change in x, y expressed as an arcade.Vector. (0, 0) would be not moving.
+        :width: Width of the sprite
+    """
+
+    def __init__(self,
+                 filename: str=None,
+                 scale: float=1,
+                 image_x: float=0, image_y: float=0,
+                 image_width: float=0, image_height: float=0,
+                 center_x: float=0, center_y: float=0,
+                 repeat_count_x=1, repeat_count_y=1):
+        """
+        Create a new Vector Sprite.
+
+        Args:
+            filename (str): Filename of an image that represents the sprite.
+            scale (float): Scale the image up or down. Scale of 1.0 is none.
+            image_x (float): Scale the image up or down. Scale of 1.0 is none.
+            image_y (float): Scale the image up or down. Scale of 1.0 is none.
+            image_width (float): Width of the sprite
+            image_height (float): Height of the sprite
+            center_x (float): Location of the sprite
+            center_y (float): Location of the sprite
+        """
+        super().__init__(filename=filename,
+                         scale=scale,
+                         image_x=image_x,
+                         image_y=image_y,
+                         image_width=image_width,
+                         image_height=image_height,
+                         center_x=center_x,
+                         center_y=center_y,
+                         repeat_count_x=repeat_count_x,
+                         repeat_count_y=repeat_count_y)
+        self._velocity = Vector(0, 0)
+        self._position = Vector(self.center_x, self.center_y)
+
+    def update(self):
+        self.position += self.velocity
+        self.angle += self.change_angle
+
+    @property
+    def velocity(self) -> Vector:
+        return self._velocity
+
+    @velocity.setter
+    def velocity(self, vec: Point):
+        self._velocity = Vector(*vec)
 
 
 def get_distance_between_sprites(sprite1: Sprite, sprite2: Sprite) -> float:
