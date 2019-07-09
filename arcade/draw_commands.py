@@ -173,7 +173,7 @@ class Texture:
         from arcade.sprite_list import SpriteList
 
         if self._sprite is None:
-            self._sprite = Sprite()
+            self._sprite = Sprite(width=width, height=height)
             self._sprite._texture = self
             self._sprite.textures = [self]
 
@@ -401,6 +401,43 @@ def make_soft_circle_texture(diameter: int, color: Color, center_alpha: int=255,
         clr = (color[0], color[1], color[2], alpha)
         draw.ellipse((center-radius, center-radius, center+radius, center+radius), fill=clr)
     name = "{}:{}:{}:{}:{}".format("soft_circle_texture", diameter, color, center_alpha, outer_alpha) # name must be unique for caching
+    return Texture(name, img)
+
+
+def make_solid_rectangle_texture(width: int, height: int, color: Color) -> Texture:
+    """Return a rectangular Texture.
+
+    Args:
+        :width (int): Width of Texture.
+        :height (int): Height of Texture.
+        :color (Color): Color of rectangle Texture.
+    Returns:
+        Solid rectangle texture.
+    """
+    img = PIL.Image.new("RGB", (int(width), int(height)), color)
+    name = "{}:{}:{}:{}".format("solidrect", width, height, color)
+    return Texture(name, img)
+
+
+def make_sprite_debug_texture(width: int, height: int, color: Color) -> Texture:
+    """Return a rectangular Texture for the purpose of sprite debug mode.
+
+    Args:
+        :width (int): Width of Texture.
+        :height (int): Height of Texture.
+        :color (Color): Color of rectangle Texture.
+    Returns:
+        Solid rectangle debug texture.
+    """
+    img = PIL.Image.new("RGB", (int(width), int(height)), (0, 0, 0, 0))
+    draw = PIL.ImageDraw.Draw(img, mode="RGB")
+    draw.rectangle((0, 0, img.width-2, img.height-2), outline=(0, 255, 0), width=1)
+    draw.line((img.width//2, img.height//2-5, img.width//2, img.height//2+5),
+              fill=(0, 255, 0), width=1)
+    draw.line((img.width//2-5, img.height//2, img.width//2+5, img.height//2),
+              fill=(0, 255, 0), width=1)
+
+    name = "{}:{}:{}:{}".format("solidrect", width, height, color)
     return Texture(name, img)
 
 

@@ -21,7 +21,7 @@ class MyTestWindow(arcade.Window):
         self.character_list = arcade.SpriteList()
 
 
-        self.player = arcade.AnimatedWalkingSprite()
+        self.player = arcade.AnimatedWalkingSprite("../../arcade/examples/images/character_sprites/character0.png")
 
         character_scale = 1
         self.player.stand_right_textures = []
@@ -64,7 +64,8 @@ class MyTestWindow(arcade.Window):
 
         self.coin_list = arcade.SpriteList()
 
-        coin = arcade.AnimatedTimeSprite(scale=0.5)
+        coin = arcade.AnimatedTimeSprite(image="../../arcade/examples/images/gold_1.png",
+                                         scale=0.5)
         coin.center_x = 500
         coin.center_y = 500
 

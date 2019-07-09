@@ -251,14 +251,10 @@ def draw_text(text: str,
         draw.multiline_text((image_start_x, image_start_y), text, color, align=align, font=font)
         image = image.resize((width // scale_down, text_height // scale_down), resample=PIL.Image.LANCZOS)
 
-        text_sprite = Sprite()
-        text_sprite._texture = Texture(key)
-        text_sprite._texture.image = image
+        text_sprite = Sprite(Texture(key, image))
 
-        text_sprite.image = image
-        text_sprite.texture_name = key
-        text_sprite.width = image.width
-        text_sprite.height = image.height
+        # text_sprite.image = image  # TODO: what is this for?
+        # text_sprite.texture_name = key  # TODO: what is this for?
 
         if anchor_x == "left":
             text_sprite.center_x = start_x + text_sprite.width / 2

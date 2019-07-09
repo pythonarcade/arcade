@@ -7,15 +7,13 @@ https://www.gamedev.net/articles/programming/general-and-gameplay-programming/sp
 
 
 import math
-
-
-from arcade.draw_commands import load_texture
-from arcade.draw_commands import draw_texture_rectangle
-from arcade.draw_commands import Texture
-from arcade.draw_commands import rotate_point
-from arcade.arcade_types import RGB
-
+import random
 from typing import Sequence, Tuple, Union
+
+from arcade.arcade_types import RGB, Color
+from arcade.draw_commands import (Texture, draw_texture_rectangle,
+                                  load_texture, make_solid_rectangle_texture,
+                                  make_sprite_debug_texture, rotate_point)
 
 Image = Union[str, Texture]
 
@@ -83,7 +81,7 @@ class Sprite:
                  scale: float=1,
                  width: float=0, height: float=0,
                  center_x: float=0, center_y: float=0,
-                 repeat_count_x=1, repeat_count_y=1):
+                 repeat_count_x=1, repeat_count_y=1, color: Color=None):
         """
         Create a new sprite.
 
@@ -101,7 +99,8 @@ class Sprite:
             raise ValueError("Width of image can't be less than zero.")
 
         if height < 0:
-            raise ValueError("Height entered is less than zero. Height must be a positive float.")
+            raise ValueError("Height entered is less than zero. "
+                             "Height must be a positive float.")
 
         if width == 0 and height != 0:
             raise ValueError("Width can't be zero.")
@@ -111,7 +110,12 @@ class Sprite:
 
         self.sprite_lists = []
 
+        self._alpha = 255
+        self._color = None
+
         if image:
+            # image given. use color argument or default to white.
+            self._color = color or (255, 255, 255)
             if type(image) is str:
                 self._texture = load_texture(file_name=image)
             elif isinstance(image, Texture):
@@ -119,16 +123,24 @@ class Sprite:
             else:
                 raise ValueError("Sprite image argument must be a "
                                  "'str' or a Texture object")
-
-            self.textures = [self._texture]
-            self._width = (width or self._texture.width) * scale
-            self._height = (height or self._texture.height) * scale
-            self._texture.scale = scale
         else:
-            self.textures = []
-            self._texture = None
-            self._width = 0
-            self._height = 0
+            if width == 0 or height == 0:
+                raise ValueError("If your Sprite doesn't have an image, "
+                                 "you must supply a width and a height "
+                                 "so arcade can draw a rectangle for you.\n"
+                                 "E.g., arcade.Sprite(width=100, height=75)")
+            # no image supplied: use color argument or generate a random one.
+            self._color = color or tuple(random.randrange(0, 255) for _ in range(3))
+            self._texture = make_solid_rectangle_texture(
+                width=width,
+                height=height,
+                color=self._color)
+
+        self.textures = [self._texture]
+        self._width = (width or self._texture.width) * scale
+        self._height = (height or self._texture.height) * scale
+        self._texture.scale = scale
+        self._debug_texture = None
 
         self.cur_texture_index = 0
 
@@ -144,9 +156,7 @@ class Sprite:
         self.boundary_top = None
         self.boundary_bottom = None
 
-        self._alpha = 255
         self._collision_radius = None
-        self._color = (255, 255, 255)
 
         self._points = None
         self._point_list_cache = None
@@ -156,6 +166,8 @@ class Sprite:
 
         self.repeat_count_x = repeat_count_x
         self.repeat_count_y = repeat_count_y
+
+        self._debug = False
 
     def append_texture(self, texture: Texture):
         """
@@ -389,6 +401,7 @@ class Sprite:
             self.clear_spatial_hashes()
             self._point_list_cache = None
             self._width = new_value
+            self.scale = 1
             self.add_spatial_hashes()
 
             for sprite_list in self.sprite_lists:
@@ -406,6 +419,7 @@ class Sprite:
             self.clear_spatial_hashes()
             self._point_list_cache = None
             self._height = new_value
+            self.scale = 1
             self.add_spatial_hashes()
 
             for sprite_list in self.sprite_lists:
@@ -423,10 +437,8 @@ class Sprite:
             self.clear_spatial_hashes()
             self._point_list_cache = None
             self._scale = new_value
-            if self._texture:
-                # TODO: Condider: always a texture?
-                self._width *= self._scale
-                self._height *= self._scale
+            self._width = self._texture.width * self._scale
+            self._height = self._texture.height * self._scale
             self.add_spatial_hashes()
 
             for sprite_list in self.sprite_lists:
@@ -582,6 +594,7 @@ class Sprite:
         self.clear_spatial_hashes()
         self._point_list_cache = None
         self._texture = texture
+        self._color = (255, 255, 255)
         self._width = texture.width * texture.scale
         self._height = texture.height * texture.scale
         self.add_spatial_hashes()
@@ -624,6 +637,29 @@ class Sprite:
             sprite_list.update_position(self)
 
     alpha = property(_get_alpha, _set_alpha)
+
+    @property
+    def debug(self) -> bool:
+        return self._debug
+
+    @debug.setter
+    def debug(self, value: bool):
+        if type(value) is not bool:
+            raise ValueError("The Sprite.debug property must be set "
+                             "to a boolean value.")
+        if value is True:
+            if self._debug_texture is None:
+                texture = make_sprite_debug_texture(
+                    width=int(self.width),
+                    height=int(self.height),
+                    color=(0, 0, 0))
+                self._debug_texture = texture
+            self._previous_texture = self.texture
+            self.texture = self._debug_texture
+        else:
+            self.texture = self._previous_texture
+
+        self._debug = value
 
     def register_sprite_list(self, new_list):
         """
@@ -677,11 +713,11 @@ class AnimatedTimeSprite(Sprite):
     Sprite for platformer games that supports animations.
     """
 
-    def __init__(self, scale: float = 1,
+    def __init__(self, image: Union[str, Texture]=None, scale: float = 1,
                  width: float = 0, height: float = 0,
                  center_x: float = 0, center_y: float = 0):
 
-        super().__init__(scale=scale, width=width, height=height,
+        super().__init__(image=image, scale=scale, width=width, height=height,
                          center_x=center_x, center_y=center_y)
         self.state = FACE_RIGHT
         self.cur_texture_index = 0
@@ -704,10 +740,10 @@ class AnimatedWalkingSprite(Sprite):
     """
     Sprite for platformer games that supports animations.
     """
-    def __init__(self, scale: float = 1,
+    def __init__(self, image: Union[str, Texture]=None, scale: float = 1,
                  width: float = 0, height: float = 0,
                  center_x: float = 0, center_y: float = 0):
-        super().__init__(scale=scale, width=width, height=height,
+        super().__init__(image=image, scale=scale, width=width, height=height,
                          center_x=center_x, center_y=center_y)
         self.state = FACE_RIGHT
         self.stand_right_textures = None
