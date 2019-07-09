@@ -713,7 +713,7 @@ class AnimatedTimeSprite(Sprite):
     Sprite for platformer games that supports animations.
     """
 
-    def __init__(self, image: Union[str, Texture]=None, scale: float = 1,
+    def __init__(self, image: Image=None, scale: float = 1,
                  width: float = 0, height: float = 0,
                  center_x: float = 0, center_y: float = 0):
 
@@ -740,7 +740,7 @@ class AnimatedWalkingSprite(Sprite):
     """
     Sprite for platformer games that supports animations.
     """
-    def __init__(self, image: Union[str, Texture]=None, scale: float = 1,
+    def __init__(self, image: Image=None, scale: float = 1,
                  width: float = 0, height: float = 0,
                  center_x: float = 0, center_y: float = 0):
         super().__init__(image=image, scale=scale, width=width, height=height,
