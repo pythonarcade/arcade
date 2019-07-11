@@ -940,6 +940,11 @@ def _get_points_for_points(point_list, size):
         new_point_list.append((x - hs, y - hs))
         new_point_list.append((x + hs, y - hs))
         new_point_list.append((x + hs, y + hs))
+
+        new_point_list.append((x + hs, y + hs))
+        new_point_list.append((x - hs, y - hs))
+        new_point_list.append((x - hs, y + hs))
+
     return new_point_list
 
 
