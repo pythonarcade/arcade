@@ -18,6 +18,14 @@ The Great Skeleton War
 
 .. _The Great Skeleton War: https://github.com/BlakeDalmas/Python/tree/master/The%20Great%20Skeleton%20War
 
+Python Knife Hit
+~~~~~~~~~~~~~~~~
+
+.. figure:: images/python_knife_hit.png
+    :width: 50%
+
+https://github.com/akmalhakimi1991/python-knife-hit
+
 Kayzee
 ~~~~~~
 
