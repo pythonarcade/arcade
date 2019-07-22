@@ -5,9 +5,8 @@ derive from.
 from typing import Tuple
 from numbers import Number
 
-from arcade.window_commands import set_viewport
-from arcade.window_commands import get_viewport
-from arcade.window_commands import set_window
+from arcade.window_commands import (get_viewport, get_window, set_viewport,
+                                    set_window, schedule, unschedule)
 
 import pyglet.gl as gl
 from arcade.monkey_patch_pyglet import *
@@ -96,10 +95,11 @@ class Window(pyglet.window.Window):
 
         :param float rate: Update frequency in seconds
         """
-        pyglet.clock.unschedule(self.update)
-        pyglet.clock.schedule_interval(self.update, rate)
-        pyglet.clock.unschedule(self.on_update)
-        pyglet.clock.schedule_interval(self.on_update, rate)
+        self._update_rate = rate
+        unschedule(self.update)
+        schedule(self.update, self._update_rate)
+        unschedule(self.on_update)
+        schedule(self.on_update, self._update_rate)
 
     def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
         """
@@ -326,3 +326,48 @@ def open_window(width: Number, height: Number, window_title: str, resizable: boo
     _window = Window(width, height, window_title, resizable, update_rate=None,
                      antialiasing=antialiasing)
     return _window
+
+
+def set_screen(screen_class: Window):
+
+    class DefaultWindow(Window):
+        """Inherit the methods without actually spinning up a new pyglet window"""
+        def __init__(self):
+            pass
+
+    default_window = DefaultWindow()
+    window = get_window()
+    screen = screen_class()
+
+    overridable_methods = ['on_draw', 'on_hide', 'on_key_press',
+                           'on_key_release', 'on_mouse_drag', 'on_mouse_enter',
+                           'on_mouse_leave', 'on_mouse_motion', 'on_mouse_press',
+                           'on_mouse_release', 'on_mouse_scroll', 'on_move',
+                           'on_resize', 'on_text', 'on_text_motion',
+                           'on_text_motion_select', 'on_update', 'update']
+
+    # unschedule the previous screen's update methods
+    unschedule(window.update)
+    unschedule(window.on_update)
+
+    # Copy over the methods from the new screen
+    for method_name in overridable_methods:
+        try:
+            # override current window method with the one
+            # in the new screen
+            setattr(window, method_name, getattr(screen, method_name))
+            # print(f"Set window.{method_name} to {screen_class.__name__}.{method_name}")
+        except AttributeError:
+            # Use original version of the method from
+            # the Window class if not found in the new screen.
+
+            # print(f"'{method_name}' not found in {screen_class.__name__}")
+
+            if hasattr(default_window, method_name):
+                # There are pyglet window methods that can be overridden
+                # that are not part of the arcade.Window class
+                setattr(window, method_name, getattr(default_window, method_name))
+
+    # schedule the new screen's update methods
+    schedule(window.update, window._update_rate)
+    schedule(window.on_update, window._update_rate)
