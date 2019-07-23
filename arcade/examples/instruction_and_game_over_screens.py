@@ -30,7 +30,7 @@ SPRITE_SCALING = 0.5
 time_taken = 0
 
 
-class MenuScreen():
+class MenuScreen:
     def __init__(self):
         arcade.set_background_color(arcade.color.WHITE)
 
@@ -43,7 +43,7 @@ class MenuScreen():
         arcade.set_screen(InstructionScreen)
 
 
-class InstructionScreen():
+class InstructionScreen:
     def __init__(self):
         arcade.set_background_color(arcade.color.ORANGE_PEEL)
         self.screen_name = "Instructions"
@@ -57,7 +57,7 @@ class InstructionScreen():
         arcade.set_screen(GameScreen)
 
 
-class GameScreen():
+class GameScreen:
     def __init__(self):
         global time_taken
 
@@ -133,7 +133,7 @@ class GameScreen():
         self.player_sprite.center_y = y
 
 
-class GameOverScreen():
+class GameOverScreen:
     def __init__(self):
         arcade.set_background_color(arcade.color.BLACK)
 
