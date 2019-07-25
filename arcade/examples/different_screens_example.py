@@ -31,8 +31,7 @@ time_taken = 0
 
 
 class MenuScreen:
-    def __init__(self):
-        arcade.set_background_color(arcade.color.WHITE)
+    background_color = arcade.color.WHITE
 
     def on_draw(self):
         arcade.start_render()
@@ -44,8 +43,9 @@ class MenuScreen:
 
 
 class InstructionScreen:
+    background_color = arcade.color.ORANGE_PEEL
+
     def __init__(self):
-        arcade.set_background_color(arcade.color.ORANGE_PEEL)
         self.screen_name = "Instructions"
 
     def on_draw(self):
@@ -58,11 +58,11 @@ class InstructionScreen:
 
 
 class GameScreen:
+    background_color = arcade.color.AMAZON
+
     def __init__(self):
         global time_taken
-
         time_taken = 0
-        arcade.set_background_color(arcade.color.AMAZON)
 
         # Sprite lists
         self.player_list = arcade.SpriteList()
@@ -134,8 +134,7 @@ class GameScreen:
 
 
 class GameOverScreen:
-    def __init__(self):
-        arcade.set_background_color(arcade.color.BLACK)
+    background_color = arcade.color.BLACK
 
     def on_draw(self):
         global time_taken
@@ -156,7 +155,7 @@ class GameOverScreen:
                          anchor_x="center")
 
     def on_mouse_press(self, x, y, button, modifiers):
-        arcade.set_screen(GameScreen)
+        arcade.set_screen(GameScreen, reset=True)
 
 
 def main():

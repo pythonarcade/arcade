@@ -2,15 +2,15 @@
 The main window class that all object-oriented applications should
 derive from.
 """
-from typing import Tuple
 from numbers import Number
-
-from arcade.window_commands import (get_viewport, get_window, set_viewport,
-                                    set_window, schedule, unschedule)
+from typing import Tuple
 
 import pyglet.gl as gl
-from arcade.monkey_patch_pyglet import *
 
+from arcade.monkey_patch_pyglet import *
+from arcade.window_commands import (get_viewport, get_window, schedule,
+                                    set_background_color, set_viewport,
+                                    set_window, unschedule)
 
 MOUSE_BUTTON_LEFT = 1
 MOUSE_BUTTON_MIDDLE = 2
@@ -69,6 +69,7 @@ class Window(pyglet.window.Window):
         self.invalid = False
         set_window(self)
         set_viewport(0, self.width, 0, self.height)
+        self._screen_registry = {}
 
     def update(self, delta_time: float):
         """
@@ -328,7 +329,20 @@ def open_window(width: Number, height: Number, window_title: str, resizable: boo
     return _window
 
 
-def set_screen(screen_class: Window):
+def set_screen(screen_class: Window, reset=False):
+    """
+    - Create a registry of pointers for each view.
+    - If reset=True or the view doesnt exist in registry, create a new object
+    - else (exists), use the pointer from the registry
+
+    TODO:Thoughts:
+    - should reset be True by default?
+
+    TODO:
+    - Passing data between screens (using global variables or object data fields?)
+        - arcade.pass_data_to_screen(GameScreen, {'foo': 1, 'bar', 2}) ??
+    - Screen inheritance (Multiple levels) sharing keybinds and draw (whatever needed)
+    """
 
     class DefaultWindow(Window):
         """Inherit the methods without actually spinning up a new pyglet window"""
@@ -337,7 +351,12 @@ def set_screen(screen_class: Window):
 
     default_window = DefaultWindow()
     window = get_window()
-    screen = screen_class()
+
+    if reset or screen_class.__name__ not in window._screen_registry.keys():
+        screen = screen_class()
+        window._screen_registry[screen_class.__name__] = screen
+    else:
+        screen = window._screen_registry[screen_class.__name__]
 
     overridable_methods = ['on_draw', 'on_hide', 'on_key_press',
                            'on_key_release', 'on_mouse_drag', 'on_mouse_enter',
@@ -349,6 +368,16 @@ def set_screen(screen_class: Window):
     # unschedule the previous screen's update methods
     unschedule(window.update)
     unschedule(window.on_update)
+
+    # set the screen's background color
+    try:
+        set_background_color(screen.__class__.background_color)
+    except AttributeError:
+        pass  # no background color specified, keeping current
+    except TypeError:
+        # Not a valid color argument
+        raise TypeError(f"'{screen.__class__.background_color}'"
+                        " is not a valid color.") from None
 
     # Copy over the methods from the new screen
     for method_name in overridable_methods:
