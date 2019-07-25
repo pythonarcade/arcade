@@ -8,7 +8,7 @@ arcade.set_screen() function and pass it the ClassName of the screen you
 want to switch to.
 
 If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.instruction_and_game_over_screens
+python -m arcade.examples.different_screens_pause
 """
 
 import arcade
