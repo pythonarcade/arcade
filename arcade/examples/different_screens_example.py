@@ -27,42 +27,44 @@ WIDTH = 800
 HEIGHT = 600
 SPRITE_SCALING = 0.5
 
-time_taken = 0
 
-
-class MenuScreen:
-    background_color = arcade.color.WHITE
+class MenuView(arcade.View):
+    def on_show(self):
+        arcade.set_background_color(arcade.color.WHITE)
 
     def on_draw(self):
         arcade.start_render()
         arcade.draw_text("Menu Screen", WIDTH/2, HEIGHT/2,
                          arcade.color.BLACK, font_size=50, anchor_x="center")
+        arcade.draw_text("Click to advance", WIDTH/2, HEIGHT/2-75,
+                         arcade.color.GRAY, font_size=20, anchor_x="center")
 
     def on_mouse_press(self, x, y, button, modifiers):
-        arcade.set_screen(InstructionScreen)
+        instructions_view = InstructionView()
+        instructions_view.show()
 
 
-class InstructionScreen:
-    background_color = arcade.color.ORANGE_PEEL
-
-    def __init__(self):
-        self.screen_name = "Instructions"
+class InstructionView(arcade.View):
+    def on_show(self):
+        arcade.set_background_color(arcade.color.ORANGE_PEEL)
 
     def on_draw(self):
         arcade.start_render()
-        arcade.draw_text(f"{self.screen_name} Screen", WIDTH/2, HEIGHT/2,
+        arcade.draw_text("Instructions Screen", WIDTH/2, HEIGHT/2,
                          arcade.color.BLACK, font_size=50, anchor_x="center")
+        arcade.draw_text("Click to advance", WIDTH/2, HEIGHT/2-75,
+                         arcade.color.GRAY, font_size=20, anchor_x="center")
 
     def on_mouse_press(self, x, y, button, modifiers):
-        arcade.set_screen(GameScreen)
+        game_view = GameView()
+        game_view.show()
 
 
-class GameScreen:
-    background_color = arcade.color.AMAZON
+class GameView(arcade.View):
+    def __init__(self, parent=None):
+        super().__init__(parent)
 
-    def __init__(self):
-        global time_taken
-        time_taken = 0
+        self.time_taken = 0
 
         # Sprite lists
         self.player_list = arcade.SpriteList()
@@ -75,7 +77,7 @@ class GameScreen:
         self.player_sprite.center_y = 50
         self.player_list.append(self.player_sprite)
 
-        for i in range(50):
+        for i in range(5):
 
             # Create the coin instance
             coin = arcade.Sprite("images/coin_01.png", SPRITE_SCALING / 3)
@@ -86,6 +88,9 @@ class GameScreen:
 
             # Add the coin to the lists
             self.coin_list.append(coin)
+
+    def on_show(self):
+        arcade.set_background_color(arcade.color.AMAZON)
 
         # Don't show the mouse cursor
         arcade.get_window().set_mouse_visible(False)
@@ -101,9 +106,7 @@ class GameScreen:
         arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
 
     def update(self, delta_time):
-        global time_taken
-
-        time_taken += delta_time
+        self.time_taken += delta_time
 
         # Call update on all sprites (The sprites don't do much in this
         # example though.)
@@ -122,8 +125,8 @@ class GameScreen:
         # If we've collected all the games, then move to a "GAME_OVER"
         # state.
         if len(self.coin_list) == 0:
-            arcade.get_window().set_mouse_visible(True)
-            arcade.set_screen(GameOverScreen)
+            game_over_view = GameOverView(self)
+            game_over_view.show()
 
     def on_mouse_motion(self, x, y, dx, dy):
         """
@@ -133,12 +136,12 @@ class GameScreen:
         self.player_sprite.center_y = y
 
 
-class GameOverScreen:
-    background_color = arcade.color.BLACK
+class GameOverView(arcade.View):
+    def on_show(self):
+        arcade.set_background_color(arcade.color.BLACK)
+        arcade.get_window().set_mouse_visible(True)
 
     def on_draw(self):
-        global time_taken
-
         arcade.start_render()
         """
         Draw "Game over" across the screen.
@@ -146,7 +149,7 @@ class GameOverScreen:
         arcade.draw_text("Game Over", 240, 400, arcade.color.WHITE, 54)
         arcade.draw_text("Click to restart", 310, 300, arcade.color.WHITE, 24)
 
-        time_taken_formatted = f"{round(time_taken, 2)} seconds"
+        time_taken_formatted = f"{round(self.parent.time_taken, 2)} seconds"
         arcade.draw_text(f"Time taken: {time_taken_formatted}",
                          WIDTH/2,
                          200,
@@ -155,12 +158,14 @@ class GameOverScreen:
                          anchor_x="center")
 
     def on_mouse_press(self, x, y, button, modifiers):
-        arcade.set_screen(GameScreen, reset=True)
+        game_view = GameView()
+        game_view.show()
 
 
 def main():
     arcade.Window(WIDTH, HEIGHT, "Instruction and Game Over Screens Example")
-    arcade.set_screen(MenuScreen)
+    menu_view = MenuView()
+    menu_view.show()
     arcade.run()
 
 

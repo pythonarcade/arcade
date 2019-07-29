@@ -329,74 +329,54 @@ def open_window(width: Number, height: Number, window_title: str, resizable: boo
     return _window
 
 
-def set_screen(screen_class: Window, reset=False):
+class View(Window):
     """
-    - Create a registry of pointers for each view.
-    - If reset=True or the view doesnt exist in registry, create a new object
-    - else (exists), use the pointer from the registry
-
     TODO:Thoughts:
-    - should reset be True by default?
-
-    TODO:
-    - Passing data between screens (using global variables or object data fields?)
-        - arcade.pass_data_to_screen(GameScreen, {'foo': 1, 'bar', 2}) ??
-    - Screen inheritance (Multiple levels) sharing keybinds and draw (whatever needed)
+    - is there a need for a close()/on_close() method?
     """
+    def __init__(self, parent: 'Window'=None):
+        self.parent = parent
 
-    class DefaultWindow(Window):
-        """Inherit the methods without actually spinning up a new pyglet window"""
-        def __init__(self):
-            pass
+    def on_show(self):
+        """Called when this view is shown"""
+        pass
 
-    default_window = DefaultWindow()
-    window = get_window()
+    def show(self):
+        """Show the View"""
 
-    if reset or screen_class.__name__ not in window._screen_registry.keys():
-        screen = screen_class()
-        window._screen_registry[screen_class.__name__] = screen
-    else:
-        screen = window._screen_registry[screen_class.__name__]
+        # unschedule the previous screen's update methods
+        window = get_window()
+        unschedule(window.update)
+        unschedule(window.on_update)
 
-    overridable_methods = ['on_draw', 'on_hide', 'on_key_press',
-                           'on_key_release', 'on_mouse_drag', 'on_mouse_enter',
-                           'on_mouse_leave', 'on_mouse_motion', 'on_mouse_press',
-                           'on_mouse_release', 'on_mouse_scroll', 'on_move',
-                           'on_resize', 'on_text', 'on_text_motion',
-                           'on_text_motion_select', 'on_update', 'update']
+        # run the View's on_show method
+        self.on_show()
 
-    # unschedule the previous screen's update methods
-    unschedule(window.update)
-    unschedule(window.on_update)
+        # Copy over the methods from the new screen
+        overridable_methods = ['on_draw', 'on_hide', 'on_key_press',
+                               'on_key_release', 'on_mouse_drag', 'on_mouse_enter',
+                               'on_mouse_leave', 'on_mouse_motion', 'on_mouse_press',
+                               'on_mouse_release', 'on_mouse_scroll', 'on_move',
+                               'on_resize', 'on_text', 'on_text_motion',
+                               'on_text_motion_select', 'on_update', 'update']
 
-    # set the screen's background color
-    try:
-        set_background_color(screen.__class__.background_color)
-    except AttributeError:
-        pass  # no background color specified, keeping current
-    except TypeError:
-        # Not a valid color argument
-        raise TypeError(f"'{screen.__class__.background_color}'"
-                        " is not a valid color.") from None
+        for method_name in overridable_methods:
+            try:
+                # override current window method with the one
+                # in the new screen
+                setattr(window, method_name, getattr(self, method_name))
+                # print(f"Set window.{method_name} to {self.__class__.__name__}.{method_name}")
+            except AttributeError:
+                # Use original version of the method from
+                # the Window class if not found in the new screen.
 
-    # Copy over the methods from the new screen
-    for method_name in overridable_methods:
-        try:
-            # override current window method with the one
-            # in the new screen
-            setattr(window, method_name, getattr(screen, method_name))
-            # print(f"Set window.{method_name} to {screen_class.__name__}.{method_name}")
-        except AttributeError:
-            # Use original version of the method from
-            # the Window class if not found in the new screen.
+                # print(f"'{method_name}' not found in {self.__class__.__name__}")
 
-            # print(f"'{method_name}' not found in {screen_class.__name__}")
+                if hasattr(self, method_name):
+                    # There are pyglet window methods that can be overridden
+                    # that are not part of the arcade.Window class
+                    setattr(window, method_name, getattr(self, method_name))
 
-            if hasattr(default_window, method_name):
-                # There are pyglet window methods that can be overridden
-                # that are not part of the arcade.Window class
-                setattr(window, method_name, getattr(default_window, method_name))
-
-    # schedule the new screen's update methods
-    schedule(window.update, window._update_rate)
-    schedule(window.on_update, window._update_rate)
+        # schedule the new screen's update methods
+        schedule(window.update, window._update_rate)
+        schedule(window.on_update, window._update_rate)
