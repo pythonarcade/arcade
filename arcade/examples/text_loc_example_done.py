@@ -21,6 +21,7 @@ gettext.install('text_loc_example', localedir='text_loc_example_locale')
 SCREEN_WIDTH = 500
 SCREEN_HEIGHT = 500
 SCREEN_TITLE = "Localizing Text Example"
+_ = gettext.gettext
 
 
 class MyGame(arcade.Window):
