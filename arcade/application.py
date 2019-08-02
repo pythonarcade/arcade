@@ -352,7 +352,13 @@ class View:
     def show(self):
         """Show the view"""
         window = get_window()
-        window.set_handlers(self)
+
+        try:
+            window.pop_handlers()
+        except AssertionError:
+            pass
+
+        window.push_handlers(self)
 
         unschedule(window.on_update)
         unschedule(window.update)
