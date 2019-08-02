@@ -1,3 +1,5 @@
+# flake8: noqa
+
 setup(
     ...
     install_requires=[

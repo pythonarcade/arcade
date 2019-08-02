@@ -1,9 +1,10 @@
 -e .
-pytest
-sphinx
 coverage
 coveralls
-sphinx_rtd_theme
-setuptools
+flake8
+pytest
 pytest-cov
 pytest-mock
+setuptools
+sphinx
+sphinx_rtd_theme
