@@ -329,7 +329,7 @@ def open_window(width: Number, height: Number, window_title: str, resizable: boo
     return _window
 
 
-class View(Window):
+class View:
     """
     TODO:Thoughts:
     - is there a need for a close()/on_close() method?
@@ -337,46 +337,34 @@ class View(Window):
     def __init__(self, parent: 'Window'=None):
         self.parent = parent
 
+    def update(self, delta_time):
+        """To be overridden"""
+        pass
+
+    def on_update(self, delta_time):
+        """To be overridden"""
+        pass
+
     def on_show(self):
         """Called when this view is shown"""
         pass
 
     def show(self):
-        """Show the View"""
-
-        # unschedule the previous screen's update methods
+        """Show the view"""
         window = get_window()
-        unschedule(window.update)
+        window.set_handlers(self)
+
         unschedule(window.on_update)
+        unschedule(window.update)
 
-        # run the View's on_show method
-        self.on_show()
-
-        # Copy over the methods from the new screen
-        overridable_methods = ['on_draw', 'on_hide', 'on_key_press',
-                               'on_key_release', 'on_mouse_drag', 'on_mouse_enter',
-                               'on_mouse_leave', 'on_mouse_motion', 'on_mouse_press',
-                               'on_mouse_release', 'on_mouse_scroll', 'on_move',
-                               'on_resize', 'on_text', 'on_text_motion',
-                               'on_text_motion_select', 'on_update', 'update']
-
-        for method_name in overridable_methods:
+        # replace the window's update methods
+        for method in ('update', 'on_update'):
             try:
-                # override current window method with the one
-                # in the new screen
-                setattr(window, method_name, getattr(self, method_name))
-                # print(f"Set window.{method_name} to {self.__class__.__name__}.{method_name}")
+                setattr(window, method, getattr(self, method))
             except AttributeError:
-                # Use original version of the method from
-                # the Window class if not found in the new screen.
+                pass
 
-                # print(f"'{method_name}' not found in {self.__class__.__name__}")
-
-                if hasattr(self, method_name):
-                    # There are pyglet window methods that can be overridden
-                    # that are not part of the arcade.Window class
-                    setattr(window, method_name, getattr(self, method_name))
-
-        # schedule the new screen's update methods
-        schedule(window.update, window._update_rate)
         schedule(window.on_update, window._update_rate)
+        schedule(window.update, window._update_rate)
+
+        self.on_show()
