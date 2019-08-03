@@ -11,6 +11,14 @@ matrix:
       os: osx
       osx_image: xcode11
       language: minimal
+      before_install: sw_vers
+    - name: "Python 3.7 on Windows"
+      os: windows
+      language: minimal
+      before_install:
+        - choco install python
+        - python -m pip install --upgrade pip
+      env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
   allow_failures:
     - dist: bionic
 addons:
@@ -21,8 +29,9 @@ addons:
     - python3-gi
     - python3-gi-cairo
     - python-gst-1.0
-before_install: pip3 install --upgrade pip
-install: pip3 install -r requirements.txt -r requirements_dev.txt
+install:
+  - pip3 install --upgrade pip
+  - pip3 install -r requirements.txt -r requirements_dev.txt
 before_script: flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
 script: pytest --ignore=tests/unit2  # TODO: remove the --ignore
 after_success: coveralls
