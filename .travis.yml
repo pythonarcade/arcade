@@ -1,3 +1,17 @@
+dist: xenial
 language: python
-install: pip install flake8
-script: flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+python: 3.7
+services: xvfb
+addons:
+  apt:
+    update: true
+    packages:
+    - freeglut3-dev
+    - python3-gi
+    - python3-gi-cairo
+    - python-gst-1.0
+before_install: pip install --upgrade pip
+install: pip install -r requirements.txt -r requirements_dev.txt
+before_script: flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+script: pytest
+after_success: coveralls
