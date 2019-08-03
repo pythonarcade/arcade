@@ -1,7 +1,18 @@
-dist: xenial
 language: python
 python: 3.7
 services: xvfb
+matrix:
+  include:
+    - name: "Python 3.7 on xenial"
+      dist: xenial
+    - name: "Python 3.7 on bionic"
+      dist: bionic
+    - name: "Python 3.7 on macOS"
+      os: osx
+      osx_image: xcode11
+      language: minimal
+  allow_failures:
+    - dist: bionic
 addons:
   apt:
     update: true
@@ -10,8 +21,8 @@ addons:
     - python3-gi
     - python3-gi-cairo
     - python-gst-1.0
-before_install: pip install --upgrade pip
-install: pip install -r requirements.txt -r requirements_dev.txt
+before_install: pip3 install --upgrade pip
+install: pip3 install -r requirements.txt -r requirements_dev.txt
 before_script: flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-script: pytest
+script: pytest --ignore=tests/unit2  # TODO: remove the --ignore
 after_success: coveralls
