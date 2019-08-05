@@ -102,11 +102,10 @@ class Window(pyglet.window.Window):
 
         :param float rate: Update frequency in seconds
         """
-        self._update_rate = rate
-        unschedule(self.update)
-        schedule(self.update, self._update_rate)
-        unschedule(self.on_update)
-        schedule(self.on_update, self._update_rate)
+        pyglet.clock.unschedule(self.update)
+        pyglet.clock.schedule_interval(self.update, rate)
+        pyglet.clock.unschedule(self.on_update)
+        pyglet.clock.schedule_interval(self.on_update, rate)
 
     def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
         """
