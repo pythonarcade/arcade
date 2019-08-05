@@ -69,7 +69,6 @@ class Window(pyglet.window.Window):
         self.invalid = False
         set_window(self)
         set_viewport(0, self.width, 0, self.height)
-        self._screen_registry = {}
         self.current_view = None
 
     def update(self, delta_time: float):
@@ -371,29 +370,3 @@ class View:
     def on_show(self):
         """Called when this view is shown"""
         pass
-
-    # def show(self):
-    #     """Show the view"""
-    #     window = get_window()
-
-    #     try:
-    #         window.pop_handlers()
-    #     except AssertionError:
-    #         pass
-
-    #     window.push_handlers(self)
-
-    #     unschedule(window.on_update)
-    #     unschedule(window.update)
-
-    #     # replace the window's update methods
-    #     for method in ('update', 'on_update'):
-    #         try:
-    #             setattr(window, method, getattr(self, method))
-    #         except AttributeError:
-    #             pass
-
-    #     schedule(window.on_update, window._update_rate)
-    #     schedule(window.update, window._update_rate)
-
-    #     self.on_show()
