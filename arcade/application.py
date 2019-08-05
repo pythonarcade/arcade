@@ -3,7 +3,7 @@ The main window class that all object-oriented applications should
 derive from.
 """
 from numbers import Number
-from typing import Tuple
+from typing import Tuple, Union
 
 import pyglet.gl as gl
 
@@ -70,6 +70,7 @@ class Window(pyglet.window.Window):
         set_window(self)
         set_viewport(0, self.width, 0, self.height)
         self._screen_registry = {}
+        self.current_view = None
 
     def update(self, delta_time: float):
         """
@@ -78,7 +79,10 @@ class Window(pyglet.window.Window):
         :param float delta_time: Time interval since the last time the function was called.
 
         """
-        pass
+        try:
+            self.current_view.update(delta_time)
+        except AttributeError:
+            pass
 
     def on_update(self, delta_time: float):
         """
@@ -87,7 +91,10 @@ class Window(pyglet.window.Window):
         :param float delta_time: Time interval since the last time the function was called.
 
         """
-        pass
+        try:
+            self.current_view.on_update(delta_time)
+        except AttributeError:
+            pass
 
     def set_update_rate(self, rate: float):
         """
@@ -304,6 +311,22 @@ class Window(pyglet.window.Window):
             self.flip()
             self.update(1/60)
 
+    def show_view(self, new_view: 'View'):
+        # when a View object is shown in a specific window,
+        # and the View is created with no parent, the parent becomes
+        # the window in which it is shown
+        if not new_view.parent:
+            new_view.parent = self
+
+        # remove previously shown view's handlers
+        if self.current_view:
+            self.remove_handlers(self.current_view)
+
+        # push new view's handlers
+        self.current_view = new_view
+        self.push_handlers(self.current_view)
+        self.current_view.on_show()
+
 
 def open_window(width: Number, height: Number, window_title: str, resizable: bool = False,
                 antialiasing=True) -> Window:
@@ -334,7 +357,7 @@ class View:
     TODO:Thoughts:
     - is there a need for a close()/on_close() method?
     """
-    def __init__(self, parent: 'Window'=None):
+    def __init__(self, parent: Union['Window', 'View']=None):
         self.parent = parent
 
     def update(self, delta_time):
@@ -349,28 +372,28 @@ class View:
         """Called when this view is shown"""
         pass
 
-    def show(self):
-        """Show the view"""
-        window = get_window()
+    # def show(self):
+    #     """Show the view"""
+    #     window = get_window()
 
-        try:
-            window.pop_handlers()
-        except AssertionError:
-            pass
+    #     try:
+    #         window.pop_handlers()
+    #     except AssertionError:
+    #         pass
 
-        window.push_handlers(self)
+    #     window.push_handlers(self)
 
-        unschedule(window.on_update)
-        unschedule(window.update)
+    #     unschedule(window.on_update)
+    #     unschedule(window.update)
 
-        # replace the window's update methods
-        for method in ('update', 'on_update'):
-            try:
-                setattr(window, method, getattr(self, method))
-            except AttributeError:
-                pass
+    #     # replace the window's update methods
+    #     for method in ('update', 'on_update'):
+    #         try:
+    #             setattr(window, method, getattr(self, method))
+    #         except AttributeError:
+    #             pass
 
-        schedule(window.on_update, window._update_rate)
-        schedule(window.update, window._update_rate)
+    #     schedule(window.on_update, window._update_rate)
+    #     schedule(window.update, window._update_rate)
 
-        self.on_show()
+    #     self.on_show()

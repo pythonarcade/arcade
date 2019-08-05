@@ -24,6 +24,8 @@ WIDTH = 800
 HEIGHT = 600
 SPRITE_SCALING = 0.5
 
+window = None
+
 
 class MenuView(arcade.View):
     def on_show(self):
@@ -38,8 +40,8 @@ class MenuView(arcade.View):
 
     def on_mouse_press(self, x, y, button, modifiers):
         # don't pass parent=self if we don't need to preserve state.
-        game_view = GameView()
-        game_view.show()
+        game = GameView()
+        window.show_view(game)
 
 
 class GameView(arcade.View):
@@ -79,8 +81,8 @@ class GameView(arcade.View):
     def on_key_press(self, key, modifiers):
         if key == arcade.key.ESCAPE:
             # pass self, the current view, to preserve this view's state
-            pause_view = PauseView(parent=self)
-            pause_view.show()
+            pause = PauseView(parent=self)
+            window.show_view(pause)
 
 
 class PauseView(arcade.View):
@@ -122,16 +124,17 @@ class PauseView(arcade.View):
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.ESCAPE:   # resume game
-            self.parent.show()
+            window.show_view(self.parent)
         elif key == arcade.key.ENTER:  # reset game
-            game_view = GameView()
-            game_view.show()
+            game = GameView()
+            window.show_view(game)
 
 
 def main():
-    arcade.Window(WIDTH, HEIGHT, "Instruction and Game Over Views Example")
-    menu_view = MenuView()
-    menu_view.show()
+    global window
+    window = arcade.Window(WIDTH, HEIGHT, "Instruction and Game Over Views Example")
+    menu = MenuView()
+    window.show_view(menu)
     arcade.run()
 
 

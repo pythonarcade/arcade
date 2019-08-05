@@ -27,6 +27,8 @@ WIDTH = 800
 HEIGHT = 600
 SPRITE_SCALING = 0.5
 
+window = None
+
 
 class MenuView(arcade.View):
     def on_show(self):
@@ -41,7 +43,7 @@ class MenuView(arcade.View):
 
     def on_mouse_press(self, x, y, button, modifiers):
         instructions_view = InstructionView()
-        instructions_view.show()
+        window.show_view(instructions_view)
 
 
 class InstructionView(arcade.View):
@@ -57,12 +59,12 @@ class InstructionView(arcade.View):
 
     def on_mouse_press(self, x, y, button, modifiers):
         game_view = GameView()
-        game_view.show()
+        window.show_view(game_view)
 
 
 class GameView(arcade.View):
     def __init__(self, parent=None):
-        super().__init__(parent)
+        super().__init__(parent=parent)
 
         self.time_taken = 0
 
@@ -93,7 +95,7 @@ class GameView(arcade.View):
         arcade.set_background_color(arcade.color.AMAZON)
 
         # Don't show the mouse cursor
-        arcade.get_window().set_mouse_visible(False)
+        window.set_mouse_visible(False)
 
     def on_draw(self):
         arcade.start_render()
@@ -125,8 +127,9 @@ class GameView(arcade.View):
         # If we've collected all the games, then move to a "GAME_OVER"
         # state.
         if len(self.coin_list) == 0:
-            game_over_view = GameOverView(self)
-            game_over_view.show()
+            game_over_view = GameOverView(parent=self)
+            window.set_mouse_visible(True)
+            window.show_view(game_over_view)
 
     def on_mouse_motion(self, x, y, dx, dy):
         """
@@ -139,7 +142,6 @@ class GameView(arcade.View):
 class GameOverView(arcade.View):
     def on_show(self):
         arcade.set_background_color(arcade.color.BLACK)
-        arcade.get_window().set_mouse_visible(True)
 
     def on_draw(self):
         arcade.start_render()
@@ -159,13 +161,14 @@ class GameOverView(arcade.View):
 
     def on_mouse_press(self, x, y, button, modifiers):
         game_view = GameView()
-        game_view.show()
+        window.show_view(game_view)
 
 
 def main():
-    arcade.Window(WIDTH, HEIGHT, "Instruction and Game Over Screens Example")
+    global window
+    window = arcade.Window(WIDTH, HEIGHT, "Different Views Example")
     menu_view = MenuView()
-    menu_view.show()
+    window.show_view(menu_view)
     arcade.run()
 
 
