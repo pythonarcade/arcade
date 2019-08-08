@@ -310,11 +310,9 @@ class Window(pyglet.window.Window):
             self.update(1/60)
 
     def show_view(self, new_view: 'View'):
-        # when a View object is shown in a specific window,
-        # and the View is created with no parent, the parent becomes
-        # the window in which it is shown
-        if not new_view.parent:
-            new_view.parent = self
+        # Store the Window that is showing the "new_view" View.
+        if not new_view.window:
+            new_view.window = self
 
         # remove previously shown view's handlers
         if self.current_view:
@@ -355,8 +353,8 @@ class View:
     TODO:Thoughts:
     - is there a need for a close()/on_close() method?
     """
-    def __init__(self, parent: Union['Window', 'View']=None):
-        self.parent = parent
+    def __init__(self):
+        self.window = None
 
     def update(self, delta_time):
         """To be overridden"""

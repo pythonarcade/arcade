@@ -24,8 +24,6 @@ WIDTH = 800
 HEIGHT = 600
 SPRITE_SCALING = 0.5
 
-window = None
-
 
 class MenuView(arcade.View):
     def on_show(self):
@@ -39,14 +37,13 @@ class MenuView(arcade.View):
                          arcade.color.GRAY, font_size=20, anchor_x="center")
 
     def on_mouse_press(self, x, y, button, modifiers):
-        # don't pass parent=self if we don't need to preserve state.
         game = GameView()
-        window.show_view(game)
+        self.window.show_view(game)
 
 
 class GameView(arcade.View):
-    def __init__(self, parent=None):
-        super().__init__(parent=parent)
+    def __init__(self):
+        super().__init__()
         self.player_sprite = arcade.Sprite("images/character.png", SPRITE_SCALING)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 50
@@ -81,21 +78,25 @@ class GameView(arcade.View):
     def on_key_press(self, key, modifiers):
         if key == arcade.key.ESCAPE:
             # pass self, the current view, to preserve this view's state
-            pause = PauseView(parent=self)
-            window.show_view(pause)
+            pause = PauseView(self)
+            self.window.show_view(pause)
 
 
 class PauseView(arcade.View):
+    def __init__(self, game_view):
+        super().__init__()
+        self.game_view = game_view
+
     def on_show(self):
         arcade.set_background_color(arcade.color.ORANGE)
 
     def on_draw(self):
         arcade.start_render()
 
-        # draw player, for effect, on pause screen
-        # state from the parent view is accessable when you
-        # pass the parent view to a new one on creation.
-        player_sprite = self.parent.player_sprite
+        # Draw player, for effect, on pause screen.
+        # The previous View (GameView) was passed in
+        # and saved in self.game_view.
+        player_sprite = self.game_view.player_sprite
         player_sprite.draw()
 
         # draw an orange filter over him
@@ -124,14 +125,13 @@ class PauseView(arcade.View):
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.ESCAPE:   # resume game
-            window.show_view(self.parent)
+            self.window.show_view(self.game_view)
         elif key == arcade.key.ENTER:  # reset game
             game = GameView()
-            window.show_view(game)
+            self.window.show_view(game)
 
 
 def main():
-    global window
     window = arcade.Window(WIDTH, HEIGHT, "Instruction and Game Over Views Example")
     menu = MenuView()
     window.show_view(menu)
