@@ -197,7 +197,6 @@ class Window(pyglet.window.Window):
         """
         Override this function to add your custom drawing code.
         """
-
         pass
 
     def on_resize(self, width: float, height: float):
@@ -322,6 +321,10 @@ class Window(pyglet.window.Window):
         self.current_view = new_view
         self.push_handlers(self.current_view)
         self.current_view.on_show()
+
+        # Note: After the View has been pushed onto pyglet's stack of event handlers (via push_handlers()), pyglet
+        # will still call the Window's event handlers. (See pyglet's EventDispatcher.dispatch_event() implementation
+        # for details)
 
 
 def open_window(width: Number, height: Number, window_title: str, resizable: bool = False,
