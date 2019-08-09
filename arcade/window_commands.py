@@ -284,3 +284,12 @@ def schedule(function_pointer: Callable, interval: Number):
     :param Number interval: Interval to call the function.
     """
     pyglet.clock.schedule_interval(function_pointer, interval)
+
+
+def unschedule(function_pointer: Callable):
+    """
+    Unschedule a function being automatically called.
+
+    :param Callable function_pointer: Pointer to the function to be unscheduled.
+    """
+    pyglet.clock.unschedule(function_pointer)

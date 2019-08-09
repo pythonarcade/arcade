@@ -2,16 +2,15 @@
 The main window class that all object-oriented applications should
 derive from.
 """
-from typing import Tuple
 from numbers import Number
-
-from arcade.window_commands import set_viewport
-from arcade.window_commands import get_viewport
-from arcade.window_commands import set_window
+from typing import Tuple, Union
 
 import pyglet.gl as gl
-from arcade.monkey_patch_pyglet import *
 
+from arcade.monkey_patch_pyglet import *
+from arcade.window_commands import (get_viewport, get_window, schedule,
+                                    set_background_color, set_viewport,
+                                    set_window, unschedule)
 
 MOUSE_BUTTON_LEFT = 1
 MOUSE_BUTTON_MIDDLE = 2
@@ -70,6 +69,7 @@ class Window(pyglet.window.Window):
         self.invalid = False
         set_window(self)
         set_viewport(0, self.width, 0, self.height)
+        self.current_view = None
 
     def update(self, delta_time: float):
         """
@@ -78,7 +78,10 @@ class Window(pyglet.window.Window):
         :param float delta_time: Time interval since the last time the function was called.
 
         """
-        pass
+        try:
+            self.current_view.update(delta_time)
+        except AttributeError:
+            pass
 
     def on_update(self, delta_time: float):
         """
@@ -87,7 +90,10 @@ class Window(pyglet.window.Window):
         :param float delta_time: Time interval since the last time the function was called.
 
         """
-        pass
+        try:
+            self.current_view.on_update(delta_time)
+        except AttributeError:
+            pass
 
     def set_update_rate(self, rate: float):
         """
@@ -303,6 +309,20 @@ class Window(pyglet.window.Window):
             self.flip()
             self.update(1/60)
 
+    def show_view(self, new_view: 'View'):
+        # Store the Window that is showing the "new_view" View.
+        if not new_view.window:
+            new_view.window = self
+
+        # remove previously shown view's handlers
+        if self.current_view:
+            self.remove_handlers(self.current_view)
+
+        # push new view's handlers
+        self.current_view = new_view
+        self.push_handlers(self.current_view)
+        self.current_view.on_show()
+
 
 def open_window(width: Number, height: Number, window_title: str, resizable: bool = False,
                 antialiasing=True) -> Window:
@@ -326,3 +346,24 @@ def open_window(width: Number, height: Number, window_title: str, resizable: boo
     _window = Window(width, height, window_title, resizable, update_rate=None,
                      antialiasing=antialiasing)
     return _window
+
+
+class View:
+    """
+    TODO:Thoughts:
+    - is there a need for a close()/on_close() method?
+    """
+    def __init__(self):
+        self.window = None
+
+    def update(self, delta_time):
+        """To be overridden"""
+        pass
+
+    def on_update(self, delta_time):
+        """To be overridden"""
+        pass
+
+    def on_show(self):
+        """Called when this view is shown"""
+        pass
