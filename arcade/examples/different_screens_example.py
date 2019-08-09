@@ -6,16 +6,16 @@ This program shows how to:
 
 Make a separate class for each view (screen) in your game.
 The class will inherit from arcade.View. The structure will
-look like an arcade.Window as each view will need to have its own draw,
-update and window event methods. To switch a view, simply create a view
-with `view = MyView()` and then use the view.show() method.
+look like an arcade.Window as each View will need to have its own draw,
+update and window event methods. To switch a View, simply create a View
+with `view = MyView()` and then use the "self.window.set_view(view)" method.
 
 This example shows how you can set data from one View on another View to pass data
 around (see: time_taken), or you can store data on the Window object to share data between
 all Views (see: total_score).
 
 If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.different_screens_example.py
+python -m arcade.examples.different_screens_example
 """
 
 import arcade
