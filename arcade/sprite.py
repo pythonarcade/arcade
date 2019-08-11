@@ -13,7 +13,7 @@ from arcade.draw_commands import load_texture
 from arcade.draw_commands import draw_texture_rectangle
 from arcade.draw_commands import Texture
 from arcade.draw_commands import rotate_point
-from arcade.arcade_types import RGB
+from arcade.arcade_types import RGB, Point
 
 from typing import Sequence
 from typing import Tuple
@@ -668,6 +668,49 @@ class Sprite:
         Alias of `remove_from_sprite_lists`
         """
         self.remove_from_sprite_lists()
+
+    def collides_with_point(self, point: Point) -> bool:
+        """Check if point is within the current sprite.
+
+        Args:
+            self: Current sprite
+            point: Point to check.
+
+        Returns:
+            True if the point is contained within the sprite's boundary.
+        """
+        from arcade.geometry import is_point_in_polygon
+
+        x, y = point
+        return is_point_in_polygon(x, y, self.points)
+
+    def collides_with_sprite(self, other: 'Sprite') -> bool:
+        """Will check if a sprite is overlapping (colliding) another Sprite.
+
+        Args:
+            self: Current Sprite.
+            other: The other sprite to check against.
+
+        Returns:
+            True or False, whether or not they are overlapping.
+        """
+        from arcade.geometry import check_for_collision
+
+        return check_for_collision(self, other)
+
+    def collides_with_list(self, sprite_list: list) -> list:
+        """Check if current sprite is overlapping with any other sprite in a list
+
+        Args:
+            self: current Sprite
+            sprite_list: SpriteList to check against
+
+        Returns:
+            SpriteList of all overlapping Sprites from the original SpriteList
+        """
+        from arcade.sprite_list import SpriteList
+        from arcade.geometry import check_for_collision_with_list
+        return check_for_collision_with_list(self, sprite_list)
 
 
 class AnimatedTimeSprite(Sprite):

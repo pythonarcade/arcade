@@ -369,9 +369,7 @@ def make_circle_texture(diameter: int, color: Color) -> Texture:
     bg_color = (0, 0, 0, 0) # fully transparent
     img = PIL.Image.new("RGBA", (diameter, diameter), bg_color)
     draw = PIL.ImageDraw.Draw(img)
-    radius = int(diameter // 2)
-    center = radius # for readability
-    draw.ellipse((radius, radius, center+radius, center+radius), fill=color)
+    draw.ellipse((0, 0, diameter-1, diameter-1), fill=color)
     name = "{}:{}:{}".format("circle_texture", diameter, color) # name must be unique for caching
     return Texture(name, img)
 
@@ -399,7 +397,7 @@ def make_soft_circle_texture(diameter: int, color: Color, center_alpha: int=255,
     for radius in range(max_radius, 0, -1):
         alpha = int(lerp(center_alpha, outer_alpha, radius/max_radius))
         clr = (color[0], color[1], color[2], alpha)
-        draw.ellipse((center-radius, center-radius, center+radius, center+radius), fill=clr)
+        draw.ellipse((center-radius, center-radius, center+radius-1, center+radius-1), fill=clr)
     name = "{}:{}:{}:{}:{}".format("soft_circle_texture", diameter, color, center_alpha, outer_alpha) # name must be unique for caching
     return Texture(name, img)
 
@@ -940,6 +938,11 @@ def _get_points_for_points(point_list, size):
         new_point_list.append((x - hs, y - hs))
         new_point_list.append((x + hs, y - hs))
         new_point_list.append((x + hs, y + hs))
+
+        new_point_list.append((x + hs, y + hs))
+        new_point_list.append((x - hs, y - hs))
+        new_point_list.append((x - hs, y + hs))
+
     return new_point_list
 
 

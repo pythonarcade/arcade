@@ -324,6 +324,27 @@ Platformers
 
    :ref:`sprite_enemies_in_platformer`
 
+
+View Management
+---------------
+
+.. figure:: thumbs/view_screens_minimal.png
+   :figwidth: 170px
+
+   :ref:`view_screens_minimal`
+
+.. figure:: thumbs/view_instructions_and_game_over.png
+   :figwidth: 170px
+
+   :ref:`view_instructions_and_game_over`
+
+.. figure:: thumbs/view_pause_screen.png
+   :figwidth: 170px
+
+   :ref:`view_pause_screen`
+
+
+
 Graphical User Interface
 ------------------------
 
@@ -514,11 +535,6 @@ Other
    :figwidth: 170px
 
    :ref:`sprite_change_coins`
-
-.. figure:: thumbs/instruction_and_game_over_screens.png
-   :figwidth: 170px
-
-   :ref:`instruction_and_game_over_screens`
 
 .. figure:: thumbs/asteroid_smasher.png
    :figwidth: 170px
