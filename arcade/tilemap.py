@@ -53,9 +53,11 @@ def get_tilemap_layer(map_object: pytiled_parser.objects.TileMap,
 
 
 def _get_tile_by_gid(map_object: pytiled_parser.objects.TileMap, tile_gid: int) -> pytiled_parser.objects.Tile:
+    # print()
     for tileset_key, tileset in map_object.tile_sets.items():
         for tile_key, tile in tileset.tiles.items():
-            cur_tile_gid = tile.id + tileset_key
+            cur_tile_gid = tile.id_ + tileset_key
+            # print(f"-- {cur_tile_gid} {tile.image.source}")
             if cur_tile_gid == tile_gid:
                 tile.tileset = tileset
                 return tile
@@ -66,7 +68,7 @@ def _get_tile_by_id(map_object: pytiled_parser.objects.TileMap, tileset: pytiled
     for tileset_key, cur_tileset in map_object.tile_sets.items():
         if cur_tileset is tileset:
             for tile_key, tile in cur_tileset.tiles.items():
-                if tile_id == tile.id:
+                if tile_id == tile.id_:
                     return tile
     return None
 
@@ -89,35 +91,36 @@ def _create_sprite_from_tile(map_object, tile: pytiled_parser.objects.Tile,
             my_sprite.properties[property.name] = property.value
 
         # print(tile.image.source, my_sprite.center_x, my_sprite.center_y)
-    if tile.hitboxes is not None and len(tile.hitboxes) > 0:
-        if len(tile.hitboxes) > 1:
+    if tile.objectgroup is not None:
+        if len(tile.objectgroup) > 1:
             print(f"Warning, only one hit box supported for tile with image {tile.image.source}.")
 
-        for hitbox in tile.hitboxes:
+        for hitbox in tile.objectgroup:
 
             half_width = map_object.tile_size.width / 2
             half_height = map_object.tile_size.height / 2
             points = []
-            if hitbox.hitbox_type == "Rectangle":
-                if hitbox.width is None or hitbox.height is None:
+            if isinstance(hitbox, pytiled_parser.objects.RectangleObject):
+                if hitbox.size is None:
                     print(
                         f"Warning: Rectangle hitbox created for without a height or width for {tile.image.source}. Ignoring.")
                     continue
 
-                p1 = [hitbox.x - half_width, half_height - hitbox.y]
-                p2 = [hitbox.x + hitbox.width - half_width, half_height - hitbox.y]
-                p3 = [hitbox.x + hitbox.width - half_width, half_height - (hitbox.y + hitbox.height)]
-                p4 = [hitbox.x - half_width, half_height - (hitbox.y + hitbox.height)]
+                # print(tile.image.source, hitbox.location, hitbox.size)
+                p1 = [hitbox.location[0] - half_width, half_height - hitbox.location[0]]
+                p2 = [hitbox.location[0] + hitbox.size[0] - half_width, half_height - hitbox.size[0]]
+                p3 = [hitbox.location[0] + hitbox.size[0] - half_width, half_height - (hitbox.location[1] + hitbox.size[1])]
+                p4 = [hitbox.location[0] - half_width, half_height - (hitbox.location[1] + hitbox.size[1])]
                 points = [p4, p3, p2, p1]
 
-            elif hitbox.hitbox_type == "Polygon":
+            elif isinstance(hitbox, pytiled_parser.objects.PolygonObject):
                 for point in hitbox.points:
-                    adj_x = point[0] + hitbox.x - half_width
-                    adj_y = half_height - (point[1] + hitbox.y)
+                    adj_x = point[0] + hitbox.location[0] - half_width
+                    adj_y = half_height - (point[1] + hitbox.location[1])
                     adj_point = [adj_x, adj_y]
                     points.append(adj_point)
 
-            elif hitbox.hitbox_type == "Polyline":
+            elif isinstance(hitbox, pytiled_parser.objects.PolylineObject):
                 for point in hitbox.points:
                     adj_x = point[0] + hitbox.x - half_width
                     adj_y = half_height - (point[1] + hitbox.y)
@@ -128,15 +131,15 @@ def _create_sprite_from_tile(map_object, tile: pytiled_parser.objects.Tile,
                 if points[0][0] != points[-1][0] or points[0][1] != points[-1][1]:
                     points.append(points[0])
 
-            elif hitbox.hitbox_type == "Ellipse":
-                if hitbox.width is None or hitbox.height is None:
+            elif isinstance(hitbox, pytiled_parser.objects.ElipseObject):
+                if hitbox.size is None:
                     print(
                         f"Warning: Ellipse hitbox created for without a height or width for {tile.image.source}. Ignoring.")
                     continue
-                w = hitbox.width / 2
-                h = hitbox.height / 2
-                cx = (hitbox.x + hitbox.width / 2) - half_width
-                cy = map_object.tile_size.height - (hitbox.y + hitbox.height / 2) - half_height
+                w = hitbox.size[0] / 2
+                h = hitbox.size[1] / 2
+                cx = (hitbox.location[0] + hitbox.size[0] / 2) - half_width
+                cy = map_object.tile_size.height - (hitbox.location[1] + hitbox.size[1] / 2) - half_height
                 total_steps = 8
                 angles = [step / total_steps * 2 * math.pi for step in range(total_steps)]
                 for angle in angles:
@@ -146,7 +149,7 @@ def _create_sprite_from_tile(map_object, tile: pytiled_parser.objects.Tile,
                     points.append(point)
 
             else:
-                print(f"Warning: Hitbox type {hitbox.hitbox_type} not supported.")
+                print(f"Warning: Hitbox type {type(hitbox)} not supported.")
 
             # Scale the points to our sprite scaling
             for point in points:
@@ -220,7 +223,7 @@ def _process_tile_layer(map_object: pytiled_parser.objects.TileMap,
 
             tile = _get_tile_by_gid(map_object, item)
             if tile is None:
-                print(f"Warning, couldn't find tile for {item}")
+                print(f"Warning, couldn't find tile for item {item} in layer '{layer.name}' in file '{map_object.tmx_file}'.")
                 continue
 
             my_sprite = _create_sprite_from_tile(map_object, tile, scaling=scaling,

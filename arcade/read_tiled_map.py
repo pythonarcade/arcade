@@ -109,6 +109,8 @@ def _parse_points(point_text: str):
 
 def read_tiled_map(tmx_file: str, scaling: float = 1, tsx_file: str = None) -> TiledMap:
     """
+    read_tiled_map has been deprecated. Use arcade.tilemap.read_tmx instead.
+
     Given a tmx_file, this will read in a tiled map, and return
     a TiledMap object.
 
@@ -129,6 +131,8 @@ def read_tiled_map(tmx_file: str, scaling: float = 1, tsx_file: str = None) -> T
     :returns: Map
     :rtype: TiledMap
     """
+    from warnings import warn
+    warn('read_tiled_map has been deprecated. Use arcade.tilemap.read_tmx instead.', DeprecationWarning)
 
     # Create a map object to store this stuff in
     my_map = TiledMap()
@@ -308,6 +312,7 @@ def read_tiled_map(tmx_file: str, scaling: float = 1, tsx_file: str = None) -> T
 
 def generate_sprites(map_object: TiledMap, layer_name: str, scaling: float, base_directory="") -> SpriteList:
     """
+    generate_sprites has been deprecated. Use arcade.tilemap.process_layer instead.
     Generate the sprites for a layer in a map.
 
     :param TiledMap map_object: Map previously read in from read_tiled_map function
@@ -317,6 +322,7 @@ def generate_sprites(map_object: TiledMap, layer_name: str, scaling: float, base
     :return: List of sprites
     :rtype: SpriteList
     """
+    from warnings import warn
     sprite_list = SpriteList()
 
     if layer_name not in map_object.layers_int_data:
