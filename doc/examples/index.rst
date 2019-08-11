@@ -328,6 +328,11 @@ Platformers
 View Management
 ---------------
 
+.. figure:: thumbs/view_screens_minimal.png
+   :figwidth: 170px
+
+   :ref:`view_screens_minimal`
+
 .. figure:: thumbs/view_instructions_and_game_over.png
    :figwidth: 170px
 

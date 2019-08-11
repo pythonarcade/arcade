@@ -14,7 +14,7 @@ update and window event methods. To switch a View, simply create a View
 with `view = MyView()` and then use the "self.window.set_view(view)" method.
 
 If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.different_screens_minimal
+python -m arcade.examples.view_screens_minimal
 """
 
 import arcade
