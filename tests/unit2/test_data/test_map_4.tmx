@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.2" tiledversion="1.2.4" orientation="orthogonal" renderorder="left-up" width="10" height="5" tilewidth="128" tileheight="128" infinite="0" backgroundcolor="#2682e4" nextlayerid="8" nextobjectid="4">
+ <tileset firstgid="1" source="grass.tsx"/>
+ <tileset firstgid="20" source="dirt.tsx"/>
+ <tileset firstgid="38" source="items.tsx"/>
+ <layer id="2" name="Platforms" width="10" height="5">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+17,18,18,18,18,18,18,18,18,19
+</data>
+ </layer>
+ <layer id="7" name="Background" width="10" height="5">
+  <data encoding="csv">
+0,2,2147483650,1073741826,3221225474,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,2,1610612738,3221225474,2684354562,0,0,0,0,0,
+0,2,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+</map>
