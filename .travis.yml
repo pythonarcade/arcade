@@ -21,6 +21,8 @@ matrix:
       env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
   allow_failures:
     - dist: bionic
+    - os: windows
+  fast_fail: true
 addons:
   apt:
     update: true
