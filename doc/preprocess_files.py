@@ -176,8 +176,8 @@ def main():
     output_file.write("Tiled Map API\n")
     output_file.write("-------------\n")
     output_file.write("\n")
-    list_classes("../arcade/read_tiled_map.py", output_file)
-    list_functions("../arcade/read_tiled_map.py", output_file)
+    list_classes("../arcade/tilemap.py", output_file)
+    list_functions("../arcade/tilemap.py", output_file)
 
     output_file.close()
 

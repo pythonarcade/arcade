@@ -109,7 +109,7 @@ Sound Support
 Tiled Map Support
 -----------------
 
-.. automodule:: arcade.read_tiled_map
+.. automodule:: arcade.tilemap
     :members:
     :undoc-members:
     :show-inheritance:
