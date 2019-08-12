@@ -20,7 +20,6 @@ matrix:
         - python -m pip install --upgrade pip
       env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
   allow_failures:
-    - os: linux
     - os: windows
   fast_fail: true
 addons:
