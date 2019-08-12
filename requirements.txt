@@ -2,4 +2,4 @@ Pyglet
 Pillow
 numpy
 pyglet-ffmpeg2
-pytiled_parser
+pytiled-parser
