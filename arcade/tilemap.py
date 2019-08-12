@@ -1,14 +1,17 @@
 """
-Functions and classes for managing a map created in the "Tiled Map Editor"
+Functions and classes for managing a map created in the "Tiled Map Editor".
+
 """
+
+from typing import Optional
+import math
+import copy
+import pytiled_parser
 
 from arcade import Sprite
 from arcade import AnimatedTimeBasedSprite
 from arcade import AnimationKeyframe
 from arcade import SpriteList
-import math
-import pytiled_parser
-import copy
 
 FLIPPED_HORIZONTALLY_FLAG = 0x80000000
 FLIPPED_VERTICALLY_FLAG = 0x40000000
@@ -37,15 +40,25 @@ def read_tmx(tmx_file: str) -> pytiled_parser.objects.TileMap:
     """
 
     tile_map = pytiled_parser.parse_tile_map(tmx_file)
-    if tile_map.background_color:
-        color = pytiled_parser.utilities.parse_color(tile_map.background_color)
-        tile_map.background_color = (color.red, color.green, color.blue)
+    # if tile_map.background_color:
+    #     color = pytiled_parser.utilities.parse_color(tile_map.background_color)
+    #     tile_map.background_color = (color.red, color.green, color.blue)
 
     return tile_map
 
 
 def get_tilemap_layer(map_object: pytiled_parser.objects.TileMap,
-                      layer_name: str):
+                      layer_name: str) -> Optional[pytiled_parser.objects.Layer]:
+    """
+    Given a TileMap and a layer name, this returns the TileLayer.
+
+    Args:
+        map_object: The map read in by read_tmx
+        layer_name: A string to match the layer name. Case sensitive.
+
+    Returns: A TileLayer, or None if no layer was found.
+
+    """
 
     assert isinstance(map_object, pytiled_parser.objects.TileMap)
     assert isinstance(layer_name, str)
@@ -58,7 +71,7 @@ def get_tilemap_layer(map_object: pytiled_parser.objects.TileMap,
 
 
 def _get_tile_by_gid(map_object: pytiled_parser.objects.TileMap,
-                     tile_gid: int) -> pytiled_parser.objects.Tile:
+                     tile_gid: int) -> Optional[pytiled_parser.objects.Tile]:
 
     flipped_diagonally = False
     flipped_horizontally = False
@@ -92,7 +105,7 @@ def _get_tile_by_gid(map_object: pytiled_parser.objects.TileMap,
 
 def _get_tile_by_id(map_object: pytiled_parser.objects.TileMap,
                     tileset: pytiled_parser.objects.TileSet,
-                    tile_id: int) -> pytiled_parser.objects.Tile:
+                    tile_id: int) -> Optional[pytiled_parser.objects.Tile]:
     for tileset_key, cur_tileset in map_object.tile_sets.items():
         if cur_tileset is tileset:
             for tile_key, tile in cur_tileset.tiles.items():
@@ -130,14 +143,15 @@ def _create_sprite_from_tile(map_object, tile: pytiled_parser.objects.Tile,
             points = []
             if isinstance(hitbox, pytiled_parser.objects.RectangleObject):
                 if hitbox.size is None:
-                    print(
-                        f"Warning: Rectangle hitbox created for without a height or width for {tile.image.source}. Ignoring.")
+                    print(f"Warning: Rectangle hitbox created for without a "
+                          f"height or width for {tile.image.source}. Ignoring.")
                     continue
 
                 # print(tile.image.source, hitbox.location, hitbox.size)
                 p1 = [hitbox.location[0] - half_width, half_height - hitbox.location[0]]
                 p2 = [hitbox.location[0] + hitbox.size[0] - half_width, half_height - hitbox.size[0]]
-                p3 = [hitbox.location[0] + hitbox.size[0] - half_width, half_height - (hitbox.location[1] + hitbox.size[1])]
+                p3 = [hitbox.location[0] + hitbox.size[0] - half_width, half_height
+                      - (hitbox.location[1] + hitbox.size[1])]
                 p4 = [hitbox.location[0] - half_width, half_height - (hitbox.location[1] + hitbox.size[1])]
                 points = [p4, p3, p2, p1]
 
@@ -150,8 +164,8 @@ def _create_sprite_from_tile(map_object, tile: pytiled_parser.objects.Tile,
 
             elif isinstance(hitbox, pytiled_parser.objects.PolylineObject):
                 for point in hitbox.points:
-                    adj_x = point[0] + hitbox.x - half_width
-                    adj_y = half_height - (point[1] + hitbox.y)
+                    adj_x = point[0] + hitbox.location[0] - half_width
+                    adj_y = half_height - (point[1] + hitbox.location[1])
                     adj_point = [adj_x, adj_y]
                     points.append(adj_point)
 
@@ -161,8 +175,8 @@ def _create_sprite_from_tile(map_object, tile: pytiled_parser.objects.Tile,
 
             elif isinstance(hitbox, pytiled_parser.objects.ElipseObject):
                 if hitbox.size is None:
-                    print(
-                        f"Warning: Ellipse hitbox created for without a height or width for {tile.image.source}. Ignoring.")
+                    print(f"Warning: Ellipse hitbox created for without a height "
+                          f"or width for {tile.image.source}. Ignoring.")
                     continue
                 w = hitbox.size[0] / 2
                 h = hitbox.size[1] / 2
@@ -196,8 +210,9 @@ def _create_sprite_from_tile(map_object, tile: pytiled_parser.objects.Tile,
 
     return my_sprite
 
+
 def _process_object_layer(map_object: pytiled_parser.objects.TileMap,
-                          layer: pytiled_parser.objects.TileLayer,
+                          layer: pytiled_parser.objects.Layer,
                           scaling: float = 1,
                           base_directory: str = "") -> SpriteList:
     sprite_list = SpriteList()
@@ -228,7 +243,6 @@ def _process_object_layer(map_object: pytiled_parser.objects.TileMap,
         if cur_object.properties is not None and 'boundary_right' in cur_object.properties:
             my_sprite.boundary_right = float(cur_object.properties['boundary_right'])
 
-
         my_sprite.properties.update(cur_object.properties)
         # sprite.properties
         sprite_list.append(my_sprite)
@@ -251,7 +265,8 @@ def _process_tile_layer(map_object: pytiled_parser.objects.TileMap,
 
             tile = _get_tile_by_gid(map_object, item)
             if tile is None:
-                print(f"Warning, couldn't find tile for item {item} in layer '{layer.name}' in file '{map_object.tmx_file}'.")
+                print(f"Warning, couldn't find tile for item {item} in layer "
+                      f"'{layer.name}' in file '{map_object.tmx_file}'.")
                 continue
 
             my_sprite = _create_sprite_from_tile(map_object, tile, scaling=scaling,

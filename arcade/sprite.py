@@ -556,8 +556,11 @@ class Sprite:
     right = property(_get_right, _set_right)
 
     def set_texture(self, texture_no: int):
-        """ Sets texture by texture id. Should be renamed but keeping
-        this for backwards compatibility. """
+        """
+        Sets texture by texture id. Should be renamed because it takes
+        a number rather than a texture, but keeping
+        this for backwards compatibility.
+        """
         if self.textures[texture_no] == self._texture:
             return
 

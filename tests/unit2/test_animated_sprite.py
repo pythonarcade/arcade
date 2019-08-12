@@ -59,6 +59,7 @@ class MyTestWindow(arcade.Window):
         self.player.center_y = SCREEN_HEIGHT // 2
         self.player.scale = 0.8
         self.player.change_x = 2
+        self.player.texture = self.player.stand_left_textures[0]
 
         self.character_list.append(self.player)
 
@@ -89,10 +90,10 @@ class MyTestWindow(arcade.Window):
             self.player.change_x *= -1
 
         self.coin_list.update()
-        self.coin_list.update_animation()
+        self.coin_list.update_animation(delta_time)
 
         self.character_list.update()
-        self.character_list.update_animation()
+        self.character_list.update_animation(delta_time)
 
 
 def test_sprite():
