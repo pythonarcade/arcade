@@ -5,6 +5,11 @@
 Release Notes
 =============
 
+Version 2.0.10
+--------------
+
+* Work on automatic Travis CI builds
+
 Version 2.0.9
 -------------
 
