@@ -31,6 +31,7 @@ TOP_VIEWPORT_MARGIN = 100
 PLAYER_START_X = 64
 PLAYER_START_Y = 256
 
+
 class MyGame(arcade.Window):
     """
     Main application class.
@@ -50,6 +51,7 @@ class MyGame(arcade.Window):
         self.wall_list = None
         self.player_list = None
         self.background_list = None
+        self.foreground_list = None
 
         # Separate variable that holds the player sprite
         self.player_sprite = None
@@ -70,7 +72,7 @@ class MyGame(arcade.Window):
         # Level
         self.level = 1
 
-    def setup(self, level):
+    def setup(self):
         """ Set up the game here. Call this function to restart the game. """
 
         # Used to keep track of our scrolling
@@ -112,21 +114,34 @@ class MyGame(arcade.Window):
         self.end_of_map = my_map.map_size.width * GRID_PIXEL_SIZE
 
         # -- Platforms
-        self.wall_list = arcade.tilemap.process_layer(my_map, platforms_layer_name, TILE_SCALING, base_directory="test_data")
+        self.wall_list = arcade.tilemap.process_layer(my_map,
+                                                      platforms_layer_name,
+                                                      TILE_SCALING,
+                                                      base_directory="test_data")
 
         # -- Moving Platforms
-        moving_platforms_list = arcade.tilemap.process_layer(my_map, moving_platforms_layer_name, TILE_SCALING, base_directory="test_data")
+        moving_platforms_list = arcade.tilemap.process_layer(my_map,
+                                                             moving_platforms_layer_name,
+                                                             TILE_SCALING,
+                                                             base_directory="test_data")
         for sprite in moving_platforms_list:
             self.wall_list.append(sprite)
 
         # -- Background
-        self.background_list = arcade.tilemap.process_layer(my_map, "Background", TILE_SCALING, base_directory="test_data")
+        self.background_list = arcade.tilemap.process_layer(my_map,
+                                                            "Background",
+                                                            TILE_SCALING,
+                                                            base_directory="test_data")
 
         # -- Coins
-        self.coin_list = arcade.tilemap.process_layer(my_map, coins_layer_name, TILE_SCALING, base_directory="test_data")
+        self.coin_list = arcade.tilemap.process_layer(my_map,
+                                                      coins_layer_name,
+                                                      TILE_SCALING,
+                                                      base_directory="test_data")
 
         # --- Other stuff
         # Set the background color
+        print(f"Background color: {my_map.background_color}")
         if my_map.background_color:
             arcade.set_background_color(my_map.background_color)
 
@@ -228,7 +243,7 @@ class MyGame(arcade.Window):
 def main():
     """ Main method """
     window = MyGame()
-    window.setup(window.level)
+    window.setup()
     arcade.run()
 
 

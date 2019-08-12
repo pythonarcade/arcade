@@ -52,7 +52,8 @@ def get_tilemap_layer(map_object: pytiled_parser.objects.TileMap,
     return None
 
 
-def _get_tile_by_gid(map_object: pytiled_parser.objects.TileMap, tile_gid: int) -> pytiled_parser.objects.Tile:
+def _get_tile_by_gid(map_object: pytiled_parser.objects.TileMap,
+                     tile_gid: int) -> pytiled_parser.objects.Tile:
     # print()
     for tileset_key, tileset in map_object.tile_sets.items():
         for tile_key, tile in tileset.tiles.items():
@@ -64,7 +65,9 @@ def _get_tile_by_gid(map_object: pytiled_parser.objects.TileMap, tile_gid: int) 
     return None
 
 
-def _get_tile_by_id(map_object: pytiled_parser.objects.TileMap, tileset: pytiled_parser.objects.TileSet, tile_id: int) -> pytiled_parser.objects.Tile:
+def _get_tile_by_id(map_object: pytiled_parser.objects.TileMap,
+                    tileset: pytiled_parser.objects.TileSet,
+                    tile_id: int) -> pytiled_parser.objects.Tile:
     for tileset_key, cur_tileset in map_object.tile_sets.items():
         if cur_tileset is tileset:
             for tile_key, tile in cur_tileset.tiles.items():
@@ -87,8 +90,8 @@ def _create_sprite_from_tile(map_object, tile: pytiled_parser.objects.Tile,
         my_sprite = Sprite(tmx_file, scaling)
 
     if tile.properties is not None and len(tile.properties) > 0:
-        for property in tile.properties:
-            my_sprite.properties[property.name] = property.value
+        for my_property in tile.properties:
+            my_sprite.properties[my_property.name] = my_property.value
 
         # print(tile.image.source, my_sprite.center_x, my_sprite.center_y)
     if tile.objectgroup is not None:

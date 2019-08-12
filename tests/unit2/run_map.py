@@ -29,6 +29,7 @@ TOP_VIEWPORT_MARGIN = 100
 
 RESOURCE_DIR = "../../arcade/examples/platform_tutorial"
 
+
 class MyGame(arcade.Window):
     """
     Main application class.
