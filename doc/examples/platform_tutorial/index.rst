@@ -1,3 +1,5 @@
+.. _platformer_tutorial:
+
 Build Your Own 2D Platformer Game
 =================================
 

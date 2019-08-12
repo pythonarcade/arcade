@@ -1,5 +1,13 @@
 """
-Functions and classes for managing a map created in the "Tiled Map Editor".
+Functions and classes for managing a map saved in the .tmx format.
+
+Typically these .tmx maps are created using the `Tiled Map Editor`_.
+
+For more information, see the `Platformer Tutorial`_.
+
+.. _Tiled Map Editor: https://www.mapeditor.org/
+.. _Platformer Tutorial: http://arcade.academy/examples/platform_tutorial/index.html
+
 
 """
 
@@ -20,7 +28,7 @@ FLIPPED_DIAGONALLY_FLAG = 0x20000000
 
 def read_tmx(tmx_file: str) -> pytiled_parser.objects.TileMap:
     """
-    Given a tmx_file, this will read in a tiled map, and return
+    Given a .tmx, this will read in a tiled map, and return
     a TiledMap object.
 
     Given a tsx_file, the map will use it as the tileset.
@@ -40,9 +48,6 @@ def read_tmx(tmx_file: str) -> pytiled_parser.objects.TileMap:
     """
 
     tile_map = pytiled_parser.parse_tile_map(tmx_file)
-    # if tile_map.background_color:
-    #     color = pytiled_parser.utilities.parse_color(tile_map.background_color)
-    #     tile_map.background_color = (color.red, color.green, color.blue)
 
     return tile_map
 
@@ -52,11 +57,10 @@ def get_tilemap_layer(map_object: pytiled_parser.objects.TileMap,
     """
     Given a TileMap and a layer name, this returns the TileLayer.
 
-    Args:
-        map_object: The map read in by read_tmx
-        layer_name: A string to match the layer name. Case sensitive.
+    :param pytiled_parser.objects.TileMap map_object: The map read in by the read_tmx function.
+    :param str layer_name: A string to match the layer name. Case sensitive.
 
-    Returns: A TileLayer, or None if no layer was found.
+    :returns: A TileLayer, or None if no layer was found.
 
     """
 
@@ -284,6 +288,19 @@ def process_layer(map_object: pytiled_parser.objects.TileMap,
                   layer_name: str,
                   scaling: float = 1,
                   base_directory: str = "") -> SpriteList:
+    """
+    This takes a map layer returned by the read_tmx function, and creates Sprites for it.
+
+    :param map_object: The TileMap read in by read_tmx.
+    :param layer_name: The name of the layer that we are creating sprites for.
+    :param scaling: Scaling the layer up or down.
+                    (Note, any number besides 1 can create a tearing effect,
+                    if numbers don't evenly divide.)
+    :param base_directory: Base directory of the file, that we start from to
+                           load images.
+    :returns: A SpriteList.
+
+    """
 
     if len(base_directory) > 0 and not base_directory.endswith("/"):
         base_directory += "/"
