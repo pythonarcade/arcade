@@ -14,7 +14,7 @@ matrix:
       before_install: sw_vers
     - name: "Python 3.7 on Windows"
       os: windows
-      language: minimal
+      language: generic
       before_install:
         - choco install python
         - python -m pip install --upgrade pip
