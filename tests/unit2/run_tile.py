@@ -5,6 +5,7 @@ import arcade
 import os
 
 # Constants
+MAP_NAME = "test_data/test_map_4.tmx"
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 650
 SCREEN_TITLE = "Platformer"
@@ -106,7 +107,7 @@ class MyGame(arcade.Window):
         coins_layer_name = 'Coins'
 
         # Map name
-        map_name = f"test_data/test_map_3.tmx"
+        map_name = MAP_NAME
         # Read in the tiled map
         my_map = arcade.tilemap.read_tmx(map_name)
 
@@ -141,7 +142,6 @@ class MyGame(arcade.Window):
 
         # --- Other stuff
         # Set the background color
-        print(f"Background color: {my_map.background_color}")
         if my_map.background_color:
             arcade.set_background_color(my_map.background_color)
 
@@ -158,6 +158,7 @@ class MyGame(arcade.Window):
 
         # Draw our sprites
         self.wall_list.draw()
+        self.background_list.draw()
         self.coin_list.draw()
         self.player_list.draw()
 
