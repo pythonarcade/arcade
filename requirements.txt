@@ -1,4 +1,4 @@
 numpy
 Pillow
-Pyglet>=1.4.1
+Pyglet>=1.4.2
 pyglet-ffmpeg2
