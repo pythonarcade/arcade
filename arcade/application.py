@@ -6,8 +6,8 @@ from numbers import Number
 from typing import Tuple, Union
 
 import pyglet.gl as gl
+import pyglet
 
-from arcade.monkey_patch_pyglet import *
 from arcade.window_commands import (get_viewport, get_window, schedule,
                                     set_background_color, set_viewport,
                                     set_window, unschedule)

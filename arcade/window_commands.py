@@ -8,7 +8,7 @@ import time
 import os
 
 import pyglet.gl as gl
-from arcade.monkey_patch_pyglet import *
+import pyglet
 
 import numpy as np
 
