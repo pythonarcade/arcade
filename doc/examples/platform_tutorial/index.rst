@@ -323,7 +323,7 @@ Explore On Your Own
 * Add ramps. See :ref:`sprite_ramps`
 * Change the character image based on the direction she is facing.
   See :ref:`sprite_face_left_or_right`
-* Add instruction and game over screens. See :ref:`instruction_and_game_over_screens`
+* Add instruction and game over screens.
 
 .. _platformer_part_eight:
 
@@ -422,7 +422,7 @@ Test the Level
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/08_load_map.py
     :caption: Load a .tmx file from Tiled Map Editor
     :linenos:
-    :emphasize-lines: 87-115
+    :emphasize-lines: 87-113
 
 .. note::
 
@@ -456,12 +456,13 @@ Here's an expanded example:
 * If the player gets to the right side of the map, the program attempts to load another layer
 
   * Add ``level`` attribute (69)
-  * Updated ``setup`` to load a file based on the level (76-152, specifically lines 76 and 113)
-  * Added end-of-map check(239-251)
+  * Updated ``setup`` to load a file based on the level (76-144, specifically lines 76 and 114)
+  * Added end-of-map check(245-256)
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/09_endgame.py
     :caption: More Advanced Example
     :linenos:
+    :emphasize-lines: 69, 76, 114, 245-256
 
 .. note::
 

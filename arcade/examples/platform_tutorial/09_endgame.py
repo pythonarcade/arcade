@@ -91,7 +91,8 @@ class MyGame(arcade.Window):
         self.coin_list = arcade.SpriteList()
 
         # Set up the player, specifically placing it at these coordinates.
-        self.player_sprite = arcade.Sprite("images/player_1/player_stand.png", CHARACTER_SCALING)
+        self.player_sprite = arcade.Sprite("images/player_1/player_stand.png",
+                                           CHARACTER_SCALING)
         self.player_sprite.center_x = PLAYER_START_X
         self.player_sprite.center_y = PLAYER_START_Y
         self.player_list.append(self.player_sprite)
@@ -119,19 +120,29 @@ class MyGame(arcade.Window):
         self.end_of_map = my_map.map_size.width * GRID_PIXEL_SIZE
 
         # -- Background
-        self.background_list = arcade.tilemap.process_layer(my_map, background_layer_name, TILE_SCALING)
+        self.background_list = arcade.tilemap.process_layer(my_map,
+                                                            background_layer_name,
+                                                            TILE_SCALING)
 
         # -- Foreground
-        self.foreground_list = arcade.tilemap.process_layer(my_map, foreground_layer_name, TILE_SCALING)
+        self.foreground_list = arcade.tilemap.process_layer(my_map,
+                                                            foreground_layer_name,
+                                                            TILE_SCALING)
 
         # -- Platforms
-        self.wall_list = arcade.tilemap.process_layer(my_map, platforms_layer_name, TILE_SCALING)
+        self.wall_list = arcade.tilemap.process_layer(my_map,
+                                                      platforms_layer_name,
+                                                      TILE_SCALING)
 
         # -- Coins
-        self.coin_list = arcade.tilemap.process_layer(my_map, coins_layer_name, TILE_SCALING)
+        self.coin_list = arcade.tilemap.process_layer(my_map,
+                                                      coins_layer_name,
+                                                      TILE_SCALING)
 
         # -- Don't Touch Layer
-        self.dont_touch_list = arcade.tilemap.process_layer(my_map, dont_touch_layer_name, TILE_SCALING)
+        self.dont_touch_list = arcade.tilemap.process_layer(my_map,
+                                                            dont_touch_layer_name,
+                                                            TILE_SCALING)
 
         # --- Other stuff
         # Set the background color
@@ -218,7 +229,8 @@ class MyGame(arcade.Window):
             arcade.play_sound(self.game_over)
 
         # Did the player touch something they should not?
-        if arcade.check_for_collision_with_list(self.player_sprite, self.dont_touch_list):
+        if arcade.check_for_collision_with_list(self.player_sprite,
+                                                self.dont_touch_list):
             self.player_sprite.change_x = 0
             self.player_sprite.change_y = 0
             self.player_sprite.center_x = PLAYER_START_X
