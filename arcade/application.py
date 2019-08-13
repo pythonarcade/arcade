@@ -309,12 +309,20 @@ class Window(pyglet.window.Window):
             self.update(1/60)
 
     def show_view(self, new_view: 'View'):
+        if not isinstance(new_view, View):
+            raise ValueError("Must pass an arcade.View object to "
+                             "Window.show_view()")
+
         # Store the Window that is showing the "new_view" View.
-        if not new_view.window:
+        if new_view.window is None:
             new_view.window = self
+        elif new_view.window != self:
+            raise RuntimeError("You are attempting to pass the same view "
+                               "object between multiple windows. A single "
+                               "view object can only be used in one window.")
 
         # remove previously shown view's handlers
-        if self.current_view:
+        if self.current_view is not None:
             self.remove_handlers(self.current_view)
 
         # push new view's handlers
