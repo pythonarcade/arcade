@@ -5,10 +5,24 @@
 Release Notes
 =============
 
-Version 2.0.10
+Version 2.1.0
 --------------
 
-* Work on automatic Travis CI builds
+* New file reader for tmx files
+* Add new view switching framework
+* Fix and Re-enable TravisCI builds
+
+* New: Collision methods to Sprite `Issue 434 <https://github.com/pvcraven/arcade/issues/434>`_
+* Fix: make_circle_texture `Issue 431 <https://github.com/pvcraven/arcade/issues/431>`_
+* Fix: Points drawn as triangles rather than rects `Issue 429 <https://github.com/pvcraven/arcade/issues/429>`_
+* Fix: Fix screen update rate issue `Issue 424 <https://github.com/pvcraven/arcade/issues/424>`_
+* Fix: Typo `Issue 422 <https://github.com/pvcraven/arcade/issues/422>`_
+* Put in exampel Kayzee game
+* Fix: Add links to PyCon video `Issue 414 <https://github.com/pvcraven/arcade/issues/414>`_
+* Fix: Docstring `Issue 409 <https://github.com/pvcraven/arcade/issues/409>`_
+* Fix: Typo `Issue 403 <https://github.com/pvcraven/arcade/issues/403>`_
+
+Thanks to SirGnip, Mr. Gallow, and Christian Clauss for their contributions.
 
 Version 2.0.9
 -------------
