@@ -8,6 +8,7 @@ class FakeWindow(arcade.Window):
         # from pyglet.BaseWindow
         EventDispatcher.__init__(self)
         self._event_queue = []
+        self._view = None
 
         # Track the behavior of Views:
         self.draw_calls = []  # records sequence of calls to on_draw()
