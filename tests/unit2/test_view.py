@@ -1,29 +1,29 @@
 import pytest
 import arcade
+from pyglet.event import EventDispatcher
 
 
 class FakeWindow(arcade.Window):
-    """A test double Window that is never displayed"""
     def __init__(self):
-        super().__init__()
+        # from pyglet.BaseWindow
+        EventDispatcher.__init__(self)
+        self._event_queue = []
+
         # Track the behavior of Views:
         self.draw_calls = []  # records sequence of calls to on_draw()
         self.update_calls = []  # records sequence of calls to update()
         self.mouse_motion_calls = []  # records sequence of calls to on_mouse_motion()
 
-    def set_visible(self, visible=True):
-        pass  # Make set_visible do nothing for testing
+        self.current_view = None
 
     def test(self, frames: int = 10):
         """The order of the event loop in the original Window.test method
         was producing unintuitive results for the purpose of these tests.
         """
         for i in range(frames):
-            self.switch_to()
             self.update(1/60)
             self.dispatch_event('on_draw')
             self.dispatch_events()
-            self.flip()
 
 
 class BaseView(arcade.View):
