@@ -137,11 +137,11 @@ def _create_sprite_from_tile(map_object, tile: pytiled_parser.objects.Tile,
 
         # print(tile.image.source, my_sprite.center_x, my_sprite.center_y)
     if tile.objectgroup is not None:
+
         if len(tile.objectgroup) > 1:
             print(f"Warning, only one hit box supported for tile with image {tile.image.source}.")
 
         for hitbox in tile.objectgroup:
-
             half_width = map_object.tile_size.width / 2
             half_height = map_object.tile_size.height / 2
             points = []
@@ -151,7 +151,6 @@ def _create_sprite_from_tile(map_object, tile: pytiled_parser.objects.Tile,
                           f"height or width for {tile.image.source}. Ignoring.")
                     continue
 
-                # print(tile.image.source, hitbox.location, hitbox.size)
                 p1 = [hitbox.location[0] - half_width, half_height - hitbox.location[0]]
                 p2 = [hitbox.location[0] + hitbox.size[0] - half_width, half_height - hitbox.size[0]]
                 p3 = [hitbox.location[0] + hitbox.size[0] - half_width, half_height
@@ -173,9 +172,10 @@ def _create_sprite_from_tile(map_object, tile: pytiled_parser.objects.Tile,
                     adj_point = [adj_x, adj_y]
                     points.append(adj_point)
 
-                # See if we need to close the polyline
-                if points[0][0] != points[-1][0] or points[0][1] != points[-1][1]:
-                    points.append(points[0])
+                # If we have a polyline, and it is closed, we need to
+                # remove the duplicate end-point
+                if points[0][0] == points[-1][0] and points[0][1] == points[-1][1]:
+                    points.pop()
 
             elif isinstance(hitbox, pytiled_parser.objects.ElipseObject):
                 if hitbox.size is None:

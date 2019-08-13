@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.2.3" orientation="orthogonal" renderorder="right-down" width="25" height="20" tilewidth="128" tileheight="128" infinite="0" nextlayerid="3" nextobjectid="1">
+<map version="1.2" tiledversion="1.2.4" orientation="orthogonal" renderorder="right-down" width="25" height="20" tilewidth="128" tileheight="128" infinite="0" nextlayerid="3" nextobjectid="1">
  <tileset firstgid="1" name="my_tiles" tilewidth="128" tileheight="128" tilecount="146" columns="0">
   <grid orientation="orthogonal" width="1" height="1"/>
   <tile id="0">
@@ -20,12 +20,7 @@
   <tile id="5">
    <image width="128" height="128" source="images/tiles/bridgeA.png"/>
    <objectgroup draworder="index">
-    <object id="1" x="14.25" y="0">
-     <polygon points="0,0 -13.75,13.375 -13.625,32.5 -2.5,44.625 16.25,45.125 26.75,35.25 40.25,45.375 58.75,45.25 69.625,35.125 82.625,45.75 100.375,45.75 113.125,33.75 112.875,12.25 102.5,0.375 79,0.75 70.875,10.75 60.375,-0.125 36,0.625 27.75,13.875 15.375,0.5"/>
-    </object>
-    <object id="2" x="14.25" y="0">
-     <polygon points="0,0 -13.75,13.375 -13.625,32.5 -2.5,44.625 16.25,45.125 26.75,35.25 40.25,45.375 58.75,45.25 69.625,35.125 82.625,45.75 100.375,45.75 113.125,33.75 112.875,12.25 102.5,0.375 79,0.75 70.875,10.75 60.375,-0.125 36,0.625 27.75,13.875 15.375,0.5"/>
-    </object>
+    <object id="3" x="0.333333" y="0.333333" width="127" height="45.3333"/>
    </objectgroup>
   </tile>
   <tile id="6">
@@ -155,8 +150,8 @@
   <tile id="49">
    <image width="128" height="128" source="images/tiles/grassHill_right.png"/>
    <objectgroup draworder="index">
-    <object id="1" x="0.625" y="127.5">
-     <polygon points="0,0 126.75,-127.125 127,0"/>
+    <object id="1" x="0.0" y="128">
+     <polygon points="0,0 128,-128 128,0"/>
     </object>
    </objectgroup>
   </tile>

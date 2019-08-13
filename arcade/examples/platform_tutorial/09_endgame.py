@@ -16,7 +16,7 @@ SPRITE_PIXEL_SIZE = 128
 GRID_PIXEL_SIZE = (SPRITE_PIXEL_SIZE * TILE_SCALING)
 
 # Movement speed of player, in pixels per frame
-PLAYER_MOVEMENT_SPEED = 5
+PLAYER_MOVEMENT_SPEED = 10
 GRAVITY = 1
 PLAYER_JUMP_SPEED = 20
 
@@ -111,37 +111,32 @@ class MyGame(arcade.Window):
 
         # Map name
         map_name = f"map2_level_{level}.tmx"
-        # Read in the tiled map
-        my_map = arcade.read_tiled_map(map_name, TILE_SCALING)
 
-        # -- Walls
-        # Grab the layer of items we can't move through
-        map_array = my_map.layers_int_data[platforms_layer_name]
+        # Read in the tiled map
+        my_map = arcade.tilemap.read_tmx(map_name)
 
         # Calculate the right edge of the my_map in pixels
-        self.end_of_map = len(map_array[0]) * GRID_PIXEL_SIZE
+        self.end_of_map = my_map.map_size.width * GRID_PIXEL_SIZE
 
         # -- Background
-        self.background_list = arcade.generate_sprites(my_map, background_layer_name, TILE_SCALING)
+        self.background_list = arcade.tilemap.process_layer(my_map, background_layer_name, TILE_SCALING)
 
         # -- Foreground
-        self.foreground_list = arcade.generate_sprites(my_map, foreground_layer_name, TILE_SCALING)
+        self.foreground_list = arcade.tilemap.process_layer(my_map, foreground_layer_name, TILE_SCALING)
 
         # -- Platforms
-        self.wall_list = arcade.generate_sprites(my_map, platforms_layer_name, TILE_SCALING)
+        self.wall_list = arcade.tilemap.process_layer(my_map, platforms_layer_name, TILE_SCALING)
 
         # -- Coins
-        self.coin_list = arcade.generate_sprites(my_map, coins_layer_name, TILE_SCALING)
+        self.coin_list = arcade.tilemap.process_layer(my_map, coins_layer_name, TILE_SCALING)
 
         # -- Don't Touch Layer
-        self.dont_touch_list = arcade.generate_sprites(my_map, dont_touch_layer_name, TILE_SCALING)
-
-        self.end_of_map = (len(map_array[0]) - 1) * GRID_PIXEL_SIZE
+        self.dont_touch_list = arcade.tilemap.process_layer(my_map, dont_touch_layer_name, TILE_SCALING)
 
         # --- Other stuff
         # Set the background color
-        if my_map.backgroundcolor:
-            arcade.set_background_color(my_map.backgroundcolor)
+        if my_map.background_color:
+            arcade.set_background_color(my_map.background_color)
 
         # Create the 'physics engine'
         self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
