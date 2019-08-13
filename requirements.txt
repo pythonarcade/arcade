@@ -1,5 +1,4 @@
-Pyglet==1.4.1
-Pillow
 numpy
+Pillow
+Pyglet>=1.4.2
 pyglet-ffmpeg2
-pytiled-parser
