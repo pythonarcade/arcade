@@ -7,6 +7,7 @@ from typing import Iterable
 from typing import TypeVar
 from typing import Generic
 from typing import List
+from typing import Optional
 
 import pyglet.gl as gl
 
@@ -354,6 +355,13 @@ class SpriteList(Generic[T]):
         for sprite in self.sprite_list:
             sprite.update()
 
+    def update_animation(self, delta_time=1/60):
+        for sprite in self.sprite_list:
+            if isinstance(sprite, AnimatedTimeBasedSprite):
+                sprite.update_animation(delta_time)
+            else:
+                sprite.update_animation()
+
     def move(self, change_x: float, change_y: float):
         """
         Moves all Sprites in the list by the same amount.
@@ -365,7 +373,7 @@ class SpriteList(Generic[T]):
             sprite.center_x += change_x
             sprite.center_y += change_y
 
-    def preload_textures(self, texture_names):
+    def preload_textures(self, texture_names: List):
         """
         Preload a set of textures that will be used for sprites in this
         sprite list.
@@ -656,11 +664,6 @@ class SpriteList(Generic[T]):
         """
         self.program = None
         return self.sprite_list.pop()
-
-    def update_animation(self, delta_time):
-        for sprite in self.sprite_list:
-            if isinstance(sprite, AnimatedTimeBasedSprite):
-                sprite.update_animation(delta_time)
 
 
 def get_closest_sprite(sprite: Sprite, sprite_list: SpriteList) -> (Sprite, float):
