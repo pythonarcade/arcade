@@ -298,16 +298,6 @@ Platformers
 
    :ref:`sprite_csv_map`
 
-.. figure:: thumbs/sprite_tiled_map.png
-   :figwidth: 170px
-
-   :ref:`sprite_tiled_map`
-
-.. figure:: thumbs/sprite_tiled_map_with_levels.png
-   :figwidth: 170px
-
-   :ref:`sprite_tiled_map_with_levels`
-
 
 .. figure:: thumbs/sprite_ramps.png
    :figwidth: 170px
@@ -323,6 +313,30 @@ Platformers
    :figwidth: 170px
 
    :ref:`sprite_enemies_in_platformer`
+
+TMX Files / Tiled Map Editor
+----------------------------
+
+.. figure:: thumbs/08_load_map.png
+   :figwidth: 170px
+
+   :ref:`sprite_tiled_map`
+
+.. figure:: thumbs/sprite_tiled_map_with_levels.png
+   :figwidth: 170px
+
+   :ref:`sprite_tiled_map_with_levels`
+
+.. figure:: thumbs/09_endgame.png
+   :figwidth: 170px
+
+   :ref:`09_endgame`
+
+.. figure:: thumbs/10_ladders_and_more.png
+   :figwidth: 170px
+
+   :ref:`10_ladders_and_more`
+
 
 
 View Management

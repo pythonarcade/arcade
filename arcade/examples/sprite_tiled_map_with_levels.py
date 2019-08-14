@@ -90,16 +90,15 @@ class MyGame(arcade.Window):
 
     def load_level(self, level):
         # Read in the tiled map
-        my_map = arcade.read_tiled_map(f"level_{level}.tmx", SPRITE_SCALING)
+        my_map = arcade.tilemap.read_tmx(f"level_{level}.tmx")
 
         # --- Walls ---
-        # Grab the layer of items we can't move through
-        map_array = my_map.layers_int_data['Platforms']
 
         # Calculate the right edge of the my_map in pixels
-        self.end_of_map = (len(map_array[0]) - 1) * GRID_PIXEL_SIZE
+        self.end_of_map = my_map.map_size.width * GRID_PIXEL_SIZE
 
-        self.wall_list = arcade.generate_sprites(my_map, 'Platforms', SPRITE_SCALING)
+        # Grab the layer of items we can't move through
+        self.wall_list = arcade.tilemap.process_layer(my_map, 'Platforms', SPRITE_SCALING)
 
         self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
                                                              self.wall_list,
@@ -107,8 +106,8 @@ class MyGame(arcade.Window):
 
         # --- Other stuff
         # Set the background color
-        if my_map.backgroundcolor:
-            arcade.set_background_color(my_map.backgroundcolor)
+        if my_map.background_color:
+            arcade.set_background_color(my_map.background_color)
 
         # Set the view port boundaries
         # These numbers set where we have 'scrolled' to.

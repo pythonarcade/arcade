@@ -478,3 +478,19 @@ Here's an expanded example:
 
     * Add :ref:`sprite_explosion`
     * Add :ref:`sprite_move_animation`
+
+Step 10
+-------
+
+.. image:: 10_ladders_and_more.png
+   :scale: 40%
+
+This example shows using:
+
+* Ladders
+* Properties to define point value of coins and flags
+* Properties and an object layer to define a moving platform.
+
+.. literalinclude:: ../../../arcade/examples/platform_tutorial/10_ladders_and_more.py
+    :caption: Ladders, Animated Tiles, and Moving Platforms
+    :linenos:
