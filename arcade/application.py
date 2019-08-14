@@ -3,14 +3,12 @@ The main window class that all object-oriented applications should
 derive from.
 """
 from numbers import Number
-from typing import Tuple, Union
+from typing import Tuple
 
 import pyglet.gl as gl
 import pyglet
 
-from arcade.window_commands import (get_viewport, get_window, schedule,
-                                    set_background_color, set_viewport,
-                                    set_window, unschedule)
+from arcade.window_commands import (get_viewport, set_viewport, set_window)
 
 MOUSE_BUTTON_LEFT = 1
 MOUSE_BUTTON_MIDDLE = 2
@@ -124,7 +122,9 @@ class Window(pyglet.window.Window):
 
         :param float x: x position of the mouse
         :param float y: y position of the mouse
-        :param int button: What button was hit. One of: arcade.MOUSE_BUTTON_LEFT, arcade.MOUSE_BUTTON_RIGHT, arcade.MOUSE_BUTTON_MIDDLE
+        :param int button: What button was hit. One of:
+                           arcade.MOUSE_BUTTON_LEFT, arcade.MOUSE_BUTTON_RIGHT,
+                           arcade.MOUSE_BUTTON_MIDDLE
         :param int modifiers: Shift/click, ctrl/click, etc.
         """
         pass
@@ -166,7 +166,7 @@ class Window(pyglet.window.Window):
         """
         pass
 
-    def set_mouse_visible(self, visible: bool=True):
+    def set_mouse_visible(self, visible: bool = True):
         """
         If true, user can see the mouse cursor while it is over the window. Set false,
         the mouse is not visible. Default is true.
@@ -336,7 +336,7 @@ class Window(pyglet.window.Window):
 
 
 def open_window(width: Number, height: Number, window_title: str, resizable: bool = False,
-                antialiasing=True) -> Window:
+                antialiasing: bool = True) -> Window:
     """
     This function opens a window. For ease-of-use we assume there will only be one window, and the
     programmer does not need to keep a handle to the window. This isn't the best architecture, because
@@ -354,8 +354,8 @@ def open_window(width: Number, height: Number, window_title: str, resizable: boo
     """
 
     global _window
-    _window = Window(width, height, window_title, resizable, update_rate=None,
-                     antialiasing=antialiasing)
+    _window = Window(width, height, window_title, resizable, update_rate = None,
+                     antialiasing = antialiasing)
     return _window
 
 
@@ -367,11 +367,11 @@ class View:
     def __init__(self):
         self.window = None
 
-    def update(self, delta_time):
+    def update(self, delta_time: float):
         """To be overridden"""
         pass
 
-    def on_update(self, delta_time):
+    def on_update(self, delta_time: float):
         """To be overridden"""
         pass
 

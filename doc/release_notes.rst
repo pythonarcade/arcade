@@ -8,9 +8,9 @@ Release Notes
 Version 2.1.0
 --------------
 
-* New file reader for tmx files
-* Add new view switching framework
-* Fix and Re-enable TravisCI builds
+* New file reader for tmx files http://arcade.academy/arcade.html#module-arcade.tilemap
+* Add new view switching framework http://arcade.academy/examples/index.html#view-management
+* Fix and Re-enable TravisCI builds https://travis-ci.org/pvcraven/arcade/builds
 
 * New: Collision methods to Sprite `Issue 434 <https://github.com/pvcraven/arcade/issues/434>`_
 * Fix: make_circle_texture `Issue 431 <https://github.com/pvcraven/arcade/issues/431>`_

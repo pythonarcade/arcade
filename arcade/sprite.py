@@ -9,12 +9,15 @@ https://www.gamedev.net/articles/programming/general-and-gameplay-programming/sp
 import math
 import dataclasses
 
+import PIL.Image
+
 from arcade.draw_commands import load_texture
 from arcade.draw_commands import draw_texture_rectangle
 from arcade.draw_commands import Texture
 from arcade.draw_commands import rotate_point
 from arcade.arcade_types import RGB, Point
 
+from typing import Optional
 from typing import Sequence
 from typing import Tuple
 
@@ -78,12 +81,12 @@ class Sprite:
     """
 
     def __init__(self,
-                 filename: str=None,
-                 scale: float=1,
-                 image_x: float=0, image_y: float=0,
-                 image_width: float=0, image_height: float=0,
-                 center_x: float=0, center_y: float=0,
-                 repeat_count_x=1, repeat_count_y=1):
+                 filename: str = None,
+                 scale: float = 1,
+                 image_x: float = 0, image_y: float = 0,
+                 image_width: float = 0, image_height: float = 0,
+                 center_x: float = 0, center_y: float = 0,
+                 repeat_count_x: int = 1, repeat_count_y: int = 1):
         """
         Create a new sprite.
 
@@ -211,7 +214,7 @@ class Sprite:
         """
         self._points = points
 
-    def forward(self, speed: float=1.0):
+    def forward(self, speed: float = 1.0):
         """
         Set a Sprite's position to speed by its angle
         :param speed: speed factor
@@ -219,10 +222,10 @@ class Sprite:
         self.change_x += math.cos(self.radians) * speed
         self.change_y += math.sin(self.radians) * speed
 
-    def reverse(self, speed: float=1.0):
+    def reverse(self, speed: float = 1.0):
         self.forward(-speed)
 
-    def strafe(self, speed: float=1.0):
+    def strafe(self, speed: float = 1.0):
         """
         Set a sprites position perpendicular to its angle by speed
         :param speed: speed factor
@@ -230,10 +233,10 @@ class Sprite:
         self.change_x += -math.sin(self.radians) * speed
         self.change_y += math.cos(self.radians) * speed
 
-    def turn_right(self, theta: float=90):
+    def turn_right(self, theta: float = 90):
         self.angle -= theta
 
-    def turn_left(self, theta: float=90):
+    def turn_left(self, theta: float = 90):
         self.angle += theta
 
     def stop(self):
@@ -610,13 +613,13 @@ class Sprite:
 
     color = property(_get_color, _set_color)
 
-    def _get_alpha(self) -> RGB:
+    def _get_alpha(self) -> int:
         """
         Return the alpha associated with the sprite.
         """
         return self._alpha
 
-    def _set_alpha(self, alpha: RGB):
+    def _set_alpha(self, alpha: int):
         """
         Set the current sprite color as a value
         """
@@ -711,7 +714,6 @@ class Sprite:
         Returns:
             SpriteList of all overlapping Sprites from the original SpriteList
         """
-        from arcade.sprite_list import SpriteList
         from arcade.geometry import check_for_collision_with_list
         return check_for_collision_with_list(self, sprite_list)
 
@@ -748,7 +750,7 @@ class AnimatedTimeSprite(Sprite):
 class AnimationKeyframe:
     tile_id: int
     duration: int
-    image: str
+    image: PIL.Image
 
 
 class AnimatedTimeBasedSprite(Sprite):
@@ -784,6 +786,7 @@ class AnimatedTimeBasedSprite(Sprite):
             source = self.frames[self.cur_frame].image.source
             # print(f"Advance to frame {self.cur_frame}: {source}")
             self.texture = load_texture(source, scale=self.scale)
+
 
 class AnimatedWalkingSprite(Sprite):
     """
