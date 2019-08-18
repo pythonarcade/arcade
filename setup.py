@@ -5,7 +5,7 @@ import sys
 from setuptools import setup
 
 BUILD = 0
-VERSION = "2.1.0"
+VERSION = "2.1.1"
 RELEASE = VERSION
 
 if __name__ == "__main__":
@@ -34,7 +34,8 @@ if __name__ == "__main__":
             'pyglet==1.4.0b1',
             'pillow',
             'numpy',
-            'pyglet-ffmpeg2'
+            'pyglet-ffmpeg2',
+            'pytiled-parser'
           ],
           packages=["arcade",
                     "arcade.key",

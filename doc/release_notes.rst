@@ -5,6 +5,11 @@
 Release Notes
 =============
 
+Version 2.1.1
+-------------
+
+* Added pytiled-parser as a dependency in setup.py
+
 Version 2.1.0
 --------------
 
