@@ -15,6 +15,13 @@ MOUSE_BUTTON_MIDDLE = 2
 MOUSE_BUTTON_RIGHT = 4
 
 
+class NoOpenGLException(Exception):
+    """
+    Exception when we can't get an OpenGL 3.3+ context
+    """
+    pass
+
+
 class Window(pyglet.window.Window):
     """
     The Window class forms the basis of most advanced games that use Arcade.
@@ -24,7 +31,7 @@ class Window(pyglet.window.Window):
     def __init__(self, width: float = 800, height: float = 600,
                  title: str = 'Arcade Window', fullscreen: bool = False,
                  resizable: bool = False, update_rate=1/60,
-                 antialiasing=True):
+                 antialiasing: bool = True):
         """
         Construct a new window
 
@@ -47,8 +54,11 @@ class Window(pyglet.window.Window):
                                       minor_version=3,
                                       double_buffer=True)
 
-        super().__init__(width=width, height=height, caption=title,
-                         resizable=resizable, config=config)
+        try:
+            super().__init__(width=width, height=height, caption=title,
+                             resizable=resizable, config=config)
+        except pyglet.window.NoSuchConfigException as e:
+            raise NoOpenGLException("Unable to create an OpenGL 3.3+ context. Check to make sure your system supports OpenGL 3.3 or higher.")
 
         if antialiasing:
             try:
