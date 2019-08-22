@@ -5,6 +5,11 @@
 Release Notes
 =============
 
+Version 2.1.2
+-------------
+
+* Fix: Linked to wrong version of Pyglet `Issue 467 <https://github.com/pvcraven/arcade/issues/467>`_
+
 Version 2.1.1
 -------------
 
