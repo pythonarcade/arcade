@@ -31,7 +31,7 @@ if __name__ == "__main__":
           url="http://arcade.academy",
           download_url="http://arcade.academy",
           install_requires=[
-            'pyglet==1.4.0b1',
+            'pyglet',
             'pillow',
             'numpy',
             'pyglet-ffmpeg2',
