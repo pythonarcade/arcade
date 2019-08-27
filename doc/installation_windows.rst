@@ -41,8 +41,45 @@ A video of the installation is below:
 Step 2: Install The Arcade Library
 ----------------------------------
 
-Install Arcade The Easy Way
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+If you install Arcade as a pre-built library, there are two options on
+how to do it. The best way is to use a "virtual environment." This is
+a collection of Python libraries that only apply to your particular project.
+You don't have to worry about libraries for other projects conflicting
+with your project. You also don't need "administrator" level privileges to
+install libraries.
+
+The second-best way is to install the library for the entire system. All
+Python instances will have access to the library. You don't have to setup
+a virtual environment, and you don't need to import the library for each project.
+
+Install Arcade with PyCharm and a Virtual Environment
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If you are using PyCharm, setting up a virtual environment is easy. Once you've
+got your project, open up the settings:
+
+.. image:: images/venv_setup_1.png
+    :width: 350px
+
+Select project interpreter:
+
+.. image:: images/venv_setup_2.png
+    :width: 350px
+
+Create a new virtual environment. Make sure the venv is inside your
+project folder.
+
+.. image:: images/venv_setup_3.png
+    :width: 350px
+
+Now you can install libraries. PyCharm will automatically ask to add them
+if you have a file called `requirements.txt` that lists the required libraries.
+
+.. image:: images/venv_setup_4.png
+    :width: 350px
+
+Install Arcade System-Wide
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Click the Window button in the lower left of your screen (or hit the window
 button on your keyboard) and start typing ``command prompt``.
