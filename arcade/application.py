@@ -83,7 +83,7 @@ class Window(pyglet.window.Window):
         """
         Move everything. For better consistency in naming, use ``on_update`` instead.
 
-        :param float delta_time: Time interval since the last time the function was called.
+        :param float delta_time: Time interval since the last time the function was called in seconds.
 
         """
         try:
