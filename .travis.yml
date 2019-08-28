@@ -1,18 +1,24 @@
 language: python
-python: 3.7
+python:
+  - '3.6'
+  - '3.7'
 services: xvfb
 matrix:
   include:
     - name: "Python 3.7 on xenial"
+      python: '3.7'
       dist: xenial
     - name: "Python 3.7 on bionic"
+      python: '3.7'
       dist: bionic
     - name: "Python 3.7 on macOS"
+      python: '3.7'
       os: osx
       osx_image: xcode11
       language: minimal
       before_install: sw_vers
     - name: "Python 3.7 on Windows"
+      python: '3.7'
       os: windows
       language: bash
       before_install:
