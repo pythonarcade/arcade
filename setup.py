@@ -10,6 +10,16 @@ RELEASE = VERSION
 
 if __name__ == "__main__":
 
+    install_requires = [
+        'pyglet',
+        'pillow',
+        'numpy',
+        'pyglet-ffmpeg2',
+        'pytiled-parser'
+    ]
+    if sys.version_info[0] == 3 and sys.version_info[1] == 6:
+        install_requires.append('dataclasses')
+
     if "--format=msi" in sys.argv or "bdist_msi" in sys.argv:
         # hack the version name to a format msi doesn't have trouble with
         VERSION = VERSION.replace("-alpha", "a")
@@ -30,19 +40,14 @@ if __name__ == "__main__":
           license="MIT",
           url="http://arcade.academy",
           download_url="http://arcade.academy",
-          install_requires=[
-            'pyglet',
-            'pillow',
-            'numpy',
-            'pyglet-ffmpeg2',
-            'pytiled-parser'
-          ],
+          install_requires=install_requires,
           packages=["arcade",
                     "arcade.key",
                     "arcade.color",
                     "arcade.csscolor",
                     "arcade.examples"
                     ],
+          python_requires='>=3.6',
           classifiers=[
               "Development Status :: 5 - Production/Stable",
               "Intended Audience :: Developers",
