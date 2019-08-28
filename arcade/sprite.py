@@ -7,7 +7,10 @@ https://www.gamedev.net/articles/programming/general-and-gameplay-programming/sp
 
 
 import math
-import dataclasses
+try:
+    import dataclasses
+except ModuleNotFoundError:
+    raise Exception('dataclasses not available, if running on Python 3.6 please manually install https://pypi.org/project/dataclasses/')
 
 import PIL.Image
 
