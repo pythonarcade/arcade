@@ -384,6 +384,10 @@ class View:
     def on_update(self, delta_time: float):
         """To be overridden"""
         pass
+    
+    def on_draw(self):
+        """Called when this view should draw"""
+        pass
 
     def on_show(self):
         """Called when this view is shown"""
