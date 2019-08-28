@@ -5,11 +5,13 @@ Sound library.
 from platform import system
 import typing
 import pyglet
-
+from pathlib import Path
 
 class Sound:
 
     def __init__(self, file_name: str):
+        if not Path(file_name).is_file():
+            raise FileNotFoundError(f"The sound file '{file_name}' is not a file or can't be read")
         self.file_name = file_name
         self.player = pyglet.media.load(file_name)
 
