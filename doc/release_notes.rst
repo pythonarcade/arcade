@@ -5,6 +5,15 @@
 Release Notes
 =============
 
+Version 2.1.3
+-------------
+
+* Fix: Ellipses drawn to incorrect dimensions `Issue 479 <https://github.com/pvcraven/arcade/issues/467>`_
+* Enhancement: Add unit test for debugging `Issue 478 <https://github.com/pvcraven/arcade/issues/478>`_
+* Enhancement: Add more descriptive error when file not found `Issue 472 <https://github.com/pvcraven/arcade/issues/472>`_
+* Enhancement: Explicitly state delta time is in seconds `Issue 473 <https://github.com/pvcraven/arcade/issues/473>`_
+* Fix: Add missing 'draw' function to view `Issue 470 <https://github.com/pvcraven/arcade/issues/470>`_
+
 Version 2.1.2
 -------------
 
