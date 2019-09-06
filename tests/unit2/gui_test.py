@@ -1,10 +1,38 @@
 import arcade
-from arcade.gui import ActionButton
+from arcade.gui import TextButton
 
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 SCREEN_TITLE = "GUI Text Buton Example"
+
+
+class PlayButton(TextButton):
+    def __init__(self, game, x=0, y=0, width=100, height=40, text="Play"):
+        super().__init__(x, y, width, height, text)
+        self.game = game
+
+    def on_press(self):
+        self.pressed = True
+
+    def on_release(self):
+        if self.pressed:
+            self.game.pause = False
+            self.pressed = False
+
+
+class PauseButton(TextButton):
+    def __init__(self, game, x=0, y=0, width=100, height=40, text="Pause"):
+        super().__init__(x, y, width, height, text)
+        self.game = game
+
+    def on_press(self):
+        self.pressed = True
+
+    def on_release(self):
+        if self.pressed:
+            self.game.pause = True
+            self.pressed = False
 
 
 class MyGame(arcade.Window):
@@ -24,12 +52,10 @@ class MyGame(arcade.Window):
     def setup(self):
         self.button_list = []
 
-        play_button = ActionButton(
-            60, 570, 100, 40, "Play", 18, "Arial", self.resume_program)
-        self.button_list.append(play_button)
+        play_button = PlayButton(self, 60, 570, 100, 40)
+        pause_button = PauseButton(self, 60, 515, 100, 40)
 
-        pause_button = ActionButton(
-            60, 515, 100, 40, "Pause", 18, "Arial", self.pause_program)
+        self.button_list.append(play_button)
         self.button_list.append(pause_button)
 
     def on_draw(self):
@@ -54,13 +80,6 @@ class MyGame(arcade.Window):
     def on_mouse_release(self, x, y, button, key_modifiers):
         for button in self.button_list:
             button.check_mouse_release(x, y)
-
-    def pause_program(self):
-        self.pause = True
-
-    def resume_program(self):
-        self.pause = False
-
 
 def main():
     game = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
