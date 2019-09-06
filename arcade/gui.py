@@ -1,4 +1,5 @@
 import arcade
+from abc import ABC, abstractmethod
 
 
 class TextButton:
@@ -71,12 +72,14 @@ class TextButton:
                          arcade.color.BLACK, font_size=self.font_size,
                          width=self.width, align="center",
                          anchor_x="center", anchor_y="center")
-
+    
+    @abstractmethod
     def on_press(self):
-        self.pressed = True
+        pass
 
+    @abstractmethod
     def on_release(self):
-        self.pressed = False
+        pass
 
     def check_mouse_press(self, x, y):
         if x > self.center_x + self.width / 2:
@@ -92,16 +95,4 @@ class TextButton:
     def check_mouse_release(self, x, y):
         if self.pressed:
             self.on_release()
-
-
-class ActionButton(TextButton):
-    def __init__(self, x=0, y=0, width=100, height=40, text="Button", f_size=18, font="Arial", action_function=None):
-        super().__init__(x, y, width, height, text, f_size, font)
-        if action_function:
-            self.action_function = action_function
-
-    def on_release(self):
-        super().on_release()
-        if self.action_function:
-            self.action_function()
 
