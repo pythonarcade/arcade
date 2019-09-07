@@ -73,14 +73,6 @@ class MyGame(arcade.Window):
             self.speed = -self.speed
         self.text_x += self.speed
 
-    def on_mouse_press(self, x, y, button, key_modifiers):
-        for button in self.button_list:
-            button.check_mouse_press(x, y)
-
-    def on_mouse_release(self, x, y, button, key_modifiers):
-        for button in self.button_list:
-            button.check_mouse_release(x, y)
-
 def main():
     game = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     game.setup()
