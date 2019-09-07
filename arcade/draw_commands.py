@@ -624,8 +624,8 @@ def draw_circle_filled(center_x: float, center_y: float, radius: float,
     :param int num_segments: float of triangle segments that make up this
          circle. Higher is better quality, but slower render time.
     """
-    width = radius
-    height = radius
+    width = radius * 2
+    height = radius * 2
     draw_ellipse_filled(center_x, center_y, width, height, color, num_segments=num_segments)
 
 
@@ -644,8 +644,8 @@ def draw_circle_outline(center_x: float, center_y: float, radius: float,
     :param int num_segments: Int of triangle segments that make up this
          circle. Higher is better quality, but slower render time.
     """
-    width = radius
-    height = radius
+    width = radius * 2
+    height = radius * 2
     draw_ellipse_outline(center_x, center_y, width, height,
                          color, border_width, num_segments=num_segments)
 
@@ -677,8 +677,8 @@ def draw_ellipse_filled(center_x: float, center_y: float,
     for segment in range(num_segments):
         theta = 2.0 * 3.1415926 * segment / num_segments
 
-        x = width * math.cos(theta)
-        y = height * math.sin(theta)
+        x = (width / 2) * math.cos(theta)
+        y = (height / 2) * math.sin(theta)
 
         unrotated_point_list.append((x, y))
 
@@ -719,8 +719,8 @@ def draw_ellipse_outline(center_x: float, center_y: float, width: float,
         for segment in range(num_segments):
             theta = 2.0 * 3.1415926 * segment / num_segments
 
-            x = width * math.cos(theta)
-            y = height * math.sin(theta)
+            x = (width / 2) * math.cos(theta)
+            y = (height / 2) * math.sin(theta)
 
             unrotated_point_list.append((x, y))
 
@@ -743,10 +743,10 @@ def draw_ellipse_outline(center_x: float, center_y: float, width: float,
         start_segment = 0
         end_segment = num_segments
 
-        inside_width = width - border_width / 2
-        outside_width = width + border_width / 2
-        inside_height = height - border_width / 2
-        outside_height = height + border_width / 2
+        inside_width = (width / 2) - border_width / 2
+        outside_width = (width / 2) + border_width / 2
+        inside_height = (height / 2) - border_width / 2
+        outside_height = (height / 2) + border_width / 2
 
         for segment in range(start_segment, end_segment + 1):
             theta = 2.0 * math.pi * segment / num_segments

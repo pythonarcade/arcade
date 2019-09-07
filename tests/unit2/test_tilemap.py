@@ -96,3 +96,9 @@ def test_three():
     assert sprite.properties['change_x'] == 1
     assert sprite.properties['change_y'] == 1
 
+
+def test_five():
+    tmx_map = arcade.tilemap.read_tmx("test_data/test_map_5.tmx")
+    assert tmx_map is not None
+
+    layer = arcade.tilemap.process_layer(tmx_map, 'object_layer')
