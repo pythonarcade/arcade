@@ -78,6 +78,7 @@ class Window(pyglet.window.Window):
         set_window(self)
         set_viewport(0, self.width, 0, self.height)
         self.current_view = None
+        self.button_list = []
 
     def update(self, delta_time: float):
         """
@@ -137,7 +138,12 @@ class Window(pyglet.window.Window):
                            arcade.MOUSE_BUTTON_MIDDLE
         :param int modifiers: Shift/click, ctrl/click, etc.
         """
-        pass
+        try:
+            if self.button_list:
+                for button in self.button_list:
+                    button.check_mouse_press(x, y)
+        except AttributeError:
+            pass
 
     def on_mouse_drag(self, x: float, y: float, dx: float, dy: float, buttons: int, modifiers: int):
         """
@@ -162,8 +168,12 @@ class Window(pyglet.window.Window):
         :param int button:
         :param int modifiers:
         """
-
-        pass
+        try:
+            if self.button_list:
+                for button in self.button_list:
+                    button.check_mouse_release(x, y)
+        except AttributeError:
+            pass
 
     def on_mouse_scroll(self, x: int, y: int, scroll_x: int, scroll_y: int):
         """
@@ -376,6 +386,7 @@ class View:
     """
     def __init__(self):
         self.window = None
+        self.button_list = []
 
     def update(self, delta_time: float):
         """To be overridden"""
@@ -391,4 +402,74 @@ class View:
 
     def on_show(self):
         """Called when this view is shown"""
+        pass
+
+    def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
+        """
+        Override this function to add mouse functionality.
+
+        :param float x: x position of mouse
+        :param float y: y position of mouse
+        :param float dx: Change in x since the last time this method was called
+        :param float dy: Change in y since the last time this method was called
+        """
+        pass
+
+    def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
+        """
+        Override this function to add mouse button functionality.
+
+        :param float x: x position of the mouse
+        :param float y: y position of the mouse
+        :param int button: What button was hit. One of:
+                           arcade.MOUSE_BUTTON_LEFT, arcade.MOUSE_BUTTON_RIGHT,
+                           arcade.MOUSE_BUTTON_MIDDLE
+        :param int modifiers: Shift/click, ctrl/click, etc.
+        """
+        try:
+            if self.button_list:
+                for button in self.button_list:
+                    button.check_mouse_press(x, y)
+        except AttributeError:
+            pass
+
+    def on_mouse_drag(self, x: float, y: float, dx: float, dy: float, buttons: int, modifiers: int):
+        """
+        Override this function to add mouse button functionality.
+
+        :param float x: x position of mouse
+        :param float y: y position of mouse
+        :param float dx: Change in x since the last time this method was called
+        :param float dy: Change in y since the last time this method was called
+        :param int buttons: Which button is pressed
+        :param int modifiers: Ctrl, shift, etc.
+        """
+        self.on_mouse_motion(x, y, dx, dy)
+
+    def on_mouse_release(self, x: float, y: float, button: int,
+                         modifiers: int):
+        """
+        Override this function to add mouse button functionality.
+
+        :param float x:
+        :param float y:
+        :param int button:
+        :param int modifiers:
+        """
+        try:
+            if self.button_list:
+                for button in self.button_list:
+                    button.check_mouse_release(x, y)
+        except AttributeError:
+            pass
+
+    def on_mouse_scroll(self, x: int, y: int, scroll_x: int, scroll_y: int):
+        """
+        User moves the scroll wheel.
+
+        :param int x:
+        :param int y:
+        :param int scroll_x:
+        :param int scroll_y:
+        """
         pass

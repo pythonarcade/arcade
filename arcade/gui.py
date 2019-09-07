@@ -1,5 +1,5 @@
 import arcade
-from abc import ABC, abstractmethod
+# from abc import ABC, abstractmethod
 
 
 class TextButton:
@@ -73,11 +73,9 @@ class TextButton:
                          width=self.width, align="center",
                          anchor_x="center", anchor_y="center")
     
-    @abstractmethod
     def on_press(self):
         pass
 
-    @abstractmethod
     def on_release(self):
         pass
 
