@@ -79,6 +79,8 @@ class Window(pyglet.window.Window):
         set_viewport(0, self.width, 0, self.height)
         self.current_view = None
         self.button_list = []
+        self.dialogue_box_list = []
+        self.text_list = []
 
     def update(self, delta_time: float):
         """
@@ -141,7 +143,15 @@ class Window(pyglet.window.Window):
         try:
             if self.button_list:
                 for button in self.button_list:
-                    button.check_mouse_press(x, y)
+                    if button.active:
+                        button.check_mouse_press(x, y)
+        except AttributeError:
+            pass
+        try:
+            if self.dialogue_box_list:
+                for dialogue_box in self.dialogue_box_list:
+                    if dialogue_box.active:
+                        dialogue_box.on_mouse_press(x, y, button, modifiers)
         except AttributeError:
             pass
 
@@ -171,7 +181,15 @@ class Window(pyglet.window.Window):
         try:
             if self.button_list:
                 for button in self.button_list:
-                    button.check_mouse_release(x, y)
+                    if button.active:
+                        button.check_mouse_release(x, y)
+        except AttributeError:
+            pass
+        try:
+            if self.dialogue_box_list:
+                for dialogue_box in self.dialogue_box_list:
+                    if dialogue_box.active:
+                        dialogue_box.on_mouse_release(x, y, button, modifiers)
         except AttributeError:
             pass
 
@@ -217,7 +235,27 @@ class Window(pyglet.window.Window):
         """
         Override this function to add your custom drawing code.
         """
-        pass
+        try:
+            if self.button_list:
+                for button in self.button_list:
+                    if button.active:
+                        button.draw()
+        except AttributeError:
+            pass
+        try:
+            if self.text_list:
+                for text in self.text_list:
+                    if text.active:
+                        text.draw()
+        except AttributeError:
+            pass
+        try:
+            if self.dialogue_box_list:
+                for dialogue_box in self.dialogue_box_list:
+                    if dialogue_box.active:
+                        dialogue_box.on_draw()
+        except AttributeError:
+            pass
 
     def on_resize(self, width: float, height: float):
         """
@@ -387,6 +425,7 @@ class View:
     def __init__(self):
         self.window = None
         self.button_list = []
+        self.dialogue_box_list = []
 
     def update(self, delta_time: float):
         """To be overridden"""
@@ -398,7 +437,26 @@ class View:
     
     def on_draw(self):
         """Called when this view should draw"""
+        try:
+            if self.button_list:
+                for button in self.button_list:
+                    button.draw()
+        except AttributeError:
+            pass
+        try:
+            if self.text_list:
+                for text in self.self.text_list:
+                    text.draw()
+        except AttributeError:
+            pass
         pass
+        try:
+            if self.dialogue_box_list:
+                for dialogue_box in self.dialogue_box_list:
+                    if dialogue_box.active:
+                        dialogue_box.on_draw()
+        except AttributeError:
+            pass
 
     def on_show(self):
         """Called when this view is shown"""
@@ -432,6 +490,13 @@ class View:
                     button.check_mouse_press(x, y)
         except AttributeError:
             pass
+        try:
+            if self.dialogue_box_list:
+                for dialogue_box in self.dialogue_box_list:
+                    if dialogue_box.active:
+                        dialogue_box.on_mouse_press(x, y, button, modifiers)
+        except AttributeError:
+            pass
 
     def on_mouse_drag(self, x: float, y: float, dx: float, dy: float, buttons: int, modifiers: int):
         """
@@ -460,6 +525,13 @@ class View:
             if self.button_list:
                 for button in self.button_list:
                     button.check_mouse_release(x, y)
+        except AttributeError:
+            pass
+        try:
+            if self.dialogue_box_list:
+                for dialogue_box in self.dialogue_box_list:
+                    if dialogue_box.active:
+                        dialogue_box.on_mouse_release(x, y, button, modifiers)
         except AttributeError:
             pass
 
