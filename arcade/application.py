@@ -81,6 +81,9 @@ class Window(pyglet.window.Window):
         self.button_list = []
         self.dialogue_box_list = []
         self.text_list = []
+        self.textbox_list = []
+        self.textbox_time = 0.0
+        self.key = None
 
     def update(self, delta_time: float):
         """
@@ -103,6 +106,16 @@ class Window(pyglet.window.Window):
         """
         try:
             self.current_view.on_update(delta_time)
+        except AttributeError:
+            pass
+        try:
+            self.textbox_time += delta_time
+            seconds = self.textbox_time % 60
+            if seconds >= 0.115:
+                if self.textbox_list:
+                    for textbox in self.textbox_list:
+                        textbox.update(delta_time, self.key)
+                    self.textbox_time = 0.0
         except AttributeError:
             pass
 
@@ -154,6 +167,12 @@ class Window(pyglet.window.Window):
                         dialogue_box.on_mouse_press(x, y, button, modifiers)
         except AttributeError:
             pass
+        try:
+            if self.textbox_list:
+                for textbox in self.textbox_list:
+                    textbox.check_mouse_press(x, y)
+        except AttributeError:
+            pass
 
     def on_mouse_drag(self, x: float, y: float, dx: float, dy: float, buttons: int, modifiers: int):
         """
@@ -192,6 +211,12 @@ class Window(pyglet.window.Window):
                         dialogue_box.on_mouse_release(x, y, button, modifiers)
         except AttributeError:
             pass
+        try:
+            if self.textbox_list:
+                for textbox in self.textbox_list:
+                    textbox.check_mouse_release(x, y)
+        except AttributeError:
+            pass
 
     def on_mouse_scroll(self, x: int, y: int, scroll_x: int, scroll_y: int):
         """
@@ -220,7 +245,10 @@ class Window(pyglet.window.Window):
         :param int symbol: Key that was hit
         :param int modifiers: If it was shift/ctrl/alt
         """
-        pass
+        try:
+            self.key = symbol
+        except AttributeError:
+            pass
 
     def on_key_release(self, symbol: int, modifiers: int):
         """
@@ -229,7 +257,10 @@ class Window(pyglet.window.Window):
         :param int symbol: Key that was hit
         :param int modifiers: If it was shift/ctrl/alt
         """
-        pass
+        try:
+            self.key = None
+        except AttributeError:
+            pass
 
     def on_draw(self):
         """
@@ -254,6 +285,12 @@ class Window(pyglet.window.Window):
                 for dialogue_box in self.dialogue_box_list:
                     if dialogue_box.active:
                         dialogue_box.on_draw()
+        except AttributeError:
+            pass
+        try:
+            if self.textbox_list:
+                for textbox in self.textbox_list:
+                        textbox.draw()
         except AttributeError:
             pass
 
@@ -426,10 +463,22 @@ class View:
         self.window = None
         self.button_list = []
         self.dialogue_box_list = []
+        self.textbox_time = 0.0
+        self.textbox_list = []
+        self.key = None
 
     def update(self, delta_time: float):
         """To be overridden"""
-        pass
+        try:
+            self.textbox_time += delta_time
+            seconds = self.textbox_time % 60
+            if seconds >= 0.115:
+                if self.textbox_list:
+                    for textbox in self.textbox_list:
+                            textbox.update(delta_time, self.key)
+                    self.textbox_time = 0.0
+        except AttributeError:
+            pass
 
     def on_update(self, delta_time: float):
         """To be overridden"""
@@ -457,7 +506,12 @@ class View:
                         dialogue_box.on_draw()
         except AttributeError:
             pass
-
+        try:
+            if self.textbox_list:
+                for textbox in self.textbox_list:
+                        textbox.draw()
+        except AttributeError:
+            pass
     def on_show(self):
         """Called when this view is shown"""
         pass
@@ -498,6 +552,13 @@ class View:
         except AttributeError:
             pass
 
+        try:
+            if self.textbox_list:
+                for textbox in self.textbox_list:
+                    textbox.check_mouse_press(x, y)
+        except AttributeError:
+            pass
+
     def on_mouse_drag(self, x: float, y: float, dx: float, dy: float, buttons: int, modifiers: int):
         """
         Override this function to add mouse button functionality.
@@ -534,6 +595,12 @@ class View:
                         dialogue_box.on_mouse_release(x, y, button, modifiers)
         except AttributeError:
             pass
+        try:
+            if self.textbox_list:
+                for textbox in self.textbox_list:
+                    textbox.check_mouse_release(x, y)
+        except AttributeError:
+            pass
 
     def on_mouse_scroll(self, x: int, y: int, scroll_x: int, scroll_y: int):
         """
@@ -545,3 +612,27 @@ class View:
         :param int scroll_y:
         """
         pass
+
+    def on_key_press(self, symbol: int, modifiers: int):
+        """
+        Override this function to add key press functionality.
+
+        :param int symbol: Key that was hit
+        :param int modifiers: If it was shift/ctrl/alt
+        """
+        try:
+            self.key = symbol
+        except AttributeError:
+            pass
+
+    def on_key_release(self, symbol: int, modifiers: int):
+        """
+        Override this function to add key release functionality.
+
+        :param int symbol: Key that was hit
+        :param int modifiers: If it was shift/ctrl/alt
+        """
+        try:
+            self.key = None
+        except AttributeError:
+            pass
