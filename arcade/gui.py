@@ -96,6 +96,23 @@ class TextButton:
             self.on_release()
 
 
+class SubmitButton(TextButton):
+    def __init__(self, textbox, on_submit, x, y, width=100, height=40, text="submit"):
+        super().__init__(x, y, width, height, text)
+        self.textbox = textbox
+        self.on_submit = on_submit
+
+    def on_press(self):
+        self.pressed = True
+
+    def on_release(self):
+        if self.pressed:
+            self.pressed = False
+            self.on_submit()
+            self.textbox.text_storage.text = ""
+            self.textbox.text_display.text = ""
+
+
 class DialogueBox:
     def __init__(self, x, y, width, height, color):
         self.x = x
@@ -306,14 +323,15 @@ class TextBox:
                 shadow_color=arcade.color.WHITE_SMOKE, highlight_color=arcade.color.WHITE):
         self.text_display = TextDisplay(x, y, width, height, outline_color, shadow_color, highlight_color)
         self.text_storage = TextStorage(width, font_size)
+        self.text = ""
 
     def draw(self):
         self.text_display.draw()
 
     def update(self, delta_time, key):
         if self.text_display.highlighted:
-            text, symbol, cursor_index = self.text_storage.update(delta_time, key)
-            self.text_display.update(delta_time, text, symbol, cursor_index)
+            self.text, symbol, cursor_index = self.text_storage.update(delta_time, key)
+            self.text_display.update(delta_time, self.text, symbol, cursor_index)
         
     def check_mouse_press(self, x, y):
         self.text_display.check_mouse_press(x, y)
