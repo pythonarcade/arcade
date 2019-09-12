@@ -13,23 +13,35 @@ class TextButton:
                  face_color=arcade.color.LIGHT_GRAY,
                  highlight_color=arcade.color.WHITE,
                  shadow_color=arcade.color.GRAY,
-                 button_height=2):
+                 button_height=2,
+                 theme=None):
         self.center_x = center_x
         self.center_y = center_y
         self.width = width
         self.height = height
         self.text = text
-        self.font_size = font_size
-        self.font_face = font_face
         self.pressed = False
-        self.face_color = face_color
-        self.highlight_color = highlight_color
-        self.shadow_color = shadow_color
-        self.button_height = button_height
         self.active = True
+        self.button_height = button_height
+        self.theme = theme
+        if self.theme:
+            self.normal_texture = self.theme.button_textures['normal']
+            self.hover_texture = self.theme.button_textures['hover']
+            self.clicked_texture = self.theme.button_textures['clicked']
+            self.locked_texture = self.theme.button_textures['locked']
+            self.font_size = self.theme.font_size
+            self.font_name = self.theme.font_name
+            self.font_color = self.theme.font_color
+        else:
+            self.font_size = font_size
+            self.font_face = font_face
+            self.face_color = face_color
+            self.highlight_color = highlight_color
+            self.shadow_color = shadow_color
+            self.font_name = font_face
+            self.font_color = face_color
 
-    def draw(self):
-        """ Draw the button """
+    def draw_color_theme(self):
         arcade.draw_rectangle_filled(self.center_x, self.center_y, self.width,
                                      self.height, self.face_color)
 
@@ -69,8 +81,22 @@ class TextButton:
             x -= self.button_height
             y += self.button_height
 
-        arcade.draw_text(self.text, x, y,
-                         arcade.color.BLACK, font_size=self.font_size,
+    def draw_texture_theme(self):
+        if self.pressed:
+            arcade.draw_texture_rectangle(self.center_x, self.center_y, self.width, self.height, self.clicked_texture)
+        else:
+            arcade.draw_texture_rectangle(self.center_x, self.center_y, self.width, self.height, self.normal_texture)
+
+    def draw(self):
+        """ Draw the button """
+        if self.theme:
+            self.draw_texture_theme()
+        else:
+            self.draw_color_theme()
+
+        arcade.draw_text(self.text, self.center_x, self.center_y,
+                         self.font_color, font_size=self.font_size,
+                         font_name=self.font_name,
                          width=self.width, align="center",
                          anchor_x="center", anchor_y="center")
     
@@ -97,8 +123,8 @@ class TextButton:
 
 
 class SubmitButton(TextButton):
-    def __init__(self, textbox, on_submit, x, y, width=100, height=40, text="submit"):
-        super().__init__(x, y, width, height, text)
+    def __init__(self, textbox, on_submit, x, y, width=100, height=40, text="submit", theme=None):
+        super().__init__(x, y, width, height, text, theme=theme)
         self.textbox = textbox
         self.on_submit = on_submit
 
@@ -114,7 +140,7 @@ class SubmitButton(TextButton):
 
 
 class DialogueBox:
-    def __init__(self, x, y, width, height, color):
+    def __init__(self, x, y, width, height, color=None, theme=None):
         self.x = x
         self.y = y
         self.width = width
@@ -123,11 +149,17 @@ class DialogueBox:
         self.active = False
         self.button_list = []
         self.text_list = []
+        self.theme = theme
+        if self.theme:
+            self.texture = self.theme.dialogue_box_texture
 
     def on_draw(self):
         try:
             if self.active:
-                arcade.draw_rectangle_filled(self.x, self.y, self.width, self.height, self.color)
+                if self.theme:
+                    arcade.draw_texture_rectangle(self.x, self.y, self.width, self.height, self.texture)
+                else:
+                    arcade.draw_rectangle_filled(self.x, self.y, self.width, self.height, self.color)
                 for button in self.button_list:
                     button.draw()
                 for text in self.text_list:
@@ -183,7 +215,7 @@ class Text:
 
 class TextDisplay:
     def __init__(self, x, y, width=300, height=40, outline_color=arcade.color.BLACK,
-                 shadow_color=arcade.color.WHITE_SMOKE, highlight_color=arcade.color.WHITE):
+                 shadow_color=arcade.color.WHITE_SMOKE, highlight_color=arcade.color.WHITE, theme=None):
         self.x = x
         self.y = y
         self.width = width
@@ -197,23 +229,44 @@ class TextDisplay:
         self.right_text = ""
         self.symbol = "|"
         self.cursor_index = 0
+        self.theme = theme
+        if self.theme:
+            self.texture = self.theme.text_box_texture
+            self.font_size = self.theme.font_size
+            self.font_color = self.theme.font_color
+            self.font_name = self.theme.font_name
+        else:
+            self.texture = None
+            self.font_size = 24
+            self.font_color = arcade.color.BLACK
+            self.font_name = ('Calibri', 'Arial')
 
     def draw_text(self):
         try:
             if self.highlighted:
-                arcade.draw_text(self.text[:self.cursor_index] + self.symbol + self.text[self.cursor_index:], self.x-self.width/2, self.y, arcade.color.BLACK, font_size=24, anchor_y="center")
+                arcade.draw_text(self.text[:self.cursor_index] + self.symbol + self.text[self.cursor_index:], self.x-self.width/2.1, self.y, self.font_color, font_size=self.font_size, anchor_y="center", font_name=self.font_name)
             else:
-                arcade.draw_text(self.text, self.x-self.width/2, self.y, arcade.color.BLACK, font_size=24, anchor_y="center")
+                arcade.draw_text(self.text, self.x-self.width/2.1, self.y, self.font_color, font_size=self.font_size, anchor_y="center", font_name=self.font_name)
         except:
             pass
 
-    def draw(self):
+    def color_theme_draw(self):
         if self.highlighted:
             arcade.draw_rectangle_filled(self.x, self.y, self.width, self.height, self.highlight_color)
         else:
             arcade.draw_rectangle_filled(self.x, self.y, self.width, self.height, self.shadow_color)
         self.draw_text()
         arcade.draw_rectangle_outline(self.x, self.y, self.width, self.height, self.outline_color, 2)
+
+    def texture_theme_draw(self):
+        arcade.draw_texture_rectangle(self.x, self.y, self.width, self.height, self.texture)
+        self.draw_text()
+
+    def draw(self):
+        if self.texture == "":
+            self.color_theme_draw()    
+        else:
+            self.texture_theme_draw()
 
     def on_press(self):
         self.highlighted = True
@@ -247,9 +300,12 @@ class TextDisplay:
 
 
 class TextStorage:
-    def __init__(self, box_width, font_size):
+    def __init__(self, box_width, font_size=24, theme=None):
         self.box_width = box_width
         self.font_size = font_size
+        self.theme = theme
+        if self.theme:
+            self.font_size = self.theme.font_size
         self.char_limit = self.box_width / self.font_size
         self.text = ""
         self.cursor_index = 1
@@ -271,7 +327,7 @@ class TextStorage:
 
     def update(self, delta_time, key):
         self.time += delta_time
-        self.blink_cursor()
+        # self.blink_cursor()
         if key:
             if key == arcade.key.BACKSPACE:
                 if self.cursor_index < len(self.text):
@@ -319,10 +375,15 @@ class TextStorage:
 
 
 class TextBox:
-    def __init__(self, x, y, width=300, height=40, outline_color=arcade.color.BLACK, font_size=24,
+    def __init__(self, x, y, width=300, height=40, theme=None, outline_color=arcade.color.BLACK, font_size=24,
                 shadow_color=arcade.color.WHITE_SMOKE, highlight_color=arcade.color.WHITE):
-        self.text_display = TextDisplay(x, y, width, height, outline_color, shadow_color, highlight_color)
-        self.text_storage = TextStorage(width, font_size)
+        self.theme = theme
+        if self.theme:
+            self.text_display = TextDisplay(x, y, width, height, theme=self.theme)
+            self.text_storage = TextStorage(width, theme=self.theme)
+        else:
+            self.text_display = TextDisplay(x, y, width, height, outline_color, shadow_color, highlight_color)
+            self.text_storage = TextStorage(width, font_size)
         self.text = ""
 
     def draw(self):
@@ -338,3 +399,38 @@ class TextBox:
 
     def check_mouse_release(self, x, y):
         self.text_display.check_mouse_release(x, y)
+
+
+class Theme:
+    def __init__(self):
+        self.button_textures = {'normal': '', 'hover': '', 'clicked': '', 'locked': '',}
+        self.menu_texture = ""
+        self.window_texture = ""
+        self.dialogue_box_texture = ""
+        self.text_box_texture = ""
+        self.font_color = arcade.color.BLACK
+        self.font_size = 24
+        self.font_name = ('Calibri', 'Arial')
+    
+    def add_button_textures(self, normal, hover="", clicked="", locked=""):
+        self.button_textures['normal'] = arcade.load_texture(normal)
+        self.button_textures['hover'] = arcade.load_texture(hover)
+        self.button_textures['clicked'] = arcade.load_texture(clicked)
+        self.button_textures['locked'] = arcade.load_texture(locked)
+
+    def add_window_texture(self, window_texture):
+        self.window_texture = arcade.load_texture(window_texture)
+
+    def add_menu_texture(self, menu_texture):
+        self.menu_texture = arcade.load_texture(menu_texture)
+
+    def add_dialogue_box_texture(self, dialogue_box_texture):
+        self.dialogue_box_texture = arcade.load_texture(dialogue_box_texture)
+
+    def add_text_box_texture(self, text_box_texture):
+        self.text_box_texture = arcade.load_texture(text_box_texture)
+
+    def set_font(self, font_size, font_color, font_name=('Calibri', 'Arial')):
+        self.font_color = font_color
+        self.font_size = font_size
+        self.font_name = font_name

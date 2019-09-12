@@ -1,15 +1,10 @@
 import arcade
-from arcade.gui import TextButton
-
-
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
-SCREEN_TITLE = "GUI Text Buton Example"
+from arcade.gui import *
 
 
 class PlayButton(TextButton):
-    def __init__(self, game, x=0, y=0, width=100, height=40, text="Play"):
-        super().__init__(x, y, width, height, text)
+    def __init__(self, game, x=0, y=0, width=100, height=40, text="Play", theme=None):
+        super().__init__(x, y, width, height, text, theme=theme)
         self.game = game
 
     def on_press(self):
@@ -22,8 +17,8 @@ class PlayButton(TextButton):
 
 
 class PauseButton(TextButton):
-    def __init__(self, game, x=0, y=0, width=100, height=40, text="Pause"):
-        super().__init__(x, y, width, height, text)
+    def __init__(self, game, x=0, y=0, width=100, height=40, text="Pause", theme=None):
+        super().__init__(x, y, width, height, text, theme=theme)
         self.game = game
 
     def on_press(self):
@@ -36,45 +31,52 @@ class PauseButton(TextButton):
 
 
 class MyGame(arcade.Window):
-    def __init__(self, width, height, title):
-        super().__init__(width, height, title)
-
+    def __init__(self):
+        super().__init__(800, 600, "GUI Text Buton Example")
         arcade.set_background_color(arcade.color.AMAZON)
-
         self.pause = False
         self.text = "Graphical User Interface"
         self.text_x = 0
         self.text_y = 300
         self.text_font_size = 40
         self.speed = 1
-        self.button_list = None
+        self.theme = None
+
+    def set_button_textures(self):
+        normal = "K:/Wamiq/Github/Arcade-Library/arcade/tests/unit2/gui_themes/Fantasy/Buttons/Normal.png"
+        hover = "K:/Wamiq/Github/Arcade-Library/arcade/tests/unit2/gui_themes/Fantasy/Buttons/Hover.png"
+        clicked = "K:/Wamiq/Github/Arcade-Library/arcade/tests/unit2/gui_themes/Fantasy/Buttons/Clicked.png"
+        locked = "K:/Wamiq/Github/Arcade-Library/arcade/tests/unit2/gui_themes/Fantasy/Buttons/Locked.png"
+        self.theme.add_button_textures(normal, hover, clicked, locked)
+
+    def setup_theme(self):
+        self.theme = Theme()
+        self.theme.set_font(24, arcade.color.WHITE)
+        self.set_button_textures()
+
+    def set_buttons(self):
+        self.button_list.append(PlayButton(self, 60, 570, 110, 50, theme=self.theme))
+        self.button_list.append(PauseButton(self, 60, 515, 110, 50, theme=self.theme))
 
     def setup(self):
-        self.button_list = []
-
-        play_button = PlayButton(self, 60, 570, 100, 40)
-        pause_button = PauseButton(self, 60, 515, 100, 40)
-
-        self.button_list.append(play_button)
-        self.button_list.append(pause_button)
+        self.setup_theme()
+        self.set_buttons()
 
     def on_draw(self):
         arcade.start_render()
-        arcade.draw_text(self.text, self.text_x, self.text_y,
-                         arcade.color.ALICE_BLUE, self.text_font_size)
-        for button in self.button_list:
-            button.draw()
+        super().on_draw()
+        arcade.draw_text(self.text, self.text_x, self.text_y, arcade.color.ALICE_BLUE, self.text_font_size)
 
     def update(self, delta_time):
         if self.pause:
             return
 
-        if self.text_x < 0 or self.text_x > SCREEN_WIDTH:
+        if self.text_x < 0 or self.text_x > self.width:
             self.speed = -self.speed
         self.text_x += self.speed
 
 def main():
-    game = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    game = MyGame()
     game.setup()
     arcade.run()
 
