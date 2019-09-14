@@ -77,8 +77,8 @@ def _is_clockwise(polygon):
     return s > 0
 
 
-def _is_convex(prev, point, next):
-    return _triangle_sum(prev.x, prev.y, point.x, point.y, next.x, next.y) < 0
+def _is_convex(prev, point, next_point):
+    return _triangle_sum(prev.x, prev.y, point.x, point.y, next_point.x, next_point.y) < 0
 
 
 def _is_ear(p1, p2, p3, polygon):
