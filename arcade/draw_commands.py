@@ -714,6 +714,7 @@ def draw_ellipse_outline(center_x: float, center_y: float, width: float,
          RGBA format.
     :param float border_width: Width of the circle outline in pixels.
     :param float tilt_angle: Angle in degrees to tilt the ellipse.
+    :param float num_segments: Number of line segments used to make the ellipse
     """
 
     if border_width == 1:
