@@ -15,6 +15,7 @@ SCREEN_TITLE = "GUI Text Buton Example"
 
 class TextButton:
     """ Text-based button """
+
     def __init__(self,
                  center_x, center_y,
                  width, height,
@@ -176,7 +177,6 @@ class MyGame(arcade.Window):
 
         quit_button = StopTextButton(60, 515, self.pause_program)
         self.button_list.append(quit_button)
-
 
     def on_draw(self):
         """

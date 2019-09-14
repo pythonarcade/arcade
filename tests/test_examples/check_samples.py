@@ -6,6 +6,7 @@ This program sees where there is not a match.
 
 import os
 
+
 def main():
     file_path = os.path.dirname(os.path.abspath(__file__))
     os.chdir(file_path)
@@ -26,17 +27,18 @@ def main():
             python_rst_filename_list.append(filename)
 
     for py_file in python_example_filename_list:
-        base_name = py_file[:len(py_file)-3]
+        base_name = py_file[:len(py_file) - 3]
         rst_name = base_name + ".rst"
         if rst_name not in python_rst_filename_list:
-            print("Missing "+rst_name)
+            print("Missing " + rst_name)
 
     print()
 
     for rst_file in python_rst_filename_list:
-        base_name = rst_file[:len(rst_file)-4]
+        base_name = rst_file[:len(rst_file) - 4]
         py_name = base_name + ".py"
         if py_name not in python_example_filename_list:
-            print("Missing "+py_name)
+            print("Missing " + py_name)
+
 
 main()

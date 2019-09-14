@@ -1,9 +1,9 @@
 import arcade
 import os
 
-
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
+
 
 class MyGame(arcade.Window):
     """ Main application class. """
@@ -23,7 +23,6 @@ class MyGame(arcade.Window):
         os.chdir(new_path)
 
         arcade.set_background_color(arcade.color.WHITE)
-
 
     def on_draw(self):
         """
@@ -157,6 +156,7 @@ class MyGame(arcade.Window):
         assert color == (255, 255, 255)
 
         image = arcade.get_image()
+
 
 def test_main():
     """ Main method """

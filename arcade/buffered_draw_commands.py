@@ -277,7 +277,6 @@ def create_lines_with_colors(point_list: PointList,
         return shape
 
 
-
 def create_polygon(point_list: PointList,
                    color: Color):
     """
@@ -443,8 +442,6 @@ def create_rectangle(center_x: float, center_y: float, width: float,
         # shape_mode = gl.GL_LINE_STRIP
         # data.append(data[0])
 
-
-
     shape = create_line_generic(data, color, shape_mode, border_width)
     return shape
 
@@ -460,6 +457,7 @@ def create_rectangle_filled_with_colors(point_list, color_list) -> Shape:
     new_point_list = [point_list[0], point_list[1], point_list[3], point_list[2]]
     new_color_list = [color_list[0], color_list[1], color_list[3], color_list[2]]
     return create_line_generic_with_colors(new_point_list, new_color_list, shape_mode)
+
 
 def create_rectangles_filled_with_colors(point_list, color_list) -> Shape:
     """
@@ -479,6 +477,7 @@ def create_rectangles_filled_with_colors(point_list, color_list) -> Shape:
         new_color_list += [color_list[1 + i], color_list[3 + i], color_list[2 + i]]
 
     return create_line_generic_with_colors(new_point_list, new_color_list, shape_mode)
+
 
 def create_triangles_filled_with_colors(point_list, color_list) -> Shape:
     """

@@ -11,6 +11,6 @@ setup(
         # Replace appname with the name of your complicated
         # Replace the value here with a list of files that contain
         #   your game's resources
-        'appname': ['/images/*',],
+        'appname': ['/images/*', ],
     },
 )

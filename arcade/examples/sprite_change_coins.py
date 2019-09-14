@@ -22,6 +22,7 @@ SCREEN_TITLE = "Sprite Change Coins"
 
 class Collectable(arcade.Sprite):
     """ This class represents something the player collects. """
+
     def __init__(self, filename, scale):
         super().__init__(filename, scale)
         # Flip this once the coin has been collected.
@@ -66,7 +67,6 @@ class MyGame(arcade.Window):
         self.player_list.append(self.player_sprite)
 
         for i in range(50):
-
             # Create the coin instance
             coin = Collectable("images/coin_01.png", SPRITE_SCALING)
             coin.width = 30
@@ -137,6 +137,7 @@ def main():
     window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     window.setup()
     arcade.run()
+
 
 if __name__ == "__main__":
     main()

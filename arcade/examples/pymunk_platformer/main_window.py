@@ -29,6 +29,7 @@ from arcade.examples.pymunk_platformer.physics_utility import (
 
 from constants import *
 
+
 class MyGame(arcade.Window):
     """ Main application class. """
 
@@ -126,7 +127,6 @@ class MyGame(arcade.Window):
         """ Handle mouse up events """
 
         if button == arcade.MOUSE_BUTTON_LEFT:
-
             # Release the item we are holding (if any)
             self.shape_being_dragged = None
 
@@ -134,7 +134,6 @@ class MyGame(arcade.Window):
         """ Handle mouse motion events """
 
         if self.shape_being_dragged is not None:
-
             # If we are holding an object, move it with the mouse
             self.last_mouse_position = (x + self.view_left, y + self.view_bottom)
             self.shape_being_dragged.shape.body.position = self.last_mouse_position
@@ -277,14 +276,14 @@ class MyGame(arcade.Window):
         elif symbol == arcade.key.UP:
             # find out if player is standing on ground
             grounding = check_grounding(self.player)
-            if grounding['body'] != None and abs(grounding['normal'].x / grounding['normal'].y) < self.player.shape.friction:
+            if grounding['body'] is not None and abs(
+                    grounding['normal'].x / grounding['normal'].y) < self.player.shape.friction:
                 # She is! Go ahead and jump
                 self.player.body.apply_impulse_at_local_point((0, PLAYER_JUMP_IMPULSE))
         elif symbol == arcade.key.SPACE:
             self.punch()
         elif symbol == arcade.key.G:
             self.grab()
-
 
     def on_key_release(self, symbol: int, modifiers: int):
         """ Handle keyboard releases. """

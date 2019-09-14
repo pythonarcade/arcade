@@ -28,6 +28,7 @@ SCREEN_TITLE = "Sprite Follow Player Simple Example 2"
 
 SPRITE_SPEED = 0.5
 
+
 class Coin(arcade.Sprite):
     """
     This class represents the coins on our screen. It is a child class of
@@ -68,6 +69,7 @@ class Coin(arcade.Sprite):
             # and change_y. Velocity is how fast the bullet travels.
             self.change_x = math.cos(angle) * COIN_SPEED
             self.change_y = math.sin(angle) * COIN_SPEED
+
 
 class MyGame(arcade.Window):
     """ Our custom Window Class"""
@@ -116,7 +118,6 @@ class MyGame(arcade.Window):
 
         # Create the coins
         for i in range(COIN_COUNT):
-
             # Create the coin instance
             # Coin image from kenney.nl
             coin = Coin("images/coin_01.png", SPRITE_SCALING_COIN)
@@ -165,6 +166,7 @@ def main():
     window = MyGame()
     window.setup()
     arcade.run()
+
 
 if __name__ == "__main__":
     main()

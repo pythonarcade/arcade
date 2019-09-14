@@ -1,9 +1,9 @@
 import arcade
 import os
 
-
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
+
 
 class MyGame(arcade.Window):
     """ Main application class. """
@@ -23,7 +23,6 @@ class MyGame(arcade.Window):
         os.chdir(new_path)
 
         arcade.set_background_color(arcade.color.WHITE)
-
 
     def on_draw(self):
         """
@@ -64,7 +63,6 @@ class MyGame(arcade.Window):
         arcade.draw_rectangle_outline(x, y, width, 50, arcade.color.BLACK, 2)
         arcade.draw_ellipse_filled(x, y, width, 50, arcade.color.AFRICAN_VIOLET, 2)
         arcade.draw_line(x - half_width, y, x + half_width, y, arcade.color.RED, 2)
-
 
 
 def test_main():

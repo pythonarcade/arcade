@@ -19,7 +19,7 @@ def list_functions(filename, output_file):
 
     """
     file_pointer = open(filename)
-    file_split = filename.replace("/",".")
+    file_split = filename.replace("/", ".")
     file_split = file_split.split(".")
 
     file_text = file_pointer.read()
@@ -54,7 +54,7 @@ def list_classes(filename, output_file):
 
     """
     file_pointer = open(filename)
-    file_split = filename.replace("/",".")
+    file_split = filename.replace("/", ".")
     file_split = file_split.split(".")
 
     class_re = re.compile("^class ([A-Za-z]+[^\(:]*)")
@@ -89,6 +89,7 @@ def list_classes(filename, output_file):
             output_file.write("\n")
     except Exception as e:
         print(f"Exception processing {filename} on line {line_no}: {e}")
+
 
 def main():
     # Set the working directory (where we expect to find files) to the same

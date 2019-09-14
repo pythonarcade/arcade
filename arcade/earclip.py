@@ -7,6 +7,7 @@ from collections import namedtuple
 
 Point = namedtuple('Point', ['x', 'y'])
 
+
 def earclip(polygon):
     """
     Simple earclipping algorithm for a given polygon p.
@@ -82,8 +83,8 @@ def _is_convex(prev, point, next):
 
 def _is_ear(p1, p2, p3, polygon):
     ear = _contains_no_points(p1, p2, p3, polygon) and \
-            _is_convex(p1, p2, p3) and \
-            _triangle_area(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y) > 0
+          _is_convex(p1, p2, p3) and \
+          _triangle_area(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y) > 0
     return ear
 
 

@@ -222,6 +222,10 @@ def _process_object_layer(map_object: pytiled_parser.objects.TileMap,
     sprite_list = SpriteList()
 
     for cur_object in layer.tiled_objects:
+        if cur_object.gid is None:
+            print("Warning: Currently only tiles (not objects) are supported in object layers.")
+            continue
+            
         tile = _get_tile_by_gid(map_object, cur_object.gid)
         my_sprite = _create_sprite_from_tile(map_object, tile, scaling=scaling,
                                              base_directory=base_directory)

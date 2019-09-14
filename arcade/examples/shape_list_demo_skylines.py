@@ -31,7 +31,7 @@ def make_star_field(star_count):
 
 
 def make_skyline(width, skyline_height, skyline_color,
-                 gap_chance = 0.70, window_chance=0.30, light_on_chance=0.5,
+                 gap_chance=0.70, window_chance=0.30, light_on_chance=0.5,
                  window_color=(255, 255, 200), window_margin=3, window_gap=2,
                  cap_chance=0.20):
     """ Make a skyline """
@@ -66,16 +66,16 @@ def make_skyline(width, skyline_height, skyline_color,
         y1 = skyline_height
         y2 = skyline_height + building_height
 
-        skyline_point_list.append( [x1, y1] )
+        skyline_point_list.append([x1, y1])
 
-        skyline_point_list.append( [x1, y2] )
+        skyline_point_list.append([x1, y2])
 
-        skyline_point_list.append( [x2, y2] )
+        skyline_point_list.append([x2, y2])
 
-        skyline_point_list.append( [x2, y1] )
+        skyline_point_list.append([x2, y1])
 
         for i in range(4):
-            color_list.append([skyline_color[0],  skyline_color[1], skyline_color[2]] )
+            color_list.append([skyline_color[0], skyline_color[1], skyline_color[2]])
 
         if random.random() < cap_chance:
             x1 = building_center_x - building_width / 2
@@ -111,13 +111,13 @@ def make_skyline(width, skyline_height, skyline_color,
                         y1 = building_base_y + row * window_height
                         y2 = building_base_y + row * window_height + window_height * .8
 
-                        skyline_point_list.append( [x1, y1] )
-                        skyline_point_list.append( [x1, y2] )
-                        skyline_point_list.append( [x2, y2] )
-                        skyline_point_list.append( [x2, y1] )
+                        skyline_point_list.append([x1, y1])
+                        skyline_point_list.append([x1, y2])
+                        skyline_point_list.append([x2, y2])
+                        skyline_point_list.append([x2, y1])
 
                         for i in range(4):
-                            color_list.append( (window_color[0], window_color[1], window_color[2]) )
+                            color_list.append((window_color[0], window_color[1], window_color[2]))
 
         building_center_x += (building_width / 2)
 

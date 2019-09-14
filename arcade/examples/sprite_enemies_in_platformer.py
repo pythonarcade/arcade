@@ -75,7 +75,7 @@ class MyGame(arcade.Window):
             self.wall_list.append(wall)
 
         # Draw the platform
-        for x in range(SPRITE_SIZE * 3, SPRITE_SIZE* 8, SPRITE_SIZE):
+        for x in range(SPRITE_SIZE * 3, SPRITE_SIZE * 8, SPRITE_SIZE):
             wall = arcade.Sprite("images/grassMid.png", SPRITE_SCALING)
 
             wall.bottom = SPRITE_SIZE * 3
@@ -140,7 +140,6 @@ class MyGame(arcade.Window):
         self.wall_list.draw()
         self.enemy_list.draw()
 
-
     def on_key_press(self, key, modifiers):
         """
         Called whenever the mouse moves.
@@ -186,7 +185,6 @@ class MyGame(arcade.Window):
             # See if the player hit a worm. If so, game over.
             if len(arcade.check_for_collision_with_list(self.player_sprite, self.enemy_list)) > 0:
                 self.game_over = True
-
 
 
 def main():

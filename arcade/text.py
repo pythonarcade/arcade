@@ -11,6 +11,7 @@ from arcade.draw_commands import Texture
 
 class Text:
     """ Class used for managing text. """
+
     def __init__(self):
         self.size = (0, 0)
         self.text_sprite_list = None
@@ -18,6 +19,7 @@ class Text:
 
 class CreateText:
     """ Class used for managing text """
+
     def __init__(self,
                  text: str,
                  color: Color,
@@ -30,7 +32,6 @@ class CreateText:
                  anchor_x="left",
                  anchor_y="baseline",
                  rotation=0):
-
         self.text = text
         self.color = color
         self.font_size = font_size
@@ -49,12 +50,12 @@ def create_text(text: str,
                 font_size: float = 12,
                 width: int = 0,
                 align="left",
-                font_name = ('Calibri', 'Arial'),
+                font_name=('Calibri', 'Arial'),
                 bold: bool = False,
                 italic: bool = False,
                 anchor_x: str = "left",
                 anchor_y: str = "baseline",
-                rotation = 0):
+                rotation=0):
     """ Deprecated. Two step text drawing for backwards compatibility. """
 
     import warnings

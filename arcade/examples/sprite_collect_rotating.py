@@ -26,7 +26,6 @@ SCREEN_TITLE = "Sprite Collect Rotating Coins Example"
 class Coin(arcade.Sprite):
 
     def update(self):
-
         # Rotate the coin.
         # The arcade.Sprite class has an "angle" attribute that controls
         # the sprite rotation. Change this, and the sprite rotates.
@@ -80,7 +79,6 @@ class MyGame(arcade.Window):
 
         # Create the coins
         for i in range(COIN_COUNT):
-
             # Create the coin instance
             # Coin image from kenney.nl
             coin = arcade.Sprite("images/coin_01.png", SPRITE_SCALING_COIN)
@@ -134,6 +132,7 @@ def main():
     window = MyGame()
     window.setup()
     arcade.run()
+
 
 if __name__ == "__main__":
     main()

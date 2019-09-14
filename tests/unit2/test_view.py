@@ -4,6 +4,7 @@ import arcade
 
 class FakeWindow(arcade.Window):
     """A test double Window that is never displayed"""
+
     def __init__(self):
         super().__init__()
         # Track the behavior of Views:
@@ -20,7 +21,7 @@ class FakeWindow(arcade.Window):
         """
         for i in range(frames):
             self.switch_to()
-            self.update(1/60)
+            self.update(1 / 60)
             self.dispatch_event('on_draw')
             self.dispatch_events()
             self.flip()
@@ -29,7 +30,7 @@ class FakeWindow(arcade.Window):
 class BaseView(arcade.View):
     def update(self, delta_time):
         self.window.update_calls.append(self.__class__.__name__)
-        self.window.dispatch_event("on_mouse_motion", 42, 43, 1, 1) ##### change
+        self.window.dispatch_event("on_mouse_motion", 42, 43, 1, 1)  ##### change
 
     def on_draw(self):
         self.window.draw_calls.append(self.__class__.__name__)

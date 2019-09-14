@@ -231,7 +231,6 @@ class MyGame(arcade.Window):
 
         self.draw_time = timeit.default_timer() - draw_start_time
 
-
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
 

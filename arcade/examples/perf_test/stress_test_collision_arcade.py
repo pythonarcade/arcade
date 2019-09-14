@@ -114,7 +114,6 @@ class MyGame(arcade.Window):
         self.player.change_y = 5
         self.player_list.append(self.player)
 
-
     def on_draw(self):
         """ Draw everything """
 
@@ -195,7 +194,8 @@ class MyGame(arcade.Window):
                         return
 
                     # Take timings
-                    print(f"{total_program_time}, {len(self.coin_list)}, {self.fps.get_fps():.1f}, {self.processing_time:.4f}, {self.draw_time:.4f}")
+                    print(
+                        f"{total_program_time}, {len(self.coin_list)}, {self.fps.get_fps():.1f}, {self.processing_time:.4f}, {self.draw_time:.4f}")
                     self.sprite_count_list.append(len(self.coin_list))
                     self.fps_list.append(round(self.fps.get_fps(), 1))
                     self.processing_time_list.append(self.processing_time)

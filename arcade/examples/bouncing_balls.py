@@ -16,6 +16,7 @@ SCREEN_WIDTH = 600
 SCREEN_HEIGHT = 600
 SCREEN_TITLE = "Bouncing Balls Example"
 
+
 class Ball:
     """
     Class to keep track of a ball's location and vector.

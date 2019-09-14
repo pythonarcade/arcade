@@ -21,6 +21,7 @@ SQUARE_WIDTH = 5
 SQUARE_HEIGHT = 5
 SQUARE_SPACING = 10
 
+
 class MyGame(arcade.Window):
     """ Main application class. """
 
@@ -52,7 +53,6 @@ class MyGame(arcade.Window):
         arcade.draw_text(output, 20, SCREEN_HEIGHT - 40, arcade.color.WHITE, 18)
 
         self.draw_time = timeit.default_timer() - draw_start_time
-
 
 
 def main():

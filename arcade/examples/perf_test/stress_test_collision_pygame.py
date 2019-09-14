@@ -67,7 +67,8 @@ class Coin(pygame.sprite.Sprite):
         # This could also be an image loaded from the disk.
         image = pygame.image.load("../images/coin_01.png")
         rect = image.get_rect()
-        image = pygame.transform.scale(image, (int(rect.width * SPRITE_SCALING_COIN), int(rect.height * SPRITE_SCALING_COIN)))
+        image = pygame.transform.scale(image,
+                                       (int(rect.width * SPRITE_SCALING_COIN), int(rect.height * SPRITE_SCALING_COIN)))
         self.image = image.convert()
         self.image.set_colorkey(BLACK)
 
@@ -76,6 +77,7 @@ class Coin(pygame.sprite.Sprite):
         # Update the position of this object by setting the values
         # of rect.x and rect.y
         self.rect = self.image.get_rect()
+
 
 class Player(pygame.sprite.Sprite):
     """
@@ -93,7 +95,8 @@ class Player(pygame.sprite.Sprite):
         # This could also be an image loaded from the disk.
         image = pygame.image.load("../images/character.png")
         rect = image.get_rect()
-        image = pygame.transform.scale(image, (int(rect.width * SPRITE_SCALING_PLAYER), int(rect.height * SPRITE_SCALING_PLAYER)))
+        image = pygame.transform.scale(image, (
+            int(rect.width * SPRITE_SCALING_PLAYER), int(rect.height * SPRITE_SCALING_PLAYER)))
         self.image = image.convert()
         self.image.set_colorkey(WHITE)
 
@@ -107,6 +110,7 @@ class Player(pygame.sprite.Sprite):
         """ Called each frame. """
         self.rect.x += self.change_x
         self.rect.y += self.change_y
+
 
 class MyGame:
     """ Our custom Window Class"""
@@ -190,7 +194,7 @@ class MyGame:
         # Display timings
         output = f"Processing time: {self.processing_time:.3f}"
         text = self.font.render(output, True, BLACK)
-        self.screen.blit(text, [ 20, SCREEN_HEIGHT - 40])
+        self.screen.blit(text, [20, SCREEN_HEIGHT - 40])
 
         output = f"Drawing time: {self.draw_time:.3f}"
         text = self.font.render(output, True, BLACK)
@@ -201,12 +205,10 @@ class MyGame:
         text = self.font.render(output, True, BLACK)
         self.screen.blit(text, [20, SCREEN_HEIGHT - 80])
 
-
         pygame.display.flip()
 
         self.draw_time = timeit.default_timer() - draw_start_time
         self.fps.tick()
-
 
     def update(self, delta_time):
         # Start update timer
@@ -228,7 +230,6 @@ class MyGame:
         for coin in coin_hit_list:
             coin.rect.x = random.randrange(SCREEN_WIDTH)
             coin.rect.y = random.randrange(SCREEN_HEIGHT)
-
 
         # Save the time it took to do this.
         self.processing_time = timeit.default_timer() - start_time

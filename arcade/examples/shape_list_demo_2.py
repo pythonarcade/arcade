@@ -36,7 +36,6 @@ class MyGame(arcade.Window):
         self.draw_time = 0
         self.shape_list = None
 
-
     def setup(self):
         # --- Create the vertex buffers objects for each square before we do
         # any drawing.
@@ -45,7 +44,6 @@ class MyGame(arcade.Window):
             for y in range(0, SCREEN_HEIGHT, SQUARE_SPACING):
                 shape = arcade.create_rectangle_filled(x, y, SQUARE_WIDTH, SQUARE_HEIGHT, arcade.color.DARK_BLUE)
                 self.shape_list.append(shape)
-
 
     def on_draw(self):
         """
@@ -65,7 +63,6 @@ class MyGame(arcade.Window):
         arcade.draw_text(output, 20, SCREEN_HEIGHT - 40, arcade.color.WHITE, 18)
 
         self.draw_time = timeit.default_timer() - draw_start_time
-
 
 
 def main():

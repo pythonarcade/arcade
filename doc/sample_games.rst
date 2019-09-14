@@ -12,7 +12,7 @@ The Great Skeleton War
 
 .. raw:: html
 
-    <iframe width="560" height="315" src="https://www.youtube.com/embed/4yRxBYXP_Eo" frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen></iframe>
+	<iframe width="560" height="315" src="https://www.youtube.com/embed/4yRxBYXP_Eo" frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen></iframe>
 
 `The Great Skeleton War`_, an intense tower defense game, where there's always something new to discover.
 
@@ -22,7 +22,7 @@ Python Knife Hit
 ~~~~~~~~~~~~~~~~
 
 .. figure:: images/python_knife_hit.png
-    :width: 50%
+	:width: 50%
 
 https://github.com/akmalhakimi1991/python-knife-hit
 
@@ -30,32 +30,32 @@ Kayzee
 ~~~~~~
 
 .. figure:: images/kayzee.png
-    :width: 50%
+	:width: 50%
 
-    `Kayzee Game <https://github.com/wamiqurrehman093/Kayzee>`_
+	`Kayzee Game <https://github.com/wamiqurrehman093/Kayzee>`_
 
 lixingqiu Games
 ~~~~~~~~~~~~~~~
 
 .. figure:: images/eight_planet.gif
-    :width: 50%
+	:width: 50%
 
-    An `Eight planet simulation <https://github.com/lixingqiu/eight_planet>`_
+	An `Eight planet simulation <https://github.com/lixingqiu/eight_planet>`_
 
 .. figure:: images/midway.png
-    :width: 50%
+	:width: 50%
 
-    `Midway Island War <https://github.com/lixingqiu/python3_arcade_midway_island_war_simple_simulate>`_
+	`Midway Island War <https://github.com/lixingqiu/python3_arcade_midway_island_war_simple_simulate>`_
 
 .. figure:: images/angry_bird.gif
-    :width: 50%
+	:width: 50%
 
-    `Angry Bird <https://github.com/lixingqiu/python_arcade_simple_angry_bird>`_
+	`Angry Bird <https://github.com/lixingqiu/python_arcade_simple_angry_bird>`_
 
 .. figure:: images/octopus.gif
-    :width: 50%
+	:width: 50%
 
-    `Octopus <https://github.com/lixingqiu/Python-arcade-Octopus-animation-demo>`_
+	`Octopus <https://github.com/lixingqiu/Python-arcade-Octopus-animation-demo>`_
 
 Space Typer
 ~~~~~~~~~~~

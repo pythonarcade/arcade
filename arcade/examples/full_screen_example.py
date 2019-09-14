@@ -77,7 +77,6 @@ class MyGame(arcade.Window):
             height = 128
             arcade.draw_texture_rectangle(x, y, width, height, self.example_image)
 
-
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
         if key == arcade.key.F:

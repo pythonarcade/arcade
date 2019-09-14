@@ -22,6 +22,7 @@ class Snowflake:
     Each instance of this class represents a single snowflake.
     Based on drawing filled-circles.
     """
+
     def __init__(self):
         self.x = 0
         self.y = 0
@@ -108,6 +109,7 @@ def main():
     window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     window.start_snowfall()
     arcade.run()
+
 
 if __name__ == "__main__":
     main()

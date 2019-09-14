@@ -2,7 +2,7 @@
 Functions and classes for managing a map created in the "Tiled Map Editor"
 """
 
-import xml.etree.ElementTree as etree
+import xml.etree.ElementTree as ElementTree
 import base64
 import zlib
 import gzip
@@ -138,7 +138,7 @@ def read_tiled_map(tmx_file: str, scaling: float = 1, tsx_file: str = None) -> T
     my_map = TiledMap()
 
     # Read in and parse the file
-    tree = etree.parse(tmx_file)
+    tree = ElementTree.parse(tmx_file)
 
     # Root node should be 'map'
     map_tag = tree.getroot()
@@ -176,14 +176,14 @@ def read_tiled_map(tmx_file: str, scaling: float = 1, tsx_file: str = None) -> T
         firstgid = int(tileset_tag.attrib["firstgid"])
         if tsx_file is not None or "source" in tileset_tag.attrib:
             if tsx_file is not None:
-                tileset_tree = etree.parse(tsx_file)
+                tileset_tree = ElementTree.parse(tsx_file)
             else:
                 source = tileset_tag.attrib["source"]
                 try:
-                    tileset_tree = etree.parse(source)
+                    tileset_tree = ElementTree.parse(source)
                 except FileNotFoundError:
                     source = Path(tmx_file).parent / Path(source)
-                    tileset_tree = etree.parse(source)
+                    tileset_tree = ElementTree.parse(source)
             # Root node should be 'map'
             tileset_root = tileset_tree.getroot()
             tile_tag_list = tileset_root.findall("tile")

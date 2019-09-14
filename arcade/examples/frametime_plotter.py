@@ -6,6 +6,7 @@ import time
 import matplotlib.pyplot as plt
 import statistics
 
+
 class FrametimePlotter:
     EVENT_POINT_Y = -0.05
     EVENT_MSG_Y = -0.045
@@ -16,7 +17,7 @@ class FrametimePlotter:
         self.start = time.perf_counter()
 
     def add_event(self, event_msg):
-        self.events.append( (len(self.times), event_msg))
+        self.events.append((len(self.times), event_msg))
 
     def end_frame(self, time_delta):
         self.times.append(time_delta)
@@ -49,8 +50,9 @@ class FrametimePlotter:
         plt.plot(frame_idxs, self.times, event_idxs, event_point_y, "k|")
         plt.xlabel("frames")
         plt.ylabel("frame duration")
-        plt.ylim(self.EVENT_POINT_Y-0.005, 0.5)
+        plt.ylim(self.EVENT_POINT_Y - 0.005, 0.5)
         plt.tight_layout()
         for frame_idx, msg in self.events:
-            plt.text(frame_idx, self.EVENT_MSG_Y, msg, horizontalalignment="center", verticalalignment="bottom", size="smaller", rotation="vertical")
+            plt.text(frame_idx, self.EVENT_MSG_Y, msg, horizontalalignment="center", verticalalignment="bottom",
+                     size="smaller", rotation="vertical")
         plt.show()

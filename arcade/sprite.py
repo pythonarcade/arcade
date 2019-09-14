@@ -5,7 +5,6 @@ For information on Spatial Hash Maps, see:
 https://www.gamedev.net/articles/programming/general-and-gameplay-programming/spatial-hashing-r2697/
 """
 
-
 import math
 import dataclasses
 
@@ -759,11 +758,11 @@ class AnimatedTimeBasedSprite(Sprite):
     """
 
     def __init__(self,
-                 filename: str=None,
-                 scale: float=1,
-                 image_x: float=0, image_y: float=0,
-                 image_width: float=0, image_height: float=0,
-                 center_x: float=0, center_y: float=0,
+                 filename: str = None,
+                 scale: float = 1,
+                 image_x: float = 0, image_y: float = 0,
+                 image_width: float = 0, image_height: float = 0,
+                 center_x: float = 0, center_y: float = 0,
                  repeat_count_x=1, repeat_count_y=1):
 
         super().__init__(filename=filename, scale=scale, image_x=image_x, image_y=image_y,
@@ -792,6 +791,7 @@ class AnimatedWalkingSprite(Sprite):
     """
     Sprite for platformer games that supports animations.
     """
+
     def __init__(self, scale: float = 1,
                  image_x: float = 0, image_y: float = 0,
                  center_x: float = 0, center_y: float = 0):

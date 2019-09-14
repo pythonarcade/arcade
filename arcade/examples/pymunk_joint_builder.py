@@ -117,7 +117,7 @@ class MyApplication(arcade.Window):
                 color = arcade.color.DARK_GREEN
             arcade.draw_line(joint.a.position.x, joint.a.position.y, joint.b.position.x, joint.b.position.y, color, 3)
 
-#arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
+        # arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
         # Display timings
         output = f"Processing time: {self.processing_time:.3f}"
         arcade.draw_text(output, 20, SCREEN_HEIGHT - 20, arcade.color.WHITE)
@@ -278,7 +278,6 @@ class MyApplication(arcade.Window):
             self.space.gravity = (0.0, -900.0)
             self.physics = "Normal"
 
-
     def update(self, delta_time):
         start_time = timeit.default_timer()
 
@@ -307,6 +306,7 @@ class MyApplication(arcade.Window):
 
         # Save the time it took to do this.
         self.processing_time = timeit.default_timer() - start_time
+
 
 window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 

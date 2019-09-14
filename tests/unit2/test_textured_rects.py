@@ -6,6 +6,7 @@ SCREEN_HEIGHT = 600
 LINE_HEIGHT = 20
 CHARACTER_SCALING = 0.5
 
+
 class MyTestWindow(arcade.Window):
 
     def __init__(self, width, height, title):
@@ -34,8 +35,6 @@ class MyTestWindow(arcade.Window):
                                           scale * self.texture.width,
                                           scale * self.texture.height,
                                           self.texture, angle=45, alpha=i * 15)
-
-
 
 
 def test_sprite():

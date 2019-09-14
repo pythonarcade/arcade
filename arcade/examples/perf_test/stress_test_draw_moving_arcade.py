@@ -116,7 +116,6 @@ class MyGame(arcade.Window):
         # Sprite lists
         self.coin_list = arcade.SpriteList(use_spatial_hash=False)
 
-
     def on_draw(self):
         """ Draw everything """
 

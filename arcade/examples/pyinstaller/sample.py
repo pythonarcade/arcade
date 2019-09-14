@@ -8,12 +8,14 @@ SCREEN_HEIGHT = 500
 TITLE = 'Arcade cx_Freeze Sample'
 BACKGROUND_COLOR = arcade.color.WHITE
 
+
 def resource_path(file):
     path = 'resources/' + file
     # are we in a frozen environment (e.g. pyInstaller)?
     if getattr(sys, 'frozen', False):
         path = sys._MEIPASS.replace('\\', '/') + '/' + path
     return path
+
 
 def main():
     arcade.open_window(SCREEN_WIDTH, SCREEN_HEIGHT, TITLE)
@@ -29,5 +31,6 @@ def main():
     arcade.finish_render()
     arcade.run()
     return
+
 
 main()

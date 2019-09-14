@@ -30,6 +30,7 @@ TOP_VIEWPORT_MARGIN = 100
 PLAYER_START_X = 64
 PLAYER_START_Y = 225
 
+
 class MyGame(arcade.Window):
     """
     Main application class.

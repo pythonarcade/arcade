@@ -18,8 +18,7 @@ def make_burst_emitter(
         particle_lifetime_min: float,
         particle_lifetime_max: float,
         particle_scale: float = 1.0,
-        fade_particles: bool = True
-    ):
+        fade_particles: bool = True):
     """Returns an emitter that emits all of its particles at once"""
     particle_factory = arcade.LifetimeParticle
     if fade_particles:
@@ -44,8 +43,7 @@ def make_interval_emitter(
         particle_lifetime_min: float,
         particle_lifetime_max: float,
         particle_scale: float = 1.0,
-        fade_particles: bool = True
-    ):
+        fade_particles: bool = True):
     """Returns an emitter that emits its particles at a constant rate for a given amount of time"""
     particle_factory = arcade.LifetimeParticle
     if fade_particles:

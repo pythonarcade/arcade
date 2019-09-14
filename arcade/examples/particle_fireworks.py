@@ -48,7 +48,7 @@ STAR_TEXTURES = [
     arcade.make_soft_circle_texture(6, arcade.color.WHITE),
     arcade.make_soft_circle_texture(6, arcade.color.PASTEL_YELLOW),
 ]
-SPINNER_HEIGHT=75
+SPINNER_HEIGHT = 75
 
 
 def make_spinner():
@@ -63,6 +63,7 @@ def make_spinner():
     )
     spinner.change_angle = 16.28
     return spinner
+
 
 def make_rocket(emit_done_cb):
     """Emitter that displays the smoke trail as the firework shell climbs into the sky"""
@@ -84,6 +85,7 @@ def make_rocket(emit_done_cb):
     rocket.change_y = random.uniform(5.0, 7.25)
     return rocket
 
+
 def make_flash(prev_emitter):
     """Return emitter that displays the brief flash when a firework shell explodes"""
     return arcade.Emitter(
@@ -95,6 +97,7 @@ def make_flash(prev_emitter):
             lifetime=0.15
         )
     )
+
 
 def make_puff(prev_emitter):
     """Return emitter that generates the subtle smoke cloud left after a firework shell explodes"""
@@ -111,22 +114,24 @@ def make_puff(prev_emitter):
 
 class AnimatedAlphaParticle(arcade.LifetimeParticle):
     """A custom particle that animates between three different alpha levels"""
+
     def __init__(
-        self,
-        filename_or_texture: arcade.FilenameOrTexture,
-        change_xy: Vector,
-        start_alpha: int = 0,
-        duration1: float = 1.0,
-        mid_alpha: int = 255,
-        duration2: float = 1.0,
-        end_alpha: int = 0,
-        center_xy: Point = (0.0, 0.0),
-        angle: float = 0,
-        change_angle: float = 0,
-        scale: float = 1.0,
-        mutation_callback=None,
+            self,
+            filename_or_texture: arcade.FilenameOrTexture,
+            change_xy: Vector,
+            start_alpha: int = 0,
+            duration1: float = 1.0,
+            mid_alpha: int = 255,
+            duration2: float = 1.0,
+            end_alpha: int = 0,
+            center_xy: Point = (0.0, 0.0),
+            angle: float = 0,
+            change_angle: float = 0,
+            scale: float = 1.0,
+            mutation_callback=None,
     ):
-        super().__init__(filename_or_texture, change_xy, duration1 + duration2, center_xy, angle, change_angle, scale, start_alpha, mutation_callback)
+        super().__init__(filename_or_texture, change_xy, duration1 + duration2, center_xy, angle, change_angle, scale,
+                         start_alpha, mutation_callback)
         self.start_alpha = start_alpha
         self.in_duration = duration1
         self.mid_alpha = mid_alpha
@@ -145,6 +150,7 @@ class AnimatedAlphaParticle(arcade.LifetimeParticle):
 
 class RocketEmitter(arcade.Emitter):
     """Custom emitter class to add gravity to the emitter to represent gravity on the firework shell"""
+
     def update(self):
         super().update()
         # gravity
@@ -326,7 +332,7 @@ class FireworksApp(arcade.Window):
             e.draw()
         arcade.draw_lrtb_rectangle_filled(0, SCREEN_WIDTH, 25, 0, arcade.color.DARK_GREEN)
         mid = SCREEN_WIDTH / 2
-        arcade.draw_lrtb_rectangle_filled(mid-2, mid+2, SPINNER_HEIGHT, 10, arcade.color.DARK_BROWN)
+        arcade.draw_lrtb_rectangle_filled(mid - 2, mid + 2, SPINNER_HEIGHT, 10, arcade.color.DARK_BROWN)
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.ESCAPE:
@@ -341,8 +347,9 @@ def firework_spark_mutator(emitter: arcade.Emitter):
     emitter.change_x *= 0.92
     emitter.change_y *= 0.92
 
+
 def rocket_smoke_mutator(emitter: arcade.Emitter):
-    emitter.scale = arcade.lerp(0.5, 3.0, emitter.lifetime_elapsed/emitter.lifetime_original)
+    emitter.scale = arcade.lerp(0.5, 3.0, emitter.lifetime_elapsed / emitter.lifetime_original)
     # A Sprite's scale doesn't affect generated textures (ex: make_soft_circle_texture) or scale being animated over time.
     # The fix below is copied from Sprite.update_animation().
     # Bug may have been recorded here: https://github.com/pvcraven/arcade/issues/331

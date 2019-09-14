@@ -18,7 +18,7 @@ TEXTURE = "images/pool_cue_ball.png"
 
 def make_emitter():
     return arcade.Emitter(
-        center_xy=(SCREEN_WIDTH/2, SCREEN_HEIGHT/2),
+        center_xy=(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2),
         emit_controller=arcade.EmitterIntervalWithTime(0.0004, 15.0),
         particle_factory=lambda emitter: arcade.LifetimeParticle(
             filename_or_texture=TEXTURE,
@@ -28,6 +28,7 @@ def make_emitter():
             alpha=128
         )
     )
+
 
 class MyGame(arcade.Window):
     def __init__(self):
@@ -53,6 +54,7 @@ class MyGame(arcade.Window):
     def on_draw(self):
         arcade.start_render()
         self.emitter.draw()
+
 
 if __name__ == "__main__":
     app = MyGame()

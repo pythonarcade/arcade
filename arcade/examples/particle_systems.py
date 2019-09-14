@@ -20,8 +20,8 @@ import math
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 SCREEN_TITLE = "Particle System Examples"
-QUIET_BETWEEN_SPAWNS = 0.25 # time between spawning another particle system
-EMITTER_TIMEOUT = 10*60
+QUIET_BETWEEN_SPAWNS = 0.25  # time between spawning another particle system
+EMITTER_TIMEOUT = 10 * 60
 CENTER_POS = (SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
 BURST_PARTICLE_COUNT = 500
 TEXTURE = "images/pool_cue_ball.png"
@@ -44,7 +44,7 @@ DEFAULT_EMIT_DURATION = 1.5
 def sine_wave(t, min_x, max_x, wavelength):
     spread = max_x - min_x
     mid = (max_x + min_x) / 2
-    return (spread / 2) * math.sin( 2 * math.pi * t / wavelength) + mid
+    return (spread / 2) * math.sin(2 * math.pi * t / wavelength) + mid
 
 
 ##### Example emitters
@@ -63,6 +63,7 @@ def emitter_0():
     )
     return emitter_0.__doc__, e
 
+
 def emitter_1():
     """Burst, emit from center, particle lifetime 1.0 seconds"""
     e = arcade.Emitter(
@@ -78,6 +79,7 @@ def emitter_1():
     )
     return emitter_1.__doc__, e
 
+
 def emitter_2():
     """Burst, emit from center, particle lifetime random in range"""
     e = arcade.Emitter(
@@ -85,13 +87,14 @@ def emitter_2():
         emit_controller=arcade.EmitBurst(BURST_PARTICLE_COUNT),
         particle_factory=lambda emitter: arcade.LifetimeParticle(
             filename_or_texture=TEXTURE,
-            change_xy=arcade.rand_in_circle((0.0, 0.0),PARTICLE_SPEED_FAST),
+            change_xy=arcade.rand_in_circle((0.0, 0.0), PARTICLE_SPEED_FAST),
             lifetime=random.uniform(DEFAULT_PARTICLE_LIFETIME - 1.0, DEFAULT_PARTICLE_LIFETIME),
             scale=DEFAULT_SCALE,
             alpha=DEFAULT_ALPHA
         )
     )
     return emitter_2.__doc__, e
+
 
 def emitter_3():
     """Burst, emit in circle"""
@@ -109,6 +112,7 @@ def emitter_3():
     )
     return emitter_3.__doc__, e
 
+
 def emitter_4():
     """Burst, emit on circle"""
     e = arcade.Emitter(
@@ -125,10 +129,11 @@ def emitter_4():
     )
     return emitter_4.__doc__, e
 
+
 def emitter_5():
     """Burst, emit in rectangle"""
     width, height = 200, 100
-    centering_offset = (-width/2, -height/2)
+    centering_offset = (-width / 2, -height / 2)
     e = arcade.Emitter(
         center_xy=CENTER_POS,
         emit_controller=arcade.EmitBurst(BURST_PARTICLE_COUNT),
@@ -142,6 +147,7 @@ def emitter_5():
         )
     )
     return emitter_5.__doc__, e
+
 
 def emitter_6():
     """Burst, emit on line"""
@@ -159,6 +165,7 @@ def emitter_6():
     )
     return emitter_6.__doc__, e
 
+
 def emitter_7():
     """Burst, emit from center, velocity fixed speed around 360 degrees"""
     e = arcade.Emitter(
@@ -173,6 +180,7 @@ def emitter_7():
         )
     )
     return emitter_7.__doc__, e
+
 
 def emitter_8():
     """Burst, emit from center, velocity in rectangle"""
@@ -189,6 +197,7 @@ def emitter_8():
     )
     return emitter_8.__doc__, e
 
+
 def emitter_9():
     """Burst, emit from center, velocity in fixed angle and random speed"""
     e = arcade.Emitter(
@@ -203,6 +212,7 @@ def emitter_9():
         )
     )
     return emitter_9.__doc__, e
+
 
 def emitter_10():
     """Burst, emit from center, velocity from angle with spread"""
@@ -219,6 +229,7 @@ def emitter_10():
     )
     return emitter_10.__doc__, e
 
+
 def emitter_11():
     """Burst, emit from center, velocity along a line"""
     e = arcade.Emitter(
@@ -234,6 +245,7 @@ def emitter_11():
     )
     return emitter_11.__doc__, e
 
+
 def emitter_12():
     """Infinite emitting w/ eternal particle"""
     e = arcade.Emitter(
@@ -247,6 +259,7 @@ def emitter_12():
         )
     )
     return emitter_12.__doc__, e
+
 
 def emitter_13():
     """Interval, emit particle every 0.01 seconds for one second"""
@@ -263,6 +276,7 @@ def emitter_13():
     )
     return emitter_13.__doc__, e
 
+
 def emitter_14():
     """Interval, emit from center, particle lifetime 1.0 seconds"""
     e = arcade.Emitter(
@@ -278,6 +292,7 @@ def emitter_14():
     )
     return emitter_14.__doc__, e
 
+
 def emitter_15():
     """Interval, emit from center, particle lifetime random in range"""
     e = arcade.Emitter(
@@ -286,12 +301,13 @@ def emitter_15():
         particle_factory=lambda emitter: arcade.LifetimeParticle(
             filename_or_texture=TEXTURE,
             change_xy=arcade.rand_in_circle((0.0, 0.0), PARTICLE_SPEED_FAST),
-            lifetime=random.uniform( DEFAULT_PARTICLE_LIFETIME - 1.0, DEFAULT_PARTICLE_LIFETIME),
+            lifetime=random.uniform(DEFAULT_PARTICLE_LIFETIME - 1.0, DEFAULT_PARTICLE_LIFETIME),
             scale=DEFAULT_SCALE,
             alpha=DEFAULT_ALPHA
         )
     )
     return emitter_15.__doc__, e
+
 
 def emitter_16():
     """Interval, emit in circle"""
@@ -309,6 +325,7 @@ def emitter_16():
     )
     return emitter_16.__doc__, e
 
+
 def emitter_17():
     """Interval, emit on circle"""
     e = arcade.Emitter(
@@ -325,10 +342,11 @@ def emitter_17():
     )
     return emitter_17.__doc__, e
 
+
 def emitter_18():
     """Interval, emit in rectangle"""
     width, height = 200, 100
-    centering_offset = (-width/2, -height/2)
+    centering_offset = (-width / 2, -height / 2)
     e = arcade.Emitter(
         center_xy=CENTER_POS,
         emit_controller=arcade.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL, DEFAULT_EMIT_DURATION),
@@ -342,7 +360,6 @@ def emitter_18():
         )
     )
     return emitter_18.__doc__, e
-
 
 
 #### left off formatting here.
@@ -363,6 +380,7 @@ def emitter_19():
     )
     return emitter_19.__doc__, e
 
+
 def emitter_20():
     """Interval, emit from center, velocity fixed speed around 360 degrees"""
     e = arcade.Emitter(
@@ -377,6 +395,7 @@ def emitter_20():
         )
     )
     return emitter_20.__doc__, e
+
 
 def emitter_21():
     """Interval, emit from center, velocity in rectangle"""
@@ -393,6 +412,7 @@ def emitter_21():
     )
     return emitter_21.__doc__, e
 
+
 def emitter_22():
     """Interval, emit from center, velocity in fixed angle and speed"""
     e = arcade.Emitter(
@@ -407,6 +427,7 @@ def emitter_22():
         )
     )
     return emitter_22.__doc__, e
+
 
 def emitter_23():
     """Interval, emit from center, velocity in fixed angle and random speed"""
@@ -423,6 +444,7 @@ def emitter_23():
     )
     return emitter_23.__doc__, e
 
+
 def emitter_24():
     """Interval, emit from center, velocity from angle with spread"""
     e = arcade.Emitter(
@@ -437,6 +459,7 @@ def emitter_24():
         )
     )
     return emitter_24.__doc__, e
+
 
 def emitter_25():
     """Interval, emit from center, velocity along a line"""
@@ -453,6 +476,7 @@ def emitter_25():
     )
     return emitter_25.__doc__, e
 
+
 def emitter_26():
     """Interval, emit particles every 0.4 seconds and stop after emitting 5"""
     e = arcade.Emitter(
@@ -468,6 +492,7 @@ def emitter_26():
     )
     return emitter_26.__doc__, e
 
+
 def emitter_27():
     """Maintain a steady count of particles"""
     e = arcade.Emitter(
@@ -480,6 +505,7 @@ def emitter_27():
         )
     )
     return emitter_27.__doc__, e
+
 
 def emitter_28():
     """random particle textures"""
@@ -494,6 +520,7 @@ def emitter_28():
         )
     )
     return emitter_28.__doc__, e
+
 
 def emitter_29():
     """random particle scale"""
@@ -510,6 +537,7 @@ def emitter_29():
     )
     return emitter_29.__doc__, e
 
+
 def emitter_30():
     """random particle alpha"""
     e = arcade.Emitter(
@@ -524,6 +552,7 @@ def emitter_30():
         )
     )
     return emitter_30.__doc__, e
+
 
 def emitter_31():
     """Constant particle angle"""
@@ -540,6 +569,7 @@ def emitter_31():
     )
     return emitter_31.__doc__, e
 
+
 def emitter_32():
     """animate particle angle"""
     e = arcade.Emitter(
@@ -555,6 +585,7 @@ def emitter_32():
     )
     return emitter_32.__doc__, e
 
+
 def emitter_33():
     """Particles that fade over time"""
     e = arcade.Emitter(
@@ -568,6 +599,7 @@ def emitter_33():
         )
     )
     return emitter_33.__doc__, e
+
 
 def emitter_34():
     """Dynamically generated textures, burst emitting, fading particles"""
@@ -583,6 +615,7 @@ def emitter_34():
         )
     )
     return emitter_34.__doc__, e
+
 
 def emitter_35():
     """Use most features"""
@@ -602,8 +635,10 @@ def emitter_35():
     )
     return emitter_35.__doc__, e
 
+
 def emitter_36():
     """Moving emitter. Particles spawn relative to emitter."""
+
     class MovingEmitter(arcade.Emitter):
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
@@ -627,6 +662,7 @@ def emitter_36():
     )
     return emitter_36.__doc__, e
 
+
 def emitter_37():
     """Rotating emitter. Particles initial velocity is relative to emitter's angle."""
     e = arcade.Emitter(
@@ -642,6 +678,7 @@ def emitter_37():
     e.change_angle = 10.0
     return emitter_37.__doc__, e
 
+
 def emitter_38():
     """Use simple emitter interface to create a burst emitter"""
     e = arcade.make_burst_emitter(
@@ -655,6 +692,7 @@ def emitter_38():
         fade_particles=True
     )
     return emitter_38.__doc__, e
+
 
 def emitter_39():
     """Use simple emitter interface to create an interval emitter"""

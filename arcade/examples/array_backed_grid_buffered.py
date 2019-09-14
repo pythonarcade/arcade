@@ -26,6 +26,7 @@ SCREEN_WIDTH = (WIDTH + MARGIN) * COLUMN_COUNT + MARGIN
 SCREEN_HEIGHT = (HEIGHT + MARGIN) * ROW_COUNT + MARGIN
 SCREEN_TITLE = "Array Backed Grid Buffered Example"
 
+
 class MyGame(arcade.Window):
     """
     Main application class.

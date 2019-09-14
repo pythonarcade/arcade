@@ -7,6 +7,7 @@ LINE_HEIGHT = 20
 CHARACTER_SCALING = 0.5
 COIN_SCALE = 0.25
 
+
 class MyTestWindow(arcade.Window):
 
     def __init__(self, width, height, title):
@@ -20,38 +21,47 @@ class MyTestWindow(arcade.Window):
 
         self.character_list = arcade.SpriteList()
 
-
         self.player = arcade.AnimatedWalkingSprite()
 
         character_scale = 1
         self.player.stand_right_textures = []
-        self.player.stand_right_textures.append(arcade.load_texture("../../arcade/examples/images/character_sprites/character0.png",
-                                                                    scale=character_scale))
+        self.player.stand_right_textures.append(
+            arcade.load_texture("../../arcade/examples/images/character_sprites/character0.png",
+                                scale=character_scale))
         self.player.stand_left_textures = []
-        self.player.stand_left_textures.append(arcade.load_texture("../../arcade/examples/images/character_sprites/character0.png",
-                                                                   scale=character_scale, mirrored=True))
+        self.player.stand_left_textures.append(
+            arcade.load_texture("../../arcade/examples/images/character_sprites/character0.png",
+                                scale=character_scale, mirrored=True))
 
         self.player.walk_right_textures = []
 
-        self.player.walk_right_textures.append(arcade.load_texture("../../arcade/examples/images/character_sprites/characterw0.png",
-                                                                   scale=character_scale))
-        self.player.walk_right_textures.append(arcade.load_texture("../../arcade/examples/images/character_sprites/characterw1.png",
-                                                                   scale=character_scale))
-        self.player.walk_right_textures.append(arcade.load_texture("../../arcade/examples/images/character_sprites/characterw2.png",
-                                                                   scale=character_scale))
-        self.player.walk_right_textures.append(arcade.load_texture("../../arcade/examples/images/character_sprites/characterw3.png",
-                                                                   scale=character_scale))
+        self.player.walk_right_textures.append(
+            arcade.load_texture("../../arcade/examples/images/character_sprites/characterw0.png",
+                                scale=character_scale))
+        self.player.walk_right_textures.append(
+            arcade.load_texture("../../arcade/examples/images/character_sprites/characterw1.png",
+                                scale=character_scale))
+        self.player.walk_right_textures.append(
+            arcade.load_texture("../../arcade/examples/images/character_sprites/characterw2.png",
+                                scale=character_scale))
+        self.player.walk_right_textures.append(
+            arcade.load_texture("../../arcade/examples/images/character_sprites/characterw3.png",
+                                scale=character_scale))
 
         self.player.walk_left_textures = []
 
-        self.player.walk_left_textures.append(arcade.load_texture("../../arcade/examples/images/character_sprites/characterw0.png",
-                                                                  scale=character_scale, mirrored=True))
-        self.player.walk_left_textures.append(arcade.load_texture("../../arcade/examples/images/character_sprites/characterw1.png",
-                                                                  scale=character_scale, mirrored=True))
-        self.player.walk_left_textures.append(arcade.load_texture("../../arcade/examples/images/character_sprites/characterw2.png",
-                                                                  scale=character_scale, mirrored=True))
-        self.player.walk_left_textures.append(arcade.load_texture("../../arcade/examples/images/character_sprites/characterw3.png",
-                                                                  scale=character_scale, mirrored=True))
+        self.player.walk_left_textures.append(
+            arcade.load_texture("../../arcade/examples/images/character_sprites/characterw0.png",
+                                scale=character_scale, mirrored=True))
+        self.player.walk_left_textures.append(
+            arcade.load_texture("../../arcade/examples/images/character_sprites/characterw1.png",
+                                scale=character_scale, mirrored=True))
+        self.player.walk_left_textures.append(
+            arcade.load_texture("../../arcade/examples/images/character_sprites/characterw2.png",
+                                scale=character_scale, mirrored=True))
+        self.player.walk_left_textures.append(
+            arcade.load_texture("../../arcade/examples/images/character_sprites/characterw3.png",
+                                scale=character_scale, mirrored=True))
 
         self.player.texture_change_distance = 20
 

@@ -58,7 +58,8 @@ class Window(pyglet.window.Window):
             super().__init__(width=width, height=height, caption=title,
                              resizable=resizable, config=config)
         except pyglet.window.NoSuchConfigException as e:
-            raise NoOpenGLException("Unable to create an OpenGL 3.3+ context. Check to make sure your system supports OpenGL 3.3 or higher.")
+            raise NoOpenGLException("Unable to create an OpenGL 3.3+ context. "
+                                    "Check to make sure your system supports OpenGL 3.3 or higher.")
 
         if antialiasing:
             try:
@@ -364,8 +365,8 @@ def open_window(width: Number, height: Number, window_title: str, resizable: boo
     """
 
     global _window
-    _window = Window(width, height, window_title, resizable, update_rate = None,
-                     antialiasing = antialiasing)
+    _window = Window(width, height, window_title, resizable, update_rate=None,
+                     antialiasing=antialiasing)
     return _window
 
 
@@ -384,7 +385,7 @@ class View:
     def on_update(self, delta_time: float):
         """To be overridden"""
         pass
-    
+
     def on_draw(self):
         """Called when this view should draw"""
         pass

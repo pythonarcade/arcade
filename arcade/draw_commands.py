@@ -25,7 +25,6 @@ from arcade import shader
 from arcade.earclip import earclip
 from arcade.utils import *
 
-
 line_vertex_shader = '''
     #version 330
     uniform mat4 Projection;
@@ -149,8 +148,8 @@ class Texture:
         self._sprite = None
 
     def draw(self, center_x: float, center_y: float, width: float,
-             height: float, angle: float=0,
-             alpha: int=255, transparent: bool=True,
+             height: float, angle: float = 0,
+             alpha: int = 255, transparent: bool = True,
              repeat_count_x=1, repeat_count_y=1):
         """
 
@@ -366,15 +365,15 @@ def make_circle_texture(diameter: int, color: Color) -> Texture:
     :Returns: A Texture object
     :Raises: None
     """
-    bg_color = (0, 0, 0, 0) # fully transparent
+    bg_color = (0, 0, 0, 0)  # fully transparent
     img = PIL.Image.new("RGBA", (diameter, diameter), bg_color)
     draw = PIL.ImageDraw.Draw(img)
-    draw.ellipse((0, 0, diameter-1, diameter-1), fill=color)
-    name = "{}:{}:{}".format("circle_texture", diameter, color) # name must be unique for caching
+    draw.ellipse((0, 0, diameter - 1, diameter - 1), fill=color)
+    name = "{}:{}:{}".format("circle_texture", diameter, color)  # name must be unique for caching
     return Texture(name, img)
 
 
-def make_soft_circle_texture(diameter: int, color: Color, center_alpha: int=255, outer_alpha: int=0) -> Texture:
+def make_soft_circle_texture(diameter: int, color: Color, center_alpha: int = 255, outer_alpha: int = 0) -> Texture:
     """
     Return a Texture of a circle with given diameter, color, and alpha values at its center and edges
 
@@ -389,20 +388,21 @@ def make_soft_circle_texture(diameter: int, color: Color, center_alpha: int=255,
         None
     """
     # TODO: create a rectangle and circle (and triangle? and arbitrary poly where clent passes in list of points?) particle?
-    bg_color = (0, 0, 0, 0) # fully transparent
+    bg_color = (0, 0, 0, 0)  # fully transparent
     img = PIL.Image.new("RGBA", (diameter, diameter), bg_color)
     draw = PIL.ImageDraw.Draw(img)
     max_radius = int(diameter // 2)
-    center = max_radius # for readability
+    center = max_radius  # for readability
     for radius in range(max_radius, 0, -1):
-        alpha = int(lerp(center_alpha, outer_alpha, radius/max_radius))
+        alpha = int(lerp(center_alpha, outer_alpha, radius / max_radius))
         clr = (color[0], color[1], color[2], alpha)
-        draw.ellipse((center-radius, center-radius, center+radius-1, center+radius-1), fill=clr)
-    name = "{}:{}:{}:{}:{}".format("soft_circle_texture", diameter, color, center_alpha, outer_alpha) # name must be unique for caching
+        draw.ellipse((center - radius, center - radius, center + radius - 1, center + radius - 1), fill=clr)
+    name = "{}:{}:{}:{}:{}".format("soft_circle_texture", diameter, color, center_alpha,
+                                   outer_alpha)  # name must be unique for caching
     return Texture(name, img)
 
 
-def make_soft_square_texture(size: int, color: Color, center_alpha: int=255, outer_alpha: int=0) -> Texture:
+def make_soft_square_texture(size: int, color: Color, center_alpha: int = 255, outer_alpha: int = 0) -> Texture:
     """
     Return a Texture of a circle with given diameter and color, fading out at the edges.
 
@@ -414,17 +414,19 @@ def make_soft_square_texture(size: int, color: Color, center_alpha: int=255, out
     Raises:
         None
     """
-    bg_color = (0, 0, 0, 0) # fully transparent
+    bg_color = (0, 0, 0, 0)  # fully transparent
     img = PIL.Image.new("RGBA", (size, size), bg_color)
     draw = PIL.ImageDraw.Draw(img)
     half_size = int(size // 2)
     for cur_size in range(0, half_size):
-        alpha = int(lerp(outer_alpha, center_alpha, cur_size/half_size))
+        alpha = int(lerp(outer_alpha, center_alpha, cur_size / half_size))
         clr = (color[0], color[1], color[2], alpha)
         # draw.ellipse((center-radius, center-radius, center+radius, center+radius), fill=clr)
-        draw.rectangle((cur_size, cur_size, size-cur_size, size-cur_size), clr, None)
-    name = "{}:{}:{}:{}".format("gradientsquare", size, color, center_alpha, outer_alpha) # name must be unique for caching
+        draw.rectangle((cur_size, cur_size, size - cur_size, size - cur_size), clr, None)
+    name = "{}:{}:{}:{}".format("gradientsquare", size, color, center_alpha,
+                                outer_alpha)  # name must be unique for caching
     return Texture(name, img)
+
 
 def _lerp_color(start_color: Color, end_color: Color, u: float) -> Color:
     return (
@@ -469,6 +471,7 @@ def draw_arc_filled(center_x: float, center_y: float,
     :param float start_angle: start angle of the arc in degrees.
     :param float end_angle: end angle of the arc in degrees.
     :param float tilt_angle: angle the arc is tilted.
+    :param float num_segments: Number of line segments used to draw arc.
     """
     unrotated_point_list = [[0, 0]]
 
@@ -699,7 +702,7 @@ def draw_ellipse_filled(center_x: float, center_y: float,
 def draw_ellipse_outline(center_x: float, center_y: float, width: float,
                          height: float, color: Color,
                          border_width: float = 1, tilt_angle: float = 0,
-                         num_segments = 128):
+                         num_segments=128):
     """
     Draw the outline of an ellipse.
 
@@ -772,6 +775,7 @@ def draw_ellipse_outline(center_x: float, center_y: float, width: float,
             point_list.append((point[0] + center_x, point[1] + center_y))
 
         _generic_draw_line_strip(point_list, color, gl.GL_TRIANGLE_STRIP)
+
 
 # --- END ELLIPSE FUNCTIONS # # #
 
@@ -887,7 +891,7 @@ def draw_line(start_x: float, start_y: float, end_x: float, end_y: float,
 
 def draw_lines(point_list: PointList,
                color: Color,
-               line_width: float=1):
+               line_width: float = 1):
     """
     Draw a set of lines.
 
@@ -1011,7 +1015,8 @@ def draw_polygon_outline(point_list: PointList,
             triangle_point_list.extend(reordered_points)
         last_point = point
 
-    points = _get_points_for_thick_line(new_point_list[0][0], new_point_list[0][1], new_point_list[1][0], new_point_list[1][1], line_width)
+    points = _get_points_for_thick_line(new_point_list[0][0], new_point_list[0][1], new_point_list[1][0],
+                                        new_point_list[1][1], line_width)
     triangle_point_list.append(points[1])
     _generic_draw_line_strip(triangle_point_list, color, gl.GL_TRIANGLE_STRIP)
 
@@ -1293,10 +1298,10 @@ def get_pixel(x: int, y: int):
     red = a[0]
     green = a[1]
     blue = a[2]
-    return (red, green, blue)
+    return red, green, blue
 
 
-def get_image(x: int = 0, y: int = 0, width: int = None, height:int = None):
+def get_image(x: int = 0, y: int = 0, width: int = None, height: int = None):
     """
     Get an image from the screen.
 

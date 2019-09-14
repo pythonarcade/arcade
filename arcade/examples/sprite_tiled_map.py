@@ -111,7 +111,6 @@ class MyGame(arcade.Window):
                                                              self.wall_list,
                                                              gravity_constant=GRAVITY)
 
-
         # Set the view port boundaries
         # These numbers set where we have 'scrolled' to.
         self.view_left = 0
