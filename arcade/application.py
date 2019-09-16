@@ -345,6 +345,57 @@ class Window(pyglet.window.Window):
         # will still call the Window's event handlers. (See pyglet's EventDispatcher.dispatch_event() implementation
         # for details)
 
+    def _create(self):
+        pass
+
+    def _recreate(self, changes):
+        pass
+
+    def flip(self):
+        pass
+
+    def switch_to(self):
+        pass
+
+    def set_caption(self, caption):
+        pass
+
+    def set_minimum_size(self, width, height):
+        pass
+
+    def set_maximum_size(self, width, height):
+        pass
+
+    def set_location(self, x, y):
+        pass
+
+    def activate(self):
+        pass
+
+    def minimize(self):
+        pass
+
+    def maximize(self):
+        pass
+
+    def set_vsync(self, vsync):
+        pass
+
+    def set_mouse_platform_visible(self, platform_visible=None):
+        pass
+
+    def set_exclusive_mouse(self, exclusive=True):
+        pass
+
+    def set_exclusive_keyboard(self, exclusive=True):
+        pass
+
+    def get_system_mouse_cursor(self, name):
+        pass
+
+    def dispatch_events(self):
+        pass
+
 
 def open_window(width: Number, height: Number, window_title: str, resizable: bool = False,
                 antialiasing: bool = True) -> Window:
