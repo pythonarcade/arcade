@@ -346,55 +346,55 @@ class Window(pyglet.window.Window):
         # for details)
 
     def _create(self):
-        pass
+        super()._create()
 
     def _recreate(self, changes):
-        pass
+        super()._recreate(changes)
 
     def flip(self):
-        pass
+        super().flip()
 
     def switch_to(self):
-        pass
+        super().switch_to()
 
     def set_caption(self, caption):
-        pass
+        super().set_caption(caption)
 
     def set_minimum_size(self, width, height):
-        pass
+        super().set_minimum_size(width, height)
 
     def set_maximum_size(self, width, height):
-        pass
+        super().set_maxiumum_size(width, height)
 
     def set_location(self, x, y):
-        pass
+        super().set_location(x, y)
 
     def activate(self):
-        pass
+        super().activate()
 
     def minimize(self):
-        pass
+        super().minimize()
 
     def maximize(self):
-        pass
+        super().maximize()
 
     def set_vsync(self, vsync):
-        pass
+        super().set_vsync(vsync)
 
     def set_mouse_platform_visible(self, platform_visible=None):
-        pass
+        super().set_mouse_platform_visible(platform_visible)
 
     def set_exclusive_mouse(self, exclusive=True):
-        pass
+        super().set_exclusive_mouse(exclusive)
 
     def set_exclusive_keyboard(self, exclusive=True):
-        pass
+        super().set_exclusive_keyboard(exclusive)
 
     def get_system_mouse_cursor(self, name):
-        pass
+        super().get_system_mouse_cursor(name)
 
     def dispatch_events(self):
-        pass
+        super().dispatch_events()
 
 
 def open_window(width: Number, height: Number, window_title: str, resizable: bool = False,
