@@ -27,6 +27,7 @@ class Ball:
         self.change_x = 0
         self.change_y = 0
         self.size = 0
+        self.color = None
 
 
 def make_ball():

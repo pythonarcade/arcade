@@ -12,6 +12,7 @@ SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 SCREEN_TITLE = "Vertex Buffer Object With Lines Example"
 
+
 class MyGame(arcade.Window):
     """
     Main application class.

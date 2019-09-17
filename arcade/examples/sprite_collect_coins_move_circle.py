@@ -20,6 +20,7 @@ SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 SCREEN_TITLE = "Sprite Collect Coins Moving in Circles Example"
 
+
 class Coin(arcade.Sprite):
 
     def __init__(self, filename, sprite_scaling):

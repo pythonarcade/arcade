@@ -2,7 +2,7 @@
 Run All Examples
 
 If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.run_all_examples
+python -m tests.test_examples.run_all_examples
 """
 import subprocess
 import argparse

@@ -10,6 +10,7 @@ SCREEN_WIDTH = 500
 SCREEN_HEIGHT = 500
 SCREEN_TITLE = "Drawing Text Example"
 
+
 class MyGame(arcade.Window):
     """
     Main application class.

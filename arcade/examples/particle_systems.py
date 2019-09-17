@@ -40,14 +40,14 @@ DEFAULT_EMIT_INTERVAL = 0.003
 DEFAULT_EMIT_DURATION = 1.5
 
 
-##### Utils
+# Utils
 def sine_wave(t, min_x, max_x, wavelength):
     spread = max_x - min_x
     mid = (max_x + min_x) / 2
     return (spread / 2) * math.sin(2 * math.pi * t / wavelength) + mid
 
 
-##### Example emitters
+# Example emitters
 def emitter_0():
     """Burst, emit from center, particle with lifetime"""
     e = arcade.Emitter(
@@ -362,8 +362,6 @@ def emitter_18():
     return emitter_18.__doc__, e
 
 
-#### left off formatting here.
-## do auto-remove of angle and change_angle
 def emitter_19():
     """Interval, emit on line"""
     e = arcade.Emitter(

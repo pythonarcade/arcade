@@ -6,6 +6,7 @@ SCREEN_HEIGHT = 600
 LINE_HEIGHT = 20
 CHARACTER_SCALING = 0.5
 
+
 class MyTestWindow(arcade.Window):
 
     def __init__(self, width, height, title):

@@ -339,22 +339,23 @@ class FireworksApp(arcade.Window):
             arcade.close_window()
 
 
-def firework_spark_mutator(emitter: arcade.Emitter):
+def firework_spark_mutator(particle: arcade.FadeParticle):
     """mutation_callback shared by all fireworks sparks"""
     # gravity
-    emitter.change_y += -0.03
+    particle.change_y += -0.03
     # drag
-    emitter.change_x *= 0.92
-    emitter.change_y *= 0.92
+    particle.change_x *= 0.92
+    particle.change_y *= 0.92
 
 
-def rocket_smoke_mutator(emitter: arcade.Emitter):
-    emitter.scale = arcade.lerp(0.5, 3.0, emitter.lifetime_elapsed / emitter.lifetime_original)
-    # A Sprite's scale doesn't affect generated textures (ex: make_soft_circle_texture) or scale being animated over time.
+def rocket_smoke_mutator(particle: arcade.LifetimeParticle):
+    particle.scale = arcade.lerp(0.5, 3.0, particle.lifetime_elapsed / particle.lifetime_original)
+    # A Sprite's scale doesn't affect generated textures
+    # (ex: make_soft_circle_texture) or scale being animated over time.
     # The fix below is copied from Sprite.update_animation().
     # Bug may have been recorded here: https://github.com/pvcraven/arcade/issues/331
-    emitter.width = emitter._texture.width * emitter.scale
-    emitter.height = emitter._texture.height * emitter.scale
+    particle.width = particle._texture.width * particle.scale
+    particle.height = particle._texture.height * particle.scale
 
 
 if __name__ == "__main__":

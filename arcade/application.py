@@ -28,7 +28,7 @@ class Window(pyglet.window.Window):
     It represents a window on the screen, and manages events.
     """
 
-    def __init__(self, width: float = 800, height: float = 600,
+    def __init__(self, width: Number = 800, height: Number = 600,
                  title: str = 'Arcade Window', fullscreen: bool = False,
                  resizable: bool = False, update_rate=1/60,
                  antialiasing: bool = True):

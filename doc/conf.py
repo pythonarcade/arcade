@@ -424,6 +424,7 @@ def replace_in_file(filename, replace_list):
         logging.exception("Something bad happened.")
         print("Error")
 
+
 def source_read(app, docname, source):
 
     # print(f"  XXX Reading {docname}")
@@ -463,17 +464,18 @@ def post_process(app, exception):
 
     # The API docs include the submodules the commands are in. This is confusing
     # so let's remove them.
-    replace_list = []
-    replace_list.append([".window_commands.", "."])
-    replace_list.append([".draw_commands.", "."])
-    replace_list.append([".buffered_draw_commands.", "."])
-    replace_list.append([".text.", "."])
-    replace_list.append([".application.", "."])
-    replace_list.append([".geometry.", "."])
-    replace_list.append([".sprite_list.", "."])
-    replace_list.append([".sprite.", "."])
-    replace_list.append([".physics_engines.", "."])
-    replace_list.append([".sound.", "."])
+    replace_list = [
+        [".window_commands.", "."],
+        [".draw_commands.", "."],
+        [".buffered_draw_commands.", "."],
+        [".text.", "."],
+        [".application.", "."],
+        [".geometry.", "."],
+        [".sprite_list.", "."],
+        [".sprite.", "."],
+        [".physics_engines.", "."],
+        [".sound.", "."]
+    ]
     filename = 'build/html/arcade.html'
     replace_in_file(filename, replace_list)
     filename = 'build/html/quick_index.html'
@@ -481,9 +483,11 @@ def post_process(app, exception):
 
     # Figures have and align-center style I can't easily get rid of.
     filename = 'build/html/examples/index.html'
-    replace_list = []
-    replace_list.append(["figure align-center", "figure"])
+    replace_list = [
+        ["figure align-center", "figure"]
+    ]
     replace_in_file(filename, replace_list)
+
 
 def setup(app):
     app.add_stylesheet("css/custom.css")

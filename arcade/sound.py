@@ -7,6 +7,7 @@ import typing
 import pyglet
 from pathlib import Path
 
+
 class Sound:
 
     def __init__(self, file_name: str):
@@ -75,7 +76,9 @@ def play_sound(sound: Sound):
     if sound is None:
         print("Unable to play sound, no data passed in.")
     elif isinstance(sound, str):
-        raise Exception("Error, passed in a string as a sound. Make sure to use load_sound first, and use that result in play_sound.")
+        msg = "Error, passed in a string as a sound. " +\
+              "Make sure to use load_sound first, and use that result in play_sound."
+        raise Exception(msg)
     try:
         sound.play()
     except Exception as e:

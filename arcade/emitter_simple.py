@@ -10,6 +10,7 @@ from typing import List
 from arcade.arcade_types import Point
 from arcade.particle import FilenameOrTexture
 
+
 def make_burst_emitter(
         center_xy: Point,
         filenames_and_textures: List[FilenameOrTexture],
@@ -33,6 +34,7 @@ def make_burst_emitter(
             scale=particle_scale
         )
     )
+
 
 def make_interval_emitter(
         center_xy: Point,

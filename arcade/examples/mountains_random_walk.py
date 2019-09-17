@@ -58,10 +58,20 @@ def create_mountain_range(height_min, height_max, color_start, color_end):
 def create_line_strip():
     shape_list = arcade.ShapeElementList()
 
-    line_strip = arcade.create_lines_with_colors(([10, 10], [500, 10],
-                                                  [10, 250], [500, 250],
-                                                  [10, 500], [500, 500]),
-                                                 (arcade.color.RED, arcade.color.BLACK, arcade.color.GREEN, arcade.color.BLACK, arcade.color.BLUE, arcade.color.BLACK), line_width=4)
+    colors = (
+        arcade.color.RED,
+        arcade.color.BLACK,
+        arcade.color.GREEN,
+        arcade.color.BLACK,
+        arcade.color.BLUE,
+        arcade.color.BLACK
+    )
+    line_strip = arcade.create_lines_with_colors(
+        ([10, 10], [500, 10],
+         [10, 250], [500, 250],
+         [10, 500], [500, 500]),
+        colors,
+        line_width=4)
 
     shape_list.append(line_strip)
 

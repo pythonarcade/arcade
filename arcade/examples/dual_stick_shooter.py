@@ -11,6 +11,7 @@ import arcade
 import random
 import math
 import os
+from typing import cast
 import pprint
 
 SCREEN_WIDTH = 1024
@@ -28,6 +29,7 @@ def dump_obj(obj):
     for key in sorted(vars(obj)):
         val = getattr(obj, key)
         print("{:30} = {} ({})".format(key, val, type(val).__name__))
+
 
 def dump_joystick(joy):
     print("========== {}".format(joy))
@@ -49,6 +51,7 @@ def dump_joystick(joy):
     print("========== pprint joy.device")
     pprint.pprint(joy.device)
 
+
 def dump_joystick_state(ticks, joy):
     # print("{:5.2f} {:5.2f} {:>20} {:5}_".format(1.234567, -8.2757272903, "hello", str(True)))
     fmt_str = "{:6d} "
@@ -66,6 +69,7 @@ def dump_joystick_state(ticks, joy):
                          joy.hat_x,
                          joy.hat_y,
                          buttons))
+
 
 def get_joy_position(x, y):
     """Given position of joystick axes, return (x, y, angle_in_degrees).
@@ -162,7 +166,7 @@ class MyGame(arcade.Window):
         self.bullet_cooldown += 1
 
         for enemy in self.enemy_list:
-            enemy.follow_sprite(self.player)
+            cast(Enemy, enemy).follow_sprite(self.player)
 
         if self.joy:
             # Joystick input - movement
@@ -170,7 +174,8 @@ class MyGame(arcade.Window):
             if move_angle:
                 self.player.change_x = move_x * MOVEMENT_SPEED
                 self.player.change_y = move_y * MOVEMENT_SPEED
-                # An angle of "0" means "right", but the player's image is drawn in the "up" direction. So an offset is needed.
+                # An angle of "0" means "right", but the player's image is drawn in the "up" direction.
+                # So an offset is needed.
                 self.player.angle = move_angle - 90
             else:
                 self.player.change_x = 0

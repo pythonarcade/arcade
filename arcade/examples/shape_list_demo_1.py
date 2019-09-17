@@ -19,7 +19,7 @@ SCREEN_TITLE = "Shape List Demo 1"
 
 SQUARE_WIDTH = 5
 SQUARE_HEIGHT = 5
-SQUARE_SPACING = 10
+SQUARE_SPACING = 40
 
 
 class MyGame(arcade.Window):

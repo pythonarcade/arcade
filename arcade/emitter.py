@@ -1,12 +1,14 @@
 """
-Emitter - Invisible object that determines when Particles are emitted, actually emits them, and manages them over their lifetime
+Emitter - Invisible object that determines when Particles are emitted, actually emits them, and manages them
+over their lifetime
 """
 
 import arcade
 from arcade.particle import Particle
-from typing import Callable
+from typing import Callable, cast
 from arcade.utils import _Vec2
 from arcade.arcade_types import Point, Vector
+
 
 ##########
 class EmitController:
@@ -49,7 +51,7 @@ class EmitMaintainCount(EmitController):
 
 
 class EmitInterval(EmitController):
-    """Base class used by subclasses that are used to configure an Emitter to have a constant rate of emitting. Will emit indefinitely."""
+    """Base class used to configure an Emitter to have a constant rate of emitting. Will emit indefinitely."""
     def __init__(self, emit_interval: float):
         self._emit_interval = emit_interval
         self._carryover_time = 0.0
@@ -67,7 +69,7 @@ class EmitInterval(EmitController):
 
 
 class EmitterIntervalWithCount(EmitInterval):
-    """Used to configure an Emitter so it emits particles at the given interval, ending after emitting a given number of particles"""
+    """Configure an Emitter to emit particles with given interval, ending after emitting given number of particles"""
     def __init__(self, emit_interval: float, particle_count: int):
         super().__init__(emit_interval)
         self._count_remaining = particle_count
@@ -83,7 +85,7 @@ class EmitterIntervalWithCount(EmitInterval):
 
 
 class EmitterIntervalWithTime(EmitInterval):
-    """Useed to configure an Emitter so it emits particles at the given interval, ending after given number of seconds"""
+    """Configure an Emitter to emit particles with given interval, ending after given number of seconds"""
     def __init__(self, emit_interval: float, lifetime: float):
         super().__init__(emit_interval)
         self._lifetime = lifetime
@@ -98,7 +100,7 @@ class EmitterIntervalWithTime(EmitInterval):
         return self._lifetime <= 0
 
 
-########## Emitter
+# Emitter
 class Emitter:
     """Emits and manages Particles over their lifetime.  The foundational class in a particle system."""
     def __init__(
@@ -110,7 +112,8 @@ class Emitter:
         emit_done_cb: Callable[["Emitter"], None] = None,
         reap_cb: Callable[[], None] = None
     ):
-        # Note Self-reference with type annotations: https://www.python.org/dev/peps/pep-0484/#the-problem-of-forward-declarations
+        # Note Self-reference with type annotations:
+        #     https://www.python.org/dev/peps/pep-0484/#the-problem-of-forward-declarations
         self.change_x = change_xy[0]
         self.change_y = change_xy[1]
 
@@ -125,7 +128,7 @@ class Emitter:
         self._particles = arcade.SpriteList(use_spatial_hash=False)
 
     def _emit(self):
-        """Emit one particle. A particle's initial position and velocity are relative to the position and angle of the emitter"""
+        """Emit one particle, its initial position and velocity are relative to the position and angle of the emitter"""
         p = self.particle_factory(self)
         p.center_x += self.center_x
         p.center_y += self.center_y
@@ -156,7 +159,7 @@ class Emitter:
         for _ in range(emit_count):
             self._emit()
         self._particles.update()
-        particles_to_reap = [p for p in self._particles if p.can_reap()]
+        particles_to_reap = [p for p in self._particles if cast(Particle, p).can_reap()]
         for dead_particle in particles_to_reap:
             dead_particle.kill()
 

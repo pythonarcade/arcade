@@ -47,11 +47,14 @@ def make_objects():
     center_y = -50
     width = 20
     height = 20
-    shape = arcade.create_rectangle_filled(center_x, center_y, width, height, arcade.color.WHITE)
+    shape = arcade.create_rectangle_filled(center_x, center_y, width, height,
+                                           arcade.color.WHITE)
     shape_list.append(shape)
-    shape = arcade.create_rectangle_outline(center_x, center_y, width, height, arcade.color.BLACK, border_width=1)
+    shape = arcade.create_rectangle_outline(center_x, center_y, width, height,
+                                            arcade.color.BLACK, border_width=1)
     shape_list.append(shape)
-    shape = arcade.create_rectangle_outline(center_x, center_y, width, height, arcade.color.AMERICAN_ROSE, border_width=1)
+    shape = arcade.create_rectangle_outline(center_x, center_y, width, height,
+                                            arcade.color.AMERICAN_ROSE, border_width=1)
     shape_list.append(shape)
 
     color1 = (215, 214, 165)
