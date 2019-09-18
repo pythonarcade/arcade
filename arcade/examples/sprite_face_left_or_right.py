@@ -24,6 +24,7 @@ MOVEMENT_SPEED = 5
 TEXTURE_LEFT = 0
 TEXTURE_RIGHT = 1
 
+
 class Player(arcade.Sprite):
 
     def __init__(self):

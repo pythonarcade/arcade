@@ -7,6 +7,7 @@ LINE_HEIGHT = 20
 CHARACTER_SCALING = 0.5
 COIN_SCALE = 0.25
 
+
 class MyTestWindow(arcade.Window):
 
     def __init__(self, width, height, title):
@@ -20,45 +21,40 @@ class MyTestWindow(arcade.Window):
 
         self.character_list = arcade.SpriteList()
 
-
         self.player = arcade.AnimatedWalkingSprite()
 
         character_scale = 1
         self.player.stand_right_textures = []
 
         self.player.stand_right_textures = arcade.load_textures("../../arcade/examples/images/character_sheet.png",
-            (
-                (0, 0,  59, 97),
-            ))
+                                                                ((0, 0, 59, 97),))
 
         self.player.stand_left_textures = []
 
         self.player.stand_left_textures = arcade.load_textures("../../arcade/examples/images/character_sheet.png",
-            (
-                (0, 0,  59, 97),
-            ), mirrored=True)
+                                                               ((0, 0, 59, 97),), mirrored=True)
 
         self.player.walk_right_textures = []
 
         self.player.walk_right_textures = arcade.load_textures("../../arcade/examples/images/character_sheet.png",
-            (
-                (592, 0,  63, 97),
-                (656, 0, 731-656, 97),
-                (731, 0, 783 - 731, 97),
-                (786, 0, 843 - 786, 97),
-                (844, 0, 898 - 844, 97),
-            ))
+                                                               (
+                                                                   (592, 0, 63, 97),
+                                                                   (656, 0, 731 - 656, 97),
+                                                                   (731, 0, 783 - 731, 97),
+                                                                   (786, 0, 843 - 786, 97),
+                                                                   (844, 0, 898 - 844, 97),
+                                                               ))
 
         self.player.walk_left_textures = []
 
         self.player.walk_left_textures = arcade.load_textures("../../arcade/examples/images/character_sheet.png",
-            (
-                (592, 0,  63, 97),
-                (656, 0, 731-656, 97),
-                (731, 0, 783 - 731, 97),
-                (786, 0, 843 - 786, 97),
-                (844, 0, 898 - 844, 97),
-            ), mirrored=True)
+                                                              (
+                                                                  (592, 0, 63, 97),
+                                                                  (656, 0, 731 - 656, 97),
+                                                                  (731, 0, 783 - 731, 97),
+                                                                  (786, 0, 843 - 786, 97),
+                                                                  (844, 0, 898 - 844, 97),
+                                                              ), mirrored=True)
 
         self.player.texture_change_distance = 20
 

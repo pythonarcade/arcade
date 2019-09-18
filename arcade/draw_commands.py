@@ -387,7 +387,8 @@ def make_soft_circle_texture(diameter: int, color: Color, center_alpha: int = 25
     Raises:
         None
     """
-    # TODO: create a rectangle and circle (and triangle? and arbitrary poly where clent passes in list of points?) particle?
+    # TODO: create a rectangle and circle (and triangle? and arbitrary poly where client passes
+    # in list of points?) particle?
     bg_color = (0, 0, 0, 0)  # fully transparent
     img = PIL.Image.new("RGBA", (diameter, diameter), bg_color)
     draw = PIL.ImageDraw.Draw(img)
@@ -1276,6 +1277,8 @@ def draw_xywh_rectangle_textured(bottom_left_x: float, bottom_left_y: float,
     :param int texture: identifier of texture returned from load_texture() call
     :param float angle: rotation of the rectangle. Defaults to zero.
     :param int alpha: Transparency of image. 0 is fully transparent, 255 (default) is visible
+    :param int repeat_count_x: Unused for now
+    :param int repeat_count_y: Unused for now
     """
 
     center_x = bottom_left_x + (width / 2)

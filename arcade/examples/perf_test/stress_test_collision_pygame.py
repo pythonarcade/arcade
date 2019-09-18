@@ -259,7 +259,7 @@ class MyGame:
                     self.results_file.write(output)
 
                     if len(self.coin_list) >= STOP_COUNT:
-                        pygame.event.post(pygame.event.Event(pygame.QUIT))
+                        pygame.event.post(pygame.event.Event(pygame.QUIT, {}))
                         return
 
                     self.sprite_count_list.append(len(self.coin_list))

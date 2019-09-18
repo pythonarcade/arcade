@@ -288,7 +288,7 @@ class Buffer:
     @classmethod
     def create_with_size(cls, size: int, usage: str = 'static'):
         """Create an empty Buffer storage of the given size."""
-        buffer = Buffer(b"", usage = usage)
+        buffer = Buffer(b"", usage=usage)
         glBindBuffer(GL_ARRAY_BUFFER, buffer.buffer_id)
         glBufferData(GL_ARRAY_BUFFER, size, None, Buffer.usages[usage])
         buffer.size = size
@@ -498,7 +498,7 @@ class VertexArray:
             glDrawArraysInstanced(mode, 0, self.num_vertices, instances)
 
 
-def vertex_array(program: GLuint, content, index_buffer = None):
+def vertex_array(program: GLuint, content, index_buffer=None):
     """Create a new Vertex Array.
     """
     return VertexArray(program, content, index_buffer)

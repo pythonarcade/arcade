@@ -30,6 +30,7 @@ RECT_HEIGHT = 50
 
 NUMBER_OF_SHAPES = 200
 
+
 class Shape:
 
     def __init__(self, x, y, width, height, angle, delta_x, delta_y,

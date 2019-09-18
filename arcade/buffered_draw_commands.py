@@ -13,6 +13,7 @@ import pyglet.gl as gl
 import numpy as np
 
 from typing import Iterable
+from typing import List
 from typing import TypeVar
 from typing import Generic
 
@@ -214,8 +215,7 @@ def create_line_strip(point_list: PointList,
             triangle_point_list += points[1], points[0], points[2], points[3]
 
             shape = create_triangles_filled_with_colors(triangle_point_list, new_color_list)
-
-        return shape
+            return shape
 
 
 def create_line_loop(point_list: PointList,
@@ -252,7 +252,7 @@ def create_lines(point_list: PointList,
 
 
 def create_lines_with_colors(point_list: PointList,
-                             color_list: Iterable[Color],
+                             color_list: List[Color],
                              line_width: float = 1):
 
     if line_width == 1:
@@ -273,8 +273,7 @@ def create_lines_with_colors(point_list: PointList,
             triangle_point_list += points[1], points[0], points[2], points[3]
 
             shape = create_triangles_filled_with_colors(triangle_point_list, new_color_list)
-
-        return shape
+            return shape
 
 
 def create_polygon(point_list: PointList,

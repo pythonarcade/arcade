@@ -30,7 +30,7 @@ class FakeWindow(arcade.Window):
 class BaseView(arcade.View):
     def update(self, delta_time):
         self.window.update_calls.append(self.__class__.__name__)
-        self.window.dispatch_event("on_mouse_motion", 42, 43, 1, 1)  ##### change
+        self.window.dispatch_event("on_mouse_motion", 42, 43, 1, 1)  # change
 
     def on_draw(self):
         self.window.draw_calls.append(self.__class__.__name__)

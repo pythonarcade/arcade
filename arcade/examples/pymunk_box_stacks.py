@@ -10,7 +10,7 @@ pip install pymunk
 Artwork from http://kenney.nl
 
 If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.pymunk_test
+python -m arcade.examples.pymunk_box_stacks
 
 Click and drag with the mouse to move the boxes.
 """

@@ -19,6 +19,7 @@ SCREEN_WIDTH = 600
 SCREEN_HEIGHT = 600
 SCREEN_TITLE = "Drawing With Functions Example"
 
+
 def draw_background():
     """
     This function draws the background. Specifically, the sky and ground.

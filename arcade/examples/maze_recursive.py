@@ -40,6 +40,7 @@ VIEWPORT_MARGIN = 200
 
 MERGE_SPRITES = True
 
+
 def create_empty_grid(width, height, default_value=TILE_EMPTY):
     """ Create an empty grid. """
     grid = []

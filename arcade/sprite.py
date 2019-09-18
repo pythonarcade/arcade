@@ -16,7 +16,6 @@ from arcade.draw_commands import Texture
 from arcade.draw_commands import rotate_point
 from arcade.arcade_types import RGB, Point
 
-from typing import Optional
 from typing import Sequence
 from typing import Tuple
 
@@ -772,11 +771,11 @@ class AnimatedTimeBasedSprite(Sprite):
         self.frames = []
         self.time_counter = 0.0
 
-    def update_animation(self, time: float):
+    def update_animation(self, delta_time: float):
         """
         Logic for selecting the proper texture to use.
         """
-        self.time_counter += time
+        self.time_counter += delta_time
         while self.time_counter > self.frames[self.cur_frame].duration / 1000.0:
             self.time_counter -= self.frames[self.cur_frame].duration / 1000.0
             self.cur_frame += 1

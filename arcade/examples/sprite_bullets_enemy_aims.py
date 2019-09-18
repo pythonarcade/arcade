@@ -14,6 +14,7 @@ SCREEN_HEIGHT = 600
 SCREEN_TITLE = "Sprites and Bullets Enemy Aims Example"
 BULLET_SPEED = 4
 
+
 class MyGame(arcade.Window):
     """ Main application class """
 
