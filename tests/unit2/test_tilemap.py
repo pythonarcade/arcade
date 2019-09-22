@@ -21,8 +21,8 @@ def test_one():
     assert len(background_list) == 2
 
     first_sprite = platforms_list[0]
-    assert first_sprite.center_x == -64
-    assert first_sprite.center_y == -64
+    assert first_sprite.center_x == 64
+    assert first_sprite.center_y == 64
     assert first_sprite.width == 128
     assert first_sprite.height == 128
 
@@ -43,13 +43,13 @@ def test_two():
 
     first_sprite = platforms_list[0]
     assert first_sprite is not None
-    assert first_sprite.center_x == -64
-    assert first_sprite.center_y == -64
+    assert first_sprite.center_x == 64
+    assert first_sprite.center_y == 64
     # print(first_sprite.center_x, first_sprite.center_y)
     # print(first_sprite.points)
 
-    assert first_sprite.center_x == -64
-    assert first_sprite.center_y == -64
+    assert first_sprite.center_x == 64
+    assert first_sprite.center_y == 64
     assert first_sprite.width == 128
     assert first_sprite.height == 128
 
