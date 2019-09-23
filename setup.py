@@ -63,4 +63,11 @@ if __name__ == "__main__":
                                    'examples/*.csv',
                                    'examples/*.tmx',
                                    'examples/sounds/*']},
+          project_urls={
+                        'Documentation': 'https://arcade.academy/',
+                        'Example Code ': 'http://arcade.academy/examples/index.html',
+                        'Issue Tracker': 'https://github.com/pvcraven/arcade/issues',
+                        'Source': 'https://github.com/pvcraven/arcade',
+                        'On-line Book': 'http://learn.arcade.academy/',
+          },
          )
