@@ -146,6 +146,7 @@ class Texture:
             self.height = 0
 
         self._sprite = None
+        self._sprite = None
 
     def draw(self, center_x: float, center_y: float, width: float,
              height: float, angle: float = 0,
@@ -1087,7 +1088,7 @@ def draw_lrtb_rectangle_outline(left: float, right: float, top: float,
     :param float bottom: The y coordinate of the rectangle bottom.
     :param Color color: The color of the rectangle.
     :param float border_width: The width of the border in pixels. Defaults to one.
-    :Raises AttributeErrror: Raised if left > right or top < bottom.
+    :Raises AttributeError: Raised if left > right or top < bottom.
 
     """
 

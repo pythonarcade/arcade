@@ -4,7 +4,7 @@
 from ctypes import *
 from collections import namedtuple
 import weakref
-from typing import Type, Tuple, Iterable
+from typing import Tuple, Iterable
 
 from pyglet.gl import *
 from pyglet import gl
@@ -386,7 +386,7 @@ class BufferDescription:
         self.formats = []
         for i, fmt in enumerate(formats):
             size, type_ = fmt
-            if size not in ('1234') or type_ not in 'fiB':
+            if size not in '1234' or type_ not in 'fiB':
                 raise ShaderException("Wrong format {fmt}.")
             size = int(size)
             gl_type_enum = BufferDescription.GL_TYPES_ENUM[type_]
@@ -524,7 +524,7 @@ class Texture:
                 GL_TEXTURE_2D, 0, sized_format, self.width, self.height, 0,
                 self.format, GL_UNSIGNED_BYTE, data.ctypes.data_as(c_void_p)
             )
-        except GLException as e:
+        except GLException:
             raise GLException(f"Unable to create texture. {GL_MAX_TEXTURE_SIZE} {size}")
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)

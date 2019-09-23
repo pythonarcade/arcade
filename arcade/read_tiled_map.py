@@ -155,10 +155,10 @@ def read_tiled_map(tmx_file: str, scaling: float = 1, tsx_file: str = None) -> T
     # Background color is optional, and may or may not be in there
     if "backgroundcolor" in map_tag.attrib:
         # Decode the background color string
-        backgroundcolor_string = map_tag.attrib["backgroundcolor"]
-        red_hex = "0x" + backgroundcolor_string[1:3]
-        green_hex = "0x" + backgroundcolor_string[3:5]
-        blue_hex = "0x" + backgroundcolor_string[5:7]
+        background_color_string = map_tag.attrib["backgroundcolor"]
+        red_hex = "0x" + background_color_string[1:3]
+        green_hex = "0x" + background_color_string[3:5]
+        blue_hex = "0x" + background_color_string[5:7]
         red = int(red_hex, 16)
         green = int(green_hex, 16)
         blue = int(blue_hex, 16)

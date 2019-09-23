@@ -686,7 +686,7 @@ class ShapeElementList(Generic[T]):
                 shape.vbo.size)
             offset += shape.vbo.size
 
-        # Create an index buffer objet. It should count starting from 0. We need to
+        # Create an index buffer object. It should count starting from 0. We need to
         # use a reset_idx to indicate that a new shape will start.
         reset_idx = 2 ** 32 - 1
         indices = []

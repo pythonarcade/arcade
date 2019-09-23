@@ -41,7 +41,7 @@ h1, h2, h3 {
 }
 div[class^='highlight'] {
     border-style: solid;
-    border-width: 2px 0px 2px 0px;
+    border-width: 2px 0 2px 0;
     background: #FCFCFC;
 }
 div[class^='highlight'] pre {

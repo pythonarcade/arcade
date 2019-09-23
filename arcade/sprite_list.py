@@ -7,7 +7,6 @@ from typing import Iterable
 from typing import TypeVar
 from typing import Generic
 from typing import List
-from typing import Optional
 
 import pyglet.gl as gl
 
