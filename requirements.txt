@@ -3,3 +3,6 @@ Pillow
 Pyglet>=1.4.2
 pyglet-ffmpeg2
 pytiled_parser
+pytest
+pymunk
+matplotlib
