@@ -27,7 +27,7 @@ from arcade.examples.pymunk_platformer.physics_utility import (
     resync_physics_sprites,
 )
 
-from constants import *
+from arcade.examples.pymunk_platformer.constants import *
 
 
 class MyGame(arcade.Window):
