@@ -218,6 +218,8 @@ class Window(pyglet.window.Window):
         :param float width: New width
         :param float height: New height
         """
+        super().on_resize(width, height)
+
         original_viewport = self.get_viewport()
 
         # unscaled_viewport = self.get_viewport_size()
