@@ -30,15 +30,9 @@ class PlaysoundException(Exception):
 
 def _load_sound_library():
     """
-    Special code for Windows so we grab the proper avbin from our directory.
+    Special code for Windows so we grab the proper library from our directory.
     Otherwise hope the correct package is installed.
     """
-
-    # lazy loading
-    if not _load_sound_library._sound_library_loaded:
-        _load_sound_library._sound_library_loaded = True
-    else:
-        return
 
     import pyglet_ffmpeg2
     pyglet_ffmpeg2.load_ffmpeg()
