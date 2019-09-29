@@ -668,8 +668,8 @@ def draw_ellipse_filled(center_x: float, center_y: float,
 
     :param float center_x: x position that is the center of the circle.
     :param float center_y: y position that is the center of the circle.
-    :param float height: height of the ellipse.
     :param float width: width of the ellipse.
+    :param float height: height of the ellipse.
     :param Color color: color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
     :param float tilt_angle: Angle in degrees to tilt the ellipse.
@@ -710,8 +710,8 @@ def draw_ellipse_outline(center_x: float, center_y: float, width: float,
 
     :param float center_x: x position that is the center of the circle.
     :param float center_y: y position that is the center of the circle.
-    :param float height: height of the ellipse.
     :param float width: width of the ellipse.
+    :param float height: height of the ellipse.
     :param Color color: color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
     :param float border_width: Width of the circle outline in pixels.
