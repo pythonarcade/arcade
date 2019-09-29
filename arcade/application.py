@@ -67,6 +67,10 @@ class Window(pyglet.window.Window):
             except pyglet.gl.GLException:
                 print("Warning: Anti-aliasing not supported on this computer.")
 
+        # Required for transparency
+        gl.glEnable(gl.GL_BLEND);
+        gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA);
+
         if update_rate:
             from pyglet import compat_platform
             if compat_platform == 'darwin' or compat_platform == 'linux':
