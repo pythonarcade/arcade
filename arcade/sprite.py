@@ -433,6 +433,12 @@ class Sprite:
 
     scale = property(_get_scale, _set_scale)
 
+    def rescale_relative_to_point(self, point: Point, factor: float) -> None:
+        """ Rescale the sprite relative to a different point than its center. """
+        self.scale *= factor
+        self.center_x = (self.center_x - point[0]) * factor + point[0]
+        self.center_y = (self.center_y - point[1]) * factor + point[1]
+
     def _get_center_x(self) -> float:
         """ Get the center x coordinate of the sprite. """
         return self._position[0]
