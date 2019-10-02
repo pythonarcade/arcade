@@ -1,6 +1,4 @@
 import arcade
-import pyglet
-import time
 import sys
 
 SCREEN_WIDTH = 800
@@ -13,6 +11,7 @@ def resource_path(file):
     path = 'resources/' + file
     # are we in a frozen environment (e.g. pyInstaller)?
     if getattr(sys, 'frozen', False):
+        # noinspection PyProtectedMember
         path = sys._MEIPASS.replace('\\', '/') + '/' + path
     return path
 

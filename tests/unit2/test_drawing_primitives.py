@@ -170,7 +170,7 @@ class MyGame(arcade.Window):
         assert color == (255, 255, 255)
 
         # Run the get image. Ideally we'd test the output
-        image = arcade.get_image()
+        arcade.get_image()
 
 
 def test_main():

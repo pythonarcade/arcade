@@ -148,10 +148,10 @@ class MyGame(arcade.Window):
             print("No joystick present, using keyboard controls")
         arcade.window_commands.schedule(self.spawn_enemy, ENEMY_SPAWN_INTERVAL)
 
-    def debug_joy_state(self, delta_time):
+    def debug_joy_state(self, _delta_time):
         dump_joystick_state(self.tick, self.joy)
 
-    def spawn_enemy(self, elapsed):
+    def spawn_enemy(self, _elapsed):
         if self.game_over:
             return
         x = random.randint(0, SCREEN_WIDTH)

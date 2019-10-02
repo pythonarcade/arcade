@@ -12,7 +12,6 @@ python -m arcade.examples.view_pause_screen
 """
 
 import arcade
-import random
 import os
 
 
@@ -36,7 +35,7 @@ class MenuView(arcade.View):
         arcade.draw_text("Click to advance.", WIDTH/2, HEIGHT/2-75,
                          arcade.color.GRAY, font_size=20, anchor_x="center")
 
-    def on_mouse_press(self, x, y, button, modifiers):
+    def on_mouse_press(self, _x, _y, _button, _modifiers):
         game = GameView()
         self.window.show_view(game)
 
@@ -75,7 +74,7 @@ class GameView(arcade.View):
         if self.player_sprite.bottom < 0 or self.player_sprite.top > HEIGHT:
             self.player_sprite.change_y *= -1
 
-    def on_key_press(self, key, modifiers):
+    def on_key_press(self, key, _modifiers):
         if key == arcade.key.ESCAPE:
             # pass self, the current view, to preserve this view's state
             pause = PauseView(self)
@@ -104,7 +103,7 @@ class PauseView(arcade.View):
                                           right=player_sprite.right,
                                           top=player_sprite.top,
                                           bottom=player_sprite.bottom,
-                                          color=(*arcade.color.ORANGE, 200))
+                                          color=arcade.color.ORANGE + (200,))
 
         arcade.draw_text("PAUSED", WIDTH/2, HEIGHT/2+50,
                          arcade.color.BLACK, font_size=50, anchor_x="center")
@@ -123,7 +122,7 @@ class PauseView(arcade.View):
                          font_size=20,
                          anchor_x="center")
 
-    def on_key_press(self, key, modifiers):
+    def on_key_press(self, key, _modifiers):
         if key == arcade.key.ESCAPE:   # resume game
             self.window.show_view(self.game_view)
         elif key == arcade.key.ENTER:  # reset game

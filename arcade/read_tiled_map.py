@@ -322,7 +322,6 @@ def generate_sprites(map_object: TiledMap, layer_name: str, scaling: float, base
     :return: List of sprites
     :rtype: SpriteList
     """
-    from warnings import warn
     sprite_list = SpriteList()
 
     if layer_name not in map_object.layers_int_data:

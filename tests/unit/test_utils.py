@@ -7,7 +7,8 @@ python -m pytest tests/unit/test_utils.py
 
 import arcade
 from pytest import approx
-from arcade.utils import _Vec2
+# noinspection PyProtectedMember
+from arcade.utils import _Vec2  # importing internal implementation class
 
 
 def test_lerp():

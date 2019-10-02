@@ -67,7 +67,7 @@ class MyGame(arcade.Window):
         self.space.gravity = (0.0, -900.0)
 
         # Lists of sprites or lines
-        self.sprite_list = arcade.SpriteList()
+        self.sprite_list: arcade.SpriteList[PhysicsSprite] = arcade.SpriteList()
         self.static_lines = []
 
         # Used for dragging shapes around with the mouse

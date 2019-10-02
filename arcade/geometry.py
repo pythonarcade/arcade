@@ -151,7 +151,6 @@ def is_point_in_polygon(x, y, polygon_point_list):
     Returns: bool
 
     """
-
     n = len(polygon_point_list)
     inside = False
 

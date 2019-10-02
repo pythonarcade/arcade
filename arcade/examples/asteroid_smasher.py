@@ -14,6 +14,8 @@ import math
 import arcade
 import os
 
+from typing import Optional, cast
+
 STARTING_ASTEROID_COUNT = 3
 SCALE = 0.5
 OFFSCREEN_SPACE = 300
@@ -157,7 +159,7 @@ class MyGame(arcade.Window):
 
         # Sprite lists
         self.all_sprites_list = None
-        self.asteroid_list = None
+        self.asteroid_list: Optional[arcade.SpriteList[AsteroidSprite]] = None
         self.bullet_list = None
         self.ship_life_list = None
 
@@ -363,7 +365,7 @@ class MyGame(arcade.Window):
                 asteroids = asteroids_spatial
 
                 for asteroid in asteroids:
-                    self.split_asteroid(asteroid)
+                    self.split_asteroid(cast(AsteroidSprite, asteroid))  # expected AsteroidSprite, got Sprite instead
                     asteroid.kill()
                     bullet.kill()
 
@@ -373,7 +375,7 @@ class MyGame(arcade.Window):
                     if self.lives > 0:
                         self.lives -= 1
                         self.player_sprite.respawn()
-                        self.split_asteroid(asteroids[0])
+                        self.split_asteroid(cast(AsteroidSprite, asteroids[0]))
                         asteroids[0].kill()
                         self.ship_life_list.pop().kill()
                         print("Crash")

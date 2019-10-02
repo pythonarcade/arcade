@@ -6,7 +6,7 @@ import pytest
 class MockWindow:
     """ Replace the pyglet base class with something we control """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *_args, **kwargs):
         self.height = kwargs['height']
         self.width = kwargs['width']
         self.caption = kwargs['caption']

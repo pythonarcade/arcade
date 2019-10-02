@@ -59,7 +59,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    window = MyGame()
+    MyGame()
     arcade.run()
 
 

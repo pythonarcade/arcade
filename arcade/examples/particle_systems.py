@@ -727,15 +727,15 @@ class MyGame(arcade.Window):
         self.emitter_factory_id = -1
         self.label = None
         self.emitter = None
+        self.emitter_timeout = 0
         self.obj = arcade.Sprite("images/bumper.png", 0.2, center_x=0, center_y=15)
         self.obj.change_x = 3
         self.frametime_plotter = FrametimePlotter()
         pyglet.clock.schedule_once(self.next_emitter, QUIET_BETWEEN_SPAWNS)
 
-    def next_emitter(self, time_delta):
+    def next_emitter(self, _time_delta):
         self.emitter_factory_id = (self.emitter_factory_id + 1) % len(self.factories)
         print("Changing emitter to {}".format(self.emitter_factory_id))
-        self.emitter_timeout = 0
         self.label, self.emitter = self.factories[self.emitter_factory_id]()
         self.frametime_plotter.add_event("spawn {}".format(self.emitter_factory_id))
 
@@ -762,7 +762,7 @@ class MyGame(arcade.Window):
                              anchor_x="center", anchor_y="center")
         if self.emitter:
             self.emitter.draw()
-            arcade.draw_text("Particles: " + str(len(self.emitter._particles)), 10, 30, arcade.color.PALE_GOLD, 12)
+            arcade.draw_text("Particles: " + str(self.emitter.get_count()), 10, 30, arcade.color.PALE_GOLD, 12)
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.ESCAPE:

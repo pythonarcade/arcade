@@ -37,7 +37,7 @@ class BaseView(arcade.View):
 
 
 class ViewOne(BaseView):
-    def on_mouse_motion(self, x, y, dx, dy):
+    def on_mouse_motion(self, _x, _y, _dx, _dy):
         self.window.mouse_motion_calls.append(self.__class__.__name__)
 
 
@@ -48,6 +48,7 @@ class ViewTwo(BaseView):
 def test_it_asserts_showing_view_of_none():
     win = FakeWindow()
     with pytest.raises(Exception):
+        # noinspection PyTypeChecker
         win.show_view(None)
 
 
@@ -79,6 +80,7 @@ def test_show_view_improper_argument_raises_value_error():
     window = FakeWindow()
 
     with pytest.raises(ValueError):
+        # noinspection PyTypeChecker
         window.show_view(None)
 
 

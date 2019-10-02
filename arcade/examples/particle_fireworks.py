@@ -218,22 +218,22 @@ class FireworksApp(arcade.Window):
         random.choice(launchers)(delta_time)
         pyglet.clock.schedule_once(self.launch_firework, random.uniform(LAUNCH_INTERVAL_MIN, LAUNCH_INTERVAL_MAX))
 
-    def launch_random_firework(self, delta_time):
+    def launch_random_firework(self, _delta_time):
         """Simple firework that explodes in a random color"""
         rocket = make_rocket(self.explode_firework)
         self.emitters.append(rocket)
 
-    def launch_ringed_firework(self, delta_time):
+    def launch_ringed_firework(self, _delta_time):
         """"Firework that has a basic explosion and a ring of sparks of a different color"""
         rocket = make_rocket(self.explode_ringed_firework)
         self.emitters.append(rocket)
 
-    def launch_sparkle_firework(self, delta_time):
+    def launch_sparkle_firework(self, _delta_time):
         """Firework which has sparks that sparkle"""
         rocket = make_rocket(self.explode_sparkle_firework)
         self.emitters.append(rocket)
 
-    def launch_spinner(self, delta_time):
+    def launch_spinner(self, _delta_time):
         """Start the spinner that throws sparks"""
         spinner1 = make_spinner()
         spinner2 = make_spinner()
@@ -350,12 +350,6 @@ def firework_spark_mutator(particle: arcade.FadeParticle):
 
 def rocket_smoke_mutator(particle: arcade.LifetimeParticle):
     particle.scale = arcade.lerp(0.5, 3.0, particle.lifetime_elapsed / particle.lifetime_original)
-    # A Sprite's scale doesn't affect generated textures
-    # (ex: make_soft_circle_texture) or scale being animated over time.
-    # The fix below is copied from Sprite.update_animation().
-    # Bug may have been recorded here: https://github.com/pvcraven/arcade/issues/331
-    particle.width = particle._texture.width * particle.scale
-    particle.height = particle._texture.height * particle.scale
 
 
 if __name__ == "__main__":

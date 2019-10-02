@@ -183,7 +183,8 @@ class MyGame(arcade.Window):
                 if total_program_time % 2 == 1:
 
                     # Take timings
-                    output = f"{total_program_time}, {len(self.coin_list)}, {self.fps.get_fps():.1f}, {self.processing_time:.4f}, {self.draw_time:.4f}\n"
+                    output = f"{total_program_time}, {len(self.coin_list)}, {self.fps.get_fps():.1f}, " \
+                             f"{self.processing_time:.4f}, {self.draw_time:.4f}\n"
 
                     self.results_file.write(output)
                     print(output, end="")

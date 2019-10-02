@@ -41,6 +41,8 @@ from arcade.joysticks import *
 from arcade.read_tiled_map import *
 from arcade.isometric import *
 from arcade.text import draw_text
+# noinspection PyDeprecation
 from arcade.text import create_text
+# noinspection PyDeprecation
 from arcade.text import render_text
 from arcade import tilemap

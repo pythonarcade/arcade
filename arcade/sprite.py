@@ -134,7 +134,7 @@ class Sprite:
         self._position = [center_x, center_y]
         self._angle = 0.0
 
-        self.velocity = [0, 0]
+        self.velocity = [0.0, 0.0]
         self.change_angle = 0
 
         self.boundary_left = None
@@ -245,7 +245,7 @@ class Sprite:
         self.change_y = 0
         self.change_angle = 0
 
-    def get_points(self) -> Tuple[Tuple[float, float]]:
+    def get_points(self) -> Tuple[Tuple[float, float], ...]:
         """
         Get the corner points for the rect that makes up the sprite.
         """
@@ -650,7 +650,7 @@ class Sprite:
         self.position = [self._position[0] + self.change_x, self._position[1] + self.change_y]
         self.angle += self.change_angle
 
-    def update_animation(self):
+    def update_animation(self, delta_time: float = 1/60):
         """
         Override this to add code that will change
         what image is shown, so the sprite can be
@@ -713,6 +713,7 @@ class Sprite:
             SpriteList of all overlapping Sprites from the original SpriteList
         """
         from arcade.geometry import check_for_collision_with_list
+        # noinspection PyTypeChecker
         return check_for_collision_with_list(self, sprite_list)
 
 
@@ -732,7 +733,7 @@ class AnimatedTimeSprite(Sprite):
         self.texture_change_frames = 5
         self.frame = 0
 
-    def update_animation(self):
+    def update_animation(self, delta_time: float = 1/60):
         """
         Logic for selecting the proper texture to use.
         """
@@ -762,7 +763,7 @@ class AnimatedTimeBasedSprite(Sprite):
                  image_x: float = 0, image_y: float = 0,
                  image_width: float = 0, image_height: float = 0,
                  center_x: float = 0, center_y: float = 0,
-                 repeat_count_x=1, repeat_count_y=1):
+                 _repeat_count_x=1, _repeat_count_y=1):
 
         super().__init__(filename=filename, scale=scale, image_x=image_x, image_y=image_y,
                          image_width=image_width, image_height=image_height,
@@ -771,7 +772,7 @@ class AnimatedTimeBasedSprite(Sprite):
         self.frames = []
         self.time_counter = 0.0
 
-    def update_animation(self, delta_time: float):
+    def update_animation(self, delta_time: float = 1/60):
         """
         Logic for selecting the proper texture to use.
         """
@@ -808,7 +809,7 @@ class AnimatedWalkingSprite(Sprite):
         self.last_texture_change_center_x = 0
         self.last_texture_change_center_y = 0
 
-    def update_animation(self):
+    def update_animation(self, delta_time: float = 1/60):
         """
         Logic for selecting the proper texture to use.
         """

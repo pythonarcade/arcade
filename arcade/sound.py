@@ -2,8 +2,6 @@
 Sound library.
 """
 
-from platform import system
-import typing
 import pyglet
 from pathlib import Path
 

@@ -61,6 +61,7 @@ class MyGame(arcade.Window):
         self.view_bottom = 0
         self.view_left = 0
         self.my_map = None
+        self.lines = None
 
     def setup(self):
         """ Set up the game and initialize the variables. """
