@@ -424,7 +424,7 @@ def open_window(width: Number, height: Number, window_title: str, resizable: boo
     """
 
     global _window
-    _window = Window(width, height, window_title, resizable = resizable, update_rate=None,
+    _window = Window(width, height, window_title, resizable=resizable, update_rate=None,
                      antialiasing=antialiasing)
     return _window
 

@@ -664,7 +664,7 @@ class SpriteList(Generic[T]):
         return self.sprite_list.pop()
 
 
-def get_closest_sprite(sprite: Sprite, sprite_list: SpriteList) -> Optional[Tuple[Sprite, float]]: # was Optional[(Sprite, float)]
+def get_closest_sprite(sprite: Sprite, sprite_list: SpriteList) -> Optional[Tuple[Sprite, float]]:
     """
     Given a Sprite and SpriteList, returns the closest sprite, and its distance.
 

@@ -9,6 +9,7 @@ If Python and Arcade are installed, this example can be run from the command lin
 python -m arcade.examples.stress_test_draw_moving_pygame
 """
 
+# noinspection PyPackageRequirements
 import pygame
 import random
 import os

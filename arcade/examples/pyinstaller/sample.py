@@ -11,7 +11,7 @@ def resource_path(file):
     path = 'resources/' + file
     # are we in a frozen environment (e.g. pyInstaller)?
     if getattr(sys, 'frozen', False):
-        # noinspection PyProtectedMember
+        # noinspection PyProtectedMember,PyUnresolvedReferences
         path = sys._MEIPASS.replace('\\', '/') + '/' + path
     return path
 

@@ -47,6 +47,7 @@ class MyGame(arcade.Window):
         # code, but it is needed to easily run the examples using "python -m"
         # as mentioned at the top of this program.
         file_path = os.path.dirname(os.path.abspath(__file__))
+        # noinspection PyUnresolvedReferences
         os.chdir(file_path / Path("../../arcade/examples"))
 
         # Sprite lists

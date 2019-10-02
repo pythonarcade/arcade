@@ -1301,6 +1301,7 @@ def get_pixel(x: int, y: int):
     :param int y: y location
     :returns: Color
     """
+    # noinspection PyCallingNonCallable,PyTypeChecker
     a = (gl.GLubyte * 3)(0)
     gl.glReadPixels(x, y, 1, 1, gl.GL_RGB, gl.GL_UNSIGNED_BYTE, a)
     red = a[0]
@@ -1335,6 +1336,7 @@ def get_image(x: int = 0, y: int = 0, width: int = None, height: int = None):
         height = window.height - y
 
     # Create an image buffer
+    # noinspection PyTypeChecker
     image_buffer = (gl.GLubyte * (4 * width * height))(0)
 
     gl.glReadPixels(x, y, width, height, gl.GL_RGBA, gl.GL_UNSIGNED_BYTE, image_buffer)

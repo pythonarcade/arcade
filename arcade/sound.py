@@ -83,6 +83,7 @@ def stop_sound(sound: pyglet.media.Source):
 
     :param sound:
     """
+    # noinspection PyUnresolvedReferences
     sound.pause()
 
 

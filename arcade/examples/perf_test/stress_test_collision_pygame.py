@@ -5,6 +5,7 @@ http://programarcadegames.com/
 http://simpson.edu/computer-science/
 """
 
+# noinspection PyPackageRequirements
 import pygame
 import random
 import os
