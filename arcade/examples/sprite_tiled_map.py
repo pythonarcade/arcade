@@ -87,6 +87,7 @@ class MyGame(arcade.Window):
         map_name = "map.tmx"
 
         # Read in the tiled map
+        # noinspection PyDeprecation
         my_map = arcade.read_tiled_map(map_name, SPRITE_SCALING)
 
         # --- Walls ---

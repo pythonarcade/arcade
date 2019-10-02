@@ -72,6 +72,7 @@ class MyGame(arcade.Window):
         self.floor_list = arcade.SpriteList()
         self.objects_list = arcade.SpriteList()
 
+        # noinspection PyDeprecation
         self.my_map = arcade.read_tiled_map('dungeon.tmx', SPRITE_SCALING)
 
         # Set up the player
