@@ -38,7 +38,7 @@ class MenuView(arcade.View):
         arcade.draw_text("Menu Screen - click to advance", WIDTH/2, HEIGHT/2,
                          arcade.color.BLACK, font_size=30, anchor_x="center")
 
-    def on_mouse_press(self, x, y, button, modifiers):
+    def on_mouse_press(self, _x, _y, _button, _modifiers):
         game_view = GameView()
         self.window.show_view(game_view)
 
@@ -52,7 +52,7 @@ class GameView(arcade.View):
         arcade.draw_text("Game - press SPACE to advance", WIDTH/2, HEIGHT/2,
                          arcade.color.BLACK, font_size=30, anchor_x="center")
 
-    def on_key_press(self, key, modifiers):
+    def on_key_press(self, key, _modifiers):
         if key == arcade.key.SPACE:
             game_over_view = GameOverView()
             self.window.show_view(game_over_view)
@@ -67,7 +67,7 @@ class GameOverView(arcade.View):
         arcade.draw_text("Game Over - press ESCAPE to advance", WIDTH/2, HEIGHT/2,
                          arcade.color.WHITE, 30, anchor_x="center")
 
-    def on_key_press(self, key, modifiers):
+    def on_key_press(self, key, _modifiers):
         if key == arcade.key.ESCAPE:
             menu_view = MenuView()
             self.window.show_view(menu_view)

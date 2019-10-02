@@ -31,7 +31,7 @@ def create_birds():
         bird_list.append([x, y])
 
 
-def update(delta_time):
+def update(_delta_time):
     """
     This is run every 1/60 of a second or so. Do not draw anything
     in this function.

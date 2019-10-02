@@ -216,7 +216,7 @@ def _create_sprite_from_tile(map_object, tile: pytiled_parser.objects.Tile,
 
 
 def _process_object_layer(map_object: pytiled_parser.objects.TileMap,
-                          layer: pytiled_parser.objects.Layer,
+                          layer: pytiled_parser.objects.ObjectLayer,
                           scaling: float = 1,
                           base_directory: str = "") -> SpriteList:
     sprite_list = SpriteList()

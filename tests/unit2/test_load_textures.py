@@ -23,7 +23,6 @@ class MyTestWindow(arcade.Window):
 
         self.player = arcade.AnimatedWalkingSprite()
 
-        character_scale = 1
         self.player.stand_right_textures = []
 
         self.player.stand_right_textures = arcade.load_textures("../../arcade/examples/images/character_sheet.png",

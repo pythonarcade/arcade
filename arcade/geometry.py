@@ -151,7 +151,6 @@ def is_point_in_polygon(x, y, polygon_point_list):
     Returns: bool
 
     """
-
     n = len(polygon_point_list)
     inside = False
 
@@ -163,6 +162,7 @@ def is_point_in_polygon(x, y, polygon_point_list):
                 if x <= max(p1x, p2x):
                     if p1y != p2y:
                         xints = (y - p1y) * (p2x - p1x) / (p2y - p1y) + p1x
+                    # noinspection PyUnboundLocalVariable
                     if p1x == p2x or x <= xints:
                         inside = not inside
         p1x, p1y = p2x, p2y

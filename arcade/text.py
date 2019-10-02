@@ -254,7 +254,7 @@ def draw_text(text: str,
 
         text_sprite = Sprite()
         text_sprite._texture = Texture(key)
-        text_sprite._texture.image = image
+        text_sprite.texture.image = image
 
         text_sprite.image = image
         text_sprite.texture_name = key

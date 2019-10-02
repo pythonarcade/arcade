@@ -6,7 +6,7 @@ import pymunk
 from arcade.examples.pymunk_platformer.physics_utility import (
     PymunkSprite,
 )
-from constants import *
+from arcade.examples.pymunk_platformer.constants import *
 
 
 def create_floor(space, sprite_list):

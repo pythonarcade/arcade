@@ -39,13 +39,16 @@ class MyGame(arcade.Window):
             print("There are no Joysticks")
             self.joystick = None
 
-    def on_joybutton_press(self, joystick, button):
+    # noinspection PyMethodMayBeStatic
+    def on_joybutton_press(self, _joystick, button):
         print("Button {} down".format(button))
 
-    def on_joybutton_release(self, joystick, button):
+    # noinspection PyMethodMayBeStatic
+    def on_joybutton_release(self, _joystick, button):
         print("Button {} up".format(button))
 
-    def on_joyhat_motion(self, joystick, hat_x, hat_y):
+    # noinspection PyMethodMayBeStatic
+    def on_joyhat_motion(self, _joystick, hat_x, hat_y):
         print("Hat ({}, {})".format(hat_x, hat_y))
 
     def setup(self):

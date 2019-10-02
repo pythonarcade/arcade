@@ -24,7 +24,7 @@ GRAVITY_CONSTANT = 0.3
 BOUNCINESS = 0.9
 
 
-def draw(delta_time):
+def draw():
     """
     Use this function to draw everything to the screen.
     """

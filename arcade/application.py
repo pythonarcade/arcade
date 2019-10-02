@@ -3,7 +3,7 @@ The main window class that all object-oriented applications should
 derive from.
 """
 from numbers import Number
-from typing import Tuple
+from typing import Tuple, Optional
 
 import pyglet.gl as gl
 import pyglet
@@ -30,7 +30,7 @@ class Window(pyglet.window.Window):
 
     def __init__(self, width: Number = 800, height: Number = 600,
                  title: str = 'Arcade Window', fullscreen: bool = False,
-                 resizable: bool = False, update_rate=1/60,
+                 resizable: bool = False, update_rate: Optional[float] = 1/60,
                  antialiasing: bool = True):
         """
         Construct a new window
@@ -68,8 +68,8 @@ class Window(pyglet.window.Window):
                 print("Warning: Anti-aliasing not supported on this computer.")
 
         # Required for transparency
-        gl.glEnable(gl.GL_BLEND);
-        gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA);
+        gl.glEnable(gl.GL_BLEND)
+        gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
 
         if update_rate:
             from pyglet import compat_platform
@@ -296,7 +296,8 @@ class Window(pyglet.window.Window):
         """
         super().set_visible(visible)
 
-    def set_viewport(self, left: Number, right: Number, bottom: Number, top: Number):
+    # noinspection PyMethodMayBeStatic
+    def set_viewport(self, left: float, right: float, bottom: float, top: float):
         """
         Set the viewport. (What coordinates we can see.
         Used to scale and/or scroll the screen.)
@@ -308,6 +309,7 @@ class Window(pyglet.window.Window):
         """
         set_viewport(left, right, bottom, top)
 
+    # noinspection PyMethodMayBeStatic
     def get_viewport(self) -> (float, float, float, float):
         """ Get the viewport. (What coordinates we can see.) """
         return get_viewport()
@@ -422,7 +424,7 @@ def open_window(width: Number, height: Number, window_title: str, resizable: boo
     """
 
     global _window
-    _window = Window(width, height, window_title, resizable = resizable, update_rate=None,
+    _window = Window(width, height, window_title, resizable=resizable, update_rate=None,
                      antialiasing=antialiasing)
     return _window
 
