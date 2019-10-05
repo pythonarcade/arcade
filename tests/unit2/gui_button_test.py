@@ -43,10 +43,10 @@ class MyGame(arcade.Window):
         self.theme = None
 
     def set_button_textures(self):
-        normal = "K:/Wamiq/Github/Arcade-Library/arcade/tests/unit2/gui_themes/Fantasy/Buttons/Normal.png"
-        hover = "K:/Wamiq/Github/Arcade-Library/arcade/tests/unit2/gui_themes/Fantasy/Buttons/Hover.png"
-        clicked = "K:/Wamiq/Github/Arcade-Library/arcade/tests/unit2/gui_themes/Fantasy/Buttons/Clicked.png"
-        locked = "K:/Wamiq/Github/Arcade-Library/arcade/tests/unit2/gui_themes/Fantasy/Buttons/Locked.png"
+        normal = "gui_themes/Fantasy/Buttons/Normal.png"
+        hover = "gui_themes/Fantasy/Buttons/Hover.png"
+        clicked = "gui_themes/Fantasy/Buttons/Clicked.png"
+        locked = "gui_themes/Fantasy/Buttons/Locked.png"
         self.theme.add_button_textures(normal, hover, clicked, locked)
 
     def setup_theme(self):

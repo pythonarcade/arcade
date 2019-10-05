@@ -56,14 +56,14 @@ class Window(arcade.Window):
         self.button_list.append(show_button)
 
     def set_dialogue_box_texture(self):
-        dialogue_box = "K:/Wamiq/Github/Arcade-Library/arcade/tests/unit2/gui_themes/Fantasy/DialogueBox/DialogueBox.png"
+        dialogue_box = "gui_themes/Fantasy/DialogueBox/DialogueBox.png"
         self.theme.add_dialogue_box_texture(dialogue_box)
 
     def set_button_texture(self):
-        normal = "K:/Wamiq/Github/Arcade-Library/arcade/tests/unit2/gui_themes/Fantasy/Buttons/Normal.png"
-        hover = "K:/Wamiq/Github/Arcade-Library/arcade/tests/unit2/gui_themes/Fantasy/Buttons/Hover.png"
-        clicked = "K:/Wamiq/Github/Arcade-Library/arcade/tests/unit2/gui_themes/Fantasy/Buttons/Clicked.png"
-        locked = "K:/Wamiq/Github/Arcade-Library/arcade/tests/unit2/gui_themes/Fantasy/Buttons/Locked.png"
+        normal = "gui_themes/Fantasy/Buttons/Normal.png"
+        hover = "gui_themes/Fantasy/Buttons/Hover.png"
+        clicked = "gui_themes/Fantasy/Buttons/Clicked.png"
+        locked = "gui_themes/Fantasy/Buttons/Locked.png"
         self.theme.add_button_textures(normal, hover, clicked, locked)
 
     def set_theme(self):
@@ -82,11 +82,11 @@ class Window(arcade.Window):
     def on_draw(self):
         arcade.start_render()
         super().on_draw()
-    
+
     def on_update(self, delta_time):
         if self.dialogue_box_list[0].active:
             return
-    
+
 def main():
     window = Window()
     window.setup()
