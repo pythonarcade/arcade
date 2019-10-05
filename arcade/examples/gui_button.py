@@ -1,4 +1,3 @@
-import arcade
 from arcade.gui import *
 
 
