@@ -9,6 +9,7 @@ If Python and Arcade are installed, this example can be run from the command lin
 python -m arcade.examples.stress_test_draw_moving_pygame
 """
 
+# noinspection PyPackageRequirements
 import pygame
 import random
 import os
@@ -183,7 +184,7 @@ class MyGame:
         self.draw_time = timeit.default_timer() - draw_start_time
         self.fps.tick()
 
-    def update(self, delta_time):
+    def update(self, _delta_time):
         # Start update timer
         start_time = timeit.default_timer()
 
@@ -223,7 +224,8 @@ class MyGame:
                 if total_program_time % 2 == 1:
 
                     # Take timings
-                    output = f"{total_program_time}, {len(self.coin_list)}, {self.fps.get_fps():.1f}, {self.processing_time:.4f}, {self.draw_time:.4f}\n"
+                    output = f"{total_program_time}, {len(self.coin_list)}, {self.fps.get_fps():.1f}, " \
+                             f"{self.processing_time:.4f}, {self.draw_time:.4f}\n"
                     print(output, end="")
                     self.results_file.write(output)
 

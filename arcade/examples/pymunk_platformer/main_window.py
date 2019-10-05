@@ -27,7 +27,7 @@ from arcade.examples.pymunk_platformer.physics_utility import (
     resync_physics_sprites,
 )
 
-from constants import *
+from arcade.examples.pymunk_platformer.constants import *
 
 
 class MyGame(arcade.Window):
@@ -53,7 +53,7 @@ class MyGame(arcade.Window):
         self.grab_joint = None
 
         # Lists of sprites
-        self.dynamic_sprite_list = arcade.SpriteList()
+        self.dynamic_sprite_list = arcade.SpriteList[PymunkSprite]()
         self.static_sprite_list = arcade.SpriteList()
 
         # Used for dragging shapes around with the mouse
@@ -228,29 +228,29 @@ class MyGame(arcade.Window):
     def punch(self):
         # --- Punch left
         # See if we have a physics object to our right
-        self.check_point = (self.player.right + 10, self.player.center_y)
-        shape_list = self.space.point_query(self.check_point, 1, pymunk.ShapeFilter())
+        check_point = (self.player.right + 10, self.player.center_y)
+        shape_list = self.space.point_query(check_point, 1, pymunk.ShapeFilter())
 
         # Apply force to any object to our right
         for shape in shape_list:
             shape.shape.body.apply_impulse_at_world_point((PLAYER_PUNCH_IMPULSE, PLAYER_PUNCH_IMPULSE),
-                                                          self.check_point)
+                                                          check_point)
 
         # --- Punch right
         # See if we have a physics object to our left
-        self.check_point = (self.player.left - 10, self.player.center_y)
-        shape_list = self.space.point_query(self.check_point, 1, pymunk.ShapeFilter())
+        check_point = (self.player.left - 10, self.player.center_y)
+        shape_list = self.space.point_query(check_point, 1, pymunk.ShapeFilter())
 
         # Apply force to any object to our right
         for shape in shape_list:
             shape.shape.body.apply_impulse_at_world_point((-PLAYER_PUNCH_IMPULSE, PLAYER_PUNCH_IMPULSE),
-                                                          self.check_point)
+                                                          check_point)
 
     def grab(self):
         """ Grab something """
         # See if we have a physics object to our right
-        self.check_point = (self.player.right + 10, self.player.center_y)
-        shape_list = self.space.point_query(self.check_point, 1, pymunk.ShapeFilter())
+        check_point = (self.player.right + 10, self.player.center_y)
+        shape_list = self.space.point_query(check_point, 1, pymunk.ShapeFilter())
 
         # Create a joint for an item to our right
         for shape in shape_list:

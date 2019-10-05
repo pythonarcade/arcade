@@ -1,6 +1,8 @@
 import os
 import arcade
 
+from typing import cast
+
 
 file_path = os.path.dirname(os.path.abspath(__file__))
 os.chdir(file_path)
@@ -74,16 +76,16 @@ def test_sprite_collides_with_list():
     player.height = 10
 
     # collides with none
-    result = player.collides_with_list(coins)
+    result = player.collides_with_list(cast(list, coins))
     assert len(result) == 0, "Should return empty list"
 
     # collides with one
     player.center_x = -5
     player.center_y = 0
-    result = player.collides_with_list(coins)
+    result = player.collides_with_list(cast(list, coins))
     assert len(result) == 1, "Should collide with one"
 
     # collides with two
     player.center_x = 5
-    result = player.collides_with_list(coins)
+    result = player.collides_with_list(cast(list, coins))
     assert len(result) == 2, "Should collide with two"

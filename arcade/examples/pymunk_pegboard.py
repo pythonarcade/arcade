@@ -49,7 +49,7 @@ class MyGame(arcade.Window):
         os.chdir(file_path)
 
         self.peg_list = arcade.SpriteList()
-        self.ball_list = arcade.SpriteList()
+        self.ball_list: arcade.SpriteList[CircleSprite] = arcade.SpriteList()
         arcade.set_background_color(arcade.color.DARK_SLATE_GRAY)
 
         self.draw_time = 0

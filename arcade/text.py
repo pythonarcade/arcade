@@ -150,7 +150,7 @@ def draw_text(text: str,
         elif anchor_y == "bottom" or anchor_y == "baseline":
             text_sprite.bottom = start_y
         else:
-            raise ValueError(f"anchor_x should be 'left', 'center', or 'right'. Not '{anchor_y}'")
+            raise ValueError(f"anchor_y should be 'top', 'center', 'bottom', or 'baseline'. Not '{anchor_y}'")
 
         text_sprite.angle = rotation
     else:
@@ -254,7 +254,7 @@ def draw_text(text: str,
 
         text_sprite = Sprite()
         text_sprite._texture = Texture(key)
-        text_sprite._texture.image = image
+        text_sprite.texture.image = image
 
         text_sprite.image = image
         text_sprite.texture_name = key
@@ -277,7 +277,7 @@ def draw_text(text: str,
         elif anchor_y == "bottom" or anchor_y == "baseline":
             text_sprite.bottom = start_y
         else:
-            raise ValueError(f"anchor_x should be 'top', 'center', 'bottom', or 'baseline'. Not '{anchor_y}'")
+            raise ValueError(f"anchor_y should be 'top', 'center', 'bottom', or 'baseline'. Not '{anchor_y}'")
 
         text_sprite.angle = rotation
 

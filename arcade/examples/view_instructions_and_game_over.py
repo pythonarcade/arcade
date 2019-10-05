@@ -43,7 +43,7 @@ class MenuView(arcade.View):
         arcade.draw_text("Click to advance", WIDTH/2, HEIGHT/2-75,
                          arcade.color.GRAY, font_size=20, anchor_x="center")
 
-    def on_mouse_press(self, x, y, button, modifiers):
+    def on_mouse_press(self, _x, _y, _button, _modifiers):
         instructions_view = InstructionView()
         self.window.show_view(instructions_view)
 
@@ -59,7 +59,7 @@ class InstructionView(arcade.View):
         arcade.draw_text("Click to advance", WIDTH/2, HEIGHT/2-75,
                          arcade.color.GRAY, font_size=20, anchor_x="center")
 
-    def on_mouse_press(self, x, y, button, modifiers):
+    def on_mouse_press(self, _x, _y, _button, _modifiers):
         game_view = GameView()
         self.window.show_view(game_view)
 
@@ -137,7 +137,7 @@ class GameView(arcade.View):
             self.window.set_mouse_visible(True)
             self.window.show_view(game_over_view)
 
-    def on_mouse_motion(self, x, y, dx, dy):
+    def on_mouse_motion(self, x, y, _dx, _dy):
         """
         Called whenever the mouse moves.
         """
@@ -146,6 +146,10 @@ class GameView(arcade.View):
 
 
 class GameOverView(arcade.View):
+    def __init__(self):
+        super().__init__()
+        self.time_taken = 0
+
     def on_show(self):
         arcade.set_background_color(arcade.color.BLACK)
 
@@ -168,7 +172,7 @@ class GameOverView(arcade.View):
         output_total = f"Total Score: {self.window.total_score}"
         arcade.draw_text(output_total, 10, 10, arcade.color.WHITE, 14)
 
-    def on_mouse_press(self, x, y, button, modifiers):
+    def on_mouse_press(self, _x, _y, _button, _modifiers):
         game_view = GameView()
         self.window.show_view(game_view)
 

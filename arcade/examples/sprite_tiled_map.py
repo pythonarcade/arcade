@@ -61,6 +61,7 @@ class MyGame(arcade.Window):
         self.physics_engine = None
         self.view_left = 0
         self.view_bottom = 0
+        self.end_of_map = 0
         self.game_over = False
         self.last_time = None
         self.frame_count = 0
@@ -86,6 +87,7 @@ class MyGame(arcade.Window):
         map_name = "map.tmx"
 
         # Read in the tiled map
+        # noinspection PyDeprecation
         my_map = arcade.read_tiled_map(map_name, SPRITE_SCALING)
 
         # --- Walls ---

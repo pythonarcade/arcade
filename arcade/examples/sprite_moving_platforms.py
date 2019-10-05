@@ -11,6 +11,8 @@ python -m arcade.examples.sprite_moving_platforms
 import arcade
 import os
 
+from typing import List, Union
+
 SPRITE_SCALING = 0.5
 
 SCREEN_WIDTH = 1000
@@ -35,7 +37,7 @@ def get_map():
     map_array = []
     for line in map_file:
         line = line.strip()
-        map_row = line.split(",")
+        map_row: List[Union[int, str]] = line.split(",")
         for index, item in enumerate(map_row):
             map_row[index] = int(item)
         map_array.append(map_row)
@@ -72,6 +74,7 @@ class MyGame(arcade.Window):
         self.physics_engine = None
         self.view_left = 0
         self.view_bottom = 0
+        self.end_of_map = 0
         self.game_over = False
 
     def setup(self):
@@ -97,7 +100,7 @@ class MyGame(arcade.Window):
 
         for row_index, row in enumerate(map_array):
             for column_index, item in enumerate(row):
-
+                wall = None
                 if item == -1:
                     continue
                 elif item == 0:

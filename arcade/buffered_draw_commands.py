@@ -12,8 +12,7 @@ from collections import defaultdict
 import pyglet.gl as gl
 import numpy as np
 
-from typing import Iterable
-from typing import List
+from typing import Iterable, Sequence
 from typing import TypeVar
 from typing import Generic
 
@@ -252,7 +251,7 @@ def create_lines(point_list: PointList,
 
 
 def create_lines_with_colors(point_list: PointList,
-                             color_list: List[Color],
+                             color_list: Sequence[Color],
                              line_width: float = 1):
 
     if line_width == 1:

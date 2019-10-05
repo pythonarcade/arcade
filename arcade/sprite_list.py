@@ -8,6 +8,7 @@ from typing import TypeVar
 from typing import Generic
 from typing import List
 from typing import Tuple
+from typing import Optional
 
 import pyglet.gl as gl
 
@@ -18,7 +19,6 @@ from PIL import Image
 
 from arcade.sprite import Sprite
 from arcade.sprite import get_distance_between_sprites
-from arcade.sprite import AnimatedTimeBasedSprite
 
 from arcade.draw_commands import rotate_point
 from arcade.window_commands import get_projection
@@ -355,12 +355,9 @@ class SpriteList(Generic[T]):
         for sprite in self.sprite_list:
             sprite.update()
 
-    def update_animation(self, delta_time=1/60):
+    def update_animation(self, delta_time: float = 1/60):
         for sprite in self.sprite_list:
-            if isinstance(sprite, AnimatedTimeBasedSprite):
-                sprite.update_animation(delta_time)
-            else:
-                sprite.update_animation()
+            sprite.update_animation(delta_time)
 
     def _get_center(self) -> Tuple[float, float]:
         """ Get the mean center coordinates of all sprites in the list. """
@@ -426,17 +423,18 @@ class SpriteList(Generic[T]):
 
         for sprite in self.sprite_list:
 
-            if sprite._texture is None:
+            # noinspection PyProtectedMember
+            if sprite.texture is None:
                 raise Exception("Error: Attempt to draw a sprite without a texture set.")
 
-            name_of_texture_to_check = sprite._texture.name
+            name_of_texture_to_check = sprite.texture.name
             if name_of_texture_to_check not in self.array_of_texture_names:
                 new_texture = True
                 # print("New because of ", name_of_texture_to_check)
 
             if name_of_texture_to_check not in new_array_of_texture_names:
                 new_array_of_texture_names.append(name_of_texture_to_check)
-                image = sprite._texture.image
+                image = sprite.texture.image
                 new_array_of_images.append(image)
 
         # print("New texture end: ", new_texture)
@@ -503,7 +501,7 @@ class SpriteList(Generic[T]):
         # coordinates for that sprite's image.
         array_of_sub_tex_coords = []
         for sprite in self.sprite_list:
-            index = self.array_of_texture_names.index(sprite._texture.name)
+            index = self.array_of_texture_names.index(sprite.texture.name)
             array_of_sub_tex_coords.append(tex_coords[index])
 
         # Create numpy array with info on location and such
@@ -573,7 +571,7 @@ class SpriteList(Generic[T]):
             self.sprite_data[i]['size'] = [sprite.width / 2, sprite.height / 2]
             self.sprite_data[i]['color'] = sprite.color + (sprite.alpha, )
 
-    def update_texture(self, sprite):
+    def update_texture(self, _sprite):
         """ Make sure we update the texture for this sprite for the next batch
         drawing"""
         if self.vao is None:
@@ -679,7 +677,7 @@ class SpriteList(Generic[T]):
         return self.sprite_list.pop()
 
 
-def get_closest_sprite(sprite: Sprite, sprite_list: SpriteList) -> (Sprite, float):
+def get_closest_sprite(sprite: Sprite, sprite_list: SpriteList) -> Optional[Tuple[Sprite, float]]:
     """
     Given a Sprite and SpriteList, returns the closest sprite, and its distance.
 

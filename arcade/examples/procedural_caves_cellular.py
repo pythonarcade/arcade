@@ -46,7 +46,7 @@ MERGE_SPRITES = False
 
 def create_grid(width, height):
     """ Create a two-dimensional grid of specified size. """
-    return [[0 for x in range(width)] for y in range(height)]
+    return [[0 for _x in range(width)] for _y in range(height)]
 
 
 def initialize_grid(grid):
@@ -121,6 +121,7 @@ class MyGame(arcade.Window):
         self.view_bottom = 0
         self.view_left = 0
         self.draw_time = 0
+        self.processing_time = 0
         self.physics_engine = None
 
         arcade.set_background_color(arcade.color.BLACK)

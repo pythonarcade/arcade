@@ -15,6 +15,7 @@ import numpy as np
 from numbers import Number
 from typing import Callable
 from typing import Union
+from typing import cast
 from arcade.arcade_types import Color
 
 _left = -1
@@ -92,7 +93,7 @@ def pause(seconds: Number):
 
     :param float seconds: Time interval to pause in seconds.
     """
-    time.sleep(seconds)
+    time.sleep(cast(float, seconds))
 
 
 def get_window() -> Union[pyglet.window.Window, None]:
@@ -130,15 +131,16 @@ def get_scaling_factor(window):
     from pyglet import compat_platform
     if compat_platform == 'darwin':
         from pyglet.libs.darwin.cocoapy import NSMakeRect
+        # noinspection PyProtectedMember
         view = window.context._nscontext.view()
-        content_rect = NSMakeRect(0, 0, window._width, window._height)  # Get size, possibly scaled
+        content_rect = NSMakeRect(0, 0, window.width, window.height)  # Get size, possibly scaled
         bounds = view.convertRectFromBacking_(content_rect)  # Convert to actual pixel sizes
         return int(content_rect.size.width / bounds.size.width)
     else:
         return 1
 
 
-def set_viewport(left: Number, right: Number, bottom: Number, top: Number):
+def set_viewport(left: float, right: float, bottom: float, top: float):
     """
     This sets what coordinates the window will cover.
 

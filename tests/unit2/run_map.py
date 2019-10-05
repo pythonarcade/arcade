@@ -56,6 +56,9 @@ class MyGame(arcade.Window):
         self.view_bottom = 0
         self.view_left = 0
 
+        # Calculate the right edge of the map in pixels
+        self.end_of_map = 0
+
         # Keep track of the score
         self.score = 0
 
@@ -98,15 +101,15 @@ class MyGame(arcade.Window):
         self.end_of_map = my_map.map_size.width * GRID_PIXEL_SIZE
 
         # -- Platforms
-        self.wall_list = arcade.tilemap.generate_sprites_from_layer(my_map,
-                                                                    "Platforms",
-                                                                    scaling=TILE_SCALING,
-                                                                    base_directory="test_data")
+        self.wall_list = arcade.tilemap.process_layer(my_map,
+                                                      "Platforms",
+                                                      scaling=TILE_SCALING,
+                                                      base_directory="test_data")
 
-        self.coin_list = arcade.tilemap.generate_sprites_from_layer(my_map,
-                                                                    "Coins",
-                                                                    scaling=TILE_SCALING,
-                                                                    base_directory="test_data")
+        self.coin_list = arcade.tilemap.process_layer(my_map,
+                                                      "Coins",
+                                                      scaling=TILE_SCALING,
+                                                      base_directory="test_data")
 
         # --- Other stuff
         # Set the background color

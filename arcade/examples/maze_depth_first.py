@@ -62,7 +62,7 @@ def make_maze_depth_first(maze_width, maze_height):
     h = (len(maze) - 1) // 2
     vis = [[0] * w + [1] for _ in range(h)] + [[1] * (w + 1)]
 
-    def walk(x, y):
+    def walk(x: int, y: int):
         vis[y][x] = 1
 
         d = [(x - 1, y), (x, y + 1), (x + 1, y), (x, y - 1)]

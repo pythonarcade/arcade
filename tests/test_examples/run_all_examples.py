@@ -5,7 +5,6 @@ If Python and Arcade are installed, this example can be run from the command lin
 python -m tests.test_examples.run_all_examples
 """
 import subprocess
-import argparse
 import os
 import glob
 

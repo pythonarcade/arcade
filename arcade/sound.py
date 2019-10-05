@@ -2,8 +2,6 @@
 Sound library.
 """
 
-from platform import system
-import typing
 import pyglet
 from pathlib import Path
 
@@ -85,6 +83,7 @@ def stop_sound(sound: pyglet.media.Source):
 
     :param sound:
     """
+    # noinspection PyUnresolvedReferences
     sound.pause()
 
 

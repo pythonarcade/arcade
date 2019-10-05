@@ -143,8 +143,7 @@ def test_create_polygon(mocker):
     mock = mocker.patch("arcade.buffered_draw_commands.create_line_generic_with_colors")
     create_polygon(
         point_list=[(30, 20), (10, 40), (50, 80), (90, 40), (50, 20)],
-        color=(100, 110, 120),
-        border_width=2
+        color=(100, 110, 120)
     )
     mock.assert_called_with(
         [(30, 20), (50, 20), (10, 40), (90, 40), (50, 80)],

@@ -127,7 +127,8 @@ class RLDungeonGenerator:
                 for c in range(room_start_col, room_start_col + room_width):
                     self.dungeon[r][c] = '.'
 
-    def are_rooms_adjacent(self, room1, room2):
+    @staticmethod
+    def are_rooms_adjacent(room1, room2):
         adj_rows = []
         adj_cols = []
         for r in range(room1.row, room1.row + room1.height):
@@ -140,7 +141,8 @@ class RLDungeonGenerator:
 
         return adj_rows, adj_cols
 
-    def distance_between_rooms(self, room1, room2):
+    @staticmethod
+    def distance_between_rooms(room1, room2):
         centre1 = (room1.row + room1.height // 2, room1.col + room1.width // 2)
         centre2 = (room2.row + room2.height // 2, room2.col + room2.width // 2)
 
@@ -288,7 +290,7 @@ class MyGame(arcade.Window):
             for row in range(dg.height):
                 for column in range(dg.width):
                     value = dg.dungeon[row][column]
-                    if value.sqr == '#':
+                    if value == '#':
                         wall = arcade.Sprite("images/grassCenter.png", WALL_SPRITE_SCALING)
                         wall.center_x = column * WALL_SPRITE_SIZE + WALL_SPRITE_SIZE / 2
                         wall.center_y = row * WALL_SPRITE_SIZE + WALL_SPRITE_SIZE / 2

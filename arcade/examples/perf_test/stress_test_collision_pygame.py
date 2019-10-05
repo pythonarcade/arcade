@@ -5,6 +5,7 @@ http://programarcadegames.com/
 http://simpson.edu/computer-science/
 """
 
+# noinspection PyPackageRequirements
 import pygame
 import random
 import os
@@ -105,6 +106,9 @@ class Player(pygame.sprite.Sprite):
         # Update the position of this object by setting the values
         # of rect.x and rect.y
         self.rect = self.image.get_rect()
+
+        self.change_x = 0
+        self.change_y = 0
 
     def update(self):
         """ Called each frame. """
@@ -210,7 +214,7 @@ class MyGame:
         self.draw_time = timeit.default_timer() - draw_start_time
         self.fps.tick()
 
-    def update(self, delta_time):
+    def update(self, _delta_time):
         # Start update timer
         self.player_list.update()
 
@@ -254,7 +258,8 @@ class MyGame:
                 if total_program_time % 2 == 1:
 
                     # Take timings
-                    output = f"{total_program_time}, {len(self.coin_list)}, {self.fps.get_fps():.1f}, {self.processing_time:.4f}, {self.draw_time:.4f}\n"
+                    output = f"{total_program_time}, {len(self.coin_list)}, {self.fps.get_fps():.1f}, " \
+                             f"{self.processing_time:.4f}, {self.draw_time:.4f}\n"
                     print(output, end="")
                     self.results_file.write(output)
 

@@ -6,14 +6,14 @@ These trade away some flexibility in favor of simplicity to allow beginners to s
 
 import arcade
 import random
-from typing import List
+from typing import Sequence
 from arcade.arcade_types import Point
 from arcade.particle import FilenameOrTexture
 
 
 def make_burst_emitter(
         center_xy: Point,
-        filenames_and_textures: List[FilenameOrTexture],
+        filenames_and_textures: Sequence[FilenameOrTexture],
         particle_count: int,
         particle_speed: float,
         particle_lifetime_min: float,
@@ -38,7 +38,7 @@ def make_burst_emitter(
 
 def make_interval_emitter(
         center_xy: Point,
-        filenames_and_textures: List[FilenameOrTexture],
+        filenames_and_textures: Sequence[FilenameOrTexture],
         emit_interval: float,
         emit_duration: float,
         particle_speed: float,

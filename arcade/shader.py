@@ -288,11 +288,11 @@ class Buffer:
     @classmethod
     def create_with_size(cls, size: int, usage: str = 'static'):
         """Create an empty Buffer storage of the given size."""
-        buffer = Buffer(b"", usage=usage)
-        glBindBuffer(GL_ARRAY_BUFFER, buffer.buffer_id)
+        empty_buffer = Buffer(b"", usage=usage)
+        glBindBuffer(GL_ARRAY_BUFFER, empty_buffer.buffer_id)
         glBufferData(GL_ARRAY_BUFFER, size, None, Buffer.usages[usage])
-        buffer.size = size
-        return buffer
+        empty_buffer.size = size
+        return empty_buffer
 
     @staticmethod
     def release(buffer_id):
@@ -362,12 +362,12 @@ class BufferDescription:
     }
 
     def __init__(self,
-                 buffer: Buffer,
+                 buff: Buffer,
                  formats: str,
                  attributes: Iterable[str],
                  normalized: Iterable[str] = None,
                  instanced: bool = False):
-        self.buffer = buffer
+        self.buffer = buff
         self.attributes = list(attributes)
         self.normalized = set() if normalized is None else set(normalized)
         self.instanced = instanced
@@ -425,10 +425,10 @@ class VertexArray:
     """
 
     def __init__(self,
-                 program: Program,
+                 prog: Program,
                  content: Iterable[BufferDescription],
                  index_buffer: Buffer = None):
-        self.program = program.prog_id
+        self.program = prog.prog_id
         self.vao = vao = GLuint()
         self.num_vertices = -1
         self.ibo = index_buffer
@@ -461,7 +461,7 @@ class VertexArray:
         glUseProgram(0)
 
     def _enable_attrib(self, buf_desc: BufferDescription):
-        buffer = buf_desc.buffer
+        buff = buf_desc.buffer
         stride = sum(attribsize for _, attribsize, _ in buf_desc.formats)
 
         if buf_desc.instanced:
@@ -470,10 +470,10 @@ class VertexArray:
                     "The first vertex attribute cannot be a per instance attribute."
                 )
         else:
-            self.num_vertices = max(self.num_vertices, buffer.size // stride)
+            self.num_vertices = max(self.num_vertices, buff.size // stride)
             # print(f"Number of vertices: {self.num_vertices}")
 
-        glBindBuffer(GL_ARRAY_BUFFER, buffer.buffer_id)
+        glBindBuffer(GL_ARRAY_BUFFER, buff.buffer_id)
         offset = 0
         for (size, attribsize, gl_type_enum), attrib in zip(buf_desc.formats, buf_desc.attributes):
             loc = glGetAttribLocation(self.program, attrib.encode('utf-8'))
@@ -498,10 +498,10 @@ class VertexArray:
             glDrawArraysInstanced(mode, 0, self.num_vertices, instances)
 
 
-def vertex_array(program: GLuint, content, index_buffer=None):
+def vertex_array(prog: GLuint, content, index_buffer=None):
     """Create a new Vertex Array.
     """
-    return VertexArray(program, content, index_buffer)
+    return VertexArray(prog, content, index_buffer)
 
 
 class Texture:

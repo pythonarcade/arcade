@@ -29,12 +29,12 @@ SCREEN_HEIGHT = (HEIGHT + MARGIN) * ROW_COUNT + MARGIN
 SCREEN_TITLE = "Tetris"
 
 colors = [
-          (0,   0,   0  ),
-          (255, 0,   0  ),
-          (0,   150, 0  ),
+          (0,   0,   0),
+          (255, 0,   0),
+          (0,   150, 0),
           (0,   0,   255),
-          (255, 120, 0  ),
-          (255, 255, 0  ),
+          (255, 120, 0),
+          (255, 255, 0),
           (180, 0,   255),
           (0,   220, 220)
           ]
@@ -65,11 +65,12 @@ tetris_shapes = [
 
 def create_textures():
     """ Create a list of images for sprites based on the global colors. """
-    texture_list = []
+    new_textures = []
     for color in colors:
+        # noinspection PyUnresolvedReferences
         image = PIL.Image.new('RGB', (WIDTH, HEIGHT), color)
-        texture_list.append(arcade.Texture(str(color), image=image))
-    return texture_list
+        new_textures.append(arcade.Texture(str(color), image=image))
+    return new_textures
 
 
 texture_list = create_textures()
@@ -96,7 +97,7 @@ def check_collision(board, shape, offset):
 def remove_row(board, row):
     """ Remove a row from the board, add a blank row on top. """
     del board[row]
-    return [[0 for i in range(COLUMN_COUNT)]] + board
+    return [[0 for _ in range(COLUMN_COUNT)]] + board
 
 
 def join_matrixes(matrix_1, matrix_2, matrix_2_offset):
@@ -111,9 +112,9 @@ def join_matrixes(matrix_1, matrix_2, matrix_2_offset):
 def new_board():
     """ Create a grid of 0's. Add 1's to the bottom for easier collision detection. """
     # Create the main board of 0's
-    board = [[0 for x in range(COLUMN_COUNT)] for y in range(ROW_COUNT)]
+    board = [[0 for _x in range(COLUMN_COUNT)] for _y in range(ROW_COUNT)]
     # Add a bottom border of 1's
-    board += [[1 for x in range(COLUMN_COUNT)]]
+    board += [[1 for _x in range(COLUMN_COUNT)]]
     return board
 
 
@@ -132,6 +133,10 @@ class MyGame(arcade.Window):
         self.game_over = False
         self.paused = False
         self.board_sprite_list = None
+
+        self.stone = None
+        self.stone_x = 0
+        self.stone_y = 0
 
     def new_stone(self):
         """
@@ -228,6 +233,7 @@ class MyGame(arcade.Window):
         elif key == arcade.key.DOWN:
             self.drop()
 
+    # noinspection PyMethodMayBeStatic
     def draw_grid(self, grid, offset_x, offset_y):
         """
         Draw the grid. Used to draw the falling stones. The board is drawn

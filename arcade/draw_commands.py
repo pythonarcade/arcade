@@ -21,6 +21,7 @@ from arcade.window_commands import get_projection
 from arcade.window_commands import get_window
 from arcade.arcade_types import Color
 from arcade.arcade_types import PointList
+from arcade.arcade_types import RectList
 from arcade import shader
 from arcade.earclip import earclip
 from arcade.utils import *
@@ -146,8 +147,9 @@ class Texture:
             self.height = 0
 
         self._sprite = None
-        self._sprite = None
+        self._sprite_list = None
 
+    # noinspection PyUnusedLocal
     def draw(self, center_x: float, center_y: float, width: float,
              height: float, angle: float = 0,
              alpha: int = 255, transparent: bool = True,
@@ -191,7 +193,7 @@ class Texture:
 
 
 def load_textures(file_name: str,
-                  image_location_list: PointList,
+                  image_location_list: RectList,
                   mirrored: bool = False,
                   flipped: bool = False,
                   scale: float = 1) -> List['Texture']:
@@ -208,7 +210,7 @@ def load_textures(file_name: str,
     http://programarcadegames.com/index.php?chapter=introduction_to_graphics&lang=en#section_5
 
     :param str file_name: Name of the file.
-    :param PointList image_location_list: List of image locations. Each location should be
+    :param RectList image_location_list: List of image sub-locations. Each rectangle should be
            a list of four floats. ``[x, y, width, height]``.
     :param bool mirrored: If set to true, the image is mirrored left to right.
     :param bool flipped: If set to true, the image is flipped upside down.
@@ -704,7 +706,7 @@ def draw_ellipse_filled(center_x: float, center_y: float,
 def draw_ellipse_outline(center_x: float, center_y: float, width: float,
                          height: float, color: Color,
                          border_width: float = 1, tilt_angle: float = 0,
-                         num_segments=128):
+                         num_segments: int = 128):
     """
     Draw the outline of an ellipse.
 
@@ -716,7 +718,7 @@ def draw_ellipse_outline(center_x: float, center_y: float, width: float,
          RGBA format.
     :param float border_width: Width of the circle outline in pixels.
     :param float tilt_angle: Angle in degrees to tilt the ellipse.
-    :param float num_segments: Number of line segments used to make the ellipse
+    :param int num_segments: Number of line segments used to make the ellipse
     """
 
     if border_width == 1:
@@ -1259,10 +1261,11 @@ def draw_texture_rectangle(center_x: float, center_y: float, width: float,
     """
 
     texture.draw(center_x, center_y, width,
-                 height, angle, alpha,
+                 height, angle, alpha, False,
                  repeat_count_x, repeat_count_y)
 
 
+# noinspection PyUnusedLocal
 def draw_xywh_rectangle_textured(bottom_left_x: float, bottom_left_y: float,
                                  width: float, height: float,
                                  texture: Texture, angle: float = 0,
@@ -1298,6 +1301,7 @@ def get_pixel(x: int, y: int):
     :param int y: y location
     :returns: Color
     """
+    # noinspection PyCallingNonCallable,PyTypeChecker
     a = (gl.GLubyte * 3)(0)
     gl.glReadPixels(x, y, 1, 1, gl.GL_RGB, gl.GL_UNSIGNED_BYTE, a)
     red = a[0]
@@ -1332,6 +1336,7 @@ def get_image(x: int = 0, y: int = 0, width: int = None, height: int = None):
         height = window.height - y
 
     # Create an image buffer
+    # noinspection PyTypeChecker
     image_buffer = (gl.GLubyte * (4 * width * height))(0)
 
     gl.glReadPixels(x, y, width, height, gl.GL_RGBA, gl.GL_UNSIGNED_BYTE, image_buffer)

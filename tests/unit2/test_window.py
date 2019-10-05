@@ -9,6 +9,13 @@ def test_window():
     arcade.set_background_color(arcade.color.AMAZON)
     w = arcade.get_window()
     assert w is not None
+
+    # Make sure the arguments get passed to the window
+    assert w.width == width
+    assert w.height == height
+    assert w.caption == title
+    assert w.resizeable is resizable
+
     arcade.set_window(w)
 
     p = arcade.get_projection()

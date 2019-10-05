@@ -11,6 +11,8 @@ python -m arcade.examples.sprite_csv_map
 import arcade
 import os
 
+from typing import List, Union
+
 SPRITE_SCALING = 0.5
 
 SCREEN_WIDTH = 800
@@ -39,7 +41,7 @@ def get_map(filename):
     map_array = []
     for line in map_file:
         line = line.strip()
-        map_row = line.split(",")
+        map_row: List[Union[int, str]] = line.split(",")
         for index, item in enumerate(map_row):
             map_row[index] = int(item)
         map_array.append(map_row)
@@ -69,6 +71,7 @@ class MyGame(arcade.Window):
         # Set up the player
         self.player_sprite = None
 
+        self.end_of_map = None
         self.physics_engine = None
         self.view_left = 0
         self.view_bottom = 0
@@ -104,6 +107,7 @@ class MyGame(arcade.Window):
                 # 1  = grass left edge
                 # 2  = grass middle
                 # 3  = grass right edge
+                wall = None
                 if item == -1:
                     continue
                 elif item == 0:

@@ -20,7 +20,7 @@ RADIANS_PER_FRAME = 0.02
 SWEEP_LENGTH = 250
 
 
-def on_draw(delta_time):
+def on_draw(_delta_time):
     """ Use this function to draw everything to the screen. """
 
     # Move the angle of the sweep.

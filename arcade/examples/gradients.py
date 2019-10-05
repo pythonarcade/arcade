@@ -51,7 +51,7 @@ class MyGame(arcade.Window):
         color1 = (7, 67, 88)
         color2 = (69, 137, 133)
         points = (100, 400), (SCREEN_WIDTH - 100, 400), (SCREEN_WIDTH - 100, 500), (100, 500)
-        colors = (color2, color1, color2, color1)
+        colors = [color2, color1, color2, color1]
         shape = arcade.create_lines_with_colors(points, colors, line_width=5)
         self.shapes.append(shape)
 
