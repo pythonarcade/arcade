@@ -30,9 +30,6 @@ EXPLOSION_TEXTURE_COUNT = 60
 class Explosion(arcade.Sprite):
     """ This class creates an explosion animation """
 
-    # Static variable that holds all the explosion textures
-    explosion_textures = []
-
     def __init__(self, texture_list):
         super().__init__("images/explosion/explosion0000.png")
 

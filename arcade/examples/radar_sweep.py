@@ -45,7 +45,7 @@ def on_draw(_delta_time):
 # This is a function-specific variable. Before we
 # use them in our function, we need to give them initial
 # values.
-on_draw.angle = 0
+on_draw.angle = 0  # type: ignore # dynamic attribute on function obj
 
 
 def main():

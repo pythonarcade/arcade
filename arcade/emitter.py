@@ -125,7 +125,7 @@ class Emitter:
         self.particle_factory = particle_factory
         self._emit_done_cb = emit_done_cb
         self._reap_cb = reap_cb
-        self._particles = arcade.SpriteList(use_spatial_hash=False)
+        self._particles: arcade.SpriteList = arcade.SpriteList(use_spatial_hash=False)
 
     def _emit(self):
         """Emit one particle, its initial position and velocity are relative to the position and angle of the emitter"""

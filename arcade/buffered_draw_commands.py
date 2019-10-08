@@ -12,13 +12,14 @@ from collections import defaultdict
 import pyglet.gl as gl
 import numpy as np
 
-from typing import Iterable, Sequence
+from typing import List, Iterable, Sequence
 from typing import TypeVar
 from typing import Generic
+from typing import cast
 
 from arcade.arcade_types import Color
 from arcade.draw_commands import rotate_point
-from arcade.arcade_types import PointList
+from arcade.arcade_types import Point, PointList
 from arcade.draw_commands import get_four_byte_color
 from arcade.draw_commands import get_projection
 from arcade.draw_commands import _get_points_for_thick_line
@@ -200,8 +201,8 @@ def create_line_strip(point_list: PointList,
     if line_width == 1:
         return create_line_generic(point_list, color, gl.GL_LINE_STRIP, line_width)
     else:
-        triangle_point_list = []
-        new_color_list = []
+        triangle_point_list: List[Point] = []
+        new_color_list: List[Color] = []
         for i in range(1, len(point_list)):
             start_x = point_list[i - 1][0]
             start_y = point_list[i - 1][1]
@@ -258,8 +259,8 @@ def create_lines_with_colors(point_list: PointList,
         return create_line_generic_with_colors(point_list, color_list, gl.GL_LINES, line_width)
     else:
 
-        triangle_point_list = []
-        new_color_list = []
+        triangle_point_list: List[Point] = []
+        new_color_list: List[Color] = []
         for i in range(1, len(point_list), 2):
             start_x = point_list[i-1][0]
             start_y = point_list[i-1][1]
@@ -406,7 +407,7 @@ def create_rectangle(center_x: float, center_y: float, width: float,
     Returns:
 
     """
-    data = get_rectangle_points(center_x, center_y, width, height, tilt_angle)
+    data: List[Point] = cast(List[Point], get_rectangle_points(center_x, center_y, width, height, tilt_angle))
 
     if filled:
         shape_mode = gl.GL_TRIANGLE_STRIP
@@ -423,10 +424,10 @@ def create_rectangle(center_x: float, center_y: float, width: float,
         o_rt = center_x + width / 2 + border_width / 2, center_y + height / 2 + border_width / 2
         o_lt = center_x - width / 2 - border_width / 2, center_y + height / 2 + border_width / 2
 
-        data = o_lt, i_lt, o_rt, i_rt, o_rb, i_rb, o_lb, i_lb, o_lt, i_lt
+        data = [o_lt, i_lt, o_rt, i_rt, o_rb, i_rb, o_lb, i_lb, o_lt, i_lt]
 
         if tilt_angle != 0:
-            point_list_2 = []
+            point_list_2: List[Point] = []
             for point in data:
                 new_point = rotate_point(point[0], point[1], center_x, center_y, tilt_angle)
                 point_list_2.append(new_point)
@@ -465,8 +466,8 @@ def create_rectangles_filled_with_colors(point_list, color_list) -> Shape:
     """
 
     shape_mode = gl.GL_TRIANGLES
-    new_point_list = []
-    new_color_list = []
+    new_point_list: List[Point] = []
+    new_color_list: List[Color] = []
     for i in range(0, len(point_list), 4):
         new_point_list += [point_list[0 + i], point_list[1 + i], point_list[3 + i]]
         new_point_list += [point_list[1 + i], point_list[3 + i], point_list[2 + i]]
@@ -594,10 +595,10 @@ def create_ellipse_filled_with_colors(center_x: float, center_y: float,
     return create_line_generic_with_colors(point_list, color_list, gl.GL_TRIANGLE_FAN)
 
 
-T = TypeVar('T', bound=Shape)
+TShape = TypeVar('TShape', bound=Shape)
 
 
-class ShapeElementList(Generic[T]):
+class ShapeElementList(Generic[TShape]):
     """
     A program can put multiple drawing primitives in a ShapeElementList, and then
     move and draw them as one. Do this when you want to create a more complex object
@@ -649,7 +650,7 @@ class ShapeElementList(Generic[T]):
         self.batches = defaultdict(_Batch)
         self.dirties = set()
 
-    def append(self, item: T):
+    def append(self, item: TShape):
         """
         Add a new shape to the list.
         """
@@ -658,7 +659,7 @@ class ShapeElementList(Generic[T]):
         self.batches[group].items.append(item)
         self.dirties.add(group)
 
-    def remove(self, item: T):
+    def remove(self, item: TShape):
         """
         Remove a specific shape from the list.
         """
@@ -732,7 +733,7 @@ class ShapeElementList(Generic[T]):
         """ Return the length of the sprite list. """
         return len(self.shape_list)
 
-    def __iter__(self) -> Iterable[T]:
+    def __iter__(self) -> Iterable[TShape]:
         """ Return an iterable object of sprites. """
         return iter(self.shape_list)
 
@@ -786,7 +787,7 @@ class ShapeElementList(Generic[T]):
     angle = property(_get_angle, _set_angle)
 
 
-class _Batch(Generic[T]):
+class _Batch(Generic[TShape]):
     def __init__(self):
         self.shape = Shape()
         self.items = []

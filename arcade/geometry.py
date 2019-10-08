@@ -4,7 +4,7 @@ Functions for calculating geometry.
 
 from arcade.sprite import Sprite
 from arcade.sprite_list import SpriteList
-from typing import List
+from typing import List, cast
 from arcade.arcade_types import PointList
 from arcade.arcade_types import Point
 
@@ -51,7 +51,7 @@ def are_polygons_intersecting(poly_a: PointList,
                 if max_b is None or projected > max_b:
                     max_b = projected
 
-            if max_a <= min_b or max_b <= min_a:
+            if cast(float, max_a) <= cast(float, min_b) or cast(float, max_b) <= cast(float, min_a):
                 return False
 
     return True

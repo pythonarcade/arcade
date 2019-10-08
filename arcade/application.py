@@ -5,7 +5,8 @@ derive from.
 import time
 
 from numbers import Number
-from typing import Tuple, Optional
+from typing import Tuple, List, Optional
+from arcade import gui
 
 import pyglet.gl as gl
 import pyglet
@@ -15,6 +16,8 @@ from arcade.window_commands import (get_viewport, set_viewport, set_window)
 MOUSE_BUTTON_LEFT = 1
 MOUSE_BUTTON_MIDDLE = 2
 MOUSE_BUTTON_RIGHT = 4
+
+_window: 'Window'
 
 
 class NoOpenGLException(Exception):
@@ -30,15 +33,15 @@ class Window(pyglet.window.Window):
     It represents a window on the screen, and manages events.
     """
 
-    def __init__(self, width: Number = 800, height: Number = 600,
+    def __init__(self, width: int = 800, height: int = 600,
                  title: str = 'Arcade Window', fullscreen: bool = False,
                  resizable: bool = False, update_rate: Optional[float] = 1/60,
                  antialiasing: bool = True):
         """
         Construct a new window
 
-        :param float width: Window width
-        :param float height: Window height
+        :param int width: Window width
+        :param int height: Window height
         :param str title: Title (appears in title bar)
         :param bool fullscreen: Should this be full screen?
         :param bool resizable: Can the user resize the window?
@@ -84,13 +87,13 @@ class Window(pyglet.window.Window):
         self.invalid = False
         set_window(self)
         set_viewport(0, self.width, 0, self.height)
-        self.current_view = None
-        self.button_list = []
-        self.dialogue_box_list = []
-        self.text_list = []
-        self.textbox_list = []
+        self.current_view: Optional[View] = None
+        self.button_list: List[gui.TextButton] = []
+        self.dialogue_box_list: List[gui.DialogueBox] = []
+        self.text_list: List[gui.Text] = []
+        self.textbox_list: List[gui.TextBox] = []
         self.textbox_time = 0.0
-        self.key = None
+        self.key: Optional[int] = None
 
     def update(self, delta_time: float):
         """
@@ -99,10 +102,8 @@ class Window(pyglet.window.Window):
         :param float delta_time: Time interval since the last time the function was called in seconds.
 
         """
-        try:
+        if self.current_view is not None:
             self.current_view.update(delta_time)
-        except AttributeError:
-            pass
 
     def on_update(self, delta_time: float):
         """
@@ -111,10 +112,8 @@ class Window(pyglet.window.Window):
         :param float delta_time: Time interval since the last time the function was called.
 
         """
-        try:
+        if self.current_view is not None:
             self.current_view.on_update(delta_time)
-        except AttributeError:
-            pass
         try:
             self.textbox_time += delta_time
             seconds = self.textbox_time % 60
@@ -162,9 +161,9 @@ class Window(pyglet.window.Window):
         """
         try:
             if self.button_list:
-                for button in self.button_list:
-                    if button.active:
-                        button.check_mouse_press(x, y)
+                for button_widget in self.button_list:
+                    if button_widget.active:
+                        button_widget.check_mouse_press(x, y)
         except AttributeError:
             pass
         try:
@@ -206,9 +205,9 @@ class Window(pyglet.window.Window):
         """
         try:
             if self.button_list:
-                for button in self.button_list:
-                    if button.active:
-                        button.check_mouse_release(x, y)
+                for button_widget in self.button_list:
+                    if button_widget.active:
+                        button_widget.check_mouse_release(x, y)
         except AttributeError:
             pass
         try:
@@ -399,7 +398,7 @@ class Window(pyglet.window.Window):
         set_viewport(left, right, bottom, top)
 
     # noinspection PyMethodMayBeStatic
-    def get_viewport(self) -> (float, float, float, float):
+    def get_viewport(self) -> Tuple[float, float, float, float]:
         """ Get the viewport. (What coordinates we can see.) """
         return get_viewport()
 
@@ -501,7 +500,7 @@ class Window(pyglet.window.Window):
         super().dispatch_events()
 
 
-def open_window(width: Number, height: Number, window_title: str, resizable: bool = False,
+def open_window(width: int, height: int, window_title: str, resizable: bool = False,
                 antialiasing: bool = True) -> Window:
     """
     This function opens a window. For ease-of-use we assume there will only be one window, and the
@@ -532,11 +531,11 @@ class View:
     """
     def __init__(self):
         self.window = None
-        self.button_list = []
-        self.dialogue_box_list = []
-        self.text_list = []
+        self.button_list: List[gui.TextButton] = []
+        self.dialogue_box_list: List[gui.DialogueBox] = []
+        self.text_list: List[gui.Text] = []
         self.textbox_time = 0.0
-        self.textbox_list = []
+        self.textbox_list: List[gui.TextBox] = []
         self.key = None
 
     def update(self, delta_time: float):
@@ -613,8 +612,8 @@ class View:
         """
         try:
             if self.button_list:
-                for button in self.button_list:
-                    button.check_mouse_press(x, y)
+                for button_widget in self.button_list:
+                    button_widget.check_mouse_press(x, y)
         except AttributeError:
             pass
         try:
@@ -657,8 +656,8 @@ class View:
         """
         try:
             if self.button_list:
-                for button in self.button_list:
-                    button.check_mouse_release(x, y)
+                for button_widget in self.button_list:
+                    button_widget.check_mouse_release(x, y)
         except AttributeError:
             pass
         try:

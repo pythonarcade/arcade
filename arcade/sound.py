@@ -37,7 +37,7 @@ def _load_sound_library():
 
 
 # Initialize static function variable
-_load_sound_library._sound_library_loaded = False
+_load_sound_library._sound_library_loaded = False  # type: ignore # dynamic attribute on function obj
 
 
 def load_sound(file_name: str):

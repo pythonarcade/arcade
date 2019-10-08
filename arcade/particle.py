@@ -19,8 +19,8 @@ class Particle(Sprite):
             filename_or_texture: FilenameOrTexture,
             change_xy: Vector,
             center_xy: Point = (0.0, 0.0),
-            angle: float = 0,
-            change_angle: float = 0,
+            angle: float = 0.0,
+            change_angle: float = 0.0,
             scale: float = 1.0,
             alpha: int = 255,
             mutation_callback=None
