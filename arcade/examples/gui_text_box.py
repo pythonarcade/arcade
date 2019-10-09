@@ -12,7 +12,8 @@ class Window(arcade.Window):
         arcade.set_background_color(arcade.color.AMETHYST)
         self.text_list.append(arcade.gui.Text("Name: ", self.center_x - 225, self.center_y))
         self.textbox_list.append(arcade.gui.TextBox(self.center_x - 125, self.center_y))
-        self.button_list.append(arcade.gui.SubmitButton(self.textbox_list[0], self.on_submit, self.center_x, self.center_y))
+        self.button_list.append(arcade.gui.SubmitButton(self.textbox_list[0], self.on_submit, self.center_x,
+                                                        self.center_y))
 
     def on_draw(self):
         arcade.start_render()
