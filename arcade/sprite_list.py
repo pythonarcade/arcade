@@ -4,6 +4,7 @@ This module provides functionality to manage Sprites in a list.
 """
 
 from typing import Iterable
+from typing import Any
 from typing import TypeVar
 from typing import Generic
 from typing import List
@@ -268,6 +269,7 @@ T = TypeVar('T', bound=Sprite)
 
 class SpriteList(Generic[T]):
 
+    array_of_images: Optional[List[Any]]
     next_texture_id = 0
 
     def __init__(self, use_spatial_hash=False, spatial_hash_cell_size=128, is_static=False):

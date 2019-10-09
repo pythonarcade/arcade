@@ -295,7 +295,7 @@ class Window(pyglet.window.Window):
         try:
             if self.textbox_list:
                 for textbox in self.textbox_list:
-                        textbox.draw()
+                    textbox.draw()
         except AttributeError:
             pass
 
@@ -523,6 +523,7 @@ class View:
         self.window = None
         self.button_list = []
         self.dialogue_box_list = []
+        self.text_list = []
         self.textbox_time = 0.0
         self.textbox_list = []
         self.key = None
@@ -535,7 +536,7 @@ class View:
             if seconds >= 0.115:
                 if self.textbox_list:
                     for textbox in self.textbox_list:
-                            textbox.update(delta_time, self.key)
+                        textbox.update(delta_time, self.key)
                     self.textbox_time = 0.0
         except AttributeError:
             pass
@@ -554,7 +555,7 @@ class View:
             pass
         try:
             if self.text_list:
-                for text in self.self.text_list:
+                for text in self.text_list:
                     text.draw()
         except AttributeError:
             pass
@@ -569,9 +570,10 @@ class View:
         try:
             if self.textbox_list:
                 for textbox in self.textbox_list:
-                        textbox.draw()
+                    textbox.draw()
         except AttributeError:
             pass
+
     def on_show(self):
         """Called when this view is shown"""
         pass
@@ -619,7 +621,7 @@ class View:
         except AttributeError:
             pass
 
-    def on_mouse_drag(self, x: float, y: float, dx: float, dy: float, buttons: int, modifiers: int):
+    def on_mouse_drag(self, x: float, y: float, dx: float, dy: float, _buttons: int, _modifiers: int):
         """
         Override this function to add mouse button functionality.
 
@@ -627,8 +629,8 @@ class View:
         :param float y: y position of mouse
         :param float dx: Change in x since the last time this method was called
         :param float dy: Change in y since the last time this method was called
-        :param int buttons: Which button is pressed
-        :param int modifiers: Ctrl, shift, etc.
+        :param int _buttons: Which button is pressed
+        :param int _modifiers: Ctrl, shift, etc.
         """
         self.on_mouse_motion(x, y, dx, dy)
 
@@ -685,12 +687,12 @@ class View:
         except AttributeError:
             pass
 
-    def on_key_release(self, symbol: int, modifiers: int):
+    def on_key_release(self, _symbol: int, _modifiers: int):
         """
         Override this function to add key release functionality.
 
-        :param int symbol: Key that was hit
-        :param int modifiers: If it was shift/ctrl/alt
+        :param int _symbol: Key that was hit
+        :param int _modifiers: If it was shift/ctrl/alt
         """
         try:
             self.key = None
