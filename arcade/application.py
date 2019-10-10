@@ -307,7 +307,7 @@ class Window(pyglet.window.Window):
         :param float width: New width
         :param float height: New height
         """
-        super().on_resize(width, height)
+        # super().on_resize(width, height)
 
         original_viewport = self.get_viewport()
 
@@ -457,7 +457,7 @@ class Window(pyglet.window.Window):
         super().set_minimum_size(width, height)
 
     def set_maximum_size(self, width, height):
-        super().set_maxiumum_size(width, height)
+        super().set_maximum_size(width, height)
 
     def set_location(self, x, y):
         super().set_location(x, y)
