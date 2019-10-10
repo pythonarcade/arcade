@@ -1,5 +1,7 @@
 # --- BEGIN TEXT FUNCTIONS # # #
 
+from typing import Tuple, Union
+
 import PIL.Image
 import PIL.ImageDraw
 import PIL.ImageFont
@@ -91,7 +93,7 @@ def draw_text(text: str,
               font_size: float = 12,
               width: int = 0,
               align: str = "left",
-              font_name=('calibri', 'arial'),
+              font_name: Union[str, Tuple[str, ...]] = ('calibri', 'arial'),
               bold: bool = False,
               italic: bool = False,
               anchor_x: str = "left",
@@ -107,7 +109,7 @@ def draw_text(text: str,
     :param float font_size: Size of the text
     :param float width:
     :param str align:
-    :param str font_name:
+    :param Union[str, Tuple[str, ...]] font_name:
     :param bool bold:
     :param bool italic:
     :param str anchor_x:

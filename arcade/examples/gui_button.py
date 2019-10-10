@@ -74,6 +74,7 @@ class MyGame(arcade.Window):
             self.speed = -self.speed
         self.text_x += self.speed
 
+
 def main():
     game = MyGame()
     game.setup()

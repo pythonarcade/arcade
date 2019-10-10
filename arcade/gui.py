@@ -1,3 +1,4 @@
+from typing import Tuple, Dict, Optional, Union
 import arcade
 # from abc import ABC, abstractmethod
 
@@ -9,7 +10,7 @@ class TextButton:
                  width, height,
                  text,
                  font_size=18,
-                 font_face="Arial",
+                 font_face: Union[str, Tuple[str, ...]] = "Arial",
                  face_color=arcade.color.LIGHT_GRAY,
                  highlight_color=arcade.color.WHITE,
                  shadow_color=arcade.color.GRAY,
@@ -117,7 +118,7 @@ class TextButton:
             return
         self.on_press()
 
-    def check_mouse_release(self, x, y):
+    def check_mouse_release(self, _x, _y):
         if self.pressed:
             self.on_release()
 
@@ -154,33 +155,24 @@ class DialogueBox:
             self.texture = self.theme.dialogue_box_texture
 
     def on_draw(self):
-        try:
-            if self.active:
-                if self.theme:
-                    arcade.draw_texture_rectangle(self.x, self.y, self.width, self.height, self.texture)
-                else:
-                    arcade.draw_rectangle_filled(self.x, self.y, self.width, self.height, self.color)
-                for button in self.button_list:
-                    button.draw()
-                for text in self.text_list:
-                    text.draw()
-        except:
-            pass
+        if self.active:
+            if self.theme:
+                arcade.draw_texture_rectangle(self.x, self.y, self.width, self.height, self.texture)
+            else:
+                arcade.draw_rectangle_filled(self.x, self.y, self.width, self.height, self.color)
+            for button in self.button_list:
+                button.draw()
+            for text in self.text_list:
+                text.draw()
 
-    def on_mouse_press(self, x, y, button, modifiers):
-        try:
-            for button in self.button_list:
-                button.check_mouse_press(x, y)
-        except:
-            pass
-    
-    def on_mouse_release(self, x, y, button, modifiers):
-        try:
-            for button in self.button_list:
-                button.check_mouse_release(x, y)
-        except:
-            pass
-        
+    def on_mouse_press(self, x, y, _button, _modifiers):
+        for button in self.button_list:
+            button.check_mouse_press(x, y)
+
+    def on_mouse_release(self, x, y, _button, _modifiers):
+        for button in self.button_list:
+            button.check_mouse_release(x, y)
+
 
 class Text:
     def __init__(self, text, x, y, color=arcade.color.BLACK, font_size=22, anchor_x="center",
@@ -206,11 +198,11 @@ class Text:
 
     def draw(self):
         arcade.draw_text(self.text, self.x, self.y, self.color, font_size=self.font_size,
-        anchor_x=self.anchor_x,
-        anchor_y=self.anchor_y,
-        width=self.width, align=self.align,
-        font_name=self.font_name, bold=self.bold,
-        italic=self.italic, rotation=self.rotation)
+                         anchor_x=self.anchor_x,
+                         anchor_y=self.anchor_y,
+                         width=self.width, align=self.align,
+                         font_name=self.font_name, bold=self.bold,
+                         italic=self.italic, rotation=self.rotation)
 
 
 class TextDisplay:
@@ -242,13 +234,13 @@ class TextDisplay:
             self.font_name = ('Calibri', 'Arial')
 
     def draw_text(self):
-        try:
-            if self.highlighted:
-                arcade.draw_text(self.text[:self.cursor_index] + self.symbol + self.text[self.cursor_index:], self.x-self.width/2.1, self.y, self.font_color, font_size=self.font_size, anchor_y="center", font_name=self.font_name)
-            else:
-                arcade.draw_text(self.text, self.x-self.width/2.1, self.y, self.font_color, font_size=self.font_size, anchor_y="center", font_name=self.font_name)
-        except:
-            pass
+        if self.highlighted:
+            arcade.draw_text(self.text[:self.cursor_index] + self.symbol + self.text[self.cursor_index:],
+                             self.x-self.width/2.1, self.y, self.font_color, font_size=self.font_size,
+                             anchor_y="center", font_name=self.font_name)
+        else:
+            arcade.draw_text(self.text, self.x-self.width/2.1, self.y, self.font_color, font_size=self.font_size,
+                             anchor_y="center", font_name=self.font_name)
 
     def color_theme_draw(self):
         if self.highlighted:
@@ -289,11 +281,11 @@ class TextDisplay:
             return
         self.on_press()
 
-    def check_mouse_release(self, x, y):
+    def check_mouse_release(self, _x, _y):
         if self.highlighted:
             self.on_release()
 
-    def update(self, delta_time, text, symbol, cursor_index):
+    def update(self, _delta_time, text, symbol, cursor_index):
         self.text = text
         self.symbol = symbol
         self.cursor_index = cursor_index
@@ -344,13 +336,13 @@ class TextStorage:
             elif key == arcade.key.LEFT:
                 if self.cursor_index > 0:
                     self.cursor_index -= 1
-                if self.left_index > 0 and self.cursor_index == self.left_index:
+                if 0 < self.left_index == self.cursor_index:
                     self.left_index -= 1
                     self.right_index -= 1
             elif key == arcade.key.RIGHT:
                 if self.cursor_index < len(self.text):
                     self.cursor_index += 1
-                if self.right_index < len(self.text) and self.cursor_index == self.right_index:
+                if len(self.text) > self.right_index == self.cursor_index:
                     self.right_index += 1
                     self.left_index += 1
             else:
@@ -376,7 +368,7 @@ class TextStorage:
 
 class TextBox:
     def __init__(self, x, y, width=300, height=40, theme=None, outline_color=arcade.color.BLACK, font_size=24,
-                shadow_color=arcade.color.WHITE_SMOKE, highlight_color=arcade.color.WHITE):
+                 shadow_color=arcade.color.WHITE_SMOKE, highlight_color=arcade.color.WHITE):
         self.theme = theme
         if self.theme:
             self.text_display = TextDisplay(x, y, width, height, theme=self.theme)
@@ -403,7 +395,8 @@ class TextBox:
 
 class Theme:
     def __init__(self):
-        self.button_textures = {'normal': '', 'hover': '', 'clicked': '', 'locked': '',}
+        self.button_textures: Dict[str, Optional['', arcade.Texture]] =\
+            {'normal': '', 'hover': '', 'clicked': '', 'locked': '', }
         self.menu_texture = ""
         self.window_texture = ""
         self.dialogue_box_texture = ""

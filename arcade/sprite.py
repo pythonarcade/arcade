@@ -9,7 +9,8 @@ import math
 try:
     import dataclasses
 except ModuleNotFoundError:
-    raise Exception('dataclasses not available, if running on Python 3.6 please manually install https://pypi.org/project/dataclasses/')
+    raise Exception('dataclasses not available, if running on Python 3.6 please manually install '
+                    'https://pypi.org/project/dataclasses/')
 
 import PIL.Image
 
