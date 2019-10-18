@@ -55,7 +55,7 @@ def load_sound(file_name: str):
         sound = Sound(file_name)
         return sound
     except Exception as e:
-        print("Unable to load {str}.", e)
+        print(f"Unable to load sound file: \"{file_name}\". Exception: {e}")
         return None
 
 
@@ -67,6 +67,7 @@ def play_sound(sound: Sound):
     """
     if sound is None:
         print("Unable to play sound, no data passed in.")
+        return
     elif isinstance(sound, str):
         msg = "Error, passed in a string as a sound. " +\
               "Make sure to use load_sound first, and use that result in play_sound."
