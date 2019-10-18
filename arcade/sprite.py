@@ -6,7 +6,11 @@ https://www.gamedev.net/articles/programming/general-and-gameplay-programming/sp
 """
 
 import math
-import dataclasses
+try:
+    import dataclasses
+except ModuleNotFoundError:
+    raise Exception('dataclasses not available, if running on Python 3.6 please manually install '
+                    'https://pypi.org/project/dataclasses/')
 
 import PIL.Image
 
@@ -432,6 +436,12 @@ class Sprite:
                 sprite_list.update_position(self)
 
     scale = property(_get_scale, _set_scale)
+
+    def rescale_relative_to_point(self, point: Point, factor: float) -> None:
+        """ Rescale the sprite relative to a different point than its center. """
+        self.scale *= factor
+        self.center_x = (self.center_x - point[0]) * factor + point[0]
+        self.center_y = (self.center_y - point[1]) * factor + point[1]
 
     def _get_center_x(self) -> float:
         """ Get the center x coordinate of the sprite. """

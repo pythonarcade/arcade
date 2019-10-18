@@ -338,6 +338,24 @@ TMX Files / Tiled Map Editor
    :ref:`10_ladders_and_more`
 
 
+GUI
+---
+
+.. figure:: thumbs/gui_button.png
+   :figwidth: 170px
+
+   :ref:`gui_button`
+
+.. figure:: thumbs/gui_dialogue_box.png
+   :figwidth: 170px
+
+   :ref:`gui_dialogue_box`
+
+.. figure:: thumbs/gui_text_box.png
+   :figwidth: 170px
+
+   :ref:`gui_text_box`
+
 
 View Management
 ---------------

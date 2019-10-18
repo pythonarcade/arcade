@@ -4,6 +4,7 @@ This module provides functionality to manage Sprites in a list.
 """
 
 from typing import Iterable
+from typing import Any
 from typing import TypeVar
 from typing import Generic
 from typing import List
@@ -268,6 +269,7 @@ T = TypeVar('T', bound=Sprite)
 
 class SpriteList(Generic[T]):
 
+    array_of_images: Optional[List[Any]]
     next_texture_id = 0
 
     def __init__(self, use_spatial_hash=False, spatial_hash_cell_size=128, is_static=False):
@@ -358,6 +360,19 @@ class SpriteList(Generic[T]):
     def update_animation(self, delta_time: float = 1/60):
         for sprite in self.sprite_list:
             sprite.update_animation(delta_time)
+
+    def _get_center(self) -> Tuple[float, float]:
+        """ Get the mean center coordinates of all sprites in the list. """
+        x = sum((sprite.center_x for sprite in self.sprite_list)) / len(self.sprite_list)
+        y = sum((sprite.center_y for sprite in self.sprite_list)) / len(self.sprite_list)
+        return x, y
+
+    center = property(_get_center)
+
+    def rescale(self, factor: float) -> None:
+        """ Rescale all sprites in the list relative to the spritelists center. """
+        for sprite in self.sprite_list:
+            sprite.rescale_relative_to_point(self.center, factor)
 
     def move(self, change_x: float, change_y: float):
         """

@@ -70,3 +70,5 @@ from arcade.text import create_text
 from arcade.text import render_text
 # noinspection PyPep8
 from arcade import tilemap
+# noinspection PyPep8
+from arcade.gui import TextButton
