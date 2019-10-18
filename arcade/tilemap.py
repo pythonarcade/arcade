@@ -225,7 +225,7 @@ def _process_object_layer(map_object: pytiled_parser.objects.TileMap,
         if cur_object.gid is None:
             print("Warning: Currently only tiles (not objects) are supported in object layers.")
             continue
-            
+
         tile = _get_tile_by_gid(map_object, cur_object.gid)
         my_sprite = _create_sprite_from_tile(map_object, tile, scaling=scaling,
                                              base_directory=base_directory)
@@ -280,8 +280,8 @@ def _process_tile_layer(map_object: pytiled_parser.objects.TileMap,
             my_sprite = _create_sprite_from_tile(map_object, tile, scaling=scaling,
                                                  base_directory=base_directory)
 
-            my_sprite.right = column_index * (map_object.tile_size[0] * scaling)
-            my_sprite.top = (map_object.map_size.height - row_index - 1) * (map_object.tile_size[1] * scaling)
+            my_sprite.left = column_index * (map_object.tile_size[0] * scaling)
+            my_sprite.bottom = (map_object.map_size.height - row_index - 1) * (map_object.tile_size[1] * scaling)
 
             sprite_list.append(my_sprite)
 
