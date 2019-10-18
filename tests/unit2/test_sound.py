@@ -34,16 +34,16 @@ class MyGame(arcade.Window):
         self.frame_count += 1
 
         if self.frame_count == 1:
+            print(f"Play {self.frame_count}")
             arcade.play_sound(self.laser_wav)
-            print("Play ")
-
-        if self.frame_count == 30:
-            arcade.play_sound(self.laser_ogg)
-            print("Play ")
 
         if self.frame_count == 60:
+            print(f"Play {self.frame_count}")
+            arcade.play_sound(self.laser_ogg)
+
+        if self.frame_count == 90:
+            print(f"Play {self.frame_count}")
             arcade.play_sound(self.laser_mp3)
-            print("Play ")
 
     def on_draw(self):
         """
@@ -57,5 +57,5 @@ class MyGame(arcade.Window):
 def test_main():
     """ Main method """
     window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT)
-    window.test(100)
+    window.test(180)
     window.close()
