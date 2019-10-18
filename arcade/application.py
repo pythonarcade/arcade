@@ -2,6 +2,8 @@
 The main window class that all object-oriented applications should
 derive from.
 """
+import time
+
 from numbers import Number
 from typing import Tuple, Optional
 
@@ -307,6 +309,8 @@ class Window(pyglet.window.Window):
         :param float width: New width
         :param float height: New height
         """
+        # This breaks on Linux.
+        # See https://github.com/pyglet/pyglet/issues/76
         # super().on_resize(width, height)
 
         original_viewport = self.get_viewport()
@@ -405,12 +409,19 @@ class Window(pyglet.window.Window):
 
         :param int frames:
         """
+        start_time = time.time()
         for i in range(frames):
             self.switch_to()
             self.dispatch_events()
             self.dispatch_event('on_draw')
             self.flip()
-            self.update(1/60)
+            current_time = time.time()
+            elapsed_time = current_time - start_time
+            start_time = current_time
+            if elapsed_time < 1. / 60.:
+                sleep_time = (1. / 60.) - elapsed_time
+                time.sleep(sleep_time)
+            self.update(1 / 60)
 
     def show_view(self, new_view: 'View'):
         if not isinstance(new_view, View):
