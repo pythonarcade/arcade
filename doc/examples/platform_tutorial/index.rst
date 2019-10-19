@@ -183,12 +183,12 @@ Step 3 - Add User Control
 
 Now we need to be able to get the user to move around. Here how to do it:
 
-* Each sprite has a ``center_x`` and ``center_y`` attributes. Changing this will
+* Each sprite has ``center_x`` and ``center_y`` attributes. Changing these will
   change the location of the sprite. (There are also attributes for top, bottom,
   left, right, and angle that will move the sprite.)
-* Each sprite has a ``change_x`` and ``change_y`` variable. This can be used to
-  hold the velocity that the sprite is moving in. We will adjust these
-  this based on what key the user hits. If the user hits the right arrow key
+* Each sprite has ``change_x`` and ``change_y`` variables. These can be used to
+  hold the velocity that the sprite is moving with. We will adjust these
+  based on what key the user hits. If the user hits the right arrow key
   we want a positive value for ``change_x``. If the value is 5, it will move
   5 pixels per frame.
 * We can call ``update`` on the sprite list which will move all the sprites
