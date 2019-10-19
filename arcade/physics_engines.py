@@ -113,10 +113,6 @@ class PhysicsEnginePlatformer:
         :rtype: bool
         """
 
-        # Check for touching a ladder
-        if self.is_on_ladder():
-            return False
-
         # Move down to see if we are on a platform
         self.player_sprite.center_y -= y_distance
 
