@@ -8,7 +8,12 @@ Release Notes
 Version 2.1.4
 -------------
 
-
+* Fix: Error when importing arcade on Raspberry Pi 4  `Issue 485 <https://github.com/pvcraven/arcade/issues/485>`_
+* Fix: Transparency not working in draw functions `Issue 489 <https://github.com/pvcraven/arcade/issues/489>`_
+* Fix: Order of parameters in draw_ellipse documentation `Issue 490 <https://github.com/pvcraven/arcade/issues/490>`_
+* Raise better error on data classes missing
+* Lots of code cleanup from SirGnip `Issue 484 <https://github.com/pvcraven/arcade/pull/484>`_
+* New code for buttons and dialog boxes from wamiqurrehman093 `Issue 476 <https://github.com/pvcraven/arcade/pull/476>`_
 
 Version 2.1.3
 -------------
