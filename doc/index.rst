@@ -6,19 +6,26 @@ The Python Arcade Library
     <table style="width:100%;">
       <tr>
         <td>
-          <img style="width:50px;" src="_static/character.png"><br/>
-          <h2><a href="examples/index.html">Example Code</a></h2>
+          <div style="display:inline-block;">
+            <img style="width:50px;" src="_static/character.png">
+          </div>
+          <div style="display:inline-block;">
+            <h2 style="width:auto;">Example Code</h2>
+          </div>
           <ul>
-          <li><a href="examples/drawing_primitives.html">Drawing Primitives</a></li>
+          <li><a href="examples/index.html">All Examples</a></li>
           <li><a href="examples/sprite_collect_coins.html">Collect Coins</a></li>
           <li><a href="examples/asteroid_smasher.html">Asteroid Smasher</a></li>
           <li><a href="examples/platform_tutorial/index.html">Platformer Tutorial</a></li>
-          <li><a href="examples/updated_platformer_example.html">Preview of New Platformer Code</a></li>
           </ul>
         </td>
         <td>
-          <img style="width:78px;" src="_static/download.svg"><br/>
-          <h2><a href="installation.html">Installation</a></h2>
+          <div style="display:inline-block;">
+            <img style="width:78px;" src="_static/download.svg"><br/>
+          </div>
+          <div style="display:inline-block;">
+            <h2 style="width:auto;">Installation</h2>
+          </div>
           <ul>
           <li><a href="installation_windows.html">Windows</a></li>
           <li><a href="installation_mac.html">Mac</a></li>
@@ -29,47 +36,89 @@ The Python Arcade Library
       </tr>
       <tr>
         <td>
-          <img style="width:78px;" src="_static/ereader.svg"><br/>
-          <h2><a href="quick_index.html">Quick API Index</a></h2>
+          <div style="display:inline-block;">
+            <img style="width:78px;" src="_static/ereader.svg"><br/>
+          </div>
+          <div style="display:inline-block;">
+            <h2>API</h2>
+          </div>
           <ul>
+          <li><a href="quick_index.html">Quick API Index</a></li>
           <li><a href="arcade.html">Full Arcade API Docs</a></li>
           <li><a href="quick_index.html#drawing-module">Drawing</a> - <a href="arcade.csscolor.html">CSS Colors</a></li>
           <li><a href="quick_index.html#application-module">Window Class</a></li>
           <li><a href="quick_index.html#sprite-module">Sprites</a></li>
-          <li><a href="http://arcade-book.readthedocs.io/en/latest/">Learn to Program with Arcade</a> (book)</li>
-          </ul>
+         </ul>
         </td>
         <td>
-          <img style="width:78px;" src="_static/weixin-logo.svg"><br/>
-          <h2>More Info</h2>
+          <div style="display:inline-block;">
+            <img style="width:78px;" src="_static/weixin-logo.svg"><br/>
+          </div>
+          <div style="display:inline-block;">
+            <h2>Social</h2>
+          </div>
           <ul>
-            <li><a href="diversity.html">Diversity</a></li>
-            <li><a href="pygame_comparison.html">Pygame Comparison</a></li>
-            <li><a href="performance_tips.html">Performance Tips</a></li>
+            <li><a href="https://twitter.com/ArcadeLibrary">Twitter @ArcadeLibrary</a></li>
+            <li><a href="https://www.reddit.com/r/pythonarcade/">Reddit /r/pythonarcade</a></li>
+            <li><a href="diversity.html">Statement on Diversity</a></li>
             <li><a href="https://youtu.be/DAWHMHMPVHU">PyCon 2018 Talk</a></li>
             <li><a href="https://youtu.be/Djtm1DzWSvo">PyCon 2019 Tutorial</a></li>
-            <li><a href="https://www.reddit.com/r/pythonarcade/">Reddit /r/pythonarcade</a></li>
           </ul>
         </td>
       </tr>
       <tr>
         <td>
-          <img style="width:78px;" src="_static/sample_games.svg"><br/>
-          <h2><a href="sample_games.html">Example Games</a></h2>
+          <div style="display:inline-block;">
+            <img style="width:78px;" src="_static/sample_games.svg">
+          </div>
+          <div style="display:inline-block;">
+            <h2>Games</h2>
+          </div>
           <ul>
+            <li><a href="sample_games.html">Example Games</a></li>
             <li><a href="instructions_gameshell.html">GameShell (Hand-held like a GameBoy)</a></li>
             <li><a href="examples/pyinstaller.html">Distributing games with PyInstaller</a></li>
           </ul>
         </td>
         <td>
-          <img style="width:78px;" src="_static/code.svg"><br/>
-          <h2>Source Code</h2>
+          <div style="display:inline-block;">
+            <img style="width:78px;" src="_static/code.svg">
+          </div>
+          <div style="display:inline-block;">
+            <h2>Source Code</h2>
+          </div>
           <ul>
             <li><a href="https://github.com/pvcraven/arcade">GitHub</a></li>
             <li><a href="release_notes.html">Release Notes</a></li>
           </ul>
         </td>
       </tr>
+      <tr>
+        <td>
+          <div style="display:inline-block;">
+            <img style="width:78px;" src="_static/speedometer-icon.svg">
+          </div>
+          <div style="display:inline-block;">
+            <h2>Performance</h2>
+          </div>
+          <ul>
+          <li><a href="performance_tips.html">Performance Tips</a></li>
+          <li><a href="pygame_comparison.html">Pygame Comparison</a></li>
+          </ul>
+        </td>
+        <td>
+          <div style="display:inline-block;">
+            <img style="width:78px;" src="_static/owl.svg">
+          </div>
+          <div style="display:inline-block;">
+            <h2>Learn</h2>
+          </div>
+          <ul>
+          <li><a href="http://arcade-book.readthedocs.io/en/latest/">Learn to Program with Arcade</a></li>
+           </ul>
+        </td>
+      </tr>
+
     </table>
 .. raw:: html
 
