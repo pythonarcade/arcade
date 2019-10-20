@@ -13,4 +13,4 @@ Better Move By Keyboard
 .. literalinclude:: ../../arcade/examples/sprite_move_keyboard_better.py
     :caption: sprite_move_keyboard_better.py
     :linenos:
-    :emphasize-lines: 23, 69-73, 105-116, 118-121, 126-133, 138-145
+    :emphasize-lines: 69-73, 104-115, 117-120, 125-132, 137-144
