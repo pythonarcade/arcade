@@ -28,6 +28,8 @@ The tutorial is divided into these parts:
 * :ref:`platformer_part_seven`
 * :ref:`platformer_part_eight`
 * :ref:`platformer_part_nine`
+* :ref:`platformer_part_ten`
+* :ref:`platformer_part_eleven`
 
 At the end of each step, if you have time explore the items listed in the "Note".
 
@@ -479,8 +481,10 @@ Here's an expanded example:
     * Add :ref:`sprite_explosion`
     * Add :ref:`sprite_move_animation`
 
-Step 10
--------
+.. _platformer_part_ten:
+
+Step 10 - Add Ladders, Properties, and a Moving Platform
+--------------------------------------------------------
 
 .. image:: 10_ladders_and_more.png
    :scale: 40%
@@ -493,4 +497,19 @@ This example shows using:
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/10_ladders_and_more.py
     :caption: Ladders, Animated Tiles, and Moving Platforms
+    :linenos:
+
+.. _platformer_part_eleven:
+
+Step 11 - Add Character Animations, and Better Keyboard Control
+---------------------------------------------------------------
+
+Add character animations!
+
+.. raw:: html
+
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/TZtXhqDOLy0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+.. literalinclude:: ../../../arcade/examples/platform_tutorial/11_animate_character.py
+    :caption: Animate Characters
     :linenos:

@@ -53,17 +53,9 @@ class PlayerCharacter(arcade.Sprite):
         # Set up parent class
         super().__init__()
 
-        # Images from Kenney.nl's Asset Pack 3
-        # main_path = "images/Female adventurer/PNG/Poses/character_femaleAdventurer"
-        # main_path = "images/Female person/PNG/Poses/character_femalePerson"
-        # main_path = "images/Male person/PNG/Poses/character_malePerson"
-        # main_path = "images/Male adventurer/PNG/Poses/character_maleAdventurer"
-        main_path = "images/Zombie/PNG/Poses/character_zombie"
-        # main_path = "images/Robot/PNG/Poses/character_robot"
-
         # Default to face-right
         self.character_face_direction = RIGHT_FACING
-        
+
         # Used for flipping between image sequences
         self.cur_texture = 0
 
@@ -77,6 +69,14 @@ class PlayerCharacter(arcade.Sprite):
         self.points = [[-22, -64], [22, -64], [22, 28], [-22, 28]]
 
         # --- Load Textures ---
+
+        # Images from Kenney.nl's Asset Pack 3
+        # main_path = "images/Female adventurer/PNG/Poses/character_femaleAdventurer"
+        # main_path = "images/Female person/PNG/Poses/character_femalePerson"
+        # main_path = "images/Male person/PNG/Poses/character_malePerson"
+        # main_path = "images/Male adventurer/PNG/Poses/character_maleAdventurer"
+        main_path = "images/Zombie/PNG/Poses/character_zombie"
+        # main_path = "images/Robot/PNG/Poses/character_robot"
 
         # Load textures for idle standing
         self.idle_texture_pair = load_texture_pair(f"{main_path}_idle.png")
@@ -139,6 +139,7 @@ class PlayerCharacter(arcade.Sprite):
         self.texture = self.walk_textures[self.cur_texture][self.character_face_direction]
 
 
+
 class MyGame(arcade.Window):
     """
     Main application class.
@@ -155,6 +156,12 @@ class MyGame(arcade.Window):
         # Set the path to start with this program
         file_path = os.path.dirname(os.path.abspath(__file__))
         os.chdir(file_path)
+
+        # Track the current state of what key is pressed
+        self.left_pressed = False
+        self.right_pressed = False
+        self.up_pressed = False
+        self.down_pressed = False
 
         # These are 'lists' that keep track of our sprites. Each sprite should
         # go into a list.
@@ -271,36 +278,64 @@ class MyGame(arcade.Window):
         arcade.draw_text(score_text, 10 + self.view_left, 10 + self.view_bottom,
                          arcade.csscolor.BLACK, 18)
 
-    def on_key_press(self, key, modifiers):
-        """Called whenever a key is pressed. """
-
-        if key == arcade.key.UP or key == arcade.key.W:
+    def process_keychange(self):
+        """
+        Called when we change a key up/down or we move on/off a ladder.
+        """
+        # Process up/down
+        if self.up_pressed and not self.down_pressed:
             if self.physics_engine.is_on_ladder():
                 self.player_sprite.change_y = PLAYER_MOVEMENT_SPEED
             elif self.physics_engine.can_jump():
                 self.player_sprite.change_y = PLAYER_JUMP_SPEED
                 arcade.play_sound(self.jump_sound)
-        elif key == arcade.key.DOWN or key == arcade.key.S:
+        elif self.down_pressed and not self.up_pressed:
             if self.physics_engine.is_on_ladder():
                 self.player_sprite.change_y = -PLAYER_MOVEMENT_SPEED
-        elif key == arcade.key.LEFT or key == arcade.key.A:
-            self.player_sprite.change_x = -PLAYER_MOVEMENT_SPEED
-        elif key == arcade.key.RIGHT or key == arcade.key.D:
+
+        # Process up/down when on a ladder and no movement
+        if self.physics_engine.is_on_ladder():
+            if not self.up_pressed and not self.down_pressed:
+                self.player_sprite.change_y = 0
+            elif self.up_pressed and self.down_pressed:
+                self.player_sprite.change_y = 0
+
+        # Process left/right
+        if self.right_pressed and not self.left_pressed:
             self.player_sprite.change_x = PLAYER_MOVEMENT_SPEED
+        elif self.left_pressed and not self.right_pressed:
+            self.player_sprite.change_x = -PLAYER_MOVEMENT_SPEED
+        else:
+            self.player_sprite.change_x = 0
+
+
+    def on_key_press(self, key, modifiers):
+        """Called whenever a key is pressed. """
+
+        if key == arcade.key.UP or key == arcade.key.W:
+            self.up_pressed = True
+        elif key == arcade.key.DOWN or key == arcade.key.S:
+            self.down_pressed = True
+        elif key == arcade.key.LEFT or key == arcade.key.A:
+            self.left_pressed = True
+        elif key == arcade.key.RIGHT or key == arcade.key.D:
+            self.right_pressed = True
+
+        self.process_keychange()
 
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key. """
 
         if key == arcade.key.UP or key == arcade.key.W:
-            if self.physics_engine.is_on_ladder():
-                self.player_sprite.change_y = 0
+            self.up_pressed = False
         elif key == arcade.key.DOWN or key == arcade.key.S:
-            if self.physics_engine.is_on_ladder():
-                self.player_sprite.change_y = 0
+            self.down_pressed = False
         elif key == arcade.key.LEFT or key == arcade.key.A:
-            self.player_sprite.change_x = 0
+            self.left_pressed = False
         elif key == arcade.key.RIGHT or key == arcade.key.D:
-            self.player_sprite.change_x = 0
+            self.right_pressed = False
+
+        self.process_keychange()
 
     def update(self, delta_time):
         """ Movement and game logic """
@@ -317,8 +352,10 @@ class MyGame(arcade.Window):
 
         if self.physics_engine.is_on_ladder() and not self.physics_engine.can_jump():
             self.player_sprite.is_on_ladder = True
+            self.process_keychange()
         else:
             self.player_sprite.is_on_ladder = False
+            self.process_keychange()
 
         self.coin_list.update_animation(delta_time)
         self.background_list.update_animation(delta_time)
@@ -348,7 +385,7 @@ class MyGame(arcade.Window):
 
             # Figure out how many points this coin is worth
             if 'Points' not in coin.properties:
-                print("Warning, collected a coing without a Points property.")
+                print("Warning, collected a coin without a Points property.")
             else:
                 points = int(coin.properties['Points'])
                 self.score += points
