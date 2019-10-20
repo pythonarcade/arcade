@@ -33,8 +33,26 @@ TOP_VIEWPORT_MARGIN = 100
 PLAYER_START_X = 900
 PLAYER_START_Y = 1024
 
+# Constants used to track if the player is facing left or right
+RIGHT_FACING = 0
+LEFT_FACING = 1
+
+def load_texture_pair(filename):
+    """
+    Load a texture pair, with the second being a mirror image.
+    """
+    textures = []
+    textures.append(arcade.load_texture(filename, scale=CHARACTER_SCALING))
+    textures.append(arcade.load_texture(filename, scale=CHARACTER_SCALING, mirrored=True))
+    return textures
+
+
 class PlayerCharacter(arcade.Sprite):
     def __init__(self):
+
+        # Set up parent class
+        super().__init__()
+
         # Images from Kenney.nl's Asset Pack 3
         # main_path = "images/Female adventurer/PNG/Poses/character_femaleAdventurer"
         # main_path = "images/Female person/PNG/Poses/character_femalePerson"
@@ -42,117 +60,83 @@ class PlayerCharacter(arcade.Sprite):
         # main_path = "images/Male adventurer/PNG/Poses/character_maleAdventurer"
         main_path = "images/Zombie/PNG/Poses/character_zombie"
         # main_path = "images/Robot/PNG/Poses/character_robot"
-        super().__init__(f"{main_path}_idle.png", CHARACTER_SCALING)
 
-        self.face_right = True
-
-        # Load textures for idle standing
-        self.idle_right_texture = arcade.load_texture(f"{main_path}_idle.png", scale=CHARACTER_SCALING)
-        self.idle_left_texture = arcade.load_texture(f"{main_path}_idle.png", scale=CHARACTER_SCALING, mirrored=True)
-        self.jump_right_texture = arcade.load_texture(f"{main_path}_jump.png", scale=CHARACTER_SCALING)
-        self.jump_left_texture = arcade.load_texture(f"{main_path}_jump.png", scale=CHARACTER_SCALING, mirrored=True)
-        self.fall_right_texture = arcade.load_texture(f"{main_path}_fall.png", scale=CHARACTER_SCALING)
-        self.fall_left_texture = arcade.load_texture(f"{main_path}_fall.png", scale=CHARACTER_SCALING, mirrored=True)
-
-        # Load textures for walking
-        self.walk_right_textures = []
-        texture = arcade.load_texture(f"{main_path}_walk0.png", scale=CHARACTER_SCALING)
-        self.walk_right_textures.append(texture)
-        texture = arcade.load_texture(f"{main_path}_walk1.png", scale=CHARACTER_SCALING)
-        self.walk_right_textures.append(texture)
-        texture = arcade.load_texture(f"{main_path}_walk2.png", scale=CHARACTER_SCALING)
-        self.walk_right_textures.append(texture)
-        texture = arcade.load_texture(f"{main_path}_walk3.png", scale=CHARACTER_SCALING)
-        self.walk_right_textures.append(texture)
-        texture = arcade.load_texture(f"{main_path}_walk4.png", scale=CHARACTER_SCALING)
-        self.walk_right_textures.append(texture)
-        texture = arcade.load_texture(f"{main_path}_walk5.png", scale=CHARACTER_SCALING)
-        self.walk_right_textures.append(texture)
-        texture = arcade.load_texture(f"{main_path}_walk6.png", scale=CHARACTER_SCALING)
-        self.walk_right_textures.append(texture)
-        texture = arcade.load_texture(f"{main_path}_walk7.png", scale=CHARACTER_SCALING)
-        self.walk_right_textures.append(texture)
-
-        self.walk_left_textures = []
-        texture = arcade.load_texture(f"{main_path}_walk0.png", scale=CHARACTER_SCALING, mirrored=True)
-        self.walk_left_textures.append(texture)
-        texture = arcade.load_texture(f"{main_path}_walk1.png", scale=CHARACTER_SCALING, mirrored=True)
-        self.walk_left_textures.append(texture)
-        texture = arcade.load_texture(f"{main_path}_walk2.png", scale=CHARACTER_SCALING, mirrored=True)
-        self.walk_left_textures.append(texture)
-        texture = arcade.load_texture(f"{main_path}_walk3.png", scale=CHARACTER_SCALING, mirrored=True)
-        self.walk_left_textures.append(texture)
-        texture = arcade.load_texture(f"{main_path}_walk4.png", scale=CHARACTER_SCALING, mirrored=True)
-        self.walk_left_textures.append(texture)
-        texture = arcade.load_texture(f"{main_path}_walk5.png", scale=CHARACTER_SCALING, mirrored=True)
-        self.walk_left_textures.append(texture)
-        texture = arcade.load_texture(f"{main_path}_walk6.png", scale=CHARACTER_SCALING, mirrored=True)
-        self.walk_left_textures.append(texture)
-        texture = arcade.load_texture(f"{main_path}_walk7.png", scale=CHARACTER_SCALING, mirrored=True)
-        self.walk_left_textures.append(texture)
-
-        self.climbing_textures = []
-        texture = arcade.load_texture(f"{main_path}_climb0.png", scale=CHARACTER_SCALING, mirrored=True)
-        self.climbing_textures.append(texture)
-        texture = arcade.load_texture(f"{main_path}_climb1.png", scale=CHARACTER_SCALING, mirrored=True)
-        self.climbing_textures.append(texture)
-
+        # Default to face-right
+        self.character_face_direction = RIGHT_FACING
+        
+        # Used for flipping between image sequences
         self.cur_texture = 0
 
+        # Track out state
         self.jumping = False
         self.climbing = False
         self.is_on_ladder = False
 
+        # Adjust the collision box. Default includes too much empty space
+        # side-to-side. Box is centered at sprite center, (0, 0)
         self.points = [[-22, -64], [22, -64], [22, 28], [-22, 28]]
 
-    def update_animation(self, delta_time):
-        if self.change_x < 0 and self.face_right:
-            self.face_right = False
-        elif self.change_x > 0 and not self.face_right:
-            self.face_right = True
+        # --- Load Textures ---
 
+        # Load textures for idle standing
+        self.idle_texture_pair = load_texture_pair(f"{main_path}_idle.png")
+        self.jump_texture_pair = load_texture_pair(f"{main_path}_jump.png")
+        self.fall_texture_pair = load_texture_pair(f"{main_path}_fall.png")
+
+        # Load textures for walking
+        self.walk_textures = []
+        for i in range(8):
+            texture = load_texture_pair(f"{main_path}_walk{i}.png")
+            self.walk_textures.append(texture)
+
+        # Load textures for climbing
+        self.climbing_textures = []
+        texture = arcade.load_texture(f"{main_path}_climb0.png", scale=CHARACTER_SCALING)
+        self.climbing_textures.append(texture)
+        texture = arcade.load_texture(f"{main_path}_climb1.png", scale=CHARACTER_SCALING)
+        self.climbing_textures.append(texture)
+
+
+    def update_animation(self, delta_time):
+
+        # Figure out if we need to flip face left or right
+        if self.change_x < 0 and self.character_face_direction == RIGHT_FACING:
+            self.character_face_direction = LEFT_FACING
+        elif self.change_x > 0 and self.character_face_direction == LEFT_FACING:
+            self.character_face_direction = RIGHT_FACING
+
+
+        # Climbing animation
         if self.is_on_ladder:
             self.climbing = True
-
         if not self.is_on_ladder and self.climbing:
             self.climbing = False
-
         if self.climbing and abs(self.change_y) > 1:
             self.cur_texture += 1
             if self.cur_texture > 7:
                 self.cur_texture = 0
-
         if self.climbing:
             self.texture = self.climbing_textures[self.cur_texture // 4]
             return
 
+        # Jumping animation
         if self.jumping and not self.is_on_ladder:
             if self.change_y >= 0:
-                if self.face_right:
-                    self.texture = self.jump_right_texture
-                else:
-                    self.texture = self.jump_left_texture
+                self.texture = self.jump_texture_pair[self.character_face_direction]
             else:
-                if self.face_right:
-                    self.texture = self.fall_right_texture
-                else:
-                    self.texture = self.fall_left_texture
+                self.texture = self.fall_texture_pair[self.character_face_direction]
             return
 
+        # Idle animation
         if self.change_x == 0:
-            if self.face_right:
-                self.texture = self.idle_right_texture
-            else:
-                self.texture = self.idle_left_texture
+            self.texture = self.idle_texture_pair[self.character_face_direction]
+            return
 
-        else:
-            self.cur_texture += 1
-            if self.cur_texture > 7:
-                self.cur_texture = 0
-            if self.face_right:
-                self.texture = self.walk_right_textures[self.cur_texture]
-            else:
-                self.texture = self.walk_left_textures[self.cur_texture]
+        # Walking animation
+        self.cur_texture += 1
+        if self.cur_texture > 7:
+            self.cur_texture = 0
+        self.texture = self.walk_textures[self.cur_texture][self.character_face_direction]
 
 
 class MyGame(arcade.Window):
@@ -343,7 +327,7 @@ class MyGame(arcade.Window):
         # Update walls, used with moving platforms
         self.wall_list.update()
 
-        # See if the wall hit a boundary and needs to reverse direction.
+        # See if the moving wall hit a boundary and needs to reverse direction.
         for wall in self.wall_list:
 
             if wall.boundary_right and wall.right > wall.boundary_right and wall.change_x > 0:
