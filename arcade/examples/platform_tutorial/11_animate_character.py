@@ -74,8 +74,8 @@ class PlayerCharacter(arcade.Sprite):
         # Images from Kenney.nl's Asset Pack 3
         # main_path = "images/Female adventurer/PNG/Poses/character_femaleAdventurer"
         # main_path = "images/Female person/PNG/Poses/character_femalePerson"
-        # main_path = "images/Male person/PNG/Poses/character_malePerson"
-        main_path = "images/Male adventurer/PNG/Poses/character_maleAdventurer"
+        main_path = "images/Male person/PNG/Poses/character_malePerson"
+        # main_path = "images/Male adventurer/PNG/Poses/character_maleAdventurer"
         # main_path = "images/Zombie/PNG/Poses/character_zombie"
         # main_path = "images/Robot/PNG/Poses/character_robot"
 
