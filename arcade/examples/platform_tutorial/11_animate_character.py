@@ -60,7 +60,7 @@ class PlayerCharacter(arcade.Sprite):
         # Used for flipping between image sequences
         self.cur_texture = 0
 
-        # Track out state
+        # Track our state
         self.jumping = False
         self.climbing = False
         self.is_on_ladder = False
@@ -160,6 +160,7 @@ class MyGame(arcade.Window):
         self.right_pressed = False
         self.up_pressed = False
         self.down_pressed = False
+        self.jump_needs_reset = False
 
         # These are 'lists' that keep track of our sprites. Each sprite should
         # go into a list.
@@ -284,8 +285,9 @@ class MyGame(arcade.Window):
         if self.up_pressed and not self.down_pressed:
             if self.physics_engine.is_on_ladder():
                 self.player_sprite.change_y = PLAYER_MOVEMENT_SPEED
-            elif self.physics_engine.can_jump():
+            elif self.physics_engine.can_jump() and not self.jump_needs_reset:
                 self.player_sprite.change_y = PLAYER_JUMP_SPEED
+                self.jump_needs_reset = True
                 arcade.play_sound(self.jump_sound)
         elif self.down_pressed and not self.up_pressed:
             if self.physics_engine.is_on_ladder():
@@ -325,6 +327,7 @@ class MyGame(arcade.Window):
 
         if key == arcade.key.UP or key == arcade.key.W:
             self.up_pressed = False
+            self.jump_needs_reset = False
         elif key == arcade.key.DOWN or key == arcade.key.S:
             self.down_pressed = False
         elif key == arcade.key.LEFT or key == arcade.key.A:
@@ -343,9 +346,9 @@ class MyGame(arcade.Window):
 
         # Update animations
         if self.physics_engine.can_jump():
-            self.player_sprite.jumping = False
+            self.player_sprite.can_jump = False
         else:
-            self.player_sprite.jumping = True
+            self.player_sprite.can_jump = True
 
         if self.physics_engine.is_on_ladder() and not self.physics_engine.can_jump():
             self.player_sprite.is_on_ladder = True
