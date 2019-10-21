@@ -37,6 +37,7 @@ PLAYER_START_Y = 1024
 RIGHT_FACING = 0
 LEFT_FACING = 1
 
+
 def load_texture_pair(filename):
     """
     Load a texture pair, with the second being a mirror image.
@@ -74,8 +75,8 @@ class PlayerCharacter(arcade.Sprite):
         # main_path = "images/Female adventurer/PNG/Poses/character_femaleAdventurer"
         # main_path = "images/Female person/PNG/Poses/character_femalePerson"
         # main_path = "images/Male person/PNG/Poses/character_malePerson"
-        # main_path = "images/Male adventurer/PNG/Poses/character_maleAdventurer"
-        main_path = "images/Zombie/PNG/Poses/character_zombie"
+        main_path = "images/Male adventurer/PNG/Poses/character_maleAdventurer"
+        # main_path = "images/Zombie/PNG/Poses/character_zombie"
         # main_path = "images/Robot/PNG/Poses/character_robot"
 
         # Load textures for idle standing
@@ -96,7 +97,6 @@ class PlayerCharacter(arcade.Sprite):
         texture = arcade.load_texture(f"{main_path}_climb1.png", scale=CHARACTER_SCALING)
         self.climbing_textures.append(texture)
 
-
     def update_animation(self, delta_time):
 
         # Figure out if we need to flip face left or right
@@ -104,7 +104,6 @@ class PlayerCharacter(arcade.Sprite):
             self.character_face_direction = LEFT_FACING
         elif self.change_x > 0 and self.character_face_direction == LEFT_FACING:
             self.character_face_direction = RIGHT_FACING
-
 
         # Climbing animation
         if self.is_on_ladder:
@@ -137,7 +136,6 @@ class PlayerCharacter(arcade.Sprite):
         if self.cur_texture > 7:
             self.cur_texture = 0
         self.texture = self.walk_textures[self.cur_texture][self.character_face_direction]
-
 
 
 class MyGame(arcade.Window):
@@ -307,7 +305,6 @@ class MyGame(arcade.Window):
             self.player_sprite.change_x = -PLAYER_MOVEMENT_SPEED
         else:
             self.player_sprite.change_x = 0
-
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
