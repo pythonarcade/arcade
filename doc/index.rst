@@ -59,10 +59,10 @@ The Python Arcade Library
           </div>
           <ul>
             <li><a href="https://twitter.com/ArcadeLibrary">Twitter @ArcadeLibrary</a></li>
+            <li><a href="https://www.instagram.com/PythonArcadeLibrary/">Instagram @PythonArcadeLibrary</a></li>
+            <li><a href="https://www.facebook.com/ArcadeLibrary/>Facebook @ArcadeLibrary</a></li>
             <li><a href="https://www.reddit.com/r/pythonarcade/">Reddit /r/pythonarcade</a></li>
             <li><a href="diversity.html">Statement on Diversity</a></li>
-            <li><a href="https://youtu.be/DAWHMHMPVHU">PyCon 2018 Talk</a></li>
-            <li><a href="https://youtu.be/Djtm1DzWSvo">PyCon 2019 Tutorial</a></li>
           </ul>
         </td>
       </tr>
@@ -114,7 +114,9 @@ The Python Arcade Library
             <h2>Learn</h2>
           </div>
           <ul>
-          <li><a href="http://arcade-book.readthedocs.io/en/latest/">Learn to Program with Arcade</a></li>
+            <li><a href="http://arcade-book.readthedocs.io/en/latest/">Learn to Program with Arcade</a></li>
+            <li><a href="https://youtu.be/DAWHMHMPVHU">PyCon 2018 Talk</a></li>
+            <li><a href="https://youtu.be/Djtm1DzWSvo">PyCon 2019 Tutorial</a></li>
            </ul>
         </td>
       </tr>
