@@ -7,10 +7,6 @@ It is ideal for beginning programmers, or programmers who want to create
 
 Arcade is built on top of Pyglet and OpenGL.
 
-.. image:: https://coveralls.io/repos/github/pvcraven/arcade/badge.svg?branch=master
-    :target: https://coveralls.io/github/pvcraven/arcade?branch=master
-    :alt: Code Coverage
-
 .. image:: https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat)
     :target: http://makeapullrequest.com
     :alt: Pull Requests Welcome
