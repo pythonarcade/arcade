@@ -46,7 +46,7 @@ class MyGame(arcade.Window):
 
         # Call draw() on all your sprite lists below
 
-    def update(self, delta_time):
+    def on_update(self, delta_time):
         """
         All the logic to move, and the game logic goes here.
         Normally, you'll call update() on the sprite lists that

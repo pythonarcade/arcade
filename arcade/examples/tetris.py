@@ -199,7 +199,7 @@ class MyGame(arcade.Window):
             if not check_collision(self.board, new_stone, (self.stone_x, self.stone_y)):
                 self.stone = new_stone
 
-    def update(self, dt):
+    def on_update(self, dt):
         """ Update, drop stone if warrented """
         self.frame_count += 1
         if self.frame_count % 10 == 0:

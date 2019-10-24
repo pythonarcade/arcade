@@ -111,7 +111,7 @@ class GameView(arcade.View):
         output_total = f"Total Score: {self.window.total_score}"
         arcade.draw_text(output_total, 10, 10, arcade.color.WHITE, 14)
 
-    def update(self, delta_time):
+    def on_update(self, delta_time):
         self.time_taken += delta_time
 
         # Call update on all sprites (The sprites don't do much in this

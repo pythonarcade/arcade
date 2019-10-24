@@ -214,7 +214,7 @@ class MyGame:
         self.draw_time = timeit.default_timer() - draw_start_time
         self.fps.tick()
 
-    def update(self, _delta_time):
+    def on_update(self, _delta_time):
         # Start update timer
         self.player_list.update()
 
