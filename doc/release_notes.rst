@@ -5,6 +5,13 @@
 Release Notes
 =============
 
+Version 2.1.5
+-------------
+
+* Fix: Default font sometimes not pulling on mac  `Issue 488 <https://github.com/pvcraven/arcade/issues/488>`_
+* Documentation updates, particularly around examples for animated characters on platformers
+* Fix to Sprite class to better support character animation around ladders
+
 Version 2.1.4
 -------------
 
