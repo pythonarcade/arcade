@@ -239,7 +239,7 @@ def run():
         # print("Testing!!!")
         window = get_window()
         if window:
-            window.update(1/60)
+            window.on_update(1/60)
             window.on_draw()
     else:
         pyglet.app.run()
