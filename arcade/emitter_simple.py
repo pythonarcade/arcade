@@ -6,7 +6,7 @@ These trade away some flexibility in favor of simplicity to allow beginners to s
 
 import arcade
 import random
-from typing import Sequence
+from typing import Sequence, Type
 from arcade.arcade_types import Point
 from arcade.particle import FilenameOrTexture
 
@@ -21,7 +21,7 @@ def make_burst_emitter(
         particle_scale: float = 1.0,
         fade_particles: bool = True):
     """Returns an emitter that emits all of its particles at once"""
-    particle_factory = arcade.LifetimeParticle
+    particle_factory: Type[arcade.LifetimeParticle] = arcade.LifetimeParticle
     if fade_particles:
         particle_factory = arcade.FadeParticle
     return arcade.Emitter(
@@ -47,7 +47,7 @@ def make_interval_emitter(
         particle_scale: float = 1.0,
         fade_particles: bool = True):
     """Returns an emitter that emits its particles at a constant rate for a given amount of time"""
-    particle_factory = arcade.LifetimeParticle
+    particle_factory: Type[arcade.LifetimeParticle] = arcade.LifetimeParticle
     if fade_particles:
         particle_factory = arcade.FadeParticle
     return arcade.Emitter(

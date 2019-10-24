@@ -11,7 +11,7 @@ For more information, see the `Platformer Tutorial`_.
 
 """
 
-from typing import Optional
+from typing import Optional, List, cast
 import math
 import copy
 import pytiled_parser
@@ -20,6 +20,7 @@ from arcade import Sprite
 from arcade import AnimatedTimeBasedSprite
 from arcade import AnimationKeyframe
 from arcade import SpriteList
+from arcade.arcade_types import Point
 
 FLIPPED_HORIZONTALLY_FLAG = 0x80000000
 FLIPPED_VERTICALLY_FLAG = 0x40000000
@@ -127,7 +128,7 @@ def _create_sprite_from_tile(map_object, tile: pytiled_parser.objects.Tile,
     # print(f"Creating tile: {tmx_file}")
     if tile.animation:
         # my_sprite = AnimatedTimeSprite(tmx_file, scaling)
-        my_sprite = AnimatedTimeBasedSprite(tmx_file, scaling)
+        my_sprite: Sprite = AnimatedTimeBasedSprite(tmx_file, scaling)
     else:
         my_sprite = Sprite(tmx_file, scaling)
 
@@ -144,7 +145,7 @@ def _create_sprite_from_tile(map_object, tile: pytiled_parser.objects.Tile,
         for hitbox in tile.objectgroup:
             half_width = map_object.tile_size.width / 2
             half_height = map_object.tile_size.height / 2
-            points = []
+            points: List[Point] = []
             if isinstance(hitbox, pytiled_parser.objects.RectangleObject):
                 if hitbox.size is None:
                     print(f"Warning: Rectangle hitbox created for without a "
@@ -207,10 +208,11 @@ def _create_sprite_from_tile(map_object, tile: pytiled_parser.objects.Tile,
         key_frame_list = []
         for frame in tile.animation:
             frame_tile = _get_tile_by_id(map_object, tile.tileset, frame.tile_id)
-            key_frame = AnimationKeyframe(frame.tile_id, frame.duration, frame_tile.image)
-            key_frame_list.append(key_frame)
+            if frame_tile:
+                key_frame = AnimationKeyframe(frame.tile_id, frame.duration, frame_tile.image)
+                key_frame_list.append(key_frame)
 
-        my_sprite.frames = key_frame_list
+        cast(AnimatedTimeBasedSprite, my_sprite).frames = key_frame_list
 
     return my_sprite
 
@@ -219,7 +221,7 @@ def _process_object_layer(map_object: pytiled_parser.objects.TileMap,
                           layer: pytiled_parser.objects.ObjectLayer,
                           scaling: float = 1,
                           base_directory: str = "") -> SpriteList:
-    sprite_list = SpriteList()
+    sprite_list: SpriteList = SpriteList()
 
     for cur_object in layer.tiled_objects:
         if cur_object.gid is None:
@@ -261,7 +263,7 @@ def _process_tile_layer(map_object: pytiled_parser.objects.TileMap,
                         layer: pytiled_parser.objects.TileLayer,
                         scaling: float = 1,
                         base_directory: str = "") -> SpriteList:
-    sprite_list = SpriteList()
+    sprite_list: SpriteList = SpriteList()
     map_array = layer.data
 
     # Loop through the layer and add in the wall list
@@ -319,3 +321,6 @@ def process_layer(map_object: pytiled_parser.objects.TileMap,
 
     elif isinstance(layer, pytiled_parser.objects.ObjectLayer):
         return _process_object_layer(map_object, layer, scaling, base_directory)
+
+    print(f"Warning, layer '{layer_name}' has unexpected type. '{type(layer)}'")
+    return SpriteList()

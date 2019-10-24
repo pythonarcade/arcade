@@ -2,29 +2,30 @@ language: python
 python:
   - '3.6'
   - '3.7'
+  - '3.8'
 services: xvfb
 matrix:
   include:
-    - name: "Python 3.7 on xenial"
-      python: '3.7'
+    - name: "Python 3.8 on xenial"
+      python: '3.8'
       dist: xenial
-    - name: "Python 3.7 on bionic"
-      python: '3.7'
+    - name: "Python 3.8 on bionic"
+      python: '3.8'
       dist: bionic
     - name: "Python 3.7 on macOS"
       python: '3.7'
       os: osx
-      osx_image: xcode11
+      osx_image: xcode11.2
       language: minimal
       before_install: sw_vers
-    - name: "Python 3.7 on Windows"
-      python: '3.7'
+    - name: "Python 3.8 on Windows"
+      python: '3.8'
       os: windows
       language: bash
       before_install:
         - choco install python
         - python -m pip install --upgrade pip
-      env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
+      env: PATH=/c/Python38:/c/Python38/Scripts:$PATH
   allow_failures:
     - os: windows
   fast_fail: true

@@ -7,6 +7,8 @@ import base64
 import zlib
 import gzip
 
+import typing
+
 from pathlib import Path
 
 from arcade.isometric import isometric_grid_to_screen
@@ -107,6 +109,7 @@ def _parse_points(point_text: str):
     return result
 
 
+@typing.no_type_check
 def read_tiled_map(tmx_file: str, scaling: float = 1, tsx_file: str = None) -> TiledMap:
     """
     read_tiled_map has been deprecated. Use arcade.tilemap.read_tmx instead.
@@ -310,6 +313,7 @@ def read_tiled_map(tmx_file: str, scaling: float = 1, tsx_file: str = None) -> T
     return my_map
 
 
+@typing.no_type_check
 def generate_sprites(map_object: TiledMap, layer_name: str, scaling: float, base_directory="") -> SpriteList:
     """
     generate_sprites has been deprecated. Use arcade.tilemap.process_layer instead.

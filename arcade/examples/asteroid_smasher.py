@@ -14,7 +14,7 @@ import math
 import arcade
 import os
 
-from typing import Optional, cast
+from typing import cast
 
 STARTING_ASTEROID_COUNT = 3
 SCALE = 0.5
@@ -158,10 +158,10 @@ class MyGame(arcade.Window):
         self.game_over = False
 
         # Sprite lists
-        self.all_sprites_list = None
-        self.asteroid_list: Optional[arcade.SpriteList[AsteroidSprite]] = None
-        self.bullet_list = None
-        self.ship_life_list = None
+        self.all_sprites_list = arcade.SpriteList()
+        self.asteroid_list = arcade.SpriteList()
+        self.bullet_list = arcade.SpriteList()
+        self.ship_life_list = arcade.SpriteList()
 
         # Set up the player
         self.score = 0

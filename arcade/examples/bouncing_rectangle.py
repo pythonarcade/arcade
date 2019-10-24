@@ -73,10 +73,10 @@ def on_draw(delta_time):
 #
 # Later on, we'll use 'classes' to track position and velocity for multiple
 # objects.
-on_draw.center_x = 100      # Initial x position
-on_draw.center_y = 50       # Initial y position
-on_draw.delta_x = 115  # Initial change in x
-on_draw.delta_y = 130  # Initial change in y
+on_draw.center_x = 100  # type: ignore # dynamic attribute on function obj  # Initial x position
+on_draw.center_y = 50   # type: ignore # dynamic attribute on function obj  # Initial y position
+on_draw.delta_x = 115   # type: ignore # dynamic attribute on function obj  # Initial change in x
+on_draw.delta_y = 130   # type: ignore # dynamic attribute on function obj  # Initial change in y
 
 
 def main():
