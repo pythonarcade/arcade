@@ -229,7 +229,7 @@ class _SpatialHash:
         # hash the minimum and maximum points
         min_point, max_point = self._hash(min_point), self._hash(max_point)
 
-        close_by_sprites = []
+        close_by_sprites: List[Sprite] = []
         # iterate over the rectangular region
         for i in range(min_point[0], max_point[0] + 1):
             for j in range(min_point[1], max_point[1] + 1):
@@ -257,7 +257,7 @@ class _SpatialHash:
 
         hash_point = self._hash(check_point)
 
-        close_by_sprites = []
+        close_by_sprites: List[Sprite] = []
         new_items = self.contents.setdefault(hash_point, [])
         close_by_sprites.extend(new_items)
 

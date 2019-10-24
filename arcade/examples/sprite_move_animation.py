@@ -32,10 +32,10 @@ def load_texture_pair(filename):
     """
     Load a texture pair, with the second being a mirror image.
     """
-    textures = []
-    textures.append(arcade.load_texture(filename, scale=CHARACTER_SCALING))
-    textures.append(arcade.load_texture(filename, scale=CHARACTER_SCALING, mirrored=True))
-    return textures
+    return [
+        arcade.load_texture(filename, scale=CHARACTER_SCALING),
+        arcade.load_texture(filename, scale=CHARACTER_SCALING, mirrored=True)
+    ]
 
 
 class PlayerCharacter(arcade.Sprite):
@@ -78,7 +78,7 @@ class PlayerCharacter(arcade.Sprite):
             texture = load_texture_pair(f"{main_path}_walk{i}.png")
             self.walk_textures.append(texture)
 
-    def update_animation(self, delta_time):
+    def update_animation(self, delta_time: float = 1/60):
 
         # Figure out if we need to flip face left or right
         if self.change_x < 0 and self.character_face_direction == RIGHT_FACING:

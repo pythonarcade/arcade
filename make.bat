@@ -7,6 +7,7 @@ IF "%~1"=="full" GOTO makefull
 IF "%~1"=="dist" GOTO makedist
 IF "%~1"=="test" GOTO test
 IF "%~1"=="testcov" GOTO test
+IF "%~1"=="typecheck" GOTO typecheck
 IF "%~1"=="fast" GOTO makefast
 IF "%~1"=="docs" GOTO makedoc
 IF "%~1"=="spelling" GOTO spelling
@@ -33,6 +34,17 @@ GOTO end
 :testcov
 
 pytest --cov=arcade
+GOTO end
+
+:typecheck
+
+echo Running mypy type checker:
+mypy -p arcade
+IF ERRORLEVEL 1 (
+    echo ERROR: Type checking via mypy found errors, detailed above.
+) else (
+    echo OK: Type checking via mypy found no errors.
+)
 GOTO end
 
 :makedist

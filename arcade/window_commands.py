@@ -13,15 +13,16 @@ import pyglet
 import numpy as np
 
 from numbers import Number
+from typing import Tuple
 from typing import Callable
 from typing import Union
 from typing import cast
 from arcade.arcade_types import Color
 
-_left = -1
-_right = 1
-_bottom = -1
-_top = 1
+_left = -1.0
+_right = 1.0
+_bottom = -1.0
+_top = 1.0
 _scaling = None
 
 _window = None
@@ -175,7 +176,8 @@ def set_viewport(left: float, right: float, bottom: float, top: float):
     # Needed for sprites
     if _scaling is None:
         _scaling = get_scaling_factor(_window)
-    gl.glViewport(0, 0, _window.width * _scaling, _window.height * _scaling)
+
+    gl.glViewport(0, 0, _window.width * _scaling, _window.height * _scaling)  # type: ignore #_window starts as None
 
     # Needed for drawing
     # gl.glMatrixMode(gl.GL_PROJECTION)
@@ -189,7 +191,7 @@ def set_viewport(left: float, right: float, bottom: float, top: float):
                                                near=-1000, far=100, dtype=np.float32)
 
 
-def get_viewport() -> (float, float, float, float):
+def get_viewport() -> Tuple[float, float, float, float]:
     """
     Get the current viewport settings.
 

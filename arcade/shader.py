@@ -4,9 +4,8 @@
 from ctypes import *
 from collections import namedtuple
 import weakref
-from typing import Tuple, Iterable
+from typing import List, Tuple, Iterable, Dict
 
-from pyglet.gl import *
 from pyglet import gl
 
 import numpy as np
@@ -20,37 +19,37 @@ class ShaderException(Exception):
 # https://bitbucket.org/HigashiNoKaze/pyglet/src/shaders/pyglet/graphics/shader.py
 
 _uniform_getters = {
-    GLint: glGetUniformiv,
-    GLfloat: glGetUniformfv,
+    gl.GLint: gl.glGetUniformiv,
+    gl.GLfloat: gl.glGetUniformfv,
 }
 
 _uniform_setters = {
     # uniform type: (gl_type, setter, length, count)
-    GL_INT: (GLint, glUniform1iv, 1, 1),
-    GL_INT_VEC2: (GLint, glUniform2iv, 2, 1),
-    GL_INT_VEC3: (GLint, glUniform3iv, 3, 1),
-    GL_INT_VEC4: (GLint, glUniform4iv, 4, 1),
+    gl.GL_INT: (gl.GLint, gl.glUniform1iv, 1, 1),
+    gl.GL_INT_VEC2: (gl.GLint, gl.glUniform2iv, 2, 1),
+    gl.GL_INT_VEC3: (gl.GLint, gl.glUniform3iv, 3, 1),
+    gl.GL_INT_VEC4: (gl.GLint, gl.glUniform4iv, 4, 1),
 
-    GL_FLOAT: (GLfloat, glUniform1fv, 1, 1),
-    GL_FLOAT_VEC2: (GLfloat, glUniform2fv, 2, 1),
-    GL_FLOAT_VEC3: (GLfloat, glUniform3fv, 3, 1),
-    GL_FLOAT_VEC4: (GLfloat, glUniform4fv, 4, 1),
+    gl.GL_FLOAT: (gl.GLfloat, gl.glUniform1fv, 1, 1),
+    gl.GL_FLOAT_VEC2: (gl.GLfloat, gl.glUniform2fv, 2, 1),
+    gl.GL_FLOAT_VEC3: (gl.GLfloat, gl.glUniform3fv, 3, 1),
+    gl.GL_FLOAT_VEC4: (gl.GLfloat, gl.glUniform4fv, 4, 1),
 
-    GL_SAMPLER_2D: (GLint, glUniform1iv, 1, 1),
+    gl.GL_SAMPLER_2D: (gl.GLint, gl.glUniform1iv, 1, 1),
 
-    GL_FLOAT_MAT2: (GLfloat, glUniformMatrix2fv, 4, 1),
-    GL_FLOAT_MAT3: (GLfloat, glUniformMatrix3fv, 6, 1),
-    GL_FLOAT_MAT4: (GLfloat, glUniformMatrix4fv, 16, 1),
+    gl.GL_FLOAT_MAT2: (gl.GLfloat, gl.glUniformMatrix2fv, 4, 1),
+    gl.GL_FLOAT_MAT3: (gl.GLfloat, gl.glUniformMatrix3fv, 6, 1),
+    gl.GL_FLOAT_MAT4: (gl.GLfloat, gl.glUniformMatrix4fv, 16, 1),
 
     # TODO: test/implement these:
-    # GL_FLOAT_MAT2x3: glUniformMatrix2x3fv,
-    # GL_FLOAT_MAT2x4: glUniformMatrix2x4fv,
+    # gl.GL_FLOAT_MAT2x3: glUniformMatrix2x3fv,
+    # gl.GL_FLOAT_MAT2x4: glUniformMatrix2x4fv,
     #
-    # GL_FLOAT_MAT3x2: glUniformMatrix3x2fv,
-    # GL_FLOAT_MAT3x4: glUniformMatrix3x4fv,
+    # gl.GL_FLOAT_MAT3x2: glUniformMatrix3x2fv,
+    # gl.GL_FLOAT_MAT3x4: glUniformMatrix3x4fv,
     #
-    # GL_FLOAT_MAT4x2: glUniformMatrix4x2fv,
-    # GL_FLOAT_MAT4x3: glUniformMatrix4x3fv,
+    # gl.GL_FLOAT_MAT4x2: glUniformMatrix4x2fv,
+    # gl.GL_FLOAT_MAT4x3: glUniformMatrix4x3fv,
 }
 
 
@@ -71,16 +70,16 @@ def _create_getter_func(program_id, location, gl_getter, c_array, length):
 def _create_setter_func(location, gl_setter, c_array, length, count, ptr, is_matrix):
 
     if is_matrix:
-        def setter_func(value):
+        def setter_func(value):  # type: ignore #conditional function variants must have identical signature
             c_array[:] = value
-            gl_setter(location, count, GL_FALSE, ptr)
+            gl_setter(location, count, gl.GL_FALSE, ptr)
 
     elif length == 1 and count == 1:
-        def setter_func(value):
+        def setter_func(value):  # type: ignore #conditional function variants must have identical signature
             c_array[0] = value
             gl_setter(location, count, ptr)
     elif length > 1 and count == 1:
-        def setter_func(values):
+        def setter_func(values):  # type: ignore #conditional function variants must have identical signature
             c_array[:] = values
             gl_setter(location, count, ptr)
 
@@ -92,8 +91,7 @@ def _create_setter_func(location, gl_setter, c_array, length, count, ptr, is_mat
 
 Uniform = namedtuple('Uniform', 'getter, setter')
 ShaderCode = str
-ShaderType = GLuint
-Shader = type(Tuple[ShaderCode, ShaderType])
+Shader = Tuple[ShaderCode, gl.GLuint]
 
 
 class Program:
@@ -108,20 +106,20 @@ class Program:
         program['MyMatrix'] = matrix.flatten()
     """
     def __init__(self, *shaders: Shader):
-        self.prog_id = prog_id = glCreateProgram()
+        self.prog_id = prog_id = gl.glCreateProgram()
         shaders_id = []
         for shader_code, shader_type in shaders:
             shader = compile_shader(shader_code, shader_type)
-            glAttachShader(self.prog_id, shader)
+            gl.glAttachShader(self.prog_id, shader)
             shaders_id.append(shader)
 
-        glLinkProgram(self.prog_id)
+        gl.glLinkProgram(self.prog_id)
 
         for shader in shaders_id:
             # Flag shaders for deletion. Will only be deleted once detached from program.
-            glDeleteShader(shader)
+            gl.glDeleteShader(shader)
 
-        self._uniforms = {}
+        self._uniforms: Dict[str, Uniform] = {}
         self._introspect_uniforms()
         weakref.finalize(self, Program._delete, shaders_id, prog_id)
 
@@ -133,13 +131,13 @@ class Program:
             return
 
         for shader_id in shaders_id:
-            glDetachShader(prog_id, shader_id)
+            gl.glDetachShader(prog_id, shader_id)
 
-        glDeleteProgram(prog_id)
+        gl.glDeleteProgram(prog_id)
 
     def release(self):
         if self.prog_id != 0:
-            glDeleteProgram(self.prog_id)
+            gl.glDeleteProgram(self.prog_id)
             self.prog_id = 0
 
     def __getitem__(self, item):
@@ -159,24 +157,24 @@ class Program:
         uniform.setter(value)
 
     def __enter__(self):
-        glUseProgram(self.prog_id)
+        gl.glUseProgram(self.prog_id)
 
     def __exit__(self, exception_type, exception_value, traceback):
-        glUseProgram(0)
+        gl.glUseProgram(0)
 
-    def get_num_active(self, variable_type: GLenum) -> int:
+    def get_num_active(self, variable_type: gl.GLenum) -> int:
         """Get the number of active variables of the passed GL type.
 
         variable_type can be GL_ACTIVE_ATTRIBUTES, GL_ACTIVE_UNIFORMS, etc.
         """
-        num_active = GLint(0)
-        glGetProgramiv(self.prog_id, variable_type, byref(num_active))
+        num_active = gl.GLint(0)
+        gl.glGetProgramiv(self.prog_id, variable_type, byref(num_active))
         return num_active.value
 
     def _introspect_uniforms(self):
-        for index in range(self.get_num_active(GL_ACTIVE_UNIFORMS)):
+        for index in range(self.get_num_active(gl.GL_ACTIVE_UNIFORMS)):
             uniform_name, u_type, u_size = self.query_uniform(index)
-            loc = glGetUniformLocation(self.prog_id, uniform_name.encode('utf-8'))
+            loc = gl.glGetUniformLocation(self.prog_id, uniform_name.encode('utf-8'))
 
             if loc == -1:      # Skip uniforms that may be in Uniform Blocks
                 continue
@@ -188,7 +186,7 @@ class Program:
 
             gl_getter = _uniform_getters[gl_type]
 
-            is_matrix = u_type in (GL_FLOAT_MAT2, GL_FLOAT_MAT3, GL_FLOAT_MAT4)
+            is_matrix = u_type in (gl.GL_FLOAT_MAT2, gl.GL_FLOAT_MAT3, gl.GL_FLOAT_MAT4)
 
             # Create persistant mini c_array for getters and setters:
             c_array = (gl_type * length)()
@@ -210,11 +208,11 @@ class Program:
         greater than 1 only for Uniform arrays, like an array of floats or an array
         of Matrices.
         """
-        usize = GLint()
-        utype = GLenum()
+        usize = gl.GLint()
+        utype = gl.GLenum()
         buf_size = 192
         uname = create_string_buffer(buf_size)
-        glGetActiveUniform(self.prog_id, index, buf_size, None, usize, utype, uname)
+        gl.glGetActiveUniform(self.prog_id, index, buf_size, None, usize, utype, uname)
         return uname.value.decode(), utype.value, usize.value
 
 
@@ -222,37 +220,37 @@ def program(vertex_shader: str, fragment_shader: str) -> Program:
     """Create a new program given the vertex_shader and fragment shader code.
     """
     return Program(
-        (vertex_shader, GL_VERTEX_SHADER),
-        (fragment_shader, GL_FRAGMENT_SHADER)
+        (vertex_shader, gl.GL_VERTEX_SHADER),
+        (fragment_shader, gl.GL_FRAGMENT_SHADER)
     )
 
 
-def compile_shader(source: str, shader_type: GLenum) -> GLuint:
+def compile_shader(source: str, shader_type: gl.GLenum) -> gl.GLuint:
     """Compile the shader code of the given type.
 
     `shader_type` could be GL_VERTEX_SHADER, GL_FRAGMENT_SHADER, ...
 
     Returns the shader id as a GLuint
     """
-    shader = glCreateShader(shader_type)
-    source = source.encode('utf-8')
+    shader = gl.glCreateShader(shader_type)
+    source_bytes = source.encode('utf-8')
     # Turn the source code string into an array of c_char_p arrays.
     strings = byref(
         cast(
-            c_char_p(source),
+            c_char_p(source_bytes),
             POINTER(c_char)
         )
     )
     # Make an array with the strings lengths
-    lengths = pointer(c_int(len(source)))
-    glShaderSource(shader, 1, strings, lengths)
-    glCompileShader(shader)
+    lengths = pointer(c_int(len(source_bytes)))
+    gl.glShaderSource(shader, 1, strings, lengths)
+    gl.glCompileShader(shader)
     result = c_int()
-    glGetShaderiv(shader, GL_COMPILE_STATUS, byref(result))
-    if result.value == GL_FALSE:
+    gl.glGetShaderiv(shader, gl.GL_COMPILE_STATUS, byref(result))
+    if result.value == gl.GL_FALSE:
         msg = create_string_buffer(512)
         length = c_int()
-        glGetShaderInfoLog(shader, 512, byref(length), msg)
+        gl.glGetShaderInfoLog(shader, 512, byref(length), msg)
         raise ShaderException(
             f"Shader compile failure ({result.value}): {msg.value.decode('utf-8')}")
     return shader
@@ -267,30 +265,30 @@ class Buffer:
     The buffer knows its id `buffer_id` and its `size` in bytes.
     """
     usages = {
-        'static': GL_STATIC_DRAW,
-        'dynamic': GL_DYNAMIC_DRAW,
-        'stream': GL_STREAM_DRAW
+        'static': gl.GL_STATIC_DRAW,
+        'dynamic': gl.GL_DYNAMIC_DRAW,
+        'stream': gl.GL_STREAM_DRAW
     }
 
     def __init__(self, data: bytes, usage: str = 'static'):
-        self.buffer_id = buffer_id = GLuint()
+        self.buffer_id = buffer_id = gl.GLuint()
         self.size = len(data)
 
-        glGenBuffers(1, byref(self.buffer_id))
+        gl.glGenBuffers(1, byref(self.buffer_id))
         if self.buffer_id.value == 0:
             raise ShaderException("Cannot create Buffer object.")
 
-        glBindBuffer(GL_ARRAY_BUFFER, self.buffer_id)
+        gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self.buffer_id)
         self.usage = Buffer.usages[usage]
-        glBufferData(GL_ARRAY_BUFFER, self.size, data, self.usage)
+        gl.glBufferData(gl.GL_ARRAY_BUFFER, self.size, data, self.usage)
         weakref.finalize(self, Buffer.release, buffer_id)
 
     @classmethod
     def create_with_size(cls, size: int, usage: str = 'static'):
         """Create an empty Buffer storage of the given size."""
         empty_buffer = Buffer(b"", usage=usage)
-        glBindBuffer(GL_ARRAY_BUFFER, empty_buffer.buffer_id)
-        glBufferData(GL_ARRAY_BUFFER, size, None, Buffer.usages[usage])
+        gl.glBindBuffer(gl.GL_ARRAY_BUFFER, empty_buffer.buffer_id)
+        gl.glBufferData(gl.GL_ARRAY_BUFFER, size, None, Buffer.usages[usage])
         empty_buffer.size = size
         return empty_buffer
 
@@ -302,28 +300,28 @@ class Buffer:
             return
 
         if buffer_id.value != 0:
-            glDeleteBuffers(1, byref(buffer_id))
+            gl.glDeleteBuffers(1, byref(buffer_id))
             buffer_id.value = 0
 
     def write(self, data: bytes, offset: int = 0):
-        glBindBuffer(GL_ARRAY_BUFFER, self.buffer_id)
-        glBufferSubData(GL_ARRAY_BUFFER, GLintptr(offset), len(data), data)
+        gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self.buffer_id)
+        gl.glBufferSubData(gl.GL_ARRAY_BUFFER, gl.GLintptr(offset), len(data), data)
         # print(f"Writing data:\n{data[:60]}")
-        # ptr = glMapBufferRange(GL_ARRAY_BUFFER, GLintptr(0), 20, GL_MAP_READ_BIT)
+        # ptr = glMapBufferRange(gl.GL_ARRAY_BUFFER, gl.GLintptr(0), 20, GL_MAP_READ_BIT)
         # print(f"Reading back from buffer:\n{string_at(ptr, size=60)}")
-        # glUnmapBuffer(GL_ARRAY_BUFFER)
+        # glUnmapBuffer(gl.GL_ARRAY_BUFFER)
 
     def orphan(self):
-        glBindBuffer(GL_ARRAY_BUFFER, self.buffer_id)
-        glBufferData(GL_ARRAY_BUFFER, self.size, None, self.usage)
+        gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self.buffer_id)
+        gl.glBufferData(gl.GL_ARRAY_BUFFER, self.size, None, self.usage)
 
     def _read(self, size):
         """ Debug method to read data from the buffer. """
 
-        glBindBuffer(GL_ARRAY_BUFFER, self.buffer_id)
-        ptr = glMapBufferRange(GL_ARRAY_BUFFER, GLintptr(0), size, GL_MAP_READ_BIT)
+        gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self.buffer_id)
+        ptr = gl.glMapBufferRange(gl.GL_ARRAY_BUFFER, gl.GLintptr(0), size, gl.GL_MAP_READ_BIT)
         print(f"Reading back from buffer:\n{string_at(ptr, size=size)}")
-        glUnmapBuffer(GL_ARRAY_BUFFER)
+        gl.glUnmapBuffer(gl.GL_ARRAY_BUFFER)
 
 
 def buffer(data: bytes, usage: str = 'static') -> Buffer:
@@ -351,14 +349,14 @@ class BufferDescription:
     times equal to the number of items in the Buffer.
     """
     GL_TYPES_ENUM = {
-        'B': GL_UNSIGNED_BYTE,
-        'f': GL_FLOAT,
-        'i': GL_INT,
+        'B': gl.GL_UNSIGNED_BYTE,
+        'f': gl.GL_FLOAT,
+        'i': gl.GL_INT,
     }
     GL_TYPES = {
-        'B': GLubyte,
-        'f': GLfloat,
-        'i': GLint,
+        'B': gl.GLubyte,
+        'f': gl.GLfloat,
+        'i': gl.GLint,
     }
 
     def __init__(self,
@@ -375,20 +373,20 @@ class BufferDescription:
         if self.normalized > set(self.attributes):
             raise ShaderException("Normalized attribute not found in attributes.")
 
-        formats = formats.split(" ")
+        formats_list = formats.split(" ")
 
-        if len(formats) != len(self.attributes):
+        if len(formats_list) != len(self.attributes):
             raise ShaderException(
-                f"Different lengths of formats ({len(formats)}) and "
+                f"Different lengths of formats ({len(formats_list)}) and "
                 f"attributes ({len(self.attributes)})"
             )
 
-        self.formats = []
-        for i, fmt in enumerate(formats):
-            size, type_ = fmt
-            if size not in '1234' or type_ not in 'fiB':
+        self.formats: List[Tuple[int, int, int]] = []
+        for i, fmt in enumerate(formats_list):
+            sizechar, type_ = fmt
+            if sizechar not in '1234' or type_ not in 'fiB':
                 raise ShaderException("Wrong format {fmt}.")
-            size = int(size)
+            size = int(sizechar)
             gl_type_enum = BufferDescription.GL_TYPES_ENUM[type_]
             gl_type = BufferDescription.GL_TYPES[type_]
             attribsize = size * sizeof(gl_type)
@@ -429,18 +427,18 @@ class VertexArray:
                  content: Iterable[BufferDescription],
                  index_buffer: Buffer = None):
         self.program = prog.prog_id
-        self.vao = vao = GLuint()
+        self.vao = vao = gl.GLuint()
         self.num_vertices = -1
         self.ibo = index_buffer
 
-        glGenVertexArrays(1, byref(self.vao))
-        glBindVertexArray(self.vao)
+        gl.glGenVertexArrays(1, byref(self.vao))
+        gl.glBindVertexArray(self.vao)
 
         for buffer_desc in content:
             self._enable_attrib(buffer_desc)
 
         if self.ibo is not None:
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.ibo.buffer_id)
+            gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, self.ibo.buffer_id)
         weakref.finalize(self, VertexArray.release, vao)
 
     @staticmethod
@@ -450,15 +448,15 @@ class VertexArray:
             return
 
         if vao.value != 0:
-            glDeleteVertexArrays(1, byref(vao))
+            gl.glDeleteVertexArrays(1, byref(vao))
             vao.value = 0
 
     def __enter__(self):
-        glBindVertexArray(self.vao)
-        glUseProgram(self.program)
+        gl.glBindVertexArray(self.vao)
+        gl.glUseProgram(self.program)
 
     def __exit__(self, exception_type, exception_value, traceback):
-        glUseProgram(0)
+        gl.glUseProgram(0)
 
     def _enable_attrib(self, buf_desc: BufferDescription):
         buff = buf_desc.buffer
@@ -473,32 +471,32 @@ class VertexArray:
             self.num_vertices = max(self.num_vertices, buff.size // stride)
             # print(f"Number of vertices: {self.num_vertices}")
 
-        glBindBuffer(GL_ARRAY_BUFFER, buff.buffer_id)
+        gl.glBindBuffer(gl.GL_ARRAY_BUFFER, buff.buffer_id)
         offset = 0
         for (size, attribsize, gl_type_enum), attrib in zip(buf_desc.formats, buf_desc.attributes):
-            loc = glGetAttribLocation(self.program, attrib.encode('utf-8'))
+            loc = gl.glGetAttribLocation(self.program, attrib.encode('utf-8'))
             if loc == -1:
                 raise ShaderException(f"Attribute {attrib} not found in shader program")
-            normalized = GL_TRUE if attrib in buf_desc.normalized else GL_FALSE
-            glVertexAttribPointer(
+            normalized = gl.GL_TRUE if attrib in buf_desc.normalized else gl.GL_FALSE
+            gl.glVertexAttribPointer(
                 loc, size, gl_type_enum,
                 normalized, stride, c_void_p(offset)
             )
             # print(f"{attrib} of size {size} with stride {stride} and offset {offset}")
             if buf_desc.instanced:
-                glVertexAttribDivisor(loc, 1)
+                gl.glVertexAttribDivisor(loc, 1)
             offset += attribsize
-            glEnableVertexAttribArray(loc)
+            gl.glEnableVertexAttribArray(loc)
 
-    def render(self, mode: GLuint, instances: int = 1):
+    def render(self, mode: gl.GLuint, instances: int = 1):
         if self.ibo is not None:
             count = self.ibo.size // 4
-            glDrawElementsInstanced(mode, count, GL_UNSIGNED_INT, None, instances)
+            gl.glDrawElementsInstanced(mode, count, gl.GL_UNSIGNED_INT, None, instances)
         else:
-            glDrawArraysInstanced(mode, 0, self.num_vertices, instances)
+            gl.glDrawArraysInstanced(mode, 0, self.num_vertices, instances)
 
 
-def vertex_array(prog: GLuint, content, index_buffer=None):
+def vertex_array(prog: gl.GLuint, content, index_buffer=None):
     """Create a new Vertex Array.
     """
     return VertexArray(prog, content, index_buffer)
@@ -507,28 +505,28 @@ def vertex_array(prog: GLuint, content, index_buffer=None):
 class Texture:
     def __init__(self, size: Tuple[int, int], component: int, data: np.array):
         self.width, self.height = size
-        sized_format = (GL_R8, GL_RG8, GL_RGB8, GL_RGBA8)[component - 1]
-        self.format = (GL_R, GL_RG, GL_RGB, GL_RGBA)[component - 1]
-        glActiveTexture(GL_TEXTURE0 + 0)  # If we need other texture unit...
-        self.texture_id = texture_id = GLuint()
-        glGenTextures(1, byref(self.texture_id))
+        sized_format = (gl.GL_R8, gl.GL_RG8, gl.GL_RGB8, gl.GL_RGBA8)[component - 1]
+        self.format = (gl.GL_R, gl.GL_RG, gl.GL_RGB, gl.GL_RGBA)[component - 1]
+        gl.glActiveTexture(gl.GL_TEXTURE0 + 0)  # If we need other texture unit...
+        self.texture_id = texture_id = gl.GLuint()
+        gl.glGenTextures(1, byref(self.texture_id))
 
         if self.texture_id.value == 0:
             raise ShaderException("Cannot create Texture.")
 
-        glBindTexture(GL_TEXTURE_2D, self.texture_id)
-        glPixelStorei(GL_PACK_ALIGNMENT, 1)
-        glPixelStorei(GL_UNPACK_ALIGNMENT, 1)
+        gl.glBindTexture(gl.GL_TEXTURE_2D, self.texture_id)
+        gl.glPixelStorei(gl.GL_PACK_ALIGNMENT, 1)
+        gl.glPixelStorei(gl.GL_UNPACK_ALIGNMENT, 1)
         try:
-            glTexImage2D(
-                GL_TEXTURE_2D, 0, sized_format, self.width, self.height, 0,
-                self.format, GL_UNSIGNED_BYTE, data.ctypes.data_as(c_void_p)
+            gl.glTexImage2D(
+                gl.GL_TEXTURE_2D, 0, sized_format, self.width, self.height, 0,
+                self.format, gl.GL_UNSIGNED_BYTE, data.ctypes.data_as(c_void_p)
             )
-        except GLException:
-            raise GLException(f"Unable to create texture. {GL_MAX_TEXTURE_SIZE} {size}")
+        except gl.GLException:
+            raise gl.GLException(f"Unable to create texture. {gl.GL_MAX_TEXTURE_SIZE} {size}")
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
+        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR)
+        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR)
         weakref.finalize(self, Texture.release, texture_id)
 
     @staticmethod
@@ -538,11 +536,11 @@ class Texture:
             return
 
         if texture_id.value != 0:
-            glDeleteTextures(1, byref(texture_id))
+            gl.glDeleteTextures(1, byref(texture_id))
 
     def use(self, texture_unit: int = 0):
-        glActiveTexture(GL_TEXTURE0 + texture_unit)
-        glBindTexture(GL_TEXTURE_2D, self.texture_id)
+        gl.glActiveTexture(gl.GL_TEXTURE0 + texture_unit)
+        gl.glBindTexture(gl.GL_TEXTURE_2D, self.texture_id)
 
 
 def texture(size: Tuple[int, int], component: int, data: np.array) -> Texture:
