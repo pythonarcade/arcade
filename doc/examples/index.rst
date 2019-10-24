@@ -293,12 +293,6 @@ Platformers
 
    :ref:`sprite_move_animation`
 
-.. figure:: thumbs/sprite_csv_map.png
-   :figwidth: 170px
-
-   :ref:`sprite_csv_map`
-
-
 .. figure:: thumbs/sprite_ramps.png
    :figwidth: 170px
 
@@ -336,6 +330,11 @@ TMX Files / Tiled Map Editor
    :figwidth: 170px
 
    :ref:`10_ladders_and_more`
+
+.. figure:: thumbs/11_animate_character.png
+   :figwidth: 170px
+
+   :ref:`11_animate_character`
 
 
 GUI
