@@ -125,7 +125,7 @@ class MyGame(arcade.Window):
 
         self.draw_time = timeit.default_timer() - draw_start_time
 
-    def update(self, delta_time):
+    def on_update(self, delta_time):
         start_time = timeit.default_timer()
 
         self.ticks_to_next_ball -= 1
@@ -151,7 +151,7 @@ class MyGame(arcade.Window):
                 # Remove balls from physics space
                 self.space.remove(ball.pymunk_shape, ball.pymunk_shape.body)
                 # Remove balls from physics list
-                ball.kill()
+                ball.remove_from_sprite_lists()
 
         # Update physics
         # Use a constant time step, don't use delta_time

@@ -53,7 +53,7 @@ class MyGame(arcade.Window):
 
         self.shape_list.draw()
 
-    def update(self, delta_time):
+    def on_update(self, delta_time):
         """ Movement and game logic """
         self.shape_list.angle += 1
 

@@ -69,7 +69,7 @@ class MyGame(arcade.Window):
         self.bullet_list.draw()
         self.player_list.draw()
 
-    def update(self, delta_time):
+    def on_update(self, delta_time):
         """All the logic to move, and the game logic goes here. """
 
         self.frame_count += 1
@@ -119,7 +119,7 @@ class MyGame(arcade.Window):
         # Get rid of the bullet when it flies off-screen
         for bullet in self.bullet_list:
             if bullet.top < 0:
-                bullet.kill()
+                bullet.remove_from_sprite_lists()
 
         self.bullet_list.update()
 

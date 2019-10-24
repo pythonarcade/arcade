@@ -172,7 +172,7 @@ class MyGame(arcade.Window):
             self.shape_being_dragged.shape.body.position = self.last_mouse_position
             self.shape_being_dragged.shape.body.velocity = dx * 20, dy * 20
 
-    def update(self, delta_time):
+    def on_update(self, delta_time):
         start_time = timeit.default_timer()
 
         # Check for balls that fall off the screen
@@ -181,7 +181,7 @@ class MyGame(arcade.Window):
                 # Remove balls from physics space
                 self.space.remove(sprite.pymunk_shape, sprite.pymunk_shape.body)
                 # Remove balls from physics list
-                sprite.kill()
+                sprite.remove_from_sprite_lists()
 
         # Update physics
         # Use a constant time step, don't use delta_time

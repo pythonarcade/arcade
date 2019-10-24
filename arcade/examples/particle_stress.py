@@ -45,7 +45,7 @@ class MyGame(arcade.Window):
         arcade.set_background_color(arcade.color.BLACK)
         self.frametime_plotter = FrametimePlotter()
 
-    def update(self, delta_time):
+    def on_update(self, delta_time):
         self.emitter.update()
         if self.emitter.can_reap():
             arcade.close_window()

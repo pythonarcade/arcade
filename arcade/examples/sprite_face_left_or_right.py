@@ -113,7 +113,7 @@ class MyGame(arcade.Window):
         # Draw all the sprites.
         self.all_sprites_list.draw()
 
-    def update(self, delta_time):
+    def on_update(self, delta_time):
         """ Movement and game logic """
 
         # Call update on all sprites (The sprites don't do much in this

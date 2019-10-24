@@ -102,7 +102,7 @@ class MyGame(arcade.Window):
         self.player_sprite.center_x = x
         self.player_sprite.center_y = y
 
-    def update(self, delta_time):
+    def on_update(self, delta_time):
         """ Movement and game logic """
 
         # Call update on all sprites (The sprites don't do much in this
@@ -121,7 +121,7 @@ class MyGame(arcade.Window):
         if hit_trigger:
             intense_sprites = [sprite for sprite in self.coin_list if sprite.intensity == 'bright']
             for coin in intense_sprites:
-                coin.kill()
+                coin.remove_from_sprite_lists()
 
 
 def main():

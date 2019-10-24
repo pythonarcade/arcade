@@ -45,7 +45,7 @@ class Explosion(arcade.Sprite):
         if self.current_texture < len(self.textures):
             self.set_texture(self.current_texture)
         else:
-            self.kill()
+            self.remove_from_sprite_lists()
 
 
 class MyGame(arcade.Window):
@@ -179,7 +179,7 @@ class MyGame(arcade.Window):
         # Add the bullet to the appropriate lists
         self.bullet_list.append(bullet)
 
-    def update(self, delta_time):
+    def on_update(self, delta_time):
         """ Movement and game logic """
 
         # Call update on bullet sprites
@@ -198,11 +198,11 @@ class MyGame(arcade.Window):
                 explosion.center_x = hit_list[0].center_x
                 explosion.center_y = hit_list[0].center_y
                 self.explosions_list.append(explosion)
-                bullet.kill()
+                bullet.remove_from_sprite_lists()
 
             # For every coin we hit, add to the score and remove the coin
             for coin in hit_list:
-                coin.kill()
+                coin.remove_from_sprite_lists()
                 self.score += 1
 
                 # Hit Sound
@@ -210,7 +210,7 @@ class MyGame(arcade.Window):
 
             # If the bullet flies off-screen, remove it.
             if bullet.bottom > SCREEN_HEIGHT:
-                bullet.kill()
+                bullet.remove_from_sprite_lists()
 
 
 def main():

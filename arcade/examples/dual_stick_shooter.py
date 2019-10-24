@@ -158,7 +158,7 @@ class MyGame(arcade.Window):
         y = random.randint(0, SCREEN_HEIGHT)
         self.enemy_list.append(Enemy(x, y))
 
-    def update(self, delta_time):
+    def on_update(self, delta_time):
         self.tick += 1
         if self.game_over:
             return
@@ -214,8 +214,8 @@ class MyGame(arcade.Window):
             enemy_shot_list = arcade.check_for_collision_with_list(bullet, self.enemy_list)
             # Loop through each colliding sprite, remove it, and add to the score.
             for enemy in enemy_shot_list:
-                enemy.kill()
-                bullet.kill()
+                enemy.remove_from_sprite_lists()
+                bullet.remove_from_sprite_lists()
                 bullet_killed = True
                 self.score += 1
             if bullet_killed:

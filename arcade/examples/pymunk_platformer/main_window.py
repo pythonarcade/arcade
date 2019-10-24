@@ -175,7 +175,7 @@ class MyGame(arcade.Window):
                                 self.view_bottom,
                                 SCREEN_HEIGHT + self.view_bottom)
 
-    def update(self, delta_time):
+    def on_update(self, delta_time):
         """ Update the sprites """
 
         # Keep track of how long this function takes.
@@ -202,7 +202,7 @@ class MyGame(arcade.Window):
                 # Remove sprites from physics space
                 self.space.remove(sprite.shape, sprite.shape.body)
                 # Remove sprites from physics list
-                sprite.kill()
+                sprite.remove_from_sprite_lists()
 
         # Update physics
         # Use a constant time step, don't use delta_time

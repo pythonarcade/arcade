@@ -115,7 +115,7 @@ class MyGame(arcade.Window):
         self.wall_list.draw()
         self.coin_list.draw()
 
-    def update(self, delta_time):
+    def on_update(self, delta_time):
         """ Movement and game logic """
 
         for coin in self.coin_list:

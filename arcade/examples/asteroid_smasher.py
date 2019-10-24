@@ -137,7 +137,7 @@ class BulletSprite(TurningSprite):
         super().update()
         if self.center_x < -100 or self.center_x > 1500 or \
                 self.center_y > 1100 or self.center_y < -100:
-            self.kill()
+            self.remove_from_sprite_lists()
 
 
 class MyGame(arcade.Window):
@@ -348,7 +348,7 @@ class MyGame(arcade.Window):
                 self.all_sprites_list.append(enemy_sprite)
                 self.asteroid_list.append(enemy_sprite)
 
-    def update(self, x):
+    def on_update(self, x):
         """ Move everything """
 
         self.frame_count += 1
@@ -366,8 +366,8 @@ class MyGame(arcade.Window):
 
                 for asteroid in asteroids:
                     self.split_asteroid(cast(AsteroidSprite, asteroid))  # expected AsteroidSprite, got Sprite instead
-                    asteroid.kill()
-                    bullet.kill()
+                    asteroid.remove_from_sprite_lists()
+                    bullet.remove_from_sprite_lists()
 
             if not self.player_sprite.respawning:
                 asteroids = arcade.check_for_collision_with_list(self.player_sprite, self.asteroid_list)
@@ -376,8 +376,8 @@ class MyGame(arcade.Window):
                         self.lives -= 1
                         self.player_sprite.respawn()
                         self.split_asteroid(cast(AsteroidSprite, asteroids[0]))
-                        asteroids[0].kill()
-                        self.ship_life_list.pop().kill()
+                        asteroids[0].remove_from_sprite_lists()
+                        self.ship_life_list.pop().remove_from_sprite_lists()
                         print("Crash")
                     else:
                         self.game_over = True

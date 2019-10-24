@@ -98,7 +98,7 @@ class MyGame(arcade.Window):
         # Draw all the sprites.
         self.player_list.draw()
 
-    def update(self, delta_time):
+    def on_update(self, delta_time):
         """ Movement and game logic """
 
         # Calculate speed based on the keys pressed
