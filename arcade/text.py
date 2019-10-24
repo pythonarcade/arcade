@@ -201,9 +201,11 @@ def draw_text(text: str,
         # Default font if no font
         if font is None:
             font_names = ("arial.ttf",
+                          'Arial.ttf',
                           'NotoSans-Regular.ttf',
                           "/usr/share/fonts/truetype/freefont/FreeMono.ttf",
-                          '/System/Library/Fonts/SFNSDisplay.ttf')
+                          '/System/Library/Fonts/SFNSDisplay.ttf',
+                          '/Library/Fonts/Arial.ttf')
             for font_string_name in font_names:
                 try:
                     font = PIL.ImageFont.truetype(font_string_name, int(font_size))
