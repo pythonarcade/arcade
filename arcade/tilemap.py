@@ -150,22 +150,22 @@ def _create_sprite_from_tile(map_object, tile: pytiled_parser.objects.Tile,
                           f"height or width for {tile.image.source}. Ignoring.")
                     continue
 
-                print(my_sprite.width, my_sprite.height)
+                # print(my_sprite.width, my_sprite.height)
                 sx = hitbox.location[0] - (my_sprite.width / (scaling * 2))
                 sy = -(hitbox.location[1] - (my_sprite.height / (scaling * 2)))
                 ex = (hitbox.location[0] + hitbox.size[0]) - (my_sprite.width / (scaling * 2))
                 ey = -((hitbox.location[1] + hitbox.size[1]) - (my_sprite.height / (scaling * 2)))
 
-                print(f"Size: {hitbox.size} Location: {hitbox.location}")
+                # print(f"Size: {hitbox.size} Location: {hitbox.location}")
                 p1 = [sx, sy]
                 p2 = [ex, sy]
                 p3 = [ex, ey]
                 p4 = [sx, ey]
                 # print(f"w:{my_sprite.width:.1f}, h:{my_sprite.height:.1f}", end=", ")
                 points = [p1, p2, p3, p4]
-                for point in points:
-                    print(f"({point[0]:.1f}, {point[1]:.1f}) ")
-                print()
+                # for point in points:
+                #     print(f"({point[0]:.1f}, {point[1]:.1f}) ")
+                # print()
 
             elif isinstance(hitbox, pytiled_parser.objects.PolygonObject):
                 for point in hitbox.points:
@@ -179,8 +179,8 @@ def _create_sprite_from_tile(map_object, tile: pytiled_parser.objects.Tile,
 
             elif isinstance(hitbox, pytiled_parser.objects.PolylineObject):
                 for point in hitbox.points:
-                    adj_x = point[0] + hitbox.location[0] - half_width
-                    adj_y = half_height - (point[1] + hitbox.location[1])
+                    adj_x = point[0] + hitbox.location[0] - my_sprite.width / (scaling * 2)
+                    adj_y =  - (point[1] + hitbox.location[1] - my_sprite.height / (scaling * 2))
                     adj_point = [adj_x, adj_y]
                     points.append(adj_point)
 
@@ -194,17 +194,31 @@ def _create_sprite_from_tile(map_object, tile: pytiled_parser.objects.Tile,
                     print(f"Warning: Ellipse hitbox created for without a height "
                           f"or width for {tile.image.source}. Ignoring.")
                     continue
-                w = hitbox.size[0] / 2
-                h = hitbox.size[1] / 2
-                cx = (hitbox.location[0] + hitbox.size[0] / 2) - half_width
-                cy = map_object.tile_size.height - (hitbox.location[1] + hitbox.size[1] / 2) - half_height
+
+                print(f"Size: {hitbox.size} Location: {hitbox.location}")
+
+                hw = hitbox.size[0] / 2
+                hh = hitbox.size[1] / 2
+                cx = hitbox.location[0] + hw
+                cy = hitbox.location[1] + hh
+
+                acx = cx - my_sprite.width
+                acy = cy - my_sprite.height
+
+                print(f"acx: {acx} acy: {acy} cx: {cx} cy: {cy} hh: {hh} hw: {hw}")
+
                 total_steps = 8
                 angles = [step / total_steps * 2 * math.pi for step in range(total_steps)]
                 for angle in angles:
-                    x = w * math.cos(angle) + cx
-                    y = h * math.sin(angle) + cy
+                    x = hw * math.cos(angle) + acx
+                    y = -(hh * math.sin(angle) + acy)
                     point = [x, y]
                     points.append(point)
+
+                for point in points:
+                    print(f"({point[0]:.1f}, {point[1]:.1f}) ")
+                print()
+
 
             else:
                 print(f"Warning: Hitbox type {type(hitbox)} not supported.")
