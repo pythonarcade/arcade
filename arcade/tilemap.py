@@ -150,17 +150,22 @@ def _create_sprite_from_tile(map_object, tile: pytiled_parser.objects.Tile,
                           f"height or width for {tile.image.source}. Ignoring.")
                     continue
 
-                half_width = my_sprite.width / 2
-                half_height = my_sprite.height / 2
+                print(my_sprite.width, my_sprite.height)
+                sx = hitbox.location[0] - (my_sprite.width / (scaling * 2))
+                sy = -(hitbox.location[1] - (my_sprite.height / (scaling * 2)))
+                ex = (hitbox.location[0] + hitbox.size[0]) - (my_sprite.width / (scaling * 2))
+                ey = -((hitbox.location[1] + hitbox.size[1]) - (my_sprite.height / (scaling * 2)))
 
-                p1 = [hitbox.location[0] - half_width, half_height - hitbox.location[0]]
-                p2 = [hitbox.location[0] + hitbox.size[0] - half_width, half_height - hitbox.size[0]]
-                p3 = [hitbox.location[0] + hitbox.size[0] - half_width, half_height
-                      - (hitbox.location[1] + hitbox.size[1])]
-                p4 = [hitbox.location[0] - half_width, half_height - (hitbox.location[1] + hitbox.size[1])]
+                print(f"Size: {hitbox.size} Location: {hitbox.location}")
+                p1 = [sx, sy]
+                p2 = [ex, sy]
+                p3 = [ex, ey]
+                p4 = [sx, ey]
                 # print(f"w:{my_sprite.width:.1f}, h:{my_sprite.height:.1f}", end=", ")
-                points = [p4, p3, p2, p1]
-                # print(points)
+                points = [p1, p2, p3, p4]
+                for point in points:
+                    print(f"({point[0]:.1f}, {point[1]:.1f}) ")
+                print()
 
             elif isinstance(hitbox, pytiled_parser.objects.PolygonObject):
                 for point in hitbox.points:
