@@ -195,29 +195,29 @@ def _create_sprite_from_tile(map_object, tile: pytiled_parser.objects.Tile,
                           f"or width for {tile.image.source}. Ignoring.")
                     continue
 
-                print(f"Size: {hitbox.size} Location: {hitbox.location}")
+                # print(f"Size: {hitbox.size} Location: {hitbox.location}")
 
                 hw = hitbox.size[0] / 2
                 hh = hitbox.size[1] / 2
                 cx = hitbox.location[0] + hw
                 cy = hitbox.location[1] + hh
 
-                acx = cx - my_sprite.width
-                acy = cy - my_sprite.height
+                acx = cx - (my_sprite.width / (scaling * 2))
+                acy = cy - (my_sprite.height / (scaling * 2))
 
-                print(f"acx: {acx} acy: {acy} cx: {cx} cy: {cy} hh: {hh} hw: {hw}")
+                # print(f"acx: {acx} acy: {acy} cx: {cx} cy: {cy} hh: {hh} hw: {hw}")
 
                 total_steps = 8
                 angles = [step / total_steps * 2 * math.pi for step in range(total_steps)]
                 for angle in angles:
-                    x = hw * math.cos(angle) + acx
-                    y = -(hh * math.sin(angle) + acy)
+                    x = (hw * math.cos(angle) + acx)
+                    y = (-(hh * math.sin(angle) + acy))
                     point = [x, y]
                     points.append(point)
 
-                for point in points:
-                    print(f"({point[0]:.1f}, {point[1]:.1f}) ")
-                print()
+                # for point in points:
+                #     print(f"({point[0]:.1f}, {point[1]:.1f}) ")
+                # print()
 
 
             else:
