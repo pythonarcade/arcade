@@ -5,6 +5,14 @@
 Release Notes
 =============
 
+Version 2.1.6
+-------------
+
+* Fix: Lots of fixes around positioning and hitboxes with tile maps  `Issue 503 <https://github.com/pvcraven/arcade/issues/503>`_
+* Documentation updates, particularly using `on_update` instead of `update` and
+  `remove_from_sprite_lists` instead of `kill`. `Issue 381 <https://github.com/pvcraven/arcade/issues/381>`_
+* Remove/adjust some examples using csvs for maps
+
 Version 2.1.5
 -------------
 
