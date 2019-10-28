@@ -95,16 +95,22 @@ def _get_tile_by_gid(map_object: pytiled_parser.objects.TileMap,
         tile_gid -= FLIPPED_VERTICALLY_FLAG
 
     for tileset_key, tileset in map_object.tile_sets.items():
-        for tile_key, tile in tileset.tiles.items():
-            cur_tile_gid = tile.id_ + tileset_key
-            # print(f"-- {tile_gid} {cur_tile_gid} {tile.image.source}")
-            if cur_tile_gid == tile_gid:
-                my_tile = copy.copy(tile)
-                my_tile.tileset = tileset
-                my_tile.flipped_vertically = flipped_vertically
-                my_tile.flipped_diagonally = flipped_diagonally
-                my_tile.flipped_horizontally = flipped_horizontally
-                return my_tile
+        if tile_gid < tileset_key or tile_gid > tileset_key + tileset.tile_count - 1:
+            continue
+        tile_ref = tileset.tiles.get(tile_gid - tileset_key)
+        # Tilesets only define a 'tile' if there is tile specific data
+        if tile_ref is None:
+            tile_ref = pytiled_parser.objects.Tile(id_ = tile_gid - tileset_key)
+        if tileset.image is not None:
+            if tile_ref.image is not None:
+                raise TypeError("Use of tileset (rather than collection of images) assumes image only defined at tileset scope")
+            tile_ref.image = tileset.image
+        my_tile = copy.copy(tile_ref)
+        my_tile.tileset = tileset
+        my_tile.flipped_vertically = flipped_vertically
+        my_tile.flipped_diagonally = flipped_diagonally
+        my_tile.flipped_horizontally = flipped_horizontally
+        return my_tile
     return None
 
 
@@ -130,7 +136,19 @@ def _create_sprite_from_tile(map_object, tile: pytiled_parser.objects.Tile,
         # my_sprite = AnimatedTimeSprite(tmx_file, scaling)
         my_sprite: Sprite = AnimatedTimeBasedSprite(tmx_file, scaling)
     else:
-        my_sprite = Sprite(tmx_file, scaling)
+        image_x = 0
+        image_y = 0
+        if tile.tileset.image is not None:
+            row = tile.id_ // tile.tileset.columns
+            image_y = row * tile.tileset.max_tile_size.height
+            col = tile.id_ % tile.tileset.columns
+            image_x = col * tile.tileset.max_tile_size.width
+        my_sprite = Sprite(tmx_file,
+                           scaling,
+                           image_x,
+                           image_y,
+                           tile.tileset.max_tile_size.width,
+                           tile.tileset.max_tile_size.height)
 
     if tile.properties is not None and len(tile.properties) > 0:
         for my_property in tile.properties:
