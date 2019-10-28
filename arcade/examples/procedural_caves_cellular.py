@@ -259,7 +259,7 @@ class MyGame(arcade.Window):
                             self.view_bottom,
                             self.height + self.view_bottom)
 
-    def update(self, delta_time):
+    def on_update(self, delta_time):
         """ Movement and game logic """
 
         start_time = timeit.default_timer()

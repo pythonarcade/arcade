@@ -47,7 +47,7 @@ class MyGame(arcade.Window):
         # Output the timer text.
         arcade.draw_text(output, 300, 300, arcade.color.BLACK, 30)
 
-    def update(self, delta_time):
+    def on_update(self, delta_time):
         """
         All the logic to move, and the game logic goes here.
         """

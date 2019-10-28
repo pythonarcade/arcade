@@ -24,7 +24,7 @@ GRAVITY_CONSTANT = 0.3
 BOUNCINESS = 0.9
 
 
-def draw():
+def draw(_delta_time):
     """
     Use this function to draw everything to the screen.
     """
@@ -72,10 +72,10 @@ def draw():
 #
 # Later on, we'll use 'classes' to track position and velocity for multiple
 # objects.
-draw.x = CIRCLE_RADIUS
-draw.y = SCREEN_HEIGHT - CIRCLE_RADIUS
-draw.delta_x = 2
-draw.delta_y = 0
+draw.x = CIRCLE_RADIUS                  # type: ignore # dynamic attribute on function obj  # Initial x position
+draw.y = SCREEN_HEIGHT - CIRCLE_RADIUS  # type: ignore # dynamic attribute on function obj  # Initial x position
+draw.delta_x = 2                        # type: ignore # dynamic attribute on function obj  # Initial x position
+draw.delta_y = 0                        # type: ignore # dynamic attribute on function obj  # Initial x position
 
 
 def main():

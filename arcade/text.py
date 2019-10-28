@@ -1,6 +1,6 @@
 # --- BEGIN TEXT FUNCTIONS # # #
 
-from typing import Tuple, Union
+from typing import Tuple, Union, cast
 
 import PIL.Image
 import PIL.ImageDraw
@@ -9,6 +9,7 @@ import PIL.ImageFont
 from arcade.sprite import Sprite
 from arcade.arcade_types import Color
 from arcade.draw_commands import Texture
+from arcade.arcade_types import RGBA
 
 
 class Text:
@@ -128,12 +129,12 @@ def draw_text(text: str,
     font_size *= scale_up
 
     # If the cache gets too large, dump it and start over.
-    if len(draw_text.cache) > 5000:
-        draw_text.cache = {}
+    if len(draw_text.cache) > 5000:  # type: ignore # dynamic attribute on function obj
+        draw_text.cache = {}  # type: ignore # dynamic attribute on function obj
 
     key = f"{text}{color}{font_size}{width}{align}{font_name}{bold}{italic}"
-    if key in draw_text.cache:
-        label = draw_text.cache[key]
+    if key in draw_text.cache:  # type: ignore # dynamic attribute on function obj
+        label = draw_text.cache[key]  # type: ignore # dynamic attribute on function obj
         text_sprite = label.text_sprite_list[0]
 
         if anchor_x == "left":
@@ -201,9 +202,11 @@ def draw_text(text: str,
         # Default font if no font
         if font is None:
             font_names = ("arial.ttf",
+                          'Arial.ttf',
                           'NotoSans-Regular.ttf',
                           "/usr/share/fonts/truetype/freefont/FreeMono.ttf",
-                          '/System/Library/Fonts/SFNSDisplay.ttf')
+                          '/System/Library/Fonts/SFNSDisplay.ttf',
+                          '/Library/Fonts/Arial.ttf')
             for font_string_name in font_names:
                 try:
                     font = PIL.ImageFont.truetype(font_string_name, int(font_size))
@@ -250,7 +253,7 @@ def draw_text(text: str,
         # Convert to tuple if needed, because the multiline_text does not take a
         # list for a color
         if isinstance(color, list):
-            color = tuple(color)
+            color = cast(RGBA, tuple(color))
         draw.multiline_text((image_start_x, image_start_y), text, color, align=align, font=font)
         image = image.resize((width // scale_down, text_height // scale_down), resample=PIL.Image.LANCZOS)
 
@@ -287,9 +290,9 @@ def draw_text(text: str,
         label.text_sprite_list = SpriteList()
         label.text_sprite_list.append(text_sprite)
 
-        draw_text.cache[key] = label
+        draw_text.cache[key] = label  # type: ignore # dynamic attribute on function obj
 
     label.text_sprite_list.draw()
 
 
-draw_text.cache = {}
+draw_text.cache = {}  # type: ignore # dynamic attribute on function obj

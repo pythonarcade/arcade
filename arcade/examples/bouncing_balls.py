@@ -78,7 +78,7 @@ class MyGame(arcade.Window):
         output = "Balls: {}".format(len(self.ball_list))
         arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
 
-    def update(self, delta_time):
+    def on_update(self, delta_time):
         """ Movement and game logic """
         for ball in self.ball_list:
             ball.x += ball.change_x

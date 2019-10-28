@@ -83,7 +83,7 @@ class MyGame(arcade.Window):
         arcade.start_render()
         self.ball.draw()
 
-    def update(self, delta_time):
+    def on_update(self, delta_time):
 
         # Update the position according to the game controller
         if self.joystick:

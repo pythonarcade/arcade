@@ -103,7 +103,7 @@ class MyGame(arcade.Window):
 
         self.shape_list.draw()
 
-    def update(self, delta_time):
+    def on_update(self, delta_time):
         self.shape_list.angle += 0.2
         self.shape_list.center_x += 0.1
         self.shape_list.center_y += 0.1

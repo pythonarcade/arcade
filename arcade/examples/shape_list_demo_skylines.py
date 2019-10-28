@@ -162,7 +162,7 @@ class MyGame(arcade.Window):
 
         arcade.draw_text(f"Time: {total_time}", 10, 10, arcade.color.WHITE)
 
-    def update(self, delta_time):
+    def on_update(self, delta_time):
         """ Movement and game logic """
         self.skyline1.center_x -= 0.5
         self.skyline2.center_x -= 1

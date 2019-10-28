@@ -15,7 +15,8 @@ import numpy as np
 
 import pyglet.gl as gl
 
-from typing import List
+from typing import List, Tuple
+from typing import TYPE_CHECKING
 
 from arcade.window_commands import get_projection
 from arcade.window_commands import get_window
@@ -25,6 +26,8 @@ from arcade.arcade_types import RectList
 from arcade import shader
 from arcade.earclip import earclip
 from arcade.utils import *
+if TYPE_CHECKING:  # import for mypy only
+    from arcade.arcade_types import Point
 
 line_vertex_shader = '''
     #version 330
@@ -66,16 +69,16 @@ def get_four_byte_color(color: Color) -> Color:
         raise ValueError("This isn't a 3 or 4 byte color")
 
 
-def get_four_float_color(color: Color) -> (float, float, float, float):
+def get_four_float_color(color: Color) -> Tuple[float, float, float, float]:
     """
     Given a 3 or 4 RGB/RGBA color where each color goes 0-255, this
-    returns a RGBA list where each item is a scaled float from 0 to 1.
+    returns a RGBA tuple where each item is a scaled float from 0 to 1.
 
     :param Color color: Three or four byte tuple
     :return: Four floats as a RGBA tuple
     """
     if len(color) == 4:
-        return color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255
+        return color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255  # type: ignore
     elif len(color) == 3:
         return color[0] / 255, color[1] / 255, color[2] / 255, 1.0
     else:
@@ -93,7 +96,7 @@ def make_transparent_color(color: Color, transparency: float):
 
 
 def rotate_point(x: float, y: float, cx: float, cy: float,
-                 angle: float) -> (float, float):
+                 angle: float) -> Tuple[float, float]:
     """
     Rotate a point around a center.
 
@@ -222,13 +225,13 @@ def load_textures(file_name: str,
     """
     # See if we already loaded this texture file, and we can just use a cached version.
     cache_file_name = "{}".format(file_name)
-    if cache_file_name in load_texture.texture_cache:
-        texture = load_texture.texture_cache[cache_file_name]
+    if cache_file_name in load_texture.texture_cache:  # type: ignore # dynamic attribute on function obj
+        texture = load_texture.texture_cache[cache_file_name]  # type: ignore # dynamic attribute on function obj
         source_image = texture.image
     else:
         source_image = PIL.Image.open(file_name)
         result = Texture(cache_file_name, source_image)
-        load_texture.texture_cache[cache_file_name] = result
+        load_texture.texture_cache[cache_file_name] = result  # type: ignore # dynamic attribute on function obj
 
     source_image_width, source_image_height = source_image.size
     texture_info_list = []
@@ -257,8 +260,8 @@ def load_textures(file_name: str,
 
         # See if we already loaded this texture, and we can just use a cached version.
         cache_name = "{}{}{}{}{}{}{}{}".format(file_name, x, y, width, height, scale, flipped, mirrored)
-        if cache_name in load_texture.texture_cache:
-            result = load_texture.texture_cache[cache_name]
+        if cache_name in load_texture.texture_cache:  # type: ignore # dynamic attribute on function obj
+            result = load_texture.texture_cache[cache_name]  # type: ignore # dynamic attribute on function obj
         else:
             image = source_image.crop((x, y, x + width, y + height))
             # image = _trim_image(image)
@@ -269,7 +272,7 @@ def load_textures(file_name: str,
             if flipped:
                 image = PIL.ImageOps.flip(image)
             result = Texture(cache_name, image)
-            load_texture.texture_cache[cache_name] = result
+            load_texture.texture_cache[cache_name] = result  # type: ignore # dynamic attribute on function obj
             result.scale = scale
         texture_info_list.append(result)
 
@@ -309,18 +312,18 @@ def load_texture(file_name: str, x: float = 0, y: float = 0,
 
     # See if we already loaded this texture, and we can just use a cached version.
     cache_name = "{}{}{}{}{}{}{}{}".format(file_name, x, y, width, height, scale, flipped, mirrored)
-    if cache_name in load_texture.texture_cache:
-        return load_texture.texture_cache[cache_name]
+    if cache_name in load_texture.texture_cache:  # type: ignore # dynamic attribute on function obj
+        return load_texture.texture_cache[cache_name]  # type: ignore # dynamic attribute on function obj
 
     # See if we already loaded this texture file, and we can just use a cached version.
     cache_file_name = "{}".format(file_name)
-    if cache_file_name in load_texture.texture_cache:
-        texture = load_texture.texture_cache[cache_file_name]
+    if cache_file_name in load_texture.texture_cache:  # type: ignore # dynamic attribute on function obj
+        texture = load_texture.texture_cache[cache_file_name]  # type: ignore # dynamic attribute on function obj
         source_image = texture.image
     else:
         source_image = PIL.Image.open(file_name)
         result = Texture(cache_file_name, source_image)
-        load_texture.texture_cache[cache_file_name] = result
+        load_texture.texture_cache[cache_file_name] = result  # type: ignore # dynamic attribute on function obj
 
     source_image_width, source_image_height = source_image.size
 
@@ -354,7 +357,7 @@ def load_texture(file_name: str, x: float = 0, y: float = 0,
         image = PIL.ImageOps.flip(image)
 
     result = Texture(cache_name, image)
-    load_texture.texture_cache[cache_name] = result
+    load_texture.texture_cache[cache_name] = result  # type: ignore # dynamic attribute on function obj
     result.scale = scale
     return result
 
@@ -440,7 +443,7 @@ def _lerp_color(start_color: Color, end_color: Color, u: float) -> Color:
     )
 
 
-load_texture.texture_cache = dict()
+load_texture.texture_cache = dict()  # type: ignore
 
 
 # --- END TEXTURE FUNCTIONS # # #
@@ -477,7 +480,7 @@ def draw_arc_filled(center_x: float, center_y: float,
     :param float tilt_angle: angle the arc is tilted.
     :param float num_segments: Number of line segments used to draw arc.
     """
-    unrotated_point_list = [[0, 0]]
+    unrotated_point_list = [(0.0, 0.0)]
 
     start_segment = int(start_angle / 360 * num_segments)
     end_segment = int(end_angle / 360 * num_segments)
@@ -840,13 +843,14 @@ def draw_line_strip(point_list: PointList,
     if line_width == 1:
         _generic_draw_line_strip(point_list, color, gl.GL_LINE_STRIP)
     else:
-        triangle_point_list = []
+        triangle_point_list: PointList = []
         # This needs a lot of improvement
         last_point = None
         for point in point_list:
             if last_point is not None:
                 points = _get_points_for_thick_line(last_point[0], last_point[1], point[0], point[1], line_width)
                 reordered_points = points[1], points[0], points[2], points[3]
+                # noinspection PyUnresolvedReferences
                 triangle_point_list.extend(reordered_points)
             last_point = point
         _generic_draw_line_strip(triangle_point_list, color, gl.GL_TRIANGLE_STRIP)
@@ -909,12 +913,13 @@ def draw_lines(point_list: PointList,
     :param float line_width: Width of the line in pixels.
     """
 
-    triangle_point_list = []
+    triangle_point_list: PointList = []
     last_point = None
     for point in point_list:
         if last_point is not None:
             points = _get_points_for_thick_line(last_point[0], last_point[1], point[0], point[1], line_width)
             reordered_points = points[1], points[0], points[2], points[0], points[2], points[3]
+            # noinspection PyUnresolvedReferences
             triangle_point_list.extend(reordered_points)
             _generic_draw_line_strip(triangle_point_list, color, gl.GL_TRIANGLES)
             last_point = None
@@ -1156,10 +1161,10 @@ def draw_rectangle_outline(center_x: float, center_y: float, width: float,
     o_rt = center_x + width / 2 + border_width / 2, center_y + height / 2 + border_width / 2
     o_lt = center_x - width / 2 - border_width / 2, center_y + height / 2 + border_width / 2
 
-    point_list = o_lt, i_lt, o_rt, i_rt, o_rb, i_rb, o_lb, i_lb, o_lt, i_lt
+    point_list: List[Point] = [o_lt, i_lt, o_rt, i_rt, o_rb, i_rb, o_lb, i_lb, o_lt, i_lt]
 
     if tilt_angle != 0:
-        point_list_2 = []
+        point_list_2: List[Point] = []
         for point in point_list:
             new_point = rotate_point(point[0], point[1], center_x, center_y, tilt_angle)
             point_list_2.append(new_point)
@@ -1330,6 +1335,8 @@ def get_image(x: int = 0, y: int = 0, width: int = None, height: int = None):
 
     # Get the dimensions
     window = get_window()
+    if window is None:
+        raise RuntimeError("Handle to the current window is None")
     if width is None:
         width = window.width - x
     if height is None:

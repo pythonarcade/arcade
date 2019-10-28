@@ -1,5 +1,5 @@
+import os
 import arcade
-
 
 class ShowButton(arcade.gui.TextButton):
     def __init__(self, dialoguebox, x, y, width=110, height=50, text="Show", theme=None):
@@ -34,6 +34,15 @@ class CloseButton(arcade.gui.TextButton):
 class Window(arcade.Window):
     def __init__(self):
         super().__init__()
+
+        # Set the working directory (where we expect to find files) to the same
+        # directory this .py file is in. You can leave this out of your own
+        # code, but it is needed to easily run the examples using "python -m"
+        # as mentioned at the top of this program.
+        file_path = os.path.dirname(os.path.abspath(__file__))
+        os.chdir(file_path)
+
+
         self.half_width = self.width/2
         self.half_height = self.height/2
         self.theme = None

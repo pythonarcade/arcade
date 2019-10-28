@@ -174,7 +174,7 @@ class MyGame(arcade.Window):
         if key == arcade.key.LEFT or key == arcade.key.RIGHT:
             self.player_sprite.change_x = 0
 
-    def update(self, delta_time):
+    def on_update(self, delta_time):
         """ Movement and game logic """
 
         if self.player_sprite.right >= self.end_of_map:
@@ -187,7 +187,7 @@ class MyGame(arcade.Window):
 
         coins_hit = arcade.check_for_collision_with_list(self.player_sprite, self.coin_list)
         for coin in coins_hit:
-            coin.kill()
+            coin.remove_from_sprite_lists()
             self.score += 1
 
         # --- Manage Scrolling ---

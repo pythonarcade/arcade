@@ -1,5 +1,6 @@
 from arcade.gui import *
 
+import os
 
 class PlayButton(TextButton):
     def __init__(self, game, x=0, y=0, width=100, height=40, text="Play", theme=None):
@@ -32,6 +33,14 @@ class PauseButton(TextButton):
 class MyGame(arcade.Window):
     def __init__(self):
         super().__init__(800, 600, "GUI Text Buton Example")
+
+        # Set the working directory (where we expect to find files) to the same
+        # directory this .py file is in. You can leave this out of your own
+        # code, but it is needed to easily run the examples using "python -m"
+        # as mentioned at the top of this program.
+        file_path = os.path.dirname(os.path.abspath(__file__))
+        os.chdir(file_path)
+
         arcade.set_background_color(arcade.color.AMAZON)
         self.pause = False
         self.text = "Graphical User Interface"

@@ -114,7 +114,7 @@ class MyGame(arcade.Window):
 
         self.shape_list.draw()
 
-    def update(self, delta_time):
+    def on_update(self, delta_time):
         """ Movement and game logic """
         self.shape_list.center_x += 1
         self.shape_list.center_y += 1

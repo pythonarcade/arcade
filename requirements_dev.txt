@@ -1,6 +1,7 @@
 -e .
 coverage
 coveralls
+mypy
 flake8
 pytest
 pytest-cov

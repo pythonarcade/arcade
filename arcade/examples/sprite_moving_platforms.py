@@ -11,8 +11,6 @@ python -m arcade.examples.sprite_moving_platforms
 import arcade
 import os
 
-from typing import List, Union
-
 SPRITE_SCALING = 0.5
 
 SCREEN_WIDTH = 1000
@@ -30,18 +28,6 @@ RIGHT_MARGIN = 4 * SPRITE_PIXEL_SIZE * SPRITE_SCALING
 MOVEMENT_SPEED = 10 * SPRITE_SCALING
 JUMP_SPEED = 28 * SPRITE_SCALING
 GRAVITY = .9 * SPRITE_SCALING
-
-
-def get_map():
-    map_file = open("map.csv")
-    map_array = []
-    for line in map_file:
-        line = line.strip()
-        map_row: List[Union[int, str]] = line.split(",")
-        for index, item in enumerate(map_row):
-            map_row[index] = int(item)
-        map_array.append(map_row)
-    return map_array
 
 
 class MyGame(arcade.Window):
@@ -81,7 +67,6 @@ class MyGame(arcade.Window):
         """ Set up the game and initialize the variables. """
 
         # Sprite lists
-        self.all_sprites_list = arcade.SpriteList()
         self.all_wall_list = arcade.SpriteList()
         self.static_wall_list = arcade.SpriteList()
         self.moving_wall_list = arcade.SpriteList()
@@ -93,30 +78,13 @@ class MyGame(arcade.Window):
         self.player_sprite.center_y = 3 * GRID_PIXEL_SIZE
         self.player_list.append(self.player_sprite)
 
-        map_array = get_map()
-
-        # Right edge of the map in pixels
-        self.end_of_map = len(map_array[0]) * GRID_PIXEL_SIZE
-
-        for row_index, row in enumerate(map_array):
-            for column_index, item in enumerate(row):
-                wall = None
-                if item == -1:
-                    continue
-                elif item == 0:
-                    wall = arcade.Sprite("images/boxCrate_double.png", SPRITE_SCALING)
-                elif item == 1:
-                    wall = arcade.Sprite("images/grassLeft.png", SPRITE_SCALING)
-                elif item == 2:
-                    wall = arcade.Sprite("images/grassMid.png", SPRITE_SCALING)
-                elif item == 3:
-                    wall = arcade.Sprite("images/grassRight.png", SPRITE_SCALING)
-
-                wall.left = column_index * GRID_PIXEL_SIZE
-                wall.top = (7 - row_index) * GRID_PIXEL_SIZE
-                self.all_sprites_list.append(wall)
-                self.all_wall_list.append(wall)
-                self.static_wall_list.append(wall)
+        # Create floor
+        for i in range(30):
+            wall = arcade.Sprite("images/grassMid.png", SPRITE_SCALING)
+            wall.bottom = 0
+            wall.center_x = i * GRID_PIXEL_SIZE
+            self.static_wall_list.append(wall)
+            self.all_wall_list.append(wall)
 
         # Create platform side to side
         wall = arcade.Sprite("images/grassMid.png", SPRITE_SCALING)
@@ -126,7 +94,6 @@ class MyGame(arcade.Window):
         wall.boundary_right = 5 * GRID_PIXEL_SIZE
         wall.change_x = 2 * SPRITE_SCALING
 
-        self.all_sprites_list.append(wall)
         self.all_wall_list.append(wall)
         self.moving_wall_list.append(wall)
 
@@ -138,7 +105,6 @@ class MyGame(arcade.Window):
         wall.boundary_right = 9 * GRID_PIXEL_SIZE
         wall.change_x = -2 * SPRITE_SCALING
 
-        self.all_sprites_list.append(wall)
         self.all_wall_list.append(wall)
         self.moving_wall_list.append(wall)
 
@@ -150,7 +116,6 @@ class MyGame(arcade.Window):
         wall.boundary_bottom = 4 * GRID_PIXEL_SIZE
         wall.change_y = 2 * SPRITE_SCALING
 
-        self.all_sprites_list.append(wall)
         self.all_wall_list.append(wall)
         self.moving_wall_list.append(wall)
 
@@ -166,7 +131,6 @@ class MyGame(arcade.Window):
         wall.change_x = 2 * SPRITE_SCALING
         wall.change_y = 2 * SPRITE_SCALING
 
-        self.all_sprites_list.append(wall)
         self.all_wall_list.append(wall)
         self.moving_wall_list.append(wall)
 
@@ -206,12 +170,6 @@ class MyGame(arcade.Window):
         arcade.draw_text(output, self.view_left + 10, self.view_bottom + 20,
                          arcade.color.WHITE, 14)
 
-        if self.game_over:
-            output = "Game Over"
-            arcade.draw_text(output, self.view_left + 200,
-                             self.view_bottom + 200,
-                             arcade.color.WHITE, 30)
-
     def on_key_press(self, key, modifiers):
         """
         Called whenever the mouse moves.
@@ -231,15 +189,11 @@ class MyGame(arcade.Window):
         if key == arcade.key.LEFT or key == arcade.key.RIGHT:
             self.player_sprite.change_x = 0
 
-    def update(self, delta_time):
+    def on_update(self, delta_time):
         """ Movement and game logic """
 
-        if self.player_sprite.right >= self.end_of_map:
-            self.game_over = True
-
         # Call update on all sprites
-        if not self.game_over:
-            self.physics_engine.update()
+        self.physics_engine.update()
 
         # --- Manage Scrolling ---
 

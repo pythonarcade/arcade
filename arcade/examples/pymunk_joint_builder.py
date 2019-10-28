@@ -287,7 +287,7 @@ class MyApplication(arcade.Window):
             self.space.gravity = (0.0, -900.0)
             self.physics = "Normal"
 
-    def update(self, delta_time):
+    def on_update(self, delta_time):
         start_time = timeit.default_timer()
 
         # Check for balls that fall off the screen

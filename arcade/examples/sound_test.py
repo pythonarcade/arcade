@@ -54,7 +54,7 @@ class MyGame(arcade.Window):
         # Play Sound
         arcade.sound.play_sound(loaded_sound)
 
-    def update(self, delta_time):
+    def on_update(self, delta_time):
         """animations"""
 
 

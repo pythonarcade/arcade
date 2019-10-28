@@ -12,6 +12,14 @@ except ModuleNotFoundError:
     raise Exception('dataclasses not available, if running on Python 3.6 please manually install '
                     'https://pypi.org/project/dataclasses/')
 
+from typing import Sequence
+from typing import Tuple
+from typing import List
+from typing import Dict
+from typing import Any
+from typing import Optional
+from typing import TYPE_CHECKING
+
 import PIL.Image
 
 from arcade.draw_commands import load_texture
@@ -19,9 +27,8 @@ from arcade.draw_commands import draw_texture_rectangle
 from arcade.draw_commands import Texture
 from arcade.draw_commands import rotate_point
 from arcade.arcade_types import RGB, Point
-
-from typing import Sequence
-from typing import Tuple
+if TYPE_CHECKING:  # handle import cycle caused by type hinting
+    from arcade.sprite_list import SpriteList
 
 FACE_RIGHT = 1
 FACE_LEFT = 2
@@ -95,8 +102,8 @@ class Sprite:
         Args:
             filename (str): Filename of an image that represents the sprite.
             scale (float): Scale the image up or down. Scale of 1.0 is none.
-            image_x (float): Scale the image up or down. Scale of 1.0 is none.
-            image_y (float): Scale the image up or down. Scale of 1.0 is none.
+            image_x (float): X offset to sprite within sprite sheet.
+            image_y (float): Y offset to sprite within sprite sheet.
             image_width (float): Width of the sprite
             image_height (float): Height of the sprite
             center_x (float): Location of the sprite
@@ -116,8 +123,9 @@ class Sprite:
         if image_height == 0 and image_width != 0:
             raise ValueError("Height can't be zero.")
 
-        self.sprite_lists = []
+        self.sprite_lists: List[Any] = []
 
+        self._texture: Optional[Texture]
         if filename is not None:
             self._texture = load_texture(filename, image_x, image_y,
                                          image_width, image_height)
@@ -135,25 +143,25 @@ class Sprite:
         self.cur_texture_index = 0
 
         self._scale = scale
-        self._position = [center_x, center_y]
+        self._position = (center_x, center_y)
         self._angle = 0.0
 
         self.velocity = [0.0, 0.0]
-        self.change_angle = 0
+        self.change_angle = 0.0
 
         self.boundary_left = None
         self.boundary_right = None
         self.boundary_top = None
         self.boundary_bottom = None
 
-        self.properties = {}
+        self.properties: Dict[str, Any] = {}
 
         self._alpha = 255
-        self._collision_radius = None
-        self._color = (255, 255, 255)
+        self._collision_radius: Optional[float] = None
+        self._color: RGB = (255, 255, 255)
 
-        self._points = None
-        self._point_list_cache = None
+        self._points: Optional[Sequence[Sequence[float]]] = None
+        self._point_list_cache: Optional[Tuple[Tuple[float, float], ...]] = None
 
         self.force = [0, 0]
         self.guid = None
@@ -171,7 +179,7 @@ class Sprite:
         """
         self.textures.append(texture)
 
-    def _get_position(self) -> (float, float):
+    def _get_position(self) -> Tuple[float, float]:
         """
         Get the center x coordinate of the sprite.
 
@@ -180,7 +188,7 @@ class Sprite:
         """
         return self._position
 
-    def _set_position(self, new_value: (float, float)):
+    def _set_position(self, new_value: Tuple[float, float]):
         """
         Set the center x coordinate of the sprite.
 
@@ -193,7 +201,7 @@ class Sprite:
         if new_value[0] != self._position[0] or new_value[1] != self._position[1]:
             self.clear_spatial_hashes()
             self._point_list_cache = None
-            self._position[0], self._position[1] = new_value
+            self._position = new_value
             self.add_spatial_hashes()
 
             for sprite_list in self.sprite_lists:
@@ -258,9 +266,9 @@ class Sprite:
 
         if self._points is not None:
             point_list = []
-            for point in range(len(self._points)):
-                point = (self._points[point][0] + self.center_x,
-                         self._points[point][1] + self.center_y)
+            for point_idx in range(len(self._points)):
+                point = (self._points[point_idx][0] + self.center_x,
+                         self._points[point_idx][1] + self.center_y)
                 point_list.append(point)
             self._point_list_cache = tuple(point_list)
         else:
@@ -452,7 +460,7 @@ class Sprite:
         if new_value != self._position[0]:
             self.clear_spatial_hashes()
             self._point_list_cache = None
-            self._position[0] = new_value
+            self._position = (new_value, self._position[1])
             self.add_spatial_hashes()
 
             for sprite_list in self.sprite_lists:
@@ -469,7 +477,7 @@ class Sprite:
         if new_value != self._position[1]:
             self.clear_spatial_hashes()
             self._point_list_cache = None
-            self._position[1] = new_value
+            self._position = (self._position[0], new_value)
             self.add_spatial_hashes()
 
             for sprite_list in self.sprite_lists:
@@ -712,7 +720,7 @@ class Sprite:
 
         return check_for_collision(self, other)
 
-    def collides_with_list(self, sprite_list: list) -> list:
+    def collides_with_list(self, sprite_list: 'SpriteList') -> list:
         """Check if current sprite is overlapping with any other sprite in a list
 
         Args:
@@ -779,7 +787,7 @@ class AnimatedTimeBasedSprite(Sprite):
                          image_width=image_width, image_height=image_height,
                          center_x=center_x, center_y=center_y)
         self.cur_frame = 0
-        self.frames = []
+        self.frames: List[AnimationKeyframe] = []
         self.time_counter = 0.0
 
     def update_animation(self, delta_time: float = 1/60):
@@ -808,12 +816,12 @@ class AnimatedWalkingSprite(Sprite):
         super().__init__(scale=scale, image_x=image_x, image_y=image_y,
                          center_x=center_x, center_y=center_y)
         self.state = FACE_RIGHT
-        self.stand_right_textures = None
-        self.stand_left_textures = None
-        self.walk_left_textures = None
-        self.walk_right_textures = None
-        self.walk_up_textures = None
-        self.walk_down_textures = None
+        self.stand_right_textures: List[Texture] = []
+        self.stand_left_textures: List[Texture] = []
+        self.walk_left_textures: List[Texture] = []
+        self.walk_right_textures: List[Texture] = []
+        self.walk_up_textures: List[Texture] = []
+        self.walk_down_textures: List[Texture] = []
         self.cur_texture_index = 0
         self.texture_change_distance = 20
         self.last_texture_change_center_x = 0
@@ -828,26 +836,25 @@ class AnimatedWalkingSprite(Sprite):
         y1 = self.center_y
         y2 = self.last_texture_change_center_y
         distance = math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
-        texture_list = []
+        texture_list: List[Texture] = []
 
         change_direction = False
         if self.change_x > 0 \
                 and self.change_y == 0 \
                 and self.state != FACE_RIGHT \
-                and self.walk_right_textures \
                 and len(self.walk_right_textures) > 0:
             self.state = FACE_RIGHT
             change_direction = True
         elif self.change_x < 0 and self.change_y == 0 and self.state != FACE_LEFT \
-                and self.walk_left_textures and len(self.walk_left_textures) > 0:
+                and len(self.walk_left_textures) > 0:
             self.state = FACE_LEFT
             change_direction = True
         elif self.change_y < 0 and self.change_x == 0 and self.state != FACE_DOWN \
-                and self.walk_down_textures and len(self.walk_down_textures) > 0:
+                and len(self.walk_down_textures) > 0:
             self.state = FACE_DOWN
             change_direction = True
         elif self.change_y > 0 and self.change_x == 0 and self.state != FACE_UP \
-                and self.walk_up_textures and len(self.walk_up_textures) > 0:
+                and len(self.walk_up_textures) > 0:
             self.state = FACE_UP
             change_direction = True
 

@@ -64,7 +64,7 @@ class GameView(arcade.View):
                          font_size=20,
                          anchor_x="center")
 
-    def update(self, delta_time):
+    def on_update(self, delta_time):
         # Call update on all sprites
         self.player_sprite.update()
 
