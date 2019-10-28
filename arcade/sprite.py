@@ -102,8 +102,8 @@ class Sprite:
         Args:
             filename (str): Filename of an image that represents the sprite.
             scale (float): Scale the image up or down. Scale of 1.0 is none.
-            image_x (float): Scale the image up or down. Scale of 1.0 is none.
-            image_y (float): Scale the image up or down. Scale of 1.0 is none.
+            image_x (float): X offset to sprite within sprite sheet.
+            image_y (float): Y offset to sprite within sprite sheet.
             image_width (float): Width of the sprite
             image_height (float): Height of the sprite
             center_x (float): Location of the sprite
