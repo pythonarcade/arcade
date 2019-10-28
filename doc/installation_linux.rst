@@ -41,7 +41,7 @@ Raspberry Pi Instructions
 
 *(Contributed by Patrick)*
 
-The Arcade library is Python 3.6+ only. Currently (July 2018) Rasbian come with
+The Arcade library is Python 3.6+ only. Currently (Oct 2019) Rasbian comes with
 Python 3.5.x You'll need to install Python 3.6+ and use it instead of the
 built-in Python 3.5.x.
 
@@ -55,9 +55,9 @@ To install Python 3.7 first do:
     sudo apt-get install libssl-dev libbz2-dev libexpat1-dev liblzma-dev zlib1g-dev
     sudo apt-get install libffi-dev python3-dev python3-pip libjpeg-dev zlib1g-dev
     cd Downloads
-    wget https://www.python.org/ftp/python/3.7.3/Python-3.7.3.tar.xz
-    tar xf Python-3.7.3.tar.xz
-    cd Python-3.7.3
+    wget https://www.python.org/ftp/python/3.7.5/Python-3.7.5.tar.xz
+    tar xf Python-3.7.5.tar.xz
+    cd Python-3.7.5
     ./configure
     make
     sudo make altinstall
