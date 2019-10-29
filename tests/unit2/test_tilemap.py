@@ -102,3 +102,17 @@ def test_five():
     assert tmx_map is not None
 
     arcade.tilemap.process_layer(tmx_map, 'object_layer')
+
+def test_sprite_sheet():
+    tmx_map = arcade.tilemap.read_tmx("test_data/test_map_6.tmx")
+    assert tmx_map is not None
+
+    sprite_list = arcade.tilemap.process_layer(tmx_map, 'Tile Layer 1')
+    assert sprite_list is not None
+    assert len(sprite_list) == 14
+
+    first_sprite = sprite_list[0]
+    assert first_sprite is not None
+    assert first_sprite.height == 16
+    assert first_sprite.width == 16
+
