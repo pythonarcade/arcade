@@ -100,10 +100,11 @@ def _get_tile_by_gid(map_object: pytiled_parser.objects.TileMap,
         tile_ref = tileset.tiles.get(tile_gid - tileset_key)
         # Tilesets only define a 'tile' if there is tile specific data
         if tile_ref is None:
-            tile_ref = pytiled_parser.objects.Tile(id_ = tile_gid - tileset_key)
+            tile_ref = pytiled_parser.objects.Tile(id_=tile_gid - tileset_key)
         if tileset.image is not None:
             if tile_ref.image is not None:
-                raise TypeError("Use of tileset (rather than collection of images) assumes image only defined at tileset scope")
+                raise TypeError("Use of tileset (rather than collection of images) "
+                                "assumes image only defined at tileset scope")
             tile_ref.image = tileset.image
         my_tile = copy.copy(tile_ref)
         my_tile.tileset = tileset
@@ -188,7 +189,7 @@ def _create_sprite_from_tile(map_object, tile: pytiled_parser.objects.Tile,
             elif isinstance(hitbox, pytiled_parser.objects.PolygonObject):
                 for point in hitbox.points:
                     adj_x = point[0] + hitbox.location[0] - my_sprite.width / (scaling * 2)
-                    adj_y =  - (point[1] + hitbox.location[1] - my_sprite.height / (scaling * 2))
+                    adj_y = -(point[1] + hitbox.location[1] - my_sprite.height / (scaling * 2))
                     # print(f"w:{my_sprite.width:.1f}, h:{my_sprite.height:.1f}", end=", ")
                     # print(f"offset: ({hitbox.location[0]:.1f}, {hitbox.location[1]:.1f})", end=", ")
                     # print(f"({point[0]:.1f}, {point[1]:.1f}) -> ({adj_x:.1f}, {adj_y:.1f})")
@@ -198,7 +199,7 @@ def _create_sprite_from_tile(map_object, tile: pytiled_parser.objects.Tile,
             elif isinstance(hitbox, pytiled_parser.objects.PolylineObject):
                 for point in hitbox.points:
                     adj_x = point[0] + hitbox.location[0] - my_sprite.width / (scaling * 2)
-                    adj_y =  - (point[1] + hitbox.location[1] - my_sprite.height / (scaling * 2))
+                    adj_y = -(point[1] + hitbox.location[1] - my_sprite.height / (scaling * 2))
                     adj_point = [adj_x, adj_y]
                     points.append(adj_point)
 
@@ -236,7 +237,6 @@ def _create_sprite_from_tile(map_object, tile: pytiled_parser.objects.Tile,
                 # for point in points:
                 #     print(f"({point[0]:.1f}, {point[1]:.1f}) ")
                 # print()
-
 
             else:
                 print(f"Warning: Hitbox type {type(hitbox)} not supported.")
@@ -326,7 +326,8 @@ def _process_tile_layer(map_object: pytiled_parser.objects.TileMap,
                                                  base_directory=base_directory)
 
             my_sprite.center_x = column_index * (map_object.tile_size[0] * scaling) + my_sprite.width / 2
-            my_sprite.center_y = (map_object.map_size.height - row_index - 1) * (map_object.tile_size[1] * scaling) + my_sprite.height / 2
+            my_sprite.center_y = (map_object.map_size.height - row_index - 1) \
+                * (map_object.tile_size[1] * scaling) + my_sprite.height / 2
 
             sprite_list.append(my_sprite)
 

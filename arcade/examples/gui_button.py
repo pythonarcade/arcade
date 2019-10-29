@@ -2,6 +2,7 @@ from arcade.gui import *
 
 import os
 
+
 class PlayButton(TextButton):
     def __init__(self, game, x=0, y=0, width=100, height=40, text="Play", theme=None):
         super().__init__(x, y, width, height, text, theme=theme)

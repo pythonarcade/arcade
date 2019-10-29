@@ -1,6 +1,7 @@
 import os
 import arcade
 
+
 class ShowButton(arcade.gui.TextButton):
     def __init__(self, dialoguebox, x, y, width=110, height=50, text="Show", theme=None):
         super().__init__(x, y, width, height, text, theme=theme)
@@ -41,7 +42,6 @@ class Window(arcade.Window):
         # as mentioned at the top of this program.
         file_path = os.path.dirname(os.path.abspath(__file__))
         os.chdir(file_path)
-
 
         self.half_width = self.width/2
         self.half_height = self.height/2
