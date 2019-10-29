@@ -12,7 +12,7 @@ body {
     content: "Listing " counter(listing) ": ";
 }
 .code-block-caption {
-    font-family: 'Consolas', 'courier new', 'courier';
+    font-family: 'Consolas', 'courier new', 'courier', monospace;
     font-size: 15px;
 }
 #example-code div {
