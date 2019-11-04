@@ -54,10 +54,10 @@ def create_orthogonal_projection(
     Creates an orthogonal projection matrix. Used internally with the
     OpenGL shaders.
 
-    :param float left: The left of the near plane relative to the plane's centre.
-    :param float right: The right of the near plane relative to the plane's centre.
-    :param float top: The top of the near plane relative to the plane's centre.
-    :param float bottom: The bottom of the near plane relative to the plane's centre.
+    :param float left: The left of the near plane relative to the plane's center.
+    :param float right: The right of the near plane relative to the plane's center.
+    :param float top: The top of the near plane relative to the plane's center.
+    :param float bottom: The bottom of the near plane relative to the plane's center.
     :param float near: The distance of the near plane from the camera's origin.
                        It is recommended that the near plane is set to 1.0 or above to avoid
                        rendering issues at close range.
