@@ -8,3 +8,16 @@ platformer
 platformers
 docstrings
 automata
+tileset
+hitbox
+hitboxes
+avbin
+ffmpeg
+earclip
+viewport
+args
+ctrl
+tmx
+tsx
+param
+numpy
