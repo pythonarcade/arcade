@@ -384,8 +384,8 @@ epub_exclude_files = ['search.html']
 
 
 # Example configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {'python': ('http://docs.python.org/3', None),
-                       'numpy': ('http://docs.scipy.org/doc/numpy', None)}
+intersphinx_mapping = {'python': ('https://docs.python.org/3', None),
+                       'numpy': ('https://docs.scipy.org/doc/numpy', None)}
 
 
 def replace_in_file(filename, replace_list):
@@ -440,7 +440,7 @@ def source_read(app, docname, source):
 
     if filename:
         import re
-        p = re.compile("^([A-Z_]+) = (\(.*\))")
+        p = re.compile("^([A-Z_]+) = (\\(.*\\))")
 
         original_text = source[0]
         append_text = "\n\n.. raw:: html\n\n"
@@ -481,12 +481,12 @@ def post_process(app, exception):
     filename = 'build/html/quick_index.html'
     replace_in_file(filename, replace_list)
 
-    # Figures have and align-center style I can't easily get rid of.
-    filename = 'build/html/examples/index.html'
-    replace_list = [
-        ["figure align-center", "figure"]
-    ]
-    replace_in_file(filename, replace_list)
+    # # Figures have an align-center style I can't easily get rid of.
+    # filename = 'build/html/examples/index.html'
+    # replace_list = [
+    #     ["figure align-center", "figure"]
+    # ]
+    # replace_in_file(filename, replace_list)
 
 
 def setup(app):

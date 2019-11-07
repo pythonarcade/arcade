@@ -23,7 +23,7 @@ def list_functions(filename, output_file):
     file_split = file_split.split(".")
 
     file_text = file_pointer.read()
-    my_re = re.compile("\ndef ([a-z][^\(]*)")
+    my_re = re.compile("\ndef ([a-z][^\\(]*)")
     functions = my_re.findall(file_text)
     functions.sort()
     first = True
