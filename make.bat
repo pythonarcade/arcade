@@ -144,6 +144,7 @@ echo make full        - Builds the project, installs it, builds
 echo                    documentation, runs unit tests.
 echo make docs          Builds the documentation. Documentation
 echo                    will be in doc/build/html
+echo make spelling      Spellchecks the documentation
 echo make fast        - Builds and installs the library WITHOUT unit
 echo                    tests.
 echo make deploy_pypi - Deploy to PyPi (if you have environment

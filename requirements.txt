@@ -6,3 +6,4 @@ pytiled_parser
 pytest
 pymunk
 matplotlib
+sphinxcontrib-spelling

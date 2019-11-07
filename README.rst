@@ -15,6 +15,15 @@ Arcade is built on top of Pyglet and OpenGL.
     :alt: first-timers-only Friendly
     :target: http://www.firsttimersonly.com/
 
+.. image:: https://img.shields.io/pypi/dm/arcade
+    :alt: PyPI - Downloads
+
+.. image:: https://img.shields.io/github/commit-activity/m/pvcraven/arcade
+    :alt: GitHub commit activity
+
+.. image:: https://img.shields.io/pypi/l/arcade
+    :alt: PyPI - License
+
 Documentation
 -------------
 
