@@ -15,6 +15,8 @@ from typing import Optional, List, cast
 import math
 import copy
 import pytiled_parser
+import os
+from pathlib import Path
 
 from arcade import Sprite
 from arcade import AnimatedTimeBasedSprite
@@ -128,9 +130,18 @@ def _get_tile_by_id(map_object: pytiled_parser.objects.TileMap,
 
 def _create_sprite_from_tile(map_object, tile: pytiled_parser.objects.Tile,
                              scaling,
-                             base_directory: str = ""):
+                             base_directory: str = None):
 
-    tmx_file = base_directory + tile.image.source
+    if base_directory:
+        tmx_file = base_directory + tile.image.source
+    else:
+        tmx_file = tile.image.source
+
+    if not os.path.exists(tmx_file):
+        tmx_file = Path(map_object.parent_dir, tile.image.source)
+        if not os.path.exists(tmx_file):
+            print(f"Warning: can't file {tmx_file} ")
+            return
 
     # print(f"Creating tile: {tmx_file}")
     if tile.animation:
