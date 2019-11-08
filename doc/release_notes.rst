@@ -5,6 +5,13 @@
 Release Notes
 =============
 
+Version 2.1.7
+-------------
+
+* Enhancement: Tile set support. `Issue 511 <https://github.com/pvcraven/arcade/issues/511>`_
+* Bug fix, search file tile images relative to tile map. `Issue 480 <https://github.com/pvcraven/arcade/issues/480>`_
+
+
 Version 2.1.6
 -------------
 
