@@ -190,7 +190,7 @@ def draw_text(text: str,
 
                 if font is None:
                     try:
-                        temp_font_name = f"{font_name}.ttf"
+                        temp_font_name = f"{font_string_name}.ttf"
                         font = PIL.ImageFont.truetype(temp_font_name, int(font_size))
                     except OSError:
                         # print(f"4 Can't find font: {temp_font_name}")
