@@ -25,4 +25,5 @@ stress_test*.csv
 test.py
 tests/test_examples/test.png
 arcade/examples/test.png
+.DS_Store
 .coveralls.yml

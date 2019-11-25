@@ -9,8 +9,7 @@ class TextButton:
                  center_x, center_y,
                  width, height,
                  text,
-                 font_size=18,
-                 font_face: Union[str, Tuple[str, ...]] = "Arial",
+                 font_size=18, font_face: Union[str, Tuple[str, ...]] = "Arial", font_color = None,
                  face_color=arcade.color.LIGHT_GRAY,
                  highlight_color=arcade.color.WHITE,
                  shadow_color=arcade.color.GRAY,
@@ -25,6 +24,7 @@ class TextButton:
         self.active = True
         self.button_height = button_height
         self.theme = theme
+        self.font_color = font_color
         if self.theme:
             self.normal_texture = self.theme.button_textures['normal']
             self.hover_texture = self.theme.button_textures['hover']
@@ -39,8 +39,11 @@ class TextButton:
             self.face_color = face_color
             self.highlight_color = highlight_color
             self.shadow_color = shadow_color
-            self.font_name = font_face
-            self.font_color = face_color
+            self.font_name = font_face            
+        if self.font_color is None:
+            self.font_color = self.face_color
+
+            
 
     def draw_color_theme(self):
         arcade.draw_rectangle_filled(self.center_x, self.center_y, self.width,
