@@ -6,3 +6,5 @@ pytiled_parser
 pytest
 pymunk
 matplotlib
+wheel
+twine
