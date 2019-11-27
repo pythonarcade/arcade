@@ -127,9 +127,11 @@ class Sprite:
 
         self._texture: Optional[Texture]
         if filename is not None:
-            self._texture = load_texture(filename, image_x, image_y,
-                                         image_width, image_height)
-
+            try:
+                self._texture = load_texture(filename, image_x, image_y,
+                                             image_width, image_height)
+            except Exception as e:
+                print(f"Unable to load {filename} {e}")
             self.textures = [self._texture]
             self._width = self._texture.width * scale
             self._height = self._texture.height * scale

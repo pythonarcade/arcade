@@ -42,6 +42,9 @@ class MyGame(arcade.Window):
         """
         super().__init__(width, height)
 
+        file_path = os.path.dirname(os.path.abspath(__file__))
+        os.chdir(file_path)
+
         # Sprite lists
         self.all_sprites_list = None
 
@@ -66,7 +69,7 @@ class MyGame(arcade.Window):
         self.objects_list = arcade.SpriteList()
 
         # noinspection PyDeprecation
-        self.my_map = arcade.read_tiled_map('dungeon.tmx', SPRITE_SCALING)
+        self.my_map = arcade.read_tiled_map(':resources:tmx_maps/isometric_dungeon.tmx', SPRITE_SCALING)
 
         # Set up the player
         self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/character_femalePerson_idle.png", 0.4)
@@ -117,7 +120,7 @@ class MyGame(arcade.Window):
         self.lines.draw()
 
 
-def test_main():
+def xtest_main():
     """ Main method """
     window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT)
     window.setup()

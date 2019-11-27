@@ -140,6 +140,12 @@ def read_tiled_map(tmx_file: str, scaling: float = 1, tsx_file: str = None) -> T
     # Create a map object to store this stuff in
     my_map = TiledMap()
 
+    # If we should pull from local resources, replace with proper path
+    if tmx_file.startswith(":resources:"):
+        import os
+        path = os.path.dirname(os.path.abspath(__file__))
+        tmx_file = f"{path}/resources/{tmx_file[11:]}"
+
     # Read in and parse the file
     tree = ElementTree.parse(tmx_file)
 
