@@ -60,14 +60,14 @@ class MyGame(arcade.Window):
 
         # Set up the player
         # Character image from kenney.nl
-        self.player_sprite = arcade.Sprite("images/character.png", SPRITE_SCALING_PLAYER)
+        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/character_femalePerson_idle.png", SPRITE_SCALING_PLAYER)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 150
         self.player_list.append(self.player_sprite)
 
         # Create the sprites
         for x in range(100, 800, 100):
-            coin = arcade.Sprite("images/coin_01.png", scale=0.3, center_x=x, center_y=400)
+            coin = arcade.Sprite(":resources:images/items/coinGold.png", scale=0.3, center_x=x, center_y=400)
             coin.intensity = 'dim'
             coin.alpha = 64
             self.coin_list.append(coin)

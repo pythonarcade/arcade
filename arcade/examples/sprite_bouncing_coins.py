@@ -55,13 +55,13 @@ class MyGame(arcade.Window):
         # Create horizontal rows of boxes
         for x in range(32, SCREEN_WIDTH, 64):
             # Bottom edge
-            wall = arcade.Sprite("images/boxCrate_double.png", SPRITE_SCALING)
+            wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", SPRITE_SCALING)
             wall.center_x = x
             wall.center_y = 32
             self.wall_list.append(wall)
 
             # Top edge
-            wall = arcade.Sprite("images/boxCrate_double.png", SPRITE_SCALING)
+            wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", SPRITE_SCALING)
             wall.center_x = x
             wall.center_y = SCREEN_HEIGHT - 32
             self.wall_list.append(wall)
@@ -69,13 +69,13 @@ class MyGame(arcade.Window):
         # Create vertical columns of boxes
         for y in range(96, SCREEN_HEIGHT, 64):
             # Left
-            wall = arcade.Sprite("images/boxCrate_double.png", SPRITE_SCALING)
+            wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", SPRITE_SCALING)
             wall.center_x = 32
             wall.center_y = y
             self.wall_list.append(wall)
 
             # Right
-            wall = arcade.Sprite("images/boxCrate_double.png", SPRITE_SCALING)
+            wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", SPRITE_SCALING)
             wall.center_x = SCREEN_WIDTH - 32
             wall.center_y = y
             self.wall_list.append(wall)
@@ -83,7 +83,7 @@ class MyGame(arcade.Window):
         # Create boxes in the middle
         for x in range(128, SCREEN_WIDTH, 196):
             for y in range(128, SCREEN_HEIGHT, 196):
-                wall = arcade.Sprite("images/boxCrate_double.png", SPRITE_SCALING)
+                wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", SPRITE_SCALING)
                 wall.center_x = x
                 wall.center_y = y
                 # wall.angle = 45
@@ -91,7 +91,7 @@ class MyGame(arcade.Window):
 
         # Create coins
         for i in range(10):
-            coin = arcade.Sprite("images/coin_01.png", 0.25)
+            coin = arcade.Sprite(":resources:images/items/coinGold.png", 0.25)
             coin.center_x = random.randrange(100, 700)
             coin.center_y = random.randrange(100, 500)
             while coin.change_x == 0 and coin.change_y == 0:

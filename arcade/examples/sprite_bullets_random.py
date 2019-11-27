@@ -75,7 +75,7 @@ class MyGame(arcade.Window):
 
             # Have a random 1 in 200 change of shooting each frame
             if random.randrange(200) == 0:
-                bullet = arcade.Sprite("images/laserBlue01.png")
+                bullet = arcade.Sprite(":resources:images/space_shooter/laserBlue01.png")
                 bullet.center_x = enemy.center_x
                 bullet.angle = -90
                 bullet.top = enemy.bottom

@@ -132,7 +132,7 @@ class MyGame(arcade.Window):
         self.score = 0
         self.tick = 0
         self.bullet_cooldown = 0
-        self.player = Player("images/playerShip2_orange.png")
+        self.player = Player(":resources:images/space_shooter/playerShip2_orange.png")
         self.bullet_list = arcade.SpriteList()
         self.enemy_list = arcade.SpriteList()
         self.joy = None
@@ -267,7 +267,7 @@ class MyGame(arcade.Window):
             return
         self.bullet_cooldown = 0
 
-        bullet = arcade.Sprite("images/laserBlue01.png", 0.75)
+        bullet = arcade.Sprite(":resources:images/space_shooter/laserBlue01.png", 0.75)
 
         # Position the bullet at the player's current location
         start_x = self.player.center_x

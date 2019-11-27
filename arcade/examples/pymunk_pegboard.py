@@ -142,7 +142,7 @@ class MyGame(arcade.Window):
             shape.friction = 0.3
             self.space.add(body, shape)
 
-            sprite = CircleSprite("images/coin_01.png", shape)
+            sprite = CircleSprite(":resources:images/items/coinGold.png", shape)
             self.ball_list.append(sprite)
 
         # Check for balls that fall off the screen

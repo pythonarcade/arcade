@@ -61,14 +61,14 @@ class MyGame(arcade.Window):
 
         # Set up the player
         self.score = 0
-        self.player_sprite = arcade.Sprite("images/character.png", 0.5)
+        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/character_femalePerson_idle.png", 0.5)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 50
         self.player_list.append(self.player_sprite)
 
         for i in range(50):
             # Create the coin instance
-            coin = Collectable("images/coin_01.png", SPRITE_SCALING)
+            coin = Collectable(":resources:images/items/coinGold.png", SPRITE_SCALING)
             coin.width = 30
             coin.height = 30
 

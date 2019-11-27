@@ -307,7 +307,6 @@ def load_texture(file_name: str, x: float = 0, y: float = 0,
 
     :Returns: The new texture.
     :raises: None
-
     """
 
     # See if we already loaded this texture, and we can just use a cached version.
@@ -316,11 +315,17 @@ def load_texture(file_name: str, x: float = 0, y: float = 0,
         return load_texture.texture_cache[cache_name]  # type: ignore # dynamic attribute on function obj
 
     # See if we already loaded this texture file, and we can just use a cached version.
-    cache_file_name = "{}".format(file_name)
+    cache_file_name = f"{file_name}"
     if cache_file_name in load_texture.texture_cache:  # type: ignore # dynamic attribute on function obj
         texture = load_texture.texture_cache[cache_file_name]  # type: ignore # dynamic attribute on function obj
         source_image = texture.image
     else:
+        # If we should pull from local resources, replace with proper path
+        if file_name.startswith(":resources:"):
+            import os
+            path = os.path.dirname(os.path.abspath(__file__))
+            file_name = f"{path}/resources/{file_name[11:]}"
+
         source_image = PIL.Image.open(file_name)
         result = Texture(cache_file_name, source_image)
         load_texture.texture_cache[cache_file_name] = result  # type: ignore # dynamic attribute on function obj

@@ -102,7 +102,7 @@ class MyGame(arcade.Window):
 
             # Shoot every 60 frames change of shooting each frame
             if self.frame_count % 60 == 0:
-                bullet = arcade.Sprite("images/laserBlue01.png")
+                bullet = arcade.Sprite(":resources:images/space_shooter/laserBlue01.png")
                 bullet.center_x = start_x
                 bullet.center_y = start_y
 
