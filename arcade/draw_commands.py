@@ -229,6 +229,12 @@ def load_textures(file_name: str,
         texture = load_texture.texture_cache[cache_file_name]  # type: ignore # dynamic attribute on function obj
         source_image = texture.image
     else:
+        # If we should pull from local resources, replace with proper path
+        if file_name.startswith(":resources:"):
+            import os
+            path = os.path.dirname(os.path.abspath(__file__))
+            file_name = f"{path}/resources/{file_name[11:]}"
+
         source_image = PIL.Image.open(file_name)
         result = Texture(cache_file_name, source_image)
         load_texture.texture_cache[cache_file_name] = result  # type: ignore # dynamic attribute on function obj
