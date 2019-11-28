@@ -1,5 +1,6 @@
 # --- BEGIN TEXT FUNCTIONS # # #
 
+from itertools import chain
 from typing import Tuple, Union, cast
 
 import PIL.Image
@@ -10,6 +11,15 @@ from arcade.sprite import Sprite
 from arcade.arcade_types import Color
 from arcade.draw_commands import Texture
 from arcade.arcade_types import RGBA
+
+DEFAULT_FONT_NAMES = (
+    "arial.ttf",
+    "Arial.ttf",
+    "NotoSans-Regular.ttf",
+    "/usr/share/fonts/truetype/freefont/FreeMono.ttf",
+    "/System/Library/Fonts/SFNSDisplay.ttf",
+    "/Library/Fonts/Arial.ttf"
+)
 
 
 class Text:
@@ -164,56 +174,20 @@ def draw_text(text: str,
 
         # Font was specified with a string
         if isinstance(font_name, str):
+            font_name = [font_name]
+
+        font_names = chain(*[
+            [font_string_name, f"{font_string_name}.ttf"]
+            for font_string_name in font_name
+        ], DEFAULT_FONT_NAMES)
+
+        for font_string_name in font_names:
             try:
-                font = PIL.ImageFont.truetype(font_name, int(font_size))
+                font = PIL.ImageFont.truetype(font_string_name, int(font_size))
             except OSError:
-                # print(f"1 Can't find font: {font_name}")
-                pass
-
-            if font is None:
-                try:
-                    temp_font_name = f"{font_name}.ttf"
-                    font = PIL.ImageFont.truetype(temp_font_name, int(font_size))
-                except OSError:
-                    # print(f"2 Can't find font: {temp_font_name}")
-                    pass
-
-        # We were instead given a list of font names, in order of preference
-        else:
-            for font_string_name in font_name:
-                try:
-                    font = PIL.ImageFont.truetype(font_string_name, int(font_size))
-                    # print(f"3 Found font: {font_string_name}")
-                except OSError:
-                    # print(f"3 Can't find font: {font_string_name}")
-                    pass
-
-                if font is None:
-                    try:
-                        temp_font_name = f"{font_string_name}.ttf"
-                        font = PIL.ImageFont.truetype(temp_font_name, int(font_size))
-                    except OSError:
-                        # print(f"4 Can't find font: {temp_font_name}")
-                        pass
-
-                if font is not None:
-                    break
-
-        # Default font if no font
-        if font is None:
-            font_names = ("arial.ttf",
-                          'Arial.ttf',
-                          'NotoSans-Regular.ttf',
-                          "/usr/share/fonts/truetype/freefont/FreeMono.ttf",
-                          '/System/Library/Fonts/SFNSDisplay.ttf',
-                          '/Library/Fonts/Arial.ttf')
-            for font_string_name in font_names:
-                try:
-                    font = PIL.ImageFont.truetype(font_string_name, int(font_size))
-                    break
-                except OSError:
-                    # print(f"5 Can't find font: {font_string_name}")
-                    pass
+                continue
+            else:
+                break
 
         # This is stupid. We have to have an image to figure out what size
         # the text will be when we draw it. Of course, we don't know how big
