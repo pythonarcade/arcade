@@ -147,11 +147,11 @@ class MyGame(arcade.Window):
         arcade.draw_text("draw_bitmap", 483, 3, arcade.color.BLACK, 12)
         texture = arcade.load_texture(":resources:images/space_shooter/playerShip1_orange.png")
         scale = .6
-        arcade.draw_texture_rectangle(540, 120, scale * texture.width,
-                                      scale * texture.height, texture, 0)
-        arcade.draw_texture_rectangle(540, 60, scale * texture.width,
-                                      scale * texture.height, texture, 45)
-
+        # arcade.draw_texture_rectangle(540, 120, scale * texture.width,
+        #                               scale * texture.height, texture, 0)
+        # arcade.draw_texture_rectangle(540, 60, scale * texture.width,
+        #                               scale * texture.height, texture, 45)
+        #
         # Overlapping, with transparency test
         # Draw
         arcade.draw_rectangle_filled(650, 100, 50, 50, (255, 0, 0))

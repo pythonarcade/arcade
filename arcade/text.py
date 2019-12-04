@@ -10,7 +10,9 @@ from arcade.sprite import Sprite
 from arcade.arcade_types import Color
 from arcade.draw_commands import Texture
 from arcade.arcade_types import RGBA
-
+from arcade.draw_commands import get_four_byte_color
+import pyglet.gl as gl
+import pyglet
 
 class Text:
     """ Class used for managing text. """
@@ -296,3 +298,47 @@ def draw_text(text: str,
 
 
 draw_text.cache = {}  # type: ignore # dynamic attribute on function obj
+
+def draw_text_2(text: str,
+                start_x: float, start_y: float,
+                color: Color,
+                font_size: float = 12,
+                width: int = 0,
+                align: str = "left",
+                font_name: Union[str, Tuple[str, ...]] = ('calibri', 'arial'),
+                bold: bool = False,
+                italic: bool = False,
+                anchor_x: str = "left",
+                anchor_y: str = "baseline",
+                rotation: float = 0
+                ):
+    """
+
+    :param str text: Text to draw
+    :param float start_x:
+    :param float start_y:
+    :param Color color: Color of the text
+    :param float font_size: Size of the text
+    :param float width:
+    :param str align:
+    :param Union[str, Tuple[str, ...]] font_name:
+    :param bool bold:
+    :param bool italic:
+    :param str anchor_x:
+    :param str anchor_y:
+    :param float rotation:
+    """
+
+    color = get_four_byte_color(color)
+    label = pyglet.text.Label(text,
+                              font_name=font_name,
+                              font_size=font_size,
+                              x=start_x, y=start_y,
+                              anchor_x=anchor_x, anchor_y=anchor_y,
+                              color=color,
+                              align=align,
+                              bold=bold,
+                              italic=italic,
+                              width=width)
+
+    label.draw()

@@ -100,5 +100,5 @@ class MyTestWindow(arcade.Window):
 
 def test_sprite():
     window = MyTestWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Test Animation")
-    window.test(150)
+    window.test(90)
     window.close()

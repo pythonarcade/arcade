@@ -1,7 +1,4 @@
 import arcade
-import os
-
-from pathlib import Path
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -18,8 +15,8 @@ class MyGame(arcade.Window):
 
         arcade.set_background_color(arcade.color.WHITE)
         self.laser_wav = arcade.load_sound(":resources:sounds/laser1.wav")
-        self.laser_mp3 = arcade.load_sound(":resources:laser1.mp3")
-        self.laser_ogg = arcade.load_sound(":resources:laser1.ogg")
+        self.laser_mp3 = arcade.load_sound(":resources:sounds/laser1.mp3")
+        self.laser_ogg = arcade.load_sound(":resources:sounds/laser1.ogg")
         self.frame_count = 0
 
     def update(self, dt):
@@ -46,5 +43,5 @@ class MyGame(arcade.Window):
 def test_main():
     """ Main method """
     window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT)
-    window.test(180)
+    window.test(90)
     window.close()
