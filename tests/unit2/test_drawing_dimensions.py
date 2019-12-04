@@ -1,5 +1,4 @@
 import arcade
-import os
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -59,5 +58,5 @@ class MyGame(arcade.Window):
 def test_main():
     """ Main method """
     window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT)
-    window.test(100)
+    window.test()
     window.close()
