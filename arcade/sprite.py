@@ -26,6 +26,7 @@ from arcade.draw_commands import load_texture
 from arcade.draw_commands import draw_texture_rectangle
 from arcade.draw_commands import Texture
 from arcade.draw_commands import rotate_point
+
 from arcade.arcade_types import RGB, Point
 if TYPE_CHECKING:  # handle import cycle caused by type hinting
     from arcade.sprite_list import SpriteList
@@ -34,6 +35,66 @@ FACE_RIGHT = 1
 FACE_LEFT = 2
 FACE_UP = 3
 FACE_DOWN = 4
+
+
+def calculate_points(image):
+    left_border = 0
+    good = True
+    while good and left_border < image.width:
+        for row in range(image.height):
+            pos = (left_border, row)
+            pixel = image.getpixel(pos)
+            print(pixel)
+            if pixel[3] != 0:
+                good = False
+                break
+        if good:
+            left_border += 1
+
+    right_border = image.width - 1
+    good = True
+    while good and right_border > 0:
+        for row in range(image.height):
+            pos = (right_border, row)
+            pixel = image.getpixel(pos)
+            if pixel[3] != 0:
+                good = False
+                break
+        if good:
+            right_border -= 1
+
+    top_border = 0
+    good = True
+    while good and top_border < image.height:
+        for column in range(image.width):
+            pos = (column, top_border)
+            pixel = image.getpixel(pos)
+            if pixel[3] != 0:
+                good = False
+                break
+        if good:
+            top_border += 1
+
+    bottom_border = image.height - 1
+    good = True
+    while good and bottom_border > 0:
+        for column in range(image.width):
+            pos = (column, bottom_border)
+            pixel = image.getpixel(pos)
+            if pixel[3] != 0:
+                good = False
+                break
+        if good:
+            bottom_border -= 1
+
+    mid_x = image.width / 2
+    mid_y = image.height / 2
+
+    p1 = left_border - mid_x, top_border - mid_y
+    p2 = right_border - mid_x, top_border - mid_y
+    p3 = right_border - mid_x, bottom_border - mid_y
+    p4 = left_border - mid_x, bottom_border - mid_y
+    return (p1, p2, p3, p4)
 
 
 class Sprite:
@@ -162,7 +223,11 @@ class Sprite:
         self._collision_radius: Optional[float] = None
         self._color: RGB = (255, 255, 255)
 
-        self._points: Optional[Sequence[Sequence[float]]] = None
+        if self._texture:
+            self._points = calculate_points(self._texture.image)
+        else:
+            self._points: Optional[Sequence[Sequence[float]]] = None
+
         self._point_list_cache: Optional[Tuple[Tuple[float, float], ...]] = None
 
         self.force = [0, 0]
