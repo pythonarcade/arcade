@@ -307,7 +307,8 @@ def _process_object_layer(map_object: pytiled_parser.objects.TileMap,
         if cur_object.properties is not None and 'boundary_right' in cur_object.properties:
             my_sprite.boundary_right = float(cur_object.properties['boundary_right'])
 
-        my_sprite.properties.update(cur_object.properties)
+        if cur_object.properties is not None:
+            my_sprite.properties.update(cur_object.properties)
         # sprite.properties
         sprite_list.append(my_sprite)
     return sprite_list
