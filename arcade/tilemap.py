@@ -336,11 +336,14 @@ def _process_tile_layer(map_object: pytiled_parser.objects.TileMap,
             my_sprite = _create_sprite_from_tile(map_object, tile, scaling=scaling,
                                                  base_directory=base_directory)
 
-            my_sprite.center_x = column_index * (map_object.tile_size[0] * scaling) + my_sprite.width / 2
-            my_sprite.center_y = (map_object.map_size.height - row_index - 1) \
-                * (map_object.tile_size[1] * scaling) + my_sprite.height / 2
+            if my_sprite is None:
+                print(f"Warning: Could not create sprite number {item} in layer '{layer.name}' {tile.image.source}")
+            else:
+                my_sprite.center_x = column_index * (map_object.tile_size[0] * scaling) + my_sprite.width / 2
+                my_sprite.center_y = (map_object.map_size.height - row_index - 1) \
+                    * (map_object.tile_size[1] * scaling) + my_sprite.height / 2
 
-            sprite_list.append(my_sprite)
+                sprite_list.append(my_sprite)
 
     return sprite_list
 
