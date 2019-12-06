@@ -44,10 +44,12 @@ def calculate_points(image):
         for row in range(image.height):
             pos = (left_border, row)
             pixel = image.getpixel(pos)
-            print(pixel)
-            if pixel[3] != 0:
-                good = False
-                break
+            if type(pixel) is int:
+                raise TypeError("Error, calculate_points called on image not in RGBA format")
+            else:
+                if pixel[3] != 0:
+                    good = False
+                    break
         if good:
             left_border += 1
 

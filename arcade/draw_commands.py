@@ -332,7 +332,7 @@ def load_texture(file_name: str, x: float = 0, y: float = 0,
             path = os.path.dirname(os.path.abspath(__file__))
             file_name = f"{path}/resources/{file_name[11:]}"
 
-        source_image = PIL.Image.open(file_name)
+        source_image = PIL.Image.open(file_name).convert('RGBA')
         result = Texture(cache_file_name, source_image)
         load_texture.texture_cache[cache_file_name] = result  # type: ignore # dynamic attribute on function obj
 
