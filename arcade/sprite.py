@@ -89,17 +89,26 @@ def calculate_points(image):
         if good:
             bottom_border -= 1
 
-    mid_x = image.width / 2
-    mid_y = image.height / 2
+    start_x = p1[0]
+    start_y = p1[1]
+    bad = False
+    top_left_corner_offset = 0
+    while not bad and left_border + top_left_corner_offset < right_border:
+        y = start_y + top_left_corner_offset
+        x = start_x
+        for count in range(top_left_corner_offset + 1):
+            pixel = image.getpixel((x, y))
+            print(f"({x}, {y}) = {pixel} | ", end="")
+            if pixel[3] != 0:
+                bad = True
+                break
+            y -= 1
+            x += 1
+        print(f" - {bad}")
+        top_left_corner_offset += 1
 
-    bottom_border = image.height - bottom_border
-    top_border = image.height - top_border
 
-    p1 = left_border - mid_x, top_border - mid_y
-    p2 = right_border - mid_x + 1, top_border - mid_y
-    p3 = right_border - mid_x + 1, bottom_border - mid_y - 1
-    p4 = left_border - mid_x, bottom_border - mid_y - 1
-    return p1, p2, p3, p4
+    # return p1, p2, p3, p4
 
 
 class Sprite:
