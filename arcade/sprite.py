@@ -44,7 +44,7 @@ def calculate_points(image):
         for row in range(image.height):
             pos = (left_border, row)
             pixel = image.getpixel(pos)
-            if type(pixel) is int:
+            if type(pixel) is int or len(pixel) != 4:
                 raise TypeError("Error, calculate_points called on image not in RGBA format")
             else:
                 if pixel[3] != 0:
@@ -92,11 +92,14 @@ def calculate_points(image):
     mid_x = image.width / 2
     mid_y = image.height / 2
 
+    bottom_border = image.height - bottom_border
+    top_border = image.height - top_border
+
     p1 = left_border - mid_x, top_border - mid_y
-    p2 = right_border - mid_x, top_border - mid_y
-    p3 = right_border - mid_x, bottom_border - mid_y
-    p4 = left_border - mid_x, bottom_border - mid_y
-    return (p1, p2, p3, p4)
+    p2 = right_border - mid_x + 1, top_border - mid_y
+    p3 = right_border - mid_x + 1, bottom_border - mid_y - 1
+    p4 = left_border - mid_x, bottom_border - mid_y - 1
+    return p1, p2, p3, p4
 
 
 class Sprite:
@@ -973,6 +976,15 @@ class AnimatedWalkingSprite(Sprite):
         else:
             self.width = self._texture.width * self.scale
             self.height = self._texture.height * self.scale
+
+
+class SpriteSolid(Sprite):
+    def __init__(self, width, height, color):
+        super().__init__()
+
+        image = PIL.Image.new('RGBA', (width, height), color)
+        self.texture = Texture("Solid", image)
+        self._points = calculate_points(image)
 
 
 def get_distance_between_sprites(sprite1: Sprite, sprite2: Sprite) -> float:
