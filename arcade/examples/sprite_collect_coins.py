@@ -14,8 +14,8 @@ import arcade
 import os
 
 # --- Constants ---
-SPRITE_SCALING_PLAYER = 1
-SPRITE_SCALING_COIN = 1
+SPRITE_SCALING_PLAYER = 0.5
+SPRITE_SCALING_COIN = .25
 COIN_COUNT = 50
 
 SCREEN_WIDTH = 800
@@ -74,7 +74,7 @@ class MyGame(arcade.Window):
 
             # Create the coin instance
             # Coin image from kenney.nl
-            coin = arcade.Sprite(":resources:images/items/coinGold.png",
+            coin = arcade.Sprite(":resources:images/items/coinGold_ul.png",
                                  SPRITE_SCALING_COIN)
 
             # Position the coin

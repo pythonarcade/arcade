@@ -229,7 +229,9 @@ class Sprite:
         self._color: RGB = (255, 255, 255)
 
         if self._texture:
-            self._points = calculate_points(self._texture.image)
+            points = calculate_points(self._texture.image)
+            scaled_points = [[value * scale for value in point] for point in points]
+            self._points = scaled_points
         else:
             self._points: Optional[Sequence[Sequence[float]]] = None
 
