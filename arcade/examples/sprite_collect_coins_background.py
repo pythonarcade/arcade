@@ -61,7 +61,7 @@ class MyGame(arcade.Window):
         # Load the background image. Do this in the setup so we don't keep reloading it all the time.
         # Image from:
         # http://wallpaper-gallery.net/single/free-background-images/free-background-images-22.html
-        self.background = arcade.load_texture("images/background.jpg")
+        self.background = arcade.load_texture(":resources:images/old/background.jpg")
 
         # Sprite lists
         self.player_list = arcade.SpriteList()
