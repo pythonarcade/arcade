@@ -50,6 +50,12 @@ def read_tmx(tmx_file: str) -> pytiled_parser.objects.TileMap:
     :rtype: TiledMap
     """
 
+    # If we should pull from local resources, replace with proper path
+    if tmx_file.startswith(":resources:"):
+        import os
+        path = os.path.dirname(os.path.abspath(__file__))
+        tmx_file = f"{path}/resources/{tmx_file[11:]}"
+
     tile_map = pytiled_parser.parse_tile_map(tmx_file)
 
     return tile_map

@@ -310,9 +310,13 @@ class Window(pyglet.window.Window):
         """
         # This breaks on Linux.
         # See https://github.com/pyglet/pyglet/issues/76
-        # super().on_resize(width, height)
+        super().on_resize(width, height)
 
-        original_viewport = self.get_viewport()
+        try:
+            original_viewport = self.get_viewport()
+        except:
+            print("Error getting viewport")
+            return
 
         # unscaled_viewport = self.get_viewport_size()
         # scaling = unscaled_viewport[0] / width

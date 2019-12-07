@@ -8,7 +8,7 @@ os.chdir(file_path)
 def test_sprites_at_point():
 
     coin_list = arcade.SpriteList()
-    sprite = arcade.Sprite("../../arcade/examples/images/coin_01.png")
+    sprite = arcade.Sprite(":resources:images/items/coinGold.png")
     sprite.position = (130, 130)
     sprite.set_position(130, 130)
     sprite.angle = 90

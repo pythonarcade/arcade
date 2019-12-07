@@ -15,6 +15,6 @@ file_path = os.path.dirname(os.path.abspath(__file__))
 os.chdir(file_path)
 
 arcade.open_window(300, 300, "Sound Demo")
-laser_sound = arcade.load_sound("sounds/laser1.wav")
+laser_sound = arcade.load_sound(":resources:sounds/laser1.wav")
 arcade.play_sound(laser_sound)
 arcade.run()

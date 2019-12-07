@@ -26,6 +26,7 @@ from arcade.draw_commands import load_texture
 from arcade.draw_commands import draw_texture_rectangle
 from arcade.draw_commands import Texture
 from arcade.draw_commands import rotate_point
+
 from arcade.arcade_types import RGB, Point
 if TYPE_CHECKING:  # handle import cycle caused by type hinting
     from arcade.sprite_list import SpriteList
@@ -127,13 +128,22 @@ class Sprite:
 
         self._texture: Optional[Texture]
         if filename is not None:
-            self._texture = load_texture(filename, image_x, image_y,
-                                         image_width, image_height)
+            try:
+                self._texture = load_texture(filename, image_x, image_y,
+                                             image_width, image_height)
+            except Exception as e:
+                print(f"Unable to load {filename} {e}")
+                self._texture = None
 
-            self.textures = [self._texture]
-            self._width = self._texture.width * scale
-            self._height = self._texture.height * scale
-            self._texture.scale = scale
+            if self._texture:
+                self.textures = [self._texture]
+                self._width = self._texture.width * scale
+                self._height = self._texture.height * scale
+                self._texture.scale = scale
+            else:
+                self.textures = []
+                self._width = 0
+                self._height = 0
         else:
             self.textures = []
             self._texture = None
@@ -160,7 +170,13 @@ class Sprite:
         self._collision_radius: Optional[float] = None
         self._color: RGB = (255, 255, 255)
 
-        self._points: Optional[Sequence[Sequence[float]]] = None
+        if self._texture:
+            points = self._texture.unscaled_hitbox_points
+            scaled_points = [[value * scale for value in point] for point in points]
+            self._points = scaled_points
+        else:
+            self._points: Optional[Sequence[Sequence[float]]] = None
+
         self._point_list_cache: Optional[Tuple[Tuple[float, float], ...]] = None
 
         self.force = [0, 0]
@@ -904,6 +920,15 @@ class AnimatedWalkingSprite(Sprite):
         else:
             self.width = self._texture.width * self.scale
             self.height = self._texture.height * self.scale
+
+
+class SpriteSolid(Sprite):
+    def __init__(self, width, height, color):
+        super().__init__()
+
+        image = PIL.Image.new('RGBA', (width, height), color)
+        self.texture = Texture("Solid", image)
+        self._points = self.texture.unscaled_hitbox_points
 
 
 def get_distance_between_sprites(sprite1: Sprite, sprite2: Sprite) -> float:

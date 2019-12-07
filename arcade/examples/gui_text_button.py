@@ -163,7 +163,7 @@ class MyGame(arcade.Window):
         # Create your sprites and sprite lists here
         self.coin_list = arcade.SpriteList()
         for i in range(10):
-            coin = arcade.Sprite("images/coin_01.png", 0.25)
+            coin = arcade.Sprite(":resources:images/items/coinGold.png", 0.25)
             coin.center_x = random.randrange(SCREEN_WIDTH)
             coin.center_y = random.randrange(SCREEN_HEIGHT)
             coin.change_y = -1

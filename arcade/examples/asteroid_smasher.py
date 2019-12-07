@@ -169,7 +169,7 @@ class MyGame(arcade.Window):
         self.lives = 3
 
         # Sounds
-        self.laser_sound = arcade.load_sound("sounds/laser1.wav")
+        self.laser_sound = arcade.load_sound(":resources:sounds/laser1.wav")
 
     def start_new_game(self):
         """ Set up the game and initialize the variables. """
@@ -185,14 +185,14 @@ class MyGame(arcade.Window):
 
         # Set up the player
         self.score = 0
-        self.player_sprite = ShipSprite("images/playerShip1_orange.png", SCALE)
+        self.player_sprite = ShipSprite(":resources:images/space_shooter/playerShip1_orange.png", SCALE)
         self.all_sprites_list.append(self.player_sprite)
         self.lives = 3
 
         # Set up the little icons that represent the player lives.
         cur_pos = 10
         for i in range(self.lives):
-            life = arcade.Sprite("images/playerLife1_orange.png", SCALE)
+            life = arcade.Sprite(":resources:images/space_shooter/playerLife1_orange.png", SCALE)
             life.center_x = cur_pos + life.width
             life.center_y = life.height
             cur_pos += life.width
@@ -200,10 +200,10 @@ class MyGame(arcade.Window):
             self.ship_life_list.append(life)
 
         # Make the asteroids
-        image_list = ("images/meteorGrey_big1.png",
-                      "images/meteorGrey_big2.png",
-                      "images/meteorGrey_big3.png",
-                      "images/meteorGrey_big4.png")
+        image_list = (":resources:images/space_shooter/meteorGrey_big1.png",
+                      ":resources:images/space_shooter/meteorGrey_big2.png",
+                      ":resources:images/space_shooter/meteorGrey_big3.png",
+                      ":resources:images/space_shooter/meteorGrey_big4.png")
         for i in range(STARTING_ASTEROID_COUNT):
             image_no = random.randrange(4)
             enemy_sprite = AsteroidSprite(image_list[image_no], SCALE)
@@ -242,7 +242,7 @@ class MyGame(arcade.Window):
         """ Called whenever a key is pressed. """
         # Shoot if the player hit the space bar and we aren't respawning.
         if not self.player_sprite.respawning and symbol == arcade.key.SPACE:
-            bullet_sprite = BulletSprite("images/laserBlue01.png", SCALE)
+            bullet_sprite = BulletSprite(":resources:images/space_shooter/laserBlue01.png", SCALE)
             bullet_sprite.guid = "Bullet"
 
             bullet_speed = 13
@@ -290,8 +290,8 @@ class MyGame(arcade.Window):
         if asteroid.size == 4:
             for i in range(3):
                 image_no = random.randrange(2)
-                image_list = ["images/meteorGrey_med1.png",
-                              "images/meteorGrey_med2.png"]
+                image_list = [":resources:images/space_shooter/meteorGrey_med1.png",
+                              ":resources:images/space_shooter/meteorGrey_med2.png"]
 
                 enemy_sprite = AsteroidSprite(image_list[image_no],
                                               SCALE * 1.5)
@@ -310,8 +310,8 @@ class MyGame(arcade.Window):
         elif asteroid.size == 3:
             for i in range(3):
                 image_no = random.randrange(2)
-                image_list = ["images/meteorGrey_small1.png",
-                              "images/meteorGrey_small2.png"]
+                image_list = [":resources:images/space_shooter/meteorGrey_small1.png",
+                              ":resources:images/space_shooter/meteorGrey_small2.png"]
 
                 enemy_sprite = AsteroidSprite(image_list[image_no],
                                               SCALE * 1.5)
@@ -330,8 +330,8 @@ class MyGame(arcade.Window):
         elif asteroid.size == 2:
             for i in range(3):
                 image_no = random.randrange(2)
-                image_list = ["images/meteorGrey_tiny1.png",
-                              "images/meteorGrey_tiny2.png"]
+                image_list = [":resources:images/space_shooter/meteorGrey_tiny1.png",
+                              ":resources:images/space_shooter/meteorGrey_tiny2.png"]
 
                 enemy_sprite = AsteroidSprite(image_list[image_no],
                                               SCALE * 1.5)

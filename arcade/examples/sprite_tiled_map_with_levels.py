@@ -78,7 +78,7 @@ class MyGame(arcade.Window):
         self.coin_list = arcade.SpriteList()
 
         # Set up the player
-        self.player_sprite = arcade.Sprite("images/character.png", SPRITE_SCALING)
+        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/character_femalePerson_idle.png", SPRITE_SCALING)
 
         # Starting position of the player
         self.player_sprite.center_x = 64

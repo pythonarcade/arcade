@@ -9,6 +9,12 @@ from pathlib import Path
 class Sound:
 
     def __init__(self, file_name: str):
+        # If we should pull from local resources, replace with proper path
+        if file_name.startswith(":resources:"):
+            import os
+            path = os.path.dirname(os.path.abspath(__file__))
+            file_name = f"{path}/resources/{file_name[11:]}"
+
         if not Path(file_name).is_file():
             raise FileNotFoundError(f"The sound file '{file_name}' is not a file or can't be read")
         self.file_name = file_name

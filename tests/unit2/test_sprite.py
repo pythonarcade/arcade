@@ -18,7 +18,7 @@ class MyTestWindow(arcade.Window):
         arcade.set_background_color(arcade.color.AMAZON)
 
         self.character_list = arcade.SpriteList()
-        self.character_sprite = arcade.Sprite("../../arcade/examples/images/character.png", CHARACTER_SCALING)
+        self.character_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/character_femalePerson_idle.png", CHARACTER_SCALING)
         self.character_sprite.center_x = 50
         self.character_sprite.center_y = 50
         self.character_sprite.change_x = 5
@@ -26,7 +26,7 @@ class MyTestWindow(arcade.Window):
         self.character_list.append(self.character_sprite)
 
         self.coin_list = arcade.SpriteList()
-        sprite = arcade.Sprite("../../arcade/examples/images/coin_01.png", CHARACTER_SCALING)
+        sprite = arcade.Sprite(":resources:images/items/coinGold.png", CHARACTER_SCALING)
         sprite.position = (130, 130)
         sprite.set_position(130, 130)
         sprite.angle = 90

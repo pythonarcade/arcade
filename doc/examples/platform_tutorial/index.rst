@@ -71,7 +71,7 @@ below working. (It is also in the zip file as
 things we can do first. Therefore we'll stick with a set-size window for this
 tutorial.)
 
-.. literalinclude:: ../../../arcade/examples/platform_tutorial/01_open_window.py
+.. literalinclude:: ../01_open_window.py
     :caption: 01_open_window.py - Open a Window
     :linenos:
 
@@ -165,7 +165,7 @@ Notice that the code creates ``Sprites`` three ways:
 * Create a series of sprites in a loop
 * Create a series of sprites using coordinates
 
-.. literalinclude:: ../../../arcade/examples/platform_tutorial/02_draw_sprites.py
+.. literalinclude:: ../02_draw_sprites.py
     :caption: 02_draw_sprites - Draw and Position Sprites
     :linenos:
     :emphasize-lines: 11-14, 27-34, 39-43, 45-69, 77-80
@@ -199,7 +199,7 @@ Now we need to be able to get the user to move around. Here how to do it:
   `PhysicsEngineSimple class <../../arcade.html#arcade.PhysicsEngineSimple>`_
   to move sprites, but keep  them from running through walls.
 
-.. literalinclude:: ../../../arcade/examples/platform_tutorial/03_user_control.py
+.. literalinclude:: ../03_user_control.py
     :caption: 03_user_control.py - Control User By Keyboard
     :linenos:
     :emphasize-lines: 16-17, 77-78, 91-101, 103-113, 115-120
@@ -220,7 +220,7 @@ jumping? We need to add gravity.
 
 The example below will allow the user to jump and walk on platforms.
 
-.. literalinclude:: ../../../arcade/examples/platform_tutorial/04_add_gravity.py
+.. literalinclude:: ../04_add_gravity.py
     :caption: 04_add_gravity.py - Add Gravity
     :linenos:
     :emphasize-lines: 18-19, 79-82, 98-101, 109-112
@@ -242,7 +242,7 @@ scrolling.
 The viewport margins control how close you can get to the edge of the screen
 before the camera starts scrolling.
 
-.. literalinclude:: ../../../arcade/examples/platform_tutorial/05_scrolling.py
+.. literalinclude:: ../05_scrolling.py
     :caption: Add Scrolling
     :linenos:
     :emphasize-lines: 21-26, 51-53, 137-177
@@ -274,7 +274,7 @@ Notice that any transparent "white-space" around the image counts as the hitbox.
 You can trim the space in a graphics editor, or in the second section,
 we'll show you how to specify the hitbox.
 
-.. literalinclude:: ../../../arcade/examples/platform_tutorial/06_coins_and_sound.py
+.. literalinclude:: ../06_coins_and_sound.py
     :caption: Add Coins and Sound
     :linenos:
     :emphasize-lines: 55-57, 71, 99-104, 119, 128, 149-159
@@ -302,7 +302,7 @@ than just drawing the score at the same x, y location every time because
 we have to "scroll" the score right with the player if we have a scrolling
 screen. To do this, we just add in the ``view_bottom`` and ``view_left`` coordinates.
 
-.. literalinclude:: ../../../arcade/examples/platform_tutorial/07_score.py
+.. literalinclude:: ../07_score.py
     :caption: Display The Score
     :linenos:
     :emphasize-lines: 55-56, 71-72, 128-131, 170-171
@@ -421,7 +421,7 @@ map editor for for "Platforms" and "Coins".
 Test the Level
 ~~~~~~~~~~~~~~
 
-.. literalinclude:: ../../../arcade/examples/platform_tutorial/08_load_map.py
+.. literalinclude:: ../08_load_map.py
     :caption: Load a .tmx file from Tiled Map Editor
     :linenos:
     :emphasize-lines: 87-113
@@ -461,7 +461,7 @@ Here's an expanded example:
   * Updated ``setup`` to load a file based on the level (76-144, specifically lines 76 and 114)
   * Added end-of-map check(245-256)
 
-.. literalinclude:: ../../../arcade/examples/platform_tutorial/09_endgame.py
+.. literalinclude:: ../09_endgame.py
     :caption: More Advanced Example
     :linenos:
     :emphasize-lines: 69, 76, 114, 245-256
@@ -495,7 +495,7 @@ This example shows using:
 * Properties to define point value of coins and flags
 * Properties and an object layer to define a moving platform.
 
-.. literalinclude:: ../../../arcade/examples/platform_tutorial/10_ladders_and_more.py
+.. literalinclude:: ../10_ladders_and_more.py
     :caption: Ladders, Animated Tiles, and Moving Platforms
     :linenos:
 
@@ -510,6 +510,6 @@ Add character animations!
 
     <iframe width="560" height="315" src="https://www.youtube.com/embed/TZtXhqDOLy0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
-.. literalinclude:: ../../../arcade/examples/platform_tutorial/11_animate_character.py
+.. literalinclude:: ../11_animate_character.py
     :caption: Animate Characters
     :linenos:

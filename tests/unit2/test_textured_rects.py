@@ -17,7 +17,7 @@ class MyTestWindow(arcade.Window):
 
         arcade.set_background_color(arcade.color.AMAZON)
 
-        self.texture = arcade.load_texture("../../arcade/examples/images/playerShip1_orange.png")
+        self.texture = arcade.load_texture(":resources:images/space_shooter/playerShip1_orange.png")
 
     def on_draw(self):
         arcade.start_render()
