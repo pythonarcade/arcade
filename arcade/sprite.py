@@ -109,8 +109,8 @@ def calculate_points(image):
         # print(f"offset: {offset}")
         return offset
 
-    def _r(point, height):
-        return point[0], height - point[1]
+    def _r(point, height, width):
+        return point[0] - width / 2, (height - point[1]) - height / 2
 
     top_left_corner_offset = _check_corner_offset(left_border, top_border, 1, 1)
     top_right_corner_offset = _check_corner_offset(right_border, top_border, -1, 1)
@@ -129,23 +129,23 @@ def calculate_points(image):
     result = []
 
     h = image.height
-    result.append(_r(p1, h))
+    w = image.width
+    result.append(_r(p1, h, w))
     if top_left_corner_offset:
-        result.append(_r(p2, h))
+        result.append(_r(p2, h, w))
 
-    result.append(_r(p3, h))
+    result.append(_r(p3, h, w))
     if top_right_corner_offset:
-        result.append(_r(p4, h))
+        result.append(_r(p4, h, w))
 
-    result.append(_r(p5, h))
+    result.append(_r(p5, h, w))
     if bottom_right_corner_offset:
-        result.append(_r(p6, h))
+        result.append(_r(p6, h, w))
 
-    result.append(_r(p7, h))
+    result.append(_r(p7, h, w))
     if bottom_left_corner_offset:
-        result.append(_r(p8, h))
+        result.append(_r(p8, h, w))
 
-    # print(result)
     return result
 
 
