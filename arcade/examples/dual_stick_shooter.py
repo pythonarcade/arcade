@@ -93,7 +93,7 @@ class Player(arcade.sprite.Sprite):
 
 class Enemy(arcade.sprite.Sprite):
     def __init__(self, x, y):
-        super().__init__(filename='images/bumper.png', scale=0.5, center_x=x, center_y=y)
+        super().__init__(filename=':resources:images/pinball/bumper.png', scale=0.5, center_x=x, center_y=y)
 
     def follow_sprite(self, player_sprite):
         """

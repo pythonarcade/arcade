@@ -143,7 +143,7 @@ class MyGame(arcade.Window):
             for row in range(GRID_HEIGHT):
                 for column in range(GRID_WIDTH):
                     if self.grid[row][column] == 1:
-                        wall = arcade.Sprite("images/grassCenter.png", SPRITE_SCALING)
+                        wall = arcade.Sprite(":resources:images/tiles/grassCenter.png", SPRITE_SCALING)
                         wall.center_x = column * SPRITE_SIZE + SPRITE_SIZE / 2
                         wall.center_y = row * SPRITE_SIZE + SPRITE_SIZE / 2
                         self.wall_list.append(wall)
@@ -165,7 +165,7 @@ class MyGame(arcade.Window):
                     column_count = end_column - start_column + 1
                     column_mid = (start_column + end_column) / 2
 
-                    wall = arcade.Sprite("images/grassCenter.png", SPRITE_SCALING,
+                    wall = arcade.Sprite(":resources:images/tiles/grassCenter.png", SPRITE_SCALING,
                                          repeat_count_x=column_count)
                     wall.center_x = column_mid * SPRITE_SIZE + SPRITE_SIZE / 2
                     wall.center_y = row * SPRITE_SIZE + SPRITE_SIZE / 2

@@ -124,7 +124,7 @@ class MyGame(arcade.Window):
             # Have we collected this?
             if not coin.changed:
                 # No? Then do so
-                coin.append_texture(arcade.load_texture("images/bumper.png"))
+                coin.append_texture(arcade.load_texture(":resources:images/pinball/bumper.png"))
                 coin.set_texture(1)
                 coin.changed = True
                 coin.width = 30

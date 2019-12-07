@@ -9,7 +9,6 @@ from pathlib import Path
 class Sound:
 
     def __init__(self, file_name: str):
-        print(f"AAAA {file_name}")
         # If we should pull from local resources, replace with proper path
         if file_name.startswith(":resources:"):
             import os

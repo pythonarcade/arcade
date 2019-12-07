@@ -13,7 +13,7 @@ from arcade.examples.frametime_plotter import FrametimePlotter
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 SCREEN_TITLE = "Particle stress test"
-TEXTURE = "images/pool_cue_ball.png"
+TEXTURE = ":resources:images/pinball/pool_cue_ball.png"
 
 
 def make_emitter():

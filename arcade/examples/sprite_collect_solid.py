@@ -64,7 +64,6 @@ class MyGame(arcade.Window):
         # Set up the player
         # Character image from kenney.nl
         self.player_sprite = arcade.SpriteSolid(64, 64, arcade.color.RED)
-        print(self.player_sprite.get_points())
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 50
         self.player_list.append(self.player_sprite)

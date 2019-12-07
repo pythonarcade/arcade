@@ -67,14 +67,14 @@ class Window(arcade.Window):
         self.button_list.append(show_button)
 
     def set_dialogue_box_texture(self):
-        dialogue_box = "gui_themes/Fantasy/DialogueBox/DialogueBox.png"
+        dialogue_box = ":resources:gui_themes/Fantasy/DialogueBox/DialogueBox.png"
         self.theme.add_dialogue_box_texture(dialogue_box)
 
     def set_button_texture(self):
-        normal = "gui_themes/Fantasy/Buttons/Normal.png"
-        hover = "gui_themes/Fantasy/Buttons/Hover.png"
-        clicked = "gui_themes/Fantasy/Buttons/Clicked.png"
-        locked = "gui_themes/Fantasy/Buttons/Locked.png"
+        normal = ":resources:gui_themes/Fantasy/Buttons/Normal.png"
+        hover = ":resources:gui_themes/Fantasy/Buttons/Hover.png"
+        clicked = ":resources:gui_themes/Fantasy/Buttons/Clicked.png"
+        locked = ":resources:gui_themes/Fantasy/Buttons/Locked.png"
         self.theme.add_button_textures(normal, hover, clicked, locked)
 
     def set_theme(self):

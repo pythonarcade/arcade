@@ -73,7 +73,7 @@ class MyGame(arcade.Window):
             self.coin_list.append(coin)
 
         # Create trigger
-        self.trigger_sprite = arcade.Sprite("images/bumper.png", scale=0.5, center_x=750, center_y=50)
+        self.trigger_sprite = arcade.Sprite(":resources:images/pinball/bumper.png", scale=0.5, center_x=750, center_y=50)
 
     def on_draw(self):
         """ Draw everything """
