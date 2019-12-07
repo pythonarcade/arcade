@@ -37,9 +37,6 @@ FACE_UP = 3
 FACE_DOWN = 4
 
 
-
-
-
 class Sprite:
     """
     Class that represents a 'sprite' on-screen.
@@ -924,7 +921,7 @@ class SpriteSolid(Sprite):
 
         image = PIL.Image.new('RGBA', (width, height), color)
         self.texture = Texture("Solid", image)
-        self._points = Texture.unscaled_hitbox_points
+        self._points = self.texture.unscaled_hitbox_points
 
 
 def get_distance_between_sprites(sprite1: Sprite, sprite2: Sprite) -> float:
