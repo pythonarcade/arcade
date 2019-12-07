@@ -67,7 +67,8 @@ if __name__ == "__main__":
                                    'examples/images/*.jpg',
                                    'examples/*.csv',
                                    'examples/*.tmx',
-                                   'examples/sounds/*']},
+                                   'examples/sounds/*',
+                                   'py.typed']},
           project_urls={
                         'Documentation': 'https://arcade.academy/',
                         'Example Code ': 'http://arcade.academy/examples/index.html',
