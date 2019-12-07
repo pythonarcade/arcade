@@ -924,7 +924,7 @@ class SpriteSolid(Sprite):
 
         image = PIL.Image.new('RGBA', (width, height), color)
         self.texture = Texture("Solid", image)
-        self._points = calculate_points(image)
+        self._points = Texture.unscaled_hitbox_points
 
 
 def get_distance_between_sprites(sprite1: Sprite, sprite2: Sprite) -> float:
