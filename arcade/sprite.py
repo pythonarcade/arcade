@@ -89,26 +89,64 @@ def calculate_points(image):
         if good:
             bottom_border -= 1
 
-    start_x = p1[0]
-    start_y = p1[1]
-    bad = False
-    top_left_corner_offset = 0
-    while not bad and left_border + top_left_corner_offset < right_border:
-        y = start_y + top_left_corner_offset
-        x = start_x
-        for count in range(top_left_corner_offset + 1):
-            pixel = image.getpixel((x, y))
-            print(f"({x}, {y}) = {pixel} | ", end="")
-            if pixel[3] != 0:
-                bad = True
-                break
-            y -= 1
-            x += 1
-        print(f" - {bad}")
-        top_left_corner_offset += 1
+    def _check_corner_offset(start_x, start_y, x_direction, y_direction ):
 
+        bad = False
+        offset = 0
+        while not bad:
+            y = start_y + (offset * y_direction)
+            x = start_x
+            for count in range(offset + 1):
+                pixel = image.getpixel((x, y))
+                # print(f"({x}, {y}) = {pixel} | ", end="")
+                if pixel[3] != 0:
+                    bad = True
+                    break
+                y -= y_direction
+                x += x_direction
+            # print(f" - {bad}")
+            offset += 1
+        # print(f"offset: {offset}")
+        return offset
 
-    # return p1, p2, p3, p4
+    def _r(point, height):
+        return point[0], height - point[1]
+
+    top_left_corner_offset = _check_corner_offset(left_border, top_border, 1, 1)
+    top_right_corner_offset = _check_corner_offset(right_border, top_border, -1, 1)
+    bottom_left_corner_offset = _check_corner_offset(left_border, bottom_border, 1, -1)
+    bottom_right_corner_offset = _check_corner_offset(right_border, bottom_border, -1, -1)
+
+    p1 = left_border + top_left_corner_offset, top_border
+    p2 = right_border - top_right_corner_offset, top_border
+    p3 = right_border, top_border + top_right_corner_offset
+    p4 = right_border, bottom_border - bottom_right_corner_offset
+    p5 = right_border - bottom_right_corner_offset, bottom_border
+    p6 = left_border + bottom_left_corner_offset, bottom_border
+    p7 = left_border, bottom_border - bottom_left_corner_offset
+    p8 = left_border, top_border + top_left_corner_offset
+
+    result = []
+
+    h = image.height
+    result.append(_r(p1, h))
+    if top_left_corner_offset:
+        result.append(_r(p2, h))
+
+    result.append(_r(p3, h))
+    if top_right_corner_offset:
+        result.append(_r(p4, h))
+
+    result.append(_r(p5, h))
+    if bottom_right_corner_offset:
+        result.append(_r(p6, h))
+
+    result.append(_r(p7, h))
+    if bottom_left_corner_offset:
+        result.append(_r(p8, h))
+
+    # print(result)
+    return result
 
 
 class Sprite:
