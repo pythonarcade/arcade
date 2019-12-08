@@ -3,19 +3,19 @@
  <tileset firstgid="1" name="my_tileset" tilewidth="128" tileheight="128" tilecount="5" columns="0">
   <grid orientation="orthogonal" width="1" height="1"/>
   <tile id="0">
-   <image width="128" height="128" source=":resources:images/tiles/boxCrate_double.png"/>
+   <image width="128" height="128" source="../images/tiles/boxCrate_double.png"/>
   </tile>
   <tile id="1">
-   <image width="128" height="128" source="images/grassLeft.png"/>
+   <image width="128" height="128" source="../images/tiles/grassLeft.png"/>
   </tile>
   <tile id="2">
-   <image width="128" height="128" source=":resources:images/tiles/grassMid.png"/>
+   <image width="128" height="128" source="../images/tiles/grassMid.png"/>
   </tile>
   <tile id="3">
-   <image width="128" height="128" source="images/grassRight.png"/>
+   <image width="128" height="128" source="../images/tiles/grassRight.png"/>
   </tile>
   <tile id="4">
-   <image width="128" height="128" source=":resources:images/items/coinGold.png"/>
+   <image width="128" height="128" source="../images/items/coinGold.png"/>
   </tile>
  </tileset>
  <layer id="2" name="Coins" width="50" height="7">
