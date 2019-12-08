@@ -61,7 +61,7 @@ class Window(pyglet.window.Window):
 
         try:
             super().__init__(width=width, height=height, caption=title,
-                             resizable=resizable, config=config)
+                             resizable=resizable, config=config, vsync=False)
         except pyglet.window.NoSuchConfigException:
             raise NoOpenGLException("Unable to create an OpenGL 3.3+ context. "
                                     "Check to make sure your system supports OpenGL 3.3 or higher.")
