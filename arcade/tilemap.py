@@ -286,8 +286,8 @@ def _process_object_layer(map_object: pytiled_parser.objects.TileMap,
         my_sprite = _create_sprite_from_tile(map_object, tile, scaling=scaling,
                                              base_directory=base_directory)
 
-        my_sprite.right = cur_object.location.x * scaling
-        my_sprite.top = (map_object.map_size.height * map_object.tile_size[1] - cur_object.location.y) * scaling
+        my_sprite.left = cur_object.location.x * scaling
+        my_sprite.bottom = (map_object.map_size.height  * map_object.tile_size[1] - cur_object.location.y) * scaling
 
         if cur_object.properties is not None and 'change_x' in cur_object.properties:
             my_sprite.change_x = float(cur_object.properties['change_x'])
