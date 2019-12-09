@@ -6,7 +6,8 @@ Generate quick API indexes in Restructured Text Format for Sphinx documentation.
 
 import re
 import os
-
+import shutil
+from pathlib import Path
 
 def list_functions(filename, output_file):
     """
@@ -91,7 +92,7 @@ def list_classes(filename, output_file):
         print(f"Exception processing {filename} on line {line_no}: {e}")
 
 
-def main():
+def quick_api():
     # Set the working directory (where we expect to find files) to the same
     # directory this .py file is in. You can leave this out of your own
     # code, but it is needed to easily run the examples using "python -m"
@@ -182,6 +183,76 @@ def main():
 
     output_file.close()
 
+def process_resource_directory(out, my_path: Path):
+    for cur_node in my_path.iterdir():
+        r1 = cur_node.relative_to('.')
+        r3 = 'resources/' + str(r1)[20:].replace('\\', '/')
+        # print(r3)
+        if cur_node.is_dir():
+
+            try:
+                os.makedirs(f"build/html/{r3}")
+            except FileExistsError:
+                pass
+
+            # out.write(f"\n{cur_node.name}\n")
+            # out.write("-" * len(cur_node.name) + "\n\n")
+            process_resource_directory.cell_count = 0
+
+            out.write(f"\n\n{r3}\n")
+            out.write("-" * len(r3) + "\n\n")
+
+            out.write(".. raw:: html\n\n")
+            out.write("    <table class='resource-table'><tr>\n")
+            process_resource_files(out, cur_node)
+            out.write("    </tr></table>\n")
+
+            process_resource_directory(out, cur_node)
+
+
+def process_resource_files(out, my_path: Path):
+    for cur_node in my_path.iterdir():
+        r1 = cur_node.relative_to('.')
+        r3 = 'resources/' + str(r1)[20:].replace('\\', '/')
+        # print(r3)
+        if not cur_node.is_dir():
+            r2 = ":resources:" + str(r1)[20:].replace('\\', '/')
+            process_resource_directory.cell_count += 1
+            if process_resource_directory.cell_count % 5 == 0:
+                out.write(f"    </tr>\n")
+                out.write(f"    <tr>\n")
+            out.write(f"    <td><img alt='{r2}' src='{r3}'>")
+            # out.write(f"<br />{r2}</td>")
+            out.write("\n")
+            src = r1
+            dst = f"build\\html\\{r3}"
+            shutil.copyfile(src, dst)
+
+
+process_resource_directory.cell_count = 0
+
+def resources():
+    file_path = os.path.dirname(os.path.abspath(__file__))
+    os.chdir(file_path)
+    try:
+        os.makedirs("build/html/resources")
+    except FileExistsError:
+        pass
+
+    out = open("resources.rst", "w")
+
+    out.write("Resources\n")
+    out.write("=========\n")
+    out.write("\n")
+    process_resource_directory(out, Path('../arcade/resources/'))
+    out.write("    </tr></table>\n")
+
+
+
+
+def main():
+    # quick_api()
+    resources()
 
 if __name__ == '__main__':
     main()

@@ -149,8 +149,9 @@ game without learning a complex framework.
    diversity
    distribute_macos
    instructions_gameshell
-   pygame_comparison.rst
-   suggested_curriculum.rst
+   pygame_comparison
+   suggested_curriculum
+   resources
 
 Learn about it:
 ^^^^^^^^^^^^^^^
