@@ -184,11 +184,19 @@ def quick_api():
     output_file.close()
 
 def process_resource_directory(out, my_path: Path):
+
     for cur_node in my_path.iterdir():
+
         r1 = cur_node.relative_to('.')
         r3 = 'resources/' + str(r1)[20:].replace('\\', '/')
         # print(r3)
         if cur_node.is_dir():
+
+            has_files = False
+            for check_node in cur_node.iterdir():
+                if check_node.is_file():
+                    has_files = True
+                    break
 
             try:
                 os.makedirs(f"build/html/{r3}")
@@ -199,13 +207,14 @@ def process_resource_directory(out, my_path: Path):
             # out.write("-" * len(cur_node.name) + "\n\n")
             process_resource_directory.cell_count = 0
 
-            out.write(f"\n\n{r3}\n")
-            out.write("-" * len(r3) + "\n\n")
+            if has_files:
+                out.write(f"\n\n{r3}\n")
+                out.write("-" * len(r3) + "\n\n")
 
-            out.write(".. raw:: html\n\n")
-            out.write("    <table class='resource-table'><tr>\n")
-            process_resource_files(out, cur_node)
-            out.write("    </tr></table>\n")
+                out.write(".. raw:: html\n\n")
+                out.write("    <table class='resource-table'><tr>\n")
+                process_resource_files(out, cur_node)
+                out.write("    </tr></table>\n")
 
             process_resource_directory(out, cur_node)
 
@@ -217,13 +226,14 @@ def process_resource_files(out, my_path: Path):
         # print(r3)
         if not cur_node.is_dir():
             r2 = ":resources:" + str(r1)[20:].replace('\\', '/')
-            process_resource_directory.cell_count += 1
-            if process_resource_directory.cell_count % 5 == 0:
-                out.write(f"    </tr>\n")
-                out.write(f"    <tr>\n")
-            out.write(f"    <td><img alt='{r2}' src='{r3}'>")
-            # out.write(f"<br />{r2}</td>")
-            out.write("\n")
+            if r2.endswith(".png"):
+                process_resource_directory.cell_count += 1
+                if process_resource_directory.cell_count % 5 == 0:
+                    out.write(f"    </tr>\n")
+                    out.write(f"    <tr>\n")
+                out.write(f"    <td><img alt='{r2}' title='{r2}' src='{r3}'>")
+                # out.write(f"<br />{r2}</td>")
+                out.write("\n")
             src = r1
             dst = f"build\\html\\{r3}"
             shutil.copyfile(src, dst)
