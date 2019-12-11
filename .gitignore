@@ -27,3 +27,4 @@ tests/test_examples/test.png
 arcade/examples/test.png
 .DS_Store
 .coveralls.yml
+/doc/resources.rst

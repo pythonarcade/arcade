@@ -45,9 +45,10 @@ The Python Arcade Library
           <ul>
           <li><a href="quick_index.html">Quick API Index</a></li>
           <li><a href="arcade.html">Full Arcade API Docs</a></li>
-          <li><a href="quick_index.html#drawing-module">Drawing</a> - <a href="arcade.csscolor.html">CSS Colors</a></li>
-          <li><a href="quick_index.html#application-module">Window Class</a></li>
-          <li><a href="quick_index.html#sprite-module">Sprites</a></li>
+          <li><a href="quick_index.html#drawing-api">Drawing API</a> - <a href="arcade.csscolor.html">CSS Colors</a></li>
+          <li><a href="quick_index.html#application-api">Window Class</a></li>
+          <li><a href="quick_index.html#sprite-api">Sprites</a></li>
+          <li><a href="resources.html">Resources - Default Images</a></li>
          </ul>
         </td>
         <td>
@@ -76,7 +77,6 @@ The Python Arcade Library
           </div>
           <ul>
             <li><a href="sample_games.html">Example Games</a></li>
-            <li><a href="instructions_gameshell.html">GameShell (Hand-held like a GameBoy)</a></li>
             <li><a href="examples/pyinstaller.html">Distributing games with PyInstaller</a></li>
           </ul>
         </td>

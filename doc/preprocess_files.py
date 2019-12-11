@@ -226,14 +226,21 @@ def process_resource_files(out, my_path: Path):
         # print(r3)
         if not cur_node.is_dir():
             r2 = ":resources:" + str(r1)[20:].replace('\\', '/')
+            process_resource_directory.cell_count += 1
+            if process_resource_directory.cell_count % 5 == 0:
+                out.write(f"    </tr>\n")
+                out.write(f"    <tr>\n")
+            out.write(f"    <td>")
             if r2.endswith(".png"):
-                process_resource_directory.cell_count += 1
-                if process_resource_directory.cell_count % 5 == 0:
-                    out.write(f"    </tr>\n")
-                    out.write(f"    <tr>\n")
-                out.write(f"    <td><img alt='{r2}' title='{r2}' src='{r3}'>")
-                # out.write(f"<br />{r2}</td>")
-                out.write("\n")
+                out.write(f"<img alt='{r2}' title='{r2}' src='{r3}'><br />")
+                out.write(f"{cur_node.name[:-4]}")
+            elif r2.endswith(".wav"):
+                out.write(f"<audio controls><source src='{r3}' type='audio/wav'></audio><br />")
+                out.write(f"{cur_node.name[:-4]}")
+            else:
+                out.write(f"{cur_node.name}")
+            # out.write(f"<br />{r2}</td>")
+            out.write("</td>\n")
             src = r1
             dst = f"build\\html\\{r3}"
             shutil.copyfile(src, dst)
@@ -254,8 +261,14 @@ def resources():
     out.write("Resources\n")
     out.write("=========\n")
     out.write("\n")
+    out.write("Resource files are images and sounds built into Arcade that"
+              "can be used to quickly build and test simple code without having"
+              "to worry about copying files into the project.\n\n")
+    out.write("Any file loaded that starts with ``:resource:`` will attempt"
+              "to load that file from the library resources instead of the"
+              "project directory.\n")
+    out.write("\n")
     process_resource_directory(out, Path('../arcade/resources/'))
-    out.write("    </tr></table>\n")
 
 
 
