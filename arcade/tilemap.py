@@ -103,12 +103,12 @@ def _get_tile_by_gid(map_object: pytiled_parser.objects.TileMap,
         tile_gid -= FLIPPED_VERTICALLY_FLAG
 
     for tileset_key, tileset in map_object.tile_sets.items():
-        if tile_gid < tileset_key or tile_gid > tileset_key + tileset.tile_count - 1:
-            continue
         tile_ref = tileset.tiles.get(tile_gid - tileset_key)
         # Tilesets only define a 'tile' if there is tile specific data
         if tile_ref is None:
             tile_ref = pytiled_parser.objects.Tile(id_=tile_gid - tileset_key)
+            if tile_ref is None:
+                continue
         if tileset.image is not None:
             if tile_ref.image is not None:
                 raise TypeError("Use of tileset (rather than collection of images) "
@@ -292,8 +292,8 @@ def _process_object_layer(map_object: pytiled_parser.objects.TileMap,
         my_sprite = _create_sprite_from_tile(map_object, tile, scaling=scaling,
                                              base_directory=base_directory)
 
-        my_sprite.right = cur_object.location.x * scaling
-        my_sprite.top = (map_object.map_size.height * map_object.tile_size[1] - cur_object.location.y) * scaling
+        my_sprite.left = cur_object.location.x * scaling
+        my_sprite.bottom = (map_object.map_size.height  * map_object.tile_size[1] - cur_object.location.y) * scaling
 
         if cur_object.properties is not None and 'change_x' in cur_object.properties:
             my_sprite.change_x = float(cur_object.properties['change_x'])
@@ -313,7 +313,8 @@ def _process_object_layer(map_object: pytiled_parser.objects.TileMap,
         if cur_object.properties is not None and 'boundary_right' in cur_object.properties:
             my_sprite.boundary_right = float(cur_object.properties['boundary_right'])
 
-        my_sprite.properties.update(cur_object.properties)
+        if cur_object.properties is not None:
+            my_sprite.properties.update(cur_object.properties)
         # sprite.properties
         sprite_list.append(my_sprite)
     return sprite_list
