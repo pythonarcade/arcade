@@ -103,8 +103,6 @@ def _get_tile_by_gid(map_object: pytiled_parser.objects.TileMap,
         tile_gid -= FLIPPED_VERTICALLY_FLAG
 
     for tileset_key, tileset in map_object.tile_sets.items():
-        if tile_gid < tileset_key or tile_gid > tileset_key + tileset.tile_count - 1:
-            continue
         tile_ref = tileset.tiles.get(tile_gid - tileset_key)
         # Tilesets only define a 'tile' if there is tile specific data
         if tile_ref is None:
