@@ -91,7 +91,7 @@ class MyGame(arcade.Window):
             self.wall_list.append(wall)
 
         # -- Draw an enemy on the ground
-        enemy = arcade.Sprite("images/wormGreen.png", SPRITE_SCALING)
+        enemy = arcade.Sprite(":resources:images/enemies/wormGreen.png", SPRITE_SCALING)
 
         enemy.bottom = SPRITE_SIZE
         enemy.left = SPRITE_SIZE * 2
@@ -101,7 +101,7 @@ class MyGame(arcade.Window):
         self.enemy_list.append(enemy)
 
         # -- Draw a enemy on the platform
-        enemy = arcade.Sprite("images/wormGreen.png", SPRITE_SCALING)
+        enemy = arcade.Sprite(":resources:images/enemies/wormGreen.png", SPRITE_SCALING)
 
         enemy.bottom = SPRITE_SIZE * 4
         enemy.left = SPRITE_SIZE * 4

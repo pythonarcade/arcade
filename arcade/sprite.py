@@ -37,80 +37,6 @@ FACE_UP = 3
 FACE_DOWN = 4
 
 
-def calculate_points(image):
-    left_border = 0
-    good = True
-    while good and left_border < image.width:
-        for row in range(image.height):
-            pos = (left_border, row)
-            pixel = image.getpixel(pos)
-            if type(pixel) is int or len(pixel) != 4:
-                raise TypeError("Error, calculate_points called on image not in RGBA format")
-            else:
-                if pixel[3] != 0:
-                    good = False
-                    break
-        if good:
-            left_border += 1
-
-    right_border = image.width - 1
-    good = True
-    while good and right_border > 0:
-        for row in range(image.height):
-            pos = (right_border, row)
-            pixel = image.getpixel(pos)
-            if pixel[3] != 0:
-                good = False
-                break
-        if good:
-            right_border -= 1
-
-    top_border = 0
-    good = True
-    while good and top_border < image.height:
-        for column in range(image.width):
-            pos = (column, top_border)
-            pixel = image.getpixel(pos)
-            if pixel[3] != 0:
-                good = False
-                break
-        if good:
-            top_border += 1
-
-    bottom_border = image.height - 1
-    good = True
-    while good and bottom_border > 0:
-        for column in range(image.width):
-            pos = (column, bottom_border)
-            pixel = image.getpixel(pos)
-            if pixel[3] != 0:
-                good = False
-                break
-        if good:
-            bottom_border -= 1
-
-    start_x = p1[0]
-    start_y = p1[1]
-    bad = False
-    top_left_corner_offset = 0
-    while not bad and left_border + top_left_corner_offset < right_border:
-        y = start_y + top_left_corner_offset
-        x = start_x
-        for count in range(top_left_corner_offset + 1):
-            pixel = image.getpixel((x, y))
-            print(f"({x}, {y}) = {pixel} | ", end="")
-            if pixel[3] != 0:
-                bad = True
-                break
-            y -= 1
-            x += 1
-        print(f" - {bad}")
-        top_left_corner_offset += 1
-
-
-    # return p1, p2, p3, p4
-
-
 class Sprite:
     """
     Class that represents a 'sprite' on-screen.
@@ -207,10 +133,17 @@ class Sprite:
                                              image_width, image_height)
             except Exception as e:
                 print(f"Unable to load {filename} {e}")
-            self.textures = [self._texture]
-            self._width = self._texture.width * scale
-            self._height = self._texture.height * scale
-            self._texture.scale = scale
+                self._texture = None
+
+            if self._texture:
+                self.textures = [self._texture]
+                self._width = self._texture.width * scale
+                self._height = self._texture.height * scale
+                self._texture.scale = scale
+            else:
+                self.textures = []
+                self._width = 0
+                self._height = 0
         else:
             self.textures = []
             self._texture = None
@@ -238,7 +171,7 @@ class Sprite:
         self._color: RGB = (255, 255, 255)
 
         if self._texture:
-            points = calculate_points(self._texture.image)
+            points = self._texture.unscaled_hitbox_points
             scaled_points = [[value * scale for value in point] for point in points]
             self._points = scaled_points
         else:
@@ -995,7 +928,7 @@ class SpriteSolid(Sprite):
 
         image = PIL.Image.new('RGBA', (width, height), color)
         self.texture = Texture("Solid", image)
-        self._points = calculate_points(image)
+        self._points = self.texture.unscaled_hitbox_points
 
 
 def get_distance_between_sprites(sprite1: Sprite, sprite2: Sprite) -> float:

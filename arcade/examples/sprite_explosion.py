@@ -85,13 +85,13 @@ class MyGame(arcade.Window):
             # Files from http://www.explosiongenerator.com are numbered sequentially.
             # This code loads all of the explosion0000.png to explosion0270.png files
             # that are part of this explosion.
-            texture_name = f"images/explosion/explosion{i:04d}.png"
+            texture_name = f":resources:images/explosion/explosion{i:04d}.png"
 
             self.explosion_texture_list.append(arcade.load_texture(texture_name))
 
         # Load sounds. Sounds from kenney.nl
-        self.gun_sound = arcade.sound.load_sound("sounds/laser1.wav")
-        self.hit_sound = arcade.sound.load_sound("sounds/phaseJump1.wav")
+        self.gun_sound = arcade.sound.load_sound(":resources:sounds/laser1.wav")
+        self.hit_sound = arcade.sound.load_sound(":resources:sounds/phaseJump1.wav")
 
         arcade.set_background_color(arcade.color.AMAZON)
 

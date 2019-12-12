@@ -95,15 +95,15 @@ class MyGame(arcade.Window):
         self.end_of_map = len(map_array[0]) * GRID_PIXEL_SIZE
 
         map_items = [":resources:images/tiles/boxCrate_double.png",
-                     "images/grassCenter.png",
-                     "images/grassCorner_left.png",
-                     "images/grassCorner_right.png",
-                     "images/grassHill_left.png",
-                     "images/grassHill_right.png",
-                     "images/grassLeft.png",
+                     ":resources:images/tiles/grassCenter.png",
+                     ":resources:images/tiles/grassCorner_left.png",
+                     ":resources:images/tiles/grassCorner_right.png",
+                     ":resources:images/tiles/grassHill_left.png",
+                     ":resources:images/tiles/grassHill_right.png",
+                     ":resources:images/tiles/grassLeft.png",
                      ":resources:images/tiles/grassMid.png",
-                     "images/grassRight.png",
-                     "images/stoneHalf.png"
+                     ":resources:images/tiles/grassRight.png",
+                     ":resources:images/tiles/stoneHalf.png"
                      ]
         for row_index, row in enumerate(map_array):
             for column_index, item in enumerate(row):

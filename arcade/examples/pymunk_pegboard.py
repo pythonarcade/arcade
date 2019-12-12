@@ -94,7 +94,7 @@ class MyGame(arcade.Window):
                 shape.friction = 0.3
                 self.space.add(body, shape)
 
-                sprite = CircleSprite("images/bumper.png", shape)
+                sprite = CircleSprite(":resources:images/pinball/bumper.png", shape)
                 self.peg_list.append(sprite)
 
     def on_draw(self):

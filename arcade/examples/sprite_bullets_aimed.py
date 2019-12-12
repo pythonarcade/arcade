@@ -54,8 +54,8 @@ class MyGame(arcade.Window):
         self.score_text = None
 
         # Load sounds. Sounds from kenney.nl
-        self.gun_sound = arcade.sound.load_sound("sounds/laser1.wav")
-        self.hit_sound = arcade.sound.load_sound("sounds/phaseJump1.wav")
+        self.gun_sound = arcade.sound.load_sound(":resources:sounds/laser1.wav")
+        self.hit_sound = arcade.sound.load_sound(":resources:sounds/phaseJump1.wav")
 
         arcade.set_background_color(arcade.color.AMAZON)
 
