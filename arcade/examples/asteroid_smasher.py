@@ -101,6 +101,20 @@ class ShipSprite(arcade.Sprite):
         self.center_x += self.change_x
         self.center_y += self.change_y
 
+        # If the ship goes off-screen, move it to the other side of the window
+        if self.right < 0:
+            self.left = SCREEN_WIDTH
+
+        if self.left > SCREEN_WIDTH:
+            self.right = 0
+
+        if self.bottom < 0:
+            self.top = SCREEN_HEIGHT
+
+        if self.top > SCREEN_HEIGHT:
+            self.bottom = 0
+
+
         """ Call the parent class. """
         super().update()
 
@@ -169,7 +183,11 @@ class MyGame(arcade.Window):
         self.lives = 3
 
         # Sounds
-        self.laser_sound = arcade.load_sound(":resources:sounds/laser1.wav")
+        self.laser_sound = arcade.load_sound(":resources:sounds/hurt5.wav")
+        self.hit_sound1 = arcade.load_sound(":resources:sounds/explosion1.wav")
+        self.hit_sound2 = arcade.load_sound(":resources:sounds/explosion2.wav")
+        self.hit_sound3 = arcade.load_sound(":resources:sounds/hit1.wav")
+        self.hit_sound4 = arcade.load_sound(":resources:sounds/hit2.wav")
 
     def start_new_game(self):
         """ Set up the game and initialize the variables. """
@@ -307,6 +325,8 @@ class MyGame(arcade.Window):
 
                 self.all_sprites_list.append(enemy_sprite)
                 self.asteroid_list.append(enemy_sprite)
+                self.hit_sound1.play()
+
         elif asteroid.size == 3:
             for i in range(3):
                 image_no = random.randrange(2)
@@ -327,6 +347,8 @@ class MyGame(arcade.Window):
 
                 self.all_sprites_list.append(enemy_sprite)
                 self.asteroid_list.append(enemy_sprite)
+                self.hit_sound2.play()
+
         elif asteroid.size == 2:
             for i in range(3):
                 image_no = random.randrange(2)
@@ -347,6 +369,10 @@ class MyGame(arcade.Window):
 
                 self.all_sprites_list.append(enemy_sprite)
                 self.asteroid_list.append(enemy_sprite)
+                self.hit_sound3.play()
+
+        elif asteroid.size == 1:
+            self.hit_sound4.play()
 
     def on_update(self, x):
         """ Move everything """
