@@ -395,6 +395,9 @@ def calculate_points(image):
     if bottom_left_corner_offset:
         result.append(_r(p8, h, w))
 
+    # Remove duplicates
+    result = list(dict.fromkeys(result))
+
     return result
 
 def load_texture(file_name: str, x: float = 0, y: float = 0,
