@@ -106,7 +106,6 @@ def _get_tile_by_gid(map_object: pytiled_parser.objects.TileMap,
         tile_ref = tileset.tiles.get(tile_gid - tileset_key)
         # Tilesets only define a 'tile' if there is tile specific data
         if tile_ref is None:
-            tile_ref = pytiled_parser.objects.Tile(id_=tile_gid - tileset_key)
             if tile_ref is None:
                 continue
         if tileset.image is not None:
@@ -147,7 +146,7 @@ def _create_sprite_from_tile(map_object, tile: pytiled_parser.objects.Tile,
         tmx_file = Path(map_object.parent_dir, tile.image.source)
         if not os.path.exists(tmx_file):
             print(f"Warning: can't file {tmx_file} ")
-            return
+            return None
 
     # print(f"Creating tile: {tmx_file}")
     if tile.animation:
