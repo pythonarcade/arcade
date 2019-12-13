@@ -23,37 +23,27 @@ class MyTestWindow(arcade.Window):
 
         self.player = arcade.AnimatedWalkingSprite()
 
-        self.player.stand_right_textures = []
+        self.player.stand_right_textures = [arcade.load_texture(":resources:images/animated_characters/robot/robot_idle.png")]
 
-        self.player.stand_right_textures = arcade.load_textures(":resources:images/old/character_sheet.png",
-                                                                ((0, 0, 59, 97),))
+        self.player.stand_left_textures = [arcade.load_texture(":resources:images/animated_characters/robot/robot_idle.png", mirrored=True)]
 
-        self.player.stand_left_textures = []
+        self.player.walk_right_textures = [arcade.load_texture(":resources:images/animated_characters/robot/robot_walk0.png"),
+                                           arcade.load_texture(":resources:images/animated_characters/robot/robot_walk1.png"),
+                                           arcade.load_texture(":resources:images/animated_characters/robot/robot_walk2.png"),
+                                           arcade.load_texture(":resources:images/animated_characters/robot/robot_walk3.png"),
+                                           arcade.load_texture(":resources:images/animated_characters/robot/robot_walk4.png"),
+                                           arcade.load_texture(":resources:images/animated_characters/robot/robot_walk5.png"),
+                                           arcade.load_texture(":resources:images/animated_characters/robot/robot_walk6.png"),
+                                           arcade.load_texture(":resources:images/animated_characters/robot/robot_walk7.png")]
 
-        self.player.stand_left_textures = arcade.load_textures(":resources:images/old/character_sheet.png",
-                                                               ((0, 0, 59, 97),), mirrored=True)
-
-        self.player.walk_right_textures = []
-
-        self.player.walk_right_textures = arcade.load_textures(":resources:images/old/character_sheet.png",
-                                                               (
-                                                                   (592, 0, 63, 97),
-                                                                   (656, 0, 731 - 656, 97),
-                                                                   (731, 0, 783 - 731, 97),
-                                                                   (786, 0, 843 - 786, 97),
-                                                                   (844, 0, 898 - 844, 97),
-                                                               ))
-
-        self.player.walk_left_textures = []
-
-        self.player.walk_left_textures = arcade.load_textures(":resources:images/old/character_sheet.png",
-                                                              (
-                                                                  (592, 0, 63, 97),
-                                                                  (656, 0, 731 - 656, 97),
-                                                                  (731, 0, 783 - 731, 97),
-                                                                  (786, 0, 843 - 786, 97),
-                                                                  (844, 0, 898 - 844, 97),
-                                                              ), mirrored=True)
+        self.player.walk_left_textures = [arcade.load_texture(":resources:images/animated_characters/robot/robot_walk0.png", mirrored=True),
+                                          arcade.load_texture(":resources:images/animated_characters/robot/robot_walk1.png", mirrored=True),
+                                          arcade.load_texture(":resources:images/animated_characters/robot/robot_walk2.png", mirrored=True),
+                                          arcade.load_texture(":resources:images/animated_characters/robot/robot_walk3.png", mirrored=True),
+                                          arcade.load_texture(":resources:images/animated_characters/robot/robot_walk4.png", mirrored=True),
+                                          arcade.load_texture(":resources:images/animated_characters/robot/robot_walk5.png", mirrored=True),
+                                          arcade.load_texture(":resources:images/animated_characters/robot/robot_walk6.png", mirrored=True),
+                                          arcade.load_texture(":resources:images/animated_characters/robot/robot_walk7.png", mirrored=True)]
 
         self.player.texture_change_distance = 20
 
