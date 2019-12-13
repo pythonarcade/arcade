@@ -79,7 +79,7 @@ class MyGame(arcade.Window):
         self.my_map = arcade.read_tiled_map('../resources/tmx_maps/isometric_dungeon.tmx', SPRITE_SCALING)
 
         # Set up the player
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/character_femalePerson_idle.png", 0.4)
+        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", 0.4)
         px, py = arcade.isometric_grid_to_screen(self.my_map.width // 2,
                                                  self.my_map.height // 2,
                                                  self.my_map.width,

@@ -5,6 +5,6 @@ def test_calculate_points():
     result = arcade.calculate_points(texture.image)
     print(result)
 
-    texture = arcade.load_texture(":resources:images/animated_characters/female_person/character_femalePerson_idle.png")
+    texture = arcade.load_texture(":resources:images/animated_characters/female_person/femalePerson_idle.png")
     result = arcade.calculate_points(texture.image)
     print(result)

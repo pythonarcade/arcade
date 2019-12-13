@@ -26,41 +26,41 @@ class MyTestWindow(arcade.Window):
         character_scale = 1
         self.player.stand_right_textures = []
         self.player.stand_right_textures.append(
-            arcade.load_texture(":resources:images/animated_characters/female_person/character_femalePerson_idle.png",
+            arcade.load_texture(":resources:images/animated_characters/female_person/femalePerson_idle.png",
                                 scale=character_scale))
         self.player.stand_left_textures = []
         self.player.stand_left_textures.append(
-            arcade.load_texture(":resources:images/animated_characters/female_person/character_femalePerson_idle.png",
+            arcade.load_texture(":resources:images/animated_characters/female_person/femalePerson_idle.png",
                                 scale=character_scale, mirrored=True))
 
         self.player.walk_right_textures = []
 
         self.player.walk_right_textures.append(
-            arcade.load_texture(":resources:images/animated_characters/female_person/character_femalePerson_walk0.png",
+            arcade.load_texture(":resources:images/animated_characters/female_person/femalePerson_walk0.png",
                                 scale=character_scale))
         self.player.walk_right_textures.append(
-            arcade.load_texture(":resources:images/animated_characters/female_person/character_femalePerson_walk1.png",
+            arcade.load_texture(":resources:images/animated_characters/female_person/femalePerson_walk1.png",
                                 scale=character_scale))
         self.player.walk_right_textures.append(
-            arcade.load_texture(":resources:images/animated_characters/female_person/character_femalePerson_walk2.png",
+            arcade.load_texture(":resources:images/animated_characters/female_person/femalePerson_walk2.png",
                                 scale=character_scale))
         self.player.walk_right_textures.append(
-            arcade.load_texture(":resources:images/animated_characters/female_person/character_femalePerson_walk3.png",
+            arcade.load_texture(":resources:images/animated_characters/female_person/femalePerson_walk3.png",
                                 scale=character_scale))
 
         self.player.walk_left_textures = []
 
         self.player.walk_left_textures.append(
-            arcade.load_texture(":resources:images/animated_characters/female_person/character_femalePerson_walk0.png",
+            arcade.load_texture(":resources:images/animated_characters/female_person/femalePerson_walk0.png",
                                 scale=character_scale, mirrored=True))
         self.player.walk_left_textures.append(
-            arcade.load_texture(":resources:images/animated_characters/female_person/character_femalePerson_walk1.png",
+            arcade.load_texture(":resources:images/animated_characters/female_person/femalePerson_walk1.png",
                                 scale=character_scale, mirrored=True))
         self.player.walk_left_textures.append(
-            arcade.load_texture(":resources:images/animated_characters/female_person/character_femalePerson_walk2.png",
+            arcade.load_texture(":resources:images/animated_characters/female_person/femalePerson_walk2.png",
                                 scale=character_scale, mirrored=True))
         self.player.walk_left_textures.append(
-            arcade.load_texture(":resources:images/animated_characters/female_person/character_femalePerson_walk3.png",
+            arcade.load_texture(":resources:images/animated_characters/female_person/femalePerson_walk3.png",
                                 scale=character_scale, mirrored=True))
 
         self.player.texture_change_distance = 20

@@ -18,7 +18,7 @@ class MyTestWindow(arcade.Window):
         arcade.set_background_color(arcade.color.AMAZON)
 
         self.character_list = arcade.SpriteList()
-        self.character_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/character_femalePerson_idle.png", CHARACTER_SCALING)
+        self.character_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", CHARACTER_SCALING)
         self.character_sprite.center_x = 250
         self.character_sprite.center_y = 250
         self.character_sprite.change_x = 5
