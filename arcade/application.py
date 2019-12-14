@@ -308,9 +308,11 @@ class Window(pyglet.window.Window):
         :param float width: New width
         :param float height: New height
         """
-        # This breaks on Linux.
+        # This breaks on Linux and Mac.
         # See https://github.com/pyglet/pyglet/issues/76
-        super().on_resize(width, height)
+        import sys
+        if sys.platform == "win32":
+            super().on_resize(width, height)
 
         try:
             original_viewport = self.get_viewport()
