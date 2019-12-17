@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.2" tiledversion="1.2.4" orientation="orthogonal" renderorder="left-up" width="20" height="17" tilewidth="128" tileheight="128" infinite="0" backgroundcolor="#003cb5" nextlayerid="18" nextobjectid="3">
- <tileset firstgid="1" source="../../../tests/unit2/test_data/grass.tsx"/>
- <tileset firstgid="20" source="../../../tests/unit2/test_data/dirt.tsx"/>
- <tileset firstgid="38" source="../../../tests/unit2/test_data/items.tsx"/>
+ <tileset firstgid="1" source="grass.tsx"/>
+ <tileset firstgid="20" source="dirt.tsx"/>
+ <tileset firstgid="38" source="items.tsx"/>
  <tileset firstgid="62" source="more_tiles.tsx"/>
  <layer id="14" name="Platforms" width="20" height="17">
   <data encoding="csv">
