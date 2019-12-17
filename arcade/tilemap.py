@@ -103,16 +103,22 @@ def _get_tile_by_gid(map_object: pytiled_parser.objects.TileMap,
         tile_gid -= FLIPPED_VERTICALLY_FLAG
 
     for tileset_key, tileset in map_object.tile_sets.items():
+
+        if tile_gid < tileset_key:
+            continue
+
         tile_ref = tileset.tiles.get(tile_gid - tileset_key)
-        # Tilesets only define a 'tile' if there is tile specific data
+
+        # No specific tile info, but there is a tile sheet
+        if tile_ref is None \
+                and tileset.image is not None \
+                and tileset_key <= tile_gid < tileset_key + tileset.tile_count:
+            image = pytiled_parser.objects.Image(source=tileset.image.source)
+            tile_ref = pytiled_parser.objects.Tile(id_=(tile_gid - tileset_key),
+                                                   image=image)
+
         if tile_ref is None:
-            if tile_ref is None:
-                continue
-        if tileset.image is not None:
-            if tile_ref.image is not None:
-                raise TypeError("Use of tileset (rather than collection of images) "
-                                "assumes image only defined at tileset scope")
-            tile_ref.image = tileset.image
+            continue
         my_tile = copy.copy(tile_ref)
         my_tile.tileset = tileset
         my_tile.flipped_vertically = flipped_vertically
