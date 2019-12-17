@@ -274,6 +274,11 @@ def _create_sprite_from_tile(map_object, tile: pytiled_parser.objects.Tile,
         for frame in tile.animation:
             frame_tile = _get_tile_by_id(map_object, tile.tileset, frame.tile_id)
             if frame_tile:
+                frame_tile.image.source = Path(map_object.parent_dir, tile.image.source)
+                if not os.path.exists(tmx_file):
+                    print(f"Warning: can't file {tmx_file} ")
+                    return None
+
                 key_frame = AnimationKeyframe(frame.tile_id, frame.duration, frame_tile.image)
                 key_frame_list.append(key_frame)
 
