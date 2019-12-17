@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.2" tiledversion="1.3.1" orientation="orthogonal" renderorder="left-up" compressionlevel="0" width="40" height="15" tilewidth="128" tileheight="128" infinite="0" nextlayerid="2" nextobjectid="1">
+ <tileset firstgid="1" source="spritesheet.tsx"/>
+ <layer id="1" name="Platforms" width="40" height="15">
+  <data encoding="base64" compression="zstd">
+   KLUv/WBgCJ0DALQCAAAiAAAALwAAACMAKAAoACgAKAAkLwAAACUtLCgALQAAACcAAAAgJk8vJhwAICFiYRBwwlX1Vi8+9sLO4uAF4HbjSydL42MQsOQDIvDJpLtzD1AEQUBINzAxA9oyTN1eGRtEbQOoBmADcHsw9Vd+gAU=
+  </data>
+ </layer>
+</map>
