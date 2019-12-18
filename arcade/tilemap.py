@@ -281,7 +281,7 @@ def _create_sprite_from_tile(map_object, tile: pytiled_parser.objects.Tile,
 
                 key_frame = AnimationKeyframe(frame.tile_id, frame.duration, frame_tile.image)
                 key_frame_list.append(key_frame)
-                print(f"Add tile {frame.tile_id} for keyframe. Source: {frame_tile.image.source}")
+                # print(f"Add tile {frame.tile_id} for keyframe. Source: {frame_tile.image.source}")
 
         cast(AnimatedTimeBasedSprite, my_sprite).frames = key_frame_list
 
