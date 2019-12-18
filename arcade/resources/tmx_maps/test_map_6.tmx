@@ -13,7 +13,7 @@
   </tile>
  </tileset>
  <tileset firstgid="4" name="Numbers" tilewidth="16" tileheight="16" tilecount="6" columns="3">
-  <image source="../images/fonts/number_sheet.png" trans="ffffff" width="48" height="32"/>
+  <image source="../images/spritesheets/number_sheet.png" trans="ffffff" width="48" height="32"/>
  </tileset>
  <tileset firstgid="10" name="Rocks" tilewidth="29" tileheight="28" tilecount="2" columns="0">
   <grid orientation="orthogonal" width="1" height="1"/>
