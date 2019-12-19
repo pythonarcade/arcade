@@ -8,6 +8,7 @@ Buffered Draw Commands.
 """
 # pylint: disable=too-many-arguments, too-many-locals, too-few-public-methods
 
+import os
 import PIL.Image
 import PIL.ImageOps
 import PIL.ImageDraw
@@ -487,6 +488,45 @@ def load_texture(file_name: str, x: float = 0, y: float = 0,
     result.unscaled_hitbox_points = calculate_points(image)
     result.scale = scale
     return result
+
+
+def load_spritesheet(file_name: str,
+                     sprite_width: int,
+                     sprite_height: int,
+                     columns:int,
+                     count: int) -> List:
+    """
+    Load a set of textures based on a single sprite sheet.
+
+    Args:
+        file_name:
+        sprite_width:
+        sprite_height:
+        columns:
+        count:
+
+    Returns:
+
+    """
+
+    texture_list = []
+
+    # If we should pull from local resources, replace with proper path
+    if str(file_name).startswith(":resources:"):
+        path = os.path.dirname(os.path.abspath(__file__))
+        file_name = f"{path}/resources/{file_name[11:]}"
+
+    source_image = PIL.Image.open(file_name).convert('RGBA')
+    for sprite_no in range(count):
+        row = sprite_no // columns
+        column = sprite_no % columns
+        start_x = sprite_width * column
+        start_y = sprite_height * row
+        image = source_image.crop((start_x, start_y, start_x + sprite_width, start_y + sprite_height))
+        texture = Texture(f"{file_name}-{sprite_no}", image)
+        texture_list.append(texture)
+
+    return texture_list
 
 
 def make_circle_texture(diameter: int, color: Color) -> Texture:
