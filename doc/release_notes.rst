@@ -5,6 +5,37 @@
 Release Notes
 =============
 
+Version 2.2.0
+-------------
+
+*Release Date: 12/19/2020*
+
+* Major Enhancement: Add built-in resources support `Issue 209 <https://github.com/pvcraven/arcade/issues/209>`_
+  This also required many changes to the code samples, but they can be run now without
+  downloading separate images.
+* Major Enhancement: Auto-calculate hit box points by trimming out the transparency
+* Major Enhancement: Sprite sheet support for the tiled map editor works now
+* Enhancement: Added ``load_spritesheet`` for loading images from a sprite sheet
+* Enhancement: Updates to physics engine to better handle non-rectangular sprites
+* Enhancement: Add SpriteSolidColor class, for creating a single-color rectangular sprite
+* Enhancement: Expose type hints to modules that depend on arcade via PEP 561
+  `Issue 533 <https://github.com/pvcraven/arcade/issues/533>`_
+  and `Issue 534 <https://github.com/pvcraven/arcade/issues/534>`_
+* Enhancement: Add font_color to gui.TextButton init `Issue 521 <https://github.com/pvcraven/arcade/issues/521>`_
+* Enhancement: Improve error messages around loading tilemaps
+* Bug fix: Turn on vsync as it sometimes was limiting FPS to 30.
+* Bug fix: get_tile_by_gid() incorrectly assumes tile GID cannot exceed tileset length `Issue 527 <https://github.com/pvcraven/arcade/issues/527>`_
+* Bug fix: Tiles in object layers not placed properly `Issue 536 <https://github.com/pvcraven/arcade/issues/536>`_
+* Bug fix: Typo when loading font `Issue 518 <https://github.com/pvcraven/arcade/issues/518>`_
+* Updated ``requirements.txt`` file
+* Add robots.txt to documentation
+
+Please also update pyglet, pyglet_ffmpeg2, and pytiled_parser libraries.
+
+Special tanks to Jon Fincher, Mr. Gallo, SirGnip, lubie0kasztanki, and EvgeniyKrysanoc
+for their contributions to this release.
+
+
 Version 2.1.7
 -------------
 
