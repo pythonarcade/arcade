@@ -226,21 +226,41 @@ def process_resource_files(out, my_path: Path):
         # print(r3)
         if not cur_node.is_dir():
             r2 = ":resources:" + str(r1)[20:].replace('\\', '/')
-            process_resource_directory.cell_count += 1
             if process_resource_directory.cell_count % 5 == 0:
                 out.write(f"    </tr>\n")
                 out.write(f"    <tr>\n")
-            out.write(f"    <td>")
-            if r2.endswith(".png"):
-                out.write(f"<img alt='{r2}' title='{r2}' src='{r3}'><br />")
+            if r2.endswith(".png") or r2.endswith(".jpg") or r2.endswith(".gif") or r2.endswith(".svg"):
+                out.write(f"    <td>")
+                out.write(f"<a href='{r3}'><img alt='{r2}' title='{r2}' src='{r3}'></a><br />")
                 out.write(f"{cur_node.name[:-4]}")
+                process_resource_directory.cell_count += 1
+                out.write("</td>\n")
             elif r2.endswith(".wav"):
-                out.write(f"<audio controls><source src='{r3}' type='audio/wav'></audio><br />")
-                out.write(f"{cur_node.name[:-4]}")
-            else:
+                out.write(f"    <td>")
+                out.write(f"<audio controls><source src='{r3}' type='audio/x-wav'></audio><br />")
                 out.write(f"{cur_node.name}")
+                process_resource_directory.cell_count += 1
+                out.write("</td>\n")
+            elif r2.endswith(".mp3"):
+                out.write(f"    <td>")
+                out.write(f"<audio controls><source src='{r3}' type='audio/mpeg'></audio><br />")
+                out.write(f"{cur_node.name}")
+                process_resource_directory.cell_count += 1
+                out.write("</td>\n")
+            elif r2.endswith(".ogg"):
+                out.write(f"    <td>")
+                out.write(f"<audio controls><source src='{r3}' type='audio/ogg'></audio><br />")
+                out.write(f"{cur_node.name}")
+                process_resource_directory.cell_count += 1
+                out.write("</td>\n")
+            elif r2.endswith(".url") or r2.endswith(".txt"):
+                pass
+            else:
+                out.write(f"    <td>")
+                out.write(f"{cur_node.name}")
+                process_resource_directory.cell_count += 1
+                out.write("</td>\n")
             # out.write(f"<br />{r2}</td>")
-            out.write("</td>\n")
             src = r1
             dst = f"build\\html\\{r3}"
             shutil.copyfile(src, dst)
@@ -261,12 +281,16 @@ def resources():
     out.write("Resources\n")
     out.write("=========\n")
     out.write("\n")
-    out.write("Resource files are images and sounds built into Arcade that"
-              "can be used to quickly build and test simple code without having"
+    out.write("Resource files are images and sounds built into Arcade that "
+              "can be used to quickly build and test simple code without having "
               "to worry about copying files into the project.\n\n")
-    out.write("Any file loaded that starts with ``:resource:`` will attempt"
-              "to load that file from the library resources instead of the"
-              "project directory.\n")
+    out.write("Any file loaded that starts with ``:resource:`` will attempt "
+              "to load that file from the library resources instead of the "
+              "project directory.\n\n")
+    out.write("Many of the resources come from `Kenney.nl <https://kenney.nl/>`_ ")
+    out.write("and are licensed under CC0 (Creative Commons Zero). Be sure to ")
+    out.write("check out his web page for a much wider selection of assets.")
+
     out.write("\n")
     process_resource_directory(out, Path('../arcade/resources/'))
 
