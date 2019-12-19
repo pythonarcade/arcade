@@ -63,7 +63,7 @@ class MyGame(arcade.Window):
 
         # Set up the player
         # Character image from kenney.nl
-        self.player_sprite = arcade.SpriteSolid(64, 64, arcade.color.RED)
+        self.player_sprite = arcade.SpriteSolidColor(64, 64, arcade.color.RED)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 50
         self.player_list.append(self.player_sprite)
@@ -73,7 +73,7 @@ class MyGame(arcade.Window):
 
             # Create the coin instance
             # Coin image from kenney.nl
-            coin = arcade.SpriteSolid(32, 32, arcade.color.BLUE)
+            coin = arcade.SpriteSolidColor(32, 32, arcade.color.BLUE)
 
             # Position the coin
             coin.center_x = random.randrange(SCREEN_WIDTH)
