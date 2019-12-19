@@ -157,17 +157,20 @@ class MyGame(arcade.Window):
         arcade.draw_rectangle_filled(650, 100, 50, 50, (255, 0, 0))
         arcade.draw_rectangle_filled(670, 100, 50, 50, (0, 255, 0, 127))
 
-        # Test colors
-        color = arcade.get_pixel(635, 100)
-        assert color == (255, 0, 0)
-        color = arcade.get_pixel(670, 100)
-        assert color == (128, 127, 0)
-        color = arcade.get_pixel(690, 100)
-        assert color == (128, 255, 128)
+        import sys
+        # TODO: Fix. See https://github.com/pvcraven/arcade/issues/539
+        if sys.platform != "darwin":
+            # Test colors
+            color = arcade.get_pixel(635, 100)
+            assert color == (255, 0, 0)
+            color = arcade.get_pixel(670, 100)
+            assert color == (128, 127, 0)
+            color = arcade.get_pixel(690, 100)
+            assert color == (128, 255, 128)
 
-        # Test this other thing
-        color = arcade.get_pixel(100, 100)
-        assert color == (255, 255, 255)
+            # Test this other thing
+            color = arcade.get_pixel(100, 100)
+            assert color == (255, 255, 255)
 
         # Run the get image. Ideally we'd test the output
         arcade.get_image()
