@@ -922,7 +922,11 @@ class AnimatedWalkingSprite(Sprite):
             self.height = self._texture.height * self.scale
 
 
-class SpriteSolid(Sprite):
+class SpriteSolidColor(Sprite):
+    """
+    This sprite is just a rectangular sprite of one solid color. No need to
+    use an image file.
+    """
     def __init__(self, width, height, color):
         super().__init__()
 
