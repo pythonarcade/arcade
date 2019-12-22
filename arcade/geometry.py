@@ -2,13 +2,13 @@
 Functions for calculating geometry.
 """
 
-from arcade.sprite import Sprite
-from arcade.sprite_list import SpriteList
+from arcade import Sprite
+from arcade import SpriteList
 from typing import List, cast
-from arcade.arcade_types import PointList
-from arcade.arcade_types import Point
+from arcade import PointList
+from arcade import Point
 
-PRECISION = 2
+_PRECISION = 2
 
 
 def are_polygons_intersecting(poly_a: PointList,
@@ -117,7 +117,7 @@ def check_for_collision_with_list(sprite: Sprite,
     :returns: List of sprites colliding, or an empty list.
     """
     if not isinstance(sprite, Sprite):
-        raise TypeError("Parameter 1 is not an instance of the Sprite class.")
+        raise TypeError(f"Parameter 1 is not an instance of the Sprite class, it is an instance of {type(sprite)}.")
     if not isinstance(sprite_list, SpriteList):
         raise TypeError(f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList.")
 
