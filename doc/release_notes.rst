@@ -5,6 +5,12 @@
 Release Notes
 =============
 
+Version 2.2.1
+-------------
+
+*Release Date: 12/22/2020*
+* Bug fix: Resource folder not included in distribution `Issue 541 <https://github.com/pvcraven/arcade/issues/541>`_
+
 Version 2.2.0
 -------------
 
