@@ -52,8 +52,8 @@ class MyGame(arcade.Window):
         self.set_mouse_visible(False)
 
         # Load sounds. Sounds from kenney.nl
-        self.gun_sound = arcade.sound.load_sound(":resources:sounds/hurt5.wav")
-        self.hit_sound = arcade.sound.load_sound(":resources:sounds/hit5.wav")
+        self.gun_sound = arcade.load_sound(":resources:sounds/hurt5.wav")
+        self.hit_sound = arcade.load_sound(":resources:sounds/hit5.wav")
 
         arcade.set_background_color(arcade.color.AMAZON)
 
@@ -119,7 +119,7 @@ class MyGame(arcade.Window):
         Called whenever the mouse button is clicked.
         """
         # Gunshot sound
-        arcade.sound.play_sound(self.gun_sound)
+        arcade.play_sound(self.gun_sound)
         # Create a bullet
         bullet = arcade.Sprite(":resources:images/space_shooter/laserBlue01.png", SPRITE_SCALING_LASER)
 
@@ -159,7 +159,7 @@ class MyGame(arcade.Window):
                 self.score += 1
 
                 # Hit Sound
-                arcade.sound.play_sound(self.hit_sound)
+                arcade.play_sound(self.hit_sound)
 
             # If the bullet flies off-screen, remove it.
             if bullet.bottom > SCREEN_HEIGHT:
