@@ -26,7 +26,7 @@ from arcade.window_commands import get_projection
 from arcade import shader
 from arcade.arcade_types import Point
 
-VERTEX_SHADER = """
+_VERTEX_SHADER = """
 #version 330
 uniform mat4 Projection;
 
@@ -61,7 +61,7 @@ void main() {
 }
 """
 
-FRAGMENT_SHADER = """
+_FRAGMENT_SHADER = """
 #version 330
 uniform sampler2D Texture;
 
@@ -264,10 +264,10 @@ class _SpatialHash:
         return close_by_sprites
 
 
-T = TypeVar('T', bound=Sprite)
+_T = TypeVar('T', bound=Sprite)
 
 
-class SpriteList(Generic[T]):
+class SpriteList(Generic[_T]):
 
     array_of_images: Optional[List[Any]]
     next_texture_id = 0
@@ -308,7 +308,7 @@ class SpriteList(Generic[T]):
         else:
             self.spatial_hash = None
 
-    def append(self, item: T):
+    def append(self, item: _T):
         """
         Add a new sprite to the list.
 
@@ -322,7 +322,7 @@ class SpriteList(Generic[T]):
         if self.use_spatial_hash:
             self.spatial_hash.insert_object_for_box(item)
 
-    def _recalculate_spatial_hash(self, item: T):
+    def _recalculate_spatial_hash(self, item: _T):
         """ Recalculate the spatial hash for a particular item. """
         if self.use_spatial_hash:
             self.spatial_hash.remove_object(item)
@@ -334,7 +334,7 @@ class SpriteList(Generic[T]):
             for sprite in self.sprite_list:
                 self.spatial_hash.insert_object_for_box(sprite)
 
-    def remove(self, item: T):
+    def remove(self, item: _T):
         """
         Remove a specific sprite from the list.
         :param Sprite item: Item to remove from the list
@@ -631,8 +631,8 @@ class SpriteList(Generic[T]):
         if self.program is None:
             # Used in drawing optimization via OpenGL
             self.program = shader.program(
-                vertex_shader=VERTEX_SHADER,
-                fragment_shader=FRAGMENT_SHADER
+                vertex_shader=_VERTEX_SHADER,
+                fragment_shader=_FRAGMENT_SHADER
             )
 
         if len(self.sprite_list) == 0:
@@ -664,7 +664,7 @@ class SpriteList(Generic[T]):
         """ Return the length of the sprite list. """
         return len(self.sprite_list)
 
-    def __iter__(self) -> Iterable[T]:
+    def __iter__(self) -> Iterable[_T]:
         """ Return an iterable object of sprites. """
         return iter(self.sprite_list)
 

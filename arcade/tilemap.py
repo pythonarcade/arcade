@@ -24,9 +24,9 @@ from arcade import AnimationKeyframe
 from arcade import SpriteList
 from arcade.arcade_types import Point
 
-FLIPPED_HORIZONTALLY_FLAG = 0x80000000
-FLIPPED_VERTICALLY_FLAG = 0x40000000
-FLIPPED_DIAGONALLY_FLAG = 0x20000000
+_FLIPPED_HORIZONTALLY_FLAG = 0x80000000
+_FLIPPED_VERTICALLY_FLAG = 0x40000000
+_FLIPPED_DIAGONALLY_FLAG = 0x20000000
 
 
 def read_tmx(tmx_file: str) -> pytiled_parser.objects.TileMap:
@@ -90,17 +90,17 @@ def _get_tile_by_gid(map_object: pytiled_parser.objects.TileMap,
     flipped_horizontally = False
     flipped_vertically = False
 
-    if tile_gid & FLIPPED_HORIZONTALLY_FLAG:
+    if tile_gid & _FLIPPED_HORIZONTALLY_FLAG:
         flipped_horizontally = True
-        tile_gid -= FLIPPED_HORIZONTALLY_FLAG
+        tile_gid -= _FLIPPED_HORIZONTALLY_FLAG
 
-    if tile_gid & FLIPPED_DIAGONALLY_FLAG:
+    if tile_gid & _FLIPPED_DIAGONALLY_FLAG:
         flipped_diagonally = True
-        tile_gid -= FLIPPED_DIAGONALLY_FLAG
+        tile_gid -= _FLIPPED_DIAGONALLY_FLAG
 
-    if tile_gid & FLIPPED_VERTICALLY_FLAG:
+    if tile_gid & _FLIPPED_VERTICALLY_FLAG:
         flipped_vertically = True
-        tile_gid -= FLIPPED_VERTICALLY_FLAG
+        tile_gid -= _FLIPPED_VERTICALLY_FLAG
 
     for tileset_key, tileset in map_object.tile_sets.items():
 

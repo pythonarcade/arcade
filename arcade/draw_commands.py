@@ -30,7 +30,7 @@ from arcade.utils import *
 if TYPE_CHECKING:  # import for mypy only
     from arcade.arcade_types import Point
 
-line_vertex_shader = '''
+_line_vertex_shader = '''
     #version 330
     uniform mat4 Projection;
     in vec2 in_vert;
@@ -42,7 +42,7 @@ line_vertex_shader = '''
     }
 '''
 
-line_fragment_shader = '''
+_line_fragment_shader = '''
     #version 330
     in vec4 v_color;
     out vec4 f_color;
@@ -970,8 +970,8 @@ def _generic_draw_line_strip(point_list: PointList,
          RGBA format.
     """
     program = shader.program(
-        vertex_shader=line_vertex_shader,
-        fragment_shader=line_fragment_shader,
+        vertex_shader=_line_vertex_shader,
+        fragment_shader=_line_fragment_shader,
     )
     buffer_type = np.dtype([('vertex', '2f4'), ('color', '4B')])
     data = np.zeros(len(point_list), dtype=buffer_type)
