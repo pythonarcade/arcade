@@ -11,7 +11,7 @@ from arcade import gui
 import pyglet.gl as gl
 import pyglet
 
-from arcade.window_commands import (get_viewport, set_viewport, set_window)
+from arcade import (get_viewport, set_viewport, set_window)
 
 MOUSE_BUTTON_LEFT = 1
 MOUSE_BUTTON_MIDDLE = 2
@@ -87,6 +87,7 @@ class Window(pyglet.window.Window):
         self.invalid = False
         set_window(self)
         set_viewport(0, self.width, 0, self.height)
+
         self.current_view: Optional[View] = None
         self.button_list: List[gui.TextButton] = []
         self.dialogue_box_list: List[gui.DialogueBox] = []
