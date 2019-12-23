@@ -21,6 +21,7 @@ from PIL import Image
 from arcade import Sprite
 from arcade import get_distance_between_sprites
 from arcade import are_polygons_intersecting
+from arcade import is_point_in_polygon
 
 from arcade import rotate_point
 from arcade import get_projection
