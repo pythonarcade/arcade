@@ -4,6 +4,9 @@ The Arcade Library
 A Python simple, easy to use module for creating 2D games.
 """
 
+# Note: DO NOT EDIT arcade/__init__.py
+# Instead look at util/init_template.py and update_init.py
+
 # Error out if we import Arcade with an incompatible version of Python.
 import sys
 
@@ -26,7 +29,6 @@ from arcade import color
 from arcade import csscolor
 # noinspection PyPep8
 from arcade import key
-
 from window_commands import close_window
 from window_commands import create_orthogonal_projection
 from window_commands import finish_render
@@ -61,9 +63,9 @@ from arcade_types import Rect
 from arcade_types import RectList
 from arcade_types import Vector
 
+from buffered_draw_commands import TShape
 from buffered_draw_commands import Shape
 from buffered_draw_commands import ShapeElementList
-from buffered_draw_commands import TShape
 from buffered_draw_commands import VertexBuffer
 from buffered_draw_commands import create_ellipse
 from buffered_draw_commands import create_ellipse_filled
@@ -126,17 +128,6 @@ from draw_commands import make_transparent_color
 from draw_commands import rotate_point
 from draw_commands import trim_image
 
-from emitter import EmitBurst
-from emitter import EmitController
-from emitter import EmitInterval
-from emitter import EmitMaintainCount
-from emitter import Emitter
-from emitter import EmitterIntervalWithCount
-from emitter import EmitterIntervalWithTime
-
-from emitter_simple import make_burst_emitter
-from emitter_simple import make_interval_emitter
-
 from geometry import are_polygons_intersecting
 from geometry import is_point_in_polygon
 
@@ -156,9 +147,20 @@ from isometric import screen_to_isometric_grid
 from joysticks import get_game_controllers
 from joysticks import get_joysticks
 
+from emitter import EmitBurst
+from emitter import EmitController
+from emitter import EmitInterval
+from emitter import EmitMaintainCount
+from emitter import Emitter
+from emitter import EmitterIntervalWithCount
+from emitter import EmitterIntervalWithTime
+
+from emitter_simple import make_burst_emitter
+from emitter_simple import make_interval_emitter
+
+from particle import FilenameOrTexture
 from particle import EternalParticle
 from particle import FadeParticle
-from particle import FilenameOrTexture
 from particle import LifetimeParticle
 from particle import Particle
 
@@ -168,14 +170,14 @@ from sound import load_sound
 from sound import play_sound
 from sound import stop_sound
 
-from sprite import AnimatedTimeBasedSprite
-from sprite import AnimatedTimeSprite
-from sprite import AnimatedWalkingSprite
-from sprite import AnimationKeyframe
 from sprite import FACE_DOWN
 from sprite import FACE_LEFT
 from sprite import FACE_RIGHT
 from sprite import FACE_UP
+from sprite import AnimatedTimeBasedSprite
+from sprite import AnimatedTimeSprite
+from sprite import AnimatedWalkingSprite
+from sprite import AnimationKeyframe
 from sprite import Sprite
 from sprite import SpriteSolidColor
 from sprite import get_distance_between_sprites
@@ -219,7 +221,8 @@ from utils import rand_vec_spread_deg
 
 from version import VERSION
 
-__all__ = [           'AnimatedTimeBasedSprite',
+
+__all__ = ['AnimatedTimeBasedSprite',
            'AnimatedTimeSprite',
            'AnimatedWalkingSprite',
            'AnimationKeyframe',
@@ -391,3 +394,4 @@ __all__ = [           'AnimatedTimeBasedSprite',
            'trim_image',
            'unschedule',
            ]
+

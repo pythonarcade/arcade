@@ -38,7 +38,7 @@ def list_functions(filename, output_file):
             output_file.write("^^^^^^^^^\n")
         output_file.write("- ")
         module = file_split[4]
-        output_file.write(f":func:`~arcade.{module}.{function}`")
+        output_file.write(f":func:`~arcade.{function}`")
         output_file.write("\n")
     if not first:
         output_file.write("\n")
@@ -54,6 +54,7 @@ def list_classes(filename, output_file):
     Returns:
 
     """
+    print(filename)
     file_pointer = open(filename)
     file_split = filename.replace("/", ".")
     file_split = file_split.split(".")
@@ -77,13 +78,13 @@ def list_classes(filename, output_file):
                 output_file.write("- ")
                 module = file_split[4]
                 class_name = class_names[0]
-                output_file.write(f":class:`~arcade.{module}.{class_name}`")
+                output_file.write(f":class:`~arcade.{class_name}`")
                 output_file.write("\n")
 
             method_names = method_re.findall(line)
             for method_name in method_names:
                 # method_name = name[2]
-                output_file.write(f"   - :func:`~arcade.{module}.{class_name}.{method_name}`\n")
+                output_file.write(f"   - :func:`~arcade.{class_name}.{method_name}`\n")
                 # name = remove_self_re.sub("", name)
 
         if not first:
@@ -115,17 +116,17 @@ def quick_api():
     list_functions("../arcade/window_commands.py", output_file)
     output_file.write("\n")
 
-    output_file.write("Drawing API\n")
-    output_file.write("-----------\n")
+    output_file.write("Application API\n")
+    output_file.write("---------------\n")
     output_file.write("\n")
-    list_classes("../arcade/draw_commands.py", output_file)
-    list_functions("../arcade/draw_commands.py", output_file)
+    list_classes("../arcade/application.py", output_file)
+    list_functions("../arcade/application.py", output_file)
 
-    output_file.write("Text API\n")
-    output_file.write("--------\n")
+    output_file.write("Arcade Types API\n")
+    output_file.write("----------------\n")
     output_file.write("\n")
-    list_classes("../arcade/text.py", output_file)
-    list_functions("../arcade/text.py", output_file)
+    list_classes("../arcade/application.py", output_file)
+    list_functions("../arcade/application.py", output_file)
 
     output_file.write("Buffered Drawing API\n")
     output_file.write("--------------------\n")
@@ -133,11 +134,41 @@ def quick_api():
     list_classes("../arcade/buffered_draw_commands.py", output_file)
     list_functions("../arcade/buffered_draw_commands.py", output_file)
 
+    output_file.write("Drawing API\n")
+    output_file.write("-----------\n")
+    output_file.write("\n")
+    list_classes("../arcade/draw_commands.py", output_file)
+    list_functions("../arcade/draw_commands.py", output_file)
+
+    output_file.write("Emitter API\n")
+    output_file.write("-----------\n")
+    output_file.write("\n")
+    list_classes("../arcade/emitter.py", output_file)
+    list_functions("../arcade/emitter.py", output_file)
+
+    output_file.write("Emitter Simple API\n")
+    output_file.write("------------------\n")
+    output_file.write("\n")
+    list_classes("../arcade/emitter_simple.py", output_file)
+    list_functions("../arcade/emitter_simple.py", output_file)
+
     output_file.write("Geometry API\n")
     output_file.write("------------\n")
     output_file.write("\n")
     list_classes("../arcade/geometry.py", output_file)
     list_functions("../arcade/geometry.py", output_file)
+
+    output_file.write("GUI API\n")
+    output_file.write("-------\n")
+    output_file.write("\n")
+    list_classes("../arcade/gui.py", output_file)
+    list_functions("../arcade/gui.py", output_file)
+
+    output_file.write("Text API\n")
+    output_file.write("--------\n")
+    output_file.write("\n")
+    list_classes("../arcade/text.py", output_file)
+    list_functions("../arcade/text.py", output_file)
 
     output_file.write("Game Controller API\n")
     output_file.write("-------------------\n")
@@ -168,12 +199,6 @@ def quick_api():
     output_file.write("\n")
     list_classes("../arcade/physics_engines.py", output_file)
     list_functions("../arcade/physics_engines.py", output_file)
-
-    output_file.write("Application API\n")
-    output_file.write("---------------\n")
-    output_file.write("\n")
-    list_classes("../arcade/application.py", output_file)
-    list_functions("../arcade/application.py", output_file)
 
     output_file.write("Tiled Map API\n")
     output_file.write("-------------\n")

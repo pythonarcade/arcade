@@ -29,6 +29,7 @@ RELEASE = VERSION
 # serve to show the default.
 
 sys.path.insert(0, os.path.abspath('..'))
+sys.path.insert(0, os.path.abspath('../arcade'))
 
 # -- General configuration ------------------------------------------------
 
@@ -49,14 +50,14 @@ extensions = [
     'sphinx.ext.viewcode',
 ]
 
-try:
-    import sphinxcontrib.spelling
-except ImportError:
-    pass
-else:
-    extensions.append("sphinxcontrib.spelling")
-
-spelling_word_list_filename = "wordlist.txt"
+# try:
+#     import sphinxcontrib.spelling
+# except ImportError:
+#     pass
+# else:
+#     extensions.append("sphinxcontrib.spelling")
+#
+# spelling_word_list_filename = "wordlist.txt"
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -385,7 +386,8 @@ epub_exclude_files = ['search.html']
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {'python': ('https://docs.python.org/3', None),
-                       'numpy': ('https://docs.scipy.org/doc/numpy', None)}
+                       'numpy': ('https://docs.scipy.org/doc/numpy', None),
+                       'PIL' : ('http://pillow.readthedocs.io/en/stable', None)}
 
 
 def replace_in_file(filename, replace_list):
