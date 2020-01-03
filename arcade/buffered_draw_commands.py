@@ -17,12 +17,12 @@ from typing import TypeVar
 from typing import Generic
 from typing import cast
 
-from arcade.arcade_types import Color
-from arcade.draw_commands import rotate_point
-from arcade.arcade_types import Point, PointList
-from arcade.draw_commands import get_four_byte_color
-from arcade.draw_commands import get_projection
-from arcade.draw_commands import _get_points_for_thick_line
+from arcade import Color
+from arcade import rotate_point
+from arcade import Point, PointList
+from arcade import get_four_byte_color
+from arcade import get_projection
+from arcade import _get_points_for_thick_line
 from arcade import shader
 
 

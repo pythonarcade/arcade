@@ -19,14 +19,14 @@ import pyglet.gl as gl
 from typing import List, Tuple
 from typing import TYPE_CHECKING
 
-from arcade.window_commands import get_projection
-from arcade.window_commands import get_window
-from arcade.arcade_types import Color
-from arcade.arcade_types import PointList
-from arcade.arcade_types import RectList
+from arcade import get_projection
+from arcade import get_window
+from arcade import Color
+from arcade import PointList
+from arcade import RectList
 from arcade import shader
-from arcade.earclip import earclip
-from arcade.utils import *
+from arcade import earclip
+
 if TYPE_CHECKING:  # import for mypy only
     from arcade.arcade_types import Point
 
