@@ -53,6 +53,7 @@ def main():
     file_list = "window_commands.py", \
                 "application.py", \
                 "arcade_types.py", \
+                "earclip_module.py", \
                 "utils.py", \
                 "drawing_support.py", \
                 "buffered_draw_commands.py", \

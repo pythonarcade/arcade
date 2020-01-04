@@ -732,8 +732,7 @@ class Sprite:
         Returns:
             True or False, whether or not they are overlapping.
         """
-        from arcade.geometry import check_for_collision
-
+        from arcade import check_for_collision
         return check_for_collision(self, other)
 
     def collides_with_list(self, sprite_list: 'SpriteList') -> list:
@@ -746,7 +745,7 @@ class Sprite:
         Returns:
             SpriteList of all overlapping Sprites from the original SpriteList
         """
-        from arcade.geometry import check_for_collision_with_list
+        from arcade import check_for_collision_with_list
         # noinspection PyTypeChecker
         return check_for_collision_with_list(self, sprite_list)
 

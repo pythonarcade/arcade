@@ -64,6 +64,9 @@ from .arcade_types import Rect
 from .arcade_types import RectList
 from .arcade_types import Vector
 
+from .earclip_module import Point
+from .earclip_module import earclip
+
 from .utils import lerp
 from .utils import lerp_vec
 from .utils import rand_angle_360_deg
@@ -268,6 +271,7 @@ __all__ = ['AnimatedTimeBasedSprite',
            'PhysicsEngineSimple',
            'PlaysoundException',
            'Point',
+           'Point',
            'PointList',
            'RGB',
            'RGBA',
@@ -349,6 +353,7 @@ __all__ = ['AnimatedTimeBasedSprite',
            'draw_xywh_rectangle_filled',
            'draw_xywh_rectangle_outline',
            'draw_xywh_rectangle_textured',
+           'earclip',
            'finish_render',
            'generate_sprites',
            'get_closest_sprite',
