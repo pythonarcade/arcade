@@ -39,7 +39,7 @@ def get_member_list(filename):
 
 def main():
 
-    with open('template_init.rst', 'r') as content_file:
+    with open('template_init.py', 'r') as content_file:
         init_template = content_file.read()
 
     with open('template_quick_index.rst', 'r') as content_file:
@@ -53,6 +53,8 @@ def main():
     file_list = "window_commands.py", \
                 "application.py", \
                 "arcade_types.py", \
+                "utils.py", \
+                "drawing_support.py", \
                 "buffered_draw_commands.py", \
                 "draw_commands.py", \
                 "geometry.py", \
@@ -79,13 +81,13 @@ def main():
     for filename in file_list:
         type_list, class_list, function_list = get_member_list(filename)
         for member in type_list:
-            init_template += f"from {member[0][:-3]} import {member[1]}\n"
+            init_template += f"from .{member[0][:-3]} import {member[1]}\n"
             all_list.append(member[1])
         for member in class_list:
-            init_template += f"from {member[0][:-3]} import {member[1]}\n"
+            init_template += f"from .{member[0][:-3]} import {member[1]}\n"
             all_list.append(member[1])
         for member in function_list:
-            init_template += f"from {member[0][:-3]} import {member[1]}\n"
+            init_template += f"from .{member[0][:-3]} import {member[1]}\n"
             all_list.append(member[1])
 
         init_template += "\n"

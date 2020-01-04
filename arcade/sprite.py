@@ -22,10 +22,10 @@ from typing import TYPE_CHECKING
 
 import PIL.Image
 
-from arcade.draw_commands import load_texture
-from arcade.draw_commands import draw_texture_rectangle
-from arcade.draw_commands import Texture
-from arcade.draw_commands import rotate_point
+from arcade import load_texture
+from arcade import draw_texture_rectangle
+from arcade import Texture
+from arcade import rotate_point
 
 from arcade.arcade_types import RGB, Point
 if TYPE_CHECKING:  # handle import cycle caused by type hinting
