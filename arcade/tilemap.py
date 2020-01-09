@@ -170,8 +170,8 @@ def _create_sprite_from_tile(map_object, tile: pytiled_parser.objects.Tile,
                            scaling,
                            image_x,
                            image_y,
-                           tile.tileset.max_tile_size.width,
-                           tile.tileset.max_tile_size.height)
+                           tile.image.size.width,
+                           tile.image.size.height)
 
     if tile.properties is not None and len(tile.properties) > 0:
         for my_property in tile.properties:
