@@ -5,6 +5,12 @@
 Release Notes
 =============
 
+Version 2.2.2
+-------------
+
+*Release Date: 1/19/2020*
+* Bug fix: Arcade assumes tiles in tileset are same sized `Issue 550 <https://github.com/pvcraven/arcade/issues/550>`_
+
 Version 2.2.1
 -------------
 
