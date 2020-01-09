@@ -5,7 +5,7 @@ import sys
 from setuptools import setup
 
 BUILD = 0
-VERSION = "2.2.1"
+VERSION = "2.2.2"
 RELEASE = VERSION
 
 if __name__ == "__main__":
