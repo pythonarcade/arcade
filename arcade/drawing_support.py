@@ -102,7 +102,7 @@ def rotate_point(x: float, y: float, cx: float, cy: float,
     x = round(rotated_x + cx, rounding_precision)
     y = round(rotated_y + cy, rounding_precision)
 
-    return x, y
+    return [x, y]
 
 
 class Texture:

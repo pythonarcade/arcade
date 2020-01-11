@@ -171,9 +171,7 @@ class Sprite:
         self._color: RGB = (255, 255, 255)
 
         if self._texture:
-            points = self._texture.unscaled_hitbox_points
-            scaled_points = [[value * scale for value in point] for point in points]
-            self._points = scaled_points
+            self._points = self._texture.unscaled_hitbox_points
         else:
             self._points: Optional[Sequence[Sequence[float]]] = None
 
@@ -236,9 +234,77 @@ class Sprite:
 
     def set_points(self, points: Sequence[Sequence[float]]):
         """
-        Set a sprite's position
+        Set a sprite's hitbox
+        """
+        from warnings import warn
+        warn('set_points has been deprecated. Use set_hitbox instead.', DeprecationWarning)
+
+        self._points = points
+
+    def get_points(self) -> Tuple[Tuple[float, float], ...]:
+        """
+        Get the points that make up the hit box for the rect that makes up the
+        sprite, including rotation and scaling.
+        """
+        from warnings import warn
+        warn('get_points has been deprecated. Use get_hitbox instead.', DeprecationWarning)
+
+        return self.get_adjusted_hit_box()
+
+    points = property(get_points, set_points)
+
+    def set_hit_box(self, points: Sequence[Sequence[float]]):
+        """
+        Set a sprite's hit box
         """
         self._points = points
+
+    def get_hit_box(self) -> Tuple[Tuple[float, float], ...]:
+        """
+        Get a sprite's hit box
+        """
+        return self._points
+
+    hit_box = property(get_hit_box, set_hit_box)
+
+    def get_adjusted_hit_box(self) -> Tuple[Tuple[float, float], ...]:
+        """
+        Get the points that make up the hit box for the rect that makes up the
+        sprite, including rotation and scaling.
+        """
+
+        if self._point_list_cache is not None:
+            return self._point_list_cache
+
+        if self._points is None:
+            x1, y1 = self.center_x - self.width / 2, self.center_y - self.height / 2
+            x2, y2 = self.center_x + self.width / 2, self.center_y - self.height / 2
+            x3, y3 = self.center_x + self.width / 2, self.center_y + self.height / 2
+            x4, y4 = self.center_x - self.width / 2, self.center_y + self.height / 2
+
+            self._points = ((x1, y1), (x2, y2), (x3, y3), (x4, y4))
+
+        point_list = []
+        for point_idx in range(len(self._points)):
+            # Get the point
+            point = [self._points[point_idx][0], self._points[point_idx][1]]
+
+            # Rotate the point
+            if self.angle:
+                point = rotate_point(point[0], point[1], 0, 0, self.angle)
+
+            # Scale the point
+            if self.scale != 1:
+                point[0] *= self.scale
+                point[1] *= self.scale
+
+            # Offset the point
+            point = (point[0] + self.center_x,
+                     point[1] + self.center_y)
+            point_list.append(point)
+        self._point_list_cache = tuple(point_list)
+
+        return self._point_list_cache
 
     def forward(self, speed: float = 1.0):
         """
@@ -272,48 +338,6 @@ class Sprite:
         self.change_x = 0
         self.change_y = 0
         self.change_angle = 0
-
-    def get_points(self) -> Tuple[Tuple[float, float], ...]:
-        """
-        Get the corner points for the rect that makes up the sprite.
-        """
-        if self._point_list_cache is not None:
-            return self._point_list_cache
-
-        if self._points is not None:
-            point_list = []
-            for point_idx in range(len(self._points)):
-                point = (self._points[point_idx][0] + self.center_x,
-                         self._points[point_idx][1] + self.center_y)
-                point_list.append(point)
-            self._point_list_cache = tuple(point_list)
-        else:
-            x1, y1 = rotate_point(self.center_x - self.width / 2,
-                                  self.center_y - self.height / 2,
-                                  self.center_x,
-                                  self.center_y,
-                                  self.angle)
-            x2, y2 = rotate_point(self.center_x + self.width / 2,
-                                  self.center_y - self.height / 2,
-                                  self.center_x,
-                                  self.center_y,
-                                  self.angle)
-            x3, y3 = rotate_point(self.center_x + self.width / 2,
-                                  self.center_y + self.height / 2,
-                                  self.center_x,
-                                  self.center_y,
-                                  self.angle)
-            x4, y4 = rotate_point(self.center_x - self.width / 2,
-                                  self.center_y + self.height / 2,
-                                  self.center_x,
-                                  self.center_y,
-                                  self.angle)
-
-            self._point_list_cache = ((x1, y1), (x2, y2), (x3, y3), (x4, y4))
-
-        return self._point_list_cache
-
-    points = property(get_points, set_points)
 
     def _set_collision_radius(self, collision_radius: float):
         """
