@@ -218,17 +218,8 @@ def _create_sprite_from_tile(map_object, tile: pytiled_parser.objects.Tile,
                 #     print(f"({point[0]:.1f}, {point[1]:.1f}) ")
                 # print()
 
-            elif isinstance(hitbox, pytiled_parser.objects.PolygonObject):
-                for point in hitbox.points:
-                    adj_x = point[0] + hitbox.location[0] - my_sprite.width / (scaling * 2)
-                    adj_y = -(point[1] + hitbox.location[1] - my_sprite.height / (scaling * 2))
-                    # print(f"w:{my_sprite.width:.1f}, h:{my_sprite.height:.1f}", end=", ")
-                    # print(f"offset: ({hitbox.location[0]:.1f}, {hitbox.location[1]:.1f})", end=", ")
-                    # print(f"({point[0]:.1f}, {point[1]:.1f}) -> ({adj_x:.1f}, {adj_y:.1f})")
-                    adj_point = [adj_x, adj_y]
-                    points.append(adj_point)
-
-            elif isinstance(hitbox, pytiled_parser.objects.PolylineObject):
+            elif isinstance(hitbox, pytiled_parser.objects.PolygonObject) \
+                    or isinstance(hitbox, pytiled_parser.objects.PolylineObject):
                 for point in hitbox.points:
                     adj_x = point[0] + hitbox.location[0] - my_sprite.width / (scaling * 2)
                     adj_y = -(point[1] + hitbox.location[1] - my_sprite.height / (scaling * 2))
@@ -314,7 +305,7 @@ def _process_object_layer(map_object: pytiled_parser.objects.TileMap,
                                              base_directory=base_directory)
 
         my_sprite.left = cur_object.location.x * scaling
-        my_sprite.bottom = (map_object.map_size.height  * map_object.tile_size[1] - cur_object.location.y) * scaling
+        my_sprite.bottom = (map_object.map_size.height * map_object.tile_size[1] - cur_object.location.y) * scaling
 
         if cur_object.properties is not None and 'change_x' in cur_object.properties:
             my_sprite.change_x = float(cur_object.properties['change_x'])
