@@ -30,6 +30,15 @@ from arcade import csscolor
 # noinspection PyPep8
 from arcade import key
 
+from .arcade_types import Color
+from .arcade_types import Point
+from .arcade_types import PointList
+from .arcade_types import RGB
+from .arcade_types import RGBA
+from .arcade_types import Rect
+from .arcade_types import RectList
+from .arcade_types import Vector
+
 from .window_commands import close_window
 from .window_commands import create_orthogonal_projection
 from .window_commands import finish_render
@@ -54,15 +63,6 @@ from .application import NoOpenGLException
 from .application import View
 from .application import Window
 from .application import open_window
-
-from .arcade_types import Color
-from .arcade_types import Point
-from .arcade_types import PointList
-from .arcade_types import RGB
-from .arcade_types import RGBA
-from .arcade_types import Rect
-from .arcade_types import RectList
-from .arcade_types import Vector
 
 from .earclip_module import Point
 from .earclip_module import earclip
