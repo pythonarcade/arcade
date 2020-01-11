@@ -166,12 +166,22 @@ def _create_sprite_from_tile(map_object, tile: pytiled_parser.objects.Tile,
             image_y = row * tile.tileset.max_tile_size.height
             col = tile.id_ % tile.tileset.columns
             image_x = col * tile.tileset.max_tile_size.width
+
+        if tile.image.size:
+            # Individual image, use image width and height
+            width = tile.image.size.width
+            height = tile.image.size.height
+        else:
+            # Sprite sheet, use max width/height from sheet
+            width = tile.tileset.max_tile_size.width
+            height = tile.tileset.max_tile_size.height
+
         my_sprite = Sprite(tmx_file,
                            scaling,
                            image_x,
                            image_y,
-                           tile.image.size.width,
-                           tile.image.size.height)
+                           width,
+                           height)
 
     if tile.properties is not None and len(tile.properties) > 0:
         for my_property in tile.properties:

@@ -277,10 +277,10 @@ class Sprite:
             return self._point_list_cache
 
         if self._points is None:
-            x1, y1 = self.center_x - self.width / 2, self.center_y - self.height / 2
-            x2, y2 = self.center_x + self.width / 2, self.center_y - self.height / 2
-            x3, y3 = self.center_x + self.width / 2, self.center_y + self.height / 2
-            x4, y4 = self.center_x - self.width / 2, self.center_y + self.height / 2
+            x1, y1 = - self.width / 2, - self.height / 2
+            x2, y2 = + self.width / 2, - self.height / 2
+            x3, y3 = + self.width / 2, + self.height / 2
+            x4, y4 = - self.width / 2, + self.height / 2
 
             self._points = ((x1, y1), (x2, y2), (x3, y3), (x4, y4))
 
