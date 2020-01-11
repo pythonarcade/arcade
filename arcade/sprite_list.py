@@ -749,7 +749,7 @@ def _check_for_collision(sprite1: Sprite, sprite2: Sprite) -> bool:
     if distance > collision_radius_sum * collision_radius_sum:
         return False
 
-    return are_polygons_intersecting(sprite1.points, sprite2.points)
+    return are_polygons_intersecting(sprite1.get_adjusted_hit_box(), sprite2.get_adjusted_hit_box())
 
 
 def check_for_collision_with_list(sprite: Sprite,
@@ -805,6 +805,6 @@ def get_sprites_at_point(point: Point,
 
     collision_list = [sprite2
                       for sprite2 in sprite_list_to_check
-                      if is_point_in_polygon(point[0], point[1], sprite2.points)]
+                      if is_point_in_polygon(point[0], point[1], sprite2.get_adjusted_hit_box())]
 
     return collision_list
