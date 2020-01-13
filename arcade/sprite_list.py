@@ -455,6 +455,22 @@ class SpriteList(Generic[_T]):
                 variables,
                 normalized=['in_color'], instanced=True)
 
+        def calculate_angle_buffer():
+            self.sprite_angle_data = array.array('f')
+            for sprite in self.sprite_list:
+                self.sprite_angle_data.append(sprite.angle)
+
+            self.sprite_size_buf = shader.buffer(
+                self.sprite_angle_data.tobytes(),
+                usage=usage
+            )
+            variables = ['in_size']
+            self.size_desc = shader.BufferDescription(
+                self.sprite_angle_buf,
+                'f',
+                variables,
+                normalized=['in_color'], instanced=True)
+
         def f2():
             # Loop through each sprite and grab its position, and the texture it will be using.
             array_of_colors = []
@@ -556,10 +572,8 @@ class SpriteList(Generic[_T]):
                 index = self.array_of_texture_names.index(sprite.texture.name)
                 array_of_sub_tex_coords.append(tex_coords[index])
 
-            buffer_type = np.dtype([('angle', 'f4'),
-                                    ('sub_tex_coords', '4f4'), ('color', '4B')])
+            buffer_type = np.dtype([('sub_tex_coords', '4f4'), ('color', '4B')])
             self.sprite_angle_size_data = np.zeros(len(self.sprite_list), dtype=buffer_type)
-            self.sprite_angle_size_data['angle'] = array_of_angles
             self.sprite_angle_size_data['sub_tex_coords'] = array_of_sub_tex_coords
             self.sprite_angle_size_data['color'] = array_of_colors
 
@@ -579,6 +593,7 @@ class SpriteList(Generic[_T]):
 
         calculate_pos_buffer()
         calculate_size_buffer()
+        calculate_angle_buffer()
         f2()
 
         vertices = np.array([
@@ -795,6 +810,7 @@ def get_closest_sprite(sprite: Sprite, sprite_list: SpriteList) -> Optional[Tupl
             min_distance = distance
     return sprite_list[min_pos], min_distance
 
+
 def check_for_collision(sprite1: Sprite, sprite2: Sprite) -> bool:
     """
     Check for a collision between two sprites.
@@ -875,6 +891,7 @@ def check_for_collision_with_list(sprite: Sprite,
     #         if _check_for_collision(sprite1, sprite2):
     #             collision_list.append(sprite2)
     return collision_list
+
 
 def get_sprites_at_point(point: Point,
                          sprite_list: SpriteList) -> List[Sprite]:
