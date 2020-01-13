@@ -18,12 +18,12 @@ import collections
 import pyglet
 
 # --- Constants ---
-SPRITE_SCALING_COIN = 0.09
+SPRITE_SCALING_COIN = 0.3
 SPRITE_NATIVE_SIZE = 128
 SPRITE_SIZE = int(SPRITE_NATIVE_SIZE * SPRITE_SCALING_COIN)
-COIN_COUNT_INCREMENT = 100
+COIN_COUNT_INCREMENT = 1000
 
-STOP_COUNT = 6000
+STOP_COUNT = 20000
 RESULTS_FILE = "stress_test_draw_moving_arcade.csv"
 
 SCREEN_WIDTH = 1800
@@ -98,7 +98,7 @@ class MyGame(arcade.Window):
         for i in range(COIN_COUNT_INCREMENT):
             # Create the coin instance
             # Coin image from kenney.nl
-            coin = Coin("../images/coin_01.png", SPRITE_SCALING_COIN)
+            coin = Coin(":resources:images/items/coinGold_ul.png", SPRITE_SCALING_COIN)
 
             # Position the coin
             coin.center_x = random.randrange(SPRITE_SIZE, SCREEN_WIDTH - SPRITE_SIZE)
@@ -126,19 +126,19 @@ class MyGame(arcade.Window):
         self.coin_list.draw()
 
         # Display info on sprites
-        output = f"Sprite count: {len(self.coin_list):,}"
-        arcade.draw_text(output, 20, SCREEN_HEIGHT - 20, arcade.color.BLACK, 16)
-
-        # Display timings
-        output = f"Processing time: {self.processing_time:.3f}"
-        arcade.draw_text(output, 20, SCREEN_HEIGHT - 40, arcade.color.BLACK, 16)
-
-        output = f"Drawing time: {self.draw_time:.3f}"
-        arcade.draw_text(output, 20, SCREEN_HEIGHT - 60, arcade.color.BLACK, 16)
-
-        fps = self.fps.get_fps()
-        output = f"FPS: {fps:3.0f}"
-        arcade.draw_text(output, 20, SCREEN_HEIGHT - 80, arcade.color.BLACK, 16)
+        # output = f"Sprite count: {len(self.coin_list):,}"
+        # arcade.draw_text(output, 20, SCREEN_HEIGHT - 20, arcade.color.BLACK, 16)
+        #
+        # # Display timings
+        # output = f"Processing time: {self.processing_time:.3f}"
+        # arcade.draw_text(output, 20, SCREEN_HEIGHT - 40, arcade.color.BLACK, 16)
+        #
+        # output = f"Drawing time: {self.draw_time:.3f}"
+        # arcade.draw_text(output, 20, SCREEN_HEIGHT - 60, arcade.color.BLACK, 16)
+        #
+        # fps = self.fps.get_fps()
+        # output = f"FPS: {fps:3.0f}"
+        # arcade.draw_text(output, 20, SCREEN_HEIGHT - 80, arcade.color.BLACK, 16)
 
         self.draw_time = timeit.default_timer() - draw_start_time
         self.fps.tick()
