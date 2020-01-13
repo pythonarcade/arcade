@@ -40,7 +40,7 @@ in vec2 in_texture;
 // per instance
 in vec2 in_pos;
 in float in_angle;
-in vec2 in_scale;
+in vec2 in_size;
 in vec4 in_sub_tex_coords;
 in vec4 in_color;
 
@@ -53,7 +53,7 @@ void main() {
                 -sin(in_angle), cos(in_angle)
             );
     vec2 pos;
-    pos = in_pos + vec2(rotate * (in_vert * in_scale));
+    pos = in_pos + vec2(rotate * (in_vert * (in_size / 2)));
     gl_Position = Projection * vec4(pos, 0.0, 1.0);
 
     vec2 tex_offset = in_sub_tex_coords.xy;
@@ -295,10 +295,15 @@ class SpriteList(Generic[_T]):
 
         self.sprite_pos_data = None
         self.sprite_pos_buf = None
+        self.pos_desc = None
+
+        self.sprite_size_data = None
+        self.sprite_size_buf = None
+        self.size_desc = None
+
         self.texture_id = None
         self._texture = None
         self._vao1 = None
-        self.pos_desc = None
         self.angle_scale_buf_desc = None
         self.vbo_buf = None
 
@@ -407,7 +412,7 @@ class SpriteList(Generic[_T]):
         else:
             usage = 'stream'
 
-        def f1():
+        def calculate_pos_buffer():
             self.sprite_pos_data = array.array('f')
             # print("A")
             for sprite in self.sprite_list:
@@ -436,14 +441,14 @@ class SpriteList(Generic[_T]):
         def calculate_size_buffer():
             self.sprite_size_data = array.array('f')
             for sprite in self.sprite_list:
-                self.sprite_size_data.append(sprite.height / 2)
-                self.sprite_size_data.append(sprite.width / 2)
+                self.sprite_size_data.append(sprite.width)
+                self.sprite_size_data.append(sprite.height)
 
             self.sprite_size_buf = shader.buffer(
                 self.sprite_size_data.tobytes(),
                 usage=usage
             )
-            variables = ['in_scale']
+            variables = ['in_size']
             self.size_desc = shader.BufferDescription(
                 self.sprite_size_buf,
                 '2f',
@@ -452,15 +457,11 @@ class SpriteList(Generic[_T]):
 
         def f2():
             # Loop through each sprite and grab its position, and the texture it will be using.
-            array_of_sizes = []
             array_of_colors = []
             array_of_angles = []
 
             for sprite in self.sprite_list:
                 array_of_angles.append(math.radians(sprite.angle))
-                size_h = sprite.height / 2
-                size_w = sprite.width / 2
-                array_of_sizes.append([size_w, size_h])
                 array_of_colors.append(sprite.color + (sprite.alpha, ))
 
             new_array_of_texture_names = []
@@ -576,7 +577,7 @@ class SpriteList(Generic[_T]):
         if len(self.sprite_list) == 0:
             return
 
-        f1()
+        calculate_pos_buffer()
         calculate_size_buffer()
         f2()
 
@@ -642,10 +643,54 @@ class SpriteList(Generic[_T]):
 
         i = self.sprite_idx[sprite]
 
-        self.sprite_pos_data[i]['position'] = [sprite.center_x, sprite.center_y]
-        self.sprite_pos_data[i]['angle'] = math.radians(sprite.angle)
-        self.sprite_pos_data[i]['size'] = [sprite.width / 2, sprite.height / 2]
-        self.sprite_pos_data[i]['color'] = sprite.color + (sprite.alpha,)
+        self.sprite_pos_data[i * 2] = sprite.position[0]
+        self.sprite_pos_data[i * 2 + 1] = sprite.position[1]
+
+        self.sprite_angle_size_data[i]['angle'] = math.radians(sprite.angle)
+        self.sprite_angle_size_data[i]['color'] = sprite.color + (sprite.alpha,)
+
+    def update_size(self, sprite: Sprite):
+        """
+        Called by the Sprite class to update the size/scale in this sprite.
+        Necessary for batch drawing of items.
+
+        :param Sprite sprite: Sprite to update.
+        """
+        if self._vao1 is None:
+            return
+
+        i = self.sprite_idx[sprite]
+
+        self.sprite_size_data[i * 2] = sprite.width
+        self.sprite_size_data[i * 2 + 1] = sprite.height
+
+    def update_height(self, sprite: Sprite):
+        """
+        Called by the Sprite class to update the size/scale in this sprite.
+        Necessary for batch drawing of items.
+
+        :param Sprite sprite: Sprite to update.
+        """
+        if self._vao1 is None:
+            return
+
+        i = self.sprite_idx[sprite]
+
+        self.sprite_size_data[i * 2 + 1] = sprite.height
+
+    def update_width(self, sprite: Sprite):
+        """
+        Called by the Sprite class to update the size/scale in this sprite.
+        Necessary for batch drawing of items.
+
+        :param Sprite sprite: Sprite to update.
+        """
+        if self._vao1 is None:
+            return
+
+        i = self.sprite_idx[sprite]
+
+        self.sprite_size_data[i * 2] = sprite.width
 
     def update_location(self, sprite: Sprite):
         """
@@ -659,7 +704,6 @@ class SpriteList(Generic[_T]):
 
         i = self.sprite_idx[sprite]
 
-        # self.sprite_pos_data[i]['position'] = sprite.position
         self.sprite_pos_data[i * 2] = sprite.position[0]
         self.sprite_pos_data[i * 2 + 1] = sprite.position[1]
 
@@ -674,7 +718,7 @@ class SpriteList(Generic[_T]):
             return
 
         i = self.sprite_idx[sprite]
-        self.sprite_pos_data[i]['angle'] = math.radians(sprite.angle)
+        self.sprite_angle_size_data[i]['angle'] = math.radians(sprite.angle)
 
     def draw(self):
         """ Draw this list of sprites. """

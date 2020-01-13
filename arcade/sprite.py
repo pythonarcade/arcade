@@ -444,7 +444,7 @@ class Sprite:
             self.add_spatial_hashes()
 
             for sprite_list in self.sprite_lists:
-                sprite_list.update_position(self)
+                sprite_list.update_size(self)
 
     width = property(_get_width, _set_width)
 
@@ -461,7 +461,7 @@ class Sprite:
             self.add_spatial_hashes()
 
             for sprite_list in self.sprite_lists:
-                sprite_list.update_position(self)
+                sprite_list.update_height(self)
 
     height = property(_get_height, _set_height)
 
