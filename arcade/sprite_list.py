@@ -14,6 +14,7 @@ from typing import Optional
 import pyglet.gl as gl
 
 import math
+import array
 import numpy as np
 
 from PIL import Image
@@ -292,11 +293,13 @@ class SpriteList(Generic[_T]):
         # Used in drawing optimization via OpenGL
         self.program = None
 
-        self.sprite_data = None
-        self.sprite_data_buf = None
+        self.sprite_pos_data = None
+        self.sprite_pos_buf = None
         self.texture_id = None
         self._texture = None
-        self.vao = None
+        self._vao1 = None
+        self.pos_desc = None
+        self.angle_scale_buf_desc = None
         self.vbo_buf = None
 
         self.array_of_texture_names = []
@@ -320,7 +323,7 @@ class SpriteList(Generic[_T]):
         self.sprite_list.append(item)
         self.sprite_idx[item] = idx
         item.register_sprite_list(self)
-        self.vao = None
+        self._vao1 = None
         if self.use_spatial_hash:
             self.spatial_hash.insert_object_for_box(item)
 
@@ -348,7 +351,7 @@ class SpriteList(Generic[_T]):
         for idx, sprite in enumerate(self.sprite_list):
             self.sprite_idx[sprite] = idx
 
-        self.vao = None
+        self._vao1 = None
         if self.use_spatial_hash:
             self.spatial_hash.remove_object(item)
 
@@ -399,134 +402,167 @@ class SpriteList(Generic[_T]):
 
     def _calculate_sprite_buffer(self):
 
-        if len(self.sprite_list) == 0:
-            return
-
-        # Loop through each sprite and grab its position, and the texture it will be using.
-        array_of_positions = []
-        array_of_sizes = []
-        array_of_colors = []
-        array_of_angles = []
-
-        for sprite in self.sprite_list:
-            array_of_positions.append([sprite.center_x, sprite.center_y])
-            array_of_angles.append(math.radians(sprite.angle))
-            size_h = sprite.height / 2
-            size_w = sprite.width / 2
-            array_of_sizes.append([size_w, size_h])
-            array_of_colors.append(sprite.color + (sprite.alpha, ))
-
-        new_array_of_texture_names = []
-        new_array_of_images = []
-        new_texture = False
-        if self.array_of_images is None:
-            new_texture = True
-
-        # print()
-        # print("New texture start: ", new_texture)
-
-        for sprite in self.sprite_list:
-
-            # noinspection PyProtectedMember
-            if sprite.texture is None:
-                raise Exception("Error: Attempt to draw a sprite without a texture set.")
-
-            name_of_texture_to_check = sprite.texture.name
-            if name_of_texture_to_check not in self.array_of_texture_names:
-                new_texture = True
-                # print("New because of ", name_of_texture_to_check)
-
-            if name_of_texture_to_check not in new_array_of_texture_names:
-                new_array_of_texture_names.append(name_of_texture_to_check)
-                image = sprite.texture.image
-                new_array_of_images.append(image)
-
-        # print("New texture end: ", new_texture)
-        # print(new_array_of_texture_names)
-        # print(self.array_of_texture_names)
-        # print()
-
-        if new_texture:
-            # Add back in any old textures. Chances are we'll need them.
-            for index, old_texture_name in enumerate(self.array_of_texture_names):
-                if old_texture_name not in new_array_of_texture_names and self.array_of_images is not None:
-                    new_array_of_texture_names.append(old_texture_name)
-                    image = self.array_of_images[index]
-                    new_array_of_images.append(image)
-
-            self.array_of_texture_names = new_array_of_texture_names
-
-            self.array_of_images = new_array_of_images
-            # print(f"New Texture Atlas with names {self.array_of_texture_names}")
-
-        # Get their sizes
-        widths, heights = zip(*(i.size for i in self.array_of_images))
-
-        # Figure out what size a composite would be
-        total_width = sum(widths)
-        max_height = max(heights)
-
-        if new_texture:
-
-            # TODO: This code isn't valid, but I think some releasing might be in order.
-            # if self.texture is not None:
-            #     shader.Texture.release(self.texture_id)
-
-            # Make the composite image
-            new_image = Image.new('RGBA', (total_width, max_height))
-
-            x_offset = 0
-            for image in self.array_of_images:
-                new_image.paste(image, (x_offset, 0))
-                x_offset += image.size[0]
-
-            # Create a texture out the composite image
-            self._texture = shader.texture(
-                 (new_image.width, new_image.height),
-                 4,
-                 np.asarray(new_image)
-            )
-
-            if self.texture_id is None:
-                self.texture_id = SpriteList.next_texture_id
-
-        # Create a list with the coordinates of all the unique textures
-        tex_coords = []
-        start_x = 0.0
-        for image in self.array_of_images:
-            end_x = start_x + (image.width / total_width)
-            normalized_width = image.width / total_width
-            start_height = 1 - (image.height / max_height)
-            normalized_height = image.height / max_height
-            tex_coords.append([start_x, start_height, normalized_width, normalized_height])
-            start_x = end_x
-
-        # Go through each sprite and pull from the coordinate list, the proper
-        # coordinates for that sprite's image.
-        array_of_sub_tex_coords = []
-        for sprite in self.sprite_list:
-            index = self.array_of_texture_names.index(sprite.texture.name)
-            array_of_sub_tex_coords.append(tex_coords[index])
-
-        # Create numpy array with info on location and such
-        buffer_type = np.dtype([('position', '2f4'), ('angle', 'f4'), ('size', '2f4'),
-                                ('sub_tex_coords', '4f4'), ('color', '4B')])
-        self.sprite_data = np.zeros(len(self.sprite_list), dtype=buffer_type)
-        self.sprite_data['position'] = array_of_positions
-        self.sprite_data['angle'] = array_of_angles
-        self.sprite_data['size'] = array_of_sizes
-        self.sprite_data['sub_tex_coords'] = array_of_sub_tex_coords
-        self.sprite_data['color'] = array_of_colors
-
         if self.is_static:
             usage = 'static'
         else:
             usage = 'stream'
 
-        self.sprite_data_buf = shader.buffer(
-            self.sprite_data.tobytes(),
-            usage=usage
-        )
+        def f1():
+            self.sprite_pos_data = array.array('f')
+            # print("A")
+            for sprite in self.sprite_list:
+                self.sprite_pos_data.append(sprite.center_x)
+                self.sprite_pos_data.append(sprite.center_y)
+
+            # Create numpy array with info on location and such
+            # buffer_type = np.dtype([('position', '2f4')])
+            # self.sprite_pos_data = np.zeros(len(self.sprite_list), dtype=buffer_type)
+
+            # self.sprite_pos_data = array.array('f')
+            # self.sprite_pos_data['position'] = array_of_positions
+
+            # self.dump()
+            self.sprite_pos_buf = shader.buffer(
+                self.sprite_pos_data.tobytes(),
+                usage=usage
+            )
+            variables = ['in_pos']
+            self.pos_desc = shader.BufferDescription(
+                self.sprite_pos_buf,
+                '2f',
+                variables,
+                normalized=['in_color'], instanced=True)
+
+
+        def f2():
+            # Loop through each sprite and grab its position, and the texture it will be using.
+            array_of_sizes = []
+            array_of_colors = []
+            array_of_angles = []
+
+            for sprite in self.sprite_list:
+                array_of_angles.append(math.radians(sprite.angle))
+                size_h = sprite.height / 2
+                size_w = sprite.width / 2
+                array_of_sizes.append([size_w, size_h])
+                array_of_colors.append(sprite.color + (sprite.alpha, ))
+
+            new_array_of_texture_names = []
+            new_array_of_images = []
+            new_texture = False
+            if self.array_of_images is None:
+                new_texture = True
+
+            # print()
+            # print("New texture start: ", new_texture)
+
+            for sprite in self.sprite_list:
+
+                # noinspection PyProtectedMember
+                if sprite.texture is None:
+                    raise Exception("Error: Attempt to draw a sprite without a texture set.")
+
+                name_of_texture_to_check = sprite.texture.name
+                if name_of_texture_to_check not in self.array_of_texture_names:
+                    new_texture = True
+                    # print("New because of ", name_of_texture_to_check)
+
+                if name_of_texture_to_check not in new_array_of_texture_names:
+                    new_array_of_texture_names.append(name_of_texture_to_check)
+                    image = sprite.texture.image
+                    new_array_of_images.append(image)
+
+            # print("New texture end: ", new_texture)
+            # print(new_array_of_texture_names)
+            # print(self.array_of_texture_names)
+            # print()
+
+            if new_texture:
+                # Add back in any old textures. Chances are we'll need them.
+                for index, old_texture_name in enumerate(self.array_of_texture_names):
+                    if old_texture_name not in new_array_of_texture_names and self.array_of_images is not None:
+                        new_array_of_texture_names.append(old_texture_name)
+                        image = self.array_of_images[index]
+                        new_array_of_images.append(image)
+
+                self.array_of_texture_names = new_array_of_texture_names
+
+                self.array_of_images = new_array_of_images
+                # print(f"New Texture Atlas with names {self.array_of_texture_names}")
+
+            # Get their sizes
+            widths, heights = zip(*(i.size for i in self.array_of_images))
+
+            # Figure out what size a composite would be
+            total_width = sum(widths)
+            max_height = max(heights)
+
+            if new_texture:
+
+                # TODO: This code isn't valid, but I think some releasing might be in order.
+                # if self.texture is not None:
+                #     shader.Texture.release(self.texture_id)
+
+                # Make the composite image
+                new_image = Image.new('RGBA', (total_width, max_height))
+
+                x_offset = 0
+                for image in self.array_of_images:
+                    new_image.paste(image, (x_offset, 0))
+                    x_offset += image.size[0]
+
+                # Create a texture out the composite image
+                self._texture = shader.texture(
+                     (new_image.width, new_image.height),
+                     4,
+                     np.asarray(new_image)
+                )
+
+                if self.texture_id is None:
+                    self.texture_id = SpriteList.next_texture_id
+
+            # Create a list with the coordinates of all the unique textures
+            tex_coords = []
+            start_x = 0.0
+            for image in self.array_of_images:
+                end_x = start_x + (image.width / total_width)
+                normalized_width = image.width / total_width
+                start_height = 1 - (image.height / max_height)
+                normalized_height = image.height / max_height
+                tex_coords.append([start_x, start_height, normalized_width, normalized_height])
+                start_x = end_x
+
+            # Go through each sprite and pull from the coordinate list, the proper
+            # coordinates for that sprite's image.
+            array_of_sub_tex_coords = []
+            for sprite in self.sprite_list:
+                index = self.array_of_texture_names.index(sprite.texture.name)
+                array_of_sub_tex_coords.append(tex_coords[index])
+
+            buffer_type = np.dtype([('angle', 'f4'), ('size', '2f4'),
+                                    ('sub_tex_coords', '4f4'), ('color', '4B')])
+            self.sprite_angle_size_data = np.zeros(len(self.sprite_list), dtype=buffer_type)
+            self.sprite_angle_size_data['angle'] = array_of_angles
+            self.sprite_angle_size_data['size'] = array_of_sizes
+            self.sprite_angle_size_data['sub_tex_coords'] = array_of_sub_tex_coords
+            self.sprite_angle_size_data['color'] = array_of_colors
+
+            self.sprite_angle_size_buf = shader.buffer(
+                self.sprite_angle_size_data.tobytes(),
+                usage=usage
+            )
+
+            self.angle_scale_buf_desc = shader.BufferDescription(
+                self.sprite_angle_size_buf,
+                '1f 2f 4f 4B',
+                ('in_angle', 'in_scale', 'in_sub_tex_coords', 'in_color'),
+                normalized=['in_color'], instanced=True)
+
+        if len(self.sprite_list) == 0:
+            return
+
+        f1()
+        f2()
 
         vertices = np.array([
             #  x,    y,   u,   v
@@ -542,19 +578,13 @@ class SpriteList(Generic[_T]):
             '2f 2f',
             ('in_vert', 'in_texture')
         )
-        pos_angle_scale_buf_desc = shader.BufferDescription(
-            self.sprite_data_buf,
-            '2f 1f 2f 4f 4B',
-            ('in_pos', 'in_angle', 'in_scale', 'in_sub_tex_coords', 'in_color'),
-            normalized=['in_color'], instanced=True)
-
-        vao_content = [vbo_buf_desc, pos_angle_scale_buf_desc]
 
         # Can add buffer to index vertices
-        self.vao = shader.vertex_array(self.program, vao_content)
+        vao_content = [vbo_buf_desc, self.pos_desc, self.angle_scale_buf_desc]
+        self._vao1 = shader.vertex_array(self.program, vao_content)
 
     def dump(self):
-        buffer = self.sprite_data.tobytes()
+        buffer = self.sprite_pos_data.tobytes()
         record_size = len(buffer) / len(self.sprite_list)
         for i, char in enumerate(buffer):
             if i % record_size == 0:
@@ -566,19 +596,19 @@ class SpriteList(Generic[_T]):
         of all sprites in the list.
         Necessary for batch drawing of items. """
 
-        if self.vao is None:
+        if self._vao1 is None:
             return
 
         for i, sprite in enumerate(self.sprite_list):
-            self.sprite_data[i]['position'] = [sprite.center_x, sprite.center_y]
-            self.sprite_data[i]['angle'] = math.radians(sprite.angle)
-            self.sprite_data[i]['size'] = [sprite.width / 2, sprite.height / 2]
-            self.sprite_data[i]['color'] = sprite.color + (sprite.alpha, )
+            self.sprite_pos_data[i]['position'] = [sprite.center_x, sprite.center_y]
+            self.sprite_pos_data[i]['angle'] = math.radians(sprite.angle)
+            self.sprite_pos_data[i]['size'] = [sprite.width / 2, sprite.height / 2]
+            self.sprite_pos_data[i]['color'] = sprite.color + (sprite.alpha,)
 
     def update_texture(self, _sprite):
         """ Make sure we update the texture for this sprite for the next batch
         drawing"""
-        if self.vao is None:
+        if self._vao1 is None:
             return
 
         self._calculate_sprite_buffer()
@@ -591,15 +621,15 @@ class SpriteList(Generic[_T]):
 
         :param Sprite sprite: Sprite to update.
         """
-        if self.vao is None:
+        if self._vao1 is None:
             return
 
         i = self.sprite_idx[sprite]
 
-        self.sprite_data[i]['position'] = [sprite.center_x, sprite.center_y]
-        self.sprite_data[i]['angle'] = math.radians(sprite.angle)
-        self.sprite_data[i]['size'] = [sprite.width / 2, sprite.height / 2]
-        self.sprite_data[i]['color'] = sprite.color + (sprite.alpha, )
+        self.sprite_pos_data[i]['position'] = [sprite.center_x, sprite.center_y]
+        self.sprite_pos_data[i]['angle'] = math.radians(sprite.angle)
+        self.sprite_pos_data[i]['size'] = [sprite.width / 2, sprite.height / 2]
+        self.sprite_pos_data[i]['color'] = sprite.color + (sprite.alpha,)
 
     def update_location(self, sprite: Sprite):
         """
@@ -608,12 +638,14 @@ class SpriteList(Generic[_T]):
 
         :param Sprite sprite: Sprite to update.
         """
-        if self.vao is None:
+        if self._vao1 is None:
             return
 
         i = self.sprite_idx[sprite]
 
-        self.sprite_data[i]['position'] = sprite.position
+        # self.sprite_pos_data[i]['position'] = sprite.position
+        self.sprite_pos_data[i * 2] = sprite.position[0]
+        self.sprite_pos_data[i * 2 + 1] = sprite.position[1]
 
     def update_angle(self, sprite: Sprite):
         """
@@ -622,11 +654,11 @@ class SpriteList(Generic[_T]):
 
         :param Sprite sprite: Sprite to update.
         """
-        if self.vao is None:
+        if self._vao1 is None:
             return
 
         i = self.sprite_idx[sprite]
-        self.sprite_data[i]['angle'] = math.radians(sprite.angle)
+        self.sprite_pos_data[i]['angle'] = math.radians(sprite.angle)
 
     def draw(self):
         """ Draw this list of sprites. """
@@ -640,7 +672,7 @@ class SpriteList(Generic[_T]):
         if len(self.sprite_list) == 0:
             return
 
-        if self.vao is None:
+        if self._vao1 is None:
             self._calculate_sprite_buffer()
 
         self._texture.use(0)
@@ -650,17 +682,17 @@ class SpriteList(Generic[_T]):
         # gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_NEAREST)
         # gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_NEAREST)
 
-        with self.vao:
+        with self._vao1:
             self.program['Texture'] = self.texture_id
             self.program['Projection'] = get_projection().flatten()
 
             if not self.is_static:
-                self.sprite_data_buf.write(self.sprite_data.tobytes())
+                self.sprite_pos_buf.write(self.sprite_pos_data.tobytes())
 
-            self.vao.render(gl.GL_TRIANGLE_STRIP, instances=len(self.sprite_list))
+            self._vao1.render(gl.GL_TRIANGLE_STRIP, instances=len(self.sprite_list))
 
             if not self.is_static:
-                self.sprite_data_buf.orphan()
+                self.sprite_pos_buf.orphan()
 
     def __len__(self) -> int:
         """ Return the length of the sprite list. """
