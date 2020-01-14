@@ -15,7 +15,6 @@ import pyglet.gl as gl
 
 import math
 import array
-import numpy as np
 
 from PIL import Image
 
@@ -419,14 +418,6 @@ class SpriteList(Generic[_T]):
                 self.sprite_pos_data.append(sprite.center_x)
                 self.sprite_pos_data.append(sprite.center_y)
 
-            # Create numpy array with info on location and such
-            # buffer_type = np.dtype([('position', '2f4')])
-            # self.sprite_pos_data = np.zeros(len(self.sprite_list), dtype=buffer_type)
-
-            # self.sprite_pos_data = array.array('f')
-            # self.sprite_pos_data['position'] = array_of_positions
-
-            # self.dump()
             self.sprite_pos_buf = shader.buffer(
                 self.sprite_pos_data.tobytes(),
                 usage=usage
@@ -557,10 +548,11 @@ class SpriteList(Generic[_T]):
                     x_offset += image.size[0]
 
                 # Create a texture out the composite image
+                texture_bytes = new_image.tobytes()
                 self._texture = shader.texture(
                      (new_image.width, new_image.height),
                      4,
-                     np.asarray(new_image)
+                     texture_bytes
                 )
 
                 if self.texture_id is None:
