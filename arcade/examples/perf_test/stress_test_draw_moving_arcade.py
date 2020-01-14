@@ -18,12 +18,12 @@ import collections
 import pyglet
 
 # --- Constants ---
-SPRITE_SCALING_COIN = 0.3
+SPRITE_SCALING_COIN = 0.25
 SPRITE_NATIVE_SIZE = 128
 SPRITE_SIZE = int(SPRITE_NATIVE_SIZE * SPRITE_SCALING_COIN)
-COIN_COUNT_INCREMENT = 1000
+COIN_COUNT_INCREMENT = 500
 
-STOP_COUNT = 20000
+STOP_COUNT = 10000
 RESULTS_FILE = "stress_test_draw_moving_arcade.csv"
 
 SCREEN_WIDTH = 1800
@@ -98,7 +98,7 @@ class MyGame(arcade.Window):
         for i in range(COIN_COUNT_INCREMENT):
             # Create the coin instance
             # Coin image from kenney.nl
-            coin = Coin(":resources:images/items/coinGold_ul.png", SPRITE_SCALING_COIN)
+            coin = Coin(":resources:images/items/coinGold.png", SPRITE_SCALING_COIN)
 
             # Position the coin
             coin.center_x = random.randrange(SPRITE_SIZE, SCREEN_WIDTH - SPRITE_SIZE)

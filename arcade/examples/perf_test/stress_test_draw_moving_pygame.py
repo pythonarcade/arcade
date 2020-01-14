@@ -25,12 +25,12 @@ WHITE = (255, 255, 255)
 RED = (255, 0, 0)
 
 # --- Constants ---
-SPRITE_SCALING_COIN = 0.09
+SPRITE_SCALING_COIN = 0.25
 SPRITE_NATIVE_SIZE = 128
 SPRITE_SIZE = int(SPRITE_NATIVE_SIZE * SPRITE_SCALING_COIN)
-COIN_COUNT_INCREMENT = 100
+COIN_COUNT_INCREMENT = 500
 
-STOP_COUNT = 6000
+STOP_COUNT = 10000
 RESULTS_FILE = "stress_test_draw_moving_pygame.csv"
 
 SCREEN_WIDTH = 1800
@@ -71,7 +71,7 @@ class Coin(pygame.sprite.Sprite):
 
         # Create an image of the block, and fill it with a color.
         # This could also be an image loaded from the disk.
-        image = pygame.image.load("../images/coin_01.png")
+        image = pygame.image.load("../../resources/images/items/coinGold.png")
         rect = image.get_rect()
         image = pygame.transform.scale(
             image,
@@ -184,7 +184,7 @@ class MyGame:
         self.draw_time = timeit.default_timer() - draw_start_time
         self.fps.tick()
 
-    def on_update(self, _delta_time):
+    def update(self, _delta_time):
         # Start update timer
         start_time = timeit.default_timer()
 
