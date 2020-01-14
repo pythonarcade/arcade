@@ -30,6 +30,9 @@ def run_examples(indices_in_range, index_skip_list):
     examples = _get_examples(EXAMPLE_SUBDIR)
     print("Found {} examples in {}".format(len(examples), EXAMPLE_SUBDIR))
 
+    file_path = os.path.dirname(os.path.abspath(__file__))
+    print(file_path)
+    os.chdir(file_path+"/../..")
     # run examples
     for (idx, example) in enumerate(examples):
         if indices_in_range is not None and idx not in indices_in_range:
