@@ -397,7 +397,7 @@ class Sprite:
         """
         Return the y coordinate of the bottom of the sprite.
         """
-        points = self.get_points()
+        points = self.get_adjusted_hit_box()
         my_min = points[0][1]
         for point in range(1, len(points)):
             my_min = min(my_min, points[point][1])
@@ -417,7 +417,7 @@ class Sprite:
         """
         Return the y coordinate of the top of the sprite.
         """
-        points = self.get_points()
+        points = self.get_adjusted_hit_box()
         my_max = points[0][1]
         for i in range(1, len(points)):
             my_max = max(my_max, points[i][1])
@@ -581,7 +581,7 @@ class Sprite:
         """
         Left-most coordinate.
         """
-        points = self.get_points()
+        points = self.get_adjusted_hit_box()
         my_min = points[0][0]
         for i in range(1, len(points)):
             my_min = min(my_min, points[i][0])
@@ -600,7 +600,7 @@ class Sprite:
         Return the x coordinate of the right-side of the sprite.
         """
 
-        points = self.get_points()
+        points = self.get_adjusted_hit_box()
         my_max = points[0][0]
         for point in range(1, len(points)):
             my_max = max(my_max, points[point][0])
@@ -744,7 +744,7 @@ class Sprite:
         from arcade.geometry import is_point_in_polygon
 
         x, y = point
-        return is_point_in_polygon(x, y, self.points)
+        return is_point_in_polygon(x, y, self.get_adjusted_hit_box())
 
     def collides_with_sprite(self, other: 'Sprite') -> bool:
         """Will check if a sprite is overlapping (colliding) another Sprite.
