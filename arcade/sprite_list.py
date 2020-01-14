@@ -608,13 +608,13 @@ class SpriteList(Generic[_T]):
         calculate_sub_tex_coords()
         calculate_colors()
 
-        vertices = np.array([
+        vertices = array.array('f', [
             #  x,    y,   u,   v
             -1.0, -1.0, 0.0, 0.0,
             -1.0, 1.0, 0.0, 1.0,
             1.0, -1.0, 1.0, 0.0,
             1.0, 1.0, 1.0, 1.0,
-        ], dtype=np.float32
+        ]
         )
         self.vbo_buf = shader.buffer(vertices.tobytes())
         vbo_buf_desc = shader.BufferDescription(
