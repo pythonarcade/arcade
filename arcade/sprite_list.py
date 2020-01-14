@@ -649,10 +649,18 @@ class SpriteList(Generic[_SpriteType]):
             return
 
         for i, sprite in enumerate(self.sprite_list):
-            self.sprite_pos_data[i]['position'] = [sprite.center_x, sprite.center_y]
-            self.sprite_pos_data[i]['angle'] = math.radians(sprite.angle)
-            self.sprite_pos_data[i]['size'] = [sprite.width / 2, sprite.height / 2]
-            self.sprite_pos_data[i]['color'] = sprite.color + (sprite.alpha,)
+            self.sprite_pos_data[i * 2] = sprite.position[0]
+            self.sprite_pos_data[i * 2 + 1] = sprite.position[1]
+
+            self.sprite_angle_data[i] = math.radians(sprite.angle)
+
+            self.sprite_color_data[i * 4] = sprite.color[0]
+            self.sprite_color_data[i * 4 + 1] = sprite.color[1]
+            self.sprite_color_data[i * 4 + 2] = sprite.color[2]
+            self.sprite_color_data[i * 4 + 3] = sprite.alpha
+
+            self.sprite_size_data[i * 2] = sprite.width
+            self.sprite_size_data[i * 2 + 1] = sprite.height
 
     def update_texture(self, _sprite):
         """ Make sure we update the texture for this sprite for the next batch
@@ -753,7 +761,7 @@ class SpriteList(Generic[_SpriteType]):
             return
 
         i = self.sprite_idx[sprite]
-        self.sprite_angle_size_data[i]['angle'] = math.radians(sprite.angle)
+        self.sprite_angle_data[i] = math.radians(sprite.angle)
 
     def draw(self):
         """ Draw this list of sprites. """
