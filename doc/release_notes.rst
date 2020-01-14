@@ -5,16 +5,30 @@
 Release Notes
 =============
 
+Version 2.2.3
+-------------
+
+*Release Date: 1/12/2020*
+
+* Bug fix: Hit boxes not getting updated with rotation and scaling. `Issue 548 <https://github.com/pvcraven/arcade/issues/548>`_
+  This update depricates Sprite.points and instead uses Sprint.hit_box and Sprint.get_adjusted_hit_box
+* Major internal change around not having ``__init__`` do ``import *`` but
+  specifically name everything. `Issue 537 <https://github.com/pvcraven/arcade/issues/537>`_
+  This rearranded a lot of files and also reworked the quickindex in documentation.
+
+
 Version 2.2.2
 -------------
 
-*Release Date: 1/19/2020*
+*Release Date: 1/9/2020*
+
 * Bug fix: Arcade assumes tiles in tileset are same sized `Issue 550 <https://github.com/pvcraven/arcade/issues/550>`_
 
 Version 2.2.1
 -------------
 
 *Release Date: 12/22/2020*
+
 * Bug fix: Resource folder not included in distribution `Issue 541 <https://github.com/pvcraven/arcade/issues/541>`_
 
 Version 2.2.0
