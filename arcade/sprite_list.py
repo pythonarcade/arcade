@@ -579,17 +579,14 @@ class SpriteList(Generic[_T]):
 
             # Go through each sprite and pull from the coordinate list, the proper
             # coordinates for that sprite's image.
-            array_of_sub_tex_coords = []
+            array_of_sub_tex_coords = array.array('f')
             for sprite in self.sprite_list:
                 index = self.array_of_texture_names.index(sprite.texture.name)
-                array_of_sub_tex_coords.append(tex_coords[index])
-
-            buffer_type = np.dtype([('sub_tex_coords', '4f4')])
-            self.sprite_angle_size_data = np.zeros(len(self.sprite_list), dtype=buffer_type)
-            self.sprite_angle_size_data['sub_tex_coords'] = array_of_sub_tex_coords
+                for coord in tex_coords[index]:
+                    array_of_sub_tex_coords.append(coord)
 
             self.sprite_angle_size_buf = shader.buffer(
-                self.sprite_angle_size_data.tobytes(),
+                array_of_sub_tex_coords.tobytes(),
                 usage=usage
             )
 
