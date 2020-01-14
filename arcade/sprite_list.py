@@ -460,24 +460,38 @@ class SpriteList(Generic[_T]):
             for sprite in self.sprite_list:
                 self.sprite_angle_data.append(sprite.angle)
 
-            self.sprite_size_buf = shader.buffer(
+            self.sprite_angle_buf = shader.buffer(
                 self.sprite_angle_data.tobytes(),
                 usage=usage
             )
-            variables = ['in_size']
-            self.size_desc = shader.BufferDescription(
+            variables = ['in_angle']
+            self.angle_desc = shader.BufferDescription(
                 self.sprite_angle_buf,
+                '1f',
+                variables,
+                normalized=['in_color'], instanced=True)
+
+        def calculate_colors():
+            self.sprite_sub_tex_data = array.array('f')
+            for sprite in self.sprite_list:
+                self.sprite_sub_tex_data.append(sprite.angle)
+
+            self.sprite_sub_tex_buf = shader.buffer(
+                self.sprite_sub_tex_data.tobytes(),
+                usage=usage
+            )
+            variables = ['in_size']
+            self.sub_tex_desc = shader.BufferDescription(
+                self.sprite_sub_tex_buf,
                 'f',
                 variables,
                 normalized=['in_color'], instanced=True)
 
-        def f2():
+        def calculate_sub_tex_coords():
             # Loop through each sprite and grab its position, and the texture it will be using.
             array_of_colors = []
-            array_of_angles = []
 
             for sprite in self.sprite_list:
-                array_of_angles.append(math.radians(sprite.angle))
                 array_of_colors.append(sprite.color + (sprite.alpha, ))
 
             new_array_of_texture_names = []
@@ -584,8 +598,8 @@ class SpriteList(Generic[_T]):
 
             self.angle_scale_buf_desc = shader.BufferDescription(
                 self.sprite_angle_size_buf,
-                '1f 4f 4B',
-                ('in_angle', 'in_sub_tex_coords', 'in_color'),
+                '4f 4B',
+                ('in_sub_tex_coords', 'in_color'),
                 normalized=['in_color'], instanced=True)
 
         if len(self.sprite_list) == 0:
@@ -594,7 +608,7 @@ class SpriteList(Generic[_T]):
         calculate_pos_buffer()
         calculate_size_buffer()
         calculate_angle_buffer()
-        f2()
+        calculate_sub_tex_coords()
 
         vertices = np.array([
             #  x,    y,   u,   v
