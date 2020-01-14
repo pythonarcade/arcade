@@ -300,10 +300,17 @@ class SpriteList(Generic[_T]):
         self.sprite_size_buf = None
         self.size_desc = None
 
+        self.sprite_angle_data = None
+        self.sprite_angle_buf = None
+        self.angle_desc = None
+
+        self.sprite_color_data = None
+        self.sprite_color_buf = None
+        self.color_desc = None
+
         self.texture_id = None
         self._texture = None
         self._vao1 = None
-        self.angle_scale_buf_desc = None
         self.vbo_buf = None
 
         self.array_of_texture_names = []
@@ -577,13 +584,13 @@ class SpriteList(Generic[_T]):
                 for coord in tex_coords[index]:
                     array_of_sub_tex_coords.append(coord)
 
-            self.sprite_angle_size_buf = shader.buffer(
+            self.sprite_sub_tex_buf = shader.buffer(
                 array_of_sub_tex_coords.tobytes(),
                 usage=usage
             )
 
             self.angle_scale_buf_desc = shader.BufferDescription(
-                self.sprite_angle_size_buf,
+                self.sprite_sub_tex_buf,
                 '4f',
                 ['in_sub_tex_coords'],
                 normalized=['in_color'], instanced=True)
@@ -662,8 +669,11 @@ class SpriteList(Generic[_T]):
         self.sprite_pos_data[i * 2] = sprite.position[0]
         self.sprite_pos_data[i * 2 + 1] = sprite.position[1]
 
-        self.sprite_angle_size_data[i]['angle'] = math.radians(sprite.angle)
-        self.sprite_angle_size_data[i]['color'] = sprite.color + (sprite.alpha,)
+        self.sprite_angle_data[i] = math.radians(sprite.angle)
+        self.sprite_color_data[i * 4] = sprite.color[0]
+        self.sprite_color_data[i * 4 + 1] = sprite.color[1]
+        self.sprite_color_data[i * 4 + 2] = sprite.color[2]
+        self.sprite_color_data[i * 4 + 3] = sprite.alpha
 
     def update_size(self, sprite: Sprite):
         """
