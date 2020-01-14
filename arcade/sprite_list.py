@@ -266,10 +266,10 @@ class _SpatialHash:
         return close_by_sprites
 
 
-_T = TypeVar('T', bound=Sprite)
+_SpriteType = TypeVar('_SpriteType', bound=Sprite)
 
 
-class SpriteList(Generic[_T]):
+class SpriteList(Generic[_SpriteType]):
 
     array_of_images: Optional[List[Any]]
     next_texture_id = 0
@@ -308,6 +308,10 @@ class SpriteList(Generic[_T]):
         self.sprite_color_buf = None
         self.color_desc = None
 
+        self.sprite_sub_tex_data = None
+        self.sprite_sub_tex_buf = None
+        self.sub_tex_desc = None
+
         self.texture_id = None
         self._texture = None
         self._vao1 = None
@@ -324,7 +328,7 @@ class SpriteList(Generic[_T]):
         else:
             self.spatial_hash = None
 
-    def append(self, item: _T):
+    def append(self, item: _SpriteType):
         """
         Add a new sprite to the list.
 
@@ -338,7 +342,7 @@ class SpriteList(Generic[_T]):
         if self.use_spatial_hash:
             self.spatial_hash.insert_object_for_box(item)
 
-    def _recalculate_spatial_hash(self, item: _T):
+    def _recalculate_spatial_hash(self, item: _SpriteType):
         """ Recalculate the spatial hash for a particular item. """
         if self.use_spatial_hash:
             self.spatial_hash.remove_object(item)
@@ -350,7 +354,7 @@ class SpriteList(Generic[_T]):
             for sprite in self.sprite_list:
                 self.spatial_hash.insert_object_for_box(sprite)
 
-    def remove(self, item: _T):
+    def remove(self, item: _SpriteType):
         """
         Remove a specific sprite from the list.
         :param Sprite item: Item to remove from the list
@@ -589,7 +593,7 @@ class SpriteList(Generic[_T]):
                 usage=usage
             )
 
-            self.angle_scale_buf_desc = shader.BufferDescription(
+            self.sub_tex_desc = shader.BufferDescription(
                 self.sprite_sub_tex_buf,
                 '4f',
                 ['in_sub_tex_coords'],
@@ -620,7 +624,12 @@ class SpriteList(Generic[_T]):
         )
 
         # Can add buffer to index vertices
-        vao_content = [vbo_buf_desc, self.pos_desc, self.size_desc, self.angle_scale_buf_desc, self.color_desc]
+        vao_content = [vbo_buf_desc,
+                       self.pos_desc,
+                       self.size_desc,
+                       self.angle_desc,
+                       self.sub_tex_desc,
+                       self.color_desc]
         self._vao1 = shader.vertex_array(self.program, vao_content)
 
     def dump(self):
@@ -784,7 +793,7 @@ class SpriteList(Generic[_T]):
         """ Return the length of the sprite list. """
         return len(self.sprite_list)
 
-    def __iter__(self) -> Iterable[_T]:
+    def __iter__(self) -> Iterable[_SpriteType]:
         """ Return an iterable object of sprites. """
         return iter(self.sprite_list)
 
