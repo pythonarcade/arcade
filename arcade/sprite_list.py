@@ -438,7 +438,7 @@ class SpriteList(Generic[_SpriteType]):
                 self.sprite_pos_buf,
                 '2f',
                 variables,
-                normalized=['in_color'], instanced=True)
+                instanced=True)
 
         def calculate_size_buffer():
             self.sprite_size_data = array.array('f')
@@ -455,7 +455,7 @@ class SpriteList(Generic[_SpriteType]):
                 self.sprite_size_buf,
                 '2f',
                 variables,
-                normalized=['in_color'], instanced=True)
+                instanced=True)
 
         def calculate_angle_buffer():
             self.sprite_angle_data = array.array('f')
@@ -471,7 +471,7 @@ class SpriteList(Generic[_SpriteType]):
                 self.sprite_angle_buf,
                 '1f',
                 variables,
-                normalized=['in_color'], instanced=True)
+                instanced=True)
 
         def calculate_colors():
             self.sprite_color_data = array.array('B')
@@ -597,7 +597,7 @@ class SpriteList(Generic[_SpriteType]):
                 self.sprite_sub_tex_buf,
                 '4f',
                 ['in_sub_tex_coords'],
-                normalized=['in_color'], instanced=True)
+                instanced=True)
 
         if len(self.sprite_list) == 0:
             return
