@@ -11,7 +11,6 @@ Buffered Draw Commands.
 import PIL.Image
 import PIL.ImageOps
 import PIL.ImageDraw
-import numpy as np
 import math
 import array
 
