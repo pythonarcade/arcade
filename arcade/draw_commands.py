@@ -13,6 +13,7 @@ import PIL.ImageOps
 import PIL.ImageDraw
 import numpy as np
 import math
+import array
 
 import pyglet.gl as gl
 
@@ -391,6 +392,45 @@ def draw_ellipse_outline(center_x: float, center_y: float, width: float,
 
 # --- BEGIN LINE FUNCTIONS # # #
 
+# def _generic_draw_line_strip(point_list: PointList,
+#                              color: Color,
+#                              mode: int = gl.GL_LINE_STRIP):
+#     """
+#     Draw a line strip. A line strip is a set of continuously connected
+#     line segments.
+#     :param point_list: List of points making up the line. Each point is
+#          in a list. So it is a list of lists.
+#     :param Color color: color, specified in a list of 3 or 4 bytes in RGB or
+#          RGBA format.
+#     """
+#     program = shader.program(
+#         vertex_shader=_line_vertex_shader,
+#         fragment_shader=_line_fragment_shader,
+#     )
+#     buffer_type = np.dtype([('vertex', '2f4'), ('color', '4B')])
+#     data = np.zeros(len(point_list), dtype=buffer_type)
+#
+#     data['vertex'] = point_list
+#
+#     color = get_four_byte_color(color)
+#     data['color'] = color
+#
+#     vbo = shader.buffer(data.tobytes())
+#     vbo_desc = shader.BufferDescription(
+#         vbo,
+#         '2f 4B',
+#         ('in_vert', 'in_color'),
+#         normalized=['in_color']
+#     )
+#
+#     vao_content = [vbo_desc]
+#
+#     vao = shader.vertex_array(program, vao_content)
+#     with vao:
+#         program['Projection'] = get_projection().flatten()
+#
+#         vao.render(mode=mode)
+
 def _generic_draw_line_strip(point_list: PointList,
                              color: Color,
                              mode: int = gl.GL_LINE_STRIP):
@@ -403,34 +443,45 @@ def _generic_draw_line_strip(point_list: PointList,
     :param Color color: color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
     """
-    program = shader.program(
-        vertex_shader=_line_vertex_shader,
-        fragment_shader=_line_fragment_shader,
-    )
-    buffer_type = np.dtype([('vertex', '2f4'), ('color', '4B')])
-    data = np.zeros(len(point_list), dtype=buffer_type)
+    if not _generic_draw_line_strip.program:
 
-    data['vertex'] = point_list
+        _generic_draw_line_strip.program = shader.program(
+            vertex_shader=_line_vertex_shader,
+            fragment_shader=_line_fragment_shader,
+        )
 
-    color = get_four_byte_color(color)
-    data['color'] = color
-
-    vbo = shader.buffer(data.tobytes())
-    vbo_desc = shader.BufferDescription(
-        vbo,
-        '2f 4B',
-        ('in_vert', 'in_color'),
-        normalized=['in_color']
+    c4 = get_four_byte_color(color)
+    c4e = c4 * len(point_list)
+    a = array.array('B', c4e)
+    color_buf = shader.buffer(a.tobytes())
+    color_buf_desc = shader.BufferDescription(
+        color_buf,
+        '4B',
+        ['in_color'],
+        normalized=['in_color'],
     )
 
-    vao_content = [vbo_desc]
+    def gen_flatten(my_list):
+        return [item for sublist in my_list for item in sublist]
 
-    vao = shader.vertex_array(program, vao_content)
+    vertices = array.array('f', gen_flatten(point_list))
+
+    vbo_buf = shader.buffer(vertices.tobytes())
+    vbo_buf_desc = shader.BufferDescription(
+        vbo_buf,
+        '2f',
+        ['in_vert']
+    )
+
+    vao_content = [vbo_buf_desc, color_buf_desc]
+
+    vao = shader.vertex_array(_generic_draw_line_strip.program, vao_content)
     with vao:
-        program['Projection'] = get_projection().flatten()
-
+        _generic_draw_line_strip.program['Projection'] = get_projection().flatten()
         vao.render(mode=mode)
 
+
+_generic_draw_line_strip.program = None
 
 def draw_line_strip(point_list: PointList,
                     color: Color, line_width: float = 1):
