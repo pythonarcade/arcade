@@ -5,6 +5,13 @@
 Release Notes
 =============
 
+Version 2.2.4
+-------------
+
+*Release Date: 1/15/2020*
+
+* Enhancement: Moving sprites now 20% more efficient.
+
 Version 2.2.3
 -------------
 
