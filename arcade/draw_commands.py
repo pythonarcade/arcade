@@ -8,11 +8,13 @@ Buffered Draw Commands.
 """
 # pylint: disable=too-many-arguments, too-many-locals, too-few-public-methods
 
+import math
+import array
+import sys
+
 import PIL.Image
 import PIL.ImageOps
 import PIL.ImageDraw
-import math
-import array
 
 import pyglet.gl as gl
 
@@ -54,8 +56,6 @@ _line_fragment_shader = '''
         f_color = v_color;
     }
 '''
-
-
 
 
 # --- BEGIN ARC FUNCTIONS # # #
@@ -442,7 +442,8 @@ def _generic_draw_line_strip(point_list: PointList,
     :param Color color: color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
     """
-    if not _generic_draw_line_strip.program:
+    # Cache the program. But not on linux because it fails unit tests for some reason.
+    if not _generic_draw_line_strip.program or sys.platform == "linux":
 
         _generic_draw_line_strip.program = shader.program(
             vertex_shader=_line_vertex_shader,
