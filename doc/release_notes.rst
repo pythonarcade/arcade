@@ -5,6 +5,16 @@
 Release Notes
 =============
 
+Version 2.2.5
+-------------
+
+*Release Date: 1/17/2020*
+
+* Enhancement: Improved speed when rendering non-buffered drawing primitives
+* Bug fix: Angle working in radians instead of degrees in 2.2.4 `Issue 552 <https://github.com/pvcraven/arcade/issues/552>`_
+* Bug fix: Angle and color of sprite not updating in 2.2.4 `Issue 553 <https://github.com/pvcraven/arcade/issues/553>`_
+
+
 Version 2.2.4
 -------------
 
