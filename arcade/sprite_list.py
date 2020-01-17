@@ -460,7 +460,7 @@ class SpriteList(Generic[_SpriteType]):
         def calculate_angle_buffer():
             self.sprite_angle_data = array.array('f')
             for sprite in self.sprite_list:
-                self.sprite_angle_data.append(sprite.angle)
+                self.sprite_angle_data.append(math.radians(sprite.angle))
 
             self.sprite_angle_buf = shader.buffer(
                 self.sprite_angle_data.tobytes(),
