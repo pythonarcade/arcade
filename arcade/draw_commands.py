@@ -391,44 +391,6 @@ def draw_ellipse_outline(center_x: float, center_y: float, width: float,
 
 # --- BEGIN LINE FUNCTIONS # # #
 
-# def _generic_draw_line_strip(point_list: PointList,
-#                              color: Color,
-#                              mode: int = gl.GL_LINE_STRIP):
-#     """
-#     Draw a line strip. A line strip is a set of continuously connected
-#     line segments.
-#     :param point_list: List of points making up the line. Each point is
-#          in a list. So it is a list of lists.
-#     :param Color color: color, specified in a list of 3 or 4 bytes in RGB or
-#          RGBA format.
-#     """
-#     program = shader.program(
-#         vertex_shader=_line_vertex_shader,
-#         fragment_shader=_line_fragment_shader,
-#     )
-#     buffer_type = np.dtype([('vertex', '2f4'), ('color', '4B')])
-#     data = np.zeros(len(point_list), dtype=buffer_type)
-#
-#     data['vertex'] = point_list
-#
-#     color = get_four_byte_color(color)
-#     data['color'] = color
-#
-#     vbo = shader.buffer(data.tobytes())
-#     vbo_desc = shader.BufferDescription(
-#         vbo,
-#         '2f 4B',
-#         ('in_vert', 'in_color'),
-#         normalized=['in_color']
-#     )
-#
-#     vao_content = [vbo_desc]
-#
-#     vao = shader.vertex_array(program, vao_content)
-#     with vao:
-#         program['Projection'] = get_projection().flatten()
-#
-#         vao.render(mode=mode)
 
 def _generic_draw_line_strip(point_list: PointList,
                              color: Color,
@@ -443,12 +405,12 @@ def _generic_draw_line_strip(point_list: PointList,
          RGBA format.
     """
     # Cache the program. But not on linux because it fails unit tests for some reason.
-    if not _generic_draw_line_strip.program or sys.platform == "linux":
+    # if not _generic_draw_line_strip.program or sys.platform == "linux":
 
-        _generic_draw_line_strip.program = shader.program(
-            vertex_shader=_line_vertex_shader,
-            fragment_shader=_line_fragment_shader,
-        )
+    _generic_draw_line_strip.program = shader.program(
+        vertex_shader=_line_vertex_shader,
+        fragment_shader=_line_fragment_shader,
+    )
 
     c4 = get_four_byte_color(color)
     c4e = c4 * len(point_list)
