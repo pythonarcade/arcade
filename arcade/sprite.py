@@ -708,6 +708,12 @@ class Sprite:
         self.position = [self._position[0] + self.change_x, self._position[1] + self.change_y]
         self.angle += self.change_angle
 
+    def on_update(self, delta_time: float = 1/60):
+        """
+        Update the sprite. Similar to update, but also takes a delta-time.
+        """
+        pass
+
     def update_animation(self, delta_time: float = 1/60):
         """
         Override this to add code that will change
