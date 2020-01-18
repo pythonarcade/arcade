@@ -77,8 +77,6 @@ Examples
   Add more procedural generation examples.
 * `Issue 464 <https://github.com/pvcraven/arcade/issues/464>`_
   Add example for checkers-like game.
-* `Issue 526 <https://github.com/pvcraven/arcade/issues/526>`_
-  Add "space invaders" example.
 
 Testing
 -------
