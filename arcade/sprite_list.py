@@ -794,8 +794,13 @@ class SpriteList(Generic[_SpriteType]):
         self._sprite_angle_data[i] = math.radians(sprite.angle)
         self._sprite_angle_changed = True
 
-    def draw(self):
-        """ Draw this list of sprites. """
+    def draw(self, **kwargs):
+        """
+        Draw this list of sprites.
+
+        :param filter: Optional parameter to set OpenGL filter, such as
+                       `gl.GL_NEAREST` to avoid smoothing.
+        """
         if self.program is None:
             # Used in drawing optimization via OpenGL
             self.program = shader.program(
@@ -813,6 +818,10 @@ class SpriteList(Generic[_SpriteType]):
 
         gl.glEnable(gl.GL_BLEND)
         gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
+
+        if "filter" in kwargs:
+            gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, kwargs["filter"])
+            gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, kwargs["filter"])
         # gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_NEAREST)
         # gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_NEAREST)
 
