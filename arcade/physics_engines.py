@@ -199,6 +199,7 @@ class PhysicsEnginePlatformer:
 
         # Check for wall hit
         hit_list_x = check_for_collision_with_list(self.player_sprite, self.platforms)
+        complete_hit_list = hit_list_x
 
         # If we hit a wall, move so the edges are at the same point
         if len(hit_list_x) > 0:
@@ -241,12 +242,16 @@ class PhysicsEnginePlatformer:
             check_again = False
             # Check for wall hit
             hit_list_y = check_for_collision_with_list(self.player_sprite, self.platforms)
+            complete_hit_list = hit_list_x
+            for sprite in hit_list_y:
+                if sprite not in complete_hit_list:
+                    complete_hit_list.append(sprite)
 
             # If we hit a wall, move so the edges are at the same point
             if len(hit_list_y) > 0:
                 change_x = self.player_sprite.change_x
                 if change_x > 0:
-                    for item in hit_list_y:
+                    for _ in hit_list_y:
                         # print(f"Spot 1 ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
                         # See if we can "run up" a ramp
                         self.player_sprite.center_y += change_x
@@ -319,8 +324,5 @@ class PhysicsEnginePlatformer:
                         platform.change_y *= -1
 
         # Return list of encountered sprites
-        complete_hit_list = hit_list_x
-        for sprite in hit_list_y:
-            complete_hit_list.append(sprite)
         return complete_hit_list
 
