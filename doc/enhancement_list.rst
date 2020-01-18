@@ -11,6 +11,8 @@ Sound
   Add player for background music.
 * `Issue 257 <https://github.com/pvcraven/arcade/issues/257>`_
   Get ffmpeg sound working on Raspberry Pi.
+* `Issue 519 <https://github.com/pvcraven/arcade/issues/519>`_
+  arcade.stop_sound() not working (ubuntu).
 
 Drawing
 -------
@@ -54,6 +56,14 @@ Tilemaps
 * `Issue 375 <https://github.com/pvcraven/arcade/issues/375>`_
   Support rotated tiles in .tmx.
 
+Documentation
+-------------
+
+* `Issue 452 <https://github.com/pvcraven/arcade/issues/452>`_
+  Documentation Request - explain how delta_time works to help learners fully
+  understand both how and why.
+
+
 Examples
 --------
 
@@ -69,6 +79,12 @@ Examples
   Add example for checkers-like game.
 * `Issue 526 <https://github.com/pvcraven/arcade/issues/526>`_
   Add "space invaders" example.
+
+Testing
+-------
+
+* `Issue 450 <https://github.com/pvcraven/arcade/issues/450>`_
+  Create unit tests for new View class.
 
 
 This enhancement is not currently in process. Please re-open if you'd like to work on it. A full list of desired enhancements is available at:
