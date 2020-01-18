@@ -872,8 +872,12 @@ class SpriteList(Generic[_SpriteType]):
         """
         Pop off the last sprite in the list.
         """
-        self.program = None
-        return self.sprite_list.pop()
+        if len(self.sprite_list) == 0:
+            raise(ValueError("pop from empty list"))
+
+        sprite = self.sprite_list[-1]
+        self.remove(sprite)
+        return sprite
 
 
 def get_closest_sprite(sprite: Sprite, sprite_list: SpriteList) -> Optional[Tuple[Sprite, float]]:
