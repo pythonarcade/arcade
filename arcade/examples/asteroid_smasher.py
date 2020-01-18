@@ -114,7 +114,6 @@ class ShipSprite(arcade.Sprite):
         if self.top > SCREEN_HEIGHT:
             self.bottom = 0
 
-
         """ Call the parent class. """
         super().update()
 

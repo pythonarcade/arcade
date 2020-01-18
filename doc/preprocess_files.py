@@ -37,7 +37,7 @@ def list_functions(filename, output_file):
             output_file.write("Functions\n")
             output_file.write("^^^^^^^^^\n")
         output_file.write("- ")
-        module = file_split[4]
+        # module = file_split[4]
         output_file.write(f":func:`~arcade.{function}`")
         output_file.write("\n")
     if not first:
@@ -76,7 +76,7 @@ def list_classes(filename, output_file):
                     output_file.write("Classes\n")
                     output_file.write("^^^^^^^\n")
                 output_file.write("- ")
-                module = file_split[4]
+                # module = file_split[4]
                 class_name = class_names[0]
                 output_file.write(f":class:`~arcade.{class_name}`")
                 output_file.write("\n")
@@ -320,11 +320,10 @@ def resources():
     process_resource_directory(out, Path('../arcade/resources/'))
 
 
-
-
 def main():
     # quick_api()
     resources()
+
 
 if __name__ == '__main__':
     main()

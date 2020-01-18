@@ -310,7 +310,6 @@ class MyGame(arcade.Window):
             if bullet.top < 0:
                 bullet.remove_from_sprite_lists()
 
-
     def process_player_bullets(self):
 
         # Move the bullets

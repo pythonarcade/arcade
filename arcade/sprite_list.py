@@ -779,7 +779,6 @@ class SpriteList(Generic[_SpriteType]):
         self._sprite_pos_data[i * 2 + 1] = sprite.position[1]
         self._sprite_pos_changed = True
 
-
     def update_angle(self, sprite: Sprite):
         """
         Called by the Sprite class to update the angle in this sprite.
