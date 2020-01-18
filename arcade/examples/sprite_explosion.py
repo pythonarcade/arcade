@@ -89,6 +89,7 @@ class MyGame(arcade.Window):
         sprite_height = 256
         file_name = ":resources:images/spritesheets/explosion.png"
 
+        # Load the explosions from a sprite sheet
         self.explosion_texture_list = arcade.load_spritesheet(file_name, sprite_width, sprite_height, columns, count)
 
         # Load sounds. Sounds from kenney.nl

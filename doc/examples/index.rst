@@ -517,6 +517,18 @@ ShapeElementLists
 
    :ref:`gradients`
 
+Semi-complete Games
+-------------------
+
+.. figure:: thumbs/asteroid_smasher.png
+   :figwidth: 170px
+
+   :ref:`asteroid_smasher`
+
+.. figure:: thumbs/slime_invaders.png
+   :figwidth: 170px
+
+   :ref:`slime_invaders`
 
 Stress Tests
 ------------
@@ -566,11 +578,6 @@ Other
    :figwidth: 170px
 
    :ref:`sprite_change_coins`
-
-.. figure:: thumbs/asteroid_smasher.png
-   :figwidth: 170px
-
-   :ref:`asteroid_smasher`
 
 .. figure:: gameshell1.jpg
    :figwidth: 170px
