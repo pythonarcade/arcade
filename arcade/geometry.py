@@ -2,9 +2,8 @@
 Functions for calculating geometry.
 """
 
-from typing import List, cast
+from typing import cast
 from arcade import PointList
-from arcade import Point
 
 _PRECISION = 2
 
@@ -55,8 +54,6 @@ def are_polygons_intersecting(poly_a: PointList,
     return True
 
 
-
-
 def is_point_in_polygon(x, y, polygon_point_list):
     """
     Use ray-tracing to see if point is inside a polygon
@@ -86,5 +83,3 @@ def is_point_in_polygon(x, y, polygon_point_list):
         p1x, p1y = p2x, p2y
 
     return inside
-
-
