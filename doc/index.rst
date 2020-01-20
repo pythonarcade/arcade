@@ -77,7 +77,6 @@ The Python Arcade Library
           </div>
           <ul>
             <li><a href="sample_games.html">Example Games</a></li>
-            <li><a href="examples/pyinstaller.html">Distributing games with PyInstaller</a></li>
           </ul>
         </td>
         <td>
