@@ -269,6 +269,15 @@ def load_textures(file_name: str,
 
 
 def calculate_points(image):
+    """
+    Given an image, this returns points that make up a hit box around it. Attempts
+    to trim out transparent pixels.
+
+    :param Image image:
+
+    :Returns: List of points
+
+    """
     left_border = 0
     good = True
     while good and left_border < image.width:
