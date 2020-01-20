@@ -1,3 +1,5 @@
+.. _enhancement_list::
+
 Enhancement List
 ================
 
