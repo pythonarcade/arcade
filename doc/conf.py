@@ -48,6 +48,7 @@ extensions = [
     'sphinx.ext.mathjax',
     'sphinx.ext.ifconfig',
     'sphinx.ext.viewcode',
+    'sphinx_sitemap'
 ]
 
 # try:
@@ -231,6 +232,7 @@ html_extra_path = ['html_extra']
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'Arcadedoc'
+html_baseurl = 'http://arcade.academy/'
 
 # -- Options for LaTeX output ---------------------------------------------
 
