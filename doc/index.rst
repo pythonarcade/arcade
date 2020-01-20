@@ -148,10 +148,8 @@ game without learning a complex framework.
    how_to_compile
    how_to_submit_changes
    diversity
-   distribute_macos
    instructions_gameshell
    pygame_comparison
-   suggested_curriculum
    resources
 
 Learn about it:
