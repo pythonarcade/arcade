@@ -11,7 +11,10 @@ from arcade import SpriteList
 
 class PhysicsEngineSimple:
     """
-    This class will move everything, and take care of collisions.
+    Simplistic physics engine for use in games without gravity, such as top-down
+    games. It is easier to get
+    started with this engine than more sophisticated engines like PyMunk. Note, it
+    does not currently handle rotation.
     """
 
     def __init__(self, player_sprite: Sprite, walls: SpriteList):
@@ -84,7 +87,9 @@ class PhysicsEngineSimple:
 
 class PhysicsEnginePlatformer:
     """
-    This class will move everything, and take care of collisions.
+    Simplistic physics engine for use in a platformer. It is easier to get
+    started with this engine than more sophisticated engines like PyMunk. Note, it
+    does not currently handle rotation.
     """
 
     def __init__(self,
