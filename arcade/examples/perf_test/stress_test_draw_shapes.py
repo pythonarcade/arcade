@@ -141,8 +141,6 @@ class MyGame(arcade.Window):
 
         # self.shape_list.update()
 
-
-
         # Save the time it took to do this.
         self.processing_time = timeit.default_timer() - start_time
 

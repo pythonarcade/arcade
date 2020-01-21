@@ -9,7 +9,7 @@ class TextButton:
                  center_x, center_y,
                  width, height,
                  text,
-                 font_size=18, font_face: Union[str, Tuple[str, ...]] = "Arial", font_color = None,
+                 font_size=18, font_face: Union[str, Tuple[str, ...]] = "Arial", font_color=None,
                  face_color=arcade.color.LIGHT_GRAY,
                  highlight_color=arcade.color.WHITE,
                  shadow_color=arcade.color.GRAY,
@@ -39,11 +39,9 @@ class TextButton:
             self.face_color = face_color
             self.highlight_color = highlight_color
             self.shadow_color = shadow_color
-            self.font_name = font_face            
+            self.font_name = font_face
         if self.font_color is None:
             self.font_color = self.face_color
-
-            
 
     def draw_color_theme(self):
         arcade.draw_rectangle_filled(self.center_x, self.center_y, self.width,
@@ -103,7 +101,7 @@ class TextButton:
                          font_name=self.font_name,
                          width=self.width, align="center",
                          anchor_x="center", anchor_y="center")
-    
+
     def on_press(self):
         pass
 
@@ -259,7 +257,7 @@ class TextDisplay:
 
     def draw(self):
         if self.texture == "":
-            self.color_theme_draw()    
+            self.color_theme_draw()
         else:
             self.texture_theme_draw()
 
@@ -310,7 +308,7 @@ class TextStorage:
         self.left_index = 0
         self.right_index = 1
         self.visible_text = ""
-        
+
     def blink_cursor(self):
         seconds = self.time % 60
         if seconds > 0.1:
@@ -388,7 +386,7 @@ class TextBox:
         if self.text_display.highlighted:
             self.text, symbol, cursor_index = self.text_storage.update(delta_time, key)
             self.text_display.update(delta_time, self.text, symbol, cursor_index)
-        
+
     def check_mouse_press(self, x, y):
         self.text_display.check_mouse_press(x, y)
 
@@ -407,7 +405,7 @@ class Theme:
         self.font_color = arcade.color.BLACK
         self.font_size = 24
         self.font_name = ('Calibri', 'Arial')
-    
+
     def add_button_textures(self, normal, hover="", clicked="", locked=""):
         self.button_textures['normal'] = arcade.load_texture(normal)
         self.button_textures['hover'] = arcade.load_texture(hover)

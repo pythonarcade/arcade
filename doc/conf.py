@@ -10,7 +10,7 @@ runpy.run_path('preprocess_files.py', run_name='__main__')
 runpy.run_path('generate_example_thumbnails.py', run_name='__main__')
 
 BUILD = 0
-VERSION = "2.2.4"
+VERSION = "2.2.6"
 RELEASE = VERSION
 
 
@@ -48,6 +48,7 @@ extensions = [
     'sphinx.ext.mathjax',
     'sphinx.ext.ifconfig',
     'sphinx.ext.viewcode',
+    'sphinx_sitemap'
 ]
 
 # try:
@@ -231,6 +232,7 @@ html_extra_path = ['html_extra']
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'Arcadedoc'
+html_baseurl = 'http://arcade.academy/'
 
 # -- Options for LaTeX output ---------------------------------------------
 
@@ -387,7 +389,7 @@ epub_exclude_files = ['search.html']
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {'python': ('https://docs.python.org/3', None),
                        'numpy': ('https://docs.scipy.org/doc/numpy', None),
-                       'PIL' : ('http://pillow.readthedocs.io/en/stable', None)}
+                       'PIL': ('http://pillow.readthedocs.io/en/stable', None)}
 
 
 def replace_in_file(filename, replace_list):

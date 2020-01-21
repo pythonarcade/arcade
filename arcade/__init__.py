@@ -194,7 +194,7 @@ from .sprite import FACE_UP
 from .sprite import AnimatedTimeBasedSprite
 from .sprite import AnimatedTimeSprite
 from .sprite import AnimatedWalkingSprite
-from .sprite import AnimationKeyframe
+from .sprite import _AnimationKeyframe
 from .sprite import Sprite
 from .sprite import SpriteSolidColor
 from .sprite import get_distance_between_sprites
@@ -242,7 +242,7 @@ from .version import VERSION
 __all__ = ['AnimatedTimeBasedSprite',
            'AnimatedTimeSprite',
            'AnimatedWalkingSprite',
-           'AnimationKeyframe',
+           '_AnimationKeyframe',
            'Color',
            'CreateText',
            'DialogueBox',

@@ -5,6 +5,33 @@
 Release Notes
 =============
 
+Version 2.2.6
+-------------
+
+*Release Date: 1/20/2020*
+
+* Bug Fix: particle_fireworks example is not running with 2.2.5 `Issue 555 <https://github.com/pvcraven/arcade/issues/555>`_
+* Bug Fix: Sprite.pop isn't reliable `Issue 531 <https://github.com/pvcraven/arcade/issues/531>`_
+* Enhancement: Raise error if default font not found on system `Issue 432 <https://github.com/pvcraven/arcade/issues/432>`_
+* Enhancement: Add space invaders clone to example list `Issue 526 <https://github.com/pvcraven/arcade/issues/526>`_
+* Enhancement: Add sitemap to website
+* Enhancement: Improve performance, error handling around setting a sprite's color
+* Enhancement: Implement optional filtering parameter to SpriteList.draw `Issue 405 <https://github.com/pvcraven/arcade/issues/405>`_
+* Enhancement: Return list of items hit during physics engine update `Issue 401 <https://github.com/pvcraven/arcade/issues/401>`_
+* Enhancement: Update resources documentation `Issue 549 <https://github.com/pvcraven/arcade/issues/549>`_
+* Enhancement: Add on_update to sprites, which includes delta_time `Issue 266 <https://github.com/pvcraven/arcade/issues/266>`_
+* Enhancement: Close enhancement-related github issues and reference them in the new :ref:`enhancement-list`.
+
+Version 2.2.5
+-------------
+
+*Release Date: 1/17/2020*
+
+* Enhancement: Improved speed when rendering non-buffered drawing primitives
+* Bug fix: Angle working in radians instead of degrees in 2.2.4 `Issue 552 <https://github.com/pvcraven/arcade/issues/552>`_
+* Bug fix: Angle and color of sprite not updating in 2.2.4 `Issue 553 <https://github.com/pvcraven/arcade/issues/553>`_
+
+
 Version 2.2.4
 -------------
 

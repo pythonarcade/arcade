@@ -12,7 +12,7 @@ from arcade import Color
 
 
 def get_points_for_thick_line(start_x: float, start_y:
-                               float, end_x: float, end_y: float,
+                              float, end_x: float, end_y: float,
                               line_width: float):
     vector_x = start_x - end_x
     vector_y = start_y - end_y
@@ -269,6 +269,15 @@ def load_textures(file_name: str,
 
 
 def calculate_points(image):
+    """
+    Given an image, this returns points that make up a hit box around it. Attempts
+    to trim out transparent pixels.
+
+    :param Image image:
+
+    :Returns: List of points
+
+    """
     left_border = 0
     good = True
     while good and left_border < image.width:
@@ -320,7 +329,7 @@ def calculate_points(image):
         if good:
             bottom_border -= 1
 
-    def _check_corner_offset(start_x, start_y, x_direction, y_direction ):
+    def _check_corner_offset(start_x, start_y, x_direction, y_direction):
 
         bad = False
         offset = 0
@@ -474,7 +483,7 @@ def load_texture(file_name: str, x: float = 0, y: float = 0,
 def load_spritesheet(file_name: str,
                      sprite_width: int,
                      sprite_height: int,
-                     columns:int,
+                     columns: int,
                      count: int) -> List:
     """
     Load a set of textures based on a single sprite sheet.

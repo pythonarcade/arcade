@@ -203,6 +203,7 @@ def draw_text(text: str,
 
         # Default font if no font
         if font is None:
+            font_found = False
             font_names = ("arial.ttf",
                           'Arial.ttf',
                           'NotoSans-Regular.ttf',
@@ -212,10 +213,14 @@ def draw_text(text: str,
             for font_string_name in font_names:
                 try:
                     font = PIL.ImageFont.truetype(font_string_name, int(font_size))
+                    font_found = True
                     break
                 except OSError:
                     # print(f"5 Can't find font: {font_string_name}")
                     pass
+
+            if not font_found:
+                raise RuntimeError("Unable to find a default font on this system. Please specify an available font.")
 
         # This is stupid. We have to have an image to figure out what size
         # the text will be when we draw it. Of course, we don't know how big

@@ -39,7 +39,9 @@ FACE_DOWN = 4
 
 class Sprite:
     """
-    Class that represents a 'sprite' on-screen.
+    Class that represents a 'sprite' on-screen. Most games center around sprites.
+    For examples on how to use this class, see:
+    http://arcade.academy/examples/index.html#sprites
 
     Attributes:
         :alpha: Transparency of sprite. 0 is invisible, 255 is opaque.
@@ -59,6 +61,8 @@ class Sprite:
         :color: Color tint the sprite
         :collision_radius: Used as a fast-check to see if this item is close \
         enough to another item. If this check works, we do a slower more accurate check.
+        You probably don't want to use this field. Instead, set points in the
+        hit box.
         :cur_texture_index: Index of current texture being used.
         :guid: Unique identifier for the sprite. Useful when debugging.
         :height: Height of the sprite.
@@ -344,7 +348,7 @@ class Sprite:
         Set the collision radius.
 
         .. note:: Final collision checking is done via geometry that was
-            set in get_points/set_points. These points are used in the
+            set in the hit_box property. These points are used in the
             check_for_collision function. This collision_radius variable
             is used as a "pre-check." We do a super-fast check with
             collision_radius and see if the sprites are close. If they are,
@@ -665,7 +669,7 @@ class Sprite:
         """
         self._color = color
         for sprite_list in self.sprite_lists:
-            sprite_list.update_position(self)
+            sprite_list.update_color(self)
 
     color = property(_get_color, _set_color)
 
@@ -679,9 +683,12 @@ class Sprite:
         """
         Set the current sprite color as a value
         """
+        if alpha < 0 or alpha > 255:
+            raise ValueError(f"Invalid value for alpha. Must be 0 to 255, received {alpha}")
+
         self._alpha = alpha
         for sprite_list in self.sprite_lists:
-            sprite_list.update_position(self)
+            sprite_list.update_color(self)
 
     alpha = property(_get_alpha, _set_alpha)
 
@@ -707,6 +714,12 @@ class Sprite:
         """
         self.position = [self._position[0] + self.change_x, self._position[1] + self.change_y]
         self.angle += self.change_angle
+
+    def on_update(self, delta_time: float = 1/60):
+        """
+        Update the sprite. Similar to update, but also takes a delta-time.
+        """
+        pass
 
     def update_animation(self, delta_time: float = 1/60):
         """
@@ -776,12 +789,16 @@ class Sprite:
 
 class AnimatedTimeSprite(Sprite):
     """
-    Sprite for platformer games that supports animations.
+    Deprecated class for periodically updating sprite animations. Use
+    AnimatedTimeBasedSprite instead.
     """
 
     def __init__(self, scale: float = 1,
                  image_x: float = 0, image_y: float = 0,
                  center_x: float = 0, center_y: float = 0):
+
+        from warnings import warn
+        warn('AnimatedTimeSprite has been deprecated. Use AnimatedTimeBasedSprite instead.', DeprecationWarning)
 
         super().__init__(scale=scale, image_x=image_x, image_y=image_y,
                          center_x=center_x, center_y=center_y)
@@ -803,7 +820,7 @@ class AnimatedTimeSprite(Sprite):
 
 
 @dataclasses.dataclass
-class AnimationKeyframe:
+class _AnimationKeyframe:
     tile_id: int
     duration: int
     image: PIL.Image
@@ -811,7 +828,8 @@ class AnimationKeyframe:
 
 class AnimatedTimeBasedSprite(Sprite):
     """
-    Sprite for platformer games that supports animations.
+    Sprite for platformer games that supports animations. These can
+    be automatically created by the Tiled Map Editor.
     """
 
     def __init__(self,
@@ -826,7 +844,7 @@ class AnimatedTimeBasedSprite(Sprite):
                          image_width=image_width, image_height=image_height,
                          center_x=center_x, center_y=center_y)
         self.cur_frame = 0
-        self.frames: List[AnimationKeyframe] = []
+        self.frames: List[_AnimationKeyframe] = []
         self.time_counter = 0.0
 
     def update_animation(self, delta_time: float = 1/60):
@@ -846,7 +864,9 @@ class AnimatedTimeBasedSprite(Sprite):
 
 class AnimatedWalkingSprite(Sprite):
     """
-    Sprite for platformer games that supports animations.
+    Sprite for platformer games that supports walking animations.
+    For a better example, see:
+    http://arcade.academy/examples/platformer.html#animate-character
     """
 
     def __init__(self, scale: float = 1,

@@ -8,3 +8,5 @@ pymunk
 matplotlib
 wheel
 twine
+sphinx-sitemap
+flake8

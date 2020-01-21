@@ -6,9 +6,8 @@ How to Compile
 Windows
 ^^^^^^^
 
-Prep your system by getting the needed Python packages:
-
-``pip install wheel sphinx coveralls sphinx_rtd_theme pyglet pyglet_ffmpeg numpy pytest pillow``
+Prep your system by getting the needed Python packages, listed in the
+``requirements.txt`` file.
 
 Create your own fork of the repository, and then clone it on your
 computer.
@@ -39,9 +38,3 @@ computer.
 Prep your system by downloading the needed packages:
 
 ``sudo apt-get install python-dev``
-
-``sudo pip3 install wheel sphinx coveralls sphinx_rtd_theme pyglet pyglet_ffmpeg numpy pytest pillow``
-
-Then, from the terminal you can run any of the following scripts:
-
-* ``sudo ./make.sh`` - Compile, install, make documentation, and run unit tests.
