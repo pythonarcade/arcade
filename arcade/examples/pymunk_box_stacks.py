@@ -101,7 +101,7 @@ class MyGame(arcade.Window):
                 self.space.add(body, shape)
                 # body.sleep()
 
-                sprite = BoxSprite(shape, "images/boxCrate_double.png", width=size, height=size)
+                sprite = BoxSprite(shape, ":resources:images/tiles/boxCrate_double.png", width=size, height=size)
                 self.sprite_list.append(sprite)
 
     def on_draw(self):
@@ -157,7 +157,7 @@ class MyGame(arcade.Window):
             shape.friction = 0.3
             self.space.add(body, shape)
 
-            sprite = CircleSprite(shape, "images/coin_01.png")
+            sprite = CircleSprite(shape, ":resources:images/items/coinGold.png")
             self.sprite_list.append(sprite)
 
     def on_mouse_release(self, x, y, button, modifiers):

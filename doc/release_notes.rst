@@ -5,6 +5,97 @@
 Release Notes
 =============
 
+Version 2.2.6
+-------------
+
+*Release Date: 1/20/2020*
+
+* Bug Fix: particle_fireworks example is not running with 2.2.5 `Issue 555 <https://github.com/pvcraven/arcade/issues/555>`_
+* Bug Fix: Sprite.pop isn't reliable `Issue 531 <https://github.com/pvcraven/arcade/issues/531>`_
+* Enhancement: Raise error if default font not found on system `Issue 432 <https://github.com/pvcraven/arcade/issues/432>`_
+* Enhancement: Add space invaders clone to example list `Issue 526 <https://github.com/pvcraven/arcade/issues/526>`_
+* Enhancement: Add sitemap to website
+* Enhancement: Improve performance, error handling around setting a sprite's color
+* Enhancement: Implement optional filtering parameter to SpriteList.draw `Issue 405 <https://github.com/pvcraven/arcade/issues/405>`_
+* Enhancement: Return list of items hit during physics engine update `Issue 401 <https://github.com/pvcraven/arcade/issues/401>`_
+* Enhancement: Update resources documentation `Issue 549 <https://github.com/pvcraven/arcade/issues/549>`_
+* Enhancement: Add on_update to sprites, which includes delta_time `Issue 266 <https://github.com/pvcraven/arcade/issues/266>`_
+* Enhancement: Close enhancement-related github issues and reference them in the new :ref:`enhancement-list`.
+
+Version 2.2.5
+-------------
+
+*Release Date: 1/17/2020*
+
+* Enhancement: Improved speed when rendering non-buffered drawing primitives
+* Bug fix: Angle working in radians instead of degrees in 2.2.4 `Issue 552 <https://github.com/pvcraven/arcade/issues/552>`_
+* Bug fix: Angle and color of sprite not updating in 2.2.4 `Issue 553 <https://github.com/pvcraven/arcade/issues/553>`_
+
+
+Version 2.2.4
+-------------
+
+*Release Date: 1/15/2020*
+
+* Enhancement: Moving sprites now 20% more efficient.
+
+Version 2.2.3
+-------------
+
+*Release Date: 1/12/2020*
+
+* Bug fix: Hit boxes not getting updated with rotation and scaling. `Issue 548 <https://github.com/pvcraven/arcade/issues/548>`_
+  This update depricates Sprite.points and instead uses Sprint.hit_box and Sprint.get_adjusted_hit_box
+* Major internal change around not having ``__init__`` do ``import *`` but
+  specifically name everything. `Issue 537 <https://github.com/pvcraven/arcade/issues/537>`_
+  This rearranded a lot of files and also reworked the quickindex in documentation.
+
+
+Version 2.2.2
+-------------
+
+*Release Date: 1/9/2020*
+
+* Bug fix: Arcade assumes tiles in tileset are same sized `Issue 550 <https://github.com/pvcraven/arcade/issues/550>`_
+
+Version 2.2.1
+-------------
+
+*Release Date: 12/22/2020*
+
+* Bug fix: Resource folder not included in distribution `Issue 541 <https://github.com/pvcraven/arcade/issues/541>`_
+
+Version 2.2.0
+-------------
+
+*Release Date: 12/19/2020*
+
+* Major Enhancement: Add built-in resources support `Issue 209 <https://github.com/pvcraven/arcade/issues/209>`_
+  This also required many changes to the code samples, but they can be run now without
+  downloading separate images.
+* Major Enhancement: Auto-calculate hit box points by trimming out the transparency
+* Major Enhancement: Sprite sheet support for the tiled map editor works now
+* Enhancement: Added ``load_spritesheet`` for loading images from a sprite sheet
+* Enhancement: Updates to physics engine to better handle non-rectangular sprites
+* Enhancement: Add SpriteSolidColor class, for creating a single-color rectangular sprite
+* Enhancement: Expose type hints to modules that depend on arcade via PEP 561
+  `Issue 533 <https://github.com/pvcraven/arcade/issues/533>`_
+  and `Issue 534 <https://github.com/pvcraven/arcade/issues/534>`_
+* Enhancement: Add font_color to gui.TextButton init `Issue 521 <https://github.com/pvcraven/arcade/issues/521>`_
+* Enhancement: Improve error messages around loading tilemaps
+* Bug fix: Turn on vsync as it sometimes was limiting FPS to 30.
+* Bug fix: get_tile_by_gid() incorrectly assumes tile GID cannot exceed tileset length `Issue 527 <https://github.com/pvcraven/arcade/issues/527>`_
+* Bug fix: Tiles in object layers not placed properly `Issue 536 <https://github.com/pvcraven/arcade/issues/536>`_
+* Bug fix: Typo when loading font `Issue 518 <https://github.com/pvcraven/arcade/issues/518>`_
+* Updated ``requirements.txt`` file
+* Add robots.txt to documentation
+
+Please also update pyglet, pyglet_ffmpeg2, and pytiled_parser libraries.
+
+Special tanks to Jon Fincher, Mr. Gallo, SirGnip, lubie0kasztanki, and EvgeniyKrysanoc
+for their contributions to this release.
+
+
 Version 2.1.7
 -------------
 

@@ -16,7 +16,7 @@ COIN_SCALING = 0.5
 # Movement speed of player, in pixels per frame
 PLAYER_MOVEMENT_SPEED = 5
 GRAVITY = 1
-PLAYER_JUMP_SPEED = 15
+PLAYER_JUMP_SPEED = 20
 
 
 class MyGame(arcade.Window):
@@ -51,15 +51,16 @@ class MyGame(arcade.Window):
         self.coin_list = arcade.SpriteList()
 
         # Set up the player, specifically placing it at these coordinates.
-        self.player_sprite = arcade.Sprite("images/player_1/player_stand.png", CHARACTER_SCALING)
+        image_source = ":resources:images/animated_characters/female_adventurer/femaleAdventurer_idle.png"
+        self.player_sprite = arcade.Sprite(image_source, CHARACTER_SCALING)
         self.player_sprite.center_x = 64
-        self.player_sprite.center_y = 96
+        self.player_sprite.center_y = 128
         self.player_list.append(self.player_sprite)
 
         # Create the ground
         # This shows using a loop to place multiple sprites horizontally
         for x in range(0, 1250, 64):
-            wall = arcade.Sprite("images/tiles/grassMid.png", TILE_SCALING)
+            wall = arcade.Sprite(":resources:images/tiles/grassMid.png", TILE_SCALING)
             wall.center_x = x
             wall.center_y = 32
             self.wall_list.append(wall)
@@ -72,7 +73,7 @@ class MyGame(arcade.Window):
 
         for coordinate in coordinate_list:
             # Add a crate on the ground
-            wall = arcade.Sprite("images/tiles/boxCrate_double.png", TILE_SCALING)
+            wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", TILE_SCALING)
             wall.position = coordinate
             self.wall_list.append(wall)
 
@@ -114,8 +115,7 @@ class MyGame(arcade.Window):
     def on_update(self, delta_time):
         """ Movement and game logic """
 
-        # Call update on all sprites (The sprites don't do much in this
-        # example though.)
+        # Move the player with the physics engine
         self.physics_engine.update()
 
 

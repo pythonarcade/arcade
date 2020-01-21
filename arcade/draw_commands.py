@@ -8,28 +8,36 @@ Buffered Draw Commands.
 """
 # pylint: disable=too-many-arguments, too-many-locals, too-few-public-methods
 
+import math
+import array
+import sys
+
 import PIL.Image
 import PIL.ImageOps
 import PIL.ImageDraw
-import numpy as np
 
 import pyglet.gl as gl
 
-from typing import List, Tuple
+from typing import List
 from typing import TYPE_CHECKING
 
-from arcade.window_commands import get_projection
-from arcade.window_commands import get_window
-from arcade.arcade_types import Color
-from arcade.arcade_types import PointList
-from arcade.arcade_types import RectList
+from arcade import get_projection
+from arcade import get_window
+from arcade import Color
+from arcade import PointList
 from arcade import shader
-from arcade.earclip import earclip
-from arcade.utils import *
+from arcade import earclip
+from arcade import rotate_point
+from arcade import get_four_byte_color
+from arcade import get_points_for_thick_line
+from arcade import Texture
+from arcade import get_window
+
+
 if TYPE_CHECKING:  # import for mypy only
     from arcade.arcade_types import Point
 
-line_vertex_shader = '''
+_line_vertex_shader = '''
     #version 330
     uniform mat4 Projection;
     in vec2 in_vert;
@@ -41,7 +49,7 @@ line_vertex_shader = '''
     }
 '''
 
-line_fragment_shader = '''
+_line_fragment_shader = '''
     #version 330
     in vec4 v_color;
     out vec4 f_color;
@@ -49,412 +57,6 @@ line_fragment_shader = '''
         f_color = v_color;
     }
 '''
-
-
-def get_four_byte_color(color: Color) -> Color:
-    """
-    Given a RGB list, it will return RGBA.
-    Given a RGBA list, it will return the same RGBA.
-
-    :param Color color: Three or four byte tuple
-
-    :returns:  return: Four byte RGBA tuple
-    """
-
-    if len(color) == 4:
-        return color
-    elif len(color) == 3:
-        return color[0], color[1], color[2], 255
-    else:
-        raise ValueError("This isn't a 3 or 4 byte color")
-
-
-def get_four_float_color(color: Color) -> Tuple[float, float, float, float]:
-    """
-    Given a 3 or 4 RGB/RGBA color where each color goes 0-255, this
-    returns a RGBA tuple where each item is a scaled float from 0 to 1.
-
-    :param Color color: Three or four byte tuple
-    :return: Four floats as a RGBA tuple
-    """
-    if len(color) == 4:
-        return color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255  # type: ignore
-    elif len(color) == 3:
-        return color[0] / 255, color[1] / 255, color[2] / 255, 1.0
-    else:
-        raise ValueError("This isn't a 3 or 4 byte color")
-
-
-def make_transparent_color(color: Color, transparency: float):
-    """
-    Given a RGB color, along with an alpha, returns a RGBA color tuple.
-
-    :param Color color: Three or four byte RGBA color
-    :param float transparency: Transparency
-    """
-    return color[0], color[1], color[2], transparency
-
-
-def rotate_point(x: float, y: float, cx: float, cy: float,
-                 angle: float) -> Tuple[float, float]:
-    """
-    Rotate a point around a center.
-
-    :param x: x value of the point you want to rotate
-    :param y: y value of the point you want to rotate
-    :param cx: x value of the center point you want to rotate around
-    :param cy: y value of the center point you want to rotate around
-    :param angle: Angle, in degrees, to rotate
-    :return: Return rotated (x, y) pair
-    :rtype: (float, float)
-    """
-    temp_x = x - cx
-    temp_y = y - cy
-
-    # now apply rotation
-    rotated_x = temp_x * math.cos(math.radians(angle)) - temp_y * math.sin(math.radians(angle))
-    rotated_y = temp_x * math.sin(math.radians(angle)) + temp_y * math.cos(math.radians(angle))
-
-    # translate back
-    rounding_precision = 2
-    x = round(rotated_x + cx, rounding_precision)
-    y = round(rotated_y + cy, rounding_precision)
-
-    return x, y
-
-
-class Texture:
-    """
-    Class that represents a texture.
-    Usually created by the ``load_texture`` or ``load_textures`` commands.
-
-    Attributes:
-        :name:
-        :image:
-        :scale:
-        :width: Width of the texture image in pixels
-        :height: Height of the texture image in pixels
-
-    """
-
-    def __init__(self, name, image=None):
-        self.name = name
-        self.texture = None
-        self.image = image
-        self.scale = 1
-        if image:
-            self.width = image.width
-            self.height = image.height
-        else:
-            self.width = 0
-            self.height = 0
-
-        self._sprite = None
-        self._sprite_list = None
-
-    # noinspection PyUnusedLocal
-    def draw(self, center_x: float, center_y: float, width: float,
-             height: float, angle: float = 0,
-             alpha: int = 255, transparent: bool = True,
-             repeat_count_x=1, repeat_count_y=1):
-        """
-
-        Args:
-            center_x:
-            center_y:
-            width:
-            height:
-            angle:
-            alpha: Currently unused.
-            transparent:  Currently unused.
-            repeat_count_x: Currently unused.
-            repeat_count_y:  Currently unused.
-
-        Returns:
-
-        """
-
-        from arcade.sprite import Sprite
-        from arcade.sprite_list import SpriteList
-
-        if self._sprite is None:
-            self._sprite = Sprite()
-            self._sprite._texture = self
-            self._sprite.textures = [self]
-
-            self._sprite_list = SpriteList()
-            self._sprite_list.append(self._sprite)
-
-        self._sprite.center_x = center_x
-        self._sprite.center_y = center_y
-        self._sprite.width = width
-        self._sprite.height = height
-        self._sprite.angle = angle
-        self._sprite.alpha = alpha
-
-        self._sprite_list.draw()
-
-
-def load_textures(file_name: str,
-                  image_location_list: RectList,
-                  mirrored: bool = False,
-                  flipped: bool = False,
-                  scale: float = 1) -> List['Texture']:
-    """
-    Load a set of textures off of a single image file.
-
-    Note, if the code is to load only part of the image, the given x, y
-    coordinates will start with the origin (0, 0) in the upper left of the
-    image. When drawing, Arcade uses (0, 0)
-    in the lower left corner when drawing. Be careful about this reversal.
-
-    For a longer explanation of why computers sometimes start in the upper
-    left, see:
-    http://programarcadegames.com/index.php?chapter=introduction_to_graphics&lang=en#section_5
-
-    :param str file_name: Name of the file.
-    :param RectList image_location_list: List of image sub-locations. Each rectangle should be
-           a list of four floats. ``[x, y, width, height]``.
-    :param bool mirrored: If set to true, the image is mirrored left to right.
-    :param bool flipped: If set to true, the image is flipped upside down.
-    :param float scale: Scale factor to apply on each new texture.
-
-
-    :Returns: List of textures loaded.
-    :Raises: ValueError
-    """
-    # See if we already loaded this texture file, and we can just use a cached version.
-    cache_file_name = "{}".format(file_name)
-    if cache_file_name in load_texture.texture_cache:  # type: ignore # dynamic attribute on function obj
-        texture = load_texture.texture_cache[cache_file_name]  # type: ignore # dynamic attribute on function obj
-        source_image = texture.image
-    else:
-        source_image = PIL.Image.open(file_name)
-        result = Texture(cache_file_name, source_image)
-        load_texture.texture_cache[cache_file_name] = result  # type: ignore # dynamic attribute on function obj
-
-    source_image_width, source_image_height = source_image.size
-    texture_info_list = []
-    for image_location in image_location_list:
-        x, y, width, height = image_location
-
-        if width <= 0:
-            raise ValueError("Texture has a width of {}, must be > 0."
-                             .format(width))
-        if x > source_image_width:
-            raise ValueError("Can't load texture starting at an x of {} "
-                             "when the image is only {} across."
-                             .format(x, source_image_width))
-        if y > source_image_height:
-            raise ValueError("Can't load texture starting at an y of {} "
-                             "when the image is only {} high."
-                             .format(y, source_image_height))
-        if x + width > source_image_width:
-            raise ValueError("Can't load texture ending at an x of {} "
-                             "when the image is only {} wide."
-                             .format(x + width, source_image_width))
-        if y + height > source_image_height:
-            raise ValueError("Can't load texture ending at an y of {} "
-                             "when the image is only {} high."
-                             .format(y + height, source_image_height))
-
-        # See if we already loaded this texture, and we can just use a cached version.
-        cache_name = "{}{}{}{}{}{}{}{}".format(file_name, x, y, width, height, scale, flipped, mirrored)
-        if cache_name in load_texture.texture_cache:  # type: ignore # dynamic attribute on function obj
-            result = load_texture.texture_cache[cache_name]  # type: ignore # dynamic attribute on function obj
-        else:
-            image = source_image.crop((x, y, x + width, y + height))
-            # image = _trim_image(image)
-
-            if mirrored:
-                image = PIL.ImageOps.mirror(image)
-
-            if flipped:
-                image = PIL.ImageOps.flip(image)
-            result = Texture(cache_name, image)
-            load_texture.texture_cache[cache_name] = result  # type: ignore # dynamic attribute on function obj
-            result.scale = scale
-        texture_info_list.append(result)
-
-    return texture_info_list
-
-
-def load_texture(file_name: str, x: float = 0, y: float = 0,
-                 width: float = 0, height: float = 0,
-                 mirrored: bool = False,
-                 flipped: bool = False,
-                 scale: float = 1) -> Texture:
-    """
-    Load image from disk and create a texture.
-
-    Note, if the code is to load only part of the image, the given x, y
-    coordinates will start with the origin (0, 0) in the upper left of the
-    image. When drawing, Arcade uses (0, 0)
-    in the lower left corner when drawing. Be careful about this reversal.
-
-    For a longer explanation of why computers sometimes start in the upper
-    left, see:
-    http://programarcadegames.com/index.php?chapter=introduction_to_graphics&lang=en#section_5
-
-    :param str file_name: Name of the file to that holds the texture.
-    :param float x: X position of the crop area of the texture.
-    :param float y: Y position of the crop area of the texture.
-    :param float width: Width of the crop area of the texture.
-    :param float height: Height of the crop area of the texture.
-    :param bool mirrored: True if we mirror the image across the y axis
-    :param bool flipped: True if we flip the image across the x axis
-    :param float scale: Scale factor to apply on the new texture.
-
-    :Returns: The new texture.
-    :raises: None
-
-    """
-
-    # See if we already loaded this texture, and we can just use a cached version.
-    cache_name = "{}{}{}{}{}{}{}{}".format(file_name, x, y, width, height, scale, flipped, mirrored)
-    if cache_name in load_texture.texture_cache:  # type: ignore # dynamic attribute on function obj
-        return load_texture.texture_cache[cache_name]  # type: ignore # dynamic attribute on function obj
-
-    # See if we already loaded this texture file, and we can just use a cached version.
-    cache_file_name = "{}".format(file_name)
-    if cache_file_name in load_texture.texture_cache:  # type: ignore # dynamic attribute on function obj
-        texture = load_texture.texture_cache[cache_file_name]  # type: ignore # dynamic attribute on function obj
-        source_image = texture.image
-    else:
-        source_image = PIL.Image.open(file_name)
-        result = Texture(cache_file_name, source_image)
-        load_texture.texture_cache[cache_file_name] = result  # type: ignore # dynamic attribute on function obj
-
-    source_image_width, source_image_height = source_image.size
-
-    if x != 0 or y != 0 or width != 0 or height != 0:
-        if x > source_image_width:
-            raise ValueError("Can't load texture starting at an x of {} "
-                             "when the image is only {} across."
-                             .format(x, source_image_width))
-        if y > source_image_height:
-            raise ValueError("Can't load texture starting at an y of {} "
-                             "when the image is only {} high."
-                             .format(y, source_image_height))
-        if x + width > source_image_width:
-            raise ValueError("Can't load texture ending at an x of {} "
-                             "when the image is only {} wide."
-                             .format(x + width, source_image_width))
-        if y + height > source_image_height:
-            raise ValueError("Can't load texture ending at an y of {} "
-                             "when the image is only {} high."
-                             .format(y + height, source_image_height))
-
-        image = source_image.crop((x, y, x + width, y + height))
-    else:
-        image = source_image
-
-    # image = _trim_image(image)
-    if mirrored:
-        image = PIL.ImageOps.mirror(image)
-
-    if flipped:
-        image = PIL.ImageOps.flip(image)
-
-    result = Texture(cache_name, image)
-    load_texture.texture_cache[cache_name] = result  # type: ignore # dynamic attribute on function obj
-    result.scale = scale
-    return result
-
-
-def make_circle_texture(diameter: int, color: Color) -> Texture:
-    """
-    Return a Texture of a circle with given diameter and color
-
-    :param int diameter: Diameter of the circle and dimensions of the square Texture returned
-    :param Color color: Color of the circle
-    :Returns: A Texture object
-    :Raises: None
-    """
-    bg_color = (0, 0, 0, 0)  # fully transparent
-    img = PIL.Image.new("RGBA", (diameter, diameter), bg_color)
-    draw = PIL.ImageDraw.Draw(img)
-    draw.ellipse((0, 0, diameter - 1, diameter - 1), fill=color)
-    name = "{}:{}:{}".format("circle_texture", diameter, color)  # name must be unique for caching
-    return Texture(name, img)
-
-
-def make_soft_circle_texture(diameter: int, color: Color, center_alpha: int = 255, outer_alpha: int = 0) -> Texture:
-    """
-    Return a Texture of a circle with given diameter, color, and alpha values at its center and edges
-
-    Args:
-        :diameter (int): Diameter of the circle and dimensions of the square Texture returned
-        :color (Color): Color of the circle
-        :center_alpha (int): alpha value of circle at its center
-        :outer_alpha (int): alpha value of circle at its edge
-    Returns:
-        A Texture object
-    Raises:
-        None
-    """
-    # TODO: create a rectangle and circle (and triangle? and arbitrary poly where client passes
-    # in list of points?) particle?
-    bg_color = (0, 0, 0, 0)  # fully transparent
-    img = PIL.Image.new("RGBA", (diameter, diameter), bg_color)
-    draw = PIL.ImageDraw.Draw(img)
-    max_radius = int(diameter // 2)
-    center = max_radius  # for readability
-    for radius in range(max_radius, 0, -1):
-        alpha = int(lerp(center_alpha, outer_alpha, radius / max_radius))
-        clr = (color[0], color[1], color[2], alpha)
-        draw.ellipse((center - radius, center - radius, center + radius - 1, center + radius - 1), fill=clr)
-    name = "{}:{}:{}:{}:{}".format("soft_circle_texture", diameter, color, center_alpha,
-                                   outer_alpha)  # name must be unique for caching
-    return Texture(name, img)
-
-
-def make_soft_square_texture(size: int, color: Color, center_alpha: int = 255, outer_alpha: int = 0) -> Texture:
-    """
-    Return a Texture of a circle with given diameter and color, fading out at the edges.
-
-    Args:
-        :diameter (int): Diameter of the circle and dimensions of the square Texture returned
-        :color (Color): Color of the circle
-    Returns:
-        The new texture.
-    Raises:
-        None
-    """
-    bg_color = (0, 0, 0, 0)  # fully transparent
-    img = PIL.Image.new("RGBA", (size, size), bg_color)
-    draw = PIL.ImageDraw.Draw(img)
-    half_size = int(size // 2)
-    for cur_size in range(0, half_size):
-        alpha = int(lerp(outer_alpha, center_alpha, cur_size / half_size))
-        clr = (color[0], color[1], color[2], alpha)
-        # draw.ellipse((center-radius, center-radius, center+radius, center+radius), fill=clr)
-        draw.rectangle((cur_size, cur_size, size - cur_size, size - cur_size), clr, None)
-    name = "{}:{}:{}:{}".format("gradientsquare", size, color, center_alpha,
-                                outer_alpha)  # name must be unique for caching
-    return Texture(name, img)
-
-
-def _lerp_color(start_color: Color, end_color: Color, u: float) -> Color:
-    return (
-        int(lerp(start_color[0], end_color[0], u)),
-        int(lerp(start_color[1], end_color[1], u)),
-        int(lerp(start_color[2], end_color[2], u))
-    )
-
-
-load_texture.texture_cache = dict()  # type: ignore
-
-
-# --- END TEXTURE FUNCTIONS # # #
-
-
-def trim_image(image: PIL.Image) -> PIL.Image:
-    """
-    Returns an image with extra whitespace cropped out.
-    """
-    bbox = image.getbbox()
-    return image.crop(bbox)
 
 
 # --- BEGIN ARC FUNCTIONS # # #
@@ -790,6 +392,7 @@ def draw_ellipse_outline(center_x: float, center_y: float, width: float,
 
 # --- BEGIN LINE FUNCTIONS # # #
 
+
 def _generic_draw_line_strip(point_list: PointList,
                              color: Color,
                              mode: int = gl.GL_LINE_STRIP):
@@ -802,34 +405,46 @@ def _generic_draw_line_strip(point_list: PointList,
     :param Color color: color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
     """
-    program = shader.program(
-        vertex_shader=line_vertex_shader,
-        fragment_shader=line_fragment_shader,
-    )
-    buffer_type = np.dtype([('vertex', '2f4'), ('color', '4B')])
-    data = np.zeros(len(point_list), dtype=buffer_type)
+    # Cache the program. But not on linux because it fails unit tests for some reason.
+    # if not _generic_draw_line_strip.program or sys.platform == "linux":
 
-    data['vertex'] = point_list
-
-    color = get_four_byte_color(color)
-    data['color'] = color
-
-    vbo = shader.buffer(data.tobytes())
-    vbo_desc = shader.BufferDescription(
-        vbo,
-        '2f 4B',
-        ('in_vert', 'in_color'),
-        normalized=['in_color']
+    _generic_draw_line_strip.program = shader.program(
+        vertex_shader=_line_vertex_shader,
+        fragment_shader=_line_fragment_shader,
     )
 
-    vao_content = [vbo_desc]
+    c4 = get_four_byte_color(color)
+    c4e = c4 * len(point_list)
+    a = array.array('B', c4e)
+    color_buf = shader.buffer(a.tobytes())
+    color_buf_desc = shader.BufferDescription(
+        color_buf,
+        '4B',
+        ['in_color'],
+        normalized=['in_color'],
+    )
 
-    vao = shader.vertex_array(program, vao_content)
+    def gen_flatten(my_list):
+        return [item for sublist in my_list for item in sublist]
+
+    vertices = array.array('f', gen_flatten(point_list))
+
+    vbo_buf = shader.buffer(vertices.tobytes())
+    vbo_buf_desc = shader.BufferDescription(
+        vbo_buf,
+        '2f',
+        ['in_vert']
+    )
+
+    vao_content = [vbo_buf_desc, color_buf_desc]
+
+    vao = shader.vertex_array(_generic_draw_line_strip.program, vao_content)
     with vao:
-        program['Projection'] = get_projection().flatten()
-
+        _generic_draw_line_strip.program['Projection'] = get_projection().flatten()
         vao.render(mode=mode)
 
+
+_generic_draw_line_strip.program = None
 
 def draw_line_strip(point_list: PointList,
                     color: Color, line_width: float = 1):
@@ -848,34 +463,12 @@ def draw_line_strip(point_list: PointList,
         last_point = None
         for point in point_list:
             if last_point is not None:
-                points = _get_points_for_thick_line(last_point[0], last_point[1], point[0], point[1], line_width)
+                points = get_points_for_thick_line(last_point[0], last_point[1], point[0], point[1], line_width)
                 reordered_points = points[1], points[0], points[2], points[3]
                 # noinspection PyUnresolvedReferences
                 triangle_point_list.extend(reordered_points)
             last_point = point
         _generic_draw_line_strip(triangle_point_list, color, gl.GL_TRIANGLE_STRIP)
-
-
-def _get_points_for_thick_line(start_x: float, start_y:
-                               float, end_x: float, end_y: float,
-                               line_width: float):
-    vector_x = start_x - end_x
-    vector_y = start_y - end_y
-    perpendicular_x = vector_y
-    perpendicular_y = -vector_x
-    length = math.sqrt(vector_x * vector_x + vector_y * vector_y)
-    normal_x = perpendicular_x / length
-    normal_y = perpendicular_y / length
-    r1_x = start_x + normal_x * line_width / 2
-    r1_y = start_y + normal_y * line_width / 2
-    r2_x = start_x - normal_x * line_width / 2
-    r2_y = start_y - normal_y * line_width / 2
-    r3_x = end_x + normal_x * line_width / 2
-    r3_y = end_y + normal_y * line_width / 2
-    r4_x = end_x - normal_x * line_width / 2
-    r4_y = end_y - normal_y * line_width / 2
-    points = (r1_x, r1_y), (r2_x, r2_y), (r4_x, r4_y), (r3_x, r3_y)
-    return points
 
 
 def draw_line(start_x: float, start_y: float, end_x: float, end_y: float,
@@ -893,7 +486,7 @@ def draw_line(start_x: float, start_y: float, end_x: float, end_y: float,
     """
 
     # points = (start_x, start_y), (end_x, end_y)
-    points = _get_points_for_thick_line(start_x, start_y, end_x, end_y, line_width)
+    points = get_points_for_thick_line(start_x, start_y, end_x, end_y, line_width)
     triangle_point_list = points[1], points[0], points[2], points[3]
     _generic_draw_line_strip(triangle_point_list, color, gl.GL_TRIANGLE_STRIP)
 
@@ -917,7 +510,7 @@ def draw_lines(point_list: PointList,
     last_point = None
     for point in point_list:
         if last_point is not None:
-            points = _get_points_for_thick_line(last_point[0], last_point[1], point[0], point[1], line_width)
+            points = get_points_for_thick_line(last_point[0], last_point[1], point[0], point[1], line_width)
             reordered_points = points[1], points[0], points[2], points[0], points[2], points[3]
             # noinspection PyUnresolvedReferences
             triangle_point_list.extend(reordered_points)
@@ -1020,13 +613,13 @@ def draw_polygon_outline(point_list: PointList,
     last_point = None
     for point in new_point_list:
         if last_point is not None:
-            points = _get_points_for_thick_line(last_point[0], last_point[1], point[0], point[1], line_width)
+            points = get_points_for_thick_line(last_point[0], last_point[1], point[0], point[1], line_width)
             reordered_points = points[1], points[0], points[2], points[3]
             triangle_point_list.extend(reordered_points)
         last_point = point
 
-    points = _get_points_for_thick_line(new_point_list[0][0], new_point_list[0][1], new_point_list[1][0],
-                                        new_point_list[1][1], line_width)
+    points = get_points_for_thick_line(new_point_list[0][0], new_point_list[0][1], new_point_list[1][0],
+                                       new_point_list[1][1], line_width)
     triangle_point_list.append(points[1])
     _generic_draw_line_strip(triangle_point_list, color, gl.GL_TRIANGLE_STRIP)
 
@@ -1307,6 +900,13 @@ def get_pixel(x: int, y: int):
     :returns: Color
     """
     # noinspection PyCallingNonCallable,PyTypeChecker
+
+    # The window may be 'scaled' on hi-res displays. Particularly Macs. OpenGL
+    # won't account for this, so we need to.
+    pixel_ratio = get_window().get_pixel_ratio()
+    x = int(pixel_ratio * x)
+    y = int(pixel_ratio * y)
+
     a = (gl.GLubyte * 3)(0)
     gl.glReadPixels(x, y, 1, 1, gl.GL_RGB, gl.GL_UNSIGNED_BYTE, a)
     red = a[0]

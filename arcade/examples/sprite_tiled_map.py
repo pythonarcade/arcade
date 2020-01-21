@@ -12,13 +12,14 @@ import arcade
 import os
 import time
 
-SPRITE_SCALING = 0.5
+TILE_SCALING = 0.5
+PLAYER_SCALING = 1
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 SCREEN_TITLE = "Sprite Tiled Map Example"
 SPRITE_PIXEL_SIZE = 128
-GRID_PIXEL_SIZE = (SPRITE_PIXEL_SIZE * SPRITE_SCALING)
+GRID_PIXEL_SIZE = (SPRITE_PIXEL_SIZE * TILE_SCALING)
 
 # How many pixels to keep as a minimum margin between the character
 # and the edge of the screen.
@@ -75,38 +76,30 @@ class MyGame(arcade.Window):
         self.coin_list = arcade.SpriteList()
 
         # Set up the player
-        self.player_sprite = arcade.Sprite("images/character.png", SPRITE_SCALING)
+        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
+                                           PLAYER_SCALING)
 
         # Starting position of the player
-        self.player_sprite.center_x = 64
+        self.player_sprite.center_x = 196
         self.player_sprite.center_y = 270
         self.player_list.append(self.player_sprite)
 
-        platforms_layer_name = 'Platforms'
-        coins_layer_name = 'Coins'
-        map_name = "map.tmx"
+        map_name = ":resources:/tmx_maps/map.tmx"
 
         # Read in the tiled map
-        # noinspection PyDeprecation
-        my_map = arcade.read_tiled_map(map_name, SPRITE_SCALING)
-
-        # --- Walls ---
-        # Grab the layer of items we can't move through
-        map_array = my_map.layers_int_data[platforms_layer_name]
-
-        # Calculate the right edge of the my_map in pixels
-        self.end_of_map = len(map_array[0]) * GRID_PIXEL_SIZE
+        my_map = arcade.tilemap.read_tmx(map_name)
+        self.end_of_map = my_map.map_size.width * GRID_PIXEL_SIZE
 
         # --- Platforms ---
-        self.wall_list = arcade.generate_sprites(my_map, platforms_layer_name, SPRITE_SCALING)
+        self.wall_list = arcade.tilemap.process_layer(my_map, 'Platforms', TILE_SCALING)
 
         # --- Coins ---
-        self.coin_list = arcade.generate_sprites(my_map, coins_layer_name, SPRITE_SCALING)
+        self.coin_list = arcade.tilemap.process_layer(my_map, 'Coins', TILE_SCALING)
 
         # --- Other stuff
         # Set the background color
-        if my_map.backgroundcolor:
-            arcade.set_background_color(my_map.backgroundcolor)
+        if my_map.background_color:
+            arcade.set_background_color(my_map.background_color)
 
         # Keep player from running through the wall_list layer
         self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,

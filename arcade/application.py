@@ -11,7 +11,7 @@ from arcade import gui
 import pyglet.gl as gl
 import pyglet
 
-from arcade.window_commands import (get_viewport, set_viewport, set_window)
+from arcade import (get_viewport, set_viewport, set_window)
 
 MOUSE_BUTTON_LEFT = 1
 MOUSE_BUTTON_MIDDLE = 2
@@ -61,7 +61,7 @@ class Window(pyglet.window.Window):
 
         try:
             super().__init__(width=width, height=height, caption=title,
-                             resizable=resizable, config=config)
+                             resizable=resizable, config=config, vsync=False)
         except pyglet.window.NoSuchConfigException:
             raise NoOpenGLException("Unable to create an OpenGL 3.3+ context. "
                                     "Check to make sure your system supports OpenGL 3.3 or higher.")
@@ -87,6 +87,7 @@ class Window(pyglet.window.Window):
         self.invalid = False
         set_window(self)
         set_viewport(0, self.width, 0, self.height)
+
         self.current_view: Optional[View] = None
         self.button_list: List[gui.TextButton] = []
         self.dialogue_box_list: List[gui.DialogueBox] = []
@@ -308,11 +309,17 @@ class Window(pyglet.window.Window):
         :param float width: New width
         :param float height: New height
         """
-        # This breaks on Linux.
+        # This breaks on Linux and Mac.
         # See https://github.com/pyglet/pyglet/issues/76
-        # super().on_resize(width, height)
+        import sys
+        if sys.platform == "win32":
+            super().on_resize(width, height)
 
-        original_viewport = self.get_viewport()
+        try:
+            original_viewport = self.get_viewport()
+        except:
+            print("Error getting viewport")
+            return
 
         # unscaled_viewport = self.get_viewport_size()
         # scaling = unscaled_viewport[0] / width

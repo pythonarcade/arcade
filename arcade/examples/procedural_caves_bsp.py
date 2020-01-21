@@ -291,7 +291,7 @@ class MyGame(arcade.Window):
                 for column in range(dg.width):
                     value = dg.dungeon[row][column]
                     if value == '#':
-                        wall = arcade.Sprite("images/grassCenter.png", WALL_SPRITE_SCALING)
+                        wall = arcade.Sprite(":resources:images/tiles/grassCenter.png", WALL_SPRITE_SCALING)
                         wall.center_x = column * WALL_SPRITE_SIZE + WALL_SPRITE_SIZE / 2
                         wall.center_y = row * WALL_SPRITE_SIZE + WALL_SPRITE_SIZE / 2
                         self.wall_list.append(wall)
@@ -313,7 +313,7 @@ class MyGame(arcade.Window):
                     column_count = end_column - start_column + 1
                     column_mid = (start_column + end_column) / 2
 
-                    wall = arcade.Sprite("images/grassCenter.png", WALL_SPRITE_SCALING,
+                    wall = arcade.Sprite(":resources:images/tiles/grassCenter.png", WALL_SPRITE_SCALING,
                                          repeat_count_x=column_count)
                     wall.center_x = column_mid * WALL_SPRITE_SIZE + WALL_SPRITE_SIZE / 2
                     wall.center_y = row * WALL_SPRITE_SIZE + WALL_SPRITE_SIZE / 2
@@ -321,7 +321,7 @@ class MyGame(arcade.Window):
                     self.wall_list.append(wall)
 
         # Set up the player
-        self.player_sprite = arcade.Sprite("images/character.png", PLAYER_SPRITE_SCALING)
+        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", PLAYER_SPRITE_SCALING)
         self.player_list.append(self.player_sprite)
 
         # Randomly place the player. If we are in a wall, repeat until we aren't.

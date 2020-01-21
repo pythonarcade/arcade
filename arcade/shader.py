@@ -8,8 +8,6 @@ from typing import List, Tuple, Iterable, Dict
 
 from pyglet import gl
 
-import numpy as np
-
 
 class ShaderException(Exception):
     pass
@@ -503,7 +501,7 @@ def vertex_array(prog: gl.GLuint, content, index_buffer=None):
 
 
 class Texture:
-    def __init__(self, size: Tuple[int, int], component: int, data: np.array):
+    def __init__(self, size: Tuple[int, int], component: int, data):
         self.width, self.height = size
         sized_format = (gl.GL_R8, gl.GL_RG8, gl.GL_RGB8, gl.GL_RGBA8)[component - 1]
         self.format = (gl.GL_R, gl.GL_RG, gl.GL_RGB, gl.GL_RGBA)[component - 1]
@@ -520,7 +518,7 @@ class Texture:
         try:
             gl.glTexImage2D(
                 gl.GL_TEXTURE_2D, 0, sized_format, self.width, self.height, 0,
-                self.format, gl.GL_UNSIGNED_BYTE, data.ctypes.data_as(c_void_p)
+                self.format, gl.GL_UNSIGNED_BYTE, data
             )
         except gl.GLException:
             raise gl.GLException(f"Unable to create texture. {gl.GL_MAX_TEXTURE_SIZE} {size}")
@@ -543,5 +541,5 @@ class Texture:
         gl.glBindTexture(gl.GL_TEXTURE_2D, self.texture_id)
 
 
-def texture(size: Tuple[int, int], component: int, data: np.array) -> Texture:
+def texture(size: Tuple[int, int], component: int, data) -> Texture:
     return Texture(size, component, data)

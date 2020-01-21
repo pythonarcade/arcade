@@ -1,6 +1,8 @@
 """
 Example of displaying an isometric map.
 
+Isometric maps aren't fully supported, and needs some additional work.
+
 Isometric map created with Tiled Map Editor: https://www.mapeditor.org/
 Tiles by Kenney: http://kenney.nl/assets/isometric-dungeon-tiles
 
@@ -28,7 +30,7 @@ def read_sprite_list(grid, sprite_list):
     for row in grid:
         for grid_location in row:
             if grid_location.tile is not None:
-                tile_sprite = arcade.Sprite(grid_location.tile.source, SPRITE_SCALING)
+                tile_sprite = arcade.Sprite("../resources/images/" + grid_location.tile.source, SPRITE_SCALING)
                 tile_sprite.center_x = grid_location.center_x * SPRITE_SCALING
                 tile_sprite.center_y = grid_location.center_y * SPRITE_SCALING
                 # print(f"{grid_location.tile.source} -- ({tile_sprite.center_x:4}, {tile_sprite.center_y:4})")
@@ -74,10 +76,10 @@ class MyGame(arcade.Window):
         self.objects_list = arcade.SpriteList()
 
         # noinspection PyDeprecation
-        self.my_map = arcade.read_tiled_map('dungeon.tmx', SPRITE_SCALING)
+        self.my_map = arcade.read_tiled_map('../resources/tmx_maps/isometric_dungeon.tmx', SPRITE_SCALING)
 
         # Set up the player
-        self.player_sprite = arcade.Sprite("images/character.png", 0.4)
+        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", 0.4)
         px, py = arcade.isometric_grid_to_screen(self.my_map.width // 2,
                                                  self.my_map.height // 2,
                                                  self.my_map.width,

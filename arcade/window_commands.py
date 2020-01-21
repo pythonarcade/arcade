@@ -38,6 +38,7 @@ def get_projection():
     :return: Numpy array with projection.
 
     """
+    global _projection
     return _projection
 
 

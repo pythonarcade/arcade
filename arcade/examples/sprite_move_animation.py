@@ -62,12 +62,12 @@ class PlayerCharacter(arcade.Sprite):
         # --- Load Textures ---
 
         # Images from Kenney.nl's Asset Pack 3
-        main_path = "platform_tutorial/images/Female adventurer/PNG/Poses/character_femaleAdventurer"
-        # main_path = "platform_tutorial/images/Female person/PNG/Poses/character_femalePerson"
-        # main_path = "platform_tutorial/images/Male person/PNG/Poses/character_malePerson"
-        # main_path = "platform_tutorial/images/Male adventurer/PNG/Poses/character_maleAdventurer"
-        # main_path = "platform_tutorial/images/Zombie/PNG/Poses/character_zombie"
-        # main_path = "platform_tutorial/images/Robot/PNG/Poses/character_robot"
+        main_path = ":resources:images/animated_characters/female_adventurer/femaleAdventurer"
+        # main_path = ":resources:images/animated_characters/female_person/femalePerson"
+        # main_path = ":resources:images/animated_characters/male_person/malePerson"
+        # main_path = ":resources:images/animated_characters/male_adventurer/maleAdventurer"
+        # main_path = ":resources:images/animated_characters/zombie/zombie"
+        # main_path = ":resources:images/animated_characters/robot/robot"
 
         # Load textures for idle standing
         self.idle_texture_pair = load_texture_pair(f"{main_path}_idle.png")
@@ -144,12 +144,12 @@ class MyGame(arcade.Window):
             coin.center_y = random.randrange(SCREEN_HEIGHT)
 
             coin.textures = []
-            coin.textures.append(arcade.load_texture("images/gold_1.png", scale=COIN_SCALE))
-            coin.textures.append(arcade.load_texture("images/gold_2.png", scale=COIN_SCALE))
-            coin.textures.append(arcade.load_texture("images/gold_3.png", scale=COIN_SCALE))
-            coin.textures.append(arcade.load_texture("images/gold_4.png", scale=COIN_SCALE))
-            coin.textures.append(arcade.load_texture("images/gold_3.png", scale=COIN_SCALE))
-            coin.textures.append(arcade.load_texture("images/gold_2.png", scale=COIN_SCALE))
+            coin.textures.append(arcade.load_texture(":resources:images/items/gold_1.png", scale=COIN_SCALE))
+            coin.textures.append(arcade.load_texture(":resources:images/items/gold_2.png", scale=COIN_SCALE))
+            coin.textures.append(arcade.load_texture(":resources:images/items/gold_3.png", scale=COIN_SCALE))
+            coin.textures.append(arcade.load_texture(":resources:images/items/gold_4.png", scale=COIN_SCALE))
+            coin.textures.append(arcade.load_texture(":resources:images/items/gold_3.png", scale=COIN_SCALE))
+            coin.textures.append(arcade.load_texture(":resources:images/items/gold_2.png", scale=COIN_SCALE))
             coin.cur_texture_index = random.randrange(len(coin.textures))
 
             self.coin_list.append(coin)

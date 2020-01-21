@@ -68,7 +68,7 @@ class MyGame(arcade.Window):
 
         # Draw the walls on the bottom
         for x in range(0, SCREEN_WIDTH, SPRITE_SIZE):
-            wall = arcade.Sprite("images/grassMid.png", SPRITE_SCALING)
+            wall = arcade.Sprite(":resources:images/tiles/grassMid.png", SPRITE_SCALING)
 
             wall.bottom = 0
             wall.left = x
@@ -76,7 +76,7 @@ class MyGame(arcade.Window):
 
         # Draw the platform
         for x in range(SPRITE_SIZE * 3, SPRITE_SIZE * 8, SPRITE_SIZE):
-            wall = arcade.Sprite("images/grassMid.png", SPRITE_SCALING)
+            wall = arcade.Sprite(":resources:images/tiles/grassMid.png", SPRITE_SCALING)
 
             wall.bottom = SPRITE_SIZE * 3
             wall.left = x
@@ -84,14 +84,14 @@ class MyGame(arcade.Window):
 
         # Draw the crates
         for x in range(0, SCREEN_WIDTH, SPRITE_SIZE * 5):
-            wall = arcade.Sprite("images/boxCrate_double.png", SPRITE_SCALING)
+            wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", SPRITE_SCALING)
 
             wall.bottom = SPRITE_SIZE
             wall.left = x
             self.wall_list.append(wall)
 
         # -- Draw an enemy on the ground
-        enemy = arcade.Sprite("images/wormGreen.png", SPRITE_SCALING)
+        enemy = arcade.Sprite(":resources:images/enemies/wormGreen.png", SPRITE_SCALING)
 
         enemy.bottom = SPRITE_SIZE
         enemy.left = SPRITE_SIZE * 2
@@ -101,7 +101,7 @@ class MyGame(arcade.Window):
         self.enemy_list.append(enemy)
 
         # -- Draw a enemy on the platform
-        enemy = arcade.Sprite("images/wormGreen.png", SPRITE_SCALING)
+        enemy = arcade.Sprite(":resources:images/enemies/wormGreen.png", SPRITE_SCALING)
 
         enemy.bottom = SPRITE_SIZE * 4
         enemy.left = SPRITE_SIZE * 4
@@ -113,7 +113,7 @@ class MyGame(arcade.Window):
         self.enemy_list.append(enemy)
 
         # -- Set up the player
-        self.player_sprite = arcade.Sprite("images/character.png", SPRITE_SCALING)
+        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", SPRITE_SCALING)
         self.player_list.append(self.player_sprite)
 
         # Starting position of the player

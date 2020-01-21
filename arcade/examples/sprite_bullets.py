@@ -52,8 +52,8 @@ class MyGame(arcade.Window):
         self.set_mouse_visible(False)
 
         # Load sounds. Sounds from kenney.nl
-        self.gun_sound = arcade.sound.load_sound("sounds/laser1.wav")
-        self.hit_sound = arcade.sound.load_sound("sounds/phaseJump1.wav")
+        self.gun_sound = arcade.load_sound(":resources:sounds/hurt5.wav")
+        self.hit_sound = arcade.load_sound(":resources:sounds/hit5.wav")
 
         arcade.set_background_color(arcade.color.AMAZON)
 
@@ -70,7 +70,7 @@ class MyGame(arcade.Window):
         self.score = 0
 
         # Image from kenney.nl
-        self.player_sprite = arcade.Sprite("images/character.png", SPRITE_SCALING_PLAYER)
+        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", SPRITE_SCALING_PLAYER)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 70
         self.player_list.append(self.player_sprite)
@@ -80,7 +80,7 @@ class MyGame(arcade.Window):
 
             # Create the coin instance
             # Coin image from kenney.nl
-            coin = arcade.Sprite("images/coin_01.png", SPRITE_SCALING_COIN)
+            coin = arcade.Sprite(":resources:images/items/coinGold.png", SPRITE_SCALING_COIN)
 
             # Position the coin
             coin.center_x = random.randrange(SCREEN_WIDTH)
@@ -119,9 +119,9 @@ class MyGame(arcade.Window):
         Called whenever the mouse button is clicked.
         """
         # Gunshot sound
-        arcade.sound.play_sound(self.gun_sound)
+        arcade.play_sound(self.gun_sound)
         # Create a bullet
-        bullet = arcade.Sprite("images/laserBlue01.png", SPRITE_SCALING_LASER)
+        bullet = arcade.Sprite(":resources:images/space_shooter/laserBlue01.png", SPRITE_SCALING_LASER)
 
         # The image points to the right, and we want it to point up. So
         # rotate it.
@@ -159,7 +159,7 @@ class MyGame(arcade.Window):
                 self.score += 1
 
                 # Hit Sound
-                arcade.sound.play_sound(self.hit_sound)
+                arcade.play_sound(self.hit_sound)
 
             # If the bullet flies off-screen, remove it.
             if bullet.bottom > SCREEN_HEIGHT:

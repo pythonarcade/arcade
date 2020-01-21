@@ -23,37 +23,27 @@ class MyTestWindow(arcade.Window):
 
         self.player = arcade.AnimatedWalkingSprite()
 
-        self.player.stand_right_textures = []
+        self.player.stand_right_textures = [arcade.load_texture(":resources:images/animated_characters/robot/robot_idle.png")]
 
-        self.player.stand_right_textures = arcade.load_textures("../../arcade/examples/images/character_sheet.png",
-                                                                ((0, 0, 59, 97),))
+        self.player.stand_left_textures = [arcade.load_texture(":resources:images/animated_characters/robot/robot_idle.png", mirrored=True)]
 
-        self.player.stand_left_textures = []
+        self.player.walk_right_textures = [arcade.load_texture(":resources:images/animated_characters/robot/robot_walk0.png"),
+                                           arcade.load_texture(":resources:images/animated_characters/robot/robot_walk1.png"),
+                                           arcade.load_texture(":resources:images/animated_characters/robot/robot_walk2.png"),
+                                           arcade.load_texture(":resources:images/animated_characters/robot/robot_walk3.png"),
+                                           arcade.load_texture(":resources:images/animated_characters/robot/robot_walk4.png"),
+                                           arcade.load_texture(":resources:images/animated_characters/robot/robot_walk5.png"),
+                                           arcade.load_texture(":resources:images/animated_characters/robot/robot_walk6.png"),
+                                           arcade.load_texture(":resources:images/animated_characters/robot/robot_walk7.png")]
 
-        self.player.stand_left_textures = arcade.load_textures("../../arcade/examples/images/character_sheet.png",
-                                                               ((0, 0, 59, 97),), mirrored=True)
-
-        self.player.walk_right_textures = []
-
-        self.player.walk_right_textures = arcade.load_textures("../../arcade/examples/images/character_sheet.png",
-                                                               (
-                                                                   (592, 0, 63, 97),
-                                                                   (656, 0, 731 - 656, 97),
-                                                                   (731, 0, 783 - 731, 97),
-                                                                   (786, 0, 843 - 786, 97),
-                                                                   (844, 0, 898 - 844, 97),
-                                                               ))
-
-        self.player.walk_left_textures = []
-
-        self.player.walk_left_textures = arcade.load_textures("../../arcade/examples/images/character_sheet.png",
-                                                              (
-                                                                  (592, 0, 63, 97),
-                                                                  (656, 0, 731 - 656, 97),
-                                                                  (731, 0, 783 - 731, 97),
-                                                                  (786, 0, 843 - 786, 97),
-                                                                  (844, 0, 898 - 844, 97),
-                                                              ), mirrored=True)
+        self.player.walk_left_textures = [arcade.load_texture(":resources:images/animated_characters/robot/robot_walk0.png", mirrored=True),
+                                          arcade.load_texture(":resources:images/animated_characters/robot/robot_walk1.png", mirrored=True),
+                                          arcade.load_texture(":resources:images/animated_characters/robot/robot_walk2.png", mirrored=True),
+                                          arcade.load_texture(":resources:images/animated_characters/robot/robot_walk3.png", mirrored=True),
+                                          arcade.load_texture(":resources:images/animated_characters/robot/robot_walk4.png", mirrored=True),
+                                          arcade.load_texture(":resources:images/animated_characters/robot/robot_walk5.png", mirrored=True),
+                                          arcade.load_texture(":resources:images/animated_characters/robot/robot_walk6.png", mirrored=True),
+                                          arcade.load_texture(":resources:images/animated_characters/robot/robot_walk7.png", mirrored=True)]
 
         self.player.texture_change_distance = 20
 
@@ -72,12 +62,12 @@ class MyTestWindow(arcade.Window):
         coin.center_y = 500
 
         coin.textures = []
-        coin.textures.append(arcade.load_texture("../../arcade/examples/images/gold_1.png", scale=COIN_SCALE))
-        coin.textures.append(arcade.load_texture("../../arcade/examples/images/gold_2.png", scale=COIN_SCALE))
-        coin.textures.append(arcade.load_texture("../../arcade/examples/images/gold_3.png", scale=COIN_SCALE))
-        coin.textures.append(arcade.load_texture("../../arcade/examples/images/gold_4.png", scale=COIN_SCALE))
-        coin.textures.append(arcade.load_texture("../../arcade/examples/images/gold_3.png", scale=COIN_SCALE))
-        coin.textures.append(arcade.load_texture("../../arcade/examples/images/gold_2.png", scale=COIN_SCALE))
+        coin.textures.append(arcade.load_texture(":resources:images/items/gold_1.png", scale=COIN_SCALE))
+        coin.textures.append(arcade.load_texture(":resources:images/items/gold_2.png", scale=COIN_SCALE))
+        coin.textures.append(arcade.load_texture(":resources:images/items/gold_3.png", scale=COIN_SCALE))
+        coin.textures.append(arcade.load_texture(":resources:images/items/gold_4.png", scale=COIN_SCALE))
+        coin.textures.append(arcade.load_texture(":resources:images/items/gold_3.png", scale=COIN_SCALE))
+        coin.textures.append(arcade.load_texture(":resources:images/items/gold_2.png", scale=COIN_SCALE))
         coin.set_texture(0)
         self.coin_list.append(coin)
 
@@ -100,5 +90,5 @@ class MyTestWindow(arcade.Window):
 
 def test_sprite():
     window = MyTestWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Test Animation")
-    window.test(150)
+    window.test(90)
     window.close()

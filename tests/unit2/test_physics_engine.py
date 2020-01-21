@@ -18,7 +18,7 @@ class MyTestWindow(arcade.Window):
         arcade.set_background_color(arcade.color.AMAZON)
 
         self.character_list = arcade.SpriteList()
-        self.character_sprite = arcade.Sprite("../../arcade/examples/images/character.png", CHARACTER_SCALING)
+        self.character_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", CHARACTER_SCALING)
         self.character_sprite.center_x = 250
         self.character_sprite.center_y = 250
         self.character_sprite.change_x = 5
@@ -27,12 +27,12 @@ class MyTestWindow(arcade.Window):
 
         self.wall_list = arcade.SpriteList()
 
-        sprite = arcade.Sprite("../../arcade/examples/images/boxCrate_double.png", CHARACTER_SCALING)
+        sprite = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", CHARACTER_SCALING)
         sprite.position = (330, 330)
         sprite.angle = 90
         self.wall_list.append(sprite)
 
-        sprite = arcade.Sprite("../../arcade/examples/images/boxCrate_double.png", CHARACTER_SCALING)
+        sprite = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", CHARACTER_SCALING)
         sprite.position = (170, 170)
         sprite.angle = 45
         self.wall_list.append(sprite)

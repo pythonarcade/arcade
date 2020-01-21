@@ -5,7 +5,7 @@ import sys
 from setuptools import setup
 
 BUILD = 0
-VERSION = "2.1.7"
+VERSION = "2.2.6"
 RELEASE = VERSION
 
 if __name__ == "__main__":
@@ -60,14 +60,30 @@ if __name__ == "__main__":
               "Topic :: Software Development :: Libraries :: Python Modules",
               ],
           test_suite="tests",
-          package_data={'arcade': ['examples/images/*.png',
-                                   'examples/images/character_sprites/*.png',
-                                   'examples/images/explosion/*.png',
-                                   'examples/images/isometric_dungeon/*.png',
-                                   'examples/images/*.jpg',
-                                   'examples/*.csv',
-                                   'examples/*.tmx',
-                                   'examples/sounds/*']},
+          package_data={'arcade': ['resources/gui_themes/Fantasy/Buttons/*',
+                                   'resources/gui_themes/Fantasy/DialogueBox/*',
+                                   'resources/gui_themes/Fantasy/Menu/*',
+                                   'resources/gui_themes/Fantasy/TextBox/*',
+                                   'resources/gui_themes/Fantasy/Window/*',
+                                   'resources/images/*',
+                                   'resources/images/alien/*',
+                                   'resources/images/animated_characters/female_adventurer/*',
+                                   'resources/images/animated_characters/female_person/*',
+                                   'resources/images/animated_characters/male_adventurer/*',
+                                   'resources/images/animated_characters/male_person/*',
+                                   'resources/images/animated_characters/robot/*',
+                                   'resources/images/animated_characters/zombie/*',
+                                   'resources/images/backgrounds/*',
+                                   'resources/images/enemies/*',
+                                   'resources/images/isometric_dungeon/*',
+                                   'resources/images/items/*',
+                                   'resources/images/pinball/*',
+                                   'resources/images/space_shooter/*',
+                                   'resources/images/spritesheets/*',
+                                   'resources/images/tiles/*',
+                                   'resources/sounds/*',
+                                   'resources/tmx_maps/*',
+                                   'py.typed']},
           project_urls={
                         'Documentation': 'https://arcade.academy/',
                         'Example Code ': 'http://arcade.academy/examples/index.html',

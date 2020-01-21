@@ -2,7 +2,7 @@ import arcade
 
 
 def test_one():
-    tmx_map = arcade.tilemap.read_tmx("test_data/test_map_1.tmx")
+    tmx_map = arcade.tilemap.read_tmx(":resources:/tmx_maps/test_map_1.tmx")
 
     assert tmx_map.map_size.width == 10
     assert tmx_map.map_size.height == 5
@@ -28,7 +28,7 @@ def test_one():
 
 
 def test_two():
-    tmx_map = arcade.tilemap.read_tmx("test_data/test_map_2.tmx")
+    tmx_map = arcade.tilemap.read_tmx(":resources:tmx_maps/test_map_2.tmx")
 
     assert tmx_map.map_size.width == 10
     assert tmx_map.map_size.height == 5
@@ -82,7 +82,7 @@ def test_two():
 
 
 def test_three():
-    tmx_map = arcade.tilemap.read_tmx("test_data/test_map_3.tmx")
+    tmx_map = arcade.tilemap.read_tmx(":resources:tmx_maps/test_map_3.tmx")
     assert tmx_map is not None
 
     sprite_list = arcade.tilemap.process_layer(tmx_map, "Moving Platforms", base_directory="test_data")
@@ -98,13 +98,13 @@ def test_three():
 
 
 def test_five():
-    tmx_map = arcade.tilemap.read_tmx("test_data/test_map_5.tmx")
+    tmx_map = arcade.tilemap.read_tmx(":resources:tmx_maps/test_map_5.tmx")
     assert tmx_map is not None
 
     arcade.tilemap.process_layer(tmx_map, 'object_layer')
 
 def test_sprite_sheet():
-    tmx_map = arcade.tilemap.read_tmx("test_data/test_map_6.tmx")
+    tmx_map = arcade.tilemap.read_tmx(":resources:tmx_maps/test_map_6.tmx")
     assert tmx_map is not None
 
     sprite_list = arcade.tilemap.process_layer(tmx_map, 'Tile Layer 1')

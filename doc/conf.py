@@ -10,7 +10,7 @@ runpy.run_path('preprocess_files.py', run_name='__main__')
 runpy.run_path('generate_example_thumbnails.py', run_name='__main__')
 
 BUILD = 0
-VERSION = "2.1.7"
+VERSION = "2.2.6"
 RELEASE = VERSION
 
 
@@ -29,6 +29,7 @@ RELEASE = VERSION
 # serve to show the default.
 
 sys.path.insert(0, os.path.abspath('..'))
+sys.path.insert(0, os.path.abspath('../arcade'))
 
 # -- General configuration ------------------------------------------------
 
@@ -47,17 +48,17 @@ extensions = [
     'sphinx.ext.mathjax',
     'sphinx.ext.ifconfig',
     'sphinx.ext.viewcode',
-    "sphinxcontrib.spelling"
+    'sphinx_sitemap'
 ]
 
-try:
-    import sphinxcontrib.spelling
-except ImportError:
-    pass
-else:
-    extensions.append("sphinxcontrib.spelling")
-
-spelling_word_list_filename = "wordlist.txt"
+# try:
+#     import sphinxcontrib.spelling
+# except ImportError:
+#     pass
+# else:
+#     extensions.append("sphinxcontrib.spelling")
+#
+# spelling_word_list_filename = "wordlist.txt"
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -172,7 +173,7 @@ html_static_path = ['_static']
 # Add any extra paths that contain custom files (such as robots.txt or
 # .htaccess) here, relative to this directory. These files are copied
 # directly to the root of the documentation.
-# html_extra_path = []
+html_extra_path = ['html_extra']
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.
@@ -231,6 +232,7 @@ html_static_path = ['_static']
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'Arcadedoc'
+html_baseurl = 'http://arcade.academy/'
 
 # -- Options for LaTeX output ---------------------------------------------
 
@@ -386,7 +388,8 @@ epub_exclude_files = ['search.html']
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {'python': ('https://docs.python.org/3', None),
-                       'numpy': ('https://docs.scipy.org/doc/numpy', None)}
+                       'numpy': ('https://docs.scipy.org/doc/numpy', None),
+                       'PIL': ('http://pillow.readthedocs.io/en/stable', None)}
 
 
 def replace_in_file(filename, replace_list):

@@ -8,11 +8,27 @@ os.chdir(file_path)
 def test_sprites_at_point():
 
     coin_list = arcade.SpriteList()
-    sprite = arcade.Sprite("../../arcade/examples/images/coin_01.png")
-    sprite.position = (130, 130)
-    sprite.set_position(130, 130)
-    sprite.angle = 90
+    sprite = arcade.SpriteSolidColor(50, 50, arcade.csscolor.RED)
     coin_list.append(sprite)
+
+    # print()
+    # print(sprite.points)
+    sprite_list = arcade.get_sprites_at_point((0, 0), coin_list)
+    assert len(sprite_list) == 1
+
+    sprite.position = (130, 130)
+    # print()
+    # print(sprite.points)
+
+    sprite_list = arcade.get_sprites_at_point((0, 0), coin_list)
+    assert len(sprite_list) == 0
+
+    sprite_list = arcade.get_sprites_at_point((140, 130), coin_list)
+    assert len(sprite_list) == 1
+
+    sprite.angle = 90
+    # print()
+    # print(sprite.points)
 
     sprite_list = arcade.get_sprites_at_point((0, 0), coin_list)
     assert len(sprite_list) == 0
@@ -49,10 +65,13 @@ def test_sprite_collides_with_sprite():
     sprite_one = arcade.Sprite(center_x=0, center_y=0)
     sprite_one.width = 10
     sprite_one.height = 10
+    # print()
+    # print("--------------", sprite_one.get_adjusted_hit_box())
 
     sprite_two = arcade.Sprite(center_x=5, center_y=5)
     sprite_two.width = 10
     sprite_two.height = 10
+    # print("--------------", sprite_two.get_adjusted_hit_box())
 
     assert sprite_one.collides_with_sprite(sprite_two) is True
 

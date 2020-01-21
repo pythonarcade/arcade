@@ -82,7 +82,7 @@ class MyGame(arcade.Window):
         self.player_list = arcade.SpriteList()
 
         # Set up the player
-        self.player_sprite = arcade.Sprite("images/character.png",
+        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
                                            SPRITE_SCALING)
         self.player_sprite.center_x = 64
         self.player_sprite.center_y = 270
@@ -94,16 +94,16 @@ class MyGame(arcade.Window):
         # Right edge of the map in pixels
         self.end_of_map = len(map_array[0]) * GRID_PIXEL_SIZE
 
-        map_items = ["images/boxCrate_double.png",
-                     "images/grassCenter.png",
-                     "images/grassCorner_left.png",
-                     "images/grassCorner_right.png",
-                     "images/grassHill_left.png",
-                     "images/grassHill_right.png",
-                     "images/grassLeft.png",
-                     "images/grassMid.png",
-                     "images/grassRight.png",
-                     "images/stoneHalf.png"
+        map_items = [":resources:images/tiles/boxCrate_double.png",
+                     ":resources:images/tiles/grassCenter.png",
+                     ":resources:images/tiles/grassCorner_left.png",
+                     ":resources:images/tiles/grassCorner_right.png",
+                     ":resources:images/tiles/grassHill_left.png",
+                     ":resources:images/tiles/grassHill_right.png",
+                     ":resources:images/tiles/grassLeft.png",
+                     ":resources:images/tiles/grassMid.png",
+                     ":resources:images/tiles/grassRight.png",
+                     ":resources:images/tiles/stoneHalf.png"
                      ]
         for row_index, row in enumerate(map_array):
             for column_index, item in enumerate(row):

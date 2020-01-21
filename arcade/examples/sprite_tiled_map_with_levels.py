@@ -12,13 +12,14 @@ import arcade
 import os
 import time
 
-SPRITE_SCALING = 0.5
+TILE_SPRITE_SCALING = 0.5
+PLAYER_SCALING = 0.6
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 SCREEN_TITLE = "Sprite Tiled Map with Levels Example"
 SPRITE_PIXEL_SIZE = 128
-GRID_PIXEL_SIZE = (SPRITE_PIXEL_SIZE * SPRITE_SCALING)
+GRID_PIXEL_SIZE = (SPRITE_PIXEL_SIZE * TILE_SPRITE_SCALING)
 
 # How many pixels to keep as a minimum margin between the character
 # and the edge of the screen.
@@ -78,10 +79,11 @@ class MyGame(arcade.Window):
         self.coin_list = arcade.SpriteList()
 
         # Set up the player
-        self.player_sprite = arcade.Sprite("images/character.png", SPRITE_SCALING)
+        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
+                                           PLAYER_SCALING)
 
         # Starting position of the player
-        self.player_sprite.center_x = 64
+        self.player_sprite.center_x = 128
         self.player_sprite.center_y = 64
         self.player_list.append(self.player_sprite)
 
@@ -91,7 +93,7 @@ class MyGame(arcade.Window):
 
     def load_level(self, level):
         # Read in the tiled map
-        my_map = arcade.tilemap.read_tmx(f"level_{level}.tmx")
+        my_map = arcade.tilemap.read_tmx(f":resources:tmx_maps/level_{level}.tmx")
 
         # --- Walls ---
 
@@ -99,7 +101,7 @@ class MyGame(arcade.Window):
         self.end_of_map = my_map.map_size.width * GRID_PIXEL_SIZE
 
         # Grab the layer of items we can't move through
-        self.wall_list = arcade.tilemap.process_layer(my_map, 'Platforms', SPRITE_SCALING)
+        self.wall_list = arcade.tilemap.process_layer(my_map, 'Platforms', TILE_SPRITE_SCALING)
 
         self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
                                                              self.wall_list,
@@ -144,7 +146,7 @@ class MyGame(arcade.Window):
         # Adjust the text position based on the view port so that we don't
         # scroll the text too.
         distance = self.player_sprite.right
-        output = f"Distance: {distance}"
+        output = f"Distance: {distance:.0f}"
         arcade.draw_text(output, self.view_left + 10, self.view_bottom + 20, arcade.color.BLACK, 14)
 
         if self.game_over:
@@ -176,7 +178,7 @@ class MyGame(arcade.Window):
             if self.level < self.max_level:
                 self.level += 1
                 self.load_level(self.level)
-                self.player_sprite.center_x = 64
+                self.player_sprite.center_x = 128
                 self.player_sprite.center_y = 64
                 self.player_sprite.change_x = 0
                 self.player_sprite.change_y = 0

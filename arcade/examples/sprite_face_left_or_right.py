@@ -32,9 +32,9 @@ class Player(arcade.Sprite):
 
         # Load a left facing texture and a right facing texture.
         # mirrored=True will mirror the image we load.
-        texture = arcade.load_texture("images/character.png", mirrored=True, scale=SPRITE_SCALING)
+        texture = arcade.load_texture(":resources:images/animated_characters/female_person/femalePerson_idle.png", mirrored=True, scale=SPRITE_SCALING)
         self.textures.append(texture)
-        texture = arcade.load_texture("images/character.png", scale=SPRITE_SCALING)
+        texture = arcade.load_texture(":resources:images/animated_characters/female_person/femalePerson_idle.png", scale=SPRITE_SCALING)
         self.textures.append(texture)
 
         # By default, face right.

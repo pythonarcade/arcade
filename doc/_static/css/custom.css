@@ -39,6 +39,16 @@ h1, h2, h3 {
 .wy-side-nav-search > div.version {
     color: #FFF;
 }
+.resource-table td {
+    width: 50px;
+}
+.resource-table {
+    width: 100%;
+}
+.resource-table img {
+    max-width: 64px;
+    max-height: 64px;
+}
 div[class^='highlight'] {
     border-style: solid;
     border-width: 2px 0 2px 0;

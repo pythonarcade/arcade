@@ -17,12 +17,12 @@ from typing import TypeVar
 from typing import Generic
 from typing import cast
 
-from arcade.arcade_types import Color
-from arcade.draw_commands import rotate_point
-from arcade.arcade_types import Point, PointList
-from arcade.draw_commands import get_four_byte_color
-from arcade.draw_commands import get_projection
-from arcade.draw_commands import _get_points_for_thick_line
+from arcade import Color
+from arcade import rotate_point
+from arcade import Point, PointList
+from arcade import get_four_byte_color
+from arcade import get_projection
+from arcade import get_points_for_thick_line
 from arcade import shader
 
 
@@ -95,7 +95,7 @@ def create_line(start_x: float, start_y: float, end_x: float, end_y: float,
 
     """
 
-    points = _get_points_for_thick_line(start_x, start_y, end_x, end_y, line_width)
+    points = get_points_for_thick_line(start_x, start_y, end_x, end_y, line_width)
     color_list = [color, color, color, color]
     triangle_point_list = points[1], points[0], points[2], points[3]
     shape = create_triangles_filled_with_colors(triangle_point_list, color_list)
@@ -210,7 +210,7 @@ def create_line_strip(point_list: PointList,
             end_y = point_list[i][1]
             color1 = color
             color2 = color
-            points = _get_points_for_thick_line(start_x, start_y, end_x, end_y, line_width)
+            points = get_points_for_thick_line(start_x, start_y, end_x, end_y, line_width)
             new_color_list += color1, color2, color1, color2
             triangle_point_list += points[1], points[0], points[2], points[3]
 
@@ -268,7 +268,7 @@ def create_lines_with_colors(point_list: PointList,
             end_y = point_list[i][1]
             color1 = color_list[i-1]
             color2 = color_list[i]
-            points = _get_points_for_thick_line(start_x, start_y, end_x, end_y, line_width)
+            points = get_points_for_thick_line(start_x, start_y, end_x, end_y, line_width)
             new_color_list += color1, color1, color2, color2
             triangle_point_list += points[1], points[0], points[2], points[3]
 

@@ -76,7 +76,7 @@ class GameView(arcade.View):
 
         # Set up the player
         self.score = 0
-        self.player_sprite = arcade.Sprite("images/character.png", SPRITE_SCALING)
+        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", SPRITE_SCALING)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 50
         self.player_list.append(self.player_sprite)
@@ -84,7 +84,7 @@ class GameView(arcade.View):
         for i in range(5):
 
             # Create the coin instance
-            coin = arcade.Sprite("images/coin_01.png", SPRITE_SCALING / 3)
+            coin = arcade.Sprite(":resources:images/items/coinGold.png", SPRITE_SCALING / 3)
 
             # Position the coin
             coin.center_x = random.randrange(WIDTH)

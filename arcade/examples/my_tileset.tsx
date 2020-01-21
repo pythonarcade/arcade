@@ -2,7 +2,7 @@
 <tileset name="my_tileset" tilewidth="128" tileheight="128" tilecount="9" columns="0">
  <grid orientation="orthogonal" width="1" height="1"/>
  <tile id="0">
-  <image width="128" height="128" source="images/boxCrate_double.png"/>
+  <image width="128" height="128" source=":resources:images/tiles/boxCrate_double.png"/>
  </tile>
  <tile id="1">
   <image width="128" height="128" source="images/grassCenter.png"/>
@@ -23,7 +23,7 @@
   <image width="128" height="128" source="images/grassLeft.png"/>
  </tile>
  <tile id="7">
-  <image width="128" height="128" source="images/grassMid.png"/>
+  <image width="128" height="128" source=":resources:images/tiles/grassMid.png"/>
  </tile>
  <tile id="8">
   <image width="128" height="128" source="images/grassRight.png"/>

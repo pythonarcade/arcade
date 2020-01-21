@@ -457,14 +457,14 @@ Here's an expanded example:
 * The player resets to the start if they fall off the map (217-226)
 * If the player gets to the right side of the map, the program attempts to load another layer
 
-  * Add ``level`` attribute (69)
-  * Updated ``setup`` to load a file based on the level (76-144, specifically lines 76 and 114)
-  * Added end-of-map check(245-256)
+  * Add ``level`` attribute (69-70)
+  * Updated ``setup`` to load a file based on the level (76-144, specifically lines 77 and 115)
+  * Added end-of-map check(246-257)
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/09_endgame.py
     :caption: More Advanced Example
     :linenos:
-    :emphasize-lines: 69, 76, 114, 245-256
+    :emphasize-lines: 69-70, 77, 114-115, 246-257
 
 .. note::
 

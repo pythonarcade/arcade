@@ -49,7 +49,7 @@ class MyGame(arcade.Window):
         width, height = self.get_size()
         self.set_viewport(0, width, 0, height)
         arcade.set_background_color(arcade.color.AMAZON)
-        self.example_image = arcade.load_texture("images/boxCrate_double.png")
+        self.example_image = arcade.load_texture(":resources:images/tiles/boxCrate_double.png")
 
     def on_draw(self):
         """

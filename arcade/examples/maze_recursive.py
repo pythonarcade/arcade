@@ -190,7 +190,7 @@ class MyGame(arcade.Window):
             for row in range(MAZE_HEIGHT):
                 for column in range(MAZE_WIDTH):
                     if maze[row][column] == 1:
-                        wall = arcade.Sprite("images/grassCenter.png", SPRITE_SCALING)
+                        wall = arcade.Sprite(":resources:images/tiles/grassCenter.png", SPRITE_SCALING)
                         wall.center_x = column * SPRITE_SIZE + SPRITE_SIZE / 2
                         wall.center_y = row * SPRITE_SIZE + SPRITE_SIZE / 2
                         self.wall_list.append(wall)
@@ -212,7 +212,7 @@ class MyGame(arcade.Window):
                     column_count = end_column - start_column + 1
                     column_mid = (start_column + end_column) / 2
 
-                    wall = arcade.Sprite("images/grassCenter.png", SPRITE_SCALING,
+                    wall = arcade.Sprite(":resources:images/tiles/grassCenter.png", SPRITE_SCALING,
                                          repeat_count_x=column_count)
                     wall.center_x = column_mid * SPRITE_SIZE + SPRITE_SIZE / 2
                     wall.center_y = row * SPRITE_SIZE + SPRITE_SIZE / 2
@@ -220,7 +220,7 @@ class MyGame(arcade.Window):
                     self.wall_list.append(wall)
 
         # Set up the player
-        self.player_sprite = arcade.Sprite("images/character.png", SPRITE_SCALING)
+        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", SPRITE_SCALING)
         self.player_list.append(self.player_sprite)
 
         # Randomly place the player. If we are in a wall, repeat until we aren't.

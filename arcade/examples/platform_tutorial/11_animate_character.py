@@ -72,12 +72,12 @@ class PlayerCharacter(arcade.Sprite):
         # --- Load Textures ---
 
         # Images from Kenney.nl's Asset Pack 3
-        # main_path = "images/Female adventurer/PNG/Poses/character_femaleAdventurer"
-        # main_path = "images/Female person/PNG/Poses/character_femalePerson"
-        main_path = "images/Male person/PNG/Poses/character_malePerson"
-        # main_path = "images/Male adventurer/PNG/Poses/character_maleAdventurer"
-        # main_path = "images/Zombie/PNG/Poses/character_zombie"
-        # main_path = "images/Robot/PNG/Poses/character_robot"
+        # main_path = ":resources:images/animated_characters/female_adventurer/femaleAdventurer"
+        # main_path = ":resources:images/animated_characters/female_person/femalePerson"
+        main_path = ":resources:images/animated_characters/male_person/malePerson"
+        # main_path = ":resources:images/animated_characters/male_adventurer/maleAdventurer"
+        # main_path = ":resources:images/animated_characters/zombie/zombie"
+        # main_path = ":resources:images/animated_characters/robot/robot"
 
         # Load textures for idle standing
         self.idle_texture_pair = load_texture_pair(f"{main_path}_idle.png")
@@ -186,9 +186,9 @@ class MyGame(arcade.Window):
         self.score = 0
 
         # Load sounds
-        self.collect_coin_sound = arcade.load_sound("sounds/coin1.wav")
-        self.jump_sound = arcade.load_sound("sounds/jump1.wav")
-        self.game_over = arcade.load_sound("sounds/gameover1.wav")
+        self.collect_coin_sound = arcade.load_sound(":resources:sounds/coin1.wav")
+        self.jump_sound = arcade.load_sound(":resources:sounds/jump1.wav")
+        self.game_over = arcade.load_sound(":resources:sounds/gameover1.wav")
 
     def setup(self):
         """ Set up the game here. Call this function to restart the game. """
@@ -207,7 +207,6 @@ class MyGame(arcade.Window):
         self.coin_list = arcade.SpriteList()
 
         # Set up the player, specifically placing it at these coordinates.
-        # self.player_sprite = arcade.Sprite("images/player_1/player_stand.png", CHARACTER_SCALING)
         self.player_sprite = PlayerCharacter()
         self.player_sprite.center_x = PLAYER_START_X
         self.player_sprite.center_y = PLAYER_START_Y
@@ -223,7 +222,7 @@ class MyGame(arcade.Window):
         coins_layer_name = 'Coins'
 
         # Map name
-        map_name = f"map_with_ladders.tmx"
+        map_name = f":resources:tmx_maps/map_with_ladders.tmx"
 
         # Read in the tiled map
         my_map = arcade.tilemap.read_tmx(map_name)
@@ -340,8 +339,7 @@ class MyGame(arcade.Window):
     def on_update(self, delta_time):
         """ Movement and game logic """
 
-        # Call update on all sprites (The sprites don't do much in this
-        # example though.)
+        # Move the player with the physics engine
         self.physics_engine.update()
 
         # Update animations

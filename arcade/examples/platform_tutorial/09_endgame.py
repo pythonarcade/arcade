@@ -70,9 +70,9 @@ class MyGame(arcade.Window):
         self.level = 1
 
         # Load sounds
-        self.collect_coin_sound = arcade.load_sound("sounds/coin1.wav")
-        self.jump_sound = arcade.load_sound("sounds/jump1.wav")
-        self.game_over = arcade.load_sound("sounds/gameover1.wav")
+        self.collect_coin_sound = arcade.load_sound(":resources:sounds/coin1.wav")
+        self.jump_sound = arcade.load_sound(":resources:sounds/jump1.wav")
+        self.game_over = arcade.load_sound(":resources:sounds/gameover1.wav")
 
     def setup(self, level):
         """ Set up the game here. Call this function to restart the game. """
@@ -92,8 +92,8 @@ class MyGame(arcade.Window):
         self.coin_list = arcade.SpriteList()
 
         # Set up the player, specifically placing it at these coordinates.
-        self.player_sprite = arcade.Sprite("images/player_1/player_stand.png",
-                                           CHARACTER_SCALING)
+        image_source = ":resources:images/animated_characters/female_adventurer/femaleAdventurer_idle.png"
+        self.player_sprite = arcade.Sprite(image_source, CHARACTER_SCALING)
         self.player_sprite.center_x = PLAYER_START_X
         self.player_sprite.center_y = PLAYER_START_Y
         self.player_list.append(self.player_sprite)
@@ -112,7 +112,7 @@ class MyGame(arcade.Window):
         dont_touch_layer_name = "Don't Touch"
 
         # Map name
-        map_name = f"map2_level_{level}.tmx"
+        map_name = f":resources:tmx_maps/map2_level_{level}.tmx"
 
         # Read in the tiled map
         my_map = arcade.tilemap.read_tmx(map_name)
@@ -198,8 +198,7 @@ class MyGame(arcade.Window):
     def update(self, delta_time):
         """ Movement and game logic """
 
-        # Call update on all sprites (The sprites don't do much in this
-        # example though.)
+        # Move the player with the physics engine
         self.physics_engine.update()
 
         # See if we hit any coins

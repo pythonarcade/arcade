@@ -61,14 +61,14 @@ class MyGame(arcade.Window):
 
         # Set up the player
         self.score = 0
-        self.player_sprite = arcade.Sprite("images/character.png", 0.5)
+        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", 0.5)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 50
         self.player_list.append(self.player_sprite)
 
         for i in range(50):
             # Create the coin instance
-            coin = Collectable("images/coin_01.png", SPRITE_SCALING)
+            coin = Collectable(":resources:images/items/coinGold.png", SPRITE_SCALING)
             coin.width = 30
             coin.height = 30
 
@@ -124,7 +124,7 @@ class MyGame(arcade.Window):
             # Have we collected this?
             if not coin.changed:
                 # No? Then do so
-                coin.append_texture(arcade.load_texture("images/bumper.png"))
+                coin.append_texture(arcade.load_texture(":resources:images/pinball/bumper.png"))
                 coin.set_texture(1)
                 coin.changed = True
                 coin.width = 30

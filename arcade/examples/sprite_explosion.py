@@ -12,6 +12,8 @@ python -m arcade.examples.sprite_explosion
 import random
 import arcade
 import os
+import PIL
+from arcade.draw_commands import Texture
 
 SPRITE_SCALING_PLAYER = 0.5
 SPRITE_SCALING_COIN = 0.2
@@ -31,7 +33,7 @@ class Explosion(arcade.Sprite):
     """ This class creates an explosion animation """
 
     def __init__(self, texture_list):
-        super().__init__("images/explosion/explosion0000.png")
+        super().__init__()
 
         # Start at the first frame
         self.current_texture = 0
@@ -81,17 +83,18 @@ class MyGame(arcade.Window):
         # takes too long and would cause the game to pause.
         self.explosion_texture_list = []
 
-        for i in range(EXPLOSION_TEXTURE_COUNT):
-            # Files from http://www.explosiongenerator.com are numbered sequentially.
-            # This code loads all of the explosion0000.png to explosion0270.png files
-            # that are part of this explosion.
-            texture_name = f"images/explosion/explosion{i:04d}.png"
+        columns = 16
+        count = 60
+        sprite_width = 256
+        sprite_height = 256
+        file_name = ":resources:images/spritesheets/explosion.png"
 
-            self.explosion_texture_list.append(arcade.load_texture(texture_name))
+        # Load the explosions from a sprite sheet
+        self.explosion_texture_list = arcade.load_spritesheet(file_name, sprite_width, sprite_height, columns, count)
 
         # Load sounds. Sounds from kenney.nl
-        self.gun_sound = arcade.sound.load_sound("sounds/laser1.wav")
-        self.hit_sound = arcade.sound.load_sound("sounds/phaseJump1.wav")
+        self.gun_sound = arcade.sound.load_sound(":resources:sounds/laser2.wav")
+        self.hit_sound = arcade.sound.load_sound(":resources:sounds/explosion2.wav")
 
         arcade.set_background_color(arcade.color.AMAZON)
 
@@ -109,7 +112,7 @@ class MyGame(arcade.Window):
         self.score = 0
 
         # Image from kenney.nl
-        self.player_sprite = arcade.Sprite("images/character.png", SPRITE_SCALING_PLAYER)
+        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", SPRITE_SCALING_PLAYER)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 70
         self.player_list.append(self.player_sprite)
@@ -119,7 +122,7 @@ class MyGame(arcade.Window):
 
             # Create the coin instance
             # Coin image from kenney.nl
-            coin = arcade.Sprite("images/coin_01.png", SPRITE_SCALING_COIN)
+            coin = arcade.Sprite(":resources:images/items/coinGold.png", SPRITE_SCALING_COIN)
 
             # Position the coin
             coin.center_x = random.randrange(SCREEN_WIDTH)
@@ -163,7 +166,7 @@ class MyGame(arcade.Window):
         arcade.sound.play_sound(self.gun_sound)
 
         # Create a bullet
-        bullet = arcade.Sprite("images/laserBlue01.png", SPRITE_SCALING_LASER)
+        bullet = arcade.Sprite(":resources:images/space_shooter/laserBlue01.png", SPRITE_SCALING_LASER)
 
         # The image points to the right, and we want it to point up. So
         # rotate it.
@@ -192,12 +195,23 @@ class MyGame(arcade.Window):
             # Check this bullet to see if it hit a coin
             hit_list = arcade.check_for_collision_with_list(bullet, self.coin_list)
 
-            # If it did, get rid of the bullet
+            # If it did...
             if len(hit_list) > 0:
+
+                # Make an explosion
                 explosion = Explosion(self.explosion_texture_list)
+
+                # Move it to the location of the coin
                 explosion.center_x = hit_list[0].center_x
                 explosion.center_y = hit_list[0].center_y
+
+                # Call update() because it sets which image we start on
+                explosion.update()
+
+                # Add to a list of sprites that are explosions
                 self.explosions_list.append(explosion)
+
+                # Get rid of the bullet
                 bullet.remove_from_sprite_lists()
 
             # For every coin we hit, add to the score and remove the coin

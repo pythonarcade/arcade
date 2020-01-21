@@ -61,7 +61,7 @@ class MyGame(arcade.Window):
         # Load the background image. Do this in the setup so we don't keep reloading it all the time.
         # Image from:
         # http://wallpaper-gallery.net/single/free-background-images/free-background-images-22.html
-        self.background = arcade.load_texture("images/background.jpg")
+        self.background = arcade.load_texture(":resources:images/backgrounds/abstract_1.jpg")
 
         # Sprite lists
         self.player_list = arcade.SpriteList()
@@ -69,7 +69,7 @@ class MyGame(arcade.Window):
 
         # Set up the player
         self.score = 0
-        self.player_sprite = arcade.Sprite("images/character.png", SPRITE_SCALING)
+        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", SPRITE_SCALING)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 50
         self.player_list.append(self.player_sprite)
@@ -77,7 +77,7 @@ class MyGame(arcade.Window):
         for i in range(50):
 
             # Create the coin instance
-            coin = arcade.Sprite("images/coin_01.png", SPRITE_SCALING / 3)
+            coin = arcade.Sprite(":resources:images/items/coinGold.png", SPRITE_SCALING / 3)
 
             # Position the coin
             coin.center_x = random.randrange(SCREEN_WIDTH)

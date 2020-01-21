@@ -26,11 +26,11 @@ CENTER_POS = (SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
 BURST_PARTICLE_COUNT = 500
 TEXTURE = "images/pool_cue_ball.png"
 TEXTURE2 = "images/playerShip3_orange.png"
-TEXTURE3 = "images/bumper.png"
-TEXTURE4 = "images/wormGreen.png"
+TEXTURE3 = ":resources:images/pinball/bumper.png"
+TEXTURE4 = ":resources:images/enemies/wormGreen.png"
 TEXTURE5 = "images/meteorGrey_med1.png"
-TEXTURE6 = "images/character.png"
-TEXTURE7 = "images/boxCrate_double.png"
+TEXTURE6 = ":resources:images/animated_characters/female_person/femalePerson_idle.png"
+TEXTURE7 = ":resources:images/tiles/boxCrate_double.png"
 DEFAULT_SCALE = 0.3
 DEFAULT_ALPHA = 32
 DEFAULT_PARTICLE_LIFETIME = 3.0
@@ -728,7 +728,7 @@ class MyGame(arcade.Window):
         self.label = None
         self.emitter = None
         self.emitter_timeout = 0
-        self.obj = arcade.Sprite("images/bumper.png", 0.2, center_x=0, center_y=15)
+        self.obj = arcade.Sprite(":resources:images/pinball/bumper.png", 0.2, center_x=0, center_y=15)
         self.obj.change_x = 3
         self.frametime_plotter = FrametimePlotter()
         pyglet.clock.schedule_once(self.next_emitter, QUIET_BETWEEN_SPAWNS)
