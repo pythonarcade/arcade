@@ -1,7 +1,6 @@
 numpy
 Pillow
 Pyglet>=1.4.8
-pyglet-ffmpeg2
 pytiled_parser
 pytest
 pymunk
@@ -10,3 +9,4 @@ wheel
 twine
 sphinx-sitemap
 flake8
+pyglet-ffmpeg2
