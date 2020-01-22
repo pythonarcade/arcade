@@ -19,6 +19,7 @@ import PIL.ImageDraw
 import pyglet.gl as gl
 
 from typing import List
+from typing import Tuple
 from typing import TYPE_CHECKING
 
 from arcade import get_projection
@@ -889,7 +890,7 @@ def draw_xywh_rectangle_textured(bottom_left_x: float, bottom_left_y: float,
                            angle=angle, alpha=alpha)
 
 
-def get_pixel(x: int, y: int):
+def get_pixel(x: int, y: int) -> Tuple[int, int, int]:
     """
     Given an x, y, will return RGB color value of that point.
 
@@ -901,7 +902,11 @@ def get_pixel(x: int, y: int):
 
     # The window may be 'scaled' on hi-res displays. Particularly Macs. OpenGL
     # won't account for this, so we need to.
-    pixel_ratio = get_window().get_pixel_ratio()
+    window = get_window()
+    if not window:
+        raise ValueError("No window is available to get pixel data from.")
+
+    pixel_ratio = window.get_pixel_ratio()
     x = int(pixel_ratio * x)
     y = int(pixel_ratio * y)
 

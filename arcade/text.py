@@ -177,7 +177,7 @@ def draw_text(text: str,
 
         # Font was specified with a string
         if isinstance(font_name, str):
-            font_name = [font_name]
+            font_name = font_name,
 
         font_names = chain(*[
             [font_string_name, f"{font_string_name}.ttf"]

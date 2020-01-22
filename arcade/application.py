@@ -5,7 +5,7 @@ derive from.
 import time
 
 from numbers import Number
-from typing import Tuple, List, Optional
+from typing import Tuple, List, Optional, TYPE_CHECKING
 
 import pyglet.gl as gl
 import pyglet
@@ -13,6 +13,12 @@ import pyglet
 from arcade import get_viewport
 from arcade import set_viewport
 from arcade import set_window
+
+if TYPE_CHECKING:
+    from arcade import TextBox
+    from arcade import TextButton
+    from arcade import DialogueBox
+    from arcade import TextLabel
 
 MOUSE_BUTTON_LEFT = 1
 MOUSE_BUTTON_MIDDLE = 2
@@ -90,10 +96,10 @@ class Window(pyglet.window.Window):
         set_viewport(0, self.width, 0, self.height)
 
         self.current_view: Optional[View] = None
-        self.button_list: List['TextButton'] = []
-        self.dialogue_box_list: List['DialogueBox'] = []
-        self.text_list: List['TextLabel'] = []
-        self.textbox_list: List['TextBox'] = []
+        self.button_list: List[TextButton] = []
+        self.dialogue_box_list: List[DialogueBox] = []
+        self.text_list: List[TextLabel] = []
+        self.textbox_list: List[TextBox] = []
         self.textbox_time = 0.0
         self.key: Optional[int] = None
 
