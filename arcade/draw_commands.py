@@ -31,6 +31,7 @@ from arcade import rotate_point
 from arcade import get_four_byte_color
 from arcade import get_points_for_thick_line
 from arcade import Texture
+from arcade import get_window
 
 
 if TYPE_CHECKING:  # import for mypy only
@@ -897,6 +898,13 @@ def get_pixel(x: int, y: int):
     :returns: Color
     """
     # noinspection PyCallingNonCallable,PyTypeChecker
+
+    # The window may be 'scaled' on hi-res displays. Particularly Macs. OpenGL
+    # won't account for this, so we need to.
+    pixel_ratio = get_window().get_pixel_ratio()
+    x = int(pixel_ratio * x)
+    y = int(pixel_ratio * y)
+
     a = (gl.GLubyte * 3)(0)
     gl.glReadPixels(x, y, 1, 1, gl.GL_RGB, gl.GL_UNSIGNED_BYTE, a)
     red = a[0]
