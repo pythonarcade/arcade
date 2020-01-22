@@ -175,7 +175,7 @@ class DialogueBox:
             button.check_mouse_release(x, y)
 
 
-class Text:
+class TextLabel:
     def __init__(self, text, x, y, color=arcade.color.BLACK, font_size=22, anchor_x="center",
                  anchor_y="center", width: int = 0,
                  align="center",

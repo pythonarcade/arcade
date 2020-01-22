@@ -30,15 +30,6 @@ from arcade import csscolor
 # noinspection PyPep8
 from arcade import key
 
-from .arcade_types import Color
-from .arcade_types import Point
-from .arcade_types import PointList
-from .arcade_types import RGB
-from .arcade_types import RGBA
-from .arcade_types import Rect
-from .arcade_types import RectList
-from .arcade_types import Vector
-
 from .window_commands import close_window
 from .window_commands import create_orthogonal_projection
 from .window_commands import finish_render
@@ -63,6 +54,15 @@ from .application import NoOpenGLException
 from .application import View
 from .application import Window
 from .application import open_window
+
+from .arcade_types import Color
+from .arcade_types import Point
+from .arcade_types import PointList
+from .arcade_types import RGB
+from .arcade_types import RGBA
+from .arcade_types import Rect
+from .arcade_types import RectList
+from .arcade_types import Vector
 
 from .earclip_module import Point
 from .earclip_module import earclip
@@ -150,10 +150,10 @@ from .geometry import is_point_in_polygon
 
 from .gui import DialogueBox
 from .gui import SubmitButton
-from .gui import Text
 from .gui import TextBox
 from .gui import TextButton
 from .gui import TextDisplay
+from .gui import TextLabel
 from .gui import TextStorage
 from .gui import Theme
 
@@ -180,6 +180,7 @@ from .particle import EternalParticle
 from .particle import FadeParticle
 from .particle import LifetimeParticle
 from .particle import Particle
+from .particle import clamp
 
 from .sound import PlaysoundException
 from .sound import Sound
@@ -194,7 +195,7 @@ from .sprite import FACE_UP
 from .sprite import AnimatedTimeBasedSprite
 from .sprite import AnimatedTimeSprite
 from .sprite import AnimatedWalkingSprite
-from .sprite import _AnimationKeyframe
+from .sprite import AnimationKeyframe
 from .sprite import Sprite
 from .sprite import SpriteSolidColor
 from .sprite import get_distance_between_sprites
@@ -214,6 +215,7 @@ from .read_tiled_map import TiledMap
 from .read_tiled_map import generate_sprites
 from .read_tiled_map import read_tiled_map
 
+from .text import DEFAULT_FONT_NAMES
 from .text import CreateText
 from .text import Text
 from .text import create_text
@@ -242,9 +244,10 @@ from .version import VERSION
 __all__ = ['AnimatedTimeBasedSprite',
            'AnimatedTimeSprite',
            'AnimatedWalkingSprite',
-           '_AnimationKeyframe',
+           'AnimationKeyframe',
            'Color',
            'CreateText',
+           'DEFAULT_FONT_NAMES',
            'DialogueBox',
            'EmitBurst',
            'EmitController',
@@ -286,10 +289,10 @@ __all__ = ['AnimatedTimeBasedSprite',
            'SubmitButton',
            'TShape',
            'Text',
-           'Text',
            'TextBox',
            'TextButton',
            'TextDisplay',
+           'TextLabel',
            'TextStorage',
            'Texture',
            'Theme',
@@ -304,6 +307,7 @@ __all__ = ['AnimatedTimeBasedSprite',
            'calculate_points',
            'check_for_collision',
            'check_for_collision_with_list',
+           'clamp',
            'close_window',
            'create_ellipse',
            'create_ellipse_filled',

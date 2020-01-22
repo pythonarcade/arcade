@@ -4,7 +4,7 @@ import PIL.ImageDraw
 import math
 import os
 
-from typing import List, Tuple
+from typing import List, Tuple, Sequence
 
 from arcade import lerp
 from arcade import RectList
@@ -78,7 +78,7 @@ def make_transparent_color(color: Color, transparency: float):
 
 
 def rotate_point(x: float, y: float, cx: float, cy: float,
-                 angle: float) -> Tuple[float, float]:
+                 angle: float) -> List[float]:
     """
     Rotate a point around a center.
 
@@ -587,8 +587,8 @@ def make_soft_square_texture(size: int, color: Color, center_alpha: int = 255, o
         clr = (color[0], color[1], color[2], alpha)
         # draw.ellipse((center-radius, center-radius, center+radius, center+radius), fill=clr)
         draw.rectangle((cur_size, cur_size, size - cur_size, size - cur_size), clr, None)
-    name = "{}:{}:{}:{}".format("gradientsquare", size, color, center_alpha,
-                                outer_alpha)  # name must be unique for caching
+    name = "{}:{}:{}:{}:{}".format("gradientsquare", size, color, center_alpha,
+                                   outer_alpha)  # name must be unique for caching
     return Texture(name, img)
 
 

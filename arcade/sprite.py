@@ -18,6 +18,7 @@ from typing import List
 from typing import Dict
 from typing import Any
 from typing import Optional
+from typing import Union
 from typing import TYPE_CHECKING
 
 import PIL.Image
@@ -174,15 +175,15 @@ class Sprite:
         self._collision_radius: Optional[float] = None
         self._color: RGB = (255, 255, 255)
 
+        self._points: Optional[List[List[float]]] = None
+
         if self._texture:
             self._points = self._texture.unscaled_hitbox_points
-        else:
-            self._points: Optional[Sequence[Sequence[float]]] = None
 
-        self._point_list_cache: Optional[Tuple[Tuple[float, float], ...]] = None
+        self._point_list_cache: Optional[List[List[float]]] = None
 
         self.force = [0, 0]
-        self.guid = None
+        self.guid: Optional[str] = None
 
         self.repeat_count_x = repeat_count_x
         self.repeat_count_y = repeat_count_y
@@ -236,7 +237,7 @@ class Sprite:
         """
         self._set_position((center_x, center_y))
 
-    def set_points(self, points: Sequence[Sequence[float]]):
+    def set_points(self, points: List[List[float]]):
         """
         Set a sprite's hitbox
         """
@@ -245,7 +246,7 @@ class Sprite:
 
         self._points = points
 
-    def get_points(self) -> Tuple[Tuple[float, float], ...]:
+    def get_points(self) -> List[List[float]]:
         """
         Get the points that make up the hit box for the rect that makes up the
         sprite, including rotation and scaling.
@@ -257,13 +258,13 @@ class Sprite:
 
     points = property(get_points, set_points)
 
-    def set_hit_box(self, points: Sequence[Sequence[float]]):
+    def set_hit_box(self, points: List[List[float]]):
         """
         Set a sprite's hit box
         """
         self._points = points
 
-    def get_hit_box(self) -> Tuple[Tuple[float, float], ...]:
+    def get_hit_box(self) -> Optional[List[List[float]]]:
         """
         Get a sprite's hit box
         """
@@ -271,7 +272,7 @@ class Sprite:
 
     hit_box = property(get_hit_box, set_hit_box)
 
-    def get_adjusted_hit_box(self) -> Tuple[Tuple[float, float], ...]:
+    def get_adjusted_hit_box(self) -> List[List[float]]:
         """
         Get the points that make up the hit box for the rect that makes up the
         sprite, including rotation and scaling.
@@ -286,7 +287,7 @@ class Sprite:
             x3, y3 = + self.width / 2, + self.height / 2
             x4, y4 = - self.width / 2, + self.height / 2
 
-            self._points = ((x1, y1), (x2, y2), (x3, y3), (x4, y4))
+            self._points = [[x1, y1], [x2, y2], [x3, y3], [x4, y4]]
 
         point_list = []
         for point_idx in range(len(self._points)):
@@ -303,10 +304,10 @@ class Sprite:
                 point[1] *= self.scale
 
             # Offset the point
-            point = (point[0] + self.center_x,
-                     point[1] + self.center_y)
+            point = [point[0] + self.center_x,
+                     point[1] + self.center_y]
             point_list.append(point)
-        self._point_list_cache = tuple(point_list)
+        self._point_list_cache = point_list
 
         return self._point_list_cache
 
@@ -820,7 +821,7 @@ class AnimatedTimeSprite(Sprite):
 
 
 @dataclasses.dataclass
-class _AnimationKeyframe:
+class AnimationKeyframe:
     tile_id: int
     duration: int
     image: PIL.Image
@@ -844,7 +845,7 @@ class AnimatedTimeBasedSprite(Sprite):
                          image_width=image_width, image_height=image_height,
                          center_x=center_x, center_y=center_y)
         self.cur_frame = 0
-        self.frames: List[_AnimationKeyframe] = []
+        self.frames: List[AnimationKeyframe] = []
         self.time_counter = 0.0
 
     def update_animation(self, delta_time: float = 1/60):
