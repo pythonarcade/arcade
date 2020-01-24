@@ -347,6 +347,41 @@ class SpriteList(Generic[_SpriteType]):
         if self.use_spatial_hash:
             self.spatial_hash.insert_object_for_box(item)
 
+    def extend(self, items: list):
+        """
+        Extends the current list with the given list
+
+        :param list items: list of Sprites to add to the list
+        """
+        for item in items:
+            self.append(item)
+
+    def insert(self, index: int, item: _SpriteType):
+        """
+        Inserts a sprite at a given index
+
+        :param int index: The index at which to insert
+        :param Sprite item: The sprite to insert
+        """
+        self.sprite_list.insert(index, item)
+        item.register_sprite_list(self)
+        for idx, sprite in enumerate(self.sprite_list[index:], start=index):
+            self.sprite_idx[sprite] = idx
+
+        self._vao1 = None
+        if self.use_spatial_hash:
+            self.spatial_hash.insert_object_for_box(item)
+
+    def reverse(self):
+        """
+        Reverses the current list inplace
+        """
+        self.sprite_list.reverse()
+        for idx, sprite in enumerate(self.sprite_list):
+            self.sprite_idx[sprite] = idx
+
+        self._vao1 = None
+
     def _recalculate_spatial_hash(self, item: _SpriteType):
         """ Recalculate the spatial hash for a particular item. """
         if self.use_spatial_hash:
@@ -886,14 +921,14 @@ class SpriteList(Generic[_SpriteType]):
     def __getitem__(self, i):
         return self.sprite_list[i]
 
-    def pop(self) -> Sprite:
+    def pop(self, index: int = -1) -> Sprite:
         """
-        Pop off the last sprite in the list.
+        Pop off the last sprite, or the given index, from the list
         """
         if len(self.sprite_list) == 0:
             raise(ValueError("pop from empty list"))
 
-        sprite = self.sprite_list[-1]
+        sprite = self.sprite_list[index]
         self.remove(sprite)
         return sprite
 
