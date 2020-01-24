@@ -364,6 +364,7 @@ class SpriteList(Generic[_SpriteType]):
         :param Sprite item: The sprite to insert
         """
         self.sprite_list.insert(index, item)
+        item.register_sprite_list(self)
         for idx, sprite in enumerate(self.sprite_list[index:], start=index):
             self.sprite_idx[sprite] = idx
 
