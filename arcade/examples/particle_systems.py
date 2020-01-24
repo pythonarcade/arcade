@@ -8,7 +8,7 @@ a number of different emitters in sequence, with each example often varying just
 setting from the previous example.
 
 If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.sprite_list_particle_systems
+python -m arcade.examples.particle_systems
 """
 import arcade
 from arcade.examples.frametime_plotter import FrametimePlotter
@@ -24,11 +24,11 @@ QUIET_BETWEEN_SPAWNS = 0.25  # time between spawning another particle system
 EMITTER_TIMEOUT = 10 * 60
 CENTER_POS = (SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
 BURST_PARTICLE_COUNT = 500
-TEXTURE = "images/pool_cue_ball.png"
-TEXTURE2 = "images/playerShip3_orange.png"
+TEXTURE = ":resources:images/pinball/pool_cue_ball.png"
+TEXTURE2 = ":resources:images/space_shooter/playerShip3_orange.png"
 TEXTURE3 = ":resources:images/pinball/bumper.png"
 TEXTURE4 = ":resources:images/enemies/wormGreen.png"
-TEXTURE5 = "images/meteorGrey_med1.png"
+TEXTURE5 = ":resources:images/space_shooter/meteorGrey_med1.png"
 TEXTURE6 = ":resources:images/animated_characters/female_person/femalePerson_idle.png"
 TEXTURE7 = ":resources:images/tiles/boxCrate_double.png"
 DEFAULT_SCALE = 0.3
@@ -736,6 +736,7 @@ class MyGame(arcade.Window):
     def next_emitter(self, _time_delta):
         self.emitter_factory_id = (self.emitter_factory_id + 1) % len(self.factories)
         print("Changing emitter to {}".format(self.emitter_factory_id))
+        self.emitter_timeout = 0
         self.label, self.emitter = self.factories[self.emitter_factory_id]()
         self.frametime_plotter.add_event("spawn {}".format(self.emitter_factory_id))
 
