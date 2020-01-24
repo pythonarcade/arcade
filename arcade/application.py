@@ -91,7 +91,10 @@ class Window(pyglet.window.Window):
             self.set_update_rate(update_rate)
 
         super().set_fullscreen(fullscreen)
-        self.invalid = False
+        # This used to be necessary on Linux, but no longer appears to be.
+        # With Pyglet 2.0+, setting this to false will not allow the screen to
+        # update.
+        # self.invalid = False
         set_window(self)
         set_viewport(0, self.width, 0, self.height)
 
