@@ -145,7 +145,10 @@ def draw_text(text: str,
     if len(draw_text.cache) > 5000:  # type: ignore # dynamic attribute on function obj
         draw_text.cache = {}  # type: ignore # dynamic attribute on function obj
 
-    key = f"{text}{color}{font_size}{width}{align}{font_name}{bold}{italic}"
+    r, g, b, alpha = get_four_byte_color(color)
+    cache_color = f"{r}{g}{b}"
+
+    key = f"{text}{cache_color}{font_size}{width}{align}{font_name}{bold}{italic}"
     if key in draw_text.cache:  # type: ignore # dynamic attribute on function obj
         label = draw_text.cache[key]  # type: ignore # dynamic attribute on function obj
         text_sprite = label.text_sprite_list[0]
@@ -169,6 +172,7 @@ def draw_text(text: str,
             raise ValueError(f"anchor_y should be 'top', 'center', 'bottom', or 'baseline'. Not '{anchor_y}'")
 
         text_sprite.angle = rotation
+        text_sprite.alpha = alpha
     else:
         label = Text()
 
@@ -267,6 +271,7 @@ def draw_text(text: str,
             raise ValueError(f"anchor_y should be 'top', 'center', 'bottom', or 'baseline'. Not '{anchor_y}'")
 
         text_sprite.angle = rotation
+        text_sprite.alpha = alpha
 
         from arcade.sprite_list import SpriteList
         label.text_sprite_list = SpriteList()
