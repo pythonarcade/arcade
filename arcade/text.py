@@ -113,7 +113,7 @@ def draw_text(text: str,
               anchor_x: str = "left",
               anchor_y: str = "baseline",
               rotation: float = 0
-              ):
+              ) -> Sprite:
     """
 
     :param str text: Text to draw
@@ -280,6 +280,7 @@ def draw_text(text: str,
         draw_text.cache[key] = label  # type: ignore # dynamic attribute on function obj
 
     label.text_sprite_list.draw()
+    return text_sprite
 
 
 draw_text.cache = {}  # type: ignore # dynamic attribute on function obj
