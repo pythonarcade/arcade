@@ -4,11 +4,12 @@ import PIL.ImageDraw
 import math
 import os
 
-from typing import List, Tuple, Sequence
+from typing import List, Tuple, cast
 
 from arcade import lerp
 from arcade import RectList
 from arcade import Color
+from arcade import RGBA
 
 
 def get_points_for_thick_line(start_x: float, start_y:
@@ -33,7 +34,7 @@ def get_points_for_thick_line(start_x: float, start_y:
     return points
 
 
-def get_four_byte_color(color: Color) -> Color:
+def get_four_byte_color(color: Color) -> RGBA:
     """
     Given a RGB list, it will return RGBA.
     Given a RGBA list, it will return the same RGBA.
@@ -44,7 +45,7 @@ def get_four_byte_color(color: Color) -> Color:
     """
 
     if len(color) == 4:
-        return color
+        return cast(RGBA, color)
     elif len(color) == 3:
         return color[0], color[1], color[2], 255
     else:
