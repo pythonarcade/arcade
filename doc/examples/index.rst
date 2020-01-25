@@ -191,6 +191,10 @@ Sprite Player Movement
 
    :ref:`sprite_move_angle`
 
+.. figure:: thumbs/dual_stick_shooter.png
+   :figwidth: 170px
+
+   :ref:`dual_stick_shooter`
 
 Sprite Non-Player Movement
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
