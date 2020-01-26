@@ -1,19 +1,16 @@
 # --- BEGIN TEXT FUNCTIONS # # #
 
 from itertools import chain
-from typing import Tuple, Union, cast
+from typing import Dict, Tuple, Union, cast
 
 import PIL.Image
 import PIL.ImageDraw
 import PIL.ImageFont
-
-from arcade.sprite import Sprite
-from arcade.arcade_types import Color
-from arcade.draw_commands import Texture
-from arcade.arcade_types import RGBA
-from arcade.draw_commands import get_four_byte_color
-
 import pyglet
+
+from arcade.arcade_types import RGBA, Color
+from arcade.draw_commands import Texture, get_four_byte_color
+from arcade.sprite import Sprite
 
 DEFAULT_FONT_NAMES = (
     "arial.ttf",
@@ -23,6 +20,8 @@ DEFAULT_FONT_NAMES = (
     "/System/Library/Fonts/SFNSDisplay.ttf",
     "/Library/Fonts/Arial.ttf"
 )
+
+draw_text_cache: Dict[str, 'Text'] = dict()
 
 
 class Text:
@@ -130,6 +129,7 @@ def draw_text(text: str,
     :param str anchor_y:
     :param float rotation:
     """
+    global draw_text_cache
 
     # Scale the font up, so it matches with the sizes of the old code back
     # when Pyglet drew the text.
@@ -142,15 +142,15 @@ def draw_text(text: str,
     font_size *= scale_up
 
     # If the cache gets too large, dump it and start over.
-    if len(draw_text.cache) > 5000:  # type: ignore # dynamic attribute on function obj
-        draw_text.cache = {}  # type: ignore # dynamic attribute on function obj
+    if len(draw_text_cache) > 5000:
+        draw_text_cache = {}
 
     r, g, b, alpha = get_four_byte_color(color)
     cache_color = f"{r}{g}{b}"
 
     key = f"{text}{cache_color}{font_size}{width}{align}{font_name}{bold}{italic}"
     try:
-        label = draw_text.cache[key]  # type: ignore # dynamic attribute on function obj
+        label = draw_text_cache[key]
     except KeyError:  # doesn't exist, create it
         label = Text()
 
@@ -232,7 +232,7 @@ def draw_text(text: str,
         label.text_sprite_list = SpriteList()
         label.text_sprite_list.append(text_sprite)
 
-        draw_text.cache[key] = label  # type: ignore # dynamic attribute on function obj
+        draw_text_cache[key] = label
 
     text_sprite = label.text_sprite_list[0]
 
@@ -259,9 +259,6 @@ def draw_text(text: str,
 
     label.text_sprite_list.draw()
     return text_sprite
-
-
-draw_text.cache = {}  # type: ignore # dynamic attribute on function obj
 
 
 def draw_text_2(text: str,
