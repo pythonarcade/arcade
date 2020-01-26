@@ -5,6 +5,23 @@
 Release Notes
 =============
 
+Version 2.2.7
+-------------
+
+*Release Date: 1/25/2020*
+
+* Enhancement: Have draw_text return a sprite `Issue 565 <https://github.com/pvcraven/arcade/issues/565>`_
+* Enhancement: Improve speed when changing alpha of text `Issue 563 <https://github.com/pvcraven/arcade/issues/563>`_
+* Enhancement: Add dual-stick shooter example `Issue 301 <https://github.com/pvcraven/arcade/issues/301>`_
+* Bug Fix: Fix for Pyglet 2.0dev incompatability `Issue 560 <https://github.com/pvcraven/arcade/issues/560>`_
+* Bug Fix: Fix broken particle_systems.py example `Issue 558 <https://github.com/pvcraven/arcade/issues/558>`_
+* Enhancement: Added mypy check to TravisCI build `Issue 557 <https://github.com/pvcraven/arcade/issues/557>`_
+* Enhancement: Fix typing issues `Issue 537 <https://github.com/pvcraven/arcade/issues/537>`_
+* Enhancement: Optimize load font in draw_text `Issue 525 <https://github.com/pvcraven/arcade/issues/525>`_
+* Enhancement: Reorganize examples
+* Bug Fix: get_pixel not working on MacOS `Issue 539 <https://github.com/pvcraven/arcade/issues/539>`_
+
+
 Version 2.2.6
 -------------
 
