@@ -150,7 +150,7 @@ def draw_text(text: str,
 
     key = f"{text}{cache_color}{font_size}{width}{align}{font_name}{bold}{italic}"
     try:
-        label = draw_text.cache[key]
+        label = draw_text.cache[key]  # type: ignore # dynamic attribute on function obj
     except KeyError:  # doesn't exist, create it
         label = Text()
 
@@ -225,8 +225,6 @@ def draw_text(text: str,
         text_sprite._texture = Texture(key)
         text_sprite.texture.image = image
 
-        text_sprite.image = image
-        text_sprite.texture_name = key
         text_sprite.width = image.width
         text_sprite.height = image.height
 
@@ -235,7 +233,7 @@ def draw_text(text: str,
         label.text_sprite_list.append(text_sprite)
 
         draw_text.cache[key] = label  # type: ignore # dynamic attribute on function obj
-    
+
     text_sprite = label.text_sprite_list[0]
 
     if anchor_x == "left":
