@@ -37,7 +37,7 @@ Version 2.2.6
 * Enhancement: Return list of items hit during physics engine update `Issue 401 <https://github.com/pvcraven/arcade/issues/401>`_
 * Enhancement: Update resources documentation `Issue 549 <https://github.com/pvcraven/arcade/issues/549>`_
 * Enhancement: Add on_update to sprites, which includes delta_time `Issue 266 <https://github.com/pvcraven/arcade/issues/266>`_
-* Enhancement: Close enhancement-related github issues and reference them in the new :ref:`enhancement-list`.
+* Enhancement: Close enhancement-related github issues and reference them in the new :ref:`enhancement_list`.
 
 Version 2.2.5
 -------------

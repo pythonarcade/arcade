@@ -12,13 +12,11 @@ except ModuleNotFoundError:
     raise Exception('dataclasses not available, if running on Python 3.6 please manually install '
                     'https://pypi.org/project/dataclasses/')
 
-from typing import Sequence
 from typing import Tuple
 from typing import List
 from typing import Dict
 from typing import Any
 from typing import Optional
-from typing import Union
 from typing import TYPE_CHECKING
 
 import PIL.Image
@@ -61,8 +59,8 @@ class Sprite:
         :change_angle: Change in rotation.
         :color: Color tint the sprite
         :collision_radius: Used as a fast-check to see if this item is close \
-        enough to another item. If this check works, we do a slower more accurate check.
-        You probably don't want to use this field. Instead, set points in the
+        enough to another item. If this check works, we do a slower more accurate check. \
+        You probably don't want to use this field. Instead, set points in the \
         hit box.
         :cur_texture_index: Index of current texture being used.
         :guid: Unique identifier for the sprite. Useful when debugging.

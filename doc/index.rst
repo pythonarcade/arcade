@@ -148,9 +148,9 @@ game without learning a complex framework.
    how_to_compile
    how_to_submit_changes
    diversity
-   instructions_gameshell
    pygame_comparison
    resources
+   enhancement_list
 
 Learn about it:
 ^^^^^^^^^^^^^^^

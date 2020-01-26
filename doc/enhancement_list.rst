@@ -1,4 +1,4 @@
-.. _enhancement_list::
+.. _enhancement_list:
 
 Enhancement List
 ================

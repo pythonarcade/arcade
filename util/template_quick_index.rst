@@ -1,4 +1,4 @@
-.. _quick_index::
+.. _quick_index:
 
 Quick Index
 ===========
