@@ -62,6 +62,8 @@ Tilemaps
 
 * `Issue 375 <https://github.com/pvcraven/arcade/issues/375>`_
   Support rotated tiles in .tmx.
+* `Issue 478 <https://github.com/pvcraven/arcade/issues/478>`_
+  Processing object layer needs better support.
 
 Documentation
 -------------
