@@ -8,7 +8,7 @@ Release Notes
 Version 2.2.8
 -------------
 
-*Release Date: 1/27/2020*
+*Release Date: Jan-27-2020*
 
 * Version number now contained in one file, rather than three.
 * Enhancement: Move several GitHub-listed enhancements to the .rst enhancement list
@@ -24,7 +24,7 @@ Version 2.2.8
 Version 2.2.7
 -------------
 
-*Release Date: 1/25/2020*
+*Release Date: Jan-25-2020*
 
 * Enhancement: Have draw_text return a sprite `Issue 565 <https://github.com/pvcraven/arcade/issues/565>`_
 * Enhancement: Improve speed when changing alpha of text `Issue 563 <https://github.com/pvcraven/arcade/issues/563>`_
@@ -41,7 +41,7 @@ Version 2.2.7
 Version 2.2.6
 -------------
 
-*Release Date: 1/20/2020*
+*Release Date: Jan-20-2020*
 
 * Bug Fix: particle_fireworks example is not running with 2.2.5 `Issue 555 <https://github.com/pvcraven/arcade/issues/555>`_
 * Bug Fix: Sprite.pop isn't reliable `Issue 531 <https://github.com/pvcraven/arcade/issues/531>`_
@@ -58,7 +58,7 @@ Version 2.2.6
 Version 2.2.5
 -------------
 
-*Release Date: 1/17/2020*
+*Release Date: Jan-17-2020*
 
 * Enhancement: Improved speed when rendering non-buffered drawing primitives
 * Bug fix: Angle working in radians instead of degrees in 2.2.4 `Issue 552 <https://github.com/pvcraven/arcade/issues/552>`_
@@ -68,14 +68,14 @@ Version 2.2.5
 Version 2.2.4
 -------------
 
-*Release Date: 1/15/2020*
+*Release Date: Jan-15-2020*
 
 * Enhancement: Moving sprites now 20% more efficient.
 
 Version 2.2.3
 -------------
 
-*Release Date: 1/12/2020*
+*Release Date: Jan-12-2020*
 
 * Bug fix: Hit boxes not getting updated with rotation and scaling. `Issue 548 <https://github.com/pvcraven/arcade/issues/548>`_
   This update depricates Sprite.points and instead uses Sprint.hit_box and Sprint.get_adjusted_hit_box
@@ -87,21 +87,21 @@ Version 2.2.3
 Version 2.2.2
 -------------
 
-*Release Date: 1/9/2020*
+*Release Date: Jan-09-2020*
 
 * Bug fix: Arcade assumes tiles in tileset are same sized `Issue 550 <https://github.com/pvcraven/arcade/issues/550>`_
 
 Version 2.2.1
 -------------
 
-*Release Date: 12/22/2020*
+*Release Date: Dec-22-2019*
 
 * Bug fix: Resource folder not included in distribution `Issue 541 <https://github.com/pvcraven/arcade/issues/541>`_
 
 Version 2.2.0
 -------------
 
-*Release Date: 12/19/2020*
+*Release Date: Dec-19-2019**
 
 * Major Enhancement: Add built-in resources support `Issue 209 <https://github.com/pvcraven/arcade/issues/209>`_
   This also required many changes to the code samples, but they can be run now without
