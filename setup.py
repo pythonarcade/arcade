@@ -4,8 +4,8 @@ from os import path
 import sys
 from setuptools import setup
 
-BUILD = 0
-VERSION = "2.2.8b1"
+from arcade.version import VERSION
+
 RELEASE = VERSION
 
 if __name__ == "__main__":
