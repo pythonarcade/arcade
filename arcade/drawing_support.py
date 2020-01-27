@@ -4,15 +4,16 @@ import PIL.ImageDraw
 import math
 import os
 
-from typing import List, Tuple
+from typing import List, Tuple, cast
 
 from arcade import lerp
 from arcade import RectList
 from arcade import Color
+from arcade import RGBA
 
 
 def get_points_for_thick_line(start_x: float, start_y:
-                               float, end_x: float, end_y: float,
+                              float, end_x: float, end_y: float,
                               line_width: float):
     vector_x = start_x - end_x
     vector_y = start_y - end_y
@@ -33,7 +34,7 @@ def get_points_for_thick_line(start_x: float, start_y:
     return points
 
 
-def get_four_byte_color(color: Color) -> Color:
+def get_four_byte_color(color: Color) -> RGBA:
     """
     Given a RGB list, it will return RGBA.
     Given a RGBA list, it will return the same RGBA.
@@ -44,7 +45,7 @@ def get_four_byte_color(color: Color) -> Color:
     """
 
     if len(color) == 4:
-        return color
+        return cast(RGBA, color)
     elif len(color) == 3:
         return color[0], color[1], color[2], 255
     else:
@@ -78,7 +79,7 @@ def make_transparent_color(color: Color, transparency: float):
 
 
 def rotate_point(x: float, y: float, cx: float, cy: float,
-                 angle: float) -> Tuple[float, float]:
+                 angle: float) -> List[float]:
     """
     Rotate a point around a center.
 
@@ -269,6 +270,15 @@ def load_textures(file_name: str,
 
 
 def calculate_points(image):
+    """
+    Given an image, this returns points that make up a hit box around it. Attempts
+    to trim out transparent pixels.
+
+    :param Image image:
+
+    :Returns: List of points
+
+    """
     left_border = 0
     good = True
     while good and left_border < image.width:
@@ -320,7 +330,7 @@ def calculate_points(image):
         if good:
             bottom_border -= 1
 
-    def _check_corner_offset(start_x, start_y, x_direction, y_direction ):
+    def _check_corner_offset(start_x, start_y, x_direction, y_direction):
 
         bad = False
         offset = 0
@@ -474,7 +484,7 @@ def load_texture(file_name: str, x: float = 0, y: float = 0,
 def load_spritesheet(file_name: str,
                      sprite_width: int,
                      sprite_height: int,
-                     columns:int,
+                     columns: int,
                      count: int) -> List:
     """
     Load a set of textures based on a single sprite sheet.
@@ -578,8 +588,8 @@ def make_soft_square_texture(size: int, color: Color, center_alpha: int = 255, o
         clr = (color[0], color[1], color[2], alpha)
         # draw.ellipse((center-radius, center-radius, center+radius, center+radius), fill=clr)
         draw.rectangle((cur_size, cur_size, size - cur_size, size - cur_size), clr, None)
-    name = "{}:{}:{}:{}".format("gradientsquare", size, color, center_alpha,
-                                outer_alpha)  # name must be unique for caching
+    name = "{}:{}:{}:{}:{}".format("gradientsquare", size, color, center_alpha,
+                                   outer_alpha)  # name must be unique for caching
     return Texture(name, img)
 
 

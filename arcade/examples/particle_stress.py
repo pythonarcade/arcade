@@ -4,7 +4,7 @@ Particle system stress test
 Run a particle system that spawns, updates, draws and reaps many particles every frame for performance testing.
 
 If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.sprite_list_particle_fireworks
+python -m arcade.examples.particle_stress
 """
 import os
 import arcade

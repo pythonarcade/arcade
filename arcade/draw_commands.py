@@ -8,15 +8,18 @@ Buffered Draw Commands.
 """
 # pylint: disable=too-many-arguments, too-many-locals, too-few-public-methods
 
+import math
+import array
+import sys
+
 import PIL.Image
 import PIL.ImageOps
 import PIL.ImageDraw
-import numpy as np
-import math
 
 import pyglet.gl as gl
 
 from typing import List
+from typing import Tuple
 from typing import TYPE_CHECKING
 
 from arcade import get_projection
@@ -29,6 +32,7 @@ from arcade import rotate_point
 from arcade import get_four_byte_color
 from arcade import get_points_for_thick_line
 from arcade import Texture
+from arcade import get_window
 
 
 if TYPE_CHECKING:  # import for mypy only
@@ -56,8 +60,6 @@ _line_fragment_shader = '''
 '''
 
 
-
-
 # --- BEGIN ARC FUNCTIONS # # #
 
 
@@ -81,7 +83,7 @@ def draw_arc_filled(center_x: float, center_y: float,
     :param float tilt_angle: angle the arc is tilted.
     :param float num_segments: Number of line segments used to draw arc.
     """
-    unrotated_point_list = [(0.0, 0.0)]
+    unrotated_point_list = [[0.0, 0.0]]
 
     start_segment = int(start_angle / 360 * num_segments)
     end_segment = int(end_angle / 360 * num_segments)
@@ -92,7 +94,7 @@ def draw_arc_filled(center_x: float, center_y: float,
         x = width * math.cos(theta)
         y = height * math.sin(theta)
 
-        unrotated_point_list.append((x, y))
+        unrotated_point_list.append([x, y])
 
     if tilt_angle == 0:
         uncentered_point_list = unrotated_point_list
@@ -148,8 +150,8 @@ def draw_arc_outline(center_x: float, center_y: float, width: float,
         x2 = outside_width * math.cos(theta)
         y2 = outside_height * math.sin(theta)
 
-        unrotated_point_list.append((x1, y1))
-        unrotated_point_list.append((x2, y2))
+        unrotated_point_list.append([x1, y1])
+        unrotated_point_list.append([x2, y2])
 
     if tilt_angle == 0:
         uncentered_point_list = unrotated_point_list
@@ -291,7 +293,7 @@ def draw_ellipse_filled(center_x: float, center_y: float,
         x = (width / 2) * math.cos(theta)
         y = (height / 2) * math.sin(theta)
 
-        unrotated_point_list.append((x, y))
+        unrotated_point_list.append([x, y])
 
     if tilt_angle == 0:
         uncentered_point_list = unrotated_point_list
@@ -334,7 +336,7 @@ def draw_ellipse_outline(center_x: float, center_y: float, width: float,
             x = (width / 2) * math.cos(theta)
             y = (height / 2) * math.sin(theta)
 
-            unrotated_point_list.append((x, y))
+            unrotated_point_list.append([x, y])
 
         if tilt_angle == 0:
             uncentered_point_list = unrotated_point_list
@@ -369,8 +371,8 @@ def draw_ellipse_outline(center_x: float, center_y: float, width: float,
             x2 = outside_width * math.cos(theta)
             y2 = outside_height * math.sin(theta)
 
-            unrotated_point_list.append((x1, y1))
-            unrotated_point_list.append((x2, y2))
+            unrotated_point_list.append([x1, y1])
+            unrotated_point_list.append([x2, y2])
 
         if tilt_angle == 0:
             uncentered_point_list = unrotated_point_list
@@ -391,6 +393,7 @@ def draw_ellipse_outline(center_x: float, center_y: float, width: float,
 
 # --- BEGIN LINE FUNCTIONS # # #
 
+
 def _generic_draw_line_strip(point_list: PointList,
                              color: Color,
                              mode: int = gl.GL_LINE_STRIP):
@@ -403,32 +406,42 @@ def _generic_draw_line_strip(point_list: PointList,
     :param Color color: color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
     """
+    # Cache the program. But not on linux because it fails unit tests for some reason.
+    # if not _generic_draw_line_strip.program or sys.platform == "linux":
+
     program = shader.program(
         vertex_shader=_line_vertex_shader,
         fragment_shader=_line_fragment_shader,
     )
-    buffer_type = np.dtype([('vertex', '2f4'), ('color', '4B')])
-    data = np.zeros(len(point_list), dtype=buffer_type)
 
-    data['vertex'] = point_list
-
-    color = get_four_byte_color(color)
-    data['color'] = color
-
-    vbo = shader.buffer(data.tobytes())
-    vbo_desc = shader.BufferDescription(
-        vbo,
-        '2f 4B',
-        ('in_vert', 'in_color'),
-        normalized=['in_color']
+    c4 = get_four_byte_color(color)
+    c4e = c4 * len(point_list)
+    a = array.array('B', c4e)
+    color_buf = shader.buffer(a.tobytes())
+    color_buf_desc = shader.BufferDescription(
+        color_buf,
+        '4B',
+        ['in_color'],
+        normalized=['in_color'],
     )
 
-    vao_content = [vbo_desc]
+    def gen_flatten(my_list):
+        return [item for sublist in my_list for item in sublist]
+
+    vertices = array.array('f', gen_flatten(point_list))
+
+    vbo_buf = shader.buffer(vertices.tobytes())
+    vbo_buf_desc = shader.BufferDescription(
+        vbo_buf,
+        '2f',
+        ['in_vert']
+    )
+
+    vao_content = [vbo_buf_desc, color_buf_desc]
 
     vao = shader.vertex_array(program, vao_content)
     with vao:
         program['Projection'] = get_projection().flatten()
-
         vao.render(mode=mode)
 
 
@@ -812,10 +825,10 @@ def draw_rectangle_filled(center_x: float, center_y: float, width: float,
          RGBA format.
     :param float tilt_angle: rotation of the rectangle. Defaults to zero.
     """
-    p1 = -width // 2 + center_x, -height // 2 + center_y
-    p2 = width // 2 + center_x, -height // 2 + center_y
-    p3 = width // 2 + center_x, height // 2 + center_y
-    p4 = -width // 2 + center_x, height // 2 + center_y
+    p1 = [-width // 2 + center_x, -height // 2 + center_y]
+    p2 = [width // 2 + center_x, -height // 2 + center_y]
+    p3 = [width // 2 + center_x, height // 2 + center_y]
+    p4 = [-width // 2 + center_x, height // 2 + center_y]
 
     if tilt_angle != 0:
         p1 = rotate_point(p1[0], p1[1], center_x, center_y, tilt_angle)
@@ -877,7 +890,7 @@ def draw_xywh_rectangle_textured(bottom_left_x: float, bottom_left_y: float,
                            angle=angle, alpha=alpha)
 
 
-def get_pixel(x: int, y: int):
+def get_pixel(x: int, y: int) -> Tuple[int, int, int]:
     """
     Given an x, y, will return RGB color value of that point.
 
@@ -886,6 +899,17 @@ def get_pixel(x: int, y: int):
     :returns: Color
     """
     # noinspection PyCallingNonCallable,PyTypeChecker
+
+    # The window may be 'scaled' on hi-res displays. Particularly Macs. OpenGL
+    # won't account for this, so we need to.
+    window = get_window()
+    if not window:
+        raise ValueError("No window is available to get pixel data from.")
+
+    pixel_ratio = window.get_pixel_ratio()
+    x = int(pixel_ratio * x)
+    y = int(pixel_ratio * y)
+
     a = (gl.GLubyte * 3)(0)
     gl.glReadPixels(x, y, 1, 1, gl.GL_RGB, gl.GL_UNSIGNED_BYTE, a)
     red = a[0]

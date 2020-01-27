@@ -5,13 +5,20 @@ derive from.
 import time
 
 from numbers import Number
-from typing import Tuple, List, Optional
-from arcade import gui
+from typing import Tuple, List, Optional, TYPE_CHECKING
 
 import pyglet.gl as gl
 import pyglet
 
-from arcade import (get_viewport, set_viewport, set_window)
+from arcade import get_viewport
+from arcade import set_viewport
+from arcade import set_window
+
+if TYPE_CHECKING:
+    from arcade import TextBox
+    from arcade import TextButton
+    from arcade import DialogueBox
+    from arcade import TextLabel
 
 MOUSE_BUTTON_LEFT = 1
 MOUSE_BUTTON_MIDDLE = 2
@@ -84,15 +91,18 @@ class Window(pyglet.window.Window):
             self.set_update_rate(update_rate)
 
         super().set_fullscreen(fullscreen)
-        self.invalid = False
+        # This used to be necessary on Linux, but no longer appears to be.
+        # With Pyglet 2.0+, setting this to false will not allow the screen to
+        # update.
+        # self.invalid = False
         set_window(self)
         set_viewport(0, self.width, 0, self.height)
 
         self.current_view: Optional[View] = None
-        self.button_list: List[gui.TextButton] = []
-        self.dialogue_box_list: List[gui.DialogueBox] = []
-        self.text_list: List[gui.Text] = []
-        self.textbox_list: List[gui.TextBox] = []
+        self.button_list: List[TextButton] = []
+        self.dialogue_box_list: List[DialogueBox] = []
+        self.text_list: List[TextLabel] = []
+        self.textbox_list: List[TextBox] = []
         self.textbox_time = 0.0
         self.key: Optional[int] = None
 
@@ -538,11 +548,11 @@ class View:
     """
     def __init__(self):
         self.window = None
-        self.button_list: List[gui.TextButton] = []
-        self.dialogue_box_list: List[gui.DialogueBox] = []
-        self.text_list: List[gui.Text] = []
+        self.button_list: List[TextButton] = []
+        self.dialogue_box_list: List[DialogueBox] = []
+        self.text_list: List[TextLabel] = []
         self.textbox_time = 0.0
-        self.textbox_list: List[gui.TextBox] = []
+        self.textbox_list: List[TextBox] = []
         self.key = None
 
     def update(self, delta_time: float):

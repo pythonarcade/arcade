@@ -28,3 +28,4 @@ arcade/examples/test.png
 .DS_Store
 .coveralls.yml
 /doc/resources.rst
+.mypy_cache/

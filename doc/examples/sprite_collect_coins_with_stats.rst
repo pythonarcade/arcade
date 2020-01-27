@@ -2,8 +2,8 @@
 
 .. _sprite_collect_coins_with_stats:
 
-Collect Coins With Stats
-========================
+Display Performance Statistics
+==============================
 
 .. image:: sprite_collect_coins_with_stats.png
     :width: 600px

@@ -45,7 +45,7 @@ The Python Arcade Library
           <ul>
           <li><a href="quick_index.html">Quick API Index</a></li>
           <li><a href="arcade.html">Full Arcade API Docs</a></li>
-          <li><a href="quick_index.html#drawing-api">Drawing API</a> - <a href="arcade.csscolor.html">CSS Colors</a></li>
+          <li><a href="arcade.csscolor.html">Colors</a> | <a href="arcade.csscolor.html">CSS Colors</a></li>
           <li><a href="quick_index.html#application-api">Window Class</a></li>
           <li><a href="quick_index.html#sprite-api">Sprites</a></li>
           <li><a href="resources.html">Resources - Default Images</a></li>
@@ -77,7 +77,6 @@ The Python Arcade Library
           </div>
           <ul>
             <li><a href="sample_games.html">Example Games</a></li>
-            <li><a href="examples/pyinstaller.html">Distributing games with PyInstaller</a></li>
           </ul>
         </td>
         <td>
@@ -90,6 +89,7 @@ The Python Arcade Library
           <ul>
             <li><a href="https://github.com/pvcraven/arcade">GitHub</a></li>
             <li><a href="release_notes.html">Release Notes</a></li>
+            <li><a href="enhancement_list.html">Enhancement List</a></li>
           </ul>
         </td>
       </tr>
@@ -115,6 +115,7 @@ The Python Arcade Library
           </div>
           <ul>
             <li><a href="http://arcade-book.readthedocs.io/en/latest/">Learn to Program with Arcade</a></li>
+            <li><a href="https://realpython.com/arcade-python-game-framework/">Arcade: A Primer on the Python Game Framework</a></li>
             <li><a href="https://youtu.be/DAWHMHMPVHU">PyCon 2018 Talk</a></li>
             <li><a href="https://youtu.be/Djtm1DzWSvo">PyCon 2019 Tutorial</a></li>
            </ul>
@@ -147,11 +148,9 @@ game without learning a complex framework.
    how_to_compile
    how_to_submit_changes
    diversity
-   distribute_macos
-   instructions_gameshell
    pygame_comparison
-   suggested_curriculum
    resources
+   enhancement_list
 
 Learn about it:
 ^^^^^^^^^^^^^^^

@@ -5,7 +5,7 @@
 Happy Face
 ==========
 
-This example shows how to use the :ref:`drawing-commands`.
+This example shows how to use the Arcade drawing commands.
 
 
 .. image:: happy_face.png

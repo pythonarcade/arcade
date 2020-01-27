@@ -3,8 +3,13 @@
 Example Code
 ============
 
-Starting Templates
-------------------
+.. toctree::
+   :maxdepth: 3
+
+   index
+
+Starting Template
+-----------------
 
 .. figure:: thumbs/starting_template.png
    :figwidth: 170px
@@ -15,12 +20,13 @@ Starting Templates
 Drawing
 -------
 
+Drawing Primitives
+^^^^^^^^^^^^^^^^^^
+
 .. figure:: thumbs/happy_face.png
    :figwidth: 170px
 
    :ref:`happy_face`
-
-
 
 .. figure:: thumbs/drawing_primitives.png
    :figwidth: 170px
@@ -43,8 +49,8 @@ Drawing
    :ref:`text_loc_example`
 
 
-Animation
----------
+Animating Drawing Primitives
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. figure:: thumbs/bouncing_rectangle.png
    :figwidth: 170px
@@ -67,7 +73,7 @@ Animation
    :ref:`radar_sweep`
 
 Drawing with Loops
-------------------
+^^^^^^^^^^^^^^^^^^
 
 .. figure:: thumbs/drawing_with_loops.png
    :figwidth: 170px
@@ -99,41 +105,53 @@ Drawing with Loops
 
    :ref:`nested_loops_top_right_triangle`
 
-.. figure:: thumbs/shapes.png
-   :figwidth: 170px
-
-   :ref:`shapes`
-
 .. figure:: thumbs/snow.png
    :figwidth: 170px
 
    :ref:`snow`
 
-User Control
-------------
-
-These show how to move non-sprite items. For Sprites, see :ref:`sprite_player_movement`.
-
-.. figure:: thumbs/move_mouse.png
+.. figure:: thumbs/shapes.png
    :figwidth: 170px
 
-   :ref:`move_mouse`
+   :ref:`shapes-slow`
 
-.. figure:: thumbs/move_keyboard.png
+.. _shape-element-lists:
+
+Faster Drawing with ShapeElementLists
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. figure:: thumbs/shapes_buffered.png
    :figwidth: 170px
 
-   :ref:`move_keyboard`
+   :ref:`shapes-fast`
 
-.. figure:: thumbs/move_joystick.png
+.. figure:: thumbs/shape_list_demo.png
    :figwidth: 170px
 
-   :ref:`move_joystick`
+   :ref:`shape_list_demo`
 
-.. figure:: thumbs/joystick.png
+.. figure:: thumbs/lines_buffered.png
    :figwidth: 170px
 
-   :ref:`joystick`
+   :ref:`lines_buffered`
 
+.. figure:: thumbs/shape_list_demo_skylines.png
+   :figwidth: 170px
+
+   :ref:`shape_list_demo_skylines`
+
+.. figure:: thumbs/shape_list_demo_person.png
+   :figwidth: 170px
+
+   :ref:`shape_list_demo_person`
+
+.. figure:: thumbs/gradients.png
+   :figwidth: 170px
+
+   :ref:`gradients`
+
+
+.. _sprites:
 
 Sprites
 -------
@@ -173,6 +191,10 @@ Sprite Player Movement
 
    :ref:`sprite_move_angle`
 
+.. figure:: thumbs/dual_stick_shooter.png
+   :figwidth: 170px
+
+   :ref:`dual_stick_shooter`
 
 Sprite Non-Player Movement
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -213,16 +235,23 @@ Sprite Non-Player Movement
 
    :ref:`sprite_follow_simple_2`
 
-Other Sprite Stuff
-^^^^^^^^^^^^^^^^^^
+Sprite Properties
+^^^^^^^^^^^^^^^^^
 
 .. figure:: thumbs/sprite_properties.png
    :figwidth: 170px
 
    :ref:`sprite_properties`
 
-Levels
-^^^^^^
+.. figure:: thumbs/sprite_change_coins.png
+   :figwidth: 170px
+
+   :ref:`sprite_change_coins`
+
+
+
+Games with Levels
+^^^^^^^^^^^^^^^^^
 
 .. figure:: thumbs/sprite_collect_coins_diff_levels.gif
    :figwidth: 170px
@@ -234,10 +263,8 @@ Levels
 
    :ref:`sprite_rooms`
 
-
-
-Bullets
-^^^^^^^
+Shooting with Sprites
+^^^^^^^^^^^^^^^^^^^^^
 
 .. figure:: thumbs/sprite_bullets.png
    :figwidth: 170px
@@ -271,7 +298,10 @@ Bullets
 
 
 Platformers
-^^^^^^^^^^^
+-----------
+
+Basic Platformers
+^^^^^^^^^^^^^^^^^
 
 .. figure:: thumbs/sprite_move_walls.png
    :figwidth: 170px
@@ -308,8 +338,8 @@ Platformers
 
    :ref:`sprite_enemies_in_platformer`
 
-TMX Files / Tiled Map Editor
-----------------------------
+Using Tiled Map Editor to Create Maps
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. figure:: thumbs/08_load_map.png
    :figwidth: 170px
@@ -337,75 +367,8 @@ TMX Files / Tiled Map Editor
    :ref:`11_animate_character`
 
 
-GUI
----
-
-.. figure:: thumbs/gui_button.png
-   :figwidth: 170px
-
-   :ref:`gui_button`
-
-.. figure:: thumbs/gui_dialogue_box.png
-   :figwidth: 170px
-
-   :ref:`gui_dialogue_box`
-
-.. figure:: thumbs/gui_text_box.png
-   :figwidth: 170px
-
-   :ref:`gui_text_box`
-
-
-View Management
----------------
-
-.. figure:: thumbs/view_screens_minimal.png
-   :figwidth: 170px
-
-   :ref:`view_screens_minimal`
-
-.. figure:: thumbs/view_instructions_and_game_over.png
-   :figwidth: 170px
-
-   :ref:`view_instructions_and_game_over`
-
-.. figure:: thumbs/view_pause_screen.png
-   :figwidth: 170px
-
-   :ref:`view_pause_screen`
-
-
-
-Graphical User Interface
-------------------------
-
-.. figure:: thumbs/gui_text_button.png
-   :figwidth: 170px
-
-   :ref:`gui_text_button`
-
-Grid Based Games
-----------------
-
-
-.. figure:: thumbs/array_backed_grid.png
-   :figwidth: 170px
-
-   :ref:`array_backed_grid`
-
-.. figure:: thumbs/array_backed_grid.png
-   :figwidth: 170px
-
-   :ref:`array_backed_grid_buffered`
-.. figure:: thumbs/tetris.png
-   :figwidth: 170px
-
-   :ref:`tetris`
-
-
-
 Procedural Generation
----------------------
+^^^^^^^^^^^^^^^^^^^^^
 
 .. figure:: thumbs/maze_recursive.png
    :figwidth: 170px
@@ -437,10 +400,88 @@ Procedural Generation
 
    :ref:`mountains_random_walk`
 
+User Interface
+--------------
+
+Instruction Screens and Game Over Screens
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. figure:: thumbs/view_screens_minimal.png
+   :figwidth: 170px
+
+   :ref:`view_screens_minimal`
+
+.. figure:: thumbs/view_instructions_and_game_over.png
+   :figwidth: 170px
+
+   :ref:`view_instructions_and_game_over`
+
+.. figure:: thumbs/view_pause_screen.png
+   :figwidth: 170px
+
+   :ref:`view_pause_screen`
+
+Resizable Window and Fullscreen Games
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. figure:: thumbs/resizable_window.png
+   :figwidth: 170px
+
+   :ref:`resizable_window`
+
+.. figure:: thumbs/full_screen_example.png
+   :figwidth: 170px
+
+   :ref:`full_screen_example`
 
 
-PyMunk
-------
+Buttons and Dialog Boxes
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. figure:: thumbs/gui_button.png
+   :figwidth: 170px
+
+   :ref:`gui_button`
+
+.. figure:: thumbs/gui_dialogue_box.png
+   :figwidth: 170px
+
+   :ref:`gui_dialogue_box`
+
+.. figure:: thumbs/gui_text_box.png
+   :figwidth: 170px
+
+   :ref:`gui_text_box`
+
+.. figure:: thumbs/gui_text_button.png
+   :figwidth: 170px
+
+   :ref:`gui_text_button`
+
+Grid-Based Games
+----------------
+
+.. figure:: thumbs/array_backed_grid.png
+   :figwidth: 170px
+
+   :ref:`array_backed_grid`
+
+.. figure:: thumbs/array_backed_grid.png
+   :figwidth: 170px
+
+   :ref:`array_backed_grid_buffered`
+.. figure:: thumbs/tetris.png
+   :figwidth: 170px
+
+   :ref:`tetris`
+
+
+Advanced
+--------
+
+
+Using PyMunk for Physics
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. figure:: thumbs/pymunk_box_stacks.png
    :figwidth: 170px
@@ -463,11 +504,7 @@ PyMunk
    :ref:`pymunk_platformer`
 
 Particle System
----------------
-
-Proposal, currently in dev version. See:
-
-https://github.com/pvcraven/arcade/pull/334
+^^^^^^^^^^^^^^^
 
 .. figure:: thumbs/particle_fireworks.png
    :figwidth: 170px
@@ -480,8 +517,8 @@ https://github.com/pvcraven/arcade/pull/334
    :ref:`particle_systems`
 
 
-Isometric Examples
-------------------
+Isometric Example
+^^^^^^^^^^^^^^^^^
 
 .. figure:: thumbs/isometric_example.png
    :figwidth: 170px
@@ -489,34 +526,18 @@ Isometric Examples
    :ref:`isometric_example`
 
 
-ShapeElementLists
------------------
+Semi-complete Games
+-------------------
 
-.. figure:: thumbs/shape_list_demo.png
+.. figure:: thumbs/asteroid_smasher.png
    :figwidth: 170px
 
-   :ref:`shape_list_demo`
+   :ref:`asteroid_smasher`
 
-.. figure:: thumbs/lines_buffered.png
+.. figure:: thumbs/slime_invaders.png
    :figwidth: 170px
 
-   :ref:`lines_buffered`
-
-.. figure:: thumbs/shape_list_demo_skylines.png
-   :figwidth: 170px
-
-   :ref:`shape_list_demo_skylines`
-
-.. figure:: thumbs/shape_list_demo_person.png
-   :figwidth: 170px
-
-   :ref:`shape_list_demo_person`
-
-.. figure:: thumbs/gradients.png
-   :figwidth: 170px
-
-   :ref:`gradients`
-
+   :ref:`slime_invaders`
 
 Stress Tests
 ------------
@@ -532,19 +553,8 @@ Stress Tests
    :ref:`stress_test_collision`
 
 
-Other
------
-
-.. figure:: thumbs/resizable_window.png
-   :figwidth: 170px
-
-   :ref:`resizable_window`
-
-.. figure:: thumbs/full_screen_example.png
-   :figwidth: 170px
-
-   :ref:`full_screen_example`
-
+Odds and Ends
+-------------
 
 .. figure:: thumbs/sprite_collect_coins_background.png
    :figwidth: 170px
@@ -561,20 +571,4 @@ Other
    :figwidth: 170px
 
    :ref:`timer`
-
-.. figure:: thumbs/sprite_change_coins.png
-   :figwidth: 170px
-
-   :ref:`sprite_change_coins`
-
-.. figure:: thumbs/asteroid_smasher.png
-   :figwidth: 170px
-
-   :ref:`asteroid_smasher`
-
-.. figure:: gameshell1.jpg
-   :figwidth: 170px
-   :width: 170px
-
-   :ref:`gameshell`
 

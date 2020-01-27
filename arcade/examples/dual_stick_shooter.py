@@ -24,6 +24,9 @@ ENEMY_SPAWN_INTERVAL = 1
 ENEMY_SPEED = 1
 JOY_DEADZONE = 0.2
 
+# If shooting doesn't work, try changing this from a 0 to a 1
+SHOOTING_AXIS_SELECTION = 0
+
 
 def dump_obj(obj):
     for key in sorted(vars(obj)):
@@ -180,8 +183,14 @@ class MyGame(arcade.Window):
             else:
                 self.player.change_x = 0
                 self.player.change_y = 0
+
             # Joystick input - shooting
-            shoot_x, shoot_y, shoot_angle = get_joy_position(self.joy.z, self.joy.rz)
+            # Joysticks aren't great about standardization of layout
+            if SHOOTING_AXIS_SELECTION == 0:
+                shoot_x, shoot_y, shoot_angle = get_joy_position(self.joy.rx, self.joy.ry)
+            else:
+                shoot_x, shoot_y, shoot_angle = get_joy_position(self.joy.z, self.joy.rz)
+
             if shoot_angle:
                 self.spawn_bullet(shoot_angle)
         else:

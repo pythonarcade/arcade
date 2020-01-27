@@ -37,7 +37,7 @@ def list_functions(filename, output_file):
             output_file.write("Functions\n")
             output_file.write("^^^^^^^^^\n")
         output_file.write("- ")
-        module = file_split[4]
+        # module = file_split[4]
         output_file.write(f":func:`~arcade.{function}`")
         output_file.write("\n")
     if not first:
@@ -76,7 +76,7 @@ def list_classes(filename, output_file):
                     output_file.write("Classes\n")
                     output_file.write("^^^^^^^\n")
                 output_file.write("- ")
-                module = file_split[4]
+                # module = file_split[4]
                 class_name = class_names[0]
                 output_file.write(f":class:`~arcade.{class_name}`")
                 output_file.write("\n")
@@ -233,8 +233,8 @@ def process_resource_directory(out, my_path: Path):
             process_resource_directory.cell_count = 0
 
             if has_files:
-                out.write(f"\n\n{r3}\n")
-                out.write("-" * len(r3) + "\n\n")
+                out.write(f"\n\n:resources:{r3[10:]}/\n")
+                out.write("-" * (len(r3) + 2) + "\n\n")
 
                 out.write(".. raw:: html\n\n")
                 out.write("    <table class='resource-table'><tr>\n")
@@ -251,13 +251,13 @@ def process_resource_files(out, my_path: Path):
         # print(r3)
         if not cur_node.is_dir():
             r2 = ":resources:" + str(r1)[20:].replace('\\', '/')
-            if process_resource_directory.cell_count % 5 == 0:
+            if process_resource_directory.cell_count % 3 == 0:
                 out.write(f"    </tr>\n")
                 out.write(f"    <tr>\n")
             if r2.endswith(".png") or r2.endswith(".jpg") or r2.endswith(".gif") or r2.endswith(".svg"):
                 out.write(f"    <td>")
                 out.write(f"<a href='{r3}'><img alt='{r2}' title='{r2}' src='{r3}'></a><br />")
-                out.write(f"{cur_node.name[:-4]}")
+                out.write(f"{cur_node.name}")
                 process_resource_directory.cell_count += 1
                 out.write("</td>\n")
             elif r2.endswith(".wav"):
@@ -309,7 +309,7 @@ def resources():
     out.write("Resource files are images and sounds built into Arcade that "
               "can be used to quickly build and test simple code without having "
               "to worry about copying files into the project.\n\n")
-    out.write("Any file loaded that starts with ``:resource:`` will attempt "
+    out.write("Any file loaded that starts with ``:resources:`` will attempt "
               "to load that file from the library resources instead of the "
               "project directory.\n\n")
     out.write("Many of the resources come from `Kenney.nl <https://kenney.nl/>`_ ")
@@ -320,11 +320,10 @@ def resources():
     process_resource_directory(out, Path('../arcade/resources/'))
 
 
-
-
 def main():
     # quick_api()
     resources()
+
 
 if __name__ == '__main__':
     main()

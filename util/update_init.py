@@ -73,9 +73,7 @@ def main():
                 "text.py", \
                 "tilemap.py", \
                 "utils.py", \
-                "version.py", \
-
-
+                "version.py"
 
     all_list = []
 

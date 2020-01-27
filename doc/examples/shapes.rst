@@ -1,9 +1,9 @@
 :orphan:
 
-.. _shapes:
+.. _shapes-slow:
 
-Drawing Shapes with Classes
-===========================
+Drawing Shapes with Classes - Slow
+==================================
 
 .. image:: shapes.png
     :width: 600px
