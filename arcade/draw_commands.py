@@ -841,8 +841,7 @@ def draw_rectangle_filled(center_x: float, center_y: float, width: float,
 
 def draw_texture_rectangle(center_x: float, center_y: float, width: float,
                            height: float, texture: Texture, angle: float = 0,
-                           alpha: int = 255,
-                           repeat_count_x: int = 1, repeat_count_y: int = 1):
+                           alpha: int = 255):
     """
     Draw a textured rectangle on-screen.
 
@@ -853,13 +852,10 @@ def draw_texture_rectangle(center_x: float, center_y: float, width: float,
     :param int texture: identifier of texture returned from load_texture() call
     :param float angle: rotation of the rectangle. Defaults to zero.
     :param float alpha: Transparency of image. 0 is fully transparent, 255 (default) is visible
-    :param int repeat_count_x: Unused for now
-    :param int repeat_count_y: Unused for now
     """
 
     texture.draw(center_x, center_y, width,
-                 height, angle, alpha, False,
-                 repeat_count_x, repeat_count_y)
+                 height, angle, alpha)
 
 
 # noinspection PyUnusedLocal
