@@ -188,6 +188,8 @@ def draw_text(text: str,
 
         # Get size the text will be
         text_image_size = draw.multiline_textsize(text, font=font)
+        # Add some extra pixels at the bottom to account for letters that drop below the baseline.
+        text_image_size = text_image_size[0], text_image_size[1] + int(font_size * 0.15)
 
         # Create image of proper size
         text_height = text_image_size[1]
