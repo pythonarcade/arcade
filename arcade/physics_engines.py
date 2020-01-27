@@ -71,7 +71,7 @@ class PhysicsEngineSimple:
         # Rotate
         self.player_sprite.angle += self.player_sprite.change_angle
 
-        hit_list = check_for_collision_with_list(self.player_sprite, self.platforms)
+        hit_list = check_for_collision_with_list(self.player_sprite, self.walls)
 
         if len(hit_list) > 0:
             # Resolve any collisions by this weird kludge
