@@ -396,7 +396,8 @@ def load_texture(file_name: str, x: float = 0, y: float = 0,
                  width: float = 0, height: float = 0,
                  mirrored: bool = False,
                  flipped: bool = False,
-                 scale: float = 1) -> Texture:
+                 scale: float = 1,
+                 can_cache = True) -> Texture:
     """
     Load image from disk and create a texture.
 
@@ -417,6 +418,9 @@ def load_texture(file_name: str, x: float = 0, y: float = 0,
     :param bool mirrored: True if we mirror the image across the y axis
     :param bool flipped: True if we flip the image across the x axis
     :param float scale: Scale factor to apply on the new texture.
+    :param bool can_cache: If a texture has already been loaded, load_texture will return the same texture in order \
+    to save time. Somtimes this is not desirable, as resizine a cached texture will cause all other textures to \
+    resize with it. Setting can_cache to false will prevent this issue at the expence of additional resources.
 
     :Returns: The new texture.
     :raises: None
@@ -424,7 +428,7 @@ def load_texture(file_name: str, x: float = 0, y: float = 0,
 
     # See if we already loaded this texture, and we can just use a cached version.
     cache_name = "{}{}{}{}{}{}{}{}".format(file_name, x, y, width, height, scale, flipped, mirrored)
-    if cache_name in load_texture.texture_cache:  # type: ignore # dynamic attribute on function obj
+    if can_cache and cache_name in load_texture.texture_cache:  # type: ignore # dynamic attribute on function obj
         return load_texture.texture_cache[cache_name]  # type: ignore # dynamic attribute on function obj
 
     # See if we already loaded this texture file, and we can just use a cached version.
