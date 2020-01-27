@@ -41,6 +41,11 @@ Sprites
   Add lighting effects.
 * `Issue 523 <https://github.com/pvcraven/arcade/issues/523>`_
   Add sprite trigger/example for onenter / onexit.
+* `Issue 289 <https://github.com/pvcraven/arcade/issues/289>`_
+  Be able to get Sprite position and velocity as vectors.
+* `Issue 332 <https://github.com/pvcraven/arcade/issues/332>`_
+  Only so many textures can be supported when drawing a SpriteList. Support more by
+  better packing of the auto-created SpriteList.
 
 Physics Engine
 --------------
@@ -64,7 +69,10 @@ Documentation
 * `Issue 452 <https://github.com/pvcraven/arcade/issues/452>`_
   Documentation Request - explain how delta_time works to help learners fully
   understand both how and why.
-
+* `Issue 543 <https://github.com/pvcraven/arcade/issues/543>`_
+  Documentation Request - Improve documentation around installing on Raspberry Pi.
+* `Issue 408 <https://github.com/pvcraven/arcade/issues/408>`_
+  Documentation Request - Explain border lines that can occur when drawing sprites, and how to avoid.
 
 Examples
 --------
