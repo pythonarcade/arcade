@@ -8,13 +8,15 @@ Release Notes
 Version 2.2.8
 -------------
 
+*Release Date: 1/27/2020*
+
 * Version number now contained in one file, rather than three.
 * Enhancement: Move several GitHub-listed enhancements to the .rst enhancement list
 * Bug Fix: Texture scale not accounted for when getting height `Issue 516 <https://github.com/pvcraven/arcade/issues/516>`_
 * Bug Fix: Issue with text cut off if it goes below baseline `Issue 515 <https://github.com/pvcraven/arcade/issues/515>`_
 * Enhancement: Allow non-cached texture creation, fixing issue with resizing `Issue 506 <https://github.com/pvcraven/arcade/issues/506>`_
 * Enhancement: Physics engine supports rotation
-* Bug Fix: Need to better resolve collisions so sprite doesn't get hyper-spaces to new weird spot`Issue 569 <https://github.com/pvcraven/arcade/issues/569>`_
+* Bug Fix: Need to better resolve collisions so sprite doesn't get hyper-spaces to new weird spot `Issue 569 <https://github.com/pvcraven/arcade/issues/569>`_
 * Bug Fix: Hit box not getting properly created when working with multi-texture player sprite. `Issue 568 <https://github.com/pvcraven/arcade/issues/568>`_
 * Bug Fix: Issue with text_sprite and anchor y of top `Issue 567 <https://github.com/pvcraven/arcade/issues/567>`_
 * Bug Fix: Issues with documentation

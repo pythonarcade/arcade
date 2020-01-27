@@ -239,6 +239,7 @@ from .utils import rand_vec_magnitude
 from .utils import rand_vec_spread_deg
 
 from .version import VERSION
+__version__ = VERSION
 
 
 __all__ = ['AnimatedTimeBasedSprite',
