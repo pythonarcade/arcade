@@ -35,7 +35,8 @@ def _circular_check(player, walls):
             player.center_x = x
             player.center_y = y
             check_hit_list = check_for_collision_with_list(player, walls)
-            # print(f"Vary {vary} ({self.player_sprite.center_x} {self.player_sprite.center_y}) = {len(check_hit_list)}")
+            # print(f"Vary {vary} ({self.player_sprite.center_x} {self.player_sprite.center_y}) "
+            #       f"= {len(check_hit_list)}")
             if len(check_hit_list) == 0:
                 return
         vary *= 2
@@ -75,11 +76,9 @@ class PhysicsEngineSimple:
 
         if len(hit_list) > 0:
             # Resolve any collisions by this weird kludge
-            self._circular_check(self.player_sprite, self.platforms)
+            _circular_check(self.player_sprite, self.walls)
 
             # print(f"Spot F ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
-
-
 
         # --- Move in the x direction
         self.player_sprite.center_x += self.player_sprite.change_x
@@ -147,7 +146,7 @@ class PhysicsEnginePlatformer:
         Create a physics engine for a platformer.
 
         :param Sprite player_sprite: The moving sprite
-        :param SpriteList walls: The sprites it can't move through
+        :param SpriteList platforms: The sprites it can't move through
         :param float gravity_constant: Downward acceleration per frame
         :param SpriteList ladders: Ladders the user can climb on
         """
@@ -270,7 +269,8 @@ class PhysicsEnginePlatformer:
             if self.player_sprite.change_y > 0:
                 while len(check_for_collision_with_list(self.player_sprite, self.platforms)) > 0:
                     self.player_sprite.center_y -= 1
-                # print(f"Spot X ({self.player_sprite.center_x}, {self.player_sprite.center_y}) {self.player_sprite.change_y}")
+                # print(f"Spot X ({self.player_sprite.center_x}, {self.player_sprite.center_y})"
+                #       f" {self.player_sprite.change_y}")
             elif self.player_sprite.change_y < 0:
                 # Reset number of jumps
                 for item in hit_list_x:
@@ -390,4 +390,3 @@ class PhysicsEnginePlatformer:
         # print(f"Spot Z ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
         # Return list of encountered sprites
         return complete_hit_list
-
