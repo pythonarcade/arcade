@@ -8,5 +8,6 @@ matplotlib
 wheel
 twine
 sphinx-sitemap
+sphinx_rtd_theme
 flake8
 pyglet-ffmpeg2
