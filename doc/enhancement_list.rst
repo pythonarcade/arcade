@@ -47,6 +47,7 @@ Sprites
   Only so many textures can be supported when drawing a SpriteList. Support more by
   better packing of the auto-created SpriteList.
 * Be able to load an animated gif as an animated time-based sprite.
+* Be able to load an Aesprite image directly (Piggy-back of Pyglet support)
 
 Physics Engine
 --------------
@@ -57,6 +58,7 @@ Physics Engine
   Show 'rope' effect.
 * `Issue 524 <https://github.com/pvcraven/arcade/issues/524>`_
   Add example for "push back".
+* Create a simplified front-end to the PyMunk physics engine
 
 Tilemaps
 --------
