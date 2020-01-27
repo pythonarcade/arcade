@@ -125,37 +125,32 @@ class Texture:
         self.texture = None
         self.image = image
         self.scale = 1
-        if image:
-            self.width = image.width
-            self.height = image.height
-        else:
-            self.width = 0
-            self.height = 0
-
         self._sprite = None
         self._sprite_list = None
         self.unscaled_hitbox_points = None
 
+    @property
+    def width(self):
+        return self.image.width * self.scale
+
+    @property
+    def height(self):
+        return self.image.height * self.scale
+
     # noinspection PyUnusedLocal
-    def draw(self, center_x: float, center_y: float, width: float,
-             height: float, angle: float = 0,
-             alpha: int = 255, transparent: bool = True,
-             repeat_count_x=1, repeat_count_y=1):
+    def draw(self, center_x: float, center_y: float,
+             width: float = None, height: float = None,
+             angle: float = 0,
+             alpha: int = 255):
         """
+        Draw the texture
 
-        Args:
-            center_x:
-            center_y:
-            width:
-            height:
-            angle:
-            alpha: Currently unused.
-            transparent:  Currently unused.
-            repeat_count_x: Currently unused.
-            repeat_count_y:  Currently unused.
-
-        Returns:
-
+        :param center_x: x location of where to draw the texture
+        :param center_y: y location of where to draw the texture
+        :param width: width to draw rectangle. If none, calculated from image size and scale
+        :param height: height to draw rectangle. If none, calculated from image size and scale
+        :param angle: angle to rotate the texture
+        :param alpha: transparency of texture. 0-255
         """
 
         from arcade.sprite import Sprite
@@ -171,8 +166,14 @@ class Texture:
 
         self._sprite.center_x = center_x
         self._sprite.center_y = center_y
-        self._sprite.width = width
-        self._sprite.height = height
+        if width:
+            self._sprite.width = width
+        else:
+            self._sprite.width = self.image.width * self.scale
+        if height:
+            self._sprite.height = height
+        else:
+            self._sprite.height = self.image.height * self.scale
         self._sprite.angle = angle
         self._sprite.alpha = alpha
 
@@ -392,12 +393,15 @@ def calculate_points(image):
 
     return result
 
-def load_texture(file_name: str, x: float = 0, y: float = 0,
+
+def load_texture(file_name: str,
+                 x: float = 0,
+                 y: float = 0,
                  width: float = 0, height: float = 0,
                  mirrored: bool = False,
                  flipped: bool = False,
                  scale: float = 1,
-                 can_cache = True) -> Texture:
+                 can_cache: bool = True) -> Texture:
     """
     Load image from disk and create a texture.
 
