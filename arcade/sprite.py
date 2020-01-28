@@ -703,9 +703,7 @@ class Sprite:
 
         draw_texture_rectangle(self.center_x, self.center_y,
                                self.width, self.height,
-                               self._texture, self.angle, self.alpha,  # TODO: review this function
-                               repeat_count_x=self.repeat_count_x,
-                               repeat_count_y=self.repeat_count_y)
+                               self._texture, self.angle, self.alpha)
 
     def update(self):
         """
