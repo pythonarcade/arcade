@@ -5,6 +5,12 @@
 Release Notes
 =============
 
+Version 2.2.9
+-------------
+
+* Bug Fix: Error when calling Sprite.draw() `Issue 570 <https://github.com/pvcraven/arcade/issues/570>`_
+
+
 Version 2.2.8
 -------------
 
