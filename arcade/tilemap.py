@@ -264,10 +264,6 @@ def _create_sprite_from_tile(map_object, tile: pytiled_parser.objects.Tile,
             else:
                 print(f"Warning: Hitbox type {type(hitbox)} not supported.")
 
-            # Scale the points to our sprite scaling
-            for point in points:
-                point[0] *= scaling
-                point[1] *= scaling
             my_sprite.points = points
 
     if tile.animation is not None:

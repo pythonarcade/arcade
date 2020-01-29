@@ -25,6 +25,7 @@ from arcade import load_texture
 from arcade import draw_texture_rectangle
 from arcade import Texture
 from arcade import rotate_point
+from arcade import draw_polygon_outline
 
 from arcade.arcade_types import RGB, Point
 if TYPE_CHECKING:  # handle import cycle caused by type hinting
@@ -140,9 +141,9 @@ class Sprite:
 
             if self._texture:
                 self.textures = [self._texture]
-                self._width = self._texture.width * scale
-                self._height = self._texture.height * scale
-                self._texture.scale = scale
+                # Ignore the texture's scale and use ours
+                self._width = self._texture.unscaled_width * scale
+                self._height = self._texture.unscaled_height * scale
             else:
                 self.textures = []
                 self._width = 0
@@ -240,7 +241,7 @@ class Sprite:
         Set a sprite's hitbox
         """
         from warnings import warn
-        warn('set_points has been deprecated. Use set_hitbox instead.', DeprecationWarning)
+        warn('set_points has been deprecated. Use set_hit_box instead.', DeprecationWarning)
 
         self._points = points
 
@@ -250,7 +251,7 @@ class Sprite:
         sprite, including rotation and scaling.
         """
         from warnings import warn
-        warn('get_points has been deprecated. Use get_hitbox instead.', DeprecationWarning)
+        warn('get_points has been deprecated. Use get_hit_box instead.', DeprecationWarning)
 
         return self.get_adjusted_hit_box()
 
@@ -258,7 +259,8 @@ class Sprite:
 
     def set_hit_box(self, points: List[List[float]]):
         """
-        Set a sprite's hit box
+        Set a sprite's hit box. When setting the hitbox, assume a sprite
+        scaling of 1.0. Points will be scaled with get_adjusted_hit_box.
         """
         self._points = points
 
@@ -276,37 +278,53 @@ class Sprite:
         sprite, including rotation and scaling.
         """
 
+        # If we've already calculated the adjusted hit box, use the cached version
         if self._point_list_cache is not None:
             return self._point_list_cache
 
+        # If there is no hitbox, use the width/height to get one
         if self._points is None:
-            x1, y1 = - self.width / 2, - self.height / 2
-            x2, y2 = + self.width / 2, - self.height / 2
-            x3, y3 = + self.width / 2, + self.height / 2
-            x4, y4 = - self.width / 2, + self.height / 2
+            x1, y1 = - self._width / 2, - self._height / 2
+            x2, y2 = + self._width / 2, - self._height / 2
+            x3, y3 = + self._width / 2, + self._height / 2
+            x4, y4 = - self._width / 2, + self._height / 2
 
             self._points = [[x1, y1], [x2, y2], [x3, y3], [x4, y4]]
+            print("Ping")
 
+        # if self._points is None:
+        #     x1, y1 = - self.texture.unscaled_width / 2, - self.texture.unscaled_height / 2
+        #     x2, y2 = + self.texture.unscaled_width / 2, - self.texture.unscaled_height / 2
+        #     x3, y3 = + self.texture.unscaled_width / 2, + self.texture.unscaled_height / 2
+        #     x4, y4 = - self.texture.unscaled_width / 2, + self.texture.unscaled_height / 2
+        #
+        #     self._points = [[x1, y1], [x2, y2], [x3, y3], [x4, y4]]
+        #     print("Ping")
+        # Adjust the hitbox
         point_list = []
         for point_idx in range(len(self._points)):
             # Get the point
             point = [self._points[point_idx][0], self._points[point_idx][1]]
-
-            # Rotate the point
-            if self.angle:
-                point = rotate_point(point[0], point[1], 0, 0, self.angle)
 
             # Scale the point
             if self.scale != 1:
                 point[0] *= self.scale
                 point[1] *= self.scale
 
+            # Rotate the point
+            if self.angle:
+                point = rotate_point(point[0], point[1], 0, 0, self.angle)
+
             # Offset the point
             point = [point[0] + self.center_x,
                      point[1] + self.center_y]
             point_list.append(point)
+
+        # Cache the results
         self._point_list_cache = point_list
 
+        # if self.texture:
+        #     print(self.texture.name, self._point_list_cache)
         return self._point_list_cache
 
     def forward(self, speed: float = 1.0):
@@ -479,8 +497,8 @@ class Sprite:
             self._point_list_cache = None
             self._scale = new_value
             if self._texture:
-                self._width = self._texture.width * self._scale
-                self._height = self._texture.height * self._scale
+                self._width = self._texture.unscaled_width * self._scale
+                self._height = self._texture.unscaled_height * self._scale
             self.add_spatial_hashes()
 
             for sprite_list in self.sprite_lists:
@@ -630,8 +648,8 @@ class Sprite:
         self.clear_spatial_hashes()
         self._point_list_cache = None
         self._texture = texture
-        self._width = texture.width * texture.scale
-        self._height = texture.height * texture.scale
+        self._width = texture.unscaled_width * self.scale
+        self._height = texture.unscaled_height * self.scale
         self.add_spatial_hashes()
         for sprite_list in self.sprite_lists:
             sprite_list.update_texture(self)
@@ -645,8 +663,8 @@ class Sprite:
         self.clear_spatial_hashes()
         self._point_list_cache = None
         self._texture = texture
-        self._width = texture.width * texture.scale
-        self._height = texture.height * texture.scale
+        self._width = texture.unscaled_width * self.scale
+        self._height = texture.unscaled_height * self.scale
         self.add_spatial_hashes()
         for sprite_list in self.sprite_lists:
             sprite_list.update_texture(self)
@@ -704,6 +722,12 @@ class Sprite:
         draw_texture_rectangle(self.center_x, self.center_y,
                                self.width, self.height,
                                self._texture, self.angle, self.alpha)
+
+    def draw_hit_box(self, color, line_thickness):
+        points = self.get_adjusted_hit_box()
+
+        draw_polygon_outline(points, color, line_thickness)
+
 
     def update(self):
         """
@@ -958,8 +982,8 @@ class AnimatedWalkingSprite(Sprite):
         if self._texture is None:
             print("Error, no texture set")
         else:
-            self.width = self._texture.width * self.scale
-            self.height = self._texture.height * self.scale
+            self.width = self._texture.unscaled_width * self.scale
+            self.height = self._texture.unscaled_height * self.scale
             self._points = self._texture.unscaled_hitbox_points
 
 
