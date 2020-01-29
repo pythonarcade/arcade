@@ -1,10 +1,13 @@
+"""
+Functions used to support drawing. No Pyglet/OpenGL here.
+"""
 import PIL.Image
 import PIL.ImageOps
 import PIL.ImageDraw
 import math
 import os
 
-from typing import List, Tuple, cast
+from typing import List, Tuple, cast, Optional
 
 from arcade import lerp
 from arcade import RectList
@@ -12,9 +15,14 @@ from arcade import Color
 from arcade import RGBA
 
 
-def get_points_for_thick_line(start_x: float, start_y:
-                              float, end_x: float, end_y: float,
+def get_points_for_thick_line(start_x: float, start_y: float,
+                              end_x: float, end_y: float,
                               line_width: float):
+    """
+    Function used internally for Arcade. OpenGL draws triangles only, so a think
+    line must be two triangles that make up a rectangle. This calculates those
+    points.
+    """
     vector_x = start_x - end_x
     vector_y = start_y - end_y
     perpendicular_x = vector_y
@@ -120,21 +128,32 @@ class Texture:
 
     """
 
-    def __init__(self, name, image=None):
+    def __init__(self, name: str, image=None):
+        from arcade.sprite import Sprite
+        from arcade.sprite_list import SpriteList
+
         self.name = name
         self.texture = None
         self.image = image
-        self.scale = 1
-        self._sprite = None
-        self._sprite_list = None
+        # self.scale = 1
+        self._sprite: Optional[Sprite] = None
+        self._sprite_list: Optional[SpriteList] = None
         self.unscaled_hitbox_points = None
 
+    # @property
+    # def scaled_width(self) -> float:
+    #     return self.image.width * self.scale
+    #
+    # @property
+    # def scaled_height(self) -> float:
+    #     return self.image.height * self.scale
+
     @property
-    def width(self):
+    def unscaled_width(self) -> int:
         return self.image.width * self.scale
 
     @property
-    def height(self):
+    def unscaled_height(self) -> int:
         return self.image.height * self.scale
 
     # noinspection PyUnusedLocal
@@ -339,9 +358,9 @@ def calculate_points(image):
             y = start_y + (offset * y_direction)
             x = start_x
             for count in range(offset + 1):
-                pixel = image.getpixel((x, y))
+                my_pixel = image.getpixel((x, y))
                 # print(f"({x}, {y}) = {pixel} | ", end="")
-                if pixel[3] != 0:
+                if my_pixel[3] != 0:
                     bad = True
                     break
                 y -= y_direction
