@@ -142,8 +142,8 @@ class Sprite:
             if self._texture:
                 self.textures = [self._texture]
                 # Ignore the texture's scale and use ours
-                self._width = self._texture.unscaled_width * scale
-                self._height = self._texture.unscaled_height * scale
+                self._width = self._texture.width * scale
+                self._height = self._texture.height * scale
             else:
                 self.textures = []
                 self._width = 0
@@ -284,7 +284,7 @@ class Sprite:
 
         # If there is no hitbox, use the width/height to get one
         if self._points is None and self._texture:
-            self._points = self._texture.unscaled_hitbox_points
+            self._points = self._texture.unscaled_hit_box_points
 
         if self._points is None and self._width:
             x1, y1 = - self._width / 2, - self._height / 2
@@ -494,8 +494,8 @@ class Sprite:
             self._point_list_cache = None
             self._scale = new_value
             if self._texture:
-                self._width = self._texture.unscaled_width * self._scale
-                self._height = self._texture.unscaled_height * self._scale
+                self._width = self._texture.width * self._scale
+                self._height = self._texture.height * self._scale
             self.add_spatial_hashes()
 
             for sprite_list in self.sprite_lists:
@@ -645,8 +645,8 @@ class Sprite:
         self.clear_spatial_hashes()
         self._point_list_cache = None
         self._texture = texture
-        self._width = texture.unscaled_width * self.scale
-        self._height = texture.unscaled_height * self.scale
+        self._width = texture.width * self.scale
+        self._height = texture.height * self.scale
         self.add_spatial_hashes()
         for sprite_list in self.sprite_lists:
             sprite_list.update_texture(self)
@@ -660,8 +660,8 @@ class Sprite:
         self.clear_spatial_hashes()
         self._point_list_cache = None
         self._texture = texture
-        self._width = texture.unscaled_width * self.scale
-        self._height = texture.unscaled_height * self.scale
+        self._width = texture.width * self.scale
+        self._height = texture.height * self.scale
         self.add_spatial_hashes()
         for sprite_list in self.sprite_lists:
             sprite_list.update_texture(self)
@@ -717,8 +717,7 @@ class Sprite:
         """ Draw the sprite. """
 
         draw_texture_rectangle(self.center_x, self.center_y,
-                               self.width, self.height,
-                               self._texture, self.angle, self.alpha)
+                               self.scale, self._texture, self.angle, self.alpha)
 
     def draw_hit_box(self, color, line_thickness):
         points = self.get_adjusted_hit_box()
@@ -979,8 +978,8 @@ class AnimatedWalkingSprite(Sprite):
         if self._texture is None:
             print("Error, no texture set")
         else:
-            self.width = self._texture.unscaled_width * self.scale
-            self.height = self._texture.unscaled_height * self.scale
+            self.width = self._texture.width * self.scale
+            self.height = self._texture.height * self.scale
             self._points = self._texture.unscaled_hitbox_points
 
 
@@ -994,7 +993,7 @@ class SpriteSolidColor(Sprite):
 
         image = PIL.Image.new('RGBA', (width, height), color)
         self.texture = Texture("Solid", image)
-        self._points = self.texture.unscaled_hitbox_points
+        self._points = self.texture.unscaled_hit_box_points
 
 
 def get_distance_between_sprites(sprite1: Sprite, sprite2: Sprite) -> float:

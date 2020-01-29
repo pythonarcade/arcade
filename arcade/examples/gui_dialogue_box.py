@@ -55,12 +55,12 @@ class Window(arcade.Window):
                                    theme=self.theme)
         dialoguebox.button_list.append(close_button)
         message = "Hello I am a Dialogue Box."
-        dialoguebox.text_list.append(arcade.gui.Text(message, self.half_width, self.half_height, self.theme.font_color))
+        dialoguebox.text_list.append(arcade.gui.TextBox(message, self.half_width, self.half_height, self.theme.font_color))
         self.dialogue_box_list.append(dialoguebox)
 
     def add_text(self):
         message = "Press this button to activate the Dialogue Box"
-        self.text_list.append(arcade.gui.Text(message, self.half_width-50, self.half_height))
+        self.text_list.append(arcade.gui.TextBox(message, self.half_width-50, self.half_height))
 
     def add_button(self):
         show_button = ShowButton(self.dialogue_box_list[0], self.width-100, self.half_height, theme=self.theme)

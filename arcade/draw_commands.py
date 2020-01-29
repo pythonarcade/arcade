@@ -839,28 +839,26 @@ def draw_rectangle_filled(center_x: float, center_y: float, width: float,
     _generic_draw_line_strip((p1, p2, p4, p3), color, gl.GL_TRIANGLE_STRIP)
 
 
-def draw_texture_rectangle(center_x: float, center_y: float, width: float,
-                           height: float, texture: Texture, angle: float = 0,
+def draw_texture_rectangle(center_x: float, center_y: float, scale: float,
+                           texture: Texture, angle: float = 0,
                            alpha: int = 255):
     """
     Draw a textured rectangle on-screen.
 
     :param float center_x: x coordinate of rectangle center.
     :param float center_y: y coordinate of rectangle center.
-    :param float width: width of the rectangle.
-    :param float height: height of the rectangle.
+    :param float scale: scaling of texture.
     :param int texture: identifier of texture returned from load_texture() call
     :param float angle: rotation of the rectangle. Defaults to zero.
     :param float alpha: Transparency of image. 0 is fully transparent, 255 (default) is visible
     """
 
-    texture.draw(center_x, center_y, width,
-                 height, angle, alpha)
+    texture.draw(center_x, center_y, scale, angle, alpha)
 
 
 # noinspection PyUnusedLocal
 def draw_xywh_rectangle_textured(bottom_left_x: float, bottom_left_y: float,
-                                 width: float, height: float,
+                                 scale: float,
                                  texture: Texture, angle: float = 0,
                                  alpha: int = 255,
                                  repeat_count_x: int = 1, repeat_count_y: int = 1):
@@ -869,8 +867,7 @@ def draw_xywh_rectangle_textured(bottom_left_x: float, bottom_left_y: float,
 
     :param float bottom_left_x: The x coordinate of the left edge of the rectangle.
     :param float bottom_left_y: The y coordinate of the bottom of the rectangle.
-    :param float width: The width of the rectangle.
-    :param float height: The height of the rectangle.
+    :param float scale: The width of the rectangle.
     :param int texture: identifier of texture returned from load_texture() call
     :param float angle: rotation of the rectangle. Defaults to zero.
     :param int alpha: Transparency of image. 0 is fully transparent, 255 (default) is visible
@@ -878,10 +875,10 @@ def draw_xywh_rectangle_textured(bottom_left_x: float, bottom_left_y: float,
     :param int repeat_count_y: Unused for now
     """
 
-    center_x = bottom_left_x + (width / 2)
-    center_y = bottom_left_y + (height / 2)
+    center_x = bottom_left_x + (texture.width * scale / 2)
+    center_y = bottom_left_y + (texture.height * scale / 2)
     draw_texture_rectangle(center_x, center_y,
-                           width, height,
+                           scale,
                            texture,
                            angle=angle, alpha=alpha)
 

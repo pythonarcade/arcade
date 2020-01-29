@@ -126,7 +126,6 @@ class Texture:
     Attributes:
         :name:
         :image:
-        :scale:
         :width: Width of the texture image in pixels
         :height: Height of the texture image in pixels
 
@@ -139,30 +138,21 @@ class Texture:
         self.name = name
         self.texture = None
         self.image = image
-        # self.scale = 1
         self._sprite: Optional[Sprite] = None
         self._sprite_list: Optional[SpriteList] = None
-        self.unscaled_hitbox_points = None
-
-    # @property
-    # def scaled_width(self) -> float:
-    #     return self.image.width * self.scale
-    #
-    # @property
-    # def scaled_height(self) -> float:
-    #     return self.image.height * self.scale
+        self.unscaled_hit_box_points = None
 
     @property
-    def unscaled_width(self) -> int:
-        return self.image.width * self.scale
+    def width(self) -> int:
+        return self.image.width
 
     @property
-    def unscaled_height(self) -> int:
-        return self.image.height * self.scale
+    def height(self) -> int:
+        return self.image.height
 
     # noinspection PyUnusedLocal
     def draw(self, center_x: float, center_y: float,
-             width: float = None, height: float = None,
+             scale: float = 1.0,
              angle: float = 0,
              alpha: int = 255):
         """
@@ -170,8 +160,7 @@ class Texture:
 
         :param center_x: x location of where to draw the texture
         :param center_y: y location of where to draw the texture
-        :param width: width to draw rectangle. If none, calculated from image size and scale
-        :param height: height to draw rectangle. If none, calculated from image size and scale
+        :param scale: Scale to draw rectangle. If none, defaults to 1
         :param angle: angle to rotate the texture
         :param alpha: transparency of texture. 0-255
         """
@@ -189,14 +178,7 @@ class Texture:
 
         self._sprite.center_x = center_x
         self._sprite.center_y = center_y
-        if width:
-            self._sprite.width = width
-        else:
-            self._sprite.width = self.image.width * self.scale
-        if height:
-            self._sprite.height = height
-        else:
-            self._sprite.height = self.image.height * self.scale
+        self._sprite.scale = scale
         self._sprite.angle = angle
         self._sprite.alpha = alpha
 

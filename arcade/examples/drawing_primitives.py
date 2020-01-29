@@ -147,10 +147,8 @@ arcade.draw_rectangle_filled(420, 160, 20, 40, arcade.color.BLUSH, 45)
 arcade.draw_text("draw_bitmap", 483, 3, arcade.color.BLACK, 12)
 texture = arcade.load_texture(":resources:images/space_shooter/playerShip1_orange.png")
 scale = .6
-arcade.draw_texture_rectangle(540, 120, scale * texture.width,
-                              scale * texture.height, texture, 0)
-arcade.draw_texture_rectangle(540, 60, scale * texture.width,
-                              scale * texture.height, texture, 45)
+arcade.draw_texture_rectangle(540, 120, scale, texture, 0)
+arcade.draw_texture_rectangle(540, 60, scale, texture, 45)
 
 # Finish the render.
 # Nothing will be drawn without this.
