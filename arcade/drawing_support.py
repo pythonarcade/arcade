@@ -28,8 +28,12 @@ def get_points_for_thick_line(start_x: float, start_y: float,
     perpendicular_x = vector_y
     perpendicular_y = -vector_x
     length = math.sqrt(vector_x * vector_x + vector_y * vector_y)
-    normal_x = perpendicular_x / length
-    normal_y = perpendicular_y / length
+    if length == 0:
+        normal_x = 1
+        normal_y = 1
+    else:
+        normal_x = perpendicular_x / length
+        normal_y = perpendicular_y / length
     r1_x = start_x + normal_x * line_width / 2
     r1_y = start_y + normal_y * line_width / 2
     r2_x = start_x - normal_x * line_width / 2
@@ -202,8 +206,7 @@ class Texture:
 def load_textures(file_name: str,
                   image_location_list: RectList,
                   mirrored: bool = False,
-                  flipped: bool = False,
-                  scale: float = 1) -> List['Texture']:
+                  flipped: bool = False) -> List['Texture']:
     """
     Load a set of textures off of a single image file.
 
@@ -221,8 +224,6 @@ def load_textures(file_name: str,
            a list of four floats. ``[x, y, width, height]``.
     :param bool mirrored: If set to true, the image is mirrored left to right.
     :param bool flipped: If set to true, the image is flipped upside down.
-    :param float scale: Scale factor to apply on each new texture.
-
 
     :Returns: List of textures loaded.
     :Raises: ValueError
@@ -269,7 +270,7 @@ def load_textures(file_name: str,
                              .format(y + height, source_image_height))
 
         # See if we already loaded this texture, and we can just use a cached version.
-        cache_name = "{}{}{}{}{}{}{}{}".format(file_name, x, y, width, height, scale, flipped, mirrored)
+        cache_name = "{}{}{}{}{}{}{}{}".format(file_name, x, y, width, height, flipped, mirrored)
         if cache_name in load_texture.texture_cache:  # type: ignore # dynamic attribute on function obj
             result = load_texture.texture_cache[cache_name]  # type: ignore # dynamic attribute on function obj
         else:
@@ -283,7 +284,6 @@ def load_textures(file_name: str,
                 image = PIL.ImageOps.flip(image)
             result = Texture(cache_name, image)
             load_texture.texture_cache[cache_name] = result  # type: ignore # dynamic attribute on function obj
-            result.scale = scale
         texture_info_list.append(result)
 
     return texture_info_list

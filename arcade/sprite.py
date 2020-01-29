@@ -283,23 +283,20 @@ class Sprite:
             return self._point_list_cache
 
         # If there is no hitbox, use the width/height to get one
-        if self._points is None:
+        if self._points is None and self._texture:
+            self._points = self._texture.unscaled_hitbox_points
+
+        if self._points is None and self._width:
             x1, y1 = - self._width / 2, - self._height / 2
             x2, y2 = + self._width / 2, - self._height / 2
             x3, y3 = + self._width / 2, + self._height / 2
             x4, y4 = - self._width / 2, + self._height / 2
 
             self._points = [[x1, y1], [x2, y2], [x3, y3], [x4, y4]]
-            print("Ping")
 
-        # if self._points is None:
-        #     x1, y1 = - self.texture.unscaled_width / 2, - self.texture.unscaled_height / 2
-        #     x2, y2 = + self.texture.unscaled_width / 2, - self.texture.unscaled_height / 2
-        #     x3, y3 = + self.texture.unscaled_width / 2, + self.texture.unscaled_height / 2
-        #     x4, y4 = - self.texture.unscaled_width / 2, + self.texture.unscaled_height / 2
-        #
-        #     self._points = [[x1, y1], [x2, y2], [x3, y3], [x4, y4]]
-        #     print("Ping")
+        if self._points is None:
+            raise ValueError("Trying to get the hit box of a sprite that doesn't have one.")
+
         # Adjust the hitbox
         point_list = []
         for point_idx in range(len(self._points)):
@@ -880,7 +877,7 @@ class AnimatedTimeBasedSprite(Sprite):
                 self.cur_frame = 0
             source = self.frames[self.cur_frame].image.source
             # print(f"Advance to frame {self.cur_frame}: {source}")
-            self.texture = load_texture(source, scale=self.scale)
+            self.texture = load_texture(source)
 
 
 class AnimatedWalkingSprite(Sprite):
