@@ -56,6 +56,7 @@ def main():
                 "earclip_module.py", \
                 "utils.py", \
                 "drawing_support.py", \
+                "texture.py", \
                 "buffered_draw_commands.py", \
                 "draw_commands.py", \
                 "geometry.py", \
@@ -109,6 +110,8 @@ def main():
             first = False
         init_template += f"'{item}',\n"
     init_template += "           ]\n\n"
+
+    init_template += "__version__ = VERSION\n"
 
     text_file = open("__init__.py", "w")
     text_file.write(init_template)

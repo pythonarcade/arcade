@@ -78,20 +78,21 @@ from .utils import rand_on_line
 from .utils import rand_vec_magnitude
 from .utils import rand_vec_spread_deg
 
-from .drawing_support import Texture
 from .drawing_support import calculate_points
 from .drawing_support import get_four_byte_color
 from .drawing_support import get_four_float_color
 from .drawing_support import get_points_for_thick_line
-from .drawing_support import load_spritesheet
-from .drawing_support import load_texture
-from .drawing_support import load_textures
-from .drawing_support import make_circle_texture
-from .drawing_support import make_soft_circle_texture
-from .drawing_support import make_soft_square_texture
 from .drawing_support import make_transparent_color
 from .drawing_support import rotate_point
-from .drawing_support import trim_image
+
+from .texture import Texture
+from .texture import load_spritesheet
+from .texture import load_texture
+from .texture import load_textures
+from .texture import make_circle_texture
+from .texture import make_soft_circle_texture
+from .texture import make_soft_square_texture
+from .texture import trim_image
 
 from .buffered_draw_commands import TShape
 from .buffered_draw_commands import Shape
@@ -239,7 +240,6 @@ from .utils import rand_vec_magnitude
 from .utils import rand_vec_spread_deg
 
 from .version import VERSION
-__version__ = VERSION
 
 
 __all__ = ['AnimatedTimeBasedSprite',
@@ -430,3 +430,4 @@ __all__ = ['AnimatedTimeBasedSprite',
            'unschedule',
            ]
 
+__version__ = VERSION
