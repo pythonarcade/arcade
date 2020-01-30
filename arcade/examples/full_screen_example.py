@@ -73,9 +73,7 @@ class MyGame(arcade.Window):
         # Draw some boxes on the bottom so we can see how they change
         for x in range(64, 800, 128):
             y = 64
-            width = 128
-            height = 128
-            arcade.draw_texture_rectangle(x, y, width, height, self.example_image)
+            arcade.draw_texture_rectangle(x, y, self.example_image)
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """

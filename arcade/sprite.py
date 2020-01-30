@@ -717,7 +717,7 @@ class Sprite:
         """ Draw the sprite. """
 
         draw_texture_rectangle(self.center_x, self.center_y,
-                               self.scale, self._texture, self.angle, self.alpha)
+                               self._texture, self.scale, self.angle, self.alpha)
 
     def draw_hit_box(self, color, line_thickness):
         points = self.get_adjusted_hit_box()

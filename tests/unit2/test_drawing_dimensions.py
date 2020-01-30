@@ -54,13 +54,6 @@ class MyGame(arcade.Window):
         arcade.draw_ellipse_filled(x, y, width, 50, arcade.color.AFRICAN_VIOLET, 2)
         arcade.draw_line(x - half_width, y, x + half_width, y, arcade.color.RED, 2)
 
-        big = arcade.load_texture(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                                  scale=1)
-        small = arcade.load_texture(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                                    scale=.5)
-
-        assert big.width > small.width
-
 
 def test_main():
     """ Main method """

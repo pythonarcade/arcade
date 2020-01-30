@@ -839,16 +839,18 @@ def draw_rectangle_filled(center_x: float, center_y: float, width: float,
     _generic_draw_line_strip((p1, p2, p4, p3), color, gl.GL_TRIANGLE_STRIP)
 
 
-def draw_texture_rectangle(center_x: float, center_y: float, scale: float,
-                           texture: Texture, angle: float = 0,
+def draw_texture_rectangle(center_x: float, center_y: float,
+                           texture: Texture,
+                           scale: float = 1,
+                           angle: float = 0,
                            alpha: int = 255):
     """
     Draw a textured rectangle on-screen.
 
     :param float center_x: x coordinate of rectangle center.
     :param float center_y: y coordinate of rectangle center.
-    :param float scale: scaling of texture.
     :param int texture: identifier of texture returned from load_texture() call
+    :param float scale: scaling of texture, defaults to 1
     :param float angle: rotation of the rectangle. Defaults to zero.
     :param float alpha: Transparency of image. 0 is fully transparent, 255 (default) is visible
     """
