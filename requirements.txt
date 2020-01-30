@@ -11,3 +11,5 @@ sphinx-sitemap
 sphinx_rtd_theme
 flake8
 pyglet-ffmpeg2
+zstandard
+mypy
