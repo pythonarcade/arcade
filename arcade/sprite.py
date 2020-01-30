@@ -986,7 +986,6 @@ class AnimatedWalkingSprite(Sprite):
         else:
             self.width = self._texture.width * self.scale
             self.height = self._texture.height * self.scale
-            self._points = self._texture.hit_box_points
 
 
 class SpriteSolidColor(Sprite):
