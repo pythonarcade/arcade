@@ -295,7 +295,9 @@ class Sprite:
             self._points = [[x1, y1], [x2, y2], [x3, y3], [x4, y4]]
 
         if self._points is None:
-            raise ValueError("Trying to get the hit box of a sprite that doesn't have one.")
+            raise ValueError("Error trying to get the hit box of a sprite, when no hit box is set.\nPlease make sure the "
+                             "Sprite.texture is set to a texture before trying to draw or do collision testing.\n"
+                             "Alternatively, manually call Sprite.set_hit_box with points for your hitbox.")
 
         # Adjust the hitbox
         point_list = []
