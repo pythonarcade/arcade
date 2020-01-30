@@ -140,7 +140,7 @@ class Texture:
         self.image = image
         self._sprite: Optional[Sprite] = None
         self._sprite_list: Optional[SpriteList] = None
-        self.unscaled_hit_box_points = None
+        self.hit_box_points = None
 
     @property
     def width(self) -> int:
@@ -485,7 +485,7 @@ def load_texture(file_name: str,
 
     result = Texture(cache_name, image)
     load_texture.texture_cache[cache_name] = result  # type: ignore # dynamic attribute on function obj
-    result.unscaled_hitbox_points = calculate_points(image)
+    result.hit_box_points = calculate_points(image)
     result.scale = scale
     return result
 

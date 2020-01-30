@@ -81,10 +81,6 @@ class PlayerCharacter(arcade.Sprite):
         self.jump_texture_pair = load_texture_pair(f"{main_path}_jump.png")
         self.fall_texture_pair = load_texture_pair(f"{main_path}_fall.png")
 
-        # Hit box will be set based on the first image used. If you want to specify
-        # a different hit box, you can do it like the code below.
-        # self.set_hit_box([[-22, -64], [22, -64], [22, 28], [-22, 28]])
-
         # Load textures for walking
         self.walk_textures = []
         for i in range(8):
@@ -100,6 +96,11 @@ class PlayerCharacter(arcade.Sprite):
 
         # Set the initial texture
         self.texture = self.idle_texture_pair[0]
+
+        # Hit box will be set based on the first image used. If you want to specify
+        # a different hit box, you can do it like the code below.
+        # self.set_hit_box([[-22, -64], [22, -64], [22, 28], [-22, 28]])
+        self.set_hit_box(self.texture.hit_box_points)
 
     def update_animation(self, delta_time: float = 1/60):
 
@@ -216,7 +217,6 @@ class MyGame(arcade.Window):
         self.player_sprite.center_x = PLAYER_START_X
         self.player_sprite.center_y = PLAYER_START_Y
         self.player_list.append(self.player_sprite)
-
 
         # --- Load in a map from the tiled editor ---
 
