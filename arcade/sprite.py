@@ -22,7 +22,7 @@ from typing import TYPE_CHECKING
 import PIL.Image
 
 from arcade import load_texture
-from arcade import draw_texture_rectangle
+from arcade import draw_scaled_texture_rectangle
 from arcade import Texture
 from arcade import rotate_point
 from arcade import draw_polygon_outline
@@ -293,6 +293,9 @@ class Sprite:
             x4, y4 = - self._width / 2, + self._height / 2
 
             self._points = [[x1, y1], [x2, y2], [x3, y3], [x4, y4]]
+
+        if self._points is None and self.texture is not None:
+            self._points = self.texture.hit_box_points
 
         if self._points is None:
             raise ValueError("Error trying to get the hit box of a sprite, when no hit box is set.\nPlease make sure the "
@@ -718,8 +721,8 @@ class Sprite:
     def draw(self):
         """ Draw the sprite. """
 
-        draw_texture_rectangle(self.center_x, self.center_y,
-                               self._texture, self.scale, self.angle, self.alpha)
+        draw_scaled_texture_rectangle(self.center_x, self.center_y,
+                                      self._texture, self.scale, self.angle, self.alpha)
 
     def draw_hit_box(self, color, line_thickness):
         points = self.get_adjusted_hit_box()
@@ -883,6 +886,8 @@ class AnimatedTimeBasedSprite(Sprite):
 class AnimatedWalkingSprite(Sprite):
     """
     Sprite for platformer games that supports walking animations.
+    Make sure to call update_animation after loading the animations so the
+    initial texture can be set. Or manually set it.
     For a better example, see:
     http://arcade.academy/examples/platformer.html#animate-character
     """
