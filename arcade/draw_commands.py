@@ -880,8 +880,8 @@ def draw_xywh_rectangle_textured(bottom_left_x: float, bottom_left_y: float,
     center_x = bottom_left_x + (texture.width * scale / 2)
     center_y = bottom_left_y + (texture.height * scale / 2)
     draw_texture_rectangle(center_x, center_y,
-                           scale,
                            texture,
+                           scale,
                            angle=angle, alpha=alpha)
 
 

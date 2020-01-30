@@ -29,8 +29,8 @@ def get_points_for_thick_line(start_x: float, start_y: float,
     perpendicular_y = -vector_x
     length = math.sqrt(vector_x * vector_x + vector_y * vector_y)
     if length == 0:
-        normal_x = 1
-        normal_y = 1
+        normal_x = 1.0
+        normal_y = 1.0
     else:
         normal_x = perpendicular_x / length
         normal_y = perpendicular_y / length
@@ -182,7 +182,8 @@ class Texture:
         self._sprite.angle = angle
         self._sprite.alpha = alpha
 
-        self._sprite_list.draw()
+        if self._sprite_list is not None:
+            self._sprite_list.draw()
 
 
 def load_textures(file_name: str,
@@ -252,7 +253,7 @@ def load_textures(file_name: str,
                              .format(y + height, source_image_height))
 
         # See if we already loaded this texture, and we can just use a cached version.
-        cache_name = "{}{}{}{}{}{}{}{}".format(file_name, x, y, width, height, flipped, mirrored)
+        cache_name = "{}{}{}{}{}{}{}".format(file_name, x, y, width, height, flipped, mirrored)
         if cache_name in load_texture.texture_cache:  # type: ignore # dynamic attribute on function obj
             result = load_texture.texture_cache[cache_name]  # type: ignore # dynamic attribute on function obj
         else:
@@ -486,7 +487,6 @@ def load_texture(file_name: str,
     result = Texture(cache_name, image)
     load_texture.texture_cache[cache_name] = result  # type: ignore # dynamic attribute on function obj
     result.hit_box_points = calculate_points(image)
-    result.scale = scale
     return result
 
 
