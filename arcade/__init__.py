@@ -129,6 +129,7 @@ from .draw_commands import draw_line_strip
 from .draw_commands import draw_lines
 from .draw_commands import draw_lrtb_rectangle_filled
 from .draw_commands import draw_lrtb_rectangle_outline
+from .draw_commands import draw_lrwh_rectangle_textured
 from .draw_commands import draw_parabola_filled
 from .draw_commands import draw_parabola_outline
 from .draw_commands import draw_point
@@ -137,12 +138,12 @@ from .draw_commands import draw_polygon_filled
 from .draw_commands import draw_polygon_outline
 from .draw_commands import draw_rectangle_filled
 from .draw_commands import draw_rectangle_outline
+from .draw_commands import draw_scaled_texture_rectangle
 from .draw_commands import draw_texture_rectangle
 from .draw_commands import draw_triangle_filled
 from .draw_commands import draw_triangle_outline
 from .draw_commands import draw_xywh_rectangle_filled
 from .draw_commands import draw_xywh_rectangle_outline
-from .draw_commands import draw_xywh_rectangle_textured
 from .draw_commands import get_image
 from .draw_commands import get_pixel
 
@@ -342,6 +343,7 @@ __all__ = ['AnimatedTimeBasedSprite',
            'draw_lines',
            'draw_lrtb_rectangle_filled',
            'draw_lrtb_rectangle_outline',
+           'draw_lrwh_rectangle_textured',
            'draw_parabola_filled',
            'draw_parabola_outline',
            'draw_point',
@@ -350,6 +352,7 @@ __all__ = ['AnimatedTimeBasedSprite',
            'draw_polygon_outline',
            'draw_rectangle_filled',
            'draw_rectangle_outline',
+           'draw_scaled_texture_rectangle',
            'draw_text',
            'draw_text_2',
            'draw_texture_rectangle',
@@ -357,7 +360,6 @@ __all__ = ['AnimatedTimeBasedSprite',
            'draw_triangle_outline',
            'draw_xywh_rectangle_filled',
            'draw_xywh_rectangle_outline',
-           'draw_xywh_rectangle_textured',
            'earclip',
            'finish_render',
            'generate_sprites',
