@@ -5,11 +5,25 @@
 Release Notes
 =============
 
+Version 2.3.0
+-------------
+
+*Release Date: Jan-30-2020*
+
+* Backwards Incompatability: arcade.Texture no longer has a scale property. This
+  property made things confusing as Sprites had their own scale attribute. This
+  seemingly small change required a lot of rework around sprites, sprite lists,
+  hit boxes, and drawing of textured rectangles.
+* Include all the things that were part of 2.2.8, but hopefully working now.
+* Bug Fix: Error when calling Sprite.draw() `Issue 570 <https://github.com/pvcraven/arcade/issues/570>`_
+* Enhancement: Added Sprite.draw_hit_box to visually draw the hit box. (Kind of slow, but useful for debugging.)
+
 Version 2.2.9
 -------------
 
-* Bug Fix: Error when calling Sprite.draw() `Issue 570 <https://github.com/pvcraven/arcade/issues/570>`_
+*Release Date: Jan-28-2020*
 
+* Roll back to 2.2.7 because bug fixes in 2.2.8 messed up scaling
 
 Version 2.2.8
 -------------
