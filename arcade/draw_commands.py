@@ -857,9 +857,9 @@ def draw_scaled_texture_rectangle(center_x: float, center_y: float,
 
 
 def draw_texture_rectangle(center_x: float, center_y: float,
-                           texture: Texture,
                            width: float,
                            height: float,
+                           texture: Texture,
                            angle: float = 0,
                            alpha: int = 255):
     """
@@ -867,14 +867,14 @@ def draw_texture_rectangle(center_x: float, center_y: float,
 
     :param float center_x: x coordinate of rectangle center.
     :param float center_y: y coordinate of rectangle center.
-    :param int texture: identifier of texture returned from load_texture() call
     :param float width: width of texture
     :param float height: height of texture
+    :param int texture: identifier of texture returned from load_texture() call
     :param float angle: rotation of the rectangle. Defaults to zero.
     :param float alpha: Transparency of image. 0 is fully transparent, 255 (default) is visible
     """
 
-    texture.draw_sized(center_x, center_y, height, width, angle, alpha)
+    texture.draw_sized(center_x, center_y, width, height, angle, alpha)
 
 
 def draw_lrwh_rectangle_textured(bottom_left_x: float, bottom_left_y: float,
