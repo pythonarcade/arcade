@@ -99,7 +99,6 @@ def main():
         for item in class_list:
             text_classes += [f"- :class:`~arcade.{item[1]}`\n"]
 
-
     init_template += "\n__all__ = ["
     all_list.sort()
     first = True

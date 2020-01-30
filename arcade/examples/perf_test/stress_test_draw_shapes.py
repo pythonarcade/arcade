@@ -48,7 +48,7 @@ class FPSCounter:
             return len(self.frame_times) / sum(self.frame_times)
 
 
-class Line():
+class Line:
     def __init__(self):
         self.start_x = random.randrange(SCREEN_WIDTH)
         self.start_y = random.randrange(SCREEN_HEIGHT - TOP_MARGIN)

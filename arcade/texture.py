@@ -62,21 +62,7 @@ class Texture:
         """
         return self.image.height
 
-    # noinspection PyUnusedLocal
-    def draw(self, center_x: float, center_y: float,
-             scale: float = 1.0,
-             angle: float = 0,
-             alpha: int = 255):
-        """
-        Draw the texture
-
-        :param center_x: x location of where to draw the texture
-        :param center_y: y location of where to draw the texture
-        :param scale: Scale to draw rectangle. If none, defaults to 1
-        :param angle: angle to rotate the texture
-        :param alpha: transparency of texture. 0-255
-        """
-
+    def _create_cached_sprite(self):
         from arcade.sprite import Sprite
         from arcade.sprite_list import SpriteList
 
@@ -88,13 +74,45 @@ class Texture:
             self._sprite_list = SpriteList()
             self._sprite_list.append(self._sprite)
 
-        self._sprite.center_x = center_x
-        self._sprite.center_y = center_y
-        self._sprite.scale = scale
-        self._sprite.angle = angle
-        self._sprite.alpha = alpha
+    def draw_sized(self,
+                   center_x: float, center_y: float,
+                   width: float,
+                   height: float,
+                   angle: float,
+                   alpha: int = 255):
 
-        if self._sprite_list is not None:
+        self._create_cached_sprite()
+        if self._sprite and self._sprite_list:
+            self._sprite.center_x = center_x
+            self._sprite.center_y = center_y
+            self._sprite.height = height
+            self._sprite.width = width
+            self._sprite.angle = angle
+            self._sprite.alpha = alpha
+            self._sprite_list.draw()
+
+    def draw_scaled(self, center_x: float, center_y: float,
+                    scale: float = 1.0,
+                    angle: float = 0,
+                    alpha: int = 255):
+
+        """
+        Draw the texture
+
+        :param center_x: x location of where to draw the texture
+        :param center_y: y location of where to draw the texture
+        :param scale: Scale to draw rectangle. If none, defaults to 1
+        :param angle: angle to rotate the texture
+        :param alpha: transparency of texture. 0-255
+        """
+
+        self._create_cached_sprite()
+        if self._sprite and self._sprite_list:
+            self._sprite.center_x = center_x
+            self._sprite.center_y = center_y
+            self._sprite.scale = scale
+            self._sprite.angle = angle
+            self._sprite.alpha = alpha
             self._sprite_list.draw()
 
 

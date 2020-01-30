@@ -10,7 +10,6 @@ Buffered Draw Commands.
 
 import math
 import array
-import sys
 
 import PIL.Image
 import PIL.ImageOps
@@ -23,7 +22,6 @@ from typing import Tuple
 from typing import TYPE_CHECKING
 
 from arcade import get_projection
-from arcade import get_window
 from arcade import Color
 from arcade import PointList
 from arcade import shader
@@ -839,9 +837,29 @@ def draw_rectangle_filled(center_x: float, center_y: float, width: float,
     _generic_draw_line_strip((p1, p2, p4, p3), color, gl.GL_TRIANGLE_STRIP)
 
 
+def draw_scaled_texture_rectangle(center_x: float, center_y: float,
+                                  texture: Texture,
+                                  scale: float = 1.0,
+                                  angle: float = 0,
+                                  alpha: int = 255):
+    """
+    Draw a textured rectangle on-screen.
+
+    :param float center_x: x coordinate of rectangle center.
+    :param float center_y: y coordinate of rectangle center.
+    :param int texture: identifier of texture returned from load_texture() call
+    :param float scale: scale of texture
+    :param float angle: rotation of the rectangle. Defaults to zero.
+    :param float alpha: Transparency of image. 0 is fully transparent, 255 (default) is visible
+    """
+
+    texture.draw_scaled(center_x, center_y, scale, angle, alpha)
+
+
 def draw_texture_rectangle(center_x: float, center_y: float,
                            texture: Texture,
-                           scale: float = 1,
+                           width: float,
+                           height: float,
                            angle: float = 0,
                            alpha: int = 255):
     """
@@ -850,39 +868,35 @@ def draw_texture_rectangle(center_x: float, center_y: float,
     :param float center_x: x coordinate of rectangle center.
     :param float center_y: y coordinate of rectangle center.
     :param int texture: identifier of texture returned from load_texture() call
-    :param float scale: scaling of texture, defaults to 1
+    :param float width: width of texture
+    :param float height: height of texture
     :param float angle: rotation of the rectangle. Defaults to zero.
     :param float alpha: Transparency of image. 0 is fully transparent, 255 (default) is visible
     """
 
-    texture.draw(center_x, center_y, scale, angle, alpha)
+    texture.draw_sized(center_x, center_y, height, width, angle, alpha)
 
 
-# noinspection PyUnusedLocal
-def draw_xywh_rectangle_textured(bottom_left_x: float, bottom_left_y: float,
-                                 scale: float,
+def draw_lrwh_rectangle_textured(bottom_left_x: float, bottom_left_y: float,
+                                 width: float,
+                                 height: float,
                                  texture: Texture, angle: float = 0,
-                                 alpha: int = 255,
-                                 repeat_count_x: int = 1, repeat_count_y: int = 1):
+                                 alpha: int = 255):
     """
     Draw a texture extending from bottom left to top right.
 
     :param float bottom_left_x: The x coordinate of the left edge of the rectangle.
     :param float bottom_left_y: The y coordinate of the bottom of the rectangle.
-    :param float scale: The width of the rectangle.
+    :param float width: The width of the rectangle.
+    :param float height: The height of the rectangle.
     :param int texture: identifier of texture returned from load_texture() call
     :param float angle: rotation of the rectangle. Defaults to zero.
     :param int alpha: Transparency of image. 0 is fully transparent, 255 (default) is visible
-    :param int repeat_count_x: Unused for now
-    :param int repeat_count_y: Unused for now
     """
 
-    center_x = bottom_left_x + (texture.width * scale / 2)
-    center_y = bottom_left_y + (texture.height * scale / 2)
-    draw_texture_rectangle(center_x, center_y,
-                           texture,
-                           scale,
-                           angle=angle, alpha=alpha)
+    center_x = bottom_left_x + (width / 2)
+    center_y = bottom_left_y + (height / 2)
+    texture.draw_sized(center_x, center_y, width, height, angle=angle, alpha=alpha)
 
 
 def get_pixel(x: int, y: int) -> Tuple[int, int, int]:

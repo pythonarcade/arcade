@@ -97,9 +97,9 @@ class MyGame(arcade.Window):
 
         # Draw the background texture
         scale = SCREEN_WIDTH / self.background.width
-        arcade.draw_texture_rectangle(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2,
-                                      self.background,
-                                      scale)
+        arcade.draw_lrwh_rectangle_textured(0, 0,
+                                            SCREEN_WIDTH, SCREEN_HEIGHT,
+                                            self.background)
 
         # Draw all the sprites.
         self.coin_list.draw()

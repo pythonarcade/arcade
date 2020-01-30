@@ -24,15 +24,16 @@ class MyTestWindow(arcade.Window):
 
         scale = .6
         arcade.draw_texture_rectangle(540, 120,
-                                      scale,
+                                      self.texture.image.width * scale,
+                                      self.texture.image.height * scale,
                                       self.texture, angle=45)
 
         arcade.draw_xywh_rectangle_textured(10, 400, 64, 64, self.texture)
 
         for i in range(15):
-            arcade.draw_texture_rectangle(i * 50 + 20, 220,
-                                          scale,
-                                          self.texture, angle=45, alpha=i * 15)
+            arcade.draw_scaled_texture_rectangle(i * 50 + 20, 220,
+                                                 scale,
+                                                 self.texture, angle=45, alpha=i * 15)
 
 
 def test_sprite():

@@ -184,9 +184,9 @@ class MyGame(arcade.Window):
         # Draw the background texture
         scale = SCREEN_WIDTH / self.rooms[self.current_room].background.width
 
-        arcade.draw_texture_rectangle(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2,
-                                      self.rooms[self.current_room].background,
-                                      scale)
+        arcade.draw_lrwh_rectangle_textured(0, 0,
+                                            SCREEN_WIDTH, SCREEN_HEIGHT,
+                                            self.rooms[self.current_room].background)
 
         # Draw all the walls in this room
         self.rooms[self.current_room].wall_list.draw()

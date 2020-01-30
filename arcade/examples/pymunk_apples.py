@@ -85,7 +85,6 @@ class MyGame(arcade.Window):
         self.space.add(shape)
         self.static_lines.append(shape)
 
-
     def on_draw(self):
         """
         Render the screen.

@@ -724,7 +724,6 @@ class Sprite:
 
         draw_polygon_outline(points, color, line_thickness)
 
-
     def update(self):
         """
         Update the sprite.
