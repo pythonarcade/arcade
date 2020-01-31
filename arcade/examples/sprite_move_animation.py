@@ -33,8 +33,8 @@ def load_texture_pair(filename):
     Load a texture pair, with the second being a mirror image.
     """
     return [
-        arcade.load_texture(filename, scale=CHARACTER_SCALING),
-        arcade.load_texture(filename, scale=CHARACTER_SCALING, mirrored=True)
+        arcade.load_texture(filename),
+        arcade.load_texture(filename, mirrored=True)
     ]
 
 
@@ -54,6 +54,7 @@ class PlayerCharacter(arcade.Sprite):
         self.jumping = False
         self.climbing = False
         self.is_on_ladder = False
+        self.scale = CHARACTER_SCALING
 
         # Adjust the collision box. Default includes too much empty space
         # side-to-side. Box is centered at sprite center, (0, 0)
@@ -144,12 +145,13 @@ class MyGame(arcade.Window):
             coin.center_y = random.randrange(SCREEN_HEIGHT)
 
             coin.textures = []
-            coin.textures.append(arcade.load_texture(":resources:images/items/gold_1.png", scale=COIN_SCALE))
-            coin.textures.append(arcade.load_texture(":resources:images/items/gold_2.png", scale=COIN_SCALE))
-            coin.textures.append(arcade.load_texture(":resources:images/items/gold_3.png", scale=COIN_SCALE))
-            coin.textures.append(arcade.load_texture(":resources:images/items/gold_4.png", scale=COIN_SCALE))
-            coin.textures.append(arcade.load_texture(":resources:images/items/gold_3.png", scale=COIN_SCALE))
-            coin.textures.append(arcade.load_texture(":resources:images/items/gold_2.png", scale=COIN_SCALE))
+            coin.textures.append(arcade.load_texture(":resources:images/items/gold_1.png"))
+            coin.textures.append(arcade.load_texture(":resources:images/items/gold_2.png"))
+            coin.textures.append(arcade.load_texture(":resources:images/items/gold_3.png"))
+            coin.textures.append(arcade.load_texture(":resources:images/items/gold_4.png"))
+            coin.textures.append(arcade.load_texture(":resources:images/items/gold_3.png"))
+            coin.textures.append(arcade.load_texture(":resources:images/items/gold_2.png"))
+            coin.scale = COIN_SCALE
             coin.cur_texture_index = random.randrange(len(coin.textures))
 
             self.coin_list.append(coin)

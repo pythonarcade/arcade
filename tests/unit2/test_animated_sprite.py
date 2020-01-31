@@ -23,45 +23,39 @@ class MyTestWindow(arcade.Window):
 
         self.player = arcade.AnimatedWalkingSprite()
 
-        character_scale = 1
+        self.player.scale = 1
         self.player.stand_right_textures = []
         self.player.stand_right_textures.append(
-            arcade.load_texture(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                                scale=character_scale))
+            arcade.load_texture(":resources:images/animated_characters/female_person/femalePerson_idle.png"))
         self.player.stand_left_textures = []
         self.player.stand_left_textures.append(
-            arcade.load_texture(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                                scale=character_scale, mirrored=True))
+            arcade.load_texture(":resources:images/animated_characters/female_person/femalePerson_idle.png", mirrored=True))
 
         self.player.walk_right_textures = []
 
         self.player.walk_right_textures.append(
-            arcade.load_texture(":resources:images/animated_characters/female_person/femalePerson_walk0.png",
-                                scale=character_scale))
+            arcade.load_texture(":resources:images/animated_characters/female_person/femalePerson_walk0.png"))
         self.player.walk_right_textures.append(
-            arcade.load_texture(":resources:images/animated_characters/female_person/femalePerson_walk1.png",
-                                scale=character_scale))
+            arcade.load_texture(":resources:images/animated_characters/female_person/femalePerson_walk1.png"))
         self.player.walk_right_textures.append(
-            arcade.load_texture(":resources:images/animated_characters/female_person/femalePerson_walk2.png",
-                                scale=character_scale))
+            arcade.load_texture(":resources:images/animated_characters/female_person/femalePerson_walk2.png"))
         self.player.walk_right_textures.append(
-            arcade.load_texture(":resources:images/animated_characters/female_person/femalePerson_walk3.png",
-                                scale=character_scale))
+            arcade.load_texture(":resources:images/animated_characters/female_person/femalePerson_walk3.png"))
 
         self.player.walk_left_textures = []
 
         self.player.walk_left_textures.append(
             arcade.load_texture(":resources:images/animated_characters/female_person/femalePerson_walk0.png",
-                                scale=character_scale, mirrored=True))
+                                mirrored=True))
         self.player.walk_left_textures.append(
             arcade.load_texture(":resources:images/animated_characters/female_person/femalePerson_walk1.png",
-                                scale=character_scale, mirrored=True))
+                                mirrored=True))
         self.player.walk_left_textures.append(
             arcade.load_texture(":resources:images/animated_characters/female_person/femalePerson_walk2.png",
-                                scale=character_scale, mirrored=True))
+                                mirrored=True))
         self.player.walk_left_textures.append(
             arcade.load_texture(":resources:images/animated_characters/female_person/femalePerson_walk3.png",
-                                scale=character_scale, mirrored=True))
+                                mirrored=True))
 
         self.player.texture_change_distance = 20
 
@@ -80,12 +74,14 @@ class MyTestWindow(arcade.Window):
         coin.center_y = 500
 
         coin.textures = []
-        coin.textures.append(arcade.load_texture(":resources:images/items/gold_1.png", scale=COIN_SCALE))
-        coin.textures.append(arcade.load_texture(":resources:images/items/gold_2.png", scale=COIN_SCALE))
-        coin.textures.append(arcade.load_texture(":resources:images/items/gold_3.png", scale=COIN_SCALE))
-        coin.textures.append(arcade.load_texture(":resources:images/items/gold_4.png", scale=COIN_SCALE))
-        coin.textures.append(arcade.load_texture(":resources:images/items/gold_3.png", scale=COIN_SCALE))
-        coin.textures.append(arcade.load_texture(":resources:images/items/gold_2.png", scale=COIN_SCALE))
+        coin.textures.append(arcade.load_texture(":resources:images/items/gold_1.png"))
+        coin.textures.append(arcade.load_texture(":resources:images/items/gold_2.png"))
+        coin.textures.append(arcade.load_texture(":resources:images/items/gold_3.png"))
+        coin.textures.append(arcade.load_texture(":resources:images/items/gold_4.png"))
+        coin.textures.append(arcade.load_texture(":resources:images/items/gold_3.png"))
+        coin.textures.append(arcade.load_texture(":resources:images/items/gold_2.png"))
+        coin.scale = COIN_SCALE
+
         coin.set_texture(0)
         self.coin_list.append(coin)
 

@@ -18,6 +18,7 @@ SCREEN_TITLE = "Better Move Sprite with Keyboard Example"
 
 MOVEMENT_SPEED = 5
 ACCELERATION_RATE = 0.1
+FRICTION = 0.02
 
 class Player(arcade.Sprite):
 
@@ -96,6 +97,21 @@ class MyGame(arcade.Window):
 
     def on_update(self, delta_time):
         """ Movement and game logic """
+
+        # Add some friction
+        if self.player_sprite.change_x > FRICTION:
+            self.player_sprite.change_x -= FRICTION
+        elif self.player_sprite.change_x < FRICTION:
+            self.player_sprite.change_x += FRICTION
+        else:
+            self.player_sprite.change_x = 0
+
+        if self.player_sprite.change_y > FRICTION:
+            self.player_sprite.change_y -= FRICTION
+        elif self.player_sprite.change_y < FRICTION:
+            self.player_sprite.change_y += FRICTION
+        else:
+            self.player_sprite.change_y = 0
 
         # Calculate acceleration based on the keys pressed
         if self.up_pressed and not self.down_pressed:
