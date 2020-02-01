@@ -12,6 +12,7 @@ Version 2.3.2
 
 * Remove scale as a parameter to load_textures because it is not unused
 * Improve documentation
+* Add example for acceleration/friction
 
 Version 2.3.1
 -------------
