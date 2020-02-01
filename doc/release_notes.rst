@@ -5,6 +5,24 @@
 Release Notes
 =============
 
+Version 2.3.2
+-------------
+
+*Release Date: Feb-01-2020*
+
+* Remove scale as a parameter to load_textures because it is not unused
+* Improve documentation
+
+Version 2.3.1
+-------------
+
+*Release Date: Jan-30-2020*
+
+* Don't auto-update sprite hit box with animated sprite
+* Fix issues with sprite.draw
+* Improve error message given when trying to do a collision check and there's no
+  hit box set on the sprite.
+
 Version 2.3.0
 -------------
 
