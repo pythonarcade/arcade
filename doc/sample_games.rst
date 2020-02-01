@@ -7,6 +7,16 @@ paul@cravenfamily.com.
 GitHub Projects
 ---------------
 
+2048
+~~~~
+
+.. image:: https://raw.githubusercontent.com/pvcraven/2048/master/sample_image.png
+   :width: 50%
+
+`2048`_, Classic sliding tile game
+
+.. _2048: https://github.com/pvcraven/2048
+
 The Great Skeleton War
 ~~~~~~~~~~~~~~~~~~~~~~
 
