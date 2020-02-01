@@ -41,7 +41,7 @@ install:
   - pip3 install -r requirements.txt -r requirements_dev.txt
 before_script: flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
 script:
-  - if [ "$TRAVIS_OS_NAME" == "windows" ]; pytest --ignore=tests/unit2  # TODO: remove the --ignore
+  - if [ "$TRAVIS_OS_NAME" == "windows" ]; pytest --ignore=tests/unit2; fi  # TODO: remove the --ignore
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then python -m mypy -p arcade; fi
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then $ coverage run -m pytest; fi
 after_success: coveralls
