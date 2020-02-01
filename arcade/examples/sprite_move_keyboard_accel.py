@@ -1,5 +1,5 @@
 """
-Show how to use acceleration
+Show how to use acceleration and friction
 
 Artwork from http://kenney.nl
 
@@ -16,8 +16,15 @@ SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 SCREEN_TITLE = "Better Move Sprite with Keyboard Example"
 
-MOVEMENT_SPEED = 5
+# Important constants for this example
+
+# Speed limit
+MAX_SPEED = 3.0
+
+# How fast we accelerate
 ACCELERATION_RATE = 0.1
+
+# How fast to slow down after we letr off the key
 FRICTION = 0.02
 
 class Player(arcade.Sprite):
@@ -26,15 +33,20 @@ class Player(arcade.Sprite):
         self.center_x += self.change_x
         self.center_y += self.change_y
 
+        # Check to see if we hit the screen edge
         if self.left < 0:
             self.left = 0
+            self.change_x = 0 # Zero x speed
         elif self.right > SCREEN_WIDTH - 1:
             self.right = SCREEN_WIDTH - 1
+            self.change_x = 0
 
         if self.bottom < 0:
             self.bottom = 0
+            self.change_y = 0
         elif self.top > SCREEN_HEIGHT - 1:
             self.top = SCREEN_HEIGHT - 1
+            self.change_y = 0
 
 
 class MyGame(arcade.Window):
@@ -95,25 +107,29 @@ class MyGame(arcade.Window):
         # Draw all the sprites.
         self.player_list.draw()
 
+        # Display speed
+        arcade.draw_text(f"X Speed: {self.player_sprite.change_x:6.3f}", 10, 50, arcade.color.BLACK)
+        arcade.draw_text(f"Y Speed: {self.player_sprite.change_y:6.3f}", 10, 70, arcade.color.BLACK)
+
     def on_update(self, delta_time):
         """ Movement and game logic """
 
         # Add some friction
         if self.player_sprite.change_x > FRICTION:
             self.player_sprite.change_x -= FRICTION
-        elif self.player_sprite.change_x < FRICTION:
+        elif self.player_sprite.change_x < -FRICTION:
             self.player_sprite.change_x += FRICTION
         else:
             self.player_sprite.change_x = 0
 
         if self.player_sprite.change_y > FRICTION:
             self.player_sprite.change_y -= FRICTION
-        elif self.player_sprite.change_y < FRICTION:
+        elif self.player_sprite.change_y < -FRICTION:
             self.player_sprite.change_y += FRICTION
         else:
             self.player_sprite.change_y = 0
 
-        # Calculate acceleration based on the keys pressed
+        # Apply acceleration based on the keys pressed
         if self.up_pressed and not self.down_pressed:
             self.player_sprite.change_y += ACCELERATION_RATE
         elif self.down_pressed and not self.up_pressed:
@@ -122,6 +138,15 @@ class MyGame(arcade.Window):
             self.player_sprite.change_x += -ACCELERATION_RATE
         elif self.right_pressed and not self.left_pressed:
             self.player_sprite.change_x += ACCELERATION_RATE
+
+        if self.player_sprite.change_x > MAX_SPEED:
+            self.player_sprite.change_x = MAX_SPEED
+        elif self.player_sprite.change_x < -MAX_SPEED:
+            self.player_sprite.change_x = -MAX_SPEED
+        if self.player_sprite.change_y > MAX_SPEED:
+            self.player_sprite.change_y = MAX_SPEED
+        elif self.player_sprite.change_y < -MAX_SPEED:
+            self.player_sprite.change_y = -MAX_SPEED
 
         # Call update to move the sprite
         # If using a physics engine, call update on it instead of the sprite

@@ -176,6 +176,12 @@ Sprite Player Movement
 
    :ref:`sprite_move_keyboard_better`
 
+.. figure:: thumbs/sprite_collect_coins.png
+   :figwidth: 170px
+
+   :ref:`sprite_move_keyboard_accel`
+
+
 .. figure:: thumbs/sprite_face_left_or_right.png
    :figwidth: 170px
 

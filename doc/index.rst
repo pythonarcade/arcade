@@ -63,6 +63,7 @@ The Python Arcade Library
             <li><a href="https://www.instagram.com/PythonArcadeLibrary/">Instagram @PythonArcadeLibrary</a></li>
             <li><a href="https://www.facebook.com/ArcadeLibrary/">Facebook @ArcadeLibrary</a></li>
             <li><a href="https://www.reddit.com/r/pythonarcade/">Reddit /r/pythonarcade</a></li>
+            <li><a href="https://discord.gg/ZjGDqMp">Discord</a></li>
             <li><a href="diversity.html">Statement on Diversity</a></li>
           </ul>
         </td>
@@ -81,6 +82,22 @@ The Python Arcade Library
         </td>
         <td>
           <div style="display:inline-block;">
+            <img style="width:78px;" src="_static/speedometer-icon.svg">
+          </div>
+          <div style="display:inline-block;">
+            <h2>Performance</h2>
+          </div>
+          <ul>
+          <li><a href="performance_tips.html">Performance Tips</a></li>
+          <li><a href="arcade_vs_pygame_performance.html">Arcade vs. Pygame Performance</a></li>
+          <li><a href="pygame_comparison.html">Arcade vs. Pygame Feature Comparison</a></li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+
+        <td>
+          <div style="display:inline-block;">
             <img style="width:78px;" src="_static/code.svg">
           </div>
           <div style="display:inline-block;">
@@ -92,20 +109,7 @@ The Python Arcade Library
             <li><a href="enhancement_list.html">Enhancement List</a></li>
           </ul>
         </td>
-      </tr>
-      <tr>
-        <td>
-          <div style="display:inline-block;">
-            <img style="width:78px;" src="_static/speedometer-icon.svg">
-          </div>
-          <div style="display:inline-block;">
-            <h2>Performance</h2>
-          </div>
-          <ul>
-          <li><a href="performance_tips.html">Performance Tips</a></li>
-          <li><a href="pygame_comparison.html">Pygame Comparison</a></li>
-          </ul>
-        </td>
+
         <td>
           <div style="display:inline-block;">
             <img style="width:78px;" src="_static/owl.svg">
@@ -114,8 +118,8 @@ The Python Arcade Library
             <h2>Learn</h2>
           </div>
           <ul>
-            <li><a href="http://arcade-book.readthedocs.io/en/latest/">Learn to Program with Arcade</a></li>
-            <li><a href="https://realpython.com/arcade-python-game-framework/">Arcade: A Primer on the Python Game Framework</a></li>
+            <li><a href="http://arcade-book.readthedocs.io/en/latest/">Book: Learn to Program with Arcade</a></li>
+            <li><a href="https://realpython.com/arcade-python-game-framework/">Real Python Article: A Primer on the Python Game Framework</a></li>
             <li><a href="https://youtu.be/DAWHMHMPVHU">PyCon 2018 Talk</a></li>
             <li><a href="https://youtu.be/Djtm1DzWSvo">PyCon 2019 Tutorial</a></li>
            </ul>
