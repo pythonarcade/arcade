@@ -11,10 +11,10 @@ Sound
 -----
 * `Issue 229 <https://github.com/pvcraven/arcade/issues/229>`_
   Add player for background music.
-* `Issue 257 <https://github.com/pvcraven/arcade/issues/257>`_
-  Get ffmpeg sound working on Raspberry Pi.
 * `Issue 519 <https://github.com/pvcraven/arcade/issues/519>`_
   arcade.stop_sound() not working (ubuntu).
+* `Issue 577 <https://github.com/pvcraven/arcade/issues/577>`_
+  Add volume support for sounds.
 
 Drawing
 -------
