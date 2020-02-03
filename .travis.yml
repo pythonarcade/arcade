@@ -43,5 +43,5 @@ before_script: flake8 . --count --select=E9,F63,F7,F82 --show-source --statistic
 script:
   - if [ "$TRAVIS_OS_NAME" == "windows" ]; then pytest --ignore=tests/unit2; fi  # TODO: remove the --ignore
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then python3 -m mypy -p arcade; fi
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then python3 -m pytest --cov; fi
-after_success: coveralls
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then python3 -m pytest --cov; coveralls; fi
+# after_success: coveralls
