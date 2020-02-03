@@ -602,7 +602,7 @@ class Sprite:
 
     def _get_left(self) -> float:
         """
-        Left-most coordinate.
+        Return the x coordinate of the left-side of the sprite's hit box.
         """
         points = self.get_adjusted_hit_box()
         my_min = points[0][0]
@@ -620,7 +620,7 @@ class Sprite:
 
     def _get_right(self) -> float:
         """
-        Return the x coordinate of the right-side of the sprite.
+        Return the x coordinate of the right-side of the sprite's hit box.
         """
 
         points = self.get_adjusted_hit_box()
