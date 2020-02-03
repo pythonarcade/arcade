@@ -348,8 +348,8 @@ def generate_sprites(map_object: TiledMap, layer_name: str, scaling: float, base
                 tmx_file = base_directory + tile_info.source
 
                 my_sprite = Sprite(tmx_file, scaling)
-                my_sprite.center_x = column_index * (map_object.tilewidth * scaling) - map_object.tilewidth / 2
-                my_sprite.center_y = (map_object.height - row_index) * (map_object.tileheight * scaling) - map_object.tileheight / 2
+                my_sprite.center_x = column_index * (map_object.tilewidth * scaling) - map_object.tilewidth / 2 * scaling
+                my_sprite.center_y = (map_object.height - row_index) * (map_object.tileheight * scaling) - map_object.tileheight / 2 * scaling
 
                 if tile_info.points is not None:
                     my_sprite.set_points(tile_info.points)
