@@ -494,7 +494,7 @@ class Sprite:
 
     def _set_scale(self, new_value: float):
         """ Set the center x coordinate of the sprite. """
-        if new_value != self._height:
+        if new_value != self._scale:
             self.clear_spatial_hashes()
             self._point_list_cache = None
             self._scale = new_value
