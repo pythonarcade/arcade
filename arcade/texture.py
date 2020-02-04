@@ -78,7 +78,7 @@ class Texture:
                    center_x: float, center_y: float,
                    width: float,
                    height: float,
-                   angle: float,
+                   angle: float = 0,
                    alpha: int = 255):
 
         self._create_cached_sprite()
@@ -294,6 +294,18 @@ def load_texture(file_name: str,
     return result
 
 
+load_texture.texture_cache = dict()  # type: ignore
+
+
+def cleanup_texture_cache():
+    """
+    This cleans up the cache of textures. Useful when running unit tests so that
+    the next test starts clean.
+    """
+    load_texture.texture_cache = dict()
+    import gc
+    gc.collect()
+
 def load_spritesheet(file_name: str,
                      sprite_width: int,
                      sprite_height: int,
@@ -404,9 +416,6 @@ def make_soft_square_texture(size: int, color: Color, center_alpha: int = 255, o
     name = "{}:{}:{}:{}:{}".format("gradientsquare", size, color, center_alpha,
                                    outer_alpha)  # name must be unique for caching
     return Texture(name, img)
-
-
-load_texture.texture_cache = dict()  # type: ignore
 
 
 # --- END TEXTURE FUNCTIONS # # #

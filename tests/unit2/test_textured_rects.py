@@ -36,7 +36,8 @@ class MyTestWindow(arcade.Window):
                                                  self.texture, angle=45, alpha=i * 15)
 
 
-def test_sprite():
+def test_textured_rects():
     window = MyTestWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Test Textures")
     window.test()
     window.close()
+    arcade.cleanup_texture_cache()

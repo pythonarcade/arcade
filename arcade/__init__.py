@@ -86,6 +86,7 @@ from .drawing_support import make_transparent_color
 from .drawing_support import rotate_point
 
 from .texture import Texture
+from .texture import cleanup_texture_cache
 from .texture import load_spritesheet
 from .texture import load_texture
 from .texture import load_textures
@@ -310,6 +311,7 @@ __all__ = ['AnimatedTimeBasedSprite',
            'check_for_collision',
            'check_for_collision_with_list',
            'clamp',
+           'cleanup_texture_cache',
            'close_window',
            'create_ellipse',
            'create_ellipse_filled',
