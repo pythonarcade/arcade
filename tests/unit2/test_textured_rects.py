@@ -1,3 +1,6 @@
+"""
+Tests for textures.
+"""
 import os
 import arcade
 
@@ -32,8 +35,9 @@ class MyTestWindow(arcade.Window):
 
         for i in range(15):
             arcade.draw_scaled_texture_rectangle(i * 50 + 20, 220,
+                                                 self.texture,
                                                  scale,
-                                                 self.texture, angle=45, alpha=i * 15)
+                                                 angle=45, alpha=i * 15)
 
 
 def test_textured_rects():
