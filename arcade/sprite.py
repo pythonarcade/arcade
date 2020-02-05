@@ -199,16 +199,16 @@ class Sprite:
 
     def _get_position(self) -> Tuple[float, float]:
         """
-        Get the center x coordinate of the sprite.
+        Get the center x and y coordinates of the sprite.
 
         Returns:
-            (width, height)
+            (center_x, center_y)
         """
         return self._position
 
     def _set_position(self, new_value: Tuple[float, float]):
         """
-        Set the center x coordinate of the sprite.
+        Set the center x and y coordinates of the sprite.
 
         Args:
             new_value:
