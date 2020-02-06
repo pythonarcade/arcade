@@ -651,7 +651,7 @@ class Sprite:
         """
         return self.rotation_point
     
-    def set_rotation_point(self, new_value: Tuple[float, float]):
+    def set_rotation_point(self, new_value: [float, float]):
         """
         Set the x and y offset of the rotation point to new_value.
         """
