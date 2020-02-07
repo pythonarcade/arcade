@@ -120,8 +120,9 @@ The Python Arcade Library
           <ul>
             <li><a href="http://arcade-book.readthedocs.io/en/latest/">Book: Learn to Program with Arcade</a></li>
             <li><a href="https://realpython.com/arcade-python-game-framework/">Real Python Article: A Primer on the Python Game Framework</a></li>
-            <li><a href="https://youtu.be/DAWHMHMPVHU">PyCon 2018 Talk</a></li>
-            <li><a href="https://youtu.be/Djtm1DzWSvo">PyCon 2019 Tutorial</a></li>
+            <li><a href="https://youtu.be/DAWHMHMPVHU">US PyCon 2018 Talk</a></li>
+            <li><a href="https://youtu.be/2SMkk63k6Ik">Aus PyCon 2018 Multiplayer Games</a></li>
+            <li><a href="https://youtu.be/Djtm1DzWSvo">US PyCon 2019 Tutorial</a></li>
            </ul>
         </td>
       </tr>
