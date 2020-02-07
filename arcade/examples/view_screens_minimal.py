@@ -21,10 +21,6 @@ import arcade
 import os
 
 
-file_path = os.path.dirname(os.path.abspath(__file__))
-os.chdir(file_path)
-
-
 WIDTH = 800
 HEIGHT = 600
 
@@ -70,7 +66,6 @@ class GameView(arcade.View):
 
 class GameOverView(arcade.View):
     def on_show(self):
-        super().__init__()
         arcade.set_background_color(arcade.color.BLACK)
 
     def on_draw(self):
