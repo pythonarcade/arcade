@@ -5,6 +5,14 @@
 Release Notes
 =============
 
+Version 2.3.4
+-------------
+
+*Release Date: Feb-08-2020*
+
+* Bug Fix: Sprites weren't appearing `Issue 585 <https://github.com/pvcraven/arcade/issues/585>`_
+
+
 Version 2.3.3
 -------------
 
