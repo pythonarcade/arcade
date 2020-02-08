@@ -55,7 +55,7 @@ class Texture:
         """
         Width of the texture in pixels
         """
-        if image:
+        if self.image:
             return self.image.width
         else:
             return 0
@@ -65,7 +65,7 @@ class Texture:
         """
         Height of the texture in pixels
         """
-        if image:
+        if self.image:
             return self.image.height
         else:
             return 0
