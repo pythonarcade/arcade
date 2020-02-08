@@ -79,6 +79,8 @@ class Sprite:
         :repeat_count_y: Unused
         :right: Set/query the sprite location by using the right coordinate. \
         This will be the 'y=x' of the right of the sprite.
+        :rotation_point: The point relative to the center of the sprite which the \
+        sprite rotates around, default is (0, 0).
         :sprite_lists: List of all the sprite lists this sprite is part of.
         :texture: `Texture` class with the current texture.
         :textures: List of textures associated with this sprite.
@@ -159,6 +161,7 @@ class Sprite:
         self._scale = scale
         self._position = (center_x, center_y)
         self._angle = 0.0
+        self.rotation_point = [0.0, 0.0]
 
         self.velocity = [0.0, 0.0]
         self.change_angle = 0.0
@@ -199,16 +202,16 @@ class Sprite:
 
     def _get_position(self) -> Tuple[float, float]:
         """
-        Get the center x coordinate of the sprite.
+        Get the center x and y coordinates of the sprite.
 
         Returns:
-            (width, height)
+            (center_x, center_y)
         """
         return self._position
 
     def _set_position(self, new_value: Tuple[float, float]):
         """
-        Set the center x coordinate of the sprite.
+        Set the center x and y coordinates of the sprite.
 
         Args:
             new_value:
@@ -579,6 +582,11 @@ class Sprite:
             self._angle = new_value
             self._point_list_cache = None
             self.add_spatial_hashes()
+            rotate_x, rotate_y = self.rotation_point
+            if rotate_x or rotate_y:
+                sprite_rotate = rotate_point(self.center_x, self.center_y,
+                                             rotate_x, rotate_y, new_value)
+                self.set_position(sprite_rotate[0],sprite_rotate[1])
 
             for sprite_list in self.sprite_lists:
                 sprite_list.update_angle(self)
@@ -636,6 +644,19 @@ class Sprite:
         self.center_x -= diff
 
     right = property(_get_right, _set_right)
+    
+    def get_rotation_point(self):
+        """
+        Return the x and y offset of the rotation point.
+        """
+        return self.rotation_point
+    
+    def set_rotation_point(self, new_value: List[float]):
+        """
+        Set the x and y offset of the rotation point to new_value.
+        """
+        if new_value != self.rotation_point:
+            self.rotation_point = new_value
 
     def set_texture(self, texture_no: int):
         """
