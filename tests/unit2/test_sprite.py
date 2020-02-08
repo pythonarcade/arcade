@@ -55,9 +55,13 @@ class MyTestWindow(arcade.Window):
         self.coin_list.append(sprite)
 
     def on_draw(self):
-        arcade.start_render()
-        self.coin_list.draw()
-        self.character_list.draw()
+        try:
+            arcade.start_render()
+            self.coin_list.draw()
+            self.character_list.draw()
+            assert arcade.get_pixel(150, 50) == (191, 121, 88)
+        except Exception as e:
+            assert e is None
 
     def update(self, delta_time):
         self.coin_list.update()
