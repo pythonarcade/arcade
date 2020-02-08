@@ -68,6 +68,12 @@ class MyTestWindow(arcade.Window):
             self.individual_coin.draw()
             assert arcade.get_pixel(230, 230) == (255, 204, 0)
 
+            # Test for coin scaling
+            if self.frame_counter < 5:
+                assert arcade.get_pixel(130, 150) == (59, 122, 87)
+            else:
+                assert arcade.get_pixel(130, 150) == (227, 182, 2)
+
         except Exception as e:
             assert e is None
 
@@ -78,6 +84,7 @@ class MyTestWindow(arcade.Window):
         self.frame_counter += 1
         if self.frame_counter == 5:
             self.character_list.pop()
+            self.coin_list[0].scale = 2.0
 
         coin_hit_list = arcade.check_for_collision_with_list(self.character_sprite, self.coin_list)
         for coin in coin_hit_list:
