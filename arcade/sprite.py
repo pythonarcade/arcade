@@ -190,6 +190,9 @@ class Sprite:
         self.repeat_count_x = repeat_count_x
         self.repeat_count_y = repeat_count_y
 
+        # Used if someone insists on doing a sprite.draw()
+        self._sprite_list = None
+
     def append_texture(self, texture: Texture):
         """
         Appends a new texture to the list of textures that can be
@@ -644,13 +647,13 @@ class Sprite:
         self.center_x -= diff
 
     right = property(_get_right, _set_right)
-    
+
     def get_rotation_point(self):
         """
         Return the x and y offset of the rotation point.
         """
         return self.rotation_point
-    
+
     def set_rotation_point(self, new_value: List[float]):
         """
         Set the x and y offset of the rotation point to new_value.
@@ -742,8 +745,12 @@ class Sprite:
     def draw(self):
         """ Draw the sprite. """
 
-        draw_scaled_texture_rectangle(self.center_x, self.center_y,
-                                      self._texture, self.scale, self.angle, self.alpha)
+        if self._sprite_list is None:
+            from arcade import SpriteList
+            self._sprite_list = SpriteList()
+            self._sprite_list.append(self)
+
+        self._sprite_list.draw()
 
     def draw_hit_box(self, color, line_thickness):
         points = self.get_adjusted_hit_box()

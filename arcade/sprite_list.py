@@ -700,11 +700,10 @@ class SpriteList(Generic[_SpriteType]):
                        self._sprite_color_desc]
         self._vao1 = shader.vertex_array(self.program, vao_content)
 
-    def _dump(self):
+    def _dump(self, buffer):
         """
         Debugging method used to dump raw byte data in the OpenGL buffer.
         """
-        buffer = self._sprite_pos_data.tobytes()
         record_size = len(buffer) / len(self.sprite_list)
         for i, char in enumerate(buffer):
             if i % record_size == 0:

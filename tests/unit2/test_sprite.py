@@ -54,12 +54,20 @@ class MyTestWindow(arcade.Window):
         sprite.angle = 90
         self.coin_list.append(sprite)
 
+        self.individual_coin = arcade.Sprite(":resources:images/items/coinGold.png", CHARACTER_SCALING)
+        self.individual_coin.position = (230, 230)
+
     def on_draw(self):
         try:
             arcade.start_render()
             self.coin_list.draw()
             self.character_list.draw()
             assert arcade.get_pixel(150, 50) == (191, 121, 88)
+
+            assert arcade.get_pixel(230, 230) == (59, 122, 87)
+            self.individual_coin.draw()
+            assert arcade.get_pixel(230, 230) == (255, 204, 0)
+
         except Exception as e:
             assert e is None
 
