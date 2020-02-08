@@ -510,7 +510,7 @@ class Sprite:
             self.add_spatial_hashes()
 
             for sprite_list in self.sprite_lists:
-                sprite_list.update_position(self)
+                sprite_list.update_size(self)
 
     scale = property(_get_scale, _set_scale)
 
