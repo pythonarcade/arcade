@@ -43,8 +43,7 @@ class Texture:
         from arcade.sprite import Sprite
         from arcade.sprite_list import SpriteList
 
-        self._name = name
-        # self.texture = None
+        self.name = name
         self.image = image
         self._sprite: Optional[Sprite] = None
         self._sprite_list: Optional[SpriteList] = None
