@@ -12,6 +12,7 @@ Version 2.3.3
 
 * Bug Fix: set_scale checks height rather than scale `Issue 578 <https://github.com/pvcraven/arcade/issues/578>`_
 * Bug Fix: Window flickers for drawing when not derived from Window class `Issue 579 <https://github.com/pvcraven/arcade/issues/579>`_
+* Enhancement: Allow joystick selection in dual-stick shooter `Issue 571 <https://github.com/pvcraven/arcade/issues/571>`_
 * Test coverage reporting now working correctly with TravisCI
 * Improved test coverage
 * Improved documentation and typing with Texture class
