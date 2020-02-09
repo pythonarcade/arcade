@@ -79,8 +79,10 @@ class Sprite:
         :repeat_count_y: Unused
         :right: Set/query the sprite location by using the right coordinate. \
         This will be the 'y=x' of the right of the sprite.
-        :rotation_point: The point relative to the center of the sprite which the \
-        sprite rotates around, default is (0, 0).
+        :rotation_point: A point the sprite rotates around, default is empty list [] \
+        for center. If it is desired to have a relative point, then rot_point_relative \
+        must be True.
+        :rot_point_relative: Specifies whether rotation_point is relative or absolute.
         :sprite_lists: List of all the sprite lists this sprite is part of.
         :texture: `Texture` class with the current texture.
         :textures: List of textures associated with this sprite.
@@ -161,7 +163,8 @@ class Sprite:
         self._scale = scale
         self._position = (center_x, center_y)
         self._angle = 0.0
-        self.rotation_point = [0.0, 0.0]
+        self.rotation_point = []
+        self.rot_point_relative = False
 
         self.velocity = [0.0, 0.0]
         self.change_angle = 0.0
@@ -580,15 +583,26 @@ class Sprite:
 
     def _set_angle(self, new_value: float):
         """ Set the angle of the sprite's rotation. """
+        old_angle = 0.0
+        if self.rot_point_relative:
+            old_angle = self._angle
         if new_value != self._angle:
             self.clear_spatial_hashes()
             self._angle = new_value
             self._point_list_cache = None
             self.add_spatial_hashes()
-            rotate_x, rotate_y = self.rotation_point
-            if rotate_x or rotate_y:
-                sprite_rotate = rotate_point(self.center_x, self.center_y,
-                                             rotate_x, rotate_y, new_value)
+            if self.rotation_point:
+                rotate_x, rotate_y = self.rotation_point
+                self_x, self_y = self.center_x, self.center_y
+                rotate_x += self_x
+                rotate_y += self_y
+                if old_angle:
+                    rotate_x, rotate_y = rotate_point(rotate_x, rotate_y,
+                                                      self_x, self_y,
+                                                     old_angle)
+                sprite_rotate = rotate_point(self_x, self_y,
+                                             rotate_x, rotate_y,
+                                             new_value-old_angle)
                 self.set_position(sprite_rotate[0],sprite_rotate[1])
 
             for sprite_list in self.sprite_lists:
@@ -648,18 +662,52 @@ class Sprite:
 
     right = property(_get_right, _set_right)
 
-    def get_rotation_point(self):
+    def _get_rotation_point(self):
         """
-        Return the x and y offset of the rotation point.
+        Return the x and y location of the rotation point.
         """
         return self.rotation_point
 
-    def set_rotation_point(self, new_value: List[float]):
+    def _set_rotation_point(self, new_value: List[Any]):
         """
-        Set the x and y offset of the rotation point to new_value.
+        Set the x and y location of the rotation point to new_value.
+        If it was rotated around a previous point then we have to
+        remove that rotation and then apply the new rotation.
         """
-        if new_value != self.rotation_point:
+        if self.rotation_point:
+            if new_value != self.rotation_point:
+                if self.angle:
+                    temp_angle = self.angle
+                    self._set_angle(0)
+                    self.rotation_point = new_value
+                    self._set_angle(temp_angle)
+                else:
+                    self.rotation_point = new_value
+        else:
             self.rotation_point = new_value
+            if self.angle:
+                self._set_angle(self.angle)
+    
+    def _get_rot_point_relative(self):
+        """
+        Returns True for relative rotation point and False for absolute.
+        """
+        return self.rot_point_relative
+    
+    def _set_rot_point_relative(self, new_value: bool):
+        """
+        Sets whether the rotation point is relative (True) or absolute (False).
+        If it was rotated around a previous point then we have to remove
+        that rotation and then apply the new rotation.
+        """
+        if self.rot_point_relative != new_value:
+            if self.angle:
+                temp_angle = self.angle
+                self._set_angle(0)
+                self.rot_point_relative = new_value
+                self._set_angle(temp_angle)
+            else:
+                self.rot_point_relative = new_value
 
     def set_texture(self, texture_no: int):
         """

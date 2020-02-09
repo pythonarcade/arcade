@@ -62,11 +62,19 @@ class MyTestWindow(arcade.Window):
         assert self.character_sprite.center_y == 50
 
         self.character_sprite.angle = 0
+        self.character_sprite.set_rotation_point((301, 50))
+        self.character_sprite.angle = 90
+        print("C", self.character_sprite.center_x, self.character_sprite.center_y)
+        assert self.character_sprite.center_x == 301
+        assert self.character_sprite.center_y == 49
+        
+        self.character_sprite.set_rotation_point((0, 0))
+        self.character_sprite.set_rot_point_relative = True
         self.character_sprite.set_rotation_point((1, 0))
         self.character_sprite.angle = 90
         print("C", self.character_sprite.center_x, self.character_sprite.center_y)
-        assert self.character_sprite.center_x == 300
-        assert self.character_sprite.center_y == 50
+        assert self.character_sprite.center_x == 301
+        assert self.character_sprite.center_y == 49
 
 
         self.character_list.append(self.character_sprite)
