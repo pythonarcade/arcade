@@ -29,7 +29,8 @@ from arcade import color
 from arcade import csscolor
 # noinspection PyPep8
 from arcade import key
-
+# noinspection PyPep8
+from arcade import resources
 from .window_commands import close_window
 from .window_commands import create_orthogonal_projection
 from .window_commands import finish_render
