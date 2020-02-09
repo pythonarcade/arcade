@@ -79,8 +79,9 @@ class Sprite:
         :repeat_count_y: Unused
         :right: Set/query the sprite location by using the right coordinate. \
         This will be the 'y=x' of the right of the sprite.
-        :rotation_point: A point the sprite rotates around, default is None for center. \
-        If it is desired to have a relative point, then rot_point_relative must be True.
+        :rotation_point: A point the sprite rotates around, default is empty list [] \
+        for center. If it is desired to have a relative point, then rot_point_relative \
+        must be True.
         :rot_point_relative: Specifies whether rotation_point is relative or absolute.
         :sprite_lists: List of all the sprite lists this sprite is part of.
         :texture: `Texture` class with the current texture.
@@ -162,7 +163,7 @@ class Sprite:
         self._scale = scale
         self._position = (center_x, center_y)
         self._angle = 0.0
-        self.rotation_point = None
+        self.rotation_point = []
         self.rot_point_relative = False
 
         self.velocity = [0.0, 0.0]
