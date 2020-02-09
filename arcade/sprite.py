@@ -667,7 +667,7 @@ class Sprite:
         """
         return self.rotation_point
 
-    def _set_rotation_point(self, new_value: List[float]):
+    def _set_rotation_point(self, new_value: Optional[List[float]]):
         """
         Set the x and y location of the rotation point to new_value.
         If it was rotated around a previous point then we have to
