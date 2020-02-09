@@ -30,19 +30,20 @@ class Texture:
     Usually created by the ``load_texture`` or ``load_textures`` commands.
 
     Attributes:
-        :name:
-        :image:
+        :name: Unique name of the texture. Used by load_textures for caching.
+               If you are manually creating a texture, you can just set this
+               to whatever.
+        :image: PIL image
         :width: Width of the texture image in pixels
         :height: Height of the texture image in pixels
 
     """
 
-    def __init__(self, name: str, image=None):
+    def __init__(self, name: str, image: PIL.Image = None):
         from arcade.sprite import Sprite
         from arcade.sprite_list import SpriteList
 
         self.name = name
-        self.texture = None
         self.image = image
         self._sprite: Optional[Sprite] = None
         self._sprite_list: Optional[SpriteList] = None
@@ -53,14 +54,20 @@ class Texture:
         """
         Width of the texture in pixels
         """
-        return self.image.width
+        if self.image:
+            return self.image.width
+        else:
+            return 0
 
     @property
     def height(self) -> int:
         """
         Height of the texture in pixels
         """
-        return self.image.height
+        if self.image:
+            return self.image.height
+        else:
+            return 0
 
     def _create_cached_sprite(self):
         from arcade.sprite import Sprite
@@ -68,7 +75,7 @@ class Texture:
 
         if self._sprite is None:
             self._sprite = Sprite()
-            self._sprite._texture = self
+            self._sprite.texture = self
             self._sprite.textures = [self]
 
             self._sprite_list = SpriteList()

@@ -9,6 +9,7 @@ wheel
 twine
 sphinx-sitemap
 sphinx_rtd_theme
+sphinx-copybutton
 flake8
 pyglet-ffmpeg2
 zstandard

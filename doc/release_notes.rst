@@ -5,6 +5,27 @@
 Release Notes
 =============
 
+Version 2.3.4
+-------------
+
+*Release Date: Feb-08-2020*
+
+* Bug Fix: Sprites weren't appearing `Issue 585 <https://github.com/pvcraven/arcade/issues/585>`_
+
+
+Version 2.3.3
+-------------
+
+*Release Date: Feb-08-2020*
+
+* Bug Fix: set_scale checks height rather than scale `Issue 578 <https://github.com/pvcraven/arcade/issues/578>`_
+* Bug Fix: Window flickers for drawing when not derived from Window class `Issue 579 <https://github.com/pvcraven/arcade/issues/579>`_
+* Enhancement: Allow joystick selection in dual-stick shooter `Issue 571 <https://github.com/pvcraven/arcade/issues/571>`_
+* Test coverage reporting now working correctly with TravisCI
+* Improved test coverage
+* Improved documentation and typing with Texture class
+* Improve minimal View example
+
 Version 2.3.2
 -------------
 

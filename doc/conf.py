@@ -47,7 +47,8 @@ extensions = [
     'sphinx.ext.mathjax',
     'sphinx.ext.ifconfig',
     'sphinx.ext.viewcode',
-    'sphinx_sitemap'
+    'sphinx_copybutton',
+    'sphinx_sitemap',
 ]
 
 # try:
