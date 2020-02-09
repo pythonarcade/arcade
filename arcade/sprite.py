@@ -680,8 +680,12 @@ class Sprite:
                     self._set_angle(0)
                     self.rotation_point = new_value
                     self._set_angle(temp_angle)
+                else:
+                    self.rotation_point = new_value
         else:
             self.rotation_point = new_value
+            if self.angle:
+                self._set_angle(self.angle)
     
     def get_rot_point_relative(self):
         """
