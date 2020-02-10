@@ -102,8 +102,11 @@ def rotate_point(x: float, y: float, cx: float, cy: float,
     temp_y = y - cy
 
     # now apply rotation
-    rotated_x = temp_x * math.cos(math.radians(angle)) - temp_y * math.sin(math.radians(angle))
-    rotated_y = temp_x * math.sin(math.radians(angle)) + temp_y * math.cos(math.radians(angle))
+    angle = math.radians(angle)
+    cos_angle = math.cos(angle)
+    sin_angle = math.sin(angle)
+    rotated_x = temp_x * cos_angle - temp_y * sin_angle
+    rotated_y = temp_x * sin_angle + temp_y * cos_angle
 
     # translate back
     rounding_precision = 2
