@@ -583,10 +583,10 @@ class Sprite:
 
     def _set_angle(self, new_value: float):
         """ Set the angle of the sprite's rotation. """
-        old_angle = 0.0
-        if self.rot_point_relative:
-            old_angle = self._angle
         if new_value != self._angle:
+            old_angle = 0.0
+            if self.rot_point_relative:
+                old_angle = self._angle
             self.clear_spatial_hashes()
             self._angle = new_value
             self._point_list_cache = None
@@ -703,7 +703,7 @@ class Sprite:
         if self.rot_point_relative != new_value:
             if self.angle:
                 temp_angle = self.angle
-                self._set_angle(0)
+                self._set_angle(0.0)
                 self.rot_point_relative = new_value
                 self._set_angle(temp_angle)
             else:
