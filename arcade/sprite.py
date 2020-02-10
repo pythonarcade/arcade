@@ -82,7 +82,8 @@ class Sprite:
         :rotation_point: A point the sprite rotates around, default is empty list [] \
         for center. If it is desired to have a relative point, then rot_point_relative \
         must be True.
-        :rot_point_relative: Specifies whether rotation_point is relative or absolute.
+        :rot_point_relative: Specifies whether rotation_point is relative or absolute. \
+        Currently absolute (False) appears to be bugged so use only relative (True).
         :sprite_lists: List of all the sprite lists this sprite is part of.
         :texture: `Texture` class with the current texture.
         :textures: List of textures associated with this sprite.
@@ -164,7 +165,7 @@ class Sprite:
         self._position = (center_x, center_y)
         self._angle = 0.0
         self.rotation_point: List[float] = []
-        self.rot_point_relative = False
+        self.rot_point_relative = True
 
         self.velocity = [0.0, 0.0]
         self.change_angle = 0.0
@@ -583,10 +584,10 @@ class Sprite:
 
     def _set_angle(self, new_value: float):
         """ Set the angle of the sprite's rotation. """
-        old_angle = 0.0
-        if self.rot_point_relative:
-            old_angle = self._angle
         if new_value != self._angle:
+            old_angle = 0.0
+            if self.rot_point_relative:
+                old_angle = self._angle
             self.clear_spatial_hashes()
             self._angle = new_value
             self._point_list_cache = None
@@ -703,7 +704,7 @@ class Sprite:
         if self.rot_point_relative != new_value:
             if self.angle:
                 temp_angle = self.angle
-                self._set_angle(0)
+                self._set_angle(0.0)
                 self.rot_point_relative = new_value
                 self._set_angle(temp_angle)
             else:
