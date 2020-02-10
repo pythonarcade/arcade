@@ -163,7 +163,7 @@ class Sprite:
         self._scale = scale
         self._position = (center_x, center_y)
         self._angle = 0.0
-        self.rotation_point = []
+        self.rotation_point: List[float] = []
         self.rot_point_relative = False
 
         self.velocity = [0.0, 0.0]
