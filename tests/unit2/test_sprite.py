@@ -50,7 +50,8 @@ class MyTestWindow(arcade.Window):
         self.character_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", CHARACTER_SCALING)
         self.character_sprite.center_x = 300
         self.character_sprite.center_y = 50
-        self.character_sprite.set_rotation_point((0, 0))
+        self.character_sprite.set_rot_point_relative((0, 0))
+
         self.character_sprite.angle = 90
 
         print("\nA", self.character_sprite.center_x, self.character_sprite.center_y)
@@ -62,15 +63,15 @@ class MyTestWindow(arcade.Window):
         assert self.character_sprite.center_y == 50
 
         self.character_sprite.angle = 0
-        self.character_sprite.set_rotation_point((301, 50))
+        self.character_sprite.set_rot_point_relative((301, 50))
         self.character_sprite.angle = 90
         print("C", self.character_sprite.center_x, self.character_sprite.center_y)
         assert self.character_sprite.center_x == 301
         assert self.character_sprite.center_y == 49
-        
-        self.character_sprite.set_rotation_point((0, 0))
+
+        self.character_sprite.set_rot_point_relative((0, 0))
         self.character_sprite.set_rot_point_relative = True
-        self.character_sprite.set_rotation_point((1, 0))
+        self.character_sprite.set_rot_point_relative((1, 0))
         self.character_sprite.angle = 90
         print("C", self.character_sprite.center_x, self.character_sprite.center_y)
         assert self.character_sprite.center_x == 301

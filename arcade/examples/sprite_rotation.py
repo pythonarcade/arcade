@@ -62,7 +62,6 @@ class MyGame(arcade.Window):
         coin.center_x = 150
         coin.center_y = SCREEN_HEIGHT / 2
         coin.rotation_point = (25, 0)
-        coin.rot_point_relative = True
         coin.change_angle = 1
 
         # Add the coin to the lists
@@ -75,8 +74,7 @@ class MyGame(arcade.Window):
         # Position the coin
         coin.center_x = 250
         coin.center_y = SCREEN_HEIGHT / 2
-        coin.rotation_point = (250 + 10, SCREEN_HEIGHT / 2)
-        coin.rot_point_relative = False
+        coin.rotation_point = (0, 25)
         coin.change_angle = 1
 
         # Add the coin to the lists

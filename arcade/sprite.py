@@ -22,10 +22,11 @@ from typing import TYPE_CHECKING
 import PIL.Image
 
 from arcade import load_texture
-from arcade import draw_scaled_texture_rectangle
 from arcade import Texture
 from arcade import rotate_point
 from arcade import draw_polygon_outline
+from arcade import Color
+from arcade.color import BLACK
 
 from arcade.arcade_types import RGB, Point
 if TYPE_CHECKING:  # handle import cycle caused by type hinting
@@ -79,11 +80,8 @@ class Sprite:
         :repeat_count_y: Unused
         :right: Set/query the sprite location by using the right coordinate. \
         This will be the 'y=x' of the right of the sprite.
-        :rotation_point: A point the sprite rotates around, default is empty list [] \
-        for center. If it is desired to have a relative point, then rot_point_relative \
-        must be True.
-        :rot_point_relative: Specifies whether rotation_point is relative or absolute. \
-        Currently absolute (False) appears to be bugged so use only relative (True).
+        :rotation_point: A point the sprite rotates around, default is None \
+        for center. Point is specified relative to the center.
         :sprite_lists: List of all the sprite lists this sprite is part of.
         :texture: `Texture` class with the current texture.
         :textures: List of textures associated with this sprite.
@@ -164,8 +162,7 @@ class Sprite:
         self._scale = scale
         self._position = (center_x, center_y)
         self._angle = 0.0
-        self.rotation_point: List[float] = []
-        self.rot_point_relative = True
+        self._rotation_point: Optional[Point] = None
 
         self.velocity = [0.0, 0.0]
         self.change_angle = 0.0
@@ -348,6 +345,10 @@ class Sprite:
         self.change_y += math.sin(self.radians) * speed
 
     def reverse(self, speed: float = 1.0):
+        """
+        Set a new speed, but in reverse.
+        :param speed: speed factor
+        """
         self.forward(-speed)
 
     def strafe(self, speed: float = 1.0):
@@ -359,9 +360,17 @@ class Sprite:
         self.change_y += math.cos(self.radians) * speed
 
     def turn_right(self, theta: float = 90):
+        """
+        Rotate the sprite right a certain number of degrees.
+        :param theta: change in angle
+        """
         self.angle -= theta
 
     def turn_left(self, theta: float = 90):
+        """
+        Rotate the sprite left a certain number of degrees.
+        :param theta: change in angle
+        """
         self.angle += theta
 
     def stop(self):
@@ -585,13 +594,10 @@ class Sprite:
     def _set_angle(self, new_value: float):
         """ Set the angle of the sprite's rotation. """
         if new_value != self._angle:
-            old_angle = 0.0
-            if self.rot_point_relative:
-                old_angle = self._angle
+            old_angle = self._angle
             self.clear_spatial_hashes()
             self._angle = new_value
             self._point_list_cache = None
-            self.add_spatial_hashes()
             if self.rotation_point:
                 rotate_x, rotate_y = self.rotation_point
                 self_x, self_y = self.center_x, self.center_y
@@ -608,6 +614,8 @@ class Sprite:
 
             for sprite_list in self.sprite_lists:
                 sprite_list.update_angle(self)
+
+            self.add_spatial_hashes()
 
     angle = property(_get_angle, _set_angle)
 
@@ -663,52 +671,33 @@ class Sprite:
 
     right = property(_get_right, _set_right)
 
-    def _get_rotation_point(self):
+    @property
+    def rotation_point(self):
         """
         Return the x and y location of the rotation point.
         """
-        return self.rotation_point
+        return self._rotation_point
 
-    def _set_rotation_point(self, new_value: List[Any]):
+    @rotation_point.setter
+    def rotation_point(self, new_value: List[Any]):
         """
         Set the x and y location of the rotation point to new_value.
         If it was rotated around a previous point then we have to
         remove that rotation and then apply the new rotation.
         """
-        if self.rotation_point:
-            if new_value != self.rotation_point:
+        if self._rotation_point:
+            if new_value != self._rotation_point:
                 if self.angle:
                     temp_angle = self.angle
                     self._set_angle(0)
-                    self.rotation_point = new_value
+                    self._rotation_point = new_value
                     self._set_angle(temp_angle)
                 else:
                     self.rotation_point = new_value
         else:
-            self.rotation_point = new_value
+            self._rotation_point = new_value
             if self.angle:
                 self._set_angle(self.angle)
-    
-    def _get_rot_point_relative(self):
-        """
-        Returns True for relative rotation point and False for absolute.
-        """
-        return self.rot_point_relative
-    
-    def _set_rot_point_relative(self, new_value: bool):
-        """
-        Sets whether the rotation point is relative (True) or absolute (False).
-        If it was rotated around a previous point then we have to remove
-        that rotation and then apply the new rotation.
-        """
-        if self.rot_point_relative != new_value:
-            if self.angle:
-                temp_angle = self.angle
-                self._set_angle(0.0)
-                self.rot_point_relative = new_value
-                self._set_angle(temp_angle)
-            else:
-                self.rot_point_relative = new_value
 
     def set_texture(self, texture_no: int):
         """
@@ -801,7 +790,12 @@ class Sprite:
 
         self._sprite_list.draw()
 
-    def draw_hit_box(self, color, line_thickness):
+    def draw_hit_box(self, color: Color = BLACK, line_thickness: float = 1):
+        """
+        Draw a sprite's hit-box. This is slow, but useful for debugging.
+        :param color: Color of box
+        :param line_thickness: How thick the box should be
+        """
         points = self.get_adjusted_hit_box()
 
         draw_polygon_outline(points, color, line_thickness)
@@ -919,6 +913,9 @@ class AnimatedTimeSprite(Sprite):
 
 @dataclasses.dataclass
 class AnimationKeyframe:
+    """
+    Used in animated sprites.
+    """
     tile_id: int
     duration: int
     image: PIL.Image
