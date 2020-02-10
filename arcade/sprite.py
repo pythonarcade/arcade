@@ -594,9 +594,9 @@ class Sprite:
             if self.rotation_point:
                 rotate_x, rotate_y = self.rotation_point
                 self_x, self_y = self.center_x, self.center_y
-                rotate_x += self_x
-                rotate_y += self_y
                 if old_angle:
+                    rotate_x += self_x
+                    rotate_y += self_y
                     rotate_x, rotate_y = rotate_point(rotate_x, rotate_y,
                                                       self_x, self_y,
                                                      old_angle)
