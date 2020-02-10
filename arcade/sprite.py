@@ -80,8 +80,6 @@ class Sprite:
         :repeat_count_y: Unused
         :right: Set/query the sprite location by using the right coordinate. \
         This will be the 'y=x' of the right of the sprite.
-        :rotation_point: A point the sprite rotates around, default is None \
-        for center. Point is specified relative to the center.
         :sprite_lists: List of all the sprite lists this sprite is part of.
         :texture: `Texture` class with the current texture.
         :textures: List of textures associated with this sprite.
@@ -162,7 +160,6 @@ class Sprite:
         self._scale = scale
         self._position = (center_x, center_y)
         self._angle = 0.0
-        self._rotation_point: Optional[Point] = None
 
         self.velocity = [0.0, 0.0]
         self.change_angle = 0.0
@@ -594,23 +591,9 @@ class Sprite:
     def _set_angle(self, new_value: float):
         """ Set the angle of the sprite's rotation. """
         if new_value != self._angle:
-            old_angle = self._angle
             self.clear_spatial_hashes()
             self._angle = new_value
             self._point_list_cache = None
-            if self.rotation_point:
-                rotate_x, rotate_y = self.rotation_point
-                self_x, self_y = self.center_x, self.center_y
-                if old_angle:
-                    rotate_x += self_x
-                    rotate_y += self_y
-                    rotate_x, rotate_y = rotate_point(rotate_x, rotate_y,
-                                                      self_x, self_y,
-                                                     old_angle)
-                sprite_rotate = rotate_point(self_x, self_y,
-                                             rotate_x, rotate_y,
-                                             new_value-old_angle)
-                self.set_position(sprite_rotate[0],sprite_rotate[1])
 
             for sprite_list in self.sprite_lists:
                 sprite_list.update_angle(self)
@@ -670,34 +653,6 @@ class Sprite:
         self.center_x -= diff
 
     right = property(_get_right, _set_right)
-
-    @property
-    def rotation_point(self):
-        """
-        Return the x and y location of the rotation point.
-        """
-        return self._rotation_point
-
-    @rotation_point.setter
-    def rotation_point(self, new_value: List[Any]):
-        """
-        Set the x and y location of the rotation point to new_value.
-        If it was rotated around a previous point then we have to
-        remove that rotation and then apply the new rotation.
-        """
-        if self._rotation_point:
-            if new_value != self._rotation_point:
-                if self.angle:
-                    temp_angle = self.angle
-                    self._set_angle(0)
-                    self._rotation_point = new_value
-                    self._set_angle(temp_angle)
-                else:
-                    self.rotation_point = new_value
-        else:
-            self._rotation_point = new_value
-            if self.angle:
-                self._set_angle(self.angle)
 
     def set_texture(self, texture_no: int):
         """
