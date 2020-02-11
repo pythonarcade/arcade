@@ -23,6 +23,7 @@ import PIL.Image
 
 from arcade import load_texture
 from arcade import Texture
+from arcade import Matrix3x3
 from arcade import rotate_point
 from arcade import draw_polygon_outline
 from arcade import Color
@@ -187,6 +188,7 @@ class Sprite:
 
         self.repeat_count_x = repeat_count_x
         self.repeat_count_y = repeat_count_y
+        self._texture_transform = Matrix3x3()
 
         # Used if someone insists on doing a sprite.draw()
         self._sprite_list = None
@@ -692,6 +694,14 @@ class Sprite:
         return self._texture
 
     texture = property(_get_texture, _set_texture2)
+
+    def _get_texture_transform(self) -> Matrix3x3:
+        return self._texture_transform
+
+    def _set_texture_transform(self, m: Matrix3x3):
+        self._texture_transform = m
+
+    texture_transform = property(_get_texture_transform, _set_texture_transform)
 
     def _get_color(self) -> RGB:
         """

@@ -36,7 +36,7 @@ _uniform_setters = {
     gl.GL_SAMPLER_2D: (gl.GLint, gl.glUniform1iv, 1, 1),
 
     gl.GL_FLOAT_MAT2: (gl.GLfloat, gl.glUniformMatrix2fv, 4, 1),
-    gl.GL_FLOAT_MAT3: (gl.GLfloat, gl.glUniformMatrix3fv, 6, 1),
+    gl.GL_FLOAT_MAT3: (gl.GLfloat, gl.glUniformMatrix3fv, 9, 1),
     gl.GL_FLOAT_MAT4: (gl.GLfloat, gl.glUniformMatrix4fv, 16, 1),
 
     # TODO: test/implement these:
