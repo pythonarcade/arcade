@@ -5,6 +5,20 @@
 Release Notes
 =============
 
+Version 2.3.5
+-------------
+
+*Release Date: Feb-12-2020*
+
+* Bug Fix: Calling sprite.draw wasn't drawing the sprite if scale was 1 `Issue 575 <https://github.com/pvcraven/arcade/issues/575>`_
+* Add unit test for Issue 575
+* Bug Fix: Changing sprite scale didn't cause sprite to redraw in new scale `Issue 588 <https://github.com/pvcraven/arcade/issues/588>`_
+* Add unit test for Issue 588
+* Enhancement: Simplify using built-in resources `Issue 576 <https://github.com/pvcraven/arcade/issues/576>`_
+* Fix for failure on on_resize(), which pyglet was quietly ignoring
+* Update ``rotate_point`` function to make it more obvious it takes degrees
+
+
 Version 2.3.4
 -------------
 

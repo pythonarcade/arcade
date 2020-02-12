@@ -3,6 +3,7 @@ Code related to working with textures.
 """
 
 import os
+import math
 
 import PIL.Image
 import PIL.ImageOps
@@ -23,6 +24,40 @@ def _lerp_color(start_color: Color, end_color: Color, u: float) -> Color:
         int(lerp(start_color[2], end_color[2], u))
     )
 
+
+class Matrix3x3:
+    def __init__(self):
+        self.reset()
+
+    def reset(self):
+        self.v = [1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]
+        return self
+
+    def multiply(self, o: List[float]):
+        self.v = [self.v[0] * o[0] + self.v[3] * o[1] + self.v[6] * o[2],
+                  self.v[1] * o[0] + self.v[4] * o[1] + self.v[7] * o[2],
+                  self.v[2] * o[0] + self.v[5] * o[1] + self.v[8] * o[2],
+                  self.v[0] * o[3] + self.v[3] * o[4] + self.v[6] * o[5],
+                  self.v[1] * o[3] + self.v[4] * o[4] + self.v[7] * o[5],
+                  self.v[2] * o[3] + self.v[5] * o[4] + self.v[8] * o[5],
+                  self.v[0] * o[6] + self.v[3] * o[7] + self.v[6] * o[8],
+                  self.v[1] * o[6] + self.v[4] * o[7] + self.v[7] * o[8],
+                  self.v[2] * o[6] + self.v[5] * o[7] + self.v[8] * o[8]]
+        return self
+
+    def scale(self, sx: float, sy: float):
+        return self.multiply([1.0 / sx, 0.0, 0.0, 0.0, 1.0 / sy, 0.0, 0.0, 0.0, 1.0])
+
+    def translate(self, tx: float, ty: float):
+        return self.multiply([1.0, 0.0, 0.0, 0.0, 1.0, 0.0, -tx, ty, 1.0])
+
+    def rotate(self, phi: float):
+        s = math.sin(math.radians(phi))
+        c = math.cos(math.radians(phi))
+        return self.multiply([c, s, 0.0, -s, c, 0.0, 0.0, 0.0, 1.0])
+
+    def shear(self, sx: float, sy: float):
+        return self.multiply([1.0, sy, 0.0, sx, 1.0, 0.0, 0.0, 0.0, 1.0])
 
 class Texture:
     """
@@ -96,6 +131,26 @@ class Texture:
             self._sprite.width = width
             self._sprite.angle = angle
             self._sprite.alpha = alpha
+            self._sprite_list.draw()
+
+    def draw_transformed(self,
+                         left: float,
+                         bottom: float,
+                         width: float,
+                         height: float,
+                         angle: float = 0,
+                         alpha: int = 255,
+                         texture_transform: Matrix3x3 = Matrix3x3()):
+
+        self._create_cached_sprite()
+        if self._sprite and self._sprite_list:
+            self._sprite.center_x = left + width / 2
+            self._sprite.center_y = bottom + height / 2
+            self._sprite.width = width
+            self._sprite.height = height
+            self._sprite.angle = angle
+            self._sprite.alpha = alpha
+            self._sprite.texture_transform = texture_transform
             self._sprite_list.draw()
 
     def draw_scaled(self, center_x: float, center_y: float,

@@ -86,6 +86,7 @@ from .drawing_support import get_points_for_thick_line
 from .drawing_support import make_transparent_color
 from .drawing_support import rotate_point
 
+from .texture import Matrix3x3
 from .texture import Texture
 from .texture import cleanup_texture_cache
 from .texture import load_spritesheet
@@ -272,6 +273,7 @@ __all__ = ['AnimatedTimeBasedSprite',
            'MOUSE_BUTTON_LEFT',
            'MOUSE_BUTTON_MIDDLE',
            'MOUSE_BUTTON_RIGHT',
+           'Matrix3x3',
            'NoOpenGLException',
            'Particle',
            'PhysicsEnginePlatformer',
