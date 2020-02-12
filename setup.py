@@ -93,6 +93,7 @@ if __name__ == "__main__":
                                    'resources/images/pinball/*',
                                    'resources/images/space_shooter/*',
                                    'resources/images/spritesheets/*',
+                                   'resources/images/texture_transform/*',
                                    'resources/images/tiles/*',
                                    'resources/sounds/*',
                                    'resources/tmx_maps/*',

@@ -18,6 +18,7 @@ import array
 
 from PIL import Image
 
+from arcade import Matrix3x3
 from arcade import Sprite
 from arcade import get_distance_between_sprites
 from arcade import are_polygons_intersecting
@@ -31,6 +32,7 @@ from arcade import Point
 _VERTEX_SHADER = """
 #version 330
 uniform mat4 Projection;
+uniform mat3 TextureTransform;
 
 // per vertex
 in vec2 in_vert;
@@ -59,6 +61,8 @@ void main() {
     vec2 tex_size = in_sub_tex_coords.zw;
 
     v_texture = (in_texture * tex_size + tex_offset) * vec2(1, -1);
+    vec3 temp = TextureTransform * vec3(v_texture, 1.0);
+    v_texture = temp.xy / temp.z;
     v_color = in_color;
 }
 """
@@ -899,6 +903,15 @@ class SpriteList(Generic[_SpriteType]):
         with self._vao1:
             self.program['Texture'] = self.texture_id
             self.program['Projection'] = get_projection().flatten()
+            texture_transform = None
+            if len(self.sprite_list) > 0:
+                # always wrap texture transformations with translations
+                # so that rotate and resize operations act on the texture
+                # center by default
+                texture_transform = Matrix3x3().translate(-0.5, -0.5).multiply(self.sprite_list[0].texture_transform.v).multiply(Matrix3x3().translate(0.5, 0.5).v)
+            if texture_transform == None:
+                texture_transform = Matrix3x3()
+            self.program['TextureTransform'] = texture_transform.v
 
             if not self.is_static:
                 if self._sprite_pos_changed:
