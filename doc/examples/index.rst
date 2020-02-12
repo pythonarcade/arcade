@@ -572,9 +572,14 @@ Odds and Ends
 
    :ref:`sprite_collect_coins_with_stats`
 
-
 .. figure:: thumbs/timer.png
    :figwidth: 170px
 
    :ref:`timer`
+
+
+.. figure:: thumbs/texture_transform.png
+   :figwidth: 170px
+
+   :ref:`texture_transform`
 
