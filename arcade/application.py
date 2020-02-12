@@ -97,7 +97,7 @@ class Window(pyglet.window.Window):
         # isn't derived from the Window class.
         # self.invalid = False
         set_window(self)
-        set_viewport(0, self.width, 0, self.height)
+        set_viewport(0, self.width - 1, 0, self.height - 1)
 
         self.current_view: Optional[View] = None
         self.button_list: List[TextButton] = []
