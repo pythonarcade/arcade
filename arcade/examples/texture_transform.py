@@ -44,8 +44,8 @@ class MyGame(arcade.Window):
         self.ship.center_x = SCREEN_WIDTH / 2
         self.ship.center_y = SCREEN_HEIGHT / 2
         self.ship.angle = 270
-        self.stars = arcade.load_texture(":resources:images/texture_transform/stars.png")
-        self.xy_square = arcade.load_texture(":resources:images/texture_transform/xy_square.png")
+        self.stars = arcade.load_texture(":resources:images/backgrounds/stars.png")
+        self.xy_square = arcade.load_texture(":resources:images/test_textures/xy_square.png")
 
         # Set the background color
         arcade.set_background_color(arcade.color.BLACK)
