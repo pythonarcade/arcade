@@ -8,7 +8,6 @@ python -m arcade.examples.sprite_texture_transform
 """
 
 import arcade
-from arcade import shader
 from arcade import Matrix3x3
 import math
 import os
@@ -18,6 +17,7 @@ SCREEN_HEIGHT = 600
 SHIP_SPEED = 5
 ASPECT = SCREEN_HEIGHT / SCREEN_WIDTH
 SCREEN_TITLE = "Texture transformations"
+
 
 class MyGame(arcade.Window):
     """ Main application class. """
@@ -38,8 +38,11 @@ class MyGame(arcade.Window):
         self.ship = None
         self.camera_x = 0
         self.t = 0
+        self.stars = None
+        self.xy_square = None
 
     def setup(self):
+        """ Setup """
         self.ship = arcade.Sprite(":resources:images/space_shooter/playerShip1_orange.png", 0.5)
         self.ship.center_x = SCREEN_WIDTH / 2
         self.ship.center_y = SCREEN_HEIGHT / 2
@@ -51,6 +54,7 @@ class MyGame(arcade.Window):
         arcade.set_background_color(arcade.color.BLACK)
 
     def on_update(self, delta_time: float):
+        """ Update """
         self.ship.update()
         self.camera_x += 2
         self.t += delta_time * 60
@@ -70,9 +74,7 @@ class MyGame(arcade.Window):
             translate = scale / 500
             self.stars.draw_transformed(
                 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, opacity,
-                Matrix3x3().rotate(angle).
-                scale(scale * ASPECT, scale).
-                translate(-self.camera_x * translate, 0))
+                Matrix3x3().rotate(angle).scale(scale * ASPECT, scale).translate(-self.camera_x * translate, 0))
         self.ship.draw()
 
         for i, pair in enumerate([
@@ -84,11 +86,12 @@ class MyGame(arcade.Window):
             ['scale(-1, 1)', Matrix3x3().scale(-1, 1)],
             ['shear(0.3, 0.1)', Matrix3x3().shear(0.3, 0.1)],
             [f'rotate({int(self.t) % 360})', Matrix3x3().rotate(self.t)],
-            ]):
+        ]):
             x = 80 + 180 * (i % 4)
             y = 420 - (i // 4) * 320
             arcade.draw_text(pair[0], x, y - 20 - pair[0].count('\n') * 10, arcade.color.WHITE, 10)
             self.xy_square.draw_transformed(x, y, 100, 100, 0, 255, pair[1])
+
 
 def main():
     """ Main method """
