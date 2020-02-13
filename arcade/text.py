@@ -101,7 +101,8 @@ def render_text(text: CreateText, start_x: float, start_y: float):
 
 
 def draw_text(text: str,
-              start_x: float, start_y: float,
+              start_x: float,
+              start_y: float,
               color: Color,
               font_size: float = 12,
               width: int = 0,
@@ -116,18 +117,18 @@ def draw_text(text: str,
     """
 
     :param str text: Text to draw
-    :param float start_x:
-    :param float start_y:
+    :param float start_x: x coordinate of the lower-left point to start drawing text
+    :param float start_y: y coordinate of the lower-left point to start drawing text
     :param Color color: Color of the text
     :param float font_size: Size of the text
-    :param float width:
-    :param str align:
-    :param Union[str, Tuple[str, ...]] font_name:
-    :param bool bold:
-    :param bool italic:
-    :param str anchor_x:
-    :param str anchor_y:
-    :param float rotation:
+    :param float width: Width of the text-box for the text to go into. Used with alignment.
+    :param str align: Align left, right, center
+    :param Union[str, Tuple[str, ...]] font_name: Font name, or list of font names in order of preference
+    :param bool bold: Bold the font
+    :param bool italic: Italicize the font
+    :param str anchor_x: Anchor the font location, defaults to 'left'
+    :param str anchor_y: Anchor the font location, defaults to 'baseline'
+    :param float rotation: Rotate the text
     """
     global draw_text_cache
 
@@ -136,8 +137,8 @@ def draw_text(text: str,
     font_size *= 1.25
 
     # Text isn't anti-aliased, so we'll draw big, and then shrink
-    scale_up = 5
-    scale_down = 5
+    scale_up = 2
+    scale_down = 2
 
     font_size *= scale_up
 
@@ -189,7 +190,7 @@ def draw_text(text: str,
         # Get size the text will be
         text_image_size = draw.multiline_textsize(text, font=font)
         # Add some extra pixels at the bottom to account for letters that drop below the baseline.
-        text_image_size = text_image_size[0], text_image_size[1] + int(font_size * 0.15)
+        text_image_size = text_image_size[0], text_image_size[1] + int(font_size * 0.25)
 
         # Create image of proper size
         text_height = text_image_size[1]
@@ -209,10 +210,10 @@ def draw_text(text: str,
             else:
                 image_start_x = 0
 
-        # If we draw a y at 0, then the text is drawn with a baseline of 0,
-        # cutting off letters that drop below the baseline. This shoves it
-        # up a bit.
-        image_start_y = - font_size * scale_up * 0.02
+        # Find y of top-left corner
+        image_start_y = 0
+
+        # Create image
         image = PIL.Image.new("RGBA", text_image_size)
         draw = PIL.ImageDraw.Draw(image)
 
