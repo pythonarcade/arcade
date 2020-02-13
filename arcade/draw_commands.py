@@ -575,15 +575,9 @@ def draw_polygon_filled(point_list: PointList,
     """
     Draw a polygon that is filled in.
 
-    Args:
-        :point_list: List of points making up the lines. Each point is
+    :param PointList point_list: List of points making up the lines. Each point is
          in a list. So it is a list of lists.
-        :color: color, specified in a list of 3 or 4 bytes in RGB or
-         RGBA format.
-    Returns:
-        None
-    Raises:
-        None
+    :param Color color: The color, specified in RGB or RGBA format.
     """
 
     triangle_points = earclip(point_list)
