@@ -25,6 +25,7 @@ def test_it_can_extend_a_spritelist():
     assert len(spritelist) == 10
     assert spritelist._vao1 is None
 
+
 def test_it_can_insert_in_a_spritelist():
     spritelist = make_named_sprites(2)
 
