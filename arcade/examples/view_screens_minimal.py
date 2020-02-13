@@ -21,10 +21,6 @@ import arcade
 import os
 
 
-file_path = os.path.dirname(os.path.abspath(__file__))
-os.chdir(file_path)
-
-
 WIDTH = 800
 HEIGHT = 600
 
@@ -40,10 +36,20 @@ class MenuView(arcade.View):
 
     def on_mouse_press(self, _x, _y, _button, _modifiers):
         game_view = GameView()
+        game_view.setup()
         self.window.show_view(game_view)
 
 
 class GameView(arcade.View):
+
+    def __init__(self):
+        super().__init__()
+        # Create variables here
+
+    def setup(self):
+        # Replace 'pass' with the code to set up your game
+        pass
+
     def on_show(self):
         arcade.set_background_color(arcade.color.ORANGE_PEEL)
 

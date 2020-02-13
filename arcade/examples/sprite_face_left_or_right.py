@@ -30,12 +30,15 @@ class Player(arcade.Sprite):
     def __init__(self):
         super().__init__()
 
+        self.textures = []
         # Load a left facing texture and a right facing texture.
         # mirrored=True will mirror the image we load.
-        texture = arcade.load_texture(":resources:images/animated_characters/female_person/femalePerson_idle.png", mirrored=True, scale=SPRITE_SCALING)
+        texture = arcade.load_texture(":resources:images/enemies/bee.png")
         self.textures.append(texture)
-        texture = arcade.load_texture(":resources:images/animated_characters/female_person/femalePerson_idle.png", scale=SPRITE_SCALING)
+        texture = arcade.load_texture(":resources:images/enemies/bee.png", mirrored=True)
         self.textures.append(texture)
+
+        self.scale = SPRITE_SCALING
 
         # By default, face right.
         self.set_texture(TEXTURE_RIGHT)
@@ -46,9 +49,9 @@ class Player(arcade.Sprite):
 
         # Figure out if we should face left or right
         if self.change_x < 0:
-            self.set_texture(TEXTURE_LEFT)
-        if self.change_x > 0:
-            self.set_texture(TEXTURE_RIGHT)
+            self.texture = self.textures[TEXTURE_LEFT]
+        elif self.change_x > 0:
+            self.texture = self.textures[TEXTURE_RIGHT]
 
         if self.left < 0:
             self.left = 0

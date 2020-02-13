@@ -12,7 +12,8 @@ import random
 import arcade
 import os
 
-SPRITE_SCALING = 0.5
+PLAYER_SCALING = 0.5
+COIN_SCALING = 0.25
 
 SCREEN_WIDTH = 1024
 SCREEN_HEIGHT = 600
@@ -69,7 +70,7 @@ class MyGame(arcade.Window):
 
         # Set up the player
         self.score = 0
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", SPRITE_SCALING)
+        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", PLAYER_SCALING)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 50
         self.player_list.append(self.player_sprite)
@@ -77,7 +78,7 @@ class MyGame(arcade.Window):
         for i in range(50):
 
             # Create the coin instance
-            coin = arcade.Sprite(":resources:images/items/coinGold.png", SPRITE_SCALING / 3)
+            coin = arcade.Sprite(":resources:images/items/coinGold.png", COIN_SCALING)
 
             # Position the coin
             coin.center_x = random.randrange(SCREEN_WIDTH)
@@ -95,8 +96,10 @@ class MyGame(arcade.Window):
         arcade.start_render()
 
         # Draw the background texture
-        arcade.draw_texture_rectangle(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2,
-                                      SCREEN_WIDTH, SCREEN_HEIGHT, self.background)
+        scale = SCREEN_WIDTH / self.background.width
+        arcade.draw_lrwh_rectangle_textured(0, 0,
+                                            SCREEN_WIDTH, SCREEN_HEIGHT,
+                                            self.background)
 
         # Draw all the sprites.
         self.coin_list.draw()

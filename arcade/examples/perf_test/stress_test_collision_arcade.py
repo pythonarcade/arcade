@@ -92,7 +92,7 @@ class MyGame(arcade.Window):
         for i in range(COIN_COUNT_INCREMENT):
             # Create the coin instance
             # Coin image from kenney.nl
-            coin = arcade.Sprite("../images/coin_01.png", SPRITE_SCALING_COIN)
+            coin = arcade.Sprite(":resources:images/items/coinGold.png", SPRITE_SCALING_COIN)
 
             # Position the coin
             coin.center_x = random.randrange(SPRITE_SIZE, SCREEN_WIDTH - SPRITE_SIZE)
@@ -107,7 +107,7 @@ class MyGame(arcade.Window):
         # Sprite lists
         self.coin_list = arcade.SpriteList(use_spatial_hash=False)
         self.player_list = arcade.SpriteList()
-        self.player = arcade.Sprite("../images/character.png", SPRITE_SCALING_PLAYER)
+        self.player = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", SPRITE_SCALING_PLAYER)
         self.player.center_x = random.randrange(SCREEN_WIDTH)
         self.player.center_y = random.randrange(SCREEN_HEIGHT)
         self.player.change_x = 3

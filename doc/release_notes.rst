@@ -5,10 +5,117 @@
 Release Notes
 =============
 
+Version 2.3.5
+-------------
+
+*Release Date: Feb-12-2020*
+
+* Bug Fix: Calling sprite.draw wasn't drawing the sprite if scale was 1 `Issue 575 <https://github.com/pvcraven/arcade/issues/575>`_
+* Add unit test for Issue 575
+* Bug Fix: Changing sprite scale didn't cause sprite to redraw in new scale `Issue 588 <https://github.com/pvcraven/arcade/issues/588>`_
+* Add unit test for Issue 588
+* Enhancement: Simplify using built-in resources `Issue 576 <https://github.com/pvcraven/arcade/issues/576>`_
+* Fix for failure on on_resize(), which pyglet was quietly ignoring
+* Update ``rotate_point`` function to make it more obvious it takes degrees
+
+
+Version 2.3.4
+-------------
+
+*Release Date: Feb-08-2020*
+
+* Bug Fix: Sprites weren't appearing `Issue 585 <https://github.com/pvcraven/arcade/issues/585>`_
+
+
+Version 2.3.3
+-------------
+
+*Release Date: Feb-08-2020*
+
+* Bug Fix: set_scale checks height rather than scale `Issue 578 <https://github.com/pvcraven/arcade/issues/578>`_
+* Bug Fix: Window flickers for drawing when not derived from Window class `Issue 579 <https://github.com/pvcraven/arcade/issues/579>`_
+* Enhancement: Allow joystick selection in dual-stick shooter `Issue 571 <https://github.com/pvcraven/arcade/issues/571>`_
+* Test coverage reporting now working correctly with TravisCI
+* Improved test coverage
+* Improved documentation and typing with Texture class
+* Improve minimal View example
+
+Version 2.3.2
+-------------
+
+*Release Date: Feb-01-2020*
+
+* Remove scale as a parameter to load_textures because it is not unused
+* Improve documentation
+* Add example for acceleration/friction
+
+Version 2.3.1
+-------------
+
+*Release Date: Jan-30-2020*
+
+* Don't auto-update sprite hit box with animated sprite
+* Fix issues with sprite.draw
+* Improve error message given when trying to do a collision check and there's no
+  hit box set on the sprite.
+
+Version 2.3.0
+-------------
+
+*Release Date: Jan-30-2020*
+
+* Backwards Incompatability: arcade.Texture no longer has a scale property. This
+  property made things confusing as Sprites had their own scale attribute. This
+  seemingly small change required a lot of rework around sprites, sprite lists,
+  hit boxes, and drawing of textured rectangles.
+* Include all the things that were part of 2.2.8, but hopefully working now.
+* Bug Fix: Error when calling Sprite.draw() `Issue 570 <https://github.com/pvcraven/arcade/issues/570>`_
+* Enhancement: Added Sprite.draw_hit_box to visually draw the hit box. (Kind of slow, but useful for debugging.)
+
+Version 2.2.9
+-------------
+
+*Release Date: Jan-28-2020*
+
+* Roll back to 2.2.7 because bug fixes in 2.2.8 messed up scaling
+
+Version 2.2.8
+-------------
+
+*Release Date: Jan-27-2020*
+
+* Version number now contained in one file, rather than three.
+* Enhancement: Move several GitHub-listed enhancements to the .rst enhancement list
+* Bug Fix: Texture scale not accounted for when getting height `Issue 516 <https://github.com/pvcraven/arcade/issues/516>`_
+* Bug Fix: Issue with text cut off if it goes below baseline `Issue 515 <https://github.com/pvcraven/arcade/issues/515>`_
+* Enhancement: Allow non-cached texture creation, fixing issue with resizing `Issue 506 <https://github.com/pvcraven/arcade/issues/506>`_
+* Enhancement: Physics engine supports rotation
+* Bug Fix: Need to better resolve collisions so sprite doesn't get hyper-spaces to new weird spot `Issue 569 <https://github.com/pvcraven/arcade/issues/569>`_
+* Bug Fix: Hit box not getting properly created when working with multi-texture player sprite. `Issue 568 <https://github.com/pvcraven/arcade/issues/568>`_
+* Bug Fix: Issue with text_sprite and anchor y of top `Issue 567 <https://github.com/pvcraven/arcade/issues/567>`_
+* Bug Fix: Issues with documentation
+
+Version 2.2.7
+-------------
+
+*Release Date: Jan-25-2020*
+
+* Enhancement: Have draw_text return a sprite `Issue 565 <https://github.com/pvcraven/arcade/issues/565>`_
+* Enhancement: Improve speed when changing alpha of text `Issue 563 <https://github.com/pvcraven/arcade/issues/563>`_
+* Enhancement: Add dual-stick shooter example `Issue 301 <https://github.com/pvcraven/arcade/issues/301>`_
+* Bug Fix: Fix for Pyglet 2.0dev incompatability `Issue 560 <https://github.com/pvcraven/arcade/issues/560>`_
+* Bug Fix: Fix broken particle_systems.py example `Issue 558 <https://github.com/pvcraven/arcade/issues/558>`_
+* Enhancement: Added mypy check to TravisCI build `Issue 557 <https://github.com/pvcraven/arcade/issues/557>`_
+* Enhancement: Fix typing issues `Issue 537 <https://github.com/pvcraven/arcade/issues/537>`_
+* Enhancement: Optimize load font in draw_text `Issue 525 <https://github.com/pvcraven/arcade/issues/525>`_
+* Enhancement: Reorganize examples
+* Bug Fix: get_pixel not working on MacOS `Issue 539 <https://github.com/pvcraven/arcade/issues/539>`_
+
+
 Version 2.2.6
 -------------
 
-*Release Date: 1/20/2020*
+*Release Date: Jan-20-2020*
 
 * Bug Fix: particle_fireworks example is not running with 2.2.5 `Issue 555 <https://github.com/pvcraven/arcade/issues/555>`_
 * Bug Fix: Sprite.pop isn't reliable `Issue 531 <https://github.com/pvcraven/arcade/issues/531>`_
@@ -20,12 +127,12 @@ Version 2.2.6
 * Enhancement: Return list of items hit during physics engine update `Issue 401 <https://github.com/pvcraven/arcade/issues/401>`_
 * Enhancement: Update resources documentation `Issue 549 <https://github.com/pvcraven/arcade/issues/549>`_
 * Enhancement: Add on_update to sprites, which includes delta_time `Issue 266 <https://github.com/pvcraven/arcade/issues/266>`_
-* Enhancement: Close enhancement-related github issues and reference them in the new :ref:`enhancement-list`.
+* Enhancement: Close enhancement-related github issues and reference them in the new :ref:`enhancement_list`.
 
 Version 2.2.5
 -------------
 
-*Release Date: 1/17/2020*
+*Release Date: Jan-17-2020*
 
 * Enhancement: Improved speed when rendering non-buffered drawing primitives
 * Bug fix: Angle working in radians instead of degrees in 2.2.4 `Issue 552 <https://github.com/pvcraven/arcade/issues/552>`_
@@ -35,14 +142,14 @@ Version 2.2.5
 Version 2.2.4
 -------------
 
-*Release Date: 1/15/2020*
+*Release Date: Jan-15-2020*
 
 * Enhancement: Moving sprites now 20% more efficient.
 
 Version 2.2.3
 -------------
 
-*Release Date: 1/12/2020*
+*Release Date: Jan-12-2020*
 
 * Bug fix: Hit boxes not getting updated with rotation and scaling. `Issue 548 <https://github.com/pvcraven/arcade/issues/548>`_
   This update depricates Sprite.points and instead uses Sprint.hit_box and Sprint.get_adjusted_hit_box
@@ -54,21 +161,21 @@ Version 2.2.3
 Version 2.2.2
 -------------
 
-*Release Date: 1/9/2020*
+*Release Date: Jan-09-2020*
 
 * Bug fix: Arcade assumes tiles in tileset are same sized `Issue 550 <https://github.com/pvcraven/arcade/issues/550>`_
 
 Version 2.2.1
 -------------
 
-*Release Date: 12/22/2020*
+*Release Date: Dec-22-2019*
 
 * Bug fix: Resource folder not included in distribution `Issue 541 <https://github.com/pvcraven/arcade/issues/541>`_
 
 Version 2.2.0
 -------------
 
-*Release Date: 12/19/2020*
+*Release Date: Dec-19-2019**
 
 * Major Enhancement: Add built-in resources support `Issue 209 <https://github.com/pvcraven/arcade/issues/209>`_
   This also required many changes to the code samples, but they can be run now without

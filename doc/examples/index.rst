@@ -176,6 +176,12 @@ Sprite Player Movement
 
    :ref:`sprite_move_keyboard_better`
 
+.. figure:: thumbs/sprite_collect_coins.png
+   :figwidth: 170px
+
+   :ref:`sprite_move_keyboard_accel`
+
+
 .. figure:: thumbs/sprite_face_left_or_right.png
    :figwidth: 170px
 
@@ -191,6 +197,10 @@ Sprite Player Movement
 
    :ref:`sprite_move_angle`
 
+.. figure:: thumbs/dual_stick_shooter.png
+   :figwidth: 170px
+
+   :ref:`dual_stick_shooter`
 
 Sprite Non-Player Movement
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -562,9 +572,14 @@ Odds and Ends
 
    :ref:`sprite_collect_coins_with_stats`
 
-
 .. figure:: thumbs/timer.png
    :figwidth: 170px
 
    :ref:`timer`
+
+
+.. figure:: thumbs/texture_transform.png
+   :figwidth: 170px
+
+   :ref:`texture_transform`
 

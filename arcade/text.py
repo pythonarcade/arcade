@@ -1,19 +1,16 @@
 # --- BEGIN TEXT FUNCTIONS # # #
 
 from itertools import chain
-from typing import Tuple, Union, cast
+from typing import Dict, Tuple, Union, cast
 
 import PIL.Image
 import PIL.ImageDraw
 import PIL.ImageFont
-
-from arcade.sprite import Sprite
-from arcade.arcade_types import Color
-from arcade.draw_commands import Texture
-from arcade.arcade_types import RGBA
-from arcade.draw_commands import get_four_byte_color
-
 import pyglet
+
+from arcade.arcade_types import RGBA, Color
+from arcade.draw_commands import Texture, get_four_byte_color
+from arcade.sprite import Sprite
 
 DEFAULT_FONT_NAMES = (
     "arial.ttf",
@@ -23,6 +20,8 @@ DEFAULT_FONT_NAMES = (
     "/System/Library/Fonts/SFNSDisplay.ttf",
     "/Library/Fonts/Arial.ttf"
 )
+
+draw_text_cache: Dict[str, 'Text'] = dict()
 
 
 class Text:
@@ -102,7 +101,8 @@ def render_text(text: CreateText, start_x: float, start_y: float):
 
 
 def draw_text(text: str,
-              start_x: float, start_y: float,
+              start_x: float,
+              start_y: float,
               color: Color,
               font_size: float = 12,
               width: int = 0,
@@ -113,63 +113,46 @@ def draw_text(text: str,
               anchor_x: str = "left",
               anchor_y: str = "baseline",
               rotation: float = 0
-              ):
+              ) -> Sprite:
     """
 
     :param str text: Text to draw
-    :param float start_x:
-    :param float start_y:
+    :param float start_x: x coordinate of the lower-left point to start drawing text
+    :param float start_y: y coordinate of the lower-left point to start drawing text
     :param Color color: Color of the text
     :param float font_size: Size of the text
-    :param float width:
-    :param str align:
-    :param Union[str, Tuple[str, ...]] font_name:
-    :param bool bold:
-    :param bool italic:
-    :param str anchor_x:
-    :param str anchor_y:
-    :param float rotation:
+    :param float width: Width of the text-box for the text to go into. Used with alignment.
+    :param str align: Align left, right, center
+    :param Union[str, Tuple[str, ...]] font_name: Font name, or list of font names in order of preference
+    :param bool bold: Bold the font
+    :param bool italic: Italicize the font
+    :param str anchor_x: Anchor the font location, defaults to 'left'
+    :param str anchor_y: Anchor the font location, defaults to 'baseline'
+    :param float rotation: Rotate the text
     """
+    global draw_text_cache
 
     # Scale the font up, so it matches with the sizes of the old code back
     # when Pyglet drew the text.
     font_size *= 1.25
 
     # Text isn't anti-aliased, so we'll draw big, and then shrink
-    scale_up = 5
-    scale_down = 5
+    scale_up = 2
+    scale_down = 2
 
     font_size *= scale_up
 
     # If the cache gets too large, dump it and start over.
-    if len(draw_text.cache) > 5000:  # type: ignore # dynamic attribute on function obj
-        draw_text.cache = {}  # type: ignore # dynamic attribute on function obj
+    if len(draw_text_cache) > 5000:
+        draw_text_cache = {}
 
-    key = f"{text}{color}{font_size}{width}{align}{font_name}{bold}{italic}"
-    if key in draw_text.cache:  # type: ignore # dynamic attribute on function obj
-        label = draw_text.cache[key]  # type: ignore # dynamic attribute on function obj
-        text_sprite = label.text_sprite_list[0]
+    r, g, b, alpha = get_four_byte_color(color)
+    cache_color = f"{r}{g}{b}"
 
-        if anchor_x == "left":
-            text_sprite.center_x = start_x + text_sprite.width / 2
-        elif anchor_x == "center":
-            text_sprite.center_x = start_x
-        elif anchor_x == "right":
-            text_sprite.right = start_x
-        else:
-            raise ValueError(f"anchor_x should be 'left', 'center', or 'right'. Not '{anchor_x}'")
-
-        if anchor_y == "top":
-            text_sprite.center_y = start_y - text_sprite.height / 2
-        elif anchor_y == "center":
-            text_sprite.center_y = start_y
-        elif anchor_y == "bottom" or anchor_y == "baseline":
-            text_sprite.bottom = start_y
-        else:
-            raise ValueError(f"anchor_y should be 'top', 'center', 'bottom', or 'baseline'. Not '{anchor_y}'")
-
-        text_sprite.angle = rotation
-    else:
+    key = f"{text}{cache_color}{font_size}{width}{align}{font_name}{bold}{italic}"
+    try:
+        label = draw_text_cache[key]
+    except KeyError:  # doesn't exist, create it
         label = Text()
 
         # Figure out the font to use
@@ -206,6 +189,8 @@ def draw_text(text: str,
 
         # Get size the text will be
         text_image_size = draw.multiline_textsize(text, font=font)
+        # Add some extra pixels at the bottom to account for letters that drop below the baseline.
+        text_image_size = text_image_size[0], text_image_size[1] + int(font_size * 0.25)
 
         # Create image of proper size
         text_height = text_image_size[1]
@@ -225,10 +210,10 @@ def draw_text(text: str,
             else:
                 image_start_x = 0
 
-        # If we draw a y at 0, then the text is drawn with a baseline of 0,
-        # cutting off letters that drop below the baseline. This shoves it
-        # up a bit.
-        image_start_y = - font_size * scale_up * 0.02
+        # Find y of top-left corner
+        image_start_y = 0
+
+        # Create image
         image = PIL.Image.new("RGBA", text_image_size)
         draw = PIL.ImageDraw.Draw(image)
 
@@ -243,41 +228,40 @@ def draw_text(text: str,
         text_sprite._texture = Texture(key)
         text_sprite.texture.image = image
 
-        text_sprite.image = image
-        text_sprite.texture_name = key
         text_sprite.width = image.width
         text_sprite.height = image.height
-
-        if anchor_x == "left":
-            text_sprite.center_x = start_x + text_sprite.width / 2
-        elif anchor_x == "center":
-            text_sprite.center_x = start_x
-        elif anchor_x == "right":
-            text_sprite.right = start_x
-        else:
-            raise ValueError(f"anchor_x should be 'left', 'center', or 'right'. Not '{anchor_x}'")
-
-        if anchor_y == "top":
-            text_sprite.center_y = start_y + text_sprite.height / 2
-        elif anchor_y == "center":
-            text_sprite.center_y = start_y
-        elif anchor_y == "bottom" or anchor_y == "baseline":
-            text_sprite.bottom = start_y
-        else:
-            raise ValueError(f"anchor_y should be 'top', 'center', 'bottom', or 'baseline'. Not '{anchor_y}'")
-
-        text_sprite.angle = rotation
 
         from arcade.sprite_list import SpriteList
         label.text_sprite_list = SpriteList()
         label.text_sprite_list.append(text_sprite)
 
-        draw_text.cache[key] = label  # type: ignore # dynamic attribute on function obj
+        draw_text_cache[key] = label
+
+    text_sprite = label.text_sprite_list[0]
+
+    if anchor_x == "left":
+        text_sprite.center_x = start_x + text_sprite.width / 2
+    elif anchor_x == "center":
+        text_sprite.center_x = start_x
+    elif anchor_x == "right":
+        text_sprite.right = start_x
+    else:
+        raise ValueError(f"anchor_x should be 'left', 'center', or 'right'. Not '{anchor_x}'")
+
+    if anchor_y == "top":
+        text_sprite.center_y = start_y - text_sprite.height / 2
+    elif anchor_y == "center":
+        text_sprite.center_y = start_y
+    elif anchor_y == "bottom" or anchor_y == "baseline":
+        text_sprite.bottom = start_y
+    else:
+        raise ValueError(f"anchor_y should be 'top', 'center', 'bottom', or 'baseline'. Not '{anchor_y}'")
+
+    text_sprite.angle = rotation
+    text_sprite.alpha = alpha
 
     label.text_sprite_list.draw()
-
-
-draw_text.cache = {}  # type: ignore # dynamic attribute on function obj
+    return text_sprite
 
 
 def draw_text_2(text: str,

@@ -10,7 +10,6 @@ Buffered Draw Commands.
 
 import math
 import array
-import sys
 
 import PIL.Image
 import PIL.ImageOps
@@ -23,7 +22,6 @@ from typing import Tuple
 from typing import TYPE_CHECKING
 
 from arcade import get_projection
-from arcade import get_window
 from arcade import Color
 from arcade import PointList
 from arcade import shader
@@ -91,8 +89,8 @@ def draw_arc_filled(center_x: float, center_y: float,
     for segment in range(start_segment, end_segment + 1):
         theta = 2.0 * 3.1415926 * segment / num_segments
 
-        x = width * math.cos(theta)
-        y = height * math.sin(theta)
+        x = width * math.cos(theta) / 2
+        y = height * math.sin(theta) / 2
 
         unrotated_point_list.append([x, y])
 
@@ -136,10 +134,10 @@ def draw_arc_outline(center_x: float, center_y: float, width: float,
     start_segment = int(start_angle / 360 * num_segments)
     end_segment = int(end_angle / 360 * num_segments)
 
-    inside_width = width - border_width / 2
-    outside_width = width + border_width / 2
-    inside_height = height - border_width / 2
-    outside_height = height + border_width / 2
+    inside_width = (width - border_width / 2) / 2
+    outside_width = (width + border_width / 2) / 2
+    inside_height = (height - border_width / 2) / 2
+    outside_height = (height + border_width / 2) / 2
 
     for segment in range(start_segment, end_segment + 1):
         theta = 2.0 * math.pi * segment / num_segments
@@ -577,15 +575,9 @@ def draw_polygon_filled(point_list: PointList,
     """
     Draw a polygon that is filled in.
 
-    Args:
-        :point_list: List of points making up the lines. Each point is
+    :param PointList point_list: List of points making up the lines. Each point is
          in a list. So it is a list of lists.
-        :color: color, specified in a list of 3 or 4 bytes in RGB or
-         RGBA format.
-    Returns:
-        None
-    Raises:
-        None
+    :param Color color: The color, specified in RGB or RGBA format.
     """
 
     triangle_points = earclip(point_list)
@@ -839,35 +831,51 @@ def draw_rectangle_filled(center_x: float, center_y: float, width: float,
     _generic_draw_line_strip((p1, p2, p4, p3), color, gl.GL_TRIANGLE_STRIP)
 
 
-def draw_texture_rectangle(center_x: float, center_y: float, width: float,
-                           height: float, texture: Texture, angle: float = 0,
-                           alpha: int = 255,
-                           repeat_count_x: int = 1, repeat_count_y: int = 1):
+def draw_scaled_texture_rectangle(center_x: float, center_y: float,
+                                  texture: Texture,
+                                  scale: float = 1.0,
+                                  angle: float = 0,
+                                  alpha: int = 255):
     """
     Draw a textured rectangle on-screen.
 
     :param float center_x: x coordinate of rectangle center.
     :param float center_y: y coordinate of rectangle center.
-    :param float width: width of the rectangle.
-    :param float height: height of the rectangle.
+    :param int texture: identifier of texture returned from load_texture() call
+    :param float scale: scale of texture
+    :param float angle: rotation of the rectangle. Defaults to zero.
+    :param float alpha: Transparency of image. 0 is fully transparent, 255 (default) is visible
+    """
+
+    texture.draw_scaled(center_x, center_y, scale, angle, alpha)
+
+
+def draw_texture_rectangle(center_x: float, center_y: float,
+                           width: float,
+                           height: float,
+                           texture: Texture,
+                           angle: float = 0,
+                           alpha: int = 255):
+    """
+    Draw a textured rectangle on-screen.
+
+    :param float center_x: x coordinate of rectangle center.
+    :param float center_y: y coordinate of rectangle center.
+    :param float width: width of texture
+    :param float height: height of texture
     :param int texture: identifier of texture returned from load_texture() call
     :param float angle: rotation of the rectangle. Defaults to zero.
     :param float alpha: Transparency of image. 0 is fully transparent, 255 (default) is visible
-    :param int repeat_count_x: Unused for now
-    :param int repeat_count_y: Unused for now
     """
 
-    texture.draw(center_x, center_y, width,
-                 height, angle, alpha, False,
-                 repeat_count_x, repeat_count_y)
+    texture.draw_sized(center_x, center_y, width, height, angle, alpha)
 
 
-# noinspection PyUnusedLocal
-def draw_xywh_rectangle_textured(bottom_left_x: float, bottom_left_y: float,
-                                 width: float, height: float,
+def draw_lrwh_rectangle_textured(bottom_left_x: float, bottom_left_y: float,
+                                 width: float,
+                                 height: float,
                                  texture: Texture, angle: float = 0,
-                                 alpha: int = 255,
-                                 repeat_count_x: int = 1, repeat_count_y: int = 1):
+                                 alpha: int = 255):
     """
     Draw a texture extending from bottom left to top right.
 
@@ -878,16 +886,11 @@ def draw_xywh_rectangle_textured(bottom_left_x: float, bottom_left_y: float,
     :param int texture: identifier of texture returned from load_texture() call
     :param float angle: rotation of the rectangle. Defaults to zero.
     :param int alpha: Transparency of image. 0 is fully transparent, 255 (default) is visible
-    :param int repeat_count_x: Unused for now
-    :param int repeat_count_y: Unused for now
     """
 
     center_x = bottom_left_x + (width / 2)
     center_y = bottom_left_y + (height / 2)
-    draw_texture_rectangle(center_x, center_y,
-                           width, height,
-                           texture,
-                           angle=angle, alpha=alpha)
+    texture.draw_sized(center_x, center_y, width, height, angle=angle, alpha=alpha)
 
 
 def get_pixel(x: int, y: int) -> Tuple[int, int, int]:

@@ -62,12 +62,13 @@ class MyTestWindow(arcade.Window):
         coin.center_y = 500
 
         coin.textures = []
-        coin.textures.append(arcade.load_texture(":resources:images/items/gold_1.png", scale=COIN_SCALE))
-        coin.textures.append(arcade.load_texture(":resources:images/items/gold_2.png", scale=COIN_SCALE))
-        coin.textures.append(arcade.load_texture(":resources:images/items/gold_3.png", scale=COIN_SCALE))
-        coin.textures.append(arcade.load_texture(":resources:images/items/gold_4.png", scale=COIN_SCALE))
-        coin.textures.append(arcade.load_texture(":resources:images/items/gold_3.png", scale=COIN_SCALE))
-        coin.textures.append(arcade.load_texture(":resources:images/items/gold_2.png", scale=COIN_SCALE))
+        coin.textures.append(arcade.load_texture(":resources:images/items/gold_1.png"))
+        coin.textures.append(arcade.load_texture(":resources:images/items/gold_2.png"))
+        coin.textures.append(arcade.load_texture(":resources:images/items/gold_3.png"))
+        coin.textures.append(arcade.load_texture(":resources:images/items/gold_4.png"))
+        coin.textures.append(arcade.load_texture(":resources:images/items/gold_3.png"))
+        coin.textures.append(arcade.load_texture(":resources:images/items/gold_2.png"))
+        coin.scale = COIN_SCALE
         coin.set_texture(0)
         self.coin_list.append(coin)
 

@@ -23,7 +23,11 @@ def test_it_can_extend_a_spritelist():
     spritelist.extend(sprites)
 
     assert len(spritelist) == 10
+<<<<<<< HEAD
     assert spritelist._vao1 == None
+=======
+    assert spritelist._vao1 is None
+>>>>>>> upstream/master
 
 
 def test_it_can_insert_in_a_spritelist():
@@ -35,7 +39,11 @@ def test_it_can_insert_in_a_spritelist():
 
     assert [s.name for s in spritelist] == [0, 2, 1]
     assert [spritelist.sprite_idx[s] for s in spritelist] == [0, 1, 2]
+<<<<<<< HEAD
     assert spritelist._vao1 == None
+=======
+    assert spritelist._vao1 is None
+>>>>>>> upstream/master
 
 
 def test_it_can_reverse_a_spritelist():
@@ -45,7 +53,11 @@ def test_it_can_reverse_a_spritelist():
 
     assert [s.name for s in spritelist] == [2, 1, 0]
     assert [spritelist.sprite_idx[s] for s in spritelist] == [0, 1, 2]
+<<<<<<< HEAD
     assert spritelist._vao1 == None
+=======
+    assert spritelist._vao1 is None
+>>>>>>> upstream/master
 
 
 def test_it_can_pop_at_a_given_index():
@@ -53,6 +65,10 @@ def test_it_can_pop_at_a_given_index():
     assert spritelist.pop(1).name == 1
     assert [s.name for s in spritelist] == [0, 2]
     assert [spritelist.sprite_idx[s] for s in spritelist] == [0, 1]
+<<<<<<< HEAD
     assert spritelist._vao1 == None
+=======
+    assert spritelist._vao1 is None
+>>>>>>> upstream/master
 
 

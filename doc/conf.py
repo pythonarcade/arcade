@@ -9,11 +9,6 @@ import os
 runpy.run_path('preprocess_files.py', run_name='__main__')
 runpy.run_path('generate_example_thumbnails.py', run_name='__main__')
 
-BUILD = 0
-VERSION = "2.2.6"
-RELEASE = VERSION
-
-
 # -*- coding: utf-8 -*-
 #
 # Arcade documentation build configuration file, created by
@@ -30,6 +25,10 @@ RELEASE = VERSION
 
 sys.path.insert(0, os.path.abspath('..'))
 sys.path.insert(0, os.path.abspath('../arcade'))
+
+from version import VERSION
+
+RELEASE = VERSION
 
 # -- General configuration ------------------------------------------------
 
@@ -48,7 +47,8 @@ extensions = [
     'sphinx.ext.mathjax',
     'sphinx.ext.ifconfig',
     'sphinx.ext.viewcode',
-    'sphinx_sitemap'
+    'sphinx_copybutton',
+    'sphinx_sitemap',
 ]
 
 # try:

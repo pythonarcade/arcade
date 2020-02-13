@@ -18,6 +18,7 @@ import array
 
 from PIL import Image
 
+from arcade import Matrix3x3
 from arcade import Sprite
 from arcade import get_distance_between_sprites
 from arcade import are_polygons_intersecting
@@ -31,6 +32,7 @@ from arcade import Point
 _VERTEX_SHADER = """
 #version 330
 uniform mat4 Projection;
+uniform mat3 TextureTransform;
 
 // per vertex
 in vec2 in_vert;
@@ -59,6 +61,8 @@ void main() {
     vec2 tex_size = in_sub_tex_coords.zw;
 
     v_texture = (in_texture * tex_size + tex_offset) * vec2(1, -1);
+    vec3 temp = TextureTransform * vec3(v_texture, 1.0);
+    v_texture = temp.xy / temp.z;
     v_color = in_color;
 }
 """
@@ -129,6 +133,9 @@ class _SpatialHash:
         return int(point[0] / self.cell_size), int(point[1] / self.cell_size)
 
     def reset(self):
+        """
+        Clear the spatial hash
+        """
         self.contents = {}
 
     def insert_object_for_box(self, new_object: Sprite):
@@ -270,7 +277,11 @@ _SpriteType = TypeVar('_SpriteType', bound=Sprite)
 
 
 class SpriteList(Generic[_SpriteType]):
-
+    """
+    Keep a list of sprites. Contains many optimizations around batch-drawing sprites
+    and doing collision detection. For optimization reasons, use_spatial_hash and
+    is_static are very important.
+    """
     array_of_images: Optional[List[Any]]
     next_texture_id = 0
 
@@ -281,9 +292,11 @@ class SpriteList(Generic[_SpriteType]):
         :param bool use_spatial_hash: If set to True, this will make moving a sprite
                in the SpriteList slower, but it will speed up collision detection
                with items in the SpriteList. Great for doing collision detection
-               with walls/platforms.
+               with static walls/platforms.
         :param int spatial_hash_cell_size:
-        :param bool is_static: Speeds drawing if this list won't change.
+        :param bool is_static: Speeds drawing if the sprites in the list do not
+               move. Will result in buggy behavior if the sprites move when this
+               is set to True.
         """
         # List of sprites in the sprite list
         self.sprite_list = []
@@ -425,6 +438,9 @@ class SpriteList(Generic[_SpriteType]):
             sprite.on_update(delta_time)
 
     def update_animation(self, delta_time: float = 1/60):
+        """
+        Call the update_animation in every sprite in the sprite list.
+        """
         for sprite in self.sprite_list:
             sprite.update_animation(delta_time)
 
@@ -469,7 +485,7 @@ class SpriteList(Generic[_SpriteType]):
         else:
             usage = 'stream'
 
-        def calculate_pos_buffer():
+        def _calculate_pos_buffer():
             self._sprite_pos_data = array.array('f')
             # print("A")
             for sprite in self.sprite_list:
@@ -488,7 +504,7 @@ class SpriteList(Generic[_SpriteType]):
                 instanced=True)
             self._sprite_pos_changed = False
 
-        def calculate_size_buffer():
+        def _calculate_size_buffer():
             self._sprite_size_data = array.array('f')
             for sprite in self.sprite_list:
                 self._sprite_size_data.append(sprite.width)
@@ -506,7 +522,7 @@ class SpriteList(Generic[_SpriteType]):
                 instanced=True)
             self._sprite_size_changed = False
 
-        def calculate_angle_buffer():
+        def _calculate_angle_buffer():
             self._sprite_angle_data = array.array('f')
             for sprite in self.sprite_list:
                 self._sprite_angle_data.append(math.radians(sprite.angle))
@@ -523,7 +539,7 @@ class SpriteList(Generic[_SpriteType]):
                 instanced=True)
             self._sprite_angle_changed = False
 
-        def calculate_colors():
+        def _calculate_colors():
             self._sprite_color_data = array.array('B')
             for sprite in self.sprite_list:
                 self._sprite_color_data.append(int(sprite.color[0]))
@@ -543,7 +559,7 @@ class SpriteList(Generic[_SpriteType]):
                 normalized=['in_color'], instanced=True)
             self._sprite_color_changed = False
 
-        def calculate_sub_tex_coords():
+        def _calculate_sub_tex_coords():
 
             new_array_of_texture_names = []
             new_array_of_images = []
@@ -567,6 +583,10 @@ class SpriteList(Generic[_SpriteType]):
 
                 if name_of_texture_to_check not in new_array_of_texture_names:
                     new_array_of_texture_names.append(name_of_texture_to_check)
+                    if sprite.texture is None:
+                        raise ValueError(f"Sprite has no texture.")
+                    if sprite.texture.image is None:
+                        raise ValueError(f"Sprite texture {sprite.texture.name} has no image.")
                     image = sprite.texture.image
                     new_array_of_images.append(image)
 
@@ -654,11 +674,11 @@ class SpriteList(Generic[_SpriteType]):
         if len(self.sprite_list) == 0:
             return
 
-        calculate_pos_buffer()
-        calculate_size_buffer()
-        calculate_angle_buffer()
-        calculate_sub_tex_coords()
-        calculate_colors()
+        _calculate_pos_buffer()
+        _calculate_size_buffer()
+        _calculate_angle_buffer()
+        _calculate_sub_tex_coords()
+        _calculate_colors()
 
         vertices = array.array('f', [
             #  x,    y,   u,   v
@@ -684,8 +704,10 @@ class SpriteList(Generic[_SpriteType]):
                        self._sprite_color_desc]
         self._vao1 = shader.vertex_array(self.program, vao_content)
 
-    def dump(self):
-        buffer = self._sprite_pos_data.tobytes()
+    def _dump(self, buffer):
+        """
+        Debugging method used to dump raw byte data in the OpenGL buffer.
+        """
         record_size = len(buffer) / len(self.sprite_list)
         for i, char in enumerate(buffer):
             if i % record_size == 0:
@@ -881,6 +903,15 @@ class SpriteList(Generic[_SpriteType]):
         with self._vao1:
             self.program['Texture'] = self.texture_id
             self.program['Projection'] = get_projection().flatten()
+            texture_transform = None
+            if len(self.sprite_list) > 0:
+                # always wrap texture transformations with translations
+                # so that rotate and resize operations act on the texture
+                # center by default
+                texture_transform = Matrix3x3().translate(-0.5, -0.5).multiply(self.sprite_list[0].texture_transform.v).multiply(Matrix3x3().translate(0.5, 0.5).v)
+            if texture_transform == None:
+                texture_transform = Matrix3x3()
+            self.program['TextureTransform'] = texture_transform.v
 
             if not self.is_static:
                 if self._sprite_pos_changed:

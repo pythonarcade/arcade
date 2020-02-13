@@ -82,9 +82,9 @@ class MyGame(arcade.Window):
     def setup_level_one(self):
         # Load the textures for the enemies, one facing left, one right
         self.enemy_textures = []
-        texture = arcade.load_texture(":resources:images/enemies/slimeBlue.png", mirrored=True, scale=SPRITE_SCALING_enemy)
+        texture = arcade.load_texture(":resources:images/enemies/slimeBlue.png", mirrored=True)
         self.enemy_textures.append(texture)
-        texture = arcade.load_texture(":resources:images/enemies/slimeBlue.png", scale=SPRITE_SCALING_enemy)
+        texture = arcade.load_texture(":resources:images/enemies/slimeBlue.png")
         self.enemy_textures.append(texture)
 
         # Create rows and columns of enemies
@@ -100,6 +100,7 @@ class MyGame(arcade.Window):
                 # Create the enemy instance
                 # enemy image from kenney.nl
                 enemy = arcade.Sprite()
+                enemy.scale = SPRITE_SCALING_enemy
                 enemy.texture = self.enemy_textures[1]
 
                 # Position the enemy

@@ -174,6 +174,10 @@ def set_viewport(left: float, right: float, bottom: float, top: float):
     _bottom = bottom
     _top = top
 
+    # Window hasn't been fully created yet, return.
+    if _window is None:
+        return
+
     # Needed for sprites
     if _scaling is None:
         _scaling = get_scaling_factor(_window)

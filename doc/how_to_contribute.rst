@@ -30,7 +30,7 @@ Then you can improve these parts of the project:
 * **Test** - Improve the unit testing.
 * **Code** - Contribute bug fixes and enhancements to the code.
 
-A list of enhancements people have requested is available on the :ref:`enhancement-list` page.
+A list of enhancements people have requested is available on the :ref:`enhancement_list` page.
 
 .. _Python Arcade SubReddit: https://www.reddit.com/r/pythonarcade
 .. _Github Issue List: https://github.com/pvcraven/arcade/issues

@@ -4,8 +4,21 @@ from os import path
 import sys
 from setuptools import setup
 
-BUILD = 0
-VERSION = "2.2.6"
+VERSION = 'default'
+def execfile(filepath, globals=None, locals=None):
+    if globals is None:
+        globals = {}
+    globals.update({
+        "__file__": filepath,
+        "__name__": "__main__",
+    })
+    with open(filepath, 'rb') as file:
+        exec(compile(file.read(), filepath, 'exec'), globals, locals)
+
+
+# execute the file
+execfile("arcade/version.py", locals=locals())
+
 RELEASE = VERSION
 
 if __name__ == "__main__":
@@ -80,6 +93,7 @@ if __name__ == "__main__":
                                    'resources/images/pinball/*',
                                    'resources/images/space_shooter/*',
                                    'resources/images/spritesheets/*',
+                                   'resources/images/texture_transform/*',
                                    'resources/images/tiles/*',
                                    'resources/sounds/*',
                                    'resources/tmx_maps/*',

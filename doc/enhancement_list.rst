@@ -1,4 +1,4 @@
-.. _enhancement_list::
+.. _enhancement_list:
 
 Enhancement List
 ================
@@ -11,10 +11,10 @@ Sound
 -----
 * `Issue 229 <https://github.com/pvcraven/arcade/issues/229>`_
   Add player for background music.
-* `Issue 257 <https://github.com/pvcraven/arcade/issues/257>`_
-  Get ffmpeg sound working on Raspberry Pi.
 * `Issue 519 <https://github.com/pvcraven/arcade/issues/519>`_
   arcade.stop_sound() not working (ubuntu).
+* `Issue 577 <https://github.com/pvcraven/arcade/issues/577>`_
+  Add volume support for sounds.
 
 Drawing
 -------
@@ -41,6 +41,13 @@ Sprites
   Add lighting effects.
 * `Issue 523 <https://github.com/pvcraven/arcade/issues/523>`_
   Add sprite trigger/example for onenter / onexit.
+* `Issue 289 <https://github.com/pvcraven/arcade/issues/289>`_
+  Be able to get Sprite position and velocity as vectors.
+* `Issue 332 <https://github.com/pvcraven/arcade/issues/332>`_
+  Only so many textures can be supported when drawing a SpriteList. Support more by
+  better packing of the auto-created SpriteList.
+* Be able to load an animated gif as an animated time-based sprite.
+* Be able to load an Aesprite image directly (Piggy-back of Pyglet support)
 
 Physics Engine
 --------------
@@ -51,12 +58,15 @@ Physics Engine
   Show 'rope' effect.
 * `Issue 524 <https://github.com/pvcraven/arcade/issues/524>`_
   Add example for "push back".
+* Create a simplified front-end to the PyMunk physics engine
 
 Tilemaps
 --------
 
 * `Issue 375 <https://github.com/pvcraven/arcade/issues/375>`_
   Support rotated tiles in .tmx.
+* `Issue 478 <https://github.com/pvcraven/arcade/issues/478>`_
+  Processing object layer needs better support.
 
 Documentation
 -------------
@@ -64,7 +74,10 @@ Documentation
 * `Issue 452 <https://github.com/pvcraven/arcade/issues/452>`_
   Documentation Request - explain how delta_time works to help learners fully
   understand both how and why.
-
+* `Issue 543 <https://github.com/pvcraven/arcade/issues/543>`_
+  Documentation Request - Improve documentation around installing on Raspberry Pi.
+* `Issue 408 <https://github.com/pvcraven/arcade/issues/408>`_
+  Documentation Request - Explain border lines that can occur when drawing sprites, and how to avoid.
 
 Examples
 --------

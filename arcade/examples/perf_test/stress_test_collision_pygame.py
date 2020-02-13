@@ -66,7 +66,7 @@ class Coin(pygame.sprite.Sprite):
 
         # Create an image of the block, and fill it with a color.
         # This could also be an image loaded from the disk.
-        image = pygame.image.load("../images/coin_01.png")
+        image = pygame.image.load("../../resources/images/items/coinGold.png")
         rect = image.get_rect()
         image = pygame.transform.scale(image,
                                        (int(rect.width * SPRITE_SCALING_COIN), int(rect.height * SPRITE_SCALING_COIN)))
@@ -94,12 +94,12 @@ class Player(pygame.sprite.Sprite):
 
         # Create an image of the block, and fill it with a color.
         # This could also be an image loaded from the disk.
-        image = pygame.image.load("../images/character.png")
+        image = pygame.image.load("../../resources/images/animated_characters/female_person/femalePerson_idle.png")
         rect = image.get_rect()
         image = pygame.transform.scale(image, (
             int(rect.width * SPRITE_SCALING_PLAYER), int(rect.height * SPRITE_SCALING_PLAYER)))
         self.image = image.convert()
-        self.image.set_colorkey(WHITE)
+        self.image.set_colorkey(BLACK)
 
         # Fetch the rectangle object that has the dimensions of the image
         # image.
@@ -214,7 +214,7 @@ class MyGame:
         self.draw_time = timeit.default_timer() - draw_start_time
         self.fps.tick()
 
-    def on_update(self, _delta_time):
+    def update(self, _delta_time):
         # Start update timer
         self.player_list.update()
 

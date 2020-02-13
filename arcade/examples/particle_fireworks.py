@@ -4,7 +4,7 @@ Particle Fireworks
 Use a fireworks display to demonstrate "real-world" uses of Emitters and Particles
 
 If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.sprite_list_particle_fireworks
+python -m arcade.examples.particle_fireworks
 """
 import arcade
 from arcade import Point, Vector
@@ -30,7 +30,7 @@ RAINBOW_COLORS = (
     arcade.color.ELECTRIC_INDIGO,
     arcade.color.ELECTRIC_PURPLE,
 )
-SPARK_TEXTURES = [arcade.make_circle_texture(15, clr) for clr in RAINBOW_COLORS]
+SPARK_TEXTURES = [arcade.make_circle_texture(8, clr) for clr in RAINBOW_COLORS]
 SPARK_PAIRS = [
     [SPARK_TEXTURES[0], SPARK_TEXTURES[3]],
     [SPARK_TEXTURES[1], SPARK_TEXTURES[5]],
@@ -45,8 +45,8 @@ CLOUD_TEXTURES = [
     arcade.make_soft_circle_texture(50, arcade.color.LIGHT_BLUE),
 ]
 STAR_TEXTURES = [
-    arcade.make_soft_circle_texture(6, arcade.color.WHITE),
-    arcade.make_soft_circle_texture(6, arcade.color.PASTEL_YELLOW),
+    arcade.make_soft_circle_texture(8, arcade.color.WHITE),
+    arcade.make_soft_circle_texture(8, arcade.color.PASTEL_YELLOW),
 ]
 SPINNER_HEIGHT = 75
 
@@ -149,10 +149,10 @@ class AnimatedAlphaParticle(arcade.LifetimeParticle):
         super().update()
         if self.lifetime_elapsed <= self.in_duration:
             u = self.lifetime_elapsed / self.in_duration
-            self.alpha = clamp(arcade.lerp(self.start_alpha, self.mid_alpha, u), 0 ,255)
+            self.alpha = clamp(arcade.lerp(self.start_alpha, self.mid_alpha, u), 0, 255)
         else:
             u = (self.lifetime_elapsed - self.in_duration) / self.out_duration
-            self.alpha = clamp(arcade.lerp(self.mid_alpha, self.end_alpha, u), 0 ,255)
+            self.alpha = clamp(arcade.lerp(self.mid_alpha, self.end_alpha, u), 0, 255)
 
 
 class RocketEmitter(arcade.Emitter):

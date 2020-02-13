@@ -29,7 +29,8 @@ from arcade import color
 from arcade import csscolor
 # noinspection PyPep8
 from arcade import key
-
+# noinspection PyPep8
+from arcade import resources
 from .window_commands import close_window
 from .window_commands import create_orthogonal_projection
 from .window_commands import finish_render
@@ -78,20 +79,23 @@ from .utils import rand_on_line
 from .utils import rand_vec_magnitude
 from .utils import rand_vec_spread_deg
 
-from .drawing_support import Texture
 from .drawing_support import calculate_points
 from .drawing_support import get_four_byte_color
 from .drawing_support import get_four_float_color
 from .drawing_support import get_points_for_thick_line
-from .drawing_support import load_spritesheet
-from .drawing_support import load_texture
-from .drawing_support import load_textures
-from .drawing_support import make_circle_texture
-from .drawing_support import make_soft_circle_texture
-from .drawing_support import make_soft_square_texture
 from .drawing_support import make_transparent_color
 from .drawing_support import rotate_point
-from .drawing_support import trim_image
+
+from .texture import Matrix3x3
+from .texture import Texture
+from .texture import cleanup_texture_cache
+from .texture import load_spritesheet
+from .texture import load_texture
+from .texture import load_textures
+from .texture import make_circle_texture
+from .texture import make_soft_circle_texture
+from .texture import make_soft_square_texture
+from .texture import trim_image
 
 from .buffered_draw_commands import TShape
 from .buffered_draw_commands import Shape
@@ -128,6 +132,7 @@ from .draw_commands import draw_line_strip
 from .draw_commands import draw_lines
 from .draw_commands import draw_lrtb_rectangle_filled
 from .draw_commands import draw_lrtb_rectangle_outline
+from .draw_commands import draw_lrwh_rectangle_textured
 from .draw_commands import draw_parabola_filled
 from .draw_commands import draw_parabola_outline
 from .draw_commands import draw_point
@@ -136,12 +141,12 @@ from .draw_commands import draw_polygon_filled
 from .draw_commands import draw_polygon_outline
 from .draw_commands import draw_rectangle_filled
 from .draw_commands import draw_rectangle_outline
+from .draw_commands import draw_scaled_texture_rectangle
 from .draw_commands import draw_texture_rectangle
 from .draw_commands import draw_triangle_filled
 from .draw_commands import draw_triangle_outline
 from .draw_commands import draw_xywh_rectangle_filled
 from .draw_commands import draw_xywh_rectangle_outline
-from .draw_commands import draw_xywh_rectangle_textured
 from .draw_commands import get_image
 from .draw_commands import get_pixel
 
@@ -268,6 +273,7 @@ __all__ = ['AnimatedTimeBasedSprite',
            'MOUSE_BUTTON_LEFT',
            'MOUSE_BUTTON_MIDDLE',
            'MOUSE_BUTTON_RIGHT',
+           'Matrix3x3',
            'NoOpenGLException',
            'Particle',
            'PhysicsEnginePlatformer',
@@ -308,6 +314,7 @@ __all__ = ['AnimatedTimeBasedSprite',
            'check_for_collision',
            'check_for_collision_with_list',
            'clamp',
+           'cleanup_texture_cache',
            'close_window',
            'create_ellipse',
            'create_ellipse_filled',
@@ -341,6 +348,7 @@ __all__ = ['AnimatedTimeBasedSprite',
            'draw_lines',
            'draw_lrtb_rectangle_filled',
            'draw_lrtb_rectangle_outline',
+           'draw_lrwh_rectangle_textured',
            'draw_parabola_filled',
            'draw_parabola_outline',
            'draw_point',
@@ -349,6 +357,7 @@ __all__ = ['AnimatedTimeBasedSprite',
            'draw_polygon_outline',
            'draw_rectangle_filled',
            'draw_rectangle_outline',
+           'draw_scaled_texture_rectangle',
            'draw_text',
            'draw_text_2',
            'draw_texture_rectangle',
@@ -356,7 +365,6 @@ __all__ = ['AnimatedTimeBasedSprite',
            'draw_triangle_outline',
            'draw_xywh_rectangle_filled',
            'draw_xywh_rectangle_outline',
-           'draw_xywh_rectangle_textured',
            'earclip',
            'finish_render',
            'generate_sprites',
@@ -429,3 +437,4 @@ __all__ = ['AnimatedTimeBasedSprite',
            'unschedule',
            ]
 
+__version__ = VERSION

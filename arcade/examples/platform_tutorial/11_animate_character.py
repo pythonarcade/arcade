@@ -12,9 +12,9 @@ SCREEN_HEIGHT = 650
 SCREEN_TITLE = "Platformer"
 
 # Constants used to scale our sprites from their original size
-CHARACTER_SCALING = 1
 TILE_SCALING = 0.5
-COIN_SCALING = 0.5
+CHARACTER_SCALING = TILE_SCALING * 2
+COIN_SCALING = TILE_SCALING
 SPRITE_PIXEL_SIZE = 128
 GRID_PIXEL_SIZE = (SPRITE_PIXEL_SIZE * TILE_SCALING)
 
@@ -30,8 +30,8 @@ RIGHT_VIEWPORT_MARGIN = 200
 BOTTOM_VIEWPORT_MARGIN = 150
 TOP_VIEWPORT_MARGIN = 100
 
-PLAYER_START_X = 900
-PLAYER_START_Y = 1024
+PLAYER_START_X = SPRITE_PIXEL_SIZE * TILE_SCALING * 2
+PLAYER_START_Y = SPRITE_PIXEL_SIZE * TILE_SCALING * 1
 
 # Constants used to track if the player is facing left or right
 RIGHT_FACING = 0
@@ -43,8 +43,8 @@ def load_texture_pair(filename):
     Load a texture pair, with the second being a mirror image.
     """
     return [
-        arcade.load_texture(filename, scale=CHARACTER_SCALING),
-        arcade.load_texture(filename, scale=CHARACTER_SCALING, mirrored=True)
+        arcade.load_texture(filename),
+        arcade.load_texture(filename, mirrored=True)
     ]
 
 
@@ -59,15 +59,12 @@ class PlayerCharacter(arcade.Sprite):
 
         # Used for flipping between image sequences
         self.cur_texture = 0
+        self.scale = CHARACTER_SCALING
 
         # Track our state
         self.jumping = False
         self.climbing = False
         self.is_on_ladder = False
-
-        # Adjust the collision box. Default includes too much empty space
-        # side-to-side. Box is centered at sprite center, (0, 0)
-        self.points = [[-22, -64], [22, -64], [22, 28], [-22, 28]]
 
         # --- Load Textures ---
 
@@ -92,10 +89,18 @@ class PlayerCharacter(arcade.Sprite):
 
         # Load textures for climbing
         self.climbing_textures = []
-        texture = arcade.load_texture(f"{main_path}_climb0.png", scale=CHARACTER_SCALING)
+        texture = arcade.load_texture(f"{main_path}_climb0.png")
         self.climbing_textures.append(texture)
-        texture = arcade.load_texture(f"{main_path}_climb1.png", scale=CHARACTER_SCALING)
+        texture = arcade.load_texture(f"{main_path}_climb1.png")
         self.climbing_textures.append(texture)
+
+        # Set the initial texture
+        self.texture = self.idle_texture_pair[0]
+
+        # Hit box will be set based on the first image used. If you want to specify
+        # a different hit box, you can do it like the code below.
+        # self.set_hit_box([[-22, -64], [22, -64], [22, 28], [-22, 28]])
+        self.set_hit_box(self.texture.hit_box_points)
 
     def update_animation(self, delta_time: float = 1/60):
 
@@ -208,6 +213,7 @@ class MyGame(arcade.Window):
 
         # Set up the player, specifically placing it at these coordinates.
         self.player_sprite = PlayerCharacter()
+
         self.player_sprite.center_x = PLAYER_START_X
         self.player_sprite.center_y = PLAYER_START_Y
         self.player_list.append(self.player_sprite)
@@ -275,6 +281,12 @@ class MyGame(arcade.Window):
         score_text = f"Score: {self.score}"
         arcade.draw_text(score_text, 10 + self.view_left, 10 + self.view_bottom,
                          arcade.csscolor.BLACK, 18)
+
+        # Draw hit boxes.
+        # for wall in self.wall_list:
+        #     wall.draw_hit_box(arcade.color.BLACK, 3)
+        #
+        # self.player_sprite.draw_hit_box(arcade.color.RED, 3)
 
     def process_keychange(self):
         """
