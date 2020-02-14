@@ -283,6 +283,7 @@ class Sprite:
         Get the points that make up the hit box for the rect that makes up the
         sprite, including rotation and scaling.
         """
+
         # If we've already calculated the adjusted hit box, use the cached version
         if self._point_list_cache is not None:
             return self._point_list_cache
@@ -312,11 +313,11 @@ class Sprite:
 
         # only apply width and height ratio if we get our points from the texture
         apply_ratio = False
-        if self._points == self._texture.hit_box_points:
-            apply_ratio = True
-        width_ratio = 0
-        height_ratio = 0
+        width_ratio = 0.
+        height_ratio = 0.
         if self._texture:
+            if self._points == self._texture.hit_box_points:
+                apply_ratio = True
             width_ratio = self._width / self._texture.width
             height_ratio = self._height / self._texture.height
 
