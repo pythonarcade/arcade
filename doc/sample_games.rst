@@ -7,6 +7,15 @@ paul@cravenfamily.com.
 GitHub Projects
 ---------------
 
+Rabbit Herder
+~~~~~~~~~~~~~
+
+.. image:: https://raw.githubusercontent.com/ryancollingwood/arcade-rabbit-herder/master/resources/static/preview.gif
+   :width: 50%
+
+`Rabbit Herder <https://github.com/ryancollingwood/arcade-rabbit-herder>`_,
+use carrots and potions to herd a rabbit through a maze.
+
 2048
 ~~~~
 
