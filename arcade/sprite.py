@@ -39,6 +39,15 @@ FACE_UP = 3
 FACE_DOWN = 4
 
 
+def points_by_dimensions(width, height):
+    x1, y1 = - width / 2, - height / 2
+    x2, y2 = + width / 2, - height / 2
+    x3, y3 = + width / 2, + height / 2
+    x4, y4 = - width / 2, + height / 2
+
+    return [[x1, y1], [x2, y2], [x3, y3], [x4, y4]]
+
+
 class Sprite:
     """
     Class that represents a 'sprite' on-screen. Most games center around sprites.
@@ -292,13 +301,15 @@ class Sprite:
         if self._points is None and self._texture:
             self._points = self._texture.hit_box_points
 
-        if self._points is None and self._width:
-            x1, y1 = - self._width / 2, - self._height / 2
-            x2, y2 = + self._width / 2, - self._height / 2
-            x3, y3 = + self._width / 2, + self._height / 2
-            x4, y4 = - self._width / 2, + self._height / 2
+        # Infer points from texture properties
+        if self._points is None and self._texture and self._texture.width:
+            self._points = points_by_dimensions(
+                self._texture.width, self.texture.height)
+            self._inferred_points_by_texture = True
 
-            self._points = [[x1, y1], [x2, y2], [x3, y3], [x4, y4]]
+        # Infer points from sprite properties
+        if self._points is None and self._width:
+            self._points = points_by_dimensions(self._width, self._height)
 
         if self._points is None and self.texture is not None:
             self._points = self.texture.hit_box_points
@@ -312,14 +323,15 @@ class Sprite:
         point_list = []
 
         # only apply width and height ratio if we get our points from the texture
-        apply_ratio = False
         width_ratio = 0.
         height_ratio = 0.
         if self._texture:
-            if self._points == self._texture.hit_box_points:
-                apply_ratio = True
+            # Points should have been gotten from the texture
+            # Apply dimensions ratio.
+            # Todo: reset _points if texture is set after _points.
             width_ratio = self._width / self._texture.width
             height_ratio = self._height / self._texture.height
+
 
         for point_idx in range(len(self._points)):
             # Get the point
@@ -331,10 +343,10 @@ class Sprite:
                 point[1] *= self.scale
 
             # take height and width into account
-            if width_ratio and apply_ratio:
+            if width_ratio:
                 point[0] *= width_ratio
 
-            if height_ratio and apply_ratio:
+            if height_ratio:
                 point[1] *= height_ratio
 
             # Rotate the point
