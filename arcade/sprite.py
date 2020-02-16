@@ -27,6 +27,7 @@ from arcade import Matrix3x3
 from arcade import rotate_point
 from arcade import draw_polygon_outline
 from arcade import Color
+from arcade import points_from_dimensions
 from arcade.color import BLACK
 
 from arcade.arcade_types import RGB, Point
@@ -37,15 +38,6 @@ FACE_RIGHT = 1
 FACE_LEFT = 2
 FACE_UP = 3
 FACE_DOWN = 4
-
-
-def points_by_dimensions(width, height):
-    x1, y1 = - width / 2, - height / 2
-    x2, y2 = + width / 2, - height / 2
-    x3, y3 = + width / 2, + height / 2
-    x4, y4 = - width / 2, + height / 2
-
-    return [[x1, y1], [x2, y2], [x3, y3], [x4, y4]]
 
 
 class Sprite:
@@ -303,13 +295,13 @@ class Sprite:
 
         # Infer points from texture properties
         if self._points is None and self._texture and self._texture.width:
-            self._points = points_by_dimensions(
+            self._points = points_from_dimensions(
                 self._texture.width, self.texture.height)
             self._inferred_points_by_texture = True
 
         # Infer points from sprite properties
         if self._points is None and self._width:
-            self._points = points_by_dimensions(self._width, self._height)
+            self._points = points_from_dimensions(self._width, self._height)
 
         if self._points is None and self.texture is not None:
             self._points = self.texture.hit_box_points

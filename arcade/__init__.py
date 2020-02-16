@@ -152,6 +152,7 @@ from .draw_commands import get_pixel
 
 from .geometry import are_polygons_intersecting
 from .geometry import is_point_in_polygon
+from .geometry import points_from_dimensions
 
 from .gui import DialogueBox
 from .gui import SubmitButton

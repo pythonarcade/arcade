@@ -83,3 +83,20 @@ def is_point_in_polygon(x, y, polygon_point_list):
         p1x, p1y = p2x, p2y
 
     return inside
+
+
+def points_from_dimensions(width: float, height: float) -> PointList:
+    """
+    Caclulate the corner coordinates of a rectangle based on its width and height
+    where its center x/y coordinate is (0, 0)
+
+    :param float width: Width of the rectangle.
+    :param float height: Height of the rectangle.
+
+    :rtype PointList:
+    """
+    center_x, center_y = width / 2, height / 2
+    return [(- center_x, - center_y),
+            (+ center_x, - center_y),
+            (+ center_x, + center_y),
+            (- center_x, + center_y)]
