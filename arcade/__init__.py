@@ -209,6 +209,7 @@ from .sprite_list import SpriteList
 from .sprite_list import check_for_collision
 from .sprite_list import check_for_collision_with_list
 from .sprite_list import get_closest_sprite
+from .sprite_list import get_sprites_at_exact_point
 from .sprite_list import get_sprites_at_point
 
 from .physics_engines import PhysicsEnginePlatformer
@@ -380,6 +381,7 @@ __all__ = ['AnimatedTimeBasedSprite',
            'get_projection',
            'get_rectangle_points',
            'get_scaling_factor',
+           'get_sprites_at_exact_point',
            'get_sprites_at_point',
            'get_tilemap_layer',
            'get_viewport',
