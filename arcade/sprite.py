@@ -713,6 +713,8 @@ class Sprite:
         """
         Set the current sprite color as a RGB value
         """
+        if self._color == color:
+            return
         self._color = color
         for sprite_list in self.sprite_lists:
             sprite_list.update_color(self)
