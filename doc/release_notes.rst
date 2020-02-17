@@ -5,6 +5,17 @@
 Release Notes
 =============
 
+Version 2.3.6
+-------------
+
+*Release Date: Feb-17-2020*
+
+* Enhancement: Add texture transformations `Issue 596 <https://github.com/pvcraven/arcade/issues/596>`_
+* Bug Fix: Fix off-by-one issue with default viewport
+* Bug Fix: Arcs are drawn double-sized `Issue 598 <https://github.com/pvcraven/arcade/issues/598>`_
+* Enhancement: Add ``get_sprites_at_exact_point`` function
+* Enhancement: Add code page 437 to default resources
+
 Version 2.3.5
 -------------
 

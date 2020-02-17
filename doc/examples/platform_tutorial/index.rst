@@ -1,12 +1,13 @@
 .. _platformer_tutorial:
 
-Build Your Own 2D Platformer Game
-=================================
+Platformer Tutorial
+===================
 
 .. image:: intro_screen.png
     :width: 70%
 
-(Presented at the `2019 PyCon`_ in Cleveland, Ohio. Here is the `video of the tutorial`_.)
+(Originally presented at the 2019 PyCon in Cleveland, Ohio,
+this tutorial is updated with new code.)
 
 In this tutorial, use Python 3.6+ and the Arcade_ library to create your own 2D platformer.
 Learn to work with Sprites and the `Tiled Map Editor`_ to create your own games.
@@ -42,7 +43,7 @@ Step 1 - Install and Open a Window
 
 Installation
 ~~~~~~~~~~~~
-* Make sure Python 3.6 or greater is installed. `Download Python here <https://www.python.org/downloads/>`_
+* Make sure Python is installed. `Download Python here <https://www.python.org/downloads/>`_
   if you don't already have it.
 * `Download this bundle with code, images, and sounds <../../_static/platform_tutorial.zip>`_.
   (Images are from `kenney.nl`_.)
@@ -51,7 +52,7 @@ Installation
 .. image:: file_structure.png
     :scale: 75%
 
-* Make sure the `Arcade library <https://pypi.org/project/arcade/>`_ 2.0.4 or greater is installed.
+* Make sure the `Arcade library <https://pypi.org/project/arcade/>`_ is installed.
 
   * Install Arcade with ``pip install arcade`` on Windows
     or ``pip3 install arcade`` on Mac/Linux. Or install by using a venv.

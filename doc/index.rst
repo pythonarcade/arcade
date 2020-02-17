@@ -46,8 +46,8 @@ The Python Arcade Library
           <li><a href="quick_index.html">Quick API Index</a></li>
           <li><a href="arcade.html">Full Arcade API Docs</a></li>
           <li><a href="arcade.csscolor.html">Colors</a> | <a href="arcade.csscolor.html">CSS Colors</a></li>
-          <li><a href="quick_index.html#application-api">Window Class</a></li>
-          <li><a href="quick_index.html#sprite-api">Sprites</a></li>
+          <li><a href="arcade.html#arcade.Window">Window Class</a></li>
+          <li><a href="arcade.html#arcade.Sprite">Sprite</a> | <a href="arcade.html#arcade.SpriteList">SpriteList</a></li>
           <li><a href="resources.html">Resources - Default Images</a></li>
          </ul>
         </td>
@@ -118,7 +118,7 @@ The Python Arcade Library
             <h2>Learn</h2>
           </div>
           <ul>
-            <li><a href="http://arcade-book.readthedocs.io/en/latest/">Book: Learn to Program with Arcade</a></li>
+            <li><a href="https://learn.arcade.academy/">Book: Learn to Program with Arcade</a></li>
             <li><a href="https://realpython.com/arcade-python-game-framework/">Real Python Article: A Primer on the Python Game Framework</a></li>
             <li><a href="https://youtu.be/DAWHMHMPVHU">US PyCon 2018 Talk</a></li>
             <li><a href="https://youtu.be/2SMkk63k6Ik">Aus PyCon 2018 Multiplayer Games</a></li>
