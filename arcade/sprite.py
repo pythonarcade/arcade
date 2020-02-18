@@ -329,11 +329,6 @@ class Sprite:
             # Get the point
             point = [self._points[point_idx][0], self._points[point_idx][1]]
 
-            # Scale the point
-            if self.scale != 1:
-                point[0] *= self.scale
-                point[1] *= self.scale
-
             # take height and width into account
             if width_ratio:
                 point[0] *= width_ratio

@@ -2,7 +2,7 @@
 Functions for calculating geometry.
 """
 
-from typing import cast
+from typing import cast, List
 from arcade import PointList
 
 _PRECISION = 2
