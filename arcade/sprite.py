@@ -713,9 +713,25 @@ class Sprite:
         """
         Set the current sprite color as a RGB value
         """
-        if self._color == color:
-            return
-        self._color = color
+        if color is None:
+            raise ValueError("Color must be three or four ints from 0-255")
+        if len(color) == 3:
+            if self._color[0] == color[0] \
+                    and self._color[1] == color[1] \
+                    and self._color[2] == color[2]:
+                return
+        elif len(color) == 4:
+            if self._color[0] == color[0] \
+                    and self._color[1] == color[1] \
+                    and self._color[2] == color[2]\
+                    and self.alpha == color[3]:
+                return
+            self.alpha = color[3]
+        else:
+            raise ValueError("Color must be three or four ints from 0-255")
+
+        self._color = color[0], color[1], color[2]
+
         for sprite_list in self.sprite_lists:
             sprite_list.update_color(self)
 
