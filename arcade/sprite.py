@@ -310,24 +310,22 @@ class Sprite:
 
         # Adjust the hitbox
         point_list = []
-        for point_idx in range(len(self._points)):
-            # Get the point
-            point = [self._points[point_idx][0], self._points[point_idx][1]]
-
+        for x, y in self._points:
+            # Transport it to around (0,0)
+            x, y = x-self.center_x, y-self.center_y
+            
             # Scale the point
             if self.scale != 1:
-                point[0] *= self.scale
-                point[1] *= self.scale
+                x, y = x*self.scale, y*self.scale
 
             # Rotate the point
             if self.angle:
-                point = rotate_point(point[0], point[1], 0, 0, self.angle)
+                x, y = rotate_point(x, y, 0, 0, self.angle)
 
-            # Offset the point
-            point = [point[0] + self.center_x,
-                     point[1] + self.center_y]
-            point_list.append(point)
-
+            # Transport it back
+            x, y = x+self.center_x, y+self.center_y
+            
+            point_list.append([x,y])
         # Cache the results
         self._point_list_cache = point_list
 
