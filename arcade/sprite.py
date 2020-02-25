@@ -265,14 +265,15 @@ class Sprite:
 
     def set_hit_box(self, points: List[List[float]]):
         """
-        Set a sprite's hit box. When setting the hitbox, assume a sprite
-        scaling of 1.0. Points will be scaled with get_adjusted_hit_box.
+        Set a sprite's hit box. Hitbox should be relative to a sprite's center,
+        and with a scale of 1.0.
+Points will be scaled with get_adjusted_hit_box.
         """
         self._points = points
 
     def get_hit_box(self) -> Optional[List[List[float]]]:
         """
-        Get a sprite's hit box
+        Get a sprite's hit box, unadjusted for translation, rotation, or scale.
         """
         return self._points
 
@@ -310,27 +311,30 @@ class Sprite:
 
         # Adjust the hitbox
         point_list = []
-        for x, y in self._points:
-            # Transport it to around (0,0)
-            x, y = x-self.center_x, y-self.center_y
-            
+        for point in self._points:
+            # Get a copy of the point
+            point = [point[0], point[1]]
+
             # Scale the point
             if self.scale != 1:
-                x, y = x*self.scale, y*self.scale
+                point[0] *= self.scale
+                point[1] *= self.scale
 
             # Rotate the point
             if self.angle:
-                x, y = rotate_point(x, y, 0, 0, self.angle)
+                point = rotate_point(point[0], point[1], 0, 0, self.angle)
 
-            # Transport it back
-            x, y = x+self.center_x, y+self.center_y
-            
-            point_list.append([x,y])
+            # Offset the point
+            point = [point[0] + self.center_x,
+                     point[1] + self.center_y]
+            point_list.append(point)
+
         # Cache the results
         self._point_list_cache = point_list
 
         # if self.texture:
         #     print(self.texture.name, self._point_list_cache)
+
         return self._point_list_cache
 
     def forward(self, speed: float = 1.0):
