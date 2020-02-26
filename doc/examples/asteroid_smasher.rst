@@ -2,8 +2,8 @@
 
 .. _asteroid_smasher:
 
-Full example: Asteroid Smasher
-==============================
+Asteroid Smasher
+================
 
 This is a sample asteroid smasher game made with the Arcade library.
 

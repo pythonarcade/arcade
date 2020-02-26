@@ -266,14 +266,15 @@ class Sprite:
 
     def set_hit_box(self, points: List[List[float]]):
         """
-        Set a sprite's hit box. When setting the hitbox, assume a sprite
-        scaling of 1.0. Points will be scaled with get_adjusted_hit_box.
+        Set a sprite's hit box. Hitbox should be relative to a sprite's center,
+        and with a scale of 1.0.
+Points will be scaled with get_adjusted_hit_box.
         """
         self._points = points
 
     def get_hit_box(self) -> Optional[List[List[float]]]:
         """
-        Get a sprite's hit box
+        Get a sprite's hit box, unadjusted for translation, rotation, or scale.
         """
         return self._points
 
@@ -324,10 +325,9 @@ class Sprite:
             width_ratio = self._width / self._texture.width
             height_ratio = self._height / self._texture.height
 
-
-        for point_idx in range(len(self._points)):
-            # Get the point
-            point = [self._points[point_idx][0], self._points[point_idx][1]]
+        for point in self._points:
+            # Get a copy of the point
+            point = [point[0], point[1]]
 
             # take height and width into account
             if width_ratio:
@@ -350,6 +350,7 @@ class Sprite:
 
         # if self.texture:
         #     print(self.texture.name, self._point_list_cache)
+
         return self._point_list_cache
 
     def forward(self, speed: float = 1.0):
@@ -730,7 +731,25 @@ class Sprite:
         """
         Set the current sprite color as a RGB value
         """
-        self._color = color
+        if color is None:
+            raise ValueError("Color must be three or four ints from 0-255")
+        if len(color) == 3:
+            if self._color[0] == color[0] \
+                    and self._color[1] == color[1] \
+                    and self._color[2] == color[2]:
+                return
+        elif len(color) == 4:
+            if self._color[0] == color[0] \
+                    and self._color[1] == color[1] \
+                    and self._color[2] == color[2]\
+                    and self.alpha == color[3]:
+                return
+            self.alpha = color[3]
+        else:
+            raise ValueError("Color must be three or four ints from 0-255")
+
+        self._color = color[0], color[1], color[2]
+
         for sprite_list in self.sprite_lists:
             sprite_list.update_color(self)
 

@@ -1085,11 +1085,38 @@ def get_sprites_at_point(point: Point,
     if sprite_list.use_spatial_hash:
         sprite_list_to_check = sprite_list.spatial_hash.get_objects_for_point(point)
         # checks_saved = len(sprite_list) - len(sprite_list_to_check)
+        # print("Checks saved: ", checks_saved)
     else:
         sprite_list_to_check = sprite_list
 
     collision_list = [sprite2
                       for sprite2 in sprite_list_to_check
                       if is_point_in_polygon(point[0], point[1], sprite2.get_adjusted_hit_box())]
+
+    return collision_list
+
+def get_sprites_at_exact_point(point: Point,
+                               sprite_list: SpriteList) -> List[Sprite]:
+    """
+    Get a list of sprites at a particular point
+
+    :param Point point: Point to check
+    :param SpriteList sprite_list: SpriteList to check against
+
+    :returns: List of sprites colliding, or an empty list.
+    """
+    if not isinstance(sprite_list, SpriteList):
+        raise TypeError(f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList.")
+
+    if sprite_list.use_spatial_hash:
+        sprite_list_to_check = sprite_list.spatial_hash.get_objects_for_point(point)
+        # checks_saved = len(sprite_list) - len(sprite_list_to_check)
+        # print("Checks saved: ", checks_saved)
+    else:
+        sprite_list_to_check = sprite_list
+
+    collision_list = [sprite2
+                      for sprite2 in sprite_list_to_check
+                      if point[0] == sprite2.center_x and point[1] == sprite2.center_y]
 
     return collision_list

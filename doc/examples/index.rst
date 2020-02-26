@@ -43,11 +43,6 @@ Drawing Primitives
 
    :ref:`drawing_text`
 
-.. figure:: thumbs/text_loc_example_translated.png
-   :figwidth: 170px
-
-   :ref:`text_loc_example`
-
 
 Animating Drawing Primitives
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -344,6 +339,11 @@ Basic Platformers
 
    :ref:`sprite_enemies_in_platformer`
 
+.. figure:: thumbs/11_animate_character.png
+   :figwidth: 170px
+
+   :ref:`platformer_tutorial`
+
 Using Tiled Map Editor to Create Maps
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -366,12 +366,6 @@ Using Tiled Map Editor to Create Maps
    :figwidth: 170px
 
    :ref:`10_ladders_and_more`
-
-.. figure:: thumbs/11_animate_character.png
-   :figwidth: 170px
-
-   :ref:`11_animate_character`
-
 
 Procedural Generation
 ^^^^^^^^^^^^^^^^^^^^^
@@ -523,17 +517,8 @@ Particle System
    :ref:`particle_systems`
 
 
-Isometric Example
-^^^^^^^^^^^^^^^^^
-
-.. figure:: thumbs/isometric_example.png
-   :figwidth: 170px
-
-   :ref:`isometric_example`
-
-
-Semi-complete Games
--------------------
+Concept Games
+-------------
 
 .. figure:: thumbs/asteroid_smasher.png
    :figwidth: 170px
@@ -544,6 +529,16 @@ Semi-complete Games
    :figwidth: 170px
 
    :ref:`slime_invaders`
+
+.. figure:: thumbs/2048.png
+   :figwidth: 170px
+
+   `2048 <https://github.com/pvcraven/2048>`_
+
+.. figure:: thumbs/rogue_like.png
+   :figwidth: 170px
+
+   `Rogue-Like <https://github.com/pythonarcade/roguelike>`_
 
 Stress Tests
 ------------
@@ -577,9 +572,19 @@ Odds and Ends
 
    :ref:`timer`
 
-
 .. figure:: thumbs/texture_transform.png
    :figwidth: 170px
 
    :ref:`texture_transform`
+
+.. figure:: thumbs/text_loc_example_translated.png
+   :figwidth: 170px
+
+   :ref:`text_loc_example`
+
+
+.. figure:: thumbs/isometric_example.png
+   :figwidth: 170px
+
+   :ref:`isometric_example`
 
