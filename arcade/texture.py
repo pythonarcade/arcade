@@ -74,10 +74,12 @@ class Texture:
 
     """
 
-    def __init__(self, name: str, image: PIL.Image = None):
+    def __init__(self, name: str, image: PIL.Image.Image = None):
         from arcade.sprite import Sprite
         from arcade.sprite_list import SpriteList
 
+        if image:
+            assert isinstance(image, PIL.Image.Image)
         self.name = name
         self.image = image
         self._sprite: Optional[Sprite] = None

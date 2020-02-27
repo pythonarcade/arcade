@@ -683,6 +683,8 @@ Points will be scaled with get_adjusted_hit_box.
         if texture == self._texture:
             return
 
+        assert(isinstance(texture, Texture))
+
         self.clear_spatial_hashes()
         self._point_list_cache = None
         self._texture = texture
@@ -711,7 +713,7 @@ Points will be scaled with get_adjusted_hit_box.
         """
         return self._color
 
-    def _set_color(self, color: RGB):
+    def _set_color(self, color: Color):
         """
         Set the current sprite color as a RGB value
         """
@@ -903,7 +905,7 @@ class AnimationKeyframe:
     """
     tile_id: int
     duration: int
-    image: PIL.Image
+    texture: Texture
 
 
 class AnimatedTimeBasedSprite(Sprite):
@@ -923,7 +925,7 @@ class AnimatedTimeBasedSprite(Sprite):
         super().__init__(filename=filename, scale=scale, image_x=image_x, image_y=image_y,
                          image_width=image_width, image_height=image_height,
                          center_x=center_x, center_y=center_y)
-        self.cur_frame = 0
+        self.cur_frame_idx = 0
         self.frames: List[AnimationKeyframe] = []
         self.time_counter = 0.0
 
@@ -932,14 +934,15 @@ class AnimatedTimeBasedSprite(Sprite):
         Logic for selecting the proper texture to use.
         """
         self.time_counter += delta_time
-        while self.time_counter > self.frames[self.cur_frame].duration / 1000.0:
-            self.time_counter -= self.frames[self.cur_frame].duration / 1000.0
-            self.cur_frame += 1
-            if self.cur_frame >= len(self.frames):
-                self.cur_frame = 0
-            source = self.frames[self.cur_frame].image.source
-            # print(f"Advance to frame {self.cur_frame}: {source}")
-            self.texture = load_texture(source)
+        while self.time_counter > self.frames[self.cur_frame_idx].duration / 1000.0:
+            self.time_counter -= self.frames[self.cur_frame_idx].duration / 1000.0
+            self.cur_frame_idx += 1
+            if self.cur_frame_idx >= len(self.frames):
+                self.cur_frame_idx = 0
+            # source = self.frames[self.cur_frame].texture.image.source
+            cur_frame = self.frames[self.cur_frame_idx]
+            # print(f"Advance to frame {self.cur_frame_idx}: {cur_frame.texture.name}")
+            self.texture = cur_frame.texture
 
 
 class AnimatedWalkingSprite(Sprite):
