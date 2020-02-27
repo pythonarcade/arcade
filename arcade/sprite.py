@@ -18,6 +18,7 @@ from typing import Dict
 from typing import Any
 from typing import Optional
 from typing import TYPE_CHECKING
+from typing import cast
 
 import PIL.Image
 
@@ -725,6 +726,7 @@ Points will be scaled with get_adjusted_hit_box.
                     and self._color[2] == color[2]:
                 return
         elif len(color) == 4:
+            color = cast(List, color) # Prevent typing error
             if self._color[0] == color[0] \
                     and self._color[1] == color[1] \
                     and self._color[2] == color[2]\
