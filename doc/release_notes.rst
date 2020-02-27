@@ -5,6 +5,16 @@
 Release Notes
 =============
 
+Version 2.3.7
+-------------
+
+*Release Date: Feb-27-2020*
+
+* Bug Fix: If setting color of sprite with 4 ints, also set alpha
+* Enhancement: Add image for code page 437
+* Bug Fix: Fixes around hit box calcs `Issue 601 <https://github.com/pvcraven/arcade/issues/601>`_
+* Bug Fix: Fixes for animated tiles and loading animated tiles from tile maps `Issue 603 <https://github.com/pvcraven/arcade/issues/603>`_
+
 Version 2.3.6
 -------------
 
