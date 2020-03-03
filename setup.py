@@ -27,7 +27,6 @@ if __name__ == "__main__":
         'pyglet',
         'pillow',
         'numpy',
-        'pyglet-ffmpeg2',
         'pytiled-parser'
     ]
     if sys.version_info[0] == 3 and sys.version_info[1] == 6:

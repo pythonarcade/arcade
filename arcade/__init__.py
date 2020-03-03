@@ -187,6 +187,7 @@ from .particle import LifetimeParticle
 from .particle import Particle
 from .particle import clamp
 
+from .sound import AudioStream
 from .sound import PlaysoundException
 from .sound import Sound
 from .sound import load_sound
@@ -251,6 +252,7 @@ __all__ = ['AnimatedTimeBasedSprite',
            'AnimatedTimeSprite',
            'AnimatedWalkingSprite',
            'AnimationKeyframe',
+           'AudioStream',
            'Color',
            'CreateText',
            'DEFAULT_FONT_NAMES',

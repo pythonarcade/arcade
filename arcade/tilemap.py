@@ -22,6 +22,8 @@ from arcade import Sprite
 from arcade import AnimatedTimeBasedSprite
 from arcade import AnimationKeyframe
 from arcade import SpriteList
+from arcade import load_texture
+from arcade import Texture
 from arcade.arcade_types import Point
 
 _FLIPPED_HORIZONTALLY_FLAG = 0x80000000
@@ -138,45 +140,77 @@ def _get_tile_by_id(map_object: pytiled_parser.objects.TileMap,
                     return tile
     return None
 
+def _get_image_info_from_tileset(tile):
+    image_x = 0
+    image_y = 0
+    if tile.tileset.image is not None:
+        row = tile.id_ // tile.tileset.columns
+        image_y = row * tile.tileset.max_tile_size.height
+        col = tile.id_ % tile.tileset.columns
+        image_x = col * tile.tileset.max_tile_size.width
 
-def _create_sprite_from_tile(map_object, tile: pytiled_parser.objects.Tile,
-                             scaling,
-                             base_directory: str = None):
+    if tile.image and tile.image.size:
+        # Individual image, use image width and height
+        width = tile.image.size.width
+        height = tile.image.size.height
+    else:
+        # Sprite sheet, use max width/height from sheet
+        width = tile.tileset.max_tile_size.width
+        height = tile.tileset.max_tile_size.height
+
+    return image_x, image_y, width, height
+
+def _get_image_source(tile: pytiled_parser.objects.Tile,
+                      base_directory: Optional[str],
+                      map_directory: Optional[str]):
+    image_file = None
+    if tile.image:
+        image_file = tile.image.source
+    elif tile.tileset.image:
+        image_file = tile.tileset.image.source
+
+    if not image_file:
+        print(f"Warning for tile {tile.id_}, no image source listed either for individual tile, or as a tileset.")
+        return None
+
+    if os.path.exists(image_file):
+        return image_file
 
     if base_directory:
-        tmx_file = base_directory + tile.image.source
-    else:
-        tmx_file = tile.image.source
+        try2 = Path(base_directory, image_file)
+        if os.path.exists(try2):
+            return try2
 
-    if not os.path.exists(tmx_file):
-        tmx_file = Path(map_object.parent_dir, tile.image.source)
-        if not os.path.exists(tmx_file):
-            print(f"Warning: can't file {tmx_file} ")
-            return None
+    if map_directory:
+        try3 = Path(map_directory, image_file)
+        if os.path.exists(try3):
+            return try3
+
+    print(f"Warning, can't file image {image_file} for tile {tile.id_} - {base_directory}")
+    return None
+
+
+def _create_sprite_from_tile(map_object: pytiled_parser.objects.TileMap,
+                             tile: pytiled_parser.objects.Tile,
+                             scaling: float = 1.0,
+                             base_directory: str = None):
+    """
+    Given a tile from the parser, see if we can create a sprite from it
+    """
+
+    # --- Step 1, find a reference to an image this is going to be based off of
+    map_source = map_object.tmx_file
+    map_directory = os.path.dirname(map_source)
+    image_file = _get_image_source(tile, base_directory, map_directory)
 
     # print(f"Creating tile: {tmx_file}")
     if tile.animation:
         # my_sprite = AnimatedTimeSprite(tmx_file, scaling)
-        my_sprite: Sprite = AnimatedTimeBasedSprite(tmx_file, scaling)
+        my_sprite: Sprite = AnimatedTimeBasedSprite(image_file, scaling)
     else:
-        image_x = 0
-        image_y = 0
-        if tile.tileset.image is not None:
-            row = tile.id_ // tile.tileset.columns
-            image_y = row * tile.tileset.max_tile_size.height
-            col = tile.id_ % tile.tileset.columns
-            image_x = col * tile.tileset.max_tile_size.width
+        image_x, image_y, width, height = _get_image_info_from_tileset(tile)
 
-        if tile.image.size:
-            # Individual image, use image width and height
-            width = tile.image.size.width
-            height = tile.image.size.height
-        else:
-            # Sprite sheet, use max width/height from sheet
-            width = tile.tileset.max_tile_size.width
-            height = tile.tileset.max_tile_size.height
-
-        my_sprite = Sprite(tmx_file,
+        my_sprite = Sprite(image_file,
                            scaling,
                            image_x,
                            image_y,
@@ -267,17 +301,34 @@ def _create_sprite_from_tile(map_object, tile: pytiled_parser.objects.Tile,
             my_sprite.points = points
 
     if tile.animation is not None:
+        # Animated image
         key_frame_list = []
+        # Loop through each frame
         for frame in tile.animation:
+            # Get the tile for the frame
             frame_tile = _get_tile_by_id(map_object, tile.tileset, frame.tile_id)
             if frame_tile:
-                frame_tile.image.source = Path(map_object.parent_dir, frame_tile.image.source)
-                if not os.path.exists(tmx_file):
-                    print(f"Warning: can't file {tmx_file} ")
-                    return None
 
-                key_frame = AnimationKeyframe(frame.tile_id, frame.duration, frame_tile.image)
+                image_file = _get_image_source(frame_tile, base_directory, map_directory)
+
+                # Does the tile have an image?
+                if frame_tile.image:
+                    # Yes, use it
+                    texture = load_texture(image_file)
+                else:
+                    # No image for tile? Pull from tilesheet
+                    image_x, image_y, width, height = _get_image_info_from_tileset(frame_tile)
+
+                    texture = load_texture(image_file,
+                                           image_x, image_y,
+                                           width, height)
+
+                key_frame = AnimationKeyframe(frame.tile_id, frame.duration, texture)
                 key_frame_list.append(key_frame)
+                # If this is the first texture in the animation, go ahead and
+                # set it as the current texture.
+                if len(key_frame_list) == 1:
+                    my_sprite.texture = key_frame.texture
                 # print(f"Add tile {frame.tile_id} for keyframe. Source: {frame_tile.image.source}")
 
         cast(AnimatedTimeBasedSprite, my_sprite).frames = key_frame_list
