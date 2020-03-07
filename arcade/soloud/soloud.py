@@ -15,12 +15,15 @@ elif sys.platform == "win64":
 	soloud_library_name = f"{path}/soloud_x64"
 elif sys.platform == "darwin":
 	soloud_library_name = f"{path}/libsoloud.dylib"
+elif sys.platform == "linux":
+	soloud_library_name = f"{path}/libsoloud.so"  # default for Linux
 
 try:
 	soloud_dll = ctypes.CDLL(soloud_library_name)
-except:
-	print(f"SoLoud dynamic link library {soloud_library_name} not found.")
+except:	
+	print(f"SoLoud dynamic link library {soloud_library_name} not found.")	
 	exit()
+
 
 
 # Raw DLL functions
