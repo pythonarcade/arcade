@@ -37,6 +37,9 @@ class Sound:
                        aPan = pan,
                        aPaused = 0,
                        aBus = 0)
+    
+    def stop(self):
+        self.wav_file.stop()
 
 class AudioStream:
 
