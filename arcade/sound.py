@@ -30,10 +30,11 @@ class Sound:
         self.file_name = file_name
         self.wav_file = soloud.Wav()
         self.wav_file.load(self.file_name)
+        self.handle = 0
 
     def play(self, volume=1.0, pan=0.0):
 
-        _audiolib.play(self.wav_file,
+        self.handle = _audiolib.play(self.wav_file,
                        aVolume = volume,
                        aPan = pan,
                        aPaused = 0,
@@ -42,6 +43,16 @@ class Sound:
     def stop(self):
         self.wav_file.stop()
 
+    def get_volume(self):
+        _audiolib.get_volume(self.handle)
+
+    def set_volume(self, volume):
+        _audiolib.set_volume(self.handle,volume)
+
+    def set_left_right_volume(self, left_volume, right_volume):
+        _audiolib.set_pan_absolute(self.handle,left_volume, right_volume)
+
+        
 class AudioStream:
 
     def __init__(self, file_name: str):
