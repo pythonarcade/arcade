@@ -97,7 +97,8 @@ if __name__ == "__main__":
                                    'resources/images/tiles/*',
                                    'resources/sounds/*',
                                    'resources/tmx_maps/*',
-                                   'py.typed']},
+                                   'py.typed'],
+                        'arcade.soloud': ['*.*']},
           project_urls={
                         'Documentation': 'https://arcade.academy/',
                         'Example Code ': 'http://arcade.academy/examples/index.html',
