@@ -8,7 +8,7 @@ import os
 
 path = os.path.dirname(os.path.abspath(__file__))
 
-soloud_library_name = None
+soloud_library_name = f"{path}/libsoloud.so"  # default for Linux
 if sys.platform == "win32":
 	soloud_library_name = f"{path}/soloud_x86"
 elif sys.platform == "win64":
@@ -18,11 +18,9 @@ elif sys.platform == "darwin":
 elif sys.platform == "linux":
 	soloud_library_name = f"{path}/libsoloud.so"  # default for Linux
 
-try:
-	soloud_dll = ctypes.CDLL(soloud_library_name)
-except:
-	print(f"SoLoud dynamic link library {soloud_library_name} not found.")
-	exit()
+
+soloud_dll = ctypes.CDLL(soloud_library_name)
+
 
 
 # Raw DLL functions
