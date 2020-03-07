@@ -33,16 +33,13 @@ class AudioStreamButton(arcade.SpriteSolidColor):
     """ Button, click-for-streaming-sound """
     def __init__(self, sound_file, pan, volume):
         super().__init__(BUTTON_SIZE, BUTTON_SIZE, arcade.color.WHITE)
-        self.sound = arcade.AudioStream(sound_file)
+        self.sound = arcade.Sound(sound_file, streaming=True)
         self.pan = pan
         self.volume = volume
 
     def play(self):
         """ Play """
         self.sound.play(pan=self.pan, volume=self.volume)
-
-    def update(self):
-        print(self.sound.get_stream_position())
 
 
 class MyGame(arcade.Window):

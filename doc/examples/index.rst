@@ -582,9 +582,8 @@ Odds and Ends
 
    :ref:`text_loc_example`
 
-
-.. figure:: thumbs/isometric_example.png
+.. figure:: thumbs/sound_demo.png
    :figwidth: 170px
 
-   :ref:`isometric_example`
+   :ref:`sound_demo`
 
