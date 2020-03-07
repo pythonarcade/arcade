@@ -125,4 +125,4 @@ def stop_sound(sound: Sound):
     :param sound:
     """
     # noinspection PyUnresolvedReferences
-    sound.pause()
+    sound.wav_file.stop()
