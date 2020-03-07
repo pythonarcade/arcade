@@ -30,17 +30,27 @@ class Sound:
         self.file_name = file_name
         self.wav_file = soloud.Wav()
         self.wav_file.load(self.file_name)
+        self.handle = 0
 
     def play(self, volume=1.0, pan=0.0):
 
-        _audiolib.play(self.wav_file,
+        self.handle = _audiolib.play(self.wav_file,
                        aVolume = volume,
                        aPan = pan,
                        aPaused = 0,
                        aBus = 0)
+        
+
+
     
     def stop(self):
         self.wav_file.stop()
+
+    def get_volume(self):
+        _audiolib.get_volume(self.handle)
+
+    def set_volume(self, volume):
+        _audiolib.set_volume(self.handle,volume)
 
 class AudioStream:
 
