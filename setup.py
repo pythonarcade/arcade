@@ -72,7 +72,6 @@ if __name__ == "__main__":
               "Programming Language :: Python :: Implementation :: CPython",
               "Topic :: Software Development :: Libraries :: Python Modules",
               ],
-          
           package_data={'arcade': ['resources/gui_themes/Fantasy/Buttons/*',
                                    'resources/gui_themes/Fantasy/DialogueBox/*',
                                    'resources/gui_themes/Fantasy/Menu/*',
@@ -97,6 +96,7 @@ if __name__ == "__main__":
                                    'resources/images/tiles/*',
                                    'resources/sounds/*',
                                    'resources/tmx_maps/*',
+                                   'soloud/*',
                                    'py.typed'],
                         'arcade.soloud': ['*.*']},
           project_urls={
