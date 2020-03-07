@@ -52,6 +52,10 @@ class Sound:
     def set_volume(self, volume):
         _audiolib.set_volume(self.handle,volume)
 
+    def set_left_right_volume(self, left_volume, right_volume):
+        _audiolib.set_pan_absolute(self.handle,left_volume, right_volume)
+
+
 class AudioStream:
 
     def __init__(self, file_name: str):
