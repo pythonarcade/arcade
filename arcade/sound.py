@@ -2,8 +2,9 @@
 Sound library.
 """
 
+
 from pathlib import Path
-import soloud.soloud as soloud
+import arcade.soloud.soloud as soloud
 
 
 _audiolib = None
