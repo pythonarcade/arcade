@@ -45,11 +45,11 @@ class Sound:
         :param float pan: Pan, from -1=left to 0=centered to 1=right
         """
         self.handle = _audiolib.play(self.wav_file,
-                                     aVolume=volume,
-                                     aPan=pan,
-                                     aPaused=0,
-                                     aBus=0)
-
+                       aVolume = volume,
+                       aPan = pan,
+                       aPaused = 0,
+                       aBus = 0)
+    
     def stop(self):
         """
         Stop a currently playing sound.
