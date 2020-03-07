@@ -39,7 +39,7 @@ class Sound:
                        aPan = pan,
                        aPaused = 0,
                        aBus = 0)
-    
+
     def stop(self):
         self.wav_file.stop()
 
@@ -52,7 +52,7 @@ class Sound:
     def set_left_right_volume(self, left_volume, right_volume):
         _audiolib.set_pan_absolute(self.handle,left_volume, right_volume)
 
-        
+
 class AudioStream:
 
     def __init__(self, file_name: str):
@@ -86,6 +86,10 @@ class AudioStream:
         # if self.handle:
         #     return _audiolib.get_stream_time(self.wav_file.objhandle)
         return self.wav_file.get_length()
+
+    def get_stream_position(self):
+        """ This always returns zero for some unknown reason. """
+        return _audiolib.get_stream_position(self.wav_file.objhandle)
 
 class PlaysoundException(Exception):
     pass

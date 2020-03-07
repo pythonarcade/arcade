@@ -8,13 +8,16 @@ If Python and Arcade are installed, this example can be run from the command lin
 python -m arcade.examples.starting_template
 """
 import arcade
+import typing
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 SCREEN_TITLE = "Starting Template"
 BUTTON_SIZE = 30
 
+
 class SoundButton(arcade.SpriteSolidColor):
+    """ Button, click-for-sound """
     def __init__(self, sound_file, pan, volume):
         super().__init__(BUTTON_SIZE, BUTTON_SIZE, arcade.color.WHITE)
         self.sound = arcade.Sound(sound_file)
@@ -22,10 +25,12 @@ class SoundButton(arcade.SpriteSolidColor):
         self.volume = volume
 
     def play(self):
+        """ Play """
         self.sound.play(pan=self.pan, volume=self.volume)
 
 
 class AudioStreamButton(arcade.SpriteSolidColor):
+    """ Button, click-for-streaming-sound """
     def __init__(self, sound_file, pan, volume):
         super().__init__(BUTTON_SIZE, BUTTON_SIZE, arcade.color.WHITE)
         self.sound = arcade.AudioStream(sound_file)
@@ -33,10 +38,12 @@ class AudioStreamButton(arcade.SpriteSolidColor):
         self.volume = volume
 
     def play(self):
+        """ Play """
         self.sound.play(pan=self.pan, volume=self.volume)
 
     def update(self):
         print(self.sound.get_stream_position())
+
 
 class MyGame(arcade.Window):
     """
@@ -55,17 +62,14 @@ class MyGame(arcade.Window):
         self.button_sprites = None
 
     def setup(self):
-        button_size = 40
         self.button_sprites = arcade.SpriteList()
 
         y = SCREEN_HEIGHT / 2 + 150
         volume = 0.1
-        button = AudioStreamButton(":resources:music/anttisinstrumentals_funkyrobot.mp3", pan=-1.0, volume=volume)
+        button = AudioStreamButton(":resources:music/funkyrobot.mp3", pan=-1.0, volume=volume)
         button.center_x = BUTTON_SIZE
         button.center_y = y
         self.button_sprites.append(button)
-
-
 
         y = SCREEN_HEIGHT / 2 + 50
         volume = 0.1
@@ -94,7 +98,6 @@ class MyGame(arcade.Window):
         button.center_y = y
         self.button_sprites.append(button)
 
-
         y = SCREEN_HEIGHT / 2
         volume = 0.5
         button = SoundButton(":resources:sounds/upgrade4.wav", pan=-1.0, volume=volume)
@@ -122,7 +125,6 @@ class MyGame(arcade.Window):
         button.center_y = y
         self.button_sprites.append(button)
 
-
         y = SCREEN_HEIGHT / 2 - 50
         volume = 1
         button = SoundButton(":resources:sounds/upgrade4.wav", pan=-1.0, volume=volume)
@@ -149,7 +151,6 @@ class MyGame(arcade.Window):
         button.center_x = SCREEN_WIDTH - BUTTON_SIZE
         button.center_y = y
         self.button_sprites.append(button)
-
 
     def on_draw(self):
         """
@@ -198,7 +199,8 @@ class MyGame(arcade.Window):
         """
         hit_sprites = arcade.get_sprites_at_point((x, y), self.button_sprites)
         for sprite in hit_sprites:
-            sprite.play()
+            button_sprite = typing.cast(SoundButton, sprite)
+            button_sprite.play()
 
     def on_mouse_release(self, x, y, button, key_modifiers):
         """
