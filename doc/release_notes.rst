@@ -5,6 +5,15 @@
 Release Notes
 =============
 
+Version 2.3.8b1
+---------------
+
+*Release Date: Mar-07-2020*
+
+Enhancement: Major sound overhaul. Now uses SoLoud library. Mac and Windows wav, ogg, and mp3 should reliably work.
+Linux isn't as tested as I'd like. Support for streaming audio, stopping audio, and controlling individual sounds volume
+and left/right panning supported.
+
 Version 2.3.7
 -------------
 
