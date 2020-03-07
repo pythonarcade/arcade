@@ -57,7 +57,8 @@ if __name__ == "__main__":
                     "arcade.key",
                     "arcade.color",
                     "arcade.csscolor",
-                    "arcade.examples"
+                    "arcade.examples",
+                    "arcade.soloud"
                     ],
           python_requires='>=3.6',
           classifiers=[
@@ -71,7 +72,7 @@ if __name__ == "__main__":
               "Programming Language :: Python :: Implementation :: CPython",
               "Topic :: Software Development :: Libraries :: Python Modules",
               ],
-          test_suite="tests",
+          
           package_data={'arcade': ['resources/gui_themes/Fantasy/Buttons/*',
                                    'resources/gui_themes/Fantasy/DialogueBox/*',
                                    'resources/gui_themes/Fantasy/Menu/*',
