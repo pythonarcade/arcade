@@ -4,11 +4,14 @@ Sound library.
 
 
 from pathlib import Path
-import arcade.soloud.soloud as soloud
 
 
 _audiolib = None
 try:
+    soloud = None
+
+    import arcade.soloud.soloud as soloud
+
     _audiolib = soloud.Soloud()
     _audiolib.init()
     _audiolib.set_global_volume(10)
@@ -20,6 +23,8 @@ class Sound:
     """ This class represents a sound you can play."""
     def __init__(self, file_name: str, streaming: bool = False):
         """ Create and load the sound. """
+        if not soloud:
+            return
 
         # If we should pull from local resources, replace with proper path
         if file_name.startswith(":resources:"):
@@ -44,6 +49,9 @@ class Sound:
         :param float volume: Volume, from 0=quiet to 1=loud
         :param float pan: Pan, from -1=left to 0=centered to 1=right
         """
+        if not soloud:
+            return
+
         self.handle = _audiolib.play(self.wav_file,
                                      aVolume=volume,
                                      aPan=pan,
@@ -54,22 +62,32 @@ class Sound:
         """
         Stop a currently playing sound.
         """
+        if not soloud:
+            return
         self.wav_file.stop()
 
     def get_volume(self):
         """ Get the current volume """
+        if not soloud:
+            return
         _audiolib.get_volume(self.handle)
 
     def set_volume(self, volume):
         """ Set the current volume """
+        if not soloud:
+            return
         _audiolib.set_volume(self.handle, volume)
 
     def set_left_right_volume(self, left_volume, right_volume):
         """ Set absolue left/right volume """
+        if not soloud:
+            return
         _audiolib.set_pan_absolute(self.handle, left_volume, right_volume)
 
     def get_length(self):
         """ Get length of audio in seconds """
+        if not soloud:
+            return 0
         return self.wav_file.get_length()
 
     # def get_stream_position(self):

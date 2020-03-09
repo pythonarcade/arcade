@@ -14,6 +14,14 @@ Enhancement: Major sound overhaul. Now uses SoLoud library. Mac and Windows wav,
 Linux isn't as tested as I'd like. Support for streaming audio, stopping audio, and controlling individual sounds volume
 and left/right panning supported.
 
+Version 2.3.8
+-------------
+
+*Release Date: Mar-09-2020*
+
+* Major enhancement to sound. Uses SoLoud cross-platform library. New features include
+  support for sound volume, sound stop, and pan left/right.
+
 Version 2.3.7
 -------------
 
