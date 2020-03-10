@@ -7,15 +7,6 @@ This is a list of possible enhancements opened in GitHub, but not being actively
 worked on. These are all good ideas. If you are thinking of helping the Arcade
 library by working on one of these, please re-open the issue.
 
-Sound
------
-* `Issue 229 <https://github.com/pvcraven/arcade/issues/229>`_
-  Add player for background music.
-* `Issue 519 <https://github.com/pvcraven/arcade/issues/519>`_
-  arcade.stop_sound() not working (ubuntu).
-* `Issue 577 <https://github.com/pvcraven/arcade/issues/577>`_
-  Add volume support for sounds.
-
 Drawing
 -------
 
@@ -74,8 +65,6 @@ Documentation
 * `Issue 452 <https://github.com/pvcraven/arcade/issues/452>`_
   Documentation Request - explain how delta_time works to help learners fully
   understand both how and why.
-* `Issue 543 <https://github.com/pvcraven/arcade/issues/543>`_
-  Documentation Request - Improve documentation around installing on Raspberry Pi.
 * `Issue 408 <https://github.com/pvcraven/arcade/issues/408>`_
   Documentation Request - Explain border lines that can occur when drawing sprites, and how to avoid.
 
