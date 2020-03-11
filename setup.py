@@ -96,6 +96,7 @@ if __name__ == "__main__":
                                    'resources/images/tiles/*',
                                    'resources/sounds/*',
                                    'resources/tmx_maps/*',
+                                   'resources/music/*',
                                    'soloud/*',
                                    'py.typed'],
                         'arcade.soloud': ['*.*']},
