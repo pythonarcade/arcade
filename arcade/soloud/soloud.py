@@ -5,6 +5,7 @@ import ctypes
 import sys
 
 import os
+from pathlib import Path
 
 path = os.path.dirname(os.path.abspath(__file__))
 
