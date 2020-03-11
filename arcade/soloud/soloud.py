@@ -10,9 +10,9 @@ path = os.path.dirname(os.path.abspath(__file__))
 
 soloud_library_name = None
 if sys.platform == "win32":
-	soloud_library_name = f"{path}/soloud_x86"
+	soloud_library_name = f"{path}\\soloud_x86"
 elif sys.platform == "win64":
-	soloud_library_name = f"{path}/soloud_x64"
+	soloud_library_name = f"{path}\\soloud_x64"
 elif sys.platform == "darwin":
 	soloud_library_name = f"{path}/libsoloud.dylib"
 elif sys.platform == "linux":
