@@ -28,6 +28,8 @@ class SoundButton(arcade.SpriteSolidColor):
         """ Play """
         self.sound.play(pan=self.pan, volume=self.volume)
 
+    
+
 
 class AudioStreamButton(arcade.SpriteSolidColor):
     """ Button, click-for-streaming-sound """
@@ -40,6 +42,14 @@ class AudioStreamButton(arcade.SpriteSolidColor):
     def play(self):
         """ Play """
         self.sound.play(pan=self.pan, volume=self.volume)
+
+    def volume_up(self):
+        vol = self.sound.get_volume()
+        self.sound.set_volume(vol+.1)
+        print(f"Volume: {self.sound.get_volume()}")
+
+    def stream_position(self):
+        print(f"Current position: {self.sound.get_stream_position()}")
 
 
 class MyGame(arcade.Window):
@@ -197,7 +207,13 @@ class MyGame(arcade.Window):
         hit_sprites = arcade.get_sprites_at_point((x, y), self.button_sprites)
         for sprite in hit_sprites:
             button_sprite = typing.cast(SoundButton, sprite)
-            button_sprite.play()
+            if button == arcade.MOUSE_BUTTON_LEFT:
+                button_sprite.play()
+            elif button == arcade.MOUSE_BUTTON_RIGHT: # right click to increase volume on currently playing sound
+                if button_sprite.sound.voice_handle:
+                    button_sprite.volume_up()
+                    button_sprite.stream_position()
+            
 
     def on_mouse_release(self, x, y, button, key_modifiers):
         """
