@@ -395,6 +395,10 @@ class TextBox:
 
 
 class Theme:
+    DEFAULT_FONT_COLOR = arcade.color.BLACK
+    DEFAULT_FONT_SIZE = 24
+    DEFAULT_FONT_NAME = ('Calibri', 'Arial')
+
     def __init__(self):
         self.button_textures: Dict[str, Optional['', arcade.Texture]] =\
             {'normal': '', 'hover': '', 'clicked': '', 'locked': '', }
@@ -402,15 +406,20 @@ class Theme:
         self.window_texture = ""
         self.dialogue_box_texture = ""
         self.text_box_texture = ""
-        self.font_color = arcade.color.BLACK
-        self.font_size = 24
-        self.font_name = ('Calibri', 'Arial')
+        self.font_color = self.__class__.DEFAULT_FONT_COLOR
+        self.font_size = self.__class__.DEFAULT_FONT_SIZE
+        self.font_name = self.__class__.DEFAULT_FONT_NAME
 
-    def add_button_textures(self, normal, hover="", clicked="", locked=""):
-        self.button_textures['normal'] = arcade.load_texture(normal)
-        self.button_textures['hover'] = arcade.load_texture(hover)
-        self.button_textures['clicked'] = arcade.load_texture(clicked)
-        self.button_textures['locked'] = arcade.load_texture(locked)
+    def add_button_textures(self, normal, hover=None, clicked=None, locked=None):
+        normal_texture = arcade.load_texture(normal)
+        self.button_textures['normal'] = normal_texture
+
+        self.button_textures['hover'] = arcade.load_texture(hover) \
+            if hover is not None else normal_texture
+        self.button_textures['clicked'] = arcade.load_texture(clicked) \
+            if clicked is not None else normal_texture
+        self.button_textures['locked'] = arcade.load_texture(locked) \
+            if locked is not None else normal_texture
 
     def add_window_texture(self, window_texture):
         self.window_texture = arcade.load_texture(window_texture)
@@ -424,7 +433,9 @@ class Theme:
     def add_text_box_texture(self, text_box_texture):
         self.text_box_texture = arcade.load_texture(text_box_texture)
 
-    def set_font(self, font_size, font_color, font_name=('Calibri', 'Arial')):
+    def set_font(self, font_size, font_color, font_name=None):
         self.font_color = font_color
         self.font_size = font_size
-        self.font_name = font_name
+        self.font_name = font_name \
+            if font_name is not None \
+            else self.__class__.DEFAULT_FONT_NAME

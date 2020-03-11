@@ -124,11 +124,11 @@ class PlayerCharacter(arcade.Sprite):
             return
 
         # Jumping animation
-        if self.jumping and not self.is_on_ladder:
-            if self.change_y >= 0:
-                self.texture = self.jump_texture_pair[self.character_face_direction]
-            else:
-                self.texture = self.fall_texture_pair[self.character_face_direction]
+        if self.change_y > 0 and not self.is_on_ladder:
+            self.texture = self.jump_texture_pair[self.character_face_direction]
+            return
+        elif self.change_y < 0 and not self.is_on_ladder:
+            self.texture = self.fall_texture_pair[self.character_face_direction]
             return
 
         # Idle animation
