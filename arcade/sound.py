@@ -24,6 +24,8 @@ class Sound:
         self.file_name: str = ""
         self.wav_file:Union[soloud.WavStream, soloud.Wav]
 
+        self.voice_handle = None # needed for volume control
+
         if not _audiolib:
             return
 
@@ -52,11 +54,11 @@ class Sound:
         if not _audiolib:
             return
 
-        _audiolib.play(self.wav_file,
-                       aVolume=volume,
-                       aPan=pan,
-                       aPaused=0,
-                       aBus=0)
+        self.voice_handle = _audiolib.play(self.wav_file,
+                                           aVolume=volume,
+                                           aPan=pan,
+                                           aPaused=0,
+                                           aBus=0)
 
     def stop(self):
         """
@@ -75,27 +77,27 @@ class Sound:
     # --- These functions should work, but instead just return zero or otherwise
     # don't appear functional.
 
-    # def get_volume(self):
-    #     """ Get the current volume """
-    #     if not _audiolib:
-    #         return 0
-    #     return _audiolib.get_volume(self.wav_file.objhandle)
-    #
-    # def set_volume(self, volume):
-    #     """ Set the current volume. Doesn't seem to work.  """
-    #     if not _audiolib:
-    #         return
-    #     self.wav_file.set_volume(volume)
-    #
-    # def set_left_right_volume(self, left_volume, right_volume):
-    #     """ Set absolute left/right volume """
-    #     if not _audiolib:
-    #         return
-    #     _audiolib.set_pan_absolute(self.wav_file.objhandle, left_volume, right_volume)
-    #
-    # def get_stream_position(self):
-    #     """ This always returns zero for some unknown reason. """
-    #     return _audiolib.get_stream_position(self.wav_file.objhandle)
+    def get_volume(self):
+        """ Get the current volume """
+        if not _audiolib:
+            return 0
+        return _audiolib.get_volume(self.voice_handle)
+    
+    def set_volume(self, volume):
+        """ Set the current volume. """
+        if not _audiolib:
+            return
+        _audiolib.set_volume(self.voice_handle, volume)
+    
+    def set_left_right_volume(self, left_volume, right_volume):
+        """ Set absolute left/right volume """
+        if not _audiolib:
+            return
+        _audiolib.set_pan_absolute(self.voice_handle, left_volume, right_volume)
+    
+    def get_stream_position(self):
+        """ This always returns zero for some unknown reason. """
+        return _audiolib.get_stream_position(self.voice_handle)
 
 
 def load_sound(file_name: str):
