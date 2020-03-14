@@ -20,8 +20,8 @@ elif sys.platform == "linux":
 
 try:
 	soloud_dll = ctypes.CDLL(soloud_library_name)
-except:
-	print(f"SoLoud dynamic link library {soloud_library_name} not found.")
+except Exception as e:
+	print(f"SoLoud dynamic link library {soloud_library_name} not found. {e}")
 
 
 # Raw DLL functions
