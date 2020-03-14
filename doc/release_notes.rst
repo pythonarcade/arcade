@@ -5,14 +5,15 @@
 Release Notes
 =============
 
-Version 2.3.8b1
----------------
+Version 2.3.9
+-------------
 
-*Release Date: Mar-07-2020*
+*Release Date: Mar-14-2020*
 
-Enhancement: Major sound overhaul. Now uses SoLoud library. Mac and Windows wav, ogg, and mp3 should reliably work.
-Linux isn't as tested as I'd like. Support for streaming audio, stopping audio, and controlling individual sounds volume
-and left/right panning supported.
+* Bug Fix: Fix for loading SoLoud under Win64 `Issue 615 <https://github.com/pvcraven/arcade/issues/615>`_
+* Fix jumping/falling texture in platformer example
+* Add tests for gui.theme `Issue 605 <https://github.com/pvcraven/arcade/issues/605>`_
+* Fix bad link to arcade.color docs
 
 Version 2.3.8
 -------------
