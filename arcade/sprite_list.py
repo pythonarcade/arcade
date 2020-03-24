@@ -413,6 +413,7 @@ class SpriteList(Generic[_SpriteType]):
         :param Sprite item: Item to remove from the list
         """
         self.sprite_list.remove(item)
+        item.sprite_lists.remove(self)
 
         # Rebuild index list
         self.sprite_idx[item] = dict()
