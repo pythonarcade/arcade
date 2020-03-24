@@ -30,6 +30,9 @@ class MyGame(arcade.Window):
 
         if self.frame_count == 180:
             self.laser_mp3.play()
+            assert self.laser_mp3.get_volume() == 1.0
+            self.laser_mp3.set_volume(0.5)
+            assert self.laser_mp3.get_volume() == 0.5
 
         if self.frame_count == 200:
             self.laser_mp3.stop()
