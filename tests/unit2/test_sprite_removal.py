@@ -39,7 +39,6 @@ class MyTestWindow(arcade.Window):
     def on_draw(self):
         arcade.start_render()
         self.character_list.draw()
-        print(f"Draw {self.frame}")
 
     def update(self, delta_time):
         self.frame += 1
@@ -55,8 +54,6 @@ class MyTestWindow(arcade.Window):
 
         if self.frame == 9:
             self.sprite_3.center_x += 5
-
-        print(self.frame)
 
 
 def test_sprite():
