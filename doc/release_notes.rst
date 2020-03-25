@@ -6,10 +6,15 @@ Release Notes
 =============
 
 Version 2.3.9
--------------
+--------------
 
-*Release Date: Mar-14-2020*
+*Release Date: Mar-25-2020*
 
+* Bug Fix: Fix for calling SpriteList.remove `Issue 613 <https://github.com/pvcraven/arcade/issues/613>`_
+* Bug Fix: get_image not working correctly on hi-res macs `Issue 594 <https://github.com/pvcraven/arcade/issues/594>`_
+* Bug Fix: Fix for "shiver" in simple physics engine `Issue 614 <https://github.com/pvcraven/arcade/issues/614>`_
+* Bug Fix: Fix for create_line_strip `Issue 616 <https://github.com/pvcraven/arcade/issues/616>`_
+* Bug Fix: Fix for volume control `Issue 610 <https://github.com/pvcraven/arcade/issues/610>`_
 * Bug Fix: Fix for loading SoLoud under Win64 `Issue 615 <https://github.com/pvcraven/arcade/issues/615>`_
 * Fix jumping/falling texture in platformer example
 * Add tests for gui.theme `Issue 605 <https://github.com/pvcraven/arcade/issues/605>`_
