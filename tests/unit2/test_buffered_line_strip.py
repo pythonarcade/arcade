@@ -26,7 +26,7 @@ class MyGame(arcade.Window):
         self.line_strip.draw()
         p = arcade.get_pixel(0, 100)
         assert p == (0, 0, 0)
-        p = arcade.get_pixel(0, 95)
+        p = arcade.get_pixel(0, 96)
         assert p == (0, 0, 0)
         p = arcade.get_pixel(0, 94)
         assert p == (255, 255, 255)
