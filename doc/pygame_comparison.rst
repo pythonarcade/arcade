@@ -27,7 +27,7 @@ Features that the Arcade Library has:
 * Encourages separation of logic and display code. Pygame tends to put both into
   the same game loop.
 * Runs on top of OpenGL 3+ and Pyglet, rather than the old SDL1 library.
-  (Currently in the process of moving to SDL2.)
+  (Currently PyGame is in the process of moving to SDL2.)
 * With the use of sprite lists, uses the acceleration of the graphics card to
   improve performance.
 * Easily scale and rotate sprites and graphics.
@@ -39,14 +39,14 @@ Features that Pygame has that the Arcade Library does not:
 
 * Has better performance for moving sprites
 * Python 2 support
-* Does not require OpenGL
+* Does not require OpenGL, so works on Raspberry Pis
 * Has better support for pixel manipulation in a memory buffer that isn't
   displayed on screen.
 
 Things that are just different:
 
 * Sound support: Pygame uses the old, unsupported Avbin library.
-  Arcade uses ffmpeg. Both are a headache.
+  Arcade uses SoLoud. Supports panning and volume.
 
 :ref:`performance`.
 
