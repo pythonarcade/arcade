@@ -25,11 +25,16 @@ SPRITE_SIZE = int(SPRITE_NATIVE_SIZE * SPRITE_SCALING_COIN)
 COIN_COUNT_INCREMENT = 500
 
 STOP_COUNT = 12000
-RESULTS_FILE = "stress_test_collision_arcade.csv"
 
 SCREEN_WIDTH = 1800
 SCREEN_HEIGHT = 1000
 SCREEN_TITLE = "Moving Sprite Stress Test"
+
+USE_SPATIAL_HASHING = True
+if USE_SPATIAL_HASHING:
+    RESULTS_FILE = "stress_test_collision_arcade_spatial.csv"
+else:
+    RESULTS_FILE = "stress_test_collision_arcade.csv"
 
 
 class FPSCounter:
@@ -105,7 +110,7 @@ class MyGame(arcade.Window):
         """ Set up the game and initialize the variables. """
 
         # Sprite lists
-        self.coin_list = arcade.SpriteList(use_spatial_hash=False)
+        self.coin_list = arcade.SpriteList(use_spatial_hash=USE_SPATIAL_HASHING)
         self.player_list = arcade.SpriteList()
         self.player = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", SPRITE_SCALING_PLAYER)
         self.player.center_x = random.randrange(SCREEN_WIDTH)
@@ -191,6 +196,7 @@ class MyGame(arcade.Window):
                     self.results_file.write(output)
 
                     if len(self.coin_list) >= STOP_COUNT:
+                        self.results_file.close()
                         pyglet.app.exit()
                         return
 
