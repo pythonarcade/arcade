@@ -421,7 +421,7 @@ def replace_in_file(filename, replace_list):
         import os
         os.remove(filename)
         os.rename(temp_filename, filename)
-        print(f"Done fixing {fix_count} lines out of {line_count} lines in {filename}")
+        print(f"Done fixing {fix_count} lines out of {line_count} lines in {filename} with {replace_list}")
 
     except Exception as e:
         import logging
@@ -482,8 +482,8 @@ def post_process(app, exception):
     ]
     filename = 'build/html/arcade.html'
     replace_in_file(filename, replace_list)
-    filename = 'build/html/quick_index.html'
-    replace_in_file(filename, replace_list)
+    # filename = 'build/html/quick_index.html'
+    # replace_in_file(filename, replace_list)
 
     # # Figures have an align-center style I can't easily get rid of.
     # filename = 'build/html/examples/index.html'
