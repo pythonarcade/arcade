@@ -156,7 +156,6 @@ class MyGame(arcade.Window):
             coin.remove_from_sprite_lists()
             # Play a sound
             arcade.play_sound(self.collect_coin_sound)
-            # Add one to the score
 
         # --- Manage Scrolling ---
 
