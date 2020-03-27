@@ -30,6 +30,7 @@ Sprites
   Create function to get sprites at a particular point.
 * `Issue 498 <https://github.com/pvcraven/arcade/issues/498>`_
   Add lighting effects.
+* Add bloom effects.
 * `Issue 523 <https://github.com/pvcraven/arcade/issues/523>`_
   Add sprite trigger/example for onenter / onexit.
 * `Issue 289 <https://github.com/pvcraven/arcade/issues/289>`_
@@ -67,6 +68,7 @@ Documentation
   understand both how and why.
 * `Issue 408 <https://github.com/pvcraven/arcade/issues/408>`_
   Documentation Request - Explain border lines that can occur when drawing sprites, and how to avoid.
+* Explain the 'views' setup for doing instruction screens and more.
 
 Examples
 --------
