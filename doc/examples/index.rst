@@ -3,10 +3,9 @@
 Example Code
 ============
 
-.. toctree::
-   :maxdepth: 3
-
-   index
+.. contents::
+   :depth: 3
+   :local:
 
 Starting Template
 -----------------
