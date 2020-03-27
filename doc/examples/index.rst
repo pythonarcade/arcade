@@ -248,8 +248,6 @@ Sprite Properties
 
    :ref:`sprite_change_coins`
 
-
-
 Games with Levels
 ^^^^^^^^^^^^^^^^^
 
@@ -296,6 +294,18 @@ Shooting with Sprites
 
    :ref:`sprite_explosion`
 
+Sound
+-----
+
+.. figure:: thumbs/sound_demo.png
+   :figwidth: 170px
+
+   :ref:`sound_demo`
+
+.. figure:: thumbs/background_music.png
+   :figwidth: 170px
+
+   :ref:`background_music`
 
 Platformers
 -----------
@@ -581,8 +591,5 @@ Odds and Ends
 
    :ref:`text_loc_example`
 
-.. figure:: thumbs/sound_demo.png
-   :figwidth: 170px
 
-   :ref:`sound_demo`
 
