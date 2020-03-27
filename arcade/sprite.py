@@ -268,7 +268,7 @@ class Sprite:
         """
         Set a sprite's hit box. Hitbox should be relative to a sprite's center,
         and with a scale of 1.0.
-Points will be scaled with get_adjusted_hit_box.
+        Points will be scaled with get_adjusted_hit_box.
         """
         self._points = points
 
