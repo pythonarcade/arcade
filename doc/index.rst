@@ -120,6 +120,7 @@ The Python Arcade Library
           <ul>
             <li><a href="https://learn.arcade.academy/">Book: Learn to Program with Arcade</a></li>
             <li><a href="https://realpython.com/arcade-python-game-framework/">Real Python Article: A Primer on the Python Game Framework</a></li>
+            <li><a href="tutorials/edge_artifacts/index.html">Fixing Edge Artifacts</a></li>
             <li><a href="https://mryslab.github.io/bots-in-pieces/python-banyan/arcade/2020/02/21/p2p-arcade-1.html">Peer To Peer Gaming With Arcade and Python Banyan</a></li>
             <li><a href="https://youtu.be/Djtm1DzWSvo">US PyCon 2019 Tutorial</a></li>
             <li><a href="https://youtu.be/2SMkk63k6Ik">Aus PyCon 2018 Multiplayer Games</a></li>
@@ -157,6 +158,7 @@ game without learning a complex framework.
    pygame_comparison
    resources
    enhancement_list
+   tutorials/edge_artifacts/index
 
 Learn about it:
 ^^^^^^^^^^^^^^^
