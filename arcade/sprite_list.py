@@ -487,11 +487,11 @@ class SpriteList(Generic[_SpriteType]):
             usage = 'stream'
 
         def _calculate_pos_buffer():
-            self._sprite_pos_data = array.array('f')
+            self._sprite_pos_data = array.array('i')
             # print("A")
             for sprite in self.sprite_list:
-                self._sprite_pos_data.append(sprite.center_x)
-                self._sprite_pos_data.append(sprite.center_y)
+                self._sprite_pos_data.append(int(sprite.center_x))
+                self._sprite_pos_data.append(int(sprite.center_y))
 
             self._sprite_pos_buf = shader.buffer(
                 self._sprite_pos_data.tobytes(),
@@ -500,16 +500,18 @@ class SpriteList(Generic[_SpriteType]):
             variables = ['in_pos']
             self._sprite_pos_desc = shader.BufferDescription(
                 self._sprite_pos_buf,
-                '2f',
+                '2i',
                 variables,
                 instanced=True)
             self._sprite_pos_changed = False
 
         def _calculate_size_buffer():
-            self._sprite_size_data = array.array('f')
+            self._sprite_size_data = array.array('i')
             for sprite in self.sprite_list:
-                self._sprite_size_data.append(sprite.width)
-                self._sprite_size_data.append(sprite.height)
+                # The // 2 and * 2 makes sure the width/height are evenly divisible
+                # to help avoid artifacts.
+                self._sprite_size_data.append(int(sprite.width // 2) * 2)
+                self._sprite_size_data.append(int(sprite.height // 2) * 2)
 
             self._sprite_size_buf = shader.buffer(
                 self._sprite_size_data.tobytes(),
@@ -518,7 +520,7 @@ class SpriteList(Generic[_SpriteType]):
             variables = ['in_size']
             self._sprite_size_desc = shader.BufferDescription(
                 self._sprite_size_buf,
-                '2f',
+                '2i',
                 variables,
                 instanced=True)
             self._sprite_size_changed = False
