@@ -1,7 +1,7 @@
 License
 =======
 
-Copyright (c) 2019 Paul Vincent Craven
+Copyright (c) 2020 Paul Vincent Craven
 
 The Arcade library is licensed under the `MIT License`_.
 
