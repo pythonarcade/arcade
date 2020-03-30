@@ -11,6 +11,14 @@ Install Python from the official Python website:
 
 https://www.python.org/downloads/
 
+.. warning::
+
+    As of Mar-30-2020, it is easiest to get Arcade working with Python 3.7.x.
+    Arcade uses two other libraries "Numpy" and "Pillow" which are difficult to install
+    on Python 3.8.x, particularly under PyCharm. If you wish to use Python 3.8,
+    see additional instructions in the note at the end of this page.
+
+
 When installing Python, make sure to customize the installation and add
 Python to the path:
 
@@ -44,10 +52,6 @@ You don't have to worry about libraries for other projects conflicting
 with your project. You also don't need "administrator" level privileges to
 install libraries.
 
-The second-best way is to install the library for the entire system. All
-Python instances will have access to the library. You don't have to setup
-a virtual environment, and you don't need to import the library for each project.
-
 Install Arcade with PyCharm and a Virtual Environment
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -73,6 +77,19 @@ if you have a file called `requirements.txt` that lists the required libraries.
 
 .. image:: images/venv_setup_4.png
     :width: 350px
+
+.. note::
+
+   If you are using Python 3.8, the "Numpy" and "Pillow" libraries might try
+   to build themselves from scratch, which will probably error out.
+   To fix, we can manually update "pip" by opening a
+   a PyCharm terminal, and then typing the following into the terminal:
+
+   ``python -m pip install -U --force-reinstall pip``
+
+   Restart PyCharm (or exit and restart the terminal)
+   and then attempt to install Arcade again.
+
 
 .. _PyCharm: https://www.jetbrains.com/pycharm/
 .. _Sublime: https://www.sublimetext.com/
