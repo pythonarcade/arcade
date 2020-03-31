@@ -4,15 +4,24 @@ Edge Artifacts
 ==============
 
 When working with images, particularly ones with transparency, graphics cards can
-create graphic artifacts on their edges.
+create graphic artifacts on their edges, so we get images like this:
 
-Misalignment of Pixels
-----------------------
+.. image:: p0.png
+    :width: 20%
 
-Typically this happens when the edge of the sprite doesn't land on an exact
-pixel boundary. For example, in Figure 1, the left image is 128 pixels square
-and drawn at (100, 100). The right image is drawn at (100, 300.5) and has a
-artifact that shows up as a line on the left edge.
+Why does this happen? How do we fix it?
+
+Why Edge Artifacts Appear
+-------------------------
+
+Edge Mis-Alignment
+^^^^^^^^^^^^^^^^^^
+
+Typically edge artifacts happen when the edge of an image doesn't land on an exact
+pixel boundary.
+Below in Figure 1, the left image is 128 pixels square
+and drawn at (100, 100), and looks fine. The image on the right is drawn with a
+center of (100, 300.5) and has an artifact that shows up as a line on the left edge.
 That artifact will not appear if the sprite is drawn at
 (100, 300) instead of (100, 300.5)
 
@@ -22,13 +31,17 @@ That artifact will not appear if the sprite is drawn at
     Figure 1: Edge artifacts caused by images that aren't on integer pixel
     boundaries.
 
+The left edge falls on a coordinate of 300.5 - (128/2) = 236.5. The computer tries
+to select a color that's an average between 236 and 237, but since there is no
+237 we get a dark color. Typically this only happens if the edge is transparent.
+
 A shape that has a height or width that is not evenly divisible by two can also
 cause artifacts. If the shape is
 15 pixels wide, then the center will fall between the 7th and 8th pixel making
 it harder to line up the pixels to the screen.
 
 Scaling
--------
+^^^^^^^
 
 Scaling an image can also cause artifacts. In Figure 2, the second sprite is scaled down
 by two-thirds. Since 128 pixels doesn't evenly scale down by two-thirds, we end
@@ -44,9 +57,10 @@ two pixels and we end up with a line artifact as well.
     Figure 2: Edge artifacts caused by scaling.
 
 Rotating
---------
+^^^^^^^^
 
-With rotation, it can be very difficult to get pixels lined up.
+With rotation, it can be very difficult to get pixels lined up, and edge artifacts
+are common.
 
 Solutions
 ---------
