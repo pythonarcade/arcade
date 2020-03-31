@@ -16,6 +16,8 @@ Drawing
   Add support for drawing rounded rectangles.
 * `Issue 433 <https://github.com/pvcraven/arcade/issues/433>`_
   Add support for bitmapped fonts.
+* `Issue 595 <https://github.com/pvcraven/arcade/issues/595>`_
+  Optimize drawing functions by caching them
 
 Sprites
 -------
@@ -51,6 +53,13 @@ Physics Engine
 * `Issue 524 <https://github.com/pvcraven/arcade/issues/524>`_
   Add example for "push back".
 * Create a simplified front-end to the PyMunk physics engine
+
+Event Processing
+----------------
+
+* `Issue 593 <https://github.com/pvcraven/arcade/issues/593>`_
+  Add support for signals
+
 
 Tilemaps
 --------
