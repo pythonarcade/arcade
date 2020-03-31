@@ -81,7 +81,7 @@ class MyGame(arcade.Window):
             # Mac, with its retina scaling, doesn't match other platforms.
             import sys
             if sys.platform != "darwin":
-                assert actual_color[0] - desired_color[0]
+                assert actual_color[0] == desired_color[0]
                 assert actual_color[1] == desired_color[1]
                 assert actual_color[2] == desired_color[2]
 
