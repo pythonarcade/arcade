@@ -726,8 +726,8 @@ class SpriteList(Generic[_SpriteType]):
             return
 
         for i, sprite in enumerate(self.sprite_list):
-            self._sprite_pos_data[i * 2] = sprite.position[0]
-            self._sprite_pos_data[i * 2 + 1] = sprite.position[1]
+            self._sprite_pos_data[i * 2] = int(sprite.position[0])
+            self._sprite_pos_data[i * 2 + 1] = int(sprite.position[1])
             self._sprite_pos_changed = True
 
             self._sprite_angle_data[i] = math.radians(sprite.angle)
@@ -739,8 +739,8 @@ class SpriteList(Generic[_SpriteType]):
             self._sprite_color_data[i * 4 + 3] = sprite.alpha
             self._sprite_color_changed = True
 
-            self._sprite_size_data[i * 2] = sprite.width
-            self._sprite_size_data[i * 2 + 1] = sprite.height
+            self._sprite_size_data[i * 2] = int(sprite.width // 2) * 2
+            self._sprite_size_data[i * 2 + 1] = int(sprite.height // 2) * 2
             self._sprite_size_changed = True
 
     def update_texture(self, _sprite):
@@ -764,8 +764,8 @@ class SpriteList(Generic[_SpriteType]):
 
         i = self.sprite_idx[sprite]
 
-        self._sprite_pos_data[i * 2] = sprite.position[0]
-        self._sprite_pos_data[i * 2 + 1] = sprite.position[1]
+        self._sprite_pos_data[i * 2] = int(sprite.position[0])
+        self._sprite_pos_data[i * 2 + 1] = int(sprite.position[1])
         self._sprite_pos_changed = True
 
         self._sprite_angle_data[i] = math.radians(sprite.angle)
@@ -808,8 +808,8 @@ class SpriteList(Generic[_SpriteType]):
 
         i = self.sprite_idx[sprite]
 
-        self._sprite_size_data[i * 2] = sprite.width
-        self._sprite_size_data[i * 2 + 1] = sprite.height
+        self._sprite_size_data[i * 2] = int(sprite.width // 2) * 2
+        self._sprite_size_data[i * 2 + 1] = int(sprite.height // 2) * 2
         self._sprite_size_changed = True
 
     def update_height(self, sprite: Sprite):
@@ -824,7 +824,7 @@ class SpriteList(Generic[_SpriteType]):
 
         i = self.sprite_idx[sprite]
 
-        self._sprite_size_data[i * 2 + 1] = sprite.height
+        self._sprite_size_data[i * 2 + 1] = int(sprite.height // 2) * 2
         self._sprite_size_changed = True
 
     def update_width(self, sprite: Sprite):
@@ -839,7 +839,7 @@ class SpriteList(Generic[_SpriteType]):
 
         i = self.sprite_idx[sprite]
 
-        self._sprite_size_data[i * 2] = sprite.width
+        self._sprite_size_data[i * 2] = int(sprite.width // 2) * 2
         self._sprite_size_changed = True
 
     def update_location(self, sprite: Sprite):
@@ -854,8 +854,8 @@ class SpriteList(Generic[_SpriteType]):
 
         i = self.sprite_idx[sprite]
 
-        self._sprite_pos_data[i * 2] = sprite.position[0]
-        self._sprite_pos_data[i * 2 + 1] = sprite.position[1]
+        self._sprite_pos_data[i * 2] = int(sprite.position[0])
+        self._sprite_pos_data[i * 2 + 1] = int(sprite.position[1])
         self._sprite_pos_changed = True
 
     def update_angle(self, sprite: Sprite):
