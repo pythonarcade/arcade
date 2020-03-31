@@ -82,19 +82,19 @@ class Sound:
         if not _audiolib:
             return 0
         return _audiolib.get_volume(self.voice_handle)
-    
+
     def set_volume(self, volume):
         """ Set the current volume. """
         if not _audiolib:
             return
         _audiolib.set_volume(self.voice_handle, volume)
-    
+
     def set_left_right_volume(self, left_volume, right_volume):
         """ Set absolute left/right volume """
         if not _audiolib:
             return
         _audiolib.set_pan_absolute(self.voice_handle, left_volume, right_volume)
-    
+
     def get_stream_position(self):
         """ This always returns zero for some unknown reason. """
         return _audiolib.get_stream_position(self.voice_handle)
@@ -102,8 +102,7 @@ class Sound:
 
 def load_sound(file_name: str):
     """
-    Load a sound. Support for .wav files. If ffmpeg is available, will work
-    with ogg and mp3 as well.
+    Load a sound.
 
     :param str file_name: Name of the sound file to load.
 
