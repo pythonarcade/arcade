@@ -31,6 +31,7 @@ TOP_LIMIT = SCREEN_HEIGHT + OFFSCREEN_SPACE
 class TurningSprite(arcade.Sprite):
     """ Sprite that sets its angle to the direction it is traveling in. """
     def update(self):
+        """ Move the sprite """
         super().update()
         self.angle = math.degrees(math.atan2(self.change_y, self.change_x))
 
@@ -138,21 +139,6 @@ class AsteroidSprite(arcade.Sprite):
             self.center_y = TOP_LIMIT
 
 
-class BulletSprite(TurningSprite):
-    """
-    Class that represents a bullet.
-
-    Derives from arcade.TurningSprite which is just a Sprite
-    that aligns to its direction.
-    """
-
-    def update(self):
-        super().update()
-        if self.center_x < -100 or self.center_x > 1500 or \
-                self.center_y > 1100 or self.center_y < -100:
-            self.remove_from_sprite_lists()
-
-
 class MyGame(arcade.Window):
     """ Main application class. """
 
@@ -171,7 +157,7 @@ class MyGame(arcade.Window):
         self.game_over = False
 
         # Sprite lists
-        self.all_sprites_list = arcade.SpriteList()
+        self.player_sprite_list = arcade.SpriteList()
         self.asteroid_list = arcade.SpriteList()
         self.bullet_list = arcade.SpriteList()
         self.ship_life_list = arcade.SpriteList()
@@ -195,7 +181,7 @@ class MyGame(arcade.Window):
         self.game_over = False
 
         # Sprite lists
-        self.all_sprites_list = arcade.SpriteList()
+        self.player_sprite_list = arcade.SpriteList()
         self.asteroid_list = arcade.SpriteList()
         self.bullet_list = arcade.SpriteList()
         self.ship_life_list = arcade.SpriteList()
@@ -203,7 +189,7 @@ class MyGame(arcade.Window):
         # Set up the player
         self.score = 0
         self.player_sprite = ShipSprite(":resources:images/space_shooter/playerShip1_orange.png", SCALE)
-        self.all_sprites_list.append(self.player_sprite)
+        self.player_sprite_list.append(self.player_sprite)
         self.lives = 3
 
         # Set up the little icons that represent the player lives.
@@ -213,7 +199,6 @@ class MyGame(arcade.Window):
             life.center_x = cur_pos + life.width
             life.center_y = life.height
             cur_pos += life.width
-            self.all_sprites_list.append(life)
             self.ship_life_list.append(life)
 
         # Make the asteroids
@@ -234,7 +219,6 @@ class MyGame(arcade.Window):
 
             enemy_sprite.change_angle = (random.random() - 0.5) * 2
             enemy_sprite.size = 4
-            self.all_sprites_list.append(enemy_sprite)
             self.asteroid_list.append(enemy_sprite)
 
     def on_draw(self):
@@ -246,7 +230,10 @@ class MyGame(arcade.Window):
         arcade.start_render()
 
         # Draw all the sprites.
-        self.all_sprites_list.draw()
+        self.asteroid_list.draw()
+        self.ship_life_list.draw()
+        self.bullet_list.draw()
+        self.player_sprite_list.draw()
 
         # Put the text on the screen.
         output = f"Score: {self.score}"
@@ -259,7 +246,7 @@ class MyGame(arcade.Window):
         """ Called whenever a key is pressed. """
         # Shoot if the player hit the space bar and we aren't respawning.
         if not self.player_sprite.respawning and symbol == arcade.key.SPACE:
-            bullet_sprite = BulletSprite(":resources:images/space_shooter/laserBlue01.png", SCALE)
+            bullet_sprite = TurningSprite(":resources:images/space_shooter/laserBlue01.png", SCALE)
             bullet_sprite.guid = "Bullet"
 
             bullet_speed = 13
@@ -273,7 +260,6 @@ class MyGame(arcade.Window):
             bullet_sprite.center_y = self.player_sprite.center_y
             bullet_sprite.update()
 
-            self.all_sprites_list.append(bullet_sprite)
             self.bullet_list.append(bullet_sprite)
 
             arcade.play_sound(self.laser_sound)
@@ -322,7 +308,6 @@ class MyGame(arcade.Window):
                 enemy_sprite.change_angle = (random.random() - 0.5) * 2
                 enemy_sprite.size = 3
 
-                self.all_sprites_list.append(enemy_sprite)
                 self.asteroid_list.append(enemy_sprite)
                 self.hit_sound1.play()
 
@@ -344,7 +329,6 @@ class MyGame(arcade.Window):
                 enemy_sprite.change_angle = (random.random() - 0.5) * 2
                 enemy_sprite.size = 2
 
-                self.all_sprites_list.append(enemy_sprite)
                 self.asteroid_list.append(enemy_sprite)
                 self.hit_sound2.play()
 
@@ -366,7 +350,6 @@ class MyGame(arcade.Window):
                 enemy_sprite.change_angle = (random.random() - 0.5) * 2
                 enemy_sprite.size = 1
 
-                self.all_sprites_list.append(enemy_sprite)
                 self.asteroid_list.append(enemy_sprite)
                 self.hit_sound3.play()
 
@@ -379,19 +362,27 @@ class MyGame(arcade.Window):
         self.frame_count += 1
 
         if not self.game_over:
-            self.all_sprites_list.update()
+            self.asteroid_list.update()
+            self.bullet_list.update()
+            self.player_sprite_list.update()
 
             for bullet in self.bullet_list:
-                asteroids_plain = arcade.check_for_collision_with_list(bullet, self.asteroid_list)
-                asteroids_spatial = arcade.check_for_collision_with_list(bullet, self.asteroid_list)
-                if len(asteroids_plain) != len(asteroids_spatial):
-                    print("ERROR")
-
-                asteroids = asteroids_spatial
+                asteroids = arcade.check_for_collision_with_list(bullet, self.asteroid_list)
 
                 for asteroid in asteroids:
                     self.split_asteroid(cast(AsteroidSprite, asteroid))  # expected AsteroidSprite, got Sprite instead
                     asteroid.remove_from_sprite_lists()
+                    bullet.remove_from_sprite_lists()
+
+                # Remove bullet if it goes off-screen
+                size = max(bullet.width, bullet.height)
+                if bullet.center_x < 0 - size:
+                    bullet.remove_from_sprite_lists()
+                if bullet.center_x > SCREEN_WIDTH + size:
+                    bullet.remove_from_sprite_lists()
+                if bullet.center_y < 0 - size:
+                    bullet.remove_from_sprite_lists()
+                if bullet.center_y > SCREEN_HEIGHT + size:
                     bullet.remove_from_sprite_lists()
 
             if not self.player_sprite.respawning:
@@ -410,6 +401,7 @@ class MyGame(arcade.Window):
 
 
 def main():
+    """ Start the game """
     window = MyGame()
     window.start_new_game()
     arcade.run()
