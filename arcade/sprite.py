@@ -814,7 +814,14 @@ class Sprite:
         """
         Remove the sprite from all sprite lists.
         """
-        for sprite_list in self.sprite_lists:
+        if len(self.sprite_lists) > 0:
+            # We can't modify a list as we iterate through it, so create a copy.
+            sprite_lists = self.sprite_lists.copy()
+        else:
+            # If the list is a size 1, we don't need to copy
+            sprite_lists = self.sprite_lists
+
+        for sprite_list in sprite_lists:
             if self in sprite_list:
                 sprite_list.remove(self)
         self.sprite_lists.clear()
