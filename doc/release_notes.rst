@@ -5,8 +5,19 @@
 Release Notes
 =============
 
-Version 2.3.9
+Version 2.3.10
 --------------
+
+* Bug Fix: Remove unused AudioStream and PlaysoundException from __init__
+* Remove attempts to load ffmpeg library
+* Add background music example
+* Bug Fix: Improve Windows install docs `Issue 619 <https://github.com/pvcraven/arcade/issues/619>`_
+* Add tutorial on edge artifacts `Issue 418 <https://github.com/pvcraven/arcade/issues/418>`_
+* Bug Fix: Can't remove sprite from multiple lists `Issue 621 <https://github.com/pvcraven/arcade/issues/621>`_
+* Several documentation updates
+
+Version 2.3.9
+-------------
 
 *Release Date: Mar-25-2020*
 
