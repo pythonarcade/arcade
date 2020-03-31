@@ -81,17 +81,9 @@ number such as 23.5, this can cause the artifacts to appear.
 Solutions
 ---------
 
-Arcade with auto-fix some of these issues. Keeping sprite sizes to a power of
+Keeping sprite sizes to a power of
 two will help. For pixel-art types of games, using the ``GL_NEAREST`` filter can
 also help.
-
-Arcade Auto-Fixes
-^^^^^^^^^^^^^^^^^
-
-Starting with Arcade 2.3.10, the actual coordinates sent to the graphics card
-are aligned to exact pixels. This helps in cases where we scale down or the
-program specifies a left edge that might fall on a coordinate like 100.5 instead
-of 100. It does not help if sprites are scaled up or rotated.
 
 Use The Power of Two
 ^^^^^^^^^^^^^^^^^^^^
