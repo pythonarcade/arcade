@@ -66,8 +66,6 @@ Documentation
 * `Issue 452 <https://github.com/pvcraven/arcade/issues/452>`_
   Documentation Request - explain how delta_time works to help learners fully
   understand both how and why.
-* `Issue 408 <https://github.com/pvcraven/arcade/issues/408>`_
-  Documentation Request - Explain border lines that can occur when drawing sprites, and how to avoid.
 * Explain the 'views' setup for doing instruction screens and more.
 * Show how to make into a redistributable/installable/exe
 

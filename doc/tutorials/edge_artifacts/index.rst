@@ -4,7 +4,8 @@ Edge Artifacts
 ==============
 
 When working with images, particularly ones with transparency, graphics cards can
-create graphic artifacts on their edges, so we get images like this:
+create graphic artifacts on their edges. Images can have 'borders' where they
+aren't wanted. For example, here there's a line on the top and left:
 
 .. image:: p0.png
     :width: 20%
@@ -13,6 +14,8 @@ Why does this happen? How do we fix it?
 
 Why Edge Artifacts Appear
 -------------------------
+
+This happens when the edge of an image does not fall cleanly onto an image.
 
 Edge Mis-Alignment
 ^^^^^^^^^^^^^^^^^^
@@ -49,7 +52,8 @@ up with edge artifacts. If we had scaled down by one-half, that is possible to d
 with 128 pixels (to 64), so there would be no artifacts.
 
 The third image in Figure 2 is scaled up by a factor of two. The edge spans
-two pixels and we end up with a line artifact as well.
+two pixels and we end up with a line artifact as well. (Scaling down by two usually
+works if the image is divisible by four. Scaling up typically doesn't.)
 
 .. figure:: p2.png
     :width: 90%
@@ -62,8 +66,27 @@ Rotating
 With rotation, it can be very difficult to get pixels lined up, and edge artifacts
 are common.
 
+Improper Viewport
+^^^^^^^^^^^^^^^^^
+
+If a window is 800 wide, and the viewport is set to 799 or 801, then lines can
+also appear. Alternatively, if a viewport left or right edge is set to a non-integer
+number such as 23.5, this can cause the artifacts to appear.
+
+.. figure:: p3.png
+    :width: 80%
+
+    Figure 3: Incorrect viewport
+
 Solutions
 ---------
+
+Arcade with auto-fix some of these issues. Keeping sprite sizes to a power of
+two will help. For pixel-art types of games, using the ``GL_NEAREST`` filter can
+also help.
+
+Arcade Auto-Fixes
+^^^^^^^^^^^^^^^^^
 
 Starting with Arcade 2.3.10, the actual coordinates sent to the graphics card
 are aligned to exact pixels. This helps in cases where we scale down or the
@@ -78,9 +101,8 @@ etc. It is ok if they aren't square, such as a 32x64 pixel is fine.
 
 Don't scale up, only scale down. Also, only scale down in powers of two.
 
-Aligning to the nearest pixel
+Aligning to the Nearest Pixel
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
 
 By default, Arcade draws sprites with a filter called "linear" which makes for
 smoother scaling and lines. If instead you want a pixel-look, you can use a different
@@ -99,4 +121,8 @@ Then, in your ``on_draw`` update the drawing of your sprites with the filter:
     def on_draw(self):
         self.my_sprite_list.draw(filter=GL_NEAREST)
 
+Double-Check Viewport Code
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Double-check your viewport code to make sure the edges are only set to integers
+and the size of the window matches up exactly, without any off-by-one errors.

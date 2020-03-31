@@ -165,9 +165,9 @@ class MyGame(arcade.Window):
         # If we changed the boundary values, update the view port to match
         if changed:
             arcade.set_viewport(self.view_left,
-                                SCREEN_WIDTH + self.view_left - 1,
+                                SCREEN_WIDTH + self.view_left,
                                 self.view_bottom,
-                                SCREEN_HEIGHT + self.view_bottom - 1)
+                                SCREEN_HEIGHT + self.view_bottom)
 
 
 def main():
