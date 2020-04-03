@@ -13,6 +13,7 @@ import pyglet
 from arcade import get_viewport
 from arcade import set_viewport
 from arcade import set_window
+from arcade.framebuffer import Framebuffer
 
 if TYPE_CHECKING:
     from arcade import TextBox
@@ -419,6 +420,11 @@ class Window(pyglet.window.Window):
     def get_viewport(self) -> Tuple[float, float, float, float]:
         """ Get the viewport. (What coordinates we can see.) """
         return get_viewport()
+
+    def use(self):
+        """Bind the window's framebuffer"""
+        gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, 0)
+        Framebuffer.currently_bound = self
 
     def test(self, frames: int = 10):
         """

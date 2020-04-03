@@ -501,11 +501,24 @@ def vertex_array(prog: gl.GLuint, content, index_buffer=None):
 
 
 class Texture:
-    def __init__(self, size: Tuple[int, int], component: int, data):
+    def __init__(self, size: Tuple[int, int], components: int, data=None):
+        """Represents an OpenGL texture.
+
+        A texture can be created with or without initial data.
+        NOTE: Currently do notsupport multisample textures even
+        thought ``samples`` is exposed.
+        
+        :param Tuple[int, int] size: The size of the texture.
+        :param int components: The number of components (1: R, 2: RG, 3: RGB, 4: RGBA).
+        :param data: The texture data (optional)
+        """
         self.width, self.height = size
-        sized_format = (gl.GL_R8, gl.GL_RG8, gl.GL_RGB8, gl.GL_RGBA8)[component - 1]
-        self.format = (gl.GL_R, gl.GL_RG, gl.GL_RGB, gl.GL_RGBA)[component - 1]
-        gl.glActiveTexture(gl.GL_TEXTURE0 + 0)  # If we need other texture unit...
+        self._components = components
+
+        sized_format = (gl.GL_R8, gl.GL_RG8, gl.GL_RGB8, gl.GL_RGBA8)[components - 1]
+        self.format = (gl.GL_R, gl.GL_RG, gl.GL_RGB, gl.GL_RGBA)[components - 1]
+        gl.glActiveTexture(gl.GL_TEXTURE0)  # Create textures in the default channel (0)
+
         self.texture_id = texture_id = gl.GLuint()
         gl.glGenTextures(1, byref(self.texture_id))
 
@@ -523,12 +536,61 @@ class Texture:
         except gl.GLException:
             raise gl.GLException(f"Unable to create texture. {gl.GL_MAX_TEXTURE_SIZE} {size}")
 
-        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR)
-        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR)
+        self.filter = gl.GL_LINEAR, gl.GL_LINEAR
         weakref.finalize(self, Texture.release, texture_id)
+
+    @property
+    def glo(self) -> gl.GLuint:
+        """The opengl texture id"""
+        return self.texture_id
+
+    @property
+    def size(self) -> Tuple[int, int]:
+        """The size of the texture as a tuple"""
+        return self.width, self.height
+
+    @property
+    def components(self) -> int:
+        """Number of components in the texture"""
+        return self._components
+
+    @property
+    def filter(self) -> Tuple[int, int]:
+        """The (min, mag) filter for this texture.
+        
+        Default value is ``GL_LINEAR, GL_LINEAR``.
+        Can be set to ``GL_NEAREST, GL_NEAREST`` for pixelated graphics.
+
+        When mipmapping is used the min filter needs to be `GL_*_MIPMAP_*`.
+
+        Also see:
+        * https://www.khronos.org/opengl/wiki/Texture#Mip_maps
+        * https://www.khronos.org/opengl/wiki/Sampler_Object#Filtering
+        """
+        return self._filter
+
+    @filter.setter
+    def filter(self, value):
+        if not isinstance(value, tuple) or not len(value) == 2:
+            raise ValueError("Texture filter must be a 2 component tuple (min, mag)")
+
+        self._filter = value
+        self.use()
+        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, self._filter[0])
+        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, self._filter[1])
+
+    def build_mipmaps(self, base=0, max=1000):
+        """Generate mipmaps for this texture.
+        Also see: https://www.khronos.org/opengl/wiki/Texture#Mip_maps
+        """
+        self.use()
+        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_BASE_LEVEL, base)
+        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAX_LEVEL, max)
+        gl.glGenerateMipmap(gl.GL_TEXTURE_2D)
 
     @staticmethod
     def release(texture_id):
+        """Destroy the texture"""
         # If we have no context, then we are shutting down, so skip this
         if gl.current_context is None:
             return
@@ -536,10 +598,24 @@ class Texture:
         if texture_id.value != 0:
             gl.glDeleteTextures(1, byref(texture_id))
 
-    def use(self, texture_unit: int = 0):
-        gl.glActiveTexture(gl.GL_TEXTURE0 + texture_unit)
+    def use(self, unit: int = 0):
+        """Bind the texture to a channel,
+
+        :param int unit: The texture unit to bind the texture.
+        """
+        gl.glActiveTexture(gl.GL_TEXTURE0 + unit)
         gl.glBindTexture(gl.GL_TEXTURE_2D, self.texture_id)
 
+    def __repr__(self):
+        return "<Texture glo={} size={}x{} components={}>".format(
+            self.texture_id.value, self.width, self.height, self._components)
 
-def texture(size: Tuple[int, int], component: int, data) -> Texture:
-    return Texture(size, component, data)
+
+def texture(size: Tuple[int, int], components: int, data=None) -> Texture:
+    """Create a Texture.
+
+    :param Tuple[int, int] size: The size of the texture
+    :param int components: Number of components (1: R, 2: RG, 3: RGB, 4: RGBA)
+    :param buffer data: The texture data (optional)
+    """
+    return Texture(size, components, data)
