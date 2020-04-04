@@ -36,6 +36,9 @@ class MyGame(arcade.Window):
         self.color_attachment2.filter = gl.GL_NEAREST, gl.GL_NEAREST
 
         self.offscreen = Framebuffer(color_attachments=[self.color_attachment1, self.color_attachment2])
+        self.offscreen.viewport = SCREEN_WIDTH, SCREEN_HEIGHT
+        self.offscreen.viewport = 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT
+        self.offscreen.depth_mask = True
         self.offscreen.use()
         self.offscreen.clear()
         print('id', self.offscreen.glo)

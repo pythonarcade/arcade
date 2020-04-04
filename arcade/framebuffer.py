@@ -91,14 +91,14 @@ class Framebuffer:
             raise ValueError("viewport should be a tuple with length 2 or 4")
 
         if len(value) == 2:
-            self._viewport = 0, 0, value
+            self._viewport = 0, 0, *value
         elif len(value) == 4:
             self._viewport = value
         else:
             raise ValueError("viewport should be a tuple with length 2 or 4")
 
         # If the framebuffer is bound we need to set the viewport
-        if Framebuffer.currently_bound_framebuffer == self:
+        if Framebuffer.currently_bound == self:
              gl.glViewport(*self._viewport)
 
     @property
@@ -157,7 +157,7 @@ class Framebuffer:
         gl.glDepthMask(self._depth_mask)
         gl.glViewport(*self._viewport)
 
-        Framebuffer.currently_bound_framebuffer = self
+        Framebuffer.currently_bound = self
 
     def clear(self, color=(0.0, 0.0, 0.0, 0.0), depth=1.0):
         """Clears the framebuffer. This will also activate/use it"""
