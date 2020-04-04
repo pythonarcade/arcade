@@ -103,6 +103,8 @@ class Program:
         matrix = np.array([[...]])
         program['MyMatrix'] = matrix.flatten()
     """
+    active = None  # Keeps track of the active program
+
     def __init__(self, *shaders: Shader):
         self.prog_id = prog_id = gl.glCreateProgram()
         shaders_id = []
@@ -147,6 +149,9 @@ class Program:
         return uniform.getter()
 
     def __setitem__(self, key, value):
+        # Ensure we are setting the uniform on this program
+        if Program.active != self:
+            self.use()
         try:
             uniform = self._uniforms[key]
         except KeyError:
@@ -154,11 +159,13 @@ class Program:
 
         uniform.setter(value)
 
-    def __enter__(self):
-        gl.glUseProgram(self.prog_id)
-
-    def __exit__(self, exception_type, exception_value, traceback):
-        gl.glUseProgram(0)
+    def use(self):
+        """Activates the shader"""
+        # IMPORTANT: This is the only place glUseProgram should be called
+        #            so we can track active program.
+        if Program.active != self:
+            gl.glUseProgram(self.prog_id)
+            Program.active = self
 
     def get_num_active(self, variable_type: gl.GLenum) -> int:
         """Get the number of active variables of the passed GL type.
@@ -310,6 +317,11 @@ class Buffer:
         # glUnmapBuffer(gl.GL_ARRAY_BUFFER)
 
     def orphan(self):
+        """
+        Re-allocate the entire buffer memory.
+        If the current buffer is busy in redering operations
+        it will be deallocated by OpenGL when completed.
+        """
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self.buffer_id)
         gl.glBufferData(gl.GL_ARRAY_BUFFER, self.size, None, self.usage)
 
@@ -411,20 +423,14 @@ class VertexArray:
         (r, g, b, a):
         content = [(buffer, '2f 4f', 'in_pos', 'in_color')]
 
-    You can use the VAO as a context manager. This is required for setting Uniform
-    variables or for rendering.
-
-    vao = VertexArrax(...)
-    with vao:
-        vao['MyUniform'] = value
-        vao.render
+    vao = VertexArray(...)
     """
 
     def __init__(self,
                  prog: Program,
                  content: Iterable[BufferDescription],
                  index_buffer: Buffer = None):
-        self.program = prog.prog_id
+        self.program = prog
         self.vao = vao = gl.GLuint()
         self.num_vertices = -1
         self.ibo = index_buffer
@@ -449,13 +455,6 @@ class VertexArray:
             gl.glDeleteVertexArrays(1, byref(vao))
             vao.value = 0
 
-    def __enter__(self):
-        gl.glBindVertexArray(self.vao)
-        gl.glUseProgram(self.program)
-
-    def __exit__(self, exception_type, exception_value, traceback):
-        gl.glUseProgram(0)
-
     def _enable_attrib(self, buf_desc: BufferDescription):
         buff = buf_desc.buffer
         stride = sum(attribsize for _, attribsize, _ in buf_desc.formats)
@@ -472,7 +471,7 @@ class VertexArray:
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, buff.buffer_id)
         offset = 0
         for (size, attribsize, gl_type_enum), attrib in zip(buf_desc.formats, buf_desc.attributes):
-            loc = gl.glGetAttribLocation(self.program, attrib.encode('utf-8'))
+            loc = gl.glGetAttribLocation(self.program.prog_id, attrib.encode('utf-8'))
             if loc == -1:
                 raise ShaderException(f"Attribute {attrib} not found in shader program")
             normalized = gl.GL_TRUE if attrib in buf_desc.normalized else gl.GL_FALSE
@@ -487,6 +486,8 @@ class VertexArray:
             gl.glEnableVertexAttribArray(loc)
 
     def render(self, mode: gl.GLuint, instances: int = 1):
+        gl.glBindVertexArray(self.vao)
+        self.program.use()
         if self.ibo is not None:
             count = self.ibo.size // 4
             gl.glDrawElementsInstanced(mode, count, gl.GL_UNSIGNED_INT, None, instances)

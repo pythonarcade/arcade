@@ -901,44 +901,43 @@ class SpriteList(Generic[_SpriteType]):
         # gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_NEAREST)
         # gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_NEAREST)
 
-        with self._vao1:
-            self.program['Texture'] = self.texture_id
-            self.program['Projection'] = get_projection().flatten()
-            texture_transform = None
-            if len(self.sprite_list) > 0:
-                # always wrap texture transformations with translations
-                # so that rotate and resize operations act on the texture
-                # center by default
-                texture_transform = Matrix3x3().translate(-0.5, -0.5).multiply(self.sprite_list[0].texture_transform.v).multiply(Matrix3x3().translate(0.5, 0.5).v)
-            if texture_transform == None:
-                texture_transform = Matrix3x3()
-            self.program['TextureTransform'] = texture_transform.v
+        self.program['Texture'] = self.texture_id
+        self.program['Projection'] = get_projection().flatten()
+        texture_transform = None
+        if len(self.sprite_list) > 0:
+            # always wrap texture transformations with translations
+            # so that rotate and resize operations act on the texture
+            # center by default
+            texture_transform = Matrix3x3().translate(-0.5, -0.5).multiply(self.sprite_list[0].texture_transform.v).multiply(Matrix3x3().translate(0.5, 0.5).v)
+        if texture_transform == None:
+            texture_transform = Matrix3x3()
+        self.program['TextureTransform'] = texture_transform.v
 
-            if not self.is_static:
-                if self._sprite_pos_changed:
-                    self._sprite_pos_buf.orphan()
-                    self._sprite_pos_buf.write(self._sprite_pos_data.tobytes())
-                    self._sprite_pos_changed = False
+        if not self.is_static:
+            if self._sprite_pos_changed:
+                self._sprite_pos_buf.orphan()
+                self._sprite_pos_buf.write(self._sprite_pos_data.tobytes())
+                self._sprite_pos_changed = False
 
-                if self._sprite_size_changed:
-                    self._sprite_size_buf.orphan()
-                    self._sprite_size_buf.write(self._sprite_size_data.tobytes())
-                    self._sprite_size_changed = False
+            if self._sprite_size_changed:
+                self._sprite_size_buf.orphan()
+                self._sprite_size_buf.write(self._sprite_size_data.tobytes())
+                self._sprite_size_changed = False
 
-                if self._sprite_angle_changed:
-                    self._sprite_angle_buf.orphan()
-                    self._sprite_angle_buf.write(self._sprite_angle_data.tobytes())
-                    self._sprite_angle_changed = False
+            if self._sprite_angle_changed:
+                self._sprite_angle_buf.orphan()
+                self._sprite_angle_buf.write(self._sprite_angle_data.tobytes())
+                self._sprite_angle_changed = False
 
-                if self._sprite_color_changed:
-                    self._sprite_color_buf.orphan()
-                    self._sprite_color_buf.write(self._sprite_color_data.tobytes())
-                    self._sprite_color_changed = False
+            if self._sprite_color_changed:
+                self._sprite_color_buf.orphan()
+                self._sprite_color_buf.write(self._sprite_color_data.tobytes())
+                self._sprite_color_changed = False
 
-                if self._sprite_sub_tex_changed:
-                    self._sprite_sub_tex_buf.orphan()
-                    self._sprite_sub_tex_buf.write(self._sprite_sub_tex_data.tobytes())
-                    self._sprite_sub_tex_changed = False
+            if self._sprite_sub_tex_changed:
+                self._sprite_sub_tex_buf.orphan()
+                self._sprite_sub_tex_buf.write(self._sprite_sub_tex_data.tobytes())
+                self._sprite_sub_tex_changed = False
 
             self._vao1.render(gl.GL_TRIANGLE_STRIP, instances=len(self.sprite_list))
 

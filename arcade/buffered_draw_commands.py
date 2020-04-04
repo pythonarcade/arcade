@@ -63,19 +63,18 @@ class Shape:
     def draw(self):
         # program['Projection'].write(get_projection().tobytes())
 
-        with self.vao:
-            assert(self.line_width == 1)
-            gl.glLineWidth(self.line_width)
+        assert(self.line_width == 1)
+        gl.glLineWidth(self.line_width)
 
-            gl.glEnable(gl.GL_BLEND)
-            gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-            gl.glEnable(gl.GL_LINE_SMOOTH)
-            gl.glHint(gl.GL_LINE_SMOOTH_HINT, gl.GL_NICEST)
-            gl.glHint(gl.GL_POLYGON_SMOOTH_HINT, gl.GL_NICEST)
-            gl.glEnable(gl.GL_PRIMITIVE_RESTART)
-            gl.glPrimitiveRestartIndex(2 ** 32 - 1)
+        gl.glEnable(gl.GL_BLEND)
+        gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
+        gl.glEnable(gl.GL_LINE_SMOOTH)
+        gl.glHint(gl.GL_LINE_SMOOTH_HINT, gl.GL_NICEST)
+        gl.glHint(gl.GL_POLYGON_SMOOTH_HINT, gl.GL_NICEST)
+        gl.glEnable(gl.GL_PRIMITIVE_RESTART)
+        gl.glPrimitiveRestartIndex(2 ** 32 - 1)
 
-            self.vao.render(mode=self.mode)
+        self.vao.render(mode=self.mode)
 
 
 def create_line(start_x: float, start_y: float, end_x: float, end_y: float,
@@ -155,8 +154,7 @@ def create_line_generic_with_colors(point_list: PointList,
     ]
 
     vao = shader.vertex_array(program, vao_content)
-    with vao:
-        program['Projection'] = get_projection().flatten()
+    program['Projection'] = get_projection().flatten()
 
     shape = Shape()
     shape.vao = vao
@@ -709,10 +707,9 @@ class ShapeElementList(Generic[TShape]):
             )
         ]
         vao = shader.vertex_array(self.program, vao_content, ibo)
-        with self.program:
-            self.program['Projection'] = get_projection().flatten()
-            self.program['Position'] = [self.center_x, self.center_y]
-            self.program['Angle'] = self.angle
+        self.program['Projection'] = get_projection().flatten()
+        self.program['Position'] = [self.center_x, self.center_y]
+        self.program['Angle'] = self.angle
 
         batch.shape.vao = vao
         batch.shape.vbo = vbo
@@ -759,8 +756,7 @@ class ShapeElementList(Generic[TShape]):
     def _set_center_x(self, value: float):
         """Set the center x coordinate of the ShapeElementList."""
         self._center_x = value
-        with self.program:
-            self.program['Position'] = [self._center_x, self._center_y]
+        self.program['Position'] = [self._center_x, self._center_y]
 
     center_x = property(_get_center_x, _set_center_x)
 
@@ -771,8 +767,7 @@ class ShapeElementList(Generic[TShape]):
     def _set_center_y(self, value: float):
         """Set the center y coordinate of the ShapeElementList."""
         self._center_y = value
-        with self.program:
-            self.program['Position'] = [self._center_x, self._center_y]
+        self.program['Position'] = [self._center_x, self._center_y]
 
     center_y = property(_get_center_y, _set_center_y)
 
@@ -783,8 +778,7 @@ class ShapeElementList(Generic[TShape]):
     def _set_angle(self, value: float):
         """Set the angle of the ShapeElementList in degrees."""
         self._angle = value
-        with self.program:
-            self.program['Angle'] = self._angle
+        self.program['Angle'] = self._angle
 
     angle = property(_get_angle, _set_angle)
 

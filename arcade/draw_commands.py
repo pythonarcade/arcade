@@ -438,9 +438,8 @@ def _generic_draw_line_strip(point_list: PointList,
     vao_content = [vbo_buf_desc, color_buf_desc]
 
     vao = shader.vertex_array(program, vao_content)
-    with vao:
-        program['Projection'] = get_projection().flatten()
-        vao.render(mode=mode)
+    program['Projection'] = get_projection().flatten()
+    vao.render(mode=mode)
 
 
 def draw_line_strip(point_list: PointList,
