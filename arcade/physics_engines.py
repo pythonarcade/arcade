@@ -126,6 +126,9 @@ def _move_sprite(moving_sprite: Sprite, walls: SpriteList, ramp_up: bool):
                         # else:
                         # print("Run up ok 1")
                         # print(f"Spot 2 ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
+                else:
+                    while len(check_for_collision_with_list(moving_sprite, walls)) > 0:
+                        moving_sprite.center_x -= 1
 
             elif change_x < 0:
                 if ramp_up:
@@ -141,6 +144,9 @@ def _move_sprite(moving_sprite: Sprite, walls: SpriteList, ramp_up: bool):
                             check_again = True
                             break
                         # print(f"Spot 4 ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
+                else:
+                    while len(check_for_collision_with_list(moving_sprite, walls)) > 0:
+                        moving_sprite.center_x += 1
 
             else:
                 print("Error, x collision while player wasn't moving.\n"
