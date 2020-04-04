@@ -26,7 +26,8 @@ class MyGame(arcade.Window):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
         # Create some color attachments and a framebuffer
-        # Ensure all properties are working
+        # Ensure all properties are working.
+        # TODO: This should be moved into unit tests
         self.color_attachment1 = Texture((SCREEN_WIDTH, SCREEN_HEIGHT), 4)
         self.color_attachment1.build_mipmaps()
         self.color_attachment1.filter = gl.GL_NEAREST, gl.GL_NEAREST
@@ -39,7 +40,7 @@ class MyGame(arcade.Window):
         self.offscreen.viewport = SCREEN_WIDTH, SCREEN_HEIGHT
         self.offscreen.viewport = 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT
         self.offscreen.depth_mask = True
-        self.offscreen.use()
+        # self.offscreen.use()
         self.offscreen.clear()
         print('id', self.offscreen.glo)
         print('viewport', self.offscreen.viewport)
@@ -50,7 +51,7 @@ class MyGame(arcade.Window):
         print('color attachments', self.offscreen.color_attachments)
         print('depth_attachment', self.offscreen.depth_attachment)
 
-        self.use()
+        # self.use()
 
         # Variables that will hold sprite lists
         self.coin_list = None
@@ -82,7 +83,7 @@ class MyGame(arcade.Window):
         """ Draw everything """
 
         # Render to offscreen
-        self.offscreen.use()
+        # self.offscreen.use()
 
         arcade.start_render()
         self.coin_list.draw()
@@ -92,7 +93,7 @@ class MyGame(arcade.Window):
         arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
 
         # Render to window again
-        self.use()
+        # self.use()
         # ...
 
 

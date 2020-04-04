@@ -11,7 +11,7 @@ class Framebuffer:
     This implementation is using texture attachments. When createing a
     Framebuffer we supply it with textures we want our scene rendered into.
     """
-    currently_bound = None  # The framebuffer that is bound currently
+    active = None  # The framebuffer that is bound currently
 
     def __init__(self, color_attachments=None, depth_attachment=None):
         """Create a framebuffer.
@@ -65,7 +65,7 @@ class Framebuffer:
         self._draw_buffers = (ctypes.c_ulong * len(layers))(*layers)
 
         # Fall back to window
-        gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, 0)
+        Framebuffer.active.use()
 
     @property
     def glo(self) -> gl.GLuint:
@@ -97,8 +97,9 @@ class Framebuffer:
         else:
             raise ValueError("viewport should be a tuple with length 2 or 4")
 
-        # If the framebuffer is bound we need to set the viewport
-        if Framebuffer.currently_bound == self:
+        # If the framebuffer is bound we need to set the viewport.
+        # Otherwise it will be set on use()
+        if Framebuffer.active == self:
              gl.glViewport(*self._viewport)
 
     @property
@@ -141,29 +142,37 @@ class Framebuffer:
     def depth_mask(self, value):
         self._depth_mask = value
         # Set state if framebuffer is active
-        if Framebuffer.currently_bound == self:
+        if Framebuffer.active == self:
             gl.glDepthMask(self._depth_mask)
 
     def use(self):
-        """Bind the framebuffer"""
-        gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, self._glo)
-        # set up drawbuffers. This maps the different texture layers
-        # so the shader can write to them (when shader has multiple ``out`` values)
-        # if len(self._color_attachments) > 1:
-        #     pass
+        """Bind the framebuffer making it the target of all redering commands"""
+        # Don't bind the same framebuffer multiple times
+        self._use()
+        Framebuffer.active = self
 
+    def _use(self):
+        """Internal use that do not change the global active framebuffer"""
+        if Framebuffer.active == self:
+            return
+
+        gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, self._glo)
         # Note: gl.glDrawBuffer(GL_NONE) if no texture attachments (future)
         gl.glDrawBuffers(len(self._draw_buffers), self._draw_buffers)
         gl.glDepthMask(self._depth_mask)
         gl.glViewport(*self._viewport)
 
-        Framebuffer.currently_bound = self
-
     def clear(self, color=(0.0, 0.0, 0.0, 0.0), depth=1.0):
         """Clears the framebuffer. This will also activate/use it"""
-        self.use()
+        self._use()
         gl.glClearColor(*color)
-        gl.glClear(gl.GL_COLOR_BUFFER_BIT)  # | gl.GL_DEPTH_BUFFER_BIT)
+        if self.depth_attachment:
+            gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
+        else:
+            gl.glClear(gl.GL_COLOR_BUFFER_BIT)
+
+        # Ensure we don't change framebuffer unless it's already activated
+        Framebuffer.active.use()
 
     def release(self, release_attachments=False):
         """Destroys the framebuffer object

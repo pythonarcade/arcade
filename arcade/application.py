@@ -108,6 +108,9 @@ class Window(pyglet.window.Window):
         self.textbox_time = 0.0
         self.key: Optional[int] = None
 
+        # The window 
+        Framebuffer.active = self
+
     def update(self, delta_time: float):
         """
         Move everything. For better consistency in naming, use ``on_update`` instead.
@@ -422,9 +425,9 @@ class Window(pyglet.window.Window):
         return get_viewport()
 
     def use(self):
-        """Bind the window's framebuffer"""
+        """Bind the window's framebuffer for rendering commands"""
         gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, 0)
-        Framebuffer.currently_bound = self
+        Framebuffer.active = self
 
     def test(self, frames: int = 10):
         """
