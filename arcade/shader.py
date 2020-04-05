@@ -668,7 +668,7 @@ class Framebuffer:
         """
         self._color_attachments = color_attachments
         self._depth_attachment = depth_attachment
-        self._glo = gl.GLuint()  # The OpenGL alias/name
+        self._glo = fbo_id = gl.GLuint()  # The OpenGL alias/name
         self._samples = 0  # Leaving this at 0 for future sample support
         self._viewport = None
         self._depth_mask = True  # Determines of the depth buffer should be affected
@@ -678,7 +678,6 @@ class Framebuffer:
         # Create the framebuffer object
         gl.glGenFramebuffers(1, self._glo)
         gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, self._glo)
-        # FIX: weakref
 
         # Ensure all attachments have the same size.
         # OpenGL do actually support different sizes,
@@ -710,11 +709,11 @@ class Framebuffer:
         # we use in the use() method to activate the different color attachment layers
         layers = [gl.GL_COLOR_ATTACHMENT0 + i for i, _ in enumerate(self._color_attachments)]
         # pyglet wants this as a ctypes thingy, so let's prepare it
-        # FIX: gl.GLuint()
-        self._draw_buffers = (c_ulong * len(layers))(*layers)
+        self._draw_buffers = (gl.GLuint * len(layers))(*layers)
 
         # Fall back to window
         Framebuffer.active.use()
+        weakref.finalize(self, Framebuffer.release, fbo_id)
 
     @property
     def glo(self) -> gl.GLuint:
@@ -823,7 +822,8 @@ class Framebuffer:
         # Ensure we don't change framebuffer unless it's already activated
         Framebuffer.active.use()
 
-    def release(self, release_attachments=False):
+    @staticmethod
+    def release(framebuffer_id):
         """Destroys the framebuffer object
         
         :param bool release_attachments: Also release the attachments
@@ -831,12 +831,7 @@ class Framebuffer:
         if gl.current_context is None:
             return
 
-        gl.glDeleteFramebuffers(1, self._glo)
-        if release_attachments:
-            for tex in self._color_attachments:
-                tex.release()
-            if self._depth_attachment:
-                self._depth_attachment.release()
+        gl.glDeleteFramebuffers(1, framebuffer_id)
 
     # NOTE: This is an experiment using a bind stack (can be explored later)
     # def __enter__(self):

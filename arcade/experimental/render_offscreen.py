@@ -1,3 +1,6 @@
+"""
+Render scene to offscreen buffer and scroll the texture coordinates
+"""
 import random
 import arcade
 import os
