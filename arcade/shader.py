@@ -114,6 +114,14 @@ class Program:
             shaders_id.append(shader)
 
         gl.glLinkProgram(self.prog_id)
+        status = c_int()
+        gl.glGetProgramiv(self.prog_id, gl.GL_LINK_STATUS, status)
+        if not status.value:
+            length = c_int()
+            gl.glGetProgramiv(program, gl.GL_INFO_LOG_LENGTH, length)
+            log = c_buffer(length.value)
+            gl.glGetProgramInfoLog(program, len(log), None, log)
+            raise ShaderException('Program link error: {}'.format(log.value))
 
         for shader in shaders_id:
             # Flag shaders for deletion. Will only be deleted once detached from program.
@@ -219,6 +227,9 @@ class Program:
         uname = create_string_buffer(buf_size)
         gl.glGetActiveUniform(self.prog_id, index, buf_size, None, usize, utype, uname)
         return uname.value.decode(), utype.value, usize.value
+
+    def __repr__(self):
+        return "<Program id={}>".format(self.prog_id)
 
 
 def program(vertex_shader: str, fragment_shader: str) -> Program:
