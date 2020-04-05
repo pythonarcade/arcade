@@ -5,8 +5,17 @@
 Release Notes
 =============
 
+Version 2.3.11
+--------------
+
+* Bug Fix: Fix procedural_caves_bsp.py
+* Bug Fix: Improve Windows install docs `Issue 623 <https://github.com/pvcraven/arcade/issues/623>`_
+
+
 Version 2.3.10
 --------------
+
+*Release Date: Mar-31-2020*
 
 * Bug Fix: Remove unused AudioStream and PlaysoundException from __init__
 * Remove attempts to load ffmpeg library
