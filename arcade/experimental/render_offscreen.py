@@ -3,9 +3,12 @@ import arcade
 import os
 import pyglet
 import pyglet.gl as gl
+import numpy
+import time
 
-from arcade.shader import Texture
-from arcade.framebuffer import Framebuffer
+from arcade import get_image
+from arcade import shader
+from arcade.experimental import geometry
 
 # --- Constants ---
 SPRITE_SCALING_PLAYER = 0.5
@@ -25,34 +28,6 @@ class MyGame(arcade.Window):
         # Call the parent class initializer
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
-        # Create some color attachments and a framebuffer
-        # Ensure all properties are working.
-        # TODO: This should be moved into unit tests
-        self.color_attachment1 = Texture((SCREEN_WIDTH, SCREEN_HEIGHT), 4)
-        self.color_attachment1.build_mipmaps()
-        self.color_attachment1.filter = gl.GL_NEAREST, gl.GL_NEAREST
-
-        self.color_attachment2 = Texture((SCREEN_WIDTH, SCREEN_HEIGHT), 4)
-        self.color_attachment2.build_mipmaps()
-        self.color_attachment2.filter = gl.GL_NEAREST, gl.GL_NEAREST
-
-        self.offscreen = Framebuffer(color_attachments=[self.color_attachment1, self.color_attachment2])
-        self.offscreen.viewport = SCREEN_WIDTH, SCREEN_HEIGHT
-        self.offscreen.viewport = 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT
-        self.offscreen.depth_mask = True
-        # self.offscreen.use()
-        self.offscreen.clear()
-        print('id', self.offscreen.glo)
-        print('viewport', self.offscreen.viewport)
-        print('width', self.offscreen.width)
-        print('height', self.offscreen.height)
-        print('size', self.offscreen.size)
-        print('samples', self.offscreen.samples)
-        print('color attachments', self.offscreen.color_attachments)
-        print('depth_attachment', self.offscreen.depth_attachment)
-
-        # self.use()
-
         # Variables that will hold sprite lists
         self.coin_list = None
 
@@ -63,7 +38,6 @@ class MyGame(arcade.Window):
 
     def setup(self):
         """ Set up the game and initialize the variables. """
-
         # Sprite lists
         self.coin_list = arcade.SpriteList()
 
@@ -79,22 +53,62 @@ class MyGame(arcade.Window):
             # Add the coin to the lists
             self.coin_list.append(coin)
 
+        # Offscreen stuff
+        program = shader.program(
+            vertex_shader='''
+                #version 330
+
+                in vec2 in_vert;
+                in vec2 in_uv;
+                out vec2 v_uv;
+
+                void main() {
+                    gl_Position = vec4(in_vert, 0.0, 1.0);
+                    v_uv = in_uv;
+                }
+            ''',
+            fragment_shader='''
+                #version 330
+
+                uniform sampler2D tex;
+                uniform float time;
+
+                in vec2 v_uv;
+                out vec4 f_color;
+
+                void main() {
+                    f_color = texture(tex, v_uv + vec2(sin(time), cos(time)));
+                }
+            ''',
+        )
+        self.color_attachment = shader.texture((SCREEN_WIDTH, SCREEN_HEIGHT), 4)
+        self.offscreen = shader.framebuffer(color_attachments=[self.color_attachment])
+        self.quad_fs = geometry.quad_fs(program, size=(2.0, 2.0))
+        # self.quad_fs.program['tex'] = 0
+
+        self.start_time = time.time()
+
     def on_draw(self):
         """ Draw everything """
+        try:
+            # Render to offscreen
+            self.offscreen.use()
+            self.offscreen.clear()
+            self.coin_list.draw()
+            output = f"Score: {self.score}"
+            arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
 
-        # Render to offscreen
-        # self.offscreen.use()
+            # Render back to window
+            self.use()
+            arcade.start_render()
+            self.color_attachment.use(0)
+            self.quad_fs.program['time'] = self.current_time()
+            self.quad_fs.render()
+        except Exception as ex:
+            print(ex)
 
-        arcade.start_render()
-        self.coin_list.draw()
-        self.player_list.draw()
-        # Put the text on the screen.
-        output = f"Score: {self.score}"
-        arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
-
-        # Render to window again
-        # self.use()
-        # ...
+    def current_time(self):
+        return time.time() - self.start_time
 
 
 def main():
