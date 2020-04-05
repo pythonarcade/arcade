@@ -13,7 +13,7 @@ import pyglet
 from arcade import get_viewport
 from arcade import set_viewport
 from arcade import set_window
-from arcade.framebuffer import Framebuffer
+from arcade import shader
 
 if TYPE_CHECKING:
     from arcade import TextBox
@@ -109,7 +109,7 @@ class Window(pyglet.window.Window):
         self.key: Optional[int] = None
 
         # The window 
-        Framebuffer.active = self
+        shader.Framebuffer.active = self
 
     def update(self, delta_time: float):
         """
@@ -427,7 +427,7 @@ class Window(pyglet.window.Window):
     def use(self):
         """Bind the window's framebuffer for rendering commands"""
         gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, 0)
-        Framebuffer.active = self
+        shader.Framebuffer.active = self
 
     def test(self, frames: int = 10):
         """
