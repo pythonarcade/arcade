@@ -172,8 +172,10 @@ class Program:
         # IMPORTANT: This is the only place glUseProgram should be called
         #            so we can track active program.
         if Program.active != self:
+            # print(f"glUseProgram({self.prog_id})")
             gl.glUseProgram(self.prog_id)
             Program.active = self
+
 
     def get_num_active(self, variable_type: gl.GLenum) -> int:
         """Get the number of active variables of the passed GL type.
@@ -291,11 +293,14 @@ class Buffer:
         self.size = len(data)
 
         gl.glGenBuffers(1, byref(self.buffer_id))
+        # print(f"glGenBuffers() -> {self.buffer_id.value}")
         if self.buffer_id.value == 0:
             raise ShaderException("Cannot create Buffer object.")
 
+        # print(f"glBindBuffer({self.buffer_id.value})")
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self.buffer_id)
         self.usage = Buffer.usages[usage]
+        # print(f"glBufferData(gl.GL_ARRAY_BUFFER, {self.size}, data, {self.usage})")
         gl.glBufferData(gl.GL_ARRAY_BUFFER, self.size, data, self.usage)
         weakref.finalize(self, Buffer.release, buffer_id)
 
@@ -310,6 +315,7 @@ class Buffer:
 
     @staticmethod
     def release(buffer_id):
+        # print(f"*** Buffer {buffer_id} have no more references. Deleting.")
 
         # If we have no context, then we are shutting down, so skip this
         if gl.current_context is None:
@@ -447,6 +453,8 @@ class VertexArray:
         self.ibo = index_buffer
 
         gl.glGenVertexArrays(1, byref(self.vao))
+        # print(f"glGenVertexArrays() -> {self.vao.value}")
+        # print(f"glBindVertexArray({self.vao.value})")
         gl.glBindVertexArray(self.vao)
 
         for buffer_desc in content:
@@ -454,6 +462,7 @@ class VertexArray:
 
         if self.ibo is not None:
             gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, self.ibo.buffer_id)
+            # print(f"glBindVertexArray(gl.GL_ELEMENT_ARRAY_BUFFER, {self.ibo.buffer_id.value})")            
         weakref.finalize(self, VertexArray.release, vao)
 
     @staticmethod
@@ -479,30 +488,40 @@ class VertexArray:
             self.num_vertices = max(self.num_vertices, buff.size // stride)
             # print(f"Number of vertices: {self.num_vertices}")
 
+        # print(f"glBindBuffer(gl.GL_ARRAY_BUFFER, {buff.buffer_id.value})")
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, buff.buffer_id)
         offset = 0
         for (size, attribsize, gl_type_enum), attrib in zip(buf_desc.formats, buf_desc.attributes):
             loc = gl.glGetAttribLocation(self.program.prog_id, attrib.encode('utf-8'))
             if loc == -1:
                 raise ShaderException(f"Attribute {attrib} not found in shader program")
+
             normalized = gl.GL_TRUE if attrib in buf_desc.normalized else gl.GL_FALSE
+            # print(f"glVertexAttribPointer({loc}, {size}, {gl_type_enum}, {normalized}, {stride}, {offset})")
             gl.glVertexAttribPointer(
                 loc, size, gl_type_enum,
                 normalized, stride, c_void_p(offset)
             )
             # print(f"{attrib} of size {size} with stride {stride} and offset {offset}")
             if buf_desc.instanced:
+                # print(f'glVertexAttribDivisor({loc}, 1)')
                 gl.glVertexAttribDivisor(loc, 1)
+
             offset += attribsize
+
+            # print(f"gl.glEnableVertexAttribArray({loc})")
             gl.glEnableVertexAttribArray(loc)
 
     def render(self, mode: gl.GLuint, instances: int = 1):
+        # print(f"glBindVertexArray({self.vao.value})")
         gl.glBindVertexArray(self.vao)
         self.program.use()
         if self.ibo is not None:
             count = self.ibo.size // 4
+            # print(f"glDrawArraysInstanced({mode}, {count}, gl.GL_UNSIGNED_INT, None, {instances})")
             gl.glDrawElementsInstanced(mode, count, gl.GL_UNSIGNED_INT, None, instances)
         else:
+            # print(f"glDrawArraysInstanced({mode}, 0, {self.num_vertices}, {instances})")
             gl.glDrawArraysInstanced(mode, 0, self.num_vertices, instances)
 
 
@@ -659,6 +678,7 @@ class Framebuffer:
         # Create the framebuffer object
         gl.glGenFramebuffers(1, self._glo)
         gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, self._glo)
+        # FIX: weakref
 
         # Ensure all attachments have the same size.
         # OpenGL do actually support different sizes,
@@ -690,6 +710,7 @@ class Framebuffer:
         # we use in the use() method to activate the different color attachment layers
         layers = [gl.GL_COLOR_ATTACHMENT0 + i for i, _ in enumerate(self._color_attachments)]
         # pyglet wants this as a ctypes thingy, so let's prepare it
+        # FIX: gl.GLuint()
         self._draw_buffers = (c_ulong * len(layers))(*layers)
 
         # Fall back to window
