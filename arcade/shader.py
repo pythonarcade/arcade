@@ -825,7 +825,7 @@ class Framebuffer:
     @staticmethod
     def release(framebuffer_id):
         """Destroys the framebuffer object
-        
+
         :param bool release_attachments: Also release the attachments
         """
         if gl.current_context is None:
@@ -867,7 +867,7 @@ class Framebuffer:
             raise ValueError("Framebuffer is incomplete. {}".format(states.get(status, "Unknown error")))
 
 
-def framebuffer(color_attachments: List[Texture]=None, depth_attachment: Texture=None) -> Texture:
+def framebuffer(color_attachments: List[Texture]=None, depth_attachment: Texture=None) -> Framebuffer:
     """Create a Framebuffer.
 
     :param List[Texture] color_attachments: List of textures we want to render into 
