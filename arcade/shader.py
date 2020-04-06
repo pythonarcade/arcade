@@ -121,7 +121,7 @@ class Program:
             gl.glGetProgramiv(program, gl.GL_INFO_LOG_LENGTH, length)
             log = c_buffer(length.value)
             gl.glGetProgramInfoLog(program, len(log), None, log)
-            raise ShaderException('Program link error: {}'.format(log.value))
+            raise ShaderException('Program link error: {}'.format(log.value.decode()))
 
         for shader in shaders_id:
             # Flag shaders for deletion. Will only be deleted once detached from program.
@@ -175,7 +175,6 @@ class Program:
             # print(f"glUseProgram({self.prog_id})")
             gl.glUseProgram(self.prog_id)
             Program.active = self
-
 
     def get_num_active(self, variable_type: gl.GLenum) -> int:
         """Get the number of active variables of the passed GL type.
@@ -462,7 +461,7 @@ class VertexArray:
 
         if self.ibo is not None:
             gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, self.ibo.buffer_id)
-            # print(f"glBindVertexArray(gl.GL_ELEMENT_ARRAY_BUFFER, {self.ibo.buffer_id.value})")            
+            # print(f"glBindVertexArray(gl.GL_ELEMENT_ARRAY_BUFFER, {self.ibo.buffer_id.value})")
         weakref.finalize(self, VertexArray.release, vao)
 
     @staticmethod
@@ -538,7 +537,7 @@ class Texture:
         A texture can be created with or without initial data.
         NOTE: Currently do notsupport multisample textures even
         thought ``samples`` is exposed.
-        
+
         :param Tuple[int, int] size: The size of the texture.
         :param int components: The number of components (1: R, 2: RG, 3: RGB, 4: RGBA).
         :param data: The texture data (optional)
@@ -588,7 +587,7 @@ class Texture:
     @property
     def filter(self) -> Tuple[int, int]:
         """The (min, mag) filter for this texture.
-        
+
         Default value is ``GL_LINEAR, GL_LINEAR``.
         Can be set to ``GL_NEAREST, GL_NEAREST`` for pixelated graphics.
 
@@ -748,7 +747,7 @@ class Framebuffer:
         # If the framebuffer is bound we need to set the viewport.
         # Otherwise it will be set on use()
         if Framebuffer.active == self:
-             gl.glViewport(*self._viewport)
+            gl.glViewport(*self._viewport)
 
     @property
     def width(self) -> int:
@@ -867,10 +866,10 @@ class Framebuffer:
             raise ValueError("Framebuffer is incomplete. {}".format(states.get(status, "Unknown error")))
 
 
-def framebuffer(color_attachments: List[Texture]=None, depth_attachment: Texture=None) -> Framebuffer:
+def framebuffer(color_attachments: List[Texture] = None, depth_attachment: Texture = None) -> Framebuffer:
     """Create a Framebuffer.
 
-    :param List[Texture] color_attachments: List of textures we want to render into 
+    :param List[Texture] color_attachments: List of textures we want to render into
     :param Texture depth_attachment: Depth texture
     """
     return Framebuffer(color_attachments, depth_attachment)

@@ -11,8 +11,8 @@ import time
 from arcade import shader
 from arcade.experimental import geometry
 
-SCREEN_WIDTH = 1000
-SCREEN_HEIGHT = 500
+SCREEN_WIDTH = 1200
+SCREEN_HEIGHT = 600
 SCREEN_TITLE = "Skyline Using Buffered Shapes"
 
 
