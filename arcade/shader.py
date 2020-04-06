@@ -657,7 +657,8 @@ class Framebuffer:
     This implementation is using texture attachments. When createing a
     Framebuffer we supply it with textures we want our scene rendered into.
     """
-    active = None  # The framebuffer that is bound currently
+    # The framebuffer or window that is currently active
+    active = None  # type: Framebuffer
 
     def __init__(self, color_attachments=None, depth_attachment=None):
         """Create a framebuffer.

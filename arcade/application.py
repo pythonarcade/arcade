@@ -108,7 +108,7 @@ class Window(pyglet.window.Window):
         self.textbox_time = 0.0
         self.key: Optional[int] = None
 
-        # The window 
+        # Tell shaders the window is the current render target
         shader.Framebuffer.active = self
 
     def update(self, delta_time: float):
