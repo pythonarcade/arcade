@@ -428,6 +428,7 @@ class Window(pyglet.window.Window):
         """Bind the window's framebuffer for rendering commands"""
         gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, 0)
         shader.Framebuffer.active = self
+        set_viewport(*get_viewport())
 
     def test(self, frames: int = 10):
         """
