@@ -148,17 +148,22 @@ class MyGame(arcade.Window):
 
         self.use()
 
-        # Put the text on the screen.
-        output = f"Score: {self.score}"
-        arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
+        from pyglet import gl
+        gl.glDisable(gl.GL_BLEND)
 
         self.color_attachment.use(0)
         self.blur_fs.program['blur'] = 1
         self.blur_fs.render()
 
-        self.color_attachment.use(0)
-        self.quad_fs.program['blur'] = 0
-        self.quad_fs.render()
+        # self.color_attachment.use(0)
+        # self.quad_fs.program['blur'] = 0
+        # self.quad_fs.render()
+
+        gl.glEnable(gl.GL_BLEND)
+
+        # Put the text on the screen.
+        output = f"Score: {self.score}"
+        arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
 
 
     def on_mouse_motion(self, x, y, dx, dy):
