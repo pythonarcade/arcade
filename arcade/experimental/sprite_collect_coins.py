@@ -48,6 +48,11 @@ class MyGame(arcade.Window):
         self.player_sprite = None
         self.score = 0
 
+        self.color_attachment = None
+        self.offscreen = None
+        self.quad_fs = None
+        self.mini_map_quad = None
+
         # Don't show the mouse cursor
         self.set_mouse_visible(False)
 
@@ -147,22 +152,31 @@ class MyGame(arcade.Window):
         self.player_list.draw()
 
         self.use()
+        arcade.draw_rectangle_filled(SCREEN_WIDTH / 2,
+                                     SCREEN_HEIGHT / 2,
+                                     SCREEN_WIDTH,
+                                     SCREEN_HEIGHT,
+                                     arcade.color.AMAZON)
+
         self.color_attachment.use(0)
         self.quad_fs.program['angle'] = 0
         self.quad_fs.program['zoom'] = 1
         self.quad_fs.render()
 
         self.use()
+        arcade.draw_rectangle_filled(SCREEN_WIDTH - SCREEN_WIDTH / 8,
+                                     SCREEN_HEIGHT - SCREEN_HEIGHT / 8,
+                                     SCREEN_WIDTH / 4,
+                                     SCREEN_HEIGHT / 4,
+                                     arcade.color.BLACK)
         self.color_attachment.use(0)
         self.mini_map_quad.program['angle'] = 0
         self.mini_map_quad.program['zoom'] = 1
         self.mini_map_quad.render()
 
-
         # Put the text on the screen.
         output = f"Score: {self.score}"
         arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
-
 
     def on_mouse_motion(self, x, y, dx, dy):
         """ Handle Mouse Motion """
