@@ -79,24 +79,13 @@ class MyGame(arcade.Window):
                 #version 330
 
                 uniform sampler2D tex;
-                uniform float angle;
-                uniform float zoom;
 
                 in vec2 v_uv;
                 out vec4 f_color;
 
                 void main() {
-                    mat3 rotate = mat3(
-                        cos(angle), -sin(angle), 0.5,
-                        sin(angle),  cos(angle), 0.5,
-                        0.0,         0.0,        1.0
-                    );
-                    mat3 scale = mat3(
-                         1.0,  0.0,  0.0,
-                         0.0,  1.0,  0.0,
-                         0.0,  0.0,  1.0
-                    );
-                    f_color = texture(tex, (rotate * scale * vec3(v_uv + vec2(-1.0, -1.0), 1.0)).xy * zoom);
+
+                    f_color = texture(tex, (vec3(v_uv + vec2(-1.0, -1.0), 1.0)).xy);
                 }
             ''',
         )
@@ -159,8 +148,6 @@ class MyGame(arcade.Window):
                                      arcade.color.AMAZON)
 
         self.color_attachment.use(0)
-        self.quad_fs.program['angle'] = 0
-        self.quad_fs.program['zoom'] = 1
         self.quad_fs.render()
 
         self.use()
@@ -170,8 +157,6 @@ class MyGame(arcade.Window):
                                      SCREEN_HEIGHT / 4,
                                      arcade.color.BLACK)
         self.color_attachment.use(0)
-        self.mini_map_quad.program['angle'] = 0
-        self.mini_map_quad.program['zoom'] = 1
         self.mini_map_quad.render()
 
         # Put the text on the screen.
