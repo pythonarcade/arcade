@@ -810,10 +810,28 @@ class Framebuffer:
         gl.glDepthMask(self._depth_mask)
         gl.glViewport(*self._viewport)
 
-    def clear(self, color=(0.0, 0.0, 0.0, 0.0), depth=1.0):
-        """Clears the framebuffer. This will also activate/use it"""
+    def clear(self, color=(0.0, 0.0, 0.0, 0.0), depth=1.0, normalized=False):
+        """Clears the framebuffer. This will also activate/use it
+        
+        :param tuple color: A 3 of 4 component tuple containing the color
+        :param depth float: Value to clear the depth buffer
+        :param bool normalized: If the color values are normalized or not
+        """
         self._use()
-        gl.glClearColor(*color)
+
+        if normalized:
+            # If the colors are already normalized we can pass them right in
+            if len(color) == 3:
+                gl.glClearColor(*color, 0.0)
+            else:
+                gl.glClearColor(*color)
+        else:
+            # OpenGL wants normalized colors (0.0 -> 1.0)
+            if len(color) == 3:
+                gl.glClearColor(color[0] / 255, color[1] / 255, color[2] / 255, 0.0)
+            else:
+                gl.glClearColor(color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255)
+
         if self.depth_attachment:
             gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
         else:

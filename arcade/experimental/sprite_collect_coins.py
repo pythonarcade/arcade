@@ -129,7 +129,7 @@ class MyGame(arcade.Window):
         arcade.start_render()
 
         self.offscreen.use()
-        self.offscreen.clear()
+        self.offscreen.clear(arcade.color.AMAZON)
 
         arcade.draw_rectangle_outline(SCREEN_WIDTH / 2,
                                       SCREEN_HEIGHT / 2,
