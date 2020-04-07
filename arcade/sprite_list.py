@@ -627,8 +627,8 @@ class SpriteList(Generic[_SpriteType]):
                 grid_height = grid_width
 
             # Figure out sprite sheet size
-            sprite_sheet_width = grid_item_width * grid_width
-            sprite_sheet_height = grid_item_height * grid_height
+            sprite_sheet_width = (grid_item_width + 1) * grid_width
+            sprite_sheet_height = (grid_item_height + 1) * grid_height
 
             if new_texture:
 
@@ -642,8 +642,8 @@ class SpriteList(Generic[_SpriteType]):
                 x_offset = 0
                 for index, image in enumerate(self.array_of_images):
 
-                    x = (index % grid_width) * grid_item_width
-                    y = (index // grid_width) * grid_item_height
+                    x = (index % grid_width) * (grid_item_width + 1)
+                    y = (index // grid_width) * (grid_item_height + 1) + 1
 
                     new_image2.paste(image, (x, y))
                     x_offset += image.size[0]
@@ -666,8 +666,8 @@ class SpriteList(Generic[_SpriteType]):
                 x = index % grid_width
                 y = index // grid_width
 
-                start_x = (grid_item_width * x) / sprite_sheet_width
-                start_y = 1 - ((grid_item_height * (y + 1)) / sprite_sheet_height)
+                start_x = ((grid_item_width + 1) * x) / sprite_sheet_width
+                start_y = 1 - (((grid_item_height + 1) * (y + 1)) / sprite_sheet_height)
                 normalized_width = image.width / sprite_sheet_width
                 normalized_height = image.height / sprite_sheet_height
                 tex_coords.append([start_x, start_y, normalized_width, normalized_height])
