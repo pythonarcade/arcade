@@ -1068,7 +1068,7 @@ class SpriteSolidColor(Sprite):
         super().__init__()
 
         image = PIL.Image.new('RGBA', (width, height), color)
-        self.texture = Texture("Solid", image)
+        self.texture = Texture(f"Solid-{color[0]}-{color[1]}-{color[2]}", image)
         self._points = self.texture.hit_box_points
 
 
