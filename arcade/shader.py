@@ -770,6 +770,7 @@ class Framebuffer:
 
     @property
     def size(self) -> Tuple[int, int]:
+        """Size as a ``(w, h)`` tuple"""
         return self._width, self._height
 
     @property
@@ -803,7 +804,6 @@ class Framebuffer:
 
     def use(self):
         """Bind the framebuffer making it the target of all redering commands"""
-        # Don't bind the same framebuffer multiple times
         self._use()
         Framebuffer.active = self
 
@@ -813,13 +813,13 @@ class Framebuffer:
             return
 
         gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, self._glo)
-        # Note: gl.glDrawBuffer(GL_NONE) if no texture attachments (future)
+        # NOTE: gl.glDrawBuffer(GL_NONE) if no texture attachments (future)
         gl.glDrawBuffers(len(self._draw_buffers), self._draw_buffers)
         gl.glDepthMask(self._depth_mask)
         gl.glViewport(*self._viewport)
 
     def clear(self, color=(0.0, 0.0, 0.0, 0.0), depth=1.0, normalized=False):
-        """Clears the framebuffer. This will also activate/use it
+        """Clears the framebuffer.
 
         :param tuple color: A 3 of 4 component tuple containing the color
         :param depth float: Value to clear the depth buffer
