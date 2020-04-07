@@ -62,33 +62,7 @@ class MyGame(arcade.Window):
         """ Set up the game and initialize the variables. """
 
         # Offscreen stuff
-        program = shader.program(
-            vertex_shader='''
-                #version 330
-
-                in vec2 in_vert;
-                in vec2 in_uv;
-                out vec2 v_uv;
-
-                void main() {
-                    gl_Position = vec4(in_vert, 0.0, 1.0);
-                    v_uv = in_uv;
-                }
-            ''',
-            fragment_shader='''
-                #version 330
-
-                uniform sampler2D tex;
-
-                in vec2 v_uv;
-                out vec4 f_color;
-
-                void main() {
-
-                    f_color = texture(tex, (vec3(v_uv + vec2(-1.0, -1.0), 1.0)).xy);
-                }
-            ''',
-        )
+        program = shader.load_program("simple_shader.vert", "simple_shader.frag")
         self.color_attachment = shader.texture((SCREEN_WIDTH, SCREEN_HEIGHT), 4)
         self.offscreen = shader.framebuffer(color_attachments=[self.color_attachment])
         self.quad_fs = geometry.quad_fs(program, size=(2.0, 2.0))
