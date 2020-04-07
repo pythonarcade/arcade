@@ -83,16 +83,28 @@ class MyGame(arcade.Window):
                 in vec2 v_uv;
                 out vec4 f_color;
                 uniform int blur;
-                uniform float weight[5] = float[] (0.227027, 0.1945946, 0.1216216, 0.054054, 0.016216);
-
+                uniform float weight =1;
+                uniform int my_size = 20;
+                uniform int step_size = 1;
+                
                 void main() {
                     vec2 tex_offset = vec2(1.0 / 800.0, 1.0 / 600.0);
                     if(blur == 1) {
-                        vec4 result = texture(tex, v_uv) * weight[0];
-                        for(int i = 1; i < 5; ++i)
+                        vec4 result = texture(tex, v_uv);
+                        for(int x = -my_size; x < my_size; x += step_size)
                         {
-                            result += texture(tex, v_uv + vec2(tex_offset.x * i, 0.0)) * weight[i];
-                            result += texture(tex, v_uv - vec2(tex_offset.x * i, 0.0)) * weight[i];
+                            for(int y = -my_size; y < my_size; y += step_size)
+                            {                                
+                                vec2 p2 = v_uv - vec2(tex_offset.x * x, tex_offset.y * y);
+                                float d = distance(v_uv, p2);
+                                float ratio = 0.0;
+                                if(d != 0) {
+                                    ratio = 1.0 / ((d * 800) * (d * 600)) * weight;
+                                }
+                                    
+                                result += texture(tex, p2) * ratio;
+                                // result += texture(tex, v_uv - vec2(tex_offset.x * x, tex_offset.y * y)) * weight;
+                            }
                         }
                         f_color = result;
                     } else {
@@ -104,7 +116,7 @@ class MyGame(arcade.Window):
         self.color_attachment = shader.texture((SCREEN_WIDTH, SCREEN_HEIGHT), 4)
         self.offscreen = shader.framebuffer(color_attachments=[self.color_attachment])
         self.blur_fs = geometry.quad_fs(program, size=(2.0, 2.0))
-        self.quad_fs = geometry.quad_fs(program, size=(2.0, 2.0), pos=(0.04, 0.0))
+        self.quad_fs = geometry.quad_fs(program, size=(2.0, 2.0), pos=(0.0, 0.0))
 
         # Sprite lists
         self.player_list = arcade.SpriteList()
@@ -115,8 +127,8 @@ class MyGame(arcade.Window):
 
         # Set up the player
         # Character image from kenney.nl
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                                           SPRITE_SCALING_PLAYER)
+        color = random.randrange(255), random.randrange(255), random.randrange(255)
+        self.player_sprite = arcade.SpriteSolidColor(30, 30, arcade.color.WHITE)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 50
         self.player_list.append(self.player_sprite)
@@ -126,8 +138,8 @@ class MyGame(arcade.Window):
 
             # Create the coin instance
             # Coin image from kenney.nl
-            coin = arcade.Sprite(":resources:images/items/coinGold.png",
-                                 SPRITE_SCALING_COIN)
+            color = random.randrange(255), random.randrange(255), random.randrange(255)
+            coin = arcade.Sprite("circle16.png")
 
             # Position the coin
             coin.center_x = random.randrange(SCREEN_WIDTH)
@@ -144,12 +156,8 @@ class MyGame(arcade.Window):
         self.offscreen.clear()
 
         self.coin_list.draw()
-        self.player_list.draw()
 
         self.use()
-
-        from pyglet import gl
-        gl.glDisable(gl.GL_BLEND)
 
         self.color_attachment.use(0)
         self.blur_fs.program['blur'] = 1
@@ -159,7 +167,7 @@ class MyGame(arcade.Window):
         # self.quad_fs.program['blur'] = 0
         # self.quad_fs.render()
 
-        gl.glEnable(gl.GL_BLEND)
+        self.player_list.draw()
 
         # Put the text on the screen.
         output = f"Score: {self.score}"
