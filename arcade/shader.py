@@ -241,6 +241,14 @@ def program(vertex_shader: str, fragment_shader: str) -> Program:
         (fragment_shader, gl.GL_FRAGMENT_SHADER)
     )
 
+def load_program(vertex_shader_filename: str, fragment_shader_filename: str) -> Program:
+    """ Create a new program given a file names that contain the vertex shader and
+    fragment shader. """
+    with open(vertex_shader_filename, "r") as myfile:
+        vertex_shader = myfile.read()
+    with open(fragment_shader_filename, "r") as myfile:
+        fragment_shader = myfile.read()
+    return program(vertex_shader, fragment_shader)
 
 def compile_shader(source: str, shader_type: gl.GLenum) -> gl.GLuint:
     """Compile the shader code of the given type.
@@ -812,7 +820,7 @@ class Framebuffer:
 
     def clear(self, color=(0.0, 0.0, 0.0, 0.0), depth=1.0, normalized=False):
         """Clears the framebuffer. This will also activate/use it
-        
+
         :param tuple color: A 3 of 4 component tuple containing the color
         :param depth float: Value to clear the depth buffer
         :param bool normalized: If the color values are normalized or not
