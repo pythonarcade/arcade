@@ -674,7 +674,7 @@ class Framebuffer:
         :param List[Texture] color_attachments: List of color attachments.
         :param Texture depth_attachment: A depth attachment (optional)
         """
-        self._color_attachments = color_attachments
+        self._color_attachments = color_attachments if isinstance(color_attachments, list) else [color_attachments]
         self._depth_attachment = depth_attachment
         self._glo = fbo_id = gl.GLuint()  # The OpenGL alias/name
         self._samples = 0  # Leaving this at 0 for future sample support
