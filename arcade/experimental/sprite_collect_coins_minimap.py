@@ -124,7 +124,6 @@ class MyGame(arcade.Window):
         self.color_attachment.use(0)
         self.quad_fs.render()
 
-        self.use()
         arcade.draw_rectangle_filled(SCREEN_WIDTH - SCREEN_WIDTH / 8,
                                      SCREEN_HEIGHT - SCREEN_HEIGHT / 8,
                                      SCREEN_WIDTH / 4,

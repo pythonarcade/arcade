@@ -15,29 +15,61 @@ import arcade
 import os
 import random
 
+# --- Minimap Related ---
+from arcade import shader
+from arcade.experimental import geometry
+
 SPRITE_SCALING = 0.5
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 SCREEN_TITLE = "Better Move Sprite with Keyboard Example"
 
+MINIMAP_HEIGHT = SCREEN_HEIGHT / 4
+MAIN_SCREEN_HEIGHT = SCREEN_HEIGHT - MINIMAP_HEIGHT
+
 MAX_HORIZONTAL_MOVEMENT_SPEED = 10
 MAX_VERTICAL_MOVEMENT_SPEED = 5
 HORIZONTAL_ACCELERATION = 0.5
 VERTICAL_ACCELERATION = 0.2
 VIEWPORT_MARGIN = SCREEN_WIDTH / 2 - 50
+TOP_VIEWPORT_MARGIN = 30
+DEFAULT_BOTTOM_VIEWPORT = -10
+
+MOVEMENT_DRAG = 0.08
 
 PLAYING_FIELD_WIDTH = 5000
+PLAYING_FIELD_HEIGHT = SCREEN_HEIGHT
+
 
 class Player(arcade.SpriteSolidColor):
-
+    """ Player ship """
     def __init__(self):
+        """ Set up player """
         super().__init__(30, 10, arcade.color.WHITE)
 
     def update(self):
+        """ Move the player """
+        # Move
         self.center_x += self.change_x
         self.center_y += self.change_y
 
+        # Drag
+        if self.change_x > 0:
+            self.change_x -= MOVEMENT_DRAG
+        if self.change_x < 0:
+            self.change_x += MOVEMENT_DRAG
+        if abs(self.change_x) < MOVEMENT_DRAG:
+            self.change_x = 0
+
+        if self.change_y > 0:
+            self.change_y -= MOVEMENT_DRAG
+        if self.change_y < 0:
+            self.change_y += MOVEMENT_DRAG
+        if abs(self.change_y) < MOVEMENT_DRAG:
+            self.change_y = 0
+
+        # Check bounds
         if self.left < 0:
             self.left = 0
         elif self.right > PLAYING_FIELD_WIDTH - 1:
@@ -71,7 +103,9 @@ class MyGame(arcade.Window):
 
         # Variables that will hold sprite lists
         self.player_list = None
-        self.other_sprite_list = None
+        self.star_sprite_list = None
+        self.enemy_sprite_list = None
+        self.bullet_sprite_list = None
 
         # Set up the player info
         self.player_sprite = None
@@ -88,12 +122,26 @@ class MyGame(arcade.Window):
         # Set the background color
         arcade.set_background_color(arcade.color.BLACK)
 
+        # --- Mini-map related ---
+        self.color_attachment = None
+        self.offscreen = None
+        self.quad_fs = None
+        self.mini_map_quad = None
+
+        program = shader.load_program("simple_shader.vert", "simple_shader.frag")
+        self.color_attachment = shader.texture((SCREEN_WIDTH, SCREEN_HEIGHT), 4)
+        self.offscreen = shader.framebuffer(color_attachments=[self.color_attachment])
+        self.quad_fs = geometry.quad_fs(program, size=(2.0, 2.0))
+        self.mini_map_quad = geometry.quad_fs(program, size=(2.0, 0.5), pos=(0.0, 0.75))
+
     def setup(self):
         """ Set up the game and initialize the variables. """
 
         # Sprite lists
         self.player_list = arcade.SpriteList()
-        self.other_sprite_list = arcade.SpriteList()
+        self.star_sprite_list = arcade.SpriteList()
+        self.enemy_sprite_list = arcade.SpriteList()
+        self.bullet_sprite_list = arcade.SpriteList()
 
         # Set up the player
         self.player_sprite = Player()
@@ -101,31 +149,81 @@ class MyGame(arcade.Window):
         self.player_sprite.center_y = 50
         self.player_list.append(self.player_sprite)
 
+        # Add stars
         for i in range(80):
             sprite = arcade.SpriteSolidColor(4, 4, arcade.color.WHITE)
             sprite.center_x = random.randrange(PLAYING_FIELD_WIDTH)
             sprite.center_y = random.randrange(600)
-            self.other_sprite_list.append(sprite)
+            self.star_sprite_list.append(sprite)
+
+        # Add enemies
+        for i in range(10):
+            sprite = arcade.SpriteSolidColor(20, 20, arcade.color.RED)
+            sprite.center_x = random.randrange(PLAYING_FIELD_WIDTH)
+            sprite.center_y = random.randrange(600)
+            self.enemy_sprite_list.append(sprite)
 
     def on_draw(self):
-        """
-        Render the screen.
-        """
+        """ Render the screen. """
 
         # This command has to happen before we start drawing
         arcade.start_render()
 
-        # Draw all the sprites.
+        # Draw to the frame buffer used in the minimap
+        self.offscreen.use()
+        self.offscreen.clear()
+
+        arcade.set_viewport(0,
+                            PLAYING_FIELD_WIDTH,
+                            0,
+                            SCREEN_HEIGHT)
+
+        self.enemy_sprite_list.draw()
+        self.bullet_sprite_list.draw()
         self.player_list.draw()
-        self.other_sprite_list.draw()
+
+        # Now draw to the actual screen
+        self.use()
+
+        arcade.set_viewport(self.view_left,
+                            SCREEN_WIDTH + self.view_left,
+                            self.view_bottom,
+                            SCREEN_HEIGHT + self.view_bottom)
+
+        # Draw all the sprites on the screen
+        self.star_sprite_list.draw()
+        self.enemy_sprite_list.draw()
+        self.bullet_sprite_list.draw()
+        self.player_list.draw()
+
+        # Draw the ground
+        arcade.draw_line(0, 0, PLAYING_FIELD_WIDTH, 0, arcade.color.WHITE)
+
+        # Draw a background for the minimap
+        arcade.draw_rectangle_filled(SCREEN_WIDTH - SCREEN_WIDTH / 2 + self.view_left,
+                                     SCREEN_HEIGHT - SCREEN_HEIGHT / 8 + self.view_bottom,
+                                     SCREEN_WIDTH,
+                                     SCREEN_HEIGHT / 4,
+                                     arcade.color.DARK_GREEN)
+
+        # Draw the minimap
+        self.color_attachment.use(0)
+        self.mini_map_quad.render()
+
+        # Draw a rectangle showing where the screen is
+        width_ratio = SCREEN_WIDTH / PLAYING_FIELD_WIDTH
+        height_ratio = MINIMAP_HEIGHT / PLAYING_FIELD_HEIGHT
+        width = width_ratio * SCREEN_WIDTH
+        height = height_ratio * MAIN_SCREEN_HEIGHT
+        x = (self.view_left + SCREEN_WIDTH / 2) * width_ratio + self.view_left
+        y = self.view_bottom + height / 2 + (SCREEN_HEIGHT - MINIMAP_HEIGHT) + self.view_bottom * height_ratio
+
+        arcade.draw_rectangle_outline(center_x=x, center_y=y,
+                                      width=width, height=height,
+                                      color=arcade.color.WHITE)
 
     def on_update(self, delta_time):
         """ Movement and game logic """
-
-        if self.player_sprite.change_x > 0:
-            self.player_sprite.change_x -= 0.1
-        if self.player_sprite.change_x > 0:
-            self.player_sprite.change_x -= 0.1
 
         # Calculate speed based on the keys pressed
         if self.up_pressed and not self.down_pressed:
@@ -150,27 +248,23 @@ class MyGame(arcade.Window):
         self.player_list.update()
 
         # Scroll left
-        changed = False
         left_boundary = self.view_left + VIEWPORT_MARGIN
         if self.player_sprite.left < left_boundary:
             self.view_left -= left_boundary - self.player_sprite.left
-            changed = True
 
         # Scroll right
         right_boundary = self.view_left + SCREEN_WIDTH - VIEWPORT_MARGIN
         if self.player_sprite.right > right_boundary:
             self.view_left += self.player_sprite.right - right_boundary
-            changed = True
+
+        # Scroll up
+        self.view_bottom = DEFAULT_BOTTOM_VIEWPORT
+        top_boundary = self.view_bottom + SCREEN_HEIGHT - TOP_VIEWPORT_MARGIN - MINIMAP_HEIGHT
+        if self.player_sprite.top > top_boundary:
+            self.view_bottom += self.player_sprite.top - top_boundary
 
         self.view_left = int(self.view_left)
         self.view_bottom = int(self.view_bottom)
-
-        # If we changed the boundary values, update the view port to match
-        if changed:
-            arcade.set_viewport(self.view_left,
-                                SCREEN_WIDTH + self.view_left,
-                                self.view_bottom,
-                                SCREEN_HEIGHT + self.view_bottom)
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
