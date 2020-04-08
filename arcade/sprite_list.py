@@ -667,7 +667,7 @@ class SpriteList(Generic[_SpriteType]):
                 y = index // grid_width
 
                 start_x = ((grid_item_width + 1) * x) / sprite_sheet_width
-                start_y = 1 - (((grid_item_height + 1) * (y + 1)) / sprite_sheet_height)
+                start_y = 1 - (((image.height + 1) * (y + 1)) / sprite_sheet_height)
                 normalized_width = image.width / sprite_sheet_width
                 normalized_height = image.height / sprite_sheet_height
                 tex_coords.append([start_x, start_y, normalized_width, normalized_height])
