@@ -688,14 +688,25 @@ class Texture:
             self.texture_id.value, self.width, self.height, self._components)
 
 
-def texture(size: Tuple[int, int], components: int, data=None) -> Texture:
+def texture(size: Tuple[int, int], components: int, data=None,
+    wrap_x: gl.GLenum = None, wrap_y: gl.GLenum = None, filter: Tuple[gl.GLenum, gl.GLenum] = None) -> Texture:
     """Create a Texture.
+
+    Wrap modes: ``GL_REPEAT``, ``GL_MIRRORED_REPEAT``, ``GL_CLAMP_TO_EDGE``, ``GL_CLAMP_TO_BORDER``
+
+    Minifying filters: ``GL_NEAREST``, ``GL_LINEAR``, ``GL_NEAREST_MIPMAP_NEAREST``, ``GL_LINEAR_MIPMAP_NEAREST``
+    ``GL_NEAREST_MIPMAP_LINEAR``, ``GL_LINEAR_MIPMAP_LINEAR``
+
+    Magnifying filters: ``GL_NEAREST``, ``GL_LINEAR``
 
     :param Tuple[int, int] size: The size of the texture
     :param int components: Number of components (1: R, 2: RG, 3: RGB, 4: RGBA)
     :param buffer data: The texture data (optional)
+    :param GLenum wrap_x: How the texture wraps in x direction 
+    :param GLenum wrap_x: How the texture wraps in y direction
+    :param Tuple[GLenum, GLenum] filter: Minification and magnification filter
     """
-    return Texture(size, components, data)
+    return Texture(size, components, data, wrap_x=wrap_x, wrap_y=wrap_y, filter=filter)
 
 
 class Framebuffer:
