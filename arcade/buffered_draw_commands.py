@@ -577,36 +577,7 @@ class ShapeElementList(Generic[TShape]):
         self._center_x = 0
         self._center_y = 0
         self._angle = 0
-        self.program = self.ctx.program(
-            vertex_shader='''
-                #version 330
-                uniform mat4 Projection;
-                uniform vec2 Position;
-                uniform float Angle;
-
-                in vec2 in_vert;
-                in vec4 in_color;
-
-                out vec4 v_color;
-                void main() {
-                    float angle = radians(Angle);
-                    mat2 rotate = mat2(
-                        cos(angle), sin(angle),
-                        -sin(angle), cos(angle)
-                    );
-                   gl_Position = Projection * vec4(Position + (rotate * in_vert), 0.0, 1.0);
-                   v_color = in_color;
-                }
-            ''',
-            fragment_shader='''
-                #version 330
-                in vec4 v_color;
-                out vec4 f_color;
-                void main() {
-                    f_color = v_color;
-                }
-            ''',
-        )
+        self.program = self.ctx.shape_element_list_program
         # Could do much better using just one vbo and glDrawElementsBaseVertex
         self.batches = defaultdict(_Batch)
         self.dirties = set()

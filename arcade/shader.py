@@ -921,6 +921,10 @@ class Context:
             self.resource_root / 'shaders/line_generic_with_colors_vs.glsl',
             self.resource_root / 'shaders/line_generic_with_colors_fs.glsl',
         )
+        self.shape_element_list_program = self.load_program(
+            self.resource_root / 'shaders/shape_element_list_vs.glsl',
+            self.resource_root / 'shaders/shape_element_list_fs.glsl',
+        )
 
     @property
     def gl_version(self):
