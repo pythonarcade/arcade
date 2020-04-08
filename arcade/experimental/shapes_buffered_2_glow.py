@@ -98,7 +98,7 @@ class MyGame(arcade.Window):
         arcade.set_background_color(arcade.color.BLACK)
 
         self.offscreen = shader.Framebuffer(color_attachments=shader.Texture((SCREEN_WIDTH, SCREEN_HEIGHT), 4))
-        self.glow = postprocessing.Glow((SCREEN_WIDTH // 4, SCREEN_HEIGHT // 4))
+        self.glow = postprocessing.Glow((SCREEN_WIDTH // 8, SCREEN_HEIGHT // 8))
 
     def on_draw(self):
         """
