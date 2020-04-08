@@ -5,6 +5,13 @@
 Release Notes
 =============
 
+Version 2.3.13
+--------------
+
+*Release Date: Apr-8-2020*
+
+* Bug Fix: Sprites with different dimensions added to same SpriteList didn't display correctly `Issue 630 <https://github.com/pvcraven/arcade/issues/630>`_
+
 Version 2.3.12
 --------------
 
