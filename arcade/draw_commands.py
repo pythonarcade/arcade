@@ -36,27 +36,6 @@ from arcade import get_window
 if TYPE_CHECKING:  # import for mypy only
     from arcade.arcade_types import Point
 
-_line_vertex_shader = '''
-    #version 330
-    uniform mat4 Projection;
-    in vec2 in_vert;
-    in vec4 in_color;
-    out vec4 v_color;
-    void main() {
-       gl_Position = Projection * vec4(in_vert, 0.0, 1.0);
-       v_color = in_color;
-    }
-'''
-
-_line_fragment_shader = '''
-    #version 330
-    in vec4 v_color;
-    out vec4 f_color;
-    void main() {
-        f_color = v_color;
-    }
-'''
-
 
 # --- BEGIN ARC FUNCTIONS # # #
 
@@ -412,11 +391,6 @@ def _generic_draw_line_strip(point_list: PointList,
 
     ctx = window.ctx
 
-    program = ctx.program(
-        vertex_shader=_line_vertex_shader,
-        fragment_shader=_line_fragment_shader,
-    )
-
     c4 = get_four_byte_color(color)
     c4e = c4 * len(point_list)
     a = array.array('B', c4e)
@@ -442,6 +416,7 @@ def _generic_draw_line_strip(point_list: PointList,
 
     vao_content = [vbo_buf_desc, color_buf_desc]
 
+    program = ctx.line_vertex_shader
     vao = ctx.vertex_array(program, vao_content)
     program['Projection'] = get_projection().flatten()
     vao.render(mode=mode)

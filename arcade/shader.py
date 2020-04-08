@@ -3,8 +3,10 @@
 
 from ctypes import *
 from collections import namedtuple
+from pathlib import Path
 import weakref
 from typing import List, Tuple, Iterable, Dict
+
 
 from pyglet import gl
 
@@ -903,10 +905,18 @@ class Context:
     """
     Represents an OpenGL context. This context belongs to an arcade.Window.
     """
+    resource_root = (Path(__file__).parent / 'resources').resolve()
+
     def __init__(self, window):
         self._window = window
         # TODO: Detect OpenGL version etc
         self._gl_version = (3, 3)
+
+        # Pre-load system shaders here
+        self.line_vertex_shader = self.load_program(
+            self.resource_root / 'shaders/line_vertex_shader_vs.glsl',
+            self.resource_root / 'shaders/line_vertex_shader_fs.glsl',
+        )
 
     @property
     def gl_version(self):
