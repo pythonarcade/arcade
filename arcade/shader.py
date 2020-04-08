@@ -539,7 +539,7 @@ def vertex_array(prog: gl.GLuint, content, index_buffer=None):
 
 
 class Texture:
-    def __init__(self, size: Tuple[int, int], components: int, data=None):
+    def __init__(self, size: Tuple[int, int], components: int, data=None, filter=None, wrap_x=None, wrap_y=None):
         """Represents an OpenGL texture.
 
         A texture can be created with or without initial data.
@@ -552,6 +552,10 @@ class Texture:
         """
         self.width, self.height = size
         self._components = components
+        # These are the defalt states in OpenGL
+        self._filter = gl.GL_LINEAR, gl.GL_LINEAR
+        self._wrap_x = gl.GL_REPEAT
+        self._wrap_y = gl.GL_REPEAT
 
         sized_format = (gl.GL_R8, gl.GL_RG8, gl.GL_RGB8, gl.GL_RGBA8)[components - 1]
         self.format = (gl.GL_R, gl.GL_RG, gl.GL_RGB, gl.GL_RGBA)[components - 1]
@@ -574,7 +578,10 @@ class Texture:
         except gl.GLException:
             raise gl.GLException(f"Unable to create texture. {gl.GL_MAX_TEXTURE_SIZE} {size}")
 
-        self.filter = gl.GL_LINEAR, gl.GL_LINEAR
+        self.filter = filter or self._filter
+        self.wrap_x = wrap_x or self._wrap_x
+        self.wrap_y = wrap_y or self._wrap_y
+
         weakref.finalize(self, Texture.release, texture_id)
 
     @property
@@ -616,6 +623,38 @@ class Texture:
         self.use()
         gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, self._filter[0])
         gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, self._filter[1])
+
+    @property
+    def wrap_x(self):
+        """
+        The horizontal wrapping of the texture. This decides how textures
+        are read when texture coordinates are outside the [0.0, 1.0] area.
+
+        Valid options are: ``GL_REPEAT``, ``GL_MIRRORED_REPEAT``, ``GL_CLAMP_TO_EDGE``, ``GL_CLAMP_TO_BORDER``
+        """
+        return self._wrap_x
+
+    @wrap_x.setter
+    def wrap_x(self, value):
+        self._wrap_x = value
+        self.use()
+        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_S, value)
+
+    @property
+    def wrap_y(self):
+        """
+        The horizontal wrapping of the texture. This decides how textures
+        are read when texture coordinates are outside the [0.0, 1.0] area.
+
+        Valid options are: ``GL_REPEAT``, ``GL_MIRRORED_REPEAT``, ``GL_CLAMP_TO_EDGE``, ``GL_CLAMP_TO_BORDER``
+        """
+        return self._wrap_y
+
+    @wrap_y.setter
+    def wrap_y(self, value):
+        self._wrap_y = value
+        self.use()
+        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_T, value)
 
     def build_mipmaps(self, base=0, max=1000):
         """Generate mipmaps for this texture.
