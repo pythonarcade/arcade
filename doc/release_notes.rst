@@ -5,8 +5,17 @@
 Release Notes
 =============
 
+Version 2.3.12
+--------------
+
+*Release Date: Apr-8-2020*
+
+* Enhancement: Support more textures in a SpriteList `Issue 332 <https://github.com/pvcraven/arcade/issues/332>`_
+
 Version 2.3.11
 --------------
+
+*Release Date: Apr-5-2020*
 
 * Bug Fix: Fix procedural_caves_bsp.py
 * Bug Fix: Improve Windows install docs `Issue 623 <https://github.com/pvcraven/arcade/issues/623>`_
