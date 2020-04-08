@@ -96,28 +96,7 @@ def create_line_generic_with_colors(point_list: PointList,
         raise RuntimeError("Cannot create Shape without a Window")
 
     ctx = window.ctx
-
-    program = ctx.program(
-        vertex_shader='''
-            #version 330
-            uniform mat4 Projection;
-            in vec2 in_vert;
-            in vec4 in_color;
-            out vec4 v_color;
-            void main() {
-               gl_Position = Projection * vec4(in_vert, 0.0, 1.0);
-               v_color = in_color;
-            }
-        ''',
-        fragment_shader='''
-            #version 330
-            in vec4 v_color;
-            out vec4 f_color;
-            void main() {
-                f_color = v_color;
-            }
-        ''',
-    )
+    program = ctx.line_generic_with_colors_program
 
     buffer_type = np.dtype([('vertex', '2f4'), ('color', '4B')])
     data = np.zeros(len(point_list), dtype=buffer_type)
