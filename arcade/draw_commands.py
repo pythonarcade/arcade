@@ -406,8 +406,13 @@ def _generic_draw_line_strip(point_list: PointList,
     """
     # Cache the program. But not on linux because it fails unit tests for some reason.
     # if not _generic_draw_line_strip.program or sys.platform == "linux":
+    window = get_window()
+    if window is None:
+        raise RuntimeError("Cannot draw without a Window")
 
-    program = shader.program(
+    ctx = window.ctx
+
+    program = ctx.program(
         vertex_shader=_line_vertex_shader,
         fragment_shader=_line_fragment_shader,
     )
@@ -415,7 +420,7 @@ def _generic_draw_line_strip(point_list: PointList,
     c4 = get_four_byte_color(color)
     c4e = c4 * len(point_list)
     a = array.array('B', c4e)
-    color_buf = shader.buffer(a.tobytes())
+    color_buf = ctx.buffer(a.tobytes())
     color_buf_desc = shader.BufferDescription(
         color_buf,
         '4B',
@@ -428,7 +433,7 @@ def _generic_draw_line_strip(point_list: PointList,
 
     vertices = array.array('f', gen_flatten(point_list))
 
-    vbo_buf = shader.buffer(vertices.tobytes())
+    vbo_buf = ctx.buffer(vertices.tobytes())
     vbo_buf_desc = shader.BufferDescription(
         vbo_buf,
         '2f',
@@ -437,7 +442,7 @@ def _generic_draw_line_strip(point_list: PointList,
 
     vao_content = [vbo_buf_desc, color_buf_desc]
 
-    vao = shader.vertex_array(program, vao_content)
+    vao = ctx.vertex_array(program, vao_content)
     program['Projection'] = get_projection().flatten()
     vao.render(mode=mode)
 

@@ -2,6 +2,7 @@ from pathlib import Path
 from pyglet import gl
 from typing import Tuple
 from arcade import shader
+from arcade import get_window
 from arcade.experimental import geometry
 
 SHADER_PATH = (Path(__file__).parent / 'shaders').resolve()
@@ -12,7 +13,8 @@ def render_texture(texture):
     """Render a texture"""
     global TEXTURE_VAO
     if TEXTURE_VAO is None:
-        texture_prog = shader.load_program(
+        ctx = get_window().ctx
+        texture_prog = ctx.load_program(
             vertex_shader_filename=SHADER_PATH / 'texture_ndc_vs.glsl',
             fragment_shader_filename=SHADER_PATH / 'texture_fs.glsl',
         )
@@ -26,6 +28,11 @@ class PostProcessing:
     """Base class"""
     def __init__(self, size: Tuple[int, int], *args, **kwargs):
         self._size = size
+        self._ctx = get_window().ctx
+
+    @property
+    def ctx(self) -> shader.Context:
+        return self._ctx
 
     @property
     def width(self):
@@ -55,8 +62,8 @@ class GaussianBlurHorizontal(PostProcessing):
     def __init__(self, size: Tuple[int, int], kernel_size=5):
         super().__init__(size)
         self._kernel_size = kernel_size
-        self._fbo = shader.framebuffer(color_attachments=shader.texture(size, 3, wrap_x=gl.GL_CLAMP_TO_EDGE, wrap_y=gl.GL_CLAMP_TO_EDGE))
-        self._program = shader.load_program(
+        self._fbo = self.ctx.framebuffer(color_attachments=self.ctx.texture(size, 3, wrap_x=gl.GL_CLAMP_TO_EDGE, wrap_y=gl.GL_CLAMP_TO_EDGE))
+        self._program = self.ctx.load_program(
             vertex_shader_filename=SHADER_PATH / 'texture_ndc_vs.glsl',
             fragment_shader_filename=SHADER_PATH / 'gaussian_blurx_fs.glsl',
         )
@@ -75,8 +82,8 @@ class GaussianBlurVertical(PostProcessing):
     def __init__(self, size: Tuple[int, int], kernel_size=5):
         super().__init__(size)
         self._kernel_size = kernel_size
-        self._fbo = shader.framebuffer(color_attachments=shader.texture(size, 3, wrap_x=gl.GL_CLAMP_TO_EDGE, wrap_y=gl.GL_CLAMP_TO_EDGE))
-        self._program = shader.load_program(
+        self._fbo = self.ctx.framebuffer(color_attachments=self.ctx.texture(size, 3, wrap_x=gl.GL_CLAMP_TO_EDGE, wrap_y=gl.GL_CLAMP_TO_EDGE))
+        self._program = self.ctx.load_program(
             vertex_shader_filename=SHADER_PATH / 'texture_ndc_vs.glsl',
             fragment_shader_filename=SHADER_PATH / 'gaussian_blury_fs.glsl',
         )
@@ -107,7 +114,7 @@ class Glow(PostProcessing):
     def __init__(self, size, kernel_size=5):
         super().__init__(size,kernel_size=kernel_size)
         self._gaussian = GaussianBlur(size, kernel_size=kernel_size)
-        self._combine_program = shader.load_program(
+        self._combine_program = self.ctx.load_program(
             vertex_shader_filename=SHADER_PATH / 'texture_ndc_vs.glsl',
             fragment_shader_filename=SHADER_PATH / 'glow_combine_fs.glsl',
         )

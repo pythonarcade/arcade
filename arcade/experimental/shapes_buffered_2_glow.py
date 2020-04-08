@@ -27,7 +27,7 @@ class MyGame(arcade.Window):
         """
         Set up the application.
         """
-        super().__init__(width, height, title, antialiasing=True)
+        super().__init__(width, height, title)
 
         self.shape_list = arcade.ShapeElementList()
         self.shape_list.center_x = SCREEN_WIDTH // 2
@@ -97,7 +97,8 @@ class MyGame(arcade.Window):
 
         arcade.set_background_color(arcade.color.BLACK)
 
-        self.offscreen = shader.Framebuffer(color_attachments=shader.Texture((SCREEN_WIDTH, SCREEN_HEIGHT), 4))
+        self.offscreen = shader.Framebuffer(
+            color_attachments=shader.Texture((SCREEN_WIDTH, SCREEN_HEIGHT), 4, wrap_x=gl.GL_CLAMP_TO_EDGE, wrap_y=gl.GL_CLAMP_TO_EDGE))
         self.glow = postprocessing.Glow((SCREEN_WIDTH // 8, SCREEN_HEIGHT // 8))
 
     def on_draw(self):
@@ -117,7 +118,9 @@ class MyGame(arcade.Window):
             self.glow.render(self.offscreen.color_attachments[0], self)
             gl.glEnable(gl.GL_BLEND)
         except Exception as e:
-            print(e)
+            import traceback
+            traceback.print_exc()
+            # print(e)
 
     def on_update(self, delta_time):
         self.shape_list.angle += 0.2

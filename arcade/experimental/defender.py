@@ -132,11 +132,11 @@ class MyGame(arcade.Window):
         self.quad_fs = None
         self.mini_map_quad = None
 
-        program = shader.load_program("simple_shader.vert", "simple_shader.frag")
-        self.minimap_color_attachment = shader.texture((SCREEN_WIDTH, SCREEN_HEIGHT), 4)
-        self.minimap_screen = shader.framebuffer(color_attachments=[self.minimap_color_attachment])
-        self.play_screen_color_attachment = shader.texture((SCREEN_WIDTH, SCREEN_HEIGHT), 4)
-        self.play_screen = shader.framebuffer(color_attachments=[self.play_screen_color_attachment])
+        program = self.ctx.load_program("simple_shader.vert", "simple_shader.frag")
+        self.minimap_color_attachment = self.ctx.texture((SCREEN_WIDTH, SCREEN_HEIGHT), 4)
+        self.minimap_screen = self.ctx.framebuffer(color_attachments=[self.minimap_color_attachment])
+        self.play_screen_color_attachment = self.ctx.texture((SCREEN_WIDTH, SCREEN_HEIGHT), 4)
+        self.play_screen = self.ctx.framebuffer(color_attachments=[self.play_screen_color_attachment])
         self.mini_map_quad = geometry.quad_fs(program, size=(2.0, 0.5), pos=(0.0, 0.75))
         self.play_screen_quad = geometry.quad_fs(program, size=(2.0, 1.5), pos=(0.0, 0.0))
 
@@ -174,76 +174,80 @@ class MyGame(arcade.Window):
 
     def on_draw(self):
         """ Render the screen. """
+        try:
+            # This command has to happen before we start drawing
+            arcade.start_render()
 
-        # This command has to happen before we start drawing
-        arcade.start_render()
+            # Draw to the frame buffer used in the minimap
+            self.minimap_screen.use()
+            self.minimap_screen.clear()
 
-        # Draw to the frame buffer used in the minimap
-        self.minimap_screen.use()
-        self.minimap_screen.clear()
+            arcade.set_viewport(0,
+                                PLAYING_FIELD_WIDTH,
+                                0,
+                                SCREEN_HEIGHT)
 
-        arcade.set_viewport(0,
-                            PLAYING_FIELD_WIDTH,
-                            0,
-                            SCREEN_HEIGHT)
+            self.enemy_sprite_list.draw()
+            self.bullet_sprite_list.draw()
+            self.player_list.draw()
 
-        self.enemy_sprite_list.draw()
-        self.bullet_sprite_list.draw()
-        self.player_list.draw()
+            # Now draw to the actual screen
+            self.play_screen.use()
+            self.play_screen.clear()
 
-        # Now draw to the actual screen
-        self.play_screen.use()
-        self.play_screen.clear()
+            # self.use()
 
-        # self.use()
+            arcade.set_viewport(self.view_left,
+                                SCREEN_WIDTH + self.view_left,
+                                self.view_bottom,
+                                SCREEN_HEIGHT + self.view_bottom)
 
-        arcade.set_viewport(self.view_left,
-                            SCREEN_WIDTH + self.view_left,
-                            self.view_bottom,
-                            SCREEN_HEIGHT + self.view_bottom)
+            # Draw all the sprites on the screen
+            self.star_sprite_list.draw()
+            self.enemy_sprite_list.draw()
+            self.bullet_sprite_list.draw()
+            self.player_list.draw()
 
-        # Draw all the sprites on the screen
-        self.star_sprite_list.draw()
-        self.enemy_sprite_list.draw()
-        self.bullet_sprite_list.draw()
-        self.player_list.draw()
+            # Draw the ground
+            arcade.draw_line(0, 0, PLAYING_FIELD_WIDTH, 0, arcade.color.WHITE)
 
-        # Draw the ground
-        arcade.draw_line(0, 0, PLAYING_FIELD_WIDTH, 0, arcade.color.WHITE)
+            self.use()
 
-        self.use()
+            arcade.set_viewport(self.view_left,
+                                SCREEN_WIDTH + self.view_left,
+                                self.view_bottom,
+                                SCREEN_HEIGHT + self.view_bottom)
 
-        arcade.set_viewport(self.view_left,
-                            SCREEN_WIDTH + self.view_left,
-                            self.view_bottom,
-                            SCREEN_HEIGHT + self.view_bottom)
+            gl.glDisable(gl.GL_BLEND)
+            self.glow.render(self.play_screen_color_attachment, self)
+            gl.glEnable(gl.GL_BLEND)
 
-        gl.glDisable(gl.GL_BLEND)
-        self.glow.render(self.play_screen_color_attachment, self)
-        gl.glEnable(gl.GL_BLEND)
+            # Draw a background for the minimap
+            arcade.draw_rectangle_filled(SCREEN_WIDTH - SCREEN_WIDTH / 2 + self.view_left,
+                                        SCREEN_HEIGHT - SCREEN_HEIGHT / 8 + self.view_bottom,
+                                        SCREEN_WIDTH,
+                                        SCREEN_HEIGHT / 4,
+                                        arcade.color.DARK_GREEN)
 
-        # Draw a background for the minimap
-        arcade.draw_rectangle_filled(SCREEN_WIDTH - SCREEN_WIDTH / 2 + self.view_left,
-                                     SCREEN_HEIGHT - SCREEN_HEIGHT / 8 + self.view_bottom,
-                                     SCREEN_WIDTH,
-                                     SCREEN_HEIGHT / 4,
-                                     arcade.color.DARK_GREEN)
+            # Draw the minimap
+            self.minimap_color_attachment.use(0)
+            self.mini_map_quad.render()
 
-        # Draw the minimap
-        self.minimap_color_attachment.use(0)
-        self.mini_map_quad.render()
+            # Draw a rectangle showing where the screen is
+            width_ratio = SCREEN_WIDTH / PLAYING_FIELD_WIDTH
+            height_ratio = MINIMAP_HEIGHT / PLAYING_FIELD_HEIGHT
+            width = width_ratio * SCREEN_WIDTH
+            height = height_ratio * MAIN_SCREEN_HEIGHT
+            x = (self.view_left + SCREEN_WIDTH / 2) * width_ratio + self.view_left
+            y = self.view_bottom + height / 2 + (SCREEN_HEIGHT - MINIMAP_HEIGHT) + self.view_bottom * height_ratio
 
-        # Draw a rectangle showing where the screen is
-        width_ratio = SCREEN_WIDTH / PLAYING_FIELD_WIDTH
-        height_ratio = MINIMAP_HEIGHT / PLAYING_FIELD_HEIGHT
-        width = width_ratio * SCREEN_WIDTH
-        height = height_ratio * MAIN_SCREEN_HEIGHT
-        x = (self.view_left + SCREEN_WIDTH / 2) * width_ratio + self.view_left
-        y = self.view_bottom + height / 2 + (SCREEN_HEIGHT - MINIMAP_HEIGHT) + self.view_bottom * height_ratio
+            arcade.draw_rectangle_outline(center_x=x, center_y=y,
+                                        width=width, height=height,
+                                        color=arcade.color.WHITE)
 
-        arcade.draw_rectangle_outline(center_x=x, center_y=y,
-                                      width=width, height=height,
-                                      color=arcade.color.WHITE)
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
 
         print("Done")
 

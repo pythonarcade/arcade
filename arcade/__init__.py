@@ -95,7 +95,6 @@ from .texture import trim_image
 from .buffered_draw_commands import TShape
 from .buffered_draw_commands import Shape
 from .buffered_draw_commands import ShapeElementList
-from .buffered_draw_commands import VertexBuffer
 from .buffered_draw_commands import create_ellipse
 from .buffered_draw_commands import create_ellipse_filled
 from .buffered_draw_commands import create_ellipse_filled_with_colors

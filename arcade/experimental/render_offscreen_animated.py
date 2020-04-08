@@ -147,7 +147,7 @@ class MyGame(arcade.Window):
     def setup(self):
         """ Set up the game and initialize the variables. """
         # Offscreen stuff
-        program = shader.program(
+        program = self.ctx.program(
             vertex_shader='''
                 #version 330
 
@@ -185,8 +185,8 @@ class MyGame(arcade.Window):
                 }
             ''',
         )
-        self.color_attachment = shader.texture((SCREEN_WIDTH, SCREEN_HEIGHT), 4)
-        self.offscreen = shader.framebuffer(color_attachments=[self.color_attachment])
+        self.color_attachment = self.ctx.texture((SCREEN_WIDTH, SCREEN_HEIGHT), 4)
+        self.offscreen = self.ctx.framebuffer(color_attachments=[self.color_attachment])
         self.quad_fs = geometry.quad_fs(program, size=(2.0, 2.0))
         self.t0 = time.time()
         self.frame = 0

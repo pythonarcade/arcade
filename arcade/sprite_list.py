@@ -26,6 +26,7 @@ from arcade import is_point_in_polygon
 
 from arcade import rotate_point
 from arcade import get_projection
+from arcade import get_window
 from arcade import shader
 from arcade import Point
 
@@ -298,6 +299,9 @@ class SpriteList(Generic[_SpriteType]):
                move. Will result in buggy behavior if the sprites move when this
                is set to True.
         """
+        # The context this sprite list belongs to
+        self.ctx = get_window().ctx
+
         # List of sprites in the sprite list
         self.sprite_list = []
         self.sprite_idx = dict()
@@ -493,7 +497,7 @@ class SpriteList(Generic[_SpriteType]):
                 self._sprite_pos_data.append(sprite.center_x)
                 self._sprite_pos_data.append(sprite.center_y)
 
-            self._sprite_pos_buf = shader.buffer(
+            self._sprite_pos_buf = self.ctx.buffer(
                 self._sprite_pos_data.tobytes(),
                 usage=usage
             )
@@ -511,7 +515,7 @@ class SpriteList(Generic[_SpriteType]):
                 self._sprite_size_data.append(sprite.width)
                 self._sprite_size_data.append(sprite.height)
 
-            self._sprite_size_buf = shader.buffer(
+            self._sprite_size_buf = self.ctx.buffer(
                 self._sprite_size_data.tobytes(),
                 usage=usage
             )
@@ -528,7 +532,7 @@ class SpriteList(Generic[_SpriteType]):
             for sprite in self.sprite_list:
                 self._sprite_angle_data.append(math.radians(sprite.angle))
 
-            self._sprite_angle_buf = shader.buffer(
+            self._sprite_angle_buf = self.ctx.buffer(
                 self._sprite_angle_data.tobytes(),
                 usage=usage
             )
@@ -548,7 +552,7 @@ class SpriteList(Generic[_SpriteType]):
                 self._sprite_color_data.append(int(sprite.color[2]))
                 self._sprite_color_data.append(int(sprite.alpha))
 
-            self._sprite_color_buf = shader.buffer(
+            self._sprite_color_buf = self.ctx.buffer(
                 self._sprite_color_data.tobytes(),
                 usage=usage
             )
@@ -632,7 +636,7 @@ class SpriteList(Generic[_SpriteType]):
 
                 # Create a texture out the composite image
                 texture_bytes = new_image.tobytes()
-                self._texture = shader.texture(
+                self._texture = self.ctx.texture(
                      (new_image.width, new_image.height),
                      4,
                      texture_bytes
@@ -660,7 +664,7 @@ class SpriteList(Generic[_SpriteType]):
                 for coord in tex_coords[index]:
                     array_of_sub_tex_coords.append(coord)
 
-            self._sprite_sub_tex_buf = shader.buffer(
+            self._sprite_sub_tex_buf = self.ctx.buffer(
                 array_of_sub_tex_coords.tobytes(),
                 usage=usage
             )
@@ -689,7 +693,7 @@ class SpriteList(Generic[_SpriteType]):
             1.0, 1.0, 1.0, 1.0,
         ]
         )
-        self.vbo_buf = shader.buffer(vertices.tobytes())
+        self.vbo_buf = self.ctx.buffer(vertices.tobytes())
         vbo_buf_desc = shader.BufferDescription(
             self.vbo_buf,
             '2f 2f',
@@ -703,7 +707,7 @@ class SpriteList(Generic[_SpriteType]):
                        self._sprite_angle_desc,
                        self._sprite_sub_tex_desc,
                        self._sprite_color_desc]
-        self._vao1 = shader.vertex_array(self.program, vao_content)
+        self._vao1 = self.ctx.vertex_array(self.program, vao_content)
 
     def _dump(self, buffer):
         """
@@ -879,7 +883,7 @@ class SpriteList(Generic[_SpriteType]):
         """
         if self.program is None:
             # Used in drawing optimization via OpenGL
-            self.program = shader.program(
+            self.program = self.ctx.program(
                 vertex_shader=_VERTEX_SHADER,
                 fragment_shader=_FRAGMENT_SHADER
             )

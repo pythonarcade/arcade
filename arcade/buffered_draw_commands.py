@@ -22,34 +22,9 @@ from arcade import rotate_point
 from arcade import Point, PointList
 from arcade import get_four_byte_color
 from arcade import get_projection
+from arcade import get_window
 from arcade import get_points_for_thick_line
 from arcade import shader
-
-
-class VertexBuffer:
-    """
-    This class represents a `vertex buffer object`_ for internal library use. Clients
-    of the library probably don't need to use this.
-
-    Attributes:
-        :vbo_id: ID of the vertex buffer as assigned by OpenGL
-        :size:
-        :width:
-        :height:
-        :color:
-
-
-    .. _vertex buffer object:
-       https://en.wikipedia.org/wiki/Vertex_Buffer_Object
-
-    """
-    def __init__(self, vbo_vertex_id: gl.GLuint, size: float, draw_mode: int, vbo_color_id: gl.GLuint = None):
-        self.vbo_vertex_id = vbo_vertex_id
-        self.vbo_color_id = vbo_color_id
-        self.size = size
-        self.draw_mode = draw_mode
-        self.color = None
-        self.line_width = 0
 
 
 class Shape:
@@ -116,7 +91,13 @@ def create_line_generic_with_colors(point_list: PointList,
 
     :Returns Shape:
     """
-    program = shader.program(
+    window = get_window()
+    if window is None:
+        raise RuntimeError("Cannot create Shape without a Window")
+
+    ctx = window.ctx
+
+    program = ctx.program(
         vertex_shader='''
             #version 330
             uniform mat4 Projection;
@@ -143,7 +124,7 @@ def create_line_generic_with_colors(point_list: PointList,
     data['vertex'] = point_list
     data['color'] = [get_four_byte_color(color) for color in color_list]
 
-    vbo = shader.buffer(data.tobytes())
+    vbo = ctx.buffer(data.tobytes())
     vao_content = [
         shader.BufferDescription(
             vbo,
@@ -153,7 +134,7 @@ def create_line_generic_with_colors(point_list: PointList,
         )
     ]
 
-    vao = shader.vertex_array(program, vao_content)
+    vao = ctx.vertex_array(program, vao_content)
     program['Projection'] = get_projection().flatten()
 
     shape = Shape()
@@ -609,6 +590,7 @@ class ShapeElementList(Generic[TShape]):
         """
         Initialize the sprite list
         """
+        self.ctx = get_window().ctx
         # List of sprites in the sprite list
         self.shape_list = []
         self.change_x = 0
@@ -616,7 +598,7 @@ class ShapeElementList(Generic[TShape]):
         self._center_x = 0
         self._center_y = 0
         self._angle = 0
-        self.program = shader.program(
+        self.program = self.ctx.program(
             vertex_shader='''
                 #version 330
                 uniform mat4 Projection;
@@ -672,7 +654,7 @@ class ShapeElementList(Generic[TShape]):
         # Create a buffer large enough to hold all the shapes buffers
         batch = self.batches[group]
         total_vbo_bytes = sum(s.vbo.size for s in batch.items)
-        vbo = shader.Buffer.create_with_size(total_vbo_bytes)
+        vbo = self.ctx.buffer(reserve=total_vbo_bytes)
         offset = 0
         gl.glBindBuffer(gl.GL_COPY_WRITE_BUFFER, vbo.buffer_id)
         # Copy all the shapes buffer in our own vbo
@@ -696,7 +678,7 @@ class ShapeElementList(Generic[TShape]):
             indices.append(reset_idx)
         del indices[-1]
         indices = np.array(indices)
-        ibo = shader.Buffer(indices.astype('i4').tobytes())
+        ibo = self.ctx.buffer(data=indices.astype('i4').tobytes())
 
         vao_content = [
             shader.BufferDescription(
@@ -706,7 +688,7 @@ class ShapeElementList(Generic[TShape]):
                 normalized=['in_color']
             )
         ]
-        vao = shader.vertex_array(self.program, vao_content, ibo)
+        vao = self.ctx.vertex_array(self.program, vao_content, ibo)
         self.program['Projection'] = get_projection().flatten()
         self.program['Position'] = [self.center_x, self.center_y]
         self.program['Angle'] = self.angle

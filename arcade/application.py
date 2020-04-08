@@ -108,8 +108,16 @@ class Window(pyglet.window.Window):
         self.textbox_time = 0.0
         self.key: Optional[int] = None
 
+        # Representation of the OpenGL context for this window
+        self._ctx = shader.Context(self)
+
         # Tell shaders the window is the current render target
         shader.Framebuffer.active = self
+
+    @property
+    def ctx(self) -> shader.Context:
+        """The OpenGL context for this window"""
+        return self._ctx
 
     def update(self, delta_time: float):
         """

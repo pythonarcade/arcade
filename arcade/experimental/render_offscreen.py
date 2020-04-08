@@ -57,7 +57,7 @@ class MyGame(arcade.Window):
             self.coin_list.append(coin)
 
         # Offscreen stuff
-        program = shader.program(
+        program = self.ctx.program(
             vertex_shader='''
                 #version 330
 
@@ -84,8 +84,8 @@ class MyGame(arcade.Window):
                 }
             ''',
         )
-        self.color_attachment = shader.texture((SCREEN_WIDTH, SCREEN_HEIGHT), 4)
-        self.offscreen = shader.framebuffer(color_attachments=[self.color_attachment])
+        self.color_attachment = self.ctx.texture((SCREEN_WIDTH, SCREEN_HEIGHT), 4)
+        self.offscreen = self.ctx.framebuffer(color_attachments=[self.color_attachment])
         self.quad_fs = geometry.quad_fs(program, size=(2.0, 2.0))
         # self.quad_fs.program['tex'] = 0
 
@@ -105,7 +105,7 @@ class MyGame(arcade.Window):
             self.use()
             arcade.start_render()
             self.color_attachment.use(0)
-            self.quad_fs.program['time'] = self.current_time()
+            self.quad_fs.program['time'] = self.current_time() / 4
             self.quad_fs.render()
         except Exception as ex:
             print(ex)

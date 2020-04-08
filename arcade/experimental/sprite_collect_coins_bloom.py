@@ -62,7 +62,7 @@ class MyGame(arcade.Window):
         """ Set up the game and initialize the variables. """
 
         # Offscreen stuff
-        program = shader.program(
+        program = self.ctx.program(
             vertex_shader='''
                 #version 330
 
@@ -113,8 +113,8 @@ class MyGame(arcade.Window):
                 }
             ''',
         )
-        self.color_attachment = shader.texture((SCREEN_WIDTH, SCREEN_HEIGHT), 4)
-        self.offscreen = shader.framebuffer(color_attachments=[self.color_attachment])
+        self.color_attachment = self.ctx.texture((SCREEN_WIDTH, SCREEN_HEIGHT), 4)
+        self.offscreen = self.ctx.framebuffer(color_attachments=[self.color_attachment])
         self.blur_fs = geometry.quad_fs(program, size=(2.0, 2.0))
         self.quad_fs = geometry.quad_fs(program, size=(2.0, 2.0), pos=(0.0, 0.0))
 
@@ -150,29 +150,32 @@ class MyGame(arcade.Window):
 
     def on_draw(self):
         """ Draw everything """
-        arcade.start_render()
+        try:
+            arcade.start_render()
 
-        self.offscreen.use()
-        self.offscreen.clear()
+            self.offscreen.use()
+            self.offscreen.clear()
 
-        self.coin_list.draw()
+            self.coin_list.draw()
 
-        self.use()
+            self.use()
 
-        self.color_attachment.use(0)
-        self.blur_fs.program['blur'] = 1
-        self.blur_fs.render()
+            self.color_attachment.use(0)
+            self.blur_fs.program['blur'] = 1
+            self.blur_fs.render()
 
-        # self.color_attachment.use(0)
-        # self.quad_fs.program['blur'] = 0
-        # self.quad_fs.render()
+            # self.color_attachment.use(0)
+            # self.quad_fs.program['blur'] = 0
+            # self.quad_fs.render()
 
-        self.player_list.draw()
+            self.player_list.draw()
 
-        # Put the text on the screen.
-        output = f"Score: {self.score}"
-        arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
-
+            # Put the text on the screen.
+            output = f"Score: {self.score}"
+            arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
 
     def on_mouse_motion(self, x, y, dx, dy):
         """ Handle Mouse Motion """

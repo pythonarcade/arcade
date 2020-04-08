@@ -105,7 +105,8 @@ class Program:
     """
     active = None  # Keeps track of the active program
 
-    def __init__(self, *shaders: Shader):
+    def __init__(self, ctx, *shaders: Shader):
+        self.ctx = ctx
         self.prog_id = prog_id = gl.glCreateProgram()
         shaders_id = []
         for shader_code, shader_type in shaders:
@@ -118,9 +119,9 @@ class Program:
         gl.glGetProgramiv(self.prog_id, gl.GL_LINK_STATUS, status)
         if not status.value:
             length = c_int()
-            gl.glGetProgramiv(program, gl.GL_INFO_LOG_LENGTH, length)
+            gl.glGetProgramiv(self.prog_id, gl.GL_INFO_LOG_LENGTH, length)
             log = c_buffer(length.value)
-            gl.glGetProgramInfoLog(program, len(log), None, log)
+            gl.glGetProgramInfoLog(self.prog_id, len(log), None, log)
             raise ShaderException('Program link error: {}'.format(log.value.decode()))
 
         for shader in shaders_id:
@@ -233,23 +234,6 @@ class Program:
         return "<Program id={}>".format(self.prog_id)
 
 
-def program(vertex_shader: str, fragment_shader: str) -> Program:
-    """Create a new program given the vertex_shader and fragment shader code.
-    """
-    return Program(
-        (vertex_shader, gl.GL_VERTEX_SHADER),
-        (fragment_shader, gl.GL_FRAGMENT_SHADER)
-    )
-
-def load_program(vertex_shader_filename: str, fragment_shader_filename: str) -> Program:
-    """ Create a new program given a file names that contain the vertex shader and
-    fragment shader. """
-    with open(vertex_shader_filename, "r") as myfile:
-        vertex_shader = myfile.read()
-    with open(fragment_shader_filename, "r") as myfile:
-        fragment_shader = myfile.read()
-    return program(vertex_shader, fragment_shader)
-
 def compile_shader(source: str, shader_type: gl.GLenum) -> gl.GLuint:
     """Compile the shader code of the given type.
 
@@ -295,9 +279,10 @@ class Buffer:
         'stream': gl.GL_STREAM_DRAW
     }
 
-    def __init__(self, data: bytes, usage: str = 'static'):
+    def __init__(self, ctx, data: bytes = None, reserve: int = 0, usage: str = 'static'):
+        self.ctx = ctx
         self.buffer_id = buffer_id = gl.GLuint()
-        self.size = len(data)
+        self.size = -1
 
         gl.glGenBuffers(1, byref(self.buffer_id))
         # print(f"glGenBuffers() -> {self.buffer_id.value}")
@@ -308,17 +293,17 @@ class Buffer:
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self.buffer_id)
         self.usage = Buffer.usages[usage]
         # print(f"glBufferData(gl.GL_ARRAY_BUFFER, {self.size}, data, {self.usage})")
-        gl.glBufferData(gl.GL_ARRAY_BUFFER, self.size, data, self.usage)
-        weakref.finalize(self, Buffer.release, buffer_id)
 
-    @classmethod
-    def create_with_size(cls, size: int, usage: str = 'static'):
-        """Create an empty Buffer storage of the given size."""
-        empty_buffer = Buffer(b"", usage=usage)
-        gl.glBindBuffer(gl.GL_ARRAY_BUFFER, empty_buffer.buffer_id)
-        gl.glBufferData(gl.GL_ARRAY_BUFFER, size, None, Buffer.usages[usage])
-        empty_buffer.size = size
-        return empty_buffer
+        if data and len(data) > 0:
+            self.size = len(data)
+            gl.glBufferData(gl.GL_ARRAY_BUFFER, self.size, data, self.usage)
+        elif reserve > 0:
+            self.size = reserve
+            gl.glBufferData(gl.GL_ARRAY_BUFFER, self.size, None, self.usage)
+        else:
+            raise ValueError("Buffer takes byte data or number of reserved bytes")
+
+        weakref.finalize(self, Buffer.release, buffer_id)
 
     @staticmethod
     def release(buffer_id):
@@ -356,12 +341,6 @@ class Buffer:
         ptr = gl.glMapBufferRange(gl.GL_ARRAY_BUFFER, gl.GLintptr(0), size, gl.GL_MAP_READ_BIT)
         print(f"Reading back from buffer:\n{string_at(ptr, size=size)}")
         gl.glUnmapBuffer(gl.GL_ARRAY_BUFFER)
-
-
-def buffer(data: bytes, usage: str = 'static') -> Buffer:
-    """Create a new OpenGL Buffer object.
-    """
-    return Buffer(data, usage)
 
 
 class BufferDescription:
@@ -451,9 +430,11 @@ class VertexArray:
     """
 
     def __init__(self,
+                 ctx,
                  prog: Program,
                  content: Iterable[BufferDescription],
                  index_buffer: Buffer = None):
+        self.ctx = ctx
         self.program = prog
         self.vao = vao = gl.GLuint()
         self.num_vertices = -1
@@ -532,14 +513,8 @@ class VertexArray:
             gl.glDrawArraysInstanced(mode, 0, self.num_vertices, instances)
 
 
-def vertex_array(prog: gl.GLuint, content, index_buffer=None):
-    """Create a new Vertex Array.
-    """
-    return VertexArray(prog, content, index_buffer)
-
-
 class Texture:
-    def __init__(self, size: Tuple[int, int], components: int, data=None, filter=None, wrap_x=None, wrap_y=None):
+    def __init__(self, ctx, size: Tuple[int, int], components: int, data=None, filter=None, wrap_x=None, wrap_y=None):
         """Represents an OpenGL texture.
 
         A texture can be created with or without initial data.
@@ -550,6 +525,7 @@ class Texture:
         :param int components: The number of components (1: R, 2: RG, 3: RGB, 4: RGBA).
         :param data: The texture data (optional)
         """
+        self.ctx = ctx
         self.width, self.height = size
         self._components = components
         # These are the defalt states in OpenGL
@@ -688,27 +664,6 @@ class Texture:
             self.texture_id.value, self.width, self.height, self._components)
 
 
-def texture(size: Tuple[int, int], components: int, data=None,
-    wrap_x: gl.GLenum = None, wrap_y: gl.GLenum = None, filter: Tuple[gl.GLenum, gl.GLenum] = None) -> Texture:
-    """Create a Texture.
-
-    Wrap modes: ``GL_REPEAT``, ``GL_MIRRORED_REPEAT``, ``GL_CLAMP_TO_EDGE``, ``GL_CLAMP_TO_BORDER``
-
-    Minifying filters: ``GL_NEAREST``, ``GL_LINEAR``, ``GL_NEAREST_MIPMAP_NEAREST``, ``GL_LINEAR_MIPMAP_NEAREST``
-    ``GL_NEAREST_MIPMAP_LINEAR``, ``GL_LINEAR_MIPMAP_LINEAR``
-
-    Magnifying filters: ``GL_NEAREST``, ``GL_LINEAR``
-
-    :param Tuple[int, int] size: The size of the texture
-    :param int components: Number of components (1: R, 2: RG, 3: RGB, 4: RGBA)
-    :param buffer data: The texture data (optional)
-    :param GLenum wrap_x: How the texture wraps in x direction 
-    :param GLenum wrap_x: How the texture wraps in y direction
-    :param Tuple[GLenum, GLenum] filter: Minification and magnification filter
-    """
-    return Texture(size, components, data, wrap_x=wrap_x, wrap_y=wrap_y, filter=filter)
-
-
 class Framebuffer:
     """
     An offscreen render target also called a Framebuffer Object in OpenGL.
@@ -718,12 +673,13 @@ class Framebuffer:
     # The framebuffer or window that is currently active
     active = None  # type: Framebuffer
 
-    def __init__(self, color_attachments=None, depth_attachment=None):
+    def __init__(self, ctx, color_attachments=None, depth_attachment=None):
         """Create a framebuffer.
 
         :param List[Texture] color_attachments: List of color attachments.
         :param Texture depth_attachment: A depth attachment (optional)
         """
+        self.ctx = ctx
         self._color_attachments = color_attachments if isinstance(color_attachments, list) else [color_attachments]
         self._depth_attachment = depth_attachment
         self._glo = fbo_id = gl.GLuint()  # The OpenGL alias/name
@@ -943,10 +899,76 @@ class Framebuffer:
             raise ValueError("Framebuffer is incomplete. {}".format(states.get(status, "Unknown error")))
 
 
-def framebuffer(color_attachments: List[Texture] = None, depth_attachment: Texture = None) -> Framebuffer:
-    """Create a Framebuffer.
-
-    :param List[Texture] color_attachments: List of textures we want to render into
-    :param Texture depth_attachment: Depth texture
+class Context:
     """
-    return Framebuffer(color_attachments, depth_attachment)
+    Represents an OpenGL context. This context belongs to an arcade.Window.
+    """
+    def __init__(self, window):
+        self._window = window
+        # TODO: Detect OpenGL version etc
+        self._gl_version = (3, 3)
+
+    @property
+    def gl_version(self):
+        return self._gl_version
+
+    def buffer(self, data: bytes = None, reserve: int = 0, usage: str = 'static') -> Buffer:
+        """Create a new OpenGL Buffer object.
+
+        :param bytes data: The buffer data
+        :param int reserve: The number of bytes reserve
+        :param str usage: Buffer usage. 'static', 'dynamic' or 'stream'
+        """
+        # create_with_size
+        return Buffer(self, data, reserve=reserve, usage=usage)
+
+    def framebuffer(self, color_attachments: List[Texture] = None, depth_attachment: Texture = None) -> Framebuffer:
+        """Create a Framebuffer.
+
+        :param List[Texture] color_attachments: List of textures we want to render into
+        :param Texture depth_attachment: Depth texture
+        """
+        return Framebuffer(self, color_attachments, depth_attachment)
+
+    def texture(self, size: Tuple[int, int], components: int, data=None,
+        wrap_x: gl.GLenum = None, wrap_y: gl.GLenum = None, filter: Tuple[gl.GLenum, gl.GLenum] = None) -> Texture:
+        """Create a Texture.
+
+        Wrap modes: ``GL_REPEAT``, ``GL_MIRRORED_REPEAT``, ``GL_CLAMP_TO_EDGE``, ``GL_CLAMP_TO_BORDER``
+
+        Minifying filters: ``GL_NEAREST``, ``GL_LINEAR``, ``GL_NEAREST_MIPMAP_NEAREST``, ``GL_LINEAR_MIPMAP_NEAREST``
+        ``GL_NEAREST_MIPMAP_LINEAR``, ``GL_LINEAR_MIPMAP_LINEAR``
+
+        Magnifying filters: ``GL_NEAREST``, ``GL_LINEAR``
+
+        :param Tuple[int, int] size: The size of the texture
+        :param int components: Number of components (1: R, 2: RG, 3: RGB, 4: RGBA)
+        :param buffer data: The texture data (optional)
+        :param GLenum wrap_x: How the texture wraps in x direction 
+        :param GLenum wrap_x: How the texture wraps in y direction
+        :param Tuple[GLenum, GLenum] filter: Minification and magnification filter
+        """
+        return Texture(self, size, components, data, wrap_x=wrap_x, wrap_y=wrap_y, filter=filter)
+
+    def vertex_array(self, prog: gl.GLuint, content, index_buffer=None):
+        """Create a new Vertex Array.
+        """
+        return VertexArray(self, prog, content, index_buffer)
+
+    def program(self, vertex_shader, fragment_shader) -> Program:
+        """Create a new program given the vertex_shader and fragment shader code.
+        """
+        return Program(
+            self,
+            (vertex_shader, gl.GL_VERTEX_SHADER),
+            (fragment_shader, gl.GL_FRAGMENT_SHADER)
+        )
+
+    def load_program(self, vertex_shader_filename, fragment_shader_filename) -> Program:
+        """ Create a new program given a file names that contain the vertex shader and
+        fragment shader. """
+        with open(vertex_shader_filename, "r") as myfile:
+            vertex_shader = myfile.read()
+        with open(fragment_shader_filename, "r") as myfile:
+            fragment_shader = myfile.read()
+        return self.program(vertex_shader, fragment_shader)
