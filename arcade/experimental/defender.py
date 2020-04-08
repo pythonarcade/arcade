@@ -19,6 +19,10 @@ import random
 from arcade import shader
 from arcade.experimental import geometry
 
+# --- Bloom related ---
+from arcade.experimental import postprocessing
+import pyglet.gl as gl
+
 SPRITE_SCALING = 0.5
 
 SCREEN_WIDTH = 800
@@ -123,16 +127,21 @@ class MyGame(arcade.Window):
         arcade.set_background_color(arcade.color.BLACK)
 
         # --- Mini-map related ---
-        self.color_attachment = None
-        self.offscreen = None
+        self.minimap_color_attachment = None
+        self.minimap_screen = None
         self.quad_fs = None
         self.mini_map_quad = None
 
         program = shader.load_program("simple_shader.vert", "simple_shader.frag")
-        self.color_attachment = shader.texture((SCREEN_WIDTH, SCREEN_HEIGHT), 4)
-        self.offscreen = shader.framebuffer(color_attachments=[self.color_attachment])
-        self.quad_fs = geometry.quad_fs(program, size=(2.0, 2.0))
+        self.minimap_color_attachment = shader.texture((SCREEN_WIDTH, SCREEN_HEIGHT), 4)
+        self.minimap_screen = shader.framebuffer(color_attachments=[self.minimap_color_attachment])
+        self.play_screen_color_attachment = shader.texture((SCREEN_WIDTH, SCREEN_HEIGHT), 4)
+        self.play_screen = shader.framebuffer(color_attachments=[self.play_screen_color_attachment])
         self.mini_map_quad = geometry.quad_fs(program, size=(2.0, 0.5), pos=(0.0, 0.75))
+        self.play_screen_quad = geometry.quad_fs(program, size=(2.0, 1.5), pos=(0.0, 0.0))
+
+        # --- Bloom related ---
+        self.glow = postprocessing.Glow((SCREEN_WIDTH // 8, SCREEN_HEIGHT // 8))
 
     def setup(self):
         """ Set up the game and initialize the variables. """
@@ -170,8 +179,8 @@ class MyGame(arcade.Window):
         arcade.start_render()
 
         # Draw to the frame buffer used in the minimap
-        self.offscreen.use()
-        self.offscreen.clear()
+        self.minimap_screen.use()
+        self.minimap_screen.clear()
 
         arcade.set_viewport(0,
                             PLAYING_FIELD_WIDTH,
@@ -183,7 +192,10 @@ class MyGame(arcade.Window):
         self.player_list.draw()
 
         # Now draw to the actual screen
-        self.use()
+        self.play_screen.use()
+        self.play_screen.clear()
+
+        # self.use()
 
         arcade.set_viewport(self.view_left,
                             SCREEN_WIDTH + self.view_left,
@@ -199,6 +211,17 @@ class MyGame(arcade.Window):
         # Draw the ground
         arcade.draw_line(0, 0, PLAYING_FIELD_WIDTH, 0, arcade.color.WHITE)
 
+        self.use()
+
+        arcade.set_viewport(self.view_left,
+                            SCREEN_WIDTH + self.view_left,
+                            self.view_bottom,
+                            SCREEN_HEIGHT + self.view_bottom)
+
+        gl.glDisable(gl.GL_BLEND)
+        self.glow.render(self.play_screen_color_attachment, self)
+        gl.glEnable(gl.GL_BLEND)
+
         # Draw a background for the minimap
         arcade.draw_rectangle_filled(SCREEN_WIDTH - SCREEN_WIDTH / 2 + self.view_left,
                                      SCREEN_HEIGHT - SCREEN_HEIGHT / 8 + self.view_bottom,
@@ -207,7 +230,7 @@ class MyGame(arcade.Window):
                                      arcade.color.DARK_GREEN)
 
         # Draw the minimap
-        self.color_attachment.use(0)
+        self.minimap_color_attachment.use(0)
         self.mini_map_quad.render()
 
         # Draw a rectangle showing where the screen is
@@ -221,6 +244,8 @@ class MyGame(arcade.Window):
         arcade.draw_rectangle_outline(center_x=x, center_y=y,
                                       width=width, height=height,
                                       color=arcade.color.WHITE)
+
+        print("Done")
 
     def on_update(self, delta_time):
         """ Movement and game logic """
