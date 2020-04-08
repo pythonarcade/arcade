@@ -1,4 +1,5 @@
 from pathlib import Path
+from pyglet import gl
 from typing import Tuple
 from arcade import shader
 from arcade.experimental import geometry
@@ -54,7 +55,7 @@ class GaussianBlurHorizontal(PostProcessing):
     def __init__(self, size: Tuple[int, int], kernel_size=5):
         super().__init__(size)
         self._kernel_size = kernel_size
-        self._fbo = shader.framebuffer(color_attachments=shader.Texture(size, 3))
+        self._fbo = shader.framebuffer(color_attachments=shader.texture(size, 3, wrap_x=gl.GL_CLAMP_TO_EDGE, wrap_y=gl.GL_CLAMP_TO_EDGE))
         self._program = shader.load_program(
             vertex_shader_filename=SHADER_PATH / 'texture_ndc_vs.glsl',
             fragment_shader_filename=SHADER_PATH / 'gaussian_blurx_fs.glsl',
@@ -74,7 +75,7 @@ class GaussianBlurVertical(PostProcessing):
     def __init__(self, size: Tuple[int, int], kernel_size=5):
         super().__init__(size)
         self._kernel_size = kernel_size
-        self._fbo = shader.framebuffer(color_attachments=shader.Texture(size, 3))
+        self._fbo = shader.framebuffer(color_attachments=shader.texture(size, 3, wrap_x=gl.GL_CLAMP_TO_EDGE, wrap_y=gl.GL_CLAMP_TO_EDGE))
         self._program = shader.load_program(
             vertex_shader_filename=SHADER_PATH / 'texture_ndc_vs.glsl',
             fragment_shader_filename=SHADER_PATH / 'gaussian_blury_fs.glsl',
