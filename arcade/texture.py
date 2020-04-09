@@ -160,13 +160,13 @@ class Texture:
                     alpha: int = 255):
 
         """
-        Draw the texture
+        Draw the texture.
 
-        :param center_x: x location of where to draw the texture
-        :param center_y: y location of where to draw the texture
-        :param scale: Scale to draw rectangle. If none, defaults to 1
-        :param angle: angle to rotate the texture
-        :param alpha: transparency of texture. 0-255
+        :param float center_x: X location of where to draw the texture.
+        :param float center_y: Y location of where to draw the texture.
+        :param float scale: Scale to draw rectangle. Defaults to 1.
+        :param float angle: Angle to rotate the texture by.
+        :param int alpha: The transparency of the texture (0-255).
         """
 
         self._create_cached_sprite()
