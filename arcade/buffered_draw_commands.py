@@ -569,6 +569,7 @@ class ShapeElementList(Generic[TShape]):
         """
         Initialize the sprite list
         """
+        # The context this shape list belongs to
         self.ctx = get_window().ctx
         # List of sprites in the sprite list
         self.shape_list = []
@@ -603,19 +604,13 @@ class ShapeElementList(Generic[TShape]):
     def _refresh_shape(self, group):
         # Create a buffer large enough to hold all the shapes buffers
         batch = self.batches[group]
+
         total_vbo_bytes = sum(s.vbo.size for s in batch.items)
         vbo = self.ctx.buffer(reserve=total_vbo_bytes)
         offset = 0
-        gl.glBindBuffer(gl.GL_COPY_WRITE_BUFFER, vbo.buffer_id)
         # Copy all the shapes buffer in our own vbo
         for shape in batch.items:
-            gl.glBindBuffer(gl.GL_COPY_READ_BUFFER, shape.vbo.buffer_id)
-            gl.glCopyBufferSubData(
-                gl.GL_COPY_READ_BUFFER,
-                gl.GL_COPY_WRITE_BUFFER,
-                gl.GLintptr(0),
-                gl.GLintptr(offset),
-                shape.vbo.size)
+            vbo.copy_from_buffer(shape.vbo, offset=offset)
             offset += shape.vbo.size
 
         # Create an index buffer object. It should count starting from 0. We need to

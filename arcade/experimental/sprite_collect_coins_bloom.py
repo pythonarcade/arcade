@@ -164,9 +164,9 @@ class MyGame(arcade.Window):
             self.blur_fs.program['blur'] = 1
             self.blur_fs.render()
 
-            # self.color_attachment.use(0)
-            # self.quad_fs.program['blur'] = 0
-            # self.quad_fs.render()
+            self.color_attachment.use(0)
+            self.quad_fs.program['blur'] = 0
+            self.quad_fs.render()
 
             self.player_list.draw()
 

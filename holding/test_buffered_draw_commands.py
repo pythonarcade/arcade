@@ -36,7 +36,7 @@ buffer_type = np.dtype([("vertex", "2f4"), ("color", "4B")])
 
 def get_data_from_vbo(vbo, count, stride):
     data = np.zeros(count, dtype=buffer_type)
-    gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vbo.buffer_id)
+    gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vbo.glo)
     gl.glGetBufferSubData(gl.GL_ARRAY_BUFFER, 0, count * stride,
                           data.ctypes.data_as(POINTER(gl.GLvoid)))
     return data

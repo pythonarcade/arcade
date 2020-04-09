@@ -108,22 +108,22 @@ class Program:
     active = None  # Keeps track of the active program
 
     def __init__(self, ctx, *shaders: Shader):
-        self.ctx = ctx
-        self.prog_id = prog_id = gl.glCreateProgram()
+        self._ctx = ctx
+        self._glo = prog_id = gl.glCreateProgram()
         shaders_id = []
         for shader_code, shader_type in shaders:
             shader = compile_shader(shader_code, shader_type)
-            gl.glAttachShader(self.prog_id, shader)
+            gl.glAttachShader(self._glo, shader)
             shaders_id.append(shader)
 
-        gl.glLinkProgram(self.prog_id)
+        gl.glLinkProgram(self._glo)
         status = c_int()
-        gl.glGetProgramiv(self.prog_id, gl.GL_LINK_STATUS, status)
+        gl.glGetProgramiv(self._glo, gl.GL_LINK_STATUS, status)
         if not status.value:
             length = c_int()
-            gl.glGetProgramiv(self.prog_id, gl.GL_INFO_LOG_LENGTH, length)
+            gl.glGetProgramiv(self._glo, gl.GL_INFO_LOG_LENGTH, length)
             log = c_buffer(length.value)
-            gl.glGetProgramInfoLog(self.prog_id, len(log), None, log)
+            gl.glGetProgramInfoLog(self._glo, len(log), None, log)
             raise ShaderException('Program link error: {}'.format(log.value.decode()))
 
         for shader in shaders_id:
@@ -133,6 +133,16 @@ class Program:
         self._uniforms: Dict[str, Uniform] = {}
         self._introspect_uniforms()
         weakref.finalize(self, Program._delete, shaders_id, prog_id)
+
+    @property
+    def ctx(self) -> 'Context':
+        """The context this program belongs to"""
+        return self._ctx
+
+    @property
+    def glo(self) -> int:
+        """The OpenGL resource id for this program"""
+        return self._glo
 
     @staticmethod
     def _delete(shaders_id, prog_id):
@@ -147,9 +157,9 @@ class Program:
         gl.glDeleteProgram(prog_id)
 
     def release(self):
-        if self.prog_id != 0:
-            gl.glDeleteProgram(self.prog_id)
-            self.prog_id = 0
+        if self._glo != 0:
+            gl.glDeleteProgram(self._glo)
+            self._glo = 0
 
     def __getitem__(self, item):
         try:
@@ -163,6 +173,7 @@ class Program:
         # Ensure we are setting the uniform on this program
         if Program.active != self:
             self.use()
+
         try:
             uniform = self._uniforms[key]
         except KeyError:
@@ -175,23 +186,23 @@ class Program:
         # IMPORTANT: This is the only place glUseProgram should be called
         #            so we can track active program.
         if Program.active != self:
-            # print(f"glUseProgram({self.prog_id})")
-            gl.glUseProgram(self.prog_id)
+            # print(f"glUseProgram({self._glo})")
+            gl.glUseProgram(self._glo)
             Program.active = self
 
-    def get_num_active(self, variable_type: gl.GLenum) -> int:
+    def _get_num_active(self, variable_type: gl.GLenum) -> int:
         """Get the number of active variables of the passed GL type.
 
         variable_type can be GL_ACTIVE_ATTRIBUTES, GL_ACTIVE_UNIFORMS, etc.
         """
         num_active = gl.GLint(0)
-        gl.glGetProgramiv(self.prog_id, variable_type, byref(num_active))
+        gl.glGetProgramiv(self._glo, variable_type, byref(num_active))
         return num_active.value
 
     def _introspect_uniforms(self):
-        for index in range(self.get_num_active(gl.GL_ACTIVE_UNIFORMS)):
+        for index in range(self._get_num_active(gl.GL_ACTIVE_UNIFORMS)):
             uniform_name, u_type, u_size = self.query_uniform(index)
-            loc = gl.glGetUniformLocation(self.prog_id, uniform_name.encode('utf-8'))
+            loc = gl.glGetUniformLocation(self._glo, uniform_name.encode('utf-8'))
 
             if loc == -1:      # Skip uniforms that may be in Uniform Blocks
                 continue
@@ -210,7 +221,7 @@ class Program:
             ptr = cast(c_array, POINTER(gl_type))
 
             # Create custom dedicated getters and setters for each uniform:
-            getter = _create_getter_func(self.prog_id, loc, gl_getter, c_array, length)
+            getter = _create_getter_func(self._glo, loc, gl_getter, c_array, length)
             setter = _create_setter_func(loc, gl_setter, c_array, length, count, ptr, is_matrix)
 
             # print(f"Found uniform: {uniform_name}, type: {u_type}, size: {u_size}, "
@@ -229,11 +240,11 @@ class Program:
         utype = gl.GLenum()
         buf_size = 192
         uname = create_string_buffer(buf_size)
-        gl.glGetActiveUniform(self.prog_id, index, buf_size, None, usize, utype, uname)
+        gl.glGetActiveUniform(self._glo, index, buf_size, None, usize, utype, uname)
         return uname.value.decode(), utype.value, usize.value
 
     def __repr__(self):
-        return "<Program id={}>".format(self.prog_id)
+        return "<Program id={}>".format(self._glo)
 
 
 def compile_shader(source: str, shader_type: gl.GLenum) -> gl.GLuint:
@@ -268,12 +279,15 @@ def compile_shader(source: str, shader_type: gl.GLenum) -> gl.GLuint:
 
 
 class Buffer:
-    """OpenGL Buffer object of type GL_ARRAY_BUFFER.
+    """OpenGL Buffer object. Buffers store byte data and upload it
+    to graphics memory. They are used for storage og vertex data,
+    element data (vertex indexing), uniform buffer data etc.
 
-    Apparently it's possible to initialize a GL_ELEMENT_ARRAY_BUFFER with
-    GL_ARRAY_BUFFER, provided we later on bind to it with the right type.
+    Common bind targets are:  ``GL_ARRAY_BUFFER``, ``GL_ELEMENT_ARRAY_BUFFER``,
+    ``GL_UNIFORM_BUFFER``, ``GL_SHADER_STORAGE_BUFFER``
 
-    The buffer knows its id `buffer_id` and its `size` in bytes.
+    It doesn't matter what bind target the buffer has on creation. What
+    matters is how we bind it in rendering calls.
     """
     usages = {
         'static': gl.GL_STATIC_DRAW,
@@ -282,67 +296,138 @@ class Buffer:
     }
 
     def __init__(self, ctx, data: bytes = None, reserve: int = 0, usage: str = 'static'):
-        self.ctx = ctx
-        self.buffer_id = buffer_id = gl.GLuint()
-        self.size = -1
+        self._ctx = ctx
+        self._glo = glo = gl.GLuint()
+        self._size = -1
+        self._usage = Buffer.usages[usage]
 
-        gl.glGenBuffers(1, byref(self.buffer_id))
-        # print(f"glGenBuffers() -> {self.buffer_id.value}")
-        if self.buffer_id.value == 0:
+        gl.glGenBuffers(1, byref(self._glo))
+        # print(f"glGenBuffers() -> {self._glo.value}")
+        if self._glo.value == 0:
             raise ShaderException("Cannot create Buffer object.")
 
-        # print(f"glBindBuffer({self.buffer_id.value})")
-        gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self.buffer_id)
-        self.usage = Buffer.usages[usage]
-        # print(f"glBufferData(gl.GL_ARRAY_BUFFER, {self.size}, data, {self.usage})")
+        # print(f"glBindBuffer({self._glo.value})")
+        gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self._glo)
+        # print(f"glBufferData(gl.GL_ARRAY_BUFFER, {self._size}, data, {self._usage})")
 
         if data and len(data) > 0:
-            self.size = len(data)
-            gl.glBufferData(gl.GL_ARRAY_BUFFER, self.size, data, self.usage)
+            self._size = len(data)
+            gl.glBufferData(gl.GL_ARRAY_BUFFER, self._size, data, self._usage)
         elif reserve > 0:
-            self.size = reserve
-            gl.glBufferData(gl.GL_ARRAY_BUFFER, self.size, None, self.usage)
+            self._size = reserve
+            gl.glBufferData(gl.GL_ARRAY_BUFFER, self._size, None, self._usage)
         else:
             raise ValueError("Buffer takes byte data or number of reserved bytes")
 
-        weakref.finalize(self, Buffer.release, buffer_id)
+        weakref.finalize(self, Buffer.release, glo)
+
+    @property
+    def size(self) -> int:
+        """The byte size of the buffer"""
+        return self._size
+
+    @property
+    def ctx(self) -> 'Context':
+        """The context this resource belongs to"""
+        return self._ctx
+
+    @property
+    def glo(self) -> gl.GLuint:
+        """The OpenGL resource id"""
+        return self._glo
 
     @staticmethod
-    def release(buffer_id):
-        # print(f"*** Buffer {buffer_id} have no more references. Deleting.")
+    def release(glo: gl.GLuint):
+        # print(f"*** Buffer {glo} have no more references. Deleting.")
 
         # If we have no context, then we are shutting down, so skip this
         if gl.current_context is None:
             return
 
-        if buffer_id.value != 0:
-            gl.glDeleteBuffers(1, byref(buffer_id))
-            buffer_id.value = 0
+        if glo.value != 0:
+            gl.glDeleteBuffers(1, byref(glo))
+            glo.value = 0
+
+    def read(self, size=-1, offset=0) -> bytes:
+        """Read data from the buffer.
+
+        :param int size: The bytes to read. -1 means the entire buffer
+        :param int offset: Byte read offset
+        """
+        if size == -1:
+            size = self._size
+
+        # Catch this before confusing INVALID_OPERATION is raised
+        if size < 1:
+            raise ValueError("Attempting to read 0 or less bytes from buffer")
+
+        # Manually detect this so it doesn't raise a confusing INVALID_VALUE error
+        if size + offset > self._size:
+            raise ValueError(
+                (
+                    "Attempting to read outside the buffer. "
+                    f"Buffer size: {self._size} "
+                    f"Reading from {offset} to {size + offset}"
+                )
+            )
+
+        gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self._glo)
+        ptr = gl.glMapBufferRange(gl.GL_ARRAY_BUFFER, offset, size, gl.GL_MAP_READ_BIT)
+        data = string_at(ptr, size=size)
+        gl.glUnmapBuffer(gl.GL_ARRAY_BUFFER)
+        return data
 
     def write(self, data: bytes, offset: int = 0):
-        gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self.buffer_id)
-        gl.glBufferSubData(gl.GL_ARRAY_BUFFER, gl.GLintptr(offset), len(data), data)
-        # print(f"Writing data:\n{data[:60]}")
-        # ptr = glMapBufferRange(gl.GL_ARRAY_BUFFER, gl.GLintptr(0), 20, GL_MAP_READ_BIT)
-        # print(f"Reading back from buffer:\n{string_at(ptr, size=60)}")
-        # glUnmapBuffer(gl.GL_ARRAY_BUFFER)
+        """Write byte data to the buffer.
 
-    def orphan(self):
+        :param bytes data: The byte data to write
+        :param int offset: The byte offset
+        """
+        gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self._glo)
+        gl.glBufferSubData(gl.GL_ARRAY_BUFFER, gl.GLintptr(offset), len(data), data)
+
+    def copy_from_buffer(self, source: 'Buffer', size=-1, offset=0, source_offset=0):
+        """Copy data into this buffer from another buffer
+        
+        :param Buffer source: The buffer to copy from
+        :param int size: The amount of bytes to copy
+        :param int offset: The byte offset to write the data in this buffer
+        :param int source_offset: The byte offset to read from the source buffer
+        """
+        # Read the entire source buffer into this buffer
+        if size == -1:
+            size = source.size
+
+        # TODO: Check buffer bounds
+        if size + source_offset > source.size:
+            raise ValueError("Attempting to read outside the source buffer")
+
+        if size + offset > self._size:
+            raise ValueError("Attempting to write outside the buffer")
+
+        gl.glBindBuffer(gl.GL_COPY_READ_BUFFER, source.glo)
+        gl.glBindBuffer(gl.GL_COPY_WRITE_BUFFER, self._glo)
+        gl.glCopyBufferSubData(
+            gl.GL_COPY_READ_BUFFER,
+            gl.GL_COPY_WRITE_BUFFER,
+            gl.GLintptr(source_offset),  # readOffset
+            gl.GLintptr(offset),  # writeOffset
+            size  # size (number of bytes to copy)
+        )
+
+    def orphan(self, size=-1):
         """
         Re-allocate the entire buffer memory.
         If the current buffer is busy in redering operations
         it will be deallocated by OpenGL when completed.
+
+        :param int size: New size of buffer. -1 will retain the current size.
         """
-        gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self.buffer_id)
-        gl.glBufferData(gl.GL_ARRAY_BUFFER, self.size, None, self.usage)
+        if size > -1:
+            self._size = size
 
-    def _read(self, size):
-        """ Debug method to read data from the buffer. """
-
-        gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self.buffer_id)
-        ptr = gl.glMapBufferRange(gl.GL_ARRAY_BUFFER, gl.GLintptr(0), size, gl.GL_MAP_READ_BIT)
-        print(f"Reading back from buffer:\n{string_at(ptr, size=size)}")
-        gl.glUnmapBuffer(gl.GL_ARRAY_BUFFER)
+        gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self._glo)
+        gl.glBufferData(gl.GL_ARRAY_BUFFER, self._size, None, self._usage)
 
 
 class BufferDescription:
@@ -451,8 +536,8 @@ class VertexArray:
             self._enable_attrib(buffer_desc)
 
         if self.ibo is not None:
-            gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, self.ibo.buffer_id)
-            # print(f"glBindVertexArray(gl.GL_ELEMENT_ARRAY_BUFFER, {self.ibo.buffer_id.value})")
+            gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, self.ibo.glo)
+            # print(f"glBindVertexArray(gl.GL_ELEMENT_ARRAY_BUFFER, {self.ibo.glo.value})")
         weakref.finalize(self, VertexArray.release, vao)
 
     @staticmethod
@@ -478,11 +563,11 @@ class VertexArray:
             self.num_vertices = max(self.num_vertices, buff.size // stride)
             # print(f"Number of vertices: {self.num_vertices}")
 
-        # print(f"glBindBuffer(gl.GL_ARRAY_BUFFER, {buff.buffer_id.value})")
-        gl.glBindBuffer(gl.GL_ARRAY_BUFFER, buff.buffer_id)
+        # print(f"glBindBuffer(gl.GL_ARRAY_BUFFER, {buff.glo.value})")
+        gl.glBindBuffer(gl.GL_ARRAY_BUFFER, buff.glo)
         offset = 0
         for (size, attribsize, gl_type_enum), attrib in zip(buf_desc.formats, buf_desc.attributes):
-            loc = gl.glGetAttribLocation(self.program.prog_id, attrib.encode('utf-8'))
+            loc = gl.glGetAttribLocation(self.program.glo, attrib.encode('utf-8'))
             if loc == -1:
                 raise ShaderException(f"Attribute {attrib} not found in shader program")
 
@@ -503,6 +588,10 @@ class VertexArray:
             gl.glEnableVertexAttribArray(loc)
 
     def render(self, mode: gl.GLuint, instances: int = 1):
+        """Render the VertexArray to the currently active framebuffer.
+
+        :param GLunit mode: Primitive type to render. TRIANGLES, LINES etc.
+        """
         # print(f"glBindVertexArray({self.vao.value})")
         gl.glBindVertexArray(self.vao)
         self.program.use()
@@ -527,8 +616,8 @@ class Texture:
         :param int components: The number of components (1: R, 2: RG, 3: RGB, 4: RGBA).
         :param data: The texture data (optional)
         """
-        self.ctx = ctx
-        self.width, self.height = size
+        self._ctx = ctx
+        self._width, self._height = size
         self._components = components
         # These are the defalt states in OpenGL
         self._filter = gl.GL_LINEAR, gl.GL_LINEAR
@@ -550,7 +639,7 @@ class Texture:
         gl.glPixelStorei(gl.GL_UNPACK_ALIGNMENT, 1)
         try:
             gl.glTexImage2D(
-                gl.GL_TEXTURE_2D, 0, sized_format, self.width, self.height, 0,
+                gl.GL_TEXTURE_2D, 0, sized_format, self._width, self._height, 0,
                 self.format, gl.GL_UNSIGNED_BYTE, data
             )
         except gl.GLException:
@@ -563,14 +652,29 @@ class Texture:
         weakref.finalize(self, Texture.release, texture_id)
 
     @property
+    def ctx(self) -> 'Context':
+        """The context this texture belongs to"""
+        return self._ctx
+
+    @property
     def glo(self) -> gl.GLuint:
-        """The opengl texture id"""
+        """The OpenGL texture id"""
         return self.texture_id
+
+    @property
+    def width(self) -> int:
+        """The width of the texture in pixels"""
+        return self._width
+
+    @property
+    def height(self) -> int:
+        """The height of the texture in pixels"""
+        return self._height
 
     @property
     def size(self) -> Tuple[int, int]:
         """The size of the texture as a tuple"""
-        return self.width, self.height
+        return self._width, self._height
 
     @property
     def components(self) -> int:
@@ -911,6 +1015,27 @@ class Context:
         self._window = window
         # TODO: Detect OpenGL version etc
         self._gl_version = (3, 3)
+
+        # --- Store the most commonly used OpenGL constants
+        # Texture
+        self.NEAREST = gl.GL_NEAREST
+        self.LINEAR = gl.GL_LINEAR
+        self.REPEAT = gl.GL_REPEAT
+        self.CLAMP_TO_EDGE = gl.GL_CLAMP_TO_EDGE
+        self.CLAMP_TO_BORDER = gl.GL_CLAMP_TO_BORDER
+        self.MIRRORED_REPEAT = gl.GL_MIRRORED_REPEAT
+
+        # VertexArray: Primitives
+        self.POINTS = gl.GL_POINTS
+        self.LINES = gl.GL_LINES
+        self.LINES_ADJACENCY = gl.GL_LINES_ADJACENCY
+        self.LINE_STRIP = gl.GL_LINE_STRIP
+        self.LINE_STRIP_ADJACENCY = gl.GL_LINE_STRIP_ADJACENCY
+        self.TRIANGLES = gl.GL_TRIANGLES
+        self.TRIANGLES_ADJACENCY = gl.GL_TRIANGLES_ADJACENCY
+        self.TRIANGLE_STRIP = gl.GL_TRIANGLE_STRIP
+        self.TRIANGLE_STRIP_ADJACENCY = gl.GL_TRIANGLE_STRIP_ADJACENCY
+        self.TRIANGLE_FAN = gl.GL_TRIANGLE_FAN
 
         # --- Pre-load system shaders here ---
 
