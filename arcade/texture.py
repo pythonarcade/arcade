@@ -297,6 +297,8 @@ def load_texture(file_name: str,
     resize with it. Setting can_cache to false will prevent this issue at the expence of additional resources.
 
     :returns: New :class:`Texture` object.
+
+    :raises: ValueError
     """
 
     # See if we already loaded this texture, and we can just use a cached version.
