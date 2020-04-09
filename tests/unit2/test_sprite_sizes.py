@@ -84,7 +84,8 @@ class MyTestWindow(arcade.Window):
             assert e is None
 
 def test_sprite():
-    window = MyTestWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Test Text")
+    window = MyTestWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Test Sprite Sizes")
     window.test()
     window.close()
+    arcade.cleanup_texture_cache()
     # arcade.run()
