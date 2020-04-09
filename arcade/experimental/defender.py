@@ -16,7 +16,6 @@ import os
 import random
 
 # --- Minimap Related ---
-from arcade import shader
 from arcade.experimental import geometry
 
 # --- Bloom related ---
@@ -25,8 +24,8 @@ import pyglet.gl as gl
 
 SPRITE_SCALING = 0.5
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Better Move Sprite with Keyboard Example"
 
 MINIMAP_HEIGHT = SCREEN_HEIGHT / 4
@@ -50,7 +49,34 @@ class Player(arcade.SpriteSolidColor):
     """ Player ship """
     def __init__(self):
         """ Set up player """
-        super().__init__(30, 10, arcade.color.WHITE)
+        super().__init__(40, 10, arcade.color.SLATE_GRAY)
+        self.face_right = True
+
+    def accelerate_up(self):
+        """ Accelerate player up """
+        self.change_y += VERTICAL_ACCELERATION
+        if self.change_y > MAX_VERTICAL_MOVEMENT_SPEED:
+            self.change_y = MAX_VERTICAL_MOVEMENT_SPEED
+
+    def accelerate_down(self):
+        """ Accelerate player down """
+        self.change_y -= VERTICAL_ACCELERATION
+        if self.change_y < -MAX_VERTICAL_MOVEMENT_SPEED:
+            self.change_y = -MAX_VERTICAL_MOVEMENT_SPEED
+
+    def accelerate_right(self):
+        """ Accelerate player right """
+        self.face_right = True
+        self.change_x += HORIZONTAL_ACCELERATION
+        if self.change_x > MAX_HORIZONTAL_MOVEMENT_SPEED:
+            self.change_x = MAX_HORIZONTAL_MOVEMENT_SPEED
+
+    def accelerate_left(self):
+        """ Accelerate player left """
+        self.face_right = False
+        self.change_x -= HORIZONTAL_ACCELERATION
+        if self.change_x < -MAX_HORIZONTAL_MOVEMENT_SPEED:
+            self.change_x = -MAX_HORIZONTAL_MOVEMENT_SPEED
 
     def update(self):
         """ Move the player """
@@ -84,6 +110,16 @@ class Player(arcade.SpriteSolidColor):
         elif self.top > SCREEN_HEIGHT - 1:
             self.top = SCREEN_HEIGHT - 1
 
+class Particle(arcade.SpriteSolidColor):
+    """ Particle from explosion """
+    def update(self):
+        """ Move the player """
+        # Move
+        self.center_x += self.change_x
+        self.center_y += self.change_y
+        self.alpha -= 5
+        if self.alpha <= 0:
+            self.remove_from_sprite_lists()
 
 class MyGame(arcade.Window):
     """
@@ -91,9 +127,7 @@ class MyGame(arcade.Window):
     """
 
     def __init__(self, width, height, title):
-        """
-        Initializer
-        """
+        """ Initializer """
 
         # Call the parent class initializer
         super().__init__(width, height, title)
@@ -166,8 +200,8 @@ class MyGame(arcade.Window):
             self.star_sprite_list.append(sprite)
 
         # Add enemies
-        for i in range(10):
-            sprite = arcade.SpriteSolidColor(20, 20, arcade.color.RED)
+        for i in range(20):
+            sprite = arcade.SpriteSolidColor(20, 20, arcade.csscolor.LIGHT_SALMON)
             sprite.center_x = random.randrange(PLAYING_FIELD_WIDTH)
             sprite.center_y = random.randrange(600)
             self.enemy_sprite_list.append(sprite)
@@ -188,10 +222,9 @@ class MyGame(arcade.Window):
                                 SCREEN_HEIGHT)
 
             self.enemy_sprite_list.draw()
-            self.bullet_sprite_list.draw()
             self.player_list.draw()
 
-            # Now draw to the actual screen
+            # Draw to the 'glow' layer
             self.play_screen.use()
             self.play_screen.clear()
 
@@ -204,13 +237,12 @@ class MyGame(arcade.Window):
 
             # Draw all the sprites on the screen
             self.star_sprite_list.draw()
-            self.enemy_sprite_list.draw()
             self.bullet_sprite_list.draw()
-            self.player_list.draw()
 
             # Draw the ground
             arcade.draw_line(0, 0, PLAYING_FIELD_WIDTH, 0, arcade.color.WHITE)
 
+            # Now draw to the actual screen
             self.use()
 
             arcade.set_viewport(self.view_left,
@@ -222,12 +254,18 @@ class MyGame(arcade.Window):
             self.glow.render(self.play_screen_color_attachment, self)
             gl.glEnable(gl.GL_BLEND)
 
+            self.enemy_sprite_list.draw()
+            self.player_list.draw()
+
+            # Draw the ground
+            arcade.draw_line(0, 0, PLAYING_FIELD_WIDTH, 0, arcade.color.WHITE)
+
             # Draw a background for the minimap
             arcade.draw_rectangle_filled(SCREEN_WIDTH - SCREEN_WIDTH / 2 + self.view_left,
-                                        SCREEN_HEIGHT - SCREEN_HEIGHT / 8 + self.view_bottom,
-                                        SCREEN_WIDTH,
-                                        SCREEN_HEIGHT / 4,
-                                        arcade.color.DARK_GREEN)
+                                         SCREEN_HEIGHT - SCREEN_HEIGHT / 8 + self.view_bottom,
+                                         SCREEN_WIDTH,
+                                         SCREEN_HEIGHT / 4,
+                                         arcade.color.DARK_GREEN)
 
             # Draw the minimap
             self.minimap_color_attachment.use(0)
@@ -242,39 +280,43 @@ class MyGame(arcade.Window):
             y = self.view_bottom + height / 2 + (SCREEN_HEIGHT - MINIMAP_HEIGHT) + self.view_bottom * height_ratio
 
             arcade.draw_rectangle_outline(center_x=x, center_y=y,
-                                        width=width, height=height,
-                                        color=arcade.color.WHITE)
+                                          width=width, height=height,
+                                          color=arcade.color.WHITE)
 
-        except Exception as e:
+        except Exception:
             import traceback
             traceback.print_exc()
-
-        print("Done")
 
     def on_update(self, delta_time):
         """ Movement and game logic """
 
         # Calculate speed based on the keys pressed
         if self.up_pressed and not self.down_pressed:
-            self.player_sprite.change_y += VERTICAL_ACCELERATION
-            if self.player_sprite.change_y > MAX_VERTICAL_MOVEMENT_SPEED:
-                self.player_sprite.change_y = MAX_VERTICAL_MOVEMENT_SPEED
+            self.player_sprite.accelerate_up()
         elif self.down_pressed and not self.up_pressed:
-            self.player_sprite.change_y -= VERTICAL_ACCELERATION
-            if self.player_sprite.change_y < -MAX_VERTICAL_MOVEMENT_SPEED:
-                self.player_sprite.change_y = -MAX_VERTICAL_MOVEMENT_SPEED
+            self.player_sprite.accelerate_down()
 
         if self.left_pressed and not self.right_pressed:
-            self.player_sprite.change_x -= HORIZONTAL_ACCELERATION
-            if self.player_sprite.change_x < -MAX_HORIZONTAL_MOVEMENT_SPEED:
-                self.player_sprite.change_x = -MAX_HORIZONTAL_MOVEMENT_SPEED
+            self.player_sprite.accelerate_left()
         elif self.right_pressed and not self.left_pressed:
-            self.player_sprite.change_x += HORIZONTAL_ACCELERATION
-            if self.player_sprite.change_x > MAX_HORIZONTAL_MOVEMENT_SPEED:
-                self.player_sprite.change_x = MAX_HORIZONTAL_MOVEMENT_SPEED
+            self.player_sprite.accelerate_right()
 
         # Call update to move the sprite
         self.player_list.update()
+        self.bullet_sprite_list.update()
+
+        for bullet in self.bullet_sprite_list:
+            enemy_hit_list = arcade.check_for_collision_with_list(bullet, self.enemy_sprite_list)
+            for enemy in enemy_hit_list:
+                enemy.remove_from_sprite_lists()
+                for i in range(10):
+                    particle = Particle(4, 4, arcade.color.RED)
+                    while particle.change_y == 0 and particle.change_x == 0:
+                        particle.change_y = random.randrange(-2, 3)
+                        particle.change_x = random.randrange(-2, 3)
+                        particle.center_x = enemy.center_x
+                        particle.center_y = enemy.center_y
+                        self.bullet_sprite_list.append(particle)
 
         # Scroll left
         left_boundary = self.view_left + VIEWPORT_MARGIN
@@ -306,6 +348,16 @@ class MyGame(arcade.Window):
             self.left_pressed = True
         elif key == arcade.key.RIGHT:
             self.right_pressed = True
+        elif key == arcade.key.SPACE:
+            bullet = arcade.SpriteSolidColor(35, 3, arcade.color.WHITE)
+            bullet.center_x = self.player_sprite.center_x
+            bullet.center_y = self.player_sprite.center_y
+            bullet.change_x = max(12, abs(self.player_sprite.change_x) + 10)
+
+            if not self.player_sprite.face_right:
+                bullet.change_x *= -1
+
+            self.bullet_sprite_list.append(bullet)
 
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key. """
