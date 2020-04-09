@@ -619,16 +619,23 @@ class SpriteList(Generic[_SpriteType]):
             image_count = len(self.array_of_images)
             root = math.sqrt(image_count)
             grid_width = int(math.sqrt(image_count))
+            # print(f"\nimage_count={image_count}, root={root}")
             if root == grid_width:
                 # Perfect square
                 grid_height = grid_width
+                # print("\nA")
             else:
-                grid_width += 1
                 grid_height = grid_width
+                grid_width += 1
+                if grid_width * grid_height < image_count:
+                    grid_height += 1
+                # print("\nB")
 
             # Figure out sprite sheet size
-            sprite_sheet_width = (grid_item_width + 1) * grid_width
-            sprite_sheet_height = (grid_item_height + 1) * grid_height
+            MARGIN = 1
+
+            sprite_sheet_width = (grid_item_width + MARGIN) * grid_width
+            sprite_sheet_height = (grid_item_height + MARGIN) * grid_height
 
             if new_texture:
 
@@ -642,8 +649,10 @@ class SpriteList(Generic[_SpriteType]):
                 x_offset = 0
                 for index, image in enumerate(self.array_of_images):
 
-                    x = (index % grid_width) * (grid_item_width + 1)
-                    y = (index // grid_width) * (grid_item_height + 1) + 1
+                    x = (index % grid_width) * (grid_item_width + MARGIN)
+                    y = (index // grid_width) * (grid_item_height + MARGIN)
+
+                    # print(f"Pasting {new_array_of_texture_names[index]} at {x, y}")
 
                     new_image2.paste(image, (x, y))
                     x_offset += image.size[0]
@@ -659,17 +668,35 @@ class SpriteList(Generic[_SpriteType]):
                 if self.texture_id is None:
                     self.texture_id = SpriteList.next_texture_id
 
+                # new_image2.save("sprites.png")
+
             # Create a list with the coordinates of all the unique textures
             tex_coords = []
 
             for index, image in enumerate(self.array_of_images):
-                x = index % grid_width
-                y = index // grid_width
+                column = index % grid_width
+                row = index // grid_width
 
-                start_x = ((grid_item_width + 1) * x) / sprite_sheet_width
-                start_y = 1 - (((image.height + 1) * (y + 1)) / sprite_sheet_height)
+                # Texture coordinates are reversed in y axis
+                row = grid_height - row - 1
+
+                x = column * (grid_item_width + MARGIN)
+                y = row * (grid_item_height + MARGIN)
+
+                # Because, coordinates are reversed
+                y += (grid_item_height - (image.height - MARGIN))
+
+                normalized_x = x / sprite_sheet_width
+                normalized_y = y / sprite_sheet_height
+
+                start_x = normalized_x
+                start_y = normalized_y
+
                 normalized_width = image.width / sprite_sheet_width
                 normalized_height = image.height / sprite_sheet_height
+
+                # print(f"Fetching {new_array_of_texture_names[index]} at {row}, {column} => {x}, {y} normalized to {start_x:.2}, {start_y:.2} size {normalized_width}, {normalized_height}")
+
                 tex_coords.append([start_x, start_y, normalized_width, normalized_height])
 
             # Go through each sprite and pull from the coordinate list, the proper
