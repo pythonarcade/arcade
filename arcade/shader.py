@@ -913,6 +913,7 @@ class Context:
         self._gl_version = (3, 3)
 
         # --- Pre-load system shaders here ---
+
         self.line_vertex_shader = self.load_program(
             self.resource_root / 'shaders/line_vertex_shader_vs.glsl',
             self.resource_root / 'shaders/line_vertex_shader_fs.glsl',
@@ -924,6 +925,10 @@ class Context:
         self.shape_element_list_program = self.load_program(
             self.resource_root / 'shaders/shape_element_list_vs.glsl',
             self.resource_root / 'shaders/shape_element_list_fs.glsl',
+        )
+        self.sprite_list_program = self.load_program(
+            self.resource_root / 'shaders/sprite_list_vs.glsl',
+            self.resource_root / 'shaders/sprite_list_fs.glsl',
         )
 
     @property
