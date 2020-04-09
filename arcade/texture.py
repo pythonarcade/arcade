@@ -485,9 +485,11 @@ def make_soft_square_texture(size: int, color: Color, center_alpha: int = 255, o
 # --- END TEXTURE FUNCTIONS # # #
 
 
-def trim_image(image: PIL.Image) -> PIL.Image:
+def trim_image(image: PIL.Image.Image) -> PIL.Image.Image:
     """
-    Returns an image with extra whitespace cropped out.
+    Crops the extra whitespace out of an image.
+
+    :returns: New :py:class:`PIL.Image.Image` object.
     """
     bbox = image.getbbox()
     return image.crop(bbox)
