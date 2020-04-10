@@ -12,6 +12,7 @@ from pyglet import gl
 
 
 class ShaderException(Exception):
+    """ Exception class for shader-specific problems. """
     pass
 
 
@@ -54,13 +55,15 @@ _uniform_setters = {
 
 
 def _create_getter_func(program_id, location, gl_getter, c_array, length):
-
+    """ Create a function for getting/setting OpenGL data. """
     if length == 1:
         def getter_func():
+            """ Get single-element OpenGL uniform data. """
             gl_getter(program_id, location, c_array)
             return c_array[0]
     else:
         def getter_func():
+            """ Get list of OpenGL uniform data. """
             gl_getter(program_id, location, c_array)
             return c_array[:]
 
@@ -68,21 +71,23 @@ def _create_getter_func(program_id, location, gl_getter, c_array, length):
 
 
 def _create_setter_func(location, gl_setter, c_array, length, count, ptr, is_matrix):
-
+    """ Create setters for OpenGL data. """
     if is_matrix:
         def setter_func(value):  # type: ignore #conditional function variants must have identical signature
+            """ Set OpenGL matrix uniform data. """
             c_array[:] = value
             gl_setter(location, count, gl.GL_FALSE, ptr)
 
     elif length == 1 and count == 1:
         def setter_func(value):  # type: ignore #conditional function variants must have identical signature
+            """ Set OpenGL uniform data value. """
             c_array[0] = value
             gl_setter(location, count, ptr)
     elif length > 1 and count == 1:
         def setter_func(values):  # type: ignore #conditional function variants must have identical signature
+            """ Set list of OpenGL uniform data. """
             c_array[:] = values
             gl_setter(location, count, ptr)
-
     else:
         raise NotImplementedError("Uniform type not yet supported.")
 
@@ -335,6 +340,7 @@ class Buffer:
 
     @staticmethod
     def release(glo: gl.GLuint):
+        """ Release/delete open gl buffer. """
         # print(f"*** Buffer {glo} have no more references. Deleting.")
 
         # If we have no context, then we are shutting down, so skip this
@@ -385,7 +391,7 @@ class Buffer:
 
     def copy_from_buffer(self, source: 'Buffer', size=-1, offset=0, source_offset=0):
         """Copy data into this buffer from another buffer
-        
+
         :param Buffer source: The buffer to copy from
         :param int size: The amount of bytes to copy
         :param int offset: The byte offset to write the data in this buffer
@@ -512,7 +518,7 @@ class VertexArray:
 
     vao = VertexArray(...)
     """
-    __slots__ = '_ctx', '_program', '_glo', '_ibo', '_num_vertices','__weakref__'
+    __slots__ = '_ctx', '_program', '_glo', '_ibo', '_num_vertices', '__weakref__'
 
     def __init__(self,
                  ctx,
@@ -617,13 +623,23 @@ class VertexArray:
 
 
 class Texture:
+    """
+    Class that represents an OpenGL texture.
+    """
     __slots__ = '_ctx', '_glo', '_width', '_height', '_components', '_format', '_filter', '_wrap_x', '_wrap_y', '__weakref__'
 
-    def __init__(self, ctx, size: Tuple[int, int], components: int, data=None, filter=None, wrap_x=None, wrap_y=None):
+    def __init__(self,
+                 ctx,
+                 size: Tuple[int, int],
+                 components: int,
+                 data=None,
+                 texture_filter=None,
+                 wrap_x=None,
+                 wrap_y=None):
         """Represents an OpenGL texture.
 
         A texture can be created with or without initial data.
-        NOTE: Currently do notsupport multisample textures even
+        NOTE: Currently does not support multisample textures even
         thought ``samples`` is exposed.
 
         :param Tuple[int, int] size: The size of the texture.
@@ -659,7 +675,7 @@ class Texture:
         except gl.GLException:
             raise gl.GLException(f"Unable to create texture. {gl.GL_MAX_TEXTURE_SIZE} {size}")
 
-        self.filter = filter or self._filter
+        self.filter = texture_filter or self._filter
         self.wrap_x = wrap_x or self._wrap_x
         self.wrap_y = wrap_y or self._wrap_y
 
@@ -752,13 +768,13 @@ class Texture:
         self.use()
         gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_T, value)
 
-    def build_mipmaps(self, base=0, max=1000):
+    def build_mipmaps(self, base=0, max_amount=1000):
         """Generate mipmaps for this texture.
         Also see: https://www.khronos.org/opengl/wiki/Texture#Mip_maps
         """
         self.use()
         gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_BASE_LEVEL, base)
-        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAX_LEVEL, max)
+        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAX_LEVEL, max_amount)
         gl.glGenerateMipmap(gl.GL_TEXTURE_2D)
 
     @staticmethod
@@ -1080,6 +1096,7 @@ class Context:
 
     @property
     def gl_version(self):
+        """ Return OpenGL version. """
         return self._gl_version
 
     def buffer(self, data: bytes = None, reserve: int = 0, usage: str = 'static') -> Buffer:
@@ -1100,8 +1117,13 @@ class Context:
         """
         return Framebuffer(self, color_attachments, depth_attachment)
 
-    def texture(self, size: Tuple[int, int], components: int, data=None,
-        wrap_x: gl.GLenum = None, wrap_y: gl.GLenum = None, filter: Tuple[gl.GLenum, gl.GLenum] = None) -> Texture:
+    def texture(self,
+                size: Tuple[int, int],
+                components: int,
+                data=None,
+                wrap_x: gl.GLenum = None,
+                wrap_y: gl.GLenum = None,
+                filter: Tuple[gl.GLenum, gl.GLenum] = None) -> Texture:
         """Create a Texture.
 
         Wrap modes: ``GL_REPEAT``, ``GL_MIRRORED_REPEAT``, ``GL_CLAMP_TO_EDGE``, ``GL_CLAMP_TO_BORDER``
@@ -1114,11 +1136,11 @@ class Context:
         :param Tuple[int, int] size: The size of the texture
         :param int components: Number of components (1: R, 2: RG, 3: RGB, 4: RGBA)
         :param buffer data: The texture data (optional)
-        :param GLenum wrap_x: How the texture wraps in x direction 
-        :param GLenum wrap_x: How the texture wraps in y direction
+        :param GLenum wrap_x: How the texture wraps in x direction
+        :param GLenum wrap_y: How the texture wraps in y direction
         :param Tuple[GLenum, GLenum] filter: Minification and magnification filter
         """
-        return Texture(self, size, components, data, wrap_x=wrap_x, wrap_y=wrap_y, filter=filter)
+        return Texture(self, size, components, data, wrap_x=wrap_x, wrap_y=wrap_y, texture_filter=filter)
 
     def vertex_array(self, prog: gl.GLuint, content, index_buffer=None):
         """Create a new Vertex Array.
