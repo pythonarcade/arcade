@@ -109,7 +109,7 @@ class OpenGLTest(arcade.Window):
         assert program.ctx == self.ctx
         assert program.glo > 0
         program.use()
-        assert program.active == program
+        assert self.ctx.active_program == program
 
         # TODO: Test all uniform types
         program['pos_offset'] = 1, 2
@@ -159,13 +159,13 @@ class OpenGLTest(arcade.Window):
 
         # Ensure bind tracking works
         fb.use()
-        assert fb.active == fb
+        assert self.ctx.active_framebuffer == fb
         self.use()
-        assert fb.active == self
+        assert self.ctx.active_framebuffer == self
         fb.clear()
         fb.clear(color=[0, 0, 0, 0])
         fb.clear(color=arcade.csscolor.AZURE)
-        assert fb.active == self
+        assert self.ctx.active_framebuffer == self
 
         # Varying attachment sizes not supported for now
         with pytest.raises(ValueError):

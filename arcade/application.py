@@ -111,9 +111,6 @@ class Window(pyglet.window.Window):
         # Representation of the OpenGL context for this window
         self._ctx = shader.Context(self)
 
-        # Tell shaders the window is the current render target
-        shader.Framebuffer.active = self
-
     @property
     def ctx(self) -> shader.Context:
         """The OpenGL context for this window"""
@@ -435,7 +432,7 @@ class Window(pyglet.window.Window):
     def use(self):
         """Bind the window's framebuffer for rendering commands"""
         gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, 0)
-        shader.Framebuffer.active = self
+        self.ctx.active_framebuffer = self
         set_viewport(*get_viewport())
 
     def test(self, frames: int = 10):

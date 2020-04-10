@@ -110,7 +110,6 @@ class Program:
         matrix = np.array([[...]])
         program['MyMatrix'] = matrix.flatten()
     """
-    active = None  # Keeps track of the active program
     __slots__ = '_ctx', '_glo', '_uniforms', '__weakref__'
 
     def __init__(self, ctx, *shaders: Shader):
@@ -172,7 +171,7 @@ class Program:
 
     def __setitem__(self, key, value):
         # Ensure we are setting the uniform on this program
-        if Program.active != self:
+        if self._ctx.active_program != self:
             self.use()
 
         try:
@@ -186,10 +185,10 @@ class Program:
         """Activates the shader"""
         # IMPORTANT: This is the only place glUseProgram should be called
         #            so we can track active program.
-        if Program.active != self:
+        if self._ctx.active_program != self:
             # print(f"glUseProgram({self._glo})")
             gl.glUseProgram(self._glo)
-            Program.active = self
+            self._ctx.active_program = self
 
     def _get_num_active(self, variable_type: gl.GLenum) -> int:
         """Get the number of active variables of the passed GL type.
@@ -810,8 +809,6 @@ class Framebuffer:
     __slots__ = (
         '_ctx', '_glo', '_width', '_height', '_color_attachments', '_depth_attachment',
         '_samples', '_viewport', '_depth_mask', '_draw_buffers', '__weakref__')
-    # The framebuffer or window that is currently active
-    active = None  # type: Framebuffer
 
     def __init__(self, ctx, color_attachments=None, depth_attachment=None):
         """Create a framebuffer.
@@ -865,8 +862,8 @@ class Framebuffer:
         # pyglet wants this as a ctypes thingy, so let's prepare it
         self._draw_buffers = (gl.GLuint * len(layers))(*layers)
 
-        # Fall back to window
-        Framebuffer.active.use()
+        # Restore the original bound framebuffer to avoid confusion
+        self.ctx.active_framebuffer.use()
         weakref.finalize(self, Framebuffer.release, fbo_id)
 
     @property
@@ -901,7 +898,7 @@ class Framebuffer:
 
         # If the framebuffer is bound we need to set the viewport.
         # Otherwise it will be set on use()
-        if Framebuffer.active == self:
+        if self._ctx.active_framebuffer == self:
             gl.glViewport(*self._viewport)
 
     @property
@@ -950,17 +947,17 @@ class Framebuffer:
     def depth_mask(self, value):
         self._depth_mask = value
         # Set state if framebuffer is active
-        if Framebuffer.active == self:
+        if self._ctx.active_framebuffer == self:
             gl.glDepthMask(self._depth_mask)
 
     def use(self):
         """Bind the framebuffer making it the target of all redering commands"""
         self._use()
-        Framebuffer.active = self
+        self._ctx.active_framebuffer = self
 
     def _use(self):
         """Internal use that do not change the global active framebuffer"""
-        if Framebuffer.active == self:
+        if self.ctx.active_framebuffer == self:
             return
 
         gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, self._glo)
@@ -1000,8 +997,8 @@ class Framebuffer:
         else:
             gl.glClear(gl.GL_COLOR_BUFFER_BIT)
 
-        # Ensure we don't change framebuffer unless it's already activated
-        Framebuffer.active.use()
+        # Restore the original render target to avoid confusion
+        self._ctx.active_framebuffer.use()
 
     @staticmethod
     def release(framebuffer_id):
@@ -1060,6 +1057,11 @@ class Context:
         self._window = window
         # TODO: Detect OpenGL version etc
         self._gl_version = (3, 3)
+
+        # Tracking active program
+        self.active_program = None  # type: Program
+        # Tracking active program
+        self.active_framebuffer = window
 
         # --- Store the most commonly used OpenGL constants
         # Texture
