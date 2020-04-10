@@ -111,39 +111,29 @@ def _move_sprite(moving_sprite: Sprite, walls: SpriteList, ramp_up: bool):
             change_x = moving_sprite.change_x
             if change_x > 0:
                 if ramp_up:
-
-                    for _ in hit_list_y:
-                        # print(f"Spot 1 ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
-                        # See if we can "run up" a ramp
-                        moving_sprite.center_y += change_x
-                        if len(check_for_collision_with_list(moving_sprite, walls)) > 0:
-                            # No, ramp run-up doesn't work.
-                            moving_sprite.center_y -= change_x
-                            moving_sprite.center_x -= 1
-                            # print(f"Spot R ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
-                            check_again = True
-                            break
-                        # else:
-                        # print("Run up ok 1")
-                        # print(f"Spot 2 ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
+                    moving_sprite.center_y += change_x
+                    if len(check_for_collision_with_list(moving_sprite, walls)) > 0:
+                        # No, ramp run-up doesn't work.
+                        moving_sprite.center_y -= change_x
+                        moving_sprite.center_x -= 1
+                        check_again = True
+                    # else:
+                    # print("Run up ok 1")
+                    # print(f"Spot 2 ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
                 else:
                     while len(check_for_collision_with_list(moving_sprite, walls)) > 0:
                         moving_sprite.center_x -= 1
-
             elif change_x < 0:
                 if ramp_up:
-                    for item in hit_list_y:
-                        # See if we can "run up" a ramp
-                        moving_sprite.center_y -= change_x
-                        if len(check_for_collision_with_list(moving_sprite, walls)) > 0:
-                            # Can't run up the ramp, reverse
-                            moving_sprite.center_y += change_x
-                            moving_sprite.left = max(item.right, moving_sprite.left)
-                            # print(f"Reverse 1 {item.right}, {self.player_sprite.left}")
-                            # Ok, if we were shoved back to the right, we need to check this whole thing again.
-                            check_again = True
-                            break
-                        # print(f"Spot 4 ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
+                    # See if we can "run up" a ramp
+                    moving_sprite.center_y -= change_x
+                    if len(check_for_collision_with_list(moving_sprite, walls)) > 0:
+                        # Can't run up the ramp, reverse
+                        moving_sprite.center_y += change_x
+                        moving_sprite.center_x += 1
+                        # Ok, if we were shoved back to the right, we need to check this whole thing again.
+                        check_again = True
+                    # print(f"Spot 4 ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
                 else:
                     while len(check_for_collision_with_list(moving_sprite, walls)) > 0:
                         moving_sprite.center_x += 1
