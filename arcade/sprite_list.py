@@ -26,9 +26,65 @@ from arcade import is_point_in_polygon
 
 from arcade import rotate_point
 from arcade import get_projection
-from arcade import get_window
 from arcade import shader
 from arcade import Point
+
+_VERTEX_SHADER = """
+#version 330
+uniform mat4 Projection;
+uniform mat3 TextureTransform;
+
+// per vertex
+in vec2 in_vert;
+in vec2 in_texture;
+
+// per instance
+in vec2 in_pos;
+in float in_angle;
+in vec2 in_size;
+in vec4 in_sub_tex_coords;
+in vec4 in_color;
+
+out vec2 v_texture;
+out vec4 v_color;
+
+void main() {
+    mat2 rotate = mat2(
+                cos(in_angle), sin(in_angle),
+                -sin(in_angle), cos(in_angle)
+            );
+    vec2 pos;
+    pos = in_pos + vec2(rotate * (in_vert * (in_size / 2)));
+    gl_Position = Projection * vec4(pos, 0.0, 1.0);
+
+    vec2 tex_offset = in_sub_tex_coords.xy;
+    vec2 tex_size = in_sub_tex_coords.zw;
+
+    v_texture = (in_texture * tex_size + tex_offset) * vec2(1, -1);
+    vec3 temp = TextureTransform * vec3(v_texture, 1.0);
+    v_texture = temp.xy / temp.z;
+    v_color = in_color;
+}
+"""
+
+_FRAGMENT_SHADER = """
+#version 330
+uniform sampler2D Texture;
+
+in vec2 v_texture;
+in vec4 v_color;
+
+out vec4 f_color;
+
+void main() {
+    vec4 basecolor = texture(Texture, v_texture);
+    basecolor = basecolor * v_color;
+    if (basecolor.a == 0.0){
+        discard;
+    }
+    f_color = basecolor;
+}
+"""
 
 
 def _create_rects(rect_list: Iterable[Sprite]) -> List[float]:
@@ -242,15 +298,12 @@ class SpriteList(Generic[_SpriteType]):
                move. Will result in buggy behavior if the sprites move when this
                is set to True.
         """
-        # The context this sprite list belongs to
-        self.ctx = get_window().ctx
-
         # List of sprites in the sprite list
         self.sprite_list = []
         self.sprite_idx = dict()
 
         # Used in drawing optimization via OpenGL
-        self.program = self.ctx.sprite_list_program
+        self.program = None
 
         self._sprite_pos_data = None
         self._sprite_pos_buf = None
@@ -440,7 +493,7 @@ class SpriteList(Generic[_SpriteType]):
                 self._sprite_pos_data.append(sprite.center_x)
                 self._sprite_pos_data.append(sprite.center_y)
 
-            self._sprite_pos_buf = self.ctx.buffer(
+            self._sprite_pos_buf = shader.buffer(
                 self._sprite_pos_data.tobytes(),
                 usage=usage
             )
@@ -458,7 +511,7 @@ class SpriteList(Generic[_SpriteType]):
                 self._sprite_size_data.append(sprite.width)
                 self._sprite_size_data.append(sprite.height)
 
-            self._sprite_size_buf = self.ctx.buffer(
+            self._sprite_size_buf = shader.buffer(
                 self._sprite_size_data.tobytes(),
                 usage=usage
             )
@@ -475,7 +528,7 @@ class SpriteList(Generic[_SpriteType]):
             for sprite in self.sprite_list:
                 self._sprite_angle_data.append(math.radians(sprite.angle))
 
-            self._sprite_angle_buf = self.ctx.buffer(
+            self._sprite_angle_buf = shader.buffer(
                 self._sprite_angle_data.tobytes(),
                 usage=usage
             )
@@ -495,7 +548,7 @@ class SpriteList(Generic[_SpriteType]):
                 self._sprite_color_data.append(int(sprite.color[2]))
                 self._sprite_color_data.append(int(sprite.alpha))
 
-            self._sprite_color_buf = self.ctx.buffer(
+            self._sprite_color_buf = shader.buffer(
                 self._sprite_color_data.tobytes(),
                 usage=usage
             )
@@ -508,7 +561,10 @@ class SpriteList(Generic[_SpriteType]):
             self._sprite_color_changed = False
 
         def _calculate_sub_tex_coords():
-
+            """
+            Create a sprite sheet, and set up subtexture coordinates to point
+            to images in that sheet.
+            """
             new_array_of_texture_names = []
             new_array_of_images = []
             new_texture = False
@@ -559,9 +615,27 @@ class SpriteList(Generic[_SpriteType]):
             # Get their sizes
             widths, heights = zip(*(i.size for i in self.array_of_images))
 
-            # Figure out what size a composite would be
-            total_width = sum(widths)
-            max_height = max(heights)
+            grid_item_width, grid_item_height = max(widths), max(heights)
+            image_count = len(self.array_of_images)
+            root = math.sqrt(image_count)
+            grid_width = int(math.sqrt(image_count))
+            # print(f"\nimage_count={image_count}, root={root}")
+            if root == grid_width:
+                # Perfect square
+                grid_height = grid_width
+                # print("\nA")
+            else:
+                grid_height = grid_width
+                grid_width += 1
+                if grid_width * grid_height < image_count:
+                    grid_height += 1
+                # print("\nB")
+
+            # Figure out sprite sheet size
+            MARGIN = 1
+
+            sprite_sheet_width = (grid_item_width + MARGIN) * grid_width
+            sprite_sheet_height = (grid_item_height + MARGIN) * grid_height
 
             if new_texture:
 
@@ -570,34 +644,60 @@ class SpriteList(Generic[_SpriteType]):
                 #     shader.Texture.release(self.texture_id)
 
                 # Make the composite image
-                new_image = Image.new('RGBA', (total_width, max_height))
+                new_image2 = Image.new('RGBA', (sprite_sheet_width, sprite_sheet_height))
 
                 x_offset = 0
-                for image in self.array_of_images:
-                    new_image.paste(image, (x_offset, 0))
+                for index, image in enumerate(self.array_of_images):
+
+                    x = (index % grid_width) * (grid_item_width + MARGIN)
+                    y = (index // grid_width) * (grid_item_height + MARGIN)
+
+                    # print(f"Pasting {new_array_of_texture_names[index]} at {x, y}")
+
+                    new_image2.paste(image, (x, y))
                     x_offset += image.size[0]
 
                 # Create a texture out the composite image
-                texture_bytes = new_image.tobytes()
-                self._texture = self.ctx.texture(
-                     (new_image.width, new_image.height),
+                texture_bytes2 = new_image2.tobytes()
+                self._texture = shader.texture(
+                     (new_image2.width, new_image2.height),
                      4,
-                     texture_bytes
+                     texture_bytes2
                 )
 
                 if self.texture_id is None:
                     self.texture_id = SpriteList.next_texture_id
 
+                # new_image2.save("sprites.png")
+
             # Create a list with the coordinates of all the unique textures
             tex_coords = []
-            start_x = 0.0
-            for image in self.array_of_images:
-                end_x = start_x + (image.width / total_width)
-                normalized_width = image.width / total_width
-                start_height = 1 - (image.height / max_height)
-                normalized_height = image.height / max_height
-                tex_coords.append([start_x, start_height, normalized_width, normalized_height])
-                start_x = end_x
+
+            for index, image in enumerate(self.array_of_images):
+                column = index % grid_width
+                row = index // grid_width
+
+                # Texture coordinates are reversed in y axis
+                row = grid_height - row - 1
+
+                x = column * (grid_item_width + MARGIN)
+                y = row * (grid_item_height + MARGIN)
+
+                # Because, coordinates are reversed
+                y += (grid_item_height - (image.height - MARGIN))
+
+                normalized_x = x / sprite_sheet_width
+                normalized_y = y / sprite_sheet_height
+
+                start_x = normalized_x
+                start_y = normalized_y
+
+                normalized_width = image.width / sprite_sheet_width
+                normalized_height = image.height / sprite_sheet_height
+
+                # print(f"Fetching {new_array_of_texture_names[index]} at {row}, {column} => {x}, {y} normalized to {start_x:.2}, {start_y:.2} size {normalized_width}, {normalized_height}")
+
+                tex_coords.append([start_x, start_y, normalized_width, normalized_height])
 
             # Go through each sprite and pull from the coordinate list, the proper
             # coordinates for that sprite's image.
@@ -607,7 +707,7 @@ class SpriteList(Generic[_SpriteType]):
                 for coord in tex_coords[index]:
                     array_of_sub_tex_coords.append(coord)
 
-            self._sprite_sub_tex_buf = self.ctx.buffer(
+            self._sprite_sub_tex_buf = shader.buffer(
                 array_of_sub_tex_coords.tobytes(),
                 usage=usage
             )
@@ -636,7 +736,7 @@ class SpriteList(Generic[_SpriteType]):
             1.0, 1.0, 1.0, 1.0,
         ]
         )
-        self.vbo_buf = self.ctx.buffer(vertices.tobytes())
+        self.vbo_buf = shader.buffer(vertices.tobytes())
         vbo_buf_desc = shader.BufferDescription(
             self.vbo_buf,
             '2f 2f',
@@ -650,7 +750,7 @@ class SpriteList(Generic[_SpriteType]):
                        self._sprite_angle_desc,
                        self._sprite_sub_tex_desc,
                        self._sprite_color_desc]
-        self._vao1 = self.ctx.vertex_array(self.program, vao_content)
+        self._vao1 = shader.vertex_array(self.program, vao_content)
 
     def _dump(self, buffer):
         """
@@ -824,6 +924,13 @@ class SpriteList(Generic[_SpriteType]):
         :param filter: Optional parameter to set OpenGL filter, such as
                        `gl.GL_NEAREST` to avoid smoothing.
         """
+        if self.program is None:
+            # Used in drawing optimization via OpenGL
+            self.program = shader.program(
+                vertex_shader=_VERTEX_SHADER,
+                fragment_shader=_FRAGMENT_SHADER
+            )
+
         if len(self.sprite_list) == 0:
             return
 
@@ -841,43 +948,44 @@ class SpriteList(Generic[_SpriteType]):
         # gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_NEAREST)
         # gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_NEAREST)
 
-        self.program['Texture'] = self.texture_id
-        self.program['Projection'] = get_projection().flatten()
-        texture_transform = None
-        if len(self.sprite_list) > 0:
-            # always wrap texture transformations with translations
-            # so that rotate and resize operations act on the texture
-            # center by default
-            texture_transform = Matrix3x3().translate(-0.5, -0.5).multiply(self.sprite_list[0].texture_transform.v).multiply(Matrix3x3().translate(0.5, 0.5).v)
-        if texture_transform == None:
-            texture_transform = Matrix3x3()
-        self.program['TextureTransform'] = texture_transform.v
+        with self._vao1:
+            self.program['Texture'] = self.texture_id
+            self.program['Projection'] = get_projection().flatten()
+            texture_transform = None
+            if len(self.sprite_list) > 0:
+                # always wrap texture transformations with translations
+                # so that rotate and resize operations act on the texture
+                # center by default
+                texture_transform = Matrix3x3().translate(-0.5, -0.5).multiply(self.sprite_list[0].texture_transform.v).multiply(Matrix3x3().translate(0.5, 0.5).v)
+            if texture_transform == None:
+                texture_transform = Matrix3x3()
+            self.program['TextureTransform'] = texture_transform.v
 
-        if not self.is_static:
-            if self._sprite_pos_changed:
-                self._sprite_pos_buf.orphan()
-                self._sprite_pos_buf.write(self._sprite_pos_data.tobytes())
-                self._sprite_pos_changed = False
+            if not self.is_static:
+                if self._sprite_pos_changed:
+                    self._sprite_pos_buf.orphan()
+                    self._sprite_pos_buf.write(self._sprite_pos_data.tobytes())
+                    self._sprite_pos_changed = False
 
-            if self._sprite_size_changed:
-                self._sprite_size_buf.orphan()
-                self._sprite_size_buf.write(self._sprite_size_data.tobytes())
-                self._sprite_size_changed = False
+                if self._sprite_size_changed:
+                    self._sprite_size_buf.orphan()
+                    self._sprite_size_buf.write(self._sprite_size_data.tobytes())
+                    self._sprite_size_changed = False
 
-            if self._sprite_angle_changed:
-                self._sprite_angle_buf.orphan()
-                self._sprite_angle_buf.write(self._sprite_angle_data.tobytes())
-                self._sprite_angle_changed = False
+                if self._sprite_angle_changed:
+                    self._sprite_angle_buf.orphan()
+                    self._sprite_angle_buf.write(self._sprite_angle_data.tobytes())
+                    self._sprite_angle_changed = False
 
-            if self._sprite_color_changed:
-                self._sprite_color_buf.orphan()
-                self._sprite_color_buf.write(self._sprite_color_data.tobytes())
-                self._sprite_color_changed = False
+                if self._sprite_color_changed:
+                    self._sprite_color_buf.orphan()
+                    self._sprite_color_buf.write(self._sprite_color_data.tobytes())
+                    self._sprite_color_changed = False
 
-            if self._sprite_sub_tex_changed:
-                self._sprite_sub_tex_buf.orphan()
-                self._sprite_sub_tex_buf.write(self._sprite_sub_tex_data.tobytes())
-                self._sprite_sub_tex_changed = False
+                if self._sprite_sub_tex_changed:
+                    self._sprite_sub_tex_buf.orphan()
+                    self._sprite_sub_tex_buf.write(self._sprite_sub_tex_data.tobytes())
+                    self._sprite_sub_tex_changed = False
 
             self._vao1.render(gl.GL_TRIANGLE_STRIP, instances=len(self.sprite_list))
 

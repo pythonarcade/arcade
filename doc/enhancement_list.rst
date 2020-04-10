@@ -37,9 +37,6 @@ Sprites
   Add sprite trigger/example for onenter / onexit.
 * `Issue 289 <https://github.com/pvcraven/arcade/issues/289>`_
   Be able to get Sprite position and velocity as vectors.
-* `Issue 332 <https://github.com/pvcraven/arcade/issues/332>`_
-  Only so many textures can be supported when drawing a SpriteList. Support more by
-  better packing of the auto-created SpriteList.
 * Be able to load an animated gif as an animated time-based sprite.
 * Be able to load an Aesprite image directly (Piggy-back of Pyglet support)
 

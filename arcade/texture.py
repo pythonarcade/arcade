@@ -62,16 +62,15 @@ class Matrix3x3:
 class Texture:
     """
     Class that represents a texture.
-    Usually created by the ``load_texture`` or ``load_textures`` commands.
+    Usually created by the :class:`load_texture` or :class:`load_textures` commands.
 
     Attributes:
         :name: Unique name of the texture. Used by load_textures for caching.
                If you are manually creating a texture, you can just set this
                to whatever.
-        :image: PIL image
-        :width: Width of the texture image in pixels
-        :height: Height of the texture image in pixels
-
+        :image: A :py:class:`PIL.Image.Image` object.
+        :width: Width of the texture in pixels.
+        :height: Height of the texture in pixels.
     """
 
     def __init__(self, name: str, image: PIL.Image.Image = None):
@@ -89,7 +88,7 @@ class Texture:
     @property
     def width(self) -> int:
         """
-        Width of the texture in pixels
+        Width of the texture in pixels.
         """
         if self.image:
             return self.image.width
@@ -99,7 +98,7 @@ class Texture:
     @property
     def height(self) -> int:
         """
-        Height of the texture in pixels
+        Height of the texture in pixels.
         """
         if self.image:
             return self.image.height
@@ -161,13 +160,13 @@ class Texture:
                     alpha: int = 255):
 
         """
-        Draw the texture
+        Draw the texture.
 
-        :param center_x: x location of where to draw the texture
-        :param center_y: y location of where to draw the texture
-        :param scale: Scale to draw rectangle. If none, defaults to 1
-        :param angle: angle to rotate the texture
-        :param alpha: transparency of texture. 0-255
+        :param float center_x: X location of where to draw the texture.
+        :param float center_y: Y location of where to draw the texture.
+        :param float scale: Scale to draw rectangle. Defaults to 1.
+        :param float angle: Angle to rotate the texture by.
+        :param int alpha: The transparency of the texture `(0-255)`.
         """
 
         self._create_cached_sprite()
@@ -183,27 +182,28 @@ class Texture:
 def load_textures(file_name: str,
                   image_location_list: RectList,
                   mirrored: bool = False,
-                  flipped: bool = False) -> List['Texture']:
+                  flipped: bool = False) -> List[Texture]:
     """
-    Load a set of textures off of a single image file.
+    Load a set of textures from a single image file.
 
-    Note, if the code is to load only part of the image, the given x, y
-    coordinates will start with the origin (0, 0) in the upper left of the
-    image. When drawing, Arcade uses (0, 0)
-    in the lower left corner when drawing. Be careful about this reversal.
+    Note: If the code is to load only part of the image, the given `x`, `y`
+    coordinates will start with the origin `(0, 0)` in the upper left of the
+    image. When drawing, Arcade uses `(0, 0)` in the lower left corner.
+    Be careful with this reversal.
 
     For a longer explanation of why computers sometimes start in the upper
     left, see:
     http://programarcadegames.com/index.php?chapter=introduction_to_graphics&lang=en#section_5
 
     :param str file_name: Name of the file.
-    :param RectList image_location_list: List of image sub-locations. Each rectangle should be
-           a list of four floats. ``[x, y, width, height]``.
-    :param bool mirrored: If set to true, the image is mirrored left to right.
-    :param bool flipped: If set to true, the image is flipped upside down.
+    :param List image_location_list: List of image sub-locations. Each rectangle should be
+           a `List` of four floats: `[x, y, width, height]`.
+    :param bool mirrored: If set to `True`, the image is mirrored left to right.
+    :param bool flipped: If set to `True`, the image is flipped upside down.
 
-    :Returns: List of textures loaded.
-    :Raises: ValueError
+    :returns: List of :class:`Texture`'s.
+
+    :raises: ValueError
     """
     # See if we already loaded this texture file, and we can just use a cached version.
     cache_file_name = "{}".format(file_name)
@@ -274,12 +274,12 @@ def load_texture(file_name: str,
                  flipped: bool = False,
                  can_cache: bool = True) -> Texture:
     """
-    Load image from disk and create a texture.
+    Load an image from disk and create a texture.
 
-    Note, if the code is to load only part of the image, the given x, y
-    coordinates will start with the origin (0, 0) in the upper left of the
-    image. When drawing, Arcade uses (0, 0)
-    in the lower left corner when drawing. Be careful about this reversal.
+    Note: If the code is to load only part of the image, the given `x`, `y`
+    coordinates will start with the origin `(0, 0)` in the upper left of the
+    image. When drawing, Arcade uses `(0, 0)` in the lower left corner.
+    Be careful with this reversal.
 
     For a longer explanation of why computers sometimes start in the upper
     left, see:
@@ -290,14 +290,15 @@ def load_texture(file_name: str,
     :param float y: Y position of the crop area of the texture.
     :param float width: Width of the crop area of the texture.
     :param float height: Height of the crop area of the texture.
-    :param bool mirrored: True if we mirror the image across the y axis
-    :param bool flipped: True if we flip the image across the x axis
+    :param bool mirrored: If set to `True`, the image is mirrored left to right.
+    :param bool flipped: If set to `True`, the image is flipped upside down.
     :param bool can_cache: If a texture has already been loaded, load_texture will return the same texture in order \
     to save time. Somtimes this is not desirable, as resizine a cached texture will cause all other textures to \
     resize with it. Setting can_cache to false will prevent this issue at the expence of additional resources.
 
-    :Returns: The new texture.
-    :raises: None
+    :returns: New :class:`Texture` object.
+
+    :raises: ValueError
     """
 
     # See if we already loaded this texture, and we can just use a cached version.
@@ -374,19 +375,16 @@ def load_spritesheet(file_name: str,
                      sprite_width: int,
                      sprite_height: int,
                      columns: int,
-                     count: int) -> List:
+                     count: int) -> List[Texture]:
     """
-    Load a set of textures based on a single sprite sheet.
 
-    Args:
-        file_name:
-        sprite_width:
-        sprite_height:
-        columns:
-        count:
+    :param str file_name: Name of the file to that holds the texture.
+    :param int sprite_width: X position of the crop area of the texture.
+    :param int sprite_height: Y position of the crop area of the texture.
+    :param int columns: Number of tiles wide the image is.
+    :param int count: Number of tiles in the image.
 
-    Returns:
-
+    :returns List: List of :class:`Texture` objects.
     """
 
     texture_list = []
@@ -411,12 +409,12 @@ def load_spritesheet(file_name: str,
 
 def make_circle_texture(diameter: int, color: Color) -> Texture:
     """
-    Return a Texture of a circle with given diameter and color
+    Return a Texture of a circle with the given diameter and color.
 
-    :param int diameter: Diameter of the circle and dimensions of the square Texture returned
-    :param Color color: Color of the circle
-    :Returns: A Texture object
-    :Raises: None
+    :param int diameter: Diameter of the circle and dimensions of the square :class:`Texture` returned.
+    :param Color color: Color of the circle.
+
+    :returns: New :class:`Texture` object.
     """
     bg_color = (0, 0, 0, 0)  # fully transparent
     img = PIL.Image.new("RGBA", (diameter, diameter), bg_color)
@@ -428,17 +426,14 @@ def make_circle_texture(diameter: int, color: Color) -> Texture:
 
 def make_soft_circle_texture(diameter: int, color: Color, center_alpha: int = 255, outer_alpha: int = 0) -> Texture:
     """
-    Return a Texture of a circle with given diameter, color, and alpha values at its center and edges
+    Return a :class:`Texture` of a circle with the given diameter and color, fading out at its edges.
 
-    Args:
-        :diameter (int): Diameter of the circle and dimensions of the square Texture returned
-        :color (Color): Color of the circle
-        :center_alpha (int): alpha value of circle at its center
-        :outer_alpha (int): alpha value of circle at its edge
-    Returns:
-        A Texture object
-    Raises:
-        None
+    :param int diameter: Diameter of the circle and dimensions of the square :class:`Texture` returned.
+    :param Color color: Color of the circle.
+    :param int center_alpha: Alpha value of the circle at its center.
+    :param int outer_alpha: Alpha value of the circle at its edges.
+
+    :returns: New :class:`Texture` object.
     """
     # TODO: create a rectangle and circle (and triangle? and arbitrary poly where client passes
     # in list of points?) particle?
@@ -458,16 +453,16 @@ def make_soft_circle_texture(diameter: int, color: Color, center_alpha: int = 25
 
 def make_soft_square_texture(size: int, color: Color, center_alpha: int = 255, outer_alpha: int = 0) -> Texture:
     """
-    Return a Texture of a circle with given diameter and color, fading out at the edges.
+    Return a :class:`Texture` of a square with the given diameter and color, fading out at its edges.
 
-    Args:
-        :diameter (int): Diameter of the circle and dimensions of the square Texture returned
-        :color (Color): Color of the circle
-    Returns:
-        The new texture.
-    Raises:
-        None
+    :param int size: Diameter of the square and dimensions of the square Texture returned.
+    :param Color color: Color of the square.
+    :param int center_alpha: Alpha value of the square at its center.
+    :param int outer_alpha: Alpha value of the square at its edges.
+
+    :returns: New :class:`Texture` object.
     """
+
     bg_color = (0, 0, 0, 0)  # fully transparent
     img = PIL.Image.new("RGBA", (size, size), bg_color)
     draw = PIL.ImageDraw.Draw(img)
@@ -485,9 +480,11 @@ def make_soft_square_texture(size: int, color: Color, center_alpha: int = 255, o
 # --- END TEXTURE FUNCTIONS # # #
 
 
-def trim_image(image: PIL.Image) -> PIL.Image:
+def trim_image(image: PIL.Image.Image) -> PIL.Image.Image:
     """
-    Returns an image with extra whitespace cropped out.
+    Crops the extra whitespace out of an image.
+
+    :returns: New :py:class:`PIL.Image.Image` object.
     """
     bbox = image.getbbox()
     return image.crop(bbox)

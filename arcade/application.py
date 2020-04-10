@@ -530,7 +530,7 @@ class Window(pyglet.window.Window):
         super().set_exclusive_keyboard(exclusive)
 
     def get_system_mouse_cursor(self, name):
-        super().get_system_mouse_cursor(name)
+        return super().get_system_mouse_cursor(name)
 
     def dispatch_events(self):
         super().dispatch_events()

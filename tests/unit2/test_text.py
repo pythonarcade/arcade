@@ -77,3 +77,4 @@ def test_main():
     window = MyTestWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Test Text")
     window.test()
     window.close()
+    arcade.cleanup_texture_cache()

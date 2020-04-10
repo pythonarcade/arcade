@@ -58,12 +58,12 @@ class MyGame(arcade.Window):
 
         tests = [
             ['identity', Matrix3x3(), (14, 14, 0)],
-            ['rotate(30)', Matrix3x3().rotate(30), (227, 86, 0)],
-            ['scale(0.8, 0.5)', Matrix3x3().scale(0.8, 0.5), (241, 155, 0)],
-            ['translate(0.3, 0.1)', Matrix3x3().translate(0.3, 0.1), (192, 243, 0)],
-            ['rotate(10).\nscale(0.33, 0.33)', Matrix3x3().rotate(10).scale(0.7, 0.7), (222, 252, 116)],
-            ['scale(-1, 1)', Matrix3x3().scale(-1, 1), (241, 14, 0)],
-            ['shear(0.3, 0.1)', Matrix3x3().shear(0.3, 0.1), (48, 25, 0)],
+            ['rotate(30)', Matrix3x3().rotate(30), (230, 87, 0)],
+            ['scale(0.8, 0.5)', Matrix3x3().scale(0.8, 0.5), (242, 158, 0)],
+            ['translate(0.3, 0.1)', Matrix3x3().translate(0.3, 0.1), (194, 245, 0)],
+            ['rotate(10).\nscale(0.33, 0.33)', Matrix3x3().rotate(10).scale(0.7, 0.7), (252, 255, 244)],
+            ['scale(-1, 1)', Matrix3x3().scale(-1, 1), (243, 14, 0)],
+            ['shear(0.3, 0.1)', Matrix3x3().shear(0.3, 0.1), (48, 26, 0)],
             [f'rotate({int(self.t) % 360})', Matrix3x3().rotate(self.t), (14, 14, 0)],
             ]
 
@@ -81,6 +81,7 @@ class MyGame(arcade.Window):
             # Mac, with its retina scaling, doesn't match other platforms.
             import sys
             if sys.platform != "darwin":
+                # print(actual_color, desired_color)
                 assert actual_color[0] == desired_color[0]
                 assert actual_color[1] == desired_color[1]
                 assert actual_color[2] == desired_color[2]
@@ -91,4 +92,5 @@ def test_texture_transform():
     window.setup()
     window.test()
     window.close()
+    # arcade.run()
     arcade.cleanup_texture_cache()

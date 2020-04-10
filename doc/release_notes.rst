@@ -5,8 +5,33 @@
 Release Notes
 =============
 
+Version 2.3.13
+--------------
+
+*Release Date: Apr-8-2020*
+
+* Bug Fix: Sprites with different dimensions added to same SpriteList didn't display correctly `Issue 630 <https://github.com/pvcraven/arcade/issues/630>`_
+
+Version 2.3.12
+--------------
+
+*Release Date: Apr-8-2020*
+
+* Enhancement: Support more textures in a SpriteList `Issue 332 <https://github.com/pvcraven/arcade/issues/332>`_
+
+Version 2.3.11
+--------------
+
+*Release Date: Apr-5-2020*
+
+* Bug Fix: Fix procedural_caves_bsp.py
+* Bug Fix: Improve Windows install docs `Issue 623 <https://github.com/pvcraven/arcade/issues/623>`_
+
+
 Version 2.3.10
 --------------
+
+*Release Date: Mar-31-2020*
 
 * Bug Fix: Remove unused AudioStream and PlaysoundException from __init__
 * Remove attempts to load ffmpeg library
