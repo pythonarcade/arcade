@@ -612,6 +612,7 @@ class VertexArray:
         """Render the VertexArray to the currently active framebuffer.
 
         :param GLunit mode: Primitive type to render. TRIANGLES, LINES etc.
+        :param int instances: OpenGL instance, used in using vertexes over and over
         """
         gl.glBindVertexArray(self._glo)
         self._program.use()
@@ -856,7 +857,7 @@ class Framebuffer:
             )
 
         # Ensure the framebuffer is sane!
-        self._check_completness()
+        self._check_completeness()
 
         # Set up draw buffers. This is simply a prepared list of attachments enums
         # we use in the use() method to activate the different color attachment layers
@@ -968,11 +969,15 @@ class Framebuffer:
         gl.glDepthMask(self._depth_mask)
         gl.glViewport(*self._viewport)
 
-    def clear(self, color=(0.0, 0.0, 0.0, 0.0), depth=1.0, normalized=False):
-        """Clears the framebuffer.
+    def clear(self,
+              color=(0.0, 0.0, 0.0, 0.0),
+              depth: float = 1.0,
+              normalized: bool = False):
+        """
+        Clears the framebuffer.
 
         :param tuple color: A 3 of 4 component tuple containing the color
-        :param depth float: Value to clear the depth buffer
+        :param float depth: Value to clear the depth buffer (unused)
         :param bool normalized: If the color values are normalized or not
         """
         self._use()
@@ -1000,9 +1005,10 @@ class Framebuffer:
 
     @staticmethod
     def release(framebuffer_id):
-        """Destroys the framebuffer object
+        """
+        Destroys the framebuffer object
 
-        :param bool release_attachments: Also release the attachments
+        :param framebuffer_id: Frame buffer to destroy
         """
         if gl.current_context is None:
             return
@@ -1023,9 +1029,10 @@ class Framebuffer:
     def __repr__(self):
         return "<Framebuffer glo={}>".format(self._glo)
 
-    def _check_completness(self):
+    @staticmethod
+    def _check_completeness():
         """
-        Checks the completness of the framebuffer.
+        Checks the completeness of the framebuffer.
         If the framebuffer is not complete, we cannot continue.
         """
         # See completness rules : https://www.khronos.org/opengl/wiki/Framebuffer_Object
@@ -1123,7 +1130,7 @@ class Context:
                 data=None,
                 wrap_x: gl.GLenum = None,
                 wrap_y: gl.GLenum = None,
-                filter: Tuple[gl.GLenum, gl.GLenum] = None) -> Texture:
+                texture_filter: Tuple[gl.GLenum, gl.GLenum] = None) -> Texture:
         """Create a Texture.
 
         Wrap modes: ``GL_REPEAT``, ``GL_MIRRORED_REPEAT``, ``GL_CLAMP_TO_EDGE``, ``GL_CLAMP_TO_BORDER``
@@ -1138,9 +1145,9 @@ class Context:
         :param buffer data: The texture data (optional)
         :param GLenum wrap_x: How the texture wraps in x direction
         :param GLenum wrap_y: How the texture wraps in y direction
-        :param Tuple[GLenum, GLenum] filter: Minification and magnification filter
+        :param Tuple[GLenum, GLenum] texture_filter: Minification and magnification filter
         """
-        return Texture(self, size, components, data, wrap_x=wrap_x, wrap_y=wrap_y, texture_filter=filter)
+        return Texture(self, size, components, data, wrap_x=wrap_x, wrap_y=wrap_y, texture_filter=texture_filter)
 
     def vertex_array(self, prog: gl.GLuint, content, index_buffer=None):
         """Create a new Vertex Array.

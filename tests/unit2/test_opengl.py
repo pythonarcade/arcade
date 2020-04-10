@@ -122,7 +122,7 @@ class OpenGLTest(arcade.Window):
         texture = self.ctx.texture(
             (100, 200),
             4,
-            filter=(self.ctx.NEAREST, self.ctx.NEAREST),
+            texture_filter=(self.ctx.NEAREST, self.ctx.NEAREST),
             wrap_x=self.ctx.CLAMP_TO_EDGE,
             wrap_y=self.ctx.REPEAT,
         )
