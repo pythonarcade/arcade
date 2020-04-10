@@ -228,7 +228,7 @@ Sprite Non-Player Movement
 .. figure:: thumbs/sprite_follow_simple.png
    :figwidth: 170px
 
-   :ref:`sprite_follow_simple_2`
+   :ref:`sprite_follow_simple`
 
 .. figure:: thumbs/sprite_follow_simple_2.png
    :figwidth: 170px
