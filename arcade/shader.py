@@ -5,7 +5,7 @@ from ctypes import *
 from collections import namedtuple
 from pathlib import Path
 import weakref
-from typing import List, Tuple, Iterable, Dict
+from typing import List, Tuple, Iterable, Dict, Optional
 
 
 from pyglet import gl
@@ -106,6 +106,7 @@ class Program:
         program['MyMatrix'] = matrix.flatten()
     """
     active = None  # Keeps track of the active program
+    __slots__ = '_ctx', '_glo', '_uniforms', '__weakref__'
 
     def __init__(self, ctx, *shaders: Shader):
         self._ctx = ctx
@@ -155,11 +156,6 @@ class Program:
             gl.glDetachShader(prog_id, shader_id)
 
         gl.glDeleteProgram(prog_id)
-
-    def release(self):
-        if self._glo != 0:
-            gl.glDeleteProgram(self._glo)
-            self._glo = 0
 
     def __getitem__(self, item):
         try:
@@ -289,6 +285,7 @@ class Buffer:
     It doesn't matter what bind target the buffer has on creation. What
     matters is how we bind it in rendering calls.
     """
+    __slots__ = '_ctx', '_glo', '_size', '_usage', '__weakref__'
     usages = {
         'static': gl.GL_STATIC_DRAW,
         'dynamic': gl.GL_DYNAMIC_DRAW,
@@ -515,76 +512,94 @@ class VertexArray:
 
     vao = VertexArray(...)
     """
+    __slots__ = '_ctx', '_program', '_glo', '_ibo', '_num_vertices','__weakref__'
 
     def __init__(self,
                  ctx,
                  prog: Program,
                  content: Iterable[BufferDescription],
                  index_buffer: Buffer = None):
-        self.ctx = ctx
-        self.program = prog
-        self.vao = vao = gl.GLuint()
-        self.num_vertices = -1
-        self.ibo = index_buffer
+        self._ctx = ctx
+        self._program = prog
+        self._glo = glo = gl.GLuint()
+        self._num_vertices = -1
+        self._ibo = index_buffer
 
-        gl.glGenVertexArrays(1, byref(self.vao))
-        # print(f"glGenVertexArrays() -> {self.vao.value}")
-        # print(f"glBindVertexArray({self.vao.value})")
-        gl.glBindVertexArray(self.vao)
+        gl.glGenVertexArrays(1, byref(self._glo))
+        gl.glBindVertexArray(self._glo)
 
         for buffer_desc in content:
             self._enable_attrib(buffer_desc)
 
-        if self.ibo is not None:
-            gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, self.ibo.glo)
-            # print(f"glBindVertexArray(gl.GL_ELEMENT_ARRAY_BUFFER, {self.ibo.glo.value})")
-        weakref.finalize(self, VertexArray.release, vao)
+        if self._ibo is not None:
+            gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, self._ibo.glo)
+
+        weakref.finalize(self, VertexArray.release, glo)
+
+    @property
+    def ctx(self) -> 'Context':
+        """The Context this object belongs to"""
+        return self._ctx
+
+    @property
+    def glo(self) -> gl.GLuint:
+        """The OpenGL resource id"""
+        return self._glo
+
+    @property
+    def program(self) -> Program:
+        """The assigned program"""
+        return self._program
+
+    @property
+    def ibo(self) -> Optional[Buffer]:
+        """Element/index buffer"""
+        return self._ibo
+
+    @property
+    def num_vertices(self) -> int:
+        """The number of vertices"""
+        return self._num_vertices
 
     @staticmethod
-    def release(vao):
+    def release(glo: gl.GLuint):
+        """Delete the object"""
         # If we have no context, then we are shutting down, so skip this
         if gl.current_context is None:
             return
 
-        if vao.value != 0:
-            gl.glDeleteVertexArrays(1, byref(vao))
-            vao.value = 0
+        if glo.value != 0:
+            gl.glDeleteVertexArrays(1, byref(glo))
+            glo.value = 0
 
     def _enable_attrib(self, buf_desc: BufferDescription):
         buff = buf_desc.buffer
         stride = sum(attribsize for _, attribsize, _ in buf_desc.formats)
 
         if buf_desc.instanced:
-            if self.num_vertices == -1:
+            if self._num_vertices == -1:
                 raise ShaderException(
                     "The first vertex attribute cannot be a per instance attribute."
                 )
         else:
-            self.num_vertices = max(self.num_vertices, buff.size // stride)
-            # print(f"Number of vertices: {self.num_vertices}")
+            self._num_vertices = max(self._num_vertices, buff.size // stride)
 
-        # print(f"glBindBuffer(gl.GL_ARRAY_BUFFER, {buff.glo.value})")
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, buff.glo)
         offset = 0
         for (size, attribsize, gl_type_enum), attrib in zip(buf_desc.formats, buf_desc.attributes):
-            loc = gl.glGetAttribLocation(self.program.glo, attrib.encode('utf-8'))
+            loc = gl.glGetAttribLocation(self._program.glo, attrib.encode())
             if loc == -1:
                 raise ShaderException(f"Attribute {attrib} not found in shader program")
 
             normalized = gl.GL_TRUE if attrib in buf_desc.normalized else gl.GL_FALSE
-            # print(f"glVertexAttribPointer({loc}, {size}, {gl_type_enum}, {normalized}, {stride}, {offset})")
             gl.glVertexAttribPointer(
                 loc, size, gl_type_enum,
                 normalized, stride, c_void_p(offset)
             )
-            # print(f"{attrib} of size {size} with stride {stride} and offset {offset}")
             if buf_desc.instanced:
-                # print(f'glVertexAttribDivisor({loc}, 1)')
                 gl.glVertexAttribDivisor(loc, 1)
 
             offset += attribsize
-
-            # print(f"gl.glEnableVertexAttribArray({loc})")
             gl.glEnableVertexAttribArray(loc)
 
     def render(self, mode: gl.GLuint, instances: int = 1):
@@ -592,19 +607,18 @@ class VertexArray:
 
         :param GLunit mode: Primitive type to render. TRIANGLES, LINES etc.
         """
-        # print(f"glBindVertexArray({self.vao.value})")
-        gl.glBindVertexArray(self.vao)
-        self.program.use()
-        if self.ibo is not None:
-            count = self.ibo.size // 4
-            # print(f"glDrawArraysInstanced({mode}, {count}, gl.GL_UNSIGNED_INT, None, {instances})")
+        gl.glBindVertexArray(self._glo)
+        self._program.use()
+        if self._ibo is not None:
+            count = self._ibo.size // 4
             gl.glDrawElementsInstanced(mode, count, gl.GL_UNSIGNED_INT, None, instances)
         else:
-            # print(f"glDrawArraysInstanced({mode}, 0, {self.num_vertices}, {instances})")
             gl.glDrawArraysInstanced(mode, 0, self.num_vertices, instances)
 
 
 class Texture:
+    __slots__ = '_ctx', '_glo', '_width', '_height', '_components', '_format', '_filter', '_wrap_x', '_wrap_y', '__weakref__'
+
     def __init__(self, ctx, size: Tuple[int, int], components: int, data=None, filter=None, wrap_x=None, wrap_y=None):
         """Represents an OpenGL texture.
 
@@ -625,22 +639,22 @@ class Texture:
         self._wrap_y = gl.GL_REPEAT
 
         sized_format = (gl.GL_R8, gl.GL_RG8, gl.GL_RGB8, gl.GL_RGBA8)[components - 1]
-        self.format = (gl.GL_R, gl.GL_RG, gl.GL_RGB, gl.GL_RGBA)[components - 1]
+        self._format = (gl.GL_R, gl.GL_RG, gl.GL_RGB, gl.GL_RGBA)[components - 1]
         gl.glActiveTexture(gl.GL_TEXTURE0)  # Create textures in the default channel (0)
 
-        self.texture_id = texture_id = gl.GLuint()
-        gl.glGenTextures(1, byref(self.texture_id))
+        self._glo = glo = gl.GLuint()
+        gl.glGenTextures(1, byref(self._glo))
 
-        if self.texture_id.value == 0:
+        if self._glo.value == 0:
             raise ShaderException("Cannot create Texture.")
 
-        gl.glBindTexture(gl.GL_TEXTURE_2D, self.texture_id)
+        gl.glBindTexture(gl.GL_TEXTURE_2D, self._glo)
         gl.glPixelStorei(gl.GL_PACK_ALIGNMENT, 1)
         gl.glPixelStorei(gl.GL_UNPACK_ALIGNMENT, 1)
         try:
             gl.glTexImage2D(
                 gl.GL_TEXTURE_2D, 0, sized_format, self._width, self._height, 0,
-                self.format, gl.GL_UNSIGNED_BYTE, data
+                self._format, gl.GL_UNSIGNED_BYTE, data
             )
         except gl.GLException:
             raise gl.GLException(f"Unable to create texture. {gl.GL_MAX_TEXTURE_SIZE} {size}")
@@ -649,7 +663,7 @@ class Texture:
         self.wrap_x = wrap_x or self._wrap_x
         self.wrap_y = wrap_y or self._wrap_y
 
-        weakref.finalize(self, Texture.release, texture_id)
+        weakref.finalize(self, Texture.release, glo)
 
     @property
     def ctx(self) -> 'Context':
@@ -659,7 +673,7 @@ class Texture:
     @property
     def glo(self) -> gl.GLuint:
         """The OpenGL texture id"""
-        return self.texture_id
+        return self._glo
 
     @property
     def width(self) -> int:
@@ -748,14 +762,14 @@ class Texture:
         gl.glGenerateMipmap(gl.GL_TEXTURE_2D)
 
     @staticmethod
-    def release(texture_id):
+    def release(glo: gl.GLuint):
         """Destroy the texture"""
         # If we have no context, then we are shutting down, so skip this
         if gl.current_context is None:
             return
 
-        if texture_id.value != 0:
-            gl.glDeleteTextures(1, byref(texture_id))
+        if glo.value != 0:
+            gl.glDeleteTextures(1, byref(glo))
 
     def use(self, unit: int = 0):
         """Bind the texture to a channel,
@@ -763,11 +777,11 @@ class Texture:
         :param int unit: The texture unit to bind the texture.
         """
         gl.glActiveTexture(gl.GL_TEXTURE0 + unit)
-        gl.glBindTexture(gl.GL_TEXTURE_2D, self.texture_id)
+        gl.glBindTexture(gl.GL_TEXTURE_2D, self._glo)
 
     def __repr__(self):
         return "<Texture glo={} size={}x{} components={}>".format(
-            self.texture_id.value, self.width, self.height, self._components)
+            self._glo.value, self._width, self._height, self._components)
 
 
 class Framebuffer:
@@ -776,6 +790,9 @@ class Framebuffer:
     This implementation is using texture attachments. When createing a
     Framebuffer we supply it with textures we want our scene rendered into.
     """
+    __slots__ = (
+        '_ctx', '_glo', '_width', '_height', '_color_attachments', '_depth_attachment',
+        '_samples', '_viewport', '_depth_mask', '_draw_buffers', '__weakref__')
     # The framebuffer or window that is currently active
     active = None  # type: Framebuffer
 
@@ -785,7 +802,7 @@ class Framebuffer:
         :param List[Texture] color_attachments: List of color attachments.
         :param Texture depth_attachment: A depth attachment (optional)
         """
-        self.ctx = ctx
+        self._ctx = ctx
         self._color_attachments = color_attachments if isinstance(color_attachments, list) else [color_attachments]
         self._depth_attachment = depth_attachment
         self._glo = fbo_id = gl.GLuint()  # The OpenGL alias/name
@@ -869,6 +886,11 @@ class Framebuffer:
         # Otherwise it will be set on use()
         if Framebuffer.active == self:
             gl.glViewport(*self._viewport)
+
+    @property
+    def ctx(self) -> 'Context':
+        """The context this object belongs to"""
+        return self._ctx
 
     @property
     def width(self) -> int:
