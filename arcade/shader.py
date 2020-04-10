@@ -1,7 +1,12 @@
 """Utilities for dealing with Shaders in OpenGL 3.3+.
 """
 
-from ctypes import *
+from ctypes import (
+    c_char, c_int, c_buffer,
+    c_char_p, c_void_p,
+    cast, POINTER, pointer, byref, sizeof,
+    create_string_buffer, string_at,
+)
 from collections import namedtuple
 from pathlib import Path
 import weakref
@@ -186,7 +191,6 @@ class Program:
         # IMPORTANT: This is the only place glUseProgram should be called
         #            so we can track active program.
         if self._ctx.active_program != self:
-            # print(f"glUseProgram({self._glo})")
             gl.glUseProgram(self._glo)
             self._ctx.active_program = self
 
@@ -225,6 +229,7 @@ class Program:
             setter = _create_setter_func(loc, gl_setter, c_array, length, count, ptr, is_matrix)
 
             # print(f"Found uniform: {uniform_name}, type: {u_type}, size: {u_size}, "
+            #       f"location: {loc}, length: {length}, count: {count}")
             #       f"location: {loc}, length: {length}, count: {count}")
 
             self._uniforms[uniform_name] = Uniform(getter, setter)
@@ -488,6 +493,7 @@ class BufferDescription:
             sizechar, type_ = fmt
             if sizechar not in '1234' or type_ not in 'fiB':
                 raise ShaderException("Wrong format {fmt}.")
+
             size = int(sizechar)
             gl_type_enum = BufferDescription.GL_TYPES_ENUM[type_]
             gl_type = BufferDescription.GL_TYPES[type_]
@@ -626,54 +632,96 @@ class Texture:
     """
     Class that represents an OpenGL texture.
     """
-    __slots__ = '_ctx', '_glo', '_width', '_height', '_components', '_format', '_filter', '_wrap_x', '_wrap_y', '__weakref__'
+    __slots__ = '_ctx', '_glo', '_width', '_height', '_dtype', '_components', '_filter', '_wrap_x', '_wrap_y', '__weakref__'
+
+    _float_base_format = (0, gl.GL_RED, gl.GL_RG, gl.GL_RGB, gl.GL_RGBA)
+    _int_base_format = (0, gl.GL_RED_INTEGER, gl.GL_RG_INTEGER, gl.GL_RGB_INTEGER, gl.GL_RGBA_INTEGER)
+    # format: (base_format, internal_format, type, size)
+    _formats = {
+        # float formats
+        'f1': (_float_base_format, (0, gl.GL_R8, gl.GL_RG8, gl.GL_RGB8, gl.GL_RGBA8), gl.GL_UNSIGNED_BYTE, 1),
+        'f2': (_float_base_format, (0, gl.GL_R16F, gl.GL_RG16F, gl.GL_RGB16F, gl.GL_RGBA16F), gl.GL_HALF_FLOAT, 2),
+        'f4': (_float_base_format, (0, gl.GL_R32F, gl.GL_RG32F, gl.GL_RGB32F, gl.GL_RGBA32F), gl.GL_FLOAT, 4),
+        # int formats
+        'i1': (_int_base_format, (0, gl.GL_R8UI, gl.GL_RG8UI, gl.GL_RGB8UI, gl.GL_RGBA8UI), gl.GL_UNSIGNED_BYTE, 1),
+        'i2': (_int_base_format, (0, gl.GL_R16UI, gl.GL_RG16UI, gl.GL_RGB16UI, gl.GL_RGBA16UI), gl.GL_UNSIGNED_SHORT, 2),
+        'i4': (_int_base_format, (0, gl.GL_R32UI, gl.GL_RG32UI, gl.GL_RGB32UI, gl.GL_RGBA32UI), gl.GL_UNSIGNED_INT, 4),
+        # uint formats
+        'u1': (_int_base_format, (0, gl.GL_R8UI, gl.GL_RG8UI, gl.GL_RGB8UI, gl.GL_RGBA8UI), gl.GL_BYTE, 1),
+        'u2': (_int_base_format, (0, gl.GL_R16UI, gl.GL_RG16UI, gl.GL_RGB16UI, gl.GL_RGBA16UI), gl.GL_SHORT, 2),
+        'u4': (_int_base_format, (0, gl.GL_R32UI, gl.GL_RG32UI, gl.GL_RGB32UI, gl.GL_RGBA32UI), gl.GL_INT, 4),
+    }
 
     def __init__(self,
-                 ctx,
+                 ctx: 'Context',
                  size: Tuple[int, int],
-                 components: int,
-                 data=None,
-                 texture_filter=None,
-                 wrap_x=None,
-                 wrap_y=None):
+                 components: int = 4,
+                 dtype: str = 'f1',
+                 data: bytes = None,
+                 texture_filter: Tuple[gl.GLuint, gl.GLuint] = None,
+                 wrap_x: gl.GLuint = None,
+                 wrap_y: gl.GLuint = None):
         """Represents an OpenGL texture.
 
         A texture can be created with or without initial data.
         NOTE: Currently does not support multisample textures even
         thought ``samples`` is exposed.
 
-        :param Tuple[int, int] size: The size of the texture.
-        :param int components: The number of components (1: R, 2: RG, 3: RGB, 4: RGBA).
+        :param Context ctx: The context the object belongs to
+        :param Tuple[int, int] size: The size of the texture
+        :param int components: The number of components (1: R, 2: RG, 3: RGB, 4: RGBA)
+        :param str dtype: The data type of each component: f1, f2, f4 / i1, i2, i4 / u1, u2, u4
+        :param bytes data: The byte data to initialize the texture with
+        :param Tuple[gl.GLuint, gl.GLuint] filter: The minification/magnification filter of the texture
+        :param gl.GLuint wrap_s
         :param data: The texture data (optional)
         """
         self._ctx = ctx
         self._width, self._height = size
+        self._dtype = dtype
         self._components = components
-        # These are the defalt states in OpenGL
+        # These are the default states in OpenGL
         self._filter = gl.GL_LINEAR, gl.GL_LINEAR
         self._wrap_x = gl.GL_REPEAT
         self._wrap_y = gl.GL_REPEAT
 
-        sized_format = (gl.GL_R8, gl.GL_RG8, gl.GL_RGB8, gl.GL_RGBA8)[components - 1]
-        self._format = (gl.GL_R, gl.GL_RG, gl.GL_RGB, gl.GL_RGBA)[components - 1]
+        if components not in [1, 2, 3, 4]:
+            raise ValueError("Components must be 1, 2, 3 or 4")
+
+        try:
+            format_info = self._formats[self._dtype]
+        except KeyError:
+            raise ValueError(f"dype '{dtype}' not support. Supported types are : {tuple(self._formats.keys())}")
+
         gl.glActiveTexture(gl.GL_TEXTURE0)  # Create textures in the default channel (0)
 
         self._glo = glo = gl.GLuint()
         gl.glGenTextures(1, byref(self._glo))
 
         if self._glo.value == 0:
-            raise ShaderException("Cannot create Texture.")
+            raise ShaderException("Cannot create Texture. OpenGL failed to generate a texture id")
 
         gl.glBindTexture(gl.GL_TEXTURE_2D, self._glo)
         gl.glPixelStorei(gl.GL_PACK_ALIGNMENT, 1)
         gl.glPixelStorei(gl.GL_UNPACK_ALIGNMENT, 1)
         try:
+            _format, _internal_format, _type, size = format_info
             gl.glTexImage2D(
-                gl.GL_TEXTURE_2D, 0, sized_format, self._width, self._height, 0,
-                self._format, gl.GL_UNSIGNED_BYTE, data
+                gl.GL_TEXTURE_2D,  # target
+                0,  # level
+                _internal_format[components],  # internal_format
+                self._width,  # width
+                self._height,  # height
+                0,  # border
+                _format[components],  # format
+                _type,  # type
+                data  # data
             )
-        except gl.GLException:
-            raise gl.GLException(f"Unable to create texture. {gl.GL_MAX_TEXTURE_SIZE} {size}")
+        except gl.GLException as ex:
+            raise gl.GLException((
+                f"Unable to create texture: {ex} : dtype={dtype} size={size} components={components} "
+                "GL_MAX_TEXTURE_SIZE = {gl.GL_MAX_TEXTURE_SIZE}"
+            ))
 
         self.filter = texture_filter or self._filter
         self.wrap_x = wrap_x or self._wrap_x
@@ -700,6 +748,11 @@ class Texture:
     def height(self) -> int:
         """The height of the texture in pixels"""
         return self._height
+
+    @property
+    def dtype(self) -> str:
+        """The data type of each component"""
+        return self._dtype
 
     @property
     def size(self) -> Tuple[int, int]:
@@ -1108,6 +1161,11 @@ class Context:
         """ Return OpenGL version. """
         return self._gl_version
 
+    @property
+    def error(self):
+        """Check OpenGL error"""
+        return gl.glGetError()
+
     def buffer(self, data: bytes = None, reserve: int = 0, usage: str = 'static') -> Buffer:
         """Create a new OpenGL Buffer object.
 
@@ -1128,8 +1186,9 @@ class Context:
 
     def texture(self,
                 size: Tuple[int, int],
-                components: int,
-                data=None,
+                components: int = 4,
+                dtype: str = 'f1',
+                data: bytes = None,
                 wrap_x: gl.GLenum = None,
                 wrap_y: gl.GLenum = None,
                 texture_filter: Tuple[gl.GLenum, gl.GLenum] = None) -> Texture:
@@ -1144,12 +1203,15 @@ class Context:
 
         :param Tuple[int, int] size: The size of the texture
         :param int components: Number of components (1: R, 2: RG, 3: RGB, 4: RGBA)
+        :param str dtype: The data type of each component: f1, f2, f4 / i1, i2, i4 / u1, u2, u4
         :param buffer data: The texture data (optional)
         :param GLenum wrap_x: How the texture wraps in x direction
         :param GLenum wrap_y: How the texture wraps in y direction
         :param Tuple[GLenum, GLenum] texture_filter: Minification and magnification filter
         """
-        return Texture(self, size, components, data, wrap_x=wrap_x, wrap_y=wrap_y, texture_filter=texture_filter)
+        return Texture(self, size, components=components, data=data, dtype=dtype,
+                       wrap_x=wrap_x, wrap_y=wrap_y,
+                       texture_filter=texture_filter)
 
     def vertex_array(self, prog: gl.GLuint, content, index_buffer=None):
         """Create a new Vertex Array.

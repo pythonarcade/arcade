@@ -70,7 +70,7 @@ class GaussianBlurHorizontal(PostProcessing):
     def __init__(self, size: Tuple[int, int], kernel_size=5):
         super().__init__(size)
         self._kernel_size = kernel_size
-        color_attachment = self.ctx.texture(size, 3, wrap_x=gl.GL_CLAMP_TO_EDGE, wrap_y=gl.GL_CLAMP_TO_EDGE)
+        color_attachment = self.ctx.texture(size, components=3, wrap_x=gl.GL_CLAMP_TO_EDGE, wrap_y=gl.GL_CLAMP_TO_EDGE)
         self._fbo = self.ctx.framebuffer(color_attachments=color_attachment)
         self._program = self.ctx.load_program(
             vertex_shader_filename=SHADER_PATH / 'texture_ndc_vs.glsl',
@@ -93,7 +93,7 @@ class GaussianBlurVertical(PostProcessing):
     def __init__(self, size: Tuple[int, int], kernel_size=5):
         super().__init__(size)
         self._kernel_size = kernel_size
-        self._fbo = self.ctx.framebuffer(color_attachments=self.ctx.texture(size, 3, wrap_x=gl.GL_CLAMP_TO_EDGE, wrap_y=gl.GL_CLAMP_TO_EDGE))
+        self._fbo = self.ctx.framebuffer(color_attachments=self.ctx.texture(size, components=3, wrap_x=gl.GL_CLAMP_TO_EDGE, wrap_y=gl.GL_CLAMP_TO_EDGE))
         self._program = self.ctx.load_program(
             vertex_shader_filename=SHADER_PATH / 'texture_ndc_vs.glsl',
             fragment_shader_filename=SHADER_PATH / 'gaussian_blury_fs.glsl',

@@ -188,9 +188,9 @@ class MyGame(arcade.Window):
         self.mini_map_quad = None
 
         program = self.ctx.load_program("simple_shader.vert", "simple_shader.frag")
-        self.minimap_color_attachment = self.ctx.texture((SCREEN_WIDTH, SCREEN_HEIGHT), 4)
+        self.minimap_color_attachment = self.ctx.texture((SCREEN_WIDTH, SCREEN_HEIGHT))
         self.minimap_screen = self.ctx.framebuffer(color_attachments=[self.minimap_color_attachment])
-        self.play_screen_color_attachment = self.ctx.texture((SCREEN_WIDTH, SCREEN_HEIGHT), 4)
+        self.play_screen_color_attachment = self.ctx.texture((SCREEN_WIDTH, SCREEN_HEIGHT))
         self.play_screen = self.ctx.framebuffer(color_attachments=[self.play_screen_color_attachment])
         self.mini_map_quad = geometry.quad_fs(program, size=(2.0, 0.5), pos=(0.0, 0.75))
         self.play_screen_quad = geometry.quad_fs(program, size=(2.0, 1.5), pos=(0.0, 0.0))
