@@ -26,65 +26,9 @@ from arcade import is_point_in_polygon
 
 from arcade import rotate_point
 from arcade import get_projection
+from arcade import get_window
 from arcade import shader
 from arcade import Point
-
-_VERTEX_SHADER = """
-#version 330
-uniform mat4 Projection;
-uniform mat3 TextureTransform;
-
-// per vertex
-in vec2 in_vert;
-in vec2 in_texture;
-
-// per instance
-in vec2 in_pos;
-in float in_angle;
-in vec2 in_size;
-in vec4 in_sub_tex_coords;
-in vec4 in_color;
-
-out vec2 v_texture;
-out vec4 v_color;
-
-void main() {
-    mat2 rotate = mat2(
-                cos(in_angle), sin(in_angle),
-                -sin(in_angle), cos(in_angle)
-            );
-    vec2 pos;
-    pos = in_pos + vec2(rotate * (in_vert * (in_size / 2)));
-    gl_Position = Projection * vec4(pos, 0.0, 1.0);
-
-    vec2 tex_offset = in_sub_tex_coords.xy;
-    vec2 tex_size = in_sub_tex_coords.zw;
-
-    v_texture = (in_texture * tex_size + tex_offset) * vec2(1, -1);
-    vec3 temp = TextureTransform * vec3(v_texture, 1.0);
-    v_texture = temp.xy / temp.z;
-    v_color = in_color;
-}
-"""
-
-_FRAGMENT_SHADER = """
-#version 330
-uniform sampler2D Texture;
-
-in vec2 v_texture;
-in vec4 v_color;
-
-out vec4 f_color;
-
-void main() {
-    vec4 basecolor = texture(Texture, v_texture);
-    basecolor = basecolor * v_color;
-    if (basecolor.a == 0.0){
-        discard;
-    }
-    f_color = basecolor;
-}
-"""
 
 
 def _create_rects(rect_list: Iterable[Sprite]) -> List[float]:
@@ -298,12 +242,15 @@ class SpriteList(Generic[_SpriteType]):
                move. Will result in buggy behavior if the sprites move when this
                is set to True.
         """
+        # The context this sprite list belongs to
+        self.ctx = get_window().ctx
+
         # List of sprites in the sprite list
         self.sprite_list = []
         self.sprite_idx = dict()
 
         # Used in drawing optimization via OpenGL
-        self.program = None
+        self.program = self.ctx.sprite_list_program
 
         self._sprite_pos_data = None
         self._sprite_pos_buf = None
@@ -493,7 +440,7 @@ class SpriteList(Generic[_SpriteType]):
                 self._sprite_pos_data.append(sprite.center_x)
                 self._sprite_pos_data.append(sprite.center_y)
 
-            self._sprite_pos_buf = shader.buffer(
+            self._sprite_pos_buf = self.ctx.buffer(
                 self._sprite_pos_data.tobytes(),
                 usage=usage
             )
@@ -511,7 +458,7 @@ class SpriteList(Generic[_SpriteType]):
                 self._sprite_size_data.append(sprite.width)
                 self._sprite_size_data.append(sprite.height)
 
-            self._sprite_size_buf = shader.buffer(
+            self._sprite_size_buf = self.ctx.buffer(
                 self._sprite_size_data.tobytes(),
                 usage=usage
             )
@@ -528,7 +475,7 @@ class SpriteList(Generic[_SpriteType]):
             for sprite in self.sprite_list:
                 self._sprite_angle_data.append(math.radians(sprite.angle))
 
-            self._sprite_angle_buf = shader.buffer(
+            self._sprite_angle_buf = self.ctx.buffer(
                 self._sprite_angle_data.tobytes(),
                 usage=usage
             )
@@ -548,7 +495,7 @@ class SpriteList(Generic[_SpriteType]):
                 self._sprite_color_data.append(int(sprite.color[2]))
                 self._sprite_color_data.append(int(sprite.alpha))
 
-            self._sprite_color_buf = shader.buffer(
+            self._sprite_color_buf = self.ctx.buffer(
                 self._sprite_color_data.tobytes(),
                 usage=usage
             )
@@ -659,7 +606,7 @@ class SpriteList(Generic[_SpriteType]):
 
                 # Create a texture out the composite image
                 texture_bytes2 = new_image2.tobytes()
-                self._texture = shader.texture(
+                self._texture = self.ctx.texture(
                      (new_image2.width, new_image2.height),
                      4,
                      texture_bytes2
@@ -707,7 +654,7 @@ class SpriteList(Generic[_SpriteType]):
                 for coord in tex_coords[index]:
                     array_of_sub_tex_coords.append(coord)
 
-            self._sprite_sub_tex_buf = shader.buffer(
+            self._sprite_sub_tex_buf = self.ctx.buffer(
                 array_of_sub_tex_coords.tobytes(),
                 usage=usage
             )
@@ -736,7 +683,7 @@ class SpriteList(Generic[_SpriteType]):
             1.0, 1.0, 1.0, 1.0,
         ]
         )
-        self.vbo_buf = shader.buffer(vertices.tobytes())
+        self.vbo_buf = self.ctx.buffer(vertices.tobytes())
         vbo_buf_desc = shader.BufferDescription(
             self.vbo_buf,
             '2f 2f',
@@ -750,7 +697,7 @@ class SpriteList(Generic[_SpriteType]):
                        self._sprite_angle_desc,
                        self._sprite_sub_tex_desc,
                        self._sprite_color_desc]
-        self._vao1 = shader.vertex_array(self.program, vao_content)
+        self._vao1 = self.ctx.vertex_array(self.program, vao_content)
 
     def _dump(self, buffer):
         """
@@ -924,13 +871,6 @@ class SpriteList(Generic[_SpriteType]):
         :param filter: Optional parameter to set OpenGL filter, such as
                        `gl.GL_NEAREST` to avoid smoothing.
         """
-        if self.program is None:
-            # Used in drawing optimization via OpenGL
-            self.program = shader.program(
-                vertex_shader=_VERTEX_SHADER,
-                fragment_shader=_FRAGMENT_SHADER
-            )
-
         if len(self.sprite_list) == 0:
             return
 
@@ -948,46 +888,45 @@ class SpriteList(Generic[_SpriteType]):
         # gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_NEAREST)
         # gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_NEAREST)
 
-        with self._vao1:
-            self.program['Texture'] = self.texture_id
-            self.program['Projection'] = get_projection().flatten()
-            texture_transform = None
-            if len(self.sprite_list) > 0:
-                # always wrap texture transformations with translations
-                # so that rotate and resize operations act on the texture
-                # center by default
-                texture_transform = Matrix3x3().translate(-0.5, -0.5).multiply(self.sprite_list[0].texture_transform.v).multiply(Matrix3x3().translate(0.5, 0.5).v)
-            if texture_transform == None:
-                texture_transform = Matrix3x3()
-            self.program['TextureTransform'] = texture_transform.v
+        self.program['Texture'] = self.texture_id
+        self.program['Projection'] = get_projection().flatten()
+        texture_transform = None
+        if len(self.sprite_list) > 0:
+            # always wrap texture transformations with translations
+            # so that rotate and resize operations act on the texture
+            # center by default
+            texture_transform = Matrix3x3().translate(-0.5, -0.5).multiply(self.sprite_list[0].texture_transform.v).multiply(Matrix3x3().translate(0.5, 0.5).v)
+        if texture_transform == None:
+            texture_transform = Matrix3x3()
+        self.program['TextureTransform'] = texture_transform.v
 
-            if not self.is_static:
-                if self._sprite_pos_changed:
-                    self._sprite_pos_buf.orphan()
-                    self._sprite_pos_buf.write(self._sprite_pos_data.tobytes())
-                    self._sprite_pos_changed = False
+        if not self.is_static:
+            if self._sprite_pos_changed:
+                self._sprite_pos_buf.orphan()
+                self._sprite_pos_buf.write(self._sprite_pos_data.tobytes())
+                self._sprite_pos_changed = False
 
-                if self._sprite_size_changed:
-                    self._sprite_size_buf.orphan()
-                    self._sprite_size_buf.write(self._sprite_size_data.tobytes())
-                    self._sprite_size_changed = False
+            if self._sprite_size_changed:
+                self._sprite_size_buf.orphan()
+                self._sprite_size_buf.write(self._sprite_size_data.tobytes())
+                self._sprite_size_changed = False
 
-                if self._sprite_angle_changed:
-                    self._sprite_angle_buf.orphan()
-                    self._sprite_angle_buf.write(self._sprite_angle_data.tobytes())
-                    self._sprite_angle_changed = False
+            if self._sprite_angle_changed:
+                self._sprite_angle_buf.orphan()
+                self._sprite_angle_buf.write(self._sprite_angle_data.tobytes())
+                self._sprite_angle_changed = False
 
-                if self._sprite_color_changed:
-                    self._sprite_color_buf.orphan()
-                    self._sprite_color_buf.write(self._sprite_color_data.tobytes())
-                    self._sprite_color_changed = False
+            if self._sprite_color_changed:
+                self._sprite_color_buf.orphan()
+                self._sprite_color_buf.write(self._sprite_color_data.tobytes())
+                self._sprite_color_changed = False
 
-                if self._sprite_sub_tex_changed:
-                    self._sprite_sub_tex_buf.orphan()
-                    self._sprite_sub_tex_buf.write(self._sprite_sub_tex_data.tobytes())
-                    self._sprite_sub_tex_changed = False
+            if self._sprite_sub_tex_changed:
+                self._sprite_sub_tex_buf.orphan()
+                self._sprite_sub_tex_buf.write(self._sprite_sub_tex_data.tobytes())
+                self._sprite_sub_tex_changed = False
 
-            self._vao1.render(gl.GL_TRIANGLE_STRIP, instances=len(self.sprite_list))
+        self._vao1.render(gl.GL_TRIANGLE_STRIP, instances=len(self.sprite_list))
 
     def __len__(self) -> int:
         """ Return the length of the sprite list. """
