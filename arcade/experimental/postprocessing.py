@@ -1,3 +1,6 @@
+"""
+Post-processing shaders.
+"""
 from pathlib import Path
 from pyglet import gl
 from typing import Tuple
@@ -32,21 +35,26 @@ class PostProcessing:
 
     @property
     def ctx(self) -> shader.Context:
+        """ Get the shader context. """
         return self._ctx
 
     @property
     def width(self):
+        """ Get the width of the buffer. """
         return self._size[0]
 
     @property
     def height(self):
+        """ Get the height of the buffer. """
         return self._size[1]
 
     @property
     def size(self):
+        """ Get the size of the buffer. """
         return self._size
 
     def render(self, *args, **kwargs) -> shader.Texture:
+        """ Render. Should be over-loaded by the child class. """
         pass
 
     def resize(self, size: Tuple[int, int]):
@@ -58,11 +66,12 @@ class PostProcessing:
 
 
 class GaussianBlurHorizontal(PostProcessing):
-
+    """ Blur the buffer horizontally. """
     def __init__(self, size: Tuple[int, int], kernel_size=5):
         super().__init__(size)
         self._kernel_size = kernel_size
-        self._fbo = self.ctx.framebuffer(color_attachments=self.ctx.texture(size, 3, wrap_x=gl.GL_CLAMP_TO_EDGE, wrap_y=gl.GL_CLAMP_TO_EDGE))
+        color_attachment = self.ctx.texture(size, 3, wrap_x=gl.GL_CLAMP_TO_EDGE, wrap_y=gl.GL_CLAMP_TO_EDGE)
+        self._fbo = self.ctx.framebuffer(color_attachments=color_attachment)
         self._program = self.ctx.load_program(
             vertex_shader_filename=SHADER_PATH / 'texture_ndc_vs.glsl',
             fragment_shader_filename=SHADER_PATH / 'gaussian_blurx_fs.glsl',
@@ -70,6 +79,7 @@ class GaussianBlurHorizontal(PostProcessing):
         self._quad_fs = geometry.quad_fs(self._program, size=(2.0, 2.0))
 
     def render(self, source: shader.Texture) -> shader.Texture:
+        """ Render """
         self._fbo.use()
         source.use(0)
         self._program['target_size'] = self._fbo.size
@@ -78,6 +88,7 @@ class GaussianBlurHorizontal(PostProcessing):
 
 
 class GaussianBlurVertical(PostProcessing):
+    """ Blur the buffer vertically. """
 
     def __init__(self, size: Tuple[int, int], kernel_size=5):
         super().__init__(size)
@@ -90,6 +101,7 @@ class GaussianBlurVertical(PostProcessing):
         self._quad_fs = geometry.quad_fs(self._program, size=(2.0, 2.0))
 
     def render(self, source: shader.Texture) -> shader.Texture:
+        """ Render """
         self._fbo.use()
         source.use(0)
         self._program['target_size'] = self._fbo.size
@@ -98,21 +110,22 @@ class GaussianBlurVertical(PostProcessing):
 
 
 class GaussianBlur(PostProcessing):
-
+    """ Do both horizontal and vertical blurs. """
     def __init__(self, size, kernel_size=5):
         super().__init__(size, kernel_size=kernel_size)
         self._blur_x = GaussianBlurHorizontal(size, kernel_size=kernel_size)
         self._blur_y = GaussianBlurVertical(size, kernel_size=kernel_size)
 
     def render(self, source: shader.Texture) -> shader.Texture:
+        """ Render """
         blurred_x = self._blur_x.render(source)
         return self._blur_y.render(blurred_x)
 
 
 class Glow(PostProcessing):
-
+    """ Post processing to create a bloom/glow effect. """
     def __init__(self, size, kernel_size=5):
-        super().__init__(size,kernel_size=kernel_size)
+        super().__init__(size, kernel_size=kernel_size)
         self._gaussian = GaussianBlur(size, kernel_size=kernel_size)
         self._combine_program = self.ctx.load_program(
             vertex_shader_filename=SHADER_PATH / 'texture_ndc_vs.glsl',
@@ -121,6 +134,7 @@ class Glow(PostProcessing):
         self._quad_fs = geometry.quad_fs(self._combine_program, size=(2.0, 2.0))
 
     def render(self, source, target):
+        """ Render """
         # source.build_mipmaps()
         blurred = self._gaussian.render(source)
         target.use()
