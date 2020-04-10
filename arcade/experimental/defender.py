@@ -1,14 +1,12 @@
 """
-Better Move Sprite With Keyboard
+Defender Clone.
 
-Simple program to show moving a sprite with the keyboard.
-This is slightly better than sprite_move_keyboard.py example
-in how it works, but also slightly more complex.
-
-Artwork from http://kenney.nl
+This example shows how to:
+1. Create a mini-map
+2. Create a 'bloom' or 'glow' effect.
 
 If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.sprite_move_keyboard_better
+python -m arcade.examples.defender
 """
 
 import arcade
@@ -22,28 +20,36 @@ from arcade.experimental import geometry
 from arcade.experimental import postprocessing
 import pyglet.gl as gl
 
-SPRITE_SCALING = 0.5
-
+# Size/title of the window
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 720
-SCREEN_TITLE = "Better Move Sprite with Keyboard Example"
+SCREEN_TITLE = "Defender Clone"
 
+# Size of the playing field
+PLAYING_FIELD_WIDTH = 5000
+PLAYING_FIELD_HEIGHT = 800
+
+# Size of the minimap
 MINIMAP_HEIGHT = SCREEN_HEIGHT / 4
+
+# Size of the playing field.
+# This, plus the minimap height, should add up to the height of the screen.
 MAIN_SCREEN_HEIGHT = SCREEN_HEIGHT - MINIMAP_HEIGHT
 
-MAX_HORIZONTAL_MOVEMENT_SPEED = 10
-MAX_VERTICAL_MOVEMENT_SPEED = 5
-HORIZONTAL_ACCELERATION = 0.5
-VERTICAL_ACCELERATION = 0.2
+# How far away from the edges do we get before scrolling?
 VIEWPORT_MARGIN = SCREEN_WIDTH / 2 - 50
 TOP_VIEWPORT_MARGIN = 30
 DEFAULT_BOTTOM_VIEWPORT = -10
 
+# Control the physics of how the player moves
+MAX_HORIZONTAL_MOVEMENT_SPEED = 10
+MAX_VERTICAL_MOVEMENT_SPEED = 5
+HORIZONTAL_ACCELERATION = 0.5
+VERTICAL_ACCELERATION = 0.2
 MOVEMENT_DRAG = 0.08
 
-PLAYING_FIELD_WIDTH = 5000
-PLAYING_FIELD_HEIGHT = SCREEN_HEIGHT
-
+# How far the bullet travels before disappearing
+BULLET_MAX_DISTANCE = SCREEN_WIDTH * 0.75
 
 class Player(arcade.SpriteSolidColor):
     """ Player ship """
@@ -110,21 +116,36 @@ class Player(arcade.SpriteSolidColor):
         elif self.top > SCREEN_HEIGHT - 1:
             self.top = SCREEN_HEIGHT - 1
 
-class Particle(arcade.SpriteSolidColor):
-    """ Particle from explosion """
+class Bullet(arcade.SpriteSolidColor):
+    """ Bullet """
+
+    def __init__(self, width, height, color):
+        super().__init__(width, height, color)
+        self.distance = 0
+
     def update(self):
-        """ Move the player """
+        """ Move the particle, and fade out """
         # Move
         self.center_x += self.change_x
         self.center_y += self.change_y
+        self.distance += self.change_x
+        if self.distance > BULLET_MAX_DISTANCE:
+            self.remove_from_sprite_lists()
+
+class Particle(arcade.SpriteSolidColor):
+    """ Particle from explosion """
+    def update(self):
+        """ Move the particle, and fade out """
+        # Move
+        self.center_x += self.change_x
+        self.center_y += self.change_y
+        # Fade
         self.alpha -= 5
         if self.alpha <= 0:
             self.remove_from_sprite_lists()
 
 class MyGame(arcade.Window):
-    """
-    Main application class.
-    """
+    """ Main application class. """
 
     def __init__(self, width, height, title):
         """ Initializer """
@@ -349,6 +370,7 @@ class MyGame(arcade.Window):
         elif key == arcade.key.RIGHT:
             self.right_pressed = True
         elif key == arcade.key.SPACE:
+            # Shoot out a bullet/laser
             bullet = arcade.SpriteSolidColor(35, 3, arcade.color.WHITE)
             bullet.center_x = self.player_sprite.center_x
             bullet.center_y = self.player_sprite.center_y
