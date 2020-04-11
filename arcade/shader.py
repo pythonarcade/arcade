@@ -923,6 +923,9 @@ class Framebuffer:
         :param List[Texture] color_attachments: List of color attachments.
         :param Texture depth_attachment: A depth attachment (optional)
         """
+        if not color_attachments:
+            raise ValueError("Framebuffer must at least have one color attachment")
+
         self._ctx = ctx
         self._color_attachments = color_attachments if isinstance(color_attachments, list) else [color_attachments]
         self._depth_attachment = depth_attachment

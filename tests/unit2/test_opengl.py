@@ -218,6 +218,8 @@ class OpenGLTest(arcade.Window):
             color_attachments=[
                 self.ctx.texture((10, 20), 4),
                 self.ctx.texture((10, 20), 4)])
+        print(fb)
+        fb.use()
         assert fb.ctx == self.ctx
         assert fb.width == 10
         assert fb.height == 20
@@ -229,15 +231,21 @@ class OpenGLTest(arcade.Window):
         assert fb.depth_mask is True
         fb.viewport = (1, 2, 3, 4)
         assert fb.viewport == (1, 2, 3, 4)
+        fb.viewport = (1, 2)
+        assert fb.viewport == (0, 0, 1, 2)
+        with pytest.raises(ValueError):
+            fb.viewport = 0
 
         # Ensure bind tracking works
-        fb.use()
         assert self.ctx.active_framebuffer == fb
         self.use()
+        self.use()  # Twice to trigger bind check
         assert self.ctx.active_framebuffer == self
         fb.clear()
-        fb.clear(color=(0, 0, 0, 0))
+        fb.clear(color=(0, 0, 0, 0), normalized=False)
+        fb.clear(color=(0, 0, 0), normalized=False)
         fb.clear(color=arcade.csscolor.AZURE)
+        fb.clear(color=(0, 0, 0, 0))
         assert self.ctx.active_framebuffer == self
 
         # Varying attachment sizes not supported for now
@@ -246,6 +254,10 @@ class OpenGLTest(arcade.Window):
                 color_attachments=[
                     self.ctx.texture((10, 10), 4),
                     self.ctx.texture((10, 11), 4)])
+
+        # Incomplete framebuffer
+        with pytest.raises(ValueError):
+            self.ctx.framebuffer()
 
 
 def test_opengl():
