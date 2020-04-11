@@ -243,14 +243,11 @@ class SpriteList(Generic[_SpriteType]):
                is set to True.
         """
         # The context this sprite list belongs to
-        self.ctx = get_window().ctx
+        self.ctx = None
 
         # List of sprites in the sprite list
         self.sprite_list = []
         self.sprite_idx = dict()
-
-        # Used in drawing optimization via OpenGL
-        self.program = self.ctx.sprite_list_program
 
         self._sprite_pos_data = None
         self._sprite_pos_buf = None
@@ -873,6 +870,12 @@ class SpriteList(Generic[_SpriteType]):
         """
         if len(self.sprite_list) == 0:
             return
+
+        # Make sure window context exists
+        if self.ctx is None:
+            get_window().ctx
+            # Used in drawing optimization via OpenGL
+            self.program = self.ctx.sprite_list_program
 
         if self._vao1 is None:
             self._calculate_sprite_buffer()
