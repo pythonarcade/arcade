@@ -260,17 +260,29 @@ def platformer_tests(moving_sprite, wall_list, physics_engine):
         moving_sprite.change_y = 0
         moving_sprite.change_angle = 0
         collisions = physics_engine.update()
-        print(moving_sprite.position)
-        # if speed == 2:
-        #     assert moving_sprite.position == (-2, 0)
-        # elif speed == 3:
-        #     assert moving_sprite.position == (-3, 1)
-        # elif speed == 4:
-        #     assert moving_sprite.position == (-4, 2)
-        # elif speed == 5:
-        #     assert moving_sprite.position == (-5, 3)
-        # elif speed == 6:
-        #     assert moving_sprite.position == (-6, 4)
+        if speed == 2:
+            assert moving_sprite.position == (-2, 0)
+        elif speed == 3:
+            assert moving_sprite.position == (-3, 1)
+        elif speed == 4:
+            assert moving_sprite.position == (-4, 2)
+        elif speed == 5:
+            assert moving_sprite.position == (-5, 3)
+        elif speed == 6:
+            assert moving_sprite.position == (-6, 4)
+
+    # Move up to wall
+    wall_sprite_1.position = OUT_OF_THE_WAY
+    physics_engine.gravity_constant = 1
+    moving_sprite.position = (0, 0)
+    moving_sprite.change_x = 1
+    moving_sprite.change_y = 0
+    collisions = physics_engine.update()
+    assert moving_sprite.position == (1, -1)
+    collisions = physics_engine.update()
+    assert moving_sprite.position == (2, -3)
+    collisions = physics_engine.update()
+    assert moving_sprite.position == (3, -6)
 
 
 def test_main():

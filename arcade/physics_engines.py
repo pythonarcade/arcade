@@ -53,6 +53,7 @@ def _move_sprite(moving_sprite: Sprite, walls: SpriteList, ramp_up: bool):
     original_y = moving_sprite.center_y
     original_angle = moving_sprite.angle
 
+    # --- Rotate
     rotating_hit_list = []
     if moving_sprite.change_angle:
 
@@ -118,6 +119,8 @@ def _move_sprite(moving_sprite: Sprite, walls: SpriteList, ramp_up: bool):
 
     # --- Move in the x direction
     if moving_sprite.change_x:
+        almost_original_y = moving_sprite.center_y
+
         direction = math.copysign(1, moving_sprite.change_x)
         exit_loop = False
         cur_x_change = 1
@@ -156,7 +159,7 @@ def _move_sprite(moving_sprite: Sprite, walls: SpriteList, ramp_up: bool):
                 cur_x_change += 1
 
         moving_sprite.center_x = original_x + cur_x_change * direction
-        moving_sprite.center_y = original_y + cur_y_change * direction
+        moving_sprite.center_y = almost_original_y + cur_y_change
 
     # Add in rotating hit list
     for sprite in rotating_hit_list:
