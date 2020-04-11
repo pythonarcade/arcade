@@ -4,6 +4,7 @@ Functions for calculating geometry.
 
 from typing import cast
 from arcade import PointList
+import math
 
 _PRECISION = 2
 
@@ -83,3 +84,8 @@ def is_point_in_polygon(x, y, polygon_point_list):
         p1x, p1y = p2x, p2y
 
     return inside
+
+
+def get_distance(x1: float, y1: float, x2: float, y2: float):
+    """ Get the distance between two points. """
+    return math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
