@@ -634,7 +634,7 @@ class Texture:
     """
     __slots__ = (
         '_ctx', '_glo', '_width', '_height', '_dtype', '_target', '_components',
-        '_format', '_internal_format', '_type', '_samples', '_filter', '_wrap_x', '_wrap_y', '__weakref__',
+        '_format', '_internal_format', '_type', '_component_size', '_samples', '_filter', '_wrap_x', '_wrap_y', '__weakref__',
     )
     _float_base_format = (0, gl.GL_RED, gl.GL_RG, gl.GL_RGB, gl.GL_RGBA)
     _int_base_format = (0, gl.GL_RED_INTEGER, gl.GL_RG_INTEGER, gl.GL_RGB_INTEGER, gl.GL_RGBA_INTEGER)
@@ -709,7 +709,7 @@ class Texture:
         gl.glPixelStorei(gl.GL_PACK_ALIGNMENT, 1)
         gl.glPixelStorei(gl.GL_UNPACK_ALIGNMENT, 1)
         try:
-            _format, _internal_format, self._type, _ = format_info
+            _format, _internal_format, self._type, self._component_size = format_info
             self._format = _format[components]
             self._internal_format = _internal_format[components]
             gl.glTexImage2D(
@@ -827,8 +827,20 @@ class Texture:
         self.use()
         gl.glTexParameteri(self._target, gl.GL_TEXTURE_WRAP_T, value)
 
-    def write(self, data: Union[bytes, Buffer], level: int = 0,
-              viewport = None):
+    def read(self, level: int = 0, alignment: int = 1) -> bytearray:
+        """
+        Read the contents of the texture.
+        """
+        gl.glActiveTexture(gl.GL_TEXTURE0)
+        gl.glBindTexture(self._target, self._glo)
+        gl.glPixelStorei(gl.GL_PACK_ALIGNMENT, 1)
+        gl.glPixelStorei(gl.GL_UNPACK_ALIGNMENT, 1)
+
+        buffer = (gl.GLubyte * (self.width * self.height * self._component_size))()
+        gl.glGetTexImage(gl.GL_TEXTURE_2D, 0, self._format, self._type, buffer)
+        return bytearray(buffer)
+
+    def write(self, data: Union[bytes, Buffer], level: int = 0, viewport=None):
         """Write byte data to the texture
 
         :param Union[bytes, Buffer] data: bytes or a Buffer with data to write

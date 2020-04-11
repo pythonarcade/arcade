@@ -206,11 +206,11 @@ class OpenGLTest(arcade.Window):
         data = array.array('f', list(range(10))).tobytes()
         texture = self.ctx.texture((10, 1), components=1, dtype='f4')
         texture.write(data)
-        self.err_check()
+        assert texture.read() == data
 
         buffer = self.ctx.buffer(data=data)
         texture.write(buffer)
-        self.err_check()
+        assert texture.read() == data
 
     def test_framebuffer(self):
         """Test framebuffers"""
