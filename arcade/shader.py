@@ -705,7 +705,7 @@ class Texture:
         gl.glPixelStorei(gl.GL_PACK_ALIGNMENT, 1)
         gl.glPixelStorei(gl.GL_UNPACK_ALIGNMENT, 1)
         try:
-            _format, _internal_format, _type, size = format_info
+            _format, _internal_format, _type, _ = format_info
             gl.glTexImage2D(
                 gl.GL_TEXTURE_2D,  # target
                 0,  # level
