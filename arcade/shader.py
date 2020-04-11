@@ -1315,17 +1315,16 @@ class Context:
         """
         return VertexArray(self, prog, content, index_buffer)
 
-    def program(self, vertex_shader, fragment_shader=None) -> Program:
+    def program(self, vertex_shader: str, fragment_shader: str = None, geometry_shader: str = None) -> Program:
         """Create a new program given the vertex_shader and fragment shader code.
         """
         shaders = [(vertex_shader, gl.GL_VERTEX_SHADER)]
         if fragment_shader:
             shaders.append((fragment_shader, gl.GL_FRAGMENT_SHADER))
-        
-        return Program(
-            self,
-            *shaders,
-        )
+        if geometry_shader:
+            shaders.append((geometry_shader, gl.GL_GEOMETRY_SHADER))
+
+        return Program(self, *shaders)
 
     def load_program(self, vertex_shader_filename, fragment_shader_filename) -> Program:
         """ Create a new program given a file names that contain the vertex shader and

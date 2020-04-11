@@ -140,6 +140,7 @@ class OpenGLTest(arcade.Window):
         with pytest.raises(shader.ShaderException):
             program['this_uniform_do_not_exist'] = 0
 
+        # Program with only vertex shader
         program = self.ctx.program(
             vertex_shader="""
             #version 330
@@ -149,6 +150,33 @@ class OpenGLTest(arcade.Window):
             void main() {
                 out_pos = in_pos + vec2(1.0);
             }
+            """,
+        )
+
+        # Program with geometry shader
+        program = self.ctx.program(
+            vertex_shader="""
+            #version 330
+            in vec2 pos;
+            void main() {
+                gl_Position = vec4(pos, 0.0, 1.0);
+            }
+            """,
+            geometry_shader="""
+            #version 330
+
+            layout (points) in;
+            layout (line_strip, max_vertices = 2) out;
+
+            void main() {    
+                gl_Position = gl_in[0].gl_Position + vec4(-0.1, 0.0, 0.0, 0.0); 
+                EmitVertex();
+
+                gl_Position = gl_in[0].gl_Position + vec4( 0.1, 0.0, 0.0, 0.0);
+                EmitVertex();
+                
+                EndPrimitive();
+            }  
             """,
         )
 
