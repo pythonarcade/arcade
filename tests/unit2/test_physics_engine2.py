@@ -168,6 +168,38 @@ def basic_tests(moving_sprite, wall_list, physics_engine):
     assert wall_sprite_2 in collisions
     assert moving_sprite.position == (0, 0)
 
+    # --- Check pre-existing collision
+    wall_sprite_1.position = (9, 0)
+    wall_sprite_2.position = OUT_OF_THE_WAY
+    moving_sprite.position = (0, 0)
+    moving_sprite.angle = 0
+    moving_sprite.change_x = 0
+    moving_sprite.change_y = 0
+    moving_sprite.change_angle = 0
+    collisions = physics_engine.update()
+    assert moving_sprite.position == (-1, 0)
+    assert len(collisions) == 0
+
+    # --- Collide on angle
+    wall_sprite_1.position = (15, -5)
+    wall_sprite_1.angle = 45
+    for speed in range(2, 10):
+
+        moving_sprite.position = (0, 0)
+        moving_sprite.angle = 0
+        moving_sprite.change_x = speed
+        moving_sprite.change_y = 0
+        moving_sprite.change_angle = 0
+        collisions = physics_engine.update()
+        print(moving_sprite.position)
+        assert moving_sprite.position == (2, 0)
+        if speed == 2:
+            assert len(collisions) == 0
+        else:
+            assert len(collisions) == 1
+
+    wall_sprite_1.angle = 0
+    
 def test_main():
     character_list = arcade.SpriteList()
     wall_list = arcade.SpriteList()

@@ -47,7 +47,6 @@ def _move_sprite(moving_sprite: Sprite, walls: SpriteList, ramp_up: bool):
     if len(check_for_collision_with_list(moving_sprite, walls)) > 0:
         _circular_check(moving_sprite, walls)
 
-
     rotating_hit_list = []
     if moving_sprite.change_angle:
         original_x = moving_sprite.center_x
