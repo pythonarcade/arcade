@@ -1,6 +1,7 @@
 """
 Low level tests for OpenGL 3.3 wrappers.
 """
+import array
 import pytest
 import arcade
 from arcade import shader
@@ -19,6 +20,9 @@ class OpenGLTest(arcade.Window):
         self.test_program()
         self.test_texture()
         self.test_framebuffer()
+        self.err_check()
+
+    def err_check(self):
         error = self.ctx.error
         if error:
             raise ValueError("Error", error)
@@ -197,6 +201,16 @@ class OpenGLTest(arcade.Window):
         test_texture_format('u1')
         test_texture_format('u2')
         test_texture_format('u4')
+
+        # Writing to texture
+        data = array.array('f', list(range(10))).tobytes()
+        texture = self.ctx.texture((10, 1), components=1, dtype='f4')
+        texture.write(data)
+        self.err_check()
+
+        buffer = self.ctx.buffer(data=data)
+        texture.write(buffer)
+        self.err_check()
 
     def test_framebuffer(self):
         """Test framebuffers"""

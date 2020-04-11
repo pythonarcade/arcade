@@ -632,8 +632,10 @@ class Texture:
     """
     Class that represents an OpenGL texture.
     """
-    __slots__ = '_ctx', '_glo', '_width', '_height', '_dtype', '_components', '_filter', '_wrap_x', '_wrap_y', '__weakref__'
-
+    __slots__ = (
+        '_ctx', '_glo', '_width', '_height', '_dtype', '_target', '_components',
+        '_format', '_internal_format', '_type', '_samples', '_filter', '_wrap_x', '_wrap_y', '__weakref__',
+    )
     _float_base_format = (0, gl.GL_RED, gl.GL_RG, gl.GL_RGB, gl.GL_RGBA)
     _int_base_format = (0, gl.GL_RED_INTEGER, gl.GL_RG_INTEGER, gl.GL_RGB_INTEGER, gl.GL_RGBA_INTEGER)
     # format: (base_format, internal_format, type, size)
@@ -680,6 +682,8 @@ class Texture:
         self._width, self._height = size
         self._dtype = dtype
         self._components = components
+        self._target = gl.GL_TEXTURE_2D
+        self._samples = 0
         # These are the default states in OpenGL
         self._filter = gl.GL_LINEAR, gl.GL_LINEAR
         self._wrap_x = gl.GL_REPEAT
@@ -701,20 +705,22 @@ class Texture:
         if self._glo.value == 0:
             raise ShaderException("Cannot create Texture. OpenGL failed to generate a texture id")
 
-        gl.glBindTexture(gl.GL_TEXTURE_2D, self._glo)
+        gl.glBindTexture(self._target, self._glo)
         gl.glPixelStorei(gl.GL_PACK_ALIGNMENT, 1)
         gl.glPixelStorei(gl.GL_UNPACK_ALIGNMENT, 1)
         try:
-            _format, _internal_format, _type, _ = format_info
+            _format, _internal_format, self._type, _ = format_info
+            self._format = _format[components]
+            self._internal_format = _internal_format[components]
             gl.glTexImage2D(
-                gl.GL_TEXTURE_2D,  # target
+                self._target,  # target
                 0,  # level
-                _internal_format[components],  # internal_format
+                self._internal_format,  # internal_format
                 self._width,  # width
                 self._height,  # height
                 0,  # border
-                _format[components],  # format
-                _type,  # type
+                self._format,  # format
+                self._type,  # type
                 data  # data
             )
         except gl.GLException as ex:
@@ -786,8 +792,8 @@ class Texture:
 
         self._filter = value
         self.use()
-        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, self._filter[0])
-        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, self._filter[1])
+        gl.glTexParameteri(self._target, gl.GL_TEXTURE_MIN_FILTER, self._filter[0])
+        gl.glTexParameteri(self._target, gl.GL_TEXTURE_MAG_FILTER, self._filter[1])
 
     @property
     def wrap_x(self):
@@ -803,7 +809,7 @@ class Texture:
     def wrap_x(self, value):
         self._wrap_x = value
         self.use()
-        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_S, value)
+        gl.glTexParameteri(self._target, gl.GL_TEXTURE_WRAP_S, value)
 
     @property
     def wrap_y(self):
@@ -819,7 +825,55 @@ class Texture:
     def wrap_y(self, value):
         self._wrap_y = value
         self.use()
-        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_T, value)
+        gl.glTexParameteri(self._target, gl.GL_TEXTURE_WRAP_T, value)
+
+    def write(self, data: Union[bytes, Buffer], level: int = 0,
+              viewport = None):
+        """Write byte data to the texture
+
+        :param Union[bytes, Buffer] data: bytes or a Buffer with data to write
+        :param int level: The texture level to write
+        :param tuple viewport: The are of the texture to write. 2 or 4 component tuple
+        """
+        # TODO: Support writing to layers using viewport + alignment
+        if self._samples > 0:
+            raise ValueError("Writing to multisample textures not supported")
+
+        x, y, w, h = 0, 0, self._width, self._height
+        if viewport:
+            if len(viewport) == 2:
+                w, h = viewport
+            elif len(viewport) == 4:
+                x, y, w, h = viewport
+            else:
+                raise ValueError("Viewport must be of length 2 or 4")
+
+        if isinstance(data, bytes):
+            gl.glActiveTexture(gl.GL_TEXTURE0)
+            gl.glBindTexture(self._target, self._glo)
+            gl.glPixelStorei(gl.GL_PACK_ALIGNMENT, 1)
+            gl.glPixelStorei(gl.GL_UNPACK_ALIGNMENT, 1)
+            gl.glTexSubImage2D(
+                self._target,  # target
+                level,  # level
+                x,  # x offset
+                y,  # y offset
+                w,  # width
+                h,  # height
+                self._format,  # format
+                self._type,  # type
+                data,  # pixel data
+            )
+        elif isinstance(data, Buffer):
+            gl.glBindBuffer(gl.GL_PIXEL_UNPACK_BUFFER, data.glo)
+            gl.glActiveTexture(gl.GL_TEXTURE0)
+            gl.glBindTexture(self._target, self._glo)
+            gl.glPixelStorei(gl.GL_PACK_ALIGNMENT, 1)
+            gl.glPixelStorei(gl.GL_UNPACK_ALIGNMENT, 1)
+            gl.glTexSubImage2D(self._target, level, x, y, w, h, self._format, self._type, 0)
+            gl.glBindBuffer(gl.GL_PIXEL_UNPACK_BUFFER, 0)
+        else:
+            raise ValueError("data must be bytes or a Buffer")
 
     def build_mipmaps(self, base=0, max_amount=1000):
         """Generate mipmaps for this texture.
