@@ -15,6 +15,7 @@ def basic_tests(moving_sprite, wall_list, physics_engine):
 
     # Two non-moving sprites side-by-side
     wall_sprite_1.position = (10, 0)
+    wall_sprite_1.angle = 0
     moving_sprite.position = (0, 0)
     moving_sprite.angle = 0
     moving_sprite.change_x = 0
@@ -45,10 +46,10 @@ def basic_tests(moving_sprite, wall_list, physics_engine):
         assert collisions[0] == wall_sprite_1
 
     # Move into wall going right to left
-    for speed in range(-2, -10, -1):
+    for speed in range(2, 10):
         wall_sprite_1.position = (-11, 0)
         moving_sprite.position = (0, 0)
-        moving_sprite.change_x = speed
+        moving_sprite.change_x = -speed
         moving_sprite.change_y = 0
         collisions = physics_engine.update()
         assert(moving_sprite.position == (-1, 0))
@@ -56,11 +57,11 @@ def basic_tests(moving_sprite, wall_list, physics_engine):
         assert collisions[0] == wall_sprite_1
 
     # Move into wall going downwards
-    for speed in range(-2, -10, -1):
+    for speed in range(2, 10):
         wall_sprite_1.position = (0, -11)
         moving_sprite.position = (0, 0)
         moving_sprite.change_x = 0
-        moving_sprite.change_y = speed
+        moving_sprite.change_y = -speed
         collisions = physics_engine.update()
         assert(moving_sprite.position == (0, -1))
         assert len(collisions) == 1
@@ -180,26 +181,98 @@ def basic_tests(moving_sprite, wall_list, physics_engine):
     assert moving_sprite.position == (-1, 0)
     assert len(collisions) == 0
 
+def simple_engine_tests(moving_sprite, wall_list, physics_engine):
+    wall_sprite_1 = wall_list[0]
+    wall_sprite_2 = wall_list[1]
+    wall_sprite_2.position = OUT_OF_THE_WAY
+
     # --- Collide on angle
     wall_sprite_1.position = (15, -5)
     wall_sprite_1.angle = 45
     for speed in range(2, 10):
-
         moving_sprite.position = (0, 0)
         moving_sprite.angle = 0
         moving_sprite.change_x = speed
         moving_sprite.change_y = 0
         moving_sprite.change_angle = 0
         collisions = physics_engine.update()
-        print(moving_sprite.position)
         assert moving_sprite.position == (2, 0)
         if speed == 2:
             assert len(collisions) == 0
         else:
             assert len(collisions) == 1
 
-    wall_sprite_1.angle = 0
-    
+    wall_sprite_1.position = (-15, -5)
+    wall_sprite_1.angle = 45
+    for speed in range(2, 10):
+        moving_sprite.position = (0, 0)
+        moving_sprite.angle = 0
+        moving_sprite.change_x = -speed
+        moving_sprite.change_y = 0
+        moving_sprite.change_angle = 0
+        collisions = physics_engine.update()
+        assert moving_sprite.position == (-2, 0)
+        if speed == 2:
+            assert len(collisions) == 0
+        else:
+            assert len(collisions) == 1
+
+def platformer_tests(moving_sprite, wall_list, physics_engine):
+    wall_sprite_1 = wall_list[0]
+    wall_sprite_2 = wall_list[1]
+    wall_sprite_2.position = OUT_OF_THE_WAY
+
+    wall_sprite_1.position = (15, -5)
+    wall_sprite_1.angle = 45
+
+    moving_sprite.position = (3, 1)
+    moving_sprite.angle = 0
+    collisions = arcade.check_for_collision_with_list(moving_sprite, wall_list)
+    print(f"\n **** {len(collisions)}")
+    print("")
+    # --- Collide on angle
+    wall_sprite_1.position = (15, -5)
+    wall_sprite_1.angle = 45
+    for speed in range(2, 7):
+        moving_sprite.position = (0, 0)
+        moving_sprite.angle = 0
+        moving_sprite.change_x = speed
+        moving_sprite.change_y = 0
+        moving_sprite.change_angle = 0
+        collisions = physics_engine.update()
+        if speed == 2:
+            assert moving_sprite.position == (2, 0)
+        elif speed == 3:
+            assert moving_sprite.position == (3, 1)
+        elif speed == 4:
+            assert moving_sprite.position == (4, 2)
+        elif speed == 5:
+            assert moving_sprite.position == (5, 3)
+        elif speed == 6:
+            assert moving_sprite.position == (6, 4)
+
+    wall_sprite_1.position = (-15, -5)
+    wall_sprite_1.angle = 45
+    for speed in range(2, 7):
+        moving_sprite.position = (0, 0)
+        moving_sprite.angle = 0
+        moving_sprite.change_x = -speed
+        moving_sprite.change_y = 0
+        moving_sprite.change_angle = 0
+        collisions = physics_engine.update()
+        print(moving_sprite.position)
+        # if speed == 2:
+        #     assert moving_sprite.position == (-2, 0)
+        # elif speed == 3:
+        #     assert moving_sprite.position == (-3, 1)
+        # elif speed == 4:
+        #     assert moving_sprite.position == (-4, 2)
+        # elif speed == 5:
+        #     assert moving_sprite.position == (-5, 3)
+        # elif speed == 6:
+        #     assert moving_sprite.position == (-6, 4)
+
+
 def test_main():
     character_list = arcade.SpriteList()
     wall_list = arcade.SpriteList()
@@ -215,6 +288,8 @@ def test_main():
 
     physics_engine = arcade.PhysicsEngineSimple(moving_sprite, wall_list)
     basic_tests(moving_sprite, wall_list, physics_engine)
+    simple_engine_tests(moving_sprite, wall_list, physics_engine)
 
-    # physics_engine = arcade.PhysicsEnginePlatformer(moving_sprite, wall_list, gravity_constant=0.0)
+    physics_engine = arcade.PhysicsEnginePlatformer(moving_sprite, wall_list, gravity_constant=0.0)
     basic_tests(moving_sprite, wall_list, physics_engine)
+    platformer_tests(moving_sprite, wall_list, physics_engine)
