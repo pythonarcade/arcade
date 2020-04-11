@@ -10,7 +10,7 @@ from ctypes import (
 from collections import namedtuple
 from pathlib import Path
 import weakref
-from typing import List, Tuple, Iterable, Dict, Optional
+from typing import List, Tuple, Iterable, Dict, Optional, Union
 
 
 from pyglet import gl
@@ -1105,6 +1105,15 @@ class Context:
     Represents an OpenGL context. This context belongs to an arcade.Window.
     """
     resource_root = (Path(__file__).parent / 'resources').resolve()
+    _errors = {
+        gl.GL_INVALID_ENUM: 'GL_INVALID_ENUM',
+        gl.GL_INVALID_VALUE: 'GL_INVALID_VALUE',
+        gl.GL_INVALID_OPERATION: 'GL_INVALID_OPERATION',
+        gl.GL_INVALID_FRAMEBUFFER_OPERATION: 'GL_INVALID_FRAMEBUFFER_OPERATION',
+        gl.GL_OUT_OF_MEMORY: 'GL_OUT_OF_MEMORY',
+        gl.GL_STACK_UNDERFLOW: 'GL_STACK_UNDERFLOW',
+        gl.GL_STACK_OVERFLOW: 'GL_STACK_OVERFLOW',
+    }
 
     def __init__(self, window):
         self._window = window
@@ -1162,9 +1171,23 @@ class Context:
         return self._gl_version
 
     @property
-    def error(self):
-        """Check OpenGL error"""
-        return gl.glGetError()
+    def error(self) -> Union[str, None]:
+        """Check OpenGL error
+
+        Returns a string representation of the occurring error
+        or ``None`` of no errors has occurred.
+
+        Example::
+
+            err = ctx.error
+            if err:
+                raise RuntimeError("OpenGL error: {err}")
+        """
+        err = gl.glGetError()
+        if err == gl.GL_NO_ERROR:
+            return None
+
+        return self._errors.get(err, 'GL_UNKNOWN_ERROR')
 
     def buffer(self, data: bytes = None, reserve: int = 0, usage: str = 'static') -> Buffer:
         """Create a new OpenGL Buffer object.
