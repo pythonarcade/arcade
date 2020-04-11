@@ -140,6 +140,18 @@ class OpenGLTest(arcade.Window):
         with pytest.raises(shader.ShaderException):
             program['this_uniform_do_not_exist'] = 0
 
+        program = self.ctx.program(
+            vertex_shader="""
+            #version 330
+            in vec2 in_pos;
+            out vec2 out_pos;
+
+            void main() {
+                out_pos = in_pos + vec2(1.0);
+            }
+            """,
+        )
+
         # TODO: Test attributes
 
     def test_texture(self):
