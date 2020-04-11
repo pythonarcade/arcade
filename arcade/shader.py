@@ -167,7 +167,7 @@ class Program:
     Example:
         program['MyUniform'] = value
     """
-    __slots__ = '_ctx', '_glo', '_uniforms', '_out_attributes', '__weakref__'
+    __slots__ = '_ctx', '_glo', '_uniforms', '_out_attributes', '_geometry_info', '__weakref__'
 
     def __init__(self,
                  ctx,
@@ -187,6 +187,7 @@ class Program:
         self._ctx = ctx
         self._glo = glo = gl.glCreateProgram()
         self._out_attributes = out_attributes or []
+        self._geometry_info = (0, 0, 0)
 
         shaders = [(vertex_shader, gl.GL_VERTEX_SHADER)]
         if fragment_shader:
@@ -205,13 +206,23 @@ class Program:
             self._setup_out_attributes()
 
         Program.link(self._glo)
+        if geometry_shader:
+            geometry_in = gl.GLint()
+            geometry_out = gl.GLint()
+            geometry_vertices = gl.GLint()
+            gl.glGetProgramiv(self._glo, gl.GL_GEOMETRY_INPUT_TYPE, geometry_in);
+            gl.glGetProgramiv(self._glo, gl.GL_GEOMETRY_OUTPUT_TYPE, geometry_out);
+            gl.glGetProgramiv(self._glo, gl.GL_GEOMETRY_VERTICES_OUT, geometry_vertices);
+            self._geometry_info = (geometry_in.value, geometry_out.value, geometry_vertices.value)
 
+        # Flag shaders for deletion. Will only be deleted once detached from program.
         for shader in shaders_id:
-            # Flag shaders for deletion. Will only be deleted once detached from program.
             gl.glDeleteShader(shader)
 
+        # Handle uniforms
         self._uniforms: Dict[str, Uniform] = {}
         self._introspect_uniforms()
+
         weakref.finalize(self, Program._delete, shaders_id, glo)
 
     @property
@@ -228,6 +239,25 @@ class Program:
     def out_attributes(self) -> List[str]:
         """Out attributes names used in transform feedback"""
         return self._out_attributes
+
+    @property
+    def geometry_input(self) -> int:
+        """The geometry shader's input primitive type.
+        This an be compared with ``GL_TRIANGLES``, ``GL_POINTS`` etc.
+        """
+        return self._geometry_info[0]
+
+    @property
+    def geometry_output(self) -> int:
+        """The geometry shader's output primitive type.
+        This an be compared with ``GL_TRIANGLES``, ``GL_POINTS`` etc.
+        """
+        return self._geometry_info[1]
+
+    @property
+    def geometry_vertices(self) -> int:
+        """The maximum number of vertices that can be emitted"""
+        return self._geometry_info[2]
 
     @staticmethod
     def _delete(shaders_id, prog_id):
