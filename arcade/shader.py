@@ -171,8 +171,8 @@ class Program:
 
     def __init__(self,
                  ctx,
-                 vertex_shader: str,
                  *,
+                 vertex_shader: str,
                  fragment_shader: str = None,
                  geometry_shader: str = None,
                  out_attributes: List[str] = None):
@@ -186,7 +186,7 @@ class Program:
         """
         self._ctx = ctx
         self._glo = glo = gl.glCreateProgram()
-        self._out_attributes = out_attributes
+        self._out_attributes = out_attributes or []
 
         shaders = [(vertex_shader, gl.GL_VERTEX_SHADER)]
         if fragment_shader:
@@ -1186,8 +1186,8 @@ class Framebuffer:
         gl.glViewport(*self._viewport)
 
     def clear(self,
-              *,
               color=(0.0, 0.0, 0.0, 0.0),
+              *,
               depth: float = 1.0,
               normalized: bool = False):
         """
@@ -1366,7 +1366,11 @@ class Context:
         # create_with_size
         return Buffer(self, data, reserve=reserve, usage=usage)
 
-    def framebuffer(self, *, color_attachments: List[Texture] = None, depth_attachment: Texture = None) -> Framebuffer:
+    def framebuffer(
+            self,
+            *,
+            color_attachments: Union[Texture, List[Texture]] = None,
+            depth_attachment: Texture = None) -> Framebuffer:
         """Create a Framebuffer.
 
         :param List[Texture] color_attachments: List of textures we want to render into
@@ -1415,7 +1419,7 @@ class Context:
             vertex_shader: str,
             fragment_shader: str = None,
             geometry_shader: str = None,
-            defines: dict = None) -> Program:
+            defines: Dict[str, str] = None) -> Program:
         """Create a new program given the vertex_shader and fragment shader code.
 
         :param str vertex_shader: vertex shader source
@@ -1429,9 +1433,9 @@ class Context:
 
         # If we don't have a fragment shader we are doing transform feedback.
         # When a geometry shader is present the out attributes will be located there
-        out_attributes = []
+        out_attributes = []  # type: List[str]
         if not source_fs:
-            if geometry_shader:
+            if source_geo:
                 out_attributes = source_geo.out_attributes
             else:
                 out_attributes = source_vs.out_attributes
@@ -1505,7 +1509,7 @@ class ShaderSource:
         self._source = source.strip()
         self._type = source_type
         self._lines = self._source.split('\n')
-        self._out_attributes = []
+        self._out_attributes = []  # type: List[str]
 
         self._version = self._find_glsl_version()
 
@@ -1522,7 +1526,7 @@ class ShaderSource:
         """The out attributes for this program"""
         return self._out_attributes
 
-    def get_source(self, defines: dict) -> str:
+    def get_source(self, *, defines: Dict[str, str] = None) -> str:
         """Return the shader source
 
         :param dict defines: Defines to replace in the source.
@@ -1547,7 +1551,7 @@ class ShaderSource:
         ))
 
     @staticmethod
-    def apply_defines(lines: List[str], defines: dict) -> List[str]:
+    def apply_defines(lines: List[str], defines: Dict[str, str]) -> List[str]:
         """Locate and apply #define values
 
         :param List[str] lines: List of source lines
@@ -1566,7 +1570,7 @@ class ShaderSource:
                 except IndexError:
                     pass
 
-            return lines
+        return lines
 
     def _parse_out_attributes(self):
         """Locates """

@@ -62,9 +62,11 @@ class MyGame(arcade.Window):
         """ Set up the game and initialize the variables. """
 
         # Offscreen stuff
-        program = shader.load_program("simple_shader.vert", "simple_shader.frag")
-        self.color_attachment = shader.texture((SCREEN_WIDTH, SCREEN_HEIGHT), 4)
-        self.offscreen = shader.framebuffer(color_attachments=[self.color_attachment])
+        program = self.ctx.load_program(
+            vertex_shader="simple_shader.vert",
+            fragment_shader="simple_shader.frag")
+        self.color_attachment = self.ctx.texture((SCREEN_WIDTH, SCREEN_HEIGHT), components=4)
+        self.offscreen = self.ctx.framebuffer(color_attachments=[self.color_attachment])
         self.quad_fs = geometry.quad_fs(program, size=(2.0, 2.0))
         self.mini_map_quad = geometry.quad_fs(program, size=(0.5, 0.5), pos=(0.75, 0.75))
 

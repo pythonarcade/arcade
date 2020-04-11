@@ -1,7 +1,7 @@
 """
 Temporary module to play with shaders and geometry
 """
-import numpy
+import array
 from arcade import shader, get_window
 import pyglet.gl as gl
 
@@ -9,17 +9,20 @@ import pyglet.gl as gl
 def quad_fs(program, size=(1.0, 1.0), pos=(0.0, 0.0)):
     width, height = size
     xpos, ypos = pos
-    data = numpy.array([
-        xpos - width / 2.0, ypos + height / 2.0, 0.0, 1.0,
-        xpos - width / 2.0, ypos - height / 2.0, 0.0, 0.0,
-        xpos + width / 2.0, ypos - height / 2.0, 1.0, 0.0,
-        xpos - width / 2.0, ypos + height / 2.0, 0.0, 1.0,
-        xpos + width / 2.0, ypos - height / 2.0, 1.0, 0.0,
-        xpos + width / 2.0, ypos + height / 2.0, 1.0, 1.0
-    ], dtype=numpy.float32)
+    data = array.array(
+        'f',
+        [
+            xpos - width / 2.0, ypos + height / 2.0, 0.0, 1.0,
+            xpos - width / 2.0, ypos - height / 2.0, 0.0, 0.0,
+            xpos + width / 2.0, ypos - height / 2.0, 1.0, 0.0,
+            xpos - width / 2.0, ypos + height / 2.0, 0.0, 1.0,
+            xpos + width / 2.0, ypos - height / 2.0, 1.0, 0.0,
+            xpos + width / 2.0, ypos + height / 2.0, 1.0, 1.0
+        ]
+    )
 
     ctx = get_window().ctx
-    vbo = ctx.buffer(data.tobytes())
+    vbo = ctx.buffer(data=data.tobytes())
     vao_content = [
         shader.BufferDescription(
             vbo,
