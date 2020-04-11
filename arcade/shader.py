@@ -25,10 +25,6 @@ class ShaderException(Exception):
     pass
 
 
-ShaderCode = str
-Shader = Tuple[ShaderCode, gl.GLuint]
-
-
 class Uniform:
     """A Program uniform"""
 
@@ -163,24 +159,50 @@ class Uniform:
 class Program:
     """Compiled and linked shader program.
 
+    Currently supports vertex, fragment and geometry shaders.
+    Transform feedback also supported when output attributes
+    names are passed in the varyings parameter.
+
     Access Uniforms via the [] operator.
     Example:
         program['MyUniform'] = value
-    For Matrices, pass the flatten array.
-    Example:
-        matrix = np.array([[...]])
-        program['MyMatrix'] = matrix.flatten()
     """
-    __slots__ = '_ctx', '_glo', '_uniforms', '__weakref__'
+    __slots__ = '_ctx', '_glo', '_uniforms', '_out_attributes', '__weakref__'
 
-    def __init__(self, ctx, *shaders: Shader):
+    def __init__(self,
+                 ctx,
+                 vertex_shader: str,
+                 *,
+                 fragment_shader: str = None,
+                 geometry_shader: str = None,
+                 out_attributes: List[str] = None):
+        """Create a Program.
+
+        :param Context ctx: The context this program belongs to
+        :param str vertex_shader: vertex shader source
+        :param str fragment_shader: fragment shader source
+        :param str geometry_shader: geometry shader source
+        :param List[str] out_attributes: List of out attributes used in transform feedback.
+        """
         self._ctx = ctx
-        self._glo = prog_id = gl.glCreateProgram()
+        self._glo = glo = gl.glCreateProgram()
+        self._out_attributes = out_attributes
+
+        shaders = [(vertex_shader, gl.GL_VERTEX_SHADER)]
+        if fragment_shader:
+            shaders.append((fragment_shader, gl.GL_FRAGMENT_SHADER))
+        if geometry_shader:
+            shaders.append((geometry_shader, gl.GL_GEOMETRY_SHADER))
+
         shaders_id = []
         for shader_code, shader_type in shaders:
             shader = Program.compile_shader(shader_code, shader_type)
             gl.glAttachShader(self._glo, shader)
             shaders_id.append(shader)
+
+        # For now we assume varyings can be set up if no fragment shader
+        if not fragment_shader:
+            self._setup_out_attributes()
 
         Program.link(self._glo)
 
@@ -190,7 +212,7 @@ class Program:
 
         self._uniforms: Dict[str, Uniform] = {}
         self._introspect_uniforms()
-        weakref.finalize(self, Program._delete, shaders_id, prog_id)
+        weakref.finalize(self, Program._delete, shaders_id, glo)
 
     @property
     def ctx(self) -> 'Context':
@@ -201,6 +223,11 @@ class Program:
     def glo(self) -> int:
         """The OpenGL resource id for this program"""
         return self._glo
+
+    @property
+    def out_attributes(self) -> List[str]:
+        """Out attributes names used in transform feedback"""
+        return self._out_attributes
 
     @staticmethod
     def _delete(shaders_id, prog_id):
@@ -241,6 +268,26 @@ class Program:
         if self._ctx.active_program != self:
             gl.glUseProgram(self._glo)
             self._ctx.active_program = self
+
+    def _setup_out_attributes(self):
+        """Set up transform feedback varyings"""
+        if not self._out_attributes:
+            return
+
+        # Covert names to char**
+        c_array = (c_char_p * len(self._out_attributes))()
+        for i, name in enumerate(self._out_attributes):
+            c_array[i] = name.encode()
+
+        ptr = cast(c_array, POINTER(POINTER(c_char)))
+
+        # NOTE: We only support interleaved attributes for now
+        gl.glTransformFeedbackVaryings(
+            self._glo,  # program
+            len(self._out_attributes),  # number of varying variables used for transform feedback
+            ptr,  # zero-terminated strings specifying the names of the varying variables
+            gl.GL_INTERLEAVED_ATTRIBS,
+        )
 
     def _introspect_uniforms(self):
         """Figure out what uniforms are available and build an internal map"""
@@ -706,10 +753,11 @@ class Texture:
     def __init__(self,
                  ctx: 'Context',
                  size: Tuple[int, int],
+                 *,
                  components: int = 4,
                  dtype: str = 'f1',
                  data: bytes = None,
-                 texture_filter: Tuple[gl.GLuint, gl.GLuint] = None,
+                 filter: Tuple[gl.GLuint, gl.GLuint] = None,
                  wrap_x: gl.GLuint = None,
                  wrap_y: gl.GLuint = None):
         """Represents an OpenGL texture.
@@ -778,7 +826,7 @@ class Texture:
                 "GL_MAX_TEXTURE_SIZE = {gl.GL_MAX_TEXTURE_SIZE}"
             ))
 
-        self.filter = texture_filter or self._filter
+        self.filter = filter or self._filter
         self.wrap_x = wrap_x or self._wrap_x
         self.wrap_y = wrap_y or self._wrap_y
 
@@ -978,7 +1026,7 @@ class Framebuffer:
         '_ctx', '_glo', '_width', '_height', '_color_attachments', '_depth_attachment',
         '_samples', '_viewport', '_depth_mask', '_draw_buffers', '__weakref__')
 
-    def __init__(self, ctx, color_attachments=None, depth_attachment=None):
+    def __init__(self, ctx, *, color_attachments=None, depth_attachment=None):
         """Create a framebuffer.
 
         :param List[Texture] color_attachments: List of color attachments.
@@ -1138,6 +1186,7 @@ class Framebuffer:
         gl.glViewport(*self._viewport)
 
     def clear(self,
+              *,
               color=(0.0, 0.0, 0.0, 0.0),
               depth: float = 1.0,
               normalized: bool = False):
@@ -1194,9 +1243,6 @@ class Framebuffer:
     #     self._stack.pop()
     #     # TODO: Bind previous. if this is the window, how do we know the viewport etc?
 
-    def __repr__(self):
-        return "<Framebuffer glo={}>".format(self._glo)
-
     @staticmethod
     def _check_completeness():
         """
@@ -1216,6 +1262,9 @@ class Framebuffer:
         status = gl.glCheckFramebufferStatus(gl.GL_FRAMEBUFFER)
         if status != gl.GL_FRAMEBUFFER_COMPLETE:
             raise ValueError("Framebuffer is incomplete. {}".format(states.get(status, "Unknown error")))
+
+    def __repr__(self):
+        return "<Framebuffer glo={}>".format(self._glo.value)
 
 
 class Context:
@@ -1267,20 +1316,20 @@ class Context:
         # --- Pre-load system shaders here ---
 
         self.line_vertex_shader = self.load_program(
-            self.resource_root / 'shaders/line_vertex_shader_vs.glsl',
-            self.resource_root / 'shaders/line_vertex_shader_fs.glsl',
+            vertex_shader=self.resource_root / 'shaders/line_vertex_shader_vs.glsl',
+            fragment_shader=self.resource_root / 'shaders/line_vertex_shader_fs.glsl',
         )
         self.line_generic_with_colors_program = self.load_program(
-            self.resource_root / 'shaders/line_generic_with_colors_vs.glsl',
-            self.resource_root / 'shaders/line_generic_with_colors_fs.glsl',
+            vertex_shader=self.resource_root / 'shaders/line_generic_with_colors_vs.glsl',
+            fragment_shader=self.resource_root / 'shaders/line_generic_with_colors_fs.glsl',
         )
         self.shape_element_list_program = self.load_program(
-            self.resource_root / 'shaders/shape_element_list_vs.glsl',
-            self.resource_root / 'shaders/shape_element_list_fs.glsl',
+            vertex_shader=self.resource_root / 'shaders/shape_element_list_vs.glsl',
+            fragment_shader=self.resource_root / 'shaders/shape_element_list_fs.glsl',
         )
         self.sprite_list_program = self.load_program(
-            self.resource_root / 'shaders/sprite_list_vs.glsl',
-            self.resource_root / 'shaders/sprite_list_fs.glsl',
+            vertex_shader=self.resource_root / 'shaders/sprite_list_vs.glsl',
+            fragment_shader=self.resource_root / 'shaders/sprite_list_fs.glsl',
         )
 
     @property
@@ -1307,7 +1356,7 @@ class Context:
 
         return self._errors.get(err, 'GL_UNKNOWN_ERROR')
 
-    def buffer(self, data: bytes = None, reserve: int = 0, usage: str = 'static') -> Buffer:
+    def buffer(self, *, data: bytes = None, reserve: int = 0, usage: str = 'static') -> Buffer:
         """Create a new OpenGL Buffer object.
 
         :param bytes data: The buffer data
@@ -1317,22 +1366,23 @@ class Context:
         # create_with_size
         return Buffer(self, data, reserve=reserve, usage=usage)
 
-    def framebuffer(self, color_attachments: List[Texture] = None, depth_attachment: Texture = None) -> Framebuffer:
+    def framebuffer(self, *, color_attachments: List[Texture] = None, depth_attachment: Texture = None) -> Framebuffer:
         """Create a Framebuffer.
 
         :param List[Texture] color_attachments: List of textures we want to render into
         :param Texture depth_attachment: Depth texture
         """
-        return Framebuffer(self, color_attachments, depth_attachment)
+        return Framebuffer(self, color_attachments=color_attachments, depth_attachment=depth_attachment)
 
     def texture(self,
                 size: Tuple[int, int],
+                *,
                 components: int = 4,
                 dtype: str = 'f1',
                 data: bytes = None,
                 wrap_x: gl.GLenum = None,
                 wrap_y: gl.GLenum = None,
-                texture_filter: Tuple[gl.GLenum, gl.GLenum] = None) -> Texture:
+                filter: Tuple[gl.GLenum, gl.GLenum] = None) -> Texture:
         """Create a Texture.
 
         Wrap modes: ``GL_REPEAT``, ``GL_MIRRORED_REPEAT``, ``GL_CLAMP_TO_EDGE``, ``GL_CLAMP_TO_BORDER``
@@ -1348,33 +1398,178 @@ class Context:
         :param buffer data: The texture data (optional)
         :param GLenum wrap_x: How the texture wraps in x direction
         :param GLenum wrap_y: How the texture wraps in y direction
-        :param Tuple[GLenum, GLenum] texture_filter: Minification and magnification filter
+        :param Tuple[GLenum, GLenum] filter: Minification and magnification filter
         """
         return Texture(self, size, components=components, data=data, dtype=dtype,
                        wrap_x=wrap_x, wrap_y=wrap_y,
-                       texture_filter=texture_filter)
+                       filter=filter)
 
     def vertex_array(self, prog: gl.GLuint, content, index_buffer=None):
         """Create a new Vertex Array.
         """
         return VertexArray(self, prog, content, index_buffer)
 
-    def program(self, vertex_shader: str, fragment_shader: str = None, geometry_shader: str = None) -> Program:
+    def program(
+            self,
+            *,
+            vertex_shader: str,
+            fragment_shader: str = None,
+            geometry_shader: str = None,
+            defines: dict = None) -> Program:
         """Create a new program given the vertex_shader and fragment shader code.
+
+        :param str vertex_shader: vertex shader source
+        :param str fragment_shader: fragment shader source
+        :param str geometry_shader: geometry shader source
+        :param dict defines: Substitute #defines values in the source
         """
-        shaders = [(vertex_shader, gl.GL_VERTEX_SHADER)]
-        if fragment_shader:
-            shaders.append((fragment_shader, gl.GL_FRAGMENT_SHADER))
-        if geometry_shader:
-            shaders.append((geometry_shader, gl.GL_GEOMETRY_SHADER))
+        source_vs = ShaderSource(vertex_shader, gl.GL_VERTEX_SHADER)
+        source_fs = ShaderSource(fragment_shader, gl.GL_FRAGMENT_SHADER) if fragment_shader else None
+        source_geo = ShaderSource(geometry_shader, gl.GL_GEOMETRY_SHADER) if geometry_shader else None
 
-        return Program(self, *shaders)
+        # If we don't have a fragment shader we are doing transform feedback.
+        # When a geometry shader is present the out attributes will be located there
+        out_attributes = []
+        if not source_fs:
+            if geometry_shader:
+                out_attributes = source_geo.out_attributes
+            else:
+                out_attributes = source_vs.out_attributes
 
-    def load_program(self, vertex_shader_filename, fragment_shader_filename) -> Program:
+        return Program(
+            self,
+            vertex_shader=source_vs.get_source(defines=defines),
+            fragment_shader=source_fs.get_source(defines=defines) if source_fs else None,
+            geometry_shader=source_geo.get_source(defines=defines) if source_geo else None,
+            out_attributes=out_attributes,
+        )
+
+    def load_program(
+            self,
+            *,
+            vertex_shader: Union[str, Path],
+            fragment_shader: Union[str, Path] = None,
+            geometry_shader: Union[str, Path] = None,
+            defines: dict = None) -> Program:
         """ Create a new program given a file names that contain the vertex shader and
-        fragment shader. """
-        with open(vertex_shader_filename, "r") as myfile:
-            vertex_shader = myfile.read()
-        with open(fragment_shader_filename, "r") as myfile:
-            fragment_shader = myfile.read()
-        return self.program(vertex_shader, fragment_shader)
+        fragment shader.
+
+        :param Union[str, Path] vertex_shader: path to vertex shader
+        :param Union[str, Path] fragment_shader: path to fragment shader
+        :param Union[str, Path] geometry_shader: path to geometry shader
+        :param dict defines: Substitute #defines values in the source
+        """
+        vertex_shader_src = None
+        fragment_shader_src = None
+        geometry_shader_src = None
+
+        # TODO: Cache these files using absolute path as key
+        if vertex_shader:
+            with open(vertex_shader, "r") as fd:
+                vertex_shader_src = fd.read()
+
+        if fragment_shader:
+            with open(fragment_shader, "r") as fd:
+                fragment_shader_src = fd.read()
+
+        if geometry_shader:
+            with open(geometry_shader, "r") as fd:
+                geometry_shader_src = fd.read()
+
+        return self.program(
+            vertex_shader=vertex_shader_src,
+            fragment_shader=fragment_shader_src,
+            geometry_shader=geometry_shader_src,
+            defines=defines,
+        )
+
+
+class ShaderSource:
+    """
+    GLSL source container for making source parsing simpler.
+    We support locating out attributes and applying #defines values.
+
+    This wrapper should ideally contain an unmodified version
+    of the original source for caching. Getting the specific
+    source with defines applied through ``get_source``.
+
+    NOTE: We do assume the source is neat enough to be parsed
+    this way and don't contain several statements on one line.
+    """
+    def __init__(self, source: str, source_type: gl.GLenum):
+        """Create a shader source wrapper.
+
+        :param str source: The shader source
+        :param gl.GLenum: The shader type (vertex, fragment, geometry etc)
+        """
+        self._source = source.strip()
+        self._type = source_type
+        self._lines = self._source.split('\n')
+        self._out_attributes = []
+
+        self._version = self._find_glsl_version()
+
+        if self._type in [gl.GL_VERTEX_SHADER, gl.GL_FRAGMENT_SHADER]:
+            self._parse_out_attributes()
+
+    @property
+    def version(self) -> int:
+        """The glsl version"""
+        return self._version
+
+    @property
+    def out_attributes(self) -> List[str]:
+        """The out attributes for this program"""
+        return self._out_attributes
+
+    def get_source(self, defines: dict) -> str:
+        """Return the shader source
+
+        :param dict defines: Defines to replace in the source.
+        """
+        if not defines:
+            return self._source
+
+        lines = ShaderSource.apply_defines(self._lines, defines)
+        return '\n'.join(lines)
+
+    def _find_glsl_version(self) -> int:
+        for line in self._lines:
+            if line.strip().startswith('#version'):
+                try:
+                    return int(line.split()[1])
+                except:
+                    pass
+
+        raise ShaderException((
+            "Cannot find #version in shader source. "
+            "Please provide at least a #version 330 statement in the beginning of the shader"
+        ))
+
+    @staticmethod
+    def apply_defines(lines: List[str], defines: dict) -> List[str]:
+        """Locate and apply #define values
+
+        :param List[str] lines: List of source lines
+        :param dict defines: dict with ``name: value`` pairs.
+        """
+        for nr, line in enumerate(lines):
+            line = line.strip()
+            if line.startswith('#define'):
+                try:
+                    name = line.split()[1]
+                    value = defines.get(name)
+                    if not value:
+                        continue
+
+                    lines[nr] = "#define {} {}".format(name, str(value))
+                except IndexError:
+                    pass
+
+            return lines
+
+    def _parse_out_attributes(self):
+        """Locates """
+        for line in self._lines:
+            if line.strip().startswith("out "):
+                self._out_attributes.append(line.split()[2].replace(';', ''))

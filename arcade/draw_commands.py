@@ -394,7 +394,7 @@ def _generic_draw_line_strip(point_list: PointList,
     c4 = get_four_byte_color(color)
     c4e = c4 * len(point_list)
     a = array.array('B', c4e)
-    color_buf = ctx.buffer(a.tobytes())
+    color_buf = ctx.buffer(data=a.tobytes())
     color_buf_desc = shader.BufferDescription(
         color_buf,
         '4B',
@@ -407,7 +407,7 @@ def _generic_draw_line_strip(point_list: PointList,
 
     vertices = array.array('f', gen_flatten(point_list))
 
-    vbo_buf = ctx.buffer(vertices.tobytes())
+    vbo_buf = ctx.buffer(data=vertices.tobytes())
     vbo_buf_desc = shader.BufferDescription(
         vbo_buf,
         '2f',

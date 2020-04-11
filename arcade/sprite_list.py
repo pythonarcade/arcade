@@ -441,7 +441,7 @@ class SpriteList(Generic[_SpriteType]):
                 self._sprite_pos_data.append(sprite.center_y)
 
             self._sprite_pos_buf = self.ctx.buffer(
-                self._sprite_pos_data.tobytes(),
+                data=self._sprite_pos_data.tobytes(),
                 usage=usage
             )
             variables = ['in_pos']
@@ -459,7 +459,7 @@ class SpriteList(Generic[_SpriteType]):
                 self._sprite_size_data.append(sprite.height)
 
             self._sprite_size_buf = self.ctx.buffer(
-                self._sprite_size_data.tobytes(),
+                data=self._sprite_size_data.tobytes(),
                 usage=usage
             )
             variables = ['in_size']
@@ -476,7 +476,7 @@ class SpriteList(Generic[_SpriteType]):
                 self._sprite_angle_data.append(math.radians(sprite.angle))
 
             self._sprite_angle_buf = self.ctx.buffer(
-                self._sprite_angle_data.tobytes(),
+                data=self._sprite_angle_data.tobytes(),
                 usage=usage
             )
             variables = ['in_angle']
@@ -496,7 +496,7 @@ class SpriteList(Generic[_SpriteType]):
                 self._sprite_color_data.append(int(sprite.alpha))
 
             self._sprite_color_buf = self.ctx.buffer(
-                self._sprite_color_data.tobytes(),
+                data=self._sprite_color_data.tobytes(),
                 usage=usage
             )
             variables = ['in_color']
@@ -655,7 +655,7 @@ class SpriteList(Generic[_SpriteType]):
                     array_of_sub_tex_coords.append(coord)
 
             self._sprite_sub_tex_buf = self.ctx.buffer(
-                array_of_sub_tex_coords.tobytes(),
+                data=array_of_sub_tex_coords.tobytes(),
                 usage=usage
             )
 
@@ -683,7 +683,7 @@ class SpriteList(Generic[_SpriteType]):
             1.0, 1.0, 1.0, 1.0,
         ]
         )
-        self.vbo_buf = self.ctx.buffer(vertices.tobytes())
+        self.vbo_buf = self.ctx.buffer(data=vertices.tobytes())
         vbo_buf_desc = shader.BufferDescription(
             self.vbo_buf,
             '2f 2f',

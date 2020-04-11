@@ -103,7 +103,7 @@ def create_line_generic_with_colors(point_list: PointList,
     data['vertex'] = point_list
     data['color'] = [get_four_byte_color(color) for color in color_list]
 
-    vbo = ctx.buffer(data.tobytes())
+    vbo = ctx.buffer(data=data.tobytes())
     vao_content = [
         shader.BufferDescription(
             vbo,

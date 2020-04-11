@@ -5,6 +5,7 @@ import array
 import pytest
 import arcade
 from arcade import shader
+from pyglet import gl
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -17,6 +18,7 @@ class OpenGLTest(arcade.Window):
         self.test_ctx()
         self.test_buffer()
         self.test_vertex_array()
+        self.test_shader_source()
         self.test_program()
         self.test_texture()
         self.test_framebuffer()
@@ -32,7 +34,7 @@ class OpenGLTest(arcade.Window):
 
     def test_buffer(self):
         """Testing OpenGL buffers"""
-        buffer = self.ctx.buffer(b'Hello world')
+        buffer = self.ctx.buffer(data=b'Hello world')
         assert buffer.glo.value > 0
         assert buffer.ctx == self.ctx
         assert buffer.read() == b'Hello world'
@@ -74,8 +76,8 @@ class OpenGLTest(arcade.Window):
     def test_vertex_array(self):
         """Test vertex_array"""
         program = self.ctx.load_program(
-            self.ctx.resource_root / 'shaders/line_vertex_shader_vs.glsl',
-            self.ctx.resource_root / 'shaders/line_vertex_shader_fs.glsl',
+            vertex_shader=self.ctx.resource_root / 'shaders/line_vertex_shader_vs.glsl',
+            fragment_shader=self.ctx.resource_root / 'shaders/line_vertex_shader_fs.glsl',
         )
         num_vertices = 100
         content = [
@@ -100,6 +102,30 @@ class OpenGLTest(arcade.Window):
         vao.render(self.ctx.TRIANGLES)
         vao.render(self.ctx.POINTS)
         vao.render(self.ctx.LINES)
+
+    def test_shader_source(self):
+        """Test shader source parsing"""
+        source_wrapper = shader.ShaderSource(
+            """
+            #version 330
+            #define TEST 10
+            #define TEST2 20
+            in vec2 in_pos;
+            in vec2 in_velocity;
+            out vec2 out_pos;
+            out vec2 out_velocity;
+            void main() {
+                out_pos = in_pos;
+                out_velocity = in_velocity;
+            }
+            """,
+            gl.GL_VERTEX_SHADER,
+        )
+        assert source_wrapper.version == 330
+        assert source_wrapper.out_attributes == ['out_pos', 'out_velocity']
+        source = source_wrapper.get_source(defines={'TEST': 1, 'TEST2': 2})
+        assert '#define TEST 1' in source
+        assert '#define TEST2 2' in source
 
     def test_program(self):
         """Test program"""
@@ -183,24 +209,28 @@ class OpenGLTest(arcade.Window):
 
         # Uniform testing
         # .. mother of all uniform programs trying to cram in as many as possible!
-        # program = self.ctx.program(
-        #     vertex_shader="""
-        #     uniform sampler2D texture0;
-        #
-        #     in vec2 in_pos;
-        #     out vec2 out_pos
-        #
-        #     void main() {
-        #         out_pos = texture(texture0, in_pos).xy;
-        #     }
-        #     """,
-        # )
+        program = self.ctx.program(
+            vertex_shader="""
+            #version 330
+            in vec2 in_pos;
+            in vec2 in_velocity;
+            out vec2 out_pos;
+            out vec2 out_velocity;
+
+            void main() {
+                out_pos = in_pos + vec2(1.0);
+                out_velocity = in_pos * 0.99;
+            }
+            """,
+        )
+        assert program.out_attributes == ['out_pos', 'out_velocity']
 
     def test_texture(self):
         """Test textures"""
         texture = self.ctx.texture(
-            (100, 200), 4,
-            texture_filter=(self.ctx.NEAREST, self.ctx.NEAREST),
+            (100, 200),
+            components=4,
+            filter=(self.ctx.NEAREST, self.ctx.NEAREST),
             wrap_x=self.ctx.CLAMP_TO_EDGE,
             wrap_y=self.ctx.REPEAT,
         )
@@ -222,10 +252,10 @@ class OpenGLTest(arcade.Window):
             self.ctx.texture((100_000, 1), 1)
 
         # Create textures of different components
-        c1 = self.ctx.texture((10, 10), 1)
-        c2 = self.ctx.texture((10, 10), 2)
-        c3 = self.ctx.texture((10, 10), 3)
-        c4 = self.ctx.texture((10, 10), 4)
+        c1 = self.ctx.texture((10, 10), components=1)
+        c2 = self.ctx.texture((10, 10), components=2)
+        c3 = self.ctx.texture((10, 10), components=3)
+        c4 = self.ctx.texture((10, 10), components=4)
         assert c1.components == 1
         assert c2.components == 2
         assert c3.components == 3
@@ -233,7 +263,7 @@ class OpenGLTest(arcade.Window):
 
         # Wrong number of components
         with pytest.raises(ValueError):
-            self.ctx.texture((10, 10), 5)
+            self.ctx.texture((10, 10), components=5)
 
         # Create textures using different formats
         def test_texture_format(dtype):
@@ -270,8 +300,8 @@ class OpenGLTest(arcade.Window):
         """Test framebuffers"""
         fb = self.ctx.framebuffer(
             color_attachments=[
-                self.ctx.texture((10, 20), 4),
-                self.ctx.texture((10, 20), 4)])
+                self.ctx.texture((10, 20), components=4),
+                self.ctx.texture((10, 20), components=4)])
         print(fb)
         fb.use()
         assert fb.ctx == self.ctx
@@ -306,8 +336,8 @@ class OpenGLTest(arcade.Window):
         with pytest.raises(ValueError):
             self.ctx.framebuffer(
                 color_attachments=[
-                    self.ctx.texture((10, 10), 4),
-                    self.ctx.texture((10, 11), 4)])
+                    self.ctx.texture((10, 10), components=4),
+                    self.ctx.texture((10, 11), components=4)])
 
         # Incomplete framebuffer
         with pytest.raises(ValueError):
