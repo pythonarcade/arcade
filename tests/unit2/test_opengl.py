@@ -136,7 +136,7 @@ class OpenGLTest(arcade.Window):
 
         # TODO: Test all uniform types
         program['pos_offset'] = 1, 2
-        assert program['pos_offset'] == [1.0, 2.0]
+        assert program['pos_offset'] == (1.0, 2.0)
         with pytest.raises(shader.ShaderException):
             program['this_uniform_do_not_exist'] = 0
 
@@ -179,8 +179,22 @@ class OpenGLTest(arcade.Window):
             }  
             """,
         )
+        # TODO: Test in/out primitives
 
-        # TODO: Test attributes
+        # Uniform testing
+        # .. mother of all uniform programs trying to cram in as many as possible!
+        # program = self.ctx.program(
+        #     vertex_shader="""
+        #     uniform sampler2D texture0;
+        #
+        #     in vec2 in_pos;
+        #     out vec2 out_pos
+        #
+        #     void main() {
+        #         out_pos = texture(texture0, in_pos).xy;
+        #     }
+        #     """,
+        # )
 
     def test_texture(self):
         """Test textures"""
