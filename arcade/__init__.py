@@ -145,6 +145,7 @@ from .draw_commands import get_image
 from .draw_commands import get_pixel
 
 from .geometry import are_polygons_intersecting
+from .geometry import get_distance
 from .geometry import is_point_in_polygon
 
 from .gui import DialogueBox
@@ -299,7 +300,6 @@ __all__ = ['AnimatedTimeBasedSprite',
            'TiledMap',
            'VERSION',
            'Vector',
-           'VertexBuffer',
            'View',
            'Window',
            'are_polygons_intersecting',
@@ -362,6 +362,7 @@ __all__ = ['AnimatedTimeBasedSprite',
            'finish_render',
            'generate_sprites',
            'get_closest_sprite',
+           'get_distance',
            'get_distance_between_sprites',
            'get_four_byte_color',
            'get_four_float_color',
