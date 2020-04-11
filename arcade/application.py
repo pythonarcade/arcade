@@ -324,17 +324,11 @@ class Window(pyglet.window.Window):
     def on_resize(self, width: float, height: float):
         """
         Override this function to add custom code to be called any time the window
-        is resized.
+        is resized. The only responsibility here is to update the viewport.
 
         :param float width: New width
         :param float height: New height
         """
-        # This breaks on Linux and Mac.
-        # See https://github.com/pyglet/pyglet/issues/76
-        import sys
-        if sys.platform == "win32":
-            super().on_resize(width, height)
-
         try:
             original_viewport = self.get_viewport()
         except:
