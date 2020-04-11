@@ -7,7 +7,7 @@ from arcade import check_for_collision_with_list
 from arcade import check_for_collision
 from arcade import Sprite
 from arcade import SpriteList
-
+from arcade import get_distance
 
 def _circular_check(player, walls):
     """
@@ -42,14 +42,35 @@ def _circular_check(player, walls):
         vary *= 2
 
 def _move_sprite(moving_sprite: Sprite, walls: SpriteList, ramp_up: bool):
-    # Rotate
-    moving_sprite.angle += moving_sprite.change_angle
 
-    hit_list = check_for_collision_with_list(moving_sprite, walls)
-
-    if len(hit_list) > 0:
-        # Resolve any collisions by this weird kludge
+    # See if we are starting this turn with a sprite already colliding with us.
+    if len(check_for_collision_with_list(moving_sprite, walls)) > 0:
         _circular_check(moving_sprite, walls)
+
+
+    rotating_hit_list = []
+    if moving_sprite.change_angle:
+        original_x = moving_sprite.center_x
+        original_y = moving_sprite.center_y
+        original_angle = moving_sprite.angle
+
+        # Rotate
+        moving_sprite.angle += moving_sprite.change_angle
+
+        # Resolve collisions caused by rotating
+        rotating_hit_list = check_for_collision_with_list(moving_sprite, walls)
+
+        if len(rotating_hit_list) > 0:
+
+            max_distance = (moving_sprite.width + moving_sprite.height) / 2
+
+            # Resolve any collisions by this weird kludge
+            _circular_check(moving_sprite, walls)
+            if get_distance(original_x, original_y, moving_sprite.center_x, moving_sprite.center_y) > max_distance:
+                # Ok, glitched trying to rotate. Reset.
+                moving_sprite.center_x = original_x
+                moving_sprite.center_y = original_y
+                moving_sprite.angle = original_angle
 
     # --- Move in the y direction
     moving_sprite.center_y += moving_sprite.change_y
@@ -154,6 +175,11 @@ def _move_sprite(moving_sprite: Sprite, walls: SpriteList, ramp_up: bool):
                       "a physics engine update and an all sprites list update.")
 
         # print(f"Spot E ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
+
+    # Add in rotating hit list
+    for sprite in rotating_hit_list:
+        if sprite not in complete_hit_list:
+            complete_hit_list.append(sprite)
     return complete_hit_list
 
 
