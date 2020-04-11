@@ -16,90 +16,15 @@ from typing import List, Tuple, Iterable, Dict, Optional, Union
 from pyglet import gl
 
 
+# Thank you Benjamin Moran for writing part of this code!
+# https://bitbucket.org/HigashiNoKaze/pyglet/src/shaders/pyglet/graphics/shader.py
+
+
 class ShaderException(Exception):
     """ Exception class for shader-specific problems. """
     pass
 
 
-# Thank you Benjamin Moran for writing part of this code!
-# https://bitbucket.org/HigashiNoKaze/pyglet/src/shaders/pyglet/graphics/shader.py
-
-_uniform_getters = {
-    gl.GLint: gl.glGetUniformiv,
-    gl.GLfloat: gl.glGetUniformfv,
-}
-
-_uniform_setters = {
-    # uniform type: (gl_type, setter, length, count)
-    gl.GL_INT: (gl.GLint, gl.glUniform1iv, 1, 1),
-    gl.GL_INT_VEC2: (gl.GLint, gl.glUniform2iv, 2, 1),
-    gl.GL_INT_VEC3: (gl.GLint, gl.glUniform3iv, 3, 1),
-    gl.GL_INT_VEC4: (gl.GLint, gl.glUniform4iv, 4, 1),
-
-    gl.GL_FLOAT: (gl.GLfloat, gl.glUniform1fv, 1, 1),
-    gl.GL_FLOAT_VEC2: (gl.GLfloat, gl.glUniform2fv, 2, 1),
-    gl.GL_FLOAT_VEC3: (gl.GLfloat, gl.glUniform3fv, 3, 1),
-    gl.GL_FLOAT_VEC4: (gl.GLfloat, gl.glUniform4fv, 4, 1),
-
-    gl.GL_SAMPLER_2D: (gl.GLint, gl.glUniform1iv, 1, 1),
-
-    gl.GL_FLOAT_MAT2: (gl.GLfloat, gl.glUniformMatrix2fv, 4, 1),
-    gl.GL_FLOAT_MAT3: (gl.GLfloat, gl.glUniformMatrix3fv, 9, 1),
-    gl.GL_FLOAT_MAT4: (gl.GLfloat, gl.glUniformMatrix4fv, 16, 1),
-
-    # TODO: test/implement these:
-    # gl.GL_FLOAT_MAT2x3: glUniformMatrix2x3fv,
-    # gl.GL_FLOAT_MAT2x4: glUniformMatrix2x4fv,
-    #
-    # gl.GL_FLOAT_MAT3x2: glUniformMatrix3x2fv,
-    # gl.GL_FLOAT_MAT3x4: glUniformMatrix3x4fv,
-    #
-    # gl.GL_FLOAT_MAT4x2: glUniformMatrix4x2fv,
-    # gl.GL_FLOAT_MAT4x3: glUniformMatrix4x3fv,
-}
-
-
-def _create_getter_func(program_id, location, gl_getter, c_array, length):
-    """ Create a function for getting/setting OpenGL data. """
-    if length == 1:
-        def getter_func():
-            """ Get single-element OpenGL uniform data. """
-            gl_getter(program_id, location, c_array)
-            return c_array[0]
-    else:
-        def getter_func():
-            """ Get list of OpenGL uniform data. """
-            gl_getter(program_id, location, c_array)
-            return c_array[:]
-
-    return getter_func
-
-
-def _create_setter_func(location, gl_setter, c_array, length, count, ptr, is_matrix):
-    """ Create setters for OpenGL data. """
-    if is_matrix:
-        def setter_func(value):  # type: ignore #conditional function variants must have identical signature
-            """ Set OpenGL matrix uniform data. """
-            c_array[:] = value
-            gl_setter(location, count, gl.GL_FALSE, ptr)
-
-    elif length == 1 and count == 1:
-        def setter_func(value):  # type: ignore #conditional function variants must have identical signature
-            """ Set OpenGL uniform data value. """
-            c_array[0] = value
-            gl_setter(location, count, ptr)
-    elif length > 1 and count == 1:
-        def setter_func(values):  # type: ignore #conditional function variants must have identical signature
-            """ Set list of OpenGL uniform data. """
-            c_array[:] = values
-            gl_setter(location, count, ptr)
-    else:
-        raise NotImplementedError("Uniform type not yet supported.")
-
-    return setter_func
-
-
-Uniform = namedtuple('Uniform', 'getter, setter')
 ShaderCode = str
 Shader = Tuple[ShaderCode, gl.GLuint]
 
@@ -117,30 +42,58 @@ class Program:
     """
     __slots__ = '_ctx', '_glo', '_uniforms', '__weakref__'
 
+    Uniform = namedtuple('Uniform', 'getter, setter')
+
+    _uniform_getters = {
+        gl.GLint: gl.glGetUniformiv,
+        gl.GLfloat: gl.glGetUniformfv,
+    }
+
+    _uniform_setters = {
+        # uniform type: (gl_type, setter, length, count)
+        gl.GL_INT: (gl.GLint, gl.glUniform1iv, 1, 1),
+        gl.GL_INT_VEC2: (gl.GLint, gl.glUniform2iv, 2, 1),
+        gl.GL_INT_VEC3: (gl.GLint, gl.glUniform3iv, 3, 1),
+        gl.GL_INT_VEC4: (gl.GLint, gl.glUniform4iv, 4, 1),
+
+        gl.GL_FLOAT: (gl.GLfloat, gl.glUniform1fv, 1, 1),
+        gl.GL_FLOAT_VEC2: (gl.GLfloat, gl.glUniform2fv, 2, 1),
+        gl.GL_FLOAT_VEC3: (gl.GLfloat, gl.glUniform3fv, 3, 1),
+        gl.GL_FLOAT_VEC4: (gl.GLfloat, gl.glUniform4fv, 4, 1),
+
+        gl.GL_SAMPLER_2D: (gl.GLint, gl.glUniform1iv, 1, 1),
+
+        gl.GL_FLOAT_MAT2: (gl.GLfloat, gl.glUniformMatrix2fv, 4, 1),
+        gl.GL_FLOAT_MAT3: (gl.GLfloat, gl.glUniformMatrix3fv, 9, 1),
+        gl.GL_FLOAT_MAT4: (gl.GLfloat, gl.glUniformMatrix4fv, 16, 1),
+
+        # TODO: test/implement these:
+        # gl.GL_FLOAT_MAT2x3: glUniformMatrix2x3fv,
+        # gl.GL_FLOAT_MAT2x4: glUniformMatrix2x4fv,
+        #
+        # gl.GL_FLOAT_MAT3x2: glUniformMatrix3x2fv,
+        # gl.GL_FLOAT_MAT3x4: glUniformMatrix3x4fv,
+        #
+        # gl.GL_FLOAT_MAT4x2: glUniformMatrix4x2fv,
+        # gl.GL_FLOAT_MAT4x3: glUniformMatrix4x3fv,
+    }
+
     def __init__(self, ctx, *shaders: Shader):
         self._ctx = ctx
         self._glo = prog_id = gl.glCreateProgram()
         shaders_id = []
         for shader_code, shader_type in shaders:
-            shader = compile_shader(shader_code, shader_type)
+            shader = Program.compile_shader(shader_code, shader_type)
             gl.glAttachShader(self._glo, shader)
             shaders_id.append(shader)
 
-        gl.glLinkProgram(self._glo)
-        status = c_int()
-        gl.glGetProgramiv(self._glo, gl.GL_LINK_STATUS, status)
-        if not status.value:
-            length = c_int()
-            gl.glGetProgramiv(self._glo, gl.GL_INFO_LOG_LENGTH, length)
-            log = c_buffer(length.value)
-            gl.glGetProgramInfoLog(self._glo, len(log), None, log)
-            raise ShaderException('Program link error: {}'.format(log.value.decode()))
+        Program.link(self._glo)
 
         for shader in shaders_id:
             # Flag shaders for deletion. Will only be deleted once detached from program.
             gl.glDeleteShader(shader)
 
-        self._uniforms: Dict[str, Uniform] = {}
+        self._uniforms: Dict[str, Program.Uniform] = {}
         self._introspect_uniforms()
         weakref.finalize(self, Program._delete, shaders_id, prog_id)
 
@@ -205,36 +158,36 @@ class Program:
 
     def _introspect_uniforms(self):
         for index in range(self._get_num_active(gl.GL_ACTIVE_UNIFORMS)):
-            uniform_name, u_type, u_size = self.query_uniform(index)
+            uniform_name, u_type, u_size = self._query_uniform(index)
             loc = gl.glGetUniformLocation(self._glo, uniform_name.encode('utf-8'))
 
             if loc == -1:      # Skip uniforms that may be in Uniform Blocks
                 continue
 
             try:
-                gl_type, gl_setter, length, count = _uniform_setters[u_type]
+                gl_type, gl_setter, length, count = Program._uniform_setters[u_type]
             except KeyError:
                 raise ShaderException(f"Unsupported Uniform type {u_type}")
 
-            gl_getter = _uniform_getters[gl_type]
+            gl_getter = Program._uniform_getters[gl_type]
 
             is_matrix = u_type in (gl.GL_FLOAT_MAT2, gl.GL_FLOAT_MAT3, gl.GL_FLOAT_MAT4)
 
-            # Create persistant mini c_array for getters and setters:
+            # Create persistent mini c_array for getters and setters:
             c_array = (gl_type * length)()
             ptr = cast(c_array, POINTER(gl_type))
 
             # Create custom dedicated getters and setters for each uniform:
-            getter = _create_getter_func(self._glo, loc, gl_getter, c_array, length)
-            setter = _create_setter_func(loc, gl_setter, c_array, length, count, ptr, is_matrix)
+            getter = Program._create_getter_func(self._glo, loc, gl_getter, c_array, length)
+            setter = Program._create_setter_func(loc, gl_setter, c_array, length, count, ptr, is_matrix)
 
             # print(f"Found uniform: {uniform_name}, type: {u_type}, size: {u_size}, "
             #       f"location: {loc}, length: {length}, count: {count}")
             #       f"location: {loc}, length: {length}, count: {count}")
 
-            self._uniforms[uniform_name] = Uniform(getter, setter)
+            self._uniforms[uniform_name] = Program.Uniform(getter, setter)
 
-    def query_uniform(self, index: int) -> Tuple[str, int, int]:
+    def _query_uniform(self, index: int) -> Tuple[str, int, int]:
         """Retrieve Uniform information at given location.
 
         Returns the name, the type as a GLenum (GL_FLOAT, ...) and the size. Size is
@@ -248,39 +201,91 @@ class Program:
         gl.glGetActiveUniform(self._glo, index, buf_size, None, usize, utype, uname)
         return uname.value.decode(), utype.value, usize.value
 
+    @staticmethod
+    def compile_shader(source: str, shader_type: gl.GLenum) -> gl.GLuint:
+        """Compile the shader code of the given type.
+
+        `shader_type` could be GL_VERTEX_SHADER, GL_FRAGMENT_SHADER, ...
+
+        Returns the shader id as a GLuint
+        """
+        shader = gl.glCreateShader(shader_type)
+        source_bytes = source.encode('utf-8')
+        # Turn the source code string into an array of c_char_p arrays.
+        strings = byref(
+            cast(
+                c_char_p(source_bytes),
+                POINTER(c_char)
+            )
+        )
+        # Make an array with the strings lengths
+        lengths = pointer(c_int(len(source_bytes)))
+        gl.glShaderSource(shader, 1, strings, lengths)
+        gl.glCompileShader(shader)
+        result = c_int()
+        gl.glGetShaderiv(shader, gl.GL_COMPILE_STATUS, byref(result))
+        if result.value == gl.GL_FALSE:
+            msg = create_string_buffer(512)
+            length = c_int()
+            gl.glGetShaderInfoLog(shader, 512, byref(length), msg)
+            raise ShaderException(
+                f"Shader compile failure ({result.value}): {msg.value.decode('utf-8')}")
+        return shader
+
+    @staticmethod
+    def link(glo):
+        gl.glLinkProgram(glo)
+        status = c_int()
+        gl.glGetProgramiv(glo, gl.GL_LINK_STATUS, status)
+        if not status.value:
+            length = c_int()
+            gl.glGetProgramiv(glo, gl.GL_INFO_LOG_LENGTH, length)
+            log = c_buffer(length.value)
+            gl.glGetProgramInfoLog(glo, len(log), None, log)
+            raise ShaderException('Program link error: {}'.format(log.value.decode()))
+
     def __repr__(self):
         return "<Program id={}>".format(self._glo)
 
+    @staticmethod
+    def _create_getter_func(program_id, location, gl_getter, c_array, length):
+        """ Create a function for getting/setting OpenGL data. """
+        if length == 1:
+            def getter_func():
+                """ Get single-element OpenGL uniform data. """
+                gl_getter(program_id, location, c_array)
+                return c_array[0]
+        else:
+            def getter_func():
+                """ Get list of OpenGL uniform data. """
+                gl_getter(program_id, location, c_array)
+                return c_array[:]
 
-def compile_shader(source: str, shader_type: gl.GLenum) -> gl.GLuint:
-    """Compile the shader code of the given type.
+        return getter_func
 
-    `shader_type` could be GL_VERTEX_SHADER, GL_FRAGMENT_SHADER, ...
+    @staticmethod
+    def _create_setter_func(location, gl_setter, c_array, length, count, ptr, is_matrix):
+        """ Create setters for OpenGL data. """
+        if is_matrix:
+            def setter_func(value):  # type: ignore #conditional function variants must have identical signature
+                """ Set OpenGL matrix uniform data. """
+                c_array[:] = value
+                gl_setter(location, count, gl.GL_FALSE, ptr)
 
-    Returns the shader id as a GLuint
-    """
-    shader = gl.glCreateShader(shader_type)
-    source_bytes = source.encode('utf-8')
-    # Turn the source code string into an array of c_char_p arrays.
-    strings = byref(
-        cast(
-            c_char_p(source_bytes),
-            POINTER(c_char)
-        )
-    )
-    # Make an array with the strings lengths
-    lengths = pointer(c_int(len(source_bytes)))
-    gl.glShaderSource(shader, 1, strings, lengths)
-    gl.glCompileShader(shader)
-    result = c_int()
-    gl.glGetShaderiv(shader, gl.GL_COMPILE_STATUS, byref(result))
-    if result.value == gl.GL_FALSE:
-        msg = create_string_buffer(512)
-        length = c_int()
-        gl.glGetShaderInfoLog(shader, 512, byref(length), msg)
-        raise ShaderException(
-            f"Shader compile failure ({result.value}): {msg.value.decode('utf-8')}")
-    return shader
+        elif length == 1 and count == 1:
+            def setter_func(value):  # type: ignore #conditional function variants must have identical signature
+                """ Set OpenGL uniform data value. """
+                c_array[0] = value
+                gl_setter(location, count, ptr)
+        elif length > 1 and count == 1:
+            def setter_func(values):  # type: ignore #conditional function variants must have identical signature
+                """ Set list of OpenGL uniform data. """
+                c_array[:] = values
+                gl_setter(location, count, ptr)
+        else:
+            raise NotImplementedError("Uniform type not yet supported.")
+
+        return setter_func
 
 
 class Buffer:
