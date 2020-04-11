@@ -873,7 +873,7 @@ class SpriteList(Generic[_SpriteType]):
 
         # Make sure window context exists
         if self.ctx is None:
-            get_window().ctx
+            self.ctx = get_window().ctx
             # Used in drawing optimization via OpenGL
             self.program = self.ctx.sprite_list_program
 
