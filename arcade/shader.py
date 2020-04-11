@@ -1468,9 +1468,8 @@ class Context:
         geometry_shader_src = None
 
         # TODO: Cache these files using absolute path as key
-        if vertex_shader:
-            with open(vertex_shader, "r") as fd:
-                vertex_shader_src = fd.read()
+        with open(vertex_shader, "r") as fd:
+            vertex_shader_src = fd.read()
 
         if fragment_shader:
             with open(fragment_shader, "r") as fd:
