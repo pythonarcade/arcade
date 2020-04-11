@@ -84,7 +84,7 @@ class MyGame(arcade.Window):
                 }
             ''',
         )
-        self.color_attachment = self.ctx.texture((SCREEN_WIDTH, SCREEN_HEIGHT), 4)
+        self.color_attachment = self.ctx.texture((SCREEN_WIDTH, SCREEN_HEIGHT))
         self.offscreen = self.ctx.framebuffer(color_attachments=[self.color_attachment])
         self.quad_fs = geometry.quad_fs(program, size=(2.0, 2.0))
         # self.quad_fs.program['tex'] = 0

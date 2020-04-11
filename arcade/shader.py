@@ -1,14 +1,23 @@
 """Utilities for dealing with Shaders in OpenGL 3.3+.
 """
 
-from ctypes import *
+from ctypes import (
+    c_char, c_int, c_buffer,
+    c_char_p, c_void_p,
+    cast, POINTER, pointer, byref, sizeof,
+    create_string_buffer, string_at,
+)
 from collections import namedtuple
 from pathlib import Path
 import weakref
-from typing import List, Tuple, Iterable, Dict, Optional
+from typing import List, Tuple, Iterable, Dict, Optional, Union
 
 
 from pyglet import gl
+
+
+# Thank you Benjamin Moran for writing part of this code!
+# https://bitbucket.org/HigashiNoKaze/pyglet/src/shaders/pyglet/graphics/shader.py
 
 
 class ShaderException(Exception):
@@ -16,85 +25,6 @@ class ShaderException(Exception):
     pass
 
 
-# Thank you Benjamin Moran for writing part of this code!
-# https://bitbucket.org/HigashiNoKaze/pyglet/src/shaders/pyglet/graphics/shader.py
-
-_uniform_getters = {
-    gl.GLint: gl.glGetUniformiv,
-    gl.GLfloat: gl.glGetUniformfv,
-}
-
-_uniform_setters = {
-    # uniform type: (gl_type, setter, length, count)
-    gl.GL_INT: (gl.GLint, gl.glUniform1iv, 1, 1),
-    gl.GL_INT_VEC2: (gl.GLint, gl.glUniform2iv, 2, 1),
-    gl.GL_INT_VEC3: (gl.GLint, gl.glUniform3iv, 3, 1),
-    gl.GL_INT_VEC4: (gl.GLint, gl.glUniform4iv, 4, 1),
-
-    gl.GL_FLOAT: (gl.GLfloat, gl.glUniform1fv, 1, 1),
-    gl.GL_FLOAT_VEC2: (gl.GLfloat, gl.glUniform2fv, 2, 1),
-    gl.GL_FLOAT_VEC3: (gl.GLfloat, gl.glUniform3fv, 3, 1),
-    gl.GL_FLOAT_VEC4: (gl.GLfloat, gl.glUniform4fv, 4, 1),
-
-    gl.GL_SAMPLER_2D: (gl.GLint, gl.glUniform1iv, 1, 1),
-
-    gl.GL_FLOAT_MAT2: (gl.GLfloat, gl.glUniformMatrix2fv, 4, 1),
-    gl.GL_FLOAT_MAT3: (gl.GLfloat, gl.glUniformMatrix3fv, 9, 1),
-    gl.GL_FLOAT_MAT4: (gl.GLfloat, gl.glUniformMatrix4fv, 16, 1),
-
-    # TODO: test/implement these:
-    # gl.GL_FLOAT_MAT2x3: glUniformMatrix2x3fv,
-    # gl.GL_FLOAT_MAT2x4: glUniformMatrix2x4fv,
-    #
-    # gl.GL_FLOAT_MAT3x2: glUniformMatrix3x2fv,
-    # gl.GL_FLOAT_MAT3x4: glUniformMatrix3x4fv,
-    #
-    # gl.GL_FLOAT_MAT4x2: glUniformMatrix4x2fv,
-    # gl.GL_FLOAT_MAT4x3: glUniformMatrix4x3fv,
-}
-
-
-def _create_getter_func(program_id, location, gl_getter, c_array, length):
-    """ Create a function for getting/setting OpenGL data. """
-    if length == 1:
-        def getter_func():
-            """ Get single-element OpenGL uniform data. """
-            gl_getter(program_id, location, c_array)
-            return c_array[0]
-    else:
-        def getter_func():
-            """ Get list of OpenGL uniform data. """
-            gl_getter(program_id, location, c_array)
-            return c_array[:]
-
-    return getter_func
-
-
-def _create_setter_func(location, gl_setter, c_array, length, count, ptr, is_matrix):
-    """ Create setters for OpenGL data. """
-    if is_matrix:
-        def setter_func(value):  # type: ignore #conditional function variants must have identical signature
-            """ Set OpenGL matrix uniform data. """
-            c_array[:] = value
-            gl_setter(location, count, gl.GL_FALSE, ptr)
-
-    elif length == 1 and count == 1:
-        def setter_func(value):  # type: ignore #conditional function variants must have identical signature
-            """ Set OpenGL uniform data value. """
-            c_array[0] = value
-            gl_setter(location, count, ptr)
-    elif length > 1 and count == 1:
-        def setter_func(values):  # type: ignore #conditional function variants must have identical signature
-            """ Set list of OpenGL uniform data. """
-            c_array[:] = values
-            gl_setter(location, count, ptr)
-    else:
-        raise NotImplementedError("Uniform type not yet supported.")
-
-    return setter_func
-
-
-Uniform = namedtuple('Uniform', 'getter, setter')
 ShaderCode = str
 Shader = Tuple[ShaderCode, gl.GLuint]
 
@@ -112,30 +42,58 @@ class Program:
     """
     __slots__ = '_ctx', '_glo', '_uniforms', '__weakref__'
 
+    Uniform = namedtuple('Uniform', 'getter, setter')
+
+    _uniform_getters = {
+        gl.GLint: gl.glGetUniformiv,
+        gl.GLfloat: gl.glGetUniformfv,
+    }
+
+    _uniform_setters = {
+        # uniform type: (gl_type, setter, length, count)
+        gl.GL_INT: (gl.GLint, gl.glUniform1iv, 1, 1),
+        gl.GL_INT_VEC2: (gl.GLint, gl.glUniform2iv, 2, 1),
+        gl.GL_INT_VEC3: (gl.GLint, gl.glUniform3iv, 3, 1),
+        gl.GL_INT_VEC4: (gl.GLint, gl.glUniform4iv, 4, 1),
+
+        gl.GL_FLOAT: (gl.GLfloat, gl.glUniform1fv, 1, 1),
+        gl.GL_FLOAT_VEC2: (gl.GLfloat, gl.glUniform2fv, 2, 1),
+        gl.GL_FLOAT_VEC3: (gl.GLfloat, gl.glUniform3fv, 3, 1),
+        gl.GL_FLOAT_VEC4: (gl.GLfloat, gl.glUniform4fv, 4, 1),
+
+        gl.GL_SAMPLER_2D: (gl.GLint, gl.glUniform1iv, 1, 1),
+
+        gl.GL_FLOAT_MAT2: (gl.GLfloat, gl.glUniformMatrix2fv, 4, 1),
+        gl.GL_FLOAT_MAT3: (gl.GLfloat, gl.glUniformMatrix3fv, 9, 1),
+        gl.GL_FLOAT_MAT4: (gl.GLfloat, gl.glUniformMatrix4fv, 16, 1),
+
+        # TODO: test/implement these:
+        # gl.GL_FLOAT_MAT2x3: glUniformMatrix2x3fv,
+        # gl.GL_FLOAT_MAT2x4: glUniformMatrix2x4fv,
+        #
+        # gl.GL_FLOAT_MAT3x2: glUniformMatrix3x2fv,
+        # gl.GL_FLOAT_MAT3x4: glUniformMatrix3x4fv,
+        #
+        # gl.GL_FLOAT_MAT4x2: glUniformMatrix4x2fv,
+        # gl.GL_FLOAT_MAT4x3: glUniformMatrix4x3fv,
+    }
+
     def __init__(self, ctx, *shaders: Shader):
         self._ctx = ctx
         self._glo = prog_id = gl.glCreateProgram()
         shaders_id = []
         for shader_code, shader_type in shaders:
-            shader = compile_shader(shader_code, shader_type)
+            shader = Program.compile_shader(shader_code, shader_type)
             gl.glAttachShader(self._glo, shader)
             shaders_id.append(shader)
 
-        gl.glLinkProgram(self._glo)
-        status = c_int()
-        gl.glGetProgramiv(self._glo, gl.GL_LINK_STATUS, status)
-        if not status.value:
-            length = c_int()
-            gl.glGetProgramiv(self._glo, gl.GL_INFO_LOG_LENGTH, length)
-            log = c_buffer(length.value)
-            gl.glGetProgramInfoLog(self._glo, len(log), None, log)
-            raise ShaderException('Program link error: {}'.format(log.value.decode()))
+        Program.link(self._glo)
 
         for shader in shaders_id:
             # Flag shaders for deletion. Will only be deleted once detached from program.
             gl.glDeleteShader(shader)
 
-        self._uniforms: Dict[str, Uniform] = {}
+        self._uniforms: Dict[str, Program.Uniform] = {}
         self._introspect_uniforms()
         weakref.finalize(self, Program._delete, shaders_id, prog_id)
 
@@ -186,7 +144,6 @@ class Program:
         # IMPORTANT: This is the only place glUseProgram should be called
         #            so we can track active program.
         if self._ctx.active_program != self:
-            # print(f"glUseProgram({self._glo})")
             gl.glUseProgram(self._glo)
             self._ctx.active_program = self
 
@@ -201,35 +158,36 @@ class Program:
 
     def _introspect_uniforms(self):
         for index in range(self._get_num_active(gl.GL_ACTIVE_UNIFORMS)):
-            uniform_name, u_type, u_size = self.query_uniform(index)
+            uniform_name, u_type, u_size = self._query_uniform(index)
             loc = gl.glGetUniformLocation(self._glo, uniform_name.encode('utf-8'))
 
             if loc == -1:      # Skip uniforms that may be in Uniform Blocks
                 continue
 
             try:
-                gl_type, gl_setter, length, count = _uniform_setters[u_type]
+                gl_type, gl_setter, length, count = Program._uniform_setters[u_type]
             except KeyError:
                 raise ShaderException(f"Unsupported Uniform type {u_type}")
 
-            gl_getter = _uniform_getters[gl_type]
+            gl_getter = Program._uniform_getters[gl_type]
 
             is_matrix = u_type in (gl.GL_FLOAT_MAT2, gl.GL_FLOAT_MAT3, gl.GL_FLOAT_MAT4)
 
-            # Create persistant mini c_array for getters and setters:
+            # Create persistent mini c_array for getters and setters:
             c_array = (gl_type * length)()
             ptr = cast(c_array, POINTER(gl_type))
 
             # Create custom dedicated getters and setters for each uniform:
-            getter = _create_getter_func(self._glo, loc, gl_getter, c_array, length)
-            setter = _create_setter_func(loc, gl_setter, c_array, length, count, ptr, is_matrix)
+            getter = Program._create_getter_func(self._glo, loc, gl_getter, c_array, length)
+            setter = Program._create_setter_func(loc, gl_setter, c_array, length, count, ptr, is_matrix)
 
             # print(f"Found uniform: {uniform_name}, type: {u_type}, size: {u_size}, "
             #       f"location: {loc}, length: {length}, count: {count}")
+            #       f"location: {loc}, length: {length}, count: {count}")
 
-            self._uniforms[uniform_name] = Uniform(getter, setter)
+            self._uniforms[uniform_name] = Program.Uniform(getter, setter)
 
-    def query_uniform(self, index: int) -> Tuple[str, int, int]:
+    def _query_uniform(self, index: int) -> Tuple[str, int, int]:
         """Retrieve Uniform information at given location.
 
         Returns the name, the type as a GLenum (GL_FLOAT, ...) and the size. Size is
@@ -243,39 +201,91 @@ class Program:
         gl.glGetActiveUniform(self._glo, index, buf_size, None, usize, utype, uname)
         return uname.value.decode(), utype.value, usize.value
 
+    @staticmethod
+    def compile_shader(source: str, shader_type: gl.GLenum) -> gl.GLuint:
+        """Compile the shader code of the given type.
+
+        `shader_type` could be GL_VERTEX_SHADER, GL_FRAGMENT_SHADER, ...
+
+        Returns the shader id as a GLuint
+        """
+        shader = gl.glCreateShader(shader_type)
+        source_bytes = source.encode('utf-8')
+        # Turn the source code string into an array of c_char_p arrays.
+        strings = byref(
+            cast(
+                c_char_p(source_bytes),
+                POINTER(c_char)
+            )
+        )
+        # Make an array with the strings lengths
+        lengths = pointer(c_int(len(source_bytes)))
+        gl.glShaderSource(shader, 1, strings, lengths)
+        gl.glCompileShader(shader)
+        result = c_int()
+        gl.glGetShaderiv(shader, gl.GL_COMPILE_STATUS, byref(result))
+        if result.value == gl.GL_FALSE:
+            msg = create_string_buffer(512)
+            length = c_int()
+            gl.glGetShaderInfoLog(shader, 512, byref(length), msg)
+            raise ShaderException(
+                f"Shader compile failure ({result.value}): {msg.value.decode('utf-8')}")
+        return shader
+
+    @staticmethod
+    def link(glo):
+        gl.glLinkProgram(glo)
+        status = c_int()
+        gl.glGetProgramiv(glo, gl.GL_LINK_STATUS, status)
+        if not status.value:
+            length = c_int()
+            gl.glGetProgramiv(glo, gl.GL_INFO_LOG_LENGTH, length)
+            log = c_buffer(length.value)
+            gl.glGetProgramInfoLog(glo, len(log), None, log)
+            raise ShaderException('Program link error: {}'.format(log.value.decode()))
+
     def __repr__(self):
         return "<Program id={}>".format(self._glo)
 
+    @staticmethod
+    def _create_getter_func(program_id, location, gl_getter, c_array, length):
+        """ Create a function for getting/setting OpenGL data. """
+        if length == 1:
+            def getter_func():
+                """ Get single-element OpenGL uniform data. """
+                gl_getter(program_id, location, c_array)
+                return c_array[0]
+        else:
+            def getter_func():
+                """ Get list of OpenGL uniform data. """
+                gl_getter(program_id, location, c_array)
+                return c_array[:]
 
-def compile_shader(source: str, shader_type: gl.GLenum) -> gl.GLuint:
-    """Compile the shader code of the given type.
+        return getter_func
 
-    `shader_type` could be GL_VERTEX_SHADER, GL_FRAGMENT_SHADER, ...
+    @staticmethod
+    def _create_setter_func(location, gl_setter, c_array, length, count, ptr, is_matrix):
+        """ Create setters for OpenGL data. """
+        if is_matrix:
+            def setter_func(value):  # type: ignore #conditional function variants must have identical signature
+                """ Set OpenGL matrix uniform data. """
+                c_array[:] = value
+                gl_setter(location, count, gl.GL_FALSE, ptr)
 
-    Returns the shader id as a GLuint
-    """
-    shader = gl.glCreateShader(shader_type)
-    source_bytes = source.encode('utf-8')
-    # Turn the source code string into an array of c_char_p arrays.
-    strings = byref(
-        cast(
-            c_char_p(source_bytes),
-            POINTER(c_char)
-        )
-    )
-    # Make an array with the strings lengths
-    lengths = pointer(c_int(len(source_bytes)))
-    gl.glShaderSource(shader, 1, strings, lengths)
-    gl.glCompileShader(shader)
-    result = c_int()
-    gl.glGetShaderiv(shader, gl.GL_COMPILE_STATUS, byref(result))
-    if result.value == gl.GL_FALSE:
-        msg = create_string_buffer(512)
-        length = c_int()
-        gl.glGetShaderInfoLog(shader, 512, byref(length), msg)
-        raise ShaderException(
-            f"Shader compile failure ({result.value}): {msg.value.decode('utf-8')}")
-    return shader
+        elif length == 1 and count == 1:
+            def setter_func(value):  # type: ignore #conditional function variants must have identical signature
+                """ Set OpenGL uniform data value. """
+                c_array[0] = value
+                gl_setter(location, count, ptr)
+        elif length > 1 and count == 1:
+            def setter_func(values):  # type: ignore #conditional function variants must have identical signature
+                """ Set list of OpenGL uniform data. """
+                c_array[:] = values
+                gl_setter(location, count, ptr)
+        else:
+            raise NotImplementedError("Uniform type not yet supported.")
+
+        return setter_func
 
 
 class Buffer:
@@ -488,6 +498,7 @@ class BufferDescription:
             sizechar, type_ = fmt
             if sizechar not in '1234' or type_ not in 'fiB':
                 raise ShaderException("Wrong format {fmt}.")
+
             size = int(sizechar)
             gl_type_enum = BufferDescription.GL_TYPES_ENUM[type_]
             gl_type = BufferDescription.GL_TYPES[type_]
@@ -626,54 +637,102 @@ class Texture:
     """
     Class that represents an OpenGL texture.
     """
-    __slots__ = '_ctx', '_glo', '_width', '_height', '_components', '_format', '_filter', '_wrap_x', '_wrap_y', '__weakref__'
+    __slots__ = (
+        '_ctx', '_glo', '_width', '_height', '_dtype', '_target', '_components',
+        '_format', '_internal_format', '_type', '_component_size', '_samples', '_filter', '_wrap_x', '_wrap_y', '__weakref__',
+    )
+    _float_base_format = (0, gl.GL_RED, gl.GL_RG, gl.GL_RGB, gl.GL_RGBA)
+    _int_base_format = (0, gl.GL_RED_INTEGER, gl.GL_RG_INTEGER, gl.GL_RGB_INTEGER, gl.GL_RGBA_INTEGER)
+    # format: (base_format, internal_format, type, size)
+    _formats = {
+        # float formats
+        'f1': (_float_base_format, (0, gl.GL_R8, gl.GL_RG8, gl.GL_RGB8, gl.GL_RGBA8), gl.GL_UNSIGNED_BYTE, 1),
+        'f2': (_float_base_format, (0, gl.GL_R16F, gl.GL_RG16F, gl.GL_RGB16F, gl.GL_RGBA16F), gl.GL_HALF_FLOAT, 2),
+        'f4': (_float_base_format, (0, gl.GL_R32F, gl.GL_RG32F, gl.GL_RGB32F, gl.GL_RGBA32F), gl.GL_FLOAT, 4),
+        # int formats
+        'i1': (_int_base_format, (0, gl.GL_R8UI, gl.GL_RG8UI, gl.GL_RGB8UI, gl.GL_RGBA8UI), gl.GL_UNSIGNED_BYTE, 1),
+        'i2': (_int_base_format, (0, gl.GL_R16UI, gl.GL_RG16UI, gl.GL_RGB16UI, gl.GL_RGBA16UI), gl.GL_UNSIGNED_SHORT, 2),
+        'i4': (_int_base_format, (0, gl.GL_R32UI, gl.GL_RG32UI, gl.GL_RGB32UI, gl.GL_RGBA32UI), gl.GL_UNSIGNED_INT, 4),
+        # uint formats
+        'u1': (_int_base_format, (0, gl.GL_R8UI, gl.GL_RG8UI, gl.GL_RGB8UI, gl.GL_RGBA8UI), gl.GL_BYTE, 1),
+        'u2': (_int_base_format, (0, gl.GL_R16UI, gl.GL_RG16UI, gl.GL_RGB16UI, gl.GL_RGBA16UI), gl.GL_SHORT, 2),
+        'u4': (_int_base_format, (0, gl.GL_R32UI, gl.GL_RG32UI, gl.GL_RGB32UI, gl.GL_RGBA32UI), gl.GL_INT, 4),
+    }
 
     def __init__(self,
-                 ctx,
+                 ctx: 'Context',
                  size: Tuple[int, int],
-                 components: int,
-                 data=None,
-                 texture_filter=None,
-                 wrap_x=None,
-                 wrap_y=None):
+                 components: int = 4,
+                 dtype: str = 'f1',
+                 data: bytes = None,
+                 texture_filter: Tuple[gl.GLuint, gl.GLuint] = None,
+                 wrap_x: gl.GLuint = None,
+                 wrap_y: gl.GLuint = None):
         """Represents an OpenGL texture.
 
         A texture can be created with or without initial data.
         NOTE: Currently does not support multisample textures even
         thought ``samples`` is exposed.
 
-        :param Tuple[int, int] size: The size of the texture.
-        :param int components: The number of components (1: R, 2: RG, 3: RGB, 4: RGBA).
+        :param Context ctx: The context the object belongs to
+        :param Tuple[int, int] size: The size of the texture
+        :param int components: The number of components (1: R, 2: RG, 3: RGB, 4: RGBA)
+        :param str dtype: The data type of each component: f1, f2, f4 / i1, i2, i4 / u1, u2, u4
+        :param bytes data: The byte data to initialize the texture with
+        :param Tuple[gl.GLuint, gl.GLuint] filter: The minification/magnification filter of the texture
+        :param gl.GLuint wrap_s
         :param data: The texture data (optional)
         """
         self._ctx = ctx
         self._width, self._height = size
+        self._dtype = dtype
         self._components = components
-        # These are the defalt states in OpenGL
+        self._target = gl.GL_TEXTURE_2D
+        self._samples = 0
+        # These are the default states in OpenGL
         self._filter = gl.GL_LINEAR, gl.GL_LINEAR
         self._wrap_x = gl.GL_REPEAT
         self._wrap_y = gl.GL_REPEAT
 
-        sized_format = (gl.GL_R8, gl.GL_RG8, gl.GL_RGB8, gl.GL_RGBA8)[components - 1]
-        self._format = (gl.GL_R, gl.GL_RG, gl.GL_RGB, gl.GL_RGBA)[components - 1]
+        if components not in [1, 2, 3, 4]:
+            raise ValueError("Components must be 1, 2, 3 or 4")
+
+        try:
+            format_info = self._formats[self._dtype]
+        except KeyError:
+            raise ValueError(f"dype '{dtype}' not support. Supported types are : {tuple(self._formats.keys())}")
+
         gl.glActiveTexture(gl.GL_TEXTURE0)  # Create textures in the default channel (0)
 
         self._glo = glo = gl.GLuint()
         gl.glGenTextures(1, byref(self._glo))
 
         if self._glo.value == 0:
-            raise ShaderException("Cannot create Texture.")
+            raise ShaderException("Cannot create Texture. OpenGL failed to generate a texture id")
 
-        gl.glBindTexture(gl.GL_TEXTURE_2D, self._glo)
+        gl.glBindTexture(self._target, self._glo)
         gl.glPixelStorei(gl.GL_PACK_ALIGNMENT, 1)
         gl.glPixelStorei(gl.GL_UNPACK_ALIGNMENT, 1)
         try:
+            _format, _internal_format, self._type, self._component_size = format_info
+            self._format = _format[components]
+            self._internal_format = _internal_format[components]
             gl.glTexImage2D(
-                gl.GL_TEXTURE_2D, 0, sized_format, self._width, self._height, 0,
-                self._format, gl.GL_UNSIGNED_BYTE, data
+                self._target,  # target
+                0,  # level
+                self._internal_format,  # internal_format
+                self._width,  # width
+                self._height,  # height
+                0,  # border
+                self._format,  # format
+                self._type,  # type
+                data  # data
             )
-        except gl.GLException:
-            raise gl.GLException(f"Unable to create texture. {gl.GL_MAX_TEXTURE_SIZE} {size}")
+        except gl.GLException as ex:
+            raise gl.GLException((
+                f"Unable to create texture: {ex} : dtype={dtype} size={size} components={components} "
+                "GL_MAX_TEXTURE_SIZE = {gl.GL_MAX_TEXTURE_SIZE}"
+            ))
 
         self.filter = texture_filter or self._filter
         self.wrap_x = wrap_x or self._wrap_x
@@ -700,6 +759,11 @@ class Texture:
     def height(self) -> int:
         """The height of the texture in pixels"""
         return self._height
+
+    @property
+    def dtype(self) -> str:
+        """The data type of each component"""
+        return self._dtype
 
     @property
     def size(self) -> Tuple[int, int]:
@@ -733,8 +797,8 @@ class Texture:
 
         self._filter = value
         self.use()
-        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, self._filter[0])
-        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, self._filter[1])
+        gl.glTexParameteri(self._target, gl.GL_TEXTURE_MIN_FILTER, self._filter[0])
+        gl.glTexParameteri(self._target, gl.GL_TEXTURE_MAG_FILTER, self._filter[1])
 
     @property
     def wrap_x(self):
@@ -750,7 +814,7 @@ class Texture:
     def wrap_x(self, value):
         self._wrap_x = value
         self.use()
-        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_S, value)
+        gl.glTexParameteri(self._target, gl.GL_TEXTURE_WRAP_S, value)
 
     @property
     def wrap_y(self):
@@ -766,7 +830,67 @@ class Texture:
     def wrap_y(self, value):
         self._wrap_y = value
         self.use()
-        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_T, value)
+        gl.glTexParameteri(self._target, gl.GL_TEXTURE_WRAP_T, value)
+
+    def read(self, level: int = 0, alignment: int = 1) -> bytearray:
+        """
+        Read the contents of the texture.
+        """
+        gl.glActiveTexture(gl.GL_TEXTURE0)
+        gl.glBindTexture(self._target, self._glo)
+        gl.glPixelStorei(gl.GL_PACK_ALIGNMENT, 1)
+        gl.glPixelStorei(gl.GL_UNPACK_ALIGNMENT, 1)
+
+        buffer = (gl.GLubyte * (self.width * self.height * self._component_size))()
+        gl.glGetTexImage(gl.GL_TEXTURE_2D, 0, self._format, self._type, buffer)
+        return bytearray(buffer)
+
+    def write(self, data: Union[bytes, Buffer], level: int = 0, viewport=None):
+        """Write byte data to the texture
+
+        :param Union[bytes, Buffer] data: bytes or a Buffer with data to write
+        :param int level: The texture level to write
+        :param tuple viewport: The are of the texture to write. 2 or 4 component tuple
+        """
+        # TODO: Support writing to layers using viewport + alignment
+        if self._samples > 0:
+            raise ValueError("Writing to multisample textures not supported")
+
+        x, y, w, h = 0, 0, self._width, self._height
+        if viewport:
+            if len(viewport) == 2:
+                w, h = viewport
+            elif len(viewport) == 4:
+                x, y, w, h = viewport
+            else:
+                raise ValueError("Viewport must be of length 2 or 4")
+
+        if isinstance(data, bytes):
+            gl.glActiveTexture(gl.GL_TEXTURE0)
+            gl.glBindTexture(self._target, self._glo)
+            gl.glPixelStorei(gl.GL_PACK_ALIGNMENT, 1)
+            gl.glPixelStorei(gl.GL_UNPACK_ALIGNMENT, 1)
+            gl.glTexSubImage2D(
+                self._target,  # target
+                level,  # level
+                x,  # x offset
+                y,  # y offset
+                w,  # width
+                h,  # height
+                self._format,  # format
+                self._type,  # type
+                data,  # pixel data
+            )
+        elif isinstance(data, Buffer):
+            gl.glBindBuffer(gl.GL_PIXEL_UNPACK_BUFFER, data.glo)
+            gl.glActiveTexture(gl.GL_TEXTURE0)
+            gl.glBindTexture(self._target, self._glo)
+            gl.glPixelStorei(gl.GL_PACK_ALIGNMENT, 1)
+            gl.glPixelStorei(gl.GL_UNPACK_ALIGNMENT, 1)
+            gl.glTexSubImage2D(self._target, level, x, y, w, h, self._format, self._type, 0)
+            gl.glBindBuffer(gl.GL_PIXEL_UNPACK_BUFFER, 0)
+        else:
+            raise ValueError("data must be bytes or a Buffer")
 
     def build_mipmaps(self, base=0, max_amount=1000):
         """Generate mipmaps for this texture.
@@ -816,6 +940,9 @@ class Framebuffer:
         :param List[Texture] color_attachments: List of color attachments.
         :param Texture depth_attachment: A depth attachment (optional)
         """
+        if not color_attachments:
+            raise ValueError("Framebuffer must at least have one color attachment")
+
         self._ctx = ctx
         self._color_attachments = color_attachments if isinstance(color_attachments, list) else [color_attachments]
         self._depth_attachment = depth_attachment
@@ -1052,6 +1179,15 @@ class Context:
     Represents an OpenGL context. This context belongs to an arcade.Window.
     """
     resource_root = (Path(__file__).parent / 'resources').resolve()
+    _errors = {
+        gl.GL_INVALID_ENUM: 'GL_INVALID_ENUM',
+        gl.GL_INVALID_VALUE: 'GL_INVALID_VALUE',
+        gl.GL_INVALID_OPERATION: 'GL_INVALID_OPERATION',
+        gl.GL_INVALID_FRAMEBUFFER_OPERATION: 'GL_INVALID_FRAMEBUFFER_OPERATION',
+        gl.GL_OUT_OF_MEMORY: 'GL_OUT_OF_MEMORY',
+        gl.GL_STACK_UNDERFLOW: 'GL_STACK_UNDERFLOW',
+        gl.GL_STACK_OVERFLOW: 'GL_STACK_OVERFLOW',
+    }
 
     def __init__(self, window):
         self._window = window
@@ -1108,6 +1244,25 @@ class Context:
         """ Return OpenGL version. """
         return self._gl_version
 
+    @property
+    def error(self) -> Union[str, None]:
+        """Check OpenGL error
+
+        Returns a string representation of the occurring error
+        or ``None`` of no errors has occurred.
+
+        Example::
+
+            err = ctx.error
+            if err:
+                raise RuntimeError("OpenGL error: {err}")
+        """
+        err = gl.glGetError()
+        if err == gl.GL_NO_ERROR:
+            return None
+
+        return self._errors.get(err, 'GL_UNKNOWN_ERROR')
+
     def buffer(self, data: bytes = None, reserve: int = 0, usage: str = 'static') -> Buffer:
         """Create a new OpenGL Buffer object.
 
@@ -1128,8 +1283,9 @@ class Context:
 
     def texture(self,
                 size: Tuple[int, int],
-                components: int,
-                data=None,
+                components: int = 4,
+                dtype: str = 'f1',
+                data: bytes = None,
                 wrap_x: gl.GLenum = None,
                 wrap_y: gl.GLenum = None,
                 texture_filter: Tuple[gl.GLenum, gl.GLenum] = None) -> Texture:
@@ -1144,26 +1300,31 @@ class Context:
 
         :param Tuple[int, int] size: The size of the texture
         :param int components: Number of components (1: R, 2: RG, 3: RGB, 4: RGBA)
+        :param str dtype: The data type of each component: f1, f2, f4 / i1, i2, i4 / u1, u2, u4
         :param buffer data: The texture data (optional)
         :param GLenum wrap_x: How the texture wraps in x direction
         :param GLenum wrap_y: How the texture wraps in y direction
         :param Tuple[GLenum, GLenum] texture_filter: Minification and magnification filter
         """
-        return Texture(self, size, components, data, wrap_x=wrap_x, wrap_y=wrap_y, texture_filter=texture_filter)
+        return Texture(self, size, components=components, data=data, dtype=dtype,
+                       wrap_x=wrap_x, wrap_y=wrap_y,
+                       texture_filter=texture_filter)
 
     def vertex_array(self, prog: gl.GLuint, content, index_buffer=None):
         """Create a new Vertex Array.
         """
         return VertexArray(self, prog, content, index_buffer)
 
-    def program(self, vertex_shader, fragment_shader) -> Program:
+    def program(self, vertex_shader: str, fragment_shader: str = None, geometry_shader: str = None) -> Program:
         """Create a new program given the vertex_shader and fragment shader code.
         """
-        return Program(
-            self,
-            (vertex_shader, gl.GL_VERTEX_SHADER),
-            (fragment_shader, gl.GL_FRAGMENT_SHADER)
-        )
+        shaders = [(vertex_shader, gl.GL_VERTEX_SHADER)]
+        if fragment_shader:
+            shaders.append((fragment_shader, gl.GL_FRAGMENT_SHADER))
+        if geometry_shader:
+            shaders.append((geometry_shader, gl.GL_GEOMETRY_SHADER))
+
+        return Program(self, *shaders)
 
     def load_program(self, vertex_shader_filename, fragment_shader_filename) -> Program:
         """ Create a new program given a file names that contain the vertex shader and

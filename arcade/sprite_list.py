@@ -604,9 +604,9 @@ class SpriteList(Generic[_SpriteType]):
                 # Create a texture out the composite image
                 texture_bytes2 = new_image2.tobytes()
                 self._texture = self.ctx.texture(
-                     (new_image2.width, new_image2.height),
-                     4,
-                     texture_bytes2
+                    (new_image2.width, new_image2.height),
+                    components=4,
+                    data=texture_bytes2,
                 )
 
                 if self.texture_id is None:
