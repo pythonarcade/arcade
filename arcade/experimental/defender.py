@@ -235,6 +235,8 @@ class MyGame(arcade.Window):
             # This command has to happen before we start drawing
             arcade.start_render()
 
+            # --- Mini-map related ---
+
             # Draw to the frame buffer used in the minimap
             self.minimap_screen.use()
             self.minimap_screen.clear()
@@ -247,11 +249,11 @@ class MyGame(arcade.Window):
             self.enemy_sprite_list.draw()
             self.player_list.draw()
 
+            # --- Bloom related ---
+
             # Draw to the 'glow' layer
             self.play_screen.use()
             self.play_screen.clear()
-
-            # self.use()
 
             arcade.set_viewport(self.view_left,
                                 SCREEN_WIDTH + self.view_left,
@@ -289,6 +291,8 @@ class MyGame(arcade.Window):
                                          SCREEN_WIDTH,
                                          SCREEN_HEIGHT / 4,
                                          arcade.color.DARK_GREEN)
+
+            # --- Mini-map related ---
 
             # Draw the minimap
             self.minimap_color_attachment.use(0)
