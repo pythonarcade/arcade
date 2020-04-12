@@ -29,12 +29,8 @@ SCREEN_TITLE = "Defender Clone"
 PLAYING_FIELD_WIDTH = 5000
 PLAYING_FIELD_HEIGHT = 800
 
-# Size of the minimap
-MINIMAP_HEIGHT = SCREEN_HEIGHT / 4
-
 # Size of the playing field.
-# This, plus the minimap height, should add up to the height of the screen.
-MAIN_SCREEN_HEIGHT = SCREEN_HEIGHT - MINIMAP_HEIGHT
+MAIN_SCREEN_HEIGHT = SCREEN_HEIGHT
 
 # How far away from the edges do we get before scrolling?
 VIEWPORT_MARGIN = SCREEN_WIDTH / 2 - 50
@@ -181,23 +177,9 @@ class MyGame(arcade.Window):
         # Set the background color
         arcade.set_background_color(arcade.color.BLACK)
 
-        # --- Mini-map related ---
-        self.minimap_color_attachment = None
-        self.minimap_screen = None
-        self.quad_fs = None
-        self.mini_map_quad = None
-
-        program = self.ctx.load_program(
-            vertex_shader="simple_shader.vert",
-            fragment_shader="simple_shader.frag")
-        self.minimap_color_attachment = self.ctx.texture((SCREEN_WIDTH, SCREEN_HEIGHT))
-        self.minimap_screen = self.ctx.framebuffer(color_attachments=[self.minimap_color_attachment])
+        # --- Bloom related ---
         self.play_screen_color_attachment = self.ctx.texture((SCREEN_WIDTH, SCREEN_HEIGHT))
         self.play_screen = self.ctx.framebuffer(color_attachments=[self.play_screen_color_attachment])
-        self.mini_map_quad = geometry.quad_fs(program, size=(2.0, 0.5), pos=(0.0, 0.75))
-        self.play_screen_quad = geometry.quad_fs(program, size=(2.0, 1.5), pos=(0.0, 0.0))
-
-        # --- Bloom related ---
         self.glow = postprocessing.Glow((SCREEN_WIDTH // 8, SCREEN_HEIGHT // 8))
 
     def setup(self):
@@ -235,20 +217,6 @@ class MyGame(arcade.Window):
             # This command has to happen before we start drawing
             arcade.start_render()
 
-            # --- Mini-map related ---
-
-            # Draw to the frame buffer used in the minimap
-            self.minimap_screen.use()
-            self.minimap_screen.clear()
-
-            arcade.set_viewport(0,
-                                PLAYING_FIELD_WIDTH,
-                                0,
-                                SCREEN_HEIGHT)
-
-            self.enemy_sprite_list.draw()
-            self.player_list.draw()
-
             # --- Bloom related ---
 
             # Draw to the 'glow' layer
@@ -284,31 +252,6 @@ class MyGame(arcade.Window):
 
             # Draw the ground
             arcade.draw_line(0, 0, PLAYING_FIELD_WIDTH, 0, arcade.color.WHITE)
-
-            # Draw a background for the minimap
-            arcade.draw_rectangle_filled(SCREEN_WIDTH - SCREEN_WIDTH / 2 + self.view_left,
-                                         SCREEN_HEIGHT - SCREEN_HEIGHT / 8 + self.view_bottom,
-                                         SCREEN_WIDTH,
-                                         SCREEN_HEIGHT / 4,
-                                         arcade.color.DARK_GREEN)
-
-            # --- Mini-map related ---
-
-            # Draw the minimap
-            self.minimap_color_attachment.use(0)
-            self.mini_map_quad.render()
-
-            # Draw a rectangle showing where the screen is
-            width_ratio = SCREEN_WIDTH / PLAYING_FIELD_WIDTH
-            height_ratio = MINIMAP_HEIGHT / PLAYING_FIELD_HEIGHT
-            width = width_ratio * SCREEN_WIDTH
-            height = height_ratio * MAIN_SCREEN_HEIGHT
-            x = (self.view_left + SCREEN_WIDTH / 2) * width_ratio + self.view_left
-            y = self.view_bottom + height / 2 + (SCREEN_HEIGHT - MINIMAP_HEIGHT) + self.view_bottom * height_ratio
-
-            arcade.draw_rectangle_outline(center_x=x, center_y=y,
-                                          width=width, height=height,
-                                          color=arcade.color.WHITE)
 
         except Exception:
             import traceback
@@ -357,7 +300,7 @@ class MyGame(arcade.Window):
 
         # Scroll up
         self.view_bottom = DEFAULT_BOTTOM_VIEWPORT
-        top_boundary = self.view_bottom + SCREEN_HEIGHT - TOP_VIEWPORT_MARGIN - MINIMAP_HEIGHT
+        top_boundary = self.view_bottom + SCREEN_HEIGHT - TOP_VIEWPORT_MARGIN
         if self.player_sprite.top > top_boundary:
             self.view_bottom += self.player_sprite.top - top_boundary
 

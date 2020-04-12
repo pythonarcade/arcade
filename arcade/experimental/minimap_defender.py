@@ -1,12 +1,10 @@
 """
 Defender Clone.
 
-This example shows how to:
-1. Create a mini-map
-2. Create a 'bloom' or 'glow' effect.
+This example shows how to create a mini-map
 
 If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.defender
+python -m arcade.examples.minimap_defender
 """
 
 import arcade
@@ -15,10 +13,6 @@ import random
 
 # --- Minimap Related ---
 from arcade.experimental import geometry
-
-# --- Bloom related ---
-from arcade.experimental import postprocessing
-import pyglet.gl as gl
 
 # Size/title of the window
 SCREEN_WIDTH = 1280
@@ -29,6 +23,7 @@ SCREEN_TITLE = "Defender Clone"
 PLAYING_FIELD_WIDTH = 5000
 PLAYING_FIELD_HEIGHT = 800
 
+# --- Mini-map related ---
 # Size of the minimap
 MINIMAP_HEIGHT = SCREEN_HEIGHT / 4
 
@@ -192,13 +187,7 @@ class MyGame(arcade.Window):
             fragment_shader="simple_shader.frag")
         self.minimap_color_attachment = self.ctx.texture((SCREEN_WIDTH, SCREEN_HEIGHT))
         self.minimap_screen = self.ctx.framebuffer(color_attachments=[self.minimap_color_attachment])
-        self.play_screen_color_attachment = self.ctx.texture((SCREEN_WIDTH, SCREEN_HEIGHT))
-        self.play_screen = self.ctx.framebuffer(color_attachments=[self.play_screen_color_attachment])
         self.mini_map_quad = geometry.quad_fs(program, size=(2.0, 0.5), pos=(0.0, 0.75))
-        self.play_screen_quad = geometry.quad_fs(program, size=(2.0, 1.5), pos=(0.0, 0.0))
-
-        # --- Bloom related ---
-        self.glow = postprocessing.Glow((SCREEN_WIDTH // 8, SCREEN_HEIGHT // 8))
 
     def setup(self):
         """ Set up the game and initialize the variables. """
@@ -249,21 +238,6 @@ class MyGame(arcade.Window):
             self.enemy_sprite_list.draw()
             self.player_list.draw()
 
-            # --- Bloom related ---
-
-            # Draw to the 'glow' layer
-            self.play_screen.use()
-            self.play_screen.clear()
-
-            arcade.set_viewport(self.view_left,
-                                SCREEN_WIDTH + self.view_left,
-                                self.view_bottom,
-                                SCREEN_HEIGHT + self.view_bottom)
-
-            # Draw all the sprites on the screen
-            self.star_sprite_list.draw()
-            self.bullet_sprite_list.draw()
-
             # Draw the ground
             arcade.draw_line(0, 0, PLAYING_FIELD_WIDTH, 0, arcade.color.WHITE)
 
@@ -275,11 +249,9 @@ class MyGame(arcade.Window):
                                 self.view_bottom,
                                 SCREEN_HEIGHT + self.view_bottom)
 
-            gl.glDisable(gl.GL_BLEND)
-            self.glow.render(self.play_screen_color_attachment, self)
-            gl.glEnable(gl.GL_BLEND)
-
+            self.star_sprite_list.draw()
             self.enemy_sprite_list.draw()
+            self.bullet_sprite_list.draw()
             self.player_list.draw()
 
             # Draw the ground
