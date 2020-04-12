@@ -181,8 +181,15 @@ class MyGame(arcade.Window):
             vertex_shader="shaders/texture_ndc_vs.glsl",
             fragment_shader="shaders/texture_fs.glsl")
         self.minimap_color_attachment = self.ctx.texture((SCREEN_WIDTH, SCREEN_HEIGHT))
+
         self.minimap_screen = self.ctx.framebuffer(color_attachments=[self.minimap_color_attachment])
+
         self.mini_map_quad = geometry.quad_fs(program, size=(2.0, 0.5), pos=(0.0, 0.75))
+
+        self.mini_map_quad = geometry.screen_rectangle(program,
+                                                       screen_size=(SCREEN_WIDTH, SCREEN_HEIGHT),
+                                                       rectangle_size=(SCREEN_WIDTH, MINIMAP_HEIGHT),
+                                                       center_pos=(SCREEN_WIDTH / 2, SCREEN_HEIGHT - MINIMAP_HEIGHT / 2))
 
     def setup(self):
         """ Set up the game and initialize the variables. """
