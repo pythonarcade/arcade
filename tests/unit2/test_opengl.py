@@ -30,7 +30,9 @@ class OpenGLTest(arcade.Window):
             raise ValueError("Error", error)
 
     def test_ctx(self):
-        assert self.ctx.gl_version == (3, 3)
+        assert self.ctx.gl_version >= (3, 3)
+        assert self.ctx.limits.MAX_TEXTURE_SIZE > 4096
+        assert self.ctx.limits.MAX_ARRAY_TEXTURE_LAYERS >= 256
 
     def test_buffer(self):
         """Testing OpenGL buffers"""
