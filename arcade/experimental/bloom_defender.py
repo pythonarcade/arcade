@@ -232,9 +232,6 @@ class MyGame(arcade.Window):
             self.star_sprite_list.draw()
             self.bullet_sprite_list.draw()
 
-            # Draw the ground
-            arcade.draw_line(0, 0, PLAYING_FIELD_WIDTH, 0, arcade.color.WHITE)
-
             # Now draw to the actual screen
             self.use()
 
@@ -243,9 +240,14 @@ class MyGame(arcade.Window):
                                 self.view_bottom,
                                 SCREEN_HEIGHT + self.view_bottom)
 
-            gl.glDisable(gl.GL_BLEND)
+            # Draw the ground
+            arcade.draw_line(0, 0, PLAYING_FIELD_WIDTH, 0, arcade.color.WHITE)
+
+            # --- Bloom related ---
+
+            # gl.glDisable(gl.GL_BLEND)
             self.glow.render(self.play_screen_color_attachment, self)
-            gl.glEnable(gl.GL_BLEND)
+            # gl.glEnable(gl.GL_BLEND)
 
             self.enemy_sprite_list.draw()
             self.player_list.draw()
