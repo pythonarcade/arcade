@@ -1432,7 +1432,7 @@ class Context:
     }
 
     def __init__(self, window):
-        self._window = window
+        self._window_ref = weakref.ref(window)
         self.limits = Limits(self)
         self._gl_version = (self.limits.MAJOR_VERSION, self.limits.MINOR_VERSION)
 
@@ -1480,6 +1480,11 @@ class Context:
             vertex_shader=self.resource_root / 'shaders/sprite_list_vs.glsl',
             fragment_shader=self.resource_root / 'shaders/sprite_list_fs.glsl',
         )
+
+    @property
+    def window(self):
+        """The window this context belongs to"""
+        return self._window_ref()
 
     @property
     def gl_version(self):
