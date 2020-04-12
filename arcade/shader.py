@@ -563,6 +563,28 @@ class Buffer:
         gl.glBufferData(gl.GL_ARRAY_BUFFER, self._size, None, self._usage)
 
 
+class AttribFormat:
+    """Describes a format for a single attribute"""
+    __slots__ = 'str_format', 'gl_type', 'components', 'bytes_per_component', 'per_instance'
+
+    def __init__(self, str_format, gl_type, components, bytes_per_component, per_instance):
+        self.str_format = str_format
+        self.gl_type = gl_type
+        self.components = components
+        self.bytes_per_component = bytes_per_component
+        self.per_instance = per_instance
+
+    @property
+    def bytes_total(self):
+        return self.components * self.bytes_per_component
+
+    def __repr__(self):
+        return (
+            f"<AttribFormat {self.str_format} {self.gl_type} components={self.components} "
+            f"bytes_per_component={self.bytes_per_component}>"
+        )
+
+
 class BufferDescription:
     """Vertex Buffer Object description, allowing easy use with VAOs.
 
@@ -581,6 +603,44 @@ class BufferDescription:
     be used once for the whole geometry. The geometry will be repeated a number of
     times equal to the number of items in the Buffer.
     """
+    # Describe all variants of a format string to simplify parsing (single component)
+    # format: str_format, gl_type, byte_size
+    # TODO: We also need special case for padding format `x`
+    _formats = {
+        # Floats
+        'f':  ('f',  gl.GL_FLOAT, 4),
+        'f1': ('f1', gl.GL_UNSIGNED_BYTE, 1),
+        'f2': ('f2', gl.GL_HALF_FLOAT, 2),
+        'f4': ('f4', gl.GL_FLOAT, 4),
+        'f8': ('f8', gl.GL_DOUBLE, 8),
+        # Unsigned integers
+        'u':  ('u', gl.GL_FLOAT, 4),
+        'u1': ('u1', gl.GL_FLOAT, 1),
+        'u2': ('u2', gl.GL_FLOAT, 2),
+        'u4': ('u4', gl.GL_FLOAT, 4),
+        # Signed integers
+        'i': ('i', gl.GL_INT, 4),
+        'i1': ('i1', gl.GL_BYTE, 1),
+        'i2': ('i2', gl.GL_SHORT, 2),
+        'i4': ('i4', gl.GL_INT, 4),
+        # TODO: Enable these later. These listings have dummy values for now.
+        # # Normalized float (0.0 -> 1.0)
+        # 'nf':  ('nf',  gl.GL_FLOAT, 4),
+        # 'nf1': ('nf1', gl.GL_FLOAT, 4),
+        # 'nf2': ('nf2', gl.GL_FLOAT, 4),
+        # 'nf4': ('nf2', gl.GL_FLOAT, 4),
+        # # Normalized uint (0.0 -> 1.0)
+        # 'nu':  ('nu',  gl.GL_FLOAT, 4),
+        # 'nu1': ('nu1', gl.GL_FLOAT, 4),
+        # 'nu2': ('nu2', gl.GL_FLOAT, 4),
+        # 'nu4': ('nu2', gl.GL_FLOAT, 4),
+        # # Normalized int (0.0 -> 1.0)
+        # 'ni':  ('ni',  gl.GL_FLOAT, 4),
+        # 'ni1': ('ni1', gl.GL_FLOAT, 4),
+        # 'ni2': ('ni2', gl.GL_FLOAT, 4),
+        # 'ni4': ('ni2', gl.GL_FLOAT, 4),
+    }
+
     GL_TYPES_ENUM = {
         'B': gl.GL_UNSIGNED_BYTE,
         'f': gl.GL_FLOAT,
@@ -723,6 +783,8 @@ class VertexArray:
 
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, buff.glo)
         offset = 0
+        # TODO: This is too simple for more complex cases. We want to bind only part of the attribs as well
+        # TODO: ENsure built in attributes like gl_InstanceID / gl_VertexID / gl_PromitiveID don't interfere
         for (size, attribsize, gl_type_enum), attrib in zip(buf_desc.formats, buf_desc.attributes):
             loc = gl.glGetAttribLocation(self._program.glo, attrib.encode())
             if loc == -1:
@@ -853,7 +915,7 @@ class Texture:
         except gl.GLException as ex:
             raise gl.GLException((
                 f"Unable to create texture: {ex} : dtype={dtype} size={size} components={components} "
-                "GL_MAX_TEXTURE_SIZE = {gl.GL_MAX_TEXTURE_SIZE}"
+                "MAX_TEXTURE_SIZE = {self.ctx.limits.MAX_TEXTURE_SIZE}"
             ))
 
         self.filter = filter or self._filter
