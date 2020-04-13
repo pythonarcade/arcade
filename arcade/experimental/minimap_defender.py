@@ -16,19 +16,19 @@ from arcade.experimental import geometry
 
 # Size/title of the window
 SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
+SCREEN_HEIGHT = 800
 SCREEN_TITLE = "Defender Clone"
 
 # Size of the playing field
 PLAYING_FIELD_WIDTH = 5000
-PLAYING_FIELD_HEIGHT = 800
+PLAYING_FIELD_HEIGHT = 1000
 
 # --- Mini-map related ---
 # Size of the minimap
-MINIMAP_HEIGHT = SCREEN_HEIGHT / 4
+MINIMAP_HEIGHT = 200
 
 # Size of the playing field.
-# This, plus the minimap height, should add up to the height of the screen.
+# This, plus the mini-map height, should add up to the height of the screen.
 MAIN_SCREEN_HEIGHT = SCREEN_HEIGHT - MINIMAP_HEIGHT
 
 # How far away from the edges do we get before scrolling?
@@ -108,8 +108,8 @@ class Player(arcade.SpriteSolidColor):
 
         if self.bottom < 0:
             self.bottom = 0
-        elif self.top > SCREEN_HEIGHT - 1:
-            self.top = SCREEN_HEIGHT - 1
+        elif self.top > PLAYING_FIELD_HEIGHT - 1:
+            self.top = PLAYING_FIELD_HEIGHT - 1
 
 class Bullet(arcade.SpriteSolidColor):
     """ Bullet """
@@ -177,19 +177,24 @@ class MyGame(arcade.Window):
         arcade.set_background_color(arcade.color.BLACK)
 
         # --- Mini-map related ---
+        # How big is our screen?
+        screen_size = (SCREEN_WIDTH, SCREEN_HEIGHT)
+        # How big is the mini-map?
+        mini_map_size = (SCREEN_WIDTH, MINIMAP_HEIGHT)
+        # Where is the mini-map to be drawn?
+        mini_map_pos = (SCREEN_WIDTH / 2, SCREEN_HEIGHT - MINIMAP_HEIGHT / 2)
+        # Load a vertex and fragment shader
         program = self.ctx.load_program(
-            vertex_shader="shaders/texture_ndc_vs.glsl",
-            fragment_shader="shaders/texture_fs.glsl")
-        self.minimap_color_attachment = self.ctx.texture((SCREEN_WIDTH, SCREEN_HEIGHT))
-
-        self.minimap_screen = self.ctx.framebuffer(color_attachments=[self.minimap_color_attachment])
-
-        self.mini_map_quad = geometry.quad_fs(program, size=(2.0, 0.5), pos=(0.0, 0.75))
-
-        self.mini_map_quad = geometry.screen_rectangle(program,
-                                                       screen_size=(SCREEN_WIDTH, SCREEN_HEIGHT),
-                                                       rectangle_size=(SCREEN_WIDTH, MINIMAP_HEIGHT),
-                                                       center_pos=(SCREEN_WIDTH / 2, SCREEN_HEIGHT - MINIMAP_HEIGHT / 2))
+            vertex_shader=arcade.resources.shaders.vertex.default_projection,
+            fragment_shader=arcade.resources.shaders.fragment.texture)
+        # Add a color attachment to store pixel colors
+        self.mini_map_color_attachment = self.ctx.texture(screen_size)
+        # Create a frame buffer with the needed color attachment
+        self.mini_map_screen = self.ctx.framebuffer(color_attachments=[self.mini_map_color_attachment])
+        # Create a rectangle that will hold where the mini-map goes
+        self.mini_map_rect = geometry.screen_rectangle(program,
+                                                       rectangle_size=mini_map_size,
+                                                       center_pos=mini_map_pos)
 
     def setup(self):
         """ Set up the game and initialize the variables. """
@@ -207,17 +212,17 @@ class MyGame(arcade.Window):
         self.player_list.append(self.player_sprite)
 
         # Add stars
-        for i in range(80):
+        for i in range(100):
             sprite = arcade.SpriteSolidColor(4, 4, arcade.color.WHITE)
             sprite.center_x = random.randrange(PLAYING_FIELD_WIDTH)
-            sprite.center_y = random.randrange(600)
+            sprite.center_y = random.randrange(PLAYING_FIELD_HEIGHT)
             self.star_sprite_list.append(sprite)
 
         # Add enemies
-        for i in range(20):
+        for i in range(30):
             sprite = arcade.SpriteSolidColor(20, 20, arcade.csscolor.LIGHT_SALMON)
             sprite.center_x = random.randrange(PLAYING_FIELD_WIDTH)
-            sprite.center_y = random.randrange(600)
+            sprite.center_y = random.randrange(PLAYING_FIELD_HEIGHT)
             self.enemy_sprite_list.append(sprite)
 
     def on_draw(self):
@@ -228,14 +233,14 @@ class MyGame(arcade.Window):
 
             # --- Mini-map related ---
 
-            # Draw to the frame buffer used in the minimap
-            self.minimap_screen.use()
-            self.minimap_screen.clear()
+            # Draw to the frame buffer used in the mini-map
+            self.mini_map_screen.use()
+            self.mini_map_screen.clear()
 
             arcade.set_viewport(0,
                                 PLAYING_FIELD_WIDTH,
                                 0,
-                                SCREEN_HEIGHT)
+                                PLAYING_FIELD_HEIGHT)
 
             self.enemy_sprite_list.draw()
             self.player_list.draw()
@@ -261,24 +266,25 @@ class MyGame(arcade.Window):
 
             # Draw a background for the minimap
             arcade.draw_rectangle_filled(SCREEN_WIDTH - SCREEN_WIDTH / 2 + self.view_left,
-                                         SCREEN_HEIGHT - SCREEN_HEIGHT / 8 + self.view_bottom,
+                                         SCREEN_HEIGHT - MINIMAP_HEIGHT + MINIMAP_HEIGHT / 2 + self.view_bottom,
                                          SCREEN_WIDTH,
-                                         SCREEN_HEIGHT / 4,
+                                         MINIMAP_HEIGHT,
                                          arcade.color.DARK_GREEN)
 
             # --- Mini-map related ---
 
             # Draw the minimap
-            self.minimap_color_attachment.use(0)
-            self.mini_map_quad.render()
+            self.mini_map_color_attachment.use(0)
+            self.mini_map_rect.render()
 
             # Draw a rectangle showing where the screen is
             width_ratio = SCREEN_WIDTH / PLAYING_FIELD_WIDTH
             height_ratio = MINIMAP_HEIGHT / PLAYING_FIELD_HEIGHT
             width = width_ratio * SCREEN_WIDTH
             height = height_ratio * MAIN_SCREEN_HEIGHT
+
             x = (self.view_left + SCREEN_WIDTH / 2) * width_ratio + self.view_left
-            y = self.view_bottom + height / 2 + (SCREEN_HEIGHT - MINIMAP_HEIGHT) + self.view_bottom * height_ratio
+            y = (SCREEN_HEIGHT - MINIMAP_HEIGHT) + self.view_bottom + height / 2 + (MAIN_SCREEN_HEIGHT / PLAYING_FIELD_HEIGHT) * self.view_bottom
 
             arcade.draw_rectangle_outline(center_x=x, center_y=y,
                                           width=width, height=height,
