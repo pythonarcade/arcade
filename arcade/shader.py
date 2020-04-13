@@ -1683,6 +1683,23 @@ class Context:
         fragment_shader_src = None
         geometry_shader_src = None
 
+        # If we should pull from local resources, replace with proper path
+        # TODO: Remove dup code here
+        if isinstance(vertex_shader, str) and str(vertex_shader).startswith(":resources:"):
+            import os
+            path = os.path.dirname(os.path.abspath(__file__))
+            vertex_shader = f"{path}/resources/{vertex_shader[11:]}"
+
+        if isinstance(fragment_shader, str) and str(fragment_shader).startswith(":resources:"):
+            import os
+            path = os.path.dirname(os.path.abspath(__file__))
+            fragment_shader = f"{path}/resources/{fragment_shader[11:]}"
+
+        if isinstance(geometry_shader, str) and str(geometry_shader).startswith(":resources:"):
+            import os
+            path = os.path.dirname(os.path.abspath(__file__))
+            geometry_shader = f"{path}/resources/{geometry_shader[11:]}"
+
         # TODO: Cache these files using absolute path as key
         with open(vertex_shader, "r") as fd:
             vertex_shader_src = fd.read()
