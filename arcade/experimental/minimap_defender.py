@@ -184,7 +184,7 @@ class MyGame(arcade.Window):
         # Where is the mini-map to be drawn?
         mini_map_pos = (SCREEN_WIDTH / 2, SCREEN_HEIGHT - MINIMAP_HEIGHT / 2)
         # Load a vertex and fragment shader
-        program = self.ctx.load_program(
+        self.program = self.ctx.load_program(
             vertex_shader=arcade.resources.shaders.vertex.default_projection,
             fragment_shader=arcade.resources.shaders.fragment.texture)
         # Add a color attachment to store pixel colors
@@ -192,8 +192,7 @@ class MyGame(arcade.Window):
         # Create a frame buffer with the needed color attachment
         self.mini_map_screen = self.ctx.framebuffer(color_attachments=[self.mini_map_color_attachment])
         # Create a rectangle that will hold where the mini-map goes
-        self.mini_map_rect = geometry.screen_rectangle(program,
-                                                       rectangle_size=mini_map_size,
+        self.mini_map_rect = geometry.screen_rectangle(rectangle_size=mini_map_size,
                                                        center_pos=mini_map_pos)
 
     def setup(self):
@@ -275,7 +274,7 @@ class MyGame(arcade.Window):
 
             # Draw the minimap
             self.mini_map_color_attachment.use(0)
-            self.mini_map_rect.render()
+            self.mini_map_rect.render(self.program)
 
             # Draw a rectangle showing where the screen is
             width_ratio = SCREEN_WIDTH / PLAYING_FIELD_WIDTH

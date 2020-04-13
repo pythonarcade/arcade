@@ -147,7 +147,7 @@ class MyGame(arcade.Window):
     def setup(self):
         """ Set up the game and initialize the variables. """
         # Offscreen stuff
-        program = self.ctx.program(
+        self.program = self.ctx.program(
             vertex_shader='''
                 #version 330
 
@@ -187,7 +187,7 @@ class MyGame(arcade.Window):
         )
         self.color_attachment = self.ctx.texture((SCREEN_WIDTH, SCREEN_HEIGHT))
         self.offscreen = self.ctx.framebuffer(color_attachments=[self.color_attachment])
-        self.quad_fs = geometry.quad_fs(program, size=(2.0, 2.0))
+        self.quad_fs = geometry.quad_fs(size=(2.0, 2.0))
         self.t0 = time.time()
         self.frame = 0
 
@@ -207,9 +207,9 @@ class MyGame(arcade.Window):
 
         self.use()
         self.color_attachment.use(0)
-        self.quad_fs.program['angle'] = -1 + (time.time() - self.t0) / 5
-        self.quad_fs.program['zoom'] = 3 + (time.time() - self.t0) / 5
-        self.quad_fs.render()
+        self.program['angle'] = -1 + (time.time() - self.t0) / 5
+        self.program['zoom'] = 3 + (time.time() - self.t0) / 5
+        self.quad_fs.render(self.program)
 
         end_time = int(round(time.time() * 1000))
         total_time = end_time - start_time
