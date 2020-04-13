@@ -49,7 +49,7 @@ class Shape:
         gl.glEnable(gl.GL_PRIMITIVE_RESTART)
         gl.glPrimitiveRestartIndex(2 ** 32 - 1)
 
-        self.vao.render(mode=self.mode)
+        self.vao.render(self.program, mode=self.mode)
 
 
 def create_line(start_x: float, start_y: float, end_x: float, end_y: float,
@@ -107,13 +107,13 @@ def create_line_generic_with_colors(point_list: PointList,
     vao_content = [
         shader.BufferDescription(
             vbo,
-            '2f 4B',
+            '2f 4f1',
             ('in_vert', 'in_color'),
             normalized=['in_color']
         )
     ]
 
-    vao = ctx.vertex_array(program, vao_content)
+    vao = ctx.geometry(vao_content)
     program['Projection'] = get_projection().flatten()
 
     shape = Shape()
@@ -628,12 +628,12 @@ class ShapeElementList(Generic[TShape]):
         vao_content = [
             shader.BufferDescription(
                 vbo,
-                '2f 4B',
+                '2f 4f1',
                 ('in_vert', 'in_color'),
                 normalized=['in_color']
             )
         ]
-        vao = self.ctx.vertex_array(self.program, vao_content, ibo)
+        vao = self.ctx.geometry(vao_content, ibo)
         self.program['Projection'] = get_projection().flatten()
         self.program['Position'] = [self.center_x, self.center_y]
         self.program['Angle'] = self.angle

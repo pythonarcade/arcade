@@ -76,14 +76,14 @@ class GaussianBlurHorizontal(PostProcessing):
             vertex_shader=SHADER_PATH / 'texture_ndc_vs.glsl',
             fragment_shader=SHADER_PATH / 'gaussian_blurx_fs.glsl',
         )
-        self._quad_fs = geometry.quad_fs(self._program, size=(2.0, 2.0))
+        self._quad_fs = geometry.quad_fs(size=(2.0, 2.0))
 
     def render(self, source: shader.Texture) -> shader.Texture:
         """ Render """
         self._fbo.use()
         source.use(0)
         self._program['target_size'] = self._fbo.size
-        self._quad_fs.render()
+        self._quad_fs.render(self._program)
         return self._fbo.color_attachments[0]
 
 
@@ -99,14 +99,14 @@ class GaussianBlurVertical(PostProcessing):
             vertex_shader=SHADER_PATH / 'texture_ndc_vs.glsl',
             fragment_shader=SHADER_PATH / 'gaussian_blury_fs.glsl',
         )
-        self._quad_fs = geometry.quad_fs(self._program, size=(2.0, 2.0))
+        self._quad_fs = geometry.quad_fs(size=(2.0, 2.0))
 
     def render(self, source: shader.Texture) -> shader.Texture:
         """ Render """
         self._fbo.use()
         source.use(0)
         self._program['target_size'] = self._fbo.size
-        self._quad_fs.render()
+        self._quad_fs.render(self._program)
         return self._fbo.color_attachments[0]
 
 
@@ -132,7 +132,7 @@ class Glow(PostProcessing):
             vertex_shader=SHADER_PATH / 'texture_ndc_vs.glsl',
             fragment_shader=SHADER_PATH / 'glow_combine_fs.glsl',
         )
-        self._quad_fs = geometry.quad_fs(self._combine_program, size=(2.0, 2.0))
+        self._quad_fs = geometry.quad_fs(size=(2.0, 2.0))
 
     def render(self, source, target):
         """ Render """
@@ -143,4 +143,4 @@ class Glow(PostProcessing):
         blurred.use(1)
         self._combine_program['color_buffer'] = 0
         self._combine_program['blur_buffer'] = 1
-        self._quad_fs.render()
+        self._quad_fs.render(self._combine_program)

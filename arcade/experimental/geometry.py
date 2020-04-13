@@ -3,10 +3,9 @@ Temporary module to play with shaders and geometry
 """
 import array
 from arcade import shader, get_window
-import pyglet.gl as gl
 
 
-def quad_fs(program, size=(1.0, 1.0), pos=(0.0, 0.0)):
+def quad_fs(size=(1.0, 1.0), pos=(0.0, 0.0)):
     width, height = size
     xpos, ypos = pos
     my_array = \
@@ -30,11 +29,10 @@ def quad_fs(program, size=(1.0, 1.0), pos=(0.0, 0.0)):
             ('in_vert', 'in_uv'),
         )
     ]
-    return Thingy(ctx.vertex_array(program, vao_content), program, vbo)
+    return ctx.geometry(vao_content)
 
 
-def screen_rectangle(program,
-                     rectangle_size=(2.0, 2.0),
+def screen_rectangle(rectangle_size=(2.0, 2.0),
                      center_pos=(0.0, 0.0),
                      screen_size=(2.0, 2.0)):
     """ Calculate a rectangle """
@@ -68,14 +66,4 @@ def screen_rectangle(program,
             ('in_vert', 'in_uv'),
         )
     ]
-    return Thingy(ctx.vertex_array(program, vao_content), program, vbo)
-
-class Thingy:
-    """Some stupid wrapper!"""
-    def __init__(self, vao, program, buffer):
-        self.vao = vao
-        self.program = program
-        self.buffer = buffer
-
-    def render(self):
-        self.vao.render(gl.GL_TRIANGLES)
+    return ctx.geometry(vao_content)

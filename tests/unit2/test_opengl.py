@@ -15,6 +15,7 @@ SCREEN_HEIGHT = 600
 def ctx():
     window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, "Test OpenGL")
     yield window.ctx
+    err_check(window.ctx)
     window.close()
 
 
@@ -22,6 +23,16 @@ def err_check(ctx):
     error = ctx.error
     if error:
         raise ValueError("Error", error)
+
+
+def test_buffer_description():
+    # TODO: components > 4
+    # TODO: padding
+    shader.BufferDescription(
+        ctx.buffer(reserve=4 * 8),
+        '2f 2f',
+        ['in_vert', 'in_uv'],
+    )
 
 
 def test_ctx(ctx):
@@ -82,7 +93,7 @@ def test_vertex_array(ctx):
     content = [
         shader.BufferDescription(
             ctx.buffer(reserve=4 * num_vertices),
-            '4B',
+            '4f1',
             ['in_color'],
             normalized=['in_color'],
         ),

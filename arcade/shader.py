@@ -7,6 +7,7 @@ from ctypes import (
     cast, POINTER, pointer, byref, sizeof,
     create_string_buffer, string_at,
 )
+import re
 from collections import namedtuple
 from pathlib import Path
 import weakref
@@ -23,6 +24,87 @@ from pyglet import gl
 class ShaderException(Exception):
     """ Exception class for shader-specific problems. """
     pass
+
+
+class TypeInfo:
+    __slots__ = 'name', 'enum', 'gl_type', 'gl_size', 'components'
+
+    def __init__(self, name, enum, gl_type, gl_size, components):
+        """Describes an opengl type
+
+        :param name: the string represenation of this type
+        :param enum: The enum of this type
+        :param gl_type: the base enum of this type
+        :param gl_size: byte size if the gl_type
+        :param components: Number of components for this enum
+        """
+        self.name = name  # type: str
+        self.enum = enum  # type: gl.GLenum
+        self.gl_type = gl_type  # type: gl.GLenum
+        self.gl_size = gl_size # type: int
+        self.components = components  # type: int
+
+    @property
+    def size(self):
+        return self.gl_size * self.components
+
+    def __repr__(self):
+        return (
+            f"<TypeInfo name={self.name}, enum={self.enum} gl_type={self.gl_type} "
+            f"gl_size={self.gl_size} components={self.components}>"
+        )
+
+
+class GLTypes:
+    """
+    Get information about an attribute type.
+    During introspection we often just get integers telling us what type is used.
+    This can for example be `35664` telling us it's a `GL_FLOAT_VEC2`.
+    We want to know this is a `gl.GLfloat` with 2 components so we can compare
+    that to the types in the `BufferDescription`.
+    These an also be used for uniform introspection.
+    """
+    # Source : https://github.com/Contraz/demosys-py/blob/f63f5dc727eafb8302cce64a890ce4527303588b/demosys/opengl/constants.py#L37-L139
+    types = {
+        # Floats
+        gl.GL_FLOAT: TypeInfo("GL_FLOAT", gl.GL_FLOAT, gl.GL_FLOAT, 4, 1),
+        gl.GL_FLOAT_VEC2: TypeInfo("GL_FLOAT_VEC2", gl.GL_FLOAT_VEC2, gl.GL_FLOAT, 4, 2),
+        gl.GL_FLOAT_VEC3: TypeInfo("GL_FLOAT_VEC3", gl.GL_FLOAT_VEC3, gl.GL_FLOAT, 4, 3),
+        gl.GL_FLOAT_VEC4: TypeInfo("GL_FLOAT_VEC4", gl.GL_FLOAT_VEC4, gl.GL_FLOAT, 4, 4),
+        # Doubles
+        gl.GL_DOUBLE: TypeInfo("GL_DOUBLE", gl.GL_DOUBLE, gl.GL_DOUBLE,  8, 1),
+        gl.GL_DOUBLE_VEC2: TypeInfo("GL_DOUBLE_VEC2", gl.GL_DOUBLE_VEC2, gl.GL_DOUBLE, 8, 2),
+        gl.GL_DOUBLE_VEC3: TypeInfo("GL_DOUBLE_VEC3", gl.GL_DOUBLE_VEC3, gl.GL_DOUBLE, 8, 3),
+        gl.GL_DOUBLE_VEC4: TypeInfo("GL_DOUBLE_VEC4", gl.GL_DOUBLE_VEC4, gl.GL_DOUBLE, 8, 4),
+        # Booleans (ubyte)
+        gl.GL_BOOL: TypeInfo("GL_BOOL", gl.GL_BOOL, gl.GL_BOOL, 1, 1),
+        gl.GL_BOOL_VEC2: TypeInfo("GL_BOOL_VEC2", gl.GL_BOOL_VEC2, gl.GL_BOOL, 1, 2),
+        gl.GL_BOOL_VEC3: TypeInfo("GL_BOOL_VEC3", gl.GL_BOOL_VEC3, gl.GL_BOOL, 1, 3),
+        gl.GL_BOOL_VEC4: TypeInfo("GL_BOOL_VEC4", gl.GL_BOOL_VEC4, gl.GL_BOOL, 1, 4),
+        # Integers
+        gl.GL_INT: TypeInfo("GL_INT", gl.GL_INT, gl.GL_INT, 4, 1),
+        gl.GL_INT_VEC2: TypeInfo("GL_INT_VEC2", gl.GL_INT_VEC2, gl.GL_INT, 4, 2),
+        gl.GL_INT_VEC3: TypeInfo("GL_INT_VEC3", gl.GL_INT_VEC3, gl.GL_INT, 4, 3),
+        gl.GL_INT_VEC4: TypeInfo("GL_INT_VEC4", gl.GL_INT_VEC4, gl.GL_INT, 4, 4),
+        # Unsigned Integers
+        gl.GL_UNSIGNED_INT: TypeInfo("GL_UNSIGNED_INT", gl.GL_UNSIGNED_INT, gl.GL_UNSIGNED_INT, 4, 1),
+        gl.GL_UNSIGNED_INT_VEC2: TypeInfo("GL_UNSIGNED_INT_VEC2", gl.GL_UNSIGNED_INT_VEC2, gl.GL_UNSIGNED_INT, 4, 2),
+        gl.GL_UNSIGNED_INT_VEC3: TypeInfo("GL_UNSIGNED_INT_VEC3", gl.GL_UNSIGNED_INT_VEC3, gl.GL_UNSIGNED_INT, 4, 3),
+        gl.GL_UNSIGNED_INT_VEC4: TypeInfo("GL_UNSIGNED_INT_VEC4", gl.GL_UNSIGNED_INT_VEC4, gl.GL_UNSIGNED_INT, 4, 4),
+        # Unsigned Short (mostly used for short index buffers)
+        gl.GL_UNSIGNED_SHORT: TypeInfo("GL.GL_UNSIGNED_SHORT", gl.GL_UNSIGNED_SHORT, gl.GL_UNSIGNED_SHORT, 2, 2),
+        # Byte
+        gl.GL_BYTE: TypeInfo("GL_BYTE", gl.GL_BYTE, gl.GL_BYTE, 1, 1),
+        gl.GL_UNSIGNED_BYTE: TypeInfo("GL_UNSIGNED_BYTE", gl.GL_UNSIGNED_BYTE, gl.GL_UNSIGNED_BYTE, 1, 1),
+        # TODO: Add sampler types if needed. Only needed for better uniform introspection.
+    }
+
+    @classmethod
+    def get(cls, enum: int):
+        try:
+            return cls.types[enum]
+        except KeyError:
+            raise ValueError(f"Unknown gl type {enum}. Someone needs to add it")
 
 
 class Uniform:
@@ -156,6 +238,38 @@ class Uniform:
         return f"<Uniform '{self._name}' loc={self._location} array_length={self._array_length}"
 
 
+class AttribFormat:
+    """Describes a format for a single attribute"""
+    __slots__ = 'name', 'gl_type', 'components', 'bytes_per_component', 'offset', 'location',
+
+    def __init__(self, name, gl_type, components, bytes_per_component, offset=0, location=0):
+        """Represents an attribute in a BufferDescription or a Program.
+
+        :param str name: Name of the attribute
+        :param gl.GLEnum gl_type: The OpenGL type such as GL_FLOAT, GL_HALF_FLOAT etc.
+        :param int bytes_per_component: Number of bytes a single component takes
+        :param int offset: (Optional offset for BufferDescription)
+        :param int location: (Optional location for program attribute)
+        """
+        self.name = name  # type: str
+        self.gl_type = gl_type  # type: gl.GLenum
+        self.components = components  # type: int
+        self.bytes_per_component = bytes_per_component  # type: int
+        self.offset = offset  # type: int
+        self.location = location  # type: int
+
+    @property
+    def bytes_total(self) -> int:
+        """Total number of bytes for this attribute"""
+        return self.components * self.bytes_per_component
+
+    def __repr__(self):
+        return (
+            f"<AttribFormat {self.name} {self.gl_type} components={self.components} "
+            f"bytes_per_component={self.bytes_per_component}>"
+        )
+
+
 class Program:
     """Compiled and linked shader program.
 
@@ -167,7 +281,10 @@ class Program:
     Example:
         program['MyUniform'] = value
     """
-    __slots__ = '_ctx', '_glo', '_uniforms', '_out_attributes', '_geometry_info', '__weakref__'
+    __slots__ = (
+        '_ctx', '_glo', '_uniforms', '_out_attributes', '_geometry_info',
+        '_attributes', 'attribute_key', '__weakref__'
+    )
 
     def __init__(self,
                  ctx,
@@ -188,6 +305,8 @@ class Program:
         self._glo = glo = gl.glCreateProgram()
         self._out_attributes = out_attributes or []
         self._geometry_info = (0, 0, 0)
+        self._attributes = []  # type: List[AttribFormat]
+        self.attribute_key = "INVALID"  # type: str
 
         shaders = [(vertex_shader, gl.GL_VERTEX_SHADER)]
         if fragment_shader:
@@ -221,6 +340,7 @@ class Program:
 
         # Handle uniforms
         self._uniforms: Dict[str, Uniform] = {}
+        self._introspect_attributes()
         self._introspect_uniforms()
 
         weakref.finalize(self, Program._delete, shaders_id, glo)
@@ -234,6 +354,10 @@ class Program:
     def glo(self) -> int:
         """The OpenGL resource id for this program"""
         return self._glo
+
+    @property
+    def attributes(self) -> Iterable[AttribFormat]:
+        return self._attributes
 
     @property
     def out_attributes(self) -> List[str]:
@@ -318,6 +442,42 @@ class Program:
             ptr,  # zero-terminated strings specifying the names of the varying variables
             gl.GL_INTERLEAVED_ATTRIBS,
         )
+
+    def _introspect_attributes(self):
+        """Introspect and store detailed info about an attribute"""
+        # TODO: Ensure gl_* attributes are ignored
+        num_attrs = gl.GLint()
+        gl.glGetProgramiv(self._glo, gl.GL_ACTIVE_ATTRIBUTES, num_attrs)
+        num_varyings = gl.GLint()
+        gl.glGetProgramiv(self._glo, gl.GL_TRANSFORM_FEEDBACK_VARYINGS, num_varyings)
+        # print(f"attrs {num_attrs.value} varyings={num_varyings.value}")
+
+        for i in range(num_attrs.value):
+            c_name = create_string_buffer(256)
+            c_size = gl.GLint()
+            c_type = gl.GLenum()
+            gl.glGetActiveAttrib(
+                self._glo,  # program to query
+                i,  # location
+                256,  # max attr name size
+                None,  # c_length,  # length of name
+                c_size,  # size of attribute (array or not)
+                c_type,  # attribute type (enum)
+                c_name,  # name buffer
+            )
+            # print(c_name.value, c_size, c_type)
+            type_info = GLTypes.get(c_type.value)
+            # print(type_info)
+            self._attributes.append(AttribFormat(
+                c_name.value.decode(),
+                type_info.gl_type,
+                type_info.components,
+                type_info.gl_size,
+                location=i,
+            ))
+
+        # The attribute key is used to cache VertexArrays
+        self.attribute_key = ':'.join(f'{attr.name}[{attr.gl_type}/{attr.components}]' for attr in self._attributes)
 
     def _introspect_uniforms(self):
         """Figure out what uniforms are available and build an internal map"""
@@ -562,27 +722,8 @@ class Buffer:
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self._glo)
         gl.glBufferData(gl.GL_ARRAY_BUFFER, self._size, None, self._usage)
 
-
-class AttribFormat:
-    """Describes a format for a single attribute"""
-    __slots__ = 'str_format', 'gl_type', 'components', 'bytes_per_component', 'per_instance'
-
-    def __init__(self, str_format, gl_type, components, bytes_per_component, per_instance):
-        self.str_format = str_format
-        self.gl_type = gl_type
-        self.components = components
-        self.bytes_per_component = bytes_per_component
-        self.per_instance = per_instance
-
-    @property
-    def bytes_total(self):
-        return self.components * self.bytes_per_component
-
-    def __repr__(self):
-        return (
-            f"<AttribFormat {self.str_format} {self.gl_type} components={self.components} "
-            f"bytes_per_component={self.bytes_per_component}>"
-        )
+    def bind(self):
+        gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self._glo)
 
 
 class BufferDescription:
@@ -604,64 +745,49 @@ class BufferDescription:
     times equal to the number of items in the Buffer.
     """
     # Describe all variants of a format string to simplify parsing (single component)
-    # format: str_format, gl_type, byte_size
-    # TODO: We also need special case for padding format `x`
+    # format: gl_type, byte_size
+    # TODO: Can we support separate per-instance attributes in an interleaved buffer?
+    # TODO: Consider adding normalized integers
     _formats = {
+        # (gl enum, byte size)
         # Floats
-        'f':  ('f',  gl.GL_FLOAT, 4),
-        'f1': ('f1', gl.GL_UNSIGNED_BYTE, 1),
-        'f2': ('f2', gl.GL_HALF_FLOAT, 2),
-        'f4': ('f4', gl.GL_FLOAT, 4),
-        'f8': ('f8', gl.GL_DOUBLE, 8),
+        'f':  (gl.GL_FLOAT, 4),
+        'f1': (gl.GL_UNSIGNED_BYTE, 1),
+        'f2': (gl.GL_HALF_FLOAT, 2),
+        'f4': (gl.GL_FLOAT, 4),
+        'f8': (gl.GL_DOUBLE, 8),
         # Unsigned integers
-        'u':  ('u', gl.GL_FLOAT, 4),
-        'u1': ('u1', gl.GL_FLOAT, 1),
-        'u2': ('u2', gl.GL_FLOAT, 2),
-        'u4': ('u4', gl.GL_FLOAT, 4),
+        'u':  (gl.GL_FLOAT, 4),
+        'u1': (gl.GL_FLOAT, 1),
+        'u2': (gl.GL_FLOAT, 2),
+        'u4': (gl.GL_FLOAT, 4),
         # Signed integers
-        'i': ('i', gl.GL_INT, 4),
-        'i1': ('i1', gl.GL_BYTE, 1),
-        'i2': ('i2', gl.GL_SHORT, 2),
-        'i4': ('i4', gl.GL_INT, 4),
-        # TODO: Enable these later. These listings have dummy values for now.
-        # # Normalized float (0.0 -> 1.0)
-        # 'nf':  ('nf',  gl.GL_FLOAT, 4),
-        # 'nf1': ('nf1', gl.GL_FLOAT, 4),
-        # 'nf2': ('nf2', gl.GL_FLOAT, 4),
-        # 'nf4': ('nf2', gl.GL_FLOAT, 4),
-        # # Normalized uint (0.0 -> 1.0)
-        # 'nu':  ('nu',  gl.GL_FLOAT, 4),
-        # 'nu1': ('nu1', gl.GL_FLOAT, 4),
-        # 'nu2': ('nu2', gl.GL_FLOAT, 4),
-        # 'nu4': ('nu2', gl.GL_FLOAT, 4),
-        # # Normalized int (0.0 -> 1.0)
-        # 'ni':  ('ni',  gl.GL_FLOAT, 4),
-        # 'ni1': ('ni1', gl.GL_FLOAT, 4),
-        # 'ni2': ('ni2', gl.GL_FLOAT, 4),
-        # 'ni4': ('ni2', gl.GL_FLOAT, 4),
+        'i': (gl.GL_INT, 4),
+        'i1': (gl.GL_BYTE, 1),
+        'i2': (gl.GL_SHORT, 2),
+        'i4': (gl.GL_INT, 4),
+        # Padding (1, 2, 4, 8 bytes)
+        'x1': (None, 1),
+        'x2': (None, 2),
+        'x4': (None, 4),
+        'x8': (None, 8),
     }
 
-    GL_TYPES_ENUM = {
-        'B': gl.GL_UNSIGNED_BYTE,
-        'f': gl.GL_FLOAT,
-        'i': gl.GL_INT,
-    }
-    GL_TYPES = {
-        'B': gl.GLubyte,
-        'f': gl.GLfloat,
-        'i': gl.GLint,
-    }
+    __slots__ = 'buffer', 'attributes', 'normalized', 'instanced', 'formats', 'stride', 'num_vertices'
 
     def __init__(self,
-                 buff: Buffer,
+                 buffer: Buffer,
                  formats: str,
                  attributes: Iterable[str],
                  normalized: Iterable[str] = None,
                  instanced: bool = False):
-        self.buffer = buff
+        self.buffer = buffer  # type: Buffer
         self.attributes = list(attributes)
         self.normalized = set() if normalized is None else set(normalized)
-        self.instanced = instanced
+        self.instanced = instanced  # type: bool
+        self.formats = []  # type: List[AttribFormat]
+        self.stride = -1  # type: int
+        self.num_vertices = -1  # type: int
 
         if self.normalized > set(self.attributes):
             raise ShaderException("Normalized attribute not found in attributes.")
@@ -674,17 +800,35 @@ class BufferDescription:
                 f"attributes ({len(self.attributes)})"
             )
 
-        self.formats: List[Tuple[int, int, int]] = []
-        for i, fmt in enumerate(formats_list):
-            sizechar, type_ = fmt
-            if sizechar not in '1234' or type_ not in 'fiB':
-                raise ShaderException("Wrong format {fmt}.")
+        self.stride = 0
+        for attr_fmt, attr_name in zip(formats_list, self.attributes):
+            try:
+                components, data_type, data_size = re.split(r'([fiu])', attr_fmt)
+                data_type = f"{data_type}{data_size}"if data_size else data_type
+                components = int(components) if components else 1  # 1 component is default
+                data_size = int(data_size) if data_size else 4  # 4 byte float and integer types are default
+                # Limit components to 4 for non-padded formats
+                if components > 4 and data_size is not None:
+                    raise ValueError("Number of components must be 1, 2, 3 or 4")
+            except Exception as ex:
+                raise ValueError(f"Could not parse attribute format: '{attr_fmt} : {ex}'")
 
-            size = int(sizechar)
-            gl_type_enum = BufferDescription.GL_TYPES_ENUM[type_]
-            gl_type = BufferDescription.GL_TYPES[type_]
-            attribsize = size * sizeof(gl_type)
-            self.formats.append((size, attribsize, gl_type_enum))
+            gl_type, byte_size = self._formats[data_type]
+            self.formats.append(AttribFormat(attr_name, gl_type, components, byte_size, offset=self.stride))
+
+            self.stride += byte_size * components
+
+        if self.buffer.size % self.stride != 0:
+            raise ValueError(
+                f"Buffer size must align by {self.stride} bytes. "
+                f"{self.buffer} size={self.buffer.size}"
+            )
+
+        # Estimate number of vertices for this buffer
+        self.num_vertices = self.buffer.size // self.stride
+
+    def __repr__(self) -> str:
+        return f"<BufferDescription {self.formats}>"
 
 
 class VertexArray:
@@ -709,28 +853,21 @@ class VertexArray:
 
     vao = VertexArray(...)
     """
-    __slots__ = '_ctx', '_program', '_glo', '_ibo', '_num_vertices', '__weakref__'
+    __slots__ = '_ctx', '_glo', '_ibo', '_content', '_num_vertices', '__weakref__'
 
+    # TODO: Resolve what VertexArray should actually store
     def __init__(self,
-                 ctx,
-                 prog: Program,
+                 ctx: 'Context',
+                 program: Program,
                  content: Iterable[BufferDescription],
                  index_buffer: Buffer = None):
         self._ctx = ctx
-        self._program = prog
+        # self._content = content
         self._glo = glo = gl.GLuint()
         self._num_vertices = -1
         self._ibo = index_buffer
 
-        gl.glGenVertexArrays(1, byref(self._glo))
-        gl.glBindVertexArray(self._glo)
-
-        for buffer_desc in content:
-            self._enable_attrib(buffer_desc)
-
-        if self._ibo is not None:
-            gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, self._ibo.glo)
-
+        self._build(program, content, index_buffer)
         weakref.finalize(self, VertexArray.release, glo)
 
     @property
@@ -769,51 +906,155 @@ class VertexArray:
             gl.glDeleteVertexArrays(1, byref(glo))
             glo.value = 0
 
-    def _enable_attrib(self, buf_desc: BufferDescription):
-        buff = buf_desc.buffer
-        stride = sum(attribsize for _, attribsize, _ in buf_desc.formats)
+    def _build(self, program: Program, content: Iterable[BufferDescription], index_buffer):
+        gl.glGenVertexArrays(1, byref(self._glo))
+        gl.glBindVertexArray(self._glo)
 
-        if buf_desc.instanced:
-            if self._num_vertices == -1:
-                raise ShaderException(
-                    "The first vertex attribute cannot be a per instance attribute."
-                )
-        else:
-            self._num_vertices = max(self._num_vertices, buff.size // stride)
+        # Lookup dict for BufferDescription attrib names
+        # print(content)
+        descr_attribs = {attr.name: (descr, attr) for descr in content for attr in descr.formats}
+        # print('->', descr_attribs)
 
-        gl.glBindBuffer(gl.GL_ARRAY_BUFFER, buff.glo)
-        offset = 0
-        # TODO: This is too simple for more complex cases. We want to bind only part of the attribs as well
-        # TODO: ENsure built in attributes like gl_InstanceID / gl_VertexID / gl_PromitiveID don't interfere
-        for (size, attribsize, gl_type_enum), attrib in zip(buf_desc.formats, buf_desc.attributes):
-            loc = gl.glGetAttribLocation(self._program.glo, attrib.encode())
-            if loc == -1:
-                raise ShaderException(f"Attribute {attrib} not found in shader program")
+        # Build the vao according to the shader's attribute specifications
+        for i, prog_attr in enumerate(program.attributes):
+            print('prog_attr', prog_attr)
+            # Do we actually have an attribute with this name in buffer descriptions?
+            try:
+                buff_descr, attr_descr = descr_attribs[prog_attr.name]
+            except KeyError:
+                raise ShaderException((
+                    "Program needs attribute '{prog_attr.name}', but is not present in buffer description."
+                    "Buffer descriptions: {content}"
+                ))
 
-            normalized = gl.GL_TRUE if attrib in buf_desc.normalized else gl.GL_FALSE
+            # TODO: Sanity check this
+            if buff_descr.instanced and i == 0:
+                raise ShaderException("The first vertex attribute cannot be a per instance attribute.")
+
+            # Make sure components described in BufferDescription and in the shader match
+            if prog_attr.components != attr_descr.components:
+                raise ShaderException((
+                    f"Program attribute '{prog_attr.name}' has {prog_attr.components} components "
+                    f"while the buffer description has {attr_descr.components} components. "
+                ))
+
+            # TODO: Compare gltype between buffer descr and program attr
+
+            buff_descr.buffer.bind()
+
+            # TODO: Detect normalization
+            # normalized = gl.GL_TRUE if attrib in buf_desc.normalized else gl.GL_FALSE
             gl.glVertexAttribPointer(
-                loc, size, gl_type_enum,
-                normalized, stride, c_void_p(offset)
+                prog_attr.location,  # attrib location
+                prog_attr.components,  # 1, 2, 3 or 4
+                prog_attr.gl_type,  # GL_FLOAT etc
+                gl.GL_FALSE,  # normalize
+                buff_descr.stride,
+                c_void_p(attr_descr.offset),
             )
-            if buf_desc.instanced:
-                gl.glVertexAttribDivisor(loc, 1)
+            # TODO: Sanity check this
+            if buff_descr.instanced:
+                gl.glVertexAttribDivisor(prog_attr.location, 1)
 
-            offset += attribsize
-            gl.glEnableVertexAttribArray(loc)
+            gl.glEnableVertexAttribArray(prog_attr.location)
 
-    def render(self, mode: gl.GLuint, instances: int = 1):
+        if index_buffer is not None:
+            gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, index_buffer.glo)
+
+    def render(self, mode: gl.GLenum, first: int = 0, vertices=0, instances: int = 1):
         """Render the VertexArray to the currently active framebuffer.
 
         :param GLunit mode: Primitive type to render. TRIANGLES, LINES etc.
+        :param int first: The first vertex to render from
         :param int instances: OpenGL instance, used in using vertexes over and over
         """
         gl.glBindVertexArray(self._glo)
-        self._program.use()
         if self._ibo is not None:
             count = self._ibo.size // 4
+            # TODO: Support first argument by offsetting pointer (second last arg)
             gl.glDrawElementsInstanced(mode, count, gl.GL_UNSIGNED_INT, None, instances)
         else:
-            gl.glDrawArraysInstanced(mode, 0, self.num_vertices, instances)
+            print(f"glDrawArraysInstanced({mode}, {first}, {vertices}, {instances})")
+            gl.glDrawArraysInstanced(mode, first, vertices, instances)
+
+
+class Geometry:
+    """A higher level abstraction of the VertexArray.
+    It generates VertexArray instances on the fly internally matching the incoming program.
+    This means we can render the same geometry with different programs as long as the
+    Program and BufferDescription have compatible attributes.
+    """
+    __slots__ = '_ctx', '_content', '_index_buffer', '_mode', '_vao_cache', '_num_vertices'
+
+    def __init__(
+            self,
+            ctx: 'Context',
+            content: Iterable[BufferDescription],
+            index_buffer: Buffer = None,
+            mode=None):
+        self._ctx = ctx
+        self._content = content
+        self._index_buffer = index_buffer
+        self._mode = mode or ctx.TRIANGLES
+        self._vao_cache = {}  # type: Dict[str, VertexArray]
+        self._num_vertices = -1
+
+        if not content:
+            raise ValueError("Geometry without buffer descriptions not supported")
+
+        # Calculate vertices. Use the minimum for now
+        self._num_vertices = content[0].num_vertices
+        for descr in self._content:
+            if descr.instanced:
+                continue
+            self._num_vertices = min(self._num_vertices, descr.num_vertices)
+
+    @property
+    def num_vertices(self) -> int:
+        # TODO: Calculate this better...
+        return self._num_vertices
+
+    @num_vertices.setter
+    def num_vertices(self, value):
+        self._num_vertices = value
+
+    def instance(self, program: Program) -> VertexArray:
+        """Get the VertexArray compatible with this program"""
+        vao = self._vao_cache.get(program.attribute_key)
+        if vao:
+            return vao
+
+        return self._generate_vao(program)
+
+    def render(self, program: Program, *, mode: gl.GLenum = None, first: int = 0, instances: int = 1):
+        """Render the geometry with a specific program.
+        :param Program program: The Program to render with
+        :param gl.GLenum mode: Override what primitive mode should be used
+        :param int first: Offset start vertex
+        :param int instances: Number of instances to render
+        """
+        program.use()
+        vao = self.instance(program)
+        if mode:
+            vao.render(mode=mode, first=first, vertices=self._num_vertices, instances=instances)
+        else:
+            vao.render(mode=self._mode, first=first, vertices=self._num_vertices, instances=instances)
+
+    def transform(self, program: Program):
+        """Render with transform feedback"""
+        raise NotImplementedError()
+
+    def flush(self):
+        """Flush all generated VertexArrays"""
+        self._vao_cache = {}
+
+    def _generate_vao(self, program: Program) -> VertexArray:
+        """Here we do the VertexArray building"""
+        print(f"Generating vao for key {program.attribute_key}")
+
+        vao = VertexArray(self._ctx, program, self._content, index_buffer=self._index_buffer)
+        self._vao_cache[program.attribute_key] = vao
+        return vao
 
 
 class Texture:
@@ -1624,10 +1865,13 @@ class Context:
                        wrap_x=wrap_x, wrap_y=wrap_y,
                        filter=filter)
 
-    def vertex_array(self, prog: gl.GLuint, content, index_buffer=None):
-        """Create a new Vertex Array.
-        """
-        return VertexArray(self, prog, content, index_buffer)
+    # def vertex_array(self, prog: gl.GLuint, content, index_buffer=None):
+    #     """Create a new Vertex Array.
+    #     """
+    #     return VertexArray(self, prog, content, index_buffer)
+
+    def geometry(self, content, index_buffer=None):
+        return Geometry(self, content, index_buffer=index_buffer)
 
     def program(
             self,
@@ -1792,5 +2036,3 @@ class ShaderSource:
         for line in self._lines:
             if line.strip().startswith("out "):
                 self._out_attributes.append(line.split()[2].replace(';', ''))
-
-

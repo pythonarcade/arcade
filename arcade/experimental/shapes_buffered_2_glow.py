@@ -120,7 +120,7 @@ class MyGame(arcade.Window):
         except Exception as e:
             import traceback
             traceback.print_exc()
-            # print(e)
+            exit(1)
 
     def on_update(self, delta_time):
         self.shape_list.angle += 0.2
