@@ -8,7 +8,6 @@ python -m arcade.examples.shapes_buffered
 """
 import random
 import arcade
-from arcade import shader
 from arcade.experimental import postprocessing
 from pyglet import gl
 

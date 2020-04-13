@@ -397,7 +397,7 @@ def _generic_draw_line_strip(point_list: PointList,
     color_buf = ctx.buffer(data=a.tobytes())
     color_buf_desc = shader.BufferDescription(
         color_buf,
-        '4B',
+        '4f1',
         ['in_color'],
         normalized=['in_color'],
     )
@@ -417,9 +417,9 @@ def _generic_draw_line_strip(point_list: PointList,
     vao_content = [vbo_buf_desc, color_buf_desc]
 
     program = ctx.line_vertex_shader
-    vao = ctx.vertex_array(program, vao_content)
+    vao = ctx.geometry(vao_content)
     program['Projection'] = get_projection().flatten()
-    vao.render(mode=mode)
+    vao.render(program, mode=mode)
 
 
 def draw_line_strip(point_list: PointList,

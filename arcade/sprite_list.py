@@ -499,7 +499,7 @@ class SpriteList(Generic[_SpriteType]):
             variables = ['in_color']
             self._sprite_color_desc = shader.BufferDescription(
                 self._sprite_color_buf,
-                '4B',
+                '4f1',
                 variables,
                 normalized=['in_color'], instanced=True)
             self._sprite_color_changed = False
@@ -694,7 +694,7 @@ class SpriteList(Generic[_SpriteType]):
                        self._sprite_angle_desc,
                        self._sprite_sub_tex_desc,
                        self._sprite_color_desc]
-        self._vao1 = self.ctx.vertex_array(self.program, vao_content)
+        self._vao1 = self.ctx.geometry(vao_content)
 
     def _dump(self, buffer):
         """
@@ -929,7 +929,7 @@ class SpriteList(Generic[_SpriteType]):
                 self._sprite_sub_tex_buf.write(self._sprite_sub_tex_data.tobytes())
                 self._sprite_sub_tex_changed = False
 
-        self._vao1.render(gl.GL_TRIANGLE_STRIP, instances=len(self.sprite_list))
+        self._vao1.render(self.program, mode=gl.GL_TRIANGLE_STRIP, instances=len(self.sprite_list))
 
     def __len__(self) -> int:
         """ Return the length of the sprite list. """

@@ -25,7 +25,7 @@ def err_check(ctx):
         raise ValueError("Error", error)
 
 
-def test_buffer_description():
+def test_buffer_description(ctx):
     # TODO: components > 4
     # TODO: padding
     shader.BufferDescription(
@@ -83,7 +83,7 @@ def test_buffer(ctx):
         buffer.copy_from_buffer(source, size=10, offset=15)
 
 
-def test_vertex_array(ctx):
+def test_geometry(ctx):
     """Test vertex_array"""
     program = ctx.load_program(
         vertex_shader=ctx.resource_root / 'shaders/line_vertex_shader_vs.glsl',
@@ -103,15 +103,13 @@ def test_vertex_array(ctx):
             ['in_vert']
         ),
     ]
-    vao = ctx.vertex_array(program, content)
+    vao = ctx.geometry(content)
     assert vao.ctx == ctx
-    assert vao.glo.value > 0
-    assert vao.program == program
     assert vao.num_vertices == num_vertices
-    assert vao.ibo is None
-    vao.render(ctx.TRIANGLES)
-    vao.render(ctx.POINTS)
-    vao.render(ctx.LINES)
+    assert vao.index_buffer is None
+    vao.render(program, mode=ctx.TRIANGLES)
+    vao.render(program, mode=ctx.POINTS)
+    vao.render(program, mode=ctx.LINES)
 
 
 def test_shader_source(ctx):

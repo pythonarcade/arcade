@@ -343,7 +343,8 @@ class Program:
         self._introspect_attributes()
         self._introspect_uniforms()
 
-        weakref.finalize(self, Program._delete, shaders_id, glo)
+        self.ctx.stats.incr('program')
+        weakref.finalize(self, Program._delete, self.ctx, shaders_id, glo)
 
     @property
     def ctx(self) -> 'Context':
@@ -384,7 +385,7 @@ class Program:
         return self._geometry_info[2]
 
     @staticmethod
-    def _delete(shaders_id, prog_id):
+    def _delete(ctx, shaders_id, prog_id):
         # Check to see if the context was already cleaned up from program
         # shut down. If so, we don't need to delete the shaders.
         if gl.current_context is None:
@@ -394,6 +395,8 @@ class Program:
             gl.glDetachShader(prog_id, shader_id)
 
         gl.glDeleteProgram(prog_id)
+
+        ctx.stats.decr('program')
 
     def __getitem__(self, item):
         try:
@@ -458,13 +461,17 @@ class Program:
             c_type = gl.GLenum()
             gl.glGetActiveAttrib(
                 self._glo,  # program to query
-                i,  # location
+                i,  # index (not the same as location)
                 256,  # max attr name size
                 None,  # c_length,  # length of name
                 c_size,  # size of attribute (array or not)
                 c_type,  # attribute type (enum)
                 c_name,  # name buffer
             )
+
+            # Get the actual location. Do not trust the original order
+            location = gl.glGetAttribLocation(self._glo, c_name)
+
             # print(c_name.value, c_size, c_type)
             type_info = GLTypes.get(c_type.value)
             # print(type_info)
@@ -473,7 +480,7 @@ class Program:
                 type_info.gl_type,
                 type_info.components,
                 type_info.gl_size,
-                location=i,
+                location=location,
             ))
 
         # The attribute key is used to cache VertexArrays
@@ -494,7 +501,7 @@ class Program:
             # Skip uniforms that may be in Uniform Blocks
             # TODO: We should handle all uniforms
             if u_location == -1:
-                print(f"Uniform {u_location} {u_name} {u_size} {u_type} skipped")
+                # print(f"Uniform {u_location} {u_name} {u_size} {u_type} skipped")
                 continue
 
             u_name = u_name.replace('[0]', '')  # Remove array suffix
@@ -611,7 +618,8 @@ class Buffer:
         else:
             raise ValueError("Buffer takes byte data or number of reserved bytes")
 
-        weakref.finalize(self, Buffer.release, glo)
+        self.ctx.stats.incr('buffer')
+        weakref.finalize(self, Buffer.release, self.ctx, glo)
 
     @property
     def size(self) -> int:
@@ -629,7 +637,7 @@ class Buffer:
         return self._glo
 
     @staticmethod
-    def release(glo: gl.GLuint):
+    def release(ctx: 'Context', glo: gl.GLuint):
         """ Release/delete open gl buffer. """
         # print(f"*** Buffer {glo} have no more references. Deleting.")
 
@@ -640,6 +648,8 @@ class Buffer:
         if glo.value != 0:
             gl.glDeleteBuffers(1, byref(glo))
             glo.value = 0
+
+        ctx.stats.decr('buffer')
 
     def read(self, size=-1, offset=0) -> bytes:
         """Read data from the buffer.
@@ -868,7 +878,9 @@ class VertexArray:
         self._ibo = index_buffer
 
         self._build(program, content, index_buffer)
-        weakref.finalize(self, VertexArray.release, glo)
+
+        self.ctx.stats.incr('vertex_array')
+        weakref.finalize(self, VertexArray.release, self.ctx, glo)
 
     @property
     def ctx(self) -> 'Context':
@@ -896,7 +908,7 @@ class VertexArray:
         return self._num_vertices
 
     @staticmethod
-    def release(glo: gl.GLuint):
+    def release(ctx: 'Context', glo: gl.GLuint):
         """Delete the object"""
         # If we have no context, then we are shutting down, so skip this
         if gl.current_context is None:
@@ -905,6 +917,8 @@ class VertexArray:
         if glo.value != 0:
             gl.glDeleteVertexArrays(1, byref(glo))
             glo.value = 0
+
+        ctx.stats.decr('vertex_array')
 
     def _build(self, program: Program, content: Iterable[BufferDescription], index_buffer):
         gl.glGenVertexArrays(1, byref(self._glo))
@@ -917,19 +931,19 @@ class VertexArray:
 
         # Build the vao according to the shader's attribute specifications
         for i, prog_attr in enumerate(program.attributes):
-            print('prog_attr', prog_attr)
+            # print('prog_attr', prog_attr)
             # Do we actually have an attribute with this name in buffer descriptions?
             try:
                 buff_descr, attr_descr = descr_attribs[prog_attr.name]
             except KeyError:
                 raise ShaderException((
-                    "Program needs attribute '{prog_attr.name}', but is not present in buffer description."
-                    "Buffer descriptions: {content}"
+                    f"Program needs attribute '{prog_attr.name}', but is not present in buffer description. "
+                    f"Buffer descriptions: {content}"
                 ))
 
             # TODO: Sanity check this
-            if buff_descr.instanced and i == 0:
-                raise ShaderException("The first vertex attribute cannot be a per instance attribute.")
+            # if buff_descr.instanced and i == 0:
+            #     raise ShaderException("The first vertex attribute cannot be a per instance attribute.")
 
             # Make sure components described in BufferDescription and in the shader match
             if prog_attr.components != attr_descr.components:
@@ -940,28 +954,36 @@ class VertexArray:
 
             # TODO: Compare gltype between buffer descr and program attr
 
+            gl.glEnableVertexAttribArray(prog_attr.location)
             buff_descr.buffer.bind()
 
             # TODO: Detect normalization
-            # normalized = gl.GL_TRUE if attrib in buf_desc.normalized else gl.GL_FALSE
+            normalized = gl.GL_TRUE if attr_descr.name in buff_descr.normalized else gl.GL_FALSE
             gl.glVertexAttribPointer(
                 prog_attr.location,  # attrib location
-                prog_attr.components,  # 1, 2, 3 or 4
-                prog_attr.gl_type,  # GL_FLOAT etc
-                gl.GL_FALSE,  # normalize
+                attr_descr.components,  # 1, 2, 3 or 4
+                attr_descr.gl_type,  # GL_FLOAT etc
+                normalized,  # normalize
                 buff_descr.stride,
                 c_void_p(attr_descr.offset),
             )
+            # print((
+            #     f"gl.glVertexAttribPointer(\n"
+            #     f"    {prog_attr.location},  # attrib location\n"
+            #     f"    {attr_descr.components},  # 1, 2, 3 or 4\n"
+            #     f"    {attr_descr.gl_type},  # GL_FLOAT etc\n"
+            #     f"    {normalized},  # normalize\n"
+            #     f"    {buff_descr.stride},\n"
+            #     f"    c_void_p({attr_descr.offset}),\n"
+            # ))
             # TODO: Sanity check this
             if buff_descr.instanced:
                 gl.glVertexAttribDivisor(prog_attr.location, 1)
 
-            gl.glEnableVertexAttribArray(prog_attr.location)
-
         if index_buffer is not None:
             gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, index_buffer.glo)
 
-    def render(self, mode: gl.GLenum, first: int = 0, vertices=0, instances: int = 1):
+    def render(self, mode: gl.GLenum, first: int = 0, vertices: int = 0, instances: int = 1):
         """Render the VertexArray to the currently active framebuffer.
 
         :param GLunit mode: Primitive type to render. TRIANGLES, LINES etc.
@@ -974,7 +996,7 @@ class VertexArray:
             # TODO: Support first argument by offsetting pointer (second last arg)
             gl.glDrawElementsInstanced(mode, count, gl.GL_UNSIGNED_INT, None, instances)
         else:
-            print(f"glDrawArraysInstanced({mode}, {first}, {vertices}, {instances})")
+            # print(f"glDrawArraysInstanced({mode}, {first}, {vertices}, {instances})")
             gl.glDrawArraysInstanced(mode, first, vertices, instances)
 
 
@@ -984,7 +1006,7 @@ class Geometry:
     This means we can render the same geometry with different programs as long as the
     Program and BufferDescription have compatible attributes.
     """
-    __slots__ = '_ctx', '_content', '_index_buffer', '_mode', '_vao_cache', '_num_vertices'
+    __slots__ = '_ctx', '_content', '_index_buffer', '_mode', '_vao_cache', '_num_vertices', '__weakref__'
 
     def __init__(
             self,
@@ -1008,6 +1030,18 @@ class Geometry:
             if descr.instanced:
                 continue
             self._num_vertices = min(self._num_vertices, descr.num_vertices)
+
+        # No cleanup is needed, but we want to count them
+        weakref.finalize(self, Geometry._release, self._ctx)
+        self._ctx.stats.incr('geometry')
+
+    @property
+    def ctx(self) -> 'Context':
+        return self._ctx
+
+    @property
+    def index_buffer(self):
+        return self._index_buffer
 
     @property
     def num_vertices(self) -> int:
@@ -1050,11 +1084,16 @@ class Geometry:
 
     def _generate_vao(self, program: Program) -> VertexArray:
         """Here we do the VertexArray building"""
-        print(f"Generating vao for key {program.attribute_key}")
+        # print(f"Generating vao for key {program.attribute_key}")
 
         vao = VertexArray(self._ctx, program, self._content, index_buffer=self._index_buffer)
         self._vao_cache[program.attribute_key] = vao
         return vao
+
+    @staticmethod
+    def _release(ctx):
+        """Mainly here to count destroyed instances"""
+        ctx.stats.decr('geometry')
 
 
 class Texture:
@@ -1163,7 +1202,8 @@ class Texture:
         self.wrap_x = wrap_x or self._wrap_x
         self.wrap_y = wrap_y or self._wrap_y
 
-        weakref.finalize(self, Texture.release, glo)
+        self.ctx.stats.incr('texture')
+        weakref.finalize(self, Texture.release, self._ctx, glo)
 
     @property
     def ctx(self) -> 'Context':
@@ -1327,7 +1367,7 @@ class Texture:
         gl.glGenerateMipmap(gl.GL_TEXTURE_2D)
 
     @staticmethod
-    def release(glo: gl.GLuint):
+    def release(ctx: 'Context', glo: gl.GLuint):
         """Destroy the texture"""
         # If we have no context, then we are shutting down, so skip this
         if gl.current_context is None:
@@ -1335,6 +1375,8 @@ class Texture:
 
         if glo.value != 0:
             gl.glDeleteTextures(1, byref(glo))
+
+        ctx.stats.decr('texture')
 
     def use(self, unit: int = 0):
         """Bind the texture to a channel,
@@ -1416,7 +1458,9 @@ class Framebuffer:
 
         # Restore the original bound framebuffer to avoid confusion
         self.ctx.active_framebuffer.use()
-        weakref.finalize(self, Framebuffer.release, fbo_id)
+
+        self.ctx.stats.incr('framebuffer')
+        weakref.finalize(self, Framebuffer.release, ctx, fbo_id)
 
     @property
     def glo(self) -> gl.GLuint:
@@ -1554,7 +1598,7 @@ class Framebuffer:
         self._ctx.active_framebuffer.use()
 
     @staticmethod
-    def release(framebuffer_id):
+    def release(ctx, framebuffer_id):
         """
         Destroys the framebuffer object
 
@@ -1564,6 +1608,7 @@ class Framebuffer:
             return
 
         gl.glDeleteFramebuffers(1, framebuffer_id)
+        ctx.stats.decr('framebuffer')
 
     # NOTE: This is an experiment using a bind stack (can be explored later)
     # def __enter__(self):
@@ -1743,6 +1788,7 @@ class Context:
         self.active_program = None  # type: Program
         # Tracking active program. On context creation the window is the default render target
         self.active_framebuffer = window
+        self.stats = ContextStats(warn_threshold=1000)
 
         # --- Store the most commonly used OpenGL constants
         # Texture
@@ -1754,16 +1800,16 @@ class Context:
         self.MIRRORED_REPEAT = gl.GL_MIRRORED_REPEAT
 
         # VertexArray: Primitives
-        self.POINTS = gl.GL_POINTS
-        self.LINES = gl.GL_LINES
-        self.LINES_ADJACENCY = gl.GL_LINES_ADJACENCY
-        self.LINE_STRIP = gl.GL_LINE_STRIP
-        self.LINE_STRIP_ADJACENCY = gl.GL_LINE_STRIP_ADJACENCY
-        self.TRIANGLES = gl.GL_TRIANGLES
-        self.TRIANGLES_ADJACENCY = gl.GL_TRIANGLES_ADJACENCY
-        self.TRIANGLE_STRIP = gl.GL_TRIANGLE_STRIP
-        self.TRIANGLE_STRIP_ADJACENCY = gl.GL_TRIANGLE_STRIP_ADJACENCY
-        self.TRIANGLE_FAN = gl.GL_TRIANGLE_FAN
+        self.POINTS = gl.GL_POINTS  # 0
+        self.LINES = gl.GL_LINES  # 1
+        self.LINE_STRIP = gl.GL_LINE_STRIP  # 3
+        self.TRIANGLES = gl.GL_TRIANGLES  # 4
+        self.TRIANGLE_STRIP = gl.GL_TRIANGLE_STRIP  # 5
+        self.TRIANGLE_FAN = gl.GL_TRIANGLE_FAN  # 6
+        self.LINES_ADJACENCY = gl.GL_LINES_ADJACENCY  # 10
+        self.LINE_STRIP_ADJACENCY = gl.GL_LINE_STRIP_ADJACENCY  # 11
+        self.TRIANGLES_ADJACENCY = gl.GL_TRIANGLES_ADJACENCY  # 12
+        self.TRIANGLE_STRIP_ADJACENCY = gl.GL_TRIANGLE_STRIP_ADJACENCY  # 13
 
         # --- Pre-load system shaders here ---
 
@@ -1783,6 +1829,10 @@ class Context:
             vertex_shader=self.resource_root / 'shaders/sprite_list_vs.glsl',
             fragment_shader=self.resource_root / 'shaders/sprite_list_fs.glsl',
         )
+
+        # --- Pre-created geometry and buffers for unbuffered draw calls ----
+        # draw_commands:generic_draw_line_strip
+        # BufferDescription(color_buf, '4f1', ['in_color'])
 
     @property
     def window(self):
@@ -2053,3 +2103,30 @@ class ShaderSource:
         for line in self._lines:
             if line.strip().startswith("out "):
                 self._out_attributes.append(line.split()[2].replace(';', ''))
+
+
+class ContextStats:
+
+    def __init__(self, warn_threshold=100):
+        self.warn_threshold = warn_threshold
+        # (created, freed)
+        self.texture = (0, 0)
+        self.framebuffer = (0, 0)
+        self.buffer = (0, 0)
+        self.program = (0, 0)
+        self.vertex_array = (0, 0)
+        self.geometry = (0, 0)
+
+    def incr(self, key):
+        created, freed = getattr(self, key)
+        setattr(self, key, (created + 1, freed))
+        if created % self.warn_threshold == 0 and created > 0:
+            from warnings import warn
+            warn((
+                f'{key} allocations passed threshold ({self.warn_threshold}). '
+                f'created = {created}, freed = {freed} = {created - freed} active.'
+            ))
+
+    def decr(self, key):
+        created, freed = getattr(self, key)
+        setattr(self, key, (created, freed + 1))
