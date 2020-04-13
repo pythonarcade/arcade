@@ -512,6 +512,14 @@ Using PyMunk for Physics
 
    :ref:`pymunk_platformer`
 
+Frame Buffers (Arcade 2.4+)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. figure:: thumbs/mini_map_defender.png
+   :figwidth: 170px
+
+   :ref:`mini_map_defender`
+
 Particle System
 ^^^^^^^^^^^^^^^
 

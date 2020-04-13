@@ -148,13 +148,6 @@ class MyGame(arcade.Window):
         # Call the parent class initializer
         super().__init__(width, height, title)
 
-        # Set the working directory (where we expect to find files) to the same
-        # directory this .py file is in. You can leave this out of your own
-        # code, but it is needed to easily run the examples using "python -m"
-        # as mentioned at the top of this program.
-        file_path = os.path.dirname(os.path.abspath(__file__))
-        os.chdir(file_path)
-
         # Variables that will hold sprite lists
         self.player_list = None
         self.star_sprite_list = None
@@ -243,9 +236,6 @@ class MyGame(arcade.Window):
 
             self.enemy_sprite_list.draw()
             self.player_list.draw()
-
-            # Draw the ground
-            arcade.draw_line(0, 0, PLAYING_FIELD_WIDTH, 0, arcade.color.WHITE)
 
             # Now draw to the actual screen
             self.use()
