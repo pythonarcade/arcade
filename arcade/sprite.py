@@ -726,7 +726,7 @@ class Sprite:
                     and self._color[2] == color[2]:
                 return
         elif len(color) == 4:
-            color = cast(List, color) # Prevent typing error
+            color = cast(List, color)  # Prevent typing error
             if self._color[0] == color[0] \
                     and self._color[1] == color[1] \
                     and self._color[2] == color[2]\
