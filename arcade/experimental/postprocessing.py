@@ -7,6 +7,7 @@ from typing import Tuple
 from arcade import shader
 from arcade import get_window
 from arcade.experimental import geometry
+from arcade.experimental.gaussian_kernel import gaussian_kernel
 
 SHADER_PATH = (Path(__file__).parent / 'shaders').resolve()
 TEXTURE_VAO = None
@@ -67,12 +68,12 @@ class PostProcessing:
 
 class GaussianBlurHorizontal(PostProcessing):
     """ Blur the buffer horizontally. """
-    def __init__(self, size: Tuple[int, int], kernel_size=5):
+    def __init__(self, size: Tuple[int, int], defines):
         super().__init__(size)
-        self._kernel_size = kernel_size
         color_attachment = self.ctx.texture(size, components=3, wrap_x=gl.GL_CLAMP_TO_EDGE, wrap_y=gl.GL_CLAMP_TO_EDGE)
         self._fbo = self.ctx.framebuffer(color_attachments=color_attachment)
         self._program = self.ctx.load_program(
+            defines=defines,
             vertex_shader=':resources:shaders/texture_default_projection_vs.glsl',
             fragment_shader=SHADER_PATH / 'gaussian_blurx_fs.glsl',
         )
@@ -90,12 +91,12 @@ class GaussianBlurHorizontal(PostProcessing):
 class GaussianBlurVertical(PostProcessing):
     """ Blur the buffer vertically. """
 
-    def __init__(self, size: Tuple[int, int], kernel_size=5):
+    def __init__(self, size: Tuple[int, int], defines):
         super().__init__(size)
-        self._kernel_size = kernel_size
         self._fbo = self.ctx.framebuffer(
             color_attachments=self.ctx.texture(size, components=3, wrap_x=gl.GL_CLAMP_TO_EDGE, wrap_y=gl.GL_CLAMP_TO_EDGE))
         self._program = self.ctx.load_program(
+            defines=defines,
             vertex_shader=':resources:shaders/texture_default_projection_vs.glsl',
             fragment_shader=SHADER_PATH / 'gaussian_blury_fs.glsl',
         )
@@ -112,10 +113,10 @@ class GaussianBlurVertical(PostProcessing):
 
 class GaussianBlur(PostProcessing):
     """ Do both horizontal and vertical blurs. """
-    def __init__(self, size, kernel_size=5):
-        super().__init__(size, kernel_size=kernel_size)
-        self._blur_x = GaussianBlurHorizontal(size, kernel_size=kernel_size)
-        self._blur_y = GaussianBlurVertical(size, kernel_size=kernel_size)
+    def __init__(self, size, defines):
+        super().__init__(size)
+        self._blur_x = GaussianBlurHorizontal(size, defines=defines)
+        self._blur_y = GaussianBlurVertical(size, defines=defines)
 
     def render(self, source: shader.Texture) -> shader.Texture:
         """ Render """
@@ -125,12 +126,34 @@ class GaussianBlur(PostProcessing):
 
 class Glow(PostProcessing):
     """ Post processing to create a bloom/glow effect. """
-    def __init__(self, size, kernel_size=5):
+    def __init__(self,
+                 size,
+                 kernel_size=21,
+                 sigma: float = 4,
+                 mu: float = 0,
+                 multiplier: float = 5,
+                 step: int = 1):
         super().__init__(size, kernel_size=kernel_size)
-        self._gaussian = GaussianBlur(size, kernel_size=kernel_size)
+
+        kernel = gaussian_kernel(kernel_size, sigma, mu, step)
+        if multiplier != 1:
+            for i in range(kernel_size):
+                kernel[i] *= multiplier
+
+        print(kernel)
+        kernel_string = "("
+        for index, item in enumerate(kernel):
+            kernel_string += f"{item:.7}"
+            if index < len(kernel) - 1:
+                kernel_string += ", "
+        kernel_string += ")"
+        print(kernel_string)
+        defines = {'KERNEL_SIZE': str(kernel_size), 'MY_KERNEL': kernel_string}
+        self._gaussian = GaussianBlur(size, defines=defines)
         self._combine_program = self.ctx.load_program(
+            defines=defines,
             vertex_shader=':resources:shaders/texture_default_projection_vs.glsl',
-            fragment_shader=SHADER_PATH / 'glow_combine_fs.glsl',
+            fragment_shader=SHADER_PATH / 'glow_combine_fs.glsl'
         )
         self._quad_fs = geometry.quad_fs(size=(2.0, 2.0))
 
