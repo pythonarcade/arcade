@@ -813,10 +813,10 @@ class BufferDescription:
         self.stride = 0
         for attr_fmt, attr_name in zip(formats_list, self.attributes):
             try:
-                components, data_type, data_size = re.split(r'([fiu])', attr_fmt)
-                data_type = f"{data_type}{data_size}"if data_size else data_type
-                components = int(components) if components else 1  # 1 component is default
-                data_size = int(data_size) if data_size else 4  # 4 byte float and integer types are default
+                components_str, data_type_str, data_size_str = re.split(r'([fiu])', attr_fmt)
+                data_type = f"{data_type_str}{data_size_str}"if data_size_str else data_type_str
+                components = int(components_str) if components_str else 1  # 1 component is default
+                data_size = int(data_size_str) if data_size_str else 4  # 4 byte float and integer types are default
                 # Limit components to 4 for non-padded formats
                 if components > 4 and data_size is not None:
                     raise ValueError("Number of components must be 1, 2, 3 or 4")
@@ -863,7 +863,7 @@ class VertexArray:
 
     vao = VertexArray(...)
     """
-    __slots__ = '_ctx', '_glo', '_ibo', '_content', '_num_vertices', '__weakref__'
+    __slots__ = '_ctx', '_glo', '_program', '_content', '_ibo', '_content', '_num_vertices', '__weakref__'
 
     # TODO: Resolve what VertexArray should actually store
     def __init__(self,
@@ -872,7 +872,8 @@ class VertexArray:
                  content: Iterable[BufferDescription],
                  index_buffer: Buffer = None):
         self._ctx = ctx
-        # self._content = content
+        self._program = program
+        self._content = content
         self._glo = glo = gl.GLuint()
         self._num_vertices = -1
         self._ibo = index_buffer
@@ -1025,7 +1026,7 @@ class Geometry:
             raise ValueError("Geometry without buffer descriptions not supported")
 
         # Calculate vertices. Use the minimum for now
-        self._num_vertices = content[0].num_vertices
+        self._num_vertices = next(iter(content)).num_vertices
         for descr in self._content:
             if descr.instanced:
                 continue
