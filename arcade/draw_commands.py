@@ -394,32 +394,26 @@ def _generic_draw_line_strip(point_list: PointList,
     c4 = get_four_byte_color(color)
     c4e = c4 * len(point_list)
     a = array.array('B', c4e)
-    color_buf = ctx.buffer(data=a.tobytes())
-    color_buf_desc = shader.BufferDescription(
-        color_buf,
-        '4f1',
-        ['in_color'],
-        normalized=['in_color'],
-    )
 
     def gen_flatten(my_list):
         return [item for sublist in my_list for item in sublist]
 
     vertices = array.array('f', gen_flatten(point_list))
 
-    vbo_buf = ctx.buffer(data=vertices.tobytes())
-    vbo_buf_desc = shader.BufferDescription(
-        vbo_buf,
-        '2f',
-        ['in_vert']
-    )
-
-    vao_content = [vbo_buf_desc, color_buf_desc]
-
+    geometry = ctx.generic_draw_line_strip_geometry
     program = ctx.line_vertex_shader
-    vao = ctx.geometry(vao_content)
+    geometry.num_vertices = len(point_list)
+
+    # Double buffer sizes if out of space
+    while len(vertices) > ctx.generic_draw_line_strip_vbo.size:
+        ctx.generic_draw_line_strip_vbo.orphan(ctx.generic_draw_line_strip_vbo * 2)
+        ctx.generic_draw_line_strip_color.orphan(ctx.generic_draw_line_strip_color * 2)
+
+    ctx.generic_draw_line_strip_vbo.write(vertices.tobytes())
+    ctx.generic_draw_line_strip_color.write(a.tobytes())
+
     program['Projection'] = get_projection().flatten()
-    vao.render(program, mode=mode)
+    geometry.render(program, mode=mode)
 
 
 def draw_line_strip(point_list: PointList,
