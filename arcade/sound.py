@@ -30,7 +30,7 @@ class Sound:
             return
 
         # If we should pull from local resources, replace with proper path
-        if file_name.startswith(":resources:"):
+        if isinstance(file_name, str) and str(file_name).startswith(":resources:"):
             import os
             path = os.path.dirname(os.path.abspath(__file__))
             file_name = f"{path}/resources/{file_name[11:]}"

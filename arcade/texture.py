@@ -212,7 +212,7 @@ def load_textures(file_name: str,
         source_image = texture.image
     else:
         # If we should pull from local resources, replace with proper path
-        if str(file_name).startswith(":resources:"):
+        if isinstance(file_name, str) and str(file_name).startswith(":resources:"):
             import os
             path = os.path.dirname(os.path.abspath(__file__))
             file_name = f"{path}/resources/{file_name[11:]}"
@@ -313,7 +313,7 @@ def load_texture(file_name: str,
         source_image = texture.image
     else:
         # If we should pull from local resources, replace with proper path
-        if str(file_name).startswith(":resources:"):
+        if isinstance(file_name, str) and str(file_name).startswith(":resources:"):
             import os
             path = os.path.dirname(os.path.abspath(__file__))
             file_name = f"{path}/resources/{file_name[11:]}"
@@ -390,7 +390,7 @@ def load_spritesheet(file_name: str,
     texture_list = []
 
     # If we should pull from local resources, replace with proper path
-    if str(file_name).startswith(":resources:"):
+    if isinstance(file_name, str) and str(file_name).startswith(":resources:"):
         path = os.path.dirname(os.path.abspath(__file__))
         file_name = f"{path}/resources/{file_name[11:]}"
 
