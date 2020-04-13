@@ -1832,8 +1832,25 @@ class Context:
         )
 
         # --- Pre-created geometry and buffers for unbuffered draw calls ----
-        # draw_commands:generic_draw_line_strip
-        # BufferDescription(color_buf, '4f1', ['in_color'])
+        # FIXME: This is a temporary test
+        self.generic_draw_line_strip_color = self.buffer(reserve=4 * 1000)
+        self.generic_draw_line_strip_vbo = self.buffer(reserve=8 * 1000)
+        self.generic_draw_line_strip_geometry = self.geometry(
+            [
+                BufferDescription(
+                    self.generic_draw_line_strip_vbo,
+                    '2f',
+                    ['in_vert']
+                ),
+                BufferDescription(
+                    self.generic_draw_line_strip_color,
+                    '4f1',
+                    ['in_color'],
+                    normalized=['in_color'],
+                ),
+            ]
+        )
+
 
     @property
     def window(self):
