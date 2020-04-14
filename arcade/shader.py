@@ -1875,6 +1875,14 @@ class Context:
             ]
         )
 
+        # Shape line(s)
+        # Reserve space for 1000 lines (2f pos, 4f color)
+        self.shape_line_buffer_pos = self.buffer(reserve=8 * 10)
+        self.shape_line_buffer_color = self.buffer(reserve=4 * 10)
+        self.shape_line_geometry = self.geometry([
+            BufferDescription(self.shape_line_buffer_pos, '2f', ['in_vert']),
+            BufferDescription(self.shape_line_buffer_color, '4f1', ['in_color'], normalized=['in_color']),
+        ])
 
     @property
     def window(self):
