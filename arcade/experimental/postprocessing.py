@@ -75,7 +75,7 @@ class GaussianBlurHorizontal(PostProcessing):
         self._program = self.ctx.load_program(
             defines=defines,
             vertex_shader=':resources:shaders/texture_default_projection_vs.glsl',
-            fragment_shader=SHADER_PATH / 'gaussian_blurx_fs.glsl',
+            fragment_shader=SHADER_PATH / 'gaussian_blur_x_fs.glsl',
         )
         self._quad_fs = geometry.quad_fs(size=(2.0, 2.0))
 
@@ -98,7 +98,7 @@ class GaussianBlurVertical(PostProcessing):
         self._program = self.ctx.load_program(
             defines=defines,
             vertex_shader=':resources:shaders/texture_default_projection_vs.glsl',
-            fragment_shader=SHADER_PATH / 'gaussian_blury_fs.glsl',
+            fragment_shader=SHADER_PATH / 'gaussian_blur_y_fs.glsl',
         )
         self._quad_fs = geometry.quad_fs(size=(2.0, 2.0))
 
