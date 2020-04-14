@@ -1848,6 +1848,13 @@ class Context:
             fragment_shader=self.resource_root / 'shaders/sprite_list_fs.glsl',
         )
 
+        # Shapes
+        self.shape_line_program = self.load_program(
+            vertex_shader=":resources:/shaders/shapes/line_vs.glsl",
+            fragment_shader=":resources:/shaders/shapes/line_fs.glsl",
+            geometry_shader=":resources:/shaders/shapes/line_geo.glsl",
+        )
+
         # --- Pre-created geometry and buffers for unbuffered draw calls ----
         # FIXME: This is a temporary test
         self.generic_draw_line_strip_color = self.buffer(reserve=4 * 1000)
