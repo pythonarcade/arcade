@@ -9,7 +9,6 @@ from arcade import get_window
 from arcade.experimental import geometry
 from arcade.experimental.gaussian_kernel import gaussian_kernel
 
-SHADER_PATH = (Path(__file__).parent / 'shaders').resolve()
 TEXTURE_VAO = None
 
 
@@ -19,8 +18,8 @@ def render_texture(texture):
     if TEXTURE_VAO is None:
         ctx = get_window().ctx
         texture_prog = ctx.load_program(
-            vertex_shader_filename=SHADER_PATH / 'texture_ndc_vs.glsl',
-            fragment_shader_filename=SHADER_PATH / 'texture_fs.glsl',
+            vertex_shader_filename=':resources:shaders/texture_ndc_vs.glsl',
+            fragment_shader_filename=':resources:shaders/texture_fs.glsl',
         )
         TEXTURE_VAO = geometry.quad_fs(texture_prog, size=(2.0, 2.0))
 
@@ -70,12 +69,15 @@ class GaussianBlurHorizontal(PostProcessing):
     """ Blur the buffer horizontally. """
     def __init__(self, size: Tuple[int, int], defines):
         super().__init__(size)
-        color_attachment = self.ctx.texture(size, components=3, wrap_x=gl.GL_CLAMP_TO_EDGE, wrap_y=gl.GL_CLAMP_TO_EDGE)
+        color_attachment = self.ctx.texture(size,
+                                            components=3,
+                                            wrap_x=gl.GL_CLAMP_TO_EDGE,
+                                            wrap_y=gl.GL_CLAMP_TO_EDGE)
         self._fbo = self.ctx.framebuffer(color_attachments=color_attachment)
         self._program = self.ctx.load_program(
             defines=defines,
             vertex_shader=':resources:shaders/texture_default_projection_vs.glsl',
-            fragment_shader=SHADER_PATH / 'gaussian_blur_x_fs.glsl',
+            fragment_shader=':resources:shaders/gaussian_blur_x_fs.glsl',
         )
         self._quad_fs = geometry.quad_fs(size=(2.0, 2.0))
 
@@ -94,11 +96,14 @@ class GaussianBlurVertical(PostProcessing):
     def __init__(self, size: Tuple[int, int], defines):
         super().__init__(size)
         self._fbo = self.ctx.framebuffer(
-            color_attachments=self.ctx.texture(size, components=3, wrap_x=gl.GL_CLAMP_TO_EDGE, wrap_y=gl.GL_CLAMP_TO_EDGE))
+            color_attachments=self.ctx.texture(size,
+                                               components=3,
+                                               wrap_x=gl.GL_CLAMP_TO_EDGE,
+                                               wrap_y=gl.GL_CLAMP_TO_EDGE))
         self._program = self.ctx.load_program(
             defines=defines,
             vertex_shader=':resources:shaders/texture_default_projection_vs.glsl',
-            fragment_shader=SHADER_PATH / 'gaussian_blur_y_fs.glsl',
+            fragment_shader=':resources:shaders/gaussian_blur_y_fs.glsl',
         )
         self._quad_fs = geometry.quad_fs(size=(2.0, 2.0))
 
@@ -153,7 +158,7 @@ class Glow(PostProcessing):
         self._combine_program = self.ctx.load_program(
             defines=defines,
             vertex_shader=':resources:shaders/texture_default_projection_vs.glsl',
-            fragment_shader=SHADER_PATH / 'glow_combine_fs.glsl'
+            fragment_shader=':resources:shaders/gaussian_combine_fs.glsl'
         )
         self._quad_fs = geometry.quad_fs(size=(2.0, 2.0))
 
