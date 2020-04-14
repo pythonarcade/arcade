@@ -2,8 +2,8 @@
 Code related to working with textures.
 """
 
-import os
 import math
+from pathlib import Path
 
 import PIL.Image
 import PIL.ImageOps
@@ -11,6 +11,7 @@ import PIL.ImageDraw
 
 from typing import Optional
 from typing import List
+from typing import Union
 
 from arcade import lerp
 from arcade import RectList
@@ -180,7 +181,7 @@ class Texture:
             self._sprite_list.draw()
 
 
-def load_textures(file_name: str,
+def load_textures(file_name: Union[str, Path],
                   image_location_list: RectList,
                   mirrored: bool = False,
                   flipped: bool = False) -> List[Texture]:
@@ -263,7 +264,7 @@ def load_textures(file_name: str,
     return texture_info_list
 
 
-def load_texture(file_name: str,
+def load_texture(file_name: Union[str, Path],
                  x: float = 0,
                  y: float = 0,
                  width: float = 0, height: float = 0,
@@ -365,7 +366,7 @@ def cleanup_texture_cache():
     import gc
     gc.collect()
 
-def load_spritesheet(file_name: str,
+def load_spritesheet(file_name: Union[str, Path],
                      sprite_width: int,
                      sprite_height: int,
                      columns: int,

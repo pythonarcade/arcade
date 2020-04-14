@@ -20,7 +20,7 @@ except Exception as e:
 
 class Sound:
     """ This class represents a sound you can play."""
-    def __init__(self, file_name: str, streaming: bool = False):
+    def __init__(self, file_name: Union[str, Path], streaming: bool = False):
         """ Create and load the sound. """
         self.file_name: str = ""
         self.wav_file:Union[soloud.WavStream, soloud.Wav]

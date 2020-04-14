@@ -1,4 +1,4 @@
-from typing import Union, Optional
+from typing import Union
 from pathlib import Path
 
 #: The absolute path to this directory

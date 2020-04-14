@@ -11,7 +11,7 @@ For more information, see the `Platformer Tutorial`_.
 
 """
 
-from typing import Optional, List, cast
+from typing import Optional, List, cast, Union
 import math
 import copy
 import pytiled_parser
@@ -31,7 +31,7 @@ _FLIPPED_VERTICALLY_FLAG = 0x40000000
 _FLIPPED_DIAGONALLY_FLAG = 0x20000000
 
 
-def read_tmx(tmx_file: str) -> pytiled_parser.objects.TileMap:
+def read_tmx(tmx_file: Union[str, Path]) -> pytiled_parser.objects.TileMap:
     """
     Given a .tmx, this will read in a tiled map, and return
     a TiledMap object.
