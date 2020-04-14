@@ -286,6 +286,12 @@ class Program:
         '_attributes', 'attribute_key', '__weakref__'
     )
 
+    _shader_types_names = {
+        gl.GL_VERTEX_SHADER: "vertex shader",
+        gl.GL_FRAGMENT_SHADER: "fragment shader",
+        gl.GL_GEOMETRY_SHADER: "geometry shader",
+    }
+
     def __init__(self,
                  ctx,
                  *,
@@ -556,8 +562,10 @@ class Program:
             msg = create_string_buffer(512)
             length = c_int()
             gl.glGetShaderInfoLog(shader, 512, byref(length), msg)
-            raise ShaderException(
-                f"Shader compile failure ({result.value}): {msg.value.decode('utf-8')}")
+            raise ShaderException((
+                f"Error compiling {Program._shader_types_names[shader_type]} "
+                f"({result.value}): {msg.value.decode('utf-8')}"
+            ))
         return shader
 
     @staticmethod
