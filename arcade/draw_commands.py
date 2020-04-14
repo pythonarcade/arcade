@@ -454,11 +454,30 @@ def draw_line(start_x: float, start_y: float, end_x: float, end_y: float,
          RGBA format.
     :param float line_width: Width of the line in pixels.
     """
+    window = get_window()
+    if not window:
+        raise RuntimeError("No window found")
 
+    ctx = window.ctx
+    program = ctx.shape_line_program
+    geometry = ctx.shape_line_geometry
+    if len(color) == 3:
+        # color = (*color, 255)
+        color = (color[0], color[1], color[2], 255)
+
+    program['Projection'] = get_projection().flatten()
+    program['line_width'] = line_width
+    ctx.shape_line_buffer_pos.write(
+        data=array.array('f', [start_x, start_y, end_x, end_y]).tobytes())
+    ctx.shape_line_buffer_color.write(
+        data=array.array('B', color).tobytes())
+    geometry.render(program, mode=gl.GL_LINES, vertices=2)
+
+    # NOTE: Keep old code just in case
     # points = (start_x, start_y), (end_x, end_y)
-    points = get_points_for_thick_line(start_x, start_y, end_x, end_y, line_width)
-    triangle_point_list = points[1], points[0], points[2], points[3]
-    _generic_draw_line_strip(triangle_point_list, color, gl.GL_TRIANGLE_STRIP)
+    # points = get_points_for_thick_line(start_x, start_y, end_x, end_y, line_width)
+    # triangle_point_list = points[1], points[0], points[2], points[3]
+    # _generic_draw_line_strip(triangle_point_list, color, gl.GL_TRIANGLE_STRIP)
 
 
 def draw_lines(point_list: PointList,
