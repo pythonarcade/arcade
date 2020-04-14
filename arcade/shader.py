@@ -1996,38 +1996,18 @@ class Context:
         :param Union[str, Path] geometry_shader: path to geometry shader
         :param dict defines: Substitute #defines values in the source
         """
-        vertex_shader_src = None
+        from arcade import resources
+
+        # TODO: Cache these files using absolute path as key
+        vertex_shader_src = resources.resolve(vertex_shader).read_text()
         fragment_shader_src = None
         geometry_shader_src = None
 
-        # If we should pull from local resources, replace with proper path
-        # TODO: Remove dup code here
-        if isinstance(vertex_shader, str) and str(vertex_shader).startswith(":resources:"):
-            import os
-            path = os.path.dirname(os.path.abspath(__file__))
-            vertex_shader = f"{path}/resources/{vertex_shader[11:]}"
-
-        if isinstance(fragment_shader, str) and str(fragment_shader).startswith(":resources:"):
-            import os
-            path = os.path.dirname(os.path.abspath(__file__))
-            fragment_shader = f"{path}/resources/{fragment_shader[11:]}"
-
-        if isinstance(geometry_shader, str) and str(geometry_shader).startswith(":resources:"):
-            import os
-            path = os.path.dirname(os.path.abspath(__file__))
-            geometry_shader = f"{path}/resources/{geometry_shader[11:]}"
-
-        # TODO: Cache these files using absolute path as key
-        with open(vertex_shader, "r") as fd:
-            vertex_shader_src = fd.read()
-
         if fragment_shader:
-            with open(fragment_shader, "r") as fd:
-                fragment_shader_src = fd.read()
+            fragment_shader_src = resources.resolve(fragment_shader).read_text()
 
         if geometry_shader:
-            with open(geometry_shader, "r") as fd:
-                geometry_shader_src = fd.read()
+            geometry_shader_src = resources.resolve(geometry_shader).read_text()
 
         return self.program(
             vertex_shader=vertex_shader_src,

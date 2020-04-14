@@ -1,3 +1,34 @@
+from typing import Union, Optional
+from pathlib import Path
+
+#: The absolute path to this directory
+RESOURCE_PATH = Path(__file__).parent.absolute()
+
+
+def resolve(path: Union[str, Path]) -> Path:
+    """Resolves a resource path and returns a Path object.
+
+    :param Union[str, Path] path: A Path or string
+    """
+    # Convert to a Path object and resolve :resources:
+    if isinstance(path, str):
+        path = path.strip()  # Allow for silly mistakes with extra spaces
+        if path.startswith(':resources:'):
+            path = path[11:]
+
+        # Always convert into a Path object
+        path = RESOURCE_PATH / path
+
+    # Check for the existence of the file and provide useful feedback to
+    # avoid deep stack trace into pathlib
+    if not path.exists():
+        raise FileNotFoundError(f"Cannot locate resource : {path}")
+
+    # Always return absolute paths
+    return path.absolute()
+
+
+# RESOURCE LIST : (Truncate file from here if auto generating resource list)
 gui_clicked = ':resources:/gui_themes/Fantasy/Buttons/Clicked.png'
 gui_hover = ':resources:/gui_themes/Fantasy/Buttons/Hover.png'
 gui_locked = ':resources:/gui_themes/Fantasy/Buttons/Locked.png'
