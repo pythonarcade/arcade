@@ -14,6 +14,7 @@ from pathlib import Path
 from arcade.isometric import isometric_grid_to_screen
 from arcade import Sprite
 from arcade import SpriteList
+from arcade.resources import resolve_resource_path
 
 
 class TiledMap:
@@ -141,10 +142,7 @@ def read_tiled_map(tmx_file: str, scaling: float = 1, tsx_file: str = None) -> T
     my_map = TiledMap()
 
     # If we should pull from local resources, replace with proper path
-    if tmx_file.startswith(":resources:"):
-        import os
-        path = os.path.dirname(os.path.abspath(__file__))
-        tmx_file = f"{path}/resources/{tmx_file[11:]}"
+    tmx_file = resolve_resource_path(tmx_file)
 
     # Read in and parse the file
     tree = ElementTree.parse(tmx_file)

@@ -1999,15 +1999,15 @@ class Context:
         from arcade import resources
 
         # TODO: Cache these files using absolute path as key
-        vertex_shader_src = resources.resolve(vertex_shader).read_text()
+        vertex_shader_src = resources.resolve_resource_path(vertex_shader).read_text()
         fragment_shader_src = None
         geometry_shader_src = None
 
         if fragment_shader:
-            fragment_shader_src = resources.resolve(fragment_shader).read_text()
+            fragment_shader_src = resources.resolve_resource_path(fragment_shader).read_text()
 
         if geometry_shader:
-            geometry_shader_src = resources.resolve(geometry_shader).read_text()
+            geometry_shader_src = resources.resolve_resource_path(geometry_shader).read_text()
 
         return self.program(
             vertex_shader=vertex_shader_src,

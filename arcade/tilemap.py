@@ -23,8 +23,8 @@ from arcade import AnimatedTimeBasedSprite
 from arcade import AnimationKeyframe
 from arcade import SpriteList
 from arcade import load_texture
-from arcade import Texture
 from arcade.arcade_types import Point
+from arcade.resources import resolve_resource_path
 
 _FLIPPED_HORIZONTALLY_FLAG = 0x80000000
 _FLIPPED_VERTICALLY_FLAG = 0x40000000
@@ -53,10 +53,7 @@ def read_tmx(tmx_file: str) -> pytiled_parser.objects.TileMap:
     """
 
     # If we should pull from local resources, replace with proper path
-    if tmx_file.startswith(":resources:"):
-        import os
-        path = os.path.dirname(os.path.abspath(__file__))
-        tmx_file = f"{path}/resources/{tmx_file[11:]}"
+    tmx_file = resolve_resource_path(tmx_file)
 
     tile_map = pytiled_parser.parse_tile_map(tmx_file)
 

@@ -5,6 +5,7 @@ Sound library.
 
 from pathlib import Path
 from typing import Union
+from arcade.resources import resolve_resource_path
 
 _audiolib = None
 try:
@@ -30,14 +31,12 @@ class Sound:
             return
 
         # If we should pull from local resources, replace with proper path
-        if file_name.startswith(":resources:"):
-            import os
-            path = os.path.dirname(os.path.abspath(__file__))
-            file_name = f"{path}/resources/{file_name[11:]}"
+        file_name = resolve_resource_path(file_name)
 
         if not Path(file_name).is_file():
             raise FileNotFoundError(f"The sound file '{file_name}' is not a file or can't be read")
-        self.file_name = file_name
+        self.file_name = str(file_name)
+
         if streaming:
             self.wav_file = soloud.WavStream()
         else:
@@ -100,7 +99,7 @@ class Sound:
         return _audiolib.get_stream_position(self.voice_handle)
 
 
-def load_sound(file_name: str):
+def load_sound(path: Union[str, Path]):
     """
     Load a sound.
 
@@ -111,6 +110,7 @@ def load_sound(file_name: str):
     """
 
     try:
+        file_name = str(path)
         sound = Sound(file_name)
         return sound
     except Exception as ex:

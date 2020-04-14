@@ -5,7 +5,7 @@ from pathlib import Path
 RESOURCE_PATH = Path(__file__).parent.absolute()
 
 
-def resolve(path: Union[str, Path]) -> Path:
+def resolve_resource_path(path: Union[str, Path]) -> Path:
     """Resolves a resource path and returns a Path object.
 
     :param Union[str, Path] path: A Path or string
@@ -15,6 +15,8 @@ def resolve(path: Union[str, Path]) -> Path:
         path = path.strip()  # Allow for silly mistakes with extra spaces
         if path.startswith(':resources:'):
             path = path[11:]
+        while path.startswith('/') or path.startswith('\\'):
+            path = path[1:]
 
         # Always convert into a Path object
         path = RESOURCE_PATH / path
