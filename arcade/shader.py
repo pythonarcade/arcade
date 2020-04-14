@@ -564,8 +564,9 @@ class Program:
             gl.glGetShaderInfoLog(shader, 512, byref(length), msg)
             raise ShaderException((
                 f"Error compiling {Program._shader_types_names[shader_type]} "
-                f"({result.value}): {msg.value.decode('utf-8')}"
-            ))
+                f"({result.value}): {msg.value.decode('utf-8')}\n"
+                f"---- [{Program._shader_types_names[shader_type]}] ---\n"
+            ) + '\n'.join(f"{str(i+1).zfill(3)}: {line} " for i, line in enumerate(source.split('\n'))))
         return shader
 
     @staticmethod
