@@ -367,6 +367,12 @@ def _process_object_layer(map_object: pytiled_parser.objects.TileMap,
         my_sprite.position = (x + rotatedCenterX, y + rotatedCenterY)
         my_sprite.angle = math.degrees(rotation)
 
+        # Opacity
+        opacity = layer.opacity
+        if opacity:
+            my_sprite.alpha = int(opacity * 255)
+
+        # Properties
         if cur_object.properties is not None and 'change_x' in cur_object.properties:
             my_sprite.change_x = float(cur_object.properties['change_x'])
 
@@ -387,7 +393,7 @@ def _process_object_layer(map_object: pytiled_parser.objects.TileMap,
 
         if cur_object.properties is not None:
             my_sprite.properties.update(cur_object.properties)
-        # sprite.properties
+
         sprite_list.append(my_sprite)
     return sprite_list
 
@@ -421,6 +427,11 @@ def _process_tile_layer(map_object: pytiled_parser.objects.TileMap,
                 my_sprite.center_x = column_index * (map_object.tile_size[0] * scaling) + my_sprite.width / 2
                 my_sprite.center_y = (map_object.map_size.height - row_index - 1) \
                     * (map_object.tile_size[1] * scaling) + my_sprite.height / 2
+
+                # Opacity
+                opacity = layer.opacity
+                if opacity:
+                    my_sprite.alpha = int(opacity * 255)
 
                 sprite_list.append(my_sprite)
 
