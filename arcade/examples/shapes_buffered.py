@@ -30,11 +30,11 @@ SCREEN_TITLE = "Shapes! Buffered"
 RECT_WIDTH = 50
 RECT_HEIGHT = 50
 
-NUMBER_OF_SHAPES = 200
+NUMBER_OF_SHAPES = 500
 
 
 class Shape:
-
+    """ Generic base shape class """
     def __init__(self, x, y, width, height, angle, delta_x, delta_y,
                  delta_angle, color):
         self.x = x
@@ -96,6 +96,19 @@ class Rectangle(Shape):
         self.shape_list = arcade.ShapeElementList()
         self.shape_list.append(shape)
 
+class Line(Shape):
+
+    def __init__(self, x, y, width, height, angle, delta_x, delta_y,
+                 delta_angle, color):
+
+        super().__init__(x, y, width, height, angle, delta_x, delta_y,
+                         delta_angle, color)
+
+        shape = arcade.create_line(0, 0,
+                                   self.width, self.height,
+                                   self.color, 2)
+        self.shape_list = arcade.ShapeElementList()
+        self.shape_list.append(shape)
 
 class MyGame(arcade.Window):
     """ Main application class. """
@@ -130,14 +143,19 @@ class MyGame(arcade.Window):
             blue = random.randrange(256)
             alpha = random.randrange(256)
 
-            shape_type = random.randrange(2)
+            # shape_type = random.randrange(3)
+            shape_type = 2
 
             if shape_type == 0:
                 shape = Rectangle(x, y, width, height, angle, d_x, d_y,
                                   d_angle, (red, green, blue, alpha))
-            else:
+            elif shape_type == 1:
                 shape = Ellipse(x, y, width, height, angle, d_x, d_y,
-                                d_angle, (red, green, blue, alpha))
+                            d_angle, (red, green, blue, alpha))
+            elif shape_type == 2:
+                shape = Line(x, y, width, height, angle, d_x, d_y,
+                             d_angle, (red, green, blue, alpha))
+
             self.shape_list.append(shape)
 
     def on_update(self, dt):
