@@ -5,6 +5,25 @@
 Release Notes
 =============
 
+Version 2.3.15
+--------------
+
+*Release Date: Apr-14-2020*
+
+* Bug Fix: Fix invalid empty text width `Issue 633 <https://github.com/pvcraven/arcade/issues/633>`_
+* Bug Fix: Make sure file name is string before checking resources `Issue 636 <https://github.com/pvcraven/arcade/issues/636>`_
+* Enhancement: Implement Size and Rotation for Tiled Objects `Issue 638 <https://github.com/pvcraven/arcade/issues/638>`_
+* Documentation: Fix incorrect link to 'sprites following player' example
+
+Version 2.3.14
+--------------
+
+*Release Date: Apr-9-2020*
+
+* Bug Fix: Another attempt at fixing sprites with different dimensions added to
+  same SpriteList didn't display correctly `Issue 630 <https://github.com/pvcraven/arcade/issues/630>`_
+* Add lots of unit tests around Sprites and texture loading.
+
 Version 2.3.13
 --------------
 
