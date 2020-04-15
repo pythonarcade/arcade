@@ -58,6 +58,7 @@ if __name__ == "__main__":
                     "arcade.color",
                     "arcade.csscolor",
                     "arcade.examples",
+                    "arcade.resources",
                     "arcade.soloud"
                     ],
           python_requires='>=3.6',
@@ -94,6 +95,8 @@ if __name__ == "__main__":
                                    'resources/images/spritesheets/*',
                                    'resources/images/texture_transform/*',
                                    'resources/images/tiles/*',
+                                   'resources/shaders/*',
+                                   'resources/shaders/shapes/*',
                                    'resources/sounds/*',
                                    'resources/tmx_maps/*',
                                    'soloud/*',
