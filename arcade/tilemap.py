@@ -221,6 +221,9 @@ def _create_sprite_from_tile(map_object: pytiled_parser.objects.TileMap,
         for my_property in tile.properties:
             my_sprite.properties[my_property.name] = my_property.value
 
+    if tile.type_:
+        my_sprite.properties['type'] = tile.type_
+
         # print(tile.image.source, my_sprite.center_x, my_sprite.center_y)
     if tile.objectgroup is not None:
 
@@ -393,6 +396,12 @@ def _process_object_layer(map_object: pytiled_parser.objects.TileMap,
 
         if cur_object.properties is not None:
             my_sprite.properties.update(cur_object.properties)
+
+        if cur_object.type:
+            my_sprite.properties['type'] = cur_object.type
+
+        if cur_object.name:
+            my_sprite.properties['name'] = cur_object.name
 
         sprite_list.append(my_sprite)
     return sprite_list
