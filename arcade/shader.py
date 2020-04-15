@@ -286,6 +286,12 @@ class Program:
         '_attributes', 'attribute_key', '__weakref__'
     )
 
+    _shader_types_names = {
+        gl.GL_VERTEX_SHADER: "vertex shader",
+        gl.GL_FRAGMENT_SHADER: "fragment shader",
+        gl.GL_GEOMETRY_SHADER: "geometry shader",
+    }
+
     def __init__(self,
                  ctx,
                  *,
@@ -556,8 +562,11 @@ class Program:
             msg = create_string_buffer(512)
             length = c_int()
             gl.glGetShaderInfoLog(shader, 512, byref(length), msg)
-            raise ShaderException(
-                f"Shader compile failure ({result.value}): {msg.value.decode('utf-8')}")
+            raise ShaderException((
+                f"Error compiling {Program._shader_types_names[shader_type]} "
+                f"({result.value}): {msg.value.decode('utf-8')}\n"
+                f"---- [{Program._shader_types_names[shader_type]}] ---\n"
+            ) + '\n'.join(f"{str(i+1).zfill(3)}: {line} " for i, line in enumerate(source.split('\n'))))
         return shader
 
     @staticmethod
@@ -989,6 +998,7 @@ class VertexArray:
 
         :param GLunit mode: Primitive type to render. TRIANGLES, LINES etc.
         :param int first: The first vertex to render from
+        :param int vertices: Number of vertices to render
         :param int instances: OpenGL instance, used in using vertexes over and over
         """
         gl.glBindVertexArray(self._glo)
@@ -1061,19 +1071,22 @@ class Geometry:
 
         return self._generate_vao(program)
 
-    def render(self, program: Program, *, mode: gl.GLenum = None, first: int = 0, instances: int = 1):
+    def render(self, program: Program, *, mode: gl.GLenum = None,
+               first: int = 0, vertices: int = None, instances: int = 1):
         """Render the geometry with a specific program.
         :param Program program: The Program to render with
         :param gl.GLenum mode: Override what primitive mode should be used
         :param int first: Offset start vertex
+        :param int vertices: Number of vertices to render
         :param int instances: Number of instances to render
         """
         program.use()
         vao = self.instance(program)
+        mode = self._mode if mode is None else mode
         if mode:
-            vao.render(mode=mode, first=first, vertices=self._num_vertices, instances=instances)
+            vao.render(mode=mode, first=first, vertices=vertices or self._num_vertices, instances=instances)
         else:
-            vao.render(mode=self._mode, first=first, vertices=self._num_vertices, instances=instances)
+            vao.render(mode=mode, first=first, vertices=vertices or self._num_vertices, instances=instances)
 
     def transform(self, program: Program):
         """Render with transform feedback"""
@@ -1836,6 +1849,13 @@ class Context:
             fragment_shader=self.resource_root / 'shaders/sprite_list_fs.glsl',
         )
 
+        # Shapes
+        self.shape_line_program = self.load_program(
+            vertex_shader=":resources:/shaders/shapes/line_vs.glsl",
+            fragment_shader=":resources:/shaders/shapes/line_fs.glsl",
+            geometry_shader=":resources:/shaders/shapes/line_geo.glsl",
+        )
+
         # --- Pre-created geometry and buffers for unbuffered draw calls ----
         # FIXME: This is a temporary test
         self.generic_draw_line_strip_color = self.buffer(reserve=4 * 1000)
@@ -1856,6 +1876,14 @@ class Context:
             ]
         )
 
+        # Shape line(s)
+        # Reserve space for 1000 lines (2f pos, 4f color)
+        self.shape_line_buffer_pos = self.buffer(reserve=8 * 10)
+        self.shape_line_buffer_color = self.buffer(reserve=4 * 10)
+        self.shape_line_geometry = self.geometry([
+            BufferDescription(self.shape_line_buffer_pos, '2f', ['in_vert']),
+            BufferDescription(self.shape_line_buffer_color, '4f1', ['in_color'], normalized=['in_color']),
+        ])
 
     @property
     def window(self):
