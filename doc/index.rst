@@ -1,6 +1,9 @@
 The Python Arcade Library
 =========================
 
+.. image:: https://user-images.githubusercontent.com/33516116/77762078-e02ce080-7030-11ea-947a-9c6733d4f33d.png
+   :target: https://pythondiscord.com/pages/events/game-jam-2020/
+
 .. raw:: html
 
     <table style="width:100%;">
