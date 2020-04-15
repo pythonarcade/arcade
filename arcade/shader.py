@@ -1852,9 +1852,9 @@ class Context:
 
         # Shapes
         self.shape_line_program = self.load_program(
-            vertex_shader=":resources:/shaders/shapes/line_unbuffered_vs.glsl",
-            fragment_shader=":resources:/shaders/shapes/line_unbuffered_fs.glsl",
-            geometry_shader=":resources:/shaders/shapes/line_unbuffered_geo.glsl",
+            vertex_shader=":resources:/shaders/shapes/line/unbuffered_vs.glsl",
+            fragment_shader=":resources:/shaders/shapes/line/unbuffered_fs.glsl",
+            geometry_shader=":resources:/shaders/shapes/line/unbuffered_geo.glsl",
         )
 
         # --- Pre-created geometry and buffers for unbuffered draw calls ----
