@@ -1831,7 +1831,8 @@ class Context:
         self.TRIANGLE_STRIP_ADJACENCY = gl.GL_TRIANGLE_STRIP_ADJACENCY  # 13
 
         # --- Pre-load system shaders here ---
-
+        # FIXME: These pre-created resources needs to be packaged nicely
+        #        Just having them globally in the context is probably not a good idea
         self.line_vertex_shader = self.load_program(
             vertex_shader=self.resource_root / 'shaders/line_vertex_shader_vs.glsl',
             fragment_shader=self.resource_root / 'shaders/line_vertex_shader_fs.glsl',
@@ -1851,38 +1852,28 @@ class Context:
 
         # Shapes
         self.shape_line_program = self.load_program(
-            vertex_shader=":resources:/shaders/shapes/line_vs.glsl",
-            fragment_shader=":resources:/shaders/shapes/line_fs.glsl",
-            geometry_shader=":resources:/shaders/shapes/line_geo.glsl",
+            vertex_shader=":resources:/shaders/shapes/line_unbuffered_vs.glsl",
+            fragment_shader=":resources:/shaders/shapes/line_unbuffered_fs.glsl",
+            geometry_shader=":resources:/shaders/shapes/line_unbuffered_geo.glsl",
         )
 
         # --- Pre-created geometry and buffers for unbuffered draw calls ----
-        # FIXME: This is a temporary test
+        # FIXME: These pre-created resources needs to be packaged nicely
+        #        Just having them globally in the context is probably not a good idea
         self.generic_draw_line_strip_color = self.buffer(reserve=4 * 1000)
         self.generic_draw_line_strip_vbo = self.buffer(reserve=8 * 1000)
-        self.generic_draw_line_strip_geometry = self.geometry(
-            [
-                BufferDescription(
-                    self.generic_draw_line_strip_vbo,
-                    '2f',
-                    ['in_vert']
-                ),
-                BufferDescription(
-                    self.generic_draw_line_strip_color,
-                    '4f1',
-                    ['in_color'],
-                    normalized=['in_color'],
-                ),
-            ]
-        )
-
+        self.generic_draw_line_strip_geometry = self.geometry([
+                BufferDescription(self.generic_draw_line_strip_vbo, '2f', ['in_vert']),
+                BufferDescription(self.generic_draw_line_strip_color, '4f1', ['in_color'], normalized=['in_color'])])
         # Shape line(s)
         # Reserve space for 1000 lines (2f pos, 4f color)
+        # TODO: Different version for buffered and unbuffered
+        # TODO: Make round-robin buffers
         self.shape_line_buffer_pos = self.buffer(reserve=8 * 10)
-        self.shape_line_buffer_color = self.buffer(reserve=4 * 10)
+        # self.shape_line_buffer_color = self.buffer(reserve=4 * 10)
         self.shape_line_geometry = self.geometry([
             BufferDescription(self.shape_line_buffer_pos, '2f', ['in_vert']),
-            BufferDescription(self.shape_line_buffer_color, '4f1', ['in_color'], normalized=['in_color']),
+            # BufferDescription(self.shape_line_buffer_color, '4f1', ['in_color'], normalized=['in_color'])
         ])
 
     @property
