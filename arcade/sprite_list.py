@@ -244,6 +244,7 @@ class SpriteList(Generic[_SpriteType]):
         """
         # The context this sprite list belongs to
         self.ctx = None
+        self.program = None
 
         # List of sprites in the sprite list
         self.sprite_list = []
@@ -576,10 +577,10 @@ class SpriteList(Generic[_SpriteType]):
                 # print("\nB")
 
             # Figure out sprite sheet size
-            MARGIN = 1
+            margin = 1
 
-            sprite_sheet_width = (grid_item_width + MARGIN) * grid_width
-            sprite_sheet_height = (grid_item_height + MARGIN) * grid_height
+            sprite_sheet_width = (grid_item_width + margin) * grid_width
+            sprite_sheet_height = (grid_item_height + margin) * grid_height
 
             if new_texture:
 
@@ -593,8 +594,8 @@ class SpriteList(Generic[_SpriteType]):
                 x_offset = 0
                 for index, image in enumerate(self.array_of_images):
 
-                    x = (index % grid_width) * (grid_item_width + MARGIN)
-                    y = (index // grid_width) * (grid_item_height + MARGIN)
+                    x = (index % grid_width) * (grid_item_width + margin)
+                    y = (index // grid_width) * (grid_item_height + margin)
 
                     # print(f"Pasting {new_array_of_texture_names[index]} at {x, y}")
 
@@ -624,11 +625,11 @@ class SpriteList(Generic[_SpriteType]):
                 # Texture coordinates are reversed in y axis
                 row = grid_height - row - 1
 
-                x = column * (grid_item_width + MARGIN)
-                y = row * (grid_item_height + MARGIN)
+                x = column * (grid_item_width + margin)
+                y = row * (grid_item_height + margin)
 
                 # Because, coordinates are reversed
-                y += (grid_item_height - (image.height - MARGIN))
+                y += (grid_item_height - (image.height - margin))
 
                 normalized_x = x / sprite_sheet_width
                 normalized_y = y / sprite_sheet_height
@@ -899,7 +900,7 @@ class SpriteList(Generic[_SpriteType]):
             # so that rotate and resize operations act on the texture
             # center by default
             texture_transform = Matrix3x3().translate(-0.5, -0.5).multiply(self.sprite_list[0].texture_transform.v).multiply(Matrix3x3().translate(0.5, 0.5).v)
-        if texture_transform == None:
+        if texture_transform is None:
             texture_transform = Matrix3x3()
         self.program['TextureTransform'] = texture_transform.v
 
