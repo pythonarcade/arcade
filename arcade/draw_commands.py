@@ -405,9 +405,9 @@ def _generic_draw_line_strip(point_list: PointList,
     geometry.num_vertices = len(point_list)
 
     # Double buffer sizes if out of space
-    while len(vertices) > ctx.generic_draw_line_strip_vbo.size:
-        ctx.generic_draw_line_strip_vbo.orphan(ctx.generic_draw_line_strip_vbo * 2)
-        ctx.generic_draw_line_strip_color.orphan(ctx.generic_draw_line_strip_color * 2)
+    while len(vertices) * 4 > ctx.generic_draw_line_strip_vbo.size:
+        ctx.generic_draw_line_strip_vbo.orphan(ctx.generic_draw_line_strip_vbo.size * 2)
+        ctx.generic_draw_line_strip_color.orphan(ctx.generic_draw_line_strip_color.size * 2)
 
     ctx.generic_draw_line_strip_vbo.write(vertices.tobytes())
     ctx.generic_draw_line_strip_color.write(a.tobytes())
@@ -494,20 +494,43 @@ def draw_lines(point_list: PointList,
          RGBA format.
     :param float line_width: Width of the line in pixels.
     """
+    # # New code
+    window = get_window()
+    if not window:
+        raise RuntimeError("No window found")
 
-    triangle_point_list: PointList = []
-    last_point = None
-    for point in point_list:
-        if last_point is not None:
-            points = get_points_for_thick_line(last_point[0], last_point[1], point[0], point[1], line_width)
-            reordered_points = points[1], points[0], points[2], points[0], points[2], points[3]
-            # noinspection PyUnresolvedReferences
-            triangle_point_list.extend(reordered_points)
-            _generic_draw_line_strip(triangle_point_list, color, gl.GL_TRIANGLES)
-            last_point = None
-        else:
-            last_point = point
+    ctx = window.ctx
+    program = ctx.shape_line_program
+    geometry = ctx.shape_line_geometry
+    if len(color) == 3:
+        color = (color[0], color[1], color[2], 255)
 
+    while len(point_list) * 3 * 4 > ctx.shape_line_buffer_pos.size:
+        ctx.shape_line_buffer_pos.orphan(ctx.shape_line_buffer_pos.size * 2)
+        ctx.shape_line_buffer_color.orphan(ctx.shape_line_buffer_color.size * 2)
+        # print('-> ', len(point_list) * 3 * 4, ctx.shape_line_buffer_pos.size)
+
+    program['Projection'] = get_projection().flatten()
+    program['line_width'] = line_width
+    ctx.shape_line_buffer_pos.write(
+        data=array.array('f', [v for point in point_list for v in point]).tobytes())
+    ctx.shape_line_buffer_color.write(
+        data=array.array('B', color * len(point_list)).tobytes())
+    geometry.render(program, mode=gl.GL_LINES, vertices=len(point_list))
+
+    # Keep old code just in case
+    # triangle_point_list: PointList = []
+    # last_point = None
+    # for point in point_list:
+    #     if last_point is not None:
+    #         points = get_points_for_thick_line(last_point[0], last_point[1], point[0], point[1], line_width)
+    #         reordered_points = points[1], points[0], points[2], points[0], points[2], points[3]
+    #         # noinspection PyUnresolvedReferences
+    #         triangle_point_list.extend(reordered_points)
+    #         _generic_draw_line_strip(triangle_point_list, color, gl.GL_TRIANGLES)
+    #         last_point = None
+    #     else:
+    #         last_point = point
 
 # --- BEGIN POINT FUNCTIONS # # #
 
