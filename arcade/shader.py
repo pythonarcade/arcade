@@ -998,6 +998,7 @@ class VertexArray:
 
         :param GLunit mode: Primitive type to render. TRIANGLES, LINES etc.
         :param int first: The first vertex to render from
+        :param int vertices: Number of vertices to render
         :param int instances: OpenGL instance, used in using vertexes over and over
         """
         gl.glBindVertexArray(self._glo)
@@ -1071,7 +1072,7 @@ class Geometry:
         return self._generate_vao(program)
 
     def render(self, program: Program, *, mode: gl.GLenum = None,
-               first: int = 0, vertices: int = 0, instances: int = 1):
+               first: int = 0, vertices: int = None, instances: int = 1):
         """Render the geometry with a specific program.
         :param Program program: The Program to render with
         :param gl.GLenum mode: Override what primitive mode should be used
@@ -1083,7 +1084,7 @@ class Geometry:
         vao = self.instance(program)
         mode = self._mode if mode is None else mode
         if mode:
-            vao.render(mode=mode, first=first, vertices=self._num_vertices, instances=instances)
+            vao.render(mode=mode, first=first, vertices=vertices or self._num_vertices, instances=instances)
         else:
             vao.render(mode=mode, first=first, vertices=vertices or self._num_vertices, instances=instances)
 
