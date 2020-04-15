@@ -5,6 +5,26 @@
 Release Notes
 =============
 
+Version 2.4a1 (Pre-release)
+-------------------------
+
+Alphas of version 2.4 are available if you specifically download the latest
+alpha versions from `pypi <https://pypi.org/project/arcade/>`_.
+Otherwise you'll default to the more stable 2.3 branch.
+
+Version 2.4 has:
+
+* Support for defining your own frame buffers and shaders for doing more
+  advanced OpenGL programming.
+
+  * Sample for using frame buffers to create mini-maps
+    `mini_map_defender.py <examples/mini_map_defender.html>`_
+  * Sample for using frame buffers to create a 'glow' or 'bloom' effect
+    `bloom_defender.py <examples/bloom_defender.html>`_
+
+* Faster drawing of shape primitives (line, square, circle)
+* Physics engine is less likely to 'glitch' out
+
 Version 2.3.15
 --------------
 
