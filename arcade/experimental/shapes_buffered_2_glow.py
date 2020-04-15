@@ -98,7 +98,7 @@ class MyGame(arcade.Window):
 
         self.offscreen = self.ctx.framebuffer(
             color_attachments=self.ctx.texture((SCREEN_WIDTH, SCREEN_HEIGHT), wrap_x=gl.GL_CLAMP_TO_EDGE, wrap_y=gl.GL_CLAMP_TO_EDGE))
-        self.glow = postprocessing.Glow((SCREEN_WIDTH // 8, SCREEN_HEIGHT // 8))
+        self.glow = postprocessing.BloomEffect((SCREEN_WIDTH // 8, SCREEN_HEIGHT // 8))
 
     def on_draw(self):
         """

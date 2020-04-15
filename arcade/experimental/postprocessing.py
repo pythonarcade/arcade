@@ -129,7 +129,7 @@ class GaussianBlur(PostProcessing):
         return self._blur_y.render(blurred_x)
 
 
-class Glow(PostProcessing):
+class BloomEffect(PostProcessing):
     """ Post processing to create a bloom/glow effect. """
     def __init__(self,
                  size,
@@ -145,14 +145,13 @@ class Glow(PostProcessing):
             for i in range(kernel_size):
                 kernel[i] *= multiplier
 
-        print(kernel)
         kernel_string = "("
         for index, item in enumerate(kernel):
             kernel_string += f"{item:.7}"
             if index < len(kernel) - 1:
                 kernel_string += ", "
         kernel_string += ")"
-        print(kernel_string)
+
         defines = {'KERNEL_SIZE': str(kernel_size), 'MY_KERNEL': kernel_string}
         self._gaussian = GaussianBlur(size, defines=defines)
         self._combine_program = self.ctx.load_program(

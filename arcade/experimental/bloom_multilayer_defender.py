@@ -1,10 +1,12 @@
 """
 Defender Clone.
 
-This example shows how to create a 'bloom' or 'glow' effect.
+This example shows how to:
+1. Create a mini-map
+2. Create a 'bloom' or 'glow' effect.
 
 If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.experimental.bloom_defender
+python -m arcade.examples.defender
 """
 
 import arcade
@@ -175,31 +177,37 @@ class MyGame(arcade.Window):
 
         # --- Bloom related ---
 
-        # Frame to receive the glow, and color attachment to store each pixel's
-        # color data
-        self.bloom_color_attachment = self.ctx.texture((SCREEN_WIDTH, SCREEN_HEIGHT))
-        self.bloom_screen = self.ctx.framebuffer(color_attachments=[self.bloom_color_attachment])
+        # Make stars glow dimly
+        self.slight_bloom_color_attachment = self.ctx.texture((SCREEN_WIDTH, SCREEN_HEIGHT))
+        self.slight_bloom_screen = self.ctx.framebuffer(color_attachments=[self.slight_bloom_color_attachment])
 
+        # --- Bloom Related ---
         # Down-sampling helps improve the blur.
         # Note: Any item with a size less than the down-sampling size may get missed in
         # the blur process. Down-sampling by 8 and having an item of 4x4 size, the item
         # will get missed 50% of the time in the x direction, and 50% of the time in the
         # y direction for a total of being missed 75% of the time.
-        down_sampling = 4
-        # Size of the screen we are glowing onto
-        size = (SCREEN_WIDTH // down_sampling, SCREEN_HEIGHT // down_sampling)
-        # Gaussian blur parameters.
-        # To preview different values, see:
-        # https://observablehq.com/@jobleonard/gaussian-kernel-calculater
+        DOWN_SAMPLING = 4
+
+        size = (SCREEN_WIDTH // DOWN_SAMPLING, SCREEN_HEIGHT // DOWN_SAMPLING)
         kernel_size = 21
         sigma = 4
         mu = 0
+        multiplier = 1.5
         step = 1
-        # Control the intensity
-        multiplier = 2
+        self.slight_bloom = postprocessing.BloomEffect(size, kernel_size, sigma, mu, multiplier, step)
 
-        # Create a post-processor to create a bloom
-        self.bloom_postprocessing = postprocessing.BloomEffect(size, kernel_size, sigma, mu, multiplier, step)
+        # Make lasers and particles glow bright
+        self.intense_bloom_color_attachment = self.ctx.texture((SCREEN_WIDTH, SCREEN_HEIGHT))
+        self.intense_bloom_screen = self.ctx.framebuffer(color_attachments=[self.intense_bloom_color_attachment])
+
+        size = (SCREEN_WIDTH // DOWN_SAMPLING, SCREEN_HEIGHT // DOWN_SAMPLING)
+        kernel_size = 21
+        sigma = 4
+        mu = 0
+        multiplier = 5
+        step = 1
+        self.intense_bloom = postprocessing.BloomEffect(size, kernel_size, sigma, mu, multiplier, step)
 
     def setup(self):
         """ Set up the game and initialize the variables. """
@@ -220,14 +228,14 @@ class MyGame(arcade.Window):
         for i in range(80):
             sprite = arcade.SpriteSolidColor(4, 4, arcade.color.WHITE)
             sprite.center_x = random.randrange(PLAYING_FIELD_WIDTH)
-            sprite.center_y = random.randrange(PLAYING_FIELD_HEIGHT)
+            sprite.center_y = random.randrange(600)
             self.star_sprite_list.append(sprite)
 
         # Add enemies
         for i in range(20):
             sprite = arcade.SpriteSolidColor(20, 20, arcade.csscolor.LIGHT_SALMON)
             sprite.center_x = random.randrange(PLAYING_FIELD_WIDTH)
-            sprite.center_y = random.randrange(PLAYING_FIELD_HEIGHT)
+            sprite.center_y = random.randrange(600)
             self.enemy_sprite_list.append(sprite)
 
     def on_draw(self):
@@ -238,17 +246,28 @@ class MyGame(arcade.Window):
 
             # --- Bloom related ---
 
-            # Draw to the 'bloom' layer
-            self.bloom_screen.use()
-            self.bloom_screen.clear((0, 0, 0, 0))
+            # Draw to the 'slight bloom' layer
+            self.slight_bloom_screen.use()
+            self.slight_bloom_screen.clear((0, 0, 0, 0))
 
             arcade.set_viewport(self.view_left,
                                 SCREEN_WIDTH + self.view_left,
                                 self.view_bottom,
                                 SCREEN_HEIGHT + self.view_bottom)
 
-            # Draw all the sprites on the screen that should have a bloom
+            # Draw all the sprites on the screen that should have a 'slight' bloom
             self.star_sprite_list.draw()
+
+            # # Draw to the 'intense bloom' layer
+            self.intense_bloom_screen.use()
+            self.intense_bloom_screen.clear((0, 0, 0, 0))
+
+            arcade.set_viewport(self.view_left,
+                                SCREEN_WIDTH + self.view_left,
+                                self.view_bottom,
+                                SCREEN_HEIGHT + self.view_bottom)
+
+            # Draw all the sprites on the screen that should have a 'intense' bloom
             self.bullet_sprite_list.draw()
 
             # Now draw to the actual screen
@@ -262,7 +281,10 @@ class MyGame(arcade.Window):
             # --- Bloom related ---
 
             # Draw the bloom layers
-            self.bloom_postprocessing.render(self.bloom_color_attachment, self)
+            # gl.glDisable(gl.GL_BLEND)
+            self.slight_bloom.render(self.slight_bloom_color_attachment, self)
+            self.intense_bloom.render(self.intense_bloom_color_attachment, self)
+            # gl.glEnable(gl.GL_BLEND)
 
             # Draw the sprites / items that have no bloom
             self.enemy_sprite_list.draw()

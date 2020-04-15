@@ -520,6 +520,11 @@ Frame Buffers (Arcade 2.4+)
 
    :ref:`mini_map_defender`
 
+.. figure:: thumbs/bloom_defender.png
+   :figwidth: 170px
+
+   :ref:`bloom_defender`
+
 Particle System
 ^^^^^^^^^^^^^^^
 
