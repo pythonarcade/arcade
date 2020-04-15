@@ -461,16 +461,19 @@ def draw_line(start_x: float, start_y: float, end_x: float, end_y: float,
     ctx = window.ctx
     program = ctx.shape_line_program
     geometry = ctx.shape_line_geometry
+    # We need to normalize the color because we are setting it as a float uniform
     if len(color) == 3:
-        # color = (*color, 255)
-        color = (color[0], color[1], color[2], 255)
+        color_normalized = (color[0] / 255, color[1] / 255, color[2] / 255, 1.0)
+    elif len(color) == 4:
+        color_normalized = (color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255)  # type: ignore
+    else:
+        raise ValueError("Invalid color format. Use a 3 or 4 component tuple")
 
     program['Projection'] = get_projection().flatten()
     program['line_width'] = line_width
+    program['color'] = color_normalized
     ctx.shape_line_buffer_pos.write(
         data=array.array('f', [start_x, start_y, end_x, end_y]).tobytes())
-    ctx.shape_line_buffer_color.write(
-        data=array.array('B', color).tobytes())
     geometry.render(program, mode=gl.GL_LINES, vertices=2)
 
     # NOTE: Keep old code just in case
@@ -494,7 +497,6 @@ def draw_lines(point_list: PointList,
          RGBA format.
     :param float line_width: Width of the line in pixels.
     """
-    # # New code
     window = get_window()
     if not window:
         raise RuntimeError("No window found")
@@ -502,20 +504,23 @@ def draw_lines(point_list: PointList,
     ctx = window.ctx
     program = ctx.shape_line_program
     geometry = ctx.shape_line_geometry
+    # We need to normalize the color because we are setting it as a float uniform
     if len(color) == 3:
-        color = (color[0], color[1], color[2], 255)
+        color_normalized = (color[0] / 255, color[1] / 255, color[2] / 255, 1.0)
+    elif len(color) == 4:
+        color_normalized = (color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255)  # type: ignore
+    else:
+        raise ValueError("Invalid color format. Use a 3 or 4 component tuple")
 
     while len(point_list) * 3 * 4 > ctx.shape_line_buffer_pos.size:
         ctx.shape_line_buffer_pos.orphan(ctx.shape_line_buffer_pos.size * 2)
-        ctx.shape_line_buffer_color.orphan(ctx.shape_line_buffer_color.size * 2)
         # print('-> ', len(point_list) * 3 * 4, ctx.shape_line_buffer_pos.size)
 
     program['Projection'] = get_projection().flatten()
     program['line_width'] = line_width
+    program['color'] = color_normalized
     ctx.shape_line_buffer_pos.write(
         data=array.array('f', [v for point in point_list for v in point]).tobytes())
-    ctx.shape_line_buffer_color.write(
-        data=array.array('B', color * len(point_list)).tobytes())
     geometry.render(program, mode=gl.GL_LINES, vertices=len(point_list))
 
     # Keep old code just in case
