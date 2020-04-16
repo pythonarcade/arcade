@@ -5,13 +5,7 @@
 Release Notes
 =============
 
-UNRELEASED
-----------
-
-* Antialiasing should now work on windows if ``antialiasing=True``
-  is passed in the window constructor.
-
-Version 2.4a1 (Pre-release)
+Version 2.4a2 (Pre-release)
 ---------------------------
 
 Alphas of version 2.4 are available if you specifically download the latest
@@ -30,6 +24,8 @@ Version 2.4 has:
 
 * Faster drawing of shape primitives (line, square, circle)
 * Physics engine is less likely to 'glitch' out
+* Antialiasing should now work on windows if ``antialiasing=True``
+  is passed in the window constructor.
 
 Version 2.3.15
 --------------
