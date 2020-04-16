@@ -202,7 +202,7 @@ def draw_parabola_outline(start_x: float, start_y: float, end_x: float,
 
 def draw_circle_filled(center_x: float, center_y: float, radius: float,
                        color: Color,
-                       num_segments: int = 128):
+                       num_segments: int = -1):
     """
     Draw a filled-in circle.
 
@@ -211,12 +211,38 @@ def draw_circle_filled(center_x: float, center_y: float, radius: float,
     :param float radius: width of the circle.
     :param Color color: color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
-    :param int num_segments: float of triangle segments that make up this
+    :param int num_segments: Number of triangle segments that make up this
          circle. Higher is better quality, but slower render time.
+         The default value of -1 means arcade will try to calulate a reasonable
+         amount of segments based on the size of the circle.
     """
-    width = radius * 2
-    height = radius * 2
-    draw_ellipse_filled(center_x, center_y, width, height, color, num_segments=num_segments)
+    window = get_window()
+    if not window:
+        raise RuntimeError("No window found")
+
+    ctx = window.ctx
+    program = ctx.shape_ellipse_unbuffered_program
+    geometry = ctx.shape_ellipse_unbuffered_geometry
+    buffer = ctx.shape_ellipse_unbuffered_buffer
+    # We need to normalize the color because we are setting it as a float uniform
+    if len(color) == 3:
+        color_normalized = (color[0] / 255, color[1] / 255, color[2] / 255, 1.0)
+    elif len(color) == 4:
+        color_normalized = (color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255)  # type: ignore
+    else:
+        raise ValueError("Invalid color format. Use a 3 or 4 component tuple")
+
+    program['Projection'] = get_projection().flatten()
+    program['color'] = color_normalized
+    program['size'] = radius, radius
+    program['segments'] = num_segments
+    buffer.write(data=array.array('f', (center_x, center_y)).tobytes())
+
+    geometry.render(program, mode=gl.GL_POINTS, vertices=1)
+
+    # width = radius * 2
+    # height = radius * 2
+    # draw_ellipse_filled(center_x, center_y, width, height, color, num_segments=num_segments)
 
 
 def draw_circle_outline(center_x: float, center_y: float, radius: float,

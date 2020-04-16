@@ -1856,6 +1856,11 @@ class Context:
             fragment_shader=":resources:/shaders/shapes/line/unbuffered_fs.glsl",
             geometry_shader=":resources:/shaders/shapes/line/unbuffered_geo.glsl",
         )
+        self.shape_ellipse_unbuffered_program = self.load_program(
+            vertex_shader=":resources:/shaders/shapes/ellipse/filled_unbuffered_vs.glsl",
+            fragment_shader=":resources:/shaders/shapes/ellipse/filled_unbuffered_fs.glsl",
+            geometry_shader=":resources:/shaders/shapes/ellipse/filled_unbuffered_geo.glsl",
+        )
 
         # --- Pre-created geometry and buffers for unbuffered draw calls ----
         # FIXME: These pre-created resources needs to be packaged nicely
@@ -1875,6 +1880,10 @@ class Context:
             BufferDescription(self.shape_line_buffer_pos, '2f', ['in_vert']),
             # BufferDescription(self.shape_line_buffer_color, '4f1', ['in_color'], normalized=['in_color'])
         ])
+        # ellipse/circle filled
+        self.shape_ellipse_unbuffered_buffer = self.buffer(reserve=8)
+        self.shape_ellipse_unbuffered_geometry = self.geometry([
+            BufferDescription(self.shape_ellipse_unbuffered_buffer, '2f', ['in_vert'])])
 
     @property
     def window(self):

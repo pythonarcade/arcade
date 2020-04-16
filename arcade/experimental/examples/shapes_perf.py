@@ -23,23 +23,24 @@ def random_color(alpha=127):
     return random.randint(0, 255), random.randint(0, 255), random.randint(0, 255), alpha
 
 
-def random_radius(range=(5, 25)):
-    return random.randrange(*range)
+def random_radius(start=5, end=25):
+    return random.randrange(start, end)
 
 
 class TestWindow(arcade.Window):
 
     def __init__(self, width, height, title):
-        super().__init__(800, 600, "Test", antialiasing=True, resizable=True, fullscreen=False)
+        super().__init__(width, height, title, antialiasing=False, resizable=True)
         # Single lines
         self.single_lines_calls = [(*random_pos(), *random_pos(), random_color()) for _ in range(600)]
         # Line list
         self.line_list = [(random.randrange(0, SCREEN_WIDTH), random.randrange(0, SCREEN_HEIGHT)) for _ in range(2 * 10000)]
 
-        # Single ciricle draw calls
-        self.single_circle_calls = [(*random_pos(), random_radius(), random_color()) for _ in range(10000)]
+        # Single circle draw calls
+        self.single_circle_calls = [(*random_pos(), random_radius(), random_color()) for _ in range(600)]
 
         self.frames = 0
+        self.elapsed = 0
         self.execution_time = 0
 
     def do_draw_line(self):
@@ -83,9 +84,9 @@ class TestWindow(arcade.Window):
         gl.glViewport(0, 0, *self.get_framebuffer_size())
 
     def on_update(self, dt):
-        pass
+        self.elapsed += dt
 
 
 if __name__ == '__main__':
-    window = TestWindow(SCREEN_HEIGHT, SCREEN_HEIGHT, TTTLE)
+    window = TestWindow(SCREEN_WIDTH, SCREEN_HEIGHT, TTTLE)
     arcade.run()
