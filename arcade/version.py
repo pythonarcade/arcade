@@ -1,3 +1,3 @@
 #!/usr/bin/env python
 
-VERSION = "2.4a1"
+VERSION = "2.4a2"
