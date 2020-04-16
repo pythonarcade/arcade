@@ -24,7 +24,7 @@ class MyGame(arcade.Window):
         Set up the application.
         """
         self.time = 0
-        super().__init__(width, height, title)
+        super().__init__(width, height, title, resizable=True)
         self.program = self.ctx.program(
             vertex_shader="""
             #version 330

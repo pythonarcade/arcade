@@ -8,7 +8,7 @@ from pyglet import gl
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
-TTTLE = "Line Test"
+TITLE = "Line Test"
 
 # line / lines
 # rectangle_filled / rectangle_outline / rectangle_textured
@@ -37,7 +37,7 @@ class TestWindow(arcade.Window):
         self.line_list = [(random.randrange(0, SCREEN_WIDTH), random.randrange(0, SCREEN_HEIGHT)) for _ in range(2 * 10000)]
 
         # Single circle draw calls
-        self.single_circle_calls = [(*random_pos(), random_radius(), random_color()) for _ in range(600)]
+        self.single_circle_calls = [(*random_pos(), random_radius(), random_color()) for _ in range(200)]
 
         self.frames = 0
         self.elapsed = 0
@@ -72,7 +72,11 @@ class TestWindow(arcade.Window):
             self.frames += 1
 
             if self.execution_time > 1.0 and self.frames > 0:
-                print(self.frames, round(self.execution_time, 3), round(self.execution_time / self.frames, 3))
+                print((
+                    f"frames {self.frames}, "
+                    f"execution time {round(self.execution_time, 3)}, "
+                    f"frame time {round(self.execution_time / self.frames, 3)}"
+                ))
                 self.execution_time = 0
                 self.frames = 0
         except:
@@ -88,5 +92,5 @@ class TestWindow(arcade.Window):
 
 
 if __name__ == '__main__':
-    window = TestWindow(SCREEN_WIDTH, SCREEN_HEIGHT, TTTLE)
+    window = TestWindow(SCREEN_WIDTH, SCREEN_HEIGHT, TITLE)
     arcade.run()
