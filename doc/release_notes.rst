@@ -5,8 +5,14 @@
 Release Notes
 =============
 
+UNRELEASED
+----------
+
+* Antialiasing should now work on windows if ``antialiasing=True``
+  is passed in the window constructor.
+
 Version 2.4a1 (Pre-release)
--------------------------
+---------------------------
 
 Alphas of version 2.4 are available if you specifically download the latest
 alpha versions from `pypi <https://pypi.org/project/arcade/>`_.
