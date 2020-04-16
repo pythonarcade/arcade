@@ -111,6 +111,12 @@ class Window(pyglet.window.Window):
         # Representation of the OpenGL context for this window
         self._ctx = shader.Context(self)
 
+    def close(self):
+        """ Close the Window. """
+        super().close()
+        pyglet.clock.unschedule(self.update)
+        pyglet.clock.unschedule(self.on_update)
+
     @property
     def ctx(self) -> shader.Context:
         """The OpenGL context for this window"""
