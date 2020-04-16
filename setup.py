@@ -97,6 +97,8 @@ if __name__ == "__main__":
                                    'resources/images/tiles/*',
                                    'resources/shaders/*',
                                    'resources/shaders/shapes/*',
+                                   'resources/shaders/shapes/ellipse/*',
+                                   'resources/shaders/shapes/line/*',
                                    'resources/sounds/*',
                                    'resources/tmx_maps/*',
                                    'soloud/*',
