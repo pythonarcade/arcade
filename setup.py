@@ -2,7 +2,7 @@
 
 from os import path
 import sys
-from setuptools import setup
+from setuptools import setup, find_namespace_packages
 
 VERSION = 'default'
 def execfile(filepath, globals=None, locals=None):
@@ -43,72 +43,40 @@ if __name__ == "__main__":
         long_desc = f.read()
 
     setup(
-          name="arcade",
-          version=RELEASE,
-          description="Arcade Game Development Library",
-          long_description=long_desc,
-          author="Paul Vincent Craven",
-          author_email="paul.craven@simpson.edu",
-          license="MIT",
-          url="http://arcade.academy",
-          download_url="http://arcade.academy",
-          install_requires=install_requires,
-          packages=["arcade",
-                    "arcade.key",
-                    "arcade.color",
-                    "arcade.csscolor",
-                    "arcade.examples",
-                    "arcade.resources",
-                    "arcade.soloud"
-                    ],
-          python_requires='>=3.6',
-          classifiers=[
-              "Development Status :: 5 - Production/Stable",
-              "Intended Audience :: Developers",
-              "License :: OSI Approved :: MIT License",
-              "Operating System :: OS Independent",
-              "Programming Language :: Python",
-              "Programming Language :: Python :: 3.6",
-              "Programming Language :: Python :: 3.7",
-              "Programming Language :: Python :: Implementation :: CPython",
-              "Topic :: Software Development :: Libraries :: Python Modules",
-              ],
-          package_data={'arcade': ['resources/gui_themes/Fantasy/Buttons/*',
-                                   'resources/gui_themes/Fantasy/DialogueBox/*',
-                                   'resources/gui_themes/Fantasy/Menu/*',
-                                   'resources/gui_themes/Fantasy/TextBox/*',
-                                   'resources/gui_themes/Fantasy/Window/*',
-                                   'resources/images/*',
-                                   'resources/images/alien/*',
-                                   'resources/images/animated_characters/female_adventurer/*',
-                                   'resources/images/animated_characters/female_person/*',
-                                   'resources/images/animated_characters/male_adventurer/*',
-                                   'resources/images/animated_characters/male_person/*',
-                                   'resources/images/animated_characters/robot/*',
-                                   'resources/images/animated_characters/zombie/*',
-                                   'resources/images/backgrounds/*',
-                                   'resources/images/enemies/*',
-                                   'resources/images/isometric_dungeon/*',
-                                   'resources/images/items/*',
-                                   'resources/images/pinball/*',
-                                   'resources/images/space_shooter/*',
-                                   'resources/images/spritesheets/*',
-                                   'resources/images/texture_transform/*',
-                                   'resources/images/tiles/*',
-                                   'resources/shaders/*',
-                                   'resources/shaders/shapes/*',
-                                   'resources/shaders/shapes/ellipse/*',
-                                   'resources/shaders/shapes/line/*',
-                                   'resources/sounds/*',
-                                   'resources/tmx_maps/*',
-                                   'soloud/*',
-                                   'py.typed'],
-                        'arcade.soloud': ['*.*']},
-          project_urls={
-                        'Documentation': 'https://arcade.academy/',
-                        'Example Code ': 'http://arcade.academy/examples/index.html',
-                        'Issue Tracker': 'https://github.com/pvcraven/arcade/issues',
-                        'Source': 'https://github.com/pvcraven/arcade',
-                        'On-line Book': 'http://learn.arcade.academy/',
-          },
-         )
+        name="arcade",
+        version=RELEASE,
+        description="Arcade Game Development Library",
+        long_description=long_desc,
+        author="Paul Vincent Craven",
+        author_email="paul.craven@simpson.edu",
+        license="MIT",
+        url="http://arcade.academy",
+        download_url="http://arcade.academy",
+        install_requires=install_requires,
+        packages=find_namespace_packages(
+            include=["arcade.*"],
+            exclude=[],
+        ),
+        python_requires='>=3.6',
+        classifiers=[
+            "Development Status :: 5 - Production/Stable",
+            "Intended Audience :: Developers",
+            "License :: OSI Approved :: MIT License",
+            "Operating System :: OS Independent",
+            "Programming Language :: Python",
+            "Programming Language :: Python :: 3.6",
+            "Programming Language :: Python :: 3.7",
+            "Programming Language :: Python :: Implementation :: CPython",
+            "Topic :: Software Development :: Libraries :: Python Modules",
+        ],
+        # include_package_data: If set to True, this tells setuptools to automatically include
+        # any data files it finds inside your package directories that are specified by your MANIFEST.in file.
+        include_package_data=True,
+        project_urls={
+            'Documentation': 'https://arcade.academy/',
+            'Example Code ': 'http://arcade.academy/examples/index.html',
+            'Issue Tracker': 'https://github.com/pvcraven/arcade/issues',
+            'Source': 'https://github.com/pvcraven/arcade',
+            'On-line Book': 'http://learn.arcade.academy/',
+        },
+)
