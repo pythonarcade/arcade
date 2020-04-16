@@ -30,7 +30,7 @@ def random_radius(start=5, end=25):
 class TestWindow(arcade.Window):
 
     def __init__(self, width, height, title):
-        super().__init__(width, height, title, antialiasing=False, resizable=True)
+        super().__init__(width, height, title, antialiasing=True, resizable=True)
         # Single lines
         self.single_lines_calls = [(*random_pos(), *random_pos(), random_color()) for _ in range(600)]
         # Line list
@@ -51,15 +51,17 @@ class TestWindow(arcade.Window):
         arcade.draw_lines(self.line_list, (255, 0, 0, 10))
 
     def do_draw_circle_filled(self):
-        # for c in self.single_circle_calls:
-        #     arcade.draw_circle_filled(c[0], c[1], c[2], c[3])
-        arcade.draw_circle_filled(400, 300, 300, arcade.color.AZURE)
+        for c in self.single_circle_calls:
+            arcade.draw_circle_filled(c[0], c[1], c[2], c[3])
 
     def do_draw_ellipse_filled(self):
         arcade.draw_ellipse_filled(400, 300, 100, 200, arcade.color.AZURE, self.elapsed * 10)
 
     def do_draw_circle_outline(self):
-        pass
+        arcade.draw_circle_outline(400, 300, 200, arcade.color.AZURE, 10)
+
+    def do_draw_ellipse_outline(self):
+        arcade.draw_ellipse_outline(400, 300, 230, 100, arcade.color.AZURE, 10, 45)
 
     def on_draw(self):
         try:
@@ -70,8 +72,10 @@ class TestWindow(arcade.Window):
             # Toggle what to test here
             # self.do_draw_line()
             # self.do_draw_lines()
-            self.do_draw_circle_filled()
+            # self.do_draw_circle_filled()
             # self.do_draw_ellipse_filled()
+            self.do_draw_circle_outline()
+            self.do_draw_ellipse_outline()
 
             self.execution_time += time.time() - start
             self.frames += 1

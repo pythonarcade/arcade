@@ -2,7 +2,7 @@
 
 #define PI 3.1415926535897932384626433832795
 #define MIN_SEGMENTS 16
-#define MAX_SEGMENTS 85
+#define MAX_SEGMENTS 112
 
 layout (points) in;
 // TODO: We might want to increase the number of emitted verties, but core 3.3 says 256 is min requirement.
@@ -11,8 +11,8 @@ layout (triangle_strip, max_vertices = 256) out;
 
 uniform mat4 Projection;
 uniform int segments;
-// [w, h, tilt]
-uniform vec3 shape;
+// [w, h, tilt, thinkness]
+uniform vec4 shape;
 
 void main() {
     // Get center of the circle
@@ -39,22 +39,30 @@ void main() {
     // sin(v), cos(v) travels clockwise around the circle starting at 0, 1 (top of circle)
     float step = PI * 2 / segments_selected;
 
-    for (int i = 0; i < segments_selected; i++) {
-        gl_Position = Projection * vec4(center, 0.0, 1.0);
-        EmitVertex();
+    // Draw think circle with triangle strip. This can be handled as a single primive by the gpu.
+    // Number of vertices is segments * 2 + 2, so we need to emit the inital vertex first
 
-        // Calculate the ellipse/circle using 0, 0 as origin
-        vec2 p1 = vec2(sin((i + 1) * step), cos((i + 1) * step)) * shape.xy;
-        // Rotate the circle and then add translation to get the right origin
+    // First outer vertex
+    vec2 p_start = vec2(sin(0), cos(0)) * shape.xy;
+    gl_Position = Projection * vec4((rot * p_start) + center, 0.0, 1.0);
+    EmitVertex();
+
+    // Draw cross segments from inner to outer
+    for (int i = 0; i < segments_selected; i++) {
+        // Inner vertex
+        vec2 p1 = vec2(sin((i) * step), cos((i) * step)) * (shape.xy - vec2(shape.w));
         gl_Position = Projection * vec4((rot * p1) + center, 0.0, 1.0);
         EmitVertex();
 
-        // Calculate the ellipse/circle using 0, 0 as origin
-        vec2 p2 = vec2(sin(i * step), cos(i * step)) * shape.xy;
-        // Rotate the circle and then add translation to get the right origin
+        // Outer vertex
+        vec2 p2 = vec2(sin((i + 1) * step), cos((i + 1) * step)) * shape.xy;
         gl_Position = Projection * vec4((rot * p2) + center, 0.0, 1.0);
         EmitVertex();
-
-        EndPrimitive();
     }
+    // Last inner vertex to wrap up
+    vec2 p_end = vec2(sin(0), cos(0)) * (shape.xy - vec2(shape.w));
+    gl_Position = Projection * vec4((rot * p_end) + center, 0.0, 1.0);
+    EmitVertex();
+
+    EndPrimitive();
 }

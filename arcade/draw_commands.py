@@ -224,7 +224,7 @@ def draw_circle_filled(center_x: float, center_y: float, radius: float,
 
 def draw_circle_outline(center_x: float, center_y: float, radius: float,
                         color: Color, border_width: float = 1,
-                        num_segments: int = 128):
+                        num_segments: int = -1):
     """
     Draw the outline of a circle.
 
@@ -234,14 +234,16 @@ def draw_circle_outline(center_x: float, center_y: float, radius: float,
     :param Color color: color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
     :param float border_width: Width of the circle outline in pixels.
-    :param int num_segments: Int of triangle segments that make up this
+    :param int num_segments: Number of triangle segments that make up this
          circle. Higher is better quality, but slower render time.
+         The default value of -1 means arcade will try to calulate a reasonable
+         amount of segments based on the size of the circle.
     """
-    width = radius * 2
-    height = radius * 2
-    draw_ellipse_outline(center_x, center_y, width, height,
-                         color, border_width, num_segments=num_segments)
-
+    # width = radius * 2
+    # height = radius * 2
+    # draw_ellipse_outline(center_x, center_y, width, height,
+    #                      color, border_width, num_segments=num_segments)
+    draw_ellipse_outline(center_x, center_y, radius * 2, radius * 2, color, border_width, num_segments)
 
 # --- END CIRCLE FUNCTIONS # # #
 
@@ -271,7 +273,7 @@ def draw_ellipse_filled(center_x: float, center_y: float,
         raise RuntimeError("No window found")
 
     ctx = window.ctx
-    program = ctx.shape_ellipse_unbuffered_program
+    program = ctx.shape_ellipse_filled_unbuffered_program
     geometry = ctx.shape_ellipse_unbuffered_geometry
     buffer = ctx.shape_ellipse_unbuffered_buffer
     # We need to normalize the color because we are setting it as a float uniform
@@ -317,7 +319,7 @@ def draw_ellipse_filled(center_x: float, center_y: float,
 def draw_ellipse_outline(center_x: float, center_y: float, width: float,
                          height: float, color: Color,
                          border_width: float = 1, tilt_angle: float = 0,
-                         num_segments: int = 128):
+                         num_segments: int = -1):
     """
     Draw the outline of an ellipse.
 
@@ -329,68 +331,94 @@ def draw_ellipse_outline(center_x: float, center_y: float, width: float,
          RGBA format.
     :param float border_width: Width of the circle outline in pixels.
     :param float tilt_angle: Angle in degrees to tilt the ellipse.
-    :param int num_segments: Number of line segments used to make the ellipse
+    :param int num_segments: Number of triangle segments that make up this
+         circle. Higher is better quality, but slower render time.
+         The default value of -1 means arcade will try to calulate a reasonable
+         amount of segments based on the size of the circle.
     """
+    window = get_window()
+    if not window:
+        raise RuntimeError("No window found")
 
-    if border_width == 1:
-        unrotated_point_list = []
-
-        for segment in range(num_segments):
-            theta = 2.0 * 3.1415926 * segment / num_segments
-
-            x = (width / 2) * math.cos(theta)
-            y = (height / 2) * math.sin(theta)
-
-            unrotated_point_list.append([x, y])
-
-        if tilt_angle == 0:
-            uncentered_point_list = unrotated_point_list
-        else:
-            uncentered_point_list = []
-            for point in unrotated_point_list:
-                uncentered_point_list.append(rotate_point(point[0], point[1], 0, 0, tilt_angle))
-
-        point_list = []
-        for point in uncentered_point_list:
-            point_list.append((point[0] + center_x, point[1] + center_y))
-
-        _generic_draw_line_strip(point_list, color, gl.GL_LINE_LOOP)
+    ctx = window.ctx
+    program = ctx.shape_ellipse_outline_unbuffered_program
+    geometry = ctx.shape_ellipse_outline_unbuffered_geometry
+    buffer = ctx.shape_ellipse_outline_unbuffered_buffer
+    # We need to normalize the color because we are setting it as a float uniform
+    if len(color) == 3:
+        color_normalized = (color[0] / 255, color[1] / 255, color[2] / 255, 1.0)
+    elif len(color) == 4:
+        color_normalized = (color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255)  # type: ignore
     else:
+        raise ValueError("Invalid color format. Use a 3 or 4 component tuple")
 
-        unrotated_point_list = []
+    program['Projection'] = get_projection().flatten()
+    program['color'] = color_normalized
+    program['shape'] = width / 2, height / 2, tilt_angle, border_width
+    program['segments'] = num_segments
+    buffer.write(data=array.array('f', (center_x, center_y)).tobytes())
 
-        start_segment = 0
-        end_segment = num_segments
+    geometry.render(program, mode=gl.GL_POINTS, vertices=1)
 
-        inside_width = (width / 2) - border_width / 2
-        outside_width = (width / 2) + border_width / 2
-        inside_height = (height / 2) - border_width / 2
-        outside_height = (height / 2) + border_width / 2
-
-        for segment in range(start_segment, end_segment + 1):
-            theta = 2.0 * math.pi * segment / num_segments
-
-            x1 = inside_width * math.cos(theta)
-            y1 = inside_height * math.sin(theta)
-
-            x2 = outside_width * math.cos(theta)
-            y2 = outside_height * math.sin(theta)
-
-            unrotated_point_list.append([x1, y1])
-            unrotated_point_list.append([x2, y2])
-
-        if tilt_angle == 0:
-            uncentered_point_list = unrotated_point_list
-        else:
-            uncentered_point_list = []
-            for point in unrotated_point_list:
-                uncentered_point_list.append(rotate_point(point[0], point[1], 0, 0, tilt_angle))
-
-        point_list = []
-        for point in uncentered_point_list:
-            point_list.append((point[0] + center_x, point[1] + center_y))
-
-        _generic_draw_line_strip(point_list, color, gl.GL_TRIANGLE_STRIP)
+    # if border_width == 1:
+    #     unrotated_point_list = []
+    #
+    #     for segment in range(num_segments):
+    #         theta = 2.0 * 3.1415926 * segment / num_segments
+    #
+    #         x = (width / 2) * math.cos(theta)
+    #         y = (height / 2) * math.sin(theta)
+    #
+    #         unrotated_point_list.append([x, y])
+    #
+    #     if tilt_angle == 0:
+    #         uncentered_point_list = unrotated_point_list
+    #     else:
+    #         uncentered_point_list = []
+    #         for point in unrotated_point_list:
+    #             uncentered_point_list.append(rotate_point(point[0], point[1], 0, 0, tilt_angle))
+    #
+    #     point_list = []
+    #     for point in uncentered_point_list:
+    #         point_list.append((point[0] + center_x, point[1] + center_y))
+    #
+    #     _generic_draw_line_strip(point_list, color, gl.GL_LINE_LOOP)
+    # else:
+    #
+    #     unrotated_point_list = []
+    #
+    #     start_segment = 0
+    #     end_segment = num_segments
+    #
+    #     inside_width = (width / 2) - border_width / 2
+    #     outside_width = (width / 2) + border_width / 2
+    #     inside_height = (height / 2) - border_width / 2
+    #     outside_height = (height / 2) + border_width / 2
+    #
+    #     for segment in range(start_segment, end_segment + 1):
+    #         theta = 2.0 * math.pi * segment / num_segments
+    #
+    #         x1 = inside_width * math.cos(theta)
+    #         y1 = inside_height * math.sin(theta)
+    #
+    #         x2 = outside_width * math.cos(theta)
+    #         y2 = outside_height * math.sin(theta)
+    #
+    #         unrotated_point_list.append([x1, y1])
+    #         unrotated_point_list.append([x2, y2])
+    #
+    #     if tilt_angle == 0:
+    #         uncentered_point_list = unrotated_point_list
+    #     else:
+    #         uncentered_point_list = []
+    #         for point in unrotated_point_list:
+    #             uncentered_point_list.append(rotate_point(point[0], point[1], 0, 0, tilt_angle))
+    #
+    #     point_list = []
+    #     for point in uncentered_point_list:
+    #         point_list.append((point[0] + center_x, point[1] + center_y))
+    #
+    #     _generic_draw_line_strip(point_list, color, gl.GL_TRIANGLE_STRIP)
 
 
 # --- END ELLIPSE FUNCTIONS # # #
