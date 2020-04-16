@@ -11,21 +11,27 @@ layout (triangle_strip, max_vertices = 256) out;
 
 uniform mat4 Projection;
 uniform int segments;
-// xy size of the ellipse
-uniform vec2 size;
-
+// [x, y, tilt]
+uniform vec3 shape;
 
 void main() {
     // Get center of the circle
     vec2 center = gl_in[0].gl_Position.xy;
     int segments_selected = 0;
 
+    // Calculate rotation/tilt
+    float angle = radians(shape.z);
+    mat2 rot = mat2(
+        cos(angle), -sin(angle),
+        sin(angle),  cos(angle)
+    );
+
     if (segments > 0) {
         // The user defined number of segments. Clamp it.
         segments_selected = segments;
     } else {
         // Estimate the number of segments needed based on size
-        segments_selected = int(2.0 * PI * max(size.x, size.y) / 10.0);
+        segments_selected = int(2.0 * PI * max(shape.x, shape.y) / 10.0);
     }
     // Clamp number of segments
     segments_selected = clamp(segments_selected, MIN_SEGMENTS, MAX_SEGMENTS);
@@ -37,10 +43,16 @@ void main() {
         gl_Position = Projection * vec4(center, 0.0, 1.0);
         EmitVertex();
 
-        gl_Position = Projection * vec4(center + vec2(sin((i + 1) * step), cos((i + 1) * step)) * size, 0.0, 1.0);
+        // Calculate the ellipse/circle using 0, 0 as origin
+        vec2 p1 = vec2(sin((i + 1) * step), cos((i + 1) * step)) * shape.xy;
+        // Rotate the circle and then add translation to get the right origin
+        gl_Position = Projection * vec4((rot * p1) + center, 0.0, 1.0);
         EmitVertex();
 
-        gl_Position = Projection * vec4(center + vec2(sin(i * step), cos(i * step)) * size, 0.0, 1.0);
+        // Calculate the ellipse/circle using 0, 0 as origin
+        vec2 p2 = vec2(sin(i * step), cos(i * step)) * shape.xy;
+        // Rotate the circle and then add translation to get the right origin
+        gl_Position = Projection * vec4((rot * p2) + center, 0.0, 1.0);
         EmitVertex();
 
         EndPrimitive();

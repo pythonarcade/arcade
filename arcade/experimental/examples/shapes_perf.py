@@ -51,8 +51,12 @@ class TestWindow(arcade.Window):
         arcade.draw_lines(self.line_list, (255, 0, 0, 10))
 
     def do_draw_circle_filled(self):
-        for c in self.single_circle_calls:
-            arcade.draw_circle_filled(c[0], c[1], c[2], c[3])
+        # for c in self.single_circle_calls:
+        #     arcade.draw_circle_filled(c[0], c[1], c[2], c[3])
+        arcade.draw_circle_filled(400, 300, 300, arcade.color.AZURE)
+
+    def do_draw_ellipse_filled(self):
+        arcade.draw_ellipse_filled(400, 300, 100, 200, arcade.color.AZURE, self.elapsed * 10)
 
     def do_draw_circle_outline(self):
         pass
@@ -67,6 +71,7 @@ class TestWindow(arcade.Window):
             # self.do_draw_line()
             # self.do_draw_lines()
             self.do_draw_circle_filled()
+            # self.do_draw_ellipse_filled()
 
             self.execution_time += time.time() - start
             self.frames += 1
@@ -79,7 +84,7 @@ class TestWindow(arcade.Window):
                 ))
                 self.execution_time = 0
                 self.frames = 0
-        except:
+        except Exception:
             import traceback
             traceback.print_exc()
             exit(0)
