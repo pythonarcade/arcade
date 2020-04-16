@@ -15,11 +15,13 @@ def resolve_resource_path(path: Union[str, Path]) -> Path:
         path = path.strip()  # Allow for silly mistakes with extra spaces
         if path.startswith(':resources:'):
             path = path[11:]
-        while path.startswith('/') or path.startswith('\\'):
-            path = path[1:]
+            while path.startswith('/') or path.startswith('\\'):
+                path = path[1:]
 
-        # Always convert into a Path object
-        path = RESOURCE_PATH / path
+            # Always convert into a Path object
+            path = Path(RESOURCE_PATH / path)
+        else:
+            path = Path(path)
 
     # Check for the existence of the file and provide useful feedback to
     # avoid deep stack trace into pathlib
