@@ -29,11 +29,12 @@ def has_line_of_sight(point_1: Point,
                             point_2[0], point_2[1])
     steps = int(distance // check_resolution)
     for step in range(steps + 1):
-        u = step / distance * check_resolution
+        step_distance = step * check_resolution
+        u = step_distance / distance
         midpoint = lerp_vec(point_1, point_2, u)
-        if max_distance != -1 and step > max_distance:
-            return True
-        # print(p1, p2, step, midpoint)
+        if max_distance != -1 and step_distance > max_distance:
+            return False
+        # print(point_1, point_2, step, u, step_distance, midpoint)
         sprite_list = get_sprites_at_point(midpoint, walls)
         if len(sprite_list) > 0:
             return False
