@@ -3,7 +3,7 @@ Temporary module to play with shaders and geometry
 """
 import array
 from arcade import shader, get_window
-
+from arcade.gl import BufferDescription
 
 def quad_fs(size=(1.0, 1.0), pos=(0.0, 0.0)):
     width, height = size
@@ -22,7 +22,7 @@ def quad_fs(size=(1.0, 1.0), pos=(0.0, 0.0)):
     ctx = get_window().ctx
     vbo = ctx.buffer(data=data.tobytes())
     vao_content = [
-        shader.BufferDescription(
+        BufferDescription(
             vbo,
             '2f 2f',
             ('in_vert', 'in_uv'),
@@ -66,7 +66,7 @@ def screen_rectangle(rectangle_size=None,
     ctx = get_window().ctx
     vbo = ctx.buffer(data=data.tobytes())
     vao_content = [
-        shader.BufferDescription(
+        BufferDescription(
             vbo,
             '2f 2f',
             ('in_vert', 'in_uv'),

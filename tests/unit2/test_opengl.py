@@ -4,7 +4,10 @@ Low level tests for OpenGL 3.3 wrappers.
 import array
 import pytest
 import arcade
-from arcade import shader
+from arcade.gl import BufferDescription
+from arcade.gl.glsl import ShaderSource
+from arcade.gl import ShaderException
+
 from pyglet import gl
 
 SCREEN_WIDTH = 800
@@ -28,7 +31,7 @@ def err_check(ctx):
 def test_buffer_description(ctx):
     # TODO: components > 4
     # TODO: padding
-    shader.BufferDescription(
+    BufferDescription(
         ctx.buffer(reserve=4 * 8),
         '2f 2f',
         ['in_vert', 'in_uv'],
@@ -86,18 +89,18 @@ def test_buffer(ctx):
 def test_geometry(ctx):
     """Test vertex_array"""
     program = ctx.load_program(
-        vertex_shader=ctx.resource_root / 'shaders/line_vertex_shader_vs.glsl',
-        fragment_shader=ctx.resource_root / 'shaders/line_vertex_shader_fs.glsl',
+        vertex_shader=':resources:shaders/line_vertex_shader_vs.glsl',
+        fragment_shader=':resources:shaders/line_vertex_shader_fs.glsl',
     )
     num_vertices = 100
     content = [
-        shader.BufferDescription(
+        BufferDescription(
             ctx.buffer(reserve=4 * num_vertices),
             '4f1',
             ['in_color'],
             normalized=['in_color'],
         ),
-        shader.BufferDescription(
+        BufferDescription(
             ctx.buffer(reserve=8 * num_vertices),
             '2f',
             ['in_vert']
@@ -114,7 +117,7 @@ def test_geometry(ctx):
 
 def test_shader_source(ctx):
     """Test shader source parsing"""
-    source_wrapper = shader.ShaderSource(
+    source_wrapper = ShaderSource(
         """
         #version 330
         #define TEST 10
@@ -173,7 +176,7 @@ def test_program(ctx):
     # TODO: Test all uniform types
     program['pos_offset'] = 1, 2
     assert program['pos_offset'] == (1.0, 2.0)
-    with pytest.raises(shader.ShaderException):
+    with pytest.raises(ShaderException):
         program['this_uniform_do_not_exist'] = 0
 
     # Program with only vertex shader

@@ -11,8 +11,6 @@ from typing import List
 from typing import Tuple
 from typing import Optional
 
-import pyglet.gl as gl
-
 import math
 import array
 
@@ -27,8 +25,8 @@ from arcade import is_point_in_polygon
 from arcade import rotate_point
 from arcade import get_projection
 from arcade import get_window
-from arcade import shader
 from arcade import Point
+from arcade import gl
 
 
 def _create_rects(rect_list: Iterable[Sprite]) -> List[float]:
@@ -443,7 +441,7 @@ class SpriteList(Generic[_SpriteType]):
                 usage=usage
             )
             variables = ['in_pos']
-            self._sprite_pos_desc = shader.BufferDescription(
+            self._sprite_pos_desc = gl.BufferDescription(
                 self._sprite_pos_buf,
                 '2f',
                 variables,
@@ -461,7 +459,7 @@ class SpriteList(Generic[_SpriteType]):
                 usage=usage
             )
             variables = ['in_size']
-            self._sprite_size_desc = shader.BufferDescription(
+            self._sprite_size_desc = gl.BufferDescription(
                 self._sprite_size_buf,
                 '2f',
                 variables,
@@ -478,7 +476,7 @@ class SpriteList(Generic[_SpriteType]):
                 usage=usage
             )
             variables = ['in_angle']
-            self._sprite_angle_desc = shader.BufferDescription(
+            self._sprite_angle_desc = gl.BufferDescription(
                 self._sprite_angle_buf,
                 '1f',
                 variables,
@@ -498,7 +496,7 @@ class SpriteList(Generic[_SpriteType]):
                 usage=usage
             )
             variables = ['in_color']
-            self._sprite_color_desc = shader.BufferDescription(
+            self._sprite_color_desc = gl.BufferDescription(
                 self._sprite_color_buf,
                 '4f1',
                 variables,
@@ -586,7 +584,7 @@ class SpriteList(Generic[_SpriteType]):
 
                 # TODO: This code isn't valid, but I think some releasing might be in order.
                 # if self.texture is not None:
-                #     shader.Texture.release(self.texture_id)
+                #     .Texture.release(self.texture_id)
 
                 # Make the composite image
                 new_image2 = Image.new('RGBA', (sprite_sheet_width, sprite_sheet_height))
@@ -657,7 +655,7 @@ class SpriteList(Generic[_SpriteType]):
                 usage=usage
             )
 
-            self._sprite_sub_tex_desc = shader.BufferDescription(
+            self._sprite_sub_tex_desc = gl.BufferDescription(
                 self._sprite_sub_tex_buf,
                 '4f',
                 ['in_sub_tex_coords'],
@@ -682,7 +680,7 @@ class SpriteList(Generic[_SpriteType]):
         ]
         )
         self.vbo_buf = self.ctx.buffer(data=vertices.tobytes())
-        vbo_buf_desc = shader.BufferDescription(
+        vbo_buf_desc = gl.BufferDescription(
             self.vbo_buf,
             '2f 2f',
             ('in_vert', 'in_texture')
@@ -881,16 +879,13 @@ class SpriteList(Generic[_SpriteType]):
         if self._vao1 is None:
             self._calculate_sprite_buffer()
 
+        self.ctx.enable(self.ctx.BLEND)
+        self.ctx.blend_func = self.ctx.BLEND_DEFAULT
+
         self._texture.use(0)
 
-        gl.glEnable(gl.GL_BLEND)
-        gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-
         if "filter" in kwargs:
-            gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, kwargs["filter"])
-            gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, kwargs["filter"])
-        # gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_NEAREST)
-        # gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_NEAREST)
+            self._texture.filter = self.ctx.NEAREST, self.ctx.NEAREST
 
         self.program['Texture'] = self.texture_id
         self.program['Projection'] = get_projection().flatten()
@@ -930,7 +925,7 @@ class SpriteList(Generic[_SpriteType]):
                 self._sprite_sub_tex_buf.write(self._sprite_sub_tex_data.tobytes())
                 self._sprite_sub_tex_changed = False
 
-        self._vao1.render(self.program, mode=gl.GL_TRIANGLE_STRIP, instances=len(self.sprite_list))
+        self._vao1.render(self.program, mode=self.ctx.TRIANGLE_STRIP, instances=len(self.sprite_list))
 
     def __len__(self) -> int:
         """ Return the length of the sprite list. """

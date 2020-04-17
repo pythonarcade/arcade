@@ -4,7 +4,8 @@ Post-processing shaders.
 from pathlib import Path
 from pyglet import gl
 from typing import Tuple
-from arcade import shader
+from arcade.gl import Context
+from arcade.gl.texture import Texture
 from arcade import get_window
 from arcade.experimental import geometry
 from arcade.experimental.gaussian_kernel import gaussian_kernel
@@ -34,7 +35,7 @@ class PostProcessing:
         self._ctx = get_window().ctx
 
     @property
-    def ctx(self) -> shader.Context:
+    def ctx(self) -> Context:
         """ Get the shader context. """
         return self._ctx
 
@@ -53,7 +54,7 @@ class PostProcessing:
         """ Get the size of the buffer. """
         return self._size
 
-    def render(self, *args, **kwargs) -> shader.Texture:
+    def render(self, *args, **kwargs) -> Texture:
         """ Render. Should be over-loaded by the child class. """
         pass
 
@@ -81,7 +82,7 @@ class GaussianBlurHorizontal(PostProcessing):
         )
         self._quad_fs = geometry.quad_fs(size=(2.0, 2.0))
 
-    def render(self, source: shader.Texture) -> shader.Texture:
+    def render(self, source: Texture) -> Texture:
         """ Render """
         self._fbo.use()
         source.use(0)
@@ -107,7 +108,7 @@ class GaussianBlurVertical(PostProcessing):
         )
         self._quad_fs = geometry.quad_fs(size=(2.0, 2.0))
 
-    def render(self, source: shader.Texture) -> shader.Texture:
+    def render(self, source: Texture) -> Texture:
         """ Render """
         self._fbo.use()
         source.use(0)
@@ -123,7 +124,7 @@ class GaussianBlur(PostProcessing):
         self._blur_x = GaussianBlurHorizontal(size, defines=defines)
         self._blur_y = GaussianBlurVertical(size, defines=defines)
 
-    def render(self, source: shader.Texture) -> shader.Texture:
+    def render(self, source: Texture) -> Texture:
         """ Render """
         blurred_x = self._blur_x.render(source)
         return self._blur_y.render(blurred_x)

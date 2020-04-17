@@ -24,7 +24,7 @@ from arcade import get_four_byte_color
 from arcade import get_projection
 from arcade import get_window
 from arcade import get_points_for_thick_line
-from arcade import shader
+from arcade.gl import BufferDescription
 
 
 class Shape:
@@ -105,7 +105,7 @@ def create_line_generic_with_colors(point_list: PointList,
 
     vbo = ctx.buffer(data=data.tobytes())
     vao_content = [
-        shader.BufferDescription(
+        BufferDescription(
             vbo,
             '2f 4f1',
             ('in_vert', 'in_color'),
@@ -626,7 +626,7 @@ class ShapeElementList(Generic[TShape]):
         ibo = self.ctx.buffer(data=indices.astype('i4').tobytes())
 
         vao_content = [
-            shader.BufferDescription(
+            BufferDescription(
                 vbo,
                 '2f 4f1',
                 ('in_vert', 'in_color'),

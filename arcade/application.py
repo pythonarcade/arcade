@@ -13,7 +13,7 @@ import pyglet
 from arcade import get_viewport
 from arcade import set_viewport
 from arcade import set_window
-from arcade import shader
+from arcade.gl import Context
 
 if TYPE_CHECKING:
     from arcade import TextBox
@@ -80,10 +80,6 @@ class Window(pyglet.window.Window):
             except pyglet.gl.GLException:
                 print("Warning: Anti-aliasing not supported on this computer.")
 
-        # Required for transparency
-        gl.glEnable(gl.GL_BLEND)
-        gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-
         if update_rate:
             from pyglet import compat_platform
             if compat_platform == 'darwin' or compat_platform == 'linux':
@@ -109,7 +105,11 @@ class Window(pyglet.window.Window):
         self.key: Optional[int] = None
 
         # Representation of the OpenGL context for this window
-        self._ctx = shader.Context(self)
+        self._ctx = Context(self)
+
+        # Required for transparency
+        self.ctx.enable(self.ctx.BLEND)
+        self.ctx.blend_func = self.ctx.BLEND_DEFAULT
 
     def close(self):
         """ Close the Window. """
@@ -118,7 +118,7 @@ class Window(pyglet.window.Window):
         pyglet.clock.unschedule(self.on_update)
 
     @property
-    def ctx(self) -> shader.Context:
+    def ctx(self) -> Context:
         """The OpenGL context for this window"""
         return self._ctx
 
