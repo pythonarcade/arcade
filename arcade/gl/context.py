@@ -41,22 +41,53 @@ class Context:
 
         # --- Store the most commonly used OpenGL constants
         # Texture
-        self.NEAREST = gl.GL_NEAREST
-        self.LINEAR = gl.GL_LINEAR
-        self.NEAREST_MIPMAP_NEAREST = gl.GL_NEAREST_MIPMAP_NEAREST
-        self.LINEAR_MIPMAP_NEAREST = gl.GL_LINEAR_MIPMAP_NEAREST
-        self.NEAREST_MIPMAP_LINEAR = gl.GL_NEAREST_MIPMAP_LINEAR
-        self.LINEAR_MIPMAP_LINEAR = gl.GL_LINEAR_MIPMAP_LINEAR
+        self.NEAREST = 0x2600
+        self.LINEAR = 0x2601
+        self.NEAREST_MIPMAP_NEAREST = 0x2700
+        self.LINEAR_MIPMAP_NEAREST = 0x2701
+        self.NEAREST_MIPMAP_LINEAR = 0x2702
+        self.LINEAR_MIPMAP_LINEAR = 0x2703
 
         self.REPEAT = gl.GL_REPEAT
         self.CLAMP_TO_EDGE = gl.GL_CLAMP_TO_EDGE
         self.CLAMP_TO_BORDER = gl.GL_CLAMP_TO_BORDER
         self.MIRRORED_REPEAT = gl.GL_MIRRORED_REPEAT
 
-        # Blend
+        # Flags
+        # NOTHING
         self.BLEND = gl.GL_BLEND
-        self.BLEND_DEFAULT = gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA
+        # DEPTH_TEST
+        # CULL_FACE
+        # RASTERIZER_DISCARD
+        # PROGRAM_POINT_SIZE
 
+        # Blend functions
+        self.ZERO = 0x0000
+        self.ONE = 0x0001
+        self.SRC_COLOR = 0x0300
+        self.ONE_MINUS_SRC_COLOR = 0x0301
+        self.SRC_ALPHA = 0x0302
+        self.ONE_MINUS_SRC_ALPHA = 0x0303
+        self.DST_ALPHA = 0x0304
+        self.ONE_MINUS_DST_ALPHA = 0x0305
+        self.DST_COLOR = 0x0306
+        self.ONE_MINUS_DST_COLOR = 0x0307
+
+        # Blend equations
+        #: source + destination
+        self.FUNC_ADD = 0x8006
+        #: source - destination
+        self.FUNC_SUBTRACT = 0x800A
+        #: destination - source
+        self.FUNC_REVERSE_SUBTRACT = 0x800B
+        #: Minimum of source and destination
+        self.MIN = 0x8007
+        #: Maximum of source and destination
+        self.MAX = 0x8008
+
+        self.BLEND_DEFAULT = self.SRC_ALPHA, self.ONE_MINUS_SRC_ALPHA
+        self.BLEND_ADDITIVE = self.ONE, self.ONE
+        self.BLEND_PREMULTIPLIED_ALPHA = self.SRC_ALPHA, self.ONE
         # VertexArray: Primitives
         self.POINTS = gl.GL_POINTS  # 0
         self.LINES = gl.GL_LINES  # 1
