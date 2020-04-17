@@ -19,18 +19,18 @@ void main() {
     vec2 size = shape.xy / 2.0;
 
     // First outer vertex
-    vec2 p1 = rot * (center + vec2(-size.x,  size.y));
-    vec2 p2 = rot * (center + vec2(-size.x, -size.y));
-    vec2 p3 = rot * (center + vec2( size.x,  size.y));
-    vec2 p4 = rot * (center + vec2( size.x, -size.y));
+    vec2 p1 = rot * vec2(-size.x,  size.y);
+    vec2 p2 = rot * vec2(-size.x, -size.y);
+    vec2 p3 = rot * vec2( size.x,  size.y);
+    vec2 p4 = rot * vec2( size.x, -size.y);
 
-    gl_Position = Projection * vec4(p1, 0.0, 1.0);
+    gl_Position = Projection * vec4(p1 + center, 0.0, 1.0);
     EmitVertex();
-    gl_Position = Projection * vec4(p2, 0.0, 1.0);
+    gl_Position = Projection * vec4(p2 + center, 0.0, 1.0);
     EmitVertex();
-    gl_Position = Projection * vec4(p3, 0.0, 1.0);
+    gl_Position = Projection * vec4(p3 + center, 0.0, 1.0);
     EmitVertex();
-    gl_Position = Projection * vec4(p4, 0.0, 1.0);
+    gl_Position = Projection * vec4(p4 + center, 0.0, 1.0);
     EmitVertex();
 
     EndPrimitive();
