@@ -71,7 +71,7 @@ def random_radius(start=5, end=25):
     return random.randrange(start, end)
 
 
-class TestWindow(arcade.Window):
+class GameWindow(arcade.Window):
 
     def __init__(self, width, height, title):
         super().__init__(width, height, title, antialiasing=True, resizable=True)
@@ -149,5 +149,5 @@ class TestWindow(arcade.Window):
 
 
 if __name__ == '__main__':
-    window = TestWindow(SCREEN_WIDTH, SCREEN_HEIGHT, TITLE)
+    window = GameWindow(SCREEN_WIDTH, SCREEN_HEIGHT, TITLE)
     arcade.run()
