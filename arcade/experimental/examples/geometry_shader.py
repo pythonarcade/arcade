@@ -8,7 +8,7 @@ import math
 import random
 from array import array
 import arcade
-from arcade.shader import BufferDescription
+from arcade.gl import BufferDescription
 from pyglet import gl
 
 # Do the math to figure out our screen dimensions
