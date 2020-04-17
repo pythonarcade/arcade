@@ -353,6 +353,13 @@ Basic Platformers
 
    :ref:`platformer_tutorial`
 
+.. figure:: thumbs/line_of_sight.png
+   :figwidth: 170px
+
+   :ref:`line_of_sight`
+
+
+
 Using Tiled Map Editor to Create Maps
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

@@ -176,5 +176,6 @@ class MyGame(arcade.Window):
 def test_main():
     """ Main method """
     window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT)
+    window.center_window()
     window.test()
     window.close()
