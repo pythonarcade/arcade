@@ -2,6 +2,7 @@
 This is for testing geometry shader shapes. Please keep.
 """
 import time
+import math
 import random
 import arcade
 from pyglet import gl
@@ -10,9 +11,52 @@ SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 TITLE = "Line Test"
 
-# line / lines
-# rectangle_filled / rectangle_outline / rectangle_textured
-# parabola
+# [x] draw_line
+# [x] draw_lines
+# [x] draw_circle_filled
+# [x] draw_ellipse_filled
+# [x] draw_circle_outline
+# [x] draw_ellipse_outline
+# [ ] draw_arc_filled
+# [ ] draw_arc_outline
+# [ ] draw_parabola_filled
+# [ ] draw_parabola_outline
+# [ ] draw_line_strip
+# [ ] draw_point
+# [ ] draw_points
+# [ ] draw_polygon_filled
+# [ ] draw_polygon_outline
+# [ ] draw_triangle_filled
+# [ ] draw_triangle_outline
+# [ ] draw_rectangle_outline
+# [ ] draw_xywh_rectangle_outline
+# [ ] draw_rectangle_outline
+# [ ] draw_lrtb_rectangle_filled
+# [ ] draw_xywh_rectangle_filled
+# [ ] draw_rectangle_filled
+# [ ] draw_scaled_texture_rectangle
+# [ ] draw_texture_rectangle
+# [ ] draw_lrwh_rectangle_textured
+
+# --- Buffered
+# create_line
+# create_line_generic_with_colors
+# create_line_generic
+# create_line_strip
+# create_line_loop
+# create_lines
+# create_lines_with_colors
+# create_polygon
+# create_rectangle_filled
+# create_rectangle_outline
+# create_rectangle
+# create_rectangle_filled_with_colors
+# create_rectangles_filled_with_colors
+# create_triangles_filled_with_colors
+# create_ellipse_filled
+# create_ellipse_outline
+# create_ellipse
+# create_ellipse_filled_with_colors
 
 
 def random_pos():
@@ -63,6 +107,9 @@ class TestWindow(arcade.Window):
     def do_draw_ellipse_outline(self):
         arcade.draw_ellipse_outline(400, 300, 230, 100, arcade.color.AZURE, 10, 45)
 
+    def do_draw_arc_filled(self):
+        arcade.draw_arc_filled(400, 300, 200, 200, arcade.color.AZURE, 30.0 - math.sin(self.elapsed) * 20.0, 340.0 + math.sin(self.elapsed) * 20.0, 0)
+
     def on_draw(self):
         try:
             self.clear()
@@ -74,8 +121,9 @@ class TestWindow(arcade.Window):
             # self.do_draw_lines()
             # self.do_draw_circle_filled()
             # self.do_draw_ellipse_filled()
-            self.do_draw_circle_outline()
-            self.do_draw_ellipse_outline()
+            # self.do_draw_circle_outline()
+            # self.do_draw_ellipse_outline()
+            self.do_draw_arc_filled()
 
             self.execution_time += time.time() - start
             self.frames += 1
