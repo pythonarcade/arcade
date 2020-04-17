@@ -44,12 +44,16 @@ class MyGame(arcade.Window):
 
         # Sprite lists
         self.player_list = None
-        self.coin_list = None
 
         # Set up the player
         self.player_sprite = None
+
+        self.coin_list = None
         self.wall_list = None
+
         self.physics_engine = None
+
+        # Used in scrolling
         self.view_bottom = 0
         self.view_left = 0
 

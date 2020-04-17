@@ -243,6 +243,8 @@ from .utils import rand_vec_spread_deg
 
 from .version import VERSION
 
+from .paths import has_line_of_sight
+
 
 __all__ = ['AnimatedTimeBasedSprite',
            'AnimatedTimeSprite',
@@ -383,6 +385,7 @@ __all__ = ['AnimatedTimeBasedSprite',
            'get_tilemap_layer',
            'get_viewport',
            'get_window',
+           'has_line_of_sight',
            'is_point_in_polygon',
            'isometric_grid_to_screen',
            'lerp',
