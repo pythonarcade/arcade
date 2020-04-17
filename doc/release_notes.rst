@@ -26,6 +26,9 @@ Version 2.4 has:
 * Physics engine is less likely to 'glitch' out
 * Antialiasing should now work on windows if ``antialiasing=True``
   is passed in the window constructor.
+* Added `arcade.get_display_size` to get resolution of the monitor
+* Added `Window.center_window()` to center the window on the monitor.
+* Add support for `has_line_of_sight()`
 
 Version 2.3.15
 --------------
