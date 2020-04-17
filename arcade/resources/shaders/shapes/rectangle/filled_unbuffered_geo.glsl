@@ -18,7 +18,7 @@ void main() {
     );
     vec2 size = shape.xy / 2.0;
 
-    // First outer vertex
+    // Emit quad as triangle strip
     vec2 p1 = rot * vec2(-size.x,  size.y);
     vec2 p2 = rot * vec2(-size.x, -size.y);
     vec2 p3 = rot * vec2( size.x,  size.y);
