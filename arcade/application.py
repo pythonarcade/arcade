@@ -105,7 +105,7 @@ class Window(pyglet.window.Window):
         self.key: Optional[int] = None
 
         # Representation of the OpenGL context for this window
-        self._ctx = Context(self)
+        self.ctx = Context(self)
 
         # Required for transparency
         self.ctx.enable(self.ctx.BLEND)
@@ -116,11 +116,6 @@ class Window(pyglet.window.Window):
         super().close()
         pyglet.clock.unschedule(self.update)
         pyglet.clock.unschedule(self.on_update)
-
-    @property
-    def ctx(self) -> Context:
-        """The OpenGL context for this window"""
-        return self._ctx
 
     def update(self, delta_time: float):
         """
