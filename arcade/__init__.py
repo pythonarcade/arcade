@@ -33,6 +33,7 @@ from arcade import resources
 from .window_commands import close_window
 from .window_commands import create_orthogonal_projection
 from .window_commands import finish_render
+from .window_commands import get_display_size
 from .window_commands import get_projection
 from .window_commands import get_scaling_factor
 from .window_commands import get_viewport
@@ -366,6 +367,7 @@ __all__ = ['AnimatedTimeBasedSprite',
            'finish_render',
            'generate_sprites',
            'get_closest_sprite',
+           'get_display_size',
            'get_distance',
            'get_distance_between_sprites',
            'get_four_byte_color',

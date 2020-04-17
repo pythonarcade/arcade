@@ -13,6 +13,8 @@ import pyglet
 from arcade import get_viewport
 from arcade import set_viewport
 from arcade import set_window
+from arcade import get_display_size
+
 from arcade.gl import Context
 
 if TYPE_CHECKING:
@@ -116,6 +118,20 @@ class Window(pyglet.window.Window):
         super().close()
         pyglet.clock.unschedule(self.update)
         pyglet.clock.unschedule(self.on_update)
+
+    def center_window(self):
+        """
+        Center the window on the screen.
+        """
+        # Get the display screen using pyglet
+        screen_width, screen_height = get_display_size()
+
+        # Set variables for use
+        self.screen_width = screen_width
+        self.screen_height = screen_height
+
+        # Center the window
+        self.set_location((self.screen_width - self.width) // 2, (self.screen_height - self.height) // 2)
 
     def update(self, delta_time: float):
         """
@@ -451,6 +467,11 @@ class Window(pyglet.window.Window):
             self.update(1 / 60)
 
     def show_view(self, new_view: 'View'):
+        """
+        Select the view to show.
+
+        :param View new_view: View to show
+        """
         if not isinstance(new_view, View):
             raise ValueError("Must pass an arcade.View object to "
                              "Window.show_view()")
