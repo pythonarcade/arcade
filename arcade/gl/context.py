@@ -368,7 +368,7 @@ class ContextStats:
             from warnings import warn
             warn((
                 f'{key} allocations passed threshold ({self.warn_threshold}). '
-                f'created = {created}, freed = {freed} = {created - freed} active.'
+                f'[created = {created}] [freed = {freed}] [active = {created - freed}]'
             ))
 
     def decr(self, key):
