@@ -22,7 +22,7 @@ TITLE = "Line Test"
 # [ ] draw_parabola_filled
 # [ ] draw_parabola_outline
 # [ ] draw_line_strip
-# [ ] draw_point
+# [x] draw_point
 # [ ] draw_points
 # [ ] draw_polygon_filled
 # [ ] draw_polygon_outline
@@ -31,8 +31,8 @@ TITLE = "Line Test"
 # [ ] draw_rectangle_outline
 # [ ] draw_xywh_rectangle_outline
 # [ ] draw_rectangle_outline
-# [ ] draw_lrtb_rectangle_filled
-# [ ] draw_xywh_rectangle_filled
+# [x] draw_lrtb_rectangle_filled
+# [x] draw_xywh_rectangle_filled
 # [ ] draw_rectangle_filled
 # [ ] draw_scaled_texture_rectangle
 # [ ] draw_texture_rectangle
@@ -107,6 +107,12 @@ class GameWindow(arcade.Window):
     def do_draw_ellipse_outline(self):
         arcade.draw_ellipse_outline(400, 300, 230, 100, arcade.color.AZURE, 10, 45)
 
+    def do_draw_rectangle(self):
+        # 0.1 : 1600
+        for x in range(0, SCREEN_WIDTH, 20):
+            for y in range(0, SCREEN_HEIGHT, 15):
+                arcade.draw_rectangle_filled(x + 10, y + 8, 10, 10, arcade.color.AZURE)
+
     def do_draw_arc_filled(self):
         arcade.draw_arc_filled(400, 300, 200, 200, arcade.color.AZURE, 30.0 - math.sin(self.elapsed) * 20.0, 340.0 + math.sin(self.elapsed) * 20.0, 0)
 
@@ -123,7 +129,9 @@ class GameWindow(arcade.Window):
             # self.do_draw_ellipse_filled()
             # self.do_draw_circle_outline()
             # self.do_draw_ellipse_outline()
-            self.do_draw_arc_filled()
+            self.do_draw_rectangle()
+            # self.do_draw_arc_filled()
+            
 
             self.execution_time += time.time() - start
             self.frames += 1
