@@ -8,6 +8,7 @@ A Python simple, easy to use module for creating 2D games.
 # Instead look at util/init_template.py and update_init.py
 
 # Error out if we import Arcade with an incompatible version of Python.
+import platform
 import sys
 
 if sys.version_info[0] < 3 or (sys.version_info[0] == 3 and sys.version_info[1] < 6):
@@ -16,7 +17,10 @@ if sys.version_info[0] < 3 or (sys.version_info[0] == 3 and sys.version_info[1] 
 # noinspection PyPep8
 import pyglet
 
-pyglet.options['shadow_window'] = False
+# On OS X we need to disable the shadow context
+# because the 2.1 shadow context cannot be upgrade to a 3.3+ core
+if platform.system() == 'Darwin':
+    pyglet.options['shadow_window'] = False
 
 # noinspection PyPep8
 from arcade import color
