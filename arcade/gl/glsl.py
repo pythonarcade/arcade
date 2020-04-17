@@ -93,4 +93,7 @@ class ShaderSource:
         """Locates """
         for line in self._lines:
             if line.strip().startswith("out "):
-                self._out_attributes.append(line.split()[2].replace(';', ''))
+                try:
+                    self._out_attributes.append(line.split()[2].replace(';', ''))
+                except IndexError:
+                    pass
