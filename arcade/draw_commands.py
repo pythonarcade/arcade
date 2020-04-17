@@ -893,18 +893,41 @@ def draw_rectangle_filled(center_x: float, center_y: float, width: float,
          RGBA format.
     :param float tilt_angle: rotation of the rectangle. Defaults to zero.
     """
-    p1 = [-width // 2 + center_x, -height // 2 + center_y]
-    p2 = [width // 2 + center_x, -height // 2 + center_y]
-    p3 = [width // 2 + center_x, height // 2 + center_y]
-    p4 = [-width // 2 + center_x, height // 2 + center_y]
+    window = get_window()
+    if not window:
+        raise RuntimeError("No window found")
 
-    if tilt_angle != 0:
-        p1 = rotate_point(p1[0], p1[1], center_x, center_y, tilt_angle)
-        p2 = rotate_point(p2[0], p2[1], center_x, center_y, tilt_angle)
-        p3 = rotate_point(p3[0], p3[1], center_x, center_y, tilt_angle)
-        p4 = rotate_point(p4[0], p4[1], center_x, center_y, tilt_angle)
+    ctx = window.ctx
 
-    _generic_draw_line_strip((p1, p2, p4, p3), color, gl.GL_TRIANGLE_STRIP)
+    program = ctx.shape_rectangle_filled_unbuffered_program
+    geometry = ctx.shape_rectangle_filled_unbuffered_geometry
+    buffer = ctx.shape_rectangle_filled_unbuffered_buffer
+    # We need to normalize the color because we are setting it as a float uniform
+    if len(color) == 3:
+        color_normalized = (color[0] / 255, color[1] / 255, color[2] / 255, 1.0)
+    elif len(color) == 4:
+        color_normalized = (color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255)  # type: ignore
+    else:
+        raise ValueError("Invalid color format. Use a 3 or 4 component tuple")
+
+    program['Projection'] = get_projection().flatten()
+    program['color'] = color_normalized
+    program['shape'] = width, height, tilt_angle
+    buffer.write(data=array.array('f', (center_x, center_y)).tobytes())
+    geometry.render(program, mode=ctx.POINTS, vertices=1)
+
+    # p1 = [-width // 2 + center_x, -height // 2 + center_y]
+    # p2 = [width // 2 + center_x, -height // 2 + center_y]
+    # p3 = [width // 2 + center_x, height // 2 + center_y]
+    # p4 = [-width // 2 + center_x, height // 2 + center_y]
+
+    # if tilt_angle != 0:
+    #     p1 = rotate_point(p1[0], p1[1], center_x, center_y, tilt_angle)
+    #     p2 = rotate_point(p2[0], p2[1], center_x, center_y, tilt_angle)
+    #     p3 = rotate_point(p3[0], p3[1], center_x, center_y, tilt_angle)
+    #     p4 = rotate_point(p4[0], p4[1], center_x, center_y, tilt_angle)
+
+    # _generic_draw_line_strip((p1, p2, p4, p3), color, gl.GL_TRIANGLE_STRIP)
 
 
 def draw_scaled_texture_rectangle(center_x: float, center_y: float,
@@ -1043,3 +1066,12 @@ def get_image(x: int = 0, y: int = 0, width: int = None, height: int = None):
 
     # image.save('glutout.png', 'PNG')
     return image
+
+
+
+    # Methods associated with the frame buffer
+    def get_fbo(self):
+        return self.ctx.framebuffer(
+            color_attachments=self.ctx.texture(self.size, 4, samples=8),
+            depth_attachment=self.ctx.depth_texture(self.size, samples=8),
+        )

@@ -139,6 +139,11 @@ class Context:
             fragment_shader=":resources:/shaders/shapes/ellipse/outline_unbuffered_fs.glsl",
             geometry_shader=":resources:/shaders/shapes/ellipse/outline_unbuffered_geo.glsl",
         )
+        self.shape_rectangle_filled_unbuffered_program = self.load_program(
+            vertex_shader=":resources:/shaders/shapes/rectangle/filled_unbuffered_vs.glsl",
+            fragment_shader=":resources:/shaders/shapes/rectangle/filled_unbuffered_fs.glsl",
+            geometry_shader=":resources:/shaders/shapes/rectangle/filled_unbuffered_geo.glsl",
+        )
 
         # --- Pre-created geometry and buffers for unbuffered draw calls ----
         # FIXME: These pre-created resources needs to be packaged nicely
@@ -166,6 +171,10 @@ class Context:
         self.shape_ellipse_outline_unbuffered_buffer = self.buffer(reserve=8)
         self.shape_ellipse_outline_unbuffered_geometry = self.geometry([
             BufferDescription(self.shape_ellipse_outline_unbuffered_buffer, '2f', ['in_vert'])])
+        # rectangle filled
+        self.shape_rectangle_filled_unbuffered_buffer = self.buffer(reserve=8)
+        self.shape_rectangle_filled_unbuffered_geometry = self.geometry([
+            BufferDescription(self.shape_rectangle_filled_unbuffered_buffer, '2f', ['in_vert'])])
 
     @property
     def window(self):
