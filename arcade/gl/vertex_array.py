@@ -34,7 +34,7 @@ class VertexArray:
 
     vao = VertexArray(...)
     """
-    __slots__ = '_ctx', '_glo', '_program', '_content', '_ibo', '_content', '_num_vertices', '__weakref__'
+    __slots__ = '_ctx', 'glo', '_program', '_content', '_ibo', '_content', '_num_vertices', '__weakref__'
 
     # TODO: Resolve what VertexArray should actually store
     def __init__(self,
@@ -45,7 +45,7 @@ class VertexArray:
         self._ctx = ctx
         self._program = program
         self._content = content
-        self._glo = glo = gl.GLuint()
+        self.glo = glo = gl.GLuint()
         self._num_vertices = -1
         self._ibo = index_buffer
 
@@ -58,11 +58,6 @@ class VertexArray:
     def ctx(self) -> 'Context':
         """The Context this object belongs to"""
         return self._ctx
-
-    @property
-    def glo(self) -> gl.GLuint:
-        """The OpenGL resource id"""
-        return self._glo
 
     @property
     def program(self) -> Program:
@@ -93,8 +88,8 @@ class VertexArray:
         ctx.stats.decr('vertex_array')
 
     def _build(self, program: Program, content: Iterable[BufferDescription], index_buffer):
-        gl.glGenVertexArrays(1, byref(self._glo))
-        gl.glBindVertexArray(self._glo)
+        gl.glGenVertexArrays(1, byref(self.glo))
+        gl.glBindVertexArray(self.glo)
 
         # Lookup dict for BufferDescription attrib names
         # print(content)
@@ -163,7 +158,7 @@ class VertexArray:
         :param int vertices: Number of vertices to render
         :param int instances: OpenGL instance, used in using vertexes over and over
         """
-        gl.glBindVertexArray(self._glo)
+        gl.glBindVertexArray(self.glo)
         if self._ibo is not None:
             count = self._ibo.size // 4
             # TODO: Support first argument by offsetting pointer (second last arg)
