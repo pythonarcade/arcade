@@ -31,6 +31,13 @@ _projection = None
 _opengl_context = None
 
 
+def get_display_size():
+    """ Return the resolution of the monitor"""
+    display = pyglet.canvas.Display()
+    screen = display.get_default_screen()
+    return screen.width, screen.height
+
+
 def get_projection():
     """
     Returns the current projection.
