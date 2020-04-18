@@ -29,3 +29,4 @@ arcade/examples/test.png
 .coveralls.yml
 /doc/resources.rst
 .mypy_cache/
+.eggs/

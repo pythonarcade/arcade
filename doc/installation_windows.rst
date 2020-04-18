@@ -91,6 +91,19 @@ if you have a file called `requirements.txt` that lists the required libraries.
    and then attempt to install Arcade again.
 
 
+Install Arcade using the command line interface
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If you prefer to use the command line interface (CLI), 
+then you can install arcade directly using pip:
+
+``pip3 install arcade``
+
+If you happen to be using pipenv, then the appropriate command is:
+
+``python3 -m pipenv install arcade``
+
+
 .. _PyCharm: https://www.jetbrains.com/pycharm/
 .. _Sublime: https://www.sublimetext.com/
 .. _Wing: https://wingware.com/
