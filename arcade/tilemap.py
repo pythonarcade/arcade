@@ -62,28 +62,34 @@ def read_tmx(tmx_file: str) -> pytiled_parser.objects.TileMap:
 
     return tile_map
 
-
 def get_tilemap_layer(map_object: pytiled_parser.objects.TileMap,
-                      layer_name: str) -> Optional[pytiled_parser.objects.Layer]:
+                      layer_path: str) -> Optional[pytiled_parser.objects.Layer]:
     """
-    Given a TileMap and a layer name, this returns the TileLayer.
+    Given a TileMap and a layer path, this returns the TileLayer.
 
     :param pytiled_parser.objects.TileMap map_object: The map read in by the read_tmx function.
-    :param str layer_name: A string to match the layer name. Case sensitive.
+    :param str layer_path: A string to match the layer name. Case sensitive.
 
     :returns: A TileLayer, or None if no layer was found.
 
     """
 
     assert isinstance(map_object, pytiled_parser.objects.TileMap)
-    assert isinstance(layer_name, str)
+    assert isinstance(layer_path, str)
 
-    for layer in map_object.layers:
-        if layer.name == layer_name:
-            return layer
+    def _get_tilemap_layer(path, layers):
+        layer_name = path.pop(0)
+        for layer in layers:
+            if layer.name == layer_name:
+                if isinstance(layer, pytiled_parser.objects.LayerGroup):
+                    return _get_tilemap_layer(path, layer.layers)
+                else:
+                    return layer
+        return None
 
-    return None
-
+    path = layer_path.strip('/').split('/')
+    layer = _get_tilemap_layer(path, map_object.layers)
+    return layer
 
 def _get_tile_by_gid(map_object: pytiled_parser.objects.TileMap,
                      tile_gid: int) -> Optional[pytiled_parser.objects.Tile]:
