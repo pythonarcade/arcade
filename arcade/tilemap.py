@@ -82,7 +82,8 @@ def get_tilemap_layer(map_object: pytiled_parser.objects.TileMap,
         for layer in layers:
             if layer.name == layer_name:
                 if isinstance(layer, pytiled_parser.objects.LayerGroup):
-                    return _get_tilemap_layer(path, layer.layers)
+                    if len(path) != 0:
+                        return _get_tilemap_layer(path, layer.layers)
                 else:
                     return layer
         return None
