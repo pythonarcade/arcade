@@ -30,7 +30,7 @@ from arcade import draw_polygon_outline
 from arcade import Color
 from arcade.color import BLACK
 
-from arcade.arcade_types import RGB, Point
+from arcade.arcade_types import RGB, Point, PointList
 if TYPE_CHECKING:  # handle import cycle caused by type hinting
     from arcade.sprite_list import SpriteList
 
@@ -177,12 +177,12 @@ class Sprite:
         self._collision_radius: Optional[float] = None
         self._color: RGB = (255, 255, 255)
 
-        self._points: Optional[List[List[float]]] = None
+        self._points: Optional[PointList] = None
 
         if self._texture:
             self._points = self._texture.hit_box_points
 
-        self._point_list_cache: Optional[List[List[float]]] = None
+        self._point_list_cache: Optional[PointList] = None
 
         self.force = [0, 0]
         self.guid: Optional[str] = None
@@ -243,7 +243,7 @@ class Sprite:
         """
         self._set_position((center_x, center_y))
 
-    def set_points(self, points: List[List[float]]):
+    def set_points(self, points: PointList):
         """
         Set a sprite's hitbox
         """
@@ -252,7 +252,7 @@ class Sprite:
 
         self._points = points
 
-    def get_points(self) -> List[List[float]]:
+    def get_points(self) -> PointList:
         """
         Get the points that make up the hit box for the rect that makes up the
         sprite, including rotation and scaling.
@@ -264,7 +264,7 @@ class Sprite:
 
     points = property(get_points, set_points)
 
-    def set_hit_box(self, points: List[List[float]]):
+    def set_hit_box(self, points: PointList):
         """
         Set a sprite's hit box. Hitbox should be relative to a sprite's center,
         and with a scale of 1.0.
@@ -273,7 +273,7 @@ class Sprite:
         self._point_list_cache = None
         self._points = points
 
-    def get_hit_box(self) -> Optional[List[List[float]]]:
+    def get_hit_box(self) -> PointList:
         """
         Get a sprite's hit box, unadjusted for translation, rotation, or scale.
         """
@@ -301,7 +301,7 @@ class Sprite:
 
     hit_box = property(get_hit_box, set_hit_box)
 
-    def get_adjusted_hit_box(self) -> List[List[float]]:
+    def get_adjusted_hit_box(self) -> PointList:
         """
         Get the points that make up the hit box for the rect that makes up the
         sprite, including rotation and scaling.

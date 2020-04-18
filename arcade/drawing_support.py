@@ -236,8 +236,7 @@ def calculate_points(image):
     if top_left_corner_offset:
         result.append(_r(p8, h, w))
 
-
     # Remove duplicates
-    result = list(dict.fromkeys(result))
+    result = tuple(dict.fromkeys(result))
 
     return result
