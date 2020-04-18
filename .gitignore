@@ -19,6 +19,7 @@ pylint.html
 .idea/
 env
 venv/
+.venv
 .pytest_cache/
 arcade/examples/stress*.csv
 stress_test*.csv
