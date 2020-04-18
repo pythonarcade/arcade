@@ -178,6 +178,17 @@ def draw_text(text: str,
                 break
 
         if not font_found:
+            try:
+                import pyglet.font
+                font_config = pyglet.font.fontconfig.get_fontconfig()
+                result = font_config.find_font('Arial')
+                font = PIL.ImageFont.truetype(result.name, int(font_size))
+            except OSError:
+                pass
+            else:
+                font_found = True
+
+        if not font_found:
             raise RuntimeError("Unable to find a default font on this system. Please specify an available font.")
 
         # This is stupid. We have to have an image to figure out what size
