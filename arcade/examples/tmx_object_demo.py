@@ -33,6 +33,8 @@ class MyGame(arcade.Window):
 
         # If you have sprite lists, you should create them here,
         # and set them to None
+        self.tile_list = None
+        self.tile_list_2 = None
 
     def setup(self):
         # Create your sprites and sprite lists here
