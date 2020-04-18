@@ -270,12 +270,33 @@ class Sprite:
         and with a scale of 1.0.
         Points will be scaled with get_adjusted_hit_box.
         """
+        self._point_list_cache = None
         self._points = points
 
     def get_hit_box(self) -> Optional[List[List[float]]]:
         """
         Get a sprite's hit box, unadjusted for translation, rotation, or scale.
         """
+        # If there is no hitbox, use the width/height to get one
+        if self._points is None and self._texture:
+            self._points = self._texture.hit_box_points
+
+        if self._points is None and self._width:
+            x1, y1 = - self._width / 2, - self._height / 2
+            x2, y2 = + self._width / 2, - self._height / 2
+            x3, y3 = + self._width / 2, + self._height / 2
+            x4, y4 = - self._width / 2, + self._height / 2
+
+            self._points = ((x1, y1), (x2, y2), (x3, y3), (x4, y4))
+
+        if self._points is None and self.texture is not None:
+            self._points = self.texture.hit_box_points
+
+        if self._points is None:
+            raise ValueError("Error trying to get the hit box of a sprite, when no hit box is set.\nPlease make sure the "
+                             "Sprite.texture is set to a texture before trying to draw or do collision testing.\n"
+                             "Alternatively, manually call Sprite.set_hit_box with points for your hitbox.")
+
         return self._points
 
     hit_box = property(get_hit_box, set_hit_box)
@@ -290,29 +311,9 @@ class Sprite:
         if self._point_list_cache is not None:
             return self._point_list_cache
 
-        # If there is no hitbox, use the width/height to get one
-        if self._points is None and self._texture:
-            self._points = self._texture.hit_box_points
-
-        if self._points is None and self._width:
-            x1, y1 = - self._width / 2, - self._height / 2
-            x2, y2 = + self._width / 2, - self._height / 2
-            x3, y3 = + self._width / 2, + self._height / 2
-            x4, y4 = - self._width / 2, + self._height / 2
-
-            self._points = [[x1, y1], [x2, y2], [x3, y3], [x4, y4]]
-
-        if self._points is None and self.texture is not None:
-            self._points = self.texture.hit_box_points
-
-        if self._points is None:
-            raise ValueError("Error trying to get the hit box of a sprite, when no hit box is set.\nPlease make sure the "
-                             "Sprite.texture is set to a texture before trying to draw or do collision testing.\n"
-                             "Alternatively, manually call Sprite.set_hit_box with points for your hitbox.")
-
         # Adjust the hitbox
         point_list = []
-        for point in self._points:
+        for point in self.hit_box:
             # Get a copy of the point
             point = [point[0], point[1]]
 
