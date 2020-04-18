@@ -118,11 +118,13 @@ def load_sound(file_name: str):
         return None
 
 
-def play_sound(sound: Sound):
+def play_sound(sound: Sound, volume: float=1.0, pan: float=0.0):
     """
     Play a sound.
 
     :param Sound sound: Sound loaded by load_sound. Do NOT use a string here for the filename.
+    :param float volume: Volume, from 0=quiet to 1=loud
+    :param float pan: Pan, from -1=left to 0=centered to 1=right
     """
     if sound is None:
         print("Unable to play sound, no data passed in.")
@@ -132,7 +134,7 @@ def play_sound(sound: Sound):
               "Make sure to use load_sound first, and use that result in play_sound."
         raise Exception(msg)
     try:
-        sound.play()
+        sound.play(volume, pan)
     except Exception as ex:
         print("Error playing sound.", ex)
 
