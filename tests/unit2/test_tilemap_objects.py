@@ -56,6 +56,13 @@ def test_one():
     assert sprite_2.alpha == int(255*.5)
 
     #
+    # Test edge case with only group name.  Should return empty sprite list
+    #
+    tile_list_3 = arcade.tilemap.process_layer(tmx_map, "Group", base_directory="test_data")
+    assert tile_list_3 is not None
+    assert len(tile_list_3) == 0
+
+    #
     # Future tests?
     #
     '''
