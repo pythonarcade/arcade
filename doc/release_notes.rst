@@ -5,7 +5,7 @@
 Release Notes
 =============
 
-Version 2.4a2 (Pre-release)
+Version 2.4a4 (Pre-release)
 ---------------------------
 
 Alphas of version 2.4 are available if you specifically download the latest
@@ -29,6 +29,10 @@ Version 2.4 has:
 * Added `arcade.get_display_size` to get resolution of the monitor
 * Added `Window.center_window()` to center the window on the monitor.
 * Add support for `has_line_of_sight()`
+* Updates to hit box calculation which in some cases were off-by-one
+* Add in font searching code if we can't find default font
+* Support getting tmx layer by path
+* Support volume and pan arguments in play_sound
 
 Version 2.3.15
 --------------
