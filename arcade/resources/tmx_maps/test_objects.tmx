@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.2" tiledversion="1.3.3" orientation="orthogonal" renderorder="right-down" width="20" height="20" tilewidth="128" tileheight="128" infinite="0" backgroundcolor="#55aa7f" nextlayerid="7" nextobjectid="13">
+ <tileset firstgid="1" source="standard_tileset.tsx"/>
+ <objectgroup id="2" name="Shapes">
+  <object id="1" x="504.89" y="630.365" width="573.603" height="469.04"/>
+  <object id="2" x="1195.01" y="794.678">
+   <point/>
+  </object>
+  <object id="3" x="1195.01" y="794.678">
+   <point/>
+  </object>
+  <object id="5" x="1284.63" y="513.852" width="558.665" height="510.865">
+   <ellipse/>
+  </object>
+  <object id="6" x="950.029" y="1392.18">
+   <polygon points="0,0 224.063,678.165 836.504,8.96254"/>
+  </object>
+ </objectgroup>
+ <objectgroup id="4" name="Text" locked="1">
+  <object id="10" x="836.621" y="89.0878" width="426.979" height="120.576">
+   <text fontfamily="Sans Serif" pixelsize="64" wrap="1">Hello World</text>
+  </object>
+ </objectgroup>
+ <group id="5" name="Group">
+  <objectgroup id="6" name="Tiles" opacity="0.5">
+   <object id="11" gid="11" x="800" y="1500" width="600" height="400" rotation="45"/>
+   <object id="12" gid="11" x="1400" y="1600" width="600" height="400"/>
+  </objectgroup>
+ </group>
+ <objectgroup id="3" name="Tiles">
+  <object id="7" name="crate1" type="crate" gid="1" x="1500" y="1800" width="400" height="1000" rotation="-45"/>
+  <object id="8" name="coin1" type="coin" gid="2" x="1400" y="1800" width="700" height="700"/>
+ </objectgroup>
+</map>

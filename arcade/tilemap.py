@@ -59,28 +59,34 @@ def read_tmx(tmx_file: Union[str, Path]) -> pytiled_parser.objects.TileMap:
 
     return tile_map
 
-
 def get_tilemap_layer(map_object: pytiled_parser.objects.TileMap,
-                      layer_name: str) -> Optional[pytiled_parser.objects.Layer]:
+                      layer_path: str) -> Optional[pytiled_parser.objects.Layer]:
     """
-    Given a TileMap and a layer name, this returns the TileLayer.
+    Given a TileMap and a layer path, this returns the TileLayer.
 
     :param pytiled_parser.objects.TileMap map_object: The map read in by the read_tmx function.
-    :param str layer_name: A string to match the layer name. Case sensitive.
+    :param str layer_path: A string to match the layer name. Case sensitive.
 
     :returns: A TileLayer, or None if no layer was found.
 
     """
 
     assert isinstance(map_object, pytiled_parser.objects.TileMap)
-    assert isinstance(layer_name, str)
+    assert isinstance(layer_path, str)
 
-    for layer in map_object.layers:
-        if layer.name == layer_name:
-            return layer
+    def _get_tilemap_layer(path, layers):
+        layer_name = path.pop(0)
+        for layer in layers:
+            if layer.name == layer_name:
+                if isinstance(layer, pytiled_parser.objects.LayerGroup):
+                    return _get_tilemap_layer(path, layer.layers)
+                else:
+                    return layer
+        return None
 
-    return None
-
+    path = layer_path.strip('/').split('/')
+    layer = _get_tilemap_layer(path, map_object.layers)
+    return layer
 
 def _get_tile_by_gid(map_object: pytiled_parser.objects.TileMap,
                      tile_gid: int) -> Optional[pytiled_parser.objects.Tile]:
@@ -217,6 +223,9 @@ def _create_sprite_from_tile(map_object: pytiled_parser.objects.TileMap,
     if tile.properties is not None and len(tile.properties) > 0:
         for my_property in tile.properties:
             my_sprite.properties[my_property.name] = my_property.value
+
+    if tile.type_:
+        my_sprite.properties['type'] = tile.type_
 
         # print(tile.image.source, my_sprite.center_x, my_sprite.center_y)
     if tile.objectgroup is not None:
@@ -364,6 +373,12 @@ def _process_object_layer(map_object: pytiled_parser.objects.TileMap,
         my_sprite.position = (x + rotatedCenterX, y + rotatedCenterY)
         my_sprite.angle = math.degrees(rotation)
 
+        # Opacity
+        opacity = layer.opacity
+        if opacity:
+            my_sprite.alpha = int(opacity * 255)
+
+        # Properties
         if cur_object.properties is not None and 'change_x' in cur_object.properties:
             my_sprite.change_x = float(cur_object.properties['change_x'])
 
@@ -384,7 +399,13 @@ def _process_object_layer(map_object: pytiled_parser.objects.TileMap,
 
         if cur_object.properties is not None:
             my_sprite.properties.update(cur_object.properties)
-        # sprite.properties
+
+        if cur_object.type:
+            my_sprite.properties['type'] = cur_object.type
+
+        if cur_object.name:
+            my_sprite.properties['name'] = cur_object.name
+
         sprite_list.append(my_sprite)
     return sprite_list
 
@@ -418,6 +439,11 @@ def _process_tile_layer(map_object: pytiled_parser.objects.TileMap,
                 my_sprite.center_x = column_index * (map_object.tile_size[0] * scaling) + my_sprite.width / 2
                 my_sprite.center_y = (map_object.map_size.height - row_index - 1) \
                     * (map_object.tile_size[1] * scaling) + my_sprite.height / 2
+
+                # Opacity
+                opacity = layer.opacity
+                if opacity:
+                    my_sprite.alpha = int(opacity * 255)
 
                 sprite_list.append(my_sprite)
 
