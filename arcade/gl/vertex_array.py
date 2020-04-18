@@ -1,5 +1,5 @@
 from ctypes import c_void_p, byref
-from typing import Dict, Iterable, Optional, TYPE_CHECKING
+from typing import Dict, Iterable, Optional, Sequence, TYPE_CHECKING
 import weakref
 
 from pyglet import gl
@@ -40,7 +40,7 @@ class VertexArray:
     def __init__(self,
                  ctx: 'Context',
                  program: Program,
-                 content: Iterable[BufferDescription],
+                 content: Sequence[BufferDescription],
                  index_buffer: Buffer = None):
         self._ctx = ctx
         self._program = program
@@ -87,7 +87,7 @@ class VertexArray:
 
         ctx.stats.decr('vertex_array')
 
-    def _build(self, program: Program, content: Iterable[BufferDescription], index_buffer):
+    def _build(self, program: Program, content: Sequence[BufferDescription], index_buffer):
         gl.glGenVertexArrays(1, byref(self.glo))
         gl.glBindVertexArray(self.glo)
 
@@ -179,7 +179,7 @@ class Geometry:
     def __init__(
             self,
             ctx: 'Context',
-            content: Iterable[BufferDescription],
+            content: Sequence[BufferDescription],
             index_buffer: Buffer = None,
             mode=None):
         self._ctx = ctx
@@ -193,7 +193,7 @@ class Geometry:
             raise ValueError("Geometry without buffer descriptions not supported")
 
         # Calculate vertices. Use the minimum for now
-        self._num_vertices = next(iter(content)).num_vertices
+        self._num_vertices = content[0].num_vertices
         for descr in self._content:
             if descr.instanced:
                 continue

@@ -1,7 +1,7 @@
 from ctypes import c_int
 import weakref
 from pathlib import Path
-from typing import Dict, List, Tuple, Union
+from typing import Dict, List, Tuple, Union, Sequence
 
 from pyglet import gl
 
@@ -275,7 +275,7 @@ class Context:
     #     """
     #     return VertexArray(self, prog, content, index_buffer)
 
-    def geometry(self, content, index_buffer=None):
+    def geometry(self, content: Sequence[BufferDescription], index_buffer: Buffer = None):
         return Geometry(self, content, index_buffer=index_buffer)
 
     def program(
