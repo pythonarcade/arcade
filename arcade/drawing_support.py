@@ -205,6 +205,9 @@ def calculate_points(image):
     bottom_left_corner_offset = _check_corner_offset(left_border, bottom_border, 1, -1)
     bottom_right_corner_offset = _check_corner_offset(right_border, bottom_border, -1, -1)
 
+    right_border += 1
+    bottom_border += 1
+
     p1 = left_border + top_left_corner_offset, top_border
     p2 = right_border - top_right_corner_offset, top_border
     p3 = right_border, top_border + top_right_corner_offset
