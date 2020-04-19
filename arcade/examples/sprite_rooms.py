@@ -182,8 +182,6 @@ class MyGame(arcade.Window):
         arcade.start_render()
 
         # Draw the background texture
-        scale = SCREEN_WIDTH / self.rooms[self.current_room].background.width
-
         arcade.draw_lrwh_rectangle_textured(0, 0,
                                             SCREEN_WIDTH, SCREEN_HEIGHT,
                                             self.rooms[self.current_room].background)

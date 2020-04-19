@@ -82,9 +82,9 @@ class Program:
             geometry_in = gl.GLint()
             geometry_out = gl.GLint()
             geometry_vertices = gl.GLint()
-            gl.glGetProgramiv(self._glo, gl.GL_GEOMETRY_INPUT_TYPE, geometry_in);
-            gl.glGetProgramiv(self._glo, gl.GL_GEOMETRY_OUTPUT_TYPE, geometry_out);
-            gl.glGetProgramiv(self._glo, gl.GL_GEOMETRY_VERTICES_OUT, geometry_vertices);
+            gl.glGetProgramiv(self._glo, gl.GL_GEOMETRY_INPUT_TYPE, geometry_in)
+            gl.glGetProgramiv(self._glo, gl.GL_GEOMETRY_OUTPUT_TYPE, geometry_out)
+            gl.glGetProgramiv(self._glo, gl.GL_GEOMETRY_VERTICES_OUT, geometry_vertices)
             self._geometry_info = (geometry_in.value, geometry_out.value, geometry_vertices.value)
 
         # Flag shaders for deletion. Will only be deleted once detached from program.

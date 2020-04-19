@@ -220,6 +220,7 @@ class Framebuffer:
         """
         Destroys the framebuffer object
 
+        :param ctx: OpenGL context
         :param framebuffer_id: Frame buffer to destroy
         """
         if gl.current_context is None:

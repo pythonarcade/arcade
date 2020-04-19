@@ -11,14 +11,14 @@ path = os.path.dirname(os.path.abspath(__file__))
 soloud_library_name = None
 
 if sys.platform == "win32":
-    if sys.maxsize > 2**32:
-        soloud_library_name = f"{path}/soloud_x64"
-    else:
-        soloud_library_name = f"{path}/soloud_x86"
+	if sys.maxsize > 2**32:
+		soloud_library_name = f"{path}/soloud_x64"
+	else:
+		soloud_library_name = f"{path}/soloud_x86"
 elif sys.platform == "darwin":
-    soloud_library_name = f"{path}/libsoloud.dylib"
+	soloud_library_name = f"{path}/libsoloud.dylib"
 elif sys.platform == "linux":
-    soloud_library_name = f"{path}/libsoloud.so"  # default for Linux`
+	soloud_library_name = f"{path}/libsoloud.so"  # default for Linux`
 
 try:
 	soloud_dll = ctypes.CDLL(soloud_library_name)
