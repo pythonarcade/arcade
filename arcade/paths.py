@@ -47,30 +47,7 @@ def has_line_of_sight(point_1: Point,
 Classic A-star algorithm for path finding.
 """
 
-# from constants import *
-# from get_blocking_sprites import get_blocking_sprites
-
-ITERATION_LIMIT = 50
-GRID_SIZE = 16
-
-
-class Node:
-    """A node class for A* Path-finding"""
-
-    def __init__(self, parent=None, position=None):
-        self.parent = parent
-        self.position = position
-
-        self.g = 0
-        self.h = 0
-        self.f = 0
-
-    def __eq__(self, other):
-        result = abs(self.position[0] - other.position[0]) <= GRID_SIZE and abs(self.position[1] - other.position[1]) <= GRID_SIZE
-
-        return result
-
-def spot_is_blocked(position, moving_sprite, blocking_sprites):
+def _spot_is_blocked(position, moving_sprite, blocking_sprites):
     original_pos = moving_sprite.position
     moving_sprite.position = position
     hit_list = check_for_collision_with_list(moving_sprite, blocking_sprites)
@@ -80,109 +57,170 @@ def spot_is_blocked(position, moving_sprite, blocking_sprites):
     else:
         return False
 
-def astar(start, end, moving_sprite, blocking_sprites):
-    """Returns a list of tuples as a path from the given start to the given end in the given maze"""
 
-    # Create start and end node
-    start_node = Node(None, start)
-    start_node.g = start_node.h = start_node.f = 0
-    end_node = Node(None, end)
-    end_node.g = end_node.h = end_node.f = 0
+class _AStarGraph(object):
+    # Define a class board like grid with two barriers
 
-    # Initialize both open and closed list
-    open_list = []
-    closed_list = []
+    def __init__(self, barriers, left, right, bottom, top):
+        self.barriers = barriers
+        self.left = left
+        self.right = right
+        self.top = top
+        self.bottom = bottom
 
-    # Add the start node
-    open_list.append(start_node)
+    def heuristic(self, start, goal):
+        # Use Chebyshev distance heuristic if we can move one square either
+        # adjacent or diagonal
+        D = 1
+        D2 = 1
+        dx = abs(start[0] - goal[0])
+        dy = abs(start[1] - goal[1])
+        return D * (dx + dy) + (D2 - 2 * D) * min(dx, dy)
 
-    # Loop counter used to break out if we work too hard
-    loop_count = 0
-    # Loop until you find the end or we've worked too hard
-    while len(open_list) > 0:
-        loop_count += 1
-        if loop_count > ITERATION_LIMIT:
-            # Ok, this is too hard. Give up.
-            # print("BREAK!")
-            return None
-
-        # Get the current node
-        current_node = open_list[0]
-        current_index = 0
-        for index, item in enumerate(open_list):
-            if item.f < current_node.f:
-                current_node = item
-                current_index = index
-
-        # Pop current off open list, add to closed list
-        open_list.pop(current_index)
-        closed_list.append(current_node)
-
-        # Found the goal
-        if current_node == end_node:
-            path = []
-            current = current_node
-            while current is not None:
-                path.append(current.position)
-                current = current.parent
-            return path[::-1]  # Return reversed path
-
-        # Generate children
-        children = []
-        for new_position in [
-            (0, -GRID_SIZE),
-            (0, GRID_SIZE),
-            (-GRID_SIZE, 0),
-            (GRID_SIZE, 0),
-            (-GRID_SIZE, -GRID_SIZE),
-            (-GRID_SIZE, GRID_SIZE),
-            (GRID_SIZE, -GRID_SIZE),
-            (GRID_SIZE, GRID_SIZE),
-        ]:  # Adjacent squares
-
-            # Get node position
-            node_position = (
-                current_node.position[0] + new_position[0],
-                current_node.position[1] + new_position[1],
-            )
-
-            # Make sure within range
-            # if node_position[0] > (len(maze) - 1)
-            #   or node_position[0] < 0
-            #   or node_position[1] > (len(maze[len(maze)-1]) -1)
-            #   or node_position[1] < 0:
-            #     continue
-
-            # Make sure walkable terrain
-
-            if spot_is_blocked(node_position, moving_sprite, blocking_sprites):
+    def get_vertex_neighbours(self, pos):
+        n = []
+        # Moves allow link a chess king
+        for dx, dy in [(1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (-1, 1), (1, -1), (-1, -1)]:
+            x2 = pos[0] + dx
+            y2 = pos[1] + dy
+            if x2 < self.left or x2 > self.right or y2 < self.bottom or y2 > self.top:
                 continue
+            n.append((x2, y2))
+        return n
 
-            # Create new node
-            new_node = Node(current_node, node_position)
+    def move_cost(self, a, b):
+        if b in self.barriers:
+            # print("Ping")
+            return 10  # Extremely high cost to enter barrier squares
 
-            # Append
-            children.append(new_node)
+        elif a[0] == b[0] or a[1] == b[1]:
+            return 1
+        else:
+            return 1.414
 
-        # Loop through children
-        for child in children:
 
-            # Child is on the closed list
-            for closed_child in closed_list:
-                if child == closed_child:
-                    continue
+        return 1  # Normal movement cost
 
-            # Create the f, g, and h values
-            child.g = current_node.g + 1
-            child.h = ((child.position[0] - end_node.position[0]) ** 2) + (
-                (child.position[1] - end_node.position[1]) ** 2
-            )
-            child.f = child.g + child.h
 
-            # Child is already in the open list
-            for open_node in open_list:
-                if child == open_node and child.g > open_node.g:
-                    continue
+def _AStarSearch(start, end, graph):
+    G = {}  # Actual movement cost to each position from the start position
+    F = {}  # Estimated movement cost of start to end going via this position
 
-            # Add the child to the open list
-            open_list.append(child)
+    # Initialize starting values
+    G[start] = 0
+    F[start] = graph.heuristic(start, end)
+
+    closedVertices = set()
+    openVertices = set([start])
+    cameFrom = {}
+
+    count = 0
+    while len(openVertices) > 0:
+        count += 1
+        if count > 2500:
+            break
+        # Get the vertex in the open list with the lowest F score
+        current = None
+        currentFscore = None
+        for pos in openVertices:
+            if current is None or F[pos] < currentFscore:
+                currentFscore = F[pos]
+                current = pos
+
+        # Check if we have reached the goal
+        if current == end:
+            # Retrace our route backward
+            path = [current]
+            while current in cameFrom:
+                current = cameFrom[current]
+                path.append(current)
+            path.reverse()
+            if F[end] >= 10000:
+                return None
+            else:
+                return path
+            # return path, F[end]  # Done!
+
+        # Mark the current vertex as closed
+        openVertices.remove(current)
+        closedVertices.add(current)
+
+        # Update scores for vertices near the current position
+        for neighbour in graph.get_vertex_neighbours(current):
+            if neighbour in closedVertices:
+                continue  # We have already processed this node exhaustively
+            candidateG = G[current] + graph.move_cost(current, neighbour)
+
+            if neighbour not in openVertices:
+                openVertices.add(neighbour)  # Discovered a new vertex
+            elif candidateG >= G[neighbour]:
+                continue  # This G score is worse than previously found
+
+            # Adopt this G score
+            cameFrom[neighbour] = current
+            G[neighbour] = candidateG
+            H = graph.heuristic(neighbour, end)
+            F[neighbour] = G[neighbour] + H
+
+    return None
+
+
+def _collapse(pos, grid_size):
+    return int(pos[0] // grid_size),  int(pos[1] // grid_size)
+
+def _expand(pos, grid_size):
+    return int(pos[0] * grid_size),  int(pos[1] * grid_size)
+
+
+class BarrierList:
+    def __init__(self, moving_sprite, blocking_sprites, grid_size, left, right, bottom, top):
+        self.grid_size = grid_size
+        self.bottom = bottom
+        self.top = top
+        self.left = left
+        self.right = right
+        original_pos = moving_sprite.position
+        barrier_list = set()
+        for cx in range(left, right + 1):
+            for cy in range(bottom, top + 1):
+                cpos = cx, cy
+                pos = _expand(cpos, grid_size)
+                if len(get_sprites_at_point(pos, blocking_sprites)) > 0:
+                    barrier_list.add(cpos)
+                moving_sprite.position = pos
+                if len(check_for_collision_with_list(moving_sprite, blocking_sprites)) > 0:
+                    barrier_list.add(cpos)
+
+        moving_sprite.position = original_pos
+
+        self.barrier_list = barrier_list
+
+
+def astar(start, end, bl:BarrierList):
+
+    grid_size = bl.grid_size
+    mod_start = _collapse(start, grid_size)
+    mod_end = _collapse(end, grid_size)
+
+    left = bl.left
+    right = bl.right
+
+    bottom = bl.bottom
+    top = bl.top
+
+    # print("Start:", mod_start, "End:", mod_end)
+    # print("Boundaries:", left, right, bottom, top)
+
+    barrier_list = bl.barrier_list
+
+    # print("Barriers:", barrier_list)
+    graph = _AStarGraph(barrier_list, left, right, bottom, top)
+    result = _AStarSearch(mod_start, mod_end, graph)
+    # print("Result: ", result)
+    if result is None:
+        return None
+
+    revised_result = []
+    for p in result:
+        revised_result.append(_expand(p, grid_size))
+    return revised_result
