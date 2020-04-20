@@ -152,16 +152,20 @@ class Buffer:
             size  # size (number of bytes to copy)
         )
 
-    def orphan(self, size=-1):
+    def orphan(self, size=-1, double: bool = False):
         """
         Re-allocate the entire buffer memory.
         If the current buffer is busy in redering operations
         it will be deallocated by OpenGL when completed.
 
         :param int size: New size of buffer. -1 will retain the current size.
+        :param bool double: Is passed in with `True` the buffer size will be doubled
         """
         if size > -1:
             self._size = size
+
+        if double:
+            self._size *= 2
 
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self._glo)
         gl.glBufferData(gl.GL_ARRAY_BUFFER, self._size, None, self._usage)
