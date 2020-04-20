@@ -43,8 +43,8 @@ def gaussian_kernel(kernel_size: int = 5,
 
 
     # normalize
-    sum = 1 / sum
+    sum_norm = 1 / sum
     for i in range(len(coeff)):
-        coeff[i] *= sum
+        coeff[i] *= sum_norm
 
     return coeff
