@@ -16,7 +16,7 @@ class MyGame(arcade.Window):
         """
         Set up the application.
         """
-        super().__init__(width, height, title, resizable=True)
+        super().__init__(width, height, title)
         self.time = 0
         self.frame = 0
         self.background = arcade.load_texture(":resources:images/backgrounds/abstract_1.jpg")

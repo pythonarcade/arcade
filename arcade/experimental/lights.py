@@ -1,10 +1,10 @@
 from array import array
 from typing import Iterable, Tuple, Sequence
 
-from arcade.gl import Context
 from arcade import Color, get_window, get_projection, get_scaling_factor, set_viewport
 from arcade import gl
 from arcade.experimental import geometry
+
 
 class Light:
     HARD = 1.0
@@ -12,7 +12,7 @@ class Light:
 
     def __init__(self, position: Tuple[float, float],
                  radius: float = 50.0, color: Tuple[int, int, int] = (255, 255, 255),
-                 mode='hard', usage: str = 'dynamic'):
+                 mode='hard'):
         """Create a Light.
 
         Note: It's important to separate lights that don' change properties
@@ -21,7 +21,6 @@ class Light:
         :param Tuple[float, float] position: the position of the light
         :param float radius: The radius of the light
         :param float mode: `hard` or `soft`
-        :param str usage: `static` or `dynamic`.
         """
         self._center_x = position[0]
         self._center_y = position[1]
@@ -95,8 +94,8 @@ class LightLayer:
     def resize(self, width, height):
         pixel_scale = get_scaling_factor(self.window)
         self._size = width * pixel_scale, height * pixel_scale
-        self._light_buffer = self.ctx.framebuffer(color_attachments=self.ctx.texture((width, height), components=4))
-        self._diffuse_buffer = self.ctx.framebuffer(color_attachments=self.ctx.texture((width, height), components=4))        
+        self._diffuse_buffer = self.ctx.framebuffer(color_attachments=self.ctx.texture((width, height), components=4))
+        self._light_buffer = self.ctx.framebuffer(color_attachments=self.ctx.texture((width, height), components=3))
 
     def add(self, light: Light):
         """Add a Light to the layer"""
