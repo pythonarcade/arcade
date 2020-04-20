@@ -53,20 +53,17 @@ class MyGame(arcade.Window):
 
     def on_draw(self):
         arcade.start_render()
-        try:
-            # Everything that should be affected by lights in here
-            with self.light_layer:
-                arcade.draw_lrwh_rectangle_textured(
-                    0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, self.background)
-                self.torch_list.draw()
 
-            # Draw the contents with lighting
-            self.light_layer.draw()
-            # self.light_layer.draw(ambient_color=(127, 127, 127))
+        # Everything that should be affected by lights in here
+        with self.light_layer:
+            arcade.draw_lrwh_rectangle_textured(
+                0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, self.background)
+            self.torch_list.draw()
 
-        except Exception:
-            traceback.print_exc()
-            exit(1)
+        # Draw the contents with lighting
+        self.light_layer.draw()
+        # draw with ambient
+        # self.light_layer.draw(ambient_color=(127, 127, 127))
 
     def on_update(self, dt):
         # Keep track of elapsed time
