@@ -16,6 +16,6 @@ Lighting Demo
    install the pre-release alpha or beta versions.
 
 
-.. literalinclude:: ../../arcade/light_demo.py
+.. literalinclude:: ../../arcade/examples/light_demo.py
     :caption: light_demo.py
     :linenos:
