@@ -72,6 +72,7 @@ class LightLayer:
             raise RuntimeError("Cannot find window")
         self.ctx = self.window.ctx
         self._lights = []
+        self._background_color = (0, 0, 0)
 
         self._prev_target = None
         self._rebuild = False
@@ -119,6 +120,10 @@ class LightLayer:
         light._light_layer = None
         self._rebuild = True
 
+    def set_background_color(self, color: Color):
+        """Set the background color for the light layer"""
+        self._background_color = color
+
     def __len__(self) -> int:
         """Number of lights"""
         return len(self._lights)
@@ -133,7 +138,7 @@ class LightLayer:
     def __enter__(self):
         self._prev_target = self.ctx.active_framebuffer
         self._diffuse_buffer.use()
-        self._diffuse_buffer.clear()
+        self._diffuse_buffer.clear(self._background_color)
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
