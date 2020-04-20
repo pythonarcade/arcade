@@ -32,7 +32,10 @@ class PostProcessing:
     """Base class"""
     def __init__(self, size: Tuple[int, int], *args, **kwargs):
         self._size = size
-        self._ctx = get_window().ctx
+        window = get_window()
+        if not window:
+            raise RuntimeError("No window found")
+        self._ctx = window.ctx
 
     @property
     def ctx(self) -> Context:
@@ -54,9 +57,9 @@ class PostProcessing:
         """ Get the size of the buffer. """
         return self._size
 
-    def render(self, *args, **kwargs) -> Texture:
-        """ Render. Should be over-loaded by the child class. """
-        pass
+    # def render(self, *args, **kwargs) -> Texture:
+    #     """ Render. Should be over-loaded by the child class. """
+    #     pass
 
     def resize(self, size: Tuple[int, int]):
         """
