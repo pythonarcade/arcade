@@ -30,3 +30,5 @@ from arcade import csscolor
 from arcade import key
 # noinspection PyPep8
 from arcade import resources
+# noinspection PyPep8
+from arcade import experimental
