@@ -126,8 +126,9 @@ class Window(pyglet.window.Window):
         # Get the display screen using pyglet
         screen_width, screen_height = get_display_size()
 
+        window_width, window_height = self.get_size()
         # Center the window
-        self.set_location((screen_width - self.screen_width) // 2, (screen_height - self.screen_height) // 2)
+        self.set_location((screen_width - window_width) // 2, (screen_height - window_height) // 2)
 
     def update(self, delta_time: float):
         """
