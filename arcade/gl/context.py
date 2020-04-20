@@ -209,6 +209,10 @@ class Context:
         """Enables a context flag"""
         gl.glEnable(flag)
 
+    def disable(self, flag: int):
+        """Disable a context flag"""
+        gl.glDisable(flag)
+
     @property
     def blend_func(self) -> Tuple[int, int]:
         """Get or the blend function"""
