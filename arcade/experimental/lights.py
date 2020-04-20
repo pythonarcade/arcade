@@ -12,7 +12,7 @@ class Light:
 
     def __init__(self, position: Tuple[float, float],
                  radius: float = 50.0, color: Tuple[int, int, int] = (255, 255, 255),
-                 mode='hard'):
+                 mode: str = 'hard'):
         """Create a Light.
 
         Note: It's important to separate lights that don' change properties
@@ -20,7 +20,7 @@ class Light:
 
         :param Tuple[float, float] position: the position of the light
         :param float radius: The radius of the light
-        :param float mode: `hard` or `soft`
+        :param str mode: `hard` or `soft`
         """
         self._center_x = position[0]
         self._center_y = position[1]
@@ -133,11 +133,17 @@ class LightLayer:
     def __exit__(self, exc_type, exc_val, exc_tb):
         self._prev_target.use()
 
-    def draw(self, target=None, ambient_color: Color = (64, 64, 64)):
+    def draw(self, position: Tuple[float, float] = (0, 0), target=None, ambient_color: Color = (64, 64, 64)):
+        """Draw the lights
+        :param Tuple[float, float] position: Position offset (scrolling)
+        :param target: The window or framebuffer we want to render to (default is window)
+        :param Color ambient_color: The ambient light color
+        """
+        if len(self._lights) == 0:
+            return
+
         if target is None:
             target = self.window
-
-        self._light_program['Projection'] = get_projection().flatten()
 
         # Re-build light data if needed
         if self._rebuild:
@@ -157,6 +163,8 @@ class LightLayer:
         # Render to light buffer
         self._light_buffer.use()
         self._light_buffer.clear()
+        self._light_program['Projection'] = get_projection().flatten()
+        self._light_program['position'] = position
         self.ctx.enable(self.ctx.BLEND)        
         self.ctx.blend_func = self.ctx.BLEND_ADDITIVE
         self._vao.render(self._light_program, mode=self.ctx.POINTS, vertices=len(self._lights))
