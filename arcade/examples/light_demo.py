@@ -60,7 +60,7 @@ class MyGame(arcade.Window):
         self.player_list.append(self.player_sprite)
 
         # --- Light related ---
-        # Lights must shine on something. They will NOT show the background color. If there is no background sprite,
+        # Lights must shine on something. If there is no background sprite or color,
         # you will just see black. Therefore, we use a loop to create a whole bunch of brick tiles to go in the
         # background.
         for x in range(-128, 2000, 128):
@@ -72,6 +72,9 @@ class MyGame(arcade.Window):
         # Create a light layer, used to render things to, then post-process and
         # add lights. This must match the screen size.
         self.light_layer = LightLayer(SCREEN_WIDTH, SCREEN_HEIGHT)
+        # We can also set the background color that will be lit by lights,
+        # but in this instance we just want a black background
+        self.light_layer.set_background_color(arcade.color.BLACK)
 
         # Here we create a bunch of lights.
 
@@ -199,6 +202,8 @@ class MyGame(arcade.Window):
             self.player_list.draw()
 
         # Draw the light layer to the screen.
+        # This fills the entire screen with the lit version
+        # of what we drew into the light layer above.
         self.light_layer.draw(ambient_color=AMBIENT_COLOR)
 
         # Now draw anything that should NOT be affected by lighting.
@@ -267,7 +272,7 @@ class MyGame(arcade.Window):
         if self.player_sprite.bottom < bottom_boundary:
             self.view_bottom -= bottom_boundary - self.player_sprite.bottom
 
-        # Make sure our boundaries are integer values. While the view port does
+        # Make sure our boundaries are integer values. While the viewport does
         # support floating point numbers, for this application we want every pixel
         # in the view port to map directly onto a pixel on the screen. We don't want
         # any rounding errors.
@@ -291,7 +296,7 @@ class MyGame(arcade.Window):
         # or by center_x, center_y.
         self.player_light.position = self.player_sprite.position
 
-        # Scroll the screen so we can see the user.
+        # Scroll the screen so we can see the player
         self.scroll_screen()
 
 
