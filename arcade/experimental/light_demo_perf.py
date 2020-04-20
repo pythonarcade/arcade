@@ -48,14 +48,14 @@ class MyGame(arcade.Window):
             # Draw the contents with lighting
             self.light_layer.draw()
 
-            image = arcade.get_image()
-            image.save(f'screenshots/frame{str(self.frame).zfill(3)}.png', 'png')
+            # image = arcade.get_image()
+            # image.save(f'screenshots/frame{str(self.frame).zfill(3)}.png', 'png')
 
         except Exception as e:
             print(e)
 
     def on_update(self, dt):
-        dt = 0.1
+        # dt = 0.1
         self.frame += 1
         try:
             self.time += dt
