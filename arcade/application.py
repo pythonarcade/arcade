@@ -126,12 +126,8 @@ class Window(pyglet.window.Window):
         # Get the display screen using pyglet
         screen_width, screen_height = get_display_size()
 
-        # Set variables for use
-        self.screen_width = screen_width
-        self.screen_height = screen_height
-
         # Center the window
-        self.set_location((self.screen_width - self.width) // 2, (self.screen_height - self.height) // 2)
+        self.set_location((screen_width - self.screen_width) // 2, (screen_height - self.screen_height) // 2)
 
     def update(self, delta_time: float):
         """
@@ -504,48 +500,58 @@ class Window(pyglet.window.Window):
         super()._recreate(changes)
 
     def flip(self):
+        """ Swap OpenGL and backing buffers for double-buffered windows. """
         super().flip()
 
     def switch_to(self):
         super().switch_to()
 
     def set_caption(self, caption):
+        """ Set the caption for the window. """
         super().set_caption(caption)
 
-    def set_minimum_size(self, width, height):
+    def set_minimum_size(self, width: int, height: int):
+        """ Set smallest window size. """
         super().set_minimum_size(width, height)
 
     def set_maximum_size(self, width, height):
+        """ Set largest window size. """
         super().set_maximum_size(width, height)
 
     def set_location(self, x, y):
+        """ Set location of the window. """
         super().set_location(x, y)
 
     def activate(self):
         super().activate()
 
     def minimize(self):
+        """ Minimize the window. """
         super().minimize()
 
     def maximize(self):
+        """ Maximize  the window. """
         super().maximize()
 
-    def set_vsync(self, vsync):
+    def set_vsync(self, vsync: bool):
         super().set_vsync(vsync)
 
     def set_mouse_platform_visible(self, platform_visible=None):
         super().set_mouse_platform_visible(platform_visible)
 
     def set_exclusive_mouse(self, exclusive=True):
+        """ Capture the mouse. """
         super().set_exclusive_mouse(exclusive)
 
     def set_exclusive_keyboard(self, exclusive=True):
+        """ Capture all keyboard input. """
         super().set_exclusive_keyboard(exclusive)
 
     def get_system_mouse_cursor(self, name):
         return super().get_system_mouse_cursor(name)
 
     def dispatch_events(self):
+        """ Dispatch events """
         super().dispatch_events()
 
 
