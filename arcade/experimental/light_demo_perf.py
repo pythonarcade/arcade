@@ -21,13 +21,13 @@ class MyGame(arcade.Window):
         self.frame = 0
         self.background = arcade.load_texture(":resources:images/backgrounds/abstract_1.jpg")
 
-        self.light_layer = LightLayer((SCREEN_WIDTH, SCREEN_HEIGHT))
+        self.light_layer = LightLayer(SCREEN_WIDTH, SCREEN_HEIGHT)
         # Add some random lights
         for _ in range(500):
             self.light_layer.add(
-                Light((
+                Light(
                     random.randrange(0, SCREEN_WIDTH),
-                    random.randrange(0, SCREEN_HEIGHT)),
+                    random.randrange(0, SCREEN_HEIGHT),
                     radius=50,
                     mode='soft',
                     color=(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))

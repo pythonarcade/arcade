@@ -10,7 +10,7 @@ class Light:
     HARD = 1.0
     SOFT = 0.0
 
-    def __init__(self, position: Tuple[float, float],
+    def __init__(self, center_x: float, center_y: float,
                  radius: float = 50.0, color: Tuple[int, int, int] = (255, 255, 255),
                  mode: str = 'hard'):
         """Create a Light.
@@ -22,8 +22,14 @@ class Light:
         :param float radius: The radius of the light
         :param str mode: `hard` or `soft`
         """
-        self._center_x = position[0]
-        self._center_y = position[1]
+        if not (isinstance(color, Tuple) or isinstance(color, list)):
+            raise ValueError("Color must be a 3-4 element Tuple or List with red-green-blue and optionally an alpha.")
+
+        if not isinstance(mode, str) or not (mode == 'soft' or mode == 'hard'):
+            raise ValueError("Mode must be set to either 'soft' or 'hard'.")
+
+        self._center_x = center_x
+        self._center_y = center_y
         self._radius = radius
         self._attenuation = Light.HARD if mode == 'hard' else Light.SOFT
         self._color = color
@@ -54,7 +60,7 @@ class Light:
 
 class LightLayer:
 
-    def __init__(self, size: Tuple[int, int]):
+    def __init__(self, width: int, height: int):
         """Create a LightLayer
 
         The size of a layer should ideally be of the same size and the screen.
@@ -89,7 +95,7 @@ class LightLayer:
             fragment_shader=":resources:shaders/lights/combine_fs.glsl",
         )
         self._quad_fs = geometry.quad_fs(size=(2.0, 2.0))
-        self.resize(*size)
+        self.resize(width, height)
 
     def resize(self, width, height):
         pixel_scale = get_scaling_factor(self.window)
@@ -165,13 +171,13 @@ class LightLayer:
         self._light_buffer.clear()
         self._light_program['Projection'] = get_projection().flatten()
         self._light_program['position'] = position
-        self.ctx.enable(self.ctx.BLEND)        
+        self.ctx.enable(self.ctx.BLEND)
         self.ctx.blend_func = self.ctx.BLEND_ADDITIVE
         self._vao.render(self._light_program, mode=self.ctx.POINTS, vertices=len(self._lights))
         self.ctx.blend_func = self.ctx.BLEND_DEFAULT
 
         # Combine pass
-        target.use()        
+        target.use()
         self._combine_program['diffuse_buffer'] = 0
         self._combine_program['light_buffer'] = 1
         self._combine_program['ambient'] = ambient_color[:3]

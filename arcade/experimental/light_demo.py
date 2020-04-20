@@ -32,7 +32,7 @@ class MyGame(arcade.Window):
             arcade.Sprite(":resources:images/tiles/torch1.png", scale=0.4, center_x=700, center_y=450),
         ])
 
-        self.light_layer = LightLayer((SCREEN_WIDTH, SCREEN_HEIGHT))
+        self.light_layer = LightLayer(SCREEN_WIDTH, SCREEN_HEIGHT)
         # Add lights to the location of the torches. We're just using hacky tweak value list here
         params = (
             (100, 'hard'),
@@ -46,9 +46,9 @@ class MyGame(arcade.Window):
         )
         for sprite, p in zip(self.torch_list, params):
             self.light_layer.add(
-                Light((sprite.center_x, sprite.center_y), radius=p[0], mode=p[1]),
+                Light(sprite.center_x, sprite.center_y, radius=p[0], mode=p[1]),
             )
-        self.moving_light = Light((400, 300), radius=300, mode='soft')
+        self.moving_light = Light(400, 300, radius=300, mode='soft')
         self.light_layer.add(self.moving_light)
 
     def on_draw(self):
