@@ -532,6 +532,11 @@ Frame Buffers (Arcade 2.4+)
 
    :ref:`bloom_defender`
 
+.. figure:: thumbs/light_demo.png
+   :figwidth: 170px
+
+   :ref:`light_demo`
+
 Particle System
 ^^^^^^^^^^^^^^^
 
