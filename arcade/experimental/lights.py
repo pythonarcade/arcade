@@ -1,5 +1,5 @@
 from array import array
-from typing import Tuple, Sequence
+from typing import Iterable, Tuple, Sequence
 
 from arcade.gl import Context
 from arcade import Color, get_window, get_projection, get_scaling_factor, set_viewport
@@ -37,19 +37,19 @@ class Light:
 
     @position.setter
     def position(self, value):
-        # if self._light_layer:
-        self._light_layer._rebuild = True
+        if self._light_layer:
+            self._light_layer._rebuild = True
         self._center_x, self._center_y = value
 
     @property
     def radius(self) -> float:
         """Get or set the light size"""
-        if self._light_layer:
-            self._light_layer._rebuild = True
         return self._radius
 
     @radius.setter
     def radius(self, value):
+        if self._light_layer:
+            self._light_layer._rebuild = True
         self._radius = value
 
 
@@ -113,6 +113,17 @@ class LightLayer:
         self._lights.remove(light)
         light._light_layer = None
         self._rebuild = True
+
+    def __len__(self) -> int:
+        """Number of lights"""
+        return len(self._lights)
+
+    def __iter__(self) -> Iterable[Light]:
+        """Return an iterable object of lights"""
+        return iter(self._lights)
+
+    def __getitem__(self, i) -> Light:
+        return self._lights[i]
 
     def __enter__(self):
         self._prev_target = self.ctx.active_framebuffer
