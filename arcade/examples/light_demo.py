@@ -1,6 +1,10 @@
 """
 Show how to use lights.
 
+.. note:: This uses features from the upcoming version 2.4. The API for these
+          functions may still change. To use, you will need to install one of the
+          pre-release packages, or install via GitHub.
+
 Artwork from http://kenney.nl
 
 If Python and Arcade are installed, this example can be run from the command line with:
