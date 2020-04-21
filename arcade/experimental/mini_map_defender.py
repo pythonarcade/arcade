@@ -12,7 +12,6 @@ python -m arcade.examples.minimap_defender
 """
 
 import arcade
-import os
 import random
 
 # --- Minimap Related ---
