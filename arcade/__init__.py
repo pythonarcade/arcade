@@ -59,6 +59,7 @@ from .application import Window
 from .application import open_window
 
 from .arcade_types import Color
+from .arcade_types import NamedPoint
 from .arcade_types import Point
 from .arcade_types import PointList
 from .arcade_types import RGB
@@ -67,7 +68,6 @@ from .arcade_types import Rect
 from .arcade_types import RectList
 from .arcade_types import Vector
 
-from .earclip_module import Point
 from .earclip_module import earclip
 
 from .utils import lerp
@@ -234,17 +234,6 @@ from .tilemap import get_tilemap_layer
 from .tilemap import process_layer
 from .tilemap import read_tmx
 
-from .utils import lerp
-from .utils import lerp_vec
-from .utils import rand_angle_360_deg
-from .utils import rand_angle_spread_deg
-from .utils import rand_in_circle
-from .utils import rand_in_rect
-from .utils import rand_on_circle
-from .utils import rand_on_line
-from .utils import rand_vec_magnitude
-from .utils import rand_vec_spread_deg
-
 from .version import VERSION
 
 from .paths import AStarBarrierList
@@ -252,11 +241,11 @@ from .paths import astar_calculate_path
 from .paths import has_line_of_sight
 
 
-__all__ = ['AnimatedTimeBasedSprite',
+__all__ = ['AStarBarrierList',
+           'AnimatedTimeBasedSprite',
            'AnimatedTimeSprite',
            'AnimatedWalkingSprite',
            'AnimationKeyframe',
-           'AStarBarrierList',
            'Color',
            'CreateText',
            'DEFAULT_FONT_NAMES',
@@ -281,11 +270,11 @@ __all__ = ['AnimatedTimeBasedSprite',
            'MOUSE_BUTTON_MIDDLE',
            'MOUSE_BUTTON_RIGHT',
            'Matrix3x3',
+           'NamedPoint',
            'NoOpenGLException',
            'Particle',
            'PhysicsEnginePlatformer',
            'PhysicsEngineSimple',
-           'Point',
            'Point',
            'PointList',
            'RGB',
@@ -397,8 +386,6 @@ __all__ = ['AnimatedTimeBasedSprite',
            'is_point_in_polygon',
            'isometric_grid_to_screen',
            'lerp',
-           'lerp',
-           'lerp_vec',
            'lerp_vec',
            'load_sound',
            'load_spritesheet',
@@ -416,20 +403,12 @@ __all__ = ['AnimatedTimeBasedSprite',
            'process_layer',
            'quick_run',
            'rand_angle_360_deg',
-           'rand_angle_360_deg',
-           'rand_angle_spread_deg',
            'rand_angle_spread_deg',
            'rand_in_circle',
-           'rand_in_circle',
-           'rand_in_rect',
            'rand_in_rect',
            'rand_on_circle',
-           'rand_on_circle',
-           'rand_on_line',
            'rand_on_line',
            'rand_vec_magnitude',
-           'rand_vec_magnitude',
-           'rand_vec_spread_deg',
            'rand_vec_spread_deg',
            'read_tiled_map',
            'read_tmx',

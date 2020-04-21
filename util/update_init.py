@@ -73,7 +73,6 @@ def main():
                 "read_tiled_map.py", \
                 "text.py", \
                 "tilemap.py", \
-                "utils.py", \
                 "version.py", \
                 "paths.py"
 

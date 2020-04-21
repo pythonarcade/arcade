@@ -3,9 +3,7 @@
 from: https://github.com/linuxlewis/tripy/blob/master/tripy.py
 """
 
-from collections import namedtuple
-
-Point = namedtuple('Point', ['x', 'y'])
+from arcade import NamedPoint
 
 
 def earclip(polygon):
@@ -21,7 +19,7 @@ def earclip(polygon):
     ear_vertex = []
     triangles = []
 
-    polygon = [Point(*point) for point in polygon]
+    polygon = [NamedPoint(*point) for point in polygon]
 
     if _is_clockwise(polygon):
         polygon.reverse()
