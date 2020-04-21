@@ -247,8 +247,8 @@ from .utils import rand_vec_spread_deg
 
 from .version import VERSION
 
-from .paths import BarrierList
-from .paths import astar
+from .paths import AStarBarrierList
+from .paths import astar_calculate_path
 from .paths import has_line_of_sight
 
 
@@ -256,7 +256,7 @@ __all__ = ['AnimatedTimeBasedSprite',
            'AnimatedTimeSprite',
            'AnimatedWalkingSprite',
            'AnimationKeyframe',
-           'BarrierList',
+           'AStarBarrierList',
            'Color',
            'CreateText',
            'DEFAULT_FONT_NAMES',
@@ -315,7 +315,7 @@ __all__ = ['AnimatedTimeBasedSprite',
            'View',
            'Window',
            'are_polygons_intersecting',
-           'astar',
+           'astar_calculate_path',
            'calculate_points',
            'check_for_collision',
            'check_for_collision_with_list',

@@ -25,13 +25,6 @@ MOVEMENT_SPEED = 5
 
 VIEWPORT_MARGIN = 300
 
-class Player(arcade.Sprite):
-    """ Player sprite"""
-    def update(self):
-        """ Move player """
-        self.center_x += self.change_x
-        self.center_y += self.change_y
-
 
 class MyGame(arcade.Window):
     """
@@ -85,13 +78,13 @@ class MyGame(arcade.Window):
         self.enemy_list = arcade.SpriteList()
 
         # Set up the player
-        self.player = Player(":resources:images/animated_characters/female_person/femalePerson_idle.png", SPRITE_SCALING)
+        self.player = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", SPRITE_SCALING)
         self.player.center_x = 50
         self.player.center_y = 350
         self.player_list.append(self.player)
 
         # Set enemies
-        enemy = Player(":resources:images/animated_characters/zombie/zombie_idle.png", SPRITE_SCALING)
+        enemy = arcade.Sprite(":resources:images/animated_characters/zombie/zombie_idle.png", SPRITE_SCALING)
         enemy.center_x = 350
         enemy.center_y = 350
         self.enemy_list.append(enemy)

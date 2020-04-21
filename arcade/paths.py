@@ -61,14 +61,28 @@ def _spot_is_blocked(position, moving_sprite, blocking_sprites):
 class _AStarGraph(object):
     # Define a class board like grid with two barriers
 
-    def __init__(self, barriers, left, right, bottom, top):
+    def __init__(self, barriers, left, right, bottom, top, diagonal_movement):
         self.barriers = barriers
         self.left = left
         self.right = right
         self.top = top
         self.bottom = bottom
 
+        if diagonal_movement:
+            self.movement_directions = (1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (-1, 1), (1, -1), (-1, -1)
+        else:
+            self.movement_directions = (1, 0), (-1, 0), (0, 1), (0, -1)
+
     def heuristic(self, start, goal):
+        """
+
+        Args:
+            start:
+            goal:
+
+        Returns:
+
+        """
         # Use Chebyshev distance heuristic if we can move one square either
         # adjacent or diagonal
         D = 1
@@ -80,7 +94,7 @@ class _AStarGraph(object):
     def get_vertex_neighbours(self, pos):
         n = []
         # Moves allow link a chess king
-        for dx, dy in [(1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (-1, 1), (1, -1), (-1, -1)]:
+        for dx, dy in self.movement_directions:
             x2 = pos[0] + dx
             y2 = pos[1] + dy
             if x2 < self.left or x2 > self.right or y2 < self.bottom or y2 > self.top:
@@ -162,6 +176,7 @@ def _AStarSearch(start, end, graph):
             H = graph.heuristic(neighbour, end)
             F[neighbour] = G[neighbour] + H
 
+    # Out-of-bounds
     return None
 
 
@@ -172,55 +187,100 @@ def _expand(pos, grid_size):
     return int(pos[0] * grid_size),  int(pos[1] * grid_size)
 
 
-class BarrierList:
-    def __init__(self, moving_sprite, blocking_sprites, grid_size, left, right, bottom, top):
+class AStarBarrierList:
+    """
+    Class that manages a list of barriers that can be encountered during
+    A* path finding.
+    """
+    def __init__(self,
+                 moving_sprite,
+                 blocking_sprites,
+                 grid_size,
+                 left,
+                 right,
+                 bottom,
+                 top):
+        """
+        :param Sprite moving_sprite: Sprite that will be moving
+        :param SpriteList blocking_sprites: Sprites that can block movement
+        :param int grid_size: Size of the grid, in pixels
+        :param int left: Left border of playing field
+        :param int right: Right border of playing field
+        :param int bottom: Bottom of playing field
+        :param int top: Top of playing field
+        """
+
         self.grid_size = grid_size
-        self.bottom = bottom
-        self.top = top
-        self.left = left
-        self.right = right
-        original_pos = moving_sprite.position
-        barrier_list = set()
-        for cx in range(left, right + 1):
-            for cy in range(bottom, top + 1):
+        self.bottom = int(bottom // grid_size)
+        self.top = int(top // grid_size)
+        self.left = int(left // grid_size)
+        self.right = int(right // grid_size)
+        self.moving_sprite = moving_sprite
+        self.blocking_sprites = blocking_sprites
+        self.barrier_list = None
+
+        self.recalculate()
+
+    def recalculate(self):
+        """
+        Recalculate blocking sprites.
+        """
+        # --- Iterate through the blocking sprites and find where we are blocked
+
+        # Save original location
+        original_pos = self.moving_sprite.position
+        # Create a set of barriers
+        self.barrier_list = set()
+        # Loop through the grid
+        for cx in range(self.left, self.right + 1):
+            for cy in range(self.bottom, self.top + 1):
+                # Grid location
                 cpos = cx, cy
-                pos = _expand(cpos, grid_size)
-                if len(get_sprites_at_point(pos, blocking_sprites)) > 0:
-                    barrier_list.add(cpos)
-                moving_sprite.position = pos
-                if len(check_for_collision_with_list(moving_sprite, blocking_sprites)) > 0:
-                    barrier_list.add(cpos)
+                # Pixel location
+                pos = _expand(cpos, self.grid_size)
 
-        moving_sprite.position = original_pos
+                # See if we'll have a collision if our sprite is at this location
+                self.moving_sprite.position = pos
+                if len(check_for_collision_with_list(self.moving_sprite, self.blocking_sprites)) > 0:
+                    self.barrier_list.add(cpos)
 
-        self.barrier_list = barrier_list
+        # Restore original location
+        self.moving_sprite.position = original_pos
 
 
-def astar(start, end, bl:BarrierList):
+def astar_calculate_path(start_point: Point,
+                         end_point: Point,
+                         barrier_list: AStarBarrierList,
+                         diagonal_movement=True):
+    """
+    :param Point start_point:
+    :param Point end_point:
+    :param AStarBarrierList barrier_list:
+    :param bool diagonal_movement:
 
-    grid_size = bl.grid_size
-    mod_start = _collapse(start, grid_size)
-    mod_end = _collapse(end, grid_size)
+    Returns: List
 
-    left = bl.left
-    right = bl.right
+    """
 
-    bottom = bl.bottom
-    top = bl.top
+    grid_size = barrier_list.grid_size
+    mod_start = _collapse(start_point, grid_size)
+    mod_end = _collapse(end_point, grid_size)
 
-    # print("Start:", mod_start, "End:", mod_end)
-    # print("Boundaries:", left, right, bottom, top)
+    left = barrier_list.left
+    right = barrier_list.right
 
-    barrier_list = bl.barrier_list
+    bottom = barrier_list.bottom
+    top = barrier_list.top
 
-    # print("Barriers:", barrier_list)
-    graph = _AStarGraph(barrier_list, left, right, bottom, top)
+    barrier_list = barrier_list.barrier_list
+
+    graph = _AStarGraph(barrier_list, left, right, bottom, top, diagonal_movement)
     result = _AStarSearch(mod_start, mod_end, graph)
-    # print("Result: ", result)
+
     if result is None:
         return None
 
-    revised_result = []
-    for p in result:
-        revised_result.append(_expand(p, grid_size))
+    # Currently 'result' is in grid locations. We need to convert them to pixel
+    # locations.
+    revised_result = [_expand(p, grid_size) for p in result]
     return revised_result
