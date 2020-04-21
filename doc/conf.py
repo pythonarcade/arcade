@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+"""
+Generate HTML docs
+"""
 
 # Run the generate quick API index script
 # Then generate thumbnails if they do not exist
@@ -494,6 +497,6 @@ def post_process(app, exception):
 
 
 def setup(app):
-    app.add_stylesheet("css/custom.css")
+    app.add_css_file("css/custom.css")
     app.connect('source-read', source_read)
     app.connect('build-finished', post_process)
