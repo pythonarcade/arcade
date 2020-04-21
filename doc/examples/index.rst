@@ -235,6 +235,17 @@ Sprite Non-Player Movement
 
    :ref:`sprite_follow_simple_2`
 
+.. figure:: thumbs/line_of_sight.png
+   :figwidth: 170px
+
+   :ref:`line_of_sight`
+
+.. figure:: thumbs/astar_pathfinding.png
+   :figwidth: 170px
+
+   :ref:`astar_pathfinding`
+
+
 Sprite Properties
 ^^^^^^^^^^^^^^^^^
 
@@ -352,12 +363,6 @@ Basic Platformers
    :figwidth: 170px
 
    :ref:`platformer_tutorial`
-
-.. figure:: thumbs/line_of_sight.png
-   :figwidth: 170px
-
-   :ref:`line_of_sight`
-
 
 
 Using Tiled Map Editor to Create Maps
