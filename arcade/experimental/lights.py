@@ -1,5 +1,5 @@
 from array import array
-from typing import Iterable, Tuple, Sequence
+from typing import Iterable, Tuple, Sequence, List, Optional
 
 from arcade import Color, get_window, get_projection, get_scaling_factor, set_viewport
 from arcade import gl
@@ -22,7 +22,7 @@ class Light:
         :param float radius: The radius of the light
         :param str mode: `hard` or `soft`
         """
-        if not (isinstance(color, Tuple) or isinstance(color, list)):
+        if not (isinstance(color, tuple) or isinstance(color, list)):
             raise ValueError("Color must be a 3-4 element Tuple or List with red-green-blue and optionally an alpha.")
 
         if not isinstance(mode, str) or not (mode == 'soft' or mode == 'hard'):
@@ -33,7 +33,7 @@ class Light:
         self._radius = radius
         self._attenuation = Light.HARD if mode == 'hard' else Light.SOFT
         self._color = color
-        self._light_layer = None
+        self._light_layer: Optional[LightLayer] =  None
 
     @property
     def position(self) -> Tuple[float, float]:
@@ -71,7 +71,8 @@ class LightLayer:
         if self.window is None:
             raise RuntimeError("Cannot find window")
         self.ctx = self.window.ctx
-        self._lights = []
+        self._lights: List[Light] = []
+        self._background_color: Optional[Color] = (0, 0, 0)
 
         self._prev_target = None
         self._rebuild = False
@@ -119,6 +120,10 @@ class LightLayer:
         light._light_layer = None
         self._rebuild = True
 
+    def set_background_color(self, color: Color):
+        """Set the background color for the light layer"""
+        self._background_color = color
+
     def __len__(self) -> int:
         """Number of lights"""
         return len(self._lights)
@@ -133,7 +138,7 @@ class LightLayer:
     def __enter__(self):
         self._prev_target = self.ctx.active_framebuffer
         self._diffuse_buffer.use()
-        self._diffuse_buffer.clear()
+        self._diffuse_buffer.clear(self._background_color)
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -153,7 +158,7 @@ class LightLayer:
 
         # Re-build light data if needed
         if self._rebuild:
-            data = []
+            data: List[float] = []
             for light in self._lights:
                 data.extend(light.position)
                 data.append(light.radius)

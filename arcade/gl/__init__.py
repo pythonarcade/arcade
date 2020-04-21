@@ -6,3 +6,4 @@
 from .context import Context
 from .types import BufferDescription
 from .exceptions import ShaderException
+from .enums import *

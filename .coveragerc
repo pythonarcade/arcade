@@ -2,6 +2,7 @@
 source = arcade
 omit =
     ./arcade/examples/*
+    ./arcade/experimental/*
     ./env/*
     ./tests/*
     ./doc/*
