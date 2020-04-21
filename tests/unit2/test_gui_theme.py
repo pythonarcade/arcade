@@ -1,20 +1,24 @@
 import arcade.color
 from arcade.gui import Theme
+from arcade.gui import Font
 
 
 def test_theme_font():
     theme = Theme()
-    assert theme.font_color == Theme.DEFAULT_FONT_COLOR
-    assert theme.font_size == Theme.DEFAULT_FONT_SIZE
-    assert theme.font_name == Theme.DEFAULT_FONT_NAME
+    assert theme.font.color == Font.DEFAULT_COLOR
+    assert theme.font.size == Font.DEFAULT_SIZE
+    assert theme.font.name == Font.DEFAULT_NAME
 
-    theme.set_font(10, arcade.color.WHITE, "verdana")
-    assert theme.font_color == arcade.color.WHITE
-    assert theme.font_size == 10
-    assert theme.font_name == "verdana"
+    theme.font.size = 10
+    theme.font.color = arcade.color.WHITE
+    theme.font.name = "verdana"
+    assert theme.font.color == arcade.color.WHITE
+    assert theme.font.size == 10
+    assert theme.font.name == "verdana"
 
-    theme.set_font(12, arcade.color.WENGE)
-    assert theme.font_name == Theme.DEFAULT_FONT_NAME
+    theme.font.size = 12
+    theme.font.name = Font.DEFAULT_NAME
+    assert theme.font.name == Font.DEFAULT_NAME
 
 
 def test_theme_box_texture():
