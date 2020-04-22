@@ -90,6 +90,7 @@ Examples
   Add more procedural generation examples.
 * `Issue 464 <https://github.com/pvcraven/arcade/issues/464>`_
   Add example for checkers-like game.
+* Add example showing how to use lerp or smoothstep for smooth camera panning.
 
 Testing
 -------
