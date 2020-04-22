@@ -112,7 +112,8 @@ def draw_text(text: str,
               italic: bool = False,
               anchor_x: str = "left",
               anchor_y: str = "baseline",
-              rotation: float = 0
+              rotation: float = 0,
+              caching: bool = False
               ) -> Sprite:
     """
 
@@ -143,8 +144,9 @@ def draw_text(text: str,
     font_size *= scale_up
 
     # If the cache gets too large, dump it and start over.
-    if len(draw_text_cache) > 5000:
-        draw_text_cache = {}
+    if caching:
+        if len(draw_text_cache) > 1000:
+            draw_text_cache = {}
 
     r, g, b, alpha = get_four_byte_color(color)
     cache_color = f"{r}{g}{b}"
@@ -235,7 +237,8 @@ def draw_text(text: str,
         label.text_sprite_list = SpriteList()
         label.text_sprite_list.append(text_sprite)
 
-        draw_text_cache[key] = label
+        if caching:
+            draw_text_cache[key] = label
 
     text_sprite = label.text_sprite_list[0]
 
