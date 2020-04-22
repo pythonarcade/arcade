@@ -116,6 +116,18 @@ def draw_text(text: str,
               ) -> Sprite:
     """
 
+    Draws text to the screen.
+
+    Internally this works by creating an image, and using the Pillow library to
+    draw the text to it. Then use that image to create a sprite. We cache the sprite
+    (so we don't have to recreate over and over, which is slow) and use it to
+    draw text to the screen.
+
+    This implementation does not support bold/italic like the older Pyglet-based
+    implementation of draw_text. However if you specify the 'italic' or 'bold'
+    version of the font via the font name, you will get that font. Just the booleans
+    do not work.
+
     :param str text: Text to draw
     :param float start_x: x coordinate of the lower-left point to start drawing text
     :param float start_y: y coordinate of the lower-left point to start drawing text
@@ -124,8 +136,8 @@ def draw_text(text: str,
     :param float width: Width of the text-box for the text to go into. Used with alignment.
     :param str align: Align left, right, center
     :param Union[str, Tuple[str, ...]] font_name: Font name, or list of font names in order of preference
-    :param bool bold: Bold the font
-    :param bool italic: Italicize the font
+    :param bool bold: Bold the font (currently unsupported)
+    :param bool italic: Italicize the font (currently unsupported)
     :param str anchor_x: Anchor the font location, defaults to 'left'
     :param str anchor_y: Anchor the font location, defaults to 'baseline'
     :param float rotation: Rotate the text
@@ -289,6 +301,7 @@ def draw_text_2(text: str,
                 rotation: float = 0
                 ):
     """
+    Draws text to the screen using pyglet's label instead. Doesn't work.
 
     :param str text: Text to draw
     :param float start_x:
