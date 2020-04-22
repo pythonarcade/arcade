@@ -217,6 +217,9 @@ def process_resource_directory(out, my_path: Path):
         # print(r3)
         if cur_node.is_dir():
 
+            if str(cur_node).endswith("__"):
+                continue
+
             has_files = False
             for check_node in cur_node.iterdir():
                 if check_node.is_file():
@@ -245,6 +248,8 @@ def process_resource_directory(out, my_path: Path):
 
 
 def process_resource_files(out, my_path: Path):
+
+
     for cur_node in my_path.iterdir():
         r1 = cur_node.relative_to('.')
         r3 = 'resources/' + str(r1)[20:].replace('\\', '/')
