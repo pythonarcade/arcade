@@ -28,6 +28,10 @@ from arcade.gl import BufferDescription
 
 
 class Shape:
+    """
+    Primitive drawing shape. This can be part of a ShapeElementList so
+    shapes can be drawn faster in batch.
+    """
     def __init__(self):
         self.vao = None
         self.vbo = None
@@ -36,6 +40,11 @@ class Shape:
         self.line_width = 1
 
     def draw(self):
+        """
+        Draw this shape. Drawing this way isn't as fast as drawing multiple
+        shapes batched together in a ShapeElementList.
+        """
+
         # program['Projection'].write(get_projection().tobytes())
 
         assert(self.line_width == 1)
@@ -242,6 +251,14 @@ def create_polygon(point_list: PointList,
     Draw a convex polygon. This will NOT draw a concave polygon.
     Because of this, you might not want to use this function.
 
+    The function returns a Shape object that can be drawn with ``my_shape.draw()``.
+    Don't create the shape in the draw method, create it in the setup method and then
+    draw it in ``on_draw``.
+
+    For even faster performance, add multiple shapes into a ShapeElementList and
+    draw that list. This allows nearly unlimited shapes to be drawn just as fast
+    as one.
+
     :param PointList point_list:
     :param color:
 
@@ -267,6 +284,14 @@ def create_rectangle_filled(center_x: float, center_y: float, width: float,
     """
     Create a filled rectangle.
 
+    The function returns a Shape object that can be drawn with ``my_shape.draw()``.
+    Don't create the shape in the draw method, create it in the setup method and then
+    draw it in ``on_draw``.
+
+    For even faster performance, add multiple shapes into a ShapeElementList and
+    draw that list. This allows nearly unlimited shapes to be drawn just as fast
+    as one.
+
     :param float center_x:
     :param float center_y:
     :param float width:
@@ -286,6 +311,14 @@ def create_rectangle_outline(center_x: float, center_y: float, width: float,
                              border_width: float = 1, tilt_angle: float = 0) -> Shape:
     """
     Create a rectangle outline.
+
+    The function returns a Shape object that can be drawn with ``my_shape.draw()``.
+    Don't create the shape in the draw method, create it in the setup method and then
+    draw it in ``on_draw``.
+
+    For even faster performance, add multiple shapes into a ShapeElementList and
+    draw that list. This allows nearly unlimited shapes to be drawn just as fast
+    as one.
 
     Args:
         center_x:
@@ -351,8 +384,16 @@ def create_rectangle(center_x: float, center_y: float, width: float,
                      filled=True) -> Shape:
     """
     This function creates a rectangle using a vertex buffer object.
-    Creating the rectangle, and then later drawing it with ``render_rectangle``
-    is faster than calling ``draw_rectangle``.
+
+    The function returns a Shape object that can be drawn with ``my_shape.draw()``.
+    Don't create the shape in the draw method, create it in the setup method and then
+    draw it in ``on_draw``.
+
+    For even faster performance, add multiple shapes into a ShapeElementList and
+    draw that list. This allows nearly unlimited shapes to be drawn just as fast
+    as one.
+    ```
+    self.my_shape = arcade.create_rectangle_filled(300, 300, 100, 100, arcade.color.RED)
 
     Args:
         center_x:
@@ -408,8 +449,15 @@ def create_rectangle(center_x: float, center_y: float, width: float,
 def create_rectangle_filled_with_colors(point_list, color_list) -> Shape:
     """
     This function creates one rectangle/quad using a vertex buffer object.
-    Creating the rectangles, and then later drawing it with ``render``
-    is faster than calling ``draw_rectangle``.
+
+    The function returns a Shape object that can be drawn with ``my_shape.draw()``.
+    Don't create the shape in the draw method, create it in the setup method and then
+    draw it in ``on_draw``.
+
+    For even faster performance, add multiple shapes into a ShapeElementList and
+    draw that list. This allows nearly unlimited shapes to be drawn just as fast
+    as one.
+
     """
 
     shape_mode = gl.GL_TRIANGLE_STRIP
@@ -421,8 +469,15 @@ def create_rectangle_filled_with_colors(point_list, color_list) -> Shape:
 def create_rectangles_filled_with_colors(point_list, color_list) -> Shape:
     """
     This function creates multiple rectangle/quads using a vertex buffer object.
-    Creating the rectangles, and then later drawing it with ``render``
-    is faster than calling ``draw_rectangle``.
+
+    The function returns a Shape object that can be drawn with ``my_shape.draw()``.
+    Don't create the shape in the draw method, create it in the setup method and then
+    draw it in ``on_draw``.
+
+    For even faster performance, add multiple shapes into a ShapeElementList and
+    draw that list. This allows nearly unlimited shapes to be drawn just as fast
+    as one.
+
     """
 
     shape_mode = gl.GL_TRIANGLES
@@ -441,8 +496,15 @@ def create_rectangles_filled_with_colors(point_list, color_list) -> Shape:
 def create_triangles_filled_with_colors(point_list, color_list) -> Shape:
     """
     This function creates multiple rectangle/quads using a vertex buffer object.
-    Creating the rectangles, and then later drawing it with ``render``
-    is faster than calling ``draw_rectangle``.
+
+    The function returns a Shape object that can be drawn with ``my_shape.draw()``.
+    Don't create the shape in the draw method, create it in the setup method and then
+    draw it in ``on_draw``.
+
+    For even faster performance, add multiple shapes into a ShapeElementList and
+    draw that list. This allows nearly unlimited shapes to be drawn just as fast
+    as one.
+
     """
 
     shape_mode = gl.GL_TRIANGLE_STRIP
@@ -454,6 +516,15 @@ def create_ellipse_filled(center_x: float, center_y: float,
                           tilt_angle: float = 0, num_segments: int = 128) -> Shape:
     """
     Create a filled ellipse. Or circle if you use the same width and height.
+
+    The function returns a Shape object that can be drawn with ``my_shape.draw()``.
+    Don't create the shape in the draw method, create it in the setup method and then
+    draw it in ``on_draw``.
+
+    For even faster performance, add multiple shapes into a ShapeElementList and
+    draw that list. This allows nearly unlimited shapes to be drawn just as fast
+    as one.
+
     """
 
     border_width = 1
@@ -467,6 +538,15 @@ def create_ellipse_outline(center_x: float, center_y: float,
                            tilt_angle: float = 0, num_segments: int = 128) -> Shape:
     """
     Create an outline of an ellipse.
+
+    The function returns a Shape object that can be drawn with ``my_shape.draw()``.
+    Don't create the shape in the draw method, create it in the setup method and then
+    draw it in ``on_draw``.
+
+    For even faster performance, add multiple shapes into a ShapeElementList and
+    draw that list. This allows nearly unlimited shapes to be drawn just as fast
+    as one.
+
     """
 
     return create_ellipse(center_x, center_y, width, height, color,
@@ -480,12 +560,16 @@ def create_ellipse(center_x: float, center_y: float,
                    filled=True) -> Shape:
 
     """
-    This creates an ellipse vertex buffer object (VBO). It can later be
-    drawn with ``render_ellipse_filled``. This method of drawing an ellipse
-    is much faster than calling ``draw_ellipse_filled`` each frame.
+    This creates an ellipse vertex buffer object (VBO).
 
-    Note: This can't be unit tested on Appveyor because its support for OpenGL is
-    poor.
+    The function returns a Shape object that can be drawn with ``my_shape.draw()``.
+    Don't create the shape in the draw method, create it in the setup method and then
+    draw it in ``on_draw``.
+
+    For even faster performance, add multiple shapes into a ShapeElementList and
+    draw that list. This allows nearly unlimited shapes to be drawn just as fast
+    as one.
+
     """
     # Create an array with the vertex point_list
     point_list = []
@@ -521,6 +605,15 @@ def create_ellipse_filled_with_colors(center_x: float, center_y: float,
                                       tilt_angle: float = 0, num_segments: int = 32) -> Shape:
     """
     Draw an ellipse, and specify inside/outside color. Used for doing gradients.
+
+    The function returns a Shape object that can be drawn with ``my_shape.draw()``.
+    Don't create the shape in the draw method, create it in the setup method and then
+    draw it in ``on_draw``.
+
+    For even faster performance, add multiple shapes into a ShapeElementList and
+    draw that list. This allows nearly unlimited shapes to be drawn just as fast
+    as one.
+
 
     :param float center_x:
     :param float center_y:
