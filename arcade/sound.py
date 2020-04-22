@@ -83,19 +83,37 @@ class Sound:
         return _audiolib.get_volume(self.voice_handle)
 
     def set_volume(self, volume):
-        """ Set the current volume. """
+        """
+        Set the current volume.
+
+        This can only be done after the sound has started
+        playing. Setting the sound volume when there is no sound playing generates
+        a TypeError. If you want to set the volume before playing, use the ``volume``
+        parameter in the ``play`` method.
+        """
         if not _audiolib:
             return
         _audiolib.set_volume(self.voice_handle, volume)
 
     def set_left_right_volume(self, left_volume, right_volume):
-        """ Set absolute left/right volume """
+        """
+        Set absolute left/right volume
+
+        This can only be done after the sound has started
+        playing. Setting the sound volume when there is no sound playing generates
+        a TypeError. If you want to set the volume before playing, use the ``volume``
+        parameter in the ``play`` method.
+
+        """
         if not _audiolib:
             return
         _audiolib.set_pan_absolute(self.voice_handle, left_volume, right_volume)
 
     def get_stream_position(self):
-        """ This always returns zero for some unknown reason. """
+        """
+        Return where we are in the stream. This will reset back to
+        zero when it is done playing.
+        """
         return _audiolib.get_stream_position(self.voice_handle)
 
 
