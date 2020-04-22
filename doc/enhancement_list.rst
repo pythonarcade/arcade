@@ -18,6 +18,8 @@ Drawing
   Add support for bitmapped fonts.
 * `Issue 595 <https://github.com/pvcraven/arcade/issues/595>`_
   Optimize drawing functions by caching them
+* After updating to Pyglet 2.x, update text drawing to use Pyglet's text drawing
+  rather than the Pillow text drawing.
 
 Sprites
 -------
