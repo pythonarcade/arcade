@@ -419,7 +419,7 @@ def _process_tile_layer(map_object: pytiled_parser.objects.TileMap,
                         scaling: float = 1,
                         base_directory: str = "") -> SpriteList:
     sprite_list: SpriteList = SpriteList()
-    map_array = layer.data
+    map_array = layer.layer_data
 
     # Loop through the layer and add in the wall list
     for row_index, row in enumerate(map_array):
