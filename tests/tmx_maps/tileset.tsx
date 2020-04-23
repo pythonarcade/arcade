@@ -17,7 +17,7 @@
   <image width="128" height="128" source="../../arcade/resources/images/tiles/brickGrey.png"/>
  </tile>
  <tile id="5">
-  <image width="128" height="128" source="../../arcade/resources/images/tiles/brickTextureWhite.png"/>
+  <image width="128" height="128" source="../../arcade/resources/images/test_textures/test_texture.png"/>
  </tile>
  <tile id="6">
   <image width="128" height="128" source="../../arcade/resources/images/tiles/bridgeA.png"/>
