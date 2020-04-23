@@ -73,7 +73,7 @@ class MyWindow(arcade.Window):
             self.wall_list.append(wall)
 
         # Add some movable boxes
-        for x in range(SPRITE_SIZE * 3, SPRITE_SIZE * 6, SPRITE_SIZE):
+        for x in range(SPRITE_SIZE * 3, SPRITE_SIZE * 8, SPRITE_SIZE):
             item = arcade.Sprite(":resources:images/tiles/boxCrate.png",
                                  SPRITE_SCALING_PLAYER)
             item.center_x = x
@@ -81,7 +81,7 @@ class MyWindow(arcade.Window):
             self.item_list.append(item)
 
         # Create the physics engine
-        self.physics_engine = PymunkPhysicsEngine()
+        self.physics_engine = PymunkPhysicsEngine(damping=0.5)
         self.physics_engine.add_sprite(self.player_sprite, moment=PymunkPhysicsEngine.MOMENT_INF)
 
         self.physics_engine.add_sprite_list(self.wall_list,

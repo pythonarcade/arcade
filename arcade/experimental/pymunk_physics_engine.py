@@ -23,10 +23,11 @@ class PymunkPhysicsEngine:
     KINEMATIC = pymunk.Body.KINEMATIC
     MOMENT_INF = pymunk.inf
 
-    def __init__(self, gravity=(0,0)):
+    def __init__(self, gravity=(0, 0), damping: float = 1.0):
         # -- Pymunk
         self.space = pymunk.Space()
         self.space.gravity = gravity
+        self.space.damping = damping
         self.sprites = {}
 
 
@@ -47,13 +48,9 @@ class PymunkPhysicsEngine:
         body = pymunk.Body(mass, moment, body_type=body_type)
         body.position = pymunk.Vec2d(sprite.center_x, sprite.center_y)
 
-        scaled_poly = []
         poly = sprite.get_hit_box()
-        for vert in poly:
-            scaled_vert = []
-            for coord in vert:
-                scaled_vert.append(coord * sprite.scale)
-            scaled_poly.append(scaled_vert)
+
+        scaled_poly = [[x * sprite.scale for x in z] for z in poly]
 
         shape = pymunk.Poly(body, scaled_poly, radius=radius)
         shape.friction = friction
