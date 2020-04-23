@@ -57,6 +57,10 @@
  </tile>
  <tile id="18">
   <image width="128" height="128" source="../../arcade/resources/images/tiles/dirtCorner_right.png"/>
+  <animation>
+   <frame tileid="143" duration="500"/>
+   <frame tileid="144" duration="500"/>
+  </animation>
  </tile>
  <tile id="19">
   <image width="128" height="128" source="../../arcade/resources/images/tiles/dirtHalf.png"/>
@@ -435,6 +439,10 @@
  </tile>
  <tile id="144">
   <image width="128" height="128" source="../../arcade/resources/images/tiles/torch2.png"/>
+  <animation>
+   <frame tileid="143" duration="500"/>
+   <frame tileid="144" duration="500"/>
+  </animation>
  </tile>
  <tile id="145">
   <image width="128" height="128" source="../../arcade/resources/images/tiles/torchOff.png"/>

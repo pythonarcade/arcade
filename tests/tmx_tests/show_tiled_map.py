@@ -68,7 +68,7 @@ class MyGame(arcade.Window):
     def setup(self):
         """ Set up the game and initialize the variables. """
 
-        map_name = "../tmx_maps/rotation.tmx"
+        map_name = "../tmx_maps/animation.tmx"
 
         # Read in the tiled map
         my_map = arcade.tilemap.read_tmx(map_name)
@@ -81,6 +81,9 @@ class MyGame(arcade.Window):
         # Set the background color
         if my_map.background_color:
             arcade.set_background_color(my_map.background_color)
+
+    def on_update(self, delta_time):
+        self.wall_list.update_animation(delta_time)
 
     def on_draw(self):
         """
