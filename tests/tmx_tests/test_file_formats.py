@@ -16,12 +16,19 @@ def test_csv_left_up():
     # --- Platforms ---
     wall_list = arcade.tilemap.process_layer(my_map, 'Blocking Sprites', TILE_SCALING)
 
-    print()
-    print(wall_list[0].texture.name)
-    # print(wall_list[1].texture.name)
+    for wall in wall_list:
+        print()
+        print(wall.texture.name)
+        print(wall.position)
 
-    assert wall_list[0].position == (64, 64)
-    assert "boxCrate" in wall_list[0].texture.name
+    assert wall_list[0].position == (64, 1216)
+    assert "dirtCenter" in wall_list[0].texture.name
+
+    assert wall_list[1].position == (1216, 1216)
+    assert "grassCenter" in wall_list[1].texture.name
+
+    assert wall_list[2].position == (64, 64)
+    assert "boxCrate" in wall_list[2].texture.name
 
 
 
