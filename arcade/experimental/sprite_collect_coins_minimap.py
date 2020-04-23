@@ -62,13 +62,13 @@ class MyGame(arcade.Window):
         """ Set up the game and initialize the variables. """
 
         # Offscreen stuff
-        program = self.ctx.load_program(
-            vertex_shader="simple_shader.vert",
-            fragment_shader="simple_shader.frag")
+        self.program = self.ctx.load_program(
+            vertex_shader=arcade.resources.shaders.vertex.default_projection,
+            fragment_shader=arcade.resources.shaders.fragment.texture)
         self.color_attachment = self.ctx.texture((SCREEN_WIDTH, SCREEN_HEIGHT), components=4)
         self.offscreen = self.ctx.framebuffer(color_attachments=[self.color_attachment])
-        self.quad_fs = geometry.quad_fs(program, size=(2.0, 2.0))
-        self.mini_map_quad = geometry.quad_fs(program, size=(0.5, 0.5), pos=(0.75, 0.75))
+        self.quad_fs = geometry.quad_fs(size=(2.0, 2.0))
+        self.mini_map_quad = geometry.quad_fs(size=(0.5, 0.5), pos=(0.75, 0.75))
 
         # Sprite lists
         self.player_list = arcade.SpriteList()
@@ -124,7 +124,7 @@ class MyGame(arcade.Window):
                                      arcade.color.AMAZON)
 
         self.color_attachment.use(0)
-        self.quad_fs.render()
+        self.quad_fs.render(self.program)
 
         arcade.draw_rectangle_filled(SCREEN_WIDTH - SCREEN_WIDTH / 8,
                                      SCREEN_HEIGHT - SCREEN_HEIGHT / 8,
@@ -132,7 +132,7 @@ class MyGame(arcade.Window):
                                      SCREEN_HEIGHT / 4,
                                      arcade.color.BLACK)
         self.color_attachment.use(0)
-        self.mini_map_quad.render()
+        self.mini_map_quad.render(self.program)
 
         # Put the text on the screen.
         output = f"Score: {self.score}"
