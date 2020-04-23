@@ -37,8 +37,12 @@ class PymunkPhysicsEngine:
                    friction: float=0.2,
                    moment=None,
                    body_type=DYNAMIC,
+                   damping=None,
+                   gravity=(0, 0),
+                   max_velocity=None,
                    radius=0
                    ):
+
         if sprite in self.sprites:
             print("Sprite already in added.")
 
@@ -47,6 +51,27 @@ class PymunkPhysicsEngine:
 
         body = pymunk.Body(mass, moment, body_type=body_type)
         body.position = pymunk.Vec2d(sprite.center_x, sprite.center_y)
+
+        def velocity_callback(my_body, my_gravity, my_damping, dt):
+            if damping is not None:
+
+                adj_damping = ((damping * 100) / 100) ** (dt)
+                # print(damping, my_damping, adj_damping)
+                my_damping = adj_damping
+            if gravity is not None:
+                my_gravity = gravity
+
+            pymunk.Body.update_velocity(my_body, my_gravity, my_damping, dt)
+
+            if max_velocity:
+
+                l = my_body.velocity.length
+                if l > max_velocity:
+                    scale = max_velocity / l
+                    body.velocity = body.velocity * scale
+
+        if damping is not None:
+            body.velocity_func = velocity_callback
 
         poly = sprite.get_hit_box()
 

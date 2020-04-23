@@ -1,9 +1,14 @@
-import arcade
+"""
+Example of Pymunk Physics Engine
 
-SCREEN_TITLE = "Starting Template Simple"
+Top-down
+"""
+import arcade
+from arcade.experimental.pymunk_physics_engine import PymunkPhysicsEngine
+
+SCREEN_TITLE = "PyMunk Top-Down"
 SPRITE_SCALING_PLAYER = 0.5
 MOVEMENT_SPEED = 5
-PLAYER_MOVE_FORCE = 700
 
 SPRITE_IMAGE_SIZE = 128
 SPRITE_SIZE = int(SPRITE_IMAGE_SIZE * SPRITE_SCALING_PLAYER)
@@ -11,7 +16,8 @@ SPRITE_SIZE = int(SPRITE_IMAGE_SIZE * SPRITE_SCALING_PLAYER)
 SCREEN_WIDTH = SPRITE_SIZE * 20
 SCREEN_HEIGHT = SPRITE_SIZE * 15
 
-from arcade.experimental.pymunk_physics_engine import PymunkPhysicsEngine
+# Physics force used to move the player. Higher number, faster accelerating.
+PLAYER_MOVE_FORCE = 4000
 
 class MyWindow(arcade.Window):
     def __init__(self, width, height, title):
@@ -80,22 +86,55 @@ class MyWindow(arcade.Window):
             item.center_y = 400
             self.item_list.append(item)
 
-        # Create the physics engine
-        self.physics_engine = PymunkPhysicsEngine(damping=0.5)
-        self.physics_engine.add_sprite(self.player_sprite, moment=PymunkPhysicsEngine.MOMENT_INF)
+        # --- Pymunk Physics Engine Setup ---
 
+        # The default damping for every object controls the percent of velocity
+        # the object will keep each second. A value of 1.0 is no speed loss,
+        # 0.9 is 10% per second, 0.1 is 90% per second.
+        # For top-down games, this is basically the friction for moving objects.
+        # For platformers with gravity, this should probably be set to 1.0.
+        # Default value is 1.0 if not specified.
+        damping = 0.9
+
+        # Set the gravity. (0, 0) is good for outer space and top-down.
+        gravity = (0, 0)
+
+        # Create the physics engine
+        self.physics_engine = PymunkPhysicsEngine(damping=damping,
+                                                  gravity=gravity)
+
+        # Add the player.
+        # For the player, we set the damping to a lower value, which increases
+        # the damping rate. This prevents the character from traveling too far
+        # after the player lets off the movement keys.
+        # Setting the moment to PymunkPhysicsEngine.MOMENT_INF prevents it from
+        # rotating.
+        # Friction normally goes between 0 (no friction) and 1.0 (high friction)
+        # Friction is between two objects in contact. It is important to remember
+        # in top-down games that friction moving along the 'floor' is controlled
+        # by damping.
+        self.physics_engine.add_sprite(self.player_sprite,
+                                       friction=0.6,
+                                       moment=PymunkPhysicsEngine.MOMENT_INF,
+                                       damping=0.01,
+                                       max_velocity=400)
+
+        # Create the walls.
+        # By setting the body type to PymunkPhysicsEngine.STATIC the walls can't
+        # move.
+        # Movable objects that respond to forces are PymunkPhysicsEngine.DYNAMIC
+        # PymunkPhysicsEngine.KINEMATIC objects will move, but are assumed to be
+        # repositioned by code and don't respond to physics forces.
+        # Dynamic is default.
         self.physics_engine.add_sprite_list(self.wall_list,
-                                            mass=1,
-                                            friction=0,
-                                            moment=None,
+                                            friction=0.6,
                                             body_type=PymunkPhysicsEngine.STATIC)
 
+        # Create some boxes to push around.
+        # Mass controls, well, the mass of an object. Defaults to 1.
         self.physics_engine.add_sprite_list(self.item_list,
                                             mass=1,
-                                            friction=0,
-                                            moment=None,
-                                            body_type=PymunkPhysicsEngine.DYNAMIC)
-
+                                            friction=0.6)
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
@@ -141,6 +180,8 @@ class MyWindow(arcade.Window):
         elif self.right_pressed and not self.left_pressed:
             force = (PLAYER_MOVE_FORCE, 0)
             self.physics_engine.apply_force(self.player_sprite, force)
+        else:
+            print("Pow")
 
         self.physics_engine.step()
         self.physics_engine.resync_sprites()

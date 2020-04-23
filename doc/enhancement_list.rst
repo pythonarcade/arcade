@@ -20,6 +20,13 @@ Drawing
   Optimize drawing functions by caching them
 * After updating to Pyglet 2.x, update text drawing to use Pyglet's text drawing
   rather than the Pillow text drawing.
+* Explore using frame buffers to overlay non-moving text and icons on a scrolling
+  screen.
+
+GUI
+---
+
+* Explore using frame buffers to create windows
 
 Sprites
 -------
