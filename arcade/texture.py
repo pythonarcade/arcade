@@ -270,8 +270,9 @@ def load_texture(file_name: str,
                  x: float = 0,
                  y: float = 0,
                  width: float = 0, height: float = 0,
-                 mirrored: bool = False,
-                 flipped: bool = False,
+                 flipped_horizontally: bool = False,
+                 flipped_vertically: bool = False,
+                 flipped_diagonally: bool = False,
                  can_cache: bool = True) -> Texture:
     """
     Load an image from disk and create a texture.
@@ -302,7 +303,14 @@ def load_texture(file_name: str,
     """
 
     # See if we already loaded this texture, and we can just use a cached version.
-    cache_name = "{}{}{}{}{}{}{}".format(file_name, x, y, width, height, flipped, mirrored)
+    cache_name = "{}-{}-{}-{}-{}-{}-{}-{}".format(file_name,
+                                                  x,
+                                                  y,
+                                                  width,
+                                                  height,
+                                                  flipped_horizontally,
+                                                  flipped_vertically,
+                                                  flipped_diagonally)
     if can_cache and cache_name in load_texture.texture_cache:  # type: ignore # dynamic attribute on function obj
         return load_texture.texture_cache[cache_name]  # type: ignore # dynamic attribute on function obj
 
@@ -347,11 +355,14 @@ def load_texture(file_name: str,
         image = source_image
 
     # image = _trim_image(image)
-    if mirrored:
-        image = PIL.ImageOps.mirror(image)
+    if flipped_diagonally:
+        image = image.transpose(PIL.Image.TRANSPOSE)
 
-    if flipped:
-        image = PIL.ImageOps.flip(image)
+    if flipped_horizontally:
+        image = image.transpose(PIL.Image.FLIP_LEFT_RIGHT)
+
+    if flipped_vertically:
+        image = image.transpose(PIL.Image.FLIP_TOP_BOTTOM)
 
     result = Texture(cache_name, image)
     load_texture.texture_cache[cache_name] = result  # type: ignore # dynamic attribute on function obj

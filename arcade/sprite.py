@@ -103,7 +103,10 @@ class Sprite:
                  image_x: float = 0, image_y: float = 0,
                  image_width: float = 0, image_height: float = 0,
                  center_x: float = 0, center_y: float = 0,
-                 repeat_count_x: int = 1, repeat_count_y: int = 1):
+                 repeat_count_x: int = 1, repeat_count_y: int = 1,
+                 flipped_horizontally: bool = False,
+                 flipped_vertically: bool = False,
+                 flipped_diagonally: bool = False):
         """
         Create a new sprite.
 
@@ -137,7 +140,10 @@ class Sprite:
         if filename is not None:
             try:
                 self._texture = load_texture(filename, image_x, image_y,
-                                             image_width, image_height)
+                                             image_width, image_height,
+                                             flipped_horizontally=flipped_horizontally,
+                                             flipped_vertically=flipped_vertically,
+                                             flipped_diagonally=flipped_diagonally)
             except Exception as e:
                 print(f"Unable to load {filename} {e}")
                 self._texture = None

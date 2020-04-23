@@ -216,13 +216,15 @@ def _create_sprite_from_tile(map_object: pytiled_parser.objects.TileMap,
         my_sprite: Sprite = AnimatedTimeBasedSprite(image_file, scaling)
     else:
         image_x, image_y, width, height = _get_image_info_from_tileset(tile)
-
         my_sprite = Sprite(image_file,
                            scaling,
                            image_x,
                            image_y,
                            width,
-                           height)
+                           height,
+                           flipped_horizontally=tile.flipped_horizontally,
+                           flipped_vertically=tile.flipped_vertically,
+                           flipped_diagonally=tile.flipped_diagonally)
 
     if tile.properties is not None and len(tile.properties) > 0:
         for my_property in tile.properties:
