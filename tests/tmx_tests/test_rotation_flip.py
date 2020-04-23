@@ -12,18 +12,17 @@ def test_rotation_mirror():
 
     # --- Platforms ---
     wall_list = arcade.tilemap.process_layer(my_map, 'Blocking Sprites')
-
-    for wall in wall_list:
-        print()
-        print(wall.position)
-        print(wall.texture.name)
-        pos = 0, 0
-        print(wall.texture.image.getpixel(pos))
-        pos = 127, 0
-        print(wall.texture.image.getpixel(pos))
-        pos = 127, 127
-        print(wall.texture.image.getpixel(pos))
-
+    #
+    # for wall in wall_list:
+    #     print()
+    #     print(wall.position)
+    #     print(wall.texture.name)
+    #     pos = 0, 0
+    #     print(wall.texture.image.getpixel(pos))
+    #     pos = 127, 0
+    #     print(wall.texture.image.getpixel(pos))
+    #     pos = 127, 127
+    #     print(wall.texture.image.getpixel(pos))
 
     wall = wall_list[0]
     assert wall.position == (64, 64)
@@ -62,9 +61,38 @@ def test_rotation_mirror():
     pos = 127, 127
     assert wall.texture.image.getpixel(pos) == (255, 0, 0, 255)
 
-    #
-    # assert wall_list[1].position == (1216, 1216)
-    # assert "grassCenter" in wall_list[1].texture.name
-    #
-    # assert wall_list[2].position == (64, 64)
-    # assert "boxCrate" in wall_list[2].texture.name
+    wall = wall_list[4]
+    assert wall.position == (832, 64)
+    pos = 0, 0
+    assert wall.texture.image.getpixel(pos) == (255, 0, 255, 255)
+    pos = 127, 0
+    assert wall.texture.image.getpixel(pos) == (0, 0, 255, 255)
+    pos = 127, 127
+    assert wall.texture.image.getpixel(pos) == (255, 0, 0, 255)
+
+    wall = wall_list[5]
+    assert wall.position == (960, 64)
+    pos = 0, 0
+    assert wall.texture.image.getpixel(pos) == (0, 0, 255, 255)
+    pos = 127, 0
+    assert wall.texture.image.getpixel(pos) == (255, 0, 255, 255)
+    pos = 127, 127
+    assert wall.texture.image.getpixel(pos) == (0, 255, 0, 255)
+
+    wall = wall_list[6]
+    assert wall.position == (1216, 64)
+    pos = 0, 0
+    assert wall.texture.image.getpixel(pos) == (0, 255, 0, 255)
+    pos = 127, 0
+    assert wall.texture.image.getpixel(pos) == (255, 0, 255, 255)
+    pos = 127, 127
+    assert wall.texture.image.getpixel(pos) == (0, 0, 255, 255)
+
+    wall = wall_list[7]
+    assert wall.position == (1344, 64)
+    pos = 0, 0
+    assert wall.texture.image.getpixel(pos) == (255, 0, 0, 255)
+    pos = 127, 0
+    assert wall.texture.image.getpixel(pos) == (0, 0, 255, 255)
+    pos = 127, 127
+    assert wall.texture.image.getpixel(pos) == (255, 0, 255, 255)
