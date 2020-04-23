@@ -1,6 +1,6 @@
 from typing import Union
 from pathlib import Path
-
+from . import shaders
 
 #: The absolute path to this directory
 RESOURCE_PATH = Path(__file__).parent.absolute()
