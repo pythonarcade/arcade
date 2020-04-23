@@ -7,6 +7,14 @@ from .buffer import Buffer
 from .exceptions import ShaderException
 
 
+# String representation of a shader type
+SHADER_TYPE_NAMES = {
+    gl.GL_VERTEX_SHADER: "vertex shader",
+    gl.GL_FRAGMENT_SHADER: "fragment shader",
+    gl.GL_GEOMETRY_SHADER: "geometry shader",
+}
+
+
 class AttribFormat:
     """Describes a format for a single attribute"""
     __slots__ = 'name', 'gl_type', 'components', 'bytes_per_component', 'offset', 'location',

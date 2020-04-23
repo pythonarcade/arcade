@@ -3,6 +3,7 @@ from typing import Dict, List
 from pyglet import gl
 
 from .exceptions import ShaderException
+from .types import SHADER_TYPE_NAMES
 
 
 class ShaderSource:
@@ -22,11 +23,15 @@ class ShaderSource:
 
         :param str source: The shader source
         :param gl.GLenum: The shader type (vertex, fragment, geometry etc)
+        :param str path: Path to the shader file if relevant
         """
         self._source = source.strip()
         self._type = source_type
         self._lines = self._source.split('\n')
         self._out_attributes = []  # type: List[str]
+
+        if not self._lines:
+            raise ValueError("Shader source is empty")
 
         self._version = self._find_glsl_version()
 
@@ -55,17 +60,21 @@ class ShaderSource:
         return '\n'.join(lines)
 
     def _find_glsl_version(self) -> int:
-        for line in self._lines:
-            if line.strip().startswith('#version'):
-                try:
-                    return int(line.split()[1])
-                except:
-                    pass
+        if self._lines[0].strip().startswith('#version'):
+            try:
+                return int(self._lines[0].split()[1])
+            except:
+                pass
+
+        source = "\n".join(f"{str(i+1).zfill(3)}: {line} " for i, line in enumerate(self._lines))
 
         raise ShaderException((
             "Cannot find #version in shader source. "
-            "Please provide at least a #version 330 statement in the beginning of the shader"
+            "Please provide at least a #version 330 statement in the beginning of the shader.\n"
+            f"---- [{SHADER_TYPE_NAMES[self._type]}] ---\n"
+            f"{source}"
         ))
+
 
     @staticmethod
     def apply_defines(lines: List[str], defines: Dict[str, str]) -> List[str]:

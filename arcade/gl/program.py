@@ -10,7 +10,7 @@ import weakref
 from pyglet import gl
 
 from .uniform import Uniform
-from .types import AttribFormat, GLTypes
+from .types import AttribFormat, GLTypes, SHADER_TYPE_NAMES
 from .exceptions import ShaderException
 
 if TYPE_CHECKING:  # handle import cycle caused by type hinting
@@ -32,12 +32,6 @@ class Program:
         '_ctx', '_glo', '_uniforms', '_out_attributes', '_geometry_info',
         '_attributes', 'attribute_key', '__weakref__'
     )
-
-    _shader_types_names = {
-        gl.GL_VERTEX_SHADER: "vertex shader",
-        gl.GL_FRAGMENT_SHADER: "fragment shader",
-        gl.GL_GEOMETRY_SHADER: "geometry shader",
-    }
 
     def __init__(self,
                  ctx,
@@ -310,9 +304,9 @@ class Program:
             length = c_int()
             gl.glGetShaderInfoLog(shader, 512, byref(length), msg)
             raise ShaderException((
-                f"Error compiling {Program._shader_types_names[shader_type]} "
+                f"Error compiling {SHADER_TYPE_NAMES[shader_type]} "
                 f"({result.value}): {msg.value.decode('utf-8')}\n"
-                f"---- [{Program._shader_types_names[shader_type]}] ---\n"
+                f"---- [{SHADER_TYPE_NAMES[shader_type]}] ---\n"
             ) + '\n'.join(f"{str(i+1).zfill(3)}: {line} " for i, line in enumerate(source.split('\n'))))
         return shader
 
