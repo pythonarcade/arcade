@@ -3,7 +3,9 @@ Example of Pymunk Physics Engine
 
 Top-down
 """
+import math
 import arcade
+from typing import Optional
 from arcade.experimental.pymunk_physics_engine import PymunkPhysicsEngine
 
 SCREEN_TITLE = "PyMunk Top-Down"
@@ -18,18 +20,23 @@ SCREEN_HEIGHT = SPRITE_SIZE * 15
 
 # Physics force used to move the player. Higher number, faster accelerating.
 PLAYER_MOVE_FORCE = 4000
+BULLET_MOVE_FORCE = 2500
+
 
 class MyWindow(arcade.Window):
+    """ Main Window """
     def __init__(self, width, height, title):
+        """ Init """
         super().__init__(width, height, title)
 
         arcade.set_background_color(arcade.color.AMAZON)
 
         self.player_list = None
         self.wall_list = None
+        self.bullet_list = None
         self.item_list = None
         self.player_sprite = None
-        self.physics_engine = None
+        self.physics_engine: Optional[PymunkPhysicsEngine] = None
 
         # Track the current state of what key is pressed
         self.left_pressed = False
@@ -38,9 +45,11 @@ class MyWindow(arcade.Window):
         self.down_pressed = False
 
     def setup(self):
+        """ Set up everything """
         # Create the sprite lists
         self.player_list = arcade.SpriteList()
         self.wall_list = arcade.SpriteList()
+        self.bullet_list = arcade.SpriteList()
         self.item_list = arcade.SpriteList()
 
         # Set up the player
@@ -80,7 +89,7 @@ class MyWindow(arcade.Window):
 
         # Add some movable boxes
         for x in range(SPRITE_SIZE * 3, SPRITE_SIZE * 8, SPRITE_SIZE):
-            item = arcade.Sprite(":resources:images/tiles/boxCrate.png",
+            item = arcade.Sprite(":resources:images/space_shooter/meteorGrey_big1.png",
                                  SPRITE_SCALING_PLAYER)
             item.center_x = x
             item.center_y = 400
@@ -103,6 +112,13 @@ class MyWindow(arcade.Window):
         self.physics_engine = PymunkPhysicsEngine(damping=damping,
                                                   gravity=gravity)
 
+        def rock_hit_handler(arbiter, space, data):
+            """ Called for bullet/rock collision """
+            bullet_shape = arbiter.shapes[0]
+            bullet_sprite = self.physics_engine.get_sprite_for_shape(bullet_shape)
+            bullet_sprite.remove_from_sprite_lists()
+
+        self.physics_engine.add_collision_handler("bullet", "rock", rock_hit_handler)
         # Add the player.
         # For the player, we set the damping to a lower value, which increases
         # the damping rate. This prevents the character from traveling too far
@@ -117,6 +133,7 @@ class MyWindow(arcade.Window):
                                        friction=0.6,
                                        moment=PymunkPhysicsEngine.MOMENT_INF,
                                        damping=0.01,
+                                       collision_type="player",
                                        max_velocity=400)
 
         # Create the walls.
@@ -128,13 +145,56 @@ class MyWindow(arcade.Window):
         # Dynamic is default.
         self.physics_engine.add_sprite_list(self.wall_list,
                                             friction=0.6,
+                                            collision_type="wall",
                                             body_type=PymunkPhysicsEngine.STATIC)
 
         # Create some boxes to push around.
         # Mass controls, well, the mass of an object. Defaults to 1.
         self.physics_engine.add_sprite_list(self.item_list,
                                             mass=1,
-                                            friction=0.6)
+                                            friction=0.6,
+                                            collision_type="rock")
+
+    def on_mouse_press(self, x, y, button, modifiers):
+        """ Called whenever the mouse button is clicked. """
+
+        bullet = arcade.SpriteSolidColor(5, 5, arcade.color.RED)
+        self.bullet_list.append(bullet)
+
+        # Position the bullet at the player's current location
+        start_x = self.player_sprite.center_x
+        start_y = self.player_sprite.center_y
+        bullet.position = self.player_sprite.position
+
+        # Get from the mouse the destination location for the bullet
+        # IMPORTANT! If you have a scrolling screen, you will also need
+        # to add in self.view_bottom and self.view_left.
+        dest_x = x
+        dest_y = y
+
+        # Do math to calculate how to get the bullet to the destination.
+        # Calculation the angle in radians between the start points
+        # and end points. This is the angle the bullet will travel.
+        x_diff = dest_x - start_x
+        y_diff = dest_y - start_y
+        angle = math.atan2(y_diff, x_diff)
+
+        force = [math.cos(angle), math.sin(angle)]
+        size = max(self.player_sprite.width, self.player_sprite.height) / 2
+
+        bullet.center_x += size * force[0]
+        bullet.center_y += size * force[1]
+
+        self.physics_engine.add_sprite(bullet,
+                                       mass=0.1,
+                                       damping=1.0,
+                                       friction=0.6)
+
+        # Taking into account the angle, calculate our force.
+        force[0] *= BULLET_MOVE_FORCE
+        force[1] *= BULLET_MOVE_FORCE
+
+        self.physics_engine.apply_force(bullet, force)
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
@@ -147,6 +207,18 @@ class MyWindow(arcade.Window):
             self.left_pressed = True
         elif key == arcade.key.RIGHT:
             self.right_pressed = True
+        elif key == arcade.key.SPACE:
+            bullet = arcade.SpriteSolidColor(5, 5, arcade.color.RED)
+            bullet.position = self.player_sprite.position
+            bullet.center_x += 30
+            self.bullet_list.append(bullet)
+            self.physics_engine.add_sprite(bullet,
+                                           mass=0.1,
+                                           damping=1.0,
+                                           friction=0.6,
+                                           collision_type="bullet")
+            force = (3000, 0)
+            self.physics_engine.apply_force(bullet, force)
 
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key. """
@@ -180,19 +252,20 @@ class MyWindow(arcade.Window):
         elif self.right_pressed and not self.left_pressed:
             force = (PLAYER_MOVE_FORCE, 0)
             self.physics_engine.apply_force(self.player_sprite, force)
-        else:
-            print("Pow")
 
+        # --- Move items in the physics engine
         self.physics_engine.step()
-        self.physics_engine.resync_sprites()
 
     def on_draw(self):
+        """ Draw everything """
         arcade.start_render()
         self.wall_list.draw()
+        self.bullet_list.draw()
         self.item_list.draw()
         self.player_list.draw()
 
 def main():
+    """ Main method """
     window = MyWindow(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     window.setup()
     arcade.run()
