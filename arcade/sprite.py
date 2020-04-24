@@ -132,6 +132,7 @@ class Sprite:
             raise ValueError("Height can't be zero.")
 
         self.sprite_lists: List[Any] = []
+        self.physics_engines: List[Any] = []
 
         self._texture: Optional[Texture]
         if filename is not None:
@@ -770,6 +771,9 @@ class Sprite:
         """
         self.sprite_lists.append(new_list)
 
+    def register_physics_engine(self, physics_engine):
+        self.physics_engines.append(physics_engine)
+
     def draw(self):
         """ Draw the sprite. """
 
@@ -825,6 +829,11 @@ class Sprite:
         for sprite_list in sprite_lists:
             if self in sprite_list:
                 sprite_list.remove(self)
+
+        for engine in self.physics_engines:
+            engine.remove_sprite(self)
+
+        self.physics_engines.clear()
         self.sprite_lists.clear()
 
     def kill(self):
