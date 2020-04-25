@@ -1,4 +1,5 @@
 from ctypes import c_int
+import logging
 import weakref
 from pathlib import Path
 from typing import Dict, List, Tuple, Union, Sequence
@@ -12,6 +13,9 @@ from .framebuffer import Framebuffer
 from .texture import Texture
 from .glsl import ShaderSource
 from .types import BufferDescription
+
+LOG = logging.getLogger(__name__)
+LOG.level = logging.INFO
 
 
 class Context:
@@ -369,11 +373,8 @@ class ContextStats:
         created, freed = getattr(self, key)
         setattr(self, key, (created + 1, freed))
         if created % self.warn_threshold == 0 and created > 0:
-            from warnings import warn
-            warn((
-                f'{key} allocations passed threshold ({self.warn_threshold}). '
-                f'[created = {created}] [freed = {freed}] [active = {created - freed}]'
-            ))
+            LOG.info("%s allocations passed threshold (%s) [created = {%s}] [freed = {%s}] [active = {%s}]",
+                     key, self.warn_threshold, created, freed, created - freed)
 
     def decr(self, key):
         created, freed = getattr(self, key)
