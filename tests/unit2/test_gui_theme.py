@@ -1,3 +1,4 @@
+import pytest
 import arcade.color
 from arcade.gui import Theme
 from arcade.gui import Font
@@ -5,6 +6,8 @@ from arcade.gui import Font
 
 def test_theme_font():
     theme = Theme()
+    assert isinstance(theme.font, Font)
+
     assert theme.font.color == Font.DEFAULT_COLOR
     assert theme.font.size == Font.DEFAULT_SIZE
     assert theme.font.name == Font.DEFAULT_NAME
@@ -19,6 +22,27 @@ def test_theme_font():
     theme.font.size = 12
     theme.font.name = Font.DEFAULT_NAME
     assert theme.font.name == Font.DEFAULT_NAME
+
+
+def test_theme_set_new_font_ban():
+    theme = Theme()
+    theme_font = theme.font
+    new_font = Font()
+
+    with pytest.raises(Exception):
+        theme.font = new_font
+
+    assert theme.font is theme_font
+
+
+def test_theme_delete_font_ban():
+    theme = Theme()
+    theme_font = theme.font
+
+    with pytest.raises(Exception):
+        del theme.font
+
+    assert theme.font is theme_font
 
 
 def test_theme_box_texture():
