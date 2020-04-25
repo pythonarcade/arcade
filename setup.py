@@ -54,7 +54,7 @@ if __name__ == "__main__":
         download_url="http://arcade.academy",
         install_requires=install_requires,
         packages=find_namespace_packages(
-            include=["arcade.*"],
+            include=["arcade", "arcade.*"],
             exclude=[],
         ),
         python_requires='>=3.6',
