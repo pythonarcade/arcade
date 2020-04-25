@@ -103,7 +103,7 @@ class MyWindow(arcade.Window):
         # For top-down games, this is basically the friction for moving objects.
         # For platformers with gravity, this should probably be set to 1.0.
         # Default value is 1.0 if not specified.
-        damping = 0.9
+        damping = 0.7
 
         # Set the gravity. (0, 0) is good for outer space and top-down.
         gravity = (0, 0)
@@ -118,7 +118,15 @@ class MyWindow(arcade.Window):
             bullet_sprite = self.physics_engine.get_sprite_for_shape(bullet_shape)
             bullet_sprite.remove_from_sprite_lists()
 
-        self.physics_engine.add_collision_handler("bullet", "rock", rock_hit_handler)
+        def wall_hit_handler(arbiter, space, data):
+            """ Called for bullet/rock collision """
+            bullet_shape = arbiter.shapes[0]
+            bullet_sprite = self.physics_engine.get_sprite_for_shape(bullet_shape)
+            bullet_sprite.remove_from_sprite_lists()
+
+        self.physics_engine.add_collision_handler("bullet", "rock", post_handler=rock_hit_handler)
+        self.physics_engine.add_collision_handler("bullet", "wall", post_handler=wall_hit_handler)
+
         # Add the player.
         # For the player, we set the damping to a lower value, which increases
         # the damping rate. This prevents the character from traveling too far
@@ -208,12 +216,12 @@ class MyWindow(arcade.Window):
         elif key == arcade.key.RIGHT:
             self.right_pressed = True
         elif key == arcade.key.SPACE:
-            bullet = arcade.SpriteSolidColor(5, 5, arcade.color.RED)
+            bullet = arcade.SpriteSolidColor(9, 9, arcade.color.RED)
             bullet.position = self.player_sprite.position
             bullet.center_x += 30
             self.bullet_list.append(bullet)
             self.physics_engine.add_sprite(bullet,
-                                           mass=0.1,
+                                           mass=0.2,
                                            damping=1.0,
                                            friction=0.6,
                                            collision_type="bullet")
