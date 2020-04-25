@@ -2,8 +2,9 @@
 Temporary module to play with shaders and geometry
 """
 import array
-from arcade import shader, get_window
+from arcade import  get_window
 from arcade.gl import BufferDescription
+
 
 def quad_fs(size=(1.0, 1.0), pos=(0.0, 0.0)):
     width, height = size

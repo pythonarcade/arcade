@@ -3,14 +3,8 @@ Render scene to offscreen buffer and scroll the texture coordinates
 """
 import random
 import arcade
-import os
-import pyglet
-import pyglet.gl as gl
-import numpy
 import time
 
-from arcade import get_image
-from arcade import shader
 from arcade.experimental import geometry
 
 # --- Constants ---

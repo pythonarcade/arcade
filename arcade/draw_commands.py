@@ -24,7 +24,6 @@ from typing import TYPE_CHECKING
 from arcade import get_projection
 from arcade import Color
 from arcade import PointList
-from arcade import shader
 from arcade import earclip
 from arcade import rotate_point
 from arcade import get_four_byte_color
