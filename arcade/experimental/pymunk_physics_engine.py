@@ -4,6 +4,7 @@ Pymunk Physics Engine
 
 import pymunk
 import math
+from typing import Callable
 from arcade import Sprite
 from arcade import SpriteList
 
@@ -110,16 +111,24 @@ class PymunkPhysicsEngine:
             self.add_sprite(sprite, mass, friction, moment, body_type, collision_type=collision_type)
 
     def remove_sprite(self, sprite: Sprite):
+        """ Remove a sprite from the physics engine. """
         physics_object = self.sprites[sprite]
         self.space.remove(physics_object.body)
         self.space.remove(physics_object.shape)
 
     def get_sprite_for_shape(self, shape) -> Sprite:
+        """ Given a shape, what sprite is associated with it? """
         for sprite in self.sprites:
             if self.sprites[sprite].shape is shape:
                 return sprite
 
-    def add_collision_handler(self, first_type, second_type, handler):
+    def add_collision_handler(self,
+                              first_type: str,
+                              second_type: str,
+                              begin_handler: Callable = None,
+                              pre_handler: Callable = None,
+                              post_handler: Callable = None,
+                              separate_handler: Callable = None):
         """ Add code to handle collisions between objects. """
         if first_type not in self.collision_types:
             self.collision_types.append(first_type)
@@ -130,7 +139,14 @@ class PymunkPhysicsEngine:
         second_type = self.collision_types.index(second_type)
 
         h = self.space.add_collision_handler(first_type_id, second_type)
-        h.post_solve = handler
+        if begin_handler:
+            h.begin = begin_handler
+        if post_handler:
+            h.post_solve = post_handler
+        if pre_handler:
+            h.pre_solve = pre_handler
+        if separate_handler:
+            h.separate = separate_handler
 
     def resync_sprites(self):
         """ Set visual sprites to be the same location as physics engine sprites. """
