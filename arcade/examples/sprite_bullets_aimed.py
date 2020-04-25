@@ -95,9 +95,7 @@ class MyGame(arcade.Window):
         arcade.set_background_color(arcade.color.AMAZON)
 
     def on_draw(self):
-        """
-        Render the screen.
-        """
+        """ Render the screen. """
 
         # This command has to happen before we start drawing
         arcade.start_render()
@@ -112,9 +110,8 @@ class MyGame(arcade.Window):
         arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
 
     def on_mouse_press(self, x, y, button, modifiers):
-        """
-        Called whenever the mouse moves.
-        """
+        """ Called whenever the mouse button is clicked. """
+
         # Create a bullet
         bullet = arcade.Sprite(":resources:images/space_shooter/laserBlue01.png", SPRITE_SCALING_LASER)
 

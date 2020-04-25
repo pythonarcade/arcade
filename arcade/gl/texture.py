@@ -215,14 +215,16 @@ class Texture:
     def read(self, level: int = 0, alignment: int = 1) -> bytearray:
         """
         Read the contents of the texture.
+        :param int level:  The texture level to read
+        :param int alignment: Alignment of the start of each row in memory in number of bytes. Possible values: 1,2,4
         """
-        gl.glActiveTexture(gl.GL_TEXTURE0)
-        gl.glBindTexture(self._target, self._glo)
-        gl.glPixelStorei(gl.GL_PACK_ALIGNMENT, 1)
-        gl.glPixelStorei(gl.GL_UNPACK_ALIGNMENT, 1)
 
-        buffer = (gl.GLubyte * (self.width * self.height * self._component_size))()
-        gl.glGetTexImage(gl.GL_TEXTURE_2D, 0, self._format, self._type, buffer)
+        gl.glBindTexture(self._target, self._glo)
+        gl.glPixelStorei(gl.GL_PACK_ALIGNMENT, alignment)
+
+        buffer = (gl.GLubyte * (self.width * self.height * self._component_size * self._components))()
+        gl.glGetTexImage(gl.GL_TEXTURE_2D, level, self._format, self._type, buffer)
+        
         return bytearray(buffer)
 
     def write(self, data: Union[bytes, Buffer], level: int = 0, viewport=None):
