@@ -150,14 +150,11 @@ class LightLayer:
         :param target: The window or framebuffer we want to render to (default is window)
         :param Color ambient_color: The ambient light color
         """
-        if len(self._lights) == 0:
-            return
-
         if target is None:
             target = self.window
 
         # Re-build light data if needed
-        if self._rebuild:
+        if self._rebuild and len(self._lights) > 0:
             data: List[float] = []
             for light in self._lights:
                 data.extend(light.position)
@@ -174,12 +171,13 @@ class LightLayer:
         # Render to light buffer
         self._light_buffer.use()
         self._light_buffer.clear()
-        self._light_program['Projection'] = get_projection().flatten()
-        self._light_program['position'] = position
-        self.ctx.enable(self.ctx.BLEND)
-        self.ctx.blend_func = self.ctx.BLEND_ADDITIVE
-        self._vao.render(self._light_program, mode=self.ctx.POINTS, vertices=len(self._lights))
-        self.ctx.blend_func = self.ctx.BLEND_DEFAULT
+        if len(self._lights) > 0:
+            self._light_program['Projection'] = get_projection().flatten()
+            self._light_program['position'] = position
+            self.ctx.enable(self.ctx.BLEND)
+            self.ctx.blend_func = self.ctx.BLEND_ADDITIVE
+            self._vao.render(self._light_program, mode=self.ctx.POINTS, vertices=len(self._lights))
+            self.ctx.blend_func = self.ctx.BLEND_DEFAULT
 
         # Combine pass
         target.use()
