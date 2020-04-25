@@ -373,7 +373,7 @@ class ContextStats:
         setattr(self, key, (created + 1, freed))
         if created % self.warn_threshold == 0 and created > 0:
             print('moo')
-            LOG.debug("%s allocations passed threshold (%s) [created = {%s}] [freed = {%s}] [active = {%s}]",
+            LOG.debug("%s allocations passed threshold (%s) [created = %s] [freed = %s] [active = %s]",
                       key, self.warn_threshold, created, freed, created - freed)
 
     def decr(self, key):
