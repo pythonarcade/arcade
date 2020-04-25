@@ -101,7 +101,7 @@ class PymunkPhysicsEngine:
         sprite.register_physics_engine(self)
 
     def add_sprite_list(self,
-                        sprite_list: SpriteList,
+                        sprite_list,
                         mass: float = 1,
                         friction: float = 0.2,
                         moment=None,
