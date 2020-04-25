@@ -7,5 +7,5 @@ in vec2 v_uv;
 out vec4 f_color;
 
 void main() {
-    f_color = texture(color_buffer, v_uv) + texture(blur_buffer, v_uv) * 1.5;
+    f_color = texture(color_buffer, v_uv) + texture(blur_buffer, v_uv);
 }
