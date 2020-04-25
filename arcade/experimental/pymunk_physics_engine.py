@@ -5,6 +5,9 @@ Pymunk Physics Engine
 import pymunk
 import math
 from typing import Callable
+from typing import List
+from typing import Dict
+from typing import Optional
 from arcade import Sprite
 from arcade import SpriteList
 
@@ -29,8 +32,8 @@ class PymunkPhysicsEngine:
         self.space = pymunk.Space()
         self.space.gravity = gravity
         self.space.damping = damping
-        self.collision_types = []
-        self.sprites = {}
+        self.collision_types: List[str] = []
+        self.sprites: Dict[Sprite, _PhysicsObject] = {}
 
     def add_sprite(self,
                    sprite: Sprite,
@@ -42,7 +45,7 @@ class PymunkPhysicsEngine:
                    gravity=(0, 0),
                    max_velocity=None,
                    radius: float = 0,
-                   collision_type: str = None,
+                   collision_type: str = "default",
                    ):
         """ Add a sprite to the physics engine. """
 
@@ -116,11 +119,12 @@ class PymunkPhysicsEngine:
         self.space.remove(physics_object.body)
         self.space.remove(physics_object.shape)
 
-    def get_sprite_for_shape(self, shape) -> Sprite:
+    def get_sprite_for_shape(self, shape) -> Optional[Sprite]:
         """ Given a shape, what sprite is associated with it? """
         for sprite in self.sprites:
             if self.sprites[sprite].shape is shape:
                 return sprite
+        return None
 
     def add_collision_handler(self,
                               first_type: str,
@@ -136,9 +140,9 @@ class PymunkPhysicsEngine:
 
         if second_type not in self.collision_types:
             self.collision_types.append(second_type)
-        second_type = self.collision_types.index(second_type)
+        second_type_id = self.collision_types.index(second_type)
 
-        h = self.space.add_collision_handler(first_type_id, second_type)
+        h = self.space.add_collision_handler(first_type_id, second_type_id)
         if begin_handler:
             h.begin = begin_handler
         if post_handler:
