@@ -535,7 +535,15 @@ class SpriteList(Generic[_SpriteType]):
                     if sprite.texture.image is None:
                         raise ValueError(f"Sprite texture {sprite.texture.name} has no image.")
                     image = sprite.texture.image
-                    new_array_of_images.append(image)
+
+                    tmp = Image.new('RGBA', (image.width+2, image.height+2))
+                    tmp.paste(image, (1,1))
+                    tmp.paste(tmp.crop((1          , 1           , image.width+1, 2             )), (1            , 0             ))
+                    tmp.paste(tmp.crop((1          , image.height, image.width+1, image.height+1)), (1            , image.height+1))
+                    tmp.paste(tmp.crop((1          , 0           ,             2, image.height+2)), (0            , 0             ))
+                    tmp.paste(tmp.crop((image.width, 0           , image.width+1, image.height+2)), (image.width+1, 0             ))
+
+                    new_array_of_images.append(tmp)
 
             # print("New texture end: ", new_texture)
             # print(new_array_of_texture_names)
@@ -575,7 +583,7 @@ class SpriteList(Generic[_SpriteType]):
                 # print("\nB")
 
             # Figure out sprite sheet size
-            margin = 1
+            margin = 0
 
             sprite_sheet_width = (grid_item_width + margin) * grid_width
             sprite_sheet_height = (grid_item_height + margin) * grid_height
@@ -615,6 +623,7 @@ class SpriteList(Generic[_SpriteType]):
 
             # Create a list with the coordinates of all the unique textures
             tex_coords = []
+            offset = 1
 
             for index, image in enumerate(self.array_of_images):
                 column = index % grid_width
@@ -623,8 +632,8 @@ class SpriteList(Generic[_SpriteType]):
                 # Texture coordinates are reversed in y axis
                 row = grid_height - row - 1
 
-                x = column * (grid_item_width + margin)
-                y = row * (grid_item_height + margin)
+                x = column * (grid_item_width + margin) + offset
+                y = row * (grid_item_height + margin) + offset
 
                 # Because, coordinates are reversed
                 y += (grid_item_height - (image.height - margin))
@@ -635,8 +644,8 @@ class SpriteList(Generic[_SpriteType]):
                 start_x = normalized_x
                 start_y = normalized_y
 
-                normalized_width = image.width / sprite_sheet_width
-                normalized_height = image.height / sprite_sheet_height
+                normalized_width = (image.width-2*offset) / sprite_sheet_width
+                normalized_height = (image.height-2*offset) / sprite_sheet_height
 
                 # print(f"Fetching {new_array_of_texture_names[index]} at {row}, {column} => {x}, {y} normalized to {start_x:.2}, {start_y:.2} size {normalized_width}, {normalized_height}")
 
