@@ -50,13 +50,17 @@ class MyGame(arcade.Window):
         Set up the game and initialize the variables.
         """
 
-        # Sprite list
+        # Create random-located coins
         self.coin_list = arcade.SpriteList()
         for i in range(10):
+            # Create coin
             coin = arcade.Sprite(":resources:images/items/coinGold.png", 0.25)
+            # Set up random position of coin
             coin.center_x = random.randrange(SCREEN_WIDTH)
             coin.center_y = random.randrange(SCREEN_HEIGHT)
+            # Set up moving down for coin
             coin.change_y = -1
+            # Add coin in list of coins
             self.coin_list.append(coin)
 
         # Create ours on-screen GUI buttons
