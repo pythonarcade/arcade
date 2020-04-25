@@ -148,14 +148,12 @@ class SubmitButton(TextButton):
 
         super().__init__(x, y, width, height, text, theme=theme)
         self.textbox = textbox
-        self.on_submit = on_submit
+        self.click_action = on_submit
 
-    def on_release(self):
-        if self.pressed:
-            self.pressed = False
-            self.on_submit()
-            self.textbox.text_storage.text = ""
-            self.textbox.text_display.text = ""
+    def on_click(self):
+        super(SubmitButton, self).on_click()
+        self.textbox.text_storage.text = ""
+        self.textbox.text_display.text = ""
 
 
 class DialogueBox:
