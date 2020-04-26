@@ -12,7 +12,6 @@ python -m arcade.examples.sprite_collect_coins
 import random
 import arcade
 import os
-from arcade import shader
 from arcade.experimental import geometry
 
 # --- Constants ---

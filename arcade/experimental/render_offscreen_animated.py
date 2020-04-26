@@ -8,7 +8,6 @@ import random
 import arcade
 import time
 
-from arcade import shader
 from arcade.experimental import geometry
 
 SCREEN_WIDTH = 1200
