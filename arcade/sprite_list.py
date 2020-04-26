@@ -11,8 +11,10 @@ from typing import List
 from typing import Tuple
 from typing import Optional
 
+import logging
 import math
 import array
+import time
 
 from PIL import Image
 
@@ -27,6 +29,8 @@ from arcade import get_projection
 from arcade import get_window
 from arcade import Point
 from arcade import gl
+
+LOG = logging.getLogger(__name__)
 
 
 def _create_rects(rect_list: Iterable[Sprite]) -> List[float]:
@@ -288,6 +292,9 @@ class SpriteList(Generic[_SpriteType]):
             self.spatial_hash = _SpatialHash(cell_size=spatial_hash_cell_size)
         else:
             self.spatial_hash = None
+
+        LOG.debug("[%s] Creating SpriteList use_spatial_hash=%s is_static=%s",
+                  id(self), use_spatial_hash, is_static)
 
     def append(self, item: _SpriteType):
         """
@@ -674,6 +681,8 @@ class SpriteList(Generic[_SpriteType]):
         if len(self.sprite_list) == 0:
             return
 
+        perf_time = time.perf_counter()
+
         _calculate_pos_buffer()
         _calculate_size_buffer()
         _calculate_angle_buffer()
@@ -703,6 +712,7 @@ class SpriteList(Generic[_SpriteType]):
                        self._sprite_sub_tex_desc,
                        self._sprite_color_desc]
         self._vao1 = self.ctx.geometry(vao_content)
+        LOG.debug('[%s] _calculate_sprite_buffer: %s sec', id(self), time.perf_counter() - perf_time)
 
     def _dump(self, buffer):
         """
