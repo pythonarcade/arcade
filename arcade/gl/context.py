@@ -504,10 +504,12 @@ class Limits:
             from warnings import warn
             warn('Error happened while querying of limits. Moving on ..')
 
-    def get(self, enum: gl.GLenum):
+    def get(self, enum: gl.GLenum) -> int:
+        """Get an integer limit"""
         value = c_int()
         gl.glGetIntegerv(enum, value)
         return value.value
 
-    def get_str(self, enum: gl.GLenum):
-        return cast(gl.glGetString(enum), c_char_p).value.decode()
+    def get_str(self, enum: gl.GLenum) -> str:
+        """Get a string limit"""
+        return cast(gl.glGetString(enum), c_char_p).value.decode()  # type: ignore
