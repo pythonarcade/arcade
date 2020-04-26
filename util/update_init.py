@@ -26,7 +26,8 @@ def get_member_list(filename):
 
             type_names = type_re.findall(line)
             for type_name in type_names:
-                type_list.append([filename, type_name])
+                if type_name not in ['LOG']:
+                    type_list.append([filename, type_name])
 
     except Exception as e:
         print(f"Exception processing {filename} on line {line_no}: {e}")
