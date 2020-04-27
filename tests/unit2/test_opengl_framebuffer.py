@@ -29,23 +29,34 @@ def test_properties(ctx):
     assert fb.viewport == (0, 0, 10, 20)
     assert fb.depth_attachment is None
     assert fb.depth_mask is True
+    assert repr(fb).startswith('<Framebuffer')
 
 
 def test_viewport(ctx):
     """Test viewport"""
     fb = create(ctx, 10, 20, components=4)
+    fb.use()
     fb.viewport = (1, 2, 3, 4)
     assert fb.viewport == (1, 2, 3, 4)
+
     fb.viewport = (1, 2)
     assert fb.viewport == (0, 0, 1, 2)
+
     with pytest.raises(ValueError):
         fb.viewport = 0
+
+    with pytest.raises(ValueError):
+        fb.viewport = 0, 0, 0
+
+    with pytest.raises(ValueError):
+        fb.viewport = 0, 0, 0, 0, 0
 
 
 def test_binding(ctx):
     """Ensure bind tracking works"""
     ctx.window.use()
     fb = create(ctx, 10, 20, components=4)
+    fb.use()
     fb.use()
     assert ctx.active_framebuffer == fb
     ctx.window.use()
@@ -58,9 +69,10 @@ def test_clear(ctx):
     ctx.window.use()
     fb = create(ctx, 10, 20, components=4)
     fb.clear()
-    fb.clear(color=(0, 0, 0, 0), normalized=False)
-    fb.clear(color=(0, 0, 0), normalized=False)
+    fb.clear(color=(0, 0, 0, 0), normalized=True)
+    fb.clear(color=(0, 0, 0), normalized=True)
     fb.clear(color=arcade.csscolor.AZURE)
+    fb.clear(color=(0, 0, 0))
     fb.clear(color=(0, 0, 0, 0))
     assert ctx.active_framebuffer == ctx.window
 
@@ -71,6 +83,14 @@ def test_multi_attachment(ctx):
         fb = create(ctx, 10, 10, components=4, layers=i + 1)
         assert len(fb.color_attachments) == i + 1
         assert fb.glo.value > 0
+
+
+def test_depth_mask(ctx):
+    fb = create(ctx, 10, 10)
+    fb.use()
+    assert fb.depth_mask is True
+    fb.depth_mask = False
+    assert fb.depth_mask is False
 
 
 def test_incomplete(ctx):
