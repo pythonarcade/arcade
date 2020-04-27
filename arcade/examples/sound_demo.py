@@ -5,7 +5,7 @@ Once you have learned how to use classes, you can begin your program with this
 template.
 
 If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.starting_template
+python -m arcade.examples.sound_demo
 """
 import arcade
 import typing
@@ -28,7 +28,7 @@ class SoundButton(arcade.SpriteSolidColor):
         """ Play """
         self.sound.play(pan=self.pan, volume=self.volume)
 
-    
+
 
 
 class AudioStreamButton(arcade.SpriteSolidColor):
@@ -213,7 +213,7 @@ class MyGame(arcade.Window):
                 if button_sprite.sound.voice_handle:
                     button_sprite.volume_up()
                     button_sprite.stream_position()
-            
+
 
     def on_mouse_release(self, x, y, button, key_modifiers):
         """
