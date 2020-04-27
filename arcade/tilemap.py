@@ -305,7 +305,7 @@ def _create_sprite_from_tile(map_object: pytiled_parser.objects.TileMap,
             else:
                 print(f"Warning: Hitbox type {type(hitbox)} not supported.")
 
-            my_sprite.points = points
+            my_sprite.set_hit_box(points)
 
     if tile.animation is not None:
         # Animated image
