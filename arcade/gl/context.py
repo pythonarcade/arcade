@@ -1,4 +1,5 @@
-from ctypes import c_int
+from ctypes import c_int, c_char_p, cast
+import sys
 import logging
 import weakref
 from pathlib import Path
@@ -35,6 +36,14 @@ class Context:
         self._window_ref = weakref.ref(window)
         self.limits = Limits(self)
         self._gl_version = (self.limits.MAJOR_VERSION, self.limits.MINOR_VERSION)
+
+        from arcade import VERSION
+        LOG.info("Arcade version : %s", VERSION)
+        LOG.info('OpenGL version : %s.%s', *self._gl_version)
+        LOG.info('Vendor         : %s', self.limits.VENDOR)
+        LOG.info('Renderer       : %s', self.limits.RENDERER)
+        LOG.info('Python         : %s', sys.version)
+        LOG.info('Platform       : %s', sys.platform)
 
         # Tracking active program
         self.active_program = None  # type: Program
@@ -388,6 +397,8 @@ class Limits:
         self.MINOR_VERSION = self.get(gl.GL_MINOR_VERSION)
         #: Major version number of the OpenGL API supported by the current context.
         self.MAJOR_VERSION = self.get(gl.GL_MAJOR_VERSION)
+        self.VENDOR = self.get_str(gl.GL_VENDOR)
+        self.RENDERER = self.get_str(gl.GL_RENDERER)
         #: Value indicating the number of sample buffers associated with the framebuffer
         self.SAMPLE_BUFFERS = self.get(gl.GL_SAMPLE_BUFFERS)
         #: An estimate of the number of bits of subpixel resolution
@@ -493,7 +504,12 @@ class Limits:
             from warnings import warn
             warn('Error happened while querying of limits. Moving on ..')
 
-    def get(self, enum: gl.GLenum):
+    def get(self, enum: gl.GLenum) -> int:
+        """Get an integer limit"""
         value = c_int()
         gl.glGetIntegerv(enum, value)
         return value.value
+
+    def get_str(self, enum: gl.GLenum) -> str:
+        """Get a string limit"""
+        return cast(gl.glGetString(enum), c_char_p).value.decode()  # type: ignore
