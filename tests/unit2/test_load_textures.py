@@ -1,4 +1,5 @@
 import os
+import pytest
 import arcade
 
 SCREEN_WIDTH = 800
@@ -57,7 +58,9 @@ class MyTestWindow(arcade.Window):
 
         self.coin_list = arcade.SpriteList()
 
-        coin = arcade.AnimatedTimeSprite(scale=0.5)
+        with pytest.deprecated_call():
+            coin = arcade.AnimatedTimeSprite(scale=0.5)
+
         coin.center_x = 500
         coin.center_y = 500
 
