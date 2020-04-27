@@ -12,9 +12,6 @@ class MyTestWindow(arcade.Window):
     def __init__(self, width, height, title):
         super().__init__(width, height, title)
 
-        file_path = os.path.dirname(os.path.abspath(__file__))
-        os.chdir(file_path)
-
         arcade.set_background_color(arcade.color.AMAZON)
 
         self.character_list = arcade.SpriteList()

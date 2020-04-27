@@ -1,9 +1,6 @@
 import os
 import arcade
 
-file_path = os.path.dirname(os.path.abspath(__file__))
-os.chdir(file_path)
-
 
 def test_sprites_at_point():
 

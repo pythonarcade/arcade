@@ -8,9 +8,6 @@ TILE_SCALING = 0.5
 
 @pytest.deprecated_call
 def test_one():
-    file_path = os.path.dirname(os.path.abspath(__file__))
-    os.chdir(file_path + "/../../arcade/resources/tmx_maps")
-
     my_map = arcade.read_tiled_map(":resources:/tmx_maps/test_map_1.tmx")
 
     # Grab the layer of items we can't move through

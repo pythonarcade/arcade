@@ -14,9 +14,6 @@ class MyTestWindow(arcade.Window):
     def __init__(self, width, height, title):
         super().__init__(width, height, title)
 
-        file_path = os.path.dirname(os.path.abspath(__file__))
-        os.chdir(file_path)
-
         self.frame_count = 0
         arcade.set_background_color(arcade.color.AMAZON)
 

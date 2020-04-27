@@ -8,9 +8,6 @@ import os
 
 
 def main():
-    file_path = os.path.dirname(os.path.abspath(__file__))
-    os.chdir(file_path)
-
     mypath = "../../arcade/examples"
 
     python_example_filename_list = []

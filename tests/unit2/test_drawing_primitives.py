@@ -13,15 +13,6 @@ class MyGame(arcade.Window):
         Initializer
         """
         super().__init__(width, height)
-
-        # Set the working directory (where we expect to find files) to the same
-        # directory this .py file is in. You can leave this out of your own
-        # code, but it is needed to easily run the examples using "python -m"
-        # as mentioned at the top of this program.
-        file_path = os.path.dirname(os.path.abspath(__file__))
-        new_path = os.path.join(file_path, '..', '..', 'arcade', 'examples')
-        os.chdir(new_path)
-
         arcade.set_background_color(arcade.color.WHITE)
 
     def on_draw(self):
