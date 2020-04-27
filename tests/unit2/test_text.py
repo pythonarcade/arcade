@@ -1,3 +1,4 @@
+import pytest
 import arcade
 
 SCREEN_WIDTH = 800
@@ -67,10 +68,12 @@ class MyTestWindow(arcade.Window):
         arcade.draw_text("Different font", current_x, current_y, arcade.color.BLACK, 12, font_name=font_name)
 
         current_y -= LINE_HEIGHT
-        # noinspection PyDeprecation
-        text = arcade.create_text("Create text", arcade.color.BLACK)
-        # noinspection PyDeprecation
-        arcade.render_text(text, current_x, current_y)
+
+        with pytest.deprecated_call():
+            # noinspection PyDeprecation
+            text = arcade.create_text("Create text", arcade.color.BLACK)
+            # noinspection PyDeprecation
+            arcade.render_text(text, current_x, current_y)
 
 
 def test_main():
