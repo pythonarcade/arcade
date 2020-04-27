@@ -1,34 +1,51 @@
+
+# IDEs
 *.sublime-project
 *.sublime-workspace
+.idea/
+/.vscode/
 *.wpr
 *.wpu
-*.pyc
-/.vscode/
-arcade.egg-info/
-arcade/__pycache__/
-dist/
-build/
-.coverage
+
+# virualenvs
+env
+venv/
+.venv
+
+# docs
+/doc/resources.rst
 doc/build/
 doc/quick_index.rst
 doc/internal/blacklist.rst
 doc/internal/build.rst
 doc/source/quick_index.rst
 doc/examples/thumbs/
-pylint.html
-.idea/
-env
-venv/
-.venv
+
+# testing
 .pytest_cache/
-arcade/examples/stress*.csv
-stress_test*.csv
-test.py
-tests/test_examples/test.png
-arcade/examples/test.png
-.DS_Store
 .coveralls.yml
-/doc/resources.rst
-.mypy_cache/
-.eggs/
 .tox/
+.mypy_cache/
+tests/test_examples/test.png
+stress_test*.csv
+arcade/examples/test.png
+arcade/examples/stress*.csv
+pylint.html
+
+# covereage
+htmlcov/
+.coverage
+
+# build
+.eggs/
+dist/
+build/
+arcade.egg-info/
+*.pyc
+arcade/__pycache__/
+
+# osx
+.DS_Store
+
+# local testing/mocking
+test.py
