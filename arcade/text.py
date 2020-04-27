@@ -195,10 +195,19 @@ def draw_text(text: str,
                 font_config = pyglet.font.fontconfig.get_fontconfig()
                 result = font_config.find_font('Arial')
                 font = PIL.ImageFont.truetype(result.name, int(font_size))
-            except OSError:
+            except Exception:
+                # NOTE: Will catch OSError from loading font and missing fontconfig in pyglet
                 pass
             else:
                 font_found = True
+
+        # Final fallback just getting PIL's default font if possible
+        if not font_found:
+            try:
+                font = PIL.ImageFont.load_default()
+                font_found = True
+            except Exception:
+                pass
 
         if not font_found:
             raise RuntimeError("Unable to find a default font on this system. Please specify an available font.")
