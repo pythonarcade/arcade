@@ -98,7 +98,7 @@ class Window(pyglet.window.Window):
         set_window(self)
         set_viewport(0, self.width - 1, 0, self.height - 1)
 
-        self.current_view: Optional[View] = None
+        self._current_view: Optional[View] = None
         self.button_list: List[TextButton] = []
         self.dialogue_box_list: List[DialogueBox] = []
         self.text_list: List[TextLabel] = []
@@ -112,6 +112,15 @@ class Window(pyglet.window.Window):
         # Required for transparency
         self.ctx.enable(self.ctx.BLEND)
         self.ctx.blend_func = self.ctx.BLEND_DEFAULT
+
+    @property
+    def current_view(self):
+        """
+        This property returns the current view being shown.
+        To set a different view, call the
+        :py:meth:`arcade.Window.show_view` method.
+        """
+        return self._current_view
 
     def close(self):
         """ Close the Window. """
@@ -137,8 +146,8 @@ class Window(pyglet.window.Window):
         :param float delta_time: Time interval since the last time the function was called in seconds.
 
         """
-        if self.current_view is not None:
-            self.current_view.update(delta_time)
+        if self._current_view is not None:
+            self._current_view.update(delta_time)
 
     def on_update(self, delta_time: float):
         """
@@ -147,8 +156,8 @@ class Window(pyglet.window.Window):
         :param float delta_time: Time interval since the last time the function was called.
 
         """
-        if self.current_view is not None:
-            self.current_view.on_update(delta_time)
+        if self._current_view is not None:
+            self._current_view.on_update(delta_time)
         try:
             self.textbox_time += delta_time
             seconds = self.textbox_time % 60
@@ -465,7 +474,8 @@ class Window(pyglet.window.Window):
 
     def show_view(self, new_view: 'View'):
         """
-        Select the view to show.
+        Select the view to show. Calling this function is the same as setting the
+        :py:meth:`arcade.Window.current_view` attribute.
 
         :param View new_view: View to show
         """
@@ -482,13 +492,13 @@ class Window(pyglet.window.Window):
                                "view object can only be used in one window.")
 
         # remove previously shown view's handlers
-        if self.current_view is not None:
-            self.remove_handlers(self.current_view)
+        if self._current_view is not None:
+            self.remove_handlers(self._current_view)
 
         # push new view's handlers
-        self.current_view = new_view
-        self.push_handlers(self.current_view)
-        self.current_view.on_show()
+        self._current_view = new_view
+        self.push_handlers(self._current_view)
+        self._current_view.on_show()
 
         # Note: After the View has been pushed onto pyglet's stack of event handlers (via push_handlers()), pyglet
         # will still call the Window's event handlers. (See pyglet's EventDispatcher.dispatch_event() implementation
@@ -505,6 +515,7 @@ class Window(pyglet.window.Window):
         super().flip()
 
     def switch_to(self):
+        """ Switch the this window. """
         super().switch_to()
 
     def set_caption(self, caption):
@@ -524,6 +535,7 @@ class Window(pyglet.window.Window):
         super().set_location(x, y)
 
     def activate(self):
+        """ Activate this window. """
         super().activate()
 
     def minimize(self):
@@ -535,9 +547,11 @@ class Window(pyglet.window.Window):
         super().maximize()
 
     def set_vsync(self, vsync: bool):
+        """ Set if we sync our draws to the monitors vertical sync rate. """
         super().set_vsync(vsync)
 
     def set_mouse_platform_visible(self, platform_visible=None):
+        """ This does something. """
         super().set_mouse_platform_visible(platform_visible)
 
     def set_exclusive_mouse(self, exclusive=True):
@@ -549,6 +563,7 @@ class Window(pyglet.window.Window):
         super().set_exclusive_keyboard(exclusive)
 
     def get_system_mouse_cursor(self, name):
+        """ Get the system mouse cursor """
         return super().get_system_mouse_cursor(name)
 
     def dispatch_events(self):
