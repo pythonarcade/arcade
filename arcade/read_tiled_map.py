@@ -350,7 +350,7 @@ def generate_sprites(map_object: TiledMap, layer_name: str, scaling: float, base
                 my_sprite.center_y = (map_object.height - row_index) * (map_object.tileheight * scaling) - map_object.tileheight / 2 * scaling
 
                 if tile_info.points is not None:
-                    my_sprite.set_points(tile_info.points)
+                    my_sprite.set_hit_box(tile_info.points)
                 sprite_list.append(my_sprite)
             elif item != 0:
                 print(f"Warning, could not find {item} image to load.")
