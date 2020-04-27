@@ -31,3 +31,4 @@ arcade/examples/test.png
 /doc/resources.rst
 .mypy_cache/
 .eggs/
+.tox/
