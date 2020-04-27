@@ -196,7 +196,8 @@ class MyWindow(arcade.Window):
         self.physics_engine.add_sprite(bullet,
                                        mass=0.1,
                                        damping=1.0,
-                                       friction=0.6)
+                                       friction=0.6,
+                                       elasticity=0.9)
 
         # Taking into account the angle, calculate our force.
         force[0] *= BULLET_MOVE_FORCE

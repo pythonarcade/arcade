@@ -39,6 +39,7 @@ class PymunkPhysicsEngine:
                    sprite: Sprite,
                    mass: float = 1,
                    friction: float = 0.2,
+                   elasticity: Optional[float] = None,
                    moment=None,
                    body_type=DYNAMIC,
                    damping=None,
@@ -90,8 +91,11 @@ class PymunkPhysicsEngine:
         scaled_poly = [[x * sprite.scale for x in z] for z in poly]
 
         shape = pymunk.Poly(body, scaled_poly, radius=radius)
+
         if collision_type:
             shape.collision_type = collision_type_id
+        if elasticity is not None:
+            shape.elasticity = elasticity
         shape.friction = friction
 
         physics_object = _PhysicsObject(body, shape)
@@ -104,6 +108,7 @@ class PymunkPhysicsEngine:
                         sprite_list,
                         mass: float = 1,
                         friction: float = 0.2,
+                        elasticity: Optional[float] = None,
                         moment=None,
                         body_type=DYNAMIC,
                         collision_type=None
@@ -111,7 +116,7 @@ class PymunkPhysicsEngine:
         """ Add all sprites in a sprite list to the physics engine. """
 
         for sprite in sprite_list:
-            self.add_sprite(sprite, mass, friction, moment, body_type, collision_type=collision_type)
+            self.add_sprite(sprite, mass, friction, elasticity, moment, body_type, collision_type=collision_type)
 
     def remove_sprite(self, sprite: Sprite):
         """ Remove a sprite from the physics engine. """
