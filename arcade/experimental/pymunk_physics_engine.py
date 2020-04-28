@@ -11,10 +11,12 @@ from typing import Optional
 from arcade import Sprite
 from arcade import SpriteList
 
-class _PhysicsObject:
-    def __init__(self, body=None, shape=None):
-        self.body = body
-        self.shape = shape
+class PymunkPhysicsObject:
+    def __init__(self,
+                 body: pymunk.Body = None,
+                 shape: pymunk.Shape = None):
+        self.body: pymunk.Body = body
+        self.shape: pymunk.Shape = shape
 
 
 class PymunkPhysicsEngine:
@@ -33,7 +35,7 @@ class PymunkPhysicsEngine:
         self.space.gravity = gravity
         self.space.damping = damping
         self.collision_types: List[str] = []
-        self.sprites: Dict[Sprite, _PhysicsObject] = {}
+        self.sprites: Dict[Sprite, PymunkPhysicsObject] = {}
 
     def add_sprite(self,
                    sprite: Sprite,
@@ -43,7 +45,7 @@ class PymunkPhysicsEngine:
                    moment=None,
                    body_type=DYNAMIC,
                    damping=None,
-                   gravity=(0, 0),
+                   gravity=None,
                    max_velocity=None,
                    radius: float = 0,
                    collision_type: str = "default",
@@ -83,8 +85,7 @@ class PymunkPhysicsEngine:
                     scale = max_velocity / velocity
                     body.velocity = body.velocity * scale
 
-        if damping is not None:
-            body.velocity_func = velocity_callback
+        body.velocity_func = velocity_callback
 
         poly = sprite.get_hit_box()
 
@@ -98,7 +99,7 @@ class PymunkPhysicsEngine:
             shape.elasticity = elasticity
         shape.friction = friction
 
-        physics_object = _PhysicsObject(body, shape)
+        physics_object = PymunkPhysicsObject(body, shape)
         self.sprites[sprite] = physics_object
 
         self.space.add(body, shape)
@@ -165,7 +166,7 @@ class PymunkPhysicsEngine:
             sprite.center_y = physics_object.body.position.y
             sprite.angle = math.degrees(physics_object.body.angle)
 
-    def step(self, delta_time=1 / 60.0):
+    def step(self, delta_time: float = 1 / 60.0):
         """ Tell the physics engine to perform calculations. """
         # Update physics
         # Use a constant time step, don't use delta_time
@@ -174,7 +175,51 @@ class PymunkPhysicsEngine:
         self.space.step(delta_time)
         self.resync_sprites()
 
+    def get_physics_object(self, sprite: Sprite) -> PymunkPhysicsObject:
+        """ Get the shape/body for a sprite. """
+        return self.sprites[sprite]
+
     def apply_force(self, sprite, force):
         """ Apply force to a Sprite. """
         physics_object = self.sprites[sprite]
         physics_object.body.apply_force_at_local_point(force, (0, 0))
+
+    def set_velocity(self, sprite, velocity):
+        """ Apply force to a Sprite. """
+        physics_object = self.sprites[sprite]
+        cv = physics_object.body.velocity
+        new_cv = (velocity, cv[1])
+        physics_object.body.velocity = new_cv
+
+    def apply_opposite_running_force(self, sprite: Sprite):
+        """
+        If a sprite goes left while on top of a dynamic sprite, that sprite
+        should get pushed to the right.
+        """
+        grounding = self.check_grounding(sprite)
+        if self.force[0] and grounding and grounding['body']:
+            grounding['body'].apply_force_at_world_point((-self.force[0], 0), grounding['position'])
+
+    def check_grounding(self, sprite: Sprite):
+        """ See if the player is on the ground. Used to see if we can jump. """
+        grounding = {
+            'normal': pymunk.Vec2d.zero(),
+            'penetration': pymunk.Vec2d.zero(),
+            'impulse': pymunk.Vec2d.zero(),
+            'position': pymunk.Vec2d.zero(),
+            'body': None
+        }
+
+        def f(arbiter):
+            n = -arbiter.contact_point_set.normal
+            if n.y > grounding['normal'].y:
+                grounding['normal'] = n
+                grounding['penetration'] = -arbiter.contact_point_set.points[0].distance
+                grounding['body'] = arbiter.shapes[1].body
+                grounding['impulse'] = arbiter.total_impulse
+                grounding['position'] = arbiter.contact_point_set.points[0].point_b
+
+        physics_object = self.sprites[sprite]
+        physics_object.body.each_arbiter(f)
+
+        return grounding
