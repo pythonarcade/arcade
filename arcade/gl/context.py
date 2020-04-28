@@ -22,6 +22,67 @@ class Context:
     """
     Represents an OpenGL context. This context belongs to an arcade.Window.
     """
+    # --- Store the most commonly used OpenGL constants
+    # Texture
+    NEAREST = 0x2600
+    LINEAR = 0x2601
+    NEAREST_MIPMAP_NEAREST = 0x2700
+    LINEAR_MIPMAP_NEAREST = 0x2701
+    NEAREST_MIPMAP_LINEAR = 0x2702
+    LINEAR_MIPMAP_LINEAR = 0x2703
+
+    REPEAT = gl.GL_REPEAT
+    CLAMP_TO_EDGE = gl.GL_CLAMP_TO_EDGE
+    CLAMP_TO_BORDER = gl.GL_CLAMP_TO_BORDER
+    MIRRORED_REPEAT = gl.GL_MIRRORED_REPEAT
+
+    # Flags
+    # NOTHING
+    BLEND = gl.GL_BLEND
+    # DEPTH_TEST
+    # CULL_FACE
+    # RASTERIZER_DISCARD
+    # PROGRAM_POINT_SIZE
+
+    # Blend functions
+    ZERO = 0x0000
+    ONE = 0x0001
+    SRC_COLOR = 0x0300
+    ONE_MINUS_SRC_COLOR = 0x0301
+    SRC_ALPHA = 0x0302
+    ONE_MINUS_SRC_ALPHA = 0x0303
+    DST_ALPHA = 0x0304
+    ONE_MINUS_DST_ALPHA = 0x0305
+    DST_COLOR = 0x0306
+    ONE_MINUS_DST_COLOR = 0x0307
+
+    # Blend equations
+    #: source + destination
+    FUNC_ADD = 0x8006
+    #: source - destination
+    FUNC_SUBTRACT = 0x800A
+    #: destination - source
+    FUNC_REVERSE_SUBTRACT = 0x800B
+    #: Minimum of source and destination
+    MIN = 0x8007
+    #: Maximum of source and destination
+    MAX = 0x8008
+
+    BLEND_DEFAULT = 0x0302, 0x0303
+    BLEND_ADDITIVE = 0x0001, 0x0001
+    BLEND_PREMULTIPLIED_ALPHA = 0x0302, 0x0001
+    # VertexArray: Primitives
+    POINTS = gl.GL_POINTS  # 0
+    LINES = gl.GL_LINES  # 1
+    LINE_STRIP = gl.GL_LINE_STRIP  # 3
+    TRIANGLES = gl.GL_TRIANGLES  # 4
+    TRIANGLE_STRIP = gl.GL_TRIANGLE_STRIP  # 5
+    TRIANGLE_FAN = gl.GL_TRIANGLE_FAN  # 6
+    LINES_ADJACENCY = gl.GL_LINES_ADJACENCY  # 10
+    LINE_STRIP_ADJACENCY = gl.GL_LINE_STRIP_ADJACENCY  # 11
+    TRIANGLES_ADJACENCY = gl.GL_TRIANGLES_ADJACENCY  # 12
+    TRIANGLE_STRIP_ADJACENCY = gl.GL_TRIANGLE_STRIP_ADJACENCY  # 13
+
     _errors = {
         gl.GL_INVALID_ENUM: 'GL_INVALID_ENUM',
         gl.GL_INVALID_VALUE: 'GL_INVALID_VALUE',
@@ -50,67 +111,6 @@ class Context:
         # Tracking active program. On context creation the window is the default render target
         self.active_framebuffer = window
         self.stats = ContextStats(warn_threshold=1000)
-
-        # --- Store the most commonly used OpenGL constants
-        # Texture
-        self.NEAREST = 0x2600
-        self.LINEAR = 0x2601
-        self.NEAREST_MIPMAP_NEAREST = 0x2700
-        self.LINEAR_MIPMAP_NEAREST = 0x2701
-        self.NEAREST_MIPMAP_LINEAR = 0x2702
-        self.LINEAR_MIPMAP_LINEAR = 0x2703
-
-        self.REPEAT = gl.GL_REPEAT
-        self.CLAMP_TO_EDGE = gl.GL_CLAMP_TO_EDGE
-        self.CLAMP_TO_BORDER = gl.GL_CLAMP_TO_BORDER
-        self.MIRRORED_REPEAT = gl.GL_MIRRORED_REPEAT
-
-        # Flags
-        # NOTHING
-        self.BLEND = gl.GL_BLEND
-        # DEPTH_TEST
-        # CULL_FACE
-        # RASTERIZER_DISCARD
-        # PROGRAM_POINT_SIZE
-
-        # Blend functions
-        self.ZERO = 0x0000
-        self.ONE = 0x0001
-        self.SRC_COLOR = 0x0300
-        self.ONE_MINUS_SRC_COLOR = 0x0301
-        self.SRC_ALPHA = 0x0302
-        self.ONE_MINUS_SRC_ALPHA = 0x0303
-        self.DST_ALPHA = 0x0304
-        self.ONE_MINUS_DST_ALPHA = 0x0305
-        self.DST_COLOR = 0x0306
-        self.ONE_MINUS_DST_COLOR = 0x0307
-
-        # Blend equations
-        #: source + destination
-        self.FUNC_ADD = 0x8006
-        #: source - destination
-        self.FUNC_SUBTRACT = 0x800A
-        #: destination - source
-        self.FUNC_REVERSE_SUBTRACT = 0x800B
-        #: Minimum of source and destination
-        self.MIN = 0x8007
-        #: Maximum of source and destination
-        self.MAX = 0x8008
-
-        self.BLEND_DEFAULT = self.SRC_ALPHA, self.ONE_MINUS_SRC_ALPHA
-        self.BLEND_ADDITIVE = self.ONE, self.ONE
-        self.BLEND_PREMULTIPLIED_ALPHA = self.SRC_ALPHA, self.ONE
-        # VertexArray: Primitives
-        self.POINTS = gl.GL_POINTS  # 0
-        self.LINES = gl.GL_LINES  # 1
-        self.LINE_STRIP = gl.GL_LINE_STRIP  # 3
-        self.TRIANGLES = gl.GL_TRIANGLES  # 4
-        self.TRIANGLE_STRIP = gl.GL_TRIANGLE_STRIP  # 5
-        self.TRIANGLE_FAN = gl.GL_TRIANGLE_FAN  # 6
-        self.LINES_ADJACENCY = gl.GL_LINES_ADJACENCY  # 10
-        self.LINE_STRIP_ADJACENCY = gl.GL_LINE_STRIP_ADJACENCY  # 11
-        self.TRIANGLES_ADJACENCY = gl.GL_TRIANGLES_ADJACENCY  # 12
-        self.TRIANGLE_STRIP_ADJACENCY = gl.GL_TRIANGLE_STRIP_ADJACENCY  # 13
 
         # States
         self._blend_func = self.BLEND_DEFAULT
