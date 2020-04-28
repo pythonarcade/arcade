@@ -50,7 +50,6 @@ from arcade import key
 from arcade import resources
 # noinspection PyPep8
 from arcade import experimental
-
 from .window_commands import close_window
 from .window_commands import create_orthogonal_projection
 from .window_commands import finish_render
@@ -247,6 +246,7 @@ from .text import Text
 from .text import create_text
 from .text import draw_text
 from .text import draw_text_2
+from .text import get_text_image
 from .text import render_text
 
 from .tilemap import get_tilemap_layer
@@ -399,6 +399,7 @@ __all__ = ['AStarBarrierList',
            'get_scaling_factor',
            'get_sprites_at_exact_point',
            'get_sprites_at_point',
+           'get_text_image',
            'get_tilemap_layer',
            'get_viewport',
            'get_window',

@@ -22,5 +22,3 @@ class FlatButton(UIElement):
         color = (127, 0, 0)
         image = PIL.Image.new('RGBA', (width, height), color)
         self.mouse_press_texture = arcade.Texture(f"Solid-{color[0]}-{color[1]}-{color[2]}", image)
-
-

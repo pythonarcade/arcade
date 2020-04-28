@@ -21,17 +21,17 @@ class MyGame(arcade.Window):
     def __init__(self, width, height, title):
         super().__init__(width, height, title)
 
-        arcade.set_background_color(arcade.color.WHITE)
+        arcade.set_background_color(arcade.color.AMAZON)
 
         logging.basicConfig(level=logging.DEBUG)
 
     def setup(self):
         """ Set up the game here. Call this function to restart the game. """
-        ui_element = arcade.experimental.gui.flat_button.FlatButton(center_x=50, center_y=50, width=90, height=50)
+        ui_element = arcade.experimental.gui.ClickableText(center_x=50, center_y=50, text="Test")
         self.ui_manager.append(ui_element)
-        ui_element = arcade.experimental.gui.flat_button.FlatButton(center_x=50, center_y=150, width=90, height=50)
+        ui_element = arcade.experimental.gui.FlatButton(center_x=50, center_y=150, width=60, height=50)
         self.ui_manager.append(ui_element)
-        ui_element = arcade.experimental.gui.flat_button.FlatButton(center_x=50, center_y=250, width=90, height=50)
+        ui_element = arcade.experimental.gui.ClickableText(center_x=50, center_y=250, text="Hi")
         self.ui_manager.append(ui_element)
 
     def on_draw(self):

@@ -17,7 +17,8 @@ class UIManager:
     def __init__(self, window: Window):
         """ Create manager """
         self.window: Window = window
-        self.ui_elements = arcade.SpriteList(use_spatial_hash=True)
+
+        self.ui_elements: arcade.SpriteList = arcade.SpriteList(use_spatial_hash=True)
 
         self.window.push_handlers(self.on_mouse_press)
         self.window.push_handlers(self.on_mouse_drag)
