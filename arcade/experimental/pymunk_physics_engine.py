@@ -197,8 +197,9 @@ class PymunkPhysicsEngine:
         should get pushed to the right.
         """
         grounding = self.check_grounding(sprite)
-        if self.force[0] and grounding and grounding['body']:
-            grounding['body'].apply_force_at_world_point((-self.force[0], 0), grounding['position'])
+        body = self.get_physics_object(sprite).body
+        if body.force[0] and grounding and grounding['body']:
+            grounding['body'].apply_force_at_world_point((-body.force[0], 0), grounding['position'])
 
     def check_grounding(self, sprite: Sprite):
         """ See if the player is on the ground. Used to see if we can jump. """
