@@ -240,10 +240,7 @@ class Geometry:
         program.use()
         vao = self.instance(program)
         mode = self._mode if mode is None else mode
-        if mode:
-            vao.render(mode=mode, first=first, vertices=vertices or self._num_vertices, instances=instances)
-        else:
-            vao.render(mode=mode, first=first, vertices=vertices or self._num_vertices, instances=instances)
+        vao.render(mode=mode, first=first, vertices=vertices or self._num_vertices, instances=instances)
 
     def transform(self, program: Program):
         """Render with transform feedback"""
