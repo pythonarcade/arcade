@@ -119,12 +119,12 @@ class Context:
         # FIXME: These pre-created resources needs to be packaged nicely
         #        Just having them globally in the context is probably not a good idea
         self.line_vertex_shader = self.load_program(
-            vertex_shader=':resources:shaders/line_vertex_shader_vs.glsl',
-            fragment_shader=':resources:shaders/line_vertex_shader_fs.glsl',
+            vertex_shader=':resources:shaders/shapes/line/line_vertex_shader_vs.glsl',
+            fragment_shader=':resources:shaders/shapes/line/line_vertex_shader_fs.glsl',
         )
         self.line_generic_with_colors_program = self.load_program(
-            vertex_shader=':resources:shaders/line_generic_with_colors_vs.glsl',
-            fragment_shader=':resources:shaders/line_generic_with_colors_fs.glsl',
+            vertex_shader=':resources:shaders/shapes/line/line_generic_with_colors_vs.glsl',
+            fragment_shader=':resources:shaders/shapes/line/line_generic_with_colors_fs.glsl',
         )
         self.shape_element_list_program = self.load_program(
             vertex_shader=':resources:shaders/shape_element_list_vs.glsl',

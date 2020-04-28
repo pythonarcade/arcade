@@ -47,8 +47,8 @@ def test_ctx(ctx):
 def test_geometry(ctx):
     """Test vertex_array"""
     program = ctx.load_program(
-        vertex_shader=':resources:shaders/line_vertex_shader_vs.glsl',
-        fragment_shader=':resources:shaders/line_vertex_shader_fs.glsl',
+        vertex_shader=':resources:shaders/shapes/line/line_vertex_shader_vs.glsl',
+        fragment_shader=':resources:shaders/shapes/line/line_vertex_shader_fs.glsl',
     )
     num_vertices = 100
     content = [
