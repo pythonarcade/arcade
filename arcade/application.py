@@ -17,11 +17,16 @@ from arcade import get_display_size
 
 from arcade.gl import Context
 
+import arcade
+
 if TYPE_CHECKING:
     from arcade import TextBox
     from arcade import TextButton
     from arcade import DialogueBox
     from arcade import TextLabel
+
+import logging
+LOG = logging.getLogger(__name__)
 
 MOUSE_BUTTON_LEFT = 1
 MOUSE_BUTTON_MIDDLE = 2
@@ -105,6 +110,7 @@ class Window(pyglet.window.Window):
         self.textbox_list: List[TextBox] = []
         self.textbox_time = 0.0
         self.key: Optional[int] = None
+        self.ui_manager = arcade.experimental.gui.UIManager(self)
 
         # Representation of the OpenGL context for this window
         self.ctx = Context(self)
