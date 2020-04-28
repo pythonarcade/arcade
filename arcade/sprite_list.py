@@ -394,6 +394,17 @@ class SpriteList(Generic[_SpriteType]):
             self.sprite_idx[sprite] = idx
 
         self._vao1 = None
+    
+    def reset_spatial_hash(self, spatial_hash_cell_size=128, is_static=False):
+        """ Instantiates or resets the spatial hash. (Used after loading a tilemap) """
+
+        self.is_static = is_static
+        self.use_spatial_hash = True
+
+        if self.spatial_hash is None:
+            self.spatial_hash = _SpatialHash(cell_size=spatial_hash_cell_size)
+
+        self._recalculate_spatial_hashes()
 
     def _recalculate_spatial_hash(self, item: _SpriteType):
         """ Recalculate the spatial hash for a particular item. """
