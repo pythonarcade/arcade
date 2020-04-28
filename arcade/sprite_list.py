@@ -6,7 +6,6 @@ This module provides functionality to manage Sprites in a list.
 from typing import Iterable
 from typing import Any
 from typing import TypeVar
-from typing import Generic
 from typing import List
 from typing import Tuple
 from typing import Optional
@@ -221,8 +220,7 @@ class _SpatialHash:
 
 _SpriteType = TypeVar('_SpriteType', bound=Sprite)
 
-
-class SpriteList(Generic[_SpriteType]):
+class SpriteList:
     """
     Keep a list of sprites. Contains many optimizations around batch-drawing sprites
     and doing collision detection. For optimization reasons, use_spatial_hash and
@@ -250,6 +248,8 @@ class SpriteList(Generic[_SpriteType]):
 
         # List of sprites in the sprite list
         self.sprite_list = []
+        self._iterator_index = 0
+
         self.sprite_idx = dict()
 
         self._sprite_pos_data = None
@@ -544,7 +544,7 @@ class SpriteList(Generic[_SpriteType]):
                     image = sprite.texture.image
 
                     tmp = Image.new('RGBA', (image.width+2, image.height+2))
-                    tmp.paste(image, (1,1))
+                    tmp.paste(image, (1, 1))
                     tmp.paste(tmp.crop((1          , 1           , image.width+1, 2             )), (1            , 0             ))
                     tmp.paste(tmp.crop((1          , image.height, image.width+1, image.height+1)), (1            , image.height+1))
                     tmp.paste(tmp.crop((1          , 0           ,             2, image.height+2)), (0            , 0             ))
@@ -956,9 +956,21 @@ class SpriteList(Generic[_SpriteType]):
         """ Return the length of the sprite list. """
         return len(self.sprite_list)
 
-    def __iter__(self) -> Iterable[_SpriteType]:
+    def __iter__(self) -> 'SpriteList':
         """ Return an iterable object of sprites. """
-        return iter(self.sprite_list)
+        # return self
+        self._iterator_index = 0
+        return self
+
+    def __next__(self) -> Sprite:
+        """ Get next item """
+
+        if self._iterator_index >= len(self.sprite_list):
+            raise StopIteration
+
+        item = self.sprite_list[self._iterator_index]
+        self._iterator_index += 1
+        return item
 
     def __getitem__(self, i):
         return self.sprite_list[i]
