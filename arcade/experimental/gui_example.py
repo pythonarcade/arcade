@@ -11,14 +11,12 @@ import arcade
 
 SCREEN_WIDTH = 500
 SCREEN_HEIGHT = 600
-SCREEN_TITLE = "Starting Template Simple"
+SCREEN_TITLE = "GUI Example"
 
 import logging
 
 class MyGame(arcade.Window):
-    """
-    Main application class.
-    """
+    """ Main application class. """
 
     def __init__(self, width, height, title):
         super().__init__(width, height, title)
@@ -29,26 +27,22 @@ class MyGame(arcade.Window):
 
     def setup(self):
         """ Set up the game here. Call this function to restart the game. """
-        ui_element = arcade.experimental.gui.ui_element.UIElement(center_x=50, center_y=50)
+        ui_element = arcade.experimental.gui.flat_button.FlatButton(center_x=50, center_y=50, width=90, height=50)
         self.ui_manager.append(ui_element)
-        ui_element = arcade.experimental.gui.ui_element.UIElement(center_x=50, center_y=150)
+        ui_element = arcade.experimental.gui.flat_button.FlatButton(center_x=50, center_y=150, width=90, height=50)
         self.ui_manager.append(ui_element)
-        ui_element = arcade.experimental.gui.ui_element.UIElement(center_x=50, center_y=250)
+        ui_element = arcade.experimental.gui.flat_button.FlatButton(center_x=50, center_y=250, width=90, height=50)
         self.ui_manager.append(ui_element)
 
     def on_draw(self):
-        """
-        Render the screen.
-        """
+        """ Render the screen. """
 
         arcade.start_render()
 
         self.ui_manager.draw()
 
     def on_mouse_press(self, x, y, button, key_modifiers):
-        """
-        Called when the user presses a mouse button.
-        """
+        """ Called when the user presses a mouse button. """
         print("Click Window")
 
 

@@ -8,15 +8,17 @@ LOG = logging.getLogger(__name__)
 class UIElement(arcade.Sprite):
     def __init__(self,
                  center_x = 0,
-                 center_y = 0):
+                 center_y = 0,
+                 width = 60,
+                 height = 40):
         super().__init__()
         self.center_x = center_x
         self.center_y = center_y
         self.is_mouse_over = False
         self.is_mouse_pressed = False
-
-        width = 50
-        height = 50
+        self.normal_texture = None
+        self.mouse_over_texture = None
+        self.mouse_press_texture = None
 
         color = (127, 127, 127)
         image = PIL.Image.new('RGBA', (width, height), color)
@@ -32,7 +34,6 @@ class UIElement(arcade.Sprite):
         color = (127, 0, 0)
         image = PIL.Image.new('RGBA', (width, height), color)
         self.mouse_press_texture = arcade.Texture(f"Solid-{color[0]}-{color[1]}-{color[2]}", image)
-
 
     def set_proper_texture(self):
         if self.is_mouse_pressed:
