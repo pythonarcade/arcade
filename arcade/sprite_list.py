@@ -452,7 +452,7 @@ class SpriteList(Generic[_SpriteType]):
                 self._sprite_pos_buf,
                 '2f',
                 variables,
-                instanced=True)
+            )
             self._sprite_pos_changed = False
 
         def _calculate_size_buffer():
@@ -469,14 +469,13 @@ class SpriteList(Generic[_SpriteType]):
             self._sprite_size_desc = gl.BufferDescription(
                 self._sprite_size_buf,
                 '2f',
-                variables,
-                instanced=True)
+                variables)
             self._sprite_size_changed = False
 
         def _calculate_angle_buffer():
             self._sprite_angle_data = array.array('f')
             for sprite in self.sprite_list:
-                self._sprite_angle_data.append(math.radians(sprite.angle))
+                self._sprite_angle_data.append(sprite.angle)
 
             self._sprite_angle_buf = self.ctx.buffer(
                 data=self._sprite_angle_data.tobytes(),
@@ -487,7 +486,7 @@ class SpriteList(Generic[_SpriteType]):
                 self._sprite_angle_buf,
                 '1f',
                 variables,
-                instanced=True)
+            )
             self._sprite_angle_changed = False
 
         def _calculate_colors():
@@ -507,7 +506,8 @@ class SpriteList(Generic[_SpriteType]):
                 self._sprite_color_buf,
                 '4f1',
                 variables,
-                normalized=['in_color'], instanced=True)
+                normalized=['in_color']
+            )
             self._sprite_color_changed = False
 
         def _calculate_sub_tex_coords():
@@ -675,7 +675,7 @@ class SpriteList(Generic[_SpriteType]):
                 self._sprite_sub_tex_buf,
                 '4f',
                 ['in_sub_tex_coords'],
-                instanced=True)
+            )
             self._sprite_sub_tex_changed = False
 
         if len(self.sprite_list) == 0:
@@ -689,28 +689,33 @@ class SpriteList(Generic[_SpriteType]):
         _calculate_sub_tex_coords()
         _calculate_colors()
 
-        vertices = array.array('f', [
-            #  x,    y,   u,   v
-            -1.0, -1.0, 0.0, 0.0,
-            -1.0, 1.0, 0.0, 1.0,
-            1.0, -1.0, 1.0, 0.0,
-            1.0, 1.0, 1.0, 1.0,
-        ]
-        )
-        self.vbo_buf = self.ctx.buffer(data=vertices.tobytes())
-        vbo_buf_desc = gl.BufferDescription(
-            self.vbo_buf,
-            '2f 2f',
-            ('in_vert', 'in_texture')
-        )
+        # vertices = array.array('f', [
+        #     #  x,    y,   u,   v
+        #     -1.0, -1.0, 0.0, 0.0,
+        #     -1.0, 1.0, 0.0, 1.0,
+        #     1.0, -1.0, 1.0, 0.0,
+        #     1.0, 1.0, 1.0, 1.0,
+        # ])
+        # self.vbo_buf = self.ctx.buffer(data=vertices.tobytes())
+        # vbo_buf_desc = gl.BufferDescription(
+        #     self.vbo_buf,
+        #     '2f 2f',
+        #     ('in_vert', 'in_texture')
+        # )
 
         # Can add buffer to index vertices
-        vao_content = [vbo_buf_desc,
-                       self._sprite_pos_desc,
+        # vao_content = [vbo_buf_desc,
+        #                self._sprite_pos_desc,
+        #                self._sprite_size_desc,
+        #                self._sprite_angle_desc,
+        #                self._sprite_sub_tex_desc,
+        #                self._sprite_color_desc]
+        vao_content = [self._sprite_pos_desc,
                        self._sprite_size_desc,
                        self._sprite_angle_desc,
                        self._sprite_sub_tex_desc,
                        self._sprite_color_desc]
+
         self._vao1 = self.ctx.geometry(vao_content)
         LOG.debug('[%s] _calculate_sprite_buffer: %s sec', id(self), time.perf_counter() - perf_time)
 
@@ -737,7 +742,7 @@ class SpriteList(Generic[_SpriteType]):
             self._sprite_pos_data[i * 2 + 1] = sprite.position[1]
             self._sprite_pos_changed = True
 
-            self._sprite_angle_data[i] = math.radians(sprite.angle)
+            self._sprite_angle_data[i] = sprite.angle
             self._sprite_angle_changed = True
 
             self._sprite_color_data[i * 4] = sprite.color[0]
@@ -775,7 +780,7 @@ class SpriteList(Generic[_SpriteType]):
         self._sprite_pos_data[i * 2 + 1] = sprite.position[1]
         self._sprite_pos_changed = True
 
-        self._sprite_angle_data[i] = math.radians(sprite.angle)
+        self._sprite_angle_data[i] = sprite.angle
         self._sprite_angle_changed = True
 
         self._sprite_color_data[i * 4] = int(sprite.color[0])
@@ -876,7 +881,7 @@ class SpriteList(Generic[_SpriteType]):
             return
 
         i = self.sprite_idx[sprite]
-        self._sprite_angle_data[i] = math.radians(sprite.angle)
+        self._sprite_angle_data[i] = sprite.angle
         self._sprite_angle_changed = True
 
     def draw(self, **kwargs):
@@ -908,6 +913,7 @@ class SpriteList(Generic[_SpriteType]):
 
         self.program['Texture'] = self.texture_id
         self.program['Projection'] = get_projection().flatten()
+
         texture_transform = None
         if len(self.sprite_list) > 0:
             # always wrap texture transformations with translations
@@ -944,7 +950,7 @@ class SpriteList(Generic[_SpriteType]):
                 self._sprite_sub_tex_buf.write(self._sprite_sub_tex_data.tobytes())
                 self._sprite_sub_tex_changed = False
 
-        self._vao1.render(self.program, mode=self.ctx.TRIANGLE_STRIP, instances=len(self.sprite_list))
+        self._vao1.render(self.program, mode=self.ctx.POINTS, vertices=len(self.sprite_list))
 
     def __len__(self) -> int:
         """ Return the length of the sprite list. """

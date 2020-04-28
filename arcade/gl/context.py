@@ -130,9 +130,14 @@ class Context:
             vertex_shader=':resources:shaders/shape_element_list_vs.glsl',
             fragment_shader=':resources:shaders/shape_element_list_fs.glsl',
         )
+        # self.sprite_list_program = self.load_program(
+        #     vertex_shader=':resources:shaders/sprites/sprite_list_instanced_vs.glsl',
+        #     fragment_shader=':resources:shaders/sprites/sprite_list_instanced_fs.glsl',
+        # )
         self.sprite_list_program = self.load_program(
-            vertex_shader=':resources:shaders/sprites/sprite_list_instanced_vs.glsl',
-            fragment_shader=':resources:shaders/sprites/sprite_list_instanced_fs.glsl',
+            vertex_shader=':resources:shaders/sprites/sprite_list_geometry_vs.glsl',
+            geometry_shader=':resources:shaders/sprites/sprite_list_geometry_geo.glsl',
+            fragment_shader=':resources:shaders/sprites/sprite_list_geometry_fs.glsl',
         )
 
         # Shapes
