@@ -181,7 +181,8 @@ def get_text_image(text: str,
     text_width = text_image_size[0]
 
     image_start_x = 0
-    if width == 0:
+    specified_width = width
+    if specified_width == 0:
         width = text_image_size[0]
     else:
         # Wait! We were given a field width.
@@ -203,7 +204,7 @@ def get_text_image(text: str,
     if height:
         text_image_size[1] = height * scale_up
 
-    if width:
+    if specified_width:
         text_image_size[0] = width * scale_up
 
     # Create image

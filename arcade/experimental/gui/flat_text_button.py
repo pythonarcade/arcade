@@ -65,8 +65,17 @@ class FlatTextButton(UIElement):
 
         rect = [0, 0, text_image_normal.width - 1, text_image_normal.height - 1]
 
-        d = ImageDraw.Draw(text_image_normal)
-        d.rectangle(rect, fill=None, outline=border_color, width=1)
+        if border_color:
+            d = ImageDraw.Draw(text_image_normal)
+            d.rectangle(rect, fill=None, outline=border_color, width=1)
+
+        if border_color_mouse_over:
+            d = ImageDraw.Draw(text_image_mouse_over)
+            d.rectangle(rect, fill=None, outline=border_color_mouse_over, width=1)
+
+        if border_color_mouse_press:
+            d = ImageDraw.Draw(text_image_mouse_press)
+            d.rectangle(rect, fill=None, outline=border_color_mouse_press, width=1)
 
         self.texture = arcade.Texture(image=text_image_normal, name=text)
         self.normal_texture = self.texture
