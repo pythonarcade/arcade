@@ -17,14 +17,18 @@ class MyGame(arcade.Window):
 
         start = time.time()
         self.sprites = arcade.SpriteList()
-        num_sprites = 1_000_000
+        num_sprites = 100_000
+        # sprite_scale = 0.01  # All sprites covering the screen
+        sprite_scale = 1.0  # default
+        sprite_size = 128
         r = int(math.sqrt(num_sprites))
         for y in range(r):
             for x in range(r):
                 self.sprites.append(arcade.Sprite(
                     arcade.resources.image_box_crate,
-                    center_x=128 * x,
-                    center_y=128 * y,
+                    scale=sprite_scale,
+                    center_x=128 * sprite_scale * x,
+                    center_y=128 * sprite_scale * y,
                 ))
         self.sprites.draw()  # Force the list to build
 
