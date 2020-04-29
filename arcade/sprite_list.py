@@ -898,7 +898,7 @@ class SpriteList:
         if self.ctx is None:
             self.ctx = get_window().ctx
             # Used in drawing optimization via OpenGL
-            self.program = self.ctx.sprite_list_program
+            self.program = self.ctx.sprite_list_program_cull
 
         if self._vao1 is None:
             self._calculate_sprite_buffer()
