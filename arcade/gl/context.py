@@ -12,6 +12,7 @@ from .program import Program
 from .vertex_array import Geometry, VertexArray
 from .framebuffer import Framebuffer
 from .texture import Texture
+from .query import Query
 from .glsl import ShaderSource
 from .types import BufferDescription
 
