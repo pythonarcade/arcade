@@ -346,8 +346,9 @@ def _create_sprite_from_tile(map_object: pytiled_parser.objects.TileMap,
 def _process_object_layer(map_object: pytiled_parser.objects.TileMap,
                           layer: pytiled_parser.objects.ObjectLayer,
                           scaling: float = 1,
-                          base_directory: str = "") -> SpriteList:
-    sprite_list: SpriteList = SpriteList()
+                          base_directory: str = "",
+                          use_spatial_hash: bool = False) -> SpriteList:
+    sprite_list: SpriteList = SpriteList(use_spatial_hash=use_spatial_hash)
 
     for cur_object in layer.tiled_objects:
         if cur_object.gid is None:
@@ -414,8 +415,9 @@ def _process_object_layer(map_object: pytiled_parser.objects.TileMap,
 def _process_tile_layer(map_object: pytiled_parser.objects.TileMap,
                         layer: pytiled_parser.objects.TileLayer,
                         scaling: float = 1,
-                        base_directory: str = "") -> SpriteList:
-    sprite_list: SpriteList = SpriteList()
+                        base_directory: str = "",
+                        use_spatial_hash: bool = False) -> SpriteList:
+    sprite_list: SpriteList = SpriteList(use_spatial_hash=use_spatial_hash)
     map_array = layer.data
 
     # Loop through the layer and add in the wall list
@@ -454,7 +456,8 @@ def _process_tile_layer(map_object: pytiled_parser.objects.TileMap,
 def process_layer(map_object: pytiled_parser.objects.TileMap,
                   layer_name: str,
                   scaling: float = 1,
-                  base_directory: str = "") -> SpriteList:
+                  base_directory: str = "",
+                  use_spatial_hash: bool = False) -> SpriteList:
     """
     This takes a map layer returned by the read_tmx function, and creates Sprites for it.
 
@@ -465,6 +468,12 @@ def process_layer(map_object: pytiled_parser.objects.TileMap,
                     if numbers don't evenly divide.)
     :param base_directory: Base directory of the file, that we start from to
                            load images.
+    :param use_spatial_hash: If all, or at least 75%, of the loaded tiles will not
+                             move between frames and you are using either the
+                             simple physics engine or platformer physics engine,
+                             set this to True to speed collision calculation.
+                             Leave False if using PyMunk, if all sprites are moving,
+                             or if no collision will be checked.
     :returns: A SpriteList.
 
     """
@@ -478,10 +487,10 @@ def process_layer(map_object: pytiled_parser.objects.TileMap,
         return SpriteList()
 
     if isinstance(layer, pytiled_parser.objects.TileLayer):
-        return _process_tile_layer(map_object, layer, scaling, base_directory)
+        return _process_tile_layer(map_object, layer, scaling, base_directory, use_spatial_hash)
 
     elif isinstance(layer, pytiled_parser.objects.ObjectLayer):
-        return _process_object_layer(map_object, layer, scaling, base_directory)
+        return _process_object_layer(map_object, layer, scaling, base_directory, use_spatial_hash)
 
     print(f"Warning, layer '{layer_name}' has unexpected type. '{type(layer)}'")
     return SpriteList()
