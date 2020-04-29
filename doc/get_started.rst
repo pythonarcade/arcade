@@ -31,11 +31,11 @@ Arcade Skill Tree
     :width: 40%
     :class: right-image
 
-* Drawing -
-  `How to Draw with Your Computer <https://learn.arcade.academy/chapters/05_drawing/drawing.html>`_,
+* Basic Drawing Commands -
+  See `How to Draw with Your Computer <https://learn.arcade.academy/chapters/05_drawing/drawing.html>`_,
   :ref:`drawing_primitives`
 
-  * ShapeElementLists - Basic drawing commands are slow. Batch together thousands
+  * ShapeElementLists - Batch together thousands
     of drawing commands into one using a
     `ShapeElementList <arcade.html#arcade.ShapeElementList>`_. See examples in
     :ref:`shape-element-lists`.
@@ -54,16 +54,26 @@ Arcade Skill Tree
 
     * Keyboard, slightly more complex but handles multiple keypresses better:
       :ref:`sprite_move_keyboard_better`
-    * Keyboard with acceleration, deacceleration: :ref:`sprite_move_keyboard_accel`
+    * Keyboard with acceleration, de-acceleration: :ref:`sprite_move_keyboard_accel`
     * Keyboard, rotate and move forward/back like a space ship: :ref:`sprite_move_angle`
   * Game Controller - :ref:`sprite_move_joystick`
 
-    * Game controller buttons
+    * Game controller buttons - :ref:`joystick`
 
 * Sprite collision detection
 
-  * Spatial hashing
-  * Sprite drag-and-drop
+  * Basic detection -
+    `Learn arcade book on collisions <https://learn.arcade.academy/chapters/18_sprites_and_collisions/sprites.html#the-update-method>`_,
+    :ref:`sprite_collect_coins`
+  * Understanding collision detection and spatial hashing
+  * Sprite Hit boxes
+
+    * Changing - *Supported, but documentation needed.*
+    * Drawing - *Supported, but documentation needed.*
+
+  * Avoid placing items on walls - :ref:`sprite_no_coins_on_walls`
+  * Sprite drag-and-drop - *Supported, but documentation needed.*
+
 
 * Drawing sprites in layers
 * Sprite animation
@@ -76,13 +86,8 @@ Arcade Skill Tree
   * Moving towards player - :ref:`sprite_follow_simple`
   * Moving towards player, but with a delay - :ref:`sprite_follow_simple_2`
   * Space-invaders style - :ref:`slime_invaders`
-  * Can a sprite see the player?
+  * Can a sprite see the player? - :ref:`line_of_sight`
   * A-star pathfinding - :ref:`astar_pathfinding`
-
-* Sprite Hit boxes
-
-  * Changing
-  * Drawing
 
 * Shooting
 
@@ -91,18 +96,22 @@ Arcade Skill Tree
   * Enemy randomly shoots *x* frames - :ref:`sprite_bullets_random`
   * Player aims - :ref:`sprite_bullets_aimed`
   * Enemy aims - :ref:`sprite_bullets_enemy_aims`
-  * Multi-hit
+  * Multi-hit - *Supported, but documentation needed.*
 
 * Physics Engines
 
   * SimplePhysicsEngine - Platformer tutorial :ref:`platformer_part_three`,
     Learn Arcade Book `Simple Physics Engine <https://learn.arcade.academy/chapters/22_sprites_and_walls/sprites_and_walls.html#physics-engine>`_,
     Example :ref:`sprite_move_walls`
-  * PlatformerPhysicsEngine
-  * Using the physics engine on multiple sprites
-  * Pymunk top-down
-  * Pymunk platformer
-  * Pymunk shooting
+  * PlatformerPhysicsEngine - From the platformer tutorial: :ref:`platformer_part_four`,
+
+    * :ref:`sprite_moving_platforms`
+    * Ladders - Platformer tutorial :ref:`platformer_part_ten`
+
+  * Using the physics engine on multiple sprites - *Supported, but documentation needed.*
+  * Pymunk top-down - *Support under development.*
+  * Pymunk platformer - *Support under development.*
+  * Pymunk shooting - *Support under development.*
 
 * View management
 
@@ -125,28 +134,35 @@ Arcade Skill Tree
     * `Place sprites with a list <https://learn.arcade.academy/chapters/22_sprites_and_walls/sprites_and_walls.html#placing-walls-with-a-list>`_
 
   * Procedural Generation
-  * TMX map creation
 
-    * Layers
-    * Levels
-    * Object Layer
-    * Hit-boxes
-    * Animated Tiles
+    * :ref:`depth_first_maze`
+    * :ref:`recursive_maze`
+    * :ref:`procedural_caves_bsp`
+    * :ref:`procedural_caves_cellular`
 
-* Sound
+  * TMX map creation - Platformer tutorial: :ref:`platformer_part_eight`
+
+    * Layers - Platformer tutorial: :ref:`platformer_part_eight`
+    * Multipile Levels - `sprite_tiled_map_with_levels`
+    * Object Layer - *Supported, but documentation needed.*
+    * Hit-boxes - *Supported, but documentation needed.*
+    * Animated Tiles - *Supported, but documentation needed.*
+
+* Sound - `Learn Arcade book sound chapter <https://learn.arcade.academy/chapters/17_sounds/sounds.html>`_
 
   * :ref:`background_music`
   * Spatial sound :ref:`sound_demo`
 
-* Particles
+* Particles - :ref:`particle_systems`
 * GUI
 
   * Buttons
   * Text boxes
 
-* Frame buffers
+* OpenGL Frame buffers
 
-  * Lights
-  * Wrap-around
-  * Mini-map
-  * Bloom/glow effect
+  * Lights - :ref:`light_demo`
+  * Wrap-around - *Supported, but documentation needed.*
+  * Mini-map - :ref:`mini_map_defender`
+  * Bloom/glow effect - :ref:`bloom_defender`
+  * Writing your own shader - *Supported, but documentation needed.*
