@@ -167,7 +167,7 @@ def get_text_image(text: str,
     # This is stupid. We have to have an image to figure out what size
     # the text will be when we draw it. Of course, we don't know how big
     # to make the image. Catch-22. So we just make a small image we'll trash
-    text_image_size = (10, 10)
+    text_image_size = [10, 10]
     image = PIL.Image.new("RGBA", text_image_size)
     draw = PIL.ImageDraw.Draw(image)
 
@@ -277,7 +277,12 @@ def draw_text(text: str,
         label = draw_text_cache[key]
     except KeyError:  # doesn't exist, create it
 
-        image = get_text_image(text, color, font_size, width, align, font_name)
+        image = get_text_image(text=text,
+                               color=color,
+                               font_size=font_size,
+                               width=width,
+                               align=align,
+                               font_name=font_name)
         text_sprite = Sprite()
         text_sprite._texture = Texture(key)
         text_sprite.texture.image = image
