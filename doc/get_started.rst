@@ -143,7 +143,7 @@ Arcade Skill Tree
   * TMX map creation - Platformer tutorial: :ref:`platformer_part_eight`
 
     * Layers - Platformer tutorial: :ref:`platformer_part_eight`
-    * Multipile Levels - `sprite_tiled_map_with_levels`
+    * Multiple Levels - :ref:`sprite_tiled_map_with_levels`
     * Object Layer - *Supported, but documentation needed.*
     * Hit-boxes - *Supported, but documentation needed.*
     * Animated Tiles - *Supported, but documentation needed.*
