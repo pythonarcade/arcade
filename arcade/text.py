@@ -100,7 +100,7 @@ def render_text(text: CreateText, start_x: float, start_y: float):
               rotation=text.rotation)
 
 def get_text_image(text: str,
-                   color: Color,
+                   text_color: Color,
                    font_size: float = 12,
                    width: int = 0,
                    align: str = "left",
@@ -181,7 +181,8 @@ def get_text_image(text: str,
     text_width = text_image_size[0]
 
     image_start_x = 0
-    if width == 0:
+    specified_width = width
+    if specified_width == 0:
         width = text_image_size[0]
     else:
         # Wait! We were given a field width.
@@ -203,7 +204,7 @@ def get_text_image(text: str,
     if height:
         text_image_size[1] = height * scale_up
 
-    if width:
+    if specified_width:
         text_image_size[0] = width * scale_up
 
     # Create image
@@ -212,9 +213,9 @@ def get_text_image(text: str,
 
     # Convert to tuple if needed, because the multiline_text does not take a
     # list for a color
-    if isinstance(color, list):
-        color = cast(RGBA, tuple(color))
-    draw.multiline_text((image_start_x, image_start_y), text, color, align=align, font=font)
+    if isinstance(text_color, list):
+        color = cast(RGBA, tuple(text_color))
+    draw.multiline_text((image_start_x, image_start_y), text, text_color, align=align, font=font)
     image = image.resize((max(1, text_image_size[0] // scale_down), text_image_size[1] // scale_down), resample=PIL.Image.LANCZOS)
     return image
 
@@ -278,7 +279,7 @@ def draw_text(text: str,
     except KeyError:  # doesn't exist, create it
 
         image = get_text_image(text=text,
-                               color=color,
+                               text_color=color,
                                font_size=font_size,
                                width=width,
                                align=align,

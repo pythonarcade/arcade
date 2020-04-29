@@ -1,8 +1,14 @@
 The Python Arcade Library
 =========================
 
-.. image:: https://user-images.githubusercontent.com/33516116/77762078-e02ce080-7030-11ea-947a-9c6733d4f33d.png
-   :target: https://pythondiscord.com/pages/events/game-jam-2020/
+.. |Go| image:: images/go.svg
+  :width: 40
+  :alt: Alternative text
+  :target: get_started.html
+
+:ref:`get-started-here` |Go|
+
+.. image::
 
 .. raw:: html
 
@@ -144,7 +150,7 @@ game without learning a complex framework.
 
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 1
 
    quick_index
    arcade
@@ -162,6 +168,7 @@ game without learning a complex framework.
    resources
    enhancement_list
    tutorials/edge_artifacts/index
+   get_started.rst
 
 Learn about it:
 ^^^^^^^^^^^^^^^
