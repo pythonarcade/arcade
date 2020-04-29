@@ -135,9 +135,14 @@ class Context:
         #     vertex_shader=':resources:shaders/sprites/sprite_list_instanced_vs.glsl',
         #     fragment_shader=':resources:shaders/sprites/sprite_list_instanced_fs.glsl',
         # )
-        self.sprite_list_program = self.load_program(
+        self.sprite_list_program_no_cull = self.load_program(
             vertex_shader=':resources:shaders/sprites/sprite_list_geometry_vs.glsl',
-            geometry_shader=':resources:shaders/sprites/sprite_list_geometry_geo.glsl',
+            geometry_shader=':resources:shaders/sprites/sprite_list_geometry_no_cull_geo.glsl',
+            fragment_shader=':resources:shaders/sprites/sprite_list_geometry_fs.glsl',
+        )
+        self.sprite_list_program_cull = self.load_program(
+            vertex_shader=':resources:shaders/sprites/sprite_list_geometry_vs.glsl',
+            geometry_shader=':resources:shaders/sprites/sprite_list_geometry_cull_geo.glsl',
             fragment_shader=':resources:shaders/sprites/sprite_list_geometry_fs.glsl',
         )
 
@@ -369,6 +374,10 @@ class Context:
             geometry_shader=geometry_shader_src,
             defines=defines,
         )
+
+    def query(self):
+        """Create a query object for measuring rendering calls in opengl"""
+        return Query(self)
 
 
 class ContextStats:
