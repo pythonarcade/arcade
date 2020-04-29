@@ -104,7 +104,10 @@ def get_text_image(text: str,
                    font_size: float = 12,
                    width: int = 0,
                    align: str = "left",
+                   valign: str = "top",
                    font_name: Union[str, Tuple[str, ...]] = ('calibri', 'arial'),
+                   background_color: Color=None,
+                   height: int = 0,
                    ):
     # Scale the font up, so it matches with the sizes of the old code back
     # when Pyglet drew the text.
@@ -171,7 +174,7 @@ def get_text_image(text: str,
     # Get size the text will be
     text_image_size = draw.multiline_textsize(text, font=font)
     # Add some extra pixels at the bottom to account for letters that drop below the baseline.
-    text_image_size = text_image_size[0], text_image_size[1] + int(font_size * 0.25)
+    text_image_size = [text_image_size[0], text_image_size[1] + int(font_size * 0.25)]
 
     # Create image of proper size
     text_height = text_image_size[1]
@@ -185,17 +188,26 @@ def get_text_image(text: str,
         if align == "center":
             # Center text on given field width
             field_width = width * scale_up
-            text_image_size = field_width, text_height
-            image_start_x = (field_width - text_width) // 2
-            width = field_width
+            image_start_x = (field_width // 2) - (text_width // 2)
         else:
             image_start_x = 0
 
     # Find y of top-left corner
     image_start_y = 0
 
+    if height and valign == "middle":
+        field_height = height * scale_up
+        image_start_y = (field_height // 2) - (text_height // 2)
+
+
+    if height:
+        text_image_size[1] = height * scale_up
+
+    if width:
+        text_image_size[0] = width * scale_up
+
     # Create image
-    image = PIL.Image.new("RGBA", text_image_size)
+    image = PIL.Image.new("RGBA", text_image_size, background_color)
     draw = PIL.ImageDraw.Draw(image)
 
     # Convert to tuple if needed, because the multiline_text does not take a
@@ -203,7 +215,7 @@ def get_text_image(text: str,
     if isinstance(color, list):
         color = cast(RGBA, tuple(color))
     draw.multiline_text((image_start_x, image_start_y), text, color, align=align, font=font)
-    image = image.resize((max(1, width // scale_down), text_height // scale_down), resample=PIL.Image.LANCZOS)
+    image = image.resize((max(1, text_image_size[0] // scale_down), text_image_size[1] // scale_down), resample=PIL.Image.LANCZOS)
     return image
 
 

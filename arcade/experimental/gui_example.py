@@ -9,7 +9,7 @@ python -m arcade.examples.starting_template_simple
 """
 import arcade
 
-SCREEN_WIDTH = 500
+SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 SCREEN_TITLE = "GUI Example"
 
@@ -27,9 +27,20 @@ class MyGame(arcade.Window):
 
     def setup(self):
         """ Set up the game here. Call this function to restart the game. """
-        ui_element = arcade.experimental.gui.ClickableText(center_x=50, center_y=50, text="Test")
+        ui_element = arcade.experimental.gui.FlatTextButton(center_x=50,
+                                                            center_y=50,
+                                                            width=60,
+                                                            height=50,
+                                                            text="Test",
+                                                            text_color=arcade.color.BLACK,
+                                                            background_color=arcade.color.LIGHT_GRAY,
+                                                            background_color_mouse_press=arcade.color.GRAY,
+                                                            border_color=arcade.color.RED)
         self.ui_manager.append(ui_element)
-        ui_element = arcade.experimental.gui.FlatButton(center_x=50, center_y=150, width=60, height=50)
+        ui_element = arcade.experimental.gui.FlatButton(center_x=50,
+                                                        center_y=150,
+                                                        width=60,
+                                                        height=50)
         self.ui_manager.append(ui_element)
         ui_element = arcade.experimental.gui.ClickableText(center_x=50, center_y=250, text="Hi")
         self.ui_manager.append(ui_element)
@@ -40,6 +51,7 @@ class MyGame(arcade.Window):
         arcade.start_render()
 
         self.ui_manager.draw()
+        arcade.draw_rectangle_filled(500, 150, 60, 50, arcade.color.BLUE)
 
     def on_mouse_press(self, x, y, button, key_modifiers):
         """ Called when the user presses a mouse button. """
