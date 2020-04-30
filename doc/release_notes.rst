@@ -5,7 +5,7 @@
 Release Notes
 =============
 
-Version 2.4a4 (Pre-release)
+Version 2.4a (Pre-release)
 ---------------------------
 
 Alphas of version 2.4 are available if you specifically download the latest
@@ -14,29 +14,52 @@ Otherwise you'll default to the more stable 2.3 branch.
 
 The new parts of the API on 2.4 are not set, and may change without warning.
 
-Version 2.4 has:
+Version 2.4 Major Features
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 * Support for defining your own frame buffers and shaders for doing more
   advanced OpenGL programming.
+* Support to render to frame buffer, then re-render. Example mini-maps:
+  `mini_map_defender.py <examples/mini_map_defender.html>`_
+  (Add wrap-around example.)
+* Use frame buffers to create a 'glow' or 'bloom' effect:
+  `bloom_defender.py <examples/bloom_defender.html>`_
+* Use frame-buffers to support lights:
+  `light_demo.py <examples/light_demo.html>`_
+* Support for logging
+* New Camera
 
-  * Sample for using frame buffers to create mini-maps:
-    `mini_map_defender.py <examples/mini_map_defender.html>`_
-  * Sample for using frame buffers to create a 'glow' or 'bloom' effect:
-    `bloom_defender.py <examples/bloom_defender.html>`_
-  * Support for lights:
-    `light_demo.py <examples/light_demo.html>`_
 
-* Faster drawing of shape primitives (line, square, circle)
-* Physics engine is less likely to 'glitch' out
-* Antialiasing should now work on windows if ``antialiasing=True``
-  is passed in the window constructor.
+Version 2.4 Minor Features
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 * Added `arcade.get_display_size` to get resolution of the monitor
 * Added `Window.center_window()` to center the window on the monitor.
 * Add support for `has_line_of_sight()`
 * Updates to hit box calculation which in some cases were off-by-one
 * Add in font searching code if we can't find default font
-* Support getting tmx layer by path
 * Support volume and pan arguments in play_sound
+* Support getting tmx layer by path
+* Support left/right/rotated sprites in tmx maps
+
+Version 2.4 Under-the-hood improvements
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* Faster drawing of shape primitives (line, square, circle)
+* Physics engine is less likely to 'glitch' out
+* Anti-aliasing should now work on windows if ``antialiasing=True``
+  is passed in the window constructor.
+* OpenGL querying
+* OpenGL culling
+
+Version 2.4 'Experimental'
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+There is now an ``arcade.experimental`` module that holds code still under
+development. Any code in this module might still have API changes.
+
+* PyMunk engine
+* New GUI code
 
 Version 2.3.15
 --------------
