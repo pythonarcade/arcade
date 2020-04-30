@@ -6,16 +6,11 @@ Platformer Tutorial
 .. image:: intro_screen.png
     :width: 70%
 
-(Originally presented at the 2019 PyCon in Cleveland, Ohio,
-this tutorial is updated with new code.)
-
-In this tutorial, use Python 3.6+ and the Arcade_ library to create your own 2D platformer.
+Use Python and the Arcade_ library to create a 2D platformer game.
 Learn to work with Sprites and the `Tiled Map Editor`_ to create your own games.
 Add coins, ramps, moving platforms, enemies, and more.
 
 .. _Tiled Map Editor: https://www.mapeditor.org/
-.. _2019 PyCon: https://us.pycon.org/2019/about/
-.. _video of the tutorial: https://youtu.be/Djtm1DzWSvo
 .. _Arcade: http://arcade.academy
 
 The tutorial is divided into these parts:
@@ -32,14 +27,14 @@ The tutorial is divided into these parts:
 * :ref:`platformer_part_ten`
 * :ref:`platformer_part_eleven`
 
-At the end of each step, if you have time explore the items listed in the "Note".
-
 
 .. _platformer_part_one:
 
 Step 1 - Install and Open a Window
 ----------------------------------
 
+Our first step is to make sure everything is installed, and that we can at least
+get a window open.
 
 Installation
 ~~~~~~~~~~~~
@@ -58,6 +53,9 @@ Installation
     or ``pip3 install arcade`` on Mac/Linux. Or install by using a venv.
   * Here are the longer, official :ref:`installation-instructions`.
 
+I highly recommend using the free community edition of PyCharm as an editor.
+If you do, see :ref:`install-pycharm`.
+
 .. _kenney.nl: https://kenney.nl/
 
 
@@ -68,26 +66,29 @@ The example below opens up a blank window. Set up a project and get the code
 below working. (It is also in the zip file as
 ``01_open_window.py``.)
 
-(It is possible to have a :ref:`resizable_window`, but there are more interesting
-things we can do first. Therefore we'll stick with a set-size window for this
-tutorial.)
+.. note::
+
+  This is a fixed-size window. It is possible to have  a
+  :ref:`resizable_window` or a :ref:`full_screen_example`, but there are more
+  interesting things we can do first. Therefore we'll stick with a fixed-size
+  window for this tutorial.
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/01_open_window.py
     :caption: 01_open_window.py - Open a Window
     :linenos:
 
-.. note::
+Once you get the code working, figure out how to:
 
-    Once you get the code working, figure out how to:
+* Change the screen size
+* Change the title
+* Change the background color
 
-    * Change the screen size
-    * Change the title
-    * Change the background color
+  * See the documentation for :ref:`color`
+  * See the documentation for :ref:`csscolor`
 
-      * Documentation for :ref:`color`
-      * Documentation for :ref:`csscolor`
-
-    * Read the documentation for the `Window <../../arcade.html#arcade.Window>`_ class.
+* Look through the documentation for the
+  `Window <../../arcade.html#arcade.Window>`_ class to get an idea of everything
+  it can do.
 
 .. _platformer_part_two:
 
@@ -107,9 +108,12 @@ The ``__init__`` only sets up the variables, but doesn't create any class
 instances. They just default to 0 or ``None``. The ``setup`` actually creates
 the object instances, such as graphical sprites.
 
-There's a reason they are split into two.
-With a ``setup`` method split out, later
-on we can easily add "restart/play again" functionality to the game.
+I often get the
+very reasonable question, "Why have two methods? Why not just put everything
+into ``__init__``? Seems like we are doing twice the work."
+Here's why.
+With a ``setup`` method split out, later on we can easily add
+"restart/play again" functionality to the game.
 A simple call to ``setup`` will reset everything.
 We can also add additional levels and have ``setup_level_1`` and ``setup_level_2``.
 

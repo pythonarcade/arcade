@@ -33,9 +33,9 @@ Version 2.4 Major Features
 Version 2.4 Minor Features
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-* Added `arcade.get_display_size` to get resolution of the monitor
-* Added `Window.center_window()` to center the window on the monitor.
-* Add support for `has_line_of_sight()`
+* Added ``arcade.get_display_size`` to get resolution of the monitor
+* Added ``Window.center_window()`` to center the window on the monitor.
+* Add support for ``has_line_of_sight()``
 * Updates to hit box calculation which in some cases were off-by-one
 * Add in font searching code if we can't find default font
 * Support volume and pan arguments in play_sound
@@ -60,6 +60,50 @@ development. Any code in this module might still have API changes.
 
 * PyMunk engine
 * New GUI code
+
+Version 2.4 To-Do List
+~~~~~~~~~~~~~~~~~~~~~~
+
+* Frame buffers
+
+  * Lockdown fram buffer API
+  * Move frame buffers out of experimental
+  * Document frame buffer support
+  * Create example for making your own frame buffer
+  * Create wrap-around example for frame buffer
+
+* Bloom
+
+  * Lockdown bloom API
+  * Will bloom support multiple layers? If so add it.
+  * Move bloom out of experimental
+  * Update bloom example
+  * Create bloom documentation
+
+* Lights
+
+  * Lockdown light API
+  * Move lights out of experimental
+  * Create light example
+  * Create light documentation
+
+* Camera
+
+  * Finish camera code
+  * Document camera API
+  * Create camera examples
+  * Verify/create camera unit tests
+
+* Logging
+
+  * Create page documenting logging
+  * Add in OpenGL querying?
+
+* Pytiled
+
+  * Figure out how to include new pytiled library without breaking everything
+  * Merge in pytiled updates
+
 
 Version 2.3.15
 --------------

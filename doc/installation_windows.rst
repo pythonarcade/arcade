@@ -52,6 +52,8 @@ You don't have to worry about libraries for other projects conflicting
 with your project. You also don't need "administrator" level privileges to
 install libraries.
 
+.. _install-pycharm:
+
 Install Arcade with PyCharm and a Virtual Environment
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -94,7 +96,7 @@ if you have a file called `requirements.txt` that lists the required libraries.
 Install Arcade using the command line interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-If you prefer to use the command line interface (CLI), 
+If you prefer to use the command line interface (CLI),
 then you can install arcade directly using pip:
 
 ``pip3 install arcade``
