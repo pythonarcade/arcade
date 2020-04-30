@@ -120,3 +120,8 @@ class Camera2D:
 
         self.update_zoom()
         self.set_viewport()
+        
+    def mouse_to_world_coordinates(self, x, y):
+        """ Returns the position of the mouse in world space. """
+        return (x / self.width * (self.right - self.left) + self.left,
+            y / self.height * (self.top - self.bottom) + self.bottom)
