@@ -308,6 +308,8 @@ def resources():
 
     out = open("resources.rst", "w")
 
+    out.write(".. _resources:\n")
+    out.write("\n")
     out.write("Resources\n")
     out.write("=========\n")
     out.write("\n")

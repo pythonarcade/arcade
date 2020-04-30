@@ -95,47 +95,78 @@ Once you get the code working, figure out how to:
 Step 2 - Add Sprites
 --------------------
 
+Our next step is to add some sprites_, which are graphics we can see and interact
+with on the screen.
+
+.. _sprites: https://en.wikipedia.org/wiki/Sprite_(computer_graphics)
+
 .. image:: listing_02.png
     :width: 70%
 
 Setup vs. Init
 ~~~~~~~~~~~~~~
 
-In the next code example, we have both an ``__init__`` method and a
-``setup`` method that we will use for setting up our game.
+In the next code example, ``02_draw_sprites``,
+we'll have both an ``__init__`` method and a
+``setup``.
 
-The ``__init__`` only sets up the variables, but doesn't create any class
-instances. They just default to 0 or ``None``. The ``setup`` actually creates
-the object instances, such as graphical sprites.
+The ``__init__`` creates the variables. The variables are set to values such as
+0 or ``None``. The ``setup`` actually creates the object instances, such as
+graphical sprites.
 
-I often get the
-very reasonable question, "Why have two methods? Why not just put everything
-into ``__init__``? Seems like we are doing twice the work."
+I often get the very reasonable question, "Why have two methods? Why not just
+put everything into ``__init__``? Seems like we are doing twice the work."
 Here's why.
 With a ``setup`` method split out, later on we can easily add
 "restart/play again" functionality to the game.
 A simple call to ``setup`` will reset everything.
-We can also add additional levels and have ``setup_level_1`` and ``setup_level_2``.
+Later, we can expand our game with different levels, and have functions such as
+``setup_level_1`` and ``setup_level_2``.
+
+Sprite Lists
+~~~~~~~~~~~~
+
+Sprites are managed in lists. The ``SpriteList`` class optimizes drawing, movement,
+and collision detection.
+
+We are using three logical groups in our game. A ``player_list`` for the player.
+A ``wall_list`` for walls we can't move through. And finally a
+``coin_list`` for coins we can pick up.
+
+.. code-block::
+
+    self.player_list = arcade.SpriteList()
+    self.wall_list = arcade.SpriteList(use_spatial_hash=True)
+    self.coin_list = arcade.SpriteList(use_spatial_hash=True)
+
+Sprite lists have an option to use something called "spatial hashing." Spatial
+hashing speeds the time it takes to find collisions, but increases the time it
+takes to move a sprite. Since I don't expect most of my walls or coins to move,
+I'll turn on spatial hashing for these lists. My player moves around a lot,
+so I'll leave it off for her.
 
 
-Add Sprites To Game
-~~~~~~~~~~~~~~~~~~~
+Add Sprites to the Game
+~~~~~~~~~~~~~~~~~~~~~~~
 
-Once we have the window up and working, the next step is to put in some
-graphics.
-"Sprites" are the graphical items that you can interact with, such as player characters,
-coins, and walls. To work with sprites we'll use the ``Sprite`` class.
-
-We create a sprite by creating an instance of the ``Sprite`` class:
+To create sprites we'll use the ``arcade.Sprite`` class.
+We can create an instance of the sprite class with code like this:
 
 .. code-block::
 
     self.player_sprite = arcade.Sprite("images/player_1/player_stand.png", CHARACTER_SCALING)
 
-Give the Sprite class reference to the image you want it to use, and (optionally)
-you can scale it up or down. If the second parameter is 0.5, and the the sprite
-is 128x128, then both width and height will be scaled down 50% for a 64x64
-sprite.
+The first parameter is a string or path to the image you want it to load.
+An optional second parameter will scale the sprite up or down.
+If the second parameter (in this case a constant ``CHARACTER_SCALING``) is set to
+0.5, and the the sprite is 128x128, then both width and height will be scaled
+down 50% for a 64x64 sprite.
+
+.. sidebar:: Built-in Resources
+
+    The arcade library has a few built-in :ref:`resources` so we can run
+    examples without downloading images. If you see code samples where sprites
+    are loaded beginning with "resources", that's what's being referenced.
 
 Next, we need to tell *where* the sprite goes. You can use the attributes
 ``center_x`` and ``center_y`` to position the sprite. You can also use ``top``,
@@ -173,7 +204,7 @@ Notice that the code creates ``Sprites`` three ways:
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/02_draw_sprites.py
     :caption: 02_draw_sprites - Draw and Position Sprites
     :linenos:
-    :emphasize-lines: 11-14, 27-34, 40-70, 78-81
+    :emphasize-lines: 11-14, 27-34, 38-70, 78-81
 
 .. note::
 
