@@ -2,13 +2,11 @@ The Python Arcade Library
 =========================
 
 .. |Go| image:: images/go.svg
-  :width: 40
-  :alt: Alternative text
-  :target: get_started.html
+   :width: 40
+   :alt: Alternative text
+   :target: get_started.html
 
 :ref:`get-started-here` |Go|
-
-.. image::
 
 .. raw:: html
 
@@ -168,7 +166,8 @@ game without learning a complex framework.
    resources
    enhancement_list
    tutorials/edge_artifacts/index
-   get_started.rst
+   get_started
+   logging
 
 Learn about it:
 ^^^^^^^^^^^^^^^

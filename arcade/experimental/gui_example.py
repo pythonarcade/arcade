@@ -15,6 +15,12 @@ SCREEN_TITLE = "GUI Example"
 
 import logging
 
+# logging.basicConfig(level=logging.DEBUG)
+format = '%(asctime)s,%(msecs)03d %(levelname)-8s [%(filename)s:%(lineno)d %(funcName)s()] %(message)s'
+logging.basicConfig(format=format,
+                    datefmt='%H:%M:%S',
+                    level=logging.DEBUG)
+
 class MyGame(arcade.Window):
     """ Main application class. """
 
@@ -22,8 +28,6 @@ class MyGame(arcade.Window):
         super().__init__(width, height, title)
 
         arcade.set_background_color(arcade.color.BLACK)
-
-        logging.basicConfig(level=logging.DEBUG)
 
     def setup(self):
         """ Set up the game here. Call this function to restart the game. """
