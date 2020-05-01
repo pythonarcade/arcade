@@ -15,11 +15,7 @@ SCREEN_TITLE = "GUI Example"
 
 import logging
 
-# logging.basicConfig(level=logging.DEBUG)
-format = '%(asctime)s,%(msecs)03d %(levelname)-8s [%(filename)s:%(lineno)d %(funcName)s()] %(message)s'
-logging.basicConfig(format=format,
-                    datefmt='%H:%M:%S',
-                    level=logging.DEBUG)
+arcade.configure_logging()
 
 class MyGame(arcade.Window):
     """ Main application class. """
@@ -67,7 +63,16 @@ class MyGame(arcade.Window):
 
         arcade.start_render()
 
-        self.ui_manager.draw()
+
+        query = self.ctx.query()
+        with query:
+            # Put the drawing commands you want to get info on here:
+            self.ui_manager.draw()
+
+        print()
+        print(f"Time elapsed       : {query.time_elapsed:,} ns")
+        print(f"Samples passed     : {query.samples_passed:,}")
+        print(f"Primitives created : {query.primitives_generated:,}")
 
     def on_mouse_press(self, x, y, button, key_modifiers):
         """ Called when the user presses a mouse button. """

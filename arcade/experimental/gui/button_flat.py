@@ -1,9 +1,9 @@
 import PIL.Image
 
 import arcade
-from arcade.experimental.gui.ui_element import UIElement
+from .button_abstract import ButtonAbstract
 
-class FlatButton(UIElement):
+class FlatButton(ButtonAbstract):
     def __init__(self, center_x, center_y, width, height):
         super().__init__(center_x, center_y, width, height, )
 

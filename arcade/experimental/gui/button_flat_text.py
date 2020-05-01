@@ -7,9 +7,9 @@ from typing import Union, Tuple
 
 import arcade
 from arcade import Color
-from arcade.experimental.gui.ui_element import UIElement
+from .button_abstract import ButtonAbstract
 
-class FlatTextButton(UIElement):
+class FlatTextButton(ButtonAbstract):
     def __init__(self,
                  text,
                  center_x,

@@ -166,3 +166,5 @@ Arcade Skill Tree
   * Mini-map - :ref:`mini_map_defender`
   * Bloom/glow effect - :ref:`bloom_defender`
   * Writing your own shader - *Supported, but documentation needed.*
+
+* :ref:`Logging`
