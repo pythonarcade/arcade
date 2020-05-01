@@ -6,9 +6,9 @@ from typing import Union, Tuple
 
 import arcade
 from arcade.arcade_types import Color
-from arcade.experimental.gui.ui_element import UIElement
+from .button_abstract import ButtonAbstract
 
-class ClickableText(UIElement):
+class ClickableText(ButtonAbstract):
     def __init__(self, text, center_x, center_y,
                  text_color: Color,
                  text_color_mouse_over: Color = None,

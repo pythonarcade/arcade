@@ -13,8 +13,6 @@ SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 SCREEN_TITLE = "GUI Example"
 
-import logging
-
 arcade.configure_logging()
 
 class MyGame(arcade.Window):
@@ -63,16 +61,7 @@ class MyGame(arcade.Window):
 
         arcade.start_render()
 
-
-        query = self.ctx.query()
-        with query:
-            # Put the drawing commands you want to get info on here:
-            self.ui_manager.draw()
-
-        print()
-        print(f"Time elapsed       : {query.time_elapsed:,} ns")
-        print(f"Samples passed     : {query.samples_passed:,}")
-        print(f"Primitives created : {query.primitives_generated:,}")
+        self.ui_manager.draw()
 
     def on_mouse_press(self, x, y, button, key_modifiers):
         """ Called when the user presses a mouse button. """

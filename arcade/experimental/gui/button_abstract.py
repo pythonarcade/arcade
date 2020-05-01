@@ -1,12 +1,15 @@
 from .ui_element import UIElement
 
+import logging
+LOG = logging.getLogger(__name__)
+
 class ButtonAbstract(UIElement):
     def __init__(self,
                  center_x=0,
                  center_y=0,
                  width=60,
                  height=40):
-        super().__init__()
+        super().__init__(center_x=center_x, center_y=center_y, width=width, height=height)
 
         self.normal_texture = None
         self.mouse_over_texture = None
