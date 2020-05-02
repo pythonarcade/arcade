@@ -22,6 +22,7 @@ Drawing
   rather than the Pillow text drawing.
 * Explore using frame buffers to overlay non-moving text and icons on a scrolling
   screen.
+* Add support for Pyglets ImageMouseCursors
 
 GUI
 ---
