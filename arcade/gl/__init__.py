@@ -3,7 +3,7 @@
 # https://bitbucket.org/HigashiNoKaze/pyglet/src/shaders/pyglet/graphics/shader.py
 
 
-from .context import Context
+from .context import Context, ArcadeContext
 from .types import BufferDescription
 from .exceptions import ShaderException
 from .enums import *

@@ -3,7 +3,7 @@ Post-processing shaders.
 """
 from pathlib import Path
 from typing import Tuple
-from arcade.gl import Context
+from arcade.gl import ArcadeContext
 from arcade.gl.texture import Texture
 from arcade import get_window
 from arcade.experimental import geometry
@@ -37,7 +37,7 @@ class PostProcessing:
         self._ctx = window.ctx
 
     @property
-    def ctx(self) -> Context:
+    def ctx(self) -> ArcadeContext:
         """ Get the shader context. """
         return self._ctx
 
