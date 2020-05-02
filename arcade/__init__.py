@@ -49,7 +49,7 @@ from arcade import key
 # noinspection PyPep8
 from arcade import resources
 # noinspection PyPep8
-from arcade import experimental
+
 from .window_commands import close_window
 from .window_commands import create_orthogonal_projection
 from .window_commands import finish_render
@@ -259,7 +259,7 @@ from .paths import AStarBarrierList
 from .paths import astar_calculate_path
 from .paths import has_line_of_sight
 
-import arcade.experimental.gui
+from arcade import experimental
 
 __all__ = ['AStarBarrierList',
            'AnimatedTimeBasedSprite',

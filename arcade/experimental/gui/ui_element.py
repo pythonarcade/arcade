@@ -8,9 +8,7 @@ LOG = logging.getLogger(__name__)
 class UIElement(arcade.Sprite):
     def __init__(self,
                  center_x = 0,
-                 center_y = 0,
-                 width = None,
-                 height = None):
+                 center_y = 0):
         super().__init__()
         self.center_x = center_x
         self.center_y = center_y
