@@ -60,24 +60,11 @@ class Camera2D:
         diff_x = self.x - x
         diff_y = self.y - y
 
-        # 
-        # if diff_x > self.camera_lag \
-        #     or diff_y > self.camera_lag \
-        #     or (x == self.old_x and y == self.old_y and self.scroll_curr_step < 1
-        # ):
-        #     self.scroll_curr_step += self.scroll_step
-        # else:
-        #     self.scroll_curr_step = self.scroll_min_step
-
         # Simple smooth scrolling
         if abs(diff_x) > self.camera_lag:
             self.x = self.x - self.scroll_curr_step * diff_x
-            # self.x = Maths.lerp(self.x, x, 0.95)
-            # self.x = self.x - Maths.smoothstep(0, 1, self.scroll_curr_step) * diff_x
         if abs(diff_y) > self.camera_lag:
             self.y = self.y - self.scroll_curr_step * diff_y
-            # self.y = Maths.lerp(self.y, y, 0.95)
-            # self.y = self.y - Maths.smoothstep(0, 1, self.scroll_curr_step) * diff_y
 
         self.old_x = x
         self.old_y = y
