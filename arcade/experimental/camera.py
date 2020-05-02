@@ -31,10 +31,12 @@ class Camera2D:
         self.zoom_bottom = 0
         self.zoom_top = height
 
-        self.camera_lag = 2
+        # Margin
+        self.margin_left = 0
+        self.margin_right = 0
+        self.margin_bottom = 0
+        self.margin_top = 0
 
-        self.scroll_step = 0.005
-        self.scroll_min_step = 0.1
         self.scroll_curr_step = 0.2
 
         self.old_x = 0
@@ -56,31 +58,30 @@ class Camera2D:
         arcade.set_viewport(self.left, self.right, self.bottom, self.top)
 
     def scroll_to(self, x, y):
+        """ Scrolls the camera to position """
+        
+        diff_x = x - self.x
+        diff_y = y - self.y
 
-        diff_x = self.x - x
-        diff_y = self.y - y
-
-        # 
-        # if diff_x > self.camera_lag \
-        #     or diff_y > self.camera_lag \
-        #     or (x == self.old_x and y == self.old_y and self.scroll_curr_step < 1
-        # ):
-        #     self.scroll_curr_step += self.scroll_step
-        # else:
-        #     self.scroll_curr_step = self.scroll_min_step
-
-        # Simple smooth scrolling
-        if abs(diff_x) > self.camera_lag:
-            self.x = self.x - self.scroll_curr_step * diff_x
-            # self.x = Maths.lerp(self.x, x, 0.95)
-            # self.x = self.x - Maths.smoothstep(0, 1, self.scroll_curr_step) * diff_x
-        if abs(diff_y) > self.camera_lag:
-            self.y = self.y - self.scroll_curr_step * diff_y
-            # self.y = Maths.lerp(self.y, y, 0.95)
-            # self.y = self.y - Maths.smoothstep(0, 1, self.scroll_curr_step) * diff_y
+        # Simple smooth scrolling with margin
+        if diff_x < self.margin_left:
+            self.x += (diff_x - self.margin_left) * self.scroll_curr_step
+        elif diff_x > self.margin_right:
+            self.x += (diff_x - self.margin_right) * self.scroll_curr_step
+        if diff_y < self.margin_bottom:
+            self.y += (diff_y - self.margin_bottom) * self.scroll_curr_step
+        elif diff_y > self.margin_top:
+            self.y += (diff_y - self.margin_top) * self.scroll_curr_step
 
         self.old_x = x
         self.old_y = y
+
+    def set_margin(self, left, right, top, bottom):
+        """ Sets the margin """
+        self.margin_left = -left
+        self.margin_right = right
+        self.margin_bottom = -bottom
+        self.margin_top = top
 
     def zoom(self, amount: float):
         """ Zooms in/out by a multiple """
