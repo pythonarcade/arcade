@@ -6,25 +6,8 @@ from typing import Tuple
 from arcade.context import ArcadeContext
 from arcade.gl.texture import Texture
 from arcade import get_window
-from arcade.experimental import geometry
+from arcade.gl import geometry
 from arcade.experimental.gaussian_kernel import gaussian_kernel
-
-TEXTURE_VAO = None
-
-
-def render_texture(texture):
-    """Render a texture"""
-    global TEXTURE_VAO
-    if TEXTURE_VAO is None:
-        ctx = get_window().ctx
-        texture_prog = ctx.load_program(
-            vertex_shader_filename=':resources:shaders/texture_ndc_vs.glsl',
-            fragment_shader_filename=':resources:shaders/texture_fs.glsl',
-        )
-        TEXTURE_VAO = geometry.quad_fs(texture_prog, size=(2.0, 2.0))
-
-    texture.use(0)
-    TEXTURE_VAO.render()
 
 
 class PostProcessing:
@@ -108,7 +91,7 @@ class GaussianBlurHorizontal(GaussianBlurPass):
             vertex_shader=':resources:shaders/texture_default_projection_vs.glsl',
             fragment_shader=':resources:shaders/postprocessing/gaussian_blur_x_fs.glsl',
         )
-        self._quad_fs = geometry.quad_fs(size=(2.0, 2.0))
+        self._quad_fs = geometry.quad_2d_fs()
 
     def render(self, source: Texture) -> Texture:
         """ Render """
@@ -134,7 +117,7 @@ class GaussianBlurVertical(GaussianBlurPass):
             vertex_shader=':resources:shaders/texture_default_projection_vs.glsl',
             fragment_shader=':resources:shaders/postprocessing/gaussian_blur_y_fs.glsl',
         )
-        self._quad_fs = geometry.quad_fs(size=(2.0, 2.0))
+        self._quad_fs = geometry.quad_2d_fs()
 
     def render(self, source: Texture) -> Texture:
         """ Render """
@@ -191,7 +174,7 @@ class BloomEffect(PostProcessing):
             vertex_shader=':resources:shaders/texture_default_projection_vs.glsl',
             fragment_shader=':resources:shaders/postprocessing/gaussian_combine_fs.glsl'
         )
-        self._quad_fs = geometry.quad_fs(size=(2.0, 2.0))
+        self._quad_fs = geometry.quad_2d_fs()
 
     def render(self, source, target):
         """ Render """

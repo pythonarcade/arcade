@@ -3,7 +3,7 @@ from typing import Iterable, Tuple, Sequence, List, Optional
 
 from arcade import Color, get_window, get_projection, get_scaling_factor, set_viewport
 from arcade import gl
-from arcade.experimental import geometry
+from arcade.gl import geometry
 
 
 class Light:
@@ -95,7 +95,7 @@ class LightLayer:
             vertex_shader=":resources:shaders/lights/combine_vs.glsl",
             fragment_shader=":resources:shaders/lights/combine_fs.glsl",
         )
-        self._quad_fs = geometry.quad_fs(size=(2.0, 2.0))
+        self._quad_fs = geometry.quad_2d_fs()
         self.resize(width, height)
 
     def resize(self, width, height):
