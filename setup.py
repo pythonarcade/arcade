@@ -27,7 +27,7 @@ if __name__ == "__main__":
         'pyglet',
         'pillow',
         'numpy',
-        'pytiled-parser==0.9.3'
+        'pytiled-parser==0.9.4a1'
     ]
     if sys.version_info[0] == 3 and sys.version_info[1] == 6:
         install_requires.append('dataclasses')
