@@ -15,7 +15,7 @@ from arcade import set_viewport
 from arcade import set_window
 from arcade import get_display_size
 
-from arcade.gl import ArcadeContext
+from arcade.context import ArcadeContext
 
 import arcade
 

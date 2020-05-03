@@ -3,7 +3,7 @@ Post-processing shaders.
 """
 from pathlib import Path
 from typing import Tuple
-from arcade.gl import ArcadeContext
+from arcade.context import ArcadeContext
 from arcade.gl.texture import Texture
 from arcade import get_window
 from arcade.experimental import geometry
