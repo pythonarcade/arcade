@@ -28,7 +28,6 @@ _scaling = None
 _window = None
 
 _projection = None
-_opengl_context = None
 
 
 def get_display_size():

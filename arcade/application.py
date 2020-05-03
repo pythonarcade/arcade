@@ -15,7 +15,7 @@ from arcade import set_viewport
 from arcade import set_window
 from arcade import get_display_size
 
-from arcade.gl import Context
+from arcade.context import ArcadeContext
 
 import arcade
 
@@ -113,7 +113,7 @@ class Window(pyglet.window.Window):
         self.ui_manager = arcade.experimental.gui.UIManager(self)
 
         # Representation of the OpenGL context for this window
-        self.ctx = Context(self)
+        self.ctx = ArcadeContext(self)
 
         # Required for transparency
         self.ctx.enable(self.ctx.BLEND)
