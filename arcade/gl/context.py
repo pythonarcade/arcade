@@ -219,8 +219,9 @@ class Context:
     #     """
     #     return VertexArray(self, prog, content, index_buffer)
 
-    def geometry(self, content: Sequence[BufferDescription], index_buffer: Buffer = None):
-        return Geometry(self, content, index_buffer=index_buffer)
+    def geometry(self, content: Sequence[BufferDescription],
+                 index_buffer: Buffer = None, mode: int = None):
+        return Geometry(self, content, index_buffer=index_buffer, mode=mode)
 
     def program(
             self,
