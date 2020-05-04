@@ -114,17 +114,17 @@ class ArcadeContext(Context):
         :param Union[str, Path] geometry_shader: path to geometry shader
         :param dict defines: Substitute #defines values in the source
         """
-        from arcade import resources
+        from arcade.resources import resolve_resource_path
 
-        vertex_shader_src = resources.resolve_resource_path(vertex_shader).read_text()
+        vertex_shader_src = resolve_resource_path(vertex_shader).read_text()
         fragment_shader_src = None
         geometry_shader_src = None
 
         if fragment_shader:
-            fragment_shader_src = resources.resolve_resource_path(fragment_shader).read_text()
+            fragment_shader_src = resolve_resource_path(fragment_shader).read_text()
 
         if geometry_shader:
-            geometry_shader_src = resources.resolve_resource_path(geometry_shader).read_text()
+            geometry_shader_src = resolve_resource_path(geometry_shader).read_text()
 
         return self.program(
             vertex_shader=vertex_shader_src,
