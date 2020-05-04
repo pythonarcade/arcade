@@ -24,20 +24,20 @@ SCREEN_HEIGHT = SPRITE_SIZE * 15
 GRAVITY = 1500
 
 # Force applied while on the ground
-PLAYER_MOVE_FORCE_ON_GROUND = 5000
+PLAYER_MOVE_FORCE_ON_GROUND = 8000
 
 # Force applied when moving left/right in the air
-PLAYER_MOVE_FORCE_IN_AIR = 400
+PLAYER_MOVE_FORCE_IN_AIR = 900
 
 # Strength of a jump
-PLAYER_JUMP_IMPULSE = 1000
+PLAYER_JUMP_IMPULSE = 1800
 
 # Keep player from going too fast
 PLAYER_MAX_HORIZONTAL_SPEED = 450
 PLAYER_MAX_VERTICAL_SPEED = 1600
 
 # How much force to put on the bullet
-BULLET_MOVE_FORCE = 4500
+BULLET_MOVE_FORCE = 5500
 
 class MyWindow(arcade.Window):
     """ Main Window """
@@ -81,8 +81,9 @@ class MyWindow(arcade.Window):
         my_map = arcade.tilemap.read_tmx(map_name)
         self.end_of_map = my_map.map_size.width * my_map.tile_size[0]
 
-        # --- Platforms ---
+        # --- Read in layers ---
         self.wall_list = arcade.tilemap.process_layer(my_map, 'Platforms', SPRITE_SCALING_TILES)
+        self.item_list = arcade.tilemap.process_layer(my_map, 'Dynamic Items', SPRITE_SCALING_TILES)
 
         # --- Pymunk Physics Engine Setup ---
 
@@ -122,6 +123,7 @@ class MyWindow(arcade.Window):
         self.physics_engine.add_sprite(self.player_sprite,
                                        friction=1.0,
                                        damping=0.4,
+                                       mass=2,
                                        moment=PymunkPhysicsEngine.MOMENT_INF,
                                        collision_type="player",
                                        max_horizontal_velocity=PLAYER_MAX_HORIZONTAL_SPEED,
@@ -139,11 +141,16 @@ class MyWindow(arcade.Window):
                                             collision_type="wall",
                                             body_type=PymunkPhysicsEngine.STATIC)
 
+        # Create the items
+        self.physics_engine.add_sprite_list(self.item_list,
+                                            friction=0.7,
+                                            collision_type="item")
+
 
     def on_mouse_press(self, x, y, button, modifiers):
         """ Called whenever the mouse button is clicked. """
 
-        bullet = arcade.SpriteSolidColor(5, 5, arcade.color.RED)
+        bullet = arcade.SpriteSolidColor(7, 7, arcade.color.RED)
         self.bullet_list.append(bullet)
 
         # Position the bullet at the player's current location
