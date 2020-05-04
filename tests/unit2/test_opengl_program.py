@@ -40,6 +40,81 @@ def test_shader_source(ctx):
     assert '#define TEST2 2' in source
 
 
+def test_shader_source_empty(ctx):
+    with pytest.raises(ValueError):
+        ShaderSource("", gl.GL_VERTEX_SHADER)
+
+
+def test_shader_source_missing_version(ctx):
+    """ShaderException: Cannot find #version in shader source"""
+    with pytest.raises(ShaderException):
+        ShaderSource(
+            (
+                "in vec3 in_vert\n"
+                "void main() {\n"
+                "   gl_Position = vec3(in_vert, 1.0);\n"
+                "}\n"
+            ),
+            gl.GL_VERTEX_SHADER,
+        )
+
+
+def test_shader_source_malformed(ctx):
+    """Malformed glsl source"""
+    with pytest.raises(ShaderException):
+        ShaderSource(
+            (
+                "in in_vert\n"
+                "void main() \n"
+                "   gl_Position = vec3(in_vert, 1.0)\n"
+                "}\n"
+            ),
+            gl.GL_VERTEX_SHADER,
+        )
+    with pytest.raises(ShaderException):
+        ShaderSource(
+            (
+                "#version\n"
+                "in in_vert\n"
+                "void main() \n"
+                "   gl_Position = vec3(in_vert, 1.0)\n"
+                "}\n"
+            ),
+            gl.GL_VERTEX_SHADER,
+        )
+    wrapper = ShaderSource(
+        (
+            "#version 330\n"
+            "\n"
+            "in in_vert\n"
+            "#define\n"
+            "#define TEST2 0\n"
+            "#define TEST 0\n"
+            "void main() \n"
+            "   gl_Position = vec3(in_vert, 1.0)\n"
+            "}\n"
+        ),
+        gl.GL_VERTEX_SHADER,
+    )
+    source = wrapper.get_source(defines={'TEST': 1})
+    assert 'TEST 1' in source
+
+
+def test_shader_program_broken_out(ctx):
+    wrapper = ShaderSource(
+        (
+            "#version 330\n"
+            "in vec3 in_vert;\n"
+            "out out_vert;\n"
+            "void main() \n"
+            "   out_vert = in_vert;\n"
+            "}\n"
+        ),
+        gl.GL_VERTEX_SHADER,
+    )
+    wrapper.out_attributes == ['out_vert']
+
+
 def test_program_basic(ctx):
     """Test program"""
     program = ctx.program(
