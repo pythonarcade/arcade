@@ -32,7 +32,7 @@ class Query:
         weakref.finalize(self, Query.release, self.ctx, glos)
 
     @property
-    def samples_passed(self):
+    def samples_passed(self) -> int:
         """How many samples was written. These are per component (RGBA)"""
         value = gl.GLint()
         gl.glGetQueryObjectiv(self._glo_samples_passed, gl.GL_QUERY_RESULT, value)
@@ -46,7 +46,7 @@ class Query:
         return value.value
 
     @property
-    def primitives_generated(self):
+    def primitives_generated(self) -> int:
         """How many primitives a vertex shader or geometry shader generated"""
         value = gl.GLint()
         gl.glGetQueryObjectiv(self._glo_primitives_generated, gl.GL_QUERY_RESULT, value)
@@ -63,7 +63,7 @@ class Query:
         gl.glEndQuery(gl.GL_PRIMITIVES_GENERATED)
 
     @staticmethod
-    def release(ctx, glos):
+    def release(ctx, glos) -> None:
         # If we have no context, then we are shutting down, so skip this
         if gl.current_context is None:
             return

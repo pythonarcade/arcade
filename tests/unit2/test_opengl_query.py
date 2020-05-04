@@ -34,6 +34,8 @@ def test_create(ctx):
     query = ctx.query()
     with query:
         quad.render(program)
+
     assert query.time_elapsed > 0
     assert query.samples_passed >= SCREEN_WIDTH * SCREEN_HEIGHT
     assert query.primitives_generated == 2
+    query = None
