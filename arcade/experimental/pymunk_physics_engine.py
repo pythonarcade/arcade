@@ -47,6 +47,8 @@ class PymunkPhysicsEngine:
                    damping=None,
                    gravity=None,
                    max_velocity=None,
+                   max_horizontal_velocity=None,
+                   max_vertical_velocity=None,
                    radius: float = 0,
                    collision_type: str = "default",
                    ):
@@ -79,11 +81,22 @@ class PymunkPhysicsEngine:
             pymunk.Body.update_velocity(my_body, my_gravity, my_damping, dt)
 
             if max_velocity:
-
                 velocity = my_body.velocity.length
                 if velocity > max_velocity:
                     scale = max_velocity / velocity
-                    body.velocity = body.velocity * scale
+                    my_body.velocity = my_body.velocity * scale
+
+            if max_horizontal_velocity:
+                velocity = my_body.velocity.x
+                if abs(velocity) > max_horizontal_velocity:
+                    velocity = max_horizontal_velocity * math.copysign(1, velocity)
+                    my_body.velocity = pymunk.Vec2d(velocity, my_body.velocity.y)
+
+            if max_vertical_velocity:
+                velocity = my_body.velocity[1]
+                if abs(velocity) > max_vertical_velocity:
+                    velocity = max_horizontal_velocity * math.copysign(1, velocity)
+                    my_body.velocity = pymunk.Vec2d(my_body.velocity.x, velocity)
 
         body.velocity_func = velocity_callback
 
@@ -190,6 +203,11 @@ class PymunkPhysicsEngine:
         cv = physics_object.body.velocity
         new_cv = (velocity, cv[1])
         physics_object.body.velocity = new_cv
+
+    def set_friction(self, sprite, friction):
+        """ Apply force to a Sprite. """
+        physics_object = self.sprites[sprite]
+        physics_object.shape.friction = friction
 
     def apply_opposite_running_force(self, sprite: Sprite):
         """

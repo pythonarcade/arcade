@@ -19,10 +19,13 @@ SCREEN_WIDTH = SPRITE_SIZE * 20
 SCREEN_HEIGHT = SPRITE_SIZE * 15
 
 # Physics force used to move the player. Higher number, faster accelerating.
-PLAYER_MOVE_FORCE = 4000
+PLAYER_MOVE_FORCE_ON_GROUND = 5000
+PLAYER_MOVE_FORCE_IN_AIR = 400
 BULLET_MOVE_FORCE = 2500
 PLAYER_JUMP_IMPULSE = 1000
 GRAVITY = 1500
+PLAYER_MAX_HORIZONTAL_SPEED = 450
+PLAYER_MAX_VERTICAL_SPEED = 1600
 
 class MyWindow(arcade.Window):
     """ Main Window """
@@ -116,7 +119,8 @@ class MyWindow(arcade.Window):
                                        damping=0.4,
                                        moment=PymunkPhysicsEngine.MOMENT_INF,
                                        collision_type="player",
-                                       max_velocity=800)
+                                       max_horizontal_velocity=PLAYER_MAX_HORIZONTAL_SPEED,
+                                       max_vertical_velocity=PLAYER_MAX_VERTICAL_SPEED)
 
         # Create the walls.
         # By setting the body type to PymunkPhysicsEngine.STATIC the walls can't
@@ -202,7 +206,7 @@ class MyWindow(arcade.Window):
             # find out if player is standing on ground
             grounding = self.physics_engine.check_grounding(self.player_sprite)
             physics_object = self.physics_engine.get_physics_object(self.player_sprite)
-            if grounding['body'] is not None and abs(grounding['normal'].x / grounding['normal'].y) < physics_object.shape.friction:
+            if grounding['body'] is not None:
                 # She is! Go ahead and jump
                 physics_object.body.apply_impulse_at_local_point((0, PLAYER_JUMP_IMPULSE))
 
@@ -221,20 +225,27 @@ class MyWindow(arcade.Window):
     def on_update(self, delta_time):
         """ Movement and game logic """
 
-        # Calculate speed based on the keys pressed
-        self.player_sprite.change_x = 0
-        self.player_sprite.change_y = 0
-
         if self.left_pressed and not self.right_pressed:
-            self.player_sprite.change_x = -MOVEMENT_SPEED
-            # force = (-PLAYER_MOVE_FORCE, 0)
-            # self.physics_engine.apply_force(self.player_sprite, force)
-            self.physics_engine.set_velocity(self.player_sprite, -400)
+            grounding = self.physics_engine.check_grounding(self.player_sprite)
+            if grounding['body'] is not None:
+                force = (-PLAYER_MOVE_FORCE_ON_GROUND, 0)
+            else:
+                force = (-PLAYER_MOVE_FORCE_IN_AIR, 0)
+
+            self.physics_engine.apply_force(self.player_sprite, force)
+            self.physics_engine.set_friction(self.player_sprite, 0)
 
         elif self.right_pressed and not self.left_pressed:
-            # force = (PLAYER_MOVE_FORCE, 0)
-            # self.physics_engine.apply_force(self.player_sprite, force)
-            self.physics_engine.set_velocity(self.player_sprite, 400)
+            grounding = self.physics_engine.check_grounding(self.player_sprite)
+            if grounding['body'] is not None:
+                force = (PLAYER_MOVE_FORCE_ON_GROUND, 0)
+            else:
+                force = (PLAYER_MOVE_FORCE_IN_AIR, 0)
+
+            self.physics_engine.apply_force(self.player_sprite, force)
+            self.physics_engine.set_friction(self.player_sprite, 0)
+        else:
+            self.physics_engine.set_friction(self.player_sprite, 1.0)
 
         # --- Move items in the physics engine
         self.physics_engine.step()
