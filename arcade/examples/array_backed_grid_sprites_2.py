@@ -4,10 +4,11 @@ Array Backed Grid Shown By Sprites
 Show how to use a two-dimensional list/array to back the display of a
 grid on-screen.
 
-This version syncs the grid to the sprite list in one go using resync_grid_with_sprites.
+This version requires updates to the grid to be mirrored with updates to the
+sprites.
 
 If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.array_backed_grid_sprites
+python -m arcade.examples.array_backed_grid_sprites_2
 """
 import arcade
 
@@ -26,7 +27,7 @@ MARGIN = 5
 # Do the math to figure out our screen dimensions
 SCREEN_WIDTH = (WIDTH + MARGIN) * COLUMN_COUNT + MARGIN
 SCREEN_HEIGHT = (HEIGHT + MARGIN) * ROW_COUNT + MARGIN
-SCREEN_TITLE = "Array Backed Grid Example"
+SCREEN_TITLE = "Array Backed Grid Buffered Example"
 
 
 class MyGame(arcade.Window):
@@ -52,10 +53,17 @@ class MyGame(arcade.Window):
 
         arcade.set_background_color(arcade.color.BLACK)
 
+        # One dimensional list of all sprites in the two-dimensional sprite list
         self.grid_sprite_list = arcade.SpriteList()
+
+        # This will be a two-dimensional grid of sprites to mirror the two
+        # dimensional grid of numbers. This points to the SAME sprites that are
+        # in grid_sprite_list, just in a 2d manner.
+        self.grid_sprites = []
 
         # Create a list of solid-color sprites to represent each grid location
         for row in range(COLUMN_COUNT):
+            self.grid_sprites.append([])
             for column in range(ROW_COUNT):
                 x = column * (WIDTH + MARGIN) + (WIDTH / 2 + MARGIN)
                 y = row * (HEIGHT + MARGIN) + (HEIGHT / 2 + MARGIN)
@@ -63,22 +71,7 @@ class MyGame(arcade.Window):
                 sprite.center_x = x
                 sprite.center_y = y
                 self.grid_sprite_list.append(sprite)
-
-    def resync_grid_with_sprites(self):
-        self.shape_list = arcade.ShapeElementList()
-        for row in range(ROW_COUNT):
-            for column in range(COLUMN_COUNT):
-                # We need to convert our two dimensional grid to our
-                # one-dimensional sprite list. For example a 10x10 grid might have
-                # row 2, column 8 mapped to location 28. (Zero-basing throws things
-                # off, but you get the idea.)
-                # ALTERNATIVELY you could set self.grid_sprite_list[pos].texture
-                # to different textures to change the image instead of the color.
-                pos = row * COLUMN_COUNT + column
-                if self.grid[row][column] == 0:
-                    self.grid_sprite_list[pos].color = arcade.color.WHITE
-                else:
-                    self.grid_sprite_list[pos].color = arcade.color.GREEN
+                self.grid_sprites[row].append(sprite)
 
     def on_draw(self):
         """
@@ -108,10 +101,10 @@ class MyGame(arcade.Window):
             # Flip the location between 1 and 0.
             if self.grid[row][column] == 0:
                 self.grid[row][column] = 1
+                self.grid_sprites[row][column].color = arcade.color.GREEN
             else:
                 self.grid[row][column] = 0
-
-        self.resync_grid_with_sprites()
+                self.grid_sprites[row][column].color = arcade.color.WHITE
 
 
 def main():

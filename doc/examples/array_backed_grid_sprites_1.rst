@@ -1,9 +1,9 @@
 :orphan:
 
-.. _array_backed_grid_buffered:
+.. _array_backed_grid_sprites_1:
 
-Array-Backed Grid Buffered
-==========================
+Grid Using Sprites v1
+=====================
 
 .. image:: array_backed_grid.png
     :width: 255px
@@ -14,10 +14,10 @@ Array-Backed Grid Buffered
 You may also want to look at:
 
 * :ref:`array_backed_grid` - very slow but simple, uses drawing commands
-* :ref:`array_backed_grid_buffered` - (This program) slow and uses buffered shapes
-* :ref:`array_backed_grid_sprites_1` - super-fast and uses sprites. Resyncs to number grid in one function call
+* :ref:`array_backed_grid_buffered` - slow and uses buffered shapes
+* :ref:`array_backed_grid_sprites_1` - (This program) super-fast and uses sprites. Resyncs to number grid in one function call
 * :ref:`array_backed_grid_sprites_2` - super-fast and uses sprites. Keeps a second 2D grid of sprites to match 2D grid of numbers
 
-.. literalinclude:: ../../arcade/examples/array_backed_grid_buffered.py
-    :caption: array_backed_grid_buffered.py
+.. literalinclude:: ../../arcade/examples/array_backed_grid_sprites.py
+    :caption: array_backed_grid_sprites.py
     :linenos:
