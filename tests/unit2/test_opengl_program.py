@@ -147,12 +147,15 @@ def test_program_basic(ctx):
     assert program.glo > 0
     program.use()
     assert ctx.active_program == program
+    assert repr(program).startswith('<Program')
 
     # TODO: Test all uniform types
     program['pos_offset'] = 1, 2
     assert program['pos_offset'] == (1.0, 2.0)
     with pytest.raises(ShaderException):
         program['this_uniform_do_not_exist'] = 0
+    with pytest.raises(ShaderException):
+        program['this_uniform_do_not_exist']
 
 
 def test_vertex_shader(ctx):
@@ -199,6 +202,57 @@ def test_geo_shader(ctx):
     assert program.geometry_input == ctx.POINTS
     assert program.geometry_output == ctx.TRIANGLE_STRIP
     assert program.geometry_vertices == 2
+
+
+def test_gl_attributes(ctx):
+    """Make sure built in attributes don't interfere with generic attribute detection"""
+    program = ctx.program(
+        vertex_shader="""
+        #version 330
+        in vec2 pos;
+        void main() {
+            gl_Position = vec4(pos + vec2(gl_VertexID) + vec2(gl_InstanceID) , 0.0, 1.0);
+        }
+        """,
+    )
+
+
+def test_compile_failed(ctx):
+    with pytest.raises(ShaderException):
+        program = ctx.program(
+            vertex_shader="""
+            #version 330
+            in vec2 pos
+            void main() {
+                gl_Position = vec4(pos
+            }
+            """,
+        )
+
+
+def test_link_failed(ctx):
+    with pytest.raises(ShaderException):
+        program = ctx.program(
+            vertex_shader="""
+            #version 330
+            in vec2 in_pos;
+            in vec2 in_uv;
+            out vec2 v_uv;
+            void main() {
+                gl_Position = vec4(in_pos, 0.0, 1.0);
+                v_uv = in_uv;
+            }
+            """,
+            fragment_shader="""
+            #version 330
+            in vec3 v_uv;
+            out vec4 v_color;
+            void main() {
+                v_color = vec4(v_uv.xy, 0.0, 1.0);
+            }
+            """,
+        )
+
 
 def test_uniforms(ctx):
     # Uniform testing
