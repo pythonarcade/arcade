@@ -5,8 +5,6 @@ import array
 import pytest
 import arcade
 from arcade.gl import BufferDescription
-from arcade.gl.glsl import ShaderSource
-from arcade.gl import ShaderException
 
 from pyglet import gl
 
@@ -18,14 +16,7 @@ SCREEN_HEIGHT = 600
 def ctx():
     window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, "Test OpenGL")
     yield window.ctx
-    err_check(window.ctx)
     window.close()
-
-
-def err_check(ctx):
-    error = ctx.error
-    if error:
-        raise ValueError("Error", error)
 
 
 def test_buffer_description(ctx):
@@ -36,12 +27,6 @@ def test_buffer_description(ctx):
         '2f 2f',
         ['in_vert', 'in_uv'],
     )
-
-
-def test_ctx(ctx):
-    assert ctx.gl_version >= (3, 3)
-    assert ctx.limits.MAX_TEXTURE_SIZE > 4096
-    assert ctx.limits.MAX_ARRAY_TEXTURE_LAYERS >= 256
 
 
 def test_geometry(ctx):
