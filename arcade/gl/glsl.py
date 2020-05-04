@@ -27,7 +27,7 @@ class ShaderSource:
         """
         self._source = source.strip()
         self._type = source_type
-        self._lines = self._source.split('\n')
+        self._lines = self._source.split('\n') if source else []
         self._out_attributes = []  # type: List[str]
 
         if not self._lines:

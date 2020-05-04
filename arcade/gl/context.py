@@ -5,6 +5,8 @@ import weakref
 from pathlib import Path
 from typing import Dict, List, Tuple, Union, Sequence
 
+# import pyglet
+from pyglet.window import Window
 from pyglet import gl
 
 from .buffer import Buffer
@@ -112,13 +114,13 @@ class Context:
         self._blend_func = self.BLEND_DEFAULT
 
     @property
-    def window(self):
+    def window(self) -> Window:
         """The window this context belongs to"""
         return self._window_ref()
 
     @property
-    def gl_version(self):
-        """ Return OpenGL version. """
+    def gl_version(self) -> Tuple[int, int]:
+        """The OpenGL version as a 2 component tuple"""
         return self._gl_version
 
     @property
@@ -159,7 +161,8 @@ class Context:
         return self._blend_func
 
     @blend_func.setter
-    def blend_func(self, value):
+    def blend_func(self, value: Tuple[int, int]):
+        self._blend_func = value
         gl.glBlendFunc(value[0], value[1])
 
     def buffer(self, *, data: bytes = None, reserve: int = 0, usage: str = 'static') -> Buffer:

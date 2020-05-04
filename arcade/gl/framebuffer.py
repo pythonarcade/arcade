@@ -1,4 +1,4 @@
-from typing import Tuple, List, TYPE_CHECKING
+from typing import Tuple, List, Union, TYPE_CHECKING
 import weakref
 
 from pyglet import gl
@@ -86,7 +86,7 @@ class Framebuffer:
         return self._glo
 
     @property
-    def viewport(self) -> Tuple[int, int, int, int]:
+    def viewport(self) -> Union[Tuple[int, int, int, int], Tuple[int, int]]:
         """The framebuffer's viewport.
 
         Two or four integer values can be assigned::
@@ -99,7 +99,7 @@ class Framebuffer:
         return self._viewport
 
     @viewport.setter
-    def viewport(self, value):
+    def viewport(self, value: Union[Tuple[int, int, int, int], Tuple[int, int]]):
         if not isinstance(value, tuple):
             raise ValueError("viewport should be a tuple with length 2 or 4")
 
@@ -158,7 +158,7 @@ class Framebuffer:
         return self._depth_mask
 
     @depth_mask.setter
-    def depth_mask(self, value):
+    def depth_mask(self, value: bool):
         self._depth_mask = value
         # Set state if framebuffer is active
         if self._ctx.active_framebuffer == self:
@@ -241,7 +241,7 @@ class Framebuffer:
     #     # TODO: Bind previous. if this is the window, how do we know the viewport etc?
 
     @staticmethod
-    def _check_completeness():
+    def _check_completeness() -> None:
         """
         Checks the completeness of the framebuffer.
         If the framebuffer is not complete, we cannot continue.
