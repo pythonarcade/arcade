@@ -161,7 +161,8 @@ class Context:
         return self._blend_func
 
     @blend_func.setter
-    def blend_func(self, value):
+    def blend_func(self, value: Tuple[int, int]):
+        self._blend_func = value
         gl.glBlendFunc(value[0], value[1])
 
     def buffer(self, *, data: bytes = None, reserve: int = 0, usage: str = 'static') -> Buffer:
