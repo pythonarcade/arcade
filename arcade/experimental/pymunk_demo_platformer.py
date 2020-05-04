@@ -10,22 +10,34 @@ from arcade.experimental.pymunk_physics_engine import PymunkPhysicsEngine
 
 SCREEN_TITLE = "PyMunk Top-Down"
 SPRITE_SCALING_PLAYER = 0.5
-MOVEMENT_SPEED = 5
+SPRITE_SCALING_TILES = 0.5
+
 
 SPRITE_IMAGE_SIZE = 128
 SPRITE_SIZE = int(SPRITE_IMAGE_SIZE * SPRITE_SCALING_PLAYER)
 
-SCREEN_WIDTH = SPRITE_SIZE * 20
+SCREEN_WIDTH = SPRITE_SIZE * 25
 SCREEN_HEIGHT = SPRITE_SIZE * 15
 
-# Physics force used to move the player. Higher number, faster accelerating.
-PLAYER_MOVE_FORCE_ON_GROUND = 5000
-PLAYER_MOVE_FORCE_IN_AIR = 400
-BULLET_MOVE_FORCE = 2500
-PLAYER_JUMP_IMPULSE = 1000
+# --- Physics forces. Higher number, faster accelerating.
+
 GRAVITY = 1500
+
+# Force applied while on the ground
+PLAYER_MOVE_FORCE_ON_GROUND = 5000
+
+# Force applied when moving left/right in the air
+PLAYER_MOVE_FORCE_IN_AIR = 400
+
+# Strength of a jump
+PLAYER_JUMP_IMPULSE = 1000
+
+# Keep player from going too fast
 PLAYER_MAX_HORIZONTAL_SPEED = 450
 PLAYER_MAX_VERTICAL_SPEED = 1600
+
+# How much force to put on the bullet
+BULLET_MOVE_FORCE = 4500
 
 class MyWindow(arcade.Window):
     """ Main Window """
@@ -70,7 +82,7 @@ class MyWindow(arcade.Window):
         self.end_of_map = my_map.map_size.width * my_map.tile_size[0]
 
         # --- Platforms ---
-        self.wall_list = arcade.tilemap.process_layer(my_map, 'Platforms', 0.5)
+        self.wall_list = arcade.tilemap.process_layer(my_map, 'Platforms', SPRITE_SCALING_TILES)
 
         # --- Pymunk Physics Engine Setup ---
 
@@ -89,19 +101,12 @@ class MyWindow(arcade.Window):
         self.physics_engine = PymunkPhysicsEngine(damping=damping,
                                                   gravity=gravity)
 
-        def rock_hit_handler(arbiter, space, data):
-            """ Called for bullet/rock collision """
-            bullet_shape = arbiter.shapes[0]
-            bullet_sprite = self.physics_engine.get_sprite_for_shape(bullet_shape)
-            bullet_sprite.remove_from_sprite_lists()
-
         def wall_hit_handler(arbiter, space, data):
             """ Called for bullet/rock collision """
             bullet_shape = arbiter.shapes[0]
             bullet_sprite = self.physics_engine.get_sprite_for_shape(bullet_shape)
             bullet_sprite.remove_from_sprite_lists()
 
-        self.physics_engine.add_collision_handler("bullet", "rock", post_handler=rock_hit_handler)
         self.physics_engine.add_collision_handler("bullet", "wall", post_handler=wall_hit_handler)
 
         # Add the player.
@@ -134,12 +139,6 @@ class MyWindow(arcade.Window):
                                             collision_type="wall",
                                             body_type=PymunkPhysicsEngine.STATIC)
 
-        # Create some boxes to push around.
-        # Mass controls, well, the mass of an object. Defaults to 1.
-        self.physics_engine.add_sprite_list(self.item_list,
-                                            mass=1,
-                                            friction=0.6,
-                                            collision_type="rock")
 
     def on_mouse_press(self, x, y, button, modifiers):
         """ Called whenever the mouse button is clicked. """
@@ -200,7 +199,7 @@ class MyWindow(arcade.Window):
                                            damping=1.0,
                                            friction=0.6,
                                            collision_type="bullet")
-            force = (3000, 0)
+            force = (BULLET_MOVE_FORCE, 0)
             self.physics_engine.apply_force(bullet, force)
         elif key == arcade.key.UP:
             # find out if player is standing on ground

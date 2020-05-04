@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.3.4" orientation="orthogonal" renderorder="left-up" width="20" height="10" tilewidth="128" tileheight="128" infinite="0" nextlayerid="3" nextobjectid="1">
+<map version="1.2" tiledversion="1.3.4" orientation="orthogonal" renderorder="left-up" width="25" height="10" tilewidth="128" tileheight="128" infinite="0" nextlayerid="3" nextobjectid="1">
  <tileset firstgid="1" name="tiles" tilewidth="128" tileheight="128" tilecount="149" columns="0">
   <grid orientation="orthogonal" width="1" height="1"/>
   <tile id="0">
@@ -549,14 +549,14 @@
    <image width="128" height="128" source="../resources/images/items/star.png"/>
   </tile>
  </tileset>
- <layer id="1" name="Platforms" width="20" height="10">
+ <layer id="1" name="Platforms" width="25" height="10">
   <data encoding="base64" compression="zlib">
-   eJxjYBjcgJ2BIYGKZi0YauZpEqlXFYgNoFiNDu7D5y49JLfoEmkePrM0gFgRitXxmAkyTx/JbmxYEQfGptYQiAHuqA1t
+   eJxjZ2BIYKAhYGdgWMBORTskgVgCiaaFHdgAMXZoAbEOje3ABVSB2ACK1Ui0Q5McC0m0g9oA2Q587tdjQISLLgV24DNfA4gVoVidRHtAdugjuREbRjYf2R58epCxIRADACLKET4=
   </data>
  </layer>
- <layer id="2" name="Dynamic Items" width="20" height="10">
+ <layer id="2" name="Dynamic Items" width="25" height="10">
   <data encoding="base64" compression="zlib">
-   eJxjYBgF1ATMA+0ACsBQdjutAAALzAAH
+   eJxjYBgFgxkwD7QD6ABGgh8HGgAADuwABw==
   </data>
  </layer>
 </map>
