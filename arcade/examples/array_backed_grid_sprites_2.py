@@ -4,8 +4,7 @@ Array Backed Grid Shown By Sprites
 Show how to use a two-dimensional list/array to back the display of a
 grid on-screen.
 
-This version requires updates to the grid to be mirrored with updates to the
-sprites.
+This version makes a grid of sprites instead of numbers
 
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.array_backed_grid_sprites_2
@@ -40,16 +39,6 @@ class MyGame(arcade.Window):
         Set up the application.
         """
         super().__init__(width, height, title)
-
-        # Create a 2 dimensional array. A two dimensional
-        # array is simply a list of lists.
-        self.grid = []
-        for row in range(ROW_COUNT):
-            # Add an empty array that will hold each cell
-            # in this row
-            self.grid.append([])
-            for column in range(COLUMN_COUNT):
-                self.grid[row].append(0)  # Append a cell
 
         arcade.set_background_color(arcade.color.BLACK)
 
@@ -99,11 +88,9 @@ class MyGame(arcade.Window):
         if row < ROW_COUNT and column < COLUMN_COUNT:
 
             # Flip the location between 1 and 0.
-            if self.grid[row][column] == 0:
-                self.grid[row][column] = 1
+            if self.grid_sprites[row][column].color == arcade.color.WHITE:
                 self.grid_sprites[row][column].color = arcade.color.GREEN
             else:
-                self.grid[row][column] = 0
                 self.grid_sprites[row][column].color = arcade.color.WHITE
 
 
