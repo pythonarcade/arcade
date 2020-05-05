@@ -392,20 +392,15 @@ def create_rectangle(center_x: float, center_y: float, width: float,
     For even faster performance, add multiple shapes into a ShapeElementList and
     draw that list. This allows nearly unlimited shapes to be drawn just as fast
     as one.
-    ```
-    self.my_shape = arcade.create_rectangle_filled(300, 300, 100, 100, arcade.color.RED)
 
-    Args:
-        center_x:
-        center_y:
-        width:
-        height:
-        color:
-        border_width:
-        tilt_angle:
-        filled:
-
-    Returns:
+    :param float center_x:
+    :param float center_y:
+    :param float width:
+    :param float height:
+    :param Color color:
+    :param float border_width:
+    :param float tilt_angle:
+    :param bool filled:
 
     """
     data: List[Point] = cast(List[Point], get_rectangle_points(center_x, center_y, width, height, tilt_angle))
