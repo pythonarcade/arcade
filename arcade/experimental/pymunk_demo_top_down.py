@@ -201,6 +201,7 @@ class MyWindow(arcade.Window):
                                        mass=0.1,
                                        damping=1.0,
                                        friction=0.6,
+                                       collision_type="bullet",
                                        elasticity=0.9)
 
         # Taking into account the angle, calculate our force.

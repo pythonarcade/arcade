@@ -53,21 +53,23 @@ class PymunkPhysicsEngine:
                    max_horizontal_velocity=None,
                    max_vertical_velocity=None,
                    radius: float = 0,
-                   collision_type: str = "default",
+                   collision_type: str = "Hi",
                    ):
         """ Add a sprite to the physics engine. """
 
+        LOG.debug(f"collision type={collision_type}")
         # See if the sprite already has been added
         if sprite in self.sprites:
             LOG.warning("Attempt to add a Sprite that has already been added. Ignoring.")
             return
 
         # Keep track of collision types
-        LOG.debug(f"Adding sprite type {collision_type}")
         if collision_type not in self.collision_types:
             LOG.debug(f"Adding new collision type of {collision_type}.")
             self.collision_types.append(collision_type)
 
+        if collision_type == "Hi":
+            print("AAA")
         # Get a number associated with the string of collision_type
         collision_type_id = self.collision_types.index(collision_type)
 
