@@ -53,7 +53,7 @@ class PymunkPhysicsEngine:
                    max_horizontal_velocity=None,
                    max_vertical_velocity=None,
                    radius: float = 0,
-                   collision_type: str = "Hi",
+                   collision_type: str = "default",
                    ):
         """ Add a sprite to the physics engine. """
 
@@ -68,8 +68,6 @@ class PymunkPhysicsEngine:
             LOG.debug(f"Adding new collision type of {collision_type}.")
             self.collision_types.append(collision_type)
 
-        if collision_type == "Hi":
-            print("AAA")
         # Get a number associated with the string of collision_type
         collision_type_id = self.collision_types.index(collision_type)
 
@@ -185,6 +183,13 @@ class PymunkPhysicsEngine:
             if self.sprites[sprite].shape is shape:
                 return sprite
         return None
+
+    def get_sprites_from_arbiter(self, arbiter):
+        """ Given a collision arbiter, return the sprites associated with the collision. """
+        shape1, shape2 = arbiter.shapes
+        sprite1 = self.get_sprite_for_shape(shape1)
+        sprite2 = self.get_sprite_for_shape(shape2)
+        return sprite1, sprite2
 
     def add_collision_handler(self,
                               first_type: str,

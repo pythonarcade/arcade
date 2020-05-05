@@ -37,33 +37,47 @@ PLAYER_MAX_HORIZONTAL_SPEED = 450
 PLAYER_MAX_VERTICAL_SPEED = 1600
 
 # How much force to put on the bullet
-BULLET_MOVE_FORCE = 5500
+BULLET_MOVE_FORCE = 4500
 
-class MyWindow(arcade.Window):
+# Make bullet less affected by gravity
+BULLET_GRAVITY = 300
+
+class GameWindow(arcade.Window):
     """ Main Window """
+
     def __init__(self, width, height, title):
-        """ Init """
+        """ Create the variables """
+
+        # Init the parent class
         super().__init__(width, height, title)
 
-        arcade.set_background_color(arcade.color.AMAZON)
+        # Player sprite
+        self.player_sprite: Optional[arcade.Sprite] = None
 
-        arcade.configure_logging()
-
-        self.player_list = None
-        self.wall_list = None
-        self.bullet_list = None
-        self.item_list = None
-        self.player_sprite = None
-        self.physics_engine: Optional[PymunkPhysicsEngine] = None
+        # Sprite lists we need
+        self.player_list: Optional[arcade.SpriteList] = None
+        self.wall_list: Optional[arcade.SpriteList] = None
+        self.bullet_list: Optional[arcade.SpriteList] = None
+        self.item_list: Optional[arcade.SpriteList] = None
 
         # Track the current state of what key is pressed
-        self.left_pressed = False
-        self.right_pressed = False
-        self.up_pressed = False
-        self.down_pressed = False
+        self.left_pressed: bool = False
+        self.right_pressed: bool = False
+        self.up_pressed: bool = False
+        self.down_pressed: bool = False
+
+        # The PyMunk physics engine!
+        self.physics_engine: Optional[PymunkPhysicsEngine] = None
+
+        # Set background color
+        arcade.set_background_color(arcade.color.AMAZON)
+
+        # Turn on logging
+        arcade.configure_logging()
 
     def setup(self):
-        """ Set up everything """
+        """ Set up everything with the game """
+
         # Create the sprite lists
         self.player_list = arcade.SpriteList()
         self.wall_list = arcade.SpriteList()
@@ -81,7 +95,6 @@ class MyWindow(arcade.Window):
 
         # Read in the tiled map
         my_map = arcade.tilemap.read_tmx(map_name)
-        self.end_of_map = my_map.map_size.width * my_map.tile_size[0]
 
         # --- Read in layers ---
         self.wall_list = arcade.tilemap.process_layer(my_map, 'Platforms', SPRITE_SCALING_TILES)
@@ -105,9 +118,8 @@ class MyWindow(arcade.Window):
                                                   gravity=gravity)
 
         def wall_hit_handler(arbiter, space, data):
-            """ Called for bullet/rock collision """
-            bullet_shape = arbiter.shapes[0]
-            bullet_sprite = self.physics_engine.get_sprite_for_shape(bullet_shape)
+            """ Called for bullet/wall collision """
+            bullet_sprite, wall_sprite = self.physics_engine.get_sprites_from_arbiter(arbiter)
             bullet_sprite.remove_from_sprite_lists()
 
         self.physics_engine.add_collision_handler("bullet", "wall", post_handler=wall_hit_handler)
@@ -179,11 +191,14 @@ class MyWindow(arcade.Window):
         bullet.center_x += size * force[0]
         bullet.center_y += size * force[1]
 
+        bullet_gravity = (0, -BULLET_GRAVITY)
+
         self.physics_engine.add_sprite(bullet,
                                        mass=0.1,
                                        damping=1.0,
                                        friction=0.6,
                                        collision_type="bullet",
+                                       gravity=bullet_gravity,
                                        elasticity=0.9)
 
         # Taking into account the angle, calculate our force.
@@ -199,18 +214,6 @@ class MyWindow(arcade.Window):
             self.left_pressed = True
         elif key == arcade.key.RIGHT:
             self.right_pressed = True
-        elif key == arcade.key.SPACE:
-            bullet = arcade.SpriteSolidColor(9, 9, arcade.color.RED)
-            bullet.position = self.player_sprite.position
-            bullet.center_x += 30
-            self.bullet_list.append(bullet)
-            self.physics_engine.add_sprite(bullet,
-                                           mass=0.2,
-                                           damping=1.0,
-                                           friction=0.6,
-                                           collision_type="bullet")
-            force = (BULLET_MOVE_FORCE, 0)
-            self.physics_engine.apply_force(bullet, force)
         elif key == arcade.key.UP:
             # find out if player is standing on ground
             grounding = self.physics_engine.check_grounding(self.player_sprite)
@@ -269,7 +272,7 @@ class MyWindow(arcade.Window):
 
 def main():
     """ Main method """
-    window = MyWindow(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    window = GameWindow(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     window.setup()
     arcade.run()
 
