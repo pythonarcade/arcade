@@ -628,7 +628,7 @@ class SpriteList:
                 # new_image2.save("sprites.png")
 
             # Create a list with the coordinates of all the unique textures
-            tex_coords = []
+            self.tex_coords = []
             offset = 1
 
             for index, image in enumerate(self.array_of_images):
@@ -655,18 +655,18 @@ class SpriteList:
 
                 # print(f"Fetching {new_array_of_texture_names[index]} at {row}, {column} => {x}, {y} normalized to {start_x:.2}, {start_y:.2} size {normalized_width}, {normalized_height}")
 
-                tex_coords.append([start_x, start_y, normalized_width, normalized_height])
+                self.tex_coords.append([start_x, start_y, normalized_width, normalized_height])
 
             # Go through each sprite and pull from the coordinate list, the proper
             # coordinates for that sprite's image.
-            array_of_sub_tex_coords = array.array('f')
+            self._sprite_sub_tex_data = array.array('f')
             for sprite in self.sprite_list:
                 index = self.array_of_texture_names.index(sprite.texture.name)
-                for coord in tex_coords[index]:
-                    array_of_sub_tex_coords.append(coord)
+                for coord in self.tex_coords[index]:
+                    self._sprite_sub_tex_data.append(coord)
 
             self._sprite_sub_tex_buf = self.ctx.buffer(
-                data=array_of_sub_tex_coords.tobytes(),
+                data=self._sprite_sub_tex_data.tobytes(),
                 usage=usage
             )
 
@@ -754,13 +754,30 @@ class SpriteList:
             self._sprite_size_data[i * 2 + 1] = sprite.height
             self._sprite_size_changed = True
 
-    def update_texture(self, _sprite):
+    def update_texture(self, sprite):
         """ Make sure we update the texture for this sprite for the next batch
         drawing"""
         if self._vao1 is None:
             return
 
-        self._calculate_sprite_buffer()
+        if sprite.texture is None:
+            return
+
+        name_of_texture_to_check = sprite.texture.name
+        if name_of_texture_to_check not in self.array_of_texture_names:
+            self._calculate_sprite_buffer()
+
+        self._sprite_sub_tex_changed = True
+
+        index = self.array_of_texture_names.index(sprite.texture.name)
+        new_coords = self.tex_coords[index]
+
+        i = self.sprite_idx[sprite]
+
+        self._sprite_sub_tex_data[i * 4] = new_coords[0]
+        self._sprite_sub_tex_data[i * 4 + 1] = new_coords[1]
+        self._sprite_sub_tex_data[i * 4 + 2] = new_coords[2]
+        self._sprite_sub_tex_data[i * 4 + 3] = new_coords[3]
 
     def update_position(self, sprite: Sprite):
         """
