@@ -9,15 +9,16 @@ from typing import List
 from typing import Dict
 from typing import Optional
 from arcade import Sprite
-from arcade import SpriteList
 
 import logging
 LOG = logging.getLogger(__name__)
 
 class PymunkPhysicsObject:
+    """ Object that holds pymunk body/shape for a sprite. """
     def __init__(self,
                  body: pymunk.Body = None,
                  shape: pymunk.Shape = None):
+        """ Init """
         self.body: pymunk.Body = body
         self.shape: pymunk.Shape = shape
 
@@ -80,6 +81,7 @@ class PymunkPhysicsEngine:
 
         # Set the body's position
         body.position = pymunk.Vec2d(sprite.center_x, sprite.center_y)
+        body.angle = math.radians(sprite.angle)
 
         # Callback used if we need custom gravity, damping, velocity, etc.
         def velocity_callback(my_body, my_gravity, my_damping, dt):
@@ -210,15 +212,31 @@ class PymunkPhysicsEngine:
             self.collision_types.append(second_type)
         second_type_id = self.collision_types.index(second_type)
 
+        def _f1(arbiter, space, data):
+            sprite_a, sprite_b = self.get_sprites_from_arbiter(arbiter)
+            begin_handler(sprite_a, sprite_b, arbiter, space, data)
+
+        def _f2(arbiter, space, data):
+            sprite_a, sprite_b = self.get_sprites_from_arbiter(arbiter)
+            post_handler(sprite_a, sprite_b, arbiter, space, data)
+
+        def _f3(arbiter, space, data):
+            sprite_a, sprite_b = self.get_sprites_from_arbiter(arbiter)
+            pre_handler(sprite_a, sprite_b, arbiter, space, data)
+
+        def _f4(arbiter, space, data):
+            sprite_a, sprite_b = self.get_sprites_from_arbiter(arbiter)
+            separate_handler(sprite_a, sprite_b, arbiter, space, data)
+
         h = self.space.add_collision_handler(first_type_id, second_type_id)
         if begin_handler:
-            h.begin = begin_handler
+            h.begin = _f1
         if post_handler:
-            h.post_solve = post_handler
+            h.post_solve = _f2
         if pre_handler:
-            h.pre_solve = pre_handler
+            h.pre_solve = _f3
         if separate_handler:
-            h.separate = separate_handler
+            h.separate = _f4
 
     def resync_sprites(self):
         """ Set visual sprites to be the same location as physics engine sprites. """
@@ -279,6 +297,7 @@ class PymunkPhysicsEngine:
         }
 
         def f(arbiter):
+            """ I don't know how this works. """
             n = -arbiter.contact_point_set.normal
             if n.y > grounding['normal'].y:
                 grounding['normal'] = n

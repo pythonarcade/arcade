@@ -117,12 +117,18 @@ class GameWindow(arcade.Window):
         self.physics_engine = PymunkPhysicsEngine(damping=damping,
                                                   gravity=gravity)
 
-        def wall_hit_handler(arbiter, space, data):
+        def wall_hit_handler(bullet_sprite, wall_sprite, arbiter, space, data):
             """ Called for bullet/wall collision """
-            bullet_sprite, wall_sprite = self.physics_engine.get_sprites_from_arbiter(arbiter)
-            bullet_sprite.remove_from_sprite_lists()
+            # bullet_sprite.remove_from_sprite_lists()
 
         self.physics_engine.add_collision_handler("bullet", "wall", post_handler=wall_hit_handler)
+
+        def item_hit_handler(bullet_sprite, item_sprite, arbiter, space, data):
+            """ Called for bullet/wall collision """
+            # bullet_sprite.remove_from_sprite_lists()
+            # item_sprite.remove_from_sprite_lists()
+
+        self.physics_engine.add_collision_handler("bullet", "item", post_handler=item_hit_handler)
 
         # Add the player.
         # For the player, we set the damping to a lower value, which increases
@@ -164,7 +170,7 @@ class GameWindow(arcade.Window):
     def on_mouse_press(self, x, y, button, modifiers):
         """ Called whenever the mouse button is clicked. """
 
-        bullet = arcade.SpriteSolidColor(7, 7, arcade.color.RED)
+        bullet = arcade.SpriteSolidColor(20, 5, arcade.color.DARK_YELLOW)
         self.bullet_list.append(bullet)
 
         # Position the bullet at the player's current location
@@ -185,14 +191,24 @@ class GameWindow(arcade.Window):
         y_diff = dest_y - start_y
         angle = math.atan2(y_diff, x_diff)
 
-        force = [math.cos(angle), math.sin(angle)]
+        # What is the 1/2 size of this sprite, so we can figure out how far
+        # away to spawn the bullet
         size = max(self.player_sprite.width, self.player_sprite.height) / 2
 
-        bullet.center_x += size * force[0]
-        bullet.center_y += size * force[1]
+        # Use angle to to spawn bullet away from player in proper direction
+        bullet.center_x += size * math.cos(angle)
+        bullet.center_y += size * math.sin(angle)
 
+        # Set angle of bullet
+        bullet.angle = math.degrees(angle)
+
+        # Gravity to use for the bullet
+        # If we don't use custom gravity, bullet drops too fast, or we have
+        # to make it go too fast.
+        # Force is in relation to bullet's angle.
         bullet_gravity = (0, -BULLET_GRAVITY)
 
+        # Add the sprite. This needs to be done AFTER setting the fields above.
         self.physics_engine.add_sprite(bullet,
                                        mass=0.1,
                                        damping=1.0,
@@ -201,10 +217,8 @@ class GameWindow(arcade.Window):
                                        gravity=bullet_gravity,
                                        elasticity=0.9)
 
-        # Taking into account the angle, calculate our force.
-        force[0] *= BULLET_MOVE_FORCE
-        force[1] *= BULLET_MOVE_FORCE
-
+        # Add force to bullet
+        force = (BULLET_MOVE_FORCE, 0)
         self.physics_engine.apply_force(bullet, force)
 
     def on_key_press(self, key, modifiers):
