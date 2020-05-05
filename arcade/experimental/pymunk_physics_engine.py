@@ -11,6 +11,9 @@ from typing import Optional
 from arcade import Sprite
 from arcade import SpriteList
 
+import logging
+LOG = logging.getLogger(__name__)
+
 class PymunkPhysicsObject:
     def __init__(self,
                  body: pymunk.Body = None,
@@ -54,68 +57,98 @@ class PymunkPhysicsEngine:
                    ):
         """ Add a sprite to the physics engine. """
 
+        # See if the sprite already has been added
         if sprite in self.sprites:
-            print("Sprite already in space.")
+            LOG.warning("Attempt to add a Sprite that has already been added. Ignoring.")
+            return
 
+        # Keep track of collision types
+        LOG.debug(f"Adding sprite type {collision_type}")
         if collision_type not in self.collision_types:
+            LOG.debug(f"Adding new collision type of {collision_type}.")
             self.collision_types.append(collision_type)
 
+        # Get a number associated with the string of collision_type
         collision_type_id = self.collision_types.index(collision_type)
 
+        # Default to a box moment
         if moment is None:
             moment = pymunk.moment_for_box(mass, (sprite.width, sprite.height))
 
+        # Create the physics body
         body = pymunk.Body(mass, moment, body_type=body_type)
+
+        # Set the body's position
         body.position = pymunk.Vec2d(sprite.center_x, sprite.center_y)
 
+        # Callback used if we need custom gravity, damping, velocity, etc.
         def velocity_callback(my_body, my_gravity, my_damping, dt):
             """ Used for custom damping, gravity, and max_velocity. """
-            if damping is not None:
 
+            # Custom damping
+            if damping is not None:
                 adj_damping = ((damping * 100) / 100) ** dt
-                # print(damping, my_damping, adj_damping)
                 my_damping = adj_damping
+
+            # Custom gravity
             if gravity is not None:
                 my_gravity = gravity
 
+            # Go ahead and update velocity
             pymunk.Body.update_velocity(my_body, my_gravity, my_damping, dt)
 
+            # Now see if we are going too fast...
+
+            # Support max velocity
             if max_velocity:
                 velocity = my_body.velocity.length
                 if velocity > max_velocity:
                     scale = max_velocity / velocity
                     my_body.velocity = my_body.velocity * scale
 
+            # Support max horizontal velocity
             if max_horizontal_velocity:
                 velocity = my_body.velocity.x
                 if abs(velocity) > max_horizontal_velocity:
                     velocity = max_horizontal_velocity * math.copysign(1, velocity)
                     my_body.velocity = pymunk.Vec2d(velocity, my_body.velocity.y)
 
+            # Support max vertical velocity
             if max_vertical_velocity:
                 velocity = my_body.velocity[1]
                 if abs(velocity) > max_vertical_velocity:
                     velocity = max_horizontal_velocity * math.copysign(1, velocity)
                     my_body.velocity = pymunk.Vec2d(my_body.velocity.x, velocity)
 
-        body.velocity_func = velocity_callback
+        # Add callback if we need to do anything custom on this body
+        if damping or gravity or max_velocity or max_horizontal_velocity or max_vertical_velocity:
+            body.velocity_func = velocity_callback
 
+        # Set the physics shape to the sprite's hitbox
         poly = sprite.get_hit_box()
-
         scaled_poly = [[x * sprite.scale for x in z] for z in poly]
-
         shape = pymunk.Poly(body, scaled_poly, radius=radius)
 
+        # Set collision type, used in collision callbacks
         if collision_type:
             shape.collision_type = collision_type_id
+
+        # How bouncy is the shape?
         if elasticity is not None:
             shape.elasticity = elasticity
+
+        # Set shapes friction
         shape.friction = friction
 
+        # Create physics object and add to list
         physics_object = PymunkPhysicsObject(body, shape)
         self.sprites[sprite] = physics_object
 
+        # Add body and shape to pymunk engine
         self.space.add(body, shape)
+
+        # Register physics engine with sprite, so we can remove from physics engine
+        # if we tell the sprite to go away.
         sprite.register_physics_engine(self)
 
     def add_sprite_list(self,
@@ -130,7 +163,13 @@ class PymunkPhysicsEngine:
         """ Add all sprites in a sprite list to the physics engine. """
 
         for sprite in sprite_list:
-            self.add_sprite(sprite, mass, friction, elasticity, moment, body_type, collision_type=collision_type)
+            self.add_sprite(sprite=sprite,
+                            mass=mass,
+                            friction=friction,
+                            elasticity=elasticity,
+                            moment=moment,
+                            body_type=body_type,
+                            collision_type=collision_type)
 
     def remove_sprite(self, sprite: Sprite):
         """ Remove a sprite from the physics engine. """
@@ -153,11 +192,14 @@ class PymunkPhysicsEngine:
                               post_handler: Callable = None,
                               separate_handler: Callable = None):
         """ Add code to handle collisions between objects. """
+
         if first_type not in self.collision_types:
+            LOG.debug(f"Adding new collision type of {first_type}.")
             self.collision_types.append(first_type)
         first_type_id = self.collision_types.index(first_type)
 
         if second_type not in self.collision_types:
+            LOG.debug(f"Adding new collision type of {second_type}.")
             self.collision_types.append(second_type)
         second_type_id = self.collision_types.index(second_type)
 

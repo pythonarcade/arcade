@@ -29,6 +29,8 @@ class MyWindow(arcade.Window):
         """ Init """
         super().__init__(width, height, title)
 
+        arcade.configure_logging()
+
         arcade.set_background_color(arcade.color.AMAZON)
 
         self.player_list = None
@@ -117,12 +119,14 @@ class MyWindow(arcade.Window):
             bullet_shape = arbiter.shapes[0]
             bullet_sprite = self.physics_engine.get_sprite_for_shape(bullet_shape)
             bullet_sprite.remove_from_sprite_lists()
+            print("Rock")
 
         def wall_hit_handler(arbiter, space, data):
             """ Called for bullet/rock collision """
             bullet_shape = arbiter.shapes[0]
             bullet_sprite = self.physics_engine.get_sprite_for_shape(bullet_shape)
             bullet_sprite.remove_from_sprite_lists()
+            print("Wall")
 
         self.physics_engine.add_collision_handler("bullet", "rock", post_handler=rock_hit_handler)
         self.physics_engine.add_collision_handler("bullet", "wall", post_handler=wall_hit_handler)
