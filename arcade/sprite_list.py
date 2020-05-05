@@ -491,10 +491,9 @@ class SpriteList:
 
         def _calculate_colors():
             self._sprite_color_data = array.array('B')
+
             for sprite in self.sprite_list:
-                self._sprite_color_data.append(int(sprite.color[0]))
-                self._sprite_color_data.append(int(sprite.color[1]))
-                self._sprite_color_data.append(int(sprite.color[2]))
+                self._sprite_color_data.extend(sprite.color[:3])
                 self._sprite_color_data.append(int(sprite.alpha))
 
             self._sprite_color_buf = self.ctx.buffer(
