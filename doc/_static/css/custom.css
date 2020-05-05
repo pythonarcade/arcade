@@ -2,11 +2,6 @@ body {
     counter-reset: listing;
 }
 
-/* By default table cells don't wrap in RTD style.
-   This makes them wrap again. */
-.wy-table-responsive table td {
-    white-space: normal;
-}
 .code-block-caption::before {
     counter-increment: listing;
     content: "Listing " counter(listing) ": ";
@@ -32,15 +27,6 @@ h1, h2, h3 {
 }
 .rst-content .section ul p {
     margin-bottom: 0px;
-}
-.wy-nav-content-wrap {
-    background: #fff;
-}
-.wy-side-nav-search {
-    background-color: #931a2a;
-}
-.wy-side-nav-search > div.version {
-    color: #FFF;
 }
 .resource-table td {
     width: 50px;
@@ -75,14 +61,26 @@ div[class^='highlight'] pre {
 	color: black;
     font-weight: bold;
 }
+/* By default table cells don't wrap in RTD style.
+   This makes them wrap again. */
+.wy-table-responsive table td {
+    white-space: normal;
+}
 .wy-nav-content-wrap {
     background: #fff;
 }
 .wy-side-nav-search {
-    background-color: #931a2a;
+    color: #ffff8a;
+    background-color: #28a05c;
+}
+.wy-side-nav-search > a {
+    color: #fcfcfc;
+}
+.wy-side-nav-search > a:visited {
+    color: #fcfcfc;
 }
 .wy-side-nav-search > div.version {
-    color: #FFF;
+    color: #fcfcfc;
 }
 .wy-menu-vertical {
     font-family: "Lato","proxima-nova","Helvetica Neue",Arial,sans-serif;
@@ -106,4 +104,20 @@ div[class^='highlight'] pre {
    margin-left: 8px;
    margin-bottom: 4px;
    margin-top: 10px;
+}
+.document > div > a > img.right-image {
+   float: right;
+   margin-left: 8px;
+   margin-bottom: 4px;
+   margin-top: 10px;
+}
+
+a {
+   color: #2980B9;
+}
+a:visited {
+   color: #2980B9;
+}
+.wy-menu-vertical a:visited {
+    color:#d9d9d9;
 }

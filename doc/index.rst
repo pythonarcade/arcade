@@ -1,5 +1,10 @@
+.. image:: images/arcade-logo.svg
+    :width: 10%
+    :class: right-image
+
 The Python Arcade Library
 =========================
+
 
 .. |Go| image:: images/go.svg
    :width: 40
@@ -17,7 +22,7 @@ The Python Arcade Library
             <img style="width:78px;" src="_static/example_code.svg">
           </div>
           <div style="display:inline-block;">
-            <h2 style="width:auto;">Example<br/>Code</h2>
+            <h2 style="width:auto;">Examples</h2>
           </div>
           <ul>
           <li><a href="examples/index.html">All Examples</a></li>
@@ -168,6 +173,7 @@ game without learning a complex framework.
    tutorials/edge_artifacts/index
    get_started
    logging
+   tutorials/pymunk_platformer/index
 
 Learn about it:
 ^^^^^^^^^^^^^^^
