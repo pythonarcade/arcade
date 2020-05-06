@@ -85,7 +85,7 @@ class Texture:
         self.image = image
         self._sprite: Optional[Sprite] = None
         self._sprite_list: Optional[SpriteList] = None
-        self.hit_box_points = None
+        self._hit_box_points = None
 
     @property
     def width(self) -> int:
@@ -106,6 +106,13 @@ class Texture:
             return self.image.height
         else:
             return 0
+
+    @property
+    def hit_box_points(self):
+        if self._hit_box_points is not None:
+            return self._hit_box_points
+        else:
+            self._hit_box_points = calculate_points(self.image)
 
     def _create_cached_sprite(self):
         from arcade.sprite import Sprite
@@ -350,7 +357,6 @@ def load_texture(file_name: Union[str, Path],
 
     result = Texture(cache_name, image)
     load_texture.texture_cache[cache_name] = result  # type: ignore # dynamic attribute on function obj
-    result.hit_box_points = calculate_points(image)
     return result
 
 
