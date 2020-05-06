@@ -193,6 +193,16 @@ class PymunkPhysicsEngine:
         sprite2 = self.get_sprite_for_shape(shape2)
         return sprite1, sprite2
 
+    def is_on_ground(self, sprite):
+        """ Return true of sprite is on top of something. """
+        grounding = self.check_grounding(sprite)
+        return grounding['body'] is not None
+
+    def apply_impulse(self, sprite, impulse):
+        """ Apply an impulse force on a sprite """
+        physics_object = self.get_physics_object(sprite)
+        physics_object.body.apply_impulse_at_local_point(impulse)
+
     def add_collision_handler(self,
                               first_type: str,
                               second_type: str,
@@ -242,9 +252,17 @@ class PymunkPhysicsEngine:
         """ Set visual sprites to be the same location as physics engine sprites. """
         for sprite in self.sprites:
             physics_object = self.sprites[sprite]
+            new_angle = math.degrees(physics_object.body.angle)
+
+            dx = physics_object.body.position.x - sprite.center_x
+            dy = physics_object.body.position.y - sprite.center_y
+            d_angle = new_angle - sprite.angle
+
             sprite.center_x = physics_object.body.position.x
             sprite.center_y = physics_object.body.position.y
-            sprite.angle = math.degrees(physics_object.body.angle)
+            sprite.angle = new_angle
+
+            sprite.pymunk_moved(self, dx, dy, d_angle)
 
     def step(self, delta_time: float = 1 / 60.0):
         """ Tell the physics engine to perform calculations. """

@@ -8,6 +8,9 @@ import arcade
 from typing import Optional
 from arcade.experimental.pymunk_physics_engine import PymunkPhysicsEngine
 
+import logging
+LOG = logging.getLogger(__name__)
+
 SCREEN_TITLE = "PyMunk Top-Down"
 SPRITE_SCALING_PLAYER = 0.5
 SPRITE_SCALING_TILES = 0.5
@@ -42,6 +45,124 @@ BULLET_MOVE_FORCE = 4500
 # Make bullet less affected by gravity
 BULLET_GRAVITY = 300
 
+DEAD_ZONE = 0.1
+
+# Constants used to track if the player is facing left or right
+RIGHT_FACING = 0
+LEFT_FACING = 1
+
+def load_texture_pair(filename):
+    """
+    Load a texture pair, with the second being a mirror image.
+    """
+    return [
+        arcade.load_texture(filename),
+        arcade.load_texture(filename, mirrored=True)
+    ]
+
+class PlayerSprite(arcade.Sprite):
+    def __init__(self):
+        # Let parent initialize
+        super().__init__()
+
+        # Set our scale
+        self.scale = SPRITE_SCALING_PLAYER
+
+        # Images from Kenney.nl's Character pack
+        # main_path = ":resources:images/animated_characters/female_adventurer/femaleAdventurer"
+        main_path = ":resources:images/animated_characters/female_person/femalePerson"
+        # main_path = ":resources:images/animated_characters/male_person/malePerson"
+        # main_path = ":resources:images/animated_characters/male_adventurer/maleAdventurer"
+        # main_path = ":resources:images/animated_characters/zombie/zombie"
+        # main_path = ":resources:images/animated_characters/robot/robot"
+
+        # Load textures for idle standing
+        self.idle_texture_pair = load_texture_pair(f"{main_path}_idle.png")
+        self.jump_texture_pair = load_texture_pair(f"{main_path}_jump.png")
+        self.fall_texture_pair = load_texture_pair(f"{main_path}_fall.png")
+
+        # Load textures for walking
+        self.walk_textures = []
+        for i in range(8):
+            texture = load_texture_pair(f"{main_path}_walk{i}.png")
+            self.walk_textures.append(texture)
+
+        # Load textures for climbing
+        self.climbing_textures = []
+        texture = arcade.load_texture(f"{main_path}_climb0.png")
+        self.climbing_textures.append(texture)
+        texture = arcade.load_texture(f"{main_path}_climb1.png")
+        self.climbing_textures.append(texture)
+
+        # Set the initial texture
+        self.texture = self.idle_texture_pair[0]
+
+        # Hit box will be set based on the first image used. If you want to specify
+        # a different hit box, you can do it like the code below.
+        # self.set_hit_box([[-22, -64], [22, -64], [22, 28], [-22, 28]])
+        self.set_hit_box(self.texture.hit_box_points)
+
+        # Default to face-right
+        self.character_face_direction = RIGHT_FACING
+
+        self.is_on_ladder = False
+        self.climbing = False
+        self.cur_texture = 0
+
+        self.x_odometer = 0
+
+    def pymunk_moved(self, physics_engine, dx, dy, d_angle):
+
+        # Figure out if we need to face left or right
+        if dx < 0 and self.character_face_direction == RIGHT_FACING:
+            self.character_face_direction = LEFT_FACING
+        elif dx > 0 and self.character_face_direction == LEFT_FACING:
+            self.character_face_direction = RIGHT_FACING
+
+        # Are we on the ground?
+        is_on_ground = physics_engine.is_on_ground(self)
+
+        """
+        # Climbing animation
+        if self.is_on_ladder:
+            self.climbing = True
+        if not self.is_on_ladder and self.climbing:
+            self.climbing = False
+        if self.climbing and abs(dy) > 1:
+            self.cur_texture += 1
+            if self.cur_texture > 7:
+                self.cur_texture = 0
+        if self.climbing:
+            self.texture = self.climbing_textures[self.cur_texture // 4]
+            return
+        """
+
+        # Jumping animation
+        if not is_on_ground:
+            if dy > DEAD_ZONE and not self.is_on_ladder:
+                self.texture = self.jump_texture_pair[self.character_face_direction]
+                return
+            elif dy < -DEAD_ZONE and not self.is_on_ladder:
+                self.texture = self.fall_texture_pair[self.character_face_direction]
+                return
+
+        # Idle animation
+        if abs(dx) <= DEAD_ZONE:
+            self.texture = self.idle_texture_pair[self.character_face_direction]
+            return
+
+        self.x_odometer += dx
+
+        if abs(self.x_odometer) > 8:
+            self.x_odometer = 0
+
+            # Walking animation
+            self.cur_texture += 1
+            if self.cur_texture > 7:
+                self.cur_texture = 0
+            self.texture = self.walk_textures[self.cur_texture][self.character_face_direction]
+
+
 class GameWindow(arcade.Window):
     """ Main Window """
 
@@ -73,7 +194,10 @@ class GameWindow(arcade.Window):
         arcade.set_background_color(arcade.color.AMAZON)
 
         # Turn on logging
-        arcade.configure_logging()
+        format = '%(asctime)s,%(msecs)03d %(levelname)-8s [%(filename)s:%(lineno)d %(funcName)s()] %(message)s'
+        logging.basicConfig(format=format,
+                            datefmt='%H:%M:%S',
+                            level=logging.DEBUG)
 
     def setup(self):
         """ Set up everything with the game """
@@ -85,8 +209,7 @@ class GameWindow(arcade.Window):
         self.item_list = arcade.SpriteList()
 
         # Set up the player
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                                           SPRITE_SCALING_PLAYER)
+        self.player_sprite = PlayerSprite()
         self.player_sprite.center_x = 250
         self.player_sprite.center_y = 250
         self.player_list.append(self.player_sprite)
@@ -166,7 +289,6 @@ class GameWindow(arcade.Window):
                                             friction=0.7,
                                             collision_type="item")
 
-
     def on_mouse_press(self, x, y, button, modifiers):
         """ Called whenever the mouse button is clicked. """
 
@@ -230,10 +352,9 @@ class GameWindow(arcade.Window):
             self.right_pressed = True
         elif key == arcade.key.UP:
             # find out if player is standing on ground
-            grounding = self.physics_engine.check_grounding(self.player_sprite)
-            physics_object = self.physics_engine.get_physics_object(self.player_sprite)
-            if grounding['body'] is not None:
+            if self.physics_engine.is_on_ground(self.player_sprite):
                 # She is! Go ahead and jump
+                physics_object = self.physics_engine.get_physics_object(self.player_sprite)
                 physics_object.body.apply_impulse_at_local_point((0, PLAYER_JUMP_IMPULSE))
 
     def on_key_release(self, key, modifiers):

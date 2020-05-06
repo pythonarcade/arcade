@@ -150,8 +150,30 @@ Add Player Movement
 
 (To be done)
 
+.. literalinclude:: pymunk_demo_platformer_06.py
+    :caption: Add Player Movement
+    :linenos:
+    :emphasize-lines: 50-51, 71-73, 162-165, 178-193
+
+Add Player Jumping
+------------------
+
+(To be done)
+
+.. literalinclude:: pymunk_demo_platformer_07.py
+    :caption: Add Player Movement
+    :linenos:
+    :emphasize-lines: 50-51
+
+Add Player Animation
+--------------------
+
+(To be done)
+
 Edit Hit-Boxes in Tiled Map Editor
----------------------------------
+----------------------------------
+
+(To be done)
 
 Add Bullets
 -----------
@@ -165,5 +187,20 @@ Destroy Bullets and Items
 
 Add Moving Platforms
 --------------------
+
+(To be done)
+
+Add "Hit" Ability
+-----------------
+
+(To be done)
+
+Add "Grab" Ability
+------------------
+
+(To be done)
+
+Add "Claw-Shot" Ability
+-----------------------
 
 (To be done)
