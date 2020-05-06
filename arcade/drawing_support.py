@@ -4,7 +4,8 @@ Functions used to support drawing. No Pyglet/OpenGL here.
 
 import math
 
-import pymunk.autogeometry
+import pymunk
+from pymunk import autogeometry
 
 from typing import List, Tuple, cast
 
@@ -128,23 +129,38 @@ def calculate_points(image):
 
     """
 
-    # Get the bounding box
-    logo_bb = pymunk.BB(-1, -1, image.width, image.height)
-
     def sample_func(sample_point):
         """ Method used to sample image. """
-        if sample_point.x < 0 \
-                or sample_point.y < 0 \
-                or sample_point.x >= image.width \
-                or sample_point.y >= image.height:
+        if sample_point[0] < 0 \
+                or sample_point[1] < 0 \
+                or sample_point[0] >= image.width \
+                or sample_point[1] >= image.height:
             return 0
 
-        point_tuple = sample_point.x, sample_point.y
+        point_tuple = sample_point[0], sample_point[1]
         color = image.getpixel(point_tuple)
         if color[3] > 0:
             return 255
         else:
             return 0
+
+    # Do a quick check if it is a full tile
+    p1 = 0, 0
+    p2 = 0, image.height - 1
+    p3 = image.width - 1, image.height - 1
+    p4 = image.width - 1, 0
+
+    if sample_func(p1) and sample_func(p2) and sample_func(p3)  and sample_func(p4):
+        # Do a quick check if it is a full tile
+        p1 =(-image.width / 2, -image.height / 2)
+        p2 = (image.width / 2, -image.height / 2)
+        p3 = (image.width / 2, image.height / 2)
+        p4 = (-image.width / 2, image.height / 2)
+
+        return p1, p2, p3, p4
+
+    # Get the bounding box
+    logo_bb = pymunk.BB(-1, -1, image.width, image.height)
 
     # Set of lines that trace the image
     line_set = pymunk.autogeometry.PolylineSet()
@@ -202,8 +218,9 @@ def calculate_points(image):
     hw = image.width / 2
     points = []
     for vec2 in selected_line_set:
-        point = vec2.x - hw, image.height - (vec2.y - hh) - image.height
+        point = round(vec2.x - hw), round(image.height - (vec2.y - hh) - image.height)
         points.append(point)
 
+    points.pop()
     # print(f"{sprite.texture.name} Line-sets={len(line_set)}, Original points={original_points}, Downsampled points={downsampled_points}")
     return points

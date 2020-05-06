@@ -193,11 +193,11 @@ class GameWindow(arcade.Window):
         # Set background color
         arcade.set_background_color(arcade.color.AMAZON)
 
-        # Turn on logging
-        format = '%(asctime)s,%(msecs)03d %(levelname)-8s [%(filename)s:%(lineno)d %(funcName)s()] %(message)s'
-        logging.basicConfig(format=format,
-                            datefmt='%H:%M:%S',
-                            level=logging.DEBUG)
+        # # Turn on logging
+        # format = '%(asctime)s,%(msecs)03d %(levelname)-8s [%(filename)s:%(lineno)d %(funcName)s()] %(message)s'
+        # logging.basicConfig(format=format,
+        #                     datefmt='%H:%M:%S',
+        #                     level=logging.DEBUG)
 
     def setup(self):
         """ Set up everything with the game """
