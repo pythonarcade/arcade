@@ -695,7 +695,7 @@ class SpriteList:
         #     1.0, -1.0, 1.0, 0.0,
         #     1.0, 1.0, 1.0, 1.0,
         # ])
-        # self.vbo_buf = self.ctx.buffer(data=vertices.tobytes())
+        # self.vbo_buf = self.ctx.buffer(data=vertices)
         # vbo_buf_desc = gl.BufferDescription(
         #     self.vbo_buf,
         #     '2f 2f',

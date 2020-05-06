@@ -30,17 +30,17 @@ def quad_2d(size: Tuple[float, float] = (1.0, 1.0), pos: Tuple[float, float] = (
     """
     ctx = _get_active_context()
     width, height = size
-    xpos, ypos = pos
+    x_pos, y_pos = pos
 
     data = array.array('f', [
-        xpos - width / 2.0, ypos + height / 2.0, 0.0, 1.0,
-        xpos - width / 2.0, ypos - height / 2.0, 0.0, 0.0,
-        xpos + width / 2.0, ypos + height / 2.0, 1.0, 1.0,
-        xpos + width / 2.0, ypos - height / 2.0, 1.0, 0.0,
+        x_pos - width / 2.0, y_pos + height / 2.0, 0.0, 1.0,
+        x_pos - width / 2.0, y_pos - height / 2.0, 0.0, 0.0,
+        x_pos + width / 2.0, y_pos + height / 2.0, 1.0, 1.0,
+        x_pos + width / 2.0, y_pos - height / 2.0, 1.0, 0.0,
     ])
 
     return ctx.geometry([BufferDescription(
-        ctx.buffer(data=data.tobytes()),
+        ctx.buffer(data=data),
         '2f 2f',
         ['in_vert', 'in_uv'],
     )], mode=ctx.TRIANGLE_STRIP)
@@ -49,10 +49,10 @@ def quad_2d(size: Tuple[float, float] = (1.0, 1.0), pos: Tuple[float, float] = (
 def screen_rectangle(left: float, right: float, top: float, bottom: float) -> Geometry:
     """Create a screen rectangle by specifying left, right, top, and bottom edges"""
     width, height = right - left, top - bottom
-    xpos, ypos = left + width / 2, right + height / 2
-    print(f"size=({width}, {height}), pos=({xpos}, {ypos})")
+    x_pos, y_pos = left + width / 2, right + height / 2
+    print(f"size=({width}, {height}), pos=({x_pos}, {y_pos})")
 
-    return quad_2d(pos=(xpos, ypos), size=(width, height))
+    return quad_2d(pos=(x_pos, y_pos), size=(width, height))
 
 
 # def screen_rectangle(rectangle_size=None,
@@ -88,7 +88,7 @@ def screen_rectangle(left: float, right: float, top: float, bottom: float) -> Ge
 #     data = array.array('f', my_array)
 
 #     ctx = get_window().ctx
-#     vbo = ctx.buffer(data=data.tobytes())
+#     vbo = ctx.buffer(data=data)
 #     vao_content = [
 #         BufferDescription(
 #             vbo,
