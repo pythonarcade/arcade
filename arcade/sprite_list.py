@@ -444,7 +444,7 @@ class SpriteList:
                 self._sprite_pos_data.append(sprite.center_y)
 
             self._sprite_pos_buf = self.ctx.buffer(
-                data=self._sprite_pos_data.tobytes(),
+                data=self._sprite_pos_data,
                 usage=usage
             )
             variables = ['in_pos']
@@ -462,7 +462,7 @@ class SpriteList:
                 self._sprite_size_data.append(sprite.height)
 
             self._sprite_size_buf = self.ctx.buffer(
-                data=self._sprite_size_data.tobytes(),
+                data=self._sprite_size_data,
                 usage=usage
             )
             variables = ['in_size']
@@ -478,7 +478,7 @@ class SpriteList:
                 self._sprite_angle_data.append(sprite.angle)
 
             self._sprite_angle_buf = self.ctx.buffer(
-                data=self._sprite_angle_data.tobytes(),
+                data=self._sprite_angle_data,
                 usage=usage
             )
             variables = ['in_angle']
@@ -497,7 +497,7 @@ class SpriteList:
                 self._sprite_color_data.append(int(sprite.alpha))
 
             self._sprite_color_buf = self.ctx.buffer(
-                data=self._sprite_color_data.tobytes(),
+                data=self._sprite_color_data,
                 usage=usage
             )
             variables = ['in_color']
@@ -666,7 +666,7 @@ class SpriteList:
                     self._sprite_sub_tex_data.append(coord)
 
             self._sprite_sub_tex_buf = self.ctx.buffer(
-                data=self._sprite_sub_tex_data.tobytes(),
+                data=self._sprite_sub_tex_data,
                 usage=usage
             )
 
@@ -695,7 +695,7 @@ class SpriteList:
         #     1.0, -1.0, 1.0, 0.0,
         #     1.0, 1.0, 1.0, 1.0,
         # ])
-        # self.vbo_buf = self.ctx.buffer(data=vertices.tobytes())
+        # self.vbo_buf = self.ctx.buffer(data=vertices)
         # vbo_buf_desc = gl.BufferDescription(
         #     self.vbo_buf,
         #     '2f 2f',
@@ -943,27 +943,27 @@ class SpriteList:
         if not self.is_static:
             if self._sprite_pos_changed:
                 self._sprite_pos_buf.orphan()
-                self._sprite_pos_buf.write(self._sprite_pos_data.tobytes())
+                self._sprite_pos_buf.write(self._sprite_pos_data)
                 self._sprite_pos_changed = False
 
             if self._sprite_size_changed:
                 self._sprite_size_buf.orphan()
-                self._sprite_size_buf.write(self._sprite_size_data.tobytes())
+                self._sprite_size_buf.write(self._sprite_size_data)
                 self._sprite_size_changed = False
 
             if self._sprite_angle_changed:
                 self._sprite_angle_buf.orphan()
-                self._sprite_angle_buf.write(self._sprite_angle_data.tobytes())
+                self._sprite_angle_buf.write(self._sprite_angle_data)
                 self._sprite_angle_changed = False
 
             if self._sprite_color_changed:
                 self._sprite_color_buf.orphan()
-                self._sprite_color_buf.write(self._sprite_color_data.tobytes())
+                self._sprite_color_buf.write(self._sprite_color_data)
                 self._sprite_color_changed = False
 
             if self._sprite_sub_tex_changed:
                 self._sprite_sub_tex_buf.orphan()
-                self._sprite_sub_tex_buf.write(self._sprite_sub_tex_data.tobytes())
+                self._sprite_sub_tex_buf.write(self._sprite_sub_tex_data)
                 self._sprite_sub_tex_changed = False
 
         self._vao1.render(self.program, mode=self.ctx.POINTS, vertices=len(self.sprite_list))

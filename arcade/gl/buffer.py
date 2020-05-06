@@ -1,6 +1,6 @@
-from ctypes import byref, string_at
+from ctypes import c_byte, byref, string_at
 import weakref
-from typing import TYPE_CHECKING
+from typing import Any, Optional, Tuple, TYPE_CHECKING
 
 from pyglet import gl
 
@@ -28,7 +28,7 @@ class Buffer:
         'stream': gl.GL_STREAM_DRAW
     }
 
-    def __init__(self, ctx, data: bytes = None, reserve: int = 0, usage: str = 'static'):
+    def __init__(self, ctx, data: Optional[Any] = None, reserve: int = 0, usage: str = 'static'):
         self._ctx = ctx
         self._glo = glo = gl.GLuint()
         self._size = -1
@@ -44,7 +44,7 @@ class Buffer:
         # print(f"glBufferData(gl.GL_ARRAY_BUFFER, {self._size}, data, {self._usage})")
 
         if data and len(data) > 0:
-            self._size = len(data)
+            self._size, data = self._data_to_ctypes(data)
             gl.glBufferData(gl.GL_ARRAY_BUFFER, self._size, data, self._usage)
         elif reserve > 0:
             self._size = reserve
@@ -54,6 +54,21 @@ class Buffer:
 
         self.ctx.stats.incr('buffer')
         weakref.finalize(self, Buffer.release, self.ctx, glo)
+
+    def _data_to_ctypes(self, data: Any) -> Tuple[int, Any]:
+        """
+        Attempt to convert the data to ctypes if needed.
+        Returns the byte size and the data.
+        """
+        if isinstance(data, bytes):
+            return len(data), data
+        else:
+            try:
+                m_view = memoryview(data)
+                c_bytes = c_byte * m_view.nbytes
+                return m_view.nbytes, c_bytes.from_buffer(m_view)
+            except Exception as ex:
+                raise ValueError(f"Failed to convert data to ctypes: {ex}")
 
     @property
     def size(self) -> int:
@@ -114,14 +129,15 @@ class Buffer:
         gl.glUnmapBuffer(gl.GL_ARRAY_BUFFER)
         return data
 
-    def write(self, data: bytes, offset: int = 0):
+    def write(self, data: Any, offset: int = 0):
         """Write byte data to the buffer.
 
         :param bytes data: The byte data to write
         :param int offset: The byte offset
         """
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self._glo)
-        gl.glBufferSubData(gl.GL_ARRAY_BUFFER, gl.GLintptr(offset), len(data), data)
+        size, data = self._data_to_ctypes(data)
+        gl.glBufferSubData(gl.GL_ARRAY_BUFFER, gl.GLintptr(offset), size, data)
 
     def copy_from_buffer(self, source: 'Buffer', size=-1, offset=0, source_offset=0):
         """Copy data into this buffer from another buffer

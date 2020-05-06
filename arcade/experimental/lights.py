@@ -168,7 +168,7 @@ class LightLayer(RenderTargetTexture):
             while self._buffer.size < len(data) * self._stride:
                 self._buffer.orphan(double=True)
 
-            self._buffer.write(data=array('f', data).tobytes())
+            self._buffer.write(data=array('f', data))
             self._rebuild = False
 
         # Render to light buffer

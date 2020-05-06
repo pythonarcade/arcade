@@ -21,7 +21,7 @@ def quad_fs(size=(1.0, 1.0), pos=(0.0, 0.0)):
     data = array.array('f', my_array)
 
     ctx = get_window().ctx
-    vbo = ctx.buffer(data=data.tobytes())
+    vbo = ctx.buffer(data=data)
     vao_content = [
         BufferDescription(
             vbo,
@@ -65,7 +65,7 @@ def screen_rectangle(rectangle_size=None,
     data = array.array('f', my_array)
 
     ctx = get_window().ctx
-    vbo = ctx.buffer(data=data.tobytes())
+    vbo = ctx.buffer(data=data)
     vao_content = [
         BufferDescription(
             vbo,
