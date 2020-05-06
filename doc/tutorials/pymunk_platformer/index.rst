@@ -148,37 +148,83 @@ should see them fall when the game starts.
 Add Player Movement
 -------------------
 
-(To be done)
+Next step is to get the player moving. In this section we'll cover how
+to move left and right. In the next section we'll show how to jump.
+
+The force that we will move the player is defined as ``PLAYER_MOVE_FORCE_ON_GROUND``.
+We'll apply a different force later, if the player happens to be airborne.
+
+We need to track if the left/right keys are held down. To do this we define
+instance variables ``left_pressed`` and ``right_pressed``. These are set to
+appropriate values in the key press and release handlers.
+
+Finally, we need to apply the correct force in ``on_update``. Force is specified
+in a tuple with horizontal force first, and vertical force second.
+
+We also set the friction when we are moving to zero, and when we are not moving to
+1. This is important to get realistic movement.
 
 .. literalinclude:: pymunk_demo_platformer_06.py
     :caption: Add Player Movement
     :linenos:
-    :emphasize-lines: 50-51, 71-73, 162-165, 178-193
+    :emphasize-lines: 50-51, 71-73, 162-165, 170-173, 178-193
 
 Add Player Jumping
 ------------------
 
-(To be done)
+To get the player to jump we need to:
+
+* Make sure the player is on the ground
+* Apply an impulse force to the player upward
+* Change the left/right force to the player while they are in the air.
+
+We can see if a sprite has a sprite below it with the ``is_on_ground`` function.
+Otherwise we'll be able to jump while we are in the air.
+(Double-jumps would allow this once.)
+
+If we don't allow the player to move left-right while in the air, they player
+will be very hard to control. If we allow them to move left/right with the same
+force as on the ground, that's typically too much. So we've got a different
+left/right force depending if we are in the air or not.
 
 .. literalinclude:: pymunk_demo_platformer_07.py
     :caption: Add Player Movement
     :linenos:
-    :emphasize-lines: 50-51
+    :emphasize-lines: 53-54, 56-57, 172-177, 193-196, 201-204
 
 Add Player Animation
 --------------------
 
-(To be done)
+To create a player animation, we make a custom child class of ``Sprite``.
+We load each frame of animation that we need, including a mirror image of it.
 
-Edit Hit-Boxes in Tiled Map Editor
-----------------------------------
+Any sprite moved by the Pymunk engine will have its ``pymunk_moved`` method
+called. This can be used to update the animation.
 
-(To be done)
+Because the physics engine works with small floating point numbers, it is a good
+idea not to change the animation as the x and y float above and below zero. For
+that reason, in this code we have a "dead zone."
+We don't change the animation until it gets outside of that zone.
+
+For the multi-frame walking animation, we use an "odometer." We need to move
+a certain number of pixels before changing the animation. If this value is too
+small our character moves her legs like Fred Flintstone, too large and it looks
+like you are ice skating.
+
+.. literalinclude:: pymunk_demo_platformer_08.py
+    :caption: Add Player Animation
+    :linenos:
+    :emphasize-lines: 59-158, 182-183, 198
 
 Add Bullets
 -----------
 
 (To be done)
+
+.. literalinclude:: pymunk_demo_platformer_09.py
+    :caption: Shooting Bullets
+    :linenos:
+    :emphasize-lines: 69-73, 297-349
 
 Destroy Bullets and Items
 -------------------------
@@ -187,6 +233,11 @@ Destroy Bullets and Items
 
 Add Moving Platforms
 --------------------
+
+(To be done)
+
+Add Ladders
+-----------
 
 (To be done)
 
