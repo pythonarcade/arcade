@@ -158,7 +158,7 @@ class TypeInfo:
     def __init__(self, name, enum, gl_type, gl_size, components):
         """Describes an opengl type
 
-        :param name: the string represenation of this type
+        :param name: the string representation of this type
         :param enum: The enum of this type
         :param gl_type: the base enum of this type
         :param gl_size: byte size if the gl_type
@@ -171,10 +171,10 @@ class TypeInfo:
         self.components = components  # type: int
 
     @property
-    def size(self):
+    def size(self) -> int:
         return self.gl_size * self.components
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return (
             f"<TypeInfo name={self.name}, enum={self.enum} gl_type={self.gl_type} "
             f"gl_size={self.gl_size} components={self.components}>"

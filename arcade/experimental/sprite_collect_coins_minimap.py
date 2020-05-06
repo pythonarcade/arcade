@@ -12,7 +12,7 @@ python -m arcade.examples.sprite_collect_coins
 import random
 import arcade
 import os
-from arcade.experimental import geometry
+from arcade.gl import geometry
 
 # --- Constants ---
 SPRITE_SCALING_PLAYER = 0.5
@@ -66,8 +66,8 @@ class MyGame(arcade.Window):
             fragment_shader=arcade.resources.shaders.fragment.texture)
         self.color_attachment = self.ctx.texture((SCREEN_WIDTH, SCREEN_HEIGHT), components=4)
         self.offscreen = self.ctx.framebuffer(color_attachments=[self.color_attachment])
-        self.quad_fs = geometry.quad_fs(size=(2.0, 2.0))
-        self.mini_map_quad = geometry.quad_fs(size=(0.5, 0.5), pos=(0.75, 0.75))
+        self.quad_fs = geometry.quad_2d_fs()
+        self.mini_map_quad = geometry.quad_2d(size=(0.5, 0.5), pos=(0.75, 0.75))
 
         # Sprite lists
         self.player_list = arcade.SpriteList()

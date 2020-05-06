@@ -491,6 +491,17 @@ Grid-Based Games
    :figwidth: 170px
 
    :ref:`array_backed_grid_buffered`
+
+.. figure:: thumbs/array_backed_grid.png
+   :figwidth: 170px
+
+   :ref:`array_backed_grid_sprites_1`
+
+.. figure:: thumbs/array_backed_grid.png
+   :figwidth: 170px
+
+   :ref:`array_backed_grid_sprites_2`
+
 .. figure:: thumbs/tetris.png
    :figwidth: 170px
 

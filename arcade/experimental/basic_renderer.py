@@ -1,7 +1,6 @@
 import math
 import arcade
-from arcade.experimental import geometry
-from pyglet import gl
+from arcade.gl import geometry
 
 # Do the math to figure out our screen dimensions
 SCREEN_WIDTH = 800
@@ -54,8 +53,8 @@ class MyGame(arcade.Window):
             }
             """
         )
-        self.quad_1 = geometry.quad_fs(pos=(-0.5, 0.5))
-        self.quad_2 = geometry.quad_fs(pos=(0.5, 0.5))
+        self.quad_1 = geometry.quad_2d(pos=(-0.5, 0.5))
+        self.quad_2 = geometry.quad_2d(pos=(0.5, 0.5))
 
     def on_draw(self):
         try:

@@ -1,21 +1,24 @@
-from typing import Union, Tuple, Optional
+""" Theme information for GUI elements. """
+from typing import Union, Tuple
 from dataclasses import dataclass
 from arcade import Color
 
 @dataclass
 class Theme:
-    text_color: Optional[Color] = None
+    """ Theme information for GUI elements. """
+    text_color: Color
 
-    font_size: float = 12
-    font_name: Union[str, Tuple[str, ...]] = ('calibri', 'arial')
+    font_size: float
+    font_name: Union[str, Tuple[str, ...]]
 
-    background_color: Optional[Color] = None
-    border_color: Optional[Color] = None
+    background_color: Color
+    border_color: Color
+    border_width: int
 
-    text_color_mouse_over: Optional[Color] = None
-    border_color_mouse_over: Optional[Color] = None
-    background_color_mouse_over: Optional[Color] = None
+    text_color_mouse_over: Color
+    border_color_mouse_over: Color
+    background_color_mouse_over: Color
 
-    background_color_mouse_press: Optional[Color] = None
-    text_color_mouse_press: Optional[Color] = None
-    border_color_mouse_press: Optional[Color] = None
+    background_color_mouse_press: Color
+    text_color_mouse_press: Color
+    border_color_mouse_press: Color

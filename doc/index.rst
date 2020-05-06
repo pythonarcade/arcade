@@ -1,5 +1,10 @@
+.. image:: images/arcade-logo.svg
+    :width: 10%
+    :class: right-image
+
 The Python Arcade Library
 =========================
+
 
 .. |Go| image:: images/go.svg
    :width: 40
@@ -14,10 +19,10 @@ The Python Arcade Library
       <tr>
         <td>
           <div style="display:inline-block;">
-            <img style="width:50px;" src="_static/character.png">
+            <img style="width:78px;" src="_static/example_code.svg">
           </div>
           <div style="display:inline-block;">
-            <h2 style="width:auto;">Example Code</h2>
+            <h2 style="width:auto;">Examples</h2>
           </div>
           <ul>
           <li><a href="examples/index.html">All Examples</a></li>
@@ -28,7 +33,7 @@ The Python Arcade Library
         </td>
         <td>
           <div style="display:inline-block;">
-            <img style="width:78px;" src="_static/download.svg"><br/>
+            <img style="width:78px;" src="_static/installation.svg"><br/>
           </div>
           <div style="display:inline-block;">
             <h2 style="width:auto;">Installation</h2>
@@ -44,7 +49,7 @@ The Python Arcade Library
       <tr>
         <td>
           <div style="display:inline-block;">
-            <img style="width:78px;" src="_static/ereader.svg"><br/>
+            <img style="width:78px;" src="_static/API.svg"><br/>
           </div>
           <div style="display:inline-block;">
             <h2>API</h2>
@@ -60,7 +65,7 @@ The Python Arcade Library
         </td>
         <td>
           <div style="display:inline-block;">
-            <img style="width:78px;" src="_static/weixin-logo.svg"><br/>
+            <img style="width:78px;" src="_static/social.svg"><br/>
           </div>
           <div style="display:inline-block;">
             <h2>Social</h2>
@@ -78,7 +83,7 @@ The Python Arcade Library
       <tr>
         <td>
           <div style="display:inline-block;">
-            <img style="width:78px;" src="_static/sample_games.svg">
+            <img style="width:78px;" src="_static/example_games.svg">
           </div>
           <div style="display:inline-block;">
             <h2>Games</h2>
@@ -89,7 +94,7 @@ The Python Arcade Library
         </td>
         <td>
           <div style="display:inline-block;">
-            <img style="width:78px;" src="_static/speedometer-icon.svg">
+            <img style="width:78px;" src="_static/performance.svg">
           </div>
           <div style="display:inline-block;">
             <h2>Performance</h2>
@@ -105,7 +110,7 @@ The Python Arcade Library
 
         <td>
           <div style="display:inline-block;">
-            <img style="width:78px;" src="_static/code.svg">
+            <img style="width:78px;" src="_static/source.svg">
           </div>
           <div style="display:inline-block;">
             <h2>Source Code</h2>
@@ -119,7 +124,7 @@ The Python Arcade Library
 
         <td>
           <div style="display:inline-block;">
-            <img style="width:78px;" src="_static/owl.svg">
+            <img style="width:78px;" src="_static/learn.svg">
           </div>
           <div style="display:inline-block;">
             <h2>Learn</h2>
@@ -168,6 +173,7 @@ game without learning a complex framework.
    tutorials/edge_artifacts/index
    get_started
    logging
+   tutorials/pymunk_platformer/index
 
 Learn about it:
 ^^^^^^^^^^^^^^^

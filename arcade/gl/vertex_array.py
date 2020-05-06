@@ -208,7 +208,7 @@ class Geometry:
         return self._ctx
 
     @property
-    def index_buffer(self):
+    def index_buffer(self) -> Optional[Buffer]:
         return self._index_buffer
 
     @property
@@ -217,7 +217,7 @@ class Geometry:
         return self._num_vertices
 
     @num_vertices.setter
-    def num_vertices(self, value):
+    def num_vertices(self, value: int):
         self._num_vertices = value
 
     def instance(self, program: Program) -> VertexArray:
@@ -229,7 +229,7 @@ class Geometry:
         return self._generate_vao(program)
 
     def render(self, program: Program, *, mode: gl.GLenum = None,
-               first: int = 0, vertices: int = None, instances: int = 1):
+               first: int = 0, vertices: int = None, instances: int = 1) -> None:
         """Render the geometry with a specific program.
         :param Program program: The Program to render with
         :param gl.GLenum mode: Override what primitive mode should be used
@@ -242,11 +242,11 @@ class Geometry:
         mode = self._mode if mode is None else mode
         vao.render(mode=mode, first=first, vertices=vertices or self._num_vertices, instances=instances)
 
-    def transform(self, program: Program):
+    def transform(self, program: Program) -> None:
         """Render with transform feedback"""
         raise NotImplementedError()
 
-    def flush(self):
+    def flush(self) -> None:
         """Flush all generated VertexArrays"""
         self._vao_cache = {}
 

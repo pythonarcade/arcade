@@ -171,7 +171,7 @@ class Texture:
         return self._filter
 
     @filter.setter
-    def filter(self, value):
+    def filter(self, value: Tuple[int, int]):
         if not isinstance(value, tuple) or not len(value) == 2:
             raise ValueError("Texture filter must be a 2 component tuple (min, mag)")
 
@@ -181,7 +181,7 @@ class Texture:
         gl.glTexParameteri(self._target, gl.GL_TEXTURE_MAG_FILTER, self._filter[1])
 
     @property
-    def wrap_x(self):
+    def wrap_x(self) -> int:
         """
         The horizontal wrapping of the texture. This decides how textures
         are read when texture coordinates are outside the [0.0, 1.0] area.
@@ -191,13 +191,13 @@ class Texture:
         return self._wrap_x
 
     @wrap_x.setter
-    def wrap_x(self, value):
+    def wrap_x(self, value: int):
         self._wrap_x = value
         self.use()
         gl.glTexParameteri(self._target, gl.GL_TEXTURE_WRAP_S, value)
 
     @property
-    def wrap_y(self):
+    def wrap_y(self) -> int:
         """
         The horizontal wrapping of the texture. This decides how textures
         are read when texture coordinates are outside the [0.0, 1.0] area.
@@ -207,7 +207,7 @@ class Texture:
         return self._wrap_y
 
     @wrap_y.setter
-    def wrap_y(self, value):
+    def wrap_y(self, value: int):
         self._wrap_y = value
         self.use()
         gl.glTexParameteri(self._target, gl.GL_TEXTURE_WRAP_T, value)
@@ -227,7 +227,7 @@ class Texture:
         
         return bytearray(buffer)
 
-    def write(self, data: Union[bytes, Buffer], level: int = 0, viewport=None):
+    def write(self, data: Union[bytes, Buffer], level: int = 0, viewport=None) -> None:
         """Write byte data to the texture
 
         :param Union[bytes, Buffer] data: bytes or a Buffer with data to write
@@ -274,7 +274,7 @@ class Texture:
         else:
             raise ValueError("data must be bytes or a Buffer")
 
-    def build_mipmaps(self, base=0, max_amount=1000):
+    def build_mipmaps(self, base=0, max_amount=1000) -> None:
         """Generate mipmaps for this texture.
         Also see: https://www.khronos.org/opengl/wiki/Texture#Mip_maps
         """
@@ -295,7 +295,7 @@ class Texture:
 
         ctx.stats.decr('texture')
 
-    def use(self, unit: int = 0):
+    def use(self, unit: int = 0) -> None:
         """Bind the texture to a channel,
 
         :param int unit: The texture unit to bind the texture.
@@ -303,6 +303,6 @@ class Texture:
         gl.glActiveTexture(gl.GL_TEXTURE0 + unit)
         gl.glBindTexture(gl.GL_TEXTURE_2D, self._glo)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "<Texture glo={} size={}x{} components={}>".format(
             self._glo.value, self._width, self._height, self._components)

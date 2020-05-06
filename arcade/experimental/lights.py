@@ -3,7 +3,8 @@ from typing import Iterable, Tuple, Sequence, List, Optional
 
 from arcade import Color, get_window, get_projection, get_scaling_factor, set_viewport
 from arcade import gl
-from arcade.experimental import geometry
+from arcade.gl import geometry
+from arcade.experimental.texture_render_target import RenderTargetTexture
 
 
 class Light:
@@ -58,7 +59,7 @@ class Light:
         self._radius = value
 
 
-class LightLayer:
+class LightLayer(RenderTargetTexture):
 
     def __init__(self, width: int, height: int):
         """Create a LightLayer
@@ -67,13 +68,9 @@ class LightLayer:
 
         :param Tuple[int, int] size: Width and height of light layer
         """
-        self.window = get_window()
-        if self.window is None:
-            raise RuntimeError("Cannot find window")
-        self.ctx = self.window.ctx
-        self._lights: List[Light] = []
-        self._background_color: Optional[Color] = (0, 0, 0)
+        super().__init__(width, height)
 
+        self._lights: List[Light] = []
         self._prev_target = None
         self._rebuild = False
         self._stride = 28
@@ -95,14 +92,24 @@ class LightLayer:
             vertex_shader=":resources:shaders/lights/combine_vs.glsl",
             fragment_shader=":resources:shaders/lights/combine_fs.glsl",
         )
-        self._quad_fs = geometry.quad_fs(size=(2.0, 2.0))
-        self.resize(width, height)
+        # NOTE: Diffuse buffer created in parent
+        self._light_buffer = self.ctx.framebuffer(color_attachments=self.ctx.texture((width, height), components=3))
+
+    @property
+    def diffuse_texture(self):
+        self.texture
+    
+    @property
+    def light_texture(self):
+        self._light_buffer.color_attachments[0]
 
     def resize(self, width, height):
-        pixel_scale = get_scaling_factor(self.window)
-        self._size = width * pixel_scale, height * pixel_scale
-        self._diffuse_buffer = self.ctx.framebuffer(color_attachments=self.ctx.texture((width, height), components=4))
+        super().resize(width, height)
         self._light_buffer = self.ctx.framebuffer(color_attachments=self.ctx.texture((width, height), components=3))
+
+    def clear(self):
+        super().clear()
+        self._light_buffer.clear()
 
     def add(self, light: Light):
         """Add a Light to the layer"""
@@ -120,10 +127,6 @@ class LightLayer:
         light._light_layer = None
         self._rebuild = True
 
-    def set_background_color(self, color: Color):
-        """Set the background color for the light layer"""
-        self._background_color = color
-
     def __len__(self) -> int:
         """Number of lights"""
         return len(self._lights)
@@ -137,8 +140,8 @@ class LightLayer:
 
     def __enter__(self):
         self._prev_target = self.ctx.active_framebuffer
-        self._diffuse_buffer.use()
-        self._diffuse_buffer.clear(self._background_color)
+        self._fbo.use()
+        self._fbo.clear(self._background_color)
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -184,7 +187,7 @@ class LightLayer:
         self._combine_program['diffuse_buffer'] = 0
         self._combine_program['light_buffer'] = 1
         self._combine_program['ambient'] = ambient_color[:3]
-        self._diffuse_buffer.color_attachments[0].use(0)
+        self._fbo.color_attachments[0].use(0)
         self._light_buffer.color_attachments[0].use(1)
 
         self._quad_fs.render(self._combine_program)

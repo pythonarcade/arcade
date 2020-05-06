@@ -774,6 +774,9 @@ class Sprite:
     def register_physics_engine(self, physics_engine):
         self.physics_engines.append(physics_engine)
 
+    def pymunk_moved(self, physics_engine, dx, dy, d_angle):
+        pass
+
     def draw(self):
         """ Draw the sprite. """
 
