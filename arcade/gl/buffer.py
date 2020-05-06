@@ -1,6 +1,6 @@
 from ctypes import c_byte, byref, string_at
 import weakref
-from typing import Any, Tuple, TYPE_CHECKING
+from typing import Any, Optional, Tuple, TYPE_CHECKING
 
 from pyglet import gl
 
@@ -28,7 +28,7 @@ class Buffer:
         'stream': gl.GL_STREAM_DRAW
     }
 
-    def __init__(self, ctx, data: bytes = None, reserve: int = 0, usage: str = 'static'):
+    def __init__(self, ctx, data: Optional[Any] = None, reserve: int = 0, usage: str = 'static'):
         self._ctx = ctx
         self._glo = glo = gl.GLuint()
         self._size = -1

@@ -3,7 +3,7 @@ import sys
 import logging
 import weakref
 from pathlib import Path
-from typing import Dict, List, Tuple, Union, Sequence
+from typing import Any, Dict, List, Tuple, Union, Sequence
 
 # import pyglet
 from pyglet.window import Window
@@ -165,10 +165,10 @@ class Context:
         self._blend_func = value
         gl.glBlendFunc(value[0], value[1])
 
-    def buffer(self, *, data: bytes = None, reserve: int = 0, usage: str = 'static') -> Buffer:
+    def buffer(self, *, data: Optional[Any] = None, reserve: int = 0, usage: str = 'static') -> Buffer:
         """Create a new OpenGL Buffer object.
 
-        :param bytes data: The buffer data
+        :param bytes data: The buffer data, This can be ``bytes`` or an object supporting the buffer protocol.
         :param int reserve: The number of bytes reserve
         :param str usage: Buffer usage. 'static', 'dynamic' or 'stream'
         """
