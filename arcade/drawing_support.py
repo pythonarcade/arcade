@@ -4,6 +4,8 @@ Functions used to support drawing. No Pyglet/OpenGL here.
 
 import math
 
+import pymunk.autogeometry
+
 from typing import List, Tuple, cast
 
 from arcade import Color
@@ -115,7 +117,6 @@ def rotate_point(x: float, y: float, cx: float, cy: float,
 
     return [x, y]
 
-
 def calculate_points(image):
     """
     Given an image, this returns points that make up a hit box around it. Attempts
@@ -126,117 +127,83 @@ def calculate_points(image):
     :Returns: List of points
 
     """
-    left_border = 0
-    good = True
-    while good and left_border < image.width:
-        for row in range(image.height):
-            pos = (left_border, row)
-            pixel = image.getpixel(pos)
-            if type(pixel) is int or len(pixel) != 4:
-                raise TypeError("Error, calculate_points called on image not in RGBA format")
-            else:
-                if pixel[3] != 0:
-                    good = False
-                    break
-        if good:
-            left_border += 1
 
-    right_border = image.width - 1
-    good = True
-    while good and right_border > 0:
-        for row in range(image.height):
-            pos = (right_border, row)
-            pixel = image.getpixel(pos)
-            if pixel[3] != 0:
-                good = False
-                break
-        if good:
-            right_border -= 1
+    # Get the bounding box
+    logo_bb = pymunk.BB(-1, -1, image.width, image.height)
 
-    top_border = 0
-    good = True
-    while good and top_border < image.height:
-        for column in range(image.width):
-            pos = (column, top_border)
-            pixel = image.getpixel(pos)
-            if pixel[3] != 0:
-                good = False
-                break
-        if good:
-            top_border += 1
+    def sample_func(sample_point):
+        """ Method used to sample image. """
+        if sample_point.x < 0 \
+                or sample_point.y < 0 \
+                or sample_point.x >= image.width \
+                or sample_point.y >= image.height:
+            return 0
 
-    bottom_border = image.height - 1
-    good = True
-    while good and bottom_border > 0:
-        for column in range(image.width):
-            pos = (column, bottom_border)
-            pixel = image.getpixel(pos)
-            if pixel[3] != 0:
-                good = False
-                break
-        if good:
-            bottom_border -= 1
+        point_tuple = sample_point.x, sample_point.y
+        color = image.getpixel(point_tuple)
+        if color[3] > 0:
+            return 255
+        else:
+            return 0
 
-    def _check_corner_offset(start_x, start_y, x_direction, y_direction):
+    # Set of lines that trace the image
+    line_set = pymunk.autogeometry.PolylineSet()
 
-        bad = False
-        offset = 0
-        while not bad:
-            y = start_y + (offset * y_direction)
-            x = start_x
-            for count in range(offset + 1):
-                my_pixel = image.getpixel((x, y))
-                # print(f"({x}, {y}) = {pixel} | ", end="")
-                if my_pixel[3] != 0:
-                    bad = True
-                    break
-                y -= y_direction
-                x += x_direction
-            # print(f" - {bad}")
-            if not bad:
-                offset += 1
-        # print(f"offset: {offset}")
-        return offset
+    # Collect the line segments
+    def segment_func(v0, v1):
+        line_set.collect_segment(v0, v1)
 
-    def _r(point, height, width):
-        return point[0] - width / 2, (height - point[1]) - height / 2
+    # How often to sample?
+    downres = 1
+    horizontal_samples = int(image.width / downres)
+    vertical_samples = int(image.height / downres)
 
-    top_left_corner_offset = _check_corner_offset(left_border, top_border, 1, 1)
-    top_right_corner_offset = _check_corner_offset(right_border, top_border, -1, 1)
-    bottom_left_corner_offset = _check_corner_offset(left_border, bottom_border, 1, -1)
-    bottom_right_corner_offset = _check_corner_offset(right_border, bottom_border, -1, -1)
+    # Run the trace
+    pymunk.autogeometry.march_soft(
+        logo_bb,
+        horizontal_samples, vertical_samples,
+        99,
+        segment_func,
+        sample_func)
 
-    p1 = left_border + top_left_corner_offset, top_border
-    p2 = (right_border + 1) - top_right_corner_offset, top_border
-    p3 = (right_border + 1), top_border + top_right_corner_offset
-    p4 = (right_border + 1), (bottom_border + 1) - bottom_right_corner_offset
-    p5 = (right_border + 1) - bottom_right_corner_offset, (bottom_border + 1)
-    p6 = left_border + bottom_left_corner_offset, (bottom_border + 1)
-    p7 = left_border, (bottom_border + 1) - bottom_left_corner_offset
-    p8 = left_border, top_border + top_left_corner_offset
+    # Select which line set to use
+    selected_line_set = line_set[0]
+    selected_range = None
+    if len(line_set) > 1:
+        # We have more than one line set. Try and find one that covers most of
+        # the sprite.
+        for line in line_set:
+            min_x = None
+            min_y = None
+            max_x = None
+            max_y = None
+            for point in line:
+                if min_x is None or point.x < min_x:
+                    min_x = point.x
+                if max_x is None or point.x > max_x:
+                    max_x = point.x
+                if min_y is None or point.y < min_y:
+                    min_y = point.y
+                if max_y is None or point.y > max_y:
+                    max_y = point.y
 
-    result = []
+            range = max_x - min_x + max_y + min_y
+            if selected_range is None or range > selected_range:
+                selected_range = range
+                selected_line_set = line
 
-    h = image.height
-    w = image.width
+    # Reduce number of verticies
+    # original_points = len(selected_line_set)
+    selected_line_set = pymunk.autogeometry.simplify_curves(selected_line_set, 4.5)
+    # downsampled_points = len(selected_line_set)
 
-    result.append(_r(p7, h, w))
-    if bottom_left_corner_offset:
-        result.append(_r(p6, h, w))
+    # Convert to normal points, offset fo 0,0 is center, flip the y
+    hh = image.height / 2
+    hw = image.width / 2
+    points = []
+    for vec2 in selected_line_set:
+        point = vec2.x - hw, image.height - (vec2.y - hh) - image.height
+        points.append(point)
 
-    result.append(_r(p5, h, w))
-    if bottom_right_corner_offset:
-        result.append(_r(p4, h, w))
-
-    result.append(_r(p3, h, w))
-    if top_right_corner_offset:
-        result.append(_r(p2, h, w))
-
-    result.append(_r(p1, h, w))
-    if top_left_corner_offset:
-        result.append(_r(p8, h, w))
-
-    # Remove duplicates
-    result = tuple(dict.fromkeys(result))
-
-    return result
+    # print(f"{sprite.texture.name} Line-sets={len(line_set)}, Original points={original_points}, Downsampled points={downsampled_points}")
+    return points
