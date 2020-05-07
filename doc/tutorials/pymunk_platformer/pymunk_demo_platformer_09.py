@@ -4,7 +4,7 @@ Example of Pymunk Physics Engine Platformer
 import math
 import arcade
 from typing import Optional
-from arcade.experimental.pymunk_physics_engine import PymunkPhysicsEngine
+from arcade.pymunk_physics_engine import PymunkPhysicsEngine
 
 SCREEN_TITLE = "PyMunk Platformer"
 
@@ -186,7 +186,7 @@ class GameWindow(arcade.Window):
         self.right_pressed: bool = False
 
         # Physics engine
-        self.physics_engine = Optional[arcade.experimental.pymunk_physics_engine.PymunkPhysicsEngine]
+        self.physics_engine = Optional[arcade.pymunk_physics_engine.PymunkPhysicsEngine]
 
         # Set background color
         arcade.set_background_color(arcade.color.AMAZON)

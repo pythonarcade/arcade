@@ -6,7 +6,7 @@ Platformer
 import math
 import arcade
 from typing import Optional
-from arcade.experimental.pymunk_physics_engine import PymunkPhysicsEngine
+from arcade.pymunk_physics_engine import PymunkPhysicsEngine
 
 import logging
 LOG = logging.getLogger(__name__)
