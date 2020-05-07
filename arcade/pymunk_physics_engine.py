@@ -2,7 +2,10 @@
 Pymunk Physics Engine
 """
 
+import pymunkoptions
+pymunkoptions.options["debug"] = False
 import pymunk
+
 import math
 from typing import Callable
 from typing import List

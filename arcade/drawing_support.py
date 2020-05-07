@@ -4,7 +4,10 @@ Functions used to support drawing. No Pyglet/OpenGL here.
 
 import math
 
+import pymunkoptions
+pymunkoptions.options["debug"] = False
 import pymunk
+
 from pymunk import autogeometry
 
 from typing import List, Tuple, cast
