@@ -34,7 +34,7 @@ def load_texture_pair(filename):
     """
     return [
         arcade.load_texture(filename),
-        arcade.load_texture(filename, mirrored=True)
+        arcade.load_texture(filename, flipped_horizontallyTrue)
     ]
 
 

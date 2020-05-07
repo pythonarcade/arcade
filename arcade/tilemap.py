@@ -213,13 +213,15 @@ def _create_sprite_from_tile(map_object: pytiled_parser.objects.TileMap,
         my_sprite: Sprite = AnimatedTimeBasedSprite(image_file, scaling)
     else:
         image_x, image_y, width, height = _get_image_info_from_tileset(tile)
-
         my_sprite = Sprite(image_file,
                            scaling,
                            image_x,
                            image_y,
                            width,
-                           height)
+                           height,
+                           flipped_horizontally=tile.flipped_horizontally,
+                           flipped_vertically=tile.flipped_vertically,
+                           flipped_diagonally=tile.flipped_diagonally)
 
     if tile.properties is not None and len(tile.properties) > 0:
         for my_property in tile.properties:
@@ -366,14 +368,15 @@ def _process_object_layer(map_object: pytiled_parser.objects.TileMap,
         my_sprite.height = height = cur_object.size[1] * scaling
         centerX = width / 2
         centerY = height / 2
-        rotation = -math.radians(cur_object.rotation)
-        cosRotation = math.cos(rotation)
-        sinRotation = math.sin(rotation)
-        rotatedCenterX = centerX * cosRotation - centerY * sinRotation
-        rotatedCenterY = centerX * sinRotation + centerY * cosRotation
+        if cur_object.rotation is not None:
+            rotation = -math.radians(cur_object.rotation)
+            cosRotation = math.cos(rotation)
+            sinRotation = math.sin(rotation)
+            rotatedCenterX = centerX * cosRotation - centerY * sinRotation
+            rotatedCenterY = centerX * sinRotation + centerY * cosRotation
 
-        my_sprite.position = (x + rotatedCenterX, y + rotatedCenterY)
-        my_sprite.angle = math.degrees(rotation)
+            my_sprite.position = (x + rotatedCenterX, y + rotatedCenterY)
+            my_sprite.angle = math.degrees(rotation)
 
         # Opacity
         opacity = layer.opacity
@@ -418,7 +421,7 @@ def _process_tile_layer(map_object: pytiled_parser.objects.TileMap,
                         base_directory: str = "",
                         use_spatial_hash: bool = False) -> SpriteList:
     sprite_list: SpriteList = SpriteList(use_spatial_hash=use_spatial_hash)
-    map_array = layer.data
+    map_array = layer.layer_data
 
     # Loop through the layer and add in the wall list
     for row_index, row in enumerate(map_array):

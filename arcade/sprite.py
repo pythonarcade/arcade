@@ -103,20 +103,26 @@ class Sprite:
                  image_x: float = 0, image_y: float = 0,
                  image_width: float = 0, image_height: float = 0,
                  center_x: float = 0, center_y: float = 0,
-                 repeat_count_x: int = 1, repeat_count_y: int = 1):
+                 repeat_count_x: int = 1, repeat_count_y: int = 1,
+                 flipped_horizontally: bool = False,
+                 flipped_vertically: bool = False,
+                 flipped_diagonally: bool = False,
+                 mirrored = None):
         """
         Create a new sprite.
 
-        Args:
-            filename (str): Filename of an image that represents the sprite.
-            scale (float): Scale the image up or down. Scale of 1.0 is none.
-            image_x (float): X offset to sprite within sprite sheet.
-            image_y (float): Y offset to sprite within sprite sheet.
-            image_width (float): Width of the sprite
-            image_height (float): Height of the sprite
-            center_x (float): Location of the sprite
-            center_y (float): Location of the sprite
-
+        :param str filename: Filename of an image that represents the sprite.
+        :param float scale: Scale the image up or down. Scale of 1.0 is none.
+        :param float image_x: X offset to sprite within sprite sheet.
+        :param float image_y: Y offset to sprite within sprite sheet.
+        :param float image_width: Width of the sprite
+        :param float image_height: Height of the sprite
+        :param float center_x: Location of the sprite
+        :param float center_y: Location of the sprite
+        :param bool flipped_horizontally: Mirror the sprite image. Flip left/right across vertical axis.
+        :param bool flipped_vertically: Flip the image up/down across the horizontal axis.
+        :param bool flipped_diagonally: Transpose the image, flip it across the diagonal.
+        :param mirrored: Deprecated.
         """
 
         if image_width < 0:
@@ -131,6 +137,11 @@ class Sprite:
         if image_height == 0 and image_width != 0:
             raise ValueError("Height can't be zero.")
 
+        if mirrored is not None:
+            from warnings import warn
+            warn("In Sprite, the 'mirrored' parameter is deprecated. Use 'flipped_horizontally' instead.", DeprecationWarning)
+            flipped_horizontally = mirrored
+
         self.sprite_lists: List[Any] = []
         self.physics_engines: List[Any] = []
 
@@ -138,7 +149,10 @@ class Sprite:
         if filename is not None:
             try:
                 self._texture = load_texture(filename, image_x, image_y,
-                                             image_width, image_height)
+                                             image_width, image_height,
+                                             flipped_horizontally=flipped_horizontally,
+                                             flipped_vertically=flipped_vertically,
+                                             flipped_diagonally=flipped_diagonally)
             except Exception as e:
                 print(f"Unable to load {filename} {e}")
                 self._texture = None
@@ -435,6 +449,9 @@ class Sprite:
                     print("Warning, attempt to remove item from spatial hash that doesn't exist in the hash.")
 
     def add_spatial_hashes(self):
+        """
+        Add spatial hashes for this sprite in all the sprite lists it is part of.
+        """
         for sprite_list in self.sprite_lists:
             if sprite_list.use_spatial_hash:
                 sprite_list.spatial_hash.insert_object_for_box(self)
@@ -772,9 +789,13 @@ class Sprite:
         self.sprite_lists.append(new_list)
 
     def register_physics_engine(self, physics_engine):
+        """ Called by the Pymunk physics engine when this sprite is added
+        to that physics engine. Lets the sprite know about the engine and
+        remove itself if it gets deleted. """
         self.physics_engines.append(physics_engine)
 
     def pymunk_moved(self, physics_engine, dx, dy, d_angle):
+        """ Called by the pymunk physics engine if this sprite moves. """
         pass
 
     def draw(self):

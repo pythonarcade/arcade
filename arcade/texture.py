@@ -275,9 +275,11 @@ def load_texture(file_name: Union[str, Path],
                  x: float = 0,
                  y: float = 0,
                  width: float = 0, height: float = 0,
-                 mirrored: bool = False,
-                 flipped: bool = False,
-                 can_cache: bool = True) -> Texture:
+                 flipped_horizontally: bool = False,
+                 flipped_vertically: bool = False,
+                 flipped_diagonally: bool = False,
+                 can_cache: bool = True,
+                 mirrored = None) -> Texture:
     """
     Load an image from disk and create a texture.
 
@@ -295,19 +297,34 @@ def load_texture(file_name: Union[str, Path],
     :param float y: Y position of the crop area of the texture.
     :param float width: Width of the crop area of the texture.
     :param float height: Height of the crop area of the texture.
-    :param bool mirrored: If set to `True`, the image is mirrored left to right.
-    :param bool flipped: If set to `True`, the image is flipped upside down.
+    :param bool flipped_horizontally: Mirror the sprite image. Flip left/right across vertical axis.
+    :param bool flipped_vertically: Flip the image up/down across the horizontal axis.
+    :param bool flipped_diagonally: Transpose the image, flip it across the diagonal.
+    :param bool mirrored: Deprecated.
     :param bool can_cache: If a texture has already been loaded, load_texture will return the same texture in order \
-    to save time. Somtimes this is not desirable, as resizine a cached texture will cause all other textures to \
-    resize with it. Setting can_cache to false will prevent this issue at the expence of additional resources.
+    to save time. Sometimes this is not desirable, as resizing a cached texture will cause all other textures to \
+    resize with it. Setting can_cache to false will prevent this issue at the experience of additional resources.
 
     :returns: New :class:`Texture` object.
 
     :raises: ValueError
     """
 
+    if mirrored is not None:
+        from warnings import warn
+        warn("In load_texture, the 'mirrored' parameter is deprecated. Use 'flipped_horizontally' instead.",
+             DeprecationWarning)
+        flipped_horizontally = mirrored
+
     # See if we already loaded this texture, and we can just use a cached version.
-    cache_name = "{}{}{}{}{}{}{}".format(file_name, x, y, width, height, flipped, mirrored)
+    cache_name = "{}-{}-{}-{}-{}-{}-{}-{}".format(file_name,
+                                                  x,
+                                                  y,
+                                                  width,
+                                                  height,
+                                                  flipped_horizontally,
+                                                  flipped_vertically,
+                                                  flipped_diagonally)
     if can_cache and cache_name in load_texture.texture_cache:  # type: ignore # dynamic attribute on function obj
         return load_texture.texture_cache[cache_name]  # type: ignore # dynamic attribute on function obj
 
@@ -349,11 +366,14 @@ def load_texture(file_name: Union[str, Path],
         image = source_image
 
     # image = _trim_image(image)
-    if mirrored:
-        image = PIL.ImageOps.mirror(image)
+    if flipped_diagonally:
+        image = image.transpose(PIL.Image.TRANSPOSE)
 
-    if flipped:
-        image = PIL.ImageOps.flip(image)
+    if flipped_horizontally:
+        image = image.transpose(PIL.Image.FLIP_LEFT_RIGHT)
+
+    if flipped_vertically:
+        image = image.transpose(PIL.Image.FLIP_TOP_BOTTOM)
 
     result = Texture(cache_name, image)
     load_texture.texture_cache[cache_name] = result  # type: ignore # dynamic attribute on function obj

@@ -23,7 +23,7 @@ class MyTestWindow(arcade.Window):
 
         self.player.stand_right_textures = [arcade.load_texture(":resources:images/animated_characters/robot/robot_idle.png")]
 
-        self.player.stand_left_textures = [arcade.load_texture(":resources:images/animated_characters/robot/robot_idle.png", mirrored=True)]
+        self.player.stand_left_textures = [arcade.load_texture(":resources:images/animated_characters/robot/robot_idle.png", flipped_horizontally=True)]
 
         self.player.walk_right_textures = [arcade.load_texture(":resources:images/animated_characters/robot/robot_walk0.png"),
                                            arcade.load_texture(":resources:images/animated_characters/robot/robot_walk1.png"),
@@ -34,14 +34,14 @@ class MyTestWindow(arcade.Window):
                                            arcade.load_texture(":resources:images/animated_characters/robot/robot_walk6.png"),
                                            arcade.load_texture(":resources:images/animated_characters/robot/robot_walk7.png")]
 
-        self.player.walk_left_textures = [arcade.load_texture(":resources:images/animated_characters/robot/robot_walk0.png", mirrored=True),
-                                          arcade.load_texture(":resources:images/animated_characters/robot/robot_walk1.png", mirrored=True),
-                                          arcade.load_texture(":resources:images/animated_characters/robot/robot_walk2.png", mirrored=True),
-                                          arcade.load_texture(":resources:images/animated_characters/robot/robot_walk3.png", mirrored=True),
-                                          arcade.load_texture(":resources:images/animated_characters/robot/robot_walk4.png", mirrored=True),
-                                          arcade.load_texture(":resources:images/animated_characters/robot/robot_walk5.png", mirrored=True),
-                                          arcade.load_texture(":resources:images/animated_characters/robot/robot_walk6.png", mirrored=True),
-                                          arcade.load_texture(":resources:images/animated_characters/robot/robot_walk7.png", mirrored=True)]
+        self.player.walk_left_textures = [arcade.load_texture(":resources:images/animated_characters/robot/robot_walk0.png", flipped_horizontally=True),
+                                          arcade.load_texture(":resources:images/animated_characters/robot/robot_walk1.png", flipped_horizontally=True),
+                                          arcade.load_texture(":resources:images/animated_characters/robot/robot_walk2.png", flipped_horizontally=True),
+                                          arcade.load_texture(":resources:images/animated_characters/robot/robot_walk3.png", flipped_horizontally=True),
+                                          arcade.load_texture(":resources:images/animated_characters/robot/robot_walk4.png", flipped_horizontally=True),
+                                          arcade.load_texture(":resources:images/animated_characters/robot/robot_walk5.png", flipped_horizontally=True),
+                                          arcade.load_texture(":resources:images/animated_characters/robot/robot_walk6.png", flipped_horizontally=True),
+                                          arcade.load_texture(":resources:images/animated_characters/robot/robot_walk7.png", flipped_horizontally=True)]
 
         self.player.texture_change_distance = 20
 

@@ -27,7 +27,7 @@ class MyTestWindow(arcade.Window):
             arcade.load_texture(":resources:images/animated_characters/female_person/femalePerson_idle.png"))
         self.player.stand_left_textures = []
         self.player.stand_left_textures.append(
-            arcade.load_texture(":resources:images/animated_characters/female_person/femalePerson_idle.png", mirrored=True))
+            arcade.load_texture(":resources:images/animated_characters/female_person/femalePerson_idle.png", flipped_horizontally=True))
 
         self.player.walk_right_textures = []
 
@@ -44,16 +44,16 @@ class MyTestWindow(arcade.Window):
 
         self.player.walk_left_textures.append(
             arcade.load_texture(":resources:images/animated_characters/female_person/femalePerson_walk0.png",
-                                mirrored=True))
+                                flipped_horizontally=True))
         self.player.walk_left_textures.append(
             arcade.load_texture(":resources:images/animated_characters/female_person/femalePerson_walk1.png",
-                                mirrored=True))
+                                flipped_horizontally=True))
         self.player.walk_left_textures.append(
             arcade.load_texture(":resources:images/animated_characters/female_person/femalePerson_walk2.png",
-                                mirrored=True))
+                                flipped_horizontally=True))
         self.player.walk_left_textures.append(
             arcade.load_texture(":resources:images/animated_characters/female_person/femalePerson_walk3.png",
-                                mirrored=True))
+                                flipped_horizontally=True))
 
         self.player.texture_change_distance = 20
 
