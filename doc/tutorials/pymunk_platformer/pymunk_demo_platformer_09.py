@@ -68,15 +68,11 @@ DISTANCE_TO_CHANGE_TEXTURE = 8
 # How much force to put on the bullet
 BULLET_MOVE_FORCE = 4500
 
+# Mass of the bullet
+BULLET_MASS = 0.1
+
 # Make bullet less affected by gravity
 BULLET_GRAVITY = 300
-
-def load_texture_pair(filename):
-    """ Load a texture pair, with the second being a mirror image. """
-    return [
-        arcade.load_texture(filename),
-        arcade.load_texture(filename, flipped_horizontally=True)
-    ]
 
 class PlayerSprite(arcade.Sprite):
     """ Player Sprite """
@@ -97,14 +93,14 @@ class PlayerSprite(arcade.Sprite):
         # main_path = ":resources:images/animated_characters/robot/robot"
 
         # Load textures for idle standing
-        self.idle_texture_pair = load_texture_pair(f"{main_path}_idle.png")
-        self.jump_texture_pair = load_texture_pair(f"{main_path}_jump.png")
-        self.fall_texture_pair = load_texture_pair(f"{main_path}_fall.png")
+        self.idle_texture_pair = arcade.load_texture_pair(f"{main_path}_idle.png")
+        self.jump_texture_pair = arcade.load_texture_pair(f"{main_path}_jump.png")
+        self.fall_texture_pair = arcade.load_texture_pair(f"{main_path}_fall.png")
 
         # Load textures for walking
         self.walk_textures = []
         for i in range(8):
-            texture = load_texture_pair(f"{main_path}_walk{i}.png")
+            texture = arcade.load_texture_pair(f"{main_path}_walk{i}.png")
             self.walk_textures.append(texture)
 
         # Set the initial texture
@@ -147,7 +143,7 @@ class PlayerSprite(arcade.Sprite):
             self.texture = self.idle_texture_pair[self.character_face_direction]
             return
 
-        # Add to the odometer how far we'v moved
+        # Add to the odometer how far we've moved
         self.x_odometer += dx
 
         # Have we moved far enough to change the texture?
@@ -336,7 +332,7 @@ class GameWindow(arcade.Window):
 
         # Add the sprite. This needs to be done AFTER setting the fields above.
         self.physics_engine.add_sprite(bullet,
-                                       mass=0.1,
+                                       mass=BULLET_MASS,
                                        damping=1.0,
                                        friction=0.6,
                                        collision_type="bullet",
@@ -361,6 +357,7 @@ class GameWindow(arcade.Window):
             # Set friction to zero for the player while moving
             self.physics_engine.set_friction(self.player_sprite, 0)
         elif self.right_pressed and not self.left_pressed:
+            # Create a force to the right. Apply it.
             if self.physics_engine.is_on_ground(self.player_sprite):
                 force = (PLAYER_MOVE_FORCE_ON_GROUND, 0)
             else:

@@ -156,21 +156,29 @@ First, add some constants for our physics. Here we are setting:
     :linenos:
     :lines: 28-47
 
-Second, in the ``setup`` method we create the physics engine and add the sprites.
+Second, add the following attributer in the ``__init__`` method to hold our
+physics engine:
+
+.. literalinclude:: pymunk_demo_platformer_05.py
+    :caption: Add Physics Engine Attribute
+    :linenos:
+    :lines: 71-72
+
+Third, in the ``setup`` method we create the physics engine and add the sprites.
 The player, walls, and dynamic items all have different properties so they are
 added individually.
 
 .. literalinclude:: pymunk_demo_platformer_05.py
     :caption: Add Sprites to Physics Engine in 'setup' Method
     :linenos:
-    :lines: 102-153
+    :lines: 105-156
 
-Third, in the ``on_update`` method we call the physics engine's ``step`` method.
+Fourth, in the ``on_update`` method we call the physics engine's ``step`` method.
 
 .. literalinclude:: pymunk_demo_platformer_05.py
     :caption: Add Sprites to Physics Engine in 'setup' Method
     :linenos:
-    :lines: 163-165
+    :lines: 166-168
 
 If you run the program, and you have dynamic items that are up in the air, you
 should see them fall when the game starts.
@@ -200,7 +208,7 @@ appropriate values in the key press and release handlers.
 .. literalinclude:: pymunk_demo_platformer_06.py
     :caption: Handle Key Up and Down Events
     :linenos:
-    :lines: 158-172
+    :lines: 161-175
     :emphasize-lines: 4-7, 12-15
 
 Finally, we need to apply the correct force in ``on_update``. Force is specified
@@ -212,7 +220,7 @@ We also set the friction when we are moving to zero, and when we are not moving 
 .. literalinclude:: pymunk_demo_platformer_06.py
     :caption: Apply Force to Move Player
     :linenos:
-    :lines: 174-195
+    :lines: 177-198
     :emphasize-lines: 4-19
 
 
@@ -237,10 +245,28 @@ will be very hard to control. If we allow them to move left/right with the same
 force as on the ground, that's typically too much. So we've got a different
 left/right force depending if we are in the air or not.
 
+For the code changes, first we'll define some constants:
+
 .. literalinclude:: pymunk_demo_platformer_07.py
-    :caption: Add Player Movement
+    :caption: Add Player Jumping - Constants
     :linenos:
-    :emphasize-lines: 52-53, 55-56, 171-176, 192-195, 200-203
+    :lines: 52-56
+
+We'll add logic that will apply the impulse force when we jump:
+
+.. literalinclude:: pymunk_demo_platformer_07.py
+    :caption: Add Player Jumping - Jump Force
+    :linenos:
+    :lines: 167-179
+    :emphasize-lines: 9-13
+
+Then we will adjust the left/right force depending on if we are grounded or not:
+
+.. literalinclude:: pymunk_demo_platformer_07.py
+    :caption: Add Player Jumping - Left/Right Force Selection
+    :linenos:
+    :lines: 189-215
+    :emphasize-lines: 6-10, 15-19
 
 * :ref:`pymunk_demo_platformer_07`
 * :ref:`pymunk_demo_platformer_07_diff`
@@ -251,33 +277,110 @@ Add Player Animation
 To create a player animation, we make a custom child class of ``Sprite``.
 We load each frame of animation that we need, including a mirror image of it.
 
-Any sprite moved by the Pymunk engine will have its ``pymunk_moved`` method
-called. This can be used to update the animation.
+We will flip the player to face left or right. If the player is in the air, we'll
+also change between a jump up and a falling graphics.
 
-Because the physics engine works with small floating point numbers, it is a good
-idea not to change the animation as the x and y float above and below zero. For
-that reason, in this code we have a "dead zone."
+Because the physics engine works with small floating point numbers, it often
+flips above and below zero by small amounts.
+It is a good idea *not* to change the animation as the x and y float around zero.
+For that reason, in this code we have a "dead zone."
 We don't change the animation until it gets outside of that zone.
+
+We also need to control how far the player moves before we change the walking
+animation, so that the feet appear in-sync with the ground.
+
+.. literalinclude:: pymunk_demo_platformer_08.py
+    :caption: Add Player Animation - Constants
+    :linenos:
+    :lines: 58-66
+
+Next, we create a ``Player`` class that is a child to ``arcade.Sprite``. This
+class will update the player animation.
+
+The ``__init__`` method loads all of the textures. Here we use Kenney.nl's
+`Toon Characters 1 <https://www.kenney.nl/assets/toon-characters-1>`_ pack.
+It has six different characters you can choose from with the same layout, so
+it makes changing as simple as changing which line is enabled. There are
+eight textures for walking, and textures for idle, jumping, and falling.
+
+As the character can face left or right, we use ``arcade.load_texture_pair``
+which will load both a regular image, and one that's mirrored.
 
 For the multi-frame walking animation, we use an "odometer." We need to move
 a certain number of pixels before changing the animation. If this value is too
 small our character moves her legs like Fred Flintstone, too large and it looks
-like you are ice skating.
+like you are ice skating. We keep track of the index of our current texture,
+0-7 since there are eight of them.
+
+Any sprite moved by the Pymunk engine will have its ``pymunk_moved`` method
+called. This can be used to update the animation.
 
 .. literalinclude:: pymunk_demo_platformer_08.py
-    :caption: Add Player Animation
+    :caption: Add Player Animation - Player Class
     :linenos:
-    :emphasize-lines: 58-157, 181-182, 197
+    :pyobject: PlayerSprite
 
-Add Bullets
------------
+Important! At this point, we are still creating an instance of ``arcade.Sprite``
+and **not** ``PlayerSprite``. We need to go back to the ``setup`` method and
+replace the line that creates the ``player`` instance with:
 
-(To be done)
+.. literalinclude:: pymunk_demo_platformer_08.py
+    :caption: Add Player Animation - Creating the Player Class
+    :linenos:
+    :lines: 189-190
+
+A really common mistake I've seen programmers make (and made myself) is  to forget
+that last part. Then you can spend a lot of time looking at the player class when
+the error is in the setup.
+
+* :ref:`pymunk_demo_platformer_08`
+* :ref:`pymunk_demo_platformer_08_diff`
+
+Shoot Bullets
+-------------
+
+Getting the player to shoot something can add a lot to our game. To begin
+with we'll define a few constants to use. How much force to shoot the bullet
+with, the bullet's mass, and the gravity to use for the bullet.
+
+If we use the same gravity for the bullet as everything else, it tends to drop
+too fast. We could set this to zero if we wanted it to not drop at all.
 
 .. literalinclude:: pymunk_demo_platformer_09.py
-    :caption: Shooting Bullets
+    :caption: Shoot Bullets - Constants
     :linenos:
-    :emphasize-lines: 68-72, 296-348
+    :lines: 68-75
+
+Next, we'll put in a mouse press handler to put in the bullet shooting code.
+
+We need to:
+
+* Create the bullet sprite
+* We need to calculate the angle from the player to the mouse click
+* Create the bullet away from the player in the proper direction, as spawning it
+  inside the player will confuse the physics engine
+* Add the bullet to the physics engine
+* Apply the force to the bullet to make if move. Note that as we angled the bullet
+  we don't need to angle the force.
+
+.. warning:: Does your platformer scroll?
+
+    If your window scrolls, you need to add in the coordinate off-set or else
+    the angle calculation will be incorrect.
+
+.. warning:: Bullets don't disappear yet!
+
+    If the bullet flies off-screen, it doesn't go away and the physics engine
+    still has to track it.
+
+.. literalinclude:: pymunk_demo_platformer_09.py
+    :caption: Shoot Bullets - Mouse Press
+    :linenos:
+    :pyobject: GameWindow.on_mouse_press
+
+* :ref:`pymunk_demo_platformer_09`
+* :ref:`pymunk_demo_platformer_09_diff`
+
 
 Destroy Bullets and Items
 -------------------------

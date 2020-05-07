@@ -77,6 +77,9 @@ class GameWindow(arcade.Window):
         self.left_pressed: bool = False
         self.right_pressed: bool = False
 
+        # Physics engine
+        self.physics_engine = Optional[arcade.PymunkPhysicsEngine]
+
         # Set background color
         arcade.set_background_color(arcade.color.AMAZON)
 
