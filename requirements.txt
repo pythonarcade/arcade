@@ -1,7 +1,7 @@
 numpy
 Pillow
 Pyglet>=1.5.4,<2
-pytiled-parser==0.9.4a4
+pytiled-parser==0.9.4a3
 pytest
 pymunk
 matplotlib
