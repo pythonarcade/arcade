@@ -65,7 +65,6 @@ class GameWindow(arcade.Window):
 
     def on_update(self, delta_time):
         """ Movement and game logic """
-
         pass
 
     def on_draw(self):

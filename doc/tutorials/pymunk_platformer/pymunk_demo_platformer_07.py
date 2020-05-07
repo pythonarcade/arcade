@@ -197,6 +197,7 @@ class GameWindow(arcade.Window):
             # Set friction to zero for the player while moving
             self.physics_engine.set_friction(self.player_sprite, 0)
         elif self.right_pressed and not self.left_pressed:
+            # Create a force to the right. Apply it.
             if self.physics_engine.is_on_ground(self.player_sprite):
                 force = (PLAYER_MOVE_FORCE_ON_GROUND, 0)
             else:

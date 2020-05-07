@@ -31,6 +31,10 @@ sure you can run it. It should pop open a black window.
     :caption: Starting Program
     :linenos:
 
+
+Create Constants
+----------------
+
 Now let's set up the ``import`` statements, and define the constants we are going
 to use. In this case, we've got sprite tiles that are 128x128 pixels. They are
 scaled down to 50% of the width and 50% of the height (scale of 0.5). The screen
@@ -42,12 +46,16 @@ See :ref:`platformer_tutorial` or :ref:`sprite_move_scrolling`.
 When you run this program, the screen should be larger.
 
 .. literalinclude:: pymunk_demo_platformer_02.py
-    :caption: Adding some constance
+    :caption: Adding some constants
     :linenos:
+    :lines: 1-29
     :emphasize-lines: 4-26
 
-Create Constants
-----------------
+* :ref:`pymunk_demo_platformer_02`
+* :ref:`pymunk_demo_platformer_02_diff`
+
+Create Instance Variables
+-------------------------
 
 Next, let's create instance variables we are going to use, and set a background
 color that's green: ``arcade.color.AMAZON``
@@ -72,7 +80,11 @@ Running this program should show the same window, but with a green background.
 .. literalinclude:: pymunk_demo_platformer_03.py
     :caption: Create instance variables
     :linenos:
-    :emphasize-lines: 33-52
+    :lines: 29-52
+    :emphasize-lines: 10-24
+
+* :ref:`pymunk_demo_platformer_03`
+* :ref:`pymunk_demo_platformer_03_diff`
 
 Load and Display Map
 --------------------
@@ -99,8 +111,18 @@ Now, in the ``setup`` function, we are going add code to:
     load must match **exactly** with the layer created in the tiled map editor.
     It is case-sensitive.
 
+.. literalinclude:: pymunk_demo_platformer_04.py
+    :caption: Creating our sprites
+    :linenos:
+    :lines: 54-80
+
 There's no point in having sprites if we don't draw them, so in the ``on_draw``
 method, let's draw out sprite lists.
+
+.. literalinclude:: pymunk_demo_platformer_04.py
+    :caption: Drawing our sprites
+    :linenos:
+    :lines: 94-100
 
 With the additions in the program below, running your program should show the
 tiled map you created:
@@ -108,10 +130,8 @@ tiled map you created:
 .. image:: pymunk_demo_platformer_04.png
     :width: 75%
 
-.. literalinclude:: pymunk_demo_platformer_04.py
-    :caption: Creating and drawing our sprites
-    :linenos:
-    :emphasize-lines: 57-80, 94-100
+* :ref:`pymunk_demo_platformer_04`
+* :ref:`pymunk_demo_platformer_04_diff`
 
 Add Physics Engine
 ------------------
@@ -131,19 +151,32 @@ First, add some constants for our physics. Here we are setting:
   the player is limited to a constant speed. And more realistic, because they
   aren't on wheels.
 
+.. literalinclude:: pymunk_demo_platformer_05.py
+    :caption: Add Constants for Physics
+    :linenos:
+    :lines: 28-47
+
 Second, in the ``setup`` method we create the physics engine and add the sprites.
 The player, walls, and dynamic items all have different properties so they are
 added individually.
 
+.. literalinclude:: pymunk_demo_platformer_05.py
+    :caption: Add Sprites to Physics Engine in 'setup' Method
+    :linenos:
+    :lines: 102-153
+
 Third, in the ``on_update`` method we call the physics engine's ``step`` method.
+
+.. literalinclude:: pymunk_demo_platformer_05.py
+    :caption: Add Sprites to Physics Engine in 'setup' Method
+    :linenos:
+    :lines: 163-165
 
 If you run the program, and you have dynamic items that are up in the air, you
 should see them fall when the game starts.
 
-.. literalinclude:: pymunk_demo_platformer_05.py
-    :caption: Add Physics Engine
-    :linenos:
-    :emphasize-lines: 28-47, 102-153, 165
+* :ref:`pymunk_demo_platformer_05`
+* :ref:`pymunk_demo_platformer_05_diff`
 
 Add Player Movement
 -------------------
@@ -154,9 +187,21 @@ to move left and right. In the next section we'll show how to jump.
 The force that we will move the player is defined as ``PLAYER_MOVE_FORCE_ON_GROUND``.
 We'll apply a different force later, if the player happens to be airborne.
 
+.. literalinclude:: pymunk_demo_platformer_06.py
+    :caption: Add Player Movement - Constants and Attributes
+    :linenos:
+    :lines: 49-72
+    :emphasize-lines: 1-2, 22-24
+
 We need to track if the left/right keys are held down. To do this we define
 instance variables ``left_pressed`` and ``right_pressed``. These are set to
 appropriate values in the key press and release handlers.
+
+.. literalinclude:: pymunk_demo_platformer_06.py
+    :caption: Handle Key Up and Down Events
+    :linenos:
+    :lines: 158-172
+    :emphasize-lines: 4-7, 12-15
 
 Finally, we need to apply the correct force in ``on_update``. Force is specified
 in a tuple with horizontal force first, and vertical force second.
@@ -165,9 +210,14 @@ We also set the friction when we are moving to zero, and when we are not moving 
 1. This is important to get realistic movement.
 
 .. literalinclude:: pymunk_demo_platformer_06.py
-    :caption: Add Player Movement
+    :caption: Apply Force to Move Player
     :linenos:
-    :emphasize-lines: 49-50, 70-72, 161-164, 169-172, 177-192
+    :lines: 174-195
+    :emphasize-lines: 4-19
+
+
+* :ref:`pymunk_demo_platformer_06`
+* :ref:`pymunk_demo_platformer_06_diff`
 
 Add Player Jumping
 ------------------
@@ -191,6 +241,9 @@ left/right force depending if we are in the air or not.
     :caption: Add Player Movement
     :linenos:
     :emphasize-lines: 52-53, 55-56, 171-176, 192-195, 200-203
+
+* :ref:`pymunk_demo_platformer_07`
+* :ref:`pymunk_demo_platformer_07_diff`
 
 Add Player Animation
 --------------------
