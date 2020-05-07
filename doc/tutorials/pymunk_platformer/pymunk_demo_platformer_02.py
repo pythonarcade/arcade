@@ -2,9 +2,8 @@
 Example of Pymunk Physics Engine Platformer
 """
 import math
-import arcade
 from typing import Optional
-from arcade.pymunk_physics_engine import PymunkPhysicsEngine
+import arcade
 
 SCREEN_TITLE = "PyMunk Platformer"
 

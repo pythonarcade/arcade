@@ -44,7 +44,7 @@ When you run this program, the screen should be larger.
 .. literalinclude:: pymunk_demo_platformer_02.py
     :caption: Adding some constance
     :linenos:
-    :emphasize-lines: 4-27
+    :emphasize-lines: 4-26
 
 Create Constants
 ----------------
@@ -72,7 +72,7 @@ Running this program should show the same window, but with a green background.
 .. literalinclude:: pymunk_demo_platformer_03.py
     :caption: Create instance variables
     :linenos:
-    :emphasize-lines: 34-53
+    :emphasize-lines: 33-52
 
 Load and Display Map
 --------------------
@@ -111,7 +111,7 @@ tiled map you created:
 .. literalinclude:: pymunk_demo_platformer_04.py
     :caption: Creating and drawing our sprites
     :linenos:
-    :emphasize-lines: 58-81, 95-101
+    :emphasize-lines: 57-80, 94-100
 
 Add Physics Engine
 ------------------
@@ -143,7 +143,7 @@ should see them fall when the game starts.
 .. literalinclude:: pymunk_demo_platformer_05.py
     :caption: Add Physics Engine
     :linenos:
-    :emphasize-lines: 29-48, 103-154, 166
+    :emphasize-lines: 28-47, 102-153, 165
 
 Add Player Movement
 -------------------
@@ -167,7 +167,7 @@ We also set the friction when we are moving to zero, and when we are not moving 
 .. literalinclude:: pymunk_demo_platformer_06.py
     :caption: Add Player Movement
     :linenos:
-    :emphasize-lines: 50-51, 71-73, 162-165, 170-173, 178-193
+    :emphasize-lines: 49-50, 70-72, 161-164, 169-172, 177-192
 
 Add Player Jumping
 ------------------
@@ -190,7 +190,7 @@ left/right force depending if we are in the air or not.
 .. literalinclude:: pymunk_demo_platformer_07.py
     :caption: Add Player Movement
     :linenos:
-    :emphasize-lines: 53-54, 56-57, 172-177, 193-196, 201-204
+    :emphasize-lines: 52-53, 55-56, 171-176, 192-195, 200-203
 
 Add Player Animation
 --------------------
@@ -214,7 +214,7 @@ like you are ice skating.
 .. literalinclude:: pymunk_demo_platformer_08.py
     :caption: Add Player Animation
     :linenos:
-    :emphasize-lines: 59-158, 182-183, 198
+    :emphasize-lines: 58-157, 181-182, 197
 
 Add Bullets
 -----------
@@ -224,7 +224,7 @@ Add Bullets
 .. literalinclude:: pymunk_demo_platformer_09.py
     :caption: Shooting Bullets
     :linenos:
-    :emphasize-lines: 69-73, 297-349
+    :emphasize-lines: 68-72, 296-348
 
 Destroy Bullets and Items
 -------------------------

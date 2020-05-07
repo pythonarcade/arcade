@@ -2,9 +2,8 @@
 Example of Pymunk Physics Engine Platformer
 """
 import math
-import arcade
 from typing import Optional
-from arcade.pymunk_physics_engine import PymunkPhysicsEngine
+import arcade
 
 SCREEN_TITLE = "PyMunk Platformer"
 
@@ -114,8 +113,8 @@ class GameWindow(arcade.Window):
         gravity = (0, -GRAVITY)
 
         # Create the physics engine
-        self.physics_engine = PymunkPhysicsEngine(damping=damping,
-                                                  gravity=gravity)
+        self.physics_engine = arcade.PymunkPhysicsEngine(damping=damping,
+                                                         gravity=gravity)
 
         # Add the player.
         # For the player, we set the damping to a lower value, which increases
@@ -131,7 +130,7 @@ class GameWindow(arcade.Window):
                                        friction=PLAYER_FRICTION,
                                        damping=PLAYER_FRICTION,
                                        mass=PLAYER_MASS,
-                                       moment=PymunkPhysicsEngine.MOMENT_INF,
+                                       moment=arcade.PymunkPhysicsEngine.MOMENT_INF,
                                        collision_type="player",
                                        max_horizontal_velocity=PLAYER_MAX_HORIZONTAL_SPEED,
                                        max_vertical_velocity=PLAYER_MAX_VERTICAL_SPEED)
@@ -146,7 +145,7 @@ class GameWindow(arcade.Window):
         self.physics_engine.add_sprite_list(self.wall_list,
                                             friction=WALL_FRICTION,
                                             collision_type="wall",
-                                            body_type=PymunkPhysicsEngine.STATIC)
+                                            body_type=arcade.PymunkPhysicsEngine.STATIC)
 
         # Create the items
         self.physics_engine.add_sprite_list(self.item_list,

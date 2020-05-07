@@ -48,7 +48,6 @@ from arcade import csscolor
 from arcade import key
 # noinspection PyPep8
 from arcade import resources
-# noinspection PyPep8
 
 from .window_commands import close_window
 from .window_commands import create_orthogonal_projection
@@ -253,12 +252,16 @@ from .tilemap import get_tilemap_layer
 from .tilemap import process_layer
 from .tilemap import read_tmx
 
+from .pymunk_physics_engine import PymunkPhysicsEngine
+from .pymunk_physics_engine import PymunkPhysicsObject
+
 from .version import VERSION
 
 from .paths import AStarBarrierList
 from .paths import astar_calculate_path
 from .paths import has_line_of_sight
 
+# noinspection PyPep8
 from arcade import experimental
 
 __all__ = ['AStarBarrierList',
@@ -297,6 +300,8 @@ __all__ = ['AStarBarrierList',
            'PhysicsEngineSimple',
            'Point',
            'PointList',
+           'PymunkPhysicsEngine',
+           'PymunkPhysicsObject',
            'RGB',
            'RGBA',
            'Rect',

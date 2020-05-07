@@ -74,6 +74,7 @@ def main():
                 "read_tiled_map.py", \
                 "text.py", \
                 "tilemap.py", \
+                "pymunk_physics_engine.py", \
                 "version.py", \
                 "paths.py"
 
