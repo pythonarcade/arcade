@@ -392,6 +392,16 @@ def cleanup_texture_cache():
     import gc
     gc.collect()
 
+def load_texture_pair(filename):
+    """
+    Load a texture pair, with the second being a mirror image of the first.
+    Useful when doing animations and the character can face left/right.
+    """
+    return [
+        load_texture(filename),
+        load_texture(filename, flipped_horizontally=True)
+    ]
+
 def load_spritesheet(file_name: Union[str, Path],
                      sprite_width: int,
                      sprite_height: int,

@@ -110,6 +110,7 @@ from .texture import Texture
 from .texture import cleanup_texture_cache
 from .texture import load_spritesheet
 from .texture import load_texture
+from .texture import load_texture_pair
 from .texture import load_textures
 from .texture import make_circle_texture
 from .texture import make_soft_circle_texture
@@ -416,6 +417,7 @@ __all__ = ['AStarBarrierList',
            'load_sound',
            'load_spritesheet',
            'load_texture',
+           'load_texture_pair',
            'load_textures',
            'make_burst_emitter',
            'make_circle_texture',
