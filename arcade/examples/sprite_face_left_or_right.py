@@ -35,7 +35,7 @@ class Player(arcade.Sprite):
         # flipped_horizontally=True will mirror the image we load.
         texture = arcade.load_texture(":resources:images/enemies/bee.png")
         self.textures.append(texture)
-        texture = arcade.load_texture(":resources:images/enemies/bee.png", flipped_horizontallyTrue)
+        texture = arcade.load_texture(":resources:images/enemies/bee.png", flipped_horizontally=True)
         self.textures.append(texture)
 
         self.scale = SPRITE_SCALING
