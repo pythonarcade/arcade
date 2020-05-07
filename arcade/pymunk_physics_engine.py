@@ -178,6 +178,7 @@ class PymunkPhysicsEngine:
         physics_object = self.sprites[sprite]
         self.space.remove(physics_object.body)
         self.space.remove(physics_object.shape)
+        self.sprites.pop(sprite)
 
     def get_sprite_for_shape(self, shape) -> Optional[Sprite]:
         """ Given a shape, what sprite is associated with it? """
@@ -250,7 +251,10 @@ class PymunkPhysicsEngine:
 
     def resync_sprites(self):
         """ Set visual sprites to be the same location as physics engine sprites. """
-        for sprite in self.sprites:
+        # Create copy in case a sprite wants to remove itself from the list as
+        # we iterate through the list.
+        sprites = self.sprites.copy()
+        for sprite in sprites:
             physics_object = self.sprites[sprite]
             new_angle = math.degrees(physics_object.body.angle)
 

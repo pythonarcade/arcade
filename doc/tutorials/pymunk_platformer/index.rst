@@ -381,11 +381,56 @@ We need to:
 * :ref:`pymunk_demo_platformer_09`
 * :ref:`pymunk_demo_platformer_09_diff`
 
-
 Destroy Bullets and Items
 -------------------------
 
-(To be done)
+This section has two goals:
+
+* Get rid of the bullet if it flies off-screen
+* Handle collisions of the bullet and other items
+
+Destroy Bullet If It Goes Off-Screen
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+First, we'll create a custom bullet class. This class will define the
+``pymunk_moved`` method, and check our location each time the bullet moves.
+If our y value is too low, we'll remove the bullet.
+
+.. literalinclude:: pymunk_demo_platformer_10.py
+    :caption: Destroy Bullets - Bullet Sprite
+    :linenos:
+    :pyobject: BulletSprite
+
+And, of course, once we create the bullet we have to update our code to use
+it instead of the plain ``arcade.Sprite`` class.
+
+.. literalinclude:: pymunk_demo_platformer_10.py
+    :caption: Destroy Bullets - Bullet Sprite
+    :linenos:
+    :lines: 313-317
+    :emphasize-lines: 4
+
+Handle Collisions
+~~~~~~~~~~~~~~~~~
+
+To handle collisions, we can add custom collision handler call-backs. If you'll
+remember when we added items to the physics engine, we gave each item a collsion
+type, such as "wall" or "bullet" or "item". We can write a function and register
+it to handle all bullet/wall collisions.
+
+In this case, bullets that hit a wall go away. Bullets that hit items cause
+both the item and the bullet to go away. We could also add code to track damage
+to a sprite, only removing it after so much damage was applied. Even changing
+the texture depending on its health.
+
+.. literalinclude:: pymunk_demo_platformer_10.py
+    :caption: Destroy Bullets - Collision Handlers
+    :linenos:
+    :lines: 242-253
+
+
+* :ref:`pymunk_demo_platformer_10`
+* :ref:`pymunk_demo_platformer_10_diff`
 
 Add Moving Platforms
 --------------------
