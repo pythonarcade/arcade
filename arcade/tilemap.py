@@ -366,17 +366,20 @@ def _process_object_layer(map_object: pytiled_parser.objects.TileMap,
 
         my_sprite.width = width = cur_object.size[0] * scaling
         my_sprite.height = height = cur_object.size[1] * scaling
-        centerX = width / 2
-        centerY = height / 2
+        center_x = width / 2
+        center_y = height / 2
         if cur_object.rotation is not None:
             rotation = -math.radians(cur_object.rotation)
-            cosRotation = math.cos(rotation)
-            sinRotation = math.sin(rotation)
-            rotatedCenterX = centerX * cosRotation - centerY * sinRotation
-            rotatedCenterY = centerX * sinRotation + centerY * cosRotation
+        else:
+            rotation = 0
 
-            my_sprite.position = (x + rotatedCenterX, y + rotatedCenterY)
-            my_sprite.angle = math.degrees(rotation)
+        cos_rotation = math.cos(rotation)
+        sin_rotation = math.sin(rotation)
+        rotated_center_x = center_x * cos_rotation - center_y * sin_rotation
+        rotated_center_y = center_x * sin_rotation + center_y * cos_rotation
+
+        my_sprite.position = (x + rotated_center_x, y + rotated_center_y)
+        my_sprite.angle = math.degrees(rotation)
 
         # Opacity
         opacity = layer.opacity
