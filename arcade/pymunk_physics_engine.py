@@ -10,6 +10,7 @@ import math
 from typing import Callable
 from typing import List
 from typing import Dict
+from typing import Sequence
 from typing import Optional
 from arcade import Sprite
 
@@ -43,6 +44,7 @@ class PymunkPhysicsEngine:
         self.space.damping = damping
         self.collision_types: List[str] = []
         self.sprites: Dict[Sprite, PymunkPhysicsObject] = {}
+        self.non_static_sprite_list: List = []
 
     def add_sprite(self,
                    sprite: Sprite,
@@ -148,6 +150,8 @@ class PymunkPhysicsEngine:
         # Create physics object and add to list
         physics_object = PymunkPhysicsObject(body, shape)
         self.sprites[sprite] = physics_object
+        if body_type != self.STATIC:
+            self.non_static_sprite_list.append(sprite)
 
         # Add body and shape to pymunk engine
         self.space.add(body, shape)
@@ -182,6 +186,8 @@ class PymunkPhysicsEngine:
         self.space.remove(physics_object.body)
         self.space.remove(physics_object.shape)
         self.sprites.pop(sprite)
+        if sprite in self.non_static_sprite_list:
+            self.non_static_sprite_list.remove(sprite)
 
     def get_sprite_for_shape(self, shape) -> Optional[Sprite]:
         """ Given a shape, what sprite is associated with it? """
@@ -256,9 +262,13 @@ class PymunkPhysicsEngine:
         """ Set visual sprites to be the same location as physics engine sprites. """
         # Create copy in case a sprite wants to remove itself from the list as
         # we iterate through the list.
-        sprites = self.sprites.copy()
+        sprites = self.non_static_sprite_list.copy()
         for sprite in sprites:
             physics_object = self.sprites[sprite]
+
+            if physics_object.body.is_sleeping:
+                continue
+
             new_angle = math.degrees(physics_object.body.angle)
 
             dx = physics_object.body.position.x - sprite.center_x
