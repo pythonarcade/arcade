@@ -248,7 +248,7 @@ class SpriteList:
 
         # List of sprites in the sprite list
         self.sprite_list = []
-        self._iterator_index = 0
+        self._iterator = None
 
         self.sprite_idx = dict()
 
@@ -974,19 +974,13 @@ class SpriteList:
 
     def __iter__(self) -> 'SpriteList':
         """ Return an iterable object of sprites. """
-        # return self
-        self._iterator_index = 0
+        self._iterator = iter(self.sprite_list)
         return self
 
     def __next__(self) -> Sprite:
         """ Get next item """
 
-        if self._iterator_index >= len(self.sprite_list):
-            raise StopIteration
-
-        item = self.sprite_list[self._iterator_index]
-        self._iterator_index += 1
-        return item
+        return next(self._iterator)
 
     def __getitem__(self, i):
         return self.sprite_list[i]
@@ -1096,6 +1090,7 @@ def check_for_collision_with_list(sprite: Sprite,
     else:
         sprite_list_to_check = sprite_list
 
+    # print(len(sprite_list_to_check.sprite_list))
     collision_list = [sprite2
                       for sprite2 in sprite_list_to_check
                       if sprite is not sprite2 and _check_for_collision(sprite, sprite2)]
