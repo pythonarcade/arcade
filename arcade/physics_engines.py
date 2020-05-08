@@ -123,7 +123,7 @@ def _move_sprite(moving_sprite: Sprite, walls: SpriteList, ramp_up: bool):
 
         direction = math.copysign(1, moving_sprite.change_x)
         exit_loop = False
-        cur_x_change = 1
+        cur_x_change = abs(moving_sprite.change_x)
         prior_x_change = 0
         cur_y_change = 0
         while not exit_loop:
@@ -139,27 +139,35 @@ def _move_sprite(moving_sprite: Sprite, walls: SpriteList, ramp_up: bool):
                     complete_hit_list.append(sprite)
 
             if len(collision_check) > 0:
-                if not ramp_up:
-                    exit_loop = True
-                    cur_x_change = prior_x_change
-                else:
-                    cur_y_change += 1
+                if ramp_up:
+                    cur_y_change = cur_x_change
                     moving_sprite.center_y = original_y + cur_y_change
 
                     collision_check = check_for_collision_with_list(moving_sprite, walls)
                     if len(collision_check) > 0:
-                        cur_y_change -= 1
-                        exit_loop = True
-                        cur_x_change = prior_x_change
+                        cur_y_change -= cur_x_change
+                    else:
+                        while(len(collision_check) == 0) and cur_y_change > 0:
+                            cur_y_change -= 1
+                            moving_sprite.center_y = almost_original_y + cur_y_change
+                            collision_check = check_for_collision_with_list(moving_sprite, walls)
+                            print(f"Sink {moving_sprite.center_y}")
+                        cur_y_change += 1
+                        collision_check = []
 
-            elif abs(moving_sprite.change_x) - cur_x_change <= 0.01:
-                exit_loop = True
+                if cur_x_change > 1 and len(collision_check) > 0:
+                    cur_x_change -= 1
+                    print("Back off")
+                else:
+                    exit_loop = True
+
             else:
-                prior_x_change = cur_x_change
-                cur_x_change += 1
+                exit_loop = True
 
+        # print(cur_x_change * direction, cur_y_change)
         moving_sprite.center_x = original_x + cur_x_change * direction
         moving_sprite.center_y = almost_original_y + cur_y_change
+        print(f"({moving_sprite.center_x}, {moving_sprite.center_y}) {cur_x_change * direction}, {cur_y_change}")
 
     # Add in rotating hit list
     for sprite in rotating_hit_list:
