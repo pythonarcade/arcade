@@ -151,13 +151,11 @@ def _move_sprite(moving_sprite: Sprite, walls: SpriteList, ramp_up: bool):
                             cur_y_change -= 1
                             moving_sprite.center_y = almost_original_y + cur_y_change
                             collision_check = check_for_collision_with_list(moving_sprite, walls)
-                            print(f"Sink {moving_sprite.center_y}")
                         cur_y_change += 1
                         collision_check = []
 
                 if cur_x_change > 1 and len(collision_check) > 0:
                     cur_x_change -= 1
-                    print("Back off")
                 else:
                     exit_loop = True
 
@@ -167,7 +165,7 @@ def _move_sprite(moving_sprite: Sprite, walls: SpriteList, ramp_up: bool):
         # print(cur_x_change * direction, cur_y_change)
         moving_sprite.center_x = original_x + cur_x_change * direction
         moving_sprite.center_y = almost_original_y + cur_y_change
-        print(f"({moving_sprite.center_x}, {moving_sprite.center_y}) {cur_x_change * direction}, {cur_y_change}")
+        # print(f"({moving_sprite.center_x}, {moving_sprite.center_y}) {cur_x_change * direction}, {cur_y_change}")
 
     # Add in rotating hit list
     for sprite in rotating_hit_list:
