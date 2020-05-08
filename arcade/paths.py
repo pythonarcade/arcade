@@ -8,7 +8,8 @@ from arcade import get_distance
 from arcade import lerp_vec
 from arcade import get_sprites_at_point
 from arcade import check_for_collision_with_list
-
+from arcade import Sprite
+from arcade import SpriteList
 
 def has_line_of_sight(point_1: Point,
                       point_2: Point,
@@ -193,13 +194,13 @@ class AStarBarrierList:
     A* path finding.
     """
     def __init__(self,
-                 moving_sprite,
-                 blocking_sprites,
-                 grid_size,
-                 left,
-                 right,
-                 bottom,
-                 top):
+                 moving_sprite: Sprite,
+                 blocking_sprites: SpriteList,
+                 grid_size: int,
+                 left: int,
+                 right: int,
+                 bottom: int,
+                 top: int):
         """
         :param Sprite moving_sprite: Sprite that will be moving
         :param SpriteList blocking_sprites: Sprites that can block movement
@@ -250,7 +251,7 @@ class AStarBarrierList:
 
 def astar_calculate_path(start_point: Point,
                          end_point: Point,
-                         barrier_list: AStarBarrierList,
+                         astar_barrier_list: AStarBarrierList,
                          diagonal_movement=True):
     """
     :param Point start_point:
@@ -262,17 +263,17 @@ def astar_calculate_path(start_point: Point,
 
     """
 
-    grid_size = barrier_list.grid_size
+    grid_size = astar_barrier_list.grid_size
     mod_start = _collapse(start_point, grid_size)
     mod_end = _collapse(end_point, grid_size)
 
-    left = barrier_list.left
-    right = barrier_list.right
+    left = astar_barrier_list.left
+    right = astar_barrier_list.right
 
-    bottom = barrier_list.bottom
-    top = barrier_list.top
+    bottom = astar_barrier_list.bottom
+    top = astar_barrier_list.top
 
-    barrier_list = barrier_list.barrier_list
+    barrier_list = astar_barrier_list.barrier_list
 
     graph = _AStarGraph(barrier_list, left, right, bottom, top, diagonal_movement)
     result = _AStarSearch(mod_start, mod_end, graph)
