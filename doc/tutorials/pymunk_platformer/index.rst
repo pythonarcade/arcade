@@ -31,7 +31,6 @@ sure you can run it. It should pop open a black window.
     :caption: Starting Program
     :linenos:
 
-
 Create Constants
 ----------------
 
@@ -96,6 +95,8 @@ file "pymunk_test_map.tmx" and place in the exact same directory as your code.
 
 .. image:: tiled_map.png
     :width: 75%
+
+If you aren't sure how to use the Tiled Map Editor, see :ref:`platformer_part_eight`.
 
 Now, in the ``setup`` function, we are going add code to:
 
@@ -222,7 +223,6 @@ We also set the friction when we are moving to zero, and when we are not moving 
     :linenos:
     :lines: 177-198
     :emphasize-lines: 4-19
-
 
 * :ref:`pymunk_demo_platformer_06`
 * :ref:`pymunk_demo_platformer_06_diff`

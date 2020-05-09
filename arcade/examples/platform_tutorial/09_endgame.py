@@ -131,19 +131,22 @@ class MyGame(arcade.Window):
                                                             TILE_SCALING)
 
         # -- Platforms
-        self.wall_list = arcade.tilemap.process_layer(my_map,
-                                                      platforms_layer_name,
-                                                      TILE_SCALING)
+        self.wall_list = arcade.tilemap.process_layer(map_object=my_map,
+                                                      layer_name=platforms_layer_name,
+                                                      scaling=TILE_SCALING,
+                                                      use_spatial_hash=True)
 
         # -- Coins
         self.coin_list = arcade.tilemap.process_layer(my_map,
                                                       coins_layer_name,
-                                                      TILE_SCALING)
+                                                      TILE_SCALING,
+                                                      use_spatial_hash=True)
 
         # -- Don't Touch Layer
         self.dont_touch_list = arcade.tilemap.process_layer(my_map,
                                                             dont_touch_layer_name,
-                                                            TILE_SCALING)
+                                                            TILE_SCALING,
+                                                            use_spatial_hash=True)
 
         # --- Other stuff
         # Set the background color
