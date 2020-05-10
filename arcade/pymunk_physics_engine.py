@@ -213,6 +213,16 @@ class PymunkPhysicsEngine:
         physics_object = self.get_physics_object(sprite)
         physics_object.body.apply_impulse_at_local_point(impulse)
 
+    def set_position(self, sprite, position):
+        """ Apply an impulse force on a sprite """
+        physics_object = self.get_physics_object(sprite)
+        physics_object.body.position = position
+
+    def set_velocity(self, sprite, velocity):
+        """ Apply an impulse force on a sprite """
+        physics_object = self.get_physics_object(sprite)
+        physics_object.body.velocity = velocity
+
     def add_collision_handler(self,
                               first_type: str,
                               second_type: str,
@@ -299,8 +309,8 @@ class PymunkPhysicsEngine:
         physics_object = self.sprites[sprite]
         physics_object.body.apply_force_at_local_point(force, (0, 0))
 
-    def set_velocity(self, sprite, velocity):
-        """ Apply force to a Sprite. """
+    def set_horizontal_velocity(self, sprite, velocity):
+        """ Set a sprite's velocity """
         physics_object = self.sprites[sprite]
         cv = physics_object.body.velocity
         new_cv = (velocity, cv[1])

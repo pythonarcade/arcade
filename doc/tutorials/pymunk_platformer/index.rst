@@ -414,7 +414,7 @@ Handle Collisions
 ~~~~~~~~~~~~~~~~~
 
 To handle collisions, we can add custom collision handler call-backs. If you'll
-remember when we added items to the physics engine, we gave each item a collsion
+remember when we added items to the physics engine, we gave each item a collision
 type, such as "wall" or "bullet" or "item". We can write a function and register
 it to handle all bullet/wall collisions.
 
@@ -435,7 +435,8 @@ the texture depending on its health.
 Add Moving Platforms
 --------------------
 
-(To be done)
+* :ref:`pymunk_demo_platformer_11`
+* :ref:`pymunk_demo_platformer_11_diff`
 
 Add Ladders
 -----------

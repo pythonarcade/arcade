@@ -5,6 +5,8 @@
 Arcade Performance Information
 ==============================
 
+*These docs are a bit old. See https://craven-performance-testing.s3-us-west-2.amazonaws.com/index.html*
+
 How does the Arcade library perform? Here are some benchmarks, and comparisons
 to PyGame 1.9.4, another very popular 2D Python library.
 
