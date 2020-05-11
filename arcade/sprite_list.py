@@ -229,7 +229,10 @@ class SpriteList:
     array_of_images: Optional[List[Any]]
     next_texture_id = 0
 
-    def __init__(self, use_spatial_hash=False, spatial_hash_cell_size=128, is_static=False):
+    def __init__(self,
+                 use_spatial_hash=None,
+                 spatial_hash_cell_size=128,
+                 is_static=False):
         """
         Initialize the sprite list
 
@@ -277,6 +280,8 @@ class SpriteList:
         self._sprite_sub_tex_desc = None
         self._sprite_sub_tex_changed = False
 
+        self._tex_coords = None
+
         self.texture_id = None
         self._texture = None
         self._vao1 = None
@@ -285,10 +290,13 @@ class SpriteList:
         self.array_of_texture_names = []
         self.array_of_images = []
 
+        self._sprites_moved = 0
+        self._percent_sprites_moved = 0
+
         # Used in collision detection optimization
         self.is_static = is_static
-        self.use_spatial_hash = use_spatial_hash
-        if use_spatial_hash:
+        self._use_spatial_hash = use_spatial_hash
+        if use_spatial_hash is True:
             self.spatial_hash = _SpatialHash(cell_size=spatial_hash_cell_size)
         else:
             self.spatial_hash = None
@@ -307,7 +315,7 @@ class SpriteList:
         self.sprite_idx[item] = idx
         item.register_sprite_list(self)
         self._vao1 = None
-        if self.use_spatial_hash:
+        if self._use_spatial_hash:
             self.spatial_hash.insert_object_for_box(item)
 
     def extend(self, items: list):
@@ -332,7 +340,7 @@ class SpriteList:
             self.sprite_idx[sprite] = idx
 
         self._vao1 = None
-        if self.use_spatial_hash:
+        if self._use_spatial_hash:
             self.spatial_hash.insert_object_for_box(item)
 
     def reverse(self):
@@ -345,14 +353,36 @@ class SpriteList:
 
         self._vao1 = None
 
+    @property
+    def percent_sprites_moved(self):
+        """ What percent of the sprites moved? """
+        return self._percent_sprites_moved
+
+    @property
+    def use_spatial_hash(self):
+        """ Are we using a spatial hash? """
+        return self._use_spatial_hash
+
+    def disable_spatial_hashing(self):
+        """ Turn off spatial hashing. """
+        self._use_spatial_hash = False
+        self.spatial_hash = None
+
+    def enable_spatial_hashing(self, spatial_hash_cell_size=128):
+        """ Turn on spatial hashing. """
+        LOG.debug("Setting use_spatial_hash={new_use_spatial_hash}")
+        self.spatial_hash = _SpatialHash(spatial_hash_cell_size)
+        self._use_spatial_hash = True
+        self._recalculate_spatial_hashes()
+
     def _recalculate_spatial_hash(self, item: _SpriteType):
         """ Recalculate the spatial hash for a particular item. """
-        if self.use_spatial_hash:
+        if self._use_spatial_hash:
             self.spatial_hash.remove_object(item)
             self.spatial_hash.insert_object_for_box(item)
 
     def _recalculate_spatial_hashes(self):
-        if self.use_spatial_hash:
+        if self._use_spatial_hash:
             self.spatial_hash.reset()
             for sprite in self.sprite_list:
                 self.spatial_hash.insert_object_for_box(sprite)
@@ -371,7 +401,7 @@ class SpriteList:
             self.sprite_idx[sprite] = idx
 
         self._vao1 = None
-        if self.use_spatial_hash:
+        if self._use_spatial_hash:
             self.spatial_hash.remove_object(item)
 
     def update(self):
@@ -628,7 +658,7 @@ class SpriteList:
                 # new_image2.save("sprites.png")
 
             # Create a list with the coordinates of all the unique textures
-            self.tex_coords = []
+            self._tex_coords = []
             offset = 1
 
             for index, image in enumerate(self.array_of_images):
@@ -655,14 +685,14 @@ class SpriteList:
 
                 # print(f"Fetching {new_array_of_texture_names[index]} at {row}, {column} => {x}, {y} normalized to {start_x:.2}, {start_y:.2} size {normalized_width}, {normalized_height}")
 
-                self.tex_coords.append([start_x, start_y, normalized_width, normalized_height])
+                self._tex_coords.append([start_x, start_y, normalized_width, normalized_height])
 
             # Go through each sprite and pull from the coordinate list, the proper
             # coordinates for that sprite's image.
             self._sprite_sub_tex_data = array.array('f')
             for sprite in self.sprite_list:
                 index = self.array_of_texture_names.index(sprite.texture.name)
-                for coord in self.tex_coords[index]:
+                for coord in self._tex_coords[index]:
                     self._sprite_sub_tex_data.append(coord)
 
             self._sprite_sub_tex_buf = self.ctx.buffer(
@@ -770,7 +800,7 @@ class SpriteList:
         self._sprite_sub_tex_changed = True
 
         index = self.array_of_texture_names.index(sprite.texture.name)
-        new_coords = self.tex_coords[index]
+        new_coords = self._tex_coords[index]
 
         i = self.sprite_idx[sprite]
 
@@ -886,6 +916,8 @@ class SpriteList:
         self._sprite_pos_data[i * 2 + 1] = sprite.position[1]
         self._sprite_pos_changed = True
 
+        self._sprites_moved += 1
+
     def update_angle(self, sprite: Sprite):
         """
         Called by the Sprite class to update the angle in this sprite.
@@ -909,6 +941,10 @@ class SpriteList:
         """
         if len(self.sprite_list) == 0:
             return
+
+        # What percent of this sprite list moved? Used in guessing spatial hashing
+        self._percent_sprites_moved = self._sprites_moved / len(self.sprite_list) * 100
+        self._sprites_moved = 0
 
         # Make sure window context exists
         if self.ctx is None:
@@ -1083,6 +1119,12 @@ def check_for_collision_with_list(sprite: Sprite,
         raise TypeError(f"Parameter 1 is not an instance of the Sprite class, it is an instance of {type(sprite)}.")
     if not isinstance(sprite_list, SpriteList):
         raise TypeError(f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList.")
+
+    if sprite_list.use_spatial_hash is None and len(sprite_list) > 30 and sprite_list.percent_sprites_moved < 10:
+        LOG.debug(f"Enabling spatial hash - Spatial hash is none, sprite list "
+                  f"is {len(sprite_list)} elements. Percent moved "
+                  f"{sprite_list._percent_sprites_moved * 100}.")
+        sprite_list.enable_spatial_hashing()
 
     if sprite_list.use_spatial_hash:
         sprite_list_to_check = sprite_list.spatial_hash.get_objects_for_box(sprite)
