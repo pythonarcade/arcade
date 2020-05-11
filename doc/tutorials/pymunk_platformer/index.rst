@@ -3,11 +3,7 @@
 Pymunk Platformer Tutorial
 ==========================
 
-.. warning::
-
-    This tutorial requires Arcade version 2.4, which is currently in Alpha.
-    You'll need to specifically install it, as 2.3 will be default. The API
-    for the Pymunk interface is still subject to change.
+.. image:: title_animated_gif.gif
 
 This tutorial covers how to write a platformer using Arcade and its Pymunk API.
 This tutorial assumes the you are somewhat familiar with Python, Arcade, and
@@ -19,6 +15,13 @@ the `Tiled Map Editor`_.
 * If you aren't familiar with the Arcade library, work through the :ref:`platformer_tutorial`.
 * If you aren't familiar with the Tiled Map Editor, the :ref:`platformer_tutorial`
   also introduces how to create a map with the Tiled Map Editor.
+
+.. warning::
+
+    This tutorial requires Arcade version 2.4, which is currently in Alpha.
+    You'll need to specifically install it, as 2.3 will be default. The API
+    for the Pymunk interface is still subject to change.
+
 
 Open a Window
 -------------
