@@ -39,6 +39,14 @@ FACE_LEFT = 2
 FACE_UP = 3
 FACE_DOWN = 4
 
+class PyMunk:
+    def __init__(self):
+        self.damping = None
+        self.gravity = None
+        self.max_velocity = None
+        self.max_horizontal_velocity = None
+        self.max_vertical_velocity = None
+
 
 class Sprite:
     """
@@ -208,6 +216,8 @@ class Sprite:
 
         # Used if someone insists on doing a sprite.draw()
         self._sprite_list = None
+
+        self.pymunk = PyMunk()
 
     def append_texture(self, texture: Texture):
         """

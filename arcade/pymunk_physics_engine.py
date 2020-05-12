@@ -63,7 +63,21 @@ class PymunkPhysicsEngine:
                    ):
         """ Add a sprite to the physics engine. """
 
-        LOG.debug(f"collision type={collision_type}")
+        if damping is not None:
+            sprite.pymunk.damping = damping
+
+        if gravity is not None:
+            sprite.pymunk.gravity = gravity
+
+        if max_velocity is not None:
+            sprite.pymunk.max_velocity = max_velocity
+
+        if max_vertical_velocity is not None:
+            sprite.pymunk.max_vertical_velocity = max_vertical_velocity
+
+        if max_horizontal_velocity is not None:
+            sprite.pymunk.max_horizontal_velocity = max_horizontal_velocity
+
         # See if the sprite already has been added
         if sprite in self.sprites:
             LOG.warning("Attempt to add a Sprite that has already been added. Ignoring.")
@@ -93,13 +107,14 @@ class PymunkPhysicsEngine:
             """ Used for custom damping, gravity, and max_velocity. """
 
             # Custom damping
-            if damping is not None:
-                adj_damping = ((damping * 100) / 100) ** dt
+            if sprite.pymunk.damping is not None:
+                adj_damping = ((sprite.pymunk.damping * 100.0) / 100.0) ** dt
+                # print(f"Custom damping {sprite.pymunk.damping} {my_damping} default to {adj_damping}")
                 my_damping = adj_damping
 
             # Custom gravity
-            if gravity is not None:
-                my_gravity = gravity
+            if sprite.pymunk.gravity is not None:
+                my_gravity = sprite.pymunk.gravity
 
             # Go ahead and update velocity
             pymunk.Body.update_velocity(my_body, my_gravity, my_damping, dt)
@@ -107,17 +122,17 @@ class PymunkPhysicsEngine:
             # Now see if we are going too fast...
 
             # Support max velocity
-            if max_velocity:
+            if sprite.pymunk.max_velocity:
                 velocity = my_body.velocity.length
-                if velocity > max_velocity:
-                    scale = max_velocity / velocity
+                if velocity > sprite.pymunk.max_velocity:
+                    scale = sprite.pymunk.max_velocity / velocity
                     my_body.velocity = my_body.velocity * scale
 
             # Support max horizontal velocity
-            if max_horizontal_velocity:
+            if sprite.pymunk.max_horizontal_velocity:
                 velocity = my_body.velocity.x
-                if abs(velocity) > max_horizontal_velocity:
-                    velocity = max_horizontal_velocity * math.copysign(1, velocity)
+                if abs(velocity) > sprite.pymunk.max_horizontal_velocity:
+                    velocity = sprite.pymunk.max_horizontal_velocity * math.copysign(1, velocity)
                     my_body.velocity = pymunk.Vec2d(velocity, my_body.velocity.y)
 
             # Support max vertical velocity
@@ -128,7 +143,8 @@ class PymunkPhysicsEngine:
                     my_body.velocity = pymunk.Vec2d(my_body.velocity.x, velocity)
 
         # Add callback if we need to do anything custom on this body
-        if damping or gravity or max_velocity or max_horizontal_velocity or max_vertical_velocity:
+        # if damping or gravity or max_velocity or max_horizontal_velocity or max_vertical_velocity:
+        if body_type == self.DYNAMIC:
             body.velocity_func = velocity_callback
 
         # Set the physics shape to the sprite's hitbox
@@ -248,7 +264,8 @@ class PymunkPhysicsEngine:
 
         def _f2(arbiter, space, data):
             sprite_a, sprite_b = self.get_sprites_from_arbiter(arbiter)
-            post_handler(sprite_a, sprite_b, arbiter, space, data)
+            if sprite_a is not None and sprite_b is not None:
+                post_handler(sprite_a, sprite_b, arbiter, space, data)
 
         def _f3(arbiter, space, data):
             sprite_a, sprite_b = self.get_sprites_from_arbiter(arbiter)
