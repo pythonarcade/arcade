@@ -74,19 +74,6 @@ BULLET_MASS = 0.1
 # Make bullet less affected by gravity
 BULLET_GRAVITY = 300
 
-class MovingSprite(arcade.Sprite):
-    """ Moving platform """
-    def update(self, delta_time: float = 1/60):
-        """ Move the moving platform """
-        velocity = (self.change_x * 60, self.change_y * 60)
-        self.physics_engines[0].set_velocity(self, velocity)
-
-        if self.center_y > self.boundary_top and self.change_y > 0:
-            self.change_y *= -1
-        if self.center_y < self.boundary_bottom and self.change_y < 0:
-            self.change_y *= -1
-
-
 class PlayerSprite(arcade.Sprite):
     """ Player Sprite """
     def __init__(self,
@@ -258,10 +245,7 @@ class GameWindow(arcade.Window):
 
         # Create the sprite lists
         self.player_list = arcade.SpriteList()
-        self.wall_list = arcade.SpriteList()
         self.bullet_list = arcade.SpriteList()
-        self.item_list = arcade.SpriteList()
-        self.moving_sprites_list = arcade.SpriteList()
 
         # Read in the tiled map
         map_name = "pymunk_test_map.tmx"
@@ -287,13 +271,9 @@ class GameWindow(arcade.Window):
         self.player_list.append(self.player_sprite)
 
         # Moving Sprite
-        moving_sprite = MovingSprite(":resources:images/tiles/grassHalf.png", SPRITE_SCALING_TILES)
-        moving_sprite.center_x = 800
-        moving_sprite.center_y = 300
-        moving_sprite.change_y = 3
-        moving_sprite.boundary_top = 800
-        moving_sprite.boundary_bottom = 300
-        self.moving_sprites_list.append(moving_sprite)
+        self.moving_sprites_list = arcade.tilemap.process_layer(my_map,
+                                                                'Moving Platforms',
+                                                                SPRITE_SCALING_TILES)
 
         # --- Pymunk Physics Engine Setup ---
 
@@ -492,7 +472,32 @@ class GameWindow(arcade.Window):
 
         # Move items in the physics engine
         self.physics_engine.step()
-        self.moving_sprites_list.update()
+
+        # For each moving sprite, see if we've reached a boundary and need to
+        # reverse course.
+        for moving_sprite in self.moving_sprites_list:
+            if moving_sprite.boundary_right and \
+                    moving_sprite.change_x > 0 and \
+                    moving_sprite.right > moving_sprite.boundary_right:
+                moving_sprite.change_x *= -1
+            elif moving_sprite.boundary_left and \
+                    moving_sprite.change_x < 0 and \
+                    moving_sprite.left > moving_sprite.boundary_left:
+                moving_sprite.change_x *= -1
+            if moving_sprite.boundary_top and \
+                    moving_sprite.change_y > 0 and \
+                    moving_sprite.top > moving_sprite.boundary_top:
+                moving_sprite.change_y *= -1
+            elif moving_sprite.boundary_bottom and \
+                    moving_sprite.change_y < 0 and \
+                    moving_sprite.bottom < moving_sprite.boundary_bottom:
+                moving_sprite.change_y *= -1
+
+            # Figure out and set our moving platform velocity.
+            # Pymunk uses velocity is in pixels per second. If we instead have
+            # pixels per frame, we need to convert.
+            velocity = (moving_sprite.change_x * 1 / delta_time, moving_sprite.change_y * 1 / delta_time)
+            self.physics_engine.set_velocity(moving_sprite, velocity)
 
     def on_draw(self):
         """ Draw everything """
@@ -507,7 +512,6 @@ class GameWindow(arcade.Window):
 def main():
     """ Main method """
     window = GameWindow(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    window.center_window()
     window.setup()
     arcade.run()
 

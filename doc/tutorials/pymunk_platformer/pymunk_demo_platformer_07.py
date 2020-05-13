@@ -88,9 +88,7 @@ class GameWindow(arcade.Window):
 
         # Create the sprite lists
         self.player_list = arcade.SpriteList()
-        self.wall_list = arcade.SpriteList()
         self.bullet_list = arcade.SpriteList()
-        self.item_list = arcade.SpriteList()
 
         # Read in the tiled map
         map_name = "pymunk_test_map.tmx"
