@@ -190,6 +190,11 @@ def _get_image_source(tile: pytiled_parser.objects.Tile,
         if os.path.exists(try3):
             return try3
 
+    if tile.tileset and tile.tileset.parent_dir:
+        try4 = Path(tile.tileset.parent_dir, image_file)
+        if os.path.exists(try4):
+            return try4
+
     print(f"Warning, can't file image {image_file} for tile {tile.id_} - {base_directory}")
     return None
 
