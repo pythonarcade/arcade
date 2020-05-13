@@ -175,14 +175,14 @@ added individually.
 .. literalinclude:: pymunk_demo_platformer_05.py
     :caption: Add Sprites to Physics Engine in 'setup' Method
     :linenos:
-    :lines: 105-156
+    :lines: 105-155
 
 Fourth, in the ``on_update`` method we call the physics engine's ``step`` method.
 
 .. literalinclude:: pymunk_demo_platformer_05.py
     :caption: Add Sprites to Physics Engine in 'setup' Method
     :linenos:
-    :lines: 166-168
+    :lines: 165-167
 
 If you run the program, and you have dynamic items that are up in the air, you
 should see them fall when the game starts.
@@ -212,7 +212,7 @@ appropriate values in the key press and release handlers.
 .. literalinclude:: pymunk_demo_platformer_06.py
     :caption: Handle Key Up and Down Events
     :linenos:
-    :lines: 161-175
+    :lines: 160-174
     :emphasize-lines: 4-7, 12-15
 
 Finally, we need to apply the correct force in ``on_update``. Force is specified
@@ -224,7 +224,7 @@ We also set the friction when we are moving to zero, and when we are not moving 
 .. literalinclude:: pymunk_demo_platformer_06.py
     :caption: Apply Force to Move Player
     :linenos:
-    :lines: 177-198
+    :lines: 176-197
     :emphasize-lines: 4-19
 
 * :ref:`pymunk_demo_platformer_06`
@@ -260,8 +260,8 @@ We'll add logic that will apply the impulse force when we jump:
 .. literalinclude:: pymunk_demo_platformer_07.py
     :caption: Add Player Jumping - Jump Force
     :linenos:
-    :lines: 167-179
-    :emphasize-lines: 9-13
+    :lines: 166-178
+    :emphasize-lines: 8-13
 
 Then we will adjust the left/right force depending on if we are grounded or not:
 
@@ -269,7 +269,7 @@ Then we will adjust the left/right force depending on if we are grounded or not:
     :caption: Add Player Jumping - Left/Right Force Selection
     :linenos:
     :lines: 189-215
-    :emphasize-lines: 6-10, 15-19
+    :emphasize-lines: 3, 6-10, 15-19
 
 * :ref:`pymunk_demo_platformer_07`
 * :ref:`pymunk_demo_platformer_07_diff`
@@ -329,12 +329,20 @@ replace the line that creates the ``player`` instance with:
 
 .. literalinclude:: pymunk_demo_platformer_08.py
     :caption: Add Player Animation - Creating the Player Class
-    :linenos:
-    :lines: 189-190
+    :lines: 197-198
 
-A really common mistake I've seen programmers make (and made myself) is  to forget
+A really common mistake I've seen programmers make (and made myself) is to forget
 that last part. Then you can spend a lot of time looking at the player class when
 the error is in the setup.
+
+We also need to go back and change the data type for the player sprite attribute
+in our ``__init__`` method:
+
+.. literalinclude:: pymunk_demo_platformer_08.py
+    :caption: Add Player Animation - Creating the Player Class
+    :lines: 161-162
+
+
 
 * :ref:`pymunk_demo_platformer_08`
 * :ref:`pymunk_demo_platformer_08_diff`
@@ -410,7 +418,7 @@ it instead of the plain ``arcade.Sprite`` class.
 .. literalinclude:: pymunk_demo_platformer_10.py
     :caption: Destroy Bullets - Bullet Sprite
     :linenos:
-    :lines: 313-317
+    :lines: 312-316
     :emphasize-lines: 4
 
 Handle Collisions

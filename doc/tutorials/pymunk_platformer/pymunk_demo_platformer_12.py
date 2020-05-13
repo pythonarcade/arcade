@@ -75,10 +75,11 @@ BULLET_MASS = 0.1
 BULLET_GRAVITY = 300
 
 class MovingSprite(arcade.Sprite):
+    """ Moving platform """
     def update(self, delta_time: float = 1/60):
-
+        """ Move the moving platform """
         velocity = (self.change_x * 60, self.change_y * 60)
-        self.physics_engine.set_velocity(self, velocity)
+        self.physics_engines[0].set_velocity(self, velocity)
 
         if self.center_y > self.boundary_top and self.change_y > 0:
             self.change_y *= -1
@@ -89,7 +90,7 @@ class MovingSprite(arcade.Sprite):
 class PlayerSprite(arcade.Sprite):
     """ Player Sprite """
     def __init__(self,
-                 ladder_list):
+                 ladder_list: arcade.SpriteList):
         """ Init """
         # Let parent initialize
         super().__init__()
@@ -230,7 +231,7 @@ class GameWindow(arcade.Window):
         super().__init__(width, height, title)
 
         # Player sprite
-        self.player_sprite: Optional[arcade.Sprite] = None
+        self.player_sprite: Optional[PlayerSprite] = None
 
         # Sprite lists we need
         self.player_list: Optional[arcade.SpriteList] = None
@@ -311,15 +312,13 @@ class GameWindow(arcade.Window):
         self.physics_engine = arcade.PymunkPhysicsEngine(damping=damping,
                                                          gravity=gravity)
 
-        moving_sprite.physics_engine = self.physics_engine
-
-        def wall_hit_handler(bullet_sprite, wall_sprite, arbiter, space, data):
+        def wall_hit_handler(bullet_sprite, _wall_sprite, _arbiter, _space, _data):
             """ Called for bullet/wall collision """
             bullet_sprite.remove_from_sprite_lists()
 
         self.physics_engine.add_collision_handler("bullet", "wall", post_handler=wall_hit_handler)
 
-        def item_hit_handler(bullet_sprite, item_sprite, arbiter, space, data):
+        def item_hit_handler(bullet_sprite, item_sprite, _arbiter, _space, _data):
             """ Called for bullet/wall collision """
             bullet_sprite.remove_from_sprite_lists()
             item_sprite.remove_from_sprite_lists()
@@ -452,11 +451,11 @@ class GameWindow(arcade.Window):
     def on_update(self, delta_time):
         """ Movement and game logic """
 
+        is_on_ground = self.physics_engine.is_on_ground(self.player_sprite)
         # Update player forces based on keys pressed
         if self.left_pressed and not self.right_pressed:
             # Create a force to the left. Apply it.
-            if self.physics_engine.is_on_ground(self.player_sprite) or \
-                self.player_sprite.is_on_ladder:
+            if is_on_ground or self.player_sprite.is_on_ladder:
                 force = (-PLAYER_MOVE_FORCE_ON_GROUND, 0)
             else:
                 force = (-PLAYER_MOVE_FORCE_IN_AIR, 0)
@@ -465,8 +464,7 @@ class GameWindow(arcade.Window):
             self.physics_engine.set_friction(self.player_sprite, 0)
         elif self.right_pressed and not self.left_pressed:
             # Create a force to the right. Apply it.
-            if self.physics_engine.is_on_ground(self.player_sprite) or \
-                self.player_sprite.is_on_ladder:
+            if is_on_ground or self.player_sprite.is_on_ladder:
                 force = (PLAYER_MOVE_FORCE_ON_GROUND, 0)
             else:
                 force = (PLAYER_MOVE_FORCE_IN_AIR, 0)
@@ -493,9 +491,7 @@ class GameWindow(arcade.Window):
             self.physics_engine.set_friction(self.player_sprite, 1.0)
 
         # Move items in the physics engine
-        # self.physics_engine.step(1/180)
-        # self.physics_engine.step(1/180)
-        self.physics_engine.step(1 / 60)
+        self.physics_engine.step()
         self.moving_sprites_list.update()
 
     def on_draw(self):

@@ -60,6 +60,14 @@ class GameWindow(arcade.Window):
         self.bullet_list = arcade.SpriteList()
         self.item_list = arcade.SpriteList()
 
+        # Read in the tiled map
+        map_name = "pymunk_test_map.tmx"
+        my_map = arcade.tilemap.read_tmx(map_name)
+
+        # Read in the map layers
+        self.wall_list = arcade.tilemap.process_layer(my_map, 'Platforms', SPRITE_SCALING_TILES)
+        self.item_list = arcade.tilemap.process_layer(my_map, 'Dynamic Items', SPRITE_SCALING_TILES)
+
         # Create player sprite
         self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
                                            SPRITE_SCALING_PLAYER)
@@ -70,14 +78,6 @@ class GameWindow(arcade.Window):
         self.player_sprite.center_y = SPRITE_SIZE * grid_y + SPRITE_SIZE / 2
         # Add to player sprite list
         self.player_list.append(self.player_sprite)
-
-        # Read in the tiled map
-        map_name = "pymunk_test_map.tmx"
-        my_map = arcade.tilemap.read_tmx(map_name)
-
-        # Read in the map layers
-        self.wall_list = arcade.tilemap.process_layer(my_map, 'Platforms', SPRITE_SCALING_TILES)
-        self.item_list = arcade.tilemap.process_layer(my_map, 'Dynamic Items', SPRITE_SCALING_TILES)
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
