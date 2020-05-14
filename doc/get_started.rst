@@ -109,8 +109,8 @@ Arcade Skill Tree
     * Ladders - Platformer tutorial :ref:`platformer_part_ten`
 
   * Using the physics engine on multiple sprites - *Supported, but documentation needed.*
-  * Pymunk top-down - *Support under development.*
-  * Pymunk platformer - *Support under development.*
+  * Pymunk top-down - *Supported, needs docs*
+  * Pymunk physics engine for a platformer - :ref:`pymunk_platformer_tutorial`
   * Pymunk shooting - *Support under development.*
 
 * View management

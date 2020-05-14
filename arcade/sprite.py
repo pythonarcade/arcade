@@ -39,6 +39,14 @@ FACE_LEFT = 2
 FACE_UP = 3
 FACE_DOWN = 4
 
+class PyMunk:
+    def __init__(self):
+        self.damping = None
+        self.gravity = None
+        self.max_velocity = None
+        self.max_horizontal_velocity = None
+        self.max_vertical_velocity = None
+
 
 class Sprite:
     """
@@ -208,6 +216,8 @@ class Sprite:
 
         # Used if someone insists on doing a sprite.draw()
         self._sprite_list = None
+
+        self.pymunk = PyMunk()
 
     def append_texture(self, texture: Texture):
         """
@@ -442,7 +452,7 @@ class Sprite:
 
         """
         for sprite_list in self.sprite_lists:
-            if sprite_list.use_spatial_hash and sprite_list.spatial_hash is not None:
+            if sprite_list._use_spatial_hash and sprite_list.spatial_hash is not None:
                 try:
                     sprite_list.spatial_hash.remove_object(self)
                 except ValueError:
@@ -453,7 +463,7 @@ class Sprite:
         Add spatial hashes for this sprite in all the sprite lists it is part of.
         """
         for sprite_list in self.sprite_lists:
-            if sprite_list.use_spatial_hash:
+            if sprite_list._use_spatial_hash:
                 sprite_list.spatial_hash.insert_object_for_box(self)
 
     def _get_bottom(self) -> float:

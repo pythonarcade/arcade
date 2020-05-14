@@ -219,32 +219,76 @@ Notice that the code creates ``Sprites`` three ways:
 Step 3 - Add User Control
 -------------------------
 
-Now we need to be able to get the user to move around. Here how to do it:
+Now we need to be able to get the user to move around.
 
-* Each sprite has ``center_x`` and ``center_y`` attributes. Changing these will
-  change the location of the sprite. (There are also attributes for top, bottom,
-  left, right, and angle that will move the sprite.)
-* Each sprite has ``change_x`` and ``change_y`` variables. These can be used to
-  hold the velocity that the sprite is moving with. We will adjust these
-  based on what key the user hits. If the user hits the right arrow key
-  we want a positive value for ``change_x``. If the value is 5, it will move
-  5 pixels per frame.
-* We can call ``update`` on the sprite list which will move all the sprites
-  according to their velocity. We can also use a (very) simple physics engine
-  called
-  `PhysicsEngineSimple class <../../arcade.html#arcade.PhysicsEngineSimple>`_
-  to move sprites, but keep  them from running through walls.
+First, at the top of the program add a constant that controls how many pixels
+per update our character travels:
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/03_user_control.py
-    :caption: 03_user_control.py - Control User By Keyboard
-    :linenos:
-    :emphasize-lines: 16-17, 78-79, 92-102, 104-114, 116-120
+    :caption: 03_user_control.py - Player Move Speed Constant
+    :lines: 16-17
+
+Next, at the end of our ``setup`` method, we are need to create a physics engine that will
+move our player and keep her from running through walls. The ``PhysicsEngineSimple``
+class takes two parameters: The moving
+sprite, and a list of sprites the moving sprite can't move through.
+
+For more information about the physics engine we are using here, see
+`PhysicsEngineSimple class <../../arcade.html#arcade.PhysicsEngineSimple>`_
 
 .. note::
 
-    If you are interested in a somewhat better, and someone more complex
-    method of keyboard control, see the differences between this and the
-    :ref:`sprite_move_keyboard_better` example.
+    It is possible to have multiple physics engines, one per moving sprite. These
+    are very simple, but easy physics engines. See
+    :ref:`pymunk_platformer_tutorial` for a more advanced physics engine.
+
+.. literalinclude:: ../../../arcade/examples/platform_tutorial/03_user_control.py
+    :caption: 03_user_control.py - Create Physics Engine
+    :lines: 16-17
+
+Each sprite has ``center_x`` and ``center_y`` attributes. Changing these will
+change the location of the sprite. (There are also attributes for top, bottom,
+left, right, and angle that will move the sprite.)
+
+Each sprite has ``change_x`` and ``change_y`` variables. These can be used to
+hold the velocity that the sprite is moving with. We will adjust these
+based on what key the user hits. If the user hits the right arrow key
+we want a positive value for ``change_x``. If the value is 5, it will move
+5 pixels per frame.
+
+In this case, when the user presses a key we'll change the sprites change x and y.
+The physics engine will look at that, and move the player unless she'll hit a wall.
+
+.. literalinclude:: ../../../arcade/examples/platform_tutorial/03_user_control.py
+    :caption: 03_user_control.py - Handle key-down
+    :linenos:
+    :pyobject: MyGame.on_key_press
+
+On releasing the key, we'll put our speed back to zero.
+
+.. literalinclude:: ../../../arcade/examples/platform_tutorial/03_user_control.py
+    :caption: 03_user_control.py - Handle key-up
+    :linenos:
+    :pyobject: MyGame.on_key_release
+
+.. note::
+
+    This method of tracking the speed to the key the player presses is simple, but
+    isn't perfect. If the player hits both left and right keys at the same time,
+    then lets off the left one, we expect the player to move right. This method won't
+    support that. If you want a slightly more complex method that does, see
+    :ref:`sprite_move_keyboard_better`.
+
+Our ``on_update`` method is called about 60 times per second. We'll ask the physics
+engine to move our player based on her ``change_x`` and ``change_y``.
+
+.. literalinclude:: ../../../arcade/examples/platform_tutorial/03_user_control.py
+    :caption: 03_user_control.py - Update the sprites
+    :linenos:
+    :pyobject: MyGame.on_update
+
+* :ref:`03_user_control`
+* :ref:`03_user_control_diff`
 
 .. _platformer_part_four:
 
@@ -252,20 +296,37 @@ Step 4 - Add Gravity
 --------------------
 
 The example above works great for top-down, but what if it is a side view with
-jumping? We need to add gravity.
-
-The example below will allow the user to jump and walk on platforms.
+jumping? We need to add gravity. First, let's define a constant to represent the
+acceleration for gravity, and one for a jump speed.
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/04_add_gravity.py
     :caption: 04_add_gravity.py - Add Gravity
+    :lines: 18-19
+
+At the end of the ``setup`` method, change the physics engine to
+``PhysicsEnginePlatformer`` and include gravity as a parameter.
+
+.. literalinclude:: ../../../arcade/examples/platform_tutorial/04_add_gravity.py
+    :caption: 04_add_gravity.py - Add Gravity
+    :lines: 80-83
+
+Then, modify the key down and key up event handlers. We'll remove the up/down
+statements we had before, and make 'UP' jump when pressed.
+
+.. literalinclude:: ../../../arcade/examples/platform_tutorial/04_add_gravity.py
+    :caption: 04_add_gravity.py - Add Gravity
+    :lines: 96-113
     :linenos:
-    :emphasize-lines: 18-19, 80-83, 99-102, 110-113
+    :emphasize-lines: 4-6
 
 .. note::
 
     You can change how the user jumps by changing the gravity and jump constants.
     Lower values for both will make for a more "floaty" character. Higher values make
     for a faster-paced game.
+
+* :ref:`04_add_gravity`
+* :ref:`04_add_gravity_diff`
 
 .. _platformer_part_five:
 
@@ -460,7 +521,7 @@ Test the Level
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/08_load_map.py
     :caption: Load a .tmx file from Tiled Map Editor
     :linenos:
-    :emphasize-lines: 88-114
+    :emphasize-lines: 88-117
 
 .. note::
 
@@ -500,7 +561,7 @@ Here's an expanded example:
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/09_endgame.py
     :caption: More Advanced Example
     :linenos:
-    :emphasize-lines: 69-70, 77, 114-115, 245-256
+    :emphasize-lines: 69-70, 77, 114-115, 248-259
 
 .. note::
 

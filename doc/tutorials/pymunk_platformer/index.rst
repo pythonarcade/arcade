@@ -3,11 +3,7 @@
 Pymunk Platformer Tutorial
 ==========================
 
-.. warning::
-
-    This tutorial requires Arcade version 2.4, which is currently in Alpha.
-    You'll need to specifically install it, as 2.3 will be default. The API
-    for the Pymunk interface is still subject to change.
+.. image:: title_animated_gif.gif
 
 This tutorial covers how to write a platformer using Arcade and its Pymunk API.
 This tutorial assumes the you are somewhat familiar with Python, Arcade, and
@@ -20,6 +16,13 @@ the `Tiled Map Editor`_.
 * If you aren't familiar with the Tiled Map Editor, the :ref:`platformer_tutorial`
   also introduces how to create a map with the Tiled Map Editor.
 
+.. warning::
+
+    This tutorial requires Arcade version 2.4, which is currently in Alpha.
+    You'll need to specifically install it, as 2.3 will be default. The API
+    for the Pymunk interface is still subject to change.
+
+
 Open a Window
 -------------
 
@@ -30,7 +33,6 @@ sure you can run it. It should pop open a black window.
 .. literalinclude:: pymunk_demo_platformer_01.py
     :caption: Starting Program
     :linenos:
-
 
 Create Constants
 ----------------
@@ -97,6 +99,8 @@ file "pymunk_test_map.tmx" and place in the exact same directory as your code.
 .. image:: tiled_map.png
     :width: 75%
 
+If you aren't sure how to use the Tiled Map Editor, see :ref:`platformer_part_eight`.
+
 Now, in the ``setup`` function, we are going add code to:
 
 * Create instances of ``SpriteList`` for each group of sprites we are doing
@@ -114,7 +118,7 @@ Now, in the ``setup`` function, we are going add code to:
 .. literalinclude:: pymunk_demo_platformer_04.py
     :caption: Creating our sprites
     :linenos:
-    :lines: 54-80
+    :pyobject: GameWindow.setup
 
 There's no point in having sprites if we don't draw them, so in the ``on_draw``
 method, let's draw out sprite lists.
@@ -122,7 +126,7 @@ method, let's draw out sprite lists.
 .. literalinclude:: pymunk_demo_platformer_04.py
     :caption: Drawing our sprites
     :linenos:
-    :lines: 94-100
+    :pyobject: GameWindow.on_draw
 
 With the additions in the program below, running your program should show the
 tiled map you created:
@@ -171,14 +175,14 @@ added individually.
 .. literalinclude:: pymunk_demo_platformer_05.py
     :caption: Add Sprites to Physics Engine in 'setup' Method
     :linenos:
-    :lines: 105-156
+    :lines: 103-153
 
 Fourth, in the ``on_update`` method we call the physics engine's ``step`` method.
 
 .. literalinclude:: pymunk_demo_platformer_05.py
     :caption: Add Sprites to Physics Engine in 'setup' Method
     :linenos:
-    :lines: 166-168
+    :lines: 163-165
 
 If you run the program, and you have dynamic items that are up in the air, you
 should see them fall when the game starts.
@@ -208,7 +212,7 @@ appropriate values in the key press and release handlers.
 .. literalinclude:: pymunk_demo_platformer_06.py
     :caption: Handle Key Up and Down Events
     :linenos:
-    :lines: 161-175
+    :lines: 158-172
     :emphasize-lines: 4-7, 12-15
 
 Finally, we need to apply the correct force in ``on_update``. Force is specified
@@ -220,9 +224,8 @@ We also set the friction when we are moving to zero, and when we are not moving 
 .. literalinclude:: pymunk_demo_platformer_06.py
     :caption: Apply Force to Move Player
     :linenos:
-    :lines: 177-198
+    :lines: 174-195
     :emphasize-lines: 4-19
-
 
 * :ref:`pymunk_demo_platformer_06`
 * :ref:`pymunk_demo_platformer_06_diff`
@@ -257,16 +260,16 @@ We'll add logic that will apply the impulse force when we jump:
 .. literalinclude:: pymunk_demo_platformer_07.py
     :caption: Add Player Jumping - Jump Force
     :linenos:
-    :lines: 167-179
-    :emphasize-lines: 9-13
+    :lines: 164-176
+    :emphasize-lines: 8-13
 
 Then we will adjust the left/right force depending on if we are grounded or not:
 
 .. literalinclude:: pymunk_demo_platformer_07.py
     :caption: Add Player Jumping - Left/Right Force Selection
     :linenos:
-    :lines: 189-215
-    :emphasize-lines: 6-10, 15-19
+    :lines: 187-213
+    :emphasize-lines: 3, 6-10, 15-19
 
 * :ref:`pymunk_demo_platformer_07`
 * :ref:`pymunk_demo_platformer_07_diff`
@@ -326,12 +329,20 @@ replace the line that creates the ``player`` instance with:
 
 .. literalinclude:: pymunk_demo_platformer_08.py
     :caption: Add Player Animation - Creating the Player Class
-    :linenos:
-    :lines: 189-190
+    :lines: 195-196
 
-A really common mistake I've seen programmers make (and made myself) is  to forget
+A really common mistake I've seen programmers make (and made myself) is to forget
 that last part. Then you can spend a lot of time looking at the player class when
 the error is in the setup.
+
+We also need to go back and change the data type for the player sprite attribute
+in our ``__init__`` method:
+
+.. literalinclude:: pymunk_demo_platformer_08.py
+    :caption: Add Player Animation - Creating the Player Class
+    :lines: 161-162
+
+
 
 * :ref:`pymunk_demo_platformer_08`
 * :ref:`pymunk_demo_platformer_08_diff`
@@ -407,14 +418,14 @@ it instead of the plain ``arcade.Sprite`` class.
 .. literalinclude:: pymunk_demo_platformer_10.py
     :caption: Destroy Bullets - Bullet Sprite
     :linenos:
-    :lines: 313-317
+    :lines: 310-314
     :emphasize-lines: 4
 
 Handle Collisions
 ~~~~~~~~~~~~~~~~~
 
 To handle collisions, we can add custom collision handler call-backs. If you'll
-remember when we added items to the physics engine, we gave each item a collsion
+remember when we added items to the physics engine, we gave each item a collision
 type, such as "wall" or "bullet" or "item". We can write a function and register
 it to handle all bullet/wall collisions.
 
@@ -426,7 +437,7 @@ the texture depending on its health.
 .. literalinclude:: pymunk_demo_platformer_10.py
     :caption: Destroy Bullets - Collision Handlers
     :linenos:
-    :lines: 242-253
+    :lines: 240-251
 
 
 * :ref:`pymunk_demo_platformer_10`
@@ -435,12 +446,179 @@ the texture depending on its health.
 Add Moving Platforms
 --------------------
 
-(To be done)
+We can add support for moving platforms. Platforms can be added in an object
+layer. An object layer allows platforms to be placed anywhere, and not just on
+exact grid locations. Object layers also allow us to add custom properties for
+each tile we place.
+
+.. figure:: add_object_layer.png
+    :width: 80%
+
+    Adding an object layer.
+
+Once we have the tile placed, we can add custom properties for it. Click the
+'+' icon and add properties for all or some of:
+
+* ``change_x``
+* ``change_y``
+* ``left_boundary``
+* ``right_boundary``
+* ``top_boundary``
+* ``bottom_boundary``
+
+If these are named exact matches, they'll automatically copy their values into
+the sprite attributes of the same name.
+
+.. figure:: add_custom_properties.png
+    :width: 80%
+
+    Adding custom properties.
+
+Now we need to update our code. In ``GameWindow.__init__`` add a line to create
+an attribute for ``moving_sprites_list``:
+
+.. literalinclude:: pymunk_demo_platformer_11.py
+    :caption: Moving Platforms - Adding the sprite list
+    :lines: 186
+
+In the ``setup`` method, load in the sprite list from the tmx layer.
+
+.. literalinclude:: pymunk_demo_platformer_11.py
+    :caption: Moving Platforms - Adding the sprite list
+    :lines: 225-227
+
+Also in the ``setup`` method, we need to add these sprites to the physics engine.
+In this case we'll add the sprites as ``KINEMATIC``. Static sprites don't move.
+Dynamic sprites move, and can have forces applied to them by other objects.
+Kinematic sprites do move, but aren't affected by other objects.
+
+.. literalinclude:: pymunk_demo_platformer_11.py
+    :caption: Moving Platforms - Loading the sprites
+    :lines: 294-296
+
+We need to draw the moving platform sprites. After adding this line, you should
+be able to run the program and see the sprites from this layer, even if they don't
+move yet.
+
+.. literalinclude:: pymunk_demo_platformer_11.py
+    :caption: Moving Platforms - Draw the sprites
+    :linenos:
+    :pyobject: GameWindow.on_draw
+    :emphasize-lines: 5
+
+Next up, we need to get the sprites moving. First, we'll check to see if there
+are any boundaries set, and if we need to reverse our direction.
+
+After that we'll create a velocity vector. Velocity is in pixels per second. In this
+case, I'm assuming the user set the velocity in pixels per frame in Tiled instead,
+so we'll convert.
+
+.. warning::
+
+    Changing center_x and center_y will not move the sprite. If you want to change
+    a sprite's position, use the physics engine's ``set_position`` method.
+
+    Also, setting an item's position "teleports" it there. The physics engine
+    will happily move the object right into another object. Setting the item's
+    velocity instead will cause the physics engine to move the item, pushing
+    any dynamic items out of the way.
+
+
+.. literalinclude:: pymunk_demo_platformer_11.py
+    :caption: Moving Platforms - Moving the sprites
+    :lines: 404-427
+
+* :ref:`pymunk_demo_platformer_11`
+* :ref:`pymunk_demo_platformer_11_diff`
 
 Add Ladders
 -----------
 
-(To be done)
+The first step to adding ladders to our platformer is modify the ``__init__``
+to track some more items:
+
+* Have a reference to a list of ladder sprites
+* Add textures for a climbing animation
+* Keep track of our movement in the y direction
+* Add a boolean to track if we are on/off a ladder
+
+.. literalinclude:: pymunk_demo_platformer_12.py
+    :caption: Add Ladders - PlayerSprite class
+    :linenos:
+    :pyobject: PlayerSprite.__init__
+    :emphasize-lines: 2, 29-34, 50-53
+
+Next, in our ``pymunk_moved`` method we need to change physics when we are
+on a ladder, and to update our player texture.
+
+When we are on a ladder, we'll turn off gravity, turn up damping, and turn down
+our max vertical velocity. If we are off the ladder, reset those attributes.
+
+When we are on a ladder, but not on the ground, we'll alternate between a couple
+climbing textures.
+
+.. literalinclude:: pymunk_demo_platformer_12.py
+    :caption: Add Ladders - PlayerSprite class
+    :linenos:
+    :pyobject: PlayerSprite.pymunk_moved
+    :emphasize-lines: 12-24, 28-43
+
+Then we just need to add a few variables to the ``__init__`` to track ladders:
+
+.. literalinclude:: pymunk_demo_platformer_12.py
+    :caption: Add Ladders - Game Window Init
+    :linenos:
+    :pyobject: GameWindow.__init__
+    :emphasize-lines: 16, 21-22
+
+Then load the ladder layer in ``setup``:
+
+.. literalinclude:: pymunk_demo_platformer_12.py
+    :caption: Add Ladders - Game Window Setup
+    :lines: 257-260
+
+Also, pass the ladder list to the player class:
+
+.. literalinclude:: pymunk_demo_platformer_12.py
+    :caption: Add Ladders - Game Window Setup
+    :lines: 262-263
+
+Then change the jump button so that we don't jump if we are on a ladder. Also,
+we want to track if the up key, or down key are pressed.
+
+.. literalinclude:: pymunk_demo_platformer_12.py
+    :caption: Add Ladders - Game Window Key Down
+    :linenos:
+    :pyobject: GameWindow.on_key_press
+    :emphasize-lines: 8-17
+
+Add to the key up handler tracking for which key is pressed.
+
+.. literalinclude:: pymunk_demo_platformer_12.py
+    :caption: Add Ladders - Game Window Key Up
+    :linenos:
+    :pyobject: GameWindow.on_key_release
+    :emphasize-lines: 8-11
+
+Next, change our update with new updates for the ladder.
+
+.. literalinclude:: pymunk_demo_platformer_12.py
+    :caption: Add Ladders - Game Window On Update
+    :linenos:
+    :lines: 431-467
+    :emphasize-lines: 8, 17, 24-37
+
+And, of course, don't forget to draw the ladders:
+
+.. literalinclude:: pymunk_demo_platformer_12.py
+    :caption: Add Ladders - Game Window Key Down
+    :linenos:
+    :pyobject: GameWindow.on_draw
+    :emphasize-lines: 5
+
+* :ref:`pymunk_demo_platformer_12`
+* :ref:`pymunk_demo_platformer_12_diff`
+
 
 Add "Hit" Ability
 -----------------

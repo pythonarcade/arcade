@@ -238,7 +238,10 @@ class MyGame(arcade.Window):
         self.end_of_map = my_map.map_size.width * GRID_PIXEL_SIZE
 
         # -- Platforms
-        self.wall_list = arcade.tilemap.process_layer(my_map, platforms_layer_name, TILE_SCALING)
+        self.wall_list = arcade.tilemap.process_layer(my_map,
+                                                      platforms_layer_name,
+                                                      TILE_SCALING,
+                                                      use_spatial_hash=True)
 
         # -- Moving Platforms
         moving_platforms_list = arcade.tilemap.process_layer(my_map, moving_platforms_layer_name, TILE_SCALING)
@@ -249,10 +252,14 @@ class MyGame(arcade.Window):
         self.background_list = arcade.tilemap.process_layer(my_map, "Background", TILE_SCALING)
 
         # -- Background objects
-        self.ladder_list = arcade.tilemap.process_layer(my_map, "Ladders", TILE_SCALING)
+        self.ladder_list = arcade.tilemap.process_layer(my_map, "Ladders",
+                                                        TILE_SCALING,
+                                                        use_spatial_hash=True)
 
         # -- Coins
-        self.coin_list = arcade.tilemap.process_layer(my_map, coins_layer_name, TILE_SCALING)
+        self.coin_list = arcade.tilemap.process_layer(my_map, coins_layer_name,
+                                                      TILE_SCALING,
+                                                      use_spatial_hash=True)
 
         # --- Other stuff
         # Set the background color

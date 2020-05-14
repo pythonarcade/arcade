@@ -5,13 +5,12 @@
 The Python Arcade Library
 =========================
 
-
-.. |Go| image:: images/go.svg
-   :width: 40
+.. |Go| image:: images/woman_sprinter.svg
+   :width: 48
    :alt: Alternative text
    :target: get_started.html
 
-:ref:`get-started-here` |Go|
+|Go| :ref:`get-started-here`
 
 .. raw:: html
 
@@ -90,6 +89,7 @@ The Python Arcade Library
           </div>
           <ul>
             <li><a href="sample_games.html">Example Games</a></li>
+            <li><a href="game_jam_2020.html">GameJam 2020 Games</a></li>
           </ul>
         </td>
         <td>

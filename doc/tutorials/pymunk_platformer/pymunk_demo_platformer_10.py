@@ -63,7 +63,7 @@ RIGHT_FACING = 0
 LEFT_FACING = 1
 
 # How many pixels to move before we change the texture in the walking animation
-DISTANCE_TO_CHANGE_TEXTURE = 8
+DISTANCE_TO_CHANGE_TEXTURE = 20
 
 # How much force to put on the bullet
 BULLET_MOVE_FORCE = 4500
@@ -129,6 +129,9 @@ class PlayerSprite(arcade.Sprite):
         # Are we on the ground?
         is_on_ground = physics_engine.is_on_ground(self)
 
+        # Add to the odometer how far we've moved
+        self.x_odometer += dx
+
         # Jumping animation
         if not is_on_ground:
             if dy > DEAD_ZONE:
@@ -142,9 +145,6 @@ class PlayerSprite(arcade.Sprite):
         if abs(dx) <= DEAD_ZONE:
             self.texture = self.idle_texture_pair[self.character_face_direction]
             return
-
-        # Add to the odometer how far we've moved
-        self.x_odometer += dx
 
         # Have we moved far enough to change the texture?
         if abs(self.x_odometer) > DISTANCE_TO_CHANGE_TEXTURE:
@@ -176,7 +176,7 @@ class GameWindow(arcade.Window):
         super().__init__(width, height, title)
 
         # Player sprite
-        self.player_sprite: Optional[arcade.Sprite] = None
+        self.player_sprite: Optional[PlayerSprite] = None
 
         # Sprite lists we need
         self.player_list: Optional[arcade.SpriteList] = None
@@ -199,9 +199,15 @@ class GameWindow(arcade.Window):
 
         # Create the sprite lists
         self.player_list = arcade.SpriteList()
-        self.wall_list = arcade.SpriteList()
         self.bullet_list = arcade.SpriteList()
-        self.item_list = arcade.SpriteList()
+
+        # Read in the tiled map
+        map_name = "pymunk_test_map.tmx"
+        my_map = arcade.tilemap.read_tmx(map_name)
+
+        # Read in the map layers
+        self.wall_list = arcade.tilemap.process_layer(my_map, 'Platforms', SPRITE_SCALING_TILES)
+        self.item_list = arcade.tilemap.process_layer(my_map, 'Dynamic Items', SPRITE_SCALING_TILES)
 
         # Create player sprite
         self.player_sprite = PlayerSprite()
@@ -213,14 +219,6 @@ class GameWindow(arcade.Window):
         self.player_sprite.center_y = SPRITE_SIZE * grid_y + SPRITE_SIZE / 2
         # Add to player sprite list
         self.player_list.append(self.player_sprite)
-
-        # Read in the tiled map
-        map_name = "pymunk_test_map.tmx"
-        my_map = arcade.tilemap.read_tmx(map_name)
-
-        # Read in the map layers
-        self.wall_list = arcade.tilemap.process_layer(my_map, 'Platforms', SPRITE_SCALING_TILES)
-        self.item_list = arcade.tilemap.process_layer(my_map, 'Dynamic Items', SPRITE_SCALING_TILES)
 
         # --- Pymunk Physics Engine Setup ---
 
@@ -239,13 +237,13 @@ class GameWindow(arcade.Window):
         self.physics_engine = arcade.PymunkPhysicsEngine(damping=damping,
                                                          gravity=gravity)
 
-        def wall_hit_handler(bullet_sprite, wall_sprite, arbiter, space, data):
+        def wall_hit_handler(bullet_sprite, _wall_sprite, _arbiter, _space, _data):
             """ Called for bullet/wall collision """
             bullet_sprite.remove_from_sprite_lists()
 
         self.physics_engine.add_collision_handler("bullet", "wall", post_handler=wall_hit_handler)
 
-        def item_hit_handler(bullet_sprite, item_sprite, arbiter, space, data):
+        def item_hit_handler(bullet_sprite, item_sprite, _arbiter, _space, _data):
             """ Called for bullet/wall collision """
             bullet_sprite.remove_from_sprite_lists()
             item_sprite.remove_from_sprite_lists()
@@ -264,7 +262,6 @@ class GameWindow(arcade.Window):
         # by damping.
         self.physics_engine.add_sprite(self.player_sprite,
                                        friction=PLAYER_FRICTION,
-                                       damping=PLAYER_FRICTION,
                                        mass=PLAYER_MASS,
                                        moment=arcade.PymunkPhysicsEngine.MOMENT_INF,
                                        collision_type="player",
@@ -367,10 +364,11 @@ class GameWindow(arcade.Window):
     def on_update(self, delta_time):
         """ Movement and game logic """
 
+        is_on_ground = self.physics_engine.is_on_ground(self.player_sprite)
         # Update player forces based on keys pressed
         if self.left_pressed and not self.right_pressed:
             # Create a force to the left. Apply it.
-            if self.physics_engine.is_on_ground(self.player_sprite):
+            if is_on_ground:
                 force = (-PLAYER_MOVE_FORCE_ON_GROUND, 0)
             else:
                 force = (-PLAYER_MOVE_FORCE_IN_AIR, 0)
@@ -379,7 +377,7 @@ class GameWindow(arcade.Window):
             self.physics_engine.set_friction(self.player_sprite, 0)
         elif self.right_pressed and not self.left_pressed:
             # Create a force to the right. Apply it.
-            if self.physics_engine.is_on_ground(self.player_sprite):
+            if is_on_ground:
                 force = (PLAYER_MOVE_FORCE_ON_GROUND, 0)
             else:
                 force = (PLAYER_MOVE_FORCE_IN_AIR, 0)

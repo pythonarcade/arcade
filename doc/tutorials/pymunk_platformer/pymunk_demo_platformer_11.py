@@ -65,6 +65,15 @@ LEFT_FACING = 1
 # How many pixels to move before we change the texture in the walking animation
 DISTANCE_TO_CHANGE_TEXTURE = 20
 
+# How much force to put on the bullet
+BULLET_MOVE_FORCE = 4500
+
+# Mass of the bullet
+BULLET_MASS = 0.1
+
+# Make bullet less affected by gravity
+BULLET_GRAVITY = 300
+
 class PlayerSprite(arcade.Sprite):
     """ Player Sprite """
     def __init__(self):
@@ -149,6 +158,14 @@ class PlayerSprite(arcade.Sprite):
                 self.cur_texture = 0
             self.texture = self.walk_textures[self.cur_texture][self.character_face_direction]
 
+class BulletSprite(arcade.SpriteSolidColor):
+    """ Bullet Sprite """
+    def pymunk_moved(self, physics_engine, dx, dy, d_angle):
+        """ Handle when the sprite is moved by the physics engine. """
+        # If the bullet falls below the screen, remove it
+        if self.center_y < -100:
+            self.remove_from_sprite_lists()
+
 class GameWindow(arcade.Window):
     """ Main Window """
 
@@ -166,6 +183,7 @@ class GameWindow(arcade.Window):
         self.wall_list: Optional[arcade.SpriteList] = None
         self.bullet_list: Optional[arcade.SpriteList] = None
         self.item_list: Optional[arcade.SpriteList] = None
+        self.moving_sprites_list: Optional[arcade.SpriteList] = None
 
         # Track the current state of what key is pressed
         self.left_pressed: bool = False
@@ -203,6 +221,11 @@ class GameWindow(arcade.Window):
         # Add to player sprite list
         self.player_list.append(self.player_sprite)
 
+        # Moving Sprite
+        self.moving_sprites_list = arcade.tilemap.process_layer(my_map,
+                                                                'Moving Platforms',
+                                                                SPRITE_SCALING_TILES)
+
         # --- Pymunk Physics Engine Setup ---
 
         # The default damping for every object controls the percent of velocity
@@ -219,6 +242,19 @@ class GameWindow(arcade.Window):
         # Create the physics engine
         self.physics_engine = arcade.PymunkPhysicsEngine(damping=damping,
                                                          gravity=gravity)
+
+        def wall_hit_handler(bullet_sprite, _wall_sprite, _arbiter, _space, _data):
+            """ Called for bullet/wall collision """
+            bullet_sprite.remove_from_sprite_lists()
+
+        self.physics_engine.add_collision_handler("bullet", "wall", post_handler=wall_hit_handler)
+
+        def item_hit_handler(bullet_sprite, item_sprite, _arbiter, _space, _data):
+            """ Called for bullet/wall collision """
+            bullet_sprite.remove_from_sprite_lists()
+            item_sprite.remove_from_sprite_lists()
+
+        self.physics_engine.add_collision_handler("bullet", "item", post_handler=item_hit_handler)
 
         # Add the player.
         # For the player, we set the damping to a lower value, which increases
@@ -255,6 +291,10 @@ class GameWindow(arcade.Window):
                                             friction=DYNAMIC_ITEM_FRICTION,
                                             collision_type="item")
 
+        # Add kinematic sprites
+        self.physics_engine.add_sprite_list(self.moving_sprites_list,
+                                            body_type=arcade.PymunkPhysicsEngine.KINEMATIC)
+
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
 
@@ -276,6 +316,60 @@ class GameWindow(arcade.Window):
             self.left_pressed = False
         elif key == arcade.key.RIGHT:
             self.right_pressed = False
+
+    def on_mouse_press(self, x, y, button, modifiers):
+        """ Called whenever the mouse button is clicked. """
+
+        bullet = BulletSprite(20, 5, arcade.color.DARK_YELLOW)
+        self.bullet_list.append(bullet)
+
+        # Position the bullet at the player's current location
+        start_x = self.player_sprite.center_x
+        start_y = self.player_sprite.center_y
+        bullet.position = self.player_sprite.position
+
+        # Get from the mouse the destination location for the bullet
+        # IMPORTANT! If you have a scrolling screen, you will also need
+        # to add in self.view_bottom and self.view_left.
+        dest_x = x
+        dest_y = y
+
+        # Do math to calculate how to get the bullet to the destination.
+        # Calculation the angle in radians between the start points
+        # and end points. This is the angle the bullet will travel.
+        x_diff = dest_x - start_x
+        y_diff = dest_y - start_y
+        angle = math.atan2(y_diff, x_diff)
+
+        # What is the 1/2 size of this sprite, so we can figure out how far
+        # away to spawn the bullet
+        size = max(self.player_sprite.width, self.player_sprite.height) / 2
+
+        # Use angle to to spawn bullet away from player in proper direction
+        bullet.center_x += size * math.cos(angle)
+        bullet.center_y += size * math.sin(angle)
+
+        # Set angle of bullet
+        bullet.angle = math.degrees(angle)
+
+        # Gravity to use for the bullet
+        # If we don't use custom gravity, bullet drops too fast, or we have
+        # to make it go too fast.
+        # Force is in relation to bullet's angle.
+        bullet_gravity = (0, -BULLET_GRAVITY)
+
+        # Add the sprite. This needs to be done AFTER setting the fields above.
+        self.physics_engine.add_sprite(bullet,
+                                       mass=BULLET_MASS,
+                                       damping=1.0,
+                                       friction=0.6,
+                                       collision_type="bullet",
+                                       gravity=bullet_gravity,
+                                       elasticity=0.9)
+
+        # Add force to bullet
+        force = (BULLET_MOVE_FORCE, 0)
+        self.physics_engine.apply_force(bullet, force)
 
     def on_update(self, delta_time):
         """ Movement and game logic """
@@ -307,10 +401,37 @@ class GameWindow(arcade.Window):
         # Move items in the physics engine
         self.physics_engine.step()
 
+        # For each moving sprite, see if we've reached a boundary and need to
+        # reverse course.
+        for moving_sprite in self.moving_sprites_list:
+            if moving_sprite.boundary_right and \
+                    moving_sprite.change_x > 0 and \
+                    moving_sprite.right > moving_sprite.boundary_right:
+                moving_sprite.change_x *= -1
+            elif moving_sprite.boundary_left and \
+                    moving_sprite.change_x < 0 and \
+                    moving_sprite.left > moving_sprite.boundary_left:
+                moving_sprite.change_x *= -1
+            if moving_sprite.boundary_top and \
+                    moving_sprite.change_y > 0 and \
+                    moving_sprite.top > moving_sprite.boundary_top:
+                moving_sprite.change_y *= -1
+            elif moving_sprite.boundary_bottom and \
+                    moving_sprite.change_y < 0 and \
+                    moving_sprite.bottom < moving_sprite.boundary_bottom:
+                moving_sprite.change_y *= -1
+
+            # Figure out and set our moving platform velocity.
+            # Pymunk uses velocity is in pixels per second. If we instead have
+            # pixels per frame, we need to convert.
+            velocity = (moving_sprite.change_x * 1 / delta_time, moving_sprite.change_y * 1 / delta_time)
+            self.physics_engine.set_velocity(moving_sprite, velocity)
+
     def on_draw(self):
         """ Draw everything """
         arcade.start_render()
         self.wall_list.draw()
+        self.moving_sprites_list.draw()
         self.bullet_list.draw()
         self.item_list.draw()
         self.player_list.draw()

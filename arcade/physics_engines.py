@@ -124,7 +124,6 @@ def _move_sprite(moving_sprite: Sprite, walls: SpriteList, ramp_up: bool):
         direction = math.copysign(1, moving_sprite.change_x)
         exit_loop = False
         cur_x_change = abs(moving_sprite.change_x)
-        prior_x_change = 0
         cur_y_change = 0
         while not exit_loop:
             if cur_x_change > abs(moving_sprite.change_x):

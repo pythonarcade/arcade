@@ -190,6 +190,11 @@ def _get_image_source(tile: pytiled_parser.objects.Tile,
         if os.path.exists(try3):
             return try3
 
+    if tile.tileset and tile.tileset.parent_dir:
+        try4 = Path(tile.tileset.parent_dir, image_file)
+        if os.path.exists(try4):
+            return try4
+
     print(f"Warning, can't file image {image_file} for tile {tile.id_} - {base_directory}")
     return None
 
@@ -463,7 +468,7 @@ def process_layer(map_object: pytiled_parser.objects.TileMap,
                   layer_name: str,
                   scaling: float = 1,
                   base_directory: str = "",
-                  use_spatial_hash: bool = False) -> SpriteList:
+                  use_spatial_hash: Optional[bool] = None) -> SpriteList:
     """
     This takes a map layer returned by the read_tmx function, and creates Sprites for it.
 
