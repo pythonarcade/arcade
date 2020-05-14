@@ -400,7 +400,7 @@ class Theme:
     DEFAULT_FONT_NAME = ('Calibri', 'Arial')
 
     def __init__(self):
-        self.button_textures: Dict[str, Optional['', arcade.Texture]] =\
+        self.button_textures: Dict[str, Optional[str, arcade.Texture]] =\
             {'normal': '', 'hover': '', 'clicked': '', 'locked': '', }
         self.menu_texture = ""
         self.window_texture = ""
