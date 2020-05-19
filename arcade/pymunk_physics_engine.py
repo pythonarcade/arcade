@@ -10,7 +10,6 @@ import math
 from typing import Callable
 from typing import List
 from typing import Dict
-from typing import Sequence
 from typing import Optional
 from arcade import Sprite
 
@@ -286,7 +285,9 @@ class PymunkPhysicsEngine:
             h.separate = _f4
 
     def resync_sprites(self):
-        """ Set visual sprites to be the same location as physics engine sprites. """
+        """
+        Set visual sprites to be the same location as physics engine sprites.
+        """
         # Create copy in case a sprite wants to remove itself from the list as
         # we iterate through the list.
         sprites = self.non_static_sprite_list.copy()
@@ -308,14 +309,28 @@ class PymunkPhysicsEngine:
 
             sprite.pymunk_moved(self, dx, dy, d_angle)
 
-    def step(self, delta_time: float = 1 / 60.0):
-        """ Tell the physics engine to perform calculations. """
+    def step(self,
+             delta_time: float = 1 / 60.0,
+             resync_sprites: bool = True):
+        """
+        Tell the physics engine to perform calculations.
+
+        :param float delta_time: Time to move the simulation forward. Keep this
+                                 value constant, do not use varying values for
+                                 each step.
+        :param bool resync_sprites: Resynchronize Arcade graphical sprites to be
+                                    at the same location as their Pymunk counterparts.
+                                    If running multiple steps per frame, set this to
+                                    false for the first steps, and true for the last
+                                    step that's part of the update.
+        """
         # Update physics
         # Use a constant time step, don't use delta_time
         # See "Game loop / moving time forward"
         # http://www.pymunk.org/en/latest/overview.html#game-loop-moving-time-forward
         self.space.step(delta_time)
-        self.resync_sprites()
+        if resync_sprites:
+            self.resync_sprites()
 
     def get_physics_object(self, sprite: Sprite) -> PymunkPhysicsObject:
         """ Get the shape/body for a sprite. """
