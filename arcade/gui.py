@@ -21,6 +21,7 @@ class TextButton:
         self.width = width
         self.height = height
         self.text = text
+
         self.pressed = False
         self.active = True
         self.theme = theme
@@ -105,15 +106,15 @@ class TextButton:
                              anchor_x="center", anchor_y="center")
 
     def on_press(self):
-        if self.press_action is not None:
+        if callable(self.press_action):
             self.press_action()
 
     def on_release(self):
-        if self.release_action is not None:
+        if callable(self.release_action):
             self.release_action()
 
     def on_click(self):
-        if self.click_action is not None:
+        if callable(self.click_action):
             self.click_action()
 
     def check_mouse_press(self, x, y):
