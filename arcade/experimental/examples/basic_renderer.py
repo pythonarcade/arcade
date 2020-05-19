@@ -57,21 +57,17 @@ class MyGame(arcade.Window):
         self.quad_2 = geometry.quad_2d(pos=(0.5, 0.5))
 
     def on_draw(self):
-        try:
-            self.clear()
-            self.color_program['color'] = (
-                (math.sin(self.time) + 1.0) / 2,
-                (math.sin(self.time + 2) + 1.0) / 2,
-                (math.sin(self.time + 3) + 1.0) / 2,
-                1.0
-            )
-            self.quad_1.render(self.color_program)
-            self.quad_2.render(self.uv_program)
+        self.clear()
+        self.color_program['color'] = (
+            (math.sin(self.time) + 1.0) / 2,
+            (math.sin(self.time + 2) + 1.0) / 2,
+            (math.sin(self.time + 3) + 1.0) / 2,
+            1.0
+        )
+        self.quad_1.render(self.color_program)
+        self.quad_2.render(self.uv_program)
 
-            arcade.draw_circle_filled(100, 100, 100, arcade.color.APPLE_GREEN)
-
-        except Exception:
-            exit(1)
+        arcade.draw_circle_filled(100, 100, 100, arcade.color.APPLE_GREEN)
 
     def on_update(self, dt):
         self.time += dt

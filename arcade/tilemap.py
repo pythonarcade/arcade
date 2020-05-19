@@ -468,7 +468,7 @@ def process_layer(map_object: pytiled_parser.objects.TileMap,
                   layer_name: str,
                   scaling: float = 1,
                   base_directory: str = "",
-                  use_spatial_hash: Optional[bool] = None) -> SpriteList:
+                  use_spatial_hash: bool = False) -> SpriteList:
     """
     This takes a map layer returned by the read_tmx function, and creates Sprites for it.
 
