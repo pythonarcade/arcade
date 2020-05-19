@@ -35,6 +35,16 @@ MOUSE_BUTTON_RIGHT = 4
 _window: 'Window'
 
 
+def get_screens():
+    """
+    Return a list of screens. So for a two-monitor setup, this should return
+    a list of two screens. Can be used with arcade.Window to select which
+    window we full-screen on.
+    """
+    display = pyglet.canvas.get_display()
+    return display.get_screens()
+
+
 class NoOpenGLException(Exception):
     """
     Exception when we can't get an OpenGL 3.3+ context
@@ -48,10 +58,15 @@ class Window(pyglet.window.Window):
     It represents a window on the screen, and manages events.
     """
 
-    def __init__(self, width: int = 800, height: int = 600,
-                 title: str = 'Arcade Window', fullscreen: bool = False,
-                 resizable: bool = False, update_rate: Optional[float] = 1/60,
-                 antialiasing: bool = True):
+    def __init__(self,
+                 width: int = 800,
+                 height: int = 600,
+                 title: str = 'Arcade Window',
+                 fullscreen: bool = False,
+                 resizable: bool = False,
+                 update_rate: Optional[float] = 1/60,
+                 antialiasing: bool = True,
+                 screen: pyglet.canvas.Screen = None):
         """
         Construct a new window
 
@@ -94,7 +109,7 @@ class Window(pyglet.window.Window):
                 self.context.set_vsync(False)
             self.set_update_rate(update_rate)
 
-        super().set_fullscreen(fullscreen)
+        super().set_fullscreen(fullscreen, screen)
         # This used to be necessary on Linux, but no longer appears to be.
         # With Pyglet 2.0+, setting this to false will not allow the screen to
         # update. It does, however, cause flickering if creating a window that
@@ -134,6 +149,19 @@ class Window(pyglet.window.Window):
         pyglet.clock.unschedule(self.update)
         pyglet.clock.unschedule(self.on_update)
 
+    def set_fullscreen(self, fullscreen=True, screen=None, mode=None,
+                       width=None, height=None):
+        """
+        Set if we are full screen or not.
+
+        :param bool fullscreen:
+        :param screen:
+        :param mode:
+        :param int width:
+        :param int height:
+        """
+        super.set_fullscreen(fullscreen, screen, mode, width, height)
+        
     def center_window(self):
         """
         Center the window on the screen.
