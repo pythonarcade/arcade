@@ -451,8 +451,7 @@ class Font:
 class Theme:
 
     def __init__(self):
-        self.button_textures: Dict[str, Optional['', arcade.Texture]] =\
-            {'normal': '', 'hover': '', 'clicked': '', 'locked': '', }
+        self.button_textures = {'normal': '', 'hover': '', 'clicked': '', 'locked': ''}
         self.menu_texture = ""
         self.window_texture = ""
         self.dialogue_box_texture = ""
