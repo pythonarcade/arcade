@@ -22,6 +22,30 @@ the `Tiled Map Editor`_.
     You'll need to specifically install it, as 2.3 will be default. The API
     for the Pymunk interface is still subject to change.
 
+Common Issues
+-------------
+
+There are a few items with the Pymunk physics engine that should be pointed out
+before you get started:
+
+* Object overlap - A fast moving object is allowed to overlap with the object it
+  collides with, and Pymunk will push them apart later. See
+  `collision bias <http://www.pymunk.org/en/latest/pymunk.html#pymunk.Space.collision_bias>`_
+  for more information.
+* Pass-through - A fast moving object can pass through another object if its
+  speed is so quick it never overlaps the other object between frames. See
+  `object tunneling <http://www.pymunk.org/en/latest/overview.html#object-tunneling>`_.
+* When stepping the physics engine forward in time, the default is to move forward
+  1/60th of a second. Whatever increment is picked, increments should always be
+  kept the same. Don't use the variable delta_time from the ``update`` method as
+  a unit, or results will be unstable and unpredictable. For a more accurate
+  simulation, you can step forward 1/120th of a second twice per frame. This increases
+  the time required, but takes more time to calculate.
+* A sprite moving across a floor made up of many rectangles can get "caught"
+  on the edges. The corner of the player sprite can get caught the corner of the
+  floor sprite. To get around this, make sure the hit box for the bottom of the
+  player sprite is rounded. Also, look into the possibility of merging horizontal
+  rows of sprites.
 
 Open a Window
 -------------
