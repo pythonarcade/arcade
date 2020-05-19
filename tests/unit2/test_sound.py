@@ -1,3 +1,5 @@
+import os
+from pathlib import Path
 import arcade
 
 SCREEN_WIDTH = 800
@@ -13,10 +15,17 @@ class MyGame(arcade.Window):
         """
         super().__init__(width, height)
 
+        file_path = os.path.dirname(os.path.abspath(__file__))
+        os.chdir(file_path)
+
         arcade.set_background_color(arcade.color.WHITE)
         self.laser_wav = arcade.load_sound(":resources:sounds/laser1.wav")
         self.laser_mp3 = arcade.load_sound(":resources:sounds/laser1.mp3")
         self.laser_ogg = arcade.load_sound(":resources:sounds/laser1.ogg")
+
+        soundpath = Path("../../arcade/resources/sounds")
+        self.coin = arcade.Sound(soundpath / "coin1.wav", streaming=True)
+
         self.frame_count = 0
 
     def update(self, dt):
@@ -36,6 +45,7 @@ class MyGame(arcade.Window):
 
         if self.frame_count == 200:
             self.laser_mp3.stop()
+            self.coin.play()
 
     def on_draw(self):
         """
