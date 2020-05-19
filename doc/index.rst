@@ -11,6 +11,7 @@ The Python Arcade Library
    :target: get_started.html
 
 |Go| :ref:`get-started-here`
+----------------------------
 
 .. raw:: html
 
@@ -25,9 +26,9 @@ The Python Arcade Library
           </div>
           <ul>
           <li><a href="examples/index.html">All Examples</a></li>
-          <li><a href="examples/sprite_collect_coins.html">Collect Coins</a></li>
-          <li><a href="examples/asteroid_smasher.html">Asteroid Smasher</a></li>
-          <li><a href="examples/platform_tutorial/index.html">Platformer Tutorial</a></li>
+          <li><a href="examples/index.html#sprites">Sprites</a></li>
+          <li><a href="examples/index.html#shooting-with-sprites">Shooting</a></li>
+          <li><a href="examples/index.html#platformers">Platformers</a></li>
           </ul>
         </td>
         <td>
@@ -46,22 +47,23 @@ The Python Arcade Library
         </td>
       </tr>
       <tr>
+
         <td>
           <div style="display:inline-block;">
-            <img style="width:78px;" src="_static/API.svg"><br/>
+            <img style="width:78px;" src="_static/learn.svg">
           </div>
           <div style="display:inline-block;">
-            <h2>API</h2>
+            <h2>Tutorials</h2>
           </div>
           <ul>
-          <li><a href="quick_index.html">Quick API Index</a></li>
-          <li><a href="arcade.html">Full Arcade API Docs</a></li>
-          <li><a href="arcade.color.html">Colors</a> | <a href="arcade.csscolor.html">CSS Colors</a></li>
-          <li><a href="arcade.html#arcade.Window">Window Class</a></li>
-          <li><a href="arcade.html#arcade.Sprite">Sprite</a> | <a href="arcade.html#arcade.SpriteList">SpriteList</a></li>
-          <li><a href="resources.html">Resources - Default Images</a></li>
-         </ul>
+            <li><a href="https://realpython.com/arcade-python-game-framework/">Real Python: Primer on the Python Game Framework</a></li>
+            <li><a href="tutorials/views/index.html">Views for Menu, Title, Game Over Screens</a></li>
+            <li><a href="examples/platform_tutorial/index.html">Simple Platformer</a></li>
+            <li><a href="tutorials/pymunk_platformer/index.html">Platformer with Physics</a></li>
+            <li><a href="tutorials/lights/index.html">Using Lights</a></li>
+           </ul>
         </td>
+
         <td>
           <div style="display:inline-block;">
             <img style="width:78px;" src="_static/social.svg"><br/>
@@ -92,19 +94,24 @@ The Python Arcade Library
             <li><a href="game_jam_2020.html">GameJam 2020 Games</a></li>
           </ul>
         </td>
+
         <td>
           <div style="display:inline-block;">
-            <img style="width:78px;" src="_static/performance.svg">
+            <img style="width:78px;" src="_static/API.svg"><br/>
           </div>
           <div style="display:inline-block;">
-            <h2>Performance</h2>
+            <h2>API</h2>
           </div>
           <ul>
-          <li><a href="performance_tips.html">Performance Tips</a></li>
-          <li><a href="arcade_vs_pygame_performance.html">Arcade vs. Pygame Performance</a></li>
-          <li><a href="pygame_comparison.html">Arcade vs. Pygame Feature Comparison</a></li>
-          </ul>
+          <li><a href="quick_index.html">Quick API Index</a></li>
+          <li><a href="arcade.html">Full Arcade API Docs</a></li>
+          <li><a href="arcade.color.html">Colors</a> | <a href="arcade.csscolor.html">CSS Colors</a></li>
+          <li><a href="arcade.html#arcade.Window">Window Class</a></li>
+          <li><a href="arcade.html#arcade.Sprite">Sprite</a> | <a href="arcade.html#arcade.SpriteList">SpriteList</a></li>
+          <li><a href="resources.html">Resources - Default Images</a></li>
+         </ul>
         </td>
+
       </tr>
       <tr>
 
@@ -124,6 +131,24 @@ The Python Arcade Library
 
         <td>
           <div style="display:inline-block;">
+            <img style="width:78px;" src="_static/performance.svg">
+          </div>
+          <div style="display:inline-block;">
+            <h2>Performance</h2>
+          </div>
+          <ul>
+          <li><a href="performance_tips.html">Performance Tips</a></li>
+          <li><a href="arcade_vs_pygame_performance.html">Arcade vs. Pygame Performance</a></li>
+          <li><a href="pygame_comparison.html">Arcade vs. Pygame Feature Comparison</a></li>
+          </ul>
+        </td>
+
+      </tr>
+
+      <tr>
+
+        <td>
+          <div style="display:inline-block;">
             <img style="width:78px;" src="_static/learn.svg">
           </div>
           <div style="display:inline-block;">
@@ -131,7 +156,6 @@ The Python Arcade Library
           </div>
           <ul>
             <li><a href="https://learn.arcade.academy/">Book: Learn to Program with Arcade</a></li>
-            <li><a href="https://realpython.com/arcade-python-game-framework/">Real Python Article: A Primer on the Python Game Framework</a></li>
             <li><a href="tutorials/edge_artifacts/index.html">Fixing Edge Artifacts</a></li>
             <li><a href="https://mryslab.github.io/bots-in-pieces/python-banyan/arcade/2020/02/21/p2p-arcade-1.html">Peer To Peer Gaming With Arcade and Python Banyan</a></li>
             <li><a href="https://youtu.be/Djtm1DzWSvo">US PyCon 2019 Tutorial</a></li>
@@ -139,7 +163,14 @@ The Python Arcade Library
             <li><a href="https://youtu.be/DAWHMHMPVHU">US PyCon 2018 Talk</a></li>
            </ul>
         </td>
+
+        <td>
+
+        </td>
+
+
       </tr>
+
 
     </table>
 .. raw:: html
@@ -159,7 +190,10 @@ game without learning a complex framework.
    arcade
    installation
    examples/index
+   tutorials/views/index
    examples/platform_tutorial/index
+   tutorials/pymunk_platformer/index
+   tutorials/lights/index
    sample_games
    performance_tips
    how_to_contribute
@@ -173,7 +207,6 @@ game without learning a complex framework.
    tutorials/edge_artifacts/index
    get_started
    logging
-   tutorials/pymunk_platformer/index
 
 Learn about it:
 ^^^^^^^^^^^^^^^

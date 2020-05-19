@@ -344,11 +344,6 @@ Basic Platformers
 
    :ref:`sprite_move_animation`
 
-.. figure:: thumbs/sprite_ramps.png
-   :figwidth: 170px
-
-   :ref:`sprite_ramps`
-
 .. figure:: thumbs/sprite_moving_platforms.png
    :figwidth: 170px
 
@@ -410,16 +405,6 @@ Procedural Generation
    :figwidth: 170px
 
    :ref:`procedural_caves_bsp`
-
-.. figure:: thumbs/mountains_midpoint_displacement.png
-   :figwidth: 170px
-
-   :ref:`mountains_midpoint_displacement`
-
-.. figure:: thumbs/mountains_random_walk.png
-   :figwidth: 170px
-
-   :ref:`mountains_random_walk`
 
 User Interface
 --------------
