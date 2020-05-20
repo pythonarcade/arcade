@@ -632,11 +632,16 @@ def open_window(width: int, height: int, window_title: str, resizable: bool = Fa
 
 class View:
     """
-    TODO:Thoughts:
-    - is there a need for a close()/on_close() method?
+    Support different views/screens in a window.
     """
-    def __init__(self):
-        self.window = None
+    def __init__(self,
+                 window: Window = None):
+
+        if window is None:
+            self.window = arcade.get_window()
+        else:
+            self.window = window
+
         self.button_list: List[TextButton] = []
         self.dialogue_box_list: List[DialogueBox] = []
         self.text_list: List[TextLabel] = []

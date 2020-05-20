@@ -409,6 +409,8 @@ Procedural Generation
 User Interface
 --------------
 
+.. _view-examples:
+
 Instruction Screens and Game Over Screens
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

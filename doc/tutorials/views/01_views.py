@@ -1,14 +1,3 @@
-"""
-Sprite Collect Coins
-
-Simple program to show basic sprite usage.
-
-Artwork from http://kenney.nl
-
-If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.sprite_collect_coins
-"""
-
 import random
 import arcade
 
@@ -19,7 +8,7 @@ COIN_COUNT = 50
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
-SCREEN_TITLE = "Sprite Collect Coins Example"
+SCREEN_TITLE = "Implement Views Example"
 
 
 class MyGame(arcade.Window):

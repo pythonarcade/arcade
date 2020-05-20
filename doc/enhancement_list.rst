@@ -82,7 +82,6 @@ Documentation
 * `Issue 452 <https://github.com/pvcraven/arcade/issues/452>`_
   Documentation Request - explain how delta_time works to help learners fully
   understand both how and why.
-* Explain the 'views' setup for doing instruction screens and more.
 * Show how to make into a redistributable/installable/exe
 * `Issue 671 <https://github.com/pvcraven/arcade/issues/671>`_
   Documentation Request - Add drag and drop examples. Tiles, cards, moving inventory
