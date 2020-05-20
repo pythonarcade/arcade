@@ -109,7 +109,8 @@ it:
 
 Then we need to define the ``on_show`` method that will be run once when we
 switch to this view. In this case, we don't need to do much, just set the
-background color.
+background color. If the game is one that scrolls, we'll also need to reset
+the viewport so that (0, 0) is back to the lower-left coordinate.
 
 .. literalinclude:: 03_views.py
     :caption: Add views - on_show
@@ -174,7 +175,9 @@ our view.
 
 .. literalinclude:: 04_views.py
     :caption: Add views - Game Over View
-    :lines: 143-147
+    :pyobject: GameView.on_update
+    :linenos:
+    :emphasize-lines: 16-20
 
 * :ref:`04_views` |larr| Full listing of where we are right now
 * :ref:`04_views_diff` |larr| What we changed to get here
