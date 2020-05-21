@@ -8,6 +8,10 @@ Drawing with Functions
 This example shows how to define functions that draw objects. Such as
 ``draw_tree(x, y)`` and ``draw_bird(x, y)``.
 
+For more information see:
+
+*  https://learn.arcade.academy/chapters/09_drawing_with_functions/drawing_with_functions.html
+
 .. raw:: html
 
     <iframe src="https://player.vimeo.com/video/167296062?byline=0&portrait=0" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
