@@ -406,12 +406,13 @@ def load_spritesheet(file_name: Union[str, Path],
                      sprite_width: int,
                      sprite_height: int,
                      columns: int,
-                     count: int) -> List[Texture]:
+                     count: int,
+                     margin: int = 0) -> List[Texture]:
     """
 
     :param str file_name: Name of the file to that holds the texture.
-    :param int sprite_width: X position of the crop area of the texture.
-    :param int sprite_height: Y position of the crop area of the texture.
+    :param int sprite_width: Width of the sprites in pixels
+    :param int sprite_height: Height of the sprites in pixels
     :param int columns: Number of tiles wide the image is.
     :param int count: Number of tiles in the image.
 
@@ -427,8 +428,8 @@ def load_spritesheet(file_name: Union[str, Path],
     for sprite_no in range(count):
         row = sprite_no // columns
         column = sprite_no % columns
-        start_x = sprite_width * column
-        start_y = sprite_height * row
+        start_x = (sprite_width + margin) * column
+        start_y = (sprite_height + margin) * row
         image = source_image.crop((start_x, start_y, start_x + sprite_width, start_y + sprite_height))
         texture = Texture(f"{file_name}-{sprite_no}", image)
         texture_list.append(texture)
