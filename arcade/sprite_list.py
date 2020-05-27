@@ -1021,6 +1021,14 @@ class SpriteList:
     def __getitem__(self, i):
         return self.sprite_list[i]
 
+    def __setitem__(self, key: int, value: Sprite):
+        self._vao1 = None
+        self.sprite_list[key] = value
+        self.sprite_idx[value] = key
+
+    def index(self, key):
+        return self.sprite_list.index(key)
+
     def pop(self, index: int = -1) -> Sprite:
         """
         Pop off the last sprite, or the given index, from the list
