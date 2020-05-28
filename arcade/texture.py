@@ -113,6 +113,7 @@ class Texture:
             return self._hit_box_points
         else:
             self._hit_box_points = calculate_points(self.image)
+            return self._hit_box_points
 
     def _create_cached_sprite(self):
         from arcade.sprite import Sprite
