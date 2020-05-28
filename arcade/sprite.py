@@ -40,7 +40,9 @@ FACE_UP = 3
 FACE_DOWN = 4
 
 class PyMunk:
+    """ Object used to hold pymunk info for a sprite. """
     def __init__(self):
+        """ Set up pymunk object """
         self.damping = None
         self.gravity = None
         self.max_velocity = None
@@ -115,7 +117,8 @@ class Sprite:
                  flipped_horizontally: bool = False,
                  flipped_vertically: bool = False,
                  flipped_diagonally: bool = False,
-                 mirrored = None):
+                 mirrored: bool = None,
+                 calculate_hit_box: bool = True):
         """
         Create a new sprite.
 
@@ -131,6 +134,8 @@ class Sprite:
         :param bool flipped_vertically: Flip the image up/down across the horizontal axis.
         :param bool flipped_diagonally: Transpose the image, flip it across the diagonal.
         :param mirrored: Deprecated.
+        :param bool calculate_hit_box: If set to True, will attempt accurate, but slow, calculation of hit box. If
+                                       False, will use image dimensions for hit box.
         """
 
         if image_width < 0:
@@ -154,6 +159,9 @@ class Sprite:
         self.physics_engines: List[Any] = []
 
         self._texture: Optional[Texture]
+
+        self._points: Optional[PointList] = None
+
         if filename is not None:
             try:
                 self._texture = load_texture(filename, image_x, image_y,
@@ -161,6 +169,14 @@ class Sprite:
                                              flipped_horizontally=flipped_horizontally,
                                              flipped_vertically=flipped_vertically,
                                              flipped_diagonally=flipped_diagonally)
+                if not calculate_hit_box:
+                    w = self._texture.width
+                    h = self._texture.height
+                    self._points = [(-w / 2, h / 2),
+                                    (w / 2, h / 2),
+                                    (w / 2, -h / 2),
+                                    (-w / 2, -h / 2)]
+
             except Exception as e:
                 print(f"Unable to load {filename} {e}")
                 self._texture = None
@@ -200,9 +216,7 @@ class Sprite:
         self._collision_radius: Optional[float] = None
         self._color: RGB = (255, 255, 255)
 
-        self._points: Optional[PointList] = None
-
-        if self._texture:
+        if self._texture and not self._points:
             self._points = self._texture.hit_box_points
 
         self._point_list_cache: Optional[PointList] = None
@@ -291,7 +305,7 @@ class Sprite:
 
     def set_hit_box(self, points: PointList):
         """
-        Set a sprite's hit box. Hitbox should be relative to a sprite's center,
+        Set a sprite's hit box. Hit box should be relative to a sprite's center,
         and with a scale of 1.0.
         Points will be scaled with get_adjusted_hit_box.
         """
