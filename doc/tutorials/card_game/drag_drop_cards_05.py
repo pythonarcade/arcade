@@ -3,6 +3,7 @@ Drag and drop cards
 
 python -m arcade.examples.drag_drop_cards
 """
+import random
 import arcade
 
 SCREEN_WIDTH = 800
@@ -10,6 +11,14 @@ SCREEN_HEIGHT = 700
 SCREEN_TITLE = "Drag and Drop Cards"
 CARD_VALUES = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"]
 CARD_SUITS = ["Clubs", "Hearts", "Spades", "Diamonds"]
+
+PILE_COUNT = 5
+PULL_PILE = 0
+TOP_PILE_1 = 1
+TOP_PILE_2 = 2
+TOP_PILE_3 = 3
+TOP_PILE_4 = 4
+
 
 class Card(arcade.Sprite):
     def __init__(self, suit, value, scale=1):
@@ -32,18 +41,45 @@ class MyGame(arcade.Window):
         self.held_card = None
         self.held_card_original_position = None
 
+        self.piles = [[] for i in range(PILE_COUNT)]
+
     def setup(self):
         """ Set up the game here. Call this function to restart the game. """
 
         for j, card_suit in enumerate(CARD_SUITS):
             for i, card_value in enumerate(CARD_VALUES):
                 card = Card(card_suit, card_value, 0.5)
-                card.position = 100 + i * 40, 110 + j * 100
+                card.position = 100, 110
                 self.card_list.append(card)
 
-        pile = arcade.SpriteSolidColor(170, 220, arcade.csscolor.DARK_OLIVE_GREEN)
-        pile.position = 100, 530
+        # Shuffle
+        for pos1 in range(len(self.card_list)):
+            pos2 = random.randrange(len(self.card_list))
+            self.card_list[pos1], self.card_list[pos2] = self.card_list[pos2], self.card_list[pos1]
+
+        for card in self.card_list:
+            self.piles[PULL_PILE].append(card)
+
+        pile = arcade.SpriteSolidColor(85, 110, arcade.csscolor.DARK_OLIVE_GREEN)
+        pile.position = 100, 110
         self.pile_mat_list.append(pile)
+
+        pile = arcade.SpriteSolidColor(85, 110, arcade.csscolor.DARK_OLIVE_GREEN)
+        pile.position = 70, 630
+        self.pile_mat_list.append(pile)
+
+        pile = arcade.SpriteSolidColor(85, 110, arcade.csscolor.DARK_OLIVE_GREEN)
+        pile.position = 170, 630
+        self.pile_mat_list.append(pile)
+
+        pile = arcade.SpriteSolidColor(85, 110, arcade.csscolor.DARK_OLIVE_GREEN)
+        pile.position = 270, 630
+        self.pile_mat_list.append(pile)
+
+        pile = arcade.SpriteSolidColor(85, 110, arcade.csscolor.DARK_OLIVE_GREEN)
+        pile.position = 370, 630
+        self.pile_mat_list.append(pile)
+
 
     def on_draw(self):
         """ Render the screen. """
@@ -67,6 +103,13 @@ class MyGame(arcade.Window):
 
         self.card_list._calculate_sprite_buffer()
 
+    def remove_card_from_pile(self, card):
+
+        for pile in self.piles:
+            if card in pile:
+                pile.remove(card)
+                break
+
     def on_mouse_release(self, x: float, y: float, button: int,
                          modifiers: int):
         """ Called when the user presses a mouse button. """
@@ -76,10 +119,20 @@ class MyGame(arcade.Window):
         pile, distance = arcade.get_closest_sprite(self.held_card, self.pile_mat_list)
         if arcade.check_for_collision(self.held_card, pile):
             self.held_card.position = pile.position
+            self.remove_card_from_pile(self.held_card)
+            index = self.pile_mat_list.index(pile)
+            self.piles[index].append(self.held_card)
         else:
             self.held_card.position = self.held_card_original_position
         self.held_card = None
         self.card_list._calculate_sprite_buffer()
+
+        print()
+        print(f"Pull deck: {len(self.piles[PULL_PILE])}")
+        print(f"Pull deck: {len(self.piles[TOP_PILE_1])}")
+        print(f"Pull deck: {len(self.piles[TOP_PILE_2])}")
+        print(f"Pull deck: {len(self.piles[TOP_PILE_3])}")
+        print(f"Pull deck: {len(self.piles[TOP_PILE_4])}")
 
     def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
         if self.held_card:
