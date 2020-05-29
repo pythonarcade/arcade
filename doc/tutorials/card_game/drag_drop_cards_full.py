@@ -175,44 +175,69 @@ class MyGame(arcade.Window):
 
     def on_draw(self):
         """ Render the screen. """
-
+        # Clear the screen
         arcade.start_render()
+        # Draw the mats the cards go on to
         self.pile_mat_list.draw()
+        # Draw the cards
         self.card_list.draw()
 
     def pull_to_top(self, card):
         """ Pull card to top of rendering order (last to render, looks on-top) """
+        # Find the index of the card
         index = self.card_list.index(card)
+        # Loop and pull all the other cards down towards the zero end
         for i in range(index, len(self.card_list) - 1):
             self.card_list[i] = self.card_list[i + 1]
+        # Put this card at the right-side/top/size of list
         self.card_list[len(self.card_list) - 1] = card
 
     def on_mouse_press(self, x, y, button, key_modifiers):
         """ Called when the user presses a mouse button. """
+
+        # Get list of cards we've clicked on
         cards = arcade.get_sprites_at_point((x, y), self.card_list)
 
+        # Have we clicked on a card?
         if len(cards) > 0:
 
+            # Might be a stack of cards, get the top one
             primary_card = cards[-1]
+            # Figure out what pile the card is in
             pile_index = self.get_pile_for_card(primary_card)
 
+            # Are we clicking on the bottom deck, to flip three cards?
             if pile_index == BOTTOM_FACE_DOWN_PILE:
+                # Flip three cards
                 for i in range(3):
+                    # If we ran out of cards, stop
                     if len(self.piles[BOTTOM_FACE_DOWN_PILE]) == 0:
                         break
+                    # Get top card
                     card = self.piles[BOTTOM_FACE_DOWN_PILE][-1]
+                    # Flip face up
                     card.face_up()
+                    # Move card position to bottom-right face up pile
                     card.position = self.pile_mat_list[BOTTOM_FACE_UP_PILE].position
+                    # Remove card from face down pile
                     self.piles[BOTTOM_FACE_DOWN_PILE].remove(card)
+                    # Move card to face up list
                     self.piles[BOTTOM_FACE_UP_PILE].append(card)
+                    # Put on top draw-order wise
                     self.pull_to_top(card)
+
             elif primary_card.is_face_down:
+                # Is the card face down? In one of those middle 7 piles? Then flip up
                 primary_card.face_up()
             else:
+                # All other cases, grab the face-up card we are clicking on
                 self.held_cards = [primary_card]
+                # Save the position
                 self.held_cards_original_position = [self.held_cards[0].position]
+                # Put on top in drawing order
                 self.pull_to_top(self.held_cards[0])
 
+                # Is this a stack of cards? If so, grab the other cards too
                 card_index = self.piles[pile_index].index(primary_card)
                 for i in range(card_index + 1, len(self.piles[pile_index])):
                     card = self.piles[pile_index][i]
@@ -231,7 +256,7 @@ class MyGame(arcade.Window):
 
                 # Is it our turned over flip mat? and no cards on it?
                 if mat_index == BOTTOM_FACE_DOWN_PILE and len(self.piles[BOTTOM_FACE_DOWN_PILE]) == 0:
-                    # Flip!
+                    # Flip the deck back over so we can restar
                     temp_list = self.piles[BOTTOM_FACE_UP_PILE].copy()
                     for card in reversed(temp_list):
                         card.face_down()
@@ -252,6 +277,11 @@ class MyGame(arcade.Window):
             if card in pile:
                 return index
 
+    def move_card_to_new_pile(self, card, pile_index):
+        """ Move the card to a new pile """
+        self.remove_card_from_pile(card)
+        self.piles[pile_index].append(card)
+
     def on_mouse_release(self, x: float, y: float, button: int,
                          modifiers: int):
         """ Called when the user presses a mouse button. """
@@ -268,42 +298,51 @@ class MyGame(arcade.Window):
         if arcade.check_for_collision(self.held_cards[0], pile):
 
             # What pile is it?
-            index = self.pile_mat_list.index(pile)
+            pile_index = self.pile_mat_list.index(pile)
 
             #  Is it the same pile we came from?
-            if index == self.get_pile_for_card(self.held_cards[0]):
+            if pile_index == self.get_pile_for_card(self.held_cards[0]):
                 # If so, who cares. We'll just reset our position.
                 pass
 
-            elif PLAY_PILE_1 <= index <= PLAY_PILE_7:
-                # Is it on a middle play pile?
-                if len(self.piles[index]) > 0:
-                    top_card = self.piles[index][-1]
+            # Is it on a middle play pile?
+            elif PLAY_PILE_1 <= pile_index <= PLAY_PILE_7:
+                # Are there already cards ther?
+                if len(self.piles[pile_index]) > 0:
+                    # Move cards to proper position
+                    top_card = self.piles[pile_index][-1]
                     for i, dropped_card in enumerate(self.held_cards):
                         dropped_card.position = top_card.center_x, top_card.center_y - 20 * (i + 1)
                 else:
+                    # Are there no cards in the middle play pile?
                     for i, dropped_card in enumerate(self.held_cards):
+                        # Move cards to proper position
                         dropped_card.position = pile.center_x, pile.center_y - 20 * i
 
                 for card in self.held_cards:
-                    self.remove_card_from_pile(card)
-                    self.piles[index].append(card)
+                    # Cards are in the right position, but we need to move them to the right list
+                    self.move_card_to_new_pile(card, pile_index)
 
+                # Success, don't reset position of cards
                 reset_position = False
 
-            elif TOP_PILE_1 <= index <= TOP_PILE_4 and len(self.held_cards) == 1:
+            # Release on top play pile? And only one card held?
+            elif TOP_PILE_1 <= pile_index <= TOP_PILE_4 and len(self.held_cards) == 1:
+                # Move position of card to pile
                 self.held_cards[0].position = pile.position
-
+                # Move card to card list
                 for card in self.held_cards:
-                    self.remove_card_from_pile(card)
-                    self.piles[index].append(card)
+                    self.move_card_to_new_pile(card, pile_index)
 
                 reset_position = False
 
         if reset_position:
-            for index, card in enumerate(self.held_cards):
-                card.position = self.held_cards_original_position[index]
+            # Where-ever we were dropped, it wasn't valid. Reset the each card's position
+            # to its original spot.
+            for pile_index, card in enumerate(self.held_cards):
+                card.position = self.held_cards_original_position[pile_index]
 
+        # We are no longer holding cards
         self.held_cards = []
 
     def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
