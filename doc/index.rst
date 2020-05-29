@@ -193,6 +193,7 @@ game without learning a complex framework.
    tutorials/views/index
    examples/platform_tutorial/index
    tutorials/pymunk_platformer/index
+   tutorials/card_game/index
    tutorials/lights/index
    sample_games
    performance_tips

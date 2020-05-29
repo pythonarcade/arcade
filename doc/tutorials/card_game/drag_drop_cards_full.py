@@ -96,25 +96,28 @@ class MyGame(arcade.Window):
         arcade.set_background_color(arcade.color.AMAZON)
 
         # Sprite list with all the cards, no matter what pile they are in.
-        self.card_list: arcade.SpriteList = arcade.SpriteList()
+        self.card_list = None
 
         # Sprite list with all the mats tha cards lay on.
-        self.pile_mat_list: arcade.SpriteList = arcade.SpriteList()
+        self.pile_mat_list = None
 
         # List of cards we are dragging with the mouse
-        self.held_cards = []
+        self.held_cards = None
 
         # Original location of cards we are dragging with the mouse in case
         # they have to go back.
         self.held_cards_original_position = None
 
         # Create a list of lists, each holds a pile of cards.
-        self.piles = [[] for _ in range(PILE_COUNT)]
+        self.piles = None
 
     def setup(self):
         """ Set up the game here. Call this function to restart the game. """
 
         # ---  Create the mats the cards go on.
+
+        # Sprite list with all the mats tha cards lay on.
+        self.pile_mat_list: arcade.SpriteList = arcade.SpriteList()
 
         # Create the mats for the bottom face down and face up piles
         pile = arcade.SpriteSolidColor(MAT_WIDTH, MAT_HEIGHT, arcade.csscolor.DARK_OLIVE_GREEN)
@@ -138,6 +141,19 @@ class MyGame(arcade.Window):
             self.pile_mat_list.append(pile)
 
         # --- Create, shuffle, and deal the cards
+
+        # Sprite list with all the cards, no matter what pile they are in.
+        self.card_list = arcade.SpriteList()
+
+        # List of cards we are dragging with the mouse
+        self.held_cards = []
+
+        # Original location of cards we are dragging with the mouse in case
+        # they have to go back.
+        self.held_cards_original_position = []
+
+        # Create a list of lists, each holds a pile of cards.
+        self.piles = [[] for _ in range(PILE_COUNT)]
 
         # Create every card
         for j, card_suit in enumerate(CARD_SUITS):
@@ -191,6 +207,12 @@ class MyGame(arcade.Window):
             self.card_list[i] = self.card_list[i + 1]
         # Put this card at the right-side/top/size of list
         self.card_list[len(self.card_list) - 1] = card
+
+    def on_key_press(self, symbol: int, modifiers: int):
+        """ User presses key """
+        if symbol == arcade.key.R:
+            # Restart
+            self.setup()
 
     def on_mouse_press(self, x, y, button, key_modifiers):
         """ Called when the user presses a mouse button. """
