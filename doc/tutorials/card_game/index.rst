@@ -260,3 +260,39 @@ Run the program, and see if the mats appear:
 * :ref:`solitaire_04` |larr| Full listing of where we are right now
 * :ref:`solitaire_04_diff` |larr| What we changed to get here
 
+Snap Cards to Piles
+-------------------
+
+Right now, you can drag the cards anywhere. They don't have to go onto a
+pile. Let's add code that "snaps" the card onto a pile. If we don't drop
+on a pile, let's reset back to the original location.
+
+.. literalinclude:: solitaire_05.py
+    :caption: Snap to nearest pile
+    :linenos:
+    :pyobject: MyGame.on_mouse_release
+    :emphasize-lines: 9-29
+
+* :ref:`solitaire_05` |larr| Full listing of where we are right now
+* :ref:`solitaire_05_diff` |larr| What we changed to get here
+
+Shuffle the Cards
+-----------------
+
+Having all the cards in order is boring. Let's shuffle them in the ``setup``
+method:
+
+.. literalinclude:: solitaire_06.py
+    :caption: Shuffle Cards
+    :linenos:
+    :lines: 107-110
+
+Don't forget to ``import random`` at the top.
+
+Run your program and make sure you can move cards around.
+
+.. image:: solitaire_06.png
+    :width: 80%
+
+* :ref:`solitaire_06` |larr| Full listing of where we are right now
+* :ref:`solitaire_06_diff` |larr| What we changed to get here
