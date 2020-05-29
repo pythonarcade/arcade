@@ -78,7 +78,6 @@ class MyGame(arcade.Window):
                 assert actual_color[1] == desired_color[1]
                 assert actual_color[2] == desired_color[2]
 
-
 def test_texture_transform():
     window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     window.setup()

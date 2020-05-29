@@ -647,7 +647,7 @@ class View:
         self.text_list: List[TextLabel] = []
         self.textbox_time = 0.0
         self.textbox_list: List[TextBox] = []
-        self.key = None
+        self.key: Optional[int] = None
 
     def update(self, delta_time: float):
         """To be overridden"""
