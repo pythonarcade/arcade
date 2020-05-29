@@ -91,16 +91,6 @@ class MyGame(arcade.Window):
         # they have to go back.
         self.held_cards_original_position = []
 
-        # Sprite list with all the cards, no matter what pile they are in.
-        self.card_list = arcade.SpriteList()
-
-        # Create every card
-        for card_suit in CARD_SUITS:
-            for card_value in CARD_VALUES:
-                card = Card(card_suit, card_value, CARD_SCALE)
-                card.position = START_X, BOTTOM_Y
-                self.card_list.append(card)
-
         # ---  Create the mats the cards go on.
 
         # Sprite list with all the mats tha cards lay on.
@@ -126,6 +116,16 @@ class MyGame(arcade.Window):
             pile = arcade.SpriteSolidColor(MAT_WIDTH, MAT_HEIGHT, arcade.csscolor.DARK_OLIVE_GREEN)
             pile.position = START_X + i * X_SPACING, TOP_Y
             self.pile_mat_list.append(pile)
+
+        # Sprite list with all the cards, no matter what pile they are in.
+        self.card_list = arcade.SpriteList()
+
+        # Create every card
+        for card_suit in CARD_SUITS:
+            for card_value in CARD_VALUES:
+                card = Card(card_suit, card_value, CARD_SCALE)
+                card.position = START_X, BOTTOM_Y
+                self.card_list.append(card)
 
     def on_draw(self):
         """ Render the screen. """

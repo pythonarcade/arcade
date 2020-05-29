@@ -236,7 +236,7 @@ Then create the mat sprites in the ``setup`` method
     :caption: Create the mat sprites
     :linenos:
     :pyobject: MyGame.setup
-    :emphasize-lines: 21-45
+    :emphasize-lines: 11-35
 
 Draw Mat Sprites
 ~~~~~~~~~~~~~~~~
@@ -285,7 +285,8 @@ method:
 .. literalinclude:: solitaire_06.py
     :caption: Shuffle Cards
     :linenos:
-    :lines: 107-110
+    :pyobject: MyGame.setup
+    :lines: 49-52
 
 Don't forget to ``import random`` at the top.
 
@@ -296,3 +297,282 @@ Run your program and make sure you can move cards around.
 
 * :ref:`solitaire_06` |larr| Full listing of where we are right now
 * :ref:`solitaire_06_diff` |larr| What we changed to get here
+
+Track Card Piles
+----------------
+
+Right now we are moving the cards around. But it isn't easy to figure out what
+card is in which pile. We could check by position, but then we start fanning
+the cards out, that will be very difficult.
+
+Therefore we will keep a separate list for each pile of cards. When we move
+a card we need to move the position, and switch which list it is in.
+
+Add New Constants
+~~~~~~~~~~~~~~~~~
+
+To start with, let's add some constants for each pile:
+
+.. literalinclude:: solitaire_07.py
+    :caption: New Constants
+    :linenos:
+    :lines: 48-65
+
+Create the Pile Lists
+~~~~~~~~~~~~~~~~~~~~~
+
+Then in our ``__init__`` add a variable to track the piles:
+
+.. literalinclude:: solitaire_07.py
+    :caption: Init Method Additions
+    :linenos:
+    :pyobject: MyGame.__init__
+    :lines: 19-20
+
+In the ``setup`` method, create a list for each pile. Then, add all the cards
+to the face-down deal pile. (Later, we'll add support for face-down cards.
+Yes, right now all the cards in the face down pile are up.)
+
+.. literalinclude:: solitaire_07.py
+    :caption: Setup Method Additions
+    :linenos:
+    :pyobject: MyGame.setup
+    :lines: 54-59
+
+Card Pile Management Methods
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Next, we need some convenience methods we'll use elsewhere.
+
+First, given a card, return the index of which pile that card belongs to:
+
+.. literalinclude:: solitaire_07.py
+    :caption: get_pile_for_card method
+    :linenos:
+    :pyobject: MyGame.get_pile_for_card
+
+Next, remove a card from whatever pile it happens to be in.
+
+.. literalinclude:: solitaire_07.py
+    :caption: remove_card_from_pile method
+    :linenos:
+    :pyobject: MyGame.remove_card_from_pile
+
+Finally, move a card from one pile to another.
+
+.. literalinclude:: solitaire_07.py
+    :caption: move_card_to_new_pile method
+    :linenos:
+    :pyobject: MyGame.move_card_to_new_pile
+
+Dropping the Card
+~~~~~~~~~~~~~~~~~
+
+Next, we need to modify what happens when we release the mouse.
+
+First, see if we release it onto the same pile it came from. If so, just reset
+the card back to its original location.
+
+.. literalinclude:: solitaire_07.py
+    :caption: on_mouse_release method
+    :linenos:
+    :pyobject: MyGame.on_mouse_release
+    :lines: 1-22
+    :emphasize-lines: 16-22
+
+What if it is on a middle play pile? Ugh, that's a bit complicated. If the mat
+is empty, we need to place it in the middle of the mat. If there are cards on the
+mat, we need to offset the card so we can see a spread of cards.
+
+While we can only pick up one card at a time right now, we need to support
+dropping multiple cards for once we support multiple card carries.
+
+.. literalinclude:: solitaire_07.py
+    :caption: on_mouse_release method
+    :linenos:
+    :pyobject: MyGame.on_mouse_release
+    :lines: 24-45
+
+What if it is released on a top play pile? Make sure that we only have one
+card we are holding. We don't want to drop a stack up top. Then move the card
+to that pile.
+
+.. literalinclude:: solitaire_07.py
+    :caption: on_mouse_release method
+    :linenos:
+    :pyobject: MyGame.on_mouse_release
+    :lines: 47-55
+
+If the move is invalid, we need to reset all held cards to their initial location.
+
+.. literalinclude:: solitaire_07.py
+    :caption: on_mouse_release method
+    :linenos:
+    :pyobject: MyGame.on_mouse_release
+    :lines: 57-64
+
+Test
+~~~~
+
+Test out your program, and see if the cards are being fanned out properly.
+
+.. note::
+
+    The code isn't enforcing any game rules. You can stack cards in any
+    order. Also, with long stacks of cards, you still have to drop the card
+    on the mat. This is counter-intuitive when the stack of cards extends
+    downwards past the mat.
+
+    We leave the solutions to these issues as an exercise for the reader.
+
+.. image:: solitaire_07.png
+    :width: 80%
+
+* :ref:`solitaire_07` |larr| Full listing of where we are right now
+* :ref:`solitaire_07_diff` |larr| What we changed to get here
+
+Pick Up Card Stacks
+-------------------
+
+How do we pick up a whole stack of cards? When the mouse is pressed, we need
+to figure out what pile the card is in.
+
+Next, look at where in the pile the card is that we clicked on. If there are
+any cards later on on the pile, we want to pick up those cards too. Add them
+to the list.
+
+.. literalinclude:: solitaire_08.py
+    :caption: on_mouse_release method
+    :linenos:
+    :pyobject: MyGame.on_mouse_press
+    :emphasize-lines: 12-13,22-28
+
+After this, you should be able to pick up a stack of cards from the middle piles
+with the mouse and move them around.
+
+* :ref:`solitaire_08` |larr| Full listing of where we are right now
+* :ref:`solitaire_08_diff` |larr| What we changed to get here
+
+Deal Out Cards
+--------------
+
+We can deal the cards into the seven middle piles by adding some code to the
+``setup`` method. We need to change the list each card is part of, along with
+its position.
+
+.. literalinclude:: solitaire_09.py
+    :caption: Setup Method Additions
+    :linenos:
+    :pyobject: MyGame.setup
+    :lines: 61-73
+
+* :ref:`solitaire_09` |larr| Full listing of where we are right now
+* :ref:`solitaire_09_diff` |larr| What we changed to get here
+
+Face Down Cards
+---------------
+
+We don't play solitaire with all the cards facing up, so let's add face-down
+support to our game.
+
+New Constants
+~~~~~~~~~~~~~
+
+First define a constant for what image to use when face-down.
+
+.. literalinclude:: solitaire_10.py
+    :caption: Face Down Image Constant
+    :linenos:
+    :lines: 51-52
+
+Updates to Card Class
+~~~~~~~~~~~~~~~~~~~~~
+
+Next, default each card in the ``Card`` class to be face up. Also, let's add
+methods to flip the card up or down.
+
+.. literalinclude:: solitaire_10.py
+    :caption: Update Card Class
+    :linenos:
+    :pyobject: Card
+    :emphasize-lines: 13-29
+
+Flip Up Cards On Middle Seven Piles
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Right now every card is face down. Let's update the ``setup`` method so the
+top cards in the middle seven piles are face up.
+
+.. literalinclude:: solitaire_10.py
+    :caption: Flip Up Cards
+    :linenos:
+    :pyobject: MyGame.setup
+    :lines: 75-77
+
+Flip Up Cards When Clicked
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+When we click on a card that is face down, instead of picking it up, let's flip
+it over:
+
+.. literalinclude:: solitaire_10.py
+    :caption: Flip Up Cards
+    :linenos:
+    :pyobject: MyGame.on_mouse_press
+    :emphasize-lines: 15-18
+
+Test
+~~~~
+
+Try out your program. As you move cards around, you should see face down cards
+as well, and be able to flip them over.
+
+.. image:: solitaire_10.png
+    :width: 80%
+
+* :ref:`solitaire_10` |larr| Full listing of where we are right now
+* :ref:`solitaire_10_diff` |larr| What we changed to get here
+
+Restart Game
+------------
+
+We can add the ability to restart are game any type we press the 'R' key:
+
+.. literalinclude:: solitaire_11.py
+    :caption: Flip Up Cards
+    :linenos:
+    :pyobject: MyGame.on_key_press
+
+Flip Three From Draw Pile
+-------------------------
+
+The draw pile at the bottom of our screen doesn't work right yet. When we
+click on it, we need it to flip three cards to the bottom-right pile. Also,
+if the have gone through all the cards in the pile, we need to reset the pile
+so we can go through it again.
+
+.. literalinclude:: solitaire_11.py
+    :caption: Flipping of Bottom Deck
+    :linenos:
+    :pyobject: MyGame.on_mouse_press
+    :emphasize-lines: 15-33, 56-71
+
+Test
+~~~~
+
+Now we've got a basic working solitaire game! Try it out!
+
+.. image:: solitaire_11.png
+    :width: 80%
+
+* :ref:`solitaire_11` |larr| Full listing of where we are right now
+* :ref:`solitaire_11_diff` |larr| What we changed to get here
+
+Conclusion
+----------
+
+There's a lot more that could be added to this game, such as enforcing rules,
+adding animation to 'slide' a dropped card to its position, sound, better graphics,
+and more. Or this could be adapted to a different card game.
+
+Hopefully this is enough to get you started on your own game.

@@ -45,6 +45,26 @@ X_SPACING = MAT_WIDTH + MAT_WIDTH * HORIZONTAL_MARGIN_PERCENT
 CARD_VALUES = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"]
 CARD_SUITS = ["Clubs", "Hearts", "Spades", "Diamonds"]
 
+# If we fan out cards stacked on each other, how far apart to fan them?
+CARD_VERTICAL_OFFSET = CARD_HEIGHT * CARD_SCALE * 0.3
+
+# Constants that represent "what pile is what" for the game
+PILE_COUNT = 13
+BOTTOM_FACE_DOWN_PILE = 0
+BOTTOM_FACE_UP_PILE = 1
+PLAY_PILE_1 = 2
+PLAY_PILE_2 = 3
+PLAY_PILE_3 = 4
+PLAY_PILE_4 = 5
+PLAY_PILE_5 = 6
+PLAY_PILE_6 = 7
+PLAY_PILE_7 = 8
+TOP_PILE_1 = 9
+TOP_PILE_2 = 10
+TOP_PILE_3 = 11
+TOP_PILE_4 = 12
+
+
 class Card(arcade.Sprite):
     """ Card sprite """
 
@@ -81,6 +101,9 @@ class MyGame(arcade.Window):
 
         # Sprite list with all the mats tha cards lay on.
         self.pile_mat_list = None
+
+        # Create a list of lists, each holds a pile of cards.
+        self.piles = None
 
     def setup(self):
         """ Set up the game here. Call this function to restart the game. """
@@ -135,6 +158,12 @@ class MyGame(arcade.Window):
             pos2 = random.randrange(len(self.card_list))
             self.card_list[pos1], self.card_list[pos2] = self.card_list[pos2], self.card_list[pos1]
 
+        # Create a list of lists, each holds a pile of cards.
+        self.piles = [[] for _ in range(PILE_COUNT)]
+
+        # Put all the cards in the bottom face-down pile
+        for card in self.card_list:
+            self.piles[BOTTOM_FACE_DOWN_PILE].append(card)
 
     def on_draw(self):
         """ Render the screen. """
@@ -168,6 +197,8 @@ class MyGame(arcade.Window):
 
             # Might be a stack of cards, get the top one
             primary_card = cards[-1]
+            # Figure out what pile the card is in
+            pile_index = self.get_pile_for_card(primary_card)
 
             # All other cases, grab the face-up card we are clicking on
             self.held_cards = [primary_card]
@@ -175,6 +206,32 @@ class MyGame(arcade.Window):
             self.held_cards_original_position = [self.held_cards[0].position]
             # Put on top in drawing order
             self.pull_to_top(self.held_cards[0])
+
+            # Is this a stack of cards? If so, grab the other cards too
+            card_index = self.piles[pile_index].index(primary_card)
+            for i in range(card_index + 1, len(self.piles[pile_index])):
+                card = self.piles[pile_index][i]
+                self.held_cards.append(card)
+                self.held_cards_original_position.append(card.position)
+                self.pull_to_top(card)
+
+    def remove_card_from_pile(self, card):
+        """ Remove card from whatever pile it was in. """
+        for pile in self.piles:
+            if card in pile:
+                pile.remove(card)
+                break
+
+    def get_pile_for_card(self, card):
+        """ What pile is this card in? """
+        for index, pile in enumerate(self.piles):
+            if card in pile:
+                return index
+
+    def move_card_to_new_pile(self, card, pile_index):
+        """ Move the card to a new pile """
+        self.remove_card_from_pile(card)
+        self.piles[pile_index].append(card)
 
     def on_mouse_release(self, x: float, y: float, button: int,
                          modifiers: int):
@@ -191,13 +248,46 @@ class MyGame(arcade.Window):
         # See if we are in contact with the closest pile
         if arcade.check_for_collision(self.held_cards[0], pile):
 
-            # For each held card, move it to the pile we dropped on
-            for i, dropped_card in enumerate(self.held_cards):
-                # Move cards to proper position
-                dropped_card.position = pile.center_x, pile.center_y
+            # What pile is it?
+            pile_index = self.pile_mat_list.index(pile)
 
-            # Success, don't reset position of cards
-            reset_position = False
+            #  Is it the same pile we came from?
+            if pile_index == self.get_pile_for_card(self.held_cards[0]):
+                # If so, who cares. We'll just reset our position.
+                pass
+
+            # Is it on a middle play pile?
+            elif PLAY_PILE_1 <= pile_index <= PLAY_PILE_7:
+                # Are there already cards there?
+                if len(self.piles[pile_index]) > 0:
+                    # Move cards to proper position
+                    top_card = self.piles[pile_index][-1]
+                    for i, dropped_card in enumerate(self.held_cards):
+                        dropped_card.position = top_card.center_x, \
+                                                top_card.center_y - CARD_VERTICAL_OFFSET * (i + 1)
+                else:
+                    # Are there no cards in the middle play pile?
+                    for i, dropped_card in enumerate(self.held_cards):
+                        # Move cards to proper position
+                        dropped_card.position = pile.center_x, \
+                                                pile.center_y - CARD_VERTICAL_OFFSET * i
+
+                for card in self.held_cards:
+                    # Cards are in the right position, but we need to move them to the right list
+                    self.move_card_to_new_pile(card, pile_index)
+
+                # Success, don't reset position of cards
+                reset_position = False
+
+            # Release on top play pile? And only one card held?
+            elif TOP_PILE_1 <= pile_index <= TOP_PILE_4 and len(self.held_cards) == 1:
+                # Move position of card to pile
+                self.held_cards[0].position = pile.position
+                # Move card to card list
+                for card in self.held_cards:
+                    self.move_card_to_new_pile(card, pile_index)
+
+                reset_position = False
 
         if reset_position:
             # Where-ever we were dropped, it wasn't valid. Reset the each card's position
