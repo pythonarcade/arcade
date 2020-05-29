@@ -25,8 +25,10 @@ MAT_WIDTH = int(CARD_WIDTH * MAT_PERCENT_OVERSIZE)
 VERTICAL_MARGIN_PERCENT = 0.10
 HORIZONTAL_MARGIN_PERCENT = 0.10
 
+# The Y of the bottom row (2 piles)
 BOTTOM_Y = MAT_HEIGHT / 2 + MAT_HEIGHT * VERTICAL_MARGIN_PERCENT
 
+# The X of where to start putting things on the left side
 START_X = MAT_WIDTH / 2 + MAT_WIDTH * HORIZONTAL_MARGIN_PERCENT
 
 # Card constants

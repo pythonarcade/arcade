@@ -49,9 +49,9 @@ will eventually be a square slightly larger than each card that tracks where
 we can put cards. (A mat where we can put a pile of cards on.)
 
 .. literalinclude:: solitaire_02.py
-    :caption: Create card sprites
+    :caption: Create constants for positioning
     :linenos:
-    :lines: 11-34
+    :lines: 11-36
 
 Card Class
 ~~~~~~~~~~
@@ -196,4 +196,67 @@ Try it out!
 
 * :ref:`solitaire_03` |larr| Full listing of where we are right now
 * :ref:`solitaire_03_diff` |larr| What we changed to get here
+
+Draw Pile Mats
+--------------
+
+Next, we'll create sprites that will act as guides to where the piles of cards
+go in our game. We'll create these as sprites, so we can use collision detection
+to figure out of we are dropping a card on them or not.
+
+Create Constants
+~~~~~~~~~~~~~~~~
+
+First, we'll create constants for the middle row of seven piles, and for the
+top row of four piles. We'll also create a constant for how far apart each pile
+should be.
+
+Again, we could hard-code numbers, but I like calculating them so I can change
+the scale easily.
+
+.. literalinclude:: solitaire_04.py
+    :caption: Add constants
+    :linenos:
+    :lines: 34-41
+
+Create Mat Sprites
+~~~~~~~~~~~~~~~~~~
+
+Create an attribute for the mat sprite list:
+
+.. literalinclude:: solitaire_04.py
+    :caption: Create the mat sprites
+    :linenos:
+    :pyobject: MyGame.__init__
+    :emphasize-lines: 16-17
+
+Then create the mat sprites in the ``setup`` method
+
+.. literalinclude:: solitaire_04.py
+    :caption: Create the mat sprites
+    :linenos:
+    :pyobject: MyGame.setup
+    :emphasize-lines: 21-45
+
+Draw Mat Sprites
+~~~~~~~~~~~~~~~~
+
+Finally, the mats aren't going to display if we don't draw them:
+
+.. literalinclude:: solitaire_04.py
+    :caption: Draw the mat sprites
+    :linenos:
+    :pyobject: MyGame.on_draw
+    :emphasize-lines: 6-7
+
+Test the Program
+~~~~~~~~~~~~~~~~
+
+Run the program, and see if the mats appear:
+
+.. image:: solitaire_04.png
+    :width: 80%
+
+* :ref:`solitaire_04` |larr| Full listing of where we are right now
+* :ref:`solitaire_04_diff` |larr| What we changed to get here
 

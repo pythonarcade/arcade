@@ -1,29 +1,28 @@
 """
 Solitaire clone.
-
-This game shows the basics of how to do drag and drop with cards.
-The game does NOT enforce many of the card-game rules, that is left
-as an exercise for the reader.
-
-Cards must be dropped on a mat, which can be counter-intuitive if you are working
-with long stacks of cards.
 """
 import random
 import arcade
 
-# Constants for sizing
+# Screen title and size
 SCREEN_WIDTH = 1024
 SCREEN_HEIGHT = 768
+SCREEN_TITLE = "Drag and Drop Cards"
 
+# Constants for sizing
 CARD_SCALE = 0.6
 
+# How big are the cards?
 CARD_WIDTH = 140 * CARD_SCALE
 CARD_HEIGHT = 190 * CARD_SCALE
 
+# How big is the mat we'll place the card on?
 MAT_PERCENT_OVERSIZE = 1.25
 MAT_HEIGHT = int(CARD_HEIGHT * MAT_PERCENT_OVERSIZE)
 MAT_WIDTH = int(CARD_WIDTH * MAT_PERCENT_OVERSIZE)
 
+# How much space do we leave as a gap between the mats?
+# Done as a percent of the mat size.
 VERTICAL_MARGIN_PERCENT = 0.10
 HORIZONTAL_MARGIN_PERCENT = 0.10
 
@@ -34,9 +33,6 @@ START_X = MAT_WIDTH / 2 + MAT_WIDTH * HORIZONTAL_MARGIN_PERCENT
 
 MIDDLE_Y = TOP_Y - MAT_HEIGHT - MAT_HEIGHT * VERTICAL_MARGIN_PERCENT
 X_SPACING = MAT_WIDTH + MAT_WIDTH * HORIZONTAL_MARGIN_PERCENT
-
-# Screen title
-SCREEN_TITLE = "Drag and Drop Cards"
 
 # Card constants
 CARD_VALUES = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"]
@@ -64,9 +60,15 @@ TOP_PILE_4 = 12
 
 class Card(arcade.Sprite):
     """ Card sprite """
+
     def __init__(self, suit, value, scale=1):
-        self.value = value
+        """ Card constructor """
+
+        # Attributes for suit and value
         self.suit = suit
+        self.value = value
+
+        # Image to use for the sprite when face up
         self.image_file_name = f":resources:images/cards/card{self.suit}{self.value}.png"
         self.is_face_up = False
         super().__init__(FACE_DOWN_IMAGE, scale, calculate_hit_box=False)
@@ -98,15 +100,15 @@ class MyGame(arcade.Window):
         # Sprite list with all the cards, no matter what pile they are in.
         self.card_list = None
 
-        # Sprite list with all the mats tha cards lay on.
-        self.pile_mat_list = None
-
         # List of cards we are dragging with the mouse
         self.held_cards = None
 
         # Original location of cards we are dragging with the mouse in case
         # they have to go back.
         self.held_cards_original_position = None
+
+        # Sprite list with all the mats tha cards lay on.
+        self.pile_mat_list = None
 
         # Create a list of lists, each holds a pile of cards.
         self.piles = None
