@@ -28,7 +28,7 @@ Version 2.4 Major Features
   `light_demo.py <examples/light_demo.html>`_
 * Support for logging
 * New Camera
-
+* PyMunk engine
 
 Version 2.4 Minor Features
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -41,6 +41,7 @@ Version 2.4 Minor Features
 * Support volume and pan arguments in play_sound
 * Support getting tmx layer by path
 * Support left/right/rotated sprites in tmx maps
+* Add ability to re-assign items in a sprite list. Useful when re-ordering sprites.
 
 Version 2.4 Under-the-hood improvements
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -58,7 +59,6 @@ Version 2.4 'Experimental'
 There is now an ``arcade.experimental`` module that holds code still under
 development. Any code in this module might still have API changes.
 
-* PyMunk engine
 * New GUI code
 
 Version 2.4 To-Do List
