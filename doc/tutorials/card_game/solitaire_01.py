@@ -3,11 +3,9 @@ Solitaire clone.
 """
 import arcade
 
-# Constants for sizing
+# Screen title and size
 SCREEN_WIDTH = 1024
 SCREEN_HEIGHT = 768
-
-# Screen title
 SCREEN_TITLE = "Drag and Drop Cards"
 
 class MyGame(arcade.Window):
