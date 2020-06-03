@@ -24,8 +24,30 @@ class Uniform:
         gl.GL_FLOAT_VEC3: (gl.GLfloat, gl.glUniform3fv, 3, 1),
         gl.GL_FLOAT_VEC4: (gl.GLfloat, gl.glUniform4fv, 4, 1),
 
-        gl.GL_SAMPLER_2D: (gl.GLint, gl.glUniform1iv, 1, 1),
+        # 1D Samplers
+        gl.GL_SAMPLER_1D: (gl.GLint, gl.glUniform1iv, 1, 1),
+        gl.GL_INT_SAMPLER_1D: (gl.GLint, gl.glUniform1iv, 1, 1),
+        gl.GL_UNSIGNED_INT_SAMPLER_1D: (gl.GLint, gl.glUniform1iv, 1, 1),
+        gl.GL_TEXTURE_1D_ARRAY: (gl.GLint, gl.glUniform1iv, 1, 1),
 
+        # 2D samplers
+        gl.GL_SAMPLER_2D: (gl.GLint, gl.glUniform1iv, 1, 1),
+        gl.GL_INT_SAMPLER_2D: (gl.GLint, gl.glUniform1iv, 1, 1),
+        gl.GL_UNSIGNED_INT_SAMPLER_2D: (gl.GLint, gl.glUniform1iv, 1, 1),
+        gl.GL_TEXTURE_2D_MULTISAMPLE: (gl.GLint, gl.glUniform1iv, 1, 1),
+
+        # Array
+        gl.GL_SAMPLER_2D_ARRAY: (gl.GLint, gl.glUniform1iv, 1, 1),
+        gl.GL_TEXTURE_2D_MULTISAMPLE_ARRAY: (gl.GLint, gl.glUniform1iv, 1, 1),
+
+        # 3D
+        gl.GL_SAMPLER_3D: (gl.GLint, gl.glUniform1iv, 1, 1),
+
+        # Cube
+        gl.GL_SAMPLER_CUBE: (gl.GLint, gl.glUniform1iv, 1, 1),
+        gl.GL_TEXTURE_CUBE_MAP_ARRAY: (gl.GLint, gl.glUniform1iv, 1, 1),
+
+        # Matrices
         gl.GL_FLOAT_MAT2: (gl.GLfloat, gl.glUniformMatrix2fv, 4, 1),
         gl.GL_FLOAT_MAT3: (gl.GLfloat, gl.glUniformMatrix3fv, 9, 1),
         gl.GL_FLOAT_MAT4: (gl.GLfloat, gl.glUniformMatrix4fv, 16, 1),
