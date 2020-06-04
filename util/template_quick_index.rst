@@ -1,5 +1,5 @@
 .. _quick_index:
 
-Quick Index
-===========
+Quick API Index
+===============
 
