@@ -48,7 +48,7 @@ from arcade import csscolor
 from arcade import key
 # noinspection PyPep8
 from arcade import resources
-
+# noinspection PyPep8
 from .window_commands import close_window
 from .window_commands import create_orthogonal_projection
 from .window_commands import finish_render
@@ -73,6 +73,7 @@ from .application import MOUSE_BUTTON_RIGHT
 from .application import NoOpenGLException
 from .application import View
 from .application import Window
+from .application import get_screens
 from .application import open_window
 
 from .arcade_types import Color
@@ -220,6 +221,7 @@ from .sprite import AnimatedTimeBasedSprite
 from .sprite import AnimatedTimeSprite
 from .sprite import AnimatedWalkingSprite
 from .sprite import AnimationKeyframe
+from .sprite import PyMunk
 from .sprite import Sprite
 from .sprite import SpriteSolidColor
 from .sprite import get_distance_between_sprites
@@ -301,6 +303,7 @@ __all__ = ['AStarBarrierList',
            'PhysicsEngineSimple',
            'Point',
            'PointList',
+           'PyMunk',
            'PymunkPhysicsEngine',
            'PymunkPhysicsObject',
            'RGB',
@@ -403,6 +406,7 @@ __all__ = ['AStarBarrierList',
            'get_projection',
            'get_rectangle_points',
            'get_scaling_factor',
+           'get_screens',
            'get_sprites_at_exact_point',
            'get_sprites_at_point',
            'get_text_image',
