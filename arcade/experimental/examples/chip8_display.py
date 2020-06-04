@@ -18,8 +18,8 @@ from arcade.gl import geometry
 from arcade import get_projection
 
 # Do the math to figure out our screen dimensions
-SCREEN_WIDTH = 64 * 20
-SCREEN_HEIGHT = 32 * 20
+SCREEN_WIDTH = 64 * 10
+SCREEN_HEIGHT = 32 * 10
 SCREEN_TITLE = "CHIP-8 Screen"
 
 
