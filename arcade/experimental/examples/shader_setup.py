@@ -31,7 +31,7 @@ class ShaderSetup(arcade.Window):
             fragment_shader="""
             #version 330
 
-            uniform sampler2D baground;
+            uniform sampler2D background;
             uniform float time;
 
             in vec2 v_uv;
@@ -40,7 +40,7 @@ class ShaderSetup(arcade.Window):
             void main() {
                 vec2 pos = v_uv * 1.0 - vec2(0.5);
                 vec2 uv = v_uv + normalize(pos) + sin(length(pos) * 10 - time);
-                out_color = texture(baground, uv);
+                out_color = texture(background, uv);
             }
             """
         )
