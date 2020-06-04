@@ -83,10 +83,6 @@ Documentation
   Documentation Request - explain how delta_time works to help learners fully
   understand both how and why.
 * Show how to make into a redistributable/installable/exe
-* `Issue 671 <https://github.com/pvcraven/arcade/issues/671>`_
-  Documentation Request - Add drag and drop examples. Tiles, cards, moving inventory
-  items, all need this.
-
 
 Examples
 --------

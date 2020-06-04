@@ -92,122 +92,6 @@ def list_classes(filename, output_file):
     except Exception as e:
         print(f"Exception processing {filename} on line {line_no}: {e}")
 
-
-def quick_api():
-    # Set the working directory (where we expect to find files) to the same
-    # directory this .py file is in. You can leave this out of your own
-    # code, but it is needed to easily run the examples using "python -m"
-    # as mentioned at the top of this program.
-    file_path = os.path.dirname(os.path.abspath(__file__))
-    os.chdir(file_path)
-
-    output_file = open("quick_index.rst", "w")
-
-    output_file.write(".. _quick-index:\n\n")
-
-    output_file.write("Quick API Index\n")
-    output_file.write("===============\n")
-    output_file.write("\n")
-
-    output_file.write("Window API\n")
-    output_file.write("----------\n")
-    output_file.write("\n")
-    list_classes("../arcade/window_commands.py", output_file)
-    list_functions("../arcade/window_commands.py", output_file)
-    output_file.write("\n")
-
-    output_file.write("Application API\n")
-    output_file.write("---------------\n")
-    output_file.write("\n")
-    list_classes("../arcade/application.py", output_file)
-    list_functions("../arcade/application.py", output_file)
-
-    output_file.write("Arcade Types API\n")
-    output_file.write("----------------\n")
-    output_file.write("\n")
-    list_classes("../arcade/application.py", output_file)
-    list_functions("../arcade/application.py", output_file)
-
-    output_file.write("Buffered Drawing API\n")
-    output_file.write("--------------------\n")
-    output_file.write("\n")
-    list_classes("../arcade/buffered_draw_commands.py", output_file)
-    list_functions("../arcade/buffered_draw_commands.py", output_file)
-
-    output_file.write("Drawing API\n")
-    output_file.write("-----------\n")
-    output_file.write("\n")
-    list_classes("../arcade/draw_commands.py", output_file)
-    list_functions("../arcade/draw_commands.py", output_file)
-
-    output_file.write("Emitter API\n")
-    output_file.write("-----------\n")
-    output_file.write("\n")
-    list_classes("../arcade/emitter.py", output_file)
-    list_functions("../arcade/emitter.py", output_file)
-
-    output_file.write("Emitter Simple API\n")
-    output_file.write("------------------\n")
-    output_file.write("\n")
-    list_classes("../arcade/emitter_simple.py", output_file)
-    list_functions("../arcade/emitter_simple.py", output_file)
-
-    output_file.write("Geometry API\n")
-    output_file.write("------------\n")
-    output_file.write("\n")
-    list_classes("../arcade/geometry.py", output_file)
-    list_functions("../arcade/geometry.py", output_file)
-
-    output_file.write("GUI API\n")
-    output_file.write("-------\n")
-    output_file.write("\n")
-    list_classes("../arcade/gui.py", output_file)
-    list_functions("../arcade/gui.py", output_file)
-
-    output_file.write("Text API\n")
-    output_file.write("--------\n")
-    output_file.write("\n")
-    list_classes("../arcade/text.py", output_file)
-    list_functions("../arcade/text.py", output_file)
-
-    output_file.write("Game Controller API\n")
-    output_file.write("-------------------\n")
-    output_file.write("\n")
-    list_classes("../arcade/joysticks.py", output_file)
-    list_functions("../arcade/joysticks.py", output_file)
-
-    output_file.write("Sound API\n")
-    output_file.write("---------\n")
-    output_file.write("\n")
-    list_classes("../arcade/sound.py", output_file)
-    list_functions("../arcade/sound.py", output_file)
-
-    output_file.write("Sprite API\n")
-    output_file.write("----------\n")
-    output_file.write("\n")
-    list_classes("../arcade/sprite.py", output_file)
-    list_functions("../arcade/sprite.py", output_file)
-
-    output_file.write("SpriteList API\n")
-    output_file.write("--------------\n")
-    output_file.write("\n")
-    list_classes("../arcade/sprite_list.py", output_file)
-    list_functions("../arcade/sprite_list.py", output_file)
-
-    output_file.write("Physics Engines Module\n")
-    output_file.write("----------------------\n")
-    output_file.write("\n")
-    list_classes("../arcade/physics_engines.py", output_file)
-    list_functions("../arcade/physics_engines.py", output_file)
-
-    output_file.write("Tiled Map API\n")
-    output_file.write("-------------\n")
-    output_file.write("\n")
-    list_classes("../arcade/tilemap.py", output_file)
-    list_functions("../arcade/tilemap.py", output_file)
-
-    output_file.close()
-
 def process_resource_directory(out, my_path: Path):
 
     for cur_node in my_path.iterdir():
@@ -328,7 +212,6 @@ def resources():
 
 
 def main():
-    # quick_api()
     resources()
 
 

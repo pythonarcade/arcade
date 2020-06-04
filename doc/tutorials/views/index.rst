@@ -2,8 +2,8 @@
 
 .. _view-tutorial:
 
-Using Views for Start/End Screens Tutorial
-==========================================
+Using Views for Start/End Screens
+=================================
 
 .. image:: screen-switch.svg
     :width: 40%

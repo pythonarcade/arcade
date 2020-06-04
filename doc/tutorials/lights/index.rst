@@ -1,4 +1,4 @@
-Lights Tutorial
-===============
+Lights
+======
 
 (To be done)

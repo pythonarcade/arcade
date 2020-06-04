@@ -1,7 +1,7 @@
 .. _pymunk_platformer_tutorial:
 
-Pymunk Platformer Tutorial
-==========================
+Pymunk Platformer
+=================
 
 .. image:: title_animated_gif.gif
 

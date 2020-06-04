@@ -1,7 +1,7 @@
 .. _platformer_tutorial:
 
-Platformer Tutorial
-===================
+Simple Platformer
+=================
 
 .. image:: intro_screen.png
     :width: 70%

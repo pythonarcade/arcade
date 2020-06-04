@@ -1,7 +1,7 @@
 .. _example-code:
 
-Example Code
-============
+How-To Example Code
+===================
 
 .. contents::
    :depth: 3

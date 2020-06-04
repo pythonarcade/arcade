@@ -1,3 +1,7 @@
+.. raw:: html
+
+    <h1><a href="blm.html"><img src="_images/fist.svg" width="24px">#BlackLivesMatter</a></h1>
+
 .. image:: images/arcade-logo.svg
     :width: 10%
     :class: right-image
@@ -60,7 +64,7 @@ The Python Arcade Library
             <li><a href="tutorials/views/index.html">Views for Menu, Title, Game Over Screens</a></li>
             <li><a href="examples/platform_tutorial/index.html">Simple Platformer</a></li>
             <li><a href="tutorials/pymunk_platformer/index.html">Platformer with Physics</a></li>
-            <li><a href="tutorials/lights/index.html">Using Lights</a></li>
+            <li><a href="tutorials/card_game/index.html">Solitaire</a></li>
            </ul>
         </td>
 
@@ -84,7 +88,7 @@ The Python Arcade Library
       <tr>
         <td>
           <div style="display:inline-block;">
-            <img style="width:78px;" src="_static/example_games.svg">
+            <img style="width:78px;" src="_static/example_games.svg" alt="example games icon">
           </div>
           <div style="display:inline-block;">
             <h2>Games</h2>
@@ -97,7 +101,7 @@ The Python Arcade Library
 
         <td>
           <div style="display:inline-block;">
-            <img style="width:78px;" src="_static/API.svg"><br/>
+            <img style="width:78px;" src="_static/API.svg" alt="API icon"><br/>
           </div>
           <div style="display:inline-block;">
             <h2>API</h2>
@@ -117,7 +121,7 @@ The Python Arcade Library
 
         <td>
           <div style="display:inline-block;">
-            <img style="width:78px;" src="_static/source.svg">
+            <img style="width:78px;" src="_static/source.svg" alt="source icon">
           </div>
           <div style="display:inline-block;">
             <h2>Source Code</h2>
@@ -149,7 +153,7 @@ The Python Arcade Library
 
         <td>
           <div style="display:inline-block;">
-            <img style="width:78px;" src="_static/learn.svg">
+            <img style="width:78px;" src="_static/learn.svg" alt="learn icon">
           </div>
           <div style="display:inline-block;">
             <h2>Learn</h2>
@@ -168,11 +172,10 @@ The Python Arcade Library
 
         </td>
 
-
       </tr>
 
-
     </table>
+
 .. raw:: html
 
     <div style="padding:56.25% 0 0 0;position:relative;"><iframe src="https://player.vimeo.com/video/167449640?byline=0&portrait=0" style="border:0;position:absolute;top:0;left:0;width:100%;height:100%;" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div><script src="https://player.vimeo.com/api/player.js"></script>
@@ -184,64 +187,51 @@ game without learning a complex framework.
 
 
 .. toctree::
+   :caption: Getting Started
    :maxdepth: 1
+
+   installation
+   get_started
+   pygame_comparison
+   sample_games
+   examples/index
+
+.. toctree::
+   :maxdepth: 1
+   :caption: API
 
    quick_index
    arcade
-   installation
-   examples/index
+   resources
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Tutorials
+
    tutorials/views/index
    examples/platform_tutorial/index
    tutorials/pymunk_platformer/index
    tutorials/card_game/index
    tutorials/lights/index
-   sample_games
-   performance_tips
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Community
+
+   diversity
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Development
+
    how_to_contribute
+   performance_tips
    directory_structure
    how_to_compile
    how_to_submit_changes
-   diversity
-   pygame_comparison
-   resources
    enhancement_list
    tutorials/edge_artifacts/index
-   get_started
    logging
 
-Learn about it:
-^^^^^^^^^^^^^^^
 
-* `Arcade on PyPi`_
-* :ref:`pygame-comparison`
 
-Give feedback:
-^^^^^^^^^^^^^^
-
-* `GitHub Arcade Issue List`_
-* `Reddit Discussion Group`_
-* Email: paul.craven@simpson.edu
-
-Contribute to the development:
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-* `GitHub Source Code for Arcade`_
-
-.. include:: ../license.rst
-
-.. |build-status-travis| image:: https://travis-ci.org/pvcraven/arcade.svg
-    :target: https://travis-ci.org/pvcraven/arcade
-    :alt: build status
-
-.. |build-status-appveyor| image:: https://ci.appveyor.com/api/projects/status/github/pvcraven/arcade
-    :target: https://ci.appveyor.com/project/pvcraven/arcade-ekjdf
-    :alt: build status
-
-.. |coverage| image:: https://coveralls.io/repos/pvcraven/arcade/badge.svg?branch=master&service=github
-    :alt: Test Coverage Status
-    :target: https://coveralls.io/github/pvcraven/arcade?branch=master
-
-.. _GitHub Source Code for Arcade: https://github.com/pvcraven/arcade
-.. _GitHub Arcade Issue List: https://github.com/pvcraven/arcade/issues
-.. _Arcade on PyPi: https://pypi.python.org/pypi/arcade
-.. _Reddit Discussion Group: https://www.reddit.com/r/pythonarcade/

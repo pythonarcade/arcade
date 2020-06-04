@@ -1,5 +1,5 @@
-Sample Games Made With The Arcade Library
-=========================================
+Sample Games Made With Arcade
+=============================
 
 Have a sample game you'd like to share here? E-mail
 paul@cravenfamily.com.
