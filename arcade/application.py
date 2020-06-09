@@ -3,21 +3,18 @@ The main window class that all object-oriented applications should
 derive from.
 """
 import time
-
 from numbers import Number
 from typing import Tuple, List, Optional, TYPE_CHECKING
 
-import pyglet.gl as gl
 import pyglet
+import pyglet.gl as gl
 
+import arcade
+from arcade import get_display_size
 from arcade import get_viewport
 from arcade import set_viewport
 from arcade import set_window
-from arcade import get_display_size
-
 from arcade.context import ArcadeContext
-
-import arcade
 
 if TYPE_CHECKING:
     from arcade import TextBox
@@ -26,6 +23,7 @@ if TYPE_CHECKING:
     from arcade import TextLabel
 
 import logging
+
 LOG = logging.getLogger(__name__)
 
 MOUSE_BUTTON_LEFT = 1
@@ -64,7 +62,7 @@ class Window(pyglet.window.Window):
                  title: str = 'Arcade Window',
                  fullscreen: bool = False,
                  resizable: bool = False,
-                 update_rate: Optional[float] = 1/60,
+                 update_rate: Optional[float] = 1 / 60,
                  antialiasing: bool = True,
                  screen: pyglet.canvas.Screen = None):
         """
@@ -92,6 +90,8 @@ class Window(pyglet.window.Window):
         try:
             super().__init__(width=width, height=height, caption=title,
                              resizable=resizable, config=config, vsync=False)
+            self.register_event_type('update')
+            self.register_event_type('on_update')
         except pyglet.window.NoSuchConfigException:
             raise NoOpenGLException("Unable to create an OpenGL 3.3+ context. "
                                     "Check to make sure your system supports OpenGL 3.3 or higher.")
@@ -146,8 +146,7 @@ class Window(pyglet.window.Window):
     def close(self):
         """ Close the Window. """
         super().close()
-        pyglet.clock.unschedule(self.update)
-        pyglet.clock.unschedule(self.on_update)
+        pyglet.clock.unschedule(self._dispatch_updates)
 
     def set_fullscreen(self, fullscreen=True, screen=None, mode=None,
                        width=None, height=None):
@@ -180,8 +179,7 @@ class Window(pyglet.window.Window):
         :param float delta_time: Time interval since the last time the function was called in seconds.
 
         """
-        if self._current_view is not None:
-            self._current_view.update(delta_time)
+        pass
 
     def on_update(self, delta_time: float):
         """
@@ -190,8 +188,6 @@ class Window(pyglet.window.Window):
         :param float delta_time: Time interval since the last time the function was called.
 
         """
-        if self._current_view is not None:
-            self._current_view.on_update(delta_time)
         try:
             self.textbox_time += delta_time
             seconds = self.textbox_time % 60
@@ -203,6 +199,10 @@ class Window(pyglet.window.Window):
         except AttributeError:
             pass
 
+    def _dispatch_updates(self, delta_time: float):
+        self.dispatch_event('update', delta_time)
+        self.dispatch_event('on_update', delta_time)
+
     def set_update_rate(self, rate: float):
         """
         Set how often the screen should be updated.
@@ -210,10 +210,8 @@ class Window(pyglet.window.Window):
 
         :param float rate: Update frequency in seconds
         """
-        pyglet.clock.unschedule(self.update)
-        pyglet.clock.schedule_interval(self.update, rate)
-        pyglet.clock.unschedule(self.on_update)
-        pyglet.clock.schedule_interval(self.on_update, rate)
+        pyglet.clock.unschedule(self._dispatch_updates)
+        pyglet.clock.schedule_interval(self._dispatch_updates, rate)
 
     def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
         """
@@ -504,7 +502,7 @@ class Window(pyglet.window.Window):
             if elapsed_time < 1. / 60.:
                 sleep_time = (1. / 60.) - elapsed_time
                 time.sleep(sleep_time)
-            self.update(1 / 60)
+            self._dispatch_updates(1 / 60)
 
     def show_view(self, new_view: 'View'):
         """
@@ -634,6 +632,7 @@ class View:
     """
     Support different views/screens in a window.
     """
+
     def __init__(self,
                  window: Window = None):
 
