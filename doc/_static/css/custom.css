@@ -10,7 +10,7 @@ body {
     font-family: 'Consolas', 'courier new', 'courier', monospace;
     font-size: 15px;
 }
-#example-code div {
+#how-to-example-code div {
 	display: flex;
 	flex-direction: row;
 	flex-wrap: wrap;
