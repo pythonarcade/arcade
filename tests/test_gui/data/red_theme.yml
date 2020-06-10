@@ -1,0 +1,4 @@
+flatbutton:
+  normal_color: RED
+  hover_color: RED
+  pressed_color: DARK_RED

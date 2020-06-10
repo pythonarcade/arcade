@@ -174,15 +174,6 @@ from .geometry import are_polygons_intersecting
 from .geometry import get_distance
 from .geometry import is_point_in_polygon
 
-from .gui import DialogueBox
-from .gui import SubmitButton
-from .gui import TextBox
-from .gui import TextButton
-from .gui import TextDisplay
-from .gui import TextLabel
-from .gui import TextStorage
-from .gui import Theme
-
 from .isometric import create_isometric_grid_lines
 from .isometric import isometric_grid_to_screen
 from .isometric import screen_to_isometric_grid
@@ -275,7 +266,6 @@ __all__ = ['AStarBarrierList',
            'Color',
            'CreateText',
            'DEFAULT_FONT_NAMES',
-           'DialogueBox',
            'EmitBurst',
            'EmitController',
            'EmitInterval',
@@ -316,16 +306,9 @@ __all__ = ['AStarBarrierList',
            'Sprite',
            'SpriteList',
            'SpriteSolidColor',
-           'SubmitButton',
            'TShape',
            'Text',
-           'TextBox',
-           'TextButton',
-           'TextDisplay',
-           'TextLabel',
-           'TextStorage',
            'Texture',
-           'Theme',
            'Tile',
            'TiledMap',
            'VERSION',
