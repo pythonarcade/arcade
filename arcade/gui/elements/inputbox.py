@@ -254,7 +254,8 @@ class UIInputBox(UIClickable):
 
         if self.focused:
             if event.type == TEXT_INPUT and event.text == '\r':
-                self.mng.disptach_ui_event(UIEvent(UIInputBox.ENTER, ui_element=self))
+                if self.mng:
+                    self.mng.disptach_ui_event(UIEvent(UIInputBox.ENTER, ui_element=self))
                 return
 
             self.text_adapter.on_event(event)

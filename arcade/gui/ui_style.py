@@ -1,15 +1,10 @@
-from functools import lru_cache
 from pathlib import Path
-from typing import TYPE_CHECKING, Dict, List, Any
+from typing import Dict, List, Any
 
 import yaml
-from arcade.resources import resolve_resource_path
 
-import arcade.gui
 from arcade.gui.utils import parse_value
-
-if TYPE_CHECKING:
-    pass
+from arcade.resources import resolve_resource_path
 
 
 class UIStyle:

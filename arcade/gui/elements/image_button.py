@@ -29,9 +29,9 @@ class UIImageButton(UIClickable):
         )
         self.style_classes.append('imagebutton')
 
-        self._normal_texture = normal_texture
-        self._hover_texture = hover_texture
-        self._press_texture = press_texture
+        self._normal_texture: Texture = normal_texture
+        self._hover_texture: Texture = hover_texture
+        self._press_texture: Texture = press_texture
         if text:
             self.render_with_text(text)
         else:

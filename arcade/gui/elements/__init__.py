@@ -104,7 +104,9 @@ class UIClickable(UIElement):
 
                 if self.collides_with_point((event.x, event.y)):
                     self.on_click()
-                    self.mng.disptach_ui_event(UIEvent(UIClickable.CLICKED, ui_element=self))
+
+                    if self.mng:
+                        self.mng.disptach_ui_event(UIEvent(UIClickable.CLICKED, ui_element=self))
 
     def set_proper_texture(self):
         """ Set normal, mouse-over, or clicked texture. """

@@ -56,7 +56,7 @@ class UIElement(arcade.Sprite):
         self.center_y = center_y
 
     @property
-    def id(self) -> str:
+    def id(self) -> Optional[str]:
         """
         You can set id on creation, but not modify later
         """

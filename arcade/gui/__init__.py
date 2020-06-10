@@ -22,8 +22,6 @@ from arcade.gui.elements.inputbox import UIInputBox
 from arcade.gui.elements.label import UILabel
 from arcade.gui.manager import UIManager
 
-resources = utils.Resources()
-
 __all__ = [
     'UIEvent',
     'UIManager',
