@@ -155,7 +155,7 @@ def calculate_points(image):
 
     if sample_func(p1) and sample_func(p2) and sample_func(p3)  and sample_func(p4):
         # Do a quick check if it is a full tile
-        p1 =(-image.width / 2, -image.height / 2)
+        p1 = (-image.width / 2, -image.height / 2)
         p2 = (image.width / 2, -image.height / 2)
         p3 = (image.width / 2, image.height / 2)
         p4 = (-image.width / 2, image.height / 2)
@@ -186,6 +186,9 @@ def calculate_points(image):
         sample_func)
 
     # Select which line set to use
+    if len(line_set) == 0:
+        return []
+
     selected_line_set = line_set[0]
     selected_range = None
     if len(line_set) > 1:
