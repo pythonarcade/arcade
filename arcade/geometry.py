@@ -69,6 +69,8 @@ def is_point_in_polygon(x, y, polygon_point_list):
     """
     n = len(polygon_point_list)
     inside = False
+    if n == 0:
+        return False
 
     p1x, p1y = polygon_point_list[0]
     for i in range(n+1):

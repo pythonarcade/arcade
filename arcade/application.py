@@ -16,12 +16,6 @@ from arcade import set_viewport
 from arcade import set_window
 from arcade.context import ArcadeContext
 
-if TYPE_CHECKING:
-    from arcade import TextBox
-    from arcade import TextButton
-    from arcade import DialogueBox
-    from arcade import TextLabel
-
 import logging
 
 LOG = logging.getLogger(__name__)
@@ -119,10 +113,6 @@ class Window(pyglet.window.Window):
         set_viewport(0, self.width - 1, 0, self.height - 1)
 
         self._current_view: Optional[View] = None
-        self.button_list: List[TextButton] = []
-        self.dialogue_box_list: List[DialogueBox] = []
-        self.text_list: List[TextLabel] = []
-        self.textbox_list: List[TextBox] = []
         self.textbox_time = 0.0
         self.key: Optional[int] = None
         self.ui_manager = arcade.experimental.gui.UIManager(self)
@@ -188,16 +178,7 @@ class Window(pyglet.window.Window):
         :param float delta_time: Time interval since the last time the function was called.
 
         """
-        try:
-            self.textbox_time += delta_time
-            seconds = self.textbox_time % 60
-            if seconds >= 0.115:
-                if self.textbox_list:
-                    for textbox in self.textbox_list:
-                        textbox.update(delta_time, self.key)
-                    self.textbox_time = 0.0
-        except AttributeError:
-            pass
+        pass
 
     def _dispatch_updates(self, delta_time: float):
         self.dispatch_event('update', delta_time)
@@ -235,26 +216,7 @@ class Window(pyglet.window.Window):
                            arcade.MOUSE_BUTTON_MIDDLE
         :param int modifiers: Shift/click, ctrl/click, etc.
         """
-        try:
-            if self.button_list:
-                for button_widget in self.button_list:
-                    if button_widget.active:
-                        button_widget.check_mouse_press(x, y)
-        except AttributeError:
-            pass
-        try:
-            if self.dialogue_box_list:
-                for dialogue_box in self.dialogue_box_list:
-                    if dialogue_box.active:
-                        dialogue_box.on_mouse_press(x, y, button, modifiers)
-        except AttributeError:
-            pass
-        try:
-            if self.textbox_list:
-                for textbox in self.textbox_list:
-                    textbox.check_mouse_press(x, y)
-        except AttributeError:
-            pass
+        pass
 
     def on_mouse_drag(self, x: float, y: float, dx: float, dy: float, buttons: int, modifiers: int):
         """
@@ -279,26 +241,7 @@ class Window(pyglet.window.Window):
         :param int button:
         :param int modifiers:
         """
-        try:
-            if self.button_list:
-                for button_widget in self.button_list:
-                    if button_widget.active:
-                        button_widget.check_mouse_release(x, y)
-        except AttributeError:
-            pass
-        try:
-            if self.dialogue_box_list:
-                for dialogue_box in self.dialogue_box_list:
-                    if dialogue_box.active:
-                        dialogue_box.on_mouse_release(x, y, button, modifiers)
-        except AttributeError:
-            pass
-        try:
-            if self.textbox_list:
-                for textbox in self.textbox_list:
-                    textbox.check_mouse_release(x, y)
-        except AttributeError:
-            pass
+        pass
 
     def on_mouse_scroll(self, x: int, y: int, scroll_x: int, scroll_y: int):
         """
@@ -348,33 +291,7 @@ class Window(pyglet.window.Window):
         """
         Override this function to add your custom drawing code.
         """
-        try:
-            if self.button_list:
-                for button in self.button_list:
-                    if button.active:
-                        button.draw()
-        except AttributeError:
-            pass
-        try:
-            if self.text_list:
-                for text in self.text_list:
-                    if text.active:
-                        text.draw()
-        except AttributeError:
-            pass
-        try:
-            if self.dialogue_box_list:
-                for dialogue_box in self.dialogue_box_list:
-                    if dialogue_box.active:
-                        dialogue_box.on_draw()
-        except AttributeError:
-            pass
-        try:
-            if self.textbox_list:
-                for textbox in self.textbox_list:
-                    textbox.draw()
-        except AttributeError:
-            pass
+        pass
 
     def on_resize(self, width: float, height: float):
         """
@@ -641,25 +558,11 @@ class View:
         else:
             self.window = window
 
-        self.button_list: List[TextButton] = []
-        self.dialogue_box_list: List[DialogueBox] = []
-        self.text_list: List[TextLabel] = []
-        self.textbox_time = 0.0
-        self.textbox_list: List[TextBox] = []
         self.key: Optional[int] = None
 
     def update(self, delta_time: float):
         """To be overridden"""
-        try:
-            self.textbox_time += delta_time
-            seconds = self.textbox_time % 60
-            if seconds >= 0.115:
-                if self.textbox_list:
-                    for textbox in self.textbox_list:
-                        textbox.update(delta_time, self.key)
-                    self.textbox_time = 0.0
-        except AttributeError:
-            pass
+        pass
 
     def on_update(self, delta_time: float):
         """To be overridden"""
@@ -667,32 +570,7 @@ class View:
 
     def on_draw(self):
         """Called when this view should draw"""
-        try:
-            if self.button_list:
-                for button in self.button_list:
-                    button.draw()
-        except AttributeError:
-            pass
-        try:
-            if self.text_list:
-                for text in self.text_list:
-                    text.draw()
-        except AttributeError:
-            pass
         pass
-        try:
-            if self.dialogue_box_list:
-                for dialogue_box in self.dialogue_box_list:
-                    if dialogue_box.active:
-                        dialogue_box.on_draw()
-        except AttributeError:
-            pass
-        try:
-            if self.textbox_list:
-                for textbox in self.textbox_list:
-                    textbox.draw()
-        except AttributeError:
-            pass
 
     def on_show(self):
         """Called when this view is shown"""
@@ -720,26 +598,7 @@ class View:
                            arcade.MOUSE_BUTTON_MIDDLE
         :param int modifiers: Shift/click, ctrl/click, etc.
         """
-        try:
-            if self.button_list:
-                for button_widget in self.button_list:
-                    button_widget.check_mouse_press(x, y)
-        except AttributeError:
-            pass
-        try:
-            if self.dialogue_box_list:
-                for dialogue_box in self.dialogue_box_list:
-                    if dialogue_box.active:
-                        dialogue_box.on_mouse_press(x, y, button, modifiers)
-        except AttributeError:
-            pass
-
-        try:
-            if self.textbox_list:
-                for textbox in self.textbox_list:
-                    textbox.check_mouse_press(x, y)
-        except AttributeError:
-            pass
+        pass
 
     def on_mouse_drag(self, x: float, y: float, dx: float, dy: float, _buttons: int, _modifiers: int):
         """
@@ -764,25 +623,7 @@ class View:
         :param int button:
         :param int modifiers:
         """
-        try:
-            if self.button_list:
-                for button_widget in self.button_list:
-                    button_widget.check_mouse_release(x, y)
-        except AttributeError:
-            pass
-        try:
-            if self.dialogue_box_list:
-                for dialogue_box in self.dialogue_box_list:
-                    if dialogue_box.active:
-                        dialogue_box.on_mouse_release(x, y, button, modifiers)
-        except AttributeError:
-            pass
-        try:
-            if self.textbox_list:
-                for textbox in self.textbox_list:
-                    textbox.check_mouse_release(x, y)
-        except AttributeError:
-            pass
+        pass
 
     def on_mouse_scroll(self, x: int, y: int, scroll_x: int, scroll_y: int):
         """
