@@ -450,7 +450,13 @@ class Window(pyglet.window.Window):
 
         # push new view's handlers
         self._current_view = new_view
-        self.push_handlers(self._current_view)
+        self.push_handlers(
+            **{
+                et: getattr(new_view, et, None)
+                for et in self.event_types
+                if et != 'on_show' and hasattr(new_view, et)
+            }
+        )
         self._current_view.on_show()
 
         # Note: After the View has been pushed onto pyglet's stack of event handlers (via push_handlers()), pyglet
