@@ -168,7 +168,7 @@ class Context:
     def buffer(self, *, data: Optional[Any] = None, reserve: int = 0, usage: str = 'static') -> Buffer:
         """Create a new OpenGL Buffer object.
 
-        :param bytes data: The buffer data, This can be ``bytes`` or an object supporting the buffer protocol.
+        :param Any data: The buffer data, This can be ``bytes`` or an object supporting the buffer protocol.
         :param int reserve: The number of bytes reserve
         :param str usage: Buffer usage. 'static', 'dynamic' or 'stream'
         """
@@ -192,7 +192,7 @@ class Context:
                 *,
                 components: int = 4,
                 dtype: str = 'f1',
-                data: bytes = None,
+                data: Any = None,
                 wrap_x: gl.GLenum = None,
                 wrap_y: gl.GLenum = None,
                 filter: Tuple[gl.GLenum, gl.GLenum] = None) -> Texture:
@@ -208,7 +208,7 @@ class Context:
         :param Tuple[int, int] size: The size of the texture
         :param int components: Number of components (1: R, 2: RG, 3: RGB, 4: RGBA)
         :param str dtype: The data type of each component: f1, f2, f4 / i1, i2, i4 / u1, u2, u4
-        :param buffer data: The texture data (optional)
+        :param Any data: The texture data (optional). Can be bytes or an object supporting the buffer protocol.
         :param GLenum wrap_x: How the texture wraps in x direction
         :param GLenum wrap_y: How the texture wraps in y direction
         :param Tuple[GLenum, GLenum] filter: Minification and magnification filter

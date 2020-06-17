@@ -1,11 +1,12 @@
 from ctypes import byref
 import weakref
-from typing import Tuple, Union, TYPE_CHECKING
+from typing import Any, Tuple, Union, TYPE_CHECKING
 
 from pyglet import gl
 
 from .exceptions import ShaderException
 from .buffer import Buffer
+from .utils import data_to_ctypes
 
 if TYPE_CHECKING:  # handle import cycle caused by type hinting
     from arcade.gl import Context
@@ -43,7 +44,7 @@ class Texture:
                  *,
                  components: int = 4,
                  dtype: str = 'f1',
-                 data: bytes = None,
+                 data: Any = None,
                  filter: Tuple[gl.GLuint, gl.GLuint] = None,
                  wrap_x: gl.GLuint = None,
                  wrap_y: gl.GLuint = None):
@@ -57,7 +58,7 @@ class Texture:
         :param Tuple[int, int] size: The size of the texture
         :param int components: The number of components (1: R, 2: RG, 3: RGB, 4: RGBA)
         :param str dtype: The data type of each component: f1, f2, f4 / i1, i2, i4 / u1, u2, u4
-        :param bytes data: The byte data to initialize the texture with
+        :param Any data: The byte data of the texture. bytes or anything supporting the buffer protocol.
         :param Tuple[gl.GLuint, gl.GLuint] filter: The minification/magnification filter of the texture
         :param gl.GLuint wrap_s
         :param data: The texture data (optional)
@@ -92,6 +93,10 @@ class Texture:
         gl.glBindTexture(self._target, self._glo)
         gl.glPixelStorei(gl.GL_PACK_ALIGNMENT, 1)
         gl.glPixelStorei(gl.GL_UNPACK_ALIGNMENT, 1)
+
+        if data is not None:
+            byte_length, data = data_to_ctypes(data)
+
         try:
             _format, _internal_format, self._type, self._component_size = format_info
             self._format = _format[components]
@@ -247,7 +252,16 @@ class Texture:
             else:
                 raise ValueError("Viewport must be of length 2 or 4")
 
-        if isinstance(data, bytes):
+        if isinstance(data, Buffer):
+            gl.glBindBuffer(gl.GL_PIXEL_UNPACK_BUFFER, data.glo)
+            gl.glActiveTexture(gl.GL_TEXTURE0)
+            gl.glBindTexture(self._target, self._glo)
+            gl.glPixelStorei(gl.GL_PACK_ALIGNMENT, 1)
+            gl.glPixelStorei(gl.GL_UNPACK_ALIGNMENT, 1)
+            gl.glTexSubImage2D(self._target, level, x, y, w, h, self._format, self._type, 0)
+            gl.glBindBuffer(gl.GL_PIXEL_UNPACK_BUFFER, 0)
+        else:
+            byte_size, data = data_to_ctypes(data)
             gl.glActiveTexture(gl.GL_TEXTURE0)
             gl.glBindTexture(self._target, self._glo)
             gl.glPixelStorei(gl.GL_PACK_ALIGNMENT, 1)
@@ -263,16 +277,6 @@ class Texture:
                 self._type,  # type
                 data,  # pixel data
             )
-        elif isinstance(data, Buffer):
-            gl.glBindBuffer(gl.GL_PIXEL_UNPACK_BUFFER, data.glo)
-            gl.glActiveTexture(gl.GL_TEXTURE0)
-            gl.glBindTexture(self._target, self._glo)
-            gl.glPixelStorei(gl.GL_PACK_ALIGNMENT, 1)
-            gl.glPixelStorei(gl.GL_UNPACK_ALIGNMENT, 1)
-            gl.glTexSubImage2D(self._target, level, x, y, w, h, self._format, self._type, 0)
-            gl.glBindBuffer(gl.GL_PIXEL_UNPACK_BUFFER, 0)
-        else:
-            raise TypeError(f"data must be bytes or a Buffer, not {type(data)}")
 
     def build_mipmaps(self, base=0, max_amount=1000) -> None:
         """Generate mipmaps for this texture.
