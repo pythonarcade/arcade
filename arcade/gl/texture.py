@@ -69,8 +69,11 @@ class Texture:
         self._components = components
         self._target = gl.GL_TEXTURE_2D
         self._samples = 0
-        # These are the default states in OpenGL
-        self._filter = gl.GL_LINEAR, gl.GL_LINEAR
+        # Default filters for float and integer textures
+        if 'f' in self.dtype:
+            self._filter = gl.GL_LINEAR, gl.GL_LINEAR
+        else:
+            self._filter = gl.GL_NEAREST, gl.GL_NEAREST
         self._wrap_x = gl.GL_REPEAT
         self._wrap_y = gl.GL_REPEAT
 
