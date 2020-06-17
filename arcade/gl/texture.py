@@ -272,7 +272,7 @@ class Texture:
             gl.glTexSubImage2D(self._target, level, x, y, w, h, self._format, self._type, 0)
             gl.glBindBuffer(gl.GL_PIXEL_UNPACK_BUFFER, 0)
         else:
-            raise ValueError("data must be bytes or a Buffer")
+            raise TypeError(f"data must be bytes or a Buffer, not {type(data)}")
 
     def build_mipmaps(self, base=0, max_amount=1000) -> None:
         """Generate mipmaps for this texture.

@@ -80,7 +80,7 @@ def test_write_read(ctx):
     with pytest.raises(ValueError):
         texture.write(in_data, viewport=(1,))
 
-    with pytest.raises(ValueError):
+    with pytest.raises(TypeError):
         texture.write('moo')
 
     # TODO: Test LODs
