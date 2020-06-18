@@ -3,7 +3,6 @@ from typing import Optional
 from uuid import uuid4
 
 import arcade
-
 from arcade.gui.ui_style import UIStyle
 
 if typing.TYPE_CHECKING:
@@ -24,9 +23,11 @@ TEXT_MOTION_SELECTION = 'TEXT_MOTION_SELECTION'
 class UIEvent:
     def __init__(self, type: str, **kwargs):
         self.type = type
-        self.__dict__.update(**kwargs)
-
+        self.data = kwargs
         self._repr_keys = tuple(kwargs.keys())
+
+    def get(self, key: str):
+        return self.data.get(key)
 
     def __str__(self):
         return ' '.join([f'{self.type} ', *[f'{key}={getattr(self, key)}' for key in self._repr_keys]])

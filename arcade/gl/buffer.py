@@ -5,6 +5,7 @@ from typing import Any, Optional, Tuple, TYPE_CHECKING
 from pyglet import gl
 
 from .exceptions import ShaderException
+from .utils import data_to_ctypes
 
 if TYPE_CHECKING:  # handle import cycle caused by type hinting
     from arcade.gl import Context
@@ -44,7 +45,7 @@ class Buffer:
         # print(f"glBufferData(gl.GL_ARRAY_BUFFER, {self._size}, data, {self._usage})")
 
         if data and len(data) > 0:
-            self._size, data = self._data_to_ctypes(data)
+            self._size, data = data_to_ctypes(data)
             gl.glBufferData(gl.GL_ARRAY_BUFFER, self._size, data, self._usage)
         elif reserve > 0:
             self._size = reserve
@@ -54,21 +55,6 @@ class Buffer:
 
         self.ctx.stats.incr('buffer')
         weakref.finalize(self, Buffer.release, self.ctx, glo)
-
-    def _data_to_ctypes(self, data: Any) -> Tuple[int, Any]:
-        """
-        Attempt to convert the data to ctypes if needed.
-        Returns the byte size and the data.
-        """
-        if isinstance(data, bytes):
-            return len(data), data
-        else:
-            try:
-                m_view = memoryview(data)
-                c_bytes = c_byte * m_view.nbytes
-                return m_view.nbytes, c_bytes.from_buffer(m_view)
-            except Exception as ex:
-                raise ValueError(f"Failed to convert data to ctypes: {ex}")
 
     @property
     def size(self) -> int:
@@ -136,7 +122,7 @@ class Buffer:
         :param int offset: The byte offset
         """
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self._glo)
-        size, data = self._data_to_ctypes(data)
+        size, data = data_to_ctypes(data)
         gl.glBufferSubData(gl.GL_ARRAY_BUFFER, gl.GLintptr(offset), size, data)
 
     def copy_from_buffer(self, source: 'Buffer', size=-1, offset=0, source_offset=0):

@@ -80,10 +80,22 @@ def test_write_read(ctx):
     with pytest.raises(ValueError):
         texture.write(in_data, viewport=(1,))
 
-    with pytest.raises(ValueError):
+    with pytest.raises(TypeError):
         texture.write('moo')
 
     # TODO: Test LODs
+
+
+def test_write_bufferprotocol(ctx):
+    """Test creating texture from data using buffer protocol"""
+    # In constructor
+    data = array.array('B', [0, 0, 255, 255])
+    texture = ctx.texture((2, 2), components=1, data=data)
+    assert texture.read() == data.tobytes()
+    # Using write()
+    texture = ctx.texture((2, 2), components=1)
+    texture.write(data)
+    assert texture.read() == data.tobytes()
 
 
 def test_creation_failed(ctx):

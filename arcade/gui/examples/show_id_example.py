@@ -55,10 +55,10 @@ class MyView(arcade.View):
         ))
 
     def on_ui_event(self, event: UIEvent):
-        if event.type == UIClickable.CLICKED and event.ui_element.id == 'submit_button':
+        if event.type == UIClickable.CLICKED and event.get('ui_element').id == 'submit_button':
             # Trigger action if 'submit_button' was clicked
             self.submit()
-        elif event.type == UIInputBox.ENTER and event.ui_element.id == 'username':
+        elif event.type == UIInputBox.ENTER and event.get('ui_element').id == 'username':
             # Trigger action if ENTER pressed in 'username'-UIInputBox
             self.submit()
 

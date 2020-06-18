@@ -1,3 +1,4 @@
+from array import array
 import pytest
 import arcade
 
@@ -41,6 +42,13 @@ def test_read_write(ctx):
     # Read with zero or negative size
     with pytest.raises(ValueError):
         buffer.read(0)
+
+
+def test_write_bufferprotocol(ctx):
+    """Write data to buffer with buffer protocol"""
+    data = array('f', [1, 2, 3, 4])
+    buff = ctx.buffer(data=data)
+    assert buff.read() == data.tobytes()
 
 
 def test_orphan(ctx):

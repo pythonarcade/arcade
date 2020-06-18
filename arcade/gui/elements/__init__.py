@@ -96,13 +96,13 @@ class UIClickable(UIElement):
         self.set_proper_texture()
 
     def on_ui_event(self, event: UIEvent):
-        if event.type == MOUSE_PRESS and self.collides_with_point((event.x, event.y)):
+        if event.type == MOUSE_PRESS and self.collides_with_point((event.get('x'), event.get('y'))):
             self.on_press()
         elif event.type == MOUSE_RELEASE and self.pressed:
             if self.pressed:
                 self.on_release()
 
-                if self.collides_with_point((event.x, event.y)):
+                if self.collides_with_point((event.get('x'), event.get('y'))):
                     self.on_click()
 
                     if self.mng:
