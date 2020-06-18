@@ -32,5 +32,6 @@ class MyView(arcade.View):
 
 if __name__ == '__main__':
     window = arcade.Window(title='ARCADE_GUI')
-    window.show_view(MyView(window))
+    view = MyView(window)
+    window.show_view(view)
     arcade.run()

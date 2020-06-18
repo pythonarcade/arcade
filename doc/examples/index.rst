@@ -446,25 +446,11 @@ Resizable Window and Fullscreen Games
 Buttons and Dialog Boxes
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. figure:: thumbs/gui_button.png
+.. figure:: thumbs/gui_elements.png
    :figwidth: 170px
 
-   :ref:`gui_button`
+   :ref:`gui_elements`
 
-.. figure:: thumbs/gui_dialogue_box.png
-   :figwidth: 170px
-
-   :ref:`gui_dialogue_box`
-
-.. figure:: thumbs/gui_text_box.png
-   :figwidth: 170px
-
-   :ref:`gui_text_box`
-
-.. figure:: thumbs/gui_text_button.png
-   :figwidth: 170px
-
-   :ref:`gui_text_button`
 
 Grid-Based Games
 ----------------
