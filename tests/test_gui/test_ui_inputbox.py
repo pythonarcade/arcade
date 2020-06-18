@@ -66,7 +66,7 @@ def test_emits_event_on_enter(mock_mng):
     inputbox.on_ui_event(UIEvent(TEXT_INPUT, text='\r'))
 
     assert mock_mng.last_event.type == UIInputBox.ENTER
-    assert mock_mng.last_event.ui_element == inputbox
+    assert mock_mng.last_event.get('ui_element') == inputbox
 
 
 def test_changes_text_on_backspace(draw_commands, mock_mng):
