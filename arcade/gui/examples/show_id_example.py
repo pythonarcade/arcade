@@ -1,3 +1,5 @@
+from typing import cast
+
 import arcade
 
 from arcade.gui import UILabel, UIClickable, UIInputBox, UIEvent, UIFlatButton, UIManager
@@ -62,12 +64,11 @@ class MyView(arcade.View):
             # Trigger action if ENTER pressed in 'username'-UIInputBox
             self.submit()
 
-    # noinspection PyTypeChecker
     def submit(self):
-        username_input: UIInputBox = self.ui_manager.find_by_id('username')
+        username_input = cast(UIInputBox, self.ui_manager.find_by_id('username'))
         username = username_input.text
 
-        login_message: UILabel = self.ui_manager.find_by_id('login_message')
+        login_message: UILabel = cast(UILabel, self.ui_manager.find_by_id('login_message'))
         login_message.text = f'Welcome {username}, you are my first player.'
 
 
