@@ -55,4 +55,4 @@ def test_uibutton_send_custom_event(mock_mng, mock_button):
     mock_mng.click(50, 50)
 
     assert mock_mng.last_event.type == UIClickable.CLICKED
-    assert mock_mng.last_event.ui_element == mock_button
+    assert mock_mng.last_event.get('ui_element') == mock_button

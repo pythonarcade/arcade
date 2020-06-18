@@ -328,7 +328,7 @@ def render_text_image(
         bg_color: Optional[Color] = None,
         bg_image: Optional[Image] = None,
 
-        width: int = None,
+        width: int = 0,
         height: int = 0,
         indent: int = 0
 ):

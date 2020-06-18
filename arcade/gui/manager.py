@@ -1,4 +1,4 @@
-from typing import Optional, Dict
+from typing import Optional, Dict, cast
 
 from arcade import SpriteList
 from pyglet.event import EventDispatcher
@@ -17,7 +17,7 @@ class UIManager(EventDispatcher):
         self._focused_element: Optional[UIElement] = None
         self._hovered_element: Optional[UIElement] = None
 
-        self._ui_elements: SpriteList[UIElement] = SpriteList(use_spatial_hash=True)
+        self._ui_elements: SpriteList = SpriteList(use_spatial_hash=True)
         self._id_cache: Dict[str, UIElement] = {}
 
         self.register_event_type('on_ui_event')
@@ -100,8 +100,10 @@ class UIManager(EventDispatcher):
         Processes UIEvents, forward events to registered elements and manages focused element
         """
         for ui_element in self._ui_elements:
+            ui_element = cast(UIElement, ui_element)
+
             if event.type == MOUSE_PRESS:
-                if ui_element.collides_with_point((event.x, event.y)):
+                if ui_element.collides_with_point((event.get('x'), event.get('y'))):
                     self.focused_element = ui_element
 
                 elif ui_element is self.focused_element:
@@ -109,7 +111,7 @@ class UIManager(EventDispatcher):
                     self.focused_element = None
 
             if event.type == MOUSE_MOTION:
-                if ui_element.collides_with_point((event.x, event.y)):
+                if ui_element.collides_with_point((event.get('x'), event.get('y'))):
                     self.hovered_element = ui_element
 
                 elif ui_element is self.hovered_element:

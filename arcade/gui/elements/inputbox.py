@@ -64,7 +64,7 @@ class KeyAdapter:
 
     def on_event(self, event):
         if event.type == TEXT_INPUT:
-            text = event.text
+            text = event.get('text')
             if text == '\r':
                 return
 
@@ -72,7 +72,7 @@ class KeyAdapter:
             self.cursor_index += len(text)
 
         elif event.type == TEXT_MOTION:
-            motion = event.motion
+            motion = event.get('motion')
 
             if motion == MOTION_UP:
                 self.cursor_index = 0
@@ -253,7 +253,7 @@ class UIInputBox(UIClickable):
         super().on_ui_event(event)
 
         if self.focused:
-            if event.type == TEXT_INPUT and event.text == '\r':
+            if event.type == TEXT_INPUT and event.get('text') == '\r':
                 if self.mng:
                     self.mng.disptach_ui_event(UIEvent(UIInputBox.ENTER, ui_element=self))
                 return

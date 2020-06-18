@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Dict, List, Any
+from typing import Dict, Any, Sequence
 
 import yaml
 
@@ -18,7 +18,6 @@ class UIStyle:
     __default_style = None
 
     def __init__(self, data: Dict, **kwargs):
-        super().__init__(**kwargs)
         self.data = data
 
     @staticmethod
@@ -67,7 +66,7 @@ class UIStyle:
             else:
                 style_data[key] = value
 
-    def get_attr(self, style_classes: List[str], attr: str):
+    def get_attr(self, style_classes: Sequence[str], attr: str):
         """
         Retrieves an attribute, resolved from style by style_classes
 
@@ -75,8 +74,7 @@ class UIStyle:
         :param attr: attribute name to get value for
         :return: value of the attribute, first found
         """
-        style_classes = reversed(style_classes)
-        for style_class in style_classes:
+        for style_class in reversed(style_classes):
             style_data = self.data.get(style_class, {})
             attr_value = style_data.get(attr)
             if attr_value:
