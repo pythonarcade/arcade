@@ -189,7 +189,7 @@ class VertexArray:
             # TODO: Support first argument by offsetting pointer (second last arg)
             gl.glDrawElementsInstanced(mode, count, gl.GL_UNSIGNED_INT, None, instances)
         else:
-            print(f"glDrawArraysInstanced({mode}, {first}, {vertices}, {instances})")
+            # print(f"glDrawArraysInstanced({mode}, {first}, {vertices}, {instances})")
             gl.glDrawArraysInstanced(mode, first, vertices, instances)
 
         gl.glEndTransformFeedback()
