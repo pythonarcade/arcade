@@ -2,6 +2,7 @@
 Low level tests for OpenGL 3.3 wrappers.
 """
 import array
+import struct
 import pytest
 import arcade
 from arcade.gl import BufferDescription
@@ -70,12 +71,24 @@ def test_geometry(ctx):
     assert vao.num_vertices == -1
     assert vao.ibo is None
     geo.flush()
-    with pytest.raises(NotImplementedError):
-        geo.transform(program)
+
+
+def test_transform(ctx):
+    """Test basic transform"""
+    program = ctx.program(vertex_shader="""
+        #version 330
+        out float value;
+        void main() {
+            value = gl_VertexID;
+        }
+        """
+    )
+    buffer = ctx.buffer(reserve=4 * 5)
+    vao = ctx.geometry()
+    vao.transform(program, buffer, mode=ctx.POINTS, vertices=5)
+    assert struct.unpack('5f', buffer.read()) == (0.0, 1.0, 2.0, 3.0, 4.0)
 
 
 def test_incomplete_geometry(ctx):
-    with pytest.raises(ValueError):
-        ctx.geometry(None)
-    with pytest.raises(ValueError):
-        ctx.geometry([])
+    ctx.geometry(None)
+    ctx.geometry([])
