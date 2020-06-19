@@ -100,6 +100,8 @@ class VertexArray:
         for i, prog_attr in enumerate(program.attributes):
             # print('prog_attr', prog_attr)
             # Do we actually have an attribute with this name in buffer descriptions?
+            if prog_attr.name.startswith('gl_'):
+                continue
             try:
                 buff_descr, attr_descr = descr_attribs[prog_attr.name]
             except KeyError:
@@ -156,7 +158,7 @@ class VertexArray:
         :param GLunit mode: Primitive type to render. TRIANGLES, LINES etc.
         :param int first: The first vertex to render from
         :param int vertices: Number of vertices to render
-        :param int instances: OpenGL instance, used in using vertexes over and over
+        :param int instances: OpenGL instance, used in using vertices over and over
         """
         gl.glBindVertexArray(self.glo)
         if self._ibo is not None:
@@ -166,6 +168,32 @@ class VertexArray:
         else:
             # print(f"glDrawArraysInstanced({mode}, {first}, {vertices}, {instances})")
             gl.glDrawArraysInstanced(mode, first, vertices, instances)
+
+    def transform(self, buffer: Buffer, mode: gl.GLenum, output_mode: gl.GLenum,
+                  first: int = 0, vertices: int = 0, instances: int = 1, buffer_offset=0):
+        if vertices < 0:
+            raise ValueError(f"Cannot determine the number of vertices: {vertices}")
+
+        gl.glBindVertexArray(self.glo)
+        gl.glEnable(gl.GL_RASTERIZER_DISCARD)
+
+        if buffer_offset > 0:
+            pass
+        else:
+            gl.glBindBufferBase(gl.GL_TRANSFORM_FEEDBACK_BUFFER, buffer_offset, buffer.glo)
+
+        gl.glBeginTransformFeedback(output_mode)
+
+        if self._ibo is not None:
+            count = self._ibo.size // 4
+            # TODO: Support first argument by offsetting pointer (second last arg)
+            gl.glDrawElementsInstanced(mode, count, gl.GL_UNSIGNED_INT, None, instances)
+        else:
+            print(f"glDrawArraysInstanced({mode}, {first}, {vertices}, {instances})")
+            gl.glDrawArraysInstanced(mode, first, vertices, instances)
+
+        gl.glEndTransformFeedback()
+        gl.glDisable(gl.GL_RASTERIZER_DISCARD)
 
 
 class Geometry:
@@ -179,25 +207,26 @@ class Geometry:
     def __init__(
             self,
             ctx: 'Context',
-            content: Sequence[BufferDescription],
+            content: Optional[Sequence[BufferDescription]],
             index_buffer: Buffer = None,
             mode=None):
         self._ctx = ctx
-        self._content = content
+        self._content = content or []
         self._index_buffer = index_buffer
         self._mode = mode or ctx.TRIANGLES
         self._vao_cache = {}  # type: Dict[str, VertexArray]
         self._num_vertices = -1
 
-        if not content:
-            raise ValueError("Geometry without buffer descriptions not supported")
+        # if not content:
+        #     raise ValueError("Geometry without buffer descriptions not supported")
 
-        # Calculate vertices. Use the minimum for now
-        self._num_vertices = content[0].num_vertices
-        for descr in self._content:
-            if descr.instanced:
-                continue
-            self._num_vertices = min(self._num_vertices, descr.num_vertices)
+        if content:
+            # Calculate vertices. Use the minimum for now
+            self._num_vertices = content[0].num_vertices
+            for descr in self._content:
+                if descr.instanced:
+                    continue
+                self._num_vertices = min(self._num_vertices, descr.num_vertices)
 
         # No cleanup is needed, but we want to count them
         weakref.finalize(self, Geometry._release, self._ctx)
@@ -242,9 +271,27 @@ class Geometry:
         mode = self._mode if mode is None else mode
         vao.render(mode=mode, first=first, vertices=vertices or self._num_vertices, instances=instances)
 
-    def transform(self, program: Program) -> None:
-        """Render with transform feedback"""
-        raise NotImplementedError()
+    def transform(self, program: Program, buffer: Buffer, *, mode: gl.GLenum = None,
+                  first: int = 0, vertices: int = None, instances: int = 1, buffer_offset: int = 0) -> None:
+        """Render with transform feedback.
+
+        If a geometry shader is used the output primitive mode is automatically detected.
+
+        :param Program program: The Program to render with
+        :param Buffer buffer: The buffer to write the output
+        :param gl.GLenum mode: The input primitive mode
+        :param int first: Offset start vertex
+        :param int vertices: Number of vertices to render
+        :param int instances: Number of instances to render
+        :param int buffer_offset: Byte offset for the buffer
+        """
+        program.use()
+        vao = self.instance(program)
+        mode = mode if mode is not None else gl.GL_POINTS
+        vao.transform(
+            buffer, mode=mode, output_mode=program.geometry_output, first=first, vertices=vertices or self._num_vertices,
+            instances=instances, buffer_offset=buffer_offset,
+        )
 
     def flush(self) -> None:
         """Flush all generated VertexArrays"""
