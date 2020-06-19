@@ -2,6 +2,7 @@ from pathlib import Path
 
 import pytest
 
+import arcade
 from arcade.gui.utils import parse_value
 
 
@@ -32,3 +33,14 @@ def test_parse_path():
 def test_parsing_unknown():
     with pytest.warns(UserWarning):
         assert parse_value('not parsable') == 'not parsable'
+
+
+def test_parsing_texture_from_arcade_resources():
+    value = parse_value('img::resources:gui_basic_assets/red_button_normal.png')
+    assert type(value) is arcade.Texture
+
+
+def test_parsing_texture_fails_controlled():
+    with pytest.warns(UserWarning):
+        value = parse_value('img:wrong/path.png')
+        assert type(value) is arcade.Texture

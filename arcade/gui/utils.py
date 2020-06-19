@@ -22,6 +22,7 @@ def parse_value(value: Any):
     * RGB ('r,g,b', 'r, g, b')
     * HEX ('00ff00')
     * Arcade colors ('BLUE', 'DARK_BLUE')
+    * Arcade Texture ('img:assets/my-img.png', 'img::resources:/gui_basic_assets/red_button_normal.png')
 
     """
     import arcade
@@ -38,6 +39,14 @@ def parse_value(value: Any):
             return int(value)
         except ValueError:
             pass
+
+        # arcade texture
+        if value.startswith('img:'):
+            try:
+                return arcade.load_texture(value[4:])
+            except FileNotFoundError:
+                warn(f'Could not load texture from {value[4:]}')
+                return arcade.load_texture(':resources:images/test_textures/placeholders.png')
 
         # arcade color
         if isinstance(value, str) and hasattr(arcade.color, value.upper()):
