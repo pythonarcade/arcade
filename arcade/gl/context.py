@@ -3,7 +3,7 @@ import sys
 import logging
 import weakref
 from pathlib import Path
-from typing import Any, Dict, List, Tuple, Union, Sequence
+from typing import Any, Dict, List, Tuple, Union, Sequence, Set
 
 # import pyglet
 from pyglet.window import Window
@@ -42,12 +42,10 @@ class Context:
     MIRRORED_REPEAT = gl.GL_MIRRORED_REPEAT
 
     # Flags
-    # NOTHING
     BLEND = gl.GL_BLEND
-    # DEPTH_TEST
-    # CULL_FACE
-    # RASTERIZER_DISCARD
-    # PROGRAM_POINT_SIZE
+    DEPTH_TEST = gl.GL_DEPTH_TEST
+    CULL_FACE = gl.GL_CULL_FACE
+    PROGRAM_POINT_SIZE = gl.GL_PROGRAM_POINT_SIZE
 
     # Blend functions
     ZERO = 0x0000
@@ -76,6 +74,7 @@ class Context:
     BLEND_DEFAULT = 0x0302, 0x0303
     BLEND_ADDITIVE = 0x0001, 0x0001
     BLEND_PREMULTIPLIED_ALPHA = 0x0302, 0x0001
+
     # VertexArray: Primitives
     POINTS = gl.GL_POINTS  # 0
     LINES = gl.GL_LINES  # 1
@@ -112,6 +111,8 @@ class Context:
 
         # States
         self._blend_func = self.BLEND_DEFAULT
+        self._point_size = 1.0
+        self._flags = set()
 
     @property
     def window(self) -> Window:
@@ -147,13 +148,47 @@ class Context:
         """Mark this context as the currently active one"""
         cls.active = ctx
 
-    def enable(self, flag: int):
+    def enable(self, *args):
         """Enables a context flag"""
-        gl.glEnable(flag)
+        self._flags.update(args)
 
-    def disable(self, flag: int):
+        for flag in args:
+            gl.glEnable(flag)
+
+    def enable_only(self, *args):
+        """Enable only some flags. This will disable all other flags"""
+        self._flags = set(args)
+
+        if self.BLEND in self._flags:
+            gl.glEnable(self.BLEND)
+        else:
+            gl.glDisable(self.BLEND)
+
+        if self.DEPTH_TEST in self._flags:
+            gl.glEnable(self.DEPTH_TEST)
+        else:
+            gl.glDisable(self.DEPTH_TEST)
+
+        if self.CULL_FACE in self._flags:
+            gl.glEnable(self.CULL_FACE)
+        else:
+            gl.glDisable(self.CULL_FACE)
+
+        if self.PROGRAM_POINT_SIZE in self._flags:
+            gl.glEnable(self.PROGRAM_POINT_SIZE)
+        else:
+            gl.glDisable(self.PROGRAM_POINT_SIZE)
+
+    def disable(self, *args):
         """Disable a context flag"""
-        gl.glDisable(flag)
+        self._flags -= set(args)
+
+        for flag in args:
+            gl.glDisable(flag)
+
+    def is_enabled(self, flag) -> bool:
+        """Check if a context flag is enabled"""
+        return flag in self._flags
 
     @property
     def blend_func(self) -> Tuple[int, int]:
@@ -164,6 +199,19 @@ class Context:
     def blend_func(self, value: Tuple[int, int]):
         self._blend_func = value
         gl.glBlendFunc(value[0], value[1])
+
+    @property
+    def point_size(self) -> float:
+        """float: Get or set the point size.
+
+        For this to take effect the ``PROGRAM_POINT_SIZE`` context flag has to be enabled.
+        """
+        gl.glPointSize(self._point_size)
+        return self._point_size
+
+    @point_size.setter
+    def point_size(self, value: float):
+        self._point_size = value
 
     def buffer(self, *, data: Optional[Any] = None, reserve: int = 0, usage: str = 'static') -> Buffer:
         """Create a new OpenGL Buffer object.
