@@ -4,7 +4,6 @@ from typing import Any, Optional, Tuple, TYPE_CHECKING
 
 from pyglet import gl
 
-from .exceptions import ShaderException
 from .utils import data_to_ctypes
 
 if TYPE_CHECKING:  # handle import cycle caused by type hinting
@@ -38,7 +37,7 @@ class Buffer:
         gl.glGenBuffers(1, byref(self._glo))
         # print(f"glGenBuffers() -> {self._glo.value}")
         if self._glo.value == 0:
-            raise ShaderException("Cannot create Buffer object.")
+            raise RuntimeError("Cannot create Buffer object.")
 
         # print(f"glBindBuffer({self._glo.value})")
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self._glo)

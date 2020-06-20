@@ -4,7 +4,6 @@ from typing import Any, Tuple, Union, TYPE_CHECKING
 
 from pyglet import gl
 
-from .exceptions import ShaderException
 from .buffer import Buffer
 from .utils import data_to_ctypes
 
@@ -91,7 +90,7 @@ class Texture:
         gl.glGenTextures(1, byref(self._glo))
 
         if self._glo.value == 0:
-            raise ShaderException("Cannot create Texture. OpenGL failed to generate a texture id")
+            raise RuntimeError("Cannot create Texture. OpenGL failed to generate a texture id")
 
         gl.glBindTexture(self._target, self._glo)
         gl.glPixelStorei(gl.GL_PACK_ALIGNMENT, 1)

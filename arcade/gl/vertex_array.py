@@ -112,7 +112,7 @@ class VertexArray:
 
             # TODO: Sanity check this
             # if buff_descr.instanced and i == 0:
-            #     raise ShaderException("The first vertex attribute cannot be a per instance attribute.")
+            #     raise ValueError("The first vertex attribute cannot be a per instance attribute.")
 
             # Make sure components described in BufferDescription and in the shader match
             if prog_attr.components != attr_descr.components:
