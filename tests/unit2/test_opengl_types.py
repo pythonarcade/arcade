@@ -47,6 +47,14 @@ def test_buffer_description(ctx):
         types.BufferDescription(ctx.buffer(reserve=10), '4f', ['in_vert'])
 
 
+def test_buffer_padding(ctx):
+    descr = types.BufferDescription(
+        ctx.buffer(reserve=4 * 7 * 10),
+        '2f 3x4 2f',
+        ('in_pos', 'in_vel'),
+    )
+
+
 def test_type_info(ctx):
     tp = types.TypeInfo('test', gl.GL_FLOAT, gl.GLfloat, 4, 4)
     assert tp.size == 16

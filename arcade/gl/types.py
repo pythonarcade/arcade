@@ -117,17 +117,28 @@ class BufferDescription:
             raise ValueError("Normalized attribute not found in attributes.")
 
         formats_list = formats.split(" ")
+        non_padded_formats = [f for f in formats_list if not 'x' in f]
 
-        if len(formats_list) != len(self.attributes):
+        if len(non_padded_formats) != len(self.attributes):
             raise ValueError(
                 f"Different lengths of formats ({len(formats_list)}) and "
                 f"attributes ({len(self.attributes)})"
             )
 
+        def zip_attrs(formats, attributes):
+            """Join together formats and attribute names taking padding into account"""
+            attr_index = 0
+            for f in formats:
+                if 'x' in f:
+                    yield f, None
+                else:
+                    yield f, attributes[attr_index]
+                    attr_index += 1
+
         self.stride = 0
-        for attr_fmt, attr_name in zip(formats_list, self.attributes):
+        for attr_fmt, attr_name in zip_attrs(formats_list, self.attributes):
             try:
-                components_str, data_type_str, data_size_str = re.split(r'([fiu])', attr_fmt)
+                components_str, data_type_str, data_size_str = re.split(r'([fiux])', attr_fmt)
                 data_type = f"{data_type_str}{data_size_str}"if data_size_str else data_type_str
                 components = int(components_str) if components_str else 1  # 1 component is default
                 data_size = int(data_size_str) if data_size_str else 4  # 4 byte float and integer types are default

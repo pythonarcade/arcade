@@ -73,6 +73,14 @@ def test_geometry(ctx):
     geo.flush()
 
 
+def test_padding(ctx):\
+    ctx.geometry([BufferDescription(
+        ctx.buffer(reserve=4 * 7 * 10),
+        '2f 3x4 2f',
+        ('in_pos', 'in_vel'),
+    )])
+
+
 def test_transform(ctx):
     """Test basic transform"""
     program = ctx.program(vertex_shader="""
