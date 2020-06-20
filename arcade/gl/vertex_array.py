@@ -271,7 +271,7 @@ class Geometry:
         mode = self._mode if mode is None else mode
         vao.render(mode=mode, first=first, vertices=vertices or self._num_vertices, instances=instances)
 
-    def transform(self, program: Program, buffer: Buffer, *, mode: gl.GLenum = None,
+    def transform(self, program: Program, buffer: Buffer, *,
                   first: int = 0, vertices: int = None, instances: int = 1, buffer_offset: int = 0) -> None:
         """Render with transform feedback.
 
@@ -287,9 +287,10 @@ class Geometry:
         """
         program.use()
         vao = self.instance(program)
-        mode = mode if mode is not None else gl.GL_POINTS
+        # mode = mode if mode is not None else gl.GL_POINTS
         vao.transform(
-            buffer, mode=mode, output_mode=program.geometry_output, first=first, vertices=vertices or self._num_vertices,
+            buffer, mode=program.geometry_input, output_mode=program.geometry_output, first=first,
+            vertices=vertices or self._num_vertices,
             instances=instances, buffer_offset=buffer_offset,
         )
 
