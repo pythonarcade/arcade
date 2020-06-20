@@ -40,6 +40,28 @@ def test_uibutton_clicked(mock_mng, mock_button):
     assert mock_button.on_click_called
 
 
+def test_uibutton_click_dispatch_event(mock_mng, mock_button):
+    # GIVEN
+    mock_mng.add_ui_element(mock_button)
+    clicked = False
+
+    @mock_button.event('on_click')
+    def callback(*args):
+        nonlocal clicked
+        clicked = True
+
+    # WHEN
+    mock_mng.click(50, 50)
+
+    # THEN
+    assert clicked
+
+
+def test_uibutton_has_on_click_event_type(mock_button):
+    # THEN
+    assert 'on_click' in mock_button.event_types
+
+
 def test_uibutton_not_clicked_if_released_beside(mock_mng, mock_button):
     mock_mng.add_ui_element(mock_button)
 

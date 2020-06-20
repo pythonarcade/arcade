@@ -11,6 +11,36 @@ import arcade.gui
 from arcade.gui import UIManager
 
 
+class MyFlatButton(arcade.gui.UIFlatButton):
+    """
+    To capture a button click, subclass the button and override on_click.
+    """
+    def on_click(self):
+        """ Called when user lets off button """
+        print("Click flat button. ")
+
+class MyGhostFlatButton(arcade.gui.UIGhostFlatButton):
+    """
+    For this subclass, we create a custom init, that takes in another
+    parameter, the UI text box. We use that parameter and print the contents
+    of the text entry box when the ghost button is clicked.
+    """
+
+    def __init__(self, center_x, center_y, input_box):
+        super().__init__(
+            'GhostFlatButton',
+            center_x=center_x,
+            center_y=center_y,
+            width=250,
+            # height=20
+        )
+        self.input_box = input_box
+
+    def on_click(self):
+        """ Called when user lets off button """
+        print(f"Click ghost flat button. {self.input_box.text}")
+
+
 class MyView(arcade.View):
     """
     Main view. Really the only view in this example. """
@@ -66,7 +96,7 @@ class MyView(arcade.View):
         self.ui_manager.add_ui_element(button)
 
         # right side elements
-        button = arcade.gui.UIFlatButton(
+        button = MyFlatButton(
             'FlatButton',
             center_x=right_column_x,
             center_y=y_slot * 1,
@@ -75,12 +105,10 @@ class MyView(arcade.View):
         )
         self.ui_manager.add_ui_element(button)
 
-        button = arcade.gui.UIGhostFlatButton(
-            'GhostFlatButton',
+        button = MyGhostFlatButton(
             center_x=right_column_x,
             center_y=y_slot * 2,
-            width=250,
-            # height=20
+            input_box=ui_input_box
         )
         self.ui_manager.add_ui_element(button)
 

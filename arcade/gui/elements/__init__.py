@@ -1,12 +1,14 @@
 from typing import Optional
 
+from pyglet.event import EventDispatcher
+
 from arcade import Texture
 
 from arcade.gui import UIElement, UIEvent, MOUSE_PRESS, MOUSE_RELEASE
 from arcade.gui.ui_style import UIStyle
 
 
-class UIClickable(UIElement):
+class UIClickable(EventDispatcher, UIElement):
     """ Texture based UIElement supporting hover and press, this should fit every use case"""
 
     CLICKED = 'UIClickable_CLICKED'
@@ -22,6 +24,7 @@ class UIClickable(UIElement):
             id=id,
             style=style
         )
+        self.register_event_type('on_click')
 
         self._pressed = False
         self._hovered = False
@@ -103,7 +106,7 @@ class UIClickable(UIElement):
                 self.on_release()
 
                 if self.collides_with_point((event.get('x'), event.get('y'))):
-                    self.on_click()
+                    self.dispatch_event('on_click')
 
                     if self.mng:
                         self.mng.disptach_ui_event(UIEvent(UIClickable.CLICKED, ui_element=self))

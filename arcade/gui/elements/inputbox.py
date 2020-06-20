@@ -124,6 +124,7 @@ class UIInputBox(UIClickable):
             style=style,
             **kwargs
         )
+        self.register_event_type('on_enter')
         self.style_classes.append('inputbox')
 
         self.width = width if width is not None else 200
@@ -254,6 +255,7 @@ class UIInputBox(UIClickable):
 
         if self.focused:
             if event.type == TEXT_INPUT and event.get('text') == '\r':
+                self.dispatch_event('on_enter')
                 if self.mng:
                     self.mng.disptach_ui_event(UIEvent(UIInputBox.ENTER, ui_element=self))
                 return
@@ -261,3 +263,4 @@ class UIInputBox(UIClickable):
             self.text_adapter.on_event(event)
 
         self.render_textures()
+

@@ -19,7 +19,7 @@ class ShaderToy:
 
         self.ctx = self.window.ctx
         self.source: str = source
-        self.mouse_pos: Tuple[float, float] = 0, 0
+        self.mouse_pos = 0, 0
         self.quad = geometry.quad_2d_fs()
 
         self.program = self.ctx.program(
@@ -66,7 +66,8 @@ class ShaderToy:
         except KeyError:
             pass
         try:
-            self.program['iResolution'] = self.window.get_framebuffer_size()
+            if self.window is not None:
+                self.program['iResolution'] = self.window.get_framebuffer_size()
         except KeyError:
             pass
 
