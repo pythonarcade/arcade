@@ -2,9 +2,10 @@
 The main window class that all object-oriented applications should
 derive from.
 """
+import logging
 import time
 from numbers import Number
-from typing import Tuple, List, Optional, TYPE_CHECKING
+from typing import Tuple, Optional
 
 import pyglet
 import pyglet.gl as gl
@@ -15,8 +16,6 @@ from arcade import get_viewport
 from arcade import set_viewport
 from arcade import set_window
 from arcade.context import ArcadeContext
-
-import logging
 
 LOG = logging.getLogger(__name__)
 

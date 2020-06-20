@@ -1,9 +1,9 @@
 import pytest
-from arcade.key import *
 
 from arcade.gui import UIEvent, TEXT_INPUT, TEXT_MOTION
 from arcade.gui.elements.inputbox import UIInputBox
-from . import T
+from arcade.key import *
+from tests.test_gui import T
 
 
 @pytest.mark.skip('This is hard to test, we would have to check the rendered texture, or mock the render calls')
@@ -67,6 +67,50 @@ def test_emits_event_on_enter(mock_mng):
 
     assert mock_mng.last_event.type == UIInputBox.ENTER
     assert mock_mng.last_event.get('ui_element') == inputbox
+
+
+def test_invokes_callback_on_return(mock_mng):
+    inputbox = UIInputBox(center_x=30, center_y=30, width=40, height=40)
+    inputbox.text = 'Best Game Lib!'
+    inputbox.cursor_index = 5
+    inputbox.on_focus()
+    mock_mng.add_ui_element(inputbox)
+
+    invoked = False
+
+    def callback():
+        nonlocal invoked
+        invoked = True
+
+    inputbox.on_enter = callback
+
+    inputbox.on_ui_event(UIEvent(TEXT_INPUT, text='\r'))
+
+    assert invoked is True
+
+
+def test_invokes_decorator_on_return(mock_mng):
+    inputbox = UIInputBox(center_x=30, center_y=30, width=40, height=40)
+    inputbox.text = 'Best Game Lib!'
+    inputbox.cursor_index = 5
+    inputbox.on_focus()
+    mock_mng.add_ui_element(inputbox)
+
+    invoked = False
+
+    @inputbox.event('on_enter')
+    def callback():
+        nonlocal invoked
+        invoked = True
+
+    inputbox.on_ui_event(UIEvent(TEXT_INPUT, text='\r'))
+
+    assert invoked is True
+
+
+def test_ui_inputbox_has_on_enter_event_type():
+    inputbox = UIInputBox(center_x=30, center_y=30, width=40, height=40)
+    assert 'on_enter' in inputbox.event_types
 
 
 def test_changes_text_on_backspace(draw_commands, mock_mng):
