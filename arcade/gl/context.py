@@ -202,15 +202,12 @@ class Context:
 
     @property
     def point_size(self) -> float:
-        """float: Get or set the point size.
-
-        For this to take effect the ``PROGRAM_POINT_SIZE`` context flag has to be enabled.
-        """
-        gl.glPointSize(self._point_size)
+        """float: Get or set the point size."""
         return self._point_size
 
     @point_size.setter
     def point_size(self, value: float):
+        gl.glPointSize(self._point_size)
         self._point_size = value
 
     def buffer(self, *, data: Optional[Any] = None, reserve: int = 0, usage: str = 'static') -> Buffer:
