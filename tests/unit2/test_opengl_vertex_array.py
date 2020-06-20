@@ -93,7 +93,7 @@ def test_transform(ctx):
     )
     buffer = ctx.buffer(reserve=4 * 5)
     vao = ctx.geometry()
-    vao.transform(program, buffer, mode=ctx.POINTS, vertices=5)
+    vao.transform(program, buffer, vertices=5)
     assert struct.unpack('5f', buffer.read()) == (0.0, 1.0, 2.0, 3.0, 4.0)
 
 
