@@ -155,7 +155,7 @@ class VertexArray:
     def render(self, mode: gl.GLenum, first: int = 0, vertices: int = 0, instances: int = 1):
         """Render the VertexArray to the currently active framebuffer.
 
-        :param GLunit mode: Primitive type to render. TRIANGLES, LINES etc.
+        :param GLuint mode: Primitive type to render. TRIANGLES, LINES etc.
         :param int first: The first vertex to render from
         :param int vertices: Number of vertices to render
         :param int instances: OpenGL instance, used in using vertices over and over
