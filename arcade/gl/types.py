@@ -4,7 +4,6 @@ from typing import Iterable, List
 from pyglet import gl
 
 from .buffer import Buffer
-from .exceptions import ShaderException
 
 
 # String representation of a shader type
@@ -102,21 +101,25 @@ class BufferDescription:
                  attributes: Iterable[str],
                  normalized: Iterable[str] = None,
                  instanced: bool = False):
+
         self.buffer = buffer  # type: Buffer
-        self.attributes = list(attributes)
+        self.attributes = attributes
         self.normalized = set() if normalized is None else set(normalized)
         self.instanced = instanced  # type: bool
         self.formats = []  # type: List[AttribFormat]
         self.stride = -1  # type: int
         self.num_vertices = -1  # type: int
 
+        if not isinstance(self.attributes, list) and not isinstance(self.attributes, tuple):
+            raise ValueError("Attributes must be a list or tuple")
+
         if self.normalized > set(self.attributes):
-            raise ShaderException("Normalized attribute not found in attributes.")
+            raise ValueError("Normalized attribute not found in attributes.")
 
         formats_list = formats.split(" ")
 
         if len(formats_list) != len(self.attributes):
-            raise ShaderException(
+            raise ValueError(
                 f"Different lengths of formats ({len(formats_list)}) and "
                 f"attributes ({len(self.attributes)})"
             )
