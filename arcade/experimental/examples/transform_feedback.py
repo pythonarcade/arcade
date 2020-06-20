@@ -1,4 +1,5 @@
 from array import array
+import math
 import random
 import struct
 import arcade
@@ -14,7 +15,9 @@ class MyGame(arcade.Window):
 
     def __init__(self, width, height, title):
         super().__init__(width, height, title, resizable=True)
+        self.time = 0
         self.dt = 0
+
         self.points_progran = self.ctx.program(
             vertex_shader="""
             #version 330
@@ -46,6 +49,7 @@ class MyGame(arcade.Window):
 
             uniform float dt;
             uniform float force;
+            uniform vec2 gravity_pos;
 
             in vec2 in_pos;
             in vec2 in_vel;
@@ -54,7 +58,6 @@ class MyGame(arcade.Window):
             out vec2 out_vel;
 
             void main() {
-                vec2 gravity_pos = vec2(0.0, 0.0);
                 vec2 dir = normalize(gravity_pos - in_pos) * force;
                 vec2 vel = in_vel + dir / length(dir) * dt;
 
@@ -85,7 +88,8 @@ class MyGame(arcade.Window):
         self.ctx.point_size = 3
 
         self.gravity_program['dt'] = self.dt
-        self.gravity_program['force'] = 0.75
+        self.gravity_program['force'] = 0.25
+        self.gravity_program['gravity_pos'] = math.sin(self.time) * 0.1, math.cos(self.time) * 0.1
 
         # Transform data
         self.gravity_1.transform(self.gravity_program, self.buffer_2)
@@ -98,7 +102,8 @@ class MyGame(arcade.Window):
         self.buffer_1, self.buffer_2 = self.buffer_2, self.buffer_1
 
     def on_update(self, dt):
-        self.dt = dt / 4
+        self.dt = dt
+        self.time += dt
 
 
 if __name__ == "__main__":
