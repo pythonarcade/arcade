@@ -34,9 +34,9 @@ def test_buffer_description(ctx):
         types.BufferDescription(ctx.buffer(reserve=15), '5f', ['in_vert'])
 
     # Mismatch length between attribute and format
-    with pytest.raises(ShaderException):
+    with pytest.raises(ValueError):
         types.BufferDescription(ctx.buffer(reserve=16), '4f 4f', ['in_vert'])
-    with pytest.raises(ShaderException):
+    with pytest.raises(ValueError):
         types.BufferDescription(ctx.buffer(reserve=16), '4f', ['in_vert', 'in_normal'])
 
     # FIXME: Non-existing normalized attribute doesn't work
