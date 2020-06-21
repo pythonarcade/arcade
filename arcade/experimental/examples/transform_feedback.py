@@ -88,7 +88,7 @@ class MyGame(arcade.Window):
 
     def on_draw(self):
         self.clear()
-        self.ctx.point_size = 2
+        self.ctx.point_size = 2 * self.get_pixel_ratio()
 
         t = time.time()
         frame_time = t - self.time
