@@ -1,5 +1,6 @@
 from array import array
 import math
+import time
 import random
 import struct
 import arcade
@@ -59,14 +60,14 @@ class MyGame(arcade.Window):
 
             void main() {
                 vec2 dir = normalize(gravity_pos - in_pos) * force;
-                vec2 vel = in_vel + dir / length(dir) * dt;
+                vec2 vel = in_vel + dir / length(dir) * 0.01;
 
                 out_vel = vel;
                 out_pos = in_pos + vel * dt;
             }
             """,
         )
-        N = 2000
+        N = 50_000
         self.buffer_1 = self.ctx.buffer(data=array('f', self.gen_initial_data(N)))
         self.buffer_2 = self.ctx.buffer(reserve=self.buffer_1.size)
 
@@ -75,6 +76,8 @@ class MyGame(arcade.Window):
 
         self.gravity_1 = self.ctx.geometry([BufferDescription(self.buffer_1, '2f 2f', ['in_pos', 'in_vel'])])
         self.gravity_2 = self.ctx.geometry([BufferDescription(self.buffer_2, '2f 2f', ['in_pos', 'in_vel'])])
+
+        self.time = time.time()
 
     def gen_initial_data(self, count):
         for _ in range(count):
@@ -85,11 +88,15 @@ class MyGame(arcade.Window):
 
     def on_draw(self):
         self.clear()
-        self.ctx.point_size = 3
+        self.ctx.point_size = 2
 
-        self.gravity_program['dt'] = self.dt
+        t = time.time()
+        frame_time = t - self.time
+        self.time = t
+
+        self.gravity_program['dt'] = frame_time
         self.gravity_program['force'] = 0.25
-        self.gravity_program['gravity_pos'] = math.sin(self.time) * 0.1, math.cos(self.time) * 0.1
+        self.gravity_program['gravity_pos'] = math.sin(self.time * 0.77) * 0.25, math.cos(self.time) * 0.25
 
         # Transform data
         self.gravity_1.transform(self.gravity_program, self.buffer_2)
@@ -100,10 +107,6 @@ class MyGame(arcade.Window):
         self.gravity_1, self.gravity_2 = self.gravity_2, self.gravity_1
         self.vao_1, self.vao_2 = self.vao_2, self.vao_1
         self.buffer_1, self.buffer_2 = self.buffer_2, self.buffer_1
-
-    def on_update(self, dt):
-        self.dt = dt
-        self.time += dt
 
 
 if __name__ == "__main__":
