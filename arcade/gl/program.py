@@ -161,7 +161,7 @@ class Program:
         try:
             uniform = self._uniforms[key]
         except KeyError:
-            raise ShaderException(f"Uniform with the name `{key}` was not found.")
+            raise KeyError(f"Uniform with the name `{key}` was not found.")
 
         uniform.setter(value)
 
