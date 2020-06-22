@@ -9,7 +9,7 @@
 
 # virualenvs
 env
-venv/
+venv*/
 .venv
 
 # docs

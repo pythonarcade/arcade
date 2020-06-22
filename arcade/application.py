@@ -148,7 +148,7 @@ class Window(pyglet.window.Window):
         :param int width:
         :param int height:
         """
-        super.set_fullscreen(fullscreen, screen, mode, width, height)
+        super().set_fullscreen(fullscreen, screen, mode, width, height)
 
     def center_window(self):
         """
