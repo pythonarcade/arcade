@@ -1,4 +1,4 @@
-from ctypes import c_int, c_char_p, cast
+from ctypes import c_int, c_char_p, cast, c_float
 import sys
 import logging
 import weakref
@@ -12,7 +12,7 @@ from pyglet import gl
 from .buffer import Buffer
 from .program import Program
 from .vertex_array import Geometry, VertexArray
-from .framebuffer import Framebuffer
+from .framebuffer import Framebuffer, DefaultFrameBuffer
 from typing import Optional
 from .texture import Texture
 from .query import Query
@@ -26,7 +26,9 @@ class Context:
     """
     Represents an OpenGL context. This context belongs to a pyglet.Window
     """
+    # The active context
     active: Optional['Context'] = None
+
     # --- Store the most commonly used OpenGL constants
     # Texture
     NEAREST = 0x2600
@@ -71,6 +73,7 @@ class Context:
     #: Maximum of source and destination
     MAX = 0x8008
 
+    # Blend mode shortcuts
     BLEND_DEFAULT = 0x0302, 0x0303
     BLEND_ADDITIVE = 0x0001, 0x0001
     BLEND_PREMULTIPLIED_ALPHA = 0x0302, 0x0001
@@ -87,6 +90,7 @@ class Context:
     TRIANGLES_ADJACENCY = gl.GL_TRIANGLES_ADJACENCY  # 12
     TRIANGLE_STRIP_ADJACENCY = gl.GL_TRIANGLE_STRIP_ADJACENCY  # 13
 
+    # The most common error enums
     _errors = {
         gl.GL_INVALID_ENUM: 'GL_INVALID_ENUM',
         gl.GL_INVALID_VALUE: 'GL_INVALID_VALUE',
@@ -103,11 +107,21 @@ class Context:
         self._gl_version = (self.limits.MAJOR_VERSION, self.limits.MINOR_VERSION)
         Context.activate(self)
 
+        # Detect the default framebuffer
+        self._screen = DefaultFrameBuffer(self)
         # Tracking active program
         self.active_program = None  # type: Program
         # Tracking active program. On context creation the window is the default render target
-        self.active_framebuffer = window
+        self.active_framebuffer = self._screen
         self.stats = ContextStats(warn_threshold=1000)
+
+        # Hardcoded states
+        # This should always be enabled
+        gl.glEnable(gl.GL_TEXTURE_CUBE_MAP_SEAMLESS)
+        # Set primitive restart index to -1 by default
+        gl.glEnable(gl.GL_PRIMITIVE_RESTART)
+        self._primitive_restart_index = -1
+        self.primitive_restart_index = self._primitive_restart_index
 
         # States
         self._blend_func = self.BLEND_DEFAULT
@@ -118,6 +132,11 @@ class Context:
     def window(self) -> Window:
         """The window this context belongs to"""
         return self._window_ref()
+
+    @property
+    def screen(self) -> Framebuffer:
+        """The framebuffer for the window"""
+        return self._screen
 
     @property
     def gl_version(self) -> Tuple[int, int]:
@@ -191,6 +210,15 @@ class Context:
         return flag in self._flags
 
     @property
+    def viewport(self) -> Tuple[int, int, int, int]:
+        """Get or set the viewport for the currently active framebuffer"""
+        return self.active_framebuffer.viewport
+
+    @viewport.setter
+    def viewport(self, value: Tuple[int, int, int, int]):
+        self.active_framebuffer.viewport = value
+
+    @property
     def blend_func(self) -> Tuple[int, int]:
         """Get or the blend function"""
         return self._blend_func
@@ -209,6 +237,17 @@ class Context:
     def point_size(self, value: float):
         gl.glPointSize(self._point_size)
         self._point_size = value
+
+    @property
+    def primitive_restart_index(self) -> int:
+        """Get or set the primitive restart index. Default is -1"""
+        return self._primitive_restart_index
+
+    @primitive_restart_index.setter
+    def primitive_restart_index(self, value: int):
+        gl.glPrimitiveRestartIndex(value)
+
+    # --- Resource methods ---
 
     def buffer(self, *, data: Optional[Any] = None, reserve: int = 0, usage: str = 'static') -> Buffer:
         """Create a new OpenGL Buffer object.
@@ -444,6 +483,9 @@ class Limits:
         self.MAX_VERTEX_UNIFORM_BLOCKS = self.get(gl.GL_MAX_VERTEX_UNIFORM_BLOCKS)
         # self.MAX_VERTEX_ATTRIB_RELATIVE_OFFSET = self.get(gl.GL_MAX_VERTEX_ATTRIB_RELATIVE_OFFSET)
         # self.MAX_VERTEX_ATTRIB_BINDINGS = self.get(gl.GL_MAX_VERTEX_ATTRIB_BINDINGS)
+        self.MAX_TEXTURE_IMAGE_UNITS = self.get(gl.GL_MAX_TEXTURE_IMAGE_UNITS)
+        # TODO: Missing in pyglet
+        # self.MAX_TEXTURE_MAX_ANISOTROPY = self.get_float(gl.GL_MAX_TEXTURE_MAX_ANISOTROPY)
 
         err = self._ctx.error
         if err:
@@ -454,6 +496,12 @@ class Limits:
         """Get an integer limit"""
         value = c_int()
         gl.glGetIntegerv(enum, value)
+        return value.value
+
+    def get_float(self, enum) -> float:
+        """Get a float limit"""
+        value = c_float()
+        gl.glGetFloatv(enum, value)
         return value.value
 
     def get_str(self, enum: gl.GLenum) -> str:
