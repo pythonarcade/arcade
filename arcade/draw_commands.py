@@ -441,8 +441,6 @@ def _generic_draw_line_strip(point_list: PointList,
     # Cache the program. But not on linux because it fails unit tests for some reason.
     # if not _generic_draw_line_strip.program or sys.platform == "linux":
     window = get_window()
-    if window is None:
-        raise RuntimeError("Cannot draw without a Window")
 
     ctx = window.ctx
 
@@ -1039,9 +1037,6 @@ def get_image(x: int = 0, y: int = 0, width: int = None, height: int = None):
 
     # Get the dimensions
     window = get_window()
-
-    if window is None:
-        raise RuntimeError("Handle to the current window is None")
 
     pixel_ratio = window.get_pixel_ratio()
     x = int(pixel_ratio * x)

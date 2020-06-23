@@ -101,9 +101,6 @@ def create_line_generic_with_colors(point_list: PointList,
     :Returns Shape:
     """
     window = get_window()
-    if window is None:
-        raise RuntimeError("Cannot create Shape without a Window")
-
     ctx = window.ctx
     program = ctx.line_generic_with_colors_program
 
