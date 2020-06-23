@@ -39,9 +39,6 @@ def test_viewport(ctx):
     fb.viewport = (1, 2, 3, 4)
     assert fb.viewport == (1, 2, 3, 4)
 
-    fb.viewport = (1, 2)
-    assert fb.viewport == (0, 0, 1, 2)
-
     with pytest.raises(ValueError):
         fb.viewport = 0
 

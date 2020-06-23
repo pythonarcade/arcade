@@ -149,7 +149,7 @@ class Program:
         try:
             uniform = self._uniforms[item]
         except KeyError:
-            raise ShaderException(f"Uniform with the name `{item}` was not found.")
+            raise KeyError(f"Uniform with the name `{item}` was not found.")
 
         return uniform.getter()
 

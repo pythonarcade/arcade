@@ -152,9 +152,9 @@ def test_program_basic(ctx):
     # TODO: Test all uniform types
     program['pos_offset'] = 1, 2
     assert program['pos_offset'] == (1.0, 2.0)
-    with pytest.raises(ShaderException):
+    with pytest.raises(KeyError):
         program['this_uniform_do_not_exist'] = 0
-    with pytest.raises(ShaderException):
+    with pytest.raises(KeyError):
         program['this_uniform_do_not_exist']
 
 
