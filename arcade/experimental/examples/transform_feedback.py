@@ -111,6 +111,7 @@ class MyGame(arcade.Window):
         self.gravity_1 = self.ctx.geometry([BufferDescription(self.buffer_1, '2f 2f', ['in_pos', 'in_vel'])])
         self.gravity_2 = self.ctx.geometry([BufferDescription(self.buffer_2, '2f 2f', ['in_pos', 'in_vel'])])
 
+        self.ctx.enable_only()  # Ensure no context flags are set
         self.time = time.time()
 
     def gen_initial_data(self, count):
