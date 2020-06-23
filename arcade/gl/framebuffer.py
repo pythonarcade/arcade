@@ -1,5 +1,7 @@
+from ctypes import c_int
 from typing import Tuple, List, Union, TYPE_CHECKING
 import weakref
+
 
 from pyglet import gl
 
@@ -19,7 +21,7 @@ class Framebuffer:
         '_ctx', '_glo', '_width', '_height', '_color_attachments', '_depth_attachment',
         '_samples', '_viewport', '_depth_mask', '_draw_buffers', '__weakref__')
 
-    def __init__(self, ctx, *, color_attachments=None, depth_attachment=None):
+    def __init__(self, ctx: 'Context', *, color_attachments=None, depth_attachment=None):
         """Create a framebuffer.
 
         :param List[Texture] color_attachments: List of color attachments.
@@ -33,10 +35,7 @@ class Framebuffer:
         self._depth_attachment = depth_attachment
         self._glo = fbo_id = gl.GLuint()  # The OpenGL alias/name
         self._samples = 0  # Leaving this at 0 for future sample support
-        self._viewport = None
         self._depth_mask = True  # Determines of the depth buffer should be affected
-        self._width = 0
-        self._height = 0
 
         # Create the framebuffer object
         gl.glGenFramebuffers(1, self._glo)
@@ -86,7 +85,7 @@ class Framebuffer:
         return self._glo
 
     @property
-    def viewport(self) -> Union[Tuple[int, int, int, int], Tuple[int, int]]:
+    def viewport(self) -> Tuple[int, int, int, int]:
         """The framebuffer's viewport.
 
         Two or four integer values can be assigned::
@@ -99,16 +98,11 @@ class Framebuffer:
         return self._viewport
 
     @viewport.setter
-    def viewport(self, value: Union[Tuple[int, int, int, int], Tuple[int, int]]):
-        if not isinstance(value, tuple):
-            raise ValueError("viewport should be a tuple with length 2 or 4")
+    def viewport(self, value: Tuple[int, int, int, int]):
+        if not isinstance(value, tuple) or len(value) != 4:
+            raise ValueError("viewport should be a 4-component tuple")
 
-        if len(value) == 2:
-            self._viewport = 0, 0, *value
-        elif len(value) == 4:
-            self._viewport = value
-        else:
-            raise ValueError("viewport should be a tuple with length 2 or 4")
+        self._viewport = value
 
         # If the framebuffer is bound we need to set the viewport.
         # Otherwise it will be set on use()
@@ -262,3 +256,35 @@ class Framebuffer:
 
     def __repr__(self):
         return "<Framebuffer glo={}>".format(self._glo.value)
+
+
+class DefaultFrameBuffer(Framebuffer):
+    """Represents the default framebuffer"""
+
+    def __init__(self, ctx: 'Context'):
+        """Detect the default framebuffer"""
+        self._ctx = ctx
+        # TODO: Can we query this?
+        self._samples = 0
+        # TODO: Maybe we should map renderbuffers?
+        self._color_attachments = []
+        self._depth_attachment = None
+        self._depth_mask = True
+
+        value = c_int()
+        gl.glGetIntegerv(gl.GL_DRAW_FRAMEBUFFER_BINDING, value)
+        self._glo = gl.GLuint(value.value)
+
+        # Query draw buffers. This will most likely return GL_BACK
+        value = c_int()
+        gl.glGetIntegerv(gl.GL_DRAW_BUFFER, value)
+        self._draw_buffers = (gl.GLuint * 1)(value.value)
+
+        # Query viewport values by inspecting the scissor box
+        values = (c_int * 4)()
+        gl.glGetIntegerv(gl.GL_SCISSOR_BOX, values)
+        x, y, width, height = list(values)
+
+        self._viewport = x, y, width, height
+        self._width = width
+        self._height = height
