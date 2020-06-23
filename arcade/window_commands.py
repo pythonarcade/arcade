@@ -44,7 +44,6 @@ def get_projection():
     :return: Numpy array with projection.
 
     """
-    global _projection
     return _projection
 
 
@@ -104,13 +103,15 @@ def pause(seconds: Number):
     time.sleep(cast(float, seconds))
 
 
-def get_window() -> Union[pyglet.window.Window, None]:
+def get_window() -> pyglet.window.Window:
     """
     Return a handle to the current window.
 
     :return: Handle to the current window.
     """
-    global _window
+    if _window is None:
+        raise RuntimeError("No window is active. Use set_window() to set an active window")
+
     return _window
 
 
@@ -124,7 +125,7 @@ def set_window(window: pyglet.window.Window):
     _window = window
 
 
-def get_scaling_factor(window):
+def get_scaling_factor(window) -> float:
     """
     Tries to get the scaling factor of the given Window. Currently works
     on MacOS only. Useful in figuring out what's going on with Retina and
@@ -133,19 +134,9 @@ def get_scaling_factor(window):
     :param Window window: Handle to window we want to get scaling factor of.
 
     :return: Scaling factor. E.g., 2 would indicate scaled up twice.
-    :rtype: int
-
+    :rtype: float
     """
-    from pyglet import compat_platform
-    if compat_platform == 'darwin':
-        from pyglet.libs.darwin.cocoapy import NSMakeRect
-        # noinspection PyProtectedMember
-        view = window.context._nscontext.view()
-        content_rect = NSMakeRect(0, 0, window.width, window.height)  # Get size, possibly scaled
-        bounds = view.convertRectFromBacking_(content_rect)  # Convert to actual pixel sizes
-        return int(content_rect.size.width / bounds.size.width)
-    else:
-        return 1
+    return get_window().get_pixel_ratio()
 
 
 def set_viewport(left: float, right: float, bottom: float, top: float):
@@ -180,15 +171,14 @@ def set_viewport(left: float, right: float, bottom: float, top: float):
     _bottom = bottom
     _top = top
 
-    # Window hasn't been fully created yet, return.
-    if _window is None:
-        return
+    window = get_window()
 
     # Needed for sprites
     if _scaling is None:
-        _scaling = get_scaling_factor(_window)
+        _scaling = get_scaling_factor(window)
 
-    gl.glViewport(0, 0, _window.width * _scaling, _window.height * _scaling)  # type: ignore #_window starts as None
+    window.ctx.screen.viewport = 0, 0, int(window.width * _scaling), int(window.height * _scaling)
+    # gl.glViewport(0, 0, int(window.width * _scaling), int(window.height * _scaling))
 
     _projection = create_orthogonal_projection(left=_left, right=_right,
                                                bottom=_bottom, top=_top,

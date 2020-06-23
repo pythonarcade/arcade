@@ -109,7 +109,6 @@ class Window(pyglet.window.Window):
         # isn't derived from the Window class.
         # self.invalid = False
         set_window(self)
-        set_viewport(0, self.width - 1, 0, self.height - 1)
 
         self._current_view: Optional[View] = None
         self.textbox_time = 0.0
@@ -118,6 +117,7 @@ class Window(pyglet.window.Window):
 
         # Representation of the OpenGL context for this window
         self.ctx = ArcadeContext(self)
+        set_viewport(0, self.width - 1, 0, self.height - 1)
 
         # Required for transparency
         self.ctx.enable(self.ctx.BLEND)
@@ -396,9 +396,7 @@ class Window(pyglet.window.Window):
 
     def use(self):
         """Bind the window's framebuffer for rendering commands"""
-        gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, 0)
-        self.ctx.active_framebuffer = self
-        set_viewport(*get_viewport())
+        self.ctx.screen.use()
 
     def test(self, frames: int = 10):
         """
