@@ -58,7 +58,7 @@ def test_binding(ctx):
     assert ctx.active_framebuffer == fb
     ctx.window.use()
     ctx.window.use()  # Twice to trigger bind check
-    assert ctx.active_framebuffer == ctx.window
+    assert ctx.active_framebuffer == ctx.screen
 
 
 def test_clear(ctx):
@@ -71,7 +71,7 @@ def test_clear(ctx):
     fb.clear(color=arcade.csscolor.AZURE)
     fb.clear(color=(0, 0, 0))
     fb.clear(color=(0, 0, 0, 0))
-    assert ctx.active_framebuffer == ctx.window
+    assert ctx.active_framebuffer == ctx.screen
 
 
 def test_multi_attachment(ctx):

@@ -245,6 +245,7 @@ class Context:
 
     @primitive_restart_index.setter
     def primitive_restart_index(self, value: int):
+        self._primitive_restart_index = value
         gl.glPrimitiveRestartIndex(value)
 
     # --- Resource methods ---

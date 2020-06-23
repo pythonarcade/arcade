@@ -28,6 +28,24 @@ def test_ctx(ctx):
     assert ctx.blend_func == ctx.BLEND_PREMULTIPLIED_ALPHA
 
 
+def test_viewport(ctx):
+    vp = 0, 0, 100, 100
+    ctx.viewport = vp
+    assert ctx.viewport == vp
+
+
+def test_point_size(ctx):
+    assert ctx.point_size == 1.0
+    ctx.point_size = 2.0
+    assert ctx.point_size == 2.0
+
+
+def test_primitive_restart(ctx):
+    assert ctx.primitive_restart_index == -1
+    ctx.primitive_restart_index = -2
+    assert ctx.primitive_restart_index == -2
+
+
 def test_enable_disable(ctx):
     # Blend is enabled by default
     assert ctx.is_enabled(ctx.BLEND)
@@ -43,3 +61,5 @@ def test_enable_disable(ctx):
     ctx.disable(ctx.BLEND)
     assert ctx.is_enabled(ctx.BLEND) is False
     assert len(ctx._flags) == 2
+
+    ctx.enable_only(ctx.BLEND, ctx.CULL_FACE, ctx.DEPTH_TEST, ctx.PROGRAM_POINT_SIZE)
