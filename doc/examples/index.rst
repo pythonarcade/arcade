@@ -300,10 +300,15 @@ Shooting with Sprites
 
    :ref:`sprite_bullets_enemy_aims`
 
-.. figure:: thumbs/sprite_explosion.png
+.. figure:: thumbs/sprite_explosion_bitmapped.png
    :figwidth: 170px
 
-   :ref:`sprite_explosion`
+   :ref:`sprite_explosion_bitmapped`
+
+.. figure:: thumbs/sprite_explosion_particles.png
+   :figwidth: 170px
+
+   :ref:`sprite_explosion_particles`
 
 Sound
 -----
