@@ -190,8 +190,8 @@ game without learning a complex framework.
    :caption: Getting Started
    :maxdepth: 1
 
-   installation
    get_started
+   installation
    pygame_comparison
    sample_games
    examples/index
@@ -208,9 +208,9 @@ game without learning a complex framework.
    :maxdepth: 1
    :caption: Tutorials
 
-   tutorials/views/index
    examples/platform_tutorial/index
    tutorials/pymunk_platformer/index
+   tutorials/views/index
    tutorials/card_game/index
    tutorials/lights/index
 
