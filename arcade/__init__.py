@@ -214,6 +214,7 @@ from .sprite import AnimatedWalkingSprite
 from .sprite import AnimationKeyframe
 from .sprite import PyMunk
 from .sprite import Sprite
+from .sprite import SpriteCircle
 from .sprite import SpriteSolidColor
 from .sprite import get_distance_between_sprites
 
@@ -304,6 +305,7 @@ __all__ = ['AStarBarrierList',
            'ShapeElementList',
            'Sound',
            'Sprite',
+           'SpriteCircle',
            'SpriteList',
            'SpriteSolidColor',
            'TShape',

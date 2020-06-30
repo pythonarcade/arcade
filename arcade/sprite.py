@@ -27,6 +27,8 @@ from arcade import Texture
 from arcade import Matrix3x3
 from arcade import rotate_point
 from arcade import draw_polygon_outline
+from arcade import make_soft_circle_texture
+from arcade import make_circle_texture
 from arcade import Color
 from arcade.color import BLACK
 
@@ -1129,6 +1131,19 @@ class SpriteSolidColor(Sprite):
         self.texture = Texture(f"Solid-{color[0]}-{color[1]}-{color[2]}", image)
         self._points = self.texture.hit_box_points
 
+class SpriteCircle(Sprite):
+    """
+    This sprite is just an elliptical sprite of one solid color. No need to
+    use an image file.
+    """
+    def __init__(self, radius, color, soft=False):
+        super().__init__()
+
+        if soft:
+            self.texture = make_soft_circle_texture(radius * 2, color)
+        else:
+            self.texture = make_circle_texture(radius * 2, color)
+        self._points = self.texture.hit_box_points
 
 def get_distance_between_sprites(sprite1: Sprite, sprite2: Sprite) -> float:
     """
