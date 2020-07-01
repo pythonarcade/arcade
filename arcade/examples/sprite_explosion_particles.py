@@ -1,13 +1,12 @@
 """
 Sprite Explosion
 
-Simple program to show basic sprite usage.
+Simple program to show creating explosions with particles
 
 Artwork from http://kenney.nl
-Explosion graphics from http://www.explosiongenerator.com/
 
 If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.sprite_explosion
+python -m arcade.examples.sprite_explosion_particles
 """
 import random
 import math
@@ -108,6 +107,13 @@ class Particle(arcade.SpriteCircle):
         direction = random.randrange(360)
         self.change_x = math.sin(math.radians(direction)) * speed
         self.change_y = math.cos(math.radians(direction)) * speed
+
+        # Track original alpha. Used as part of 'sparkle' where we temp set the
+        # alpha back to 255
+        self.my_alpha = 255
+
+        # What list do we add smoke particles to?
+        self.my_list = my_list
 
     def update(self):
         """ Update the particle """
