@@ -1,3 +1,11 @@
+"""
+This example shows how to programmatically change the GUI style.
+
+This can also be done with a yaml file.
+See:
+https://github.com/pvcraven/arcade/blob/development/arcade/resources/style/default.yml
+and the UIStyle.from_file() command.
+"""
 import arcade
 
 import arcade.gui
@@ -5,20 +13,17 @@ from arcade.gui import UIFlatButton, UIGhostFlatButton, UIManager
 from arcade.gui.ui_style import UIStyle
 
 class MyView(arcade.View):
-    def __init__(self, window: arcade.Window):
+
+    """ Main program view """
+    def __init__(self, my_window: arcade.Window):
+        """ Set up this view """
         super().__init__()
 
-        self.window = window
+        self.window = my_window
         self.ui_manager = UIManager(window)
 
-    def on_draw(self):
-        arcade.start_render()
-        arcade.set_background_color(arcade.color.BLACK)
-
-    def on_show(self):
-        self.setup()
-
     def setup(self):
+        """ Setup the view """
         self.ui_manager.purge_ui_elements()
         flat = UIFlatButton('Hello world', center_x=200, center_y=self.window.height // 2, width=200, height=40)
         flat.set_style_attrs(
@@ -55,6 +60,15 @@ class MyView(arcade.View):
             height=40,
             id='right_button'
         ))
+
+    def on_draw(self):
+        """ Draw this view """
+        arcade.start_render()
+        arcade.set_background_color(arcade.color.BLACK)
+
+    def on_show(self):
+        """ Show this view """
+        self.setup()
 
 
 if __name__ == '__main__':

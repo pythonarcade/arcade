@@ -1,9 +1,13 @@
 """
-Show GUI Elements
-
 Show how to use GUI elements.
 
 python -m arcade.examples.gui_elements_example
+
+To style, see the style example or use a yaml file.
+See:
+https://github.com/pvcraven/arcade/blob/development/arcade/resources/style/default.yml
+and the UIStyle.from_file() command.
+
 """
 import arcade
 
