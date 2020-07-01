@@ -8,6 +8,8 @@ import pymunkoptions
 pymunkoptions.options["debug"] = False
 import pymunk
 
+from PIL import Image
+
 from pymunk import autogeometry
 
 from typing import List, Tuple, cast
@@ -121,12 +123,14 @@ def rotate_point(x: float, y: float, cx: float, cy: float,
 
     return [x, y]
 
-def calculate_points(image):
+def calculate_points(image: Image, hit_box_detail: float = 4.5):
     """
     Given an image, this returns points that make up a hit box around it. Attempts
     to trim out transparent pixels.
 
-    :param Image image:
+    :param Image image: Image get hit box from.
+    :param int hit_box_detail: How detailed to make the hit box. There's a
+                               trade-off in number of points vs. accuracy.
 
     :Returns: List of points
 
@@ -153,7 +157,7 @@ def calculate_points(image):
     p3 = image.width - 1, image.height - 1
     p4 = image.width - 1, 0
 
-    if sample_func(p1) and sample_func(p2) and sample_func(p3)  and sample_func(p4):
+    if sample_func(p1) and sample_func(p2) and sample_func(p3) and sample_func(p4):
         # Do a quick check if it is a full tile
         p1 = (-image.width / 2, -image.height / 2)
         p2 = (image.width / 2, -image.height / 2)
@@ -169,7 +173,7 @@ def calculate_points(image):
     line_set = pymunk.autogeometry.PolylineSet()
 
     # Collect the line segments
-    def segment_func(v0, v1):
+    def _segment_func(v0, v1):
         line_set.collect_segment(v0, v1)
 
     # How often to sample?
@@ -182,7 +186,7 @@ def calculate_points(image):
         logo_bb,
         horizontal_samples, vertical_samples,
         99,
-        segment_func,
+        _segment_func,
         sample_func)
 
     # Select which line set to use
@@ -209,14 +213,15 @@ def calculate_points(image):
                 if max_y is None or point.y > max_y:
                     max_y = point.y
 
-            range = max_x - min_x + max_y + min_y
-            if selected_range is None or range > selected_range:
-                selected_range = range
+            my_range = max_x - min_x + max_y + min_y
+            if selected_range is None or my_range > selected_range:
+                selected_range = my_range
                 selected_line_set = line
 
     # Reduce number of verticies
     # original_points = len(selected_line_set)
-    selected_line_set = pymunk.autogeometry.simplify_curves(selected_line_set, 4.5)
+    selected_line_set = pymunk.autogeometry.simplify_curves(selected_line_set,
+                                                            hit_box_detail)
     # downsampled_points = len(selected_line_set)
 
     # Convert to normal points, offset fo 0,0 is center, flip the y
@@ -227,6 +232,8 @@ def calculate_points(image):
         point = round(vec2.x - hw), round(image.height - (vec2.y - hh) - image.height)
         points.append(point)
 
-    points.pop()
+    if len(points) > 1 and points[0] == points[-1]:
+        points.pop()
+
     # print(f"{sprite.texture.name} Line-sets={len(line_set)}, Original points={original_points}, Downsampled points={downsampled_points}")
     return points
