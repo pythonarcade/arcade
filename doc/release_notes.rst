@@ -46,7 +46,7 @@ Version 2.4 Minor Features
 
 **New functionality:**
 
-* Support for logging
+* Support for logging. See :ref:`logging`.
 * Support volume and pan arguments in `play_sound <arcade.html#arcade.play_sound>`_
 * Add ability to directly assign items in a sprite list. This is particularly
   useful when re-ordering sprites for drawing.
