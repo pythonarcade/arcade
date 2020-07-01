@@ -213,12 +213,15 @@ def calculate_points(image: Image, hit_box_detail: float = 4.5):
                 if max_y is None or point.y > max_y:
                     max_y = point.y
 
+            if min_x is None or max_x is None or min_y is None or max_y is None:
+                raise ValueError("No points in bounding box.")
+
             my_range = max_x - min_x + max_y + min_y
             if selected_range is None or my_range > selected_range:
                 selected_range = my_range
                 selected_line_set = line
 
-    # Reduce number of verticies
+    # Reduce number of vertices
     # original_points = len(selected_line_set)
     selected_line_set = pymunk.autogeometry.simplify_curves(selected_line_set,
                                                             hit_box_detail)
