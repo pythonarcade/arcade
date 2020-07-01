@@ -31,7 +31,7 @@ _projection = None
 
 
 def get_display_size():
-    """ Return the resolution of the monitor"""
+    """ Return the width and height in pixels of the default monitor. """
     display = pyglet.canvas.Display()
     screen = display.get_default_screen()
     return screen.width, screen.height
