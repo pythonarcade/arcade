@@ -177,7 +177,7 @@ def set_viewport(left: float, right: float, bottom: float, top: float):
     if _scaling is None:
         _scaling = get_scaling_factor(window)
 
-    window.ctx.screen.viewport = 0, 0, int(window.width * _scaling), int(window.height * _scaling)
+    window.ctx.fbo.viewport = 0, 0, int(window.width * _scaling), int(window.height * _scaling)
     # gl.glViewport(0, 0, int(window.width * _scaling), int(window.height * _scaling))
 
     _projection = create_orthogonal_projection(left=_left, right=_right,
