@@ -4,12 +4,12 @@ from ctypes import (
     cast, POINTER, pointer, byref,
     create_string_buffer,
 )
-from typing import Dict, Iterable, Tuple, List, TYPE_CHECKING
+from typing import Dict, Iterable, Tuple, List, TYPE_CHECKING, Union
 import weakref
 
 from pyglet import gl
 
-from .uniform import Uniform
+from .uniform import Uniform, UniformBlock
 from .types import AttribFormat, GLTypes, SHADER_TYPE_NAMES
 from .exceptions import ShaderException
 
@@ -54,6 +54,7 @@ class Program:
         self._geometry_info = (0, 0, 0)
         self._attributes = []  # type: List[AttribFormat]
         self.attribute_key = "INVALID"  # type: str
+        self._uniforms: Dict[str, Uniform] = {}
 
         shaders = [(vertex_shader, gl.GL_VERTEX_SHADER)]
         if fragment_shader:
@@ -86,9 +87,9 @@ class Program:
             gl.glDeleteShader(shader)
 
         # Handle uniforms
-        self._uniforms: Dict[str, Uniform] = {}
         self._introspect_attributes()
         self._introspect_uniforms()
+        self._introspect_uniform_blocks()
 
         self.ctx.stats.incr('program')
         weakref.finalize(self, Program._delete, self.ctx, shaders_id, glo)
@@ -145,7 +146,7 @@ class Program:
 
         ctx.stats.decr('program')
 
-    def __getitem__(self, item):
+    def __getitem__(self, item) -> Union[Uniform, UniformBlock]:
         try:
             uniform = self._uniforms[item]
         except KeyError:
@@ -254,6 +255,16 @@ class Program:
             u_name = u_name.replace('[0]', '')  # Remove array suffix
             self._uniforms[u_name] = Uniform(self._glo, u_location, u_name, u_type, u_size)
 
+    def _introspect_uniform_blocks(self):
+        active_uniform_blocks = gl.GLint(0)
+        gl.glGetProgramiv(self._glo, gl.GL_ACTIVE_UNIFORM_BLOCKS, byref(active_uniform_blocks))
+        # print('GL_ACTIVE_UNIFORM_BLOCKS', active_uniform_blocks)
+
+        for loc in range(active_uniform_blocks.value):
+            index, size, name = self._query_uniform_block(loc)
+            block = UniformBlock(self._glo, index, size, name)
+            self._uniforms[name] = block
+
     def _query_uniform(self, location: int) -> Tuple[str, int, int]:
         """Retrieve Uniform information at given location.
 
@@ -261,20 +272,40 @@ class Program:
         greater than 1 only for Uniform arrays, like an array of floats or an array
         of Matrices.
         """
-        usize = gl.GLint()
-        utype = gl.GLenum()
+        u_size = gl.GLint()
+        u_type = gl.GLenum()
         buf_size = 192  # max uniform character length
-        uname = create_string_buffer(buf_size)
+        u_name = create_string_buffer(buf_size)
         gl.glGetActiveUniform(
             self._glo,  # program to query
             location,  # location to query
             buf_size,  # size of the character/name buffer
             None,  # the number of characters actually written by OpenGL in the string
-            usize,  # size of the uniform variable
-            utype,  # data type of the uniform variable
-            uname  # string buffer for storing the name
+            u_size,  # size of the uniform variable
+            u_type,  # data type of the uniform variable
+            u_name  # string buffer for storing the name
         )
-        return uname.value.decode(), utype.value, usize.value
+        return u_name.value.decode(), u_type.value, u_size.value
+
+    def _query_uniform_block(self, location: int) -> Tuple[int, int, str]:
+        """Query active uniform block by retrieving the name and index and size"""
+        # Query name
+        u_size = gl.GLint()
+        buf_size = 192  # max uniform character length        
+        u_name = create_string_buffer(buf_size)
+        gl.glGetActiveUniformBlockName(
+            self._glo,  # program to query
+            location,  # location to query
+            256,  # max size if the name
+            u_size,  # length
+            u_name,
+        )
+        # Query index
+        index = gl.glGetUniformBlockIndex(self._glo, u_name)
+        # Query size
+        b_size = gl.GLint()
+        gl.glGetActiveUniformBlockiv(self._glo, index, gl.GL_UNIFORM_BLOCK_DATA_SIZE, b_size)
+        return index, b_size.value, u_name.value.decode()
 
     @staticmethod
     def compile_shader(source: str, shader_type: gl.GLenum) -> gl.GLuint:
