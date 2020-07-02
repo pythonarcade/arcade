@@ -139,6 +139,11 @@ class Context:
         return self._screen
 
     @property
+    def fbo(self) -> Framebuffer:
+        """The currently active framebuffer"""
+        return self.active_framebuffer
+
+    @property
     def gl_version(self) -> Tuple[int, int]:
         """The OpenGL version as a 2 component tuple"""
         return self._gl_version
