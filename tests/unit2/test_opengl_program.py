@@ -1,7 +1,9 @@
+import struct
 import pytest
 import arcade
 from pyglet import gl
 from arcade.gl import ShaderException
+from arcade.gl.uniform import UniformBlock
 from arcade.gl.glsl import ShaderSource
 
 SCREEN_WIDTH = 800
@@ -272,3 +274,39 @@ def test_uniforms(ctx):
         """,
     )
     assert program.out_attributes == ['out_pos', 'out_velocity']
+
+
+def test_uniform_block(ctx):
+    """Test uniform block"""
+    # Simple tranform with a uniform block
+    program = ctx.program(vertex_shader="""
+        #version 330
+        uniform Projection {
+            uniform mat4 matrix;
+        } proj;
+
+        out vec2 pos;
+
+        void main() {
+            pos = (proj.matrix * vec4(800, 600, 0.0, 1.0)).xy;
+        }
+    """
+    )
+    # Obtain the ubo info and modify binding + test properties
+    ubo = program['Projection']
+    assert isinstance(ubo, UniformBlock)
+    program['Projection'] = 1
+    assert ubo.binding == 1
+    ubo.binding = 0
+    assert ubo.binding == 0
+    assert ubo.index == 0
+    assert ubo.name == "Projection"
+
+    # Project a point (800, 600) into (1, 1) using a projection matrix
+    projection_matrix = arcade.create_orthogonal_projection(0, 800, 0, 600, -10, 10, dtype='f4')
+    ubo_buffer = ctx.buffer(data=projection_matrix.flatten())
+    buffer = ctx.buffer(reserve=8)
+    vao = ctx.geometry()
+    ubo_buffer.bind_to_uniform_block(0)
+    vao.transform(program, buffer, vertices=1)
+    assert struct.unpack('2f', buffer.read()) == (1, 1)
