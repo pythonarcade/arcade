@@ -3,18 +3,26 @@ Arcade's version of the OpenGL Context.
 Contains pre-loaded programs 
 """
 from pathlib import Path
-from typing import Union
+from typing import Tuple, Union
+
 from arcade.gl import BufferDescription, Context
 from arcade.gl.program import Program
-
+import arcade
 
 class ArcadeContext(Context):
     """
-    Represents an OpenGL context. This context belongs to an arcade.Window.
+    An OpenGL context implementation for Arcade with added custom features.
+    This context belongs to an arcade.Window.
     """
 
     def __init__(self, window):
         super().__init__(window)
+
+        # Set up a default projection
+        self._projection_buffer = self.buffer(reserve=64)
+        self._projection_buffer.bind_to_uniform_block(0)
+        self._projection_matrix = None
+        self.projection = 0, self.screen.width, 0, self.screen.height,
 
         # --- Pre-load system shaders here ---
         # FIXME: These pre-created resources needs to be packaged nicely
@@ -98,6 +106,34 @@ class ArcadeContext(Context):
         self.shape_rectangle_filled_unbuffered_buffer = self.buffer(reserve=8)
         self.shape_rectangle_filled_unbuffered_geometry = self.geometry([
             BufferDescription(self.shape_rectangle_filled_unbuffered_buffer, '2f', ['in_vert'])])
+
+    @property
+    def projection(self) -> Tuple[float, float, float, float]:
+        """Any: Get or set the global orthogonal projection for arcade.
+
+        This projection is used by sprites and shapes. and is represented
+        by four floats: ``(left, right, bottom, top)``
+        """
+        return self._projection
+
+    @projection.setter
+    def projection(self, value: Tuple[float, float, float, float]):
+        if not isinstance(value, tuple) or len(value) != 4:
+            raise ValueError(f"projection must be a 4-component tuple, not {type(value)}: {value}")
+
+        self._projection = value
+        self._projection_matrix = arcade.create_orthogonal_projection(
+            value[0], value[1],
+            value[2], value[3],
+            -100, 100,
+            dtype='f4',
+        )
+        self._projection_buffer.write(self._projection_matrix)
+
+    @property
+    def projection_matrix(self):
+        """ndarray: Get the current projection matrix as a numpy array"""
+        return self._projection_matrix
 
     def load_program(
             self,
