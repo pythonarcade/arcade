@@ -15,7 +15,7 @@ import arcade
 import random
 
 # --- Minimap Related ---
-from arcade.experimental import geometry
+from arcade.gl import geometry
 
 # Size/title of the window
 SCREEN_WIDTH = 1280
@@ -188,8 +188,7 @@ class MyGame(arcade.Window):
         # Create a frame buffer with the needed color attachment
         self.mini_map_screen = self.ctx.framebuffer(color_attachments=[self.mini_map_color_attachment])
         # Create a rectangle that will hold where the mini-map goes
-        self.mini_map_rect = geometry.screen_rectangle(rectangle_size=mini_map_size,
-                                                       center_pos=mini_map_pos)
+        self.mini_map_rect = geometry.screen_rectangle(0, SCREEN_WIDTH, MINIMAP_HEIGHT, SCREEN_HEIGHT)
 
     def setup(self):
         """ Set up the game and initialize the variables. """
