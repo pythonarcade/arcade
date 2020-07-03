@@ -1,3 +1,5 @@
+.. include:: <isonum.txt>
+
 GPU Particle Burst
 ==================
 
@@ -138,11 +140,13 @@ Finally, draw it.
     :pyobject: MyWindow.on_draw
     :caption: MyWindow.on_draw
 
+Program Listings
+~~~~~~~~~~~~~~~~
 
-* :ref:`fragment_shader`
-* :ref:`vertex_shader_v1`
-* :ref:`gpu_particle_burst_02`
-* :ref:`gpu_particle_burst_02_diff`
+* :ref:`fragment_shader` |larr| Where we are right now
+* :ref:`vertex_shader_v1` |larr| Where we are right now
+* :ref:`gpu_particle_burst_02` |larr| Where we are right now
+* :ref:`gpu_particle_burst_02_diff` |larr| What we changed to get here
 
 Step 3: Multiple Moving Particles
 ---------------------------------
@@ -150,8 +154,100 @@ Step 3: Multiple Moving Particles
 .. image:: gpu_particle_burst_03.png
     :width: 50%
 
-* :ref:`gpu_particle_burst_03`
-* :ref:`gpu_particle_burst_03_diff`
+Next step is to have more than one particle, and to have the particles move.
+We'll do this by creating the particles, and calculating where they should
+be based on the time since creation. This is a bit different than the way
+we move sprites, as they are manually repositioned bit-by-bit during each
+update call.
+
+Imports
+~~~~~~~
+
+First, we'll import both the random and time libraries:
+
+.. literalinclude:: gpu_particle_burst_03.py
+    :lines: 4-5
+
+Constants
+~~~~~~~~~
+
+Then we need to create a constant that contains the number of particles to create:
+
+.. literalinclude:: gpu_particle_burst_03.py
+    :lines: 15
+
+Burst Dataclass
+~~~~~~~~~~~~~~~
+
+We'll need to add a time to our burst data. This will be a floating point
+number that represents the start-time of when the burst was created.
+
+.. literalinclude:: gpu_particle_burst_03.py
+    :pyobject: Burst
+    :emphasize-lines: 6
+
+.. _update_burst:
+
+Update Burst Creation
+~~~~~~~~~~~~~~~~~~~~~
+
+Now when we create a burst, we need multiple particles, and each particle
+also needs a velocity. In ``_gen_initial_data`` we add a loop for each particle,
+and also output a delta x and y.
+
+Note: Because of how we set delta x and delta y, the particles will expand into
+a rectangle rather than a circle. We'll fix that on a later step.
+
+Because we added a velocity, our buffer now needs two pairs of floats ``2f 2f``
+named ``in_pos`` and ``in_vel``. We'll update our shader in a bit to work with the
+new values.
+
+Finally, our burst object needs to track the time we created the burst.
+
+.. literalinclude:: gpu_particle_burst_03.py
+    :pyobject: MyWindow.on_mouse_press
+    :emphasize-lines: 6-12, 27-28, 33
+    :linenos:
+
+Set Time in on_draw
+~~~~~~~~~~~~~~~~~~~
+
+When we draw, we need to set "uniform data" (data that is the same for all
+points) that says how many seconds it has been since the burst started. The
+shader will use this to calculate particle position.
+
+.. literalinclude:: gpu_particle_burst_03.py
+    :pyobject: MyWindow.on_draw
+    :emphasize-lines: 11-12
+
+
+Update Vertex Shader
+~~~~~~~~~~~~~~~~~~~~
+
+Our vertex shader needs to be updated. We now take in a ``uniform float`` called
+time. Uniform data is set once, and each vertex in the program can use it.
+In our case, we don't need a separate copy of the burst's start time for each
+particle in the burst, therefore it is uniform data.
+
+We also need to add another vector of two floats that will take in our velocity.
+We set ``in_vel`` in :ref:`update_burst`.
+
+Then finally we calculate a new position based on the time and our particle's
+velocity. We use that new position when setting ``gl_Position``.
+
+.. literalinclude:: vertex_shader_v2.glsl
+    :language: glsl
+    :caption: vertex_shader_v2.glsl
+    :linenos:
+    :emphasize-lines: 3-4, 9-10, 20-21, 24
+
+Program Listings
+~~~~~~~~~~~~~~~~
+
+* :ref:`vertex_shader_v2` |larr| Where we are right now
+* :ref:`vertex_shader_v2_diff` |larr| What we changed to get here
+* :ref:`gpu_particle_burst_03` |larr| Where we are right now
+* :ref:`gpu_particle_burst_03_diff` |larr| What we changed to get here
 
 Step 4: Random Angle and Speed
 ------------------------------
@@ -159,17 +255,73 @@ Step 4: Random Angle and Speed
 .. image:: gpu_particle_burst_04.png
     :width: 50%
 
-* :ref:`gpu_particle_burst_04`
-* :ref:`gpu_particle_burst_04_diff`
+Step 3 didn't do a good job of picking a velocity, as our particles expanded
+into a rectangle rather than a circle. Rather than just pick a random delta
+x and y, we need to pick a random direction and speed. Then calculate delta x
+and y from that.
+
+Update Imports
+~~~~~~~~~~~~~~
+
+Import the math library so we can do some trig:
+
+.. literalinclude:: gpu_particle_burst_04.py
+    :lines: 6
+
+Update Burst Creation
+~~~~~~~~~~~~~~~~~~~~~
+
+Now, pick a random direction from zero to 2 pi radians. Also, pick a random
+speed. Then use sine and cosine to calculate the delta x and y.
+
+.. literalinclude:: gpu_particle_burst_04.py
+    :pyobject: MyWindow.on_mouse_press
+    :linenos:
+    :emphasize-lines: 7-10
+    :lines: 1-15
+
+Program Listings
+~~~~~~~~~~~~~~~~
+
+* :ref:`gpu_particle_burst_04` |larr| Where we are right now
+* :ref:`gpu_particle_burst_04_diff` |larr| What we changed to get here
 
 Step 5: Gaussian Distribution
 -----------------------------
 
+.. image:: gpu_particle_burst_05.png
+    :width: 50%
+
+Setting speed to a random amount makes for an expanding circle.
+Another option is to use a gaussian function to produce more of a 'splat'
+look:
+
+.. literalinclude:: gpu_particle_burst_05.py
+    :lines: 66
+
+Program Listings
+~~~~~~~~~~~~~~~~
+
+* :ref:`gpu_particle_burst_05` |larr| Where we are right now
+* :ref:`gpu_particle_burst_05_diff` |larr| What we changed to get here
+
 Step 6: Add Color
 -----------------
 
+Next, add in some color.
+
+Program Listings
+~~~~~~~~~~~~~~~~
+
+* :ref:`vertex_shader_v3` |larr| Where we are right now
+* :ref:`vertex_shader_v3_diff` |larr| What we changed to get here
+* :ref:`gpu_particle_burst_06` |larr| Where we are right now
+* :ref:`gpu_particle_burst_06_diff` |larr| What we changed to get here
+
 Step 7: Fade Out
 ----------------
+
+Fade the particles out.
 
 Final Program
 -------------

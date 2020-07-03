@@ -52,8 +52,6 @@ class MyWindow(arcade.Window):
 
         def _gen_initial_data(initial_x, initial_y):
             """ Generate data for each particle """
-            initial_x = initial_x
-            initial_y = initial_y
             yield initial_x
             yield initial_y
 

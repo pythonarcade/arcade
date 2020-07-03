@@ -38,8 +38,11 @@ class MyWindow(arcade.Window):
     def on_draw(self):
         """ Draw everything """
         self.clear()
+
+        # Set the particle size
         self.ctx.point_size = 2 * self.get_pixel_ratio()
 
+        # Loop through each burst
         for burst in self.burst_list:
 
             # Set the uniform data
@@ -55,15 +58,13 @@ class MyWindow(arcade.Window):
     def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
         """ User clicks mouse """
 
-        def _gen_initial_data(x, y):
+        def _gen_initial_data(initial_x, initial_y):
             """ Generate data for each particle """
             for i in range(PARTICLE_COUNT):
-                x = x
-                y = y
                 dx = random.uniform(-.2, .2)
                 dy = random.uniform(-.2, .2)
-                yield x
-                yield y
+                yield initial_x
+                yield initial_y
                 yield dx
                 yield dy
 
@@ -85,8 +86,8 @@ class MyWindow(arcade.Window):
         # Create our Vertex Attribute Object
         vao = self.ctx.geometry([buffer_description])
 
+        # Create the Burst object and add it to the list of bursts
         burst = Burst(buffer=buffer, vao=vao, start_time=time.time())
-
         self.burst_list.append(burst)
 
 

@@ -30,7 +30,7 @@ class MyWindow(arcade.Window):
 
         # Program to visualize the points
         self.program = self.ctx.load_program(
-            vertex_shader="vertex_shader_v2.glsl",
+            vertex_shader="vertex_shader_v3.glsl",
             fragment_shader="fragment_shader.glsl",
         )
 
@@ -63,13 +63,19 @@ class MyWindow(arcade.Window):
             """ Generate data for each particle """
             for i in range(PARTICLE_COUNT):
                 angle = random.uniform(0, 2 * math.pi)
-                speed = random.uniform(0.0, 0.3)
+                speed = abs(random.gauss(0, 1)) * .5
                 dx = math.sin(angle) * speed
                 dy = math.cos(angle) * speed
+                red = random.uniform(0, 1.0)
+                green = random.uniform(0, red)
+                blue = 0
                 yield initial_x
                 yield initial_y
                 yield dx
                 yield dy
+                yield red
+                yield green
+                yield blue
 
         # Recalculate the coordinates from pixels to the OpenGL system with
         # 0, 0 at the center.
@@ -84,8 +90,8 @@ class MyWindow(arcade.Window):
 
         # Create a buffer description that says how the buffer data is formatted.
         buffer_description = arcade.gl.BufferDescription(buffer,
-                                                         '2f 2f',
-                                                         ['in_pos', 'in_vel'])
+                                                         '2f 2f 3f',
+                                                         ['in_pos', 'in_vel', 'in_color'])
         # Create our Vertex Attribute Object
         vao = self.ctx.geometry([buffer_description])
 

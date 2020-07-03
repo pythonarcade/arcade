@@ -63,7 +63,7 @@ class MyWindow(arcade.Window):
             """ Generate data for each particle """
             for i in range(PARTICLE_COUNT):
                 angle = random.uniform(0, 2 * math.pi)
-                speed = random.uniform(0.0, 0.3)
+                speed = abs(random.gauss(0, 1)) * .5
                 dx = math.sin(angle) * speed
                 dy = math.cos(angle) * speed
                 yield initial_x
