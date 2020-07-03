@@ -15,6 +15,9 @@ SCREEN_TITLE = "GPU Particle Explosion"
 
 PARTICLE_COUNT = 300
 
+MIN_FADE_TIME = 0.25
+MAX_FADE_TIME = 1.5
+
 @dataclass
 class Burst:
     """ Track for each burst. """
@@ -30,11 +33,11 @@ class MyWindow(arcade.Window):
 
         # Program to visualize the points
         self.program = self.ctx.load_program(
-            vertex_shader="vertex_shader_v3.glsl",
+            vertex_shader="vertex_shader_v4.glsl",
             fragment_shader="fragment_shader.glsl",
         )
 
-        self.ctx.enable_only()
+        self.ctx.enable_only(self.ctx.BLEND)
 
     def on_draw(self):
         """ Draw everything """
@@ -53,8 +56,15 @@ class MyWindow(arcade.Window):
             burst.vao.render(self.program, mode=self.ctx.POINTS)
 
     def on_update(self, dt):
-        """ Update everything """
-        pass
+        """ Update game """
+
+        # Create a copy of our list, as we can't modify a list while iterating it.
+        # Then see if any of the items have completely faded out and need to be removed.
+        temp_list = self.burst_list.copy()
+        for burst in temp_list:
+            if time.time() - burst.start_time > MAX_FADE_TIME:
+               self.burst_list.remove(burst)
+
 
     def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
         """ User clicks mouse """
@@ -69,6 +79,8 @@ class MyWindow(arcade.Window):
                 red = random.uniform(0.5, 1.0)
                 green = random.uniform(0, red)
                 blue = 0
+                fade_rate = random.uniform(1 / MAX_FADE_TIME, 1 / MIN_FADE_TIME)
+
                 yield initial_x
                 yield initial_y
                 yield dx
@@ -76,6 +88,7 @@ class MyWindow(arcade.Window):
                 yield red
                 yield green
                 yield blue
+                yield fade_rate
 
         # Recalculate the coordinates from pixels to the OpenGL system with
         # 0, 0 at the center.
@@ -90,8 +103,11 @@ class MyWindow(arcade.Window):
 
         # Create a buffer description that says how the buffer data is formatted.
         buffer_description = arcade.gl.BufferDescription(buffer,
-                                                         '2f 2f 3f',
-                                                         ['in_pos', 'in_vel', 'in_color'])
+                                                         '2f 2f 3f f',
+                                                         ['in_pos',
+                                                          'in_vel',
+                                                          'in_color',
+                                                          'in_fade_rate'])
         # Create our Vertex Attribute Object
         vao = self.ctx.geometry([buffer_description])
 

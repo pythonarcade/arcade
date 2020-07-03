@@ -308,7 +308,29 @@ Program Listings
 Step 6: Add Color
 -----------------
 
-Next, add in some color.
+.. image:: gpu_particle_burst_06.png
+    :width: 50%
+
+So far our particles have all been white. How do we add in color? We'll
+need to generate it for each particle. Shaders take colors in the form of
+RGB floats, so we'll generate a random number for red, and add in some green
+to get our yellows. Don't add more green than red, or else you get a green tint.
+
+Finally, pass in the three floats as ``in_color`` to the shader buffer (VBO).
+
+.. literalinclude:: gpu_particle_burst_06.py
+    :pyobject: MyWindow.on_mouse_press
+    :linenos:
+    :emphasize-lines: 11-13, 18-20, 34-36
+    :lines: 1-50
+
+Then, update the shader to use the color instead of always using white:
+
+.. literalinclude:: vertex_shader_v3.glsl
+    :language: glsl
+    :caption: vertex_shader_v3.glsl
+    :linenos:
+    :emphasize-lines: 12-13, 20-21
 
 Program Listings
 ~~~~~~~~~~~~~~~~
@@ -321,7 +343,22 @@ Program Listings
 Step 7: Fade Out
 ----------------
 
+.. image:: gpu_particle_burst_07.png
+    :width: 50%
+
 Fade the particles out.
+
+Program Listings
+~~~~~~~~~~~~~~~~
+
+* :ref:`vertex_shader_v4` |larr| Where we are right now
+* :ref:`vertex_shader_v4_diff` |larr| What we changed to get here
+* :ref:`gpu_particle_burst_07` |larr| Where we are right now
+* :ref:`gpu_particle_burst_07_diff` |larr| What we changed to get here
+
+
+Step 8: Add Gravity
+-------------------
 
 Final Program
 -------------
