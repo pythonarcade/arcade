@@ -22,6 +22,7 @@ class MyGame(arcade.Window):
         self.background = arcade.load_texture(":resources:images/backgrounds/abstract_1.jpg")
 
         self.light_layer = LightLayer(SCREEN_WIDTH, SCREEN_HEIGHT)
+        self.light_layer.set_background_color(arcade.color.WHITE)
         # Add some random lights
         for _ in range(500):
             self.light_layer.add(
@@ -35,24 +36,18 @@ class MyGame(arcade.Window):
             )
 
     def on_draw(self):
-        try:
-            arcade.start_render()
+        arcade.start_render()
 
-            # Everything that should be affected by lights in here
-            with self.light_layer:
-                arcade.set_background_color(arcade.color.WHITE)
-                arcade.start_render()
-                # arcade.draw_lrwh_rectangle_textured(
-                #     0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, self.background)
+        # Everything that should be affected by lights in here
+        with self.light_layer:
+            # The light layer is just cleared using the background color here (white)
+            pass
 
-            # Draw the contents with lighting
-            self.light_layer.draw()
+        # Draw the contents with lighting
+        self.light_layer.draw()
 
-            # image = arcade.get_image()
-            # image.save(f'screenshots/frame{str(self.frame).zfill(3)}.png', 'png')
-
-        except Exception as e:
-            print(e)
+        # image = arcade.get_image()
+        # image.save(f'screenshots/frame{str(self.frame).zfill(3)}.png', 'png')
 
     def on_update(self, dt):
         # dt = 0.1
