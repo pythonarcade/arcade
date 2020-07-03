@@ -302,8 +302,8 @@ class Window(pyglet.window.Window):
         """
         try:
             original_viewport = self.get_viewport()
-        except:
-            print("Error getting viewport")
+        except Exception as ex:
+            print("Error getting viewport:", ex)
             return
 
         # unscaled_viewport = self.get_viewport_size()
