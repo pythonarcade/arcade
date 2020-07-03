@@ -19,15 +19,7 @@ from typing import Union
 from typing import cast
 from arcade.arcade_types import Color
 
-_left = -1.0
-_right = 1.0
-_bottom = -1.0
-_top = 1.0
-_scaling = None
-
 _window = None
-
-_projection = None
 
 
 def get_display_size():
@@ -39,12 +31,12 @@ def get_display_size():
 
 def get_projection():
     """
-    Returns the current projection.
+    Returns the current projection matrix.
 
     :return: Numpy array with projection.
 
     """
-    return _projection
+    return get_window().ctx.projection_matrix
 
 
 def create_orthogonal_projection(
@@ -91,7 +83,7 @@ def create_orthogonal_projection(
         (0., b, 0., 0.),
         (0., 0., c, 0.),
         (tx, ty, tz, 1.),
-    ), dtype=dtype)
+    ), dtype=dtype or 'f4')
 
 
 def pause(seconds: Number):
@@ -127,9 +119,7 @@ def set_window(window: pyglet.window.Window):
 
 def get_scaling_factor(window) -> float:
     """
-    Tries to get the scaling factor of the given Window. Currently works
-    on MacOS only. Useful in figuring out what's going on with Retina and
-    high-res displays.
+    Gets the scaling factor of the given Window.
 
     :param Window window: Handle to window we want to get scaling factor of.
 
@@ -159,40 +149,21 @@ def set_viewport(left: float, right: float, bottom: float, top: float):
     :param Number bottom: Bottom (smallest) y value.
     :param Number top: Top (largest) y value.
     """
-    global _left
-    global _right
-    global _bottom
-    global _top
-    global _projection
-    global _scaling
-
-    _left = left
-    _right = right
-    _bottom = bottom
-    _top = top
-
     window = get_window()
+    scaling = get_scaling_factor(window)
 
-    # Needed for sprites
-    if _scaling is None:
-        _scaling = get_scaling_factor(window)
-
-    window.ctx.fbo.viewport = 0, 0, int(window.width * _scaling), int(window.height * _scaling)
-    # gl.glViewport(0, 0, int(window.width * _scaling), int(window.height * _scaling))
-
-    _projection = create_orthogonal_projection(left=_left, right=_right,
-                                               bottom=_bottom, top=_top,
-                                               near=-1000, far=100, dtype=np.float32)
+    window.ctx.fbo.viewport = 0, 0, int(window.width * scaling), int(window.height * scaling)
+    window.ctx.projection = left, right, bottom, top
 
 
 def get_viewport() -> Tuple[float, float, float, float]:
     """
     Get the current viewport settings.
 
-    :return: Tuple of floats, with left, right, bottom, top
+    :return: Tuple of floats, with ``(left, right, bottom, top)``
 
     """
-    return _left, _right, _bottom, _top
+    return get_window().ctx.projection
 
 
 def close_window():
@@ -218,9 +189,7 @@ def finish_render():
     If programs use derive from the Window class, this function is
     automatically called.
     """
-    global _window
-
-    _window.flip()
+    get_window().flip()
 
 
 def run():
@@ -258,7 +227,7 @@ def start_render():
     Get set up to render. Required to be called before drawing anything to the
     screen.
     """
-    gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
+    get_window().ctx.fbo.clear()
 
 
 def set_background_color(color: Color):
@@ -267,8 +236,7 @@ def set_background_color(color: Color):
 
     :param Color color: List of 3 or 4 bytes in RGB/RGBA format.
     """
-
-    gl.glClearColor(color[0]/255, color[1]/255, color[2]/255, 1)
+    get_window().ctx.fbo.clear_color = color
 
 
 def schedule(function_pointer: Callable, interval: Number):
