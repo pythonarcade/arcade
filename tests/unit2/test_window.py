@@ -1,3 +1,4 @@
+
 def test_window():
     import arcade
     width = 800
@@ -15,8 +16,13 @@ def test_window():
     assert w.height == height
     assert w.caption == title
     assert w.resizeable is resizable
+    assert w.current_view is None
 
     arcade.set_window(w)
+
+    w.background_color = 255, 255, 255, 255
+    w.set_mouse_visible(True)
+    w.set_size(width, height)
 
     p = arcade.get_projection()
     assert p is not None
