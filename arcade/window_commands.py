@@ -225,7 +225,7 @@ def start_render():
     Get set up to render. Required to be called before drawing anything to the
     screen.
     """
-    get_window().ctx.fbo.clear()
+    get_window().clear()
 
 
 def set_background_color(color: Color):
@@ -234,7 +234,7 @@ def set_background_color(color: Color):
 
     :param Color color: List of 3 or 4 bytes in RGB/RGBA format.
     """
-    get_window().ctx.fbo.clear_color = color
+    get_window().background_color = color
 
 
 def schedule(function_pointer: Callable, interval: Number):
