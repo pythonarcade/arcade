@@ -155,3 +155,33 @@ class Uniform:
 
     def __repr__(self):
         return f"<Uniform '{self._name}' loc={self._location} array_length={self._array_length}"
+
+
+class UniformBlock:
+    __slots__ = ('glo', 'index', 'size', 'name')
+
+    def __init__(self, glo: int, index: int, size: int, name: str):
+        self.glo = glo
+        self.index = index
+        self.size = size
+        self.name = name
+
+    @property
+    def binding(self) -> int:
+        """int: Get or set the binding point for this uniform block"""
+        binding = gl.GLint()
+        gl.glGetActiveUniformBlockiv(self.glo, self.index, gl.GL_UNIFORM_BLOCK_BINDING, binding)
+        return binding.value
+
+    @binding.setter
+    def binding(self, binding: int):
+        gl.glUniformBlockBinding(self.glo, self.index, binding)
+
+    def getter(self):
+        return self
+
+    def setter(self, value: int):
+        self.binding = value
+
+    def __str__(self):
+        return f"<UniformBlock {self.name} index={self.index} size={self.size}>"

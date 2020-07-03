@@ -43,7 +43,7 @@ class Buffer:
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self._glo)
         # print(f"glBufferData(gl.GL_ARRAY_BUFFER, {self._size}, data, {self._usage})")
 
-        if data and len(data) > 0:
+        if data is not None and len(data) > 0:
             self._size, data = data_to_ctypes(data)
             gl.glBufferData(gl.GL_ARRAY_BUFFER, self._size, data, self._usage)
         elif reserve > 0:
@@ -173,3 +173,9 @@ class Buffer:
 
     def bind(self):
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self._glo)
+
+    def bind_to_uniform_block(self, binding: int = 0, offset: int = 0, size: int = -1):
+        if size < 0:
+            size = self.size
+
+        gl.glBindBufferRange(gl.GL_UNIFORM_BUFFER, binding, self._glo, offset, size)
