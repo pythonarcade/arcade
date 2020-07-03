@@ -213,6 +213,7 @@ game without learning a complex framework.
    tutorials/views/index
    tutorials/card_game/index
    tutorials/lights/index
+   tutorials/gpu_particle_burst/index
 
 .. toctree::
    :maxdepth: 1
