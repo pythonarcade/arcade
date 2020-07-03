@@ -346,7 +346,59 @@ Step 7: Fade Out
 .. image:: gpu_particle_burst_07.png
     :width: 50%
 
-Fade the particles out.
+Right now the explosion particles last forever. Let's get them to fade out.
+Once a burst has faded out, let's remove it from ``burst_list``.
+
+Constants
+~~~~~~~~~
+
+First, let's add a couple constants to control the minimum and maximum tile to
+fade a particle:
+
+.. literalinclude:: gpu_particle_burst_07.py
+    :lines: 18-19
+
+Update Init
+~~~~~~~~~~~
+
+Next, we need to update our OpenGL context to support alpha blending. Go
+back to the ``__init__`` method and update the ``enable_only`` call to:
+
+.. code-block:: python
+
+    self.ctx.enable_only(self.ctx.BLEND)
+
+Add Fade Rate to Buffer
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Next, add the fade rate to the VBO:
+
+.. literalinclude:: gpu_particle_burst_07.py
+    :pyobject: MyWindow.on_mouse_press
+    :linenos:
+    :emphasize-lines: 14, 23, 37-42
+
+Update Shader
+~~~~~~~~~~~~~
+
+Update the shader. Calculate the alpha. If it is less that 0, just use 0.
+
+.. literalinclude:: vertex_shader_v4.glsl
+    :language: glsl
+    :caption: vertex_shader_v4.glsl
+    :linenos:
+    :emphasize-lines: 15-16, 23-25, 28
+
+Remove Faded Bursts
+~~~~~~~~~~~~~~~~~~~
+
+Once our burst has completely faded, no need to keep it around. So in our
+``on_update`` remove the burst from the burst_list after it has been faded.
+
+.. literalinclude:: gpu_particle_burst_07.py
+    :pyobject: MyWindow.on_update
+    :linenos:
+    :emphasize-lines: 4-10
 
 Program Listings
 ~~~~~~~~~~~~~~~~
@@ -356,12 +408,24 @@ Program Listings
 * :ref:`gpu_particle_burst_07` |larr| Where we are right now
 * :ref:`gpu_particle_burst_07_diff` |larr| What we changed to get here
 
-
 Step 8: Add Gravity
 -------------------
 
-Final Program
--------------
+You could also add come gravity to the particles by adjusting the velocity
+based on a gravity constant. (In this case, 1.1.)
 
-* :ref:`gpu_particle_burst_final`
+.. code-block:: glsl
+
+    // Adjust velocity based on gravity
+    vec2 new_vel = in_vel;
+    new_vel[1] -= time * 1.1;
+
+    // Calculate a new position
+    vec2 new_pos = in_pos + (time * new_vel);
+
+Program Listings
+~~~~~~~~~~~~~~~~
+
+* :ref:`vertex_shader_v5` |larr| Where we are right now
+* :ref:`vertex_shader_v5_diff` |larr| What we changed to get here
 

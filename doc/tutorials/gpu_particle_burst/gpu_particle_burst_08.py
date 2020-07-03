@@ -33,7 +33,7 @@ class MyWindow(arcade.Window):
 
         # Program to visualize the points
         self.program = self.ctx.load_program(
-            vertex_shader="vertex_shader_v4.glsl",
+            vertex_shader="vertex_shader_v5.glsl",
             fragment_shader="fragment_shader.glsl",
         )
 
