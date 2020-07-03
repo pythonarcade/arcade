@@ -260,6 +260,7 @@ class Framebuffer:
 
 class DefaultFrameBuffer(Framebuffer):
     """Represents the default framebuffer"""
+    __slots__ = ()
 
     def __init__(self, ctx: 'Context'):
         """Detect the default framebuffer"""
