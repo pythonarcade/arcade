@@ -1,7 +1,7 @@
 from array import array
 from typing import Iterable, Tuple, Sequence, List, Optional
 
-from arcade import Color, get_window, get_projection, get_scaling_factor, set_viewport
+from arcade import Color, get_window, get_scaling_factor, set_viewport
 from arcade import gl
 from arcade.gl import geometry
 from arcade.experimental.texture_render_target import RenderTargetTexture

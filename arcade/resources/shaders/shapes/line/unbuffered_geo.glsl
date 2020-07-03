@@ -3,7 +3,9 @@
 layout (lines) in;
 layout (triangle_strip, max_vertices = 4) out;
 
-uniform mat4 Projection;
+uniform Projection {
+    uniform mat4 matrix;
+} proj;
 uniform float line_width;
 
 vec2 lineNormal2D(vec2 start, vec2 end) {
@@ -20,13 +22,13 @@ void main() {
     vec2 normal = lineNormal2D(line_start, line_end) * line_width / 2.0;
 
     // Emit a quad using a line strip with the correct line width
-    gl_Position = Projection * vec4(line_start + normal, 0.0, 1.0);
+    gl_Position = proj.matrix * vec4(line_start + normal, 0.0, 1.0);
     EmitVertex();
-    gl_Position = Projection * vec4(line_start - normal, 0.0, 1.0);
+    gl_Position = proj.matrix * vec4(line_start - normal, 0.0, 1.0);
     EmitVertex();
-    gl_Position = Projection * vec4(line_end + normal, 0.0, 1.0);
+    gl_Position = proj.matrix * vec4(line_end + normal, 0.0, 1.0);
     EmitVertex();
-    gl_Position = Projection * vec4(line_end - normal, 0.0, 1.0);
+    gl_Position = proj.matrix * vec4(line_end - normal, 0.0, 1.0);
     EmitVertex();
 
     EndPrimitive();

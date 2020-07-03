@@ -21,7 +21,6 @@ from typing import List
 from typing import Tuple
 from typing import TYPE_CHECKING
 
-from arcade import get_projection
 from arcade import Color
 from arcade import PointList
 from arcade import earclip
@@ -283,7 +282,6 @@ def draw_ellipse_filled(center_x: float, center_y: float,
     else:
         raise ValueError("Invalid color format. Use a 3 or 4 component tuple")
 
-    program['Projection'] = get_projection().flatten()
     program['color'] = color_normalized
     program['shape'] = width / 2, height / 2, tilt_angle
     program['segments'] = num_segments
@@ -351,7 +349,6 @@ def draw_ellipse_outline(center_x: float, center_y: float, width: float,
     else:
         raise ValueError("Invalid color format. Use a 3 or 4 component tuple")
 
-    program['Projection'] = get_projection().flatten()
     program['color'] = color_normalized
     program['shape'] = width / 2, height / 2, tilt_angle, border_width
     program['segments'] = num_segments
@@ -465,7 +462,6 @@ def _generic_draw_line_strip(point_list: PointList,
     ctx.generic_draw_line_strip_vbo.write(vertices.tobytes())
     ctx.generic_draw_line_strip_color.write(a.tobytes())
 
-    program['Projection'] = get_projection().flatten()
     geometry.render(program, mode=mode)
 
 
@@ -522,7 +518,6 @@ def draw_line(start_x: float, start_y: float, end_x: float, end_y: float,
     else:
         raise ValueError("Invalid color format. Use a 3 or 4 component tuple")
 
-    program['Projection'] = get_projection().flatten()
     program['line_width'] = line_width
     program['color'] = color_normalized
     ctx.shape_line_buffer_pos.write(
@@ -569,7 +564,6 @@ def draw_lines(point_list: PointList,
         ctx.shape_line_buffer_pos.orphan(ctx.shape_line_buffer_pos.size * 2)
         # print('-> ', len(point_list) * 3 * 4, ctx.shape_line_buffer_pos.size)
 
-    program['Projection'] = get_projection().flatten()
     program['line_width'] = line_width
     program['color'] = color_normalized
     ctx.shape_line_buffer_pos.write(
@@ -907,7 +901,6 @@ def draw_rectangle_filled(center_x: float, center_y: float, width: float,
     else:
         raise ValueError("Invalid color format. Use a 3 or 4 component tuple")
 
-    program['Projection'] = get_projection().flatten()
     program['color'] = color_normalized
     program['shape'] = width, height, tilt_angle
     buffer.write(data=array.array('f', (center_x, center_y)).tobytes())
