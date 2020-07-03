@@ -7,9 +7,7 @@ import gc
 import time
 import os
 
-import pyglet.gl as gl
 import pyglet
-
 import numpy as np
 
 from numbers import Number
