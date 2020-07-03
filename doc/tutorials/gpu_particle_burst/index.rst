@@ -9,6 +9,11 @@ GPU Particle Burst
 In this example, we show how to create explosions using particles. The particles
 are tracked by the GPU, significantly improving the performance.
 
+.. warning::
+
+    This tutorial was written using Arcade 2.4a12. You'll need at least that
+    version for it to work.
+
 Step 1: Open a Blank Window
 ---------------------------
 
@@ -322,7 +327,6 @@ Finally, pass in the three floats as ``in_color`` to the shader buffer (VBO).
     :pyobject: MyWindow.on_mouse_press
     :linenos:
     :emphasize-lines: 11-13, 18-20, 34-36
-    :lines: 1-50
 
 Then, update the shader to use the color instead of always using white:
 
