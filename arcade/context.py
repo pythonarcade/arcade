@@ -9,6 +9,7 @@ from arcade.gl import BufferDescription, Context
 from arcade.gl.program import Program
 import arcade
 
+
 class ArcadeContext(Context):
     """
     An OpenGL context implementation for Arcade with added custom features.
@@ -18,11 +19,11 @@ class ArcadeContext(Context):
     def __init__(self, window):
         super().__init__(window)
 
-        # Set up a default projection
-        self._projection_buffer = self.buffer(reserve=64)
-        self._projection_buffer.bind_to_uniform_block(0)
-        self._projection_matrix = None
-        self.projection = 0, self.screen.width, 0, self.screen.height,
+        # Set up a default orthogonal projection for sprites and shapes
+        self._projection_2d_buffer = self.buffer(reserve=64)
+        self._projection_2d_buffer.bind_to_uniform_block(0)
+        self._projection_2d_matrix = None
+        self.projection_2d = 0, self.screen.width, 0, self.screen.height,
 
         # --- Pre-load system shaders here ---
         # FIXME: These pre-created resources needs to be packaged nicely
@@ -108,32 +109,32 @@ class ArcadeContext(Context):
             BufferDescription(self.shape_rectangle_filled_unbuffered_buffer, '2f', ['in_vert'])])
 
     @property
-    def projection(self) -> Tuple[float, float, float, float]:
+    def projection_2d(self) -> Tuple[float, float, float, float]:
         """Any: Get or set the global orthogonal projection for arcade.
 
-        This projection is used by sprites and shapes. and is represented
+        This projection is used by sprites and shapes and is represented
         by four floats: ``(left, right, bottom, top)``
         """
-        return self._projection
+        return self._projection_2d
 
-    @projection.setter
-    def projection(self, value: Tuple[float, float, float, float]):
+    @projection_2d.setter
+    def projection_2d(self, value: Tuple[float, float, float, float]):
         if not isinstance(value, tuple) or len(value) != 4:
             raise ValueError(f"projection must be a 4-component tuple, not {type(value)}: {value}")
 
-        self._projection = value
-        self._projection_matrix = arcade.create_orthogonal_projection(
+        self._projection_2d = value
+        self._projection_2d_matrix = arcade.create_orthogonal_projection(
             value[0], value[1],
             value[2], value[3],
             -100, 100,
             dtype='f4',
         )
-        self._projection_buffer.write(self._projection_matrix)
+        self._projection_2d_buffer.write(self._projection_2d_matrix)
 
     @property
-    def projection_matrix(self):
+    def projection_2d_matrix(self):
         """ndarray: Get the current projection matrix as a numpy array"""
-        return self._projection_matrix
+        return self._projection_2d_matrix
 
     def load_program(
             self,

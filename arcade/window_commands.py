@@ -34,7 +34,7 @@ def get_projection():
     :return: Numpy array with projection.
 
     """
-    return get_window().ctx.projection_matrix
+    return get_window().ctx.projection_2d_matrix
 
 
 def create_orthogonal_projection(
@@ -151,7 +151,7 @@ def set_viewport(left: float, right: float, bottom: float, top: float):
     scaling = get_scaling_factor(window)
 
     window.ctx.fbo.viewport = 0, 0, int(window.width * scaling), int(window.height * scaling)
-    window.ctx.projection = left, right, bottom, top
+    window.ctx.projection_2d = left, right, bottom, top
 
 
 def get_viewport() -> Tuple[float, float, float, float]:
@@ -161,7 +161,7 @@ def get_viewport() -> Tuple[float, float, float, float]:
     :return: Tuple of floats, with ``(left, right, bottom, top)``
 
     """
-    return get_window().ctx.projection
+    return get_window().ctx.projection_2d
 
 
 def close_window():
