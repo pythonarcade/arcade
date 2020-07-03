@@ -120,7 +120,7 @@ class Window(pyglet.window.Window):
         self.ctx = ArcadeContext(self)
         set_viewport(0, self.width - 1, 0, self.height - 1)
 
-        self.background_color: Color = 0, 0, 0, 0
+        self.background_color: Color = (0, 0, 0, 0)
 
         # Required for transparency
         self.ctx.enable(self.ctx.BLEND)
