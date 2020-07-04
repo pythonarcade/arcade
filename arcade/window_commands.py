@@ -11,19 +11,28 @@ import pyglet
 import numpy as np
 
 from numbers import Number
-from typing import Tuple
-from typing import Callable
-from typing import Union
-from typing import cast
+from typing import (
+    Callable,
+    cast,
+    Tuple,
+    Union
+)
 from arcade.arcade_types import Color
 
 _window = None
 
 
-def get_display_size():
-    """ Return the width and height in pixels of the default monitor. """
+def get_display_size(screen_id: int = 0) -> Tuple[int, int]:
+    """Return the width and height of a monitor.
+
+    The size of the primary monitor is returned by default.
+
+    :param int screen_id: The screen number
+    :return: Tuple containing the width and height of the screen
+    :rtype: tuple
+    """
     display = pyglet.canvas.Display()
-    screen = display.get_default_screen()
+    screen = display.get_screens()[screen_id]
     return screen.width, screen.height
 
 
@@ -32,7 +41,6 @@ def get_projection():
     Returns the current projection matrix.
 
     :return: Numpy array with projection.
-
     """
     return get_window().ctx.projection_2d_matrix
 
