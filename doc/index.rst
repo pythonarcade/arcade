@@ -203,6 +203,8 @@ game without learning a complex framework.
 
    quick_index
    arcade
+   arcade_gl
+   arcade_gui
    resources
 
 .. toctree::
@@ -221,6 +223,7 @@ game without learning a complex framework.
    :caption: Community
 
    diversity
+   social
 
 .. toctree::
    :maxdepth: 1
