@@ -128,7 +128,7 @@ class ArcadeContext(Context):
             value[2], value[3],
             -100, 100,
             dtype='f4',
-        )
+        ).flatten()
         self._projection_2d_buffer.write(self._projection_2d_matrix)
 
     @property
