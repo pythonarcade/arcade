@@ -43,6 +43,7 @@ build/
 arcade.egg-info/
 *.pyc
 arcade/__pycache__/
+doc/_build
 
 # osx
 .DS_Store
