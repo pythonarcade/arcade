@@ -170,7 +170,9 @@ class Framebuffer:
 
         gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, self._glo)
         # NOTE: gl.glDrawBuffer(GL_NONE) if no texture attachments (future)
-        gl.glDrawBuffers(len(self._draw_buffers), self._draw_buffers)
+        # NOTE: Default framebuffer currently has this set to None
+        if self._draw_buffers:
+            gl.glDrawBuffers(len(self._draw_buffers), self._draw_buffers)
         gl.glDepthMask(self._depth_mask)
         gl.glViewport(*self._viewport)
 
@@ -277,9 +279,12 @@ class DefaultFrameBuffer(Framebuffer):
         self._glo = gl.GLuint(value.value)
 
         # Query draw buffers. This will most likely return GL_BACK
-        value = c_int()
-        gl.glGetIntegerv(gl.GL_DRAW_BUFFER, value)
-        self._draw_buffers = (gl.GLuint * 1)(value.value)
+        # value = c_int()
+        # gl.glGetIntegerv(gl.GL_DRAW_BUFFER0, value)
+        # print(value.value)  # 1029 GL_BACK 0x405
+        # self._draw_buffers = (gl.GLuint * 1)(value.value)
+        # NOTE: Don't query for now
+        self._draw_buffers = None
 
         # Query viewport values by inspecting the scissor box
         values = (c_int * 4)()
