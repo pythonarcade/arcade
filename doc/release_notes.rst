@@ -67,6 +67,16 @@ Version 2.4 Under-the-hood improvements
 * OpenGL querying
 * OpenGL culling
 
+Version 2.4 New Documentation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* Pymunk Tutorial
+* View tutorial
+* Solitaire tutorial
+* GPU particle burst tutorial
+* Several examples
+* Performance testing
+
 Version 2.4 'Experimental'
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 

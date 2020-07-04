@@ -1,4 +1,4 @@
-.. _orphan:
+:orphan:
 
 Black Lives Matter
 ==================
