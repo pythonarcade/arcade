@@ -236,48 +236,43 @@ class MyGame(arcade.Window):
 
     def on_draw(self):
         """ Render the screen. """
-        try:
-            # This command has to happen before we start drawing
-            arcade.start_render()
+        # This command has to happen before we start drawing
+        arcade.start_render()
 
-            # --- Bloom related ---
+        # --- Bloom related ---
 
-            # Draw to the 'bloom' layer
-            self.bloom_screen.use()
-            self.bloom_screen.clear((0, 0, 0, 0))
+        # Draw to the 'bloom' layer
+        self.bloom_screen.use()
+        self.bloom_screen.clear((0, 0, 0, 0))
 
-            arcade.set_viewport(self.view_left,
-                                SCREEN_WIDTH + self.view_left,
-                                self.view_bottom,
-                                SCREEN_HEIGHT + self.view_bottom)
+        arcade.set_viewport(self.view_left,
+                            SCREEN_WIDTH + self.view_left,
+                            self.view_bottom,
+                            SCREEN_HEIGHT + self.view_bottom)
 
-            # Draw all the sprites on the screen that should have a bloom
-            self.star_sprite_list.draw()
-            self.bullet_sprite_list.draw()
+        # Draw all the sprites on the screen that should have a bloom
+        self.star_sprite_list.draw()
+        self.bullet_sprite_list.draw()
 
-            # Now draw to the actual screen
-            self.use()
+        # Now draw to the actual screen
+        self.use()
 
-            arcade.set_viewport(self.view_left,
-                                SCREEN_WIDTH + self.view_left,
-                                self.view_bottom,
-                                SCREEN_HEIGHT + self.view_bottom)
+        arcade.set_viewport(self.view_left,
+                            SCREEN_WIDTH + self.view_left,
+                            self.view_bottom,
+                            SCREEN_HEIGHT + self.view_bottom)
 
-            # --- Bloom related ---
+        # --- Bloom related ---
 
-            # Draw the bloom layers
-            self.bloom_postprocessing.render(self.bloom_color_attachment, self)
+        # Draw the bloom layers
+        self.bloom_postprocessing.render(self.bloom_color_attachment, self)
 
-            # Draw the sprites / items that have no bloom
-            self.enemy_sprite_list.draw()
-            self.player_list.draw()
+        # Draw the sprites / items that have no bloom
+        self.enemy_sprite_list.draw()
+        self.player_list.draw()
 
-            # Draw the ground
-            arcade.draw_line(0, 0, PLAYING_FIELD_WIDTH, 0, arcade.color.WHITE)
-
-        except Exception:
-            import traceback
-            traceback.print_exc()
+        # Draw the ground
+        arcade.draw_line(0, 0, PLAYING_FIELD_WIDTH, 0, arcade.color.WHITE)
 
     def on_update(self, delta_time):
         """ Movement and game logic """
