@@ -8,14 +8,17 @@ for the Python Arcade library.
 
 For example code, see :ref:`example-code`.
 
-Color and Keyboard Constants
-----------------------------
+Sub Modules
+-----------
 
 .. toctree::
 
     arcade.key
     arcade.csscolor
     arcade.color
+    arcade_gl
+    arcade_gui
+
 
 Main API
 --------
