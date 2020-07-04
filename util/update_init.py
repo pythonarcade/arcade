@@ -61,7 +61,6 @@ def main():
                 "buffered_draw_commands.py", \
                 "draw_commands.py", \
                 "geometry.py", \
-                "gui.py", \
                 "isometric.py", \
                 "joysticks.py", \
                 "emitter.py", \
@@ -71,7 +70,6 @@ def main():
                 "sprite.py", \
                 "sprite_list.py", \
                 "physics_engines.py", \
-                "read_tiled_map.py", \
                 "text.py", \
                 "tilemap.py", \
                 "pymunk_physics_engine.py", \
@@ -82,6 +80,7 @@ def main():
 
     for filename in file_list:
         type_list, class_list, function_list = get_member_list(filename)
+
         for member in type_list:
             init_template += f"from .{member[0][:-3]} import {member[1]}\n"
             all_list.append(member[1])
