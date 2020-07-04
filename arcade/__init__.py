@@ -48,7 +48,6 @@ from arcade import csscolor
 from arcade import key
 # noinspection PyPep8
 from arcade import resources
-# noinspection PyPep8
 from .window_commands import close_window
 from .window_commands import create_orthogonal_projection
 from .window_commands import finish_render
@@ -228,12 +227,6 @@ from .sprite_list import get_sprites_at_point
 from .physics_engines import PhysicsEnginePlatformer
 from .physics_engines import PhysicsEngineSimple
 
-from .read_tiled_map import GridLocation
-from .read_tiled_map import Tile
-from .read_tiled_map import TiledMap
-from .read_tiled_map import generate_sprites
-from .read_tiled_map import read_tiled_map
-
 from .text import DEFAULT_FONT_NAMES
 from .text import CreateText
 from .text import Text
@@ -281,7 +274,6 @@ __all__ = ['AStarBarrierList',
            'FACE_UP',
            'FadeParticle',
            'FilenameOrTexture',
-           'GridLocation',
            'LifetimeParticle',
            'MOUSE_BUTTON_LEFT',
            'MOUSE_BUTTON_MIDDLE',
@@ -311,8 +303,6 @@ __all__ = ['AStarBarrierList',
            'TShape',
            'Text',
            'Texture',
-           'Tile',
-           'TiledMap',
            'VERSION',
            'Vector',
            'View',
@@ -376,7 +366,6 @@ __all__ = ['AStarBarrierList',
            'draw_xywh_rectangle_outline',
            'earclip',
            'finish_render',
-           'generate_sprites',
            'get_closest_sprite',
            'get_display_size',
            'get_distance',
@@ -427,7 +416,6 @@ __all__ = ['AStarBarrierList',
            'rand_on_line',
            'rand_vec_magnitude',
            'rand_vec_spread_deg',
-           'read_tiled_map',
            'read_tmx',
            'render_text',
            'rotate_point',
