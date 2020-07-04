@@ -3,9 +3,8 @@ Shows simple use of tranform feedback.
 
 Transforming is similar to rendering except that the output
 or the shader is a buffer instead of a framebuffer/screen.
-This lets us to arbitrary calculations on floats or integers.
 
-This examples shows a common ping-ping technique were we
+This examples shows a common ping-pong technique were we
 transform a buffer with positions and velocities between
 two buffers so we always work on the previous state.
 
@@ -20,7 +19,6 @@ from array import array
 import math
 import time
 import random
-import struct
 import arcade
 from arcade.gl import BufferDescription, geometry
 
