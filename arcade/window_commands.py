@@ -38,7 +38,9 @@ def get_display_size(screen_id: int = 0) -> Tuple[int, int]:
 
 def get_projection():
     """
-    Returns the current projection matrix.
+    Returns the current projection matrix used by sprites and shapes in arcade.
+
+    This is a shortcut for ```window.ctx.projection_2d_matrix``.
 
     :return: Numpy array with projection.
     """
@@ -126,6 +128,7 @@ def set_window(window: pyglet.window.Window):
 def get_scaling_factor(window) -> float:
     """
     Gets the scaling factor of the given Window.
+    This is the ratio between the window and framebuffer size.
 
     :param Window window: Handle to window we want to get scaling factor of.
 
@@ -139,7 +142,7 @@ def set_viewport(left: float, right: float, bottom: float, top: float):
     """
     This sets what coordinates the window will cover.
 
-    By default, the lower left coordinate will be (0, 0) and the top y
+    By default, the lower left coordinate will be ``(0, 0)`` and the top y
     coordinate will be the height of the window in pixels, and the right x
     coordinate will be the width of the window in pixels.
 
@@ -149,6 +152,12 @@ def set_viewport(left: float, right: float, bottom: float, top: float):
     Note: It is recommended to only set the view port to integer values that
     line up with the pixels on the screen. Otherwise if making a tiled game
     the blocks may not line up well, creating rectangle artifacts.
+
+    For more advanced users: This functions sets the orthogonal projection
+    used by shapes and sprites using the values passed in. it also
+    updates the viewport to match the current screen resolution.
+    ```window.ctx.projection_2d`` and ``window.ctx.viewport```
+    can be used to set viewport and projection separately.
 
     :param Number left: Left-most (smallest) x value.
     :param Number right: Right-most (largest) x value.
@@ -238,7 +247,8 @@ def start_render():
 
 def set_background_color(color: Color):
     """
-    This specifies the background color of the window.
+    Specifies the background color of the window. This value
+    will persist for every future screen clears until changed.
 
     :param Color color: List of 3 or 4 bytes in RGB/RGBA format.
     """
