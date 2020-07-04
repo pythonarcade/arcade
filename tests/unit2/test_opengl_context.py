@@ -34,6 +34,18 @@ def test_viewport(ctx):
     assert ctx.viewport == vp
 
 
+def test_projection(ctx):
+    assert ctx.projection_2d == (0, SCREEN_WIDTH - 1, 0, SCREEN_HEIGHT - 1)
+    ctx.projection_2d = (1, 10, 2, 11)
+    assert ctx.projection_2d == (1, 10, 2, 11)
+
+    with pytest.raises(ValueError):
+        ctx.projection_2d = "moo"
+
+    with pytest.raises(ValueError):
+        ctx.projection_2d = 1, 2, 3, 4, 5
+
+
 def test_point_size(ctx):
     assert ctx.point_size == 1.0
     ctx.point_size = 2.0

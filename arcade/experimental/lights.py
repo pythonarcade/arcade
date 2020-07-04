@@ -1,7 +1,7 @@
 from array import array
 from typing import Iterable, Tuple, Sequence, List, Optional
 
-from arcade import Color, get_window, get_projection, get_scaling_factor, set_viewport
+from arcade import Color, get_window, get_scaling_factor, set_viewport
 from arcade import gl
 from arcade.gl import geometry
 from arcade.experimental.texture_render_target import RenderTargetTexture
@@ -175,7 +175,6 @@ class LightLayer(RenderTargetTexture):
         self._light_buffer.use()
         self._light_buffer.clear()
         if len(self._lights) > 0:
-            self._light_program['Projection'] = get_projection().flatten()
             self._light_program['position'] = position
             self.ctx.enable(self.ctx.BLEND)
             self.ctx.blend_func = self.ctx.BLEND_ADDITIVE

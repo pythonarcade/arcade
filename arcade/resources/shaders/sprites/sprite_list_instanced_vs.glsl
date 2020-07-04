@@ -1,6 +1,8 @@
 #version 330
 
-uniform mat4 Projection;
+uniform Projection {
+    uniform mat4 matrix;
+} proj;
 uniform mat3 TextureTransform;
 
 // per vertex
@@ -24,7 +26,7 @@ void main() {
             );
     vec2 pos;
     pos = in_pos + vec2(rotate * (in_vert * (in_size / 2)));
-    gl_Position = Projection * vec4(pos, 0.0, 1.0);
+    gl_Position = proj.matrix * vec4(pos, 0.0, 1.0);
 
     vec2 tex_offset = in_sub_tex_coords.xy;
     vec2 tex_size = in_sub_tex_coords.zw;

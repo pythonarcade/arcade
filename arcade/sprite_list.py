@@ -24,7 +24,6 @@ from arcade import are_polygons_intersecting
 from arcade import is_point_in_polygon
 
 from arcade import rotate_point
-from arcade import get_projection
 from arcade import get_window
 from arcade import Point
 from arcade import gl
@@ -964,7 +963,6 @@ class SpriteList:
             self._texture.filter = self.ctx.NEAREST, self.ctx.NEAREST
 
         self.program['Texture'] = self.texture_id
-        self.program['Projection'] = get_projection().flatten()
 
         texture_transform = None
         if len(self.sprite_list) > 0:

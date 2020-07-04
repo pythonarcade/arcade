@@ -9,7 +9,10 @@ layout (points) in;
 // TODO: Normally 4096 is supported, but let's stay on the safe side
 layout (triangle_strip, max_vertices = 256) out;
 
-uniform mat4 Projection;
+uniform Projection {
+    uniform mat4 matrix;
+} proj;
+
 uniform int segments;
 // [w, h, tilt]
 uniform vec3 shape;
@@ -40,19 +43,19 @@ void main() {
     float step = PI * 2 / segments_selected;
 
     for (int i = 0; i < segments_selected; i++) {
-        gl_Position = Projection * vec4(center, 0.0, 1.0);
+        gl_Position = proj.matrix * vec4(center, 0.0, 1.0);
         EmitVertex();
 
         // Calculate the ellipse/circle using 0, 0 as origin
         vec2 p1 = vec2(sin((i + 1) * step), cos((i + 1) * step)) * shape.xy;
         // Rotate the circle and then add translation to get the right origin
-        gl_Position = Projection * vec4((rot * p1) + center, 0.0, 1.0);
+        gl_Position = proj.matrix * vec4((rot * p1) + center, 0.0, 1.0);
         EmitVertex();
 
         // Calculate the ellipse/circle using 0, 0 as origin
         vec2 p2 = vec2(sin(i * step), cos(i * step)) * shape.xy;
         // Rotate the circle and then add translation to get the right origin
-        gl_Position = Projection * vec4((rot * p2) + center, 0.0, 1.0);
+        gl_Position = proj.matrix * vec4((rot * p2) + center, 0.0, 1.0);
         EmitVertex();
 
         EndPrimitive();

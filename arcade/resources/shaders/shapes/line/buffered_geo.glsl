@@ -3,7 +3,10 @@
 layout (lines) in;
 layout (triangle_strip, max_vertices = 4) out;
 
-uniform mat4 Projection;
+uniform Projection {
+    uniform mat4 matrix;
+} proj;
+
 uniform float line_width;
 
 in vec4 vs_color[2];
@@ -22,16 +25,16 @@ void main() {
     // Calculate normal
     vec2 normal = lineNormal2D(line_start, line_end) * line_width / 2.0;
     gs_color = vs_color[0];
-    gl_Position = Projection * vec4(line_start + normal, 0.0, 1.0);
+    gl_Position = proj.matrix * vec4(line_start + normal, 0.0, 1.0);
     EmitVertex();
     gs_color = vs_color[0];
-    gl_Position = Projection * vec4(line_start - normal, 0.0, 1.0);
+    gl_Position = proj.matrix * vec4(line_start - normal, 0.0, 1.0);
     EmitVertex();
     gs_color = vs_color[0];
-    gl_Position = Projection * vec4(line_end + normal, 0.0, 1.0);
+    gl_Position = proj.matrix * vec4(line_end + normal, 0.0, 1.0);
     EmitVertex();
     gs_color = vs_color[0];
-    gl_Position = Projection * vec4(line_end - normal, 0.0, 1.0);
+    gl_Position = proj.matrix * vec4(line_end - normal, 0.0, 1.0);
     EmitVertex();
 
     EndPrimitive();

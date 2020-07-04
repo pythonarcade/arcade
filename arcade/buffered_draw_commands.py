@@ -21,7 +21,6 @@ from arcade import Color
 from arcade import rotate_point
 from arcade import Point, PointList
 from arcade import get_four_byte_color
-from arcade import get_projection
 from arcade import get_window
 from arcade import get_points_for_thick_line
 from arcade.gl import BufferDescription
@@ -44,9 +43,6 @@ class Shape:
         Draw this shape. Drawing this way isn't as fast as drawing multiple
         shapes batched together in a ShapeElementList.
         """
-
-        # program['Projection'].write(get_projection().tobytes())
-
         assert(self.line_width == 1)
         gl.glLineWidth(self.line_width)
 
@@ -120,7 +116,6 @@ def create_line_generic_with_colors(point_list: PointList,
     ]
 
     vao = ctx.geometry(vao_content)
-    program['Projection'] = get_projection().flatten()
 
     shape = Shape()
     shape.vao = vao
@@ -719,7 +714,6 @@ class ShapeElementList(Generic[TShape]):
             )
         ]
         vao = self.ctx.geometry(vao_content, ibo)
-        self.program['Projection'] = get_projection().flatten()
         self.program['Position'] = [self.center_x, self.center_y]
         self.program['Angle'] = self.angle
 

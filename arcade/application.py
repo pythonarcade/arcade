@@ -16,6 +16,7 @@ from arcade import get_viewport
 from arcade import set_viewport
 from arcade import set_window
 from arcade.context import ArcadeContext
+from arcade.arcade_types import Color
 
 LOG = logging.getLogger(__name__)
 
@@ -119,6 +120,8 @@ class Window(pyglet.window.Window):
         self.ctx = ArcadeContext(self)
         set_viewport(0, self.width - 1, 0, self.height - 1)
 
+        self.background_color: Color = (0, 0, 0, 0)
+
         # Required for transparency
         self.ctx.enable(self.ctx.BLEND)
         self.ctx.blend_func = self.ctx.BLEND_DEFAULT
@@ -131,6 +134,10 @@ class Window(pyglet.window.Window):
         :py:meth:`arcade.Window.show_view` method.
         """
         return self._current_view
+
+    def clear(self):
+        """Clears the window with the configured background color"""
+        self.ctx.screen.clear(self.background_color)
 
     def close(self):
         """ Close the Window. """
@@ -302,8 +309,8 @@ class Window(pyglet.window.Window):
         """
         try:
             original_viewport = self.get_viewport()
-        except:
-            print("Error getting viewport")
+        except Exception as ex:
+            print("Error getting viewport:", ex)
             return
 
         # unscaled_viewport = self.get_viewport_size()

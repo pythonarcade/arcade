@@ -105,22 +105,18 @@ class MyGame(arcade.Window):
         Render the screen.
         """
         arcade.start_render()
-        try:
-            self.offscreen.use()
-            self.offscreen.clear()
-            self.shape_list.draw()
 
-            # This command has to happen before we start drawing
-            self.use()
-            arcade.start_render()
+        self.offscreen.use()
+        self.offscreen.clear()
+        self.shape_list.draw()
 
-            gl.glDisable(gl.GL_BLEND)
-            self.glow.render(self.offscreen.color_attachments[0], self)
-            gl.glEnable(gl.GL_BLEND)
-        except Exception as e:
-            import traceback
-            traceback.print_exc()
-            exit(1)
+        # This command has to happen before we start drawing
+        self.use()
+        arcade.start_render()
+
+        gl.glDisable(gl.GL_BLEND)
+        self.glow.render(self.offscreen.color_attachments[0], self)
+        gl.glEnable(gl.GL_BLEND)
 
     def on_update(self, delta_time):
         self.shape_list.angle += 0.2

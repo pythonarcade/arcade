@@ -1,6 +1,8 @@
 #version 330
 
-uniform mat4 Projection;
+uniform Projection {
+    uniform mat4 matrix;
+} proj;
 uniform vec2 Position;
 uniform float Angle;
 
@@ -15,6 +17,6 @@ void main() {
         cos(angle), sin(angle),
         -sin(angle), cos(angle)
     );
-    gl_Position = Projection * vec4(Position + (rotate * in_vert), 0.0, 1.0);
+    gl_Position = proj.matrix * vec4(Position + (rotate * in_vert), 0.0, 1.0);
     v_color = in_color;
 }
