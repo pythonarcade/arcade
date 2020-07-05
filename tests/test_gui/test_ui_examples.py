@@ -13,7 +13,7 @@ import arcade
 from . import T
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture
 def window():
     window = arcade.Window(title='ARCADE_GUI')
     yield window
