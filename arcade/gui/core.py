@@ -99,9 +99,7 @@ class UIElement(arcade.Sprite):
 
     def render(self):
         """
-        Optinally render own textures, a style change may be indicated
-        # TODO looks like a not to bad pattern to have a render function, which renders textures and can be used to
-        # TODO refresh those in case of some style change!
+        Render and update textures, called on style change
         """
         pass
 
