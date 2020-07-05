@@ -446,12 +446,14 @@ class Window(pyglet.window.Window):
 
         # remove previously shown view's handlers
         if self._current_view is not None:
+            self._current_view.on_hide_view()
             self.remove_handlers(self._current_view)
 
         # push new view's handlers
         self._current_view = new_view
         self.push_handlers(self._current_view)
         self._current_view.on_show()
+        self._current_view.on_show_view()
 
         # Note: After the View has been pushed onto pyglet's stack of event handlers (via push_handlers()), pyglet
         # will still call the Window's event handlers. (See pyglet's EventDispatcher.dispatch_event() implementation
@@ -577,7 +579,17 @@ class View:
         pass
 
     def on_show(self):
+        """Called when this view is shown and if window dispatches a on_show event.
+        (first time showing window or resize)
+        """
+        pass
+
+    def on_show_view(self):
         """Called when this view is shown"""
+        pass
+
+    def on_hide_view(self):
+        """Called when this view is not shown anymore"""
         pass
 
     def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
