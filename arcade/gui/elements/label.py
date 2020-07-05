@@ -1,7 +1,6 @@
 from typing import Optional
 
 import arcade
-
 from arcade.gui.elements import UIClickable
 from arcade.gui.ui_style import UIStyle
 from arcade.gui.utils import get_text_image
@@ -26,9 +25,11 @@ class UILabel(UIClickable):
         )
         self.style_classes.append('label')
 
+        self._target_width = width
+
         self.align = align
-        self.width = width
         self.text = text
+        # self.render already implicitly called through setting text
 
     @property
     def text(self):
@@ -37,9 +38,9 @@ class UILabel(UIClickable):
     @text.setter
     def text(self, value):
         self._text = value
-        self.render_texture()
+        self.render()
 
-    def render_texture(self):
+    def render(self):
         font_name = self.style_attr('font_name', ['Calibri', 'Arial'])
         font_size = self.style_attr('font_size', 12)
 
@@ -57,21 +58,21 @@ class UILabel(UIClickable):
                                            font_size=font_size,
                                            font_name=font_name,
                                            align=self.align,
-                                           width=int(self.width),
+                                           width=int(self._target_width),
                                            )
         text_image_mouse_over = get_text_image(text=self.text,
                                                font_color=font_color_hover,
                                                font_size=font_size,
                                                font_name=font_name,
                                                align=self.align,
-                                               width=int(self.width),
+                                               width=int(self._target_width),
                                                )
         text_image_mouse_press = get_text_image(text=self.text,
                                                 font_color=font_color_press,
                                                 font_size=font_size,
                                                 font_name=font_name,
                                                 align=self.align,
-                                                width=int(self.width),
+                                                width=int(self._target_width),
                                                 )
 
         self.normal_texture = arcade.Texture(image=text_image_normal, name=self.text + '1')

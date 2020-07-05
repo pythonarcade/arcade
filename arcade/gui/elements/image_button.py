@@ -32,6 +32,8 @@ class UIImageButton(UIClickable):
         self._normal_texture: Texture = normal_texture
         self._hover_texture: Texture = hover_texture
         self._press_texture: Texture = press_texture
+
+        # FIXME use render function
         if text:
             self.render_with_text(text)
         else:

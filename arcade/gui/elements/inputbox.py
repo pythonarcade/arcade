@@ -137,14 +137,14 @@ class UIInputBox(UIClickable):
         self.hover_texture = None
         self.focus_texture = None
 
-        self.render_textures()
+        self.render()
 
-    def render_textures(self):
+    def render(self):
         """
         text got updated, so recreate textures
         """
-        # TODO load defaults from style
 
+        # FIXME this will skip style changes
         if self.text_adapter.state_changed:
             self.text_adapter.reset_state_changed()
         else:
@@ -248,7 +248,7 @@ class UIInputBox(UIClickable):
     @text.setter
     def text(self, value):
         self.text_adapter.text = value
-        self.render_textures()
+        self.render()
 
     def on_ui_event(self, event: UIEvent):
         super().on_ui_event(event)
@@ -262,5 +262,5 @@ class UIInputBox(UIClickable):
 
             self.text_adapter.on_event(event)
 
-        self.render_textures()
+        self.render()
 
