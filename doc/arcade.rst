@@ -4,12 +4,13 @@ Arcade Package API
 ==================
 
 This page documents the Application Programming Interface (API)
-for the Python Arcade library.
+for the Python Arcade library. Soo also:
 
-For example code, see :ref:`example-code`.
+* :ref:`quick-index`
+* :ref:`example-code`
 
-Sub Modules
------------
+Arcade Sub Modules
+------------------
 
 .. toctree::
 

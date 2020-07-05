@@ -1,7 +1,7 @@
 """
 The Arcade Library
 
-A Python simple, easy to use module for creating 2D games.
+A powerful, yet easy-to-use module for creating 2D games in Python.
 """
 
 # Note: DO NOT EDIT arcade/__init__.py
