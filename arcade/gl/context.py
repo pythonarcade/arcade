@@ -272,8 +272,8 @@ class Context:
             depth_attachment: Texture = None) -> Framebuffer:
         """Create a Framebuffer.
 
-        :param List[Texture] color_attachments: List of textures we want to render into
-        :param Texture depth_attachment: Depth texture
+        :param List[arcade.gl.Texture] color_attachments: List of textures we want to render into
+        :param arcade.gl.Texture depth_attachment: Depth texture
         """
         return Framebuffer(self, color_attachments=color_attachments, depth_attachment=depth_attachment)
 

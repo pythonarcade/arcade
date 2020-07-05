@@ -42,6 +42,7 @@ def generate_thumbnails(input_files, output_path):
         im = Image.open(input_file)
         im.thumbnail(size)
         im.save(output_path / input_file.name)
+    print("Done generating thumbnails.")
 
 
 if __name__ == '__main__':

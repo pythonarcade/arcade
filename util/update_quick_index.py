@@ -136,8 +136,8 @@ def process_directory(directory, text_file):
 
                 text_file.write(f"\n")
 
-        else:
-            print(f"Warning, no title for {path_name}")
+        elif "__init__" not in path_name:
+            print(f"WARNING: Can't create quick index for {path_name}, as no title listed.")
 
 def include_template(text_file):
     with open('template_quick_index.rst', 'r') as content_file:
@@ -163,5 +163,6 @@ def main():
     process_directory(Path("../arcade/gui"), text_file)
 
     text_file.close()
+    print("Done creating quick_index.rst")
 
 main()

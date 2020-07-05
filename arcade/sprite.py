@@ -240,7 +240,7 @@ class Sprite:
         Appends a new texture to the list of textures that can be
         applied to this sprite.
 
-        :param Texture texture: Texture to add ot the list of available textures
+        :param arcade.Texture texture: Texture to add ot the list of available textures
 
         """
         self.textures.append(texture)

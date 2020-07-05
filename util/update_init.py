@@ -43,9 +43,6 @@ def main():
     with open('template_init.py', 'r') as content_file:
         init_template = content_file.read()
 
-    with open('template_quick_index.rst', 'r') as content_file:
-        quick_index_content = content_file.read()
-
     text_data = []
     text_classes = []
     text_functions = []
@@ -120,24 +117,6 @@ def main():
     text_data.sort()
     text_functions.sort()
     text_classes.sort()
-
-    text_file = open("../doc/quick_index.rst", "w")
-    text_file.write(quick_index_content)
-
-    text_file.write("\n\nClasses\n")
-    text_file.write("-------\n")
-    for item in text_classes:
-        text_file.write(item)
-
-    text_file.write("\n\nFunctions\n")
-    text_file.write("---------\n")
-    for item in text_functions:
-        text_file.write(item)
-
-    text_file.write("\n\nData\n")
-    text_file.write("----\n")
-    for item in text_data:
-        text_file.write(item)
 
     text_file.close()
 

@@ -574,7 +574,7 @@ Here's an expanded example:
       * :ref:`sprite_bullets_aimed`
       * :ref:`sprite_bullets_enemy_aims`
 
-    * Add :ref:`sprite_explosion`
+    * Add :ref:`sprite_explosion_bitmapped`
     * Add :ref:`sprite_move_animation`
 
 .. _platformer_part_ten:

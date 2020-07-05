@@ -18,7 +18,8 @@ if TYPE_CHECKING:  # handle import cycle caused by type hinting
 
 
 class Program:
-    """Compiled and linked shader program.
+    """
+    Compiled and linked shader program.
 
     Currently supports vertex, fragment and geometry shaders.
     Transform feedback also supported when output attributes
@@ -26,6 +27,9 @@ class Program:
 
     Access Uniforms via the [] operator.
     Example:
+
+    .. code-block:
+
         program['MyUniform'] = value
     """
     __slots__ = (
@@ -291,7 +295,7 @@ class Program:
         """Query active uniform block by retrieving the name and index and size"""
         # Query name
         u_size = gl.GLint()
-        buf_size = 192  # max uniform character length        
+        buf_size = 192  # max uniform character length
         u_name = create_string_buffer(buf_size)
         gl.glGetActiveUniformBlockName(
             self._glo,  # program to query
