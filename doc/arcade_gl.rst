@@ -1,7 +1,7 @@
 .. _arcade-api-gl:
 
-Arcade GL Package API
-=====================
+arcade.gl package
+=================
 
 .. automodule:: arcade.gl
     :members:

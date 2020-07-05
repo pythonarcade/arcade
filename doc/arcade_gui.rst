@@ -1,7 +1,7 @@
 .. _arcade-api-gui:
 
-Arcade GUI Package API
-======================
+arcade.gui package
+==================
 
 .. automodule:: arcade.gui
     :members:
