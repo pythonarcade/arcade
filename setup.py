@@ -28,7 +28,8 @@ if __name__ == "__main__":
         'pillow',
         'numpy',
         'pytiled-parser==0.9.4a3',
-        'pymunk'
+        'pymunk',
+        'pyyaml'
     ]
     if sys.version_info[0] == 3 and sys.version_info[1] == 6:
         install_requires.append('dataclasses')
