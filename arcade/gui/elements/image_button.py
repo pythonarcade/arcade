@@ -33,13 +33,25 @@ class UIImageButton(UIClickable):
         self._hover_texture: Texture = hover_texture
         self._press_texture: Texture = press_texture
 
-        # FIXME use render function
-        if text:
-            self.render_with_text(text)
+        self.text = text
+        # self.render implicitly called through setting self.text
+
+    @property
+    def text(self):
+        return self._text
+
+    @text.setter
+    def text(self, text):
+        self._text = text
+        self.render()
+
+    def render(self):
+        if self.text:
+            self.render_with_text(self.text)
         else:
-            self.normal_texture = normal_texture
-            self.hover_texture = hover_texture
-            self.press_texture = press_texture
+            self.normal_texture = self.normal_texture
+            self.hover_texture = self.hover_texture
+            self.press_texture = self.press_texture
 
     def render_with_text(self, text: str):
         font_size = self.style_attr('font_size', 22)
