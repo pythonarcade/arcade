@@ -82,7 +82,6 @@ class KeyAdapter:
                 self.cursor_index = len(self.text)
             elif motion == MOTION_LEFT:
                 self.cursor_index -= 1
-                print(self.cursor_index)
             # elif motion == MOTION_NEXT_WORD:
             #     pass
             # elif motion == MOTION_PREVIOUS_WORD:
@@ -137,19 +136,12 @@ class UIInputBox(UIClickable):
         self.hover_texture = None
         self.focus_texture = None
 
-        self.render_textures()
+        self.render()
 
-    def render_textures(self):
+    def render(self):
         """
         text got updated, so recreate textures
         """
-        # TODO load defaults from style
-
-        if self.text_adapter.state_changed:
-            self.text_adapter.reset_state_changed()
-        else:
-            return
-
         font_name = self.style_attr('font_name', ['Calibri', 'Arial'])
         font_size = self.style_attr('font_size', 22)
 
@@ -248,7 +240,7 @@ class UIInputBox(UIClickable):
     @text.setter
     def text(self, value):
         self.text_adapter.text = value
-        self.render_textures()
+        self.render()
 
     def on_ui_event(self, event: UIEvent):
         super().on_ui_event(event)
@@ -262,5 +254,8 @@ class UIInputBox(UIClickable):
 
             self.text_adapter.on_event(event)
 
-        self.render_textures()
+        if self.text_adapter.state_changed:
+            self.text_adapter.reset_state_changed()
+            self.render()
+
 

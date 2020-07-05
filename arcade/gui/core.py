@@ -1,5 +1,5 @@
 import typing
-from typing import Optional
+from typing import Optional, Set
 from uuid import uuid4
 
 import arcade
@@ -48,7 +48,8 @@ class UIElement(arcade.Sprite):
         # unique id, to overwrite style for exactly this element, DONT CHANGE THIS LATER
         self.__style_id = str(uuid4())
         self.style_classes = ['globals']
-        self._style = style if style else UIStyle.default_style()
+        self._style: UIStyle = style if style else UIStyle.default_style()
+        self._style.push_handlers(self.on_style_change)
 
         # what do we need to look like a proper arcade.Sprite
         # self.texture <- subclass
@@ -71,7 +72,7 @@ class UIElement(arcade.Sprite):
         self.__id = value
 
     @property
-    def style(self):
+    def style(self) -> UIStyle:
         return self._style
 
     def set_style_attrs(self, **kwargs):
@@ -82,28 +83,23 @@ class UIElement(arcade.Sprite):
 
         :param kwargs: key-value pairs
         """
-        style_data = self._style.get_class(self.__style_id)
+        self._style.set_class_attrs(self.__style_id, **kwargs)
 
-        for key, value in kwargs.items():
-            if value is None:
-                if key in style_data:
-                    del style_data[key]
-            else:
-                style_data[key] = value
-
-        self.render()
+    def _lookup_classes(self):
+        return [*self.style_classes, self.id, self.__style_id]
 
     def style_attr(self, key, default=None):
-        lookup_classes = [*self.style_classes, self.id, self.__style_id]
-        value = self._style.get_attr(lookup_classes, key)
+        value = self._style.get_attr(self._lookup_classes(), key)
 
         return value if value else default
 
+    def on_style_change(self, style_classes: Set[str]):
+        if style_classes.intersection(set(self._lookup_classes())):
+            self.render()
+
     def render(self):
         """
-        Optinally render own textures, a style change may be indicated
-        # TODO looks like a not to bad pattern to have a render function, which renders textures and can be used to
-        # TODO refresh those in case of some style change!
+        Render and update textures, called on style change
         """
         pass
 

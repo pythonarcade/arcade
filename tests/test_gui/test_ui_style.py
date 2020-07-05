@@ -1,5 +1,6 @@
-import arcade
+from typing import Set
 
+import arcade
 from arcade.gui import UIFlatButton, UIGhostFlatButton
 from arcade.gui.ui_style import UIStyle
 
@@ -8,6 +9,25 @@ def test_ui_element_uses_default_style():
     button = UIFlatButton('Love snakes.', 100, 100, 100, 30)
 
     assert button._style == UIStyle.default_style()
+
+
+def test_ui_style_has_on_change_event_type():
+    style = UIStyle({})
+    assert 'on_style_change' in style.event_types
+
+
+def test_ui_style_dispatches_event_on_change():
+    style = UIStyle({})
+    updated_style_classes = None
+
+    @style.event()
+    def on_style_change(style_classes: Set[str]):
+        nonlocal updated_style_classes
+        updated_style_classes = style_classes
+
+    style.set_class_attrs('some-class', color=arcade.color.BLUE)
+
+    assert {'some-class'} == updated_style_classes
 
 
 def test_style_returns_property_for_ui_elements():

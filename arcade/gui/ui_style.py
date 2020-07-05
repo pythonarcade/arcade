@@ -1,13 +1,14 @@
 from pathlib import Path
-from typing import Dict, Any, Sequence
+from typing import Dict, Any, Sequence, Set
 
 import yaml
+from pyglet.event import EventDispatcher
 
 from arcade.gui.utils import parse_value
 from arcade.resources import resolve_resource_path
 
 
-class UIStyle:
+class UIStyle(EventDispatcher):
     """
     Used as singleton in the UIView, style changes are applied by changing the values of the singleton.
 
@@ -17,8 +18,10 @@ class UIStyle:
     """
     __default_style = None
 
-    def __init__(self, data: Dict, **kwargs):
+    def __init__(self, data: Dict[str, Any], **kwargs):
         self.data = data
+
+        self.register_event_type('on_style_change')
 
     @staticmethod
     def from_file(path: Path):
@@ -54,17 +57,33 @@ class UIStyle:
             ))
         return cls.__default_style
 
-    def get_class(self, style_classes: str):
-        return self.data.setdefault(style_classes, {})
+    def on_style_change(self, style_classes: Set[str]):
+        """
+        After changes to the UIStyle, set_class_attrs will dispatch an `on_style_change` event.
 
-    def set_class_attrs(self, style_classes: str, **kwargs):
-        style_data = self.get_class(style_classes)
+        :param style_classes: Should contain all style classes that changed.
+        """
+        pass
+
+    def get_class(self, style_class: str):
+        return self.data.setdefault(style_class, {})
+
+    def set_class_attrs(self, style_class: str, **kwargs):
+        """
+        Set style attributes for a given class name.
+
+        :param style_class:
+        :param kwargs: style attributes
+        """
+        style_data = self.get_class(style_class)
         for key, value in kwargs.items():
             if value is None:
                 if key in style_data:
                     del style_data[key]
             else:
                 style_data[key] = value
+
+        self.dispatch_event('on_style_change', {style_class})
 
     def get_attr(self, style_classes: Sequence[str], attr: str):
         """
