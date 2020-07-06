@@ -3,7 +3,6 @@ Path-related functions.
 
 """
 from arcade import Point
-from arcade import SpriteList
 from arcade import get_distance
 from arcade import lerp_vec
 from arcade import get_sprites_at_point
@@ -137,7 +136,7 @@ def _AStarSearch(start, end, graph):
         # Get the vertex in the open list with the lowest F score
         current = None
         currentFscore = None
-        for pos in openVertices:
+        for pos in sorted(openVertices):
             if current is None or F[pos] < currentFscore:
                 currentFscore = F[pos]
                 current = pos
@@ -161,7 +160,7 @@ def _AStarSearch(start, end, graph):
         closedVertices.add(current)
 
         # Update scores for vertices near the current position
-        for neighbour in graph.get_vertex_neighbours(current):
+        for neighbour in sorted(graph.get_vertex_neighbours(current)):
             if neighbour in closedVertices:
                 continue  # We have already processed this node exhaustively
             candidateG = G[current] + graph.move_cost(current, neighbour)
@@ -247,6 +246,7 @@ class AStarBarrierList:
 
         # Restore original location
         self.moving_sprite.position = original_pos
+        self.barrier_list = sorted(self.barrier_list)
 
 
 def astar_calculate_path(start_point: Point,
@@ -256,7 +256,7 @@ def astar_calculate_path(start_point: Point,
     """
     :param Point start_point:
     :param Point end_point:
-    :param AStarBarrierList barrier_list:
+    :param AStarBarrierList astar_barrier_list:
     :param bool diagonal_movement:
 
     Returns: List
