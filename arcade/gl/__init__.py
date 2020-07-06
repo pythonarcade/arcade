@@ -1,3 +1,18 @@
+"""
+This modules contains a wrapper over OpenGL 3.3 core making OpenGL
+more reasonable to work with and easier to learn.
+The API is based on `ModernGL <https://github.com/moderngl/moderngl>`_ implementing
+a subset of the features.
+We use pyglet's OpenGL bindings based on ctypes.
+
+Creating OpenGL resources such as buffers, framebuffers programs and textures
+should be done through methods in a context.
+
+* Arcade users should access :py:attr:`arcade.Window.ctx` exposing an :py:class:`arcade.ArcadeContext`
+* Pyglet users can instantiate an :py:class:`arcade.gl.Context` for the window or
+  extend this class with more features if needed.
+"""
+
 from .context import Context
 from .types import BufferDescription
 from .exceptions import ShaderException
