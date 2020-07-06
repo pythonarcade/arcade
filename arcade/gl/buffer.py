@@ -171,9 +171,6 @@ class Buffer:
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self._glo)
         gl.glBufferData(gl.GL_ARRAY_BUFFER, self._size, None, self._usage)
 
-    def bind(self):
-        gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self._glo)
-
     def bind_to_uniform_block(self, binding: int = 0, offset: int = 0, size: int = -1):
         if size < 0:
             size = self.size
