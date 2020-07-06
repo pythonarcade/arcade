@@ -13,7 +13,7 @@ import arcade
 class ArcadeContext(Context):
     """
     An OpenGL context implementation for Arcade with added custom features.
-    This context belongs to an arcade.Window.
+    This context is normally accessed thought :py:attr:`arcade.Window.ctx`.
     """
 
     def __init__(self, window):
@@ -110,10 +110,12 @@ class ArcadeContext(Context):
 
     @property
     def projection_2d(self) -> Tuple[float, float, float, float]:
-        """Any: Get or set the global orthogonal projection for arcade.
+        """Get or set the global orthogonal projection for arcade.
 
         This projection is used by sprites and shapes and is represented
         by four floats: ``(left, right, bottom, top)``
+
+        :type: Tuple[float, float, float, float]
         """
         return self._projection_2d
 
@@ -133,7 +135,10 @@ class ArcadeContext(Context):
 
     @property
     def projection_2d_matrix(self):
-        """ndarray: Get the current projection matrix as a numpy array"""
+        """
+        Get the current projection matrix as a numpy array.
+        This 4x4 matrix is calculated when setting :py:attr:`~arcade.ArcadeContext.projection_2d`.
+        """
         return self._projection_2d_matrix
 
     def load_program(
@@ -146,10 +151,10 @@ class ArcadeContext(Context):
         """Create a new program given a file names that contain the vertex shader and
         fragment shader.
 
-        :param Union[str, Path] vertex_shader: path to vertex shader
-        :param Union[str, Path] fragment_shader: path to fragment shader
-        :param Union[str, Path] geometry_shader: path to geometry shader
-        :param dict defines: Substitute #defines values in the source
+        :param Union[str,pathlib.Path] vertex_shader: path to vertex shader
+        :param Union[str,pathlib.Path] fragment_shader: path to fragment shader
+        :param Union[str,pathlib.Path] geometry_shader: path to geometry shader
+        :param dict defines: Substitute ``#define`` values in the source
         """
         from arcade.resources import resolve_resource_path
 

@@ -48,30 +48,33 @@ def main():
     text_functions = []
 
     os.chdir("../arcade")
-    file_list = "window_commands.py", \
-                "application.py", \
-                "arcade_types.py", \
-                "earclip_module.py", \
-                "utils.py", \
-                "drawing_support.py", \
-                "texture.py", \
-                "buffered_draw_commands.py", \
-                "draw_commands.py", \
-                "geometry.py", \
-                "isometric.py", \
-                "joysticks.py", \
-                "emitter.py", \
-                "emitter_simple.py", \
-                "particle.py", \
-                "sound.py", \
-                "sprite.py", \
-                "sprite_list.py", \
-                "physics_engines.py", \
-                "text.py", \
-                "tilemap.py", \
-                "pymunk_physics_engine.py", \
-                "version.py", \
-                "paths.py"
+    file_list = (
+        "window_commands.py",
+        "application.py",
+        "arcade_types.py",
+        "earclip_module.py",
+        "utils.py",
+        "drawing_support.py",
+        "texture.py",
+        "buffered_draw_commands.py",
+        "draw_commands.py",
+        "geometry.py",
+        "isometric.py",
+        "joysticks.py",
+        "emitter.py",
+        "emitter_simple.py",
+        "particle.py",
+        "sound.py",
+        "sprite.py",
+        "sprite_list.py",
+        "physics_engines.py",
+        "text.py",
+        "tilemap.py",
+        "pymunk_physics_engine.py",
+        "version.py",
+        "paths.py",
+        "context.py",
+    )
 
     all_list = []
 

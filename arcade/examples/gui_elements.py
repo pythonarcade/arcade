@@ -57,7 +57,7 @@ class MyView(arcade.View):
         """ Draw this view. GUI elements are automatically drawn. """
         arcade.start_render()
 
-    def on_show(self):
+    def on_show_view(self):
         """ Called once when view is activated. """
         self.setup()
         arcade.set_background_color(arcade.color.BLACK)
