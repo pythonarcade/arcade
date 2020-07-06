@@ -15,8 +15,8 @@ class MyView(arcade.View):
         arcade.start_render()
         arcade.set_background_color(arcade.color.BLACK)
 
-    def on_show(self):
-        print('on_show')
+    def on_show_view(self):
+        print('on_show_view')
         self.setup()
 
     def setup(self):
