@@ -151,10 +151,10 @@ class ArcadeContext(Context):
         """Create a new program given a file names that contain the vertex shader and
         fragment shader.
 
-        :param Union[str, Path] vertex_shader: path to vertex shader
-        :param Union[str, Path] fragment_shader: path to fragment shader
-        :param Union[str, Path] geometry_shader: path to geometry shader
-        :param dict defines: Substitute #defines values in the source
+        :param Union[str,pathlib.Path] vertex_shader: path to vertex shader
+        :param Union[str,pathlib.Path] fragment_shader: path to fragment shader
+        :param Union[str,pathlib.Path] geometry_shader: path to geometry shader
+        :param dict defines: Substitute ``#define`` values in the source
         """
         from arcade.resources import resolve_resource_path
 
