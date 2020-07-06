@@ -116,15 +116,14 @@ class Window(pyglet.window.Window):
         self.key: Optional[int] = None
         self.ui_manager = arcade.experimental.gui.UIManager(self)
 
-        # Representation of the OpenGL context for this window
-        self.ctx = ArcadeContext(self)
+        self._ctx: ArcadeContext = ArcadeContext(self)
         set_viewport(0, self.width - 1, 0, self.height - 1)
 
-        self.background_color: Color = (0, 0, 0, 0)
+        self._background_color: Color = (0, 0, 0, 0)
 
         # Required for transparency
-        self.ctx.enable(self.ctx.BLEND)
-        self.ctx.blend_func = self.ctx.BLEND_DEFAULT
+        self._ctx.enable(self.ctx.BLEND)
+        self._ctx.blend_func = self.ctx.BLEND_DEFAULT
 
     @property
     def current_view(self):
@@ -135,9 +134,32 @@ class Window(pyglet.window.Window):
         """
         return self._current_view
 
+    @property
+    def ctx(self) -> ArcadeContext:
+        """
+        The OpenGL context for this window.
+
+        :type: :py:class:`arcade.ArcadeContext`
+        """
+        return self._ctx
+
     def clear(self):
-        """Clears the window with the configured background color"""
+        """Clears the window with the configured background color
+        set through :py:attr:`arcade.Window.background_color`.
+        """
         self.ctx.screen.clear(self.background_color)
+
+    @property
+    def background_color(self):
+        """Get or set the background color for this window.
+
+        :type: Color
+        """
+        return self._background_color
+
+    @background_color.setter
+    def background_color(self, value: Color):
+        self._background_color = value
 
     def close(self):
         """ Close the Window. """
