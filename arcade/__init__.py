@@ -1,7 +1,7 @@
 """
 The Arcade Library
 
-A powerful, yet easy-to-use module for creating 2D games in Python.
+A Python simple, easy to use module for creating 2D games.
 """
 
 # Note: DO NOT EDIT arcade/__init__.py
@@ -249,6 +249,8 @@ from .paths import AStarBarrierList
 from .paths import astar_calculate_path
 from .paths import has_line_of_sight
 
+from .context import ArcadeContext
+
 # noinspection PyPep8
 from arcade import experimental
 
@@ -257,6 +259,7 @@ __all__ = ['AStarBarrierList',
            'AnimatedTimeSprite',
            'AnimatedWalkingSprite',
            'AnimationKeyframe',
+           'ArcadeContext',
            'Color',
            'CreateText',
            'DEFAULT_FONT_NAMES',
