@@ -13,7 +13,7 @@ import arcade
 class ArcadeContext(Context):
     """
     An OpenGL context implementation for Arcade with added custom features.
-    This context belongs to an arcade.Window.
+    This context is normally accessed thought :py:attr:`arcade.Window.ctx`.
     """
 
     def __init__(self, window):
@@ -110,10 +110,12 @@ class ArcadeContext(Context):
 
     @property
     def projection_2d(self) -> Tuple[float, float, float, float]:
-        """Any: Get or set the global orthogonal projection for arcade.
+        """Get or set the global orthogonal projection for arcade.
 
         This projection is used by sprites and shapes and is represented
         by four floats: ``(left, right, bottom, top)``
+
+        :type: Tuple[float, float, float, float]
         """
         return self._projection_2d
 
@@ -133,7 +135,10 @@ class ArcadeContext(Context):
 
     @property
     def projection_2d_matrix(self):
-        """ndarray: Get the current projection matrix as a numpy array"""
+        """
+        Get the current projection matrix as a numpy array.
+        This 4x4 matrix is calculated when setting :py:attr:`~arcade.ArcadeContext.projection_2d`.
+        """
         return self._projection_2d_matrix
 
     def load_program(
