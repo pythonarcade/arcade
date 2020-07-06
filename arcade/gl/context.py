@@ -5,7 +5,7 @@ import weakref
 from pathlib import Path
 from typing import Any, Dict, List, Tuple, Union, Sequence, Set
 
-# import pyglet
+import pyglet
 from pyglet.window import Window
 from pyglet import gl
 
@@ -101,7 +101,7 @@ class Context:
         gl.GL_STACK_OVERFLOW: 'GL_STACK_OVERFLOW',
     }
 
-    def __init__(self, window):
+    def __init__(self, window: pyglet.window.Window):
         self._window_ref = weakref.ref(window)
         self.limits = Limits(self)
         self._gl_version = (self.limits.MAJOR_VERSION, self.limits.MINOR_VERSION)
@@ -110,10 +110,10 @@ class Context:
         # Detect the default framebuffer
         self._screen = DefaultFrameBuffer(self)
         # Tracking active program
-        self.active_program = None  # type: Program
+        self.active_program: Optional[Program] = None
         # Tracking active program. On context creation the window is the default render target
-        self.active_framebuffer = self._screen
-        self.stats = ContextStats(warn_threshold=1000)
+        self.active_framebuffer: Framebuffer = self._screen
+        self.stats: ContextStats = ContextStats(warn_threshold=1000)
 
         # Hardcoded states
         # This should always be enabled
@@ -126,7 +126,7 @@ class Context:
         # States
         self._blend_func = self.BLEND_DEFAULT
         self._point_size = 1.0
-        self._flags = set()
+        self._flags: Set[int] = set()
 
     @property
     def window(self) -> Window:
@@ -140,7 +140,12 @@ class Context:
 
     @property
     def fbo(self) -> Framebuffer:
-        """The currently active framebuffer"""
+        """
+        Get the currently active framebuffer.
+        This property is read-only
+
+        :type: :py:class:`arcade.gl.Framebuffer`
+        """
         return self.active_framebuffer
 
     @property
