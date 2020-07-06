@@ -57,15 +57,18 @@ def test_astar():
                                        barrier_list,
                                        diagonal_movement=False)
 
-    # print(path)
-    assert path == [(160, 160), (128, 160), (128, 128), (128, 96), (96, 96), (96, 64), (64, 64), (64, 32), (32, 32)]
+    # barrier_list.recalculate()
+    # print(f"barrier_list: {barrier_list.barrier_list}")
+
+    # print("Path 1", path)
+    assert path == [(160, 160), (128, 160), (128, 128), (96, 128), (96, 96), (64, 96), (64, 64), (32, 64), (32, 32)]
 
     path = arcade.astar_calculate_path(enemy.position,
                                        player.position,
                                        barrier_list,
                                        diagonal_movement=True)
     assert path == [(160, 160), (128, 128), (96, 96), (64, 64), (32, 32)]
-    # print(path)
+    # print("Path 2", path)
 
 
     sprite = arcade.Sprite(":resources:images/tiles/grassCenter.png", SPRITE_SCALING)
@@ -100,4 +103,4 @@ def test_astar():
                                        barrier_list,
                                        diagonal_movement=True)
 
-    assert path == [(160, 160), (128, 128), (128, 96), (128, 64), (128, 32), (96, 0), (64, 0), (32, 32)]
+    assert path == [(160, 160), (128, 160), (96, 192), (64, 160), (64, 128), (64, 96), (64, 64), (32, 32)]
