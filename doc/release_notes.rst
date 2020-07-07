@@ -5,44 +5,50 @@
 Release Notes
 =============
 
-Version 2.4a (Pre-release)
----------------------------
+Version 2.4
+-----------
 
-Alphas of version 2.4 are available if you specifically download the latest
-alpha versions from `pypi <https://pypi.org/project/arcade/>`_.
-Otherwise you'll default to the more stable 2.3 branch.
-
-The new parts of the API on 2.4 are not set, and may change without warning.
+Arcade version 2.4 is a major enhancement release to Arcade.
 
 Version 2.4 Major Features
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-* Support for defining your own frame buffers and shaders for doing more
-  advanced OpenGL programming.
+* Support for defining your own frame buffers, shaders, and more
+  advanced OpenGL programming. New API in :ref:`arcade-api-gl`.
 
     * Support to render to frame buffer, then re-render. Example:
       :ref:`mini_map_defender`.
     * Use frame buffers to create a 'glow' or 'bloom' effect: :ref:`bloom_defender`.
     * Use frame-buffers to support lights: :ref:`light_demo`.
 
+* New support for style-able GUI elements. New API in :ref:`arcade-api-gui`.
+
+    * Example: :ref:`gui_elements`
+    * Example: :ref:`gui_custom_style`
+
 * PyMunk engine for platformers. See tutorial: :ref:`pymunk_platformer_tutorial`.
-* New support for style-able GUI elements. See: :ref:`gui_elements`
-  and :ref:`gui_custom_style`.
-* New Camera
+* AStar algorithm for finding paths. See
+  :data:`~arcade.astar_calculate_path` and :data:`~arcade.AStarBarrierList`.
+
+  * For an example of using the A-Star algorithm, see :ref:`astar_pathfinding`.
+
 
 Version 2.4 Minor Features
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 **New functions/classes:**
 
-* Added `get_display_size() <arcade.html#arcade.get_display_size>`_ to get resolution of the monitor
-* Added `Window.center_window() <arcade.html#arcade.Window.center_window>`_ to center the window on the monitor.
+* Added `get_display_size() <arcade.html#arcade.get_display_size>`_ to get
+  resolution of the monitor
+* Added `Window.center_window() <arcade.html#arcade.Window.center_window>`_ to
+  center the window on the monitor.
 * Added `has_line_of_sight() <arcade.html#arcade.has_line_of_sight>`_ to
   calculate if there is line-of-sight between two points.
 * Added `SpriteSolidColor <arcade.html#arcade.SpriteSolidColor>`_
   class that makes a solid-color rectangular sprite.
 * Added `SpriteCircle <arcade.html#arcade.SpriteCircle>`_
   class that makes a circular sprite, either solid or with a fading gradient.
+* Added :data:`~arcade.get_distance` function to get the distance between two points.
 
 **New functionality:**
 
@@ -70,12 +76,13 @@ Version 2.4 Under-the-hood improvements
 Version 2.4 New Documentation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-* Pymunk Tutorial
-* View tutorial
-* Solitaire tutorial
-* GPU particle burst tutorial
-* Several examples
-* Performance testing
+* New Tutorial: :ref:`pymunk_platformer_tutorial`
+* New Tutorial: :ref:`view-tutorial`
+* New Tutorial: :ref:`solitaire_tutorial`
+* New Tutorial: :ref:`gpu_particle_burst`
+* Several new and updated examples on :ref:`example-code`
+* `New performance testing project <https://craven-performance-testing.s3-us-west-2.amazonaws.com/index.html>`_
+* A lot of improvements, and a few videos for https://learn.arcade.academy
 
 Version 2.4 'Experimental'
 ~~~~~~~~~~~~~~~~~~~~~~~~~~

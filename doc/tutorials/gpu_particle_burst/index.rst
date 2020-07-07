@@ -1,5 +1,7 @@
 .. include:: <isonum.txt>
 
+.. _gpu_particle_burst:
+
 GPU Particle Burst
 ==================
 
