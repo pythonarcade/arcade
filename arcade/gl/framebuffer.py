@@ -14,21 +14,42 @@ if TYPE_CHECKING:  # handle import cycle caused by type hinting
 class Framebuffer:
     """
     An offscreen render target also called a Framebuffer Object in OpenGL.
-    This implementation is using texture attachments. When createing a
+    This implementation is using texture attachments. When creating a
     Framebuffer we supply it with textures we want our scene rendered into.
+    The advantage of using texture attachments is the ability we get
+    to keep working on the contents of the framebuffer.
+
+    The best way to create framebuffer is through :py:meth:`arcade.gl.Context.framebuffer`::
+
+        # Create a 100 x 100 framebuffer with one attachment
+        ctx.framebuffer(color_attachments=[ctx.texture((100, 100), components=4)])
+
+        # Create a 100 x 100 framebuffer with two attachments
+        # Shaders can be configured writing to the different layers
+        ctx.framebuffer(
+            color_attachments=[
+                ctx.texture((100, 100), components=4),
+                ctx.texture((100, 100), components=4),
+            ]
+        )
+
+    :param Context ctx: The context this framebuffer belongs to
+    :param List[Texture] color_attachments: List of color attachments.
+    :param Texture depth_attachment: A depth attachment (optional)
     """
     __slots__ = (
         '_ctx', '_glo', '_width', '_height', '_color_attachments', '_depth_attachment',
         '_samples', '_viewport', '_depth_mask', '_draw_buffers', '__weakref__')
 
     def __init__(self, ctx: 'Context', *, color_attachments=None, depth_attachment=None):
-        """Create a framebuffer.
-
+        """
+        :param Context ctx: The context this framebuffer belongs to
         :param List[Texture] color_attachments: List of color attachments.
         :param Texture depth_attachment: A depth attachment (optional)
         """
         if not color_attachments:
             raise ValueError("Framebuffer must at least have one color attachment")
+
 
         self._ctx = ctx
         self._color_attachments = color_attachments if isinstance(color_attachments, list) else [color_attachments]
@@ -81,16 +102,27 @@ class Framebuffer:
 
     @property
     def glo(self) -> gl.GLuint:
-        """The OpenGL id/name of the framebuffer"""
+        """
+        The OpenGL id/name of the framebuffer
+
+        :type: GLuint
+        """
         return self._glo
 
     @property
     def viewport(self) -> Tuple[int, int, int, int]:
-        """The framebuffer's viewport.
+        """
+        Get or set the framebuffer's viewport.
+        The viewport parameter are ``(x, y, width, height)``.
+        It determines what part of the framebuffer should be redered to.
+        By default the viewport is ``(0, 0, width, height)``.
+
+        The viewport value is persistent all will automatically
+        be applies every time the framebuffer is bound.
 
         Two or four integer values can be assigned::
 
-            # Explicitly set start and end values
+            # Explicitly set x, y, width, height
             fb.viewport = 100, 100, 200, 200
             # Implies 0, 0, 100, 100
             fb.viewport = 100, 100
@@ -111,43 +143,78 @@ class Framebuffer:
 
     @property
     def ctx(self) -> 'Context':
-        """The context this object belongs to"""
+        """
+        The context this object belongs to.
+
+        :type: :py:class:`arcade.gl.Context`
+        """
         return self._ctx
 
     @property
     def width(self) -> int:
-        """The width of the framebuffer in pixels"""
+        """
+        The width of the framebuffer in pixels
+
+        :type: int
+        """
         return self._width
 
     @property
     def height(self) -> int:
-        """The height of the framebuffer in pixels"""
+        """
+        The height of the framebuffer in pixels
+
+        :type: int
+        """
         return self._height
 
     @property
     def size(self) -> Tuple[int, int]:
-        """Size as a ``(w, h)`` tuple"""
+        """
+        Size as a ``(w, h)`` tuple
+
+        :type: tuple (int, int)
+        """
         return self._width, self._height
 
     @property
     def samples(self) -> int:
-        """Number of samples (MSAA)"""
+        """
+        Number of samples (MSAA)
+
+        :type: int
+        """
         return self._samples
 
     @property
     def color_attachments(self) -> List[Texture]:
-        """A list of color attachments"""
+        """
+        A list of color attachments
+
+        :type: list of :py:class:`arcade.gl.Texture`
+        """
         return self._color_attachments
 
     @property
     def depth_attachment(self) -> Texture:
-        """Depth attachment"""
+        """
+        Depth attachment
+
+        :type: :py:class:`arcade.gl.Texture`
+        """
         return self._depth_attachment
 
     @property
     def depth_mask(self) -> bool:
-        """The depth mask. It determines of depth values should be written
+        """
+        Get or set the depth mask (default: ``True``).
+        It determines if depth values should be written
         to the depth texture when depth testing is enabled.
+
+        The depth mask value is persistent all will automatically
+        be applies every time the framebuffer is bound.
+
+        :type: bool
         """
         return self._depth_mask
 
@@ -182,9 +249,14 @@ class Framebuffer:
               depth: float = 1.0,
               normalized: bool = False):
         """
-        Clears the framebuffer.
+        Clears the framebuffer::
 
-        :param tuple color: A 3 of 4 component tuple containing the color
+            # Clear framebuffer using the color red in normalized form
+            fbo.clear(color=(1.0, 0.0, 0.0, 1.0), normalized=True)
+            # Clear the framebuffer using arcade's colors (not normalized)
+            fb.clear(color=arcade.color.WHITE)
+
+        :param tuple color: A 3 or 4 component tuple containing the color
         :param float depth: Value to clear the depth buffer (unused)
         :param bool normalized: If the color values are normalized or not
         """
@@ -217,24 +289,13 @@ class Framebuffer:
         Destroys the framebuffer object
 
         :param ctx: OpenGL context
-        :param framebuffer_id: Frame buffer to destroy
+        :param framebuffer_id: Framebuffer to destroy (glo)
         """
         if gl.current_context is None:
             return
 
         gl.glDeleteFramebuffers(1, framebuffer_id)
         ctx.stats.decr('framebuffer')
-
-    # NOTE: This is an experiment using a bind stack (can be explored later)
-    # def __enter__(self):
-    #     """Enter method for context manager"""
-    #     self._stack.push(self)
-    #     self.use()
-
-    # def __exit__(self):
-    #     """Exit method for context manager"""
-    #     self._stack.pop()
-    #     # TODO: Bind previous. if this is the window, how do we know the viewport etc?
 
     @staticmethod
     def _check_completeness() -> None:
