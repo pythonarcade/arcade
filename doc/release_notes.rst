@@ -8,6 +8,8 @@ Release Notes
 Version 2.4
 -----------
 
+*Currently in Beta. Arcade 2.4b1 released 2002-07-07*
+
 Arcade version 2.4 is a major enhancement release to Arcade.
 
 Version 2.4 Major Features
