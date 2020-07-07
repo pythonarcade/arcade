@@ -1,5 +1,6 @@
 import re
 import os
+from string import Template
 
 
 def get_member_list(filename):
@@ -41,7 +42,7 @@ def get_member_list(filename):
 def main():
 
     with open('template_init.py', 'r') as content_file:
-        init_template = content_file.read()
+        init_template = Template(content_file.read())
 
     text_data = []
     text_classes = []
@@ -76,22 +77,25 @@ def main():
         "context.py",
     )
 
+
+    import_strings = ""
+    all_strings = ""
     all_list = []
 
     for filename in file_list:
         type_list, class_list, function_list = get_member_list(filename)
 
         for member in type_list:
-            init_template += f"from .{member[0][:-3]} import {member[1]}\n"
+            import_strings += f"from .{member[0][:-3]} import {member[1]}\n"
             all_list.append(member[1])
         for member in class_list:
-            init_template += f"from .{member[0][:-3]} import {member[1]}\n"
+            import_strings += f"from .{member[0][:-3]} import {member[1]}\n"
             all_list.append(member[1])
         for member in function_list:
-            init_template += f"from .{member[0][:-3]} import {member[1]}\n"
+            import_strings += f"from .{member[0][:-3]} import {member[1]}\n"
             all_list.append(member[1])
 
-        init_template += "\n"
+        import_strings += "\n"
 
         for item in type_list:
             text_data += [f"- :data:`~arcade.{item[1]}`\n"]
@@ -100,21 +104,24 @@ def main():
         for item in class_list:
             text_classes += [f"- :class:`~arcade.{item[1]}`\n"]
 
-    init_template += "\n__all__ = ["
+    all_strings += "\n__all__ = ["
     all_list.sort()
     first = True
     for item in all_list:
         if not first:
-            init_template += "           "
+            all_strings += "           "
         else:
             first = False
-        init_template += f"'{item}',\n"
-    init_template += "           ]\n\n"
+        all_strings += f"'{item}',\n"
+    all_strings += "           ]\n\n"
 
-    init_template += "__version__ = VERSION\n"
+    all_strings += "__version__ = VERSION\n"
 
     text_file = open("__init__.py", "w")
-    text_file.write(init_template)
+    text_file.write(init_template.substitute({
+        'imports': import_strings,
+        'all': all_strings,
+    }))
     text_file.close()
 
     text_data.sort()
