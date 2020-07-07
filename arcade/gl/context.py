@@ -24,70 +24,112 @@ LOG = logging.getLogger(__name__)
 
 class Context:
     """
-    Represents an OpenGL context. This context belongs to a pyglet.Window
+    Represents an OpenGL context. This context belongs to a ``pyglet.Window``
+    normally accessed through ``window.ctx``.
+
+    The Context class contains methods for creating resources,
+    global states and commonly used enums. All enums also exist
+    in the ``gl`` module. (``ctx.BLEND`` or ``arcade.gl.BLEND``).
     """
-    # The active context
+    #: The active context
     active: Optional['Context'] = None
 
     # --- Store the most commonly used OpenGL constants
     # Texture
+    #: Texture interpolation: Nearest pixel
     NEAREST = 0x2600
+    #: Texture interpolation: Linear interpolate
     LINEAR = 0x2601
+    #: Texture interpolation: Minification filter for mipmaps
     NEAREST_MIPMAP_NEAREST = 0x2700
+    #: Texture interpolation: Minification filter for mipmaps
     LINEAR_MIPMAP_NEAREST = 0x2701
+    #: Texture interpolation: Minification filter for mipmaps
     NEAREST_MIPMAP_LINEAR = 0x2702
+    #: Texture interpolation: Minification filter for mipmaps
     LINEAR_MIPMAP_LINEAR = 0x2703
 
+    #: Texture wrap mode: Repeat
     REPEAT = gl.GL_REPEAT
+    # Texture wrap mode: Clamp to border pixel
     CLAMP_TO_EDGE = gl.GL_CLAMP_TO_EDGE
+    # Texture wrap mode: Clamp to border color
     CLAMP_TO_BORDER = gl.GL_CLAMP_TO_BORDER
+    # Texture wrap mode: Repeat mirrored
     MIRRORED_REPEAT = gl.GL_MIRRORED_REPEAT
 
     # Flags
+    #: Context flag: Blending
     BLEND = gl.GL_BLEND
+    #: Context flag: Depth testing
     DEPTH_TEST = gl.GL_DEPTH_TEST
+    #: Context flag: Face culling
     CULL_FACE = gl.GL_CULL_FACE
+    #: Context flag: Enable ``gl_PointSize`` in shaders.
     PROGRAM_POINT_SIZE = gl.GL_PROGRAM_POINT_SIZE
 
     # Blend functions
+    #: Blend function
     ZERO = 0x0000
+    #: Blend function
     ONE = 0x0001
+    #: Blend function
     SRC_COLOR = 0x0300
+    #: Blend function
     ONE_MINUS_SRC_COLOR = 0x0301
+    #: Blend function
     SRC_ALPHA = 0x0302
+    #: Blend function
     ONE_MINUS_SRC_ALPHA = 0x0303
+    #: Blend function
     DST_ALPHA = 0x0304
+    #: Blend function
     ONE_MINUS_DST_ALPHA = 0x0305
+    #: Blend function
     DST_COLOR = 0x0306
+    #: Blend function
     ONE_MINUS_DST_COLOR = 0x0307
 
     # Blend equations
     #: source + destination
     FUNC_ADD = 0x8006
-    #: source - destination
+    #: Blend equations: source - destination
     FUNC_SUBTRACT = 0x800A
-    #: destination - source
+    #: Blend equations: destination - source
     FUNC_REVERSE_SUBTRACT = 0x800B
-    #: Minimum of source and destination
+    #: Blend equations: Minimum of source and destination
     MIN = 0x8007
-    #: Maximum of source and destination
+    #: Blend equations: Maximum of source and destination
     MAX = 0x8008
 
     # Blend mode shortcuts
+    #: Blend mode shortcut for default blend mode: ``SRC_ALPHA, ONE_MINUS_SRC_ALPHA``
     BLEND_DEFAULT = 0x0302, 0x0303
+    #: Blend mode shortcut for additive blending: ``ONE, ONE``
     BLEND_ADDITIVE = 0x0001, 0x0001
+    #: Blend mode shortcut for premultipled alpha: ``SRC_ALPHA, ONE``
     BLEND_PREMULTIPLIED_ALPHA = 0x0302, 0x0001
 
     # VertexArray: Primitives
+    #: Primitive mode
     POINTS = gl.GL_POINTS  # 0
+    #: Primitive mode
     LINES = gl.GL_LINES  # 1
+    #: Primitive mode
     LINE_STRIP = gl.GL_LINE_STRIP  # 3
+    #: Primitive mode
     TRIANGLES = gl.GL_TRIANGLES  # 4
+    #: Primitive mode
     TRIANGLE_STRIP = gl.GL_TRIANGLE_STRIP  # 5
+    #: Primitive mode
     TRIANGLE_FAN = gl.GL_TRIANGLE_FAN  # 6
+    #: Primitive mode
     LINES_ADJACENCY = gl.GL_LINES_ADJACENCY  # 10
+    #: Primitive mode
     LINE_STRIP_ADJACENCY = gl.GL_LINE_STRIP_ADJACENCY  # 11
+    #: Primitive mode
     TRIANGLES_ADJACENCY = gl.GL_TRIANGLES_ADJACENCY  # 12
+    #: Primitive mode
     TRIANGLE_STRIP_ADJACENCY = gl.GL_TRIANGLE_STRIP_ADJACENCY  # 13
 
     # The most common error enums
@@ -111,7 +153,7 @@ class Context:
         self._screen = DefaultFrameBuffer(self)
         # Tracking active program
         self.active_program: Optional[Program] = None
-        # Tracking active program. On context creation the window is the default render target
+        # Tracking active framebuffer. On context creation the window is the default render target
         self.active_framebuffer: Framebuffer = self._screen
         self.stats: ContextStats = ContextStats(warn_threshold=1000)
 
@@ -130,12 +172,20 @@ class Context:
 
     @property
     def window(self) -> Window:
-        """The window this context belongs to"""
+        """
+        The window this context belongs to.
+        
+        :type: ``pyglet.Window``
+        """
         return self._window_ref()
 
     @property
     def screen(self) -> Framebuffer:
-        """The framebuffer for the window"""
+        """
+        The framebuffer for the window.
+        
+        :type: :py:class:`~arcade.Framebuffer`
+        """
         return self._screen
 
     @property
@@ -150,7 +200,11 @@ class Context:
 
     @property
     def gl_version(self) -> Tuple[int, int]:
-        """The OpenGL version as a 2 component tuple"""
+        """
+        The OpenGL version as a 2 component tuple
+
+        :type: tuple (major, minor) version
+        """
         return self._gl_version
 
     @property
@@ -165,6 +219,8 @@ class Context:
             err = ctx.error
             if err:
                 raise RuntimeError("OpenGL error: {err}")
+        
+        :type: str
         """
         err = gl.glGetError()
         if err == gl.GL_NO_ERROR:
@@ -174,18 +230,36 @@ class Context:
 
     @classmethod
     def activate(cls, ctx: 'Context'):
-        """Mark this context as the currently active one"""
+        """Mark a context as the currently active one"""
         cls.active = ctx
 
     def enable(self, *args):
-        """Enables a context flag"""
+        """
+        Enables one or more context flags::
+
+            # Single flag
+            ctx.enable(ctx.BLEND)
+            # Multiple flags
+            ctx.enable(ctx.DEPTH_TEST, ctx.CULL_FACE)
+        """
         self._flags.update(args)
 
         for flag in args:
             gl.glEnable(flag)
 
     def enable_only(self, *args):
-        """Enable only some flags. This will disable all other flags"""
+        """
+        Enable only some flags. This will disable all other flags.
+        This is a simple way to ensure that context flag states
+        are not lingering from other sections of your code base::
+
+            # Ensure all flags are disabled (enable no flags)
+            ctx.enable_only()
+            # Make sure only blending is enabled
+            ctx.enable_only(ctx.BLEND)
+            # Make sure only depth test and culling is enabled
+            ctx.enable_only(ctx.DEPTH_TEST, ctx.CULL_FACE)        
+        """
         self._flags = set(args)
 
         if self.BLEND in self._flags:
@@ -209,19 +283,44 @@ class Context:
             gl.glDisable(self.PROGRAM_POINT_SIZE)
 
     def disable(self, *args):
-        """Disable a context flag"""
+        """
+        Disable one or more context flags::
+
+            # Single flag
+            ctx.disable(ctx.BLEND)
+            # Multiple flags
+            ctx.disable(ctx.DEPTH_TEST, ctx.CULL_FACE)
+        """
         self._flags -= set(args)
 
         for flag in args:
             gl.glDisable(flag)
 
     def is_enabled(self, flag) -> bool:
-        """Check if a context flag is enabled"""
+        """
+        Check if a context flag is enabled
+
+        :type: bool
+        """
         return flag in self._flags
 
     @property
     def viewport(self) -> Tuple[int, int, int, int]:
-        """Get or set the viewport for the currently active framebuffer"""
+        """
+        Get or set the viewport for the currently active framebuffer.
+        The viewport simply describes what pixels of the screen
+        OpenGL should render to. Normally it would be the size of
+        the window's framebuffer::
+
+            # 4:3 screen
+            ctx.viewport = 0, 0, 800, 600
+            # 1080p
+            ctx.viewport = 0, 0, 1920, 1080
+            # Using the current framebuffer size
+            ctx.viewport = 0, 0, *ctx.screen.size
+
+        :type: tuple (x, y, width, height)
+        """
         return self.active_framebuffer.viewport
 
     @viewport.setter
@@ -230,7 +329,13 @@ class Context:
 
     @property
     def blend_func(self) -> Tuple[int, int]:
-        """Get or the blend function"""
+        """
+        Get or the blend function::
+
+            ctx.blend_func = ctx.ONE, ctx.ONE
+
+        :type: tuple (src, dst)
+        """
         return self._blend_func
 
     @blend_func.setter
@@ -266,6 +371,7 @@ class Context:
         :param Any data: The buffer data, This can be ``bytes`` or an object supporting the buffer protocol.
         :param int reserve: The number of bytes reserve
         :param str usage: Buffer usage. 'static', 'dynamic' or 'stream'
+        :rtype: :py:class:`~arcade.gl.Buffer`
         """
         # create_with_size
         return Buffer(self, data, reserve=reserve, usage=usage)
@@ -279,6 +385,7 @@ class Context:
 
         :param List[arcade.gl.Texture] color_attachments: List of textures we want to render into
         :param arcade.gl.Texture depth_attachment: Depth texture
+        :rtype: :py:class:`~arcade.gl.Framebuffer`
         """
         return Framebuffer(self, color_attachments=color_attachments, depth_attachment=depth_attachment)
 
@@ -306,7 +413,7 @@ class Context:
         :param Any data: The texture data (optional). Can be bytes or an object supporting the buffer protocol.
         :param GLenum wrap_x: How the texture wraps in x direction
         :param GLenum wrap_y: How the texture wraps in y direction
-        :param Tuple[GLenum, GLenum] filter: Minification and magnification filter
+        :param Tuple[GLenum,GLenum] filter: Minification and magnification filter
         """
         return Texture(self, size, components=components, data=data, dtype=dtype,
                        wrap_x=wrap_x, wrap_y=wrap_y,
@@ -328,12 +435,13 @@ class Context:
             fragment_shader: str = None,
             geometry_shader: str = None,
             defines: Dict[str, str] = None) -> Program:
-        """Create a new program given the vertex_shader and fragment shader code.
+        """Create a :py:class:`~arcade.gl.Program` given the vertex, fragment and geometry shader.
 
         :param str vertex_shader: vertex shader source
-        :param str fragment_shader: fragment shader source
-        :param str geometry_shader: geometry shader source
-        :param dict defines: Substitute #defines values in the source
+        :param str fragment_shader: fragment shader source (optional)
+        :param str geometry_shader: geometry shader source (optional)
+        :param dict defines: Substitute #defines values in the source (optional)
+        :rtype: :py:class:`~arcade.gl.Program`
         """
         source_vs = ShaderSource(vertex_shader, gl.GL_VERTEX_SHADER)
         source_fs = ShaderSource(fragment_shader, gl.GL_FRAGMENT_SHADER) if fragment_shader else None
@@ -357,7 +465,11 @@ class Context:
         )
 
     def query(self):
-        """Create a query object for measuring rendering calls in opengl"""
+        """
+        Create a query object for measuring rendering calls in opengl.
+
+        :rtype: :py:class:`~arcade.gl.Query`
+        """
         return Query(self)
 
 

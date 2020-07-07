@@ -124,7 +124,7 @@ class VertexArray:
             # TODO: Compare gltype between buffer descr and program attr
 
             gl.glEnableVertexAttribArray(prog_attr.location)
-            buff_descr.buffer.bind()
+            gl.glBindBuffer(gl.GL_ARRAY_BUFFER, buff_descr.buffer.glo)
 
             # TODO: Detect normalization
             normalized = gl.GL_TRUE if attr_descr.name in buff_descr.normalized else gl.GL_FALSE

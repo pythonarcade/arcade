@@ -47,11 +47,11 @@ class AttribFormat:
 
 
 class BufferDescription:
-    """Vertex Buffer Object description, allowing easy use with VAOs.
+    """Buffer Object description used with :py:class:`arcade.gl.Geometry`.
 
-    This class provides a Buffer object with a description of its content, allowing
-    a VertexArray object to correctly enable its shader attributes with the
-    vertex Buffer object.
+    This class provides a Buffer object with a description of its content, allowing the
+    a :py:class:`~arcade.gl.Geometry` object to correctly map shader attributes
+    to a program/shader.
 
     The formats is a string providing the number and type of each attribute. Currently
     we only support f (float), i (integer) and B (unsigned byte).
@@ -102,12 +102,19 @@ class BufferDescription:
                  normalized: Iterable[str] = None,
                  instanced: bool = False):
 
+        #: The :py:class:`~arcade.gl.Buffer` this description object describes
         self.buffer = buffer  # type: Buffer
+        #: List of string attributes
         self.attributes = attributes
+        #: List of normalied attributes
         self.normalized = set() if normalized is None else set(normalized)
+        #: Instanced flag (bool)
         self.instanced = instanced  # type: bool
+        #: Formats of each attribute
         self.formats = []  # type: List[AttribFormat]
+        #: The byte stride of the buffer
         self.stride = -1  # type: int
+        #: Number of vertices in the buffer
         self.num_vertices = -1  # type: int
 
         if not isinstance(self.attributes, list) and not isinstance(self.attributes, tuple):

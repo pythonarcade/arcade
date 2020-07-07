@@ -31,6 +31,7 @@ __all__ = [
     'Framebuffer',
     'Geometry',
     'Program',
+    'Query',
     'ShaderException',
     'Texture',
 ]

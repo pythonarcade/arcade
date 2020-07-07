@@ -48,6 +48,8 @@ from arcade import csscolor
 from arcade import key
 # noinspection PyPep8
 from arcade import resources
+
+# --- Generated imports ---
 from .window_commands import close_window
 from .window_commands import create_orthogonal_projection
 from .window_commands import finish_render
@@ -251,8 +253,12 @@ from .paths import has_line_of_sight
 
 from .context import ArcadeContext
 
+
+
 # noinspection PyPep8
 from arcade import experimental
+
+# --- Generated __all__ ---
 
 __all__ = ['AStarBarrierList',
            'AnimatedTimeBasedSprite',
@@ -435,3 +441,4 @@ __all__ = ['AStarBarrierList',
            ]
 
 __version__ = VERSION
+

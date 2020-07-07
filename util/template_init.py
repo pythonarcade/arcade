@@ -48,5 +48,12 @@ from arcade import csscolor
 from arcade import key
 # noinspection PyPep8
 from arcade import resources
+
+# --- Generated imports ---
+$imports
+
 # noinspection PyPep8
 from arcade import experimental
+
+# --- Generated __all__ ---
+$all
