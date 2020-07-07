@@ -9,10 +9,8 @@ Version 2.4a (Pre-release)
 ---------------------------
 
 Alphas of version 2.4 are available if you specifically download the latest
-alpha versions from `pypi <https://pypi.org/project/arcade/>`_.
+beta versions from `pypi <https://pypi.org/project/arcade/>`_.
 Otherwise you'll default to the more stable 2.3 branch.
-
-The new parts of the API on 2.4 are not set, and may change without warning.
 
 Version 2.4 Major Features
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -70,12 +68,13 @@ Version 2.4 Under-the-hood improvements
 Version 2.4 New Documentation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-* Pymunk Tutorial
-* View tutorial
-* Solitaire tutorial
-* GPU particle burst tutorial
-* Several examples
-* Performance testing
+* New Tutorial: :ref:`pymunk_platformer_tutorial`
+* New Tutorial: :ref:`view-tutorial`
+* New Tutorial: :ref:`solitaire_tutorial`
+* New Tutorial: :ref:`gpu_particle_burst`
+* Several new and updated examples on :ref:`example-code`
+* `New performance testing project <https://craven-performance-testing.s3-us-west-2.amazonaws.com/index.html>`_
+* A lot of improvements, and a few videos for https://learn.arcade.academy
 
 Version 2.4 'Experimental'
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
