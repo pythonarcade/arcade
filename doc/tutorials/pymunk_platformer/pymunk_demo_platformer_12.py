@@ -252,12 +252,19 @@ class GameWindow(arcade.Window):
         my_map = arcade.tilemap.read_tmx(map_name)
 
         # Read in the map layers
-        self.wall_list = arcade.tilemap.process_layer(my_map, 'Platforms', SPRITE_SCALING_TILES)
-        self.item_list = arcade.tilemap.process_layer(my_map, 'Dynamic Items', SPRITE_SCALING_TILES)
+        self.wall_list = arcade.tilemap.process_layer(my_map,
+                                                      'Platforms',
+                                                      SPRITE_SCALING_TILES,
+                                                      hit_box_algorithm="Detailed")
+        self.item_list = arcade.tilemap.process_layer(my_map,
+                                                      'Dynamic Items',
+                                                      SPRITE_SCALING_TILES,
+                                                      hit_box_algorithm="Detailed")
         self.ladder_list = arcade.tilemap.process_layer(my_map,
                                                         'Ladders',
                                                         SPRITE_SCALING_TILES,
-                                                        use_spatial_hash=True)
+                                                        use_spatial_hash=True,
+                                                        hit_box_algorithm="Detailed")
 
         # Create player sprite
         self.player_sprite = PlayerSprite(self.ladder_list)
@@ -508,6 +515,11 @@ class GameWindow(arcade.Window):
         self.bullet_list.draw()
         self.item_list.draw()
         self.player_list.draw()
+
+        for item in self.player_list:
+            item.draw_hit_box(arcade.color.RED)
+        for item in self.item_list:
+            item.draw_hit_box(arcade.color.RED)
 
 def main():
     """ Main method """

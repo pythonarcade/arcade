@@ -123,7 +123,130 @@ def rotate_point(x: float, y: float, cx: float, cy: float,
 
     return [x, y]
 
-def calculate_points(image: Image, hit_box_detail: float = 4.5):
+def calculate_hit_box_points_simple(image):
+    """
+    Given an image, this returns points that make up a hit box around it. Attempts
+    to trim out transparent pixels.
+
+    :param Image image:
+
+    :Returns: List of points
+
+    """
+    left_border = 0
+    good = True
+    while good and left_border < image.width:
+        for row in range(image.height):
+            pos = (left_border, row)
+            pixel = image.getpixel(pos)
+            if type(pixel) is int or len(pixel) != 4:
+                raise TypeError("Error, calculate_hit_box_points_simple called on image not in RGBA format")
+            else:
+                if pixel[3] != 0:
+                    good = False
+                    break
+        if good:
+            left_border += 1
+
+    right_border = image.width - 1
+    good = True
+    while good and right_border > 0:
+        for row in range(image.height):
+            pos = (right_border, row)
+            pixel = image.getpixel(pos)
+            if pixel[3] != 0:
+                good = False
+                break
+        if good:
+            right_border -= 1
+
+    top_border = 0
+    good = True
+    while good and top_border < image.height:
+        for column in range(image.width):
+            pos = (column, top_border)
+            pixel = image.getpixel(pos)
+            if pixel[3] != 0:
+                good = False
+                break
+        if good:
+            top_border += 1
+
+    bottom_border = image.height - 1
+    good = True
+    while good and bottom_border > 0:
+        for column in range(image.width):
+            pos = (column, bottom_border)
+            pixel = image.getpixel(pos)
+            if pixel[3] != 0:
+                good = False
+                break
+        if good:
+            bottom_border -= 1
+
+    def _check_corner_offset(start_x, start_y, x_direction, y_direction):
+
+        bad = False
+        offset = 0
+        while not bad:
+            y = start_y + (offset * y_direction)
+            x = start_x
+            for count in range(offset + 1):
+                my_pixel = image.getpixel((x, y))
+                # print(f"({x}, {y}) = {pixel} | ", end="")
+                if my_pixel[3] != 0:
+                    bad = True
+                    break
+                y -= y_direction
+                x += x_direction
+            # print(f" - {bad}")
+            offset += 1
+        # print(f"offset: {offset}")
+        return offset
+
+    def _r(point, height, width):
+        return point[0] - width / 2, (height - point[1]) - height / 2
+
+    top_left_corner_offset = _check_corner_offset(left_border, top_border, 1, 1)
+    top_right_corner_offset = _check_corner_offset(right_border, top_border, -1, 1)
+    bottom_left_corner_offset = _check_corner_offset(left_border, bottom_border, 1, -1)
+    bottom_right_corner_offset = _check_corner_offset(right_border, bottom_border, -1, -1)
+
+    p1 = left_border + top_left_corner_offset, top_border
+    p2 = right_border - top_right_corner_offset, top_border
+    p3 = right_border, top_border + top_right_corner_offset
+    p4 = right_border, bottom_border - bottom_right_corner_offset
+    p5 = right_border - bottom_right_corner_offset, bottom_border
+    p6 = left_border + bottom_left_corner_offset, bottom_border
+    p7 = left_border, bottom_border - bottom_left_corner_offset
+    p8 = left_border, top_border + top_left_corner_offset
+
+    result = []
+
+    h = image.height
+    w = image.width
+    result.append(_r(p1, h, w))
+    if top_left_corner_offset:
+        result.append(_r(p2, h, w))
+
+    result.append(_r(p3, h, w))
+    if top_right_corner_offset:
+        result.append(_r(p4, h, w))
+
+    result.append(_r(p5, h, w))
+    if bottom_right_corner_offset:
+        result.append(_r(p6, h, w))
+
+    result.append(_r(p7, h, w))
+    if bottom_left_corner_offset:
+        result.append(_r(p8, h, w))
+
+    # Remove duplicates
+    result = list(dict.fromkeys(result))
+
+    return result
+
+def calculate_hit_box_points_detailed(image: Image, hit_box_detail: float = 4.5):
     """
     Given an image, this returns points that make up a hit box around it. Attempts
     to trim out transparent pixels.

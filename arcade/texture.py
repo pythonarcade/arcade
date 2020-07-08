@@ -16,7 +16,8 @@ from typing import Union
 from arcade import lerp
 from arcade import RectList
 from arcade import Color
-from arcade import calculate_points
+from arcade import calculate_hit_box_points_simple
+from arcade import calculate_hit_box_points_detailed
 from arcade.resources import resolve_resource_path
 
 def _lerp_color(start_color: Color, end_color: Color, u: float) -> Color:
@@ -75,7 +76,19 @@ class Texture:
         :height: Height of the texture in pixels.
     """
 
-    def __init__(self, name: str, image: PIL.Image.Image = None):
+    def __init__(self,
+                 name: str,
+                 image: PIL.Image.Image = None,
+                 hit_box_algorithm: str = "Simple",
+                 hit_box_detail: float = 4.5):
+        """
+
+        Args:
+            name: Name of texture. Used for caching, so must be unique for each texture.
+            image: Image to use as a texture.
+            hit_box_algorithm: One of 'None', 'Simple' or 'Detailed'
+            hit_box_detail: Float, defaults to 4.5. Used with 'Detailed' to hit box
+        """
         from arcade.sprite import Sprite
         from arcade.sprite_list import SpriteList
 
@@ -86,6 +99,14 @@ class Texture:
         self._sprite: Optional[Sprite] = None
         self._sprite_list: Optional[SpriteList] = None
         self._hit_box_points = None
+
+        if hit_box_algorithm is not "Simple" and \
+           hit_box_algorithm is not "Detailed" and \
+           hit_box_algorithm is not "None":
+           raise ValueError("hit_box_algorithm must be 'Simple', 'Detailed', or 'None'.")
+        self._hit_box_algorithm = hit_box_algorithm
+
+        self._hit_box_detail = hit_box_detail
 
     @property
     def width(self) -> int:
@@ -112,7 +133,18 @@ class Texture:
         if self._hit_box_points is not None:
             return self._hit_box_points
         else:
-            self._hit_box_points = calculate_points(self.image)
+            if self._hit_box_algorithm == "Simple":
+                self._hit_box_points = calculate_hit_box_points_simple(self.image)
+            elif self._hit_box_algorithm == "Detailed":
+                self._hit_box_points = calculate_hit_box_points_detailed(self.image, self._hit_box_detail)
+            else:
+                p1 = (-self.image.width / 2, -self.image.height / 2)
+                p2 = (self.image.width / 2, -self.image.height / 2)
+                p3 = (self.image.width / 2, self.image.height / 2)
+                p4 = (-self.image.width / 2, self.image.height / 2)
+
+                self._hit_box_points = p1, p2, p3, p4
+
             return self._hit_box_points
 
     def _create_cached_sprite(self):
@@ -280,7 +312,9 @@ def load_texture(file_name: Union[str, Path],
                  flipped_vertically: bool = False,
                  flipped_diagonally: bool = False,
                  can_cache: bool = True,
-                 mirrored = None) -> Texture:
+                 mirrored = None,
+                 hit_box_algorithm = "Simple",
+                 hit_box_detail: float = 4.5) -> Texture:
     """
     Load an image from disk and create a texture.
 
@@ -339,7 +373,9 @@ def load_texture(file_name: Union[str, Path],
         file_name = resolve_resource_path(file_name)
 
         source_image = PIL.Image.open(file_name).convert('RGBA')
-        result = Texture(cache_file_name, source_image)
+        result = Texture(cache_file_name, source_image,
+                         hit_box_algorithm=hit_box_algorithm,
+                         hit_box_detail=hit_box_detail)
         load_texture.texture_cache[cache_file_name] = result  # type: ignore # dynamic attribute on function obj
 
     source_image_width, source_image_height = source_image.size
@@ -376,7 +412,9 @@ def load_texture(file_name: Union[str, Path],
     if flipped_vertically:
         image = image.transpose(PIL.Image.FLIP_TOP_BOTTOM)
 
-    result = Texture(cache_name, image)
+    result = Texture(cache_name, image,
+                     hit_box_algorithm=hit_box_algorithm,
+                     hit_box_detail=hit_box_detail)
     load_texture.texture_cache[cache_name] = result  # type: ignore # dynamic attribute on function obj
     return result
 
