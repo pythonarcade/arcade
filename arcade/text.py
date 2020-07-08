@@ -315,7 +315,7 @@ def draw_text(text: str,
     elif anchor_y == "center":
         text_sprite.center_y = start_y
     elif anchor_y == "bottom" or anchor_y == "baseline":
-        text_sprite.bottom = start_y
+        text_sprite.center_y = start_y + text_sprite.height / 2
     else:
         raise ValueError(f"anchor_y should be 'top', 'center', 'bottom', or 'baseline'. Not '{anchor_y}'")
 
