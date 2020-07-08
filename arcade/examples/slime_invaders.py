@@ -79,7 +79,7 @@ class MyGame(arcade.Window):
 
         arcade.set_background_color(arcade.color.AMAZON)
 
-        arcade.configure_logging()
+        # arcade.configure_logging()
 
     def setup_level_one(self):
         # Load the textures for the enemies, one facing left, one right
