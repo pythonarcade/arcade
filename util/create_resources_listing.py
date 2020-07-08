@@ -14,12 +14,10 @@ def process_resource_directory(out, my_path: Path):
 
     for cur_node in my_path.iterdir():
 
-        r1 = cur_node.relative_to('.')
-        r3 = 'resources/' + str(r1)[20:].replace('\\', '/')
-        # print(r3)
+        curr_node_rel = cur_node.relative_to('../arcade/')
         if cur_node.is_dir():
 
-            if str(cur_node).endswith("__"):
+            if cur_node.name.endswith("__"):
                 continue
 
             has_files = False
@@ -28,18 +26,16 @@ def process_resource_directory(out, my_path: Path):
                     has_files = True
                     break
 
-            try:
-                os.makedirs(f"build/html/{r3}")
-            except FileExistsError:
-                pass
+            os.makedirs(Path("build/html", *curr_node_rel.parts), exist_ok=True)
 
             # out.write(f"\n{cur_node.name}\n")
             # out.write("-" * len(cur_node.name) + "\n\n")
             process_resource_directory.cell_count = 0
 
             if has_files:
-                out.write(f"\n\n:resources:{r3[10:]}/\n")
-                out.write("-" * (len(r3) + 2) + "\n\n")
+                header_title = f":resources:{curr_node_rel.relative_to('resources').as_posix()}/"
+                out.write(f"\n{header_title}\n")
+                out.write("-" * (len(header_title)) + "\n\n")
 
                 out.write(".. raw:: html\n\n")
                 out.write("    <table class='resource-table'><tr>\n")
@@ -51,41 +47,45 @@ def process_resource_directory(out, my_path: Path):
 
 def process_resource_files(out, my_path: Path):
 
-
     for cur_node in my_path.iterdir():
+        # cur_node ..\arcade\resources\tmx_maps\standard_tileset.tsx
+        # cur_node_rel tmx_maps\standard_tileset.tsx
+        # r1 ..\arcade\resources\tmx_maps\standard_tileset.tsx
+        # r3 resources/tmx_maps/standard_tileset.tsx
+        # r2 :resources:tmx_maps/standard_tileset.tsx
+        cur_node_rel = cur_node.relative_to('../arcade')
         r1 = cur_node.relative_to('.')
         r3 = 'resources/' + str(r1)[20:].replace('\\', '/')
-        # print(r3)
         if not cur_node.is_dir():
-            r2 = ":resources:" + str(r1)[20:].replace('\\', '/')
+            r2 = f":resources:{cur_node_rel.relative_to('resources').as_posix()}"
             if process_resource_directory.cell_count % 3 == 0:
                 out.write(f"    </tr>\n")
                 out.write(f"    <tr>\n")
-            if r2.endswith(".png") or r2.endswith(".jpg") or r2.endswith(".gif") or r2.endswith(".svg"):
+            if cur_node.suffix in [".png", ".jpg", ".gif", ".svg"]:
                 out.write(f"    <td>")
                 out.write(f"<a href='{r3}'><img alt='{r2}' title='{r2}' src='{r3}'></a><br />")
                 out.write(f"{cur_node.name}")
                 process_resource_directory.cell_count += 1
                 out.write("</td>\n")
-            elif r2.endswith(".wav"):
+            elif cur_node.suffix == ".wav":
                 out.write(f"    <td>")
                 out.write(f"<audio controls><source src='{r3}' type='audio/x-wav'></audio><br />")
                 out.write(f"{cur_node.name}")
                 process_resource_directory.cell_count += 1
                 out.write("</td>\n")
-            elif r2.endswith(".mp3"):
+            elif cur_node.suffix == ".mp3":
                 out.write(f"    <td>")
                 out.write(f"<audio controls><source src='{r3}' type='audio/mpeg'></audio><br />")
                 out.write(f"{cur_node.name}")
                 process_resource_directory.cell_count += 1
                 out.write("</td>\n")
-            elif r2.endswith(".ogg"):
+            elif cur_node.suffix == ".ogg":
                 out.write(f"    <td>")
                 out.write(f"<audio controls><source src='{r3}' type='audio/ogg'></audio><br />")
                 out.write(f"{cur_node.name}")
                 process_resource_directory.cell_count += 1
                 out.write("</td>\n")
-            elif r2.endswith(".url") or r2.endswith(".txt"):
+            elif cur_node.suffix in [".url", ".txt"]:
                 pass
             else:
                 out.write(f"    <td>")
@@ -94,7 +94,7 @@ def process_resource_files(out, my_path: Path):
                 out.write("</td>\n")
             # out.write(f"<br />{r2}</td>")
             src = r1
-            dst = f"build\\html\\{r3}"
+            dst = Path("build/html", r3)
             shutil.copyfile(src, dst)
 
 
