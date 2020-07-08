@@ -223,12 +223,24 @@ class Texture:
         These are rules for how a texture interpolates.
         The filter is specified for minification and magnification.
 
-        Default value is ``GL_LINEAR, GL_LINEAR``.
-        Can be set to ``GL_NEAREST, GL_NEAREST`` for pixelated graphics.
+        Default value is ``LINEAR, LINEAR``.
+        Can be set to ``NEAREST, NEAREST`` for pixelated graphics.
 
-        When mipmapping is used the min filter needs to be `GL_*_MIPMAP_*`.
+        When mipmapping is used the min filter needs to be one of the
+        ``MIPMAP`` variants.
 
-        Also see:
+        Accepted values::
+            
+            # Enums can be accessed on the context or arcade.gl            
+            NEAREST                # Nearest pixel
+            LINEAR                 # Linear interpolate
+            NEAREST_MIPMAP_NEAREST # Minification filter for mipmaps
+            LINEAR_MIPMAP_NEAREST  # Minification filter for mipmaps
+            NEAREST_MIPMAP_LINEAR  # Minification filter for mipmaps
+            LINEAR_MIPMAP_LINEAR   # Minification filter for mipmaps
+
+        Also see
+
         * https://www.khronos.org/opengl/wiki/Texture#Mip_maps
         * https://www.khronos.org/opengl/wiki/Sampler_Object#Filtering
 
@@ -250,9 +262,20 @@ class Texture:
     def wrap_x(self) -> int:
         """
         Get or set the horizontal wrapping of the texture. This decides how textures
-        are read when texture coordinates are outside the [0.0, 1.0] area.
+        are read when texture coordinates are outside the ``[0.0, 1.0]`` area.
+        Default value is ``REPEAT``.
 
-        Valid options are: ``GL_REPEAT``, ``GL_MIRRORED_REPEAT``, ``GL_CLAMP_TO_EDGE``, ``GL_CLAMP_TO_BORDER``
+        Valid options are::
+
+            # Note: Enums can also be accessed in arcade.gl
+            # Repeat pixels on the y axis
+            texture.wrap_x = ctx.REPEAT
+            # Repeat pixels on the y axis mirrored
+            texture.wrap_x = ctx.MIRRORED_REPEAT
+            # Repeat the edge pixels when reading outside the texture
+            texture.wrap_x = ctx.CLAMP_TO_EDGE
+            # Use the border color (black by default) when reading outside the texture
+            texture.wrap_x = ctx.CLAMP_TO_BORDER
 
         :type: int
         """
@@ -268,9 +291,20 @@ class Texture:
     def wrap_y(self) -> int:
         """
         Get or set the horizontal wrapping of the texture. This decides how textures
-        are read when texture coordinates are outside the [0.0, 1.0] area.
+        are read when texture coordinates are outside the ``[0.0, 1.0]`` area.
+        Default value is ``REPEAT``.
 
-        Valid options are: ``GL_REPEAT``, ``GL_MIRRORED_REPEAT``, ``GL_CLAMP_TO_EDGE``, ``GL_CLAMP_TO_BORDER``
+        Valid options are::
+
+            # Note: Enums can also be accessed in arcade.gl
+            # Repeat pixels on the x axis
+            texture.wrap_x = ctx.REPEAT
+            # Repeat pixels on the x axis mirrored
+            texture.wrap_x = ctx.MIRRORED_REPEAT
+            # Repeat the edge pixels when reading outside the texture
+            texture.wrap_x = ctx.CLAMP_TO_EDGE
+            # Use the border color (black by default) when reading outside the texture
+            texture.wrap_x = ctx.CLAMP_TO_BORDER
 
         :type: int
         """
@@ -299,10 +333,9 @@ class Texture:
         return bytearray(buffer)
 
     def write(self, data: Union[bytes, Buffer], level: int = 0, viewport=None) -> None:
-        """Write byte data to the texture. This can be bytes or any
-        object supporting the buffer protocol.
+        """Write byte data to the texture. This can be bytes or a :py:class:`~arcade.gl.Buffer`.
 
-        :param Union[bytes, Buffer] data: bytes or a Buffer with data to write
+        :param Union[bytes,Buffer] data: bytes or a Buffer with data to write
         :param int level: The texture level to write
         :param tuple viewport: The are of the texture to write. 2 or 4 component tuple
         """
@@ -347,9 +380,12 @@ class Texture:
 
     def build_mipmaps(self, base: int = 0, max_level: int = 1000) -> None:
         """Generate mipmaps for this texture. Leave the default arguments
-        will usually do the job.
+        will usually do the job. Building mipmaps will create several
+        smaller versions of the texture (256 x 256, 128 x 128, 64 x 64, 32 x 32 etc)
+        helping OpenGL in rendering a nicer version of texture
+        when it's rendered to the screen in smaller version.
 
-        Note that mimmaps will only be used if the texture filter is
+        Note that mipmaps will only be used if the texture filter is
         configured with a mipmap-type minification::
 
             # Set up linear interpolating minification filter
@@ -367,7 +403,12 @@ class Texture:
 
     @staticmethod
     def release(ctx: 'Context', glo: gl.GLuint):
-        """Destroy the texture"""
+        """
+        Destroy the texture.
+        This is called automatically when the object is garbage collected.
+
+        :param gl.GLuint glo: The OpenGL texture id
+        """
         # If we have no context, then we are shutting down, so skip this
         if gl.current_context is None:
             return
