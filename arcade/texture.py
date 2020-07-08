@@ -352,14 +352,15 @@ def load_texture(file_name: Union[str, Path],
         flipped_horizontally = mirrored
 
     # See if we already loaded this texture, and we can just use a cached version.
-    cache_name = "{}-{}-{}-{}-{}-{}-{}-{}".format(file_name,
-                                                  x,
-                                                  y,
-                                                  width,
-                                                  height,
-                                                  flipped_horizontally,
-                                                  flipped_vertically,
-                                                  flipped_diagonally)
+    cache_name = "{}-{}-{}-{}-{}-{}-{}-{}-{}".format(file_name,
+                                                     x,
+                                                     y,
+                                                     width,
+                                                     height,
+                                                     flipped_horizontally,
+                                                     flipped_vertically,
+                                                     flipped_diagonally,
+                                                     hit_box_algorithm)
     if can_cache and cache_name in load_texture.texture_cache:  # type: ignore # dynamic attribute on function obj
         return load_texture.texture_cache[cache_name]  # type: ignore # dynamic attribute on function obj
 

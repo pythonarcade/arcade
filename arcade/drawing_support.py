@@ -140,7 +140,7 @@ def calculate_hit_box_points_simple(image):
             pos = (left_border, row)
             pixel = image.getpixel(pos)
             if type(pixel) is int or len(pixel) != 4:
-                raise TypeError("Error, calculate_hit_box_points_simple called on image not in RGBA format")
+                raise TypeError("Error, calculate_points called on image not in RGBA format")
             else:
                 if pixel[3] != 0:
                     good = False
@@ -184,6 +184,10 @@ def calculate_hit_box_points_simple(image):
         if good:
             bottom_border -= 1
 
+    # If the image is empty, return an empty set
+    if bottom_border == 0:
+        return []
+
     def _check_corner_offset(start_x, start_y, x_direction, y_direction):
 
         bad = False
@@ -200,7 +204,8 @@ def calculate_hit_box_points_simple(image):
                 y -= y_direction
                 x += x_direction
             # print(f" - {bad}")
-            offset += 1
+            if not bad:
+                offset += 1
         # print(f"offset: {offset}")
         return offset
 
@@ -213,36 +218,37 @@ def calculate_hit_box_points_simple(image):
     bottom_right_corner_offset = _check_corner_offset(right_border, bottom_border, -1, -1)
 
     p1 = left_border + top_left_corner_offset, top_border
-    p2 = right_border - top_right_corner_offset, top_border
-    p3 = right_border, top_border + top_right_corner_offset
-    p4 = right_border, bottom_border - bottom_right_corner_offset
-    p5 = right_border - bottom_right_corner_offset, bottom_border
-    p6 = left_border + bottom_left_corner_offset, bottom_border
-    p7 = left_border, bottom_border - bottom_left_corner_offset
+    p2 = (right_border + 1) - top_right_corner_offset, top_border
+    p3 = (right_border + 1), top_border + top_right_corner_offset
+    p4 = (right_border + 1), (bottom_border + 1) - bottom_right_corner_offset
+    p5 = (right_border + 1) - bottom_right_corner_offset, (bottom_border + 1)
+    p6 = left_border + bottom_left_corner_offset, (bottom_border + 1)
+    p7 = left_border, (bottom_border + 1) - bottom_left_corner_offset
     p8 = left_border, top_border + top_left_corner_offset
 
     result = []
 
     h = image.height
     w = image.width
-    result.append(_r(p1, h, w))
-    if top_left_corner_offset:
-        result.append(_r(p2, h, w))
-
-    result.append(_r(p3, h, w))
-    if top_right_corner_offset:
-        result.append(_r(p4, h, w))
-
-    result.append(_r(p5, h, w))
-    if bottom_right_corner_offset:
-        result.append(_r(p6, h, w))
 
     result.append(_r(p7, h, w))
     if bottom_left_corner_offset:
+        result.append(_r(p6, h, w))
+
+    result.append(_r(p5, h, w))
+    if bottom_right_corner_offset:
+        result.append(_r(p4, h, w))
+
+    result.append(_r(p3, h, w))
+    if top_right_corner_offset:
+        result.append(_r(p2, h, w))
+
+    result.append(_r(p1, h, w))
+    if top_left_corner_offset:
         result.append(_r(p8, h, w))
 
     # Remove duplicates
-    result = list(dict.fromkeys(result))
+    result = tuple(dict.fromkeys(result))
 
     return result
 
