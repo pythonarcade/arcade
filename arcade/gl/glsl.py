@@ -63,7 +63,7 @@ class ShaderSource:
         if self._lines[0].strip().startswith('#version'):
             try:
                 return int(self._lines[0].split()[1])
-            except:
+            except Exception:
                 pass
 
         source = "\n".join(f"{str(i+1).zfill(3)}: {line} " for i, line in enumerate(self._lines))

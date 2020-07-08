@@ -13,7 +13,35 @@ if TYPE_CHECKING:  # handle import cycle caused by type hinting
 
 class Texture:
     """
-    Class that represents an OpenGL texture.
+    An OpenGL texture.
+    We can create an empty black texture or a texture from byte data.
+    A texture can also be created with different datatypes such as
+    float, integer or unsigned integer.
+
+    Supported ``dtype`` values are::
+
+        # Float formats
+        'f1': UNSIGNED_BYTE
+        'f2': HALF_FLOAT
+        'f4': FLOAT
+        # int formats
+        'i1': BYTE
+        'i2': SHORT
+        'i4': INT
+        # uint formats
+        'u1': UNSIGNED_BYTE
+        'u2': UNSIGNED_SHORT
+        'u4': UNSIGNED_INT
+
+    :param Context ctx: The context the object belongs to
+    :param Tuple[int, int] size: The size of the texture
+    :param int components: The number of components (1: R, 2: RG, 3: RGB, 4: RGBA)
+    :param str dtype: The data type of each component: f1, f2, f4 / i1, i2, i4 / u1, u2, u4
+    :param data: The texture data (optional). Can be bytes or any object supporting the buffer protocol.
+    :param Any data: The byte data of the texture. bytes or anything supporting the buffer protocol.
+    :param Tuple[gl.GLuint,gl.GLuint] filter: The minification/magnification filter of the texture
+    :param gl.GLuint wrap_x: Wrap mode x
+    :param gl.GLuint wrap_y: Wrap mode y
     """
     __slots__ = (
         '_ctx', '_glo', '_width', '_height', '_dtype', '_target', '_components',
@@ -28,13 +56,13 @@ class Texture:
         'f2': (_float_base_format, (0, gl.GL_R16F, gl.GL_RG16F, gl.GL_RGB16F, gl.GL_RGBA16F), gl.GL_HALF_FLOAT, 2),
         'f4': (_float_base_format, (0, gl.GL_R32F, gl.GL_RG32F, gl.GL_RGB32F, gl.GL_RGBA32F), gl.GL_FLOAT, 4),
         # int formats
-        'i1': (_int_base_format, (0, gl.GL_R8UI, gl.GL_RG8UI, gl.GL_RGB8UI, gl.GL_RGBA8UI), gl.GL_UNSIGNED_BYTE, 1),
-        'i2': (_int_base_format, (0, gl.GL_R16UI, gl.GL_RG16UI, gl.GL_RGB16UI, gl.GL_RGBA16UI), gl.GL_UNSIGNED_SHORT, 2),
-        'i4': (_int_base_format, (0, gl.GL_R32UI, gl.GL_RG32UI, gl.GL_RGB32UI, gl.GL_RGBA32UI), gl.GL_UNSIGNED_INT, 4),
+        'i1': (_int_base_format, (0, gl.GL_R8I, gl.GL_RG8I, gl.GL_RGB8I, gl.GL_RGBA8I), gl.GL_BYTE, 1),
+        'i2': (_int_base_format, (0, gl.GL_R16I, gl.GL_RG16I, gl.GL_RGB16I, gl.GL_RGBA16I), gl.GL_SHORT, 2),
+        'i4': (_int_base_format, (0, gl.GL_R32I, gl.GL_RG32I, gl.GL_RGB32I, gl.GL_RGBA32I), gl.GL_INT, 4),
         # uint formats
-        'u1': (_int_base_format, (0, gl.GL_R8UI, gl.GL_RG8UI, gl.GL_RGB8UI, gl.GL_RGBA8UI), gl.GL_BYTE, 1),
-        'u2': (_int_base_format, (0, gl.GL_R16UI, gl.GL_RG16UI, gl.GL_RGB16UI, gl.GL_RGBA16UI), gl.GL_SHORT, 2),
-        'u4': (_int_base_format, (0, gl.GL_R32UI, gl.GL_RG32UI, gl.GL_RGB32UI, gl.GL_RGBA32UI), gl.GL_INT, 4),
+        'u1': (_int_base_format, (0, gl.GL_R8UI, gl.GL_RG8UI, gl.GL_RGB8UI, gl.GL_RGBA8UI), gl.GL_UNSIGNED_BYTE, 1),
+        'u2': (_int_base_format, (0, gl.GL_R16UI, gl.GL_RG16UI, gl.GL_RGB16UI, gl.GL_RGBA16UI), gl.GL_UNSIGNED_SHORT, 2),
+        'u4': (_int_base_format, (0, gl.GL_R32UI, gl.GL_RG32UI, gl.GL_RGB32UI, gl.GL_RGBA32UI), gl.GL_UNSIGNED_INT, 4),
     }
 
     def __init__(self,
@@ -47,8 +75,7 @@ class Texture:
                  filter: Tuple[gl.GLuint, gl.GLuint] = None,
                  wrap_x: gl.GLuint = None,
                  wrap_y: gl.GLuint = None):
-        """Represents an OpenGL texture.
-
+        """
         A texture can be created with or without initial data.
         NOTE: Currently does not support multisample textures even
         thought ``samples`` is exposed.
@@ -129,42 +156,72 @@ class Texture:
 
     @property
     def ctx(self) -> 'Context':
-        """The context this texture belongs to"""
+        """
+        The context this texture belongs to
+
+        :type: :py:class:`~arcade.gl.Context`
+        """
         return self._ctx
 
     @property
     def glo(self) -> gl.GLuint:
-        """The OpenGL texture id"""
+        """
+        The OpenGL texture id
+
+        :type: GLuint
+        """
         return self._glo
 
     @property
     def width(self) -> int:
-        """The width of the texture in pixels"""
+        """
+        The width of the texture in pixels
+
+        :type: int
+        """
         return self._width
 
     @property
     def height(self) -> int:
-        """The height of the texture in pixels"""
+        """
+        The height of the texture in pixels
+
+        :type: int
+        """
         return self._height
 
     @property
     def dtype(self) -> str:
-        """The data type of each component"""
+        """
+        The data type of each component
+
+        :type: str
+        """
         return self._dtype
 
     @property
     def size(self) -> Tuple[int, int]:
-        """The size of the texture as a tuple"""
+        """
+        The size of the texture as a tuple
+
+        :type: tuple (width, height)
+        """
         return self._width, self._height
 
     @property
     def components(self) -> int:
-        """Number of components in the texture"""
+        """
+        Number of components in the texture
+
+        :type: int
+        """
         return self._components
 
     @property
     def filter(self) -> Tuple[int, int]:
-        """The (min, mag) filter for this texture.
+        """Get or set the ``(min, mag)`` filter for this texture.
+        These are rules for how a texture interpolates.
+        The filter is specified for minification and magnification.
 
         Default value is ``GL_LINEAR, GL_LINEAR``.
         Can be set to ``GL_NEAREST, GL_NEAREST`` for pixelated graphics.
@@ -174,6 +231,8 @@ class Texture:
         Also see:
         * https://www.khronos.org/opengl/wiki/Texture#Mip_maps
         * https://www.khronos.org/opengl/wiki/Sampler_Object#Filtering
+
+        :type: tuple (min filter, mag filter)
         """
         return self._filter
 
@@ -190,10 +249,12 @@ class Texture:
     @property
     def wrap_x(self) -> int:
         """
-        The horizontal wrapping of the texture. This decides how textures
+        Get or set the horizontal wrapping of the texture. This decides how textures
         are read when texture coordinates are outside the [0.0, 1.0] area.
 
         Valid options are: ``GL_REPEAT``, ``GL_MIRRORED_REPEAT``, ``GL_CLAMP_TO_EDGE``, ``GL_CLAMP_TO_BORDER``
+
+        :type: int
         """
         return self._wrap_x
 
@@ -206,10 +267,12 @@ class Texture:
     @property
     def wrap_y(self) -> int:
         """
-        The horizontal wrapping of the texture. This decides how textures
+        Get or set the horizontal wrapping of the texture. This decides how textures
         are read when texture coordinates are outside the [0.0, 1.0] area.
 
         Valid options are: ``GL_REPEAT``, ``GL_MIRRORED_REPEAT``, ``GL_CLAMP_TO_EDGE``, ``GL_CLAMP_TO_BORDER``
+
+        :type: int
         """
         return self._wrap_y
 
@@ -222,10 +285,11 @@ class Texture:
     def read(self, level: int = 0, alignment: int = 1) -> bytearray:
         """
         Read the contents of the texture.
+
         :param int level:  The texture level to read
         :param int alignment: Alignment of the start of each row in memory in number of bytes. Possible values: 1,2,4
+        :rtype: bytearray
         """
-
         gl.glBindTexture(self._target, self._glo)
         gl.glPixelStorei(gl.GL_PACK_ALIGNMENT, alignment)
 
@@ -235,7 +299,8 @@ class Texture:
         return bytearray(buffer)
 
     def write(self, data: Union[bytes, Buffer], level: int = 0, viewport=None) -> None:
-        """Write byte data to the texture
+        """Write byte data to the texture. This can be bytes or any
+        object supporting the buffer protocol.
 
         :param Union[bytes, Buffer] data: bytes or a Buffer with data to write
         :param int level: The texture level to write
@@ -280,13 +345,24 @@ class Texture:
                 data,  # pixel data
             )
 
-    def build_mipmaps(self, base=0, max_amount=1000) -> None:
-        """Generate mipmaps for this texture.
+    def build_mipmaps(self, base: int = 0, max_level: int = 1000) -> None:
+        """Generate mipmaps for this texture. Leave the default arguments
+        will usually do the job.
+
+        Note that mimmaps will only be used if the texture filter is
+        configured with a mipmap-type minification::
+
+            # Set up linear interpolating minification filter
+            texture.filter = ctx.LINEAR_MIPMAP_LINEAR, ctx.LINEAR
+
+        :param int base: Level the mipmaps start at (usually 0)
+        :param int max_level: The maximum levels to generate
+
         Also see: https://www.khronos.org/opengl/wiki/Texture#Mip_maps
         """
         self.use()
         gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_BASE_LEVEL, base)
-        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAX_LEVEL, max_amount)
+        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAX_LEVEL, max_level)
         gl.glGenerateMipmap(gl.GL_TEXTURE_2D)
 
     @staticmethod

@@ -7,6 +7,8 @@ SCREEN_WIDTH = 2048
 SCREEN_HEIGHT = 1024
 SCREEN_TITLE = "Subpixel Experiment"
 
+import logging
+arcade.configure_logging(logging.DEBUG)
 
 class MyGame(arcade.Window):
 
@@ -30,7 +32,9 @@ class MyGame(arcade.Window):
             for x in range(0, SCREEN_WIDTH, sprite_size):
                 # Just cycle until we get a sprite of the right size. This is terrible, but works!
                 while True:
-                    sprite = arcade.Sprite(next(resource_cycle), center_x=x + sprite_size // 2, center_y=y + sprite_size // 2)
+                    resource = next(resource_cycle)
+                    print('sprite', resource)
+                    sprite = arcade.Sprite(resource, center_x=x + sprite_size // 2, center_y=y + sprite_size // 2, calculate_hit_box=False)
                     # Add sprite if correct size and get to the next sprite in the grid
                     if sprite.width == 128 and sprite.height == 128:
                         self.sprites.append(sprite)
