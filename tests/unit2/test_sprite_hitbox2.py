@@ -53,7 +53,7 @@ def test():
     assert hit_box[2] == (width / 2, height / 2)
     assert hit_box[3] == (-width / 2, height / 2)
 
-    wall = arcade.Sprite(":resources:images/items/coinGold.png")
+    wall = arcade.Sprite(":resources:images/items/coinGold.png", hit_box_algorithm="Detailed")
     wall.position = 0, 0
 
     hit_box = wall.get_hit_box()

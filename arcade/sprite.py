@@ -120,7 +120,8 @@ class Sprite:
                  flipped_vertically: bool = False,
                  flipped_diagonally: bool = False,
                  mirrored: bool = None,
-                 calculate_hit_box: bool = True):
+                 hit_box_algorithm: str = "Simple",
+                 hit_box_detail: float = 4.5):
         """
         Create a new sprite.
 
@@ -136,8 +137,10 @@ class Sprite:
         :param bool flipped_vertically: Flip the image up/down across the horizontal axis.
         :param bool flipped_diagonally: Transpose the image, flip it across the diagonal.
         :param mirrored: Deprecated.
-        :param bool calculate_hit_box: If set to True, will attempt accurate, but slow, calculation of hit box. If
-                                       False, will use image dimensions for hit box.
+        :param str hit_box_algorithm: Can be 'Detailed', 'Simple', or 'None'.
+        :param float hit_box_detail: If hit_box_algorithm is 'Detailed', controls
+                                     amount of detail. Higher number means more points.
+
         """
 
         if image_width < 0:
@@ -157,6 +160,14 @@ class Sprite:
             warn("In Sprite, the 'mirrored' parameter is deprecated. Use 'flipped_horizontally' instead.", DeprecationWarning)
             flipped_horizontally = mirrored
 
+        if hit_box_algorithm != "Simple" and \
+           hit_box_algorithm != "Detailed" and \
+           hit_box_algorithm != "None":
+           raise ValueError("hit_box_algorithm must be 'Simple', 'Detailed', or 'None'.")
+        self._hit_box_algorithm = hit_box_algorithm
+
+        self._hit_box_detail = hit_box_detail
+
         self.sprite_lists: List[Any] = []
         self.physics_engines: List[Any] = []
 
@@ -170,14 +181,10 @@ class Sprite:
                                              image_width, image_height,
                                              flipped_horizontally=flipped_horizontally,
                                              flipped_vertically=flipped_vertically,
-                                             flipped_diagonally=flipped_diagonally)
-                if not calculate_hit_box:
-                    w = self._texture.width
-                    h = self._texture.height
-                    self._points = [(-w / 2, h / 2),
-                                    (w / 2, h / 2),
-                                    (w / 2, -h / 2),
-                                    (-w / 2, -h / 2)]
+                                             flipped_diagonally=flipped_diagonally,
+                                             hit_box_algorithm=hit_box_algorithm,
+                                             hit_box_detail=hit_box_detail
+                                             )
 
             except Exception as e:
                 print(f"Unable to load {filename} {e}")
