@@ -13,26 +13,9 @@ if TYPE_CHECKING:  # handle import cycle caused by type hinting
 
 
 class VertexArray:
-    """Vertex Array Object (VAO) is holding all the different OpenGL objects
-    together.
-
-    A VAO is the glue between a Shader program and buffers data.
-
-    Buffer information is provided through a list of tuples `content`
-    content = [
-        (buffer, 'format str', 'attrib1', 'attrib2', ...),
-    ]
-    The first item is a Buffer object. Then comes a format string providing information
-    about the count and type of data in the buffer. Type can be `f` for floats or `i`
-    for integers. Count can be 1, 2, 3 or 4.
-    Finally comes the strings representing the attributes found in the shader.
-
-    Example:
-        Providing a buffer with data of interleaved positions (x, y) and colors
-        (r, g, b, a):
-        content = [(buffer, '2f 4f', 'in_pos', 'in_color')]
-
-    vao = VertexArray(...)
+    """Wrapper for Vertex Array Objects (VAOs).
+    This objects should not be instantiated from user code.
+    Use :py:class:`arcade.gl.Geomtry` instead. It will create VAO instances for you.
     """
     __slots__ = '_ctx', 'glo', '_program', '_content', '_ibo', '_content', '_num_vertices', '__weakref__'
 
@@ -56,27 +39,43 @@ class VertexArray:
 
     @property
     def ctx(self) -> 'Context':
-        """The Context this object belongs to"""
+        """
+        The Context this object belongs to
+
+        :type: :py:class:`arcade.gl.Context`
+        """
         return self._ctx
 
     @property
     def program(self) -> Program:
-        """The assigned program"""
+        """
+        The assigned program
+
+        :type: :py:class:`arcade.gl.Program`
+        """
         return self._program
 
     @property
     def ibo(self) -> Optional[Buffer]:
-        """Element/index buffer"""
+        """
+        Element/index buffer
+
+        :type: :py:class:`arcade.gl.Buffer`
+        """
         return self._ibo
 
     @property
     def num_vertices(self) -> int:
-        """The number of vertices"""
+        """
+        The number of vertices
+        
+        :type: int
+        """
         return self._num_vertices
 
     @staticmethod
     def release(ctx: 'Context', glo: gl.GLuint):
-        """Delete the object"""
+        """Delete this object"""
         # If we have no context, then we are shutting down, so skip this
         if gl.current_context is None:
             return
@@ -171,6 +170,7 @@ class VertexArray:
 
     def transform(self, buffer: Buffer, mode: gl.GLenum, output_mode: gl.GLenum,
                   first: int = 0, vertices: int = 0, instances: int = 1, buffer_offset=0):
+        """Run a transform feedback"""
         if vertices < 0:
             raise ValueError(f"Cannot determine the number of vertices: {vertices}")
 
