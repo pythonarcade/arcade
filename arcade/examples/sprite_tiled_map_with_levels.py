@@ -101,7 +101,10 @@ class MyGame(arcade.Window):
         self.end_of_map = my_map.map_size.width * GRID_PIXEL_SIZE
 
         # Grab the layer of items we can't move through
-        self.wall_list = arcade.tilemap.process_layer(my_map, 'Platforms', TILE_SPRITE_SCALING)
+        self.wall_list = arcade.tilemap.process_layer(my_map,
+                                                      'Platforms',
+                                                      TILE_SPRITE_SCALING,
+                                                      use_spatial_hash=True)
 
         self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
                                                              self.wall_list,

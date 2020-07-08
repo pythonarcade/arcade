@@ -91,10 +91,16 @@ class MyGame(arcade.Window):
         self.end_of_map = my_map.map_size.width * GRID_PIXEL_SIZE
 
         # --- Platforms ---
-        self.wall_list = arcade.tilemap.process_layer(my_map, 'Platforms', TILE_SCALING)
+        self.wall_list = arcade.tilemap.process_layer(my_map,
+                                                      'Platforms',
+                                                      TILE_SCALING,
+                                                      use_spatial_hash=True)
 
         # --- Coins ---
-        self.coin_list = arcade.tilemap.process_layer(my_map, 'Coins', TILE_SCALING)
+        self.coin_list = arcade.tilemap.process_layer(my_map,
+                                                      'Coins',
+                                                      TILE_SCALING,
+                                                      use_spatial_hash=True)
 
         # --- Other stuff
         # Set the background color
@@ -127,6 +133,12 @@ class MyGame(arcade.Window):
         self.player_list.draw()
         self.wall_list.draw()
         self.coin_list.draw()
+
+        for item in self.player_list:
+            item.draw_hit_box(arcade.color.RED)
+
+        for item in self.wall_list:
+            item.draw_hit_box(arcade.color.RED)
 
         if self.last_time and self.frame_count % 60 == 0:
             fps = 1.0 / (time.time() - self.last_time) * 60
