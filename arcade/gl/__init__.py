@@ -18,11 +18,12 @@ from .types import BufferDescription
 from .exceptions import ShaderException
 from .enums import *
 from .buffer import Buffer
-from .vertex_array import Geometry
+from .vertex_array import Geometry, VertexArray
 from .texture import Texture
 from .framebuffer import Framebuffer
 from .program import Program
 from .query import Query
+from . import geometry
 
 __all__ = [
     'Buffer',
@@ -33,5 +34,7 @@ __all__ = [
     'Program',
     'Query',
     'ShaderException',
+    'VertexArray',
     'Texture',
+    'geometry',
 ]

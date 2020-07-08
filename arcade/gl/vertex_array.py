@@ -234,14 +234,31 @@ class Geometry:
 
     @property
     def ctx(self) -> 'Context':
+        """
+        The context this geometry belongs to.
+
+        :type: :py:class:`~arcade.gl.Geometry`
+        """
         return self._ctx
 
     @property
     def index_buffer(self) -> Optional[Buffer]:
+        """
+        Index/element buffer if suppoled at creation.
+
+        :type: :py:class:`~arcade.gl.Buffer`
+        """
         return self._index_buffer
 
     @property
     def num_vertices(self) -> int:
+        """
+        Get or set the number of vertices.
+        Be careful when modifying this properly
+        and be absolutely sure what you are doing.
+
+        :type: int
+        """
         # TODO: Calculate this better...
         return self._num_vertices
 
@@ -250,7 +267,9 @@ class Geometry:
         self._num_vertices = value
 
     def instance(self, program: Program) -> VertexArray:
-        """Get the VertexArray compatible with this program"""
+        """
+        Get the VertexArray compatible with this program
+        """
         vao = self._vao_cache.get(program.attribute_key)
         if vao:
             return vao
