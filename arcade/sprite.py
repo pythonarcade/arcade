@@ -1149,12 +1149,12 @@ class SpriteSolidColor(Sprite):
     This sprite is just a rectangular sprite of one solid color. No need to
     use an image file.
     """
-    def __init__(self, width, height, color):
+    def __init__(self, width:int, height:int, color):
         """
         Create a solid-color rectangular sprite.
 
-        :param float width: Width of the sprite
-        :param float height: Height of the sprite
+        :param int width: Width of the sprite
+        :param int height: Height of the sprite
         :param Color color: Color of the sprite
         """
         super().__init__()
@@ -1169,7 +1169,7 @@ class SpriteCircle(Sprite):
     use an image file.
     """
     def __init__(self,
-                 radius:float,
+                 radius:int,
                  color:Color,
                  soft:bool = False):
         """
