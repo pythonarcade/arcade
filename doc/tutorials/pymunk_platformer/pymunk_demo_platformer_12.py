@@ -77,7 +77,8 @@ BULLET_GRAVITY = 300
 class PlayerSprite(arcade.Sprite):
     """ Player Sprite """
     def __init__(self,
-                 ladder_list: arcade.SpriteList):
+                 ladder_list: arcade.SpriteList,
+                 hit_box_algorithm):
         """ Init """
         # Let parent initialize
         super().__init__()
@@ -94,7 +95,8 @@ class PlayerSprite(arcade.Sprite):
         # main_path = ":resources:images/animated_characters/robot/robot"
 
         # Load textures for idle standing
-        self.idle_texture_pair = arcade.load_texture_pair(f"{main_path}_idle.png")
+        self.idle_texture_pair = arcade.load_texture_pair(f"{main_path}_idle.png",
+                                                          hit_box_algorithm=hit_box_algorithm)
         self.jump_texture_pair = arcade.load_texture_pair(f"{main_path}_jump.png")
         self.fall_texture_pair = arcade.load_texture_pair(f"{main_path}_fall.png")
 
@@ -267,7 +269,7 @@ class GameWindow(arcade.Window):
                                                         hit_box_algorithm="Detailed")
 
         # Create player sprite
-        self.player_sprite = PlayerSprite(self.ladder_list)
+        self.player_sprite = PlayerSprite(self.ladder_list, hit_box_algorithm="Detailed")
 
         # Set player location
         grid_x = 1
@@ -516,10 +518,10 @@ class GameWindow(arcade.Window):
         self.item_list.draw()
         self.player_list.draw()
 
-        for item in self.player_list:
-            item.draw_hit_box(arcade.color.RED)
-        for item in self.item_list:
-            item.draw_hit_box(arcade.color.RED)
+        # for item in self.player_list:
+        #     item.draw_hit_box(arcade.color.RED)
+        # for item in self.item_list:
+        #     item.draw_hit_box(arcade.color.RED)
 
 def main():
     """ Main method """
