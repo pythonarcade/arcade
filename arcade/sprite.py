@@ -137,9 +137,27 @@ class Sprite:
         :param bool flipped_vertically: Flip the image up/down across the horizontal axis.
         :param bool flipped_diagonally: Transpose the image, flip it across the diagonal.
         :param mirrored: Deprecated.
-        :param str hit_box_algorithm: Can be 'Detailed', 'Simple', or 'None'.
-        :param float hit_box_detail: If hit_box_algorithm is 'Detailed', controls
-                                     amount of detail. Higher number means more points.
+        :param str hit_box_algorithm: One of 'None', 'Simple' or 'Detailed'. \
+        Defaults to 'Simple'. Use 'Simple' for the :data:`PhysicsEngineSimple`, \
+        :data:`PhysicsEnginePlatformer` \
+        and 'Detailed' for the :data:`PymunkPhysicsEngine`.
+
+            .. figure:: images/hit_box_algorithm_none.png
+               :width: 40%
+
+               hit_box_algorithm = "None"
+
+            .. figure:: images/hit_box_algorithm_simple.png
+               :width: 55%
+
+               hit_box_algorithm = "Simple"
+
+            .. figure:: images/hit_box_algorithm_detailed.png
+               :width: 75%
+
+               hit_box_algorithm = "Detailed"
+        :param float hit_box_detail: Float, defaults to 4.5. Used with 'Detailed' to hit box
+
 
         """
 

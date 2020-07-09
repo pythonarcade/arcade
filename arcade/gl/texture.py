@@ -230,8 +230,8 @@ class Texture:
         ``MIPMAP`` variants.
 
         Accepted values::
-            
-            # Enums can be accessed on the context or arcade.gl            
+
+            # Enums can be accessed on the context or arcade.gl
             NEAREST                # Nearest pixel
             LINEAR                 # Linear interpolate
             NEAREST_MIPMAP_NEAREST # Minification filter for mipmaps
@@ -329,7 +329,7 @@ class Texture:
 
         buffer = (gl.GLubyte * (self.width * self.height * self._component_size * self._components))()
         gl.glGetTexImage(gl.GL_TEXTURE_2D, level, self._format, self._type, buffer)
-        
+
         return bytearray(buffer)
 
     def write(self, data: Union[bytes, Buffer], level: int = 0, viewport=None) -> None:
@@ -407,6 +407,7 @@ class Texture:
         Destroy the texture.
         This is called automatically when the object is garbage collected.
 
+        :param arcade.gl.Context ctx: OpenGL Context
         :param gl.GLuint glo: The OpenGL texture id
         """
         # If we have no context, then we are shutting down, so skip this

@@ -121,7 +121,7 @@ def load_sound(path: Union[str, Path]):
     """
     Load a sound.
 
-    :param str file_name: Name of the sound file to load.
+    :param str path: Name of the sound file to load.
 
     :returns: Sound object
     :rtype: Sound
