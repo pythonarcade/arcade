@@ -5,12 +5,54 @@
 Release Notes
 =============
 
+Keep up-to-date with the latest changes to the Arcade library by the release notes.
+
 Version 2.4
 -----------
 
-*Currently in Beta. Arcade 2.4b1 released 2002-07-07*
+*Currently in Beta. Arcade 2.4b2 released 2002-07-08*
 
 Arcade version 2.4 is a major enhancement release to Arcade.
+
+.. image:: examples/light_demo.png
+    :width: 30%
+    :class: inline-image
+    :target: examples/light_demo.html
+
+.. image:: examples/astar_pathfinding.png
+    :width: 30%
+    :class: inline-image
+    :target: examples/astar_pathfinding.html
+
+.. image:: examples/mini_map_defender.png
+    :width: 30%
+    :class: inline-image
+    :target: examples/mini_map_defender.html
+
+.. image:: examples/bloom_defender.png
+    :width: 30%
+    :class: inline-image
+    :target: examples/bloom_defender.html
+
+.. image:: examples/gui_elements.png
+    :width: 30%
+    :class: inline-image
+    :target: examples/gui_elements.html
+
+.. image:: tutorials/pymunk_platformer/title_animated_gif.gif
+    :width: 30%
+    :class: inline-image
+    :target: tutorials/pymunk_platformer/index.html
+
+.. image:: tutorials/gpu_particle_burst/explosions.gif
+    :width: 30%
+    :class: inline-image
+    :target: tutorials/gpu_particle_burst/index.html
+
+.. image:: tutorials/card_game/animated.gif
+    :width: 30%
+    :class: inline-image
+    :target: tutorials/card_game/index.html
 
 Version 2.4 Major Features
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -72,7 +114,7 @@ Version 2.4 Under-the-hood improvements
 * Simple Physics engine is less likely to 'glitch' out.
 * Anti-aliasing should now work on windows if ``antialiasing=True``
   is passed in the window constructor.
-* OpenGL querying
+* OpenGL querying (keeps from drawing off-screen objects, improving performance)
 * OpenGL culling
 
 Version 2.4 New Documentation
@@ -84,13 +126,22 @@ Version 2.4 New Documentation
 * New Tutorial: :ref:`gpu_particle_burst`
 * Several new and updated examples on :ref:`example-code`
 * `New performance testing project <https://craven-performance-testing.s3-us-west-2.amazonaws.com/index.html>`_
-* A lot of improvements, and a few videos for https://learn.arcade.academy
+* A lot of improvements to https://learn.arcade.academy
+* `Instructional videos <https://www.youtube.com/playlist?list=PLUjR0nhln8uaI277eQfKkM8Nhp-xARriu>`_
+  added to for https://learn.arcade.academy
 
 Version 2.4 'Experimental'
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 There is now an ``arcade.experimental`` module that holds code still under
 development. Any code in this module might still have API changes.
+
+Special Thanks
+~~~~~~~~~~~~~~
+
+Special thanks to `einarf <https://github.com/einarf>`_ and
+`eruvanos <https://github.com/eruvanos>`_ for their significant work in helping
+put this release together.
 
 Version 2.3.15
 --------------

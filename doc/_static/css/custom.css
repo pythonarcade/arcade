@@ -125,3 +125,6 @@ a:visited {
   margin-bottom: 0px;
     font-weight: bold;
 }
+.inline-image {
+    display: inline;
+}
