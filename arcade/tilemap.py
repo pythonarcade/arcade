@@ -483,7 +483,7 @@ def process_layer(map_object: pytiled_parser.objects.TileMap,
                   layer_name: str,
                   scaling: float = 1,
                   base_directory: str = "",
-                  use_spatial_hash: bool = False,
+                  use_spatial_hash: Optional[bool] = None,
                   hit_box_algorithm="Simple",
                   hit_box_detail: float = 4.5
                   ) -> SpriteList:
