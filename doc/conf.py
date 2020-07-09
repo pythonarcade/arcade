@@ -17,6 +17,8 @@ autodoc_default_options = {
     'special-members': '__init__',
 }
 
+autodoc_inherit_docstrings = False
+
 # -*- coding: utf-8 -*-
 #
 # Arcade documentation build configuration file, created by
