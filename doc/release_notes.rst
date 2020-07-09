@@ -10,7 +10,7 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
 Version 2.4
 -----------
 
-*Currently in Beta. Arcade 2.4b2 released 2002-07-08*
+*Currently in Beta. Arcade 2.4b3 released 2020-07-09*
 
 Arcade version 2.4 is a major enhancement release to Arcade.
 
@@ -53,6 +53,11 @@ Arcade version 2.4 is a major enhancement release to Arcade.
     :width: 30%
     :class: inline-image
     :target: tutorials/card_game/index.html
+
+.. image:: examples/transform_feedback.gif
+    :width: 30%
+    :class: inline-image
+    :target: examples/transform_feedback.html
 
 Version 2.4 Major Features
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -104,7 +109,26 @@ Version 2.4 Minor Features
 * Support getting tmx layer by path, making it less likely reading in a tmx file
   will have directory confusion issues.
 * Add in font searching code if we can't find default font when drawing text.
-* Hit boxes are auto-calculated with a great deal more accurately.
+* Added :data:`arcade.Sprite.draw_hit_box` method to draw a hit box outline.
+* The :data:`arcade.Texture` class, :data:`arcade.Sprite` class, and
+  :data:`arcade.tilemap.process_layer` take in ``hit_box_algorithm`` and
+  ``hit_box_detail`` parameters for hit box calculation.
+
+.. figure:: images/hit_box_algorithm_none.png
+   :width: 40%
+
+   hit_box_algorithm = "None"
+
+.. figure:: images/hit_box_algorithm_simple.png
+   :width: 55%
+
+   hit_box_algorithm = "Simple"
+
+.. figure:: images/hit_box_algorithm_detailed.png
+   :width: 75%
+
+   hit_box_algorithm = "Detailed"
+
 
 Version 2.4 Under-the-hood improvements
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -139,8 +163,8 @@ development. Any code in this module might still have API changes.
 Special Thanks
 ~~~~~~~~~~~~~~
 
-Special thanks to `einarf <https://github.com/einarf>`_ and
-`eruvanos <https://github.com/eruvanos>`_ for their significant work in helping
+Special thanks to `Einar Forselv <https://github.com/einarf>`_ and
+`Maic Siemering <https://github.com/eruvanos>`_ for their significant work in helping
 put this release together.
 
 Version 2.3.15
