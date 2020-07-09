@@ -536,6 +536,11 @@ Frame Buffers (Arcade 2.4+)
 
    :ref:`light_demo`
 
+.. figure:: thumbs/transform_feedback.png
+   :figwidth: 170px
+
+   :ref:`transform_feedback`
+
 Particle System
 ^^^^^^^^^^^^^^^
 
