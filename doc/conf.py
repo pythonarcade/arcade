@@ -13,6 +13,10 @@ runpy.run_path('generate_example_thumbnails.py', run_name='__main__')
 runpy.run_path('../util/create_resources_listing.py', run_name='__main__')
 runpy.run_path('../util/update_quick_index.py', run_name='__main__')
 
+autodoc_default_options = {
+    'special-members': '__init__',
+}
+
 # -*- coding: utf-8 -*-
 #
 # Arcade documentation build configuration file, created by
