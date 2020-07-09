@@ -15,7 +15,9 @@ if TYPE_CHECKING:  # handle import cycle caused by type hinting
 class VertexArray:
     """Wrapper for Vertex Array Objects (VAOs).
     This objects should not be instantiated from user code.
-    Use :py:class:`arcade.gl.Geomtry` instead. It will create VAO instances for you.
+    Use :py:class:`arcade.gl.Geometry` instead. It will create VAO instances for you
+    automatically. There is a lot of complex interaction between programs
+    and vertex arrays that will be done for you automatically.
     """
     __slots__ = '_ctx', 'glo', '_program', '_content', '_ibo', '_content', '_num_vertices', '__weakref__'
 
@@ -75,7 +77,10 @@ class VertexArray:
 
     @staticmethod
     def release(ctx: 'Context', glo: gl.GLuint):
-        """Delete this object"""
+        """
+        Delete this object.
+        This is automatically called when this object is garbage collected.
+        """
         # If we have no context, then we are shutting down, so skip this
         if gl.current_context is None:
             return
@@ -87,6 +92,7 @@ class VertexArray:
         ctx.stats.decr('vertex_array')
 
     def _build(self, program: Program, content: Sequence[BufferDescription], index_buffer):
+        """Build a vertex array compatible with the program passed in"""
         gl.glGenVertexArrays(1, byref(self.glo))
         gl.glBindVertexArray(self.glo)
 
@@ -170,7 +176,16 @@ class VertexArray:
 
     def transform(self, buffer: Buffer, mode: gl.GLenum, output_mode: gl.GLenum,
                   first: int = 0, vertices: int = 0, instances: int = 1, buffer_offset=0):
-        """Run a transform feedback"""
+        """Run a transform feedback.
+        
+        :param Buffer buffer: The buffer to write the output
+        :param gl.GLenum mode: The input primitive mode
+        :param gl.GLenum output:mode: The output primitive mode
+        :param int first: Offset start vertex
+        :param int vertices: Number of vertices to render
+        :param int instances: Number of instances to render
+        :param int buffer_offset: Byte offset for the buffer
+        """
         if vertices < 0:
             raise ValueError(f"Cannot determine the number of vertices: {vertices}")
 
@@ -200,7 +215,14 @@ class Geometry:
     """A higher level abstraction of the VertexArray.
     It generates VertexArray instances on the fly internally matching the incoming program.
     This means we can render the same geometry with different programs as long as the
-    Program and BufferDescription have compatible attributes.
+    :py:class:`~arcade.gl.Program` and :py:class:`~arcade.gl.BufferDescription` have compatible attributes.
+
+    Geometry objects should be created through :py:meth:`arcade.gl.Context.geometry`
+
+    :param Contex ctx: The context this object belongs to
+    :param list content: List of BufferDescriptions
+    :param Buffer index_buffer: Index/element buffer
+    :param int mode: The default draw mode
     """
     __slots__ = '_ctx', '_content', '_index_buffer', '_mode', '_vao_cache', '_num_vertices', '__weakref__'
 
@@ -216,7 +238,12 @@ class Geometry:
         self._mode = mode or ctx.TRIANGLES
         self._vao_cache = {}  # type: Dict[str, VertexArray]
         self._num_vertices = -1
-
+        """
+        :param Contex ctx: The context this object belongs to
+        :param list content: List of BufferDescriptions
+        :param Buffer index_buffer: Index/element buffer
+        :param int mode: The default draw mode
+        """
         # if not content:
         #     raise ValueError("Geometry without buffer descriptions not supported")
 
@@ -244,7 +271,7 @@ class Geometry:
     @property
     def index_buffer(self) -> Optional[Buffer]:
         """
-        Index/element buffer if suppoled at creation.
+        Index/element buffer if supplied at creation.
 
         :type: :py:class:`~arcade.gl.Buffer`
         """
@@ -268,7 +295,7 @@ class Geometry:
 
     def instance(self, program: Program) -> VertexArray:
         """
-        Get the VertexArray compatible with this program
+        Get the :py:class:`arcade.gl.VertexArray` compatible with this program
         """
         vao = self._vao_cache.get(program.attribute_key)
         if vao:
@@ -279,6 +306,7 @@ class Geometry:
     def render(self, program: Program, *, mode: gl.GLenum = None,
                first: int = 0, vertices: int = None, instances: int = 1) -> None:
         """Render the geometry with a specific program.
+
         :param Program program: The Program to render with
         :param gl.GLenum mode: Override what primitive mode should be used
         :param int first: Offset start vertex
@@ -292,7 +320,8 @@ class Geometry:
 
     def transform(self, program: Program, buffer: Buffer, *,
                   first: int = 0, vertices: int = None, instances: int = 1, buffer_offset: int = 0) -> None:
-        """Render with transform feedback.
+        """Render with transform feedback. Instead of rendering to the screen
+        or a framebuffer the result will instead end up in the ``buffer`` we supply.
 
         If a geometry shader is used the output primitive mode is automatically detected.
 
@@ -314,7 +343,9 @@ class Geometry:
         )
 
     def flush(self) -> None:
-        """Flush all generated VertexArrays"""
+        """
+        Flush all the internally generated VertexArrays
+        """
         self._vao_cache = {}
 
     def _generate_vao(self, program: Program) -> VertexArray:

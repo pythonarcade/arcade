@@ -18,6 +18,8 @@ class Texture:
     A texture can also be created with different datatypes such as
     float, integer or unsigned integer.
 
+    The best way to create a texture instance is through :py:meth:`arcade.gl.Context.texture`
+
     Supported ``dtype`` values are::
 
         # Float formats
@@ -379,8 +381,8 @@ class Texture:
             )
 
     def build_mipmaps(self, base: int = 0, max_level: int = 1000) -> None:
-        """Generate mipmaps for this texture. Leave the default arguments
-        will usually do the job. Building mipmaps will create several
+        """Generate mipmaps for this texture. Leaveing the default arguments
+        will usually does the job. Building mipmaps will create several
         smaller versions of the texture (256 x 256, 128 x 128, 64 x 64, 32 x 32 etc)
         helping OpenGL in rendering a nicer version of texture
         when it's rendered to the screen in smaller version.
