@@ -4,6 +4,7 @@ Physics engines for top-down or platformers.
 # pylint: disable=too-many-arguments, too-many-locals, too-few-public-methods
 
 import math
+# import time
 
 from arcade import check_for_collision_with_list
 from arcade import check_for_collision
@@ -44,6 +45,8 @@ def _circular_check(player, walls):
         vary *= 2
 
 def _move_sprite(moving_sprite: Sprite, walls: SpriteList, ramp_up: bool):
+
+    # start_time = time.time()
 
     # See if we are starting this turn with a sprite already colliding with us.
     if len(check_for_collision_with_list(moving_sprite, walls)) > 0:
@@ -117,27 +120,42 @@ def _move_sprite(moving_sprite: Sprite, walls: SpriteList, ramp_up: bool):
     moving_sprite.center_y = round(moving_sprite.center_y, 2)
     # print(f"Spot Q ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
 
+    # end_time = time.time()
+    # print(f"Move 1 - {end_time - start_time:7.4f}")
+    # start_time = time.time()
+
+    loop_count = 0
     # --- Move in the x direction
     if moving_sprite.change_x:
+        # Keep track of our current y, used in ramping up
         almost_original_y = moving_sprite.center_y
 
+        # Strip off sign so we only have to write one version of this for
+        # both directions
         direction = math.copysign(1, moving_sprite.change_x)
-        exit_loop = False
         cur_x_change = abs(moving_sprite.change_x)
+        upper_bound = cur_x_change
+        lower_bound = 0
         cur_y_change = 0
+
+        exit_loop = False
         while not exit_loop:
-            if cur_x_change > abs(moving_sprite.change_x):
-                cur_x_change = abs(moving_sprite.change_x)
 
+            loop_count += 1
+            # print(f"{cur_x_change=}, {upper_bound=}, {lower_bound=}, {loop_count=}")
+
+            # Move sprite and check for collisions
             moving_sprite.center_x = original_x + cur_x_change * direction
-
             collision_check = check_for_collision_with_list(moving_sprite, walls)
 
+            # Update collision list
             for sprite in collision_check:
                 if sprite not in complete_hit_list:
                     complete_hit_list.append(sprite)
 
+            # Did we collide?
             if len(collision_check) > 0:
+                # We did collide. Can we ramp up and not collide?
                 if ramp_up:
                     cur_y_change = cur_x_change
                     moving_sprite.center_y = original_y + cur_y_change
@@ -147,19 +165,35 @@ def _move_sprite(moving_sprite: Sprite, walls: SpriteList, ramp_up: bool):
                         cur_y_change -= cur_x_change
                     else:
                         while(len(collision_check) == 0) and cur_y_change > 0:
+                            # print("Ramp up check")
                             cur_y_change -= 1
                             moving_sprite.center_y = almost_original_y + cur_y_change
                             collision_check = check_for_collision_with_list(moving_sprite, walls)
                         cur_y_change += 1
                         collision_check = []
 
-                if cur_x_change > 1 and len(collision_check) > 0:
-                    cur_x_change -= 1
+                if len(collision_check) > 0:
+                    # print(f"Yes @ {cur_x_change}")
+                    upper_bound = cur_x_change - 1
+                    if upper_bound - lower_bound <= 1:
+                        cur_x_change = lower_bound
+                        exit_loop = True
+                        # print(f"Exit 2 @ {cur_x_change}")
+                    else:
+                        cur_x_change = (upper_bound + lower_bound) / 2
                 else:
                     exit_loop = True
+                    # print(f"Exit 1 @ {cur_x_change}")
 
             else:
-                exit_loop = True
+                # No collision. Keep this new position and exit
+                lower_bound = cur_x_change
+                if upper_bound - lower_bound <= 1:
+                    # print(f"Exit 3 @ {cur_x_change}")
+                    exit_loop = True
+                else:
+                    # print(f"No @ {cur_x_change}")
+                    cur_x_change = (upper_bound + lower_bound) / 2
 
         # print(cur_x_change * direction, cur_y_change)
         moving_sprite.center_x = original_x + cur_x_change * direction
@@ -170,6 +204,10 @@ def _move_sprite(moving_sprite: Sprite, walls: SpriteList, ramp_up: bool):
     for sprite in rotating_hit_list:
         if sprite not in complete_hit_list:
             complete_hit_list.append(sprite)
+
+    # end_time = time.time()
+    # print(f"Move 2 - {end_time - start_time:7.4f} {loop_count}")
+
     return complete_hit_list
 
 
@@ -314,6 +352,7 @@ class PhysicsEnginePlatformer:
 
         :Returns: SpriteList with all sprites contacted. Empty list if no sprites.
         """
+        # start_time = time.time()
         # print(f"Spot A ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
 
         # --- Add gravity if we aren't on a ladder
@@ -364,4 +403,7 @@ class PhysicsEnginePlatformer:
 
         # print(f"Spot Z ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
         # Return list of encountered sprites
+        # end_time = time.time()
+        # print(f"Update - {end_time - start_time:7.4f}\n")
+
         return complete_hit_list
