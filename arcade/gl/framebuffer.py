@@ -34,8 +34,8 @@ class Framebuffer:
         )
 
     :param Context ctx: The context this framebuffer belongs to
-    :param List[Texture] color_attachments: List of color attachments.
-    :param Texture depth_attachment: A depth attachment (optional)
+    :param List[arcade.gl.Texture] color_attachments: List of color attachments.
+    :param arcade.gl.Texture depth_attachment: A depth attachment (optional)
     """
     __slots__ = (
         '_ctx', '_glo', '_width', '_height', '_color_attachments', '_depth_attachment',
@@ -44,8 +44,8 @@ class Framebuffer:
     def __init__(self, ctx: 'Context', *, color_attachments=None, depth_attachment=None):
         """
         :param Context ctx: The context this framebuffer belongs to
-        :param List[Texture] color_attachments: List of color attachments.
-        :param Texture depth_attachment: A depth attachment (optional)
+        :param List[arcade.gl.Texture] color_attachments: List of color attachments.
+        :param arcade.gl.Texture depth_attachment: A depth attachment (optional)
         """
         if not color_attachments:
             raise ValueError("Framebuffer must at least have one color attachment")
