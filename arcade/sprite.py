@@ -1150,6 +1150,13 @@ class SpriteSolidColor(Sprite):
     use an image file.
     """
     def __init__(self, width, height, color):
+        """
+        Create a solid-color rectangular sprite.
+
+        :param float width: Width of the sprite
+        :param float height: Height of the sprite
+        :param Color color: Color of the sprite
+        """
         super().__init__()
 
         image = PIL.Image.new('RGBA', (width, height), color)
@@ -1161,7 +1168,16 @@ class SpriteCircle(Sprite):
     This sprite is just an elliptical sprite of one solid color. No need to
     use an image file.
     """
-    def __init__(self, radius, color, soft=False):
+    def __init__(self,
+                 radius:float,
+                 color:Color,
+                 soft:bool = False):
+        """
+
+        :param float radius: Radius of the circle
+        :param Color color: Color of the circle
+        :param bool soft: If True, will add a alpha gradient
+        """
         super().__init__()
 
         if soft:
