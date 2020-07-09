@@ -15,6 +15,8 @@ class Buffer:
     to graphics memory so shader programs can process the data.
     They are used for storage of vertex data,
     element data (vertex indexing), uniform block data etc.
+
+    Buffer objects should be created using :py:meth:`arcade.gl.Context.buffer`
     """
     __slots__ = '_ctx', '_glo', '_size', '_usage', '__weakref__'
     _usages = {

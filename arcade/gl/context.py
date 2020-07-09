@@ -426,6 +426,13 @@ class Context:
 
     def geometry(self, content: Optional[Sequence[BufferDescription]] = None,
                  index_buffer: Buffer = None, mode: int = None):
+        """
+        Create a Geomtry instance.
+
+        :param list content: List of :py:class:`~arcade.gl.BufferDescription` (optional)
+        :param Buffer index_buffer: Index/element buffer (optional)
+        :param int mode: The default draw mode (optional)
+        """
         return Geometry(self, content, index_buffer=index_buffer, mode=mode)
 
     def program(

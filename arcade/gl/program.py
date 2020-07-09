@@ -25,10 +25,10 @@ class Program:
     Transform feedback also supported when output attributes
     names are passed in the varyings parameter.
 
-    Access Uniforms via the [] operator.
-    Example:
+    The best way to create a program instance is through :py:meth:`arcade.gl.Context.program`
 
-    .. code-block:
+    Access Uniforms via the ``[]`` operator.
+    Example::
 
         program['MyUniform'] = value
     """
@@ -57,6 +57,7 @@ class Program:
         self._out_attributes = out_attributes or []
         self._geometry_info = (0, 0, 0)
         self._attributes = []  # type: List[AttribFormat]
+        #: Internal cache key used with vertex arrays
         self.attribute_key = "INVALID"  # type: str
         self._uniforms: Dict[str, Uniform] = {}
 
@@ -100,27 +101,46 @@ class Program:
 
     @property
     def ctx(self) -> 'Context':
-        """The context this program belongs to"""
+        """
+        The context this program belongs to
+        
+        :type: :py:class:`arcade.gl.Context`
+        """
         return self._ctx
 
     @property
     def glo(self) -> int:
-        """The OpenGL resource id for this program"""
+        """
+        The OpenGL resource id for this program
+
+        :type: int
+        """
         return self._glo
 
     @property
     def attributes(self) -> Iterable[AttribFormat]:
+        """
+        List of attribute information
+        """
         return self._attributes
 
     @property
     def out_attributes(self) -> List[str]:
-        """Out attributes names used in transform feedback"""
+        """
+        Out attributes names used in transform feedback
+        
+        :type: list of str
+        """
         return self._out_attributes
 
     @property
     def geometry_input(self) -> int:
-        """The geometry shader's input primitive type.
+        """
+        The geometry shader's input primitive type.
         This an be compared with ``GL_TRIANGLES``, ``GL_POINTS`` etc.
+        and is queried when the program is created.
+
+        :type: int
         """
         return self._geometry_info[0]
 
@@ -128,12 +148,20 @@ class Program:
     def geometry_output(self) -> int:
         """The geometry shader's output primitive type.
         This an be compared with ``GL_TRIANGLES``, ``GL_POINTS`` etc.
+        and is queried when the program is created.
+
+        :type: int
         """
         return self._geometry_info[1]
 
     @property
     def geometry_vertices(self) -> int:
-        """The maximum number of vertices that can be emitted"""
+        """
+        The maximum number of vertices that can be emitted.
+        This is queried when the program is created.
+
+        :type: int
+        """
         return self._geometry_info[2]
 
     @staticmethod
@@ -151,6 +179,7 @@ class Program:
         ctx.stats.decr('program')
 
     def __getitem__(self, item) -> Union[Uniform, UniformBlock]:
+        """Get a uniform or uniform block"""
         try:
             uniform = self._uniforms[item]
         except KeyError:
@@ -159,6 +188,7 @@ class Program:
         return uniform.getter()
 
     def __setitem__(self, key, value):
+        """Set a uniform value"""
         # Ensure we are setting the uniform on this program
         if self._ctx.active_program != self:
             self.use()
@@ -171,7 +201,10 @@ class Program:
         uniform.setter(value)
 
     def use(self):
-        """Activates the shader"""
+        """
+        Activates the shader.
+        This is normally done for you automatically.
+        """
         # IMPORTANT: This is the only place glUseProgram should be called
         #            so we can track active program.
         if self._ctx.active_program != self:
@@ -347,6 +380,7 @@ class Program:
 
     @staticmethod
     def link(glo):
+        """Link a shader program"""
         gl.glLinkProgram(glo)
         status = c_int()
         gl.glGetProgramiv(glo, gl.GL_LINK_STATUS, status)
