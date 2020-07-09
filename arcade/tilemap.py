@@ -360,7 +360,7 @@ def _process_object_layer(map_object: pytiled_parser.objects.TileMap,
                           layer: pytiled_parser.objects.ObjectLayer,
                           scaling: float = 1,
                           base_directory: str = "",
-                          use_spatial_hash: bool = False,
+                          use_spatial_hash: Optional[bool] = None,
                           hit_box_algorithm = "Simple",
                           hit_box_detail = 4.5) -> SpriteList:
     sprite_list: SpriteList = SpriteList(use_spatial_hash=use_spatial_hash)
@@ -437,7 +437,7 @@ def _process_tile_layer(map_object: pytiled_parser.objects.TileMap,
                         layer: pytiled_parser.objects.TileLayer,
                         scaling: float = 1,
                         base_directory: str = "",
-                        use_spatial_hash: bool = False,
+                        use_spatial_hash: Optional[bool] = None,
                         hit_box_algorithm="Simple",
                         hit_box_detail: float = 4.5
                         ) -> SpriteList:
