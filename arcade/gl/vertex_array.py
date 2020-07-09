@@ -16,7 +16,8 @@ class VertexArray:
     """Wrapper for Vertex Array Objects (VAOs).
     This objects should not be instantiated from user code.
     Use :py:class:`arcade.gl.Geometry` instead. It will create VAO instances for you
-    automatically.
+    automatically. There is a lot of complex interaction between programs
+    and vertex arrays that will be done for you automatically.
     """
     __slots__ = '_ctx', 'glo', '_program', '_content', '_ibo', '_content', '_num_vertices', '__weakref__'
 
@@ -214,7 +215,14 @@ class Geometry:
     """A higher level abstraction of the VertexArray.
     It generates VertexArray instances on the fly internally matching the incoming program.
     This means we can render the same geometry with different programs as long as the
-    Program and BufferDescription have compatible attributes.
+    :py:class:`~arcade.gl.Program` and :py:class:`~arcade.gl.BufferDescription` have compatible attributes.
+
+    Geometry objects should be created through :py:meth:`arcade.gl.Context.geometry`
+
+    :param Contex ctx: The context this object belongs to
+    :param list content: List of BufferDescriptions
+    :param Buffer index_buffer: Index/element buffer
+    :param int mode: The default draw mode
     """
     __slots__ = '_ctx', '_content', '_index_buffer', '_mode', '_vao_cache', '_num_vertices', '__weakref__'
 
@@ -230,7 +238,12 @@ class Geometry:
         self._mode = mode or ctx.TRIANGLES
         self._vao_cache = {}  # type: Dict[str, VertexArray]
         self._num_vertices = -1
-
+        """
+        :param Contex ctx: The context this object belongs to
+        :param list content: List of BufferDescriptions
+        :param Buffer index_buffer: Index/element buffer
+        :param int mode: The default draw mode
+        """
         # if not content:
         #     raise ValueError("Geometry without buffer descriptions not supported")
 

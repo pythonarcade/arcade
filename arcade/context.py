@@ -14,6 +14,9 @@ class ArcadeContext(Context):
     """
     An OpenGL context implementation for Arcade with added custom features.
     This context is normally accessed thought :py:attr:`arcade.Window.ctx`.
+
+    **This is part of the low level rendering API in arcade
+    and is mainly for more advanced usage**
     """
 
     def __init__(self, window):

@@ -56,13 +56,31 @@ class BufferDescription:
     The formats is a string providing the number and type of each attribute. Currently
     we only support f (float), i (integer) and B (unsigned byte).
 
-    `normalized` enumerates the attributes which must have their values normalized.
+    ``normalized`` enumerates the attributes which must have their values normalized.
     This is useful for instance for colors attributes given as unsigned byte and
     normalized to floats with values between 0.0 and 1.0.
 
-    `instanced` allows this buffer to be used as instanced buffer. Each value will
+    ``instanced`` allows this buffer to be used as instanced buffer. Each value will
     be used once for the whole geometry. The geometry will be repeated a number of
     times equal to the number of items in the Buffer.
+
+    Example::
+
+        # Describe my_buffer
+        # It contains two floating point numbers being a 2d position
+        # and two floating point numbers being texture coordinates.
+        # We expect the shader using this buffer to have an in_pos and in_uv attribute (exact name)
+        BufferDescription(
+            my_buffer,
+            '2f 2f',
+            ['in_pos', 'in_uv'],
+        )
+
+    :param Buffer buffer: The buffer to describe
+    :param str formats: The format of each attribute
+    :param list attributes: List of attributes names (strings)
+    :param list normalized: list of attribute names that should be normalized
+    :param bool instanced: ``True`` if this is per instance data
     """
     # Describe all variants of a format string to simplify parsing (single component)
     # format: gl_type, byte_size
@@ -101,7 +119,13 @@ class BufferDescription:
                  attributes: Iterable[str],
                  normalized: Iterable[str] = None,
                  instanced: bool = False):
-
+        """
+        :param Buffer buffer: The buffer to describe
+        :param str formats: The format of each attribute
+        :param list attributes: List of attributes names (strings)
+        :param list normalized: list of attribute names that should be normalized
+        :param bool instanced: ``True`` if this is per instance data
+        """
         #: The :py:class:`~arcade.gl.Buffer` this description object describes
         self.buffer = buffer  # type: Buffer
         #: List of string attributes

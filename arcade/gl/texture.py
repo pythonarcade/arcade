@@ -18,6 +18,8 @@ class Texture:
     A texture can also be created with different datatypes such as
     float, integer or unsigned integer.
 
+    The best way to create a texture instance is through :py:meth:`arcade.gl.Context.texture`
+
     Supported ``dtype`` values are::
 
         # Float formats
