@@ -109,13 +109,60 @@ Version 2.4 Minor Features
 Version 2.4 Under-the-hood improvements
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-* Speed improvements to drawing of shape primitives, such as lines, squares,
-  and circles.
+**General**
+
 * Simple Physics engine is less likely to 'glitch' out.
 * Anti-aliasing should now work on windows if ``antialiasing=True``
   is passed in the window constructor.
-* OpenGL querying (keeps from drawing off-screen objects, improving performance)
-* OpenGL culling
+* Major speed improvements to drawing of shape primitives, such as lines, squares,
+  and circles by moving more of the work to the graphics processor.
+* Speed improvements for sprites including gpu-based sprite culling (don't draw sprites outside the screen).
+* Speed improvements due to shader caching. This should be especially noticeable on Mac OS.
+* Speed improvements due to more efficient ways of setting rendering states such as projection.
+* Speed improvements due to less memory copying in the lower level rendering API.
+
+**OpenGL API**
+
+A brand new low level rendering API wrapping OpenGL 3.3 core was added in this release.
+It's loosely based on the `ModernGL <https://github.com/moderngl/moderngl>`_ API,
+so ModernGL users should be able to pick it up fast.
+This API is used by arcade for all the higher level drawing functionality, but
+can also be used by end users to really take advantage of their GPU. More
+guides and tutorials around this is likely to appear in the future.
+
+A simplified list of features in the new API:
+
+* A :py:class:`~arcade.gl.Context` and :py:class:`arcade.ArcadeContext` object was
+  introduced and can be found through the ``window.ctx`` property.
+  This object offers methods to create opengl resources such as textures,
+  programs/shaders, framebuffers, buffers and queries. It also has shortcuts for changing
+  various context states. When working with OpenGL in arcade you are encouraged to use
+  ``arcade.gl`` instead of ``pyglet.gl``. This is important as the context is doing
+  quite a bit of bookkeeping to make our life easier.
+* New :py:class:`~arcade.gl.Texture` class supporting a wide variety of formats such as 8/16/32 bit
+  integer, unsigned integer and float values. New convenient methods and properties
+  was also added to change filtering, repeat mode, read and write data, building mipmaps etc.
+* New :py:class:`~arcade.gl.Buffer` class with methods for manipulating data such as
+  simple reading/writing and copying data from other buffers. This buffer can also
+  now be bound as a uniform buffer object.
+* New :py:class:`~arcade.gl.Framebuffer` wrapper class making us able to render any content into
+  one more more textures. This opens up for a lot of possibilities.
+* The :py:class:`~arcade.gl.Program` has been expanded to support geometry shaders and transform feedback
+  (rendering to a buffer instead of a screen). It also exposes a lot of new
+  properties due to much more details introspection during creation.
+  We also able to assign binding locations for uniform blocks.
+* A simple glsl wrapper/parser was introduced to sanity check the glsl code,
+  inject preprocessor values and auto detect out attributes (used in transforms).
+* A higher level type :py:class:`~arcade.gl.Geometry` was introduced to make working with
+  shaders/programs a lot easier. It supports using a subset of attributes
+  defined in your buffer description by inspecting the the program's attributes
+  generating and caching compatible variants internally.
+* A :py:class:`~arcade.gl.Query` class was added for easy access to low level
+  measuring of opengl rendering calls. We can get the number samples written,
+  number of primitives processed and time elapsed in nanoseconds.
+* Added support for the buffer protocol. When ``arcade.gl`` requires byte data
+  we can also pass objects like numpy array of pythons ``array.array`` directly
+  not having to convert this data to bytes.
 
 Version 2.4 New Documentation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
