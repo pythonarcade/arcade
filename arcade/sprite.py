@@ -512,6 +512,12 @@ class Sprite:
         Return the y coordinate of the bottom of the sprite.
         """
         points = self.get_adjusted_hit_box()
+
+        # This happens if our point list is empty, such as a completely
+        # transparent sprite.
+        if len(points) == 0:
+            return self.center_x
+
         my_min = points[0][1]
         for point in range(1, len(points)):
             my_min = min(my_min, points[point][1])
@@ -532,6 +538,12 @@ class Sprite:
         Return the y coordinate of the top of the sprite.
         """
         points = self.get_adjusted_hit_box()
+
+        # This happens if our point list is empty, such as a completely
+        # transparent sprite.
+        if len(points) == 0:
+            return self.center_x
+
         my_max = points[0][1]
         for i in range(1, len(points)):
             my_max = max(my_max, points[i][1])
@@ -697,6 +709,12 @@ class Sprite:
         Return the x coordinate of the left-side of the sprite's hit box.
         """
         points = self.get_adjusted_hit_box()
+
+        # This happens if our point list is empty, such as a completely
+        # transparent sprite.
+        if len(points) == 0:
+            return self.center_x
+
         my_min = points[0][0]
         for i in range(1, len(points)):
             my_min = min(my_min, points[i][0])
@@ -716,6 +734,12 @@ class Sprite:
         """
 
         points = self.get_adjusted_hit_box()
+
+        # This happens if our point list is empty, such as a completely
+        # transparent sprite.
+        if len(points) == 0:
+            return self.center_x
+
         my_max = points[0][0]
         for point in range(1, len(points)):
             my_max = max(my_max, points[point][0])
