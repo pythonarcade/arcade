@@ -287,26 +287,34 @@ class PymunkPhysicsEngine:
     def resync_sprites(self):
         """
         Set visual sprites to be the same location as physics engine sprites.
+        Call this after stepping the pymunk physics engine
         """
         # Create copy in case a sprite wants to remove itself from the list as
         # we iterate through the list.
         sprites = self.non_static_sprite_list.copy()
+
         for sprite in sprites:
+            # Get physics object for this sprite
             physics_object = self.sprites[sprite]
 
+            # Item is sleeping, skip
             if physics_object.body.is_sleeping:
                 continue
 
+            original_position = sprite.position
+            new_position = physics_object.body.position
             new_angle = math.degrees(physics_object.body.angle)
 
-            dx = physics_object.body.position.x - sprite.center_x
-            dy = physics_object.body.position.y - sprite.center_y
+            # Calculate change in location, used in call-back
+            dx = new_position[0] - original_position[0]
+            dy = new_position[1] - original_position[1]
             d_angle = new_angle - sprite.angle
 
-            sprite.center_x = physics_object.body.position.x
-            sprite.center_y = physics_object.body.position.y
+            # Update sprite to new location
+            sprite.position = new_position
             sprite.angle = new_angle
 
+            # Notify sprite we moved, in case animation needs to be updated
             sprite.pymunk_moved(self, dx, dy, d_angle)
 
     def step(self,
