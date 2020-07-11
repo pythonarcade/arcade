@@ -355,3 +355,6 @@ class DefaultFrameBuffer(Framebuffer):
         self._viewport = x, y, width, height
         self._width = width
         self._height = height
+
+        # HACK: Signal the default framebuffer having depth buffer
+        self._depth_attachment = True
