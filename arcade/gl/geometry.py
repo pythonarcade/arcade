@@ -1,7 +1,7 @@
 """
 A module providing commonly used geometry
 """
-import array
+from array import array
 from typing import Tuple
 
 from arcade.gl import Context, BufferDescription
@@ -32,7 +32,7 @@ def quad_2d(size: Tuple[float, float] = (1.0, 1.0), pos: Tuple[float, float] = (
     width, height = size
     x_pos, y_pos = pos
 
-    data = array.array('f', [
+    data = array('f', [
         x_pos - width / 2.0, y_pos + height / 2.0, 0.0, 1.0,
         x_pos - width / 2.0, y_pos - height / 2.0, 0.0, 0.0,
         x_pos + width / 2.0, y_pos + height / 2.0, 1.0, 1.0,
@@ -56,7 +56,7 @@ def screen_rectangle(bottom_left_x: float, bottom_left_y: float, width: float, h
     :param float height: Height of the rectangle   
     """
     ctx = _get_active_context()
-    data = array.array('f', [
+    data = array('f', [
         bottom_left_x, bottom_left_y + height, 0.0, 1.0,
         bottom_left_x, bottom_left_y, 0.0, 0.0,
         bottom_left_x + width, bottom_left_y + height, 1.0, 1.0,
@@ -67,3 +67,139 @@ def screen_rectangle(bottom_left_x: float, bottom_left_y: float, width: float, h
         '2f 2f',
         ['in_vert', 'in_uv'],
     )], mode=ctx.TRIANGLE_STRIP)
+
+
+def cube(size=(1.0, 1.0, 1.0), center=(0.0, 0.0, 0.0)) -> Geometry:
+    """Creates a cube with normals and texture coordinates.
+
+    :param tuple size: size of the cube as a 3-component tuple
+    :param tuple center: center of the cube as a 3-component tuple
+    :rtype: arcade.gl.Geometry
+    :returns: A cube
+    """
+    ctx = _get_active_context()
+    width, height, depth = size
+    width, height, depth = width / 2.0, height / 2.0, depth / 2.0
+
+    pos = array('f', [
+        center[0] + width, center[1] - height, center[2] + depth,
+        center[0] + width, center[1] + height, center[2] + depth,
+        center[0] - width, center[1] - height, center[2] + depth,
+        center[0] + width, center[1] + height, center[2] + depth,
+        center[0] - width, center[1] + height, center[2] + depth,
+        center[0] - width, center[1] - height, center[2] + depth,
+        center[0] + width, center[1] - height, center[2] - depth,
+        center[0] + width, center[1] + height, center[2] - depth,
+        center[0] + width, center[1] - height, center[2] + depth,
+        center[0] + width, center[1] + height, center[2] - depth,
+        center[0] + width, center[1] + height, center[2] + depth,
+        center[0] + width, center[1] - height, center[2] + depth,
+        center[0] + width, center[1] - height, center[2] - depth,
+        center[0] + width, center[1] - height, center[2] + depth,
+        center[0] - width, center[1] - height, center[2] + depth,
+        center[0] + width, center[1] - height, center[2] - depth,
+        center[0] - width, center[1] - height, center[2] + depth,
+        center[0] - width, center[1] - height, center[2] - depth,
+        center[0] - width, center[1] - height, center[2] + depth,
+        center[0] - width, center[1] + height, center[2] + depth,
+        center[0] - width, center[1] + height, center[2] - depth,
+        center[0] - width, center[1] - height, center[2] + depth,
+        center[0] - width, center[1] + height, center[2] - depth,
+        center[0] - width, center[1] - height, center[2] - depth,
+        center[0] + width, center[1] + height, center[2] - depth,
+        center[0] + width, center[1] - height, center[2] - depth,
+        center[0] - width, center[1] - height, center[2] - depth,
+        center[0] + width, center[1] + height, center[2] - depth,
+        center[0] - width, center[1] - height, center[2] - depth,
+        center[0] - width, center[1] + height, center[2] - depth,
+        center[0] + width, center[1] + height, center[2] - depth,
+        center[0] - width, center[1] + height, center[2] - depth,
+        center[0] + width, center[1] + height, center[2] + depth,
+        center[0] - width, center[1] + height, center[2] - depth,
+        center[0] - width, center[1] + height, center[2] + depth,
+        center[0] + width, center[1] + height, center[2] + depth,
+    ])
+
+    normal = array('f', [
+        -0, 0, 1,
+        -0, 0, 1,
+        -0, 0, 1,
+        0, 0, 1,
+        0, 0, 1,
+        0, 0, 1,
+        1, 0, 0,
+        1, 0, 0,
+        1, 0, 0,
+        1, 0, 0,
+        1, 0, 0,
+        1, 0, 0,
+        0, -1, 0,
+        0, -1, 0,
+        0, -1, 0,
+        0, -1, 0,
+        0, -1, 0,
+        0, -1, 0,
+        -1, -0, 0,
+        -1, -0, 0,
+        -1, -0, 0,
+        -1, -0, 0,
+        -1, -0, 0,
+        -1, -0, 0,
+        0, 0, -1,
+        0, 0, -1,
+        0, 0, -1,
+        0, 0, -1,
+        0, 0, -1,
+        0, 0, -1,
+        0, 1, 0,
+        0, 1, 0,
+        0, 1, 0,
+        0, 1, 0,
+        0, 1, 0,
+        0, 1, 0,
+    ])
+
+    uv = array('f', [
+        1, 0,
+        1, 1,
+        0, 0,
+        1, 1,
+        0, 1,
+        0, 0,
+        1, 0,
+        1, 1,
+        0, 0,
+        1, 1,
+        0, 1,
+        0, 0,
+        1, 1,
+        0, 1,
+        0, 0,
+        1, 1,
+        0, 0,
+        1, 0,
+        0, 1,
+        0, 0,
+        1, 0,
+        0, 1,
+        1, 0,
+        1, 1,
+        1, 0,
+        1, 1,
+        0, 1,
+        1, 0,
+        0, 1,
+        0, 0,
+        1, 1,
+        0, 1,
+        1, 0,
+        0, 1,
+        0, 0,
+        1, 0
+    ])
+
+    return ctx.geometry([
+        BufferDescription(ctx.buffer(data=pos), '3f', ['in_position']),
+        BufferDescription(ctx.buffer(data=normal), '3f', ['in_normal']),
+        BufferDescription(ctx.buffer(data=uv), '2f', ['in_uv']),
+    ])
