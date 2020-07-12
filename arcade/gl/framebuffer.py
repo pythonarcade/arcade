@@ -50,13 +50,12 @@ class Framebuffer:
         if not color_attachments:
             raise ValueError("Framebuffer must at least have one color attachment")
 
-
         self._ctx = ctx
         self._color_attachments = color_attachments if isinstance(color_attachments, list) else [color_attachments]
         self._depth_attachment = depth_attachment
         self._glo = fbo_id = gl.GLuint()  # The OpenGL alias/name
         self._samples = 0  # Leaving this at 0 for future sample support
-        self._depth_mask = True  # Determines of the depth buffer should be affected
+        self._depth_mask = True  # Determines if the depth buffer should be affected
 
         # Create the framebuffer object
         gl.glGenFramebuffers(1, self._glo)
@@ -83,6 +82,15 @@ class Framebuffer:
                 gl.GL_TEXTURE_2D,
                 tex.glo,
                 0,  # Level 0
+            )
+
+        if self.depth_attachment:
+            gl.glFramebufferTexture2D(
+                gl.GL_FRAMEBUFFER,
+                gl.GL_DEPTH_ATTACHMENT,
+                self.depth_attachment._target,
+                self.depth_attachment.glo,
+                0
             )
 
         # Ensure the framebuffer is sane!
@@ -240,6 +248,7 @@ class Framebuffer:
         # NOTE: Default framebuffer currently has this set to None
         if self._draw_buffers:
             gl.glDrawBuffers(len(self._draw_buffers), self._draw_buffers)
+
         gl.glDepthMask(self._depth_mask)
         gl.glViewport(*self._viewport)
 
@@ -247,7 +256,8 @@ class Framebuffer:
               color=(0.0, 0.0, 0.0, 0.0),
               *,
               depth: float = 1.0,
-              normalized: bool = False):
+              normalized: bool = False,
+              use=False):
         """
         Clears the framebuffer::
 
@@ -259,6 +269,7 @@ class Framebuffer:
         :param tuple color: A 3 or 4 component tuple containing the color
         :param float depth: Value to clear the depth buffer (unused)
         :param bool normalized: If the color values are normalized or not
+        :param bool use: Also bind/use the framebuffer
         """
         self._use()
 
@@ -281,7 +292,8 @@ class Framebuffer:
             gl.glClear(gl.GL_COLOR_BUFFER_BIT)
 
         # Restore the original render target to avoid confusion
-        self._ctx.active_framebuffer.use()
+        if use is False:
+            self._ctx.active_framebuffer.use()
 
     @staticmethod
     def release(ctx, framebuffer_id):
