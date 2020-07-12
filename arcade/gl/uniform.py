@@ -19,6 +19,11 @@ class Uniform:
         gl.GL_INT_VEC3: (gl.GLint, gl.glUniform3iv, 3, 1),
         gl.GL_INT_VEC4: (gl.GLint, gl.glUniform4iv, 4, 1),
 
+        gl.GL_BOOL: (gl.GLint, gl.glUniform1iv, 1, 1),
+        gl.GL_BOOL_VEC2: (gl.GLint, gl.glUniform2iv, 2, 1),
+        gl.GL_BOOL_VEC3: (gl.GLint, gl.glUniform3iv, 3, 1),
+        gl.GL_BOOL_VEC4: (gl.GLint, gl.glUniform4iv, 4, 1),
+
         gl.GL_FLOAT: (gl.GLfloat, gl.glUniform1fv, 1, 1),
         gl.GL_FLOAT_VEC2: (gl.GLfloat, gl.glUniform2fv, 2, 1),
         gl.GL_FLOAT_VEC3: (gl.GLfloat, gl.glUniform3fv, 3, 1),
