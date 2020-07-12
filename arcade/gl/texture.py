@@ -1,6 +1,6 @@
 from ctypes import byref
 import weakref
-from typing import Any, Tuple, Union, TYPE_CHECKING
+from typing import Any, Optional, Tuple, Union, TYPE_CHECKING
 
 from pyglet import gl
 
@@ -46,7 +46,7 @@ class Texture:
     :param gl.GLuint wrap_y: Wrap mode y
     """
     __slots__ = (
-        '_ctx', '_glo', '_width', '_height', '_dtype', '_target', '_components',
+        '_ctx', '_glo', '_width', '_height', '_dtype', '_target', '_components', '_depth', '_compare_func',
         '_format', '_internal_format', '_type', '_component_size', '_samples', '_filter', '_wrap_x', '_wrap_y', '__weakref__',
     )
     _float_base_format = (0, gl.GL_RED, gl.GL_RG, gl.GL_RGB, gl.GL_RGBA)
@@ -66,6 +66,17 @@ class Texture:
         'u2': (_int_base_format, (0, gl.GL_R16UI, gl.GL_RG16UI, gl.GL_RGB16UI, gl.GL_RGBA16UI), gl.GL_UNSIGNED_SHORT, 2),
         'u4': (_int_base_format, (0, gl.GL_R32UI, gl.GL_RG32UI, gl.GL_RGB32UI, gl.GL_RGBA32UI), gl.GL_UNSIGNED_INT, 4),
     }
+    _compare_funcs = {
+        None: gl.GL_NONE,
+        '<=':  gl.GL_LEQUAL,
+        '<': gl.GL_LESS,
+        '>=': gl.GL_GEQUAL,
+        '>': gl.GL_GREATER,
+        '==': gl.GL_EQUAL,
+        '!=': gl.GL_NOTEQUAL,
+        '0': gl.GL_NEVER,
+        '1': gl.GL_ALWAYS,
+    }
 
     def __init__(self,
                  ctx: 'Context',
@@ -76,42 +87,45 @@ class Texture:
                  data: Any = None,
                  filter: Tuple[gl.GLuint, gl.GLuint] = None,
                  wrap_x: gl.GLuint = None,
-                 wrap_y: gl.GLuint = None):
+                 wrap_y: gl.GLuint = None,
+                 target=gl.GL_TEXTURE_2D,
+                 depth=False):
         """
         A texture can be created with or without initial data.
         NOTE: Currently does not support multisample textures even
         thought ``samples`` is exposed.
 
         :param Context ctx: The context the object belongs to
-        :param Tuple[int, int] size: The size of the texture
+        :param Tuple[int,int] size: The size of the texture
         :param int components: The number of components (1: R, 2: RG, 3: RGB, 4: RGBA)
         :param str dtype: The data type of each component: f1, f2, f4 / i1, i2, i4 / u1, u2, u4
         :param Any data: The byte data of the texture. bytes or anything supporting the buffer protocol.
         :param Tuple[gl.GLuint, gl.GLuint] filter: The minification/magnification filter of the texture
-        :param gl.GLuint wrap_s
-        :param data: The texture data (optional)
+        :param gl.GLuint wrap_x: Wrap mode x
+        :param gl.GLuint wrap_y: Wrap mode y
+        :param int target: The texture type
+        :param bool depth: creates a depth texture if `True`
         """
         self._ctx = ctx
         self._width, self._height = size
         self._dtype = dtype
         self._components = components
-        self._target = gl.GL_TEXTURE_2D
+        self._target = target
         self._samples = 0
+        self._depth = depth
+        self._compare_func = None
         # Default filters for float and integer textures
-        if 'f' in self.dtype:
+        # Integer textures should have NEAREST interpolation
+        # by default 3.3 core doesn't really support it consistently.
+        if 'f' in self._dtype:
             self._filter = gl.GL_LINEAR, gl.GL_LINEAR
         else:
             self._filter = gl.GL_NEAREST, gl.GL_NEAREST
         self._wrap_x = gl.GL_REPEAT
         self._wrap_y = gl.GL_REPEAT
 
-        if components not in [1, 2, 3, 4]:
+        if self._components not in [1, 2, 3, 4]:
             raise ValueError("Components must be 1, 2, 3 or 4")
-
-        try:
-            format_info = self._formats[self._dtype]
-        except KeyError:
-            raise ValueError(f"dype '{dtype}' not support. Supported types are : {tuple(self._formats.keys())}")
 
         gl.glActiveTexture(gl.GL_TEXTURE0)  # Create textures in the default channel (0)
 
@@ -122,32 +136,16 @@ class Texture:
             raise RuntimeError("Cannot create Texture. OpenGL failed to generate a texture id")
 
         gl.glBindTexture(self._target, self._glo)
-        gl.glPixelStorei(gl.GL_PACK_ALIGNMENT, 1)
-        gl.glPixelStorei(gl.GL_UNPACK_ALIGNMENT, 1)
+        # gl.glPixelStorei(gl.GL_PACK_ALIGNMENT, 1)
+        # gl.glPixelStorei(gl.GL_UNPACK_ALIGNMENT, 1)
 
         if data is not None:
             byte_length, data = data_to_ctypes(data)
 
-        try:
-            _format, _internal_format, self._type, self._component_size = format_info
-            self._format = _format[components]
-            self._internal_format = _internal_format[components]
-            gl.glTexImage2D(
-                self._target,  # target
-                0,  # level
-                self._internal_format,  # internal_format
-                self._width,  # width
-                self._height,  # height
-                0,  # border
-                self._format,  # format
-                self._type,  # type
-                data  # data
-            )
-        except gl.GLException as ex:
-            raise gl.GLException((
-                f"Unable to create texture: {ex} : dtype={dtype} size={size} components={components} "
-                "MAX_TEXTURE_SIZE = {self.ctx.limits.MAX_TEXTURE_SIZE}"
-            ))
+        if self._target == gl.GL_TEXTURE_2D:
+            self._texture_2d(data)
+        else:
+            raise ValueError("Unsupported texture target")
 
         self.filter = filter or self._filter
         self.wrap_x = wrap_x or self._wrap_x
@@ -155,6 +153,50 @@ class Texture:
 
         self.ctx.stats.incr('texture')
         weakref.finalize(self, Texture.release, self._ctx, glo)
+
+    def _texture_2d(self, data):
+        """Create a 2D texture"""
+        # Create depth 2d texture
+        if self._depth:
+            gl.glTexImage2D(
+                self._target,
+                0, # level
+                gl.GL_DEPTH_COMPONENT24, 
+                self._width, 
+                self._height, 
+                0, 
+                gl.GL_DEPTH_COMPONENT, 
+                gl.GL_FLOAT,
+                data,
+            )
+            self.compare_func = '<='
+        # Create normal 2d texture
+        else:
+            try:
+                format_info = self._formats[self._dtype]
+            except KeyError:
+                raise ValueError(f"dype '{self._dtype}' not support. Supported types are : {tuple(self._formats.keys())}")
+
+            try:
+                _format, _internal_format, self._type, self._component_size = format_info
+                self._format = _format[self.components]
+                self._internal_format = _internal_format[self.components]
+                gl.glTexImage2D(
+                    self._target,  # target
+                    0,  # level
+                    self._internal_format,  # internal_format
+                    self._width,  # width
+                    self._height,  # height
+                    0,  # border
+                    self._format,  # format
+                    self._type,  # type
+                    data  # data
+                )
+            except gl.GLException as ex:
+                raise gl.GLException((
+                    f"Unable to create texture: {ex} : dtype={self._dtype} size={self.size} components={self._components} "
+                    "MAX_TEXTURE_SIZE = {self.ctx.limits.MAX_TEXTURE_SIZE}"
+                ))
 
     @property
     def ctx(self) -> 'Context':
@@ -218,6 +260,15 @@ class Texture:
         :type: int
         """
         return self._components
+
+    @property
+    def depth(self) -> bool:
+        """
+        If this is a depth texture.
+
+        :type: bool
+        """
+        return self._depth
 
     @property
     def filter(self) -> Tuple[int, int]:
@@ -317,6 +368,46 @@ class Texture:
         self._wrap_y = value
         self.use()
         gl.glTexParameteri(self._target, gl.GL_TEXTURE_WRAP_T, value)
+
+    @property
+    def compare_func(self) -> Optional[str]:
+        """
+        Get or set the compare function for a depth texture::
+
+            texture.compare_func = None  # Disable depth comparison completely
+            texture.compare_func = '<='  # GL_LEQUAL
+            texture.compare_func = '<'   # GL_LESS
+            texture.compare_func = '>='  # GL_GEQUAL
+            texture.compare_func = '>'   # GL_GREATER
+            texture.compare_func = '=='  # GL_EQUAL
+            texture.compare_func = '!='  # GL_NOTEQUAL
+            texture.compare_func = '0'   # GL_NEVER
+            texture.compare_func = '1'   # GL_ALWAYS
+
+        :type: str
+        """
+        return self._compare_func
+
+    @compare_func.setter
+    def compare_func(self, value: Union[str, None]):
+        if not self._depth:
+            raise ValueError("Depth comparison function can only be set on depth textures")
+
+        if not isinstance(value, str) and value is not None:
+            raise ValueError(f"value must be as string: {self._compare_funcs.keys()}")
+
+        func = self._compare_funcs.get(value, None)
+        if func is None:
+            raise ValueError(f"value must be as string: {self._compare_funcs.keys()}")
+
+        self._compare_func = value
+        gl.glActiveTexture(gl.GL_TEXTURE0)
+        gl.glBindTexture(self._target, self._glo)
+        if value is None:
+            gl.glTexParameteri(self._target, gl.GL_TEXTURE_COMPARE_MODE, gl.GL_NONE)
+        else:
+            gl.glTexParameteri(self._target, gl.GL_TEXTURE_COMPARE_MODE, gl.GL_COMPARE_REF_TO_TEXTURE)
+            gl.glTexParameteri(self._target, gl.GL_TEXTURE_COMPARE_FUNC, func)
 
     def read(self, level: int = 0, alignment: int = 1) -> bytearray:
         """

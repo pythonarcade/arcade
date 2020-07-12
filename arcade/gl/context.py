@@ -219,7 +219,7 @@ class Context:
             err = ctx.error
             if err:
                 raise RuntimeError("OpenGL error: {err}")
-        
+
         :type: str
         """
         err = gl.glGetError()
@@ -398,7 +398,7 @@ class Context:
                 wrap_x: gl.GLenum = None,
                 wrap_y: gl.GLenum = None,
                 filter: Tuple[gl.GLenum, gl.GLenum] = None) -> Texture:
-        """Create a Texture.
+        """Create a 2D Texture.
 
         Wrap modes: ``GL_REPEAT``, ``GL_MIRRORED_REPEAT``, ``GL_CLAMP_TO_EDGE``, ``GL_CLAMP_TO_BORDER``
 
@@ -419,10 +419,13 @@ class Context:
                        wrap_x=wrap_x, wrap_y=wrap_y,
                        filter=filter)
 
-    # def vertex_array(self, prog: gl.GLuint, content, index_buffer=None):
-    #     """Create a new Vertex Array.
-    #     """
-    #     return VertexArray(self, prog, content, index_buffer)
+    def depth_texture(self, size: Tuple[int, int], *, data=None) -> Texture:
+        """Create a 2D depth texture
+
+        :param Tuple[int, int] size: The size of the texture
+        :param Any data: The texture data (optional). Can be bytes or an object supporting the buffer protocol.
+        """
+        return Texture(self, size, data=data, depth=True)
 
     def geometry(self, content: Optional[Sequence[BufferDescription]] = None,
                  index_buffer: Buffer = None, mode: int = None):
