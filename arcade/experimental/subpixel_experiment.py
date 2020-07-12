@@ -3,8 +3,8 @@ import arcade
 from arcade import gl
 
 # Do the math to figure out our screen dimensions
-SCREEN_WIDTH = 2048
-SCREEN_HEIGHT = 1024
+SCREEN_WIDTH = 800
+SCREEN_HEIGHT = 600
 SCREEN_TITLE = "Subpixel Experiment"
 
 import logging
@@ -34,7 +34,7 @@ class MyGame(arcade.Window):
                 while True:
                     resource = next(resource_cycle)
                     print('sprite', resource)
-                    sprite = arcade.Sprite(resource, center_x=x + sprite_size // 2, center_y=y + sprite_size // 2, calculate_hit_box=False)
+                    sprite = arcade.Sprite(resource, center_x=x + sprite_size // 2, center_y=y + sprite_size // 2, hit_box_algorithm='None')
                     # Add sprite if correct size and get to the next sprite in the grid
                     if sprite.width == 128 and sprite.height == 128:
                         self.sprites.append(sprite)
@@ -51,6 +51,7 @@ class MyGame(arcade.Window):
     def on_resize(self, width, height):
         print("Resize", width, height)
         arcade.set_viewport(0, SCREEN_WIDTH, 0, SCREEN_HEIGHT)
+        # arcade.set_viewport(100, 200, 100, 200)
 
 
 if __name__ == "__main__":
