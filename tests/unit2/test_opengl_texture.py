@@ -30,6 +30,7 @@ def test_default_properties(ctx):
 
 
 def test_properties(ctx):
+    """poke some texture properties"""
     texture = ctx.texture((100, 200), components=4)
 
     texture.filter = ctx.NEAREST_MIPMAP_NEAREST, ctx.NEAREST
@@ -57,7 +58,7 @@ def test_mipmaps(ctx):
 
 
 def test_write_read(ctx):
-    # Writing to texture
+    """Writing to texture"""
     in_data = array.array('f', list(range(40))).tobytes()
     texture = ctx.texture((10, 1), components=4, dtype='f4')
     texture.write(in_data)
@@ -99,7 +100,7 @@ def test_write_bufferprotocol(ctx):
 
 
 def test_creation_failed(ctx):
-    # Make an unreasonable texture
+    """Make an unreasonable texture"""
     with pytest.raises(Exception):
         ctx.texture((100_000, 1), components=1)
 
@@ -108,7 +109,7 @@ def test_creation_failed(ctx):
 
 
 def test_components(ctx):
-    # Create textures of different components
+    """Create textures of different components"""
     c1 = ctx.texture((10, 10), components=1)
     c2 = ctx.texture((10, 10), components=2)
     c3 = ctx.texture((10, 10), components=3)
@@ -124,7 +125,7 @@ def test_components(ctx):
 
 
 def test_texture_dtypes(ctx):
-    # Create textures using different formats
+    """Create textures using different formats"""
     def test_texture_format(dtype):
         for components in range(1, 5):
             texture = ctx.texture((10, 10), components=components, dtype=dtype)
@@ -144,3 +145,10 @@ def test_texture_dtypes(ctx):
     test_texture_format('u1')
     test_texture_format('u2')
     test_texture_format('u4')
+
+
+def test_depth(ctx):
+    """Create depth texture"""
+    tex = ctx.depth_texture((100, 100))
+    assert tex.size == (100, 100)
+    assert tex.compare_func == '<='
