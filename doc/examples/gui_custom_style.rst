@@ -5,10 +5,6 @@
 GUI Custom Style
 ================
 
-.. note::
-
-   This example requires Arcade 2.4a10 or higher.
-
 .. image:: gui_custom_style.png
     :width: 600px
     :align: center

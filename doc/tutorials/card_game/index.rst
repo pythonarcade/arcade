@@ -10,12 +10,6 @@ Solitaire
 This solitaire tutorial takes you though the basics of creating a card game, and
 doing extensive drag/drop work.
 
-.. warning::
-
-    This tutorial requires Arcade version 2.4a9 or greater.
-    As this is an Alpha version,
-    you'll need to specifically install it, as 2.3 will be default.
-
 Open a Window
 -------------
 

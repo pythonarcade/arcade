@@ -16,12 +16,6 @@ the `Tiled Map Editor`_.
 * If you aren't familiar with the Tiled Map Editor, the :ref:`platformer_tutorial`
   also introduces how to create a map with the Tiled Map Editor.
 
-.. warning::
-
-    This tutorial requires Arcade version 2.4, which is currently in Alpha.
-    You'll need to specifically install it, as 2.3 will be default. The API
-    for the Pymunk interface is still subject to change.
-
 Common Issues
 -------------
 

@@ -5,10 +5,6 @@
 GUI Elements
 ============
 
-.. note::
-
-   This example requires Arcade 2.4a10 or higher.
-
 .. image:: gui_elements.png
     :width: 600px
     :align: center

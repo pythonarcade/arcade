@@ -11,11 +11,6 @@ GPU Particle Burst
 In this example, we show how to create explosions using particles. The particles
 are tracked by the GPU, significantly improving the performance.
 
-.. warning::
-
-    This tutorial was written using Arcade 2.4a12. You'll need at least that
-    version for it to work.
-
 Step 1: Open a Blank Window
 ---------------------------
 

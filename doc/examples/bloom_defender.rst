@@ -10,11 +10,6 @@ Bloom-Effect Defender
     :align: center
     :alt: Screen shot of a Defender clone with a bloom/glow effect.
 
-.. note::
-
-   This example runs in the Arcade 2.4 set of code. You'll need to specifically
-   install the pre-release alpha or beta versions.
-
 Creating a "glowing" effect can enhance 2D games. This example shows how to
 do it.
 
