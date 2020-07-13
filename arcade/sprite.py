@@ -137,9 +137,27 @@ class Sprite:
         :param bool flipped_vertically: Flip the image up/down across the horizontal axis.
         :param bool flipped_diagonally: Transpose the image, flip it across the diagonal.
         :param mirrored: Deprecated.
-        :param str hit_box_algorithm: Can be 'Detailed', 'Simple', or 'None'.
-        :param float hit_box_detail: If hit_box_algorithm is 'Detailed', controls
-                                     amount of detail. Higher number means more points.
+        :param str hit_box_algorithm: One of 'None', 'Simple' or 'Detailed'. \
+        Defaults to 'Simple'. Use 'Simple' for the :data:`PhysicsEngineSimple`, \
+        :data:`PhysicsEnginePlatformer` \
+        and 'Detailed' for the :data:`PymunkPhysicsEngine`.
+
+            .. figure:: images/hit_box_algorithm_none.png
+               :width: 40%
+
+               hit_box_algorithm = "None"
+
+            .. figure:: images/hit_box_algorithm_simple.png
+               :width: 55%
+
+               hit_box_algorithm = "Simple"
+
+            .. figure:: images/hit_box_algorithm_detailed.png
+               :width: 75%
+
+               hit_box_algorithm = "Detailed"
+        :param float hit_box_detail: Float, defaults to 4.5. Used with 'Detailed' to hit box
+
 
         """
 
@@ -494,6 +512,12 @@ class Sprite:
         Return the y coordinate of the bottom of the sprite.
         """
         points = self.get_adjusted_hit_box()
+
+        # This happens if our point list is empty, such as a completely
+        # transparent sprite.
+        if len(points) == 0:
+            return self.center_x
+
         my_min = points[0][1]
         for point in range(1, len(points)):
             my_min = min(my_min, points[point][1])
@@ -514,6 +538,12 @@ class Sprite:
         Return the y coordinate of the top of the sprite.
         """
         points = self.get_adjusted_hit_box()
+
+        # This happens if our point list is empty, such as a completely
+        # transparent sprite.
+        if len(points) == 0:
+            return self.center_x
+
         my_max = points[0][1]
         for i in range(1, len(points)):
             my_max = max(my_max, points[i][1])
@@ -679,6 +709,12 @@ class Sprite:
         Return the x coordinate of the left-side of the sprite's hit box.
         """
         points = self.get_adjusted_hit_box()
+
+        # This happens if our point list is empty, such as a completely
+        # transparent sprite.
+        if len(points) == 0:
+            return self.center_x
+
         my_min = points[0][0]
         for i in range(1, len(points)):
             my_min = min(my_min, points[i][0])
@@ -698,6 +734,12 @@ class Sprite:
         """
 
         points = self.get_adjusted_hit_box()
+
+        # This happens if our point list is empty, such as a completely
+        # transparent sprite.
+        if len(points) == 0:
+            return self.center_x
+
         my_max = points[0][0]
         for point in range(1, len(points)):
             my_max = max(my_max, points[point][0])
@@ -1131,7 +1173,14 @@ class SpriteSolidColor(Sprite):
     This sprite is just a rectangular sprite of one solid color. No need to
     use an image file.
     """
-    def __init__(self, width, height, color):
+    def __init__(self, width:int, height:int, color):
+        """
+        Create a solid-color rectangular sprite.
+
+        :param int width: Width of the sprite
+        :param int height: Height of the sprite
+        :param Color color: Color of the sprite
+        """
         super().__init__()
 
         image = PIL.Image.new('RGBA', (width, height), color)
@@ -1143,7 +1192,16 @@ class SpriteCircle(Sprite):
     This sprite is just an elliptical sprite of one solid color. No need to
     use an image file.
     """
-    def __init__(self, radius, color, soft=False):
+    def __init__(self,
+                 radius:int,
+                 color:Color,
+                 soft:bool = False):
+        """
+
+        :param float radius: Radius of the circle
+        :param Color color: Color of the circle
+        :param bool soft: If True, will add a alpha gradient
+        """
         super().__init__()
 
         if soft:

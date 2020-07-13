@@ -153,6 +153,9 @@ def set_viewport(left: float, right: float, bottom: float, top: float):
     line up with the pixels on the screen. Otherwise if making a tiled game
     the blocks may not line up well, creating rectangle artifacts.
 
+    Note: Window.on_resize will call set_viewport by default. If you set your
+    own custom viewport, you may need to over-ride this method.
+
     For more advanced users: This functions sets the orthogonal projection
     used by shapes and sprites using the values passed in. it also
     updates the viewport to match the current screen resolution.

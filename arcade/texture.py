@@ -82,12 +82,31 @@ class Texture:
                  hit_box_algorithm: str = "Simple",
                  hit_box_detail: float = 4.5):
         """
+        Create a texture, given a PIL Image object.
 
-        Args:
-            name: Name of texture. Used for caching, so must be unique for each texture.
-            image: Image to use as a texture.
-            hit_box_algorithm: One of 'None', 'Simple' or 'Detailed'
-            hit_box_detail: Float, defaults to 4.5. Used with 'Detailed' to hit box
+        :param str name: Name of texture. Used for caching, so must be unique for each texture.
+        :param PIL.Image.Image image: Image to use as a texture.
+        :param str hit_box_algorithm: One of 'None', 'Simple' or 'Detailed'. \
+        Defaults to 'Simple'. Use 'Simple' for the :data:`PhysicsEngineSimple`, \
+        :data:`PhysicsEnginePlatformer` \
+        and 'Detailed' for the :data:`PymunkPhysicsEngine`.
+
+            .. figure:: images/hit_box_algorithm_none.png
+               :width: 40%
+
+               hit_box_algorithm = "None"
+
+            .. figure:: images/hit_box_algorithm_simple.png
+               :width: 55%
+
+               hit_box_algorithm = "Simple"
+
+            .. figure:: images/hit_box_algorithm_detailed.png
+               :width: 75%
+
+               hit_box_algorithm = "Detailed"
+        :param float hit_box_detail: Float, defaults to 4.5. Used with 'Detailed' to hit box
+
         """
         from arcade.sprite import Sprite
         from arcade.sprite_list import SpriteList
@@ -335,10 +354,30 @@ def load_texture(file_name: Union[str, Path],
     :param bool flipped_horizontally: Mirror the sprite image. Flip left/right across vertical axis.
     :param bool flipped_vertically: Flip the image up/down across the horizontal axis.
     :param bool flipped_diagonally: Transpose the image, flip it across the diagonal.
-    :param bool mirrored: Deprecated.
     :param bool can_cache: If a texture has already been loaded, load_texture will return the same texture in order \
     to save time. Sometimes this is not desirable, as resizing a cached texture will cause all other textures to \
     resize with it. Setting can_cache to false will prevent this issue at the experience of additional resources.
+    :param bool mirrored: Deprecated.
+    :param str hit_box_algorithm: One of 'None', 'Simple' or 'Detailed'. \
+    Defaults to 'Simple'. Use 'Simple' for the :data:`PhysicsEngineSimple`, \
+    :data:`PhysicsEnginePlatformer` \
+    and 'Detailed' for the :data:`PymunkPhysicsEngine`.
+
+        .. figure:: images/hit_box_algorithm_none.png
+           :width: 40%
+
+           hit_box_algorithm = "None"
+
+        .. figure:: images/hit_box_algorithm_simple.png
+           :width: 55%
+
+           hit_box_algorithm = "Simple"
+
+        .. figure:: images/hit_box_algorithm_detailed.png
+           :width: 75%
+
+           hit_box_algorithm = "Detailed"
+    :param float hit_box_detail: Float, defaults to 4.5. Used with 'Detailed' to hit box
 
     :returns: New :class:`Texture` object.
 
@@ -432,14 +471,17 @@ def cleanup_texture_cache():
     import gc
     gc.collect()
 
-def load_texture_pair(filename):
+def load_texture_pair(filename, hit_box_algorithm: str = "Simple"):
     """
     Load a texture pair, with the second being a mirror image of the first.
     Useful when doing animations and the character can face left/right.
     """
     return [
-        load_texture(filename),
-        load_texture(filename, flipped_horizontally=True)
+        load_texture(filename,
+                     hit_box_algorithm=hit_box_algorithm),
+        load_texture(filename,
+                     flipped_horizontally=True,
+                     hit_box_algorithm=hit_box_algorithm)
     ]
 
 def load_spritesheet(file_name: Union[str, Path],
@@ -455,6 +497,7 @@ def load_spritesheet(file_name: Union[str, Path],
     :param int sprite_height: Height of the sprites in pixels
     :param int columns: Number of tiles wide the image is.
     :param int count: Number of tiles in the image.
+    :param int margin: Margin between images
 
     :returns List: List of :class:`Texture` objects.
     """
