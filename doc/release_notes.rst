@@ -10,7 +10,7 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
 Version 2.4
 -----------
 
-*Currently in Beta. Arcade 2.4b3 released 2020-07-09*
+Arcade 2.4.1 was released 2020-07-13.
 
 Arcade version 2.4 is a major enhancement release to Arcade.
 
