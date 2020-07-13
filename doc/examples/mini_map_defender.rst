@@ -78,7 +78,7 @@ In this case, we render it to the pre-defined location with:
 The rest of the code in this section calculates a rectangle on the mini-map
 that outlines what the user can see on the mini-map.
 
-.. literalinclude:: ../../arcade/experimental/mini_map_defender.py
+.. literalinclude:: ../../arcade/examples/mini_map_defender.py
     :caption: mini_map_defender.py
     :linenos:
     :emphasize-lines: 26-32, 172-189, 226-238, 263-280

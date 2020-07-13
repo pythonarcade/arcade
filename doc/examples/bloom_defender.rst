@@ -48,7 +48,7 @@ Lines 264-265
 
 Finally we render that buffer to the screen.
 
-.. literalinclude:: ../../arcade/experimental/bloom_defender.py
+.. literalinclude:: ../../arcade/examples/bloom_defender.py
     :caption: mini_map_defender.py
     :linenos:
     :emphasize-lines: 176-202, 239-252, 264-265

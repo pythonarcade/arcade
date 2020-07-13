@@ -92,12 +92,12 @@ Drawing with Loops
 .. figure:: thumbs/nested_loops_top_left_triangle.png
    :figwidth: 170px
 
-   :ref:`nested_loops_bottom_left_triangle`
+   :ref:`nested_loops_top_left_triangle`
 
-.. figure:: thumbs/nested_loops_top_right_triangle.png
+.. figure:: thumbs/nested_loops_bottom_right_triangle.png
    :figwidth: 170px
 
-   :ref:`nested_loops_top_right_triangle`
+   :ref:`nested_loops_bottom_right_triangle`
 
 .. figure:: thumbs/snow.png
    :figwidth: 170px

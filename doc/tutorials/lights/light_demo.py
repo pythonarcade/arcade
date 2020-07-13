@@ -7,8 +7,6 @@ Show how to use lights.
 
 Artwork from http://kenney.nl
 
-If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.light_demo
 """
 import arcade
 from arcade.experimental.lights import Light, LightLayer

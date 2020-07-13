@@ -1,5 +1,7 @@
-Lights
-======
+Lights Tutorial
+===============
+
+.. image:: lights.png
 
 (To be done.)
 

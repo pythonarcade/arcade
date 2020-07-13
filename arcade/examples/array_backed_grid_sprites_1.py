@@ -7,7 +7,7 @@ grid on-screen.
 This version syncs the grid to the sprite list in one go using resync_grid_with_sprites.
 
 If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.array_backed_grid_sprites
+python -m arcade.examples.array_backed_grid_sprites_1
 """
 import arcade
 

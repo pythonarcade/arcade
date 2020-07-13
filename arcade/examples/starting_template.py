@@ -32,6 +32,7 @@ class MyGame(arcade.Window):
         # and set them to None
 
     def setup(self):
+        """ Set up the game variables. Call to re-start the game. """
         # Create your sprites and sprite lists here
         pass
 
