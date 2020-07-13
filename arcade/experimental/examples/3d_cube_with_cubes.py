@@ -144,5 +144,5 @@ class MyGame(arcade.Window):
 
 
 if __name__ == "__main__":
-    MyGame(256, 256, "3D Cube")
+    MyGame(720, 720, "3D Cube")
     arcade.run()
