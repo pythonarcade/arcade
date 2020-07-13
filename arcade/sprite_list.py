@@ -286,6 +286,8 @@ class SpriteList:
         self._vao1 = None
         self.vbo_buf = None
 
+        self._force_new_atlas_generation = False
+
         self.array_of_texture_names = []
         self.array_of_images = []
 
@@ -448,15 +450,25 @@ class SpriteList:
             sprite.center_x += change_x
             sprite.center_y += change_y
 
-    def preload_textures(self, texture_names: List):
+    def preload_textures(self, texture_list: List):
         """
         Preload a set of textures that will be used for sprites in this
         sprite list.
 
-        :param array texture_names: List of file names to load in as textures.
+        :param array texture_list: List of textures.
         """
-        self.array_of_texture_names.extend(texture_names)
-        self.array_of_images = None
+        if self.array_of_texture_names is None:
+            self.array_of_texture_names = []
+
+        if self.array_of_images is None:
+            self.array_of_images = []
+
+        for texture in texture_list:
+            if not texture.name in self.array_of_texture_names:
+                self.array_of_texture_names.append(texture.name)
+                self.array_of_images.append(texture.image)
+
+        self._force_new_atlas_generation = True
 
     def _calculate_sprite_buffer(self):
 
@@ -546,8 +558,9 @@ class SpriteList:
             new_array_of_texture_names = []
             new_array_of_images = []
             new_texture = False
-            if self.array_of_images is None:
+            if self.array_of_images is None or self._force_new_atlas_generation:
                 new_texture = True
+                self._force_new_atlas_generation = False
 
             # print()
             # print("New texture start: ", new_texture)
@@ -559,11 +572,16 @@ class SpriteList:
                     raise Exception("Error: Attempt to draw a sprite without a texture set.")
 
                 name_of_texture_to_check = sprite.texture.name
+
+                # Do we already have this in our old texture atlas?
                 if name_of_texture_to_check not in self.array_of_texture_names:
+                    # No, so flag that we'll have to create a new one.
                     new_texture = True
                     # print("New because of ", name_of_texture_to_check)
 
+                # Do we already have this created because of a prior loop?
                 if name_of_texture_to_check not in new_array_of_texture_names:
+                    # No, so make as a new image
                     new_array_of_texture_names.append(name_of_texture_to_check)
                     if sprite.texture is None:
                         raise ValueError(f"Sprite has no texture.")
@@ -571,6 +589,7 @@ class SpriteList:
                         raise ValueError(f"Sprite texture {sprite.texture.name} has no image.")
                     image = sprite.texture.image
 
+                    # Create a new image with a transparent border around it to help prevent artifacts
                     tmp = Image.new('RGBA', (image.width+2, image.height+2))
                     tmp.paste(image, (1, 1))
                     tmp.paste(tmp.crop((1          , 1           , image.width+1, 2             )), (1            , 0             ))
@@ -578,6 +597,7 @@ class SpriteList:
                     tmp.paste(tmp.crop((1          , 0           ,             2, image.height+2)), (0            , 0             ))
                     tmp.paste(tmp.crop((image.width, 0           , image.width+1, image.height+2)), (image.width+1, 0             ))
 
+                    # Put in our array of new images
                     new_array_of_images.append(tmp)
 
             # print("New texture end: ", new_texture)
