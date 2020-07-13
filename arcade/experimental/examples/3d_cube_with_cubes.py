@@ -113,7 +113,7 @@ class MyGame(arcade.Window):
         self.fbo1.use()
         self.fbo1.clear(color=(1.0, 1.0, 1.0, 1.0), normalized=True)
         rotate = Matrix44.from_eulers((self.time, self.time * 0.77, self.time * 0.01), dtype='f4')
-        translate = Matrix44.from_translation((0, 0, -2.0), dtype='f4')
+        translate = Matrix44.from_translation((0, 0, -1.75), dtype='f4')
         modelview = translate * rotate
         if self.frame > 0:
             self.program['use_texture'] = 1
