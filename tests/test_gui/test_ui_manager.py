@@ -18,7 +18,7 @@ def test_ui_manager_dispatch_ui_event(mock_mng):
     mock_mng.push_handlers(on_ui_event)
 
     # WHEN
-    mock_mng.disptach_ui_event(test_event)
+    mock_mng.dispatch_ui_event(test_event)
 
     # THEN
     assert catched_event == test_event

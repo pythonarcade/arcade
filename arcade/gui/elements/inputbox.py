@@ -24,7 +24,7 @@ from arcade.gui.ui_style import UIStyle
 from arcade.gui.utils import get_text_image
 
 
-class KeyAdapter:
+class _KeyAdapter:
     """
     Handles the text and key inputs, primary storage of text and cursor_index.
     """
@@ -62,7 +62,7 @@ class KeyAdapter:
     def reset_state_changed(self):
         self.state_changed = False
 
-    def on_event(self, event):
+    def on_ui_event(self, event):
         if event.type == TEXT_INPUT:
             text = event.get('text')
             if text == '\r':
@@ -106,6 +106,13 @@ class KeyAdapter:
 
 
 class UIInputBox(UIClickable):
+    """
+    Provides an input field for the user. If it gets focus, user clicks on it,
+    it will show a cursor and will react to keystrokes, changing the text and cursor position.
+
+
+    """
+
     ENTER = 'ENTER'
 
     def __init__(self,
@@ -116,6 +123,16 @@ class UIInputBox(UIClickable):
                  id: Optional[str] = None,
                  style: UIStyle = None,
                  **kwargs):
+        """
+        :param center_x: center X of element
+        :param center_y: center y of element
+        :param width: width of element
+        :param height: height of element
+        :param text: text
+        :param id: id of :py:class:`arcade.gui.UIElement`
+        :param style: style of :py:class:`arcade.gui.UIElement`
+        :param kwargs: catches unsupported named parameters
+        """
         super().__init__(
             center_x=center_x,
             center_y=center_y,
@@ -130,7 +147,7 @@ class UIInputBox(UIClickable):
         self.height = height
 
         self.symbol = '|'
-        self.text_adapter = KeyAdapter(text)
+        self.text_adapter = _KeyAdapter(text)
 
         self.normal_texture = None
         self.hover_texture = None
@@ -139,9 +156,6 @@ class UIInputBox(UIClickable):
         self.render()
 
     def render(self):
-        """
-        text got updated, so recreate textures
-        """
         font_name = self.style_attr('font_name', ['Calibri', 'Arial'])
         font_size = self.style_attr('font_size', 22)
 
@@ -227,6 +241,9 @@ class UIInputBox(UIClickable):
 
     @property
     def cursor_index(self):
+        """
+        Current index of cursor
+        """
         return self.text_adapter.cursor_index
 
     @cursor_index.setter
@@ -235,6 +252,9 @@ class UIInputBox(UIClickable):
 
     @property
     def text(self):
+        """
+        Stored text
+        """
         return self.text_adapter.text
 
     @text.setter
@@ -249,10 +269,10 @@ class UIInputBox(UIClickable):
             if event.type == TEXT_INPUT and event.get('text') == '\r':
                 self.dispatch_event('on_enter')
                 if self.mng:
-                    self.mng.disptach_ui_event(UIEvent(UIInputBox.ENTER, ui_element=self))
+                    self.mng.dispatch_ui_event(UIEvent(UIInputBox.ENTER, ui_element=self))
                 return
 
-            self.text_adapter.on_event(event)
+            self.text_adapter.on_ui_event(event)
 
         if self.text_adapter.state_changed:
             self.text_adapter.reset_state_changed()

@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Dict, Any, Sequence, Set
+from typing import Dict, Any, Sequence, Set, Union
 
 import yaml
 from pyglet.event import EventDispatcher
@@ -13,13 +13,16 @@ class UIStyle(EventDispatcher):
     Used as singleton in the UIView, style changes are applied by changing the values of the singleton.
 
     Use `.load()` to update UIStyle instance from YAML-file
-
-
     """
     __default_style = None
 
-    def __init__(self, data: Dict[str, Any], **kwargs):
-        self.data = data
+    def __init__(self, data: Dict[str, Any]=None, **kwargs):
+        """
+        :param data: Data of the UIStyle
+        :param kwargs: Data of UIStyle as named parameters
+        """
+        self.data = data if data else {}
+        self.data.update(kwargs)
 
         self.register_event_type('on_style_change')
 
@@ -30,11 +33,18 @@ class UIStyle(EventDispatcher):
 
         :param path: Path to a valid style YAML file
         """
-        ui_style = UIStyle({})
+        ui_style = UIStyle()
         ui_style.load(path)
         return ui_style
 
-    def load(self, path: Path):
+    def load(self, path: Union[str, Path]):
+        """
+        Loads style attributes from YAML file
+        :param path: Path to file
+        """
+        if isinstance(path, str):
+            path = Path(path)
+
         with path.open() as file:
             data: Dict[str, Dict[str, Any]] = yaml.safe_load(file)
             assert isinstance(data, dict)

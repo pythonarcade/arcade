@@ -3,13 +3,15 @@ from typing import Optional
 from pyglet.event import EventDispatcher
 
 from arcade import Texture
-
 from arcade.gui import UIElement, UIEvent, MOUSE_PRESS, MOUSE_RELEASE
 from arcade.gui.ui_style import UIStyle
 
 
 class UIClickable(EventDispatcher, UIElement):
-    """ Texture based UIElement supporting hover and press, this should fit every use case"""
+    """
+    Texture based UIElement supporting hover and press,
+    this should fit every use case
+    """
 
     CLICKED = 'UIClickable_CLICKED'
 
@@ -18,6 +20,13 @@ class UIClickable(EventDispatcher, UIElement):
                  id: Optional[str] = None,
                  style: UIStyle = None,
                  **kwargs):
+        """
+        :param center_x: center X of element
+        :param center_y:Center Y of element
+        :param id: id of :py:class:`arcade.gui.UIElement`
+        :param style: style of :py:class:`arcade.gui.UIElement`
+        :param kwargs: catches unsupported named parameters
+        """
         super().__init__(
             center_x=center_x,
             center_y=center_y,
@@ -73,6 +82,9 @@ class UIClickable(EventDispatcher, UIElement):
 
     @property
     def hovered(self):
+        """
+        True if mouse is over this element, only one element at a time
+        """
         return self._hovered
 
     @hovered.setter
@@ -82,6 +94,10 @@ class UIClickable(EventDispatcher, UIElement):
 
     @property
     def pressed(self):
+        """
+        True if mouse is over this element and mouse button gets pressed,
+        only one element at a time
+        """
         return self._pressed
 
     @pressed.setter
@@ -91,6 +107,9 @@ class UIClickable(EventDispatcher, UIElement):
 
     @property
     def focused(self):
+        """
+        True if mouse is clicked on this element, until click outside of this element
+        """
         return self._focused
 
     @focused.setter
@@ -109,7 +128,7 @@ class UIClickable(EventDispatcher, UIElement):
                     self.dispatch_event('on_click')
 
                     if self.mng:
-                        self.mng.disptach_ui_event(UIEvent(UIClickable.CLICKED, ui_element=self))
+                        self.mng.dispatch_ui_event(UIEvent(UIClickable.CLICKED, ui_element=self))
 
     def set_proper_texture(self):
         """ Set normal, mouse-over, or clicked texture. """

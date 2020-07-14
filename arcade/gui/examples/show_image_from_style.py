@@ -3,7 +3,7 @@ import arcade
 import arcade.gui
 from arcade.gui import UIManager
 
-
+# TODO Work in progress
 class MyView(arcade.View):
     def __init__(self, window: arcade.Window):
         super().__init__()

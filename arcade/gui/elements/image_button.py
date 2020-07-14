@@ -20,6 +20,18 @@ class UIImageButton(UIClickable):
                  style: UIStyle = None,
                  **kwargs
                  ):
+        """
+
+        :param center_x: center X of element
+        :param center_y: center y of element
+        :param normal_texture:
+        :param hover_texture:
+        :param press_texture:
+        :param text:
+        :param id: id of :py:class:`arcade.gui.UIElement`
+        :param style: style of :py:class:`arcade.gui.UIElement`
+        :param kwargs: catches unsupported named parameters
+        """
         super().__init__(
             center_x=center_x,
             center_y=center_y,
