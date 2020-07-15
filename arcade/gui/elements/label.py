@@ -7,6 +7,9 @@ from arcade.gui.utils import get_text_image
 
 
 class UILabel(UIClickable):
+    """
+    :py:class:`arcade.gui.UIElement` for showing text.
+    """
     def __init__(self,
                  text: str,
                  center_x: int,
@@ -16,6 +19,16 @@ class UILabel(UIClickable):
                  id: Optional[str] = None,
                  style: UIStyle = None,
                  **kwargs):
+        """
+        :param text: Text to show
+        :param center_x: center X of element
+        :param center_y: center y of element
+        :param width: width, 0 will use the width of the rendered text
+        :param align: position of the text, requires a fix width
+        :param id: id of :py:class:`arcade.gui.UIElement`
+        :param style: style of :py:class:`arcade.gui.UIElement`
+        :param kwargs: catches unsupported named parameters
+        """
         super().__init__(
             center_x=center_x,
             center_y=center_y,
@@ -33,6 +46,9 @@ class UILabel(UIClickable):
 
     @property
     def text(self):
+        """
+        Text of the label
+        """
         return self._text
 
     @text.setter

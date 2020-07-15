@@ -46,7 +46,7 @@ def test_setting_focus_to_other_element_handles_refocus(mock_mng, mock_button, m
 def test_click_on_element_makes_it_active(mock_mng, mock_button):
     mock_mng.add_ui_element(mock_button)
 
-    mock_mng.disptach_ui_event(UIEvent(MOUSE_PRESS, x=50, y=50, button=1, modifier=0))
+    mock_mng.dispatch_ui_event(UIEvent(MOUSE_PRESS, x=50, y=50, button=1, modifier=0))
 
     assert mock_mng.focused_element is mock_button
     assert mock_button.on_focus_called
@@ -56,7 +56,7 @@ def test_click_beside_element_unfocuses(mock_mng, mock_button):
     mock_mng.add_ui_element(mock_button)
     mock_mng.focused_element = mock_button
 
-    mock_mng.disptach_ui_event(UIEvent(MOUSE_PRESS, x=100, y=100, button=1, modifier=0))
+    mock_mng.dispatch_ui_event(UIEvent(MOUSE_PRESS, x=100, y=100, button=1, modifier=0))
 
     assert mock_mng.focused_element is None
     assert mock_button.on_unfocus_called
@@ -70,7 +70,7 @@ def test_change_focus_to_different_element(mock_mng, mock_button: MockButton, mo
     mock_mng.focused_element = mock_button
 
     # WHEN
-    mock_mng.disptach_ui_event(UIEvent(MOUSE_PRESS, x=50, y=50, button=1, modifier=0))
+    mock_mng.dispatch_ui_event(UIEvent(MOUSE_PRESS, x=50, y=50, button=1, modifier=0))
 
     # THEN
     assert mock_mng.focused_element is mock_button2

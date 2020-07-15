@@ -22,6 +22,16 @@ class UIAbstractFlatButton(UIClickable):
                  **kwargs):
         """
         Do not forget to call render in subclass __init__
+
+        :param text:
+        :param center_x: center X of element
+        :param center_y: center y of element
+        :param width:
+        :param height:
+        :param align:
+        :param id: id of :py:class:`arcade.gui.UIElement`
+        :param style: style of :py:class:`arcade.gui.UIElement`
+        :param kwargs: catches unsupported named parameters
         """
         super().__init__(
             center_x=center_x,
@@ -125,6 +135,17 @@ class UIFlatButton(UIAbstractFlatButton):
                  id: Optional[str] = None,
                  style: UIStyle = None,
                  **kwargs):
+        """
+        :param text: Text
+        :param center_x: center X of element
+        :param center_y: center y of element
+        :param width: width of element
+        :param height: height of element
+        :param align: align of text, requires set width
+        :param id: id of :py:class:`arcade.gui.UIElement`
+        :param style: style of :py:class:`arcade.gui.UIElement`
+        :param kwargs: catches unsupported named parameters
+        """
         super().__init__(text, center_x, center_y, width, height, align, id=id, style=style, **kwargs)
         self.style_classes.append('flatbutton')
         self.render()
@@ -141,6 +162,17 @@ class UIGhostFlatButton(UIAbstractFlatButton):
                  id: Optional[str] = None,
                  style: UIStyle = None,
                  **kwargs):
+        """
+        :param text: Text
+        :param center_x: center X of element
+        :param center_y: center y of element
+        :param width: width of element
+        :param height: height of element
+        :param align: align of text, requires set width
+        :param id: id of :py:class:`arcade.gui.UIElement`
+        :param style: style of :py:class:`arcade.gui.UIElement`
+        :param kwargs: catches unsupported named parameters
+        """
         super().__init__(text, center_x, center_y, width, height, align, id=id, style=style, **kwargs)
         self.style_classes.append('ghostflatbutton')
         self.render()
