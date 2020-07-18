@@ -193,7 +193,7 @@ def create_line_loop(point_list: PointList,
 
     """
     point_list = list(point_list) + [point_list[0]]
-    return create_line_generic(point_list, color, gl.GL_LINE_STRIP, line_width)
+    return create_line_strip(point_list, color, line_width)
 
 
 def create_lines(point_list: PointList,
