@@ -17,6 +17,7 @@ import time
 
 from PIL import Image
 
+from arcade import Color
 from arcade import Matrix3x3
 from arcade import Sprite
 from arcade import get_distance_between_sprites
@@ -1021,6 +1022,11 @@ class SpriteList:
                 self._sprite_sub_tex_changed = False
 
         self._vao1.render(self.program, mode=self.ctx.POINTS, vertices=len(self.sprite_list))
+
+    def draw_hit_boxes(self, color: Color = (0, 0, 0, 255), line_thickness: float = 1):
+        """ Draw all the hit boxes in this list """
+        for sprite in self.sprite_list:
+            sprite.draw_hit_box(color, line_thickness)
 
     def __len__(self) -> int:
         """ Return the length of the sprite list. """
