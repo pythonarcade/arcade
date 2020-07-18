@@ -27,6 +27,8 @@ from arcade import Texture
 from arcade import Matrix3x3
 from arcade import rotate_point
 from arcade import draw_polygon_outline
+from arcade import create_line_loop
+from arcade import ShapeElementList
 from arcade import make_soft_circle_texture
 from arcade import make_circle_texture
 from arcade import Color
@@ -193,6 +195,8 @@ class Sprite:
 
         self._points: Optional[PointList] = None
 
+        self._hit_box_shape = None
+
         if filename is not None:
             try:
                 self._texture = load_texture(filename, image_x, image_y,
@@ -337,6 +341,7 @@ class Sprite:
         Points will be scaled with get_adjusted_hit_box.
         """
         self._point_list_cache = None
+        self._hit_box_shape = None
         self._points = points
 
     def get_hit_box(self) -> PointList:
@@ -885,13 +890,45 @@ class Sprite:
 
     def draw_hit_box(self, color: Color = BLACK, line_thickness: float = 1):
         """
-        Draw a sprite's hit-box. This is slow, but useful for debugging.
+        Draw a sprite's hit-box.
+
+        The 'hit box' drawing is cached, so if you change the color/line thickness
+        later, it won't take.
+
         :param color: Color of box
         :param line_thickness: How thick the box should be
         """
-        points = self.get_adjusted_hit_box()
 
-        draw_polygon_outline(points, color, line_thickness)
+        if self._hit_box_shape is None:
+
+            # Adjust the hitbox
+            point_list = []
+            for point in self.hit_box:
+                # Get a copy of the point
+                point = [point[0], point[1]]
+
+                # Scale the point
+                if self.scale != 1:
+                    point[0] *= self.scale
+                    point[1] *= self.scale
+
+                # Rotate the point
+                if self.angle:
+                    point = rotate_point(point[0], point[1], 0, 0, self.angle)
+
+                point_list.append(point)
+
+            shape = create_line_loop(point_list, color, line_thickness)
+            self._hit_box_shape = ShapeElementList()
+            self._hit_box_shape.append(shape)
+
+        self._hit_box_shape.center_x = self.center_x
+        self._hit_box_shape.center_y = self.center_y
+        self._hit_box_shape.angle = self.angle
+        self._hit_box_shape.draw()
+
+        # point_list = self.get_adjusted_hit_box()
+        # draw_polygon_outline(point_list, color, line_thickness)
 
     def update(self):
         """
