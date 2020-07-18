@@ -195,7 +195,7 @@ class Sprite:
 
         self._points: Optional[PointList] = None
 
-        self._hit_box_shape = None
+        self._hit_box_shape: Optional[ShapeElementList] = None
 
         if filename is not None:
             try:
