@@ -597,7 +597,7 @@ def draw_point(x: float, y: float, color: Color, size: float):
          RGBA format.
     :param float size: Size of the point in pixels.
     """
-    draw_rectangle_filled(x, y, size / 2, size / 2, color)
+    draw_rectangle_filled(x, y, size, size, color)
 
 
 def _get_points_for_points(point_list, size):

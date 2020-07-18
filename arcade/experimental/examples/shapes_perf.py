@@ -9,7 +9,7 @@ from pyglet import gl
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
-TITLE = "Line Test"
+TITLE = "Shape Test"
 
 # [x] draw_line
 # [x] draw_lines
@@ -116,6 +116,11 @@ class GameWindow(arcade.Window):
     def do_draw_arc_filled(self):
         arcade.draw_arc_filled(400, 300, 200, 200, arcade.color.AZURE, 30.0 - math.sin(self.elapsed) * 20.0, 340.0 + math.sin(self.elapsed) * 20.0, 0)
 
+    def draw_point(self):
+        for x in range(0, SCREEN_WIDTH, 20):
+            for y in range(0, SCREEN_HEIGHT, 15):
+                arcade.draw_point(x + 10, y + 8, arcade.color.WHITE, 1.0)
+
     def on_draw(self):
         try:
             self.clear()
@@ -129,9 +134,9 @@ class GameWindow(arcade.Window):
             # self.do_draw_ellipse_filled()
             # self.do_draw_circle_outline()
             # self.do_draw_ellipse_outline()
-            self.do_draw_rectangle()
+            # self.do_draw_rectangle()
             # self.do_draw_arc_filled()
-            
+            self.draw_point()
 
             self.execution_time += time.time() - start
             self.frames += 1
