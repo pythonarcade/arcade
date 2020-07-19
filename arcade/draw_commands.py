@@ -267,10 +267,8 @@ def draw_ellipse_filled(center_x: float, center_y: float,
          amount of segments based on the size of the circle.
     """
     window = get_window()
-    if not window:
-        raise RuntimeError("No window found")
-
     ctx = window.ctx
+
     program = ctx.shape_ellipse_filled_unbuffered_program
     geometry = ctx.shape_ellipse_unbuffered_geometry
     buffer = ctx.shape_ellipse_unbuffered_buffer
@@ -334,10 +332,8 @@ def draw_ellipse_outline(center_x: float, center_y: float, width: float,
          amount of segments based on the size of the circle.
     """
     window = get_window()
-    if not window:
-        raise RuntimeError("No window found")
-
     ctx = window.ctx
+
     program = ctx.shape_ellipse_outline_unbuffered_program
     geometry = ctx.shape_ellipse_outline_unbuffered_geometry
     buffer = ctx.shape_ellipse_outline_unbuffered_buffer
@@ -438,7 +434,6 @@ def _generic_draw_line_strip(point_list: PointList,
     # Cache the program. But not on linux because it fails unit tests for some reason.
     # if not _generic_draw_line_strip.program or sys.platform == "linux":
     window = get_window()
-
     ctx = window.ctx
 
     c4 = get_four_byte_color(color)
@@ -504,10 +499,8 @@ def draw_line(start_x: float, start_y: float, end_x: float, end_y: float,
     :param float line_width: Width of the line in pixels.
     """
     window = get_window()
-    if not window:
-        raise RuntimeError("No window found")
-
     ctx = window.ctx
+
     program = ctx.shape_line_program
     geometry = ctx.shape_line_geometry
     # We need to normalize the color because we are setting it as a float uniform
@@ -546,10 +539,8 @@ def draw_lines(point_list: PointList,
     :param float line_width: Width of the line in pixels.
     """
     window = get_window()
-    if not window:
-        raise RuntimeError("No window found")
-
     ctx = window.ctx
+
     program = ctx.shape_line_program
     geometry = ctx.shape_line_geometry
     # We need to normalize the color because we are setting it as a float uniform
