@@ -154,6 +154,7 @@ class GameWindow(arcade.Window):
         # self.draw_point()
         # self.draw_points()
 
+        self.ctx.finish()
         self.execution_time += time.time() - start
         self.frames += 1
 

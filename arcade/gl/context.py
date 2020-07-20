@@ -363,6 +363,10 @@ class Context:
         self._primitive_restart_index = value
         gl.glPrimitiveRestartIndex(value)
 
+    def finish(self) -> None:
+        """Wait until all OpenGL rendering commands are completed"""
+        gl.glFinish()
+
     # --- Resource methods ---
 
     def buffer(self, *, data: Optional[Any] = None, reserve: int = 0, usage: str = 'static') -> Buffer:
