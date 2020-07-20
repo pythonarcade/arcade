@@ -591,25 +591,24 @@ def draw_point(x: float, y: float, color: Color, size: float):
     draw_rectangle_filled(x, y, size, size, color)
 
 
-def _get_points_for_points(point_list, size):
-    new_point_list = []
-    hs = size / 2
-    for point in point_list:
-        x = point[0]
-        y = point[1]
-        new_point_list.append((x - hs, y - hs))
-        new_point_list.append((x + hs, y - hs))
-        new_point_list.append((x + hs, y + hs))
+# def _get_points_for_points(point_list, size):
+#     new_point_list = []
+#     hs = size / 2
+#     for point in point_list:
+#         x = point[0]
+#         y = point[1]
+#         new_point_list.append((x - hs, y - hs))
+#         new_point_list.append((x + hs, y - hs))
+#         new_point_list.append((x + hs, y + hs))
 
-        new_point_list.append((x + hs, y + hs))
-        new_point_list.append((x - hs, y - hs))
-        new_point_list.append((x - hs, y + hs))
+#         new_point_list.append((x + hs, y + hs))
+#         new_point_list.append((x - hs, y - hs))
+#         new_point_list.append((x - hs, y + hs))
 
-    return new_point_list
+#     return new_point_list
 
 
-def draw_points(point_list: PointList,
-                color: Color, size: float = 1):
+def draw_points(point_list: PointList, color: Color, size: float = 1):
     """
     Draw a set of points.
 
@@ -619,8 +618,29 @@ def draw_points(point_list: PointList,
          RGBA format.
     :param float size: Size of the point in pixels.
     """
-    new_point_list = _get_points_for_points(point_list, size)
-    _generic_draw_line_strip(new_point_list, color, gl.GL_TRIANGLES)
+    window = get_window()
+    ctx = window.ctx
+
+    program = ctx.shape_rectangle_filled_unbuffered_program
+    geometry = ctx.shape_rectangle_filled_unbuffered_geometry
+    buffer = ctx.shape_rectangle_filled_unbuffered_buffer
+    # We need to normalize the color because we are setting it as a float uniform
+    if len(color) == 3:
+        color_normalized = (color[0] / 255, color[1] / 255, color[2] / 255, 1.0)
+    elif len(color) == 4:
+        color_normalized = (color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255)  # type: ignore
+    else:
+        raise ValueError("Invalid color format. Use a 3 or 4 component tuple")
+
+    # Resize buffer
+    data_size = len(point_list) * 8
+    # if data_size > buffer.size:
+    buffer.orphan(size=data_size)
+
+    program['color'] = color_normalized
+    program['shape'] = size, size, 0
+    buffer.write(data=array.array('f', [v for point in point_list for v in point]))
+    geometry.render(program, mode=ctx.POINTS, vertices=data_size // 4)
 
 
 # --- END POINT FUNCTIONS # # #

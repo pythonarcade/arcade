@@ -79,9 +79,13 @@ class GameWindow(arcade.Window):
         self.single_lines_calls = [(*random_pos(), *random_pos(), random_color()) for _ in range(600)]
         # Line list
         self.line_list = [(random.randrange(0, SCREEN_WIDTH), random.randrange(0, SCREEN_HEIGHT)) for _ in range(2 * 10000)]
-
         # Single circle draw calls
         self.single_circle_calls = [(*random_pos(), random_radius(), random_color()) for _ in range(200)]
+        # Random list of points
+        self.points = [
+            arcade.NamedPoint(random.randint(0, SCREEN_WIDTH), random.randint(0, SCREEN_HEIGHT))
+            for _ in range(10_000)
+        ]
 
         self.frames = 0
         self.elapsed = 0
@@ -121,38 +125,37 @@ class GameWindow(arcade.Window):
             for y in range(0, SCREEN_HEIGHT, 15):
                 arcade.draw_point(x + 10, y + 8, arcade.color.WHITE, 1.0)
 
+    def draw_points(self):
+        arcade.draw_points(self.points, arcade.color.WHITE, 1.0)
+
     def on_draw(self):
-        try:
-            self.clear()
+        self.clear()
 
-            start = time.time()
+        start = time.time()
 
-            # Toggle what to test here
-            # self.do_draw_line()
-            # self.do_draw_lines()
-            # self.do_draw_circle_filled()
-            # self.do_draw_ellipse_filled()
-            # self.do_draw_circle_outline()
-            # self.do_draw_ellipse_outline()
-            # self.do_draw_rectangle()
-            # self.do_draw_arc_filled()
-            self.draw_point()
+        # Toggle what to test here
+        # self.do_draw_line()
+        # self.do_draw_lines()
+        # self.do_draw_circle_filled()
+        # self.do_draw_ellipse_filled()
+        # self.do_draw_circle_outline()
+        # self.do_draw_ellipse_outline()
+        # self.do_draw_rectangle()
+        # self.do_draw_arc_filled()
+        # self.draw_point()
+        self.draw_points()
 
-            self.execution_time += time.time() - start
-            self.frames += 1
+        self.execution_time += time.time() - start
+        self.frames += 1
 
-            if self.execution_time > 1.0 and self.frames > 0:
-                print((
-                    f"frames {self.frames}, "
-                    f"execution time {round(self.execution_time, 3)}, "
-                    f"frame time {round(self.execution_time / self.frames, 3)}"
-                ))
-                self.execution_time = 0
-                self.frames = 0
-        except Exception:
-            import traceback
-            traceback.print_exc()
-            exit(0)
+        if self.execution_time > 1.0 and self.frames > 0:
+            print((
+                f"frames {self.frames}, "
+                f"execution time {round(self.execution_time, 3)}, "
+                f"frame time {round(self.execution_time / self.frames, 3)}"
+            ))
+            self.execution_time = 0
+            self.frames = 0
 
     def on_resize(self, width, height):
         gl.glViewport(0, 0, *self.get_framebuffer_size())
