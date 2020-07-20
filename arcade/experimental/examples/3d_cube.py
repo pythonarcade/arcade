@@ -56,7 +56,7 @@ class MyGame(arcade.Window):
             }
             """,
         )
-        self.on_resize(*self.get_framebuffer_size())
+        self.on_resize(*self.get_size())
         self.time = 0
 
     def on_draw(self):
@@ -74,7 +74,8 @@ class MyGame(arcade.Window):
 
     def on_resize(self, width, height):
         """Set up viewport and projection"""
-        self.ctx.viewport = 0, 0, width, height
+        ratio = arcade.get_scaling_factor(self)
+        self.ctx.viewport = 0, 0, int(width * ratio), int(height * ratio)
         aspect_ratio = width / height
         self.program['projection'] = Matrix44.perspective_projection(60, aspect_ratio, 0.1, 100).flatten()
 
