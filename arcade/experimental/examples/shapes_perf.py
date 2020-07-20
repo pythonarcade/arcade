@@ -23,7 +23,7 @@ TITLE = "Shape Test"
 # [ ] draw_parabola_outline
 # [ ] draw_line_strip
 # [x] draw_point
-# [ ] draw_points
+# [x] draw_points
 # [ ] draw_polygon_filled
 # [ ] draw_polygon_outline
 # [ ] draw_triangle_filled
@@ -81,6 +81,11 @@ class GameWindow(arcade.Window):
         self.line_list = [(random.randrange(0, SCREEN_WIDTH), random.randrange(0, SCREEN_HEIGHT)) for _ in range(2 * 10000)]
         # Single circle draw calls
         self.single_circle_calls = [(*random_pos(), random_radius(), random_color()) for _ in range(200)]
+        # line strip
+        self.line_strip = [
+            arcade.NamedPoint(random.randint(0, SCREEN_WIDTH), random.randint(0, SCREEN_HEIGHT))
+            for _ in range(10)
+        ]
         # Random list of points
         self.points = [
             arcade.NamedPoint(random.randint(0, SCREEN_WIDTH), random.randint(0, SCREEN_HEIGHT))
@@ -120,13 +125,16 @@ class GameWindow(arcade.Window):
     def do_draw_arc_filled(self):
         arcade.draw_arc_filled(400, 300, 200, 200, arcade.color.AZURE, 30.0 - math.sin(self.elapsed) * 20.0, 340.0 + math.sin(self.elapsed) * 20.0, 0)
 
+    def draw_line_strip(self):
+        arcade.draw_line_strip(self.line_strip, arcade.color.WHITE, 20.0)
+
     def draw_point(self):
         for x in range(0, SCREEN_WIDTH, 20):
             for y in range(0, SCREEN_HEIGHT, 15):
                 arcade.draw_point(x + 10, y + 8, arcade.color.WHITE, 1.0)
 
     def draw_points(self):
-        arcade.draw_points(self.points, arcade.color.WHITE, 1.0)
+        arcade.draw_points(self.points, arcade.color.WILLPOWER_ORANGE, 1.0)
 
     def on_draw(self):
         self.clear()
@@ -142,8 +150,9 @@ class GameWindow(arcade.Window):
         # self.do_draw_ellipse_outline()
         # self.do_draw_rectangle()
         # self.do_draw_arc_filled()
+        self.draw_line_strip()
         # self.draw_point()
-        self.draw_points()
+        # self.draw_points()
 
         self.execution_time += time.time() - start
         self.frames += 1
