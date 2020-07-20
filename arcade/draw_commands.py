@@ -896,9 +896,6 @@ def draw_rectangle_filled(center_x: float, center_y: float, width: float,
     :param float tilt_angle: rotation of the rectangle. Defaults to zero.
     """
     window = get_window()
-    if not window:
-        raise RuntimeError("No window found")
-
     ctx = window.ctx
 
     program = ctx.shape_rectangle_filled_unbuffered_program
@@ -1006,8 +1003,6 @@ def get_pixel(x: int, y: int) -> Tuple[int, int, int]:
     # The window may be 'scaled' on hi-res displays. Particularly Macs. OpenGL
     # won't account for this, so we need to.
     window = get_window()
-    if not window:
-        raise ValueError("No window is available to get pixel data from.")
 
     pixel_ratio = window.get_pixel_ratio()
     x = int(pixel_ratio * x)
@@ -1064,12 +1059,3 @@ def get_image(x: int = 0, y: int = 0, width: int = None, height: int = None):
 
     # image.save('glutout.png', 'PNG')
     return image
-
-
-
-    # Methods associated with the frame buffer
-    def get_fbo(self):
-        return self.ctx.framebuffer(
-            color_attachments=self.ctx.texture(self.size, 4, samples=8),
-            depth_attachment=self.ctx.depth_texture(self.size, samples=8),
-        )
