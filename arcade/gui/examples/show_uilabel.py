@@ -13,13 +13,9 @@ class MyView(arcade.View):
 
     def on_draw(self):
         arcade.start_render()
-        arcade.set_background_color(arcade.color.BLACK)
 
     def on_show_view(self):
-        print('on_show_view')
-        self.setup()
-
-    def setup(self):
+        arcade.set_background_color(arcade.color.BLACK)
         self.ui_manager.purge_ui_elements()
 
         self.ui_manager.add_ui_element(arcade.gui.UILabel(

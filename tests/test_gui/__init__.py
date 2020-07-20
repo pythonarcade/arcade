@@ -3,9 +3,9 @@ from typing import List, Optional
 from uuid import uuid4
 
 import PIL
-import arcade
 import pytest
 
+import arcade
 import arcade.gui
 from arcade.gui import UIClickable, UIManager
 from arcade.gui.ui_style import UIStyle
@@ -98,13 +98,25 @@ class MockButton(UIClickable):
                  style: UIStyle = None,
                  **kwargs):
         super().__init__(center_x=center_x, center_y=center_y, id=id, style=style, **kwargs)
-
-        self.normal_texture = arcade.Texture(image=PIL.Image.new("RGBA", (width, height), color=(255,0,0)), name=str(uuid4()))
-        self.hover_texture = arcade.Texture(image=PIL.Image.new("RGBA", (width, height), color=(255,0,0)), name=str(uuid4()))
-        self.press_texture = arcade.Texture(image=PIL.Image.new("RGBA", (width, height), color=(255,0,0)), name=str(uuid4()))
-        self.focus_texture = arcade.Texture(image=PIL.Image.new("RGBA", (width, height), color=(255,0,0)), name=str(uuid4()))
-
         self.event_history: List[arcade.gui.UIEvent] = []
+        self._width = width
+        self._height = height
+
+    def render(self):
+        self.normal_texture = arcade.Texture(
+            image=PIL.Image.new("RGBA", (self._width, self._height), color=(255, 0, 0)),
+            name=str(uuid4()))
+        self.hover_texture = arcade.Texture(
+            image=PIL.Image.new("RGBA", (self._width, self._height), color=(255, 0, 0)),
+            name=str(uuid4()))
+        self.press_texture = arcade.Texture(
+            image=PIL.Image.new("RGBA", (self._width, self._height), color=(255, 0, 0)),
+            name=str(uuid4()))
+        self.focus_texture = arcade.Texture(
+            image=PIL.Image.new("RGBA", (self._width, self._height), color=(255, 0, 0)),
+            name=str(uuid4()))
+
+        self.set_proper_texture()
 
     def on_ui_event(self, event: arcade.gui.UIEvent):
         self.event_history.append(event)

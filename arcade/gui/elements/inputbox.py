@@ -110,7 +110,21 @@ class UIInputBox(UIClickable):
     Provides an input field for the user. If it gets focus, user clicks on it,
     it will show a cursor and will react to keystrokes, changing the text and cursor position.
 
-
+    Style attributes:
+    * font_name
+    * font_size
+    * font_color
+    * font_color_hover
+    * font_color_focus
+    * border_width
+    * border_color
+    * border_color_hover
+    * border_color_focus
+    * bg_color
+    * bg_color_hover
+    * bg_color_focus
+    * vmargin - Vertical margin around text
+    * margin_left
     """
 
     ENTER = 'ENTER'

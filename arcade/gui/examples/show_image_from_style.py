@@ -15,11 +15,7 @@ class MyView(arcade.View):
         arcade.start_render()
 
     def on_show_view(self):
-        print('on_show_view')
-        self.setup()
         arcade.set_background_color(arcade.color.BLACK)
-
-    def setup(self):
         self.ui_manager.purge_ui_elements()
 
         button_normal = arcade.load_texture(':resources:gui_basic_assets/red_button_normal.png')
