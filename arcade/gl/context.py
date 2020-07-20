@@ -343,6 +343,10 @@ class Context:
         self._blend_func = value
         gl.glBlendFunc(value[0], value[1])
 
+    # def blend_equation(self)
+    # def front_face(self)
+    # def cull_face(self)
+
     @property
     def point_size(self) -> float:
         """float: Get or set the point size."""
