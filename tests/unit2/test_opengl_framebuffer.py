@@ -104,3 +104,16 @@ def test_varying_attachment_size(ctx):
             color_attachments=[
                 ctx.texture((10, 10), components=4),
                 ctx.texture((10, 11), components=4)])
+
+
+def test_read(ctx):
+    fb = create(ctx, 2, 2, components=4)
+    fb.clear(color=(1, 1, 0, 1), normalized=True)
+    data = fb.read(components=4)
+    assert len(data) == 16
+    assert data == b'\xff\xff\x00\xff' * 4
+
+    # FIXME: needs read alignment
+    # data = fb.read(components=3)
+    # assert len(data) == 12
+    # assert data == b'\xff\xff\x00' * 4
