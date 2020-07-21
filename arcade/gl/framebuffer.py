@@ -6,6 +6,7 @@ import weakref
 from pyglet import gl
 
 from .texture import Texture
+from .types import pixel_formats
 
 if TYPE_CHECKING:  # handle import cycle caused by type hinting
     from arcade.gl import Context
@@ -37,6 +38,8 @@ class Framebuffer:
     :param List[arcade.gl.Texture] color_attachments: List of color attachments.
     :param arcade.gl.Texture depth_attachment: A depth attachment (optional)
     """
+    #: Is this the default framebuffer? (window buffer)
+    is_default = False
     __slots__ = (
         '_ctx', '_glo', '_width', '_height', '_color_attachments', '_depth_attachment',
         '_samples', '_viewport', '_depth_mask', '_draw_buffers', '__weakref__')
@@ -295,6 +298,28 @@ class Framebuffer:
         if use is False:
             self._ctx.active_framebuffer.use()
 
+    def read(self, *, viewport=None, components=3, attachment=0, dtype='f1') -> bytearray:
+        """Read framebuffer pixels"""
+        # TODO: use texture attachment info to determine read format?
+        self._use()
+
+        try:
+            frmt = pixel_formats[dtype]
+            base_format = frmt[0][components]
+            pixel_type = frmt[2]
+        except Exception:
+            raise ValueError(f"Invalid dtype '{dtype}'")
+
+        # Configure attachment to read from
+        # gl.glReadBuffer(gl.GL_COLOR_ATTACHMENT0 + attachment)
+        x, y, width, height = 0, 0, self._width, self._height
+        data = (gl.GLubyte * (components * width * height))(0)
+        gl.glReadPixels(x, y, width, height, base_format, pixel_type, data)
+
+        # Restore the original framebuffer (if needed)
+        self._ctx.active_framebuffer.use()
+        return bytearray(data)
+
     @staticmethod
     def release(ctx, framebuffer_id):
         """
@@ -335,6 +360,8 @@ class Framebuffer:
 
 class DefaultFrameBuffer(Framebuffer):
     """Represents the default framebuffer"""
+    #: Is this the default framebuffer? (window buffer)
+    is_default = True
     __slots__ = ()
 
     def __init__(self, ctx: 'Context'):
