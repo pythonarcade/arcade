@@ -21,14 +21,21 @@ def window():
 
 
 def view_to_png(window: arcade.Window, view: arcade.View, path: Path):
-    window.clear()
-
+    from PIL import Image
+    # window.clear()
+    ctx = window.ctx
+    offscreen = ctx.framebuffer(color_attachments=[ctx.texture(window.get_size(), components=4)])
+    offscreen.use()
     window.show_view(view)
     window.dispatch_event('on_draw')
     window.dispatch_events()
 
-    arcade.finish_render()
-    arcade.get_image().save(str(path))
+    ctx.finish()
+    image = Image.frombuffer('RGBA', offscreen.size, offscreen.read(components=4)).convert('RGB')
+    image = image.transpose(Image.FLIP_TOP_BOTTOM)
+    image.save(str(path))
+    # arcade.get_image().convert('RGB').save(str(path))
+    ctx.screen.use()
 
 
 def files_equal(file1: Path, file2: Path):
@@ -46,7 +53,7 @@ def load_view(abs_module_path) -> arcade.View:
 @pytest.mark.skipif(os.getenv('TRAVIS') == 'true',
                     reason=('Example tests not executable on travis, '
                             'check https://travis-ci.org/github/eruvanos/arcade_gui/jobs/678758144#L506'))
-@pytest.mark.skipif(sys.platform == 'darwin', reason='Not yet supported on darwin')
+#@pytest.mark.skipif(sys.platform == 'darwin', reason='Not yet supported on darwin')
 @pytest.mark.parametrize('example', [
     T('show_id_example', 'show_id_example'),
     T('show_uiinputbox', 'show_uiinputbox'),
@@ -73,4 +80,4 @@ def test_id_example(window, example):
     # compare files
     assert expected_screen.exists(), f'expected screen missing, actual at {actual_screen}'
     assert files_equal(expected_screen, actual_screen)
-    actual_screen.unlink()
+    # actual_screen.unlink()
