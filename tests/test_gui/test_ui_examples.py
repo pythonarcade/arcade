@@ -6,6 +6,8 @@ import sys
 from importlib import import_module
 from pathlib import Path
 
+import numpy as np
+from PIL import Image
 import pkg_resources
 import pytest
 
@@ -21,10 +23,10 @@ def window():
 
 
 def view_to_png(window: arcade.Window, view: arcade.View, path: Path):
-    from PIL import Image
     # window.clear()
     ctx = window.ctx
     offscreen = ctx.framebuffer(color_attachments=[ctx.texture(window.get_size(), components=4)])
+    offscreen.clear()
     offscreen.use()
     window.show_view(view)
     window.dispatch_event('on_draw')
@@ -40,6 +42,19 @@ def view_to_png(window: arcade.Window, view: arcade.View, path: Path):
 
 def files_equal(file1: Path, file2: Path):
     return file1.read_bytes() == file2.read_bytes()
+
+
+def img_diff(file1: Path, file2: Path) -> float:
+    """Difference between two images in percent"""
+    img_a = Image.open(file1).convert('RGB')
+    img_b = Image.open(file2).convert('RGB')
+    a = np.frombuffer(img_a.tobytes(), dtype='u1').astype('f4')
+    b = np.frombuffer(img_b.tobytes(), dtype='u1').astype('f4')
+    r = np.absolute(a - b)
+    # save diff
+    # Image.frombytes('RGB', (800, 600), r.astype('u1')).save(file2)
+    print(np.sum(r), np.sum(a))
+    return np.sum(r) / np.sum(a)
 
 
 def load_view(abs_module_path) -> arcade.View:
@@ -79,5 +94,6 @@ def test_id_example(window, example):
 
     # compare files
     assert expected_screen.exists(), f'expected screen missing, actual at {actual_screen}'
-    assert files_equal(expected_screen, actual_screen)
+    # assert files_equal(expected_screen, actual_screen)
+    assert img_diff(expected_screen, actual_screen) < 0.135
     # actual_screen.unlink()
