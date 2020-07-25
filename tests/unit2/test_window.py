@@ -1,3 +1,5 @@
+import numpy as np
+
 
 def test_window():
     import arcade
@@ -21,18 +23,24 @@ def test_window():
     arcade.set_window(w)
 
     w.background_color = 255, 255, 255, 255
+    assert w.background_color == (255, 255, 255, 255)
     w.set_mouse_visible(True)
     w.set_size(width, height)
 
     p = arcade.get_projection()
-    assert p is not None
+    assert isinstance(p, np.ndarray)
 
     v = arcade.get_viewport()
     assert v[0] == 0
     # The lines below fail. Why?
-    # assert v[1] == width - 1
+    assert v[1] == width - 1
     assert v[2] == 0
-    # assert v[3] == height - 1
+    assert v[3] == height - 1
+
+    factor = arcade.get_scaling_factor()
+    assert factor > 0
+    factor = arcade.get_scaling_factor(w)
+    assert factor > 0
 
     arcade.start_render()
     arcade.finish_render()
@@ -48,4 +56,3 @@ def test_window():
 
     arcade.open_window(width, height, title, resizable)
     arcade.quick_run(0.01)
-
