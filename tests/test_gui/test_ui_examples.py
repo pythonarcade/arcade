@@ -6,6 +6,8 @@ import sys
 from importlib import import_module
 from pathlib import Path
 
+import numpy as np
+from PIL import Image
 import pkg_resources
 import pytest
 
@@ -21,18 +23,38 @@ def window():
 
 
 def view_to_png(window: arcade.Window, view: arcade.View, path: Path):
-    window.clear()
-
+    # window.clear()
+    ctx = window.ctx
+    offscreen = ctx.framebuffer(color_attachments=[ctx.texture(window.get_size(), components=4)])
+    offscreen.clear()
+    offscreen.use()
     window.show_view(view)
     window.dispatch_event('on_draw')
     window.dispatch_events()
 
-    arcade.finish_render()
-    arcade.get_image().save(str(path))
+    ctx.finish()
+    image = Image.frombuffer('RGBA', offscreen.size, offscreen.read(components=4)).convert('RGB')
+    image = image.transpose(Image.FLIP_TOP_BOTTOM)
+    image.save(str(path))
+    # arcade.get_image().convert('RGB').save(str(path))
+    ctx.screen.use()
 
 
 def files_equal(file1: Path, file2: Path):
     return file1.read_bytes() == file2.read_bytes()
+
+
+def img_diff(file1: Path, file2: Path) -> float:
+    """Difference between two images in percent"""
+    img_a = Image.open(file1).convert('RGB')
+    img_b = Image.open(file2).convert('RGB')
+    a = np.frombuffer(img_a.tobytes(), dtype='u1').astype('f4')
+    b = np.frombuffer(img_b.tobytes(), dtype='u1').astype('f4')
+    r = np.absolute(a - b)
+    # save diff
+    # Image.frombytes('RGB', (800, 600), r.astype('u1')).save(file2)
+    print(np.sum(r), np.sum(a))
+    return np.sum(r) / np.sum(a)
 
 
 def load_view(abs_module_path) -> arcade.View:
@@ -46,7 +68,7 @@ def load_view(abs_module_path) -> arcade.View:
 @pytest.mark.skipif(os.getenv('TRAVIS') == 'true',
                     reason=('Example tests not executable on travis, '
                             'check https://travis-ci.org/github/eruvanos/arcade_gui/jobs/678758144#L506'))
-@pytest.mark.skipif(sys.platform == 'darwin', reason='Not yet supported on darwin')
+#@pytest.mark.skipif(sys.platform == 'darwin', reason='Not yet supported on darwin')
 @pytest.mark.parametrize('example', [
     T('show_id_example', 'show_id_example'),
     T('show_uiinputbox', 'show_uiinputbox'),
@@ -72,5 +94,6 @@ def test_id_example(window, example):
 
     # compare files
     assert expected_screen.exists(), f'expected screen missing, actual at {actual_screen}'
-    assert files_equal(expected_screen, actual_screen)
-    actual_screen.unlink()
+    # assert files_equal(expected_screen, actual_screen)
+    assert img_diff(expected_screen, actual_screen) < 0.135
+    # actual_screen.unlink()

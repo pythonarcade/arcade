@@ -6,6 +6,7 @@ from pyglet import gl
 
 from .buffer import Buffer
 from .utils import data_to_ctypes
+from .types import pixel_formats
 
 if TYPE_CHECKING:  # handle import cycle caused by type hinting
     from arcade.gl import Context
@@ -49,23 +50,6 @@ class Texture:
         '_ctx', '_glo', '_width', '_height', '_dtype', '_target', '_components', '_depth', '_compare_func',
         '_format', '_internal_format', '_type', '_component_size', '_samples', '_filter', '_wrap_x', '_wrap_y', '__weakref__',
     )
-    _float_base_format = (0, gl.GL_RED, gl.GL_RG, gl.GL_RGB, gl.GL_RGBA)
-    _int_base_format = (0, gl.GL_RED_INTEGER, gl.GL_RG_INTEGER, gl.GL_RGB_INTEGER, gl.GL_RGBA_INTEGER)
-    # format: (base_format, internal_format, type, size)
-    _formats = {
-        # float formats
-        'f1': (_float_base_format, (0, gl.GL_R8, gl.GL_RG8, gl.GL_RGB8, gl.GL_RGBA8), gl.GL_UNSIGNED_BYTE, 1),
-        'f2': (_float_base_format, (0, gl.GL_R16F, gl.GL_RG16F, gl.GL_RGB16F, gl.GL_RGBA16F), gl.GL_HALF_FLOAT, 2),
-        'f4': (_float_base_format, (0, gl.GL_R32F, gl.GL_RG32F, gl.GL_RGB32F, gl.GL_RGBA32F), gl.GL_FLOAT, 4),
-        # int formats
-        'i1': (_int_base_format, (0, gl.GL_R8I, gl.GL_RG8I, gl.GL_RGB8I, gl.GL_RGBA8I), gl.GL_BYTE, 1),
-        'i2': (_int_base_format, (0, gl.GL_R16I, gl.GL_RG16I, gl.GL_RGB16I, gl.GL_RGBA16I), gl.GL_SHORT, 2),
-        'i4': (_int_base_format, (0, gl.GL_R32I, gl.GL_RG32I, gl.GL_RGB32I, gl.GL_RGBA32I), gl.GL_INT, 4),
-        # uint formats
-        'u1': (_int_base_format, (0, gl.GL_R8UI, gl.GL_RG8UI, gl.GL_RGB8UI, gl.GL_RGBA8UI), gl.GL_UNSIGNED_BYTE, 1),
-        'u2': (_int_base_format, (0, gl.GL_R16UI, gl.GL_RG16UI, gl.GL_RGB16UI, gl.GL_RGBA16UI), gl.GL_UNSIGNED_SHORT, 2),
-        'u4': (_int_base_format, (0, gl.GL_R32UI, gl.GL_RG32UI, gl.GL_RGB32UI, gl.GL_RGBA32UI), gl.GL_UNSIGNED_INT, 4),
-    }
     _compare_funcs = {
         None: gl.GL_NONE,
         '<=':  gl.GL_LEQUAL,
@@ -173,9 +157,9 @@ class Texture:
         # Create normal 2d texture
         else:
             try:
-                format_info = self._formats[self._dtype]
+                format_info = pixel_formats[self._dtype]
             except KeyError:
-                raise ValueError(f"dype '{self._dtype}' not support. Supported types are : {tuple(self._formats.keys())}")
+                raise ValueError(f"dype '{self._dtype}' not support. Supported types are : {tuple(pixel_formats.keys())}")
 
             try:
                 _format, _internal_format, self._type, self._component_size = format_info

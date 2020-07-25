@@ -256,9 +256,8 @@ def test_link_failed(ctx):
         )
 
 
-def test_uniforms(ctx):
+def test_out_attributes(ctx):
     # Uniform testing
-    # .. mother of all uniform programs trying to cram in as many as possible!
     program = ctx.program(
         vertex_shader="""
         #version 330
@@ -274,6 +273,23 @@ def test_uniforms(ctx):
         """,
     )
     assert program.out_attributes == ['out_pos', 'out_velocity']
+
+    if ctx.gl_version >= (4, 1):
+        program = ctx.program(
+            vertex_shader="""
+            #version 410
+            layout(location = 0) in vec2 in_pos;
+            layout(location = 1) in vec2 in_velocity;
+            layout(location = 0) out vec2 out_pos;
+            layout(location = 1) out vec2 out_velocity;
+
+            void main() {
+                out_pos = in_pos + vec2(1.0);
+                out_velocity = in_pos * 0.99;
+            }
+            """,
+        )
+        assert program.out_attributes == ['out_pos', 'out_velocity']
 
 
 def test_uniform_block(ctx):

@@ -1,4 +1,5 @@
 from typing import Dict, List
+import re
 
 from pyglet import gl
 
@@ -99,10 +100,8 @@ class ShaderSource:
         return lines
 
     def _parse_out_attributes(self):
-        """Locates """
+        """Locates out attributes so we don't have to manually supply them"""
         for line in self._lines:
-            if line.strip().startswith("out "):
-                try:
-                    self._out_attributes.append(line.split()[2].replace(';', ''))
-                except IndexError:
-                    pass
+            res = re.match(r'(layout(.+)\))?(\s+)?(out)(\s+)(\w+)(\s+)(\w+)', line.strip())
+            if res:
+                self._out_attributes.append(res.groups()[-1])

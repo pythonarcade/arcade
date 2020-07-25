@@ -6,6 +6,7 @@ import weakref
 from pyglet import gl
 
 from .texture import Texture
+from .types import pixel_formats
 
 if TYPE_CHECKING:  # handle import cycle caused by type hinting
     from arcade.gl import Context
@@ -37,9 +38,11 @@ class Framebuffer:
     :param List[arcade.gl.Texture] color_attachments: List of color attachments.
     :param arcade.gl.Texture depth_attachment: A depth attachment (optional)
     """
+    #: Is this the default framebuffer? (window buffer)
+    is_default = False
     __slots__ = (
         '_ctx', '_glo', '_width', '_height', '_color_attachments', '_depth_attachment',
-        '_samples', '_viewport', '_depth_mask', '_draw_buffers', '__weakref__')
+        '_samples', '_viewport', '_depth_mask', '_draw_buffers', '_prev_fbo', '__weakref__')
 
     def __init__(self, ctx: 'Context', *, color_attachments=None, depth_attachment=None):
         """
@@ -56,6 +59,7 @@ class Framebuffer:
         self._glo = fbo_id = gl.GLuint()  # The OpenGL alias/name
         self._samples = 0  # Leaving this at 0 for future sample support
         self._depth_mask = True  # Determines if the depth buffer should be affected
+        self._prev_fbo = None
 
         # Create the framebuffer object
         gl.glGenFramebuffers(1, self._glo)
@@ -232,6 +236,14 @@ class Framebuffer:
         # Set state if framebuffer is active
         if self._ctx.active_framebuffer == self:
             gl.glDepthMask(self._depth_mask)
+ 
+    def __enter__(self):
+        self._prev_fbo = self._ctx.active_framebuffer
+        self.use()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self._prev_fbo.use()
 
     def use(self):
         """Bind the framebuffer making it the target of all redering commands"""
@@ -244,6 +256,7 @@ class Framebuffer:
             return
 
         gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, self._glo)
+
         # NOTE: gl.glDrawBuffer(GL_NONE) if no texture attachments (future)
         # NOTE: Default framebuffer currently has this set to None
         if self._draw_buffers:
@@ -256,8 +269,7 @@ class Framebuffer:
               color=(0.0, 0.0, 0.0, 0.0),
               *,
               depth: float = 1.0,
-              normalized: bool = False,
-              use=False):
+              normalized: bool = False):
         """
         Clears the framebuffer::
 
@@ -269,31 +281,44 @@ class Framebuffer:
         :param tuple color: A 3 or 4 component tuple containing the color
         :param float depth: Value to clear the depth buffer (unused)
         :param bool normalized: If the color values are normalized or not
-        :param bool use: Also bind/use the framebuffer
         """
-        self._use()
-
-        if normalized:
-            # If the colors are already normalized we can pass them right in
-            if len(color) == 3:
-                gl.glClearColor(*color, 0.0)
+        with self:
+            if normalized:
+                # If the colors are already normalized we can pass them right in
+                if len(color) == 3:
+                    gl.glClearColor(*color, 0.0)
+                else:
+                    gl.glClearColor(*color)
             else:
-                gl.glClearColor(*color)
-        else:
-            # OpenGL wants normalized colors (0.0 -> 1.0)
-            if len(color) == 3:
-                gl.glClearColor(color[0] / 255, color[1] / 255, color[2] / 255, 0.0)
+                # OpenGL wants normalized colors (0.0 -> 1.0)
+                if len(color) == 3:
+                    gl.glClearColor(color[0] / 255, color[1] / 255, color[2] / 255, 0.0)
+                else:
+                    gl.glClearColor(color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255)
+
+            if self.depth_attachment:
+                gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
             else:
-                gl.glClearColor(color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255)
+                gl.glClear(gl.GL_COLOR_BUFFER_BIT)
 
-        if self.depth_attachment:
-            gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
-        else:
-            gl.glClear(gl.GL_COLOR_BUFFER_BIT)
+    def read(self, *, viewport=None, components=3, attachment=0, dtype='f1') -> bytearray:
+        """Read framebuffer pixels"""
+        # TODO: use texture attachment info to determine read format?
+        try:
+            frmt = pixel_formats[dtype]
+            base_format = frmt[0][components]
+            pixel_type = frmt[2]
+        except Exception:
+            raise ValueError(f"Invalid dtype '{dtype}'")
 
-        # Restore the original render target to avoid confusion
-        if use is False:
-            self._ctx.active_framebuffer.use()
+        with self:
+            # Configure attachment to read from
+            # gl.glReadBuffer(gl.GL_COLOR_ATTACHMENT0 + attachment)
+            x, y, width, height = 0, 0, self._width, self._height
+            data = (gl.GLubyte * (components * width * height))(0)
+            gl.glReadPixels(x, y, width, height, base_format, pixel_type, data)
+
+        return bytearray(data)
 
     @staticmethod
     def release(ctx, framebuffer_id):
@@ -335,6 +360,8 @@ class Framebuffer:
 
 class DefaultFrameBuffer(Framebuffer):
     """Represents the default framebuffer"""
+    #: Is this the default framebuffer? (window buffer)
+    is_default = True
     __slots__ = ()
 
     def __init__(self, ctx: 'Context'):

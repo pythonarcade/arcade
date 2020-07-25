@@ -168,9 +168,15 @@ def set_viewport(left: float, right: float, bottom: float, top: float):
     :param Number top: Top (largest) y value.
     """
     window = get_window()
-    scaling = get_scaling_factor(window)
+    fbo = window.ctx.fbo
+    # If the window framebuffer is active we should apply pixel scale
+    if fbo.is_default:
+        scaling = get_scaling_factor(window)
+        fbo.viewport = 0, 0, int(window.width * scaling), int(window.height * scaling)
+    # otherwise it's an offscreen framebuffer not needing pixel scale
+    else:
+        fbo.viewport = 0, 0, *fbo.size
 
-    window.ctx.fbo.viewport = 0, 0, int(window.width * scaling), int(window.height * scaling)
     window.ctx.projection_2d = left, right, bottom, top
 
 
