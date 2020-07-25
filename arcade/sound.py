@@ -73,6 +73,12 @@ class Sound:
             return 0
         return self.wav_file.get_length()
 
+    def is_complete(self):
+        """ Return true if the sound is done playing. """
+        if not _audiolib:
+            return False
+        return not bool(_audiolib.is_valid_voice_handle(self.voice_handle))
+
     # --- These functions should work, but instead just return zero or otherwise
     # don't appear functional.
 
