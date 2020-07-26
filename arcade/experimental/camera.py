@@ -34,9 +34,14 @@ class Camera2D:
 
         :rtype: Tuple[float, float]
         """
-        # 1) Account for black borders in viewport
-        # 2) Account for projection (including zoom)
-        return x, y
+        # Account for black borders in viewport
+        vp = self._adjust_viewport_to_aspect_ratio(self.aspect_ratio, self._viewport)
+        # Account for projection (including zoom)
+        
+        return (
+            x + self._scroll_x - vp[0],
+            y + self.scroll_y - vp[1],
+        )
 
     # Mouse coordinates to screen (relative)
     # 
@@ -70,6 +75,15 @@ class Camera2D:
         :type: float
         """
         return (self._projection[1] - self._projection[0]) / (self._projection[3] - self._projection[2])
+
+    @property
+    def viewport_size(self) -> Tuple[int, int]:
+        """
+        Get the x and y dimension of the viewport.
+
+        :type: Tuple[int, int]
+        """
+        return self._viewport[2], self._viewport[3]
 
     @property
     def window(self):
