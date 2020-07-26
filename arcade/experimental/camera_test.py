@@ -4,10 +4,6 @@ import time
 import arcade
 from arcade.experimental.camera import Camera2D
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
-SCREEN_TITLE = "Camera Test"
-
 
 class MyGame(arcade.Window):
 
@@ -17,14 +13,15 @@ class MyGame(arcade.Window):
         self.map = arcade.tilemap.read_tmx(':resources:tmx_maps/map.tmx')
         self.background = arcade.tilemap.process_layer(self.map, 'Platforms', hit_box_algorithm='None')
         self.camera = Camera2D(
-            viewport=(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT),
-            projection=(0, SCREEN_WIDTH, 0, SCREEN_HEIGHT),
+            viewport=(0, 0, self.width, self.height),
+            projection=(0, self.width, 0, self.height),
         )
+        self.background_color = self.map.background_color
         self.time = 0
 
     def on_draw(self):
-        self.clear()        
         self.camera.use()
+        self.clear()
         self.background.draw()
 
     def on_update(self, dt):
@@ -33,12 +30,12 @@ class MyGame(arcade.Window):
             2800 + math.sin(self.time / 3) * 2900,
             -20 + math.cos(self.time / 3) * 100,
         )
-        pass
 
     def on_resize(self, width, height):
         self.camera.viewport = 0, 0, width, height
+        # self.camera.projection = 0, width, 0, height
 
 
 if __name__ == "__main__":
-    MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    MyGame(800, 600, "Camera Test")
     arcade.run()

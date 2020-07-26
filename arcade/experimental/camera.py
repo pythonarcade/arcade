@@ -15,7 +15,8 @@ import arcade
 
 class Camera2D:
 
-    def __init__(self, *, viewport: Tuple[int, int, int, int], projection: Tuple[float, float, float, float]):
+    def __init__(self, *, viewport: Tuple[int, int, int, int], projection: Tuple[float, float, float, float],
+                 ):
         """Test"""
         self._window = arcade.get_window()
         self._viewport = viewport
@@ -23,6 +24,57 @@ class Camera2D:
         self._scroll_x: float = 0
         self._scroll_y: float = 0
         self._zoom: float = 0
+
+    def mouse_coordinates_to_world(self, x, y) -> Tuple[float, float]:
+        """
+        Converts mouse coordinates to wold coordinates.
+        This returns the actual x and y position the mouse pointer
+        is located in your game world regardless of scrolling
+        or zoom level.
+
+        :rtype: Tuple[float, float]
+        """
+        # 1) Account for black borders in viewport
+        # 2) Account for projection (including zoom)
+        return x, y
+
+    # Mouse coordinates to screen (relative)
+    # 
+
+    def _adjust_viewport_to_aspect_ratio(self, aspect_ratio: float, viewport: Tuple[int, int, int, int]):
+        """
+        Calculate viewport base on aspect ratio
+        adding black borders when needed
+        """
+        expected_width = int(self._window.height * aspect_ratio)
+        expected_height = int(expected_width / aspect_ratio)
+
+        if expected_width > self._window.width:
+            expected_width = self._window.width
+            expected_height = int(expected_width / aspect_ratio)
+
+        blank_space_x = self._window.width - expected_width
+        blank_space_y = self._window.height - expected_height
+        return (
+            blank_space_x // 2,
+            blank_space_y // 2,
+            expected_width,
+            expected_height,            
+        )
+
+    @property
+    def aspect_ratio(self) -> float:
+        """
+        Get the aspect ratio of the projection
+
+        :type: float
+        """
+        return (self._projection[1] - self._projection[0]) / (self._projection[3] - self._projection[2])
+
+    @property
+    def window(self):
+        """The window this camera belongs to"""
+        return self._window
 
     @property
     def projection(self) -> Tuple[float, float, float, float]:
@@ -110,7 +162,10 @@ class Camera2D:
 
     def use(self):
         """Make the camera active"""
-        # Apply scroll
+        # Calculate aspect ratio from projection
+        ar = self.aspect_ratio
+
+        # Apply scrolling
         proj = (
             self._projection[0] + self._scroll_x,
             self._projection[1] + self._scroll_x,
@@ -118,9 +173,12 @@ class Camera2D:
             self._projection[3] + self._scroll_y,
         )
 
-        # scale the viewport
+        # Ensure aspect ratio is maintained
+        vp = self._adjust_viewport_to_aspect_ratio(ar, self._viewport)
+
+        # Apply pixel ratio scaling
         scale = arcade.get_scaling_factor(self._window)
-        vp_scaled = tuple(int(v * scale) for v in self._viewport)
+        vp_scaled = tuple(int(v * scale) for v in vp)
 
         self._window.ctx.viewport = vp_scaled
         self._window.ctx.projection_2d = proj
