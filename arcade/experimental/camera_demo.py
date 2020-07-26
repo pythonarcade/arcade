@@ -17,12 +17,16 @@ class MyGame(arcade.Window):
             projection=(0, self.width, 0, self.height),
         )
         self.background_color = self.map.background_color
+        self.mouse_pos = 0, 0
         self.time = 0
 
     def on_draw(self):
         self.camera.use()
         self.clear()
         self.background.draw()
+
+        world_pos = self.camera.mouse_coordinates_to_world(*self.mouse_pos)
+        arcade.draw_circle_filled(*world_pos, 10, arcade.color.BLUE)
 
     def on_update(self, dt):
         self.time += dt
@@ -35,6 +39,8 @@ class MyGame(arcade.Window):
         self.camera.viewport = 0, 0, width, height
         # self.camera.projection = 0, width, 0, height
 
+    def on_mouse_motion(self, x, y, dx, dy):
+        self.mouse_pos = x, y
 
 if __name__ == "__main__":
     MyGame(800, 600, "Camera Test")
