@@ -152,6 +152,7 @@ class Framebuffer:
         # Otherwise it will be set on use()
         if self._ctx.active_framebuffer == self:
             gl.glViewport(*self._viewport)
+            gl.glScissor(*self._viewport)
 
     @property
     def ctx(self) -> 'Context':

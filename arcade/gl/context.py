@@ -165,6 +165,11 @@ class Context:
         self._primitive_restart_index = -1
         self.primitive_restart_index = self._primitive_restart_index
 
+        # We enable scissor testing by default.
+        # This is always set to the same value as the viewport
+        # to avoid background color affecting areas outside the viewport
+        gl.glEnable(gl.GL_SCISSOR_TEST)
+
         # States
         self._blend_func = self.BLEND_DEFAULT
         self._point_size = 1.0
