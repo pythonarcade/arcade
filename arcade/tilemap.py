@@ -148,10 +148,12 @@ def _get_image_info_from_tileset(tile):
     image_x = 0
     image_y = 0
     if tile.tileset.image is not None:
+        margin = tile.tileset.margin or 0
+        spacing = tile.tileset.spacing or 0
         row = tile.id_ // tile.tileset.columns
-        image_y = row * tile.tileset.max_tile_size.height
+        image_y = margin + row * (tile.tileset.max_tile_size.height + spacing)
         col = tile.id_ % tile.tileset.columns
-        image_x = col * tile.tileset.max_tile_size.width
+        image_x = margin + col * (tile.tileset.max_tile_size.width + spacing)
 
     if tile.image and tile.image.size:
         # Individual image, use image width and height
