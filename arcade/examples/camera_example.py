@@ -1,11 +1,11 @@
 """
-Load a Tiled map file
+Camera Example
 
 Artwork from: http://kenney.nl
 Tiled available from: http://www.mapeditor.org/
 
 If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.sprite_tiled_map
+python -m arcade.examples.camera_example
 """
 
 import time
@@ -18,7 +18,7 @@ PLAYER_SCALING = 0.5
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
-SCREEN_TITLE = "Sprite Tiled Map Example"
+SCREEN_TITLE = "Camera Example"
 SPRITE_PIXEL_SIZE = 128
 GRID_PIXEL_SIZE = (SPRITE_PIXEL_SIZE * TILE_SCALING)
 
@@ -60,8 +60,7 @@ class MyGame(arcade.Window):
         self.frame_count = 0
         self.fps_message = None
 
-        self.zoom = 0
-
+        self.camera_zoom = 0
         self.camera = Camera2D(
             viewport=(0, 0, self.width, self.height),
             projection=(0, self.width, 0, self.height),
@@ -84,15 +83,10 @@ class MyGame(arcade.Window):
         self.player_list.append(self.player_sprite)
 
         # Center camera on user
-        user_centered = (
-            self.player_sprite.center_x - self.width / 2,
-            self.player_sprite.center_y - self.height / 2,
-        )
-        self.camera.scroll = user_centered
-
-        map_name = ":resources:tmx_maps/level_1.tmx"
+        self.pan_camera_to_user()
 
         # Read in the tiled map
+        map_name = ":resources:tmx_maps/level_1.tmx"
         my_map = arcade.tilemap.read_tmx(map_name)
         self.end_of_map = my_map.map_size.width * GRID_PIXEL_SIZE
 
@@ -121,17 +115,20 @@ class MyGame(arcade.Window):
         self.game_over = False
 
     def on_resize(self, width, height):
+        """ Resize window """
         self.camera.viewport = 0, 0, width, height
 
     def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
-        self.zoom += scroll_y
-        if self.zoom > 5:
-            self.zoom = 5
-        elif self.zoom < -5:
-            self.zoom = -5
+        """ Mouse scroll - control zoom. """
+        self.camera_zoom += scroll_y
+        if self.camera_zoom > 5:
+            self.camera_zoom = 5
+        elif self.camera_zoom < -5:
+            self.camera_zoom = -5
 
-        self.camera.zoom = self.zoom * 20
-        print(self.zoom)
+        # Camera zoom doesn't work yet
+        # self.camera.zoom = self.zoom
+        print(f"Zoom: {self.camera_zoom}")
 
     def on_draw(self):
         """ Render the screen. """
@@ -149,16 +146,10 @@ class MyGame(arcade.Window):
         self.wall_list.draw()
         self.coin_list.draw()
 
-        # self.player_list.draw_hit_boxes(arcade.color.RED)
-        # self.wall_list.draw_hit_boxes(arcade.color.RED)
-
+        # Draw FPS
         if self.last_time and self.frame_count % 60 == 0:
             fps = 1.0 / (time.time() - self.last_time) * 60
             self.fps_message = f"FPS: {fps:5.0f}"
-
-        x = 10 + self.camera.scroll[0]
-        y = 20 + self.camera.scroll[1]
-        arcade.draw_text(f"Score: {self.score}", x, y, arcade.color.BLACK, 14)
 
         if self.fps_message:
             x = 10 + self.camera.scroll[0]
@@ -168,6 +159,12 @@ class MyGame(arcade.Window):
         if self.frame_count % 60 == 0:
             self.last_time = time.time()
 
+        # Draw Score
+        x = 10 + self.camera.scroll[0]
+        y = 20 + self.camera.scroll[1]
+        arcade.draw_text(f"Score: {self.score}", x, y, arcade.color.BLACK, 14)
+
+        # Draw game over
         if self.game_over:
             x = 200 + self.camera.scroll[0]
             y = 200 + self.camera.scroll[1]
@@ -175,7 +172,7 @@ class MyGame(arcade.Window):
 
     def on_key_press(self, key, modifiers):
         """
-        Called whenever the mouse moves.
+        Called whenever a key is pressed
         """
         if key == arcade.key.UP:
             if self.physics_engine.can_jump():
@@ -192,14 +189,33 @@ class MyGame(arcade.Window):
         if key == arcade.key.LEFT or key == arcade.key.RIGHT:
             self.player_sprite.change_x = 0
 
+    def pan_camera_to_user(self, panning_fraction: float = 1.0):
+        """
+        Manage Scrolling
+
+        :param panning_fraction: Number from 0 to 1. Higher the number, faster we
+                                 pan the camera to the user.
+        """
+
+        # This spot would center on the user
+        screen_center_x = self.player_sprite.center_x - SCREEN_WIDTH / 2
+        screen_center_y = self.player_sprite.center_y - SCREEN_HEIGHT / 2
+        if screen_center_y < 0:
+            screen_center_y = 0
+        user_centered = screen_center_x, screen_center_y
+
+        cur_scroll = self.camera.scroll
+        new_scroll = arcade.lerp(cur_scroll[0], user_centered[0], panning_fraction), \
+            arcade.lerp(cur_scroll[1], user_centered[1], panning_fraction)
+        self.camera.scroll = new_scroll
+
     def on_update(self, delta_time):
         """ Movement and game logic """
 
         if self.player_sprite.right >= self.end_of_map:
             self.game_over = True
 
-        # Call update on all sprites (The sprites don't do much in this
-        # example though.)
+        # Call update on all sprites
         if not self.game_over:
             self.physics_engine.update()
 
@@ -208,26 +224,8 @@ class MyGame(arcade.Window):
             coin.remove_from_sprite_lists()
             self.score += 1
 
-        # --- Manage Scrolling ---
-
-        # This spot would center on the user
-        user_centered = (
-            self.player_sprite.center_x - SCREEN_WIDTH / 2,
-            self.player_sprite.center_y - SCREEN_HEIGHT / 2,
-        )
-        # Center on user
-        # self.camera.scroll = user_centered
-
-        # Smooth scroll to user
-
-        # Adjust this number between 0 to 1. Closer to 1, faster the pan.
-        panning_fraction = 0.02
-
-        cur_scroll = self.camera.scroll
-        new_scroll = arcade.lerp(cur_scroll[0], user_centered[0], panning_fraction), \
-            arcade.lerp(cur_scroll[1], user_centered[1], panning_fraction)
-        self.camera.scroll = new_scroll
-
+        # Pan to the user
+        self.pan_camera_to_user(panning_fraction=0.02)
 
 def main():
     """ Get this game started. """
