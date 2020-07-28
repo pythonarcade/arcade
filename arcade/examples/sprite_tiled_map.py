@@ -162,7 +162,7 @@ class MyGame(arcade.Window):
 
     def on_key_press(self, key, modifiers):
         """
-        Called whenever the mouse moves.
+        Called whenever a key is pressed.
         """
         if key == arcade.key.UP:
             if self.physics_engine.can_jump():
@@ -185,8 +185,7 @@ class MyGame(arcade.Window):
         if self.player_sprite.right >= self.end_of_map:
             self.game_over = True
 
-        # Call update on all sprites (The sprites don't do much in this
-        # example though.)
+        # Call update on all sprites
         if not self.game_over:
             self.physics_engine.update()
 
