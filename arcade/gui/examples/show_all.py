@@ -15,11 +15,7 @@ class MyView(arcade.View):
         arcade.start_render()
 
     def on_show_view(self):
-        print('on_show_view')
-        self.setup()
         arcade.set_background_color(arcade.color.BLACK)
-
-    def setup(self):
         self.ui_manager.purge_ui_elements()
 
         y_slot = self.window.height // 4
@@ -66,6 +62,19 @@ class MyView(arcade.View):
             center_y=y_slot * 2,
             width=250,
             # height=20
+        ))
+
+        self.ui_manager.add_ui_element(arcade.gui.UIToggel(
+            center_x=self.window.width // 4 * 3 - 60,
+            center_y=y_slot * 3,
+            height=30,
+            value=False
+        ))
+        self.ui_manager.add_ui_element(arcade.gui.UIToggel(
+            center_x=self.window.width // 4 * 3 + 60,
+            center_y=y_slot * 3,
+            height=30,
+            value=True
         ))
 
 

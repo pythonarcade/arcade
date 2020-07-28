@@ -21,7 +21,6 @@ class UIImageButton(UIClickable):
                  **kwargs
                  ):
         """
-
         :param center_x: center X of element
         :param center_y: center y of element
         :param normal_texture:

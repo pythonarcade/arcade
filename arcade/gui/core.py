@@ -137,6 +137,7 @@ class UIElement(arcade.Sprite):
     def render(self):
         """
         Render and update textures, called on style change.
+        Initially called while added to :py:class:`arcade.gui.UIManager`
 
         Has to be implemented by subclasses of :py:class:`arcade.gui.UIElement`.
         """

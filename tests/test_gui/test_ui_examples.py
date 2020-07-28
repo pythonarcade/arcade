@@ -2,14 +2,13 @@
 Tests if examples render and show the same screen like expected
 """
 import os
-import sys
 from importlib import import_module
 from pathlib import Path
 
 import numpy as np
-from PIL import Image
 import pkg_resources
 import pytest
+from PIL import Image
 
 import arcade
 from . import T
@@ -68,7 +67,6 @@ def load_view(abs_module_path) -> arcade.View:
 @pytest.mark.skipif(os.getenv('TRAVIS') == 'true',
                     reason=('Example tests not executable on travis, '
                             'check https://travis-ci.org/github/eruvanos/arcade_gui/jobs/678758144#L506'))
-#@pytest.mark.skipif(sys.platform == 'darwin', reason='Not yet supported on darwin')
 @pytest.mark.parametrize('example', [
     T('show_id_example', 'show_id_example'),
     T('show_uiinputbox', 'show_uiinputbox'),
@@ -94,6 +92,6 @@ def test_id_example(window, example):
 
     # compare files
     assert expected_screen.exists(), f'expected screen missing, actual at {actual_screen}'
-    # assert files_equal(expected_screen, actual_screen)
-    assert img_diff(expected_screen, actual_screen) < 0.135
-    # actual_screen.unlink()
+
+    assert img_diff(expected_screen, actual_screen) < 0.135  # max threshold for image difference, mac vs win
+    actual_screen.unlink()

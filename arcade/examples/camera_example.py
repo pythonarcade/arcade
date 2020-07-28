@@ -1,23 +1,24 @@
 """
-Load a Tiled map file
+Camera Example
 
 Artwork from: http://kenney.nl
 Tiled available from: http://www.mapeditor.org/
 
 If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.sprite_tiled_map
+python -m arcade.examples.camera_example
 """
 
-import arcade
-import os
 import time
+import arcade
+from arcade.experimental.camera import Camera2D
 
 TILE_SCALING = 0.5
-PLAYER_SCALING = 1
+PLAYER_SCALING = 0.5
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
-SCREEN_TITLE = "Sprite Tiled Map Example"
+
+SCREEN_TITLE = "Camera Example"
 SPRITE_PIXEL_SIZE = 128
 GRID_PIXEL_SIZE = (SPRITE_PIXEL_SIZE * TILE_SCALING)
 
@@ -41,14 +42,7 @@ class MyGame(arcade.Window):
         """
         Initializer
         """
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-
-        # Set the working directory (where we expect to find files) to the same
-        # directory this .py file is in. You can leave this out of your own
-        # code, but it is needed to easily run the examples using "python -m"
-        # as mentioned at the top of this program.
-        file_path = os.path.dirname(os.path.abspath(__file__))
-        os.chdir(file_path)
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, resizable=True)
 
         # Sprite lists
         self.wall_list = None
@@ -60,13 +54,17 @@ class MyGame(arcade.Window):
         self.player_sprite = None
 
         self.physics_engine = None
-        self.view_left = 0
-        self.view_bottom = 0
         self.end_of_map = 0
         self.game_over = False
         self.last_time = None
         self.frame_count = 0
         self.fps_message = None
+
+        self.camera_zoom = 0
+        self.camera = Camera2D(
+            viewport=(0, 0, self.width, self.height),
+            projection=(0, self.width, 0, self.height),
+        )
 
     def setup(self):
         """ Set up the game and initialize the variables. """
@@ -81,12 +79,14 @@ class MyGame(arcade.Window):
 
         # Starting position of the player
         self.player_sprite.center_x = 196
-        self.player_sprite.center_y = 270
+        self.player_sprite.center_y = 128
         self.player_list.append(self.player_sprite)
 
-        map_name = ":resources:/tmx_maps/map.tmx"
+        # Center camera on user
+        self.pan_camera_to_user()
 
         # Read in the tiled map
+        map_name = ":resources:tmx_maps/level_1.tmx"
         my_map = arcade.tilemap.read_tmx(map_name)
         self.end_of_map = my_map.map_size.width * GRID_PIXEL_SIZE
 
@@ -112,17 +112,29 @@ class MyGame(arcade.Window):
                                                              self.wall_list,
                                                              gravity_constant=GRAVITY)
 
-        # Set the view port boundaries
-        # These numbers set where we have 'scrolled' to.
-        self.view_left = 0
-        self.view_bottom = 0
-
         self.game_over = False
 
+    def on_resize(self, width, height):
+        """ Resize window """
+        self.camera.viewport = 0, 0, width, height
+
+    def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
+        """ Mouse scroll - control zoom. """
+        self.camera_zoom += scroll_y
+        if self.camera_zoom > 5:
+            self.camera_zoom = 5
+        elif self.camera_zoom < -5:
+            self.camera_zoom = -5
+
+        # Camera zoom doesn't work yet
+        # self.camera.zoom = self.zoom
+        print(f"Zoom: {self.camera_zoom}")
+
     def on_draw(self):
-        """
-        Render the screen.
-        """
+        """ Render the screen. """
+
+        self.camera.use()
+        self.clear()
 
         self.frame_count += 1
 
@@ -134,35 +146,33 @@ class MyGame(arcade.Window):
         self.wall_list.draw()
         self.coin_list.draw()
 
-        for item in self.player_list:
-            item.draw_hit_box(arcade.color.RED)
-
-        for item in self.wall_list:
-            item.draw_hit_box(arcade.color.RED)
-
+        # Draw FPS
         if self.last_time and self.frame_count % 60 == 0:
             fps = 1.0 / (time.time() - self.last_time) * 60
             self.fps_message = f"FPS: {fps:5.0f}"
 
         if self.fps_message:
-            arcade.draw_text(self.fps_message, self.view_left + 10, self.view_bottom + 40, arcade.color.BLACK, 14)
+            x = 10 + self.camera.scroll[0]
+            y = 40 + self.camera.scroll[1]
+            arcade.draw_text(self.fps_message, x, y, arcade.color.BLACK, 14)
 
         if self.frame_count % 60 == 0:
             self.last_time = time.time()
 
-        # Put the text on the screen.
-        # Adjust the text position based on the view port so that we don't
-        # scroll the text too.
-        distance = self.player_sprite.right
-        output = f"Distance: {distance}"
-        arcade.draw_text(output, self.view_left + 10, self.view_bottom + 20, arcade.color.BLACK, 14)
+        # Draw Score
+        x = 10 + self.camera.scroll[0]
+        y = 20 + self.camera.scroll[1]
+        arcade.draw_text(f"Score: {self.score}", x, y, arcade.color.BLACK, 14)
 
+        # Draw game over
         if self.game_over:
-            arcade.draw_text("Game Over", self.view_left + 200, self.view_bottom + 200, arcade.color.BLACK, 30)
+            x = 200 + self.camera.scroll[0]
+            y = 200 + self.camera.scroll[1]
+            arcade.draw_text("Game Over", x, y, arcade.color.BLACK, 30)
 
     def on_key_press(self, key, modifiers):
         """
-        Called whenever a key is pressed.
+        Called whenever a key is pressed
         """
         if key == arcade.key.UP:
             if self.physics_engine.can_jump():
@@ -179,6 +189,26 @@ class MyGame(arcade.Window):
         if key == arcade.key.LEFT or key == arcade.key.RIGHT:
             self.player_sprite.change_x = 0
 
+    def pan_camera_to_user(self, panning_fraction: float = 1.0):
+        """
+        Manage Scrolling
+
+        :param panning_fraction: Number from 0 to 1. Higher the number, faster we
+                                 pan the camera to the user.
+        """
+
+        # This spot would center on the user
+        screen_center_x = self.player_sprite.center_x - SCREEN_WIDTH / 2
+        screen_center_y = self.player_sprite.center_y - SCREEN_HEIGHT / 2
+        if screen_center_y < 0:
+            screen_center_y = 0
+        user_centered = screen_center_x, screen_center_y
+
+        cur_scroll = self.camera.scroll
+        new_scroll = arcade.lerp(cur_scroll[0], user_centered[0], panning_fraction), \
+            arcade.lerp(cur_scroll[1], user_centered[1], panning_fraction)
+        self.camera.scroll = new_scroll
+
     def on_update(self, delta_time):
         """ Movement and game logic """
 
@@ -194,47 +224,11 @@ class MyGame(arcade.Window):
             coin.remove_from_sprite_lists()
             self.score += 1
 
-        # --- Manage Scrolling ---
-
-        # Track if we need to change the view port
-
-        changed = False
-
-        # Scroll left
-        left_bndry = self.view_left + VIEWPORT_LEFT_MARGIN
-        if self.player_sprite.left < left_bndry:
-            self.view_left -= left_bndry - self.player_sprite.left
-            changed = True
-
-        # Scroll right
-        right_bndry = self.view_left + SCREEN_WIDTH - VIEWPORT_RIGHT_MARGIN
-        if self.player_sprite.right > right_bndry:
-            self.view_left += self.player_sprite.right - right_bndry
-            changed = True
-
-        # Scroll up
-        top_bndry = self.view_bottom + SCREEN_HEIGHT - VIEWPORT_MARGIN_TOP
-        if self.player_sprite.top > top_bndry:
-            self.view_bottom += self.player_sprite.top - top_bndry
-            changed = True
-
-        # Scroll down
-        bottom_bndry = self.view_bottom + VIEWPORT_MARGIN_BOTTOM
-        if self.player_sprite.bottom < bottom_bndry:
-            self.view_bottom -= bottom_bndry - self.player_sprite.bottom
-            changed = True
-
-        # If we need to scroll, go ahead and do it.
-        if changed:
-            self.view_left = int(self.view_left)
-            self.view_bottom = int(self.view_bottom)
-            arcade.set_viewport(self.view_left,
-                                SCREEN_WIDTH + self.view_left,
-                                self.view_bottom,
-                                SCREEN_HEIGHT + self.view_bottom)
-
+        # Pan to the user
+        self.pan_camera_to_user(panning_fraction=0.02)
 
 def main():
+    """ Get this game started. """
     window = MyGame()
     window.setup()
     arcade.run()

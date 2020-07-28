@@ -27,7 +27,7 @@ class Camera2D:
 
     def mouse_coordinates_to_world(self, x, y) -> Tuple[float, float]:
         """
-        Converts mouse coordinates to wold coordinates.
+        Converts mouse coordinates to world coordinates.
         This returns the actual x and y position the mouse pointer
         is located in your game world regardless of scrolling
         or zoom level.
@@ -68,7 +68,7 @@ class Camera2D:
             blank_space_x // 2 + self._viewport[0], 
             blank_space_y // 2 + self._viewport[1],
             expected_width,
-            expected_height,            
+            expected_height,
         )
 
     @property
@@ -89,7 +89,7 @@ class Camera2D:
     def projection(self) -> Tuple[float, float, float, float]:
         """
         Get or set the orthographic projection::
-        
+
             # Project 0 -> 800 (x) and 0 -> 600 on the viewport
             camera.projection = 0, 800, 0, 600
 
@@ -127,7 +127,7 @@ class Camera2D:
 
         :type: Tuple[float, float]
         """
-        return self._scroll_y, self._scroll_y
+        return self._scroll_x, self._scroll_y
 
     @scroll.setter
     def scroll(self, value: Tuple[float, float]):
@@ -215,7 +215,7 @@ class Camera2D:
 
 #         self.screen_width = screen.width
 #         self.screen_height = screen.height
-        
+
 #         # The zoomed dimensions
 #         self.zoom_width = width
 #         self.zoom_height = height
@@ -248,12 +248,12 @@ class Camera2D:
 #         self.right = self.zoom_right + self.x - self.width_center
 #         self.bottom = self.zoom_bottom + self.y - self.height_center
 #         self.top = self.zoom_top + self.y - self.height_center
-        
+
 #         arcade.set_viewport(self.left, self.right, self.bottom, self.top)
 
 #     def scroll_to(self, x, y):
 #         """ Scrolls the camera to position """
-        
+
 #         diff_x = x - self.x
 #         diff_y = y - self.y
 
@@ -315,7 +315,7 @@ class Camera2D:
 
 #         self.update_zoom()
 #         self.set_viewport()
-        
+
 #     def mouse_to_world_coordinates(self, x, y):
 #         """ Returns the position of the mouse in world space. """
 #         return (x / self.width * (self.right - self.left) + self.left,

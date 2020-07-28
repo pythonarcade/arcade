@@ -1,3 +1,4 @@
+from unittest.mock import Mock
 from uuid import uuid4
 
 import pytest
@@ -23,6 +24,13 @@ def test_ui_manager_dispatch_ui_event(mock_mng):
     # THEN
     assert catched_event == test_event
 
+
+def test_ui_elements_get_reference_to_mng(mock_mng):
+    ui_element = MockButton()
+
+    mock_mng.add_ui_element(ui_element)
+
+    assert ui_element.mng == mock_mng
 
 def test_ui_elements_get_reference_to_mng(mock_mng):
     ui_element = MockButton()
@@ -75,12 +83,13 @@ def test_broken_ui_element_raises(mock_mng):
     assert 'super().__init__' in str(e.value)
 
 
-def test_no_id_duplication_exception_after_purge(mock_mng):
+def test_calls_render_while_add_ui_element(mock_mng):
     # GIVEN
-    mock_mng.add_ui_element(MockButton(id='dream'))
+    button = MockButton()
+    button.render = Mock(wraps=button.render)
 
     # WHEN
-    mock_mng.purge_ui_elements()
+    mock_mng.add_ui_element(button)
 
     # THEN
-    mock_mng.add_ui_element(MockButton(id='dream'))
+    button.render.assert_called_once()
