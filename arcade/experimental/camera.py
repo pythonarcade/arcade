@@ -53,18 +53,20 @@ class Camera2D:
         Calculate viewport base on aspect ratio
         adding black borders when needed
         """
-        expected_width = int(self._window.height * aspect_ratio)
+        width, height = self._viewport[2], self._viewport[3]
+
+        expected_width = int(height * aspect_ratio)
         expected_height = int(expected_width / aspect_ratio)
 
-        if expected_width > self._window.width:
-            expected_width = self._window.width
+        if expected_width > width:
+            expected_width = width
             expected_height = int(expected_width / aspect_ratio)
 
-        blank_space_x = self._window.width - expected_width
-        blank_space_y = self._window.height - expected_height
+        blank_space_x = width - expected_width
+        blank_space_y = height - expected_height
         return (
-            blank_space_x // 2,
-            blank_space_y // 2,
+            blank_space_x // 2 + self._viewport[0], 
+            blank_space_y // 2 + self._viewport[1],
             expected_width,
             expected_height,            
         )
@@ -113,6 +115,9 @@ class Camera2D:
 
     @viewport.setter
     def viewport(self, value: Tuple[int, int, int, int]):
+        if not isinstance(value, tuple) and len(value) == 4:
+            raise ValueError("viewport must be a 4-component tuple")
+
         self._viewport = value
 
     @property
