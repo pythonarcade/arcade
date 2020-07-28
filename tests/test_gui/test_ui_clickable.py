@@ -1,44 +1,67 @@
-import arcade
 import pytest
 
+import arcade
 import arcade.gui
 from arcade.gui import UIClickable
 
 
-@pytest.fixture()
-def button(mock_mng) -> UIClickable:
-    normal_texture = arcade.load_texture(':resources:gui_basic_assets/red_button_normal.png', can_cache=False)
-    hover_texture = arcade.load_texture(':resources:gui_basic_assets/red_button_normal.png', can_cache=False)
-    focus_texture = arcade.load_texture(':resources:gui_basic_assets/red_button_normal.png', can_cache=False)
-    press_texture = arcade.load_texture(':resources:gui_basic_assets/red_button_normal.png', can_cache=False)
+class TestClickable(UIClickable):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.render()
 
-    b = UIClickable(
+    def render(self):
+        self.normal_texture = arcade.load_texture(
+            ':resources:gui_basic_assets/red_button_normal.png',
+            can_cache=False,
+            hit_box_algorithm='None')
+        self.hover_texture = arcade.load_texture(
+            ':resources:gui_basic_assets/red_button_normal.png',
+            can_cache=False,
+            hit_box_algorithm='None')
+        self.focus_texture = arcade.load_texture(
+            ':resources:gui_basic_assets/red_button_normal.png',
+            can_cache=False,
+            hit_box_algorithm='None')
+        self.press_texture = arcade.load_texture(
+            ':resources:gui_basic_assets/red_button_normal.png',
+            can_cache=False,
+            hit_box_algorithm='None')
+
+
+@pytest.fixture()
+def clickable(mock_mng) -> UIClickable:
+    b = TestClickable(
         center_x=30,
         center_y=40,
     )
-    b.normal_texture = normal_texture
-    b.hover_texture = hover_texture
-    b.press_texture = press_texture
-    b.focus_texture = focus_texture
 
     mock_mng.add_ui_element(b)
     return b
 
 
-def test_shows_normal_texture(button):
-    assert button.texture == button.normal_texture
+def test_shows_normal_texture(clickable):
+    assert clickable.texture == clickable.normal_texture
 
 
-def test_shows_hover_texture(button):
-    button.on_hover()
-    assert button.texture == button.hover_texture
+def test_shows_hover_texture(clickable):
+    clickable.on_hover()
+    assert clickable.texture == clickable.hover_texture
 
 
-def test_shows_press_texture(button):
-    button.on_press()
-    assert button.texture == button.press_texture
+def test_shows_press_texture(clickable):
+    clickable.on_press()
+    assert clickable.texture == clickable.press_texture
 
 
-def test_shows_focus_texture(button):
-    button.on_focus()
-    assert button.texture == button.focus_texture
+def test_shows_focus_texture(clickable):
+    clickable.on_focus()
+    assert clickable.texture == clickable.focus_texture
+
+
+def test_updates_texture_after_style_change(clickable):
+    old_texture = clickable.normal_texture
+    clickable.set_style_attrs(some_att='new_value')
+
+    assert old_texture != clickable.normal_texture
+    assert clickable.texture == clickable.normal_texture

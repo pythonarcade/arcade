@@ -17,6 +17,7 @@ Available :py:class:`arcade.gui.UIElement`
 * :py:class:`arcade.gui.UIImageButton`
 * :py:class:`arcade.gui.UIFlatButton`
 * :py:class:`arcade.gui.UIGhostFlatButton`
+* :py:class:`arcade.gui.UIToggel`
 
 Run examples with `python -m arcade.gui.examples.<example name>`
 
@@ -46,6 +47,7 @@ from arcade.gui.core import (
 from arcade.gui.elements import UIClickable
 from arcade.gui.elements.flat_button import UIFlatButton, UIGhostFlatButton
 from arcade.gui.elements.image_button import UIImageButton
+from arcade.gui.elements.toggel import UIToggel
 
 from arcade.gui.elements.inputbox import UIInputBox
 from arcade.gui.elements.label import UILabel
@@ -62,6 +64,7 @@ __all__ = [
     'UIFlatButton',
     'UIGhostFlatButton',
     'UIImageButton',
+    'UIToggel',
     'MOUSE_PRESS',
     'MOUSE_RELEASE',
     'MOUSE_SCROLL',

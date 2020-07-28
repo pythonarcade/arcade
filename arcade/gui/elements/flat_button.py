@@ -9,6 +9,23 @@ from arcade.gui.utils import render_text_image
 
 
 class UIAbstractFlatButton(UIClickable):
+    """
+    Style attributes:
+    * font_name - List of font names
+    * font_size
+    * font_color
+    * font_color_hover
+    * font_color_press
+    * border_width
+    * border_color
+    * border_color_hover
+    * border_color_press
+    * bg_color
+    * bg_color_hover
+    * bg_color_press
+    * vmargin - vertical margin around the text
+    """
+
     def __init__(self,
                  text: str,
                  center_x: int = 0,
@@ -21,8 +38,6 @@ class UIAbstractFlatButton(UIClickable):
                  style: UIStyle = None,
                  **kwargs):
         """
-        Do not forget to call render in subclass __init__
-
         :param text:
         :param center_x: center X of element
         :param center_y: center y of element
@@ -72,7 +87,7 @@ class UIAbstractFlatButton(UIClickable):
 
         text_image_normal = render_text_image(
             self.text,
-            font_size=22,
+            font_size=font_size,
             font_name=font_name,
             align=self.align,
             valign='middle',
@@ -88,7 +103,7 @@ class UIAbstractFlatButton(UIClickable):
         )
         text_image_hover = render_text_image(
             self.text,
-            font_size=22,
+            font_size=font_size,
             font_name=font_name,
             align=self.align,
             valign='middle',

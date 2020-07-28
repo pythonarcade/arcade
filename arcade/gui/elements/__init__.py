@@ -130,6 +130,23 @@ class UIClickable(EventDispatcher, UIElement):
                     if self.mng:
                         self.mng.dispatch_ui_event(UIEvent(UIClickable.CLICKED, ui_element=self))
 
+    def render(self):
+        """
+        Render and update textures, called on style change.
+        Initially called while added to :py:class:`arcade.gui.UIManager`
+
+        Has to be implemented by subclasses of :py:class:`arcade.gui.UIElement`.
+
+        Recommendation: call :py:meth:`arcade.gui.UIClickable.set_proper_texture()`
+        after setting up the textures if you don't use property textures which handle this.
+        Property textures:
+        * self.normal_texture
+        * self.hover_texture
+        * self.press_texture
+        * self.focus_texture
+        """
+        raise NotImplementedError()
+
     def set_proper_texture(self):
         """ Set normal, mouse-over, or clicked texture. """
         if self.pressed and self.press_texture:

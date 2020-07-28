@@ -13,14 +13,11 @@ class MyView(arcade.View):
 
     def on_draw(self):
         arcade.start_render()
-        arcade.set_background_color(arcade.color.BLACK)
 
     def on_show_view(self):
-        print('on_show_view')
-        self.setup()
-
-    def setup(self):
+        arcade.set_background_color(arcade.color.BLACK)
         self.ui_manager.purge_ui_elements()
+
         flat = UIFlatButton('Hello world', center_x=200, center_y=self.window.height // 2, width=200, height=40)
         flat.set_style_attrs(
             font_color=arcade.color.WHITE,

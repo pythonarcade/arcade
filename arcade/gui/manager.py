@@ -144,6 +144,7 @@ class UIManager(EventDispatcher):
             raise UIException('UIElement seems not to be properly setup, please check if you'
                               ' overwrite the constructor and forgot "super().__init__(**kwargs)"')
 
+        ui_element.render()
         self._ui_elements.append(ui_element)
         ui_element.mng = self
 
