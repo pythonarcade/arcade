@@ -48,6 +48,7 @@ class MyGame(arcade.Window):
         self.wall_list = None
         self.player_list = None
         self.coin_list = None
+        self.bomb_list = None
 
         # Set up the player
         self.score = 0
@@ -65,6 +66,11 @@ class MyGame(arcade.Window):
             viewport=(0, 0, self.width, self.height),
             projection=(0, self.width, 0, self.height),
         )
+
+        self.shake_offset_1 = 0
+        self.shake_offset_2 = 0
+        self.shake_vel_1 = 0
+        self.shake_vel_2 = 0
 
     def setup(self):
         """ Set up the game and initialize the variables. """
@@ -99,6 +105,12 @@ class MyGame(arcade.Window):
         # --- Coins ---
         self.coin_list = arcade.tilemap.process_layer(my_map,
                                                       'Coins',
+                                                      TILE_SCALING,
+                                                      use_spatial_hash=True)
+
+        # --- Bombs ---
+        self.bomb_list = arcade.tilemap.process_layer(my_map,
+                                                      'Bombs',
                                                       TILE_SCALING,
                                                       use_spatial_hash=True)
 
@@ -145,6 +157,7 @@ class MyGame(arcade.Window):
         self.player_list.draw()
         self.wall_list.draw()
         self.coin_list.draw()
+        self.bomb_list.draw()
 
         # Draw FPS
         if self.last_time and self.frame_count % 60 == 0:
@@ -205,8 +218,37 @@ class MyGame(arcade.Window):
         user_centered = screen_center_x, screen_center_y
 
         cur_scroll = self.camera.scroll
-        new_scroll = arcade.lerp(cur_scroll[0], user_centered[0], panning_fraction), \
-            arcade.lerp(cur_scroll[1], user_centered[1], panning_fraction)
+        new_scroll = [arcade.lerp(cur_scroll[0], user_centered[0], panning_fraction), \
+            arcade.lerp(cur_scroll[1], user_centered[1], panning_fraction)]
+
+        # Add in camera shake
+        self.shake_offset_1 += self.shake_vel_1
+        self.shake_offset_2 += self.shake_vel_2
+
+        if self.shake_offset_1 > 0:
+            self.shake_vel_1 -= 1
+        elif self.shake_offset_1 < 0:
+            self.shake_vel_1 += 1
+
+        if self.shake_offset_2 > 0:
+            self.shake_vel_2 -= 1
+        elif self.shake_offset_2 < 0:
+            self.shake_vel_2 += 1
+
+        self.shake_vel_1 *= 0.9
+        self.shake_vel_2 *= 0.9
+
+        if abs(self.shake_vel_1) < 0.5 and abs(self.shake_offset_1) < 0.5:
+            self.shake_vel_1 = 0
+            self.shake_offset_1 = 0
+
+        if abs(self.shake_vel_2) < 0.5 and abs(self.shake_offset_2) < 0.5:
+            self.shake_vel_2 = 0
+            self.shake_offset_2 = 0
+
+        new_scroll[0] += self.shake_offset_1
+        new_scroll[1] += self.shake_offset_2
+
         self.camera.scroll = new_scroll
 
     def on_update(self, delta_time):
@@ -223,6 +265,14 @@ class MyGame(arcade.Window):
         for coin in coins_hit:
             coin.remove_from_sprite_lists()
             self.score += 1
+
+        # Bomb hits
+        bombs_hit = arcade.check_for_collision_with_list(self.player_sprite, self.bomb_list)
+        for bomb in bombs_hit:
+            bomb.remove_from_sprite_lists()
+            print("Pow")
+            self.shake_vel_1 = 5
+            self.shake_vel_2 = 7
 
         # Pan to the user
         self.pan_camera_to_user(panning_fraction=0.02)

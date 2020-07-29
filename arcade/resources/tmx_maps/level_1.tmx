@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.4" tiledversion="1.4.1" orientation="orthogonal" renderorder="right-down" width="40" height="20" tilewidth="128" tileheight="128" infinite="0" backgroundcolor="#8291e9" nextlayerid="3" nextobjectid="1">
+<map version="1.4" tiledversion="1.4.1" orientation="orthogonal" renderorder="right-down" width="40" height="20" tilewidth="128" tileheight="128" infinite="0" backgroundcolor="#8291e9" nextlayerid="4" nextobjectid="1">
  <tileset firstgid="1" source="standard_tileset.tsx"/>
  <layer id="1" name="Platforms" width="40" height="20">
   <data encoding="base64" compression="zlib">
-   eJztlMsKgCAQRUd6P3f9/69m5ICJjmNauvDCIQqbDjcLoKamJiZLboGXcXkfkkmx/6dTZEp7tz6f0ny5Eeq4KsBx/kU4nQn/kqzh+G0asXNdneF1876v+uPMta2J9Rng/j/2gc+29ebzC/2mL7dO0khaoB1T9UfNwa4QdEMoR87+i/HTu6Jowf6+U+1r2xyuG9XlCM/uUxLqZnY5S05PyAME
+   eJztlOsKgCAMRhfZ/fKv93/VjBxU6JzN0MAPPqKwdThZACUlJZJMqQFe5q/cVDbdwXSNMC83Rz6e3Hi5qcxxNgXH+RfhOKv8S5KGw7dcKp3rcobXn/d95Y8z17ZGytPB+Y9pA59t8+bjC/2mD7ZGt9ZVQDPG8kfNQVdYZMNSjJz9J+G7uqKqwP6+Y+1r2xwuG+Wyh7v7mA1le7ocdXco3AME
   </data>
  </layer>
  <layer id="2" name="Coins" width="40" height="20">
   <data encoding="base64" compression="zlib">
-   eJzt0DEKADAIBEHx/49OLxghRVzxpr1mOTMRNu8OeHTr9mLfgvZB1UPrzcTOzu4pn5FknxG/JDWRWibTj/LDAdLoAB8=
+   eJzt0NEJADAIA1Fx/6H7XxChSL1A3gSXRJix5XbAI9XuTsbcNtpHXQ+tt3J3bnarfEZSfUb8ktREalHmH+2HA8/4AB8=
+  </data>
+ </layer>
+ <layer id="3" name="Bombs" width="40" height="20">
+  <data encoding="base64" compression="zlib">
+   eJzt0UENAAAIA7GpwL9UDPAngVbBZUsAALiotgOem/b3SdJz+ABD
   </data>
  </layer>
 </map>
