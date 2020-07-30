@@ -79,8 +79,10 @@ class GameWindow(arcade.Window):
         self.single_lines_calls = [(*random_pos(), *random_pos(), random_color()) for _ in range(600)]
         # Line list
         self.line_list = [(random.randrange(0, SCREEN_WIDTH), random.randrange(0, SCREEN_HEIGHT)) for _ in range(2 * 10000)]
+
         # Single circle draw calls
         self.single_circle_calls = [(*random_pos(), random_radius(), random_color()) for _ in range(200)]
+
         # line strip
         self.line_strip = [
             arcade.NamedPoint(random.randint(0, SCREEN_WIDTH), random.randint(0, SCREEN_HEIGHT))
@@ -102,6 +104,9 @@ class GameWindow(arcade.Window):
 
     def do_draw_lines(self):
         arcade.draw_lines(self.line_list, (255, 0, 0, 10))
+
+    def draw_line_strip(self):
+        arcade.draw_line_strip(self.line_strip, arcade.color.WHITE, 20.0)
 
     def do_draw_circle_filled(self):
         for c in self.single_circle_calls:
@@ -125,13 +130,10 @@ class GameWindow(arcade.Window):
     def do_draw_arc_filled(self):
         arcade.draw_arc_filled(400, 300, 200, 200, arcade.color.AZURE, 30.0 - math.sin(self.elapsed) * 20.0, 340.0 + math.sin(self.elapsed) * 20.0, 0)
 
-    def draw_line_strip(self):
-        arcade.draw_line_strip(self.line_strip, arcade.color.WHITE, 20.0)
-
     def draw_point(self):
         for x in range(0, SCREEN_WIDTH, 20):
-            for y in range(0, SCREEN_HEIGHT, 15):
-                arcade.draw_point(x + 10, y + 8, arcade.color.WHITE, 1.0)
+            for y in range(0, SCREEN_HEIGHT, 20):
+                arcade.draw_point(x, y, arcade.color.WHITE, 1)
 
     def draw_points(self):
         arcade.draw_points(self.points, arcade.color.WILLPOWER_ORANGE, 1.0)
@@ -144,13 +146,13 @@ class GameWindow(arcade.Window):
         # Toggle what to test here
         # self.do_draw_line()
         # self.do_draw_lines()
+        self.draw_line_strip()
         # self.do_draw_circle_filled()
         # self.do_draw_ellipse_filled()
         # self.do_draw_circle_outline()
         # self.do_draw_ellipse_outline()
         # self.do_draw_rectangle()
         # self.do_draw_arc_filled()
-        self.draw_line_strip()
         # self.draw_point()
         # self.draw_points()
 
