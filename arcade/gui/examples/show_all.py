@@ -1,3 +1,6 @@
+"""
+Example showing GUI elements
+"""
 import arcade
 
 import arcade.gui
@@ -5,16 +8,19 @@ from arcade.gui import UIManager
 
 
 class MyView(arcade.View):
-    def __init__(self, window: arcade.Window):
+    """ View for this example """
+    def __init__(self, my_window: arcade.Window):
         super().__init__()
 
-        self.window = window
-        self.ui_manager = UIManager(window)
+        self.window = my_window
+        self.ui_manager = UIManager(my_window)
 
     def on_draw(self):
+        """ Draw this view """
         arcade.start_render()
 
     def on_show_view(self):
+        """ Show main view """
         arcade.set_background_color(arcade.color.BLACK)
         self.ui_manager.purge_ui_elements()
 
@@ -64,13 +70,13 @@ class MyView(arcade.View):
             # height=20
         ))
 
-        self.ui_manager.add_ui_element(arcade.gui.UIToggel(
+        self.ui_manager.add_ui_element(arcade.gui.UIToggle(
             center_x=self.window.width // 4 * 3 - 60,
             center_y=y_slot * 3,
             height=30,
             value=False
         ))
-        self.ui_manager.add_ui_element(arcade.gui.UIToggel(
+        self.ui_manager.add_ui_element(arcade.gui.UIToggle(
             center_x=self.window.width // 4 * 3 + 60,
             center_y=y_slot * 3,
             height=30,

@@ -1,11 +1,11 @@
 import pytest
 
-from arcade.gui.elements.toggel import UIToggel
+from arcade.gui.elements.toggle import UIToggle
 
 
 @pytest.fixture()
-def toggel(mock_mng) -> UIToggel:
-    b = UIToggel(
+def toggle(mock_mng) -> UIToggle:
+    b = UIToggle(
         center_x=30,
         center_y=40,
         height=30
@@ -14,27 +14,27 @@ def toggel(mock_mng) -> UIToggel:
     return b
 
 
-def test_toggel_off_via_click(toggel, mock_mng):
+def test_toggle_off_via_click(toggle, mock_mng):
     last_called_with = None
 
-    @toggel.event('on_toggel')
-    def on_toggel(value):
+    @toggle.event('on_toggle')
+    def on_toggle(value):
         nonlocal last_called_with
         last_called_with = value
 
-    mock_mng.click(toggel.center_x, toggel.center_y)
+    mock_mng.click(toggle.center_x, toggle.center_y)
 
     assert last_called_with is False
 
 
-def test_toggel_off_via_toggel(toggel, mock_mng):
+def test_toggle_off_via_toggle(toggle, mock_mng):
     last_called_with = None
 
-    @toggel.event('on_toggel')
-    def on_toggel(value):
+    @toggle.event('on_toggle')
+    def on_toggle(value):
         nonlocal last_called_with
         last_called_with = value
 
-    toggel.toggel()
+    toggle.toggle()
 
     assert last_called_with is False

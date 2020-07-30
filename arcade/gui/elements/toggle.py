@@ -8,7 +8,7 @@ from arcade.gui import UIClickable
 from arcade.gui.ui_style import UIStyle
 
 
-class UIToggel(UIClickable):
+class UIToggle(UIClickable):
     """
     A toggle which can be `true` or `false`.
 
@@ -20,9 +20,9 @@ class UIToggel(UIClickable):
     """
 
     def __init__(self,
-                 center_x: int,
-                 center_y: int,
-                 height: int,
+                 center_x: int = 0,
+                 center_y: int = 0,
+                 height: int = 0,
                  value: bool = True,
                  id: Optional[str] = None,
                  style: UIStyle = None,
@@ -43,8 +43,8 @@ class UIToggel(UIClickable):
             style=style,
             **kwargs
         )
-        self.style_classes.append('toggel')
-        self.register_event_type('on_toggel')
+        self.style_classes.append('toggle')
+        self.register_event_type('on_toggle')
         self._height = height
 
         self._value = value
@@ -64,12 +64,12 @@ class UIToggel(UIClickable):
     @value.setter
     def value(self, value: bool):
         self._value = value
-        self.dispatch_event('on_toggel', value)
+        self.dispatch_event('on_toggle', value)
         self.set_proper_texture()
 
-    def toggel(self):
+    def toggle(self):
         """
-        Toggels current value (True => False, False => True)
+        Toggles current value (True => False, False => True)
         """
         self.value = not self.value
 
@@ -77,7 +77,7 @@ class UIToggel(UIClickable):
         self.value = not self.value
         self.set_proper_texture()
 
-    def on_toggel(self, value):
+    def on_toggle(self, value):
         """
         Called if value changes through programmatic change or user interaction.
         """
@@ -96,14 +96,14 @@ class UIToggel(UIClickable):
         """Draw a rounded rectangle"""
         width, height = size
         rectangle = Image.new('RGBA', size, fill)
-        corner = UIToggel._round_corner(radius, fill)
+        corner = UIToggle._round_corner(radius, fill)
         rectangle.paste(corner, (0, 0))
         rectangle.paste(corner.rotate(90), (0, height - radius))  # Rotate the corner and paste it
         rectangle.paste(corner.rotate(180), (width - radius, height - radius))
         rectangle.paste(corner.rotate(270), (width - radius, 0))
         return rectangle
 
-    def _render_toggel(self, right: bool, color, bg_color) -> Texture:
+    def _render_toggle(self, right: bool, color, bg_color) -> Texture:
         height = self._height
         width = self._height * 2
 
@@ -124,7 +124,7 @@ class UIToggel(UIClickable):
         pos_y *= SCALE
 
         # False
-        switch = UIToggel._round_rectangle((width, height), border_radius, bg_color)
+        switch = UIToggle._round_rectangle((width, height), border_radius, bg_color)
         d = ImageDraw.Draw(switch)
         d.ellipse((pos_x - radius, pos_y - radius, pos_x + radius, pos_y + radius), fill=color)
         switch = switch.resize((switch.width // SCALE, switch.height // SCALE), resample=Image.LANCZOS)
@@ -133,11 +133,11 @@ class UIToggel(UIClickable):
     def render(self):
         color_true = self.style_attr('color_true')
         bg_color_true = self.style_attr('bg_color_true')
-        self._true_texture = self._render_toggel(True, color_true, bg_color_true)
+        self._true_texture = self._render_toggle(True, color_true, bg_color_true)
 
         color_false = self.style_attr('color_false')
         bg_color_false = self.style_attr('bg_color_false')
-        self._false_texture = self._render_toggel(False, color_false, bg_color_false)
+        self._false_texture = self._render_toggle(False, color_false, bg_color_false)
 
         self.set_proper_texture()
 
