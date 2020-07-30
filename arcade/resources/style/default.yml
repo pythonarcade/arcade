@@ -84,7 +84,7 @@ imagebutton:
   font_color_hover: WHITE
   font_color_press: WHITE
 
-toggel:
+toggle:
   color_true: WHITE
   bg_color_true: BLUE
 
