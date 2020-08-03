@@ -242,7 +242,8 @@ class Window(pyglet.window.Window):
         :param int button: What button was hit. One of:
                            arcade.MOUSE_BUTTON_LEFT, arcade.MOUSE_BUTTON_RIGHT,
                            arcade.MOUSE_BUTTON_MIDDLE
-        :param int modifiers: Shift/click, ctrl/click, etc.
+        :param int modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
+                              pressed during this event. See :ref:`keyboard_modifiers`.
         """
         pass
 
@@ -255,7 +256,8 @@ class Window(pyglet.window.Window):
         :param float dx: Change in x since the last time this method was called
         :param float dy: Change in y since the last time this method was called
         :param int buttons: Which button is pressed
-        :param int modifiers: Ctrl, shift, etc.
+        :param int modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
+                              pressed during this event. See :ref:`keyboard_modifiers`.
         """
         self.on_mouse_motion(x, y, dx, dy)
 
@@ -267,7 +269,8 @@ class Window(pyglet.window.Window):
         :param float x:
         :param float y:
         :param int button:
-        :param int modifiers:
+        :param int modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
+                              pressed during this event. See :ref:`keyboard_modifiers`.
         """
         pass
 
@@ -296,7 +299,8 @@ class Window(pyglet.window.Window):
         Override this function to add key press functionality.
 
         :param int symbol: Key that was hit
-        :param int modifiers: If it was shift/ctrl/alt
+        :param int modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
+                              pressed during this event. See :ref:`keyboard_modifiers`.
         """
         try:
             self.key = symbol
@@ -308,7 +312,8 @@ class Window(pyglet.window.Window):
         Override this function to add key release functionality.
 
         :param int symbol: Key that was hit
-        :param int modifiers: If it was shift/ctrl/alt
+        :param int modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
+                              pressed during this event. See :ref:`keyboard_modifiers`.
         """
         try:
             self.key = None
@@ -640,7 +645,8 @@ class View:
         :param int button: What button was hit. One of:
                            arcade.MOUSE_BUTTON_LEFT, arcade.MOUSE_BUTTON_RIGHT,
                            arcade.MOUSE_BUTTON_MIDDLE
-        :param int modifiers: Shift/click, ctrl/click, etc.
+        :param int modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
+                              pressed during this event. See :ref:`keyboard_modifiers`.
         """
         pass
 
@@ -653,7 +659,8 @@ class View:
         :param float dx: Change in x since the last time this method was called
         :param float dy: Change in y since the last time this method was called
         :param int _buttons: Which button is pressed
-        :param int _modifiers: Ctrl, shift, etc.
+        :param int _modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
+                              pressed during this event. See :ref:`keyboard_modifiers`.
         """
         self.on_mouse_motion(x, y, dx, dy)
 
@@ -665,7 +672,8 @@ class View:
         :param float x:
         :param float y:
         :param int button:
-        :param int modifiers:
+        :param int modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
+                              pressed during this event. See :ref:`keyboard_modifiers`.
         """
         pass
 
@@ -685,7 +693,8 @@ class View:
         Override this function to add key press functionality.
 
         :param int symbol: Key that was hit
-        :param int modifiers: If it was shift/ctrl/alt
+        :param int modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
+                              pressed during this event. See :ref:`keyboard_modifiers`.
         """
         try:
             self.key = symbol
@@ -697,7 +706,8 @@ class View:
         Override this function to add key release functionality.
 
         :param int _symbol: Key that was hit
-        :param int _modifiers: If it was shift/ctrl/alt
+        :param int _modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
+                               pressed during this event. See :ref:`keyboard_modifiers`.
         """
         try:
             self.key = None
