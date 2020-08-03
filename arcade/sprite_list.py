@@ -9,6 +9,7 @@ from typing import TypeVar
 from typing import List
 from typing import Tuple
 from typing import Optional
+from typing import Union
 
 import logging
 import math
@@ -320,7 +321,7 @@ class SpriteList:
         if self._use_spatial_hash:
             self.spatial_hash.insert_object_for_box(item)
 
-    def extend(self, items: list):
+    def extend(self, items: Union[list, 'SpriteList']):
         """
         Extends the current list with the given list
 
@@ -465,7 +466,7 @@ class SpriteList:
             self.array_of_images = []
 
         for texture in texture_list:
-            if not texture.name in self.array_of_texture_names:
+            if texture.name not in self.array_of_texture_names:
                 self.array_of_texture_names.append(texture.name)
                 self.array_of_images.append(texture.image)
 
@@ -1051,6 +1052,7 @@ class SpriteList:
         self.sprite_idx[value] = key
 
     def index(self, key):
+        """ Return the index of this sprite """
         return self.sprite_list.index(key)
 
     def pop(self, index: int = -1) -> Sprite:
