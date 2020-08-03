@@ -35,7 +35,7 @@ class UIManager(EventDispatcher):
         As an alternative you can remove all registered handlers of a UIManager by calling
         :py:meth:`arcade.gui.UIManager.unregister_handlers()` within :py:meth:`arcade.View.on_hide_view()`.
 
-        :param arcade.Window window: Window to register handlers to, defaults to :py:method:`arcade.get_window()`
+        :param arcade.Window window: Window to register handlers to, defaults to :py:meth:`arcade.get_window()`
         :param kwargs: catches unsupported named parameters
         """
         super().__init__()

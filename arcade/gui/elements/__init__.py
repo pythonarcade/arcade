@@ -21,8 +21,10 @@ class UIClickable(EventDispatcher, UIElement):
                  style: UIStyle = None,
                  **kwargs):
         """
-        :param center_x: center X of element
-        :param center_y:Center Y of element
+        Create a clickable UI Element
+
+        :param center_x: Center X of element
+        :param center_y: Center Y of element
         :param id: id of :py:class:`arcade.gui.UIElement`
         :param style: style of :py:class:`arcade.gui.UIElement`
         :param kwargs: catches unsupported named parameters
