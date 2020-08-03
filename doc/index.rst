@@ -1,7 +1,3 @@
-.. raw:: html
-
-    <h1><a href="blm.html"><img src="_images/fist.svg" width="24px">#BlackLivesMatter</a></h1>
-
 .. image:: images/arcade-logo.svg
     :width: 10%
     :class: right-image
@@ -206,6 +202,7 @@ game without learning a complex framework.
    arcade_gl
    arcade_gui
    resources
+   keyboard
 
 .. toctree::
    :maxdepth: 1
