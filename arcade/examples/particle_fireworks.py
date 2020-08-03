@@ -9,7 +9,6 @@ python -m arcade.examples.particle_fireworks
 import arcade
 from arcade import Point, Vector
 from arcade.utils import _Vec2  # bring in "private" class
-from arcade.examples.frametime_plotter import FrametimePlotter
 import os
 import random
 import pyglet
@@ -177,7 +176,6 @@ class FireworksApp(arcade.Window):
 
         arcade.set_background_color(arcade.color.BLACK)
         self.emitters = []
-        self.frametime_plotter = FrametimePlotter()
 
         self.launch_firework(0)
         arcade.schedule(self.launch_spinner, 4.0)
@@ -216,7 +214,6 @@ class FireworksApp(arcade.Window):
         self.emitters.append(self.cloud)
 
     def launch_firework(self, delta_time):
-        self.frametime_plotter.add_event("launch")
         launchers = (
             self.launch_random_firework,
             self.launch_ringed_firework,
@@ -331,7 +328,6 @@ class FireworksApp(arcade.Window):
         to_del = [e for e in emitters_to_update if e.can_reap()]
         for e in to_del:
             self.emitters.remove(e)
-        self.frametime_plotter.end_frame(delta_time)
 
     def on_draw(self):
         arcade.start_render()
@@ -362,4 +358,3 @@ def rocket_smoke_mutator(particle: arcade.LifetimeParticle):
 if __name__ == "__main__":
     app = FireworksApp()
     arcade.run()
-    app.frametime_plotter.show()

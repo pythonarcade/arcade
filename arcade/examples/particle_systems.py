@@ -11,7 +11,6 @@ If Python and Arcade are installed, this example can be run from the command lin
 python -m arcade.examples.particle_systems
 """
 import arcade
-from arcade.examples.frametime_plotter import FrametimePlotter
 import pyglet
 import os
 import random
@@ -730,7 +729,6 @@ class MyGame(arcade.Window):
         self.emitter_timeout = 0
         self.obj = arcade.Sprite(":resources:images/pinball/bumper.png", 0.2, center_x=0, center_y=15)
         self.obj.change_x = 3
-        self.frametime_plotter = FrametimePlotter()
         pyglet.clock.schedule_once(self.next_emitter, QUIET_BETWEEN_SPAWNS)
 
     def next_emitter(self, _time_delta):
@@ -738,20 +736,17 @@ class MyGame(arcade.Window):
         print("Changing emitter to {}".format(self.emitter_factory_id))
         self.emitter_timeout = 0
         self.label, self.emitter = self.factories[self.emitter_factory_id]()
-        self.frametime_plotter.add_event("spawn {}".format(self.emitter_factory_id))
 
     def update(self, delta_time):
         if self.emitter:
             self.emitter_timeout += 1
             self.emitter.update()
             if self.emitter.can_reap() or self.emitter_timeout > EMITTER_TIMEOUT:
-                self.frametime_plotter.add_event("reap")
                 pyglet.clock.schedule_once(self.next_emitter, QUIET_BETWEEN_SPAWNS)
                 self.emitter = None
         self.obj.update()
         if self.obj.center_x > SCREEN_WIDTH:
             self.obj.center_x = 0
-        self.frametime_plotter.end_frame(delta_time)
 
     def on_draw(self):
         arcade.start_render()
@@ -773,4 +768,3 @@ class MyGame(arcade.Window):
 if __name__ == "__main__":
     game = MyGame()
     arcade.run()
-    game.frametime_plotter.show()
