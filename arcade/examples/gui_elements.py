@@ -1,6 +1,7 @@
 """
 Show how to use GUI elements.
 
+You can run this example with:
 python -m arcade.examples.gui_elements_example
 
 To style, see the style example or use a yaml file.

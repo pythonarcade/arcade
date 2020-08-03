@@ -1,6 +1,9 @@
 """
 This example shows how to programmatically change the GUI style.
 
+You can run this example with:
+python -m arcade.examples.gui_custom_style
+
 This can also be done with a yaml file.
 See:
 https://github.com/pvcraven/arcade/blob/development/arcade/resources/style/default.yml
