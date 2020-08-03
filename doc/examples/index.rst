@@ -516,7 +516,7 @@ Using PyMunk for Physics
 .. figure:: thumbs/pymunk_platformer.png
    :figwidth: 170px
 
-   :ref:`pymunk_platformer`
+   :ref:`pymunk_platformer_tutorial`
 
 Frame Buffers
 ^^^^^^^^^^^^^
