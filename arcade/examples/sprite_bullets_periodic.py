@@ -5,11 +5,47 @@ If Python and Arcade are installed, this example can be run from the command lin
 python -m arcade.examples.sprite_bullets_periodic
 """
 import arcade
-import os
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 SCREEN_TITLE = "Sprites and Periodic Bullets Example"
+
+
+class EnemySprite(arcade.Sprite):
+    """ Enemy ship class that tracks how long it has been since firing. """
+
+    def __init__(self, image_file, scale, bullet_list, time_between_firing):
+        """ Set up the enemy """
+        super().__init__(image_file, scale)
+
+        # How long has it been since we last fired?
+        self.time_since_last_firing = 0.0
+
+        # How often do we fire?
+        self.time_between_firing = time_between_firing
+
+        # When we fire, what list tracks the bullets?
+        self.bullet_list = bullet_list
+
+    def on_update(self, delta_time: float = 1/60):
+        """ Update this sprite. """
+
+        # Track time since we last fired
+        self.time_since_last_firing += delta_time
+
+        # If we are past the firing time, then fire
+        if self.time_since_last_firing >= self.time_between_firing:
+
+            # Reset timer
+            self.time_since_last_firing = 0
+
+            # Fire the bullet
+            bullet = arcade.Sprite(":resources:images/space_shooter/laserBlue01.png")
+            bullet.center_x = self.center_x
+            bullet.angle = -90
+            bullet.top = self.bottom
+            bullet.change_y = -2
+            self.bullet_list.append(bullet)
 
 
 class MyGame(arcade.Window):
@@ -18,18 +54,15 @@ class MyGame(arcade.Window):
     def __init__(self):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
-        # Set the working directory (where we expect to find files) to the same
-        # directory this .py file is in. You can leave this out of your own
-        # code, but it is needed to easily run the examples using "python -m"
-        # as mentioned at the top of this program.
-        file_path = os.path.dirname(os.path.abspath(__file__))
-        os.chdir(file_path)
-
         arcade.set_background_color(arcade.color.BLACK)
 
-        # --- Keep track of a frame count.
-        # --- This is important for doing things every x frames
-        self.frame_count = 0
+        self.player = None
+        self.player_list = None
+        self.enemy_list = None
+        self.bullet_list = None
+
+    def setup(self):
+        """ Setup the variables for the game. """
 
         self.player_list = arcade.SpriteList()
         self.enemy_list = arcade.SpriteList()
@@ -40,14 +73,20 @@ class MyGame(arcade.Window):
         self.player_list.append(self.player)
 
         # Add top-left enemy ship
-        enemy = arcade.Sprite(":resources:images/space_shooter/playerShip1_green.png", 0.5)
+        enemy = EnemySprite(":resources:images/space_shooter/playerShip1_green.png",
+                            scale=0.5,
+                            bullet_list=self.bullet_list,
+                            time_between_firing=2.0)
         enemy.center_x = 120
         enemy.center_y = SCREEN_HEIGHT - enemy.height
         enemy.angle = 180
         self.enemy_list.append(enemy)
 
         # Add top-right enemy ship
-        enemy = arcade.Sprite(":resources:images/space_shooter/playerShip1_green.png", 0.5)
+        enemy = EnemySprite(":resources:images/space_shooter/playerShip1_green.png",
+                            scale=0.5,
+                            bullet_list=self.bullet_list,
+                            time_between_firing=1.0)
         enemy.center_x = SCREEN_WIDTH - 120
         enemy.center_y = SCREEN_HEIGHT - enemy.height
         enemy.angle = 180
@@ -63,22 +102,10 @@ class MyGame(arcade.Window):
         self.player_list.draw()
 
     def on_update(self, delta_time):
-        """All the logic to move, and the game logic goes here. """
+        """ All the logic to move, and the game logic goes here. """
 
-        # --- Add one to the frame count
-        self.frame_count += 1
-
-        # Loop through each enemy that we have
-        for enemy in self.enemy_list:
-
-            # --- Use the modulus to trigger doing something every 120 frames
-            if self.frame_count % 120 == 0:
-                bullet = arcade.Sprite(":resources:images/space_shooter/laserBlue01.png")
-                bullet.center_x = enemy.center_x
-                bullet.angle = -90
-                bullet.top = enemy.bottom
-                bullet.change_y = -2
-                self.bullet_list.append(bullet)
+        # Call on_update for each enemy in  the list
+        self.enemy_list.on_update(delta_time)
 
         # Get rid of the bullet when it flies off-screen
         for bullet in self.bullet_list:
@@ -96,7 +123,9 @@ class MyGame(arcade.Window):
 
 
 def main():
-    MyGame()
+    """ Run the game """
+    window = MyGame()
+    window.setup()
     arcade.run()
 
 

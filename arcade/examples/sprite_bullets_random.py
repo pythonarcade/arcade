@@ -6,7 +6,6 @@ python -m arcade.examples.sprite_bullets_random
 """
 import arcade
 import random
-import os
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -19,13 +18,6 @@ class MyGame(arcade.Window):
     def __init__(self, width, height, title):
         super().__init__(width, height, title)
 
-        # Set the working directory (where we expect to find files) to the same
-        # directory this .py file is in. You can leave this out of your own
-        # code, but it is needed to easily run the examples using "python -m"
-        # as mentioned at the top of this program.
-        file_path = os.path.dirname(os.path.abspath(__file__))
-        os.chdir(file_path)
-
         arcade.set_background_color(arcade.color.BLACK)
 
         self.frame_count = 0
@@ -36,6 +28,7 @@ class MyGame(arcade.Window):
         self.player = None
 
     def setup(self):
+        """ Setup the variables for the game. """
         self.player_list = arcade.SpriteList()
         self.enemy_list = arcade.SpriteList()
         self.bullet_list = arcade.SpriteList()
@@ -73,8 +66,13 @@ class MyGame(arcade.Window):
         # Loop through each enemy that we have
         for enemy in self.enemy_list:
 
-            # Have a random 1 in 200 change of shooting each frame
-            if random.randrange(200) == 0:
+            # Have a random 1 in 200 change of shooting each 1/60th of a second
+            odds = 200
+
+            # Adjust odds based on delta-time
+            adj_odds = int(odds * (1 / 60) / delta_time)
+
+            if random.randrange(adj_odds) == 0:
                 bullet = arcade.Sprite(":resources:images/space_shooter/laserBlue01.png")
                 bullet.center_x = enemy.center_x
                 bullet.angle = -90
