@@ -27,8 +27,7 @@ if __name__ == "__main__":
         'pyglet',
         'pillow',
         'numpy',
-        'pyglet-ffmpeg2',
-        'pytiled-parser'
+        'pytiled-parser==0.9.3'
     ]
     if sys.version_info[0] == 3 and sys.version_info[1] == 6:
         install_requires.append('dataclasses')
@@ -58,7 +57,8 @@ if __name__ == "__main__":
                     "arcade.key",
                     "arcade.color",
                     "arcade.csscolor",
-                    "arcade.examples"
+                    "arcade.examples",
+                    "arcade.soloud"
                     ],
           python_requires='>=3.6',
           classifiers=[
@@ -72,7 +72,6 @@ if __name__ == "__main__":
               "Programming Language :: Python :: Implementation :: CPython",
               "Topic :: Software Development :: Libraries :: Python Modules",
               ],
-          test_suite="tests",
           package_data={'arcade': ['resources/gui_themes/Fantasy/Buttons/*',
                                    'resources/gui_themes/Fantasy/DialogueBox/*',
                                    'resources/gui_themes/Fantasy/Menu/*',
@@ -97,7 +96,9 @@ if __name__ == "__main__":
                                    'resources/images/tiles/*',
                                    'resources/sounds/*',
                                    'resources/tmx_maps/*',
-                                   'py.typed']},
+                                   'soloud/*',
+                                   'py.typed'],
+                        'arcade.soloud': ['*.*']},
           project_urls={
                         'Documentation': 'https://arcade.academy/',
                         'Example Code ': 'http://arcade.academy/examples/index.html',

@@ -1,6 +1,5 @@
 from typing import Tuple, Dict, Optional, Union
 import arcade
-# from abc import ABC, abstractmethod
 
 
 class TextButton:
@@ -9,7 +8,9 @@ class TextButton:
                  center_x, center_y,
                  width, height,
                  text,
-                 font_size=18, font_face: Union[str, Tuple[str, ...]] = "Arial", font_color=None,
+                 font_size=18,
+                 font_face: Union[str, Tuple[str, ...]] = "Arial",
+                 font_color=None,
                  face_color=arcade.color.LIGHT_GRAY,
                  highlight_color=arcade.color.WHITE,
                  shadow_color=arcade.color.GRAY,
@@ -20,74 +21,75 @@ class TextButton:
         self.width = width
         self.height = height
         self.text = text
+
         self.pressed = False
         self.active = True
-        self.button_height = button_height
         self.theme = theme
-        self.font_color = font_color
-        if self.theme:
-            self.normal_texture = self.theme.button_textures['normal']
-            self.hover_texture = self.theme.button_textures['hover']
-            self.clicked_texture = self.theme.button_textures['clicked']
-            self.locked_texture = self.theme.button_textures['locked']
-            self.font_size = self.theme.font_size
-            self.font_name = self.theme.font_name
-            self.font_color = self.theme.font_color
+
+        self.press_action = None
+        self.release_action = None
+        self.click_action = None
+
+        self.button_height = button_height
+        self.face_color = face_color
+        self.highlight_color = highlight_color
+        self.shadow_color = shadow_color
+
+        if self.theme is not None:
+            self.font = self.theme.font
         else:
-            self.font_size = font_size
-            self.font_face = font_face
-            self.face_color = face_color
-            self.highlight_color = highlight_color
-            self.shadow_color = shadow_color
-            self.font_name = font_face
-        if self.font_color is None:
-            self.font_color = self.face_color
+            self.font = Font(font_face, font_size, font_color)
+
+    def get_top(self):
+        return self.center_y + self.height / 2
+
+    def get_bottom(self):
+        return self.center_y - self.height / 2
+
+    def get_left(self):
+        return self.center_x - self.width / 2
+
+    def get_right(self):
+        return self.center_x + self.width / 2
 
     def draw_color_theme(self):
         arcade.draw_rectangle_filled(self.center_x, self.center_y, self.width,
                                      self.height, self.face_color)
 
         if not self.pressed:
-            color = self.shadow_color
+            bottom_and_right_color = self.shadow_color
+            top_and_left_color = self.highlight_color
         else:
-            color = self.highlight_color
+            bottom_and_right_color = self.highlight_color
+            top_and_left_color = self.shadow_color
 
-        # Bottom horizontal
-        arcade.draw_line(self.center_x - self.width / 2, self.center_y - self.height / 2,
-                         self.center_x + self.width / 2, self.center_y - self.height / 2,
-                         color, self.button_height)
+        left = self.get_left()
+        right = self.get_right()
+        top = self.get_top()
+        bottom = self.get_bottom()
 
-        # Right vertical
-        arcade.draw_line(self.center_x + self.width / 2, self.center_y - self.height / 2,
-                         self.center_x + self.width / 2, self.center_y + self.height / 2,
-                         color, self.button_height)
+        # draw bottom horizontal line
+        arcade.draw_line(left, bottom, right, bottom,
+                         bottom_and_right_color, self.button_height)
 
-        if not self.pressed:
-            color = self.highlight_color
-        else:
-            color = self.shadow_color
+        # draw right vertical line
+        arcade.draw_line(right, bottom, right, top,
+                         bottom_and_right_color, self.button_height)
 
-        # Top horizontal
-        arcade.draw_line(self.center_x - self.width / 2, self.center_y + self.height / 2,
-                         self.center_x + self.width / 2, self.center_y + self.height / 2,
-                         color, self.button_height)
+        # draw top horizontal line
+        arcade.draw_line(left, top, right, top,
+                         top_and_left_color, self.button_height)
 
-        # Left vertical
-        arcade.draw_line(self.center_x - self.width / 2, self.center_y - self.height / 2,
-                         self.center_x - self.width / 2, self.center_y + self.height / 2,
-                         color, self.button_height)
-
-        x = self.center_x
-        y = self.center_y
-        if not self.pressed:
-            x -= self.button_height
-            y += self.button_height
+        # draw left vertical line
+        arcade.draw_line(left, bottom, left, top,
+                         top_and_left_color, self.button_height)
 
     def draw_texture_theme(self):
-        if self.pressed:
-            arcade.draw_texture_rectangle(self.center_x, self.center_y, self.width, self.height, self.clicked_texture)
-        else:
-            arcade.draw_texture_rectangle(self.center_x, self.center_y, self.width, self.height, self.normal_texture)
+        texture_type = "clicked" if self.pressed else "normal"
+        texture = self.theme.button_textures[texture_type]
+
+        arcade.draw_texture_rectangle(self.center_x, self.center_y,
+                                      self.width, self.height, texture)
 
     def draw(self):
         """ Draw the button """
@@ -96,49 +98,63 @@ class TextButton:
         else:
             self.draw_color_theme()
 
-        arcade.draw_text(self.text, self.center_x, self.center_y,
-                         self.font_color, font_size=self.font_size,
-                         font_name=self.font_name,
-                         width=self.width, align="center",
-                         anchor_x="center", anchor_y="center")
+        if self.text:
+            arcade.draw_text(self.text, self.center_x, self.center_y,
+                             self.font.color, font_size=self.font.size,
+                             font_name=self.font.name,
+                             width=self.width, align="center",
+                             anchor_x="center", anchor_y="center")
 
     def on_press(self):
-        pass
+        if callable(self.press_action):
+            self.press_action()
 
     def on_release(self):
-        pass
+        if callable(self.release_action):
+            self.release_action()
+
+    def on_click(self):
+        if callable(self.click_action):
+            self.click_action()
 
     def check_mouse_press(self, x, y):
-        if x > self.center_x + self.width / 2:
-            return
-        if x < self.center_x - self.width / 2:
-            return
-        if y > self.center_y + self.height / 2:
-            return
-        if y < self.center_y - self.height / 2:
-            return
-        self.on_press()
+        if self.check_mouse_collision(x, y):
+            self.pressed = True
+            self.on_press()
 
-    def check_mouse_release(self, _x, _y):
+    def check_mouse_release(self, x, y):
         if self.pressed:
-            self.on_release()
+            self.pressed = False
+
+            if self.check_mouse_collision(x, y):
+                self.on_release()
+                self.on_click()
+
+    def check_mouse_collision(self, x, y):
+        return (
+            self.get_left() <= x <= self.get_right()
+            and
+            self.get_bottom() <= y <= self.get_top()
+        )
 
 
 class SubmitButton(TextButton):
+    """
+    Deprecated class for create submit button. Use TextButton instead.
+    """
     def __init__(self, textbox, on_submit, x, y, width=100, height=40, text="submit", theme=None):
+
+        from warnings import warn
+        warn('SubmitButton has been deprecated. Use TextButton instead.', DeprecationWarning)
+
         super().__init__(x, y, width, height, text, theme=theme)
         self.textbox = textbox
-        self.on_submit = on_submit
+        self.click_action = on_submit
 
-    def on_press(self):
-        self.pressed = True
-
-    def on_release(self):
-        if self.pressed:
-            self.pressed = False
-            self.on_submit()
-            self.textbox.text_storage.text = ""
-            self.textbox.text_display.text = ""
+    def on_click(self):
+        super(SubmitButton, self).on_click()
+        self.textbox.text_storage.text = ""
+        self.textbox.text_display.text = ""
 
 
 class DialogueBox:
@@ -158,11 +174,15 @@ class DialogueBox:
     def on_draw(self):
         if self.active:
             if self.theme:
-                arcade.draw_texture_rectangle(self.x, self.y, self.width, self.height, self.texture)
+                arcade.draw_texture_rectangle(self.x, self.y, self.width,
+                                              self.height, self.texture)
             else:
-                arcade.draw_rectangle_filled(self.x, self.y, self.width, self.height, self.color)
+                arcade.draw_rectangle_filled(self.x, self.y, self.width,
+                                             self.height, self.color)
+
             for button in self.button_list:
                 button.draw()
+
             for text in self.text_list:
                 text.draw()
 
@@ -176,12 +196,10 @@ class DialogueBox:
 
 
 class TextLabel:
-    def __init__(self, text, x, y, color=arcade.color.BLACK, font_size=22, anchor_x="center",
-                 anchor_y="center", width: int = 0,
-                 align="center",
-                 font_name=('Calibri', 'Arial'),
-                 bold: bool = False,
-                 italic: bool = False, rotation=0):
+    def __init__(self, text, x, y, color=arcade.color.BLACK, font_size=22,
+                 anchor_x="center", anchor_y="center", width: int = 0,
+                 align="center", font_name=('Calibri', 'Arial'),
+                 bold: bool = False, italic: bool = False, rotation=0):
         self.text = text
         self.x = x
         self.y = y
@@ -198,9 +216,9 @@ class TextLabel:
         self.active = True
 
     def draw(self):
-        arcade.draw_text(self.text, self.x, self.y, self.color, font_size=self.font_size,
-                         anchor_x=self.anchor_x,
-                         anchor_y=self.anchor_y,
+        arcade.draw_text(self.text, self.x, self.y, self.color,
+                         font_size=self.font_size,
+                         anchor_x=self.anchor_x, anchor_y=self.anchor_y,
                          width=self.width, align=self.align,
                          font_name=self.font_name, bold=self.bold,
                          italic=self.italic, rotation=self.rotation)
@@ -394,23 +412,69 @@ class TextBox:
         self.text_display.check_mouse_release(x, y)
 
 
+class Font:
+    """
+    Font settings for draw gui items.
+
+    Attributes:
+        :name: Font name.
+        :size: Font size.
+        :color: Font color.
+        :bold: True - font is bold
+        :italic: True - font is italic
+    """
+
+    DEFAULT_NAME = ('calibri', 'arial')
+    DEFAULT_SIZE = 24
+    DEFAULT_COLOR = arcade.color.BLACK
+
+    def __init__(self, name=None, size=None, color=None,
+                 bold=False, italic=False):
+        """
+        Create a new font.
+
+        :param string | tuple of string name: Font name, or list of font
+            names in order of preference
+        :param float size: Size of the font
+        :param (int, int, int) color: Color of the font
+        :param boolean bold: Bold font style
+        :param boolean italic: Italic font style
+
+        """
+        self.name = name if name is not None else self.__class__.DEFAULT_NAME
+        self.size = size if size is not None else self.__class__.DEFAULT_SIZE
+        self.color = color if color is not None else self.__class__.DEFAULT_COLOR
+        self.bold = bold
+        self.italic = italic
+
+
 class Theme:
+
     def __init__(self):
-        self.button_textures: Dict[str, Optional['', arcade.Texture]] =\
-            {'normal': '', 'hover': '', 'clicked': '', 'locked': '', }
+        self.button_textures = {'normal': '', 'hover': '', 'clicked': '', 'locked': ''}
         self.menu_texture = ""
         self.window_texture = ""
         self.dialogue_box_texture = ""
         self.text_box_texture = ""
-        self.font_color = arcade.color.BLACK
-        self.font_size = 24
-        self.font_name = ('Calibri', 'Arial')
+        self.__font = Font()
 
-    def add_button_textures(self, normal, hover="", clicked="", locked=""):
-        self.button_textures['normal'] = arcade.load_texture(normal)
-        self.button_textures['hover'] = arcade.load_texture(hover)
-        self.button_textures['clicked'] = arcade.load_texture(clicked)
-        self.button_textures['locked'] = arcade.load_texture(locked)
+    font = property(
+        lambda self: self.__font,
+        None,
+        None,
+        "Font of theme"
+    )
+
+    def add_button_textures(self, normal, hover=None, clicked=None, locked=None):
+        normal_texture = arcade.load_texture(normal)
+        self.button_textures['normal'] = normal_texture
+
+        self.button_textures['hover'] = arcade.load_texture(hover) \
+            if hover is not None else normal_texture
+        self.button_textures['clicked'] = arcade.load_texture(clicked) \
+            if clicked is not None else normal_texture
+        self.button_textures['locked'] = arcade.load_texture(locked) \
+            if locked is not None else normal_texture
 
     def add_window_texture(self, window_texture):
         self.window_texture = arcade.load_texture(window_texture)
@@ -424,7 +488,14 @@ class Theme:
     def add_text_box_texture(self, text_box_texture):
         self.text_box_texture = arcade.load_texture(text_box_texture)
 
-    def set_font(self, font_size, font_color, font_name=('Calibri', 'Arial')):
-        self.font_color = font_color
-        self.font_size = font_size
-        self.font_name = font_name
+    def set_font(self, font_size, font_color, font_name=None):
+        """ Deprecated. Set font. """
+
+        import warnings
+        warnings.warn("set_font has been deprecated, please use Theme.font attribute instead.", DeprecationWarning)
+
+        self.font.color = font_color
+        self.font.size = font_size
+        self.font.name = font_name \
+            if font_name is not None \
+            else Font.DEFAULT_NAME

@@ -3,10 +3,9 @@
 Example Code
 ============
 
-.. toctree::
-   :maxdepth: 3
-
-   index
+.. contents::
+   :depth: 3
+   :local:
 
 Starting Template
 -----------------
@@ -229,7 +228,7 @@ Sprite Non-Player Movement
 .. figure:: thumbs/sprite_follow_simple.png
    :figwidth: 170px
 
-   :ref:`sprite_follow_simple_2`
+   :ref:`sprite_follow_simple`
 
 .. figure:: thumbs/sprite_follow_simple_2.png
    :figwidth: 170px
@@ -248,8 +247,6 @@ Sprite Properties
    :figwidth: 170px
 
    :ref:`sprite_change_coins`
-
-
 
 Games with Levels
 ^^^^^^^^^^^^^^^^^
@@ -297,6 +294,18 @@ Shooting with Sprites
 
    :ref:`sprite_explosion`
 
+Sound
+-----
+
+.. figure:: thumbs/sound_demo.png
+   :figwidth: 170px
+
+   :ref:`sound_demo`
+
+.. figure:: thumbs/background_music.png
+   :figwidth: 170px
+
+   :ref:`background_music`
 
 Platformers
 -----------
@@ -583,8 +592,4 @@ Odds and Ends
    :ref:`text_loc_example`
 
 
-.. figure:: thumbs/isometric_example.png
-   :figwidth: 170px
-
-   :ref:`isometric_example`
 

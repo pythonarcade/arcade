@@ -1,4 +1,6 @@
-.. _performance:
+:orphan:
+
+.. _arcade_vs_pygame_performance:
 
 Arcade Performance Information
 ==============================

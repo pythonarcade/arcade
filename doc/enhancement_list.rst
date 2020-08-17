@@ -7,15 +7,6 @@ This is a list of possible enhancements opened in GitHub, but not being actively
 worked on. These are all good ideas. If you are thinking of helping the Arcade
 library by working on one of these, please re-open the issue.
 
-Sound
------
-* `Issue 229 <https://github.com/pvcraven/arcade/issues/229>`_
-  Add player for background music.
-* `Issue 519 <https://github.com/pvcraven/arcade/issues/519>`_
-  arcade.stop_sound() not working (ubuntu).
-* `Issue 577 <https://github.com/pvcraven/arcade/issues/577>`_
-  Add volume support for sounds.
-
 Drawing
 -------
 
@@ -25,6 +16,8 @@ Drawing
   Add support for drawing rounded rectangles.
 * `Issue 433 <https://github.com/pvcraven/arcade/issues/433>`_
   Add support for bitmapped fonts.
+* `Issue 595 <https://github.com/pvcraven/arcade/issues/595>`_
+  Optimize drawing functions by caching them
 
 Sprites
 -------
@@ -39,13 +32,11 @@ Sprites
   Create function to get sprites at a particular point.
 * `Issue 498 <https://github.com/pvcraven/arcade/issues/498>`_
   Add lighting effects.
+* Add bloom effects.
 * `Issue 523 <https://github.com/pvcraven/arcade/issues/523>`_
   Add sprite trigger/example for onenter / onexit.
 * `Issue 289 <https://github.com/pvcraven/arcade/issues/289>`_
   Be able to get Sprite position and velocity as vectors.
-* `Issue 332 <https://github.com/pvcraven/arcade/issues/332>`_
-  Only so many textures can be supported when drawing a SpriteList. Support more by
-  better packing of the auto-created SpriteList.
 * Be able to load an animated gif as an animated time-based sprite.
 * Be able to load an Aesprite image directly (Piggy-back of Pyglet support)
 
@@ -59,6 +50,13 @@ Physics Engine
 * `Issue 524 <https://github.com/pvcraven/arcade/issues/524>`_
   Add example for "push back".
 * Create a simplified front-end to the PyMunk physics engine
+
+Event Processing
+----------------
+
+* `Issue 593 <https://github.com/pvcraven/arcade/issues/593>`_
+  Add support for signals
+
 
 Tilemaps
 --------
@@ -74,10 +72,8 @@ Documentation
 * `Issue 452 <https://github.com/pvcraven/arcade/issues/452>`_
   Documentation Request - explain how delta_time works to help learners fully
   understand both how and why.
-* `Issue 543 <https://github.com/pvcraven/arcade/issues/543>`_
-  Documentation Request - Improve documentation around installing on Raspberry Pi.
-* `Issue 408 <https://github.com/pvcraven/arcade/issues/408>`_
-  Documentation Request - Explain border lines that can occur when drawing sprites, and how to avoid.
+* Explain the 'views' setup for doing instruction screens and more.
+* Show how to make into a redistributable/installable/exe
 
 Examples
 --------

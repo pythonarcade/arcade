@@ -31,14 +31,8 @@ Documentation
 * For installation: http://arcade.academy/installation.html
 * For example code that uses the Arcade library see: http://arcade.academy/examples/index.html
 * For API documentation see: http://arcade.academy/quick_index.html
-* Learn Arcade AND how to program: http://arcade-book.readthedocs.io/en/latest/
-
-Latest Release
---------------
-
-Latest version is 2.1.7 released 2019-11-7.
-
-Release notes: http://arcade.academy/release_notes.html
+* Learn Arcade AND how to program: https://learn.arcade.academy
+* Release notes: http://arcade.academy/release_notes.html
 
 Games Using Arcade
 ------------------

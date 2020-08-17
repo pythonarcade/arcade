@@ -108,7 +108,7 @@ def chart_stress_test_draw_moving_process_comparison():
 def chart_stress_test_collision_comparison():
     r1 = read_results("stress_test_collision_arcade.csv")
     r2 = read_results("stress_test_collision_arcade_spatial.csv")
-    r3 = read_results("stress_test_collision_pygame.csv")
+    r3 = read_results("stress_test_collision_pygame_1_9_6.csv")
 
     sprite_count = [row[SPRITE_COUNT] for row in r1]
     d1 = [row[PROCESSING_TIME] for row in r1]

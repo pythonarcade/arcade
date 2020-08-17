@@ -191,6 +191,8 @@ def create_line_strip(point_list: PointList,
     Create a multi-point line to be rendered later. This works faster than draw_line because
     the vertexes are only loaded to the graphics card once, rather than each frame.
 
+    Internally, thick lines are created by two triangles.
+
     :param PointList point_list:
     :param Color color:
     :param PointList line_width:
@@ -214,8 +216,8 @@ def create_line_strip(point_list: PointList,
             new_color_list += color1, color2, color1, color2
             triangle_point_list += points[1], points[0], points[2], points[3]
 
-            shape = create_triangles_filled_with_colors(triangle_point_list, new_color_list)
-            return shape
+        shape = create_triangles_filled_with_colors(triangle_point_list, new_color_list)
+        return shape
 
 
 def create_line_loop(point_list: PointList,

@@ -41,6 +41,121 @@ def _circular_check(player, walls):
                 return
         vary *= 2
 
+def _move_sprite(moving_sprite: Sprite, walls: SpriteList, ramp_up: bool):
+    # Rotate
+    moving_sprite.angle += moving_sprite.change_angle
+
+    hit_list = check_for_collision_with_list(moving_sprite, walls)
+
+    if len(hit_list) > 0:
+        # Resolve any collisions by this weird kludge
+        _circular_check(moving_sprite, walls)
+
+    # --- Move in the y direction
+    moving_sprite.center_y += moving_sprite.change_y
+
+    # Check for wall hit
+    hit_list_x = check_for_collision_with_list(moving_sprite, walls)
+    # print(f"Post-y move {hit_list_x}")
+    complete_hit_list = hit_list_x
+
+    # If we hit a wall, move so the edges are at the same point
+    if len(hit_list_x) > 0:
+        if moving_sprite.change_y > 0:
+            while len(check_for_collision_with_list(moving_sprite, walls)) > 0:
+                moving_sprite.center_y -= 1
+            # print(f"Spot X ({self.player_sprite.center_x}, {self.player_sprite.center_y})"
+            #       f" {self.player_sprite.change_y}")
+        elif moving_sprite.change_y < 0:
+            # Reset number of jumps
+            for item in hit_list_x:
+                while check_for_collision(moving_sprite, item):
+                    # self.player_sprite.bottom = item.top <- Doesn't work for ramps
+                    moving_sprite.center_y += 0.25
+
+                if item.change_x != 0:
+                    moving_sprite.center_x += item.change_x
+
+            # print(f"Spot Y ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
+        else:
+            pass
+            # TODO: The code below can't execute, as "item" doesn't
+            # exist. In theory, this condition should never be arrived at.
+            # Collision while player wasn't moving, most likely
+            # moving platform.
+            # if self.player_sprite.center_y >= item.center_y:
+            #     self.player_sprite.bottom = item.top
+            # else:
+            #     self.player_sprite.top = item.bottom
+        moving_sprite.change_y = min(0.0, hit_list_x[0].change_y)
+
+    # print(f"Spot D ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
+    moving_sprite.center_y = round(moving_sprite.center_y, 2)
+    # print(f"Spot Q ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
+
+    # --- Move in the x direction
+    moving_sprite.center_x += moving_sprite.change_x
+
+    check_again = True
+    while check_again:
+        check_again = False
+        # Check for wall hit
+        hit_list_y = check_for_collision_with_list(moving_sprite, walls)
+        complete_hit_list = hit_list_x
+        for sprite in hit_list_y:
+            if sprite not in complete_hit_list:
+                complete_hit_list.append(sprite)
+
+        # If we hit a wall, move so the edges are at the same point
+        if len(hit_list_y) > 0:
+            change_x = moving_sprite.change_x
+            if change_x > 0:
+                if ramp_up:
+
+                    for _ in hit_list_y:
+                        # print(f"Spot 1 ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
+                        # See if we can "run up" a ramp
+                        moving_sprite.center_y += change_x
+                        if len(check_for_collision_with_list(moving_sprite, walls)) > 0:
+                            # No, ramp run-up doesn't work.
+                            moving_sprite.center_y -= change_x
+                            moving_sprite.center_x -= 1
+                            # print(f"Spot R ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
+                            check_again = True
+                            break
+                        # else:
+                        # print("Run up ok 1")
+                        # print(f"Spot 2 ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
+                else:
+                    while len(check_for_collision_with_list(moving_sprite, walls)) > 0:
+                        moving_sprite.center_x -= 1
+
+            elif change_x < 0:
+                if ramp_up:
+                    for item in hit_list_y:
+                        # See if we can "run up" a ramp
+                        moving_sprite.center_y -= change_x
+                        if len(check_for_collision_with_list(moving_sprite, walls)) > 0:
+                            # Can't run up the ramp, reverse
+                            moving_sprite.center_y += change_x
+                            moving_sprite.left = max(item.right, moving_sprite.left)
+                            # print(f"Reverse 1 {item.right}, {self.player_sprite.left}")
+                            # Ok, if we were shoved back to the right, we need to check this whole thing again.
+                            check_again = True
+                            break
+                        # print(f"Spot 4 ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
+                else:
+                    while len(check_for_collision_with_list(moving_sprite, walls)) > 0:
+                        moving_sprite.center_x += 1
+
+            else:
+                print("Error, x collision while player wasn't moving.\n"
+                      "Make sure you aren't calling multiple updates, like "
+                      "a physics engine update and an all sprites list update.")
+
+        # print(f"Spot E ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
+    return complete_hit_list
+
 
 class PhysicsEngineSimple:
     """
@@ -69,63 +184,7 @@ class PhysicsEngineSimple:
         :Returns: SpriteList with all sprites contacted. Empty list if no sprites.
         """
 
-        # Rotate
-        self.player_sprite.angle += self.player_sprite.change_angle
-
-        hit_list = check_for_collision_with_list(self.player_sprite, self.walls)
-
-        if len(hit_list) > 0:
-            # Resolve any collisions by this weird kludge
-            _circular_check(self.player_sprite, self.walls)
-
-            # print(f"Spot F ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
-
-        # --- Move in the x direction
-        self.player_sprite.center_x += self.player_sprite.change_x
-
-        # Check for wall hit
-        hit_list_x = \
-            check_for_collision_with_list(self.player_sprite,
-                                          self.walls)
-
-        # If we hit a wall, move so the edges are at the same point
-        if len(hit_list_x) > 0:
-            if self.player_sprite.change_x > 0:
-                for item in hit_list_x:
-                    self.player_sprite.right = min(item.left,
-                                                   self.player_sprite.right)
-            elif self.player_sprite.change_x < 0:
-                for item in hit_list_x:
-                    self.player_sprite.left = max(item.right,
-                                                  self.player_sprite.left)
-            else:
-                print("Error, collision while player wasn't moving.")
-
-        # --- Move in the y direction
-        self.player_sprite.center_y += self.player_sprite.change_y
-
-        # Check for wall hit
-        hit_list_y = \
-            check_for_collision_with_list(self.player_sprite,
-                                          self.walls)
-
-        # If we hit a wall, move so the edges are at the same point
-        if len(hit_list_y) > 0:
-            if self.player_sprite.change_y > 0:
-                for item in hit_list_y:
-                    self.player_sprite.top = min(item.bottom,
-                                                 self.player_sprite.top)
-            elif self.player_sprite.change_y < 0:
-                for item in hit_list_y:
-                    self.player_sprite.bottom = max(item.top,
-                                                    self.player_sprite.bottom)
-            else:
-                print("Error, collision while player wasn't moving.")
-
-        # Return list of encountered sprites
-        complete_hit_list = hit_list_x
-        for sprite in hit_list_y:
-            complete_hit_list.append(sprite)
+        complete_hit_list = _move_sprite(self.player_sprite, self.walls, ramp_up=False)
         return complete_hit_list
 
 
@@ -243,113 +302,12 @@ class PhysicsEnginePlatformer:
         if not self.is_on_ladder():
             self.player_sprite.change_y -= self.gravity_constant
 
-        # Rotate
-        self.player_sprite.angle += self.player_sprite.change_angle
-
-        hit_list = check_for_collision_with_list(self.player_sprite, self.platforms)
-
-        if len(hit_list) > 0:
-            # Resolve any collisions by this weird kludge
-            _circular_check(self.player_sprite, self.platforms)
 
             # print(f"Spot F ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
 
         # print(f"Spot B ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
 
-        # --- Move in the y direction
-        self.player_sprite.center_y += self.player_sprite.change_y
-
-        # Check for wall hit
-        hit_list_x = check_for_collision_with_list(self.player_sprite, self.platforms)
-        # print(f"Post-y move {hit_list_x}")
-        complete_hit_list = hit_list_x
-
-        # If we hit a wall, move so the edges are at the same point
-        if len(hit_list_x) > 0:
-            if self.player_sprite.change_y > 0:
-                while len(check_for_collision_with_list(self.player_sprite, self.platforms)) > 0:
-                    self.player_sprite.center_y -= 1
-                # print(f"Spot X ({self.player_sprite.center_x}, {self.player_sprite.center_y})"
-                #       f" {self.player_sprite.change_y}")
-            elif self.player_sprite.change_y < 0:
-                # Reset number of jumps
-                for item in hit_list_x:
-                    while check_for_collision(self.player_sprite, item):
-                        # self.player_sprite.bottom = item.top <- Doesn't work for ramps
-                        self.player_sprite.center_y += 0.25
-
-                    if item.change_x != 0:
-                        self.player_sprite.center_x += item.change_x
-
-                # print(f"Spot Y ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
-            else:
-                pass
-                # TODO: The code below can't execute, as "item" doesn't
-                # exist. In theory, this condition should never be arrived at.
-                # Collision while player wasn't moving, most likely
-                # moving platform.
-                # if self.player_sprite.center_y >= item.center_y:
-                #     self.player_sprite.bottom = item.top
-                # else:
-                #     self.player_sprite.top = item.bottom
-            self.player_sprite.change_y = min(0.0, hit_list_x[0].change_y)
-
-        # print(f"Spot D ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
-        self.player_sprite.center_y = round(self.player_sprite.center_y, 2)
-        # print(f"Spot Q ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
-
-        # --- Move in the x direction
-        self.player_sprite.center_x += self.player_sprite.change_x
-
-        check_again = True
-        while check_again:
-            check_again = False
-            # Check for wall hit
-            hit_list_y = check_for_collision_with_list(self.player_sprite, self.platforms)
-            complete_hit_list = hit_list_x
-            for sprite in hit_list_y:
-                if sprite not in complete_hit_list:
-                    complete_hit_list.append(sprite)
-
-            # If we hit a wall, move so the edges are at the same point
-            if len(hit_list_y) > 0:
-                change_x = self.player_sprite.change_x
-                if change_x > 0:
-                    for _ in hit_list_y:
-                        # print(f"Spot 1 ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
-                        # See if we can "run up" a ramp
-                        self.player_sprite.center_y += change_x
-                        if len(check_for_collision_with_list(self.player_sprite, self.platforms)) > 0:
-                            # No, ramp run-up doesn't work.
-                            self.player_sprite.center_y -= change_x
-                            self.player_sprite.center_x -= 1
-                            # print(f"Spot R ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
-                            check_again = True
-                            break
-                        # else:
-                            # print("Run up ok 1")
-                        # print(f"Spot 2 ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
-
-                elif change_x < 0:
-                    for item in hit_list_y:
-                        # See if we can "run up" a ramp
-                        self.player_sprite.center_y -= change_x
-                        if len(check_for_collision_with_list(self.player_sprite, self.platforms)) > 0:
-                            # Can't run up the ramp, reverse
-                            self.player_sprite.center_y += change_x
-                            self.player_sprite.left = max(item.right, self.player_sprite.left)
-                            # print(f"Reverse 1 {item.right}, {self.player_sprite.left}")
-                            # Ok, if we were shoved back to the right, we need to check this whole thing again.
-                            check_again = True
-                            break
-                        # print(f"Spot 4 ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
-
-                else:
-                    print("Error, x collision while player wasn't moving.\n"
-                          "Make sure you aren't calling multiple updates, like "
-                          "a physics engine update and an all sprites list update.")
-
-            # print(f"Spot E ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
+        complete_hit_list = _move_sprite(self.player_sprite, self.platforms, ramp_up=True)
 
         for platform in self.platforms:
             if platform.change_x != 0 or platform.change_y != 0:

@@ -5,6 +5,94 @@
 Release Notes
 =============
 
+Version 2.3.15
+--------------
+
+*Release Date: Apr-14-2020*
+
+* Bug Fix: Fix invalid empty text width `Issue 633 <https://github.com/pvcraven/arcade/issues/633>`_
+* Bug Fix: Make sure file name is string before checking resources `Issue 636 <https://github.com/pvcraven/arcade/issues/636>`_
+* Enhancement: Implement Size and Rotation for Tiled Objects `Issue 638 <https://github.com/pvcraven/arcade/issues/638>`_
+* Documentation: Fix incorrect link to 'sprites following player' example
+
+Version 2.3.14
+--------------
+
+*Release Date: Apr-9-2020*
+
+* Bug Fix: Another attempt at fixing sprites with different dimensions added to
+  same SpriteList didn't display correctly `Issue 630 <https://github.com/pvcraven/arcade/issues/630>`_
+* Add lots of unit tests around Sprites and texture loading.
+
+Version 2.3.13
+--------------
+
+*Release Date: Apr-8-2020*
+
+* Bug Fix: Sprites with different dimensions added to same SpriteList didn't display correctly `Issue 630 <https://github.com/pvcraven/arcade/issues/630>`_
+
+Version 2.3.12
+--------------
+
+*Release Date: Apr-8-2020*
+
+* Enhancement: Support more textures in a SpriteList `Issue 332 <https://github.com/pvcraven/arcade/issues/332>`_
+
+Version 2.3.11
+--------------
+
+*Release Date: Apr-5-2020*
+
+* Bug Fix: Fix procedural_caves_bsp.py
+* Bug Fix: Improve Windows install docs `Issue 623 <https://github.com/pvcraven/arcade/issues/623>`_
+
+
+Version 2.3.10
+--------------
+
+*Release Date: Mar-31-2020*
+
+* Bug Fix: Remove unused AudioStream and PlaysoundException from __init__
+* Remove attempts to load ffmpeg library
+* Add background music example
+* Bug Fix: Improve Windows install docs `Issue 619 <https://github.com/pvcraven/arcade/issues/619>`_
+* Add tutorial on edge artifacts `Issue 418 <https://github.com/pvcraven/arcade/issues/418>`_
+* Bug Fix: Can't remove sprite from multiple lists `Issue 621 <https://github.com/pvcraven/arcade/issues/621>`_
+* Several documentation updates
+
+Version 2.3.9
+-------------
+
+*Release Date: Mar-25-2020*
+
+* Bug Fix: Fix for calling SpriteList.remove `Issue 613 <https://github.com/pvcraven/arcade/issues/613>`_
+* Bug Fix: get_image not working correctly on hi-res macs `Issue 594 <https://github.com/pvcraven/arcade/issues/594>`_
+* Bug Fix: Fix for "shiver" in simple physics engine `Issue 614 <https://github.com/pvcraven/arcade/issues/614>`_
+* Bug Fix: Fix for create_line_strip `Issue 616 <https://github.com/pvcraven/arcade/issues/616>`_
+* Bug Fix: Fix for volume control `Issue 610 <https://github.com/pvcraven/arcade/issues/610>`_
+* Bug Fix: Fix for loading SoLoud under Win64 `Issue 615 <https://github.com/pvcraven/arcade/issues/615>`_
+* Fix jumping/falling texture in platformer example
+* Add tests for gui.theme `Issue 605 <https://github.com/pvcraven/arcade/issues/605>`_
+* Fix bad link to arcade.color docs
+
+Version 2.3.8
+-------------
+
+*Release Date: Mar-09-2020*
+
+* Major enhancement to sound. Uses SoLoud cross-platform library. New features include
+  support for sound volume, sound stop, and pan left/right.
+
+Version 2.3.7
+-------------
+
+*Release Date: Feb-27-2020*
+
+* Bug Fix: If setting color of sprite with 4 ints, also set alpha
+* Enhancement: Add image for code page 437
+* Bug Fix: Fixes around hit box calcs `Issue 601 <https://github.com/pvcraven/arcade/issues/601>`_
+* Bug Fix: Fixes for animated tiles and loading animated tiles from tile maps `Issue 603 <https://github.com/pvcraven/arcade/issues/603>`_
+
 Version 2.3.6
 -------------
 

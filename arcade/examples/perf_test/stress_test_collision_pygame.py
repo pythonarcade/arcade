@@ -26,7 +26,7 @@ SPRITE_SIZE = int(SPRITE_NATIVE_SIZE * SPRITE_SCALING_COIN)
 COIN_COUNT_INCREMENT = 500
 
 STOP_COUNT = 12000
-RESULTS_FILE = "stress_test_collision_pygame.csv"
+RESULTS_FILE = "stress_test_collision_pygame_1_9_6.csv"
 
 SCREEN_WIDTH = 1800
 SCREEN_HEIGHT = 1000

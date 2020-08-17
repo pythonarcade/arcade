@@ -941,12 +941,21 @@ def get_image(x: int = 0, y: int = 0, width: int = None, height: int = None):
 
     # Get the dimensions
     window = get_window()
+
     if window is None:
         raise RuntimeError("Handle to the current window is None")
+
+    pixel_ratio = window.get_pixel_ratio()
+    x = int(pixel_ratio * x)
+    y = int(pixel_ratio * y)
+
     if width is None:
         width = window.width - x
     if height is None:
         height = window.height - y
+
+    width = int(pixel_ratio * width)
+    height = int(pixel_ratio * height)
 
     # Create an image buffer
     # noinspection PyTypeChecker

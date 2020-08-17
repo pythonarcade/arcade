@@ -15,15 +15,17 @@ be drawn using Vertex Buffer Objects for better performance.
 
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.shapes
+
 """
 
 import arcade
 import random
+import timeit
 
 # Set up the constants
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
-SCREEN_TITLE = "Shapes!"
+SCREEN_TITLE = "Shapes! Buffered"
 
 RECT_WIDTH = 50
 RECT_HEIGHT = 50
@@ -50,11 +52,19 @@ class Shape:
         self.x += self.delta_x
         self.y += self.delta_y
         self.angle += self.delta_angle
+        if self.x < 0 and self.delta_x < 0:
+            self.delta_x *= -1
+        if self.y < 0 and self.delta_y < 0:
+            self.delta_y *= -1
+        if self.x > SCREEN_WIDTH and self.delta_x > 0:
+            self.delta_x *= -1
+        if self.y > SCREEN_HEIGHT and self.delta_y > 0:
+            self.delta_y *= -1
 
     def draw(self):
         self.shape_list.center_x = self.x
         self.shape_list.center_y = self.y
-        self.shape_list.angle = self.angle
+        # self.shape_list.angle = self.angle
         self.shape_list.draw()
 
 class Ellipse(Shape):
@@ -65,7 +75,7 @@ class Ellipse(Shape):
         super().__init__(x, y, width, height, angle, delta_x, delta_y,
                          delta_angle, color)
 
-        shape = arcade.create_ellipse_filled(self.x, self.y,
+        shape = arcade.create_ellipse_filled(0, 0,
                                              self.width, self.height,
                                              self.color, self.angle)
         self.shape_list = arcade.ShapeElementList()
@@ -80,7 +90,7 @@ class Rectangle(Shape):
         super().__init__(x, y, width, height, angle, delta_x, delta_y,
                          delta_angle, color)
 
-        shape = arcade.create_rectangle_filled(self.x, self.y,
+        shape = arcade.create_rectangle_filled(0, 0,
                                                self.width, self.height,
                                                self.color, self.angle)
         self.shape_list = arcade.ShapeElementList()
@@ -93,6 +103,12 @@ class MyGame(arcade.Window):
     def __init__(self):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
         self.shape_list = None
+
+        self.processing_time = 0
+        self.draw_time = 0
+        self.frame_count = 0
+        self.fps_start_timer = None
+        self.fps = None
 
     def setup(self):
         """ Set up the game and initialize the variables. """
@@ -126,18 +142,44 @@ class MyGame(arcade.Window):
 
     def on_update(self, dt):
         """ Move everything """
+        start_time = timeit.default_timer()
 
         for shape in self.shape_list:
             shape.move()
+
+        self.processing_time = timeit.default_timer() - start_time
 
     def on_draw(self):
         """
         Render the screen.
         """
+        # Start timing how long this takes
+        draw_start_time = timeit.default_timer()
+
+        if self.frame_count % 60 == 0:
+            if self.fps_start_timer is not None:
+                total_time = timeit.default_timer() - self.fps_start_timer
+                self.fps = 60 / total_time
+            self.fps_start_timer = timeit.default_timer()
+        self.frame_count += 1
+
         arcade.start_render()
 
         for shape in self.shape_list:
             shape.draw()
+
+        # Display timings
+        output = f"Processing time: {self.processing_time:.3f}"
+        arcade.draw_text(output, 20, SCREEN_HEIGHT - 20, arcade.color.WHITE, 16)
+
+        output = f"Drawing time: {self.draw_time:.3f}"
+        arcade.draw_text(output, 20, SCREEN_HEIGHT - 40, arcade.color.WHITE, 16)
+
+        if self.fps is not None:
+            output = f"FPS: {self.fps:.0f}"
+            arcade.draw_text(output, 20, SCREEN_HEIGHT - 60, arcade.color.WHITE, 16)
+
+        self.draw_time = timeit.default_timer() - draw_start_time
 
 
 def main():

@@ -30,6 +30,9 @@ h1, h2, h3 {
 .rst-content .highlight>pre {
     line-height: 1.5;
 }
+.rst-content .section ul p {
+    margin-bottom: 0px;
+}
 .wy-nav-content-wrap {
     background: #fff;
 }

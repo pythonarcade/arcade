@@ -18,6 +18,7 @@ from typing import Dict
 from typing import Any
 from typing import Optional
 from typing import TYPE_CHECKING
+from typing import cast
 
 import PIL.Image
 
@@ -267,7 +268,7 @@ class Sprite:
         """
         Set a sprite's hit box. Hitbox should be relative to a sprite's center,
         and with a scale of 1.0.
-Points will be scaled with get_adjusted_hit_box.
+        Points will be scaled with get_adjusted_hit_box.
         """
         self._points = points
 
@@ -683,6 +684,8 @@ Points will be scaled with get_adjusted_hit_box.
         if texture == self._texture:
             return
 
+        assert(isinstance(texture, Texture))
+
         self.clear_spatial_hashes()
         self._point_list_cache = None
         self._texture = texture
@@ -711,7 +714,7 @@ Points will be scaled with get_adjusted_hit_box.
         """
         return self._color
 
-    def _set_color(self, color: RGB):
+    def _set_color(self, color: Color):
         """
         Set the current sprite color as a RGB value
         """
@@ -723,6 +726,7 @@ Points will be scaled with get_adjusted_hit_box.
                     and self._color[2] == color[2]:
                 return
         elif len(color) == 4:
+            color = cast(List, color) # Prevent typing error
             if self._color[0] == color[0] \
                     and self._color[1] == color[1] \
                     and self._color[2] == color[2]\
@@ -810,7 +814,14 @@ Points will be scaled with get_adjusted_hit_box.
         """
         Remove the sprite from all sprite lists.
         """
-        for sprite_list in self.sprite_lists:
+        if len(self.sprite_lists) > 0:
+            # We can't modify a list as we iterate through it, so create a copy.
+            sprite_lists = self.sprite_lists.copy()
+        else:
+            # If the list is a size 1, we don't need to copy
+            sprite_lists = self.sprite_lists
+
+        for sprite_list in sprite_lists:
             if self in sprite_list:
                 sprite_list.remove(self)
         self.sprite_lists.clear()
@@ -903,7 +914,7 @@ class AnimationKeyframe:
     """
     tile_id: int
     duration: int
-    image: PIL.Image
+    texture: Texture
 
 
 class AnimatedTimeBasedSprite(Sprite):
@@ -923,7 +934,7 @@ class AnimatedTimeBasedSprite(Sprite):
         super().__init__(filename=filename, scale=scale, image_x=image_x, image_y=image_y,
                          image_width=image_width, image_height=image_height,
                          center_x=center_x, center_y=center_y)
-        self.cur_frame = 0
+        self.cur_frame_idx = 0
         self.frames: List[AnimationKeyframe] = []
         self.time_counter = 0.0
 
@@ -932,14 +943,15 @@ class AnimatedTimeBasedSprite(Sprite):
         Logic for selecting the proper texture to use.
         """
         self.time_counter += delta_time
-        while self.time_counter > self.frames[self.cur_frame].duration / 1000.0:
-            self.time_counter -= self.frames[self.cur_frame].duration / 1000.0
-            self.cur_frame += 1
-            if self.cur_frame >= len(self.frames):
-                self.cur_frame = 0
-            source = self.frames[self.cur_frame].image.source
-            # print(f"Advance to frame {self.cur_frame}: {source}")
-            self.texture = load_texture(source)
+        while self.time_counter > self.frames[self.cur_frame_idx].duration / 1000.0:
+            self.time_counter -= self.frames[self.cur_frame_idx].duration / 1000.0
+            self.cur_frame_idx += 1
+            if self.cur_frame_idx >= len(self.frames):
+                self.cur_frame_idx = 0
+            # source = self.frames[self.cur_frame].texture.image.source
+            cur_frame = self.frames[self.cur_frame_idx]
+            # print(f"Advance to frame {self.cur_frame_idx}: {cur_frame.texture.name}")
+            self.texture = cur_frame.texture
 
 
 class AnimatedWalkingSprite(Sprite):
@@ -1056,7 +1068,7 @@ class SpriteSolidColor(Sprite):
         super().__init__()
 
         image = PIL.Image.new('RGBA', (width, height), color)
-        self.texture = Texture("Solid", image)
+        self.texture = Texture(f"Solid-{color[0]}-{color[1]}-{color[2]}", image)
         self._points = self.texture.hit_box_points
 
 

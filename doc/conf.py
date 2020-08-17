@@ -75,7 +75,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'Arcade'
+project = 'Python Arcade Library'
 copyright = '2020, Paul Vincent Craven'
 author = 'Paul Vincent Craven'
 
@@ -158,12 +158,12 @@ html_theme = 'sphinx_rtd_theme'
 
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
-# html_logo = None
+html_logo = '_static/favicon-32x32.png'
 
 # The name of an image file (within the static path) to use as favicon of the
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
 # pixels large.
-# html_favicon = None
+html_favicon = '_static/favicon.ico'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -421,7 +421,7 @@ def replace_in_file(filename, replace_list):
         import os
         os.remove(filename)
         os.rename(temp_filename, filename)
-        print(f"Done fixing {fix_count} lines out of {line_count} lines in {filename}")
+        print(f"Done fixing {fix_count} lines out of {line_count} lines in {filename} with {replace_list}")
 
     except Exception as e:
         import logging
@@ -482,8 +482,8 @@ def post_process(app, exception):
     ]
     filename = 'build/html/arcade.html'
     replace_in_file(filename, replace_list)
-    filename = 'build/html/quick_index.html'
-    replace_in_file(filename, replace_list)
+    # filename = 'build/html/quick_index.html'
+    # replace_in_file(filename, replace_list)
 
     # # Figures have an align-center style I can't easily get rid of.
     # filename = 'build/html/examples/index.html'

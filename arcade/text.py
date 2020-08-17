@@ -222,7 +222,7 @@ def draw_text(text: str,
         if isinstance(color, list):
             color = cast(RGBA, tuple(color))
         draw.multiline_text((image_start_x, image_start_y), text, color, align=align, font=font)
-        image = image.resize((width // scale_down, text_height // scale_down), resample=PIL.Image.LANCZOS)
+        image = image.resize((max(1, width // scale_down), text_height // scale_down), resample=PIL.Image.LANCZOS)
 
         text_sprite = Sprite()
         text_sprite._texture = Texture(key)

@@ -19,8 +19,8 @@ import os
 # Sprite scaling. Make this larger, like 0.5 to zoom in and add
 # 'mystery' to what you can see. Make it smaller, like 0.1 to see
 # more of the map.
-WALL_SPRITE_SCALING = 0.25
-PLAYER_SPRITE_SCALING = 0.20
+WALL_SPRITE_SCALING = 0.5
+PLAYER_SPRITE_SCALING = 0.25
 
 WALL_SPRITE_SIZE = 128 * WALL_SPRITE_SCALING
 
@@ -42,10 +42,11 @@ WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 600
 WINDOW_TITLE = "Procedural Caves BSP Example"
 
-MERGE_SPRITES = True
+MERGE_SPRITES = False
 
 
 class Room:
+    """ A room """
     def __init__(self, r, c, h, w):
         self.row = r
         self.col = c
@@ -54,7 +55,9 @@ class Room:
 
 
 class RLDungeonGenerator:
+    """ Generate the dungeon """
     def __init__(self, w, h):
+        """ Create the board """
         self.MAX = 15  # Cutoff for when we want to stop dividing sections
         self.width = w
         self.height = h
@@ -129,6 +132,7 @@ class RLDungeonGenerator:
 
     @staticmethod
     def are_rooms_adjacent(room1, room2):
+        """ See if two rooms are next to each other. """
         adj_rows = []
         adj_cols = []
         for r in range(room1.row, room1.row + room1.height):
@@ -143,12 +147,14 @@ class RLDungeonGenerator:
 
     @staticmethod
     def distance_between_rooms(room1, room2):
+        """ Get the distance between two rooms """
         centre1 = (room1.row + room1.height // 2, room1.col + room1.width // 2)
         centre2 = (room2.row + room2.height // 2, room2.col + room2.width // 2)
 
         return math.sqrt((centre1[0] - centre2[0]) ** 2 + (centre1[1] - centre2[1]) ** 2)
 
     def carve_corridor_between_rooms(self, room1, room2):
+        """ Make a corridor between rooms """
         if room2[2] == 'rows':
             row = random.choice(room2[1])
             # Figure out which room is to the left of the other
@@ -185,9 +191,12 @@ class RLDungeonGenerator:
             elif start_row == end_row - 1:
                 self.dungeon[start_row][col] = '+'
 
-    # Find two nearby rooms that are in difference groups, draw
-    # a corridor between them and merge the groups
     def find_closest_unconnect_groups(self, groups, room_dict):
+        """
+        Find two nearby rooms that are in difference groups, draw
+        a corridor between them and merge the groups
+        """
+
         shortest_distance = 99999
         start = None
         start_group = None
@@ -216,11 +225,13 @@ class RLDungeonGenerator:
         groups.remove(other_group)
 
     def connect_rooms(self):
-        # Build a dictionary containing an entry for each room. Each bucket will
-        # hold a list of the adjacent rooms, weather they are adjacent along rows or
-        # columns and the distance between them.
-        #
-        # Also build the initial groups (which start of as a list of individual rooms)
+        """
+        Build a dictionary containing an entry for each room. Each bucket will
+        hold a list of the adjacent rooms, weather they are adjacent along rows or
+        columns and the distance between them.
+
+        Also build the initial groups (which start of as a list of individual rooms)
+        """
         groups = []
         room_dict = {}
         for room in self.rooms:
@@ -242,6 +253,7 @@ class RLDungeonGenerator:
             self.find_closest_unconnect_groups(groups, room_dict)
 
     def generate_map(self):
+        """ Make the map """
         self.random_split(1, 1, self.height - 1, self.width - 1)
         self.carve_rooms()
         self.connect_rooms()
@@ -276,7 +288,8 @@ class MyGame(arcade.Window):
         arcade.set_background_color(arcade.color.BLACK)
 
     def setup(self):
-        self.wall_list = arcade.SpriteList()
+        """ Set up the game """
+        self.wall_list = arcade.SpriteList(use_spatial_hash=True)
         self.player_list = arcade.SpriteList()
 
         # Create cave system using a 2D grid
@@ -321,7 +334,8 @@ class MyGame(arcade.Window):
                     self.wall_list.append(wall)
 
         # Set up the player
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", PLAYER_SPRITE_SCALING)
+        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
+                                           PLAYER_SPRITE_SCALING)
         self.player_list.append(self.player_sprite)
 
         # Randomly place the player. If we are in a wall, repeat until we aren't.
@@ -403,8 +417,7 @@ class MyGame(arcade.Window):
 
         start_time = timeit.default_timer()
 
-        # Call update on all sprites (The sprites don't do much in this
-        # example though.)
+        # Move the player
         self.physics_engine.update()
 
         # --- Manage Scrolling ---
@@ -448,6 +461,7 @@ class MyGame(arcade.Window):
 
 
 def main():
+    """ Main method, start up window and run """
     game = MyGame(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
     game.setup()
     arcade.run()

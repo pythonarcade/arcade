@@ -169,7 +169,7 @@ Notice that the code creates ``Sprites`` three ways:
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/02_draw_sprites.py
     :caption: 02_draw_sprites - Draw and Position Sprites
     :linenos:
-    :emphasize-lines: 11-14, 27-34, 39-43, 45-69, 77-80
+    :emphasize-lines: 11-14, 27-34, 40-70, 78-81
 
 .. note::
 
@@ -203,7 +203,7 @@ Now we need to be able to get the user to move around. Here how to do it:
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/03_user_control.py
     :caption: 03_user_control.py - Control User By Keyboard
     :linenos:
-    :emphasize-lines: 16-17, 77-78, 91-101, 103-113, 115-120
+    :emphasize-lines: 16-17, 78-79, 92-102, 104-114, 116-120
 
 .. note::
 
@@ -224,7 +224,7 @@ The example below will allow the user to jump and walk on platforms.
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/04_add_gravity.py
     :caption: 04_add_gravity.py - Add Gravity
     :linenos:
-    :emphasize-lines: 18-19, 79-82, 98-101, 109-112
+    :emphasize-lines: 18-19, 80-83, 99-102, 110-113
 
 .. note::
 
@@ -278,7 +278,7 @@ we'll show you how to specify the hitbox.
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/06_coins_and_sound.py
     :caption: Add Coins and Sound
     :linenos:
-    :emphasize-lines: 55-57, 71, 99-104, 119, 128, 149-159
+    :emphasize-lines: 55-57, 71, 100-105, 120, 129, 149-158
 
 .. note::
 
@@ -306,7 +306,7 @@ screen. To do this, we just add in the ``view_bottom`` and ``view_left`` coordin
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/07_score.py
     :caption: Display The Score
     :linenos:
-    :emphasize-lines: 55-56, 71-72, 128-131, 170-171
+    :emphasize-lines: 55-56, 71-72, 129-132, 170-171
 
 .. note::
 
@@ -425,7 +425,7 @@ Test the Level
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/08_load_map.py
     :caption: Load a .tmx file from Tiled Map Editor
     :linenos:
-    :emphasize-lines: 87-113
+    :emphasize-lines: 88-114
 
 .. note::
 
@@ -460,12 +460,12 @@ Here's an expanded example:
 
   * Add ``level`` attribute (69-70)
   * Updated ``setup`` to load a file based on the level (76-144, specifically lines 77 and 115)
-  * Added end-of-map check(246-257)
+  * Added end-of-map check(245-256)
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/09_endgame.py
     :caption: More Advanced Example
     :linenos:
-    :emphasize-lines: 69-70, 77, 114-115, 246-257
+    :emphasize-lines: 69-70, 77, 114-115, 245-256
 
 .. note::
 
