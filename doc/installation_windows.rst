@@ -2,7 +2,7 @@ Installation on Windows
 =======================
 
 To develop with the Arcade library, we need to install Python, then install
-Arcade, and finally install a development environment.
+Arcade.
 
 Step 1: Install Python
 ----------------------
@@ -15,27 +15,16 @@ The website gives you the option of downloading two different versions:
 Version 3.x.x or version 2.x.x. The Arcade library requires Python
 beginning with 3.x.x.
 
-When installing Python, make sure to customize the installation and add
-Python to the path:
+When installing Python, make sure to add Pthon to the path (1) before clicking the Install button (2).
 
 .. image:: images/setup_windows_1.png
-    :width: 400px
+    :width: 450px
 
-The defaults on the next screen are fine:
+After that, you can just close the dialog. There's no need to increase the path length, although it
+doesn't hurt anything if you do.
 
 .. image:: images/setup_windows_2.png
-    :width: 400px
-
-Then install Python for all users:
-
-.. image:: images/setup_windows_3.png
-    :width: 400px
-
-A video of the installation is below:
-
-.. raw:: html
-
-    <iframe width="560" height="315" src="https://www.youtube.com/embed/KbA6zbUXXP4" frameborder="0" allowfullscreen></iframe><p>
+    :width: 450px
 
 
 Step 2: Install The Arcade Library
@@ -59,24 +48,24 @@ If you are using PyCharm, setting up a virtual environment is easy. Once you've
 got your project, open up the settings:
 
 .. image:: images/venv_setup_1.png
-    :width: 350px
+    :width: 300px
 
 Select project interpreter:
 
 .. image:: images/venv_setup_2.png
-    :width: 350px
+    :width: 650px
 
 Create a new virtual environment. Make sure the venv is inside your
 project folder.
 
 .. image:: images/venv_setup_3.png
-    :width: 350px
+    :width: 650px
 
 Now you can install libraries. PyCharm will automatically ask to add them
 if you have a file called `requirements.txt` that lists the required libraries.
 
 .. image:: images/venv_setup_4.png
-    :width: 350px
+    :width: 650px
 
 Install Arcade System-Wide
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -113,22 +102,3 @@ Or you can get the source code for the library from GitHub:
 
 https://github.com/pvcraven/arcade
 
-Step 3: Install A Development Environment
------------------------------------------
-
-Get and set up one of these development environments:
-
-#. PyCharm_. Arguably the most popular option. But with so many features it can
-   be overwhelming when getting started.
-#. Sublime_. This is more complex to set up for Python, but by far my favorite
-   editor. Spend 20 minutes to watch tutorial videos and you will save a lot of
-   time later.
-   Anaconda_ is a great Sublime_ plug-in for doing Python development.
-#. Wing_ (costs money) or `Wing 101`_ (free but less powerful)
-#. Or pick your own environment
-
-.. _PyCharm: https://www.jetbrains.com/pycharm/
-.. _Sublime: https://www.sublimetext.com/
-.. _Wing: https://wingware.com/
-.. _Wing 101: http://wingware.com/downloads/wingide-101
-.. _Anaconda: http://damnwidget.github.io/anaconda/
