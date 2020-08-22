@@ -6,7 +6,7 @@ from pyglet import gl
 
 from .buffer import Buffer
 from .types import BufferDescription
-from .program import  Program
+from .program import Program
 
 if TYPE_CHECKING:  # handle import cycle caused by type hinting
     from arcade.gl import Context
@@ -19,14 +19,26 @@ class VertexArray:
     automatically. There is a lot of complex interaction between programs
     and vertex arrays that will be done for you automatically.
     """
-    __slots__ = '_ctx', 'glo', '_program', '_content', '_ibo', '_content', '_num_vertices', '__weakref__'
+
+    __slots__ = (
+        "_ctx",
+        "glo",
+        "_program",
+        "_content",
+        "_ibo",
+        "_content",
+        "_num_vertices",
+        "__weakref__",
+    )
 
     # TODO: Resolve what VertexArray should actually store
-    def __init__(self,
-                 ctx: 'Context',
-                 program: Program,
-                 content: Sequence[BufferDescription],
-                 index_buffer: Buffer = None):
+    def __init__(
+        self,
+        ctx: "Context",
+        program: Program,
+        content: Sequence[BufferDescription],
+        index_buffer: Buffer = None,
+    ):
         self._ctx = ctx
         self._program = program
         self._content = content
@@ -36,11 +48,11 @@ class VertexArray:
 
         self._build(program, content, index_buffer)
 
-        self.ctx.stats.incr('vertex_array')
+        self.ctx.stats.incr("vertex_array")
         weakref.finalize(self, VertexArray.release, self.ctx, glo)
 
     @property
-    def ctx(self) -> 'Context':
+    def ctx(self) -> "Context":
         """
         The Context this object belongs to
 
@@ -76,7 +88,7 @@ class VertexArray:
         return self._num_vertices
 
     @staticmethod
-    def release(ctx: 'Context', glo: gl.GLuint):
+    def release(ctx: "Context", glo: gl.GLuint):
         """
         Delete this object.
         This is automatically called when this object is garbage collected.
@@ -89,31 +101,37 @@ class VertexArray:
             gl.glDeleteVertexArrays(1, byref(glo))
             glo.value = 0
 
-        ctx.stats.decr('vertex_array')
+        ctx.stats.decr("vertex_array")
 
-    def _build(self, program: Program, content: Sequence[BufferDescription], index_buffer):
+    def _build(
+        self, program: Program, content: Sequence[BufferDescription], index_buffer
+    ):
         """Build a vertex array compatible with the program passed in"""
         gl.glGenVertexArrays(1, byref(self.glo))
         gl.glBindVertexArray(self.glo)
 
         # Lookup dict for BufferDescription attrib names
         # print(content)
-        descr_attribs = {attr.name: (descr, attr) for descr in content for attr in descr.formats}
+        descr_attribs = {
+            attr.name: (descr, attr) for descr in content for attr in descr.formats
+        }
         # print('->', descr_attribs)
 
         # Build the vao according to the shader's attribute specifications
         for i, prog_attr in enumerate(program.attributes):
             # print('prog_attr', prog_attr)
             # Do we actually have an attribute with this name in buffer descriptions?
-            if prog_attr.name.startswith('gl_'):
+            if prog_attr.name.startswith("gl_"):
                 continue
             try:
                 buff_descr, attr_descr = descr_attribs[prog_attr.name]
             except KeyError:
-                raise ValueError((
-                    f"Program needs attribute '{prog_attr.name}', but is not present in buffer description. "
-                    f"Buffer descriptions: {content}"
-                ))
+                raise ValueError(
+                    (
+                        f"Program needs attribute '{prog_attr.name}', but is not present in buffer description. "
+                        f"Buffer descriptions: {content}"
+                    )
+                )
 
             # TODO: Sanity check this
             # if buff_descr.instanced and i == 0:
@@ -121,10 +139,12 @@ class VertexArray:
 
             # Make sure components described in BufferDescription and in the shader match
             if prog_attr.components != attr_descr.components:
-                raise ValueError((
-                    f"Program attribute '{prog_attr.name}' has {prog_attr.components} components "
-                    f"while the buffer description has {attr_descr.components} components. "
-                ))
+                raise ValueError(
+                    (
+                        f"Program attribute '{prog_attr.name}' has {prog_attr.components} components "
+                        f"while the buffer description has {attr_descr.components} components. "
+                    )
+                )
 
             # TODO: Compare gltype between buffer descr and program attr
 
@@ -132,7 +152,9 @@ class VertexArray:
             gl.glBindBuffer(gl.GL_ARRAY_BUFFER, buff_descr.buffer.glo)
 
             # TODO: Detect normalization
-            normalized = gl.GL_TRUE if attr_descr.name in buff_descr.normalized else gl.GL_FALSE
+            normalized = (
+                gl.GL_TRUE if attr_descr.name in buff_descr.normalized else gl.GL_FALSE
+            )
             gl.glVertexAttribPointer(
                 prog_attr.location,  # attrib location
                 attr_descr.components,  # 1, 2, 3 or 4
@@ -157,7 +179,9 @@ class VertexArray:
         if index_buffer is not None:
             gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, index_buffer.glo)
 
-    def render(self, mode: gl.GLenum, first: int = 0, vertices: int = 0, instances: int = 1):
+    def render(
+        self, mode: gl.GLenum, first: int = 0, vertices: int = 0, instances: int = 1
+    ):
         """Render the VertexArray to the currently active framebuffer.
 
         :param GLuint mode: Primitive type to render. TRIANGLES, LINES etc.
@@ -174,8 +198,16 @@ class VertexArray:
             # print(f"glDrawArraysInstanced({mode}, {first}, {vertices}, {instances})")
             gl.glDrawArraysInstanced(mode, first, vertices, instances)
 
-    def transform(self, buffer: Buffer, mode: gl.GLenum, output_mode: gl.GLenum,
-                  first: int = 0, vertices: int = 0, instances: int = 1, buffer_offset=0):
+    def transform(
+        self,
+        buffer: Buffer,
+        mode: gl.GLenum,
+        output_mode: gl.GLenum,
+        first: int = 0,
+        vertices: int = 0,
+        instances: int = 1,
+        buffer_offset=0,
+    ):
         """Run a transform feedback.
         
         :param Buffer buffer: The buffer to write the output
@@ -195,7 +227,9 @@ class VertexArray:
         if buffer_offset > 0:
             pass
         else:
-            gl.glBindBufferBase(gl.GL_TRANSFORM_FEEDBACK_BUFFER, buffer_offset, buffer.glo)
+            gl.glBindBufferBase(
+                gl.GL_TRANSFORM_FEEDBACK_BUFFER, buffer_offset, buffer.glo
+            )
 
         gl.glBeginTransformFeedback(output_mode)
 
@@ -224,14 +258,24 @@ class Geometry:
     :param Buffer index_buffer: Index/element buffer
     :param int mode: The default draw mode
     """
-    __slots__ = '_ctx', '_content', '_index_buffer', '_mode', '_vao_cache', '_num_vertices', '__weakref__'
+
+    __slots__ = (
+        "_ctx",
+        "_content",
+        "_index_buffer",
+        "_mode",
+        "_vao_cache",
+        "_num_vertices",
+        "__weakref__",
+    )
 
     def __init__(
-            self,
-            ctx: 'Context',
-            content: Optional[Sequence[BufferDescription]],
-            index_buffer: Buffer = None,
-            mode=None):
+        self,
+        ctx: "Context",
+        content: Optional[Sequence[BufferDescription]],
+        index_buffer: Buffer = None,
+        mode=None,
+    ):
         self._ctx = ctx
         self._content = content or []
         self._index_buffer = index_buffer
@@ -257,10 +301,10 @@ class Geometry:
 
         # No cleanup is needed, but we want to count them
         weakref.finalize(self, Geometry._release, self._ctx)
-        self._ctx.stats.incr('geometry')
+        self._ctx.stats.incr("geometry")
 
     @property
-    def ctx(self) -> 'Context':
+    def ctx(self) -> "Context":
         """
         The context this geometry belongs to.
 
@@ -303,8 +347,15 @@ class Geometry:
 
         return self._generate_vao(program)
 
-    def render(self, program: Program, *, mode: gl.GLenum = None,
-               first: int = 0, vertices: int = None, instances: int = 1) -> None:
+    def render(
+        self,
+        program: Program,
+        *,
+        mode: gl.GLenum = None,
+        first: int = 0,
+        vertices: int = None,
+        instances: int = 1,
+    ) -> None:
         """Render the geometry with a specific program.
 
         :param Program program: The Program to render with
@@ -316,10 +367,23 @@ class Geometry:
         program.use()
         vao = self.instance(program)
         mode = self._mode if mode is None else mode
-        vao.render(mode=mode, first=first, vertices=vertices or self._num_vertices, instances=instances)
+        vao.render(
+            mode=mode,
+            first=first,
+            vertices=vertices or self._num_vertices,
+            instances=instances,
+        )
 
-    def transform(self, program: Program, buffer: Buffer, *,
-                  first: int = 0, vertices: int = None, instances: int = 1, buffer_offset: int = 0) -> None:
+    def transform(
+        self,
+        program: Program,
+        buffer: Buffer,
+        *,
+        first: int = 0,
+        vertices: int = None,
+        instances: int = 1,
+        buffer_offset: int = 0,
+    ) -> None:
         """Render with transform feedback. Instead of rendering to the screen
         or a framebuffer the result will instead end up in the ``buffer`` we supply.
 
@@ -337,9 +401,13 @@ class Geometry:
         vao = self.instance(program)
         # mode = mode if mode is not None else gl.GL_POINTS
         vao.transform(
-            buffer, mode=program.geometry_input, output_mode=program.geometry_output, first=first,
+            buffer,
+            mode=program.geometry_input,
+            output_mode=program.geometry_output,
+            first=first,
             vertices=vertices or self._num_vertices,
-            instances=instances, buffer_offset=buffer_offset,
+            instances=instances,
+            buffer_offset=buffer_offset,
         )
 
     def flush(self) -> None:
@@ -352,11 +420,13 @@ class Geometry:
         """Here we do the VertexArray building"""
         # print(f"Generating vao for key {program.attribute_key}")
 
-        vao = VertexArray(self._ctx, program, self._content, index_buffer=self._index_buffer)
+        vao = VertexArray(
+            self._ctx, program, self._content, index_buffer=self._index_buffer
+        )
         self._vao_cache[program.attribute_key] = vao
         return vao
 
     @staticmethod
     def _release(ctx):
         """Mainly here to count destroyed instances"""
-        ctx.stats.decr('geometry')
+        ctx.stats.decr("geometry")

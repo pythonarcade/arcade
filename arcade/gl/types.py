@@ -7,21 +7,72 @@ from .buffer import Buffer
 
 
 _float_base_format = (0, gl.GL_RED, gl.GL_RG, gl.GL_RGB, gl.GL_RGBA)
-_int_base_format = (0, gl.GL_RED_INTEGER, gl.GL_RG_INTEGER, gl.GL_RGB_INTEGER, gl.GL_RGBA_INTEGER)
+_int_base_format = (
+    0,
+    gl.GL_RED_INTEGER,
+    gl.GL_RG_INTEGER,
+    gl.GL_RGB_INTEGER,
+    gl.GL_RGBA_INTEGER,
+)
 # format: (base_format, internal_format, type, size)
 pixel_formats = {
     # float formats
-    'f1': (_float_base_format, (0, gl.GL_R8, gl.GL_RG8, gl.GL_RGB8, gl.GL_RGBA8), gl.GL_UNSIGNED_BYTE, 1),
-    'f2': (_float_base_format, (0, gl.GL_R16F, gl.GL_RG16F, gl.GL_RGB16F, gl.GL_RGBA16F), gl.GL_HALF_FLOAT, 2),
-    'f4': (_float_base_format, (0, gl.GL_R32F, gl.GL_RG32F, gl.GL_RGB32F, gl.GL_RGBA32F), gl.GL_FLOAT, 4),
+    "f1": (
+        _float_base_format,
+        (0, gl.GL_R8, gl.GL_RG8, gl.GL_RGB8, gl.GL_RGBA8),
+        gl.GL_UNSIGNED_BYTE,
+        1,
+    ),
+    "f2": (
+        _float_base_format,
+        (0, gl.GL_R16F, gl.GL_RG16F, gl.GL_RGB16F, gl.GL_RGBA16F),
+        gl.GL_HALF_FLOAT,
+        2,
+    ),
+    "f4": (
+        _float_base_format,
+        (0, gl.GL_R32F, gl.GL_RG32F, gl.GL_RGB32F, gl.GL_RGBA32F),
+        gl.GL_FLOAT,
+        4,
+    ),
     # int formats
-    'i1': (_int_base_format, (0, gl.GL_R8I, gl.GL_RG8I, gl.GL_RGB8I, gl.GL_RGBA8I), gl.GL_BYTE, 1),
-    'i2': (_int_base_format, (0, gl.GL_R16I, gl.GL_RG16I, gl.GL_RGB16I, gl.GL_RGBA16I), gl.GL_SHORT, 2),
-    'i4': (_int_base_format, (0, gl.GL_R32I, gl.GL_RG32I, gl.GL_RGB32I, gl.GL_RGBA32I), gl.GL_INT, 4),
+    "i1": (
+        _int_base_format,
+        (0, gl.GL_R8I, gl.GL_RG8I, gl.GL_RGB8I, gl.GL_RGBA8I),
+        gl.GL_BYTE,
+        1,
+    ),
+    "i2": (
+        _int_base_format,
+        (0, gl.GL_R16I, gl.GL_RG16I, gl.GL_RGB16I, gl.GL_RGBA16I),
+        gl.GL_SHORT,
+        2,
+    ),
+    "i4": (
+        _int_base_format,
+        (0, gl.GL_R32I, gl.GL_RG32I, gl.GL_RGB32I, gl.GL_RGBA32I),
+        gl.GL_INT,
+        4,
+    ),
     # uint formats
-    'u1': (_int_base_format, (0, gl.GL_R8UI, gl.GL_RG8UI, gl.GL_RGB8UI, gl.GL_RGBA8UI), gl.GL_UNSIGNED_BYTE, 1),
-    'u2': (_int_base_format, (0, gl.GL_R16UI, gl.GL_RG16UI, gl.GL_RGB16UI, gl.GL_RGBA16UI), gl.GL_UNSIGNED_SHORT, 2),
-    'u4': (_int_base_format, (0, gl.GL_R32UI, gl.GL_RG32UI, gl.GL_RGB32UI, gl.GL_RGBA32UI), gl.GL_UNSIGNED_INT, 4),
+    "u1": (
+        _int_base_format,
+        (0, gl.GL_R8UI, gl.GL_RG8UI, gl.GL_RGB8UI, gl.GL_RGBA8UI),
+        gl.GL_UNSIGNED_BYTE,
+        1,
+    ),
+    "u2": (
+        _int_base_format,
+        (0, gl.GL_R16UI, gl.GL_RG16UI, gl.GL_RGB16UI, gl.GL_RGBA16UI),
+        gl.GL_UNSIGNED_SHORT,
+        2,
+    ),
+    "u4": (
+        _int_base_format,
+        (0, gl.GL_R32UI, gl.GL_RG32UI, gl.GL_RGB32UI, gl.GL_RGBA32UI),
+        gl.GL_UNSIGNED_INT,
+        4,
+    ),
 }
 
 
@@ -35,9 +86,19 @@ SHADER_TYPE_NAMES = {
 
 class AttribFormat:
     """Describes a format for a single attribute"""
-    __slots__ = 'name', 'gl_type', 'components', 'bytes_per_component', 'offset', 'location',
 
-    def __init__(self, name, gl_type, components, bytes_per_component, offset=0, location=0):
+    __slots__ = (
+        "name",
+        "gl_type",
+        "components",
+        "bytes_per_component",
+        "offset",
+        "location",
+    )
+
+    def __init__(
+        self, name, gl_type, components, bytes_per_component, offset=0, location=0
+    ):
         """Represents an attribute in a BufferDescription or a Program.
 
         :param str name: Name of the attribute
@@ -101,6 +162,7 @@ class BufferDescription:
     :param list normalized: list of attribute names that should be normalized
     :param bool instanced: ``True`` if this is per instance data
     """
+
     # Describe all variants of a format string to simplify parsing (single component)
     # format: gl_type, byte_size
     # TODO: Can we support separate per-instance attributes in an interleaved buffer?
@@ -108,36 +170,46 @@ class BufferDescription:
     _formats = {
         # (gl enum, byte size)
         # Floats
-        'f':  (gl.GL_FLOAT, 4),
-        'f1': (gl.GL_UNSIGNED_BYTE, 1),
-        'f2': (gl.GL_HALF_FLOAT, 2),
-        'f4': (gl.GL_FLOAT, 4),
-        'f8': (gl.GL_DOUBLE, 8),
+        "f": (gl.GL_FLOAT, 4),
+        "f1": (gl.GL_UNSIGNED_BYTE, 1),
+        "f2": (gl.GL_HALF_FLOAT, 2),
+        "f4": (gl.GL_FLOAT, 4),
+        "f8": (gl.GL_DOUBLE, 8),
         # Unsigned integers
-        'u':  (gl.GL_FLOAT, 4),
-        'u1': (gl.GL_FLOAT, 1),
-        'u2': (gl.GL_FLOAT, 2),
-        'u4': (gl.GL_FLOAT, 4),
+        "u": (gl.GL_FLOAT, 4),
+        "u1": (gl.GL_FLOAT, 1),
+        "u2": (gl.GL_FLOAT, 2),
+        "u4": (gl.GL_FLOAT, 4),
         # Signed integers
-        'i': (gl.GL_INT, 4),
-        'i1': (gl.GL_BYTE, 1),
-        'i2': (gl.GL_SHORT, 2),
-        'i4': (gl.GL_INT, 4),
+        "i": (gl.GL_INT, 4),
+        "i1": (gl.GL_BYTE, 1),
+        "i2": (gl.GL_SHORT, 2),
+        "i4": (gl.GL_INT, 4),
         # Padding (1, 2, 4, 8 bytes)
-        'x1': (None, 1),
-        'x2': (None, 2),
-        'x4': (None, 4),
-        'x8': (None, 8),
+        "x1": (None, 1),
+        "x2": (None, 2),
+        "x4": (None, 4),
+        "x8": (None, 8),
     }
 
-    __slots__ = 'buffer', 'attributes', 'normalized', 'instanced', 'formats', 'stride', 'num_vertices'
+    __slots__ = (
+        "buffer",
+        "attributes",
+        "normalized",
+        "instanced",
+        "formats",
+        "stride",
+        "num_vertices",
+    )
 
-    def __init__(self,
-                 buffer: Buffer,
-                 formats: str,
-                 attributes: Iterable[str],
-                 normalized: Iterable[str] = None,
-                 instanced: bool = False):
+    def __init__(
+        self,
+        buffer: Buffer,
+        formats: str,
+        attributes: Iterable[str],
+        normalized: Iterable[str] = None,
+        instanced: bool = False,
+    ):
         """
         :param Buffer buffer: The buffer to describe
         :param str formats: The format of each attribute
@@ -160,14 +232,16 @@ class BufferDescription:
         #: Number of vertices in the buffer
         self.num_vertices = -1  # type: int
 
-        if not isinstance(self.attributes, list) and not isinstance(self.attributes, tuple):
+        if not isinstance(self.attributes, list) and not isinstance(
+            self.attributes, tuple
+        ):
             raise ValueError("Attributes must be a list or tuple")
 
         if self.normalized > set(self.attributes):
             raise ValueError("Normalized attribute not found in attributes.")
 
         formats_list = formats.split(" ")
-        non_padded_formats = [f for f in formats_list if not 'x' in f]
+        non_padded_formats = [f for f in formats_list if not "x" in f]
 
         if len(non_padded_formats) != len(self.attributes):
             raise ValueError(
@@ -179,7 +253,7 @@ class BufferDescription:
             """Join together formats and attribute names taking padding into account"""
             attr_index = 0
             for f in formats:
-                if 'x' in f:
+                if "x" in f:
                     yield f, None
                 else:
                     yield f, attributes[attr_index]
@@ -188,18 +262,34 @@ class BufferDescription:
         self.stride = 0
         for attr_fmt, attr_name in zip_attrs(formats_list, self.attributes):
             try:
-                components_str, data_type_str, data_size_str = re.split(r'([fiux])', attr_fmt)
-                data_type = f"{data_type_str}{data_size_str}"if data_size_str else data_type_str
-                components = int(components_str) if components_str else 1  # 1 component is default
-                data_size = int(data_size_str) if data_size_str else 4  # 4 byte float and integer types are default
+                components_str, data_type_str, data_size_str = re.split(
+                    r"([fiux])", attr_fmt
+                )
+                data_type = (
+                    f"{data_type_str}{data_size_str}"
+                    if data_size_str
+                    else data_type_str
+                )
+                components = (
+                    int(components_str) if components_str else 1
+                )  # 1 component is default
+                data_size = (
+                    int(data_size_str) if data_size_str else 4
+                )  # 4 byte float and integer types are default
                 # Limit components to 4 for non-padded formats
                 if components > 4 and data_size is not None:
                     raise ValueError("Number of components must be 1, 2, 3 or 4")
             except Exception as ex:
-                raise ValueError(f"Could not parse attribute format: '{attr_fmt} : {ex}'")
+                raise ValueError(
+                    f"Could not parse attribute format: '{attr_fmt} : {ex}'"
+                )
 
             gl_type, byte_size = self._formats[data_type]
-            self.formats.append(AttribFormat(attr_name, gl_type, components, byte_size, offset=self.stride))
+            self.formats.append(
+                AttribFormat(
+                    attr_name, gl_type, components, byte_size, offset=self.stride
+                )
+            )
 
             self.stride += byte_size * components
 
@@ -217,7 +307,7 @@ class BufferDescription:
 
 
 class TypeInfo:
-    __slots__ = 'name', 'enum', 'gl_type', 'gl_size', 'components'
+    __slots__ = "name", "enum", "gl_type", "gl_size", "components"
 
     def __init__(self, name, enum, gl_type, gl_size, components):
         """Describes an opengl type
@@ -231,7 +321,7 @@ class TypeInfo:
         self.name = name  # type: str
         self.enum = enum  # type: gl.GLenum
         self.gl_type = gl_type  # type: gl.GLenum
-        self.gl_size = gl_size # type: int
+        self.gl_size = gl_size  # type: int
         self.components = components  # type: int
 
     @property
@@ -254,18 +344,31 @@ class GLTypes:
     that to the types in the `BufferDescription`.
     These an also be used for uniform introspection.
     """
+
     # Source : https://github.com/Contraz/demosys-py/blob/f63f5dc727eafb8302cce64a890ce4527303588b/demosys/opengl/constants.py#L37-L139
     types = {
         # Floats
         gl.GL_FLOAT: TypeInfo("GL_FLOAT", gl.GL_FLOAT, gl.GL_FLOAT, 4, 1),
-        gl.GL_FLOAT_VEC2: TypeInfo("GL_FLOAT_VEC2", gl.GL_FLOAT_VEC2, gl.GL_FLOAT, 4, 2),
-        gl.GL_FLOAT_VEC3: TypeInfo("GL_FLOAT_VEC3", gl.GL_FLOAT_VEC3, gl.GL_FLOAT, 4, 3),
-        gl.GL_FLOAT_VEC4: TypeInfo("GL_FLOAT_VEC4", gl.GL_FLOAT_VEC4, gl.GL_FLOAT, 4, 4),
+        gl.GL_FLOAT_VEC2: TypeInfo(
+            "GL_FLOAT_VEC2", gl.GL_FLOAT_VEC2, gl.GL_FLOAT, 4, 2
+        ),
+        gl.GL_FLOAT_VEC3: TypeInfo(
+            "GL_FLOAT_VEC3", gl.GL_FLOAT_VEC3, gl.GL_FLOAT, 4, 3
+        ),
+        gl.GL_FLOAT_VEC4: TypeInfo(
+            "GL_FLOAT_VEC4", gl.GL_FLOAT_VEC4, gl.GL_FLOAT, 4, 4
+        ),
         # Doubles
-        gl.GL_DOUBLE: TypeInfo("GL_DOUBLE", gl.GL_DOUBLE, gl.GL_DOUBLE,  8, 1),
-        gl.GL_DOUBLE_VEC2: TypeInfo("GL_DOUBLE_VEC2", gl.GL_DOUBLE_VEC2, gl.GL_DOUBLE, 8, 2),
-        gl.GL_DOUBLE_VEC3: TypeInfo("GL_DOUBLE_VEC3", gl.GL_DOUBLE_VEC3, gl.GL_DOUBLE, 8, 3),
-        gl.GL_DOUBLE_VEC4: TypeInfo("GL_DOUBLE_VEC4", gl.GL_DOUBLE_VEC4, gl.GL_DOUBLE, 8, 4),
+        gl.GL_DOUBLE: TypeInfo("GL_DOUBLE", gl.GL_DOUBLE, gl.GL_DOUBLE, 8, 1),
+        gl.GL_DOUBLE_VEC2: TypeInfo(
+            "GL_DOUBLE_VEC2", gl.GL_DOUBLE_VEC2, gl.GL_DOUBLE, 8, 2
+        ),
+        gl.GL_DOUBLE_VEC3: TypeInfo(
+            "GL_DOUBLE_VEC3", gl.GL_DOUBLE_VEC3, gl.GL_DOUBLE, 8, 3
+        ),
+        gl.GL_DOUBLE_VEC4: TypeInfo(
+            "GL_DOUBLE_VEC4", gl.GL_DOUBLE_VEC4, gl.GL_DOUBLE, 8, 4
+        ),
         # Booleans (ubyte)
         gl.GL_BOOL: TypeInfo("GL_BOOL", gl.GL_BOOL, gl.GL_BOOL, 1, 1),
         gl.GL_BOOL_VEC2: TypeInfo("GL_BOOL_VEC2", gl.GL_BOOL_VEC2, gl.GL_BOOL, 1, 2),
@@ -277,15 +380,27 @@ class GLTypes:
         gl.GL_INT_VEC3: TypeInfo("GL_INT_VEC3", gl.GL_INT_VEC3, gl.GL_INT, 4, 3),
         gl.GL_INT_VEC4: TypeInfo("GL_INT_VEC4", gl.GL_INT_VEC4, gl.GL_INT, 4, 4),
         # Unsigned Integers
-        gl.GL_UNSIGNED_INT: TypeInfo("GL_UNSIGNED_INT", gl.GL_UNSIGNED_INT, gl.GL_UNSIGNED_INT, 4, 1),
-        gl.GL_UNSIGNED_INT_VEC2: TypeInfo("GL_UNSIGNED_INT_VEC2", gl.GL_UNSIGNED_INT_VEC2, gl.GL_UNSIGNED_INT, 4, 2),
-        gl.GL_UNSIGNED_INT_VEC3: TypeInfo("GL_UNSIGNED_INT_VEC3", gl.GL_UNSIGNED_INT_VEC3, gl.GL_UNSIGNED_INT, 4, 3),
-        gl.GL_UNSIGNED_INT_VEC4: TypeInfo("GL_UNSIGNED_INT_VEC4", gl.GL_UNSIGNED_INT_VEC4, gl.GL_UNSIGNED_INT, 4, 4),
+        gl.GL_UNSIGNED_INT: TypeInfo(
+            "GL_UNSIGNED_INT", gl.GL_UNSIGNED_INT, gl.GL_UNSIGNED_INT, 4, 1
+        ),
+        gl.GL_UNSIGNED_INT_VEC2: TypeInfo(
+            "GL_UNSIGNED_INT_VEC2", gl.GL_UNSIGNED_INT_VEC2, gl.GL_UNSIGNED_INT, 4, 2
+        ),
+        gl.GL_UNSIGNED_INT_VEC3: TypeInfo(
+            "GL_UNSIGNED_INT_VEC3", gl.GL_UNSIGNED_INT_VEC3, gl.GL_UNSIGNED_INT, 4, 3
+        ),
+        gl.GL_UNSIGNED_INT_VEC4: TypeInfo(
+            "GL_UNSIGNED_INT_VEC4", gl.GL_UNSIGNED_INT_VEC4, gl.GL_UNSIGNED_INT, 4, 4
+        ),
         # Unsigned Short (mostly used for short index buffers)
-        gl.GL_UNSIGNED_SHORT: TypeInfo("GL.GL_UNSIGNED_SHORT", gl.GL_UNSIGNED_SHORT, gl.GL_UNSIGNED_SHORT, 2, 2),
+        gl.GL_UNSIGNED_SHORT: TypeInfo(
+            "GL.GL_UNSIGNED_SHORT", gl.GL_UNSIGNED_SHORT, gl.GL_UNSIGNED_SHORT, 2, 2
+        ),
         # Byte
         gl.GL_BYTE: TypeInfo("GL_BYTE", gl.GL_BYTE, gl.GL_BYTE, 1, 1),
-        gl.GL_UNSIGNED_BYTE: TypeInfo("GL_UNSIGNED_BYTE", gl.GL_UNSIGNED_BYTE, gl.GL_UNSIGNED_BYTE, 1, 1),
+        gl.GL_UNSIGNED_BYTE: TypeInfo(
+            "GL_UNSIGNED_BYTE", gl.GL_UNSIGNED_BYTE, gl.GL_UNSIGNED_BYTE, 1, 1
+        ),
         # TODO: Add sampler types if needed. Only needed for better uniform introspection.
     }
 

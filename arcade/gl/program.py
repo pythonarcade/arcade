@@ -1,7 +1,12 @@
 from ctypes import (
-    c_char, c_int, c_buffer,
+    c_char,
+    c_int,
+    c_buffer,
     c_char_p,
-    cast, POINTER, pointer, byref,
+    cast,
+    POINTER,
+    pointer,
+    byref,
     create_string_buffer,
 )
 from typing import Dict, Iterable, Tuple, List, TYPE_CHECKING, Union
@@ -32,18 +37,27 @@ class Program:
 
         program['MyUniform'] = value
     """
+
     __slots__ = (
-        '_ctx', '_glo', '_uniforms', '_out_attributes', '_geometry_info',
-        '_attributes', 'attribute_key', '__weakref__'
+        "_ctx",
+        "_glo",
+        "_uniforms",
+        "_out_attributes",
+        "_geometry_info",
+        "_attributes",
+        "attribute_key",
+        "__weakref__",
     )
 
-    def __init__(self,
-                 ctx,
-                 *,
-                 vertex_shader: str,
-                 fragment_shader: str = None,
-                 geometry_shader: str = None,
-                 out_attributes: List[str] = None):
+    def __init__(
+        self,
+        ctx,
+        *,
+        vertex_shader: str,
+        fragment_shader: str = None,
+        geometry_shader: str = None,
+        out_attributes: List[str] = None,
+    ):
         """Create a Program.
 
         :param Context ctx: The context this program belongs to
@@ -85,7 +99,11 @@ class Program:
             gl.glGetProgramiv(self._glo, gl.GL_GEOMETRY_INPUT_TYPE, geometry_in)
             gl.glGetProgramiv(self._glo, gl.GL_GEOMETRY_OUTPUT_TYPE, geometry_out)
             gl.glGetProgramiv(self._glo, gl.GL_GEOMETRY_VERTICES_OUT, geometry_vertices)
-            self._geometry_info = (geometry_in.value, geometry_out.value, geometry_vertices.value)
+            self._geometry_info = (
+                geometry_in.value,
+                geometry_out.value,
+                geometry_vertices.value,
+            )
 
         # Flag shaders for deletion. Will only be deleted once detached from program.
         for shader in shaders_id:
@@ -96,11 +114,11 @@ class Program:
         self._introspect_uniforms()
         self._introspect_uniform_blocks()
 
-        self.ctx.stats.incr('program')
+        self.ctx.stats.incr("program")
         weakref.finalize(self, Program._delete, self.ctx, shaders_id, glo)
 
     @property
-    def ctx(self) -> 'Context':
+    def ctx(self) -> "Context":
         """
         The context this program belongs to
         
@@ -176,7 +194,7 @@ class Program:
 
         gl.glDeleteProgram(prog_id)
 
-        ctx.stats.decr('program')
+        ctx.stats.decr("program")
 
     def __getitem__(self, item) -> Union[Uniform, UniformBlock]:
         """Get a uniform or uniform block"""
@@ -226,7 +244,9 @@ class Program:
         # NOTE: We only support interleaved attributes for now
         gl.glTransformFeedbackVaryings(
             self._glo,  # program
-            len(self._out_attributes),  # number of varying variables used for transform feedback
+            len(
+                self._out_attributes
+            ),  # number of varying variables used for transform feedback
             ptr,  # zero-terminated strings specifying the names of the varying variables
             gl.GL_INTERLEAVED_ATTRIBS,
         )
@@ -260,16 +280,21 @@ class Program:
             # print(c_name.value, c_size, c_type)
             type_info = GLTypes.get(c_type.value)
             # print(type_info)
-            self._attributes.append(AttribFormat(
-                c_name.value.decode(),
-                type_info.gl_type,
-                type_info.components,
-                type_info.gl_size,
-                location=location,
-            ))
+            self._attributes.append(
+                AttribFormat(
+                    c_name.value.decode(),
+                    type_info.gl_type,
+                    type_info.components,
+                    type_info.gl_size,
+                    location=location,
+                )
+            )
 
         # The attribute key is used to cache VertexArrays
-        self.attribute_key = ':'.join(f'{attr.name}[{attr.gl_type}/{attr.components}]' for attr in self._attributes)
+        self.attribute_key = ":".join(
+            f"{attr.name}[{attr.gl_type}/{attr.components}]"
+            for attr in self._attributes
+        )
 
     def _introspect_uniforms(self):
         """Figure out what uniforms are available and build an internal map"""
@@ -289,12 +314,16 @@ class Program:
                 # print(f"Uniform {u_location} {u_name} {u_size} {u_type} skipped")
                 continue
 
-            u_name = u_name.replace('[0]', '')  # Remove array suffix
-            self._uniforms[u_name] = Uniform(self._glo, u_location, u_name, u_type, u_size)
+            u_name = u_name.replace("[0]", "")  # Remove array suffix
+            self._uniforms[u_name] = Uniform(
+                self._glo, u_location, u_name, u_type, u_size
+            )
 
     def _introspect_uniform_blocks(self):
         active_uniform_blocks = gl.GLint(0)
-        gl.glGetProgramiv(self._glo, gl.GL_ACTIVE_UNIFORM_BLOCKS, byref(active_uniform_blocks))
+        gl.glGetProgramiv(
+            self._glo, gl.GL_ACTIVE_UNIFORM_BLOCKS, byref(active_uniform_blocks)
+        )
         # print('GL_ACTIVE_UNIFORM_BLOCKS', active_uniform_blocks)
 
         for loc in range(active_uniform_blocks.value):
@@ -320,7 +349,7 @@ class Program:
             None,  # the number of characters actually written by OpenGL in the string
             u_size,  # size of the uniform variable
             u_type,  # data type of the uniform variable
-            u_name  # string buffer for storing the name
+            u_name,  # string buffer for storing the name
         )
         return u_name.value.decode(), u_type.value, u_size.value
 
@@ -341,7 +370,9 @@ class Program:
         index = gl.glGetUniformBlockIndex(self._glo, u_name)
         # Query size
         b_size = gl.GLint()
-        gl.glGetActiveUniformBlockiv(self._glo, index, gl.GL_UNIFORM_BLOCK_DATA_SIZE, b_size)
+        gl.glGetActiveUniformBlockiv(
+            self._glo, index, gl.GL_UNIFORM_BLOCK_DATA_SIZE, b_size
+        )
         return index, b_size.value, u_name.value.decode()
 
     @staticmethod
@@ -353,14 +384,9 @@ class Program:
         Returns the shader id as a GLuint
         """
         shader = gl.glCreateShader(shader_type)
-        source_bytes = source.encode('utf-8')
+        source_bytes = source.encode("utf-8")
         # Turn the source code string into an array of c_char_p arrays.
-        strings = byref(
-            cast(
-                c_char_p(source_bytes),
-                POINTER(c_char)
-            )
-        )
+        strings = byref(cast(c_char_p(source_bytes), POINTER(c_char)))
         # Make an array with the strings lengths
         lengths = pointer(c_int(len(source_bytes)))
         gl.glShaderSource(shader, 1, strings, lengths)
@@ -371,11 +397,17 @@ class Program:
             msg = create_string_buffer(512)
             length = c_int()
             gl.glGetShaderInfoLog(shader, 512, byref(length), msg)
-            raise ShaderException((
-                f"Error compiling {SHADER_TYPE_NAMES[shader_type]} "
-                f"({result.value}): {msg.value.decode('utf-8')}\n"
-                f"---- [{SHADER_TYPE_NAMES[shader_type]}] ---\n"
-            ) + '\n'.join(f"{str(i+1).zfill(3)}: {line} " for i, line in enumerate(source.split('\n'))))
+            raise ShaderException(
+                (
+                    f"Error compiling {SHADER_TYPE_NAMES[shader_type]} "
+                    f"({result.value}): {msg.value.decode('utf-8')}\n"
+                    f"---- [{SHADER_TYPE_NAMES[shader_type]}] ---\n"
+                )
+                + "\n".join(
+                    f"{str(i+1).zfill(3)}: {line} "
+                    for i, line in enumerate(source.split("\n"))
+                )
+            )
         return shader
 
     @staticmethod
@@ -389,7 +421,7 @@ class Program:
             gl.glGetProgramiv(glo, gl.GL_INFO_LOG_LENGTH, length)
             log = c_buffer(length.value)
             gl.glGetProgramInfoLog(glo, len(log), None, log)
-            raise ShaderException('Program link error: {}'.format(log.value.decode()))
+            raise ShaderException("Program link error: {}".format(log.value.decode()))
 
     def __repr__(self):
         return "<Program id={}>".format(self._glo)

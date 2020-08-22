@@ -18,14 +18,17 @@ class Buffer:
 
     Buffer objects should be created using :py:meth:`arcade.gl.Context.buffer`
     """
-    __slots__ = '_ctx', '_glo', '_size', '_usage', '__weakref__'
+
+    __slots__ = "_ctx", "_glo", "_size", "_usage", "__weakref__"
     _usages = {
-        'static': gl.GL_STATIC_DRAW,
-        'dynamic': gl.GL_DYNAMIC_DRAW,
-        'stream': gl.GL_STREAM_DRAW
+        "static": gl.GL_STATIC_DRAW,
+        "dynamic": gl.GL_DYNAMIC_DRAW,
+        "stream": gl.GL_STREAM_DRAW,
     }
 
-    def __init__(self, ctx, data: Optional[Any] = None, reserve: int = 0, usage: str = 'static'):
+    def __init__(
+        self, ctx, data: Optional[Any] = None, reserve: int = 0, usage: str = "static"
+    ):
         """
         :param Context ctx: The context this buffer belongs to
         :param Any data: The data this buffer should contain. It can be bytes or any object supporting the buffer protocol.
@@ -55,7 +58,7 @@ class Buffer:
         else:
             raise ValueError("Buffer takes byte data or number of reserved bytes")
 
-        self.ctx.stats.incr('buffer')
+        self.ctx.stats.incr("buffer")
         weakref.finalize(self, Buffer.release, self.ctx, glo)
 
     @property
@@ -68,7 +71,7 @@ class Buffer:
         return self._size
 
     @property
-    def ctx(self) -> 'Context':
+    def ctx(self) -> "Context":
         """
         The context this resource belongs to.
 
@@ -86,7 +89,7 @@ class Buffer:
         return self._glo
 
     @staticmethod
-    def release(ctx: 'Context', glo: gl.GLuint):
+    def release(ctx: "Context", glo: gl.GLuint):
         """
         Release/delete open gl buffer.
         This is automatically called when the object is garbage collected.
@@ -99,7 +102,7 @@ class Buffer:
             gl.glDeleteBuffers(1, byref(glo))
             glo.value = 0
 
-        ctx.stats.decr('buffer')
+        ctx.stats.decr("buffer")
 
     def read(self, size=-1, offset=0) -> bytes:
         """Read data from the buffer.
@@ -141,7 +144,7 @@ class Buffer:
         size, data = data_to_ctypes(data)
         gl.glBufferSubData(gl.GL_ARRAY_BUFFER, gl.GLintptr(offset), size, data)
 
-    def copy_from_buffer(self, source: 'Buffer', size=-1, offset=0, source_offset=0):
+    def copy_from_buffer(self, source: "Buffer", size=-1, offset=0, source_offset=0):
         """Copy data into this buffer from another buffer
 
         :param Buffer source: The buffer to copy from
@@ -167,7 +170,7 @@ class Buffer:
             gl.GL_COPY_WRITE_BUFFER,
             gl.GLintptr(source_offset),  # readOffset
             gl.GLintptr(offset),  # writeOffset
-            size  # size (number of bytes to copy)
+            size,  # size (number of bytes to copy)
         )
 
     def orphan(self, size=-1, double: bool = False):

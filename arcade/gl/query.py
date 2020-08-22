@@ -24,10 +24,15 @@ class Query:
         print('time_elapsed:', query.time_elapsed)
         print('primitives_generated:', query.primitives_generated)
     """
+
     __slots__ = (
-        '_ctx',
-        '_glo_samples_passed', '_glo_any_samples_passed', '_glo_time_elapsed', '_glo_primitives_generated',
-        '__weakref__')
+        "_ctx",
+        "_glo_samples_passed",
+        "_glo_any_samples_passed",
+        "_glo_time_elapsed",
+        "_glo_primitives_generated",
+        "__weakref__",
+    )
 
     def __init__(self, ctx):
         # TODO: Support querying a subset of these queries (faster)
@@ -50,7 +55,7 @@ class Query:
         weakref.finalize(self, Query.release, self._ctx, glos)
 
     @property
-    def ctx(self) -> 'Context':
+    def ctx(self) -> "Context":
         """
         The context this query object belongs to
 

@@ -19,6 +19,7 @@ class ShaderSource:
     NOTE: We do assume the source is neat enough to be parsed
     this way and don't contain several statements on one line.
     """
+
     def __init__(self, source: str, source_type: gl.GLenum):
         """Create a shader source wrapper.
 
@@ -28,7 +29,7 @@ class ShaderSource:
         """
         self._source = source.strip()
         self._type = source_type
-        self._lines = self._source.split('\n') if source else []
+        self._lines = self._source.split("\n") if source else []
         self._out_attributes = []  # type: List[str]
 
         if not self._lines:
@@ -58,24 +59,27 @@ class ShaderSource:
             return self._source
 
         lines = ShaderSource.apply_defines(self._lines, defines)
-        return '\n'.join(lines)
+        return "\n".join(lines)
 
     def _find_glsl_version(self) -> int:
-        if self._lines[0].strip().startswith('#version'):
+        if self._lines[0].strip().startswith("#version"):
             try:
                 return int(self._lines[0].split()[1])
             except Exception:
                 pass
 
-        source = "\n".join(f"{str(i+1).zfill(3)}: {line} " for i, line in enumerate(self._lines))
+        source = "\n".join(
+            f"{str(i+1).zfill(3)}: {line} " for i, line in enumerate(self._lines)
+        )
 
-        raise ShaderException((
-            "Cannot find #version in shader source. "
-            "Please provide at least a #version 330 statement in the beginning of the shader.\n"
-            f"---- [{SHADER_TYPE_NAMES[self._type]}] ---\n"
-            f"{source}"
-        ))
-
+        raise ShaderException(
+            (
+                "Cannot find #version in shader source. "
+                "Please provide at least a #version 330 statement in the beginning of the shader.\n"
+                f"---- [{SHADER_TYPE_NAMES[self._type]}] ---\n"
+                f"{source}"
+            )
+        )
 
     @staticmethod
     def apply_defines(lines: List[str], defines: Dict[str, str]) -> List[str]:
@@ -86,7 +90,7 @@ class ShaderSource:
         """
         for nr, line in enumerate(lines):
             line = line.strip()
-            if line.startswith('#define'):
+            if line.startswith("#define"):
                 try:
                     name = line.split()[1]
                     value = defines.get(name)
@@ -102,6 +106,8 @@ class ShaderSource:
     def _parse_out_attributes(self):
         """Locates out attributes so we don't have to manually supply them"""
         for line in self._lines:
-            res = re.match(r'(layout(.+)\))?(\s+)?(out)(\s+)(\w+)(\s+)(\w+)', line.strip())
+            res = re.match(
+                r"(layout(.+)\))?(\s+)?(out)(\s+)(\w+)(\s+)(\w+)", line.strip()
+            )
             if res:
                 self._out_attributes.append(res.groups()[-1])

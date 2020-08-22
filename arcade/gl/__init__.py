@@ -29,15 +29,15 @@ from .query import Query
 from . import geometry
 
 __all__ = [
-    'Buffer',
-    'BufferDescription',
-    'Context',
-    'Framebuffer',
-    'Geometry',
-    'Program',
-    'Query',
-    'ShaderException',
-    'VertexArray',
-    'Texture',
-    'geometry',
+    "Buffer",
+    "BufferDescription",
+    "Context",
+    "Framebuffer",
+    "Geometry",
+    "Program",
+    "Query",
+    "ShaderException",
+    "VertexArray",
+    "Texture",
+    "geometry",
 ]

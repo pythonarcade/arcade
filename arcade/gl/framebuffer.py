@@ -38,13 +38,27 @@ class Framebuffer:
     :param List[arcade.gl.Texture] color_attachments: List of color attachments.
     :param arcade.gl.Texture depth_attachment: A depth attachment (optional)
     """
+
     #: Is this the default framebuffer? (window buffer)
     is_default = False
     __slots__ = (
-        '_ctx', '_glo', '_width', '_height', '_color_attachments', '_depth_attachment',
-        '_samples', '_viewport', '_depth_mask', '_draw_buffers', '_prev_fbo', '__weakref__')
+        "_ctx",
+        "_glo",
+        "_width",
+        "_height",
+        "_color_attachments",
+        "_depth_attachment",
+        "_samples",
+        "_viewport",
+        "_depth_mask",
+        "_draw_buffers",
+        "_prev_fbo",
+        "__weakref__",
+    )
 
-    def __init__(self, ctx: 'Context', *, color_attachments=None, depth_attachment=None):
+    def __init__(
+        self, ctx: "Context", *, color_attachments=None, depth_attachment=None
+    ):
         """
         :param Context ctx: The context this framebuffer belongs to
         :param List[arcade.gl.Texture] color_attachments: List of color attachments.
@@ -54,7 +68,11 @@ class Framebuffer:
             raise ValueError("Framebuffer must at least have one color attachment")
 
         self._ctx = ctx
-        self._color_attachments = color_attachments if isinstance(color_attachments, list) else [color_attachments]
+        self._color_attachments = (
+            color_attachments
+            if isinstance(color_attachments, list)
+            else [color_attachments]
+        )
         self._depth_attachment = depth_attachment
         self._glo = fbo_id = gl.GLuint()  # The OpenGL alias/name
         self._samples = 0  # Leaving this at 0 for future sample support
@@ -68,10 +86,16 @@ class Framebuffer:
         # Ensure all attachments have the same size.
         # OpenGL do actually support different sizes,
         # but let's keep this simple with high compatibility.
-        expected_size = (self._color_attachments[0] if self._color_attachments else self._depth_attachment).size
+        expected_size = (
+            self._color_attachments[0]
+            if self._color_attachments
+            else self._depth_attachment
+        ).size
         for layer in [*self._color_attachments, self._depth_attachment]:
             if layer and layer.size != expected_size:
-                raise ValueError("All framebuffer attachments should have the same size")
+                raise ValueError(
+                    "All framebuffer attachments should have the same size"
+                )
 
         self._width, self._height = expected_size
         self._viewport = 0, 0, self._width, self._height
@@ -94,7 +118,7 @@ class Framebuffer:
                 gl.GL_DEPTH_ATTACHMENT,
                 self.depth_attachment._target,
                 self.depth_attachment.glo,
-                0
+                0,
             )
 
         # Ensure the framebuffer is sane!
@@ -102,14 +126,16 @@ class Framebuffer:
 
         # Set up draw buffers. This is simply a prepared list of attachments enums
         # we use in the use() method to activate the different color attachment layers
-        layers = [gl.GL_COLOR_ATTACHMENT0 + i for i, _ in enumerate(self._color_attachments)]
+        layers = [
+            gl.GL_COLOR_ATTACHMENT0 + i for i, _ in enumerate(self._color_attachments)
+        ]
         # pyglet wants this as a ctypes thingy, so let's prepare it
         self._draw_buffers = (gl.GLuint * len(layers))(*layers)
 
         # Restore the original bound framebuffer to avoid confusion
         self.ctx.active_framebuffer.use()
 
-        self.ctx.stats.incr('framebuffer')
+        self.ctx.stats.incr("framebuffer")
         weakref.finalize(self, Framebuffer.release, ctx, fbo_id)
 
     @property
@@ -155,7 +181,7 @@ class Framebuffer:
             gl.glScissor(*self._viewport)
 
     @property
-    def ctx(self) -> 'Context':
+    def ctx(self) -> "Context":
         """
         The context this object belongs to.
 
@@ -237,7 +263,7 @@ class Framebuffer:
         # Set state if framebuffer is active
         if self._ctx.active_framebuffer == self:
             gl.glDepthMask(self._depth_mask)
- 
+
     def __enter__(self):
         self._prev_fbo = self._ctx.active_framebuffer
         self.use()
@@ -266,11 +292,13 @@ class Framebuffer:
         gl.glDepthMask(self._depth_mask)
         gl.glViewport(*self._viewport)
 
-    def clear(self,
-              color=(0.0, 0.0, 0.0, 0.0),
-              *,
-              depth: float = 1.0,
-              normalized: bool = False):
+    def clear(
+        self,
+        color=(0.0, 0.0, 0.0, 0.0),
+        *,
+        depth: float = 1.0,
+        normalized: bool = False,
+    ):
         """
         Clears the framebuffer::
 
@@ -295,14 +323,18 @@ class Framebuffer:
                 if len(color) == 3:
                     gl.glClearColor(color[0] / 255, color[1] / 255, color[2] / 255, 0.0)
                 else:
-                    gl.glClearColor(color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255)
+                    gl.glClearColor(
+                        color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255
+                    )
 
             if self.depth_attachment:
                 gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
             else:
                 gl.glClear(gl.GL_COLOR_BUFFER_BIT)
 
-    def read(self, *, viewport=None, components=3, attachment=0, dtype='f1') -> bytearray:
+    def read(
+        self, *, viewport=None, components=3, attachment=0, dtype="f1"
+    ) -> bytearray:
         """Read framebuffer pixels"""
         # TODO: use texture attachment info to determine read format?
         try:
@@ -333,7 +365,7 @@ class Framebuffer:
             return
 
         gl.glDeleteFramebuffers(1, framebuffer_id)
-        ctx.stats.decr('framebuffer')
+        ctx.stats.decr("framebuffer")
 
     @staticmethod
     def _check_completeness() -> None:
@@ -342,18 +374,24 @@ class Framebuffer:
         If the framebuffer is not complete, we cannot continue.
         """
         # See completness rules : https://www.khronos.org/opengl/wiki/Framebuffer_Object
-        states = {gl.GL_FRAMEBUFFER_UNSUPPORTED: "Framebuffer unsupported. Try another format.",
-                  gl.GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT: "Framebuffer incomplete attachment.",
-                  gl.GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT: "Framebuffer missing attachment.",
-                  gl.GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT: "Framebuffer unsupported dimension.",
-                  gl.GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT: "Framebuffer incomplete formats.",
-                  gl.GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER: "Framebuffer incomplete draw buffer.",
-                  gl.GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER: "Framebuffer incomplete read buffer.",
-                  gl.GL_FRAMEBUFFER_COMPLETE: "Framebuffer is complete."}
+        states = {
+            gl.GL_FRAMEBUFFER_UNSUPPORTED: "Framebuffer unsupported. Try another format.",
+            gl.GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT: "Framebuffer incomplete attachment.",
+            gl.GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT: "Framebuffer missing attachment.",
+            gl.GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT: "Framebuffer unsupported dimension.",
+            gl.GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT: "Framebuffer incomplete formats.",
+            gl.GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER: "Framebuffer incomplete draw buffer.",
+            gl.GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER: "Framebuffer incomplete read buffer.",
+            gl.GL_FRAMEBUFFER_COMPLETE: "Framebuffer is complete.",
+        }
 
         status = gl.glCheckFramebufferStatus(gl.GL_FRAMEBUFFER)
         if status != gl.GL_FRAMEBUFFER_COMPLETE:
-            raise ValueError("Framebuffer is incomplete. {}".format(states.get(status, "Unknown error")))
+            raise ValueError(
+                "Framebuffer is incomplete. {}".format(
+                    states.get(status, "Unknown error")
+                )
+            )
 
     def __repr__(self):
         return "<Framebuffer glo={}>".format(self._glo.value)
@@ -361,11 +399,12 @@ class Framebuffer:
 
 class DefaultFrameBuffer(Framebuffer):
     """Represents the default framebuffer"""
+
     #: Is this the default framebuffer? (window buffer)
     is_default = True
     __slots__ = ()
 
-    def __init__(self, ctx: 'Context'):
+    def __init__(self, ctx: "Context"):
         """Detect the default framebuffer"""
         self._ctx = ctx
         # TODO: Can we query this?
