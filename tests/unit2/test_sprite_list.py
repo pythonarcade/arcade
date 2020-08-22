@@ -54,5 +54,3 @@ def test_it_can_pop_at_a_given_index():
     assert [s.name for s in spritelist] == [0, 2]
     assert [spritelist.sprite_idx[s] for s in spritelist] == [0, 1]
     assert spritelist._vao1 is None
-
-

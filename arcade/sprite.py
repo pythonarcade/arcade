@@ -28,6 +28,7 @@ from arcade import Matrix3x3
 from arcade import rotate_point
 from arcade import draw_polygon_outline
 from arcade import Color
+from arcade import points_from_dimensions
 from arcade.color import BLACK
 
 from arcade.arcade_types import RGB, Point
@@ -294,13 +295,15 @@ class Sprite:
         if self._points is None and self._texture:
             self._points = self._texture.hit_box_points
 
-        if self._points is None and self._width:
-            x1, y1 = - self._width / 2, - self._height / 2
-            x2, y2 = + self._width / 2, - self._height / 2
-            x3, y3 = + self._width / 2, + self._height / 2
-            x4, y4 = - self._width / 2, + self._height / 2
+        # Infer points from texture properties
+        if self._points is None and self._texture and self._texture.width:
+            self._points = points_from_dimensions(
+                self._texture.width, self.texture.height)
+            self._inferred_points_by_texture = True
 
-            self._points = [[x1, y1], [x2, y2], [x3, y3], [x4, y4]]
+        # Infer points from sprite properties
+        if self._points is None and self._width:
+            self._points = points_from_dimensions(self._width, self._height)
 
         if self._points is None and self.texture is not None:
             self._points = self.texture.hit_box_points
@@ -312,14 +315,27 @@ class Sprite:
 
         # Adjust the hitbox
         point_list = []
+
+        # only apply width and height ratio if we get our points from the texture
+        width_ratio = 0.
+        height_ratio = 0.
+        if self._texture:
+            # Points should have been gotten from the texture
+            # Apply dimensions ratio.
+            # Todo: reset _points if texture is set after _points.
+            width_ratio = self._width / self._texture.width
+            height_ratio = self._height / self._texture.height
+
         for point in self._points:
             # Get a copy of the point
             point = [point[0], point[1]]
 
-            # Scale the point
-            if self.scale != 1:
-                point[0] *= self.scale
-                point[1] *= self.scale
+            # take height and width into account
+            if width_ratio:
+                point[0] *= width_ratio
+
+            if height_ratio:
+                point[1] *= height_ratio
 
             # Rotate the point
             if self.angle:
