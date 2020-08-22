@@ -26,36 +26,41 @@ class ArcadeContext(Context):
         self._projection_2d_buffer = self.buffer(reserve=64)
         self._projection_2d_buffer.bind_to_uniform_block(0)
         self._projection_2d_matrix = None
-        self.projection_2d = 0, self.screen.width, 0, self.screen.height,
+        self.projection_2d = (
+            0,
+            self.screen.width,
+            0,
+            self.screen.height,
+        )
 
         # --- Pre-load system shaders here ---
         # FIXME: These pre-created resources needs to be packaged nicely
         #        Just having them globally in the context is probably not a good idea
         self.line_vertex_shader = self.load_program(
-            vertex_shader=':resources:shaders/shapes/line/line_vertex_shader_vs.glsl',
-            fragment_shader=':resources:shaders/shapes/line/line_vertex_shader_fs.glsl',
+            vertex_shader=":resources:shaders/shapes/line/line_vertex_shader_vs.glsl",
+            fragment_shader=":resources:shaders/shapes/line/line_vertex_shader_fs.glsl",
         )
         self.line_generic_with_colors_program = self.load_program(
-            vertex_shader=':resources:shaders/shapes/line/line_generic_with_colors_vs.glsl',
-            fragment_shader=':resources:shaders/shapes/line/line_generic_with_colors_fs.glsl',
+            vertex_shader=":resources:shaders/shapes/line/line_generic_with_colors_vs.glsl",
+            fragment_shader=":resources:shaders/shapes/line/line_generic_with_colors_fs.glsl",
         )
         self.shape_element_list_program = self.load_program(
-            vertex_shader=':resources:shaders/shape_element_list_vs.glsl',
-            fragment_shader=':resources:shaders/shape_element_list_fs.glsl',
+            vertex_shader=":resources:shaders/shape_element_list_vs.glsl",
+            fragment_shader=":resources:shaders/shape_element_list_fs.glsl",
         )
         # self.sprite_list_program = self.load_program(
         #     vertex_shader=':resources:shaders/sprites/sprite_list_instanced_vs.glsl',
         #     fragment_shader=':resources:shaders/sprites/sprite_list_instanced_fs.glsl',
         # )
         self.sprite_list_program_no_cull = self.load_program(
-            vertex_shader=':resources:shaders/sprites/sprite_list_geometry_vs.glsl',
-            geometry_shader=':resources:shaders/sprites/sprite_list_geometry_no_cull_geo.glsl',
-            fragment_shader=':resources:shaders/sprites/sprite_list_geometry_fs.glsl',
+            vertex_shader=":resources:shaders/sprites/sprite_list_geometry_vs.glsl",
+            geometry_shader=":resources:shaders/sprites/sprite_list_geometry_no_cull_geo.glsl",
+            fragment_shader=":resources:shaders/sprites/sprite_list_geometry_fs.glsl",
         )
         self.sprite_list_program_cull = self.load_program(
-            vertex_shader=':resources:shaders/sprites/sprite_list_geometry_vs.glsl',
-            geometry_shader=':resources:shaders/sprites/sprite_list_geometry_cull_geo.glsl',
-            fragment_shader=':resources:shaders/sprites/sprite_list_geometry_fs.glsl',
+            vertex_shader=":resources:shaders/sprites/sprite_list_geometry_vs.glsl",
+            geometry_shader=":resources:shaders/sprites/sprite_list_geometry_cull_geo.glsl",
+            fragment_shader=":resources:shaders/sprites/sprite_list_geometry_fs.glsl",
         )
 
         # Shapes
@@ -85,31 +90,52 @@ class ArcadeContext(Context):
         #        Just having them globally in the context is probably not a good idea
         self.generic_draw_line_strip_color = self.buffer(reserve=4 * 1000)
         self.generic_draw_line_strip_vbo = self.buffer(reserve=8 * 1000)
-        self.generic_draw_line_strip_geometry = self.geometry([
-                BufferDescription(self.generic_draw_line_strip_vbo, '2f', ['in_vert']),
-                BufferDescription(self.generic_draw_line_strip_color, '4f1', ['in_color'], normalized=['in_color'])])
+        self.generic_draw_line_strip_geometry = self.geometry(
+            [
+                BufferDescription(self.generic_draw_line_strip_vbo, "2f", ["in_vert"]),
+                BufferDescription(
+                    self.generic_draw_line_strip_color,
+                    "4f1",
+                    ["in_color"],
+                    normalized=["in_color"],
+                ),
+            ]
+        )
         # Shape line(s)
         # Reserve space for 1000 lines (2f pos, 4f color)
         # TODO: Different version for buffered and unbuffered
         # TODO: Make round-robin buffers
         self.shape_line_buffer_pos = self.buffer(reserve=8 * 10)
         # self.shape_line_buffer_color = self.buffer(reserve=4 * 10)
-        self.shape_line_geometry = self.geometry([
-            BufferDescription(self.shape_line_buffer_pos, '2f', ['in_vert']),
-            # BufferDescription(self.shape_line_buffer_color, '4f1', ['in_color'], normalized=['in_color'])
-        ])
+        self.shape_line_geometry = self.geometry(
+            [
+                BufferDescription(self.shape_line_buffer_pos, "2f", ["in_vert"]),
+                # BufferDescription(self.shape_line_buffer_color, '4f1', ['in_color'], normalized=['in_color'])
+            ]
+        )
         # ellipse/circle filled
         self.shape_ellipse_unbuffered_buffer = self.buffer(reserve=8)
-        self.shape_ellipse_unbuffered_geometry = self.geometry([
-            BufferDescription(self.shape_ellipse_unbuffered_buffer, '2f', ['in_vert'])])
+        self.shape_ellipse_unbuffered_geometry = self.geometry(
+            [BufferDescription(self.shape_ellipse_unbuffered_buffer, "2f", ["in_vert"])]
+        )
         # ellipse/circle outline
         self.shape_ellipse_outline_unbuffered_buffer = self.buffer(reserve=8)
-        self.shape_ellipse_outline_unbuffered_geometry = self.geometry([
-            BufferDescription(self.shape_ellipse_outline_unbuffered_buffer, '2f', ['in_vert'])])
+        self.shape_ellipse_outline_unbuffered_geometry = self.geometry(
+            [
+                BufferDescription(
+                    self.shape_ellipse_outline_unbuffered_buffer, "2f", ["in_vert"]
+                )
+            ]
+        )
         # rectangle filled
         self.shape_rectangle_filled_unbuffered_buffer = self.buffer(reserve=8)
-        self.shape_rectangle_filled_unbuffered_geometry = self.geometry([
-            BufferDescription(self.shape_rectangle_filled_unbuffered_buffer, '2f', ['in_vert'])])
+        self.shape_rectangle_filled_unbuffered_geometry = self.geometry(
+            [
+                BufferDescription(
+                    self.shape_rectangle_filled_unbuffered_buffer, "2f", ["in_vert"]
+                )
+            ]
+        )
 
     @property
     def projection_2d(self) -> Tuple[float, float, float, float]:
@@ -125,14 +151,13 @@ class ArcadeContext(Context):
     @projection_2d.setter
     def projection_2d(self, value: Tuple[float, float, float, float]):
         if not isinstance(value, tuple) or len(value) != 4:
-            raise ValueError(f"projection must be a 4-component tuple, not {type(value)}: {value}")
+            raise ValueError(
+                f"projection must be a 4-component tuple, not {type(value)}: {value}"
+            )
 
         self._projection_2d = value
         self._projection_2d_matrix = arcade.create_orthogonal_projection(
-            value[0], value[1],
-            value[2], value[3],
-            -100, 100,
-            dtype='f4',
+            value[0], value[1], value[2], value[3], -100, 100, dtype="f4",
         ).flatten()
         self._projection_2d_buffer.write(self._projection_2d_matrix)
 
@@ -145,12 +170,13 @@ class ArcadeContext(Context):
         return self._projection_2d_matrix
 
     def load_program(
-            self,
-            *,
-            vertex_shader: Union[str, Path],
-            fragment_shader: Union[str, Path] = None,
-            geometry_shader: Union[str, Path] = None,
-            defines: dict = None) -> Program:
+        self,
+        *,
+        vertex_shader: Union[str, Path],
+        fragment_shader: Union[str, Path] = None,
+        geometry_shader: Union[str, Path] = None,
+        defines: dict = None,
+    ) -> Program:
         """Create a new program given a file names that contain the vertex shader and
         fragment shader.
 

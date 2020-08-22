@@ -31,8 +31,9 @@ class Context:
     global states and commonly used enums. All enums also exist
     in the ``gl`` module. (``ctx.BLEND`` or ``arcade.gl.BLEND``).
     """
+
     #: The active context
-    active: Optional['Context'] = None
+    active: Optional["Context"] = None
 
     # --- Store the most commonly used OpenGL constants
     # Texture
@@ -134,13 +135,13 @@ class Context:
 
     # The most common error enums
     _errors = {
-        gl.GL_INVALID_ENUM: 'GL_INVALID_ENUM',
-        gl.GL_INVALID_VALUE: 'GL_INVALID_VALUE',
-        gl.GL_INVALID_OPERATION: 'GL_INVALID_OPERATION',
-        gl.GL_INVALID_FRAMEBUFFER_OPERATION: 'GL_INVALID_FRAMEBUFFER_OPERATION',
-        gl.GL_OUT_OF_MEMORY: 'GL_OUT_OF_MEMORY',
-        gl.GL_STACK_UNDERFLOW: 'GL_STACK_UNDERFLOW',
-        gl.GL_STACK_OVERFLOW: 'GL_STACK_OVERFLOW',
+        gl.GL_INVALID_ENUM: "GL_INVALID_ENUM",
+        gl.GL_INVALID_VALUE: "GL_INVALID_VALUE",
+        gl.GL_INVALID_OPERATION: "GL_INVALID_OPERATION",
+        gl.GL_INVALID_FRAMEBUFFER_OPERATION: "GL_INVALID_FRAMEBUFFER_OPERATION",
+        gl.GL_OUT_OF_MEMORY: "GL_OUT_OF_MEMORY",
+        gl.GL_STACK_UNDERFLOW: "GL_STACK_UNDERFLOW",
+        gl.GL_STACK_OVERFLOW: "GL_STACK_OVERFLOW",
     }
 
     def __init__(self, window: pyglet.window.Window):
@@ -231,10 +232,10 @@ class Context:
         if err == gl.GL_NO_ERROR:
             return None
 
-        return self._errors.get(err, 'GL_UNKNOWN_ERROR')
+        return self._errors.get(err, "GL_UNKNOWN_ERROR")
 
     @classmethod
-    def activate(cls, ctx: 'Context'):
+    def activate(cls, ctx: "Context"):
         """Mark a context as the currently active one"""
         cls.active = ctx
 
@@ -378,7 +379,9 @@ class Context:
 
     # --- Resource methods ---
 
-    def buffer(self, *, data: Optional[Any] = None, reserve: int = 0, usage: str = 'static') -> Buffer:
+    def buffer(
+        self, *, data: Optional[Any] = None, reserve: int = 0, usage: str = "static"
+    ) -> Buffer:
         """Create a new OpenGL Buffer object.
 
         :param Any data: The buffer data, This can be ``bytes`` or an object supporting the buffer protocol.
@@ -390,27 +393,32 @@ class Context:
         return Buffer(self, data, reserve=reserve, usage=usage)
 
     def framebuffer(
-            self,
-            *,
-            color_attachments: Union[Texture, List[Texture]] = None,
-            depth_attachment: Texture = None) -> Framebuffer:
+        self,
+        *,
+        color_attachments: Union[Texture, List[Texture]] = None,
+        depth_attachment: Texture = None
+    ) -> Framebuffer:
         """Create a Framebuffer.
 
         :param List[arcade.gl.Texture] color_attachments: List of textures we want to render into
         :param arcade.gl.Texture depth_attachment: Depth texture
         :rtype: :py:class:`~arcade.gl.Framebuffer`
         """
-        return Framebuffer(self, color_attachments=color_attachments, depth_attachment=depth_attachment)
+        return Framebuffer(
+            self, color_attachments=color_attachments, depth_attachment=depth_attachment
+        )
 
-    def texture(self,
-                size: Tuple[int, int],
-                *,
-                components: int = 4,
-                dtype: str = 'f1',
-                data: Any = None,
-                wrap_x: gl.GLenum = None,
-                wrap_y: gl.GLenum = None,
-                filter: Tuple[gl.GLenum, gl.GLenum] = None) -> Texture:
+    def texture(
+        self,
+        size: Tuple[int, int],
+        *,
+        components: int = 4,
+        dtype: str = "f1",
+        data: Any = None,
+        wrap_x: gl.GLenum = None,
+        wrap_y: gl.GLenum = None,
+        filter: Tuple[gl.GLenum, gl.GLenum] = None
+    ) -> Texture:
         """Create a 2D Texture.
 
         Wrap modes: ``GL_REPEAT``, ``GL_MIRRORED_REPEAT``, ``GL_CLAMP_TO_EDGE``, ``GL_CLAMP_TO_BORDER``
@@ -428,9 +436,16 @@ class Context:
         :param GLenum wrap_y: How the texture wraps in y direction
         :param Tuple[GLenum,GLenum] filter: Minification and magnification filter
         """
-        return Texture(self, size, components=components, data=data, dtype=dtype,
-                       wrap_x=wrap_x, wrap_y=wrap_y,
-                       filter=filter)
+        return Texture(
+            self,
+            size,
+            components=components,
+            data=data,
+            dtype=dtype,
+            wrap_x=wrap_x,
+            wrap_y=wrap_y,
+            filter=filter,
+        )
 
     def depth_texture(self, size: Tuple[int, int], *, data=None) -> Texture:
         """Create a 2D depth texture
@@ -440,8 +455,12 @@ class Context:
         """
         return Texture(self, size, data=data, depth=True)
 
-    def geometry(self, content: Optional[Sequence[BufferDescription]] = None,
-                 index_buffer: Buffer = None, mode: int = None):
+    def geometry(
+        self,
+        content: Optional[Sequence[BufferDescription]] = None,
+        index_buffer: Buffer = None,
+        mode: int = None,
+    ):
         """
         Create a Geomtry instance.
 
@@ -452,12 +471,13 @@ class Context:
         return Geometry(self, content, index_buffer=index_buffer, mode=mode)
 
     def program(
-            self,
-            *,
-            vertex_shader: str,
-            fragment_shader: str = None,
-            geometry_shader: str = None,
-            defines: Dict[str, str] = None) -> Program:
+        self,
+        *,
+        vertex_shader: str,
+        fragment_shader: str = None,
+        geometry_shader: str = None,
+        defines: Dict[str, str] = None
+    ) -> Program:
         """Create a :py:class:`~arcade.gl.Program` given the vertex, fragment and geometry shader.
 
         :param str vertex_shader: vertex shader source
@@ -467,8 +487,16 @@ class Context:
         :rtype: :py:class:`~arcade.gl.Program`
         """
         source_vs = ShaderSource(vertex_shader, gl.GL_VERTEX_SHADER)
-        source_fs = ShaderSource(fragment_shader, gl.GL_FRAGMENT_SHADER) if fragment_shader else None
-        source_geo = ShaderSource(geometry_shader, gl.GL_GEOMETRY_SHADER) if geometry_shader else None
+        source_fs = (
+            ShaderSource(fragment_shader, gl.GL_FRAGMENT_SHADER)
+            if fragment_shader
+            else None
+        )
+        source_geo = (
+            ShaderSource(geometry_shader, gl.GL_GEOMETRY_SHADER)
+            if geometry_shader
+            else None
+        )
 
         # If we don't have a fragment shader we are doing transform feedback.
         # When a geometry shader is present the out attributes will be located there
@@ -482,8 +510,12 @@ class Context:
         return Program(
             self,
             vertex_shader=source_vs.get_source(defines=defines),
-            fragment_shader=source_fs.get_source(defines=defines) if source_fs else None,
-            geometry_shader=source_geo.get_source(defines=defines) if source_geo else None,
+            fragment_shader=source_fs.get_source(defines=defines)
+            if source_fs
+            else None,
+            geometry_shader=source_geo.get_source(defines=defines)
+            if source_geo
+            else None,
             out_attributes=out_attributes,
         )
 
@@ -497,7 +529,6 @@ class Context:
 
 
 class ContextStats:
-
     def __init__(self, warn_threshold=100):
         self.warn_threshold = warn_threshold
         # (created, freed)
@@ -512,8 +543,14 @@ class ContextStats:
         created, freed = getattr(self, key)
         setattr(self, key, (created + 1, freed))
         if created % self.warn_threshold == 0 and created > 0:
-            LOG.debug("%s allocations passed threshold (%s) [created = %s] [freed = %s] [active = %s]",
-                      key, self.warn_threshold, created, freed, created - freed)
+            LOG.debug(
+                "%s allocations passed threshold (%s) [created = %s] [freed = %s] [active = %s]",
+                key,
+                self.warn_threshold,
+                created,
+                freed,
+                created - freed,
+            )
 
     def decr(self, key):
         created, freed = getattr(self, key)
@@ -522,6 +559,7 @@ class ContextStats:
 
 class Limits:
     """OpenGL Limitations"""
+
     def __init__(self, ctx):
         self._ctx = ctx
         #: Minor version number of the OpenGL API supported by the current context
@@ -538,7 +576,9 @@ class Limits:
         #: A mask value indicating what context profile is used (core, compat etc.)
         self.CONTEXT_PROFILE_MASK = self.get(gl.GL_CONTEXT_PROFILE_MASK)
         #: Minimum required alignment for uniform buffer sizes and offset
-        self.UNIFORM_BUFFER_OFFSET_ALIGNMENT = self.get(gl.GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT)
+        self.UNIFORM_BUFFER_OFFSET_ALIGNMENT = self.get(
+            gl.GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT
+        )
         #: Value indicates the maximum number of layers allowed in an array texture, and must be at least 256
         self.MAX_ARRAY_TEXTURE_LAYERS = self.get(gl.GL_MAX_ARRAY_TEXTURE_LAYERS)
         #: A rough estimate of the largest 3D texture that the GL can handle. The value must be at least 64
@@ -548,15 +588,23 @@ class Limits:
         #: Maximum number of samples in a color multisample texture
         self.MAX_COLOR_TEXTURE_SAMPLES = self.get(gl.GL_MAX_COLOR_TEXTURE_SAMPLES)
         #: the number of words for fragment shader uniform variables in all uniform blocks
-        self.MAX_COMBINED_FRAGMENT_UNIFORM_COMPONENTS = self.get(gl.GL_MAX_COMBINED_FRAGMENT_UNIFORM_COMPONENTS)
+        self.MAX_COMBINED_FRAGMENT_UNIFORM_COMPONENTS = self.get(
+            gl.GL_MAX_COMBINED_FRAGMENT_UNIFORM_COMPONENTS
+        )
         #: Number of words for geometry shader uniform variables in all uniform blocks
-        self.MAX_COMBINED_GEOMETRY_UNIFORM_COMPONENTS = self.get(gl.GL_MAX_COMBINED_GEOMETRY_UNIFORM_COMPONENTS)
+        self.MAX_COMBINED_GEOMETRY_UNIFORM_COMPONENTS = self.get(
+            gl.GL_MAX_COMBINED_GEOMETRY_UNIFORM_COMPONENTS
+        )
         #: Maximum supported texture image units that can be used to access texture maps from the vertex shader
-        self.MAX_COMBINED_TEXTURE_IMAGE_UNITS = self.get(gl.GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS)
+        self.MAX_COMBINED_TEXTURE_IMAGE_UNITS = self.get(
+            gl.GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS
+        )
         #: Maximum number of uniform blocks per program
         self.MAX_COMBINED_UNIFORM_BLOCKS = self.get(gl.GL_MAX_COMBINED_UNIFORM_BLOCKS)
         #: Number of words for vertex shader uniform variables in all uniform blocks
-        self.MAX_COMBINED_VERTEX_UNIFORM_COMPONENTS = self.get(gl.GL_MAX_COMBINED_VERTEX_UNIFORM_COMPONENTS)
+        self.MAX_COMBINED_VERTEX_UNIFORM_COMPONENTS = self.get(
+            gl.GL_MAX_COMBINED_VERTEX_UNIFORM_COMPONENTS
+        )
         #: A rough estimate of the largest cube-map texture that the GL can handle
         self.MAX_CUBE_MAP_TEXTURE_SIZE = self.get(gl.GL_MAX_CUBE_MAP_TEXTURE_SIZE)
         #: Maximum number of samples in a multisample depth or depth-stencil texture
@@ -570,26 +618,38 @@ class Limits:
         #: Recommended maximum number of vertex array vertices
         self.MAX_ELEMENTS_VERTICES = self.get(gl.GL_MAX_ELEMENTS_VERTICES)
         #: Maximum number of components of the inputs read by the fragment shader
-        self.MAX_FRAGMENT_INPUT_COMPONENTS = self.get(gl.GL_MAX_FRAGMENT_INPUT_COMPONENTS)
+        self.MAX_FRAGMENT_INPUT_COMPONENTS = self.get(
+            gl.GL_MAX_FRAGMENT_INPUT_COMPONENTS
+        )
         #: Maximum number of individual floating-point, integer, or boolean values that can be
         #: held in uniform variable storage for a fragment shader
-        self.MAX_FRAGMENT_UNIFORM_COMPONENTS = self.get(gl.GL_MAX_FRAGMENT_UNIFORM_COMPONENTS)
+        self.MAX_FRAGMENT_UNIFORM_COMPONENTS = self.get(
+            gl.GL_MAX_FRAGMENT_UNIFORM_COMPONENTS
+        )
         #: maximum number of individual 4-vectors of floating-point, integer,
         #: or boolean values that can be held in uniform variable storage for a fragment shader
         self.MAX_FRAGMENT_UNIFORM_VECTORS = self.get(gl.GL_MAX_FRAGMENT_UNIFORM_VECTORS)
         #: Maximum number of uniform blocks per fragment shader.
         self.MAX_FRAGMENT_UNIFORM_BLOCKS = self.get(gl.GL_MAX_FRAGMENT_UNIFORM_BLOCKS)
         #: Maximum number of components of inputs read by a geometry shader
-        self.MAX_GEOMETRY_INPUT_COMPONENTS = self.get(gl.GL_MAX_GEOMETRY_INPUT_COMPONENTS)
+        self.MAX_GEOMETRY_INPUT_COMPONENTS = self.get(
+            gl.GL_MAX_GEOMETRY_INPUT_COMPONENTS
+        )
         #: Maximum number of components of outputs written by a geometry shader
-        self.MAX_GEOMETRY_OUTPUT_COMPONENTS = self.get(gl.GL_MAX_GEOMETRY_OUTPUT_COMPONENTS)
+        self.MAX_GEOMETRY_OUTPUT_COMPONENTS = self.get(
+            gl.GL_MAX_GEOMETRY_OUTPUT_COMPONENTS
+        )
         #: Maximum supported texture image units that can be used to access texture maps from the geometry shader
-        self.MAX_GEOMETRY_TEXTURE_IMAGE_UNITS = self.get(gl.GL_MAX_GEOMETRY_TEXTURE_IMAGE_UNITS)
+        self.MAX_GEOMETRY_TEXTURE_IMAGE_UNITS = self.get(
+            gl.GL_MAX_GEOMETRY_TEXTURE_IMAGE_UNITS
+        )
         #: Maximum number of uniform blocks per geometry shader
         self.MAX_GEOMETRY_UNIFORM_BLOCKS = self.get(gl.GL_MAX_GEOMETRY_UNIFORM_BLOCKS)
         #: Maximum number of individual floating-point, integer, or boolean values that can
         #: be held in uniform variable storage for a geometry shader
-        self.MAX_GEOMETRY_UNIFORM_COMPONENTS = self.get(gl.GL_MAX_GEOMETRY_UNIFORM_COMPONENTS)
+        self.MAX_GEOMETRY_UNIFORM_COMPONENTS = self.get(
+            gl.GL_MAX_GEOMETRY_UNIFORM_COMPONENTS
+        )
         #: Maximum number of samples supported in integer format multisample buffers
         self.MAX_INTEGER_SAMPLES = self.get(gl.GL_MAX_INTEGER_SAMPLES)
         #: Maximum samples for a framebuffer
@@ -617,10 +677,14 @@ class Limits:
         #: Maximum number of 4-component generic vertex attributes accessible to a vertex shader.
         self.MAX_VERTEX_ATTRIBS = self.get(gl.GL_MAX_VERTEX_ATTRIBS)
         #: Maximum supported texture image units that can be used to access texture maps from the vertex shader.
-        self.MAX_VERTEX_TEXTURE_IMAGE_UNITS = self.get(gl.GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS)
+        self.MAX_VERTEX_TEXTURE_IMAGE_UNITS = self.get(
+            gl.GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS
+        )
         #: Maximum number of individual floating-point, integer, or boolean values that
         #: can be held in uniform variable storage for a vertex shader
-        self.MAX_VERTEX_UNIFORM_COMPONENTS = self.get(gl.GL_MAX_VERTEX_UNIFORM_COMPONENTS)
+        self.MAX_VERTEX_UNIFORM_COMPONENTS = self.get(
+            gl.GL_MAX_VERTEX_UNIFORM_COMPONENTS
+        )
         #: Maximum number of 4-vectors that may be held in uniform variable storage for the vertex shader
         self.MAX_VERTEX_UNIFORM_VECTORS = self.get(gl.GL_MAX_VERTEX_UNIFORM_VECTORS)
         #: Maximum number of components of output written by a vertex shader
@@ -636,7 +700,8 @@ class Limits:
         err = self._ctx.error
         if err:
             from warnings import warn
-            warn('Error happened while querying of limits. Moving on ..')
+
+            warn("Error happened while querying of limits. Moving on ..")
 
     def get(self, enum: gl.GLenum) -> int:
         """Get an integer limit"""
