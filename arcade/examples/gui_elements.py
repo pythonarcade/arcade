@@ -52,7 +52,7 @@ class MyView(arcade.View):
     def __init__(self):
         super().__init__()
 
-        self.ui_manager = UIManager(window)
+        self.ui_manager = UIManager()
 
     def on_draw(self):
         """ Draw this view. GUI elements are automatically drawn. """

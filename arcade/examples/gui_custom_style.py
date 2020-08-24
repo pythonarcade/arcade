@@ -18,12 +18,11 @@ from arcade.gui.ui_style import UIStyle
 class MyView(arcade.View):
 
     """ Main program view """
-    def __init__(self, my_window: arcade.Window):
+    def __init__(self):
         """ Set up this view """
         super().__init__()
 
-        self.window = my_window
-        self.ui_manager = UIManager(window)
+        self.ui_manager = UIManager()
 
     def setup(self):
         """ Setup the view """
@@ -76,5 +75,5 @@ class MyView(arcade.View):
 
 if __name__ == '__main__':
     window = arcade.Window(title='ARCADE_GUI')
-    window.show_view(MyView(window))
+    window.show_view(MyView())
     arcade.run()
