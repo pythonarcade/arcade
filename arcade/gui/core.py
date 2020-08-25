@@ -32,7 +32,6 @@ class UIEvent:
         """
         self.type = type
         self.data = kwargs
-        self._repr_keys = tuple(kwargs.keys())
 
     def get(self, key: str) -> Any:
         """
@@ -42,8 +41,8 @@ class UIEvent:
         """
         return self.data.get(key)
 
-    def __str__(self):
-        return ' '.join([f'{self.type} ', *[f'{key}={getattr(self, key)}' for key in self._repr_keys]])
+    def __repr__(self):
+        return ' '.join([f'{self.type} ', *[f'{key}={value}' for key, value in self.data.items()]])
 
 
 class UIElement(arcade.Sprite):
@@ -79,6 +78,9 @@ class UIElement(arcade.Sprite):
         # self.width/height <- subclass
         self.center_x = center_x
         self.center_y = center_y
+
+    def __repr__(self):
+        return f'UIElement({self.id if self.id else self.__style_id})'
 
     @property
     def id(self) -> Optional[str]:
