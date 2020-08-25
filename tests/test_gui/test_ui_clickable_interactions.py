@@ -1,4 +1,5 @@
 from arcade.gui import UIClickable
+from tests.test_gui import MockButton
 
 
 def test_has_normal_state(mock_button):
@@ -78,3 +79,44 @@ def test_uibutton_send_custom_event(mock_mng, mock_button):
 
     assert mock_mng.last_event.type == UIClickable.CLICKED
     assert mock_mng.last_event.get('ui_element') == mock_button
+
+
+def test_hover_over_last_rendered_element(mock_mng):
+    button1 = MockButton(center_x=50, center_y=50, width=400, height=400, id='button1')
+    button2 = MockButton(center_x=50, center_y=50, width=40, height=40, id='button2')
+    mock_mng.add_ui_element(button1)
+    mock_mng.add_ui_element(button2)
+
+    mock_mng.move_mouse(50, 50)
+
+    assert mock_mng.hovered_element == button2
+
+
+def test_focus_over_last_rendered_element(mock_mng):
+    button1 = MockButton(center_x=50, center_y=50, width=400, height=400, id='button1')
+    button2 = MockButton(center_x=50, center_y=50, width=40, height=40, id='button2')
+    mock_mng.add_ui_element(button1)
+    mock_mng.add_ui_element(button2)
+
+    mock_mng.click_and_hold(50, 50)
+
+    assert mock_mng.focused_element == button2
+
+
+def test_click_hits_last_rendered_element(mock_mng):
+    button1 = MockButton(center_x=50, center_y=50, width=400, height=400, id='button1')
+    button2 = MockButton(center_x=50, center_y=50, width=40, height=40, id='button2')
+    mock_mng.add_ui_element(button1)
+    mock_mng.add_ui_element(button2)
+
+    mock_mng.click(50, 50)
+
+    # second button clicked
+    assert button2.on_click_called
+
+    # but first button NOT
+    assert not button1.on_click_called
+
+    # last event triggered from button2
+    assert mock_mng.last_event.type == UIClickable.CLICKED
+    assert mock_mng.last_event.get('ui_element') == button2

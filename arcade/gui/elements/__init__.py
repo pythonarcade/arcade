@@ -10,7 +10,7 @@ from arcade.gui.ui_style import UIStyle
 class UIClickable(EventDispatcher, UIElement):
     """
     Texture based UIElement supporting hover and press,
-    this should fit every use case
+    this should fit every use case.
     """
 
     CLICKED = 'UIClickable_CLICKED'
@@ -122,7 +122,7 @@ class UIClickable(EventDispatcher, UIElement):
     def on_ui_event(self, event: UIEvent):
         if event.type == MOUSE_PRESS and self.collides_with_point((event.get('x'), event.get('y'))):
             self.on_press()
-        elif event.type == MOUSE_RELEASE and self.pressed:
+        elif event.type == MOUSE_RELEASE and self.pressed and self.focused:
             if self.pressed:
                 self.on_release()
 
@@ -179,4 +179,13 @@ class UIClickable(EventDispatcher, UIElement):
         self.pressed = False
 
     def on_click(self):
+        """
+        This callback will be triggered if
+        * the Clickable is pressed
+        * the Clickable is focused
+        * MOUSE_RELEASE event triggered
+
+        In case of multiple UIElements are overlapping, the last added to UIManager will be focused on MOUSE_RELEASE,
+        so that only that one will trigger on_click.
+        """
         pass

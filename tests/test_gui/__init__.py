@@ -18,6 +18,15 @@ class TestUIManager(UIManager):
 
         self.push_handlers(on_ui_event=self._on_ui_event)
 
+    def move_mouse(self, x: int, y: int):
+        self.dispatch_ui_event(arcade.gui.UIEvent(
+            arcade.gui.MOUSE_MOTION,
+            x=x,
+            y=y,
+            button=1,
+            modifier=0
+        ))
+
     def click_and_hold(self, x: int, y: int):
         self.dispatch_ui_event(arcade.gui.UIEvent(
             arcade.gui.MOUSE_PRESS,
