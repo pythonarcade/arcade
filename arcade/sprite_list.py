@@ -3,7 +3,7 @@ This module provides functionality to manage Sprites in a list.
 
 """
 
-from typing import Iterable
+from typing import Iterable, Iterator
 from typing import Any
 from typing import TypeVar
 from typing import List
@@ -252,7 +252,6 @@ class SpriteList:
 
         # List of sprites in the sprite list
         self.sprite_list = []
-        self._iterator = None
 
         self.sprite_idx = dict()
 
@@ -1033,15 +1032,9 @@ class SpriteList:
         """ Return the length of the sprite list. """
         return len(self.sprite_list)
 
-    def __iter__(self) -> 'SpriteList':
+    def __iter__(self) -> Iterator[Sprite]:
         """ Return an iterable object of sprites. """
-        self._iterator = iter(self.sprite_list)
-        return self
-
-    def __next__(self) -> Sprite:
-        """ Get next item """
-
-        return next(self._iterator)
+        return iter(self.sprite_list)
 
     def __getitem__(self, i):
         return self.sprite_list[i]
