@@ -11,6 +11,7 @@ import pytest
 from PIL import Image
 
 import arcade
+
 from . import T
 
 
@@ -75,7 +76,7 @@ def load_view(abs_module_path) -> arcade.View:
     T('show_all', 'show_all'),
     T('show_uiflatbutton_custom_style', 'show_uiflatbutton_custom_style')
 ])
-def test_id_example(window, example):
+def test_id_example(twm, window, example):
     expected_screen = Path(pkg_resources.resource_filename('tests.test_gui', f'assets/{example}.png'))
 
     # import example view
@@ -93,5 +94,6 @@ def test_id_example(window, example):
     # compare files
     assert expected_screen.exists(), f'expected screen missing, actual at {actual_screen}'
 
-    assert img_diff(expected_screen, actual_screen) < 0.135  # max threshold for image difference, mac vs win
-    actual_screen.unlink()
+    if not twm:
+        assert img_diff(expected_screen, actual_screen) < 0.135  # max threshold for image difference, mac vs win
+        actual_screen.unlink()

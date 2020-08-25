@@ -40,8 +40,11 @@ class MyGame(arcade.Window):
         assert p == (255, 255, 255)
 
 
-def test_main():
+def test_main(twm):
     """ Main method """
-    window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT)
-    window.test()
-    window.close()
+    if twm:
+        assert True
+    else:
+        window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT)
+        window.test()
+        window.close()

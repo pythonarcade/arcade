@@ -1,4 +1,5 @@
 import pytest
+
 import arcade
 
 SCREEN_WIDTH = 800
@@ -106,12 +107,13 @@ def test_varying_attachment_size(ctx):
                 ctx.texture((10, 11), components=4)])
 
 
-def test_read(ctx):
+def test_read(twm, ctx):
     fb = create(ctx, 2, 2, components=4)
     fb.clear(color=(1, 1, 0, 1), normalized=True)
     data = fb.read(components=4)
     assert len(data) == 16
-    assert data == b'\xff\xff\x00\xff' * 4
+    if not twm:
+        assert data == b'\xff\xff\x00\xff' * 4
 
     # FIXME: needs read alignment
     # data = fb.read(components=3)
