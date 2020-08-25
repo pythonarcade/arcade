@@ -73,7 +73,7 @@ class UIManager(EventDispatcher):
         """
         Remove handler functions (`on_...`) from :py:attr:`arcade.Window`
 
-        Every :py:class:`arcade.View` uses its own :py:class:`arcade.gui.UIManager`,
+        If every :py:class:`arcade.View` uses its own :py:class:`arcade.gui.UIManager`,
         this method should be called in :py:meth:`arcade.View.on_hide_view()`.
         """
         self.window.remove_handlers(
@@ -183,7 +183,7 @@ class UIManager(EventDispatcher):
         """
         Processes UIEvents, forward events to added elements and manages focused and hovered elements
         """
-        for ui_element in self._ui_elements:
+        for ui_element in list(self._ui_elements):
             ui_element = cast(UIElement, ui_element)
 
             if event.type == MOUSE_PRESS:
