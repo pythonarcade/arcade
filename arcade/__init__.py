@@ -10,6 +10,9 @@ A Python simple, easy to use module for creating 2D games.
 # Error out if we import Arcade with an incompatible version of Python.
 import platform
 import sys
+import os
+
+from pathlib import Path
 
 if sys.version_info[0] < 3 or (sys.version_info[0] == 3 and sys.version_info[1] < 6):
     sys.exit("The Arcade Library requires Python 3.6 or higher.")
@@ -31,6 +34,17 @@ def configure_logging(level: int = None):
         ch.setFormatter(logging.Formatter('%(relativeCreated)s %(name)s %(levelname)s - %(message)s'))
         LOG.addHandler(ch)
 
+
+lib_location = Path(__file__).parent.absolute()
+lib_location = lib_location / "lib"
+
+if sys.platform == "darwin" or sys.platform.startswith("linux"):
+    if "LD_LIBRARY_PATH" in os.environ:
+        os.environ["LD_LIBRARY_PATH"] += ":" + str(lib_location)
+    else:
+        os.environ["LD_LIBRARY_PATH"] = str(lib_location)
+else:
+    os.environ["PATH"] += str(lib_location)
 
 # noinspection PyPep8
 import pyglet
