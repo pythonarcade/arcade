@@ -201,10 +201,10 @@ from .particle import LifetimeParticle
 from .particle import Particle
 from .particle import clamp
 
-from .sound import Sound
-from .sound import load_sound
-from .sound import play_sound
-from .sound import stop_sound
+from .sound.sound import Sound
+from .sound.sound import load_sound
+from .sound.sound import play_sound
+from .sound.sound import stop_sound
 
 from .sprite import FACE_DOWN
 from .sprite import FACE_LEFT
@@ -443,4 +443,3 @@ __all__ = ['AStarBarrierList',
            ]
 
 __version__ = VERSION
-
