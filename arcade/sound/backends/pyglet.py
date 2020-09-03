@@ -1,6 +1,16 @@
 import math
+import os
+import sys
 from pathlib import Path
 from typing import Union
+
+if sys.platform == "darwin" or sys.platform.startswith("linux"):
+    if "LD_LIBRARY_PATH" in os.environ:
+        os.environ["LD_LIBRARY_PATH"] += ":" + "../../libs/ffmpeg/"
+    else:
+        os.environ["LD_LIBRARY_PATH"] = "../../libs/ffmpeg/"
+else:
+    os.environ["PATH"] += "../../libs/ffmpeg/"
 
 import pyglet
 import pyglet.media as media
