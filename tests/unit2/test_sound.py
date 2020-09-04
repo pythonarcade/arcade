@@ -28,8 +28,8 @@ class MyGame(arcade.Window):
         self.laser_mp3_stream = arcade.load_sound(":resources:sounds/laser1.mp3", streaming=True)
         self.laser_ogg_stream = arcade.load_sound(":resources:sounds/laser1.ogg", streaming=True)
 
-        assert round(self.laser_wav.get_length(), 1) == 0.1
-        assert round(self.laser_wav_stream.get_length(), 1) == 0.1
+        assert round(self.laser_wav.get_length(), 1) == 0.2
+        assert round(self.laser_wav_stream.get_length(), 1) == 0.2
 
         assert round(self.laser_mp3.get_length(), 1) == 1.6
         assert round(self.laser_mp3_stream.get_length(), 1) == 1.6
