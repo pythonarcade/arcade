@@ -24,7 +24,7 @@ RELEASE = VERSION
 if __name__ == "__main__":
 
     install_requires = [
-        'pyglet',
+        'pyglet>=1.5.2',
         'pillow',
         'numpy',
         'pytiled-parser==0.9.4a3',
