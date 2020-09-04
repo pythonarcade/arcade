@@ -68,3 +68,9 @@ class SoundBackend:
         raise NotImplementedError(
             "The sound backend you've selected has not implemented the 'is_complete' method."
         )
+
+    def is_playing(self) -> bool:
+        """ Return if the sound is currently playing or not """
+        raise NotImplementedError(
+            "The sound backend you've selected has not implemented the 'is_playing' method."
+        )

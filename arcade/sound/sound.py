@@ -55,6 +55,10 @@ class Sound:
         """ Return true if the sound is done playing. """
         return self.backend.is_complete()
 
+    def is_playing(self) -> bool:
+        """ Return if the sound is currently playing or not """
+        return self.backend.is_playing()
+
     def get_volume(self) -> float:
         """ Get the current volume """
         return self.backend.get_volume()

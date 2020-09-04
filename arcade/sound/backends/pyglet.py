@@ -62,3 +62,7 @@ class PygletBackend(SoundBackend):
             return True
         else:
             return False
+
+    def is_playing(self) -> bool:
+        """ Return true if the sound is playing. """
+        return self.player.playing
