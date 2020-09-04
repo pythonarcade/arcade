@@ -1,3 +1,13 @@
+"""
+Base Sound Backend
+
+This can be inherited to create a new Sound Backend.
+See the PygletBackend for an example of a Sound Backend.
+
+This is used to abstract the backend being used to allow for
+users to create their own backends if they have needs that
+the current backends can't support.
+"""
 from pathlib import Path
 from typing import Union
 

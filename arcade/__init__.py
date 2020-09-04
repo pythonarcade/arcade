@@ -34,7 +34,12 @@ def configure_logging(level: int = None):
         ch.setFormatter(logging.Formatter('%(relativeCreated)s %(name)s %(levelname)s - %(message)s'))
         LOG.addHandler(ch)
 
-
+# The following is used to load ffmpeg libraries.
+# Currently Arcade is only shipping binaries for Mac OS
+# as ffmpeg is not needed for support on Windows and Linux.
+# However it is setup to load ffmpeg if the binaries are present
+# on Windows and Linux. So if you need ffmpeg you can simply
+# drop the binaries in the "lib" folder of Arcade
 lib_location = Path(__file__).parent.absolute()
 lib_location = lib_location / "lib"
 

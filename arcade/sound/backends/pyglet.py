@@ -1,3 +1,13 @@
+"""
+Pyglet Sound Backend
+
+This uses Pyglet for all Sound functions, using built-in decoders
+on Windows and Linux. On Mac, ffmpeg is shipped with Arcade and loaded
+in to provide support for more file formats.
+
+If you need ffmpeg support for Windows or Linux, the binaries simply
+need placed in the "lib" folder of Arcade and they will be automatically loaded
+"""
 import math
 from pathlib import Path
 from typing import Union
@@ -12,7 +22,7 @@ class PygletBackend(SoundBackend):
         super(PygletBackend, self).__init__("pyglet", file_name)
         self.source: Union[media.StaticSource, media.StreamingSource] = None
         self.player: media.Player = media.Player()
-        self.player.min_distance = 100000000
+        self.player.min_distance = 100000000 #setting this allows for 2D panning with 3D audio
 
         self.source = media.load(self.file_name, streaming=streaming)
 
@@ -25,7 +35,7 @@ class PygletBackend(SoundBackend):
         :param bool loop: Loop, false to play once, true to loop continously
         """
         self.player.volume = volume
-        self.player.position = (pan, 0.0, math.sqrt(1 - math.pow(pan, 2)))
+        self.player.position = (pan, 0.0, math.sqrt(1 - math.pow(pan, 2))) #used to mimic panning with 3D audio
         self.player.loop = loop
         self.player.queue(self.source)
         self.player.play()
