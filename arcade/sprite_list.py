@@ -221,6 +221,7 @@ class _SpatialHash:
 
 _SpriteType = TypeVar('_SpriteType', bound=Sprite)
 
+
 class SpriteList:
     """
     Keep a list of sprites. Contains many optimizations around batch-drawing sprites
@@ -991,7 +992,7 @@ class SpriteList:
             # so that rotate and resize operations act on the texture
             # center by default
             texture_transform = Matrix3x3().translate(-0.5, -0.5).multiply(self.sprite_list[0].texture_transform.v).multiply(Matrix3x3().translate(0.5, 0.5).v)
-        if texture_transform is None:
+        else:
             texture_transform = Matrix3x3()
         self.program['TextureTransform'] = texture_transform.v
 
