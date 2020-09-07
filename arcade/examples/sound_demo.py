@@ -6,9 +6,17 @@ template.
 
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.sound_demo
+
+The top button is to play a music track.
+The 3 rows of buttons are arranged such that the audio is panned in the direction of the button,
+and the volume increases as you go down the column.
+
+Left click a button to play a sound. 
+If a sound is playing right click to increase volume, middle click to decrease.
 """
-import arcade
 import typing
+
+import arcade
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -18,6 +26,7 @@ BUTTON_SIZE = 30
 
 class SoundButton(arcade.SpriteSolidColor):
     """ Button, click-for-sound """
+
     def __init__(self, sound_file, pan, volume):
         super().__init__(BUTTON_SIZE, BUTTON_SIZE, arcade.color.WHITE)
         self.sound = arcade.Sound(sound_file)
@@ -29,10 +38,9 @@ class SoundButton(arcade.SpriteSolidColor):
         self.sound.play(pan=self.pan, volume=self.volume)
 
 
-
-
 class AudioStreamButton(arcade.SpriteSolidColor):
     """ Button, click-for-streaming-sound """
+
     def __init__(self, sound_file, pan, volume):
         super().__init__(BUTTON_SIZE, BUTTON_SIZE, arcade.color.WHITE)
         self.sound = arcade.Sound(sound_file, streaming=True)
@@ -41,11 +49,16 @@ class AudioStreamButton(arcade.SpriteSolidColor):
 
     def play(self):
         """ Play """
-        self.sound.play(pan=self.pan, volume=self.volume)
+        self.sound.play(volume=self.volume, pan=self.pan)
 
     def volume_up(self):
         vol = self.sound.get_volume()
-        self.sound.set_volume(vol+.1)
+        self.sound.set_volume(vol + 0.1)
+        print(f"Volume: {self.sound.get_volume()}")
+
+    def volume_down(self):
+        vol = self.sound.get_volume()
+        self.sound.set_volume(vol - 0.1)
         print(f"Volume: {self.sound.get_volume()}")
 
     def stream_position(self):
@@ -73,7 +86,9 @@ class MyGame(arcade.Window):
 
         y = SCREEN_HEIGHT / 2 + 150
         volume = 0.1
-        button = AudioStreamButton(":resources:music/funkyrobot.mp3", pan=-1.0, volume=volume)
+        button = AudioStreamButton(
+            ":resources:music/funkyrobot.mp3", pan=-1.0, volume=volume
+        )
         button.center_x = BUTTON_SIZE
         button.center_y = y
         self.button_sprites.append(button)
@@ -209,11 +224,16 @@ class MyGame(arcade.Window):
             button_sprite = typing.cast(SoundButton, sprite)
             if button == arcade.MOUSE_BUTTON_LEFT:
                 button_sprite.play()
-            elif button == arcade.MOUSE_BUTTON_RIGHT: # right click to increase volume on currently playing sound
-                if button_sprite.sound.voice_handle:
+            elif (
+                button == arcade.MOUSE_BUTTON_RIGHT
+            ):  # right click to increase volume on currently playing sound
+                if not button_sprite.sound.is_complete():
                     button_sprite.volume_up()
                     button_sprite.stream_position()
-
+            elif button == arcade.MOUSE_BUTTON_MIDDLE:
+                if not button_sprite.sound.is_complete():
+                    button_sprite.volume_down()
+                    button_sprite.stream_position()
 
     def on_mouse_release(self, x, y, button, key_modifiers):
         """
