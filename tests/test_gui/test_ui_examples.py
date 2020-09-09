@@ -69,12 +69,15 @@ def load_view(abs_module_path) -> arcade.View:
                     reason=('Example tests not executable on travis, '
                             'check https://travis-ci.org/github/eruvanos/arcade_gui/jobs/678758144#L506'))
 @pytest.mark.parametrize('example', [
+    T('show_all', 'show_all'),
+    T('show_decorator_example', 'show_decorator_example'),
     T('show_id_example', 'show_id_example'),
+    # T('show_image_from_style', 'show_image_from_style'),
+    T('show_uiflatbutton', 'show_uiflatbutton'),
+    T('show_uiflatbutton_custom_style', 'show_uiflatbutton_custom_style'),
+    T('show_uiimagetoggle', 'show_uiimagetoggle'),
     T('show_uiinputbox', 'show_uiinputbox'),
     T('show_uilabel', 'show_uilabel'),
-    T('show_uiflatbutton', 'show_uiflatbutton'),
-    T('show_all', 'show_all'),
-    T('show_uiflatbutton_custom_style', 'show_uiflatbutton_custom_style')
 ])
 def test_id_example(twm, window, example):
     expected_screen = Path(pkg_resources.resource_filename('tests.test_gui', f'assets/{example}.png'))

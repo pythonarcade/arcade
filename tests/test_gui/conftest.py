@@ -51,7 +51,9 @@ def window():
 
 @fixture
 def mock_mng(window):
-    return TestUIManager(window)
+    ui_manager = TestUIManager(window)
+    yield ui_manager
+    ui_manager.unregister_handlers()
 
 
 @pytest.fixture()

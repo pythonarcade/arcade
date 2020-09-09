@@ -27,7 +27,7 @@ class UIStyle(EventDispatcher):
         self.register_event_type('on_style_change')
 
     @staticmethod
-    def from_file(path: Path):
+    def from_file(path: Union[str, Path]):
         """
         Load style from a file, overwriting existing data
 

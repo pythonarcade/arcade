@@ -63,6 +63,9 @@ class MyView(arcade.View):
         self.setup()
         arcade.set_background_color(arcade.color.BLACK)
 
+    def on_hide_view(self):
+        self.ui_manager.unregister_handlers()
+
     def setup(self):
         """ Set up this view. """
         self.ui_manager.purge_ui_elements()

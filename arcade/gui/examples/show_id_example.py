@@ -1,7 +1,6 @@
 from typing import cast
 
 import arcade
-
 from arcade.gui import UILabel, UIClickable, UIInputBox, UIEvent, UIFlatButton, UIManager
 
 
@@ -66,6 +65,9 @@ class MyView(arcade.View):
 
         login_message: UILabel = cast(UILabel, self.ui_manager.find_by_id('login_message'))
         login_message.text = f'Welcome {username}, you are my first player.'
+
+    def on_hide_view(self):
+        self.ui_manager.unregister_handlers()
 
 
 if __name__ == '__main__':

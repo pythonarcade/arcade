@@ -50,7 +50,7 @@ from arcade.gui.elements.flat_button import UIFlatButton, UIGhostFlatButton
 from arcade.gui.elements.image_button import UIImageButton
 from arcade.gui.elements.inputbox import UIInputBox
 from arcade.gui.elements.label import UILabel
-from arcade.gui.elements.toggle import UIToggle
+from arcade.gui.elements.toggle import UIToggle, UIImageToggle
 from arcade.gui.manager import UIManager
 
 __all__ = [
@@ -65,6 +65,7 @@ __all__ = [
     'UIGhostFlatButton',
     'UIImageButton',
     'UIToggle',
+    'UIImageToggle',
     'MOUSE_MOTION',
     'MOUSE_PRESS',
     'MOUSE_RELEASE',

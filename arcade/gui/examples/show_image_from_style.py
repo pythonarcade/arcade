@@ -3,6 +3,7 @@ import arcade
 import arcade.gui
 from arcade.gui import UIManager
 
+
 # TODO Work in progress
 class MyView(arcade.View):
     def __init__(self, window: arcade.Window):
@@ -29,6 +30,9 @@ class MyView(arcade.View):
             press_texture=pressed_texture,
             text='UIImageButton',
         ))
+
+    def on_hide_view(self):
+        self.ui_manager.unregister_handlers()
 
 
 if __name__ == '__main__':

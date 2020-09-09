@@ -3,8 +3,8 @@ from arcade.gui.core import MOUSE_MOTION
 from . import MockButton
 
 
-def test_view_starts_without_hovered_element(window):
-    assert UIManager(window).hovered_element is None
+def test_view_starts_without_hovered_element(window, mock_mng):
+    assert mock_mng.hovered_element is None
 
 
 def test_setting_hovered_element_to_none_handles_unhover(mock_mng, mock_button):

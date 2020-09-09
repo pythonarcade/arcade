@@ -8,7 +8,102 @@ from arcade.gui import UIClickable
 from arcade.gui.ui_style import UIStyle
 
 
-class UIToggle(UIClickable):
+class UIAbstractToggel(UIClickable):
+    _value: bool
+    _true_texture: Optional[Texture]
+    _false_texture: Optional[Texture]
+
+    def __init__(self, *args, value: bool = True, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.register_event_type('on_toggle')
+
+        self._value = value
+
+    @property
+    def value(self) -> bool:
+        """
+        current value
+        """
+        return self._value
+
+    @value.setter
+    def value(self, value: bool):
+        self._value = value
+        self.dispatch_event('on_toggle', value)
+        self.set_proper_texture()
+
+    def set_proper_texture(self):
+        preserve_scale = self.scale
+
+        if self.value:
+            self.texture = self._true_texture
+        else:
+            self.texture = self._false_texture
+
+        self.scale = preserve_scale
+
+    def toggle(self):
+        """
+        Toggles current value (True => False, False => True)
+        """
+        self.value = not self.value
+
+    def on_click(self):
+        self.value = not self.value
+
+    def on_toggle(self, value):
+        """
+        Called if value changes through programmatic change or user interaction.
+        """
+        pass
+
+
+class UIImageToggle(UIAbstractToggel):
+    """
+    A toggle which can be `true` or `false`.
+
+    Switches between two images. Useful for switches like fullscreen or sound mute/unmute.
+    """
+
+    def __init__(self,
+                 true_texture: Texture,
+                 false_texture: Texture,
+                 center_x: int = 0,
+                 center_y: int = 0,
+                 value: bool = True,
+                 id: Optional[str] = None,
+                 style: UIStyle = None,
+                 **kwargs):
+        """
+        :param true_texture: displayed if value is True
+        :param false_texture: displayed if value is False
+        :param center_x: center X of element
+        :param center_y: center y of element
+        :param value: initial value
+        :param id: id of :py:class:`arcade.gui.UIElement`
+        :param style: style of :py:class:`arcade.gui.UIElement`
+        :param kwargs: catches unsupported named parameters
+        """
+        super().__init__(
+            center_x=center_x,
+            center_y=center_y,
+            value=value,
+            id=id,
+            style=style,
+            **kwargs)
+        self.style_classes.append('image-toggle')
+
+        self._true_texture = true_texture
+        self._false_texture = false_texture
+
+        self.set_proper_texture()
+
+    def render(self):
+        self.set_proper_texture()
+
+
+class UIToggle(UIAbstractToggel):
     """
     A toggle which can be `true` or `false`.
 
@@ -39,49 +134,15 @@ class UIToggle(UIClickable):
         super().__init__(
             center_x=center_x,
             center_y=center_y,
+            value=value,
             id=id,
             style=style,
             **kwargs
         )
         self.style_classes.append('toggle')
-        self.register_event_type('on_toggle')
         self._height = height
 
-        self._value = value
-        self._true_texture: Optional[Texture] = None
-        self._false_texture: Optional[Texture] = None
-
         self.render()
-        self.set_proper_texture()
-
-    @property
-    def value(self) -> bool:
-        """
-        current value
-        """
-        return self._value
-
-    @value.setter
-    def value(self, value: bool):
-        self._value = value
-        self.dispatch_event('on_toggle', value)
-        self.set_proper_texture()
-
-    def toggle(self):
-        """
-        Toggles current value (True => False, False => True)
-        """
-        self.value = not self.value
-
-    def on_click(self):
-        self.value = not self.value
-        self.set_proper_texture()
-
-    def on_toggle(self, value):
-        """
-        Called if value changes through programmatic change or user interaction.
-        """
-        pass
 
     @staticmethod
     def _round_corner(radius, fill):
@@ -140,9 +201,3 @@ class UIToggle(UIClickable):
         self._false_texture = self._render_toggle(False, color_false, bg_color_false)
 
         self.set_proper_texture()
-
-    def set_proper_texture(self):
-        if self.value:
-            self.texture = self._true_texture
-        else:
-            self.texture = self._false_texture
