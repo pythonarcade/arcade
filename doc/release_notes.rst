@@ -7,6 +7,13 @@ Release Notes
 
 Keep up-to-date with the latest changes to the Arcade library by the release notes.
 
+Version 2.4.2
+-------------
+
+Version 2.4.2 was released 2020-09-08
+
+TODO: Full change list coming.
+
 Version 2.4
 -----------
 
