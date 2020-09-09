@@ -37,7 +37,7 @@ def test_uibutton_clicked(mock_mng, mock_button):
 
     mock_mng.click(50, 50)
 
-    assert mock_button.on_release
+    assert mock_button.on_release_called
     assert mock_button.on_click_called
 
 
@@ -120,3 +120,12 @@ def test_click_hits_last_rendered_element(mock_mng):
     # last event triggered from button2
     assert mock_mng.last_event.type == UIClickable.CLICKED
     assert mock_mng.last_event.get('ui_element') == button2
+
+
+def test_do_not_react_to_right_click(mock_mng, mock_button):
+    mock_mng.add_ui_element(mock_button)
+
+    mock_mng.right_click(50, 50)
+
+    assert not mock_button.on_release_called
+    assert not mock_button.on_click_called
