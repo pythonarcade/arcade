@@ -12,7 +12,31 @@ Version 2.4.2
 
 Version 2.4.2 was released 2020-09-08
 
-TODO: Full change list coming.
+* Enhancement: ``draw_hit_boxes`` new method in ``SpriteList``.
+* Enhancement: ``draw_points`` now significantly faster
+* Added UIToggle, on/off switch
+* Add example showing how to do GPU transformations with the mouse
+* Create buttons with default size/position so size can be set after creation.
+* Allow checking if a sound is done playing `Issue 728 <https://github.com/pvcraven/arcade/issues/728>`_
+* Add an early camera mock-up
+* Add ``finish`` method to ``arcade.gl.context``.
+* New example arcade.experimental.examples.3d_cube (experimental)
+* New example arcade.examples.camera_example
+* Improved UIManager.unregister_handlers(), improves multi view setup
+
+* Update ``preload_textures`` method of ``SpriteList`` to actually pre-load textures
+* GUI code clean-up `Issue 723 <https://github.com/pvcraven/arcade/issues/723>`_
+* Update downloadable .zip for for platformer example code to match current code in documentation.
+* Bug Fix: ``draw_point`` calculates wrong point size
+* Fixed draw_points calculates wrong point size
+* Fixed create_line_loop for thickness !=
+* Fixed pixel scale for offscreen framebuffers and read()
+* Fixed SpriteList iterator is stateful
+* Fix for pixel scale in offscreen framebuffers
+* Fix for UI tests
+* Fix issues with FBO binding
+* Cleanup Remove old examples and code
+
 
 Version 2.4
 -----------
