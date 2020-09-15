@@ -8,7 +8,7 @@ from arcade.gui import UIClickable
 from arcade.gui.ui_style import UIStyle
 
 
-class UIAbstractToggel(UIClickable):
+class UIAbstractToggle(UIClickable):
     _value: bool
     _true_texture: Optional[Texture]
     _false_texture: Optional[Texture]
@@ -59,7 +59,7 @@ class UIAbstractToggel(UIClickable):
         pass
 
 
-class UIImageToggle(UIAbstractToggel):
+class UIImageToggle(UIAbstractToggle):
     """
     A toggle which can be `true` or `false`.
 
@@ -103,7 +103,7 @@ class UIImageToggle(UIAbstractToggel):
         self.set_proper_texture()
 
 
-class UIToggle(UIAbstractToggel):
+class UIToggle(UIAbstractToggle):
     """
     A toggle which can be `true` or `false`.
 
