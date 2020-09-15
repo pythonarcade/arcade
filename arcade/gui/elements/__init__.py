@@ -2,6 +2,7 @@ from typing import Optional
 
 from pyglet.event import EventDispatcher
 
+import arcade
 from arcade import Texture
 from arcade.gui import UIElement, UIEvent, MOUSE_PRESS, MOUSE_RELEASE
 from arcade.gui.ui_style import UIStyle
@@ -120,17 +121,22 @@ class UIClickable(EventDispatcher, UIElement):
         self.set_proper_texture()
 
     def on_ui_event(self, event: UIEvent):
-        if event.type == MOUSE_PRESS and self.collides_with_point((event.get('x'), event.get('y'))):
-            self.on_press()
-        elif event.type == MOUSE_RELEASE and self.pressed and self.focused:
-            if self.pressed:
-                self.on_release()
+        if event.type in (MOUSE_PRESS, MOUSE_RELEASE):
+            left_click = event.get('button') == arcade.MOUSE_BUTTON_LEFT
+            if not left_click:
+                return
 
-                if self.collides_with_point((event.get('x'), event.get('y'))):
-                    self.dispatch_event('on_click')
+            if event.type == MOUSE_PRESS and self.collides_with_point((event.get('x'), event.get('y'))):
+                self.on_press()
+            elif event.type == MOUSE_RELEASE and self.pressed and self.focused:
+                if self.pressed:
+                    self.on_release()
 
-                    if self.mng:
-                        self.mng.dispatch_ui_event(UIEvent(UIClickable.CLICKED, ui_element=self))
+                    if self.collides_with_point((event.get('x'), event.get('y'))):
+                        self.dispatch_event('on_click')
+
+                        if self.mng:
+                            self.mng.dispatch_ui_event(UIEvent(UIClickable.CLICKED, ui_element=self))
 
     def render(self):
         """

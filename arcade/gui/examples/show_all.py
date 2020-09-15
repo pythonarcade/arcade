@@ -83,6 +83,9 @@ class MyView(arcade.View):
             value=True
         ))
 
+    def on_hide_view(self):
+        self.ui_manager.unregister_handlers()
+
 
 if __name__ == '__main__':
     window = arcade.Window(title='ARCADE_GUI')

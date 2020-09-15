@@ -15,9 +15,10 @@ import arcade.gui
 from arcade.gui import UIFlatButton, UIGhostFlatButton, UIManager
 from arcade.gui.ui_style import UIStyle
 
-class MyView(arcade.View):
 
+class MyView(arcade.View):
     """ Main program view """
+
     def __init__(self):
         """ Set up this view """
         super().__init__()
@@ -71,6 +72,9 @@ class MyView(arcade.View):
     def on_show_view(self):
         """ Show this view """
         self.setup()
+
+    def on_hide_view(self):
+        self.ui_manager.unregister_handlers()
 
 
 if __name__ == '__main__':

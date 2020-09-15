@@ -27,27 +27,31 @@ class TestUIManager(UIManager):
             modifier=0
         ))
 
-    def click_and_hold(self, x: int, y: int):
+    def click_and_hold(self, x: int, y: int, button=arcade.MOUSE_BUTTON_LEFT):
         self.dispatch_ui_event(arcade.gui.UIEvent(
             arcade.gui.MOUSE_PRESS,
             x=x,
             y=y,
-            button=1,
+            button=button,
             modifier=0
         ))
 
-    def release(self, x: int, y: int):
+    def release(self, x: int, y: int, button=arcade.MOUSE_BUTTON_LEFT):
         self.dispatch_ui_event(arcade.gui.UIEvent(
             arcade.gui.MOUSE_RELEASE,
             x=x,
             y=y,
-            button=1,
+            button=button,
             modifier=0
         ))
 
     def click(self, x: int, y: int):
         self.click_and_hold(x, y)
         self.release(x, y)
+
+    def right_click(self, x: int, y: int):
+        self.click_and_hold(x, y, button=arcade.MOUSE_BUTTON_RIGHT)
+        self.release(x, y, button=arcade.MOUSE_BUTTON_RIGHT)
 
     def _on_ui_event(self, event: arcade.gui.UIEvent):
         self.event_history.append(event)
