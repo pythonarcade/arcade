@@ -749,6 +749,8 @@ class ShapeElementList(Generic[TShape]):
         """
         Draw everything in the list.
         """
+        self.program['Position'] = [self._center_x, self._center_y]
+
         for group in self.dirties:
             self._refresh_shape(group)
         self.dirties.clear()
@@ -762,7 +764,6 @@ class ShapeElementList(Generic[TShape]):
     def _set_center_x(self, value: float):
         """Set the center x coordinate of the ShapeElementList."""
         self._center_x = value
-        self.program['Position'] = [self._center_x, self._center_y]
 
     center_x = property(_get_center_x, _set_center_x)
 
