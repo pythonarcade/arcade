@@ -467,9 +467,14 @@ def _process_tile_layer(map_object: pytiled_parser.objects.TileMap,
             if my_sprite is None:
                 print(f"Warning: Could not create sprite number {item} in layer '{layer.name}' {tile.image.source}")
             else:
-                my_sprite.center_x = column_index * (map_object.tile_size[0] * scaling) + my_sprite.width / 2
+                offset_x = 0
+                offset_y = 0
+                if tile.tileset.tile_offset is not None:
+                    offset_x = tile.tileset.tile_offset.x or 0
+                    offset_y = tile.tileset.tile_offset.y or 0
+                my_sprite.center_x = (offset_x * scaling) + column_index * (map_object.tile_size[0] * scaling) + my_sprite.width / 2
                 my_sprite.center_y = (map_object.map_size.height - row_index - 1) \
-                    * (map_object.tile_size[1] * scaling) + my_sprite.height / 2
+                    * (map_object.tile_size[1] * scaling) + my_sprite.height / 2 - (offset_y * scaling)
 
                 # Opacity
                 opacity = layer.opacity
