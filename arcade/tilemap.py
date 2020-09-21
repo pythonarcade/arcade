@@ -445,7 +445,6 @@ def _process_tile_layer(map_object: pytiled_parser.objects.TileMap,
                         ) -> SpriteList:
     sprite_list: SpriteList = SpriteList(use_spatial_hash=use_spatial_hash)
     map_array = layer.layer_data
-
     # Loop through the layer and add in the wall list
     for row_index, row in enumerate(map_array):
         for column_index, item in enumerate(row):
@@ -470,11 +469,20 @@ def _process_tile_layer(map_object: pytiled_parser.objects.TileMap,
                 offset_x = 0
                 offset_y = 0
                 if tile.tileset.tile_offset is not None:
-                    offset_x = tile.tileset.tile_offset.x or 0
-                    offset_y = tile.tileset.tile_offset.y or 0
-                my_sprite.center_x = (offset_x * scaling) + column_index * (map_object.tile_size[0] * scaling) + my_sprite.width / 2
-                my_sprite.center_y = (map_object.map_size.height - row_index - 1) \
-                    * (map_object.tile_size[1] * scaling) + my_sprite.height / 2 - (offset_y * scaling)
+                    offset_x = tile.tileset.tile_offset.x* scaling or 0
+                    offset_y = tile.tileset.tile_offset.y* scaling or 0
+                tile_width = map_object.tile_size[0] * scaling
+                tile_height = map_object.tile_size[1] * scaling
+                sprite_center_x = my_sprite.width / 2
+                if map_object.orientation == "staggered": #assuiming staggeraxis y and index odd
+                    if row_index % 2 == 1:
+                        offset_x += tile_width/2
+                    tile_height = tile_height/2
+                    offset_y += tile_height
+                my_sprite.center_x = offset_x + column_index * tile_width + sprite_center_x
+                tile_y_index = map_object.map_size.height - row_index - 1
+                my_sprite_center_y = my_sprite.height / 2
+                my_sprite.center_y = tile_y_index * tile_height + my_sprite_center_y - offset_y
 
                 # Opacity
                 opacity = layer.opacity
@@ -484,7 +492,6 @@ def _process_tile_layer(map_object: pytiled_parser.objects.TileMap,
                 sprite_list.append(my_sprite)
 
     return sprite_list
-
 
 def process_layer(map_object: pytiled_parser.objects.TileMap,
                   layer_name: str,
