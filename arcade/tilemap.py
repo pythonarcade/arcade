@@ -471,6 +471,10 @@ def _process_tile_layer(map_object: pytiled_parser.objects.TileMap,
                 if tile.tileset.tile_offset is not None:
                     offset_x = tile.tileset.tile_offset.x* scaling or 0
                     offset_y = tile.tileset.tile_offset.y* scaling or 0
+                if layer.offset is not None:
+                    offset_x += layer.offset.x * scaling or 0
+                    offset_y += layer.offset.y * scaling or 0
+
                 tile_width = map_object.tile_size[0] * scaling
                 tile_height = map_object.tile_size[1] * scaling
                 sprite_center_x = my_sprite.width / 2
