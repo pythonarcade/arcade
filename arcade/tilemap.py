@@ -507,12 +507,16 @@ def _process_image_layer(map_object: pytiled_parser.objects.TileMap,
     map_source = map_object.tmx_file
     map_directory = os.path.dirname(map_source)
     image_file = _get_image_source(layer, base_directory, map_directory)
-    sprite = Sprite(image_file,scaling, 0,  0, hit_box_algorithm="None")
+    sprite = Sprite(image_file, scaling, 0, 0, hit_box_algorithm="None")
     sprite.center_x = sprite.width // 2
     sprite.center_y = sprite.height // 2
     if layer.offset:
+        tile_height = map_object.tile_size[1]
+        if map_object.orientation == "staggered":
+            tile_height //= 2
+        map_height = map_object.map_size.height * tile_height
         sprite.center_x += layer.offset.x
-        sprite.center_y += layer.offset.y
+        sprite.center_y += map_height - sprite.height - layer.offset.y
 
     sprite_list.append(sprite)
     return sprite_list
