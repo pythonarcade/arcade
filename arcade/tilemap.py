@@ -166,13 +166,13 @@ def _get_image_info_from_tileset(tile):
 
     return image_x, image_y, width, height
 
-def _get_image_source(tile: pytiled_parser.objects.Tile,
+def _get_image_source(tile: Union[pytiled_parser.objects.Tile, pytiled_parser.objects.ImageLayer],
                       base_directory: Optional[str],
                       map_directory: Optional[str]):
     image_file = None
     if tile.image:
         image_file = tile.image.source
-    elif tile.tileset.image:
+    elif isinstance(tile, pytiled_parser.objects.Tile) and tile.tileset.image:
         image_file = tile.tileset.image.source
 
     if not image_file:
@@ -497,6 +497,26 @@ def _process_tile_layer(map_object: pytiled_parser.objects.TileMap,
 
     return sprite_list
 
+def _process_image_layer(map_object: pytiled_parser.objects.TileMap,
+                        layer: pytiled_parser.objects.TileLayer,
+                        scaling: float = 1,
+                        base_directory: str = "",
+                        ) -> SpriteList:
+    sprite_list: SpriteList = SpriteList()
+
+    map_source = map_object.tmx_file
+    map_directory = os.path.dirname(map_source)
+    image_file = _get_image_source(layer, base_directory, map_directory)
+    sprite = Sprite(image_file,scaling, 0,  0, hit_box_algorithm="None")
+    sprite.center_x = sprite.width // 2
+    sprite.center_y = sprite.height // 2
+    if layer.offset:
+        sprite.center_x += layer.offset.x
+        sprite.center_y += layer.offset.y
+
+    sprite_list.append(sprite)
+    return sprite_list
+
 def process_layer(map_object: pytiled_parser.objects.TileMap,
                   layer_name: str,
                   scaling: float = 1,
@@ -572,6 +592,14 @@ def process_layer(map_object: pytiled_parser.objects.TileMap,
                                      hit_box_algorithm,
                                      hit_box_detail
                                      )
+
+    elif isinstance(layer, pytiled_parser.objects.ImageLayer):
+        return _process_image_layer(map_object,
+                                     layer,
+                                     scaling,
+                                     base_directory,
+                                     )
+
 
     print(f"Warning, layer '{layer_name}' has unexpected type. '{type(layer)}'")
     return SpriteList()
