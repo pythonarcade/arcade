@@ -1,9 +1,12 @@
 .. _bundle_into_redistributable:
 
-Bundling a game with PyInstaller
+Bundling a Game with PyInstaller
 ================================
 
-*Note: You must have Arcade version 2.4.3 or greater and Pymunk5.7.0 or greater for the instructions below to work.*
+.. note::
+
+    You must have Arcade version 2.4.3 or greater and Pymunk 5.7.0 or greater
+    for the instructions below to work.*
 
 You've written your game using Arcade_ and it is a masterpiece! Congrats! Now
 you want to share it with others. That usually means helping people install
@@ -13,7 +16,7 @@ it all working. Sharing is not an easy task. Well, PyInstaller_ can change all t
 PyInstaller_ is a tool for Python that lets you bundle up an entire Python application
 into a one-file executable bundle that you can easily share. Thankfully, it works great with Arcade_!
 
-Bundling a simple Arcade script
+Bundling a Simple Arcade Script
 -------------------------------
 
 To demonstrate how PyInstaller works, we will:
@@ -54,7 +57,7 @@ script needs is inside this executable file.
 
 For simple games, this is all you need to know! But, if your game loads any kind of data files from disk, continue reading.
 
-Handling data files
+Handling Data Files
 -------------------
 
 When creating a bundle, PyInstaller first examines your project and automatically identifies nearly everything your project needs (a Python interpreter,
@@ -80,7 +83,7 @@ Below are some examples that show a few common patterns of how data files can be
 The examples first show a code snippet that demonstrates how data is loaded, followed by the PyInstaller
 command to bundle it up.
 
-One data file
+One Data File
 ~~~~~~~~~~~~~
 
 If you simply have one data file in the same directory as your script, refer to the data file using a relative path like this:
@@ -97,7 +100,7 @@ Then, you would use a PyInstaller command like this to include the data file in 
     ...or...
     pyinstaller myscript.py --add-data "*.jpg;."
 
-One data directory
+One Data Directory
 ~~~~~~~~~~~~~~~~~~
 
 If you have a directory of data files (such as ``images``), refer to the data directory using a relative path like this:
@@ -113,7 +116,7 @@ Then, you would use a PyInstaller command like this to include the directory in 
 
     pyinstaller myscript.py --add-data "images;images"
 
-Multiple data files and directories
+Multiple Data Files and Directories
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 You can use the ``--add-data`` flag multiple times to add multiple files and directories into the bundle:
@@ -122,7 +125,7 @@ You can use the ``--add-data`` flag multiple times to add multiple files and dir
 
     pyinstaller myscript.py --add-data "player.jpg;." --add-data "enemy.jpg;." --add-data "music;music"
 
-One directory for everything
+One Directory for Everything
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Although you can include every data file and directory with separate ``--add-data`` flags, it is suggested
@@ -162,7 +165,7 @@ have what you need to bundle your game and share it with your new fans!
 Troubleshooting
 ---------------
 
-Use a one-folder bundle for troubleshooting
+Use a One-Folder Bundle for Troubleshooting
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 If you are having problems getting your bundle to work properly, it may help to temporarily
@@ -172,7 +175,7 @@ the contents of the folder and make sure all of the files are where you expect t
 to be. The one-file bundle produced by ``--onefile`` is simply a
 self-uncompressing archive of this one-folder bundle.
 
-PyInstaller not bundling a needed module
+PyInstaller Not Bundling a Needed Module
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 In most cases, PyInstaller is able to analyze your project and automatically determine
