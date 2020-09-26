@@ -5,8 +5,11 @@ Contains pre-loaded programs
 from pathlib import Path
 from typing import Tuple, Union
 
+from PIL import Image
+
 from arcade.gl import BufferDescription, Context
 from arcade.gl.program import Program
+from arcade.gl.texture import Texture
 import arcade
 
 
@@ -203,3 +206,32 @@ class ArcadeContext(Context):
             geometry_shader=geometry_shader_src,
             defines=defines,
         )
+
+    def load_texture(
+        self,
+        path: str,
+        *,
+        flip: bool = True,
+        build_mipmaps=False,
+    ) -> Texture:
+        """Loads and creates an OpenGL 2D texture.
+
+        :param Union[str,pathlib.Path] path: Path to texture
+        :param bool flip: Flips the image upside down
+        :param bool build_mipmaps: Build mipmaps for the texture
+        """
+        from arcade.resources import resolve_resource_path
+        path = resolve_resource_path(path)
+
+        image = Image.open(str(path))
+
+        if flip:
+            image = image.transpose(Image.FLIP_TOP_BOTTOM)
+
+        texture = self.texture(image.size, components=4, data=image.convert("RGBA").tobytes())
+        image.close()
+
+        if build_mipmaps:
+            texture.build_mipmaps()
+
+        return texture
