@@ -209,7 +209,7 @@ class ArcadeContext(Context):
 
     def load_texture(
         self,
-        path: str,
+        path: Union[str, Path],
         *,
         flip: bool = True,
         build_mipmaps=False,
