@@ -62,6 +62,7 @@ The Python Arcade Library
             <li><a href="tutorials/pymunk_platformer/index.html">Platformer with Physics</a></li>
             <li><a href="tutorials/card_game/index.html">Solitaire</a></li>
             <li><a href="tutorials/gpu_particle_burst/index.html">GPU Particle Burst</a></li>
+            <li><a href="tutorials/bundling_with_pyinstaller/index.html">Bundling a game with PyInstaller</a></li>
            </ul>
         </td>
 
@@ -214,6 +215,7 @@ game without learning a complex framework.
    tutorials/card_game/index
    tutorials/lights/index
    tutorials/gpu_particle_burst/index
+   tutorials/bundling_with_pyinstaller/index
 
 .. toctree::
    :maxdepth: 1
