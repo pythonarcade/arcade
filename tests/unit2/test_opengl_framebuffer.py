@@ -63,7 +63,7 @@ def test_binding(ctx):
 
 
 def test_clear(ctx):
-    """Clear framebuffer with different mehtods and ensure binding do not change"""
+    """Clear framebuffer with different methods and ensure binding do not change"""
     ctx.window.use()
     fb = create(ctx, 10, 20, components=4)
     fb.clear()
@@ -109,8 +109,9 @@ def test_varying_attachment_size(ctx):
 
 def test_read(twm, ctx):
     fb = create(ctx, 2, 2, components=4)
-    fb.clear(color=(1, 1, 0, 1), normalized=True)
+    fb.clear(color=(255, 255, 0, 255))
     data = fb.read(components=4)
+
     assert len(data) == 16
     if not twm:
         assert data == b'\xff\xff\x00\xff' * 4
