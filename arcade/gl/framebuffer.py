@@ -291,6 +291,7 @@ class Framebuffer:
 
         gl.glDepthMask(self._depth_mask)
         gl.glViewport(*self._viewport)
+        gl.glScissor(*self._viewport)
 
     def clear(
         self,
