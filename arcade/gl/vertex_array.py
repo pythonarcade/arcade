@@ -213,19 +213,28 @@ class VertexArray:
         :param int first: Offset start vertex
         :param int vertices: Number of vertices to render
         :param int instances: Number of instances to render
-        :param int buffer_offset: Byte offset for the buffer
+        :param int buffer_offset: Byte offset for the buffer (target)
         """
         if vertices < 0:
             raise ValueError(f"Cannot determine the number of vertices: {vertices}")
+
+        if buffer_offset >= buffer.size:
+            raise ValueError("buffer_offset at end or past the buffer size")
 
         gl.glBindVertexArray(self.glo)
         gl.glEnable(gl.GL_RASTERIZER_DISCARD)
 
         if buffer_offset > 0:
-            pass
+            gl.glBindBufferRange(
+                gl.GL_TRANSFORM_FEEDBACK_BUFFER,
+                0,
+                buffer.glo,
+                buffer_offset,
+                buffer.size - buffer_offset,
+            )
         else:
             gl.glBindBufferBase(
-                gl.GL_TRANSFORM_FEEDBACK_BUFFER, buffer_offset, buffer.glo
+                gl.GL_TRANSFORM_FEEDBACK_BUFFER, 0, buffer.glo
             )
 
         gl.glBeginTransformFeedback(output_mode)
