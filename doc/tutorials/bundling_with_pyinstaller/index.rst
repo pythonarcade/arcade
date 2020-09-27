@@ -11,10 +11,12 @@ Bundling a Game with PyInstaller
 You've written your game using Arcade_ and it is a masterpiece! Congrats! Now
 you want to share it with others. That usually means helping people install
 Python, downloading the necessary modules, copying your code, and then getting
-it all working. Sharing is not an easy task. Well, PyInstaller_ can change all that!
+it all working. Sharing is not an easy task. Well, PyInstaller_ can change all
+that!
 
-PyInstaller_ is a tool for Python that lets you bundle up an entire Python application
-into a one-file executable bundle that you can easily share. Thankfully, it works great with Arcade_!
+PyInstaller_ is a tool for Python that lets you bundle up an entire Python
+application into a one-file executable bundle that you can easily share.
+Thankfully, it works great with Arcade_!
 
 Bundling a Simple Arcade Script
 -------------------------------
