@@ -55,6 +55,7 @@ class Texture:
         "_dtype",
         "_target",
         "_components",
+        "_alignment",
         "_depth",
         "_compare_func",
         "_format",
@@ -113,6 +114,7 @@ class Texture:
         self._width, self._height = size
         self._dtype = dtype
         self._components = components
+        self._alignment = 1
         self._target = target
         self._samples = 0
         self._depth = depth
@@ -141,8 +143,6 @@ class Texture:
             )
 
         gl.glBindTexture(self._target, self._glo)
-        # gl.glPixelStorei(gl.GL_PACK_ALIGNMENT, 1)
-        # gl.glPixelStorei(gl.GL_UNPACK_ALIGNMENT, 1)
 
         if data is not None:
             byte_length, data = data_to_ctypes(data)
@@ -161,6 +161,11 @@ class Texture:
 
     def _texture_2d(self, data):
         """Create a 2D texture"""
+        # Make sure we unpack the pixel data with correct alignment
+        # or we'll end up with corrupted textures
+        gl.glPixelStorei(gl.GL_UNPACK_ALIGNMENT, self._alignment)
+        gl.glPixelStorei(gl.GL_PACK_ALIGNMENT, self._alignment)
+
         # Create depth 2d texture
         if self._depth:
             gl.glTexImage2D(
@@ -191,8 +196,8 @@ class Texture:
                     self._type,
                     self._component_size,
                 ) = format_info
-                self._format = _format[self.components]
-                self._internal_format = _internal_format[self.components]
+                self._format = _format[self._components]
+                self._internal_format = _internal_format[self._components]
                 gl.glTexImage2D(
                     self._target,  # target
                     0,  # level
