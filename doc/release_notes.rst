@@ -7,6 +7,27 @@ Release Notes
 
 Keep up-to-date with the latest changes to the Arcade library by the release notes.
 
+Versoin 2.4.3
+-------------
+
+Version 2.4.3 was released 2020-09-30
+
+General
+
+* Added PyInstalled hook and tutorial
+* ShapeLists should no longer share position between instances
+* GUI improvements: new UIImageToggle
+
+Low level rendering api (arcade.gl):
+
+* ArcadeContext now has a load_texture method for creating opengl textures using Pillow.
+* Bug: Fixed an issue related to drawing indexed geometry with offset
+* Bug: Scissor box not updating when using framebuffer
+* Bug: Fixed an issue with pack/unpack alignment for textures
+* Bug: Transforming geometry into a target buffer should now work with byte offset
+* Bug: Duplicate sprites in 'check_for_collision_with_list' `Issue #763 <https://github.com/pythonarcade/arcade/issues/763>`_
+* Improved docstrings in arcade.gl
+
 Version 2.4.2
 -------------
 
