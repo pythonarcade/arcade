@@ -10,6 +10,7 @@ from typing import List
 from typing import Tuple
 from typing import Optional
 from typing import Union
+from typing import Set
 
 import logging
 import math
@@ -160,7 +161,7 @@ class _SpatialHash:
                     print(f"Warning, tried to remove item {sprite_to_delete.guid} from spatial hash {i} {j} when "
                           f"it wasn't there. {min_point} {max_point}")
 
-    def get_objects_for_box(self, check_object: Sprite) -> List[Sprite]:
+    def get_objects_for_box(self, check_object: Sprite) -> Set[Sprite]:
         """
         Returns colliding Sprites.
 
@@ -195,7 +196,7 @@ class _SpatialHash:
                 #     print(f"Found {item.guid} in {i}, {j}")
                 close_by_sprites.extend(new_items)
 
-        return close_by_sprites
+        return set(close_by_sprites)
 
     def get_objects_for_point(self, check_point: Point) -> List[Sprite]:
         """
