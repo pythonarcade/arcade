@@ -571,6 +571,7 @@ class Sprite:
         if new_value != self._width:
             self.clear_spatial_hashes()
             self._point_list_cache = None
+            self._points = None
             self._width = new_value
             self.add_spatial_hashes()
 
@@ -588,6 +589,7 @@ class Sprite:
         if new_value != self._height:
             self.clear_spatial_hashes()
             self._point_list_cache = None
+            self._points = None
             self._height = new_value
             self.add_spatial_hashes()
 

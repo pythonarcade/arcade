@@ -20,6 +20,7 @@ from arcade import calculate_hit_box_points_simple
 from arcade import calculate_hit_box_points_detailed
 from arcade.resources import resolve_resource_path
 
+
 def _lerp_color(start_color: Color, end_color: Color, u: float) -> Color:
     return (
         int(lerp(start_color[0], end_color[0], u)),
@@ -61,6 +62,7 @@ class Matrix3x3:
 
     def shear(self, sx: float, sy: float):
         return self.multiply([1.0, sy, 0.0, sx, 1.0, 0.0, 0.0, 0.0, 1.0])
+
 
 class Texture:
     """
