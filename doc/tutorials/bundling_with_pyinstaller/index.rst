@@ -28,11 +28,11 @@ To demonstrate how PyInstaller works, we will:
 * bundle the application into a one-file executable
 * run the application
 
-First, install PyInstaller into your environment with:
+First, make sure both Arcade and PyInstaller are installed in your Python environment with:
 
 .. code-block:: bash
 
-    pip install pyinstaller
+    pip install arcade pyinstaller
 
 Then create a file called ``myscript.py`` that contains the following:
 
