@@ -960,6 +960,9 @@ class SpriteList:
 
         :param filter: Optional parameter to set OpenGL filter, such as
                        `gl.GL_NEAREST` to avoid smoothing.
+
+        :param blend_function: Optional parameter to set the OpenGL blend function used for drawing the sprite list, such as
+                        'arcade.Window.ctx.BLEND_ADDITIVE' or 'arcade.Window.ctx.BLEND_DEFAULT'
         """
         if len(self.sprite_list) == 0:
             return
@@ -978,7 +981,10 @@ class SpriteList:
             self._calculate_sprite_buffer()
 
         self.ctx.enable(self.ctx.BLEND)
-        self.ctx.blend_func = self.ctx.BLEND_DEFAULT
+        if "blend_function" in kwargs:
+            self.ctx.blend_func = kwargs["blend_function"]
+        else:
+            self.ctx.blend_func = self.ctx.BLEND_DEFAULT
 
         self._texture.use(0)
 
