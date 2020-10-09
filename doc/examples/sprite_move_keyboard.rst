@@ -13,3 +13,4 @@ Sprite Move By Keyboard
 .. literalinclude:: ../../arcade/examples/sprite_move_keyboard.py
     :caption: sprite_move_keyboard.py
     :linenos:
+    :emphasize-lines: 26-40, 95-113

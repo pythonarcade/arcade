@@ -11,15 +11,7 @@ Install Python from the official Python website:
 
 https://www.python.org/downloads/
 
-.. warning::
-
-    As of Mar-30-2020, it is easiest to get Arcade working with Python 3.7.x.
-    Arcade uses two other libraries "Numpy" and "Pillow" which are difficult to install
-    on Python 3.8.x, particularly under PyCharm. If you wish to use Python 3.8,
-    see additional instructions in the note at the end of this page.
-
-
-When installing Python, make sure to add Pthon to the path (1) before clicking the Install button (2).
+When installing Python, make sure to add Python to the path (1) before clicking the Install button (2).
 
 .. image:: images/setup_windows_1.png
     :width: 450px
@@ -29,7 +21,6 @@ doesn't hurt anything if you do.
 
 .. image:: images/setup_windows_2.png
     :width: 450px
-
 
 Step 2: Install The Arcade Library
 ----------------------------------
