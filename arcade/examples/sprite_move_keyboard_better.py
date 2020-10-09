@@ -12,7 +12,6 @@ python -m arcade.examples.sprite_move_keyboard_better
 """
 
 import arcade
-import os
 
 SPRITE_SCALING = 0.5
 
@@ -26,9 +25,13 @@ MOVEMENT_SPEED = 5
 class Player(arcade.Sprite):
 
     def update(self):
+        """ Move the player """
+        # Move player.
+        # Remove these lines if physics engine is moving player.
         self.center_x += self.change_x
         self.center_y += self.change_y
 
+        # Check for out-of-bounds
         if self.left < 0:
             self.left = 0
         elif self.right > SCREEN_WIDTH - 1:
@@ -52,13 +55,6 @@ class MyGame(arcade.Window):
 
         # Call the parent class initializer
         super().__init__(width, height, title)
-
-        # Set the working directory (where we expect to find files) to the same
-        # directory this .py file is in. You can leave this out of your own
-        # code, but it is needed to easily run the examples using "python -m"
-        # as mentioned at the top of this program.
-        file_path = os.path.dirname(os.path.abspath(__file__))
-        os.chdir(file_path)
 
         # Variables that will hold sprite lists
         self.player_list = None
@@ -115,8 +111,8 @@ class MyGame(arcade.Window):
             self.player_sprite.change_x = MOVEMENT_SPEED
 
         # Call update to move the sprite
-        # If using a physics engine, call update on it instead of the sprite
-        # list.
+        # If using a physics engine, call update player to rely on physics engine
+        # for movement, and call physics engine here.
         self.player_list.update()
 
     def on_key_press(self, key, modifiers):

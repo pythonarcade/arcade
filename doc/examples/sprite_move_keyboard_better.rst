@@ -22,4 +22,4 @@ See the highlighted sections.
 .. literalinclude:: ../../arcade/examples/sprite_move_keyboard_better.py
     :caption: sprite_move_keyboard_better.py
     :linenos:
-    :emphasize-lines: 69-73, 104-115, 117-120, 125-132, 137-144
+    :emphasize-lines: 65-69, 100-111, 113-116, 121-128, 133-140

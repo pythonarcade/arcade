@@ -12,7 +12,6 @@ python -m arcade.examples.sprite_move_keyboard
 """
 
 import arcade
-import os
 
 SPRITE_SCALING = 0.5
 
@@ -24,11 +23,16 @@ MOVEMENT_SPEED = 5
 
 
 class Player(arcade.Sprite):
+    """ Player Class """
 
     def update(self):
+        """ Move the player """
+        # Move player.
+        # Remove these lines if physics engine is moving player.
         self.center_x += self.change_x
         self.center_y += self.change_y
 
+        # Check for out-of-bounds
         if self.left < 0:
             self.left = 0
         elif self.right > SCREEN_WIDTH - 1:
@@ -52,13 +56,6 @@ class MyGame(arcade.Window):
 
         # Call the parent class initializer
         super().__init__(width, height, title)
-
-        # Set the working directory (where we expect to find files) to the same
-        # directory this .py file is in. You can leave this out of your own
-        # code, but it is needed to easily run the examples using "python -m"
-        # as mentioned at the top of this program.
-        file_path = os.path.dirname(os.path.abspath(__file__))
-        os.chdir(file_path)
 
         # Variables that will hold sprite lists
         self.player_list = None
@@ -95,13 +92,13 @@ class MyGame(arcade.Window):
     def on_update(self, delta_time):
         """ Movement and game logic """
 
-        # Call update on all sprites (The sprites don't do much in this
-        # example though.)
+        # Move the player
         self.player_list.update()
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
 
+        # If the player presses a key, update the speed
         if key == arcade.key.UP:
             self.player_sprite.change_y = MOVEMENT_SPEED
         elif key == arcade.key.DOWN:
@@ -114,6 +111,10 @@ class MyGame(arcade.Window):
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key. """
 
+        # If a player releases a key, zero out the speed.
+        # This doesn't work well if multiple keys are pressed.
+        # Use 'better move by keyboard' example if you need to
+        # handle this.
         if key == arcade.key.UP or key == arcade.key.DOWN:
             self.player_sprite.change_y = 0
         elif key == arcade.key.LEFT or key == arcade.key.RIGHT:
