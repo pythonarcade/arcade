@@ -1,9 +1,12 @@
 from typing import Optional
 from uuid import uuid4
 
-import arcade
-import pyglet
 from PIL import ImageDraw
+
+import arcade
+from arcade.gui import UIEvent, TEXT_INPUT, TEXT_MOTION, UIClickable
+from arcade.gui.ui_style import UIStyle
+from arcade.gui.utils import get_text_image
 from arcade.key import (
     MOTION_UP,
     MOTION_RIGHT,
@@ -17,11 +20,6 @@ from arcade.key import (
     MOTION_BACKSPACE,
     MOTION_DELETE, MOTION_BEGINNING_OF_LINE,
 )
-from pyglet.window import Window
-
-from arcade.gui import UIEvent, TEXT_INPUT, TEXT_MOTION, UIClickable
-from arcade.gui.ui_style import UIStyle
-from arcade.gui.utils import get_text_image
 
 
 class _KeyAdapter:
@@ -130,8 +128,9 @@ class UIInputBox(UIClickable):
     ENTER = 'ENTER'
 
     def __init__(self,
-                 center_x, center_y,
-                 width: int,  # any way to not give width?
+                 center_x=0,
+                 center_y=0,
+                 width=0,
                  height=0,
                  text='',
                  id: Optional[str] = None,
@@ -291,5 +290,3 @@ class UIInputBox(UIClickable):
         if self.text_adapter.state_changed:
             self.text_adapter.reset_state_changed()
             self.render()
-
-

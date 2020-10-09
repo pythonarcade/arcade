@@ -13,8 +13,17 @@ class UIAbstractToggle(UIClickable):
     _true_texture: Optional[Texture]
     _false_texture: Optional[Texture]
 
-    def __init__(self, *args, value: bool = True, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(
+            self,
+            value: bool = True,
+            center_x: int = 0,
+            center_y: int = 0,
+            **kwargs):
+        super().__init__(
+            center_x=center_x,
+            center_y=center_y,
+            **kwargs
+        )
 
         self.register_event_type('on_toggle')
 

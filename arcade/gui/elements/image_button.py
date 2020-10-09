@@ -3,18 +3,17 @@ from uuid import uuid4
 
 import arcade
 from arcade import Texture
-
 from arcade.gui import UIClickable, utils
 from arcade.gui.ui_style import UIStyle
 
 
 class UIImageButton(UIClickable):
     def __init__(self,
-                 center_x,
-                 center_y,
                  normal_texture: Texture,
-                 hover_texture: Texture,
-                 press_texture: Texture,
+                 hover_texture: Optional[Texture] = None,
+                 press_texture: Optional[Texture] = None,
+                 center_x=0,
+                 center_y=0,
                  text='',
                  id: Optional[str] = None,
                  style: UIStyle = None,
@@ -23,10 +22,10 @@ class UIImageButton(UIClickable):
         """
         :param center_x: center X of element
         :param center_y: center y of element
-        :param normal_texture:
-        :param hover_texture:
-        :param press_texture:
-        :param text:
+        :param normal_texture: texture shown in normal state
+        :param hover_texture: texture shown if hovered
+        :param press_texture: texture shown if pressed
+        :param text: text drawn on top of image
         :param id: id of :py:class:`arcade.gui.UIElement`
         :param style: style of :py:class:`arcade.gui.UIElement`
         :param kwargs: catches unsupported named parameters
@@ -41,8 +40,8 @@ class UIImageButton(UIClickable):
         self.style_classes.append('imagebutton')
 
         self._normal_texture: Texture = normal_texture
-        self._hover_texture: Texture = hover_texture
-        self._press_texture: Texture = press_texture
+        self._hover_texture: Optional[Texture] = hover_texture
+        self._press_texture: Optional[Texture] = press_texture
 
         self.text = text
         # self.render implicitly called through setting self.text
@@ -60,9 +59,9 @@ class UIImageButton(UIClickable):
         if self.text:
             self.render_with_text(self.text)
         else:
-            self.normal_texture = self.normal_texture
-            self.hover_texture = self.hover_texture
-            self.press_texture = self.press_texture
+            self.normal_texture = self._normal_texture
+            self.hover_texture = self._hover_texture
+            self.press_texture = self._press_texture
 
     def render_with_text(self, text: str):
         font_size = self.style_attr('font_size', 22)
@@ -84,20 +83,22 @@ class UIImageButton(UIClickable):
                                                  )
         self.normal_texture = Texture(str(uuid4()), image=normal_image)
 
-        hover_image = utils.get_image_with_text(text,
-                                                background_image=self._hover_texture.image,
-                                                font_color=font_color_hover,
-                                                font_size=font_size,
-                                                align='center',
-                                                valign='middle'
-                                                )
-        self.hover_texture = Texture(str(uuid4()), image=hover_image)
+        if self._hover_texture:
+            hover_image = utils.get_image_with_text(text,
+                                                    background_image=self._hover_texture.image,
+                                                    font_color=font_color_hover,
+                                                    font_size=font_size,
+                                                    align='center',
+                                                    valign='middle'
+                                                    )
+            self.hover_texture = Texture(str(uuid4()), image=hover_image)
 
-        press_image = utils.get_image_with_text(text,
-                                                background_image=self._press_texture.image,
-                                                font_color=font_color_press,
-                                                font_size=font_size,
-                                                align='center',
-                                                valign='middle'
-                                                )
-        self.press_texture = Texture(str(uuid4()), image=press_image)
+        if self._press_texture:
+            press_image = utils.get_image_with_text(text,
+                                                    background_image=self._press_texture.image,
+                                                    font_color=font_color_press,
+                                                    font_size=font_size,
+                                                    align='center',
+                                                    valign='middle'
+                                                    )
+            self.press_texture = Texture(str(uuid4()), image=press_image)

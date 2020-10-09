@@ -5,8 +5,12 @@ Contains pre-loaded programs
 from pathlib import Path
 from typing import Tuple, Union
 
+from PIL import Image
+import pyglet
+
 from arcade.gl import BufferDescription, Context
 from arcade.gl.program import Program
+from arcade.gl.texture import Texture
 import arcade
 
 
@@ -15,11 +19,16 @@ class ArcadeContext(Context):
     An OpenGL context implementation for Arcade with added custom features.
     This context is normally accessed thought :py:attr:`arcade.Window.ctx`.
 
+    Pyglet users can use the base Context class and extend that as they please.
+
     **This is part of the low level rendering API in arcade
     and is mainly for more advanced usage**
     """
 
-    def __init__(self, window):
+    def __init__(self, window: pyglet.window.Window):
+        """
+        :param pyglet.window.Window window: The pyglet window
+        """
         super().__init__(window)
 
         # Set up a default orthogonal projection for sprites and shapes
@@ -165,7 +174,7 @@ class ArcadeContext(Context):
     def projection_2d_matrix(self):
         """
         Get the current projection matrix as a numpy array.
-        This 4x4 matrix is calculated when setting :py:attr:`~arcade.ArcadeContext.projection_2d`.
+        This 4x4 float32 matrix is calculated when setting :py:attr:`~arcade.ArcadeContext.projection_2d`.
         """
         return self._projection_2d_matrix
 
@@ -178,11 +187,23 @@ class ArcadeContext(Context):
         defines: dict = None,
     ) -> Program:
         """Create a new program given a file names that contain the vertex shader and
-        fragment shader.
+        fragment shader. Note that fragment and geometry shader are optional for
+        when transform shaders are loaded.
+
+        This method also supports the ``:resources:`` prefix.
+        It's recommended to use absolute paths, but not required.
+
+        Example::
+
+            # The most common use case if having a vertex and fragment shader
+            program = window.ctx.load_program(
+                vertex_shader="vert.glsl",
+                fragment_shader="frag.glsl",
+            )
 
         :param Union[str,pathlib.Path] vertex_shader: path to vertex shader
-        :param Union[str,pathlib.Path] fragment_shader: path to fragment shader
-        :param Union[str,pathlib.Path] geometry_shader: path to geometry shader
+        :param Union[str,pathlib.Path] fragment_shader: path to fragment shader (optional)
+        :param Union[str,pathlib.Path] geometry_shader: path to geometry shader (optional)
         :param dict defines: Substitute ``#define`` values in the source
         """
         from arcade.resources import resolve_resource_path
@@ -203,3 +224,37 @@ class ArcadeContext(Context):
             geometry_shader=geometry_shader_src,
             defines=defines,
         )
+
+    def load_texture(
+        self,
+        path: Union[str, Path],
+        *,
+        flip: bool = True,
+        build_mipmaps=False,
+    ) -> Texture:
+        """Loads and creates an OpenGL 2D texture.
+        Currently all textures are converted to RGBA.
+
+        Example::
+
+            texture = window.ctx.load_texture("background.png")
+
+        :param Union[str,pathlib.Path] path: Path to texture
+        :param bool flip: Flips the image upside down
+        :param bool build_mipmaps: Build mipmaps for the texture
+        """
+        from arcade.resources import resolve_resource_path
+        path = resolve_resource_path(path)
+
+        image = Image.open(str(path))
+
+        if flip:
+            image = image.transpose(Image.FLIP_TOP_BOTTOM)
+
+        texture = self.texture(image.size, components=4, data=image.convert("RGBA").tobytes())
+        image.close()
+
+        if build_mipmaps:
+            texture.build_mipmaps()
+
+        return texture

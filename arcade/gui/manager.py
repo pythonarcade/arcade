@@ -22,7 +22,7 @@ class UIManager(EventDispatcher):
 
     """
 
-    def __init__(self, window=None, **kwargs):
+    def __init__(self, window=None, attach_callbacks=True, **kwargs):
         """
         Creates a new :py:class:`arcade.gui.UIManager` and
         registers the corresponding handlers to the current window.
@@ -49,7 +49,9 @@ class UIManager(EventDispatcher):
         self._id_cache: Dict[str, UIElement] = {}
 
         self.register_event_type('on_ui_event')
-        self.register_handlers()
+
+        if attach_callbacks:
+            self.register_handlers()
 
     def register_handlers(self):
         """
@@ -57,6 +59,8 @@ class UIManager(EventDispatcher):
         """
         # self.window.push_handlers(self) # Not as explicit as following
         self.window.push_handlers(
+            self.on_resize,
+            self.on_update,
             self.on_draw,
             self.on_mouse_press,
             self.on_mouse_release,
@@ -77,6 +81,8 @@ class UIManager(EventDispatcher):
         this method should be called in :py:meth:`arcade.View.on_hide_view()`.
         """
         self.window.remove_handlers(
+            self.on_resize,
+            self.on_update,
             self.on_draw,
             self.on_mouse_press,
             self.on_mouse_release,
@@ -164,11 +170,23 @@ class UIManager(EventDispatcher):
         """
         return self._id_cache.get(ui_element_id)
 
+    def on_resize(self, width, height):
+        """
+        Callback triggered on window resize
+        """
+        pass
+
     def on_draw(self):
         """
         Draws all added :py:class:`arcade.gui.UIElement`.
         """
         self._ui_elements.draw()
+
+    def on_update(self, dt):
+        """
+        Callback triggered on update
+        """
+        pass
 
     def dispatch_ui_event(self, event: UIEvent):
         """

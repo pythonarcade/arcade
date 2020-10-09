@@ -8,7 +8,7 @@ The API is based on `ModernGL <https://github.com/moderngl/moderngl>`_ implement
 a subset of the features.
 We use pyglet's OpenGL bindings based on ctypes.
 
-Creating OpenGL resources such as buffers, framebuffers programs and textures
+Creating OpenGL resources such as buffers, framebuffers, programs (shaders) and textures
 should be done through methods in a context.
 
 * Arcade users should access :py:attr:`arcade.Window.ctx` exposing an :py:class:`arcade.ArcadeContext`

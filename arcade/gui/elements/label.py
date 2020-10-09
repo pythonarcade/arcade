@@ -1,4 +1,5 @@
 from typing import Optional
+from uuid import uuid4
 
 import arcade
 from arcade.gui.elements import UIClickable
@@ -12,8 +13,8 @@ class UILabel(UIClickable):
     """
     def __init__(self,
                  text: str,
-                 center_x: int,
-                 center_y: int,
+                 center_x=0,
+                 center_y=0,
                  width: int = 0,
                  align='center',
                  id: Optional[str] = None,
@@ -91,6 +92,6 @@ class UILabel(UIClickable):
                                                 width=int(self._target_width),
                                                 )
 
-        self.normal_texture = arcade.Texture(image=text_image_normal, name=self.text + '1')
-        self.press_texture = arcade.Texture(image=text_image_mouse_press, name=self.text + '2')
-        self.hover_texture = arcade.Texture(image=text_image_mouse_over, name=self.text + '3')
+        self.normal_texture = arcade.Texture(image=text_image_normal, name=str(uuid4()), hit_box_algorithm="None")
+        self.press_texture = arcade.Texture(image=text_image_mouse_press, name=str(uuid4()), hit_box_algorithm="None")
+        self.hover_texture = arcade.Texture(image=text_image_mouse_over, name=str(uuid4()), hit_box_algorithm="None")

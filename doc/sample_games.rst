@@ -7,6 +7,24 @@ paul@cravenfamily.com.
 GitHub Projects
 ---------------
 
+Transcience Animation
+~~~~~~~~~~~~~~~~~~~~~
+
+.. image:: https://raw.githubusercontent.com/SunTzunami/Transience_animation_PyArcade/master/Demo/preview.gif
+   :width: 75%
+
+`Transcience Animation <https://github.com/SunTzunami/Transience_animation_PyArcade>`_
+
+
+Stellar Arena Demo
+~~~~~~~~~~~~~~~~~~
+
+.. raw:: html
+
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/Jn-Vj20hOmc" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+`Stellar Arena Demo <https://github.com/BramCetusAlt/Stellar-Arena>`_
+
 Battle Bros
 ~~~~~~~~~~~
 

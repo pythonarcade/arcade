@@ -26,7 +26,6 @@ from arcade import load_texture
 from arcade import Texture
 from arcade import Matrix3x3
 from arcade import rotate_point
-from arcade import draw_polygon_outline
 from arcade import create_line_loop
 from arcade import ShapeElementList
 from arcade import make_soft_circle_texture
@@ -571,6 +570,13 @@ class Sprite:
         if new_value != self._width:
             self.clear_spatial_hashes()
             self._point_list_cache = None
+
+            # If there is a hit box, rescale it to the new width
+            if self._points:
+                scale = new_value / self._width
+                old_points = self._points
+                self._points = [(point[0] * scale, point[1]) for point in old_points]
+
             self._width = new_value
             self.add_spatial_hashes()
 
@@ -588,6 +594,13 @@ class Sprite:
         if new_value != self._height:
             self.clear_spatial_hashes()
             self._point_list_cache = None
+
+            # If there is a hit box, rescale it to the new width
+            if self._points:
+                scale = new_value / self._height
+                old_points = self._points
+                self._points = [(point[0], point[1] * scale) for point in old_points]
+
             self._height = new_value
             self.add_spatial_hashes()
 
@@ -912,9 +925,9 @@ class Sprite:
                     point[0] *= self.scale
                     point[1] *= self.scale
 
-                # Rotate the point
-                if self.angle:
-                    point = rotate_point(point[0], point[1], 0, 0, self.angle)
+                # Rotate the point (Don't, should already be rotated.)
+                # if self.angle:
+                #     point = rotate_point(point[0], point[1], 0, 0, self.angle)
 
                 point_list.append(point)
 
