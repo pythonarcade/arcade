@@ -11,7 +11,6 @@ python -m arcade.examples.sprite_face_left_or_right
 """
 
 import arcade
-import os
 
 SPRITE_SCALING = 0.5
 
@@ -21,6 +20,7 @@ SCREEN_TITLE = "Sprite Face Left or Right Example"
 
 MOVEMENT_SPEED = 5
 
+# Index of textures, first element faces left, second faces right
 TEXTURE_LEFT = 0
 TEXTURE_RIGHT = 1
 
@@ -30,18 +30,19 @@ class Player(arcade.Sprite):
     def __init__(self):
         super().__init__()
 
+        self.scale = SPRITE_SCALING
         self.textures = []
+
         # Load a left facing texture and a right facing texture.
         # flipped_horizontally=True will mirror the image we load.
         texture = arcade.load_texture(":resources:images/enemies/bee.png")
         self.textures.append(texture)
-        texture = arcade.load_texture(":resources:images/enemies/bee.png", flipped_horizontally=True)
+        texture = arcade.load_texture(":resources:images/enemies/bee.png",
+                                      flipped_horizontally=True)
         self.textures.append(texture)
 
-        self.scale = SPRITE_SCALING
-
         # By default, face right.
-        self.set_texture(TEXTURE_RIGHT)
+        self.texture = texture
 
     def update(self):
         self.center_x += self.change_x
@@ -52,16 +53,6 @@ class Player(arcade.Sprite):
             self.texture = self.textures[TEXTURE_LEFT]
         elif self.change_x > 0:
             self.texture = self.textures[TEXTURE_RIGHT]
-
-        if self.left < 0:
-            self.left = 0
-        elif self.right > SCREEN_WIDTH - 1:
-            self.right = SCREEN_WIDTH - 1
-
-        if self.bottom < 0:
-            self.bottom = 0
-        elif self.top > SCREEN_HEIGHT - 1:
-            self.top = SCREEN_HEIGHT - 1
 
 
 class MyGame(arcade.Window):
@@ -77,15 +68,8 @@ class MyGame(arcade.Window):
         # Call the parent class initializer
         super().__init__(width, height, title)
 
-        # Set the working directory (where we expect to find files) to the same
-        # directory this .py file is in. You can leave this out of your own
-        # code, but it is needed to easily run the examples using "python -m"
-        # as mentioned at the top of this program.
-        file_path = os.path.dirname(os.path.abspath(__file__))
-        os.chdir(file_path)
-
         # Variables that will hold sprite lists
-        self.all_sprites_list = None
+        self.player_sprite_list = None
 
         # Set up the player info
         self.player_sprite = None
@@ -97,13 +81,13 @@ class MyGame(arcade.Window):
         """ Set up the game and initialize the variables. """
 
         # Sprite lists
-        self.all_sprites_list = arcade.SpriteList()
+        self.player_sprite_list = arcade.SpriteList()
 
         # Set up the player
         self.player_sprite = Player()
         self.player_sprite.center_x = SCREEN_WIDTH / 2
         self.player_sprite.center_y = SCREEN_HEIGHT / 2
-        self.all_sprites_list.append(self.player_sprite)
+        self.player_sprite_list.append(self.player_sprite)
 
     def on_draw(self):
         """
@@ -114,14 +98,14 @@ class MyGame(arcade.Window):
         arcade.start_render()
 
         # Draw all the sprites.
-        self.all_sprites_list.draw()
+        self.player_sprite_list.draw()
 
     def on_update(self, delta_time):
         """ Movement and game logic """
 
         # Call update on all sprites (The sprites don't do much in this
         # example though.)
-        self.all_sprites_list.update()
+        self.player_sprite_list.update()
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """

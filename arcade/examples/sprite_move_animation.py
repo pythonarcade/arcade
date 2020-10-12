@@ -10,7 +10,6 @@ python -m arcade.examples.sprite_move_animation
 """
 import arcade
 import random
-import os
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -20,8 +19,9 @@ COIN_SCALE = 0.5
 COIN_COUNT = 50
 CHARACTER_SCALING = 1
 
+# How fast to move, and how fast to run the animation
 MOVEMENT_SPEED = 5
-UPDATES_PER_FRAME = 7
+UPDATES_PER_FRAME = 5
 
 # Constants used to track if the player is facing left or right
 RIGHT_FACING = 0
@@ -50,10 +50,6 @@ class PlayerCharacter(arcade.Sprite):
         # Used for flipping between image sequences
         self.cur_texture = 0
 
-        # Track out state
-        self.jumping = False
-        self.climbing = False
-        self.is_on_ladder = False
         self.scale = CHARACTER_SCALING
 
         # Adjust the collision box. Default includes too much empty space
@@ -96,26 +92,17 @@ class PlayerCharacter(arcade.Sprite):
         self.cur_texture += 1
         if self.cur_texture > 7 * UPDATES_PER_FRAME:
             self.cur_texture = 0
-        self.texture = self.walk_textures[self.cur_texture // UPDATES_PER_FRAME][self.character_face_direction]
+        frame = self.cur_texture // UPDATES_PER_FRAME
+        direction = self.character_face_direction
+        self.texture = self.walk_textures[frame][direction]
 
 
 class MyGame(arcade.Window):
     """ Main application class. """
 
     def __init__(self, width, height, title):
-        """
-        Initializer
-        """
-        super().__init__(width, height, title)
-
-        # Set the working directory (where we expect to find files) to the same
-        # directory this .py file is in. You can leave this out of your own
-        # code, but it is needed to easily run the examples using "python -m"
-        # as mentioned at the top of this program.
-        file_path = os.path.dirname(os.path.abspath(__file__))
-        os.chdir(file_path)
-
         """ Set up the game and initialize the variables. """
+        super().__init__(width, height, title)
 
         # Sprite lists
         self.player_list = None
@@ -140,19 +127,10 @@ class MyGame(arcade.Window):
         self.player_list.append(self.player)
 
         for i in range(COIN_COUNT):
-            coin = arcade.AnimatedTimeSprite(scale=0.5)
+            coin = arcade.Sprite(":resources:images/items/gold_1.png",
+                                 scale=0.5)
             coin.center_x = random.randrange(SCREEN_WIDTH)
             coin.center_y = random.randrange(SCREEN_HEIGHT)
-
-            coin.textures = []
-            coin.textures.append(arcade.load_texture(":resources:images/items/gold_1.png"))
-            coin.textures.append(arcade.load_texture(":resources:images/items/gold_2.png"))
-            coin.textures.append(arcade.load_texture(":resources:images/items/gold_3.png"))
-            coin.textures.append(arcade.load_texture(":resources:images/items/gold_4.png"))
-            coin.textures.append(arcade.load_texture(":resources:images/items/gold_3.png"))
-            coin.textures.append(arcade.load_texture(":resources:images/items/gold_2.png"))
-            coin.scale = COIN_SCALE
-            coin.cur_texture_index = random.randrange(len(coin.textures))
 
             self.coin_list.append(coin)
 
@@ -200,9 +178,10 @@ class MyGame(arcade.Window):
     def on_update(self, delta_time):
         """ Movement and game logic """
 
-        self.coin_list.update()
-        self.coin_list.update_animation()
+        # Move the player
         self.player_list.update()
+
+        # Update the players animation
         self.player_list.update_animation()
 
         # Generate a list of all sprites that collided with the player.
