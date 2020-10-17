@@ -11,6 +11,8 @@ from .program import Program
 if TYPE_CHECKING:  # handle import cycle caused by type hinting
     from arcade.gl import Context
 
+index_types = [None, gl.GL_UNSIGNED_BYTE, gl.GL_UNSIGNED_SHORT, None, gl.GL_UNSIGNED_INT]
+
 
 class VertexArray:
     """Wrapper for Vertex Array Objects (VAOs).
@@ -26,6 +28,8 @@ class VertexArray:
         "_program",
         "_content",
         "_ibo",
+        "_index_element_size",
+        "_index_element_type",
         "_content",
         "_num_vertices",
         "__weakref__",
@@ -38,6 +42,7 @@ class VertexArray:
         program: Program,
         content: Sequence[BufferDescription],
         index_buffer: Buffer = None,
+        index_element_size: int = 4,
     ):
         self._ctx = ctx
         self._program = program
@@ -45,6 +50,8 @@ class VertexArray:
         self.glo = glo = gl.GLuint()
         self._num_vertices = -1
         self._ibo = index_buffer
+        self._index_element_size = index_element_size
+        self._index_element_type = index_types[index_element_size]
 
         self._build(program, content, index_buffer)
 
@@ -191,7 +198,7 @@ class VertexArray:
         """
         gl.glBindVertexArray(self.glo)
         if self._ibo is not None:
-            gl.glDrawElementsInstanced(mode, vertices, gl.GL_UNSIGNED_INT, first * 4, instances)
+            gl.glDrawElementsInstanced(mode, vertices, self._index_element_type, first * self._index_element_size, instances)
         else:
             gl.glDrawArraysInstanced(mode, first, vertices, instances)
 
@@ -269,6 +276,7 @@ class Geometry:
         "_ctx",
         "_content",
         "_index_buffer",
+        "_index_element_size",
         "_mode",
         "_vao_cache",
         "_num_vertices",
@@ -281,10 +289,12 @@ class Geometry:
         content: Optional[Sequence[BufferDescription]],
         index_buffer: Buffer = None,
         mode=None,
+        index_element_size: int = 4,
     ):
         self._ctx = ctx
         self._content = content or []
         self._index_buffer = index_buffer
+        self._index_element_size = index_element_size
         self._mode = mode or ctx.TRIANGLES
         self._vao_cache = {}  # type: Dict[str, VertexArray]
         self._num_vertices = -1
@@ -292,12 +302,16 @@ class Geometry:
         :param Contex ctx: The context this object belongs to
         :param list content: List of BufferDescriptions
         :param Buffer index_buffer: Index/element buffer
-        :param int mode: The default draw mode
+        :param int mode: The default draw mode (optional)
+        :param int index_element_size: Byte size of the index buffer datatype. Can be 1, 2 or 4 (8, 16 or 32bit integer)
         """
+        if self._index_buffer and self._index_element_size not in (1, 2, 4):
+            raise ValueError("index_element_size must be 1, 2, or 4")
+
         if content:
             # Calculate vertices. Use the minimum for now
             if self._index_buffer:
-                self._num_vertices = self._index_buffer.size // 4
+                self._num_vertices = self._index_buffer.size // self._index_element_size
             else:
                 self._num_vertices = content[0].num_vertices
                 for descr in self._content:
@@ -427,7 +441,7 @@ class Geometry:
         # print(f"Generating vao for key {program.attribute_key}")
 
         vao = VertexArray(
-            self._ctx, program, self._content, index_buffer=self._index_buffer
+            self._ctx, program, self._content, index_buffer=self._index_buffer, index_element_size=self._index_element_size,
         )
         self._vao_cache[program.attribute_key] = vao
         return vao

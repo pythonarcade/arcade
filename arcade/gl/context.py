@@ -460,6 +460,7 @@ class Context:
         content: Optional[Sequence[BufferDescription]] = None,
         index_buffer: Buffer = None,
         mode: int = None,
+        index_element_size: int = 4,
     ):
         """
         Create a Geomtry instance.
@@ -467,8 +468,10 @@ class Context:
         :param list content: List of :py:class:`~arcade.gl.BufferDescription` (optional)
         :param Buffer index_buffer: Index/element buffer (optional)
         :param int mode: The default draw mode (optional)
+        :param int mode: The default draw mode (optional)
+        :param int index_element_size: Byte size of the index buffer type. Can be 1, 2 or 4 (8, 16 or 32 bit unsigned integer)
         """
-        return Geometry(self, content, index_buffer=index_buffer, mode=mode)
+        return Geometry(self, content, index_buffer=index_buffer, mode=mode, index_element_size=index_element_size)
 
     def program(
         self,
