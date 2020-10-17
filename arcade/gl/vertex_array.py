@@ -294,9 +294,6 @@ class Geometry:
         :param Buffer index_buffer: Index/element buffer
         :param int mode: The default draw mode
         """
-        # if not content:
-        #     raise ValueError("Geometry without buffer descriptions not supported")
-
         if content:
             # Calculate vertices. Use the minimum for now
             if self._index_buffer:
