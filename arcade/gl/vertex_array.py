@@ -299,11 +299,14 @@ class Geometry:
 
         if content:
             # Calculate vertices. Use the minimum for now
-            self._num_vertices = content[0].num_vertices
-            for descr in self._content:
-                if descr.instanced:
-                    continue
-                self._num_vertices = min(self._num_vertices, descr.num_vertices)
+            if self._index_buffer:
+                self._num_vertices = self._index_buffer.size // 4
+            else:
+                self._num_vertices = content[0].num_vertices
+                for descr in self._content:
+                    if descr.instanced:
+                        continue
+                    self._num_vertices = min(self._num_vertices, descr.num_vertices)
 
         # No cleanup is needed, but we want to count them
         weakref.finalize(self, Geometry._release, self._ctx)
