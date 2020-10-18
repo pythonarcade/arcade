@@ -99,6 +99,120 @@ def test_transform(ctx):
     assert struct.unpack('5f', buffer.read()) == (0.0, 1.0, 2.0, 3.0, 4.0)
 
 
+def test_index_buffer_32bit(ctx):
+    """Create a vao with 32 bit index buffer"""
+    program = ctx.program(
+        vertex_shader="""
+        #version 330
+        in vec2 in_position;
+        void main() {
+            gl_Position = vec4(in_position, 0.0, 1.0);
+        }
+        """,
+        fragment_shader="""
+        #version 330
+        out vec4 color;
+        void main() {
+            color = vec4(1.0);
+        }
+        """,
+    )
+    vertex_buffer = ctx.buffer(data=array.array('f', [0.0] * 2 * 4))
+    ibo = ctx.buffer(data=array.array('I', [0, 1, 2, 0, 1, 3]))
+    vao = ctx.geometry(
+        [
+            BufferDescription(vertex_buffer, "2f", ["in_position"]),
+        ],
+        index_buffer=ibo,
+        index_element_size=4,
+        mode=ctx.TRIANGLES,
+    )
+    assert vao.ctx == ctx
+    assert vao.num_vertices == 6
+    assert vao.index_buffer == ibo
+    vao.render(program)
+
+
+def test_index_buffer_16bit(ctx):
+    """Create a vao with 16 bit index buffer"""
+    program = ctx.program(
+        vertex_shader="""
+        #version 330
+        in vec2 in_position;
+        void main() {
+            gl_Position = vec4(in_position, 0.0, 1.0);
+        }
+        """,
+        fragment_shader="""
+        #version 330
+        out vec4 color;
+        void main() {
+            color = vec4(1.0);
+        }
+        """,
+    )
+    vertex_buffer = ctx.buffer(data=array.array('f', [0.0] * 2 * 4))
+    ibo = ctx.buffer(data=array.array('H', [0, 1, 2, 0, 1, 3]))
+    vao = ctx.geometry(
+        [
+            BufferDescription(vertex_buffer, "2f", ["in_position"]),
+        ],
+        index_buffer=ibo,
+        index_element_size=2,
+        mode=ctx.TRIANGLES,
+    )
+    assert vao.ctx == ctx
+    assert vao.num_vertices == 6
+    assert vao.index_buffer == ibo
+    vao.render(program)
+
+
+def test_index_buffer_8bit(ctx):
+    """Create a vao with 8 bit index buffer"""
+    program = ctx.program(
+        vertex_shader="""
+        #version 330
+        in vec2 in_position;
+        void main() {
+            gl_Position = vec4(in_position, 0.0, 1.0);
+        }
+        """,
+        fragment_shader="""
+        #version 330
+        out vec4 color;
+        void main() {
+            color = vec4(1.0);
+        }
+        """,
+    )
+    vertex_buffer = ctx.buffer(data=array.array('f', [0.0] * 2 * 4))
+    ibo = ctx.buffer(data=array.array('B', [0, 1, 2, 0, 1, 3]))
+    vao = ctx.geometry(
+        [
+            BufferDescription(vertex_buffer, "2f", ["in_position"]),
+        ],
+        index_buffer=ibo,
+        index_element_size=1,
+        mode=ctx.TRIANGLES,
+    )
+    assert vao.ctx == ctx
+    assert vao.num_vertices == 6
+    assert vao.index_buffer == ibo
+    vao.render(program)
+
+
+def test_index_buffer_incorrect_type_size(ctx):
+    """Attempt to use an illegal index buffer type size"""
+    for size in [0, 3, 5]:
+        with pytest.raises(ValueError):
+            ctx.geometry(
+                [
+                    BufferDescription(ctx.buffer(reserve=16), "2f", ["in_position"]),
+                ],
+                index_buffer=ctx.buffer(reserve=16),
+                index_element_size=size,
+            )
+
+
 def test_incomplete_geometry(ctx):
-    ctx.geometry(None)
-    ctx.geometry([])
+    ctx.geometry()
