@@ -25,17 +25,19 @@ def ctx():
 def test_buffer_description(ctx):
     # TODO: components > 4
     # TODO: padding
-    BufferDescription(
-        ctx.buffer(reserve=4 * 8),
+    buffer = ctx.buffer(reserve=4 * 8)
+    attribute_names = ['in_vert', 'in_uv']
+    descr = BufferDescription(
+        buffer,
         '2f 2f',
-        ['in_vert', 'in_uv'],
+        attribute_names,
     )
-
-
-# TODO: Instanced
-# TODO: tranform
-# TODO: index buffer
-
+    assert descr.num_vertices == 2
+    assert descr.buffer == buffer
+    assert descr.attributes == attribute_names
+    assert descr.instanced is False
+    assert len(descr.formats) == 2
+    assert descr.stride == 16
 
 def test_geometry(ctx):
     """Test vertex_array"""
