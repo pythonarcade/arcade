@@ -1,9 +1,9 @@
-from arcade.gui import UIEvent, UIManager
+from arcade.gui import UIEvent
 from arcade.gui.core import MOUSE_MOTION
 from . import MockButton
 
 
-def test_view_starts_without_hovered_element(window, mock_mng):
+def test_view_starts_without_hovered_element(mock_mng):
     assert mock_mng.hovered_element is None
 
 

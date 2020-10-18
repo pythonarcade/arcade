@@ -17,6 +17,8 @@ class MockWindow(EventDispatcher):
         self.register_event_type('on_mouse_motion')
         self.register_event_type('on_key_press')
         self.register_event_type('on_key_release')
+        self.register_event_type('on_update')
+        self.register_event_type('on_resize')
         self.register_event_type('on_text')
         self.register_event_type('on_text_motion')
         self.register_event_type('on_text_motion_select')
@@ -41,17 +43,12 @@ def draw_commands():
 
 
 @pytest.fixture
-def window():
+def mock_window():
     return MockWindow()
 
-
-# @fixture
-# def mng(window):
-#     return UIManager(window)
-
 @fixture
-def mock_mng(window):
-    ui_manager = TestUIManager(window)
+def mock_mng(mock_window):
+    ui_manager = TestUIManager(mock_window)
     yield ui_manager
     ui_manager.unregister_handlers()
 
