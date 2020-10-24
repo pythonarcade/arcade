@@ -51,7 +51,7 @@ class Program:
 
     def __init__(
         self,
-        ctx,
+        ctx: "Context",
         *,
         vertex_shader: str,
         fragment_shader: str = None,

@@ -27,7 +27,7 @@ class Buffer:
     }
 
     def __init__(
-        self, ctx, data: Optional[Any] = None, reserve: int = 0, usage: str = "static"
+        self, ctx: "Context", data: Optional[Any] = None, reserve: int = 0, usage: str = "static"
     ):
         """
         :param Context ctx: The context this buffer belongs to

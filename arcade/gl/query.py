@@ -34,7 +34,7 @@ class Query:
         "__weakref__",
     )
 
-    def __init__(self, ctx):
+    def __init__(self, ctx: "Context"):
         # TODO: Support querying a subset of these queries (faster)
         # TODO: Evalute of this query should be included
         # gl.GL_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN
