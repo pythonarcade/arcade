@@ -328,7 +328,7 @@ def draw_ellipse_outline(center_x: float, center_y: float, width: float,
     :param float tilt_angle: Angle in degrees to tilt the ellipse.
     :param int num_segments: Number of triangle segments that make up this
          circle. Higher is better quality, but slower render time.
-         The default value of -1 means arcade will try to calulate a reasonable
+         The default value of -1 means arcade will try to calculate a reasonable
          amount of segments based on the size of the circle.
     """
     window = get_window()
@@ -348,7 +348,7 @@ def draw_ellipse_outline(center_x: float, center_y: float, width: float,
     program['color'] = color_normalized
     program['shape'] = width / 2, height / 2, tilt_angle, border_width
     program['segments'] = num_segments
-    buffer.write(data=array.array('f', (center_x, center_y)).tobytes())
+    buffer.write(data=array.array('f', (center_x, center_y)))
 
     geometry.render(program, mode=gl.GL_POINTS, vertices=1)
 

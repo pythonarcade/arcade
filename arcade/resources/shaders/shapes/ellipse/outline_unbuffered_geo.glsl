@@ -42,7 +42,7 @@ void main() {
     // sin(v), cos(v) travels clockwise around the circle starting at 0, 1 (top of circle)
     float step = PI * 2 / segments_selected;
 
-    // Draw think circle with triangle strip. This can be handled as a single primive by the gpu.
+    // Draw thick circle with triangle strip. This can be handled as a single primive by the gpu.
     // Number of vertices is segments * 2 + 2, so we need to emit the inital vertex first
 
     // First outer vertex
