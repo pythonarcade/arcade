@@ -283,7 +283,7 @@ def draw_ellipse_filled(center_x: float, center_y: float,
     program['color'] = color_normalized
     program['shape'] = width / 2, height / 2, tilt_angle
     program['segments'] = num_segments
-    buffer.write(data=array.array('f', (center_x, center_y)).tobytes())
+    buffer.write(data=array.array('f', (center_x, center_y)))
 
     geometry.render(program, mode=gl.GL_POINTS, vertices=1)
 
@@ -454,8 +454,8 @@ def _generic_draw_line_strip(point_list: PointList,
         ctx.generic_draw_line_strip_vbo.orphan(ctx.generic_draw_line_strip_vbo.size * 2)
         ctx.generic_draw_line_strip_color.orphan(ctx.generic_draw_line_strip_color.size * 2)
 
-    ctx.generic_draw_line_strip_vbo.write(vertices.tobytes())
-    ctx.generic_draw_line_strip_color.write(a.tobytes())
+    ctx.generic_draw_line_strip_vbo.write(vertices)
+    ctx.generic_draw_line_strip_color.write(a)
 
     geometry.render(program, mode=mode)
 
@@ -514,7 +514,7 @@ def draw_line(start_x: float, start_y: float, end_x: float, end_y: float,
     program['line_width'] = line_width
     program['color'] = color_normalized
     ctx.shape_line_buffer_pos.write(
-        data=array.array('f', [start_x, start_y, end_x, end_y]).tobytes())
+        data=array.array('f', [start_x, start_y, end_x, end_y]))
     geometry.render(program, mode=gl.GL_LINES, vertices=2)
 
     # NOTE: Keep old code just in case
@@ -558,7 +558,7 @@ def draw_lines(point_list: PointList,
     program['line_width'] = line_width
     program['color'] = color_normalized
     ctx.shape_line_buffer_pos.write(
-        data=array.array('f', [v for point in point_list for v in point]).tobytes())
+        data=array.array('f', [v for point in point_list for v in point]))
     geometry.render(program, mode=gl.GL_LINES, vertices=len(point_list))
 
     # Keep old code just in case
@@ -911,7 +911,7 @@ def draw_rectangle_filled(center_x: float, center_y: float, width: float,
 
     program['color'] = color_normalized
     program['shape'] = width, height, tilt_angle
-    buffer.write(data=array.array('f', (center_x, center_y)).tobytes())
+    buffer.write(data=array.array('f', (center_x, center_y)))
     geometry.render(program, mode=ctx.POINTS, vertices=1)
 
     # p1 = [-width // 2 + center_x, -height // 2 + center_y]
