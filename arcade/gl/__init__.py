@@ -11,8 +11,8 @@ should be done through methods in a context.
 * Pyglet users can instantiate an :py:class:`arcade.gl.Context` for the window or
   extend this class with more features if needed.
 
-**Fair warning: This module contains the low level rendering API for arcade
-and is only recommended for more advanced users**
+.. warning:: This module contains the low level rendering API for arcade
+             and is only recommended for more advanced users
 """
 
 from .context import Context
