@@ -2,4 +2,4 @@
 from setuptools import setup
 
 exec(open("arcade/version.py").read())
-setup(version=VERSION,)
+setup(version=VERSION)
