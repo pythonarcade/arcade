@@ -10,8 +10,8 @@ from array import array
 import arcade
 from arcade.gl import BufferDescription, geometry
 
-SCREEN_WIDTH = 400
-SCREEN_HEIGHT = 400
+SCREEN_WIDTH = 800
+SCREEN_HEIGHT = 800
 SCREEN_TITLE = "Instancing"
 
 
@@ -38,7 +38,7 @@ class MyGame(arcade.Window):
 
             void main() {
                 // Create rotation based on what instance we are drawing
-                float angle = time * 0.5 + gl_InstanceID * 100.0;
+                float angle = time * 0.5 + gl_InstanceID;
                 mat2 rot = mat2(
                     cos(angle), sin(angle),
                     -sin(angle), cos(angle)
@@ -66,7 +66,7 @@ class MyGame(arcade.Window):
         self.instances = 1_000
         # Create triangle
         vertices = array("f", [
-            # x, y, red, green, blue
+            # x, y
             0.0, 0.8,
             -0.8, -0.8,
             0.8, -0.8,
