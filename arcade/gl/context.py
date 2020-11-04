@@ -132,6 +132,8 @@ class Context:
     TRIANGLES_ADJACENCY = gl.GL_TRIANGLES_ADJACENCY  # 12
     #: Primitive mode
     TRIANGLE_STRIP_ADJACENCY = gl.GL_TRIANGLE_STRIP_ADJACENCY  # 13
+    #: Patch mode (tessellation)
+    PATCHES = gl.GL_PATCHES
 
     # The most common error enums
     _errors = {
@@ -354,6 +356,25 @@ class Context:
     # def cull_face(self)
 
     @property
+    def patch_vertices(self) -> int:
+        """
+        Get or set number of vertices that will be used to make up a single patch primitive.
+        Patch primitives are consumed by the tessellation control shader (if present) and subsequently used for tessellation.
+
+        :type: int
+        """
+        value = c_int()
+        gl.glGetIntegerv(gl.GL_PATCH_VERTICES, value)
+        return value.value
+
+    @patch_vertices.setter
+    def patch_vertices(self, value: int):
+        if not isinstance(value, int):
+            raise TypeError("patch_vertices must be an integer")
+
+        gl.glPatchParameteri(gl.GL_PATCH_VERTICES, value)
+
+    @property
     def point_size(self) -> float:
         """float: Get or set the point size."""
         return self._point_size
@@ -479,6 +500,8 @@ class Context:
         vertex_shader: str,
         fragment_shader: str = None,
         geometry_shader: str = None,
+        tess_control_shader: str = None,
+        tess_evaluation_shader: str = None,
         defines: Dict[str, str] = None
     ) -> Program:
         """Create a :py:class:`~arcade.gl.Program` given the vertex, fragment and geometry shader.
@@ -486,6 +509,8 @@ class Context:
         :param str vertex_shader: vertex shader source
         :param str fragment_shader: fragment shader source (optional)
         :param str geometry_shader: geometry shader source (optional)
+        :param str tess_control_shader: tessellation control shader source (optional)
+        :param str tess_evaluation_shader: tessellation evaluation shader source (optional)
         :param dict defines: Substitute #defines values in the source (optional)
         :rtype: :py:class:`~arcade.gl.Program`
         """
@@ -498,6 +523,16 @@ class Context:
         source_geo = (
             ShaderSource(geometry_shader, gl.GL_GEOMETRY_SHADER)
             if geometry_shader
+            else None
+        )
+        source_tc = (
+            ShaderSource(tess_control_shader, gl.GL_TESS_CONTROL_SHADER)
+            if tess_control_shader
+            else None
+        )
+        source_te = (
+            ShaderSource(tess_evaluation_shader, gl.GL_TESS_EVALUATION_SHADER)
+            if tess_evaluation_shader
             else None
         )
 
@@ -518,6 +553,12 @@ class Context:
             else None,
             geometry_shader=source_geo.get_source(defines=defines)
             if source_geo
+            else None,
+            tess_control_shader=source_tc.get_source(defines=defines)
+            if source_tc
+            else None,
+            tess_evaluation_shader=source_te.get_source(defines=defines)
+            if source_te
             else None,
             out_attributes=out_attributes,
         )

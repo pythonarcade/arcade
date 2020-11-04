@@ -56,6 +56,8 @@ class Program:
         vertex_shader: str,
         fragment_shader: str = None,
         geometry_shader: str = None,
+        tess_control_shader: str = None,
+        tess_evaluation_shader: str = None,
         out_attributes: List[str] = None,
     ):
         """Create a Program.
@@ -64,6 +66,8 @@ class Program:
         :param str vertex_shader: vertex shader source
         :param str fragment_shader: fragment shader source
         :param str geometry_shader: geometry shader source
+        :param str tess_control_shader: tessellation control shader source
+        :param str tess_evaluation_shader: tessellation evaluation shader source
         :param List[str] out_attributes: List of out attributes used in transform feedback.
         """
         self._ctx = ctx
@@ -80,6 +84,10 @@ class Program:
             shaders.append((fragment_shader, gl.GL_FRAGMENT_SHADER))
         if geometry_shader:
             shaders.append((geometry_shader, gl.GL_GEOMETRY_SHADER))
+        if tess_control_shader:
+            shaders.append((tess_control_shader, gl.GL_TESS_CONTROL_SHADER))
+        if tess_evaluation_shader:
+            shaders.append((tess_evaluation_shader, gl.GL_TESS_EVALUATION_SHADER))
 
         shaders_id = []
         for shader_code, shader_type in shaders:

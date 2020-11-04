@@ -81,6 +81,8 @@ SHADER_TYPE_NAMES = {
     gl.GL_VERTEX_SHADER: "vertex shader",
     gl.GL_FRAGMENT_SHADER: "fragment shader",
     gl.GL_GEOMETRY_SHADER: "geometry shader",
+    gl.GL_TESS_CONTROL_SHADER: "tessellation control shader",
+    gl.GL_TESS_EVALUATION_SHADER: "tessellation evaluation shader",
 }
 
 
