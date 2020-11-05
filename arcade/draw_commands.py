@@ -996,7 +996,7 @@ def get_pixel(x: int, y: int) -> Tuple[int, int, int]:
 
     :param int x: x location
     :param int y: y location
-    :returns: Color
+    :rtype: Color
     """
     # noinspection PyCallingNonCallable,PyTypeChecker
 
@@ -1016,7 +1016,7 @@ def get_pixel(x: int, y: int) -> Tuple[int, int, int]:
     return red, green, blue
 
 
-def get_image(x: int = 0, y: int = 0, width: int = None, height: int = None):
+def get_image(x: int = 0, y: int = 0, width: int = None, height: int = None) -> PIL.Image.Image:
     """
     Get an image from the screen.
 
@@ -1024,6 +1024,8 @@ def get_image(x: int = 0, y: int = 0, width: int = None, height: int = None):
     :param int y: Start (top) y location
     :param int width: Width of image. Leave blank for grabbing the 'rest' of the image
     :param int height: Height of image. Leave blank for grabbing the 'rest' of the image
+    :returns: A Pillow Image
+    :rtype: PIL.Image.Image
 
     You can save the image like:
 
