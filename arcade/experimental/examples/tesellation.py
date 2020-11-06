@@ -8,8 +8,8 @@ from array import array
 import arcade
 from arcade.gl import BufferDescription, geometry
 
-SCREEN_WIDTH = 400
-SCREEN_HEIGHT = 400
+SCREEN_WIDTH = 800
+SCREEN_HEIGHT = 800
 SCREEN_TITLE = "Bezier Curve Tessellation"
 
 
@@ -20,7 +20,7 @@ class MyGame(arcade.Window):
         Set up the application.
         """
         self.time = 0
-        super().__init__(width, height, title)
+        super().__init__(width, height, title, gl_version=(4, 1))
         self.program = self.ctx.program(
             vertex_shader="""
             #version 400 core
