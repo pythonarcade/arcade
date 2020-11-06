@@ -58,6 +58,7 @@ class Window(pyglet.window.Window):
                  resizable: bool = False,
                  update_rate: Optional[float] = 1 / 60,
                  antialiasing: bool = True,
+                 gl_version: Tuple[int, int] = (3, 3),
                  screen: pyglet.canvas.Screen = None):
         """
         Construct a new window
@@ -69,10 +70,12 @@ class Window(pyglet.window.Window):
         :param bool resizable: Can the user resize the window?
         :param float update_rate: How frequently to update the window.
         :param bool antialiasing: Should OpenGL's anti-aliasing be enabled?
+        :param Tuple[int,int] gl_version: What OpenGL version to request. This is ``(3, 3)`` by default
+                                           and can be overridden when using more advanced OpenGL features.
         """
         if antialiasing:
-            config = pyglet.gl.Config(major_version=3,
-                                      minor_version=3,
+            config = pyglet.gl.Config(major_version=gl_version[0],
+                                      minor_version=gl_version[1],
                                       double_buffer=True,
                                       sample_buffers=1,
                                       samples=4)
