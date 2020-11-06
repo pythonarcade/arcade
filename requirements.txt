@@ -1,10 +1,10 @@
-numpy
-Pillow
+numpy~=1.19.1
+Pillow~=7.2.0
 Pyglet>=1.5.4,<2
 pytiled-parser==0.9.4a3
-pytest
-pymunk
-matplotlib
+pytest~=6.0.1
+pymunk~=5.6.0
+matplotlib~=3.3.1
 wheel
 twine
 sphinx-sitemap
@@ -15,4 +15,7 @@ zstandard
 mypy
 coverage
 tox
-pyyaml
+pyyaml~=5.3.1
+
+Shapely~=1.7.1
+setuptools~=49.6.0

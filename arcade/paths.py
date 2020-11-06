@@ -2,50 +2,47 @@
 Path-related functions.
 
 """
+from shapely import speedups
+from shapely.geometry import LineString, Polygon
+
 from arcade import Point
-from arcade import get_distance
-from arcade import lerp_vec
-from arcade import get_sprites_at_point
 from arcade import check_for_collision_with_list
 from arcade import Sprite
 from arcade import SpriteList
 
+
+speedups.enable()
+
+
 def has_line_of_sight(point_1: Point,
                       point_2: Point,
                       walls: SpriteList,
-                      max_distance: int = -1,
-                      check_resolution: int = 2):
+                      max_distance: int = -1):
     """
-    Determine if we have line of sight between two points. Try to make sure
-    that spatial hashing is enabled on the wall SpriteList or this will be
-    very slow.
+    Determine if we have line of sight between two points. Having a line of
+    sight means, that you can connect both points with straight line without
+    intersecting any obstacle.
+    Thanks to the shapely efficiency and speedups boost, this method is very
+    fast. It can easily test 10 000 lines_of_sight.
 
-    :param Point point_1: Start position
-    :param Point point_2: End position position
-    :param SpriteList walls: List of all blocking sprites
-    :param int max_distance: Max distance point 1 can see
-    :param int check_resolution: Check every x pixels for a sprite. Trade-off
-                                 between accuracy and speed.
+    :param point_1: tuple -- coordinates of first position (x, y)
+    :param point_2: tuple -- coordinates of second position (x, y)
+    :param walls: list -- Obstacle objects to check against
+    :param max_distance: int --
+    :return: tuple -- (bool, list)
     """
-    distance = get_distance(point_1[0], point_1[1],
-                            point_2[0], point_2[1])
-    steps = int(distance // check_resolution)
-    for step in range(steps + 1):
-        step_distance = step * check_resolution
-        u = step_distance / distance
-        midpoint = lerp_vec(point_1, point_2, u)
-        if max_distance != -1 and step_distance > max_distance:
-            return False
-        # print(point_1, point_2, step, u, step_distance, midpoint)
-        sprite_list = get_sprites_at_point(midpoint, walls)
-        if len(sprite_list) > 0:
-            return False
-    return True
+    if not walls:
+        return True
+    line_of_sight = LineString([point_1, point_2])
+    if 0 < max_distance < line_of_sight.length:
+        return False
+    return not any((Polygon(o.get_adjusted_hit_box()).crosses(line_of_sight) for o in walls))
 
 
 """
 Classic A-star algorithm for path finding.
 """
+
 
 def _spot_is_blocked(position, moving_sprite, blocking_sprites):
     original_pos = moving_sprite.position
