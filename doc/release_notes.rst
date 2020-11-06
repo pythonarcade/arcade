@@ -7,7 +7,7 @@ Release Notes
 
 Keep up-to-date with the latest changes to the Arcade library by the release notes.
 
-Versoin 2.4.3
+Version 2.4.3
 -------------
 
 Version 2.4.3 was released 2020-09-30
