@@ -7,6 +7,42 @@ Release Notes
 
 Keep up-to-date with the latest changes to the Arcade library by the release notes.
 
+Unreleased
+----------
+
+Potential changes for the next version
+
+Ongoing pull requests
+
+* `Changing to Pyglet from Soloud for Sound <https://github.com/pythonarcade/arcade/pull/746>`_
+* `Optimize has_line_of_sight using shapely <https://github.com/pythonarcade/arcade/pull/783>`_
+* `Update setuptools configuration to align with PEP 517/518 <https://github.com/pythonarcade/arcade/pull/780>`_
+* `changed algorithm for checking for polygon collisions <https://github.com/pythonarcade/arcade/issues/771>`_
+* `Fix incorrect PyInstaller data file path handling docs <https://github.com/pythonarcade/arcade/pull/774>`_
+
+General
+
+* ``SpriteList.draw`` now supports a `blend_function` parameter.
+  This opens up for drawing sprites with different blend modes.
+* Bugfix: Sprite hit box didn't properly update when changing width or height
+* GUI improvements (eruvanos needs to elaborate)
+
+* Several examples was improved
+* Improvements to the pyinstaller tutorial
+
+Advanced
+
+* Added support for tessellation shaders
+* ``arcade.Window`` now takes a ``gl_version`` parameter
+  so users can request a higher OpenGL version than the
+  default ``(3, 3)`` version. This only be used to advanced users.
+* Bugfix: Geometry's internal vertex count was incorrect when using an index buffer
+* We now support 8, 16 and 32 bit index buffers
+* Optimized several draw methods by omitting ``tobytes()`` letting
+  the buffer protocol do the work
+* More advanced examples was added to ``arcade/experimental/examples``
+
+
 Version 2.4.3
 -------------
 
