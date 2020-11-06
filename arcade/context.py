@@ -184,6 +184,8 @@ class ArcadeContext(Context):
         vertex_shader: Union[str, Path],
         fragment_shader: Union[str, Path] = None,
         geometry_shader: Union[str, Path] = None,
+        tess_control_shader: Union[str, Path] = None,
+        tess_evaluation_shader: Union[str, Path] = None,
         defines: dict = None,
     ) -> Program:
         """Create a new program given a file names that contain the vertex shader and
@@ -211,6 +213,8 @@ class ArcadeContext(Context):
         vertex_shader_src = resolve_resource_path(vertex_shader).read_text()
         fragment_shader_src = None
         geometry_shader_src = None
+        tess_control_src = None
+        tess_evaluation_src = None
 
         if fragment_shader:
             fragment_shader_src = resolve_resource_path(fragment_shader).read_text()
@@ -218,10 +222,16 @@ class ArcadeContext(Context):
         if geometry_shader:
             geometry_shader_src = resolve_resource_path(geometry_shader).read_text()
 
+        if tess_control_shader and tess_evaluation_shader:
+            tess_control_src = resolve_resource_path(tess_control_shader)
+            tess_evaluation_src = resolve_resource_path(tess_evaluation_shader)
+
         return self.program(
             vertex_shader=vertex_shader_src,
             fragment_shader=fragment_shader_src,
             geometry_shader=geometry_shader_src,
+            tess_control_shader=tess_control_src,
+            tess_evaluation_shader=tess_evaluation_src,
             defines=defines,
         )
 
