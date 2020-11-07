@@ -6,7 +6,7 @@ Bundling a Game with PyInstaller
 .. note::
 
     You must have Arcade version 2.4.3 or greater and Pymunk 5.7.0 or greater
-    for the instructions below to work.*
+    for the instructions below to work.
 
 You've written your game using Arcade_ and it is a masterpiece! Congrats! Now
 you want to share it with others. That usually means helping people install
@@ -64,7 +64,7 @@ Handling Data Files
 
 When creating a bundle, PyInstaller first examines your project and automatically identifies nearly everything your project needs (a Python interpreter,
 installed modules, etc). But, it can't automatically determine what data files your game is loading from disk (images, sounds,
-maps). So, you must explicitly tell PyInstaller about these files and where they should put them in the bundle.
+maps). So, you must explicitly tell PyInstaller about these files and where it should put them in the bundle.
 This is done with PyInstaller's ``--add-data`` flag:
 
 .. code-block:: bash
@@ -76,14 +76,34 @@ PyInstaller should include in the bundle. The item after the semicolon is the "d
 specifies where files should be placed in the bundle, relative to the bundle's root. In the example
 above, the ``stripes.jpg`` image is copied to the root of the bundle ("``.``").
 
-One thing to keep in mind. When you are packaging your game in a PyInstaller bundle,
-you do not have control over what directory your executable will be run from. Therefore,
-it is best to use relative path names in your Python code when loading data files. That
-way your game will work no matter where people run the bundled executable from.
+After instructing PyInstaller to include data files in a bundle, you must make sure your code loads
+the data files from the correct directory. When you share your game's bundle, you have no control over what directory
+the user will run your bundle from. This is complicated by the fact that a one-file PyInstaller
+bundle is uncompressed at runtime to a random temporary directory and then executed from there. This document describes
+one simple approach that allows your code to execute and load files when running in a PyInstaller bundle AND also be
+able to run when not bundled.
 
-Below are some examples that show a few common patterns of how data files can be bundled.
-The examples first show a code snippet that demonstrates how data is loaded, followed by the PyInstaller
-command to bundle it up.
+You need to do two things. First, the snippet below must be placed at the beginning of your script:
+
+.. code-block:: python
+
+    if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+        os.chdir(sys._MEIPASS)
+
+This snippet uses ``sys.frozen`` and ``sys._MEIPASS``, which are both set by PyInstaller. The ``sys.frozen`` setting
+indicates whether code is running from a bundle ("frozen"). If the code is "frozen", the working
+directory is changed to the root of where the bundle has been uncompressed to (``sys._MEIPASS``). PyInstaller often
+uncompresses its one-file bundles to a directory named something like: ``C:\Users\user\AppData\Local\Temp\_MEI123456``.
+
+Second, once the code above has set the current working directory, all file paths in your code can be relative
+paths (ex: ``resources\images\stripes.jpg``) as opposed to absolute paths (ex:
+``C:\projects\mygame\resources\images\stripes.jpg``).  If you do these two things and add data files to
+your package as demonstrated below, your code will be able to run "normally" as well as running in a bundle.
+
+Below are some examples that show a few common patterns of how data files can be included in a PyInstaller bundle.
+The examples first show a code snippet that demonstrates how data is loaded (relative path names), followed by the
+PyInstaller command to copy data files into the bundle.  They all assume that the ``os.chdir()`` snippet
+of code listed above is being used.
 
 One Data File
 ~~~~~~~~~~~~~
@@ -134,17 +154,19 @@ Although you can include every data file and directory with separate ``--add-dat
 that you write your game so that all of your data files are under one root directory, often named ``resources``. You
 can use subdirectories to help organize everything. An example directory tree could look like::
 
-    resources/
-    |--- images/
-    |    |--- enemy.jpg
-    |    |--- player.jpg
-    |--- sound/
-    |    |--- game_over.wav
-    |    |--- laser.wav
-    |--- text/
-         |--- names.txt
+    project/
+    |--- game.py
+    |--- resources/
+         |--- images/
+         |    |--- enemy.jpg
+         |    |--- player.jpg
+         |--- sound/
+         |    |--- game_over.wav
+         |    |--- laser.wav
+         |--- text/
+              |--- names.txt
 
-With this approach, it becomes easy to bundle all your data with just a single ``--add-data`` flag. You're code
+With this approach, it becomes easy to bundle all your data with just a single ``--add-data`` flag. Your code
 would use relative pathnames to load resources, something like this:
 
 .. code-block:: python
@@ -160,6 +182,11 @@ And, you would include this entire directory tree into the bundle like this:
 
 It is worth spending a bit of time to plan out how you will layout and load your data files in order to keep
 the bundling process simple.
+
+The technique of handling data files described above is just one approach. If you want more control and flexibility
+in handling data files, learn about the different path information that is available by reading the
+`PyInstaller Run-Time Information <https://pyinstaller.readthedocs.io/en/stable/runtime-information.html>`_
+documentation.
 
 Now that you know how to install PyInstaller, include data files, and bundle your game into an executable, you
 have what you need to bundle your game and share it with your new fans!
