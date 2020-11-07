@@ -16,6 +16,3 @@ mypy
 coverage
 tox
 pyyaml~=5.3.1
-
-Shapely~=1.7.1
-setuptools~=49.6.0
