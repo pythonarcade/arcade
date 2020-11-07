@@ -272,6 +272,15 @@ class Texture:
         return self._width, self._height
 
     @property
+    def byte_size(self) -> int:
+        """
+        The byte size of the texture.
+
+        :type: int
+        """
+        return pixel_formats[self._dtype][3] * self._components * self.width * self.height
+
+    @property
     def components(self) -> int:
         """
         Number of components in the texture

@@ -152,3 +152,40 @@ def test_depth(ctx):
     tex = ctx.depth_texture((100, 100))
     assert tex.size == (100, 100)
     assert tex.compare_func == '<='
+
+
+def test_byte_size(ctx):
+    """Ensure texture byte size is properly reported"""
+    # RBGA8
+    texture = ctx.texture((4, 4), components=1)
+    assert texture.byte_size == 16
+    texture = ctx.texture((4, 4), components=2)
+    assert texture.byte_size == 32
+    texture = ctx.texture((4, 4), components=3)
+    assert texture.byte_size == 48
+    texture = ctx.texture((4, 4), components=4)
+    assert texture.byte_size == 64
+
+    # 16 bit float
+    texture = ctx.texture((4, 4), components=1, dtype='f2')
+    assert texture.byte_size == 32
+    texture = ctx.texture((4, 4), components=4, dtype='f2')
+    assert texture.byte_size == 128
+
+    # 32 bit float
+    texture = ctx.texture((4, 4), components=1, dtype='f4')
+    assert texture.byte_size == 64
+    texture = ctx.texture((4, 4), components=4, dtype='f4')
+    assert texture.byte_size == 256
+
+    # 16 bit integer
+    texture = ctx.texture((4, 4), components=1, dtype='i2')
+    assert texture.byte_size == 32
+    texture = ctx.texture((4, 4), components=4, dtype='i2')
+    assert texture.byte_size == 128
+
+    # 32 bit float
+    texture = ctx.texture((4, 4), components=1, dtype='i4')
+    assert texture.byte_size == 64
+    texture = ctx.texture((4, 4), components=4, dtype='i4')
+    assert texture.byte_size == 256
