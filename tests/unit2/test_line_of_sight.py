@@ -1,5 +1,6 @@
 import arcade
 
+
 def test_line_of_sight():
     player = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png")
     player.center_x = 50

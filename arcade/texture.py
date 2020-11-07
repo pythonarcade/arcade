@@ -38,15 +38,16 @@ class Matrix3x3:
         return self
 
     def multiply(self, o: List[float]):
-        self.v = [self.v[0] * o[0] + self.v[3] * o[1] + self.v[6] * o[2],
-                  self.v[1] * o[0] + self.v[4] * o[1] + self.v[7] * o[2],
-                  self.v[2] * o[0] + self.v[5] * o[1] + self.v[8] * o[2],
-                  self.v[0] * o[3] + self.v[3] * o[4] + self.v[6] * o[5],
-                  self.v[1] * o[3] + self.v[4] * o[4] + self.v[7] * o[5],
-                  self.v[2] * o[3] + self.v[5] * o[4] + self.v[8] * o[5],
-                  self.v[0] * o[6] + self.v[3] * o[7] + self.v[6] * o[8],
-                  self.v[1] * o[6] + self.v[4] * o[7] + self.v[7] * o[8],
-                  self.v[2] * o[6] + self.v[5] * o[7] + self.v[8] * o[8]]
+        v = self.v
+        self.v = [v[0] * o[0] + v[3] * o[1] + v[6] * o[2],
+                  v[1] * o[0] + v[4] * o[1] + v[7] * o[2],
+                  v[2] * o[0] + v[5] * o[1] + v[8] * o[2],
+                  v[0] * o[3] + v[3] * o[4] + v[6] * o[5],
+                  v[1] * o[3] + v[4] * o[4] + v[7] * o[5],
+                  v[2] * o[3] + v[5] * o[4] + v[8] * o[5],
+                  v[0] * o[6] + v[3] * o[7] + v[6] * o[8],
+                  v[1] * o[6] + v[4] * o[7] + v[7] * o[8],
+                  v[2] * o[6] + v[5] * o[7] + v[8] * o[8]]
         return self
 
     def scale(self, sx: float, sy: float):
