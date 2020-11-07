@@ -39,6 +39,11 @@ def test_buffer_description(ctx):
     assert len(descr.formats) == 2
     assert descr.stride == 16
 
+    # Buffer parameter not a buffer
+    with pytest.raises(ValueError):
+        BufferDescription("test", "2f", ["pos"])
+
+
 def test_geometry(ctx):
     """Test vertex_array"""
     program = ctx.load_program(

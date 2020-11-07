@@ -167,8 +167,6 @@ class BufferDescription:
 
     # Describe all variants of a format string to simplify parsing (single component)
     # format: gl_type, byte_size
-    # TODO: Can we support separate per-instance attributes in an interleaved buffer?
-    # TODO: Consider adding normalized integers
     _formats = {
         # (gl enum, byte size)
         # Floats
@@ -233,6 +231,9 @@ class BufferDescription:
         self.stride = -1  # type: int
         #: Number of vertices in the buffer
         self.num_vertices = -1  # type: int
+
+        if not isinstance(buffer, Buffer):
+            raise ValueError("buffer parameter must be an arcade.gl.Buffer")
 
         if not isinstance(self.attributes, list) and not isinstance(
             self.attributes, tuple
