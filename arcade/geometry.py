@@ -1,12 +1,16 @@
 """
 Functions for calculating geometry.
 """
+from shapely import speedups
+from shapely.geometry import LineString, Polygon, Point
 
 from typing import cast
 from arcade import PointList
 import math
 
 _PRECISION = 2
+
+speedups.enable()
 
 
 def are_polygons_intersecting(poly_a: PointList,
@@ -21,38 +25,10 @@ def are_polygons_intersecting(poly_a: PointList,
     :rtype bool:
     """
 
-    for polygon in (poly_a, poly_b):
+    shapely_polygon_a = Polygon(poly_a)
+    shapely_polygon_b = Polygon(poly_b)
 
-        for i1 in range(len(polygon)):
-            i2 = (i1 + 1) % len(polygon)
-            projection_1 = polygon[i1]
-            projection_2 = polygon[i2]
-
-            normal = (projection_2[1] - projection_1[1],
-                      projection_1[0] - projection_2[0])
-
-            min_a, max_a, min_b, max_b = (None,) * 4
-
-            for poly in poly_a:
-                projected = normal[0] * poly[0] + normal[1] * poly[1]
-
-                if min_a is None or projected < min_a:
-                    min_a = projected
-                if max_a is None or projected > max_a:
-                    max_a = projected
-
-            for poly in poly_b:
-                projected = normal[0] * poly[0] + normal[1] * poly[1]
-
-                if min_b is None or projected < min_b:
-                    min_b = projected
-                if max_b is None or projected > max_b:
-                    max_b = projected
-
-            if cast(float, max_a) <= cast(float, min_b) or cast(float, max_b) <= cast(float, min_a):
-                return False
-
-    return True
+    return shapely_polygon_a.intersects(shapely_polygon_b)
 
 
 def is_point_in_polygon(x, y, polygon_point_list):
@@ -67,27 +43,12 @@ def is_point_in_polygon(x, y, polygon_point_list):
     Returns: bool
 
     """
-    n = len(polygon_point_list)
-    inside = False
-    if n == 0:
-        return False
+    shapely_point = Point(x, y)
+    shapely_polygon = Polygon(polygon_point_list)
 
-    p1x, p1y = polygon_point_list[0]
-    for i in range(n+1):
-        p2x, p2y = polygon_point_list[i % n]
-        if y > min(p1y, p2y):
-            if y <= max(p1y, p2y):
-                if x <= max(p1x, p2x):
-                    if p1y != p2y:
-                        xints = (y - p1y) * (p2x - p1x) / (p2y - p1y) + p1x
-                    # noinspection PyUnboundLocalVariable
-                    if p1x == p2x or x <= xints:
-                        inside = not inside
-        p1x, p1y = p2x, p2y
-
-    return inside
+    return shapely_polygon.contains(shapely_point)
 
 
 def get_distance(x1: float, y1: float, x2: float, y2: float):
     """ Get the distance between two points. """
-    return math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
+    return math.hypot(x1 - x2, y1 - y2)
