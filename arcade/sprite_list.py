@@ -1168,7 +1168,7 @@ def check_for_collision_with_list(sprite: Sprite,
         sprite_list_to_check = sprite_list
 
     # print(len(sprite_list_to_check.sprite_list))
-    collision_list = [sprite2
+    return [sprite2
                       for sprite2 in sprite_list_to_check
                       if sprite is not sprite2 and _check_for_collision(sprite, sprite2)]
 
@@ -1177,7 +1177,6 @@ def check_for_collision_with_list(sprite: Sprite,
     #     if sprite1 is not sprite2 and sprite2 not in collision_list:
     #         if _check_for_collision(sprite1, sprite2):
     #             collision_list.append(sprite2)
-    return collision_list
 
 
 def get_sprites_at_point(point: Point,
@@ -1200,11 +1199,9 @@ def get_sprites_at_point(point: Point,
     else:
         sprite_list_to_check = sprite_list
 
-    collision_list = [sprite2
-                      for sprite2 in sprite_list_to_check
-                      if is_point_in_polygon(point[0], point[1], sprite2.get_adjusted_hit_box())]
+    return [s for s in sprite_list_to_check if
+                      is_point_in_polygon(point[0], point[1], s.get_adjusted_hit_box())]
 
-    return collision_list
 
 def get_sprites_at_exact_point(point: Point,
                                sprite_list: SpriteList) -> List[Sprite]:
@@ -1226,8 +1223,4 @@ def get_sprites_at_exact_point(point: Point,
     else:
         sprite_list_to_check = sprite_list
 
-    collision_list = [sprite2
-                      for sprite2 in sprite_list_to_check
-                      if point[0] == sprite2.center_x and point[1] == sprite2.center_y]
-
-    return collision_list
+    return [s for s in sprite_list_to_check if s.position == point]
