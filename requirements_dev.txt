@@ -1,9 +1,0 @@
--e .
-coverage
-coveralls
-mypy
-flake8
-pytest
-pytest-cov
-pytest-mock
-setuptools
