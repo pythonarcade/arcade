@@ -8,6 +8,7 @@ import pytest
 import arcade
 import arcade.gui
 from arcade.gui import UIClickable, UIManager
+from arcade.gui.elements.box import UIBox
 from arcade.gui.ui_style import UIStyle
 
 
@@ -91,6 +92,14 @@ class Env:
 
         for key, value in self.old_vars.items():
             os.environ[key] = value
+
+
+def dummy_element(width=100, height=50, color=arcade.color.LIGHT_CORAL):
+    return UIBox(
+        width=width,
+        height=height,
+        color=color
+    )
 
 
 class MockButton(UIClickable):

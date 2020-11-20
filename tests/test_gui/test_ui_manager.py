@@ -32,13 +32,6 @@ def test_ui_elements_get_reference_to_mng(mock_mng):
 
     assert ui_element.mng == mock_mng
 
-def test_ui_elements_get_reference_to_mng(mock_mng):
-    ui_element = MockButton()
-
-    mock_mng.add_ui_element(ui_element)
-
-    assert ui_element.mng == mock_mng
-
 
 def test_can_search_ui_elements_by_id(mock_mng):
     mock_button = MockButton(id=str(uuid4()))
