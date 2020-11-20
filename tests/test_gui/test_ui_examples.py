@@ -11,8 +11,8 @@ import pytest
 from PIL import Image
 
 import arcade
-
-from . import T
+from arcade.gui.manager import UIAbstractManager
+from tests.test_gui import T
 
 
 @pytest.fixture
@@ -79,7 +79,7 @@ def load_view(abs_module_path) -> arcade.View:
     T('show_uiinputbox', 'show_uiinputbox'),
     T('show_uilabel', 'show_uilabel'),
 ])
-def test_id_example(twm, window, example):
+def test_gui_examples(twm, window, example):
     expected_screen = Path(pkg_resources.resource_filename('tests.test_gui', f'assets/{example}.png'))
 
     # import example view
@@ -92,7 +92,8 @@ def test_id_example(twm, window, example):
 
     # manually clean up ui_manager handlers
     # TODO this should be handled by arcade
-    window.remove_handlers(view.ui_manager)
+    ui_manager: UIAbstractManager = view.ui_manager
+    ui_manager.unregister_handlers()
 
     # compare files
     assert expected_screen.exists(), f'expected screen missing, actual at {actual_screen}'

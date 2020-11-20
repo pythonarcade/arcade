@@ -41,6 +41,7 @@ from arcade.gui.core import (
     MOUSE_SCROLL,
     KEY_PRESS,
     KEY_RELEASE,
+    RESIZE,
     TEXT_INPUT,
     TEXT_MOTION,
     TEXT_MOTION_SELECTION
@@ -72,6 +73,7 @@ __all__ = [
     'MOUSE_SCROLL',
     'KEY_PRESS',
     'KEY_RELEASE',
+    'RESIZE',
     'TEXT_INPUT',
     'TEXT_MOTION',
     'TEXT_MOTION_SELECTION',
