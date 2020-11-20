@@ -1,5 +1,7 @@
 import pytest
 
+import arcade
+from arcade import SpriteSolidColor
 from arcade.gui.layouts.anchor import UIAnchorLayout
 from arcade.gui.layouts.box import UIBoxLayout
 from tests.test_gui import dummy_element
@@ -89,6 +91,16 @@ def test_anchor_center(anchor_layout):
 
 def test_anchor_center_with_offset(anchor_layout):
     element_1 = dummy_element()
+
+    anchor_layout.pack(element_1, center_x=10, center_y=-20)
+    anchor_layout.refresh()
+
+    assert element_1.center_x == anchor_layout.center_x + 10
+    assert element_1.center_y == anchor_layout.center_y - 20
+
+
+def test_anchor_can_place_sprite(anchor_layout):
+    element_1 = SpriteSolidColor(100, 50, arcade.color.GREEN)
 
     anchor_layout.pack(element_1, center_x=10, center_y=-20)
     anchor_layout.refresh()

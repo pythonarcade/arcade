@@ -37,10 +37,10 @@ class UIAbstractLayout(ABC):
         return self._id
 
     # --------- add element & size hint
-    def pack(self, element: Union['UIAbstractLayout', UIElement], **kwargs):
+    def pack(self, element: Union[Sprite, UIElement, 'UIAbstractLayout'], **kwargs):
         self._elements.append(PackedElement(element, kwargs))
 
-        if isinstance(element, UIElement):
+        if isinstance(element, Sprite):
             self._layer.append(element)
         if isinstance(element, UIAbstractLayout):
             self._child_layouts.append(element)

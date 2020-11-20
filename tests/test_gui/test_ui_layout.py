@@ -1,5 +1,12 @@
+import pytest
+
+import arcade
+from arcade import SpriteSolidColor
 from arcade.gui.layouts import UIAbstractLayout
+from arcade.gui.layouts.anchor import UIAnchorLayout
+from arcade.gui.layouts.box import UIBoxLayout
 from tests.test_gui import dummy_element
+from . import T
 
 
 class TestAbstractLayout(UIAbstractLayout):
@@ -44,16 +51,19 @@ def test_layout_moves_children():
     assert child.center_x == 10
     assert child.center_y == 20
 
-# TODO remove if parent not needed
-# def test_layout_forwards_new_parent():
-#     layout = TestAbstractLayout()
-#     layout_1 = TestAbstractLayout()
-#     layout_2 = TestAbstractLayout()
-#     layout.pack(layout_1)
-#     layout.pack(layout_2)
-#
-#     layout.parent = 1
-#
-#     assert layout.parent == 1
-#     assert layout_1.parent == 1
-#     assert layout_2.parent == 1
+@pytest.mark.parametrize(
+    ['layout'], [
+        T('VBox', UIBoxLayout()),
+        T('HBox', UIBoxLayout(vertical=False)),
+        T('Anchor', UIAnchorLayout(800, 600)),
+    ]
+)
+def test_pack_adds_elements_to_draw_layer(layout: UIAbstractLayout):
+    ui_element = dummy_element()
+    sprite = SpriteSolidColor(100, 50, arcade.color.GREEN)
+
+    layout.pack(ui_element)
+    layout.pack(sprite)
+
+    assert len(ui_element.sprite_lists) == 1
+    assert len(sprite.sprite_lists) == 1

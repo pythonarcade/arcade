@@ -1,5 +1,7 @@
 import pytest
 
+import arcade
+from arcade import SpriteSolidColor
 from arcade.gui.layouts.box import UIBoxLayout
 from . import T, dummy_element
 
@@ -139,6 +141,42 @@ def test_v_box_align_items_left():
 def test_box_alignment(vertical, align, center_x, center_y):
     box = UIBoxLayout(vertical=vertical, align=align)
     element_1 = dummy_element(width=100, height=50)
+    box.pack(element_1)
+    box.height = 500
+    box.width = 400
+    box.left = 0
+    box.bottom = 0
+
+    box.refresh()
+
+    assert (element_1.center_x, element_1.center_y) == (center_x, center_y)
+
+
+@pytest.mark.parametrize(
+    ['vertical', 'align', 'center_x', 'center_y'], [
+        T('vertical top', True, 'top', 50, 475),
+        T('vertical center', True, 'center', 50, 250),
+        T('vertical bottom', True, 'bottom', 50, 25),
+
+        T('horizontal left', False, 'left', 50, 25),
+        T('horizontal center', False, 'center', 200, 25),
+        T('horizontal right', False, 'right', 350, 25),
+
+        # use synonyms
+        T('vertical start', True, 'start', 50, 475),
+        T('vertical end', True, 'end', 50, 25),
+        T('vertical left', True, 'left', 50, 475),
+        T('vertical right', True, 'right', 50, 25),
+
+        T('horizontal start', False, 'start', 50, 25),
+        T('horizontal end', False, 'end', 350, 25),
+        T('horizontal top', False, 'top', 50, 25),
+        T('horizontal bottom', False, 'bottom', 350, 25),
+    ]
+)
+def test_box_alignment_for_sprites(vertical, align, center_x, center_y):
+    box = UIBoxLayout(vertical=vertical, align=align)
+    element_1 = SpriteSolidColor(width=100, height=50, color=arcade.color.RED)
     box.pack(element_1)
     box.height = 500
     box.width = 400

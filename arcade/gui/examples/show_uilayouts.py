@@ -1,7 +1,7 @@
 from typing import Union
 
 import arcade
-from arcade import View, Window
+from arcade import View, Window, SpriteSolidColor
 from arcade.gui import UILabel, UIElement
 from arcade.gui.layouts.manager import UILayoutManager
 from arcade.gui.layouts.utils import valid
@@ -12,9 +12,9 @@ from arcade.gui.layouts.box import UIBoxLayout
 
 
 class MyView(View):
-    def __init__(self):
-        super().__init__()
-        self.manager = UILayoutManager()
+    def __init__(self, window=None):
+        super().__init__(window=window)
+        self.ui_manager = UILayoutManager(window=window)
 
         self._last_mouse_pos = (0, 0)
 
@@ -26,7 +26,7 @@ class MyView(View):
             UILabel.__name__,
         )
 
-        root_layout = self.manager.root_layout
+        root_layout = self.ui_manager.root_layout
 
         # top left
         layout_top_left = UIBoxLayout(id='top right')
@@ -54,6 +54,7 @@ class MyView(View):
         layout_center_left.pack(UILabel(text="left=0"))
         layout_center_left.pack(UILabel(text="center_y=0"))
         layout_center_left.pack(UILabel(text="no fill effect"), space=20)
+        layout_center_left.pack(SpriteSolidColor(width=50, height=50, color=arcade.color.GREEN))
         root_layout.pack(layout_center_left, left=0, center_y=0)
 
         # bottom center
@@ -69,6 +70,8 @@ class MyView(View):
         layout2.pack(UILabel(text="left=10"))
         layout2.pack(UILabel(text="no fill effect"), space=20)
         root_layout.pack(layout2, left=10, bottom=20)
+
+        self.ui_manager.refresh()
 
         self.debug_layout(root_layout)
 
@@ -101,7 +104,7 @@ class MyView(View):
     def on_draw(self):
         arcade.start_render()
 
-        self.draw_borders(self.manager.root_layout)
+        self.draw_borders(self.ui_manager.root_layout)
 
     def on_key_press(self, symbol: int, modifiers: int):
         if symbol == arcade.key.S:
@@ -111,9 +114,9 @@ class MyView(View):
         elif symbol == arcade.key.W:
             print('Window size', self.window.get_size())
         elif symbol == arcade.key.D:
-            self.debug_layout(self.manager.root_layout)
+            self.debug_layout(self.ui_manager.root_layout)
         elif symbol == arcade.key.R:
-            (self.manager.refresh())
+            (self.ui_manager.refresh())
 
     def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
         self._last_mouse_pos = (x, y)

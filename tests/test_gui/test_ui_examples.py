@@ -70,6 +70,7 @@ def load_view(abs_module_path) -> arcade.View:
     T('show_uiimagetoggle', 'show_uiimagetoggle'),
     T('show_uiinputbox', 'show_uiinputbox'),
     T('show_uilabel', 'show_uilabel'),
+    T('show_uilayouts', 'show_uilayouts'),
 ])
 def test_gui_examples(twm, window, example):
     expected_screen = Path(pkg_resources.resource_filename('tests.test_gui', f'assets/{example}.png'))

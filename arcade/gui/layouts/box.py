@@ -1,6 +1,7 @@
 from operator import attrgetter
 from typing import Union
 
+from arcade import Sprite
 from arcade.gui import UIElement
 from arcade.gui.layouts import UIAbstractLayout
 
@@ -16,7 +17,7 @@ class UIBoxLayout(UIAbstractLayout):
         self.align = align
         self.vertical = vertical
 
-    def pack(self, element: Union['UIAbstractLayout', UIElement], **kwargs):
+    def pack(self, element: Union[Sprite, UIElement, 'UIAbstractLayout'], **kwargs):
         super().pack(element, **kwargs)
 
         # TODO this change could be reflected in sizehint not in actual changed properties
