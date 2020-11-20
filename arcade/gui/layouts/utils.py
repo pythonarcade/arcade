@@ -18,7 +18,7 @@ def valid(element: Union[Sprite, UIElement, 'UIAbstractLayout']):
         return False
 
     if isinstance(element, UIAbstractLayout):
-        for element, data in element:
+        for element in element:
             if not (left <= element.left <= right):
                 return False
             if not (left <= element.right <= right):
@@ -28,7 +28,7 @@ def valid(element: Union[Sprite, UIElement, 'UIAbstractLayout']):
             if not (bottom <= element.bottom <= top):
                 return False
 
-            if not element.valid():
+            if not valid(element):
                 return False
 
     return True

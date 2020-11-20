@@ -15,15 +15,7 @@ from arcade.gui.manager import UIAbstractManager
 from tests.test_gui import T
 
 
-@pytest.fixture
-def window():
-    window = arcade.Window(title='ARCADE_GUI')
-    yield window
-    window.close()
-
-
 def view_to_png(window: arcade.Window, view: arcade.View, path: Path):
-    # window.clear()
     ctx = window.ctx
     offscreen = ctx.framebuffer(color_attachments=[ctx.texture(window.get_size(), components=4)])
     offscreen.clear()

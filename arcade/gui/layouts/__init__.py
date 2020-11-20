@@ -13,13 +13,11 @@ class PackedElement(NamedTuple):
 
 class UIAbstractLayout(ABC):
     def __init__(self,
-                 # parent: Optional[UILayoutParent] = None,
                  # draw_border=False,
                  id=None,
                  **kwargs):
         super().__init__()
         # self.draw_border = draw_border
-        # self._parent: Optional[UILayoutParent] = parent
 
         self._elements: List[PackedElement] = []
         self._layer = SpriteList()
@@ -38,17 +36,6 @@ class UIAbstractLayout(ABC):
     def id(self):
         return self._id
 
-    # ---------- propergate parent
-    # @property
-    # def parent(self) -> Optional[UILayoutParent]:
-    #     return self._parent
-
-    # @parent.setter
-    # def parent(self, value: Optional[UILayoutParent]):
-    #     self._parent = value
-    #     for child in self._child_layouts:
-    #         child.parent = value
-
     # --------- add element & size hint
     def pack(self, element: Union['UIAbstractLayout', UIElement], **kwargs):
         self._elements.append(PackedElement(element, kwargs))
@@ -56,11 +43,7 @@ class UIAbstractLayout(ABC):
         if isinstance(element, UIElement):
             self._layer.append(element)
         if isinstance(element, UIAbstractLayout):
-            # element.parent = self
             self._child_layouts.append(element)
-
-        # self.update_size_hint()
-        self.changed()
 
     def draw(self):
         # TODO fix this!
@@ -166,12 +149,6 @@ class UIAbstractLayout(ABC):
             element.left += x
 
     # ---------- placement and refresh
-
-    def changed(self):
-        """Notify parent that this layout changed"""
-        # if self.parent:
-        #     self.parent.changed()
-
     def refresh(self):
         for element in self:
             if isinstance(element, UIAbstractLayout):

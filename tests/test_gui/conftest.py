@@ -5,6 +5,7 @@ import pytest
 from pyglet.event import EventDispatcher
 from pytest import fixture
 
+from arcade import Window
 from . import MockHolder, MockButton, TestUIManager
 
 
@@ -43,8 +44,16 @@ def draw_commands():
 
 
 @pytest.fixture
+def window():
+    window = Window(title='ARCADE_GUI')
+    yield window
+    window.close()
+
+
+@pytest.fixture
 def mock_window():
     return MockWindow()
+
 
 @fixture
 def mock_mng(mock_window):

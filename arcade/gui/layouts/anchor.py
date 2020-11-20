@@ -2,7 +2,6 @@ from typing import Union
 
 from arcade import Sprite
 from arcade.gui import UIElement
-
 from arcade.gui.layouts import UIAbstractLayout
 
 
@@ -20,17 +19,15 @@ class UIAnchorLayout(UIAbstractLayout):
 
     """
 
-    def __init__(self, width, height, **kwargs):
+    # TODO add parameters to init with viewport values
+    def __init__(self,
+                 width,
+                 height,
+                 **kwargs):
         super().__init__(**kwargs)
 
         self._width = width
         self._height = height
-    #
-    # def size_hint(self) -> SizeHint:
-    #     return SizeHint(
-    #         width=self._width,
-    #         height=self._height,
-    #     )
 
     def place_elements(self):
         # FIXME do not overdraw others!
