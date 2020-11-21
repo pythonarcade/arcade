@@ -59,7 +59,11 @@ class _AStarGraph(object):
     # Define a class board like grid with two barriers
 
     def __init__(self, barriers, left, right, bottom, top, diagonal_movement):
-        self.barriers = barriers
+        if barriers is set:
+            self.barriers = barriers
+        else:
+            self.barriers = set(barriers)
+
         self.left = left
         self.right = right
         self.top = top
@@ -102,12 +106,12 @@ class _AStarGraph(object):
     def move_cost(self, a, b):
         if b in self.barriers:
             # print("Ping")
-            return 10  # Extremely high cost to enter barrier squares
+            return 50  # Extremely high cost to enter barrier squares
 
         elif a[0] == b[0] or a[1] == b[1]:
             return 1
         else:
-            return 1.414
+            return 1.42
 
 
         return 1  # Normal movement cost
@@ -128,7 +132,7 @@ def _AStarSearch(start, end, graph):
     count = 0
     while len(openVertices) > 0:
         count += 1
-        if count > 2500:
+        if count > 500:
             break
         # Get the vertex in the open list with the lowest F score
         current = None
