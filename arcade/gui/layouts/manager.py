@@ -1,6 +1,9 @@
 from _warnings import warn
+from typing import Union
 
 import arcade
+from arcade import Sprite
+from arcade.gui import UIElement
 from arcade.gui.layouts import UIAbstractLayout
 from arcade.gui.layouts.anchor import UIAnchorLayout
 from arcade.gui.layouts.utils import valid
@@ -21,8 +24,9 @@ class UILayoutManager(UIAbstractManager):
         self.register_handlers()
 
     def on_ui_event(self, event):
-        pass
-        # TODO pass
+        for element in self.root_layout:
+            if hasattr(element, 'on_ui_event'):
+                element.on_ui_event(event)
 
     def on_draw(self):
         self._root_layout.draw()
@@ -32,6 +36,9 @@ class UILayoutManager(UIAbstractManager):
 
         # Relayout all children, this might be to slow, let's see
         self.refresh()
+
+    def pack(self, element: Union[Sprite, UIElement, 'UIAbstractLayout'], **kwargs):
+        self._root_layout.pack(element, **kwargs)
 
     def _resize_root_layout(self):
         self.root_layout.top = self._top

@@ -1,7 +1,10 @@
+from unittest.mock import Mock
+
 import pytest
 
 import arcade
 from arcade import SpriteSolidColor
+from arcade.gui import UIEvent
 from arcade.gui.layouts import UIAbstractLayout
 from arcade.gui.layouts.anchor import UIAnchorLayout
 from arcade.gui.layouts.box import UIBoxLayout
@@ -50,6 +53,36 @@ def test_layout_moves_children():
     layout.move(10, 20)
     assert child.center_x == 10
     assert child.center_y == 20
+
+
+@pytest.mark.parametrize(
+    ['layout'], [
+        T('VBox', UIBoxLayout()),
+        T('HBox', UIBoxLayout(vertical=False)),
+        T('Anchor', UIAnchorLayout(800, 600)),
+    ]
+)
+def test_passes_ui_events(layout):
+    # GIVEN
+    element = dummy_element()
+    element.on_ui_event = Mock()
+    layout.pack(element)
+
+    sprite = SpriteSolidColor(100, 50, arcade.color.GREEN)
+    layout.pack(sprite)
+
+    child_layout = UIBoxLayout()
+    child_layout.on_ui_event = Mock()
+    layout.pack(child_layout)
+
+    test_event = UIEvent('ANY EVENT')
+
+    # WHEN
+    layout.on_ui_event(test_event)
+
+    # THEN
+    element.on_ui_event.assert_called_once_with(test_event)
+
 
 @pytest.mark.parametrize(
     ['layout'], [

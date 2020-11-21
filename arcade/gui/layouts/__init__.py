@@ -3,7 +3,7 @@ from operator import attrgetter
 from typing import List, NamedTuple, Union, Dict
 
 from arcade import Sprite, SpriteList
-from arcade.gui import UIElement
+from arcade.gui import UIElement, UIEvent
 
 
 class PackedElement(NamedTuple):
@@ -35,6 +35,11 @@ class UIAbstractLayout(ABC):
     @property
     def id(self):
         return self._id
+
+    def on_ui_event(self, event: UIEvent):
+        for element in self:
+            if hasattr(element, 'on_ui_event'):
+                element.on_ui_event(event)
 
     # --------- add element & size hint
     def pack(self, element: Union[Sprite, UIElement, 'UIAbstractLayout'], **kwargs):
