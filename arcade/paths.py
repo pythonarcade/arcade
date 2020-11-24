@@ -31,11 +31,11 @@ def has_line_of_sight(point_1: Point,
     :param max_distance: int --
     :return: tuple -- (bool, list)
     """
-    if not walls:
-        return True
     line_of_sight = LineString([point_1, point_2])
     if 0 < max_distance < line_of_sight.length:
         return False
+    if not walls:
+        return True
     return not any((Polygon(o.get_adjusted_hit_box()).crosses(line_of_sight) for o in walls))
 
 
