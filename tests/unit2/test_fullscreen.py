@@ -24,7 +24,7 @@ class MyTestWindow(arcade.Window):
 def test_sprite():
     window = MyTestWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Test Text")
     window.center_window()
-    window.set_fullscreen(True, width=1920, height=1080)
+    # window.set_fullscreen(True, width=1920, height=1080)
     window.test(10)
     window.set_fullscreen(False)
     window.test(10)
