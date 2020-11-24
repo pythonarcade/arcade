@@ -42,14 +42,20 @@ def test_sprite_collides_with_point():
     # Affirmative
     point = (0, 0)
     assert sprite.collides_with_point(point) is True
-    point = (1, 1)
+    point = (0, 0.9)
     assert sprite.collides_with_point(point) is True
-    point = (0, 1)
+    point = (0.9, 0)
     assert sprite.collides_with_point(point) is True
-    point = (1, 0)
+    point = (0.9, 0.9)
     assert sprite.collides_with_point(point) is True
 
     # Negative
+    point = (0, 1)
+    assert sprite.collides_with_point(point) is False
+    point = (1, 0)
+    assert sprite.collides_with_point(point) is False
+    point = (1, 1)
+    assert sprite.collides_with_point(point) is False
     point = (-1, -1)
     assert sprite.collides_with_point(point) is False
     point = (-1, 0)
@@ -62,18 +68,40 @@ def test_sprite_collides_with_sprite():
     sprite_one = arcade.Sprite(center_x=0, center_y=0)
     sprite_one.width = 10
     sprite_one.height = 10
-    # print()
-    # print("--------------", sprite_one.get_adjusted_hit_box())
 
-    sprite_two = arcade.Sprite(center_x=5, center_y=5)
+    sprite_two = arcade.Sprite(center_x=0, center_y=0)
     sprite_two.width = 10
     sprite_two.height = 10
-    # print("--------------", sprite_two.get_adjusted_hit_box())
 
+    sprite_three = arcade.Sprite(center_x=0, center_y=0)
+    sprite_three.width = 1
+    sprite_three.height = 1
+
+    # Exact overlap
     assert sprite_one.collides_with_sprite(sprite_two) is True
 
-    sprite_one.center_x = -5
+    # Contains
+    assert sprite_one.collides_with_sprite(sprite_three) is True
+
+    # Complete overlap
+    assert sprite_three.collides_with_sprite(sprite_one) is True
+
+    # Far away
+    sprite_two.center_x = 100
     assert sprite_one.collides_with_sprite(sprite_two) is False
+
+    # border to the right
+    sprite_two.center_x = 10
+    assert sprite_one.collides_with_sprite(sprite_two) is False
+
+
+    # Borders, opposite side
+    sprite_two.center_x = -10
+    assert sprite_one.collides_with_sprite(sprite_two) is False
+
+    # Overlap
+    sprite_two.center_x = -9
+    assert sprite_one.collides_with_sprite(sprite_two) is True
 
 
 def test_sprite_collides_with_list():

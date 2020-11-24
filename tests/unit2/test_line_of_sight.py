@@ -3,11 +3,11 @@ import arcade
 
 def test_line_of_sight():
     player = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png")
-    player.center_x = 50
+    player.center_x = 0
     player.center_y = 350
 
     enemy = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png")
-    enemy.center_x = 150
+    enemy.center_x = 250
     enemy.center_y = 350
 
     wall_list = arcade.SpriteList(use_spatial_hash=True)

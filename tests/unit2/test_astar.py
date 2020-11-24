@@ -1,8 +1,11 @@
+"""
+Test for A-Star path routing
+"""
 import arcade
 
 SPRITE_IMAGE_SIZE = 128
 SPRITE_SCALING = 0.25
-SPRITE_SIZE = SPRITE_IMAGE_SIZE * SPRITE_SCALING
+SPRITE_SIZE = int(SPRITE_IMAGE_SIZE * SPRITE_SCALING)
 
 def test_astar():
     grid_size = SPRITE_SIZE
@@ -14,7 +17,7 @@ def test_astar():
 
     # Set up the player
     player = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                                SPRITE_SCALING)
+                           SPRITE_SCALING)
     player.center_x = SPRITE_SIZE * 1
     player.center_y = SPRITE_SIZE * 1
     player_list.append(player)
@@ -50,7 +53,6 @@ def test_astar():
                                            playing_field_bottom_boundary,
                                            playing_field_top_boundary)
 
-
     # print()
     path = arcade.astar_calculate_path(enemy.position,
                                        player.position,
@@ -69,7 +71,6 @@ def test_astar():
                                        diagonal_movement=True)
     assert path == [(160, 160), (128, 128), (96, 96), (64, 64), (32, 32)]
     # print("Path 2", path)
-
 
     sprite = arcade.Sprite(":resources:images/tiles/grassCenter.png", SPRITE_SCALING)
     sprite.center_x = SPRITE_SIZE * 3
