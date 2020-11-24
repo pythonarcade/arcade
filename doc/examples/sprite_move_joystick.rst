@@ -2,8 +2,8 @@
 
 .. _sprite_move_joystick:
 
-Collect Coins - Game Controller
-===============================
+Game Controller/Joystick
+========================
 
 .. literalinclude:: ../../arcade/examples/sprite_move_joystick.py
     :caption: sprite_move_joystick.py
