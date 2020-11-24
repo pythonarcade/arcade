@@ -23,33 +23,52 @@ DEAD_ZONE = 0.05
 
 
 class Player(arcade.Sprite):
-
+    """ Player sprite """
     def __init__(self, filename, scale):
         super().__init__(filename, scale)
 
+        # Get list of game controllers that are available
         joysticks = arcade.get_joysticks()
+
+        # If we have any...
         if joysticks:
+            # Grab the first one in  the list
             self.joystick = joysticks[0]
+
+            # Open it for input
             self.joystick.open()
+
+            # Push this object as a handler for joystick events.
+            # Required for the on_joy* events to be called.
+            self.joystick.push_handlers(self)
         else:
-            print("There are no Joysticks")
+            # Handle if there are no joysticks.
+            print("There are no joysticks, plug in a joystick and run again.")
             self.joystick = None
 
     def update(self):
+        """ Move the player """
+
+        # If there is a joystick, grab the speed.
         if self.joystick:
+
+            # x-axis
             self.change_x = self.joystick.x * MOVEMENT_SPEED
             # Set a "dead zone" to prevent drive from a centered joystick
             if abs(self.change_x) < DEAD_ZONE:
                 self.change_x = 0
 
+            # y-axis
             self.change_y = -self.joystick.y * MOVEMENT_SPEED
             # Set a "dead zone" to prevent drive from a centered joystick
             if abs(self.change_y) < DEAD_ZONE:
                 self.change_y = 0
 
+        # Move the player
         self.center_x += self.change_x
         self.center_y += self.change_y
 
+        # Keep from moving off-screen
         if self.left < 0:
             self.left = 0
         elif self.right > SCREEN_WIDTH - 1:
@@ -60,6 +79,20 @@ class Player(arcade.Sprite):
         elif self.top > SCREEN_HEIGHT - 1:
             self.top = SCREEN_HEIGHT - 1
 
+    # noinspection PyMethodMayBeStatic
+    def on_joybutton_press(self, _joystick, button):
+        """ Handle button-down event for the joystick """
+        print("Button {} down".format(button))
+
+    # noinspection PyMethodMayBeStatic
+    def on_joybutton_release(self, _joystick, button):
+        """ Handle button-up event for the joystick """
+        print("Button {} up".format(button))
+
+    # noinspection PyMethodMayBeStatic
+    def on_joyhat_motion(self, _joystick, hat_x, hat_y):
+        """ Handle hat events """
+        print("Hat ({}, {})".format(hat_x, hat_y))
 
 class MyGame(arcade.Window):
     """
