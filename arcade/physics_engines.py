@@ -175,25 +175,28 @@ def _move_sprite(moving_sprite: Sprite, walls: SpriteList, ramp_up: bool):
                 if len(collision_check) > 0:
                     # print(f"Yes @ {cur_x_change}")
                     upper_bound = cur_x_change - 1
-                    if upper_bound - lower_bound <= 1:
+                    if upper_bound - lower_bound <= 0:
                         cur_x_change = lower_bound
                         exit_loop = True
                         # print(f"Exit 2 @ {cur_x_change}")
                     else:
-                        cur_x_change = (upper_bound + lower_bound) / 2
+                        cur_x_change = (upper_bound + lower_bound) // 2
                 else:
-                    exit_loop = True
-                    # print(f"Exit 1 @ {cur_x_change}")
+                    lower_bound = cur_x_change
+                    if upper_bound - lower_bound <= 0:
+                        exit_loop = True
+
+                        # print(f"Exit 1 @ {cur_x_change}")
 
             else:
                 # No collision. Keep this new position and exit
                 lower_bound = cur_x_change
-                if upper_bound - lower_bound <= 1:
+                if upper_bound - lower_bound <= 0:
                     # print(f"Exit 3 @ {cur_x_change}")
                     exit_loop = True
                 else:
                     # print(f"No @ {cur_x_change}")
-                    cur_x_change = (upper_bound + lower_bound) / 2
+                    cur_x_change = (upper_bound + lower_bound) // 2 + (upper_bound + lower_bound) % 2
 
         # print(cur_x_change * direction, cur_y_change)
         moving_sprite.center_x = original_x + cur_x_change * direction
