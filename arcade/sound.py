@@ -1,129 +1,101 @@
 """
-Sound library.
+Sound Library.
 """
 
-
+import math
 from pathlib import Path
-from typing import Union
+from typing import Optional, Union
+
+import pyglet
+import pyglet.media as media
 from arcade.resources import resolve_resource_path
-
-_audiolib = None
-try:
-    import arcade.soloud.soloud as soloud
-
-    _audiolib = soloud.Soloud()
-    _audiolib.init()
-    _audiolib.set_global_volume(10)
-except Exception as e:
-    print(f"Warning, can't initialize soloud {e}. Sound support will be limited.")
 
 
 class Sound:
     """ This class represents a sound you can play."""
+
     def __init__(self, file_name: Union[str, Path], streaming: bool = False):
-        """ Create and load the sound. """
         self.file_name: str = ""
-        self.wav_file:Union[soloud.WavStream, soloud.Wav]
 
-        self.voice_handle = None # needed for volume control
-
-        if not _audiolib:
-            return
-
-        # If we should pull from local resources, replace with proper path
         file_name = resolve_resource_path(file_name)
 
         if not Path(file_name).is_file():
-            raise FileNotFoundError(f"The sound file '{file_name}' is not a file or can't be read")
+            raise FileNotFoundError(
+                f"The sound file '{file_name}' is not a file or can't be read."
+            )
         self.file_name = str(file_name)
 
-        if streaming:
-            self.wav_file = soloud.WavStream()
-        else:
-            self.wav_file = soloud.Wav()
-        self.wav_file.load(self.file_name)
+        self.source: Union[media.StaticSource, media.StreamingSource] = media.load(self.file_name, streaming=streaming)
 
-    def play(self, volume=1.0, pan=0.0):
+        self.min_distance = 100000000 #setting the players to this allows for 2D panning with 3D audio
+
+    def play(self, volume: float = 1.0, pan: float = 0.0, loop: bool = False) -> media.Player:
         """
         Play the sound.
 
         :param float volume: Volume, from 0=quiet to 1=loud
         :param float pan: Pan, from -1=left to 0=centered to 1=right
+        :param bool loop: Loop, false to play once, true to loop continously
         """
-        if not _audiolib:
-            return
+        player: media.Player = media.Player()
+        player.volume = volume
+        player.position = (pan, 0.0, math.sqrt(1 - math.pow(pan, 2))) #used to mimic panning with 3D audio
+        player.loop = loop
+        player.queue(self.source)
+        player.play()
+        media.Source._players.append(player)
 
-        self.voice_handle = _audiolib.play(self.wav_file,
-                                           aVolume=volume,
-                                           aPan=pan,
-                                           aPaused=0,
-                                           aBus=0)
+        def _on_player_eos():
+            media.Source._players.remove(player)
+            # There is a closure on player. To get the refcount to 0,
+            # we need to delete this function.
+            player.on_player_eos = None
 
-    def stop(self):
+        player.on_player_eos = _on_player_eos
+        return player
+
+    def stop(self, player: media.Player) -> None:
         """
         Stop a currently playing sound.
         """
-        if not soloud:
-            return
-        self.wav_file.stop()
+        player.pause()
+        player.delete()
+        media.Source._players.remove(player)
 
-    def get_length(self):
+    def get_length(self) -> float:
         """ Get length of audio in seconds """
-        if not soloud:
-            return 0
-        return self.wav_file.get_length()
+        return self.source.get_length()
 
-    def is_complete(self):
+    def is_complete(self, player: media.Player) -> bool:
         """ Return true if the sound is done playing. """
-        if not _audiolib:
+        if player.time >= self.source.duration:
+            return True
+        else:
             return False
-        return not bool(_audiolib.is_valid_voice_handle(self.voice_handle))
 
-    # --- These functions should work, but instead just return zero or otherwise
-    # don't appear functional.
+    def is_playing(self, player: media.Player) -> bool:
+        """ Return if the sound is currently playing or not """
+        return player.is_playing()
 
-    def get_volume(self):
+    def get_volume(self, player: media.Player) -> float:
         """ Get the current volume """
-        if not _audiolib:
-            return 0
-        return _audiolib.get_volume(self.voice_handle)
+        return player.volume
 
-    def set_volume(self, volume):
+    def set_volume(self, volume, player: media.Player) -> None:
         """
         Set the current volume.
-
-        This can only be done after the sound has started
-        playing. Setting the sound volume when there is no sound playing generates
-        a TypeError. If you want to set the volume before playing, use the ``volume``
-        parameter in the ``play`` method.
         """
-        if not _audiolib:
-            return
-        _audiolib.set_volume(self.voice_handle, volume)
+        player.volume = volume
 
-    def set_left_right_volume(self, left_volume, right_volume):
-        """
-        Set absolute left/right volume
-
-        This can only be done after the sound has started
-        playing. Setting the sound volume when there is no sound playing generates
-        a TypeError. If you want to set the volume before playing, use the ``volume``
-        parameter in the ``play`` method.
-
-        """
-        if not _audiolib:
-            return
-        _audiolib.set_pan_absolute(self.voice_handle, left_volume, right_volume)
-
-    def get_stream_position(self):
+    def get_stream_position(self, player: media.Player) -> float:
         """
         Return where we are in the stream. This will reset back to
         zero when it is done playing.
         """
-        return _audiolib.get_stream_position(self.voice_handle)
+        return player.time
 
 
-def load_sound(path: Union[str, Path]):
+def load_sound(path: Union[str, Path], streaming: bool =False) -> Optional[Sound]:
     """
     Load a sound.
 
@@ -135,14 +107,16 @@ def load_sound(path: Union[str, Path]):
 
     try:
         file_name = str(path)
-        sound = Sound(file_name)
+        sound = Sound(file_name, streaming)
         return sound
     except Exception as ex:
-        print(f"Unable to load sound file: \"{file_name}\". Exception: {ex}")
+        print(f'Unable to load sound file: "{file_name}". Exception: {ex}')
         return None
 
 
-def play_sound(sound: Sound, volume: float=1.0, pan: float=0.0):
+def play_sound(
+    sound: Sound, volume: float = 1.0, pan: float = 0.0, looping: bool = False
+) -> media.Player:
     """
     Play a sound.
 
@@ -154,20 +128,23 @@ def play_sound(sound: Sound, volume: float=1.0, pan: float=0.0):
         print("Unable to play sound, no data passed in.")
         return
     elif isinstance(sound, str):
-        msg = "Error, passed in a string as a sound. " +\
-              "Make sure to use load_sound first, and use that result in play_sound."
+        msg = (
+            "Error, passed in a string as a sound. "
+            + "Make sure to use load_sound first, and use that result in play_sound."
+        )
         raise Exception(msg)
     try:
-        sound.play(volume, pan)
+        return sound.play(volume, pan, looping)
     except Exception as ex:
         print("Error playing sound.", ex)
 
 
-def stop_sound(sound: Sound):
+def stop_sound(player: media.Player):
     """
     Stop a sound that is currently playing.
 
     :param sound:
     """
-    # noinspection PyUnresolvedReferences
-    sound.wav_file.stop()
+    player.pause()
+    player.delete()
+    media.Source._players.remove(player)
