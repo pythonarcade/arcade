@@ -304,7 +304,7 @@ class MyGame(arcade.Window):
         if self.up_pressed and not self.down_pressed:
             if self.physics_engine.is_on_ladder():
                 self.player_sprite.change_y = PLAYER_MOVEMENT_SPEED
-            elif self.physics_engine.can_jump() and not self.jump_needs_reset:
+            elif self.physics_engine.can_jump(y_distance=10) and not self.jump_needs_reset:
                 self.player_sprite.change_y = PLAYER_JUMP_SPEED
                 self.jump_needs_reset = True
                 arcade.play_sound(self.jump_sound)
