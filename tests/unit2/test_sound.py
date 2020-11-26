@@ -30,88 +30,74 @@ class MyGame(arcade.Window):
 
         self.frame_count = 0
 
+        self.player = None
+
     def update(self, dt):
         self.frame_count += 1
 
         if self.frame_count == 1:
-            self.laser_wav.play(volume=0.5)
-            assert self.laser_wav.get_volume() == 0.5
-            self.laser_wav.set_volume(1.0)
-            assert self.laser_wav.get_volume() == 1.0
-
-            self.laser_wav_stream.play(volume=0.5)
-            assert self.laser_wav_stream.get_volume() == 0.5
-            self.laser_wav_stream.set_volume(1.0)
-            assert self.laser_wav_stream.get_volume() == 1.0
-
-        if self.frame_count == 10:
-            self.laser_wav.stop()
-            assert self.laser_wav.is_playing() == False
-
-            self.laser_wav_stream.stop()
-            assert self.laser_wav.is_playing() == False
+            self.player = self.laser_wav.play(volume=0.5)
+            assert self.laser_wav.get_volume(self.player) == 0.5
+            self.laser_wav.set_volume(1.0, self.player)
+            assert self.laser_wav.get_volume(self.player) == 1.0
 
         if self.frame_count == 20:
-            self.laser_wav.play()
-            assert self.laser_wav.is_playing() == True
+            assert self.laser_wav.is_playing(self.player) == True
+            self.laser_wav.stop(self.player)
+            assert self.laser_wav.is_playing(self.player) == False
 
-            self.laser_wav_stream.play()
-            assert self.laser_wav_stream.is_playing() == True
+            self.player = self.laser_wav_stream.play(volume=0.5)
+            assert self.laser_wav_stream.get_volume(self.player) == 0.5
+            self.laser_wav_stream.set_volume(1.0, self.player)
+            assert self.laser_wav_stream.get_volume(self.player) == 1.0
+
+        if self.frame_count == 40:
+            assert self.laser_wav_stream.is_playing(self.player) == True
+            self.laser_wav_stream.stop(self.player)
+            assert self.laser_wav_stream.is_playing(self.player) == False
+
+            self.player = self.laser_ogg.play(volume=0.5)
+            assert self.laser_ogg.get_volume(self.player) == 0.5
+            self.laser_ogg.set_volume(1.0, self.player)
+            assert self.laser_ogg.get_volume(self.player) == 1.0
+
+        if self.frame_count == 60:
+            assert self.laser_ogg.is_playing(self.player) == True
+            self.laser_ogg.stop(self.player)
+            assert self.laser_ogg.is_playing(self.player) == False
+
+            self.player = self.laser_ogg_stream.play(volume=0.5)
+            assert self.laser_ogg_stream.get_volume(self.player) == 0.5
+            self.laser_ogg_stream.set_volume(1.0, self.player)
+            assert self.laser_ogg_stream.get_volume(self.player) == 1.0
 
         if self.frame_count == 80:
-            self.laser_ogg.play(volume=0.5)
-            assert self.laser_ogg.get_volume() == 0.5
-            self.laser_ogg.set_volume(1.0)
-            assert self.laser_ogg.get_volume() == 1.0
+            assert self.laser_ogg_stream.is_playing(self.player) == True
+            self.laser_ogg_stream.stop(self.player)
+            assert self.laser_ogg_stream.is_playing(self.player) == False
 
-            self.laser_ogg_stream.play(volume=0.5)
-            assert self.laser_ogg_stream.get_volume() == 0.5
-            self.laser_ogg_stream.set_volume(1.0)
-            assert self.laser_ogg_stream.get_volume() == 1.0
-
-        if self.frame_count == 90:
-            self.laser_ogg.stop()
-            assert self.laser_ogg.is_playing() == False
-
-            self.laser_ogg_stream.stop()
-            assert self.laser_ogg_stream.is_playing() == False
+            self.player = self.laser_mp3.play(volume=0.5)
+            assert self.laser_mp3.get_volume(self.player) == 0.5
+            self.laser_mp3.set_volume(1.0, self.player)
+            assert self.laser_mp3.get_volume(self.player) == 1.0
 
         if self.frame_count == 100:
-            self.laser_ogg.play()
-            assert self.laser_ogg.is_playing() == True
+            assert self.laser_mp3.is_playing(self.player) == True
+            self.laser_mp3.stop(self.player)
+            assert self.laser_mp3.is_playing(self.player) == False
 
-            self.laser_ogg_stream.play()
-            assert self.laser_ogg_stream.is_playing() == True
+            self.player = self.laser_mp3_stream.play(volume=0.5)
+            assert self.laser_mp3_stream.get_volume(self.player) == 0.5
+            self.laser_mp3_stream.set_volume(1.0, self.player)
+            assert self.laser_mp3_stream.get_volume(self.player) == 1.0
 
-        if self.frame_count == 200:
-            arcade.play_sound(self.laser_mp3, volume=0.5)
-            assert self.laser_mp3.get_volume() == 0.5
-            self.laser_mp3.set_volume(1.0)
-            assert self.laser_mp3.get_volume() == 1.0
+        if self.frame_count == 120:
+            assert self.laser_mp3_stream.is_playing(self.player) == True
+            self.laser_mp3_stream.stop(self.player)
+            assert self.laser_mp3_stream.is_playing(self.player) == False
 
-            arcade.play_sound(self.laser_mp3_stream, volume=0.5)
-            assert self.laser_mp3_stream.get_volume() == 0.5
-            self.laser_mp3_stream.set_volume(1.0)
-            assert self.laser_mp3_stream.get_volume() == 1.0
 
-        if self.frame_count == 210:
-            arcade.stop_sound(self.laser_mp3)
-            assert self.laser_mp3.is_playing() == False
 
-            arcade.stop_sound(self.laser_mp3_stream)
-            assert self.laser_mp3_stream.is_playing() == False
-
-        if self.frame_count == 220:
-            self.laser_mp3.play()
-            assert self.laser_mp3.is_playing() == True
-
-            self.laser_mp3_stream.play()
-            assert self.laser_mp3_stream.is_playing() == True
-
-        if self.frame_count == 210:
-            self.laser_mp3.stop()
-            self.laser_mp3_stream.stop()
-            
     def on_draw(self):
         """
         Render the screen.
@@ -124,5 +110,5 @@ class MyGame(arcade.Window):
 def test_main():
     """ Main method """
     window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT)
-    window.test(240)
+    window.test(140)
     window.close()
