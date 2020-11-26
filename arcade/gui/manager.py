@@ -220,12 +220,20 @@ class UIManager(EventDispatcher):
                     self.hovered_element = None
 
             ui_element.on_ui_event(event)
+    def transform_xy_to_game_coordinates(self,x,y):
+        # apply x,y transformation for stretched applications
+        xv1,xv2,yv1,yv2 = self.window.get_viewport() # load viewport rectangle
+        return xv1 + (x/self.window.width)*(xv2-xv1), yv1 + (y / self.window.height) * (yv2 - yv1)
 
     def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
         """
         Dispatches :py:meth:`arcade.View.on_mouse_press()` as :py:class:`arcade.gui.UIElement`
         with type :py:attr:`arcade.gui.MOUSE_PRESS`
         """
+
+        # apply x,y transformation for stretched applications
+        x,y = transform_xy_to_game_coordinates(x,y)
+
         self.dispatch_ui_event(UIEvent(MOUSE_PRESS, x=x, y=y, button=button, modifiers=modifiers))
 
     def on_mouse_release(self, x: float, y: float, button: int, modifiers: int):
@@ -233,6 +241,10 @@ class UIManager(EventDispatcher):
         Dispatches :py:meth:`arcade.View.on_mouse_release()` as :py:class:`arcade.gui.UIElement`
         with type :py:attr:`arcade.gui.MOUSE_RELEASE`
         """
+
+        # apply x,y transformation for stretched applications
+        x,y = transform_xy_to_game_coordinates(x,y)
+
         self.dispatch_ui_event(UIEvent(MOUSE_RELEASE, x=x, y=y, button=button, modifiers=modifiers))
 
     def on_mouse_scroll(self, x: int, y: int, scroll_x: int, scroll_y: int):
@@ -240,6 +252,10 @@ class UIManager(EventDispatcher):
         Dispatches :py:meth:`arcade.View.on_mouse_scroll()` as :py:class:`arcade.gui.UIElement`
         with type :py:attr:`arcade.gui.MOUSE_SCROLL`
         """
+
+        # apply x,y transformation for stretched applications
+        x,y = transform_xy_to_game_coordinates(x,y)
+
         self.dispatch_ui_event(UIEvent(MOUSE_SCROLL,
                                        x=x,
                                        y=y,
@@ -252,6 +268,10 @@ class UIManager(EventDispatcher):
         Dispatches :py:meth:`arcade.View.on_mouse_motion()` as :py:class:`arcade.gui.UIElement`
         with type :py:attr:`arcade.gui.MOUSE_MOTION`
         """
+
+        # apply x,y transformation for stretched applications
+        x, y = transform_xy_to_game_coordinates(x, y)
+
         self.dispatch_ui_event(UIEvent(MOUSE_MOTION,
                                        x=x,
                                        y=y,
