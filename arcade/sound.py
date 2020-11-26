@@ -75,7 +75,7 @@ class Sound:
 
     def is_playing(self, player: media.Player) -> bool:
         """ Return if the sound is currently playing or not """
-        return player.is_playing()
+        return player.playing
 
     def get_volume(self, player: media.Player) -> float:
         """ Get the current volume """
