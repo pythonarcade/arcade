@@ -58,7 +58,8 @@ class Window(pyglet.window.Window):
                  resizable: bool = False,
                  update_rate: Optional[float] = 1 / 60,
                  antialiasing: bool = True,
-                 screen: pyglet.canvas.Screen = None):
+                 screen: pyglet.canvas.Screen = None,
+                 stretch_game_with_window:bool=False):
         """
         Construct a new window
 
@@ -70,6 +71,7 @@ class Window(pyglet.window.Window):
         :param float update_rate: How frequently to update the window.
         :param bool antialiasing: Should OpenGL's anti-aliasing be enabled?
         """
+        self.stretch_game_with_window = stretch_game_with_window
         if antialiasing:
             config = pyglet.gl.Config(major_version=3,
                                       minor_version=3,
@@ -343,10 +345,13 @@ class Window(pyglet.window.Window):
         # unscaled_viewport = self.get_viewport_size()
         # scaling = unscaled_viewport[0] / width
 
-        self.set_viewport(original_viewport[0],
-                          original_viewport[0] + width,
-                          original_viewport[2],
-                          original_viewport[2] + height)
+        if not self.stretch_game_with_window:
+            self.set_viewport(original_viewport[0],
+                              original_viewport[0] + width,
+                              original_viewport[2],
+                              original_viewport[2] + height)
+        else:
+            self.set_viewport(*original_viewport)
 
     def set_min_size(self, width: float, height: float):
         """ Wrap the Pyglet window call to set minimum size
