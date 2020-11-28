@@ -282,15 +282,11 @@ class Sprite:
         """
         return self._position
 
-    def _set_position(self, new_value: Tuple[float, float]):
+    def _set_position(self, new_value: Point):
         """
         Set the center x and y coordinates of the sprite.
 
-        Args:
-            new_value:
-
-        Returns:
-
+        :param Point new_value: New position.
         """
         if new_value[0] != self._position[0] or new_value[1] != self._position[1]:
             self.clear_spatial_hashes()
@@ -961,6 +957,8 @@ class Sprite:
         Override this to add code that will change
         what image is shown, so the sprite can be
         animated.
+
+        :param float delta_time: Time since last update.
         """
         pass
 
@@ -994,12 +992,9 @@ class Sprite:
     def collides_with_point(self, point: Point) -> bool:
         """Check if point is within the current sprite.
 
-        Args:
-            self: Current sprite
-            point: Point to check.
-
-        Returns:
-            True if the point is contained within the sprite's boundary.
+        :param Point point: Point to check.
+        :return: True if the point is contained within the sprite's boundary.
+        :rtype: bool
         """
         from arcade.geometry import is_point_in_polygon
 
@@ -1009,12 +1004,9 @@ class Sprite:
     def collides_with_sprite(self, other: 'Sprite') -> bool:
         """Will check if a sprite is overlapping (colliding) another Sprite.
 
-        Args:
-            self: Current Sprite.
-            other: The other sprite to check against.
-
-        Returns:
-            True or False, whether or not they are overlapping.
+        :param Sprite other: the other sprite to check against.
+        :return: True or False, whether or not they are overlapping.
+        :rtype: bool
         """
         from arcade import check_for_collision
         return check_for_collision(self, other)
@@ -1022,12 +1014,9 @@ class Sprite:
     def collides_with_list(self, sprite_list: 'SpriteList') -> list:
         """Check if current sprite is overlapping with any other sprite in a list
 
-        Args:
-            self: current Sprite
-            sprite_list: SpriteList to check against
-
-        Returns:
-            SpriteList of all overlapping Sprites from the original SpriteList
+        :param SpriteList sprite_list: SpriteList to check against
+        :return: SpriteList of all overlapping Sprites from the original SpriteList
+        :rtype: SpriteList
         """
         from arcade import check_for_collision_with_list
         # noinspection PyTypeChecker
