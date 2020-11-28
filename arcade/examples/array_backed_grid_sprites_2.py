@@ -51,9 +51,9 @@ class MyGame(arcade.Window):
         self.grid_sprites = []
 
         # Create a list of solid-color sprites to represent each grid location
-        for row in range(COLUMN_COUNT):
+        for row in range(ROW_COUNT):
             self.grid_sprites.append([])
-            for column in range(ROW_COUNT):
+            for column in range(COLUMN_COUNT):
                 x = column * (WIDTH + MARGIN) + (WIDTH / 2 + MARGIN)
                 y = row * (HEIGHT + MARGIN) + (HEIGHT / 2 + MARGIN)
                 sprite = arcade.SpriteSolidColor(WIDTH, HEIGHT, arcade.color.WHITE)
