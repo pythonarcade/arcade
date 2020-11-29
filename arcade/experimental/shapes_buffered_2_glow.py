@@ -32,15 +32,17 @@ class MyGame(arcade.Window):
         self.shape_list.center_x = SCREEN_WIDTH // 2
         self.shape_list.center_y = SCREEN_HEIGHT // 2
         self.shape_list.angle = 0
-        point_list = ((0, 50),
-                      (10, 10),
-                      (50, 0),
-                      (10, -10),
-                      (0, -50),
-                      (-10, -10),
-                      (-50, 0),
-                      (-10, 10),
-                      (0, 50))
+        point_list = (
+            (0, 50),
+            (10, 10),
+            (50, 0),
+            (10, -10),
+            (0, -50),
+            (-10, -10),
+            (-50, 0),
+            (-10, 10),
+            (0, 50),
+        )
         colors = [
             getattr(arcade.color, color)
             for color in dir(arcade.color)
@@ -55,39 +57,34 @@ class MyGame(arcade.Window):
             my_line_strip = arcade.create_line_strip(points, color, 5)
             self.shape_list.append(my_line_strip)
 
-        point_list = ((-50, -50),
-                      (0, 40),
-                      (50, -50))
+        point_list = ((-50, -50), (0, 40), (50, -50))
         for i in range(5):
             x = SCREEN_WIDTH // 2 - random.randrange(SCREEN_WIDTH - 50)
             y = SCREEN_HEIGHT // 2 - random.randrange(SCREEN_HEIGHT - 50)
             points = [(px + x, py + y) for px, py in point_list]
             triangle_filled = arcade.create_triangles_filled_with_colors(
-                points,
-                random.sample(colors, 3)
+                points, random.sample(colors, 3)
             )
             self.shape_list.append(triangle_filled)
 
-        point_list = ((-50, -70),
-                      (-50, 70),
-                      (50, 70),
-                      (50, -70))
+        point_list = ((-50, -70), (-50, 70), (50, 70), (50, -70))
         for i in range(5):
             x = SCREEN_WIDTH // 2 - random.randrange(SCREEN_WIDTH - 50)
             y = SCREEN_HEIGHT // 2 - random.randrange(SCREEN_HEIGHT - 50)
             points = [(px + x, py + y) for px, py in point_list]
             rect_filled = arcade.create_rectangle_filled_with_colors(
-                points,
-                random.sample(colors, 4)
+                points, random.sample(colors, 4)
             )
             self.shape_list.append(rect_filled)
 
-        point_list = ((100, 100),
-                      (50, 150),
-                      (100, 200),
-                      (200, 200),
-                      (250, 150),
-                      (200, 100))
+        point_list = (
+            (100, 100),
+            (50, 150),
+            (100, 200),
+            (200, 200),
+            (250, 150),
+            (200, 100),
+        )
         poly = arcade.create_polygon(point_list, (255, 10, 10))
         self.shape_list.append(poly)
 
@@ -97,7 +94,12 @@ class MyGame(arcade.Window):
         arcade.set_background_color(arcade.color.BLACK)
 
         self.offscreen = self.ctx.framebuffer(
-            color_attachments=self.ctx.texture((SCREEN_WIDTH, SCREEN_HEIGHT), wrap_x=gl.GL_CLAMP_TO_EDGE, wrap_y=gl.GL_CLAMP_TO_EDGE))
+            color_attachments=self.ctx.texture(
+                (SCREEN_WIDTH, SCREEN_HEIGHT),
+                wrap_x=gl.GL_CLAMP_TO_EDGE,
+                wrap_y=gl.GL_CLAMP_TO_EDGE,
+            )
+        )
         self.glow = postprocessing.BloomEffect((SCREEN_WIDTH, SCREEN_HEIGHT))
 
     def on_draw(self):

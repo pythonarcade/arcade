@@ -84,8 +84,9 @@ class MyGame(arcade.Window):
 
         # Draw the current position of each snowflake
         for snowflake in self.snowflake_list:
-            arcade.draw_circle_filled(snowflake.x, snowflake.y,
-                                      snowflake.size, arcade.color.WHITE)
+            arcade.draw_circle_filled(
+                snowflake.x, snowflake.y, snowflake.size, arcade.color.WHITE
+            )
 
     def on_update(self, delta_time):
         """

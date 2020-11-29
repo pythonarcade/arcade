@@ -41,61 +41,116 @@ class MyGame(arcade.Window):
         start_x = 50
         start_y = 450
         arcade.draw_point(start_x, start_y, arcade.color.BLUE, 5)
-        arcade.draw_text("Simple line of text in 12 point", start_x, start_y, arcade.color.BLACK, 12)
+        arcade.draw_text(
+            "Simple line of text in 12 point", start_x, start_y, arcade.color.BLACK, 12
+        )
 
         start_x = 50
         start_y = 150
         arcade.draw_point(start_x, start_y, arcade.color.BLUE, 5)
-        arcade.draw_text("Garamond Text", start_x, start_y, arcade.color.BLACK, 15, font_name='GARA')
+        arcade.draw_text(
+            "Garamond Text", start_x, start_y, arcade.color.BLACK, 15, font_name="GARA"
+        )
 
         start_x = 50
         start_y = 400
         arcade.draw_point(start_x, start_y, arcade.color.BLUE, 5)
-        arcade.draw_text("Text anchored 'top' and 'left'.",
-                         start_x, start_y, arcade.color.BLACK, 12, anchor_x="left", anchor_y="top")
+        arcade.draw_text(
+            "Text anchored 'top' and 'left'.",
+            start_x,
+            start_y,
+            arcade.color.BLACK,
+            12,
+            anchor_x="left",
+            anchor_y="top",
+        )
 
         start_y = 350
         arcade.draw_point(start_x, start_y, arcade.color.BLUE, 5)
-        arcade.draw_text("14 point multi\nline\ntext",
-                         start_x, start_y, arcade.color.BLACK, 14, anchor_y="top")
+        arcade.draw_text(
+            "14 point multi\nline\ntext",
+            start_x,
+            start_y,
+            arcade.color.BLACK,
+            14,
+            anchor_y="top",
+        )
 
         start_y = 450
         start_x = 300
         width = 200
         height = 20
         arcade.draw_point(start_x, start_y, arcade.color.BLUE, 5)
-        arcade.draw_lrtb_rectangle_outline(start_x, start_x + width,
-                                           start_y + height, start_y,
-                                           arcade.color.BLUE, 1)
-        arcade.draw_text("Centered Text.",
-                         start_x, start_y, arcade.color.BLACK, 14, width=200, align="center")
+        arcade.draw_lrtb_rectangle_outline(
+            start_x, start_x + width, start_y + height, start_y, arcade.color.BLUE, 1
+        )
+        arcade.draw_text(
+            "Centered Text.",
+            start_x,
+            start_y,
+            arcade.color.BLACK,
+            14,
+            width=200,
+            align="center",
+        )
 
         start_y = 250
         start_x = 300
         arcade.draw_point(start_x, start_y, arcade.color.BLUE, 5)
-        arcade.draw_text("Text centered on\na point",
-                         start_x, start_y, arcade.color.BLACK, 14, width=200, align="center",
-                         anchor_x="center", anchor_y="center")
+        arcade.draw_text(
+            "Text centered on\na point",
+            start_x,
+            start_y,
+            arcade.color.BLACK,
+            14,
+            width=200,
+            align="center",
+            anchor_x="center",
+            anchor_y="center",
+        )
 
         start_y = 150
         start_x = 300
         arcade.draw_point(start_x, start_y, arcade.color.BLUE, 5)
-        arcade.draw_text("Text rotated on\na point", start_x, start_y,
-                         arcade.color.BLACK, 14, width=200, align="center", anchor_x="center",
-                         anchor_y="center", rotation=self.text_angle)
+        arcade.draw_text(
+            "Text rotated on\na point",
+            start_x,
+            start_y,
+            arcade.color.BLACK,
+            14,
+            width=200,
+            align="center",
+            anchor_x="center",
+            anchor_y="center",
+            rotation=self.text_angle,
+        )
 
         start_y = 150
         start_x = 20
         arcade.draw_point(start_x, start_y, arcade.color.BLUE, 5)
-        arcade.draw_text("Sideways text", start_x, start_y,
-                         arcade.color.BLACK, 14, width=200, align="center",
-                         anchor_x="center", anchor_y="center", rotation=90.0)
+        arcade.draw_text(
+            "Sideways text",
+            start_x,
+            start_y,
+            arcade.color.BLACK,
+            14,
+            width=200,
+            align="center",
+            anchor_x="center",
+            anchor_y="center",
+            rotation=90.0,
+        )
 
         start_y = 20
         start_x = 50
         arcade.draw_point(start_x, start_y, arcade.color.BLUE, 5)
-        arcade.draw_text(f"Time elapsed: {self.time_elapsed:7.1f}",
-                         start_x, start_y, arcade.color.BLACK, 14)
+        arcade.draw_text(
+            f"Time elapsed: {self.time_elapsed:7.1f}",
+            start_x,
+            start_y,
+            arcade.color.BLACK,
+            14,
+        )
 
 
 def main():

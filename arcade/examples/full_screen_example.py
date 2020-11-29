@@ -49,7 +49,9 @@ class MyGame(arcade.Window):
         width, height = self.get_size()
         self.set_viewport(0, width, 0, height)
         arcade.set_background_color(arcade.color.AMAZON)
-        self.example_image = arcade.load_texture(":resources:images/tiles/boxCrate_double.png")
+        self.example_image = arcade.load_texture(
+            ":resources:images/tiles/boxCrate_double.png"
+        )
 
     def on_draw(self):
         """
@@ -63,12 +65,22 @@ class MyGame(arcade.Window):
 
         text_size = 18
         # Draw text on the screen so the user has an idea of what is happening
-        arcade.draw_text("Press F to toggle between full screen and windowed mode, unstretched.",
-                         screen_width // 2, screen_height // 2 - 20,
-                         arcade.color.WHITE, text_size, anchor_x="center")
-        arcade.draw_text("Press S to toggle between full screen and windowed mode, stretched.",
-                         screen_width // 2, screen_height // 2 + 20,
-                         arcade.color.WHITE, text_size, anchor_x="center")
+        arcade.draw_text(
+            "Press F to toggle between full screen and windowed mode, unstretched.",
+            screen_width // 2,
+            screen_height // 2 - 20,
+            arcade.color.WHITE,
+            text_size,
+            anchor_x="center",
+        )
+        arcade.draw_text(
+            "Press S to toggle between full screen and windowed mode, stretched.",
+            screen_width // 2,
+            screen_height // 2 + 20,
+            arcade.color.WHITE,
+            text_size,
+            anchor_x="center",
+        )
 
         # Draw some boxes on the bottom so we can see how they change
         for x in range(64, 800, 128):

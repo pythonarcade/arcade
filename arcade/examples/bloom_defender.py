@@ -49,6 +49,7 @@ BULLET_MAX_DISTANCE = SCREEN_WIDTH * 0.75
 
 class Player(arcade.SpriteSolidColor):
     """ Player ship """
+
     def __init__(self):
         """ Set up player """
         super().__init__(40, 10, arcade.color.SLATE_GRAY)
@@ -112,6 +113,7 @@ class Player(arcade.SpriteSolidColor):
         elif self.top > SCREEN_HEIGHT - 1:
             self.top = SCREEN_HEIGHT - 1
 
+
 class Bullet(arcade.SpriteSolidColor):
     """ Bullet """
 
@@ -128,8 +130,10 @@ class Bullet(arcade.SpriteSolidColor):
         if self.distance > BULLET_MAX_DISTANCE:
             self.remove_from_sprite_lists()
 
+
 class Particle(arcade.SpriteSolidColor):
     """ Particle from explosion """
+
     def update(self):
         """ Move the particle, and fade out """
         # Move
@@ -139,6 +143,7 @@ class Particle(arcade.SpriteSolidColor):
         self.alpha -= 5
         if self.alpha <= 0:
             self.remove_from_sprite_lists()
+
 
 class MyGame(arcade.Window):
     """ Main application class. """
@@ -182,7 +187,9 @@ class MyGame(arcade.Window):
         # Frame to receive the glow, and color attachment to store each pixel's
         # color data
         self.bloom_color_attachment = self.ctx.texture((SCREEN_WIDTH, SCREEN_HEIGHT))
-        self.bloom_screen = self.ctx.framebuffer(color_attachments=[self.bloom_color_attachment])
+        self.bloom_screen = self.ctx.framebuffer(
+            color_attachments=[self.bloom_color_attachment]
+        )
 
         # Down-sampling helps improve the blur.
         # Note: Any item with a size less than the down-sampling size may get missed in
@@ -203,7 +210,9 @@ class MyGame(arcade.Window):
         multiplier = 2
 
         # Create a post-processor to create a bloom
-        self.bloom_postprocessing = postprocessing.BloomEffect(size, kernel_size, sigma, mu, multiplier, step)
+        self.bloom_postprocessing = postprocessing.BloomEffect(
+            size, kernel_size, sigma, mu, multiplier, step
+        )
 
     def setup(self):
         """ Set up the game and initialize the variables. """
@@ -245,10 +254,12 @@ class MyGame(arcade.Window):
         self.bloom_screen.use()
         self.bloom_screen.clear((0, 0, 0, 0))
 
-        arcade.set_viewport(self.view_left,
-                            SCREEN_WIDTH + self.view_left,
-                            self.view_bottom,
-                            SCREEN_HEIGHT + self.view_bottom)
+        arcade.set_viewport(
+            self.view_left,
+            SCREEN_WIDTH + self.view_left,
+            self.view_bottom,
+            SCREEN_HEIGHT + self.view_bottom,
+        )
 
         # Draw all the sprites on the screen that should have a bloom
         self.star_sprite_list.draw()
@@ -257,10 +268,12 @@ class MyGame(arcade.Window):
         # Now draw to the actual screen
         self.use()
 
-        arcade.set_viewport(self.view_left,
-                            SCREEN_WIDTH + self.view_left,
-                            self.view_bottom,
-                            SCREEN_HEIGHT + self.view_bottom)
+        arcade.set_viewport(
+            self.view_left,
+            SCREEN_WIDTH + self.view_left,
+            self.view_bottom,
+            SCREEN_HEIGHT + self.view_bottom,
+        )
 
         # --- Bloom related ---
 
@@ -293,7 +306,9 @@ class MyGame(arcade.Window):
         self.bullet_sprite_list.update()
 
         for bullet in self.bullet_sprite_list:
-            enemy_hit_list = arcade.check_for_collision_with_list(bullet, self.enemy_sprite_list)
+            enemy_hit_list = arcade.check_for_collision_with_list(
+                bullet, self.enemy_sprite_list
+            )
             for enemy in enemy_hit_list:
                 enemy.remove_from_sprite_lists()
                 for i in range(10):

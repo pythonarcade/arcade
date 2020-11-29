@@ -48,8 +48,9 @@ width = 120
 height = 100
 start_angle = 190
 end_angle = 350
-arcade.draw_arc_outline(x, y, width, height, arcade.color.BLACK,
-                        start_angle, end_angle, 10)
+arcade.draw_arc_outline(
+    x, y, width, height, arcade.color.BLACK, start_angle, end_angle, 10
+)
 
 # Finish drawing and display the result
 arcade.finish_render()

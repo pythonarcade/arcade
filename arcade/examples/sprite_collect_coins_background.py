@@ -62,7 +62,9 @@ class MyGame(arcade.Window):
         # Load the background image. Do this in the setup so we don't keep reloading it all the time.
         # Image from:
         # http://wallpaper-gallery.net/single/free-background-images/free-background-images-22.html
-        self.background = arcade.load_texture(":resources:images/backgrounds/abstract_1.jpg")
+        self.background = arcade.load_texture(
+            ":resources:images/backgrounds/abstract_1.jpg"
+        )
 
         # Sprite lists
         self.player_list = arcade.SpriteList()
@@ -70,7 +72,10 @@ class MyGame(arcade.Window):
 
         # Set up the player
         self.score = 0
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", PLAYER_SCALING)
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            PLAYER_SCALING,
+        )
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 50
         self.player_list.append(self.player_sprite)
@@ -96,9 +101,9 @@ class MyGame(arcade.Window):
         arcade.start_render()
 
         # Draw the background texture
-        arcade.draw_lrwh_rectangle_textured(0, 0,
-                                            SCREEN_WIDTH, SCREEN_HEIGHT,
-                                            self.background)
+        arcade.draw_lrwh_rectangle_textured(
+            0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, self.background
+        )
 
         # Draw all the sprites.
         self.coin_list.draw()
@@ -122,7 +127,9 @@ class MyGame(arcade.Window):
         self.coin_list.update()
 
         # Generate a list of all sprites that collided with the player.
-        hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.coin_list)
+        hit_list = arcade.check_for_collision_with_list(
+            self.player_sprite, self.coin_list
+        )
 
         # Loop through each colliding sprite, remove it, and add to the score.
         for coin in hit_list:

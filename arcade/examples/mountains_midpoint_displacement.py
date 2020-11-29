@@ -20,8 +20,9 @@ SCREEN_TITLE = "Mountains Midpoint Displacement Example"
 
 
 # Iterative midpoint vertical displacement
-def midpoint_displacement(start, end, roughness, vertical_displacement=None,
-                          num_of_iterations=16):
+def midpoint_displacement(
+    start, end, roughness, vertical_displacement=None, num_of_iterations=16
+):
     """
     Given a straight line segment specified by a starting point and an endpoint
     in the form of [starting_point_x, starting_point_y] and [endpoint_x, endpoint_y],
@@ -34,7 +35,7 @@ def midpoint_displacement(start, end, roughness, vertical_displacement=None,
     if vertical_displacement is None:
         # if no initial displacement is specified set displacement to:
         #  (y_start+y_end)/2
-        vertical_displacement = (start[1]+end[1])/2
+        vertical_displacement = (start[1] + end[1]) / 2
     # Data structure that stores the points is a list of lists where
     # each sublist represents a point and holds its x and y coordinates:
     # points=[[x_0, y_0],[x_1, y_1],...,[x_n, y_n]]
@@ -50,14 +51,16 @@ def midpoint_displacement(start, end, roughness, vertical_displacement=None,
         # the original sequence.
         # Tuple type is used for security reasons since they are immutable in Python.
         points_tup = tuple(points)
-        for i in range(len(points_tup)-1):
+        for i in range(len(points_tup) - 1):
             # Calculate x and y midpoint coordinates:
             # [(x_i+x_(i+1))/2, (y_i+y_(i+1))/2]
-            midpoint = list(map(lambda x: (points_tup[i][x]+points_tup[i+1][x])/2,
-                                [0, 1]))
+            midpoint = list(
+                map(lambda x: (points_tup[i][x] + points_tup[i + 1][x]) / 2, [0, 1])
+            )
             # Displace midpoint y-coordinate
-            midpoint[1] += random.choice([-vertical_displacement,
-                                          vertical_displacement])
+            midpoint[1] += random.choice(
+                [-vertical_displacement, vertical_displacement]
+            )
             # Insert the displaced midpoint in the current list of points
             bisect.insort(points, midpoint)
             # bisect allows to insert an element in a list so that its order
@@ -110,11 +113,15 @@ def fix_points(points):
     return new_list
 
 
-def create_mountain_range(start, end, roughness, vertical_displacement, num_of_iterations, color_start):
+def create_mountain_range(
+    start, end, roughness, vertical_displacement, num_of_iterations, color_start
+):
 
     shape_list = arcade.ShapeElementList()
 
-    layer_1 = midpoint_displacement(start, end, roughness, vertical_displacement, num_of_iterations)
+    layer_1 = midpoint_displacement(
+        start, end, roughness, vertical_displacement, num_of_iterations
+    )
     layer_1 = fix_points(layer_1)
 
     color_list = [color_start] * len(layer_1)
@@ -147,23 +154,36 @@ class MyGame(arcade.Window):
 
         color1 = (195, 157, 224)
         color2 = (240, 203, 163)
-        points = (0, 0), (SCREEN_WIDTH, 0), (SCREEN_WIDTH, SCREEN_HEIGHT), (0, SCREEN_HEIGHT)
+        points = (
+            (0, 0),
+            (SCREEN_WIDTH, 0),
+            (SCREEN_WIDTH, SCREEN_HEIGHT),
+            (0, SCREEN_HEIGHT),
+        )
         colors = (color1, color1, color2, color2)
         rect = arcade.create_rectangle_filled_with_colors(points, colors)
 
         background.append(rect)
         self.mountains.append(background)
 
-        layer_4 = create_mountain_range([0, 350], [SCREEN_WIDTH, 320], 1.1, 250, 8, (158, 98, 204))
+        layer_4 = create_mountain_range(
+            [0, 350], [SCREEN_WIDTH, 320], 1.1, 250, 8, (158, 98, 204)
+        )
         self.mountains.append(layer_4)
 
-        layer_3 = create_mountain_range([0, 270], [SCREEN_WIDTH, 190], 1.1, 120, 9, (130, 79, 138))
+        layer_3 = create_mountain_range(
+            [0, 270], [SCREEN_WIDTH, 190], 1.1, 120, 9, (130, 79, 138)
+        )
         self.mountains.append(layer_3)
 
-        layer_2 = create_mountain_range([0, 180], [SCREEN_WIDTH, 80], 1.2, 30, 12, (68, 28, 99))
+        layer_2 = create_mountain_range(
+            [0, 180], [SCREEN_WIDTH, 80], 1.2, 30, 12, (68, 28, 99)
+        )
         self.mountains.append(layer_2)
 
-        layer_1 = create_mountain_range([250, 0], [SCREEN_WIDTH, 200], 1.4, 20, 12, (49, 7, 82))
+        layer_1 = create_mountain_range(
+            [250, 0], [SCREEN_WIDTH, 200], 1.4, 20, 12, (49, 7, 82)
+        )
         self.mountains.append(layer_1)
 
     def on_draw(self):

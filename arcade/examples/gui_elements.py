@@ -20,9 +20,11 @@ class MyFlatButton(arcade.gui.UIFlatButton):
     """
     To capture a button click, subclass the button and override on_click.
     """
+
     def on_click(self):
         """ Called when user lets off button """
         print("Click flat button. ")
+
 
 class MyGhostFlatButton(arcade.gui.UIGhostFlatButton):
     """
@@ -33,7 +35,7 @@ class MyGhostFlatButton(arcade.gui.UIGhostFlatButton):
 
     def __init__(self, center_x, center_y, input_box):
         super().__init__(
-            'GhostFlatButton',
+            "GhostFlatButton",
             center_x=center_x,
             center_y=center_y,
             width=250,
@@ -48,7 +50,8 @@ class MyGhostFlatButton(arcade.gui.UIGhostFlatButton):
 
 class MyView(arcade.View):
     """
-    Main view. Really the only view in this example. """
+    Main view. Really the only view in this example."""
+
     def __init__(self):
         super().__init__()
 
@@ -75,37 +78,43 @@ class MyView(arcade.View):
         right_column_x = 3 * self.window.width // 4
 
         # left side elements
-        self.ui_manager.add_ui_element(arcade.gui.UILabel(
-            'UILabel',
-            center_x=left_column_x,
-            center_y=y_slot * 3,
-        ))
+        self.ui_manager.add_ui_element(
+            arcade.gui.UILabel(
+                "UILabel",
+                center_x=left_column_x,
+                center_y=y_slot * 3,
+            )
+        )
 
         ui_input_box = arcade.gui.UIInputBox(
-            center_x=left_column_x,
-            center_y=y_slot * 2,
-            width=300
+            center_x=left_column_x, center_y=y_slot * 2, width=300
         )
-        ui_input_box.text = 'UIInputBox'
+        ui_input_box.text = "UIInputBox"
         ui_input_box.cursor_index = len(ui_input_box.text)
         self.ui_manager.add_ui_element(ui_input_box)
 
-        button_normal = arcade.load_texture(':resources:gui_basic_assets/red_button_normal.png')
-        hovered_texture = arcade.load_texture(':resources:gui_basic_assets/red_button_hover.png')
-        pressed_texture = arcade.load_texture(':resources:gui_basic_assets/red_button_press.png')
+        button_normal = arcade.load_texture(
+            ":resources:gui_basic_assets/red_button_normal.png"
+        )
+        hovered_texture = arcade.load_texture(
+            ":resources:gui_basic_assets/red_button_hover.png"
+        )
+        pressed_texture = arcade.load_texture(
+            ":resources:gui_basic_assets/red_button_press.png"
+        )
         button = arcade.gui.UIImageButton(
             center_x=left_column_x,
             center_y=y_slot * 1,
             normal_texture=button_normal,
             hover_texture=hovered_texture,
             press_texture=pressed_texture,
-            text='UIImageButton'
+            text="UIImageButton",
         )
         self.ui_manager.add_ui_element(button)
 
         # right side elements
         button = MyFlatButton(
-            'FlatButton',
+            "FlatButton",
             center_x=right_column_x,
             center_y=y_slot * 1,
             width=250,
@@ -114,15 +123,13 @@ class MyView(arcade.View):
         self.ui_manager.add_ui_element(button)
 
         button = MyGhostFlatButton(
-            center_x=right_column_x,
-            center_y=y_slot * 2,
-            input_box=ui_input_box
+            center_x=right_column_x, center_y=y_slot * 2, input_box=ui_input_box
         )
         self.ui_manager.add_ui_element(button)
 
 
-if __name__ == '__main__':
-    window = arcade.Window(title='ARCADE_GUI')
+if __name__ == "__main__":
+    window = arcade.Window(title="ARCADE_GUI")
     view = MyView()
     window.show_view(view)
     arcade.run()

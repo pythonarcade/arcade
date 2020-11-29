@@ -66,16 +66,20 @@ def dump_joystick_state(ticks, joy):
     fmt_str += " ".join(num_fmts)
     fmt_str += " {:2d} {:2d} {}"
     buttons = " ".join(["{:5}".format(str(b)) for b in joy.buttons])
-    print(fmt_str.format(ticks,
-                         joy.x,
-                         joy.y,
-                         joy.z,
-                         joy.rx,
-                         joy.ry,
-                         joy.rz,
-                         joy.hat_x,
-                         joy.hat_y,
-                         buttons))
+    print(
+        fmt_str.format(
+            ticks,
+            joy.x,
+            joy.y,
+            joy.z,
+            joy.rx,
+            joy.ry,
+            joy.rz,
+            joy.hat_x,
+            joy.hat_y,
+            buttons,
+        )
+    )
 
 
 def get_joy_position(x, y):
@@ -91,7 +95,12 @@ def get_joy_position(x, y):
 
 class Player(arcade.sprite.Sprite):
     def __init__(self, filename):
-        super().__init__(filename=filename, scale=0.4, center_x=SCREEN_WIDTH/2, center_y=SCREEN_HEIGHT/2)
+        super().__init__(
+            filename=filename,
+            scale=0.4,
+            center_x=SCREEN_WIDTH / 2,
+            center_y=SCREEN_HEIGHT / 2,
+        )
         self.shoot_up_pressed = False
         self.shoot_down_pressed = False
         self.shoot_left_pressed = False
@@ -100,7 +109,12 @@ class Player(arcade.sprite.Sprite):
 
 class Enemy(arcade.sprite.Sprite):
     def __init__(self, x, y):
-        super().__init__(filename=':resources:images/pinball/bumper.png', scale=0.5, center_x=x, center_y=y)
+        super().__init__(
+            filename=":resources:images/pinball/bumper.png",
+            scale=0.5,
+            center_x=x,
+            center_y=y,
+        )
 
     def follow_sprite(self, player_sprite):
         """
@@ -170,7 +184,9 @@ class MyGame(arcade.View):
 
         if self.joy:
             # Joystick input - movement
-            move_x, move_y, move_angle = get_joy_position(self.joy.move_stick_x, self.joy.move_stick_y)
+            move_x, move_y, move_angle = get_joy_position(
+                self.joy.move_stick_x, self.joy.move_stick_y
+            )
             if move_angle:
                 self.player.change_x = move_x * MOVEMENT_SPEED
                 self.player.change_y = move_y * MOVEMENT_SPEED
@@ -180,19 +196,21 @@ class MyGame(arcade.View):
                 self.player.change_y = 0
 
             # Joystick input - shooting
-            shoot_x, shoot_y, shoot_angle = get_joy_position(self.joy.shoot_stick_x, self.joy.shoot_stick_y)
+            shoot_x, shoot_y, shoot_angle = get_joy_position(
+                self.joy.shoot_stick_x, self.joy.shoot_stick_y
+            )
             if shoot_angle:
                 self.spawn_bullet(shoot_angle)
         else:
             # Keyboard input - shooting
             if self.player.shoot_right_pressed and self.player.shoot_up_pressed:
-                self.spawn_bullet(0+45)
+                self.spawn_bullet(0 + 45)
             elif self.player.shoot_up_pressed and self.player.shoot_left_pressed:
-                self.spawn_bullet(90+45)
+                self.spawn_bullet(90 + 45)
             elif self.player.shoot_left_pressed and self.player.shoot_down_pressed:
-                self.spawn_bullet(180+45)
+                self.spawn_bullet(180 + 45)
             elif self.player.shoot_down_pressed and self.player.shoot_right_pressed:
-                self.spawn_bullet(270+45)
+                self.spawn_bullet(270 + 45)
             elif self.player.shoot_right_pressed:
                 self.spawn_bullet(0)
             elif self.player.shoot_up_pressed:
@@ -205,12 +223,16 @@ class MyGame(arcade.View):
         self.enemy_list.update()
         self.player.update()
         self.bullet_list.update()
-        ship_death_hit_list = arcade.check_for_collision_with_list(self.player, self.enemy_list)
+        ship_death_hit_list = arcade.check_for_collision_with_list(
+            self.player, self.enemy_list
+        )
         if len(ship_death_hit_list) > 0:
             self.game_over = True
         for bullet in self.bullet_list:
             bullet_killed = False
-            enemy_shot_list = arcade.check_for_collision_with_list(bullet, self.enemy_list)
+            enemy_shot_list = arcade.check_for_collision_with_list(
+                bullet, self.enemy_list
+            )
             # Loop through each colliding sprite, remove it, and add to the score.
             for enemy in enemy_shot_list:
                 enemy.remove_from_sprite_lists()
@@ -302,12 +324,22 @@ class MyGame(arcade.View):
 
         # Game over message
         if self.game_over:
-            arcade.draw_text("Game Over", SCREEN_WIDTH/2, SCREEN_HEIGHT/2, arcade.color.WHITE, 100, width=SCREEN_WIDTH,
-                             align="center", anchor_x="center", anchor_y="center")
+            arcade.draw_text(
+                "Game Over",
+                SCREEN_WIDTH / 2,
+                SCREEN_HEIGHT / 2,
+                arcade.color.WHITE,
+                100,
+                width=SCREEN_WIDTH,
+                align="center",
+                anchor_x="center",
+                anchor_y="center",
+            )
 
 
 class JoyConfigView(arcade.View):
     """A View that allows a user to interactively configure their joystick"""
+
     REGISTRATION_PAUSE = 1.5
     NO_JOYSTICK_PAUSE = 2.0
     JOY_ATTRS = ("x", "y", "z", "rx", "ry", "rz")
@@ -344,7 +376,11 @@ class JoyConfigView(arcade.View):
                 max_val = farthest_val
         self.msg = f"Registered!"
 
-        setattr(pyglet.input.base.Joystick, method_name, property(lambda that: getattr(that, max_attr), None))
+        setattr(
+            pyglet.input.base.Joystick,
+            method_name,
+            property(lambda that: getattr(that, max_attr), None),
+        )
 
         # pause briefly after registering an axis
         yield from self._pause(self.REGISTRATION_PAUSE)
@@ -366,10 +402,22 @@ class JoyConfigView(arcade.View):
 
     def on_draw(self):
         arcade.start_render()
-        arcade.draw_text("Configure your joystick", self.width/2, self.height/2+100,
-                         arcade.color.BLACK, font_size=32, anchor_x="center")
-        arcade.draw_text(self.msg, self.width/2, self.height/2,
-                         arcade.color.BLACK, font_size=24, anchor_x="center")
+        arcade.draw_text(
+            "Configure your joystick",
+            self.width / 2,
+            self.height / 2 + 100,
+            arcade.color.BLACK,
+            font_size=32,
+            anchor_x="center",
+        )
+        arcade.draw_text(
+            self.msg,
+            self.width / 2,
+            self.height / 2,
+            arcade.color.BLACK,
+            font_size=24,
+            anchor_x="center",
+        )
 
     def _pause(self, delay):
         """Block a generator from advancing for the given delay. Call with 'yield from self._pause(1.0)"""
@@ -399,5 +447,9 @@ if __name__ == "__main__":
         ("Move the shooting stick up or down", "shoot_stick_y"),
     )
     game = MyGame()
-    window.show_view(JoyConfigView(joy_config_method_names, window.joys, game, SCREEN_WIDTH, SCREEN_HEIGHT))
+    window.show_view(
+        JoyConfigView(
+            joy_config_method_names, window.joys, game, SCREEN_WIDTH, SCREEN_HEIGHT
+        )
+    )
     arcade.run()

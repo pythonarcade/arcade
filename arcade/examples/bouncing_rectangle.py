@@ -45,9 +45,13 @@ def on_draw(delta_time):
     # Draw a rectangle.
     # For a full list of colors see:
     # http://arcade.academy/arcade.color.html
-    arcade.draw_rectangle_filled(on_draw.center_x, on_draw.center_y,
-                                 RECT_WIDTH, RECT_HEIGHT,
-                                 arcade.color.ALIZARIN_CRIMSON)
+    arcade.draw_rectangle_filled(
+        on_draw.center_x,
+        on_draw.center_y,
+        RECT_WIDTH,
+        RECT_HEIGHT,
+        arcade.color.ALIZARIN_CRIMSON,
+    )
 
     # Modify rectangles position based on the delta
     # vector. (Delta means change. You can also think
@@ -56,11 +60,15 @@ def on_draw(delta_time):
     on_draw.center_y += on_draw.delta_y * delta_time
 
     # Figure out if we hit the edge and need to reverse.
-    if on_draw.center_x < RECT_WIDTH // 2 \
-            or on_draw.center_x > SCREEN_WIDTH - RECT_WIDTH // 2:
+    if (
+        on_draw.center_x < RECT_WIDTH // 2
+        or on_draw.center_x > SCREEN_WIDTH - RECT_WIDTH // 2
+    ):
         on_draw.delta_x *= -1
-    if on_draw.center_y < RECT_HEIGHT // 2 \
-            or on_draw.center_y > SCREEN_HEIGHT - RECT_HEIGHT // 2:
+    if (
+        on_draw.center_y < RECT_HEIGHT // 2
+        or on_draw.center_y > SCREEN_HEIGHT - RECT_HEIGHT // 2
+    ):
         on_draw.delta_y *= -1
 
 
@@ -74,9 +82,9 @@ def on_draw(delta_time):
 # Later on, we'll use 'classes' to track position and velocity for multiple
 # objects.
 on_draw.center_x = 100  # type: ignore # dynamic attribute on function obj  # Initial x position
-on_draw.center_y = 50   # type: ignore # dynamic attribute on function obj  # Initial y position
-on_draw.delta_x = 115   # type: ignore # dynamic attribute on function obj  # Initial change in x
-on_draw.delta_y = 130   # type: ignore # dynamic attribute on function obj  # Initial change in y
+on_draw.center_y = 50  # type: ignore # dynamic attribute on function obj  # Initial y position
+on_draw.delta_x = 115  # type: ignore # dynamic attribute on function obj  # Initial change in x
+on_draw.delta_y = 130  # type: ignore # dynamic attribute on function obj  # Initial change in y
 
 
 def main():

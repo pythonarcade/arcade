@@ -59,7 +59,10 @@ class MyGame(arcade.Window):
         self.coin_list = arcade.SpriteList()
 
         # Set up the player
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", SPRITE_SCALING)
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            SPRITE_SCALING,
+        )
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 64
 
@@ -67,7 +70,9 @@ class MyGame(arcade.Window):
         # Create a series of horizontal walls
         for y in range(0, 800, 200):
             for x in range(100, 700, 64):
-                wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", SPRITE_SCALING)
+                wall = arcade.Sprite(
+                    ":resources:images/tiles/boxCrate_double.png", SPRITE_SCALING
+                )
                 wall.center_x = x
                 wall.center_y = y
                 self.wall_list.append(wall)
@@ -78,7 +83,9 @@ class MyGame(arcade.Window):
 
             # Create the coin instance
             # Coin image from kenney.nl
-            coin = arcade.Sprite(":resources:images/items/coinGold.png", SPRITE_SCALING_COIN)
+            coin = arcade.Sprite(
+                ":resources:images/items/coinGold.png", SPRITE_SCALING_COIN
+            )
 
             # --- IMPORTANT PART ---
 
@@ -92,10 +99,14 @@ class MyGame(arcade.Window):
                 coin.center_y = random.randrange(SCREEN_HEIGHT)
 
                 # See if the coin is hitting a wall
-                wall_hit_list = arcade.check_for_collision_with_list(coin, self.wall_list)
+                wall_hit_list = arcade.check_for_collision_with_list(
+                    coin, self.wall_list
+                )
 
                 # See if the coin is hitting another coin
-                coin_hit_list = arcade.check_for_collision_with_list(coin, self.coin_list)
+                coin_hit_list = arcade.check_for_collision_with_list(
+                    coin, self.coin_list
+                )
 
                 if len(wall_hit_list) == 0 and len(coin_hit_list) == 0:
                     # It is!
@@ -106,7 +117,9 @@ class MyGame(arcade.Window):
 
             # --- END OF IMPORTANT PART ---
 
-        self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.wall_list)
+        self.physics_engine = arcade.PhysicsEngineSimple(
+            self.player_sprite, self.wall_list
+        )
 
         # Set the background color
         arcade.set_background_color(arcade.color.AMAZON)

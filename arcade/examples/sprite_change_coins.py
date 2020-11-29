@@ -61,7 +61,10 @@ class MyGame(arcade.Window):
 
         # Set up the player
         self.score = 0
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", 0.5)
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            0.5,
+        )
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 50
         self.player_list.append(self.player_sprite)
@@ -117,14 +120,18 @@ class MyGame(arcade.Window):
         self.coin_list.update()
 
         # Generate a list of all sprites that collided with the player.
-        hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.coin_list)
+        hit_list = arcade.check_for_collision_with_list(
+            self.player_sprite, self.coin_list
+        )
 
         # Loop through each colliding sprite, change it, and add to the score.
         for coin in hit_list:
             # Have we collected this?
             if not coin.changed:
                 # No? Then do so
-                coin.append_texture(arcade.load_texture(":resources:images/pinball/bumper.png"))
+                coin.append_texture(
+                    arcade.load_texture(":resources:images/pinball/bumper.png")
+                )
                 coin.set_texture(1)
                 coin.changed = True
                 coin.width = 30

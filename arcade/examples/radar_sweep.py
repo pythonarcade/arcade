@@ -38,8 +38,9 @@ def on_draw(_delta_time):
     arcade.draw_line(CENTER_X, CENTER_Y, x, y, arcade.color.OLIVE, 4)
 
     # Draw the outline of the radar
-    arcade.draw_circle_outline(CENTER_X, CENTER_Y, SWEEP_LENGTH,
-                               arcade.color.DARK_GREEN, 10)
+    arcade.draw_circle_outline(
+        CENTER_X, CENTER_Y, SWEEP_LENGTH, arcade.color.DARK_GREEN, 10
+    )
 
 
 # This is a function-specific variable. Before we

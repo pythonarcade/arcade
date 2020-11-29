@@ -51,12 +51,14 @@ class FPSCounter:
 
 
 class Coin(arcade.Sprite):
-
     def update(self):
         """
         Update the sprite.
         """
-        self.position = (self.position[0] + self.change_x, self.position[1] + self.change_y)
+        self.position = (
+            self.position[0] + self.change_x,
+            self.position[1] + self.change_y,
+        )
 
 
 class MyGame(arcade.Window):
@@ -183,8 +185,10 @@ class MyGame(arcade.Window):
                 if total_program_time % 2 == 1:
 
                     # Take timings
-                    output = f"{total_program_time}, {len(self.coin_list)}, {self.fps.get_fps():.1f}, " \
-                             f"{self.processing_time:.4f}, {self.draw_time:.4f}\n"
+                    output = (
+                        f"{total_program_time}, {len(self.coin_list)}, {self.fps.get_fps():.1f}, "
+                        f"{self.processing_time:.4f}, {self.draw_time:.4f}\n"
+                    )
 
                     self.results_file.write(output)
                     print(output, end="")

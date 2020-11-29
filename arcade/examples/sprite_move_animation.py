@@ -34,7 +34,7 @@ def load_texture_pair(filename):
     """
     return [
         arcade.load_texture(filename),
-        arcade.load_texture(filename, flipped_horizontally=True)
+        arcade.load_texture(filename, flipped_horizontally=True),
     ]
 
 
@@ -59,7 +59,9 @@ class PlayerCharacter(arcade.Sprite):
         # --- Load Textures ---
 
         # Images from Kenney.nl's Asset Pack 3
-        main_path = ":resources:images/animated_characters/female_adventurer/femaleAdventurer"
+        main_path = (
+            ":resources:images/animated_characters/female_adventurer/femaleAdventurer"
+        )
         # main_path = ":resources:images/animated_characters/female_person/femalePerson"
         # main_path = ":resources:images/animated_characters/male_person/malePerson"
         # main_path = ":resources:images/animated_characters/male_adventurer/maleAdventurer"
@@ -75,7 +77,7 @@ class PlayerCharacter(arcade.Sprite):
             texture = load_texture_pair(f"{main_path}_walk{i}.png")
             self.walk_textures.append(texture)
 
-    def update_animation(self, delta_time: float = 1/60):
+    def update_animation(self, delta_time: float = 1 / 60):
 
         # Figure out if we need to flip face left or right
         if self.change_x < 0 and self.character_face_direction == RIGHT_FACING:
@@ -127,8 +129,7 @@ class MyGame(arcade.Window):
         self.player_list.append(self.player)
 
         for i in range(COIN_COUNT):
-            coin = arcade.Sprite(":resources:images/items/gold_1.png",
-                                 scale=0.5)
+            coin = arcade.Sprite(":resources:images/items/gold_1.png", scale=0.5)
             coin.center_x = random.randrange(SCREEN_WIDTH)
             coin.center_y = random.randrange(SCREEN_HEIGHT)
 

@@ -72,25 +72,35 @@ def random_radius(start=5, end=25):
 
 
 class GameWindow(arcade.Window):
-
     def __init__(self, width, height, title):
         super().__init__(width, height, title, antialiasing=True, resizable=True)
         # Single lines
-        self.single_lines_calls = [(*random_pos(), *random_pos(), random_color()) for _ in range(600)]
+        self.single_lines_calls = [
+            (*random_pos(), *random_pos(), random_color()) for _ in range(600)
+        ]
         # Line list
-        self.line_list = [(random.randrange(0, SCREEN_WIDTH), random.randrange(0, SCREEN_HEIGHT)) for _ in range(2 * 10000)]
+        self.line_list = [
+            (random.randrange(0, SCREEN_WIDTH), random.randrange(0, SCREEN_HEIGHT))
+            for _ in range(2 * 10000)
+        ]
 
         # Single circle draw calls
-        self.single_circle_calls = [(*random_pos(), random_radius(), random_color()) for _ in range(200)]
+        self.single_circle_calls = [
+            (*random_pos(), random_radius(), random_color()) for _ in range(200)
+        ]
 
         # line strip
         self.line_strip = [
-            arcade.NamedPoint(random.randint(0, SCREEN_WIDTH), random.randint(0, SCREEN_HEIGHT))
+            arcade.NamedPoint(
+                random.randint(0, SCREEN_WIDTH), random.randint(0, SCREEN_HEIGHT)
+            )
             for _ in range(10)
         ]
         # Random list of points
         self.points = [
-            arcade.NamedPoint(random.randint(0, SCREEN_WIDTH), random.randint(0, SCREEN_HEIGHT))
+            arcade.NamedPoint(
+                random.randint(0, SCREEN_WIDTH), random.randint(0, SCREEN_HEIGHT)
+            )
             for _ in range(10_000)
         ]
 
@@ -113,7 +123,9 @@ class GameWindow(arcade.Window):
             arcade.draw_circle_filled(c[0], c[1], c[2], c[3])
 
     def do_draw_ellipse_filled(self):
-        arcade.draw_ellipse_filled(400, 300, 100, 200, arcade.color.AZURE, self.elapsed * 10)
+        arcade.draw_ellipse_filled(
+            400, 300, 100, 200, arcade.color.AZURE, self.elapsed * 10
+        )
 
     def do_draw_circle_outline(self):
         arcade.draw_circle_outline(400, 300, 200, arcade.color.AZURE, 10)
@@ -128,7 +140,16 @@ class GameWindow(arcade.Window):
                 arcade.draw_rectangle_filled(x + 10, y + 8, 10, 10, arcade.color.AZURE)
 
     def do_draw_arc_filled(self):
-        arcade.draw_arc_filled(400, 300, 200, 200, arcade.color.AZURE, 30.0 - math.sin(self.elapsed) * 20.0, 340.0 + math.sin(self.elapsed) * 20.0, 0)
+        arcade.draw_arc_filled(
+            400,
+            300,
+            200,
+            200,
+            arcade.color.AZURE,
+            30.0 - math.sin(self.elapsed) * 20.0,
+            340.0 + math.sin(self.elapsed) * 20.0,
+            0,
+        )
 
     def draw_point(self):
         for x in range(0, SCREEN_WIDTH, 20):
@@ -161,11 +182,13 @@ class GameWindow(arcade.Window):
         self.frames += 1
 
         if self.execution_time > 1.0 and self.frames > 0:
-            print((
-                f"frames {self.frames}, "
-                f"execution time {round(self.execution_time, 3)}, "
-                f"frame time {round(self.execution_time / self.frames, 3)}"
-            ))
+            print(
+                (
+                    f"frames {self.frames}, "
+                    f"execution time {round(self.execution_time, 3)}, "
+                    f"frame time {round(self.execution_time / self.frames, 3)}"
+                )
+            )
             self.execution_time = 0
             self.frames = 0
 
@@ -176,6 +199,6 @@ class GameWindow(arcade.Window):
         self.elapsed += dt
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     window = GameWindow(SCREEN_WIDTH, SCREEN_HEIGHT, TITLE)
     arcade.run()

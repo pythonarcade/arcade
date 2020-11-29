@@ -47,6 +47,7 @@ MERGE_SPRITES = False
 
 class Room:
     """ A room """
+
     def __init__(self, r, c, h, w):
         self.row = r
         self.col = c
@@ -56,6 +57,7 @@ class Room:
 
 class RLDungeonGenerator:
     """ Generate the dungeon """
+
     def __init__(self, w, h):
         """ Create the board """
         self.MAX = 15  # Cutoff for when we want to stop dividing sections
@@ -68,7 +70,7 @@ class RLDungeonGenerator:
         for h in range(self.height):
             row = []
             for w in range(self.width):
-                row.append('#')
+                row.append("#")
 
             self.dungeon.append(row)
 
@@ -116,7 +118,9 @@ class RLDungeonGenerator:
             # If the room doesn't occupy the entire section we are carving it from,
             # 'jiggle' it a bit in the square
             if section_height > room_height:
-                room_start_row = leaf[0] + random.randrange(section_height - room_height)
+                room_start_row = leaf[0] + random.randrange(
+                    section_height - room_height
+                )
             else:
                 room_start_row = leaf[0]
 
@@ -125,10 +129,12 @@ class RLDungeonGenerator:
             else:
                 room_start_col = leaf[1]
 
-            self.rooms.append(Room(room_start_row, room_start_col, room_height, room_width))
+            self.rooms.append(
+                Room(room_start_row, room_start_col, room_height, room_width)
+            )
             for r in range(room_start_row, room_start_row + room_height):
                 for c in range(room_start_col, room_start_col + room_width):
-                    self.dungeon[r][c] = '.'
+                    self.dungeon[r][c] = "."
 
     @staticmethod
     def are_rooms_adjacent(room1, room2):
@@ -151,11 +157,13 @@ class RLDungeonGenerator:
         centre1 = (room1.row + room1.height // 2, room1.col + room1.width // 2)
         centre2 = (room2.row + room2.height // 2, room2.col + room2.width // 2)
 
-        return math.sqrt((centre1[0] - centre2[0]) ** 2 + (centre1[1] - centre2[1]) ** 2)
+        return math.sqrt(
+            (centre1[0] - centre2[0]) ** 2 + (centre1[1] - centre2[1]) ** 2
+        )
 
     def carve_corridor_between_rooms(self, room1, room2):
         """ Make a corridor between rooms """
-        if room2[2] == 'rows':
+        if room2[2] == "rows":
             row = random.choice(room2[1])
             # Figure out which room is to the left of the other
             if room1.col + room1.width < room2[0].col:
@@ -165,13 +173,13 @@ class RLDungeonGenerator:
                 start_col = room2[0].col + room2[0].width
                 end_col = room1.col
             for c in range(start_col, end_col):
-                self.dungeon[row][c] = '.'
+                self.dungeon[row][c] = "."
 
             if end_col - start_col >= 4:
-                self.dungeon[row][start_col] = '+'
-                self.dungeon[row][end_col - 1] = '+'
+                self.dungeon[row][start_col] = "+"
+                self.dungeon[row][end_col - 1] = "+"
             elif start_col == end_col - 1:
-                self.dungeon[row][start_col] = '+'
+                self.dungeon[row][start_col] = "+"
         else:
             col = random.choice(room2[1])
             # Figure out which room is above the other
@@ -183,13 +191,13 @@ class RLDungeonGenerator:
                 end_row = room1.row
 
             for r in range(start_row, end_row):
-                self.dungeon[r][col] = '.'
+                self.dungeon[r][col] = "."
 
             if end_row - start_row >= 4:
-                self.dungeon[start_row][col] = '+'
-                self.dungeon[end_row - 1][col] = '+'
+                self.dungeon[start_row][col] = "+"
+                self.dungeon[end_row - 1][col] = "+"
             elif start_row == end_row - 1:
-                self.dungeon[start_row][col] = '+'
+                self.dungeon[start_row][col] = "+"
 
     def find_closest_unconnect_groups(self, groups, room_dict):
         """
@@ -243,9 +251,23 @@ class RLDungeonGenerator:
                     continue
                 adj = self.are_rooms_adjacent(room, other)
                 if len(adj[0]) > 0:
-                    room_dict[key].append((other, adj[0], 'rows', self.distance_between_rooms(room, other)))
+                    room_dict[key].append(
+                        (
+                            other,
+                            adj[0],
+                            "rows",
+                            self.distance_between_rooms(room, other),
+                        )
+                    )
                 elif len(adj[1]) > 0:
-                    room_dict[key].append((other, adj[1], 'cols', self.distance_between_rooms(room, other)))
+                    room_dict[key].append(
+                        (
+                            other,
+                            adj[1],
+                            "cols",
+                            self.distance_between_rooms(room, other),
+                        )
+                    )
 
             groups.append([room])
 
@@ -303,8 +325,11 @@ class MyGame(arcade.Window):
             for row in range(dg.height):
                 for column in range(dg.width):
                     value = dg.dungeon[row][column]
-                    if value == '#':
-                        wall = arcade.Sprite(":resources:images/tiles/grassCenter.png", WALL_SPRITE_SCALING)
+                    if value == "#":
+                        wall = arcade.Sprite(
+                            ":resources:images/tiles/grassCenter.png",
+                            WALL_SPRITE_SCALING,
+                        )
                         wall.center_x = column * WALL_SPRITE_SIZE + WALL_SPRITE_SIZE / 2
                         wall.center_y = row * WALL_SPRITE_SIZE + WALL_SPRITE_SIZE / 2
                         self.wall_list.append(wall)
@@ -316,26 +341,31 @@ class MyGame(arcade.Window):
             for row in range(dg.height):
                 column = 0
                 while column < dg.width:
-                    while column < dg.width and dg.dungeon[row][column] != '#':
+                    while column < dg.width and dg.dungeon[row][column] != "#":
                         column += 1
                     start_column = column
-                    while column < dg.width and dg.dungeon[row][column] == '#':
+                    while column < dg.width and dg.dungeon[row][column] == "#":
                         column += 1
                     end_column = column - 1
 
                     column_count = end_column - start_column + 1
                     column_mid = (start_column + end_column) / 2
 
-                    wall = arcade.Sprite(":resources:images/tiles/grassCenter.png", WALL_SPRITE_SCALING,
-                                         repeat_count_x=column_count)
+                    wall = arcade.Sprite(
+                        ":resources:images/tiles/grassCenter.png",
+                        WALL_SPRITE_SCALING,
+                        repeat_count_x=column_count,
+                    )
                     wall.center_x = column_mid * WALL_SPRITE_SIZE + WALL_SPRITE_SIZE / 2
                     wall.center_y = row * WALL_SPRITE_SIZE + WALL_SPRITE_SIZE / 2
                     wall.width = WALL_SPRITE_SIZE * column_count
                     self.wall_list.append(wall)
 
         # Set up the player
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                                           PLAYER_SPRITE_SCALING)
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            PLAYER_SPRITE_SCALING,
+        )
         self.player_list.append(self.player_sprite)
 
         # Randomly place the player. If we are in a wall, repeat until we aren't.
@@ -347,13 +377,16 @@ class MyGame(arcade.Window):
             self.player_sprite.center_y = random.randrange(AREA_HEIGHT)
 
             # Are we in a wall?
-            walls_hit = arcade.check_for_collision_with_list(self.player_sprite, self.wall_list)
+            walls_hit = arcade.check_for_collision_with_list(
+                self.player_sprite, self.wall_list
+            )
             if len(walls_hit) == 0:
                 # Not in a wall! Success!
                 placed = True
 
-        self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite,
-                                                         self.wall_list)
+        self.physics_engine = arcade.PhysicsEngineSimple(
+            self.player_sprite, self.wall_list
+        )
 
     def on_draw(self):
         """ Render the screen. """
@@ -373,22 +406,31 @@ class MyGame(arcade.Window):
         sprite_count = len(self.wall_list)
 
         output = f"Sprite Count: {sprite_count}"
-        arcade.draw_text(output,
-                         self.view_left + 20,
-                         WINDOW_HEIGHT - 20 + self.view_bottom,
-                         arcade.color.WHITE, 16)
+        arcade.draw_text(
+            output,
+            self.view_left + 20,
+            WINDOW_HEIGHT - 20 + self.view_bottom,
+            arcade.color.WHITE,
+            16,
+        )
 
         output = f"Drawing time: {self.draw_time:.3f}"
-        arcade.draw_text(output,
-                         self.view_left + 20,
-                         WINDOW_HEIGHT - 40 + self.view_bottom,
-                         arcade.color.WHITE, 16)
+        arcade.draw_text(
+            output,
+            self.view_left + 20,
+            WINDOW_HEIGHT - 40 + self.view_bottom,
+            arcade.color.WHITE,
+            16,
+        )
 
         output = f"Processing time: {self.processing_time:.3f}"
-        arcade.draw_text(output,
-                         self.view_left + 20,
-                         WINDOW_HEIGHT - 60 + self.view_bottom,
-                         arcade.color.WHITE, 16)
+        arcade.draw_text(
+            output,
+            self.view_left + 20,
+            WINDOW_HEIGHT - 60 + self.view_bottom,
+            arcade.color.WHITE,
+            16,
+        )
 
         self.draw_time = timeit.default_timer() - draw_start_time
 
@@ -451,10 +493,12 @@ class MyGame(arcade.Window):
             changed = True
 
         if changed:
-            arcade.set_viewport(self.view_left,
-                                WINDOW_WIDTH + self.view_left,
-                                self.view_bottom,
-                                WINDOW_HEIGHT + self.view_bottom)
+            arcade.set_viewport(
+                self.view_left,
+                WINDOW_WIDTH + self.view_left,
+                self.view_bottom,
+                WINDOW_HEIGHT + self.view_bottom,
+            )
 
         # Save the time it took to do this.
         self.processing_time = timeit.default_timer() - start_time

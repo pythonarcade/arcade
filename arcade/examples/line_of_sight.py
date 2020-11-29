@@ -78,13 +78,19 @@ class MyGame(arcade.Window):
         self.enemy_list = arcade.SpriteList()
 
         # Set up the player
-        self.player = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", SPRITE_SCALING)
+        self.player = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            SPRITE_SCALING,
+        )
         self.player.center_x = 50
         self.player.center_y = 350
         self.player_list.append(self.player)
 
         # Set enemies
-        enemy = arcade.Sprite(":resources:images/animated_characters/zombie/zombie_idle.png", SPRITE_SCALING)
+        enemy = arcade.Sprite(
+            ":resources:images/animated_characters/zombie/zombie_idle.png",
+            SPRITE_SCALING,
+        )
         enemy.center_x = 350
         enemy.center_y = 350
         self.enemy_list.append(enemy)
@@ -102,8 +108,7 @@ class MyGame(arcade.Window):
                 if random.randrange(100) > 20:
                     self.wall_list.append(sprite)
 
-        self.physics_engine = arcade.PhysicsEngineSimple(self.player,
-                                                         self.wall_list)
+        self.physics_engine = arcade.PhysicsEngineSimple(self.player, self.wall_list)
 
     def on_draw(self):
         """
@@ -119,18 +124,20 @@ class MyGame(arcade.Window):
             self.enemy_list.draw()
 
             for enemy in self.enemy_list:
-                if arcade.has_line_of_sight(self.player.position,
-                                            enemy.position,
-                                            self.wall_list):
+                if arcade.has_line_of_sight(
+                    self.player.position, enemy.position, self.wall_list
+                ):
                     color = arcade.color.RED
                 else:
                     color = arcade.color.WHITE
-                arcade.draw_line(self.player.center_x,
-                                 self.player.center_y,
-                                 enemy.center_x,
-                                 enemy.center_y,
-                                 color,
-                                 2)
+                arcade.draw_line(
+                    self.player.center_x,
+                    self.player.center_y,
+                    enemy.center_x,
+                    enemy.center_y,
+                    color,
+                    2,
+                )
 
         except Exception as e:
             print(e)
@@ -192,10 +199,12 @@ class MyGame(arcade.Window):
 
         # If we changed the boundary values, update the view port to match
         if changed:
-            arcade.set_viewport(self.view_left,
-                                SCREEN_WIDTH + self.view_left,
-                                self.view_bottom,
-                                SCREEN_HEIGHT + self.view_bottom)
+            arcade.set_viewport(
+                self.view_left,
+                SCREEN_WIDTH + self.view_left,
+                self.view_bottom,
+                SCREEN_HEIGHT + self.view_bottom,
+            )
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """

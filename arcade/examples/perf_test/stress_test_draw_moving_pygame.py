@@ -64,8 +64,8 @@ class Coin(pygame.sprite.Sprite):
     """
 
     def __init__(self):
-        """ Constructor. Pass in the color of the block,
-        and its x and y position. """
+        """Constructor. Pass in the color of the block,
+        and its x and y position."""
         # Call the parent class (Sprite) constructor
         super().__init__()
 
@@ -75,7 +75,11 @@ class Coin(pygame.sprite.Sprite):
         rect = image.get_rect()
         image = pygame.transform.scale(
             image,
-            (int(rect.width * SPRITE_SCALING_COIN), int(rect.height * SPRITE_SCALING_COIN)))
+            (
+                int(rect.width * SPRITE_SCALING_COIN),
+                int(rect.height * SPRITE_SCALING_COIN),
+            ),
+        )
         self.image = image.convert()
         self.image.set_colorkey(BLACK)
 
@@ -130,7 +134,7 @@ class MyGame:
         # This is a list of every sprite. All blocks and the player block as well.
         self.coin_list = pygame.sprite.Group()
 
-        self.font = pygame.font.SysFont('Calibri', 25, True, False)
+        self.font = pygame.font.SysFont("Calibri", 25, True, False)
 
         # Open file to save timings
         self.results_file = open(RESULTS_FILE, "w")
@@ -224,8 +228,10 @@ class MyGame:
                 if total_program_time % 2 == 1:
 
                     # Take timings
-                    output = f"{total_program_time}, {len(self.coin_list)}, {self.fps.get_fps():.1f}, " \
-                             f"{self.processing_time:.4f}, {self.draw_time:.4f}\n"
+                    output = (
+                        f"{total_program_time}, {len(self.coin_list)}, {self.fps.get_fps():.1f}, "
+                        f"{self.processing_time:.4f}, {self.draw_time:.4f}\n"
+                    )
                     print(output, end="")
                     self.results_file.write(output)
 
@@ -264,21 +270,23 @@ def main():
     pygame.quit()
 
     # Plot our results
-    plt.plot(window.sprite_count_list, window.processing_time_list, label="Processing Time")
+    plt.plot(
+        window.sprite_count_list, window.processing_time_list, label="Processing Time"
+    )
     plt.plot(window.sprite_count_list, window.drawing_time_list, label="Drawing Time")
 
-    plt.legend(loc='upper left', shadow=True, fontsize='x-large')
+    plt.legend(loc="upper left", shadow=True, fontsize="x-large")
 
-    plt.ylabel('Time')
-    plt.xlabel('Sprite Count')
+    plt.ylabel("Time")
+    plt.xlabel("Sprite Count")
 
     plt.show()
 
     # Plot our results
     plt.plot(window.sprite_count_list, window.fps_list)
 
-    plt.ylabel('FPS')
-    plt.xlabel('Sprite Count')
+    plt.ylabel("FPS")
+    plt.xlabel("Sprite Count")
 
     plt.show()
 

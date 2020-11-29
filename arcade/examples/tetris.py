@@ -29,37 +29,25 @@ SCREEN_HEIGHT = (HEIGHT + MARGIN) * ROW_COUNT + MARGIN
 SCREEN_TITLE = "Tetris"
 
 colors = [
-          (0,   0,   0),
-          (255, 0,   0),
-          (0,   150, 0),
-          (0,   0,   255),
-          (255, 120, 0),
-          (255, 255, 0),
-          (180, 0,   255),
-          (0,   220, 220)
-          ]
+    (0, 0, 0),
+    (255, 0, 0),
+    (0, 150, 0),
+    (0, 0, 255),
+    (255, 120, 0),
+    (255, 255, 0),
+    (180, 0, 255),
+    (0, 220, 220),
+]
 
 # Define the shapes of the single parts
 tetris_shapes = [
-    [[1, 1, 1],
-     [0, 1, 0]],
-
-    [[0, 2, 2],
-     [2, 2, 0]],
-
-    [[3, 3, 0],
-     [0, 3, 3]],
-
-    [[4, 0, 0],
-     [4, 4, 4]],
-
-    [[0, 0, 5],
-     [5, 5, 5]],
-
+    [[1, 1, 1], [0, 1, 0]],
+    [[0, 2, 2], [2, 2, 0]],
+    [[3, 3, 0], [0, 3, 3]],
+    [[4, 0, 0], [4, 4, 4]],
+    [[0, 0, 5], [5, 5, 5]],
     [[6, 6, 6, 6]],
-
-    [[7, 7],
-     [7, 7]]
+    [[7, 7], [7, 7]],
 ]
 
 
@@ -68,7 +56,7 @@ def create_textures():
     new_textures = []
     for color in colors:
         # noinspection PyUnresolvedReferences
-        image = PIL.Image.new('RGB', (WIDTH, HEIGHT), color)
+        image = PIL.Image.new("RGB", (WIDTH, HEIGHT), color)
         new_textures.append(arcade.Texture(str(color), image=image))
     return new_textures
 
@@ -78,7 +66,10 @@ texture_list = create_textures()
 
 def rotate_clockwise(shape):
     """ Rotates a matrix clockwise """
-    return [[shape[y][x] for y in range(len(shape))] for x in range(len(shape[0]) - 1, -1, -1)]
+    return [
+        [shape[y][x] for y in range(len(shape))]
+        for x in range(len(shape[0]) - 1, -1, -1)
+    ]
 
 
 def check_collision(board, shape, offset):
@@ -161,7 +152,9 @@ class MyGame(arcade.Window):
                     sprite.append_texture(texture)
                 sprite.set_texture(0)
                 sprite.center_x = (MARGIN + WIDTH) * column + MARGIN + WIDTH // 2
-                sprite.center_y = SCREEN_HEIGHT - (MARGIN + HEIGHT) * row + MARGIN + HEIGHT // 2
+                sprite.center_y = (
+                    SCREEN_HEIGHT - (MARGIN + HEIGHT) * row + MARGIN + HEIGHT // 2
+                )
 
                 self.board_sprite_list.append(sprite)
 
@@ -181,7 +174,9 @@ class MyGame(arcade.Window):
         if not self.game_over and not self.paused:
             self.stone_y += 1
             if check_collision(self.board, self.stone, (self.stone_x, self.stone_y)):
-                self.board = join_matrixes(self.board, self.stone, (self.stone_x, self.stone_y))
+                self.board = join_matrixes(
+                    self.board, self.stone, (self.stone_x, self.stone_y)
+                )
                 while True:
                     for i, row in enumerate(self.board[:-1]):
                         if 0 not in row:
@@ -247,7 +242,12 @@ class MyGame(arcade.Window):
                     color = colors[grid[row][column]]
                     # Do the math to figure out where the box is
                     x = (MARGIN + WIDTH) * (column + offset_x) + MARGIN + WIDTH // 2
-                    y = SCREEN_HEIGHT - (MARGIN + HEIGHT) * (row + offset_y) + MARGIN + HEIGHT // 2
+                    y = (
+                        SCREEN_HEIGHT
+                        - (MARGIN + HEIGHT) * (row + offset_y)
+                        + MARGIN
+                        + HEIGHT // 2
+                    )
 
                     # Draw the box
                     arcade.draw_rectangle_filled(x, y, WIDTH, HEIGHT, color)

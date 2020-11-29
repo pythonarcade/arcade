@@ -53,7 +53,10 @@ class MyGame(arcade.Window):
         """ Set up the game here. Call this function to restart the game. """
 
         # List of music
-        self.music_list = [":resources:music/funkyrobot.mp3", ":resources:music/1918.mp3"]
+        self.music_list = [
+            ":resources:music/funkyrobot.mp3",
+            ":resources:music/1918.mp3",
+        ]
         # Array index of what to play
         self.current_song = 0
         # Play the song
@@ -68,7 +71,7 @@ class MyGame(arcade.Window):
         length = self.music.get_length()
 
         size = 20
-        margin = size * .5
+        margin = size * 0.5
 
         # Print time elapsed and total
         y = SCREEN_HEIGHT - (size + margin)

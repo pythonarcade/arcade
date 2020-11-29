@@ -38,10 +38,22 @@ class MenuView(arcade.View):
 
     def on_draw(self):
         arcade.start_render()
-        arcade.draw_text("Menu Screen", WIDTH/2, HEIGHT/2,
-                         arcade.color.BLACK, font_size=50, anchor_x="center")
-        arcade.draw_text("Click to advance", WIDTH/2, HEIGHT/2-75,
-                         arcade.color.GRAY, font_size=20, anchor_x="center")
+        arcade.draw_text(
+            "Menu Screen",
+            WIDTH / 2,
+            HEIGHT / 2,
+            arcade.color.BLACK,
+            font_size=50,
+            anchor_x="center",
+        )
+        arcade.draw_text(
+            "Click to advance",
+            WIDTH / 2,
+            HEIGHT / 2 - 75,
+            arcade.color.GRAY,
+            font_size=20,
+            anchor_x="center",
+        )
 
     def on_mouse_press(self, _x, _y, _button, _modifiers):
         instructions_view = InstructionView()
@@ -54,10 +66,22 @@ class InstructionView(arcade.View):
 
     def on_draw(self):
         arcade.start_render()
-        arcade.draw_text("Instructions Screen", WIDTH/2, HEIGHT/2,
-                         arcade.color.BLACK, font_size=50, anchor_x="center")
-        arcade.draw_text("Click to advance", WIDTH/2, HEIGHT/2-75,
-                         arcade.color.GRAY, font_size=20, anchor_x="center")
+        arcade.draw_text(
+            "Instructions Screen",
+            WIDTH / 2,
+            HEIGHT / 2,
+            arcade.color.BLACK,
+            font_size=50,
+            anchor_x="center",
+        )
+        arcade.draw_text(
+            "Click to advance",
+            WIDTH / 2,
+            HEIGHT / 2 - 75,
+            arcade.color.GRAY,
+            font_size=20,
+            anchor_x="center",
+        )
 
     def on_mouse_press(self, _x, _y, _button, _modifiers):
         game_view = GameView()
@@ -76,7 +100,10 @@ class GameView(arcade.View):
 
         # Set up the player
         self.score = 0
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", SPRITE_SCALING)
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            SPRITE_SCALING,
+        )
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 50
         self.player_list.append(self.player_sprite)
@@ -84,7 +111,9 @@ class GameView(arcade.View):
         for i in range(5):
 
             # Create the coin instance
-            coin = arcade.Sprite(":resources:images/items/coinGold.png", SPRITE_SCALING / 3)
+            coin = arcade.Sprite(
+                ":resources:images/items/coinGold.png", SPRITE_SCALING / 3
+            )
 
             # Position the coin
             coin.center_x = random.randrange(WIDTH)
@@ -120,7 +149,9 @@ class GameView(arcade.View):
         self.player_list.update()
 
         # Generate a list of all sprites that collided with the player.
-        hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.coin_list)
+        hit_list = arcade.check_for_collision_with_list(
+            self.player_sprite, self.coin_list
+        )
 
         # Loop through each colliding sprite, remove it, and add to the
         # score.
@@ -162,12 +193,14 @@ class GameOverView(arcade.View):
         arcade.draw_text("Click to restart", 310, 300, arcade.color.WHITE, 24)
 
         time_taken_formatted = f"{round(self.time_taken, 2)} seconds"
-        arcade.draw_text(f"Time taken: {time_taken_formatted}",
-                         WIDTH/2,
-                         200,
-                         arcade.color.GRAY,
-                         font_size=15,
-                         anchor_x="center")
+        arcade.draw_text(
+            f"Time taken: {time_taken_formatted}",
+            WIDTH / 2,
+            200,
+            arcade.color.GRAY,
+            font_size=15,
+            anchor_x="center",
+        )
 
         output_total = f"Total Score: {self.window.total_score}"
         arcade.draw_text(output_total, 10, 10, arcade.color.WHITE, 14)

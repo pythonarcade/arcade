@@ -49,8 +49,10 @@ MOVEMENT_DRAG = 0.08
 # How far the bullet travels before disappearing
 BULLET_MAX_DISTANCE = SCREEN_WIDTH * 0.75
 
+
 class Player(arcade.SpriteSolidColor):
     """ Player ship """
+
     def __init__(self):
         """ Set up player """
         super().__init__(40, 10, arcade.color.SLATE_GRAY)
@@ -114,6 +116,7 @@ class Player(arcade.SpriteSolidColor):
         elif self.top > PLAYING_FIELD_HEIGHT - 1:
             self.top = PLAYING_FIELD_HEIGHT - 1
 
+
 class Bullet(arcade.SpriteSolidColor):
     """ Bullet """
 
@@ -130,8 +133,10 @@ class Bullet(arcade.SpriteSolidColor):
         if self.distance > BULLET_MAX_DISTANCE:
             self.remove_from_sprite_lists()
 
+
 class Particle(arcade.SpriteSolidColor):
     """ Particle from explosion """
+
     def update(self):
         """ Move the particle, and fade out """
         # Move
@@ -141,6 +146,7 @@ class Particle(arcade.SpriteSolidColor):
         self.alpha -= 5
         if self.alpha <= 0:
             self.remove_from_sprite_lists()
+
 
 class MyGame(arcade.Window):
     """ Main application class. """
@@ -182,13 +188,18 @@ class MyGame(arcade.Window):
         # Load a vertex and fragment shader
         self.program = self.ctx.load_program(
             vertex_shader=arcade.resources.shaders.vertex.default_projection,
-            fragment_shader=arcade.resources.shaders.fragment.texture)
+            fragment_shader=arcade.resources.shaders.fragment.texture,
+        )
         # Add a color attachment to store pixel colors
         self.mini_map_color_attachment = self.ctx.texture(screen_size)
         # Create a frame buffer with the needed color attachment
-        self.mini_map_screen = self.ctx.framebuffer(color_attachments=[self.mini_map_color_attachment])
+        self.mini_map_screen = self.ctx.framebuffer(
+            color_attachments=[self.mini_map_color_attachment]
+        )
         # Create a rectangle that will hold where the mini-map goes
-        self.mini_map_rect = geometry.screen_rectangle(0, SCREEN_WIDTH, MINIMAP_HEIGHT, SCREEN_HEIGHT)
+        self.mini_map_rect = geometry.screen_rectangle(
+            0, SCREEN_WIDTH, MINIMAP_HEIGHT, SCREEN_HEIGHT
+        )
 
     def setup(self):
         """ Set up the game and initialize the variables. """
@@ -230,10 +241,7 @@ class MyGame(arcade.Window):
         self.mini_map_screen.use()
         self.mini_map_screen.clear()
 
-        arcade.set_viewport(0,
-                            PLAYING_FIELD_WIDTH,
-                            0,
-                            PLAYING_FIELD_HEIGHT)
+        arcade.set_viewport(0, PLAYING_FIELD_WIDTH, 0, PLAYING_FIELD_HEIGHT)
 
         self.enemy_sprite_list.draw()
         self.player_list.draw()
@@ -241,10 +249,12 @@ class MyGame(arcade.Window):
         # Now draw to the actual screen
         self.use()
 
-        arcade.set_viewport(self.view_left,
-                            SCREEN_WIDTH + self.view_left,
-                            self.view_bottom,
-                            SCREEN_HEIGHT + self.view_bottom)
+        arcade.set_viewport(
+            self.view_left,
+            SCREEN_WIDTH + self.view_left,
+            self.view_bottom,
+            SCREEN_HEIGHT + self.view_bottom,
+        )
 
         self.star_sprite_list.draw()
         self.enemy_sprite_list.draw()
@@ -255,11 +265,13 @@ class MyGame(arcade.Window):
         arcade.draw_line(0, 0, PLAYING_FIELD_WIDTH, 0, arcade.color.WHITE)
 
         # Draw a background for the minimap
-        arcade.draw_rectangle_filled(SCREEN_WIDTH - SCREEN_WIDTH / 2 + self.view_left,
-                                        SCREEN_HEIGHT - MINIMAP_HEIGHT + MINIMAP_HEIGHT / 2 + self.view_bottom,
-                                        SCREEN_WIDTH,
-                                        MINIMAP_HEIGHT,
-                                        arcade.color.DARK_GREEN)
+        arcade.draw_rectangle_filled(
+            SCREEN_WIDTH - SCREEN_WIDTH / 2 + self.view_left,
+            SCREEN_HEIGHT - MINIMAP_HEIGHT + MINIMAP_HEIGHT / 2 + self.view_bottom,
+            SCREEN_WIDTH,
+            MINIMAP_HEIGHT,
+            arcade.color.DARK_GREEN,
+        )
 
         # --- Mini-map related ---
 
@@ -274,11 +286,16 @@ class MyGame(arcade.Window):
         height = height_ratio * MAIN_SCREEN_HEIGHT
 
         x = (self.view_left + SCREEN_WIDTH / 2) * width_ratio + self.view_left
-        y = (SCREEN_HEIGHT - MINIMAP_HEIGHT) + self.view_bottom + height / 2 + (MAIN_SCREEN_HEIGHT / PLAYING_FIELD_HEIGHT) * self.view_bottom
+        y = (
+            (SCREEN_HEIGHT - MINIMAP_HEIGHT)
+            + self.view_bottom
+            + height / 2
+            + (MAIN_SCREEN_HEIGHT / PLAYING_FIELD_HEIGHT) * self.view_bottom
+        )
 
-        arcade.draw_rectangle_outline(center_x=x, center_y=y,
-                                        width=width, height=height,
-                                        color=arcade.color.WHITE)
+        arcade.draw_rectangle_outline(
+            center_x=x, center_y=y, width=width, height=height, color=arcade.color.WHITE
+        )
 
     def on_update(self, delta_time):
         """ Movement and game logic """
@@ -299,7 +316,9 @@ class MyGame(arcade.Window):
         self.bullet_sprite_list.update()
 
         for bullet in self.bullet_sprite_list:
-            enemy_hit_list = arcade.check_for_collision_with_list(bullet, self.enemy_sprite_list)
+            enemy_hit_list = arcade.check_for_collision_with_list(
+                bullet, self.enemy_sprite_list
+            )
             for enemy in enemy_hit_list:
                 enemy.remove_from_sprite_lists()
                 for i in range(10):
@@ -323,7 +342,9 @@ class MyGame(arcade.Window):
 
         # Scroll up
         self.view_bottom = DEFAULT_BOTTOM_VIEWPORT
-        top_boundary = self.view_bottom + SCREEN_HEIGHT - TOP_VIEWPORT_MARGIN - MINIMAP_HEIGHT
+        top_boundary = (
+            self.view_bottom + SCREEN_HEIGHT - TOP_VIEWPORT_MARGIN - MINIMAP_HEIGHT
+        )
         if self.player_sprite.top > top_boundary:
             self.view_bottom += self.player_sprite.top - top_boundary
 

@@ -9,7 +9,6 @@ SCREEN_TITLE = "Basic Renderer"
 
 
 class MyGame(arcade.Window):
-
     def __init__(self, width, height, title):
         """
         Set up the application.
@@ -31,7 +30,7 @@ class MyGame(arcade.Window):
             void main() {
                 out_color = color;
             }
-            """
+            """,
         )
         self.uv_program = self.ctx.program(
             vertex_shader="""
@@ -51,18 +50,18 @@ class MyGame(arcade.Window):
             void main() {
                 out_color = vec4(v_uv, 0.0, 1.0);
             }
-            """
+            """,
         )
         self.quad_1 = geometry.quad_2d(pos=(-0.5, 0.5))
         self.quad_2 = geometry.quad_2d(pos=(0.5, 0.5))
 
     def on_draw(self):
         self.clear()
-        self.color_program['color'] = (
+        self.color_program["color"] = (
             (math.sin(self.time) + 1.0) / 2,
             (math.sin(self.time + 2) + 1.0) / 2,
             (math.sin(self.time + 3) + 1.0) / 2,
-            1.0
+            1.0,
         )
         self.quad_1.render(self.color_program)
         self.quad_2.render(self.uv_program)

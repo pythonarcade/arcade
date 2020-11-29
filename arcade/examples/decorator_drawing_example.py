@@ -27,7 +27,7 @@ def setup():
 def create_birds():
     for bird_count in range(10):
         x = random.randrange(SCREEN_WIDTH)
-        y = random.randrange(SCREEN_HEIGHT/2, SCREEN_HEIGHT)
+        y = random.randrange(SCREEN_HEIGHT / 2, SCREEN_HEIGHT)
         bird_list.append([x, y])
 
 
@@ -63,14 +63,22 @@ def draw_background():
     This function draws the background. Specifically, the sky and ground.
     """
     # Draw the sky in the top two-thirds
-    arcade.draw_rectangle_filled(SCREEN_WIDTH / 2, SCREEN_HEIGHT * 2 / 3,
-                                 SCREEN_WIDTH - 1, SCREEN_HEIGHT * 2 / 3,
-                                 arcade.color.SKY_BLUE)
+    arcade.draw_rectangle_filled(
+        SCREEN_WIDTH / 2,
+        SCREEN_HEIGHT * 2 / 3,
+        SCREEN_WIDTH - 1,
+        SCREEN_HEIGHT * 2 / 3,
+        arcade.color.SKY_BLUE,
+    )
 
     # Draw the ground in the bottom third
-    arcade.draw_rectangle_filled(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 6,
-                                 SCREEN_WIDTH - 1, SCREEN_HEIGHT / 3,
-                                 arcade.color.DARK_SPRING_GREEN)
+    arcade.draw_rectangle_filled(
+        SCREEN_WIDTH / 2,
+        SCREEN_HEIGHT / 6,
+        SCREEN_WIDTH - 1,
+        SCREEN_HEIGHT / 3,
+        arcade.color.DARK_SPRING_GREEN,
+    )
 
 
 def draw_birds():
@@ -112,13 +120,14 @@ def draw_pine_tree(center_x, center_y):
     tree_bottom_y = center_y + 20
 
     # Draw the triangle on top of the trunk
-    point_list = ((center_x - 40, tree_bottom_y),
-                  (center_x, tree_bottom_y + 100),
-                  (center_x + 40, tree_bottom_y))
+    point_list = (
+        (center_x - 40, tree_bottom_y),
+        (center_x, tree_bottom_y + 100),
+        (center_x + 40, tree_bottom_y),
+    )
 
     arcade.draw_polygon_filled(point_list, arcade.color.DARK_GREEN)
 
 
 if __name__ == "__main__":
     setup()
-

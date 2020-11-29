@@ -3,6 +3,7 @@ Pymunk Physics Engine
 """
 
 import pymunkoptions
+
 pymunkoptions.options["debug"] = False
 import pymunk
 
@@ -14,13 +15,14 @@ from typing import Optional
 from arcade import Sprite
 
 import logging
+
 LOG = logging.getLogger(__name__)
+
 
 class PymunkPhysicsObject:
     """ Object that holds pymunk body/shape for a sprite. """
-    def __init__(self,
-                 body: pymunk.Body = None,
-                 shape: pymunk.Shape = None):
+
+    def __init__(self, body: pymunk.Body = None, shape: pymunk.Shape = None):
         """ Init """
         self.body: pymunk.Body = body
         self.shape: pymunk.Shape = shape
@@ -45,21 +47,22 @@ class PymunkPhysicsEngine:
         self.sprites: Dict[Sprite, PymunkPhysicsObject] = {}
         self.non_static_sprite_list: List = []
 
-    def add_sprite(self,
-                   sprite: Sprite,
-                   mass: float = 1,
-                   friction: float = 0.2,
-                   elasticity: Optional[float] = None,
-                   moment=None,
-                   body_type=DYNAMIC,
-                   damping=None,
-                   gravity=None,
-                   max_velocity=None,
-                   max_horizontal_velocity=None,
-                   max_vertical_velocity=None,
-                   radius: float = 0,
-                   collision_type: str = "default",
-                   ):
+    def add_sprite(
+        self,
+        sprite: Sprite,
+        mass: float = 1,
+        friction: float = 0.2,
+        elasticity: Optional[float] = None,
+        moment=None,
+        body_type=DYNAMIC,
+        damping=None,
+        gravity=None,
+        max_velocity=None,
+        max_horizontal_velocity=None,
+        max_vertical_velocity=None,
+        radius: float = 0,
+        collision_type: str = "default",
+    ):
         """ Add a sprite to the physics engine. """
 
         if damping is not None:
@@ -79,7 +82,9 @@ class PymunkPhysicsEngine:
 
         # See if the sprite already has been added
         if sprite in self.sprites:
-            LOG.warning("Attempt to add a Sprite that has already been added. Ignoring.")
+            LOG.warning(
+                "Attempt to add a Sprite that has already been added. Ignoring."
+            )
             return
 
         # Keep track of collision types
@@ -131,7 +136,9 @@ class PymunkPhysicsEngine:
             if sprite.pymunk.max_horizontal_velocity:
                 velocity = my_body.velocity.x
                 if abs(velocity) > sprite.pymunk.max_horizontal_velocity:
-                    velocity = sprite.pymunk.max_horizontal_velocity * math.copysign(1, velocity)
+                    velocity = sprite.pymunk.max_horizontal_velocity * math.copysign(
+                        1, velocity
+                    )
                     my_body.velocity = pymunk.Vec2d(velocity, my_body.velocity.y)
 
             # Support max vertical velocity
@@ -175,25 +182,28 @@ class PymunkPhysicsEngine:
         # if we tell the sprite to go away.
         sprite.register_physics_engine(self)
 
-    def add_sprite_list(self,
-                        sprite_list,
-                        mass: float = 1,
-                        friction: float = 0.2,
-                        elasticity: Optional[float] = None,
-                        moment=None,
-                        body_type=DYNAMIC,
-                        collision_type=None
-                        ):
+    def add_sprite_list(
+        self,
+        sprite_list,
+        mass: float = 1,
+        friction: float = 0.2,
+        elasticity: Optional[float] = None,
+        moment=None,
+        body_type=DYNAMIC,
+        collision_type=None,
+    ):
         """ Add all sprites in a sprite list to the physics engine. """
 
         for sprite in sprite_list:
-            self.add_sprite(sprite=sprite,
-                            mass=mass,
-                            friction=friction,
-                            elasticity=elasticity,
-                            moment=moment,
-                            body_type=body_type,
-                            collision_type=collision_type)
+            self.add_sprite(
+                sprite=sprite,
+                mass=mass,
+                friction=friction,
+                elasticity=elasticity,
+                moment=moment,
+                body_type=body_type,
+                collision_type=collision_type,
+            )
 
     def remove_sprite(self, sprite: Sprite):
         """ Remove a sprite from the physics engine. """
@@ -221,7 +231,7 @@ class PymunkPhysicsEngine:
     def is_on_ground(self, sprite):
         """ Return true of sprite is on top of something. """
         grounding = self.check_grounding(sprite)
-        return grounding['body'] is not None
+        return grounding["body"] is not None
 
     def apply_impulse(self, sprite, impulse):
         """ Apply an impulse force on a sprite """
@@ -238,13 +248,15 @@ class PymunkPhysicsEngine:
         physics_object = self.get_physics_object(sprite)
         physics_object.body.velocity = velocity
 
-    def add_collision_handler(self,
-                              first_type: str,
-                              second_type: str,
-                              begin_handler: Callable = None,
-                              pre_handler: Callable = None,
-                              post_handler: Callable = None,
-                              separate_handler: Callable = None):
+    def add_collision_handler(
+        self,
+        first_type: str,
+        second_type: str,
+        begin_handler: Callable = None,
+        pre_handler: Callable = None,
+        post_handler: Callable = None,
+        separate_handler: Callable = None,
+    ):
         """ Add code to handle collisions between objects. """
 
         if first_type not in self.collision_types:
@@ -317,9 +329,7 @@ class PymunkPhysicsEngine:
             # Notify sprite we moved, in case animation needs to be updated
             sprite.pymunk_moved(self, dx, dy, d_angle)
 
-    def step(self,
-             delta_time: float = 1 / 60.0,
-             resync_sprites: bool = True):
+    def step(self, delta_time: float = 1 / 60.0, resync_sprites: bool = True):
         """
         Tell the physics engine to perform calculations.
 
@@ -368,28 +378,30 @@ class PymunkPhysicsEngine:
         """
         grounding = self.check_grounding(sprite)
         body = self.get_physics_object(sprite).body
-        if body.force[0] and grounding and grounding['body']:
-            grounding['body'].apply_force_at_world_point((-body.force[0], 0), grounding['position'])
+        if body.force[0] and grounding and grounding["body"]:
+            grounding["body"].apply_force_at_world_point(
+                (-body.force[0], 0), grounding["position"]
+            )
 
     def check_grounding(self, sprite: Sprite):
         """ See if the player is on the ground. Used to see if we can jump. """
         grounding = {
-            'normal': pymunk.Vec2d.zero(),
-            'penetration': pymunk.Vec2d.zero(),
-            'impulse': pymunk.Vec2d.zero(),
-            'position': pymunk.Vec2d.zero(),
-            'body': None
+            "normal": pymunk.Vec2d.zero(),
+            "penetration": pymunk.Vec2d.zero(),
+            "impulse": pymunk.Vec2d.zero(),
+            "position": pymunk.Vec2d.zero(),
+            "body": None,
         }
 
         def f(arbiter):
             """ I don't know how this works. """
             n = -arbiter.contact_point_set.normal
-            if n.y > grounding['normal'].y:
-                grounding['normal'] = n
-                grounding['penetration'] = -arbiter.contact_point_set.points[0].distance
-                grounding['body'] = arbiter.shapes[1].body
-                grounding['impulse'] = arbiter.total_impulse
-                grounding['position'] = arbiter.contact_point_set.points[0].point_b
+            if n.y > grounding["normal"].y:
+                grounding["normal"] = n
+                grounding["penetration"] = -arbiter.contact_point_set.points[0].distance
+                grounding["body"] = arbiter.shapes[1].body
+                grounding["impulse"] = arbiter.total_impulse
+                grounding["position"] = arbiter.contact_point_set.points[0].point_b
 
         physics_object = self.sprites[sprite]
         physics_object.body.each_arbiter(f)

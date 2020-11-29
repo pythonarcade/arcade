@@ -87,13 +87,13 @@ class MyGame(arcade.Window):
 
         # Put some crates on the ground
         # This shows using a coordinate list to place sprites
-        coordinate_list = [[512, 96],
-                           [256, 96],
-                           [768, 96]]
+        coordinate_list = [[512, 96], [256, 96], [768, 96]]
 
         for coordinate in coordinate_list:
             # Add a crate on the ground
-            wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", TILE_SCALING)
+            wall = arcade.Sprite(
+                ":resources:images/tiles/boxCrate_double.png", TILE_SCALING
+            )
             wall.position = coordinate
             self.wall_list.append(wall)
 
@@ -105,9 +105,9 @@ class MyGame(arcade.Window):
             self.coin_list.append(coin)
 
         # Create the 'physics engine'
-        self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
-                                                             self.wall_list,
-                                                             GRAVITY)
+        self.physics_engine = arcade.PhysicsEnginePlatformer(
+            self.player_sprite, self.wall_list, GRAVITY
+        )
 
     def on_draw(self):
         """ Render the screen. """
@@ -147,8 +147,9 @@ class MyGame(arcade.Window):
         self.physics_engine.update()
 
         # See if we hit any coins
-        coin_hit_list = arcade.check_for_collision_with_list(self.player_sprite,
-                                                             self.coin_list)
+        coin_hit_list = arcade.check_for_collision_with_list(
+            self.player_sprite, self.coin_list
+        )
 
         # Loop through each coin we hit (if any) and remove it
         for coin in coin_hit_list:
@@ -194,10 +195,12 @@ class MyGame(arcade.Window):
             self.view_left = int(self.view_left)
 
             # Do the scrolling
-            arcade.set_viewport(self.view_left,
-                                SCREEN_WIDTH + self.view_left,
-                                self.view_bottom,
-                                SCREEN_HEIGHT + self.view_bottom)
+            arcade.set_viewport(
+                self.view_left,
+                SCREEN_WIDTH + self.view_left,
+                self.view_bottom,
+                SCREEN_HEIGHT + self.view_bottom,
+            )
 
 
 def main():

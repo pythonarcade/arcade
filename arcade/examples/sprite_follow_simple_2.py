@@ -111,7 +111,10 @@ class MyGame(arcade.Window):
 
         # Set up the player
         # Character image from kenney.nl
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", SPRITE_SCALING_PLAYER)
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            SPRITE_SCALING_PLAYER,
+        )
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 50
         self.player_list.append(self.player_sprite)
@@ -153,7 +156,9 @@ class MyGame(arcade.Window):
             coin.follow_sprite(self.player_sprite)
 
         # Generate a list of all sprites that collided with the player.
-        hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.coin_list)
+        hit_list = arcade.check_for_collision_with_list(
+            self.player_sprite, self.coin_list
+        )
 
         # Loop through each colliding sprite, remove it, and add to the score.
         for coin in hit_list:

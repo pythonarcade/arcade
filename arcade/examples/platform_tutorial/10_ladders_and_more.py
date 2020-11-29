@@ -14,7 +14,7 @@ CHARACTER_SCALING = 1
 TILE_SCALING = 0.5
 COIN_SCALING = 0.5
 SPRITE_PIXEL_SIZE = 128
-GRID_PIXEL_SIZE = (SPRITE_PIXEL_SIZE * TILE_SCALING)
+GRID_PIXEL_SIZE = SPRITE_PIXEL_SIZE * TILE_SCALING
 
 # Movement speed of player, in pixels per frame
 PLAYER_MOVEMENT_SPEED = 7
@@ -103,11 +103,11 @@ class MyGame(arcade.Window):
         # --- Load in a map from the tiled editor ---
 
         # Name of the layer in the file that has our platforms/walls
-        platforms_layer_name = 'Platforms'
-        moving_platforms_layer_name = 'Moving Platforms'
+        platforms_layer_name = "Platforms"
+        moving_platforms_layer_name = "Moving Platforms"
 
         # Name of the layer that has items for pick-up
-        coins_layer_name = 'Coins'
+        coins_layer_name = "Coins"
 
         # Map name
         map_name = f":resources:tmx_maps/map_with_ladders.tmx"
@@ -119,30 +119,31 @@ class MyGame(arcade.Window):
         self.end_of_map = my_map.map_size.width * GRID_PIXEL_SIZE
 
         # -- Platforms
-        self.wall_list = arcade.tilemap.process_layer(my_map,
-                                                      platforms_layer_name,
-                                                      scaling=TILE_SCALING,
-                                                      use_spatial_hash=True)
+        self.wall_list = arcade.tilemap.process_layer(
+            my_map, platforms_layer_name, scaling=TILE_SCALING, use_spatial_hash=True
+        )
 
         # -- Moving Platforms
-        moving_platforms_list = arcade.tilemap.process_layer(my_map, moving_platforms_layer_name, TILE_SCALING)
+        moving_platforms_list = arcade.tilemap.process_layer(
+            my_map, moving_platforms_layer_name, TILE_SCALING
+        )
         for sprite in moving_platforms_list:
             self.wall_list.append(sprite)
 
         # -- Background objects
-        self.background_list = arcade.tilemap.process_layer(my_map, "Background", TILE_SCALING)
+        self.background_list = arcade.tilemap.process_layer(
+            my_map, "Background", TILE_SCALING
+        )
 
         # -- Background objects
-        self.ladder_list = arcade.tilemap.process_layer(my_map,
-                                                        "Ladders",
-                                                        scaling=TILE_SCALING,
-                                                        use_spatial_hash=True)
+        self.ladder_list = arcade.tilemap.process_layer(
+            my_map, "Ladders", scaling=TILE_SCALING, use_spatial_hash=True
+        )
 
         # -- Coins
-        self.coin_list = arcade.tilemap.process_layer(my_map,
-                                                      coins_layer_name,
-                                                      scaling=TILE_SCALING,
-                                                      use_spatial_hash=True)
+        self.coin_list = arcade.tilemap.process_layer(
+            my_map, coins_layer_name, scaling=TILE_SCALING, use_spatial_hash=True
+        )
 
         # --- Other stuff
         # Set the background color
@@ -150,10 +151,12 @@ class MyGame(arcade.Window):
             arcade.set_background_color(my_map.background_color)
 
         # Create the 'physics engine'
-        self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
-                                                             self.wall_list,
-                                                             gravity_constant=GRAVITY,
-                                                             ladders=self.ladder_list)
+        self.physics_engine = arcade.PhysicsEnginePlatformer(
+            self.player_sprite,
+            self.wall_list,
+            gravity_constant=GRAVITY,
+            ladders=self.ladder_list,
+        )
 
     def on_draw(self):
         """ Render the screen. """
@@ -170,8 +173,13 @@ class MyGame(arcade.Window):
 
         # Draw our score on the screen, scrolling it with the viewport
         score_text = f"Score: {self.score}"
-        arcade.draw_text(score_text, 10 + self.view_left, 10 + self.view_bottom,
-                         arcade.csscolor.BLACK, 18)
+        arcade.draw_text(
+            score_text,
+            10 + self.view_left,
+            10 + self.view_bottom,
+            arcade.csscolor.BLACK,
+            18,
+        )
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
@@ -220,27 +228,40 @@ class MyGame(arcade.Window):
         # See if the wall hit a boundary and needs to reverse direction.
         for wall in self.wall_list:
 
-            if wall.boundary_right and wall.right > wall.boundary_right and wall.change_x > 0:
+            if (
+                wall.boundary_right
+                and wall.right > wall.boundary_right
+                and wall.change_x > 0
+            ):
                 wall.change_x *= -1
-            if wall.boundary_left and wall.left < wall.boundary_left and wall.change_x < 0:
+            if (
+                wall.boundary_left
+                and wall.left < wall.boundary_left
+                and wall.change_x < 0
+            ):
                 wall.change_x *= -1
             if wall.boundary_top and wall.top > wall.boundary_top and wall.change_y > 0:
                 wall.change_y *= -1
-            if wall.boundary_bottom and wall.bottom < wall.boundary_bottom and wall.change_y < 0:
+            if (
+                wall.boundary_bottom
+                and wall.bottom < wall.boundary_bottom
+                and wall.change_y < 0
+            ):
                 wall.change_y *= -1
 
         # See if we hit any coins
-        coin_hit_list = arcade.check_for_collision_with_list(self.player_sprite,
-                                                             self.coin_list)
+        coin_hit_list = arcade.check_for_collision_with_list(
+            self.player_sprite, self.coin_list
+        )
 
         # Loop through each coin we hit (if any) and remove it
         for coin in coin_hit_list:
 
             # Figure out how many points this coin is worth
-            if 'Points' not in coin.properties:
+            if "Points" not in coin.properties:
                 print("Warning, collected a coing without a Points property.")
             else:
-                points = int(coin.properties['Points'])
+                points = int(coin.properties["Points"])
                 self.score += points
 
             # Remove the coin
@@ -283,10 +304,12 @@ class MyGame(arcade.Window):
             self.view_left = int(self.view_left)
 
             # Do the scrolling
-            arcade.set_viewport(self.view_left,
-                                SCREEN_WIDTH + self.view_left,
-                                self.view_bottom,
-                                SCREEN_HEIGHT + self.view_bottom)
+            arcade.set_viewport(
+                self.view_left,
+                SCREEN_WIDTH + self.view_left,
+                self.view_bottom,
+                SCREEN_HEIGHT + self.view_bottom,
+            )
 
 
 def main():

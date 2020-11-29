@@ -12,7 +12,6 @@ from arcade.gl import geometry
 
 
 class MyGame(arcade.Window):
-
     def __init__(self, width, height, title):
         super().__init__(width, height, title, resizable=False)
 
@@ -112,13 +111,15 @@ class MyGame(arcade.Window):
         # Draw the current cube using the last one as a texture
         self.fbo1.use()
         self.fbo1.clear(color=(1.0, 1.0, 1.0, 1.0), normalized=True)
-        rotate = Matrix44.from_eulers((self.time, self.time * 0.77, self.time * 0.01), dtype='f4')
-        translate = Matrix44.from_translation((0, 0, -1.75), dtype='f4')
+        rotate = Matrix44.from_eulers(
+            (self.time, self.time * 0.77, self.time * 0.01), dtype="f4"
+        )
+        translate = Matrix44.from_translation((0, 0, -1.75), dtype="f4")
         modelview = translate * rotate
         if self.frame > 0:
-            self.program['use_texture'] = 1
+            self.program["use_texture"] = 1
             self.fbo2.color_attachments[0].use()
-        self.program['modelview'] = modelview.flatten()
+        self.program["modelview"] = modelview.flatten()
         self.cube.render(self.program)
 
         self.ctx.disable(self.ctx.DEPTH_TEST)
@@ -141,7 +142,9 @@ class MyGame(arcade.Window):
         ratio = arcade.get_scaling_factor(self)
         self.ctx.viewport = 0, 0, int(width * ratio), int(height * ratio)
         aspect_ratio = width / height
-        self.program['projection'] = Matrix44.perspective_projection(60, aspect_ratio, 0.1, 100).flatten()
+        self.program["projection"] = Matrix44.perspective_projection(
+            60, aspect_ratio, 0.1, 100
+        ).flatten()
 
 
 if __name__ == "__main__":

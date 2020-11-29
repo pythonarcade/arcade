@@ -29,6 +29,7 @@ SCREEN_HEIGHT = 1000
 SCREEN_TITLE = "Moving Sprite Stress Test"
 TOP_MARGIN = 40
 
+
 class FPSCounter:
     def __init__(self):
         self.time = time.perf_counter()
@@ -56,8 +57,14 @@ class Line:
         self.end_y = random.randrange(SCREEN_HEIGHT - TOP_MARGIN)
 
     def draw(self):
-        arcade.draw_line(self.start_x, self.start_y,
-                         self.end_x, self.end_y, arcade.color.WOOD_BROWN, 4)
+        arcade.draw_line(
+            self.start_x,
+            self.start_y,
+            self.end_x,
+            self.end_y,
+            arcade.color.WOOD_BROWN,
+            4,
+        )
 
 
 class MyGame(arcade.Window):
@@ -164,8 +171,10 @@ class MyGame(arcade.Window):
                 if total_program_time % 2 == 1:
 
                     # Take timings
-                    output = f"{total_program_time}, {len(self.shape_list)}, {self.fps.get_fps():.1f}, " \
-                             f"{self.processing_time:.4f}, {self.draw_time:.4f}\n"
+                    output = (
+                        f"{total_program_time}, {len(self.shape_list)}, {self.fps.get_fps():.1f}, "
+                        f"{self.processing_time:.4f}, {self.draw_time:.4f}\n"
+                    )
 
                     self.results_file.write(output)
                     print(output, end="")

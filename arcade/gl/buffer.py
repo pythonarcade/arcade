@@ -27,7 +27,11 @@ class Buffer:
     }
 
     def __init__(
-        self, ctx: "Context", data: Optional[Any] = None, reserve: int = 0, usage: str = "static"
+        self,
+        ctx: "Context",
+        data: Optional[Any] = None,
+        reserve: int = 0,
+        usage: str = "static",
     ):
         """
         :param Context ctx: The context this buffer belongs to
@@ -196,7 +200,7 @@ class Buffer:
     def bind_to_uniform_block(self, binding: int = 0, offset: int = 0, size: int = -1):
         """Bind this buffer to a uniform block location.
         In most cases it will be sufficient to only provice a binding location.
-        
+
         :param int binding: The binding location
         :param int offset: byte offset
         :param int size: size of the buffer to bind.

@@ -64,14 +64,13 @@ def create_line_strip():
         arcade.color.GREEN,
         arcade.color.BLACK,
         arcade.color.BLUE,
-        arcade.color.BLACK
+        arcade.color.BLACK,
     )
     line_strip = arcade.create_lines_with_colors(
-        ([10, 10], [500, 10],
-         [10, 250], [500, 250],
-         [10, 500], [500, 500]),
+        ([10, 10], [500, 10], [10, 250], [500, 250], [10, 500], [500, 500]),
         colors,
-        line_width=4)
+        line_width=4,
+    )
 
     shape_list.append(line_strip)
 
@@ -100,8 +99,18 @@ class MyGame(arcade.Window):
 
         background = arcade.ShapeElementList()
 
-        points = (0, 0), (SCREEN_WIDTH, 0), (SCREEN_WIDTH, SCREEN_HEIGHT), (0, SCREEN_HEIGHT)
-        colors = (arcade.color.SKY_BLUE, arcade.color.SKY_BLUE, arcade.color.BLUE, arcade.color.BLUE)
+        points = (
+            (0, 0),
+            (SCREEN_WIDTH, 0),
+            (SCREEN_WIDTH, SCREEN_HEIGHT),
+            (0, SCREEN_HEIGHT),
+        )
+        colors = (
+            arcade.color.SKY_BLUE,
+            arcade.color.SKY_BLUE,
+            arcade.color.BLUE,
+            arcade.color.BLUE,
+        )
         rect = arcade.create_rectangles_filled_with_colors(points, colors)
 
         background.append(rect)

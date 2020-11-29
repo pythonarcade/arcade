@@ -60,20 +60,30 @@ class MyGame(arcade.Window):
 
         # Set up the player
         # Character image from kenney.nl
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", SPRITE_SCALING_PLAYER)
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            SPRITE_SCALING_PLAYER,
+        )
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 150
         self.player_list.append(self.player_sprite)
 
         # Create the sprites
         for x in range(100, 800, 100):
-            coin = arcade.Sprite(":resources:images/items/coinGold.png", scale=0.3, center_x=x, center_y=400)
-            coin.intensity = 'dim'
+            coin = arcade.Sprite(
+                ":resources:images/items/coinGold.png",
+                scale=0.3,
+                center_x=x,
+                center_y=400,
+            )
+            coin.intensity = "dim"
             coin.alpha = 64
             self.coin_list.append(coin)
 
         # Create trigger
-        self.trigger_sprite = arcade.Sprite(":resources:images/pinball/bumper.png", scale=0.5, center_x=750, center_y=50)
+        self.trigger_sprite = arcade.Sprite(
+            ":resources:images/pinball/bumper.png", scale=0.5, center_x=750, center_y=50
+        )
 
     def on_draw(self):
         """ Draw everything """
@@ -85,11 +95,13 @@ class MyGame(arcade.Window):
         # Put the instructions on the screen.
         instructions1 = "Touch a coin to set its intensity property to 'bright'."
         arcade.draw_text(instructions1, 10, 90, arcade.color.WHITE, 14)
-        instructions2 = "Touch the trigger at the bottom-right to destroy all 'bright' sprites."
+        instructions2 = (
+            "Touch the trigger at the bottom-right to destroy all 'bright' sprites."
+        )
         arcade.draw_text(instructions2, 10, 70, arcade.color.WHITE, 14)
 
         # Query the property on the coins and show results.
-        coins_are_bright = [coin.intensity == 'bright' for coin in self.coin_list]
+        coins_are_bright = [coin.intensity == "bright" for coin in self.coin_list]
         output_any = f"Any sprites have intensity=bright? : {any(coins_are_bright)}"
         arcade.draw_text(output_any, 10, 40, arcade.color.WHITE, 14)
         output_all = f"All sprites have intensity=bright? : {all(coins_are_bright)}"
@@ -110,16 +122,22 @@ class MyGame(arcade.Window):
         self.coin_list.update()
 
         # Generate a list of all sprites that collided with the player.
-        coins_hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.coin_list)
+        coins_hit_list = arcade.check_for_collision_with_list(
+            self.player_sprite, self.coin_list
+        )
 
         # Loop through each colliding sprite to set intensity=bright
         for coin in coins_hit_list:
-            coin.intensity = 'bright'
+            coin.intensity = "bright"
             coin.alpha = 255
 
-        hit_trigger = arcade.check_for_collision(self.player_sprite, self.trigger_sprite)
+        hit_trigger = arcade.check_for_collision(
+            self.player_sprite, self.trigger_sprite
+        )
         if hit_trigger:
-            intense_sprites = [sprite for sprite in self.coin_list if sprite.intensity == 'bright']
+            intense_sprites = [
+                sprite for sprite in self.coin_list if sprite.intensity == "bright"
+            ]
             for coin in intense_sprites:
                 coin.remove_from_sprite_lists()
 

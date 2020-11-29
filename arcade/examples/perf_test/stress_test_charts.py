@@ -9,7 +9,7 @@ DRAWING_TIME = 4
 def read_results(filename):
     results = []
     with open(filename) as csv_file:
-        csv_reader = csv.reader(csv_file, delimiter=',')
+        csv_reader = csv.reader(csv_file, delimiter=",")
         for row in csv_reader:
             results.append([float(cell) for cell in row])
         return results
@@ -27,10 +27,10 @@ def chart_stress_test_draw_moving_pygame():
     plt.plot(sprite_count, processing_time, label="Processing Time")
     plt.plot(sprite_count, drawing_time, label="Drawing Time")
 
-    plt.legend(loc='upper left', shadow=True, fontsize='x-large')
+    plt.legend(loc="upper left", shadow=True, fontsize="x-large")
 
-    plt.ylabel('Time')
-    plt.xlabel('Sprite Count')
+    plt.ylabel("Time")
+    plt.xlabel("Sprite Count")
 
     plt.savefig("chart_stress_test_draw_moving_pygame.svg")
     # plt.show()
@@ -49,10 +49,10 @@ def chart_stress_test_draw_moving_arcade():
     plt.plot(sprite_count, processing_time, label="Processing Time")
     plt.plot(sprite_count, drawing_time, label="Drawing Time")
 
-    plt.legend(loc='upper left', shadow=True, fontsize='x-large')
+    plt.legend(loc="upper left", shadow=True, fontsize="x-large")
 
-    plt.ylabel('Time')
-    plt.xlabel('Sprite Count')
+    plt.ylabel("Time")
+    plt.xlabel("Sprite Count")
 
     # plt.show()
     plt.savefig("chart_stress_test_draw_moving_arcade.svg")
@@ -72,10 +72,10 @@ def chart_stress_test_draw_moving_draw_comparison():
     plt.plot(sprite_count, d1, label="Drawing Time Arcade")
     plt.plot(sprite_count, d2, label="Drawing Time Pygame")
 
-    plt.legend(loc='upper left', shadow=True, fontsize='x-large')
+    plt.legend(loc="upper left", shadow=True, fontsize="x-large")
 
-    plt.ylabel('Time')
-    plt.xlabel('Sprite Count')
+    plt.ylabel("Time")
+    plt.xlabel("Sprite Count")
 
     # plt.show()
     plt.savefig("chart_stress_test_draw_moving_draw_comparison.svg")
@@ -95,10 +95,10 @@ def chart_stress_test_draw_moving_process_comparison():
     plt.plot(sprite_count, d1, label="Processing Time Arcade")
     plt.plot(sprite_count, d2, label="Processing Time Pygame")
 
-    plt.legend(loc='upper left', shadow=True, fontsize='x-large')
+    plt.legend(loc="upper left", shadow=True, fontsize="x-large")
 
-    plt.ylabel('Time')
-    plt.xlabel('Sprite Count')
+    plt.ylabel("Time")
+    plt.xlabel("Sprite Count")
 
     # plt.show()
     plt.savefig("chart_stress_test_draw_moving_process_comparison.svg")
@@ -121,10 +121,10 @@ def chart_stress_test_collision_comparison():
     plt.plot(sprite_count, d2, label="Processing Time Arcade Spatial")
     plt.plot(sprite_count, d3, label="Processing Time Pygame")
 
-    plt.legend(loc='upper left', shadow=True, fontsize='x-large')
+    plt.legend(loc="upper left", shadow=True, fontsize="x-large")
 
-    plt.ylabel('Time')
-    plt.xlabel('Sprite Count')
+    plt.ylabel("Time")
+    plt.xlabel("Sprite Count")
 
     # plt.show()
     plt.savefig("chart_stress_test_collision_comparison.svg")

@@ -14,13 +14,16 @@ class UIClickable(EventDispatcher, UIElement):
     this should fit every use case.
     """
 
-    CLICKED = 'UIClickable_CLICKED'
+    CLICKED = "UIClickable_CLICKED"
 
-    def __init__(self,
-                 center_x=0, center_y=0,
-                 id: Optional[str] = None,
-                 style: UIStyle = None,
-                 **kwargs):
+    def __init__(
+        self,
+        center_x=0,
+        center_y=0,
+        id: Optional[str] = None,
+        style: UIStyle = None,
+        **kwargs
+    ):
         """
         Create a clickable UI Element
 
@@ -30,13 +33,8 @@ class UIClickable(EventDispatcher, UIElement):
         :param style: style of :py:class:`arcade.gui.UIElement`
         :param kwargs: catches unsupported named parameters
         """
-        super().__init__(
-            center_x=center_x,
-            center_y=center_y,
-            id=id,
-            style=style
-        )
-        self.register_event_type('on_click')
+        super().__init__(center_x=center_x, center_y=center_y, id=id, style=style)
+        self.register_event_type("on_click")
 
         self._pressed = False
         self._hovered = False
@@ -122,21 +120,25 @@ class UIClickable(EventDispatcher, UIElement):
 
     def on_ui_event(self, event: UIEvent):
         if event.type in (MOUSE_PRESS, MOUSE_RELEASE):
-            left_click = event.get('button') == arcade.MOUSE_BUTTON_LEFT
+            left_click = event.get("button") == arcade.MOUSE_BUTTON_LEFT
             if not left_click:
                 return
 
-            if event.type == MOUSE_PRESS and self.collides_with_point((event.get('x'), event.get('y'))):
+            if event.type == MOUSE_PRESS and self.collides_with_point(
+                (event.get("x"), event.get("y"))
+            ):
                 self.on_press()
             elif event.type == MOUSE_RELEASE and self.pressed and self.focused:
                 if self.pressed:
                     self.on_release()
 
-                    if self.collides_with_point((event.get('x'), event.get('y'))):
-                        self.dispatch_event('on_click')
+                    if self.collides_with_point((event.get("x"), event.get("y"))):
+                        self.dispatch_event("on_click")
 
                         if self.mng:
-                            self.mng.dispatch_ui_event(UIEvent(UIClickable.CLICKED, ui_element=self))
+                            self.mng.dispatch_ui_event(
+                                UIEvent(UIClickable.CLICKED, ui_element=self)
+                            )
 
     def render(self):
         """

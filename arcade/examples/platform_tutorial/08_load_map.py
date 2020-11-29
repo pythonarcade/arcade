@@ -13,7 +13,7 @@ CHARACTER_SCALING = 1
 TILE_SCALING = 0.5
 COIN_SCALING = 0.5
 SPRITE_PIXEL_SIZE = 128
-GRID_PIXEL_SIZE = (SPRITE_PIXEL_SIZE * TILE_SCALING)
+GRID_PIXEL_SIZE = SPRITE_PIXEL_SIZE * TILE_SCALING
 
 # Movement speed of player, in pixels per frame
 PLAYER_MOVEMENT_SPEED = 10
@@ -90,21 +90,25 @@ class MyGame(arcade.Window):
         # Name of map file to load
         map_name = ":resources:tmx_maps/map.tmx"
         # Name of the layer in the file that has our platforms/walls
-        platforms_layer_name = 'Platforms'
+        platforms_layer_name = "Platforms"
         # Name of the layer that has items for pick-up
-        coins_layer_name = 'Coins'
+        coins_layer_name = "Coins"
 
         # Read in the tiled map
         my_map = arcade.tilemap.read_tmx(map_name)
 
         # -- Platforms
-        self.wall_list = arcade.tilemap.process_layer(map_object=my_map,
-                                                      layer_name=platforms_layer_name,
-                                                      scaling=TILE_SCALING,
-                                                      use_spatial_hash=True)
+        self.wall_list = arcade.tilemap.process_layer(
+            map_object=my_map,
+            layer_name=platforms_layer_name,
+            scaling=TILE_SCALING,
+            use_spatial_hash=True,
+        )
 
         # -- Coins
-        self.coin_list = arcade.tilemap.process_layer(my_map, coins_layer_name, TILE_SCALING)
+        self.coin_list = arcade.tilemap.process_layer(
+            my_map, coins_layer_name, TILE_SCALING
+        )
 
         # --- Other stuff
         # Set the background color
@@ -112,9 +116,9 @@ class MyGame(arcade.Window):
             arcade.set_background_color(my_map.background_color)
 
         # Create the 'physics engine'
-        self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
-                                                             self.wall_list,
-                                                             GRAVITY)
+        self.physics_engine = arcade.PhysicsEnginePlatformer(
+            self.player_sprite, self.wall_list, GRAVITY
+        )
 
     def on_draw(self):
         """ Render the screen. """
@@ -129,8 +133,13 @@ class MyGame(arcade.Window):
 
         # Draw our score on the screen, scrolling it with the viewport
         score_text = f"Score: {self.score}"
-        arcade.draw_text(score_text, 10 + self.view_left, 10 + self.view_bottom,
-                         arcade.csscolor.WHITE, 18)
+        arcade.draw_text(
+            score_text,
+            10 + self.view_left,
+            10 + self.view_bottom,
+            arcade.csscolor.WHITE,
+            18,
+        )
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
@@ -159,8 +168,9 @@ class MyGame(arcade.Window):
         self.physics_engine.update()
 
         # See if we hit any coins
-        coin_hit_list = arcade.check_for_collision_with_list(self.player_sprite,
-                                                             self.coin_list)
+        coin_hit_list = arcade.check_for_collision_with_list(
+            self.player_sprite, self.coin_list
+        )
 
         # Loop through each coin we hit (if any) and remove it
         for coin in coin_hit_list:
@@ -208,10 +218,12 @@ class MyGame(arcade.Window):
             self.view_left = int(self.view_left)
 
             # Do the scrolling
-            arcade.set_viewport(self.view_left,
-                                SCREEN_WIDTH + self.view_left,
-                                self.view_bottom,
-                                SCREEN_HEIGHT + self.view_bottom)
+            arcade.set_viewport(
+                self.view_left,
+                SCREEN_WIDTH + self.view_left,
+                self.view_bottom,
+                SCREEN_HEIGHT + self.view_bottom,
+            )
 
 
 def main():

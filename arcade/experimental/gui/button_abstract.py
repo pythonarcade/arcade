@@ -4,13 +4,14 @@ Abstract button class
 from .ui_element import UIElement
 
 import logging
+
 LOG = logging.getLogger(__name__)
+
 
 class ButtonAbstract(UIElement):
     """ Abstract button to be used as a base class for other button types. """
-    def __init__(self,
-                 center_x=0,
-                 center_y=0):
+
+    def __init__(self, center_x=0, center_y=0):
         super().__init__(center_x=center_x, center_y=center_y)
 
         self.normal_texture = None

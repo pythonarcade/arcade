@@ -57,7 +57,7 @@ def create_outside_walls(maze):
     # Create left and right walls
     for row in range(len(maze)):
         maze[row][0] = TILE_CRATE
-        maze[row][len(maze[row])-1] = TILE_CRATE
+        maze[row][len(maze[row]) - 1] = TILE_CRATE
 
     # Create top and bottom walls
     for column in range(1, len(maze[0]) - 1):
@@ -190,7 +190,9 @@ class MyGame(arcade.Window):
             for row in range(MAZE_HEIGHT):
                 for column in range(MAZE_WIDTH):
                     if maze[row][column] == 1:
-                        wall = arcade.Sprite(":resources:images/tiles/grassCenter.png", SPRITE_SCALING)
+                        wall = arcade.Sprite(
+                            ":resources:images/tiles/grassCenter.png", SPRITE_SCALING
+                        )
                         wall.center_x = column * SPRITE_SIZE + SPRITE_SIZE / 2
                         wall.center_y = row * SPRITE_SIZE + SPRITE_SIZE / 2
                         self.wall_list.append(wall)
@@ -212,15 +214,21 @@ class MyGame(arcade.Window):
                     column_count = end_column - start_column + 1
                     column_mid = (start_column + end_column) / 2
 
-                    wall = arcade.Sprite(":resources:images/tiles/grassCenter.png", SPRITE_SCALING,
-                                         repeat_count_x=column_count)
+                    wall = arcade.Sprite(
+                        ":resources:images/tiles/grassCenter.png",
+                        SPRITE_SCALING,
+                        repeat_count_x=column_count,
+                    )
                     wall.center_x = column_mid * SPRITE_SIZE + SPRITE_SIZE / 2
                     wall.center_y = row * SPRITE_SIZE + SPRITE_SIZE / 2
                     wall.width = SPRITE_SIZE * column_count
                     self.wall_list.append(wall)
 
         # Set up the player
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", SPRITE_SCALING)
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            SPRITE_SCALING,
+        )
         self.player_list.append(self.player_sprite)
 
         # Randomly place the player. If we are in a wall, repeat until we aren't.
@@ -232,12 +240,16 @@ class MyGame(arcade.Window):
             self.player_sprite.center_y = random.randrange(MAZE_HEIGHT * SPRITE_SIZE)
 
             # Are we in a wall?
-            walls_hit = arcade.check_for_collision_with_list(self.player_sprite, self.wall_list)
+            walls_hit = arcade.check_for_collision_with_list(
+                self.player_sprite, self.wall_list
+            )
             if len(walls_hit) == 0:
                 # Not in a wall! Success!
                 placed = True
 
-        self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.wall_list)
+        self.physics_engine = arcade.PhysicsEngineSimple(
+            self.player_sprite, self.wall_list
+        )
 
         # Set the background color
         arcade.set_background_color(arcade.color.AMAZON)
@@ -267,22 +279,31 @@ class MyGame(arcade.Window):
         sprite_count = len(self.wall_list)
 
         output = f"Sprite Count: {sprite_count}"
-        arcade.draw_text(output,
-                         self.view_left + 20,
-                         SCREEN_HEIGHT - 20 + self.view_bottom,
-                         arcade.color.WHITE, 16)
+        arcade.draw_text(
+            output,
+            self.view_left + 20,
+            SCREEN_HEIGHT - 20 + self.view_bottom,
+            arcade.color.WHITE,
+            16,
+        )
 
         output = f"Drawing time: {self.draw_time:.3f}"
-        arcade.draw_text(output,
-                         self.view_left + 20,
-                         SCREEN_HEIGHT - 40 + self.view_bottom,
-                         arcade.color.WHITE, 16)
+        arcade.draw_text(
+            output,
+            self.view_left + 20,
+            SCREEN_HEIGHT - 40 + self.view_bottom,
+            arcade.color.WHITE,
+            16,
+        )
 
         output = f"Processing time: {self.processing_time:.3f}"
-        arcade.draw_text(output,
-                         self.view_left + 20,
-                         SCREEN_HEIGHT - 60 + self.view_bottom,
-                         arcade.color.WHITE, 16)
+        arcade.draw_text(
+            output,
+            self.view_left + 20,
+            SCREEN_HEIGHT - 60 + self.view_bottom,
+            arcade.color.WHITE,
+            16,
+        )
 
         self.draw_time = timeit.default_timer() - draw_start_time
 
@@ -346,10 +367,12 @@ class MyGame(arcade.Window):
             changed = True
 
         if changed:
-            arcade.set_viewport(self.view_left,
-                                SCREEN_WIDTH + self.view_left,
-                                self.view_bottom,
-                                SCREEN_HEIGHT + self.view_bottom)
+            arcade.set_viewport(
+                self.view_left,
+                SCREEN_WIDTH + self.view_left,
+                self.view_bottom,
+                SCREEN_HEIGHT + self.view_bottom,
+            )
 
         # Save the time it took to do this.
         self.processing_time = timeit.default_timer() - start_time

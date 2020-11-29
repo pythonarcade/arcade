@@ -26,6 +26,7 @@ class Room:
     This class holds all the information about the
     different rooms.
     """
+
     def __init__(self):
         # You may want many lists. Lists for coins, monsters, etc.
         self.wall_list = None
@@ -53,7 +54,9 @@ def setup_room_1():
     for y in (0, SCREEN_HEIGHT - SPRITE_SIZE):
         # Loop for each box going across
         for x in range(0, SCREEN_WIDTH, SPRITE_SIZE):
-            wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", SPRITE_SCALING)
+            wall = arcade.Sprite(
+                ":resources:images/tiles/boxCrate_double.png", SPRITE_SCALING
+            )
             wall.left = x
             wall.bottom = y
             room.wall_list.append(wall)
@@ -64,7 +67,9 @@ def setup_room_1():
         for y in range(SPRITE_SIZE, SCREEN_HEIGHT - SPRITE_SIZE, SPRITE_SIZE):
             # Skip making a block 4 and 5 blocks up on the right side
             if (y != SPRITE_SIZE * 4 and y != SPRITE_SIZE * 5) or x == 0:
-                wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", SPRITE_SCALING)
+                wall = arcade.Sprite(
+                    ":resources:images/tiles/boxCrate_double.png", SPRITE_SCALING
+                )
                 wall.left = x
                 wall.bottom = y
                 room.wall_list.append(wall)
@@ -77,7 +82,9 @@ def setup_room_1():
     # If you want coins or monsters in a level, then add that code here.
 
     # Load the background image for this level.
-    room.background = arcade.load_texture(":resources:images/backgrounds/abstract_1.jpg")
+    room.background = arcade.load_texture(
+        ":resources:images/backgrounds/abstract_1.jpg"
+    )
 
     return room
 
@@ -98,7 +105,9 @@ def setup_room_2():
     for y in (0, SCREEN_HEIGHT - SPRITE_SIZE):
         # Loop for each box going across
         for x in range(0, SCREEN_WIDTH, SPRITE_SIZE):
-            wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", SPRITE_SCALING)
+            wall = arcade.Sprite(
+                ":resources:images/tiles/boxCrate_double.png", SPRITE_SCALING
+            )
             wall.left = x
             wall.bottom = y
             room.wall_list.append(wall)
@@ -109,7 +118,9 @@ def setup_room_2():
         for y in range(SPRITE_SIZE, SCREEN_HEIGHT - SPRITE_SIZE, SPRITE_SIZE):
             # Skip making a block 4 and 5 blocks up
             if (y != SPRITE_SIZE * 4 and y != SPRITE_SIZE * 5) or x != 0:
-                wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", SPRITE_SCALING)
+                wall = arcade.Sprite(
+                    ":resources:images/tiles/boxCrate_double.png", SPRITE_SCALING
+                )
                 wall.left = x
                 wall.bottom = y
                 room.wall_list.append(wall)
@@ -118,7 +129,9 @@ def setup_room_2():
     wall.left = 5 * SPRITE_SIZE
     wall.bottom = 6 * SPRITE_SIZE
     room.wall_list.append(wall)
-    room.background = arcade.load_texture(":resources:images/backgrounds/abstract_2.jpg")
+    room.background = arcade.load_texture(
+        ":resources:images/backgrounds/abstract_2.jpg"
+    )
 
     return room
 
@@ -151,7 +164,10 @@ class MyGame(arcade.Window):
     def setup(self):
         """ Set up the game and initialize the variables. """
         # Set up the player
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", SPRITE_SCALING)
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            SPRITE_SCALING,
+        )
         self.player_sprite.center_x = 100
         self.player_sprite.center_y = 100
         self.player_list = arcade.SpriteList()
@@ -171,7 +187,9 @@ class MyGame(arcade.Window):
         self.current_room = 0
 
         # Create a physics engine for this room
-        self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.rooms[self.current_room].wall_list)
+        self.physics_engine = arcade.PhysicsEngineSimple(
+            self.player_sprite, self.rooms[self.current_room].wall_list
+        )
 
     def on_draw(self):
         """
@@ -182,9 +200,9 @@ class MyGame(arcade.Window):
         arcade.start_render()
 
         # Draw the background texture
-        arcade.draw_lrwh_rectangle_textured(0, 0,
-                                            SCREEN_WIDTH, SCREEN_HEIGHT,
-                                            self.rooms[self.current_room].background)
+        arcade.draw_lrwh_rectangle_textured(
+            0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, self.rooms[self.current_room].background
+        )
 
         # Draw all the walls in this room
         self.rooms[self.current_room].wall_list.draw()
@@ -225,13 +243,15 @@ class MyGame(arcade.Window):
         # to a different room.
         if self.player_sprite.center_x > SCREEN_WIDTH and self.current_room == 0:
             self.current_room = 1
-            self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite,
-                                                             self.rooms[self.current_room].wall_list)
+            self.physics_engine = arcade.PhysicsEngineSimple(
+                self.player_sprite, self.rooms[self.current_room].wall_list
+            )
             self.player_sprite.center_x = 0
         elif self.player_sprite.center_x < 0 and self.current_room == 1:
             self.current_room = 0
-            self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite,
-                                                             self.rooms[self.current_room].wall_list)
+            self.physics_engine = arcade.PhysicsEngineSimple(
+                self.player_sprite, self.rooms[self.current_room].wall_list
+            )
             self.player_sprite.center_x = SCREEN_WIDTH
 
 

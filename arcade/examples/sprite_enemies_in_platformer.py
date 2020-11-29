@@ -84,7 +84,9 @@ class MyGame(arcade.Window):
 
         # Draw the crates
         for x in range(0, SCREEN_WIDTH, SPRITE_SIZE * 5):
-            wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", SPRITE_SCALING)
+            wall = arcade.Sprite(
+                ":resources:images/tiles/boxCrate_double.png", SPRITE_SCALING
+            )
 
             wall.bottom = SPRITE_SIZE
             wall.left = x
@@ -113,16 +115,19 @@ class MyGame(arcade.Window):
         self.enemy_list.append(enemy)
 
         # -- Set up the player
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", SPRITE_SCALING)
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            SPRITE_SCALING,
+        )
         self.player_list.append(self.player_sprite)
 
         # Starting position of the player
         self.player_sprite.center_x = 64
         self.player_sprite.center_y = 270
 
-        self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
-                                                             self.wall_list,
-                                                             gravity_constant=GRAVITY)
+        self.physics_engine = arcade.PhysicsEnginePlatformer(
+            self.player_sprite, self.wall_list, gravity_constant=GRAVITY
+        )
 
         # Set the background color
         arcade.set_background_color(arcade.color.AMAZON)
@@ -173,17 +178,29 @@ class MyGame(arcade.Window):
                 if len(arcade.check_for_collision_with_list(enemy, self.wall_list)) > 0:
                     enemy.change_x *= -1
                 # If the enemy hit the left boundary, reverse
-                elif enemy.boundary_left is not None and enemy.left < enemy.boundary_left:
+                elif (
+                    enemy.boundary_left is not None and enemy.left < enemy.boundary_left
+                ):
                     enemy.change_x *= -1
                 # If the enemy hit the right boundary, reverse
-                elif enemy.boundary_right is not None and enemy.right > enemy.boundary_right:
+                elif (
+                    enemy.boundary_right is not None
+                    and enemy.right > enemy.boundary_right
+                ):
                     enemy.change_x *= -1
 
             # Update the player using the physics engine
             self.physics_engine.update()
 
             # See if the player hit a worm. If so, game over.
-            if len(arcade.check_for_collision_with_list(self.player_sprite, self.enemy_list)) > 0:
+            if (
+                len(
+                    arcade.check_for_collision_with_list(
+                        self.player_sprite, self.enemy_list
+                    )
+                )
+                > 0
+            ):
                 self.game_over = True
 
 

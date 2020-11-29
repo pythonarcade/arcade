@@ -26,7 +26,6 @@ TEXTURE_RIGHT = 1
 
 
 class Player(arcade.Sprite):
-
     def __init__(self):
         super().__init__()
 
@@ -37,8 +36,9 @@ class Player(arcade.Sprite):
         # flipped_horizontally=True will mirror the image we load.
         texture = arcade.load_texture(":resources:images/enemies/bee.png")
         self.textures.append(texture)
-        texture = arcade.load_texture(":resources:images/enemies/bee.png",
-                                      flipped_horizontally=True)
+        texture = arcade.load_texture(
+            ":resources:images/enemies/bee.png", flipped_horizontally=True
+        )
         self.textures.append(texture)
 
         # By default, face right.

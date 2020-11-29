@@ -28,7 +28,11 @@ SCREEN_TITLE = "Pymunk test"
 
 class PhysicsSprite(arcade.Sprite):
     def __init__(self, pymunk_shape, filename):
-        super().__init__(filename, center_x=pymunk_shape.body.position.x, center_y=pymunk_shape.body.position.y)
+        super().__init__(
+            filename,
+            center_x=pymunk_shape.body.position.x,
+            center_y=pymunk_shape.body.position.y,
+        )
         self.pymunk_shape = pymunk_shape
 
 
@@ -80,7 +84,9 @@ class MyGame(arcade.Window):
         # Create the floor
         floor_height = 80
         body = pymunk.Body(body_type=pymunk.Body.STATIC)
-        shape = pymunk.Segment(body, [0, floor_height], [SCREEN_WIDTH, floor_height], 0.0)
+        shape = pymunk.Segment(
+            body, [0, floor_height], [SCREEN_WIDTH, floor_height], 0.0
+        )
         shape.friction = 10
         self.space.add(shape)
         self.static_lines.append(shape)
@@ -101,7 +107,12 @@ class MyGame(arcade.Window):
                 self.space.add(body, shape)
                 # body.sleep()
 
-                sprite = BoxSprite(shape, ":resources:images/tiles/boxCrate_double.png", width=size, height=size)
+                sprite = BoxSprite(
+                    shape,
+                    ":resources:images/tiles/boxCrate_double.png",
+                    width=size,
+                    height=size,
+                )
                 self.sprite_list.append(sprite)
 
     def on_draw(self):

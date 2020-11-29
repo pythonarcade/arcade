@@ -20,7 +20,7 @@ SCREEN_HEIGHT = 600
 
 SCREEN_TITLE = "Camera Example"
 SPRITE_PIXEL_SIZE = 128
-GRID_PIXEL_SIZE = (SPRITE_PIXEL_SIZE * TILE_SCALING)
+GRID_PIXEL_SIZE = SPRITE_PIXEL_SIZE * TILE_SCALING
 
 # How many pixels to keep as a minimum margin between the character
 # and the edge of the screen.
@@ -80,8 +80,10 @@ class MyGame(arcade.Window):
         self.coin_list = arcade.SpriteList()
 
         # Set up the player
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                                           PLAYER_SCALING)
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            PLAYER_SCALING,
+        )
 
         # Starting position of the player
         self.player_sprite.center_x = 196
@@ -97,22 +99,19 @@ class MyGame(arcade.Window):
         self.end_of_map = my_map.map_size.width * GRID_PIXEL_SIZE
 
         # --- Platforms ---
-        self.wall_list = arcade.tilemap.process_layer(my_map,
-                                                      'Platforms',
-                                                      TILE_SCALING,
-                                                      use_spatial_hash=True)
+        self.wall_list = arcade.tilemap.process_layer(
+            my_map, "Platforms", TILE_SCALING, use_spatial_hash=True
+        )
 
         # --- Coins ---
-        self.coin_list = arcade.tilemap.process_layer(my_map,
-                                                      'Coins',
-                                                      TILE_SCALING,
-                                                      use_spatial_hash=True)
+        self.coin_list = arcade.tilemap.process_layer(
+            my_map, "Coins", TILE_SCALING, use_spatial_hash=True
+        )
 
         # --- Bombs ---
-        self.bomb_list = arcade.tilemap.process_layer(my_map,
-                                                      'Bombs',
-                                                      TILE_SCALING,
-                                                      use_spatial_hash=True)
+        self.bomb_list = arcade.tilemap.process_layer(
+            my_map, "Bombs", TILE_SCALING, use_spatial_hash=True
+        )
 
         # --- Other stuff
         # Set the background color
@@ -120,9 +119,9 @@ class MyGame(arcade.Window):
             arcade.set_background_color(my_map.background_color)
 
         # Keep player from running through the wall_list layer
-        self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
-                                                             self.wall_list,
-                                                             gravity_constant=GRAVITY)
+        self.physics_engine = arcade.PhysicsEnginePlatformer(
+            self.player_sprite, self.wall_list, gravity_constant=GRAVITY
+        )
 
         self.game_over = False
 
@@ -218,8 +217,10 @@ class MyGame(arcade.Window):
         user_centered = screen_center_x, screen_center_y
 
         cur_scroll = self.camera.scroll
-        new_scroll = [arcade.lerp(cur_scroll[0], user_centered[0], panning_fraction), \
-            arcade.lerp(cur_scroll[1], user_centered[1], panning_fraction)]
+        new_scroll = [
+            arcade.lerp(cur_scroll[0], user_centered[0], panning_fraction),
+            arcade.lerp(cur_scroll[1], user_centered[1], panning_fraction),
+        ]
 
         # Add in camera shake
         self.shake_offset_1 += self.shake_vel_1
@@ -261,13 +262,17 @@ class MyGame(arcade.Window):
         if not self.game_over:
             self.physics_engine.update()
 
-        coins_hit = arcade.check_for_collision_with_list(self.player_sprite, self.coin_list)
+        coins_hit = arcade.check_for_collision_with_list(
+            self.player_sprite, self.coin_list
+        )
         for coin in coins_hit:
             coin.remove_from_sprite_lists()
             self.score += 1
 
         # Bomb hits
-        bombs_hit = arcade.check_for_collision_with_list(self.player_sprite, self.bomb_list)
+        bombs_hit = arcade.check_for_collision_with_list(
+            self.player_sprite, self.bomb_list
+        )
         for bomb in bombs_hit:
             bomb.remove_from_sprite_lists()
             print("Pow")
@@ -276,6 +281,7 @@ class MyGame(arcade.Window):
 
         # Pan to the user
         self.pan_camera_to_user(panning_fraction=0.02)
+
 
 def main():
     """ Get this game started. """

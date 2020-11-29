@@ -57,8 +57,8 @@ def make_spinner():
         particle_factory=lambda emitter: arcade.FadeParticle(
             filename_or_texture=random.choice(STAR_TEXTURES),
             change_xy=(0, 6.0),
-            lifetime=0.2
-        )
+            lifetime=0.2,
+        ),
     )
     spinner.change_angle = 16.28
     return spinner
@@ -76,9 +76,9 @@ def make_rocket(emit_done_cb):
             lifetime=random.uniform(1.0, 1.5),
             start_alpha=100,
             end_alpha=0,
-            mutation_callback=rocket_smoke_mutator
+            mutation_callback=rocket_smoke_mutator,
         ),
-        emit_done_cb=emit_done_cb
+        emit_done_cb=emit_done_cb,
     )
     rocket.change_x = random.uniform(-1.0, 1.0)
     rocket.change_y = random.uniform(5.0, 7.25)
@@ -93,8 +93,8 @@ def make_flash(prev_emitter):
         particle_factory=lambda emitter: arcade.FadeParticle(
             filename_or_texture=FLASH_TEXTURE,
             change_xy=arcade.rand_in_circle((0.0, 0.0), 3.5),
-            lifetime=0.15
-        )
+            lifetime=0.15,
+        ),
     )
 
 
@@ -105,10 +105,13 @@ def make_puff(prev_emitter):
         emit_controller=arcade.EmitBurst(4),
         particle_factory=lambda emitter: arcade.FadeParticle(
             filename_or_texture=PUFF_TEXTURE,
-            change_xy=(_Vec2(arcade.rand_in_circle((0.0, 0.0), 0.4)) + _Vec2(0.3, 0.0)).as_tuple(),
-            lifetime=4.0
-        )
+            change_xy=(
+                _Vec2(arcade.rand_in_circle((0.0, 0.0), 0.4)) + _Vec2(0.3, 0.0)
+            ).as_tuple(),
+            lifetime=4.0,
+        ),
     )
+
 
 def clamp(a, low, high):
     if a > high:
@@ -118,26 +121,36 @@ def clamp(a, low, high):
     else:
         return a
 
+
 class AnimatedAlphaParticle(arcade.LifetimeParticle):
     """A custom particle that animates between three different alpha levels"""
 
     def __init__(
-            self,
-            filename_or_texture: arcade.FilenameOrTexture,
-            change_xy: Vector,
-            start_alpha: int = 0,
-            duration1: float = 1.0,
-            mid_alpha: int = 255,
-            duration2: float = 1.0,
-            end_alpha: int = 0,
-            center_xy: Point = (0.0, 0.0),
-            angle: float = 0,
-            change_angle: float = 0,
-            scale: float = 1.0,
-            mutation_callback=None,
+        self,
+        filename_or_texture: arcade.FilenameOrTexture,
+        change_xy: Vector,
+        start_alpha: int = 0,
+        duration1: float = 1.0,
+        mid_alpha: int = 255,
+        duration2: float = 1.0,
+        end_alpha: int = 0,
+        center_xy: Point = (0.0, 0.0),
+        angle: float = 0,
+        change_angle: float = 0,
+        scale: float = 1.0,
+        mutation_callback=None,
     ):
-        super().__init__(filename_or_texture, change_xy, duration1 + duration2, center_xy, angle, change_angle, scale,
-                         start_alpha, mutation_callback)
+        super().__init__(
+            filename_or_texture,
+            change_xy,
+            duration1 + duration2,
+            center_xy,
+            angle,
+            change_angle,
+            scale,
+            start_alpha,
+            mutation_callback,
+        )
         self.start_alpha = start_alpha
         self.in_duration = duration1
         self.mid_alpha = mid_alpha
@@ -191,8 +204,8 @@ class FireworksApp(arcade.Window):
                 mid_alpha=128,
                 duration2=random.uniform(2.0, 6.0),
                 end_alpha=0,
-                center_xy=arcade.rand_in_rect((0.0, 0.0), SCREEN_WIDTH, SCREEN_HEIGHT)
-            )
+                center_xy=arcade.rand_in_rect((0.0, 0.0), SCREEN_WIDTH, SCREEN_HEIGHT),
+            ),
         )
         self.emitters.append(stars)
 
@@ -202,14 +215,16 @@ class FireworksApp(arcade.Window):
             emit_controller=arcade.EmitMaintainCount(60),
             particle_factory=lambda emitter: AnimatedAlphaParticle(
                 filename_or_texture=random.choice(CLOUD_TEXTURES),
-                change_xy=(_Vec2(arcade.rand_in_circle((0.0, 0.0), 0.04)) + _Vec2(0.1, 0)).as_tuple(),
+                change_xy=(
+                    _Vec2(arcade.rand_in_circle((0.0, 0.0), 0.04)) + _Vec2(0.1, 0)
+                ).as_tuple(),
                 start_alpha=0,
                 duration1=random.uniform(5.0, 10.0),
                 mid_alpha=255,
                 duration2=random.uniform(5.0, 10.0),
                 end_alpha=0,
-                center_xy=arcade.rand_in_circle((0.0, 0.0), 50)
-            )
+                center_xy=arcade.rand_in_circle((0.0, 0.0), 50),
+            ),
         )
         self.emitters.append(self.cloud)
 
@@ -220,7 +235,10 @@ class FireworksApp(arcade.Window):
             self.launch_sparkle_firework,
         )
         random.choice(launchers)(delta_time)
-        pyglet.clock.schedule_once(self.launch_firework, random.uniform(LAUNCH_INTERVAL_MIN, LAUNCH_INTERVAL_MAX))
+        pyglet.clock.schedule_once(
+            self.launch_firework,
+            random.uniform(LAUNCH_INTERVAL_MIN, LAUNCH_INTERVAL_MAX),
+        )
 
     def launch_random_firework(self, _delta_time):
         """Simple firework that explodes in a random color"""
@@ -258,8 +276,8 @@ class FireworksApp(arcade.Window):
                 filename_or_texture=spark_texture,
                 change_xy=arcade.rand_in_circle((0.0, 0.0), 9.0),
                 lifetime=random.uniform(0.5, 1.2),
-                mutation_callback=firework_spark_mutator
-            )
+                mutation_callback=firework_spark_mutator,
+            ),
         )
         self.emitters.append(sparks)
 
@@ -276,8 +294,8 @@ class FireworksApp(arcade.Window):
                 filename_or_texture=spark_texture,
                 change_xy=arcade.rand_in_circle((0.0, 0.0), 8.0),
                 lifetime=random.uniform(0.55, 0.8),
-                mutation_callback=firework_spark_mutator
-            )
+                mutation_callback=firework_spark_mutator,
+            ),
         )
         self.emitters.append(sparks)
 
@@ -286,10 +304,11 @@ class FireworksApp(arcade.Window):
             emit_controller=arcade.EmitBurst(20),
             particle_factory=lambda emitter: arcade.FadeParticle(
                 filename_or_texture=ring_texture,
-                change_xy=arcade.rand_on_circle((0.0, 0.0), 5.0) + arcade.rand_in_circle((0.0, 0.0), 0.25),
+                change_xy=arcade.rand_on_circle((0.0, 0.0), 5.0)
+                + arcade.rand_in_circle((0.0, 0.0), 0.25),
                 lifetime=random.uniform(1.0, 1.6),
-                mutation_callback=firework_spark_mutator
-            )
+                mutation_callback=firework_spark_mutator,
+            ),
         )
         self.emitters.append(ring)
 
@@ -310,8 +329,8 @@ class FireworksApp(arcade.Window):
                 mid_alpha=0,
                 duration2=random.uniform(0.1, 0.2),
                 end_alpha=255,
-                mutation_callback=firework_spark_mutator
-            )
+                mutation_callback=firework_spark_mutator,
+            ),
         )
         self.emitters.append(sparks)
 
@@ -333,9 +352,13 @@ class FireworksApp(arcade.Window):
         arcade.start_render()
         for e in self.emitters:
             e.draw()
-        arcade.draw_lrtb_rectangle_filled(0, SCREEN_WIDTH, 25, 0, arcade.color.DARK_GREEN)
+        arcade.draw_lrtb_rectangle_filled(
+            0, SCREEN_WIDTH, 25, 0, arcade.color.DARK_GREEN
+        )
         mid = SCREEN_WIDTH / 2
-        arcade.draw_lrtb_rectangle_filled(mid - 2, mid + 2, SPINNER_HEIGHT, 10, arcade.color.DARK_BROWN)
+        arcade.draw_lrtb_rectangle_filled(
+            mid - 2, mid + 2, SPINNER_HEIGHT, 10, arcade.color.DARK_BROWN
+        )
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.ESCAPE:
@@ -352,7 +375,9 @@ def firework_spark_mutator(particle: arcade.FadeParticle):
 
 
 def rocket_smoke_mutator(particle: arcade.LifetimeParticle):
-    particle.scale = arcade.lerp(0.5, 3.0, particle.lifetime_elapsed / particle.lifetime_original)
+    particle.scale = arcade.lerp(
+        0.5, 3.0, particle.lifetime_elapsed / particle.lifetime_original
+    )
 
 
 if __name__ == "__main__":

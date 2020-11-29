@@ -23,6 +23,7 @@ MOVEMENT_SPEED = 5
 # ambient light, set it to black.
 AMBIENT_COLOR = (10, 10, 10)
 
+
 class MyGame(arcade.Window):
     """ Main Game Window """
 
@@ -58,7 +59,10 @@ class MyGame(arcade.Window):
         self.wall_list = arcade.SpriteList()
 
         # Create player sprite
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", 0.4)
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            0.4,
+        )
         self.player_sprite.center_x = 64
         self.player_sprite.center_y = 270
         self.player_list.append(self.player_sprite)
@@ -86,7 +90,7 @@ class MyGame(arcade.Window):
         x = 100
         y = 200
         radius = 100
-        mode = 'soft'
+        mode = "soft"
         color = arcade.csscolor.WHITE
         light = Light(x, y, radius, color, mode)
         self.light_layer.add(light)
@@ -96,7 +100,7 @@ class MyGame(arcade.Window):
         y = 150
         radius = 200
         color = arcade.csscolor.WHITE
-        mode = 'soft'
+        mode = "soft"
         light = Light(x, y, radius, color, mode)
         self.light_layer.add(light)
 
@@ -104,7 +108,7 @@ class MyGame(arcade.Window):
         x = 50
         y = 450
         radius = 100
-        mode = 'soft'
+        mode = "soft"
         color = arcade.csscolor.RED
         light = Light(x, y, radius, color, mode)
         self.light_layer.add(light)
@@ -112,7 +116,7 @@ class MyGame(arcade.Window):
         x = 250
         y = 450
         radius = 100
-        mode = 'soft'
+        mode = "soft"
         color = arcade.csscolor.GREEN
         light = Light(x, y, radius, color, mode)
         self.light_layer.add(light)
@@ -120,7 +124,7 @@ class MyGame(arcade.Window):
         x = 450
         y = 450
         radius = 100
-        mode = 'soft'
+        mode = "soft"
         color = arcade.csscolor.BLUE
         light = Light(x, y, radius, color, mode)
         self.light_layer.add(light)
@@ -129,7 +133,7 @@ class MyGame(arcade.Window):
         x = 650
         y = 450
         radius = 100
-        mode = 'soft'
+        mode = "soft"
         color = arcade.csscolor.RED
         light = Light(x, y, radius, color, mode)
         self.light_layer.add(light)
@@ -137,7 +141,7 @@ class MyGame(arcade.Window):
         x = 750
         y = 450
         radius = 100
-        mode = 'soft'
+        mode = "soft"
         color = arcade.csscolor.GREEN
         light = Light(x, y, radius, color, mode)
         self.light_layer.add(light)
@@ -145,7 +149,7 @@ class MyGame(arcade.Window):
         x = 850
         y = 450
         radius = 100
-        mode = 'soft'
+        mode = "soft"
         color = arcade.csscolor.BLUE
         light = Light(x, y, radius, color, mode)
         self.light_layer.add(light)
@@ -155,7 +159,7 @@ class MyGame(arcade.Window):
         x = 650
         y = 150
         radius = 100
-        mode = 'hard'
+        mode = "hard"
         color = arcade.csscolor.RED
         light = Light(x, y, radius, color, mode)
         self.light_layer.add(light)
@@ -163,7 +167,7 @@ class MyGame(arcade.Window):
         x = 750
         y = 150
         radius = 100
-        mode = 'hard'
+        mode = "hard"
         color = arcade.csscolor.GREEN
         light = Light(x, y, radius, color, mode)
         self.light_layer.add(light)
@@ -171,7 +175,7 @@ class MyGame(arcade.Window):
         x = 850
         y = 150
         radius = 100
-        mode = 'hard'
+        mode = "hard"
         color = arcade.csscolor.BLUE
         light = Light(x, y, radius, color, mode)
         self.light_layer.add(light)
@@ -181,12 +185,14 @@ class MyGame(arcade.Window):
         # We'll only add it to the light layer when the player turns the light
         # on. We start with the light off.
         radius = 150
-        mode = 'soft'
+        mode = "soft"
         color = arcade.csscolor.WHITE
         self.player_light = Light(0, 0, radius, color, mode)
 
         # Create the physics engine
-        self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.wall_list)
+        self.physics_engine = arcade.PhysicsEngineSimple(
+            self.player_sprite, self.wall_list
+        )
 
         # Set the viewport boundaries
         # These numbers set where we have 'scrolled' to.
@@ -211,9 +217,13 @@ class MyGame(arcade.Window):
         self.light_layer.draw(ambient_color=AMBIENT_COLOR)
 
         # Now draw anything that should NOT be affected by lighting.
-        arcade.draw_text("Press SPACE to turn character light on/off.",
-                         10 + self.view_left, 10 + self.view_bottom,
-                         arcade.color.WHITE, 20)
+        arcade.draw_text(
+            "Press SPACE to turn character light on/off.",
+            10 + self.view_left,
+            10 + self.view_bottom,
+            arcade.color.WHITE,
+            20,
+        )
 
     def on_resize(self, width, height):
         """ User resizes the screen. """
@@ -283,10 +293,12 @@ class MyGame(arcade.Window):
         self.view_left = int(self.view_left)
         self.view_bottom = int(self.view_bottom)
 
-        arcade.set_viewport(self.view_left,
-                            self.width + self.view_left,
-                            self.view_bottom,
-                            self.height + self.view_bottom)
+        arcade.set_viewport(
+            self.view_left,
+            self.width + self.view_left,
+            self.view_bottom,
+            self.height + self.view_bottom,
+        )
 
     def on_update(self, delta_time):
         """ Movement and game logic """

@@ -11,7 +11,13 @@ from .program import Program
 if TYPE_CHECKING:  # handle import cycle caused by type hinting
     from arcade.gl import Context
 
-index_types = [None, gl.GL_UNSIGNED_BYTE, gl.GL_UNSIGNED_SHORT, None, gl.GL_UNSIGNED_INT]
+index_types = [
+    None,
+    gl.GL_UNSIGNED_BYTE,
+    gl.GL_UNSIGNED_SHORT,
+    None,
+    gl.GL_UNSIGNED_INT,
+]
 
 
 class VertexArray:
@@ -89,7 +95,7 @@ class VertexArray:
     def num_vertices(self) -> int:
         """
         The number of vertices
-        
+
         :type: int
         """
         return self._num_vertices
@@ -198,7 +204,13 @@ class VertexArray:
         """
         gl.glBindVertexArray(self.glo)
         if self._ibo is not None:
-            gl.glDrawElementsInstanced(mode, vertices, self._index_element_type, first * self._index_element_size, instances)
+            gl.glDrawElementsInstanced(
+                mode,
+                vertices,
+                self._index_element_type,
+                first * self._index_element_size,
+                instances,
+            )
         else:
             gl.glDrawArraysInstanced(mode, first, vertices, instances)
 
@@ -213,7 +225,7 @@ class VertexArray:
         buffer_offset=0,
     ):
         """Run a transform feedback.
-        
+
         :param Buffer buffer: The buffer to write the output
         :param gl.GLenum mode: The input primitive mode
         :param gl.GLenum output:mode: The output primitive mode
@@ -240,9 +252,7 @@ class VertexArray:
                 buffer.size - buffer_offset,
             )
         else:
-            gl.glBindBufferBase(
-                gl.GL_TRANSFORM_FEEDBACK_BUFFER, 0, buffer.glo
-            )
+            gl.glBindBufferBase(gl.GL_TRANSFORM_FEEDBACK_BUFFER, 0, buffer.glo)
 
         gl.glBeginTransformFeedback(output_mode)
 
@@ -441,7 +451,11 @@ class Geometry:
         # print(f"Generating vao for key {program.attribute_key}")
 
         vao = VertexArray(
-            self._ctx, program, self._content, index_buffer=self._index_buffer, index_element_size=self._index_element_size,
+            self._ctx,
+            program,
+            self._content,
+            index_buffer=self._index_buffer,
+            index_element_size=self._index_element_size,
         )
         self._vao_cache[program.attribute_key] = vao
         return vao

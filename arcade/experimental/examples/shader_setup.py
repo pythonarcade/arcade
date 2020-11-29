@@ -42,10 +42,12 @@ class ShaderSetup(arcade.Window):
                 vec2 uv = v_uv + normalize(pos) + sin(length(pos) * 10 - time);
                 out_color = texture(background, uv);
             }
-            """
+            """,
         )
         self.quad = geometry.screen_rectangle(-1, -1, 2, 2)
-        image = Image.open(resolve_resource_path(":resources:images/backgrounds/abstract_1.jpg")).convert("RGBA")
+        image = Image.open(
+            resolve_resource_path(":resources:images/backgrounds/abstract_1.jpg")
+        ).convert("RGBA")
         image = image.transpose(Image.FLIP_TOP_BOTTOM)
         self.texture = self.ctx.texture(image.size, components=4, data=image.tobytes())
 

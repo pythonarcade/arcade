@@ -9,7 +9,6 @@ SCREEN_TITLE = "Basic Renderer"
 
 
 class MyGame(arcade.Window):
-
     def __init__(self, width, height, title):
         super().__init__(width, height, title)
         # vsync must be off when measuring rendering calls
@@ -24,12 +23,14 @@ class MyGame(arcade.Window):
         r = int(math.sqrt(num_sprites))
         for y in range(r):
             for x in range(r):
-                self.sprites.append(arcade.Sprite(
-                    arcade.resources.image_box_crate,
-                    scale=sprite_scale,
-                    center_x=128 * sprite_scale * x,
-                    center_y=128 * sprite_scale * y,
-                ))
+                self.sprites.append(
+                    arcade.Sprite(
+                        arcade.resources.image_box_crate,
+                        scale=sprite_scale,
+                        center_x=128 * sprite_scale * x,
+                        center_y=128 * sprite_scale * y,
+                    )
+                )
         self.sprites.draw()  # Force the list to build
 
         self.sprites.program = self.ctx.sprite_list_program_no_cull
@@ -51,7 +52,9 @@ class MyGame(arcade.Window):
 
         if self.frames % self.frame_step == 0:
             print(f"--- Stats over {self.frame_step} frames")
-            print(f"Time elapsed       : {self.time_elapsed_total / 1_000_000_000} seconds")
+            print(
+                f"Time elapsed       : {self.time_elapsed_total / 1_000_000_000} seconds"
+            )
             print(f"Samples passed     : {self.query.samples_passed}")
             print(f"Primitives created : {self.query.primitives_generated}")
             self.time_elapsed_total = 0

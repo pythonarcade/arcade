@@ -14,7 +14,6 @@ SCREEN_TITLE = "Bezier Curve Tessellation"
 
 
 class MyGame(arcade.Window):
-
     def __init__(self, width, height, title):
         """
         Set up the application.
@@ -33,7 +32,7 @@ class MyGame(arcade.Window):
                 gl_Position = vec4(pos, 0.0, 1.0);
             }
             """,
-           tess_control_shader="""
+            tess_control_shader="""
             #version 400 core
 
             uniform float time;
@@ -78,7 +77,7 @@ class MyGame(arcade.Window):
             void main() {
                 frag_color = vec4(1.0);
             }
-            """
+            """,
         )
 
         # We are processing patches of 4 vertices
@@ -88,19 +87,19 @@ class MyGame(arcade.Window):
             "f",
             # x, y
             [
-                -1.0, 0.0,
-                -0.5, 1.0,
-                0.5, -1.0,
-                1.0, 0.0,
-            ]
+                -1.0,
+                0.0,
+                -0.5,
+                1.0,
+                0.5,
+                -1.0,
+                1.0,
+                0.0,
+            ],
         )
-        self.geometry = self.ctx.geometry([
-            BufferDescription(
-                self.ctx.buffer(data=vertices),
-                "2f",
-                ["in_vert"]
-            )
-        ])
+        self.geometry = self.ctx.geometry(
+            [BufferDescription(self.ctx.buffer(data=vertices), "2f", ["in_vert"])]
+        )
 
     def on_draw(self):
         self.clear()

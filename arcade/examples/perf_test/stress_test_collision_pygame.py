@@ -59,8 +59,8 @@ class Coin(pygame.sprite.Sprite):
     """
 
     def __init__(self):
-        """ Constructor. Pass in the color of the block,
-        and its x and y position. """
+        """Constructor. Pass in the color of the block,
+        and its x and y position."""
         # Call the parent class (Sprite) constructor
         super().__init__()
 
@@ -68,8 +68,13 @@ class Coin(pygame.sprite.Sprite):
         # This could also be an image loaded from the disk.
         image = pygame.image.load("../../resources/images/items/coinGold.png")
         rect = image.get_rect()
-        image = pygame.transform.scale(image,
-                                       (int(rect.width * SPRITE_SCALING_COIN), int(rect.height * SPRITE_SCALING_COIN)))
+        image = pygame.transform.scale(
+            image,
+            (
+                int(rect.width * SPRITE_SCALING_COIN),
+                int(rect.height * SPRITE_SCALING_COIN),
+            ),
+        )
         self.image = image.convert()
         self.image.set_colorkey(BLACK)
 
@@ -87,17 +92,24 @@ class Player(pygame.sprite.Sprite):
     """
 
     def __init__(self):
-        """ Constructor. Pass in the color of the block,
-        and its x and y position. """
+        """Constructor. Pass in the color of the block,
+        and its x and y position."""
         # Call the parent class (Sprite) constructor
         super().__init__()
 
         # Create an image of the block, and fill it with a color.
         # This could also be an image loaded from the disk.
-        image = pygame.image.load("../../resources/images/animated_characters/female_person/femalePerson_idle.png")
+        image = pygame.image.load(
+            "../../resources/images/animated_characters/female_person/femalePerson_idle.png"
+        )
         rect = image.get_rect()
-        image = pygame.transform.scale(image, (
-            int(rect.width * SPRITE_SCALING_PLAYER), int(rect.height * SPRITE_SCALING_PLAYER)))
+        image = pygame.transform.scale(
+            image,
+            (
+                int(rect.width * SPRITE_SCALING_PLAYER),
+                int(rect.height * SPRITE_SCALING_PLAYER),
+            ),
+        )
         self.image = image.convert()
         self.image.set_colorkey(BLACK)
 
@@ -162,7 +174,7 @@ class MyGame:
 
         self.player_list.add(self.player)
 
-        self.font = pygame.font.SysFont('Calibri', 25, True, False)
+        self.font = pygame.font.SysFont("Calibri", 25, True, False)
 
         # Open file to save timings
         self.results_file = open(RESULTS_FILE, "w")
@@ -258,8 +270,10 @@ class MyGame:
                 if total_program_time % 2 == 1:
 
                     # Take timings
-                    output = f"{total_program_time}, {len(self.coin_list)}, {self.fps.get_fps():.1f}, " \
-                             f"{self.processing_time:.4f}, {self.draw_time:.4f}\n"
+                    output = (
+                        f"{total_program_time}, {len(self.coin_list)}, {self.fps.get_fps():.1f}, "
+                        f"{self.processing_time:.4f}, {self.draw_time:.4f}\n"
+                    )
                     print(output, end="")
                     self.results_file.write(output)
 

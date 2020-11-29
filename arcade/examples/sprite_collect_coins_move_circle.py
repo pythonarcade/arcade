@@ -22,7 +22,6 @@ SCREEN_TITLE = "Sprite Collect Coins Moving in Circles Example"
 
 
 class Coin(arcade.Sprite):
-
     def __init__(self, filename, sprite_scaling):
         """ Constructor. """
         # Call the parent class (Sprite) constructor
@@ -45,10 +44,12 @@ class Coin(arcade.Sprite):
 
         """ Update the ball's position. """
         # Calculate a new x, y
-        self.center_x = self.circle_radius * math.sin(self.circle_angle) \
-            + self.circle_center_x
-        self.center_y = self.circle_radius * math.cos(self.circle_angle) \
-            + self.circle_center_y
+        self.center_x = (
+            self.circle_radius * math.sin(self.circle_angle) + self.circle_center_x
+        )
+        self.center_y = (
+            self.circle_radius * math.cos(self.circle_angle) + self.circle_center_y
+        )
 
         # Increase the angle in prep for the next round.
         self.circle_angle += self.circle_speed
@@ -86,7 +87,10 @@ class MyGame(arcade.Window):
         # Set up the player
         self.score = 0
         # Character image from kenney.nl
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", SPRITE_SCALING)
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            SPRITE_SCALING,
+        )
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 70
         self.all_sprites_list.append(self.player_sprite)
@@ -141,8 +145,9 @@ class MyGame(arcade.Window):
         self.all_sprites_list.update()
 
         # Generate a list of all sprites that collided with the player.
-        hit_list = arcade.check_for_collision_with_list(self.player_sprite,
-                                                        self.coin_list)
+        hit_list = arcade.check_for_collision_with_list(
+            self.player_sprite, self.coin_list
+        )
 
         # Loop through each colliding sprite, remove it, and add to the score.
         for coin in hit_list:

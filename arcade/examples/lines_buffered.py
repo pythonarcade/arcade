@@ -25,15 +25,17 @@ class MyGame(arcade.Window):
         super().__init__(width, height, title)
 
         self.shape_list = arcade.ShapeElementList()
-        point_list = ((0, 50),
-                      (10, 10),
-                      (50, 0),
-                      (10, -10),
-                      (0, -50),
-                      (-10, -10),
-                      (-50, 0),
-                      (-10, 10),
-                      (0, 50))
+        point_list = (
+            (0, 50),
+            (10, 10),
+            (50, 0),
+            (10, -10),
+            (0, -50),
+            (-10, -10),
+            (-50, 0),
+            (-10, 10),
+            (0, 50),
+        )
         colors = [
             getattr(arcade.color, color)
             for color in dir(arcade.color)

@@ -16,7 +16,7 @@ file_path = os.path.dirname(os.path.abspath(__file__))
 os.chdir(file_path)
 
 # Try to auto-detect the user's language and translate to it
-gettext.install('text_loc_example', localedir='text_loc_example_locale')
+gettext.install("text_loc_example", localedir="text_loc_example_locale")
 
 SCREEN_WIDTH = 500
 SCREEN_HEIGHT = 500
@@ -56,7 +56,11 @@ class MyGame(arcade.Window):
         start_y = 450
         arcade.draw_point(start_x, start_y, arcade.color.BLUE, 5)
         arcade.draw_text(
-            _("Simple line of text in 12 point"), start_x, start_y, arcade.color.BLACK, 12
+            _("Simple line of text in 12 point"),
+            start_x,
+            start_y,
+            arcade.color.BLACK,
+            12,
         )
 
 
@@ -67,4 +71,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

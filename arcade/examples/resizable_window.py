@@ -42,14 +42,18 @@ class MyGame(arcade.Window):
         i = 0
         for y in range(START, END, STEP):
             arcade.draw_point(0, y, arcade.color.BLUE, 5)
-            arcade.draw_text(f"{y}", 5, y, arcade.color.BLACK, 12, anchor_x="left", anchor_y="bottom")
+            arcade.draw_text(
+                f"{y}", 5, y, arcade.color.BLACK, 12, anchor_x="left", anchor_y="bottom"
+            )
             i += 1
 
         # Draw the x labels.
         i = 1
         for x in range(START + STEP, END, STEP):
             arcade.draw_point(x, 0, arcade.color.BLUE, 5)
-            arcade.draw_text(f"{x}", x, 5, arcade.color.BLACK, 12, anchor_x="left", anchor_y="bottom")
+            arcade.draw_text(
+                f"{x}", x, 5, arcade.color.BLACK, 12, anchor_x="left", anchor_y="bottom"
+            )
             i += 1
 
 

@@ -11,12 +11,7 @@ import pyglet
 import numpy as np
 
 from numbers import Number
-from typing import (
-    Callable,
-    cast,
-    Tuple,
-    Union
-)
+from typing import Callable, cast, Tuple, Union
 from arcade.arcade_types import Color
 
 _window = None
@@ -47,15 +42,7 @@ def get_projection():
     return get_window().ctx.projection_2d_matrix
 
 
-def create_orthogonal_projection(
-        left,
-        right,
-        bottom,
-        top,
-        near,
-        far,
-        dtype=None
-):
+def create_orthogonal_projection(left, right, bottom, top, near, far, dtype=None):
     """
     Creates an orthogonal projection matrix. Used internally with the
     OpenGL shaders.
@@ -79,19 +66,22 @@ def create_orthogonal_projection(
     tmb = top - bottom
     fmn = far - near
 
-    a = 2. / rml
-    b = 2. / tmb
-    c = -2. / fmn
+    a = 2.0 / rml
+    b = 2.0 / tmb
+    c = -2.0 / fmn
     tx = -(right + left) / rml
     ty = -(top + bottom) / tmb
     tz = -(far + near) / fmn
 
-    return np.array((
-        (a, 0., 0., 0.),
-        (0., b, 0., 0.),
-        (0., 0., c, 0.),
-        (tx, ty, tz, 1.),
-    ), dtype=dtype or 'f4')
+    return np.array(
+        (
+            (a, 0.0, 0.0, 0.0),
+            (0.0, b, 0.0, 0.0),
+            (0.0, 0.0, c, 0.0),
+            (tx, ty, tz, 1.0),
+        ),
+        dtype=dtype or "f4",
+    )
 
 
 def pause(seconds: Number):
@@ -110,7 +100,9 @@ def get_window() -> pyglet.window.Window:
     :return: Handle to the current window.
     """
     if _window is None:
-        raise RuntimeError("No window is active. Use set_window() to set an active window")
+        raise RuntimeError(
+            "No window is active. Use set_window() to set an active window"
+        )
 
     return _window
 
@@ -226,11 +218,11 @@ def run():
     After the window has been set up, and the event hooks are in place, this is usually one of the last
     commands on the main program.
     """
-    if 'ARCADE_TEST' in os.environ and os.environ['ARCADE_TEST'].upper() == "TRUE":
+    if "ARCADE_TEST" in os.environ and os.environ["ARCADE_TEST"].upper() == "TRUE":
         # print("Testing!!!")
         window = get_window()
         if window:
-            window.on_update(1/60)
+            window.on_update(1 / 60)
             window.on_draw()
     else:
         pyglet.app.run()

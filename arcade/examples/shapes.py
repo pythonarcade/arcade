@@ -35,8 +35,10 @@ NUMBER_OF_SHAPES = 500
 
 class Shape:
     """ Generic base shape class """
-    def __init__(self, x, y, width, height, angle, delta_x, delta_y,
-                 delta_angle, color):
+
+    def __init__(
+        self, x, y, width, height, angle, delta_x, delta_y, delta_angle, color
+    ):
         self.x = x
         self.y = y
         self.width = width
@@ -60,25 +62,26 @@ class Shape:
         if self.y > SCREEN_HEIGHT and self.delta_y > 0:
             self.delta_y *= -1
 
-class Ellipse(Shape):
 
+class Ellipse(Shape):
     def draw(self):
-        arcade.draw_ellipse_filled(self.x, self.y, self.width, self.height,
-                                   self.color, self.angle)
+        arcade.draw_ellipse_filled(
+            self.x, self.y, self.width, self.height, self.color, self.angle
+        )
 
 
 class Rectangle(Shape):
-
     def draw(self):
-        arcade.draw_rectangle_filled(self.x, self.y, self.width, self.height,
-                                     self.color, self.angle)
+        arcade.draw_rectangle_filled(
+            self.x, self.y, self.width, self.height, self.color, self.angle
+        )
+
 
 class Line(Shape):
-
     def draw(self):
-        arcade.draw_line(self.x, self.y,
-                         self.x + self.width, self.y + self.height,
-                         self.color, 2)
+        arcade.draw_line(
+            self.x, self.y, self.x + self.width, self.y + self.height, self.color, 2
+        )
 
 
 class MyGame(arcade.Window):
@@ -118,14 +121,41 @@ class MyGame(arcade.Window):
             # shape_type = 2
 
             if shape_type == 0:
-                shape = Rectangle(x, y, width, height, angle, d_x, d_y,
-                                  d_angle, (red, green, blue, alpha))
+                shape = Rectangle(
+                    x,
+                    y,
+                    width,
+                    height,
+                    angle,
+                    d_x,
+                    d_y,
+                    d_angle,
+                    (red, green, blue, alpha),
+                )
             elif shape_type == 1:
-                shape = Ellipse(x, y, width, height, angle, d_x, d_y,
-                            d_angle, (red, green, blue, alpha))
+                shape = Ellipse(
+                    x,
+                    y,
+                    width,
+                    height,
+                    angle,
+                    d_x,
+                    d_y,
+                    d_angle,
+                    (red, green, blue, alpha),
+                )
             elif shape_type == 2:
-                shape = Line(x, y, width, height, angle, d_x, d_y,
-                             d_angle, (red, green, blue, alpha))
+                shape = Line(
+                    x,
+                    y,
+                    width,
+                    height,
+                    angle,
+                    d_x,
+                    d_y,
+                    d_angle,
+                    (red, green, blue, alpha),
+                )
 
             self.shape_list.append(shape)
 

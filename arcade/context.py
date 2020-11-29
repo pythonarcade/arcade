@@ -166,7 +166,13 @@ class ArcadeContext(Context):
 
         self._projection_2d = value
         self._projection_2d_matrix = arcade.create_orthogonal_projection(
-            value[0], value[1], value[2], value[3], -100, 100, dtype="f4",
+            value[0],
+            value[1],
+            value[2],
+            value[3],
+            -100,
+            100,
+            dtype="f4",
         ).flatten()
         self._projection_2d_buffer.write(self._projection_2d_matrix)
 
@@ -254,6 +260,7 @@ class ArcadeContext(Context):
         :param bool build_mipmaps: Build mipmaps for the texture
         """
         from arcade.resources import resolve_resource_path
+
         path = resolve_resource_path(path)
 
         image = Image.open(str(path))
@@ -261,7 +268,9 @@ class ArcadeContext(Context):
         if flip:
             image = image.transpose(Image.FLIP_TOP_BOTTOM)
 
-        texture = self.texture(image.size, components=4, data=image.convert("RGBA").tobytes())
+        texture = self.texture(
+            image.size, components=4, data=image.convert("RGBA").tobytes()
+        )
         image.close()
 
         if build_mipmaps:

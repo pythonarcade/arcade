@@ -34,7 +34,6 @@ SCREEN_TITLE = "Transform Feedback"
 
 
 class MyGame(arcade.Window):
-
     def __init__(self, width, height, title):
         super().__init__(width, height, title, resizable=True)
         self.time = 0
@@ -135,16 +134,24 @@ class MyGame(arcade.Window):
         )
         N = 10_000
         # Make two buffers we tranform between so we can work on the previous result
-        self.buffer_1 = self.ctx.buffer(data=array('f', self.gen_initial_data(N)))
+        self.buffer_1 = self.ctx.buffer(data=array("f", self.gen_initial_data(N)))
         self.buffer_2 = self.ctx.buffer(reserve=self.buffer_1.size)
 
         # We also need to be able to visualize both versions (draw to the screen)
-        self.vao_1 = self.ctx.geometry([BufferDescription(self.buffer_1, '2f 2x4', ['in_pos'])])
-        self.vao_2 = self.ctx.geometry([BufferDescription(self.buffer_2, '2f 2x4', ['in_pos'])])
+        self.vao_1 = self.ctx.geometry(
+            [BufferDescription(self.buffer_1, "2f 2x4", ["in_pos"])]
+        )
+        self.vao_2 = self.ctx.geometry(
+            [BufferDescription(self.buffer_2, "2f 2x4", ["in_pos"])]
+        )
 
         # We need to be able to tranform both buffers (ping-pong)
-        self.gravity_1 = self.ctx.geometry([BufferDescription(self.buffer_1, '2f 2f', ['in_pos', 'in_vel'])])
-        self.gravity_2 = self.ctx.geometry([BufferDescription(self.buffer_2, '2f 2f', ['in_pos', 'in_vel'])])
+        self.gravity_1 = self.ctx.geometry(
+            [BufferDescription(self.buffer_1, "2f 2f", ["in_pos", "in_vel"])]
+        )
+        self.gravity_2 = self.ctx.geometry(
+            [BufferDescription(self.buffer_2, "2f 2f", ["in_pos", "in_vel"])]
+        )
 
         # Set up blending states
         self.ctx.enable_only(self.ctx.BLEND)
@@ -163,7 +170,9 @@ class MyGame(arcade.Window):
 
     def on_draw(self):
         self.clear()
-        arcade.set_viewport(0, self.get_framebuffer_size()[0], 0, self.get_framebuffer_size()[1])
+        arcade.set_viewport(
+            0, self.get_framebuffer_size()[0], 0, self.get_framebuffer_size()[1]
+        )
 
         # Calculate the actual delta time and current time
         t = time.time()
@@ -171,9 +180,9 @@ class MyGame(arcade.Window):
         self.time = t
 
         # Set uniforms in the program
-        self.gravity_program['dt'] = frame_time
-        self.gravity_program['force'] = 10.0
-        self.gravity_program['gravity_pos'] = self.mouse_pos
+        self.gravity_program["dt"] = frame_time
+        self.gravity_program["force"] = 10.0
+        self.gravity_program["gravity_pos"] = self.mouse_pos
 
         # Transform data in buffer_1 into buffer_2
         self.gravity_1.transform(self.gravity_program, self.buffer_2)

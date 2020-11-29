@@ -42,6 +42,7 @@ ENEMY_MOVE_DOWN_AMOUNT = 30
 GAME_OVER = 1
 PLAY_GAME = 0
 
+
 class MyGame(arcade.Window):
     """ Main application class. """
 
@@ -84,7 +85,9 @@ class MyGame(arcade.Window):
     def setup_level_one(self):
         # Load the textures for the enemies, one facing left, one right
         self.enemy_textures = []
-        texture = arcade.load_texture(":resources:images/enemies/slimeBlue.png", mirrored=True)
+        texture = arcade.load_texture(
+            ":resources:images/enemies/slimeBlue.png", mirrored=True
+        )
         self.enemy_textures.append(texture)
         texture = arcade.load_texture(":resources:images/enemies/slimeBlue.png")
         self.enemy_textures.append(texture)
@@ -122,9 +125,19 @@ class MyGame(arcade.Window):
         shield_width_count = 20
         shield_height_count = 5
         y_start = 150
-        for x in range(x_start, x_start + shield_width_count * shield_block_width, shield_block_width):
-            for y in range(y_start, y_start + shield_height_count * shield_block_height, shield_block_height):
-                shield_sprite = arcade.SpriteSolidColor(shield_block_width, shield_block_height, arcade.color.WHITE)
+        for x in range(
+            x_start,
+            x_start + shield_width_count * shield_block_width,
+            shield_block_width,
+        ):
+            for y in range(
+                y_start,
+                y_start + shield_height_count * shield_block_height,
+                shield_block_height,
+            ):
+                shield_sprite = arcade.SpriteSolidColor(
+                    shield_block_width, shield_block_height, arcade.color.WHITE
+                )
                 shield_sprite.center_x = x
                 shield_sprite.center_y = y
                 self.shield_list.append(shield_sprite)
@@ -148,7 +161,10 @@ class MyGame(arcade.Window):
         self.score = 0
 
         # Image from kenney.nl
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", SPRITE_SCALING_PLAYER)
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            SPRITE_SCALING_PLAYER,
+        )
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 40
         self.player_list.append(self.player_sprite)
@@ -207,7 +223,9 @@ class MyGame(arcade.Window):
             arcade.play_sound(self.gun_sound)
 
             # Create a bullet
-            bullet = arcade.Sprite(":resources:images/space_shooter/laserBlue01.png", SPRITE_SCALING_LASER)
+            bullet = arcade.Sprite(
+                ":resources:images/space_shooter/laserBlue01.png", SPRITE_SCALING_LASER
+            )
 
             # The image points to the right, and we want it to point up. So
             # rotate it.
@@ -269,7 +287,10 @@ class MyGame(arcade.Window):
             # a chance to fire.
             if random.randrange(chance) == 0 and enemy.center_x not in x_spawn:
                 # Create a bullet
-                bullet = arcade.Sprite(":resources:images/space_shooter/laserRed01.png", SPRITE_SCALING_LASER)
+                bullet = arcade.Sprite(
+                    ":resources:images/space_shooter/laserRed01.png",
+                    SPRITE_SCALING_LASER,
+                )
 
                 # Angle down.
                 bullet.angle = 180
@@ -306,7 +327,9 @@ class MyGame(arcade.Window):
                 continue
 
             # See if the player got hit with a bullet
-            if arcade.check_for_collision_with_list(self.player_sprite, self.enemy_bullet_list):
+            if arcade.check_for_collision_with_list(
+                self.player_sprite, self.enemy_bullet_list
+            ):
                 self.game_state = GAME_OVER
 
             # If the bullet falls off the screen get rid of it

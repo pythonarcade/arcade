@@ -17,7 +17,7 @@ SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 600
 SCREEN_TITLE = "Sprite with Moving Platforms Example"
 SPRITE_PIXEL_SIZE = 128
-GRID_PIXEL_SIZE = (SPRITE_PIXEL_SIZE * SPRITE_SCALING)
+GRID_PIXEL_SIZE = SPRITE_PIXEL_SIZE * SPRITE_SCALING
 
 # How many pixels to keep as a minimum margin between the character
 # and the edge of the screen.
@@ -27,7 +27,7 @@ RIGHT_MARGIN = 4 * SPRITE_PIXEL_SIZE * SPRITE_SCALING
 # Physics
 MOVEMENT_SPEED = 10 * SPRITE_SCALING
 JUMP_SPEED = 28 * SPRITE_SCALING
-GRAVITY = .9 * SPRITE_SCALING
+GRAVITY = 0.9 * SPRITE_SCALING
 
 
 class MyGame(arcade.Window):
@@ -73,7 +73,10 @@ class MyGame(arcade.Window):
         self.player_list = arcade.SpriteList()
 
         # Set up the player
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", SPRITE_SCALING)
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            SPRITE_SCALING,
+        )
         self.player_sprite.center_x = 2 * GRID_PIXEL_SIZE
         self.player_sprite.center_y = 3 * GRID_PIXEL_SIZE
         self.player_list.append(self.player_sprite)
@@ -134,10 +137,9 @@ class MyGame(arcade.Window):
         self.all_wall_list.append(wall)
         self.moving_wall_list.append(wall)
 
-        self.physics_engine = \
-            arcade.PhysicsEnginePlatformer(self.player_sprite,
-                                           self.all_wall_list,
-                                           gravity_constant=GRAVITY)
+        self.physics_engine = arcade.PhysicsEnginePlatformer(
+            self.player_sprite, self.all_wall_list, gravity_constant=GRAVITY
+        )
 
         # Set the background color
         arcade.set_background_color(arcade.color.AMAZON)
@@ -167,8 +169,9 @@ class MyGame(arcade.Window):
         # scroll the text too.
         distance = self.player_sprite.right
         output = f"Distance: {distance}"
-        arcade.draw_text(output, self.view_left + 10, self.view_bottom + 20,
-                         arcade.color.WHITE, 14)
+        arcade.draw_text(
+            output, self.view_left + 10, self.view_bottom + 20, arcade.color.WHITE, 14
+        )
 
     def on_key_press(self, key, modifiers):
         """
@@ -227,10 +230,12 @@ class MyGame(arcade.Window):
 
         # If we need to scroll, go ahead and do it.
         if changed:
-            arcade.set_viewport(self.view_left,
-                                SCREEN_WIDTH + self.view_left,
-                                self.view_bottom,
-                                SCREEN_HEIGHT + self.view_bottom)
+            arcade.set_viewport(
+                self.view_left,
+                SCREEN_WIDTH + self.view_left,
+                self.view_bottom,
+                SCREEN_HEIGHT + self.view_bottom,
+            )
 
 
 def main():

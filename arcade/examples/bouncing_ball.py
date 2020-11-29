@@ -34,8 +34,7 @@ def draw(_delta_time):
     arcade.start_render()
 
     # Draw our rectangle
-    arcade.draw_circle_filled(draw.x, draw.y, CIRCLE_RADIUS,
-                              arcade.color.BLACK)
+    arcade.draw_circle_filled(draw.x, draw.y, CIRCLE_RADIUS, arcade.color.BLACK)
 
     # Modify rectangles position based on the delta
     # vector. (Delta means change. You can also think
@@ -72,10 +71,10 @@ def draw(_delta_time):
 #
 # Later on, we'll use 'classes' to track position and velocity for multiple
 # objects.
-draw.x = CIRCLE_RADIUS                  # type: ignore # dynamic attribute on function obj  # Initial x position
+draw.x = CIRCLE_RADIUS  # type: ignore # dynamic attribute on function obj  # Initial x position
 draw.y = SCREEN_HEIGHT - CIRCLE_RADIUS  # type: ignore # dynamic attribute on function obj  # Initial x position
-draw.delta_x = 2                        # type: ignore # dynamic attribute on function obj  # Initial x position
-draw.delta_y = 0                        # type: ignore # dynamic attribute on function obj  # Initial x position
+draw.delta_x = 2  # type: ignore # dynamic attribute on function obj  # Initial x position
+draw.delta_y = 0  # type: ignore # dynamic attribute on function obj  # Initial x position
 
 
 def main():

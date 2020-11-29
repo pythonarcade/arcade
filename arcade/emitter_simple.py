@@ -12,14 +12,15 @@ from arcade.particle import FilenameOrTexture
 
 
 def make_burst_emitter(
-        center_xy: Point,
-        filenames_and_textures: Sequence[FilenameOrTexture],
-        particle_count: int,
-        particle_speed: float,
-        particle_lifetime_min: float,
-        particle_lifetime_max: float,
-        particle_scale: float = 1.0,
-        fade_particles: bool = True):
+    center_xy: Point,
+    filenames_and_textures: Sequence[FilenameOrTexture],
+    particle_count: int,
+    particle_speed: float,
+    particle_lifetime_min: float,
+    particle_lifetime_max: float,
+    particle_scale: float = 1.0,
+    fade_particles: bool = True,
+):
     """Returns an emitter that emits all of its particles at once"""
     particle_factory: Type[arcade.LifetimeParticle] = arcade.LifetimeParticle
     if fade_particles:
@@ -31,21 +32,22 @@ def make_burst_emitter(
             filename_or_texture=random.choice(filenames_and_textures),
             change_xy=arcade.rand_in_circle((0.0, 0.0), particle_speed),
             lifetime=random.uniform(particle_lifetime_min, particle_lifetime_max),
-            scale=particle_scale
-        )
+            scale=particle_scale,
+        ),
     )
 
 
 def make_interval_emitter(
-        center_xy: Point,
-        filenames_and_textures: Sequence[FilenameOrTexture],
-        emit_interval: float,
-        emit_duration: float,
-        particle_speed: float,
-        particle_lifetime_min: float,
-        particle_lifetime_max: float,
-        particle_scale: float = 1.0,
-        fade_particles: bool = True):
+    center_xy: Point,
+    filenames_and_textures: Sequence[FilenameOrTexture],
+    emit_interval: float,
+    emit_duration: float,
+    particle_speed: float,
+    particle_lifetime_min: float,
+    particle_lifetime_max: float,
+    particle_scale: float = 1.0,
+    fade_particles: bool = True,
+):
     """Returns an emitter that emits its particles at a constant rate for a given amount of time"""
     particle_factory: Type[arcade.LifetimeParticle] = arcade.LifetimeParticle
     if fade_particles:
@@ -57,6 +59,6 @@ def make_interval_emitter(
             filename_or_texture=random.choice(filenames_and_textures),
             change_xy=arcade.rand_on_circle((0.0, 0.0), particle_speed),
             lifetime=random.uniform(particle_lifetime_min, particle_lifetime_max),
-            scale=particle_scale
-        )
+            scale=particle_scale,
+        ),
     )
