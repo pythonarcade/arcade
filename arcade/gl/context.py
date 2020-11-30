@@ -182,7 +182,7 @@ class Context:
     def window(self) -> Window:
         """
         The window this context belongs to.
-        
+
         :type: ``pyglet.Window``
         """
         return self._window_ref()
@@ -191,7 +191,7 @@ class Context:
     def screen(self) -> Framebuffer:
         """
         The framebuffer for the window.
-        
+
         :type: :py:class:`~arcade.Framebuffer`
         """
         return self._screen
@@ -266,7 +266,7 @@ class Context:
             # Make sure only blending is enabled
             ctx.enable_only(ctx.BLEND)
             # Make sure only depth test and culling is enabled
-            ctx.enable_only(ctx.DEPTH_TEST, ctx.CULL_FACE)        
+            ctx.enable_only(ctx.DEPTH_TEST, ctx.CULL_FACE)
         """
         self._flags = set(args)
 
@@ -417,7 +417,7 @@ class Context:
         self,
         *,
         color_attachments: Union[Texture, List[Texture]] = None,
-        depth_attachment: Texture = None
+        depth_attachment: Texture = None,
     ) -> Framebuffer:
         """Create a Framebuffer.
 
@@ -438,7 +438,7 @@ class Context:
         data: Any = None,
         wrap_x: gl.GLenum = None,
         wrap_y: gl.GLenum = None,
-        filter: Tuple[gl.GLenum, gl.GLenum] = None
+        filter: Tuple[gl.GLenum, gl.GLenum] = None,
     ) -> Texture:
         """Create a 2D Texture.
 
@@ -492,7 +492,13 @@ class Context:
         :param int mode: The default draw mode (optional)
         :param int index_element_size: Byte size of the index buffer type. Can be 1, 2 or 4 (8, 16 or 32 bit unsigned integer)
         """
-        return Geometry(self, content, index_buffer=index_buffer, mode=mode, index_element_size=index_element_size)
+        return Geometry(
+            self,
+            content,
+            index_buffer=index_buffer,
+            mode=mode,
+            index_element_size=index_element_size,
+        )
 
     def program(
         self,
@@ -502,7 +508,7 @@ class Context:
         geometry_shader: str = None,
         tess_control_shader: str = None,
         tess_evaluation_shader: str = None,
-        defines: Dict[str, str] = None
+        defines: Dict[str, str] = None,
     ) -> Program:
         """Create a :py:class:`~arcade.gl.Program` given the vertex, fragment and geometry shader.
 

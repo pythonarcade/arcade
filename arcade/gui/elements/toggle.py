@@ -14,18 +14,11 @@ class UIAbstractToggle(UIClickable):
     _false_texture: Optional[Texture]
 
     def __init__(
-            self,
-            value: bool = True,
-            center_x: int = 0,
-            center_y: int = 0,
-            **kwargs):
-        super().__init__(
-            center_x=center_x,
-            center_y=center_y,
-            **kwargs
-        )
+        self, value: bool = True, center_x: int = 0, center_y: int = 0, **kwargs
+    ):
+        super().__init__(center_x=center_x, center_y=center_y, **kwargs)
 
-        self.register_event_type('on_toggle')
+        self.register_event_type("on_toggle")
 
         self._value = value
 
@@ -39,7 +32,7 @@ class UIAbstractToggle(UIClickable):
     @value.setter
     def value(self, value: bool):
         self._value = value
-        self.dispatch_event('on_toggle', value)
+        self.dispatch_event("on_toggle", value)
         self.set_proper_texture()
 
     def set_proper_texture(self):
@@ -75,15 +68,17 @@ class UIImageToggle(UIAbstractToggle):
     Switches between two images. Useful for switches like fullscreen or sound mute/unmute.
     """
 
-    def __init__(self,
-                 true_texture: Texture,
-                 false_texture: Texture,
-                 center_x: int = 0,
-                 center_y: int = 0,
-                 value: bool = True,
-                 id: Optional[str] = None,
-                 style: UIStyle = None,
-                 **kwargs):
+    def __init__(
+        self,
+        true_texture: Texture,
+        false_texture: Texture,
+        center_x: int = 0,
+        center_y: int = 0,
+        value: bool = True,
+        id: Optional[str] = None,
+        style: UIStyle = None,
+        **kwargs,
+    ):
         """
         :param true_texture: displayed if value is True
         :param false_texture: displayed if value is False
@@ -100,8 +95,9 @@ class UIImageToggle(UIAbstractToggle):
             value=value,
             id=id,
             style=style,
-            **kwargs)
-        self.style_classes.append('image-toggle')
+            **kwargs,
+        )
+        self.style_classes.append("image-toggle")
 
         self._true_texture = true_texture
         self._false_texture = false_texture
@@ -123,14 +119,16 @@ class UIToggle(UIAbstractToggle):
     * bg_color_false: color of the background when value is `false`
     """
 
-    def __init__(self,
-                 center_x: int = 0,
-                 center_y: int = 0,
-                 height: int = 0,
-                 value: bool = True,
-                 id: Optional[str] = None,
-                 style: UIStyle = None,
-                 **kwargs):
+    def __init__(
+        self,
+        center_x: int = 0,
+        center_y: int = 0,
+        height: int = 0,
+        value: bool = True,
+        id: Optional[str] = None,
+        style: UIStyle = None,
+        **kwargs,
+    ):
         """
         :param center_x: center X of element
         :param center_y: center y of element
@@ -146,9 +144,9 @@ class UIToggle(UIAbstractToggle):
             value=value,
             id=id,
             style=style,
-            **kwargs
+            **kwargs,
         )
-        self.style_classes.append('toggle')
+        self.style_classes.append("toggle")
         self._height = height
 
         self.render()
@@ -156,7 +154,7 @@ class UIToggle(UIAbstractToggle):
     @staticmethod
     def _round_corner(radius, fill):
         """Draw a round corner"""
-        corner = Image.new('RGBA', (radius, radius), (0, 0, 0, 0))
+        corner = Image.new("RGBA", (radius, radius), (0, 0, 0, 0))
         draw = ImageDraw.Draw(corner)
         draw.pieslice((0, 0, radius * 2, radius * 2), 180, 270, fill=fill)
         return corner
@@ -165,10 +163,12 @@ class UIToggle(UIAbstractToggle):
     def _round_rectangle(size, radius, fill):
         """Draw a rounded rectangle"""
         width, height = size
-        rectangle = Image.new('RGBA', size, fill)
+        rectangle = Image.new("RGBA", size, fill)
         corner = UIToggle._round_corner(radius, fill)
         rectangle.paste(corner, (0, 0))
-        rectangle.paste(corner.rotate(90), (0, height - radius))  # Rotate the corner and paste it
+        rectangle.paste(
+            corner.rotate(90), (0, height - radius)
+        )  # Rotate the corner and paste it
         rectangle.paste(corner.rotate(180), (width - radius, height - radius))
         rectangle.paste(corner.rotate(270), (width - radius, 0))
         return rectangle
@@ -196,17 +196,21 @@ class UIToggle(UIAbstractToggle):
         # False
         switch = UIToggle._round_rectangle((width, height), border_radius, bg_color)
         d = ImageDraw.Draw(switch)
-        d.ellipse((pos_x - radius, pos_y - radius, pos_x + radius, pos_y + radius), fill=color)
-        switch = switch.resize((switch.width // SCALE, switch.height // SCALE), resample=Image.LANCZOS)
+        d.ellipse(
+            (pos_x - radius, pos_y - radius, pos_x + radius, pos_y + radius), fill=color
+        )
+        switch = switch.resize(
+            (switch.width // SCALE, switch.height // SCALE), resample=Image.LANCZOS
+        )
         return Texture(name=str(uuid4()), image=switch)
 
     def render(self):
-        color_true = self.style_attr('color_true')
-        bg_color_true = self.style_attr('bg_color_true')
+        color_true = self.style_attr("color_true")
+        bg_color_true = self.style_attr("bg_color_true")
         self._true_texture = self._render_toggle(True, color_true, bg_color_true)
 
-        color_false = self.style_attr('color_false')
-        bg_color_false = self.style_attr('bg_color_false')
+        color_false = self.style_attr("color_false")
+        bg_color_false = self.style_attr("bg_color_false")
         self._false_texture = self._render_toggle(False, color_false, bg_color_false)
 
         self.set_proper_texture()

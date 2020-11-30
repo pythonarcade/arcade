@@ -129,7 +129,7 @@ class Program:
     def ctx(self) -> "Context":
         """
         The context this program belongs to
-        
+
         :type: :py:class:`arcade.gl.Context`
         """
         return self._ctx
@@ -154,7 +154,7 @@ class Program:
     def out_attributes(self) -> List[str]:
         """
         Out attributes names used in transform feedback
-        
+
         :type: list of str
         """
         return self._out_attributes

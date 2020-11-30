@@ -5,6 +5,7 @@ Functions used to support drawing. No Pyglet/OpenGL here.
 import math
 
 import pymunkoptions
+
 pymunkoptions.options["debug"] = False
 import pymunk
 
@@ -18,9 +19,9 @@ from arcade import Color
 from arcade import RGBA
 
 
-def get_points_for_thick_line(start_x: float, start_y: float,
-                              end_x: float, end_y: float,
-                              line_width: float):
+def get_points_for_thick_line(
+    start_x: float, start_y: float, end_x: float, end_y: float, line_width: float
+):
     """
     Function used internally for Arcade. OpenGL draws triangles only, so a think
     line must be two triangles that make up a rectangle. This calculates those
@@ -93,8 +94,9 @@ def make_transparent_color(color: Color, transparency: float):
     return color[0], color[1], color[2], transparency
 
 
-def rotate_point(x: float, y: float, cx: float, cy: float,
-                 angle_degrees: float) -> List[float]:
+def rotate_point(
+    x: float, y: float, cx: float, cy: float, angle_degrees: float
+) -> List[float]:
     """
     Rotate a point around a center.
 
@@ -123,6 +125,7 @@ def rotate_point(x: float, y: float, cx: float, cy: float,
 
     return [x, y]
 
+
 def calculate_hit_box_points_simple(image):
     """
     Given an image, this returns points that make up a hit box around it. Attempts
@@ -140,7 +143,9 @@ def calculate_hit_box_points_simple(image):
             pos = (left_border, row)
             pixel = image.getpixel(pos)
             if type(pixel) is int or len(pixel) != 4:
-                raise TypeError("Error, calculate_points called on image not in RGBA format")
+                raise TypeError(
+                    "Error, calculate_points called on image not in RGBA format"
+                )
             else:
                 if pixel[3] != 0:
                     good = False
@@ -215,7 +220,9 @@ def calculate_hit_box_points_simple(image):
     top_left_corner_offset = _check_corner_offset(left_border, top_border, 1, 1)
     top_right_corner_offset = _check_corner_offset(right_border, top_border, -1, 1)
     bottom_left_corner_offset = _check_corner_offset(left_border, bottom_border, 1, -1)
-    bottom_right_corner_offset = _check_corner_offset(right_border, bottom_border, -1, -1)
+    bottom_right_corner_offset = _check_corner_offset(
+        right_border, bottom_border, -1, -1
+    )
 
     p1 = left_border + top_left_corner_offset, top_border
     p2 = (right_border + 1) - top_right_corner_offset, top_border
@@ -252,6 +259,7 @@ def calculate_hit_box_points_simple(image):
 
     return result
 
+
 def calculate_hit_box_points_detailed(image: Image, hit_box_detail: float = 4.5):
     """
     Given an image, this returns points that make up a hit box around it. Attempts
@@ -267,10 +275,12 @@ def calculate_hit_box_points_detailed(image: Image, hit_box_detail: float = 4.5)
 
     def sample_func(sample_point):
         """ Method used to sample image. """
-        if sample_point[0] < 0 \
-                or sample_point[1] < 0 \
-                or sample_point[0] >= image.width \
-                or sample_point[1] >= image.height:
+        if (
+            sample_point[0] < 0
+            or sample_point[1] < 0
+            or sample_point[0] >= image.width
+            or sample_point[1] >= image.height
+        ):
             return 0
 
         point_tuple = sample_point[0], sample_point[1]
@@ -312,11 +322,8 @@ def calculate_hit_box_points_detailed(image: Image, hit_box_detail: float = 4.5)
 
     # Run the trace
     pymunk.autogeometry.march_soft(
-        logo_bb,
-        horizontal_samples, vertical_samples,
-        99,
-        _segment_func,
-        sample_func)
+        logo_bb, horizontal_samples, vertical_samples, 99, _segment_func, sample_func
+    )
 
     # Select which line set to use
     if len(line_set) == 0:
@@ -352,8 +359,9 @@ def calculate_hit_box_points_detailed(image: Image, hit_box_detail: float = 4.5)
 
     # Reduce number of vertices
     # original_points = len(selected_line_set)
-    selected_line_set = pymunk.autogeometry.simplify_curves(selected_line_set,
-                                                            hit_box_detail)
+    selected_line_set = pymunk.autogeometry.simplify_curves(
+        selected_line_set, hit_box_detail
+    )
     # downsampled_points = len(selected_line_set)
 
     # Convert to normal points, offset fo 0,0 is center, flip the y

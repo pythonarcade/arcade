@@ -14,9 +14,10 @@ class UIStyle(EventDispatcher):
 
     Use `.load()` to update UIStyle instance from YAML-file
     """
+
     __default_style = None
 
-    def __init__(self, data: Dict[str, Any]=None, **kwargs):
+    def __init__(self, data: Dict[str, Any] = None, **kwargs):
         """
         :param data: Data of the UIStyle
         :param kwargs: Data of UIStyle as named parameters
@@ -24,7 +25,7 @@ class UIStyle(EventDispatcher):
         self.data = data if data else {}
         self.data.update(kwargs)
 
-        self.register_event_type('on_style_change')
+        self.register_event_type("on_style_change")
 
     @staticmethod
     def from_file(path: Union[str, Path]):
@@ -62,9 +63,9 @@ class UIStyle(EventDispatcher):
         :return: empty style # TODO maybe load the real default style once
         """
         if cls.__default_style is None:
-            cls.__default_style = UIStyle.from_file(resolve_resource_path(
-                ':resources:style/default.yml'
-            ))
+            cls.__default_style = UIStyle.from_file(
+                resolve_resource_path(":resources:style/default.yml")
+            )
         return cls.__default_style
 
     def on_style_change(self, style_classes: Set[str]):
@@ -93,7 +94,7 @@ class UIStyle(EventDispatcher):
             else:
                 style_data[key] = value
 
-        self.dispatch_event('on_style_change', {style_class})
+        self.dispatch_event("on_style_change", {style_class})
 
     def get_attr(self, style_classes: Sequence[str], attr: str):
         """

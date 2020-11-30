@@ -47,6 +47,7 @@ BULLET_MAX_DISTANCE = SCREEN_WIDTH * 0.75
 
 class Player(arcade.SpriteSolidColor):
     """ Player ship """
+
     def __init__(self):
         """ Set up player """
         super().__init__(40, 10, arcade.color.SLATE_GRAY)
@@ -110,6 +111,7 @@ class Player(arcade.SpriteSolidColor):
         elif self.top > SCREEN_HEIGHT - 1:
             self.top = SCREEN_HEIGHT - 1
 
+
 class Bullet(arcade.SpriteSolidColor):
     """ Bullet """
 
@@ -126,8 +128,10 @@ class Bullet(arcade.SpriteSolidColor):
         if self.distance > BULLET_MAX_DISTANCE:
             self.remove_from_sprite_lists()
 
+
 class Particle(arcade.SpriteSolidColor):
     """ Particle from explosion """
+
     def update(self):
         """ Move the particle, and fade out """
         # Move
@@ -137,6 +141,7 @@ class Particle(arcade.SpriteSolidColor):
         self.alpha -= 5
         if self.alpha <= 0:
             self.remove_from_sprite_lists()
+
 
 class MyGame(arcade.Window):
     """ Main application class. """
@@ -178,8 +183,12 @@ class MyGame(arcade.Window):
         # --- Bloom related ---
 
         # Make stars glow dimly
-        self.slight_bloom_color_attachment = self.ctx.texture((SCREEN_WIDTH, SCREEN_HEIGHT))
-        self.slight_bloom_screen = self.ctx.framebuffer(color_attachments=[self.slight_bloom_color_attachment])
+        self.slight_bloom_color_attachment = self.ctx.texture(
+            (SCREEN_WIDTH, SCREEN_HEIGHT)
+        )
+        self.slight_bloom_screen = self.ctx.framebuffer(
+            color_attachments=[self.slight_bloom_color_attachment]
+        )
 
         # --- Bloom Related ---
         # Down-sampling helps improve the blur.
@@ -195,11 +204,17 @@ class MyGame(arcade.Window):
         mu = 0
         multiplier = 1.5
         step = 1
-        self.slight_bloom = postprocessing.BloomEffect(size, kernel_size, sigma, mu, multiplier, step)
+        self.slight_bloom = postprocessing.BloomEffect(
+            size, kernel_size, sigma, mu, multiplier, step
+        )
 
         # Make lasers and particles glow bright
-        self.intense_bloom_color_attachment = self.ctx.texture((SCREEN_WIDTH, SCREEN_HEIGHT))
-        self.intense_bloom_screen = self.ctx.framebuffer(color_attachments=[self.intense_bloom_color_attachment])
+        self.intense_bloom_color_attachment = self.ctx.texture(
+            (SCREEN_WIDTH, SCREEN_HEIGHT)
+        )
+        self.intense_bloom_screen = self.ctx.framebuffer(
+            color_attachments=[self.intense_bloom_color_attachment]
+        )
 
         size = (SCREEN_WIDTH // DOWN_SAMPLING, SCREEN_HEIGHT // DOWN_SAMPLING)
         kernel_size = 21
@@ -207,7 +222,9 @@ class MyGame(arcade.Window):
         mu = 0
         multiplier = 5
         step = 1
-        self.intense_bloom = postprocessing.BloomEffect(size, kernel_size, sigma, mu, multiplier, step)
+        self.intense_bloom = postprocessing.BloomEffect(
+            size, kernel_size, sigma, mu, multiplier, step
+        )
 
     def setup(self):
         """ Set up the game and initialize the variables. """
@@ -249,10 +266,12 @@ class MyGame(arcade.Window):
         self.slight_bloom_screen.use()
         self.slight_bloom_screen.clear((0, 0, 0, 0))
 
-        arcade.set_viewport(self.view_left,
-                            SCREEN_WIDTH + self.view_left,
-                            self.view_bottom,
-                            SCREEN_HEIGHT + self.view_bottom)
+        arcade.set_viewport(
+            self.view_left,
+            SCREEN_WIDTH + self.view_left,
+            self.view_bottom,
+            SCREEN_HEIGHT + self.view_bottom,
+        )
 
         # Draw all the sprites on the screen that should have a 'slight' bloom
         self.star_sprite_list.draw()
@@ -261,10 +280,12 @@ class MyGame(arcade.Window):
         self.intense_bloom_screen.use()
         self.intense_bloom_screen.clear((0, 0, 0, 0))
 
-        arcade.set_viewport(self.view_left,
-                            SCREEN_WIDTH + self.view_left,
-                            self.view_bottom,
-                            SCREEN_HEIGHT + self.view_bottom)
+        arcade.set_viewport(
+            self.view_left,
+            SCREEN_WIDTH + self.view_left,
+            self.view_bottom,
+            SCREEN_HEIGHT + self.view_bottom,
+        )
 
         # Draw all the sprites on the screen that should have a 'intense' bloom
         self.bullet_sprite_list.draw()
@@ -272,10 +293,12 @@ class MyGame(arcade.Window):
         # Now draw to the actual screen
         self.use()
 
-        arcade.set_viewport(self.view_left,
-                            SCREEN_WIDTH + self.view_left,
-                            self.view_bottom,
-                            SCREEN_HEIGHT + self.view_bottom)
+        arcade.set_viewport(
+            self.view_left,
+            SCREEN_WIDTH + self.view_left,
+            self.view_bottom,
+            SCREEN_HEIGHT + self.view_bottom,
+        )
 
         # --- Bloom related ---
 
@@ -311,7 +334,9 @@ class MyGame(arcade.Window):
         self.bullet_sprite_list.update()
 
         for bullet in self.bullet_sprite_list:
-            enemy_hit_list = arcade.check_for_collision_with_list(bullet, self.enemy_sprite_list)
+            enemy_hit_list = arcade.check_for_collision_with_list(
+                bullet, self.enemy_sprite_list
+            )
             for enemy in enemy_hit_list:
                 enemy.remove_from_sprite_lists()
                 for i in range(10):

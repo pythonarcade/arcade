@@ -57,10 +57,7 @@ def _create_rects(rect_list: Iterable[Sprite]) -> List[float]:
             p3 = rotate_point(p3[0], p3[1], shape.center_x, shape.center_y, shape.angle)
             p4 = rotate_point(p4[0], p4[1], shape.center_x, shape.center_y, shape.angle)
 
-        v2f.extend([p1[0], p1[1],
-                   p2[0], p2[1],
-                   p3[0], p3[1],
-                   p4[0], p4[1]])
+        v2f.extend([p1[0], p1[1], p2[0], p2[1], p3[0], p3[1], p4[0], p4[1]])
 
     return v2f
 
@@ -158,8 +155,10 @@ class _SpatialHash:
                     #       f"{min_point} {max_point}")
 
                 except ValueError:
-                    print(f"Warning, tried to remove item {sprite_to_delete.guid} from spatial hash {i} {j} when "
-                          f"it wasn't there. {min_point} {max_point}")
+                    print(
+                        f"Warning, tried to remove item {sprite_to_delete.guid} from spatial hash {i} {j} when "
+                        f"it wasn't there. {min_point} {max_point}"
+                    )
 
     def get_objects_for_box(self, check_object: Sprite) -> Set[Sprite]:
         """
@@ -220,7 +219,7 @@ class _SpatialHash:
         return close_by_sprites
 
 
-_SpriteType = TypeVar('_SpriteType', bound=Sprite)
+_SpriteType = TypeVar("_SpriteType", bound=Sprite)
 
 
 class SpriteList:
@@ -229,13 +228,13 @@ class SpriteList:
     and doing collision detection. For optimization reasons, use_spatial_hash and
     is_static are very important.
     """
+
     array_of_images: Optional[List[Any]]
     next_texture_id = 0
 
-    def __init__(self,
-                 use_spatial_hash=None,
-                 spatial_hash_cell_size=128,
-                 is_static=False):
+    def __init__(
+        self, use_spatial_hash=None, spatial_hash_cell_size=128, is_static=False
+    ):
         """
         Initialize the sprite list
 
@@ -305,8 +304,12 @@ class SpriteList:
         else:
             self.spatial_hash = None
 
-        LOG.debug("[%s] Creating SpriteList use_spatial_hash=%s is_static=%s",
-                  id(self), use_spatial_hash, is_static)
+        LOG.debug(
+            "[%s] Creating SpriteList use_spatial_hash=%s is_static=%s",
+            id(self),
+            use_spatial_hash,
+            is_static,
+        )
 
     def append(self, item: _SpriteType):
         """
@@ -322,7 +325,7 @@ class SpriteList:
         if self._use_spatial_hash:
             self.spatial_hash.insert_object_for_box(item)
 
-    def extend(self, items: Union[list, 'SpriteList']):
+    def extend(self, items: Union[list, "SpriteList"]):
         """
         Extends the current list with the given list
 
@@ -415,14 +418,14 @@ class SpriteList:
         for sprite in self.sprite_list:
             sprite.update()
 
-    def on_update(self, delta_time: float = 1/60):
+    def on_update(self, delta_time: float = 1 / 60):
         """
         Update the sprite. Similar to update, but also takes a delta-time.
         """
         for sprite in self.sprite_list:
             sprite.on_update(delta_time)
 
-    def update_animation(self, delta_time: float = 1/60):
+    def update_animation(self, delta_time: float = 1 / 60):
         """
         Call the update_animation in every sprite in the sprite list.
         """
@@ -431,8 +434,12 @@ class SpriteList:
 
     def _get_center(self) -> Tuple[float, float]:
         """ Get the mean center coordinates of all sprites in the list. """
-        x = sum((sprite.center_x for sprite in self.sprite_list)) / len(self.sprite_list)
-        y = sum((sprite.center_y for sprite in self.sprite_list)) / len(self.sprite_list)
+        x = sum((sprite.center_x for sprite in self.sprite_list)) / len(
+            self.sprite_list
+        )
+        y = sum((sprite.center_y for sprite in self.sprite_list)) / len(
+            self.sprite_list
+        )
         return x, y
 
     center = property(_get_center)
@@ -476,80 +483,72 @@ class SpriteList:
     def _calculate_sprite_buffer(self):
 
         if self.is_static:
-            usage = 'static'
+            usage = "static"
         else:
-            usage = 'stream'
+            usage = "stream"
 
         def _calculate_pos_buffer():
-            self._sprite_pos_data = array.array('f')
+            self._sprite_pos_data = array.array("f")
             # print("A")
             for sprite in self.sprite_list:
                 self._sprite_pos_data.append(sprite.center_x)
                 self._sprite_pos_data.append(sprite.center_y)
 
             self._sprite_pos_buf = self.ctx.buffer(
-                data=self._sprite_pos_data,
-                usage=usage
+                data=self._sprite_pos_data, usage=usage
             )
-            variables = ['in_pos']
+            variables = ["in_pos"]
             self._sprite_pos_desc = gl.BufferDescription(
                 self._sprite_pos_buf,
-                '2f',
+                "2f",
                 variables,
             )
             self._sprite_pos_changed = False
 
         def _calculate_size_buffer():
-            self._sprite_size_data = array.array('f')
+            self._sprite_size_data = array.array("f")
             for sprite in self.sprite_list:
                 self._sprite_size_data.append(sprite.width)
                 self._sprite_size_data.append(sprite.height)
 
             self._sprite_size_buf = self.ctx.buffer(
-                data=self._sprite_size_data,
-                usage=usage
+                data=self._sprite_size_data, usage=usage
             )
-            variables = ['in_size']
+            variables = ["in_size"]
             self._sprite_size_desc = gl.BufferDescription(
-                self._sprite_size_buf,
-                '2f',
-                variables)
+                self._sprite_size_buf, "2f", variables
+            )
             self._sprite_size_changed = False
 
         def _calculate_angle_buffer():
-            self._sprite_angle_data = array.array('f')
+            self._sprite_angle_data = array.array("f")
             for sprite in self.sprite_list:
                 self._sprite_angle_data.append(sprite.angle)
 
             self._sprite_angle_buf = self.ctx.buffer(
-                data=self._sprite_angle_data,
-                usage=usage
+                data=self._sprite_angle_data, usage=usage
             )
-            variables = ['in_angle']
+            variables = ["in_angle"]
             self._sprite_angle_desc = gl.BufferDescription(
                 self._sprite_angle_buf,
-                '1f',
+                "1f",
                 variables,
             )
             self._sprite_angle_changed = False
 
         def _calculate_colors():
-            self._sprite_color_data = array.array('B')
+            self._sprite_color_data = array.array("B")
 
             for sprite in self.sprite_list:
                 self._sprite_color_data.extend(sprite.color[:3])
                 self._sprite_color_data.append(int(sprite.alpha))
 
             self._sprite_color_buf = self.ctx.buffer(
-                data=self._sprite_color_data,
-                usage=usage
+                data=self._sprite_color_data, usage=usage
             )
-            variables = ['in_color']
+            variables = ["in_color"]
             self._sprite_color_desc = gl.BufferDescription(
-                self._sprite_color_buf,
-                '4f1',
-                variables,
-                normalized=['in_color']
+                self._sprite_color_buf, "4f1", variables, normalized=["in_color"]
             )
             self._sprite_color_changed = False
 
@@ -572,7 +571,9 @@ class SpriteList:
 
                 # noinspection PyProtectedMember
                 if sprite.texture is None:
-                    raise Exception("Error: Attempt to draw a sprite without a texture set.")
+                    raise Exception(
+                        "Error: Attempt to draw a sprite without a texture set."
+                    )
 
                 name_of_texture_to_check = sprite.texture.name
 
@@ -589,16 +590,24 @@ class SpriteList:
                     if sprite.texture is None:
                         raise ValueError(f"Sprite has no texture.")
                     if sprite.texture.image is None:
-                        raise ValueError(f"Sprite texture {sprite.texture.name} has no image.")
+                        raise ValueError(
+                            f"Sprite texture {sprite.texture.name} has no image."
+                        )
                     image = sprite.texture.image
 
                     # Create a new image with a transparent border around it to help prevent artifacts
-                    tmp = Image.new('RGBA', (image.width+2, image.height+2))
+                    tmp = Image.new("RGBA", (image.width + 2, image.height + 2))
                     tmp.paste(image, (1, 1))
-                    tmp.paste(tmp.crop((1          , 1           , image.width+1, 2             )), (1            , 0             ))
-                    tmp.paste(tmp.crop((1          , image.height, image.width+1, image.height+1)), (1            , image.height+1))
-                    tmp.paste(tmp.crop((1          , 0           ,             2, image.height+2)), (0            , 0             ))
-                    tmp.paste(tmp.crop((image.width, 0           , image.width+1, image.height+2)), (image.width+1, 0             ))
+                    tmp.paste(tmp.crop((1, 1, image.width + 1, 2)), (1, 0))
+                    tmp.paste(
+                        tmp.crop((1, image.height, image.width + 1, image.height + 1)),
+                        (1, image.height + 1),
+                    )
+                    tmp.paste(tmp.crop((1, 0, 2, image.height + 2)), (0, 0))
+                    tmp.paste(
+                        tmp.crop((image.width, 0, image.width + 1, image.height + 2)),
+                        (image.width + 1, 0),
+                    )
 
                     # Put in our array of new images
                     new_array_of_images.append(tmp)
@@ -611,7 +620,10 @@ class SpriteList:
             if new_texture:
                 # Add back in any old textures. Chances are we'll need them.
                 for index, old_texture_name in enumerate(self.array_of_texture_names):
-                    if old_texture_name not in new_array_of_texture_names and self.array_of_images is not None:
+                    if (
+                        old_texture_name not in new_array_of_texture_names
+                        and self.array_of_images is not None
+                    ):
                         new_array_of_texture_names.append(old_texture_name)
                         image = self.array_of_images[index]
                         new_array_of_images.append(image)
@@ -653,7 +665,9 @@ class SpriteList:
                 #     .Texture.release(self.texture_id)
 
                 # Make the composite image
-                new_image2 = Image.new('RGBA', (sprite_sheet_width, sprite_sheet_height))
+                new_image2 = Image.new(
+                    "RGBA", (sprite_sheet_width, sprite_sheet_height)
+                )
 
                 x_offset = 0
                 for index, image in enumerate(self.array_of_images):
@@ -694,7 +708,7 @@ class SpriteList:
                 y = row * (grid_item_height + margin) + offset
 
                 # Because, coordinates are reversed
-                y += (grid_item_height - (image.height - margin))
+                y += grid_item_height - (image.height - margin)
 
                 normalized_x = x / sprite_sheet_width
                 normalized_y = y / sprite_sheet_height
@@ -702,30 +716,31 @@ class SpriteList:
                 start_x = normalized_x
                 start_y = normalized_y
 
-                normalized_width = (image.width-2*offset) / sprite_sheet_width
-                normalized_height = (image.height-2*offset) / sprite_sheet_height
+                normalized_width = (image.width - 2 * offset) / sprite_sheet_width
+                normalized_height = (image.height - 2 * offset) / sprite_sheet_height
 
                 # print(f"Fetching {new_array_of_texture_names[index]} at {row}, {column} => {x}, {y} normalized to {start_x:.2}, {start_y:.2} size {normalized_width}, {normalized_height}")
 
-                self._tex_coords.append([start_x, start_y, normalized_width, normalized_height])
+                self._tex_coords.append(
+                    [start_x, start_y, normalized_width, normalized_height]
+                )
 
             # Go through each sprite and pull from the coordinate list, the proper
             # coordinates for that sprite's image.
-            self._sprite_sub_tex_data = array.array('f')
+            self._sprite_sub_tex_data = array.array("f")
             for sprite in self.sprite_list:
                 index = self.array_of_texture_names.index(sprite.texture.name)
                 for coord in self._tex_coords[index]:
                     self._sprite_sub_tex_data.append(coord)
 
             self._sprite_sub_tex_buf = self.ctx.buffer(
-                data=self._sprite_sub_tex_data,
-                usage=usage
+                data=self._sprite_sub_tex_data, usage=usage
             )
 
             self._sprite_sub_tex_desc = gl.BufferDescription(
                 self._sprite_sub_tex_buf,
-                '4f',
-                ['in_sub_tex_coords'],
+                "4f",
+                ["in_sub_tex_coords"],
             )
             self._sprite_sub_tex_changed = False
 
@@ -761,14 +776,20 @@ class SpriteList:
         #                self._sprite_angle_desc,
         #                self._sprite_sub_tex_desc,
         #                self._sprite_color_desc]
-        vao_content = [self._sprite_pos_desc,
-                       self._sprite_size_desc,
-                       self._sprite_angle_desc,
-                       self._sprite_sub_tex_desc,
-                       self._sprite_color_desc]
+        vao_content = [
+            self._sprite_pos_desc,
+            self._sprite_size_desc,
+            self._sprite_angle_desc,
+            self._sprite_sub_tex_desc,
+            self._sprite_color_desc,
+        ]
 
         self._vao1 = self.ctx.geometry(vao_content)
-        LOG.debug('[%s] _calculate_sprite_buffer: %s sec', id(self), time.perf_counter() - perf_time)
+        LOG.debug(
+            "[%s] _calculate_sprite_buffer: %s sec",
+            id(self),
+            time.perf_counter() - perf_time,
+        )
 
     def _dump(self, buffer):
         """
@@ -781,9 +802,9 @@ class SpriteList:
             print(f"{char:02x} ", end="")
 
     def _update_positions(self):
-        """ Called by the Sprite class to update position, angle, size and color
+        """Called by the Sprite class to update position, angle, size and color
         of all sprites in the list.
-        Necessary for batch drawing of items. """
+        Necessary for batch drawing of items."""
 
         if self._vao1 is None:
             return
@@ -807,7 +828,7 @@ class SpriteList:
             self._sprite_size_changed = True
 
     def update_texture(self, sprite):
-        """ Make sure we update the texture for this sprite for the next batch
+        """Make sure we update the texture for this sprite for the next batch
         drawing"""
         if self._vao1 is None:
             return
@@ -991,17 +1012,22 @@ class SpriteList:
         if "filter" in kwargs:
             self._texture.filter = self.ctx.NEAREST, self.ctx.NEAREST
 
-        self.program['Texture'] = self.texture_id
+        self.program["Texture"] = self.texture_id
 
         texture_transform = None
         if len(self.sprite_list) > 0:
             # always wrap texture transformations with translations
             # so that rotate and resize operations act on the texture
             # center by default
-            texture_transform = Matrix3x3().translate(-0.5, -0.5).multiply(self.sprite_list[0].texture_transform.v).multiply(Matrix3x3().translate(0.5, 0.5).v)
+            texture_transform = (
+                Matrix3x3()
+                .translate(-0.5, -0.5)
+                .multiply(self.sprite_list[0].texture_transform.v)
+                .multiply(Matrix3x3().translate(0.5, 0.5).v)
+            )
         else:
             texture_transform = Matrix3x3()
-        self.program['TextureTransform'] = texture_transform.v
+        self.program["TextureTransform"] = texture_transform.v
 
         if not self.is_static:
             if self._sprite_pos_changed:
@@ -1029,7 +1055,9 @@ class SpriteList:
                 self._sprite_sub_tex_buf.write(self._sprite_sub_tex_data)
                 self._sprite_sub_tex_changed = False
 
-        self._vao1.render(self.program, mode=self.ctx.POINTS, vertices=len(self.sprite_list))
+        self._vao1.render(
+            self.program, mode=self.ctx.POINTS, vertices=len(self.sprite_list)
+        )
 
     def draw_hit_boxes(self, color: Color = (0, 0, 0, 255), line_thickness: float = 1):
         """ Draw all the hit boxes in this list """
@@ -1061,14 +1089,16 @@ class SpriteList:
         Pop off the last sprite, or the given index, from the list
         """
         if len(self.sprite_list) == 0:
-            raise(ValueError("pop from empty list"))
+            raise (ValueError("pop from empty list"))
 
         sprite = self.sprite_list[index]
         self.remove(sprite)
         return sprite
 
 
-def get_closest_sprite(sprite: Sprite, sprite_list: SpriteList) -> Optional[Tuple[Sprite, float]]:
+def get_closest_sprite(
+    sprite: Sprite, sprite_list: SpriteList
+) -> Optional[Tuple[Sprite, float]]:
     """
     Given a Sprite and SpriteList, returns the closest sprite, and its distance.
 
@@ -1103,8 +1133,10 @@ def check_for_collision(sprite1: Sprite, sprite2: Sprite) -> bool:
     if not isinstance(sprite1, Sprite):
         raise TypeError("Parameter 1 is not an instance of the Sprite class.")
     if isinstance(sprite2, SpriteList):
-        raise TypeError("Parameter 2 is a instance of the SpriteList instead of a required Sprite. See if you meant to "
-                        "call check_for_collision_with_list instead of check_for_collision.")
+        raise TypeError(
+            "Parameter 2 is a instance of the SpriteList instead of a required Sprite. See if you meant to "
+            "call check_for_collision_with_list instead of check_for_collision."
+        )
     elif not isinstance(sprite2, Sprite):
         raise TypeError("Parameter 2 is not an instance of the Sprite class.")
 
@@ -1137,11 +1169,14 @@ def _check_for_collision(sprite1: Sprite, sprite2: Sprite) -> bool:
     if distance > collision_radius_sum * collision_radius_sum:
         return False
 
-    return are_polygons_intersecting(sprite1.get_adjusted_hit_box(), sprite2.get_adjusted_hit_box())
+    return are_polygons_intersecting(
+        sprite1.get_adjusted_hit_box(), sprite2.get_adjusted_hit_box()
+    )
 
 
-def check_for_collision_with_list(sprite: Sprite,
-                                  sprite_list: SpriteList) -> List[Sprite]:
+def check_for_collision_with_list(
+    sprite: Sprite, sprite_list: SpriteList
+) -> List[Sprite]:
     """
     Check for a collision between a sprite, and a list of sprites.
 
@@ -1151,14 +1186,24 @@ def check_for_collision_with_list(sprite: Sprite,
     :returns: List of sprites colliding, or an empty list.
     """
     if not isinstance(sprite, Sprite):
-        raise TypeError(f"Parameter 1 is not an instance of the Sprite class, it is an instance of {type(sprite)}.")
+        raise TypeError(
+            f"Parameter 1 is not an instance of the Sprite class, it is an instance of {type(sprite)}."
+        )
     if not isinstance(sprite_list, SpriteList):
-        raise TypeError(f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList.")
+        raise TypeError(
+            f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList."
+        )
 
-    if sprite_list.use_spatial_hash is None and len(sprite_list) > 30 and sprite_list.percent_sprites_moved < 10:
-        LOG.debug(f"Enabling spatial hash - Spatial hash is none, sprite list "
-                  f"is {len(sprite_list)} elements. Percent moved "
-                  f"{sprite_list._percent_sprites_moved * 100}.")
+    if (
+        sprite_list.use_spatial_hash is None
+        and len(sprite_list) > 30
+        and sprite_list.percent_sprites_moved < 10
+    ):
+        LOG.debug(
+            f"Enabling spatial hash - Spatial hash is none, sprite list "
+            f"is {len(sprite_list)} elements. Percent moved "
+            f"{sprite_list._percent_sprites_moved * 100}."
+        )
         sprite_list.enable_spatial_hashing()
 
     if sprite_list.use_spatial_hash:
@@ -1168,9 +1213,11 @@ def check_for_collision_with_list(sprite: Sprite,
         sprite_list_to_check = sprite_list
 
     # print(len(sprite_list_to_check.sprite_list))
-    return [sprite2
-                      for sprite2 in sprite_list_to_check
-                      if sprite is not sprite2 and _check_for_collision(sprite, sprite2)]
+    return [
+        sprite2
+        for sprite2 in sprite_list_to_check
+        if sprite is not sprite2 and _check_for_collision(sprite, sprite2)
+    ]
 
     # collision_list = []
     # for sprite2 in sprite_list_to_check:
@@ -1179,8 +1226,7 @@ def check_for_collision_with_list(sprite: Sprite,
     #             collision_list.append(sprite2)
 
 
-def get_sprites_at_point(point: Point,
-                         sprite_list: SpriteList) -> List[Sprite]:
+def get_sprites_at_point(point: Point, sprite_list: SpriteList) -> List[Sprite]:
     """
     Get a list of sprites at a particular point
 
@@ -1190,7 +1236,9 @@ def get_sprites_at_point(point: Point,
     :returns: List of sprites colliding, or an empty list.
     """
     if not isinstance(sprite_list, SpriteList):
-        raise TypeError(f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList.")
+        raise TypeError(
+            f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList."
+        )
 
     if sprite_list.use_spatial_hash:
         sprite_list_to_check = sprite_list.spatial_hash.get_objects_for_point(point)
@@ -1199,12 +1247,14 @@ def get_sprites_at_point(point: Point,
     else:
         sprite_list_to_check = sprite_list
 
-    return [s for s in sprite_list_to_check if
-                      is_point_in_polygon(point[0], point[1], s.get_adjusted_hit_box())]
+    return [
+        s
+        for s in sprite_list_to_check
+        if is_point_in_polygon(point[0], point[1], s.get_adjusted_hit_box())
+    ]
 
 
-def get_sprites_at_exact_point(point: Point,
-                               sprite_list: SpriteList) -> List[Sprite]:
+def get_sprites_at_exact_point(point: Point, sprite_list: SpriteList) -> List[Sprite]:
     """
     Get a list of sprites at a particular point
 
@@ -1214,7 +1264,9 @@ def get_sprites_at_exact_point(point: Point,
     :returns: List of sprites colliding, or an empty list.
     """
     if not isinstance(sprite_list, SpriteList):
-        raise TypeError(f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList.")
+        raise TypeError(
+            f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList."
+        )
 
     if sprite_list.use_spatial_hash:
         sprite_list_to_check = sprite_list.spatial_hash.get_objects_for_point(point)

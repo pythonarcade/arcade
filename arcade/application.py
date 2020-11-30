@@ -24,7 +24,7 @@ MOUSE_BUTTON_LEFT = 1
 MOUSE_BUTTON_MIDDLE = 2
 MOUSE_BUTTON_RIGHT = 4
 
-_window: 'Window'
+_window: "Window"
 
 
 def get_screens():
@@ -41,6 +41,7 @@ class NoOpenGLException(Exception):
     """
     Exception when we can't get an OpenGL 3.3+ context
     """
+
     pass
 
 
@@ -50,16 +51,18 @@ class Window(pyglet.window.Window):
     It represents a window on the screen, and manages events.
     """
 
-    def __init__(self,
-                 width: int = 800,
-                 height: int = 600,
-                 title: str = 'Arcade Window',
-                 fullscreen: bool = False,
-                 resizable: bool = False,
-                 update_rate: Optional[float] = 1 / 60,
-                 antialiasing: bool = True,
-                 gl_version: Tuple[int, int] = (3, 3),
-                 screen: pyglet.canvas.Screen = None):
+    def __init__(
+        self,
+        width: int = 800,
+        height: int = 600,
+        title: str = "Arcade Window",
+        fullscreen: bool = False,
+        resizable: bool = False,
+        update_rate: Optional[float] = 1 / 60,
+        antialiasing: bool = True,
+        gl_version: Tuple[int, int] = (3, 3),
+        screen: pyglet.canvas.Screen = None,
+    ):
         """
         Construct a new window
 
@@ -74,24 +77,34 @@ class Window(pyglet.window.Window):
                                            and can be overridden when using more advanced OpenGL features.
         """
         if antialiasing:
-            config = pyglet.gl.Config(major_version=gl_version[0],
-                                      minor_version=gl_version[1],
-                                      double_buffer=True,
-                                      sample_buffers=1,
-                                      samples=4)
+            config = pyglet.gl.Config(
+                major_version=gl_version[0],
+                minor_version=gl_version[1],
+                double_buffer=True,
+                sample_buffers=1,
+                samples=4,
+            )
         else:
-            config = pyglet.gl.Config(major_version=3,
-                                      minor_version=3,
-                                      double_buffer=True)
+            config = pyglet.gl.Config(
+                major_version=3, minor_version=3, double_buffer=True
+            )
 
         try:
-            super().__init__(width=width, height=height, caption=title,
-                             resizable=resizable, config=config, vsync=False)
-            self.register_event_type('update')
-            self.register_event_type('on_update')
+            super().__init__(
+                width=width,
+                height=height,
+                caption=title,
+                resizable=resizable,
+                config=config,
+                vsync=False,
+            )
+            self.register_event_type("update")
+            self.register_event_type("on_update")
         except pyglet.window.NoSuchConfigException:
-            raise NoOpenGLException("Unable to create an OpenGL 3.3+ context. "
-                                    "Check to make sure your system supports OpenGL 3.3 or higher.")
+            raise NoOpenGLException(
+                "Unable to create an OpenGL 3.3+ context. "
+                "Check to make sure your system supports OpenGL 3.3 or higher."
+            )
 
         if antialiasing:
             try:
@@ -101,7 +114,8 @@ class Window(pyglet.window.Window):
 
         if update_rate:
             from pyglet import compat_platform
-            if compat_platform == 'darwin' or compat_platform == 'linux':
+
+            if compat_platform == "darwin" or compat_platform == "linux":
                 # Set vsync to false, or we'll be limited to a 1/30 sec update rate possibly
                 self.context.set_vsync(False)
             self.set_update_rate(update_rate)
@@ -169,8 +183,9 @@ class Window(pyglet.window.Window):
         super().close()
         pyglet.clock.unschedule(self._dispatch_updates)
 
-    def set_fullscreen(self, fullscreen=True, screen=None, mode=None,
-                       width=None, height=None):
+    def set_fullscreen(
+        self, fullscreen=True, screen=None, mode=None, width=None, height=None
+    ):
         """
         Set if we are full screen or not.
 
@@ -191,7 +206,9 @@ class Window(pyglet.window.Window):
 
         window_width, window_height = self.get_size()
         # Center the window
-        self.set_location((screen_width - window_width) // 2, (screen_height - window_height) // 2)
+        self.set_location(
+            (screen_width - window_width) // 2, (screen_height - window_height) // 2
+        )
 
     def update(self, delta_time: float):
         """
@@ -212,8 +229,8 @@ class Window(pyglet.window.Window):
         pass
 
     def _dispatch_updates(self, delta_time: float):
-        self.dispatch_event('update', delta_time)
-        self.dispatch_event('on_update', delta_time)
+        self.dispatch_event("update", delta_time)
+        self.dispatch_event("on_update", delta_time)
 
     def set_update_rate(self, rate: float):
         """
@@ -250,7 +267,9 @@ class Window(pyglet.window.Window):
         """
         pass
 
-    def on_mouse_drag(self, x: float, y: float, dx: float, dy: float, buttons: int, modifiers: int):
+    def on_mouse_drag(
+        self, x: float, y: float, dx: float, dy: float, buttons: int, modifiers: int
+    ):
         """
         Override this function to add mouse button functionality.
 
@@ -264,8 +283,7 @@ class Window(pyglet.window.Window):
         """
         self.on_mouse_motion(x, y, dx, dy)
 
-    def on_mouse_release(self, x: float, y: float, button: int,
-                         modifiers: int):
+    def on_mouse_release(self, x: float, y: float, button: int, modifiers: int):
         """
         Override this function to add mouse button functionality.
 
@@ -346,13 +364,15 @@ class Window(pyglet.window.Window):
         # unscaled_viewport = self.get_viewport_size()
         # scaling = unscaled_viewport[0] / width
 
-        self.set_viewport(original_viewport[0],
-                          original_viewport[0] + width,
-                          original_viewport[2],
-                          original_viewport[2] + height)
+        self.set_viewport(
+            original_viewport[0],
+            original_viewport[0] + width,
+            original_viewport[2],
+            original_viewport[2] + height,
+        )
 
     def set_min_size(self, width: float, height: float):
-        """ Wrap the Pyglet window call to set minimum size
+        """Wrap the Pyglet window call to set minimum size
 
         :param float width: width in pixels.
         :param float height: height in pixels.
@@ -361,10 +381,10 @@ class Window(pyglet.window.Window):
         if self._resizable:
             super().set_minimum_size(width, height)
         else:
-            raise ValueError('Cannot set min size on non-resizable window')
+            raise ValueError("Cannot set min size on non-resizable window")
 
     def set_max_size(self, width: float, height: float):
-        """ Wrap the Pyglet window call to set maximum size
+        """Wrap the Pyglet window call to set maximum size
 
         :param float width: width in pixels.
         :param float height: height in pixels.
@@ -375,7 +395,7 @@ class Window(pyglet.window.Window):
         if self._resizable:
             super().set_maximum_size(width, height)
         else:
-            raise ValueError('Cannot set max size on non-resizable window')
+            raise ValueError("Cannot set max size on non-resizable window")
 
     def set_size(self, width: float, height: float):
         """
@@ -445,17 +465,17 @@ class Window(pyglet.window.Window):
         for i in range(frames):
             self.switch_to()
             self.dispatch_events()
-            self.dispatch_event('on_draw')
+            self.dispatch_event("on_draw")
             self.flip()
             current_time = time.time()
             elapsed_time = current_time - start_time
             start_time = current_time
-            if elapsed_time < 1. / 60.:
-                sleep_time = (1. / 60.) - elapsed_time
+            if elapsed_time < 1.0 / 60.0:
+                sleep_time = (1.0 / 60.0) - elapsed_time
                 time.sleep(sleep_time)
             self._dispatch_updates(1 / 60)
 
-    def show_view(self, new_view: 'View'):
+    def show_view(self, new_view: "View"):
         """
         Select the view to show. Calling this function is the same as setting the
         :py:meth:`arcade.Window.current_view` attribute.
@@ -463,16 +483,17 @@ class Window(pyglet.window.Window):
         :param View new_view: View to show
         """
         if not isinstance(new_view, View):
-            raise ValueError("Must pass an arcade.View object to "
-                             "Window.show_view()")
+            raise ValueError("Must pass an arcade.View object to " "Window.show_view()")
 
         # Store the Window that is showing the "new_view" View.
         if new_view.window is None:
             new_view.window = self
         elif new_view.window != self:
-            raise RuntimeError("You are attempting to pass the same view "
-                               "object between multiple windows. A single "
-                               "view object can only be used in one window.")
+            raise RuntimeError(
+                "You are attempting to pass the same view "
+                "object between multiple windows. A single "
+                "view object can only be used in one window."
+            )
 
         # remove previously shown view's handlers
         if self._current_view is not None:
@@ -485,7 +506,7 @@ class Window(pyglet.window.Window):
             **{
                 et: getattr(new_view, et, None)
                 for et in self.event_types
-                if et != 'on_show' and hasattr(new_view, et)
+                if et != "on_show" and hasattr(new_view, et)
             }
         )
         self._current_view.on_show()
@@ -562,8 +583,13 @@ class Window(pyglet.window.Window):
         super().dispatch_events()
 
 
-def open_window(width: int, height: int, window_title: str, resizable: bool = False,
-                antialiasing: bool = True) -> Window:
+def open_window(
+    width: int,
+    height: int,
+    window_title: str,
+    resizable: bool = False,
+    antialiasing: bool = True,
+) -> Window:
     """
     This function opens a window. For ease-of-use we assume there will only be one window, and the
     programmer does not need to keep a handle to the window. This isn't the best architecture, because
@@ -581,8 +607,14 @@ def open_window(width: int, height: int, window_title: str, resizable: bool = Fa
     """
 
     global _window
-    _window = Window(width, height, window_title, resizable=resizable, update_rate=None,
-                     antialiasing=antialiasing)
+    _window = Window(
+        width,
+        height,
+        window_title,
+        resizable=resizable,
+        update_rate=None,
+        antialiasing=antialiasing,
+    )
     _window.invalid = False
     return _window
 
@@ -592,8 +624,7 @@ class View:
     Support different views/screens in a window.
     """
 
-    def __init__(self,
-                 window: Window = None):
+    def __init__(self, window: Window = None):
 
         if window is None:
             self.window = arcade.get_window()
@@ -653,7 +684,9 @@ class View:
         """
         pass
 
-    def on_mouse_drag(self, x: float, y: float, dx: float, dy: float, _buttons: int, _modifiers: int):
+    def on_mouse_drag(
+        self, x: float, y: float, dx: float, dy: float, _buttons: int, _modifiers: int
+    ):
         """
         Override this function to add mouse button functionality.
 
@@ -667,8 +700,7 @@ class View:
         """
         self.on_mouse_motion(x, y, dx, dy)
 
-    def on_mouse_release(self, x: float, y: float, button: int,
-                         modifiers: int):
+    def on_mouse_release(self, x: float, y: float, button: int, modifiers: int):
         """
         Override this function to add mouse button functionality.
 

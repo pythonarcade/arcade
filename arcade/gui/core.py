@@ -8,16 +8,16 @@ from arcade.gui.ui_style import UIStyle
 if typing.TYPE_CHECKING:
     from arcade.gui import UIManager
 
-MOUSE_PRESS = 'MOUSE_PRESS'
-MOUSE_RELEASE = 'MOUSE_RELEASE'
-MOUSE_SCROLL = 'MOUSE_SCROLL'
-MOUSE_MOTION = 'MOUSE_MOTION'
-KEY_PRESS = 'KEY_PRESS'
-KEY_RELEASE = 'KEY_RELEASE'
+MOUSE_PRESS = "MOUSE_PRESS"
+MOUSE_RELEASE = "MOUSE_RELEASE"
+MOUSE_SCROLL = "MOUSE_SCROLL"
+MOUSE_MOTION = "MOUSE_MOTION"
+KEY_PRESS = "KEY_PRESS"
+KEY_RELEASE = "KEY_RELEASE"
 
-TEXT_INPUT = 'TEXT_INPUT'
-TEXT_MOTION = 'TEXT_MOTION'
-TEXT_MOTION_SELECTION = 'TEXT_MOTION_SELECTION'
+TEXT_INPUT = "TEXT_INPUT"
+TEXT_MOTION = "TEXT_MOTION"
+TEXT_MOTION_SELECTION = "TEXT_MOTION_SELECTION"
 
 
 class UIEvent:
@@ -42,7 +42,9 @@ class UIEvent:
         return self.data.get(key)
 
     def __repr__(self):
-        return ' '.join([f'{self.type} ', *[f'{key}={value}' for key, value in self.data.items()]])
+        return " ".join(
+            [f"{self.type} ", *[f"{key}={value}" for key, value in self.data.items()]]
+        )
 
 
 class UIElement(arcade.Sprite):
@@ -56,20 +58,22 @@ class UIElement(arcade.Sprite):
     :py:attr:`UIElement().id`, :py:attr:`UIElement().style_classes`, and element specific style attributes.
     """
 
-    def __init__(self,
-                 center_x=0,
-                 center_y=0,
-                 id: Optional[str] = None,
-                 style: UIStyle = None,
-                 **kwargs):
+    def __init__(
+        self,
+        center_x=0,
+        center_y=0,
+        id: Optional[str] = None,
+        style: UIStyle = None,
+        **kwargs,
+    ):
         super().__init__()
         # ID for this element, to search in view by id or identify this element from an event
         self.__id = id
-        self.mng: Optional['UIManager'] = None
+        self.mng: Optional["UIManager"] = None
 
         # unique id, to overwrite style for exactly this element, DONT CHANGE THIS LATER
         self.__style_id = str(uuid4())
-        self.style_classes = ['globals']
+        self.style_classes = ["globals"]
         self._style: UIStyle = style if style else UIStyle.default_style()
         self._style.push_handlers(self.on_style_change)
 
@@ -80,7 +84,7 @@ class UIElement(arcade.Sprite):
         self.center_y = center_y
 
     def __repr__(self):
-        return f'UIElement({self.id if self.id else self.__style_id})'
+        return f"UIElement({self.id if self.id else self.__style_id})"
 
     @property
     def id(self) -> Optional[str]:
@@ -92,7 +96,7 @@ class UIElement(arcade.Sprite):
     @id.setter
     def id(self, value):
         if len(self.sprite_lists) > 0:
-            raise UIException('Setting id, after adding to a UIManager, is to late!')
+            raise UIException("Setting id, after adding to a UIManager, is to late!")
 
         self.__id = value
 
@@ -183,4 +187,5 @@ class UIException(Exception):
     """
     Abstract Exception within the UI.
     """
+
     pass

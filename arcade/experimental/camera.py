@@ -14,9 +14,12 @@ import arcade
 
 
 class Camera2D:
-
-    def __init__(self, *, viewport: Tuple[int, int, int, int], projection: Tuple[float, float, float, float],
-                 ):
+    def __init__(
+        self,
+        *,
+        viewport: Tuple[int, int, int, int],
+        projection: Tuple[float, float, float, float],
+    ):
         """Test"""
         self._window = arcade.get_window()
         self._viewport = viewport
@@ -38,7 +41,10 @@ class Camera2D:
         vp = self._adjust_viewport_to_aspect_ratio(self.aspect_ratio, self._viewport)
         # Account for projection (including zoom)
         vp_width, vp_height = vp[2], vp[3]
-        proj_width, proj_height = self._projection[1] - self._projection[0], self._projection[3] - self._projection[2]
+        proj_width, proj_height = (
+            self._projection[1] - self._projection[0],
+            self._projection[3] - self._projection[2],
+        )
         dx, dy = proj_width / vp_width, proj_height / vp_height
 
         return (
@@ -48,7 +54,9 @@ class Camera2D:
 
     # Mouse coordinates to screen (relative)
 
-    def _adjust_viewport_to_aspect_ratio(self, aspect_ratio: float, viewport: Tuple[int, int, int, int]):
+    def _adjust_viewport_to_aspect_ratio(
+        self, aspect_ratio: float, viewport: Tuple[int, int, int, int]
+    ):
         """
         Calculate viewport base on aspect ratio
         adding black borders when needed
@@ -65,7 +73,7 @@ class Camera2D:
         blank_space_x = width - expected_width
         blank_space_y = height - expected_height
         return (
-            blank_space_x // 2 + self._viewport[0], 
+            blank_space_x // 2 + self._viewport[0],
             blank_space_y // 2 + self._viewport[1],
             expected_width,
             expected_height,
@@ -78,7 +86,9 @@ class Camera2D:
 
         :type: float
         """
-        return (self._projection[1] - self._projection[0]) / (self._projection[3] - self._projection[2])
+        return (self._projection[1] - self._projection[0]) / (
+            self._projection[3] - self._projection[2]
+        )
 
     @property
     def window(self):

@@ -8,10 +8,10 @@ SCREEN_TITLE = "ShaderToy Demo"
 
 
 class MyGame(arcade.Window):
-
     def __init__(self, width, height, title):
         super().__init__(width, height, title, resizable=True)
-        self.shadertoy = ShaderToy("""
+        self.shadertoy = ShaderToy(
+            """
             void mainImage( out vec4 fragColor, in vec2 fragCoord )
             {
                 // Calculate the texture coordinate of the current fragment.
@@ -20,7 +20,8 @@ class MyGame(arcade.Window):
                 // Write the fragment color
                 fragColor = vec4(uv, 0.0, 1.0);	                
             }                    
-        """)
+        """
+        )
 
     def on_draw(self):
         arcade.start_render()

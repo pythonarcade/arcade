@@ -25,11 +25,17 @@ class Sound:
             )
         self.file_name = str(file_name)
 
-        self.source: Union[media.StaticSource, media.StreamingSource] = media.load(self.file_name, streaming=streaming)
+        self.source: Union[media.StaticSource, media.StreamingSource] = media.load(
+            self.file_name, streaming=streaming
+        )
 
-        self.min_distance = 100000000 #setting the players to this allows for 2D panning with 3D audio
+        self.min_distance = (
+            100000000  # setting the players to this allows for 2D panning with 3D audio
+        )
 
-    def play(self, volume: float = 1.0, pan: float = 0.0, loop: bool = False) -> media.Player:
+    def play(
+        self, volume: float = 1.0, pan: float = 0.0, loop: bool = False
+    ) -> media.Player:
         """
         Play the sound.
 
@@ -39,7 +45,11 @@ class Sound:
         """
         player: media.Player = media.Player()
         player.volume = volume
-        player.position = (pan, 0.0, math.sqrt(1 - math.pow(pan, 2))) #used to mimic panning with 3D audio
+        player.position = (
+            pan,
+            0.0,
+            math.sqrt(1 - math.pow(pan, 2)),
+        )  # used to mimic panning with 3D audio
         player.loop = loop
         player.queue(self.source)
         player.play()
@@ -95,7 +105,7 @@ class Sound:
         return player.time
 
 
-def load_sound(path: Union[str, Path], streaming: bool =False) -> Optional[Sound]:
+def load_sound(path: Union[str, Path], streaming: bool = False) -> Optional[Sound]:
     """
     Load a sound.
 

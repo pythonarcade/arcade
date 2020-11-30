@@ -8,11 +8,11 @@ SCREEN_TITLE = "ShaderToy Demo"
 
 
 class MyGame(arcade.Window):
-
     def __init__(self, width, height, title):
         super().__init__(width, height, title, resizable=True)
         self.time = 0
-        self.shadertoy = ShaderToy("""
+        self.shadertoy = ShaderToy(
+            """
             // Star Nest by Pablo Roman Andrioli
             // This content is under the MIT License.
             // Source : https://www.shadertoy.com/view/XlfGRj
@@ -76,7 +76,8 @@ class MyGame(arcade.Window):
                 v=mix(vec3(length(v)),v,saturation); //color adjust
                 fragColor = vec4(v*.01,1.);	                
             }                    
-        """)
+        """
+        )
 
     def on_draw(self):
         arcade.start_render()

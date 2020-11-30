@@ -122,7 +122,14 @@ class Uniform:
             self._program_id, self._location, gl_getter, c_array, length
         )
         self.setter = Uniform._create_setter_func(
-            self._location, gl_setter, c_array, length, self._array_length, count, ptr, is_matrix
+            self._location,
+            gl_setter,
+            c_array,
+            length,
+            self._array_length,
+            count,
+            ptr,
+            is_matrix,
         )
 
     @staticmethod

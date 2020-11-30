@@ -8,10 +8,11 @@ SCREEN_HEIGHT = 600
 SCREEN_TITLE = "Subpixel Experiment"
 
 import logging
+
 arcade.configure_logging(logging.DEBUG)
 
-class MyGame(arcade.Window):
 
+class MyGame(arcade.Window):
     def __init__(self, width, height, title):
         """
         Set up the application.
@@ -23,7 +24,9 @@ class MyGame(arcade.Window):
         # Just grab all the image resources we can find
         resources = [
             getattr(arcade.resources, resource)
-            for resource in dir(arcade.resources) if resource.startswith('image_')]
+            for resource in dir(arcade.resources)
+            if resource.startswith("image_")
+        ]
         resource_cycle = cycle(resources)
         # We only care about sprites of this size
         sprite_size = 128
@@ -33,8 +36,13 @@ class MyGame(arcade.Window):
                 # Just cycle until we get a sprite of the right size. This is terrible, but works!
                 while True:
                     resource = next(resource_cycle)
-                    print('sprite', resource)
-                    sprite = arcade.Sprite(resource, center_x=x + sprite_size // 2, center_y=y + sprite_size // 2, hit_box_algorithm='None')
+                    print("sprite", resource)
+                    sprite = arcade.Sprite(
+                        resource,
+                        center_x=x + sprite_size // 2,
+                        center_y=y + sprite_size // 2,
+                        hit_box_algorithm="None",
+                    )
                     # Add sprite if correct size and get to the next sprite in the grid
                     if sprite.width == 128 and sprite.height == 128:
                         self.sprites.append(sprite)

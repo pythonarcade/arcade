@@ -13,8 +13,7 @@ _PRECISION = 2
 speedups.enable()
 
 
-def are_polygons_intersecting(poly_a: PointList,
-                              poly_b: PointList) -> bool:
+def are_polygons_intersecting(poly_a: PointList, poly_b: PointList) -> bool:
     """
     Return True if two polygons intersect.
 

@@ -32,16 +32,26 @@ def make_star_field(star_count):
     return shape_list
 
 
-def make_skyline(width, skyline_height, skyline_color,
-                 gap_chance=0.70, window_chance=0.30, light_on_chance=0.5,
-                 window_color=(255, 255, 200), window_margin=3, window_gap=2,
-                 cap_chance=0.20):
+def make_skyline(
+    width,
+    skyline_height,
+    skyline_color,
+    gap_chance=0.70,
+    window_chance=0.30,
+    light_on_chance=0.5,
+    window_color=(255, 255, 200),
+    window_margin=3,
+    window_gap=2,
+    cap_chance=0.20,
+):
     """ Make a skyline """
 
     shape_list = arcade.ShapeElementList()
 
     # Add the "base" that we build the buildings on
-    shape = arcade.create_rectangle_filled(width / 2, skyline_height / 2, width, skyline_height, skyline_color)
+    shape = arcade.create_rectangle_filled(
+        width / 2, skyline_height / 2, width, skyline_height, skyline_color
+    )
     shape_list.append(shape)
 
     building_center_x = 0
@@ -98,7 +108,9 @@ def make_skyline(width, skyline_height, skyline_color,
 
             # Based on that, how big should they be?
             window_height = (building_height - window_margin * 2) / window_rows
-            window_width = (building_width - window_margin * 2 - window_gap * (window_columns - 1)) / window_columns
+            window_width = (
+                building_width - window_margin * 2 - window_gap * (window_columns - 1)
+            ) / window_columns
 
             # Find the bottom left of the building so we can start adding widows
             building_base_y = building_center_y - building_height / 2
@@ -108,10 +120,19 @@ def make_skyline(width, skyline_height, skyline_color,
             for row in range(window_rows):
                 for column in range(window_columns):
                     if random.random() < light_on_chance:
-                        x1 = building_left_x + column * (window_width + window_gap) + window_margin
-                        x2 = building_left_x + column * (window_width + window_gap) + window_width + window_margin
+                        x1 = (
+                            building_left_x
+                            + column * (window_width + window_gap)
+                            + window_margin
+                        )
+                        x2 = (
+                            building_left_x
+                            + column * (window_width + window_gap)
+                            + window_width
+                            + window_margin
+                        )
                         y1 = building_base_y + row * window_height
-                        y2 = building_base_y + row * window_height + window_height * .8
+                        y2 = building_base_y + row * window_height + window_height * 0.8
 
                         skyline_point_list.append([x1, y1])
                         skyline_point_list.append([x1, y2])
@@ -119,9 +140,11 @@ def make_skyline(width, skyline_height, skyline_color,
                         skyline_point_list.append([x2, y1])
 
                         for i in range(4):
-                            color_list.append((window_color[0], window_color[1], window_color[2]))
+                            color_list.append(
+                                (window_color[0], window_color[1], window_color[2])
+                            )
 
-        building_center_x += (building_width / 2)
+        building_center_x += building_width / 2
 
     shape = arcade.create_rectangles_filled_with_colors(skyline_point_list, color_list)
     shape_list.append(shape)
@@ -147,7 +170,7 @@ class MyGame(arcade.Window):
         """ Set up the game and initialize the variables. """
         # Offscreen stuff
         self.program = self.ctx.program(
-            vertex_shader='''
+            vertex_shader="""
                 #version 330
 
                 in vec2 in_vert;
@@ -158,8 +181,8 @@ class MyGame(arcade.Window):
                     gl_Position = vec4(in_vert, 0.0, 1.0);
                     v_uv = in_uv;
                 }
-            ''',
-            fragment_shader='''
+            """,
+            fragment_shader="""
                 #version 330
 
                 uniform sampler2D tex;
@@ -182,7 +205,7 @@ class MyGame(arcade.Window):
                     );
                     f_color = texture(tex, (rotate * scale * vec3(v_uv + vec2(-0.5, -0.5), 1.0)).xy * zoom);
                 }
-            ''',
+            """,
         )
         self.color_attachment = self.ctx.texture((SCREEN_WIDTH, SCREEN_HEIGHT))
         self.offscreen = self.ctx.framebuffer(color_attachments=[self.color_attachment])
@@ -206,8 +229,8 @@ class MyGame(arcade.Window):
 
         self.use()
         self.color_attachment.use(0)
-        self.program['angle'] = -1 + (time.time() - self.t0) / 5
-        self.program['zoom'] = 3 + (time.time() - self.t0) / 5
+        self.program["angle"] = -1 + (time.time() - self.t0) / 5
+        self.program["zoom"] = 3 + (time.time() - self.t0) / 5
         self.quad_fs.render(self.program)
 
         end_time = int(round(time.time() * 1000))
