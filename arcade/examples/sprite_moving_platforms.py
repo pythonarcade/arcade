@@ -9,7 +9,6 @@ If Python and Arcade are installed, this example can be run from the command lin
 python -m arcade.examples.sprite_moving_platforms
 """
 import arcade
-import os
 
 SPRITE_SCALING = 0.5
 
@@ -40,20 +39,16 @@ class MyGame(arcade.Window):
 
         super().__init__(width, height, title)
 
-        # Set the working directory (where we expect to find files) to the same
-        # directory this .py file is in. You can leave this out of your own
-        # code, but it is needed to easily run the examples using "python -m"
-        # as mentioned at the top of this program.
-        file_path = os.path.dirname(os.path.abspath(__file__))
-        os.chdir(file_path)
-
         # Sprite lists
-        self.all_sprites_list = None
+
+        # We use an all-wall list to check for collisions.
         self.all_wall_list = None
+
+        # Drawing non-moving walls separate from moving walls improves performance.
         self.static_wall_list = None
         self.moving_wall_list = None
+
         self.player_list = None
-        self.coin_list = None
 
         # Set up the player
         self.player_sprite = None
