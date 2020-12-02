@@ -74,16 +74,32 @@ class Sound:
             return False
 
     def is_playing(self, player: media.Player) -> bool:
-        """ Return if the sound is currently playing or not """
+        """
+        Return if the sound is currently playing or not
+
+        :param pyglet.media.Player player: Player returned from :func:`play_sound`.
+        :returns: A boolean, ``True`` if the sound is playing.
+        :rtype: bool
+
+        """
         return player.playing
 
     def get_volume(self, player: media.Player) -> float:
-        """ Get the current volume """
+        """
+        Get the current volume.
+
+        :param pyglet.media.Player player: Player returned from :func:`play_sound`.
+        :returns: A float, 0 for volume off, 1 for full volume.
+        :rtype: float
+        """
         return player.volume
 
     def set_volume(self, volume, player: media.Player) -> None:
         """
-        Set the current volume.
+        Set the volume of a sound as it is playing.
+
+        :param float volume: Floating point volume. 0 is silent, 1 is full.
+        :param pyglet.media.Player player: Player returned from :func:`play_sound`.
         """
         player.volume = volume
 
@@ -91,6 +107,9 @@ class Sound:
         """
         Return where we are in the stream. This will reset back to
         zero when it is done playing.
+
+        :param pyglet.media.Player player: Player returned from :func:`play_sound`.
+
         """
         return player.time
 
@@ -99,9 +118,11 @@ def load_sound(path: Union[str, Path], streaming: bool =False) -> Optional[Sound
     """
     Load a sound.
 
-    :param str path: Name of the sound file to load.
-
-    :returns: Sound object
+    :param Path path: Name of the sound file to load.
+    :param bool streaming: Boolean for determining if we stream the sound
+                           or load it all into memory. Set to ``True`` for long sounds to save
+                           memory, ``False`` for short sounds to speed playback.
+    :returns: Sound object which can be used by the  :func:`play_sound` function.
     :rtype: Sound
     """
 
@@ -120,7 +141,7 @@ def play_sound(
     """
     Play a sound.
 
-    :param Sound sound: Sound loaded by load_sound. Do NOT use a string here for the filename.
+    :param Sound sound: Sound loaded by :func:`load_sound`. Do NOT use a string here for the filename.
     :param float volume: Volume, from 0=quiet to 1=loud
     :param float pan: Pan, from -1=left to 0=centered to 1=right
     """
@@ -143,7 +164,7 @@ def stop_sound(player: media.Player):
     """
     Stop a sound that is currently playing.
 
-    :param sound:
+    :param pyglet.media.Player player: Player returned from :func:`play_sound`.
     """
     player.pause()
     player.delete()
