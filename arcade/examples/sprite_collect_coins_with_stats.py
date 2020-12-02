@@ -11,13 +11,12 @@ python -m arcade.examples.sprite_collect_coins_with_stats
 
 import random
 import arcade
-import os
 import timeit
 
 # --- Constants ---
 SPRITE_SCALING_PLAYER = 0.5
-SPRITE_SCALING_COIN = 0.2
-COIN_COUNT = 50
+SPRITE_SCALING_COIN = 0.3
+COIN_COUNT = 150
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -32,13 +31,6 @@ class MyGame(arcade.Window):
         # Call the parent class initializer
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
-        # Set the working directory (where we expect to find files) to the same
-        # directory this .py file is in. You can leave this out of your own
-        # code, but it is needed to easily run the examples using "python -m"
-        # as mentioned at the top of this program.
-        file_path = os.path.dirname(os.path.abspath(__file__))
-        os.chdir(file_path)
-
         # Variables that will hold sprite lists
         self.player_list = None
         self.coin_list = None
@@ -50,8 +42,15 @@ class MyGame(arcade.Window):
         # Don't show the mouse cursor
         self.set_mouse_visible(False)
 
+        # --- Variables for our statistics
+
+        # Time for on_update
         self.processing_time = 0
+
+        # Time for on_draw
         self.draw_time = 0
+
+        # Variables used to calculate frames per second
         self.frame_count = 0
         self.fps_start_timer = None
         self.fps = None
@@ -80,7 +79,8 @@ class MyGame(arcade.Window):
 
             # Create the coin instance
             # Coin image from kenney.nl
-            coin = arcade.Sprite(":resources:images/items/coinGold.png", SPRITE_SCALING_COIN)
+            coin = arcade.Sprite(":resources:images/items/coinGold.png",
+                                 SPRITE_SCALING_COIN)
 
             # Position the coin
             coin.center_x = random.randrange(SCREEN_WIDTH)
@@ -93,13 +93,21 @@ class MyGame(arcade.Window):
         """ Draw everything """
 
         # Start timing how long this takes
-        draw_start_time = timeit.default_timer()
+        start_time = timeit.default_timer()
 
-        if self.frame_count % 60 == 0:
+        # --- Calculate FPS
+
+        fps_calculation_freq = 60
+        # Once every 60 frames, calculate our FPS
+        if self.frame_count % fps_calculation_freq == 0:
+            # Do we have a start time?
             if self.fps_start_timer is not None:
+                # Calculate FPS
                 total_time = timeit.default_timer() - self.fps_start_timer
-                self.fps = 60 / total_time
+                self.fps = fps_calculation_freq / total_time
+            # Reset the timer
             self.fps_start_timer = timeit.default_timer()
+        # Add one to our frame count
         self.frame_count += 1
 
         arcade.start_render()
@@ -108,20 +116,21 @@ class MyGame(arcade.Window):
 
         # Put the text on the screen.
         output = f"Score: {self.score}"
-        arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
+        arcade.draw_text(output, 10, 20, arcade.color.BLACK, 18)
 
         # Display timings
         output = f"Processing time: {self.processing_time:.3f}"
-        arcade.draw_text(output, 20, SCREEN_HEIGHT - 20, arcade.color.BLACK, 16)
+        arcade.draw_text(output, 20, SCREEN_HEIGHT - 25, arcade.color.BLACK, 18)
 
         output = f"Drawing time: {self.draw_time:.3f}"
-        arcade.draw_text(output, 20, SCREEN_HEIGHT - 40, arcade.color.BLACK, 16)
+        arcade.draw_text(output, 20, SCREEN_HEIGHT - 50, arcade.color.BLACK, 18)
 
         if self.fps is not None:
             output = f"FPS: {self.fps:.0f}"
-            arcade.draw_text(output, 20, SCREEN_HEIGHT - 60, arcade.color.BLACK, 16)
+            arcade.draw_text(output, 20, SCREEN_HEIGHT - 75, arcade.color.BLACK, 18)
 
-        self.draw_time = timeit.default_timer() - draw_start_time
+        # Stop the draw timer, and calculate total on_draw time.
+        self.draw_time = timeit.default_timer() - start_time
 
     def on_mouse_motion(self, x, y, dx, dy):
         """ Handle Mouse Motion """
@@ -134,6 +143,9 @@ class MyGame(arcade.Window):
     def on_update(self, delta_time):
         """ Movement and game logic """
 
+        # Start timing how long this takes
+        start_time = timeit.default_timer()
+
         # Call update on all sprites (The sprites don't do much in this
         # example though.)
         self.coin_list.update()
@@ -145,6 +157,9 @@ class MyGame(arcade.Window):
         for coin in coins_hit_list:
             coin.remove_from_sprite_lists()
             self.score += 1
+
+        # Stop the draw timer, and calculate total on_draw time.
+        self.processing_time = timeit.default_timer() - start_time
 
 
 def main():
