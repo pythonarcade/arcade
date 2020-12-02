@@ -593,7 +593,7 @@ This example shows using:
 
 To create a moving platform using TMX editor, there are a few steps:
 
-1. Define an **object layer** instead of a tile layter.
+1. Define an **object layer** instead of a tile layer.
 2. Select **Insert Tile**
 3. Select the tile you wish to insert.
 4. Place the tile.
