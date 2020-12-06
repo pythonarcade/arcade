@@ -490,6 +490,11 @@ Grid-Based Games
 
    :ref:`tetris`
 
+.. figure:: thumbs/conway_alpha.png
+   :figwidth: 170px
+
+   :ref:`conway_alpha`
+
 
 Advanced
 --------
