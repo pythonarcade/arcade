@@ -12,6 +12,7 @@ class ShaderToy:
             fragColor = vec4(1.0);
         }
     """
+
     def __init__(self, source: str):
         self.window = get_window()
         if not self.window:
@@ -58,16 +59,16 @@ class ShaderToy:
 
     def draw(self, time: float = 0, target=None):
         try:
-            self.program['iTime'] = time
+            self.program["iTime"] = time
         except KeyError:
             pass
         try:
-            self.program['iMouse'] = self.mouse_pos[0], -self.mouse_pos[1]
+            self.program["iMouse"] = self.mouse_pos[0], -self.mouse_pos[1]
         except KeyError:
             pass
         try:
             if self.window is not None:
-                self.program['iResolution'] = self.window.get_framebuffer_size()
+                self.program["iResolution"] = self.window.get_framebuffer_size()
         except KeyError:
             pass
 

@@ -18,10 +18,10 @@ DEFAULT_FONT_NAMES = (
     "NotoSans-Regular.ttf",
     "/usr/share/fonts/truetype/freefont/FreeMono.ttf",
     "/System/Library/Fonts/SFNSDisplay.ttf",
-    "/Library/Fonts/Arial.ttf"
+    "/Library/Fonts/Arial.ttf",
 )
 
-draw_text_cache: Dict[str, 'Text'] = dict()
+draw_text_cache: Dict[str, "Text"] = dict()
 
 
 class Text:
@@ -35,18 +35,20 @@ class Text:
 class CreateText:
     """ Class used for managing text """
 
-    def __init__(self,
-                 text: str,
-                 color: Color,
-                 font_size: float = 12,
-                 width: int = 20,
-                 align="left",
-                 font_name=('Calibri', 'Arial'),
-                 bold: bool = False,
-                 italic: bool = False,
-                 anchor_x="left",
-                 anchor_y="baseline",
-                 rotation=0):
+    def __init__(
+        self,
+        text: str,
+        color: Color,
+        font_size: float = 12,
+        width: int = 20,
+        align="left",
+        font_name=("Calibri", "Arial"),
+        bold: bool = False,
+        italic: bool = False,
+        anchor_x="left",
+        anchor_y="baseline",
+        rotation=0,
+    ):
         self.text = text
         self.color = color
         self.font_size = font_size
@@ -60,22 +62,40 @@ class CreateText:
         self.rotation = rotation
 
 
-def create_text(text: str,
-                color: Color,
-                font_size: float = 12,
-                width: int = 0,
-                align="left",
-                font_name=('Calibri', 'Arial'),
-                bold: bool = False,
-                italic: bool = False,
-                anchor_x: str = "left",
-                anchor_y: str = "baseline",
-                rotation=0):
+def create_text(
+    text: str,
+    color: Color,
+    font_size: float = 12,
+    width: int = 0,
+    align="left",
+    font_name=("Calibri", "Arial"),
+    bold: bool = False,
+    italic: bool = False,
+    anchor_x: str = "left",
+    anchor_y: str = "baseline",
+    rotation=0,
+):
     """ Deprecated. Two step text drawing for backwards compatibility. """
 
     import warnings
-    warnings.warn("create_text has been deprecated, please use draw_text instead.", DeprecationWarning)
-    my_text = CreateText(text, color, font_size, width, align, font_name, bold, italic, anchor_x, anchor_y, rotation)
+
+    warnings.warn(
+        "create_text has been deprecated, please use draw_text instead.",
+        DeprecationWarning,
+    )
+    my_text = CreateText(
+        text,
+        color,
+        font_size,
+        width,
+        align,
+        font_name,
+        bold,
+        italic,
+        anchor_x,
+        anchor_y,
+        rotation,
+    )
     return my_text
 
 
@@ -83,32 +103,40 @@ def render_text(text: CreateText, start_x: float, start_y: float):
     """ Deprecated. Two step text drawing for backwards compatibility. """
 
     import warnings
-    warnings.warn("render_text has been deprecated, please use draw_text instead.", DeprecationWarning)
 
-    draw_text(text.text,
-              start_x,
-              start_y,
-              color=text.color,
-              font_size=text.font_size,
-              width=text.width,
-              align=text.align,
-              font_name=text.font_name,
-              bold=text.bold,
-              italic=text.italic,
-              anchor_x=text.anchor_x,
-              anchor_y=text.anchor_y,
-              rotation=text.rotation)
+    warnings.warn(
+        "render_text has been deprecated, please use draw_text instead.",
+        DeprecationWarning,
+    )
 
-def get_text_image(text: str,
-                   text_color: Color,
-                   font_size: float = 12,
-                   width: int = 0,
-                   align: str = "left",
-                   valign: str = "top",
-                   font_name: Union[str, Tuple[str, ...]] = ('calibri', 'arial'),
-                   background_color: Color=None,
-                   height: int = 0,
-                   ):
+    draw_text(
+        text.text,
+        start_x,
+        start_y,
+        color=text.color,
+        font_size=text.font_size,
+        width=text.width,
+        align=text.align,
+        font_name=text.font_name,
+        bold=text.bold,
+        italic=text.italic,
+        anchor_x=text.anchor_x,
+        anchor_y=text.anchor_y,
+        rotation=text.rotation,
+    )
+
+
+def get_text_image(
+    text: str,
+    text_color: Color,
+    font_size: float = 12,
+    width: int = 0,
+    align: str = "left",
+    valign: str = "top",
+    font_name: Union[str, Tuple[str, ...]] = ("calibri", "arial"),
+    background_color: Color = None,
+    height: int = 0,
+):
     # Scale the font up, so it matches with the sizes of the old code back
     # when Pyglet drew the text.
     font_size *= 1.25
@@ -124,12 +152,15 @@ def get_text_image(text: str,
 
     # Font was specified with a string
     if isinstance(font_name, str):
-        font_name = font_name,
+        font_name = (font_name,)
 
-    font_names = chain(*[
-        [font_string_name, f"{font_string_name}.ttf"]
-        for font_string_name in font_name
-    ], DEFAULT_FONT_NAMES)
+    font_names = chain(
+        *[
+            [font_string_name, f"{font_string_name}.ttf"]
+            for font_string_name in font_name
+        ],
+        DEFAULT_FONT_NAMES,
+    )
 
     font_found = False
     for font_string_name in font_names:
@@ -144,8 +175,9 @@ def get_text_image(text: str,
     if not font_found:
         try:
             import pyglet.font
+
             font_config = pyglet.font.fontconfig.get_fontconfig()
-            result = font_config.find_font('Arial')
+            result = font_config.find_font("Arial")
             font = PIL.ImageFont.truetype(result.name, int(font_size))
         except Exception:
             # NOTE: Will catch OSError from loading font and missing fontconfig in pyglet
@@ -162,7 +194,9 @@ def get_text_image(text: str,
             pass
 
     if not font_found:
-        raise RuntimeError("Unable to find a default font on this system. Please specify an available font.")
+        raise RuntimeError(
+            "Unable to find a default font on this system. Please specify an available font."
+        )
 
     # This is stupid. We have to have an image to figure out what size
     # the text will be when we draw it. Of course, we don't know how big
@@ -200,7 +234,6 @@ def get_text_image(text: str,
         field_height = height * scale_up
         image_start_y = (field_height // 2) - (text_height // 2)
 
-
     if height:
         text_image_size[1] = height * scale_up
 
@@ -215,26 +248,31 @@ def get_text_image(text: str,
     # list for a color
     if isinstance(text_color, list):
         color = cast(RGBA, tuple(text_color))
-    draw.multiline_text((image_start_x, image_start_y), text, text_color, align=align, font=font)
-    image = image.resize((max(1, text_image_size[0] // scale_down), text_image_size[1] // scale_down), resample=PIL.Image.LANCZOS)
+    draw.multiline_text(
+        (image_start_x, image_start_y), text, text_color, align=align, font=font
+    )
+    image = image.resize(
+        (max(1, text_image_size[0] // scale_down), text_image_size[1] // scale_down),
+        resample=PIL.Image.LANCZOS,
+    )
     return image
 
 
-
-def draw_text(text: str,
-              start_x: float,
-              start_y: float,
-              color: Color,
-              font_size: float = 12,
-              width: int = 0,
-              align: str = "left",
-              font_name: Union[str, Tuple[str, ...]] = ('calibri', 'arial'),
-              bold: bool = False,
-              italic: bool = False,
-              anchor_x: str = "left",
-              anchor_y: str = "baseline",
-              rotation: float = 0
-              ) -> Sprite:
+def draw_text(
+    text: str,
+    start_x: float,
+    start_y: float,
+    color: Color,
+    font_size: float = 12,
+    width: int = 0,
+    align: str = "left",
+    font_name: Union[str, Tuple[str, ...]] = ("calibri", "arial"),
+    bold: bool = False,
+    italic: bool = False,
+    anchor_x: str = "left",
+    anchor_y: str = "baseline",
+    rotation: float = 0,
+) -> Sprite:
     """
 
     Draws text to the screen.
@@ -278,12 +316,14 @@ def draw_text(text: str,
         label = draw_text_cache[key]
     except KeyError:  # doesn't exist, create it
 
-        image = get_text_image(text=text,
-                               text_color=color,
-                               font_size=font_size,
-                               width=width,
-                               align=align,
-                               font_name=font_name)
+        image = get_text_image(
+            text=text,
+            text_color=color,
+            font_size=font_size,
+            width=width,
+            align=align,
+            font_name=font_name,
+        )
         text_sprite = Sprite()
         text_sprite._texture = Texture(key)
         text_sprite.texture.image = image
@@ -308,7 +348,9 @@ def draw_text(text: str,
     elif anchor_x == "right":
         text_sprite.right = start_x
     else:
-        raise ValueError(f"anchor_x should be 'left', 'center', or 'right'. Not '{anchor_x}'")
+        raise ValueError(
+            f"anchor_x should be 'left', 'center', or 'right'. Not '{anchor_x}'"
+        )
 
     if anchor_y == "top":
         text_sprite.center_y = start_y - text_sprite.height / 2
@@ -317,7 +359,9 @@ def draw_text(text: str,
     elif anchor_y == "bottom" or anchor_y == "baseline":
         text_sprite.center_y = start_y + text_sprite.height / 2
     else:
-        raise ValueError(f"anchor_y should be 'top', 'center', 'bottom', or 'baseline'. Not '{anchor_y}'")
+        raise ValueError(
+            f"anchor_y should be 'top', 'center', 'bottom', or 'baseline'. Not '{anchor_y}'"
+        )
 
     text_sprite.angle = rotation
     text_sprite.alpha = alpha
@@ -326,19 +370,21 @@ def draw_text(text: str,
     return text_sprite
 
 
-def draw_text_2(text: str,
-                start_x: float, start_y: float,
-                color: Color,
-                font_size: float = 12,
-                width: int = 0,
-                align: str = "left",
-                font_name: Union[str, Tuple[str, ...]] = ('calibri', 'arial'),
-                bold: bool = False,
-                italic: bool = False,
-                anchor_x: str = "left",
-                anchor_y: str = "baseline",
-                rotation: float = 0
-                ):
+def draw_text_2(
+    text: str,
+    start_x: float,
+    start_y: float,
+    color: Color,
+    font_size: float = 12,
+    width: int = 0,
+    align: str = "left",
+    font_name: Union[str, Tuple[str, ...]] = ("calibri", "arial"),
+    bold: bool = False,
+    italic: bool = False,
+    anchor_x: str = "left",
+    anchor_y: str = "baseline",
+    rotation: float = 0,
+):
     """
     Draws text to the screen using pyglet's label instead. Doesn't work.
 
@@ -358,15 +404,19 @@ def draw_text_2(text: str,
     """
 
     color = get_four_byte_color(color)
-    label = pyglet.text.Label(text,
-                              font_name=font_name,
-                              font_size=font_size,
-                              x=start_x, y=start_y,
-                              anchor_x=anchor_x, anchor_y=anchor_y,
-                              color=color,
-                              align=align,
-                              bold=bold,
-                              italic=italic,
-                              width=width)
+    label = pyglet.text.Label(
+        text,
+        font_name=font_name,
+        font_size=font_size,
+        x=start_x,
+        y=start_y,
+        anchor_x=anchor_x,
+        anchor_y=anchor_y,
+        color=color,
+        align=align,
+        bold=bold,
+        italic=italic,
+        width=width,
+    )
 
     label.draw()

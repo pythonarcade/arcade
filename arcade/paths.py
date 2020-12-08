@@ -14,10 +14,9 @@ from arcade import SpriteList
 speedups.enable()
 
 
-def has_line_of_sight(point_1: Point,
-                      point_2: Point,
-                      walls: SpriteList,
-                      max_distance: int = -1):
+def has_line_of_sight(
+    point_1: Point, point_2: Point, walls: SpriteList, max_distance: int = -1
+):
     """
     Determine if we have line of sight between two points. Having a line of
     sight means, that you can connect both points with straight line without
@@ -36,7 +35,9 @@ def has_line_of_sight(point_1: Point,
         return False
     if not walls:
         return True
-    return not any((Polygon(o.get_adjusted_hit_box()).crosses(line_of_sight) for o in walls))
+    return not any(
+        (Polygon(o.get_adjusted_hit_box()).crosses(line_of_sight) for o in walls)
+    )
 
 
 """
@@ -70,7 +71,16 @@ class _AStarGraph(object):
         self.bottom = bottom
 
         if diagonal_movement:
-            self.movement_directions = (1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (-1, 1), (1, -1), (-1, -1)
+            self.movement_directions = (
+                (1, 0),
+                (-1, 0),
+                (0, 1),
+                (0, -1),
+                (1, 1),
+                (-1, 1),
+                (1, -1),
+                (-1, -1),
+            )
         else:
             self.movement_directions = (1, 0), (-1, 0), (0, 1), (0, -1)
 
@@ -112,7 +122,6 @@ class _AStarGraph(object):
             return 1
         else:
             return 1.42
-
 
         return 1  # Normal movement cost
 
@@ -182,10 +191,11 @@ def _AStarSearch(start, end, graph):
 
 
 def _collapse(pos, grid_size):
-    return int(pos[0] // grid_size),  int(pos[1] // grid_size)
+    return int(pos[0] // grid_size), int(pos[1] // grid_size)
+
 
 def _expand(pos, grid_size):
-    return int(pos[0] * grid_size),  int(pos[1] * grid_size)
+    return int(pos[0] * grid_size), int(pos[1] * grid_size)
 
 
 class AStarBarrierList:
@@ -193,14 +203,17 @@ class AStarBarrierList:
     Class that manages a list of barriers that can be encountered during
     A* path finding.
     """
-    def __init__(self,
-                 moving_sprite: Sprite,
-                 blocking_sprites: SpriteList,
-                 grid_size: int,
-                 left: int,
-                 right: int,
-                 bottom: int,
-                 top: int):
+
+    def __init__(
+        self,
+        moving_sprite: Sprite,
+        blocking_sprites: SpriteList,
+        grid_size: int,
+        left: int,
+        right: int,
+        bottom: int,
+        top: int,
+    ):
         """
         :param Sprite moving_sprite: Sprite that will be moving
         :param SpriteList blocking_sprites: Sprites that can block movement
@@ -242,7 +255,14 @@ class AStarBarrierList:
 
                 # See if we'll have a collision if our sprite is at this location
                 self.moving_sprite.position = pos
-                if len(check_for_collision_with_list(self.moving_sprite, self.blocking_sprites)) > 0:
+                if (
+                    len(
+                        check_for_collision_with_list(
+                            self.moving_sprite, self.blocking_sprites
+                        )
+                    )
+                    > 0
+                ):
                     self.barrier_list.add(cpos)
 
         # Restore original location
@@ -250,10 +270,12 @@ class AStarBarrierList:
         self.barrier_list = sorted(self.barrier_list)
 
 
-def astar_calculate_path(start_point: Point,
-                         end_point: Point,
-                         astar_barrier_list: AStarBarrierList,
-                         diagonal_movement=True):
+def astar_calculate_path(
+    start_point: Point,
+    end_point: Point,
+    astar_barrier_list: AStarBarrierList,
+    diagonal_movement=True,
+):
     """
     :param Point start_point:
     :param Point end_point:

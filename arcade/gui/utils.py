@@ -26,7 +26,7 @@ def parse_value(value: Any):
     """
     import arcade
 
-    if value in (None, '', 'None'):
+    if value in (None, "", "None"):
         return None
 
     if type(value) in (int, float, list):
@@ -44,15 +44,15 @@ def parse_value(value: Any):
             return getattr(arcade.color, value)
 
         # hex
-        if len(value) in (3, 6) and ',' not in value:
+        if len(value) in (3, 6) and "," not in value:
             try:
-                return getrgb(f'#{value}')
+                return getrgb(f"#{value}")
             except ValueError:
                 pass
 
         # rgb
         try:
-            return getrgb(f'rgb({value})')
+            return getrgb(f"rgb({value})")
         except ValueError:
             pass
 
@@ -60,7 +60,7 @@ def parse_value(value: Any):
         if os.path.exists(value):
             return Path(value)
 
-    warn(f'Could not parse style value: {value}')
+    warn(f"Could not parse style value: {value}")
     return value
 
 
@@ -73,15 +73,16 @@ def add_margin(pil_img, top, right, bottom, left, color=None):
     return result
 
 
-def get_image_with_text(text: str,
-                        font_color: Color,
-                        background_image: Image,
-                        font_size: float = 12,
-                        align: str = "left",
-                        valign: str = "top",
-                        font_name: Union[str, Tuple[str, ...]] = ('calibri', 'arial'),
-                        indent=0
-                        ) -> Image:
+def get_image_with_text(
+    text: str,
+    font_color: Color,
+    background_image: Image,
+    font_size: float = 12,
+    align: str = "left",
+    valign: str = "top",
+    font_name: Union[str, Tuple[str, ...]] = ("calibri", "arial"),
+    indent=0,
+) -> Image:
     # Scale the font up, so it matches with the sizes of the old code back
     # when Pyglet drew the text.
     font_size *= 1.25
@@ -97,12 +98,15 @@ def get_image_with_text(text: str,
 
     # Font was specified with a string
     if isinstance(font_name, str):
-        font_name = font_name,
+        font_name = (font_name,)
 
-    font_names = chain(*[
-        [font_string_name, f"{font_string_name}.ttf"]
-        for font_string_name in font_name
-    ], DEFAULT_FONT_NAMES)
+    font_names = chain(
+        *[
+            [font_string_name, f"{font_string_name}.ttf"]
+            for font_string_name in font_name
+        ],
+        DEFAULT_FONT_NAMES,
+    )
 
     font_found = False
     for font_string_name in font_names:
@@ -117,8 +121,9 @@ def get_image_with_text(text: str,
     if not font_found:
         try:
             import pyglet.font
+
             font_config = pyglet.font.fontconfig.get_fontconfig()
-            result = font_config.find_font('Arial')
+            result = font_config.find_font("Arial")
             font = PIL.ImageFont.truetype(result.name, int(font_size))
         except Exception:
             # NOTE: Will catch OSError from loading font and missing fontconfig in pyglet
@@ -135,7 +140,9 @@ def get_image_with_text(text: str,
             pass
 
     if not font_found:
-        raise RuntimeError("Unable to find a default font on this system. Please specify an available font.")
+        raise RuntimeError(
+            "Unable to find a default font on this system. Please specify an available font."
+        )
 
     # This is stupid. We have to have an image to figure out what size
     # the text will be when we draw it. Of course, we don't know how big
@@ -182,25 +189,30 @@ def get_image_with_text(text: str,
     # list for a color
     if isinstance(font_color, list):
         color = cast(RGBA, tuple(font_color))
-    draw.multiline_text((image_start_x, image_start_y), text, font_color, align=align, font=font)
-    image = image.resize((max(1, text_image_size[0] // scale_down), text_image_size[1] // scale_down),
-                         resample=PIL.Image.LANCZOS)
+    draw.multiline_text(
+        (image_start_x, image_start_y), text, font_color, align=align, font=font
+    )
+    image = image.resize(
+        (max(1, text_image_size[0] // scale_down), text_image_size[1] // scale_down),
+        resample=PIL.Image.LANCZOS,
+    )
     return image
 
 
 # taken from arcade 2.4 alpha
 # TODO remove this!
-def get_text_image(text: str,
-                   font_color: Color,
-                   font_size: float = 12,
-                   width: int = 0,
-                   align: str = "left",
-                   valign: str = "top",
-                   font_name: Union[str, Tuple[str, ...]] = ('calibri', 'arial'),
-                   background_color: Color = None,
-                   height: int = 0,
-                   indent=0
-                   ) -> Image:
+def get_text_image(
+    text: str,
+    font_color: Color,
+    font_size: float = 12,
+    width: int = 0,
+    align: str = "left",
+    valign: str = "top",
+    font_name: Union[str, Tuple[str, ...]] = ("calibri", "arial"),
+    background_color: Color = None,
+    height: int = 0,
+    indent=0,
+) -> Image:
     # Scale the font up, so it matches with the sizes of the old code back
     # when Pyglet drew the text.
     font_size *= 1.25
@@ -216,12 +228,15 @@ def get_text_image(text: str,
 
     # Font was specified with a string
     if isinstance(font_name, str):
-        font_name = font_name,
+        font_name = (font_name,)
 
-    font_names = chain(*[
-        [font_string_name, f"{font_string_name}.ttf"]
-        for font_string_name in font_name
-    ], DEFAULT_FONT_NAMES)
+    font_names = chain(
+        *[
+            [font_string_name, f"{font_string_name}.ttf"]
+            for font_string_name in font_name
+        ],
+        DEFAULT_FONT_NAMES,
+    )
 
     font_found = False
     for font_string_name in font_names:
@@ -236,8 +251,9 @@ def get_text_image(text: str,
     if not font_found:
         try:
             import pyglet.font
+
             font_config = pyglet.font.fontconfig.get_fontconfig()
-            result = font_config.find_font('Arial')
+            result = font_config.find_font("Arial")
             font = PIL.ImageFont.truetype(result.name, int(font_size))
         except Exception:
             # NOTE: Will catch OSError from loading font and missing fontconfig in pyglet
@@ -254,7 +270,9 @@ def get_text_image(text: str,
             pass
 
     if not font_found:
-        raise RuntimeError("Unable to find a default font on this system. Please specify an available font.")
+        raise RuntimeError(
+            "Unable to find a default font on this system. Please specify an available font."
+        )
 
     # This is stupid. We have to have an image to figure out what size
     # the text will be when we draw it. Of course, we don't know how big
@@ -306,31 +324,30 @@ def get_text_image(text: str,
     # list for a color
     if isinstance(font_color, list):
         color = cast(RGBA, tuple(font_color))
-    draw.multiline_text((image_start_x, image_start_y), text, font_color, align=align, font=font)
-    image = image.resize((max(1, text_image_size[0] // scale_down), text_image_size[1] // scale_down),
-                         resample=PIL.Image.LANCZOS)
+    draw.multiline_text(
+        (image_start_x, image_start_y), text, font_color, align=align, font=font
+    )
+    image = image.resize(
+        (max(1, text_image_size[0] // scale_down), text_image_size[1] // scale_down),
+        resample=PIL.Image.LANCZOS,
+    )
     return image
 
 
 def render_text_image(
-        text: str,
-
-        font_size=22,
-        font_name=('Calibri', 'Arial'),
-        font_color: Color = arcade.color.WHITE,
-
-        border_width: int = 2,
-        border_color: Optional[Color] = arcade.color.WHITE,
-
-        align: str = "left",
-        valign: str = "top",
-
-        bg_color: Optional[Color] = None,
-        bg_image: Optional[Image] = None,
-
-        width: int = 0,
-        height: int = 0,
-        indent: int = 0
+    text: str,
+    font_size=22,
+    font_name=("Calibri", "Arial"),
+    font_color: Color = arcade.color.WHITE,
+    border_width: int = 2,
+    border_color: Optional[Color] = arcade.color.WHITE,
+    align: str = "left",
+    valign: str = "top",
+    bg_color: Optional[Color] = None,
+    bg_image: Optional[Image] = None,
+    width: int = 0,
+    height: int = 0,
+    indent: int = 0,
 ):
     if bg_image:
 
@@ -344,11 +361,10 @@ def render_text_image(
             font_name=font_name,
             font_color=font_color,
             font_size=font_size,
-
             background_image=bg_image,
             align=align,
             valign=valign,
-            indent=indent
+            indent=indent,
         )
     else:
         image = get_text_image(
@@ -356,23 +372,18 @@ def render_text_image(
             font_name=font_name,
             font_color=font_color,
             font_size=font_size,
-
             background_color=bg_color,
             align=align,
             valign=valign,
             indent=indent,
-
             width=width,
-            height=height
+            height=height,
         )
 
     # draw outline
     if border_width is None:
         border_width = 0
-    rect = [0,
-            0,
-            image.width - border_width / 2,
-            image.height - border_width / 2]
+    rect = [0, 0, image.width - border_width / 2, image.height - border_width / 2]
 
     if border_color and border_width:
         d = ImageDraw.Draw(image)

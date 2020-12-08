@@ -15,6 +15,7 @@ class EmitController:
     """Base class for how a client configure the rate at which an Emitter emits Particles
 
     Subclasses allow the client to control the rate and duration of emitting"""
+
     def how_many(self, delta_time: float, current_particle_count: int) -> int:
         raise NotImplemented("EmitterRate.how_many must be implemented")
 
@@ -24,6 +25,7 @@ class EmitController:
 
 class EmitBurst(EmitController):
     """Used to configure an Emitter to emit particles in one burst"""
+
     def __init__(self, count: int):
         self._is_complete = False
         self._count = count
@@ -40,6 +42,7 @@ class EmitBurst(EmitController):
 
 class EmitMaintainCount(EmitController):
     """Used to configure an Emitter so it emits particles so that the given count is always maintained"""
+
     def __init__(self, particle_count: int):
         self._target_count = particle_count
 
@@ -52,6 +55,7 @@ class EmitMaintainCount(EmitController):
 
 class EmitInterval(EmitController):
     """Base class used to configure an Emitter to have a constant rate of emitting. Will emit indefinitely."""
+
     def __init__(self, emit_interval: float):
         self._emit_interval = emit_interval
         self._carryover_time = 0.0
@@ -70,6 +74,7 @@ class EmitInterval(EmitController):
 
 class EmitterIntervalWithCount(EmitInterval):
     """Configure an Emitter to emit particles with given interval, ending after emitting given number of particles"""
+
     def __init__(self, emit_interval: float, particle_count: int):
         super().__init__(emit_interval)
         self._count_remaining = particle_count
@@ -86,6 +91,7 @@ class EmitterIntervalWithCount(EmitInterval):
 
 class EmitterIntervalWithTime(EmitInterval):
     """Configure an Emitter to emit particles with given interval, ending after given number of seconds"""
+
     def __init__(self, emit_interval: float, lifetime: float):
         super().__init__(emit_interval)
         self._lifetime = lifetime
@@ -103,6 +109,7 @@ class EmitterIntervalWithTime(EmitInterval):
 # Emitter
 class Emitter:
     """Emits and manages Particles over their lifetime.  The foundational class in a particle system."""
+
     def __init__(
         self,
         center_xy: Point,
@@ -110,7 +117,7 @@ class Emitter:
         particle_factory: Callable[["Emitter"], Particle],
         change_xy: Vector = (0.0, 0.0),
         emit_done_cb: Callable[["Emitter"], None] = None,
-        reap_cb: Callable[[], None] = None
+        reap_cb: Callable[[], None] = None,
     ):
         # Note Self-reference with type annotations:
         #     https://www.python.org/dev/peps/pep-0484/#the-problem-of-forward-declarations

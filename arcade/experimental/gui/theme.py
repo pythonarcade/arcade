@@ -3,9 +3,11 @@ from typing import Union, Tuple
 from dataclasses import dataclass
 from arcade import Color
 
+
 @dataclass
 class Theme:
     """ Theme information for GUI elements. """
+
     text_color: Color
 
     font_size: float

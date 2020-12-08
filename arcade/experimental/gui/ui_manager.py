@@ -7,7 +7,9 @@ from pyglet.window import Window
 import arcade
 
 import logging
+
 LOG = logging.getLogger(__name__)
+
 
 class UIManager:
     """
@@ -34,7 +36,9 @@ class UIManager:
         LOG.debug("Click UIManager")
         matching_ui_elements = arcade.get_sprites_at_point((x, y), self.ui_elements)
         if len(matching_ui_elements) > 0:
-            matching_ui_element2 = typing.cast(arcade.experimental.gui.UIElement, matching_ui_elements[0])
+            matching_ui_element2 = typing.cast(
+                arcade.experimental.gui.UIElement, matching_ui_elements[0]
+            )
             matching_ui_element2.is_mouse_pressed = True
             return matching_ui_element2.on_mouse_press(x, y, button, modifiers)
 
@@ -55,7 +59,9 @@ class UIManager:
 
         matching_ui_elements = arcade.get_sprites_at_point((x, y), self.ui_elements)
         for matching_ui_element in matching_ui_elements:
-            matching_ui_element2 = typing.cast(arcade.experimental.gui.UIElement, matching_ui_element)
+            matching_ui_element2 = typing.cast(
+                arcade.experimental.gui.UIElement, matching_ui_element
+            )
             if not matching_ui_element2.is_mouse_over:
                 matching_ui_element2.is_mouse_over = True
                 matching_ui_element2.on_mouse_over()

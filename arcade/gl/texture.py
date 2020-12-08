@@ -278,7 +278,9 @@ class Texture:
 
         :type: int
         """
-        return pixel_formats[self._dtype][3] * self._components * self.width * self.height
+        return (
+            pixel_formats[self._dtype][3] * self._components * self.width * self.height
+        )
 
     @property
     def components(self) -> int:

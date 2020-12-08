@@ -4,6 +4,7 @@ Physics engines for top-down or platformers.
 # pylint: disable=too-many-arguments, too-many-locals, too-few-public-methods
 
 import math
+
 # import time
 
 from arcade import check_for_collision_with_list
@@ -11,6 +12,7 @@ from arcade import check_for_collision
 from arcade import Sprite
 from arcade import SpriteList
 from arcade import get_distance
+
 
 def _circular_check(player, walls):
     """
@@ -23,15 +25,16 @@ def _circular_check(player, walls):
 
     vary = 1
     while True:
-        try_list = [[original_x, original_y + vary],
-                    [original_x, original_y - vary],
-                    [original_x + vary, original_y],
-                    [original_x - vary, original_y],
-                    [original_x + vary, original_y + vary],
-                    [original_x + vary, original_y - vary],
-                    [original_x - vary, original_y + vary],
-                    [original_x - vary, original_y - vary]
-                    ]
+        try_list = [
+            [original_x, original_y + vary],
+            [original_x, original_y - vary],
+            [original_x + vary, original_y],
+            [original_x - vary, original_y],
+            [original_x + vary, original_y + vary],
+            [original_x + vary, original_y - vary],
+            [original_x - vary, original_y + vary],
+            [original_x - vary, original_y - vary],
+        ]
 
         for my_item in try_list:
             x, y = my_item
@@ -43,6 +46,7 @@ def _circular_check(player, walls):
             if len(check_hit_list) == 0:
                 return
         vary *= 2
+
 
 def _move_sprite(moving_sprite: Sprite, walls: SpriteList, ramp_up: bool):
 
@@ -72,7 +76,15 @@ def _move_sprite(moving_sprite: Sprite, walls: SpriteList, ramp_up: bool):
 
             # Resolve any collisions by this weird kludge
             _circular_check(moving_sprite, walls)
-            if get_distance(original_x, original_y, moving_sprite.center_x, moving_sprite.center_y) > max_distance:
+            if (
+                get_distance(
+                    original_x,
+                    original_y,
+                    moving_sprite.center_x,
+                    moving_sprite.center_y,
+                )
+                > max_distance
+            ):
                 # Ok, glitched trying to rotate. Reset.
                 moving_sprite.center_x = original_x
                 moving_sprite.center_y = original_y
@@ -160,15 +172,19 @@ def _move_sprite(moving_sprite: Sprite, walls: SpriteList, ramp_up: bool):
                     cur_y_change = cur_x_change
                     moving_sprite.center_y = original_y + cur_y_change
 
-                    collision_check = check_for_collision_with_list(moving_sprite, walls)
+                    collision_check = check_for_collision_with_list(
+                        moving_sprite, walls
+                    )
                     if len(collision_check) > 0:
                         cur_y_change -= cur_x_change
                     else:
-                        while(len(collision_check) == 0) and cur_y_change > 0:
+                        while (len(collision_check) == 0) and cur_y_change > 0:
                             # print("Ramp up check")
                             cur_y_change -= 1
                             moving_sprite.center_y = almost_original_y + cur_y_change
-                            collision_check = check_for_collision_with_list(moving_sprite, walls)
+                            collision_check = check_for_collision_with_list(
+                                moving_sprite, walls
+                            )
                         cur_y_change += 1
                         collision_check = []
 
@@ -196,7 +212,9 @@ def _move_sprite(moving_sprite: Sprite, walls: SpriteList, ramp_up: bool):
                     exit_loop = True
                 else:
                     # print(f"No @ {cur_x_change}")
-                    cur_x_change = (upper_bound + lower_bound) // 2 + (upper_bound + lower_bound) % 2
+                    cur_x_change = (upper_bound + lower_bound) // 2 + (
+                        upper_bound + lower_bound
+                    ) % 2
 
         # print(cur_x_change * direction, cur_y_change)
         moving_sprite.center_x = original_x + cur_x_change * direction
@@ -229,8 +247,8 @@ class PhysicsEngineSimple:
         :param Sprite player_sprite: The moving sprite
         :param SpriteList walls: The sprites it can't move through
         """
-        assert(isinstance(player_sprite, Sprite))
-        assert(isinstance(walls, SpriteList))
+        assert isinstance(player_sprite, Sprite)
+        assert isinstance(walls, SpriteList)
         self.player_sprite = player_sprite
         self.walls = walls
 
@@ -252,12 +270,13 @@ class PhysicsEnginePlatformer:
     does not currently handle rotation.
     """
 
-    def __init__(self,
-                 player_sprite: Sprite,
-                 platforms: SpriteList,
-                 gravity_constant: float = 0.5,
-                 ladders: SpriteList = None,
-                 ):
+    def __init__(
+        self,
+        player_sprite: Sprite,
+        platforms: SpriteList,
+        gravity_constant: float = 0.5,
+        ladders: SpriteList = None,
+    ):
         """
         Create a physics engine for a platformer.
 
@@ -307,7 +326,11 @@ class PhysicsEnginePlatformer:
         if len(hit_list) > 0:
             self.jumps_since_ground = 0
 
-        if len(hit_list) > 0 or self.allow_multi_jump and self.jumps_since_ground < self.allowed_jumps:
+        if (
+            len(hit_list) > 0
+            or self.allow_multi_jump
+            and self.jumps_since_ground < self.allowed_jumps
+        ):
             return True
         else:
             return False
@@ -366,20 +389,26 @@ class PhysicsEnginePlatformer:
 
         # print(f"Spot B ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
 
-        complete_hit_list = _move_sprite(self.player_sprite, self.platforms, ramp_up=True)
+        complete_hit_list = _move_sprite(
+            self.player_sprite, self.platforms, ramp_up=True
+        )
 
         for platform in self.platforms:
             if platform.change_x != 0 or platform.change_y != 0:
                 platform.center_x += platform.change_x
 
-                if platform.boundary_left is not None \
-                        and platform.left <= platform.boundary_left:
+                if (
+                    platform.boundary_left is not None
+                    and platform.left <= platform.boundary_left
+                ):
                     platform.left = platform.boundary_left
                     if platform.change_x < 0:
                         platform.change_x *= -1
 
-                if platform.boundary_right is not None \
-                        and platform.right >= platform.boundary_right:
+                if (
+                    platform.boundary_right is not None
+                    and platform.right >= platform.boundary_right
+                ):
                     platform.right = platform.boundary_right
                     if platform.change_x > 0:
                         platform.change_x *= -1
@@ -392,14 +421,18 @@ class PhysicsEnginePlatformer:
 
                 platform.center_y += platform.change_y
 
-                if platform.boundary_top is not None \
-                        and platform.top >= platform.boundary_top:
+                if (
+                    platform.boundary_top is not None
+                    and platform.top >= platform.boundary_top
+                ):
                     platform.top = platform.boundary_top
                     if platform.change_y > 0:
                         platform.change_y *= -1
 
-                if platform.boundary_bottom is not None \
-                        and platform.bottom <= platform.boundary_bottom:
+                if (
+                    platform.boundary_bottom is not None
+                    and platform.bottom <= platform.boundary_bottom
+                ):
                     platform.bottom = platform.boundary_bottom
                     if platform.change_y < 0:
                         platform.change_y *= -1

@@ -7,6 +7,7 @@ import math
 
 SQRT2 = math.sqrt(2)
 
+
 def erf(x):
     a1 = 0.254829592
     a2 = -0.284496736
@@ -20,13 +21,14 @@ def erf(x):
 
     return math.copysign(1, x) * y
 
+
 def def_int_gaussian(x, mu, sigma):
     return 0.5 * erf((x - mu) / (SQRT2 * sigma))
 
-def gaussian_kernel(kernel_size: int = 5,
-                    sigma: float = 1,
-                    mu: float = 0,
-                    step: int = 1):
+
+def gaussian_kernel(
+    kernel_size: int = 5, sigma: float = 1, mu: float = 0, step: int = 1
+):
     end = 0.5 * kernel_size
     start = -end
     coeff = []
@@ -40,7 +42,6 @@ def gaussian_kernel(kernel_size: int = 5,
         coeff.append(c)
         sum += c
         last_int = new_int
-
 
     # normalize
     sum_norm = 1 / sum

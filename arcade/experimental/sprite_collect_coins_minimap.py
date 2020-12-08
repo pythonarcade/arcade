@@ -16,7 +16,7 @@ from arcade.gl import geometry
 
 # --- Constants ---
 SPRITE_SCALING_PLAYER = 0.5
-SPRITE_SCALING_COIN = .25
+SPRITE_SCALING_COIN = 0.25
 COIN_COUNT = 50
 
 SCREEN_WIDTH = 800
@@ -63,8 +63,11 @@ class MyGame(arcade.Window):
         # Offscreen stuff
         self.program = self.ctx.load_program(
             vertex_shader=arcade.resources.shaders.vertex.default_projection,
-            fragment_shader=arcade.resources.shaders.fragment.texture)
-        self.color_attachment = self.ctx.texture((SCREEN_WIDTH, SCREEN_HEIGHT), components=4)
+            fragment_shader=arcade.resources.shaders.fragment.texture,
+        )
+        self.color_attachment = self.ctx.texture(
+            (SCREEN_WIDTH, SCREEN_HEIGHT), components=4
+        )
         self.offscreen = self.ctx.framebuffer(color_attachments=[self.color_attachment])
         self.quad_fs = geometry.quad_2d_fs()
         self.mini_map_quad = geometry.quad_2d(size=(0.5, 0.5), pos=(0.75, 0.75))
@@ -78,8 +81,10 @@ class MyGame(arcade.Window):
 
         # Set up the player
         # Character image from kenney.nl
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                                           SPRITE_SCALING_PLAYER)
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            SPRITE_SCALING_PLAYER,
+        )
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 50
         self.player_list.append(self.player_sprite)
@@ -89,8 +94,9 @@ class MyGame(arcade.Window):
 
             # Create the coin instance
             # Coin image from kenney.nl
-            coin = arcade.Sprite(":resources:images/items/coinGold.png",
-                                 SPRITE_SCALING_COIN)
+            coin = arcade.Sprite(
+                ":resources:images/items/coinGold.png", SPRITE_SCALING_COIN
+            )
 
             # Position the coin
             coin.center_x = random.randrange(SCREEN_WIDTH)
@@ -106,30 +112,36 @@ class MyGame(arcade.Window):
         self.offscreen.use()
         self.offscreen.clear(arcade.color.AMAZON)
 
-        arcade.draw_rectangle_outline(SCREEN_WIDTH / 2,
-                                      SCREEN_HEIGHT / 2,
-                                      SCREEN_WIDTH,
-                                      SCREEN_HEIGHT,
-                                      arcade.color.WHITE,
-                                      10)
+        arcade.draw_rectangle_outline(
+            SCREEN_WIDTH / 2,
+            SCREEN_HEIGHT / 2,
+            SCREEN_WIDTH,
+            SCREEN_HEIGHT,
+            arcade.color.WHITE,
+            10,
+        )
         self.coin_list.draw()
         self.player_list.draw()
 
         self.use()
-        arcade.draw_rectangle_filled(SCREEN_WIDTH / 2,
-                                     SCREEN_HEIGHT / 2,
-                                     SCREEN_WIDTH,
-                                     SCREEN_HEIGHT,
-                                     arcade.color.AMAZON)
+        arcade.draw_rectangle_filled(
+            SCREEN_WIDTH / 2,
+            SCREEN_HEIGHT / 2,
+            SCREEN_WIDTH,
+            SCREEN_HEIGHT,
+            arcade.color.AMAZON,
+        )
 
         self.color_attachment.use(0)
         self.quad_fs.render(self.program)
 
-        arcade.draw_rectangle_filled(SCREEN_WIDTH - SCREEN_WIDTH / 8,
-                                     SCREEN_HEIGHT - SCREEN_HEIGHT / 8,
-                                     SCREEN_WIDTH / 4,
-                                     SCREEN_HEIGHT / 4,
-                                     arcade.color.BLACK)
+        arcade.draw_rectangle_filled(
+            SCREEN_WIDTH - SCREEN_WIDTH / 8,
+            SCREEN_HEIGHT - SCREEN_HEIGHT / 8,
+            SCREEN_WIDTH / 4,
+            SCREEN_HEIGHT / 4,
+            arcade.color.BLACK,
+        )
         self.color_attachment.use(0)
         self.mini_map_quad.render(self.program)
 
@@ -152,7 +164,9 @@ class MyGame(arcade.Window):
         self.coin_list.update()
 
         # Generate a list of all sprites that collided with the player.
-        coins_hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.coin_list)
+        coins_hit_list = arcade.check_for_collision_with_list(
+            self.player_sprite, self.coin_list
+        )
 
         # Loop through each colliding sprite, remove it, and add to the score.
         for coin in coins_hit_list:

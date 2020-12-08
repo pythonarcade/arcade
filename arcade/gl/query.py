@@ -67,7 +67,7 @@ class Query:
     def samples_passed(self) -> int:
         """
         How many samples was written. These are per component (RGBA)
-        
+
         :type: int
         """
         value = gl.GLint()
@@ -78,7 +78,7 @@ class Query:
     def time_elapsed(self) -> int:
         """
         The time elapsed in nanoseconds
-        
+
         :type: int
         """
         value = gl.GLint()

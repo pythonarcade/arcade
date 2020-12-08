@@ -31,6 +31,7 @@ class Shape:
     Primitive drawing shape. This can be part of a ShapeElementList so
     shapes can be drawn faster in batch.
     """
+
     def __init__(self):
         self.vao = None
         self.vbo = None
@@ -43,7 +44,7 @@ class Shape:
         Draw this shape. Drawing this way isn't as fast as drawing multiple
         shapes batched together in a ShapeElementList.
         """
-        assert(self.line_width == 1)
+        assert self.line_width == 1
         gl.glLineWidth(self.line_width)
 
         gl.glEnable(gl.GL_BLEND)
@@ -57,8 +58,14 @@ class Shape:
         self.vao.render(self.program, mode=self.mode)
 
 
-def create_line(start_x: float, start_y: float, end_x: float, end_y: float,
-                color: Color, line_width: float = 1) -> Shape:
+def create_line(
+    start_x: float,
+    start_y: float,
+    end_x: float,
+    end_y: float,
+    color: Color,
+    line_width: float = 1,
+) -> Shape:
     """
     Create a line to be rendered later. This works faster than draw_line because
     the vertexes are only loaded to the graphics card once, rather than each frame.
@@ -81,10 +88,12 @@ def create_line(start_x: float, start_y: float, end_x: float, end_y: float,
     return shape
 
 
-def create_line_generic_with_colors(point_list: PointList,
-                                    color_list: Iterable[Color],
-                                    shape_mode: int,
-                                    line_width: float = 1) -> Shape:
+def create_line_generic_with_colors(
+    point_list: PointList,
+    color_list: Iterable[Color],
+    shape_mode: int,
+    line_width: float = 1,
+) -> Shape:
     """
     This function is used by ``create_line_strip`` and ``create_line_loop``,
     just changing the OpenGL type for the line drawing.
@@ -100,18 +109,15 @@ def create_line_generic_with_colors(point_list: PointList,
     ctx = window.ctx
     program = ctx.line_generic_with_colors_program
 
-    buffer_type = np.dtype([('vertex', '2f4'), ('color', '4B')])
+    buffer_type = np.dtype([("vertex", "2f4"), ("color", "4B")])
     data = np.zeros(len(point_list), dtype=buffer_type)
-    data['vertex'] = point_list
-    data['color'] = [get_four_byte_color(color) for color in color_list]
+    data["vertex"] = point_list
+    data["color"] = [get_four_byte_color(color) for color in color_list]
 
     vbo = ctx.buffer(data=data.tobytes())
     vao_content = [
         BufferDescription(
-            vbo,
-            '2f 4f1',
-            ('in_vert', 'in_color'),
-            normalized=['in_color']
+            vbo, "2f 4f1", ("in_vert", "in_color"), normalized=["in_color"]
         )
     ]
 
@@ -127,25 +133,20 @@ def create_line_generic_with_colors(point_list: PointList,
     return shape
 
 
-def create_line_generic(point_list: PointList,
-                        color: Color,
-                        shape_mode: int, line_width: float = 1) -> Shape:
+def create_line_generic(
+    point_list: PointList, color: Color, shape_mode: int, line_width: float = 1
+) -> Shape:
     """
     This function is used by ``create_line_strip`` and ``create_line_loop``,
     just changing the OpenGL type for the line drawing.
     """
     colors = [get_four_byte_color(color)] * len(point_list)
-    shape = create_line_generic_with_colors(
-        point_list,
-        colors,
-        shape_mode,
-        line_width)
+    shape = create_line_generic_with_colors(point_list, colors, shape_mode, line_width)
 
     return shape
 
 
-def create_line_strip(point_list: PointList,
-                      color: Color, line_width: float = 1):
+def create_line_strip(point_list: PointList, color: Color, line_width: float = 1):
     """
     Create a multi-point line to be rendered later. This works faster than draw_line because
     the vertexes are only loaded to the graphics card once, rather than each frame.
@@ -171,7 +172,9 @@ def create_line_strip(point_list: PointList,
             end_y = point_list[i][1]
             color1 = color
             color2 = color
-            points = get_points_for_thick_line(start_x, start_y, end_x, end_y, line_width)
+            points = get_points_for_thick_line(
+                start_x, start_y, end_x, end_y, line_width
+            )
             new_color_list += color1, color2, color1, color2
             triangle_point_list += points[1], points[0], points[2], points[3]
 
@@ -179,8 +182,7 @@ def create_line_strip(point_list: PointList,
         return shape
 
 
-def create_line_loop(point_list: PointList,
-                     color: Color, line_width: float = 1):
+def create_line_loop(point_list: PointList, color: Color, line_width: float = 1):
     """
     Create a multi-point line loop to be rendered later. This works faster than draw_line because
     the vertexes are only loaded to the graphics card once, rather than each frame.
@@ -196,8 +198,7 @@ def create_line_loop(point_list: PointList,
     return create_line_strip(point_list, color, line_width)
 
 
-def create_lines(point_list: PointList,
-                 color: Color, line_width: float = 1):
+def create_lines(point_list: PointList, color: Color, line_width: float = 1):
     """
     Create a multi-point line loop to be rendered later. This works faster than draw_line because
     the vertexes are only loaded to the graphics card once, rather than each frame.
@@ -212,33 +213,38 @@ def create_lines(point_list: PointList,
     return create_line_generic(point_list, color, gl.GL_LINES, line_width)
 
 
-def create_lines_with_colors(point_list: PointList,
-                             color_list: Sequence[Color],
-                             line_width: float = 1):
+def create_lines_with_colors(
+    point_list: PointList, color_list: Sequence[Color], line_width: float = 1
+):
 
     if line_width == 1:
-        return create_line_generic_with_colors(point_list, color_list, gl.GL_LINES, line_width)
+        return create_line_generic_with_colors(
+            point_list, color_list, gl.GL_LINES, line_width
+        )
     else:
 
         triangle_point_list: List[Point] = []
         new_color_list: List[Color] = []
         for i in range(1, len(point_list), 2):
-            start_x = point_list[i-1][0]
-            start_y = point_list[i-1][1]
+            start_x = point_list[i - 1][0]
+            start_y = point_list[i - 1][1]
             end_x = point_list[i][0]
             end_y = point_list[i][1]
-            color1 = color_list[i-1]
+            color1 = color_list[i - 1]
             color2 = color_list[i]
-            points = get_points_for_thick_line(start_x, start_y, end_x, end_y, line_width)
+            points = get_points_for_thick_line(
+                start_x, start_y, end_x, end_y, line_width
+            )
             new_color_list += color1, color1, color2, color2
             triangle_point_list += points[1], points[0], points[2], points[3]
 
-            shape = create_triangles_filled_with_colors(triangle_point_list, new_color_list)
+            shape = create_triangles_filled_with_colors(
+                triangle_point_list, new_color_list
+            )
             return shape
 
 
-def create_polygon(point_list: PointList,
-                   color: Color):
+def create_polygon(point_list: PointList, color: Color):
     """
     Draw a convex polygon. This will NOT draw a concave polygon.
     Because of this, you might not want to use this function.
@@ -270,9 +276,14 @@ def create_polygon(point_list: PointList,
     return create_line_generic(point_list, color, gl.GL_TRIANGLE_STRIP, 1)
 
 
-def create_rectangle_filled(center_x: float, center_y: float, width: float,
-                            height: float, color: Color,
-                            tilt_angle: float = 0) -> Shape:
+def create_rectangle_filled(
+    center_x: float,
+    center_y: float,
+    width: float,
+    height: float,
+    color: Color,
+    tilt_angle: float = 0,
+) -> Shape:
     """
     Create a filled rectangle.
 
@@ -294,13 +305,20 @@ def create_rectangle_filled(center_x: float, center_y: float, width: float,
     :Returns Shape:
 
     """
-    return create_rectangle(center_x, center_y, width, height,
-                            color, tilt_angle=tilt_angle)
+    return create_rectangle(
+        center_x, center_y, width, height, color, tilt_angle=tilt_angle
+    )
 
 
-def create_rectangle_outline(center_x: float, center_y: float, width: float,
-                             height: float, color: Color,
-                             border_width: float = 1, tilt_angle: float = 0) -> Shape:
+def create_rectangle_outline(
+    center_x: float,
+    center_y: float,
+    width: float,
+    height: float,
+    color: Color,
+    border_width: float = 1,
+    tilt_angle: float = 0,
+) -> Shape:
     """
     Create a rectangle outline.
 
@@ -324,12 +342,14 @@ def create_rectangle_outline(center_x: float, center_y: float, width: float,
     Returns:
 
     """
-    return create_rectangle(center_x, center_y, width, height,
-                            color, border_width, tilt_angle, filled=False)
+    return create_rectangle(
+        center_x, center_y, width, height, color, border_width, tilt_angle, filled=False
+    )
 
 
-def get_rectangle_points(center_x: float, center_y: float, width: float,
-                         height: float, tilt_angle: float = 0) -> PointList:
+def get_rectangle_points(
+    center_x: float, center_y: float, width: float, height: float, tilt_angle: float = 0
+) -> PointList:
     """
     Utility function that will return all four coordinate points of a
     rectangle given the x, y center, width, height, and rotation.
@@ -362,18 +382,21 @@ def get_rectangle_points(center_x: float, center_y: float, width: float,
         x3, y3 = rotate_point(x3, y3, center_x, center_y, tilt_angle)
         x4, y4 = rotate_point(x4, y4, center_x, center_y, tilt_angle)
 
-    data = [(x1, y1),
-            (x2, y2),
-            (x3, y3),
-            (x4, y4)]
+    data = [(x1, y1), (x2, y2), (x3, y3), (x4, y4)]
 
     return data
 
 
-def create_rectangle(center_x: float, center_y: float, width: float,
-                     height: float, color: Color,
-                     border_width: float = 1, tilt_angle: float = 0,
-                     filled=True) -> Shape:
+def create_rectangle(
+    center_x: float,
+    center_y: float,
+    width: float,
+    height: float,
+    color: Color,
+    border_width: float = 1,
+    tilt_angle: float = 0,
+    filled=True,
+) -> Shape:
     """
     This function creates a rectangle using a vertex buffer object.
 
@@ -395,29 +418,57 @@ def create_rectangle(center_x: float, center_y: float, width: float,
     :param bool filled:
 
     """
-    data: List[Point] = cast(List[Point], get_rectangle_points(center_x, center_y, width, height, tilt_angle))
+    data: List[Point] = cast(
+        List[Point], get_rectangle_points(center_x, center_y, width, height, tilt_angle)
+    )
 
     if filled:
         shape_mode = gl.GL_TRIANGLE_STRIP
         data[-2:] = reversed(data[-2:])
     else:
 
-        i_lb = center_x - width / 2 + border_width / 2, center_y - height / 2 + border_width / 2
-        i_rb = center_x + width / 2 - border_width / 2, center_y - height / 2 + border_width / 2
-        i_rt = center_x + width / 2 - border_width / 2, center_y + height / 2 - border_width / 2
-        i_lt = center_x - width / 2 + border_width / 2, center_y + height / 2 - border_width / 2
+        i_lb = (
+            center_x - width / 2 + border_width / 2,
+            center_y - height / 2 + border_width / 2,
+        )
+        i_rb = (
+            center_x + width / 2 - border_width / 2,
+            center_y - height / 2 + border_width / 2,
+        )
+        i_rt = (
+            center_x + width / 2 - border_width / 2,
+            center_y + height / 2 - border_width / 2,
+        )
+        i_lt = (
+            center_x - width / 2 + border_width / 2,
+            center_y + height / 2 - border_width / 2,
+        )
 
-        o_lb = center_x - width / 2 - border_width / 2, center_y - height / 2 - border_width / 2
-        o_rb = center_x + width / 2 + border_width / 2, center_y - height / 2 - border_width / 2
-        o_rt = center_x + width / 2 + border_width / 2, center_y + height / 2 + border_width / 2
-        o_lt = center_x - width / 2 - border_width / 2, center_y + height / 2 + border_width / 2
+        o_lb = (
+            center_x - width / 2 - border_width / 2,
+            center_y - height / 2 - border_width / 2,
+        )
+        o_rb = (
+            center_x + width / 2 + border_width / 2,
+            center_y - height / 2 - border_width / 2,
+        )
+        o_rt = (
+            center_x + width / 2 + border_width / 2,
+            center_y + height / 2 + border_width / 2,
+        )
+        o_lt = (
+            center_x - width / 2 - border_width / 2,
+            center_y + height / 2 + border_width / 2,
+        )
 
         data = [o_lt, i_lt, o_rt, i_rt, o_rb, i_rb, o_lb, i_lb, o_lt, i_lt]
 
         if tilt_angle != 0:
             point_list_2: List[Point] = []
             for point in data:
-                new_point = rotate_point(point[0], point[1], center_x, center_y, tilt_angle)
+                new_point = rotate_point(
+                    point[0], point[1], center_x, center_y, tilt_angle
+                )
                 point_list_2.append(new_point)
             data = point_list_2
 
@@ -498,9 +549,15 @@ def create_triangles_filled_with_colors(point_list, color_list) -> Shape:
     return create_line_generic_with_colors(point_list, color_list, shape_mode)
 
 
-def create_ellipse_filled(center_x: float, center_y: float,
-                          width: float, height: float, color: Color,
-                          tilt_angle: float = 0, num_segments: int = 128) -> Shape:
+def create_ellipse_filled(
+    center_x: float,
+    center_y: float,
+    width: float,
+    height: float,
+    color: Color,
+    tilt_angle: float = 0,
+    num_segments: int = 128,
+) -> Shape:
     """
     Create a filled ellipse. Or circle if you use the same width and height.
 
@@ -515,14 +572,29 @@ def create_ellipse_filled(center_x: float, center_y: float,
     """
 
     border_width = 1
-    return create_ellipse(center_x, center_y, width, height, color,
-                          border_width, tilt_angle, num_segments, filled=True)
+    return create_ellipse(
+        center_x,
+        center_y,
+        width,
+        height,
+        color,
+        border_width,
+        tilt_angle,
+        num_segments,
+        filled=True,
+    )
 
 
-def create_ellipse_outline(center_x: float, center_y: float,
-                           width: float, height: float, color: Color,
-                           border_width: float = 1,
-                           tilt_angle: float = 0, num_segments: int = 128) -> Shape:
+def create_ellipse_outline(
+    center_x: float,
+    center_y: float,
+    width: float,
+    height: float,
+    color: Color,
+    border_width: float = 1,
+    tilt_angle: float = 0,
+    num_segments: int = 128,
+) -> Shape:
     """
     Create an outline of an ellipse.
 
@@ -536,15 +608,30 @@ def create_ellipse_outline(center_x: float, center_y: float,
 
     """
 
-    return create_ellipse(center_x, center_y, width, height, color,
-                          border_width, tilt_angle, num_segments, filled=False)
+    return create_ellipse(
+        center_x,
+        center_y,
+        width,
+        height,
+        color,
+        border_width,
+        tilt_angle,
+        num_segments,
+        filled=False,
+    )
 
 
-def create_ellipse(center_x: float, center_y: float,
-                   width: float, height: float, color: Color,
-                   border_width: float = 1,
-                   tilt_angle: float = 0, num_segments: int = 32,
-                   filled=True) -> Shape:
+def create_ellipse(
+    center_x: float,
+    center_y: float,
+    width: float,
+    height: float,
+    color: Color,
+    border_width: float = 1,
+    tilt_angle: float = 0,
+    num_segments: int = 32,
+    filled=True,
+) -> Shape:
 
     """
     This creates an ellipse vertex buffer object (VBO).
@@ -586,10 +673,16 @@ def create_ellipse(center_x: float, center_y: float,
     return create_line_generic(point_list, color, shape_mode, border_width)
 
 
-def create_ellipse_filled_with_colors(center_x: float, center_y: float,
-                                      width: float, height: float,
-                                      outside_color: Color, inside_color: Color,
-                                      tilt_angle: float = 0, num_segments: int = 32) -> Shape:
+def create_ellipse_filled_with_colors(
+    center_x: float,
+    center_y: float,
+    width: float,
+    height: float,
+    outside_color: Color,
+    inside_color: Color,
+    tilt_angle: float = 0,
+    num_segments: int = 32,
+) -> Shape:
     """
     Draw an ellipse, and specify inside/outside color. Used for doing gradients.
 
@@ -635,7 +728,7 @@ def create_ellipse_filled_with_colors(center_x: float, center_y: float,
     return create_line_generic_with_colors(point_list, color_list, gl.GL_TRIANGLE_FAN)
 
 
-TShape = TypeVar('TShape', bound=Shape)
+TShape = TypeVar("TShape", bound=Shape)
 
 
 class ShapeElementList(Generic[TShape]):
@@ -645,6 +738,7 @@ class ShapeElementList(Generic[TShape]):
     out of simpler primitives. This also speeds rendering as all objects are drawn
     in one operation.
     """
+
     def __init__(self):
         """
         Initialize the sprite list
@@ -703,19 +797,16 @@ class ShapeElementList(Generic[TShape]):
             indices.append(reset_idx)
         del indices[-1]
         indices = np.array(indices)
-        ibo = self.ctx.buffer(data=indices.astype('i4').tobytes())
+        ibo = self.ctx.buffer(data=indices.astype("i4").tobytes())
 
         vao_content = [
             BufferDescription(
-                vbo,
-                '2f 4f1',
-                ('in_vert', 'in_color'),
-                normalized=['in_color']
+                vbo, "2f 4f1", ("in_vert", "in_color"), normalized=["in_color"]
             )
         ]
         vao = self.ctx.geometry(vao_content, ibo)
-        self.program['Position'] = [self.center_x, self.center_y]
-        self.program['Angle'] = self.angle
+        self.program["Position"] = [self.center_x, self.center_y]
+        self.program["Angle"] = self.angle
 
         batch.shape.vao = vao
         batch.shape.vbo = vbo
@@ -749,7 +840,7 @@ class ShapeElementList(Generic[TShape]):
         """
         Draw everything in the list.
         """
-        self.program['Position'] = [self._center_x, self._center_y]
+        self.program["Position"] = [self._center_x, self._center_y]
 
         for group in self.dirties:
             self._refresh_shape(group)
@@ -774,7 +865,7 @@ class ShapeElementList(Generic[TShape]):
     def _set_center_y(self, value: float):
         """Set the center y coordinate of the ShapeElementList."""
         self._center_y = value
-        self.program['Position'] = [self._center_x, self._center_y]
+        self.program["Position"] = [self._center_x, self._center_y]
 
     center_y = property(_get_center_y, _set_center_y)
 
@@ -785,7 +876,7 @@ class ShapeElementList(Generic[TShape]):
     def _set_angle(self, value: float):
         """Set the angle of the ShapeElementList in degrees."""
         self._angle = value
-        self.program['Angle'] = self._angle
+        self.program["Angle"] = self._angle
 
     angle = property(_get_angle, _set_angle)
 

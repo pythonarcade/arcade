@@ -25,7 +25,8 @@ class RenderTargetTexture:
         self.ctx = self.window.ctx
 
         self._fbo = self.ctx.framebuffer(
-            color_attachments=[self.ctx.texture((width, height), components=4)])
+            color_attachments=[self.ctx.texture((width, height), components=4)]
+        )
 
         self._quad_fs = geometry.quad_2d_fs()
         self._fbo = self.ctx.framebuffer(color_attachments=[self.texture])
@@ -47,4 +48,6 @@ class RenderTargetTexture:
         """Resize the the internal texture"""
         pixel_scale = get_scaling_factor(self.window)
         self._size = width * pixel_scale, height * pixel_scale
-        self._fbo = self.ctx.framebuffer(color_attachments=self.ctx.texture((width, height), components=4))
+        self._fbo = self.ctx.framebuffer(
+            color_attachments=self.ctx.texture((width, height), components=4)
+        )

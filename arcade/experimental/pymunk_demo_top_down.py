@@ -25,6 +25,7 @@ BULLET_MOVE_FORCE = 2500
 
 class MyWindow(arcade.Window):
     """ Main Window """
+
     def __init__(self, width, height, title):
         """ Init """
         super().__init__(width, height, title)
@@ -55,44 +56,52 @@ class MyWindow(arcade.Window):
         self.item_list = arcade.SpriteList()
 
         # Set up the player
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                                           SPRITE_SCALING_PLAYER)
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            SPRITE_SCALING_PLAYER,
+        )
         self.player_sprite.center_x = 250
         self.player_sprite.center_y = 250
         self.player_list.append(self.player_sprite)
 
         # Set up the walls
         for x in range(0, SCREEN_WIDTH + 1, SPRITE_SIZE):
-            wall = arcade.Sprite(":resources:images/tiles/grassCenter.png",
-                                 SPRITE_SCALING_PLAYER)
+            wall = arcade.Sprite(
+                ":resources:images/tiles/grassCenter.png", SPRITE_SCALING_PLAYER
+            )
             wall.center_x = x
             wall.center_y = 0
             self.wall_list.append(wall)
 
-            wall = arcade.Sprite(":resources:images/tiles/grassCenter.png",
-                                 SPRITE_SCALING_PLAYER)
+            wall = arcade.Sprite(
+                ":resources:images/tiles/grassCenter.png", SPRITE_SCALING_PLAYER
+            )
             wall.center_x = x
             wall.center_y = SCREEN_HEIGHT
             self.wall_list.append(wall)
 
         # Set up the walls
         for y in range(SPRITE_SIZE, SCREEN_HEIGHT, SPRITE_SIZE):
-            wall = arcade.Sprite(":resources:images/tiles/grassCenter.png",
-                                 SPRITE_SCALING_PLAYER)
+            wall = arcade.Sprite(
+                ":resources:images/tiles/grassCenter.png", SPRITE_SCALING_PLAYER
+            )
             wall.center_x = 0
             wall.center_y = y
             self.wall_list.append(wall)
 
-            wall = arcade.Sprite(":resources:images/tiles/grassCenter.png",
-                                 SPRITE_SCALING_PLAYER)
+            wall = arcade.Sprite(
+                ":resources:images/tiles/grassCenter.png", SPRITE_SCALING_PLAYER
+            )
             wall.center_x = SCREEN_WIDTH
             wall.center_y = y
             self.wall_list.append(wall)
 
         # Add some movable boxes
         for x in range(SPRITE_SIZE * 3, SPRITE_SIZE * 8, SPRITE_SIZE):
-            item = arcade.Sprite(":resources:images/space_shooter/meteorGrey_big1.png",
-                                 SPRITE_SCALING_PLAYER)
+            item = arcade.Sprite(
+                ":resources:images/space_shooter/meteorGrey_big1.png",
+                SPRITE_SCALING_PLAYER,
+            )
             item.center_x = x
             item.center_y = 400
             self.item_list.append(item)
@@ -111,8 +120,7 @@ class MyWindow(arcade.Window):
         gravity = (0, 0)
 
         # Create the physics engine
-        self.physics_engine = PymunkPhysicsEngine(damping=damping,
-                                                  gravity=gravity)
+        self.physics_engine = PymunkPhysicsEngine(damping=damping, gravity=gravity)
 
         def rock_hit_handler(arbiter, space, data):
             """ Called for bullet/rock collision """
@@ -128,8 +136,12 @@ class MyWindow(arcade.Window):
             bullet_sprite.remove_from_sprite_lists()
             print("Wall")
 
-        self.physics_engine.add_collision_handler("bullet", "rock", post_handler=rock_hit_handler)
-        self.physics_engine.add_collision_handler("bullet", "wall", post_handler=wall_hit_handler)
+        self.physics_engine.add_collision_handler(
+            "bullet", "rock", post_handler=rock_hit_handler
+        )
+        self.physics_engine.add_collision_handler(
+            "bullet", "wall", post_handler=wall_hit_handler
+        )
 
         # Add the player.
         # For the player, we set the damping to a lower value, which increases
@@ -141,12 +153,14 @@ class MyWindow(arcade.Window):
         # Friction is between two objects in contact. It is important to remember
         # in top-down games that friction moving along the 'floor' is controlled
         # by damping.
-        self.physics_engine.add_sprite(self.player_sprite,
-                                       friction=0.6,
-                                       moment=PymunkPhysicsEngine.MOMENT_INF,
-                                       damping=0.01,
-                                       collision_type="player",
-                                       max_velocity=400)
+        self.physics_engine.add_sprite(
+            self.player_sprite,
+            friction=0.6,
+            moment=PymunkPhysicsEngine.MOMENT_INF,
+            damping=0.01,
+            collision_type="player",
+            max_velocity=400,
+        )
 
         # Create the walls.
         # By setting the body type to PymunkPhysicsEngine.STATIC the walls can't
@@ -155,17 +169,18 @@ class MyWindow(arcade.Window):
         # PymunkPhysicsEngine.KINEMATIC objects will move, but are assumed to be
         # repositioned by code and don't respond to physics forces.
         # Dynamic is default.
-        self.physics_engine.add_sprite_list(self.wall_list,
-                                            friction=0.6,
-                                            collision_type="wall",
-                                            body_type=PymunkPhysicsEngine.STATIC)
+        self.physics_engine.add_sprite_list(
+            self.wall_list,
+            friction=0.6,
+            collision_type="wall",
+            body_type=PymunkPhysicsEngine.STATIC,
+        )
 
         # Create some boxes to push around.
         # Mass controls, well, the mass of an object. Defaults to 1.
-        self.physics_engine.add_sprite_list(self.item_list,
-                                            mass=1,
-                                            friction=0.6,
-                                            collision_type="rock")
+        self.physics_engine.add_sprite_list(
+            self.item_list, mass=1, friction=0.6, collision_type="rock"
+        )
 
     def on_mouse_press(self, x, y, button, modifiers):
         """ Called whenever the mouse button is clicked. """
@@ -197,12 +212,14 @@ class MyWindow(arcade.Window):
         bullet.center_x += size * force[0]
         bullet.center_y += size * force[1]
 
-        self.physics_engine.add_sprite(bullet,
-                                       mass=0.1,
-                                       damping=1.0,
-                                       friction=0.6,
-                                       collision_type="bullet",
-                                       elasticity=0.9)
+        self.physics_engine.add_sprite(
+            bullet,
+            mass=0.1,
+            damping=1.0,
+            friction=0.6,
+            collision_type="bullet",
+            elasticity=0.9,
+        )
 
         # Taking into account the angle, calculate our force.
         force[0] *= BULLET_MOVE_FORCE
@@ -226,11 +243,9 @@ class MyWindow(arcade.Window):
             bullet.position = self.player_sprite.position
             bullet.center_x += 30
             self.bullet_list.append(bullet)
-            self.physics_engine.add_sprite(bullet,
-                                           mass=0.2,
-                                           damping=1.0,
-                                           friction=0.6,
-                                           collision_type="bullet")
+            self.physics_engine.add_sprite(
+                bullet, mass=0.2, damping=1.0, friction=0.6, collision_type="bullet"
+            )
             force = (3000, 0)
             self.physics_engine.apply_force(bullet, force)
 
@@ -277,6 +292,7 @@ class MyWindow(arcade.Window):
         self.bullet_list.draw()
         self.item_list.draw()
         self.player_list.draw()
+
 
 def main():
     """ Main method """

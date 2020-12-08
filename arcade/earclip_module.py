@@ -45,7 +45,9 @@ def earclip(polygon):
 
         polygon.remove(ear)
         point_count -= 1
-        triangles.append(((prev_point.x, prev_point.y), (ear.x, ear.y), (next_point.x, next_point.y)))
+        triangles.append(
+            ((prev_point.x, prev_point.y), (ear.x, ear.y), (next_point.x, next_point.y))
+        )
         if point_count > 3:
             prev_prev_point = polygon[prev_index - 1]
             next_next_index = (i + 1) % point_count
@@ -53,7 +55,7 @@ def earclip(polygon):
 
             groups = [
                 (prev_prev_point, prev_point, next_point, polygon),
-                (prev_point, next_point, next_next_point, polygon)
+                (prev_point, next_point, next_next_point, polygon),
             ]
             for group in groups:
                 p = group[1]
@@ -76,13 +78,17 @@ def _is_clockwise(polygon):
 
 
 def _is_convex(prev, point, next_point):
-    return _triangle_sum(prev.x, prev.y, point.x, point.y, next_point.x, next_point.y) < 0
+    return (
+        _triangle_sum(prev.x, prev.y, point.x, point.y, next_point.x, next_point.y) < 0
+    )
 
 
 def _is_ear(p1, p2, p3, polygon):
-    ear = _contains_no_points(p1, p2, p3, polygon) and \
-          _is_convex(p1, p2, p3) and \
-          _triangle_area(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y) > 0
+    ear = (
+        _contains_no_points(p1, p2, p3, polygon)
+        and _is_convex(p1, p2, p3)
+        and _triangle_area(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y) > 0
+    )
     return ear
 
 
