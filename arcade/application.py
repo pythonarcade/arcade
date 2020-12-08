@@ -55,6 +55,7 @@ class Window(pyglet.window.Window):
                  height: int = 600,
                  title: str = 'Arcade Window',
                  fullscreen: bool = False,
+                 visible: bool=True,
                  resizable: bool = False,
                  update_rate: Optional[float] = 1 / 60,
                  antialiasing: bool = True,
@@ -67,6 +68,7 @@ class Window(pyglet.window.Window):
         :param int height: Window height
         :param str title: Title (appears in title bar)
         :param bool fullscreen: Should this be full screen?
+        :param bool visible: Should the window be visible immediately
         :param bool resizable: Can the user resize the window?
         :param float update_rate: How frequently to update the window.
         :param bool antialiasing: Should OpenGL's anti-aliasing be enabled?
@@ -86,7 +88,7 @@ class Window(pyglet.window.Window):
 
         try:
             super().__init__(width=width, height=height, caption=title,
-                             resizable=resizable, config=config, vsync=False)
+                             resizable=resizable, config=config, visible=visible, vsync=False)
             self.register_event_type('update')
             self.register_event_type('on_update')
         except pyglet.window.NoSuchConfigException:
