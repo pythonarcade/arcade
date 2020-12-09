@@ -550,6 +550,7 @@ def make_soft_circle_texture(diameter: int, color: Color, center_alpha: int = 25
     :param int outer_alpha: Alpha value of the circle at its edges.
 
     :returns: New :class:`Texture` object.
+    :rtype: arcade.Texture
     """
     # TODO: create a rectangle and circle (and triangle? and arbitrary poly where client passes
     # in list of points?) particle?
