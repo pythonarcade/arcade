@@ -18,6 +18,7 @@ Version 2.4.4 was released 2020-12-09
 * `Changed algorithm for checking for polygon collisions <https://github.com/pythonarcade/arcade/issues/771>`_
 * `Fix incorrect PyInstaller data file path handling docs <https://github.com/pythonarcade/arcade/pull/774>`_
 * `Fix for hitbox not scaling <https://github.com/pythonarcade/arcade/issues/752>`_
+* `Add support for pyinstaller on Linux <https://github.com/pythonarcade/arcade/issues/800>`_
 
 General
 
