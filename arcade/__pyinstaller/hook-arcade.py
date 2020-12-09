@@ -41,4 +41,11 @@ elif is_darwin:
     raise NotImplementedError("Arcade does not support pyinstaller on Mac yet")
 
 elif is_unix:
-    raise NotImplementedError("Arcade does not support pyinstaller on Unix yet")
+    datas = [
+        (hook_path.parent.parent.joinpath("resources"), "./arcade/resources"),
+    ]
+
+    binaries = [
+        (hook_path.parent.parent.parent.joinpath("pymunk/libchipmunk.so"), "."),
+        (hook_path.parent.parent.joinpath("soloud/libsoloud.so"), "./arcade/soloud"),
+    ]
