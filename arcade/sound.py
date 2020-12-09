@@ -7,6 +7,9 @@ from pathlib import Path
 from typing import Optional, Union
 
 import pyglet
+
+pyglet.options["audio"] = ("openal", "xaudio2", "directsound", "pulse", "silent")
+
 import pyglet.media as media
 from arcade.resources import resolve_resource_path
 
