@@ -7,10 +7,10 @@ Release Notes
 
 Keep up-to-date with the latest changes to the Arcade library by the release notes.
 
-Version 2.4.4
--------------
+Version 2.5
+-----------
 
-Version 2.4.4 was released 2020-12-09
+Version 2.5 was released 2020-12-09
 
 * `Changing to Pyglet from Soloud for Sound <https://github.com/pythonarcade/arcade/pull/746>`_
 * `Optimize has_line_of_sight using shapely <https://github.com/pythonarcade/arcade/pull/783>`_
