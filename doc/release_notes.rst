@@ -7,28 +7,28 @@ Release Notes
 
 Keep up-to-date with the latest changes to the Arcade library by the release notes.
 
-Unreleased
-----------
+Version 2.4.4
+-------------
 
-Potential changes for the next version
-
-Ongoing pull requests
+Version 2.4.4 was released 2020-12-09
 
 * `Changing to Pyglet from Soloud for Sound <https://github.com/pythonarcade/arcade/pull/746>`_
 * `Optimize has_line_of_sight using shapely <https://github.com/pythonarcade/arcade/pull/783>`_
 * `Update setuptools configuration to align with PEP 517/518 <https://github.com/pythonarcade/arcade/pull/780>`_
-* `changed algorithm for checking for polygon collisions <https://github.com/pythonarcade/arcade/issues/771>`_
+* `Changed algorithm for checking for polygon collisions <https://github.com/pythonarcade/arcade/issues/771>`_
 * `Fix incorrect PyInstaller data file path handling docs <https://github.com/pythonarcade/arcade/pull/774>`_
+* `Fix for hitbox not scaling <https://github.com/pythonarcade/arcade/issues/752>`_
 
 General
 
-* ``SpriteList.draw`` now supports a `blend_function` parameter.
+* `SpriteList.draw now supports a blend_function parameter. <https://github.com/pythonarcade/arcade/pull/770>`_
   This opens up for drawing sprites with different blend modes.
 * Bugfix: Sprite hit box didn't properly update when changing width or height
 * GUI improvements (eruvanos needs to elaborate)
-
 * Several examples was improved
 * Improvements to the pyinstaller tutorial
+* Better pin versions of depended libraries
+* Fix issues with simple and platformer physics engines.
 
 Advanced
 
@@ -42,6 +42,13 @@ Advanced
   the buffer protocol do the work
 * More advanced examples was added to ``arcade/experimental/examples``
 
+Documentation
+
+* Add :ref:`conway_alpha` example showing how to use alpha to control display
+  of sprites in a grid.
+* Improve documentation around sound API.
+* Improve documentation with FPS and timing stats example :ref:`sprite_collect_coins_with_stats`.
+* Improve moving platform docs a bit in :ref:`platformer_tutorial` tutorial.
 
 Version 2.4.3
 -------------
