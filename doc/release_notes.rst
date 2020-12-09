@@ -12,6 +12,9 @@ Version 2.5
 
 Version 2.5 was released 2020-12-09
 
+(Note, libraries Arcade depends on do not work yet with Python 3.9 on Mac. Mac
+users will need to use Python 3.6, 3.7 or 3.8.)
+
 * `Changing to Pyglet from Soloud for Sound <https://github.com/pythonarcade/arcade/pull/746>`_
 * `Optimize has_line_of_sight using shapely <https://github.com/pythonarcade/arcade/pull/783>`_
 * `Update setuptools configuration to align with PEP 517/518 <https://github.com/pythonarcade/arcade/pull/780>`_
