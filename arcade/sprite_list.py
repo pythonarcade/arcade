@@ -1099,6 +1099,7 @@ def check_for_collision(sprite1: Sprite, sprite2: Sprite) -> bool:
     :param sprite2: Second sprite
 
     :Returns: True or False depending if the sprites intersect.
+    :rtype: bool
     """
     if not isinstance(sprite1, Sprite):
         raise TypeError("Parameter 1 is not an instance of the Sprite class.")
@@ -1118,7 +1119,8 @@ def _check_for_collision(sprite1: Sprite, sprite2: Sprite) -> bool:
     :param Sprite sprite1: Sprite 1
     :param Sprite sprite2: Sprite 2
 
-    :returns: Boolean
+    :returns: True if sprites overlap.
+    :rtype: bool
     """
     collision_radius_sum = sprite1.collision_radius + sprite2.collision_radius
 
@@ -1149,6 +1151,7 @@ def check_for_collision_with_list(sprite: Sprite,
     :param SpriteList sprite_list: SpriteList to check against
 
     :returns: List of sprites colliding, or an empty list.
+    :rtype: list
     """
     if not isinstance(sprite, Sprite):
         raise TypeError(f"Parameter 1 is not an instance of the Sprite class, it is an instance of {type(sprite)}.")
@@ -1188,6 +1191,7 @@ def get_sprites_at_point(point: Point,
     :param SpriteList sprite_list: SpriteList to check against
 
     :returns: List of sprites colliding, or an empty list.
+    :rtype: list
     """
     if not isinstance(sprite_list, SpriteList):
         raise TypeError(f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList.")
@@ -1212,6 +1216,7 @@ def get_sprites_at_exact_point(point: Point,
     :param SpriteList sprite_list: SpriteList to check against
 
     :returns: List of sprites colliding, or an empty list.
+    :rtype: list
     """
     if not isinstance(sprite_list, SpriteList):
         raise TypeError(f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList.")

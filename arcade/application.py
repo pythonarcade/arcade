@@ -32,6 +32,9 @@ def get_screens():
     Return a list of screens. So for a two-monitor setup, this should return
     a list of two screens. Can be used with arcade.Window to select which
     window we full-screen on.
+
+    :returns: List of screens, one for each monitor.
+    :rtype: List
     """
     display = pyglet.canvas.get_display()
     return display.get_screens()
@@ -134,6 +137,8 @@ class Window(pyglet.window.Window):
         This property returns the current view being shown.
         To set a different view, call the
         :py:meth:`arcade.Window.show_view` method.
+
+        :rtype: arcade.View
         """
         return self._current_view
 
@@ -175,7 +180,7 @@ class Window(pyglet.window.Window):
         Set if we are full screen or not.
 
         :param bool fullscreen:
-        :param screen:
+        :param screen: Which screen should we display on? See :func:`get_screens`
         :param mode:
         :param int width:
         :param int height:
