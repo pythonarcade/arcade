@@ -20,7 +20,6 @@ import pymunk
 import random
 import timeit
 import math
-import os
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 800
@@ -40,13 +39,6 @@ class MyGame(arcade.Window):
 
     def __init__(self, width, height, title):
         super().__init__(width, height, title)
-
-        # Set the working directory (where we expect to find files) to the same
-        # directory this .py file is in. You can leave this out of your own
-        # code, but it is needed to easily run the examples using "python -m"
-        # as mentioned at the top of this program.
-        file_path = os.path.dirname(os.path.abspath(__file__))
-        os.chdir(file_path)
 
         self.peg_list = arcade.SpriteList()
         self.ball_list: arcade.SpriteList[CircleSprite] = arcade.SpriteList()
@@ -142,7 +134,7 @@ class MyGame(arcade.Window):
             shape.friction = 0.3
             self.space.add(body, shape)
 
-            sprite = CircleSprite(":resources:images/items/coinGold.png", shape)
+            sprite = CircleSprite(":resources:images/items/gold_1.png", shape)
             self.ball_list.append(sprite)
 
         # Check for balls that fall off the screen
