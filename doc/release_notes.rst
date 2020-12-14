@@ -7,6 +7,19 @@ Release Notes
 
 Keep up-to-date with the latest changes to the Arcade library by the release notes.
 
+Version 2.5.1
+-------------
+
+Version 2.5 was released 2020-12-14
+
+* Fix bug with sound where panning wasn't working on Windows machines.
+* `Fix for create_lines_with_colors <https://github.com/pythonarcade/arcade/issues/804>`_
+* `Fix for pegboard example, coin image too small <https://github.com/pythonarcade/arcade/issues/779>`_
+* `Fix for create_ellipse dimensions being too big. <https://github.com/pythonarcade/arcade/issues/756>`_
+* `Add visible kwarg to window constructor <https://github.com/pythonarcade/arcade/pull/802>`_
+* Fix some type-checking errors found by mypy.
+* Update API docs
+
 Version 2.5
 -----------
 
