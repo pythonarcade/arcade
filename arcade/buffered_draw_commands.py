@@ -233,8 +233,7 @@ def create_lines_with_colors(point_list: PointList,
             new_color_list += color1, color1, color2, color2
             triangle_point_list += points[1], points[0], points[2], points[3]
 
-            shape = create_triangles_filled_with_colors(triangle_point_list, new_color_list)
-            return shape
+        return create_triangles_filled_with_colors(triangle_point_list, new_color_list)
 
 
 def create_polygon(point_list: PointList,

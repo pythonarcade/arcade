@@ -62,7 +62,8 @@ class Window(pyglet.window.Window):
                  update_rate: Optional[float] = 1 / 60,
                  antialiasing: bool = True,
                  gl_version: Tuple[int, int] = (3, 3),
-                 screen: pyglet.canvas.Screen = None):
+                 screen: pyglet.canvas.Screen = None,
+                 visible: bool=True):
         """
         Construct a new window
 
@@ -75,6 +76,7 @@ class Window(pyglet.window.Window):
         :param bool antialiasing: Should OpenGL's anti-aliasing be enabled?
         :param Tuple[int,int] gl_version: What OpenGL version to request. This is ``(3, 3)`` by default
                                            and can be overridden when using more advanced OpenGL features.
+        :param bool visible: Should the window be visible immediately
         """
         if antialiasing:
             config = pyglet.gl.Config(major_version=gl_version[0],
@@ -89,7 +91,7 @@ class Window(pyglet.window.Window):
 
         try:
             super().__init__(width=width, height=height, caption=title,
-                             resizable=resizable, config=config, vsync=False)
+                             resizable=resizable, config=config, vsync=False, visible=visible)
             self.register_event_type('update')
             self.register_event_type('on_update')
         except pyglet.window.NoSuchConfigException:
