@@ -55,3 +55,6 @@ def test_main():
     window.switch()
     window.test(20)
     window.close()
+    # Force window close and garbage collection to allow unit tests to run all
+    # in a row.
+    arcade.close_window()

@@ -48,3 +48,6 @@ def test_main(twm):
         window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT)
         window.test()
         window.close()
+        # Force window close and garbage collection to allow unit tests to run all
+        # in a row.
+        arcade.close_window()
