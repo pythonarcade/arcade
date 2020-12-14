@@ -563,8 +563,8 @@ def create_ellipse(center_x: float, center_y: float,
     for segment in range(num_segments):
         theta = 2.0 * 3.1415926 * segment / num_segments
 
-        x = width * math.cos(theta) + center_x
-        y = height * math.sin(theta) + center_y
+        x = width / 2 * math.cos(theta) + center_x
+        y = height / 2 * math.sin(theta) + center_y
 
         if tilt_angle:
             x, y = rotate_point(x, y, center_x, center_y, tilt_angle)
