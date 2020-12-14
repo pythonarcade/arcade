@@ -1,6 +1,6 @@
 """
 Arcade's version of the OpenGL Context.
-Contains pre-loaded programs 
+Contains pre-loaded programs
 """
 from pathlib import Path
 from typing import Tuple, Union
@@ -223,8 +223,8 @@ class ArcadeContext(Context):
             geometry_shader_src = resolve_resource_path(geometry_shader).read_text()
 
         if tess_control_shader and tess_evaluation_shader:
-            tess_control_src = resolve_resource_path(tess_control_shader)
-            tess_evaluation_src = resolve_resource_path(tess_evaluation_shader)
+            tess_control_src = resolve_resource_path(tess_control_shader).read_text()
+            tess_evaluation_src = resolve_resource_path(tess_evaluation_shader).read_text()
 
         return self.program(
             vertex_shader=vertex_shader_src,

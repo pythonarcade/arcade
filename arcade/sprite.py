@@ -229,7 +229,7 @@ class Sprite:
         self.cur_texture_index = 0
 
         self._scale = scale
-        self._position = (center_x, center_y)
+        self._position: Point = (center_x, center_y)
         self._angle = 0.0
 
         self.velocity = [0.0, 0.0]
@@ -273,7 +273,7 @@ class Sprite:
         """
         self.textures.append(texture)
 
-    def _get_position(self) -> Tuple[float, float]:
+    def _get_position(self) -> Point:
         """
         Get the center x and y coordinates of the sprite.
 

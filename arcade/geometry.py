@@ -1,10 +1,9 @@
 """
 Functions for calculating geometry.
 """
-from shapely import speedups
-from shapely.geometry import LineString, Polygon, Point
+from shapely import speedups # type: ignore
+from shapely.geometry import Polygon, Point # type: ignore
 
-from typing import cast
 from arcade import PointList
 import math
 

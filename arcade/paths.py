@@ -2,8 +2,8 @@
 Path-related functions.
 
 """
-from shapely import speedups
-from shapely.geometry import LineString, Polygon
+from shapely import speedups # type: ignore
+from shapely.geometry import LineString, Polygon # type: ignore
 
 from arcade import Point
 from arcade import check_for_collision_with_list
