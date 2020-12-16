@@ -67,7 +67,7 @@ class Sound:
 
     def get_length(self) -> float:
         """ Get length of audio in seconds """
-        return self.source.get_length()
+        return self.source.duration
 
     def is_complete(self, player: media.Player) -> bool:
         """ Return true if the sound is done playing. """
