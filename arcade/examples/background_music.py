@@ -24,15 +24,16 @@ class MyGame(arcade.Window):
         # Variables used to manage our music. See setup() for giving them
         # values.
         self.music_list = []
-        self.current_song = 0
+        self.current_song_index = 0
+        self.current_player = None
         self.music = None
 
     def advance_song(self):
         """ Advance our pointer to the next song. This does NOT start the song. """
-        self.current_song += 1
-        if self.current_song >= len(self.music_list):
-            self.current_song = 0
-        print(f"Advancing song to {self.current_song}.")
+        self.current_song_index += 1
+        if self.current_song_index >= len(self.music_list):
+            self.current_song_index = 0
+        print(f"Advancing song to {self.current_song_index}.")
 
     def play_song(self):
         """ Play the song. """
@@ -41,9 +42,9 @@ class MyGame(arcade.Window):
             self.music.stop()
 
         # Play the next song
-        print(f"Playing {self.music_list[self.current_song]}")
-        self.music = arcade.Sound(self.music_list[self.current_song], streaming=True)
-        self.music.play(MUSIC_VOLUME)
+        print(f"Playing {self.music_list[self.current_song_index]}")
+        self.music = arcade.Sound(self.music_list[self.current_song_index], streaming=True)
+        self.current_player = self.music.play(MUSIC_VOLUME)
         # This is a quick delay. If we don't do this, our elapsed time is 0.0
         # and on_update will think the music is over and advance us to the next
         # song before starting this one.
@@ -55,7 +56,7 @@ class MyGame(arcade.Window):
         # List of music
         self.music_list = [":resources:music/funkyrobot.mp3", ":resources:music/1918.mp3"]
         # Array index of what to play
-        self.current_song = 0
+        self.current_song_index = 0
         # Play the song
         self.play_song()
 
@@ -64,7 +65,7 @@ class MyGame(arcade.Window):
 
         arcade.start_render()
 
-        position = self.music.get_stream_position()
+        position = self.music.get_stream_position(self.current_player)
         length = self.music.get_length()
 
         size = 20
@@ -77,12 +78,12 @@ class MyGame(arcade.Window):
 
         # Print current song
         y -= size + margin
-        text = f"Currently playing: {self.music_list[self.current_song]}"
+        text = f"Currently playing: {self.music_list[self.current_song_index]}"
         arcade.draw_text(text, 0, y, arcade.csscolor.BLACK, size)
 
     def on_update(self, dt):
 
-        position = self.music.get_stream_position()
+        position = self.music.get_stream_position(self.current_player)
 
         # The position pointer is reset to 0 right after we finish the song.
         # This makes it very difficult to figure out if we just started playing
