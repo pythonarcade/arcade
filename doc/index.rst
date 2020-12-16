@@ -56,13 +56,13 @@ The Python Arcade Library
             <h2>Tutorials</h2>
           </div>
           <ul>
-            <li><a href="https://realpython.com/arcade-python-game-framework/">Real Python: Primer on the Python Game Framework</a></li>
-            <li><a href="tutorials/views/index.html">Views for Menu, Title, Game Over Screens</a></li>
             <li><a href="examples/platform_tutorial/index.html">Simple Platformer</a></li>
             <li><a href="tutorials/pymunk_platformer/index.html">Platformer with Physics</a></li>
+            <li><a href="tutorials/views/index.html">Views for Menu, Title, Game Over Screens</a></li>
             <li><a href="tutorials/card_game/index.html">Solitaire</a></li>
-            <li><a href="tutorials/gpu_particle_burst/index.html">GPU Particle Burst</a></li>
             <li><a href="tutorials/bundling_with_pyinstaller/index.html">Bundling a game with PyInstaller</a></li>
+            <li><a href="tutorials/gpu_particle_burst/index.html">GPU Particle Burst</a></li>
+            <li><a href="https://realpython.com/arcade-python-game-framework/">Real Python: Primer on Arcade</a></li>
            </ul>
         </td>
 
@@ -167,7 +167,13 @@ The Python Arcade Library
         </td>
 
         <td>
-
+          <div style="display:inline-block;">
+            <h2>Related Libraries</h2>
+          </div>
+          <ul>
+            <li><a href="http://jobase.org">JoBase</a></li>
+            <li><a href="https://github.com/kfields/arcade-imgui">Arcade-ImGui</a></li>
+           </ul>
         </td>
 
       </tr>
