@@ -171,8 +171,9 @@ The Python Arcade Library
             <h2>Related Libraries</h2>
           </div>
           <ul>
-            <li><a href="http://jobase.org">JoBase</a></li>
             <li><a href="https://github.com/kfields/arcade-imgui">Arcade-ImGui</a></li>
+            <li><a href="https://github.com/maarten-dp/arcade-curtains">Arcade-Curtains</a></li>
+            <li><a href="http://jobase.org">JoBase</a></li>
            </ul>
         </td>
 
