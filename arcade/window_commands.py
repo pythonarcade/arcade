@@ -271,10 +271,27 @@ def set_background_color(color: Color):
 def schedule(function_pointer: Callable, interval: Number):
     """
     Schedule a function to be automatically called every ``interval``
-    seconds.
+    seconds. The function/callable needs to take a delta time argument
+    similar to ``on_update``. This is a float representing the number
+    of seconds since the method was scheduled or called.
+
+    A function can be scheduled multiple times, but this is not recommended.
+
+    .. Warning:: Scheduled functions should **always** be unscheduled
+                 using :py:func:`arcade.unschedule`. Having lingering
+                 scheduled functions will lead to crashes.
+
+    Example::
+
+        def some_action(delta_time):
+            print(delta_time)
+
+        # Call the function every second
+        arcade.schedule(some_action, 1)
+        # Unschedule
 
     :param Callable function_pointer: Pointer to the function to be called.
-    :param Number interval: Interval to call the function.
+    :param Number interval: Interval to call the function (float or integer)
     """
     pyglet.clock.schedule_interval(function_pointer, interval)
 
@@ -282,6 +299,14 @@ def schedule(function_pointer: Callable, interval: Number):
 def unschedule(function_pointer: Callable):
     """
     Unschedule a function being automatically called.
+  
+    Example::
+
+        def some_action(delta_time):
+            print(delta_time)
+
+        arcade.schedule(some_action, 1)
+        arcade.unschedule(some_action)
 
     :param Callable function_pointer: Pointer to the function to be unscheduled.
     """
