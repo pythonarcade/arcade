@@ -4,8 +4,14 @@ Sample Games Made With Arcade
 Have a sample game you'd like to share here? E-mail
 paul@cravenfamily.com.
 
-GitHub Projects
----------------
+Adventure
+~~~~~~~~~
+
+.. raw:: html
+
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/DTEPg0AoY5o" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+`Adventure GitHub <https://github.com/clareHuisman/learn-arcade-work/tree/master/Lab%2012%20-%20Final%20Lab>`_
 
 Transcience Animation
 ~~~~~~~~~~~~~~~~~~~~~
@@ -140,8 +146,8 @@ Two Worlds
 
 .. _Two Worlds: https://github.com/pvcraven/two_worlds
 
-Games from Simpson College Spring 2017 CMSC 150 Course
-------------------------------------------------------
+Simpson College Spring 2017 CMSC 150 Course
+-------------------------------------------
 
 These games were created by first-semester programming students.
 
