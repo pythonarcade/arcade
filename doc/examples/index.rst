@@ -254,6 +254,11 @@ Sprite Non-Player Movement
 Sprite Properties
 ^^^^^^^^^^^^^^^^^
 
+.. figure:: thumbs/sprite_health.png
+   :figwidth: 170px
+
+   :ref:`sprite_health`
+
 .. figure:: thumbs/sprite_properties.png
    :figwidth: 170px
 
