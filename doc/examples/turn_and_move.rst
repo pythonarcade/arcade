@@ -5,10 +5,9 @@
 Turn and Move
 =============
 
-.. image:: turn_and_move.png
-    :width: 500px
-    :align: center
-    :alt: Turn and Move
+.. raw:: html
+
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/OHpVO1ObqHA" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 In this example, the tank turns and moves towards where ever the user clicks
 the mouse.
