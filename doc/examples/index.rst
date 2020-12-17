@@ -196,6 +196,11 @@ Sprite Player Movement
 
    :ref:`dual_stick_shooter`
 
+.. figure:: thumbs/turn_and_move.png
+   :figwidth: 170px
+
+   :ref:`turn_and_move`
+
 Sprite Non-Player Movement
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
