@@ -232,7 +232,7 @@ class UIManager(EventDispatcher):
         """
 
         # apply x,y transformation for stretched applications
-        x,y = transform_xy_to_game_coordinates(x,y)
+        x,y = self.transform_xy_to_game_coordinates(x,y)
 
         self.dispatch_ui_event(UIEvent(MOUSE_PRESS, x=x, y=y, button=button, modifiers=modifiers))
 
@@ -243,7 +243,7 @@ class UIManager(EventDispatcher):
         """
 
         # apply x,y transformation for stretched applications
-        x,y = transform_xy_to_game_coordinates(x,y)
+        x,y = self.transform_xy_to_game_coordinates(x,y)
 
         self.dispatch_ui_event(UIEvent(MOUSE_RELEASE, x=x, y=y, button=button, modifiers=modifiers))
 
@@ -254,7 +254,7 @@ class UIManager(EventDispatcher):
         """
 
         # apply x,y transformation for stretched applications
-        x,y = transform_xy_to_game_coordinates(x,y)
+        x,y = self.transform_xy_to_game_coordinates(x,y)
 
         self.dispatch_ui_event(UIEvent(MOUSE_SCROLL,
                                        x=x,
@@ -270,7 +270,7 @@ class UIManager(EventDispatcher):
         """
 
         # apply x,y transformation for stretched applications
-        x, y = transform_xy_to_game_coordinates(x, y)
+        x, y = self.transform_xy_to_game_coordinates(x, y)
 
         self.dispatch_ui_event(UIEvent(MOUSE_MOTION,
                                        x=x,
