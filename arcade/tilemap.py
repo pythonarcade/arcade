@@ -455,9 +455,9 @@ def _process_tile_layer(map_object: pytiled_parser.objects.TileMap,
 
             tile = _get_tile_by_gid(map_object, item)
             if tile is None:
-                print(f"Warning, couldn't find tile for item {item} in layer "
-                      f"'{layer.name}' in file '{map_object.tmx_file}'.")
-                continue
+                error_msg =  f"Warning, couldn't find tile for item {item} in layer " \
+                             f"'{layer.name}' in file '{map_object.tmx_file}'."
+                raise ValueError(error_msg)
 
             my_sprite = _create_sprite_from_tile(map_object, tile, scaling=scaling,
                                                  base_directory=base_directory,
