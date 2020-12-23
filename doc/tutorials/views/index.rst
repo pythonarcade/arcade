@@ -45,10 +45,11 @@ class:
     class MyGame(arcade.Window):
 
 Change it to derive from ``arcade.View`` instead of ``arcade.Window``.
+I also suggest using "View" as part of the name:
 
 .. code-block:: python
 
-    class MyGame(arcade.Window):
+    class GameView(arcade.View):
 
 This will require a couple other updates. The ``View`` class does not control
 the size of the window, so we'll need to take that out of the call to the
