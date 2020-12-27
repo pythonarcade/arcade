@@ -50,3 +50,4 @@ doc/_build
 
 # local testing/mocking
 test.py
+pip-wheel-metadata/
