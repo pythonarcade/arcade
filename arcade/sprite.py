@@ -208,8 +208,7 @@ class Sprite:
                                              )
 
             except Exception as e:
-                print(f"Unable to load {filename} {e}")
-                self._texture = None
+                raise FileNotFoundError(f"Unable to load image file {filename} {e}")
 
             if self._texture:
                 self.textures = [self._texture]

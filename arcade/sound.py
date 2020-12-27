@@ -140,9 +140,7 @@ def load_sound(path: Union[str, Path], streaming: bool =False) -> Optional[Sound
         sound = Sound(file_name, streaming)
         return sound
     except Exception as ex:
-        print(f'Unable to load sound file: "{file_name}". Exception: {ex}')
-        return None
-
+        raise FileNotFoundError(f'Unable to load sound file: "{file_name}". Exception: {ex}')
 
 def play_sound(
     sound: Sound, volume: float = 1.0, pan: float = 0.0, looping: bool = False
