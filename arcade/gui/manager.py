@@ -29,6 +29,9 @@ class UIAbstractManager(EventDispatcher, metaclass=ABCMeta):
     def __init__(self, *args, **kwargs):
         self.register_event_type('on_ui_event')
 
+        self._focused_element: Optional[UIElement] = None
+        self._hovered_element: Optional[UIElement] = None
+
     @abstractmethod
     def on_ui_event(self, event):
         """
@@ -192,6 +195,43 @@ class UIAbstractManager(EventDispatcher, metaclass=ABCMeta):
                                        selection=selection,
                                        ))
 
+    # Define hover and focus elements
+    @property
+    def focused_element(self) -> Optional[UIElement]:
+        """
+        :return: focused UIElement, only one UIElement can be focused at a time
+        """
+        return self._focused_element
+
+    @focused_element.setter
+    def focused_element(self, new_focus: UIElement):
+        if self._focused_element and hasattr(self._focused_element, 'on_focus'):
+            self._focused_element.on_unfocus()
+        self._focused_element = None
+
+        if hasattr(new_focus, 'on_focus'):
+            new_focus.on_focus()
+
+        self._focused_element = new_focus
+
+    @property
+    def hovered_element(self) -> Optional[UIElement]:
+        """
+        :return: hovered UIElement, only one UIElement can be focused at a time
+        """
+        return self._hovered_element
+
+    @hovered_element.setter
+    def hovered_element(self, new_hover: UIElement):
+        if self._hovered_element and hasattr(self._hovered_element, 'on_unhover'):
+            self._hovered_element.on_unhover()
+        self._hovered_element = None
+
+        if hasattr(new_hover, 'on_hover'):
+            new_hover.on_hover()
+
+        self._hovered_element = new_hover
+
 
 class UIManager(UIAbstractManager):
     """
@@ -222,11 +262,7 @@ class UIManager(UIAbstractManager):
         :param kwargs: catches unsupported named parameters
         """
         super().__init__()
-        # TODO really needed?
         self.window: Window = window if window else arcade.get_window()
-
-        self._focused_element: Optional[UIElement] = None
-        self._hovered_element: Optional[UIElement] = None
 
         self._ui_elements: SpriteList = SpriteList(use_spatial_hash=True)
         self._id_cache: Dict[str, UIElement] = {}
@@ -234,42 +270,6 @@ class UIManager(UIAbstractManager):
         if attach_callbacks:
             # TODO maybe push to ABC
             self.register_handlers()
-
-    @property
-    def focused_element(self) -> Optional[UIElement]:
-        """
-        :return: focused UIElement, only one UIElement can be focused at a time
-        """
-        return self._focused_element
-
-    @focused_element.setter
-    def focused_element(self, new_focus: UIElement):
-        if self._focused_element is not None:
-            self._focused_element.on_unfocus()
-            self._focused_element = None
-
-        if new_focus is not None:
-            new_focus.on_focus()
-
-        self._focused_element = new_focus
-
-    @property
-    def hovered_element(self) -> Optional[UIElement]:
-        """
-        :return: hovered UIElement, only one UIElement can be focused at a time
-        """
-        return self._hovered_element
-
-    @hovered_element.setter
-    def hovered_element(self, new_hover: UIElement):
-        if self._hovered_element is not None:
-            self._hovered_element.on_unhover()
-            self._hovered_element = None
-
-        if new_hover is not None:
-            new_hover.on_hover()
-
-        self._hovered_element = new_hover
 
     def purge_ui_elements(self):
         """
