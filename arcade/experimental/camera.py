@@ -144,7 +144,7 @@ class Camera2D:
 
     @scroll_x.setter
     def scroll_x(self, value: float):
-        self._scroll = value
+        self._scroll_x = value
 
     @property
     def scroll_y(self) -> float:
