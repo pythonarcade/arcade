@@ -24,7 +24,7 @@ class UIBox(UIElement):
             **kwargs
         )
 
-        if None not in (width, height, color):
+        if None not in (width, height) and color is not None:
             image = PIL.Image.new('RGBA', (width, height), color)
             self.texture = arcade.Texture(f"Solid-{color[0]}-{color[1]}-{color[2]}", image, hit_box_algorithm='None')
         elif texture:

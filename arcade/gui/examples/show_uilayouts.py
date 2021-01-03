@@ -2,13 +2,12 @@ from typing import Union
 
 import arcade
 from arcade import View, Window, SpriteSolidColor
-from arcade.gui import UILabel, UIElement
+from arcade.gui import UILabel, UIElement, UIFlatButton
+from arcade.gui.layouts import UIAbstractLayout
+from arcade.gui.layouts.box import UIBoxLayout
 from arcade.gui.layouts.manager import UILayoutManager
 from arcade.gui.layouts.utils import valid
 from arcade.gui.ui_style import UIStyle
-
-from arcade.gui.layouts import UIAbstractLayout
-from arcade.gui.layouts.box import UIBoxLayout
 
 
 class MyView(View):
@@ -28,6 +27,12 @@ class MyView(View):
 
         root_layout = self.ui_manager.root_layout
 
+        ui_flat_button = UIFlatButton(text="no fill effect")
+
+        @ui_flat_button.event('on_click')
+        def on_click(*args):
+            print('clicked')
+
         # top left
         layout_top_left = UIBoxLayout(id='top right')
         layout_top_left.pack(UILabel(text="top=0"))
@@ -40,6 +45,7 @@ class MyView(View):
         layout_center.pack(UILabel(text="center_x=0"))
         layout_center.pack(UILabel(text="center_y=0"))
         layout_center.pack(UILabel(text="no fill effect"), space=20)
+        layout_center.pack(ui_flat_button, space=20)
         root_layout.pack(layout_center, center_x=0, center_y=0)
 
         # center right

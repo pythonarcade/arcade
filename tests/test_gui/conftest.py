@@ -1,12 +1,9 @@
-from contextlib import ExitStack
-from unittest.mock import patch
-
 import pytest
 from pyglet.event import EventDispatcher
 from pytest import fixture
 
 from arcade import Window
-from . import MockHolder, MockButton, TestUIManager
+from . import MockButton, TestUIManager, TestUILayoutManager
 
 
 class MockWindow(EventDispatcher):
@@ -25,24 +22,6 @@ class MockWindow(EventDispatcher):
         self.register_event_type('on_text_motion_select')
 
 
-@fixture()
-def draw_commands():
-    """
-    Decorator
-
-    Mocks all 'arcade.draw_...' methods and injects a holder with mocks
-    """
-    import arcade
-    to_patch = [attr for attr in dir(arcade) if attr.startswith('draw_')]
-    holder = MockHolder()
-
-    with ExitStack() as stack:
-        for method in to_patch:
-            holder[method] = stack.enter_context(patch(f'arcade.{method}'))
-
-        yield holder
-
-
 @pytest.fixture
 def window():
     window = Window(title='ARCADE_GUI')
@@ -58,6 +37,13 @@ def mock_window():
 @fixture
 def mock_mng(mock_window):
     ui_manager = TestUIManager(mock_window)
+    yield ui_manager
+    ui_manager.unregister_handlers()
+
+
+@pytest.fixture()
+def mock_layout_mng(window):
+    ui_manager = TestUILayoutManager(window)
     yield ui_manager
     ui_manager.unregister_handlers()
 

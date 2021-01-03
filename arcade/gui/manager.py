@@ -27,6 +27,7 @@ class UIAbstractManager(EventDispatcher, metaclass=ABCMeta):
     window: Window
 
     def __init__(self, *args, **kwargs):
+        super().__init__()
         self.register_event_type('on_ui_event')
 
         self._focused_element: Optional[UIElement] = None

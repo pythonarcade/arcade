@@ -2,7 +2,7 @@ from abc import abstractmethod, ABC
 from operator import attrgetter
 from typing import List, NamedTuple, Union, Dict
 
-from arcade import Sprite, SpriteList
+from arcade import Sprite, SpriteList, get_sprites_at_point
 from arcade.gui import UIElement, UIEvent
 
 
@@ -40,6 +40,19 @@ class UIAbstractLayout(ABC):
         for element in self:
             if hasattr(element, 'on_ui_event'):
                 element.on_ui_event(event)
+
+    def get_elements_at(self, pos) -> List[Union[Sprite]]:
+        """
+        Search for Sprites containing given position
+        :param pos: x, y position
+        :return: List of elements in draw order
+        """
+        elements_at_pos = get_sprites_at_point(pos, self._layer)
+
+        for layout in self._child_layouts:
+            elements_at_pos.extend(layout.get_elements_at(pos))
+
+        return elements_at_pos
 
     # --------- add element & size hint
     def pack(self, element: Union[Sprite, UIElement, 'UIAbstractLayout'], **kwargs):

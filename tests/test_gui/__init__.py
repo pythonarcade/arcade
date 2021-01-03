@@ -1,4 +1,5 @@
 import os
+from abc import abstractmethod
 from typing import List, Optional
 from uuid import uuid4
 
@@ -9,15 +10,14 @@ import arcade
 import arcade.gui
 from arcade.gui import UIClickable, UIManager
 from arcade.gui.elements.box import UIBox
+from arcade.gui.layouts.manager import UILayoutManager
 from arcade.gui.ui_style import UIStyle
 
 
-class TestUIManager(UIManager):
+class InteractionMixin:
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.event_history: List[arcade.gui.UIEvent] = []
-
-        self.push_handlers(on_ui_event=self._on_ui_event)
 
     def move_mouse(self, x: int, y: int):
         self.dispatch_ui_event(arcade.gui.UIEvent(
@@ -60,6 +60,18 @@ class TestUIManager(UIManager):
     @property
     def last_event(self):
         return self.event_history[-1] if self.event_history else None
+
+
+class TestUIManager(InteractionMixin, UIManager):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.push_handlers(on_ui_event=self._on_ui_event)
+
+
+class TestUILayoutManager(InteractionMixin, UILayoutManager):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.push_handlers(on_ui_event=self._on_ui_event)
 
 
 def T(name, *args):

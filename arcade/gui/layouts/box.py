@@ -13,6 +13,12 @@ class UIBoxLayout(UIAbstractLayout):
             align='left',
             **kwargs
     ):
+        """
+
+        :param vertical:
+        :param align: top|start|left|center|bottom|end|right
+        :param kwargs:
+        """
         super().__init__(**kwargs)
         self.align = align
         self.vertical = vertical

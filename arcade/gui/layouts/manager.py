@@ -3,7 +3,7 @@ from typing import Union
 
 import arcade
 from arcade import Sprite
-from arcade.gui import UIElement
+from arcade.gui import UIElement, MOUSE_PRESS, MOUSE_MOTION, UIEvent, MOUSE_RELEASE
 from arcade.gui.layouts import UIAbstractLayout
 from arcade.gui.layouts.anchor import UIAnchorLayout
 from arcade.gui.layouts.utils import valid
@@ -11,7 +11,7 @@ from arcade.gui.manager import UIAbstractManager
 
 
 class UILayoutManager(UIAbstractManager):
-    def __init__(self, window=None):
+    def __init__(self, window=None, attach_callbacks=True):
         super().__init__()
         self.window: arcade.Window = window if window else arcade.get_window()
 
@@ -21,12 +21,12 @@ class UILayoutManager(UIAbstractManager):
             parent=self)
         self._resize_root_layout()
 
-        self.register_handlers()
+        if attach_callbacks:
+            self.register_handlers()
 
     def on_ui_event(self, event):
-        for element in self.root_layout:
-            if hasattr(element, 'on_ui_event'):
-                element.on_ui_event(event)
+        self._handle_ui_event(event)
+        self.root_layout.on_ui_event(event)
 
     def on_draw(self):
         self._root_layout.draw()
@@ -60,6 +60,34 @@ class UILayoutManager(UIAbstractManager):
 
         if not valid(self._root_layout):
             warn('Refresh produced invalid boundaries')
+
+    def _handle_ui_event(self, event: UIEvent):
+        """
+        Care about hover and focus of elements
+        """
+
+        # if mouse event search for ui_elements at pos to handle hover and focus
+        if event.type in (MOUSE_PRESS, MOUSE_MOTION, MOUSE_RELEASE):
+            pos = event.get('x'), event.get('y')
+            elements_at_pos = self.root_layout.get_elements_at(pos)
+
+            # handle hover
+            if event.type == MOUSE_MOTION:
+                if len(elements_at_pos) > 0:
+                    new_hovered_element = elements_at_pos[-1]
+                    if new_hovered_element != self.hovered_element:
+                        self.hovered_element = new_hovered_element
+                else:
+                    self.hovered_element = None
+
+            # handle focus
+            if event.type == MOUSE_PRESS:
+                if len(elements_at_pos) > 0:
+                    new_focused_element = elements_at_pos[-1]
+                    if new_focused_element != self.focused_element:
+                        self.focused_element = new_focused_element
+                else:
+                    self.focused_element = None
 
     # UILayoutManager always fills the whole view
     @property
