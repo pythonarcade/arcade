@@ -196,8 +196,8 @@ class MyGame(arcade.Window):
         """ Rotate the stone, check collision. """
         if not self.game_over and not self.paused:
             new_stone = rotate_counterclockwise(self.stone)
-            if self.stone_x + len(self.stone) > COLUMN_COUNT - 1:
-                self.stone_x -= len(self.stone)
+            if self.stone_x + len(new_stone[0]) >= COLUMN_COUNT:
+                self.stone_x = COLUMN_COUNT - len(new_stone[0])
             if not check_collision(self.board, new_stone, (self.stone_x, self.stone_y)):
                 self.stone = new_stone
 
