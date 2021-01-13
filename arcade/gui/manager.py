@@ -50,11 +50,12 @@ class UIAbstractManager(EventDispatcher, metaclass=ABCMeta):
     def register_handlers(self):
         """
         Registers handler functions (`on_...`) to :py:attr:`arcade.gui.UIElement`
+
+        on_draw is not registered, to provide full control about draw order
         """
         self.window.push_handlers(
             self.on_resize,
             self.on_update,
-            self.on_draw,
             self.on_mouse_press,
             self.on_mouse_release,
             self.on_mouse_scroll,
@@ -76,7 +77,6 @@ class UIAbstractManager(EventDispatcher, metaclass=ABCMeta):
         self.window.remove_handlers(
             self.on_resize,
             self.on_update,
-            self.on_draw,
             self.on_mouse_press,
             self.on_mouse_release,
             self.on_mouse_scroll,

@@ -29,10 +29,10 @@ class UIBoxLayout(UIAbstractLayout):
         # TODO this change could be reflected in sizehint not in actual changed properties
         space = kwargs.get('space', 0)
         if self.vertical:
-            self.width = max(map(attrgetter('width'), self))
+            self.width = max(map(attrgetter('width'), self)) + self.padding_horizontal
             self.height += element.height + space
         else:
-            self.height = max(map(attrgetter('height'), self))
+            self.height = max(map(attrgetter('height'), self)) + self.padding_vertical
             self.width += element.width + space
 
     def place_elements(self):
@@ -64,7 +64,7 @@ class UIBoxLayout(UIAbstractLayout):
                 start_x = (self.width - min_width)
 
         # cursor: placeable position relative to self.left, self.top
-        cursor = start_x, start_y
+        cursor = start_x + self.padding_left, start_y + self.padding_top
 
         # place elements
         for element, data in self._elements:
@@ -84,18 +84,18 @@ class UIBoxLayout(UIAbstractLayout):
             element.top = self.top - cy
 
     def min_size(self):
-        width = 0
-        height = 0
+        width = self.padding_horizontal
+        height = self.padding_vertical
         for element, data in self._elements:
 
             if self.vertical:
                 height += element.height
                 height += data.get('space', 0)
-                width = max(width, element.width)
+                width = max(width, element.width + self.padding_horizontal)
             else:
                 width += element.width
                 width += data.get('space', 0)
-                height = max(height, element.height)
+                height = max(height, element.height + self.padding_vertical)
 
         return width, height
 

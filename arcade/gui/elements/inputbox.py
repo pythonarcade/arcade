@@ -121,8 +121,8 @@ class UIInputBox(UIClickable):
     * bg_color
     * bg_color_hover
     * bg_color_focus
-    * vmargin - Vertical margin around text
-    * margin_left
+    * vpadding - Vertical padding around text
+    * padding_left
     """
 
     ENTER = 'ENTER'
@@ -190,11 +190,11 @@ class UIInputBox(UIClickable):
         bg_color_focus = self.style_attr('bg_color_focus', arcade.color.GRAY)
 
         width = int(self.width)
-        vmargin = self.style_attr('vmargin', 0)
-        height = self.height if self.height else font_size + vmargin
+        vpadding = self.style_attr('vpadding', 0)
+        height = self.height if self.height else font_size + vpadding
 
         align = "left"
-        margin_left = self.style_attr('margin_left', 10)
+        padding_left = self.style_attr('padding_left', 10)
 
         # text
         text_image_normal = get_text_image(text=self.text,
@@ -205,7 +205,7 @@ class UIInputBox(UIClickable):
                                            width=width,
                                            height=height,
                                            valign='middle',
-                                           indent=margin_left,
+                                           indent=padding_left,
                                            background_color=bg_color
                                            )
         text_image_hover = get_text_image(text=self.text,
@@ -216,7 +216,7 @@ class UIInputBox(UIClickable):
                                           width=width,
                                           height=height,
                                           valign='middle',
-                                          indent=margin_left,
+                                          indent=padding_left,
                                           background_color=bg_color_hover
                                           )
 
@@ -229,7 +229,7 @@ class UIInputBox(UIClickable):
                                           width=width,
                                           height=height,
                                           valign='middle',
-                                          indent=margin_left,
+                                          indent=padding_left,
                                           background_color=bg_color_focus
                                           )
 

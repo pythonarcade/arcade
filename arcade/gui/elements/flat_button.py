@@ -23,7 +23,7 @@ class UIAbstractFlatButton(UIClickable):
     * bg_color
     * bg_color_hover
     * bg_color_press
-    * vmargin - vertical margin around the text
+    * vpadding - vertical padding around the text
     """
 
     def __init__(self,
@@ -82,8 +82,8 @@ class UIAbstractFlatButton(UIClickable):
         bg_color_hover = self.style_attr('bg_color_hover', None)
         bg_color_press = self.style_attr('bg_color_press', None)
 
-        vmargin = self.style_attr('vmargin', 0)
-        height = self.height if self.height else font_size + vmargin
+        vpadding = self.style_attr('vpadding', 0)
+        height = self.height if self.height else font_size + vpadding
 
         text_image_normal = render_text_image(
             self.text,

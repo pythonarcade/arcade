@@ -1,9 +1,13 @@
 from abc import abstractmethod, ABC
 from operator import attrgetter
-from typing import List, NamedTuple, Union, Dict
+from pathlib import Path
+from typing import List, NamedTuple, Union, Dict, Optional, Tuple
 
-from arcade import Sprite, SpriteList, get_sprites_at_point
+import PIL
+
+from arcade import Sprite, SpriteList, get_sprites_at_point, Color, Texture
 from arcade.gui import UIElement, UIEvent
+from arcade.resources import resolve_resource_path
 
 
 class PackedElement(NamedTuple):
@@ -11,26 +15,96 @@ class PackedElement(NamedTuple):
     data: Dict
 
 
+padding = Union[
+    int,
+    Tuple[int, int],
+    Tuple[int, int, int, int]
+]
+
+
 class UIAbstractLayout(ABC):
     def __init__(self,
-                 # draw_border=False,
                  id=None,
+                 bg: Union[Color, str, Path] = None,
+                 border_color: Optional[Color] = None,
+                 border_width: int = 2,
+                 padding: padding = 0,
                  **kwargs):
+        """
+
+        :param id: id of the
+        :param bg:
+        :param border_color:
+        :param border_width:
+        :param kwargs:
+        """
         super().__init__()
         # self.draw_border = draw_border
 
         self._elements: List[PackedElement] = []
         self._layer = SpriteList()
-        self._child_layouts = []
+        self._child_layouts: List[UIAbstractLayout] = []
 
         # anker for own position
         self._top = 0
         self._left = 0
 
-        self._width = 0
-        self._height = 0
+        self._padding = padding
+
+        self._width = self.padding_horizontal
+        self._height = self.padding_vertical
 
         self._id = id
+
+        self._border_color = border_color
+        self._border_width = border_width
+        self._bg_sprite: Optional[Sprite] = None
+
+        self._bg = bg
+        self.refresh_bg()
+
+    def _create_bg_sprite(self, bg):
+
+        # calc size containing padding
+        h_padding = self.padding_left + self.padding_right
+        v_padding = self.padding_top + self.padding_bottom
+        size = (self._width + v_padding, self._height + h_padding)
+
+        if isinstance(bg, Path) or isinstance(bg, str):
+            image_path = resolve_resource_path(bg)
+            bg_image = PIL.Image.open(image_path)
+            bg_image = bg_image.resize(size)
+        else:
+            # bg should be a color, so we will create a bg image
+            bg_image = PIL.Image.new('RGBA', size, bg)
+
+        return bg_image
+
+    def refresh_bg(self):
+        # if bg and border not set, we skip the bg_sprite
+        if self._bg is None and self._border_color is None:
+            self._bg_sprite = None
+            return
+
+        bg = self._bg if self._bg else (255, 0, 0, 0)
+
+        # recreate bg
+        bg_image = self._create_bg_sprite(bg)
+
+        # apply border
+        if self._border_color:
+            bg_image = PIL.ImageOps.expand(
+                bg_image,
+                border=self._border_width,
+                fill=self._border_color
+            )
+
+        self._bg_sprite = Sprite()
+        self._bg_sprite.texture = Texture(f"BG", bg_image, hit_box_algorithm='None')
+
+        off_y = (self.padding_top - self.padding_bottom) // 2
+        off_x = (self.padding_right - self.padding_left) // 2
+        self._bg_sprite.position = self.center_x + off_x, self.center_y + off_y
 
     @property
     def id(self):
@@ -64,21 +138,70 @@ class UIAbstractLayout(ABC):
             self._child_layouts.append(element)
 
     def draw(self):
-        # TODO fix this!
-        # self.draw_border()
+        if self._bg_sprite:
+            self._bg_sprite.draw()
 
         self._layer.draw()
-        # self._layer.draw_hit_boxes(arcade.color.LIGHT_RED_OCHRE, 2)
         for child in self._child_layouts:
             child.draw()
 
-    # def draw_border(self):
-    #     arcade.draw_lrtb_rectangle_outline(
-    #         self.left,
-    #         self.right,
-    #         self.top,
-    #         self.bottom,
-    #         arcade.color.LIGHT_RED_OCHRE)
+    # padding values
+    @property
+    def padding(self):
+        return self._padding
+
+    @padding.setter
+    def padding(self, value: padding):
+        self._padding = value
+        self.refresh()
+
+    @property
+    def padding_top(self):
+        if isinstance(self._padding, int):
+            return self._padding
+        if len(self._padding) == 2:
+            return self._padding[0]
+        elif len(self._padding) == 4:
+            return self._padding[0]
+        return 0
+
+    @property
+    def padding_right(self):
+        if isinstance(self._padding, int):
+            return self._padding
+        if len(self._padding) == 2:
+            return self._padding[1]
+        elif len(self._padding) == 4:
+            return self._padding[1]
+        return 0
+
+    @property
+    def padding_bottom(self):
+        if isinstance(self._padding, int):
+            return self._padding
+        if len(self._padding) == 2:
+            return self._padding[0]
+        elif len(self._padding) == 4:
+            return self._padding[2]
+        return 0
+
+    @property
+    def padding_left(self):
+        if isinstance(self._padding, int):
+            return self._padding
+        if len(self._padding) == 2:
+            return self._padding[1]
+        elif len(self._padding) == 4:
+            return self._padding[3]
+        return 0
+
+    @property
+    def padding_vertical(self):
+        return self.padding_top + self.padding_bottom
+
+    @property
+    def padding_horizontal(self):
+        return self.padding_right + self.padding_left
 
     # --------- position - fixed
     @property
@@ -98,10 +221,10 @@ class UIAbstractLayout(ABC):
     def left(self, value):
         self._left = value
 
-    @left.setter
-    def left(self, value):
-        x_diff = value - self.left
-        self.move(x_diff, 0)
+    # @left.setter
+    # def left(self, value):
+    #     x_diff = value - self.left
+    #     self.move(x_diff, 0)
 
     @property
     def width(self):
@@ -124,7 +247,7 @@ class UIAbstractLayout(ABC):
     # --------- position - calc
     @property
     def right(self):
-        return self.left + self.width
+        return self.left + self.width + self.padding_horizontal
 
     @right.setter
     def right(self, value):
@@ -133,7 +256,7 @@ class UIAbstractLayout(ABC):
 
     @property
     def bottom(self):
-        return self.top - self.height
+        return self.top - self.height - self.padding_vertical
 
     @bottom.setter
     def bottom(self, value):
@@ -172,6 +295,8 @@ class UIAbstractLayout(ABC):
             if isinstance(element, UIAbstractLayout):
                 element.refresh()
         self.place_elements()
+
+        self.refresh_bg()
 
     @abstractmethod
     def place_elements(self):

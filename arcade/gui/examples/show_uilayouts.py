@@ -15,6 +15,8 @@ class MyView(View):
         super().__init__(window=window)
         self.ui_manager = UILayoutManager(window=window)
 
+        self._drag_start = None
+        self._drag_stop = None
         self._last_mouse_pos = (0, 0)
 
     def on_show_view(self):
@@ -41,7 +43,13 @@ class MyView(View):
         root_layout.pack(layout_top_left, top=0, left=20, fill_x=True)
 
         # window center
-        layout_center = UIBoxLayout(id='center', align='center')
+        layout_center = UIBoxLayout(
+            id='center',
+            align='center',
+            bg=arcade.color.CARMINE,
+            padding=(10, 0, 30, 40),
+            border_color=arcade.color.BLACK
+        )
         layout_center.pack(UILabel(text="center_x=0"))
         layout_center.pack(UILabel(text="center_y=0"))
         layout_center.pack(UILabel(text="no fill effect"), space=20)
@@ -56,7 +64,14 @@ class MyView(View):
         root_layout.pack(layout_center_right, right=0, top=0, fill_y=True)
 
         # center left
-        layout_center_left = UIBoxLayout(vertical=True, align='center', id='right center')
+        layout_center_left = UIBoxLayout(
+            vertical=True,
+            align='center',
+            id='right center',
+            bg=None,
+            padding=(10, 0, 30, 40),
+            border_color=arcade.color.BLACK
+        )
         layout_center_left.pack(UILabel(text="left=0"))
         layout_center_left.pack(UILabel(text="center_y=0"))
         layout_center_left.pack(UILabel(text="no fill effect"), space=20)
@@ -64,7 +79,7 @@ class MyView(View):
         root_layout.pack(layout_center_left, left=0, center_y=0)
 
         # bottom center
-        layout_bottom_center = UIBoxLayout(vertical=False, align='center', id='bottom center')
+        layout_bottom_center = UIBoxLayout(vertical=False, align='center', id='bottom center', bg=arcade.color.BEIGE)
         layout_bottom_center.pack(UILabel(text="bottom=0"))
         layout_bottom_center.pack(UILabel(text="center_x=0"), space=10)
         layout_bottom_center.pack(UILabel(text="no fill effect"), space=10)
@@ -110,7 +125,15 @@ class MyView(View):
     def on_draw(self):
         arcade.start_render()
 
+        self.ui_manager.on_draw()
+
         self.draw_borders(self.ui_manager.root_layout)
+        if self._drag_start and self._drag_stop:
+            arcade.draw_line(*self._drag_start, *self._drag_stop, arcade.color.RED, line_width=2)
+
+            distance = abs(self._drag_start[0] - self._drag_stop[0]), abs(self._drag_start[1] - self._drag_stop[1])
+            text_pos = (self._drag_start[0] + self._drag_stop[0])//2, (self._drag_start[1] + self._drag_stop[1])//2
+            arcade.draw_text(f'x:{distance[0]}, y:{distance[1]}', *text_pos, arcade.color.BLACK, font_size=20, bold=True)
 
     def on_key_press(self, symbol: int, modifiers: int):
         if symbol == arcade.key.S:
@@ -126,6 +149,14 @@ class MyView(View):
 
     def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
         self._last_mouse_pos = (x, y)
+        self._drag_stop = x, y
+
+    def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
+        self._drag_start = x, y
+
+    def on_mouse_release(self, x: float, y: float, button: int,
+                         modifiers: int):
+        self._drag_start = None
 
 
 def main():

@@ -59,12 +59,20 @@ class UIStyle(EventDispatcher):
     @classmethod
     def default_style(cls):
         """
-        :return: empty style # TODO maybe load the real default style once
+        :return: empty style
         """
         if cls.__default_style is None:
             cls.__default_style = UIStyle.from_file(resolve_resource_path(
                 ':resources:style/default.yml'
             ))
+        return cls.__default_style
+
+    @classmethod
+    def set_default_style(cls, style: 'UIStyle'):
+        """
+        Set the default style, which will be used for any new element
+        """
+        cls.__default_style = style
         return cls.__default_style
 
     def on_style_change(self, style_classes: Set[str]):

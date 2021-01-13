@@ -1,6 +1,9 @@
 from typing import Optional
 
 import PIL
+from PIL import ImageDraw, ImageOps
+from PIL.ImageDraw import Draw
+
 import arcade
 from arcade.gui import UIElement, UIException
 
@@ -11,11 +14,11 @@ class UIBox(UIElement):
     """
 
     def __init__(self,
-                 center_x=0,
-                 center_y=0,
                  width: int = None,
                  height: int = None,
                  color: Optional[arcade.Color] = None,
+                 center_x=0,
+                 center_y=0,
                  texture: Optional[arcade.Texture] = None,
                  **kwargs):
         super().__init__(

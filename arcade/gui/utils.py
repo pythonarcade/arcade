@@ -64,7 +64,7 @@ def parse_value(value: Any):
     return value
 
 
-def add_margin(pil_img, top, right, bottom, left, color=None):
+def add_padding(pil_img, top, right, bottom, left, color=None):
     width, height = pil_img.size
     new_width = width + right + left
     new_height = height + top + bottom
