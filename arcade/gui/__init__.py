@@ -17,7 +17,7 @@ Available :py:class:`arcade.gui.UIElement`
 * :py:class:`arcade.gui.UIImageButton`
 * :py:class:`arcade.gui.UIFlatButton`
 * :py:class:`arcade.gui.UIGhostFlatButton`
-* :py:class:`arcade.gui.UIToggel`
+* :py:class:`arcade.gui.UIToggle`
 
 Run examples with `python -m arcade.gui.examples.<example name>`
 
