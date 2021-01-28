@@ -7,6 +7,16 @@ Release Notes
 
 Keep up-to-date with the latest changes to the Arcade library by the release notes.
 
+Version 2.5.3
+-------------
+
+Version 2.5.3 was released 2021-01-27
+
+* `Fix memory leak when removing sprites from sprite list <https://github.com/pythonarcade/arcade/issues/815>`_
+* `Fix solitaire example using old hitbox parameter <https://github.com/pythonarcade/arcade/issues/814>`_
+* Fix/improve tetris example
+* Fix for camera2d.scroll_x
+
 Version 2.5.2
 -------------
 
