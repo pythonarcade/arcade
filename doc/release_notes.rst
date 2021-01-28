@@ -7,10 +7,31 @@ Release Notes
 
 Keep up-to-date with the latest changes to the Arcade library by the release notes.
 
+Version 2.5.2
+-------------
+
+Version 2.5.2 was released 2020-12-27
+
+* Improve schedule/unschedule docstrings
+* Fix Sound.get_length
+* Raise error if there are multiple instances of a streaming source
+* Fix background music example to match new sound API
+* Update main landing page for docs
+* Split sprite platformer tutorial into multiple pages
+* Add 'related projects' page
+* Add 'adventure' sample game link
+* Add resources for top-down tank images
+* Add turn-and-move example
+* Fix name of sandCorner_left.png
+* Update tilemap to error out instead of continuing if we can't find a tile
+* Improve view tutorial
+* Generate error rather than warning if we can't find image or sound file
+* Specify timer resolution in Windows
+
 Version 2.5.1
 -------------
 
-Version 2.5 was released 2020-12-14
+Version 2.5.1 was released 2020-12-14
 
 * Fix bug with sound where panning wasn't working on Windows machines.
 * `Fix for create_lines_with_colors <https://github.com/pythonarcade/arcade/issues/804>`_
