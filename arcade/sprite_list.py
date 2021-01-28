@@ -400,7 +400,7 @@ class SpriteList:
         item.sprite_lists.remove(self)
 
         # Rebuild index list
-        self.sprite_idx[item] = dict()
+        self.sprite_idx = dict()
         for idx, sprite in enumerate(self.sprite_list):
             self.sprite_idx[sprite] = idx
 
