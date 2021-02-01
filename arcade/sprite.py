@@ -1054,6 +1054,243 @@ class AnimatedTimeSprite(Sprite):
         self.frame += 1
 
 
+
+class AnimatedSprite(Sprite):
+
+    """"
+    New class for Sprite animation. (trial)
+    """
+
+    # static integer for unique texture ids
+    _uniqueID = 1
+
+    @staticmethod
+    def _getNextID():
+        AnimatedSprite._uniqueID += 1
+        return AnimatedSprite._uniqueID
+
+    # Constructor
+    def __init__(self):
+        #call to parent (Sprite)
+        super().__init__()
+
+        # parent fields
+        self.state = FACE_RIGHT
+
+        # animation data structure
+        # First a list of dictionnaries, one entry for one state value
+        # Each dictionary entry contains the following :
+        # - KEY : name of the animation,
+        # - VALUE = dict {
+        #     + textureList : []
+        #     + frameDuration : float
+        #     + backAndForth : bool
+        #     + counter : int
+        #    }
+        self._anims = [{}] * 4
+
+        # Current animation name
+        self._current_animation_name = None
+        # Current displayed texture
+        self.cur_texture_index = 0
+        # Set elapsed duration (used to know if we have to stop the animation)
+        self._elapsed_duration = 0
+        # Set play/pause flag
+        self._playing = True
+
+
+    def addAnimation(self,
+                     animation_name: str,
+                     filepath: str,
+                     final_width: int,
+                     final_height: int,
+                     nb_frames_x: int,
+                     nb_frames_y: int,
+                     frame_width: int,
+                     frame_height: int,
+                     frame_start_index: int = 0,
+                     frame_end_index: int = 0,
+                     frame_duration: float = 1 / 24,
+                     flipped_horizontally: bool = False,
+                     flipped_vertically: bool = False,
+                     loop_counter: int = 0,
+                     back_and_forth: bool = False,
+                     filter_color: tuple = (255, 255, 255, 255),
+                     facing_direction: int = FACE_RIGHT,
+                     hit_box_algo: str = 'None'
+                     ):
+        """
+        Adds a new animation in the Sprite object. It takes all images from a given SpriteSheet. \
+        This Sprite is animated according to the elpased time and each frame has the same duration. \
+        If this animation is the first to be added, select it right now.
+        :param str filepath: path to the image file.
+        :param int final_width: final width of the sprite (after input image has been resized).
+        :param int final_height: final height of the sprite (after input image has been resized).
+        :param bool use_max_ratio: flag to indicate if the resize operation will keep the whole sprite \
+        in the final_width and final_height box (False), or if it will fill the complete box, \
+        even if one of the dimensions will get out of the box. In both cases, the aspect ratio will be kept. \
+        In all cases, the final_width and the final_height values may not been respected, depending on final \
+        size ratio and input image ratio.
+        :param int nb_frames_x: number of frames in the input image, along the x-axis
+        :param int nb_frames_y: number of frames in the input image, along the y-axis
+        :param int frame_width: width of each frame. frame_width*nb_frames_x must be equal to the input image width.
+        :param int frame_height: width of each frame. frame_height*nb_frames_y must be equal to the input image height.
+        :param int frame_start_index: index of the first frame of the current animation. Indexes start at 0. \
+        Indexes are taken from left to right and from top to bottom. 0 means the top-left frame in the input image.
+        :param int frame_end_index: index of the last frame for the current animation. this value cannot exceed (nb_frames_x*nb_frames_y)-1.
+        :param float frame_duration: duration of each frame (in seconds).
+        :param bool flipped_horizontally: flag to indicate the frames will be horizontally flipped for this animation.
+        :param bool flipped_vertically: flag to indicate the frames will be vertically flipped for this animation.
+        :param int loop_counter: integer value to tell how many animation loop must be performed before the animation is being stopped. \
+        If the value is zero or less, that means the animation will loop forever. When an animation has finished, it remains on the last frame.
+        :param bool back_and_forth: flag to indicate if the frames used in this animation (with indexes between frame_start_index and frame_end_index) \
+        must be duplicated in the opposite order. It allows a sprite sheet with 5 frames, '1-2-3-4-5', to create an animation like, \
+        either '1-2-3-4-5' (flag value = False) \
+        or '1-2-3-4-5-4-3-2' (flag value to True).
+        :param tuple filter_color: RGBA tuple to be used like a filter layer. All the frames used in this animation will be color-filtered.
+        :param str animation_name: functional name of your animation. This string will be used to select the animation you want to display. \
+        If you have several animations, one per facing direction, you can give the same name for all of these animations (e.g. 'walk'/'run'/'idle'). \
+        This is the pair 'animation_name'+'facing_direction' that will be used to select the correct frame to display
+        :param int facing_direction: current facing direction for your animated sprite. It will be used in addition with animation_name, \
+        in order to select the correct frame to display. Warning : if one pair 'animation_name'+'facing_direction' is missing in the animation \
+        data structure (e.g. you didn't add this animation), the previous selected animation will remain selected.
+        :return None
+        """
+
+        # Create data structure if not already existing
+        if animation_name in self._anims[facing_direction]:
+            raise RuntimeError(f"AnimatedSprite : {animation_name} is already added to the current object (state={facing_direction})")
+        self._anims[facing_direction][animation_name] = {}
+        animDict = self._anims[facing_direction][animation_name]
+        animDict["textureList"] = []
+        animDict["frameDuration"] = frame_duration
+        animDict["backAndForth"] = back_and_forth
+        animDict["counter"] =  loop_counter
+        animDict["color"] = filter_color
+
+        # Prepare texture ID
+        texID = f"{animation_name}{AnimatedSprite._getNextID()}"
+
+        # Now create all textures and add them into the list
+        for y in range(nb_frames_y):
+            for x in range(nb_frames_x):
+                index = x + (y * nb_frames_x)
+                # add index only if in range
+                if index >= frame_start_index and index <= frame_end_index:
+                    texName = f"{texID}{index}"  # TODO : use a texture loader with unique names in order to avoid GPU memory flooding
+                    tex = load_texture(filepath,
+                                       x*frame_width, y*frame_height, frame_width, frame_height,
+                                       flipped_horizontally=flipped_horizontally,
+                                       flipped_vertically=flipped_vertically,
+                                       hit_box_algorithm=hit_box_algo)
+                    animDict["textureList"].append(tex)
+
+        # If this animation is the first, select it, and select the first texture, and play
+        if self._current_animation_name == None:
+            self.selectAnimation(animation_name, True, True)
+
+    def selectAnimation(self, animation_name, rewind=False, running=True):
+        """
+        Select the current animation to display. \
+        This method only checks if there is an animation with the given name in the data structure, \
+        for the current facing direction. \
+        If yes, this animation is selected, and the Sprite class textures field is updated. If not, this method does nothing.
+        :param str animation_name: just the functional name of the animation to select.
+        :param bool rewind: a flag to indicate if the new animation must be rewind or not. By default no rewind is done.
+        :param bool runnning: a flag to indicate if the new animation must be played or stopped. By default the animation is played.
+        :return: None
+        """
+        if animation_name in self._anims[self.state]:
+            self._current_animation_name = animation_name
+            self.textures = self._anims[self.state][animation_name]["textureList"]
+            self.color = self._anims[self.state][animation_name]["color"]
+            if rewind:
+                self.rewindAnimation()
+            if running:
+                self.resumeAnimation()
+
+    def update_animation(self, delta_time: float = 1/60):
+        # Increase current elapsed time if playing
+        if self._playing:
+            self._elapsed_duration += delta_time
+
+        # If the current animation name is not found in the state list, that means
+        # the state has been changed after anim selection. So now we do not update anymore.
+        # else, just process
+        if self._current_animation_name in self._anims[self.state]:
+            animDict = self._anims[self.state][self._current_animation_name]
+
+            # get number of frames
+            nbFrames  = len(animDict["textureList"])
+            nbFrames2 = nbFrames
+            # update nbFrames in case of backAndForth
+            if animDict["backAndForth"]:
+                nbFrames2 += nbFrames-2
+            # compute frame num according to time
+            frameIdx = int(self._elapsed_duration/animDict["frameDuration"])
+
+            # update frame index according to loop counter
+            if animDict["counter"] <= 0:
+                # use modulo for infinite loop
+                frameIdx = frameIdx % nbFrames2
+            else:
+                # Saturate the final index frame
+                if frameIdx >= nbFrames2*animDict["counter"]:
+                    frameIdx = nbFrames2*animDict["counter"]-1
+                frameIdx = frameIdx % nbFrames2
+
+            # In case of backAndForth
+            if frameIdx >= nbFrames:
+                frameIdx = nbFrames2 - frameIdx
+
+            # set current texture index and texture from the parent class
+            self.cur_texture_index = frameIdx
+            self.set_texture(self.cur_texture_index)
+
+    def pauseAnimation(self):
+        """
+        Pauses the current animation. It does not rewind it.
+        :return: None
+        """
+        self._playing = False
+
+    def resumeAnimation(self):
+        """
+        Resumes the current animation. It does not rewind it.
+        :return: None
+        """
+        self._playing = True
+
+    def rewindAnimation(self):
+        """
+        Just rewinds the current animation to the first frame. It does not change the play/stop flag.
+        :return:
+        """
+        self._elapsed_duration = 0
+
+    def playAnimation(self):
+        """
+        Rewinds and Plays the current animation.
+        :return: None
+        """
+        self.rewindAnimation()
+        self.resumeAnimation()
+
+    def stopAnimation(self):
+        """
+        Stops the current animation and rewinds it.
+        :return: None
+        """
+        self.pauseAnimation()
+        self.rewindAnimation()
+
+
+
+
+
+
+
+
 @dataclasses.dataclass
 class AnimationKeyframe:
     """
