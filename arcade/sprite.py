@@ -1081,8 +1081,8 @@ class AnimatedSprite(Sprite):
         :return: tuple (int, int, int) number of textures, number of frames when back and forth is enabled, number of frames when counter is enabled (and back and forth)
         """
         nb_frames = 0
-        if anim_name in self._anims[self.state]:
-            anim_dict = self._anims[self.state][anim_name]
+        if anim_name in self._anims[self.state-1]:
+            anim_dict = self._anims[self.state-1][anim_name]
             nb_frames     = len(anim_dict["texture_list"])
             nb_frames_baf = nb_frames
             nb_frames_cnt = nb_frames
@@ -1100,8 +1100,8 @@ class AnimatedSprite(Sprite):
         """
         frame_idx  = 0
         frame_perc = 0
-        if anim_name in self._anims[self.state]:
-            anim_dict = self._anims[self.state][anim_name]
+        if anim_name in self._anims[self.state-1]:
+            anim_dict = self._anims[self.state-1][anim_name]
             # Get number of frames
             nb_frames, nb_frames_baf, nb_frames_cnt = self._get_nb_frames(anim_name)
             # compute absolute frame index according to time
@@ -1141,7 +1141,7 @@ class AnimatedSprite(Sprite):
         #     + back_and_forth : bool
         #     + counter : int
         #    }
-        self._anims = [{}] * 4
+        self._anims = [{},{},{},{}]
 
         # Current animation name
         self._current_animation_name = None
@@ -1157,8 +1157,6 @@ class AnimatedSprite(Sprite):
     def add_animation(self,
                      animation_name: str,
                      filepath: str,
-                     final_width: int,
-                     final_height: int,
                      nb_frames_x: int,
                      nb_frames_y: int,
                      frame_width: int,
@@ -1188,8 +1186,6 @@ class AnimatedSprite(Sprite):
         size ratio and input image ratio.
         :param int nb_frames_x: number of frames in the input image, along the x-axis
         :param int nb_frames_y: number of frames in the input image, along the y-axis
-        :param int frame_width: width of each frame. frame_width*nb_frames_x must be equal to the input image width.
-        :param int frame_height: width of each frame. frame_height*nb_frames_y must be equal to the input image height.
         :param int frame_start_index: index of the first frame of the current animation. Indexes start at 0. \
         Indexes are taken from left to right and from top to bottom. 0 means the top-left frame in the input image.
         :param int frame_end_index: index of the last frame for the current animation. this value cannot exceed (nb_frames_x*nb_frames_y)-1.
@@ -1213,15 +1209,16 @@ class AnimatedSprite(Sprite):
         """
 
         # Create data structure if not already existing
-        if animation_name in self._anims[facing_direction]:
+        if animation_name in self._anims[facing_direction-1]:
             raise RuntimeError(f"AnimatedSprite : {animation_name} is already added to the current object (state={facing_direction})")
-        self._anims[facing_direction][animation_name] = {}
-        anim_dict = self._anims[facing_direction][animation_name]
-        anim_dict["texture_list"] = []
-        anim_dict["frame_duration"] = frame_duration
-        anim_dict["back_and_forth"] = back_and_forth
-        anim_dict["counter"] =  loop_counter
-        anim_dict["color"] = filter_color
+
+        my_dict = {
+            "texture_list" : [],
+            "frame_duration" : frame_duration,
+            "back_and_forth" : back_and_forth,
+            "counter" :  loop_counter,
+            "color" : filter_color,
+        }
 
         # Prepare texture ID
         texID = f"{animation_name}{AnimatedSprite._next_id()}"
@@ -1238,7 +1235,10 @@ class AnimatedSprite(Sprite):
                                        flipped_horizontally=flipped_horizontally,
                                        flipped_vertically=flipped_vertically,
                                        hit_box_algorithm=hit_box_algo)
-                    anim_dict["texture_list"].append(tex)
+                    my_dict["texture_list"].append(tex)
+
+        # Store this animation
+        self._anims[facing_direction-1][animation_name] = my_dict
 
         # If this animation is the first, select it, and select the first texture, and play
         if self._current_animation_name == None:
@@ -1256,10 +1256,10 @@ class AnimatedSprite(Sprite):
         :param bool runnning: a flag to indicate if the new animation must be played or stopped. By default the animation is played.
         :return: None
         """
-        if animation_name in self._anims[self.state]:
+        if animation_name in self._anims[self.state-1]:
             self._current_animation_name = animation_name
-            self.textures = self._anims[self.state][animation_name]["texture_list"]
-            self.color = self._anims[self.state][animation_name]["color"]
+            self.textures = self._anims[self.state-1][animation_name]["texture_list"]
+            self.color = self._anims[self.state-1][animation_name]["color"]
             if rewind:
                 self.rewind_animation()
             if running:
@@ -1287,10 +1287,11 @@ class AnimatedSprite(Sprite):
             # If the current animation name is not found in the state list, that means
             # the state has been changed after anim selection. So now we do not update anymore.
             # else, just process
-            if self._current_animation_name in self._anims[self.state]:
+            if self._current_animation_name in self._anims[self.state-1]:
                 # Get current frame index
                 frame_idx, frame_perc = self._get_frame_index(self._current_animation_name)
                 # set current texture index and texture from the parent class
+                self.textures = self._anims[self.state - 1][self._current_animation_name]["texture_list"]
                 self.cur_texture_index = frame_idx
                 self.set_texture(self.cur_texture_index)
                 # Store current percentage
