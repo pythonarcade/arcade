@@ -1062,12 +1062,66 @@ class AnimatedSprite(Sprite):
     """
 
     # static integer for unique texture ids
-    _uniqueID = 1
+    _unique_id = 1
 
     @staticmethod
-    def _getNextID():
-        AnimatedSprite._uniqueID += 1
-        return AnimatedSprite._uniqueID
+    def _next_id():
+        """
+        Static method to get an unique identifier for textures
+        :return: int unique identifier
+        """
+        AnimatedSprite._unique_id += 1
+        return AnimatedSprite._unique_id
+
+    # Private methods
+    def _get_nb_frames(self,anim_name):
+        """
+        Private method to get the number of frames for the requested animation name
+        :param str anim_name: name of the requested animation
+        :return: tuple (int, int, int) number of textures, number of frames when back and forth is enabled, number of frames when counter is enabled (and back and forth)
+        """
+        nb_frames = 0
+        if anim_name in self._anims[self.state]:
+            anim_dict = self._anims[self.state][anim_name]
+            nb_frames     = len(anim_dict["texture_list"])
+            nb_frames_baf = nb_frames
+            nb_frames_cnt = nb_frames
+            if anim_dict["back_and_forth"]:
+                nb_frames_baf += nb_frames - 2
+            if anim_dict["counter"] > 0:
+                nb_frames_cnt = nb_frames_baf*anim_dict["counter"]
+        return (nb_frames, nb_frames_baf, nb_frames_cnt)
+
+    def _get_frame_index(self, anim_name):
+        """
+        Private methods to get the current index to display and the percentage of progression in the requested animation
+        :param anim_name: name of the requested animation
+        :return: tuple(int, float) index of the frame to display, percentage progression
+        """
+        frame_idx  = 0
+        frame_perc = 0
+        if anim_name in self._anims[self.state]:
+            anim_dict = self._anims[self.state][anim_name]
+            # Get number of frames
+            nb_frames, nb_frames_baf, nb_frames_cnt = self._get_nb_frames(anim_name)
+            # compute absolute frame index according to time
+            frame_idx = int(self._elapsed_duration / anim_dict["frame_duration"])
+            # update frame index according to loop counter
+            if anim_dict["counter"] <= 0:
+                # use modulo for infinite loop
+                frame_idx = frame_idx % nb_frames_baf
+            else:
+                # Saturate the final index frame (stay on the last frame)
+                frame_perc = min(1.0, frame_idx / nb_frames_cnt)
+                if frame_idx >= nb_frames_cnt:
+                    frame_idx = nb_frames_cnt - 1
+                frame_idx  = frame_idx % nb_frames_baf
+            # In case of back And Forth
+            if frame_idx >= nb_frames:
+                frame_idx = nb_frames_baf - frame_idx
+        return frame_idx, frame_perc
+
+
 
     # Constructor
     def __init__(self):
@@ -1082,9 +1136,9 @@ class AnimatedSprite(Sprite):
         # Each dictionary entry contains the following :
         # - KEY : name of the animation,
         # - VALUE = dict {
-        #     + textureList : []
-        #     + frameDuration : float
-        #     + backAndForth : bool
+        #     + texture_list : []
+        #     + frame_duration : float
+        #     + back_and_forth : bool
         #     + counter : int
         #    }
         self._anims = [{}] * 4
@@ -1097,9 +1151,10 @@ class AnimatedSprite(Sprite):
         self._elapsed_duration = 0
         # Set play/pause flag
         self._playing = True
+        # Percentage progression
+        self._percent_progression = 0
 
-
-    def addAnimation(self,
+    def add_animation(self,
                      animation_name: str,
                      filepath: str,
                      final_width: int,
@@ -1161,15 +1216,15 @@ class AnimatedSprite(Sprite):
         if animation_name in self._anims[facing_direction]:
             raise RuntimeError(f"AnimatedSprite : {animation_name} is already added to the current object (state={facing_direction})")
         self._anims[facing_direction][animation_name] = {}
-        animDict = self._anims[facing_direction][animation_name]
-        animDict["textureList"] = []
-        animDict["frameDuration"] = frame_duration
-        animDict["backAndForth"] = back_and_forth
-        animDict["counter"] =  loop_counter
-        animDict["color"] = filter_color
+        anim_dict = self._anims[facing_direction][animation_name]
+        anim_dict["texture_list"] = []
+        anim_dict["frame_duration"] = frame_duration
+        anim_dict["back_and_forth"] = back_and_forth
+        anim_dict["counter"] =  loop_counter
+        anim_dict["color"] = filter_color
 
         # Prepare texture ID
-        texID = f"{animation_name}{AnimatedSprite._getNextID()}"
+        texID = f"{animation_name}{AnimatedSprite._next_id()}"
 
         # Now create all textures and add them into the list
         for y in range(nb_frames_y):
@@ -1177,19 +1232,20 @@ class AnimatedSprite(Sprite):
                 index = x + (y * nb_frames_x)
                 # add index only if in range
                 if index >= frame_start_index and index <= frame_end_index:
-                    texName = f"{texID}{index}"  # TODO : use a texture loader with unique names in order to avoid GPU memory flooding
+                    tex_name = f"{texID}{index}"  # TODO : use a texture loader with unique names in order to avoid GPU memory flooding
                     tex = load_texture(filepath,
                                        x*frame_width, y*frame_height, frame_width, frame_height,
                                        flipped_horizontally=flipped_horizontally,
                                        flipped_vertically=flipped_vertically,
                                        hit_box_algorithm=hit_box_algo)
-                    animDict["textureList"].append(tex)
+                    anim_dict["texture_list"].append(tex)
 
         # If this animation is the first, select it, and select the first texture, and play
         if self._current_animation_name == None:
-            self.selectAnimation(animation_name, True, True)
+            self.select_animation(animation_name, True, True)
+            self.update_animation(0)
 
-    def selectAnimation(self, animation_name, rewind=False, running=True):
+    def select_animation(self, animation_name, rewind=False, running=True):
         """
         Select the current animation to display. \
         This method only checks if there is an animation with the given name in the data structure, \
@@ -1202,89 +1258,87 @@ class AnimatedSprite(Sprite):
         """
         if animation_name in self._anims[self.state]:
             self._current_animation_name = animation_name
-            self.textures = self._anims[self.state][animation_name]["textureList"]
+            self.textures = self._anims[self.state][animation_name]["texture_list"]
             self.color = self._anims[self.state][animation_name]["color"]
             if rewind:
-                self.rewindAnimation()
+                self.rewind_animation()
             if running:
-                self.resumeAnimation()
+                self.resume_animation()
+
+    def select_frame(self, frame_index):
+        """
+        This method selects a specific frame in the stored textures.\
+        When calling this method, it automatically pauses the animation.
+        In other words, this method forces the current class behaviour.
+        :param int frame_index: number of the requested frame.
+        :return: None
+        """
+        self.pause_animation()
+        self.cur_texture_index = frame_index
+        self.set_texture(self.cur_texture_index)
+        self._percent_progression = 0
+
 
     def update_animation(self, delta_time: float = 1/60):
         # Increase current elapsed time if playing
         if self._playing:
             self._elapsed_duration += delta_time
 
-        # If the current animation name is not found in the state list, that means
-        # the state has been changed after anim selection. So now we do not update anymore.
-        # else, just process
-        if self._current_animation_name in self._anims[self.state]:
-            animDict = self._anims[self.state][self._current_animation_name]
+            # If the current animation name is not found in the state list, that means
+            # the state has been changed after anim selection. So now we do not update anymore.
+            # else, just process
+            if self._current_animation_name in self._anims[self.state]:
+                # Get current frame index
+                frame_idx, frame_perc = self._get_frame_index(self._current_animation_name)
+                # set current texture index and texture from the parent class
+                self.cur_texture_index = frame_idx
+                self.set_texture(self.cur_texture_index)
+                # Store current percentage
+                self._percent_progression = frame_perc
 
-            # get number of frames
-            nbFrames  = len(animDict["textureList"])
-            nbFrames2 = nbFrames
-            # update nbFrames in case of backAndForth
-            if animDict["backAndForth"]:
-                nbFrames2 += nbFrames-2
-            # compute frame num according to time
-            frameIdx = int(self._elapsed_duration/animDict["frameDuration"])
-
-            # update frame index according to loop counter
-            if animDict["counter"] <= 0:
-                # use modulo for infinite loop
-                frameIdx = frameIdx % nbFrames2
-            else:
-                # Saturate the final index frame
-                if frameIdx >= nbFrames2*animDict["counter"]:
-                    frameIdx = nbFrames2*animDict["counter"]-1
-                frameIdx = frameIdx % nbFrames2
-
-            # In case of backAndForth
-            if frameIdx >= nbFrames:
-                frameIdx = nbFrames2 - frameIdx
-
-            # set current texture index and texture from the parent class
-            self.cur_texture_index = frameIdx
-            self.set_texture(self.cur_texture_index)
-
-    def pauseAnimation(self):
+    def pause_animation(self):
         """
         Pauses the current animation. It does not rewind it.
         :return: None
         """
         self._playing = False
 
-    def resumeAnimation(self):
+    def resume_animation(self):
         """
         Resumes the current animation. It does not rewind it.
         :return: None
         """
         self._playing = True
 
-    def rewindAnimation(self):
+    def rewind_animation(self):
         """
         Just rewinds the current animation to the first frame. It does not change the play/stop flag.
-        :return:
+        :return: None
         """
         self._elapsed_duration = 0
 
-    def playAnimation(self):
+    def play_animation(self):
         """
         Rewinds and Plays the current animation.
         :return: None
         """
-        self.rewindAnimation()
-        self.resumeAnimation()
+        self.rewind_animation()
+        self.resume_animation()
 
-    def stopAnimation(self):
+    def stop_animation(self):
         """
         Stops the current animation and rewinds it.
         :return: None
         """
-        self.pauseAnimation()
-        self.rewindAnimation()
+        self.pause_animation()
+        self.rewind_animation()
 
+    def is_finished(self):
+        return self._percent_progression >= 1.0
 
+    def get_percent(self):
+        return self._percent_progression
+        pass
 
 
 
