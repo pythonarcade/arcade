@@ -4,6 +4,14 @@ Sample Games Made With Arcade
 Have a sample game you'd like to share here? E-mail
 paul@cravenfamily.com.
 
+Fishy-Game
+~~~~~~~~~~
+
+.. image:: https://raw.githubusercontent.com/LiorAvrahami/fishy-game/main/example%20image.png
+   :width: 75%
+
+`Fishy Game <https://github.com/LiorAvrahami/fishy-game>`_ by LiorAvrahami
+
 Adventure
 ~~~~~~~~~
 
