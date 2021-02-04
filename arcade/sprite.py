@@ -1080,8 +1080,8 @@ class AnimatedSprite():
         nb_frames = 0
         nb_frames_baf = 0
         nb_frames_cnt = 0
-        if self._current_animation_name in self._anims[self.state]:
-            anim_dict = dict(self._anims[self.state][self._current_animation_name])
+        if self._current_animation_name in self._anims[self._state]:
+            anim_dict = dict(self._anims[self._state][self._current_animation_name])
             nb_frames     = len(anim_dict["sprite"].textures)
             nb_frames_baf = nb_frames
             nb_frames_cnt = nb_frames
@@ -1103,8 +1103,8 @@ class AnimatedSprite():
         frame_idx  = 0
         frame_perc = 0
 
-        if self._current_animation_name in self._anims[self.state]:
-            anim_dict = self._anims[self.state][self._current_animation_name]
+        if self._current_animation_name in self._anims[self._state]:
+            anim_dict = self._anims[self._state][self._current_animation_name]
 
             # Get number of frames
             nb_frames, nb_frames_baf, nb_frames_cnt = self._get_nb_frames()
@@ -1135,7 +1135,7 @@ class AnimatedSprite():
         super().__init__()
 
         # parent fields
-        self.state  = 0
+        self._state  = 0
         self._x     = -100000
         self._y     = -100000
         self._angle = 0
@@ -1276,11 +1276,11 @@ class AnimatedSprite():
         :param bool runnning: a flag to indicate if the new animation must be played or stopped. By default the animation is played.
         :return: None
         """
-        if animation_name in self._anims[self.state]:
+        if animation_name in self._anims[self._state]:
             # Select new animation according to state and animation name
             self._current_animation_name = animation_name
             # Set color
-            data_struct = dict(self._anims[self.state][animation_name])
+            data_struct = dict(self._anims[self._state][animation_name])
             self.color = data_struct["color"]
             # Rewind and play if requested
             if rewind:
@@ -1300,13 +1300,8 @@ class AnimatedSprite():
         self._cur_texture_index = frame_index
         self._percent_progression = 0
         # Set the textures for the Sprite class
-        data_struct = dict(self._anims[self.state][self._current_animation_name])
+        data_struct = dict(self._anims[self._state][self._current_animation_name])
         data_struct["sprite"].set_texture(self._cur_texture_index)
-
-    def select_state(self,new_state):
-        if new_state < 0 or new_state >= len(self._anims):
-            raise RuntimeError(f"[ERR] select_state : ({new_state} is not in the range [0-{len(self._anims)-1}])")
-        self.state = new_state
 
     def removeAnimation(self, anim_name):
         # remove animations from the data structure
@@ -1327,7 +1322,7 @@ class AnimatedSprite():
             # If the current animation name is not found in the state list, that means
             # the state has been changed after anim selection. So now we do not update anymore.
             # else, just process
-            if self._current_animation_name in self._anims[self.state]:
+            if self._current_animation_name in self._anims[self._state]:
                 # Get current frame index
                 frame_idx, frame_perc = self._get_frame_index()
                 # set current texture index
@@ -1335,11 +1330,11 @@ class AnimatedSprite():
                 # Store current percentage
                 self._percent_progression = frame_perc
                 # Set texture for Sprite class
-                data_struct = dict(self._anims[self.state][self._current_animation_name])
+                data_struct = dict(self._anims[self._state][self._current_animation_name])
                 data_struct["sprite"].set_texture(self._cur_texture_index)
 
         # update position and angle for the current Sprite
-        data_struct = dict(self._anims[self.state][self._current_animation_name])
+        data_struct = dict(self._anims[self._state][self._current_animation_name])
         data_struct["sprite"].center_x = self._x
         data_struct["sprite"].center_y = self._y
         data_struct["sprite"].angle    = self._angle
@@ -1347,28 +1342,44 @@ class AnimatedSprite():
         data_struct["sprite"].scale    = self._scale
 
     def draw(self):
-        data_struct = dict(self._anims[self.state][self._current_animation_name])
+        data_struct = dict(self._anims[self._state][self._current_animation_name])
         data_struct["sprite"].draw()
 
-    def set_scale(self,newScale):
-        self._scale = newScale
-
-    def set_position(self,pos):
-        self._x = pos[0]
-        self._y = pos[1]
-    def set_y(self,y):
-        self._y = y
-    def set_x(self,x):
-        self._x = x
-
-    def set_angle(self,ang):
-        self._angle = ang
-
-    def get_position(self):
-        return (self._x,self._y)
-
-    def get_angle(self):
+    @property
+    def center_x(self):
+        return self._x
+    @property
+    def center_y(self):
+        return self._y
+    @property
+    def angle(self):
         return self._angle
+    @property
+    def scale(self):
+        return self._scale
+    @property
+    def state(self):
+        return self._state
+
+    @center_x.setter
+    def center_x(self, new_x):
+        self._x = new_x
+    @center_y.setter
+    def center_y(self, new_y):
+        self._y = new_y
+    @angle.setter
+    def angle(self, new_ang):
+        self._angle = new_ang
+    @scale.setter
+    def scale(self, new_scale):
+        self._scale= new_scale
+    @scale.setter
+    def state(self, new_state):
+        if new_state < 0 or new_state >= len(self._anims):
+            raise RuntimeError(f"[ERR] select_state : ({new_state} is not in the range [0-{len(self._anims)-1}])")
+        self._state = new_state
+
+
 
     def pause_animation(self):
         """

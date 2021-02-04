@@ -70,14 +70,12 @@ class TestArcade(arcade.Window):
                     dy = 2*(2.5-move_vertical)*60*delta_time*self.speed
                     direction = 2*move_vertical + move_horizontal
                 self.character.select_animation("walk")
-                self.character.select_state(direction)
+                self.character.state = direction
             # Move the character according to the direction
-            pos = self.character.get_position()
-            self.character.set_x(pos[0]+dx)
-            self.character.set_y(pos[1]+dy)
+            self.character.center_x += dx
+            self.character.center_y += dy
 
         # Finally, update animation frame according to selected animation and facing direction
-        self.character.scale = 1
         self.character.update_animation(delta_time)
 
     def __init__(self, width, height, title, fullScreen):
@@ -261,20 +259,27 @@ class TestArcade(arcade.Window):
                                      facing_direction=i)
 
         # Set position for counter
-        self.numbers1.set_position((100,500))
-        self.numbers2.set_position((400,500))
-        self.numbers3.set_position((700,500))
+        self.numbers1.center_x = 100
+        self.numbers1.center_y = 500
+        self.numbers2.center_x = 400
+        self.numbers2.center_y = 500
+        self.numbers3.center_x = 700
+        self.numbers3.center_y = 500
 
         # Set positions ofr yoyo
-        self.yoyo1.set_position((650,200))
-        self.yoyo2.set_position((100,200))
-        self.yoyo3.set_position((375,50))
+        self.yoyo1.center_x = 650
+        self.yoyo1.center_y = 200
+        self.yoyo2.center_x = 100
+        self.yoyo2.center_y = 200
+        self.yoyo3.center_x = 375
+        self.yoyo3.center_y = 50
 
         # By default the character is idle and facing down
-        self.character.set_position((400,360))
+        self.character.center_x = 400
+        self.character.center_y = 360
         self.character.select_animation("idle")
-        self.character.select_state(FACE_DOWN)
-        self.character.set_scale(2)
+        self.character.state = FACE_DOWN
+        self.character.scale = 2
         self.speed = 3
         self.char_attack = False
 
@@ -310,8 +315,8 @@ class TestArcade(arcade.Window):
         percent1 = self.yoyo1.get_percent()
         k1 = 2*abs(0.5-percent1)
         k2 = 2 * (0.5 - abs(0.5 - percent1))
-        self.yoyo1.set_y(50 + (k1 * 150))
-        self.yoyo1.set_angle((1.5 * 360) * k2)
+        self.yoyo1.center_y =50 + (k1 * 150)
+        self.yoyo1.angle = (1.5 * 360) * k2
        # update Y position and angle for yoyo2 (only if the animation is requested : press SPACE bar to run)
         if self.yoyo2.get_current_animation() == "yoyo":
             # Select the "idle" animation when the "yoyo" one is finished
@@ -322,8 +327,8 @@ class TestArcade(arcade.Window):
             percent = self.yoyo2.get_percent()
             k1 = 2 * abs(0.5 - percent)
             k2 = 2 * (0.5 - abs(0.5 - percent))
-            self.yoyo2.set_y(50 + (k1 * 150))
-            self.yoyo2.set_angle((1.5 * 360) * k2)
+            self.yoyo2.center_y = 50 + (k1 * 150)
+            self.yoyo2.angle = (1.5 * 360) * k2
         # update character animation and position
         self.update_character(delta_time)
 
