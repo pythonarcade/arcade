@@ -28,7 +28,6 @@ class RenderTargetTexture:
             color_attachments=[self.ctx.texture((width, height), components=4)])
 
         self._quad_fs = geometry.quad_2d_fs()
-        self._fbo = self.ctx.framebuffer(color_attachments=[self.texture])
 
     @property
     def texture(self) -> Texture:
