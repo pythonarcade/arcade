@@ -16,10 +16,10 @@ class EmitController:
 
     Subclasses allow the client to control the rate and duration of emitting"""
     def how_many(self, delta_time: float, current_particle_count: int) -> int:
-        raise NotImplemented("EmitterRate.how_many must be implemented")
+        raise NotImplementedError("EmitterRate.how_many must be implemented")
 
     def is_complete(self) -> bool:
-        raise NotImplemented("EmitterRate.is_complete must be implemented")
+        raise NotImplementedError("EmitterRate.is_complete must be implemented")
 
 
 class EmitBurst(EmitController):
