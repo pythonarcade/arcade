@@ -4,8 +4,6 @@ Functions used to support drawing. No Pyglet/OpenGL here.
 
 import math
 
-import pymunkoptions
-pymunkoptions.options["debug"] = False
 import pymunk
 
 from PIL import Image
@@ -301,28 +299,23 @@ def calculate_hit_box_points_detailed(image: Image, hit_box_detail: float = 4.5)
     # Set of lines that trace the image
     line_set = pymunk.autogeometry.PolylineSet()
 
-    # Collect the line segments
-    def _segment_func(v0, v1):
-        line_set.collect_segment(v0, v1)
-
     # How often to sample?
     downres = 1
     horizontal_samples = int(image.width / downres)
     vertical_samples = int(image.height / downres)
 
     # Run the trace
-    pymunk.autogeometry.march_soft(
+    # Get back one or more sets of lines covering stuff.
+    line_sets = pymunk.autogeometry.march_soft(
         logo_bb,
         horizontal_samples, vertical_samples,
         99,
-        _segment_func,
         sample_func)
 
-    # Select which line set to use
-    if len(line_set) == 0:
+    if len(line_sets) == 0:
         return []
 
-    selected_line_set = line_set[0]
+    selected_line_set = line_sets[0]
     selected_range = None
     if len(line_set) > 1:
         # We have more than one line set. Try and find one that covers most of
