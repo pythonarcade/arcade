@@ -70,7 +70,11 @@ def load_view(abs_module_path) -> arcade.View:
     T('show_uiimagetoggle', 'show_uiimagetoggle'),
     T('show_uiinputbox', 'show_uiinputbox'),
     T('show_uilabel', 'show_uilabel'),
+
+    # UILayout examples
     T('show_uilayouts', 'show_uilayouts'),
+    T('show_uilayouts_start_menu', 'show_uilayouts_start_menu'),
+    T('show_uilayouts_hud_inventory', 'show_uilayouts_hud_inventory'),
 ])
 def test_gui_examples(twm, window, example):
     expected_screen = Path(pkg_resources.resource_filename('tests.test_gui', f'assets/{example}.png'))
@@ -84,7 +88,6 @@ def test_gui_examples(twm, window, example):
     view_to_png(window, view, actual_screen)
 
     # manually clean up ui_manager handlers
-    # TODO this should be handled by arcade
     ui_manager: UIAbstractManager = view.ui_manager
     ui_manager.unregister_handlers()
 

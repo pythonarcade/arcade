@@ -37,7 +37,8 @@ class MyView(arcade.View):
         ui_input_box = arcade.gui.UIInputBox(
             center_x=self.window.width // 4,
             center_y=y_slot * 2,
-            width=300
+            width=300,
+            height=40
         )
         ui_input_box.text = 'UIInputBox'
         ui_input_box.cursor_index = len(ui_input_box.text)
@@ -61,14 +62,14 @@ class MyView(arcade.View):
             center_x=self.window.width // 4 * 3,
             center_y=y_slot * 1,
             width=250,
-            # height=20
+            height=40
         ))
         self.ui_manager.add_ui_element(arcade.gui.UIGhostFlatButton(
             'GhostFlatButton',
             center_x=self.window.width // 4 * 3,
             center_y=y_slot * 2,
             width=250,
-            # height=20
+            height=40
         ))
 
         self.ui_manager.add_ui_element(arcade.gui.UIToggle(

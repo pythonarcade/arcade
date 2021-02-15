@@ -29,18 +29,20 @@ class MyView(View):
 
         root_layout = self.ui_manager.root_layout
 
-        ui_flat_button = UIFlatButton(text="no fill effect")
+        ui_flat_button = UIFlatButton(text="no fill effect", height=40)
 
         @ui_flat_button.event('on_click')
         def on_click(*args):
             print('clicked')
 
         # top left
-        layout_top_left = UIBoxLayout(id='top right')
+        layout_top_left = UIBoxLayout(id='top right',
+                                      padding=5,
+                                      border_color=arcade.color.BLUE)
         layout_top_left.pack(UILabel(text="top=0"))
         layout_top_left.pack(UILabel(text="left=20"))
         layout_top_left.pack(UILabel(text="fill_x=True"), space=20)
-        root_layout.pack(layout_top_left, top=0, left=20, fill_x=True)
+        root_layout.pack(layout_top_left, top=0, left=20, fill_x=True) # TODO remove
 
         # window center
         layout_center = UIBoxLayout(
@@ -92,7 +94,7 @@ class MyView(View):
         layout2.pack(UILabel(text="no fill effect"), space=20)
         root_layout.pack(layout2, left=10, bottom=20)
 
-        self.ui_manager.refresh()
+        self.ui_manager.do_layout()
 
         self.debug_layout(root_layout)
 
@@ -127,13 +129,13 @@ class MyView(View):
 
         self.ui_manager.on_draw()
 
-        self.draw_borders(self.ui_manager.root_layout)
         if self._drag_start and self._drag_stop:
             arcade.draw_line(*self._drag_start, *self._drag_stop, arcade.color.RED, line_width=2)
 
             distance = abs(self._drag_start[0] - self._drag_stop[0]), abs(self._drag_start[1] - self._drag_stop[1])
-            text_pos = (self._drag_start[0] + self._drag_stop[0])//2, (self._drag_start[1] + self._drag_stop[1])//2
-            arcade.draw_text(f'x:{distance[0]}, y:{distance[1]}', *text_pos, arcade.color.BLACK, font_size=20, bold=True)
+            text_pos = (self._drag_start[0] + self._drag_stop[0]) // 2, (self._drag_start[1] + self._drag_stop[1]) // 2
+            arcade.draw_text(f'x:{distance[0]}, y:{distance[1]}', *text_pos, arcade.color.BLACK, font_size=20,
+                             bold=True)
 
     def on_key_press(self, symbol: int, modifiers: int):
         if symbol == arcade.key.S:
@@ -145,7 +147,7 @@ class MyView(View):
         elif symbol == arcade.key.D:
             self.debug_layout(self.ui_manager.root_layout)
         elif symbol == arcade.key.R:
-            (self.ui_manager.refresh())
+            (self.ui_manager.do_layout())
 
     def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
         self._last_mouse_pos = (x, y)
