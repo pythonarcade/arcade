@@ -1,5 +1,5 @@
 import typing
-from typing import Optional, Set, Any
+from typing import Optional, Set, Any, Tuple
 from uuid import uuid4
 
 import arcade
@@ -63,6 +63,8 @@ class UIElement(arcade.Sprite):
                  center_y=0,
                  id: Optional[str] = None,
                  style: UIStyle = None,
+                 min_size: Optional[Tuple] = None,
+                 size_hint: Optional[Tuple] = None,
                  **kwargs):
         super().__init__()
         # ID for this element, to search in view by id or identify this element from an event
@@ -80,6 +82,9 @@ class UIElement(arcade.Sprite):
         # self.width/height <- subclass
         self.center_x = center_x
         self.center_y = center_y
+
+        self.min_size = min_size
+        self.size_hint = size_hint
 
     def __repr__(self):
         return f'UIElement({self.id if self.id else self.__style_id})'

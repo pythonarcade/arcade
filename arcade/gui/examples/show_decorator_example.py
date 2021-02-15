@@ -13,6 +13,7 @@ class MyView(arcade.View):
 
     def on_draw(self):
         arcade.start_render()
+        self.ui_manager.on_draw()
 
     def on_show_view(self):
         arcade.set_background_color(arcade.color.BLACK)

@@ -23,7 +23,12 @@ padding = Union[
 
 
 class UIAbstractLayout(ABC):
+    min_size = (0, 0)
+    """Minimal size of this UILayout"""
+
     def __init__(self,
+                 *,
+                 size_hint: Optional[Tuple],
                  id=None,
                  bg: Union[Color, str, Path] = None,
                  border_color: Optional[Color] = None,
@@ -32,18 +37,21 @@ class UIAbstractLayout(ABC):
                  **kwargs):
         """
 
-        :param id: id of the
-        :param bg:
-        :param border_color:
-        :param border_width:
-        :param kwargs:
+        :param id: id of this layout
+        :param size_hint: The size_hint is a tuple of two floats used by layouts to manage the sizes of their children. It indicates the size relative to the layout’s size (0.0 - 1.0)
+        :param bg: background, may be a color for a solid background color or the path to a image file
+        :param border_color: color of the border
+        :param border_width: width of the border
+        :param padding: distance between border and children
         """
         super().__init__()
-        # self.draw_border = draw_border
+        self._id = id
 
         self._elements: List[PackedElement] = []
         self._layer = SpriteList()
         self._child_layouts: List[UIAbstractLayout] = []
+
+        self.size_hint = size_hint
 
         # anker for own position
         self._top = 0
@@ -51,18 +59,18 @@ class UIAbstractLayout(ABC):
 
         self._padding = padding
 
-        self._width = self.padding_horizontal
-        self._height = self.padding_vertical
-
-        self._id = id
-
         self._border_color = border_color
         self._border_width = border_width
         self._bg_sprite: Optional[Sprite] = None
-
         self._bg = bg
+
+        ebw = self.effective_border_width()
+        self._width = self.padding_horizontal + ebw * 2
+        self._height = self.padding_vertical + ebw * 2
+
         self.refresh_bg()
 
+    # --------- background
     def _create_bg_sprite(self, bg):
 
         # calc size containing padding
@@ -102,9 +110,7 @@ class UIAbstractLayout(ABC):
         self._bg_sprite = Sprite()
         self._bg_sprite.texture = Texture(f"BG", bg_image, hit_box_algorithm='None')
 
-        off_y = (self.padding_top - self.padding_bottom) // 2
-        off_x = (self.padding_right - self.padding_left) // 2
-        self._bg_sprite.position = self.center_x + off_x, self.center_y + off_y
+        self._bg_sprite.position = self.center_x, self.center_y
 
     @property
     def id(self):
@@ -136,7 +142,22 @@ class UIAbstractLayout(ABC):
             self._layer.append(element)
         if isinstance(element, UIAbstractLayout):
             self._child_layouts.append(element)
+        return element
 
+    def remove(self, element: Union[Sprite, UIElement, 'UIAbstractLayout']):
+        for packed_element in self._elements:
+            if packed_element.element == element:
+                break
+        else:
+            return
+
+        self._elements.remove(packed_element)
+        if isinstance(element, Sprite):
+            self._layer.remove(element)
+        if isinstance(element, UIAbstractLayout):
+            self._child_layouts.remove(element)
+
+    # --------- draw self and children
     def draw(self):
         if self._bg_sprite:
             self._bg_sprite.draw()
@@ -145,7 +166,7 @@ class UIAbstractLayout(ABC):
         for child in self._child_layouts:
             child.draw()
 
-    # padding values
+    # --------- padding
     @property
     def padding(self):
         return self._padding
@@ -153,7 +174,7 @@ class UIAbstractLayout(ABC):
     @padding.setter
     def padding(self, value: padding):
         self._padding = value
-        self.refresh()
+        self.do_layout()
 
     @property
     def padding_top(self):
@@ -203,6 +224,16 @@ class UIAbstractLayout(ABC):
     def padding_horizontal(self):
         return self.padding_right + self.padding_left
 
+    # --------- border width
+    def effective_border_width(self) -> int:
+        """
+        If a border color is set, returns the border width, else 0.
+        """
+        if self._border_color:
+            return self._border_width
+        else:
+            return 0
+
     # --------- position - fixed
     @property
     def top(self):
@@ -220,11 +251,6 @@ class UIAbstractLayout(ABC):
     @left.setter
     def left(self, value):
         self._left = value
-
-    # @left.setter
-    # def left(self, value):
-    #     x_diff = value - self.left
-    #     self.move(x_diff, 0)
 
     @property
     def width(self):
@@ -244,10 +270,20 @@ class UIAbstractLayout(ABC):
     def height(self, value):
         self._height = value
 
-    # --------- position - calc
+    @property
+    def size(self):
+        return self.width, self.height
+
+    @size.setter
+    def size(self, value: Tuple[int, int]):
+        width, height = value
+        self.width = width
+        self.height = height
+
+    # --------- calculated position values
     @property
     def right(self):
-        return self.left + self.width + self.padding_horizontal
+        return self.left + self.width + self.padding_horizontal + self.effective_border_width() * 2
 
     @right.setter
     def right(self, value):
@@ -256,7 +292,7 @@ class UIAbstractLayout(ABC):
 
     @property
     def bottom(self):
-        return self.top - self.height - self.padding_vertical
+        return self.top - self.height - self.padding_vertical + self.effective_border_width() * 2
 
     @bottom.setter
     def bottom(self, value):
@@ -282,6 +318,9 @@ class UIAbstractLayout(ABC):
         self.move(0, y_diff)
 
     def move(self, x, y):
+        """
+        self and all children are moved relative by the given x and y values.
+        """
         self._top += y
         self._left += x
 
@@ -290,11 +329,18 @@ class UIAbstractLayout(ABC):
             element.left += x
 
     # ---------- placement and refresh
-    def refresh(self):
+    def do_layout(self):
+        """
+        Starts the layouting algorithm.
+
+        1. self.place_elements() is called to set size and position of children
+        2. recursive call of do_layout() to sub layouts
+        """
+        self.place_elements()
+
         for element in self:
             if isinstance(element, UIAbstractLayout):
-                element.refresh()
-        self.place_elements()
+                element.do_layout()
 
         self.refresh_bg()
 
@@ -302,6 +348,7 @@ class UIAbstractLayout(ABC):
     def place_elements(self):
         raise NotImplementedError()
 
+    # --------- iterate through elements
     def __iter__(self):
         yield from map(attrgetter('element'), self._elements)
 

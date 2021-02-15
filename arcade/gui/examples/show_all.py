@@ -18,6 +18,7 @@ class MyView(arcade.View):
     def on_draw(self):
         """ Draw this view """
         arcade.start_render()
+        self.ui_manager.on_draw()
 
     def on_show_view(self):
         """ Show main view """

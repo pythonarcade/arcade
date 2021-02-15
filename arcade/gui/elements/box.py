@@ -1,8 +1,6 @@
-from typing import Optional
+from typing import Optional, Tuple
 
 import PIL
-from PIL import ImageDraw, ImageOps
-from PIL.ImageDraw import Draw
 
 import arcade
 from arcade.gui import UIElement, UIException
@@ -20,10 +18,14 @@ class UIBox(UIElement):
                  center_x=0,
                  center_y=0,
                  texture: Optional[arcade.Texture] = None,
+                 min_size: Optional[Tuple] = None,
+                 size_hint: Optional[Tuple] = None,
                  **kwargs):
         super().__init__(
             center_x=center_x,
             center_y=center_y,
+            min_size=min_size,
+            size_hint=size_hint,
             **kwargs
         )
 

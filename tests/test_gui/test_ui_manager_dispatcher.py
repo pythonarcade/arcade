@@ -12,7 +12,6 @@ def test_handler_pushed():
         call.push_handlers(
             msg.on_resize,
             msg.on_update,
-            msg.on_draw,
             msg.on_mouse_press,
             msg.on_mouse_release,
             msg.on_mouse_scroll,
@@ -42,7 +41,6 @@ def test_handler_removed():
         call.remove_handlers(
             msg.on_resize,
             msg.on_update,
-            msg.on_draw,
             msg.on_mouse_press,
             msg.on_mouse_release,
             msg.on_mouse_scroll,

@@ -20,7 +20,7 @@ def test_vertical(v_layout):
 
     v_layout.pack(element_1)
     v_layout.pack(element_2)
-    v_layout.refresh()
+    v_layout.do_layout()
 
     assert element_1.top == 200
     assert element_1.bottom == 150
@@ -39,7 +39,7 @@ def test_vertical_with_spacing(v_layout):
 
     v_layout.pack(element_1)
     v_layout.pack(element_2, space=10)
-    v_layout.refresh()
+    v_layout.do_layout()
 
     assert element_1.bottom == 150
     assert element_2.top == 140
@@ -59,7 +59,9 @@ def test_horizontal(h_layout):
 
     h_layout.pack(element_1)
     h_layout.pack(element_2)
-    h_layout.refresh()
+
+    h_layout.size = h_layout.min_size
+    h_layout.do_layout()
 
     assert element_1.top == 200
     assert element_1.left == 100
@@ -77,7 +79,9 @@ def test_horizontal_with_spacing(h_layout):
 
     h_layout.pack(element_1)
     h_layout.pack(element_2, space=10)
-    h_layout.refresh()
+
+    h_layout.size = h_layout.min_size
+    h_layout.do_layout()
 
     assert element_1.right == 200
     assert element_2.left == 210
@@ -86,10 +90,17 @@ def test_horizontal_with_spacing(h_layout):
 def test_box_layout_updates_width_and_height(v_layout: UIBoxLayout):
     v_layout.pack(dummy_element(100, 50))
 
+    v_layout.size = v_layout.min_size
+    v_layout.do_layout()
+
     assert v_layout.width == 100
     assert v_layout.height == 50
 
     v_layout.pack(dummy_element(150, 50), space=10)
+
+    v_layout.size = v_layout.min_size
+    v_layout.do_layout()
+
     assert v_layout.width == 150
     assert v_layout.height == 110
 
@@ -100,7 +111,7 @@ def test_v_box_align_items_center():
     box.pack(element)
     box.width = 400
 
-    box.refresh()
+    box.do_layout()
 
     assert element.center_x == 200
 
@@ -111,7 +122,7 @@ def test_v_box_align_items_left():
     box.pack(element)
     box.width = 400
 
-    box.refresh()
+    box.do_layout()
 
     assert element.left == 0
 
@@ -147,7 +158,7 @@ def test_box_alignment(vertical, align, center_x, center_y):
     box.left = 0
     box.bottom = 0
 
-    box.refresh()
+    box.do_layout()
 
     assert (element_1.center_x, element_1.center_y) == (center_x, center_y)
 
@@ -183,7 +194,7 @@ def test_box_alignment_for_sprites(vertical, align, center_x, center_y):
     box.left = 0
     box.bottom = 0
 
-    box.refresh()
+    box.do_layout()
 
     assert (element_1.center_x, element_1.center_y) == (center_x, center_y)
 
@@ -193,9 +204,9 @@ def test_min_size_vertical():
     box.pack(dummy_element(width=100, height=50))
     box.pack(dummy_element(width=100, height=50), space=20)
 
-    box.refresh()
+    box.do_layout()
 
-    assert box.min_size() == (100, 120)
+    assert box.min_size == (100, 120)
 
 
 def test_min_size_horizontal():
@@ -203,6 +214,6 @@ def test_min_size_horizontal():
     box.pack(dummy_element(width=100, height=50))
     box.pack(dummy_element(width=100, height=50), space=20)
 
-    box.refresh()
+    box.do_layout()
 
-    assert box.min_size() == (220, 50)
+    assert box.min_size == (220, 50)

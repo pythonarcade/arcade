@@ -17,9 +17,9 @@ class UILayoutManager(UIAbstractManager):
 
         self._root_layout: UIAbstractLayout = UIAnchorLayout(
             self.window.width,
-            self.window.height,
-            parent=self)
-        self._resize_root_layout()
+            self.window.height
+        )
+        self.do_layout()
 
         if attach_callbacks:
             self.register_handlers()
@@ -32,19 +32,21 @@ class UILayoutManager(UIAbstractManager):
         self._root_layout.draw()
 
     def on_update(self, dt):
-        self._resize_root_layout()
-
-        # Relayout all children, this might be to slow, let's see
-        self.refresh()
+        # FIXME: This might be to slow, let's see
+        self.do_layout()
 
     def pack(self, element: Union[Sprite, UIElement, 'UIAbstractLayout'], **kwargs):
-        self._root_layout.pack(element, **kwargs)
+        return self._root_layout.pack(element, **kwargs)
+
+    def remove(self, element: Union[Sprite, UIElement, 'UIAbstractLayout']):
+        return self._root_layout.remove(element)
 
     def _resize_root_layout(self):
-        self.root_layout.top = self._top
-        self.root_layout.left = self._left
-        self.root_layout.width = self.window.width
-        self.root_layout.height = self.window.height
+        left, right, bottom, top = self.window.get_viewport()
+        self.root_layout.top = top
+        self.root_layout.left = left
+        self.root_layout.width = right - left
+        self.root_layout.height = top - bottom
 
     @property
     def root_layout(self):
@@ -53,10 +55,12 @@ class UILayoutManager(UIAbstractManager):
     @root_layout.setter
     def root_layout(self, layout: UIAbstractLayout):
         self._root_layout = layout
-        self.refresh()
+        self.do_layout()
 
-    def refresh(self):
-        self._root_layout.refresh()
+    def do_layout(self):
+        self._resize_root_layout()
+
+        self._root_layout.do_layout()
 
         if not valid(self._root_layout):
             warn('Refresh produced invalid boundaries')
@@ -88,20 +92,3 @@ class UILayoutManager(UIAbstractManager):
                         self.focused_element = new_focused_element
                 else:
                     self.focused_element = None
-
-    # UILayoutManager always fills the whole view
-    @property
-    def _left(self):
-        return self.window.get_viewport()[0]
-
-    @property
-    def _right(self):
-        return self.window.get_viewport()[1]
-
-    @property
-    def _bottom(self):
-        return self.window.get_viewport()[2]
-
-    @property
-    def _top(self):
-        return self.window.get_viewport()[3]

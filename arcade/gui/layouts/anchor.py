@@ -24,7 +24,7 @@ class UIAnchorLayout(UIAbstractLayout):
                  width,
                  height,
                  **kwargs):
-        super().__init__(**kwargs)
+        super().__init__(size_hint=(1.0, 1.0), **kwargs)
 
         self._width = width
         self._height = height
@@ -44,9 +44,24 @@ class UIAnchorLayout(UIAbstractLayout):
             fill_x = data.get('fill_x')
             fill_y = data.get('fill_y')
 
+            min_size = getattr(element, 'min_size', None)
+            size_hint = getattr(element, 'size_hint', None)
+            if min_size or size_hint:
+                # one is set, so we are allowed to change elements size
+
+                # use current element size, if no min_size was provided
+                min_width, min_height = min_size or (element.width, element.height)
+                hint_width, hint_height = size_hint or (0, 0)
+
+                width = max(min_width, int(hint_width * self.width))
+                height = max(min_height, int(hint_height * self.height))
+
+                element.width = width
+                element.height = height
+
+            # legacy pack kwargs
             if fill_x:
                 element.width = self._width
-
             if fill_y:
                 element.height = self._height
 

@@ -17,19 +17,21 @@ def layout_manager(window) -> UILayoutManager:
 
 
 def test_update_triggers_refresh(layout_manager):
-    layout_manager.root_layout.refresh = Mock()
-
+    layout_manager.root_layout.do_layout = Mock()
     layout_manager.on_update(0)
-
-    assert layout_manager.root_layout.refresh.called
+    assert layout_manager.root_layout.do_layout.called
 
 
 def test_delegate_pack_method_to_root_layout(layout_manager):
     layout_manager.root_layout.pack = Mock()
-
     layout_manager.pack(dummy_element())
-
     assert layout_manager.root_layout.pack.called
+
+
+def test_delegate_remove_method_to_root_layout(layout_manager):
+    layout_manager.root_layout.remove = Mock()
+    layout_manager.remove(dummy_element())
+    assert layout_manager.root_layout.remove.called
 
 
 def test_passes_ui_events(layout_manager):
