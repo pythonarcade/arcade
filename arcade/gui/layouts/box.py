@@ -32,11 +32,11 @@ class UIBoxLayout(UIAbstractLayout):
             min_width, min_height = self._min_size_of(element)
 
             if self.vertical:
-                height += element.height
+                height += min_height
                 height += data.get('space', 0)
                 width = max(width, min_width + self.padding_horizontal + ebw * 2)
             else:
-                width += element.width
+                width += min_width
                 width += data.get('space', 0)
                 height = max(height, min_height + self.padding_vertical + ebw * 2)
 
@@ -75,12 +75,14 @@ class UIBoxLayout(UIAbstractLayout):
 
             # resize elements on primary axis
             if self.vertical:
-                factor = left_height / hints_y_sum
+                factor = left_height / hints_y_sum if hints_y_sum else 0
+
                 for element, hint in zip(elements, hints_x):
                     min_height = self._min_size_of(element)[1]
                     element.height = int(min_height + factor * hint)
-            else:
-                factor = left_width / hints_x_sum
+
+            elif not self.vertical:
+                factor = left_width / hints_x_sum if hints_x_sum else 0
                 for element, hint in zip(elements, hints_x):
                     min_width = self._min_size_of(element)[0]
                     element.width = int(min_width + factor * hint)
@@ -88,10 +90,12 @@ class UIBoxLayout(UIAbstractLayout):
             # resize elements on orthogonal axis
             if self.vertical:
                 for element, hint in zip(elements, hints_x):
-                    element.width = int(self.width * hint)
+                    element_min_width = self._min_size_of(element)[0]
+                    element.width = max(element_min_width, int(self.width * hint))
             else:
                 for element, hint in zip(elements, hints_y):
-                    element.height = int(self.height * hint)
+                    element_min_height = self._min_size_of(element)[1]
+                    element.height = max(element_min_height, int(self.height * hint))
 
         start_x = 0
         start_y = 0

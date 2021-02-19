@@ -217,3 +217,67 @@ def test_min_size_horizontal():
     box.do_layout()
 
     assert box.min_size == (220, 50)
+
+
+def test_vertical_children_size_hint_mix():
+    box = UIBoxLayout(vertical=True)
+    box.top = 100
+
+    dummy1 = dummy_element(width=100, height=50)
+    dummy1.size_hint = None
+    box.pack(dummy1)
+
+    dummy2 = dummy_element(width=100, height=50)
+    dummy2.size_hint = (0, 0)
+    box.pack(dummy2)
+
+    box.do_layout()
+
+    assert dummy1.top == 100
+    assert dummy2.top == 50
+
+
+def test_horizontal_children_size_hint_mix():
+    box = UIBoxLayout(vertical=False)
+    box.left = 0
+
+    dummy1 = dummy_element(width=100, height=50)
+    dummy1.size_hint = None
+    box.pack(dummy1)
+
+    dummy2 = dummy_element(width=100, height=50)
+    dummy2.size_hint = (0, 0)
+    box.pack(dummy2)
+
+    box.do_layout()
+
+    assert dummy1.left == 0
+    assert dummy2.left == 100
+
+def test_horizontal_nested_layout():
+    nested = UIBoxLayout(vertical=False)
+    nested.pack(dummy_element(width=100, height=50))
+
+    box = UIBoxLayout(vertical=False)
+    box.pack(nested)
+
+    print(nested.min_size)
+    print(box.min_size)
+    box.size = box.min_size
+    box.do_layout()
+
+    assert box.min_size == (100, 50)
+
+def test_vertical_nested_layout():
+    nested = UIBoxLayout(vertical=True)
+    nested.pack(dummy_element(width=100, height=50))
+
+    box = UIBoxLayout(vertical=False)
+    box.pack(nested)
+
+    print(nested.min_size)
+    print(box.min_size)
+    box.size = box.min_size
+    box.do_layout()
+
+    assert box.min_size == (100, 50)
