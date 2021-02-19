@@ -19,6 +19,8 @@ Version 2.5.4 was released 2021-02-19
 * Updated pinned version numbers for dependent libraries
 * MyPy fixes
 * Minor improvements around SpriteList list operations
+* `Fix for physics engine getting stuck on a corner <https://github.com/pythonarcade/arcade/issues/820>`_
+
 
 Version 2.5.3
 -------------
