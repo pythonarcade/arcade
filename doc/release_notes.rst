@@ -7,6 +7,19 @@ Release Notes
 
 Keep up-to-date with the latest changes to the Arcade library by the release notes.
 
+Version 2.5.4
+-------------
+
+Version 2.5.4 was released 2021-02-19
+
+* `Fix for soloud installer hook <https://github.com/pythonarcade/arcade/issues/816>`_
+* Add fishy game on example page
+* Fix but around framebuffer creation not properly restoring active frame buffer
+* Fix for but where TextureRenderTarget creates FBO twice
+* Updated pinned version numbers for dependent libraries
+* MyPy fixes
+* Minor improvements around SpriteList list operations
+
 Version 2.5.3
 -------------
 
