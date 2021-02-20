@@ -1,7 +1,7 @@
 #!/bin/bash
 
 rm -rf doc/build
-rm dist/*
+rm -f dist/*
 python3 setup.py clean
 python3 setup.py build
 python3 setup.py bdist_wheel
