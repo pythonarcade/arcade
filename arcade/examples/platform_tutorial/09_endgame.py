@@ -112,10 +112,10 @@ class MyGame(arcade.Window):
         dont_touch_layer_name = "Don't Touch"
 
         # Map name
-        map_name = f":resources:tmx_maps/map2_level_{level}.tmx"
+        map_name = f":resources:tiled_maps/map2_level_{level}.json"
 
         # Read in the tiled map
-        my_map = arcade.tilemap.read_tmx(map_name)
+        my_map = arcade.tilemap.read_map(map_name)
 
         # Calculate the right edge of the my_map in pixels
         self.end_of_map = my_map.map_size.width * GRID_PIXEL_SIZE
