@@ -107,24 +107,17 @@ def _get_tile_by_gid(map_object: pytiled_parser.TiledMap,
         if tile_gid < tileset_key:
             continue
 
-        tile_ref = tileset.tiles.get(tile_gid - tileset_key)
-
         # No specific tile info, but there is a tile sheet
-        if tile_ref is None \
+        if tileset.tiles is None \
                 and tileset.image is not None \
                 and tileset_key <= tile_gid < tileset_key + tileset.tile_count:
-            image = pytiled_parser.objects.Image(source=tileset.image.source)
-            tile_ref = pytiled_parser.objects.Tile(id_=(tile_gid - tileset_key),
-                                                   image=image)
-
-        if tile_ref is None:
-            continue
-        my_tile = copy.copy(tile_ref)
-        my_tile.tileset = tileset
-        my_tile.flipped_vertically = flipped_vertically
-        my_tile.flipped_diagonally = flipped_diagonally
-        my_tile.flipped_horizontally = flipped_horizontally
-        return my_tile
+            tile_ref = pytiled_parser.Tile(id=(tile_gid - tileset_key), image=tileset.image)
+            my_tile = copy.copy(tile_ref)
+            my_tile.tileset = tileset
+            my_tile.flipped_vertically = flipped_vertically
+            my_tile.flipped_diagonally = flipped_diagonally
+            my_tile.flipped_horizontally = flipped_horizontally
+            return my_tile
     return None
 
 
@@ -144,19 +137,19 @@ def _get_image_info_from_tileset(tile):
     if tile.tileset.image is not None:
         margin = tile.tileset.margin or 0
         spacing = tile.tileset.spacing or 0
-        row = tile.id_ // tile.tileset.columns
+        row = tile.id // tile.tileset.columns
         image_y = margin + row * (tile.tileset.tile_height + spacing)
-        col = tile.id_ % tile.tileset.columns
+        col = tile.id % tile.tileset.columns
         image_x = margin + col * (tile.tileset.tile_width + spacing)
 
-    if tile.image:
-        # Individual image, use image width and height
-        width = tile.image_width
-        height = tile.image_height
-    else:
+    if tile.tileset.image:
         # Sprite sheet, use max width/height from sheet
         width = tile.tileset.tile_width
         height = tile.tileset.tile_height
+    else:
+        # Individual image, use image width and height
+        width = tile.image_width
+        height = tile.image_height
 
     return image_x, image_y, width, height
 
@@ -445,7 +438,7 @@ def _process_tile_layer(map_object: pytiled_parser.TiledMap,
             tile = _get_tile_by_gid(map_object, item)
             if tile is None:
                 error_msg =  f"Warning, couldn't find tile for item {item} in layer " \
-                             f"'{layer.name}' in file '{map_object.tmx_file}'."
+                             f"'{layer.name}' in file '{map_object.map_file}'."
                 raise ValueError(error_msg)
 
             my_sprite = _create_sprite_from_tile(map_object, tile, scaling=scaling,
