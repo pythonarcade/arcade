@@ -93,7 +93,7 @@ class MyGame(arcade.Window):
 
     def load_level(self, level):
         # Read in the tiled map
-        my_map = arcade.tilemap.read_tmx(f":resources:tmx_maps/level_{level}.tmx")
+        my_map = arcade.tilemap.read_map(f":resources:tiled_maps/level_{level}.json")
 
         # --- Walls ---
 
