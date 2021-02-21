@@ -131,10 +131,10 @@ def _get_tile_by_gid(map_object: pytiled_parser.TiledMap,
 def _get_tile_by_id(map_object: pytiled_parser.TiledMap,
                     tileset: pytiled_parser.Tileset,
                     tile_id: int) -> Optional[pytiled_parser.Tile]:
-    for tileset_key, cur_tileset in map_object.tile_sets.items():
+    for tileset_key, cur_tileset in map_object.tilesets.items():
         if cur_tileset is tileset:
             for tile_key, tile in cur_tileset.tiles.items():
-                if tile_id == tile.id_:
+                if tile_id == tile.id:
                     return tile
     return None
 
@@ -226,8 +226,8 @@ def _create_sprite_from_tile(map_object: pytiled_parser.TiledMap,
                            )
 
     if tile.properties is not None and len(tile.properties) > 0:
-        for my_property in tile.properties:
-            my_sprite.properties[my_property.name] = my_property.value
+        for key, value in tile.properties.items():
+            my_sprite.properties[key] = value
 
     if tile.type:
         my_sprite.properties['type'] = tile.type
@@ -367,8 +367,8 @@ def _process_object_layer(map_object: pytiled_parser.TiledMap,
                                              hit_box_algorithm=hit_box_algorithm,
                                              hit_box_detail=hit_box_detail)
 
-        x = cur_object.location.x * scaling
-        y = (map_object.map_size.height * map_object.tile_size[1] - cur_object.location.y) * scaling
+        x = cur_object.coordinates.x * scaling
+        y = (map_object.map_size.height * map_object.tile_size[1] - cur_object.coordinates.y) * scaling
 
         my_sprite.width = width = cur_object.size[0] * scaling
         my_sprite.height = height = cur_object.size[1] * scaling
