@@ -5,7 +5,7 @@ TILE_SCALING = 1.0
 
 def test_csv_left_up():
     # Read in the tiled map
-    my_map = arcade.tilemap.read_tmx("../tmx_maps/cvs_left_up_embedded.tmx")
+    my_map = arcade.tilemap.read_map("../tiled_maps/csv_left_up_embedded.json")
 
     assert my_map.tile_size == (128, 128)
     assert my_map.orientation == "orthogonal"
@@ -27,7 +27,7 @@ def test_csv_left_up():
 
 def test_csv_right_down():
     # Read in the tiled map
-    my_map = arcade.tilemap.read_tmx("../tmx_maps/cvs_right_down_external.tmx")
+    my_map = arcade.tilemap.read_map("../tiled_maps/csv_right_down_external.json")
 
     assert my_map.tile_size == (128, 128)
     assert my_map.orientation == "orthogonal"
@@ -49,7 +49,7 @@ def test_csv_right_down():
 
 def test_base_64_zlib():
     # Read in the tiled map
-    my_map = arcade.tilemap.read_tmx("../tmx_maps/base_64_zlib.tmx")
+    my_map = arcade.tilemap.read_map("../tiled_maps/base_64_zlib.json")
 
     assert my_map.tile_size == (128, 128)
     assert my_map.orientation == "orthogonal"
@@ -76,7 +76,7 @@ def test_base_64_zlib():
 
 def test_base_64_zstandard():
     # Read in the tiled map
-    my_map = arcade.tilemap.read_tmx("../tmx_maps/base_64_zstandard.tmx")
+    my_map = arcade.tilemap.read_map("../tiled_maps/base_64_zstandard.json")
 
     assert my_map.tile_size == (128, 128)
     assert my_map.orientation == "orthogonal"
@@ -103,7 +103,7 @@ def test_base_64_zstandard():
 
 def test_base_64_gzip():
     # Read in the tiled map
-    my_map = arcade.tilemap.read_tmx("../tmx_maps/base_64_gzip.tmx")
+    my_map = arcade.tilemap.read_map("../tiled_maps/base_64_gzip.json")
 
     assert my_map.tile_size == (128, 128)
     assert my_map.orientation == "orthogonal"

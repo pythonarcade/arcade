@@ -2,7 +2,7 @@ import arcade
 
 def test_rotation_mirror():
     # Read in the tiled map
-    my_map = arcade.tilemap.read_tmx("../tmx_maps/rotation.tmx")
+    my_map = arcade.tilemap.read_map("../tiled_maps/rotation.json")
 
     assert my_map.tile_size == (128, 128)
     assert my_map.orientation == "orthogonal"

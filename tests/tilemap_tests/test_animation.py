@@ -9,7 +9,7 @@ def test_rotation_mirror():
     os.chdir(file_path)
 
     # Read in the tiled map
-    my_map = arcade.tilemap.read_tmx("../tmx_maps/animation.tmx")
+    my_map = arcade.tilemap.read_map("../tiled_maps/animation.json")
 
     # --- Platforms ---
     wall_list = arcade.tilemap.process_layer(my_map, 'Blocking Sprites')
