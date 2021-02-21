@@ -11,18 +11,16 @@ For more information, see the `Platformer Tutorial`_.
 
 """
 
-from typing import Optional, List, cast, Union
-import math
 import copy
-import pytiled_parser
+import math
 import os
 from pathlib import Path
+from typing import List, Optional, Union, cast
 
-from arcade import Sprite
-from arcade import AnimatedTimeBasedSprite
-from arcade import AnimationKeyframe
-from arcade import SpriteList
-from arcade import load_texture
+import pytiled_parser
+
+from arcade import (AnimatedTimeBasedSprite, AnimationKeyframe, Sprite,
+                    SpriteList, load_texture)
 from arcade.arcade_types import Point
 from arcade.resources import resolve_resource_path
 
@@ -31,14 +29,10 @@ _FLIPPED_VERTICALLY_FLAG = 0x40000000
 _FLIPPED_DIAGONALLY_FLAG = 0x20000000
 
 
-def read_tmx(tmx_file: Union[str, Path]) -> pytiled_parser.objects.TileMap:
+def read_map(map_file: Union[str, Path]) -> pytiled_parser.TiledMap:
     """
-    Given a .tmx, this will read in a tiled map, and return
+    Given a .json file, this will read in a tiled map, and return
     a TiledMap object.
-
-    Given a tsx_file, the map will use it as the tileset.
-    If tsx_file is not specified, it will use the tileset specified
-    within the tmx_file.
 
     Important: Tiles must be a "collection" of images.
 
@@ -46,23 +40,23 @@ def read_tmx(tmx_file: Union[str, Path]) -> pytiled_parser.objects.TileMap:
     but only polygons are supported.
     (This is a great area for PR's to improve things.)
 
-    :param str tmx_file: String with name of our TMX file
+    :param str json_file: String with name of our JSON Tiled file
 
     :returns: Map
     :rtype: TiledMap
     """
 
     # If we should pull from local resources, replace with proper path
-    tmx_file = resolve_resource_path(tmx_file)
+    map_file = resolve_resource_path(map_file)
 
-    tile_map = pytiled_parser.parse_tile_map(tmx_file)
+    tile_map = pytiled_parser.parse_map(map_file)
 
     return tile_map
 
-def get_tilemap_layer(map_object: pytiled_parser.objects.TileMap,
-                      layer_path: str) -> Optional[pytiled_parser.objects.Layer]:
+def get_tilemap_layer(map_object: pytiled_parser.TiledMap,
+                      layer_path: str) -> Optional[pytiled_parser.Layer]:
     """
-    Given a TileMap and a layer path, this returns the TileLayer.
+    Given a TiledMap and a layer path, this returns the TileLayer.
 
     :param pytiled_parser.objects.TileMap map_object: The map read in by the read_tmx function.
     :param str layer_path: A string to match the layer name. Case sensitive.
@@ -71,14 +65,14 @@ def get_tilemap_layer(map_object: pytiled_parser.objects.TileMap,
 
     """
 
-    assert isinstance(map_object, pytiled_parser.objects.TileMap)
+    assert isinstance(map_object, pytiled_parser.TiledMap)
     assert isinstance(layer_path, str)
 
     def _get_tilemap_layer(path, layers):
         layer_name = path.pop(0)
         for layer in layers:
             if layer.name == layer_name:
-                if isinstance(layer, pytiled_parser.objects.LayerGroup):
+                if isinstance(layer, pytiled_parser.LayerGroup):
                     if len(path) != 0:
                         return _get_tilemap_layer(path, layer.layers)
                 else:
@@ -89,8 +83,8 @@ def get_tilemap_layer(map_object: pytiled_parser.objects.TileMap,
     layer = _get_tilemap_layer(path, map_object.layers)
     return layer
 
-def _get_tile_by_gid(map_object: pytiled_parser.objects.TileMap,
-                     tile_gid: int) -> Optional[pytiled_parser.objects.Tile]:
+def _get_tile_by_gid(map_object: pytiled_parser.TiledMap,
+                     tile_gid: int) -> Optional[pytiled_parser.Tile]:
 
     flipped_diagonally = False
     flipped_horizontally = False
@@ -108,7 +102,7 @@ def _get_tile_by_gid(map_object: pytiled_parser.objects.TileMap,
         flipped_vertically = True
         tile_gid -= _FLIPPED_VERTICALLY_FLAG
 
-    for tileset_key, tileset in map_object.tile_sets.items():
+    for tileset_key, tileset in map_object.tilesets.items():
 
         if tile_gid < tileset_key:
             continue
@@ -134,9 +128,9 @@ def _get_tile_by_gid(map_object: pytiled_parser.objects.TileMap,
     return None
 
 
-def _get_tile_by_id(map_object: pytiled_parser.objects.TileMap,
-                    tileset: pytiled_parser.objects.TileSet,
-                    tile_id: int) -> Optional[pytiled_parser.objects.Tile]:
+def _get_tile_by_id(map_object: pytiled_parser.TiledMap,
+                    tileset: pytiled_parser.Tileset,
+                    tile_id: int) -> Optional[pytiled_parser.Tile]:
     for tileset_key, cur_tileset in map_object.tile_sets.items():
         if cur_tileset is tileset:
             for tile_key, tile in cur_tileset.tiles.items():
@@ -151,29 +145,29 @@ def _get_image_info_from_tileset(tile):
         margin = tile.tileset.margin or 0
         spacing = tile.tileset.spacing or 0
         row = tile.id_ // tile.tileset.columns
-        image_y = margin + row * (tile.tileset.max_tile_size.height + spacing)
+        image_y = margin + row * (tile.tileset.tile_height + spacing)
         col = tile.id_ % tile.tileset.columns
-        image_x = margin + col * (tile.tileset.max_tile_size.width + spacing)
+        image_x = margin + col * (tile.tileset.tile_width + spacing)
 
-    if tile.image and tile.image.size:
+    if tile.image:
         # Individual image, use image width and height
-        width = tile.image.size.width
-        height = tile.image.size.height
+        width = tile.image_width
+        height = tile.image_height
     else:
         # Sprite sheet, use max width/height from sheet
-        width = tile.tileset.max_tile_size.width
-        height = tile.tileset.max_tile_size.height
+        width = tile.tileset.tile_width
+        height = tile.tileset.tile_height
 
     return image_x, image_y, width, height
 
-def _get_image_source(tile: pytiled_parser.objects.Tile,
+def _get_image_source(tile: pytiled_parser.Tile,
                       base_directory: Optional[str],
                       map_directory: Optional[str]):
     image_file = None
     if tile.image:
-        image_file = tile.image.source
+        image_file = tile.image
     elif tile.tileset.image:
-        image_file = tile.tileset.image.source
+        image_file = tile.tileset.image
 
     if not image_file:
         print(f"Warning for tile {tile.id_}, no image source listed either for individual tile, or as a tileset.")
@@ -192,17 +186,12 @@ def _get_image_source(tile: pytiled_parser.objects.Tile,
         if os.path.exists(try3):
             return try3
 
-    if tile.tileset and tile.tileset.parent_dir:
-        try4 = Path(tile.tileset.parent_dir, image_file)
-        if os.path.exists(try4):
-            return try4
-
-    print(f"Warning, can't file image {image_file} for tile {tile.id_} - {base_directory}")
+    print(f"Warning, can't find image {image_file} for tile {tile.id_} - {base_directory}")
     return None
 
 
-def _create_sprite_from_tile(map_object: pytiled_parser.objects.TileMap,
-                             tile: pytiled_parser.objects.Tile,
+def _create_sprite_from_tile(map_object: pytiled_parser.TiledMap,
+                             tile: pytiled_parser.Tile,
                              scaling: float = 1.0,
                              base_directory: str = None,
                              hit_box_algorithm="Simple",
@@ -213,7 +202,7 @@ def _create_sprite_from_tile(map_object: pytiled_parser.objects.TileMap,
     """
 
     # --- Step 1, find a reference to an image this is going to be based off of
-    map_source = map_object.tmx_file
+    map_source = map_object.map_file
     map_directory = os.path.dirname(map_source)
     image_file = _get_image_source(tile, base_directory, map_directory)
 
@@ -240,28 +229,28 @@ def _create_sprite_from_tile(map_object: pytiled_parser.objects.TileMap,
         for my_property in tile.properties:
             my_sprite.properties[my_property.name] = my_property.value
 
-    if tile.type_:
-        my_sprite.properties['type'] = tile.type_
+    if tile.type:
+        my_sprite.properties['type'] = tile.type
 
         # print(tile.image.source, my_sprite.center_x, my_sprite.center_y)
-    if tile.objectgroup is not None:
+    if tile.objects is not None:
 
-        if len(tile.objectgroup) > 1:
+        if len(tile.objects.tiled_objects) > 1:
             print(f"Warning, only one hit box supported for tile with image {tile.image.source}.")
 
-        for hitbox in tile.objectgroup:
+        for hitbox in tile.objectgroup.tiled_objects:
             points: List[Point] = []
-            if isinstance(hitbox, pytiled_parser.objects.RectangleObject):
+            if isinstance(hitbox, pytiled_parser.tiled_object.Rectangle):
                 if hitbox.size is None:
                     print(f"Warning: Rectangle hitbox created for without a "
                           f"height or width for {tile.image.source}. Ignoring.")
                     continue
 
                 # print(my_sprite.width, my_sprite.height)
-                sx = hitbox.location[0] - (my_sprite.width / (scaling * 2))
-                sy = -(hitbox.location[1] - (my_sprite.height / (scaling * 2)))
-                ex = (hitbox.location[0] + hitbox.size[0]) - (my_sprite.width / (scaling * 2))
-                ey = -((hitbox.location[1] + hitbox.size[1]) - (my_sprite.height / (scaling * 2)))
+                sx = hitbox.coordinates.x - (my_sprite.width / (scaling * 2))
+                sy = -(hitbox.coordinates.y - (my_sprite.height / (scaling * 2)))
+                ex = (hitbox.coordinates.x + hitbox.size.width) - (my_sprite.width / (scaling * 2))
+                ey = -((hitbox.coordinates.y + hitbox.size.height) - (my_sprite.height / (scaling * 2)))
 
                 # print(f"Size: {hitbox.size} Location: {hitbox.location}")
                 p1 = [sx, sy]
@@ -274,11 +263,11 @@ def _create_sprite_from_tile(map_object: pytiled_parser.objects.TileMap,
                 #     print(f"({point[0]:.1f}, {point[1]:.1f}) ")
                 # print()
 
-            elif isinstance(hitbox, pytiled_parser.objects.PolygonObject) \
-                    or isinstance(hitbox, pytiled_parser.objects.PolylineObject):
+            elif isinstance(hitbox, pytiled_parser.tiled_object.Polygon) \
+                    or isinstance(hitbox, pytiled_parser.tiled_object.Polyline):
                 for point in hitbox.points:
-                    adj_x = point[0] + hitbox.location[0] - my_sprite.width / (scaling * 2)
-                    adj_y = -(point[1] + hitbox.location[1] - my_sprite.height / (scaling * 2))
+                    adj_x = point.x + hitbox.coordinates.x - my_sprite.width / (scaling * 2)
+                    adj_y = -(point.y + hitbox.coordinates.y - my_sprite.height / (scaling * 2))
                     adj_point = [adj_x, adj_y]
                     points.append(adj_point)
 
@@ -287,7 +276,7 @@ def _create_sprite_from_tile(map_object: pytiled_parser.objects.TileMap,
                 if points[0][0] == points[-1][0] and points[0][1] == points[-1][1]:
                     points.pop()
 
-            elif isinstance(hitbox, pytiled_parser.objects.ElipseObject):
+            elif isinstance(hitbox, pytiled_parser.tiled_object.Ellipse):
                 if hitbox.size is None:
                     print(f"Warning: Ellipse hitbox created for without a height "
                           f"or width for {tile.image.source}. Ignoring.")
@@ -295,10 +284,10 @@ def _create_sprite_from_tile(map_object: pytiled_parser.objects.TileMap,
 
                 # print(f"Size: {hitbox.size} Location: {hitbox.location}")
 
-                hw = hitbox.size[0] / 2
-                hh = hitbox.size[1] / 2
-                cx = hitbox.location[0] + hw
-                cy = hitbox.location[1] + hh
+                hw = hitbox.size.width / 2
+                hh = hitbox.size.height / 2
+                cx = hitbox.coordinates.x + hw
+                cy = hitbox.coordinates.y + hh
 
                 acx = cx - (my_sprite.width / (scaling * 2))
                 acy = cy - (my_sprite.height / (scaling * 2))
@@ -358,8 +347,8 @@ def _create_sprite_from_tile(map_object: pytiled_parser.objects.TileMap,
     return my_sprite
 
 
-def _process_object_layer(map_object: pytiled_parser.objects.TileMap,
-                          layer: pytiled_parser.objects.ObjectLayer,
+def _process_object_layer(map_object: pytiled_parser.TiledMap,
+                          layer: pytiled_parser.ObjectLayer,
                           scaling: float = 1,
                           base_directory: str = "",
                           use_spatial_hash: Optional[bool] = None,
@@ -435,8 +424,8 @@ def _process_object_layer(map_object: pytiled_parser.objects.TileMap,
     return sprite_list
 
 
-def _process_tile_layer(map_object: pytiled_parser.objects.TileMap,
-                        layer: pytiled_parser.objects.TileLayer,
+def _process_tile_layer(map_object: pytiled_parser.TiledMap,
+                        layer: pytiled_parser.TileLayer,
                         scaling: float = 1,
                         base_directory: str = "",
                         use_spatial_hash: Optional[bool] = None,
@@ -444,7 +433,7 @@ def _process_tile_layer(map_object: pytiled_parser.objects.TileMap,
                         hit_box_detail: float = 4.5
                         ) -> SpriteList:
     sprite_list: SpriteList = SpriteList(use_spatial_hash=use_spatial_hash)
-    map_array = layer.layer_data
+    map_array = layer.data
 
     # Loop through the layer and add in the wall list
     for row_index, row in enumerate(map_array):
@@ -481,7 +470,7 @@ def _process_tile_layer(map_object: pytiled_parser.objects.TileMap,
     return sprite_list
 
 
-def process_layer(map_object: pytiled_parser.objects.TileMap,
+def process_layer(map_object: pytiled_parser.TiledMap,
                   layer_name: str,
                   scaling: float = 1,
                   base_directory: str = "",
@@ -538,7 +527,7 @@ def process_layer(map_object: pytiled_parser.objects.TileMap,
         print(f"Warning, no layer named '{layer_name}'.")
         return SpriteList()
 
-    if isinstance(layer, pytiled_parser.objects.TileLayer):
+    if isinstance(layer, pytiled_parser.TileLayer):
         return _process_tile_layer(map_object,
                                    layer,
                                    scaling,
@@ -547,7 +536,7 @@ def process_layer(map_object: pytiled_parser.objects.TileMap,
                                    hit_box_algorithm,
                                    hit_box_detail)
 
-    elif isinstance(layer, pytiled_parser.objects.ObjectLayer):
+    elif isinstance(layer, pytiled_parser.ObjectLayer):
         return _process_object_layer(map_object,
                                      layer,
                                      scaling,

@@ -260,7 +260,7 @@ from .text import render_text
 
 from .tilemap import get_tilemap_layer
 from .tilemap import process_layer
-from .tilemap import read_tmx
+from .tilemap import read_map
 
 from .pymunk_physics_engine import PymunkPhysicsEngine
 from .pymunk_physics_engine import PymunkPhysicsObject
