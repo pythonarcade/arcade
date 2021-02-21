@@ -354,7 +354,7 @@ def _process_object_layer(map_object: pytiled_parser.TiledMap,
     sprite_list: SpriteList = SpriteList(use_spatial_hash=use_spatial_hash)
 
     for cur_object in layer.tiled_objects:
-        if cur_object.gid is None:
+        if not hasattr(cur_object, "gid"):
             print("Warning: Currently only tiles (not objects) are supported in object layers.")
             continue
 
