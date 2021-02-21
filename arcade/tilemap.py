@@ -238,7 +238,7 @@ def _create_sprite_from_tile(map_object: pytiled_parser.TiledMap,
         if len(tile.objects.tiled_objects) > 1:
             print(f"Warning, only one hit box supported for tile with image {tile.image.source}.")
 
-        for hitbox in tile.objectgroup.tiled_objects:
+        for hitbox in tile.objects.tiled_objects:
             points: List[Point] = []
             if isinstance(hitbox, pytiled_parser.tiled_object.Rectangle):
                 if hitbox.size is None:
