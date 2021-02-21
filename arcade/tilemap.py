@@ -115,12 +115,13 @@ def _get_tile_by_gid(map_object: pytiled_parser.TiledMap,
         else:
             tile_ref = tileset.tiles.get(tile_gid - tileset_key)
 
-        my_tile = copy.copy(tile_ref)
-        my_tile.tileset = tileset
-        my_tile.flipped_vertically = flipped_vertically
-        my_tile.flipped_diagonally = flipped_diagonally
-        my_tile.flipped_horizontally = flipped_horizontally
-        return my_tile
+        if tile_ref:
+            my_tile = copy.copy(tile_ref)
+            my_tile.tileset = tileset
+            my_tile.flipped_vertically = flipped_vertically
+            my_tile.flipped_diagonally = flipped_diagonally
+            my_tile.flipped_horizontally = flipped_horizontally
+            return my_tile
     return None
 
 
