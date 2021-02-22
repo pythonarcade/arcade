@@ -16,6 +16,7 @@ import logging
 import math
 import array
 import time
+from random import shuffle
 
 from PIL import Image
 
@@ -322,10 +323,8 @@ class SpriteList:
     def __setitem__(self, key: int, value: Sprite):
         self._vao1 = None
 
-        item_to_be_removed = self.sprite_list[key]
-        value.sprite_lists.remove(item_to_be_removed)
-
         if self._use_spatial_hash:
+            item_to_be_removed = self.sprite_list[key]
             self.spatial_hash.remove_object(item_to_be_removed)
             self.spatial_hash.insert_object_for_box(value)
 
@@ -409,6 +408,17 @@ class SpriteList:
         Reverses the current list inplace
         """
         self.sprite_list.reverse()
+        for idx, sprite in enumerate(self.sprite_list):
+            self.sprite_idx[sprite] = idx
+
+        self._vao1 = None
+        
+
+    def shuffle(self):
+        """
+        Shuffles the current list inplace
+        """
+        shuffle(self.sprite_list)
         for idx, sprite in enumerate(self.sprite_list):
             self.sprite_idx[sprite] = idx
 
