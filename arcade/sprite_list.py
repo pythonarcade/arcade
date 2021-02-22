@@ -323,7 +323,6 @@ class SpriteList:
         self._vao1 = None
 
         item_to_be_removed = self.sprite_list[key]
-        value.sprite_lists.remove(item_to_be_removed)
 
         if self._use_spatial_hash:
             self.spatial_hash.remove_object(item_to_be_removed)
