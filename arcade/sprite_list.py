@@ -322,9 +322,8 @@ class SpriteList:
     def __setitem__(self, key: int, value: Sprite):
         self._vao1 = None
 
-        item_to_be_removed = self.sprite_list[key]
-
         if self._use_spatial_hash:
+            item_to_be_removed = self.sprite_list[key]
             self.spatial_hash.remove_object(item_to_be_removed)
             self.spatial_hash.insert_object_for_box(value)
 
