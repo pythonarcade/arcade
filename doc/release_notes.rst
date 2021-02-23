@@ -7,6 +7,14 @@ Release Notes
 
 Keep up-to-date with the latest changes to the Arcade library by the release notes.
 
+Version 2.5.5
+-------------
+
+Version 2.5.5 was released 2021-02-23
+
+* `Fix setting an individual sprite list location to a new sprite not working <https://github.com/pythonarcade/arcade/issues/824>`_
+
+
 Version 2.5.4
 -------------
 
