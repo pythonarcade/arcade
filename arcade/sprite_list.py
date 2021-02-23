@@ -16,6 +16,7 @@ import logging
 import math
 import array
 import time
+from random import shuffle
 
 from PIL import Image
 
@@ -409,6 +410,17 @@ class SpriteList:
         Reverses the current list inplace
         """
         self.sprite_list.reverse()
+        for idx, sprite in enumerate(self.sprite_list):
+            self.sprite_idx[sprite] = idx
+
+        self._vao1 = None
+
+
+    def shuffle(self):
+        """
+        Shuffles the current list inplace
+        """
+        shuffle(self.sprite_list)
         for idx, sprite in enumerate(self.sprite_list):
             self.sprite_idx[sprite] = idx
 
