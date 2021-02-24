@@ -1056,8 +1056,14 @@ class AnimatedTimeSprite(Sprite):
 
 class AnimatedSprite():
 
-    """"
-    New class for Sprite animation.
+    """
+    New class for Sprite animation. This class aggregates several Sprite objects.
+    This class allows to store different animations (e.g. : Idle, Walk, Run, Crouch, Attack, ...),
+    and several states a.k.a. directions (e.g. : up, down, top-right, ...).
+    The different states are user-defined : technically a state is just an integer value.
+    It is up to you to set which value is linked to which state.
+    The different animations are also user-defined : technically each animation is described by a name (string).
+    It is up to you to give animation names according to your user needs.
     """
     _current_animation_name: str
 
@@ -1073,8 +1079,7 @@ class AnimatedSprite():
 
     def _get_nb_frames(self):
         """
-        Private method to get the number of frames for the requested animation name
-        :param str anim_name: name of the requested animation
+        Private method to get the number of frames for the current animation
         :return: tuple (int, int, int) number of textures, number of frames when back and forth is enabled, number of frames when counter is enabled (and back and forth)
         """
         nb_frames = 0
@@ -1096,8 +1101,8 @@ class AnimatedSprite():
 
     def _get_frame_index(self):
         """
-        Private methods to get the current index to display and the percentage of progression in the requested animation
-        :param anim_name: name of the requested animation
+        Private methods to get the current index to display and the percentage of progression for the current animation.
+        For infinite animations, the progress value will go from 0 to 1, and then will go back to 0, ...
         :return: tuple(int, float) index of the frame to display, percentage progression
         """
         frame_idx  = 0
@@ -1131,6 +1136,12 @@ class AnimatedSprite():
 
     # Constructor
     def __init__(self, nb_states=1):
+        """
+        Constructor method. There is only one parameter that is the number of states that will be stored in this object. \
+        By default, there is only one state. But you can set several ones (e.g. : in case of a 4 direction moving character, you set this value to 4) \
+        :param nb_states: number of different animation categories. This value cannot be less than 1.
+        """
+
         #call to parent (Sprite)
         super().__init__()
 
@@ -1152,6 +1163,8 @@ class AnimatedSprite():
         #     + counter : int
         #    }
         self._anims = []
+        if nb_states < 1:
+            raise RuntimeError(f"[ERROR] the number of states for this AnimatedSprite instance is less than 1 ! nb_states={nb_states}")
         for i in range(nb_states):
             self._anims.append({})
 
@@ -1181,44 +1194,46 @@ class AnimatedSprite():
                      loop_counter: int = 0,
                      back_and_forth: bool = False,
                      filter_color: tuple = (255, 255, 255, 255),
-                     facing_direction: int = 0,
+                     animation_state: int = 0,
                      hit_box_algo: str = 'None',
                      ):
         """
         Adds a new animation in the Sprite object. It takes all images from a given SpriteSheet. \
-        This Sprite is animated according to the elpased time and each frame has the same duration. \
-        If the animation is the first to be added, it is selected.
+        This Sprite is animated according to the elapsed time and each frame has the same duration. \
+        If the animation is the first to be added, it is automatically selected. \
+        One important thing is that ALL frames for this animation MUST have the same sizes.
         :param str animation_name: functional name of your animation. This string will be used to select the animation you want to display. \
-        If you have several animations, one per facing direction, you can give the same name for all of these animations (e.g. 'walk'/'run'/'idle'). \
-        This is the pair 'animation_name'+'facing_direction' that will be used to select the correct frame to display
+        If you have several animations (one per animation state), you can give the same name for all of the animations (e.g. 'walk'/'run'/'idle'). \
+        This is the pair 'animation_name'+'animation_state' that will be used to select the correct frame to display
         :param str filepath: path to the image file.
         :param int nb_frames_x: number of frames in the input image, along the x-axis
         :param int nb_frames_y: number of frames in the input image, along the y-axis
-        :param int frame_width: width for 1 frame in the input image
-        :param int frame_height: height for 1 frame in the input image
+        :param int frame_width: width for 1 frame in the input image (frame_width*nb_frames_x shall be lesser than or equal to the image width)
+        :param int frame_height: height for 1 frame in the input image (frame_height*nb_frames_y shall be lesser than or equal to the image height)
         :param int frame_start_index: index of the first frame of the current animation. Indexes start at 0. \
         Indexes are taken from left to right and from top to bottom. 0 means the top-left frame in the input image.
         :param int frame_end_index: index of the last frame for the current animation. this value cannot exceed (nb_frames_x*nb_frames_y)-1.
         :param float frame_duration: duration of each frame (in seconds).
         :param bool flipped_horizontally: flag to indicate the frames will be horizontally flipped for this animation.
         :param bool flipped_vertically: flag to indicate the frames will be vertically flipped for this animation.
-        :param int loop_counter: integer value to tell how many animation loop must be performed before the animation is being stopped. \
+        :param int loop_counter: integer value to tell how many animation loops must be performed before the animation is being stopped. \
         If the value is zero or less, that means the animation will loop forever. When an animation has finished, it remains on the last frame.
         :param bool back_and_forth: flag to indicate if the frames used in this animation (with indexes between frame_start_index and frame_end_index) \
         must be duplicated in the opposite order. It allows a sprite sheet with 5 frames, '1-2-3-4-5', to create an animation like, \
         either '1-2-3-4-5' (flag value = False) \
         or '1-2-3-4-5-4-3-2' (flag value to True).
-        :param tuple filter_color: RGBA tuple to be used like a filter layer. All the frames used in this animation will be color-filtered.
-        :param int facing_direction: current facing direction for your animated sprite. It will be used in addition with animation_name, \
-        in order to select the correct frame to display. Warning : if one pair 'animation_name'+'facing_direction' is missing in the animation \
-        data structure (e.g. you didn't add this animation), the previous selected animation will remain selected.
-        :param str hit_box_algo same than hit_box_algorithm from the arcade.Sprite class
+        :param tuple filter_color: RGBA tuple to be used like a filter layer. All the frames used in this animation will be color-filtered. \
+        Each value of the tuple is a [0-255] integer value.
+        :param int animation_state: current state for your animated sprite. It will be used in addition with animation_name, \
+        in order to select the correct frame to display. Warning : is you call the select_animation() method, and if one pair 'animation_name'+'animation_state'
+        is missing in the animation data structure (e.g. you haven't added this animation yet, have forgotten), the previous selected animation will remain selected.
+        :param str hit_box_algo same than hit_box_algorithm from the arcade.Sprite class. This value is set to 'None' by default
         :return None
         """
 
         # Create data structure if not already existing
-        if animation_name in self._anims[facing_direction]:
-            raise RuntimeError(f"AnimatedSprite : {animation_name} is already added to the current object (state={facing_direction})")
+        if animation_name in self._anims[animation_state]:
+            raise RuntimeError(f"AnimatedSprite : {animation_name} is already added to the current object (animation_state={animation_state})")
 
         my_dict = self._prepare_data_struct(frame_duration,back_and_forth,loop_counter,filter_color)
         my_dict["sprite"].center_x = self._x
@@ -1259,17 +1274,35 @@ class AnimatedSprite():
         my_dict["sprite"].set_texture(0)
 
         # Store this animation
-        self._anims[facing_direction][animation_name] = my_dict
+        self._anims[animation_state][animation_name] = my_dict
 
         # If this animation is the first, select it, and select the first texture, and play
         if self._current_animation_name == None:
             self.select_animation(animation_name, True, True)
 
+    def select_state(self, new_state, rewind=False, running=True):
+        """
+        This method just changes the animation_state (but does not change the current animation name). \
+        E.g. : This is used to change the direction of a top-down 8-direction character.
+        :param int new_state: the value of the new animation state
+        :param bool rewind: a flag to indicate if the new animation must be rewind or not. By default no rewind is done.
+        :param bool runnning: a flag to indicate if the new animation must be played or stopped. By default the animation is played.
+        :return: None
+        """
+        if new_state < 0 or new_state >= len(self._anims):
+            raise RuntimeError(f"[ERR] select_state : ({new_state} is not in the range [0-{len(self._anims)-1}])")
+        self._state = new_state
+        # Rewind and play if requested
+        if rewind:
+            self.rewind_animation()
+        if running:
+            self.resume_animation()
+
     def select_animation(self, animation_name, rewind=False, running=True):
         """
         Select the current animation to display. \
         This method only checks if there is an animation with the given name in the data structure, \
-        for the current facing direction. \
+        for the current animation state. \
         If yes, this animation is selected, and the Sprite class textures field is updated. If not, this method does nothing.
         :param str animation_name: just the functional name of the animation to select.
         :param bool rewind: a flag to indicate if the new animation must be rewind or not. By default no rewind is done.
@@ -1291,8 +1324,9 @@ class AnimatedSprite():
     def select_frame(self, frame_index):
         """
         This method selects a specific frame in the stored textures.\
-        When calling this method, it automatically pauses the animation.
-        In other words, this method forces the current class behaviour.
+        When calling this method, it automatically pauses the animation. \
+        e.g. : this method is used for a 'no animation' multi-sprite. \
+        This is up to the user to know how many frames have been added to this animation during the creation process.
         :param int frame_index: number of the requested frame.
         :return: None
         """
@@ -1304,10 +1338,16 @@ class AnimatedSprite():
         data_struct["sprite"].set_texture(self._cur_texture_index)
 
     def removeAnimation(self, anim_name):
+        """
+        Tnis method just removes an animation from the data structure. It will remove the animation from ALL the 'states'.
+        :param anim_name: functional name of the animation to remove
+        :return: None
+        """
+
         # remove animations from the data structure
-        for facing_direction in range(len(self._anims)):
-            if anim_name in self._anims[facing_direction]:
-                del self._anims[facing_direction][anim_name]
+        for animation_state in range(len(self._anims)):
+            if anim_name in self._anims[animation_state]:
+                del self._anims[animation_state][anim_name]
         # check if this animation was the current one selected
         # if yes just raise an error in order to notify the developper
         # to onlyremove unused animations
@@ -1315,6 +1355,13 @@ class AnimatedSprite():
             raise RuntimeError(f"[ERR] AnimatedSprite : remove animation only if not used {anim_name}")
 
     def update_animation(self, delta_time: float = 1/60):
+        """
+        This method updates the current animation, in order to select the correct frame that should be displayed. \
+        This method must be called from the update() method of the current application
+        :param delta_time: number of elapsed seconds since the last update() call
+        :return: None
+        """
+
         # Increase current elapsed time if playing
         if self._playing:
             self._elapsed_duration += delta_time
@@ -1342,6 +1389,11 @@ class AnimatedSprite():
         data_struct["sprite"].scale    = self._scale
 
     def draw(self):
+        """
+        This method draws the correct frame, according to the previous 'update_animation' method call. \
+        This method must be called from the draw() method of the current application.
+        :return:
+        """
         data_struct = dict(self._anims[self._state][self._current_animation_name])
         data_struct["sprite"].draw()
 
@@ -1357,9 +1409,6 @@ class AnimatedSprite():
     @property
     def scale(self):
         return self._scale
-    @property
-    def state(self):
-        return self._state
 
     @center_x.setter
     def center_x(self, new_x):
@@ -1373,12 +1422,6 @@ class AnimatedSprite():
     @scale.setter
     def scale(self, new_scale):
         self._scale= new_scale
-    @scale.setter
-    def state(self, new_state):
-        if new_state < 0 or new_state >= len(self._anims):
-            raise RuntimeError(f"[ERR] select_state : ({new_state} is not in the range [0-{len(self._anims)-1}])")
-        self._state = new_state
-
 
 
     def pause_animation(self):
@@ -1417,6 +1460,9 @@ class AnimatedSprite():
         """
         self.pause_animation()
         self.rewind_animation()
+
+    def get_current_state(self):
+        return self._state
 
     def get_current_animation(self):
         return self._current_animation_name

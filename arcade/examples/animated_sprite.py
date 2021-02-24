@@ -70,7 +70,7 @@ class TestArcade(arcade.Window):
                     dy = 2*(2.5-move_vertical)*60*delta_time*self.speed
                     direction = 2*move_vertical + move_horizontal
                 self.character.select_animation("walk")
-                self.character.state = direction
+                self.character.select_state(direction)
             # Move the character according to the direction
             self.character.center_x += dx
             self.character.center_y += dy
@@ -224,7 +224,7 @@ class TestArcade(arcade.Window):
                                      flipped_vertically=False,
                                      loop_counter=0,
                                      back_and_forth=True,
-                                     facing_direction=i)
+                                     animation_state=i)
             # Add idle animations for each facing_direction
             self.character.add_animation(
                                      animation_name="idle",
@@ -240,7 +240,7 @@ class TestArcade(arcade.Window):
                                      flipped_vertically=False,
                                      loop_counter=0,
                                      back_and_forth=False,
-                                     facing_direction=i)
+                                     animation_state=i)
             # Add attack animations for each facing_direction
             self.character.add_animation(
                                      animation_name="attack",
@@ -256,7 +256,7 @@ class TestArcade(arcade.Window):
                                      flipped_vertically=False,
                                      loop_counter=1,
                                      back_and_forth=False,
-                                     facing_direction=i)
+                                     animation_state=i)
 
         # Set position for counter
         self.numbers1.center_x = 100
@@ -278,7 +278,7 @@ class TestArcade(arcade.Window):
         self.character.center_x = 400
         self.character.center_y = 360
         self.character.select_animation("idle")
-        self.character.state = FACE_DOWN
+        self.character.select_state(FACE_DOWN)
         self.character.scale = 2
         self.speed = 3
         self.char_attack = False
