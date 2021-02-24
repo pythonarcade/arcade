@@ -229,6 +229,7 @@ from .sprite import FACE_DOWN
 from .sprite import FACE_LEFT
 from .sprite import FACE_RIGHT
 from .sprite import FACE_UP
+from .sprite import AnimatedSprite
 from .sprite import AnimatedTimeBasedSprite
 from .sprite import AnimatedTimeSprite
 from .sprite import AnimatedWalkingSprite
