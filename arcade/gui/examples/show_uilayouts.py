@@ -62,7 +62,8 @@ class MyView(View):
         layout_center_right = UIBoxLayout(vertical=True, align='center', id='right center')
         layout_center_right.pack(UILabel(text="right=0"))
         layout_center_right.pack(UILabel(text="top=0"))
-        layout_center_right.pack(UILabel(text="fill_y=True"), space=20)
+        layout_center_right.pack(UILabel(text="fill_y=True"), space=10)
+        layout_center_right.pack(UILabel(text="align=center"), space=20)
         root_layout.pack(layout_center_right, right=0, top=0, fill_y=True)
 
         # center left

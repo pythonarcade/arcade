@@ -4,11 +4,12 @@ from PIL.Image import Image, ANTIALIAS
 
 import arcade
 from arcade import View, Window, load_texture, Texture
-from arcade.gui import UIImageButton, UIFlatButton
+from arcade.gui import UIImageButton, UIFlatButton, UIEvent, MOUSE_PRESS, MOUSE_RELEASE, MOUSE_DRAG
 from arcade.gui.elements.box import UIBox
 from arcade.gui.layouts.anchor import UIAnchorLayout
 from arcade.gui.layouts.box import UIBoxLayout
 from arcade.gui.layouts.manager import UILayoutManager
+from arcade.gui.utils import center_on_viewport
 
 SLOT_TEXTURE = load_texture(':resources:gui_basic_assets/button_square_blue.png')
 SLOT_TEXTURE_PRESSED = load_texture(':resources:gui_basic_assets/button_square_blue_pressed.png')
@@ -55,6 +56,23 @@ class SlotButton(UIImageButton):
         return Texture(fg.name + bg.name, combined_img, hit_box_algorithm='None')
 
 
+class DraggableUIAnchorLayout(UIAnchorLayout):
+    dragging = None
+
+    def on_ui_event(self, event: UIEvent):
+        super().on_ui_event(event)
+
+        if event.type == MOUSE_PRESS:
+            point = event.get('x'), event.get('y')
+            self.dragging = self.collides_with_point(point)
+
+        if event.type == MOUSE_RELEASE:
+            self.dragging = False
+
+        if event.type == MOUSE_DRAG and self.dragging:
+            self.move(event.get('dx'), event.get('dy'))
+
+
 class MyView(View):
     def __init__(self, window=None):
         super().__init__(window=window)
@@ -73,13 +91,13 @@ class MyView(View):
 
     def create_inventory(self):
         # Build inventory
-        frame = UIAnchorLayout(400, 310, bg=arcade.color.BROWN)
+        frame = DraggableUIAnchorLayout(400, 310, bg=arcade.color.BROWN)
 
         # fix size
         frame.min_size = None
         frame.size_hint = None
 
-        self.ui_manager.pack(frame, center_x=0, center_y=0)
+        self.ui_manager.push(frame)
 
         # Inventory with slots
         inventory = UIBoxLayout(vertical=True, id=f'col')
@@ -98,7 +116,6 @@ class MyView(View):
         # Active item
         self.equipped_item = UIBox(100, 100, arcade.color.LIGHT_GRAY)
         frame.pack(self.equipped_item, top=10, right=10)
-        self._no_item_equipped = self.equipped_item.texture
 
         # Close button
         close_btn = UIFlatButton('Close', width=100, height=35)
@@ -106,15 +123,17 @@ class MyView(View):
 
         @close_btn.event()
         def on_click():
-            self.ui_manager.remove(frame)
+            self.ui_manager.pop(frame)
 
-        # manually call `do_layout()`, so everything is ready on the first `on_draw()` call
-        self.ui_manager.do_layout()
-
+        center_on_viewport(frame)
         self.inv = inventory
 
     def on_show_view(self):
         arcade.set_background_color(arcade.color.WHITE)
+
+        # show inventory window on startup
+        self.create_inventory()
+        self.ui_manager.do_layout()
 
     def on_update(self, delta_time: float):
         # Update equipped item from game state

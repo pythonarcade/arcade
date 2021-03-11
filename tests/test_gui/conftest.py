@@ -9,10 +9,11 @@ from . import MockButton, TestUIManager, TestUILayoutManager
 class MockWindow(EventDispatcher):
     def __init__(self):
         self.register_event_type('on_draw')
+        self.register_event_type('on_mouse_drag')
+        self.register_event_type('on_mouse_motion')
         self.register_event_type('on_mouse_press')
         self.register_event_type('on_mouse_release')
         self.register_event_type('on_mouse_scroll')
-        self.register_event_type('on_mouse_motion')
         self.register_event_type('on_key_press')
         self.register_event_type('on_key_release')
         self.register_event_type('on_update')

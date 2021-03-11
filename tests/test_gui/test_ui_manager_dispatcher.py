@@ -12,16 +12,18 @@ def test_handler_pushed():
         call.push_handlers(
             msg.on_resize,
             msg.on_update,
+            msg.on_mouse_drag,
+            msg.on_mouse_motion,
             msg.on_mouse_press,
             msg.on_mouse_release,
             msg.on_mouse_scroll,
-            msg.on_mouse_motion,
             msg.on_key_press,
             msg.on_key_release,
             msg.on_text,
             msg.on_text_motion,
             msg.on_text_motion_select)
     ])
+
 
 def test_handler_not_pushed():
     window = Mock()
@@ -41,10 +43,11 @@ def test_handler_removed():
         call.remove_handlers(
             msg.on_resize,
             msg.on_update,
+            msg.on_mouse_drag,
+            msg.on_mouse_motion,
             msg.on_mouse_press,
             msg.on_mouse_release,
             msg.on_mouse_scroll,
-            msg.on_mouse_motion,
             msg.on_key_press,
             msg.on_key_release,
             msg.on_text,

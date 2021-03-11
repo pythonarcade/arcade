@@ -10,6 +10,7 @@ from arcade.gui import (
     UIElement,
     UIException,
     UIEvent,
+    MOUSE_DRAG,
     MOUSE_PRESS,
     MOUSE_RELEASE,
     MOUSE_SCROLL,
@@ -56,10 +57,11 @@ class UIAbstractManager(EventDispatcher, metaclass=ABCMeta):
         self.window.push_handlers(
             self.on_resize,
             self.on_update,
+            self.on_mouse_drag,
+            self.on_mouse_motion,
             self.on_mouse_press,
             self.on_mouse_release,
             self.on_mouse_scroll,
-            self.on_mouse_motion,
             self.on_key_press,
             self.on_key_release,
             self.on_text,
@@ -77,10 +79,11 @@ class UIAbstractManager(EventDispatcher, metaclass=ABCMeta):
         self.window.remove_handlers(
             self.on_resize,
             self.on_update,
+            self.on_mouse_drag,
+            self.on_mouse_motion,
             self.on_mouse_press,
             self.on_mouse_release,
             self.on_mouse_scroll,
-            self.on_mouse_motion,
             self.on_key_press,
             self.on_key_release,
             self.on_text,
@@ -155,6 +158,20 @@ class UIAbstractManager(EventDispatcher, metaclass=ABCMeta):
                                        y=y,
                                        dx=dx,
                                        dy=dy,
+                                       ))
+
+    def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
+        """
+        Dispatches :py:meth:`arcade.View.on_mouse_drag()` as :py:class:`arcade.gui.UIElement`
+        with type :py:attr:`arcade.gui.MOUSE_DRAG`
+        """
+        self.dispatch_ui_event(UIEvent(MOUSE_DRAG,
+                                       x=x,
+                                       y=y,
+                                       dx=dx,
+                                       dy=dy,
+                                       buttons=buttons,
+                                       modifiers=modifiers
                                        ))
 
     def on_mouse_scroll(self, x: int, y: int, scroll_x: int, scroll_y: int):

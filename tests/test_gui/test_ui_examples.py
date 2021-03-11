@@ -74,6 +74,7 @@ def load_view(abs_module_path) -> arcade.View:
     # UILayout examples
     T('show_uilayouts', 'show_uilayouts'),
     T('show_uilayouts_start_menu', 'show_uilayouts_start_menu'),
+    T('show_uilayouts_inventory', 'show_uilayouts_inventory'),
     T('show_uilayouts_hud_inventory', 'show_uilayouts_hud_inventory'),
 ])
 def test_gui_examples(twm, window, example):
@@ -82,6 +83,7 @@ def test_gui_examples(twm, window, example):
     # import example view
     MyView = import_module(f'arcade.gui.examples.{example}').MyView
     view = MyView(window)
+    window.dispatch_event('on_update', 1)
 
     # Render View and take screen shot
     actual_screen = expected_screen.with_name(f'{example}_tmp.png')

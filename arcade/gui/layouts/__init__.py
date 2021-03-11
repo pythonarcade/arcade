@@ -5,7 +5,7 @@ from typing import List, NamedTuple, Union, Dict, Optional, Tuple
 
 import PIL
 
-from arcade import Sprite, SpriteList, get_sprites_at_point, Color, Texture
+from arcade import Sprite, SpriteList, get_sprites_at_point, Color, Texture, Point
 from arcade.gui import UIElement, UIEvent
 from arcade.resources import resolve_resource_path
 
@@ -133,6 +133,24 @@ class UIAbstractLayout(ABC):
             elements_at_pos.extend(layout.get_elements_at(pos))
 
         return elements_at_pos
+
+    def collides_with_point(self, point: Point) -> bool:
+        """
+        Check if point is within the current layout.
+
+        :param Point point: Point to check.
+        :return: True if the point is contained within the sprite's boundary.
+        :rtype: bool
+        """
+        from arcade.geometry import is_point_in_polygon
+
+        x, y = point
+        return is_point_in_polygon(x, y, [
+            (self.left, self.top),
+            (self.right, self.top),
+            (self.right, self.bottom),
+            (self.left, self.bottom),
+        ])
 
     # --------- add element & size hint
     def pack(self, element: Union[Sprite, UIElement, 'UIAbstractLayout'], **kwargs):

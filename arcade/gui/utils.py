@@ -1,7 +1,7 @@
 import os
 from itertools import chain
 from pathlib import Path
-from typing import Union, cast, Tuple, Optional, Any
+from typing import Union, cast, Tuple, Optional, Any, TYPE_CHECKING
 from warnings import warn
 
 import PIL
@@ -10,7 +10,17 @@ from PIL.Image import Image
 from PIL.ImageColor import getrgb
 
 import arcade
-from arcade import RGBA, Color, DEFAULT_FONT_NAMES
+from arcade import RGBA, Color, DEFAULT_FONT_NAMES, Sprite, get_viewport
+
+if TYPE_CHECKING:
+    from arcade.gui import UIElement
+    from arcade.gui.layouts import UIAbstractLayout
+
+
+def center_on_viewport(element: Union[Sprite, 'UIElement', 'UIAbstractLayout']):
+    left, right, bottom, top = get_viewport()
+    element.center_x = left + (right - left) / 2
+    element.center_y = bottom + (top - bottom) / 2
 
 
 def parse_value(value: Any):
