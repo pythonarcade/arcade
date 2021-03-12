@@ -153,17 +153,18 @@ def set_viewport(left: float, right: float, bottom: float, top: float):
     If a program is making a game where the user scrolls around a larger
     world, this command can help out.
 
-    Note: It is recommended to only set the view port to integer values that
+    Note: It is recommended to only set the viewport to integer values that
     line up with the pixels on the screen. Otherwise if making a tiled game
     the blocks may not line up well, creating rectangle artifacts.
 
-    Note: Window.on_resize will call set_viewport by default. If you set your
+    Note: ``Window.on_resize`` will call ``set_viewport`` by default. If you set your
     own custom viewport, you may need to over-ride this method.
 
-    For more advanced users: This functions sets the orthogonal projection
-    used by shapes and sprites using the values passed in. it also
-    updates the viewport to match the current screen resolution.
-    ```window.ctx.projection_2d`` and ``window.ctx.viewport```
+    **For more advanced users**: This functions sets the orthogonal projection
+    used by shapes and sprites. It also updates the viewport to match the current
+    screen resolution.
+    ``window.ctx.projection_2d`` (:py:meth:`~arcade.ArcadeContext.projection_2d`)
+    and ``window.ctx.viewport`` (:py:meth:`~arcade.gl.Context.viewport`)
     can be used to set viewport and projection separately.
 
     :param Number left: Left-most (smallest) x value.
