@@ -2,10 +2,10 @@ from typing import Union
 
 from arcade import Sprite
 from arcade.gui import UIElement
-from arcade.gui.layouts import UIAbstractLayout
+from arcade.gui.layouts import UILayout
 
 
-class UIAnchorLayout(UIAbstractLayout):
+class UIAnchorLayout(UILayout):
     """
 
     Layout which places its children according to two anchor values
@@ -33,7 +33,7 @@ class UIAnchorLayout(UIAbstractLayout):
         # FIXME do not overdraw others!
 
         for element, data in self._elements:
-            element: Union[UIAbstractLayout, UIElement, Sprite]
+            element: Union[UILayout, UIElement, Sprite]
             top = data.get('top')
             left = data.get('left')
             bottom = data.get('bottom')

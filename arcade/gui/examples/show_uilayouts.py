@@ -3,7 +3,7 @@ from typing import Union
 import arcade
 from arcade import View, Window, SpriteSolidColor
 from arcade.gui import UILabel, UIElement, UIFlatButton
-from arcade.gui.layouts import UIAbstractLayout
+from arcade.gui.layouts import UILayout
 from arcade.gui.layouts.box import UIBoxLayout
 from arcade.gui.layouts.manager import UILayoutManager
 from arcade.gui.layouts.utils import valid
@@ -107,21 +107,21 @@ class MyView(View):
             valid(layout2)
         )
 
-    def debug_layout(self, element: Union[UIElement, UIAbstractLayout], prefix=''):
+    def debug_layout(self, element: Union[UIElement, UILayout], prefix=''):
         print(
             f'{prefix}{type(element).__name__}[{getattr(element, "id", "")}]: '
             f'ltrb/wh: {element.left}, {element.top}, {element.right},{element.bottom}/ {element.width}, {element.height}'
-            f' {valid(element) if isinstance(element, UIAbstractLayout) else ""}')
+            f' {valid(element) if isinstance(element, UILayout) else ""}')
 
-        if isinstance(element, UIAbstractLayout):
+        if isinstance(element, UILayout):
             for e in element:
                 self.debug_layout(e, '\t' + prefix)
 
-    def draw_borders(self, element: Union[UIElement, UIAbstractLayout]):
+    def draw_borders(self, element: Union[UIElement, UILayout]):
         l, r, t, b = element.left, element.right, element.top, element.bottom
         arcade.draw_lrtb_rectangle_outline(l, r, t, b, arcade.color.RED)
 
-        if isinstance(element, UIAbstractLayout):
+        if isinstance(element, UILayout):
             for e in element:
                 self.draw_borders(e)
 

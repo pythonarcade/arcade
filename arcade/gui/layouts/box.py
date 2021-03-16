@@ -1,7 +1,7 @@
-from arcade.gui.layouts import UIAbstractLayout
+from arcade.gui.layouts import UILayout
 
 
-class UIBoxLayout(UIAbstractLayout):
+class UIBoxLayout(UILayout):
     def __init__(
             self,
             vertical=True,

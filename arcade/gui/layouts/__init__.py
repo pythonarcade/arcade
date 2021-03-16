@@ -11,7 +11,7 @@ from arcade.resources import resolve_resource_path
 
 
 class PackedElement(NamedTuple):
-    element: Union['UIAbstractLayout', Sprite]
+    element: Union['UILayout', Sprite]
     data: Dict
 
 
@@ -22,7 +22,7 @@ padding = Union[
 ]
 
 
-class UIAbstractLayout(ABC):
+class UILayout(ABC):
     min_size = (0, 0)
     """Minimal size of this UILayout"""
 
@@ -49,7 +49,7 @@ class UIAbstractLayout(ABC):
 
         self._elements: List[PackedElement] = []
         self._layer = SpriteList()
-        self._child_layouts: List[UIAbstractLayout] = []
+        self._child_layouts: List[UILayout] = []
 
         self.size_hint = size_hint
 
@@ -153,16 +153,16 @@ class UIAbstractLayout(ABC):
         ])
 
     # --------- add element & size hint
-    def pack(self, element: Union[Sprite, UIElement, 'UIAbstractLayout'], **kwargs):
+    def pack(self, element: Union[Sprite, UIElement, 'UILayout'], **kwargs):
         self._elements.append(PackedElement(element, kwargs))
 
         if isinstance(element, Sprite):
             self._layer.append(element)
-        if isinstance(element, UIAbstractLayout):
+        if isinstance(element, UILayout):
             self._child_layouts.append(element)
         return element
 
-    def remove(self, element: Union[Sprite, UIElement, 'UIAbstractLayout']):
+    def remove(self, element: Union[Sprite, UIElement, 'UILayout']):
         for packed_element in self._elements:
             if packed_element.element == element:
                 break
@@ -172,7 +172,7 @@ class UIAbstractLayout(ABC):
         self._elements.remove(packed_element)
         if isinstance(element, Sprite):
             self._layer.remove(element)
-        if isinstance(element, UIAbstractLayout):
+        if isinstance(element, UILayout):
             self._child_layouts.remove(element)
 
     # --------- draw self and children
@@ -357,7 +357,7 @@ class UIAbstractLayout(ABC):
         self.place_elements()
 
         for element in self:
-            if isinstance(element, UIAbstractLayout):
+            if isinstance(element, UILayout):
                 element.do_layout()
 
         self.refresh_bg()

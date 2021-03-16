@@ -6,8 +6,11 @@
 * New UIManager -> UILayoutManager
   * provides entry for layouting
   * does not register `on_draw` callback
+    
 
 * Available Layouts
+  * UILayout
+    * Abstract layout class
   * UIBoxLayout
     * vertical and horizontal orientation
     * background and border may be set
@@ -24,8 +27,8 @@
 ### Planned features
 
 * [x] Remove elements from UIManager
-* [ ] UIElements size can be influenced by UILayout
-* [ ] Layer support on UIManager
+* [x] UIElements size can be influenced by UILayout
+* [x] Layer support on UIManager
 * [ ] Hide UI and disable input
 * [ ] Grid Layout
 * [ ] Spacing in BoxLayout

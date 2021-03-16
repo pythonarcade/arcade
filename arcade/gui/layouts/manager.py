@@ -5,7 +5,7 @@ from typing import Union, List, Optional
 import arcade
 from arcade import Sprite
 from arcade.gui import UIElement, MOUSE_PRESS, MOUSE_MOTION, UIEvent, MOUSE_RELEASE
-from arcade.gui.layouts import UIAbstractLayout
+from arcade.gui.layouts import UILayout
 from arcade.gui.layouts.anchor import UIAnchorLayout
 from arcade.gui.layouts.utils import valid
 from arcade.gui.manager import UIAbstractManager
@@ -16,7 +16,7 @@ class UIStack:
     UIStack handles the complexity of multiple UI trees at the same point in time.
     The goal is to forward UIEvents only to the top UILayout on the stack. (Latest pushed.)
 
-    The actual dispatching is implemented by the :py:class:`UILayoutManager` using :py:method:`UIStack.peek()`
+    The actual dispatching is implemented by the :py:class:`UILayoutManager` using :py:meth:`UIStack.peek()`
 
     If the stack is empty a default UIAnchorLayout is used,
     which should be used especially for HUD elements.
@@ -24,18 +24,18 @@ class UIStack:
     Switching between UILayouts like windows might be added at a later point in time.
     """
 
-    def __init__(self, default_layout: UIAbstractLayout):
+    def __init__(self, default_layout: UILayout):
         self.default_layout = default_layout
 
-        self.stack: List[UIAbstractLayout] = []
+        self.stack: List[UILayout] = []
 
-    def push(self, layout: UIAbstractLayout, **kwargs):
+    def push(self, layout: UILayout, **kwargs):
         """
         Push a new UILayout on top of the stack.
         """
         self.stack.append(layout)
 
-    def pop(self, element: Optional[UIAbstractLayout] = None) -> UIAbstractLayout:
+    def pop(self, element: Optional[UILayout] = None) -> UILayout:
         """
         Removes the top layout and returns it. Returns default layout if stack is empty.
 
@@ -48,7 +48,7 @@ class UIStack:
             return self.stack.pop()
         return self.default_layout
 
-    def peek(self) -> UIAbstractLayout:
+    def peek(self) -> UILayout:
         """
         :return: Top UILayout of the stack. Returns default layout if stack is empty.
         """
@@ -69,7 +69,7 @@ class UILayoutManager(UIAbstractManager):
     The UILayoutManager handles the connection between UILayouts, and UIElements and the mouse, and
     keyboard events. It also triggers the underlying UILayouts to position the UIElements.
 
-    To add a new UILayout or UIElement use :py:method:`UILayoutManager.pack(element)`
+    To add a new UILayout or UIElement use :py:meth:`UILayoutManager.pack(element)`
 
     UILayoutManager uses a :py:class:`UIAnchorLayout` as the root layout, which provides simple ways to position
     all elements on screen.
@@ -80,7 +80,7 @@ class UILayoutManager(UIAbstractManager):
     In case you want to provide a window-like experience, which may overlap with the HUD or other
     window-like objects, the UILayoutManager provides a stack function.
 
-    Use :py:method:`UILayoutManager.push(element)` to place a UIElement or UILayout on the top.
+    Use :py:meth:`UILayoutManager.push(element)` to place a UIElement or UILayout on the top.
     All UIEvents will be past to the latest pushed element.
 
     To remove the top element use `UILayoutManager.pop()` or `UILayoutManager.pop(element)`
@@ -113,7 +113,7 @@ class UILayoutManager(UIAbstractManager):
         # FIXME: This might be to slow, let's see
         self.do_layout()
 
-    def pack(self, element: Union[Sprite, UIElement, 'UIAbstractLayout'], **kwargs):
+    def pack(self, element: Union[Sprite, UIElement, 'UILayout'], **kwargs):
         """
         Packs an element into the root_layout.
 
@@ -122,19 +122,19 @@ class UILayoutManager(UIAbstractManager):
         """
         return self.root_layout.pack(element, **kwargs)
 
-    def push(self, layout: UIAbstractLayout):
+    def push(self, layout: UILayout):
         """
         Adds the element to the internal UIStack
         """
         self._ui_stack.push(layout)
 
-    def pop(self, layout: UIAbstractLayout):
+    def pop(self, layout: UILayout):
         """
         Adds the element to the internal UIStack
         """
         self._ui_stack.pop(layout)
 
-    def remove(self, element: Union[Sprite, UIElement, 'UIAbstractLayout']) -> None:
+    def remove(self, element: Union[Sprite, UIElement, 'UILayout']) -> None:
         """
         Removes the element from the root_layout
         """
@@ -152,7 +152,7 @@ class UILayoutManager(UIAbstractManager):
         return self._ui_stack.default_layout
 
     @root_layout.setter
-    def root_layout(self, layout: UIAbstractLayout):
+    def root_layout(self, layout: UILayout):
         self._ui_stack.default_layout = layout
         self.do_layout()
 

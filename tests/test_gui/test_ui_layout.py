@@ -5,13 +5,13 @@ import pytest
 import arcade
 from arcade import SpriteSolidColor
 from arcade.gui import UIEvent
-from arcade.gui.layouts import UIAbstractLayout
+from arcade.gui.layouts import UILayout
 from arcade.gui.layouts.anchor import UIAnchorLayout
 from arcade.gui.layouts.box import UIBoxLayout
 from tests.test_gui import dummy_element, T
 
 
-class TestAbstractLayout(UIAbstractLayout):
+class TestLayout(UILayout):
     """
     Allow tests for the base UILayout functions.
     """
@@ -24,7 +24,7 @@ class TestAbstractLayout(UIAbstractLayout):
 
 
 def test_move_layout():
-    layout = TestAbstractLayout()
+    layout = TestLayout()
     layout.width = 100
     layout.height = 50
 
@@ -37,7 +37,7 @@ def test_move_layout():
 
 
 def test_layout_has_proper_position():
-    layout = TestAbstractLayout()
+    layout = TestLayout()
     layout.width = 100
     layout.height = 50
     layout.left = 50
@@ -48,7 +48,7 @@ def test_layout_has_proper_position():
 
 
 def test_layout_moves_children():
-    layout = TestAbstractLayout()
+    layout = TestLayout()
     child = dummy_element()
     layout.pack(child)
 
@@ -93,7 +93,7 @@ def test_passes_ui_events(layout):
         T('Anchor', UIAnchorLayout(800, 600)),
     ]
 )
-def test_pack_adds_elements_to_draw_layer(layout: UIAbstractLayout):
+def test_pack_adds_elements_to_draw_layer(layout: UILayout):
     ui_element = dummy_element()
     sprite = SpriteSolidColor(100, 50, arcade.color.GREEN)
 
@@ -129,7 +129,7 @@ def test_remove_child(layout):
         T('Anchor', UIAnchorLayout(800, 600)),
     ]
 )
-def test_child_expanded_to_parent_size(layout: UIAbstractLayout):
+def test_child_expanded_to_parent_size(layout: UILayout):
     ui_element = dummy_element()
     ui_element.size_hint = (1, 1)
     layout.width = 300

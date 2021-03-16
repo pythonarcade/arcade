@@ -1,9 +1,35 @@
 """
-This module provides UIElements which can be used to ease the interaction
-with the player.
+Aracade GUI
+===========
 
-Starting with :py:class:`arcade.gui.UIManager` you can add new :py:class:`arcade.gui.UIElement`
+Overview
+--------
+
+This module provides classes which can be used to create a GUI.
+
+The central component is the UIManager. You can chose between two of them:
+
+- :py:class:`arcade.gui.UIManager` (will be deprecated)
+
+    - Manages UIElemenets
+    - Supports hover and focus of UIElements
+
+- :py:class:`arcade.gui.UILayoutManager`
+
+    - Like :py:class:`arcade.gui.UIManager`
+    - Place UIElements via :py:class:`arcade.gui.layouts.UILayout` - :py:meth:`arcade.gui.UILayoutManager.pack()`
+    - Supports window-like modals - :py:meth:`arcade.gui.UILayoutManager.push()`
+
+
+Starting with :py:class:`arcade.gui.UIManager` or :py:class:`arcade.gui.UILayoutManager` you can add new :py:class:`arcade.gui.UIElement`
 which will be drawn on top of your other sprites.
+
+Creating a UIManager will register to window hooks like `on_key_press`, to handle the interactions automatically.
+
+To draw all UIElements within the UIManager use `on_draw()`.
+
+Details
+-------
 
 The UI interactions are implemented using Pyglets :py:class:`pyglet.event.EventDispatcher`.
 The :py:class:`arcade.gui.UIManager` subscribes to all :py:class:`arcade.Window`
@@ -19,15 +45,30 @@ Available :py:class:`arcade.gui.UIElement`
 * :py:class:`arcade.gui.UIGhostFlatButton`
 * :py:class:`arcade.gui.UIToggle`
 
+Within the `layouts` subpackage you will find following implementations:
+
+* :py:class:`arcade.gui.UIBoxLayout` - Places children in a horizontal or vertical line
+* :py:class:`arcade.gui.UIAnchorLayout` - Places children relative to `top`, `left`, `bottom`, `right`, `center_x`, or `center_y`
+
+
+Examples
+--------
+
 Run examples with `python -m arcade.gui.examples.<example name>`
 
 * show_all - Show all components
 * show_decorator_example - Show example interaction using event decorators
 * show_id_example - Using id off an :py:class:`arcade.gui.UIElement`
+* show_image_from_style - Customice elements
 * show_uiflatbutton - :py:class:`arcade.gui.UIFlatButton` example
 * show_uiflatbutton_custom_style - Flatbutton with custom styleing
+* show_uiimagetoggle - Example with a :py:class:`arcade.gui.UIImageToggle`
 * show_uiinputbox - Example with a :py:class:`arcade.gui.UIInputBox`
 * show_uilabel - Show text with a :py:class:`arcade.gui.UILabel`
+* show_uilayouts - Example show of :py:class:`arcade.gui.UILayouts`
+* show_uilayouts_hud_inventory - Example how to build a HUD inventory
+* show_uilayouts_inventory - Example how to build a window-like inventory
+* show_uilayouts_start_menu - Example how to build a simple start menu
 
 """
 from arcade.gui import utils
@@ -55,7 +96,13 @@ from arcade.gui.elements.label import UILabel
 from arcade.gui.elements.toggle import UIToggle, UIImageToggle
 from arcade.gui.manager import UIManager
 
+from arcade.gui.layouts.manager import UILayoutManager
+from arcade.gui.layouts.box import UIBoxLayout
+from arcade.gui.layouts.anchor import UIAnchorLayout
+
 __all__ = [
+    'UIAnchorLayout',
+    'UIBoxLayout',
     'UIEvent',
     'UIManager',
     'UIElement',
@@ -68,6 +115,7 @@ __all__ = [
     'UIImageButton',
     'UIToggle',
     'UIImageToggle',
+    'UILayoutManager',
     'MOUSE_DRAG',
     'MOUSE_MOTION',
     'MOUSE_PRESS',

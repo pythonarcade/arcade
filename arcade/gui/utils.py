@@ -14,10 +14,10 @@ from arcade import RGBA, Color, DEFAULT_FONT_NAMES, Sprite, get_viewport
 
 if TYPE_CHECKING:
     from arcade.gui import UIElement
-    from arcade.gui.layouts import UIAbstractLayout
+    from arcade.gui.layouts import UILayout
 
 
-def center_on_viewport(element: Union[Sprite, 'UIElement', 'UIAbstractLayout']):
+def center_on_viewport(element: Union[Sprite, 'UIElement', 'UILayout']):
     left, right, bottom, top = get_viewport()
     element.center_x = left + (right - left) / 2
     element.center_y = bottom + (top - bottom) / 2

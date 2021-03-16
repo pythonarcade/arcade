@@ -2,11 +2,11 @@ from typing import Union
 
 from arcade import Sprite
 from arcade.gui import UIElement
-from arcade.gui.layouts import UIAbstractLayout
+from arcade.gui.layouts import UILayout
 
 
 # TODO test this method
-def valid(element: Union[Sprite, UIElement, 'UIAbstractLayout']):
+def valid(element: Union[Sprite, UIElement, 'UILayout']):
     left = element.left
     right = element.right
     top = element.top
@@ -17,7 +17,7 @@ def valid(element: Union[Sprite, UIElement, 'UIAbstractLayout']):
     if not (bottom <= top):
         return False
 
-    if isinstance(element, UIAbstractLayout):
+    if isinstance(element, UILayout):
         for element in element:
             if not (left <= element.left <= right):
                 return False
