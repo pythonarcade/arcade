@@ -1,3 +1,3 @@
 #!/usr/bin/env python
 
-VERSION = "2.5.5"
+VERSION = "2.5.6"
