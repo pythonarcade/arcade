@@ -59,19 +59,19 @@ class MyGame(arcade.Window):
         body = pymunk.Body(body_type=pymunk.Body.STATIC)
         shape = pymunk.Segment(body, [0, 10], [SCREEN_WIDTH, 10], 0.0)
         shape.friction = 10
-        self.space.add(shape)
+        self.space.add(shape, body)
         self.static_lines.append(shape)
 
         body = pymunk.Body(body_type=pymunk.Body.STATIC)
         shape = pymunk.Segment(body, [SCREEN_WIDTH - 50, 10], [SCREEN_WIDTH, 30], 0.0)
         shape.friction = 10
-        self.space.add(shape)
+        self.space.add(shape, body)
         self.static_lines.append(shape)
 
         body = pymunk.Body(body_type=pymunk.Body.STATIC)
         shape = pymunk.Segment(body, [50, 10], [0, 30], 0.0)
         shape.friction = 10
-        self.space.add(shape)
+        self.space.add(shape, body)
         self.static_lines.append(shape)
 
         radius = 20
