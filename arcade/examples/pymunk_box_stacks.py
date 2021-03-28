@@ -52,13 +52,6 @@ class MyGame(arcade.Window):
     def __init__(self, width, height, title):
         super().__init__(width, height, title)
 
-        # Set the working directory (where we expect to find files) to the same
-        # directory this .py file is in. You can leave this out of your own
-        # code, but it is needed to easily run the examples using "python -m"
-        # as mentioned at the top of this program.
-        file_path = os.path.dirname(os.path.abspath(__file__))
-        os.chdir(file_path)
-
         arcade.set_background_color(arcade.color.DARK_SLATE_GRAY)
 
         # -- Pymunk
@@ -82,7 +75,7 @@ class MyGame(arcade.Window):
         body = pymunk.Body(body_type=pymunk.Body.STATIC)
         shape = pymunk.Segment(body, [0, floor_height], [SCREEN_WIDTH, floor_height], 0.0)
         shape.friction = 10
-        self.space.add(shape)
+        self.space.add(shape, body)
         self.static_lines.append(shape)
 
         # Create the stacks of boxes
