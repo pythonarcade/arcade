@@ -4,28 +4,40 @@ from PIL.Image import Image, ANTIALIAS
 
 import arcade
 from arcade import View, Window, load_texture, Texture
-from arcade.gui import UIImageButton, UIFlatButton, UIEvent, MOUSE_PRESS, MOUSE_RELEASE, MOUSE_DRAG
+from arcade.gui import (
+    UIImageButton,
+    UIFlatButton,
+    UIEvent,
+)
 from arcade.gui.elements.box import UIBox
+from arcade.gui.events import (
+    MOUSE_DRAG,
+    MOUSE_PRESS,
+    MOUSE_RELEASE,
+)
 from arcade.gui.layouts.anchor import UIAnchorLayout
 from arcade.gui.layouts.box import UIBoxLayout
 from arcade.gui.layouts.manager import UILayoutManager
 from arcade.gui.utils import center_on_viewport
 
-SLOT_TEXTURE = load_texture(':resources:gui_basic_assets/button_square_blue.png')
-SLOT_TEXTURE_PRESSED = load_texture(':resources:gui_basic_assets/button_square_blue_pressed.png')
+SLOT_TEXTURE = load_texture(":resources:gui_basic_assets/button_square_blue.png")
+SLOT_TEXTURE_PRESSED = load_texture(
+    ":resources:gui_basic_assets/button_square_blue_pressed.png"
+)
 
 ITEMS = {
-    'Sword': load_texture(':resources:gui_basic_assets/items/sword_gold.png'),
-    'Shield': load_texture(':resources:gui_basic_assets/items/shield_gold.png'),
+    "Sword": load_texture(":resources:gui_basic_assets/items/sword_gold.png"),
+    "Shield": load_texture(":resources:gui_basic_assets/items/shield_gold.png"),
 }
 
 
 class SlotButton(UIImageButton):
-
     def __init__(self, game_state: Dict, item: str):
         # Combine slot background with slot image
         slot_tex = self.combine_textures(ITEMS.get(item), SLOT_TEXTURE)
-        slot_tex_pressed = self.combine_textures(ITEMS.get(item), SLOT_TEXTURE_PRESSED, offset_y=4)
+        slot_tex_pressed = self.combine_textures(
+            ITEMS.get(item), SLOT_TEXTURE_PRESSED, offset_y=4
+        )
         super().__init__(
             normal_texture=slot_tex,
             press_texture=slot_tex_pressed,
@@ -35,7 +47,7 @@ class SlotButton(UIImageButton):
         self.item = item
 
     def on_click(self):
-        self.game_state['equipped_item'] = self.item
+        self.game_state["equipped_item"] = self.item
 
     @staticmethod
     def combine_textures(fg: Optional[Texture], bg: Optional[Texture], offset_y=0):
@@ -51,9 +63,12 @@ class SlotButton(UIImageButton):
         img_fg = img_fg.resize((thumbnail_size, thumbnail_size), ANTIALIAS)
 
         combined_img = img_bg.copy()
-        offset = ((img_bg.width - img_fg.width) // 2, (img_bg.width - img_fg.width) // 2 + offset_y)
-        combined_img.paste(img_fg, box=offset, mask=img_fg.convert('RGBA'))
-        return Texture(fg.name + bg.name, combined_img, hit_box_algorithm='None')
+        offset = (
+            (img_bg.width - img_fg.width) // 2,
+            (img_bg.width - img_fg.width) // 2 + offset_y,
+        )
+        combined_img.paste(img_fg, box=offset, mask=img_fg.convert("RGBA"))
+        return Texture(fg.name + bg.name, combined_img, hit_box_algorithm="None")
 
 
 class DraggableUIAnchorLayout(UIAnchorLayout):
@@ -63,14 +78,14 @@ class DraggableUIAnchorLayout(UIAnchorLayout):
         super().on_ui_event(event)
 
         if event.type == MOUSE_PRESS:
-            point = event.get('x'), event.get('y')
+            point = event.get("x"), event.get("y")
             self.dragging = self.collides_with_point(point)
 
         if event.type == MOUSE_RELEASE:
             self.dragging = False
 
         if event.type == MOUSE_DRAG and self.dragging:
-            self.move(event.get('dx'), event.get('dy'))
+            self.move(event.get("dx"), event.get("dy"))
 
 
 class MyView(View):
@@ -79,11 +94,9 @@ class MyView(View):
         self.ui_manager = UILayoutManager(window=window)
 
         # Init game state
-        self.game_state = dict(
-            equipped_item=None
-        )
+        self.game_state = dict(equipped_item=None)
 
-        show_inventory = UIFlatButton('Inventory', width=150, height=50)
+        show_inventory = UIFlatButton("Inventory", width=150, height=50)
         self.ui_manager.pack(show_inventory, center_x=0, center_y=0)
         show_inventory.on_click = self.create_inventory
 
@@ -100,16 +113,35 @@ class MyView(View):
         self.ui_manager.push(frame)
 
         # Inventory with slots
-        inventory = UIBoxLayout(vertical=True, id=f'col')
+        inventory = UIBoxLayout(vertical=True, id=f"col")
         frame.pack(inventory, left=0, top=0, bg_color=arcade.color.BROWN)
 
         # Add slots
-        items = ['Sword', 'Shield', None, None, None, None, None, None, None, None, None, None, None, None, None, None]
+        items = [
+            "Sword",
+            "Shield",
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+        ]
 
         ci = iter(items)
         space = 10
         for y in range(4):
-            row = inventory.pack(UIBoxLayout(vertical=False, id=f'row-{y}'), space=space)
+            row = inventory.pack(
+                UIBoxLayout(vertical=False, id=f"row-{y}"), space=space
+            )
             for x in range(4):
                 row.pack(SlotButton(self.game_state, next(ci)), space=space)
 
@@ -118,7 +150,7 @@ class MyView(View):
         frame.pack(self.equipped_item, top=10, right=10)
 
         # Close button
-        close_btn = UIFlatButton('Close', width=100, height=35)
+        close_btn = UIFlatButton("Close", width=100, height=35)
         frame.pack(close_btn, bottom=10, right=10)
 
         @close_btn.event()
@@ -137,7 +169,7 @@ class MyView(View):
 
     def on_update(self, delta_time: float):
         # Update equipped item from game state
-        item_tex = ITEMS.get(self.game_state['equipped_item'])
+        item_tex = ITEMS.get(self.game_state["equipped_item"])
         if item_tex:
             self.equipped_item.texture = item_tex
         else:
@@ -154,5 +186,5 @@ def main():
     arcade.run()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

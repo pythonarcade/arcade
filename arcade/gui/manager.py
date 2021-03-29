@@ -8,8 +8,9 @@ import arcade
 from arcade import SpriteList
 from arcade.gui import (
     UIElement,
-    UIException,
     UIEvent,
+)
+from arcade.gui.events import (
     MOUSE_DRAG,
     MOUSE_PRESS,
     MOUSE_RELEASE,
@@ -19,9 +20,10 @@ from arcade.gui import (
     TEXT_INPUT,
     TEXT_MOTION,
     TEXT_MOTION_SELECTION,
-    RESIZE
+    RESIZE,
+    MOUSE_MOTION,
 )
-from arcade.gui.core import MOUSE_MOTION
+from arcade.gui.exceptions import UIException
 
 
 class UIAbstractManager(EventDispatcher, metaclass=ABCMeta):
@@ -29,7 +31,7 @@ class UIAbstractManager(EventDispatcher, metaclass=ABCMeta):
 
     def __init__(self, *args, **kwargs):
         super().__init__()
-        self.register_event_type('on_ui_event')
+        self.register_event_type("on_ui_event")
 
         self._focused_element: Optional[UIElement] = None
         self._hovered_element: Optional[UIElement] = None
@@ -93,12 +95,12 @@ class UIAbstractManager(EventDispatcher, metaclass=ABCMeta):
 
     def dispatch_ui_event(self, event: UIEvent):
         """
-        Dispatches a :py:class:`arcade.gui.UIEvent` to all added :py:class:`arcade.gui.UIElement`\ s.
+        Dispatches a :py:class:`arcade.gui.UIEvent` to all added :py:class:`arcade.gui.UIElement`s.
 
         :param UIEvent event: event to dispatch
         :return:
         """
-        self.dispatch_event('on_ui_event', event)
+        self.dispatch_event("on_ui_event", event)
 
     # Listener
     def on_resize(self, width, height):
@@ -117,101 +119,111 @@ class UIAbstractManager(EventDispatcher, metaclass=ABCMeta):
     def on_key_press(self, symbol: int, modifiers: int):
         """
         Dispatches :py:meth:`arcade.View.on_key_press()` as :py:class:`arcade.gui.UIElement`
-        with type :py:attr:`arcade.gui.KEY_PRESS`
+        with type :py:attr:`arcade.gui.events.KEY_PRESS`
         """
-        self.dispatch_ui_event(UIEvent(KEY_PRESS,
-                                       symbol=symbol,
-                                       modifiers=modifiers
-                                       ))
+        self.dispatch_ui_event(UIEvent(KEY_PRESS, symbol=symbol, modifiers=modifiers))
 
     def on_key_release(self, symbol: int, modifiers: int):
         """
         Dispatches :py:meth:`arcade.View.on_key_release()` as :py:class:`arcade.gui.UIElement`
-        with type :py:attr:`arcade.gui.KEY_RELEASE`
+        with type :py:attr:`arcade.gui.events.KEY_RELEASE`
         """
-        self.dispatch_ui_event(UIEvent(KEY_RELEASE,
-                                       symbol=symbol,
-                                       modifiers=modifiers
-                                       ))
+        self.dispatch_ui_event(UIEvent(KEY_RELEASE, symbol=symbol, modifiers=modifiers))
 
     def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
         """
         Dispatches :py:meth:`arcade.View.on_mouse_press()` as :py:class:`arcade.gui.UIElement`
-        with type :py:attr:`arcade.gui.MOUSE_PRESS`
+        with type :py:attr:`arcade.gui.events.MOUSE_PRESS`
         """
-        self.dispatch_ui_event(UIEvent(MOUSE_PRESS, x=x, y=y, button=button, modifiers=modifiers))
+        self.dispatch_ui_event(
+            UIEvent(MOUSE_PRESS, x=x, y=y, button=button, modifiers=modifiers)
+        )
 
     def on_mouse_release(self, x: float, y: float, button: int, modifiers: int):
         """
         Dispatches :py:meth:`arcade.View.on_mouse_release()` as :py:class:`arcade.gui.UIElement`
-        with type :py:attr:`arcade.gui.MOUSE_RELEASE`
+        with type :py:attr:`arcade.gui.events.MOUSE_RELEASE`
         """
-        self.dispatch_ui_event(UIEvent(MOUSE_RELEASE, x=x, y=y, button=button, modifiers=modifiers))
+        self.dispatch_ui_event(
+            UIEvent(MOUSE_RELEASE, x=x, y=y, button=button, modifiers=modifiers)
+        )
 
     def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
         """
         Dispatches :py:meth:`arcade.View.on_mouse_motion()` as :py:class:`arcade.gui.UIElement`
-        with type :py:attr:`arcade.gui.MOUSE_MOTION`
+        with type :py:attr:`arcade.gui.events.MOUSE_MOTION`
         """
-        self.dispatch_ui_event(UIEvent(MOUSE_MOTION,
-                                       x=x,
-                                       y=y,
-                                       dx=dx,
-                                       dy=dy,
-                                       ))
+        self.dispatch_ui_event(
+            UIEvent(
+                MOUSE_MOTION,
+                x=x,
+                y=y,
+                dx=dx,
+                dy=dy,
+            )
+        )
 
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         """
         Dispatches :py:meth:`arcade.View.on_mouse_drag()` as :py:class:`arcade.gui.UIElement`
-        with type :py:attr:`arcade.gui.MOUSE_DRAG`
+        with type :py:attr:`arcade.gui.events.MOUSE_DRAG`
         """
-        self.dispatch_ui_event(UIEvent(MOUSE_DRAG,
-                                       x=x,
-                                       y=y,
-                                       dx=dx,
-                                       dy=dy,
-                                       buttons=buttons,
-                                       modifiers=modifiers
-                                       ))
+        self.dispatch_ui_event(
+            UIEvent(
+                MOUSE_DRAG, x=x, y=y, dx=dx, dy=dy, buttons=buttons, modifiers=modifiers
+            )
+        )
 
     def on_mouse_scroll(self, x: int, y: int, scroll_x: int, scroll_y: int):
         """
         Dispatches :py:meth:`arcade.View.on_mouse_scroll()` as :py:class:`arcade.gui.UIElement`
-        with type :py:attr:`arcade.gui.MOUSE_SCROLL`
+        with type :py:attr:`arcade.gui.events.MOUSE_SCROLL`
         """
-        self.dispatch_ui_event(UIEvent(MOUSE_SCROLL,
-                                       x=x,
-                                       y=y,
-                                       scroll_x=scroll_x,
-                                       scroll_y=scroll_y,
-                                       ))
+        self.dispatch_ui_event(
+            UIEvent(
+                MOUSE_SCROLL,
+                x=x,
+                y=y,
+                scroll_x=scroll_x,
+                scroll_y=scroll_y,
+            )
+        )
 
     def on_text(self, text):
         """
         Dispatches :py:meth:`arcade.View.on_text()` as :py:class:`arcade.gui.UIElement`
-        with type :py:attr:`arcade.gui.TEXT_INPUT`
+        with type :py:attr:`arcade.gui.events.TEXT_INPUT`
         """
-        self.dispatch_ui_event(UIEvent(TEXT_INPUT,
-                                       text=text,
-                                       ))
+        self.dispatch_ui_event(
+            UIEvent(
+                TEXT_INPUT,
+                text=text,
+            )
+        )
 
     def on_text_motion(self, motion):
         """
         Dispatches :py:meth:`arcade.View.on_text_motion()` as :py:class:`arcade.gui.UIElement`
-        with type :py:attr:`arcade.gui.TEXT_MOTION`
+        with type :py:attr:`arcade.gui.events.TEXT_MOTION`
         """
-        self.dispatch_ui_event(UIEvent(TEXT_MOTION,
-                                       motion=motion,
-                                       ))
+        self.dispatch_ui_event(
+            UIEvent(
+                TEXT_MOTION,
+                motion=motion,
+            )
+        )
 
     def on_text_motion_select(self, selection):
         """
         Dispatches :py:meth:`arcade.View.on_text_motion_select()` as :py:class:`arcade.gui.UIElement`
-        with type :py:attr:`arcade.gui.TEXT_MOTION_SELECT`
+        with type :py:attr:`arcade.gui.events.TEXT_MOTION_SELECT`
         """
-        self.dispatch_ui_event(UIEvent(TEXT_MOTION_SELECTION,
-                                       selection=selection,
-                                       ))
+        self.dispatch_ui_event(
+            UIEvent(
+                TEXT_MOTION_SELECTION,
+                selection=selection,
+            )
+        )
 
     # Define hover and focus elements
     @property
@@ -223,11 +235,11 @@ class UIAbstractManager(EventDispatcher, metaclass=ABCMeta):
 
     @focused_element.setter
     def focused_element(self, new_focus: UIElement):
-        if self._focused_element and hasattr(self._focused_element, 'on_focus'):
+        if self._focused_element and hasattr(self._focused_element, "on_focus"):
             self._focused_element.on_unfocus()
         self._focused_element = None
 
-        if hasattr(new_focus, 'on_focus'):
+        if hasattr(new_focus, "on_focus"):
             new_focus.on_focus()
 
         self._focused_element = new_focus
@@ -241,11 +253,11 @@ class UIAbstractManager(EventDispatcher, metaclass=ABCMeta):
 
     @hovered_element.setter
     def hovered_element(self, new_hover: UIElement):
-        if self._hovered_element and hasattr(self._hovered_element, 'on_unhover'):
+        if self._hovered_element and hasattr(self._hovered_element, "on_unhover"):
             self._hovered_element.on_unhover()
         self._hovered_element = None
 
-        if hasattr(new_hover, 'on_hover'):
+        if hasattr(new_hover, "on_hover"):
             new_hover.on_hover()
 
         self._hovered_element = new_hover
@@ -304,9 +316,11 @@ class UIManager(UIAbstractManager):
         The :py:class:`arcade.gui.UIElement` will be drawn by the :py:class:`arcade.gui.UIManager`.
         :param UIElement ui_element: element to add.
         """
-        if not hasattr(ui_element, 'id'):
-            raise UIException('UIElement seems not to be properly setup, please check if you'
-                              ' overwrite the constructor and forgot "super().__init__(**kwargs)"')
+        if not hasattr(ui_element, "id"):
+            raise UIException(
+                "UIElement seems not to be properly setup, please check if you"
+                ' overwrite the constructor and forgot "super().__init__(**kwargs)"'
+            )
 
         ui_element.render()
         self._ui_elements.append(ui_element)
@@ -342,7 +356,7 @@ class UIManager(UIAbstractManager):
             ui_element = cast(UIElement, ui_element)
 
             if event.type == MOUSE_PRESS:
-                if ui_element.collides_with_point((event.get('x'), event.get('y'))):
+                if ui_element.collides_with_point((event.get("x"), event.get("y"))):
                     self.focused_element = ui_element
 
                 elif ui_element is self.focused_element:
@@ -350,7 +364,7 @@ class UIManager(UIAbstractManager):
                     self.focused_element = None
 
             if event.type == MOUSE_MOTION:
-                if ui_element.collides_with_point((event.get('x'), event.get('y'))):
+                if ui_element.collides_with_point((event.get("x"), event.get("y"))):
                     self.hovered_element = ui_element
 
                 elif ui_element is self.hovered_element:

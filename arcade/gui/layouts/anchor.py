@@ -20,10 +20,7 @@ class UIAnchorLayout(UILayout):
     """
 
     # TODO add parameters to init with viewport values
-    def __init__(self,
-                 width,
-                 height,
-                 **kwargs):
+    def __init__(self, width, height, **kwargs):
         super().__init__(size_hint=(1.0, 1.0), **kwargs)
 
         self._width = width
@@ -34,18 +31,18 @@ class UIAnchorLayout(UILayout):
 
         for element, data in self._elements:
             element: Union[UILayout, UIElement, Sprite]
-            top = data.get('top')
-            left = data.get('left')
-            bottom = data.get('bottom')
-            right = data.get('right')
-            center_x = data.get('center_x')
-            center_y = data.get('center_y')
+            top = data.get("top")
+            left = data.get("left")
+            bottom = data.get("bottom")
+            right = data.get("right")
+            center_x = data.get("center_x")
+            center_y = data.get("center_y")
 
-            fill_x = data.get('fill_x')
-            fill_y = data.get('fill_y')
+            fill_x = data.get("fill_x")
+            fill_y = data.get("fill_y")
 
-            min_size = getattr(element, 'min_size', None)
-            size_hint = getattr(element, 'size_hint', None)
+            min_size = getattr(element, "min_size", None)
+            size_hint = getattr(element, "size_hint", None)
             if min_size or size_hint:
                 # one is set, so we are allowed to change elements size
 

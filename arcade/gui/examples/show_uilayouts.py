@@ -7,7 +7,7 @@ from arcade.gui.layouts import UILayout
 from arcade.gui.layouts.box import UIBoxLayout
 from arcade.gui.layouts.manager import UILayoutManager
 from arcade.gui.layouts.utils import valid
-from arcade.gui.ui_style import UIStyle
+from arcade.gui.style import UIStyle
 
 
 class MyView(View):
@@ -31,26 +31,26 @@ class MyView(View):
 
         ui_flat_button = UIFlatButton(text="no fill effect", height=40)
 
-        @ui_flat_button.event('on_click')
+        @ui_flat_button.event("on_click")
         def on_click(*args):
-            print('clicked')
+            print("clicked")
 
         # top left
-        layout_top_left = UIBoxLayout(id='top right',
-                                      padding=5,
-                                      border_color=arcade.color.BLUE)
+        layout_top_left = UIBoxLayout(
+            id="top right", padding=5, border_color=arcade.color.BLUE
+        )
         layout_top_left.pack(UILabel(text="top=0"))
         layout_top_left.pack(UILabel(text="left=20"))
         layout_top_left.pack(UILabel(text="fill_x=True"), space=20)
-        root_layout.pack(layout_top_left, top=0, left=20, fill_x=True) # TODO remove
+        root_layout.pack(layout_top_left, top=0, left=20, fill_x=True)  # TODO remove
 
         # window center
         layout_center = UIBoxLayout(
-            id='center',
-            align='center',
+            id="center",
+            align="center",
             bg=arcade.color.CARMINE,
             padding=(10, 0, 30, 40),
-            border_color=arcade.color.BLACK
+            border_color=arcade.color.BLACK,
         )
         layout_center.pack(UILabel(text="center_x=0"))
         layout_center.pack(UILabel(text="center_y=0"))
@@ -59,7 +59,9 @@ class MyView(View):
         root_layout.pack(layout_center, center_x=0, center_y=0)
 
         # center right
-        layout_center_right = UIBoxLayout(vertical=True, align='center', id='right center')
+        layout_center_right = UIBoxLayout(
+            vertical=True, align="center", id="right center"
+        )
         layout_center_right.pack(UILabel(text="right=0"))
         layout_center_right.pack(UILabel(text="top=0"))
         layout_center_right.pack(UILabel(text="fill_y=True"), space=10)
@@ -69,27 +71,31 @@ class MyView(View):
         # center left
         layout_center_left = UIBoxLayout(
             vertical=True,
-            align='center',
-            id='right center',
+            align="center",
+            id="right center",
             bg=None,
             padding=(10, 0, 30, 40),
-            border_color=arcade.color.BLACK
+            border_color=arcade.color.BLACK,
         )
         layout_center_left.pack(UILabel(text="left=0"))
         layout_center_left.pack(UILabel(text="center_y=0"))
         layout_center_left.pack(UILabel(text="no fill effect"), space=20)
-        layout_center_left.pack(SpriteSolidColor(width=50, height=50, color=arcade.color.GREEN))
+        layout_center_left.pack(
+            SpriteSolidColor(width=50, height=50, color=arcade.color.GREEN)
+        )
         root_layout.pack(layout_center_left, left=0, center_y=0)
 
         # bottom center
-        layout_bottom_center = UIBoxLayout(vertical=False, align='center', id='bottom center', bg=arcade.color.BEIGE)
+        layout_bottom_center = UIBoxLayout(
+            vertical=False, align="center", id="bottom center", bg=arcade.color.BEIGE
+        )
         layout_bottom_center.pack(UILabel(text="bottom=0"))
         layout_bottom_center.pack(UILabel(text="center_x=0"), space=10)
         layout_bottom_center.pack(UILabel(text="no fill effect"), space=10)
         root_layout.pack(layout_bottom_center, center_x=0, bottom=60)
 
         # bottom left
-        layout2 = UIBoxLayout(vertical=True, id='bottom left')
+        layout2 = UIBoxLayout(vertical=True, id="bottom left")
         layout2.pack(UILabel(text="bottom=20"))
         layout2.pack(UILabel(text="left=10"))
         layout2.pack(UILabel(text="no fill effect"), space=20)
@@ -99,23 +105,18 @@ class MyView(View):
 
         self.debug_layout(root_layout)
 
-        print(
-            layout2.left,
-            layout2.top,
-            layout2.right,
-            layout2.bottom,
-            valid(layout2)
-        )
+        print(layout2.left, layout2.top, layout2.right, layout2.bottom, valid(layout2))
 
-    def debug_layout(self, element: Union[UIElement, UILayout], prefix=''):
+    def debug_layout(self, element: Union[UIElement, UILayout], prefix=""):
         print(
             f'{prefix}{type(element).__name__}[{getattr(element, "id", "")}]: '
-            f'ltrb/wh: {element.left}, {element.top}, {element.right},{element.bottom}/ {element.width}, {element.height}'
-            f' {valid(element) if isinstance(element, UILayout) else ""}')
+            f"ltrb/wh: {element.left}, {element.top}, {element.right},{element.bottom}/ {element.width}, {element.height}"
+            f' {valid(element) if isinstance(element, UILayout) else ""}'
+        )
 
         if isinstance(element, UILayout):
             for e in element:
-                self.debug_layout(e, '\t' + prefix)
+                self.debug_layout(e, "\t" + prefix)
 
     def draw_borders(self, element: Union[UIElement, UILayout]):
         l, r, t, b = element.left, element.right, element.top, element.bottom
@@ -131,12 +132,23 @@ class MyView(View):
         self.ui_manager.on_draw()
 
         if self._drag_start and self._drag_stop:
-            arcade.draw_line(*self._drag_start, *self._drag_stop, arcade.color.RED, line_width=2)
+            arcade.draw_line(
+                *self._drag_start, *self._drag_stop, arcade.color.RED, line_width=2
+            )
 
-            distance = abs(self._drag_start[0] - self._drag_stop[0]), abs(self._drag_start[1] - self._drag_stop[1])
-            text_pos = (self._drag_start[0] + self._drag_stop[0]) // 2, (self._drag_start[1] + self._drag_stop[1]) // 2
-            arcade.draw_text(f'x:{distance[0]}, y:{distance[1]}', *text_pos, arcade.color.BLACK, font_size=20,
-                             bold=True)
+            distance = abs(self._drag_start[0] - self._drag_stop[0]), abs(
+                self._drag_start[1] - self._drag_stop[1]
+            )
+            text_pos = (self._drag_start[0] + self._drag_stop[0]) // 2, (
+                self._drag_start[1] + self._drag_stop[1]
+            ) // 2
+            arcade.draw_text(
+                f"x:{distance[0]}, y:{distance[1]}",
+                *text_pos,
+                arcade.color.BLACK,
+                font_size=20,
+                bold=True,
+            )
 
     def on_key_press(self, symbol: int, modifiers: int):
         if symbol == arcade.key.S:
@@ -144,7 +156,7 @@ class MyView(View):
         elif symbol == arcade.key.M:
             print(self._last_mouse_pos)
         elif symbol == arcade.key.W:
-            print('Window size', self.window.get_size())
+            print("Window size", self.window.get_size())
         elif symbol == arcade.key.D:
             self.debug_layout(self.ui_manager.root_layout)
         elif symbol == arcade.key.R:
@@ -157,8 +169,7 @@ class MyView(View):
     def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
         self._drag_start = x, y
 
-    def on_mouse_release(self, x: float, y: float, button: int,
-                         modifiers: int):
+    def on_mouse_release(self, x: float, y: float, button: int, modifiers: int):
         self._drag_start = None
 
 
@@ -175,5 +186,5 @@ def main():
     arcade.run()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

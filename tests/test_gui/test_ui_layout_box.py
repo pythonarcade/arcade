@@ -3,7 +3,7 @@ import pytest
 import arcade
 from arcade import SpriteSolidColor
 from arcade.gui.layouts.box import UIBoxLayout
-from . import T, dummy_element
+from . import t, dummy_element
 
 
 @pytest.fixture()
@@ -106,7 +106,7 @@ def test_box_layout_updates_width_and_height(v_layout: UIBoxLayout):
 
 
 def test_v_box_align_items_center():
-    box = UIBoxLayout(vertical=False, align='center')
+    box = UIBoxLayout(vertical=False, align="center")
     element = dummy_element()
     box.pack(element)
     box.width = 400
@@ -117,7 +117,7 @@ def test_v_box_align_items_center():
 
 
 def test_v_box_align_items_left():
-    box = UIBoxLayout(vertical=False, align='left')
+    box = UIBoxLayout(vertical=False, align="left")
     element = dummy_element()
     box.pack(element)
     box.width = 400
@@ -128,26 +128,24 @@ def test_v_box_align_items_left():
 
 
 @pytest.mark.parametrize(
-    ['vertical', 'align', 'center_x', 'center_y'], [
-        T('vertical top', True, 'top', 50, 475),
-        T('vertical center', True, 'center', 50, 250),
-        T('vertical bottom', True, 'bottom', 50, 25),
-
-        T('horizontal left', False, 'left', 50, 25),
-        T('horizontal center', False, 'center', 200, 25),
-        T('horizontal right', False, 'right', 350, 25),
-
+    ["vertical", "align", "center_x", "center_y"],
+    [
+        t("vertical top", True, "top", 50, 475),
+        t("vertical center", True, "center", 50, 250),
+        t("vertical bottom", True, "bottom", 50, 25),
+        t("horizontal left", False, "left", 50, 25),
+        t("horizontal center", False, "center", 200, 25),
+        t("horizontal right", False, "right", 350, 25),
         # use synonyms
-        T('vertical start', True, 'start', 50, 475),
-        T('vertical end', True, 'end', 50, 25),
-        T('vertical left', True, 'left', 50, 475),
-        T('vertical right', True, 'right', 50, 25),
-
-        T('horizontal start', False, 'start', 50, 25),
-        T('horizontal end', False, 'end', 350, 25),
-        T('horizontal top', False, 'top', 50, 25),
-        T('horizontal bottom', False, 'bottom', 350, 25),
-    ]
+        t("vertical start", True, "start", 50, 475),
+        t("vertical end", True, "end", 50, 25),
+        t("vertical left", True, "left", 50, 475),
+        t("vertical right", True, "right", 50, 25),
+        t("horizontal start", False, "start", 50, 25),
+        t("horizontal end", False, "end", 350, 25),
+        t("horizontal top", False, "top", 50, 25),
+        t("horizontal bottom", False, "bottom", 350, 25),
+    ],
 )
 def test_box_alignment(vertical, align, center_x, center_y):
     box = UIBoxLayout(vertical=vertical, align=align)
@@ -164,26 +162,24 @@ def test_box_alignment(vertical, align, center_x, center_y):
 
 
 @pytest.mark.parametrize(
-    ['vertical', 'align', 'center_x', 'center_y'], [
-        T('vertical top', True, 'top', 50, 475),
-        T('vertical center', True, 'center', 50, 250),
-        T('vertical bottom', True, 'bottom', 50, 25),
-
-        T('horizontal left', False, 'left', 50, 25),
-        T('horizontal center', False, 'center', 200, 25),
-        T('horizontal right', False, 'right', 350, 25),
-
+    ["vertical", "align", "center_x", "center_y"],
+    [
+        t("vertical top", True, "top", 50, 475),
+        t("vertical center", True, "center", 50, 250),
+        t("vertical bottom", True, "bottom", 50, 25),
+        t("horizontal left", False, "left", 50, 25),
+        t("horizontal center", False, "center", 200, 25),
+        t("horizontal right", False, "right", 350, 25),
         # use synonyms
-        T('vertical start', True, 'start', 50, 475),
-        T('vertical end', True, 'end', 50, 25),
-        T('vertical left', True, 'left', 50, 475),
-        T('vertical right', True, 'right', 50, 25),
-
-        T('horizontal start', False, 'start', 50, 25),
-        T('horizontal end', False, 'end', 350, 25),
-        T('horizontal top', False, 'top', 50, 25),
-        T('horizontal bottom', False, 'bottom', 350, 25),
-    ]
+        t("vertical start", True, "start", 50, 475),
+        t("vertical end", True, "end", 50, 25),
+        t("vertical left", True, "left", 50, 475),
+        t("vertical right", True, "right", 50, 25),
+        t("horizontal start", False, "start", 50, 25),
+        t("horizontal end", False, "end", 350, 25),
+        t("horizontal top", False, "top", 50, 25),
+        t("horizontal bottom", False, "bottom", 350, 25),
+    ],
 )
 def test_box_alignment_for_sprites(vertical, align, center_x, center_y):
     box = UIBoxLayout(vertical=vertical, align=align)
@@ -254,6 +250,7 @@ def test_horizontal_children_size_hint_mix():
     assert dummy1.left == 0
     assert dummy2.left == 100
 
+
 def test_horizontal_nested_layout():
     nested = UIBoxLayout(vertical=False)
     nested.pack(dummy_element(width=100, height=50))
@@ -267,6 +264,7 @@ def test_horizontal_nested_layout():
     box.do_layout()
 
     assert box.min_size == (100, 50)
+
 
 def test_vertical_nested_layout():
     nested = UIBoxLayout(vertical=True)

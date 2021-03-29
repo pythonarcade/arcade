@@ -1,5 +1,7 @@
 from arcade.gui import UIEvent
-from arcade.gui.core import MOUSE_MOTION
+from arcade.gui.events import (
+    MOUSE_MOTION,
+)
 from . import MockButton
 
 
@@ -26,7 +28,9 @@ def test_setting_hovered_element_calls_on_hover(mock_mng, mock_button):
     assert mock_button.on_hover_called
 
 
-def test_setting_hover_to_other_element_handles_rehover(mock_mng, mock_button, mock_button2: MockButton):
+def test_setting_hover_to_other_element_handles_rehover(
+    mock_mng, mock_button, mock_button2: MockButton
+):
     mock_mng.add_ui_element(mock_button)
     mock_mng.add_ui_element(mock_button2)
     mock_mng.hovered_element = mock_button
@@ -63,7 +67,9 @@ def test_motion_out_of_element_unhoveres(mock_mng, mock_button):
     assert mock_button.on_unhover_called
 
 
-def test_change_hover_over_different_element(mock_mng, mock_button, mock_button2: MockButton):
+def test_change_hover_over_different_element(
+    mock_mng, mock_button, mock_button2: MockButton
+):
     mock_button.center_x += 100
 
     mock_mng.add_ui_element(mock_button)

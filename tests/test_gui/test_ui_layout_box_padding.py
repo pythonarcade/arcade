@@ -28,9 +28,9 @@ def test_vertical_with_spacing_and_padding():
 
 
 def test_vertical_with_spacing_padding_and_border():
-    v_layout = UIBoxLayout(padding=(10, 20, 30, 40),
-                           border_color=arcade.color.RED,
-                           border_width=5)
+    v_layout = UIBoxLayout(
+        padding=(10, 20, 30, 40), border_color=arcade.color.RED, border_width=5
+    )
     v_layout.top = 200
     v_layout.left = 100
 
@@ -78,10 +78,12 @@ def test_horizontal_with_spacing_and_padding():
 
 
 def test_horizontal_with_spacing_padding_and_border():
-    v_layout = UIBoxLayout(vertical=False,
-                           padding=(10, 20, 30, 40),
-                           border_color=arcade.color.RED,
-                           border_width=5)
+    v_layout = UIBoxLayout(
+        vertical=False,
+        padding=(10, 20, 30, 40),
+        border_color=arcade.color.RED,
+        border_width=5,
+    )
     v_layout.top = 200
     v_layout.left = 100
 

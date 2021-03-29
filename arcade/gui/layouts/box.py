@@ -2,12 +2,7 @@ from arcade.gui.layouts import UILayout
 
 
 class UIBoxLayout(UILayout):
-    def __init__(
-            self,
-            vertical=True,
-            align='left',
-            **kwargs
-    ):
+    def __init__(self, vertical=True, align="left", **kwargs):
         """
 
         :param vertical:
@@ -33,23 +28,24 @@ class UIBoxLayout(UILayout):
 
             if self.vertical:
                 height += min_height
-                height += data.get('space', 0)
+                height += data.get("space", 0)
                 width = max(width, min_width + self.padding_horizontal + ebw * 2)
             else:
                 width += min_width
-                width += data.get('space', 0)
+                width += data.get("space", 0)
                 height = max(height, min_height + self.padding_vertical + ebw * 2)
 
         return width, height
 
     def _size_hint_elements(self):
         for element, data in self._elements:
-            if getattr(element, 'size_hint', None):
+            if getattr(element, "size_hint", None):
                 yield element, element.size_hint
 
-    def _min_size_of(self, element):
-        min_size = getattr(element, 'min_size', None)
-        return min_size if min_size else (element.width, element.height)
+    @staticmethod
+    def _min_size_of(element):
+        min_size = getattr(element, "min_size", None)
+        return min_size or (element.width, element.height)
 
     def place_elements(self):
         # Places elemens next to each other in one direction
@@ -81,7 +77,7 @@ class UIBoxLayout(UILayout):
                     min_height = self._min_size_of(element)[1]
                     element.height = int(min_height + factor * hint)
 
-            elif not self.vertical:
+            else:
                 factor = left_width / hints_x_sum if hints_x_sum else 0
                 for element, hint in zip(elements, hints_x):
                     min_width = self._min_size_of(element)[0]
@@ -101,21 +97,21 @@ class UIBoxLayout(UILayout):
         start_y = 0
 
         if self.vertical:
-            if self.align in ('top', 'start', 'left'):
+            if self.align in ("top", "start", "left"):
                 pass
-            elif self.align in ('center',):
+            elif self.align in ("center",):
                 start_y = (self.height - min_height) // 2
-            elif self.align in ('bottom', 'end', 'right'):
-                start_y = (self.height - min_height)
+            elif self.align in ("bottom", "end", "right"):
+                start_y = self.height - min_height
         else:  # horizontal
-            start_y = (self.height - min_height)
+            start_y = self.height - min_height
 
-            if self.align in ('top', 'start', 'left'):
+            if self.align in ("top", "start", "left"):
                 pass
-            elif self.align in ('center',):
+            elif self.align in ("center",):
                 start_x = (self.width - min_width) // 2
-            elif self.align in ('bottom', 'end', 'right'):
-                start_x = (self.width - min_width)
+            elif self.align in ("bottom", "end", "right"):
+                start_x = self.width - min_width
 
         # cursor: placeable position relative to self.left, self.top
         ebw = self.effective_border_width()
@@ -124,7 +120,7 @@ class UIBoxLayout(UILayout):
         # place elements
         for element, data in self._elements:
             cx, cy = cursor
-            space = data.get('space', 0)
+            space = data.get("space", 0)
 
             # update cursor
             if self.vertical:

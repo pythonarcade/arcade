@@ -46,7 +46,7 @@ def test_uibutton_click_dispatch_event(mock_mng, mock_button):
     mock_mng.add_ui_element(mock_button)
     clicked = False
 
-    @mock_button.event('on_click')
+    @mock_button.event("on_click")
     def callback(*args):
         nonlocal clicked
         clicked = True
@@ -60,7 +60,7 @@ def test_uibutton_click_dispatch_event(mock_mng, mock_button):
 
 def test_uibutton_has_on_click_event_type(mock_button):
     # THEN
-    assert 'on_click' in mock_button.event_types
+    assert "on_click" in mock_button.event_types
 
 
 def test_uibutton_not_clicked_if_released_beside(mock_mng, mock_button):
@@ -78,12 +78,12 @@ def test_uibutton_send_custom_event(mock_mng, mock_button):
     mock_mng.click(50, 50)
 
     assert mock_mng.last_event.type == UIClickable.CLICKED
-    assert mock_mng.last_event.get('ui_element') == mock_button
+    assert mock_mng.last_event.get("ui_element") == mock_button
 
 
 def test_hover_over_last_rendered_element(mock_mng):
-    button1 = MockButton(center_x=50, center_y=50, width=400, height=400, id='button1')
-    button2 = MockButton(center_x=50, center_y=50, width=40, height=40, id='button2')
+    button1 = MockButton(center_x=50, center_y=50, width=400, height=400, id="button1")
+    button2 = MockButton(center_x=50, center_y=50, width=40, height=40, id="button2")
     mock_mng.add_ui_element(button1)
     mock_mng.add_ui_element(button2)
 
@@ -93,8 +93,8 @@ def test_hover_over_last_rendered_element(mock_mng):
 
 
 def test_focus_over_last_rendered_element(mock_mng):
-    button1 = MockButton(center_x=50, center_y=50, width=400, height=400, id='button1')
-    button2 = MockButton(center_x=50, center_y=50, width=40, height=40, id='button2')
+    button1 = MockButton(center_x=50, center_y=50, width=400, height=400, id="button1")
+    button2 = MockButton(center_x=50, center_y=50, width=40, height=40, id="button2")
     mock_mng.add_ui_element(button1)
     mock_mng.add_ui_element(button2)
 
@@ -104,8 +104,8 @@ def test_focus_over_last_rendered_element(mock_mng):
 
 
 def test_click_hits_last_rendered_element(mock_mng):
-    button1 = MockButton(center_x=50, center_y=50, width=400, height=400, id='button1')
-    button2 = MockButton(center_x=50, center_y=50, width=40, height=40, id='button2')
+    button1 = MockButton(center_x=50, center_y=50, width=400, height=400, id="button1")
+    button2 = MockButton(center_x=50, center_y=50, width=40, height=40, id="button2")
     mock_mng.add_ui_element(button1)
     mock_mng.add_ui_element(button2)
 
@@ -119,7 +119,7 @@ def test_click_hits_last_rendered_element(mock_mng):
 
     # last event triggered from button2
     assert mock_mng.last_event.type == UIClickable.CLICKED
-    assert mock_mng.last_event.get('ui_element') == button2
+    assert mock_mng.last_event.get("ui_element") == button2
 
 
 def test_do_not_react_to_right_click(mock_mng, mock_button):

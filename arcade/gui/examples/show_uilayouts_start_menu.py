@@ -4,9 +4,13 @@ from arcade.gui import UIImageButton
 from arcade.gui.layouts.box import UIBoxLayout
 from arcade.gui.layouts.manager import UILayoutManager
 
-BUTTON_NORMAL = arcade.load_texture(':resources:gui_basic_assets/red_button_normal.png')
-HOVERED_TEXTURE = arcade.load_texture(':resources:gui_basic_assets/red_button_hover.png')
-PRESSED_TEXTURE = arcade.load_texture(':resources:gui_basic_assets/red_button_press.png')
+BUTTON_NORMAL = arcade.load_texture(":resources:gui_basic_assets/red_button_normal.png")
+HOVERED_TEXTURE = arcade.load_texture(
+    ":resources:gui_basic_assets/red_button_hover.png"
+)
+PRESSED_TEXTURE = arcade.load_texture(
+    ":resources:gui_basic_assets/red_button_press.png"
+)
 
 
 class MenuButton(UIImageButton):
@@ -31,31 +35,28 @@ class MyView(View):
         menu = self.ui_manager.pack(UIBoxLayout(), center_x=0, center_y=0)
 
         # add button to menu
-        start_button = menu.pack(MenuButton('Start Game'))
+        start_button = menu.pack(MenuButton("Start Game"))
         start_button.on_click = self.start_game
 
         # same code but different syntax
-        menu.pack(
-            MenuButton('Settings'),
-            space=20
-        ).on_click = self.open_settings
+        menu.pack(MenuButton("Settings"), space=20).on_click = self.open_settings
 
         # Add exit button
-        menu.pack(MenuButton('Exit'), space=20).on_click = self.exit_game
+        menu.pack(MenuButton("Exit"), space=20).on_click = self.exit_game
 
         # manually call `do_layout()`, so everything is ready on the first `on_draw()` call
         self.ui_manager.do_layout()
 
     def start_game(self):
-        print('Open GameView')
+        print("Open GameView")
         # self.window.show_view(GameView())
 
     def open_settings(self):
-        print('Open SettingsView')
+        print("Open SettingsView")
         # self.window.show_view(SettingsView())
 
     def exit_game(self):
-        print('Exit game')
+        print("Exit game")
         exit()
 
     def on_draw(self):
@@ -69,5 +70,5 @@ def main():
     arcade.run()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

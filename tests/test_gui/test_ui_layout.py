@@ -8,7 +8,7 @@ from arcade.gui import UIEvent
 from arcade.gui.layouts import UILayout
 from arcade.gui.layouts.anchor import UIAnchorLayout
 from arcade.gui.layouts.box import UIBoxLayout
-from tests.test_gui import dummy_element, T
+from tests.test_gui import dummy_element, t
 
 
 class TestLayout(UILayout):
@@ -58,11 +58,12 @@ def test_layout_moves_children():
 
 
 @pytest.mark.parametrize(
-    ['layout'], [
-        T('VBox', UIBoxLayout()),
-        T('HBox', UIBoxLayout(vertical=False)),
-        T('Anchor', UIAnchorLayout(800, 600)),
-    ]
+    ["layout"],
+    [
+        t("VBox", UIBoxLayout()),
+        t("HBox", UIBoxLayout(vertical=False)),
+        t("Anchor", UIAnchorLayout(800, 600)),
+    ],
 )
 def test_passes_ui_events(layout):
     # GIVEN
@@ -77,7 +78,7 @@ def test_passes_ui_events(layout):
     child_layout.on_ui_event = Mock()
     layout.pack(child_layout)
 
-    test_event = UIEvent('ANY EVENT')
+    test_event = UIEvent("ANY EVENT")
 
     # WHEN
     layout.on_ui_event(test_event)
@@ -87,11 +88,12 @@ def test_passes_ui_events(layout):
 
 
 @pytest.mark.parametrize(
-    ['layout'], [
-        T('VBox', UIBoxLayout()),
-        T('HBox', UIBoxLayout(vertical=False)),
-        T('Anchor', UIAnchorLayout(800, 600)),
-    ]
+    ["layout"],
+    [
+        t("VBox", UIBoxLayout()),
+        t("HBox", UIBoxLayout(vertical=False)),
+        t("Anchor", UIAnchorLayout(800, 600)),
+    ],
 )
 def test_pack_adds_elements_to_draw_layer(layout: UILayout):
     ui_element = dummy_element()
@@ -105,11 +107,12 @@ def test_pack_adds_elements_to_draw_layer(layout: UILayout):
 
 
 @pytest.mark.parametrize(
-    ['layout'], [
-        T('VBox', UIBoxLayout()),
-        T('HBox', UIBoxLayout(vertical=False)),
-        T('Anchor', UIAnchorLayout(800, 600)),
-    ]
+    ["layout"],
+    [
+        t("VBox", UIBoxLayout()),
+        t("HBox", UIBoxLayout(vertical=False)),
+        t("Anchor", UIAnchorLayout(800, 600)),
+    ],
 )
 def test_remove_child(layout):
     sprite = SpriteSolidColor(100, 50, arcade.color.GREEN)
@@ -123,11 +126,12 @@ def test_remove_child(layout):
 
 
 @pytest.mark.parametrize(
-    ['layout'], [
-        T('VBox', UIBoxLayout()),
-        T('HBox', UIBoxLayout(vertical=False)),
-        T('Anchor', UIAnchorLayout(800, 600)),
-    ]
+    ["layout"],
+    [
+        t("VBox", UIBoxLayout()),
+        t("HBox", UIBoxLayout(vertical=False)),
+        t("Anchor", UIAnchorLayout(800, 600)),
+    ],
 )
 def test_child_expanded_to_parent_size(layout: UILayout):
     ui_element = dummy_element()

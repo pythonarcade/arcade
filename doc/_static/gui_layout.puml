@@ -1,0 +1,16 @@
+@startuml
+
+!include https://raw.githubusercontent.com/bschwarz/puml-themes/master/themes/cerulean-outline/puml-theme-cerulean-outline.puml
+
+UIManager -> UILayout ++ : do_layout()
+    group place_elements()
+        UILayout <- children: get min_size, size_hint, size
+        UILayout -> children: set size and pos
+    end
+
+    loop sub layouts
+        UILayout -> children: do_layout()
+    end
+
+    return
+@enduml

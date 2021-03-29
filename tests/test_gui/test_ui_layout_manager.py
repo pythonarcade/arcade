@@ -43,7 +43,7 @@ def test_passes_ui_events(layout_manager):
     sprite = SpriteSolidColor(100, 50, arcade.color.GREEN)
     layout_manager.pack(sprite)
 
-    test_event = UIEvent('ANY EVENT')
+    test_event = UIEvent("ANY EVENT")
 
     # WHEN
     layout_manager.on_ui_event(test_event)

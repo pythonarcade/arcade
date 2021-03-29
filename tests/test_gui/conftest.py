@@ -8,24 +8,24 @@ from . import MockButton, TestUIManager, TestUILayoutManager
 
 class MockWindow(EventDispatcher):
     def __init__(self):
-        self.register_event_type('on_draw')
-        self.register_event_type('on_mouse_drag')
-        self.register_event_type('on_mouse_motion')
-        self.register_event_type('on_mouse_press')
-        self.register_event_type('on_mouse_release')
-        self.register_event_type('on_mouse_scroll')
-        self.register_event_type('on_key_press')
-        self.register_event_type('on_key_release')
-        self.register_event_type('on_update')
-        self.register_event_type('on_resize')
-        self.register_event_type('on_text')
-        self.register_event_type('on_text_motion')
-        self.register_event_type('on_text_motion_select')
+        self.register_event_type("on_draw")
+        self.register_event_type("on_mouse_drag")
+        self.register_event_type("on_mouse_motion")
+        self.register_event_type("on_mouse_press")
+        self.register_event_type("on_mouse_release")
+        self.register_event_type("on_mouse_scroll")
+        self.register_event_type("on_key_press")
+        self.register_event_type("on_key_release")
+        self.register_event_type("on_update")
+        self.register_event_type("on_resize")
+        self.register_event_type("on_text")
+        self.register_event_type("on_text_motion")
+        self.register_event_type("on_text_motion_select")
 
 
 @pytest.fixture
 def window():
-    window = Window(title='ARCADE_GUI')
+    window = Window(title="ARCADE_GUI")
     yield window
     window.close()
 

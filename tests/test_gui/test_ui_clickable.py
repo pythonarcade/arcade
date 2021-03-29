@@ -12,21 +12,25 @@ class TestClickable(UIClickable):
 
     def render(self):
         self.normal_texture = arcade.load_texture(
-            ':resources:gui_basic_assets/red_button_normal.png',
+            ":resources:gui_basic_assets/red_button_normal.png",
             can_cache=False,
-            hit_box_algorithm='None')
+            hit_box_algorithm="None",
+        )
         self.hover_texture = arcade.load_texture(
-            ':resources:gui_basic_assets/red_button_normal.png',
+            ":resources:gui_basic_assets/red_button_normal.png",
             can_cache=False,
-            hit_box_algorithm='None')
+            hit_box_algorithm="None",
+        )
         self.focus_texture = arcade.load_texture(
-            ':resources:gui_basic_assets/red_button_normal.png',
+            ":resources:gui_basic_assets/red_button_normal.png",
             can_cache=False,
-            hit_box_algorithm='None')
+            hit_box_algorithm="None",
+        )
         self.press_texture = arcade.load_texture(
-            ':resources:gui_basic_assets/red_button_normal.png',
+            ":resources:gui_basic_assets/red_button_normal.png",
             can_cache=False,
-            hit_box_algorithm='None')
+            hit_box_algorithm="None",
+        )
 
 
 @pytest.fixture()
@@ -61,7 +65,7 @@ def test_shows_focus_texture(clickable):
 
 def test_updates_texture_after_style_change(clickable):
     old_texture = clickable.normal_texture
-    clickable.set_style_attrs(some_att='new_value')
+    clickable.set_style_attrs(some_att="new_value")
 
     assert old_texture != clickable.normal_texture
     assert clickable.texture == clickable.normal_texture

@@ -1,13 +1,12 @@
-from _warnings import warn
 from itertools import chain
 from typing import Union, List, Optional
 
 import arcade
 from arcade import Sprite
-from arcade.gui import UIElement, MOUSE_PRESS, MOUSE_MOTION, UIEvent, MOUSE_RELEASE
+from arcade.gui import UIElement, UIEvent
+from arcade.gui.events import MOUSE_PRESS, MOUSE_MOTION, MOUSE_RELEASE
 from arcade.gui.layouts import UILayout
 from arcade.gui.layouts.anchor import UIAnchorLayout
-from arcade.gui.layouts.utils import valid
 from arcade.gui.manager import UIAbstractManager
 
 
@@ -89,12 +88,9 @@ class UILayoutManager(UIAbstractManager):
 
     def __init__(self, window=None, attach_callbacks=True):
         super().__init__()
-        self.window: arcade.Window = window if window else arcade.get_window()
+        self.window: arcade.Window = window or arcade.get_window()
 
-        self._ui_stack = UIStack(UIAnchorLayout(
-            self.window.width,
-            self.window.height
-        ))
+        self._ui_stack = UIStack(UIAnchorLayout(self.window.width, self.window.height))
 
         self.do_layout()
 
@@ -113,7 +109,7 @@ class UILayoutManager(UIAbstractManager):
         # FIXME: This might be to slow, let's see
         self.do_layout()
 
-    def pack(self, element: Union[Sprite, UIElement, 'UILayout'], **kwargs):
+    def pack(self, element: Union[Sprite, UIElement, "UILayout"], **kwargs):
         """
         Packs an element into the root_layout.
 
@@ -134,7 +130,7 @@ class UILayoutManager(UIAbstractManager):
         """
         self._ui_stack.pop(layout)
 
-    def remove(self, element: Union[Sprite, UIElement, 'UILayout']) -> None:
+    def remove(self, element: Union[Sprite, UIElement, "UILayout"]) -> None:
         """
         Removes the element from the root_layout
         """
@@ -162,9 +158,6 @@ class UILayoutManager(UIAbstractManager):
         for layout in self._ui_stack:
             layout.do_layout()
 
-        if not valid(self.root_layout):
-            warn('Refresh produced invalid boundaries')
-
     def _handle_ui_event(self, event: UIEvent):
         """
         Care about hover and focus of elements
@@ -172,7 +165,7 @@ class UILayoutManager(UIAbstractManager):
 
         # if mouse event search for ui_elements at pos to handle hover and focus
         if event.type in (MOUSE_PRESS, MOUSE_MOTION, MOUSE_RELEASE):
-            pos = event.get('x'), event.get('y')
+            pos = event.get("x"), event.get("y")
 
             current_layout = self._ui_stack.peek()
             elements_at_pos = current_layout.get_elements_at(pos)

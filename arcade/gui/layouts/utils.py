@@ -5,8 +5,10 @@ from arcade.gui import UIElement
 from arcade.gui.layouts import UILayout
 
 
-# TODO test this method
-def valid(element: Union[Sprite, UIElement, 'UILayout']):
+def valid(element: Union[Sprite, UIElement, "UILayout"]):
+    """
+    Checks if :class:`UILayout` has a valid size and all children are within the bounds of the given layout.
+    """
     left = element.left
     right = element.right
     top = element.top
