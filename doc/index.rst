@@ -60,7 +60,6 @@ The Python Arcade Library
             <li><a href="tutorials/pymunk_platformer/index.html">Platformer with Physics</a></li>
             <li><a href="tutorials/views/index.html">Views for Menu, Title, Game Over Screens</a></li>
             <li><a href="tutorials/card_game/index.html">Solitaire</a></li>
-            <li><a href="tutorials/bundling_with_pyinstaller/index.html">Bundling a game with PyInstaller</a></li>
             <li><a href="tutorials/gpu_particle_burst/index.html">GPU Particle Burst</a></li>
             <li><a href="https://realpython.com/arcade-python-game-framework/">Real Python: Primer on Arcade</a></li>
            </ul>
@@ -115,6 +114,28 @@ The Python Arcade Library
         </td>
 
       </tr>
+
+      <tr>
+
+        <td>
+          <div style="display:inline-block;">
+            <img style="width:78px;" src="_static/download-circle.svg" alt="download icon">
+          </div>
+          <div style="display:inline-block;">
+            <h2>Distribute Your Game</h2>
+          </div>
+          <ul>
+            <li><a href="tutorials/bundling_with_pyinstaller/index.html">Bundling a game with PyInstaller</a></li>
+          </ul>
+        </td>
+
+        <td>
+
+        </td>
+
+      </tr>
+
+
       <tr>
 
         <td>

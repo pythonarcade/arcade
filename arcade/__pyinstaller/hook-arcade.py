@@ -33,7 +33,7 @@ if is_win:
     ]
 
     binaries = [
-        (hook_path.parent.parent.parent.joinpath("pymunk/chipmunk.dll"), "."),
+        (hook_path.parent.parent.parent.joinpath("pymunk/_chipmunk.pyd"), "."),
     ]
 
 elif is_darwin:

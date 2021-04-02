@@ -4,6 +4,18 @@ Sample Games Made With Arcade
 Have a sample game you'd like to share here? E-mail
 paul@cravenfamily.com.
 
+Age of Divisiveness
+~~~~~~~~~~~~~~~~~~~
+
+.. image:: https://raw.githubusercontent.com/chceswieta/age-of-divisiveness/main/resources/promo/city_build.gif
+   :width: 75%
+
+`Age of Divisiveness <https://github.com/chceswieta/age-of-divisiveness>`_ by
+Patryk Majewski, Krzysztof Szymaniak, Gabriel Wechta, Błażej Wróbel
+
+Multiplayer LAN game with strong Civilization I and old Settlers vibe!
+Very extensive.
+
 Fishy-Game
 ~~~~~~~~~~
 
