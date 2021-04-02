@@ -14,17 +14,18 @@ class MyView(arcade.View):
 
     def on_draw(self):
         arcade.start_render()
+        self.ui_manager.on_draw()
 
     def on_show_view(self):
         arcade.set_background_color(arcade.color.WHITE)
         self.ui_manager.purge_ui_elements()
 
         screen_switch = UIImageToggle(
-            true_texture=load_texture(':resources:gui_basic_assets/icons/smaller.png'),
-            false_texture=load_texture(':resources:gui_basic_assets/icons/larger.png'),
+            true_texture=load_texture(":resources:gui_basic_assets/icons/smaller.png"),
+            false_texture=load_texture(":resources:gui_basic_assets/icons/larger.png"),
             center_x=self.window.width // 2,
             center_y=self.window.height // 2,
-            value=False
+            value=False,
         )
         self.ui_manager.add_ui_element(screen_switch)
 
@@ -42,7 +43,7 @@ class MyView(arcade.View):
         self.ui_manager.unregister_handlers()
 
 
-if __name__ == '__main__':
-    window = arcade.Window(title='ARCADE_GUI')
+if __name__ == "__main__":
+    window = arcade.Window(title="ARCADE_GUI")
     window.show_view(MyView(window))
     arcade.run()

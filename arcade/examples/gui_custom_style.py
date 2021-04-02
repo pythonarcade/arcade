@@ -13,7 +13,7 @@ import arcade
 
 import arcade.gui
 from arcade.gui import UIFlatButton, UIGhostFlatButton, UIManager
-from arcade.gui.ui_style import UIStyle
+from arcade.gui.style import UIStyle
 
 
 class MyView(arcade.View):

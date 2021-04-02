@@ -1,4 +1,7 @@
-from arcade.gui import UIEvent, MOUSE_PRESS
+from arcade.gui import UIEvent
+from arcade.gui.events import (
+    MOUSE_PRESS,
+)
 from . import MockButton
 
 
@@ -25,7 +28,9 @@ def test_setting_focused_element_to_none_handles_unfocus(mock_mng, mock_button):
     assert mock_button.on_unfocus_called
 
 
-def test_setting_focus_to_other_element_handles_refocus(mock_mng, mock_button, mock_button2: MockButton):
+def test_setting_focus_to_other_element_handles_refocus(
+    mock_mng, mock_button, mock_button2: MockButton
+):
     mock_mng.add_ui_element(mock_button)
     mock_mng.add_ui_element(mock_button2)
     mock_mng.focused_element = mock_button
@@ -62,7 +67,9 @@ def test_click_beside_element_unfocuses(mock_mng, mock_button):
     assert mock_button.on_unfocus_called
 
 
-def test_change_focus_to_different_element(mock_mng, mock_button: MockButton, mock_button2: MockButton):
+def test_change_focus_to_different_element(
+    mock_mng, mock_button: MockButton, mock_button2: MockButton
+):
     mock_button.center_x += 100
 
     mock_mng.add_ui_element(mock_button)

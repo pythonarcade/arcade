@@ -16,16 +16,16 @@ def test_ui_element_renders_on_style_change():
 
 def test_ui_element_not_renders_on_style_change_with_foreign_id():
     render_mock: Mock = Mock()
-    button = MockButton(id='this-button')
+    button = MockButton(id="this-button")
     button.render = render_mock
 
-    button.style.set_class_attrs('other-button', color=arcade.color.BLUE)
+    button.style.set_class_attrs("other-button", color=arcade.color.BLUE)
 
     render_mock.assert_not_called()
 
 
 def test_ui_element_renders_on_style_change_with_own_id():
-    this_button_id = 'this-button'
+    this_button_id = "this-button"
     render_mock: Mock = Mock()
     button = MockButton(id=this_button_id)
     button.render = render_mock
@@ -33,5 +33,3 @@ def test_ui_element_renders_on_style_change_with_own_id():
     button.style.set_class_attrs(this_button_id, color=arcade.color.BLUE)
 
     render_mock.assert_called_once()
-
-

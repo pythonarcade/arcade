@@ -336,39 +336,43 @@ def source_read(app, docname, source):
 
 
 def post_process(app, exception):
+    try:
+        # The API docs include the submodules the commands are in. This is confusing
+        # so let's remove them.
+        replace_list = [
+            [".window_commands.", "."],
+            [".draw_commands.", "."],
+            [".buffered_draw_commands.", "."],
+            [".text.", "."],
+            [".application.", "."],
+            [".geometry.", "."],
+            [".sprite_list.", "."],
+            [".sprite.", "."],
+            [".physics_engines.", "."],
+            [".sound.", "."]
+        ]
+        filename = 'build/html/arcade.html'
+        replace_in_file(filename, replace_list)
 
-    # The API docs include the submodules the commands are in. This is confusing
-    # so let's remove them.
-    replace_list = [
-        [".window_commands.", "."],
-        [".draw_commands.", "."],
-        [".buffered_draw_commands.", "."],
-        [".text.", "."],
-        [".application.", "."],
-        [".geometry.", "."],
-        [".sprite_list.", "."],
-        [".sprite.", "."],
-        [".physics_engines.", "."],
-        [".sound.", "."]
-    ]
-    filename = 'build/html/arcade.html'
-    replace_in_file(filename, replace_list)
+        from dirsync import sync
+        source_path = '../arcade/resources'
+        target_path = 'build/html/resources'
 
-    from dirsync import sync
-    source_path = '../arcade/resources'
-    target_path = 'build/html/resources'
+        sync(source_path, target_path, 'sync', create=True)  # for syncing one way
 
-    sync(source_path, target_path, 'sync', create=True)  # for syncing one way
+        # filename = 'build/html/quick_index.html'
+        # replace_in_file(filename, replace_list)
 
-    # filename = 'build/html/quick_index.html'
-    # replace_in_file(filename, replace_list)
-
-    # # Figures have an align-center style I can't easily get rid of.
-    # filename = 'build/html/examples/index.html'
-    # replace_list = [
-    #     ["figure align-center", "figure"]
-    # ]
-    # replace_in_file(filename, replace_list)
+        # # Figures have an align-center style I can't easily get rid of.
+        # filename = 'build/html/examples/index.html'
+        # replace_list = [
+        #     ["figure align-center", "figure"]
+        # ]
+        # replace_in_file(filename, replace_list)
+    except:
+        import traceback
+        traceback.print_exc()
+        raise
 
 
 def setup(app):
