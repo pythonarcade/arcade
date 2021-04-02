@@ -57,7 +57,7 @@ class MyView(View):
 
     def exit_game(self):
         print("Exit game")
-        exit()
+        self.window.close()
 
     def on_draw(self):
         arcade.start_render()

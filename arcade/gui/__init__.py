@@ -55,13 +55,13 @@ Run examples with ``python -m arcade.gui.examples.<example name>``
 
 * show_all - Show all components
 * show_decorator_example - Show example interaction using event decorators
-* show_id_example - Using id off an :py:class:`~arcade.gui.UIElement`
-* show_image_from_style - Customice elements
+* show_id_example - Use id of :py:class:`~arcade.gui.UIElement` for interaction control
+* show_image_from_style - Use :py:class:`~arcade.gui.UIStyle` to customize appearance of an element
 * show_uiflatbutton - :py:class:`~arcade.gui.UIFlatButton` example
 * show_uiflatbutton_custom_style - :py:class:`~arcade.gui.UIFlatButton` with custom styling
-* show_uiimagetoggle - Example with a :py:class:`~arcade.gui.UIImageToggle`
-* show_uiinputbox - Example with a :py:class:`~arcade.gui.UIInputBox`
-* show_uilabel - Show text with a :py:class:`~arcade.gui.UILabel`
+* show_uiimagetoggle - Example with an :py:class:`~arcade.gui.UIImageToggle`
+* show_uiinputbox - Example with an :py:class:`~arcade.gui.UIInputBox`
+* show_uilabel - Show text with an :py:class:`~arcade.gui.UILabel`
 * show_uilayouts - Example show of :py:class:`~arcade.gui.UILayouts`
 * show_uilayouts_hud_inventory - Example how to build a HUD inventory
 * show_uilayouts_inventory - Example how to build a window-like inventory
