@@ -3,13 +3,14 @@ from uuid import uuid4
 
 import pytest
 
-from arcade.gui import UIException, UIElement, UIEvent
+from arcade.gui import UIElement, UIEvent
+from arcade.gui.exceptions import UIException
 from . import MockButton
 
 
 def test_ui_manager_dispatch_ui_event(mock_mng):
     # GIVEN
-    test_event = UIEvent('some-ui-event')
+    test_event = UIEvent("some-ui-event")
     catched_event = None
 
     def on_ui_event(event):
@@ -24,13 +25,6 @@ def test_ui_manager_dispatch_ui_event(mock_mng):
     # THEN
     assert catched_event == test_event
 
-
-def test_ui_elements_get_reference_to_mng(mock_mng):
-    ui_element = MockButton()
-
-    mock_mng.add_ui_element(ui_element)
-
-    assert ui_element.mng == mock_mng
 
 def test_ui_elements_get_reference_to_mng(mock_mng):
     ui_element = MockButton()
@@ -57,12 +51,12 @@ def test_can_set_id_after_creation(mock_mng, mock_button):
 
 
 def test_find_by_id_returns_none(mock_mng):
-    assert mock_mng.find_by_id('no element here') is None
+    assert mock_mng.find_by_id("no element here") is None
 
 
 def test_duplicate_ids_raise_an_ui_exception(mock_mng):
-    ui_element_1 = MockButton(id='element1')
-    ui_element_2 = MockButton(id='element1')
+    ui_element_1 = MockButton(id="element1")
+    ui_element_2 = MockButton(id="element1")
     mock_mng.add_ui_element(ui_element_1)
 
     with pytest.raises(UIException) as e:
@@ -80,7 +74,7 @@ def test_broken_ui_element_raises(mock_mng):
     with pytest.raises(UIException) as e:
         mock_mng.add_ui_element(BrokenUIElement())
 
-    assert 'super().__init__' in str(e.value)
+    assert "super().__init__" in str(e.value)
 
 
 def test_calls_render_while_add_ui_element(mock_mng):

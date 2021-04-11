@@ -486,7 +486,7 @@ Next, default each card in the ``Card`` class to be face up. Also, let's add
 methods to flip the card up or down.
 
 .. literalinclude:: solitaire_10.py
-    :caption: Update Card Class
+    :caption: Updated Card Class
     :linenos:
     :pyobject: Card
     :emphasize-lines: 13-29

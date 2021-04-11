@@ -213,7 +213,7 @@ class Texture:
                 raise gl.GLException(
                     (
                         f"Unable to create texture: {ex} : dtype={self._dtype} size={self.size} components={self._components} "
-                        "MAX_TEXTURE_SIZE = {self.ctx.limits.MAX_TEXTURE_SIZE}"
+                        f"MAX_TEXTURE_SIZE = {self.ctx.limits.MAX_TEXTURE_SIZE}"
                     )
                 )
 
