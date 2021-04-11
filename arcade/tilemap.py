@@ -177,7 +177,7 @@ def _get_image_info_from_tileset(tile):
     image_x = 0
     image_y = 0
     if tile.tileset.image is not None:
-        margin = tile.tileset.padding or 0
+        margin = tile.tileset.margin or 0
         spacing = tile.tileset.spacing or 0
         row = tile.id // tile.tileset.columns
         image_y = margin + row * (tile.tileset.tile_height + spacing)
