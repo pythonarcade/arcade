@@ -350,9 +350,6 @@ class Window(pyglet.window.Window):
             print("Error getting viewport:", ex)
             return
 
-        # unscaled_viewport = self.get_viewport_size()
-        # scaling = unscaled_viewport[0] / width
-
         self.set_viewport(original_viewport[0],
                           original_viewport[0] + width,
                           original_viewport[2],
@@ -424,7 +421,9 @@ class Window(pyglet.window.Window):
     def set_viewport(self, left: float, right: float, bottom: float, top: float):
         """
         Set the viewport. (What coordinates we can see.
-        Used to scale and/or scroll the screen.)
+        Used to scale and/or scroll the screen).
+
+        See :py:func:`arcade.set_viewport` for more detailed information.
 
         :param Number left:
         :param Number right:

@@ -81,7 +81,7 @@ class Card(arcade.Sprite):
         # Image to use for the sprite when face up
         self.image_file_name = f":resources:images/cards/card{self.suit}{self.value}.png"
         self.is_face_up = False
-        super().__init__(FACE_DOWN_IMAGE, scale, calculate_hit_box=False)
+        super().__init__(FACE_DOWN_IMAGE, scale, hit_box_algorithm="None")
 
     def face_down(self):
         """ Turn card face-down """

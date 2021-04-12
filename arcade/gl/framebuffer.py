@@ -133,7 +133,7 @@ class Framebuffer:
         self._draw_buffers = (gl.GLuint * len(layers))(*layers)
 
         # Restore the original bound framebuffer to avoid confusion
-        self.ctx.active_framebuffer.use()
+        self.ctx.active_framebuffer.use(force=True)
 
         self.ctx.stats.incr("framebuffer")
         weakref.finalize(self, Framebuffer.release, ctx, fbo_id)
@@ -272,14 +272,18 @@ class Framebuffer:
     def __exit__(self, exc_type, exc_val, exc_tb):
         self._prev_fbo.use()
 
-    def use(self):
-        """Bind the framebuffer making it the target of all redering commands"""
-        self._use()
+    def use(self, *, force: bool = False):
+        """Bind the framebuffer making it the target of all redering commands
+        
+        :param bool force: Force the framebuffer binding even if the system
+                           already believes it's already bound.
+        """
+        self._use(force=force)
         self._ctx.active_framebuffer = self
 
-    def _use(self):
+    def _use(self, *, force: bool = False):
         """Internal use that do not change the global active framebuffer"""
-        if self.ctx.active_framebuffer == self:
+        if self.ctx.active_framebuffer == self and not force:
             return
 
         gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, self._glo)

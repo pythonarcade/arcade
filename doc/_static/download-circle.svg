@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Designed by Vexels.com - 2016 All Rights Reserved - https://vexels.com/terms-and-conditions/  -->
+
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="1200px" height="1200px" viewBox="0 0 1200 1200" enable-background="new 0 0 1200 1200" xml:space="preserve">
+<g>
+	<g>
+		<defs>
+			<path id="SVGID_1_" d="M1034.046,538.479c0,269.779-218.7,488.479-488.479,488.479c-269.8,0-488.5-218.7-488.5-488.479
+				S275.766,50,545.567,50C815.346,50,1034.046,268.7,1034.046,538.479z"/>
+		</defs>
+		<use xlink:href="#SVGID_1_"  overflow="visible" fill="#87CEDB"/>
+		<clipPath id="SVGID_2_">
+			<use xlink:href="#SVGID_1_"  overflow="visible"/>
+		</clipPath>
+		<linearGradient id="SVGID_3_" gradientUnits="userSpaceOnUse" x1="1023.9274" y1="1034.7157" x2="580.5427" y2="667.3395">
+			<stop  offset="0" style="stop-color:#FFFFFF"/>
+			<stop  offset="0.0718" style="stop-color:#DFDFDF"/>
+			<stop  offset="0.2156" style="stop-color:#A5A5A5"/>
+			<stop  offset="0.3593" style="stop-color:#727272"/>
+			<stop  offset="0.4998" style="stop-color:#494949"/>
+			<stop  offset="0.6362" style="stop-color:#292929"/>
+			<stop  offset="0.7674" style="stop-color:#121212"/>
+			<stop  offset="0.8912" style="stop-color:#050505"/>
+			<stop  offset="1" style="stop-color:#000000"/>
+		</linearGradient>
+		<polygon opacity="0.5" clip-path="url(#SVGID_2_)" fill="url(#SVGID_3_)" points="292.363,767.789 670.58,1150 1079.694,1145.199 
+			1142.934,880.117 1040.965,715.2 614.636,287.53 500.694,335.568 521.474,374.758 495.767,418.456 454.962,424.935 
+			531.853,503.924 552.695,524.01 529.672,563.557 542.747,665.547 605.725,721.91 498.419,709.539 347.478,554.163 		"/>
+	</g>
+	<g>
+		<path fill="#FAB30B" d="M542.747,665.547l72.267-125.181l72.247-125.182h-71.094V294.47c0-5.242-4.235-9.478-9.446-9.478H478.74
+			c-5.189,0-9.445,4.235-9.445,9.478v120.714H398.19l72.258,125.182L542.747,665.547z"/>
+		<path fill="#25526B" d="M762.327,553.681h-22.688v143.402H347.404V553.681h-27.909c-21.807,0-39.483,17.656-39.483,39.484V738.79
+			c0,21.808,17.677,39.505,39.483,39.505h442.831c21.828,0,39.505-17.697,39.505-39.505V593.165
+			C801.831,571.337,784.155,553.681,762.327,553.681z"/>
+	</g>
+	<path opacity="0.5" fill="#FFFFFF" d="M518.895,288.494h-34.902c-5.19,0-9.446,4.236-9.446,9.479v42.502
+		C477.566,315.92,489.811,301.913,518.895,288.494z"/>
+	<path opacity="0.5" fill="#FFFFFF" d="M569.376,288.494h34.902c5.19,0,9.446,4.236,9.446,9.479v42.502
+		C610.704,315.92,598.459,301.913,569.376,288.494z"/>
+	<g>
+		<path opacity="0.5" fill="#FFFFFF" d="M465.719,419.463h-59.876l18.253,31.641C435.388,433.114,457.499,422.796,465.719,419.463z"
+			/>
+	</g>
+	<g>
+		<path opacity="0.5" fill="#FFFFFF" d="M621.472,419.463h59.875l-18.253,31.641C651.803,433.114,629.692,422.796,621.472,419.463z"
+			/>
+	</g>
+	<g opacity="0.5">
+		<path fill="#FFFFFF" d="M343.84,555.799h-21.22c-21.808,0-39.484,17.677-39.484,39.505v21.472
+			C295.005,600.042,316.917,572.805,343.84,555.799z"/>
+	</g>
+	<g opacity="0.5">
+		<path fill="#FFFFFF" d="M739.765,555.799h21.22c21.807,0,39.483,17.677,39.483,39.505v21.472
+			C788.601,600.042,766.688,572.805,739.765,555.799z"/>
+	</g>
+</g>
+</svg>

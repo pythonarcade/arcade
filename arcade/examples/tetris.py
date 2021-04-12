@@ -76,7 +76,7 @@ def create_textures():
 texture_list = create_textures()
 
 
-def rotate_clockwise(shape):
+def rotate_counterclockwise(shape):
     """ Rotates a matrix clockwise """
     return [[shape[y][x] for y in range(len(shape))] for x in range(len(shape[0]) - 1, -1, -1)]
 
@@ -195,7 +195,9 @@ class MyGame(arcade.Window):
     def rotate_stone(self):
         """ Rotate the stone, check collision. """
         if not self.game_over and not self.paused:
-            new_stone = rotate_clockwise(self.stone)
+            new_stone = rotate_counterclockwise(self.stone)
+            if self.stone_x + len(new_stone[0]) >= COLUMN_COUNT:
+                self.stone_x = COLUMN_COUNT - len(new_stone[0])
             if not check_collision(self.board, new_stone, (self.stone_x, self.stone_y)):
                 self.stone = new_stone
 

@@ -7,10 +7,72 @@ Release Notes
 
 Keep up-to-date with the latest changes to the Arcade library by the release notes.
 
+Version 2.5.6
+-------------
+
+Version 2.5.6 was released 2021-03-28
+
+* Fix issue with PyInstaller and Pymunk not allowing Arcade to work with bundling
+* `Fix some PyMunk examples <https://github.com/pythonarcade/arcade/issues/835>`_
+* Update some example code. Highlight PyInstaller instructions
+
+Version 2.5.5
+-------------
+
+Version 2.5.5 was released 2021-02-23
+
+* `Fix setting an individual sprite list location to a new sprite not working <https://github.com/pythonarcade/arcade/issues/824>`_
+
+Version 2.5.4
+-------------
+
+Version 2.5.4 was released 2021-02-19
+
+* `Fix for soloud installer hook <https://github.com/pythonarcade/arcade/issues/816>`_
+* Add fishy game on example page
+* Fix but around framebuffer creation not properly restoring active frame buffer
+* Fix for but where TextureRenderTarget creates FBO twice
+* Updated pinned version numbers for dependent libraries
+* MyPy fixes
+* Minor improvements around SpriteList list operations
+* `Fix for physics engine getting stuck on a corner <https://github.com/pythonarcade/arcade/issues/820>`_
+
+
+Version 2.5.3
+-------------
+
+Version 2.5.3 was released 2021-01-27
+
+* `Fix memory leak when removing sprites from sprite list <https://github.com/pythonarcade/arcade/issues/815>`_
+* `Fix solitaire example using old hitbox parameter <https://github.com/pythonarcade/arcade/issues/814>`_
+* Fix/improve tetris example
+* Fix for camera2d.scroll_x
+
+Version 2.5.2
+-------------
+
+Version 2.5.2 was released 2020-12-27
+
+* Improve schedule/unschedule docstrings
+* Fix Sound.get_length
+* Raise error if there are multiple instances of a streaming source
+* Fix background music example to match new sound API
+* Update main landing page for docs
+* Split sprite platformer tutorial into multiple pages
+* Add 'related projects' page
+* Add 'adventure' sample game link
+* Add resources for top-down tank images
+* Add turn-and-move example
+* Fix name of sandCorner_left.png
+* Update tilemap to error out instead of continuing if we can't find a tile
+* Improve view tutorial
+* Generate error rather than warning if we can't find image or sound file
+* Specify timer resolution in Windows
+
 Version 2.5.1
 -------------
 
-Version 2.5 was released 2020-12-14
+Version 2.5.1 was released 2020-12-14
 
 * Fix bug with sound where panning wasn't working on Windows machines.
 * `Fix for create_lines_with_colors <https://github.com/pythonarcade/arcade/issues/804>`_

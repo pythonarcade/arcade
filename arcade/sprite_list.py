@@ -16,6 +16,7 @@ import logging
 import math
 import array
 import time
+from random import shuffle
 
 from PIL import Image
 
@@ -308,6 +309,46 @@ class SpriteList:
         LOG.debug("[%s] Creating SpriteList use_spatial_hash=%s is_static=%s",
                   id(self), use_spatial_hash, is_static)
 
+    def __len__(self) -> int:
+        """ Return the length of the sprite list. """
+        return len(self.sprite_list)
+
+    def __iter__(self) -> Iterator[Sprite]:
+        """ Return an iterable object of sprites. """
+        return iter(self.sprite_list)
+
+    def __getitem__(self, i):
+        return self.sprite_list[i]
+
+    def __setitem__(self, key: int, value: Sprite):
+        self._vao1 = None
+
+        item_to_be_removed = self.sprite_list[key]
+        item_to_be_removed.sprite_lists.remove(self)
+
+        if self._use_spatial_hash:
+            self.spatial_hash.remove_object(item_to_be_removed)
+            self.spatial_hash.insert_object_for_box(value)
+
+        value.register_sprite_list(self)
+        self.sprite_list[key] = value
+        self.sprite_idx[value] = key
+
+    def index(self, key):
+        """ Return the index of this sprite """
+        return self.sprite_list.index(key)
+
+    def pop(self, index: int = -1) -> Sprite:
+        """
+        Pop off the last sprite, or the given index, from the list
+        """
+        if len(self.sprite_list) == 0:
+            raise(ValueError("pop from empty list"))
+
+        sprite = self.sprite_list[index]
+        self.remove(sprite)
+        return sprite
+
     def append(self, item: _SpriteType):
         """
         Add a new sprite to the list.
@@ -347,11 +388,39 @@ class SpriteList:
         if self._use_spatial_hash:
             self.spatial_hash.insert_object_for_box(item)
 
+    def remove(self, item: _SpriteType):
+        """
+        Remove a specific sprite from the list.
+        :param Sprite item: Item to remove from the list
+        """
+        self.sprite_list.remove(item)
+        item.sprite_lists.remove(self)
+
+        # Rebuild index list
+        self.sprite_idx = dict()
+        for idx, sprite in enumerate(self.sprite_list):
+            self.sprite_idx[sprite] = idx
+
+        self._vao1 = None
+        if self._use_spatial_hash:
+            self.spatial_hash.remove_object(item)
+
     def reverse(self):
         """
         Reverses the current list inplace
         """
         self.sprite_list.reverse()
+        for idx, sprite in enumerate(self.sprite_list):
+            self.sprite_idx[sprite] = idx
+
+        self._vao1 = None
+
+
+    def shuffle(self):
+        """
+        Shuffles the current list inplace
+        """
+        shuffle(self.sprite_list)
         for idx, sprite in enumerate(self.sprite_list):
             self.sprite_idx[sprite] = idx
 
@@ -390,23 +459,6 @@ class SpriteList:
             self.spatial_hash.reset()
             for sprite in self.sprite_list:
                 self.spatial_hash.insert_object_for_box(sprite)
-
-    def remove(self, item: _SpriteType):
-        """
-        Remove a specific sprite from the list.
-        :param Sprite item: Item to remove from the list
-        """
-        self.sprite_list.remove(item)
-        item.sprite_lists.remove(self)
-
-        # Rebuild index list
-        self.sprite_idx[item] = dict()
-        for idx, sprite in enumerate(self.sprite_list):
-            self.sprite_idx[sprite] = idx
-
-        self._vao1 = None
-        if self._use_spatial_hash:
-            self.spatial_hash.remove_object(item)
 
     def update(self):
         """
@@ -1035,37 +1087,6 @@ class SpriteList:
         """ Draw all the hit boxes in this list """
         for sprite in self.sprite_list:
             sprite.draw_hit_box(color, line_thickness)
-
-    def __len__(self) -> int:
-        """ Return the length of the sprite list. """
-        return len(self.sprite_list)
-
-    def __iter__(self) -> Iterator[Sprite]:
-        """ Return an iterable object of sprites. """
-        return iter(self.sprite_list)
-
-    def __getitem__(self, i):
-        return self.sprite_list[i]
-
-    def __setitem__(self, key: int, value: Sprite):
-        self._vao1 = None
-        self.sprite_list[key] = value
-        self.sprite_idx[value] = key
-
-    def index(self, key):
-        """ Return the index of this sprite """
-        return self.sprite_list.index(key)
-
-    def pop(self, index: int = -1) -> Sprite:
-        """
-        Pop off the last sprite, or the given index, from the list
-        """
-        if len(self.sprite_list) == 0:
-            raise(ValueError("pop from empty list"))
-
-        sprite = self.sprite_list[index]
-        self.remove(sprite)
-        return sprite
 
 
 def get_closest_sprite(sprite: Sprite, sprite_list: SpriteList) -> Optional[Tuple[Sprite, float]]:

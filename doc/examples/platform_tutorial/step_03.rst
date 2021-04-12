@@ -29,7 +29,7 @@ For more information about the physics engine we are using here, see
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/03_user_control.py
     :caption: 03_user_control.py - Create Physics Engine
-    :lines: 16-17
+    :lines: 65-66
 
 Each sprite has ``center_x`` and ``center_y`` attributes. Changing these will
 change the location of the sprite. (There are also attributes for top, bottom,

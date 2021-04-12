@@ -74,7 +74,7 @@ class MyApplication(arcade.Window):
         self.sprite_list: arcade.SpriteList[PhysicsSprite] = arcade.SpriteList()
         self.static_lines = []
 
-        # Used for dragging shapes aruond with the mouse
+        # Used for dragging shapes around with the mouse
         self.shape_being_dragged = None
         self.last_mouse_position = 0, 0
 
@@ -95,7 +95,7 @@ class MyApplication(arcade.Window):
         body = pymunk.Body(body_type=pymunk.Body.STATIC)
         shape = pymunk.Segment(body, [0, self.floor_height], [SCREEN_WIDTH, self.floor_height], 0.0)
         shape.friction = 10
-        self.space.add(shape)
+        self.space.add(shape, body)
         self.static_lines.append(shape)
 
     def on_draw(self):

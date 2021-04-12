@@ -2,8 +2,6 @@
 Pymunk Physics Engine
 """
 
-import pymunkoptions
-pymunkoptions.options["debug"] = False
 import pymunk
 
 import math
@@ -22,8 +20,8 @@ class PymunkPhysicsObject:
                  body: pymunk.Body = None,
                  shape: pymunk.Shape = None):
         """ Init """
-        self.body: pymunk.Body = body
-        self.shape: pymunk.Shape = shape
+        self.body: Optional[pymunk.Body] = body
+        self.shape: Optional[pymunk.Shape] = shape
 
 
 class PymunkPhysicsEngine:
@@ -34,7 +32,7 @@ class PymunkPhysicsEngine:
     DYNAMIC = pymunk.Body.DYNAMIC
     STATIC = pymunk.Body.STATIC
     KINEMATIC = pymunk.Body.KINEMATIC
-    MOMENT_INF = pymunk.inf
+    MOMENT_INF = float('inf')
 
     def __init__(self, gravity=(0, 0), damping: float = 1.0):
         # -- Pymunk
@@ -368,6 +366,9 @@ class PymunkPhysicsEngine:
         """
         grounding = self.check_grounding(sprite)
         body = self.get_physics_object(sprite).body
+        if not body:
+           raise ValueError("Physics body not set.")
+
         if body.force[0] and grounding and grounding['body']:
             grounding['body'].apply_force_at_world_point((-body.force[0], 0), grounding['position'])
 
@@ -392,6 +393,8 @@ class PymunkPhysicsEngine:
                 grounding['position'] = arbiter.contact_point_set.points[0].point_b
 
         physics_object = self.sprites[sprite]
+        if not physics_object.body:
+            raise ValueError("No physics body set.")
         physics_object.body.each_arbiter(f)
 
         return grounding

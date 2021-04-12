@@ -33,8 +33,7 @@ if is_win:
     ]
 
     binaries = [
-        (hook_path.parent.parent.parent.joinpath("pymunk/chipmunk.dll"), "."),
-        (hook_path.parent.parent.joinpath("soloud/soloud*.dll"), "./arcade/soloud"),
+        (hook_path.parent.parent.parent.joinpath("pymunk/_chipmunk.pyd"), "."),
     ]
 
 elif is_darwin:
@@ -47,5 +46,4 @@ elif is_unix:
 
     binaries = [
         (hook_path.parent.parent.parent.joinpath("pymunk/libchipmunk.so"), "."),
-        (hook_path.parent.parent.joinpath("soloud/libsoloud.so"), "./arcade/soloud"),
     ]

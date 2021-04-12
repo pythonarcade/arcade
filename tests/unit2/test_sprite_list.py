@@ -55,4 +55,7 @@ def test_it_can_pop_at_a_given_index():
     assert [spritelist.sprite_idx[s] for s in spritelist] == [0, 1]
     assert spritelist._vao1 is None
 
-
+def test_can_assign_back_to_self():
+    spritelist = make_named_sprites(3)
+    spritelist[0] = spritelist[0]
+    assert spritelist[0] == spritelist[0]
