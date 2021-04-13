@@ -9,19 +9,19 @@ from arcade.gui.style import UIStyle
 
 class UIImageButton(UIClickable):
     def __init__(
-            self,
-            normal_texture: Texture,
-            hover_texture: Optional[Texture] = None,
-            press_texture: Optional[Texture] = None,
-            text="",
-            center_x=0,
-            center_y=0,
-            # TODO min_size in ImageButton, how to handle this?
-            min_size: Optional[Tuple] = None,
-            size_hint: Optional[Tuple] = None,
-            id: Optional[str] = None,
-            style: UIStyle = None,
-            **kwargs
+        self,
+        normal_texture: Texture,
+        hover_texture: Optional[Texture] = None,
+        press_texture: Optional[Texture] = None,
+        text="",
+        center_x=0,
+        center_y=0,
+        # TODO min_size in ImageButton, how to handle this?
+        min_size: Optional[Tuple] = None,
+        size_hint: Optional[Tuple] = None,
+        id: Optional[str] = None,
+        style: UIStyle = None,
+        **kwargs
     ):
         """
         :param center_x: center X of element
