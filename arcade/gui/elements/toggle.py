@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Tuple
 from uuid import uuid4
 
 from PIL import Image, ImageDraw
@@ -14,9 +14,22 @@ class UIAbstractToggle(UIClickable):
     _false_texture: Optional[Texture]
 
     def __init__(
-        self, value: bool = True, center_x: int = 0, center_y: int = 0, **kwargs
+        self,
+        value: bool,
+        center_x: int,
+        center_y: int,
+        min_size: Optional[Tuple],
+        size_hint: Optional[Tuple],
+        **kwargs
     ):
-        super().__init__(center_x=center_x, center_y=center_y, **kwargs)
+        super().__init__(
+            value=value,
+            center_x=center_x,
+            center_y=center_y,
+            min_size=min_size,
+            size_hint=size_hint,
+            **kwargs
+        )
 
         self.register_event_type("on_toggle")
 
@@ -90,9 +103,11 @@ class UIImageToggle(UIAbstractToggle):
         :param kwargs: catches unsupported named parameters
         """
         super().__init__(
+            value=value,
             center_x=center_x,
             center_y=center_y,
-            value=value,
+            min_size=None,
+            size_hint=None,
             id=id,
             style=style,
             **kwargs
@@ -139,9 +154,12 @@ class UIToggle(UIAbstractToggle):
         :param kwargs: catches unsupported named parameters
         """
         super().__init__(
+            value=value,
             center_x=center_x,
             center_y=center_y,
-            value=value,
+            # TODO Support this?
+            min_size=None,
+            size_hint=None,
             id=id,
             style=style,
             **kwargs
@@ -202,7 +220,11 @@ class UIToggle(UIAbstractToggle):
         switch = switch.resize(
             (switch.width // SCALE, switch.height // SCALE), resample=Image.LANCZOS
         )
-        return Texture(name=str(uuid4()), image=switch)
+        return Texture(
+            name=str(uuid4()),
+            image=switch,
+            hit_box_algorithm="None",
+        )
 
     def render(self):
         color_true = self.style_attr("color_true")

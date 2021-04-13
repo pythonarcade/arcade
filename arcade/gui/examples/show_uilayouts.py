@@ -27,8 +27,6 @@ class MyView(View):
             UILabel.__name__,
         )
 
-        root_layout = self.ui_manager.root_layout
-
         ui_flat_button = UIFlatButton(text="no fill effect", height=40)
 
         @ui_flat_button.event("on_click")
@@ -42,7 +40,9 @@ class MyView(View):
         layout_top_left.pack(UILabel(text="top=0"))
         layout_top_left.pack(UILabel(text="left=20"))
         layout_top_left.pack(UILabel(text="fill_x=True"), space=20)
-        root_layout.pack(layout_top_left, top=0, left=20, fill_x=True)  # TODO remove
+        self.ui_manager.pack(
+            layout_top_left, top=0, left=20, fill_x=True
+        )  # TODO remove
 
         # window center
         layout_center = UIBoxLayout(
@@ -56,7 +56,7 @@ class MyView(View):
         layout_center.pack(UILabel(text="center_y=0"))
         layout_center.pack(UILabel(text="no fill effect"), space=20)
         layout_center.pack(ui_flat_button, space=20)
-        root_layout.pack(layout_center, center_x=0, center_y=0)
+        self.ui_manager.pack(layout_center, center_x=0, center_y=0)
 
         # center right
         layout_center_right = UIBoxLayout(
@@ -66,7 +66,7 @@ class MyView(View):
         layout_center_right.pack(UILabel(text="top=0"))
         layout_center_right.pack(UILabel(text="fill_y=True"), space=10)
         layout_center_right.pack(UILabel(text="align=center"), space=20)
-        root_layout.pack(layout_center_right, right=0, top=0, fill_y=True)
+        self.ui_manager.pack(layout_center_right, right=0, top=0, fill_y=True)
 
         # center left
         layout_center_left = UIBoxLayout(
@@ -83,7 +83,7 @@ class MyView(View):
         layout_center_left.pack(
             SpriteSolidColor(width=50, height=50, color=arcade.color.GREEN)
         )
-        root_layout.pack(layout_center_left, left=0, center_y=0)
+        self.ui_manager.pack(layout_center_left, left=0, center_y=0)
 
         # bottom center
         layout_bottom_center = UIBoxLayout(
@@ -92,18 +92,18 @@ class MyView(View):
         layout_bottom_center.pack(UILabel(text="bottom=0"))
         layout_bottom_center.pack(UILabel(text="center_x=0"), space=10)
         layout_bottom_center.pack(UILabel(text="no fill effect"), space=10)
-        root_layout.pack(layout_bottom_center, center_x=0, bottom=60)
+        self.ui_manager.pack(layout_bottom_center, center_x=0, bottom=60)
 
         # bottom left
         layout2 = UIBoxLayout(vertical=True, id="bottom left")
         layout2.pack(UILabel(text="bottom=20"))
         layout2.pack(UILabel(text="left=10"))
         layout2.pack(UILabel(text="no fill effect"), space=20)
-        root_layout.pack(layout2, left=10, bottom=20)
+        self.ui_manager.pack(layout2, left=10, bottom=20)
 
         self.ui_manager.do_layout()
 
-        self.debug_layout(root_layout)
+        self.debug_layout(self.ui_manager.root_layout)
 
         print(layout2.left, layout2.top, layout2.right, layout2.bottom, valid(layout2))
 

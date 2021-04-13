@@ -24,8 +24,7 @@ class MyView(arcade.View):
             "Hello world",
             center_x=200,
             center_y=self.window.height // 2,
-            width=200,
-            height=40,
+            min_size=(200, 40),
         )
         flat.set_style_attrs(
             font_color=arcade.color.WHITE,
@@ -58,8 +57,7 @@ class MyView(arcade.View):
                 "Hello world",
                 center_x=600,
                 center_y=self.window.height // 2,
-                width=200,
-                height=40,
+                min_size=(200, 40),
                 id="right_button",
             )
         )

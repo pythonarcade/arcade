@@ -20,9 +20,11 @@ class MyFlatButton(arcade.gui.UIFlatButton):
     """
     To capture a button click, subclass the button and override on_click.
     """
+
     def on_click(self):
         """ Called when user lets off button """
         print("Click flat button. ")
+
 
 class MyGhostFlatButton(arcade.gui.UIGhostFlatButton):
     """
@@ -36,8 +38,7 @@ class MyGhostFlatButton(arcade.gui.UIGhostFlatButton):
             'GhostFlatButton',
             center_x=center_x,
             center_y=center_y,
-            width=250,
-            # height=20
+            min_size=(250, 20),
         )
         self.input_box = input_box
 
@@ -49,6 +50,7 @@ class MyGhostFlatButton(arcade.gui.UIGhostFlatButton):
 class MyView(arcade.View):
     """
     Main view. Really the only view in this example. """
+
     def __init__(self):
         super().__init__()
 
@@ -108,8 +110,7 @@ class MyView(arcade.View):
             'FlatButton',
             center_x=right_column_x,
             center_y=y_slot * 1,
-            width=250,
-            # height=20
+            min_size=(250, 20),
         )
         self.ui_manager.add_ui_element(button)
 

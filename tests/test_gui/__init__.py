@@ -9,7 +9,7 @@ import pytest
 import arcade
 import arcade.gui
 from arcade.gui import UIClickable, UIManager
-from arcade.gui.elements.box import UIBox
+from arcade.gui.elements.box import UIColorBox
 from arcade.gui.layouts.manager import UILayoutManager
 from arcade.gui.style import UIStyle
 
@@ -106,7 +106,7 @@ class Env:
 
 
 def dummy_element(width=100, height=50, color=arcade.color.LIGHT_CORAL):
-    return UIBox(width=width, height=height, color=color)
+    return UIColorBox(min_size=(width, height), color=color)
 
 
 class MockButton(UIClickable):
@@ -122,34 +122,38 @@ class MockButton(UIClickable):
         self,
         center_x=0,
         center_y=0,
-        width=40,
-        height=40,
+        min_size=(40, 40),
+        size_hint=None,
         id: Optional[str] = None,
         style: UIStyle = None,
         **kwargs
     ):
         super().__init__(
-            center_x=center_x, center_y=center_y, id=id, style=style, **kwargs
+            center_x=center_x,
+            center_y=center_y,
+            id=id,
+            style=style,
+            min_size=min_size,
+            size_hint=size_hint,
+            **kwargs
         )
         self.event_history: List[arcade.gui.events.UIEvent] = []
-        self._width = width
-        self._height = height
 
     def render(self):
         self.normal_texture = arcade.Texture(
-            image=PIL.Image.new("RGBA", (self._width, self._height), color=(255, 0, 0)),
+            image=PIL.Image.new("RGBA", (self.width, self.height), color=(255, 0, 0)),
             name=str(uuid4()),
         )
         self.hover_texture = arcade.Texture(
-            image=PIL.Image.new("RGBA", (self._width, self._height), color=(255, 0, 0)),
+            image=PIL.Image.new("RGBA", (self.width, self.height), color=(255, 0, 0)),
             name=str(uuid4()),
         )
         self.press_texture = arcade.Texture(
-            image=PIL.Image.new("RGBA", (self._width, self._height), color=(255, 0, 0)),
+            image=PIL.Image.new("RGBA", (self.width, self.height), color=(255, 0, 0)),
             name=str(uuid4()),
         )
         self.focus_texture = arcade.Texture(
-            image=PIL.Image.new("RGBA", (self._width, self._height), color=(255, 0, 0)),
+            image=PIL.Image.new("RGBA", (self.width, self.height), color=(255, 0, 0)),
             name=str(uuid4()),
         )
 

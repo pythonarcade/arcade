@@ -49,7 +49,6 @@ def img_diff(file1: Path, file2: Path) -> float:
     r = np.absolute(a - b)
     # save diff
     # Image.frombytes('RGB', (800, 600), r.astype('u1')).save(file2)
-    print(np.sum(r), np.sum(a))
     return np.sum(r) / np.sum(a)
 
 

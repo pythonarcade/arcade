@@ -5,7 +5,7 @@ from PIL.Image import Image, ANTIALIAS
 import arcade
 from arcade import View, Window, load_texture, Texture
 from arcade.gui import UIImageButton
-from arcade.gui.elements.box import UIBox
+from arcade.gui.elements.box import UIColorBox
 from arcade.gui.layouts.box import UIBoxLayout
 from arcade.gui.layouts.manager import UILayoutManager
 
@@ -69,8 +69,8 @@ class MyView(View):
         self.game_state = dict(equipped_item=None)
 
         # Equipped item
-        self.equipped_item = UIBox(
-            100, 100, color=(0, 0, 0, 0)
+        self.equipped_item = UIColorBox(
+            color=(0, 0, 0, 0), min_size=(100, 100)
         )  # Blank box while no item equid
         self._no_item_equipped = self.equipped_item.texture
         self.ui_manager.pack(self.equipped_item, center_x=0, center_y=0)

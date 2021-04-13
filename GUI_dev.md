@@ -26,6 +26,12 @@ Doc structure
   * provides entry for layouting
   * does not register `on_draw` callback
     
+* UIElements
+  * min_size
+  * size_hint
+  
+* Changed Constructor
+
 
 * Available Layouts
   * UILayout
@@ -41,7 +47,6 @@ Doc structure
     * position children relative to top, right, bottom, left, center_x, center_y
     * children UILayouts can be expanded using `fill_x` or 'fill_y'
     * 🐛 missing support for padding, border, bg
-
 
 ### Planned features
 

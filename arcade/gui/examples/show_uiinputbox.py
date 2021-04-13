@@ -20,7 +20,7 @@ class MyView(arcade.View):
         self.ui_manager.purge_ui_elements()
 
         box = arcade.gui.UIInputBox(
-            text="hello", center_x=400, center_y=300, width=200, height=40
+            text="hello", center_x=400, center_y=300, min_size=(200, 40)
         )
         self.ui_manager.add_ui_element(box)
 

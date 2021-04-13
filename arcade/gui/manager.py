@@ -292,7 +292,7 @@ class UIManager(UIAbstractManager):
         :param kwargs: catches unsupported named parameters
         """
         super().__init__()
-        self.window: Window = window if window else arcade.get_window()
+        self.window: Window = window or arcade.get_window()
 
         self._ui_elements: SpriteList = SpriteList(use_spatial_hash=True)
         self._id_cache: Dict[str, UIElement] = {}

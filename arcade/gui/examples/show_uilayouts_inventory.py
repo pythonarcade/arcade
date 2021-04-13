@@ -9,7 +9,7 @@ from arcade.gui import (
     UIFlatButton,
     UIEvent,
 )
-from arcade.gui.elements.box import UIBox
+from arcade.gui.elements.box import UITextureBox
 from arcade.gui.events import (
     MOUSE_DRAG,
     MOUSE_PRESS,
@@ -100,8 +100,6 @@ class MyView(View):
         self.ui_manager.pack(show_inventory, center_x=0, center_y=0)
         show_inventory.on_click = self.create_inventory
 
-        self.equipped_item = UIBox(100, 100, arcade.color.LIGHT_GRAY)
-
     def create_inventory(self):
         # Build inventory
         frame = DraggableUIAnchorLayout(400, 310, bg=arcade.color.BROWN)
@@ -146,7 +144,7 @@ class MyView(View):
                 row.pack(SlotButton(self.game_state, next(ci)), space=space)
 
         # Active item
-        self.equipped_item = UIBox(100, 100, arcade.color.LIGHT_GRAY)
+        self.equipped_item = UITextureBox(SLOT_TEXTURE, min_size=(100, 100))
         frame.pack(self.equipped_item, top=10, right=10)
 
         # Close button
@@ -169,15 +167,16 @@ class MyView(View):
 
     def on_update(self, delta_time: float):
         # Update equipped item from game state
-        item_tex = ITEMS.get(self.game_state["equipped_item"])
-        if item_tex:
+        item_tex = ITEMS.get(self.game_state["equipped_item"], SLOT_TEXTURE)
+        if item_tex != self.equipped_item.texture:
             self.equipped_item.texture = item_tex
-        else:
-            self.equipped_item.texture = SLOT_TEXTURE
+            self.ui_manager.do_layout()
 
     def on_draw(self):
         arcade.start_render()
         self.ui_manager.on_draw()
+
+        self.equipped_item.draw_hit_box(arcade.color.GREEN, 2)
 
 
 def main():

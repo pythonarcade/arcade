@@ -32,16 +32,14 @@ class MyView(arcade.View):
                 text="Username:",
                 center_x=100,
                 center_y=self.window.height // 2,
-                width=300,
-                height=40,
+                min_size=(300, 40),
             )
         )
         self.ui_manager.add_ui_element(
             UIInputBox(
                 center_x=350,
                 center_y=self.window.height // 2,
-                width=300,
-                height=40,
+                min_size=(300, 40),
                 id="username",
             )
         )
@@ -50,8 +48,7 @@ class MyView(arcade.View):
                 text="Login",
                 center_x=650,
                 center_y=self.window.height // 2,
-                width=200,
-                height=40,
+                min_size=(200, 40),
                 id="submit_button",
             )
         )
@@ -61,8 +58,7 @@ class MyView(arcade.View):
                 text="",
                 center_x=self.window.width // 2,
                 center_y=self.window.height // 2 - 100,
-                width=600,
-                height=40,
+                min_size=(600, 40),
                 id="login_message",
             )
         )

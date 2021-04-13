@@ -38,7 +38,7 @@ class MyView(arcade.View):
         )
 
         ui_input_box = arcade.gui.UIInputBox(
-            center_x=self.window.width // 4, center_y=y_slot * 2, width=300, height=40
+            center_x=self.window.width // 4, center_y=y_slot * 2, min_size=(300, 40)
         )
         ui_input_box.text = "UIInputBox"
         ui_input_box.cursor_index = len(ui_input_box.text)
@@ -61,6 +61,7 @@ class MyView(arcade.View):
             press_texture=pressed_texture,
             text="UIImageButton",
         )
+        button.set_style_attrs(font_size=16)
         self.ui_manager.add_ui_element(button)
 
         # right
@@ -69,8 +70,7 @@ class MyView(arcade.View):
                 "FlatButton",
                 center_x=self.window.width // 4 * 3,
                 center_y=y_slot * 1,
-                width=250,
-                height=40,
+                min_size=(250, 40),
             )
         )
         self.ui_manager.add_ui_element(
@@ -78,8 +78,7 @@ class MyView(arcade.View):
                 "GhostFlatButton",
                 center_x=self.window.width // 4 * 3,
                 center_y=y_slot * 2,
-                width=250,
-                height=40,
+                min_size=(250, 40),
             )
         )
 

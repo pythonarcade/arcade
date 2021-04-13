@@ -11,15 +11,15 @@ class UILabel(UIElement):
     """
 
     def __init__(
-            self,
-            text: str,
-            center_x=0,
-            center_y=0,
-            min_size: Optional[Tuple] = None,
-            size_hint: Optional[Tuple] = None,
-            id: Optional[str] = None,
-            style: UIStyle = None,
-            **kwargs
+        self,
+        text: str,
+        center_x=0,
+        center_y=0,
+        min_size: Optional[Tuple] = None,
+        size_hint: Optional[Tuple] = None,
+        id: Optional[str] = None,
+        style: UIStyle = None,
+        **kwargs
     ):
         """
         :param text: Text to show
@@ -81,5 +81,7 @@ class UILabel(UIElement):
         )
 
         self.texture = arcade.Texture(
-            image=text_image_normal, name=text_image_normal_uuid
+            image=text_image_normal,
+            name=text_image_normal_uuid,
+            hit_box_algorithm="None",
         )

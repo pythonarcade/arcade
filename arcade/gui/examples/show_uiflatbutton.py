@@ -23,8 +23,7 @@ class MyView(arcade.View):
                 "Hello world",
                 center_x=200,
                 center_y=self.window.height // 2,
-                width=200,
-                height=40,
+                min_size=(250, 40),
             )
         )
 
@@ -33,8 +32,7 @@ class MyView(arcade.View):
                 "Hello world",
                 center_x=600,
                 center_y=self.window.height // 2,
-                width=200,
-                height=40,
+                min_size=(250, 40),
             )
         )
 
