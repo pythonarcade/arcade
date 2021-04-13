@@ -93,6 +93,15 @@ class UIElement(arcade.Sprite):
         if min_size is not None:
             self.width, self.height = min_size
 
+    @property
+    def texture(self):
+        return super().texture
+
+    @texture.setter
+    def texture(self, value: Texture):
+        super()._set_texture2(value)
+        self._points = None
+
     def __repr__(self):
         return f"UIElement({self.id if self.id else self.__style_id})"
 
