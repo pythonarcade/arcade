@@ -1,5 +1,6 @@
 import os
 import arcade
+from arcade import Texture
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -43,3 +44,19 @@ def test_textures():
     window.test()
     window.close()
     arcade.cleanup_texture_cache()
+
+
+def test_texture_constructor_allows_none_and_none_string():
+    """
+    Test constructor accepting both None and the old style 'None'
+    """
+    Texture(
+        name="allowsnonehitbox",
+        hit_box_algorithm=None
+    )
+
+    Texture(
+        name="old_behavior_preserved",
+        hit_box_algorithm="None"
+    )
+

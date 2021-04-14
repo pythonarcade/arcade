@@ -124,9 +124,15 @@ class Texture:
 
         if hit_box_algorithm != "Simple" and \
            hit_box_algorithm != "Detailed" and \
-           hit_box_algorithm != "None":
-           raise ValueError("hit_box_algorithm must be 'Simple', 'Detailed', or 'None'.")
-        self._hit_box_algorithm = hit_box_algorithm
+           hit_box_algorithm != "None" and \
+           hit_box_algorithm != None:
+           raise ValueError(
+               "hit_box_algorithm must be 'Simple', 'Detailed', 'None'"
+               ", or an actual None value."
+           )
+
+        # preserve old behavior in case any users subclassed Texture
+        self._hit_box_algorithm = hit_box_algorithm or "None"
 
         self._hit_box_detail = hit_box_detail
 
