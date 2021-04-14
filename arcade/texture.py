@@ -89,7 +89,7 @@ class Texture:
 
         :param str name: Name of texture. Used for caching, so must be unique for each texture.
         :param PIL.Image.Image image: Image to use as a texture.
-        :param str hit_box_algorithm: One of 'None', 'Simple' or 'Detailed'. \
+        :param str hit_box_algorithm: One of None, 'None', 'Simple' or 'Detailed'. \
         Defaults to 'Simple'. Use 'Simple' for the :data:`PhysicsEngineSimple`, \
         :data:`PhysicsEnginePlatformer` \
         and 'Detailed' for the :data:`PymunkPhysicsEngine`.
