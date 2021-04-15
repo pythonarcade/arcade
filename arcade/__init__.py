@@ -54,10 +54,11 @@ else:
 # noinspection PyPep8
 import pyglet
 
-# On OS X we need to disable the shadow context
-# because the 2.1 shadow context cannot be upgrade to a 3.3+ core
-if platform.system() == 'Darwin':
-    pyglet.options['shadow_window'] = False
+# Disable shadow windows until issues with intel GPUs
+# on Windows and elsewhere are better understood.
+# Originally, this only disabled them for macs where
+# the 2.1 shadow context cannot be upgrade to a 3.3+ core
+pyglet.options['shadow_window'] = False
 
 # noinspection PyPep8
 from arcade import color
@@ -462,3 +463,4 @@ __all__ = ['AStarBarrierList',
            ]
 
 __version__ = VERSION
+
