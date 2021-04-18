@@ -46,6 +46,7 @@ class UIManager(EventDispatcher):
         self._hovered_element: Optional[UIElement] = None
 
         self._ui_elements: SpriteList = SpriteList(use_spatial_hash=True)
+        self._ui_elements._keep_textures = False
         self._id_cache: Dict[str, UIElement] = {}
 
         self.register_event_type('on_ui_event')
@@ -135,7 +136,8 @@ class UIManager(EventDispatcher):
         """
         Removes all UIElements which where added to the :py:class:`arcade.gui.UIManager`.
         """
-        self._ui_elements = SpriteList()
+        self._ui_elements: SpriteList = SpriteList(use_spatial_hash=True)
+        self._ui_elements._keep_textures = False
         self._id_cache = {}
 
     def add_ui_element(self, ui_element: UIElement):

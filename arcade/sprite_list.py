@@ -231,6 +231,7 @@ class SpriteList:
     """
     array_of_images: Optional[List[Any]]
     next_texture_id = 0
+    _keep_textures = True
 
     def __init__(self,
                  use_spatial_hash=None,
@@ -650,11 +651,15 @@ class SpriteList:
 
             if new_texture:
                 # Add back in any old textures. Chances are we'll need them.
-                for index, old_texture_name in enumerate(self.array_of_texture_names):
-                    if old_texture_name not in new_array_of_texture_names and self.array_of_images is not None:
-                        new_array_of_texture_names.append(old_texture_name)
-                        image = self.array_of_images[index]
-                        new_array_of_images.append(image)
+                if self._keep_textures:
+                    # In general we want to keep old textures, if they come back (AnimatedSprites)
+                    # But for the GUI it is a problem, to keep all created textures
+                    # This provides a temporary workaround
+                    for index, old_texture_name in enumerate(self.array_of_texture_names):
+                        if old_texture_name not in new_array_of_texture_names and self.array_of_images is not None:
+                            new_array_of_texture_names.append(old_texture_name)
+                            image = self.array_of_images[index]
+                            new_array_of_images.append(image)
 
                 self.array_of_texture_names = new_array_of_texture_names
 
