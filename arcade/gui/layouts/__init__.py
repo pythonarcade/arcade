@@ -169,6 +169,7 @@ class UILayout(ABC):
 
         self._elements: List[_PackedElement] = []
         self._layer = SpriteList()
+        self._layer._keep_textures = False  # Workaround to prevent OOM
         self._child_layouts: List[UILayout] = []
 
         self.size_hint = size_hint
