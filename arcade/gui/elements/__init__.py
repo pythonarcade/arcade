@@ -98,10 +98,15 @@ class UIElement(arcade.Sprite):
         return super().texture
 
     @texture.setter
-    def texture(self, value: Texture):
-        super()._set_texture2(value)
+    def texture(self, texture: Texture):
+        if texture == self._texture:
+            return
+        assert(isinstance(texture, Texture))
+
+        super()._set_texture2(texture)
         # update points list, so that size changes are applied to hitbox
-        self._points = value.hit_box_points
+        if texture:
+            self._points = texture.hit_box_points
 
     def __repr__(self):
         return f"UIElement({self.id if self.id else self.__style_id})"

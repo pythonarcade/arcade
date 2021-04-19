@@ -13,7 +13,7 @@ from tests.test_gui import dummy_element
 def layout_manager(window) -> UILayoutManager:
     mng = UILayoutManager(window)
     yield mng
-    mng.unregister_handlers()
+    mng.disable()
 
 
 def test_update_triggers_refresh(layout_manager):

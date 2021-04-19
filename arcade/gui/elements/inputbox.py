@@ -174,6 +174,7 @@ class UIInputBox(UIClickable):
         self.focus_texture = None
 
         self.render()
+        self.set_proper_texture()
 
     def render(self):
         font_name = self.style_attr("font_name", ["Calibri", "Arial"])

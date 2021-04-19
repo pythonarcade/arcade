@@ -26,6 +26,7 @@ class MyView(arcade.View):
     def on_show_view(self):
         arcade.set_background_color(arcade.color.BLACK)
         self.ui_manager.purge_ui_elements()
+        self.ui_manager.enable()
 
         self.ui_manager.add_ui_element(
             UILabel(
@@ -86,7 +87,7 @@ class MyView(arcade.View):
         login_message.text = f"Welcome {username}, you are my first player."
 
     def on_hide_view(self):
-        self.ui_manager.unregister_handlers()
+        self.ui_manager.disable()
 
 
 if __name__ == "__main__":

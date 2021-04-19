@@ -86,7 +86,7 @@ class UILayoutManager(UIAbstractManager):
 
     """
 
-    def __init__(self, window=None, attach_callbacks=True):
+    def __init__(self, window=None, auto_enable=False):
         super().__init__()
         self.window: arcade.Window = window or arcade.get_window()
 
@@ -94,8 +94,8 @@ class UILayoutManager(UIAbstractManager):
 
         self.do_layout()
 
-        if attach_callbacks:
-            self.register_handlers()
+        if auto_enable:
+            self.enable()
 
     def on_ui_event(self, event):
         self._handle_ui_event(event)

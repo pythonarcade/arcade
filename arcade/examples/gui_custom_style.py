@@ -68,13 +68,15 @@ class MyView(arcade.View):
         """ Draw this view """
         arcade.start_render()
         arcade.set_background_color(arcade.color.BLACK)
+        self.ui_manager.on_draw()
 
     def on_show_view(self):
         """ Show this view """
         self.setup()
+        self.ui_manager.enable()
 
     def on_hide_view(self):
-        self.ui_manager.unregister_handlers()
+        self.ui_manager.disable()
 
 
 if __name__ == '__main__':

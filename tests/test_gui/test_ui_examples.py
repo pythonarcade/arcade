@@ -102,7 +102,7 @@ def test_gui_examples(twm, window, example):
 
     # manually clean up ui_manager handlers
     ui_manager: UIAbstractManager = view.ui_manager
-    ui_manager.unregister_handlers()
+    ui_manager.disable()
 
     # compare files
     assert (

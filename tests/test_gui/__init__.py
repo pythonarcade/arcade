@@ -138,23 +138,28 @@ class MockButton(UIClickable):
             **kwargs
         )
         self.event_history: List[arcade.gui.events.UIEvent] = []
+        self.render()
 
     def render(self):
         self.normal_texture = arcade.Texture(
             image=PIL.Image.new("RGBA", (self.width, self.height), color=(255, 0, 0)),
             name=str(uuid4()),
+            hit_box_algorithm='None'
         )
         self.hover_texture = arcade.Texture(
             image=PIL.Image.new("RGBA", (self.width, self.height), color=(255, 0, 0)),
             name=str(uuid4()),
+            hit_box_algorithm='None'
         )
         self.press_texture = arcade.Texture(
             image=PIL.Image.new("RGBA", (self.width, self.height), color=(255, 0, 0)),
             name=str(uuid4()),
+            hit_box_algorithm='None'
         )
         self.focus_texture = arcade.Texture(
             image=PIL.Image.new("RGBA", (self.width, self.height), color=(255, 0, 0)),
             name=str(uuid4()),
+            hit_box_algorithm='None'
         )
 
         self.set_proper_texture()

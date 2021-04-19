@@ -50,11 +50,12 @@ class UIAbstractManager(EventDispatcher, metaclass=ABCMeta):
         """
         pass
 
-    def register_handlers(self):
+    def enable(self):
         """
         Registers handler functions (`on_...`) to :py:attr:`arcade.gui.UIElement`
 
-        on_draw is not registered, to provide full control about draw order
+        on_draw is not registered, to provide full control about draw order,
+        so it has to be called by the devs themselves.
         """
         self.window.push_handlers(
             self.on_resize,
@@ -71,7 +72,7 @@ class UIAbstractManager(EventDispatcher, metaclass=ABCMeta):
             self.on_text_motion_select,
         )
 
-    def unregister_handlers(self):
+    def disable(self):
         """
         Remove handler functions (`on_...`) from :py:attr:`arcade.Window`
 
@@ -275,7 +276,7 @@ class UIManager(UIAbstractManager):
 
     """
 
-    def __init__(self, window=None, attach_callbacks=True, **kwargs):
+    def __init__(self, window=None, auto_enable=False, **kwargs):
         """
         Creates a new :py:class:`arcade.gui.UIManager` and
         registers the corresponding handlers to the current window.
@@ -298,9 +299,9 @@ class UIManager(UIAbstractManager):
         self._ui_elements._keep_textures = False  # Workaround to prevent OOM
         self._id_cache: Dict[str, UIElement] = {}
 
-        if attach_callbacks:
+        if auto_enable:
             # TODO maybe push to ABC
-            self.register_handlers()
+            self.enable()
 
     def purge_ui_elements(self):
         """

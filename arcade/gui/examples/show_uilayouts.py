@@ -14,6 +14,7 @@ class MyView(View):
     def __init__(self, window=None):
         super().__init__(window=window)
         self.ui_manager = UILayoutManager(window=window)
+        self.ui_manager.enable()
 
         self._drag_start = None
         self._drag_stop = None

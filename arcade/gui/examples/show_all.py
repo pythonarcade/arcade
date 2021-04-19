@@ -25,6 +25,7 @@ class MyView(arcade.View):
         """ Show main view """
         arcade.set_background_color(arcade.color.BLACK)
         self.ui_manager.purge_ui_elements()
+        self.ui_manager.enable()
 
         y_slot = self.window.height // 4
 
@@ -100,7 +101,7 @@ class MyView(arcade.View):
         )
 
     def on_hide_view(self):
-        self.ui_manager.unregister_handlers()
+        self.ui_manager.disable()
 
 
 if __name__ == "__main__":
