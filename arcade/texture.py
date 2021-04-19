@@ -89,7 +89,7 @@ class Texture:
 
         :param str name: Name of texture. Used for caching, so must be unique for each texture.
         :param PIL.Image.Image image: Image to use as a texture.
-        :param str hit_box_algorithm: One of 'None', 'Simple' or 'Detailed'. \
+        :param str hit_box_algorithm: One of None, 'None', 'Simple' or 'Detailed'. \
         Defaults to 'Simple'. Use 'Simple' for the :data:`PhysicsEngineSimple`, \
         :data:`PhysicsEnginePlatformer` \
         and 'Detailed' for the :data:`PymunkPhysicsEngine`.
@@ -124,9 +124,15 @@ class Texture:
 
         if hit_box_algorithm != "Simple" and \
            hit_box_algorithm != "Detailed" and \
-           hit_box_algorithm != "None":
-           raise ValueError("hit_box_algorithm must be 'Simple', 'Detailed', or 'None'.")
-        self._hit_box_algorithm = hit_box_algorithm
+           hit_box_algorithm != "None" and \
+           hit_box_algorithm != None:
+           raise ValueError(
+               "hit_box_algorithm must be 'Simple', 'Detailed', 'None'"
+               ", or an actual None value."
+           )
+
+        # preserve old behavior in case any users subclassed Texture
+        self._hit_box_algorithm = hit_box_algorithm or "None"
 
         self._hit_box_detail = hit_box_detail
 

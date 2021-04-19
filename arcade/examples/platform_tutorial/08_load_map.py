@@ -88,14 +88,14 @@ class MyGame(arcade.Window):
         # --- Load in a map from the tiled editor ---
 
         # Name of map file to load
-        map_name = ":resources:tmx_maps/map.tmx"
+        map_name = ":resources:tiled_maps/map.json"
         # Name of the layer in the file that has our platforms/walls
         platforms_layer_name = 'Platforms'
         # Name of the layer that has items for pick-up
         coins_layer_name = 'Coins'
 
         # Read in the tiled map
-        my_map = arcade.tilemap.read_tmx(map_name)
+        my_map = arcade.tilemap.read_map(map_name)
 
         # -- Platforms
         self.wall_list = arcade.tilemap.process_layer(map_object=my_map,

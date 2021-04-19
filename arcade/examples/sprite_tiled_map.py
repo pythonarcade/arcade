@@ -84,10 +84,10 @@ class MyGame(arcade.Window):
         self.player_sprite.center_y = 270
         self.player_list.append(self.player_sprite)
 
-        map_name = ":resources:/tmx_maps/map.tmx"
+        map_name = ":resources:/tiled_maps/map.json"
 
         # Read in the tiled map
-        my_map = arcade.tilemap.read_tmx(map_name)
+        my_map = arcade.tilemap.read_map(map_name)
         self.end_of_map = my_map.map_size.width * GRID_PIXEL_SIZE
 
         # --- Platforms ---

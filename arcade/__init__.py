@@ -54,10 +54,11 @@ else:
 # noinspection PyPep8
 import pyglet
 
-# On OS X we need to disable the shadow context
-# because the 2.1 shadow context cannot be upgrade to a 3.3+ core
-if platform.system() == 'Darwin':
-    pyglet.options['shadow_window'] = False
+# Disable shadow windows until issues with intel GPUs
+# on Windows and elsewhere are better understood.
+# Originally, this only disabled them for macs where
+# the 2.1 shadow context cannot be upgrade to a 3.3+ core
+pyglet.options['shadow_window'] = False
 
 # noinspection PyPep8
 from arcade import color
@@ -260,7 +261,7 @@ from .text import render_text
 
 from .tilemap import get_tilemap_layer
 from .tilemap import process_layer
-from .tilemap import read_tmx
+from .tilemap import read_map
 
 from .pymunk_physics_engine import PymunkPhysicsEngine
 from .pymunk_physics_engine import PymunkPhysicsObject
@@ -462,3 +463,4 @@ __all__ = ['AStarBarrierList',
            ]
 
 __version__ = VERSION
+

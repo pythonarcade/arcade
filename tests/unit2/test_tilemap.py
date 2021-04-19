@@ -1,8 +1,10 @@
 import arcade
 
+from pytiled_parser.common_types import Color
+
 
 def test_one():
-    tmx_map = arcade.tilemap.read_tmx(":resources:/tmx_maps/test_map_1.tmx")
+    tmx_map = arcade.tilemap.read_map(":resources:/tiled_maps/test_map_1.json")
 
     assert tmx_map.map_size.width == 10
     assert tmx_map.map_size.height == 5
@@ -10,7 +12,7 @@ def test_one():
     assert tmx_map.orientation == "orthogonal"
     assert tmx_map.render_order == 'right-down'
     assert len(tmx_map.layers) == 2
-    assert tmx_map.background_color == (0, 160, 229)
+    assert tmx_map.background_color == Color(0, 160, 229, 255)
 
     platforms_list = arcade.tilemap.process_layer(tmx_map, "Platforms", base_directory="test_data")
 
@@ -28,7 +30,7 @@ def test_one():
 
 
 def test_two():
-    tmx_map = arcade.tilemap.read_tmx(":resources:tmx_maps/test_map_2.tmx")
+    tmx_map = arcade.tilemap.read_map(":resources:tiled_maps/test_map_2.json")
 
     assert tmx_map.map_size.width == 10
     assert tmx_map.map_size.height == 5
@@ -37,7 +39,7 @@ def test_two():
     assert tmx_map.render_order == 'left-up'
     assert len(tmx_map.layers) == 3
 
-    platforms_list = arcade.tilemap.process_layer(tmx_map, "Platforms", base_directory="test_data")
+    platforms_list = arcade.tilemap.process_layer(tmx_map, "Platforms")
 
     assert platforms_list is not None
 
@@ -53,7 +55,7 @@ def test_two():
     assert first_sprite.width == 128
     assert first_sprite.height == 128
 
-    dirt_list = arcade.tilemap.process_layer(tmx_map, "Dirt", base_directory="test_data")
+    dirt_list = arcade.tilemap.process_layer(tmx_map, "Dirt")
 
     first_sprite = dirt_list[0]
     assert first_sprite is not None
@@ -71,7 +73,7 @@ def test_two():
     # print(first_sprite.center_x, first_sprite.center_y)
     # print(first_sprite.points)
 
-    coin_list = arcade.tilemap.process_layer(tmx_map, "Coins", base_directory="test_data")
+    coin_list = arcade.tilemap.process_layer(tmx_map, "Coins")
     first_sprite = coin_list[0]
     assert first_sprite is not None
     # print(first_sprite.center_x, first_sprite.center_y)
@@ -82,7 +84,7 @@ def test_two():
 
 
 def test_three():
-    tmx_map = arcade.tilemap.read_tmx(":resources:tmx_maps/test_map_3.tmx")
+    tmx_map = arcade.tilemap.read_map(":resources:tiled_maps/test_map_3.json")
     assert tmx_map is not None
 
     sprite_list = arcade.tilemap.process_layer(tmx_map, "Moving Platforms", base_directory="test_data")
@@ -98,13 +100,13 @@ def test_three():
 
 
 def test_five():
-    tmx_map = arcade.tilemap.read_tmx(":resources:tmx_maps/test_map_5.tmx")
+    tmx_map = arcade.tilemap.read_map(":resources:tiled_maps/test_map_5.json")
     assert tmx_map is not None
 
     arcade.tilemap.process_layer(tmx_map, 'object_layer')
 
 def test_sprite_sheet():
-    tmx_map = arcade.tilemap.read_tmx(":resources:tmx_maps/test_map_6.tmx")
+    tmx_map = arcade.tilemap.read_map(":resources:tiled_maps/test_map_6.json")
     assert tmx_map is not None
 
     sprite_list = arcade.tilemap.process_layer(tmx_map, 'Tile Layer 1')

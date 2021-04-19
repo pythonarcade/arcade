@@ -194,8 +194,8 @@ class GameWindow(arcade.Window):
         self.bullet_list = arcade.SpriteList()
 
         # Read in the tiled map
-        map_name = "pymunk_test_map.tmx"
-        my_map = arcade.tilemap.read_tmx(map_name)
+        map_name = "pymunk_test_map.json"
+        my_map = arcade.tilemap.read_map(map_name)
 
         # Read in the map layers
         self.wall_list = arcade.tilemap.process_layer(my_map, 'Platforms', SPRITE_SCALING_TILES)

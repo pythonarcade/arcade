@@ -197,10 +197,14 @@ class Program:
         if gl.current_context is None:
             return
 
-        for shader_id in shaders_id:
-            gl.glDetachShader(prog_id, shader_id)
+        try:
+            for shader_id in shaders_id:
+                gl.glDetachShader(prog_id, shader_id)
 
-        gl.glDeleteProgram(prog_id)
+            gl.glDeleteProgram(prog_id)
+        except gl.GLException:
+            # Context probably corrupt
+            pass
 
         ctx.stats.decr("program")
 

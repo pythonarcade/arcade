@@ -215,10 +215,10 @@ class GameWindow(arcade.Window):
         self.player_sprite.center_y = 250
         self.player_list.append(self.player_sprite)
 
-        map_name = "pymunk_test_map.tmx"
+        map_name = "pymunk_test_map.json"
 
         # Read in the tiled map
-        my_map = arcade.tilemap.read_tmx(map_name)
+        my_map = arcade.tilemap.read_map(map_name)
 
         # --- Read in layers ---
         self.wall_list = arcade.tilemap.process_layer(my_map, 'Platforms', SPRITE_SCALING_TILES)
