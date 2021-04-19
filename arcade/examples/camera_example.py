@@ -92,8 +92,8 @@ class MyGame(arcade.Window):
         self.pan_camera_to_user()
 
         # Read in the tiled map
-        map_name = ":resources:tmx_maps/level_1.tmx"
-        my_map = arcade.tilemap.read_tmx(map_name)
+        map_name = ":resources:tiled_maps/level_1.json"
+        my_map = arcade.tilemap.read_map(map_name)
         self.end_of_map = my_map.map_size.width * GRID_PIXEL_SIZE
 
         # --- Platforms ---

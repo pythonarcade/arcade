@@ -3,8 +3,10 @@ Platformer Game
 
 python -m arcade.examples.platform_tutorial.11_animate_character
 """
-import arcade
+import math
 import os
+
+import arcade
 
 # Constants
 SCREEN_WIDTH = 1000
@@ -16,7 +18,7 @@ TILE_SCALING = 0.5
 CHARACTER_SCALING = TILE_SCALING * 2
 COIN_SCALING = TILE_SCALING
 SPRITE_PIXEL_SIZE = 128
-GRID_PIXEL_SIZE = (SPRITE_PIXEL_SIZE * TILE_SCALING)
+GRID_PIXEL_SIZE = SPRITE_PIXEL_SIZE * TILE_SCALING
 
 # Movement speed of player, in pixels per frame
 PLAYER_MOVEMENT_SPEED = 7
@@ -30,8 +32,8 @@ RIGHT_VIEWPORT_MARGIN = 200
 BOTTOM_VIEWPORT_MARGIN = 150
 TOP_VIEWPORT_MARGIN = 100
 
-PLAYER_START_X = SPRITE_PIXEL_SIZE * TILE_SCALING * 2
-PLAYER_START_Y = SPRITE_PIXEL_SIZE * TILE_SCALING * 1
+PLAYER_START_X = 2
+PLAYER_START_Y = 1
 
 # Constants used to track if the player is facing left or right
 RIGHT_FACING = 0
@@ -44,40 +46,23 @@ def load_texture_pair(filename):
     """
     return [
         arcade.load_texture(filename),
-        arcade.load_texture(filename, flipped_horizontally=True)
+        arcade.load_texture(filename, flipped_horizontally=True),
     ]
 
 
-class PlayerCharacter(arcade.Sprite):
-    """ Player Sprite"""
-    def __init__(self):
-
-        # Set up parent class
+class Entity(arcade.Sprite):
+    def __init__(self, name_folder, name_file):
         super().__init__()
 
-        # Default to face-right
-        self.character_face_direction = RIGHT_FACING
+        # Default to facing right
+        self.facing_direction = RIGHT_FACING
 
-        # Used for flipping between image sequences
+        # Used for image sequences
         self.cur_texture = 0
         self.scale = CHARACTER_SCALING
 
-        # Track our state
-        self.jumping = False
-        self.climbing = False
-        self.is_on_ladder = False
+        main_path = f":resources:images/animated_characters/{name_folder}/{name_file}"
 
-        # --- Load Textures ---
-
-        # Images from Kenney.nl's Asset Pack 3
-        # main_path = ":resources:images/animated_characters/female_adventurer/femaleAdventurer"
-        # main_path = ":resources:images/animated_characters/female_person/femalePerson"
-        main_path = ":resources:images/animated_characters/male_person/malePerson"
-        # main_path = ":resources:images/animated_characters/male_adventurer/maleAdventurer"
-        # main_path = ":resources:images/animated_characters/zombie/zombie"
-        # main_path = ":resources:images/animated_characters/robot/robot"
-
-        # Load textures for idle standing
         self.idle_texture_pair = load_texture_pair(f"{main_path}_idle.png")
         self.jump_texture_pair = load_texture_pair(f"{main_path}_jump.png")
         self.fall_texture_pair = load_texture_pair(f"{main_path}_fall.png")
@@ -103,12 +88,47 @@ class PlayerCharacter(arcade.Sprite):
         # self.set_hit_box([[-22, -64], [22, -64], [22, 28], [-22, 28]])
         self.set_hit_box(self.texture.hit_box_points)
 
-    def update_animation(self, delta_time: float = 1/60):
+
+class Enemy(Entity):
+    def __init__(self, name_folder, name_file):
+
+        # Setup parent class
+        super().__init__(name_folder, name_file)
+
+
+class RobotEnemy(Enemy):
+    def __init__(self):
+
+        # Set up parent class
+        super().__init__("robot", "robot")
+
+
+class ZombieEnemy(Enemy):
+    def __init__(self):
+
+        # Set up parent class
+        super().__init("zombie", "zombie")
+
+
+class PlayerCharacter(Entity):
+    """ Player Sprite"""
+
+    def __init__(self):
+
+        # Set up parent class
+        super().__init__("male_person", "malePerson")
+
+        # Track our state
+        self.jumping = False
+        self.climbing = False
+        self.is_on_ladder = False
+
+    def update_animation(self, delta_time: float = 1 / 60):
 
         # Figure out if we need to flip face left or right
-        if self.change_x < 0 and self.character_face_direction == RIGHT_FACING:
+        if self.change_x < 0 and self.facing_direction == RIGHT_FACING:
             self.character_face_direction = LEFT_FACING
-        elif self.change_x > 0 and self.character_face_direction == LEFT_FACING:
+        elif self.change_x > 0 and self.facing_direction == LEFT_FACING:
             self.character_face_direction = RIGHT_FACING
 
         # Climbing animation
@@ -126,22 +146,22 @@ class PlayerCharacter(arcade.Sprite):
 
         # Jumping animation
         if self.change_y > 0 and not self.is_on_ladder:
-            self.texture = self.jump_texture_pair[self.character_face_direction]
+            self.texture = self.jump_texture_pair[self.facing_direction]
             return
         elif self.change_y < 0 and not self.is_on_ladder:
-            self.texture = self.fall_texture_pair[self.character_face_direction]
+            self.texture = self.fall_texture_pair[self.facing_direction]
             return
 
         # Idle animation
         if self.change_x == 0:
-            self.texture = self.idle_texture_pair[self.character_face_direction]
+            self.texture = self.idle_texture_pair[self.facing_direction]
             return
 
         # Walking animation
         self.cur_texture += 1
         if self.cur_texture > 7:
             self.cur_texture = 0
-        self.texture = self.walk_textures[self.cur_texture][self.character_face_direction]
+        self.texture = self.walk_textures[self.cur_texture][self.facing_direction]
 
 
 class MyGame(arcade.Window):
@@ -175,6 +195,7 @@ class MyGame(arcade.Window):
         self.background_list = None
         self.ladder_list = None
         self.player_list = None
+        self.enemy_list = None
 
         # Separate variable that holds the player sprite
         self.player_sprite = None
@@ -211,22 +232,18 @@ class MyGame(arcade.Window):
         self.background_list = arcade.SpriteList()
         self.wall_list = arcade.SpriteList()
         self.coin_list = arcade.SpriteList()
-
-        # Set up the player, specifically placing it at these coordinates.
-        self.player_sprite = PlayerCharacter()
-
-        self.player_sprite.center_x = PLAYER_START_X
-        self.player_sprite.center_y = PLAYER_START_Y
-        self.player_list.append(self.player_sprite)
+        self.enemy_list = arcade.SpriteList()
 
         # --- Load in a map from the tiled editor ---
 
         # Name of the layer in the file that has our platforms/walls
-        platforms_layer_name = 'Platforms'
-        moving_platforms_layer_name = 'Moving Platforms'
+        platforms_layer_name = "Platforms"
+        moving_platforms_layer_name = "Moving Platforms"
+
+        enemy_spawns_layer_name = "Enemies"
 
         # Name of the layer that has items for pick-up
-        coins_layer_name = 'Coins'
+        coins_layer_name = "Coins"
 
         # Map name
         map_name = f":resources:tiled_maps/map_with_ladders.json"
@@ -234,32 +251,65 @@ class MyGame(arcade.Window):
         # Read in the tiled map
         my_map = arcade.tilemap.read_map(map_name)
 
+        # Set up the player, specifically placing it at these coordinates.
+        self.player_sprite = PlayerCharacter()
+
+        self.player_sprite.center_x = (
+            my_map.tile_size[0] * TILE_SCALING * PLAYER_START_X
+        )
+        self.player_sprite.center_y = (
+            my_map.tile_size[1] * TILE_SCALING * PLAYER_START_Y
+        )
+        self.player_list.append(self.player_sprite)
+
         # Calculate the right edge of the my_map in pixels
         self.end_of_map = my_map.map_size.width * GRID_PIXEL_SIZE
 
         # -- Platforms
-        self.wall_list = arcade.tilemap.process_layer(my_map,
-                                                      platforms_layer_name,
-                                                      TILE_SCALING,
-                                                      use_spatial_hash=True)
+        self.wall_list = arcade.tilemap.process_layer(
+            my_map, platforms_layer_name, TILE_SCALING, use_spatial_hash=True
+        )
 
         # -- Moving Platforms
-        moving_platforms_list = arcade.tilemap.process_layer(my_map, moving_platforms_layer_name, TILE_SCALING)
+        moving_platforms_list = arcade.tilemap.process_layer(
+            my_map, moving_platforms_layer_name, TILE_SCALING
+        )
         for sprite in moving_platforms_list:
             self.wall_list.append(sprite)
 
         # -- Background objects
-        self.background_list = arcade.tilemap.process_layer(my_map, "Background", TILE_SCALING)
+        self.background_list = arcade.tilemap.process_layer(
+            my_map, "Background", TILE_SCALING
+        )
 
         # -- Background objects
-        self.ladder_list = arcade.tilemap.process_layer(my_map, "Ladders",
-                                                        TILE_SCALING,
-                                                        use_spatial_hash=True)
+        self.ladder_list = arcade.tilemap.process_layer(
+            my_map, "Ladders", TILE_SCALING, use_spatial_hash=True
+        )
 
         # -- Coins
-        self.coin_list = arcade.tilemap.process_layer(my_map, coins_layer_name,
-                                                      TILE_SCALING,
-                                                      use_spatial_hash=True)
+        self.coin_list = arcade.tilemap.process_layer(
+            my_map, coins_layer_name, TILE_SCALING, use_spatial_hash=True
+        )
+
+        # -- Enemies
+        enemies_layer = arcade.get_tilemap_layer(my_map, enemy_spawns_layer_name)
+
+        for point in enemies_layer.tiled_objects:
+            cartesian = arcade.tilemap.get_cartesian(my_map, point.coordinates)
+            print(cartesian)
+            enemy = RobotEnemy()
+            enemy.center_x = math.floor(
+                cartesian.x * TILE_SCALING * my_map.tile_size[0]
+            )
+            enemy.center_y = math.floor(
+                -(cartesian.y - my_map.map_size.height)
+                * TILE_SCALING
+                * my_map.tile_size[1]
+            )
+            print(enemy.center_x)
+            print(enemy.center_y)
+            self.enemy_list.append(enemy)
 
         # --- Other stuff
         # Set the background color
@@ -267,10 +317,12 @@ class MyGame(arcade.Window):
             arcade.set_background_color(my_map.background_color)
 
         # Create the 'physics engine'
-        self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
-                                                             self.wall_list,
-                                                             gravity_constant=GRAVITY,
-                                                             ladders=self.ladder_list)
+        self.physics_engine = arcade.PhysicsEnginePlatformer(
+            self.player_sprite,
+            self.wall_list,
+            gravity_constant=GRAVITY,
+            ladders=self.ladder_list,
+        )
 
     def on_draw(self):
         """ Render the screen. """
@@ -284,11 +336,17 @@ class MyGame(arcade.Window):
         self.ladder_list.draw()
         self.coin_list.draw()
         self.player_list.draw()
+        self.enemy_list.draw()
 
         # Draw our score on the screen, scrolling it with the viewport
         score_text = f"Score: {self.score}"
-        arcade.draw_text(score_text, 10 + self.view_left, 10 + self.view_bottom,
-                         arcade.csscolor.BLACK, 18)
+        arcade.draw_text(
+            score_text,
+            10 + self.view_left,
+            10 + self.view_bottom,
+            arcade.csscolor.BLACK,
+            18,
+        )
 
         # Draw hit boxes.
         # for wall in self.wall_list:
@@ -304,7 +362,10 @@ class MyGame(arcade.Window):
         if self.up_pressed and not self.down_pressed:
             if self.physics_engine.is_on_ladder():
                 self.player_sprite.change_y = PLAYER_MOVEMENT_SPEED
-            elif self.physics_engine.can_jump(y_distance=10) and not self.jump_needs_reset:
+            elif (
+                self.physics_engine.can_jump(y_distance=10)
+                and not self.jump_needs_reset
+            ):
                 self.player_sprite.change_y = PLAYER_JUMP_SPEED
                 self.jump_needs_reset = True
                 arcade.play_sound(self.jump_sound)
@@ -378,6 +439,7 @@ class MyGame(arcade.Window):
         self.coin_list.update_animation(delta_time)
         self.background_list.update_animation(delta_time)
         self.player_list.update_animation(delta_time)
+        self.enemy_list.update_animation(delta_time)
 
         # Update walls, used with moving platforms
         self.wall_list.update()
@@ -385,27 +447,40 @@ class MyGame(arcade.Window):
         # See if the moving wall hit a boundary and needs to reverse direction.
         for wall in self.wall_list:
 
-            if wall.boundary_right and wall.right > wall.boundary_right and wall.change_x > 0:
+            if (
+                wall.boundary_right
+                and wall.right > wall.boundary_right
+                and wall.change_x > 0
+            ):
                 wall.change_x *= -1
-            if wall.boundary_left and wall.left < wall.boundary_left and wall.change_x < 0:
+            if (
+                wall.boundary_left
+                and wall.left < wall.boundary_left
+                and wall.change_x < 0
+            ):
                 wall.change_x *= -1
             if wall.boundary_top and wall.top > wall.boundary_top and wall.change_y > 0:
                 wall.change_y *= -1
-            if wall.boundary_bottom and wall.bottom < wall.boundary_bottom and wall.change_y < 0:
+            if (
+                wall.boundary_bottom
+                and wall.bottom < wall.boundary_bottom
+                and wall.change_y < 0
+            ):
                 wall.change_y *= -1
 
         # See if we hit any coins
-        coin_hit_list = arcade.check_for_collision_with_list(self.player_sprite,
-                                                             self.coin_list)
+        coin_hit_list = arcade.check_for_collision_with_list(
+            self.player_sprite, self.coin_list
+        )
 
         # Loop through each coin we hit (if any) and remove it
         for coin in coin_hit_list:
 
             # Figure out how many points this coin is worth
-            if 'Points' not in coin.properties:
+            if "Points" not in coin.properties:
                 print("Warning, collected a coin without a Points property.")
             else:
-                points = int(coin.properties['Points'])
+                points = int(coin.properties["Points"])
                 self.score += points
 
             # Remove the coin
@@ -448,10 +523,12 @@ class MyGame(arcade.Window):
             self.view_left = int(self.view_left)
 
             # Do the scrolling
-            arcade.set_viewport(self.view_left,
-                                SCREEN_WIDTH + self.view_left,
-                                self.view_bottom,
-                                SCREEN_HEIGHT + self.view_bottom)
+            arcade.set_viewport(
+                self.view_left,
+                SCREEN_WIDTH + self.view_left,
+                self.view_bottom,
+                SCREEN_HEIGHT + self.view_bottom,
+            )
 
 
 def main():

@@ -1,12 +1,13 @@
 import arcade
 
+from pytiled_parser.common_types import Color
 #
 # Test size, rotation, alpha of tiles from a Tiled object layer
 # Also tests path traversal to get a layer within a layer group
 #
 
 def test_one():
-    tmx_map = arcade.tilemap.read_tmx(":resources:/tmx_maps/test_objects.tmx")
+    tmx_map = arcade.tilemap.read_map(":resources:/tiled_maps/test_objects.json")
 
     assert tmx_map.map_size.width == 20
     assert tmx_map.map_size.height == 20
@@ -14,7 +15,7 @@ def test_one():
     assert tmx_map.orientation == "orthogonal"
     assert tmx_map.render_order == 'right-down'
     assert len(tmx_map.layers) == 4
-    assert tmx_map.background_color == (85, 170, 127)
+    assert tmx_map.background_color == Color(85, 170, 127, 255)
 
     tile_list = arcade.tilemap.process_layer(tmx_map, "Tiles", base_directory="test_data")
     assert tile_list is not None
