@@ -34,6 +34,9 @@ _FLIPPED_VERTICALLY_FLAG = 0x40000000
 _FLIPPED_DIAGONALLY_FLAG = 0x20000000
 
 
+def read_tmx(map_file: Union[str, Path]) -> pytiled_parser.TiledMap:
+    raise DeprecationWarning("The read_tmx function has been replaced with read_map. Use this function and convert your .tmx files to .json using the Tiled editor.")
+
 def read_map(map_file: Union[str, Path]) -> pytiled_parser.TiledMap:
     """
     Given a .json file, this will read in a tiled map, and return
