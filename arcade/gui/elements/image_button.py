@@ -29,7 +29,7 @@ class UIImageButton(UIClickable):
         :param normal_texture: texture shown in normal state
         :param hover_texture: texture shown if hovered
         :param press_texture: texture shown if pressed
-        :param text: text drawn on top of image
+        :param text: text drawn on top of textures, only the modified textures are kept
         :param id: id of :py:class:`arcade.gui.UIElement`
         :param style: style of :py:class:`arcade.gui.UIElement`
         :param kwargs: catches unsupported named parameters
@@ -50,21 +50,12 @@ class UIImageButton(UIClickable):
         )
         self.style_classes.append("imagebutton")
 
-        self._origin_normal_texture: Texture = normal_texture
-        self._origin_hover_texture: Optional[Texture] = hover_texture
-        self._origin_press_texture: Optional[Texture] = press_texture
+        self._normal_texture: Texture = normal_texture
+        self._hover_texture: Optional[Texture] = hover_texture
+        self._press_texture: Optional[Texture] = press_texture
 
-        self.text = text
-        # self.render implicitly called through setting self.text
-
-    @property
-    def text(self):
-        return self._text
-
-    @text.setter
-    def text(self, text):
-        self._text = text
-        self.render()
+        self.write_text(text=text)
+        self.set_proper_texture()
 
     @property
     def normal_texture(self):
@@ -91,15 +82,14 @@ class UIImageButton(UIClickable):
         raise Exception("Change texture not supported")
 
     def render(self):
-        if self.text:
-            self.render_with_text(self.text)
-        else:
-            self._normal_texture = self._origin_normal_texture
-            self._hover_texture = self._origin_hover_texture
-            self._press_texture = self._origin_press_texture
         self.set_proper_texture()
 
-    def render_with_text(self, text: str):
+    def write_text(self, text: str):
+        """
+        Writes text on top of the normal, hover and press texture.
+        The original textures will be replaced by copies with the given text
+        :param text: Text to write
+        """
         font_name = self.style_attr("font_name", ["Calibri", "Arial"])
         font_size = self.style_attr("font_size", 22)
         font_color = self.style_attr("font_color", arcade.color.GRAY)
@@ -116,53 +106,53 @@ class UIImageButton(UIClickable):
             font_name=font_name,
             font_size=font_size,
             font_color=font_color,
-            bg_image=self._origin_normal_texture.image,
+            bg_image=self._normal_texture.image,
         )
         normal_image_uuid = text_utils.generate_uuid(
             text=text,
             font_name=font_name,
             font_size=font_size,
             font_color=font_color,
-            image=self._origin_normal_texture.image,
+            image=self._normal_texture.image,
         )
         self._normal_texture = Texture(
-            normal_image_uuid, image=normal_image, hit_box_algorithm="None"
+            self._normal_texture.name + normal_image_uuid, image=normal_image, hit_box_algorithm="None"
         )
 
-        if self._origin_hover_texture:
+        if self._hover_texture:
             hover_image = text_utils.create_raw_text_image(
                 text=text,
                 font_name=font_name,
                 font_size=font_size,
                 font_color=font_color_hover,
-                bg_image=self._origin_hover_texture.image,
+                bg_image=self._hover_texture.image,
             )
             hover_image_uuid = text_utils.generate_uuid(
                 text=text,
                 font_name=font_name,
                 font_size=font_size,
                 font_color=font_color_hover,
-                image=self._origin_hover_texture.image,
+                image=self._hover_texture.image,
             )
             self._hover_texture = Texture(
-                hover_image_uuid, image=hover_image, hit_box_algorithm="None"
+                self._hover_texture.name + hover_image_uuid, image=hover_image, hit_box_algorithm="None"
             )
 
-        if self._origin_press_texture:
+        if self._press_texture:
             press_image = text_utils.create_raw_text_image(
                 text=text,
                 font_name=font_name,
                 font_size=font_size,
                 font_color=font_color_press,
-                bg_image=self._origin_press_texture.image,
+                bg_image=self._press_texture.image,
             )
             press_image_uuid = text_utils.generate_uuid(
                 text=text,
                 font_name=font_name,
                 font_size=font_size,
                 font_color=font_color_press,
-                image=self._origin_press_texture.image,
+                image=self._press_texture.image,
             )
             self._press_texture = Texture(
-                press_image_uuid, image=press_image, hit_box_algorithm="None"
+                self._press_texture.name + press_image_uuid, image=press_image, hit_box_algorithm="None"
             )
