@@ -63,8 +63,8 @@ class AtlasRegion:
         self.height = height
         # start_x, start_y, normalized_width, normalized_height
         self.texture_coordinates = (
-            1.0 / self.x,
-            1.0 / (self.atlas.height - self.y),
+            self.x / self.atlas.width,
+            (self.atlas.height - self.y - self.height) / self.atlas.height,
             self.width / self.atlas.width,
             self.height / self.atlas.height,
         )

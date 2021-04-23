@@ -668,11 +668,9 @@ class SpriteList:
             # --------------------------------------------------------------------
             # Go through each sprite and pull from the coordinate list, the proper
             # coordinates for that sprite's image
-            print("---texcoords")
             self._sprite_sub_tex_data = array.array('f')
             for sprite in self.sprite_list:
                 region = atlas.get_region_info(sprite.texture.name)
-                print(region.texture_coordinates)
                 self._sprite_sub_tex_data.extend(region.texture_coordinates)
 
             self._sprite_sub_tex_buf = self.ctx.buffer(
@@ -949,7 +947,7 @@ class SpriteList:
         self.atlas.texture.use(0)
 
         if "filter" in kwargs:
-            self._texture.filter = self.ctx.NEAREST, self.ctx.NEAREST
+            self.atlas.texture.filter = self.ctx.NEAREST, self.ctx.NEAREST
 
         self.program['Texture'] = 0
 
