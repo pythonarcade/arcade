@@ -3,7 +3,7 @@ This module provides functionality to manage Sprites in a list.
 
 """
 
-from typing import Iterable, Iterator
+from typing import Iterable, Iterator, TYPE_CHECKING
 from typing import Any
 from typing import TypeVar
 from typing import List
@@ -20,17 +20,21 @@ from random import shuffle
 
 from PIL import Image
 
-from arcade import Color
-from arcade import Matrix3x3
-from arcade import Sprite
-from arcade import get_distance_between_sprites
-from arcade import are_polygons_intersecting
-from arcade import is_point_in_polygon
+from arcade import (
+    Color,
+    Matrix3x3,
+    Sprite,
+    get_distance_between_sprites,
+    are_polygons_intersecting,
+    is_point_in_polygon,
+    rotate_point,
+    get_window,
+    Point,
+    gl,
+)
 
-from arcade import rotate_point
-from arcade import get_window
-from arcade import Point
-from arcade import gl
+if TYPE_CHECKING:
+    from arcade import TextureAtlas
 
 LOG = logging.getLogger(__name__)
 
@@ -171,8 +175,6 @@ class _SpatialHash:
 
         :return: List of close-by sprites
         :rtype: List
-
-
         """
         # Get the corners
         min_x = check_object.left
@@ -230,13 +232,14 @@ class SpriteList:
     and doing collision detection. For optimization reasons, use_spatial_hash and
     is_static are very important.
     """
-    array_of_images: Optional[List[Any]]
     next_texture_id = 0
+    _keep_textures = True
 
     def __init__(self,
                  use_spatial_hash=None,
                  spatial_hash_cell_size=128,
-                 is_static=False):
+                 is_static=False,
+                 atlas: "TextureAtlas" = None):
         """
         Initialize the sprite list
 
@@ -248,10 +251,13 @@ class SpriteList:
         :param bool is_static: Speeds drawing if the sprites in the list do not
                move. Will result in buggy behavior if the sprites move when this
                is set to True.
+        :param TextureAtlas atlas: The texture alas for this sprite list. If no
+                atlas is supplied the global/default one will be used.
         """
         # The context this sprite list belongs to
         self.ctx = None
         self.program = None
+        self._atlas = atlas
 
         # List of sprites in the sprite list
         self.sprite_list = []
@@ -284,16 +290,10 @@ class SpriteList:
         self._sprite_sub_tex_changed = False
 
         self._tex_coords = None
-
-        self.texture_id = None
-        self._texture = None
         self._vao1 = None
         self.vbo_buf = None
 
         self._force_new_atlas_generation = False
-
-        self.array_of_texture_names = []
-        self.array_of_images = []
 
         self._sprites_moved = 0
         self._percent_sprites_moved = 0
@@ -333,6 +333,11 @@ class SpriteList:
         value.register_sprite_list(self)
         self.sprite_list[key] = value
         self.sprite_idx[value] = key
+
+    @property
+    def atlas(self) -> "TextureAtlas":
+        """Get the texture atlas for this sprite list"""
+        return self._atlas or self.ctx.default_atlas
 
     def index(self, key):
         """ Return the index of this sprite """
@@ -512,6 +517,8 @@ class SpriteList:
 
         :param array texture_list: List of textures.
         """
+        # TODO: Here we should just dump the images into the atlas
+
         if self.array_of_texture_names is None:
             self.array_of_texture_names = []
 
@@ -609,165 +616,64 @@ class SpriteList:
             """
             Create a sprite sheet, and set up subtexture coordinates to point
             to images in that sheet.
+
+            Algorithm for building atlas:
+            - Loop through all sprites and gather texture names and images not already in the "atlas"
+            - If any new texture was detected we add add the old images
+            - calculate atlas size etc
+            - Generate texture coordinates per texture (name)
+
             """
-            new_array_of_texture_names = []
-            new_array_of_images = []
-            new_texture = False
-            if self.array_of_images is None or self._force_new_atlas_generation:
-                new_texture = True
-                self._force_new_atlas_generation = False
+            atlas = self.atlas
+            # Gather all unique textures in a set (Texture hash() is the name)
+            textures = set(sprite.texture for sprite in self.sprite_list)
+            # If our set contains None one of the sprites don't have a texture
+            if None in textures:
+                raise Exception("Error: Attempt to draw a sprite without a texture set.")
 
-            # print()
-            # print("New texture start: ", new_texture)
+            atlas.update_textures(textures, keep_old_textures=self._keep_textures)
+            # atlas.show()
 
-            for sprite in self.sprite_list:
-
-                # noinspection PyProtectedMember
-                if sprite.texture is None:
-                    raise Exception("Error: Attempt to draw a sprite without a texture set.")
-
-                name_of_texture_to_check = sprite.texture.name
-
-                # Do we already have this in our old texture atlas?
-                if name_of_texture_to_check not in self.array_of_texture_names:
-                    # No, so flag that we'll have to create a new one.
-                    new_texture = True
-                    # print("New because of ", name_of_texture_to_check)
-
-                # Do we already have this created because of a prior loop?
-                if name_of_texture_to_check not in new_array_of_texture_names:
-                    # No, so make as a new image
-                    new_array_of_texture_names.append(name_of_texture_to_check)
-                    if sprite.texture is None:
-                        raise ValueError(f"Sprite has no texture.")
-                    if sprite.texture.image is None:
-                        raise ValueError(f"Sprite texture {sprite.texture.name} has no image.")
-                    image = sprite.texture.image
-
-                    # Create a new image with a transparent border around it to help prevent artifacts
-                    tmp = Image.new('RGBA', (image.width+2, image.height+2))
-                    tmp.paste(image, (1, 1))
-                    tmp.paste(tmp.crop((1          , 1           , image.width+1, 2             )), (1            , 0             ))
-                    tmp.paste(tmp.crop((1          , image.height, image.width+1, image.height+1)), (1            , image.height+1))
-                    tmp.paste(tmp.crop((1          , 0           ,             2, image.height+2)), (0            , 0             ))
-                    tmp.paste(tmp.crop((image.width, 0           , image.width+1, image.height+2)), (image.width+1, 0             ))
-
-                    # Put in our array of new images
-                    new_array_of_images.append(tmp)
-
-            # print("New texture end: ", new_texture)
-            # print(new_array_of_texture_names)
-            # print(self.array_of_texture_names)
-            # print()
-
-            if new_texture:
-                # Add back in any old textures. Chances are we'll need them.
-                for index, old_texture_name in enumerate(self.array_of_texture_names):
-                    if old_texture_name not in new_array_of_texture_names and self.array_of_images is not None:
-                        new_array_of_texture_names.append(old_texture_name)
-                        image = self.array_of_images[index]
-                        new_array_of_images.append(image)
-
-                self.array_of_texture_names = new_array_of_texture_names
-
-                self.array_of_images = new_array_of_images
-                # print(f"New Texture Atlas with names {self.array_of_texture_names}")
-
-            # Get their sizes
-            widths, heights = zip(*(i.size for i in self.array_of_images))
-
-            grid_item_width, grid_item_height = max(widths), max(heights)
-            image_count = len(self.array_of_images)
-            root = math.sqrt(image_count)
-            grid_width = int(math.sqrt(image_count))
-            # print(f"\nimage_count={image_count}, root={root}")
-            if root == grid_width:
-                # Perfect square
-                grid_height = grid_width
-                # print("\nA")
-            else:
-                grid_height = grid_width
-                grid_width += 1
-                if grid_width * grid_height < image_count:
-                    grid_height += 1
-                # print("\nB")
-
-            # Figure out sprite sheet size
-            margin = 0
-
-            sprite_sheet_width = (grid_item_width + margin) * grid_width
-            sprite_sheet_height = (grid_item_height + margin) * grid_height
-
-            if new_texture:
-
-                # TODO: This code isn't valid, but I think some releasing might be in order.
-                # if self.texture is not None:
-                #     .Texture.release(self.texture_id)
-
-                # Make the composite image
-                new_image2 = Image.new('RGBA', (sprite_sheet_width, sprite_sheet_height))
-
-                x_offset = 0
-                for index, image in enumerate(self.array_of_images):
-
-                    x = (index % grid_width) * (grid_item_width + margin)
-                    y = (index // grid_width) * (grid_item_height + margin)
-
-                    # print(f"Pasting {new_array_of_texture_names[index]} at {x, y}")
-
-                    new_image2.paste(image, (x, y))
-                    x_offset += image.size[0]
-
-                # Create a texture out the composite image
-                texture_bytes2 = new_image2.tobytes()
-                self._texture = self.ctx.texture(
-                    (new_image2.width, new_image2.height),
-                    components=4,
-                    data=texture_bytes2,
-                )
-
-                if self.texture_id is None:
-                    self.texture_id = SpriteList.next_texture_id
-
-                # new_image2.save("sprites.png")
-
+            # -------------------------------------------------------------
             # Create a list with the coordinates of all the unique textures
-            self._tex_coords = []
-            offset = 1
+            # self._tex_coords = []
+            # offset = 1
 
-            for index, image in enumerate(self.array_of_images):
-                column = index % grid_width
-                row = index // grid_width
+            # for index, image in enumerate(self.array_of_images):
+            #     column = index % grid_width
+            #     row = index // grid_width
 
-                # Texture coordinates are reversed in y axis
-                row = grid_height - row - 1
+            #     # Texture coordinates are reversed in y axis
+            #     row = grid_height - row - 1
 
-                x = column * (grid_item_width + margin) + offset
-                y = row * (grid_item_height + margin) + offset
+            #     x = column * (grid_item_width + margin) + offset
+            #     y = row * (grid_item_height + margin) + offset
 
-                # Because, coordinates are reversed
-                y += (grid_item_height - (image.height - margin))
+            #     # Because, coordinates are reversed
+            #     y += (grid_item_height - (image.height - margin))
 
-                normalized_x = x / sprite_sheet_width
-                normalized_y = y / sprite_sheet_height
+            #     normalized_x = x / sprite_sheet_width
+            #     normalized_y = y / sprite_sheet_height
 
-                start_x = normalized_x
-                start_y = normalized_y
+            #     start_x = normalized_x
+            #     start_y = normalized_y
 
-                normalized_width = (image.width-2*offset) / sprite_sheet_width
-                normalized_height = (image.height-2*offset) / sprite_sheet_height
+            #     normalized_width = (image.width-2*offset) / sprite_sheet_width
+            #     normalized_height = (image.height-2*offset) / sprite_sheet_height
 
-                # print(f"Fetching {new_array_of_texture_names[index]} at {row}, {column} => {x}, {y} normalized to {start_x:.2}, {start_y:.2} size {normalized_width}, {normalized_height}")
+            #     # print(f"Fetching {new_array_of_texture_names[index]} at {row}, {column} => {x}, {y} normalized to {start_x:.2}, {start_y:.2} size {normalized_width}, {normalized_height}")
 
-                self._tex_coords.append([start_x, start_y, normalized_width, normalized_height])
+            #     self._tex_coords.append([start_x, start_y, normalized_width, normalized_height])
 
+            # --------------------------------------------------------------------
             # Go through each sprite and pull from the coordinate list, the proper
-            # coordinates for that sprite's image.
+            # coordinates for that sprite's image
+            print("---texcoords")
             self._sprite_sub_tex_data = array.array('f')
             for sprite in self.sprite_list:
-                index = self.array_of_texture_names.index(sprite.texture.name)
-                for coord in self._tex_coords[index]:
-                    self._sprite_sub_tex_data.append(coord)
+                region = atlas.get_region_info(sprite.texture.name)
+                print(region.texture_coordinates)
+                self._sprite_sub_tex_data.extend(region.texture_coordinates)
 
             self._sprite_sub_tex_buf = self.ctx.buffer(
                 data=self._sprite_sub_tex_data,
@@ -867,14 +773,16 @@ class SpriteList:
         if sprite.texture is None:
             return
 
-        name_of_texture_to_check = sprite.texture.name
-        if name_of_texture_to_check not in self.array_of_texture_names:
+        # name_of_texture_to_check = sprite.texture.name
+        # if name_of_texture_to_check not in self.array_of_texture_names:
+        #     self._calculate_sprite_buffer()
+
+        if not self.atlas.has_texture(sprite.texture):
             self._calculate_sprite_buffer()
 
         self._sprite_sub_tex_changed = True
-
-        index = self.array_of_texture_names.index(sprite.texture.name)
-        new_coords = self._tex_coords[index]
+        region = self.atlas.add(sprite.texture)
+        new_coords = region.texture_coordinates
 
         i = self.sprite_idx[sprite]
 
@@ -1038,12 +946,12 @@ class SpriteList:
         else:
             self.ctx.blend_func = self.ctx.BLEND_DEFAULT
 
-        self._texture.use(0)
+        self.atlas.texture.use(0)
 
         if "filter" in kwargs:
             self._texture.filter = self.ctx.NEAREST, self.ctx.NEAREST
 
-        self.program['Texture'] = self.texture_id
+        self.program['Texture'] = 0
 
         texture_transform = None
         if len(self.sprite_list) > 0:

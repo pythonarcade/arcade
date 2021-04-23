@@ -2,6 +2,7 @@
 Arcade's version of the OpenGL Context.
 Contains pre-loaded programs
 """
+from arcade.texture_atlas import TextureAtlas
 from pathlib import Path
 from typing import Tuple, Union
 
@@ -24,6 +25,7 @@ class ArcadeContext(Context):
     **This is part of the low level rendering API in arcade
     and is mainly for more advanced usage**
     """
+    atlas_size = 8192, 8192
 
     def __init__(self, window: pyglet.window.Window):
         """
@@ -145,6 +147,23 @@ class ArcadeContext(Context):
                 )
             ]
         )
+
+        # Create the default texture atlas
+        # 8192 is a safe maximum size for textures in OpenGL 3.3
+        # We might want to query the max limit, but this makes it consistent
+        # across all OpenGL implementations.
+        self._atlas = TextureAtlas(self.atlas_size, border=1, mutable=True, ctx=self)
+
+    @property
+    def default_atlas(self) -> TextureAtlas:
+        """
+        The default texture atlas. This is crated when arcade is initialized.
+        All sprite lists will use use this atlas unless a different atlas
+        is passned in the ``SpriteList`` constructor.
+
+        :type: TextureAtlas
+        """
+        return self._atlas
 
     @property
     def projection_2d(self) -> Tuple[float, float, float, float]:

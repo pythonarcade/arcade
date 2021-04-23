@@ -274,6 +274,8 @@ from .paths import has_line_of_sight
 
 from .context import ArcadeContext
 
+from .texture_atlas import TextureAtlas
+
 
 
 # noinspection PyPep8
@@ -333,6 +335,7 @@ __all__ = ['AStarBarrierList',
            'TShape',
            'Text',
            'Texture',
+           'TextureAtlas',
            'VERSION',
            'Vector',
            'View',

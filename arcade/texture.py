@@ -136,6 +136,10 @@ class Texture:
 
         self._hit_box_detail = hit_box_detail
 
+    def __hash__(self) -> int:
+        """The hash if a texture is the name"""
+        return hash(self.name)
+
     @property
     def width(self) -> int:
         """
