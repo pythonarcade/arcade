@@ -317,6 +317,10 @@ class Window(pyglet.window.Window):
         except AttributeError:
             pass
 
+        # TEMP HACK
+        if symbol == arcade.key.F12:
+            self.ctx.default_atlas.show()
+
     def on_key_release(self, symbol: int, modifiers: int):
         """
         Override this function to add key release functionality.
