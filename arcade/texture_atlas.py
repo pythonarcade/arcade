@@ -11,6 +11,7 @@ Pyglet atlases are located here:
 https://github.com/einarf/pyglet/blob/master/pyglet/image/atlas.py
 
 """
+import logging
 from typing import Set, Tuple, Sequence, TYPE_CHECKING
 
 from PIL import Image
@@ -25,6 +26,8 @@ from pyglet.image.atlas import (
 if TYPE_CHECKING:
     from arcade import ArcadeContext, Texture
     from arcade.gl import Texture as GLTexture
+
+LOG = logging.getLogger(__name__)
 
 
 # TODO:
@@ -177,10 +180,13 @@ class TextureAtlas:
 
     def add(self, texture: "Texture") -> AtlasRegion:
         """Add a texture to the atlas"""
+        LOG.debug("Attempting to add texture: %s", texture.name)
+
         if not self._mutable:
             raise AllocatorException("The atlas is not mutable")
 
-        if self.has_texture(texture.name):
+        if self.has_texture(texture):
+            LOG.info("Texture %s already in atlas", texture.name)
             return self.get_region_info(texture.name)
 
         # Allocate space for texture
@@ -190,7 +196,10 @@ class TextureAtlas:
                 texture.image.height + self.border * 2,
             )
         except AllocatorException:
+            self.show()
             raise AllocatorException(f"No more space for texture {texture.name} size={texture.image.size}")
+
+        LOG.debug("Allocated new space for texture %s : %s %s", texture.name, x, y)
 
         # Write into atlas at the allocated location
         viewport = (
