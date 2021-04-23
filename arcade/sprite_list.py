@@ -777,9 +777,10 @@ class SpriteList:
 
         if not self.atlas.has_texture(sprite.texture):
             self._calculate_sprite_buffer()
+            self.atlas.add(sprite.texture)
 
         self._sprite_sub_tex_changed = True
-        region = self.atlas.add(sprite.texture)
+        region = self.atlas.get_region_info(sprite.texture.name)
         new_coords = region.texture_coordinates
 
         i = self.sprite_idx[sprite]
