@@ -632,40 +632,7 @@ class SpriteList:
                 raise Exception("Error: Attempt to draw a sprite without a texture set.")
 
             atlas.update_textures(textures, keep_old_textures=self._keep_textures)
-            # atlas.show()
 
-            # -------------------------------------------------------------
-            # Create a list with the coordinates of all the unique textures
-            # self._tex_coords = []
-            # offset = 1
-
-            # for index, image in enumerate(self.array_of_images):
-            #     column = index % grid_width
-            #     row = index // grid_width
-
-            #     # Texture coordinates are reversed in y axis
-            #     row = grid_height - row - 1
-
-            #     x = column * (grid_item_width + margin) + offset
-            #     y = row * (grid_item_height + margin) + offset
-
-            #     # Because, coordinates are reversed
-            #     y += (grid_item_height - (image.height - margin))
-
-            #     normalized_x = x / sprite_sheet_width
-            #     normalized_y = y / sprite_sheet_height
-
-            #     start_x = normalized_x
-            #     start_y = normalized_y
-
-            #     normalized_width = (image.width-2*offset) / sprite_sheet_width
-            #     normalized_height = (image.height-2*offset) / sprite_sheet_height
-
-            #     # print(f"Fetching {new_array_of_texture_names[index]} at {row}, {column} => {x}, {y} normalized to {start_x:.2}, {start_y:.2} size {normalized_width}, {normalized_height}")
-
-            #     self._tex_coords.append([start_x, start_y, normalized_width, normalized_height])
-
-            # --------------------------------------------------------------------
             # Go through each sprite and pull from the coordinate list, the proper
             # coordinates for that sprite's image
             self._sprite_sub_tex_data = array.array('f')
@@ -696,27 +663,6 @@ class SpriteList:
         _calculate_sub_tex_coords()
         _calculate_colors()
 
-        # vertices = array.array('f', [
-        #     #  x,    y,   u,   v
-        #     -1.0, -1.0, 0.0, 0.0,
-        #     -1.0, 1.0, 0.0, 1.0,
-        #     1.0, -1.0, 1.0, 0.0,
-        #     1.0, 1.0, 1.0, 1.0,
-        # ])
-        # self.vbo_buf = self.ctx.buffer(data=vertices)
-        # vbo_buf_desc = gl.BufferDescription(
-        #     self.vbo_buf,
-        #     '2f 2f',
-        #     ('in_vert', 'in_texture')
-        # )
-
-        # Can add buffer to index vertices
-        # vao_content = [vbo_buf_desc,
-        #                self._sprite_pos_desc,
-        #                self._sprite_size_desc,
-        #                self._sprite_angle_desc,
-        #                self._sprite_sub_tex_desc,
-        #                self._sprite_color_desc]
         vao_content = [self._sprite_pos_desc,
                        self._sprite_size_desc,
                        self._sprite_angle_desc,
@@ -770,10 +716,6 @@ class SpriteList:
 
         if sprite.texture is None:
             return
-
-        # name_of_texture_to_check = sprite.texture.name
-        # if name_of_texture_to_check not in self.array_of_texture_names:
-        #     self._calculate_sprite_buffer()
 
         if not self.atlas.has_texture(sprite.texture):
             self._calculate_sprite_buffer()
