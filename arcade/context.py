@@ -148,11 +148,7 @@ class ArcadeContext(Context):
             ]
         )
 
-        # Create the default texture atlas
-        # 8192 is a safe maximum size for textures in OpenGL 3.3
-        # We might want to query the max limit, but this makes it consistent
-        # across all OpenGL implementations.
-        self._atlas = TextureAtlas(self.atlas_size, border=1, mutable=True, ctx=self)
+        self._atlas = None
 
     @property
     def default_atlas(self) -> TextureAtlas:
@@ -163,6 +159,13 @@ class ArcadeContext(Context):
 
         :type: TextureAtlas
         """
+        if not self._atlas:
+            # Create the default texture atlas
+            # 8192 is a safe maximum size for textures in OpenGL 3.3
+            # We might want to query the max limit, but this makes it consistent
+            # across all OpenGL implementations.
+            self._atlas = TextureAtlas(self.atlas_size, border=1, mutable=True, ctx=self)
+
         return self._atlas
 
     @property
