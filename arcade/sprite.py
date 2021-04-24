@@ -187,7 +187,7 @@ class Sprite:
 
         self._hit_box_detail = hit_box_detail
 
-        self.sprite_lists: List[Any] = []
+        self.sprite_lists: List["SpriteList"] = []
         self.physics_engines: List[Any] = []
 
         self._texture: Optional[Texture]
