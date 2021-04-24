@@ -533,6 +533,9 @@ class SpriteList:
         self._force_new_atlas_generation = True
 
     def _calculate_sprite_buffer(self):
+        """Create or resize buffers"""
+        if len(self.sprite_list) == 0:
+            return
 
         if self.is_static:
             usage = 'static'
@@ -652,9 +655,6 @@ class SpriteList:
             )
             self._sprite_sub_tex_changed = False
 
-        if len(self.sprite_list) == 0:
-            return
-
         perf_time = time.perf_counter()
 
         _calculate_pos_buffer()
@@ -718,7 +718,6 @@ class SpriteList:
             return
 
         if not self.atlas.has_texture(sprite.texture):
-            self._calculate_sprite_buffer()
             self.atlas.add(sprite.texture)
 
         self._sprite_sub_tex_changed = True
