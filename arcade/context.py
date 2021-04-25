@@ -2,7 +2,7 @@
 Arcade's version of the OpenGL Context.
 Contains pre-loaded programs
 """
-from arcade.texture_atlas import TextureAtlas
+from contextlib import contextmanager
 from pathlib import Path
 from typing import Tuple, Union
 
@@ -12,6 +12,7 @@ import pyglet
 from arcade.gl import BufferDescription, Context
 from arcade.gl.program import Program
 from arcade.gl.texture import Texture
+from arcade.texture_atlas import TextureAtlas
 import arcade
 
 
@@ -199,6 +200,31 @@ class ArcadeContext(Context):
         This 4x4 float32 matrix is calculated when setting :py:attr:`~arcade.ArcadeContext.projection_2d`.
         """
         return self._projection_2d_matrix
+
+    @contextmanager
+    def pyglet_rendering(self):
+        """Context manager for pyglet rendering.
+        Since arcade and pyglet needs slightly different
+        states we needs some initialization and cleanup.
+
+        Examples::
+
+            with window.ctx.pyglet_rendering():
+                # Draw with pyglet here
+        """
+        # Ensure projection and view matrices are set in pyglet
+        self.window.projection = pyglet.math.Mat4.orthogonal_projection(
+            0, self.window.width,
+            0, self.window.height,
+            1, -1
+        )
+        # Global modelview matrix should be set to identitiy
+        self.window.view = pyglet.math.Mat4()
+        try:
+            yield None
+        finally:
+            # Force arcade.gl to rebind programs
+            self.active_program = None
 
     def load_program(
         self,
