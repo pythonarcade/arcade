@@ -218,7 +218,7 @@ class ArcadeContext(Context):
             0, self.window.height,
             1, -1
         )
-        # Global modelview matrix should be set to identitiy
+        # Global modelview matrix should be set to identity
         self.window.view = pyglet.math.Mat4()
         try:
             yield None
