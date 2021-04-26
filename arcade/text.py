@@ -1,5 +1,7 @@
 # --- BEGIN TEXT FUNCTIONS # # #
 
+from pyglet.libs.win32.constants import CTRL_BREAK_EVENT
+import arcade
 from itertools import chain
 from typing import Dict, Tuple, Union, cast
 
@@ -221,7 +223,7 @@ def get_text_image(text: str,
 
 
 
-def draw_text(text: str,
+def draw_text_2(text: str,
               start_x: float,
               start_y: float,
               color: Color,
@@ -326,9 +328,9 @@ def draw_text(text: str,
     return text_sprite
 
 
-def draw_text_2(text: str,
+def draw_text(text: str,
                 start_x: float, start_y: float,
-                color: Color,
+                color: Color = arcade.color.WHITE,
                 font_size: float = 12,
                 width: int = 0,
                 align: str = "left",
@@ -358,15 +360,31 @@ def draw_text_2(text: str,
     """
 
     color = get_four_byte_color(color)
-    label = pyglet.text.Label(text,
-                              font_name=font_name,
-                              font_size=font_size,
-                              x=start_x, y=start_y,
-                              anchor_x=anchor_x, anchor_y=anchor_y,
-                              color=color,
-                              align=align,
-                              bold=bold,
-                              italic=italic,
-                              width=width)
+    # label = pyglet.text.Label(text,
+    #                           font_name=font_name,
+    #                           font_size=font_size,
+    #                           x=start_x, y=start_y,
+    #                           anchor_x=anchor_x, anchor_y=anchor_y,
+    #                           color=color,
+    #                           align=align,
+    #                           bold=bold,
+    #                           italic=italic,
+    #                           width=width)
 
-    label.draw()
+    # See : https://github.com/pyglet/pyglet/blob/ff30eadc2942553c9de96d6ce564ad1bc3128fb4/pyglet/text/__init__.py#L401
+    label = arcade.get_window().ctx.default_pyglet_label
+    label.text = text
+    label.x = start_x
+    label.y = start_y
+    label.font_name = font_name
+    label.font_size = font_size
+    label.anchor_x = anchor_x
+    label.anchor_y = anchor_y
+    label.align = align
+    label.color = color
+    label.bold = bold
+    label.italic = italic
+    label.width = width
+
+    with arcade.get_window().ctx.pyglet_rendering():
+        label.draw()

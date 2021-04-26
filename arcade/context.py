@@ -150,6 +150,9 @@ class ArcadeContext(Context):
         )
 
         self._atlas = None
+        # Global label we modify in `arcade.draw_text`.
+        # Creating and destrying labels per text draw doesn't work well.
+        self.default_pyglet_label = pyglet.text.Label("")
 
     @property
     def default_atlas(self) -> TextureAtlas:
