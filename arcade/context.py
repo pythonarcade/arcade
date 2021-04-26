@@ -228,6 +228,8 @@ class ArcadeContext(Context):
         finally:
             # Force arcade.gl to rebind programs
             self.active_program = None
+            # Rebind the projection uniform block
+            self._projection_2d_buffer.bind_to_uniform_block(binding=0)
 
     def load_program(
         self,
