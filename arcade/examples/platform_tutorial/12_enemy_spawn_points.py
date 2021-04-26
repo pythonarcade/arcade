@@ -107,7 +107,7 @@ class ZombieEnemy(Enemy):
     def __init__(self):
 
         # Set up parent class
-        super().__init("zombie", "zombie")
+        super().__init__("zombie", "zombie")
 
 
 class PlayerCharacter(Entity):
@@ -298,7 +298,11 @@ class MyGame(arcade.Window):
         for point in enemies_layer.tiled_objects:
             cartesian = arcade.tilemap.get_cartesian(my_map, point.coordinates)
             print(cartesian)
-            enemy = RobotEnemy()
+            enemy_type = point.properties["type"]
+            if enemy_type == "robot":
+                enemy = RobotEnemy()
+            elif enemy_type == "zombie":
+                enemy = ZombieEnemy()
             enemy.center_x = math.floor(
                 cartesian.x * TILE_SCALING * my_map.tile_size[0]
             )
