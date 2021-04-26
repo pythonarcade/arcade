@@ -122,7 +122,6 @@ class Window(pyglet.window.Window):
         self._current_view: Optional[View] = None
         self.textbox_time = 0.0
         self.key: Optional[int] = None
-        self.ui_manager = arcade.experimental.gui.UIManager(self)
 
         self._ctx: ArcadeContext = ArcadeContext(self)
         set_viewport(0, self.width - 1, 0, self.height - 1)
@@ -132,6 +131,8 @@ class Window(pyglet.window.Window):
         # Required for transparency
         self._ctx.enable(self.ctx.BLEND)
         self._ctx.blend_func = self.ctx.BLEND_DEFAULT
+
+        self.ui_manager = arcade.experimental.gui.UIManager(self)
 
     @property
     def current_view(self):
