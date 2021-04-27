@@ -1,25 +1,26 @@
 """
 This module provides functionality to manage Sprites in a list.
-
 """
-
-from arcade.context import ArcadeContext
-from typing import Iterable, Iterator, TYPE_CHECKING
-from typing import Any
-from typing import TypeVar
-from typing import List
-from typing import Tuple
-from typing import Optional
-from typing import Union
-from typing import Set
-
 import logging
 import time
 from array import array
 from collections import deque
 from random import shuffle
 
+from typing import (
+    Dict,
+    Iterable,
+    Iterator,
+    TYPE_CHECKING,
+    TypeVar,
+    List,
+    Tuple,
+    Optional,
+    Union,
+    Set,
+)
 
+from arcade.context import ArcadeContext
 from arcade import (
     Color,
     Matrix3x3,
@@ -42,6 +43,7 @@ LOG = logging.getLogger(__name__)
 # The slot index that makes a sprite invisible.
 # 2^32-1 is usually reserved for primitive restart
 _SPRITE_SLOT_INVISIBLE = 2147483647  # 2^31-1
+
 
 def _create_rects(rect_list: Iterable[Sprite]) -> List[float]:
     """
@@ -264,7 +266,7 @@ class SpriteList:
 
         # List of sprites in the sprite list
         self.sprite_list = []
-        self.sprite_idx = dict()
+        self.sprite_idx: Dict[Sprite, int] = dict()
         self.is_static = is_static
 
         # Performance Note
@@ -353,16 +355,17 @@ class SpriteList:
         return self.sprite_list[i]
 
     def __setitem__(self, key: int, value: Sprite):
-        item_to_be_removed = self.sprite_list[key]
-        item_to_be_removed.sprite_lists.remove(self)
+        # item_to_be_removed = self.sprite_list[key]
+        # item_to_be_removed.sprite_lists.remove(self)
 
-        if self._use_spatial_hash:
-            self.spatial_hash.remove_object(item_to_be_removed)
-            self.spatial_hash.insert_object_for_box(value)
+        # if self._use_spatial_hash:
+        #     self.spatial_hash.remove_object(item_to_be_removed)
+        #     self.spatial_hash.insert_object_for_box(value)
 
-        value.register_sprite_list(self)
-        self.sprite_list[key] = value
-        self.sprite_idx[value] = key
+        # value.register_sprite_list(self)
+        # self.sprite_list[key] = value
+        # self.sprite_idx[value] = key
+        raise ValueError("__setitem__ not working yet")
 
     @property
     def atlas(self) -> "TextureAtlas":
@@ -381,20 +384,25 @@ class SpriteList:
         self._grow_buffers()  # We might need to increase our buffers
         return _id
 
-    def index(self, key):
-        """ Return the index of this sprite """
+    def index(self, key) -> int:
+        """
+        Return the index of this sprite
+
+        :type: int
+        """
         return self.sprite_list.index(key)
 
     def pop(self, index: int = -1) -> Sprite:
         """
         Pop off the last sprite, or the given index, from the list
         """
-        if len(self.sprite_list) == 0:
-            raise(ValueError("pop from empty list"))
+        # if len(self.sprite_list) == 0:
+        #     raise(ValueError("pop from empty list"))
 
-        sprite = self.sprite_list[index]
-        self.remove(sprite)
-        return sprite
+        # sprite = self.sprite_list[index]
+        # self.remove(sprite)
+        # return sprite
+        raise ValueError("Not implemented yet")
 
     def append(self, item: _SpriteType):
         """
@@ -428,14 +436,14 @@ class SpriteList:
         Remove a specific sprite from the list.
         :param Sprite item: Item to remove from the list
         """
+        i = self.sprite_idx[item]
+        del self.sprite_idx[item]
         self.sprite_list.remove(item)
         item.sprite_lists.remove(self)
 
-        i = self.sprite_idx[item]
         self._sprite_buffer_free_slots.append(i)
         self._sprite_index_data[i] = _SPRITE_SLOT_INVISIBLE
         self._sprite_index_changed = True
-        del self.sprite_idx[item]
 
         if self._use_spatial_hash:
             self.spatial_hash.remove_object(item)
@@ -456,14 +464,15 @@ class SpriteList:
         :param int index: The index at which to insert
         :param Sprite item: The sprite to insert
         """
-        self.sprite_list.insert(index, item)
-        item.register_sprite_list(self)
+        # self.sprite_list.insert(index, item)
+        # item.register_sprite_list(self)
 
-        for idx, sprite in enumerate(self.sprite_list[index:], start=index):
-            self.sprite_idx[sprite] = idx
+        # for idx, sprite in enumerate(self.sprite_list[index:], start=index):
+        #     self.sprite_idx[sprite] = idx
 
-        if self._use_spatial_hash:
-            self.spatial_hash.insert_object_for_box(item)
+        # if self._use_spatial_hash:
+        #     self.spatial_hash.insert_object_for_box(item)
+        raise ValueError("Not implemented yet")
 
     def reverse(self):
         """
@@ -498,7 +507,7 @@ class SpriteList:
 
     def enable_spatial_hashing(self, spatial_hash_cell_size=128):
         """ Turn on spatial hashing. """
-        LOG.debug("Setting use_spatial_hash={new_use_spatial_hash}")
+        LOG.debug("Enable spatial hashing with cell size %s", spatial_hash_cell_size)
         self.spatial_hash = _SpatialHash(spatial_hash_cell_size)
         self._use_spatial_hash = True
         self._recalculate_spatial_hashes()
@@ -602,7 +611,6 @@ class SpriteList:
         :param Sprite sprite: Sprite to update.
         """
         i = self.sprite_idx[sprite]
-
         self._sprite_pos_data[i * 2] = sprite.position[0]
         self._sprite_pos_data[i * 2 + 1] = sprite.position[1]
         self._sprite_pos_changed = True
@@ -682,7 +690,6 @@ class SpriteList:
 
     def _write_sprite_buffers_to_gpu(self):
         """Create or resize buffers"""
-
         # LOG.debug(
         #     "SpriteList._write_sprite_buffers_to_gpu: pos=%s, size=%s, angle=%s, color=%s tex=%s idx=%s",
         #     self._sprite_pos_changed,
@@ -692,26 +699,21 @@ class SpriteList:
         #     self._sprite_sub_tex_changed,
         #     self._sprite_index_changed,
         # )
-
-        start = time.perf_counter()
+        # start = time.perf_counter()
 
         if self._sprite_pos_changed:
-            # self._sprite_pos_buf.orphan()
             self._sprite_pos_buf.write(self._sprite_pos_data)
             self._sprite_pos_changed = False
 
         if self._sprite_size_changed:
-            # self._sprite_size_buf.orphan()
             self._sprite_size_buf.write(self._sprite_size_data)
             self._sprite_size_changed = False
 
         if self._sprite_angle_changed:
-            # self._sprite_angle_buf.orphan()
             self._sprite_angle_buf.write(self._sprite_angle_data)
             self._sprite_angle_changed = False
 
         if self._sprite_color_changed:
-            # self._sprite_color_buf.orphan()
             self._sprite_color_buf.write(self._sprite_color_data)
             self._sprite_color_changed = False
 
@@ -721,7 +723,6 @@ class SpriteList:
                 textures = set(sprite.texture for sprite in self.sprite_list)
                 self._atlas.update_textures(textures, keep_old_textures=self._keep_textures)
 
-            # self._sprite_sub_tex_buf.orphan()
             self._sprite_sub_tex_buf.write(self._sprite_sub_tex_data)
             self._sprite_sub_tex_changed = False
 
@@ -797,6 +798,7 @@ class SpriteList:
         """Double the internal buffer sizes"""
         if self._sprite_buffer_slots < self._capacity:
             return
+
         # double the capacity
         extend_by = self._capacity
         self._capacity = self._capacity * 2
