@@ -1,6 +1,5 @@
 # --- BEGIN TEXT FUNCTIONS # # #
 
-from pyglet.libs.win32.constants import CTRL_BREAK_EVENT
 import arcade
 from itertools import chain
 from typing import Dict, Tuple, Union, cast
@@ -8,7 +7,6 @@ from typing import Dict, Tuple, Union, cast
 import PIL.Image
 import PIL.ImageDraw
 import PIL.ImageFont
-import pyglet
 
 from arcade.arcade_types import RGBA, Color
 from arcade.draw_commands import Texture, get_four_byte_color
