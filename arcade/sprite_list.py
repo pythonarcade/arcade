@@ -239,6 +239,42 @@ class SpriteList:
     is_static are very important.
     """
     _keep_textures = True
+    __slots__ = (
+        'ctx',
+        'program',
+        '_atlas',
+        'sprite_list',
+        'sprite_idx',
+        'is_static',
+        '_capacity',
+        '_sprite_buffer_slots',
+        '_sprite_buffer_free_slots',
+        '_sprite_pos_data',
+        '_sprite_size_data',
+        '_sprite_angle_data',
+        '_sprite_color_data',
+        '_sprite_sub_tex_data',
+        '_sprite_sub_tex_data',
+        '_sprite_index_data',
+        '_sprite_pos_buf',
+        '_sprite_size_buf',
+        '_sprite_angle_buf',
+        '_sprite_color_buf',
+        '_sprite_sub_tex_buf',
+        '_sprite_index_buf',
+        '_sprite_pos_changed',
+        '_sprite_size_changed',
+        '_sprite_angle_changed',
+        '_sprite_color_changed',
+        '_sprite_sub_tex_changed',
+        '_sprite_index_changed',
+        '_geometry',
+        '_sprites_moved',
+        '_percent_sprites_moved',
+        '_use_spatial_hash',
+        'spatial_hash',
+        'extra'
+    )
 
     def __init__(self,
                  use_spatial_hash=None,
@@ -263,6 +299,8 @@ class SpriteList:
         self.ctx: ArcadeContext = get_window().ctx
         self.program = self.ctx.sprite_list_program_cull
         self._atlas = atlas or self.ctx.default_atlas
+           
+        self.extra = None
 
         # List of sprites in the sprite list
         self.sprite_list = []
