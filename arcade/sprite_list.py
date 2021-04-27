@@ -555,20 +555,9 @@ class SpriteList:
 
         :param array texture_list: List of textures.
         """
-        # TODO: Here we should just dump the images into the atlas
-
-        # if self.array_of_texture_names is None:
-        #     self.array_of_texture_names = []
-
-        # if self.array_of_images is None:
-        #     self.array_of_images = []
-
-        # for texture in texture_list:
-        #     if texture.name not in self.array_of_texture_names:
-        #         self.array_of_texture_names.append(texture.name)
-        #         self.array_of_images.append(texture.image)
-
-        raise ValueError("Inject textures into atlas")
+        for texture in texture_list:
+            if not self._atlas.has_texture(texture):
+                self._atlas.add(texture)
 
     def update_texture(self, sprite):
         """Make sure we update the texture for this sprite for the next batch
