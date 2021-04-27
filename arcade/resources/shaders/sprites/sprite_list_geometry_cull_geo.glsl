@@ -6,7 +6,6 @@ uniform Projection {
     uniform mat4 matrix;
 } proj;
 
-
 uniform mat3 TextureTransform;
 
 in float v_angle[1];
@@ -21,8 +20,8 @@ out vec4 gs_color;
 #define VP_CLIP 1.0
 
 void main() {
-    // Sprite index 0 means the sprite is deleted or disabled
-    if (vertex_id[0] == 0) return;
+    // Sprite index 2147483647 means the sprite is deleted or disabled
+    if (vertex_id[0] == 2147483647) return;
 
     // Get center of the sprite
     vec2 center = gl_in[0].gl_Position.xy;

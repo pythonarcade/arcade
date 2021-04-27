@@ -180,14 +180,13 @@ class TextureAtlas:
 
     def add(self, texture: "Texture") -> AtlasRegion:
         """Add a texture to the atlas"""
+        if self.has_texture(texture):
+            return self.get_region_info(texture.name)
+
         LOG.debug("Attempting to add texture: %s", texture.name)
 
         if not self._mutable:
             raise AllocatorException("The atlas is not mutable")
-
-        if self.has_texture(texture):
-            LOG.info("Texture %s already in atlas", texture.name)
-            return self.get_region_info(texture.name)
 
         # Allocate space for texture
         try:

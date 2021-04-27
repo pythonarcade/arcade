@@ -14,8 +14,9 @@ from typing import Union
 from typing import Set
 
 import logging
-from array import array
 import time
+from array import array
+from collections import deque
 from random import shuffle
 
 
@@ -31,7 +32,6 @@ from arcade import (
     Point,
     gl,
 )
-import arcade
 
 if TYPE_CHECKING:
     from arcade import TextureAtlas
@@ -39,6 +39,9 @@ if TYPE_CHECKING:
 
 LOG = logging.getLogger(__name__)
 
+# The slot index that makes a sprite invisible.
+# 2^32-1 is usually reserved for primitive restart
+_SPRITE_SLOT_INVISIBLE = 2147483647  # 2^31-1
 
 def _create_rects(rect_list: Iterable[Sprite]) -> List[float]:
     """
@@ -276,11 +279,12 @@ class SpriteList:
         # NOTE: This is possibly obsolete
         # usage = 'static' if self.is_static else "stream"
 
-        # The initial capacity of the spritelist (internal)
-        self._capacity = 10000
-        # The next available buffer slot.
-        # Slot 0 is reserver for disabled sprites
-        self._sprite_data_size = 1
+        # The initial capacity of the spritelist buffers (internal)
+        self._capacity = 100
+        # The number of slots used in the sprite buffer
+        self._sprite_buffer_slots = 0
+        # List of free slots in the sprite buffers. These are filled when sprites are removed.
+        self._sprite_buffer_free_slots = deque()
 
         # Python representation of buffer data
         self._sprite_pos_data = array('f', [0] * self._capacity * 2)
@@ -367,8 +371,14 @@ class SpriteList:
 
     def _next_id(self):
         """Get the next sprite id"""
-        _id = self._sprite_data_size
-        self._sprite_data_size += 1
+        # Reuse old slots from deleted sprites
+        if self._sprite_buffer_free_slots:
+            return self._sprite_buffer_free_slots.popleft()
+
+        # Add a new slot
+        _id = self._sprite_buffer_slots
+        self._sprite_buffer_slots += 1
+        self._grow_buffers()  # We might need to increase our buffers
         return _id
 
     def index(self, key):
@@ -411,7 +421,7 @@ class SpriteList:
 
         if hasattr(item, "textures"):
             for texture in item.textures or []:
-                self.atlas.add(texture)
+                self._atlas.add(texture)
 
     def remove(self, item: _SpriteType):
         """
@@ -422,8 +432,10 @@ class SpriteList:
         item.sprite_lists.remove(self)
 
         i = self.sprite_idx[item]
-        self._sprite_index_data[i] = 0
+        self._sprite_buffer_free_slots.append(i)
+        self._sprite_index_data[i] = _SPRITE_SLOT_INVISIBLE
         self._sprite_index_changed = True
+        del self.sprite_idx[item]
 
         if self._use_spatial_hash:
             self.spatial_hash.remove_object(item)
@@ -446,6 +458,7 @@ class SpriteList:
         """
         self.sprite_list.insert(index, item)
         item.register_sprite_list(self)
+
         for idx, sprite in enumerate(self.sprite_list[index:], start=index):
             self.sprite_idx[sprite] = idx
 
@@ -540,6 +553,8 @@ class SpriteList:
     def move(self, change_x: float, change_y: float):
         """
         Moves all Sprites in the list by the same amount.
+        This can be a very expensive operation depending on the
+        size of the sprite list.
 
         :param float change_x: Amount to change all x values by
         :param float change_y: Amount to change all y values by
@@ -556,8 +571,7 @@ class SpriteList:
         :param array texture_list: List of textures.
         """
         for texture in texture_list:
-            if not self._atlas.has_texture(texture):
-                self._atlas.add(texture)
+            self._atlas.add(texture)
 
     def update_texture(self, sprite):
         """Make sure we update the texture for this sprite for the next batch
@@ -565,10 +579,7 @@ class SpriteList:
         if sprite.texture is None:
             raise Exception("Attempting to add a sprite without a texture")
 
-        if not self.atlas.has_texture(sprite.texture):
-            self._atlas.add(sprite.texture)
-
-        region = self._atlas.get_region_info(sprite.texture.name)
+        region = self._atlas.add(sprite.texture)
 
         i = self.sprite_idx[sprite]
         new_coords = region.texture_coordinates
@@ -579,29 +590,6 @@ class SpriteList:
         self._sprite_sub_tex_data[i * 4 + 3] = new_coords[3]
 
         self._sprite_sub_tex_changed = True
-
-    # def _update_positions(self):
-    #     """ Called by the Sprite class to update position, angle, size and color
-    #     of all sprites in the list.
-    #     Necessary for batch drawing of items. """
-
-    #     for i, sprite in enumerate(self.sprite_list):
-    #         self._sprite_pos_data[i * 2] = sprite.position[0]
-    #         self._sprite_pos_data[i * 2 + 1] = sprite.position[1]
-    #         self._sprite_pos_changed = True
-
-    #         self._sprite_angle_data[i] = sprite.angle
-    #         self._sprite_angle_changed = True
-
-    #         self._sprite_color_data[i * 4] = sprite.color[0]
-    #         self._sprite_color_data[i * 4 + 1] = sprite.color[1]
-    #         self._sprite_color_data[i * 4 + 2] = sprite.color[2]
-    #         self._sprite_color_data[i * 4 + 3] = sprite.alpha
-    #         self._sprite_color_changed = True
-
-    #         self._sprite_size_data[i * 2] = sprite.width
-    #         self._sprite_size_data[i * 2 + 1] = sprite.height
-    #         self._sprite_size_changed = True
 
     def update_position(self, sprite: Sprite):
         """
@@ -618,15 +606,6 @@ class SpriteList:
         self._sprite_pos_data[i * 2] = sprite.position[0]
         self._sprite_pos_data[i * 2 + 1] = sprite.position[1]
         self._sprite_pos_changed = True
-
-        # self._sprite_angle_data[i] = sprite.angle
-        # self._sprite_angle_changed = True
-
-        # self._sprite_color_data[i * 4] = int(sprite.color[0])
-        # self._sprite_color_data[i * 4 + 1] = int(sprite.color[1])
-        # self._sprite_color_data[i * 4 + 2] = int(sprite.color[2])
-        # self._sprite_color_data[i * 4 + 3] = int(sprite.alpha)
-        # self._sprite_color_changed = True
 
     def update_color(self, sprite: Sprite):
         """
@@ -704,14 +683,15 @@ class SpriteList:
     def _write_sprite_buffers_to_gpu(self):
         """Create or resize buffers"""
 
-        LOG.debug(
-            "SpriteList._write_sprite_buffers_to_gpu: pos=%s, size=%s, angle=%s, color=%s tex=%s",
-            self._sprite_pos_changed,
-            self._sprite_size_changed,
-            self._sprite_angle_changed,
-            self._sprite_color_changed,
-            self._sprite_sub_tex_changed,
-        )
+        # LOG.debug(
+        #     "SpriteList._write_sprite_buffers_to_gpu: pos=%s, size=%s, angle=%s, color=%s tex=%s idx=%s",
+        #     self._sprite_pos_changed,
+        #     self._sprite_size_changed,
+        #     self._sprite_angle_changed,
+        #     self._sprite_color_changed,
+        #     self._sprite_sub_tex_changed,
+        #     self._sprite_index_changed,
+        # )
 
         start = time.perf_counter()
 
@@ -747,8 +727,9 @@ class SpriteList:
 
         if self._sprite_index_changed:
             self._sprite_index_buf.write(self._sprite_index_data)
+            self._sprite_index_changed = False
 
-        LOG.debug("SpriteList._write_buffers_to_gpu: %s", time.perf_counter() - start)
+        # LOG.debug("SpriteList._write_buffers_to_gpu: %s", time.perf_counter() - start)
 
     def draw(self, **kwargs):
         """
@@ -773,6 +754,7 @@ class SpriteList:
             self._sprite_angle_changed,
             self._sprite_color_changed,
             self._sprite_sub_tex_changed,
+            self._sprite_index_changed,
             )):
             self._write_sprite_buffers_to_gpu()
 
@@ -802,7 +784,7 @@ class SpriteList:
         self._geometry.render(
             self.program,
             mode=self.ctx.POINTS,
-            vertices=self._sprite_data_size,
+            vertices=self._sprite_buffer_slots,
         )
 
     def draw_hit_boxes(self, color: Color = (0, 0, 0, 255), line_thickness: float = 1):
@@ -810,6 +792,45 @@ class SpriteList:
         # NOTE: Find a way to efficiently draw this
         for sprite in self.sprite_list:
             sprite.draw_hit_box(color, line_thickness)
+
+    def _grow_buffers(self):
+        """Double the internal buffer sizes"""
+        if self._sprite_buffer_slots < self._capacity:
+            return
+        # double the capacity
+        extend_by = self._capacity
+        self._capacity = self._capacity * 2
+
+        LOG.debug(
+            f"(%s) Increasing buffer capacity from %s to %s",
+            self._sprite_buffer_slots,
+            extend_by,
+            self._capacity,
+        )
+
+        # Extend the buffers so we don't lose the old data
+        self._sprite_pos_data.extend([0] * extend_by * 2)
+        self._sprite_size_data.extend([0] * extend_by * 2)
+        self._sprite_angle_data.extend([0] * extend_by)
+        self._sprite_color_data.extend([0] * extend_by * 4)
+        self._sprite_sub_tex_data.extend([0] * extend_by * 4)
+        self._sprite_index_data.extend([0] * extend_by)
+
+        # Resize existing opengl buffers to the new capacity
+        self._sprite_pos_buf.orphan(size=self._capacity * 4 * 2)
+        self._sprite_size_buf.orphan(size=self._capacity * 4 * 2)
+        self._sprite_angle_buf.orphan(size=self._capacity * 4)
+        self._sprite_color_buf.orphan(size=self._capacity * 4 * 4)
+        self._sprite_sub_tex_buf.orphan(size=self._capacity * 4 * 4)
+        # Index buffer
+        self._sprite_index_buf.orphan(size=self._capacity * 4)
+
+        self._sprite_pos_changed = True
+        self._sprite_size_changed = True
+        self._sprite_angle_changed = True
+        self._sprite_color_changed = True
+        self._sprite_sub_tex_changed = True
+        self._sprite_index_changed = True
 
     def _dump(self, buffer):
         """
