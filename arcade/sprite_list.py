@@ -566,7 +566,7 @@ class SpriteList:
             raise Exception("Attempting to add a sprite without a texture")
 
         if not self.atlas.has_texture(sprite.texture):
-            self.atlas.add(sprite.texture)
+            self._atlas.add(sprite.texture)
 
         region = self._atlas.get_region_info(sprite.texture.name)
 
@@ -605,9 +605,11 @@ class SpriteList:
 
     def update_position(self, sprite: Sprite):
         """
-        Called by the Sprite class to update position, angle, size and color
-        of the specified sprite.
-        Necessary for batch drawing of items.
+        Called when setting initial position of a sprite when
+        added or inserted into the SpriteList.
+
+        ``update_location`` should be called to move them
+        once the sprites are in the list.
 
         :param Sprite sprite: Sprite to update.
         """
@@ -702,6 +704,17 @@ class SpriteList:
     def _write_sprite_buffers_to_gpu(self):
         """Create or resize buffers"""
 
+        LOG.debug(
+            "SpriteList._write_sprite_buffers_to_gpu: pos=%s, size=%s, angle=%s, color=%s tex=%s",
+            self._sprite_pos_changed,
+            self._sprite_size_changed,
+            self._sprite_angle_changed,
+            self._sprite_color_changed,
+            self._sprite_sub_tex_changed,
+        )
+
+        start = time.perf_counter()
+
         if self._sprite_pos_changed:
             # self._sprite_pos_buf.orphan()
             self._sprite_pos_buf.write(self._sprite_pos_data)
@@ -735,6 +748,8 @@ class SpriteList:
         if self._sprite_index_changed:
             self._sprite_index_buf.write(self._sprite_index_data)
 
+        LOG.debug("SpriteList._write_buffers_to_gpu: %s", time.perf_counter() - start)
+
     def draw(self, **kwargs):
         """
         Draw this list of sprites.
@@ -752,8 +767,14 @@ class SpriteList:
         self._percent_sprites_moved = self._sprites_moved / len(self.sprite_list) * 100
         self._sprites_moved = 0
 
-        # Should we update atlas here?
-        self._write_sprite_buffers_to_gpu()
+        if any((
+            self._sprite_pos_changed,
+            self._sprite_size_changed,
+            self._sprite_angle_changed,
+            self._sprite_color_changed,
+            self._sprite_sub_tex_changed,
+            )):
+            self._write_sprite_buffers_to_gpu()
 
         self.ctx.enable(self.ctx.BLEND)
         if "blend_function" in kwargs:
