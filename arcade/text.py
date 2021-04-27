@@ -1,5 +1,6 @@
 # --- BEGIN TEXT FUNCTIONS # # #
 
+import pyglet
 import arcade
 from itertools import chain
 from typing import Dict, Tuple, Union, cast
@@ -356,33 +357,34 @@ def draw_text(text: str,
     :param str anchor_y:
     :param float rotation:
     """
+    # See : https://github.com/pyglet/pyglet/blob/ff30eadc2942553c9de96d6ce564ad1bc3128fb4/pyglet/text/__init__.py#L401
 
     color = get_four_byte_color(color)
-    # label = pyglet.text.Label(text,
-    #                           font_name=font_name,
-    #                           font_size=font_size,
-    #                           x=start_x, y=start_y,
-    #                           anchor_x=anchor_x, anchor_y=anchor_y,
-    #                           color=color,
-    #                           align=align,
-    #                           bold=bold,
-    #                           italic=italic,
-    #                           width=width)
+    # Cache the states that are expensive to change
+    key = f"{font_size}{font_name}{bold}{italic}{anchor_x}{anchor_y}{align}{width}"
+    cache = arcade.get_window().ctx.pyglet_label_cache
+    label = cache.get(key)
+    if not label:
+        label = pyglet.text.Label(
+            text=text,
+            x=start_x,
+            y=start_y,
+            font_name=font_name,
+            font_size=font_size,
+            anchor_x=anchor_x,
+            anchor_y=anchor_y,
+            color=color,
+            width=width,
+            bold=bold,
+            italic=italic,
+        )
+        cache[key] = label
 
-    # See : https://github.com/pyglet/pyglet/blob/ff30eadc2942553c9de96d6ce564ad1bc3128fb4/pyglet/text/__init__.py#L401
-    label = arcade.get_window().ctx.default_pyglet_label
+    # These updates are relatively cheap
     label.text = text
     label.x = start_x
     label.y = start_y
-    label.font_name = font_name
-    label.font_size = font_size
-    label.anchor_x = anchor_x
-    label.anchor_y = anchor_y
-    label.align = align
     label.color = color
-    label.bold = bold
-    label.italic = italic
-    label.width = width
 
     with arcade.get_window().ctx.pyglet_rendering():
         label.draw()
