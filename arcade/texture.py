@@ -143,13 +143,17 @@ class Texture:
         """The hash if a texture is the name"""
         return hash(self.name)
 
-    def __eq__(self, other: "Texture") -> bool:
+    def __eq__(self, other) -> bool:
         if other is None:
+            return False
+        if not isinstance(other, self.__class__):
             return False
         return self.name == other.name
 
-    def __ne__(self, other: "Texture") -> bool:
+    def __ne__(self, other) -> bool:
         if other is None:
+            return True
+        if not isinstance(other, self.__class__):
             return True
         return self.name != other.name
     # ------------------------------------------------------------
