@@ -28,8 +28,6 @@ setup(
     install_requires=[
         "pyglet==2.0dev2",
         "pillow~=8.1",
-        "numpy==1.20.1; python_version > '3.6'",
-        "numpy==1.19.5; python_version < '3.7'",
         "pymunk~=6.0.0",
         "pyyaml~=5.4",
         "shapely==1.7.1",
@@ -51,6 +49,7 @@ setup(
             "sphinx_copybutton",
             "dirsync",
             "wheel",
+            "numpy",
         ],
     },
     packages=find_namespace_packages(
