@@ -200,7 +200,7 @@ class ArcadeContext(Context):
     @property
     def projection_2d_matrix(self) -> Mat4:
         """
-        Get the current projection matrix as a numpy array.
+        Get the current projection matrix.
         This 4x4 float32 matrix is calculated when setting :py:attr:`~arcade.ArcadeContext.projection_2d`.
 
         :type: Mat4
