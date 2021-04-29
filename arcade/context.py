@@ -8,6 +8,7 @@ from typing import Tuple, Union
 
 from PIL import Image
 import pyglet
+from pyglet.math import Mat4
 
 from arcade.gl import BufferDescription, Context
 from arcade.gl.program import Program
@@ -192,15 +193,17 @@ class ArcadeContext(Context):
 
         self._projection_2d = value
         self._projection_2d_matrix = arcade.create_orthogonal_projection(
-            value[0], value[1], value[2], value[3], -100, 100, dtype="f4",
-        ).flatten()
+            value[0], value[1], value[2], value[3], -100, 100,
+        )
         self._projection_2d_buffer.write(self._projection_2d_matrix)
 
     @property
-    def projection_2d_matrix(self):
+    def projection_2d_matrix(self) -> Mat4:
         """
         Get the current projection matrix as a numpy array.
         This 4x4 float32 matrix is calculated when setting :py:attr:`~arcade.ArcadeContext.projection_2d`.
+
+        :type: Mat4
         """
         return self._projection_2d_matrix
 
@@ -216,12 +219,12 @@ class ArcadeContext(Context):
                 # Draw with pyglet here
         """
         # Ensure projection and view matrices are set in pyglet
-        self.window.projection = pyglet.math.Mat4.orthogonal_projection(
+        self.window.projection = Mat4.orthogonal_projection(
             *self.projection_2d,
             1, -1
         )
         # Global modelview matrix should be set to identity
-        self.window.view = pyglet.math.Mat4()
+        self.window.view = Mat4()
         try:
             yield None
         finally:
