@@ -243,6 +243,8 @@ class SpriteList:
         'ctx',
         'program',
         '_atlas',
+        '_deferred_sprites',
+        '_initialized',
         'sprite_list',
         'sprite_idx',
         'is_static',
@@ -280,7 +282,8 @@ class SpriteList:
                  use_spatial_hash=None,
                  spatial_hash_cell_size=128,
                  is_static=False,
-                 atlas: "TextureAtlas" = None):
+                 atlas: "TextureAtlas" = None,
+                 capacity: int = 100):
         """
         Initialize the sprite list
 
@@ -294,37 +297,30 @@ class SpriteList:
                is set to True.
         :param TextureAtlas atlas: The texture alas for this sprite list. If no
                atlas is supplied the global/default one will be used.
+        :param int capacity: The initial capacity of the internal buffer.
+               It's a suggestion for the maximum amount of sprites this list
+               can hold. Can normally be left with default value.
         """
-        # The context this sprite list belongs to
-        self.ctx: ArcadeContext = get_window().ctx
-        self.program = self.ctx.sprite_list_program_cull
-        self._atlas = atlas or self.ctx.default_atlas
-           
+        self.ctx = None
+        self.program = None
+        self._atlas = atlas
+        self._initialized = False
         self.extra = None
+
+        # The initial capacity of the spritelist buffers (internal)
+        self._capacity = abs(capacity) or 100
+        # The number of slots used in the sprite buffer
+        self._sprite_buffer_slots = 0
+        # List of free slots in the sprite buffers. These are filled when sprites are removed.
+        self._sprite_buffer_free_slots = deque()
+
+        # Sprites added before the window/context is created
+        self._deferred_sprites: Set[Sprite] = set()
 
         # List of sprites in the sprite list
         self.sprite_list = []
         self.sprite_idx: Dict[Sprite, int] = dict()
         self.is_static = is_static
-
-        # Performance Note
-        # ----------------
-        # array.array is twice as slow as a python list when it comes to
-        # allocation and assignment, but array is free to serialize to bytes.
-        # Both types can pretty much be used interchangeably with the
-        # exception when writing to a buffer
-        # NOTE: It could also be that casting the list to a tuple can be
-        #       faster because a tuple should support buffer protocol (as floats)
-        
-        # NOTE: This is possibly obsolete
-        # usage = 'static' if self.is_static else "stream"
-
-        # The initial capacity of the spritelist buffers (internal)
-        self._capacity = 100
-        # The number of slots used in the sprite buffer
-        self._sprite_buffer_slots = 0
-        # List of free slots in the sprite buffers. These are filled when sprites are removed.
-        self._sprite_buffer_free_slots = deque()
 
         # Python representation of buffer data
         self._sprite_pos_data = array('f', [0] * self._capacity * 2)
@@ -335,37 +331,13 @@ class SpriteList:
         # Index buffer
         self._sprite_index_data = array('I', [0] * self._capacity)
 
-        # Buffers for each sprite attribute (read by shader) with initial capacity
-        self._sprite_pos_buf = self.ctx.buffer(reserve=self._capacity * 4 * 2)
-        self._sprite_size_buf = self.ctx.buffer(reserve=self._capacity * 4 * 2)
-        self._sprite_angle_buf = self.ctx.buffer(reserve=self._capacity * 4)
-        self._sprite_color_buf = self.ctx.buffer(reserve=self._capacity * 4 * 4)
-        self._sprite_sub_tex_buf = self.ctx.buffer(reserve=self._capacity * 4 * 4)
-        # Index buffer
-        self._sprite_index_buf = self.ctx.buffer(reserve=self._capacity * 4)
-
-        # Flags for signaling if a buffer needs to be
-        # written to the opengl buffer
+        # Flags for signaling if a buffer needs to be written to the opengl buffer
         self._sprite_pos_changed = False
         self._sprite_size_changed = False
         self._sprite_angle_changed = False
         self._sprite_color_changed = False
         self._sprite_sub_tex_changed = False
         self._sprite_index_changed = False
-
-        # Geometry description for the shader
-        contents = [
-            gl.BufferDescription(self._sprite_pos_buf, "2f", ['in_pos']),
-            gl.BufferDescription(self._sprite_size_buf, "2f", ['in_size']),
-            gl.BufferDescription(self._sprite_angle_buf, "1f", ['in_angle']),
-            gl.BufferDescription(self._sprite_sub_tex_buf, "4f", ['in_sub_tex_coords']),
-            gl.BufferDescription(self._sprite_color_buf, "4f1", ["in_color"], normalized=["in_color"]),
-        ]
-        self._geometry = self.ctx.geometry(
-            contents,
-            index_buffer=self._sprite_index_buf,
-            index_element_size=4,  # 32 bit integers
-        )
 
         # Info for spatial hash
         self._sprites_moved = 0
@@ -380,6 +352,58 @@ class SpriteList:
 
         LOG.debug("[%s] Creating SpriteList use_spatial_hash=%s is_static=%s",
                   id(self), use_spatial_hash, is_static)
+
+        # Check if the window/context is available
+        try:
+            get_window()
+            self._init_deferred()
+        except Exception as ex:
+            print(ex)
+
+    def _init_deferred(self):
+        """Since spritelist can be created before the window we need to defer initialization"""
+        self.ctx: ArcadeContext = get_window().ctx
+        self.program = self.ctx.sprite_list_program_cull
+        self._atlas = self._atlas or self.ctx.default_atlas
+
+        # Buffers for each sprite attribute (read by shader) with initial capacity
+        self._sprite_pos_buf = self.ctx.buffer(reserve=self._capacity * 4 * 2)
+        self._sprite_size_buf = self.ctx.buffer(reserve=self._capacity * 4 * 2)
+        self._sprite_angle_buf = self.ctx.buffer(reserve=self._capacity * 4)
+        self._sprite_color_buf = self.ctx.buffer(reserve=self._capacity * 4 * 4)
+        self._sprite_sub_tex_buf = self.ctx.buffer(reserve=self._capacity * 4 * 4)
+        # Index buffer
+        self._sprite_index_buf = self.ctx.buffer(reserve=self._capacity * 4)
+
+        contents = [
+            gl.BufferDescription(self._sprite_pos_buf, "2f", ['in_pos']),
+            gl.BufferDescription(self._sprite_size_buf, "2f", ['in_size']),
+            gl.BufferDescription(self._sprite_angle_buf, "1f", ['in_angle']),
+            gl.BufferDescription(self._sprite_sub_tex_buf, "4f", ['in_sub_tex_coords']),
+            gl.BufferDescription(self._sprite_color_buf, "4f1", ["in_color"], normalized=["in_color"]),
+        ]
+        self._geometry = self.ctx.geometry(
+            contents,
+            index_buffer=self._sprite_index_buf,
+            index_element_size=4,  # 32 bit integers
+        )
+
+        self._initialized = True
+
+        # Load all the textures and write texture coordinates into buffers
+        for sprite in self._deferred_sprites:
+            if sprite.texture is None:
+                raise ValueError("Attempting to use a sprite without a texture")
+            self.update_texture(sprite)
+
+        self._deferred_sprites = None
+
+        self._sprite_pos_changed = True
+        self._sprite_size_changed = True
+        self._sprite_angle_changed = True
+        self._sprite_color_changed = True
+        self._sprite_sub_tex_changed = True
+        self._sprite_index_changed = True
 
     def __len__(self) -> int:
         """ Return the length of the sprite list. """
@@ -410,8 +434,11 @@ class SpriteList:
         """Get the texture atlas for this sprite list"""
         return self._atlas
 
-    def _next_id(self):
-        """Get the next sprite id"""
+    def _next_slot(self):
+        """
+        Get the next available slot in the sprite buffers.
+        This can be a previously used slot or a new one.
+        """
         # Reuse old slots from deleted sprites
         if self._sprite_buffer_free_slots:
             return self._sprite_buffer_free_slots.popleft()
@@ -448,7 +475,7 @@ class SpriteList:
 
         :param Sprite item: Sprite to add to the list.
         """
-        idx = self._next_id()
+        idx = self._next_slot()
         self.sprite_list.append(item)
         self.sprite_idx[item] = idx
         item.register_sprite_list(self)
@@ -516,17 +543,22 @@ class SpriteList:
         """
         Reverses the current list in-place
         """
-        self.sprite_list.reverse()
-        for idx, sprite in enumerate(self.sprite_list):
-            self.sprite_idx[sprite] = idx
+        # NOTE: We might be able to reverse() the index buffer
+        #       Assuming __setitem__ is not called
+        # self.sprite_list.reverse()
+        # for idx, sprite in enumerate(self.sprite_list):
+        #     self.sprite_idx[sprite] = idx
+        raise NotImplementedError
 
     def shuffle(self):
         """
         Shuffles the current list in-place
         """
-        shuffle(self.sprite_list)
-        for idx, sprite in enumerate(self.sprite_list):
-            self.sprite_idx[sprite] = idx
+        # NOTE: Does this also call __setitem__
+        # shuffle(self.sprite_list)
+        # for idx, sprite in enumerate(self.sprite_list):
+        #     self.sprite_idx[sprite] = idx
+        raise NotImplementedError
 
     @property
     def percent_sprites_moved(self):
@@ -534,11 +566,11 @@ class SpriteList:
         return self._percent_sprites_moved
 
     @property
-    def use_spatial_hash(self):
+    def use_spatial_hash(self) -> bool:
         """ Are we using a spatial hash? """
         return self._use_spatial_hash
 
-    def disable_spatial_hashing(self):
+    def disable_spatial_hashing(self) -> None:
         """ Turn off spatial hashing. """
         self._use_spatial_hash = False
         self.spatial_hash = None
@@ -562,7 +594,7 @@ class SpriteList:
             for sprite in self.sprite_list:
                 self.spatial_hash.insert_object_for_box(sprite)
 
-    def update(self):
+    def update(self) -> None:
         """
         Call the update() method on each sprite in the list.
         """
@@ -597,7 +629,7 @@ class SpriteList:
         for sprite in self.sprite_list:
             sprite.rescale_relative_to_point(self.center, factor)
 
-    def move(self, change_x: float, change_y: float):
+    def move(self, change_x: float, change_y: float) -> None:
         """
         Moves all Sprites in the list by the same amount.
         This can be a very expensive operation depending on the
@@ -610,21 +642,30 @@ class SpriteList:
             sprite.center_x += change_x
             sprite.center_y += change_y
 
-    def preload_textures(self, texture_list: List["Texture"]):
+    def preload_textures(self, texture_list: List["Texture"]) -> None:
         """
         Preload a set of textures that will be used for sprites in this
         sprite list.
 
         :param array texture_list: List of textures.
         """
+        if not self.ctx:
+            raise ValueError("Cannot preload textures before the window is created")
+
         for texture in texture_list:
             self._atlas.add(texture)
 
-    def update_texture(self, sprite):
+    def update_texture(self, sprite) -> None:
         """Make sure we update the texture for this sprite for the next batch
         drawing"""
-        if sprite.texture is None:
-            raise Exception("Attempting to add a sprite without a texture")
+        # We cannot interact with texture atlases unless the context
+        # is created. We defer all texture initialization for later
+        if not self._initialized:
+            self._deferred_sprites.add(sprite)
+            return
+
+        if not sprite.texture:
+            return
 
         region = self._atlas.add(sprite.texture)
 
@@ -638,7 +679,7 @@ class SpriteList:
 
         self._sprite_sub_tex_changed = True
 
-    def update_position(self, sprite: Sprite):
+    def update_position(self, sprite: Sprite) -> None:
         """
         Called when setting initial position of a sprite when
         added or inserted into the SpriteList.
@@ -653,7 +694,7 @@ class SpriteList:
         self._sprite_pos_data[i * 2 + 1] = sprite.position[1]
         self._sprite_pos_changed = True
 
-    def update_color(self, sprite: Sprite):
+    def update_color(self, sprite: Sprite) -> None:
         """
         Called by the Sprite class to update position, angle, size and color
         of the specified sprite.
@@ -668,7 +709,7 @@ class SpriteList:
         self._sprite_color_data[i * 4 + 3] = int(sprite.alpha)
         self._sprite_color_changed = True
 
-    def update_size(self, sprite: Sprite):
+    def update_size(self, sprite: Sprite) -> None:
         """
         Called by the Sprite class to update the size/scale in this sprite.
         Necessary for batch drawing of items.
@@ -770,6 +811,21 @@ class SpriteList:
 
         # LOG.debug("SpriteList._write_buffers_to_gpu: %s", time.perf_counter() - start)
 
+    def _normalize_index_buffer(self):
+        """
+        Removes unused slots in the index buffer.
+        The other buffers don't need this because they re-use slots.
+        New sprites on the other hand always needs to be added
+        to the end of the index buffer to preserve order
+        """
+        # Need counter for how many slots are used in index buffer.
+        # 1) Sort the deleted indices (decending) and pop() them in a loop
+        # 2) Create a new array.array and manually copy every
+        #    item in the list except the deleted index slots
+        # 3) Use a tranform (gpu) to trim the index buffer and
+        #    read this buffer back into a new array using array.from_bytes
+        raise NotImplementedError
+
     def draw(self, **kwargs):
         """
         Draw this list of sprites.
@@ -780,6 +836,14 @@ class SpriteList:
         :param blend_function: Optional parameter to set the OpenGL blend function used for drawing the sprite list, such as
                         'arcade.Window.ctx.BLEND_ADDITIVE' or 'arcade.Window.ctx.BLEND_DEFAULT'
         """
+        if not self._initialized:
+            LOG.warn(
+                "SpriteList was created before the window. "
+                "Initialization will happen on the first draw() "
+                "possibly creating some initial stalls."
+            )
+            self._init_deferred()
+
         if len(self.sprite_list) == 0:
             return
 
@@ -857,13 +921,14 @@ class SpriteList:
         self._sprite_index_data.extend([0] * extend_by)
 
         # Resize existing opengl buffers to the new capacity
-        self._sprite_pos_buf.orphan(size=self._capacity * 4 * 2)
-        self._sprite_size_buf.orphan(size=self._capacity * 4 * 2)
-        self._sprite_angle_buf.orphan(size=self._capacity * 4)
-        self._sprite_color_buf.orphan(size=self._capacity * 4 * 4)
-        self._sprite_sub_tex_buf.orphan(size=self._capacity * 4 * 4)
-        # Index buffer
-        self._sprite_index_buf.orphan(size=self._capacity * 4)
+        if self._initialized:
+            self._sprite_pos_buf.orphan(size=self._capacity * 4 * 2)
+            self._sprite_size_buf.orphan(size=self._capacity * 4 * 2)
+            self._sprite_angle_buf.orphan(size=self._capacity * 4)
+            self._sprite_color_buf.orphan(size=self._capacity * 4 * 4)
+            self._sprite_sub_tex_buf.orphan(size=self._capacity * 4 * 4)
+            # Index buffer
+            self._sprite_index_buf.orphan(size=self._capacity * 4)
 
         self._sprite_pos_changed = True
         self._sprite_size_changed = True
