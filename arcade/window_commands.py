@@ -47,7 +47,8 @@ def get_projection() -> Mat4:
 
     This is a shortcut for ```window.ctx.projection_2d_matrix``.
 
-    :return: Numpy array with projection.
+    :return: Projection matrix
+    :rtype: Mat4
     """
     return get_window().ctx.projection_2d_matrix
 
