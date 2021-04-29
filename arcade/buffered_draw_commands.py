@@ -6,6 +6,7 @@ but uses Vertex Buffer Objects. This keeps the vertices loaded on
 the graphics card for much faster render times.
 """
 
+import struct
 import math
 import itertools
 from collections import defaultdict
@@ -100,12 +101,13 @@ def create_line_generic_with_colors(point_list: PointList,
     ctx = window.ctx
     program = ctx.line_generic_with_colors_program
 
-    buffer_type = np.dtype([('vertex', '2f4'), ('color', '4B')])
-    data = np.zeros(len(point_list), dtype=buffer_type)
-    data['vertex'] = point_list
-    data['color'] = [get_four_byte_color(color) for color in color_list]
+    vertex_size = 12  # 2f 4f1 = 12 bytes
+    data = bytearray(vertex_size * len(point_list))
+    for i, entry in enumerate(zip(point_list, color_list)):
+        offset = i * vertex_size
+        struct.pack_into("ffBBBB", data, offset, *entry[0], *entry[1])
 
-    vbo = ctx.buffer(data=data.tobytes())
+    vbo = ctx.buffer(data=data)
     vao_content = [
         BufferDescription(
             vbo,
