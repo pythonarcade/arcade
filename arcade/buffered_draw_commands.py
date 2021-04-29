@@ -6,12 +6,12 @@ but uses Vertex Buffer Objects. This keeps the vertices loaded on
 the graphics card for much faster render times.
 """
 
+from array import array
 import struct
 import math
 import itertools
 from collections import defaultdict
 import pyglet.gl as gl
-import numpy as np
 
 from typing import List, Iterable, Sequence
 from typing import TypeVar
@@ -100,6 +100,9 @@ def create_line_generic_with_colors(point_list: PointList,
     window = get_window()
     ctx = window.ctx
     program = ctx.line_generic_with_colors_program
+
+    # Ensure colors have 4 components
+    color_list = [get_four_byte_color(color) for color in color_list]
 
     vertex_size = 12  # 2f 4f1 = 12 bytes
     data = bytearray(vertex_size * len(point_list))
@@ -703,8 +706,8 @@ class ShapeElementList(Generic[TShape]):
             indices.extend(itertools.islice(counter, shape.vao.num_vertices))
             indices.append(reset_idx)
         del indices[-1]
-        indices = np.array(indices)
-        ibo = self.ctx.buffer(data=indices.astype('i4').tobytes())
+
+        ibo = self.ctx.buffer(data=array('I', indices))
 
         vao_content = [
             BufferDescription(
