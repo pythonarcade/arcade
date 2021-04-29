@@ -416,18 +416,25 @@ class SpriteList:
     def __getitem__(self, i):
         return self.sprite_list[i]
 
-    def __setitem__(self, key: int, value: Sprite):
-        # item_to_be_removed = self.sprite_list[key]
-        # item_to_be_removed.sprite_lists.remove(self)
+    def __setitem__(self, idx: int, sprite: Sprite):
+        """Replace a sprite at a specific index"""
+        item_to_be_removed = self.sprite_list[idx]
+        item_to_be_removed.sprite_lists.remove(self)
 
-        # if self._use_spatial_hash:
-        #     self.spatial_hash.remove_object(item_to_be_removed)
-        #     self.spatial_hash.insert_object_for_box(value)
+        if self._use_spatial_hash:
+            self.spatial_hash.remove_object(item_to_be_removed)
+            self.spatial_hash.insert_object_for_box(sprite)
 
-        # value.register_sprite_list(self)
-        # self.sprite_list[key] = value
-        # self.sprite_idx[value] = key
-        raise ValueError("__setitem__ not working yet")
+        sprite.register_sprite_list(self)
+        self.sprite_list[idx] = sprite
+        self.sprite_idx[sprite] = idx
+
+        # Update the internal sprite buffer data
+        self.update_position(sprite)
+        self.update_size(sprite)
+        self.update_angle(sprite)
+        self.update_color(sprite)
+        self.update_texture(sprite)
 
     @property
     def atlas(self) -> "TextureAtlas":
