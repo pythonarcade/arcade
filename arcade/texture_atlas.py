@@ -17,9 +17,9 @@ from typing import Set, Tuple, Sequence, TYPE_CHECKING
 from PIL import Image
 
 import arcade
+
 from pyglet.image.atlas import (
     Allocator,
-    _Strip,
     AllocatorException,
 )
 
