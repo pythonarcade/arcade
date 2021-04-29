@@ -246,7 +246,7 @@ class SpriteList:
         '_deferred_sprites',
         '_initialized',
         'sprite_list',
-        'sprite_idx',
+        'sprite_slot',
         'is_static',
         '_capacity',
         '_sprite_buffer_slots',
@@ -319,7 +319,10 @@ class SpriteList:
 
         # List of sprites in the sprite list
         self.sprite_list = []
-        self.sprite_idx: Dict[Sprite, int] = dict()
+        # Slot indices for the sprite in internal buffers
+        # This has nothing to do with the index in the spritelist itself
+        self.sprite_slot: Dict[Sprite, int] = dict()
+        # TODO: Figure out what to do with this. Might be obsolete.
         self.is_static = is_static
 
         # Python representation of buffer data
@@ -427,7 +430,7 @@ class SpriteList:
 
         sprite.register_sprite_list(self)
         self.sprite_list[idx] = sprite
-        self.sprite_idx[sprite] = idx
+        self.sprite_slot[sprite] = idx
 
         # Update the internal sprite buffer data
         self.update_position(sprite)
@@ -468,13 +471,12 @@ class SpriteList:
         """
         Pop off the last sprite, or the given index, from the list
         """
-        # if len(self.sprite_list) == 0:
-        #     raise(ValueError("pop from empty list"))
+        if len(self.sprite_list) == 0:
+            raise(ValueError("pop from empty list"))
 
-        # sprite = self.sprite_list[index]
-        # self.remove(sprite)
-        # return sprite
-        raise ValueError("Not implemented yet")
+        sprite = self.sprite_list[index]
+        self.remove(sprite)
+        return sprite
 
     def append(self, item: _SpriteType):
         """
@@ -484,7 +486,7 @@ class SpriteList:
         """
         idx = self._next_slot()
         self.sprite_list.append(item)
-        self.sprite_idx[item] = idx
+        self.sprite_slot[item] = idx
         item.register_sprite_list(self)
 
         self.update_position(item)
@@ -508,8 +510,8 @@ class SpriteList:
         Remove a specific sprite from the list.
         :param Sprite item: Item to remove from the list
         """
-        i = self.sprite_idx[item]
-        del self.sprite_idx[item]
+        i = self.sprite_slot[item]
+        del self.sprite_slot[item]
         self.sprite_list.remove(item)
         item.sprite_lists.remove(self)
 
@@ -540,7 +542,7 @@ class SpriteList:
         # item.register_sprite_list(self)
 
         # for idx, sprite in enumerate(self.sprite_list[index:], start=index):
-        #     self.sprite_idx[sprite] = idx
+        #     self.sprite_slot[sprite] = idx
 
         # if self._use_spatial_hash:
         #     self.spatial_hash.insert_object_for_box(item)
@@ -552,10 +554,10 @@ class SpriteList:
         """
         # NOTE: We might be able to reverse() the index buffer
         #       Assuming __setitem__ is not called
-        # self.sprite_list.reverse()
-        # for idx, sprite in enumerate(self.sprite_list):
-        #     self.sprite_idx[sprite] = idx
-        raise NotImplementedError
+        self.sprite_list.reverse()
+        # # NOTE: We need to do some copy gymnastics here
+        # self._sprite_index_buf.reverse()
+        # self._sprite_index_changed = True
 
     def shuffle(self):
         """
@@ -564,7 +566,7 @@ class SpriteList:
         # NOTE: Does this also call __setitem__
         # shuffle(self.sprite_list)
         # for idx, sprite in enumerate(self.sprite_list):
-        #     self.sprite_idx[sprite] = idx
+        #     self.sprite_slot[sprite] = idx
         raise NotImplementedError
 
     @property
@@ -676,7 +678,7 @@ class SpriteList:
 
         region = self._atlas.add(sprite.texture)
 
-        i = self.sprite_idx[sprite]
+        i = self.sprite_slot[sprite]
         new_coords = region.texture_coordinates
 
         self._sprite_sub_tex_data[i * 4] = new_coords[0]
@@ -696,7 +698,7 @@ class SpriteList:
 
         :param Sprite sprite: Sprite to update.
         """
-        i = self.sprite_idx[sprite]
+        i = self.sprite_slot[sprite]
         self._sprite_pos_data[i * 2] = sprite.position[0]
         self._sprite_pos_data[i * 2 + 1] = sprite.position[1]
         self._sprite_pos_changed = True
@@ -709,7 +711,7 @@ class SpriteList:
 
         :param Sprite sprite: Sprite to update.
         """
-        i = self.sprite_idx[sprite]
+        i = self.sprite_slot[sprite]
         self._sprite_color_data[i * 4] = int(sprite.color[0])
         self._sprite_color_data[i * 4 + 1] = int(sprite.color[1])
         self._sprite_color_data[i * 4 + 2] = int(sprite.color[2])
@@ -723,7 +725,7 @@ class SpriteList:
 
         :param Sprite sprite: Sprite to update.
         """
-        i = self.sprite_idx[sprite]
+        i = self.sprite_slot[sprite]
         self._sprite_size_data[i * 2] = sprite.width
         self._sprite_size_data[i * 2 + 1] = sprite.height
         self._sprite_size_changed = True
@@ -735,7 +737,7 @@ class SpriteList:
 
         :param Sprite sprite: Sprite to update.
         """
-        i = self.sprite_idx[sprite]
+        i = self.sprite_slot[sprite]
         self._sprite_size_data[i * 2 + 1] = sprite.height
         self._sprite_size_changed = True
 
@@ -746,7 +748,7 @@ class SpriteList:
 
         :param Sprite sprite: Sprite to update.
         """
-        i = self.sprite_idx[sprite]
+        i = self.sprite_slot[sprite]
         self._sprite_size_data[i * 2] = sprite.width
         self._sprite_size_changed = True
 
@@ -757,7 +759,7 @@ class SpriteList:
 
         :param Sprite sprite: Sprite to update.
         """
-        i = self.sprite_idx[sprite]
+        i = self.sprite_slot[sprite]
         self._sprite_pos_data[i * 2] = sprite.position[0]
         self._sprite_pos_data[i * 2 + 1] = sprite.position[1]
         self._sprite_pos_changed = True
@@ -770,7 +772,7 @@ class SpriteList:
 
         :param Sprite sprite: Sprite to update.
         """
-        i = self.sprite_idx[sprite]
+        i = self.sprite_slot[sprite]
         self._sprite_angle_data[i] = sprite.angle
         self._sprite_angle_changed = True
 

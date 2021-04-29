@@ -34,8 +34,7 @@ def test_it_can_insert_in_a_spritelist():
     spritelist.insert(1, sprite)
 
     assert [s.name for s in spritelist] == [0, 2, 1]
-    assert [spritelist.sprite_idx[s] for s in spritelist] == [0, 1, 2]
-    assert spritelist._vao1 is None
+    assert [spritelist.sprite_slot[s] for s in spritelist] == [0, 1, 2]
 
 
 def test_it_can_reverse_a_spritelist():
@@ -44,16 +43,15 @@ def test_it_can_reverse_a_spritelist():
     spritelist.reverse()
 
     assert [s.name for s in spritelist] == [2, 1, 0]
-    assert [spritelist.sprite_idx[s] for s in spritelist] == [0, 1, 2]
-    assert spritelist._vao1 is None
+    assert [spritelist.sprite_slot[s] for s in spritelist] == [1, 2, 3]
 
 
 def test_it_can_pop_at_a_given_index():
     spritelist = make_named_sprites(3)
     assert spritelist.pop(1).name == 1
     assert [s.name for s in spritelist] == [0, 2]
-    assert [spritelist.sprite_idx[s] for s in spritelist] == [0, 1]
-    assert spritelist._vao1 is None
+    # Indices will not change internally
+    assert [spritelist.sprite_slot[s] for s in spritelist] == [0, 2]
 
 def test_can_assign_back_to_self():
     spritelist = make_named_sprites(3)
