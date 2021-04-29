@@ -217,8 +217,7 @@ class ArcadeContext(Context):
         """
         # Ensure projection and view matrices are set in pyglet
         self.window.projection = pyglet.math.Mat4.orthogonal_projection(
-            0, self.window.width,
-            0, self.window.height,
+            *self.projection_2d,
             1, -1
         )
         # Global modelview matrix should be set to identity
