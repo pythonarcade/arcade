@@ -1044,7 +1044,12 @@ class SpriteList:
         extend_by = self._idx_capacity
         self._idx_capacity = self._idx_capacity * 2
 
-        print(self._sprite_index_slots, self._sprite_buffer_slots, self._sprite_index_slots / self._sprite_buffer_slots)
+        LOG.debug(
+            "Buffers: index_slots=%s sprite_slots=%s over-allocation-ratio=%s",
+            self._sprite_index_slots,
+            self._sprite_buffer_slots,
+            self._sprite_index_slots / self._sprite_buffer_slots
+        )
 
         LOG.debug(
             f"(%s) Increasing index capacity from %s to %s",
