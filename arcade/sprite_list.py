@@ -767,8 +767,6 @@ class SpriteList:
         slot = self.sprite_slot[sprite]
         new_coords = region.texture_coordinates
 
-        print("update_texture", slot, sprite.width, sprite.height, self._sprite_index_data, self._sprite_index_slots)
-
         self._sprite_sub_tex_data[slot * 4] = new_coords[0]
         self._sprite_sub_tex_data[slot * 4 + 1] = new_coords[1]
         self._sprite_sub_tex_data[slot * 4 + 2] = new_coords[2]
