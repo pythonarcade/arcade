@@ -111,7 +111,6 @@ class MyGame(arcade.Window):
         # This command has to happen before we start drawing
         arcade.start_render()
         self.layers_grid_sprites_one_dim[0].draw()
-        self.layers_grid_sprites_one_dim[0].vbo_buf = None
 
     def on_update(self, delta_time: float):
         """ Update the grid """
