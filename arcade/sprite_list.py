@@ -32,6 +32,7 @@ from arcade import (
     get_window,
     Point,
     gl,
+    sprite,
 )
 
 if TYPE_CHECKING:
@@ -42,7 +43,8 @@ LOG = logging.getLogger(__name__)
 
 # The slot index that makes a sprite invisible.
 # 2^32-1 is usually reserved for primitive restart
-_SPRITE_SLOT_INVISIBLE = 2147483647  # 2^31-1
+# NOTE: Possibly we want to use slot 0 for this?
+_SPRITE_SLOT_INVISIBLE = 2**32-2
 
 
 def _create_rects(rect_list: Iterable[Sprite]) -> List[float]:
@@ -248,8 +250,10 @@ class SpriteList:
         'sprite_list',
         'sprite_slot',
         'is_static',
-        '_capacity',
+        '_buf_capacity',
+        '_idx_capacity',
         '_sprite_buffer_slots',
+        '_sprite_index_slots',
         '_sprite_buffer_free_slots',
         '_sprite_pos_data',
         '_sprite_size_data',
@@ -308,9 +312,13 @@ class SpriteList:
         self.extra = None
 
         # The initial capacity of the spritelist buffers (internal)
-        self._capacity = abs(capacity) or 100
+        self._buf_capacity = abs(capacity) or 100
+        # The initial capacity of the index buffer (internal)
+        self._idx_capacity = abs(capacity) or 100
         # The number of slots used in the sprite buffer
         self._sprite_buffer_slots = 0
+        # Number of slots used in the index buffer
+        self._sprite_index_slots = 0
         # List of free slots in the sprite buffers. These are filled when sprites are removed.
         self._sprite_buffer_free_slots = deque()
 
@@ -318,21 +326,21 @@ class SpriteList:
         self._deferred_sprites: Set[Sprite] = set()
 
         # List of sprites in the sprite list
-        self.sprite_list = []
-        # Slot indices for the sprite in internal buffers
+        self.sprite_list: List[Sprite] = []
+        # Buffer slots for the sprites (exclusing index buffer)
         # This has nothing to do with the index in the spritelist itself
         self.sprite_slot: Dict[Sprite, int] = dict()
         # TODO: Figure out what to do with this. Might be obsolete.
         self.is_static = is_static
 
         # Python representation of buffer data
-        self._sprite_pos_data = array('f', [0] * self._capacity * 2)
-        self._sprite_size_data = array('f', [0] * self._capacity * 2)
-        self._sprite_angle_data = array('f', [0] * self._capacity)
-        self._sprite_color_data = array('B', [0] * self._capacity * 4)
-        self._sprite_sub_tex_data = array('f', [0] * self._capacity * 4)
+        self._sprite_pos_data = array('f', [0] * self._buf_capacity * 2)
+        self._sprite_size_data = array('f', [0] * self._buf_capacity * 2)
+        self._sprite_angle_data = array('f', [0] * self._buf_capacity)
+        self._sprite_color_data = array('B', [0] * self._buf_capacity * 4)
+        self._sprite_sub_tex_data = array('f', [0] * self._buf_capacity * 4)
         # Index buffer
-        self._sprite_index_data = array('I', [0] * self._capacity)
+        self._sprite_index_data = array('I', [0] * self._idx_capacity)
 
         # Flags for signaling if a buffer needs to be written to the opengl buffer
         self._sprite_pos_changed = False
@@ -370,13 +378,13 @@ class SpriteList:
         self._atlas = self._atlas or self.ctx.default_atlas
 
         # Buffers for each sprite attribute (read by shader) with initial capacity
-        self._sprite_pos_buf = self.ctx.buffer(reserve=self._capacity * 4 * 2)
-        self._sprite_size_buf = self.ctx.buffer(reserve=self._capacity * 4 * 2)
-        self._sprite_angle_buf = self.ctx.buffer(reserve=self._capacity * 4)
-        self._sprite_color_buf = self.ctx.buffer(reserve=self._capacity * 4 * 4)
-        self._sprite_sub_tex_buf = self.ctx.buffer(reserve=self._capacity * 4 * 4)
+        self._sprite_pos_buf = self.ctx.buffer(reserve=self._buf_capacity * 4 * 2)
+        self._sprite_size_buf = self.ctx.buffer(reserve=self._buf_capacity * 4 * 2)
+        self._sprite_angle_buf = self.ctx.buffer(reserve=self._buf_capacity * 4)
+        self._sprite_color_buf = self.ctx.buffer(reserve=self._buf_capacity * 4 * 4)
+        self._sprite_sub_tex_buf = self.ctx.buffer(reserve=self._buf_capacity * 4 * 4)
         # Index buffer
-        self._sprite_index_buf = self.ctx.buffer(reserve=self._capacity * 4)
+        self._sprite_index_buf = self.ctx.buffer(reserve=self._idx_capacity * 4)
 
         contents = [
             gl.BufferDescription(self._sprite_pos_buf, "2f", ['in_pos']),
@@ -419,18 +427,22 @@ class SpriteList:
     def __getitem__(self, i):
         return self.sprite_list[i]
 
-    def __setitem__(self, idx: int, sprite: Sprite):
+    def __setitem__(self, sprite_index: int, sprite: Sprite):
         """Replace a sprite at a specific index"""
-        item_to_be_removed = self.sprite_list[idx]
-        item_to_be_removed.sprite_lists.remove(self)
+        sprite_to_be_removed = self.sprite_list[sprite_index]
+        sprite_to_be_removed.sprite_lists.remove(self)
 
         if self._use_spatial_hash:
-            self.spatial_hash.remove_object(item_to_be_removed)
+            self.spatial_hash.remove_object(sprite_to_be_removed)
             self.spatial_hash.insert_object_for_box(sprite)
 
         sprite.register_sprite_list(self)
-        self.sprite_list[idx] = sprite
-        self.sprite_slot[sprite] = idx
+        self.sprite_list[sprite_index] = sprite
+
+        # Delete the old sprite in the slot index adding a new one with the same slots
+        slot = self.sprite_slot[sprite_to_be_removed]
+        del self.sprite_slot[sprite_to_be_removed]
+        self.sprite_slot[sprite] = slot
 
         # Update the internal sprite buffer data
         self.update_position(sprite)
@@ -444,20 +456,22 @@ class SpriteList:
         """Get the texture atlas for this sprite list"""
         return self._atlas
 
-    def _next_slot(self):
+    def _next_slot(self) -> int:
         """
-        Get the next available slot in the sprite buffers.
-        This can be a previously used slot or a new one.
+        Get the next available slot in sprite buffers
+
+        :return: index slot, buffer_slot
+        :rtype: int
         """
         # Reuse old slots from deleted sprites
         if self._sprite_buffer_free_slots:
             return self._sprite_buffer_free_slots.popleft()
 
         # Add a new slot
-        _id = self._sprite_buffer_slots
+        buff_slot = self._sprite_buffer_slots
         self._sprite_buffer_slots += 1
-        self._grow_buffers()  # We might need to increase our buffers
-        return _id
+        self._grow_sprite_buffers()  # We might need to increase our buffers
+        return buff_slot
 
     def index(self, key) -> int:
         """
@@ -478,31 +492,32 @@ class SpriteList:
         self.remove(sprite)
         return sprite
 
-    def append(self, item: _SpriteType):
+    def append(self, sprite: _SpriteType):
         """
         Add a new sprite to the list.
 
         :param Sprite item: Sprite to add to the list.
         """
-        idx = self._next_slot()
-        self.sprite_list.append(item)
-        self.sprite_slot[item] = idx
-        item.register_sprite_list(self)
+        slot = self._next_slot()
+        self.sprite_list.append(sprite)
+        self.sprite_slot[sprite] = slot
+        sprite.register_sprite_list(self)
 
-        self.update_position(item)
-        self.update_size(item)
-        self.update_angle(item)
-        self.update_color(item)
-        self.update_texture(item)
+        self._update_all(sprite)
 
-        self._sprite_index_data[idx] = idx
+        # Add sprite to the end of the index buffer
+        idx_slot = self._sprite_index_slots
+        self._sprite_index_slots += 1
+        self._grow_index_buffer()
+        self._sprite_index_data[idx_slot] = slot
         self._sprite_index_changed = True
 
         if self._use_spatial_hash:
-            self.spatial_hash.insert_object_for_box(item)
+            self.spatial_hash.insert_object_for_box(sprite)
 
-        if hasattr(item, "textures"):
-            for texture in item.textures or []:
+        # Load additional textures attached to the sprite
+        if hasattr(sprite, "textures"):
+            for texture in sprite.textures or []:
                 self._atlas.add(texture)
 
     def remove(self, item: _SpriteType):
@@ -510,13 +525,24 @@ class SpriteList:
         Remove a specific sprite from the list.
         :param Sprite item: Item to remove from the list
         """
-        i = self.sprite_slot[item]
+        slot = self.sprite_slot[item]
         del self.sprite_slot[item]
         self.sprite_list.remove(item)
         item.sprite_lists.remove(self)
 
-        self._sprite_buffer_free_slots.append(i)
-        self._sprite_index_data[i] = _SPRITE_SLOT_INVISIBLE
+        self._sprite_buffer_free_slots.append(slot)
+
+        # NOTE: Optimize this by deferring removal?
+        #       Defer removal
+        # Set the sprite as invisible in the index buffer
+        # idx_slot = self._sprite_index_data.index(slot)
+        # self._sprite_index_data[idx_slot] = _SPRITE_SLOT_INVISIBLE
+
+        # Brutal resize for now. Optimize later
+        self._sprite_index_data.remove(slot)
+        self._sprite_index_data.append(0)
+        self._sprite_index_slots -= 1
+
         self._sprite_index_changed = True
 
         if self._use_spatial_hash:
@@ -531,43 +557,64 @@ class SpriteList:
         for item in items:
             self.append(item)
 
-    def insert(self, index: int, item: _SpriteType):
+    def insert(self, index: int, sprite: _SpriteType):
         """
-        Inserts a sprite at a given index
+        Inserts a sprite at a given index.
 
         :param int index: The index at which to insert
         :param Sprite item: The sprite to insert
         """
-        # self.sprite_list.insert(index, item)
-        # item.register_sprite_list(self)
+        self.sprite_list.insert(index, sprite)
+        sprite.register_sprite_list(self)
 
-        # for idx, sprite in enumerate(self.sprite_list[index:], start=index):
-        #     self.sprite_slot[sprite] = idx
+        # Allocate a new slot and write the data
+        slot = self._next_slot()
+        self.sprite_slot[sprite] = slot
+        self._update_all(sprite)
 
-        # if self._use_spatial_hash:
-        #     self.spatial_hash.insert_object_for_box(item)
-        raise ValueError("Not implemented yet")
+        # Allocate room in the index buffer
+        self._normalize_index_buffer()
+        idx_slot = self._sprite_index_slots
+        self._sprite_index_slots += 1
+        self._grow_index_buffer()
+        self._sprite_index_data.insert(index, slot)
+        self._sprite_index_data.pop()
+
+        if self._use_spatial_hash:
+            self.spatial_hash.insert_object_for_box(sprite)
 
     def reverse(self):
         """
         Reverses the current list in-place
         """
-        # NOTE: We might be able to reverse() the index buffer
-        #       Assuming __setitem__ is not called
         self.sprite_list.reverse()
-        # # NOTE: We need to do some copy gymnastics here
-        # self._sprite_index_buf.reverse()
-        # self._sprite_index_changed = True
+        # Reverse the index buffer
+        # Only revers the part of the array we use
+        self._sprite_index_data = self._sprite_index_data[:self._sprite_index_slots]
+        self._sprite_index_data.reverse()
+        # Resize the index buffer to the original capacity
+        if len(self._sprite_index_data) < self._idx_capacity:
+            extend_by = self._idx_capacity - len(self._sprite_index_data)
+            self._sprite_index_data.extend([0] * extend_by)
+
+        self._sprite_index_changed = True
 
     def shuffle(self):
         """
         Shuffles the current list in-place
         """
-        # NOTE: Does this also call __setitem__
-        # shuffle(self.sprite_list)
-        # for idx, sprite in enumerate(self.sprite_list):
-        #     self.sprite_slot[sprite] = idx
-        raise NotImplementedError
+        # Make sure the index buffer is the same length as the sprite list
+        self._normalize_index_buffer()
+        # zip index and sprite into pairs and shuffle
+        pairs = list(zip(self.sprite_list, self._sprite_index_data))
+        shuffle(pairs)
+        # Reconstruct the lists again from pairs
+        self.sprite_list, indices = zip(*pairs)
+        self._sprite_index_data = array('I', indices)
+        # Resize the index buffer to the original capacity
+        if len(self._sprite_index_data) < self._idx_capacity:
+            extend_by = self._idx_capacity - len(self._sprite_index_data)
+            self._sprite_index_data.extend([0] * extend_by)
 
     @property
     def percent_sprites_moved(self):
@@ -664,6 +711,49 @@ class SpriteList:
         for texture in texture_list:
             self._atlas.add(texture)
 
+    def _update_all(self, sprite):
+        """
+        Update all sprite data. This is faster when adding and moving sprites.
+        This duplicate code, but reduces call overhead, dict lookups etc.
+        """
+        slot = self.sprite_slot[sprite]
+        # position
+        self._sprite_pos_data[slot * 2] = sprite.position[0]
+        self._sprite_pos_data[slot * 2 + 1] = sprite.position[1]
+        self._sprite_pos_changed = True
+        # size
+        self._sprite_size_data[slot * 2] = sprite.width
+        self._sprite_size_data[slot * 2 + 1] = sprite.height
+        self._sprite_size_changed = True
+        # angle
+        self._sprite_angle_data[slot] = sprite.angle
+        self._sprite_angle_changed = True
+        # color
+        self._sprite_color_data[slot * 4] = int(sprite.color[0])
+        self._sprite_color_data[slot * 4 + 1] = int(sprite.color[1])
+        self._sprite_color_data[slot * 4 + 2] = int(sprite.color[2])
+        self._sprite_color_data[slot * 4 + 3] = int(sprite.alpha)
+        self._sprite_color_changed = True
+
+        # texture
+        if not self._initialized:
+            self._deferred_sprites.add(sprite)
+            return
+
+        if not sprite.texture:
+            return
+
+        region = self._atlas.add(sprite.texture)
+
+        slot = self.sprite_slot[sprite]
+        new_coords = region.texture_coordinates
+
+        self._sprite_sub_tex_data[slot * 4] = new_coords[0]
+        self._sprite_sub_tex_data[slot * 4 + 1] = new_coords[1]
+        self._sprite_sub_tex_data[slot * 4 + 2] = new_coords[2]
+        self._sprite_sub_tex_data[slot * 4 + 3] = new_coords[3]
+        self._sprite_sub_tex_changed = True
+
     def update_texture(self, sprite) -> None:
         """Make sure we update the texture for this sprite for the next batch
         drawing"""
@@ -678,13 +768,13 @@ class SpriteList:
 
         region = self._atlas.add(sprite.texture)
 
-        i = self.sprite_slot[sprite]
+        slot = self.sprite_slot[sprite]
         new_coords = region.texture_coordinates
 
-        self._sprite_sub_tex_data[i * 4] = new_coords[0]
-        self._sprite_sub_tex_data[i * 4 + 1] = new_coords[1]
-        self._sprite_sub_tex_data[i * 4 + 2] = new_coords[2]
-        self._sprite_sub_tex_data[i * 4 + 3] = new_coords[3]
+        self._sprite_sub_tex_data[slot * 4] = new_coords[0]
+        self._sprite_sub_tex_data[slot * 4 + 1] = new_coords[1]
+        self._sprite_sub_tex_data[slot * 4 + 2] = new_coords[2]
+        self._sprite_sub_tex_data[slot * 4 + 3] = new_coords[3]
 
         self._sprite_sub_tex_changed = True
 
@@ -698,9 +788,9 @@ class SpriteList:
 
         :param Sprite sprite: Sprite to update.
         """
-        i = self.sprite_slot[sprite]
-        self._sprite_pos_data[i * 2] = sprite.position[0]
-        self._sprite_pos_data[i * 2 + 1] = sprite.position[1]
+        slot = self.sprite_slot[sprite]
+        self._sprite_pos_data[slot * 2] = sprite.position[0]
+        self._sprite_pos_data[slot * 2 + 1] = sprite.position[1]
         self._sprite_pos_changed = True
 
     def update_color(self, sprite: Sprite) -> None:
@@ -711,11 +801,11 @@ class SpriteList:
 
         :param Sprite sprite: Sprite to update.
         """
-        i = self.sprite_slot[sprite]
-        self._sprite_color_data[i * 4] = int(sprite.color[0])
-        self._sprite_color_data[i * 4 + 1] = int(sprite.color[1])
-        self._sprite_color_data[i * 4 + 2] = int(sprite.color[2])
-        self._sprite_color_data[i * 4 + 3] = int(sprite.alpha)
+        slot = self.sprite_slot[sprite]
+        self._sprite_color_data[slot * 4] = int(sprite.color[0])
+        self._sprite_color_data[slot * 4 + 1] = int(sprite.color[1])
+        self._sprite_color_data[slot * 4 + 2] = int(sprite.color[2])
+        self._sprite_color_data[slot * 4 + 3] = int(sprite.alpha)
         self._sprite_color_changed = True
 
     def update_size(self, sprite: Sprite) -> None:
@@ -725,9 +815,9 @@ class SpriteList:
 
         :param Sprite sprite: Sprite to update.
         """
-        i = self.sprite_slot[sprite]
-        self._sprite_size_data[i * 2] = sprite.width
-        self._sprite_size_data[i * 2 + 1] = sprite.height
+        slot = self.sprite_slot[sprite]
+        self._sprite_size_data[slot * 2] = sprite.width
+        self._sprite_size_data[slot * 2 + 1] = sprite.height
         self._sprite_size_changed = True
 
     def update_height(self, sprite: Sprite):
@@ -737,8 +827,8 @@ class SpriteList:
 
         :param Sprite sprite: Sprite to update.
         """
-        i = self.sprite_slot[sprite]
-        self._sprite_size_data[i * 2 + 1] = sprite.height
+        slot = self.sprite_slot[sprite]
+        self._sprite_size_data[slot * 2 + 1] = sprite.height
         self._sprite_size_changed = True
 
     def update_width(self, sprite: Sprite):
@@ -748,8 +838,8 @@ class SpriteList:
 
         :param Sprite sprite: Sprite to update.
         """
-        i = self.sprite_slot[sprite]
-        self._sprite_size_data[i * 2] = sprite.width
+        slot = self.sprite_slot[sprite]
+        self._sprite_size_data[slot * 2] = sprite.width
         self._sprite_size_changed = True
 
     def update_location(self, sprite: Sprite):
@@ -759,9 +849,9 @@ class SpriteList:
 
         :param Sprite sprite: Sprite to update.
         """
-        i = self.sprite_slot[sprite]
-        self._sprite_pos_data[i * 2] = sprite.position[0]
-        self._sprite_pos_data[i * 2 + 1] = sprite.position[1]
+        slot = self.sprite_slot[sprite]
+        self._sprite_pos_data[slot * 2] = sprite.position[0]
+        self._sprite_pos_data[slot * 2 + 1] = sprite.position[1]
         self._sprite_pos_changed = True
         self._sprites_moved += 1
 
@@ -772,22 +862,23 @@ class SpriteList:
 
         :param Sprite sprite: Sprite to update.
         """
-        i = self.sprite_slot[sprite]
-        self._sprite_angle_data[i] = sprite.angle
+        slot = self.sprite_slot[sprite]
+        self._sprite_angle_data[slot] = sprite.angle
         self._sprite_angle_changed = True
 
     def _write_sprite_buffers_to_gpu(self):
         """Create or resize buffers"""
-        # LOG.debug(
-        #     "SpriteList._write_sprite_buffers_to_gpu: pos=%s, size=%s, angle=%s, color=%s tex=%s idx=%s",
-        #     self._sprite_pos_changed,
-        #     self._sprite_size_changed,
-        #     self._sprite_angle_changed,
-        #     self._sprite_color_changed,
-        #     self._sprite_sub_tex_changed,
-        #     self._sprite_index_changed,
-        # )
-        # start = time.perf_counter()
+        LOG.debug(
+            "[%s] SpriteList._write_sprite_buffers_to_gpu: pos=%s, size=%s, angle=%s, color=%s tex=%s idx=%s",
+            id(self),
+            self._sprite_pos_changed,
+            self._sprite_size_changed,
+            self._sprite_angle_changed,
+            self._sprite_color_changed,
+            self._sprite_sub_tex_changed,
+            self._sprite_index_changed,
+        )
+        start = time.perf_counter()
 
         if self._sprite_pos_changed:
             self._sprite_pos_buf.write(self._sprite_pos_data)
@@ -816,24 +907,11 @@ class SpriteList:
 
         if self._sprite_index_changed:
             self._sprite_index_buf.write(self._sprite_index_data)
+            # import struct
+            # print(struct.unpack("50I", self._sprite_index_buf.read(size=50 * 4)))
             self._sprite_index_changed = False
 
-        # LOG.debug("SpriteList._write_buffers_to_gpu: %s", time.perf_counter() - start)
-
-    def _normalize_index_buffer(self):
-        """
-        Removes unused slots in the index buffer.
-        The other buffers don't need this because they re-use slots.
-        New sprites on the other hand always needs to be added
-        to the end of the index buffer to preserve order
-        """
-        # Need counter for how many slots are used in index buffer.
-        # 1) Sort the deleted indices (decending) and pop() them in a loop
-        # 2) Create a new array.array and manually copy every
-        #    item in the list except the deleted index slots
-        # 3) Use a tranform (gpu) to trim the index buffer and
-        #    read this buffer back into a new array using array.from_bytes
-        raise NotImplementedError
+        # LOG.debug("[%s] SpriteList._write_buffers_to_gpu: %s", id(self), time.perf_counter() - start)
 
     def draw(self, **kwargs):
         """
@@ -896,7 +974,7 @@ class SpriteList:
         self._geometry.render(
             self.program,
             mode=self.ctx.POINTS,
-            vertices=self._sprite_buffer_slots,
+            vertices=self._sprite_index_slots,
         )
 
     def draw_hit_boxes(self, color: Color = (0, 0, 0, 255), line_thickness: float = 1):
@@ -905,20 +983,37 @@ class SpriteList:
         for sprite in self.sprite_list:
             sprite.draw_hit_box(color, line_thickness)
 
-    def _grow_buffers(self):
+    def _normalize_index_buffer(self):
+        """
+        Removes unused slots in the index buffer.
+        The other buffers don't need this because they re-use slots.
+        New sprites on the other hand always needs to be added
+        to the end of the index buffer to preserve order
+        """
+        # Need counter for how many slots are used in index buffer.
+        # 1) Sort the deleted indices (decending) and pop() them in a loop
+        # 2) Create a new array.array and manually copy every
+        #    item in the list except the deleted index slots
+        # 3) Use a tranform (gpu) to trim the index buffer and
+        #    read this buffer back into a new array using array.from_bytes
+        # NOTE: Right now the index buffer is always normalized
+        pass
+
+    def _grow_sprite_buffers(self):
         """Double the internal buffer sizes"""
-        if self._sprite_buffer_slots < self._capacity:
+        # Resize sprite buffers if needed
+        if self._sprite_buffer_slots < self._buf_capacity:
             return
 
         # double the capacity
-        extend_by = self._capacity
-        self._capacity = self._capacity * 2
+        extend_by = self._buf_capacity
+        self._buf_capacity = self._buf_capacity * 2
 
         LOG.debug(
             f"(%s) Increasing buffer capacity from %s to %s",
             self._sprite_buffer_slots,
             extend_by,
-            self._capacity,
+            self._buf_capacity,
         )
 
         # Extend the buffers so we don't lose the old data
@@ -927,23 +1022,41 @@ class SpriteList:
         self._sprite_angle_data.extend([0] * extend_by)
         self._sprite_color_data.extend([0] * extend_by * 4)
         self._sprite_sub_tex_data.extend([0] * extend_by * 4)
-        self._sprite_index_data.extend([0] * extend_by)
 
-        # Resize existing opengl buffers to the new capacity
         if self._initialized:
-            self._sprite_pos_buf.orphan(size=self._capacity * 4 * 2)
-            self._sprite_size_buf.orphan(size=self._capacity * 4 * 2)
-            self._sprite_angle_buf.orphan(size=self._capacity * 4)
-            self._sprite_color_buf.orphan(size=self._capacity * 4 * 4)
-            self._sprite_sub_tex_buf.orphan(size=self._capacity * 4 * 4)
-            # Index buffer
-            self._sprite_index_buf.orphan(size=self._capacity * 4)
+            self._sprite_pos_buf.orphan(size=self._buf_capacity * 4 * 2)
+            self._sprite_size_buf.orphan(size=self._buf_capacity * 4 * 2)
+            self._sprite_angle_buf.orphan(size=self._buf_capacity * 4)
+            self._sprite_color_buf.orphan(size=self._buf_capacity * 4 * 4)
+            self._sprite_sub_tex_buf.orphan(size=self._buf_capacity * 4 * 4)
 
         self._sprite_pos_changed = True
         self._sprite_size_changed = True
         self._sprite_angle_changed = True
         self._sprite_color_changed = True
         self._sprite_sub_tex_changed = True
+
+    def _grow_index_buffer(self):
+        # Extend the index buffer capacity if needed
+        if self._sprite_index_slots < self._idx_capacity:
+            return
+
+        extend_by = self._idx_capacity
+        self._idx_capacity = self._idx_capacity * 2
+
+        print(self._sprite_index_slots, self._sprite_buffer_slots, self._sprite_index_slots / self._sprite_buffer_slots)
+
+        LOG.debug(
+            f"(%s) Increasing index capacity from %s to %s",
+            self._sprite_index_slots,
+            extend_by,
+            self._idx_capacity,
+        )
+
+        self._sprite_index_data.extend([0] * extend_by)
+        if self._initialized:
+            self._sprite_index_buf.orphan(size=self._idx_capacity * 4)
+
         self._sprite_index_changed = True
 
     def _dump(self, buffer):
