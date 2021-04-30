@@ -403,7 +403,7 @@ class SpriteList:
 
         # Load all the textures and write texture coordinates into buffers
         for sprite in self._deferred_sprites:
-            if sprite.texture is None:
+            if sprite._texture is None:
                 raise ValueError("Attempting to use a sprite without a texture")
             self.update_texture(sprite)
 
@@ -494,9 +494,12 @@ class SpriteList:
 
         :param Sprite item: Sprite to add to the list.
         """
+        if sprite in self.sprite_slot:
+            raise ValueError("Sprite already in SpriteList")
+
         slot = self._next_slot()
-        self.sprite_list.append(sprite)
         self.sprite_slot[sprite] = slot
+        self.sprite_list.append(sprite)
         sprite.register_sprite_list(self)
 
         self._update_all(sprite)
@@ -521,10 +524,14 @@ class SpriteList:
         Remove a specific sprite from the list.
         :param Sprite item: Item to remove from the list
         """
-        slot = self.sprite_slot[sprite]
-        del self.sprite_slot[sprite]
+        try:
+            slot = self.sprite_slot[sprite]
+        except KeyError:
+            raise ValueError("Sprite is not in the SpriteList")
+
         self.sprite_list.remove(sprite)
         sprite.sprite_lists.remove(self)
+        del self.sprite_slot[sprite]
 
         self._sprite_buffer_free_slots.append(slot)
 
@@ -538,7 +545,6 @@ class SpriteList:
         self._sprite_index_data.remove(slot)
         self._sprite_index_data.append(0)
         self._sprite_index_slots -= 1
-
         self._sprite_index_changed = True
 
         if self._use_spatial_hash:
@@ -707,7 +713,7 @@ class SpriteList:
         for texture in texture_list:
             self._atlas.add(texture)
 
-    def _update_all(self, sprite):
+    def _update_all(self, sprite: Sprite):
         """
         Update all sprite data. This is faster when adding and moving sprites.
         This duplicate code, but reduces call overhead, dict lookups etc.
@@ -736,10 +742,10 @@ class SpriteList:
             self._deferred_sprites.add(sprite)
             return
 
-        if not sprite.texture:
+        if not sprite._texture:
             return
 
-        region = self._atlas.add(sprite.texture)
+        region = self._atlas.add(sprite._texture)
 
         slot = self.sprite_slot[sprite]
         new_coords = region.texture_coordinates
@@ -759,10 +765,10 @@ class SpriteList:
             self._deferred_sprites.add(sprite)
             return
 
-        if not sprite.texture:
+        if not sprite._texture:
             return
 
-        region = self._atlas.add(sprite.texture)
+        region = self._atlas.add(sprite._texture)
 
         slot = self.sprite_slot[sprite]
         new_coords = region.texture_coordinates
@@ -899,7 +905,7 @@ class SpriteList:
         if self._sprite_sub_tex_changed:
             if not self._keep_textures:
                 # Gather all unique textures in a set (Texture hash() is the name)
-                textures = set(sprite.texture for sprite in self.sprite_list)
+                textures = set(sprite._texture for sprite in self.sprite_list)
                 self._atlas.update_textures(textures, keep_old_textures=self._keep_textures)
 
             self._sprite_sub_tex_buf.write(self._sprite_sub_tex_data)
