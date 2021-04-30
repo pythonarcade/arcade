@@ -445,11 +445,7 @@ class SpriteList:
         self.sprite_slot[sprite] = slot
 
         # Update the internal sprite buffer data
-        self.update_position(sprite)
-        self.update_size(sprite)
-        self.update_angle(sprite)
-        self.update_color(sprite)
-        self.update_texture(sprite)
+        self._update_all(sprite)
 
     @property
     def atlas(self) -> "TextureAtlas":
@@ -771,12 +767,19 @@ class SpriteList:
         slot = self.sprite_slot[sprite]
         new_coords = region.texture_coordinates
 
+        print("update_texture", slot, sprite.width, sprite.height, self._sprite_index_data, self._sprite_index_slots)
+
         self._sprite_sub_tex_data[slot * 4] = new_coords[0]
         self._sprite_sub_tex_data[slot * 4 + 1] = new_coords[1]
         self._sprite_sub_tex_data[slot * 4 + 2] = new_coords[2]
         self._sprite_sub_tex_data[slot * 4 + 3] = new_coords[3]
-
         self._sprite_sub_tex_changed = True
+
+        # Update size in cas the sprite was initialized without size
+        # NOTE: There should be a better way to do this
+        self._sprite_size_data[slot * 2] = sprite.width
+        self._sprite_size_data[slot * 2 + 1] = sprite.height
+        self._sprite_size_changed = True
 
     def update_position(self, sprite: Sprite) -> None:
         """
