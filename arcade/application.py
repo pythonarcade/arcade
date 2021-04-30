@@ -63,7 +63,8 @@ class Window(pyglet.window.Window):
                  antialiasing: bool = True,
                  gl_version: Tuple[int, int] = (3, 3),
                  screen: pyglet.canvas.Screen = None,
-                 visible: bool=True):
+                 visible: bool=True,
+                 vsync: bool = True):
         """
         Construct a new window
 
@@ -77,6 +78,8 @@ class Window(pyglet.window.Window):
         :param Tuple[int,int] gl_version: What OpenGL version to request. This is ``(3, 3)`` by default
                                            and can be overridden when using more advanced OpenGL features.
         :param bool visible: Should the window be visible immediately
+        :param bool vsync: Wait for vertical screen refresh before swapping buffer
+                           This can make animations and movement look smoother.
         """
         if antialiasing:
             config = pyglet.gl.Config(major_version=gl_version[0],
@@ -105,11 +108,9 @@ class Window(pyglet.window.Window):
                 print("Warning: Anti-aliasing not supported on this computer.")
 
         if update_rate:
-            from pyglet import compat_platform
-            if compat_platform == 'darwin' or compat_platform == 'linux':
-                # Set vsync to false, or we'll be limited to a 1/30 sec update rate possibly
-                self.context.set_vsync(False)
             self.set_update_rate(update_rate)
+
+        self.set_vsync(vsync)
 
         super().set_fullscreen(fullscreen, screen)
         # This used to be necessary on Linux, but no longer appears to be.
