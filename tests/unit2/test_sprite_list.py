@@ -1,3 +1,4 @@
+from re import split
 import arcade
 
 
@@ -23,7 +24,6 @@ def test_it_can_extend_a_spritelist():
     spritelist.extend(sprites)
 
     assert len(spritelist) == 10
-    assert spritelist._vao1 is None
 
 
 def test_it_can_insert_in_a_spritelist():
@@ -34,16 +34,20 @@ def test_it_can_insert_in_a_spritelist():
     spritelist.insert(1, sprite)
 
     assert [s.name for s in spritelist] == [0, 2, 1]
-    assert [spritelist.sprite_slot[s] for s in spritelist] == [0, 1, 2]
+    # New slot was added in position 2
+    assert [spritelist.sprite_slot[s] for s in spritelist] == [0, 2, 1]
+    # Index buffer should refer to the slots in the same order
+    assert list(spritelist._sprite_index_data[:3]) == [0, 2, 1]
 
 
 def test_it_can_reverse_a_spritelist():
     spritelist = make_named_sprites(3)
-
     spritelist.reverse()
 
     assert [s.name for s in spritelist] == [2, 1, 0]
-    assert [spritelist.sprite_slot[s] for s in spritelist] == [1, 2, 3]
+    # The slot indices doesn't change, but the position in the spritelist do
+    assert [spritelist.sprite_slot[s] for s in spritelist] == [2, 1, 0]
+    assert list(spritelist._sprite_index_data[:3]) == [2, 1, 0]
 
 
 def test_it_can_pop_at_a_given_index():
@@ -53,7 +57,16 @@ def test_it_can_pop_at_a_given_index():
     # Indices will not change internally
     assert [spritelist.sprite_slot[s] for s in spritelist] == [0, 2]
 
+
 def test_can_assign_back_to_self():
     spritelist = make_named_sprites(3)
     spritelist[0] = spritelist[0]
     assert spritelist[0] == spritelist[0]
+
+def test_can_shuffle():
+    spritelist = make_named_sprites(3)
+    spritelist.shuffle()
+
+    # Ensure the index buffer is referring to the correct slots
+    slots = [spritelist.sprite_slot[s] for s in spritelist]
+    assert list(spritelist._sprite_index_data[:3]) == slots
