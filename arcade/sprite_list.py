@@ -516,15 +516,15 @@ class SpriteList:
             for texture in sprite.textures or []:
                 self._atlas.add(texture)
 
-    def remove(self, item: _SpriteType):
+    def remove(self, sprite: _SpriteType):
         """
         Remove a specific sprite from the list.
         :param Sprite item: Item to remove from the list
         """
-        slot = self.sprite_slot[item]
-        del self.sprite_slot[item]
-        self.sprite_list.remove(item)
-        item.sprite_lists.remove(self)
+        slot = self.sprite_slot[sprite]
+        del self.sprite_slot[sprite]
+        self.sprite_list.remove(sprite)
+        sprite.sprite_lists.remove(self)
 
         self._sprite_buffer_free_slots.append(slot)
 
@@ -542,16 +542,16 @@ class SpriteList:
         self._sprite_index_changed = True
 
         if self._use_spatial_hash:
-            self.spatial_hash.remove_object(item)
+            self.spatial_hash.remove_object(sprite)
 
-    def extend(self, items: Union[list, 'SpriteList']):
+    def extend(self, sprites: Union[list, 'SpriteList']):
         """
         Extends the current list with the given list
 
         :param list items: list of Sprites to add to the list
         """
-        for item in items:
-            self.append(item)
+        for sprite in sprites:
+            self.append(sprite)
 
     def insert(self, index: int, sprite: _SpriteType):
         """
