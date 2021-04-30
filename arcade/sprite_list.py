@@ -714,21 +714,21 @@ class SpriteList:
         """
         slot = self.sprite_slot[sprite]
         # position
-        self._sprite_pos_data[slot * 2] = sprite.position[0]
-        self._sprite_pos_data[slot * 2 + 1] = sprite.position[1]
+        self._sprite_pos_data[slot * 2] = sprite._position[0]
+        self._sprite_pos_data[slot * 2 + 1] = sprite._position[1]
         self._sprite_pos_changed = True
         # size
-        self._sprite_size_data[slot * 2] = sprite.width
-        self._sprite_size_data[slot * 2 + 1] = sprite.height
+        self._sprite_size_data[slot * 2] = sprite._width
+        self._sprite_size_data[slot * 2 + 1] = sprite._height
         self._sprite_size_changed = True
         # angle
-        self._sprite_angle_data[slot] = sprite.angle
+        self._sprite_angle_data[slot] = sprite._angle
         self._sprite_angle_changed = True
         # color
-        self._sprite_color_data[slot * 4] = int(sprite.color[0])
-        self._sprite_color_data[slot * 4 + 1] = int(sprite.color[1])
-        self._sprite_color_data[slot * 4 + 2] = int(sprite.color[2])
-        self._sprite_color_data[slot * 4 + 3] = int(sprite.alpha)
+        self._sprite_color_data[slot * 4] = sprite._color[0]
+        self._sprite_color_data[slot * 4 + 1] = sprite._color[1]
+        self._sprite_color_data[slot * 4 + 2] = sprite._color[2]
+        self._sprite_color_data[slot * 4 + 3] = sprite._alpha
         self._sprite_color_changed = True
 
         # texture
@@ -775,8 +775,8 @@ class SpriteList:
 
         # Update size in cas the sprite was initialized without size
         # NOTE: There should be a better way to do this
-        self._sprite_size_data[slot * 2] = sprite.width
-        self._sprite_size_data[slot * 2 + 1] = sprite.height
+        self._sprite_size_data[slot * 2] = sprite._width
+        self._sprite_size_data[slot * 2 + 1] = sprite._height
         self._sprite_size_changed = True
 
     def update_position(self, sprite: Sprite) -> None:
@@ -790,8 +790,8 @@ class SpriteList:
         :param Sprite sprite: Sprite to update.
         """
         slot = self.sprite_slot[sprite]
-        self._sprite_pos_data[slot * 2] = sprite.position[0]
-        self._sprite_pos_data[slot * 2 + 1] = sprite.position[1]
+        self._sprite_pos_data[slot * 2] = sprite._position[0]
+        self._sprite_pos_data[slot * 2 + 1] = sprite._position[1]
         self._sprite_pos_changed = True
 
     def update_color(self, sprite: Sprite) -> None:
@@ -803,10 +803,10 @@ class SpriteList:
         :param Sprite sprite: Sprite to update.
         """
         slot = self.sprite_slot[sprite]
-        self._sprite_color_data[slot * 4] = int(sprite.color[0])
-        self._sprite_color_data[slot * 4 + 1] = int(sprite.color[1])
-        self._sprite_color_data[slot * 4 + 2] = int(sprite.color[2])
-        self._sprite_color_data[slot * 4 + 3] = int(sprite.alpha)
+        self._sprite_color_data[slot * 4] = int(sprite._color[0])
+        self._sprite_color_data[slot * 4 + 1] = int(sprite._color[1])
+        self._sprite_color_data[slot * 4 + 2] = int(sprite._color[2])
+        self._sprite_color_data[slot * 4 + 3] = int(sprite._alpha)
         self._sprite_color_changed = True
 
     def update_size(self, sprite: Sprite) -> None:
@@ -817,8 +817,8 @@ class SpriteList:
         :param Sprite sprite: Sprite to update.
         """
         slot = self.sprite_slot[sprite]
-        self._sprite_size_data[slot * 2] = sprite.width
-        self._sprite_size_data[slot * 2 + 1] = sprite.height
+        self._sprite_size_data[slot * 2] = sprite._width
+        self._sprite_size_data[slot * 2 + 1] = sprite._height
         self._sprite_size_changed = True
 
     def update_height(self, sprite: Sprite):
@@ -829,7 +829,7 @@ class SpriteList:
         :param Sprite sprite: Sprite to update.
         """
         slot = self.sprite_slot[sprite]
-        self._sprite_size_data[slot * 2 + 1] = sprite.height
+        self._sprite_size_data[slot * 2 + 1] = sprite._height
         self._sprite_size_changed = True
 
     def update_width(self, sprite: Sprite):
@@ -840,7 +840,7 @@ class SpriteList:
         :param Sprite sprite: Sprite to update.
         """
         slot = self.sprite_slot[sprite]
-        self._sprite_size_data[slot * 2] = sprite.width
+        self._sprite_size_data[slot * 2] = sprite._width
         self._sprite_size_changed = True
 
     def update_location(self, sprite: Sprite):
@@ -851,8 +851,8 @@ class SpriteList:
         :param Sprite sprite: Sprite to update.
         """
         slot = self.sprite_slot[sprite]
-        self._sprite_pos_data[slot * 2] = sprite.position[0]
-        self._sprite_pos_data[slot * 2 + 1] = sprite.position[1]
+        self._sprite_pos_data[slot * 2] = sprite._position[0]
+        self._sprite_pos_data[slot * 2 + 1] = sprite._position[1]
         self._sprite_pos_changed = True
         self._sprites_moved += 1
 
@@ -864,7 +864,7 @@ class SpriteList:
         :param Sprite sprite: Sprite to update.
         """
         slot = self.sprite_slot[sprite]
-        self._sprite_angle_data[slot] = sprite.angle
+        self._sprite_angle_data[slot] = sprite._angle
         self._sprite_angle_changed = True
 
     def _write_sprite_buffers_to_gpu(self):
@@ -879,7 +879,6 @@ class SpriteList:
             self._sprite_sub_tex_changed,
             self._sprite_index_changed,
         )
-        start = time.perf_counter()
 
         if self._sprite_pos_changed:
             self._sprite_pos_buf.write(self._sprite_pos_data)
@@ -908,11 +907,7 @@ class SpriteList:
 
         if self._sprite_index_changed:
             self._sprite_index_buf.write(self._sprite_index_data)
-            # import struct
-            # print(struct.unpack("50I", self._sprite_index_buf.read(size=50 * 4)))
             self._sprite_index_changed = False
-
-        # LOG.debug("[%s] SpriteList._write_buffers_to_gpu: %s", id(self), time.perf_counter() - start)
 
     def draw(self, **kwargs):
         """
