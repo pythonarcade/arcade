@@ -189,7 +189,7 @@ class TextureAtlas:
             raise AllocatorException("The atlas is not mutable")
 
         if texture.image.mode != "RGBA":
-            print(f"TextureAtlas: Converting texture '{texture.name}' to RGBA")
+            LOG.warning(f"TextureAtlas: Converting texture '{texture.name}' to RGBA")
             texture.image = texture.image.convert("RGBA")
 
         # Allocate space for texture
