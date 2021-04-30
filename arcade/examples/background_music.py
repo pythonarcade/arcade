@@ -4,8 +4,9 @@ Background Music Example
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.background_music
 """
-import arcade
 import time
+
+import arcade
 
 SCREEN_WIDTH = 600
 SCREEN_HEIGHT = 300
@@ -14,7 +15,7 @@ MUSIC_VOLUME = 0.5
 
 
 class MyGame(arcade.Window):
-    """ Main application class. """
+    """Main application class."""
 
     def __init__(self, width, height, title):
         super().__init__(width, height, title)
@@ -29,21 +30,23 @@ class MyGame(arcade.Window):
         self.music = None
 
     def advance_song(self):
-        """ Advance our pointer to the next song. This does NOT start the song. """
+        """Advance our pointer to the next song. This does NOT start the song."""
         self.current_song_index += 1
         if self.current_song_index >= len(self.music_list):
             self.current_song_index = 0
         print(f"Advancing song to {self.current_song_index}.")
 
     def play_song(self):
-        """ Play the song. """
+        """Play the song."""
         # Stop what is currently playing.
         if self.music:
-            self.music.stop()
+            self.music.stop(self.current_player)
 
         # Play the next song
         print(f"Playing {self.music_list[self.current_song_index]}")
-        self.music = arcade.Sound(self.music_list[self.current_song_index], streaming=True)
+        self.music = arcade.Sound(
+            self.music_list[self.current_song_index], streaming=True
+        )
         self.current_player = self.music.play(MUSIC_VOLUME)
         # This is a quick delay. If we don't do this, our elapsed time is 0.0
         # and on_update will think the music is over and advance us to the next
@@ -51,17 +54,20 @@ class MyGame(arcade.Window):
         time.sleep(0.03)
 
     def setup(self):
-        """ Set up the game here. Call this function to restart the game. """
+        """Set up the game here. Call this function to restart the game."""
 
         # List of music
-        self.music_list = [":resources:music/funkyrobot.mp3", ":resources:music/1918.mp3"]
+        self.music_list = [
+            ":resources:music/funkyrobot.mp3",
+            ":resources:music/1918.mp3",
+        ]
         # Array index of what to play
         self.current_song_index = 0
         # Play the song
         self.play_song()
 
     def on_draw(self):
-        """ Render the screen. """
+        """Render the screen."""
 
         arcade.start_render()
 
@@ -69,7 +75,7 @@ class MyGame(arcade.Window):
         length = self.music.get_length()
 
         size = 20
-        margin = size * .5
+        margin = size * 0.5
 
         # Print time elapsed and total
         y = SCREEN_HEIGHT - (size + margin)
@@ -94,7 +100,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    """ Main method """
+    """Main method"""
     window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     window.setup()
     arcade.run()
