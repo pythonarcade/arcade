@@ -1,4 +1,5 @@
-from re import split
+
+import pytest
 import arcade
 
 
@@ -58,15 +59,34 @@ def test_it_can_pop_at_a_given_index():
     assert [spritelist.sprite_slot[s] for s in spritelist] == [0, 2]
 
 
-def test_can_assign_back_to_self():
-    spritelist = make_named_sprites(3)
-    spritelist[0] = spritelist[0]
-    assert spritelist[0] == spritelist[0]
+def test_setitem():
+    """Testing __setitem__"""
+    num_sprites = 10
+    spritelist = make_named_sprites(num_sprites)
+
+    # Assign the same item to the same slot
+    for i in range(num_sprites):
+        spritelist[i] = spritelist[i]
+        assert spritelist[i] == spritelist[i]
+
+    # Try to duplicate a sprite
+    with pytest.raises(Exception):
+        spritelist[0] = spritelist[1]
+
+    # Assign new sprite
+    spritelist[0] = arcade.Sprite()
+
 
 def test_can_shuffle():
-    spritelist = make_named_sprites(3)
-    spritelist.shuffle()
+    num_sprites = 10
+    spritelist = make_named_sprites(num_sprites)
 
-    # Ensure the index buffer is referring to the correct slots
-    slots = [spritelist.sprite_slot[s] for s in spritelist]
-    assert list(spritelist._sprite_index_data[:3]) == slots
+    # Shuffle multiple times
+    for _ in range(10):
+        spritelist.shuffle()
+        # Ensure the index buffer is referring to the correct slots
+        slots = [spritelist.sprite_slot[s] for s in spritelist]
+        assert list(spritelist._sprite_index_data[:num_sprites]) == slots
+        assert spritelist._sprite_buffer_slots == 10
+        assert spritelist._sprite_index_slots == 10
+        assert len(spritelist) == 10
