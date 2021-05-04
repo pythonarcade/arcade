@@ -1,4 +1,5 @@
 import pytest
+import arcade
 
 
 def pytest_addoption(parser):
@@ -10,3 +11,23 @@ def twm(pytestconfig):
     if pytestconfig.getoption("twm"):
         return True
     return False
+
+
+@pytest.fixture(scope="module")
+def ctx():
+    window = arcade.Window(800, 600, "Test")
+    try:
+        window.clear()
+        yield window.ctx
+    finally:
+        window.close()
+
+
+@pytest.fixture(scope="module")
+def window():
+    window = arcade.Window(800, 600, "Test")
+    try:
+        window.clear()
+        yield window
+    finally:
+        window.close()

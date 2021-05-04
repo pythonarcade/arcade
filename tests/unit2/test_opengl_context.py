@@ -1,22 +1,10 @@
 """
 Low level tests for OpenGL 3.3 wrappers.
 """
-import array
 import pytest
-import arcade
-
-from pyglet import gl
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
-
-
-@pytest.fixture(scope="module")
-def ctx():
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, "Test OpenGL")
-    yield window.ctx
-    window.close()
-
 
 def test_ctx(ctx):
     assert ctx.gl_version >= (3, 3)

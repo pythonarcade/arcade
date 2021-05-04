@@ -7,7 +7,8 @@ SPRITE_IMAGE_SIZE = 128
 SPRITE_SCALING = 0.25
 SPRITE_SIZE = int(SPRITE_IMAGE_SIZE * SPRITE_SCALING)
 
-def test_astar():
+
+def test_astar(ctx):
     grid_size = SPRITE_SIZE
 
     # Sprite lists

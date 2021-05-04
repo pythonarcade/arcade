@@ -1,16 +1,7 @@
-import pytest
-import arcade
 from arcade.gl import geometry
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
-
-
-@pytest.fixture(scope="module")
-def ctx():
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, "Test OpenGL")
-    yield window.ctx
-    window.close()
 
 
 def test_create(ctx):

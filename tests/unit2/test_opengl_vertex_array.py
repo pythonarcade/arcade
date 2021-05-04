@@ -4,22 +4,9 @@ Low level tests for OpenGL 3.3 wrappers.
 import array
 import struct
 import pytest
-import arcade
 from arcade.gl import BufferDescription
 from arcade.gl.vertex_array import VertexArray
 from arcade.gl.program import Program
-
-from pyglet import gl
-
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
-
-
-@pytest.fixture(scope="module")
-def ctx():
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, "Test OpenGL")
-    yield window.ctx
-    window.close()
 
 
 def test_buffer_description(ctx):
