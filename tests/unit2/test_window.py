@@ -1,4 +1,4 @@
-import numpy as np
+import pyglet
 
 
 def test_window(twm):
@@ -29,7 +29,7 @@ def test_window(twm):
     w.set_size(width, height)
 
     p = arcade.get_projection()
-    assert isinstance(p, np.ndarray)
+    assert isinstance(p, pyglet.math.Mat4)
 
     v = arcade.get_viewport()
     if not twm:

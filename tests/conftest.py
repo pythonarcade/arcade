@@ -13,7 +13,7 @@ def twm(pytestconfig):
     return False
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="function")
 def ctx():
     window = arcade.Window(800, 600, "Test")
     try:
@@ -23,7 +23,7 @@ def ctx():
         window.close()
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="function")
 def window():
     window = arcade.Window(800, 600, "Test")
     try:

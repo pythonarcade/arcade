@@ -6,7 +6,7 @@ from pytiled_parser.common_types import Color
 # Also tests path traversal to get a layer within a layer group
 #
 
-def test_one():
+def test_one(window):
     tmx_map = arcade.tilemap.read_map(":resources:/tiled_maps/test_objects.json")
 
     assert tmx_map.map_size.width == 20
