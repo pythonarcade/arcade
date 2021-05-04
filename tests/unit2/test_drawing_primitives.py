@@ -6,7 +6,6 @@ def test_draw_primitives(window):
     Render the screen.
     """
     arcade.set_background_color(arcade.color.WHITE)
-    window.ctx.enable(window.ctx.BLEND)
 
     # Start the render process. This must be done before any drawing commands.
     arcade.start_render()

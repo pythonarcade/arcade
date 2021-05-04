@@ -3,7 +3,7 @@ import arcade
 TILE_SCALING = 1.0
 
 
-def test_csv_left_up():
+def test_csv_left_up(window):
     # Read in the tiled map
     my_map = arcade.tilemap.read_map("../tiled_maps/csv_left_up_embedded.json")
 
@@ -25,7 +25,7 @@ def test_csv_left_up():
     assert wall_list[2].position == (64, 64)
     assert "boxCrate" in wall_list[2].texture.name
 
-def test_csv_right_down():
+def test_csv_right_down(window):
     # Read in the tiled map
     my_map = arcade.tilemap.read_map("../tiled_maps/csv_right_down_external.json")
 
@@ -47,7 +47,7 @@ def test_csv_right_down():
     assert wall_list[2].position == (64, 64)
     assert "boxCrate" in wall_list[2].texture.name
 
-def test_base_64_zlib():
+def test_base_64_zlib(window):
     # Read in the tiled map
     my_map = arcade.tilemap.read_map("../tiled_maps/base_64_zlib.json")
 
@@ -74,7 +74,7 @@ def test_base_64_zlib():
     assert wall_list[2].position == (64, 64)
     assert "boxCrate" in wall_list[2].texture.name
 
-def test_base_64_gzip():
+def test_base_64_gzip(window):
     # Read in the tiled map
     my_map = arcade.tilemap.read_map("../tiled_maps/base_64_gzip.json")
 
