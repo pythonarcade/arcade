@@ -427,19 +427,28 @@ class SpriteList:
     def __getitem__(self, i):
         return self.sprite_list[i]
 
-    def __setitem__(self, sprite_index: int, sprite: Sprite):
+    def __setitem__(self, index: int, sprite: Sprite):
         """Replace a sprite at a specific index"""
-        sprite_to_be_removed = self.sprite_list[sprite_index]
+        # print(f"{id(self)} : {id(sprite)} __setitem__({index})")
+
+        try:
+            existing_index = self.sprite_list.index(sprite)  # raise ValueError
+            if existing_index == index:
+                return
+            raise Exception(f"Sprite is already in the list (index {existing_index})")
+        except ValueError as ex:
+            pass
+
+        sprite_to_be_removed = self.sprite_list[index]
         sprite_to_be_removed.sprite_lists.remove(self)
+        self.sprite_list[index] = sprite  # Replace sprite
+        sprite.register_sprite_list(self)
 
         if self._use_spatial_hash:
             self.spatial_hash.remove_object(sprite_to_be_removed)
             self.spatial_hash.insert_object_for_box(sprite)
 
-        sprite.register_sprite_list(self)
-        self.sprite_list[sprite_index] = sprite
-
-        # Delete the old sprite in the slot index adding a new one with the same slots
+        # Steal the slot from the old sprite
         slot = self.sprite_slot[sprite_to_be_removed]
         del self.sprite_slot[sprite_to_be_removed]
         self.sprite_slot[sprite] = slot
@@ -469,13 +478,13 @@ class SpriteList:
         self._grow_sprite_buffers()  # We might need to increase our buffers
         return buff_slot
 
-    def index(self, key) -> int:
+    def index(self, sprite: Sprite) -> int:
         """
-        Return the index of this sprite
+        Return the index of a sprite in the spritelist
 
         :type: int
         """
-        return self.sprite_list.index(key)
+        return self.sprite_list.index(sprite)
 
     def pop(self, index: int = -1) -> Sprite:
         """
@@ -494,6 +503,7 @@ class SpriteList:
 
         :param Sprite item: Sprite to add to the list.
         """
+        # print(f"{id(self)} : {id(sprite)} append")
         if sprite in self.sprite_slot:
             raise ValueError("Sprite already in SpriteList")
 
@@ -519,11 +529,28 @@ class SpriteList:
             for texture in sprite.textures or []:
                 self._atlas.add(texture)
 
+    def swap(self, index_1: int, index_2: int):
+        """Swap two sprites by index"""
+        # Swap order in spritelist
+        sprite_1 = self.sprite_list[index_1]
+        sprite_2 = self.sprite_list[index_2]
+        self.sprite_list[index_1] = sprite_2
+        self.sprite_list[index_2] = sprite_1
+
+        # Swap order in index buffer
+        slot_1 = self.sprite_slot[sprite_1]
+        slot_2 = self.sprite_slot[sprite_2]
+        i1 = self._sprite_index_data.index(slot_1)
+        i2 = self._sprite_index_data.index(slot_2)
+        self._sprite_index_data[i1] = slot_2
+        self._sprite_index_data[i2] = slot_1
+
     def remove(self, sprite: _SpriteType):
         """
         Remove a specific sprite from the list.
         :param Sprite item: Item to remove from the list
         """
+        # print(f"{id(self)} : {id(sprite)} remove")
         try:
             slot = self.sprite_slot[sprite]
         except KeyError:
@@ -566,6 +593,9 @@ class SpriteList:
         :param int index: The index at which to insert
         :param Sprite item: The sprite to insert
         """
+        if sprite in self.sprite_list:
+            raise ValueError("Sprite is already in list")
+
         self.sprite_list.insert(index, sprite)
         sprite.register_sprite_list(self)
 
@@ -609,9 +639,9 @@ class SpriteList:
         self._normalize_index_buffer()
         # zip index and sprite into pairs and shuffle
         pairs = list(zip(self.sprite_list, self._sprite_index_data))
-        shuffle(pairs)
         # Reconstruct the lists again from pairs
-        self.sprite_list, indices = zip(*pairs)
+        sprites, indices = zip(*pairs)
+        self.sprite_list = list(sprites)
         self._sprite_index_data = array('I', indices)
         # Resize the index buffer to the original capacity
         if len(self._sprite_index_data) < self._idx_capacity:
@@ -856,7 +886,11 @@ class SpriteList:
 
         :param Sprite sprite: Sprite to update.
         """
-        slot = self.sprite_slot[sprite]
+        # print(f"{id(self)} : {id(sprite)} update_location")
+        try:
+            slot = self.sprite_slot[sprite]
+        except KeyError:
+            raise ValueError(id(sprite))
         self._sprite_pos_data[slot * 2] = sprite._position[0]
         self._sprite_pos_data[slot * 2 + 1] = sprite._position[1]
         self._sprite_pos_changed = True
