@@ -15,12 +15,6 @@ import arcade
 from . import T
 
 
-@pytest.fixture
-def window():
-    window = arcade.Window(title='ARCADE_GUI')
-    yield window
-    window.close()
-
 
 def view_to_png(window: arcade.Window, view: arcade.View, path: Path):
     # window.clear()

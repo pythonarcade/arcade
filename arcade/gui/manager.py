@@ -1,10 +1,8 @@
 from typing import Optional, Dict, cast
 
-import arcade
-from arcade import SpriteList
 from pyglet.event import EventDispatcher
-from pyglet.window import Window
 
+from arcade import SpriteList, Window, get_window
 from arcade.gui import UIElement, UIException, UIEvent, MOUSE_PRESS, MOUSE_RELEASE, MOUSE_SCROLL, KEY_PRESS, \
     KEY_RELEASE, TEXT_INPUT, TEXT_MOTION, TEXT_MOTION_SELECTION
 from arcade.gui.core import MOUSE_MOTION
@@ -40,7 +38,7 @@ class UIManager(EventDispatcher):
         """
         super().__init__()
         # TODO really needed?
-        self.window: Window = window if window else arcade.get_window()
+        self.window: Window = window or get_window()
 
         self._focused_element: Optional[UIElement] = None
         self._hovered_element: Optional[UIElement] = None
@@ -95,6 +93,21 @@ class UIManager(EventDispatcher):
             self.on_text_motion,
             self.on_text_motion_select,
         )
+
+    def adjust_mouse_coordinates(self, x, y):
+        """
+        This method is used, to translate mouse coordinates to coordinates
+        respecting the viewport and projection of cameras.
+        The implementation should work in most common cases.
+
+        If you use scrolling in the :py:class:`arcade.experimental.camera.Camera2D` you have to reset scrolling
+        or overwrite this method using the camera conversion: `ui_manager.adjust_mouse_coordinates = camera.mouse_coordinates_to_world`
+        """
+        vx, vy, vw, vh = self.window.ctx.viewport
+        pl, pr, pb, pt = self.window.ctx.projection_2d
+        proj_width, proj_height = pr - pl, pt - pb
+        dx, dy = proj_width / vw, proj_height / vh
+        return (x - vx) * dx, (y - vy) * dy
 
     @property
     def focused_element(self) -> Optional[UIElement]:
@@ -228,6 +241,7 @@ class UIManager(EventDispatcher):
         Dispatches :py:meth:`arcade.View.on_mouse_press()` as :py:class:`arcade.gui.UIElement`
         with type :py:attr:`arcade.gui.MOUSE_PRESS`
         """
+        x, y = self.adjust_mouse_coordinates(x, y)
         self.dispatch_ui_event(UIEvent(MOUSE_PRESS, x=x, y=y, button=button, modifiers=modifiers))
 
     def on_mouse_release(self, x: float, y: float, button: int, modifiers: int):
@@ -235,6 +249,7 @@ class UIManager(EventDispatcher):
         Dispatches :py:meth:`arcade.View.on_mouse_release()` as :py:class:`arcade.gui.UIElement`
         with type :py:attr:`arcade.gui.MOUSE_RELEASE`
         """
+        x, y = self.adjust_mouse_coordinates(x, y)
         self.dispatch_ui_event(UIEvent(MOUSE_RELEASE, x=x, y=y, button=button, modifiers=modifiers))
 
     def on_mouse_scroll(self, x: int, y: int, scroll_x: int, scroll_y: int):
@@ -242,6 +257,7 @@ class UIManager(EventDispatcher):
         Dispatches :py:meth:`arcade.View.on_mouse_scroll()` as :py:class:`arcade.gui.UIElement`
         with type :py:attr:`arcade.gui.MOUSE_SCROLL`
         """
+        x, y = self.adjust_mouse_coordinates(x, y)
         self.dispatch_ui_event(UIEvent(MOUSE_SCROLL,
                                        x=x,
                                        y=y,
@@ -254,6 +270,7 @@ class UIManager(EventDispatcher):
         Dispatches :py:meth:`arcade.View.on_mouse_motion()` as :py:class:`arcade.gui.UIElement`
         with type :py:attr:`arcade.gui.MOUSE_MOTION`
         """
+        x, y = self.adjust_mouse_coordinates(x, y)
         self.dispatch_ui_event(UIEvent(MOUSE_MOTION,
                                        x=x,
                                        y=y,

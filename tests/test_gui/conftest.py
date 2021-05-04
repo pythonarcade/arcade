@@ -2,26 +2,10 @@ from contextlib import ExitStack
 from unittest.mock import patch
 
 import pytest
-from pyglet.event import EventDispatcher
 from pytest import fixture
 
+import arcade
 from . import MockHolder, MockButton, TestUIManager
-
-
-class MockWindow(EventDispatcher):
-    def __init__(self):
-        self.register_event_type('on_draw')
-        self.register_event_type('on_mouse_press')
-        self.register_event_type('on_mouse_release')
-        self.register_event_type('on_mouse_scroll')
-        self.register_event_type('on_mouse_motion')
-        self.register_event_type('on_key_press')
-        self.register_event_type('on_key_release')
-        self.register_event_type('on_update')
-        self.register_event_type('on_resize')
-        self.register_event_type('on_text')
-        self.register_event_type('on_text_motion')
-        self.register_event_type('on_text_motion_select')
 
 
 @fixture()
@@ -43,12 +27,15 @@ def draw_commands():
 
 
 @pytest.fixture
-def mock_window():
-    return MockWindow()
+def window():
+    window = arcade.Window(title='ARCADE_GUI')
+    yield window
+    window.close()
+
 
 @fixture
-def mock_mng(mock_window):
-    ui_manager = TestUIManager(mock_window)
+def mock_mng(window):
+    ui_manager = TestUIManager(window)
     yield ui_manager
     ui_manager.unregister_handlers()
 
