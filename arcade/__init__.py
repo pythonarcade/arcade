@@ -259,9 +259,7 @@ from .text import draw_text_2
 from .text import get_text_image
 from .text import render_text
 
-from .tilemap import get_tilemap_layer
-from .tilemap import process_layer
-from .tilemap import read_map
+from .tilemap import load_tilemap
 
 from .pymunk_physics_engine import PymunkPhysicsEngine
 from .pymunk_physics_engine import PymunkPhysicsObject
@@ -415,7 +413,6 @@ __all__ = ['AStarBarrierList',
            'get_sprites_at_exact_point',
            'get_sprites_at_point',
            'get_text_image',
-           'get_tilemap_layer',
            'get_viewport',
            'get_window',
            'has_line_of_sight',
