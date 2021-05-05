@@ -13,7 +13,7 @@ CHARACTER_SCALING = 1
 TILE_SCALING = 0.5
 COIN_SCALING = 0.5
 SPRITE_PIXEL_SIZE = 128
-GRID_PIXEL_SIZE = (SPRITE_PIXEL_SIZE * TILE_SCALING)
+GRID_PIXEL_SIZE = SPRITE_PIXEL_SIZE * TILE_SCALING
 
 # Movement speed of player, in pixels per frame
 PLAYER_MOVEMENT_SPEED = 10
@@ -41,13 +41,11 @@ class MyGame(arcade.Window):
         # Call the parent class and set up the window
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
+        # The object to store our tilemap
+        self.tile_map = None
+
         # These are 'lists' that keep track of our sprites. Each sprite should
         # go into a list.
-        self.coin_list = None
-        self.wall_list = None
-        self.foreground_list = None
-        self.background_list = None
-        self.dont_touch_list = None
         self.player_list = None
 
         # Separate variable that holds the player sprite
@@ -75,7 +73,7 @@ class MyGame(arcade.Window):
         self.game_over = arcade.load_sound(":resources:sounds/gameover1.wav")
 
     def setup(self, level):
-        """ Set up the game here. Call this function to restart the game. """
+        """Set up the game here. Call this function to restart the game."""
 
         # Used to keep track of our scrolling
         self.view_bottom = 0
@@ -86,10 +84,6 @@ class MyGame(arcade.Window):
 
         # Create the Sprite lists
         self.player_list = arcade.SpriteList()
-        self.foreground_list = arcade.SpriteList()
-        self.background_list = arcade.SpriteList()
-        self.wall_list = arcade.SpriteList()
-        self.coin_list = arcade.SpriteList()
 
         # Set up the player, specifically placing it at these coordinates.
         image_source = ":resources:images/animated_characters/female_adventurer/femaleAdventurer_idle.png"
@@ -101,13 +95,13 @@ class MyGame(arcade.Window):
         # --- Load in a map from the tiled editor ---
 
         # Name of the layer in the file that has our platforms/walls
-        platforms_layer_name = 'Platforms'
+        platforms_layer_name = "Platforms"
         # Name of the layer that has items for pick-up
-        coins_layer_name = 'Coins'
+        coins_layer_name = "Coins"
         # Name of the layer that has items for foreground
-        foreground_layer_name = 'Foreground'
+        foreground_layer_name = "Foreground"
         # Name of the layer that has items for background
-        background_layer_name = 'Background'
+        background_layer_name = "Background"
         # Name of the layer that has items we shouldn't touch
         dont_touch_layer_name = "Don't Touch"
 
@@ -115,71 +109,55 @@ class MyGame(arcade.Window):
         map_name = f":resources:tiled_maps/map2_level_{level}.json"
 
         # Read in the tiled map
-        my_map = arcade.tilemap.read_map(map_name)
+        layer_options = {
+            "Platforms": {
+                "use_spatial_hash": True,
+            },
+            "Coins": {
+                "use_spatial_hash": True,
+            },
+            "Don't Touch": {
+                "use_spatial_hash": True,
+            },
+        }
+        self.tile_map = arcade.load_tilemap(map_name, TILE_SCALING, layer_options)
 
         # Calculate the right edge of the my_map in pixels
-        self.end_of_map = my_map.map_size.width * GRID_PIXEL_SIZE
-
-        # -- Background
-        self.background_list = arcade.tilemap.process_layer(my_map,
-                                                            background_layer_name,
-                                                            TILE_SCALING)
-
-        # -- Foreground
-        self.foreground_list = arcade.tilemap.process_layer(my_map,
-                                                            foreground_layer_name,
-                                                            TILE_SCALING)
-
-        # -- Platforms
-        self.wall_list = arcade.tilemap.process_layer(map_object=my_map,
-                                                      layer_name=platforms_layer_name,
-                                                      scaling=TILE_SCALING,
-                                                      use_spatial_hash=True)
-
-        # -- Coins
-        self.coin_list = arcade.tilemap.process_layer(my_map,
-                                                      coins_layer_name,
-                                                      TILE_SCALING,
-                                                      use_spatial_hash=True)
-
-        # -- Don't Touch Layer
-        self.dont_touch_list = arcade.tilemap.process_layer(my_map,
-                                                            dont_touch_layer_name,
-                                                            TILE_SCALING,
-                                                            use_spatial_hash=True)
+        self.end_of_map = self.tile_map.tiled_map.map_size.width * GRID_PIXEL_SIZE
 
         # --- Other stuff
         # Set the background color
-        if my_map.background_color:
-            arcade.set_background_color(my_map.background_color)
+        if self.tile_map.tiled_map.background_color:
+            arcade.set_background_color(self.tile_map.tiled_map.background_color)
 
         # Create the 'physics engine'
-        self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
-                                                             self.wall_list,
-                                                             GRAVITY)
+        self.physics_engine = arcade.PhysicsEnginePlatformer(
+            self.player_sprite, self.tile_map.sprite_lists["Platforms"], GRAVITY
+        )
 
     def on_draw(self):
-        """ Render the screen. """
+        """Render the screen."""
 
         # Clear the screen to the background color
         arcade.start_render()
 
         # Draw our sprites
-        self.wall_list.draw()
-        self.background_list.draw()
-        self.wall_list.draw()
-        self.coin_list.draw()
-        self.dont_touch_list.draw()
+        for sprite_list in self.tile_map.sprite_lists.values():
+            sprite_list.draw()
         self.player_list.draw()
-        self.foreground_list.draw()
 
         # Draw our score on the screen, scrolling it with the viewport
         score_text = f"Score: {self.score}"
-        arcade.draw_text(score_text, 10 + self.view_left, 10 + self.view_bottom,
-                         arcade.csscolor.BLACK, 18)
+        arcade.draw_text(
+            score_text,
+            10 + self.view_left,
+            10 + self.view_bottom,
+            arcade.csscolor.BLACK,
+            18,
+        )
 
     def on_key_press(self, key, modifiers):
-        """Called whenever a key is pressed. """
+        """Called whenever a key is pressed."""
 
         if key == arcade.key.UP or key == arcade.key.W:
             if self.physics_engine.can_jump():
@@ -191,7 +169,7 @@ class MyGame(arcade.Window):
             self.player_sprite.change_x = PLAYER_MOVEMENT_SPEED
 
     def on_key_release(self, key, modifiers):
-        """Called when the user releases a key. """
+        """Called when the user releases a key."""
 
         if key == arcade.key.LEFT or key == arcade.key.A:
             self.player_sprite.change_x = 0
@@ -199,14 +177,15 @@ class MyGame(arcade.Window):
             self.player_sprite.change_x = 0
 
     def update(self, delta_time):
-        """ Movement and game logic """
+        """Movement and game logic"""
 
         # Move the player with the physics engine
         self.physics_engine.update()
 
         # See if we hit any coins
-        coin_hit_list = arcade.check_for_collision_with_list(self.player_sprite,
-                                                             self.coin_list)
+        coin_hit_list = arcade.check_for_collision_with_list(
+            self.player_sprite, self.tile_map.sprite_lists["Coins"]
+        )
 
         # Loop through each coin we hit (if any) and remove it
         for coin in coin_hit_list:
@@ -232,8 +211,9 @@ class MyGame(arcade.Window):
             arcade.play_sound(self.game_over)
 
         # Did the player touch something they should not?
-        if arcade.check_for_collision_with_list(self.player_sprite,
-                                                self.dont_touch_list):
+        if arcade.check_for_collision_with_list(
+            self.player_sprite, self.tile_map.sprite_lists["Don't Touch"]
+        ):
             self.player_sprite.change_x = 0
             self.player_sprite.change_y = 0
             self.player_sprite.center_x = PLAYER_START_X
@@ -291,14 +271,16 @@ class MyGame(arcade.Window):
             self.view_left = int(self.view_left)
 
             # Do the scrolling
-            arcade.set_viewport(self.view_left,
-                                SCREEN_WIDTH + self.view_left,
-                                self.view_bottom,
-                                SCREEN_HEIGHT + self.view_bottom)
+            arcade.set_viewport(
+                self.view_left,
+                SCREEN_WIDTH + self.view_left,
+                self.view_bottom,
+                SCREEN_HEIGHT + self.view_bottom,
+            )
 
 
 def main():
-    """ Main method """
+    """Main method"""
     window = MyGame()
     window.setup(window.level)
     arcade.run()
