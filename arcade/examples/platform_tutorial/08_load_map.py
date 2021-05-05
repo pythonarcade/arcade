@@ -92,16 +92,12 @@ class MyGame(arcade.Window):
 
         layer_options = {
             "Platforms": {
-                "scaling": TILE_SCALING,
                 "use_spatial_hash": True,
-            },
-            "Coins": {
-                "scaling": TILE_SCALING,
             },
         }
 
         # Read in the tiled map
-        self.tile_map = arcade.load_tilemap(map_name, layer_options)
+        self.tile_map = arcade.load_tilemap(map_name, TILE_SCALING, layer_options)
 
         # --- Other stuff
         # Set the background color

@@ -25,6 +25,7 @@ class TileMap:
     def __init__(
         self,
         map_file: Union[str, Path],
+        scaling: float = 1.0,
         layer_options: Optional[Dict[str, Dict[str, Any]]] = None,
     ) -> None:
         """
@@ -39,6 +40,7 @@ class TileMap:
         self.tiled_map = pytiled_parser.parse_map(map_file)
         self.sprite_lists: Dict[str, SpriteList] = {}
         self.object_lists: Dict[str, List[TiledObject]] = {}
+        self.scaling = scaling
 
         if not layer_options:
             layer_options = {}
@@ -47,13 +49,12 @@ class TileMap:
             processed: Union[
                 SpriteList, Tuple[Optional[SpriteList], Optional[List[TiledObject]]]
             ]
+            options = layer_options[layer.name] if layer.name in layer_options else {}
             if isinstance(layer, pytiled_parser.TileLayer):
-                processed = self._process_tile_layer(layer, **layer_options[layer.name])
+                processed = self._process_tile_layer(layer, **options)
                 self.sprite_lists[layer.name] = processed
             elif isinstance(layer, pytiled_parser.ObjectLayer):
-                processed = self._process_object_layer(
-                    layer, **layer_options[layer.name]
-                )
+                processed = self._process_object_layer(layer, **options)
                 if processed[0]:
                     sprite_list = processed[0]
                     if sprite_list:
@@ -207,11 +208,14 @@ class TileMap:
     def _create_sprite_from_tile(
         self,
         tile: pytiled_parser.Tile,
-        scaling: float = 1.0,
+        scaling: Optional[float] = None,
         hit_box_algorithm: str = "Simple",
         hit_box_detail: float = 4.5,
     ) -> Sprite:
         """Given a tile from the parser, try and create a Sprite from it."""
+
+        if not scaling:
+            scaling = self.scaling
 
         # --- Step 1, Find a reference to an image this is going to be based off of
         map_source = self.tiled_map.map_file
@@ -358,11 +362,15 @@ class TileMap:
     def _process_tile_layer(
         self,
         layer: pytiled_parser.TileLayer,
-        scaling: float = 1,
+        scaling: Optional[float] = None,
         use_spatial_hash: Optional[bool] = None,
         hit_box_algorithm: str = "Simple",
         hit_box_detail: float = 4.5,
     ) -> SpriteList:
+
+        if not scaling:
+            scaling = self.scaling
+
         sprite_list: SpriteList = SpriteList(use_spatial_hash=use_spatial_hash)
         map_array = layer.data
 
@@ -414,11 +422,15 @@ class TileMap:
     def _process_object_layer(
         self,
         layer: pytiled_parser.ObjectLayer,
-        scaling: float = 1,
+        scaling: Optional[float] = None,
         use_spatial_hash: Optional[bool] = None,
         hit_box_algorithm: str = "Simple",
         hit_box_detail: float = 4.5,
     ) -> Tuple[Optional[SpriteList], Optional[List[TiledObject]]]:
+
+        if not scaling:
+            scaling = self.scaling
+
         sprite_list: Optional[SpriteList] = None
         objects_list: Optional[List[TiledObject]] = []
 
@@ -561,9 +573,10 @@ class TileMap:
 
 def load_tilemap(
     map_file: Union[str, Path],
+    scaling: float = 1.0,
     layer_options: Optional[Dict[str, Dict[str, Any]]] = None,
 ) -> TileMap:
-    return TileMap(map_file, layer_options)
+    return TileMap(map_file, scaling, layer_options)
 
 
 def read_tmx(map_file: Union[str, Path]) -> pytiled_parser.TiledMap:
