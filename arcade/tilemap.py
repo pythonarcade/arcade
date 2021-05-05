@@ -1,8 +1,9 @@
 import copy
 import math
 import os
+from collections import OrderedDict
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, Union, cast
+from typing import Any, Dict, List, Optional, OrderedDict, Tuple, Union, cast
 
 import pytiled_parser
 
@@ -38,8 +39,8 @@ class TileMap:
         # If we should pull from local resources, replace with proper path
         map_file = resolve_resource_path(map_file)
         self.tiled_map = pytiled_parser.parse_map(map_file)
-        self.sprite_lists: Dict[str, SpriteList] = {}
-        self.object_lists: Dict[str, List[TiledObject]] = {}
+        self.sprite_lists: OrderedDict[str, SpriteList] = OrderedDict()
+        self.object_lists: OrderedDict[str, List[TiledObject]] = OrderedDict()
         self.scaling = scaling
 
         if not layer_options:

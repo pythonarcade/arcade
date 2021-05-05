@@ -247,6 +247,8 @@ from .sprite_list import get_closest_sprite
 from .sprite_list import get_sprites_at_exact_point
 from .sprite_list import get_sprites_at_point
 
+from .scene import Scene
+
 from .physics_engines import PhysicsEnginePlatformer
 from .physics_engines import PhysicsEngineSimple
 
