@@ -23,7 +23,9 @@ _FLIPPED_DIAGONALLY_FLAG = 0x20000000
 
 class TileMap:
     def __init__(
-        self, map_file: Union[str, Path], layer_options: Dict[str, Dict[str, Any]]
+        self,
+        map_file: Union[str, Path],
+        layer_options: Optional[Dict[str, Dict[str, Any]]] = None,
     ) -> None:
         """
         Given a .json file, this will read in a Tiled map, and
@@ -37,6 +39,9 @@ class TileMap:
         self.tiled_map = pytiled_parser.parse_map(map_file)
         self.sprite_lists: Dict[str, SpriteList] = {}
         self.object_lists: Dict[str, List[TiledObject]] = {}
+
+        if not layer_options:
+            layer_options = {}
 
         for layer in self.tiled_map.layers:
             processed: Union[
@@ -555,7 +560,8 @@ class TileMap:
 
 
 def load_tilemap(
-    map_file: Union[str, Path], layer_options: Dict[str, Dict[str, Any]]
+    map_file: Union[str, Path],
+    layer_options: Optional[Dict[str, Dict[str, Any]]] = None,
 ) -> TileMap:
     return TileMap(map_file, layer_options)
 
