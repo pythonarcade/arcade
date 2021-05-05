@@ -38,9 +38,8 @@ class MyGame(arcade.Window):
         # Call the parent class and set up the window
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
-        # These are 'lists' that keep track of our sprites. Each sprite should
-        # go into a list.
-        self.tile_map = None
+        # Our Scene object for managing Sprite Lists
+        self.scene: arcade.Scene = None
 
         # Separate variable that holds the player sprite
         self.player_sprite = None
@@ -64,31 +63,8 @@ class MyGame(arcade.Window):
     def setup(self):
         """Set up the game here. Call this function to restart the game."""
 
-        # Used to keep track of our scrolling
-        self.view_bottom = 0
-        self.view_left = 0
-
-        # Keep track of the score
-        self.score = 0
-
-        # Create the Sprite lists
-        self.player_list = arcade.SpriteList()
-
-        # Set up the player, specifically placing it at these coordinates.
-        image_source = ":resources:images/animated_characters/female_adventurer/femaleAdventurer_idle.png"
-        self.player_sprite = arcade.Sprite(image_source, CHARACTER_SCALING)
-        self.player_sprite.center_x = 128
-        self.player_sprite.center_y = 128
-        self.player_list.append(self.player_sprite)
-
-        # --- Load in a map from the tiled editor ---
-
         # Name of map file to load
         map_name = ":resources:tiled_maps/map.json"
-        # Name of the layer in the file that has our platforms/walls
-        platforms_layer_name = "Platforms"
-        # Name of the layer that has items for pick-up
-        coins_layer_name = "Coins"
 
         layer_options = {
             "Platforms": {
@@ -99,6 +75,28 @@ class MyGame(arcade.Window):
         # Read in the tiled map
         self.tile_map = arcade.load_tilemap(map_name, TILE_SCALING, layer_options)
 
+        # Initiate New Scene
+        self.scene = arcade.Scene.from_tilemap(self.tile_map)
+
+        # Used to keep track of our scrolling
+        self.view_bottom = 0
+        self.view_left = 0
+
+        # Keep track of the score
+        self.score = 0
+
+        # Create the Player Sprite lists
+        player_list = arcade.SpriteList()
+
+        # Set up the player, specifically placing it at these coordinates.
+        image_source = ":resources:images/animated_characters/female_adventurer/femaleAdventurer_idle.png"
+        self.player_sprite = arcade.Sprite(image_source, CHARACTER_SCALING)
+        self.player_sprite.center_x = 128
+        self.player_sprite.center_y = 128
+        player_list.append(self.player_sprite)
+
+        self.scene.add_sprite_list("Player", player_list)
+
         # --- Other stuff
         # Set the background color
         if self.tile_map.tiled_map.background_color:
@@ -106,7 +104,7 @@ class MyGame(arcade.Window):
 
         # Create the 'physics engine'
         self.physics_engine = arcade.PhysicsEnginePlatformer(
-            self.player_sprite, self.tile_map.sprite_lists["Platforms"], GRAVITY
+            self.player_sprite, self.scene.get_sprite_list("Platforms"), GRAVITY
         )
 
     def on_draw(self):
@@ -115,10 +113,8 @@ class MyGame(arcade.Window):
         # Clear the screen to the background color
         arcade.start_render()
 
-        # Draw our sprites
-        for sprite_list in self.tile_map.sprite_lists.values():
-            sprite_list.draw()
-        self.player_list.draw()
+        # Draw our Scene
+        self.scene.draw()
 
         # Draw our score on the screen, scrolling it with the viewport
         score_text = f"Score: {self.score}"
@@ -158,7 +154,7 @@ class MyGame(arcade.Window):
 
         # See if we hit any coins
         coin_hit_list = arcade.check_for_collision_with_list(
-            self.player_sprite, self.tile_map.sprite_lists["Coins"]
+            self.player_sprite, self.scene.get_sprite_list("Coins")
         )
 
         # Loop through each coin we hit (if any) and remove it
