@@ -327,7 +327,7 @@ class TileMap:
             for frame in tile.animation:
                 frame_tile = self._get_tile_by_id(tile.tileset, frame.tile_id)
                 if frame_tile:
-                    image_file = self._get_image_source(frame_tile)
+                    image_file = self._get_image_source(frame_tile, map_directory)
 
                     if frame_tile.image and image_file:
                         texture = load_texture(image_file)
