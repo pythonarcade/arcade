@@ -39,6 +39,14 @@ PLAYER_START_Y = 1
 RIGHT_FACING = 0
 LEFT_FACING = 1
 
+LAYER_NAME_MOVING_PLATFORMS = "Moving Platforms"
+LAYER_NAME_PLATFORMS = "Platforms"
+LAYER_NAME_COINS = "Coins"
+LAYER_NAME_BACKGROUND = "Background"
+LAYER_NAME_LADDERS = "Ladders"
+LAYER_NAME_PLAYER = "Player"
+LAYER_NAME_ENEMIES = "Enemies"
+
 
 def load_texture_pair(filename):
     """
@@ -111,7 +119,7 @@ class ZombieEnemy(Enemy):
 
 
 class PlayerCharacter(Entity):
-    """ Player Sprite"""
+    """Player Sprite"""
 
     def __init__(self):
 
@@ -188,14 +196,11 @@ class MyGame(arcade.Window):
         self.down_pressed = False
         self.jump_needs_reset = False
 
-        # These are 'lists' that keep track of our sprites. Each sprite should
-        # go into a list.
-        self.coin_list = None
-        self.wall_list = None
-        self.background_list = None
-        self.ladder_list = None
-        self.player_list = None
-        self.enemy_list = None
+        # Our TileMap Object
+        self.tile_map = None
+
+        # Our Scene Object
+        self.scene = None
 
         # Separate variable that holds the player sprite
         self.player_sprite = None
@@ -218,7 +223,33 @@ class MyGame(arcade.Window):
         self.game_over = arcade.load_sound(":resources:sounds/gameover1.wav")
 
     def setup(self):
-        """ Set up the game here. Call this function to restart the game. """
+        """Set up the game here. Call this function to restart the game."""
+
+        # Map name
+        map_name = f":resources:tiled_maps/map_with_ladders.json"
+
+        # Layer Specific Options for the Tilemap
+        layer_options = {
+            LAYER_NAME_PLATFORMS: {
+                "use_spatial_hash": True,
+            },
+            LAYER_NAME_MOVING_PLATFORMS: {
+                "use_spatial_hash": True,
+            },
+            LAYER_NAME_LADDERS: {
+                "use_spatial_hash": True,
+            },
+            LAYER_NAME_COINS: {
+                "use_spatial_hash": True,
+            },
+        }
+
+        # Load in TileMap
+        self.tile_map = arcade.load_tilemap(map_name, TILE_SCALING, layer_options)
+
+        # Initiate New Scene with our TileMap, this will automatically add all layers
+        # from the map as SpriteLists in the scene in the proper order.
+        self.scene = arcade.Scene.from_tilemap(self.tile_map)
 
         # Used to keep track of our scrolling
         self.view_bottom = 0
@@ -228,119 +259,78 @@ class MyGame(arcade.Window):
         self.score = 0
 
         # Create the Sprite lists
-        self.player_list = arcade.SpriteList()
-        self.background_list = arcade.SpriteList()
-        self.wall_list = arcade.SpriteList()
-        self.coin_list = arcade.SpriteList()
-        self.enemy_list = arcade.SpriteList()
-
-        # --- Load in a map from the tiled editor ---
-
-        # Name of the layer in the file that has our platforms/walls
-        platforms_layer_name = "Platforms"
-        moving_platforms_layer_name = "Moving Platforms"
-
-        enemy_spawns_layer_name = "Enemies"
-
-        # Name of the layer that has items for pick-up
-        coins_layer_name = "Coins"
-
-        # Map name
-        map_name = f":resources:tiled_maps/map_with_ladders.json"
-
-        # Read in the tiled map
-        my_map = arcade.tilemap.read_map(map_name)
+        player_list = arcade.SpriteList()
+        background_list = arcade.SpriteList()
+        wall_list = arcade.SpriteList()
+        coin_list = arcade.SpriteList()
+        enemy_list = arcade.SpriteList()
 
         # Set up the player, specifically placing it at these coordinates.
         self.player_sprite = PlayerCharacter()
 
         self.player_sprite.center_x = (
-            my_map.tile_size[0] * TILE_SCALING * PLAYER_START_X
+            self.tile_map.tiled_map.tile_size[0] * TILE_SCALING * PLAYER_START_X
         )
         self.player_sprite.center_y = (
-            my_map.tile_size[1] * TILE_SCALING * PLAYER_START_Y
+            self.tile_map.tiled_map.tile_size[1] * TILE_SCALING * PLAYER_START_Y
         )
-        self.player_list.append(self.player_sprite)
+        player_list.append(self.player_sprite)
+
+        # Add Player SpriteList to Scene
+        self.scene.add_sprite_list(LAYER_NAME_PLAYER, player_list)
 
         # Calculate the right edge of the my_map in pixels
-        self.end_of_map = my_map.map_size.width * GRID_PIXEL_SIZE
-
-        # -- Platforms
-        self.wall_list = arcade.tilemap.process_layer(
-            my_map, platforms_layer_name, TILE_SCALING, use_spatial_hash=True
-        )
-
-        # -- Moving Platforms
-        moving_platforms_list = arcade.tilemap.process_layer(
-            my_map, moving_platforms_layer_name, TILE_SCALING
-        )
-        for sprite in moving_platforms_list:
-            self.wall_list.append(sprite)
-
-        # -- Background objects
-        self.background_list = arcade.tilemap.process_layer(
-            my_map, "Background", TILE_SCALING
-        )
-
-        # -- Background objects
-        self.ladder_list = arcade.tilemap.process_layer(
-            my_map, "Ladders", TILE_SCALING, use_spatial_hash=True
-        )
-
-        # -- Coins
-        self.coin_list = arcade.tilemap.process_layer(
-            my_map, coins_layer_name, TILE_SCALING, use_spatial_hash=True
-        )
+        self.end_of_map = self.tile_map.tiled_map.map_size.width * GRID_PIXEL_SIZE
 
         # -- Enemies
-        enemies_layer = arcade.get_tilemap_layer(my_map, enemy_spawns_layer_name)
+        enemies_layer = self.tile_map.object_lists[LAYER_NAME_ENEMIES]
 
-        for point in enemies_layer.tiled_objects:
-            cartesian = arcade.tilemap.get_cartesian(my_map, point.coordinates)
-            print(cartesian)
-            enemy_type = point.properties["type"]
+        for my_object in enemies_layer:
+            cartesian = self.tile_map.get_cartesian(
+                my_object.shape[0], my_object.shape[1]
+            )
+            enemy_type = my_object.properties["type"]
             if enemy_type == "robot":
                 enemy = RobotEnemy()
             elif enemy_type == "zombie":
                 enemy = ZombieEnemy()
             enemy.center_x = math.floor(
-                cartesian.x * TILE_SCALING * my_map.tile_size[0]
+                cartesian[0] * TILE_SCALING * self.tile_map.tiled_map.tile_size[0]
             )
             enemy.center_y = math.floor(
-                -(cartesian.y - my_map.map_size.height)
+                -(cartesian[1] - self.tile_map.tiled_map.map_size.height)
                 * TILE_SCALING
-                * my_map.tile_size[1]
+                * self.tile_map.tiled_map.tile_size[1]
             )
-            print(enemy.center_x)
-            print(enemy.center_y)
-            self.enemy_list.append(enemy)
+            enemy_list.append(enemy)
+
+        # Add Enemy SpriteList to Scene
+        self.scene.add_sprite_list(LAYER_NAME_ENEMIES, enemy_list)
 
         # --- Other stuff
         # Set the background color
-        if my_map.background_color:
-            arcade.set_background_color(my_map.background_color)
+        if self.tile_map.tiled_map.background_color:
+            arcade.set_background_color(self.tile_map.tiled_map.background_color)
 
         # Create the 'physics engine'
         self.physics_engine = arcade.PhysicsEnginePlatformer(
             self.player_sprite,
-            self.wall_list,
+            [
+                self.scene.get_sprite_list(LAYER_NAME_PLATFORMS),
+                self.scene.get_sprite_list(LAYER_NAME_MOVING_PLATFORMS),
+            ],
             gravity_constant=GRAVITY,
-            ladders=self.ladder_list,
+            ladders=self.scene.get_sprite_list(LAYER_NAME_LADDERS),
         )
 
     def on_draw(self):
-        """ Render the screen. """
+        """Render the screen."""
 
         # Clear the screen to the background color
         arcade.start_render()
 
-        # Draw our sprites
-        self.wall_list.draw()
-        self.background_list.draw()
-        self.ladder_list.draw()
-        self.coin_list.draw()
-        self.player_list.draw()
-        self.enemy_list.draw()
+        # Draw our Scene
+        self.scene.draw()
 
         # Draw our score on the screen, scrolling it with the viewport
         score_text = f"Score: {self.score}"
@@ -393,7 +383,7 @@ class MyGame(arcade.Window):
             self.player_sprite.change_x = 0
 
     def on_key_press(self, key, modifiers):
-        """Called whenever a key is pressed. """
+        """Called whenever a key is pressed."""
 
         if key == arcade.key.UP or key == arcade.key.W:
             self.up_pressed = True
@@ -407,7 +397,7 @@ class MyGame(arcade.Window):
         self.process_keychange()
 
     def on_key_release(self, key, modifiers):
-        """Called when the user releases a key. """
+        """Called when the user releases a key."""
 
         if key == arcade.key.UP or key == arcade.key.W:
             self.up_pressed = False
@@ -422,7 +412,7 @@ class MyGame(arcade.Window):
         self.process_keychange()
 
     def on_update(self, delta_time):
-        """ Movement and game logic """
+        """Movement and game logic"""
 
         # Move the player with the physics engine
         self.physics_engine.update()
@@ -440,16 +430,22 @@ class MyGame(arcade.Window):
             self.player_sprite.is_on_ladder = False
             self.process_keychange()
 
-        self.coin_list.update_animation(delta_time)
-        self.background_list.update_animation(delta_time)
-        self.player_list.update_animation(delta_time)
-        self.enemy_list.update_animation(delta_time)
+        # Update Animations
+        self.scene.update_animation(
+            delta_time,
+            [
+                LAYER_NAME_COINS,
+                LAYER_NAME_BACKGROUND,
+                LAYER_NAME_PLAYER,
+                LAYER_NAME_ENEMIES,
+            ],
+        )
 
         # Update walls, used with moving platforms
-        self.wall_list.update()
+        self.scene.update(LAYER_NAME_MOVING_PLATFORMS)
 
         # See if the moving wall hit a boundary and needs to reverse direction.
-        for wall in self.wall_list:
+        for wall in self.scene.get_sprite_list(LAYER_NAME_MOVING_PLATFORMS):
 
             if (
                 wall.boundary_right
@@ -474,7 +470,7 @@ class MyGame(arcade.Window):
 
         # See if we hit any coins
         coin_hit_list = arcade.check_for_collision_with_list(
-            self.player_sprite, self.coin_list
+            self.player_sprite, self.scene.get_sprite_list(LAYER_NAME_COINS)
         )
 
         # Loop through each coin we hit (if any) and remove it
@@ -536,7 +532,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    """ Main method """
+    """Main method"""
     window = MyGame()
     window.setup()
     arcade.run()
