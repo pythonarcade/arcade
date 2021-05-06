@@ -30,6 +30,13 @@ TOP_VIEWPORT_MARGIN = 100
 PLAYER_START_X = 64
 PLAYER_START_Y = 225
 
+# Layer Names from our TileMap
+LAYER_NAME_PLATFORMS = "Platforms"
+LAYER_NAME_COINS = "Coins"
+LAYER_NAME_FOREGROUND = "Foreground"
+LAYER_NAME_BACKGROUND = "Background"
+LAYER_NAME_DONT_TOUCH = "Don't Touch"
+
 
 class MyGame(arcade.Window):
     """
@@ -41,15 +48,11 @@ class MyGame(arcade.Window):
         # Call the parent class and set up the window
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
-        # The object to store our tilemap
+        # Our TileMap Object
         self.tile_map = None
 
-        # Our Scene object for managing Sprite Lists
-        self.scene: arcade.Scene = None
-
-        # These are 'lists' that keep track of our sprites. Each sprite should
-        # go into a list.
-        self.player_list = None
+        # Our Scene Object
+        self.scene = None
 
         # Separate variable that holds the player sprite
         self.player_sprite = None
@@ -81,26 +84,15 @@ class MyGame(arcade.Window):
         # Map name
         map_name = f":resources:tiled_maps/map2_level_{level}.json"
 
-        # Name of the layer in the file that has our platforms/walls
-        platforms_layer_name = "Platforms"
-        # Name of the layer that has items for pick-up
-        coins_layer_name = "Coins"
-        # Name of the layer that has items for foreground
-        foreground_layer_name = "Foreground"
-        # Name of the layer that has items for background
-        background_layer_name = "Background"
-        # Name of the layer that has items we shouldn't touch
-        dont_touch_layer_name = "Don't Touch"
-
         # Layer Specific Options for the Tilemap
         layer_options = {
-            platforms_layer_name: {
+            LAYER_NAME_PLATFORMS: {
                 "use_spatial_hash": True,
             },
-            coins_layer_name: {
+            LAYER_NAME_COINS: {
                 "use_spatial_hash": True,
             },
-            dont_touch_layer_name: {
+            LAYER_NAME_DONT_TOUCH: {
                 "use_spatial_hash": True,
             },
         }
@@ -108,7 +100,8 @@ class MyGame(arcade.Window):
         # Load in TileMap
         self.tile_map = arcade.load_tilemap(map_name, TILE_SCALING, layer_options)
 
-        # Initiate New Scene
+        # Initiate New Scene with our TileMap, this will automatically add all layers
+        # from the map as SpriteLists in the scene in the proper order.
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
 
         # Used to keep track of our scrolling
@@ -128,7 +121,9 @@ class MyGame(arcade.Window):
         self.player_sprite.center_y = PLAYER_START_Y
         player_list.append(self.player_sprite)
 
-        self.scene.add_sprite_list_before("Player", player_list, foreground_layer_name)
+        # Add Player Spritelist before "Foreground" layer. This will make the foreground
+        # be drawn after the player, making it appear to be in front of the Player.
+        self.scene.add_sprite_list_before("Player", player_list, LAYER_NAME_FOREGROUND)
 
         # --- Load in a map from the tiled editor ---
 
@@ -143,7 +138,7 @@ class MyGame(arcade.Window):
         # Create the 'physics engine'
         self.physics_engine = arcade.PhysicsEnginePlatformer(
             self.player_sprite,
-            self.scene.get_sprite_list(platforms_layer_name),
+            self.scene.get_sprite_list(LAYER_NAME_PLATFORMS),
             GRAVITY,
         )
 
@@ -194,7 +189,7 @@ class MyGame(arcade.Window):
 
         # See if we hit any coins
         coin_hit_list = arcade.check_for_collision_with_list(
-            self.player_sprite, self.scene.get_sprite_list("Coins")
+            self.player_sprite, self.scene.get_sprite_list(LAYER_NAME_COINS)
         )
 
         # Loop through each coin we hit (if any) and remove it
@@ -222,7 +217,7 @@ class MyGame(arcade.Window):
 
         # Did the player touch something they should not?
         if arcade.check_for_collision_with_list(
-            self.player_sprite, self.scene.get_sprite_list("Don't Touch")
+            self.player_sprite, self.scene.get_sprite_list(LAYER_NAME_DONT_TOUCH)
         ):
             self.player_sprite.change_x = 0
             self.player_sprite.change_y = 0
