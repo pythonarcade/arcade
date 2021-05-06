@@ -248,6 +248,12 @@ game without learning a complex framework.
 
 .. toctree::
    :maxdepth: 1
+   :caption: Advanced
+
+   advanced/vsync
+
+.. toctree::
+   :maxdepth: 1
    :caption: Community
 
    diversity

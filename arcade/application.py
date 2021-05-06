@@ -94,7 +94,7 @@ class Window(pyglet.window.Window):
 
         try:
             super().__init__(width=width, height=height, caption=title,
-                             resizable=resizable, config=config, vsync=False, visible=visible)
+                             resizable=resizable, config=config, vsync=vsync, visible=visible)
             self.register_event_type('update')
             self.register_event_type('on_update')
         except pyglet.window.NoSuchConfigException:
