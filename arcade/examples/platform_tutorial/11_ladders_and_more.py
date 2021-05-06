@@ -129,7 +129,7 @@ class MyGame(arcade.Window):
         self.player_sprite.center_y = PLAYER_START_Y
         player_list.append(self.player_sprite)
 
-        # Add Player Spritelist to Scene
+        # Add Player SpriteList to Scene
         self.scene.add_sprite_list("Player", player_list)
 
         # Calculate the right edge of the my_map in pixels
@@ -206,11 +206,12 @@ class MyGame(arcade.Window):
         self.physics_engine.update()
 
         # Update animations
-        self.scene.get_sprite_list(LAYER_NAME_COINS).update_animation(delta_time)
-        self.scene.get_sprite_list(LAYER_NAME_BACKGROUND).update_animation(delta_time)
+        self.scene.update_animation(
+            delta_time, [LAYER_NAME_COINS, LAYER_NAME_BACKGROUND]
+        )
 
         # Update walls, used with moving platforms
-        self.scene.get_sprite_list(LAYER_NAME_MOVING_PLATFORMS).update()
+        self.scene.update(LAYER_NAME_MOVING_PLATFORMS)
 
         # See if the wall hit a boundary and needs to reverse direction.
         for wall in self.scene.get_sprite_list(LAYER_NAME_MOVING_PLATFORMS):
