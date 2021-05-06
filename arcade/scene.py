@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Union
 
 from arcade import SpriteList
 from arcade.tilemap import TileMap
@@ -56,6 +56,53 @@ class Scene:
         self.name_mapping = {
             key: val for key, val in self.name_mapping.items() if val != sprite_list
         }
+
+    def update(self, names: Optional[Union[str, List[str]]] = None) -> None:
+        """
+        Used to update SpriteLists contained in the scene.
+
+        If `names` parameter is provided then only the specified spritelists
+        will be updated. A single name or a list of names can be passed to the
+        parameter. If `names` is not provided, then every sprite_list in the scene
+        will be updated.
+
+        :param Union[str, List[str]] names: A name or list of names of SpriteLists to update
+        """
+        if names:
+            if isinstance(names, str):
+                self.name_mapping[names].update()
+            elif isinstance(names, list):
+                for name in names:
+                    self.name_mapping[name].update()
+            return
+
+        for sprite_list in self.sprite_lists:
+            sprite_list.update()
+
+    def update_animation(
+        self, delta_time: float, names: Optional[Union[str, List[str]]] = None
+    ) -> None:
+        """
+        Used to update the animation of SpriteLists contained in the scene.
+
+        If `names` parameter is provided then only the specified spritelists
+        will be updated. A single name or a list of names can be passed to the
+        parameter. If `names` is not provided, then every sprite_list in the scene
+        will be updated.
+
+        :param float delta_time: The delta time for the update.
+        :param Union[str, List[str]] names: A name or list of names of SpriteLists to update.
+        """
+        if names:
+            if isinstance(names, str):
+                self.name_mapping[names].update_animation(delta_time)
+            elif isinstance(names, list):
+                for name in names:
+                    self.name_mapping[name].update_animation(delta_time)
+            return
+
+        for sprite_list in self.sprite_lists:
+            sprite_list.update_animation(delta_time)
 
     def draw(self) -> None:
         for sprite_list in self.sprite_lists:
