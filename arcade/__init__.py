@@ -243,6 +243,7 @@ from .sprite import get_distance_between_sprites
 from .sprite_list import SpriteList
 from .sprite_list import check_for_collision
 from .sprite_list import check_for_collision_with_list
+from .sprite_list import check_for_collision_with_lists
 from .sprite_list import get_closest_sprite
 from .sprite_list import get_sprites_at_exact_point
 from .sprite_list import get_sprites_at_point
@@ -343,6 +344,7 @@ __all__ = ['AStarBarrierList',
            'calculate_hit_box_points_simple',
            'check_for_collision',
            'check_for_collision_with_list',
+           'check_for_collision_with_lists',
            'clamp',
            'cleanup_texture_cache',
            'close_window',

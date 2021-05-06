@@ -3,34 +3,19 @@ This module provides functionality to manage Sprites in a list.
 
 """
 
-from typing import Iterable, Iterator
-from typing import Any
-from typing import TypeVar
-from typing import List
-from typing import Tuple
-from typing import Optional
-from typing import Union
-from typing import Set
-
+import array
 import logging
 import math
-import array
 import time
 from random import shuffle
+from typing import (Any, Iterable, Iterator, List, Optional, Set, Tuple,
+                    TypeVar, Union)
 
 from PIL import Image
 
-from arcade import Color
-from arcade import Matrix3x3
-from arcade import Sprite
-from arcade import get_distance_between_sprites
-from arcade import are_polygons_intersecting
-from arcade import is_point_in_polygon
-
-from arcade import rotate_point
-from arcade import get_window
-from arcade import Point
-from arcade import gl
+from arcade import (Color, Matrix3x3, Point, Sprite, are_polygons_intersecting,
+                    get_distance_between_sprites, get_window, gl,
+                    is_point_in_polygon, rotate_point)
 
 LOG = logging.getLogger(__name__)
 
@@ -1163,13 +1148,12 @@ def _check_for_collision(sprite1: Sprite, sprite2: Sprite) -> bool:
     return are_polygons_intersecting(sprite1.get_adjusted_hit_box(), sprite2.get_adjusted_hit_box())
 
 
-def check_for_collision_with_list(sprite: Sprite,
-                                  sprite_list: SpriteList) -> List[Sprite]:
+def check_for_collision_with_list(sprite: Sprite, sprite_list: List[SpriteList]) -> List[Sprite]:
     """
-    Check for a collision between a sprite, and a list of sprites.
+    Check for a collision between a Sprite, and a list of Sprites.
 
     :param Sprite sprite: Sprite to check
-    :param SpriteList sprite_list: SpriteList to check against
+    :param SpriteList sprite_list: SpriteLists to check against
 
     :returns: List of sprites colliding, or an empty list.
     :rtype: list
@@ -1178,11 +1162,11 @@ def check_for_collision_with_list(sprite: Sprite,
         raise TypeError(f"Parameter 1 is not an instance of the Sprite class, it is an instance of {type(sprite)}.")
     if not isinstance(sprite_list, SpriteList):
         raise TypeError(f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList.")
-
+    
     if sprite_list.use_spatial_hash is None and len(sprite_list) > 30 and sprite_list.percent_sprites_moved < 10:
         LOG.debug(f"Enabling spatial hash - Spatial hash is none, sprite list "
-                  f"is {len(sprite_list)} elements. Percent moved "
-                  f"{sprite_list._percent_sprites_moved * 100}.")
+                f"is {len(sprite_list)} elements. Percent moved "
+                f"{sprite_list._percent_sprites_moved * 100}.")
         sprite_list.enable_spatial_hashing()
 
     if sprite_list.use_spatial_hash:
@@ -1191,16 +1175,49 @@ def check_for_collision_with_list(sprite: Sprite,
     else:
         sprite_list_to_check = sprite_list
 
-    # print(len(sprite_list_to_check.sprite_list))
     return [sprite2
                       for sprite2 in sprite_list_to_check
                       if sprite is not sprite2 and _check_for_collision(sprite, sprite2)]
 
-    # collision_list = []
-    # for sprite2 in sprite_list_to_check:
-    #     if sprite1 is not sprite2 and sprite2 not in collision_list:
-    #         if _check_for_collision(sprite1, sprite2):
-    #             collision_list.append(sprite2)
+
+
+
+def check_for_collision_with_lists(sprite: Sprite,
+                                  sprite_lists: List[SpriteList]) -> List[Sprite]:
+    """
+    Check for a collision between a Sprite, and a list of SpriteLists.
+
+    :param Sprite sprite: Sprite to check
+    :param List[SpriteList] sprite_list: SpriteLists to check against
+
+    :returns: List of sprites colliding, or an empty list.
+    :rtype: list
+    """
+    if not isinstance(sprite, Sprite):
+        raise TypeError(f"Parameter 1 is not an instance of the Sprite class, it is an instance of {type(sprite)}.")
+    if not isinstance(sprite_lists, list):
+        raise TypeError(f"Parameter 2 is a {type(sprite_lists)} instead of expected List[SpriteList].")
+
+    sprites = []
+
+    for sprite_list in sprite_lists:  
+        if sprite_list.use_spatial_hash is None and len(sprite_list) > 30 and sprite_list.percent_sprites_moved < 10:
+            LOG.debug(f"Enabling spatial hash - Spatial hash is none, sprite list "
+                    f"is {len(sprite_list)} elements. Percent moved "
+                    f"{sprite_list._percent_sprites_moved * 100}.")
+            sprite_list.enable_spatial_hashing()
+
+        if sprite_list.use_spatial_hash:
+            sprite_list_to_check = sprite_list.spatial_hash.get_objects_for_box(sprite)
+            # checks_saved = len(sprite_list) - len(sprite_list_to_check)
+        else:
+            sprite_list_to_check = sprite_list
+
+        for sprite2 in sprite_list_to_check:
+            if sprite is not sprite2 and _check_for_collision(sprite, sprite2):
+                sprites.append(sprite2)
+
+    return sprites
 
 
 def get_sprites_at_point(point: Point,

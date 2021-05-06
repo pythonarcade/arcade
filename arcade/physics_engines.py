@@ -4,15 +4,15 @@ Physics engines for top-down or platformers.
 # pylint: disable=too-many-arguments, too-many-locals, too-few-public-methods
 
 import math
-from typing import List, Union
+from typing import List, Optional, Union
 
 from arcade import (Sprite, SpriteList, check_for_collision,
-                    check_for_collision_with_list, get_distance)
+                    check_for_collision_with_lists, get_distance)
 
 # import time
 
 
-def _circular_check(player, walls):
+def _circular_check(player: Sprite, walls: List[SpriteList]):
     """
     This is a horrible kludge to 'guess' our way out of a collision
     Returns:
@@ -37,19 +37,19 @@ def _circular_check(player, walls):
             x, y = my_item
             player.center_x = x
             player.center_y = y
-            check_hit_list = check_for_collision_with_list(player, walls)
+            check_hit_list = check_for_collision_with_lists(player, walls)
             # print(f"Vary {vary} ({self.player_sprite.center_x} {self.player_sprite.center_y}) "
             #       f"= {len(check_hit_list)}")
             if len(check_hit_list) == 0:
                 return
         vary *= 2
 
-def _move_sprite(moving_sprite: Sprite, walls: SpriteList, ramp_up: bool):
+def _move_sprite(moving_sprite: Sprite, walls: List[SpriteList], ramp_up: bool) -> List[Sprite]:
 
     # start_time = time.time()
 
     # See if we are starting this turn with a sprite already colliding with us.
-    if len(check_for_collision_with_list(moving_sprite, walls)) > 0:
+    if len(check_for_collision_with_lists(moving_sprite, walls)) > 0:
         _circular_check(moving_sprite, walls)
 
     original_x = moving_sprite.center_x
@@ -64,7 +64,7 @@ def _move_sprite(moving_sprite: Sprite, walls: SpriteList, ramp_up: bool):
         moving_sprite.angle += moving_sprite.change_angle
 
         # Resolve collisions caused by rotating
-        rotating_hit_list = check_for_collision_with_list(moving_sprite, walls)
+        rotating_hit_list = check_for_collision_with_lists(moving_sprite, walls)
 
         if len(rotating_hit_list) > 0:
 
@@ -82,14 +82,14 @@ def _move_sprite(moving_sprite: Sprite, walls: SpriteList, ramp_up: bool):
     moving_sprite.center_y += moving_sprite.change_y
 
     # Check for wall hit
-    hit_list_x = check_for_collision_with_list(moving_sprite, walls)
+    hit_list_x = check_for_collision_with_lists(moving_sprite, walls)
     # print(f"Post-y move {hit_list_x}")
     complete_hit_list = hit_list_x
 
     # If we hit a wall, move so the edges are at the same point
     if len(hit_list_x) > 0:
         if moving_sprite.change_y > 0:
-            while len(check_for_collision_with_list(moving_sprite, walls)) > 0:
+            while len(check_for_collision_with_lists(moving_sprite, walls)) > 0:
                 moving_sprite.center_y -= 1
             # print(f"Spot X ({self.player_sprite.center_x}, {self.player_sprite.center_y})"
             #       f" {self.player_sprite.change_y}")
@@ -146,7 +146,7 @@ def _move_sprite(moving_sprite: Sprite, walls: SpriteList, ramp_up: bool):
 
             # Move sprite and check for collisions
             moving_sprite.center_x = original_x + cur_x_change * direction
-            collision_check = check_for_collision_with_list(moving_sprite, walls)
+            collision_check = check_for_collision_with_lists(moving_sprite, walls)
 
             # Update collision list
             for sprite in collision_check:
@@ -160,7 +160,7 @@ def _move_sprite(moving_sprite: Sprite, walls: SpriteList, ramp_up: bool):
                     cur_y_change = cur_x_change
                     moving_sprite.center_y = original_y + cur_y_change
 
-                    collision_check = check_for_collision_with_list(moving_sprite, walls)
+                    collision_check = check_for_collision_with_lists(moving_sprite, walls)
                     if len(collision_check) > 0:
                         cur_y_change -= cur_x_change
                     else:
@@ -168,7 +168,7 @@ def _move_sprite(moving_sprite: Sprite, walls: SpriteList, ramp_up: bool):
                             # print("Ramp up check")
                             cur_y_change -= 1
                             moving_sprite.center_y = almost_original_y + cur_y_change
-                            collision_check = check_for_collision_with_list(moving_sprite, walls)
+                            collision_check = check_for_collision_with_lists(moving_sprite, walls)
                         cur_y_change += 1
                         collision_check = []
 
@@ -261,7 +261,7 @@ class PhysicsEnginePlatformer:
                  player_sprite: Sprite,
                  platforms: Union[Sprite, List[SpriteList]],
                  gravity_constant: float = 0.5,
-                 ladders: SpriteList = None,
+                 ladders: Optional[Union[Sprite, List[SpriteList]]] = None,
                  ):
         """
         Create a physics engine for a platformer.
@@ -271,29 +271,38 @@ class PhysicsEnginePlatformer:
         :param float gravity_constant: Downward acceleration per frame
         :param SpriteList ladders: Ladders the user can climb on
         """
-        if ladders is not None and not isinstance(ladders, SpriteList):
-            raise TypeError("Fourth parameter should be a SpriteList of ladders")
+        self.ladders: List[SpriteList]
+        self.platforms: Optional[List[SpriteList]]
+
+        if ladders:
+            if isinstance(ladders, SpriteList):
+                self.ladders = [ladders]
+            elif isinstance(ladders, list):
+                self.ladders = ladders
+            else:
+                raise TypeError(f"Parameter 4 is a {type(ladders)}, expected a SpriteList or List[SpriteList]")
+        else:
+            self.ladders = None
 
         if isinstance(platforms, SpriteList):
             self.platforms = [platforms]
         elif isinstance(platforms, list):
             self.platforms = platforms
         else:
-            raise TypeError(f"Parameter 2 is a {type(platforms)}, expected a SpriteList or List of SpriteLists")
+            raise TypeError(f"Parameter 2 is a {type(platforms)}, expected a SpriteList or List[SpriteList]")
              
 
-        self.player_sprite = player_sprite
-        self.gravity_constant = gravity_constant
-        self.jumps_since_ground = 0
-        self.allowed_jumps = 1
-        self.allow_multi_jump = False
-        self.ladders = ladders
+        self.player_sprite: Sprite = player_sprite
+        self.gravity_constant: float = gravity_constant
+        self.jumps_since_ground: int = 0
+        self.allowed_jumps: int = 1
+        self.allow_multi_jump: bool = False
 
     def is_on_ladder(self):
         """ Return 'true' if the player is in contact with a sprite in the ladder list. """
         # Check for touching a ladder
         if self.ladders:
-            hit_list = check_for_collision_with_list(self.player_sprite, self.ladders)
+            hit_list = check_for_collision_with_lists(self.player_sprite, self.ladders)
             if len(hit_list) > 0:
                 return True
         return False
@@ -312,9 +321,7 @@ class PhysicsEnginePlatformer:
         self.player_sprite.center_y -= y_distance
 
         # Check for wall hit
-        hit_list = []
-        for platform_list in self.platforms:
-            hit_list.append(check_for_collision_with_list(self.player_sprite, platform_list))
+        hit_list = check_for_collision_with_lists(self.player_sprite, self.platforms)
         
         self.player_sprite.center_y += y_distance
 
@@ -380,9 +387,7 @@ class PhysicsEnginePlatformer:
 
         # print(f"Spot B ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
 
-        complete_hit_list = []
-        for platform_list in self.platforms:
-            complete_hit_list.append(_move_sprite(self.player_sprite, platform_list, ramp_up=True))
+        complete_hit_list = _move_sprite(self.player_sprite, self.platforms, ramp_up=True)
 
         for platform_list in self.platforms:
             for platform in platform_list:
