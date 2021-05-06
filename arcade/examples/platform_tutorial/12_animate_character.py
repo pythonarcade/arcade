@@ -3,8 +3,9 @@ Platformer Game
 
 python -m arcade.examples.platform_tutorial.11_animate_character
 """
-import arcade
 import os
+
+import arcade
 
 # Constants
 SCREEN_WIDTH = 1000
@@ -16,7 +17,7 @@ TILE_SCALING = 0.5
 CHARACTER_SCALING = TILE_SCALING * 2
 COIN_SCALING = TILE_SCALING
 SPRITE_PIXEL_SIZE = 128
-GRID_PIXEL_SIZE = (SPRITE_PIXEL_SIZE * TILE_SCALING)
+GRID_PIXEL_SIZE = SPRITE_PIXEL_SIZE * TILE_SCALING
 
 # Movement speed of player, in pixels per frame
 PLAYER_MOVEMENT_SPEED = 7
@@ -37,6 +38,13 @@ PLAYER_START_Y = SPRITE_PIXEL_SIZE * TILE_SCALING * 1
 RIGHT_FACING = 0
 LEFT_FACING = 1
 
+LAYER_NAME_MOVING_PLATFORMS = "Moving Platforms"
+LAYER_NAME_PLATFORMS = "Platforms"
+LAYER_NAME_COINS = "Coins"
+LAYER_NAME_BACKGROUND = "Background"
+LAYER_NAME_LADDERS = "Ladders"
+LAYER_NAME_PLAYER = "Player"
+
 
 def load_texture_pair(filename):
     """
@@ -44,12 +52,13 @@ def load_texture_pair(filename):
     """
     return [
         arcade.load_texture(filename),
-        arcade.load_texture(filename, flipped_horizontally=True)
+        arcade.load_texture(filename, flipped_horizontally=True),
     ]
 
 
 class PlayerCharacter(arcade.Sprite):
-    """ Player Sprite"""
+    """Player Sprite"""
+
     def __init__(self):
 
         # Set up parent class
@@ -103,7 +112,7 @@ class PlayerCharacter(arcade.Sprite):
         # self.set_hit_box([[-22, -64], [22, -64], [22, 28], [-22, 28]])
         self.set_hit_box(self.texture.hit_box_points)
 
-    def update_animation(self, delta_time: float = 1/60):
+    def update_animation(self, delta_time: float = 1 / 60):
 
         # Figure out if we need to flip face left or right
         if self.change_x < 0 and self.character_face_direction == RIGHT_FACING:
@@ -141,7 +150,9 @@ class PlayerCharacter(arcade.Sprite):
         self.cur_texture += 1
         if self.cur_texture > 7:
             self.cur_texture = 0
-        self.texture = self.walk_textures[self.cur_texture][self.character_face_direction]
+        self.texture = self.walk_textures[self.cur_texture][
+            self.character_face_direction
+        ]
 
 
 class MyGame(arcade.Window):
@@ -168,13 +179,11 @@ class MyGame(arcade.Window):
         self.down_pressed = False
         self.jump_needs_reset = False
 
-        # These are 'lists' that keep track of our sprites. Each sprite should
-        # go into a list.
-        self.coin_list = None
-        self.wall_list = None
-        self.background_list = None
-        self.ladder_list = None
-        self.player_list = None
+        # Our TileMap Object
+        self.tile_map = None
+
+        # Our Scene Object
+        self.scene = None
 
         # Separate variable that holds the player sprite
         self.player_sprite = None
@@ -197,7 +206,30 @@ class MyGame(arcade.Window):
         self.game_over = arcade.load_sound(":resources:sounds/gameover1.wav")
 
     def setup(self):
-        """ Set up the game here. Call this function to restart the game. """
+        """Set up the game here. Call this function to restart the game."""
+
+        # Map name
+        map_name = f":resources:tiled_maps/map_with_ladders.json"
+
+        # Layer Specific Options for the Tilemap
+        layer_options = {
+            LAYER_NAME_PLATFORMS: {
+                "use_spatial_hash": True,
+            },
+            LAYER_NAME_LADDERS: {
+                "use_spatial_hash": True,
+            },
+            LAYER_NAME_COINS: {
+                "use_spatial_hash": True,
+            },
+        }
+
+        # Load in TileMap
+        self.tile_map = arcade.load_tilemap(map_name, TILE_SCALING, layer_options)
+
+        # Initiate New Scene with our TileMap, this will automatically add all layers
+        # from the map as SpriteLists in the scene in the proper order.
+        self.scene = arcade.Scene.from_tilemap(self.tile_map)
 
         # Used to keep track of our scrolling
         self.view_bottom = 0
@@ -207,88 +239,58 @@ class MyGame(arcade.Window):
         self.score = 0
 
         # Create the Sprite lists
-        self.player_list = arcade.SpriteList()
-        self.background_list = arcade.SpriteList()
-        self.wall_list = arcade.SpriteList()
-        self.coin_list = arcade.SpriteList()
+        player_list = arcade.SpriteList()
+        background_list = arcade.SpriteList()
+        wall_list = arcade.SpriteList()
+        coin_list = arcade.SpriteList()
 
         # Set up the player, specifically placing it at these coordinates.
         self.player_sprite = PlayerCharacter()
 
         self.player_sprite.center_x = PLAYER_START_X
         self.player_sprite.center_y = PLAYER_START_Y
-        self.player_list.append(self.player_sprite)
+        player_list.append(self.player_sprite)
 
-        # --- Load in a map from the tiled editor ---
-
-        # Name of the layer in the file that has our platforms/walls
-        platforms_layer_name = 'Platforms'
-        moving_platforms_layer_name = 'Moving Platforms'
-
-        # Name of the layer that has items for pick-up
-        coins_layer_name = 'Coins'
-
-        # Map name
-        map_name = f":resources:tiled_maps/map_with_ladders.json"
-
-        # Read in the tiled map
-        my_map = arcade.tilemap.read_map(map_name)
+        # Add Player SpriteList to Scene
+        self.scene.add_sprite_list(LAYER_NAME_PLAYER, player_list)
 
         # Calculate the right edge of the my_map in pixels
-        self.end_of_map = my_map.map_size.width * GRID_PIXEL_SIZE
-
-        # -- Platforms
-        self.wall_list = arcade.tilemap.process_layer(my_map,
-                                                      platforms_layer_name,
-                                                      TILE_SCALING,
-                                                      use_spatial_hash=True)
-
-        # -- Moving Platforms
-        moving_platforms_list = arcade.tilemap.process_layer(my_map, moving_platforms_layer_name, TILE_SCALING)
-        for sprite in moving_platforms_list:
-            self.wall_list.append(sprite)
-
-        # -- Background objects
-        self.background_list = arcade.tilemap.process_layer(my_map, "Background", TILE_SCALING)
-
-        # -- Background objects
-        self.ladder_list = arcade.tilemap.process_layer(my_map, "Ladders",
-                                                        TILE_SCALING,
-                                                        use_spatial_hash=True)
-
-        # -- Coins
-        self.coin_list = arcade.tilemap.process_layer(my_map, coins_layer_name,
-                                                      TILE_SCALING,
-                                                      use_spatial_hash=True)
+        self.end_of_map = self.tile_map.tiled_map.map_size.width * GRID_PIXEL_SIZE
 
         # --- Other stuff
         # Set the background color
-        if my_map.background_color:
-            arcade.set_background_color(my_map.background_color)
+        if self.tile_map.tiled_map.background_color:
+            arcade.set_background_color(self.tile_map.tiled_map.background_color)
 
         # Create the 'physics engine'
-        self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
-                                                             self.wall_list,
-                                                             gravity_constant=GRAVITY,
-                                                             ladders=self.ladder_list)
+        self.physics_engine = arcade.PhysicsEnginePlatformer(
+            self.player_sprite,
+            [
+                self.scene.get_sprite_list(LAYER_NAME_PLATFORMS),
+                self.scene.get_sprite_list(LAYER_NAME_MOVING_PLATFORMS),
+            ],
+            gravity_constant=GRAVITY,
+            ladders=self.scene.get_sprite_list(LAYER_NAME_LADDERS),
+        )
 
     def on_draw(self):
-        """ Render the screen. """
+        """Render the screen."""
 
         # Clear the screen to the background color
         arcade.start_render()
 
-        # Draw our sprites
-        self.wall_list.draw()
-        self.background_list.draw()
-        self.ladder_list.draw()
-        self.coin_list.draw()
-        self.player_list.draw()
+        # Draw our Scene
+        self.scene.draw()
 
         # Draw our score on the screen, scrolling it with the viewport
         score_text = f"Score: {self.score}"
-        arcade.draw_text(score_text, 10 + self.view_left, 10 + self.view_bottom,
-                         arcade.csscolor.BLACK, 18)
+        arcade.draw_text(
+            score_text,
+            10 + self.view_left,
+            10 + self.view_bottom,
+            arcade.csscolor.BLACK,
+            18,
+        )
 
         # Draw hit boxes.
         # for wall in self.wall_list:
@@ -304,7 +306,10 @@ class MyGame(arcade.Window):
         if self.up_pressed and not self.down_pressed:
             if self.physics_engine.is_on_ladder():
                 self.player_sprite.change_y = PLAYER_MOVEMENT_SPEED
-            elif self.physics_engine.can_jump(y_distance=10) and not self.jump_needs_reset:
+            elif (
+                self.physics_engine.can_jump(y_distance=10)
+                and not self.jump_needs_reset
+            ):
                 self.player_sprite.change_y = PLAYER_JUMP_SPEED
                 self.jump_needs_reset = True
                 arcade.play_sound(self.jump_sound)
@@ -328,7 +333,7 @@ class MyGame(arcade.Window):
             self.player_sprite.change_x = 0
 
     def on_key_press(self, key, modifiers):
-        """Called whenever a key is pressed. """
+        """Called whenever a key is pressed."""
 
         if key == arcade.key.UP or key == arcade.key.W:
             self.up_pressed = True
@@ -342,7 +347,7 @@ class MyGame(arcade.Window):
         self.process_keychange()
 
     def on_key_release(self, key, modifiers):
-        """Called when the user releases a key. """
+        """Called when the user releases a key."""
 
         if key == arcade.key.UP or key == arcade.key.W:
             self.up_pressed = False
@@ -357,7 +362,7 @@ class MyGame(arcade.Window):
         self.process_keychange()
 
     def on_update(self, delta_time):
-        """ Movement and game logic """
+        """Movement and game logic"""
 
         # Move the player with the physics engine
         self.physics_engine.update()
@@ -375,37 +380,51 @@ class MyGame(arcade.Window):
             self.player_sprite.is_on_ladder = False
             self.process_keychange()
 
-        self.coin_list.update_animation(delta_time)
-        self.background_list.update_animation(delta_time)
-        self.player_list.update_animation(delta_time)
+        # Update Animations
+        self.scene.update_animation(
+            delta_time, [LAYER_NAME_COINS, LAYER_NAME_BACKGROUND, LAYER_NAME_PLAYER]
+        )
 
         # Update walls, used with moving platforms
-        self.wall_list.update()
+        self.scene.update(LAYER_NAME_MOVING_PLATFORMS)
 
         # See if the moving wall hit a boundary and needs to reverse direction.
-        for wall in self.wall_list:
+        for wall in self.scene.get_sprite_list(LAYER_NAME_MOVING_PLATFORMS):
 
-            if wall.boundary_right and wall.right > wall.boundary_right and wall.change_x > 0:
+            if (
+                wall.boundary_right
+                and wall.right > wall.boundary_right
+                and wall.change_x > 0
+            ):
                 wall.change_x *= -1
-            if wall.boundary_left and wall.left < wall.boundary_left and wall.change_x < 0:
+            if (
+                wall.boundary_left
+                and wall.left < wall.boundary_left
+                and wall.change_x < 0
+            ):
                 wall.change_x *= -1
             if wall.boundary_top and wall.top > wall.boundary_top and wall.change_y > 0:
                 wall.change_y *= -1
-            if wall.boundary_bottom and wall.bottom < wall.boundary_bottom and wall.change_y < 0:
+            if (
+                wall.boundary_bottom
+                and wall.bottom < wall.boundary_bottom
+                and wall.change_y < 0
+            ):
                 wall.change_y *= -1
 
         # See if we hit any coins
-        coin_hit_list = arcade.check_for_collision_with_list(self.player_sprite,
-                                                             self.coin_list)
+        coin_hit_list = arcade.check_for_collision_with_list(
+            self.player_sprite, self.scene.get_sprite_list(LAYER_NAME_COINS)
+        )
 
         # Loop through each coin we hit (if any) and remove it
         for coin in coin_hit_list:
 
             # Figure out how many points this coin is worth
-            if 'Points' not in coin.properties:
+            if "Points" not in coin.properties:
                 print("Warning, collected a coin without a Points property.")
             else:
-                points = int(coin.properties['Points'])
+                points = int(coin.properties["Points"])
                 self.score += points
 
             # Remove the coin
@@ -448,14 +467,16 @@ class MyGame(arcade.Window):
             self.view_left = int(self.view_left)
 
             # Do the scrolling
-            arcade.set_viewport(self.view_left,
-                                SCREEN_WIDTH + self.view_left,
-                                self.view_bottom,
-                                SCREEN_HEIGHT + self.view_bottom)
+            arcade.set_viewport(
+                self.view_left,
+                SCREEN_WIDTH + self.view_left,
+                self.view_bottom,
+                SCREEN_HEIGHT + self.view_bottom,
+            )
 
 
 def main():
-    """ Main method """
+    """Main method"""
     window = MyGame()
     window.setup()
     arcade.run()
