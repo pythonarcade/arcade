@@ -125,7 +125,6 @@ class Window(pyglet.window.Window):
         self.key: Optional[int] = None
 
         self._ctx: ArcadeContext = ArcadeContext(self)
-        set_viewport(0, self.width - 1, 0, self.height - 1)
 
         self._background_color: Color = (0, 0, 0, 0)
 
@@ -350,12 +349,8 @@ class Window(pyglet.window.Window):
         :param float width: New width
         :param float height: New height
         """
-        try:
-            original_viewport = self.get_viewport()
-        except Exception as ex:
-            print("Error getting viewport:", ex)
-            return
-
+        # Retain projection scrolling if applied
+        original_viewport = self.get_viewport()
         self.set_viewport(original_viewport[0],
                           original_viewport[0] + width,
                           original_viewport[2],
