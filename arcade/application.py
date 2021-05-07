@@ -125,10 +125,7 @@ class Window(pyglet.window.Window):
         self.key: Optional[int] = None
 
         self._ctx: ArcadeContext = ArcadeContext(self)
-
         self._background_color: Color = (0, 0, 0, 0)
-
-        self.ui_manager = arcade.experimental.gui.UIManager(self)
 
     @property
     def current_view(self):
