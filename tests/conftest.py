@@ -20,8 +20,7 @@ def prepare_window(window: arcade.Window):
     # Reset projection and viewport
     ctx.screen.use(force=True)
     ctx.enable_only(ctx.BLEND)
-    window.ctx.viewport = 0, 0, window.width, window.height
-    window.ctx.projection_2d = 0, window.width, 0, window.height
+    arcade.set_viewport(0, window.width, 0, window.height)
     window.flip()
     window.background_color = 0, 0, 0, 0
     window.clear()
