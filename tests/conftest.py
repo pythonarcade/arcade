@@ -1,6 +1,12 @@
 import pytest
 import arcade
 
+WINDOW_WIDTH, WINDOW_HEIGHT = 800, 600
+
+
+def create_window():
+    return arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, "Testing")
+
 
 def pytest_addoption(parser):
     parser.addoption("--twm", action="store_true", default=False, help="Disable window geometry tests when using a tiling window manager" )
@@ -15,9 +21,8 @@ def twm(pytestconfig):
 
 @pytest.fixture(scope="function")
 def ctx():
-    window = arcade.Window(800, 600, "Test")
+    window = create_window()
     try:
-        window.clear()
         yield window.ctx
     finally:
         window.close()
@@ -25,9 +30,8 @@ def ctx():
 
 @pytest.fixture(scope="function")
 def window():
-    window = arcade.Window(800, 600, "Test")
+    window = create_window()
     try:
-        window.clear()
         yield window
     finally:
         window.close()

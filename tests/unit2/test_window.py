@@ -34,10 +34,9 @@ def test_window(twm):
     v = arcade.get_viewport()
     if not twm:
         assert v[0] == 0
-        # The lines below fail. Why?
-        assert v[1] == width - 1
+        assert v[1] == width
         assert v[2] == 0
-        assert v[3] == height - 1
+        assert v[3] == height
 
     factor = arcade.get_scaling_factor()
     assert factor > 0

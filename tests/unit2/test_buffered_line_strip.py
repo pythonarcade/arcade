@@ -1,29 +1,17 @@
 import arcade
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
 
-
-class MyGame(arcade.Window):
-    """ Main application class. """
-
-    def __init__(self, width, height):
-        """
-        Initializer
-        """
-        super().__init__(width, height)
-
+def test_buffered_lines(window):
         arcade.set_background_color(arcade.color.WHITE)
 
         point_list = ([0, 100],
-                     [100, 100],
-                      [100, 300],
-                      [300, 300])
-        self.line_strip = arcade.create_line_strip(point_list, arcade.csscolor.BLACK, 10)
+                    [100, 100],
+                    [100, 300],
+                    [300, 300])
+        line_strip = arcade.create_line_strip(point_list, arcade.csscolor.BLACK, 10)
 
-    def on_draw(self):
         arcade.start_render()
-        self.line_strip.draw()
+        line_strip.draw()
         p = arcade.get_pixel(0, 100)
         assert p == (0, 0, 0)
         p = arcade.get_pixel(0, 96)
@@ -38,16 +26,3 @@ class MyGame(arcade.Window):
         assert p == (0, 0, 0)
         p = arcade.get_pixel(301, 300)
         assert p == (255, 255, 255)
-
-
-def test_main(twm):
-    """ Main method """
-    if twm:
-        assert True
-    else:
-        window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT)
-        window.test()
-        window.close()
-        # Force window close and garbage collection to allow unit tests to run all
-        # in a row.
-        arcade.close_window()
