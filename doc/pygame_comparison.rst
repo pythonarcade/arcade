@@ -8,6 +8,7 @@ Pygame library. So how do they differ?
 
 Features that the Arcade Library has:
 
+* Licensed under the `MIT License`_, which is more generous than Pygame's LGPL_.
 * Draws stationary sprites much faster. See :ref:`drawing_stationary_performance`
 * Supports Python 3 `type hinting`_.
 * Thick ellipses, arcs, and circles do not have a `moiré pattern`_.
@@ -51,6 +52,8 @@ Things that are just different:
 :ref:`performance`.
 
 
+.. _MIT License: https://github.com/pythonarcade/arcade/blob/development/license.rst
+.. _LGPL: https://github.com/pygame/pygame/blob/main/docs/LGPL.txt
 .. _type hinting: https://docs.python.org/3/library/typing.html
 .. _moiré pattern: http://stackoverflow.com/questions/10148479/artifacts-when-drawing-primitives-with-pygame
 .. _2.0: https://github.com/pygame/pygame/releases/tag/2.0.0
