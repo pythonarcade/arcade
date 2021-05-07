@@ -236,6 +236,8 @@ class ArcadeContext(Context):
             self.active_program = None
             # Rebind the projection uniform block
             self._projection_2d_buffer.bind_to_uniform_block(binding=0)
+            self.enable(self.BLEND)
+            self.blend_func = self.BLEND_DEFAULT
 
     def load_program(
         self,
