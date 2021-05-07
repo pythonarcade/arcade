@@ -74,6 +74,21 @@
                  "point":true,
                  "properties":[
                         {
+                         "name":"boundary_left",
+                         "type":"int",
+                         "value":128
+                        }, 
+                        {
+                         "name":"boundary_right",
+                         "type":"int",
+                         "value":320
+                        }, 
+                        {
+                         "name":"change_x",
+                         "type":"int",
+                         "value":1
+                        }, 
+                        {
                          "name":"type",
                          "type":"string",
                          "value":"robot"
@@ -92,6 +107,21 @@
                  "point":true,
                  "properties":[
                         {
+                         "name":"boundary_left",
+                         "type":"int",
+                         "value":640
+                        }, 
+                        {
+                         "name":"boundary_right",
+                         "type":"int",
+                         "value":960
+                        }, 
+                        {
+                         "name":"change_x",
+                         "type":"int",
+                         "value":1
+                        }, 
+                        {
                          "name":"type",
                          "type":"string",
                          "value":"robot"
@@ -109,6 +139,21 @@
                  "name":"",
                  "point":true,
                  "properties":[
+                        {
+                         "name":"boundary_left",
+                         "type":"int",
+                         "value":704
+                        }, 
+                        {
+                         "name":"boundary_right",
+                         "type":"int",
+                         "value":896
+                        }, 
+                        {
+                         "name":"change_x",
+                         "type":"int",
+                         "value":1
+                        }, 
                         {
                          "name":"type",
                          "type":"string",
@@ -307,7 +352,7 @@
  "nextobjectid":16,
  "orientation":"orthogonal",
  "renderorder":"left-up",
- "tiledversion":"1.5.0",
+ "tiledversion":"1.6.0",
  "tileheight":128,
  "tilesets":[
         {
@@ -328,6 +373,6 @@
         }],
  "tilewidth":128,
  "type":"map",
- "version":1.5,
+ "version":"1.6",
  "width":20
 }
