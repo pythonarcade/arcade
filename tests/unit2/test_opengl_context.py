@@ -3,8 +3,6 @@ Low level tests for OpenGL 3.3 wrappers.
 """
 import pytest
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
 
 def test_ctx(ctx):
     assert ctx.gl_version >= (3, 3)
@@ -22,8 +20,9 @@ def test_viewport(ctx):
     assert ctx.viewport == vp
 
 
-def test_projection(ctx):
-    assert ctx.projection_2d == (0, SCREEN_WIDTH, 0, SCREEN_HEIGHT)
+def test_projection(window):
+    ctx = window.ctx
+    assert ctx.projection_2d == (0, window.width, 0, window.height)
     ctx.projection_2d = (1, 10, 2, 11)
     assert ctx.projection_2d == (1, 10, 2, 11)
 
@@ -33,7 +32,7 @@ def test_projection(ctx):
     with pytest.raises(ValueError):
         ctx.projection_2d = 1, 2, 3, 4, 5
 
-    ctx.projection_2d = 0, SCREEN_WIDTH, 0, SCREEN_HEIGHT
+    # ctx.projection_2d = 0, window.width, 0, window.height
 
 
 def test_point_size(ctx):

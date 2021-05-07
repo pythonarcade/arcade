@@ -1,60 +1,53 @@
-import os
 import arcade
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
-LINE_HEIGHT = 20
 CHARACTER_SCALING = 0.5
+frame = 0
 
 
-class MyTestWindow(arcade.Window):
+def test_sprite_removal(window):
+    global frame
+    frame = 0
+    arcade.set_background_color(arcade.color.AMAZON)
 
-    def __init__(self, width, height, title):
-        super().__init__(width, height, title)
+    character_list = arcade.SpriteList()
 
-        arcade.set_background_color(arcade.color.AMAZON)
+    sprite_1 = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", CHARACTER_SCALING)
+    sprite_1.center_x = 150
+    sprite_1.center_y = 150
+    character_list.append(sprite_1)
 
-        self.character_list = arcade.SpriteList()
+    sprite_2 = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", CHARACTER_SCALING)
+    sprite_2.center_x = 250
+    sprite_2.center_y = 250
+    character_list.append(sprite_2)
 
-        self.sprite_1 = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", CHARACTER_SCALING)
-        self.sprite_1.center_x = 150
-        self.sprite_1.center_y = 150
-        self.character_list.append(self.sprite_1)
+    sprite_3 = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", CHARACTER_SCALING)
+    sprite_3.center_x = 250
+    sprite_3.center_y = 250
+    character_list.append(sprite_3)
 
-        self.sprite_2 = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", CHARACTER_SCALING)
-        self.sprite_2.center_x = 250
-        self.sprite_2.center_y = 250
-        self.character_list.append(self.sprite_2)
 
-        self.sprite_3 = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", CHARACTER_SCALING)
-        self.sprite_3.center_x = 250
-        self.sprite_3.center_y = 250
-        self.character_list.append(self.sprite_3)
-
-        self.frame = 0
-
-    def on_draw(self):
+    def on_draw():
         arcade.start_render()
-        self.character_list.draw()
+        character_list.draw()
 
-    def update(self, delta_time):
-        self.frame += 1
+    def update(delta_time):
+        global frame
+        frame += 1
 
-        if self.frame == 3:
-            self.sprite_2.remove_from_sprite_lists()
+        if frame == 3:
+            sprite_2.remove_from_sprite_lists()
 
-        if self.frame == 5:
-            self.character_list.remove(self.sprite_3)
+        if frame == 5:
+            character_list.remove(sprite_3)
 
-        if self.frame == 7:
-            self.sprite_2.center_x += 5
+        if frame == 7:
+            sprite_2.center_x += 5
 
-        if self.frame == 9:
-            self.sprite_3.center_x += 5
+        if frame == 9:
+            sprite_3.center_x += 5
 
-
-def test_sprite():
-    window = MyTestWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Test Text")
+    window.on_draw = on_draw
+    window.update = update
     window.test()
-    window.close()
     arcade.cleanup_texture_cache()

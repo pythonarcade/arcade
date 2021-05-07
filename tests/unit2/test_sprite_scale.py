@@ -1,35 +1,24 @@
-import os
 import arcade
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
-LINE_HEIGHT = 20
 CHARACTER_SCALING = 0.5
 
+def test_sprite_scale(window):
+    arcade.set_background_color(arcade.color.AMAZON)
 
-class MyTestWindow(arcade.Window):
+    character_list = arcade.SpriteList()
+    character_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", CHARACTER_SCALING)
+    character_sprite.center_x = 150
+    character_sprite.center_y = 150
+    character_list.append(character_sprite)
 
-    def __init__(self, width, height, title):
-        super().__init__(width, height, title)
-
-        arcade.set_background_color(arcade.color.AMAZON)
-
-        self.character_list = arcade.SpriteList()
-        self.character_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", CHARACTER_SCALING)
-        self.character_sprite.center_x = 150
-        self.character_sprite.center_y = 150
-        self.character_list.append(self.character_sprite)
-
-    def on_draw(self):
+    def on_draw():
         arcade.start_render()
-        self.character_list.draw()
+        character_list.draw()
 
-    def update(self, delta_time):
-        self.character_sprite.scale += 0.1
+    def update(delta_time):
+        character_sprite.scale += 0.1
 
-
-def test_sprite():
-    window = MyTestWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Test Text")
+    window.on_draw = on_draw
+    window.update = update
     window.test()
-    window.close()
     arcade.cleanup_texture_cache()

@@ -1,11 +1,33 @@
 import pytest
 import arcade
 
-WINDOW_WIDTH, WINDOW_HEIGHT = 800, 600
+# Reduce the atlas size
+arcade.ArcadeContext.atlas_size = (1000, 1000)
 
+WINDOW = None
 
 def create_window():
-    return arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, "Testing")
+    global WINDOW
+    if not WINDOW:
+        print("CREATING WINDOW")
+        WINDOW = arcade.Window(title="Testing", vsync=False)
+    return WINDOW
+
+
+def prepare_window(window: arcade.Window):
+    window.switch_to()
+    ctx = window.ctx
+    # Reset projection and viewport
+    ctx.screen.use(force=True)
+    ctx.enable_only(ctx.BLEND)
+    window.ctx.viewport = 0, 0, window.width, window.height
+    window.ctx.projection_2d = 0, window.width, 0, window.height
+    window.flip()
+    window.clear()
+    # Ensure no old functions are lingering
+    window.on_draw = lambda: None
+    window.on_update = lambda dt: None
+    window.update = lambda dt: None
 
 
 def pytest_addoption(parser):
@@ -22,16 +44,20 @@ def twm(pytestconfig):
 @pytest.fixture(scope="function")
 def ctx():
     window = create_window()
+    arcade.set_window(window)
     try:
+        prepare_window(window)
         yield window.ctx
     finally:
-        window.close()
+        window.flip()
 
 
 @pytest.fixture(scope="function")
 def window():
     window = create_window()
+    arcade.set_window(window)
     try:
+        prepare_window(window)
         yield window
     finally:
-        window.close()
+        window.flip()

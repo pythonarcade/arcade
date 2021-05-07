@@ -1,12 +1,11 @@
 import arcade
-import os
 import pyglet.gl as gl
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
 
-def make_objects():
+def test_buffered_drawing(window):
     shape_list = arcade.ShapeElementList()
 
     center_x = 0
@@ -72,42 +71,11 @@ def make_objects():
     shape = arcade.create_line_generic(points, arcade.color.ALIZARIN_CRIMSON, gl.GL_TRIANGLE_FAN)
     shape_list.append(shape)
 
-    return shape_list
+    shape_list.center_x = 200
+    shape_list.center_y = 200
 
-
-class MyGame(arcade.Window):
-    """ Main application class. """
-
-    def __init__(self, width, height):
-        """
-        Initializer
-        """
-        super().__init__(width, height)
-        arcade.set_background_color(arcade.color.AMAZON)
-
-        self.shape_list = make_objects()
-
-        self.shape_list.center_x = 200
-        self.shape_list.center_y = 200
-
-    def on_draw(self):
-        """
-        Render the screen.
-        """
-
-        # Start the render process. This must be done before any drawing commands.
-        arcade.start_render()
-
-        self.shape_list.draw()
-
-    def update(self, delta_time):
-        """ Movement and game logic """
-        self.shape_list.move(1, 1)
-        self.shape_list.angle += .1
-
-
-def test_main():
-    """ Main method """
-    window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT)
-    window.test()
-    window.close()
+    for _ in range(10):
+        shape_list.draw()
+        window.flip()
+        window.clear()
+        shape_list.move(1, 1)

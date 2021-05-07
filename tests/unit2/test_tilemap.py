@@ -3,7 +3,7 @@ import arcade
 from pytiled_parser.common_types import Color
 
 
-def test_one(window):
+def test_one():
     tmx_map = arcade.tilemap.read_map(":resources:/tiled_maps/test_map_1.json")
 
     assert tmx_map.map_size.width == 10
@@ -29,7 +29,7 @@ def test_one(window):
     assert first_sprite.height == 128
 
 
-def test_two(window):
+def test_two():
     tmx_map = arcade.tilemap.read_map(":resources:tiled_maps/test_map_2.json")
 
     assert tmx_map.map_size.width == 10
@@ -83,7 +83,7 @@ def test_two(window):
     # assert first_sprite.properties['Points'] == '10'
 
 
-def test_three(window):
+def test_three():
     tmx_map = arcade.tilemap.read_map(":resources:tiled_maps/test_map_3.json")
     assert tmx_map is not None
 
@@ -99,13 +99,13 @@ def test_three(window):
     assert sprite.properties['change_y'] == 1
 
 
-def test_five(window):
+def test_five():
     tmx_map = arcade.tilemap.read_map(":resources:tiled_maps/test_map_5.json")
     assert tmx_map is not None
 
     arcade.tilemap.process_layer(tmx_map, 'object_layer')
 
-def test_sprite_sheet(window):
+def test_sprite_sheet():
     tmx_map = arcade.tilemap.read_map(":resources:tiled_maps/test_map_6.json")
     assert tmx_map is not None
 
