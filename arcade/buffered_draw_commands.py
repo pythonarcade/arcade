@@ -47,11 +47,6 @@ class Shape:
         assert(self.line_width == 1)
         gl.glLineWidth(self.line_width)
 
-        gl.glEnable(gl.GL_BLEND)
-        gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-        gl.glEnable(gl.GL_LINE_SMOOTH)
-        gl.glHint(gl.GL_LINE_SMOOTH_HINT, gl.GL_NICEST)
-        gl.glHint(gl.GL_POLYGON_SMOOTH_HINT, gl.GL_NICEST)
         gl.glEnable(gl.GL_PRIMITIVE_RESTART)
         gl.glPrimitiveRestartIndex(2 ** 32 - 1)
 
