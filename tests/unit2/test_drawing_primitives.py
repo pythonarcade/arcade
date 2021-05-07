@@ -5,10 +5,8 @@ def test_draw_primitives(window):
     """
     Render the screen.
     """
-    arcade.set_background_color(arcade.color.WHITE)
-
-    # Start the render process. This must be done before any drawing commands.
-    arcade.start_render()
+    arcade.set_background_color((255, 255, 255, 255))  # arcade.color.WHITE)
+    window.clear()
 
     # Draw a grid
     # Draw vertical lines every 120 pixels
@@ -134,9 +132,6 @@ def test_draw_primitives(window):
     # Draw
     arcade.draw_rectangle_filled(650, 100, 50, 50, (255, 0, 0))
     arcade.draw_rectangle_filled(670, 100, 50, 50, (0, 255, 0, 127))
-
-    import PIL
-    arcade.get_image().save("TEST.png")
 
     # Test colors
     color = arcade.get_pixel(635, 100)
