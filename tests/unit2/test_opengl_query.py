@@ -29,8 +29,6 @@ def test_create(window: arcade.Window):
     with query:
         quad.render(program)
 
-    # arcade.get_image().save("test.png")
-
     assert query.time_elapsed > 0
     assert query.primitives_generated == 2
     assert query.samples_passed >= SCREEN_WIDTH * SCREEN_HEIGHT

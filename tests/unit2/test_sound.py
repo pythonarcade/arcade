@@ -7,7 +7,6 @@ player = None
 def test_sound(window):
     global frame_count, player
 
-    arcade.set_background_color(arcade.color.WHITE)
     laser_wav = arcade.load_sound(":resources:sounds/laser1.wav")
     laser_mp3 = arcade.load_sound(":resources:sounds/laser1.mp3")
     laser_ogg = arcade.load_sound(":resources:sounds/laser1.ogg")

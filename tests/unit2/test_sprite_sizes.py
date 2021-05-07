@@ -45,15 +45,16 @@ def test_sprite_sizes(window: arcade.Window):
             center_y = ROW_SPACING
 
             # Sample bottom
-            pixel_color = arcade.get_pixel(center_x, center_y - (my_height / 2 - 4))
+            pixel_color = arcade.get_pixel(center_x, center_y - (my_height // 2 - 4))
             assert pixel_color == my_color
 
             # Sample top
-            pixel_color = arcade.get_pixel(center_x, center_y + (my_height / 2 - 4))
+            pixel_color = arcade.get_pixel(center_x, center_y + (my_height // 2 - 4))
             assert pixel_color == my_color
 
             # Sample right
-            pixel_color = arcade.get_pixel(center_x + (my_width / 2 - 1), center_y)
+            print(center_x + (my_width // 2 - 1), center_y)
+            pixel_color = arcade.get_pixel(center_x + (my_width // 2 - 4), center_y)
             assert pixel_color == my_color
 
         for i in range(7):
@@ -64,11 +65,11 @@ def test_sprite_sizes(window: arcade.Window):
             center_y = ROW_SPACING * 2
 
             # Sample bottom
-            pixel_color = arcade.get_pixel(center_x, center_y - (my_height / 2 - 1))
+            pixel_color = arcade.get_pixel(center_x, center_y - (my_height // 2 - 4))
             assert pixel_color == my_color
 
             # Sample top
-            pixel_color = arcade.get_pixel(center_x, center_y + (my_height / 2 - 4))
+            pixel_color = arcade.get_pixel(center_x, center_y + (my_height // 2 - 4))
             assert pixel_color == my_color
 
     window.on_draw = on_draw

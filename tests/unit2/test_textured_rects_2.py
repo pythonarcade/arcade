@@ -19,5 +19,3 @@ def test_textured_rects_2(window: arcade.Window):
 
     window.on_draw = on_draw
     window.test(10)
-
-    arcade.get_image().save("test_textured_rects_2.png")
