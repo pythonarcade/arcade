@@ -23,6 +23,7 @@ def prepare_window(window: arcade.Window):
     window.ctx.viewport = 0, 0, window.width, window.height
     window.ctx.projection_2d = 0, window.width, 0, window.height
     window.flip()
+    window.background_color = 0, 0, 0, 0
     window.clear()
     # Ensure no old functions are lingering
     window.on_draw = lambda: None
