@@ -135,9 +135,9 @@ class PlayerCharacter(Entity):
 
         # Figure out if we need to flip face left or right
         if self.change_x < 0 and self.facing_direction == RIGHT_FACING:
-            self.character_face_direction = LEFT_FACING
+            self.facing_direction = LEFT_FACING
         elif self.change_x > 0 and self.facing_direction == LEFT_FACING:
-            self.character_face_direction = RIGHT_FACING
+            self.facing_direction = RIGHT_FACING
 
         # Climbing animation
         if self.is_on_ladder:
