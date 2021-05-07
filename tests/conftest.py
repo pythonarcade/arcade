@@ -17,13 +17,12 @@ def create_window():
 def prepare_window(window: arcade.Window):
     window.switch_to()
     ctx = window.ctx
-    # Reset projection and viewport
-    ctx.screen.use(force=True)
-    ctx.enable_only(ctx.BLEND)
-    arcade.set_viewport(0, window.width, 0, window.height)
+
+    # Reset context (various states)
+    ctx.reset()
     window.flip()
-    window.background_color = 0, 0, 0, 0
     window.clear()
+
     # Ensure no old functions are lingering
     window.on_draw = lambda: None
     window.on_update = lambda dt: None

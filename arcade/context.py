@@ -159,6 +159,17 @@ class ArcadeContext(Context):
         # These multiple labels with different configurations are stored
         self.pyglet_label_cache = {}
 
+    def reset(self) -> None:
+        """
+        Reset context flags and other states.
+        This is mostly used in unit testing.
+        """
+        self.screen.use(force=True)
+        arcade.set_viewport(0, self.window.width, 0, self.window.height)
+        self.enable_only(self.BLEND)
+        self.blend_func = self.BLEND_DEFAULT
+        self.point_size = 1.0
+
     @property
     def default_atlas(self) -> TextureAtlas:
         """
