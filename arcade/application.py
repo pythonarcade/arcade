@@ -64,7 +64,7 @@ class Window(pyglet.window.Window):
                  gl_version: Tuple[int, int] = (3, 3),
                  screen: pyglet.canvas.Screen = None,
                  visible: bool=True,
-                 vsync: bool = True):
+                 vsync: bool = False):
         """
         Construct a new window
 
