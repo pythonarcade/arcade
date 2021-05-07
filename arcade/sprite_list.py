@@ -406,6 +406,9 @@ class SpriteList:
             if sprite._texture is None:
                 raise ValueError("Attempting to use a sprite without a texture")
             self.update_texture(sprite)
+            if hasattr(sprite, "textures"):
+                for texture in sprite.textures or []:
+                    self._atlas.add(texture)
 
         self._deferred_sprites = None
 
@@ -525,7 +528,7 @@ class SpriteList:
             self.spatial_hash.insert_object_for_box(sprite)
 
         # Load additional textures attached to the sprite
-        if hasattr(sprite, "textures"):
+        if hasattr(sprite, "textures") and self._initialized:
             for texture in sprite.textures or []:
                 self._atlas.add(texture)
 
