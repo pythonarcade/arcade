@@ -35,6 +35,10 @@ class ArcadeContext(Context):
         """
         super().__init__(window)
 
+        # Enabled blending by default
+        self._ctx.enable(self.ctx.BLEND)
+        self._ctx.blend_func = self.ctx.BLEND_DEFAULT
+
         # Set up a default orthogonal projection for sprites and shapes
         self._projection_2d_buffer = self.buffer(reserve=64)
         self._projection_2d_buffer.bind_to_uniform_block(0)

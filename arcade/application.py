@@ -128,10 +128,6 @@ class Window(pyglet.window.Window):
 
         self._background_color: Color = (0, 0, 0, 0)
 
-        # Required for transparency
-        self._ctx.enable(self.ctx.BLEND)
-        self._ctx.blend_func = self.ctx.BLEND_DEFAULT
-
         self.ui_manager = arcade.experimental.gui.UIManager(self)
 
     @property
