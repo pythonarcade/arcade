@@ -495,6 +495,21 @@ class Window(pyglet.window.Window):
         # will still call the Window's event handlers. (See pyglet's EventDispatcher.dispatch_event() implementation
         # for details)
 
+    def hide_view(self):
+        """
+        Hide the currently active view (if any) returning us
+        back to ``on_draw`` and ``on_update`` functions in the window.
+
+        This is not necessary to call if you are switching views.
+        Simply call ``show_view`` again.
+        """
+        if self._current_view is None:
+            return
+
+        self._current_view.on_hide_view()
+        self.remove_handlers(self._current_view)
+        self._current_view = None
+
     def _create(self):
         super()._create()
 
