@@ -2,7 +2,7 @@ import os
 
 import arcade
 
-def test_rotation_mirror(window):
+def test_rotation_mirror():
 
     # Change to current directory
     file_path = os.path.dirname(os.path.abspath(__file__))
