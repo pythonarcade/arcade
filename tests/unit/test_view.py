@@ -12,7 +12,6 @@ def test_on_show_view_called():
     window.show_view(view)
 
     show_mock.assert_called_once()
-    window.close()
 
 
 def test_on_hide_view_called():
@@ -27,4 +26,3 @@ def test_on_hide_view_called():
     window.show_view(view2)
 
     hide_mock.assert_called_once()
-    window.close()

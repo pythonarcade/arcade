@@ -17,6 +17,7 @@ def create_window():
 def prepare_window(window: arcade.Window):
     window.switch_to()
     ctx = window.ctx
+    window.hide_view()  # Disable views if any is active
 
     # Reset context (various states)
     ctx.reset()
