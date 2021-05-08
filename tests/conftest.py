@@ -2,7 +2,7 @@ import pytest
 import arcade
 
 # Reduce the atlas size
-arcade.ArcadeContext.atlas_size = (1000, 1000)
+arcade.ArcadeContext.atlas_size = (2048, 2048)
 
 WINDOW = None
 
@@ -17,6 +17,7 @@ def create_window():
 def prepare_window(window: arcade.Window):
     window.switch_to()
     ctx = window.ctx
+    ctx._default_atlas = None  # Clear the global atlas
     window.hide_view()  # Disable views if any is active
 
     # Reset context (various states)
