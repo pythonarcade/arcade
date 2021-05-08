@@ -165,6 +165,8 @@ class ArcadeContext(Context):
         This is mostly used in unit testing.
         """
         self.screen.use(force=True)
+        self._projection_2d_buffer.bind_to_uniform_block(0)
+        self.active_program = None
         arcade.set_viewport(0, self.window.width, 0, self.window.height)
         self.enable_only(self.BLEND)
         self.blend_func = self.BLEND_DEFAULT
