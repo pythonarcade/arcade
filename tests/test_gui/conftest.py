@@ -24,13 +24,6 @@ class MockWindow(EventDispatcher):
 
 
 @pytest.fixture
-def window():
-    window = Window(title="ARCADE_GUI")
-    yield window
-    window.close()
-
-
-@pytest.fixture
 def mock_window():
     return MockWindow()
 
