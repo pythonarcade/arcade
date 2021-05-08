@@ -15,6 +15,10 @@ def create_window():
 
 
 def prepare_window(window: arcade.Window):
+    # Check if someone has been naughty
+    if window.has_exit:
+        raise RuntimeError("Please do not close the global test window :D")
+
     window.switch_to()
     ctx = window.ctx
     ctx._default_atlas = None  # Clear the global atlas

@@ -2,7 +2,6 @@ import pytest
 from pyglet.event import EventDispatcher
 from pytest import fixture
 
-from arcade import Window
 from . import MockButton, TestUIManager, TestUILayoutManager
 
 
