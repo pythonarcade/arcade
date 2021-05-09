@@ -65,10 +65,17 @@ def test_text(window):
 
     current_y -= LINE_HEIGHT
 
-    with pytest.deprecated_call():
-        # noinspection PyDeprecation
-        text = arcade.create_text("Create text", arcade.color.BLACK)
-        # noinspection PyDeprecation
-        arcade.render_text(text, current_x, current_y)
-
     window.flip()
+
+
+def test_create_text_image(window):
+    pass
+
+
+def test_create_text(window):
+    pass
+
+
+def test_create_text_sprite(window):
+    pass
+
