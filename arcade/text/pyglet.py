@@ -3,10 +3,54 @@ Drawing text with pyglet label
 """
 from typing import Tuple, Union
 
-import pyglet
 import arcade
+import pyglet
 from arcade.arcade_types import Color
 from arcade.draw_commands import get_four_byte_color
+
+
+class Text:
+
+    def __init__(
+        self,
+        text: str,
+        start_x: float,
+        start_y: float,
+        color: Color = arcade.color.WHITE,
+        font_size: float = 12,
+        width: int = 0,
+        align: str = "left",
+        font_name: Union[str, Tuple[str, ...]] = ("calibri", "arial"),
+        bold: bool = False,
+        italic: bool = False,
+        anchor_x: str = "left",
+        anchor_y: str = "baseline",
+        rotation: float = 0,
+    ):
+        self._label = pyglet.text.Label(
+            text=text,
+            x=start_x,
+            y=start_y,
+            font_name=font_name,
+            font_size=font_size,
+            anchor_x=anchor_x,
+            anchor_y=anchor_y,
+            color=color,
+            width=width,
+            bold=bold,
+            italic=italic,
+        )
+
+    @property
+    def value(self) -> str:
+        self._label.text
+
+    @value.setter
+    def value(self, value: str):
+        self._label.text = value
+
+    def draw(self):
+        self._label.draw()
 
 
 def draw_text(
@@ -75,4 +119,4 @@ def draw_text(
 
 
 def create_text(*args, **kwargs):
-    pass
+    return Text("Hello")

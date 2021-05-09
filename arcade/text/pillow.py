@@ -19,20 +19,39 @@ DEFAULT_FONT_NAMES = (
     "NotoSans-Regular.ttf",
     "/usr/share/fonts/truetype/freefont/FreeMono.ttf",
     "/System/Library/Fonts/SFNSDisplay.ttf",
-    "/Library/Fonts/Arial.ttf"
+    "/Library/Fonts/Arial.ttf",
 )
 
 
-def get_text_image(text: str,
-                   text_color: Color,
-                   font_size: float = 12,
-                   width: int = 0,
-                   align: str = "left",
-                   valign: str = "top",
-                   font_name: Union[str, Tuple[str, ...]] = ('calibri', 'arial'),
-                   background_color: Color=None,
-                   height: int = 0,
-                   ) -> PIL.Image.Image:
+def create_text_image(
+    text: str,
+    text_color: Color,
+    font_size: float = 12,
+    width: int = 0,
+    align: str = "left",
+    valign: str = "top",
+    font_name: Union[str, Tuple[str, ...]] = ("calibri", "arial"),
+    background_color: Color = None,
+    height: int = 0,
+) -> PIL.Image.Image:
+    """
+    Create a PIL.Image containing text.
+
+    .. warning::
+        This method can be fairly slow. We recommend creating
+        images on initialization or infrequently later on.
+
+    :param str text: The text to render to the image
+    :param Color text_color: Color of the text
+    :param float font_size: Size of the font
+    :param int width: The width of the image in pixels
+    :param str align: "left" or "right" aligned
+    :param str valign: "top" or "bottom" aligned
+    :param str font_name: The font to use
+    :param Color background_color: The background color of the image
+    :param int height: the height of the image in pixels
+    """
+
     # Scale the font up, so it matches with the sizes of the old code back
     # when Pyglet drew the text.
     font_size *= 1.25
@@ -48,12 +67,15 @@ def get_text_image(text: str,
 
     # Font was specified with a string
     if isinstance(font_name, str):
-        font_name = font_name,
+        font_name = (font_name,)
 
-    font_names = chain(*[
-        [font_string_name, f"{font_string_name}.ttf"]
-        for font_string_name in font_name
-    ], DEFAULT_FONT_NAMES)
+    font_names = chain(
+        *[
+            [font_string_name, f"{font_string_name}.ttf"]
+            for font_string_name in font_name
+        ],
+        DEFAULT_FONT_NAMES,
+    )
 
     font_found = False
     for font_string_name in font_names:
@@ -68,8 +90,9 @@ def get_text_image(text: str,
     if not font_found:
         try:
             import pyglet.font
+
             font_config = pyglet.font.fontconfig.get_fontconfig()
-            result = font_config.find_font('Arial')
+            result = font_config.find_font("Arial")
             font = PIL.ImageFont.truetype(result.name, int(font_size))
         except Exception:
             # NOTE: Will catch OSError from loading font and missing fontconfig in pyglet
@@ -86,7 +109,9 @@ def get_text_image(text: str,
             pass
 
     if not font_found:
-        raise RuntimeError("Unable to find a default font on this system. Please specify an available font.")
+        raise RuntimeError(
+            "Unable to find a default font on this system. Please specify an available font."
+        )
 
     # This is stupid. We have to have an image to figure out what size
     # the text will be when we draw it. Of course, we don't know how big
@@ -124,7 +149,6 @@ def get_text_image(text: str,
         field_height = height * scale_up
         image_start_y = (field_height // 2) - (text_height // 2)
 
-
     if height:
         text_image_size[1] = height * scale_up
 
@@ -140,27 +164,33 @@ def get_text_image(text: str,
     if isinstance(text_color, list):
         color = cast(RGBA, tuple(text_color))
 
-    draw.multiline_text((image_start_x, image_start_y), text, text_color, align=align, font=font)
-    image = image.resize((max(1, text_image_size[0] // scale_down), text_image_size[1] // scale_down), resample=PIL.Image.LANCZOS)
+    draw.multiline_text(
+        (image_start_x, image_start_y), text, text_color, align=align, font=font
+    )
+    image = image.resize(
+        (max(1, text_image_size[0] // scale_down), text_image_size[1] // scale_down),
+        resample=PIL.Image.LANCZOS,
+    )
     return image
 
 
-def create_text_sprite(text: str,
-              start_x: float,
-              start_y: float,
-              color: Color,
-              font_size: float = 12,
-              width: int = 0,
-              align: str = "left",
-              font_name: Union[str, Tuple[str, ...]] = ('calibri', 'arial'),
-              bold: bool = False,
-              italic: bool = False,
-              anchor_x: str = "left",
-              anchor_y: str = "baseline",
-              rotation: float = 0
-              ) -> Sprite:
+def create_text_sprite(
+    text: str,
+    start_x: float,
+    start_y: float,
+    color: Color,
+    font_size: float = 12,
+    width: int = 0,
+    align: str = "left",
+    font_name: Union[str, Tuple[str, ...]] = ("calibri", "arial"),
+    bold: bool = False,
+    italic: bool = False,
+    anchor_x: str = "left",
+    anchor_y: str = "baseline",
+    rotation: float = 0,
+) -> Sprite:
     """
-    Draws text to the screen.
+    Creates a sprite with a text texture using :py:func:`~arcade.create_text_image`.
 
     Internally this works by creating an image, and using the Pillow library to
     draw the text to it. Then use that image to create a sprite. We cache the sprite
@@ -189,12 +219,14 @@ def create_text_sprite(text: str,
     r, g, b, alpha = get_four_byte_color(color)
     cache_color = f"{r}{g}{b}"
     key = f"{text}{cache_color}{font_size}{width}{align}{font_name}{bold}{italic}"
-    image = get_text_image(text=text,
-                            text_color=color,
-                            font_size=font_size,
-                            width=width,
-                            align=align,
-                            font_name=font_name)
+    image = create_text_image(
+        text=text,
+        text_color=color,
+        font_size=font_size,
+        width=width,
+        align=align,
+        font_name=font_name,
+    )
     text_sprite = Sprite()
     text_sprite._texture = Texture(key)
     text_sprite.texture.image = image
@@ -208,7 +240,9 @@ def create_text_sprite(text: str,
     elif anchor_x == "right":
         text_sprite.right = start_x
     else:
-        raise ValueError(f"anchor_x should be 'left', 'center', or 'right'. Not '{anchor_x}'")
+        raise ValueError(
+            f"anchor_x should be 'left', 'center', or 'right'. Not '{anchor_x}'"
+        )
 
     if anchor_y == "top":
         text_sprite.center_y = start_y - text_sprite.height / 2
@@ -217,7 +251,9 @@ def create_text_sprite(text: str,
     elif anchor_y == "bottom" or anchor_y == "baseline":
         text_sprite.center_y = start_y + text_sprite.height / 2
     else:
-        raise ValueError(f"anchor_y should be 'top', 'center', 'bottom', or 'baseline'. Not '{anchor_y}'")
+        raise ValueError(
+            f"anchor_y should be 'top', 'center', 'bottom', or 'baseline'. Not '{anchor_y}'"
+        )
 
     text_sprite.angle = rotation
     text_sprite.alpha = alpha
