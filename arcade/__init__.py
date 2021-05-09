@@ -253,9 +253,8 @@ from .physics_engines import PhysicsEngineSimple
 from .text import DEFAULT_FONT_NAMES
 from .text import create_text
 from .text import draw_text
-from .text import get_text_image
+from .text import create_text_image
 from .text import create_text_sprite
-from .text import get_text_image
 
 from .tilemap import get_tilemap_layer
 from .tilemap import process_layer
@@ -366,7 +365,7 @@ __all__ = ['AStarBarrierList',
            'create_rectangle_filled_with_colors',
            'create_rectangle_outline',
            'create_rectangles_filled_with_colors',
-           'create_text',
+           'create_text_sprite',
            'create_triangles_filled_with_colors',
            'draw_arc_filled',
            'draw_arc_outline',
@@ -389,8 +388,8 @@ __all__ = ['AStarBarrierList',
            'draw_rectangle_filled',
            'draw_rectangle_outline',
            'draw_scaled_texture_rectangle',
+           'create_text',
            'draw_text',
-           'draw_text_2',
            'draw_texture_rectangle',
            'draw_triangle_filled',
            'draw_triangle_outline',
@@ -415,7 +414,7 @@ __all__ = ['AStarBarrierList',
            'get_screens',
            'get_sprites_at_exact_point',
            'get_sprites_at_point',
-           'get_text_image',
+           'create_text_image',
            'get_tilemap_layer',
            'get_viewport',
            'get_window',
@@ -449,7 +448,6 @@ __all__ = ['AStarBarrierList',
            'rand_vec_magnitude',
            'rand_vec_spread_deg',
            'read_tmx',
-           'render_text',
            'rotate_point',
            'run',
            'schedule',
