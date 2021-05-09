@@ -1,9 +1,9 @@
-# --- BEGIN TEXT FUNCTIONS # # #
+"""
+PIL based text functions
+"""
 
-import pyglet
-import arcade
 from itertools import chain
-from typing import Dict, Tuple, Union, cast
+from typing import Tuple, Union, cast
 
 import PIL.Image
 import PIL.ImageDraw
@@ -22,83 +22,6 @@ DEFAULT_FONT_NAMES = (
     "/Library/Fonts/Arial.ttf"
 )
 
-draw_text_cache: Dict[str, 'Text'] = dict()
-
-
-class Text:
-    """ Class used for managing text. """
-
-    def __init__(self):
-        self.size = (0, 0)
-        self.text_sprite_list = None
-
-
-class CreateText:
-    """ Class used for managing text """
-
-    def __init__(self,
-                 text: str,
-                 color: Color,
-                 font_size: float = 12,
-                 width: int = 20,
-                 align="left",
-                 font_name=('Calibri', 'Arial'),
-                 bold: bool = False,
-                 italic: bool = False,
-                 anchor_x="left",
-                 anchor_y="baseline",
-                 rotation=0):
-        self.text = text
-        self.color = color
-        self.font_size = font_size
-        self.width = width
-        self.align = align
-        self.font_name = font_name
-        self.bold = bold
-        self.italic = italic
-        self.anchor_x = anchor_x
-        self.anchor_y = anchor_y
-        self.rotation = rotation
-
-
-def create_text(text: str,
-                color: Color,
-                font_size: float = 12,
-                width: int = 0,
-                align="left",
-                font_name=('Calibri', 'Arial'),
-                bold: bool = False,
-                italic: bool = False,
-                anchor_x: str = "left",
-                anchor_y: str = "baseline",
-                rotation=0):
-    """ Deprecated. Two step text drawing for backwards compatibility. """
-
-    import warnings
-    warnings.warn("create_text has been deprecated, please use draw_text instead.", DeprecationWarning)
-    my_text = CreateText(text, color, font_size, width, align, font_name, bold, italic, anchor_x, anchor_y, rotation)
-    return my_text
-
-
-def render_text(text: CreateText, start_x: float, start_y: float):
-    """ Deprecated. Two step text drawing for backwards compatibility. """
-
-    import warnings
-    warnings.warn("render_text has been deprecated, please use draw_text instead.", DeprecationWarning)
-
-    draw_text(text.text,
-              start_x,
-              start_y,
-              color=text.color,
-              font_size=text.font_size,
-              width=text.width,
-              align=text.align,
-              font_name=text.font_name,
-              bold=text.bold,
-              italic=text.italic,
-              anchor_x=text.anchor_x,
-              anchor_y=text.anchor_y,
-              rotation=text.rotation)
 
 def get_text_image(text: str,
                    text_color: Color,
@@ -109,7 +32,7 @@ def get_text_image(text: str,
                    font_name: Union[str, Tuple[str, ...]] = ('calibri', 'arial'),
                    background_color: Color=None,
                    height: int = 0,
-                   ):
+                   ) -> PIL.Image.Image:
     # Scale the font up, so it matches with the sizes of the old code back
     # when Pyglet drew the text.
     font_size *= 1.25
@@ -216,13 +139,13 @@ def get_text_image(text: str,
     # list for a color
     if isinstance(text_color, list):
         color = cast(RGBA, tuple(text_color))
+
     draw.multiline_text((image_start_x, image_start_y), text, text_color, align=align, font=font)
     image = image.resize((max(1, text_image_size[0] // scale_down), text_image_size[1] // scale_down), resample=PIL.Image.LANCZOS)
     return image
 
 
-
-def draw_text_2(text: str,
+def create_text_sprite(text: str,
               start_x: float,
               start_y: float,
               color: Color,
@@ -237,7 +160,6 @@ def draw_text_2(text: str,
               rotation: float = 0
               ) -> Sprite:
     """
-
     Draws text to the screen.
 
     Internally this works by creating an image, and using the Pillow library to
@@ -264,43 +186,20 @@ def draw_text_2(text: str,
     :param str anchor_y: Anchor the font location, defaults to 'baseline'
     :param float rotation: Rotate the text
     """
-    global draw_text_cache
-
-    # If the cache gets too large, dump it and start over.
-    if len(draw_text_cache) > 5000:
-        draw_text_cache = {}
-
     r, g, b, alpha = get_four_byte_color(color)
     cache_color = f"{r}{g}{b}"
-
     key = f"{text}{cache_color}{font_size}{width}{align}{font_name}{bold}{italic}"
-
-    try:
-        label = draw_text_cache[key]
-    except KeyError:  # doesn't exist, create it
-
-        image = get_text_image(text=text,
-                               text_color=color,
-                               font_size=font_size,
-                               width=width,
-                               align=align,
-                               font_name=font_name)
-        text_sprite = Sprite()
-        text_sprite._texture = Texture(key)
-        text_sprite.texture.image = image
-
-        text_sprite.width = image.width
-        text_sprite.height = image.height
-
-        from arcade.sprite_list import SpriteList
-
-        label = Text()
-        label.text_sprite_list = SpriteList()
-        label.text_sprite_list.append(text_sprite)
-
-        draw_text_cache[key] = label
-
-    text_sprite = label.text_sprite_list[0]
+    image = get_text_image(text=text,
+                            text_color=color,
+                            font_size=font_size,
+                            width=width,
+                            align=align,
+                            font_name=font_name)
+    text_sprite = Sprite()
+    text_sprite._texture = Texture(key)
+    text_sprite.texture.image = image
+    text_sprite.width = image.width
+    text_sprite.height = image.height
 
     if anchor_x == "left":
         text_sprite.center_x = start_x + text_sprite.width / 2
@@ -323,68 +222,4 @@ def draw_text_2(text: str,
     text_sprite.angle = rotation
     text_sprite.alpha = alpha
 
-    label.text_sprite_list.draw()
     return text_sprite
-
-
-def draw_text(text: str,
-                start_x: float, start_y: float,
-                color: Color = arcade.color.WHITE,
-                font_size: float = 12,
-                width: int = 0,
-                align: str = "left",
-                font_name: Union[str, Tuple[str, ...]] = ('calibri', 'arial'),
-                bold: bool = False,
-                italic: bool = False,
-                anchor_x: str = "left",
-                anchor_y: str = "baseline",
-                rotation: float = 0
-                ):
-    """
-    Draws text to the screen using pyglet's label instead. Doesn't work.
-
-    :param str text: Text to draw
-    :param float start_x:
-    :param float start_y:
-    :param Color color: Color of the text
-    :param float font_size: Size of the text
-    :param float width:
-    :param str align:
-    :param Union[str, Tuple[str, ...]] font_name:
-    :param bool bold:
-    :param bool italic:
-    :param str anchor_x:
-    :param str anchor_y:
-    :param float rotation:
-    """
-    # See : https://github.com/pyglet/pyglet/blob/ff30eadc2942553c9de96d6ce564ad1bc3128fb4/pyglet/text/__init__.py#L401
-
-    color = get_four_byte_color(color)
-    # Cache the states that are expensive to change
-    key = f"{font_size}{font_name}{bold}{italic}{anchor_x}{anchor_y}{align}{width}"
-    cache = arcade.get_window().ctx.pyglet_label_cache
-    label = cache.get(key)
-    if not label:
-        label = pyglet.text.Label(
-            text=text,
-            x=start_x,
-            y=start_y,
-            font_name=font_name,
-            font_size=font_size,
-            anchor_x=anchor_x,
-            anchor_y=anchor_y,
-            color=color,
-            width=width,
-            bold=bold,
-            italic=italic,
-        )
-        cache[key] = label
-
-    # These updates are relatively cheap
-    label.text = text
-    label.x = start_x
-    label.y = start_y
-    label.color = color
-
-    with arcade.get_window().ctx.pyglet_rendering():
-        label.draw()
