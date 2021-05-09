@@ -251,13 +251,11 @@ from .physics_engines import PhysicsEnginePlatformer
 from .physics_engines import PhysicsEngineSimple
 
 from .text import DEFAULT_FONT_NAMES
-from .text import CreateText
-from .text import Text
 from .text import create_text
 from .text import draw_text
-from .text import draw_text_2
 from .text import get_text_image
-from .text import render_text
+from .text import create_text_sprite
+from .text import get_text_image
 
 from .tilemap import get_tilemap_layer
 from .tilemap import process_layer
