@@ -990,7 +990,7 @@ def draw_lrwh_rectangle_textured(bottom_left_x: float, bottom_left_y: float,
     texture.draw_sized(center_x, center_y, width, height, angle=angle, alpha=alpha)
 
 
-def get_pixel(x: int, y: int, components: int = 3) -> Tuple[int]:
+def get_pixel(x: int, y: int, components: int = 3) -> Tuple[int, ...]:
     """
     Given an x, y, will return a color value of that point.
 
@@ -1012,7 +1012,7 @@ def get_pixel(x: int, y: int, components: int = 3) -> Tuple[int]:
 
     a = (gl.GLubyte * 4)(0)
     gl.glReadPixels(x, y, 1, 1, gl.GL_RGBA, gl.GL_UNSIGNED_BYTE, a)
-    return tuple(a[:components])
+    return tuple(int(i) for i in a[:components])
 
 
 def get_image(x: int = 0, y: int = 0, width: int = None, height: int = None) -> PIL.Image.Image:

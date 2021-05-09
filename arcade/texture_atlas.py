@@ -12,7 +12,7 @@ https://github.com/einarf/pyglet/blob/master/pyglet/image/atlas.py
 
 """
 import logging
-from typing import Set, Tuple, Sequence, TYPE_CHECKING
+from typing import Dict, Set, Tuple, Sequence, TYPE_CHECKING
 
 from PIL import Image
 
@@ -110,9 +110,9 @@ class TextureAtlas:
 
         # A dictionary of all the allocated regions
         # The key is the cache name for a texture
-        self._atlas_regions = dict()
+        self._atlas_regions: Dict[str, AtlasRegion] = dict()
         # A set of textures this atlas contains for fast lookups
-        self._textures = set()
+        self._textures: Set["Texture"] = set()
 
         # Add all the textures
         for tex in textures or []:
@@ -173,10 +173,6 @@ class TextureAtlas:
         :type: bool
         """
         return self._mutable
-
-    def has_texture(self, name: str) -> bool:
-        """Checks if a texture name is in the atlas"""
-        return name in self._atlas_regions
 
     def add(self, texture: "Texture") -> AtlasRegion:
         """Add a texture to the atlas"""
@@ -257,7 +253,7 @@ class TextureAtlas:
 
     def clear(self) -> None:
         """Clear and reset the texture atlas"""
-        self._texture = self._ctx.texture(self.size, 4)
+        self._texture = self._ctx.texture(self.size, components=4)
         self._textures = set()
         self._atlas_regions = dict()
         self._allocator = Allocator(*self._size)

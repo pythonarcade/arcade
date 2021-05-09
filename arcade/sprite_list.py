@@ -2,15 +2,16 @@
 This module provides functionality to manage Sprites in a list.
 """
 import logging
-import time
 from array import array
 from collections import deque
 from random import shuffle
 
 from typing import (
     Dict,
+    Deque,
     Iterable,
     Iterator,
+    Sequence,
     TYPE_CHECKING,
     TypeVar,
     List,
@@ -32,7 +33,6 @@ from arcade import (
     get_window,
     Point,
     gl,
-    sprite,
 )
 
 if TYPE_CHECKING:
@@ -307,7 +307,8 @@ class SpriteList:
         """
         self.ctx = None
         self.program = None
-        self._atlas = atlas
+        if atlas:
+            self._atlas: TextureAtlas = atlas
         self._initialized = False
         self.extra = None
 
@@ -320,7 +321,7 @@ class SpriteList:
         # Number of slots used in the index buffer
         self._sprite_index_slots = 0
         # List of free slots in the sprite buffers. These are filled when sprites are removed.
-        self._sprite_buffer_free_slots = deque()
+        self._sprite_buffer_free_slots: Deque[int] = deque()
 
         # Sprites added before the window/context is created
         self._deferred_sprites: Set[Sprite] = set()
@@ -355,11 +356,10 @@ class SpriteList:
         self._percent_sprites_moved = 0
 
         # Used in collision detection optimization
+        self.spatial_hash: Optional[_SpatialHash] = None
         self._use_spatial_hash = use_spatial_hash
         if use_spatial_hash is True:
             self.spatial_hash = _SpatialHash(cell_size=spatial_hash_cell_size)
-        else:
-            self.spatial_hash = None
 
         LOG.debug("[%s] Creating SpriteList use_spatial_hash=%s is_static=%s",
                   id(self), use_spatial_hash, is_static)
@@ -375,7 +375,7 @@ class SpriteList:
         """Since spritelist can be created before the window we need to defer initialization"""
         self.ctx: ArcadeContext = get_window().ctx
         self.program = self.ctx.sprite_list_program_cull
-        self._atlas = self._atlas or self.ctx.default_atlas
+        self._atlas: TextureAtlas = getattr(self, '_atlas', None) or self.ctx.default_atlas
 
         # Buffers for each sprite attribute (read by shader) with initial capacity
         self._sprite_pos_buf = self.ctx.buffer(reserve=self._buf_capacity * 4 * 2)
@@ -447,7 +447,7 @@ class SpriteList:
         self.sprite_list[index] = sprite  # Replace sprite
         sprite.register_sprite_list(self)
 
-        if self._use_spatial_hash:
+        if self.spatial_hash:
             self.spatial_hash.remove_object(sprite_to_be_removed)
             self.spatial_hash.insert_object_for_box(sprite)
 
@@ -524,7 +524,7 @@ class SpriteList:
         self._sprite_index_data[idx_slot] = slot
         self._sprite_index_changed = True
 
-        if self._use_spatial_hash:
+        if self.spatial_hash:
             self.spatial_hash.insert_object_for_box(sprite)
 
         # Load additional textures attached to the sprite
@@ -577,7 +577,7 @@ class SpriteList:
         self._sprite_index_slots -= 1
         self._sprite_index_changed = True
 
-        if self._use_spatial_hash:
+        if self.spatial_hash:
             self.spatial_hash.remove_object(sprite)
 
     def extend(self, sprites: Union[list, 'SpriteList']):
@@ -615,7 +615,7 @@ class SpriteList:
         self._sprite_index_data.insert(index, slot)
         self._sprite_index_data.pop()
 
-        if self._use_spatial_hash:
+        if self.spatial_hash:
             self.spatial_hash.insert_object_for_box(sprite)
 
     def reverse(self):
@@ -675,7 +675,7 @@ class SpriteList:
 
     def _recalculate_spatial_hash(self, item: _SpriteType):
         """ Recalculate the spatial hash for a particular item. """
-        if self._use_spatial_hash:
+        if self.spatial_hash:
             self.spatial_hash.remove_object(item)
             self.spatial_hash.insert_object_for_box(item)
 
@@ -1210,7 +1210,7 @@ def check_for_collision_with_list(sprite: Sprite,
                   f"{sprite_list._percent_sprites_moved * 100}.")
         sprite_list.enable_spatial_hashing()
 
-    if sprite_list.use_spatial_hash:
+    if sprite_list.spatial_hash:
         sprite_list_to_check = sprite_list.spatial_hash.get_objects_for_box(sprite)
         # checks_saved = len(sprite_list) - len(sprite_list_to_check)
     else:
@@ -1242,7 +1242,7 @@ def get_sprites_at_point(point: Point,
     if not isinstance(sprite_list, SpriteList):
         raise TypeError(f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList.")
 
-    if sprite_list.use_spatial_hash:
+    if sprite_list.spatial_hash:
         sprite_list_to_check = sprite_list.spatial_hash.get_objects_for_point(point)
         # checks_saved = len(sprite_list) - len(sprite_list_to_check)
         # print("Checks saved: ", checks_saved)
@@ -1267,7 +1267,7 @@ def get_sprites_at_exact_point(point: Point,
     if not isinstance(sprite_list, SpriteList):
         raise TypeError(f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList.")
 
-    if sprite_list.use_spatial_hash:
+    if sprite_list.spatial_hash:
         sprite_list_to_check = sprite_list.spatial_hash.get_objects_for_point(point)
         # checks_saved = len(sprite_list) - len(sprite_list_to_check)
         # print("Checks saved: ", checks_saved)

@@ -193,6 +193,9 @@ def close_window() -> None:
     """
     global _window
 
+    if _window is None:
+        return
+
     _window.close()
     _window = None
 

@@ -4,7 +4,7 @@ Contains pre-loaded programs
 """
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Tuple, Union
+from typing import Dict, Optional, Tuple, Union
 
 from PIL import Image
 import pyglet
@@ -154,10 +154,10 @@ class ArcadeContext(Context):
             ]
         )
 
-        self._atlas = None
+        self._atlas: Optional[TextureAtlas] = None
         # Global labels we modify in `arcade.draw_text`.
         # These multiple labels with different configurations are stored
-        self.pyglet_label_cache = {}
+        self.pyglet_label_cache: Dict[str, pyglet.text.Label] = {}
 
     def reset(self) -> None:
         """
