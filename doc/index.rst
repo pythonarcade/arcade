@@ -39,10 +39,10 @@ The Python Arcade Library
             <h2 style="width:auto;">Installation</h2>
           </div>
           <ul>
-          <li><a href="installation_windows.html">Windows</a></li>
-          <li><a href="installation_mac.html">Mac</a></li>
-          <li><a href="installation_linux.html">Linux</a></li>
-          <li><a href="installation_from_source.html">Install From Source</a></li>
+          <li><a href="install/windows.html">Windows</a></li>
+          <li><a href="install/mac.html">Mac</a></li>
+          <li><a href="install/linux.html">Linux</a></li>
+          <li><a href="install/source.html">Install From Source</a></li>
           </ul>
         </td>
       </tr>
@@ -78,7 +78,7 @@ The Python Arcade Library
             <li><a href="https://www.facebook.com/ArcadeLibrary/">Facebook @ArcadeLibrary</a></li>
             <li><a href="https://www.reddit.com/r/pythonarcade/">Reddit /r/pythonarcade</a></li>
             <li><a href="https://discord.gg/ZjGDqMp">Discord</a></li>
-            <li><a href="diversity.html">Statement on Diversity</a></li>
+            <li><a href="community/diversity.html">Statement on Diversity</a></li>
           </ul>
         </td>
       </tr>
@@ -256,8 +256,7 @@ game without learning a complex framework.
    :maxdepth: 1
    :caption: Community
 
-   diversity
-   social
+   community/index
 
 .. toctree::
    :maxdepth: 1
