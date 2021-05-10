@@ -37,6 +37,7 @@ class Text:
             anchor_y=anchor_y,
             color=color,
             width=width,
+            align=align,
             bold=bold,
             italic=italic,
         )
@@ -103,8 +104,10 @@ def draw_text(
             anchor_y=anchor_y,
             color=color,
             width=width,
+            align=align,
             bold=bold,
             italic=italic,
+            multiline=True if width else None,
         )
         cache[key] = label
 
@@ -114,7 +117,9 @@ def draw_text(
     label.y = start_y
     label.color = color
 
+    window = arcade.get_window()
     with arcade.get_window().ctx.pyglet_rendering():
+        window.view = pyglet.math.Mat4().rotate(0.1, z=1)
         label.draw()
 
 
