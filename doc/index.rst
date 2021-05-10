@@ -235,6 +235,12 @@ game without learning a complex framework.
 
 .. toctree::
    :maxdepth: 1
+   :caption: API (New)
+
+   api/index
+
+.. toctree::
+   :maxdepth: 1
    :caption: Tutorials
 
    examples/platform_tutorial/index
