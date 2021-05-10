@@ -263,15 +263,4 @@ game without learning a complex framework.
    :maxdepth: 1
    :caption: Development
 
-   release_notes
-   how_to_contribute
-   performance_tips
-   directory_structure
-   how_to_compile
-   how_to_submit_changes
-   enhancement_list
-   tutorials/edge_artifacts/index
-   logging
-
-
-
+   development/index
