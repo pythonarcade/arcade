@@ -217,7 +217,7 @@ game without learning a complex framework.
    :maxdepth: 1
 
    get_started
-   installation
+   install/index
    pygame_comparison
    sample_games
    examples/index

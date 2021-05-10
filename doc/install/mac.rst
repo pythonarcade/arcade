@@ -19,7 +19,7 @@ https://github.com/pythonarcade/template
 .. image:: images/mac5.png
 
 After you've downloaded it, open up the zip file, and pull out the template folder
-to your desktop or whereever you'd like to save it. Then rename it to your
+to your desktop or wherever you'd like to save it. Then rename it to your
 project name.
 
 Start PyCharm, and select File...Open and select the folder you just created.
