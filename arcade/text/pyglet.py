@@ -119,7 +119,8 @@ def draw_text(
 
     window = arcade.get_window()
     with arcade.get_window().ctx.pyglet_rendering():
-        window.view = pyglet.math.Mat4().rotate(0.1, z=1)
+        # Rotation test
+        # window.view = pyglet.math.Mat4().rotate(0.1, z=1)
         label.draw()
 
 
