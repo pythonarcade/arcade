@@ -279,7 +279,8 @@ class SpriteList:
         '_percent_sprites_moved',
         '_use_spatial_hash',
         'spatial_hash',
-        'extra'
+        'extra',
+        '__weakref__',
     )
 
     def __init__(self,
