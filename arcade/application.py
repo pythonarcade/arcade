@@ -592,7 +592,7 @@ def open_window(width: int, height: int, window_title: str, resizable: bool = Fa
     :param bool antialiasing: Smooth the graphics?
 
     :returns: Handle to window
-    :rtype arcade.Window:
+    :rtype: Window
     """
 
     global _window

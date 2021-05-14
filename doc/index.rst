@@ -232,12 +232,7 @@ game without learning a complex framework.
    arcade_gui
    resources
    keyboard
-
-.. toctree::
-   :maxdepth: 1
-   :caption: API (New)
-
-   api/index
+   api/application.rst
 
 .. toctree::
    :maxdepth: 1
