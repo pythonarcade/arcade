@@ -490,6 +490,15 @@ class SpriteList:
         """
         return self.sprite_list.index(sprite)
 
+    def clear(self):
+        """Clears the spritelist"""
+        # Reset buffers
+        # Reset SpatialHash
+        # Manually remove the spritelist from all sprites
+        #    We don't want lingering references in sprites
+        # Clear the slot_idx and slot info
+        raise NotImplemented
+
     def pop(self, index: int = -1) -> Sprite:
         """
         Pop off the last sprite, or the given index, from the list
