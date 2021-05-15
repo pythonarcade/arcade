@@ -22,7 +22,6 @@ from typing import (
     Dict,
     List,
     Optional,
-    Set,
     TYPE_CHECKING,
 )
 
@@ -171,7 +170,6 @@ class Sprite:
         flipped_horizontally: bool = False,
         flipped_vertically: bool = False,
         flipped_diagonally: bool = False,
-        mirrored: bool = None,
         hit_box_algorithm: str = "Simple",
         hit_box_detail: float = 4.5,
     ):
@@ -189,7 +187,6 @@ class Sprite:
         :param bool flipped_horizontally: Mirror the sprite image. Flip left/right across vertical axis.
         :param bool flipped_vertically: Flip the image up/down across the horizontal axis.
         :param bool flipped_diagonally: Transpose the image, flip it across the diagonal.
-        :param mirrored: Deprecated.
         :param str hit_box_algorithm: One of 'None', 'Simple' or 'Detailed'. \
         Defaults to 'Simple'. Use 'Simple' for the :data:`PhysicsEngineSimple`, \
         :data:`PhysicsEnginePlatformer` \
@@ -267,15 +264,6 @@ class Sprite:
         if image_height == 0 and image_width != 0:
             raise ValueError("Height can't be zero.")
 
-        if mirrored is not None:
-            from warnings import warn
-
-            warn(
-                "In Sprite, the 'mirrored' parameter is deprecated. Use 'flipped_horizontally' instead.",
-                DeprecationWarning,
-            )
-            flipped_horizontally = mirrored
-
         if (
             hit_box_algorithm != "Simple"
             and hit_box_algorithm != "Detailed"
@@ -350,35 +338,6 @@ class Sprite:
         :param float center_y: New y position of sprite
         """
         self._set_position((center_x, center_y))
-
-    def set_points(self, points: PointList):
-        """
-        Set a sprite's hitbox
-        """
-        from warnings import warn
-
-        warn(
-            "set_points has been deprecated. Use set_hit_box instead.",
-            DeprecationWarning,
-        )
-
-        self._points = points
-
-    def get_points(self) -> PointList:
-        """
-        Get the points that make up the hit box for the rect that makes up the
-        sprite, including rotation and scaling.
-        """
-        from warnings import warn
-
-        warn(
-            "get_points has been deprecated. Use get_hit_box instead.",
-            DeprecationWarning,
-        )
-
-        return self.get_adjusted_hit_box()
-
-    points = property(get_points, set_points)
 
     def set_hit_box(self, points: PointList):
         """
@@ -1088,52 +1047,6 @@ class Sprite:
 
         # noinspection PyTypeChecker
         return check_for_collision_with_list(self, sprite_list)
-
-
-class AnimatedTimeSprite(Sprite):
-    """
-    Deprecated class for periodically updating sprite animations. Use
-    AnimatedTimeBasedSprite instead.
-    """
-
-    def __init__(
-        self,
-        scale: float = 1,
-        image_x: float = 0,
-        image_y: float = 0,
-        center_x: float = 0,
-        center_y: float = 0,
-    ):
-
-        from warnings import warn
-
-        warn(
-            "AnimatedTimeSprite has been deprecated. Use AnimatedTimeBasedSprite instead.",
-            DeprecationWarning,
-        )
-
-        super().__init__(
-            scale=scale,
-            image_x=image_x,
-            image_y=image_y,
-            center_x=center_x,
-            center_y=center_y,
-        )
-        self.state = FACE_RIGHT
-        self.cur_texture_index = 0
-        self.texture_change_frames = 5
-        self.frame = 0
-
-    def update_animation(self, delta_time: float = 1 / 60):
-        """
-        Logic for selecting the proper texture to use.
-        """
-        if self.frame % self.texture_change_frames == 0:
-            self.cur_texture_index += 1
-            if self.cur_texture_index >= len(self.textures):
-                self.cur_texture_index = 0
-            self.set_texture(self.cur_texture_index)
-        self.frame += 1
 
 
 @dataclasses.dataclass

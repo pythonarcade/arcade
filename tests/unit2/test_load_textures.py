@@ -51,36 +51,13 @@ def test_load_textures(window):
 
     character_list.append(player)
 
-    coin_list = arcade.SpriteList()
-
-    with pytest.deprecated_call():
-        coin = arcade.AnimatedTimeSprite(scale=0.5)
-
-    coin.center_x = 500
-    coin.center_y = 500
-
-    coin.textures = []
-    coin.textures.append(arcade.load_texture(":resources:images/items/gold_1.png"))
-    coin.textures.append(arcade.load_texture(":resources:images/items/gold_2.png"))
-    coin.textures.append(arcade.load_texture(":resources:images/items/gold_3.png"))
-    coin.textures.append(arcade.load_texture(":resources:images/items/gold_4.png"))
-    coin.textures.append(arcade.load_texture(":resources:images/items/gold_3.png"))
-    coin.textures.append(arcade.load_texture(":resources:images/items/gold_2.png"))
-    coin.scale = COIN_SCALE
-    coin.set_texture(0)
-    coin_list.append(coin)
-
     def on_draw():
         arcade.start_render()
-        coin_list.draw()
         character_list.draw()
 
     def update(delta_time):
         if frame_count == 70:
             player.change_x *= -1
-
-        coin_list.update()
-        coin_list.update_animation(delta_time)
 
         character_list.update()
         character_list.update_animation(delta_time)

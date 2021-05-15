@@ -231,7 +231,6 @@ from .sprite import FACE_LEFT
 from .sprite import FACE_RIGHT
 from .sprite import FACE_UP
 from .sprite import AnimatedTimeBasedSprite
-from .sprite import AnimatedTimeSprite
 from .sprite import AnimatedWalkingSprite
 from .sprite import AnimationKeyframe
 from .sprite import PyMunk
