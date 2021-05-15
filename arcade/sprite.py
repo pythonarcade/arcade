@@ -208,10 +208,10 @@ class Sprite:
                hit_box_algorithm = "Detailed"
         :param float hit_box_detail: Float, defaults to 4.5. Used with 'Detailed' to hit box
         """
-        self._width = 0
-        self._height = 0
+        self._width: float = 0.0
+        self._height: float = 0.0
         self._scale: float = scale
-        self.force: Tuple[int, int] = [0, 0]
+        self.force = [0, 0]
         self._color: RGB = (255, 255, 255)
         self._alpha: int = 255
         self.repeat_count_x = repeat_count_x
@@ -243,7 +243,7 @@ class Sprite:
         self._position: Point = (center_x, center_y)
         self._angle = 0.0
 
-        self.velocity: Tuple[float, float] = [0.0, 0.0]
+        self.velocity = [0.0, 0.0]
         self.change_angle: float = 0.0
 
         self._texture_transform = Matrix3x3()
