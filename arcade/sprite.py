@@ -6,7 +6,6 @@ https://www.gamedev.net/articles/programming/general-and-gameplay-programming/sp
 """
 
 import math
-import weakref
 try:
     import dataclasses
 except ModuleNotFoundError:
@@ -227,7 +226,7 @@ class Sprite:
         self._hit_box_algorithm = hit_box_algorithm
         self._hit_box_detail = hit_box_detail
 
-        self.sprite_lists: Set["SpriteList"] = weakref.WeakSet()
+        self.sprite_lists: List["SpriteList"] = []
         self.physics_engines: List[Any] = []
         self._sprite_list: Optional["SpriteList"] = None  # # Used for Sprite.draw()
 
@@ -894,7 +893,7 @@ class Sprite:
         Register this sprite as belonging to a list. We will automatically
         remove ourselves from the the list when kill() is called.
         """
-        self.sprite_lists.add(new_list)
+        self.sprite_lists.append(new_list)
 
     def register_physics_engine(self, physics_engine):
         """ Called by the Pymunk physics engine when this sprite is added
