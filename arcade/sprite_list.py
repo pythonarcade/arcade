@@ -44,7 +44,7 @@ LOG = logging.getLogger(__name__)
 # The slot index that makes a sprite invisible.
 # 2^32-1 is usually reserved for primitive restart
 # NOTE: Possibly we want to use slot 0 for this?
-_SPRITE_SLOT_INVISIBLE = 2**32-2
+_SPRITE_SLOT_INVISIBLE = 2 ** 32 - 2
 
 
 def _create_rects(rect_list: Iterable[Sprite]) -> List[float]:
@@ -70,10 +70,7 @@ def _create_rects(rect_list: Iterable[Sprite]) -> List[float]:
             p3 = rotate_point(p3[0], p3[1], shape.center_x, shape.center_y, shape.angle)
             p4 = rotate_point(p4[0], p4[1], shape.center_x, shape.center_y, shape.angle)
 
-        v2f.extend([p1[0], p1[1],
-                   p2[0], p2[1],
-                   p3[0], p3[1],
-                   p4[0], p4[1]])
+        v2f.extend([p1[0], p1[1], p2[0], p2[1], p3[0], p3[1], p4[0], p4[1]])
 
     return v2f
 
@@ -171,8 +168,10 @@ class _SpatialHash:
                     #       f"{min_point} {max_point}")
 
                 except ValueError:
-                    print(f"Warning, tried to remove item {sprite_to_delete.guid} from spatial hash {i} {j} when "
-                          f"it wasn't there. {min_point} {max_point}")
+                    print(
+                        f"Warning, tried to remove item {sprite_to_delete.guid} from spatial hash {i} {j} when "
+                        f"it wasn't there. {min_point} {max_point}"
+                    )
 
     def get_objects_for_box(self, check_object: Sprite) -> Set[Sprite]:
         """
@@ -231,7 +230,7 @@ class _SpatialHash:
         return close_by_sprites
 
 
-_SpriteType = TypeVar('_SpriteType', bound=Sprite)
+_SpriteType = TypeVar("_SpriteType", bound=Sprite)
 
 
 class SpriteList:
@@ -240,55 +239,58 @@ class SpriteList:
     and doing collision detection. For optimization reasons, use_spatial_hash and
     is_static are very important.
     """
+
     _keep_textures = True
     __slots__ = (
-        'ctx',
-        'program',
-        '_atlas',
-        '_deferred_sprites',
-        '_initialized',
-        'sprite_list',
-        'sprite_slot',
-        'is_static',
-        '_buf_capacity',
-        '_idx_capacity',
-        '_sprite_buffer_slots',
-        '_sprite_index_slots',
-        '_sprite_buffer_free_slots',
-        '_sprite_pos_data',
-        '_sprite_size_data',
-        '_sprite_angle_data',
-        '_sprite_color_data',
-        '_sprite_sub_tex_data',
-        '_sprite_sub_tex_data',
-        '_sprite_index_data',
-        '_sprite_pos_buf',
-        '_sprite_size_buf',
-        '_sprite_angle_buf',
-        '_sprite_color_buf',
-        '_sprite_sub_tex_buf',
-        '_sprite_index_buf',
-        '_sprite_pos_changed',
-        '_sprite_size_changed',
-        '_sprite_angle_changed',
-        '_sprite_color_changed',
-        '_sprite_sub_tex_changed',
-        '_sprite_index_changed',
-        '_geometry',
-        '_sprites_moved',
-        '_percent_sprites_moved',
-        '_use_spatial_hash',
-        'spatial_hash',
-        'extra',
-        '__weakref__',
+        "ctx",
+        "program",
+        "_atlas",
+        "_deferred_sprites",
+        "_initialized",
+        "sprite_list",
+        "sprite_slot",
+        "is_static",
+        "_buf_capacity",
+        "_idx_capacity",
+        "_sprite_buffer_slots",
+        "_sprite_index_slots",
+        "_sprite_buffer_free_slots",
+        "_sprite_pos_data",
+        "_sprite_size_data",
+        "_sprite_angle_data",
+        "_sprite_color_data",
+        "_sprite_sub_tex_data",
+        "_sprite_sub_tex_data",
+        "_sprite_index_data",
+        "_sprite_pos_buf",
+        "_sprite_size_buf",
+        "_sprite_angle_buf",
+        "_sprite_color_buf",
+        "_sprite_sub_tex_buf",
+        "_sprite_index_buf",
+        "_sprite_pos_changed",
+        "_sprite_size_changed",
+        "_sprite_angle_changed",
+        "_sprite_color_changed",
+        "_sprite_sub_tex_changed",
+        "_sprite_index_changed",
+        "_geometry",
+        "_sprites_moved",
+        "_percent_sprites_moved",
+        "_use_spatial_hash",
+        "spatial_hash",
+        "extra",
+        "__weakref__",
     )
 
-    def __init__(self,
-                 use_spatial_hash=None,
-                 spatial_hash_cell_size=128,
-                 is_static=False,
-                 atlas: "TextureAtlas" = None,
-                 capacity: int = 100):
+    def __init__(
+        self,
+        use_spatial_hash=None,
+        spatial_hash_cell_size=128,
+        is_static=False,
+        atlas: "TextureAtlas" = None,
+        capacity: int = 100,
+    ):
         """
         Initialize the sprite list
 
@@ -336,13 +338,13 @@ class SpriteList:
         self.is_static = is_static
 
         # Python representation of buffer data
-        self._sprite_pos_data = array('f', [0] * self._buf_capacity * 2)
-        self._sprite_size_data = array('f', [0] * self._buf_capacity * 2)
-        self._sprite_angle_data = array('f', [0] * self._buf_capacity)
-        self._sprite_color_data = array('B', [0] * self._buf_capacity * 4)
-        self._sprite_sub_tex_data = array('f', [0] * self._buf_capacity * 4)
+        self._sprite_pos_data = array("f", [0] * self._buf_capacity * 2)
+        self._sprite_size_data = array("f", [0] * self._buf_capacity * 2)
+        self._sprite_angle_data = array("f", [0] * self._buf_capacity)
+        self._sprite_color_data = array("B", [0] * self._buf_capacity * 4)
+        self._sprite_sub_tex_data = array("f", [0] * self._buf_capacity * 4)
         # Index buffer
-        self._sprite_index_data = array('I', [0] * self._idx_capacity)
+        self._sprite_index_data = array("I", [0] * self._idx_capacity)
 
         # Flags for signaling if a buffer needs to be written to the opengl buffer
         self._sprite_pos_changed = False
@@ -362,8 +364,12 @@ class SpriteList:
         if use_spatial_hash is True:
             self.spatial_hash = _SpatialHash(cell_size=spatial_hash_cell_size)
 
-        LOG.debug("[%s] Creating SpriteList use_spatial_hash=%s is_static=%s",
-                  id(self), use_spatial_hash, is_static)
+        LOG.debug(
+            "[%s] Creating SpriteList use_spatial_hash=%s is_static=%s",
+            id(self),
+            use_spatial_hash,
+            is_static,
+        )
 
         # Check if the window/context is available
         try:
@@ -376,7 +382,9 @@ class SpriteList:
         """Since spritelist can be created before the window we need to defer initialization"""
         self.ctx: ArcadeContext = get_window().ctx
         self.program = self.ctx.sprite_list_program_cull
-        self._atlas: TextureAtlas = getattr(self, '_atlas', None) or self.ctx.default_atlas
+        self._atlas: TextureAtlas = (
+            getattr(self, "_atlas", None) or self.ctx.default_atlas
+        )
 
         # Buffers for each sprite attribute (read by shader) with initial capacity
         self._sprite_pos_buf = self.ctx.buffer(reserve=self._buf_capacity * 4 * 2)
@@ -388,11 +396,13 @@ class SpriteList:
         self._sprite_index_buf = self.ctx.buffer(reserve=self._idx_capacity * 4)
 
         contents = [
-            gl.BufferDescription(self._sprite_pos_buf, "2f", ['in_pos']),
-            gl.BufferDescription(self._sprite_size_buf, "2f", ['in_size']),
-            gl.BufferDescription(self._sprite_angle_buf, "1f", ['in_angle']),
-            gl.BufferDescription(self._sprite_sub_tex_buf, "4f", ['in_sub_tex_coords']),
-            gl.BufferDescription(self._sprite_color_buf, "4f1", ["in_color"], normalized=["in_color"]),
+            gl.BufferDescription(self._sprite_pos_buf, "2f", ["in_pos"]),
+            gl.BufferDescription(self._sprite_size_buf, "2f", ["in_size"]),
+            gl.BufferDescription(self._sprite_angle_buf, "1f", ["in_angle"]),
+            gl.BufferDescription(self._sprite_sub_tex_buf, "4f", ["in_sub_tex_coords"]),
+            gl.BufferDescription(
+                self._sprite_color_buf, "4f1", ["in_color"], normalized=["in_color"]
+            ),
         ]
         self._geometry = self.ctx.geometry(
             contents,
@@ -421,11 +431,11 @@ class SpriteList:
         self._sprite_index_changed = True
 
     def __len__(self) -> int:
-        """ Return the length of the sprite list. """
+        """Return the length of the sprite list."""
         return len(self.sprite_list)
 
     def __iter__(self) -> Iterator[Sprite]:
-        """ Return an iterable object of sprites. """
+        """Return an iterable object of sprites."""
         return iter(self.sprite_list)
 
     def __getitem__(self, i):
@@ -504,7 +514,7 @@ class SpriteList:
         Pop off the last sprite, or the given index, from the list
         """
         if len(self.sprite_list) == 0:
-            raise(ValueError("pop from empty list"))
+            raise (ValueError("pop from empty list"))
 
         sprite = self.sprite_list[index]
         self.remove(sprite)
@@ -590,7 +600,7 @@ class SpriteList:
         if self.spatial_hash:
             self.spatial_hash.remove_object(sprite)
 
-    def extend(self, sprites: Union[list, 'SpriteList']):
+    def extend(self, sprites: Union[list, "SpriteList"]):
         """
         Extends the current list with the given list
 
@@ -635,7 +645,7 @@ class SpriteList:
         self.sprite_list.reverse()
         # Reverse the index buffer
         # Only revers the part of the array we use
-        self._sprite_index_data = self._sprite_index_data[:self._sprite_index_slots]
+        self._sprite_index_data = self._sprite_index_data[: self._sprite_index_slots]
         self._sprite_index_data.reverse()
         # Resize the index buffer to the original capacity
         if len(self._sprite_index_data) < self._idx_capacity:
@@ -655,7 +665,7 @@ class SpriteList:
         # Reconstruct the lists again from pairs
         sprites, indices = zip(*pairs)
         self.sprite_list = list(sprites)
-        self._sprite_index_data = array('I', indices)
+        self._sprite_index_data = array("I", indices)
         # Resize the index buffer to the original capacity
         if len(self._sprite_index_data) < self._idx_capacity:
             extend_by = self._idx_capacity - len(self._sprite_index_data)
@@ -663,28 +673,28 @@ class SpriteList:
 
     @property
     def percent_sprites_moved(self):
-        """ What percent of the sprites moved? """
+        """What percent of the sprites moved?"""
         return self._percent_sprites_moved
 
     @property
     def use_spatial_hash(self) -> bool:
-        """ Are we using a spatial hash? """
+        """Are we using a spatial hash?"""
         return self._use_spatial_hash
 
     def disable_spatial_hashing(self) -> None:
-        """ Turn off spatial hashing. """
+        """Turn off spatial hashing."""
         self._use_spatial_hash = False
         self.spatial_hash = None
 
     def enable_spatial_hashing(self, spatial_hash_cell_size=128):
-        """ Turn on spatial hashing. """
+        """Turn on spatial hashing."""
         LOG.debug("Enable spatial hashing with cell size %s", spatial_hash_cell_size)
         self.spatial_hash = _SpatialHash(spatial_hash_cell_size)
         self._use_spatial_hash = True
         self._recalculate_spatial_hashes()
 
     def _recalculate_spatial_hash(self, item: _SpriteType):
-        """ Recalculate the spatial hash for a particular item. """
+        """Recalculate the spatial hash for a particular item."""
         if self.spatial_hash:
             self.spatial_hash.remove_object(item)
             self.spatial_hash.insert_object_for_box(item)
@@ -702,14 +712,14 @@ class SpriteList:
         for sprite in self.sprite_list:
             sprite.update()
 
-    def on_update(self, delta_time: float = 1/60):
+    def on_update(self, delta_time: float = 1 / 60):
         """
         Update the sprite. Similar to update, but also takes a delta-time.
         """
         for sprite in self.sprite_list:
             sprite.on_update(delta_time)
 
-    def update_animation(self, delta_time: float = 1/60):
+    def update_animation(self, delta_time: float = 1 / 60):
         """
         Call the update_animation in every sprite in the sprite list.
         """
@@ -718,15 +728,19 @@ class SpriteList:
             sprite.update_animation(delta_time)
 
     def _get_center(self) -> Tuple[float, float]:
-        """ Get the mean center coordinates of all sprites in the list. """
-        x = sum((sprite.center_x for sprite in self.sprite_list)) / len(self.sprite_list)
-        y = sum((sprite.center_y for sprite in self.sprite_list)) / len(self.sprite_list)
+        """Get the mean center coordinates of all sprites in the list."""
+        x = sum((sprite.center_x for sprite in self.sprite_list)) / len(
+            self.sprite_list
+        )
+        y = sum((sprite.center_y for sprite in self.sprite_list)) / len(
+            self.sprite_list
+        )
         return x, y
 
     center = property(_get_center)
 
     def rescale(self, factor: float) -> None:
-        """ Rescale all sprites in the list relative to the spritelists center. """
+        """Rescale all sprites in the list relative to the spritelists center."""
         for sprite in self.sprite_list:
             sprite.rescale_relative_to_point(self.center, factor)
 
@@ -953,7 +967,9 @@ class SpriteList:
             if not self._keep_textures:
                 # Gather all unique textures in a set (Texture hash() is the name)
                 textures = set(sprite._texture for sprite in self.sprite_list)
-                self._atlas.update_textures(textures, keep_old_textures=self._keep_textures)
+                self._atlas.update_textures(
+                    textures, keep_old_textures=self._keep_textures
+                )
 
             self._sprite_sub_tex_buf.write(self._sprite_sub_tex_data)
             self._sprite_sub_tex_changed = False
@@ -987,14 +1003,16 @@ class SpriteList:
         self._percent_sprites_moved = self._sprites_moved / len(self.sprite_list) * 100
         self._sprites_moved = 0
 
-        if any((
-            self._sprite_pos_changed,
-            self._sprite_size_changed,
-            self._sprite_angle_changed,
-            self._sprite_color_changed,
-            self._sprite_sub_tex_changed,
-            self._sprite_index_changed,
-            )):
+        if any(
+            (
+                self._sprite_pos_changed,
+                self._sprite_size_changed,
+                self._sprite_angle_changed,
+                self._sprite_color_changed,
+                self._sprite_sub_tex_changed,
+                self._sprite_index_changed,
+            )
+        ):
             self._write_sprite_buffers_to_gpu()
 
         self.ctx.enable(self.ctx.BLEND)
@@ -1017,7 +1035,7 @@ class SpriteList:
         #     texture_transform = Matrix3x3()
         # self.program['TextureTransform'] = texture_transform.v
 
-        self.program['TextureTransform'] = Matrix3x3().v
+        self.program["TextureTransform"] = Matrix3x3().v
 
         self._atlas.texture.use(0)
         self._geometry.render(
@@ -1027,7 +1045,7 @@ class SpriteList:
         )
 
     def draw_hit_boxes(self, color: Color = (0, 0, 0, 255), line_thickness: float = 1):
-        """ Draw all the hit boxes in this list """
+        """Draw all the hit boxes in this list"""
         # NOTE: Find a way to efficiently draw this
         for sprite in self.sprite_list:
             sprite.draw_hit_box(color, line_thickness)
@@ -1097,7 +1115,7 @@ class SpriteList:
             "Buffers: index_slots=%s sprite_slots=%s over-allocation-ratio=%s",
             self._sprite_index_slots,
             self._sprite_buffer_slots,
-            self._sprite_index_slots / self._sprite_buffer_slots
+            self._sprite_index_slots / self._sprite_buffer_slots,
         )
 
         LOG.debug(
@@ -1124,7 +1142,9 @@ class SpriteList:
             print(f"{char:02x} ", end="")
 
 
-def get_closest_sprite(sprite: Sprite, sprite_list: SpriteList) -> Optional[Tuple[Sprite, float]]:
+def get_closest_sprite(
+    sprite: Sprite, sprite_list: SpriteList
+) -> Optional[Tuple[Sprite, float]]:
     """
     Given a Sprite and SpriteList, returns the closest sprite, and its distance.
 
@@ -1160,8 +1180,10 @@ def check_for_collision(sprite1: Sprite, sprite2: Sprite) -> bool:
     if not isinstance(sprite1, Sprite):
         raise TypeError("Parameter 1 is not an instance of the Sprite class.")
     if isinstance(sprite2, SpriteList):
-        raise TypeError("Parameter 2 is a instance of the SpriteList instead of a required Sprite. See if you meant to "
-                        "call check_for_collision_with_list instead of check_for_collision.")
+        raise TypeError(
+            "Parameter 2 is a instance of the SpriteList instead of a required Sprite. See if you meant to "
+            "call check_for_collision_with_list instead of check_for_collision."
+        )
     elif not isinstance(sprite2, Sprite):
         raise TypeError("Parameter 2 is not an instance of the Sprite class.")
 
@@ -1195,11 +1217,14 @@ def _check_for_collision(sprite1: Sprite, sprite2: Sprite) -> bool:
     if distance > collision_radius_sum * collision_radius_sum:
         return False
 
-    return are_polygons_intersecting(sprite1.get_adjusted_hit_box(), sprite2.get_adjusted_hit_box())
+    return are_polygons_intersecting(
+        sprite1.get_adjusted_hit_box(), sprite2.get_adjusted_hit_box()
+    )
 
 
-def check_for_collision_with_list(sprite: Sprite,
-                                  sprite_list: SpriteList) -> List[Sprite]:
+def check_for_collision_with_list(
+    sprite: Sprite, sprite_list: SpriteList
+) -> List[Sprite]:
     """
     Check for a collision between a sprite, and a list of sprites.
 
@@ -1210,14 +1235,24 @@ def check_for_collision_with_list(sprite: Sprite,
     :rtype: list
     """
     if not isinstance(sprite, Sprite):
-        raise TypeError(f"Parameter 1 is not an instance of the Sprite class, it is an instance of {type(sprite)}.")
+        raise TypeError(
+            f"Parameter 1 is not an instance of the Sprite class, it is an instance of {type(sprite)}."
+        )
     if not isinstance(sprite_list, SpriteList):
-        raise TypeError(f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList.")
+        raise TypeError(
+            f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList."
+        )
 
-    if sprite_list.use_spatial_hash is None and len(sprite_list) > 30 and sprite_list.percent_sprites_moved < 10:
-        LOG.debug(f"Enabling spatial hash - Spatial hash is none, sprite list "
-                  f"is {len(sprite_list)} elements. Percent moved "
-                  f"{sprite_list._percent_sprites_moved * 100}.")
+    if (
+        sprite_list.use_spatial_hash is None
+        and len(sprite_list) > 30
+        and sprite_list.percent_sprites_moved < 10
+    ):
+        LOG.debug(
+            f"Enabling spatial hash - Spatial hash is none, sprite list "
+            f"is {len(sprite_list)} elements. Percent moved "
+            f"{sprite_list._percent_sprites_moved * 100}."
+        )
         sprite_list.enable_spatial_hashing()
 
     if sprite_list.spatial_hash:
@@ -1227,9 +1262,11 @@ def check_for_collision_with_list(sprite: Sprite,
         sprite_list_to_check = sprite_list
 
     # print(len(sprite_list_to_check.sprite_list))
-    return [sprite2
-                      for sprite2 in sprite_list_to_check
-                      if sprite is not sprite2 and _check_for_collision(sprite, sprite2)]
+    return [
+        sprite2
+        for sprite2 in sprite_list_to_check
+        if sprite is not sprite2 and _check_for_collision(sprite, sprite2)
+    ]
 
     # collision_list = []
     # for sprite2 in sprite_list_to_check:
@@ -1238,8 +1275,7 @@ def check_for_collision_with_list(sprite: Sprite,
     #             collision_list.append(sprite2)
 
 
-def get_sprites_at_point(point: Point,
-                         sprite_list: SpriteList) -> List[Sprite]:
+def get_sprites_at_point(point: Point, sprite_list: SpriteList) -> List[Sprite]:
     """
     Get a list of sprites at a particular point
 
@@ -1250,7 +1286,9 @@ def get_sprites_at_point(point: Point,
     :rtype: list
     """
     if not isinstance(sprite_list, SpriteList):
-        raise TypeError(f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList.")
+        raise TypeError(
+            f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList."
+        )
 
     if sprite_list.spatial_hash:
         sprite_list_to_check = sprite_list.spatial_hash.get_objects_for_point(point)
@@ -1259,12 +1297,14 @@ def get_sprites_at_point(point: Point,
     else:
         sprite_list_to_check = sprite_list
 
-    return [s for s in sprite_list_to_check if
-                      is_point_in_polygon(point[0], point[1], s.get_adjusted_hit_box())]
+    return [
+        s
+        for s in sprite_list_to_check
+        if is_point_in_polygon(point[0], point[1], s.get_adjusted_hit_box())
+    ]
 
 
-def get_sprites_at_exact_point(point: Point,
-                               sprite_list: SpriteList) -> List[Sprite]:
+def get_sprites_at_exact_point(point: Point, sprite_list: SpriteList) -> List[Sprite]:
     """
     Get a list of sprites at a particular point
 
@@ -1275,7 +1315,9 @@ def get_sprites_at_exact_point(point: Point,
     :rtype: list
     """
     if not isinstance(sprite_list, SpriteList):
-        raise TypeError(f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList.")
+        raise TypeError(
+            f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList."
+        )
 
     if sprite_list.spatial_hash:
         sprite_list_to_check = sprite_list.spatial_hash.get_objects_for_point(point)
