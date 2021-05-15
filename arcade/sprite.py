@@ -15,6 +15,7 @@ except ModuleNotFoundError:
 
 from typing import (
     Any,
+    Tuple,
     cast,
     Dict,
     List,
@@ -112,6 +113,42 @@ class Sprite:
     movement or other sprite updates.
 
     """
+    __slots__ = (
+        '_hit_box_algorithm',
+        '_hit_box_detail',
+        'sprite_lists',
+        'physics_engines',
+        '_texture',
+        '_points',
+        '_hit_box_shape',
+        'textures',
+        '_width',
+        '_height',
+        'cur_texture_index',
+        '_scale',
+        '_position',
+        '_angle',
+        'velocity',
+        'change_angle',
+        'boundary_left',
+        'boundary_right',
+        'boundary_top',
+        'boundary_bottom',
+        'properties',
+        '_alpha',
+        '_collision_radius',
+        '_color',
+        '_points',
+        '_point_list_cache',
+        'force',
+        'guid',
+        'repeat_count_x',
+        'repeat_count_y',
+        '_texture_transform',
+        '_sprite_list',
+        'pymunk',
+        'extra',
+    )
 
     def __init__(self,
                  filename: str = None,
@@ -161,10 +198,49 @@ class Sprite:
 
                hit_box_algorithm = "Detailed"
         :param float hit_box_detail: Float, defaults to 4.5. Used with 'Detailed' to hit box
-
-
         """
+        self._width = 0
+        self._height = 0
+        self._scale: float = scale
+        self.force: Tuple[int, int] = [0, 0]
+        self._color: RGB = (255, 255, 255)
+        self._alpha: int = 255
+        self.repeat_count_x = repeat_count_x
+        self.repeat_count_y = repeat_count_y
+        self._collision_radius: Optional[float] = None
 
+        self.guid: Optional[str] = None
+        self.properties: Dict[str, Any] = {}
+
+        self.boundary_left = None
+        self.boundary_right = None
+        self.boundary_top = None
+        self.boundary_bottom = None
+
+        self._texture: Optional[Texture] = None
+        self.textures = []
+        self.cur_texture_index: int = 0
+
+        self._points: Optional[PointList] = None
+        self._point_list_cache: Optional[PointList] = None
+        self._hit_box_shape: Optional[ShapeElementList] = None
+        self._hit_box_algorithm = hit_box_algorithm
+        self._hit_box_detail = hit_box_detail
+
+        self.sprite_lists: Set["SpriteList"] = weakref.WeakSet()
+        self.physics_engines: List[Any] = []
+        self._sprite_list: Optional["SpriteList"] = None  # # Used for Sprite.draw()
+
+        self._position: Point = (center_x, center_y)
+        self._angle = 0.0
+
+        self.velocity: Tuple[float, float] = [0.0, 0.0]
+        self.change_angle: float = 0.0
+
+        self._texture_transform = Matrix3x3()
+        self.pymunk = PyMunk()
+
+        # Sanity check values
         if image_width < 0:
             raise ValueError("Width of image can't be less than zero.")
 
@@ -186,84 +262,24 @@ class Sprite:
            hit_box_algorithm != "Detailed" and \
            hit_box_algorithm != "None":
            raise ValueError("hit_box_algorithm must be 'Simple', 'Detailed', or 'None'.")
-        self._hit_box_algorithm = hit_box_algorithm
-
-        self._hit_box_detail = hit_box_detail
-
-        self.sprite_lists: Set["SpriteList"] = weakref.WeakSet()
-        self.physics_engines: List[Any] = []
-
-        self._texture: Optional[Texture]
-
-        self._points: Optional[PointList] = None
-
-        self._hit_box_shape: Optional[ShapeElementList] = None
 
         if filename is not None:
-            try:
-                self._texture = load_texture(filename, image_x, image_y,
-                                             image_width, image_height,
-                                             flipped_horizontally=flipped_horizontally,
-                                             flipped_vertically=flipped_vertically,
-                                             flipped_diagonally=flipped_diagonally,
-                                             hit_box_algorithm=hit_box_algorithm,
-                                             hit_box_detail=hit_box_detail
-                                             )
-
-            except Exception as e:
-                raise FileNotFoundError(f"Unable to load image file {filename} {e}")
-
-            if self._texture:
+                self._texture = load_texture(
+                    filename, image_x, image_y,
+                    image_width, image_height,
+                    flipped_horizontally=flipped_horizontally,
+                    flipped_vertically=flipped_vertically,
+                    flipped_diagonally=flipped_diagonally,
+                    hit_box_algorithm=hit_box_algorithm,
+                    hit_box_detail=hit_box_detail
+                )
                 self.textures = [self._texture]
                 # Ignore the texture's scale and use ours
                 self._width = self._texture.width * scale
                 self._height = self._texture.height * scale
-            else:
-                self.textures = []
-                self._width = 0
-                self._height = 0
-        else:
-            self.textures = []
-            self._texture = None
-            self._width = 0
-            self._height = 0
-
-        self.cur_texture_index = 0
-
-        self._scale = scale
-        self._position: Point = (center_x, center_y)
-        self._angle = 0.0
-
-        self.velocity = [0.0, 0.0]
-        self.change_angle = 0.0
-
-        self.boundary_left = None
-        self.boundary_right = None
-        self.boundary_top = None
-        self.boundary_bottom = None
-
-        self.properties: Dict[str, Any] = {}
-
-        self._alpha = 255
-        self._collision_radius: Optional[float] = None
-        self._color: RGB = (255, 255, 255)
 
         if self._texture and not self._points:
             self._points = self._texture.hit_box_points
-
-        self._point_list_cache: Optional[PointList] = None
-
-        self.force = [0, 0]
-        self.guid: Optional[str] = None
-
-        self.repeat_count_x = repeat_count_x
-        self.repeat_count_y = repeat_count_y
-        self._texture_transform = Matrix3x3()
-
-        # Used if someone insists on doing a sprite.draw()
-        self._sprite_list = None
-
-        self.pymunk = PyMunk()
 
     def append_texture(self, texture: Texture):
         """
@@ -830,6 +846,7 @@ class Sprite:
         """
         if color is None:
             raise ValueError("Color must be three or four ints from 0-255")
+
         if len(color) == 3:
             if self._color[0] == color[0] \
                     and self._color[1] == color[1] \
@@ -866,7 +883,7 @@ class Sprite:
         if alpha < 0 or alpha > 255:
             raise ValueError(f"Invalid value for alpha. Must be 0 to 255, received {alpha}")
 
-        self._alpha = alpha
+        self._alpha = int(alpha)
         for sprite_list in self.sprite_lists:
             sprite_list.update_color(self)
 
