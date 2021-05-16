@@ -31,7 +31,7 @@ setup(
         "pymunk~=6.0.0",
         "pyyaml~=5.4",
         "shapely==1.7.1",
-        "pytiled-parser==1.4.0",
+        "pytiled-parser==1.5.0",
         "dataclasses; python_version < '3.7'",
     ],
     extras_require={
