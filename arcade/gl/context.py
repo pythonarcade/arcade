@@ -1,8 +1,7 @@
 from ctypes import c_int, c_char_p, cast, c_float
-import sys
+from collections import deque
 import logging
 import weakref
-from pathlib import Path
 from typing import Any, Dict, List, Tuple, Union, Sequence, Set
 
 import pyglet
@@ -178,6 +177,11 @@ class Context:
         self._point_size = 1.0
         self._flags: Set[int] = set()
 
+        # Normal garbade collection as default (what we expect in python)
+        self._gc_mode = "auto"
+        #: Collected objects to gc when gc_mode is "context_gc"
+        self.objects = deque()
+
     @property
     def window(self) -> Window:
         """
@@ -214,6 +218,35 @@ class Context:
         :type: tuple (major, minor) version
         """
         return self._gl_version
+
+    def gc(self):
+        """
+        Run garbage collection of OpenGL objects for this context.
+        This is only needed when ``gc_mode`` is ``context_gc``.
+        """
+        # Loop the array until all objects are gone.
+        # Deleting one object might add new ones so we need
+        while len(self.objects):
+            obj = self.objects.pop()
+            obj.delete()
+
+    @property
+    def gc_mode(self) -> str:
+        """
+        Set the garbage collection mode for OpenGL resources.
+        Supported modes are:
+
+            # default: Auto 
+            ctx.gc_mode = "auto"
+        """
+        return self._gc_mode
+
+    @gc_mode.setter
+    def gc_mode(self, value: str):
+        modes = ["auto", "context_gc"]
+        if value not in modes:
+            raise ValueError("Unsupported gc_mode. Supported modes are:", modes)
+        self._gc_mode = value
 
     @property
     def error(self) -> Union[str, None]:

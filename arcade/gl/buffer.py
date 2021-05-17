@@ -58,8 +58,15 @@ class Buffer:
         else:
             raise ValueError("Buffer takes byte data or number of reserved bytes")
 
-        self.ctx.stats.incr("buffer")
-        weakref.finalize(self, Buffer.release, self.ctx, glo)
+        if self._ctx.gc_mode == "auto":
+            weakref.finalize(self, Buffer.delete_glo, self.ctx, glo)
+
+        self._ctx.stats.incr("buffer")
+
+    def __del__(self):
+        # Intercept garbage collection if we are using Context.gc()
+        if self._ctx.gc_mode == "context_gc":
+            self._ctx.objects.append(self)
 
     @property
     def size(self) -> int:
@@ -88,8 +95,15 @@ class Buffer:
         """
         return self._glo
 
+    def delete(self):
+        """
+        Destroy the underlying OpenGL resource.
+        Don't use this unless you know exactly what you are doing.
+        """
+        Buffer.delete_glo(self._ctx, self._glo)
+
     @staticmethod
-    def release(ctx: "Context", glo: gl.GLuint):
+    def delete_glo(ctx: "Context", glo: gl.GLuint):
         """
         Release/delete open gl buffer.
         This is automatically called when the object is garbage collected.
