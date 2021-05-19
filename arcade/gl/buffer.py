@@ -63,6 +63,9 @@ class Buffer:
 
         self._ctx.stats.incr("buffer")
 
+    def __repr__(self):
+        return f"<Buffer {self._glo.value}>"
+
     def __del__(self):
         # Intercept garbage collection if we are using Context.gc()
         if self._ctx.gc_mode == "context_gc":
@@ -154,6 +157,7 @@ class Buffer:
         :param bytes data: The byte data to write. This can be bytes or any object supporting the buffer protocol.
         :param int offset: The byte offset
         """
+        print(f"Buffer({self._glo.value}).write({data})")
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self._glo)
         size, data = data_to_ctypes(data)
         gl.glBufferSubData(gl.GL_ARRAY_BUFFER, gl.GLintptr(offset), size, data)

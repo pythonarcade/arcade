@@ -60,6 +60,9 @@ class VertexArray:
 
         self.ctx.stats.incr("vertex_array")
 
+    def __repr__(self):
+        return f"<VertexArray {self.glo.value}>"
+
     def __del__(self):
         # Intercept garbage collection if we are using Context.gc()
         if self._ctx.gc_mode == "context_gc":
@@ -106,7 +109,7 @@ class VertexArray:
         Destroy the underlying OpenGL resource.
         Don't use this unless you know exactly what you are doing.
         """
-        Buffer.delete_glo(self._ctx, self.glo)
+        VertexArray.delete_glo(self._ctx, self.glo)
 
     @staticmethod
     def delete_glo(ctx: "Context", glo: gl.GLuint):
