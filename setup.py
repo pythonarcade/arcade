@@ -3,7 +3,7 @@ import sys
 from setuptools import setup
 
 if sys.platform == "darwin":
-    required_python_version=">=3.6,<3.9"
+    required_python_version=">=3.6"
 else:
     required_python_version=">=3.6"
 
