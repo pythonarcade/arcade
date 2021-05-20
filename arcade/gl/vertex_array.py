@@ -55,8 +55,18 @@ class VertexArray:
 
         self._build(program, content, index_buffer)
 
+        if self._ctx.gc_mode == "auto":
+            weakref.finalize(self, VertexArray.delete_glo, self.ctx, glo)
+
         self.ctx.stats.incr("vertex_array")
-        weakref.finalize(self, VertexArray.release, self.ctx, glo)
+
+    def __repr__(self):
+        return f"<VertexArray {self.glo.value}>"
+
+    def __del__(self):
+        # Intercept garbage collection if we are using Context.gc()
+        if self._ctx.gc_mode == "context_gc":
+            self._ctx.objects.append(self)
 
     @property
     def ctx(self) -> "Context":
@@ -94,8 +104,15 @@ class VertexArray:
         """
         return self._num_vertices
 
+    def delete(self):
+        """
+        Destroy the underlying OpenGL resource.
+        Don't use this unless you know exactly what you are doing.
+        """
+        VertexArray.delete_glo(self._ctx, self.glo)
+
     @staticmethod
-    def release(ctx: "Context", glo: gl.GLuint):
+    def delete_glo(ctx: "Context", glo: gl.GLuint):
         """
         Delete this object.
         This is automatically called when this object is garbage collected.

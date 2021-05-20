@@ -52,7 +52,9 @@ class Query:
         gl.glGenQueries(1, self._glo_primitives_generated)
 
         glos = [glo_samples_passed, glo_time_elapsed, glo_time_elapsed]
-        weakref.finalize(self, Query.release, self._ctx, glos)
+
+        if self._ctx.gc_mode == "auto":
+            weakref.finalize(self, Query.delete_glo, self._ctx, glos)
 
     @property
     def ctx(self) -> "Context":
@@ -106,8 +108,22 @@ class Query:
         gl.glEndQuery(gl.GL_TIME_ELAPSED)
         gl.glEndQuery(gl.GL_PRIMITIVES_GENERATED)
 
+    def delete(self):
+        """
+        Destroy the underlying OpenGL resource.
+        Don't use this unless you know exactly what you are doing.
+        """
+        Query.delete_glo(
+            self._ctx,
+            [
+                self._glo_samples_passed,
+                self._glo_time_elapsed,
+                self._glo_primitives_generated,
+            ]
+        )
+
     @staticmethod
-    def release(ctx, glos) -> None:
+    def delete_glo(ctx, glos) -> None:
         """
         Delete this query object. This is automatically called
         when the object is garbage collected.

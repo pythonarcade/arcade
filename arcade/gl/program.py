@@ -113,17 +113,25 @@ class Program:
                 geometry_vertices.value,
             )
 
-        # Flag shaders for deletion. Will only be deleted once detached from program.
+        # Delete shaders (not needed after linking)
         for shader in shaders_id:
             gl.glDeleteShader(shader)
+            gl.glDetachShader(self._glo, shader)
 
         # Handle uniforms
         self._introspect_attributes()
         self._introspect_uniforms()
         self._introspect_uniform_blocks()
 
+        if self._ctx.gc_mode == "auto":
+            weakref.finalize(self, Program.delete_glo, self._ctx, self._glo)
+
         self.ctx.stats.incr("program")
-        weakref.finalize(self, Program._delete, self.ctx, shaders_id, glo)
+
+    def __del__(self):
+        # Intercept garbage collection if we are using Context.gc()
+        if self._ctx.gc_mode == "context_gc":
+            self._ctx.objects.append(self)
 
     @property
     def ctx(self) -> "Context":
@@ -190,15 +198,19 @@ class Program:
         """
         return self._geometry_info[2]
 
+    def delete(self):
+        """
+        Destroy the underlying OpenGL resource.
+        Don't use this unless you know exactly what you are doing.
+        """
+        Program.delete_glo(self._ctx, self._glo)
+
     @staticmethod
-    def _delete(ctx, shaders_id, prog_id):
+    def delete_glo(ctx, prog_id):
         # Check to see if the context was already cleaned up from program
         # shut down. If so, we don't need to delete the shaders.
         if gl.current_context is None:
             return
-
-        for shader_id in shaders_id:
-            gl.glDetachShader(prog_id, shader_id)
 
         gl.glDeleteProgram(prog_id)
 
