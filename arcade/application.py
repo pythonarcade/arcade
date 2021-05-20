@@ -63,7 +63,8 @@ class Window(pyglet.window.Window):
                  antialiasing: bool = True,
                  gl_version: Tuple[int, int] = (3, 3),
                  screen: pyglet.canvas.Screen = None,
-                 visible: bool=True):
+                 visible: bool=True,
+                 gc_mode: str = "auto"):
         """
         Construct a new window
 
@@ -77,6 +78,7 @@ class Window(pyglet.window.Window):
         :param Tuple[int,int] gl_version: What OpenGL version to request. This is ``(3, 3)`` by default
                                            and can be overridden when using more advanced OpenGL features.
         :param bool visible: Should the window be visible immediately
+        :param bool gc_mode: Decides how opengl objects should be garbage collected
         """
         if antialiasing:
             config = pyglet.gl.Config(major_version=gl_version[0],
@@ -124,7 +126,7 @@ class Window(pyglet.window.Window):
         self.key: Optional[int] = None
         self.ui_manager = arcade.experimental.gui.UIManager(self)
 
-        self._ctx: ArcadeContext = ArcadeContext(self)
+        self._ctx: ArcadeContext = ArcadeContext(self, gc_mode=gc_mode)
         set_viewport(0, self.width - 1, 0, self.height - 1)
 
         self._background_color: Color = (0, 0, 0, 0)
