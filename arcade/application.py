@@ -3,6 +3,7 @@ The main window class that all object-oriented applications should
 derive from.
 """
 import logging
+import os
 import time
 from numbers import Number
 from typing import Tuple, Optional
@@ -80,6 +81,12 @@ class Window(pyglet.window.Window):
         :param bool visible: Should the window be visible immediately
         :param bool gc_mode: Decides how opengl objects should be garbage collected
         """
+        # In certain environments (mainly headless) we can't have antialiasing/MSAA enabled.
+        # TODO: Detect other headless environments
+        # Detect replit environment 
+        if os.environ.get("REPL_ID"):
+            antialiasing = False
+
         if antialiasing:
             config = pyglet.gl.Config(major_version=gl_version[0],
                                       minor_version=gl_version[1],
