@@ -1,18 +1,7 @@
 import pytest
 import arcade
 from pyglet import gl
-from arcade.gl import types, ShaderException
-
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
-
-
-@pytest.fixture(scope="module")
-def ctx():
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, "Test OpenGL")
-    yield window.ctx
-    window.use()
-    window.close()
+from arcade.gl import types
 
 
 def test_attrib_format(ctx):

@@ -9,8 +9,8 @@ out vec4 f_color;
 
 void main() {
     vec4 basecolor = texture(Texture, gs_uv);
-    basecolor = basecolor * gs_color;
-    if (basecolor.a == 0.0){
+    basecolor *= gs_color;
+    if (basecolor.a == 0.0) {
         discard;
     }
     f_color = basecolor;

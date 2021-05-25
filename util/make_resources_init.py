@@ -1,6 +1,10 @@
 """
-Getting duplicate name errors:
+Generates arcade/resources/__init__.py by looking for
+media types in arcade/resources.
 
+Add file extensions to MEDIA_TYPES
+
+Getting duplicate name errors:
 Warning: There is a duplicate resource variable name (image_ladder_mid).
 Warning: There is a duplicate resource variable name (image_ladder_top).
 Warning: There is a duplicate resource variable name (sound_laser1).
@@ -12,17 +16,18 @@ Warning: There is a duplicate resource variable name (sound_rock_hit2).
 import pathlib
 from typing import List
 
+MEDIA_TYPES = ['.png', '.wav', '.tmx', '.tsx', '.wav', '.mp3', '.ogg']
+
 
 def main() -> None:
     """Creates __init__.py in the arcade/resources directory."""
-    media_types = ['.png', '.wav', '.tmx', '.tsx', '.wav', '.mp3', '.ogg']
-    parent = pathlib.Path(__file__).parent.parent / "arcade/resources"
+    parent = pathlib.Path(__file__).parent.parent.resolve() / "arcade/resources"
 
     used_variable_names: List[str] = []
 
     with open(parent.as_posix() + "/__init__.py", 'w') as f:
         for item in parent.glob('**/*'):
-            if item.suffix in media_types:
+            if item.suffix in MEDIA_TYPES:
 
                 relative_path = item.relative_to(parent)
                 stem = item.stem

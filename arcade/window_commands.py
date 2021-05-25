@@ -8,18 +8,23 @@ import time
 import os
 
 import pyglet
-import numpy as np
+from pyglet.math import Mat4
 
 from numbers import Number
 from typing import (
     Callable,
+    Optional,
     cast,
     Tuple,
-    Union
+    TYPE_CHECKING
 )
 from arcade.arcade_types import Color
 
-_window = None
+if TYPE_CHECKING:
+    from arcade import Window
+
+
+_window: Optional["Window"] = None
 
 
 def get_display_size(screen_id: int = 0) -> Tuple[int, int]:
@@ -36,13 +41,14 @@ def get_display_size(screen_id: int = 0) -> Tuple[int, int]:
     return screen.width, screen.height
 
 
-def get_projection():
+def get_projection() -> Mat4:
     """
     Returns the current projection matrix used by sprites and shapes in arcade.
 
     This is a shortcut for ```window.ctx.projection_2d_matrix``.
 
-    :return: Numpy array with projection.
+    :return: Projection matrix
+    :rtype: Mat4
     """
     return get_window().ctx.projection_2d_matrix
 
@@ -52,10 +58,9 @@ def create_orthogonal_projection(
         right,
         bottom,
         top,
-        near,
-        far,
-        dtype=None
-):
+        near = 1,
+        far = -1,
+) -> Mat4:
     """
     Creates an orthogonal projection matrix. Used internally with the
     OpenGL shaders.
@@ -68,33 +73,15 @@ def create_orthogonal_projection(
                        It is recommended that the near plane is set to 1.0 or above to avoid
                        rendering issues at close range.
     :param float far: The distance of the far plane from the camera's origin.
-    :param dtype:
     :return: A projection matrix representing the specified orthogonal perspective.
-    :rtype: numpy.array
+    :rtype: Mat4
 
     .. seealso:: http://msdn.microsoft.com/en-us/library/dd373965(v=vs.85).aspx
     """
-
-    rml = right - left
-    tmb = top - bottom
-    fmn = far - near
-
-    a = 2. / rml
-    b = 2. / tmb
-    c = -2. / fmn
-    tx = -(right + left) / rml
-    ty = -(top + bottom) / tmb
-    tz = -(far + near) / fmn
-
-    return np.array((
-        (a, 0., 0., 0.),
-        (0., b, 0., 0.),
-        (0., 0., c, 0.),
-        (tx, ty, tz, 1.),
-    ), dtype=dtype or 'f4')
+    return Mat4.orthogonal_projection(left, right, bottom, top, near, far)
 
 
-def pause(seconds: Number):
+def pause(seconds: Number) -> None:
     """
     Pause for the specified number of seconds. This is a convenience function that just calls time.sleep()
 
@@ -103,7 +90,7 @@ def pause(seconds: Number):
     time.sleep(cast(float, seconds))
 
 
-def get_window() -> pyglet.window.Window:
+def get_window() -> "Window":
     """
     Return a handle to the current window.
 
@@ -115,7 +102,7 @@ def get_window() -> pyglet.window.Window:
     return _window
 
 
-def set_window(window: pyglet.window.Window):
+def set_window(window: "Window") -> None:
     """
     Set a handle to the current window.
 
@@ -125,7 +112,7 @@ def set_window(window: pyglet.window.Window):
     _window = window
 
 
-def get_scaling_factor(window=None) -> float:
+def get_scaling_factor(window: "Window" = None) -> float:
     """
     Gets the scaling factor of the given Window.
     This is the ratio between the window and framebuffer size.
@@ -133,7 +120,10 @@ def get_scaling_factor(window=None) -> float:
 
     :param Window window: Handle to window we want to get scaling factor of.
 
-    :return: Scaling factor. E.g., 2 would indicate scaled up twice.
+    :return: Scaling factor. E.g., 2.0 would indicate the framebuffer
+             width and height being 2.0 times the window width and height.
+             This means one "window pixel" is actual a 2 x 2 square of pixels
+             in the framebuffer.
     :rtype: float
     """
     if window:
@@ -142,7 +132,7 @@ def get_scaling_factor(window=None) -> float:
         return get_window().get_pixel_ratio()
 
 
-def set_viewport(left: float, right: float, bottom: float, top: float):
+def set_viewport(left: float, right: float, bottom: float, top: float) -> None:
     """
     This sets what coordinates the window will cover.
 
@@ -195,13 +185,16 @@ def get_viewport() -> Tuple[float, float, float, float]:
     return get_window().ctx.projection_2d
 
 
-def close_window():
+def close_window() -> None:
     """
     Closes the current window, and then runs garbage collection. The garbage collection
     is necessary to prevent crashing when opening/closing windows rapidly (usually during
     unit tests).
     """
     global _window
+
+    if _window is None:
+        return
 
     _window.close()
     _window = None
@@ -290,15 +283,14 @@ def quick_run(time_to_pause: Number):
     close_window()
 
 
-def start_render():
+def start_render() -> None:
     """
-    Get set up to render. Required to be called before drawing anything to the
-    screen.
+    Clears the window. Can also be replaced with :py:meth:`~arcade.Window.clear`.
     """
     get_window().clear()
 
 
-def set_background_color(color: Color):
+def set_background_color(color: Color) -> None:
     """
     Specifies the background color of the window. This value
     will persist for every future screen clears until changed.

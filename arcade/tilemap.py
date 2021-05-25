@@ -230,7 +230,7 @@ def _get_image_source(
             return try3
 
     print(
-        f"Warning, can't find image {image_file} for tile {tile.id_} - {base_directory}"
+        f"Warning, can't find image {image_file} for tile {tile.id} - {base_directory}"
     )
     return None
 

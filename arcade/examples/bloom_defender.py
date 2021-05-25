@@ -301,9 +301,9 @@ class MyGame(arcade.Window):
                     while particle.change_y == 0 and particle.change_x == 0:
                         particle.change_y = random.randrange(-2, 3)
                         particle.change_x = random.randrange(-2, 3)
-                        particle.center_x = enemy.center_x
-                        particle.center_y = enemy.center_y
-                        self.bullet_sprite_list.append(particle)
+                    particle.center_x = enemy.center_x
+                    particle.center_y = enemy.center_y
+                    self.bullet_sprite_list.append(particle)
 
         # Scroll left
         left_boundary = self.view_left + VIEWPORT_MARGIN

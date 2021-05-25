@@ -20,12 +20,13 @@ class MyGame(arcade.Window):
     def __init__(self):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
         self.total_time = 0.0
+        self.output = "00:00:00"
 
     def setup(self):
         """
         Set up the application.
         """
-        arcade.set_background_color(arcade.color.WHITE)
+        arcade.set_background_color(arcade.color.ALABAMA_CRIMSON)
         self.total_time = 0.0
 
     def on_draw(self):
@@ -35,23 +36,26 @@ class MyGame(arcade.Window):
         # commands. We do NOT need an stop render command.
         arcade.start_render()
 
-        # Calculate minutes
-        minutes = int(self.total_time) // 60
-
-        # Calculate seconds by using a modulus (remainder)
-        seconds = int(self.total_time) % 60
-
-        # Figure out our output
-        output = f"Time: {minutes:02d}:{seconds:02d}"
-
         # Output the timer text.
-        arcade.draw_text(output, 300, 300, arcade.color.BLACK, 30)
+        arcade.draw_text(self.output, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 50, arcade.color.WHITE, 100, anchor_x="center")
 
     def on_update(self, delta_time):
         """
         All the logic to move, and the game logic goes here.
         """
         self.total_time += delta_time
+
+        # Calculate minutes
+        minutes = int(self.total_time) // 60
+
+        # Calculate seconds by using a modulus (remainder)
+        seconds = int(self.total_time) % 60
+
+        # Calculate 100s of a second
+        seconds_100s = int((self.total_time - seconds) * 100)
+
+        # Figure out our output
+        self.output = f"{minutes:02d}:{seconds:02d}:{seconds_100s:02d}"
 
 
 def main():

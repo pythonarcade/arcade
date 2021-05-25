@@ -2,7 +2,6 @@ import pytest
 from pyglet.event import EventDispatcher
 from pytest import fixture
 
-from arcade import Window
 from . import MockButton, TestUIManager, TestUILayoutManager
 
 
@@ -21,13 +20,6 @@ class MockWindow(EventDispatcher):
         self.register_event_type("on_text")
         self.register_event_type("on_text_motion")
         self.register_event_type("on_text_motion_select")
-
-
-@pytest.fixture
-def window():
-    window = Window(title="ARCADE_GUI")
-    yield window
-    window.close()
 
 
 @pytest.fixture

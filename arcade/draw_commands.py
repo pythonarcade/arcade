@@ -990,12 +990,14 @@ def draw_lrwh_rectangle_textured(bottom_left_x: float, bottom_left_y: float,
     texture.draw_sized(center_x, center_y, width, height, angle=angle, alpha=alpha)
 
 
-def get_pixel(x: int, y: int) -> Tuple[int, int, int]:
+def get_pixel(x: int, y: int, components: int = 3) -> Tuple[int, ...]:
     """
-    Given an x, y, will return RGB color value of that point.
+    Given an x, y, will return a color value of that point.
 
     :param int x: x location
     :param int y: y location
+    :param int components: Number of components to fetch. By default we fetch 3
+        3 components (RGB). 4 componets would be RGBA.
     :rtype: Color
     """
     # noinspection PyCallingNonCallable,PyTypeChecker
@@ -1008,12 +1010,9 @@ def get_pixel(x: int, y: int) -> Tuple[int, int, int]:
     x = int(pixel_ratio * x)
     y = int(pixel_ratio * y)
 
-    a = (gl.GLubyte * 3)(0)
-    gl.glReadPixels(x, y, 1, 1, gl.GL_RGB, gl.GL_UNSIGNED_BYTE, a)
-    red = a[0]
-    green = a[1]
-    blue = a[2]
-    return red, green, blue
+    a = (gl.GLubyte * 4)(0)
+    gl.glReadPixels(x, y, 1, 1, gl.GL_RGBA, gl.GL_UNSIGNED_BYTE, a)
+    return tuple(int(i) for i in a[:components])
 
 
 def get_image(x: int = 0, y: int = 0, width: int = None, height: int = None) -> PIL.Image.Image:

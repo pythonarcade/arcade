@@ -63,7 +63,8 @@ class Window(pyglet.window.Window):
                  antialiasing: bool = True,
                  gl_version: Tuple[int, int] = (3, 3),
                  screen: pyglet.canvas.Screen = None,
-                 visible: bool=True):
+                 visible: bool=True,
+                 vsync: bool = False):
         """
         Construct a new window
 
@@ -77,6 +78,8 @@ class Window(pyglet.window.Window):
         :param Tuple[int,int] gl_version: What OpenGL version to request. This is ``(3, 3)`` by default
                                            and can be overridden when using more advanced OpenGL features.
         :param bool visible: Should the window be visible immediately
+        :param bool vsync: Wait for vertical screen refresh before swapping buffer
+                           This can make animations and movement look smoother.
         """
         if antialiasing:
             config = pyglet.gl.Config(major_version=gl_version[0],
@@ -91,7 +94,7 @@ class Window(pyglet.window.Window):
 
         try:
             super().__init__(width=width, height=height, caption=title,
-                             resizable=resizable, config=config, vsync=False, visible=visible)
+                             resizable=resizable, config=config, vsync=vsync, visible=visible)
             self.register_event_type('update')
             self.register_event_type('on_update')
         except pyglet.window.NoSuchConfigException:
@@ -105,11 +108,9 @@ class Window(pyglet.window.Window):
                 print("Warning: Anti-aliasing not supported on this computer.")
 
         if update_rate:
-            from pyglet import compat_platform
-            if compat_platform == 'darwin' or compat_platform == 'linux':
-                # Set vsync to false, or we'll be limited to a 1/30 sec update rate possibly
-                self.context.set_vsync(False)
             self.set_update_rate(update_rate)
+
+        self.set_vsync(vsync)
 
         super().set_fullscreen(fullscreen, screen)
         # This used to be necessary on Linux, but no longer appears to be.
@@ -122,16 +123,9 @@ class Window(pyglet.window.Window):
         self._current_view: Optional[View] = None
         self.textbox_time = 0.0
         self.key: Optional[int] = None
-        self.ui_manager = arcade.experimental.gui.UIManager(self)
 
         self._ctx: ArcadeContext = ArcadeContext(self)
-        set_viewport(0, self.width - 1, 0, self.height - 1)
-
         self._background_color: Color = (0, 0, 0, 0)
-
-        # Required for transparency
-        self._ctx.enable(self.ctx.BLEND)
-        self._ctx.blend_func = self.ctx.BLEND_DEFAULT
 
     @property
     def current_view(self):
@@ -317,6 +311,10 @@ class Window(pyglet.window.Window):
         except AttributeError:
             pass
 
+        # TEMP HACK
+        if symbol == arcade.key.F12:
+            self.ctx.default_atlas.show()
+
     def on_key_release(self, symbol: int, modifiers: int):
         """
         Override this function to add key release functionality.
@@ -344,12 +342,8 @@ class Window(pyglet.window.Window):
         :param float width: New width
         :param float height: New height
         """
-        try:
-            original_viewport = self.get_viewport()
-        except Exception as ex:
-            print("Error getting viewport:", ex)
-            return
-
+        # Retain projection scrolling if applied
+        original_viewport = self.get_viewport()
         self.set_viewport(original_viewport[0],
                           original_viewport[0] + width,
                           original_viewport[2],
@@ -501,6 +495,21 @@ class Window(pyglet.window.Window):
         # will still call the Window's event handlers. (See pyglet's EventDispatcher.dispatch_event() implementation
         # for details)
 
+    def hide_view(self):
+        """
+        Hide the currently active view (if any) returning us
+        back to ``on_draw`` and ``on_update`` functions in the window.
+
+        This is not necessary to call if you are switching views.
+        Simply call ``show_view`` again.
+        """
+        if self._current_view is None:
+            return
+
+        self._current_view.on_hide_view()
+        self.remove_handlers(self._current_view)
+        self._current_view = None
+
     def _create(self):
         super()._create()
 
@@ -583,7 +592,7 @@ def open_window(width: int, height: int, window_title: str, resizable: bool = Fa
     :param bool antialiasing: Smooth the graphics?
 
     :returns: Handle to window
-    :rtype arcade.Window:
+    :rtype: Window
     """
 
     global _window

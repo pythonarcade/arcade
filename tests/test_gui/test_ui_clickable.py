@@ -67,5 +67,5 @@ def test_updates_texture_after_style_change(clickable):
     old_texture = clickable.normal_texture
     clickable.set_style_attrs(some_att="new_value")
 
-    assert old_texture != clickable.normal_texture
+    assert id(old_texture) != id(clickable.normal_texture)
     assert clickable.texture == clickable.normal_texture

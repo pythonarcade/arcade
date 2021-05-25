@@ -7,6 +7,18 @@ Release Notes
 
 Keep up-to-date with the latest changes to the Arcade library by the release notes.
 
+UNRELEASED (2.6.0)
+------------------
+
+* Revamped text rendering
+* Texture atlases
+* Extended tilemap support
+* GUI improvements
+* Documentation restructuring
+* SpriteList optimization
+* ``arcade.get_pixel`` supports getting RGB and RGBA color value
+* .. more ...
+
 Version 2.5.6
 -------------
 
@@ -188,47 +200,47 @@ Arcade 2.4.1 was released 2020-07-13.
 
 Arcade version 2.4 is a major enhancement release to Arcade.
 
-.. image:: examples/light_demo.png
+.. image:: ../examples/light_demo.png
     :width: 30%
     :class: inline-image
     :target: examples/light_demo.html
 
-.. image:: examples/astar_pathfinding.png
+.. image:: ../examples/astar_pathfinding.png
     :width: 30%
     :class: inline-image
     :target: examples/astar_pathfinding.html
 
-.. image:: examples/mini_map_defender.png
+.. image:: ../examples/mini_map_defender.png
     :width: 30%
     :class: inline-image
     :target: examples/mini_map_defender.html
 
-.. image:: examples/bloom_defender.png
+.. image:: ../examples/bloom_defender.png
     :width: 30%
     :class: inline-image
     :target: examples/bloom_defender.html
 
-.. image:: examples/gui_elements.png
+.. image:: ../examples/gui_elements.png
     :width: 30%
     :class: inline-image
     :target: examples/gui_elements.html
 
-.. image:: tutorials/pymunk_platformer/title_animated_gif.gif
+.. image:: ../tutorials/pymunk_platformer/title_animated_gif.gif
     :width: 30%
     :class: inline-image
     :target: tutorials/pymunk_platformer/index.html
 
-.. image:: tutorials/gpu_particle_burst/explosions.gif
+.. image:: ../tutorials/gpu_particle_burst/explosions.gif
     :width: 30%
     :class: inline-image
     :target: tutorials/gpu_particle_burst/index.html
 
-.. image:: tutorials/card_game/animated.gif
+.. image:: ../tutorials/card_game/animated.gif
     :width: 30%
     :class: inline-image
     :target: tutorials/card_game/index.html
 
-.. image:: examples/transform_feedback.gif
+.. image:: ../examples/transform_feedback.png
     :width: 30%
     :class: inline-image
     :target: examples/transform_feedback.html
@@ -288,17 +300,17 @@ Version 2.4 Minor Features
   :data:`arcade.tilemap.process_layer` take in ``hit_box_algorithm`` and
   ``hit_box_detail`` parameters for hit box calculation.
 
-.. figure:: images/hit_box_algorithm_none.png
+.. figure:: ../images/hit_box_algorithm_none.png
    :width: 40%
 
    hit_box_algorithm = "None"
 
-.. figure:: images/hit_box_algorithm_simple.png
+.. figure:: ../images/hit_box_algorithm_simple.png
    :width: 55%
 
    hit_box_algorithm = "Simple"
 
-.. figure:: images/hit_box_algorithm_detailed.png
+.. figure:: ../images/hit_box_algorithm_detailed.png
    :width: 75%
 
    hit_box_algorithm = "Detailed"

@@ -1,19 +1,12 @@
-import pytest
 import arcade
 from arcade.gl import geometry
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
 
+def test_create(window: arcade.Window):
+    ctx = window.ctx
+    SCREEN_WIDTH, SCREEN_HEIGHT = window.get_framebuffer_size()
+    print(ctx.viewport, ctx.projection_2d)
 
-@pytest.fixture(scope="module")
-def ctx():
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, "Test OpenGL")
-    yield window.ctx
-    window.close()
-
-
-def test_create(ctx):
     program = ctx.program(
         vertex_shader="""
         #version 330
@@ -32,10 +25,10 @@ def test_create(ctx):
     )
     quad = geometry.quad_2d_fs()
     query = ctx.query()
+
     with query:
         quad.render(program)
 
     assert query.time_elapsed > 0
-    assert query.samples_passed >= SCREEN_WIDTH * SCREEN_HEIGHT
     assert query.primitives_generated == 2
-    query = None
+    assert query.samples_passed >= SCREEN_WIDTH * SCREEN_HEIGHT
