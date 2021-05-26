@@ -29,11 +29,16 @@ class ArcadeContext(Context):
     """
     atlas_size = 8192, 8192
 
-    def __init__(self, window: pyglet.window.Window):
+    def __init__(self, window: pyglet.window.Window, gc_mode: str = "auto"):
         """
         :param pyglet.window.Window window: The pyglet window
+        :param str gc_mode: The gabage collection mode for opengl objects.
+                            ``auto`` (default) is just what we would expect in python
+                            while ``context_gc`` requires you to call ``Context.gc()``.
+                            The latter can be useful when using multiple threads when
+                            it's not clear what thread will gc the object.
         """
-        super().__init__(window)
+        super().__init__(window, gc_mode=gc_mode)
 
         # Enabled blending by default
         self.enable(self.BLEND)

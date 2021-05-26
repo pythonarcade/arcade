@@ -19,6 +19,49 @@ UNRELEASED (2.6.0)
 * ``arcade.get_pixel`` supports getting RGB and RGBA color value
 * .. more ...
 
+Version 2.5.7
+-------------
+
+Fixes
+~~~~~
+
+* The arcade gui should now respect the current viewport
+* Fixed an issue with UILabel allocating large amounts of
+  textures over time consuming a lot of memory
+* Fixed an issue with the initial viewport sometimes being
+  1 pixel too small causing some artifacts
+* Fixed a race condition in ``Sound.stop()`` sometimes
+  causing a crash
+* Fixed an issue in requirements causing issues for poetry
+* Fixed an error reporting issue when reaching maximum
+  texture size
+
+New Features
+~~~~~~~~~~~~
+
+**replit.com**
+
+Arcade should now work out of the box on replit.com. We detect
+when arcade runs in replit tweaking various settings. One important
+setting we disable is antialiasing since this doesn't work
+well with software rendering.
+
+**Alternative Garbage Collection of OpenGL Resources**
+
+``arcade.gl.Context`` now supports an alternative garbage collection mode more
+compatible with threaded applications and garbage collection of OpenGL resources.
+OpenGL resources can only be accessed or destroyed from the same thread the
+window was created. In threaded applications the python garbage collector
+can in some cases try to destroy OpenGL objects possibly causing a hard crash.
+
+This can be configured when creating the ``arcade.Window`` passing in a new
+``gc_mode`` parameter. By default his parameter is ``"auto"`` providing
+the default garbage collection we have in python.
+
+Passing in ``"context_gc"`` on the other hand will move all "dead" OpenGL
+objects into ``Context.objects``. These can be garbage collected manually
+by calling ``Context.gc()`` in a more controlled way in the the right thread.
+
 Version 2.5.6
 -------------
 
