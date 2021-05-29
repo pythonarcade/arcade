@@ -95,4 +95,3 @@ def test_base_64_gzip():
 
     assert wall_list[2].position == (64, 64)
     assert "boxCrate" in wall_list[2].texture.name
-

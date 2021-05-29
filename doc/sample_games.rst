@@ -4,8 +4,19 @@ Sample Games Made With Arcade
 Have a sample game you'd like to share here? E-mail
 paul@cravenfamily.com.
 
+Ready or Not?
+~~~~~~~~~~~~~
+
+.. raw:: html
+
+   <iframe width="560" height="315" src="https://www.youtube.com/embed/3jix7ebgA_s" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+`Ready or Not? <https://github.com/mochatek/ReadyOrNot>`_ a local multiplayer action
+RPG by Akash S Panickar.
+
 Age of Divisiveness
 ~~~~~~~~~~~~~~~~~~~
+
 
 .. image:: https://raw.githubusercontent.com/chceswieta/age-of-divisiveness/main/resources/promo/city_build.gif
    :width: 75%

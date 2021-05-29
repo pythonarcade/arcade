@@ -13,6 +13,7 @@ from PIL import Image
 import arcade
 from arcade.gui.manager import UIAbstractManager
 from tests.test_gui import t
+from . import T
 
 
 def view_to_png(window: arcade.Window, view: arcade.View, path: Path):

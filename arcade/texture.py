@@ -136,6 +136,28 @@ class Texture:
 
         self._hit_box_detail = hit_box_detail
 
+    # ------------------------------------------------------------
+    # Comparison and hash functions so textures can work with sets
+    # A texture's uniqueness is simply based on the name
+    def __hash__(self) -> int:
+        """The hash if a texture is the name"""
+        return hash(self.name)
+
+    def __eq__(self, other) -> bool:
+        if other is None:
+            return False
+        if not isinstance(other, self.__class__):
+            return False
+        return self.name == other.name
+
+    def __ne__(self, other) -> bool:
+        if other is None:
+            return True
+        if not isinstance(other, self.__class__):
+            return True
+        return self.name != other.name
+    # ------------------------------------------------------------
+
     @property
     def width(self) -> int:
         """

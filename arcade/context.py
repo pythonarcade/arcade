@@ -2,15 +2,18 @@
 Arcade's version of the OpenGL Context.
 Contains pre-loaded programs
 """
+from contextlib import contextmanager
 from pathlib import Path
-from typing import Tuple, Union
+from typing import Dict, Optional, Tuple, Union
 
 from PIL import Image
 import pyglet
+from pyglet.math import Mat4
 
 from arcade.gl import BufferDescription, Context
 from arcade.gl.program import Program
 from arcade.gl.texture import Texture
+from arcade.texture_atlas import TextureAtlas
 import arcade
 
 
@@ -24,12 +27,22 @@ class ArcadeContext(Context):
     **This is part of the low level rendering API in arcade
     and is mainly for more advanced usage**
     """
+    atlas_size = 8192, 8192
 
-    def __init__(self, window: pyglet.window.Window):
+    def __init__(self, window: pyglet.window.Window, gc_mode: str = "auto"):
         """
         :param pyglet.window.Window window: The pyglet window
+        :param str gc_mode: The gabage collection mode for opengl objects.
+                            ``auto`` (default) is just what we would expect in python
+                            while ``context_gc`` requires you to call ``Context.gc()``.
+                            The latter can be useful when using multiple threads when
+                            it's not clear what thread will gc the object.
         """
-        super().__init__(window)
+        super().__init__(window, gc_mode=gc_mode)
+
+        # Enabled blending by default
+        self.enable(self.BLEND)
+        self.blend_func = self.BLEND_DEFAULT
 
         # Set up a default orthogonal projection for sprites and shapes
         self._projection_2d_buffer = self.buffer(reserve=64)
@@ -146,6 +159,42 @@ class ArcadeContext(Context):
             ]
         )
 
+        self._atlas: Optional[TextureAtlas] = None
+        # Global labels we modify in `arcade.draw_text`.
+        # These multiple labels with different configurations are stored
+        self.pyglet_label_cache: Dict[str, pyglet.text.Label] = {}
+
+    def reset(self) -> None:
+        """
+        Reset context flags and other states.
+        This is mostly used in unit testing.
+        """
+        self.screen.use(force=True)
+        self._projection_2d_buffer.bind_to_uniform_block(0)
+        self.active_program = None
+        arcade.set_viewport(0, self.window.width, 0, self.window.height)
+        self.enable_only(self.BLEND)
+        self.blend_func = self.BLEND_DEFAULT
+        self.point_size = 1.0
+
+    @property
+    def default_atlas(self) -> TextureAtlas:
+        """
+        The default texture atlas. This is crated when arcade is initialized.
+        All sprite lists will use use this atlas unless a different atlas
+        is passned in the ``SpriteList`` constructor.
+
+        :type: TextureAtlas
+        """
+        if not self._atlas:
+            # Create the default texture atlas
+            # 8192 is a safe maximum size for textures in OpenGL 3.3
+            # We might want to query the max limit, but this makes it consistent
+            # across all OpenGL implementations.
+            self._atlas = TextureAtlas(self.atlas_size, border=1, mutable=True, ctx=self)
+
+        return self._atlas
+
     @property
     def projection_2d(self) -> Tuple[float, float, float, float]:
         """Get or set the global orthogonal projection for arcade.
@@ -166,17 +215,47 @@ class ArcadeContext(Context):
 
         self._projection_2d = value
         self._projection_2d_matrix = arcade.create_orthogonal_projection(
-            value[0], value[1], value[2], value[3], -100, 100, dtype="f4",
-        ).flatten()
+            value[0], value[1], value[2], value[3], -100, 100,
+        )
         self._projection_2d_buffer.write(self._projection_2d_matrix)
 
     @property
-    def projection_2d_matrix(self):
+    def projection_2d_matrix(self) -> Mat4:
         """
-        Get the current projection matrix as a numpy array.
+        Get the current projection matrix.
         This 4x4 float32 matrix is calculated when setting :py:attr:`~arcade.ArcadeContext.projection_2d`.
+
+        :type: Mat4
         """
         return self._projection_2d_matrix
+
+    @contextmanager
+    def pyglet_rendering(self):
+        """Context manager for pyglet rendering.
+        Since arcade and pyglet needs slightly different
+        states we needs some initialization and cleanup.
+
+        Examples::
+
+            with window.ctx.pyglet_rendering():
+                # Draw with pyglet here
+        """
+        # Ensure projection and view matrices are set in pyglet
+        self.window.projection = Mat4.orthogonal_projection(
+            *self.projection_2d,
+            1, -1
+        )
+        # Global modelview matrix should be set to identity
+        self.window.view = Mat4()
+        try:
+            yield None
+        finally:
+            # Force arcade.gl to rebind programs
+            self.active_program = None
+            # Rebind the projection uniform block
+            self._projection_2d_buffer.bind_to_uniform_block(binding=0)
+            self.enable(self.BLEND)
+            self.blend_func = self.BLEND_DEFAULT
 
     def load_program(
         self,

@@ -7,6 +7,61 @@ Release Notes
 
 Keep up-to-date with the latest changes to the Arcade library by the release notes.
 
+UNRELEASED (2.6.0)
+------------------
+
+* Revamped text rendering
+* Texture atlases
+* Extended tilemap support
+* GUI improvements
+* Documentation restructuring
+* SpriteList optimization
+* ``arcade.get_pixel`` supports getting RGB and RGBA color value
+* .. more ...
+
+Version 2.5.7
+-------------
+
+Fixes
+~~~~~
+
+* The arcade gui should now respect the current viewport
+* Fixed an issue with UILabel allocating large amounts of
+  textures over time consuming a lot of memory
+* Fixed an issue with the initial viewport sometimes being
+  1 pixel too small causing some artifacts
+* Fixed a race condition in ``Sound.stop()`` sometimes
+  causing a crash
+* Fixed an issue in requirements causing issues for poetry
+* Fixed an error reporting issue when reaching maximum
+  texture size
+
+New Features
+~~~~~~~~~~~~
+
+**replit.com**
+
+Arcade should now work out of the box on replit.com. We detect
+when arcade runs in replit tweaking various settings. One important
+setting we disable is antialiasing since this doesn't work
+well with software rendering.
+
+**Alternative Garbage Collection of OpenGL Resources**
+
+``arcade.gl.Context`` now supports an alternative garbage collection mode more
+compatible with threaded applications and garbage collection of OpenGL resources.
+OpenGL resources can only be accessed or destroyed from the same thread the
+window was created. In threaded applications the python garbage collector
+can in some cases try to destroy OpenGL objects possibly causing a hard crash.
+
+This can be configured when creating the ``arcade.Window`` passing in a new
+``gc_mode`` parameter. By default his parameter is ``"auto"`` providing
+the default garbage collection we have in python.
+
+Passing in ``"context_gc"`` on the other hand will move all "dead" OpenGL
+objects into ``Context.objects``. These can be garbage collected manually
+by calling ``Context.gc()`` in a more controlled way in the the right thread.
+
 Version 2.5.6
 -------------
 
@@ -188,47 +243,47 @@ Arcade 2.4.1 was released 2020-07-13.
 
 Arcade version 2.4 is a major enhancement release to Arcade.
 
-.. image:: examples/light_demo.png
+.. image:: ../examples/light_demo.png
     :width: 30%
     :class: inline-image
     :target: examples/light_demo.html
 
-.. image:: examples/astar_pathfinding.png
+.. image:: ../examples/astar_pathfinding.png
     :width: 30%
     :class: inline-image
     :target: examples/astar_pathfinding.html
 
-.. image:: examples/mini_map_defender.png
+.. image:: ../examples/mini_map_defender.png
     :width: 30%
     :class: inline-image
     :target: examples/mini_map_defender.html
 
-.. image:: examples/bloom_defender.png
+.. image:: ../examples/bloom_defender.png
     :width: 30%
     :class: inline-image
     :target: examples/bloom_defender.html
 
-.. image:: examples/gui_elements.png
+.. image:: ../examples/gui_elements.png
     :width: 30%
     :class: inline-image
     :target: examples/gui_elements.html
 
-.. image:: tutorials/pymunk_platformer/title_animated_gif.gif
+.. image:: ../tutorials/pymunk_platformer/title_animated_gif.gif
     :width: 30%
     :class: inline-image
     :target: tutorials/pymunk_platformer/index.html
 
-.. image:: tutorials/gpu_particle_burst/explosions.gif
+.. image:: ../tutorials/gpu_particle_burst/explosions.gif
     :width: 30%
     :class: inline-image
     :target: tutorials/gpu_particle_burst/index.html
 
-.. image:: tutorials/card_game/animated.gif
+.. image:: ../tutorials/card_game/animated.gif
     :width: 30%
     :class: inline-image
     :target: tutorials/card_game/index.html
 
-.. image:: examples/transform_feedback.gif
+.. image:: ../examples/transform_feedback.png
     :width: 30%
     :class: inline-image
     :target: examples/transform_feedback.html
@@ -288,17 +343,17 @@ Version 2.4 Minor Features
   :data:`arcade.tilemap.process_layer` take in ``hit_box_algorithm`` and
   ``hit_box_detail`` parameters for hit box calculation.
 
-.. figure:: images/hit_box_algorithm_none.png
+.. figure:: ../images/hit_box_algorithm_none.png
    :width: 40%
 
    hit_box_algorithm = "None"
 
-.. figure:: images/hit_box_algorithm_simple.png
+.. figure:: ../images/hit_box_algorithm_simple.png
    :width: 55%
 
    hit_box_algorithm = "Simple"
 
-.. figure:: images/hit_box_algorithm_detailed.png
+.. figure:: ../images/hit_box_algorithm_detailed.png
    :width: 75%
 
    hit_box_algorithm = "Detailed"

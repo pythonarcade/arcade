@@ -1,21 +1,7 @@
 """
 Low level tests for OpenGL 3.3 wrappers.
 """
-import array
 import pytest
-import arcade
-
-from pyglet import gl
-
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
-
-
-@pytest.fixture(scope="module")
-def ctx():
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, "Test OpenGL")
-    yield window.ctx
-    window.close()
 
 
 def test_ctx(ctx):
@@ -34,8 +20,9 @@ def test_viewport(ctx):
     assert ctx.viewport == vp
 
 
-def test_projection(ctx):
-    assert ctx.projection_2d == (0, SCREEN_WIDTH - 1, 0, SCREEN_HEIGHT - 1)
+def test_projection(window):
+    ctx = window.ctx
+    assert ctx.projection_2d == (0, window.width, 0, window.height)
     ctx.projection_2d = (1, 10, 2, 11)
     assert ctx.projection_2d == (1, 10, 2, 11)
 
@@ -44,6 +31,8 @@ def test_projection(ctx):
 
     with pytest.raises(ValueError):
         ctx.projection_2d = 1, 2, 3, 4, 5
+
+    # ctx.projection_2d = 0, window.width, 0, window.height
 
 
 def test_point_size(ctx):

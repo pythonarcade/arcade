@@ -156,8 +156,15 @@ class Texture:
         self.wrap_x = wrap_x or self._wrap_x
         self.wrap_y = wrap_y or self._wrap_y
 
+        if self._ctx.gc_mode == "auto":
+            weakref.finalize(self, Texture.delete_glo, self._ctx, glo)
+
         self.ctx.stats.incr("texture")
-        weakref.finalize(self, Texture.release, self._ctx, glo)
+
+    def __del__(self):
+        # Intercept garbage collection if we are using Context.gc()
+        if self._ctx.gc_mode == "context_gc":
+            self._ctx.objects.append(self)
 
     def _texture_2d(self, data):
         """Create a 2D texture"""
@@ -531,8 +538,15 @@ class Texture:
         gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAX_LEVEL, max_level)
         gl.glGenerateMipmap(gl.GL_TEXTURE_2D)
 
+    def delete(self):
+        """
+        Destroy the underlying OpenGL resource.
+        Don't use this unless you know exactly what you are doing.
+        """
+        Texture.delete_glo(self._ctx, self._glo)
+
     @staticmethod
-    def release(ctx: "Context", glo: gl.GLuint):
+    def delete_glo(ctx: "Context", glo: gl.GLuint):
         """
         Destroy the texture.
         This is called automatically when the object is garbage collected.

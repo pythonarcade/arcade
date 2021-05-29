@@ -1,6 +1,6 @@
 import arcade
 
-def test_rotation_mirror():
+def test_rotation_mirror(window):
     # Read in the tiled map
     my_map = arcade.tilemap.read_map("../tiled_maps/rotation.json")
 

@@ -32,7 +32,7 @@ To get an impression of these elements run ``python -m arcade.gui.examples.show_
 
 """
 from abc import abstractmethod
-from typing import Optional, Tuple, Set
+from typing import Optional, Tuple, Set, TYPE_CHECKING
 from uuid import uuid4
 
 from pyglet.event import EventDispatcher
@@ -42,6 +42,9 @@ from arcade import Texture
 from arcade.gui.events import UIEvent, MOUSE_PRESS, MOUSE_RELEASE
 from arcade.gui.exceptions import UIException
 from arcade.gui.style import UIStyle
+
+if TYPE_CHECKING:
+    from arcade.gui.manager import UIManager
 
 
 class UIElement(arcade.Sprite):

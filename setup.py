@@ -5,9 +5,9 @@ from os import path
 from setuptools import find_namespace_packages, setup
 
 if sys.platform == "darwin":
-    required_python_version=">=3.6,<3.9"
+    required_python_version=">=3.6"
 else:
-    required_python_version=">=3.6,<3.10"
+    required_python_version=">=3.6"
 
 exec(open("arcade/version.py").read())
 
@@ -28,12 +28,10 @@ setup(
     install_requires=[
         "pyglet==2.0dev2",
         "pillow~=8.1",
-        "numpy==1.20.1; python_version > '3.6'",
-        "numpy==1.19.5; python_version < '3.7'",
         "pymunk~=6.0.0",
         "pyyaml~=5.4",
         "shapely==1.7.1",
-        "pytiled-parser==1.4.0",
+        "pytiled-parser==1.5.0",
         "dataclasses; python_version < '3.7'",
     ],
     extras_require={
@@ -51,6 +49,7 @@ setup(
             "sphinx_copybutton",
             "dirsync",
             "wheel",
+            "numpy",
         ],
     },
     packages=find_namespace_packages(

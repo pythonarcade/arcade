@@ -6,7 +6,8 @@ recursive-include arcade *.typed
 recursive-include arcade/resources *.txt *.md *.url
 recursive-include arcade/resources *.mp3 *.wav *.ogg
 recursive-include arcade/resources *.png *.jpg *.gif
-recursive-include arcade/resources *.tmx *.tsx
+recursive-include arcade/resources *.tmx *.tsx *.json
 recursive-include arcade/resources *.glsl
 recursive-include arcade/resources *.yml
 recursive-include arcade/lib *.dylib
+recursive-exclude arcade .mypy_cache/**
