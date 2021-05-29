@@ -111,19 +111,19 @@ class MyGame(arcade.Window):
         # Keep track of the score
         self.score = 0
 
-        # Create the Sprite lists
-        player_list = arcade.SpriteList()
+        # Add Player Spritelist before "Foreground" layer. This will make the foreground
+        # be drawn after the player, making it appear to be in front of the Player.
+        # Setting before using scene.add_sprite allows us to define where the SpriteList
+        # will be in the draw order. If we just use add_sprite, it will be appended to the
+        # end of the order.
+        self.scene.add_sprite_list_before("Player", LAYER_NAME_FOREGROUND)
 
         # Set up the player, specifically placing it at these coordinates.
         image_source = ":resources:images/animated_characters/female_adventurer/femaleAdventurer_idle.png"
         self.player_sprite = arcade.Sprite(image_source, CHARACTER_SCALING)
         self.player_sprite.center_x = PLAYER_START_X
         self.player_sprite.center_y = PLAYER_START_Y
-        player_list.append(self.player_sprite)
-
-        # Add Player Spritelist before "Foreground" layer. This will make the foreground
-        # be drawn after the player, making it appear to be in front of the Player.
-        self.scene.add_sprite_list_before("Player", player_list, LAYER_NAME_FOREGROUND)
+        self.scene.add_sprite("Player", self.player_sprite)
 
         # --- Load in a map from the tiled editor ---
 

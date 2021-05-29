@@ -98,10 +98,7 @@ class MyGame(arcade.Window):
         self.player_sprite = arcade.Sprite(image_source, CHARACTER_SCALING)
         self.player_sprite.center_x = 128
         self.player_sprite.center_y = 128
-        player_list.append(self.player_sprite)
-
-        # Add Player SpriteList to Scene
-        self.scene.add_sprite_list("Player", player_list)
+        self.scene.add_sprite("Player", self.player_sprite)
 
         # --- Other stuff
         # Set the background color

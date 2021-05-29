@@ -258,26 +258,15 @@ class MyGame(arcade.Window):
         # Keep track of the score
         self.score = 0
 
-        # Create the Sprite lists
-        player_list = arcade.SpriteList()
-        background_list = arcade.SpriteList()
-        wall_list = arcade.SpriteList()
-        coin_list = arcade.SpriteList()
-        enemy_list = arcade.SpriteList()
-
         # Set up the player, specifically placing it at these coordinates.
         self.player_sprite = PlayerCharacter()
-
         self.player_sprite.center_x = (
             self.tile_map.tiled_map.tile_size[0] * TILE_SCALING * PLAYER_START_X
         )
         self.player_sprite.center_y = (
             self.tile_map.tiled_map.tile_size[1] * TILE_SCALING * PLAYER_START_Y
         )
-        player_list.append(self.player_sprite)
-
-        # Add Player SpriteList to Scene
-        self.scene.add_sprite_list(LAYER_NAME_PLAYER, player_list)
+        self.scene.add_sprite(LAYER_NAME_PLAYER, self.player_sprite)
 
         # Calculate the right edge of the my_map in pixels
         self.end_of_map = self.tile_map.tiled_map.map_size.width * GRID_PIXEL_SIZE
@@ -302,10 +291,7 @@ class MyGame(arcade.Window):
                 * TILE_SCALING
                 * self.tile_map.tiled_map.tile_size[1]
             )
-            enemy_list.append(enemy)
-
-        # Add Enemy SpriteList to Scene
-        self.scene.add_sprite_list(LAYER_NAME_ENEMIES, enemy_list)
+            self.scene.add_sprite(LAYER_NAME_ENEMIES, enemy)
 
         # --- Other stuff
         # Set the background color
@@ -442,7 +428,7 @@ class MyGame(arcade.Window):
         )
 
         # Update walls, used with moving platforms
-        self.scene.update(LAYER_NAME_MOVING_PLATFORMS)
+        self.scene.update([LAYER_NAME_MOVING_PLATFORMS])
 
         # See if the moving wall hit a boundary and needs to reverse direction.
         for wall in self.scene.get_sprite_list(LAYER_NAME_MOVING_PLATFORMS):
