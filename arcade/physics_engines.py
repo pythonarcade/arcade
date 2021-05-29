@@ -244,10 +244,7 @@ class PhysicsEngineSimple:
         :Returns: SpriteList with all sprites contacted. Empty list if no sprites.
         """
 
-        complete_hit_list = []
-        for walls_list in self.walls:
-            complete_hit_list.append(_move_sprite(self.player_sprite, walls_list, ramp_up=False))
-        return complete_hit_list
+        return _move_sprite(self.player_sprite, self.walls, ramp_up=False)
 
 
 class PhysicsEnginePlatformer:
@@ -271,7 +268,7 @@ class PhysicsEnginePlatformer:
         :param float gravity_constant: Downward acceleration per frame
         :param SpriteList ladders: Ladders the user can climb on
         """
-        self.ladders: List[SpriteList]
+        self.ladders: Optional[List[SpriteList]]
         self.platforms: Optional[List[SpriteList]]
 
         if ladders:
