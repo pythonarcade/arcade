@@ -200,6 +200,7 @@ def draw_parabola_outline(start_x: float, start_y: float, end_x: float,
 
 def draw_circle_filled(center_x: float, center_y: float, radius: float,
                        color: Color,
+                       tilt_angle: float = 0,
                        num_segments: int = -1):
     """
     Draw a filled-in circle.
@@ -209,19 +210,23 @@ def draw_circle_filled(center_x: float, center_y: float, radius: float,
     :param float radius: width of the circle.
     :param Color color: color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
+    :param float tilt_angle: Angle in degrees to tilt the circle. Useful for low segment count circles
     :param int num_segments: Number of triangle segments that make up this
          circle. Higher is better quality, but slower render time.
-         The default value of -1 means arcade will try to calulate a reasonable
+         The default value of -1 means arcade will try to calculate a reasonable
          amount of segments based on the size of the circle.
     """
     # width = radius * 2
     # height = radius * 2
     # draw_ellipse_filled(center_x, center_y, width, height, color, num_segments=num_segments)
-    draw_ellipse_filled(center_x, center_y, radius * 2, radius * 2, color, 0, num_segments)
+    draw_ellipse_filled(center_x, center_y, radius * 2, radius * 2, color,
+                        tilt_angle=tilt_angle,
+                        num_segments=num_segments)
 
 
 def draw_circle_outline(center_x: float, center_y: float, radius: float,
                         color: Color, border_width: float = 1,
+                        tilt_angle: float = 0,
                         num_segments: int = -1):
     """
     Draw the outline of a circle.
@@ -232,9 +237,10 @@ def draw_circle_outline(center_x: float, center_y: float, radius: float,
     :param Color color: color, specified in a list of 3 or 4 bytes in RGB or
          RGBA format.
     :param float border_width: Width of the circle outline in pixels.
+    :param float tilt_angle: Angle in degrees to tilt the circle. Useful for low segment count circles
     :param int num_segments: Number of triangle segments that make up this
          circle. Higher is better quality, but slower render time.
-         The default value of -1 means arcade will try to calulate a reasonable
+         The default value of -1 means arcade will try to calculate a reasonable
          amount of segments based on the size of the circle.
     """
     # width = radius * 2
@@ -245,6 +251,7 @@ def draw_circle_outline(center_x: float, center_y: float, radius: float,
                          width=radius * 2, height=radius * 2,
                          color=color,
                          border_width=border_width,
+                         tilt_angle=tilt_angle,
                          num_segments=num_segments)
 
 # --- END CIRCLE FUNCTIONS # # #
@@ -267,7 +274,7 @@ def draw_ellipse_filled(center_x: float, center_y: float,
     :param float tilt_angle: Angle in degrees to tilt the ellipse.
     :param int num_segments: Number of triangle segments that make up this
          circle. Higher is better quality, but slower render time.
-         The default value of -1 means arcade will try to calulate a reasonable
+         The default value of -1 means arcade will try to calculate a reasonable
          amount of segments based on the size of the circle.
     """
     window = get_window()
@@ -315,9 +322,11 @@ def draw_ellipse_filled(center_x: float, center_y: float,
     # _generic_draw_line_strip(point_list, color, gl.GL_TRIANGLE_FAN)
 
 
-def draw_ellipse_outline(center_x: float, center_y: float, width: float,
+def draw_ellipse_outline(center_x: float, center_y: float,
+                         width: float,
                          height: float, color: Color,
-                         border_width: float = 1, tilt_angle: float = 0,
+                         border_width: float = 1,
+                         tilt_angle: float = 0,
                          num_segments: int = -1):
     """
     Draw the outline of an ellipse.
@@ -334,6 +343,7 @@ def draw_ellipse_outline(center_x: float, center_y: float, width: float,
          circle. Higher is better quality, but slower render time.
          The default value of -1 means arcade will try to calculate a reasonable
          amount of segments based on the size of the circle.
+    :param float tilt_angle: Tile of the circle. Useful when drawing a circle with a low segment count
     """
     window = get_window()
     ctx = window.ctx
