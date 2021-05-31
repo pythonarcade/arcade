@@ -5,7 +5,7 @@ The long term goal is to rely on pyglet's texture atlas, but
 it's still unclear what features we need supported in arcade
 so need to prototype something to get started.
 
-We're still bulding on pyglet's allocator.
+We're still building on pyglet's allocator.
 
 Pyglet atlases are located here:
 https://github.com/einarf/pyglet/blob/master/pyglet/image/atlas.py
@@ -54,7 +54,7 @@ class AtlasRegion:
         :param str atlas: The atlas this region belongs to
         :param str texture: The arcade texture
         :param int x: The x position of the texture
-        :param int y: The y position fo the texture
+        :param int y: The y position of the texture
         :param int width: The width of the texture in pixels
         :param int height: The height of the texture in pixels
         """
@@ -76,7 +76,7 @@ class AtlasRegion:
 class TextureAtlas:
     """
     A texture atlas is a large texture containing several textures
-    so OpenGL can easily batch draw thousands or hundreds of thouands
+    so OpenGL can easily batch draw thousands or hundreds of thousands
     of sprites on one draw operation.
 
     This is a fairly simple atlas that stores horizontal strips were

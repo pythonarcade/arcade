@@ -14,7 +14,7 @@ uniform Projection {
 } proj;
 
 uniform int segments;
-// [w, h, tilt, thinkness]
+// [w, h, tilt, thickness]
 uniform vec4 shape;
 
 void main() {
@@ -42,8 +42,8 @@ void main() {
     // sin(v), cos(v) travels clockwise around the circle starting at 0, 1 (top of circle)
     float step = PI * 2 / segments_selected;
 
-    // Draw thick circle with triangle strip. This can be handled as a single primive by the gpu.
-    // Number of vertices is segments * 2 + 2, so we need to emit the inital vertex first
+    // Draw thick circle with triangle strip. This can be handled as a single primitive by the gpu.
+    // Number of vertices is segments * 2 + 2, so we need to emit the initial vertex first
 
     // First outer vertex
     vec2 p_start = vec2(sin(0), cos(0)) * shape.xy;
