@@ -1,5 +1,3 @@
-import PIL.Image
-
 import arcade
 
 import logging
