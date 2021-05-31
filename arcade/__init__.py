@@ -258,6 +258,7 @@ from .text import create_text_sprite
 from .tilemap import get_tilemap_layer
 from .tilemap import process_layer
 from .tilemap import read_map
+from .tilemap import read_tmx
 
 from .pymunk_physics_engine import PymunkPhysicsEngine
 from .pymunk_physics_engine import PymunkPhysicsObject
@@ -281,12 +282,10 @@ from arcade import experimental
 
 __all__ = ['AStarBarrierList',
            'AnimatedTimeBasedSprite',
-           'AnimatedTimeSprite',
            'AnimatedWalkingSprite',
            'AnimationKeyframe',
            'ArcadeContext',
            'Color',
-           'CreateText',
            'DEFAULT_FONT_NAMES',
            'EmitBurst',
            'EmitController',
