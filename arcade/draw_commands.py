@@ -241,7 +241,11 @@ def draw_circle_outline(center_x: float, center_y: float, radius: float,
     # height = radius * 2
     # draw_ellipse_outline(center_x, center_y, width, height,
     #                      color, border_width, num_segments=num_segments)
-    draw_ellipse_outline(center_x, center_y, radius * 2, radius * 2, color, border_width, num_segments)
+    draw_ellipse_outline(center_x=center_x, center_y=center_y,
+                         width=radius * 2, height=radius * 2,
+                         color=color,
+                         border_width=border_width,
+                         num_segments=num_segments)
 
 # --- END CIRCLE FUNCTIONS # # #
 
