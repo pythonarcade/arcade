@@ -12,6 +12,7 @@ from arcade import Sprite
 from arcade import SpriteList
 from arcade import get_distance
 
+
 def _circular_check(player, walls):
     """
     This is a horrible kludge to 'guess' our way out of a collision
