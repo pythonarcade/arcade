@@ -3,6 +3,7 @@ The main window class that all object-oriented applications should
 derive from.
 """
 import logging
+import os
 import time
 from numbers import Number
 from typing import Tuple, Optional
@@ -64,7 +65,8 @@ class Window(pyglet.window.Window):
                  gl_version: Tuple[int, int] = (3, 3),
                  screen: pyglet.canvas.Screen = None,
                  visible: bool=True,
-                 vsync: bool = False):
+                 vsync: bool = False,
+                 gc_mode: str = "auto"):
         """
         Construct a new window
 
@@ -80,7 +82,14 @@ class Window(pyglet.window.Window):
         :param bool visible: Should the window be visible immediately
         :param bool vsync: Wait for vertical screen refresh before swapping buffer
                            This can make animations and movement look smoother.
+        :param bool gc_mode: Decides how opengl objects should be garbage collected
         """
+        # In certain environments (mainly headless) we can't have antialiasing/MSAA enabled.
+        # TODO: Detect other headless environments
+        # Detect replit environment 
+        if os.environ.get("REPL_ID"):
+            antialiasing = False
+
         if antialiasing:
             config = pyglet.gl.Config(major_version=gl_version[0],
                                       minor_version=gl_version[1],
@@ -124,7 +133,8 @@ class Window(pyglet.window.Window):
         self.textbox_time = 0.0
         self.key: Optional[int] = None
 
-        self._ctx: ArcadeContext = ArcadeContext(self)
+        self._ctx: ArcadeContext = ArcadeContext(self, gc_mode=gc_mode)
+        set_viewport(0, self.width, 0, self.height)
         self._background_color: Color = (0, 0, 0, 0)
 
     @property

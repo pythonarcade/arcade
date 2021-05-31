@@ -11,6 +11,7 @@ import pyglet
 pyglet.options["audio"] = ("openal", "xaudio2", "directsound", "pulse", "silent")
 
 import pyglet.media as media
+
 from arcade.resources import resolve_resource_path
 
 
@@ -69,7 +70,8 @@ class Sound:
         """
         player.pause()
         player.delete()
-        media.Source._players.remove(player)
+        if player in media.Source._players:
+            media.Source._players.remove(player)
 
     def get_length(self) -> float:
         """ Get length of audio in seconds """
@@ -175,4 +177,5 @@ def stop_sound(player: media.Player):
     """
     player.pause()
     player.delete()
-    media.Source._players.remove(player)
+    if player in media.Source._players:
+        media.Source._players.remove(player)
