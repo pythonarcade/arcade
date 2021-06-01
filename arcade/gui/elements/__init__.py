@@ -56,7 +56,8 @@ class UIElement(arcade.Sprite):
     and a id based identification.
 
     Style values are resolved depending on the
-    :py:property:`arcade.gui.UIElement().id`, :py:attr:`arcade.gui.UIElement().style_classes`, and element specific style attributes.
+    :py:attr:`arcade.gui.UIElement().id`, :py:attr:`arcade.gui.UIElement().style_classes`,
+    and element specific style attributes.
 
     :py:class:`arcade.gui.UIElement` implements :py:class:`arcade.Sprite`.
     Subclasses have to implement :py:meth:`arcade.gui.UIElement.render()` and set the :py:attr:`arcade.Sprite.texture`
