@@ -17,3 +17,5 @@ before the camera starts scrolling.
 .. note::
 
     Work at changing the viewport margins to something that you like.
+
+* :ref:`05_scrolling`

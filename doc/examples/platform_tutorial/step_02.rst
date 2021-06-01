@@ -123,3 +123,5 @@ Notice that the code creates ``Sprites`` three ways:
     * Adjust the code and try putting sprites in new positions.
     * Use different images for sprites (see the images folder).
     * Practice placing individually, via a loop, and by coordinates in a list.
+
+* :ref:`02_draw_sprites_diff`
