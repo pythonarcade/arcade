@@ -1,40 +1,122 @@
+.. _Tiled Map Editor: https://www.mapeditor.org/
 
 .. _platformer_part_nine:
 
-Step 9 - Multiple Levels and Other Layers
------------------------------------------
+Step 9 - Use a Map Editor
+-------------------------
 
-Here's an expanded example:
+.. image:: use_tileset.png
+    :width: 70%
 
-* This adds foreground, background, and "Don't Touch" layers.
+Create a Map File
+~~~~~~~~~~~~~~~~~
 
-  * The background tiles appear behind the player
-  * The foreground appears in front of the player
-  * The Don't Touch layer will reset the player to the start (228-237)
+For this part, we'll restart with a new program. Instead of placing our tiles
+by code, we'll use a map editor.
 
-* The player resets to the start if they fall off the map (217-226)
-* If the player gets to the right side of the map, the program attempts to load another layer
+Download and install the `Tiled Map Editor`_. (Think about donating, as it is
+a wonderful project.)
 
-  * Add ``level`` attribute (69-70)
-  * Updated ``setup`` to load a file based on the level (76-144, specifically lines 77 and 115)
-  * Added end-of-map check(245-256)
+Open a new file with options similar to these:
 
-.. literalinclude:: ../../../arcade/examples/platform_tutorial/09_endgame.py
-    :caption: More Advanced Example
+* Orthogonal - This is a normal square-grid layout. It is the only version that
+  Arcade supports very well at this time.
+* Tile layer format - This selects how the data is stored inside the file. Any option works, but Base64
+  zlib compressed is the smallest.
+* Tile render order - Any of these should work. It simply specifies what order the tiles are
+  added. Right-down has tiles added left->right and top->down.
+* Map size - You can change this later, but this is your total grid size.
+* Tile size - the size, in pixels, of your tiles. Your tiles all need to be the same size.
+  Also, rendering works better if the tile size is a power of 2, such as
+  16, 32, 64, 128, and 256.
+
+.. image:: new_file.png
+   :scale: 80%
+
+.. Note::
+
+   Arcade can only work with JSON maps from Tiled. TMX maps will not work. Make sure to save/export your maps accordingly.
+
+Save it as ``map.json``.
+
+Rename the layer "Platforms". We'll use layer names to load our data later. Eventually
+you might have layers for:
+
+* Platforms that you run into (or you can think of them as walls)
+* Coins or objects to pick up
+* Background objects that you don't interact with, but appear behind the player
+* Foreground objects that you don't interact with, but appear in front of the player
+* Insta-death blocks (like lava)
+* Ladders
+
+.. Note::
+
+    Once you get multiple layers it is VERY easy to add items to the wrong
+    layer.
+
+.. image:: platforms.png
+   :scale: 80%
+
+Create a Tileset
+~~~~~~~~~~~~~~~~
+
+Before we can add anything to the layer we need to create a set of tiles.
+This isn't as obvious or intuitive as it should be. To create a new tileset
+click "New Tileset" in the window on the lower right:
+
+.. image:: new_tileset.png
+   :scale: 80%
+
+Right now, Arcade only supports a "collection of images" for a tileset.
+I find it convenient to embed the tileset in the map.
+
+.. image:: new_tileset_02.png
+   :scale: 80%
+
+Once you create a new tile, the button to add tiles to the tileset is
+hard to find. Click the wrench:
+
+.. image:: new_tileset_03.png
+   :scale: 80%
+
+Then click the 'plus' and add in your tiles
+
+.. image:: new_tileset_04.png
+   :scale: 80%
+
+Draw a Level
+~~~~~~~~~~~~
+
+At this point you should be able to "paint" a level. At the very least, put
+in a floor and then see if you can get this program working. (Don't put
+in a lot of time designing a level until you are sure you can get it to
+load.)
+
+We are able to load in the map file to a ``TileMap`` object, and then use that
+object to create our scene. This will take all of the layers in the map and load
+them in as SpriteLists, and set their draw orders in the scene to however they are
+defined in the map file. You can access the SpriteLists directly the same way you do
+with a normal scene. The SpriteLists are named according to the layer names from Tiled.
+
+Test the Level
+~~~~~~~~~~~~~~
+
+.. literalinclude:: ../../../arcade/examples/platform_tutorial/09_load_map.py
+    :caption: Load a .json file from Tiled Map Editor
     :linenos:
-    :emphasize-lines: 69-70, 77, 114-115, 248-259
+    :emphasize-lines: 41-42, 69-84, 103-106
 
 .. note::
 
-    What else might you want to do?
+    You can set the **background color** of the map by selecting "Map...Map Properties".
+    Then click on the three dots to pull up a color picker.
 
-    * :ref:`sprite_enemies_in_platformer`
-    * :ref:`sprite_face_left_or_right`
-    * Bullets (or something you can shoot)
+    You can edit the **hitbox** of a tile to make ramps
+    or platforms that only cover a portion of the rectangle in the grid.
 
-      * :ref:`sprite_bullets`
-      * :ref:`sprite_bullets_aimed`
-      * :ref:`sprite_bullets_enemy_aims`
+    To edit the hitbox, use the polygon tool (only) and draw a polygon around
+    the item. You can hold down "CTRL" when positioning a point to get the exact
+    corner of an item.
 
-    * Add :ref:`sprite_explosion_bitmapped`
-    * Add :ref:`sprite_move_animation`
+    .. image:: collision_editor.png
+       :scale: 20%
