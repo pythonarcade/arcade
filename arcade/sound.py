@@ -31,7 +31,7 @@ class Sound:
 
         self.source: Union[media.StaticSource, media.StreamingSource] = media.load(self.file_name, streaming=streaming)
 
-        self.min_distance = 100000000 #setting the players to this allows for 2D panning with 3D audio
+        self.min_distance = 100000000  # setting the players to this allows for 2D panning with 3D audio
 
     def play(self, volume: float = 1.0, pan: float = 0.0, loop: bool = False) -> media.Player:
         """
@@ -125,7 +125,7 @@ class Sound:
         return player.time
 
 
-def load_sound(path: Union[str, Path], streaming: bool =False) -> Optional[Sound]:
+def load_sound(path: Union[str, Path], streaming: bool = False) -> Optional[Sound]:
     """
     Load a sound.
 
@@ -143,6 +143,7 @@ def load_sound(path: Union[str, Path], streaming: bool =False) -> Optional[Sound
         return sound
     except Exception as ex:
         raise FileNotFoundError(f'Unable to load sound file: "{file_name}". Exception: {ex}')
+
 
 def play_sound(
     sound: Sound, volume: float = 1.0, pan: float = 0.0, looping: bool = False

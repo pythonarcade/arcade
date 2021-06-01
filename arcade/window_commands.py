@@ -58,8 +58,8 @@ def create_orthogonal_projection(
         right,
         bottom,
         top,
-        near = 1,
-        far = -1,
+        near=1,
+        far=-1,
 ) -> Mat4:
     """
     Creates an orthogonal projection matrix. Used internally with the
@@ -76,7 +76,7 @@ def create_orthogonal_projection(
     :return: A projection matrix representing the specified orthogonal perspective.
     :rtype: Mat4
 
-    .. seealso:: http://msdn.microsoft.com/en-us/library/dd373965(v=vs.85).aspx
+    .. seealso:: https://msdn.microsoft.com/en-us/library/dd373965(v=vs.85).aspx
     """
     return Mat4.orthogonal_projection(left, right, bottom, top, near, far)
 
@@ -265,8 +265,6 @@ def run():
 
             with timer_resolution(msecs=10):
                 pyglet.app.run()
-
-
 
 
 def quick_run(time_to_pause: Number):

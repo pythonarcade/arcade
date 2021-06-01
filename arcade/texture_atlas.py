@@ -229,6 +229,7 @@ class TextureAtlas:
 
         This is used internally by ``SpriteList``.
 
+        :param textures: List of Texture objects
         :param bool keep_old_textures: Keep old textures around
         """
         new_textures = textures - self._textures

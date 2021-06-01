@@ -367,7 +367,7 @@ class PymunkPhysicsEngine:
         grounding = self.check_grounding(sprite)
         body = self.get_physics_object(sprite).body
         if not body:
-           raise ValueError("Physics body not set.")
+            raise ValueError("Physics body not set.")
 
         if body.force[0] and grounding and grounding['body']:
             grounding['body'].apply_force_at_world_point((-body.force[0], 0), grounding['position'])

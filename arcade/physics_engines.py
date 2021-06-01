@@ -45,6 +45,7 @@ def _circular_check(player, walls):
                 return
         vary *= 2
 
+
 def _move_sprite(moving_sprite: Sprite, walls: SpriteList, ramp_up: bool):
 
     # start_time = time.time()
