@@ -7,6 +7,7 @@ import math
 import os
 
 import arcade
+import pytiled_parser
 
 # Constants
 SCREEN_WIDTH = 1000
@@ -68,6 +69,7 @@ class Entity(arcade.Sprite):
         # Used for image sequences
         self.cur_texture = 0
         self.scale = CHARACTER_SCALING
+        self.character_face_direction = RIGHT_FACING
 
         main_path = f":resources:images/animated_characters/{name_folder}/{name_file}"
 
@@ -93,8 +95,8 @@ class Entity(arcade.Sprite):
 
         # Hit box will be set based on the first image used. If you want to specify
         # a different hit box, you can do it like the code below.
-        # self.set_hit_box([[-22, -64], [22, -64], [22, 28], [-22, 28]])
-        self.set_hit_box(self.texture.hit_box_points)
+        # set_hit_box = [[-22, -64], [22, -64], [22, 28], [-22, 28]]
+        self.hit_box = self.texture.hit_box_points
 
 
 class Enemy(Entity):
@@ -283,6 +285,8 @@ class MyGame(arcade.Window):
                 enemy = RobotEnemy()
             elif enemy_type == "zombie":
                 enemy = ZombieEnemy()
+            else:
+                raise Exception(f"Unknown enemy type {enemy_type}.")
             enemy.center_x = math.floor(
                 cartesian[0] * TILE_SCALING * self.tile_map.tiled_map.tile_size[0]
             )

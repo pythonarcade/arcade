@@ -24,6 +24,7 @@ class MyFlatButton(arcade.gui.UIFlatButton):
         """ Called when user lets off button """
         print("Click flat button. ")
 
+
 class MyGhostFlatButton(arcade.gui.UIGhostFlatButton):
     """
     For this subclass, we create a custom init, that takes in another

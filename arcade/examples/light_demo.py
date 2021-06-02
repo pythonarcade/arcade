@@ -5,7 +5,7 @@ Show how to use lights.
           functions may still change. To use, you will need to install one of the
           pre-release packages, or install via GitHub.
 
-Artwork from http://kenney.nl
+Artwork from https://kenney.nl
 
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.light_demo

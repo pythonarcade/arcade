@@ -5,7 +5,7 @@ A-Star Path-finding
           functions may still change. To use, you will need to install one of the
           pre-release packages, or install via GitHub.
 
-Artwork from http://kenney.nl
+Artwork from https://kenney.nl
 
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.astar_pathfinding
@@ -17,7 +17,7 @@ import random
 
 SPRITE_IMAGE_SIZE = 128
 SPRITE_SCALING = 0.25
-SPRITE_SIZE = SPRITE_IMAGE_SIZE * SPRITE_SCALING
+SPRITE_SIZE = int(SPRITE_IMAGE_SIZE * SPRITE_SCALING)
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -86,7 +86,8 @@ class MyGame(arcade.Window):
         self.enemy_list = arcade.SpriteList()
 
         # Set up the player
-        self.player = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", SPRITE_SCALING)
+        self.player = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
+                                    SPRITE_SCALING)
         self.player.center_x = SPRITE_SIZE * 5
         self.player.center_y = SPRITE_SIZE * 1
         self.player_list.append(self.player)
@@ -151,100 +152,89 @@ class MyGame(arcade.Window):
         """
         Render the screen.
         """
-        try:
-            # This command has to happen before we start drawing
-            arcade.start_render()
+        # This command has to happen before we start drawing
+        arcade.start_render()
 
-            # Draw all the sprites.
-            self.player_list.draw()
-            self.wall_list.draw()
-            self.enemy_list.draw()
+        # Draw all the sprites.
+        self.player_list.draw()
+        self.wall_list.draw()
+        self.enemy_list.draw()
 
-            if self.path:
-                arcade.draw_line_strip(self.path, arcade.color.BLUE, 2)
-
-        except Exception:
-
-            import traceback
-            traceback.print_exc()
+        if self.path:
+            arcade.draw_line_strip(self.path, arcade.color.BLUE, 2)
 
     def on_update(self, delta_time):
         """ Movement and game logic """
 
-        try:
-            # Calculate speed based on the keys pressed
-            self.player.change_x = 0
-            self.player.change_y = 0
+        # Calculate speed based on the keys pressed
+        self.player.change_x = 0
+        self.player.change_y = 0
 
-            if self.up_pressed and not self.down_pressed:
-                self.player.change_y = MOVEMENT_SPEED
-            elif self.down_pressed and not self.up_pressed:
-                self.player.change_y = -MOVEMENT_SPEED
-            if self.left_pressed and not self.right_pressed:
-                self.player.change_x = -MOVEMENT_SPEED
-            elif self.right_pressed and not self.left_pressed:
-                self.player.change_x = MOVEMENT_SPEED
+        if self.up_pressed and not self.down_pressed:
+            self.player.change_y = MOVEMENT_SPEED
+        elif self.down_pressed and not self.up_pressed:
+            self.player.change_y = -MOVEMENT_SPEED
+        if self.left_pressed and not self.right_pressed:
+            self.player.change_x = -MOVEMENT_SPEED
+        elif self.right_pressed and not self.left_pressed:
+            self.player.change_x = MOVEMENT_SPEED
 
-            # Update the character
-            self.physics_engine.update()
+        # Update the character
+        self.physics_engine.update()
 
-            # Calculate a path to the player
-            enemy = self.enemy_list[0]
-            # Set to True if we can move diagonally. Note that diagnonal movement
-            # might cause the enemy to clip corners.
-            self.path = arcade.astar_calculate_path(enemy.position,
-                                                    self.player.position,
-                                                    self.barrier_list,
-                                                    diagonal_movement=False)
-                # print(self.path,"->", self.player.position)
+        # Calculate a path to the player
+        enemy = self.enemy_list[0]
+        # Set to True if we can move diagonally. Note that diagnonal movement
+        # might cause the enemy to clip corners.
+        self.path = arcade.astar_calculate_path(enemy.position,
+                                                self.player.position,
+                                                self.barrier_list,
+                                                diagonal_movement=False)
+        # print(self.path,"->", self.player.position)
 
-            # --- Manage Scrolling ---
+        # --- Manage Scrolling ---
 
-            # Keep track of if we changed the boundary. We don't want to call the
-            # set_viewport command if we didn't change the view port.
-            changed = False
+        # Keep track of if we changed the boundary. We don't want to call the
+        # set_viewport command if we didn't change the view port.
+        changed = False
 
-            # Scroll left
-            left_boundary = self.view_left + VIEWPORT_MARGIN
-            if self.player.left < left_boundary:
-                self.view_left -= left_boundary - self.player.left
-                changed = True
+        # Scroll left
+        left_boundary = self.view_left + VIEWPORT_MARGIN
+        if self.player.left < left_boundary:
+            self.view_left -= left_boundary - self.player.left
+            changed = True
 
-            # Scroll right
-            right_boundary = self.view_left + SCREEN_WIDTH - VIEWPORT_MARGIN
-            if self.player.right > right_boundary:
-                self.view_left += self.player.right - right_boundary
-                changed = True
+        # Scroll right
+        right_boundary = self.view_left + SCREEN_WIDTH - VIEWPORT_MARGIN
+        if self.player.right > right_boundary:
+            self.view_left += self.player.right - right_boundary
+            changed = True
 
-            # Scroll up
-            top_boundary = self.view_bottom + SCREEN_HEIGHT - VIEWPORT_MARGIN
-            if self.player.top > top_boundary:
-                self.view_bottom += self.player.top - top_boundary
-                changed = True
+        # Scroll up
+        top_boundary = self.view_bottom + SCREEN_HEIGHT - VIEWPORT_MARGIN
+        if self.player.top > top_boundary:
+            self.view_bottom += self.player.top - top_boundary
+            changed = True
 
-            # Scroll down
-            bottom_boundary = self.view_bottom + VIEWPORT_MARGIN
-            if self.player.bottom < bottom_boundary:
-                self.view_bottom -= bottom_boundary - self.player.bottom
-                changed = True
+        # Scroll down
+        bottom_boundary = self.view_bottom + VIEWPORT_MARGIN
+        if self.player.bottom < bottom_boundary:
+            self.view_bottom -= bottom_boundary - self.player.bottom
+            changed = True
 
-            # Make sure our boundaries are integer values. While the view port does
-            # support floating point numbers, for this application we want every pixel
-            # in the view port to map directly onto a pixel on the screen. We don't want
-            # any rounding errors.
-            self.view_left = int(self.view_left)
-            self.view_bottom = int(self.view_bottom)
+        # Make sure our boundaries are integer values. While the view port does
+        # support floating point numbers, for this application we want every pixel
+        # in the view port to map directly onto a pixel on the screen. We don't want
+        # any rounding errors.
+        self.view_left = int(self.view_left)
+        self.view_bottom = int(self.view_bottom)
 
-            # If we changed the boundary values, update the view port to match
-            if changed:
-                arcade.set_viewport(self.view_left,
-                                    SCREEN_WIDTH + self.view_left,
-                                    self.view_bottom,
-                                    SCREEN_HEIGHT + self.view_bottom)
-
-        except Exception:
-            import traceback
-            traceback.print_exc()
+        # If we changed the boundary values, update the view port to match
+        if changed:
+            arcade.set_viewport(self.view_left,
+                                SCREEN_WIDTH + self.view_left,
+                                self.view_bottom,
+                                SCREEN_HEIGHT + self.view_bottom)
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """

@@ -14,7 +14,6 @@ python -m arcade.experimental.bloom_defender
 import arcade
 import os
 import random
-import pyglet.gl as gl
 
 # --- Bloom related ---
 from arcade.experimental import postprocessing
@@ -112,6 +111,7 @@ class Player(arcade.SpriteSolidColor):
         elif self.top > SCREEN_HEIGHT - 1:
             self.top = SCREEN_HEIGHT - 1
 
+
 class Bullet(arcade.SpriteSolidColor):
     """ Bullet """
 
@@ -128,6 +128,7 @@ class Bullet(arcade.SpriteSolidColor):
         if self.distance > BULLET_MAX_DISTANCE:
             self.remove_from_sprite_lists()
 
+
 class Particle(arcade.SpriteSolidColor):
     """ Particle from explosion """
     def update(self):
@@ -139,6 +140,7 @@ class Particle(arcade.SpriteSolidColor):
         self.alpha -= 5
         if self.alpha <= 0:
             self.remove_from_sprite_lists()
+
 
 class MyGame(arcade.Window):
     """ Main application class. """

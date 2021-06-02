@@ -121,6 +121,7 @@ def rotate_point(x: float, y: float, cx: float, cy: float,
 
     return [x, y]
 
+
 def calculate_hit_box_points_simple(image):
     """
     Given an image, this returns points that make up a hit box around it. Attempts
@@ -249,6 +250,7 @@ def calculate_hit_box_points_simple(image):
     result = tuple(dict.fromkeys(result))
 
     return result
+
 
 def calculate_hit_box_points_detailed(image: Image, hit_box_detail: float = 4.5):
     """

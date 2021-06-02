@@ -14,19 +14,10 @@ from arcade.gui.layouts.manager import UILayoutManager
 from arcade.gui.style import UIStyle
 
 
-class TestUIManager(UIManager):
-    use_super_mouse_adjustment = False
-
+class InteractionMixin:
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.event_history: List[arcade.gui.events.UIEvent] = []
-
-    # For easier calculation we overwrite the adjustment, so events can test without floating point values
-    def adjust_mouse_coordinates(self, x, y):
-        if self.use_super_mouse_adjustment:
-            return super().adjust_mouse_coordinates(x, y)
-        else:
-            return x, y
 
     def move_mouse(self, x: int, y: int):
         self.dispatch_ui_event(
@@ -48,7 +39,6 @@ class TestUIManager(UIManager):
                 arcade.gui.events.MOUSE_RELEASE, x=x, y=y, button=button, modifier=0
             )
         )
-        self.on_mouse_motion(x, y, 0, 0)
 
     def click(self, x: int, y: int):
         self.click_and_hold(x, y)

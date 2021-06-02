@@ -545,7 +545,7 @@ def emitter_30():
             change_xy=arcade.rand_in_circle((0.0, 0.0), PARTICLE_SPEED_FAST),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
             scale=DEFAULT_SCALE,
-            alpha=random.uniform(32, 128)
+            alpha=int(random.uniform(32, 128))
         )
     )
     return emitter_30.__doc__, e

@@ -83,7 +83,7 @@ def main():
 
         # Any random y from in the top 2/3 of the screen.
         # No birds on the ground.
-        y = random.randrange(SCREEN_HEIGHT / 3, SCREEN_HEIGHT - 20)
+        y = random.randrange(SCREEN_HEIGHT // 3, SCREEN_HEIGHT - 20)
 
         # Draw the bird.
         draw_bird(x, y)

@@ -3,7 +3,7 @@ Sprite Change Coins
 
 This shows how you can change a sprite once it is hit, rather than eliminate it.
 
-Artwork from http://kenney.nl
+Artwork from https://kenney.nl
 
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.sprite_change_coins

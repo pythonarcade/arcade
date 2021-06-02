@@ -5,16 +5,18 @@ from os import path
 from setuptools import find_namespace_packages, setup
 
 if sys.platform == "darwin":
-    required_python_version=">=3.6"
+    required_python_version = ">=3.6"
 else:
-    required_python_version=">=3.6"
+    required_python_version = ">=3.6"
 
 exec(open("arcade/version.py").read())
+
 
 def get_long_description() -> str:
     fname = path.join(path.dirname(path.abspath(__file__)), "README.rst")
     with open(fname, "r") as f:
         return f.read()
+
 
 setup(
     name="arcade",
@@ -24,9 +26,9 @@ setup(
     author_email="paul.craven@simpson.edu",
     license="MIT",
     url="https://arcade.academy",
-    download_url="http://arcade.academy",
+    download_url="https://arcade.academy",
     install_requires=[
-        "pyglet==2.0dev2",
+        "pyglet==2.0.dev4",
         "pillow~=8.1",
         "pymunk~=6.0.0",
         "pyyaml~=5.4",
@@ -76,7 +78,7 @@ setup(
         "Example Code": "https://arcade.academy/examples/index.html",
         "Issue Tracker": "https://github.com/pythonarcade/arcade/issues",
         "Source": "https://github.com/pythonarcade/arcade",
-        "On-line Book": "http://learn.arcade.academy",
+        "On-line Book": "https://learn.arcade.academy",
     },
     version=VERSION
 )

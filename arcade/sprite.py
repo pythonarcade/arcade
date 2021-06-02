@@ -17,7 +17,6 @@ except ModuleNotFoundError:
 
 from typing import (
     Any,
-    Tuple,
     cast,
     Dict,
     List,
@@ -65,7 +64,7 @@ class Sprite:
     """
     Class that represents a 'sprite' on-screen. Most games center around sprites.
     For examples on how to use this class, see:
-    http://arcade.academy/examples/index.html#sprites
+    https://arcade.academy/examples/index.html#sprites
 
     Attributes:
         :alpha: Transparency of sprite. 0 is invisible, 255 is opaque.
@@ -1116,7 +1115,7 @@ class AnimatedWalkingSprite(Sprite):
     Make sure to call update_animation after loading the animations so the
     initial texture can be set. Or manually set it.
     For a better example, see:
-    http://arcade.academy/examples/platformer.html#animate-character
+    https://arcade.academy/examples/platformer.html#animate-character
     """
 
     def __init__(

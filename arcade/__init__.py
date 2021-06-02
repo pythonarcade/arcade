@@ -282,12 +282,10 @@ from arcade import experimental
 
 __all__ = ['AStarBarrierList',
            'AnimatedTimeBasedSprite',
-           'AnimatedTimeSprite',
            'AnimatedWalkingSprite',
            'AnimationKeyframe',
            'ArcadeContext',
            'Color',
-           'CreateText',
            'DEFAULT_FONT_NAMES',
            'EmitBurst',
            'EmitController',

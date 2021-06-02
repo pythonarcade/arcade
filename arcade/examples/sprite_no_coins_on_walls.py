@@ -4,7 +4,7 @@ No coins on the walls
 Simple program to show basic sprite usage. Specifically, create coin sprites that
 aren't on top of any walls, and don't have coins on top of each other.
 
-Artwork from http://kenney.nl
+Artwork from https://kenney.nl
 
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.sprite_no_coins_on_walls
@@ -59,7 +59,8 @@ class MyGame(arcade.Window):
         self.coin_list = arcade.SpriteList()
 
         # Set up the player
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", SPRITE_SCALING)
+        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
+                                           SPRITE_SCALING)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 64
 

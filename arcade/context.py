@@ -286,6 +286,8 @@ class ArcadeContext(Context):
         :param Union[str,pathlib.Path] fragment_shader: path to fragment shader (optional)
         :param Union[str,pathlib.Path] geometry_shader: path to geometry shader (optional)
         :param dict defines: Substitute ``#define`` values in the source
+        :param Union[str,pathlib.Path] tess_control_shader: Tessellation Control Shader
+        :param Union[str,pathlib.Path] tess_evaluation_shader: Tessellation Evaluation Shader
         """
         from arcade.resources import resolve_resource_path
 

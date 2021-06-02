@@ -64,7 +64,7 @@ class Window(pyglet.window.Window):
                  antialiasing: bool = True,
                  gl_version: Tuple[int, int] = (3, 3),
                  screen: pyglet.canvas.Screen = None,
-                 visible: bool=True,
+                 visible: bool = True,
                  vsync: bool = False,
                  gc_mode: str = "auto"):
         """
@@ -349,8 +349,8 @@ class Window(pyglet.window.Window):
         Override this function to add custom code to be called any time the window
         is resized. The only responsibility here is to update the viewport.
 
-        :param float width: New width
-        :param float height: New height
+        :param int width: New width
+        :param int height: New height
         """
         # Retain projection scrolling if applied
         original_viewport = self.get_viewport()
@@ -359,7 +359,7 @@ class Window(pyglet.window.Window):
                           original_viewport[2],
                           original_viewport[2] + height)
 
-    def set_min_size(self, width: float, height: float):
+    def set_min_size(self, width: int, height: int):
         """ Wrap the Pyglet window call to set minimum size
 
         :param float width: width in pixels.
@@ -371,11 +371,11 @@ class Window(pyglet.window.Window):
         else:
             raise ValueError('Cannot set min size on non-resizable window')
 
-    def set_max_size(self, width: float, height: float):
+    def set_max_size(self, width: int, height: int):
         """ Wrap the Pyglet window call to set maximum size
 
-        :param float width: width in pixels.
-        :param float height: height in pixels.
+        :param int width: width in pixels.
+        :param int height: height in pixels.
         :Raises ValueError:
 
         """
@@ -385,12 +385,12 @@ class Window(pyglet.window.Window):
         else:
             raise ValueError('Cannot set max size on non-resizable window')
 
-    def set_size(self, width: float, height: float):
+    def set_size(self, width: int, height: int):
         """
         Ignore the resizable flag and set the size
 
-        :param float width:
-        :param float height:
+        :param int width:
+        :param int height:
         """
 
         super().set_size(width, height)
