@@ -173,7 +173,8 @@ class MyGame(arcade.Window):
                     self.wall_list.append(wall)
 
         # Set up the player
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", SPRITE_SCALING)
+        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
+                                           SPRITE_SCALING)
         self.player_list.append(self.player_sprite)
 
         # Randomly place the player. If we are in a wall, repeat until we aren't.
@@ -181,8 +182,8 @@ class MyGame(arcade.Window):
         while not placed:
 
             # Randomly position
-            max_x = GRID_WIDTH * SPRITE_SIZE
-            max_y = GRID_HEIGHT * SPRITE_SIZE
+            max_x = int(GRID_WIDTH * SPRITE_SIZE)
+            max_y = int(GRID_HEIGHT * SPRITE_SIZE)
             self.player_sprite.center_x = random.randrange(max_x)
             self.player_sprite.center_y = random.randrange(max_y)
 

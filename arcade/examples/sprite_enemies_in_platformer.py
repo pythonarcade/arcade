@@ -113,7 +113,8 @@ class MyGame(arcade.Window):
         self.enemy_list.append(enemy)
 
         # -- Set up the player
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", SPRITE_SCALING)
+        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
+                                           SPRITE_SCALING)
         self.player_list.append(self.player_sprite)
 
         # Starting position of the player

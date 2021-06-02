@@ -37,7 +37,10 @@ class MyGame(arcade.Window):
         arcade.start_render()
 
         # Output the timer text.
-        arcade.draw_text(self.output, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 50, arcade.color.WHITE, 100, anchor_x="center")
+        arcade.draw_text(self.output,
+                         SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 50,
+                         arcade.color.WHITE, 100,
+                         anchor_x="center")
 
     def on_update(self, delta_time):
         """

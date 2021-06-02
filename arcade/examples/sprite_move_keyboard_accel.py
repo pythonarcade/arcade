@@ -27,6 +27,7 @@ ACCELERATION_RATE = 0.1
 # How fast to slow down after we letr off the key
 FRICTION = 0.02
 
+
 class Player(arcade.Sprite):
 
     def update(self):
@@ -36,7 +37,7 @@ class Player(arcade.Sprite):
         # Check to see if we hit the screen edge
         if self.left < 0:
             self.left = 0
-            self.change_x = 0 # Zero x speed
+            self.change_x = 0  # Zero x speed
         elif self.right > SCREEN_WIDTH - 1:
             self.right = SCREEN_WIDTH - 1
             self.change_x = 0
@@ -91,7 +92,8 @@ class MyGame(arcade.Window):
         self.player_list = arcade.SpriteList()
 
         # Set up the player
-        self.player_sprite = Player(":resources:images/animated_characters/female_person/femalePerson_idle.png", SPRITE_SCALING)
+        self.player_sprite = Player(":resources:images/animated_characters/female_person/femalePerson_idle.png",
+                                    SPRITE_SCALING)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 50
         self.player_list.append(self.player_sprite)

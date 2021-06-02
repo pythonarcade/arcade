@@ -19,7 +19,6 @@ import arcade
 import pymunk
 import timeit
 import math
-import os
 
 SCREEN_WIDTH = 1800
 SCREEN_HEIGHT = 800
