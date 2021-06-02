@@ -41,15 +41,15 @@ class Sound:
         :param float pan: Pan, from -1=left to 0=centered to 1=right
         :param bool loop: Loop, false to play once, true to loop continously
         """
-        if (isinstance(self.source, media.StreamingSource)):
-            if (self.source.is_player_source):
+        if isinstance(self.source, media.StreamingSource):
+            if self.source.is_player_source:
                 raise RuntimeError("Tried to play a streaming source more than once."
-                " Streaming sources should only be played in one instance."
-                " If you need more use a Static source.")
+                                   " Streaming sources should only be played in one instance."
+                                   " If you need more use a Static source.")
 
         player: media.Player = media.Player()
         player.volume = volume
-        player.position = (pan, 0.0, math.sqrt(1 - math.pow(pan, 2))) #used to mimic panning with 3D audio
+        player.position = (pan, 0.0, math.sqrt(1 - math.pow(pan, 2)))  # used to mimic panning with 3D audio
         player.loop = loop
         player.queue(self.source)
         player.play()
@@ -154,6 +154,7 @@ def play_sound(
     :param Sound sound: Sound loaded by :func:`load_sound`. Do NOT use a string here for the filename.
     :param float volume: Volume, from 0=quiet to 1=loud
     :param float pan: Pan, from -1=left to 0=centered to 1=right
+    :param bool looping: Should we loop the sound over and over?
     """
     if sound is None:
         print("Unable to play sound, no data passed in.")
