@@ -48,11 +48,6 @@ def process_resource_directory(out, my_path: Path):
 def process_resource_files(out, my_path: Path):
 
     for cur_node in my_path.iterdir():
-        # cur_node ..\arcade\resources\tmx_maps\standard_tileset.tsx
-        # cur_node_rel tmx_maps\standard_tileset.tsx
-        # r1 ..\arcade\resources\tmx_maps\standard_tileset.tsx
-        # r3 resources/tmx_maps/standard_tileset.tsx
-        # r2 :resources:tmx_maps/standard_tileset.tsx
         cur_node_rel = cur_node.relative_to('../arcade')
         r1 = cur_node.relative_to('.')
         r3 = 'resources/' + str(r1)[20:].replace('\\', '/')

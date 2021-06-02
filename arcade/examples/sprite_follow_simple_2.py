@@ -5,7 +5,7 @@ This calculates a 'vector' towards the player and randomly updates it based
 on the player's location. This is a bit more complex, but more interesting
 way of following the player.
 
-Artwork from http://kenney.nl
+Artwork from https://kenney.nl
 
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.sprite_follow_simple_2

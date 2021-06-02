@@ -1,8 +1,8 @@
 """
 Camera Example
 
-Artwork from: http://kenney.nl
-Tiled available from: http://www.mapeditor.org/
+Artwork from: https://kenney.nl
+Tiled available from: https://www.mapeditor.org/
 
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.camera_example
@@ -218,8 +218,8 @@ class MyGame(arcade.Window):
         user_centered = screen_center_x, screen_center_y
 
         cur_scroll = self.camera.scroll
-        new_scroll = [arcade.lerp(cur_scroll[0], user_centered[0], panning_fraction), \
-            arcade.lerp(cur_scroll[1], user_centered[1], panning_fraction)]
+        new_scroll = [arcade.lerp(cur_scroll[0], user_centered[0], panning_fraction),
+                      arcade.lerp(cur_scroll[1], user_centered[1], panning_fraction)]
 
         # Add in camera shake
         self.shake_offset_1 += self.shake_vel_1
@@ -276,6 +276,7 @@ class MyGame(arcade.Window):
 
         # Pan to the user
         self.pan_camera_to_user(panning_fraction=0.02)
+
 
 def main():
     """ Get this game started. """

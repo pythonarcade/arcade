@@ -16,7 +16,7 @@ Warning: There is a duplicate resource variable name (sound_rock_hit2).
 import pathlib
 from typing import List
 
-MEDIA_TYPES = ['.png', '.wav', '.tmx', '.tsx', '.wav', '.mp3', '.ogg']
+MEDIA_TYPES = ['.png', '.wav', '.tmx', '.tsx', '.wav', '.mp3', '.ogg', '.json']
 
 
 def main() -> None:

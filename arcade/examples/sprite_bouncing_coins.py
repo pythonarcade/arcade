@@ -4,7 +4,7 @@ Sprite Simple Bouncing
 Simple program to show how to bounce items.
 This only works for straight vertical and horizontal angles.
 
-Artwork from http://kenney.nl
+Artwork from https://kenney.nl
 
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.sprite_bouncing_coins

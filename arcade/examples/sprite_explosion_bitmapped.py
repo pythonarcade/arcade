@@ -3,8 +3,8 @@ Sprite Explosion
 
 Simple program to show how to make explosions with a series of bitmaps.
 
-Artwork from http://kenney.nl
-Explosion graphics from http://www.explosiongenerator.com/
+Artwork from https://kenney.nl
+Explosion graphics from https://www.explosiongenerator.com/
 
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.sprite_explosion_bitmapped

@@ -1,12 +1,12 @@
 """
-Functions and classes for managing a map saved in the .tmx format.
+Functions and classes for managing a map saved in the Tiled Map Editor JSON format.
 
-Typically these .tmx maps are created using the `Tiled Map Editor`_.
+Typically these maps are created using the `Tiled Map Editor`_.
 
 For more information, see the `Platformer Tutorial`_.
 
 .. _Tiled Map Editor: https://www.mapeditor.org/
-.. _Platformer Tutorial: http://arcade.academy/examples/platform_tutorial/index.html
+.. _Platformer Tutorial: https://arcade.academy/examples/platform_tutorial/index.html
 
 
 """
@@ -37,6 +37,7 @@ _FLIPPED_DIAGONALLY_FLAG = 0x20000000
 def read_tmx(map_file: Union[str, Path]) -> pytiled_parser.TiledMap:
     raise DeprecationWarning("The read_tmx function has been replaced with read_map. Use this function and convert your .tmx files to .json using the Tiled editor.")
 
+
 def read_map(map_file: Union[str, Path]) -> pytiled_parser.TiledMap:
     """
     Given a .json file, this will read in a tiled map, and return
@@ -44,11 +45,11 @@ def read_map(map_file: Union[str, Path]) -> pytiled_parser.TiledMap:
 
     Important: Tiles must be a "collection" of images.
 
-    Hitboxes can be drawn around tiles in the tileset editor,
+    Hit boxes can be drawn around tiles in the tileset editor,
     but only polygons are supported.
     (This is a great area for PR's to improve things.)
 
-    :param str json_file: String with name of our JSON Tiled file
+    :param str map_file: String with name of our JSON Tiled file
 
     :returns: Map
     :rtype: TiledMap
@@ -252,9 +253,7 @@ def _create_sprite_from_tile(
     map_directory = os.path.dirname(map_source)
     image_file = _get_image_source(tile, base_directory, map_directory)
 
-    # print(f"Creating tile: {tmx_file}")
     if tile.animation:
-        # my_sprite = AnimatedTimeSprite(tmx_file, scaling)
         my_sprite: Sprite = AnimatedTimeBasedSprite(image_file, scaling)
     else:
         image_x, image_y, width, height = _get_image_info_from_tileset(tile)
@@ -585,9 +584,9 @@ def process_layer(
     hit_box_detail: float = 4.5,
 ) -> SpriteList:
     """
-    This takes a map layer returned by the read_tmx function, and creates Sprites for it.
+    This takes a map layer returned by the read_map function, and creates Sprites for it.
 
-    :param map_object: The TileMap read in by read_tmx.
+    :param map_object: The TileMap read in by read_map.
     :param layer_name: The name of the layer that we are creating sprites for.
     :param scaling: Scaling the layer up or down.
                     (Note, any number besides 1 can create a tearing effect,

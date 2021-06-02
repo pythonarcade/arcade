@@ -4,7 +4,7 @@ Face left or right depending on our direction
 
 Simple program to show basic sprite usage.
 
-Artwork from http://kenney.nl
+Artwork from https://kenney.nl
 
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.sprite_face_left_or_right

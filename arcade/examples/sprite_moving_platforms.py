@@ -3,7 +3,7 @@ Sprite with Moving Platforms
 
 Load a map stored in csv format, as exported by the program 'Tiled.'
 
-Artwork from http://kenney.nl
+Artwork from https://kenney.nl
 
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.sprite_moving_platforms

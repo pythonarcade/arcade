@@ -1,7 +1,7 @@
 """
 Slime Invaders
 
-Artwork from http://kenney.nl
+Artwork from https://kenney.nl
 
 This example shows how to:
 
