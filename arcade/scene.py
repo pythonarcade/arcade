@@ -13,7 +13,7 @@ class Scene:
     def from_tilemap(cls, tilemap: TileMap) -> "Scene":
         scene = cls()
         for name, sprite_list in tilemap.sprite_lists.items():
-            scene.add_sprite_list(name, sprite_list)
+            scene.add_sprite_list(name=name, sprite_list=sprite_list)
         return scene
 
     def get_sprite_list(self, name: str) -> SpriteList:
@@ -21,37 +21,46 @@ class Scene:
 
     def add_sprite(self, name: str, sprite: Sprite) -> None:
         if name in self.name_mapping:
-            self.name_mapping[name].append(sprite) 
+            self.name_mapping[name].append(sprite)
         else:
             new_list = SpriteList()
             new_list.append(sprite)
-            self.add_sprite_list(name, new_list)
+            self.add_sprite_list(name=name, sprite_list=new_list)
 
     def add_sprite_list(
         self,
         name: str,
+        use_spatial_hash: bool = False,
         sprite_list: Optional[SpriteList] = None,
     ) -> None:
         if not sprite_list:
-            sprite_list = SpriteList()
+            sprite_list = SpriteList(use_spatial_hash=use_spatial_hash)
         self.name_mapping[name] = sprite_list
         self.sprite_lists.append(sprite_list)
 
     def add_sprite_list_before(
-        self, name: str, before: str, sprite_list: Optional[SpriteList] = None
+        self,
+        name: str,
+        before: str,
+        use_spatial_hash: bool = False,
+        sprite_list: Optional[SpriteList] = None,
     ) -> None:
         if not sprite_list:
-            sprite_list = SpriteList()
+            sprite_list = SpriteList(use_spatial_hash=use_spatial_hash)
         self.name_mapping[name] = sprite_list
         before_list = self.name_mapping[before]
         index = self.sprite_lists.index(before_list) - 1
         self.sprite_lists.insert(index, sprite_list)
 
     def add_sprite_list_after(
-        self, name: str, after: str, sprite_list: Optional[SpriteList] = None
+        self,
+        name: str,
+        after: str,
+        use_spatial_hash: bool = False,
+        sprite_list: Optional[SpriteList] = None,
     ) -> None:
         if not sprite_list:
-            sprite_list = SpriteList()
+            sprite_list = SpriteList(use_spatial_hash=use_spatial_hash)
         self.name_mapping[name] = sprite_list
         after_list = self.name_mapping[after]
         index = self.sprite_lists.index(after_list)
