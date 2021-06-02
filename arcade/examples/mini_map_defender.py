@@ -49,6 +49,7 @@ MOVEMENT_DRAG = 0.08
 # How far the bullet travels before disappearing
 BULLET_MAX_DISTANCE = SCREEN_WIDTH * 0.75
 
+
 class Player(arcade.SpriteSolidColor):
     """ Player ship """
     def __init__(self):
@@ -114,6 +115,7 @@ class Player(arcade.SpriteSolidColor):
         elif self.top > PLAYING_FIELD_HEIGHT - 1:
             self.top = PLAYING_FIELD_HEIGHT - 1
 
+
 class Bullet(arcade.SpriteSolidColor):
     """ Bullet """
 
@@ -130,6 +132,7 @@ class Bullet(arcade.SpriteSolidColor):
         if self.distance > BULLET_MAX_DISTANCE:
             self.remove_from_sprite_lists()
 
+
 class Particle(arcade.SpriteSolidColor):
     """ Particle from explosion """
     def update(self):
@@ -141,6 +144,7 @@ class Particle(arcade.SpriteSolidColor):
         self.alpha -= 5
         if self.alpha <= 0:
             self.remove_from_sprite_lists()
+
 
 class MyGame(arcade.Window):
     """ Main application class. """
@@ -256,10 +260,10 @@ class MyGame(arcade.Window):
 
         # Draw a background for the minimap
         arcade.draw_rectangle_filled(SCREEN_WIDTH - SCREEN_WIDTH / 2 + self.view_left,
-                                        SCREEN_HEIGHT - MINIMAP_HEIGHT + MINIMAP_HEIGHT / 2 + self.view_bottom,
-                                        SCREEN_WIDTH,
-                                        MINIMAP_HEIGHT,
-                                        arcade.color.DARK_GREEN)
+                                     SCREEN_HEIGHT - MINIMAP_HEIGHT + MINIMAP_HEIGHT / 2 + self.view_bottom,
+                                     SCREEN_WIDTH,
+                                     MINIMAP_HEIGHT,
+                                     arcade.color.DARK_GREEN)
 
         # --- Mini-map related ---
 
@@ -274,11 +278,12 @@ class MyGame(arcade.Window):
         height = height_ratio * MAIN_SCREEN_HEIGHT
 
         x = (self.view_left + SCREEN_WIDTH / 2) * width_ratio + self.view_left
-        y = (SCREEN_HEIGHT - MINIMAP_HEIGHT) + self.view_bottom + height / 2 + (MAIN_SCREEN_HEIGHT / PLAYING_FIELD_HEIGHT) * self.view_bottom
+        y = (SCREEN_HEIGHT - MINIMAP_HEIGHT) + self.view_bottom + height / 2 \
+            + (MAIN_SCREEN_HEIGHT / PLAYING_FIELD_HEIGHT) * self.view_bottom
 
         arcade.draw_rectangle_outline(center_x=x, center_y=y,
-                                        width=width, height=height,
-                                        color=arcade.color.WHITE)
+                                      width=width, height=height,
+                                      color=arcade.color.WHITE)
 
     def on_update(self, delta_time):
         """ Movement and game logic """
@@ -309,7 +314,7 @@ class MyGame(arcade.Window):
                         particle.change_x = random.randrange(-2, 3)
                         particle.center_x = enemy.center_x
                         particle.center_y = enemy.center_y
-                        self.bullet_sprite_list.append(particle)
+                    self.bullet_sprite_list.append(particle)
 
         # Scroll left
         left_boundary = self.view_left + VIEWPORT_MARGIN
