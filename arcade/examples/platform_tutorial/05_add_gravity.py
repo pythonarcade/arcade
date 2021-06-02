@@ -43,7 +43,7 @@ class MyGame(arcade.Window):
     def setup(self):
         """Set up the game here. Call this function to restart the game."""
 
-        # Initilize Scene
+        # Initialize Scene
         self.scene = arcade.Scene()
 
         # Set up the player, specifically placing it at these coordinates.

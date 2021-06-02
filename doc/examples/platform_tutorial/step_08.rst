@@ -35,3 +35,9 @@ Explore On Your Own
 * Change the character image based on the direction she is facing.
   See :ref:`sprite_face_left_or_right`
 * Add instruction and game over screens.
+
+Source Code
+~~~~~~~~~~~
+
+* :ref:`08_score`
+* :ref:`08_score_diff`

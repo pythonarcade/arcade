@@ -72,5 +72,8 @@ engine to move our player based on her ``change_x`` and ``change_y``.
     :linenos:
     :pyobject: MyGame.on_update
 
+Source Code
+~~~~~~~~~~~
+
 * :ref:`04_user_control`
 * :ref:`04_user_control_diff`

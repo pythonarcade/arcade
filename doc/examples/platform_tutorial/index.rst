@@ -13,6 +13,9 @@ Add coins, ramps, moving platforms, enemies, and more.
 .. _Tiled Map Editor: https://www.mapeditor.org/
 .. _Arcade: http://arcade.academy
 
+At the end of each chapter of this tutorial. There is a link to the full source code
+for that chapter as well as a difference listing for that chapter against the previous.
+
 The tutorial is divided into these parts:
 
 .. toctree::
@@ -32,5 +35,3 @@ The tutorial is divided into these parts:
    step_12
    step_13
    step_14
-
-

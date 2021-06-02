@@ -37,3 +37,9 @@ we'll show you how to specify the hitbox.
     You could also subclass the coin sprite and add an attribute for a score
     value. Then you could have coins worth one point, and gems worth 5, 10, and
     15 points.
+
+Source Code
+~~~~~~~~~~~
+
+* :ref:`07_coins_and_sound`
+* :ref:`07_coins_and_sound_diff`

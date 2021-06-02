@@ -35,5 +35,8 @@ statements we had before, and make 'UP' jump when pressed.
     Lower values for both will make for a more "floaty" character. Higher values make
     for a faster-paced game.
 
+Source Code
+~~~~~~~~~~~
+
 * :ref:`05_add_gravity`
 * :ref:`05_add_gravity_diff`

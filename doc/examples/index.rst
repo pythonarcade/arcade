@@ -388,16 +388,6 @@ Using Tiled Map Editor to Create Maps
 
    :ref:`sprite_tiled_map_with_levels`
 
-.. figure:: thumbs/09_endgame.png
-   :figwidth: 170px
-
-   :ref:`09_endgame`
-
-.. figure:: thumbs/10_ladders_and_more.png
-   :figwidth: 170px
-
-   :ref:`10_ladders_and_more`
-
 Procedural Generation
 ^^^^^^^^^^^^^^^^^^^^^
 

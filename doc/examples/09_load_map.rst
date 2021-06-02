@@ -3,7 +3,7 @@
 .. _sprite_tiled_map:
 
 Load a Tiled Map
-==============
+================
 
 .. image:: 09_load_map.png
     :width: 600px

@@ -2,7 +2,7 @@
 .. _platformer_part_ten:
 
 Step 10 - Multiple Levels and Other Layers
------------------------------------------
+------------------------------------------
 
 Here's an expanded example:
 
@@ -19,7 +19,7 @@ Here's an expanded example:
   * Updated ``setup`` to load a file based on the level (81-101, specifically lines 81 and 85)
   * Added end-of-map check(233-244)
 
-.. literalinclude:: ../../../arcade/examples/platform_tutorial/10_endgame.py
+.. literalinclude:: ../../../arcade/examples/platform_tutorial/10_multiple_levels.py
     :caption: More Advanced Example
     :linenos:
     :emphasize-lines: 73-74, 81, 84-85, 233-244
@@ -38,3 +38,9 @@ Here's an expanded example:
 
     * Add :ref:`sprite_explosion_bitmapped`
     * Add :ref:`sprite_move_animation`
+
+Source Code
+~~~~~~~~~~~
+
+* :ref:`10_multiple_levels`
+* :ref:`10_multiple_levels_diff`
