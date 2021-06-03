@@ -5,7 +5,7 @@
 Transform Feedback
 ==================
 
-.. image:: transform_feedback.gif
+.. image:: transform_feedback.png
     :width: 600px
     :align: center
     :alt: Transform Feedback Example

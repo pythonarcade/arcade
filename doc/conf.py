@@ -9,7 +9,7 @@ import runpy
 import sys
 import os
 
-runpy.run_path('generate_example_thumbnails.py', run_name='__main__')
+runpy.run_path('../util/generate_example_thumbnails.py', run_name='__main__')
 runpy.run_path('../util/create_resources_listing.py', run_name='__main__')
 runpy.run_path('../util/update_quick_index.py', run_name='__main__')
 

@@ -113,7 +113,6 @@ class _AStarGraph(object):
         else:
             return 1.42
 
-
         return 1  # Normal movement cost
 
 
@@ -125,29 +124,29 @@ def _AStarSearch(start, end, graph):
     G[start] = 0
     F[start] = graph.heuristic(start, end)
 
-    closedVertices = set()
-    openVertices = set([start])
-    cameFrom = {}
+    closed_vertices = set()
+    open_vertices = set([start])
+    came_from = {}
 
     count = 0
-    while len(openVertices) > 0:
+    while len(open_vertices) > 0:
         count += 1
         if count > 500:
             break
         # Get the vertex in the open list with the lowest F score
         current = None
-        currentFscore = None
-        for pos in sorted(openVertices):
-            if current is None or F[pos] < currentFscore:
-                currentFscore = F[pos]
+        current_fscore = None
+        for pos in sorted(open_vertices):
+            if current is None or F[pos] < current_fscore:
+                current_fscore = F[pos]
                 current = pos
 
         # Check if we have reached the goal
         if current == end:
             # Retrace our route backward
             path = [current]
-            while current in cameFrom:
-                current = cameFrom[current]
+            while current in came_from:
+                current = came_from[current]
                 path.append(current)
             path.reverse()
             if F[end] >= 10000:
@@ -157,22 +156,22 @@ def _AStarSearch(start, end, graph):
             # return path, F[end]  # Done!
 
         # Mark the current vertex as closed
-        openVertices.remove(current)
-        closedVertices.add(current)
+        open_vertices.remove(current)
+        closed_vertices.add(current)
 
         # Update scores for vertices near the current position
         for neighbour in sorted(graph.get_vertex_neighbours(current)):
-            if neighbour in closedVertices:
+            if neighbour in closed_vertices:
                 continue  # We have already processed this node exhaustively
             candidateG = G[current] + graph.move_cost(current, neighbour)
 
-            if neighbour not in openVertices:
-                openVertices.add(neighbour)  # Discovered a new vertex
+            if neighbour not in open_vertices:
+                open_vertices.add(neighbour)  # Discovered a new vertex
             elif candidateG >= G[neighbour]:
                 continue  # This G score is worse than previously found
 
             # Adopt this G score
-            cameFrom[neighbour] = current
+            came_from[neighbour] = current
             G[neighbour] = candidateG
             H = graph.heuristic(neighbour, end)
             F[neighbour] = G[neighbour] + H
@@ -183,6 +182,7 @@ def _AStarSearch(start, end, graph):
 
 def _collapse(pos, grid_size):
     return int(pos[0] // grid_size),  int(pos[1] // grid_size)
+
 
 def _expand(pos, grid_size):
     return int(pos[0] * grid_size),  int(pos[1] * grid_size)

@@ -3,7 +3,7 @@ Moving Sprite Stress Test
 
 Simple program to test how fast we can draw sprites that are moving
 
-Artwork from http://kenney.nl
+Artwork from https://kenney.nl
 
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.stress_test_draw_moving

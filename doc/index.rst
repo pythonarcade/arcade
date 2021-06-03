@@ -39,10 +39,10 @@ The Python Arcade Library
             <h2 style="width:auto;">Installation</h2>
           </div>
           <ul>
-          <li><a href="installation_windows.html">Windows</a></li>
-          <li><a href="installation_mac.html">Mac</a></li>
-          <li><a href="installation_linux.html">Linux</a></li>
-          <li><a href="installation_from_source.html">Install From Source</a></li>
+          <li><a href="install/windows.html">Windows</a></li>
+          <li><a href="install/mac.html">Mac</a></li>
+          <li><a href="install/linux.html">Linux</a></li>
+          <li><a href="install/source.html">Install From Source</a></li>
           </ul>
         </td>
       </tr>
@@ -78,7 +78,7 @@ The Python Arcade Library
             <li><a href="https://www.facebook.com/ArcadeLibrary/">Facebook @ArcadeLibrary</a></li>
             <li><a href="https://www.reddit.com/r/pythonarcade/">Reddit /r/pythonarcade</a></li>
             <li><a href="https://discord.gg/ZjGDqMp">Discord</a></li>
-            <li><a href="diversity.html">Statement on Diversity</a></li>
+            <li><a href="community/diversity.html">Statement on Diversity</a></li>
           </ul>
         </td>
       </tr>
@@ -194,7 +194,6 @@ The Python Arcade Library
           <ul>
             <li><a href="https://github.com/kfields/arcade-imgui">Arcade-ImGui</a></li>
             <li><a href="https://github.com/maarten-dp/arcade-curtains">Arcade-Curtains</a></li>
-            <li><a href="http://jobase.org">JoBase</a></li>
            </ul>
         </td>
 
@@ -217,7 +216,7 @@ game without learning a complex framework.
    :maxdepth: 1
 
    get_started
-   installation
+   install/index
    pygame_comparison
    sample_games
    examples/index
@@ -232,6 +231,7 @@ game without learning a complex framework.
    arcade_gui
    resources
    keyboard
+   api/application.rst
 
 .. toctree::
    :maxdepth: 1
@@ -248,24 +248,18 @@ game without learning a complex framework.
 
 .. toctree::
    :maxdepth: 1
+   :caption: Advanced
+
+   advanced/vsync
+
+.. toctree::
+   :maxdepth: 1
    :caption: Community
 
-   diversity
-   social
+   community/index
 
 .. toctree::
    :maxdepth: 1
    :caption: Development
 
-   release_notes
-   how_to_contribute
-   performance_tips
-   directory_structure
-   how_to_compile
-   how_to_submit_changes
-   enhancement_list
-   tutorials/edge_artifacts/index
-   logging
-
-
-
+   development/index

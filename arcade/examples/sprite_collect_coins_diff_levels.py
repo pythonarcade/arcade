@@ -3,7 +3,7 @@ Sprite Collect Coins with Different Levels
 
 Simple program to show basic sprite usage.
 
-Artwork from http://kenney.nl
+Artwork from https://kenney.nl
 
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.sprite_collect_coins_diff_levels
@@ -99,7 +99,7 @@ class MyGame(arcade.Window):
         for i in range(30):
 
             # Create the coin instance
-            coin = FallingCoin("images/gold_1.png", SPRITE_SCALING / 2)
+            coin = FallingCoin(":resources:images/items/coinBronze.png" , SPRITE_SCALING / 2)
 
             # Position the coin
             coin.center_x = random.randrange(SCREEN_WIDTH)
@@ -112,7 +112,7 @@ class MyGame(arcade.Window):
         for i in range(30):
 
             # Create the coin instance
-            coin = RisingCoin("images/gold_1.png", SPRITE_SCALING / 2)
+            coin = RisingCoin(":resources:images/items/coinSilver.png" , SPRITE_SCALING / 2)
 
             # Position the coin
             coin.center_x = random.randrange(SCREEN_WIDTH)

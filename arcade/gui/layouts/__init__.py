@@ -58,7 +58,7 @@ UIBoxLayout
 ~~~~~~~~~~~
 
 :class:`~arcade.gui.UIBoxLayout` provides a layout, which places elements in a vertical or horizontal direction.
-To achieve a grid like layout it is possible to use nested  :class:`~arcade.gui.UIBoxLayout`s.
+To achieve a grid like layout it is possible to use nested  :class:`~arcade.gui.UIBoxLayout`.
 
 **Behavior**
 

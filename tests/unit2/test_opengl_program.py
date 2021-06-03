@@ -6,16 +6,6 @@ from arcade.gl import ShaderException
 from arcade.gl.uniform import UniformBlock
 from arcade.gl.glsl import ShaderSource
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
-
-
-@pytest.fixture(scope="module")
-def ctx():
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, "Test OpenGL")
-    yield window.ctx
-    window.close()
-
 
 def test_shader_source(ctx):
     """Test shader source parsing"""
@@ -319,8 +309,8 @@ def test_uniform_block(ctx):
     assert ubo.name == "Projection"
 
     # Project a point (800, 600) into (1, 1) using a projection matrix
-    projection_matrix = arcade.create_orthogonal_projection(0, 800, 0, 600, -10, 10, dtype='f4')
-    ubo_buffer = ctx.buffer(data=projection_matrix.flatten())
+    projection_matrix = arcade.create_orthogonal_projection(0, 800, 0, 600, -10, 10)
+    ubo_buffer = ctx.buffer(data=projection_matrix)
     buffer = ctx.buffer(reserve=8)
     vao = ctx.geometry()
     ubo_buffer.bind_to_uniform_block(0)

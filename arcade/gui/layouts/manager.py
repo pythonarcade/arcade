@@ -73,8 +73,7 @@ class UILayoutManager(UIAbstractManager):
     UILayoutManager uses a :py:class:`UIAnchorLayout` as the root layout, which provides simple ways to position
     all elements on screen.
 
-    Advanced usage - overlapping UI
-    -------------------------------
+    **Advanced usage - overlapping UI**
 
     In case you want to provide a window-like experience, which may overlap with the HUD or other
     window-like objects, the UILayoutManager provides a stack function.

@@ -135,8 +135,15 @@ class Framebuffer:
         # Restore the original bound framebuffer to avoid confusion
         self.ctx.active_framebuffer.use(force=True)
 
+        if self._ctx.gc_mode == "auto" and not self.is_default:
+            weakref.finalize(self, Framebuffer.delete_glo, ctx, fbo_id)
+
         self.ctx.stats.incr("framebuffer")
-        weakref.finalize(self, Framebuffer.release, ctx, fbo_id)
+
+    def __del__(self):
+        # Intercept garbage collection if we are using Context.gc()
+        if self._ctx.gc_mode == "context_gc" and not self.is_default:
+            self._ctx.objects.append(self)
 
     @property
     def glo(self) -> gl.GLuint:
@@ -358,8 +365,15 @@ class Framebuffer:
 
         return bytearray(data)
 
+    def delete(self):
+        """
+        Destroy the underlying OpenGL resource.
+        Don't use this unless you know exactly what you are doing.
+        """
+        Framebuffer.delete_glo(self._ctx, self._glo)
+
     @staticmethod
-    def release(ctx, framebuffer_id):
+    def delete_glo(ctx, framebuffer_id):
         """
         Destroys the framebuffer object
 

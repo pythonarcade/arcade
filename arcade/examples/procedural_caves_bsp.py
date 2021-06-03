@@ -3,7 +3,7 @@ This example procedurally develops a random cave based on
 Binary Space Partitioning (BSP)
 
 For more information, see:
-http://roguebasin.roguelikedevelopment.org/index.php?title=Basic_BSP_Dungeon_generation
+https://roguebasin.roguelikedevelopment.org/index.php?title=Basic_BSP_Dungeon_generation
 https://github.com/DanaL/RLDungeonGenerator
 
 If Python and Arcade are installed, this example can be run from the command line with:

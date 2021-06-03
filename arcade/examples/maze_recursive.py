@@ -4,7 +4,7 @@ Create a maze using a recursive division method.
 For more information on the algorithm, see "Recursive Division Method"
 at https://en.wikipedia.org/wiki/Maze_generation_algorithm
 
-Artwork from http://kenney.nl
+Artwork from https://kenney.nl
 
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.maze_recursive
@@ -16,7 +16,7 @@ import os
 
 NATIVE_SPRITE_SIZE = 128
 SPRITE_SCALING = 0.25
-SPRITE_SIZE = NATIVE_SPRITE_SIZE * SPRITE_SCALING
+SPRITE_SIZE = int(NATIVE_SPRITE_SIZE * SPRITE_SCALING)
 
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 700
@@ -220,7 +220,8 @@ class MyGame(arcade.Window):
                     self.wall_list.append(wall)
 
         # Set up the player
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", SPRITE_SCALING)
+        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
+                                           SPRITE_SCALING)
         self.player_list.append(self.player_sprite)
 
         # Randomly place the player. If we are in a wall, repeat until we aren't.

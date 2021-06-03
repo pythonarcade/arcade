@@ -231,7 +231,6 @@ from .sprite import FACE_LEFT
 from .sprite import FACE_RIGHT
 from .sprite import FACE_UP
 from .sprite import AnimatedTimeBasedSprite
-from .sprite import AnimatedTimeSprite
 from .sprite import AnimatedWalkingSprite
 from .sprite import AnimationKeyframe
 from .sprite import PyMunk
@@ -251,17 +250,15 @@ from .physics_engines import PhysicsEnginePlatformer
 from .physics_engines import PhysicsEngineSimple
 
 from .text import DEFAULT_FONT_NAMES
-from .text import CreateText
-from .text import Text
 from .text import create_text
 from .text import draw_text
-from .text import draw_text_2
-from .text import get_text_image
-from .text import render_text
+from .text import create_text_image
+from .text import create_text_sprite
 
 from .tilemap import get_tilemap_layer
 from .tilemap import process_layer
 from .tilemap import read_map
+from .tilemap import read_tmx
 
 from .pymunk_physics_engine import PymunkPhysicsEngine
 from .pymunk_physics_engine import PymunkPhysicsObject
@@ -274,6 +271,8 @@ from .paths import has_line_of_sight
 
 from .context import ArcadeContext
 
+from .texture_atlas import TextureAtlas
+
 
 
 # noinspection PyPep8
@@ -283,12 +282,10 @@ from arcade import experimental
 
 __all__ = ['AStarBarrierList',
            'AnimatedTimeBasedSprite',
-           'AnimatedTimeSprite',
            'AnimatedWalkingSprite',
            'AnimationKeyframe',
            'ArcadeContext',
            'Color',
-           'CreateText',
            'DEFAULT_FONT_NAMES',
            'EmitBurst',
            'EmitController',
@@ -333,6 +330,7 @@ __all__ = ['AStarBarrierList',
            'TShape',
            'Text',
            'Texture',
+           'TextureAtlas',
            'VERSION',
            'Vector',
            'View',
@@ -365,7 +363,7 @@ __all__ = ['AStarBarrierList',
            'create_rectangle_filled_with_colors',
            'create_rectangle_outline',
            'create_rectangles_filled_with_colors',
-           'create_text',
+           'create_text_sprite',
            'create_triangles_filled_with_colors',
            'draw_arc_filled',
            'draw_arc_outline',
@@ -388,8 +386,8 @@ __all__ = ['AStarBarrierList',
            'draw_rectangle_filled',
            'draw_rectangle_outline',
            'draw_scaled_texture_rectangle',
+           'create_text',
            'draw_text',
-           'draw_text_2',
            'draw_texture_rectangle',
            'draw_triangle_filled',
            'draw_triangle_outline',
@@ -414,7 +412,7 @@ __all__ = ['AStarBarrierList',
            'get_screens',
            'get_sprites_at_exact_point',
            'get_sprites_at_point',
-           'get_text_image',
+           'create_text_image',
            'get_tilemap_layer',
            'get_viewport',
            'get_window',
@@ -448,7 +446,6 @@ __all__ = ['AStarBarrierList',
            'rand_vec_magnitude',
            'rand_vec_spread_deg',
            'read_tmx',
-           'render_text',
            'rotate_point',
            'run',
            'schedule',

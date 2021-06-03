@@ -11,6 +11,7 @@ import pyglet
 pyglet.options["audio"] = ("openal", "xaudio2", "directsound", "pulse", "silent")
 
 import pyglet.media as media
+
 from arcade.resources import resolve_resource_path
 
 
@@ -30,7 +31,7 @@ class Sound:
 
         self.source: Union[media.StaticSource, media.StreamingSource] = media.load(self.file_name, streaming=streaming)
 
-        self.min_distance = 100000000 #setting the players to this allows for 2D panning with 3D audio
+        self.min_distance = 100000000  # setting the players to this allows for 2D panning with 3D audio
 
     def play(self, volume: float = 1.0, pan: float = 0.0, loop: bool = False) -> media.Player:
         """
@@ -40,15 +41,15 @@ class Sound:
         :param float pan: Pan, from -1=left to 0=centered to 1=right
         :param bool loop: Loop, false to play once, true to loop continously
         """
-        if (isinstance(self.source, media.StreamingSource)):
-            if (self.source.is_player_source):
+        if isinstance(self.source, media.StreamingSource):
+            if self.source.is_player_source:
                 raise RuntimeError("Tried to play a streaming source more than once."
-                " Streaming sources should only be played in one instance."
-                " If you need more use a Static source.")
+                                   " Streaming sources should only be played in one instance."
+                                   " If you need more use a Static source.")
 
         player: media.Player = media.Player()
         player.volume = volume
-        player.position = (pan, 0.0, math.sqrt(1 - math.pow(pan, 2))) #used to mimic panning with 3D audio
+        player.position = (pan, 0.0, math.sqrt(1 - math.pow(pan, 2)))  # used to mimic panning with 3D audio
         player.loop = loop
         player.queue(self.source)
         player.play()
@@ -69,7 +70,8 @@ class Sound:
         """
         player.pause()
         player.delete()
-        media.Source._players.remove(player)
+        if player in media.Source._players:
+            media.Source._players.remove(player)
 
     def get_length(self) -> float:
         """ Get length of audio in seconds """
@@ -123,7 +125,7 @@ class Sound:
         return player.time
 
 
-def load_sound(path: Union[str, Path], streaming: bool =False) -> Optional[Sound]:
+def load_sound(path: Union[str, Path], streaming: bool = False) -> Optional[Sound]:
     """
     Load a sound.
 
@@ -142,6 +144,7 @@ def load_sound(path: Union[str, Path], streaming: bool =False) -> Optional[Sound
     except Exception as ex:
         raise FileNotFoundError(f'Unable to load sound file: "{file_name}". Exception: {ex}')
 
+
 def play_sound(
     sound: Sound, volume: float = 1.0, pan: float = 0.0, looping: bool = False
 ) -> media.Player:
@@ -151,6 +154,7 @@ def play_sound(
     :param Sound sound: Sound loaded by :func:`load_sound`. Do NOT use a string here for the filename.
     :param float volume: Volume, from 0=quiet to 1=loud
     :param float pan: Pan, from -1=left to 0=centered to 1=right
+    :param bool looping: Should we loop the sound over and over?
     """
     if sound is None:
         print("Unable to play sound, no data passed in.")
@@ -175,4 +179,5 @@ def stop_sound(player: media.Player):
     """
     player.pause()
     player.delete()
-    media.Source._players.remove(player)
+    if player in media.Source._players:
+        media.Source._players.remove(player)

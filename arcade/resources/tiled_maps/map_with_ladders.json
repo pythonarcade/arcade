@@ -72,6 +72,12 @@
                  "id":3,
                  "name":"",
                  "point":true,
+                 "properties":[
+                        {
+                         "name":"type",
+                         "type":"string",
+                         "value":"robot"
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -84,6 +90,12 @@
                  "id":5,
                  "name":"",
                  "point":true,
+                 "properties":[
+                        {
+                         "name":"type",
+                         "type":"string",
+                         "value":"robot"
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -96,6 +108,12 @@
                  "id":6,
                  "name":"",
                  "point":true,
+                 "properties":[
+                        {
+                         "name":"type",
+                         "type":"string",
+                         "value":"zombie"
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,

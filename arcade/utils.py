@@ -26,7 +26,7 @@ def rand_in_circle(center: Point, radius: float):
     """
     Generate a point in a circle, or can think of it as a vector pointing
     a random direction with a random magnitude <= radius
-    Reference: http://stackoverflow.com/a/30564123
+    Reference: https://stackoverflow.com/a/30564123
     Note: This algorithm returns a higher concentration of points around the center of the circle
     """
     # random angle

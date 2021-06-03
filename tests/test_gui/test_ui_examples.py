@@ -14,7 +14,6 @@ import arcade
 from arcade.gui.manager import UIAbstractManager
 from tests.test_gui import t
 
-
 def view_to_png(window: arcade.Window, view: arcade.View, path: Path):
     ctx = window.ctx
     offscreen = ctx.framebuffer(
