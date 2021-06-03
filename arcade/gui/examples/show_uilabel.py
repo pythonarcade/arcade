@@ -5,11 +5,10 @@ from arcade.gui import UIManager
 
 
 class MyView(arcade.View):
-    def __init__(self, window: arcade.Window):
-        super().__init__()
+    def __init__(self, my_window: arcade.Window):
+        super().__init__(my_window)
 
-        self.window = window
-        self.ui_manager = UIManager(window)
+        self.ui_manager = UIManager(self.window)
 
     def on_draw(self):
         arcade.start_render()

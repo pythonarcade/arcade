@@ -10,4 +10,5 @@ Learn to use the built-in UI elements for the Arcade library!
 .. toctree::
    :maxdepth: 1
 
+   labels
    layout_manager
