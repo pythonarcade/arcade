@@ -4,7 +4,11 @@ import arcade.gui
 
 class MyButton(arcade.gui.UIFlatButton):
     def on_click(self):
-        print("Button has been clicked!")
+        print("Button has been clicked!", self.text)
+        if self.text == "Start Game":
+            self.text = "Stop Game"
+        else:
+            self.text = "Start Game"
 
 
 class MyView(arcade.View):

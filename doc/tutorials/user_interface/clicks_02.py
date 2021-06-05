@@ -26,7 +26,7 @@ class MyView(arcade.View):
         style = arcade.gui.UIStyle(style_data)
 
         # Create our button
-        my_button = arcade.gui.UIFlatButton(
+        self.my_button = arcade.gui.UIFlatButton(
             text="Start Game",
             center_x=self.window.width / 2,
             center_y=self.window.height / 2,
@@ -36,13 +36,17 @@ class MyView(arcade.View):
         )
 
         # Map that button's on_click method to this view's on_button_click method.
-        my_button.on_click = self.on_button_click
+        self.my_button.on_click = self.on_button_click
 
         # Add in our element.
-        self.ui_manager.add_ui_element(my_button)
+        self.ui_manager.add_ui_element(self.my_button)
 
     def on_button_click(self):
         print("Button has been clicked!")
+        if self.my_button.text == "Start Game":
+            self.my_button.text = "Stop Game"
+        else:
+            self.my_button.text = "Start Game"
 
     def on_draw(self):
         arcade.start_render()
