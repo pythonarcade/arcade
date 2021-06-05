@@ -67,8 +67,12 @@ When the view is hidden, we need to unregister the those mouse handlers.
 
 For the full listing see :ref:`labels_01`.
 
+.. _styling-gui-labels:
+
 Styling GUI Labels
 ------------------
+
+Chances are, most programs will need something other than the default font and color.
 
 .. figure:: labels_02.gif
    :width: 50%

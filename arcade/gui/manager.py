@@ -265,13 +265,11 @@ class UIAbstractManager(EventDispatcher, metaclass=ABCMeta):
 
 class UIManager(UIAbstractManager):
     """
-    Central component of :py:mod:`arcade.gui` .
-    Holds :py:class:`arcade.gui.UIElement` and connects them with :py:class:`arcade.Window` callbacks.
+    The UIManager is the central component of Arcade's GUI library :py:mod:`arcade.gui`.
+    UIManager holds and managers all :py:class:`arcade.gui.UIElement` classes and their children.
+    It connects them with :py:class:`arcade.Window` callbacks to handle mouse events.
 
-    Basics:
-
-    * Add :py:class:`arcade.gui.UIElement` with :py:meth:`arcade.gui.UIManager.add_ui_element()`
-    * Remove all :py:class:`arcade.gui.UIElement` with :py:meth:`arcade.gui.UIManager.purge_ui_elements()`
+    For more information see the :ref:`user-interface-tutorial`.
 
     """
 
