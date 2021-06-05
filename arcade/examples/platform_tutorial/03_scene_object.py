@@ -39,9 +39,8 @@ class MyGame(arcade.Window):
         self.scene = arcade.Scene()
 
         # Create the Sprite lists
-        player_list = arcade.SpriteList()
-        wall_list = arcade.SpriteList(use_spatial_hash=True)
-        coin_list = arcade.SpriteList(use_spatial_hash=True)
+        self.scene.add_sprite_list("Player")
+        self.scene.add_sprite_list("Walls", use_spatial_hash=True)
 
         # Set up the player, specifically placing it at these coordinates.
         image_source = ":resources:images/animated_characters/female_adventurer/femaleAdventurer_idle.png"
