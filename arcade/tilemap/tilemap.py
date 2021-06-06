@@ -1,3 +1,12 @@
+"""
+This module provides functionality to load in JSON map files from
+the Tiled Map Editor. This is achieved using the pytiled-parser 
+library.
+
+For more info on Tiled see: https://www.mapeditor.org/
+For more info on pytiled-parser see: https://github.com/Beefy-Swain/pytiled_parser
+"""
+
 import copy
 import math
 import os
@@ -6,7 +15,6 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, OrderedDict, Tuple, Union, cast
 
 import pytiled_parser
-
 from arcade import (
     AnimatedTimeBasedSprite,
     AnimationKeyframe,
@@ -23,6 +31,26 @@ _FLIPPED_DIAGONALLY_FLAG = 0x20000000
 
 
 class TileMap:
+    """
+    Class that represent's a fully parsed and loaded map from Tiled.
+    For examples on how to use this class, see:
+    https://arcade.academy/examples/index.html#using-tiled-map-editor-to-create-maps
+
+    Attributes:
+        :tiled_map: The pytiled-parser map object. This can be useful for implementing features
+        that aren't supported by this class by accessing the raw map data directly.
+        :width: The width of the map in tiles. This is the number of tiles, not pixels.
+        :height: The height of the map in tiles. This is the number of tiles, not pixels.
+        :tile_width: The width in pixels of each tile.
+        :tile_height: The height in pixels of each tile.
+        :background_color: The background color of the map.
+        :scaling: A global scaling value to be applied to all Sprites in the map.
+        :sprite_lists: A dictionary mapping SpriteLists to their layer names. This is used
+        for all tile layers of the map.
+        :object_lists: A dictionary mapping TiledObjects to their layer names. This is used
+        for all object layers of the map.
+    """
+
     def __init__(
         self,
         map_file: Union[str, Path],
@@ -30,18 +58,51 @@ class TileMap:
         layer_options: Optional[Dict[str, Dict[str, Any]]] = None,
     ) -> None:
         """
-        Given a .json file, this will read in a Tiled map, and
+        Given a .json file, this will read in a Tiled map file, and
         initialize a new TileMap object.
 
-        :param str map_file: The filename of the JSON Tiled file
+        The `layer_options` parameter can be used to specify per layer arguments.
+        The available options for this are:
+
+            use_spatial_hash - A boolean to enable spatial hashing on this layer's SpriteList.
+            scaling - A float providing layer specific Sprite scaling.
+            hit_box_algorithm - A string for the hit box algorithm to use for the Sprite's in this layer.
+            hit_box_detail - A float specifying the level of detail for each Sprite's hitbox
+
+            For example:
+
+            layer_options = {
+                "Platforms": {
+                    "use_spatial_hash": True,
+                    "scaling": 2.5,
+                },
+            }
+
+        The keys and their values in each layer are passed to the layer processing functions
+        using the `**` operator on the dictionary.
+
+        :param Union[str, Path] map_file: The JSON map file.
+        :param float scaling: Global scaling to apply to all Sprites.
+        :param Dict[str, Dict[str, Any]] layer_options: Extra parameters for each layer.
         """
 
         # If we should pull from local resources, replace with proper path
         map_file = resolve_resource_path(map_file)
+
+        # This attribute stores the pytiled-parser map object
         self.tiled_map = pytiled_parser.parse_map(map_file)
+
+        # Set Map Attributes
+        self.width = self.tiled_map.map_size.width
+        self.height = self.tiled_map.map_size.height
+        self.tile_width = self.tiled_map.tile_size.width
+        self.tile_height = self.tiled_map.tile_size.height
+        self.background_color = self.tiled_map.background_color
+        self.scaling = scaling
+
+        # Dictionaries to store the SpriteLists for processed layers
         self.sprite_lists: OrderedDict[str, SpriteList] = OrderedDict()
         self.object_lists: OrderedDict[str, List[TiledObject]] = OrderedDict()
-        self.scaling = scaling
 
         if not layer_options:
             layer_options = {}
@@ -577,10 +638,28 @@ def load_tilemap(
     scaling: float = 1.0,
     layer_options: Optional[Dict[str, Dict[str, Any]]] = None,
 ) -> TileMap:
+    """
+    Given a .json map file, loads in and returns a `TileMap` object.
+
+    A TileMap can be created directly using the classes `__init__` function.
+    This function exists for ease of use.
+
+    For more clarification on the layer_options key, see the `__init__` function
+    of the `TileMap` class
+
+    :param Union[str, Path] map_file: The JSON map file.
+    :param float scaling: The global scaling to apply to all Sprite's within the map.
+    :param Dict[str, Dict[str, Any]] layer_options: Layer specific options for the map.
+    """
     return TileMap(map_file, scaling, layer_options)
 
 
 def read_tmx(map_file: Union[str, Path]) -> pytiled_parser.TiledMap:
+    """
+    Deprecated function to raise a warning that it has been removed.
+
+    Exists to provide info for outdated codebases.
+    """
     raise DeprecationWarning(
         "The read_tmx function has been replaced by the new TileMap class."
     )
