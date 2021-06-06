@@ -1,115 +1,43 @@
-.. _Tiled Map Editor: https://www.mapeditor.org/
 
 .. _platformer_part_eight:
 
-Step 8 - Use a Map Editor
--------------------------
+Step 8 - Display The Score
+--------------------------
 
-.. image:: use_tileset.png
-    :width: 70%
+Now that we can collect coins and get points,
+we need a way to display the score on the screen.
 
-Create a Map File
-~~~~~~~~~~~~~~~~~
+This is a bit more complex
+than just drawing the score at the same x, y location every time because
+we have to "scroll" the score right with the player if we have a scrolling
+screen. To do this, we just add in the ``view_bottom`` and ``view_left`` coordinates.
 
-For this part, we'll restart with a new program. Instead of placing our tiles
-by code, we'll use a map editor.
-
-Download and install the `Tiled Map Editor`_. (Think about donating, as it is
-a wonderful project.)
-
-Open a new file with options similar to these:
-
-* Orthogonal - This is a normal square-grid layout. It is the only version that
-  Arcade supports very well at this time.
-* Tile layer format - This selects how the data is stored inside the file. Any option works, but Base64
-  zlib compressed is the smallest.
-* Tile render order - Any of these should work. It simply specifies what order the tiles are
-  added. Right-down has tiles added left->right and top->down.
-* Map size - You can change this later, but this is your total grid size.
-* Tile size - the size, in pixels, of your tiles. Your tiles all need to be the same size.
-  Also, rendering works better if the tile size is a power of 2, such as
-  16, 32, 64, 128, and 256.
-
-.. image:: new_file.png
-   :scale: 80%
-
-Save it as ``map.tmx``.
-
-Rename the layer "Platforms". We'll use layer names to load our data later. Eventually
-you might have layers for:
-
-* Platforms that you run into (or you can think of them as walls)
-* Coins or objects to pick up
-* Background objects that you don't interact with, but appear behind the player
-* Foreground objects that you don't interact with, but appear in front of the player
-* Insta-death blocks (like lava)
-* Ladders
-
-.. Note::
-
-    Once you get multiple layers it is VERY easy to add items to the wrong
-    layer.
-
-.. image:: platforms.png
-   :scale: 80%
-
-Create a Tileset
-~~~~~~~~~~~~~~~~
-
-Before we can add anything to the layer we need to create a set of tiles.
-This isn't as obvious or intuitive as it should be. To create a new tileset
-click "New Tileset" in the window on the lower right:
-
-.. image:: new_tileset.png
-   :scale: 80%
-
-Right now, Arcade only supports a "collection of images" for a tileset.
-I find it convenient to embed the tileset in the map.
-
-.. image:: new_tileset_02.png
-   :scale: 80%
-
-Once you create a new tile, the button to add tiles to the tileset is
-hard to find. Click the wrench:
-
-.. image:: new_tileset_03.png
-   :scale: 80%
-
-Then click the 'plus' and add in your tiles
-
-.. image:: new_tileset_04.png
-   :scale: 80%
-
-Draw a Level
-~~~~~~~~~~~~
-
-At this point you should be able to "paint" a level. At the very least, put
-in a floor and then see if you can get this program working. (Don't put
-in a lot of time designing a level until you are sure you can get it to
-load.)
-
-The program below assumes there are layers created by the tiled
-map editor for for "Platforms" and "Coins".
-
-Test the Level
-~~~~~~~~~~~~~~
-
-.. literalinclude:: ../../../arcade/examples/platform_tutorial/08_load_map.py
-    :caption: Load a .tmx file from Tiled Map Editor
+.. literalinclude:: ../../../arcade/examples/platform_tutorial/08_score.py
+    :caption: Display The Score
     :linenos:
-    :emphasize-lines: 88-117
+    :emphasize-lines: 52-53, 71-72, 122-130, 169-170
 
 .. note::
 
-    You can set the **background color** of the map by selecting "Map...Map Properties".
-    Then click on the three dots to pull up a color picker.
+    You might also want to add:
 
-    You can edit the **hitbox** of a tile to make ramps
-    or platforms that only cover a portion of the rectangle in the grid.
+    * A count of how many coins are left to be collected.
+    * Number of lives left.
+    * A timer: :ref:`timer`
+    * This example shows how to add an FPS timer: :ref:`stress_test_draw_moving`
 
-    To edit the hitbox, use the polygon tool (only) and draw a polygon around
-    the item. You can hold down "CTRL" when positioning a point to get the exact
-    corner of an item.
+Explore On Your Own
+~~~~~~~~~~~~~~~~~~~
 
-    .. image:: collision_editor.png
-       :scale: 20%
+* Practice creating your own layout with different tiles.
+* Add background images. See :ref:`sprite_collect_coins_background`
+* Add moving platforms. See :ref:`sprite_moving_platforms`
+* Change the character image based on the direction she is facing.
+  See :ref:`sprite_face_left_or_right`
+* Add instruction and game over screens.
+
+Source Code
+~~~~~~~~~~~
+
+* :ref:`08_score`
+* :ref:`08_score_diff`

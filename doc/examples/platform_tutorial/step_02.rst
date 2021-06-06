@@ -124,4 +124,8 @@ Notice that the code creates ``Sprites`` three ways:
     * Use different images for sprites (see the images folder).
     * Practice placing individually, via a loop, and by coordinates in a list.
 
+Source Code
+~~~~~~~~~~~
+
+* :ref:`02_draw_sprites`
 * :ref:`02_draw_sprites_diff`

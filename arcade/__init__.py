@@ -242,9 +242,12 @@ from .sprite import get_distance_between_sprites
 from .sprite_list import SpriteList
 from .sprite_list import check_for_collision
 from .sprite_list import check_for_collision_with_list
+from .sprite_list import check_for_collision_with_lists
 from .sprite_list import get_closest_sprite
 from .sprite_list import get_sprites_at_exact_point
 from .sprite_list import get_sprites_at_point
+
+from .scene import Scene
 
 from .physics_engines import PhysicsEnginePlatformer
 from .physics_engines import PhysicsEngineSimple
@@ -255,10 +258,7 @@ from .text import draw_text
 from .text import create_text_image
 from .text import create_text_sprite
 
-from .tilemap import get_tilemap_layer
-from .tilemap import process_layer
-from .tilemap import read_map
-from .tilemap import read_tmx
+from .tilemap import load_tilemap
 
 from .pymunk_physics_engine import PymunkPhysicsEngine
 from .pymunk_physics_engine import PymunkPhysicsObject
@@ -341,6 +341,7 @@ __all__ = ['AStarBarrierList',
            'calculate_hit_box_points_simple',
            'check_for_collision',
            'check_for_collision_with_list',
+           'check_for_collision_with_lists',
            'clamp',
            'cleanup_texture_cache',
            'close_window',
@@ -412,6 +413,7 @@ __all__ = ['AStarBarrierList',
            'get_screens',
            'get_sprites_at_exact_point',
            'get_sprites_at_point',
+           'get_text_image',
            'create_text_image',
            'get_tilemap_layer',
            'get_viewport',

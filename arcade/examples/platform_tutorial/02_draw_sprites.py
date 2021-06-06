@@ -36,7 +36,7 @@ class MyGame(arcade.Window):
         arcade.set_background_color(arcade.csscolor.CORNFLOWER_BLUE)
 
     def setup(self):
-        """ Set up the game here. Call this function to restart the game. """
+        """Set up the game here. Call this function to restart the game."""
         # Create the Sprite lists
         self.player_list = arcade.SpriteList()
         self.wall_list = arcade.SpriteList(use_spatial_hash=True)
@@ -59,18 +59,18 @@ class MyGame(arcade.Window):
 
         # Put some crates on the ground
         # This shows using a coordinate list to place sprites
-        coordinate_list = [[512, 96],
-                           [256, 96],
-                           [768, 96]]
+        coordinate_list = [[512, 96], [256, 96], [768, 96]]
 
         for coordinate in coordinate_list:
             # Add a crate on the ground
-            wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", TILE_SCALING)
+            wall = arcade.Sprite(
+                ":resources:images/tiles/boxCrate_double.png", TILE_SCALING
+            )
             wall.position = coordinate
             self.wall_list.append(wall)
 
     def on_draw(self):
-        """ Render the screen. """
+        """Render the screen."""
 
         # Clear the screen to the background color
         arcade.start_render()
@@ -82,7 +82,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    """ Main method """
+    """Main method"""
     window = MyGame()
     window.setup()
     arcade.run()

@@ -22,18 +22,18 @@ class MyGame(arcade.Window):
         arcade.set_background_color(arcade.csscolor.CORNFLOWER_BLUE)
 
     def setup(self):
-        """ Set up the game here. Call this function to restart the game. """
+        """Set up the game here. Call this function to restart the game."""
         pass
 
     def on_draw(self):
-        """ Render the screen. """
+        """Render the screen."""
 
         arcade.start_render()
         # Code to draw the screen goes here
 
 
 def main():
-    """ Main method """
+    """Main method"""
     window = MyGame()
     window.setup()
     arcade.run()
