@@ -52,3 +52,6 @@ doc/_build
 test.py
 pip-wheel-metadata/
 temp/
+
+# Tiled Session for project
+*.tiled-session
