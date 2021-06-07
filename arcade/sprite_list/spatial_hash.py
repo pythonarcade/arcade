@@ -336,6 +336,42 @@ def check_for_collision_with_list(
     #             collision_list.append(sprite2)
 
 
+def check_for_collision_with_lists(sprite: Sprite,
+                                  sprite_lists: List[SpriteList]) -> List[Sprite]:
+    """
+    Check for a collision between a Sprite, and a list of SpriteLists.
+    :param Sprite sprite: Sprite to check
+    :param List[SpriteList] sprite_list: SpriteLists to check against
+    :returns: List of sprites colliding, or an empty list.
+    :rtype: list
+    """
+    if not isinstance(sprite, Sprite):
+        raise TypeError(f"Parameter 1 is not an instance of the Sprite class, it is an instance of {type(sprite)}.")
+    if not isinstance(sprite_lists, list):
+        raise TypeError(f"Parameter 2 is a {type(sprite_lists)} instead of expected List[SpriteList].")
+
+    sprites = []
+
+    for sprite_list in sprite_lists:  
+        if sprite_list.use_spatial_hash is None and len(sprite_list) > 30 and sprite_list.percent_sprites_moved < 10:
+            LOG.debug(f"Enabling spatial hash - Spatial hash is none, sprite list "
+                    f"is {len(sprite_list)} elements. Percent moved "
+                    f"{sprite_list._percent_sprites_moved * 100}.")
+            sprite_list.enable_spatial_hashing()
+
+        if sprite_list.use_spatial_hash:
+            sprite_list_to_check = sprite_list.spatial_hash.get_objects_for_box(sprite)
+            # checks_saved = len(sprite_list) - len(sprite_list_to_check)
+        else:
+            sprite_list_to_check = sprite_list
+
+        for sprite2 in sprite_list_to_check:
+            if sprite is not sprite2 and _check_for_collision(sprite, sprite2):
+                sprites.append(sprite2)
+
+    return sprites
+
+
 def get_sprites_at_point(point: Point, sprite_list: SpriteList) -> List[Sprite]:
     """
     Get a list of sprites at a particular point

@@ -1,34 +1,46 @@
+
 .. _platformer_part_ten:
 
-Step 10 - Add Ladders, Properties, and a Moving Platform
---------------------------------------------------------
+Step 10 - Multiple Levels and Other Layers
+------------------------------------------
 
-.. image:: 10_ladders_and_more.png
-   :scale: 40%
+Here's an expanded example:
 
-This example shows using:
+* This adds foreground, background, and "Don't Touch" layers.
 
-* Ladders
-* Properties to define point value of coins and flags
-* Properties and an object layer to define a moving platform.
+  * The background tiles appear behind the player
+  * The foreground appears in front of the player
+  * The Don't Touch layer will reset the player to the start (218-231)
 
-To create a moving platform using TMX editor, there are a few steps:
+* The player resets to the start if they fall off the map (207-216)
+* If the player gets to the right side of the map, the program attempts to load another layer
 
-1. Define an **object layer** instead of a tile layer.
-2. Select **Insert Tile**
-3. Select the tile you wish to insert.
-4. Place the tile.
-5. Add custom properties. You can add:
+  * Add ``level`` attribute (73-74)
+  * Updated ``setup`` to load a file based on the level (81-101, specifically lines 81 and 85)
+  * Added end-of-map check(233-244)
 
-  * ``change_x``
-  * ``change_y``
-  * ``boundary_bottom``
-  * ``boundary_top``
-  * ``boundary_left``
-  * ``boundary_right``
-
-.. image:: moving_platform_setup.png
-
-.. literalinclude:: ../../../arcade/examples/platform_tutorial/10_ladders_and_more.py
-    :caption: Ladders, Animated Tiles, and Moving Platforms
+.. literalinclude:: ../../../arcade/examples/platform_tutorial/10_multiple_levels.py
+    :caption: More Advanced Example
     :linenos:
+    :emphasize-lines: 73-74, 81, 84-85, 233-244
+
+.. note::
+
+    What else might you want to do?
+
+    * :ref:`sprite_enemies_in_platformer`
+    * :ref:`sprite_face_left_or_right`
+    * Bullets (or something you can shoot)
+
+      * :ref:`sprite_bullets`
+      * :ref:`sprite_bullets_aimed`
+      * :ref:`sprite_bullets_enemy_aims`
+
+    * Add :ref:`sprite_explosion_bitmapped`
+    * Add :ref:`sprite_move_animation`
+
+Source Code
+~~~~~~~~~~~
+
+* :ref:`10_multiple_levels`
+* :ref:`10_multiple_levels_diff`

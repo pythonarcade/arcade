@@ -53,7 +53,19 @@ class UIAbstractFlatButton(UIClickable):
             **kwargs
         )
 
-        self.text = text
+        self._text = text
+
+    @property
+    def text(self):
+        """
+        Text of the label
+        """
+        return self._text
+
+    @text.setter
+    def text(self, value):
+        self._text = value
+        self.render()
 
     def render(self):
         font_name = self.style_attr("font_name", ["Calibri", "Arial"])
@@ -80,7 +92,7 @@ class UIAbstractFlatButton(UIClickable):
         h_align = self.style_attr("h_align", "center")
 
         text_image_normal, text_image_normal_uuid = text_utils.create_text(
-            text=self.text,
+            text=self._text,
             font_name=font_name,
             font_size=font_size,
             font_color=font_color,
