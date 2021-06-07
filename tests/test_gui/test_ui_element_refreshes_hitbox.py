@@ -19,7 +19,7 @@ def ui_element():
 
 def test_sprite_refreshes_hitbox_after_switching_texture(ui_element):
     tex_1 = Texture("tex1", Image.new("RGBA", (50, 50), (0, 0, 0, 1)))
-    tex_2 = Texture("tex1", Image.new("RGBA", (100, 100), (0, 0, 0, 1)))
+    tex_2 = Texture("tex2", Image.new("RGBA", (100, 100), (0, 0, 0, 1)))
 
     ui_element.texture = tex_1
 

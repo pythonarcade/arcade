@@ -8,8 +8,6 @@ individual sprites.
 import logging
 from array import array
 from collections import deque
-from random import shuffle
-
 from typing import (
     Dict,
     Deque,
@@ -23,12 +21,12 @@ from typing import (
     Set,
 )
 
-from arcade.context import ArcadeContext
 from arcade import Color
 from arcade import Matrix3x3
 from arcade import Sprite
 from arcade import get_window
 from arcade import gl
+from arcade.context import ArcadeContext
 
 if TYPE_CHECKING:
     from arcade import TextureAtlas
@@ -51,7 +49,7 @@ class SpriteList:
     is_static are very important.
     """
 
-    _keep_textures = True
+    # _keep_textures = True
     __slots__ = (
         "ctx",
         "program",
@@ -63,6 +61,7 @@ class SpriteList:
         "is_static",
         "_buf_capacity",
         "_idx_capacity",
+        "_keep_textures",
         "_sprite_buffer_slots",
         "_sprite_index_slots",
         "_sprite_buffer_free_slots",
@@ -95,12 +94,12 @@ class SpriteList:
     )
 
     def __init__(
-        self,
-        use_spatial_hash=None,
-        spatial_hash_cell_size=128,
-        is_static=False,
-        atlas: "TextureAtlas" = None,
-        capacity: int = 100,
+            self,
+            use_spatial_hash=None,
+            spatial_hash_cell_size=128,
+            is_static=False,
+            atlas: "TextureAtlas" = None,
+            capacity: int = 100,
     ):
         """
         Initialize the sprite list
@@ -125,6 +124,8 @@ class SpriteList:
             self._atlas: TextureAtlas = atlas
         self._initialized = False
         self.extra = None
+
+        self._keep_textures = True
 
         # The initial capacity of the spritelist buffers (internal)
         self._buf_capacity = abs(capacity) or 100
@@ -196,7 +197,7 @@ class SpriteList:
         self.ctx: ArcadeContext = get_window().ctx
         self.program = self.ctx.sprite_list_program_cull
         self._atlas: TextureAtlas = (
-            getattr(self, "_atlas", None) or self.ctx.default_atlas
+                getattr(self, "_atlas", None) or self.ctx.default_atlas
         )
 
         # Buffers for each sprite attribute (read by shader) with initial capacity
@@ -819,14 +820,14 @@ class SpriteList:
         self._sprites_moved = 0
 
         if any(
-            (
-                self._sprite_pos_changed,
-                self._sprite_size_changed,
-                self._sprite_angle_changed,
-                self._sprite_color_changed,
-                self._sprite_sub_tex_changed,
-                self._sprite_index_changed,
-            )
+                (
+                        self._sprite_pos_changed,
+                        self._sprite_size_changed,
+                        self._sprite_angle_changed,
+                        self._sprite_color_changed,
+                        self._sprite_sub_tex_changed,
+                        self._sprite_index_changed,
+                )
         ):
             self._write_sprite_buffers_to_gpu()
 

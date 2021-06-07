@@ -41,7 +41,6 @@ def test_on_mouse_release_passes_an_event(mock_mng, mock_button):
 
 def test_on_mouse_scroll_passes_an_event(mock_mng, mock_button):
     mock_mng.add_ui_element(mock_button)
-    mock_mng.add_ui_element(mock_button)
 
     mock_mng.on_mouse_scroll(1, 2, 3, 4)
 
@@ -54,7 +53,6 @@ def test_on_mouse_scroll_passes_an_event(mock_mng, mock_button):
 
 
 def test_on_mouse_motion_passes_an_event(mock_mng, mock_button):
-    mock_mng.add_ui_element(mock_button)
     mock_mng.add_ui_element(mock_button)
 
     mock_mng.on_mouse_motion(1, 2, 3, 4)
@@ -69,7 +67,6 @@ def test_on_mouse_motion_passes_an_event(mock_mng, mock_button):
 
 def test_on_key_press_passes_an_event(mock_mng, mock_button):
     mock_mng.add_ui_element(mock_button)
-    mock_mng.add_ui_element(mock_button)
 
     mock_mng.on_key_press(arcade.key.ENTER, 0)
 
@@ -79,7 +76,6 @@ def test_on_key_press_passes_an_event(mock_mng, mock_button):
 
 
 def test_on_key_release_passes_an_event(mock_mng, mock_button):
-    mock_mng.add_ui_element(mock_button)
     mock_mng.add_ui_element(mock_button)
 
     mock_mng.on_key_release(arcade.key.ENTER, 0)
@@ -91,7 +87,6 @@ def test_on_key_release_passes_an_event(mock_mng, mock_button):
 
 def test_on_text_passes_an_event(mock_mng, mock_button):
     mock_mng.add_ui_element(mock_button)
-    mock_mng.add_ui_element(mock_button)
 
     mock_mng.on_text("a")
 
@@ -102,7 +97,6 @@ def test_on_text_passes_an_event(mock_mng, mock_button):
 
 def test_on_text_motion_passes_an_event(mock_mng, mock_button):
     mock_mng.add_ui_element(mock_button)
-    mock_mng.add_ui_element(mock_button)
 
     mock_mng.on_text_motion(MOTION_UP)
 
@@ -112,7 +106,6 @@ def test_on_text_motion_passes_an_event(mock_mng, mock_button):
 
 
 def test_on_text_motion_selection_passes_an_event(mock_mng, mock_button):
-    mock_mng.add_ui_element(mock_button)
     mock_mng.add_ui_element(mock_button)
 
     mock_mng.on_text_motion_select(MOTION_UP)

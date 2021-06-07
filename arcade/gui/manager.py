@@ -94,6 +94,21 @@ class UIAbstractManager(EventDispatcher, metaclass=ABCMeta):
             self.on_text_motion_select,
         )
 
+    def adjust_mouse_coordinates(self, x, y):
+        """
+        This method is used, to translate mouse coordinates to coordinates
+        respecting the viewport and projection of cameras.
+        The implementation should work in most common cases.
+
+        If you use scrolling in the :py:class:`arcade.experimental.camera.Camera2D` you have to reset scrolling
+        or overwrite this method using the camera conversion: `ui_manager.adjust_mouse_coordinates = camera.mouse_coordinates_to_world`
+        """
+        vx, vy, vw, vh = self.window.ctx.viewport
+        pl, pr, pb, pt = self.window.ctx.projection_2d
+        proj_width, proj_height = pr - pl, pt - pb
+        dx, dy = proj_width / vw, proj_height / vh
+        return (x - vx) * dx, (y - vy) * dy
+
     def dispatch_ui_event(self, event: UIEvent):
         """
         Dispatches a :py:class:`arcade.gui.UIEvent` to all added :py:class:`arcade.gui.UIElement`s.
@@ -136,6 +151,7 @@ class UIAbstractManager(EventDispatcher, metaclass=ABCMeta):
         Dispatches :py:meth:`arcade.View.on_mouse_press()` as :py:class:`arcade.gui.UIElement`
         with type :py:attr:`arcade.gui.events.MOUSE_PRESS`
         """
+        x, y = self.adjust_mouse_coordinates(x, y)
         self.dispatch_ui_event(
             UIEvent(MOUSE_PRESS, x=x, y=y, button=button, modifiers=modifiers)
         )
@@ -145,6 +161,7 @@ class UIAbstractManager(EventDispatcher, metaclass=ABCMeta):
         Dispatches :py:meth:`arcade.View.on_mouse_release()` as :py:class:`arcade.gui.UIElement`
         with type :py:attr:`arcade.gui.events.MOUSE_RELEASE`
         """
+        x, y = self.adjust_mouse_coordinates(x, y)
         self.dispatch_ui_event(
             UIEvent(MOUSE_RELEASE, x=x, y=y, button=button, modifiers=modifiers)
         )
@@ -154,6 +171,7 @@ class UIAbstractManager(EventDispatcher, metaclass=ABCMeta):
         Dispatches :py:meth:`arcade.View.on_mouse_motion()` as :py:class:`arcade.gui.UIElement`
         with type :py:attr:`arcade.gui.events.MOUSE_MOTION`
         """
+        x, y = self.adjust_mouse_coordinates(x, y)
         self.dispatch_ui_event(
             UIEvent(
                 MOUSE_MOTION,
@@ -169,6 +187,7 @@ class UIAbstractManager(EventDispatcher, metaclass=ABCMeta):
         Dispatches :py:meth:`arcade.View.on_mouse_drag()` as :py:class:`arcade.gui.UIElement`
         with type :py:attr:`arcade.gui.events.MOUSE_DRAG`
         """
+        x, y = self.adjust_mouse_coordinates(x, y)
         self.dispatch_ui_event(
             UIEvent(
                 MOUSE_DRAG, x=x, y=y, dx=dx, dy=dy, buttons=buttons, modifiers=modifiers
@@ -180,6 +199,7 @@ class UIAbstractManager(EventDispatcher, metaclass=ABCMeta):
         Dispatches :py:meth:`arcade.View.on_mouse_scroll()` as :py:class:`arcade.gui.UIElement`
         with type :py:attr:`arcade.gui.events.MOUSE_SCROLL`
         """
+        x, y = self.adjust_mouse_coordinates(x, y)
         self.dispatch_ui_event(
             UIEvent(
                 MOUSE_SCROLL,

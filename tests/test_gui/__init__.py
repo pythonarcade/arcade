@@ -20,24 +20,16 @@ class InteractionMixin:
         self.event_history: List[arcade.gui.events.UIEvent] = []
 
     def move_mouse(self, x: int, y: int):
-        self.dispatch_ui_event(
-            arcade.gui.events.UIEvent(
-                arcade.gui.events.MOUSE_MOTION, x=x, y=y, button=1, modifier=0
-            )
-        )
+        self.on_mouse_motion(x, y, 0, 0)
 
     def click_and_hold(self, x: int, y: int, button=arcade.MOUSE_BUTTON_LEFT):
-        self.dispatch_ui_event(
-            arcade.gui.events.UIEvent(
-                arcade.gui.events.MOUSE_PRESS, x=x, y=y, button=button, modifier=0
-            )
+        self.on_mouse_press(
+            x=x, y=y, button=button, modifiers=0
         )
 
     def release(self, x: int, y: int, button=arcade.MOUSE_BUTTON_LEFT):
-        self.dispatch_ui_event(
-            arcade.gui.events.UIEvent(
-                arcade.gui.events.MOUSE_RELEASE, x=x, y=y, button=button, modifier=0
-            )
+        self.on_mouse_release(
+            x=x, y=y, button=button, modifiers=0
         )
 
     def click(self, x: int, y: int):
@@ -61,15 +53,33 @@ class InteractionMixin:
 
 
 class TestUIManager(UIManager, InteractionMixin):
+    use_super_mouse_adjustment = False
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.push_handlers(on_ui_event=self._on_ui_event)
+
+    # For easier calculation we overwrite the adjustment, so events can test without floating point values
+    def adjust_mouse_coordinates(self, x, y):
+        if self.use_super_mouse_adjustment:
+            return super().adjust_mouse_coordinates(x, y)
+        else:
+            return x, y
 
 
 class TestUILayoutManager(UILayoutManager, InteractionMixin):
+    use_super_mouse_adjustment = False
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.push_handlers(on_ui_event=self._on_ui_event)
+
+    # For easier calculation we overwrite the adjustment, so events can test without floating point values
+    def adjust_mouse_coordinates(self, x, y):
+        if self.use_super_mouse_adjustment:
+            return super().adjust_mouse_coordinates(x, y)
+        else:
+            return x, y
 
 
 def t(name, *args):
@@ -119,14 +129,14 @@ class MockButton(UIClickable):
     on_unfocus_called = False
 
     def __init__(
-        self,
-        center_x=0,
-        center_y=0,
-        min_size=(40, 40),
-        size_hint=None,
-        id: Optional[str] = None,
-        style: UIStyle = None,
-        **kwargs
+            self,
+            center_x=0,
+            center_y=0,
+            min_size=(40, 40),
+            size_hint=None,
+            id: Optional[str] = None,
+            style: UIStyle = None,
+            **kwargs
     ):
         super().__init__(
             center_x=center_x,
