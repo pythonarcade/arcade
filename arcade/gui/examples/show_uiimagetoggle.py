@@ -19,6 +19,7 @@ class MyView(arcade.View):
     def on_show_view(self):
         arcade.set_background_color(arcade.color.WHITE)
         self.ui_manager.purge_ui_elements()
+        self.ui_manager.enable()
 
         screen_switch = UIImageToggle(
             true_texture=load_texture(":resources:gui_basic_assets/icons/smaller.png"),
@@ -40,7 +41,7 @@ class MyView(arcade.View):
             screen_switch.position = self.window.width // 2, self.window.height // 2
 
     def on_hide_view(self):
-        self.ui_manager.unregister_handlers()
+        self.ui_manager.disable()
 
 
 if __name__ == "__main__":

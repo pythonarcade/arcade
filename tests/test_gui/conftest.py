@@ -53,14 +53,14 @@ def window():
 def mock_mng(window):
     ui_manager = TestUIManager(window)
     yield ui_manager
-    ui_manager.unregister_handlers()
 
 
 @pytest.fixture()
 def mock_layout_mng(window):
     ui_manager = TestUILayoutManager(window)
+    ui_manager.enable()
     yield ui_manager
-    ui_manager.unregister_handlers()
+    ui_manager.disable()
 
 
 @pytest.fixture()

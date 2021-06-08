@@ -1,11 +1,8 @@
-from typing import Optional
-from uuid import uuid4
+from typing import Optional, Tuple
 
 import arcade
-
-from arcade.gui import UIClickable
+from arcade.gui import UIClickable, text_utils
 from arcade.gui.style import UIStyle
-from arcade.gui.utils import render_text_image
 
 
 class UIAbstractFlatButton(UIClickable):
@@ -31,9 +28,8 @@ class UIAbstractFlatButton(UIClickable):
         text: str,
         center_x: int = 0,
         center_y: int = 0,
-        width: int = None,
-        height: int = None,
-        align="center",
+        min_size: Optional[Tuple] = None,
+        size_hint: Optional[Tuple] = None,
         id: Optional[str] = None,
         style: UIStyle = None,
         **kwargs
@@ -42,21 +38,22 @@ class UIAbstractFlatButton(UIClickable):
         :param text:
         :param center_x: center X of element
         :param center_y: center y of element
-        :param width:
-        :param height:
         :param align:
         :param id: id of :py:class:`arcade.gui.UIElement`
         :param style: style of :py:class:`arcade.gui.UIElement`
         :param kwargs: catches unsupported named parameters
         """
         super().__init__(
-            center_x=center_x, center_y=center_y, id=id, style=style, **kwargs
+            center_x=center_x,
+            center_y=center_y,
+            min_size=min_size,
+            size_hint=size_hint,
+            id=id,
+            style=style,
+            **kwargs
         )
 
         self._text = text
-        self.align = align
-        self.width = width
-        self.height = height
 
     @property
     def text(self):
@@ -91,58 +88,64 @@ class UIAbstractFlatButton(UIClickable):
         bg_color_hover = self.style_attr("bg_color_hover", None)
         bg_color_press = self.style_attr("bg_color_press", None)
 
-        vpadding = self.style_attr("vpadding", 0)
-        height = self.height if self.height else font_size + vpadding
+        v_align = self.style_attr("v_align", "center")
+        h_align = self.style_attr("h_align", "center")
 
-        text_image_normal = render_text_image(
-            self._text,
-            font_size=font_size,
+        text_image_normal, text_image_normal_uuid = text_utils.create_text(
+            text=self._text,
             font_name=font_name,
-            align=self.align,
-            valign="middle",
-            bg_image=None,
-            width=int(self.width),
-            height=height,
-            indent=0,
+            font_size=font_size,
             font_color=font_color,
+            bg_color=bg_color,
+            min_width=self.width - border_width,
+            min_height=self.height - border_width,
+            v_align=v_align,
+            h_align=h_align,
             border_width=border_width,
             border_color=border_color,
-            bg_color=bg_color,
         )
-        text_image_hover = render_text_image(
-            self.text,
-            font_size=font_size,
+        text_image_hover, text_image_hover_uuid = text_utils.create_text(
+            text=self.text,
             font_name=font_name,
-            align=self.align,
-            valign="middle",
-            bg_image=None,
-            width=int(self.width),
-            height=height,
-            indent=0,
+            font_size=font_size,
             font_color=font_color_hover,
+            bg_color=bg_color_hover,
+            min_width=self.width - border_width,
+            min_height=self.height - border_width,
+            v_align=v_align,
+            h_align=h_align,
             border_width=border_width,
             border_color=border_color_hover,
-            bg_color=bg_color_hover,
         )
-        text_image_press = render_text_image(
-            self.text,
-            font_size=font_size,
+        text_image_press, text_image_press_uuid = text_utils.create_text(
+            text=self.text,
             font_name=font_name,
-            align=self.align,
-            valign="middle",
-            bg_image=None,
-            width=int(self.width),
-            height=height,
-            indent=0,
+            font_size=font_size,
             font_color=font_color_press,
+            bg_color=bg_color_press,
+            min_width=self.width - border_width,
+            min_height=self.height - border_width,
+            v_align=v_align,
+            h_align=h_align,
             border_width=border_width,
             border_color=border_color_press,
-            bg_color=bg_color_press,
         )
 
-        self.normal_texture = arcade.Texture(image=text_image_normal, name=str(uuid4()))
-        self.hover_texture = arcade.Texture(image=text_image_hover, name=str(uuid4()))
-        self.press_texture = arcade.Texture(image=text_image_press, name=str(uuid4()))
+        self.normal_texture = arcade.Texture(
+            image=text_image_normal,
+            name=text_image_normal_uuid,
+            hit_box_algorithm="None",
+        )
+        self.hover_texture = arcade.Texture(
+            image=text_image_hover,
+            name=text_image_hover_uuid,
+            hit_box_algorithm="None",
+        )
+        self.press_texture = arcade.Texture(
+            image=text_image_press,
+            name=text_image_press_uuid,
+            hit_box_algorithm="None",
+        )
 
 
 class UIFlatButton(UIAbstractFlatButton):
@@ -151,9 +154,8 @@ class UIFlatButton(UIAbstractFlatButton):
         text: str,
         center_x: int = 0,
         center_y: int = 0,
-        width: int = 0,
-        height: int = 0,
-        align="center",
+        min_size: Optional[Tuple] = None,
+        size_hint: Optional[Tuple] = None,
         id: Optional[str] = None,
         style: UIStyle = None,
         **kwargs
@@ -162,15 +164,21 @@ class UIFlatButton(UIAbstractFlatButton):
         :param text: Text
         :param center_x: center X of element
         :param center_y: center y of element
-        :param width: width of element
-        :param height: height of element
-        :param align: align of text, requires set width
+        :param min_size: min_size of the element
+        :param size_hint: size_hint to grow/shrink within UILayout
         :param id: id of :py:class:`arcade.gui.UIElement`
         :param style: style of :py:class:`arcade.gui.UIElement`
         :param kwargs: catches unsupported named parameters
         """
         super().__init__(
-            text, center_x, center_y, width, height, align, id=id, style=style, **kwargs
+            text,
+            center_x=center_x,
+            center_y=center_y,
+            min_size=min_size,
+            size_hint=size_hint,
+            id=id,
+            style=style,
+            **kwargs
         )
         self.style_classes.append("flatbutton")
         self.render()
@@ -182,9 +190,8 @@ class UIGhostFlatButton(UIAbstractFlatButton):
         text: str,
         center_x: int = 0,
         center_y: int = 0,
-        width: int = 0,
-        height: int = 0,
-        align="center",
+        min_size: Optional[Tuple] = None,
+        size_hint: Optional[Tuple] = None,
         id: Optional[str] = None,
         style: UIStyle = None,
         **kwargs
@@ -193,15 +200,21 @@ class UIGhostFlatButton(UIAbstractFlatButton):
         :param text: Text
         :param center_x: center X of element
         :param center_y: center y of element
-        :param width: width of element
-        :param height: height of element
-        :param align: align of text, requires set width
+        :param min_size: min_size of the element
+        :param size_hint: size_hint to grow/shrink within UILayout
         :param id: id of :py:class:`arcade.gui.UIElement`
         :param style: style of :py:class:`arcade.gui.UIElement`
         :param kwargs: catches unsupported named parameters
         """
         super().__init__(
-            text, center_x, center_y, width, height, align, id=id, style=style, **kwargs
+            text,
+            center_x=center_x,
+            center_y=center_y,
+            min_size=min_size,
+            size_hint=size_hint,
+            id=id,
+            style=style,
+            **kwargs
         )
         self.style_classes.append("ghostflatbutton")
         self.render()

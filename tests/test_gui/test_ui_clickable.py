@@ -2,12 +2,20 @@ import pytest
 
 import arcade
 import arcade.gui
-from arcade.gui import UIClickable
+from arcade.gui import UIClickable, UIStyle
 
 
 class TestClickable(UIClickable):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self, center_x, center_y, min_size, size_hint=None, **kwargs):
+        super().__init__(
+            center_x=center_x,
+            center_y=center_y,
+            min_size=min_size,
+            size_hint=size_hint,
+            id=None,
+            style=UIStyle.default_style(),
+            **kwargs
+        )
         self.render()
 
     def render(self):
@@ -38,6 +46,7 @@ def clickable(mock_mng) -> UIClickable:
     b = TestClickable(
         center_x=30,
         center_y=40,
+        min_size=(100, 30),
     )
 
     mock_mng.add_ui_element(b)

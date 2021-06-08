@@ -18,14 +18,15 @@ class MyView(arcade.View):
     def on_show_view(self):
         arcade.set_background_color(arcade.color.BLACK)
         self.ui_manager.purge_ui_elements()
+        self.ui_manager.enable()
 
         box = arcade.gui.UIInputBox(
-            text="hello", center_x=400, center_y=300, width=200, height=40
+            text="hello", center_x=400, center_y=300, min_size=(200, 40)
         )
         self.ui_manager.add_ui_element(box)
 
     def on_hide_view(self):
-        self.ui_manager.unregister_handlers()
+        self.ui_manager.disable()
 
 
 if __name__ == "__main__":

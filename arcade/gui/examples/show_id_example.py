@@ -26,22 +26,21 @@ class MyView(arcade.View):
     def on_show_view(self):
         arcade.set_background_color(arcade.color.BLACK)
         self.ui_manager.purge_ui_elements()
+        self.ui_manager.enable()
 
         self.ui_manager.add_ui_element(
             UILabel(
                 text="Username:",
                 center_x=100,
                 center_y=self.window.height // 2,
-                width=300,
-                height=40,
+                min_size=(300, 40),
             )
         )
         self.ui_manager.add_ui_element(
             UIInputBox(
                 center_x=350,
                 center_y=self.window.height // 2,
-                width=300,
-                height=40,
+                min_size=(300, 40),
                 id="username",
             )
         )
@@ -50,8 +49,7 @@ class MyView(arcade.View):
                 text="Login",
                 center_x=650,
                 center_y=self.window.height // 2,
-                width=200,
-                height=40,
+                min_size=(200, 40),
                 id="submit_button",
             )
         )
@@ -61,8 +59,7 @@ class MyView(arcade.View):
                 text="",
                 center_x=self.window.width // 2,
                 center_y=self.window.height // 2 - 100,
-                width=600,
-                height=40,
+                min_size=(600, 40),
                 id="login_message",
             )
         )
@@ -90,7 +87,7 @@ class MyView(arcade.View):
         login_message.text = f"Welcome {username}, you are my first player."
 
     def on_hide_view(self):
-        self.ui_manager.unregister_handlers()
+        self.ui_manager.disable()
 
 
 if __name__ == "__main__":

@@ -1,13 +1,11 @@
-from typing import Optional
-from uuid import uuid4
-
-from PIL import ImageDraw
+from typing import Optional, Tuple
 
 import arcade
+from arcade.gui import text_utils
 from arcade.gui.elements import UIClickable
 from arcade.gui.events import UIEvent, TEXT_INPUT, TEXT_MOTION
 from arcade.gui.style import UIStyle
-from arcade.gui.utils import get_text_image
+from arcade.gui.text_utils import Padding
 from arcade.key import (
     MOTION_UP,
     MOTION_RIGHT,
@@ -137,11 +135,11 @@ class UIInputBox(UIClickable):
 
     def __init__(
         self,
+        text="",
         center_x=0,
         center_y=0,
-        width=0,
-        height=0,
-        text="",
+        min_size: Optional[Tuple] = (200, 30),
+        size_hint: Optional[Tuple] = None,
         id: Optional[str] = None,
         style: UIStyle = None,
         **kwargs
@@ -157,13 +155,16 @@ class UIInputBox(UIClickable):
         :param kwargs: catches unsupported named parameters
         """
         super().__init__(
-            center_x=center_x, center_y=center_y, id=id, style=style, **kwargs
+            center_x=center_x,
+            center_y=center_y,
+            min_size=min_size,
+            size_hint=size_hint,
+            id=id,
+            style=style,
+            **kwargs
         )
         self.register_event_type("on_enter")
         self.style_classes.append("inputbox")
-
-        self.width = width if width is not None else 200
-        self.height = height
 
         self.symbol = "|"
         self.text_adapter = _KeyAdapter(text)
@@ -173,6 +174,7 @@ class UIInputBox(UIClickable):
         self.focus_texture = None
 
         self.render()
+        self.set_proper_texture()
 
     def render(self):
         font_name = self.style_attr("font_name", ["Calibri", "Arial"])
@@ -180,9 +182,10 @@ class UIInputBox(UIClickable):
 
         font_color = self.style_attr("font_color", arcade.color.WHITE)
         font_color_hover = self.style_attr("font_color_hover", None)
+        font_color_focus = self.style_attr("font_color_focus", None)
+
         if font_color_hover is None:
             font_color_hover = font_color
-        font_color_focus = self.style_attr("font_color_focus", None)
         if font_color_focus is None:
             font_color_focus = font_color_hover
 
@@ -195,80 +198,74 @@ class UIInputBox(UIClickable):
         bg_color_hover = self.style_attr("bg_color_hover", arcade.color.GRAY)
         bg_color_focus = self.style_attr("bg_color_focus", arcade.color.GRAY)
 
-        width = int(self.width)
-        vpadding = self.style_attr("vpadding", 0)
-        height = self.height if self.height else font_size + vpadding
-
-        align = "left"
-        padding_left = self.style_attr("padding_left", 10)
+        # TODO fix overdraw behavior
+        # -> textures are growing, but hitbox stays, does not shrink -.-
+        v_align = "center"
+        h_align = "left"
+        padding = Padding(left=border_width)
 
         # text
-        text_image_normal = get_text_image(
+        text_image_normal, text_image_normal_uuid = text_utils.create_text(
             text=self.text,
+            font_name=font_name,
+            font_size=font_size,
             font_color=font_color,
-            font_size=font_size,
-            font_name=font_name,
-            align=align,
-            width=width,
-            height=height,
-            valign="middle",
-            indent=padding_left,
-            background_color=bg_color,
+            bg_color=bg_color,
+            min_width=self.width,
+            min_height=self.height,
+            v_align=v_align,
+            h_align=h_align,
+            padding=padding,
+            border_width=border_width,
+            border_color=border_color,
         )
-        text_image_hover = get_text_image(
+        text_image_hover, text_image_hover_uuid = text_utils.create_text(
             text=self.text,
-            font_color=font_color_hover,
-            font_size=font_size,
             font_name=font_name,
-            align=align,
-            width=width,
-            height=height,
-            valign="middle",
-            indent=padding_left,
-            background_color=bg_color_hover,
+            font_size=font_size,
+            font_color=font_color_hover,
+            bg_color=bg_color_hover,
+            min_width=self.width,
+            min_height=self.height,
+            v_align=v_align,
+            h_align=h_align,
+            padding=padding,
+            border_width=border_width,
+            border_color=border_color_hover,
         )
 
-        text_to_show = (
+        text_with_cursor = (
             self.text[: self.cursor_index]
             + self.symbol
             + self.text[self.cursor_index :]
         )
-        text_image_focus = get_text_image(
-            text=text_to_show,
-            font_color=font_color_focus,
-            font_size=font_size,
+        text_image_focus, text_image_focus_uuid = text_utils.create_text(
+            text=text_with_cursor,
             font_name=font_name,
-            align=align,
-            width=width,
-            height=height,
-            valign="middle",
-            indent=padding_left,
-            background_color=bg_color_focus,
+            font_size=font_size,
+            font_color=font_color_focus,
+            bg_color=bg_color_focus,
+            min_width=self.width,
+            min_height=self.height,
+            v_align=v_align,
+            h_align=h_align,
+            padding=padding,
+            border_width=border_width,
+            border_color=border_color_focus,
         )
 
         # draw outline
-        rect = [
-            0,
-            0,
-            text_image_normal.width - border_width / 2,
-            text_image_normal.height - border_width / 2,
-        ]
-
-        if border_color and border_width:
-            d = ImageDraw.Draw(text_image_normal)
-            d.rectangle(rect, fill=None, outline=border_color, width=border_width)
-
-        if border_color_hover:
-            d = ImageDraw.Draw(text_image_hover)
-            d.rectangle(rect, fill=None, outline=border_color_hover, width=border_width)
-
-        if border_color_focus:
-            d = ImageDraw.Draw(text_image_focus)
-            d.rectangle(rect, fill=None, outline=border_color_focus, width=border_width)
-
-        self.normal_texture = arcade.Texture(image=text_image_normal, name=str(uuid4()))
-        self.hover_texture = arcade.Texture(image=text_image_hover, name=str(uuid4()))
-        self.focus_texture = arcade.Texture(image=text_image_focus, name=str(uuid4()))
+        self.normal_texture = arcade.Texture(
+            image=text_image_normal,
+            name=text_image_normal_uuid,
+            hit_box_algorithm="None",
+        )
+        self.hover_texture = arcade.Texture(
+            image=text_image_hover, name=text_image_hover_uuid, hit_box_algorithm="None"
+        )
+        self.focus_texture = arcade.Texture(
+            image=text_image_focus, name=text_image_focus_uuid, hit_box_algorithm="None"
+        )
 
     @property
     def cursor_index(self):

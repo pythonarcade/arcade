@@ -66,12 +66,12 @@ class UIElement(arcade.Sprite):
 
     def __init__(
         self,
-        center_x=0,
-        center_y=0,
-        id: Optional[str] = None,
-        style: UIStyle = None,
-        min_size: Optional[Tuple] = None,
-        size_hint: Optional[Tuple] = None,
+        center_x,
+        center_y,
+        min_size: Optional[Tuple],
+        size_hint: Optional[Tuple],
+        id: Optional[str],
+        style: UIStyle,
         **kwargs,
     ):
         super().__init__()
@@ -90,9 +90,27 @@ class UIElement(arcade.Sprite):
         # self.width/height <- subclass
         self.center_x = center_x
         self.center_y = center_y
-
         self.min_size = min_size
         self.size_hint = size_hint
+
+        # use min_size as initial width and height, Sprite defaults to 0
+        if min_size is not None:
+            self.width, self.height = min_size
+
+    @property
+    def texture(self):
+        return super().texture
+
+    @texture.setter
+    def texture(self, texture: Texture):
+        if texture == self._texture:
+            return
+        assert(isinstance(texture, Texture))
+
+        super()._set_texture2(texture)
+        # update points list, so that size changes are applied to hitbox
+        if texture:
+            self._points = texture.hit_box_points
 
     def __repr__(self):
         return f"UIElement({self.id if self.id else self.__style_id})"
@@ -204,10 +222,12 @@ class UIClickable(EventDispatcher, UIElement):
 
     def __init__(
         self,
-        center_x=0,
-        center_y=0,
-        id: Optional[str] = None,
-        style: UIStyle = None,
+        center_x,
+        center_y,
+        min_size: Optional[Tuple],
+        size_hint: Optional[Tuple],
+        id: Optional[str],
+        style: UIStyle,
         **kwargs,
     ):
         """
@@ -219,7 +239,14 @@ class UIClickable(EventDispatcher, UIElement):
         :param style: style of :py:class:`arcade.gui.UIElement`
         :param kwargs: catches unsupported named parameters
         """
-        super().__init__(center_x=center_x, center_y=center_y, id=id, style=style)
+        super().__init__(
+            center_x=center_x,
+            center_y=center_y,
+            min_size=min_size,
+            size_hint=size_hint,
+            id=id,
+            style=style,
+        )
         self.register_event_type("on_click")
 
         self._pressed = False

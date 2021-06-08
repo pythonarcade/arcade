@@ -2,6 +2,22 @@ from arcade.gui.layouts import UILayout
 
 
 class UIBoxLayout(UILayout):
+    """
+    :class:`~arcade.gui.UIBoxLayout` provides a layout, which places elements in a vertical or horizontal direction next to each other.
+    To achieve a grid like layout it is possible to use nested  :class:`~arcade.gui.UIBoxLayout`s.
+
+    **Behavior**
+
+    - wraps content
+    - children will not overlap
+    - overflow not handled*
+
+    **Supported pack kwargs**
+
+    space
+        extra space between this element and the following
+    """
+
     def __init__(self, vertical=True, align="left", **kwargs):
         """
 

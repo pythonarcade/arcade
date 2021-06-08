@@ -48,7 +48,6 @@ def img_diff(file1: Path, file2: Path) -> float:
     r = np.absolute(a - b)
     # save diff
     # Image.frombytes('RGB', (800, 600), r.astype('u1')).save(file2)
-    print(np.sum(r), np.sum(a))
     return np.sum(r) / np.sum(a)
 
 
@@ -102,7 +101,7 @@ def test_gui_examples(twm, window, example):
 
     # manually clean up ui_manager handlers
     ui_manager: UIAbstractManager = view.ui_manager
-    ui_manager.unregister_handlers()
+    ui_manager.disable()
 
     # compare files
     assert (
