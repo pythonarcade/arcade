@@ -786,6 +786,9 @@ class SpriteList:
                 self._atlas.update_textures(
                     textures, keep_old_textures=self._keep_textures
                 )
+                # Re-write texture coordinates for all sprites
+                for sprite in self.sprite_list:
+                    self.update_texture(sprite)
 
             self._sprite_sub_tex_buf.write(self._sprite_sub_tex_data)
             self._sprite_sub_tex_changed = False
