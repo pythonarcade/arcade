@@ -107,6 +107,8 @@ class TextureAtlas:
         self._mutable = True
         self._texture = self._ctx.texture(size, components=4)
         self._allocator = Allocator(*self._size)
+        # Creating an fbo makes us able to clear the texture
+        self._fbo = self._ctx.framebuffer(color_attachments=[self._texture])
 
         # A dictionary of all the allocated regions
         # The key is the cache name for a texture
@@ -208,7 +210,7 @@ class TextureAtlas:
             texture.image.height,
         )
 
-        # Write the image director to vram in the allocated space
+        # Write the image directly to vram in the allocated space
         self._texture.write(texture.image.tobytes(), 0, viewport=viewport)
 
         # Store a texture region for this allocation
@@ -254,7 +256,7 @@ class TextureAtlas:
 
     def clear(self) -> None:
         """Clear and reset the texture atlas"""
-        self._texture = self._ctx.texture(self.size, components=4)
+        self._fbo.clear()
         self._textures = set()
         self._atlas_regions = dict()
         self._allocator = Allocator(*self._size)

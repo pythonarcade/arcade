@@ -378,7 +378,7 @@ Basic Platformers
 Using Tiled Map Editor to Create Maps
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. figure:: thumbs/08_load_map.png
+.. figure:: thumbs/sprite_tiled_map.png
    :figwidth: 170px
 
    :ref:`sprite_tiled_map`

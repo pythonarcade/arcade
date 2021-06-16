@@ -9,7 +9,7 @@ from arcade.gui import (
     UIFlatButton,
     UIEvent,
 )
-from arcade.gui.elements.box import UIBox
+from arcade.gui.elements.box import UITextureBox
 from arcade.gui.events import (
     MOUSE_DRAG,
     MOUSE_PRESS,
@@ -20,14 +20,21 @@ from arcade.gui.layouts.box import UIBoxLayout
 from arcade.gui.layouts.manager import UILayoutManager
 from arcade.gui.utils import center_on_viewport
 
-SLOT_TEXTURE = load_texture(":resources:gui_basic_assets/button_square_blue.png")
+SLOT_TEXTURE = load_texture(
+    ":resources:gui_basic_assets/button_square_blue.png", hit_box_algorithm="None"
+)
 SLOT_TEXTURE_PRESSED = load_texture(
-    ":resources:gui_basic_assets/button_square_blue_pressed.png"
+    ":resources:gui_basic_assets/button_square_blue_pressed.png",
+    hit_box_algorithm="None",
 )
 
 ITEMS = {
-    "Sword": load_texture(":resources:gui_basic_assets/items/sword_gold.png"),
-    "Shield": load_texture(":resources:gui_basic_assets/items/shield_gold.png"),
+    "Sword": load_texture(
+        ":resources:gui_basic_assets/items/sword_gold.png", hit_box_algorithm="None"
+    ),
+    "Shield": load_texture(
+        ":resources:gui_basic_assets/items/shield_gold.png", hit_box_algorithm="None"
+    ),
 }
 
 
@@ -96,11 +103,9 @@ class MyView(View):
         # Init game state
         self.game_state = dict(equipped_item=None)
 
-        show_inventory = UIFlatButton("Inventory", width=150, height=50)
+        show_inventory = UIFlatButton("Inventory", min_size=(150, 50))
         self.ui_manager.pack(show_inventory, center_x=0, center_y=0)
         show_inventory.on_click = self.create_inventory
-
-        self.equipped_item = UIBox(100, 100, arcade.color.LIGHT_GRAY)
 
     def create_inventory(self):
         # Build inventory
@@ -146,7 +151,7 @@ class MyView(View):
                 row.pack(SlotButton(self.game_state, next(ci)), space=space)
 
         # Active item
-        self.equipped_item = UIBox(100, 100, arcade.color.LIGHT_GRAY)
+        self.equipped_item = UITextureBox(SLOT_TEXTURE, min_size=(100, 100))
         frame.pack(self.equipped_item, top=10, right=10)
 
         # Close button
@@ -162,6 +167,7 @@ class MyView(View):
 
     def on_show_view(self):
         arcade.set_background_color(arcade.color.WHITE)
+        self.ui_manager.enable()
 
         # show inventory window on startup
         self.create_inventory()
@@ -169,11 +175,10 @@ class MyView(View):
 
     def on_update(self, delta_time: float):
         # Update equipped item from game state
-        item_tex = ITEMS.get(self.game_state["equipped_item"])
-        if item_tex:
+        item_tex = ITEMS.get(self.game_state["equipped_item"], SLOT_TEXTURE)
+        if item_tex != self.equipped_item.texture:
             self.equipped_item.texture = item_tex
-        else:
-            self.equipped_item.texture = SLOT_TEXTURE
+            self.ui_manager.do_layout()
 
     def on_draw(self):
         arcade.start_render()

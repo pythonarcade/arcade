@@ -30,6 +30,7 @@ class MyView(View):
 
     def on_show_view(self):
         arcade.set_background_color(arcade.color.WHITE)
+        self.ui_manager.enable()
 
         # Add BoxLayout centered on screen
         menu = self.ui_manager.pack(UIBoxLayout(), center_x=0, center_y=0)

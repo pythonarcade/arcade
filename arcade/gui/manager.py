@@ -50,11 +50,12 @@ class UIAbstractManager(EventDispatcher, metaclass=ABCMeta):
         """
         pass
 
-    def register_handlers(self):
+    def enable(self):
         """
         Registers handler functions (`on_...`) to :py:attr:`arcade.gui.UIElement`
 
-        on_draw is not registered, to provide full control about draw order
+        on_draw is not registered, to provide full control about draw order,
+        so it has to be called by the devs themselves.
         """
         self.window.push_handlers(
             self.on_resize,
@@ -71,7 +72,7 @@ class UIAbstractManager(EventDispatcher, metaclass=ABCMeta):
             self.on_text_motion_select,
         )
 
-    def unregister_handlers(self):
+    def disable(self):
         """
         Remove handler functions (`on_...`) from :py:attr:`arcade.Window`
 
@@ -92,6 +93,21 @@ class UIAbstractManager(EventDispatcher, metaclass=ABCMeta):
             self.on_text_motion,
             self.on_text_motion_select,
         )
+
+    def adjust_mouse_coordinates(self, x, y):
+        """
+        This method is used, to translate mouse coordinates to coordinates
+        respecting the viewport and projection of cameras.
+        The implementation should work in most common cases.
+
+        If you use scrolling in the :py:class:`arcade.experimental.camera.Camera2D` you have to reset scrolling
+        or overwrite this method using the camera conversion: `ui_manager.adjust_mouse_coordinates = camera.mouse_coordinates_to_world`
+        """
+        vx, vy, vw, vh = self.window.ctx.viewport
+        pl, pr, pb, pt = self.window.ctx.projection_2d
+        proj_width, proj_height = pr - pl, pt - pb
+        dx, dy = proj_width / vw, proj_height / vh
+        return (x - vx) * dx, (y - vy) * dy
 
     def dispatch_ui_event(self, event: UIEvent):
         """
@@ -135,6 +151,7 @@ class UIAbstractManager(EventDispatcher, metaclass=ABCMeta):
         Dispatches :py:meth:`arcade.View.on_mouse_press()` as :py:class:`arcade.gui.UIElement`
         with type :py:attr:`arcade.gui.events.MOUSE_PRESS`
         """
+        x, y = self.adjust_mouse_coordinates(x, y)
         self.dispatch_ui_event(
             UIEvent(MOUSE_PRESS, x=x, y=y, button=button, modifiers=modifiers)
         )
@@ -144,6 +161,7 @@ class UIAbstractManager(EventDispatcher, metaclass=ABCMeta):
         Dispatches :py:meth:`arcade.View.on_mouse_release()` as :py:class:`arcade.gui.UIElement`
         with type :py:attr:`arcade.gui.events.MOUSE_RELEASE`
         """
+        x, y = self.adjust_mouse_coordinates(x, y)
         self.dispatch_ui_event(
             UIEvent(MOUSE_RELEASE, x=x, y=y, button=button, modifiers=modifiers)
         )
@@ -153,6 +171,7 @@ class UIAbstractManager(EventDispatcher, metaclass=ABCMeta):
         Dispatches :py:meth:`arcade.View.on_mouse_motion()` as :py:class:`arcade.gui.UIElement`
         with type :py:attr:`arcade.gui.events.MOUSE_MOTION`
         """
+        x, y = self.adjust_mouse_coordinates(x, y)
         self.dispatch_ui_event(
             UIEvent(
                 MOUSE_MOTION,
@@ -168,6 +187,7 @@ class UIAbstractManager(EventDispatcher, metaclass=ABCMeta):
         Dispatches :py:meth:`arcade.View.on_mouse_drag()` as :py:class:`arcade.gui.UIElement`
         with type :py:attr:`arcade.gui.events.MOUSE_DRAG`
         """
+        x, y = self.adjust_mouse_coordinates(x, y)
         self.dispatch_ui_event(
             UIEvent(
                 MOUSE_DRAG, x=x, y=y, dx=dx, dy=dy, buttons=buttons, modifiers=modifiers
@@ -179,6 +199,7 @@ class UIAbstractManager(EventDispatcher, metaclass=ABCMeta):
         Dispatches :py:meth:`arcade.View.on_mouse_scroll()` as :py:class:`arcade.gui.UIElement`
         with type :py:attr:`arcade.gui.events.MOUSE_SCROLL`
         """
+        x, y = self.adjust_mouse_coordinates(x, y)
         self.dispatch_ui_event(
             UIEvent(
                 MOUSE_SCROLL,
@@ -273,7 +294,7 @@ class UIManager(UIAbstractManager):
 
     """
 
-    def __init__(self, window=None, attach_callbacks=True, **kwargs):
+    def __init__(self, window=None, auto_enable=False, **kwargs):
         """
         Creates a new :py:class:`arcade.gui.UIManager` and
         registers the corresponding handlers to the current window.
@@ -290,20 +311,22 @@ class UIManager(UIAbstractManager):
         :param kwargs: catches unsupported named parameters
         """
         super().__init__()
-        self.window: Window = window if window else arcade.get_window()
+        self.window: Window = window or arcade.get_window()
 
         self._ui_elements: SpriteList = SpriteList(use_spatial_hash=True)
+        self._ui_elements._keep_textures = False  # Workaround to prevent OOM
         self._id_cache: Dict[str, UIElement] = {}
 
-        if attach_callbacks:
+        if auto_enable:
             # TODO maybe push to ABC
-            self.register_handlers()
+            self.enable()
 
     def purge_ui_elements(self):
         """
         Removes all UIElements which where added to the :py:class:`arcade.gui.UIManager`.
         """
-        self._ui_elements = SpriteList()
+        self._ui_elements = SpriteList(use_spatial_hash=True)
+        self._ui_elements._keep_textures = False  # Workaround to prevent OOM
         self._id_cache = {}
 
     def add_ui_element(self, ui_element: UIElement):

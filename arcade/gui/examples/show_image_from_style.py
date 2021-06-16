@@ -19,6 +19,7 @@ class MyView(arcade.View):
     def on_show_view(self):
         arcade.set_background_color(arcade.color.BLACK)
         self.ui_manager.purge_ui_elements()
+        self.ui_manager.enable()
 
         button_normal = arcade.load_texture(
             ":resources:gui_basic_assets/red_button_normal.png"
@@ -41,7 +42,7 @@ class MyView(arcade.View):
         )
 
     def on_hide_view(self):
-        self.ui_manager.unregister_handlers()
+        self.ui_manager.disable()
 
 
 if __name__ == "__main__":
