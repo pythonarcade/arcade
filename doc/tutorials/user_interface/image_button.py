@@ -6,9 +6,10 @@ class MyView(arcade.View):
     def __init__(self, my_window: arcade.Window):
         super().__init__(my_window)
 
-        self.paused = False
+        self.paused = True
         self.sprite_list = arcade.SpriteList()
         sprite = arcade.Sprite(":resources:images/enemies/fishGreen.png")
+        sprite.position = (0, 50)
         self.sprite_list.append(sprite)
 
         # This creates a "manager" for all our UI elements
@@ -83,8 +84,9 @@ class MyView(arcade.View):
         self.ui_manager.disable()
 
     def on_update(self, delta_time: float):
-        for sprite in self.sprite_list:
-            sprite.center_x += 1
+        if not self.paused:
+            for sprite in self.sprite_list:
+                sprite.center_x += 1
 
 
 if __name__ == "__main__":
