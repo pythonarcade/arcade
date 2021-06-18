@@ -27,6 +27,7 @@ class MyView(arcade.View):
             press_texture=press_texture,
             center_x=self.window.width / 2,
             center_y=self.window.height / 2,
+            size_hint=(20, 20)
         )
 
         # Map that button's on_click method to this view's on_button_click method.
