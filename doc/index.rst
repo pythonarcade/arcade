@@ -231,7 +231,6 @@ game without learning a complex framework.
    arcade_gui
    resources
    keyboard
-   api/application.rst
 
 .. toctree::
    :maxdepth: 1
