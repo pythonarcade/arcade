@@ -36,6 +36,7 @@ from arcade import make_soft_circle_texture
 from arcade import make_circle_texture
 from arcade import Color
 from arcade.color import BLACK
+from arcade.resources import resolve_resource_path
 
 from arcade.arcade_types import RGB, Point, PointList
 
@@ -1243,6 +1244,32 @@ class AnimatedWalkingSprite(Sprite):
         else:
             self.width = self._texture.width * self.scale
             self.height = self._texture.height * self.scale
+
+
+def load_animated_gif(resource_name):
+    """ Given an animated gif, return a AnimatedTimeBasedSprite. """
+
+    file_name = resolve_resource_path(resource_name)
+    print(file_name)
+    image_object = PIL.Image.open(file_name)
+    if not image_object.is_animated:
+        raise TypeError(f"The file {resource_name} is not an animated gif.")
+
+    print(image_object.n_frames)
+
+    sprite = AnimatedTimeBasedSprite()
+    for frame in range(0, image_object.n_frames):
+        image_object.seek(frame)
+        frame_duration = image_object.info['duration']
+        print(frame_duration)
+        image = image_object.convert("RGBA")
+        texture = Texture(f"{resource_name}-{frame}", image)
+        sprite.textures.append(texture)
+        frame = AnimationKeyframe(0, frame_duration, texture)
+        sprite.frames.append(frame)
+
+    sprite.texture = sprite.textures[0]
+    return sprite
 
 
 class SpriteSolidColor(Sprite):

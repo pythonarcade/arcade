@@ -231,6 +231,7 @@ from .sprite import FACE_LEFT
 from .sprite import FACE_RIGHT
 from .sprite import FACE_UP
 from .sprite import AnimatedTimeBasedSprite
+from .sprite import load_animated_gif
 from .sprite import AnimatedWalkingSprite
 from .sprite import AnimationKeyframe
 from .sprite import PyMunk
@@ -423,6 +424,7 @@ __all__ = ['AStarBarrierList',
            'isometric_grid_to_screen',
            'lerp',
            'lerp_vec',
+           'load_animated_gif',
            'load_sound',
            'load_spritesheet',
            'load_texture',
