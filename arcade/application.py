@@ -66,7 +66,8 @@ class Window(pyglet.window.Window):
                  screen: pyglet.canvas.Screen = None,
                  visible: bool = True,
                  vsync: bool = False,
-                 gc_mode: str = "auto"):
+                 gc_mode: str = "auto",
+                 center_window = False):
         """
         Construct a new window
 
@@ -83,6 +84,7 @@ class Window(pyglet.window.Window):
         :param bool vsync: Wait for vertical screen refresh before swapping buffer
                            This can make animations and movement look smoother.
         :param bool gc_mode: Decides how opengl objects should be garbage collected
+        :param bool center_window: If true, will center the window.
         """
         # In certain environments (mainly headless) we can't have antialiasing/MSAA enabled.
         # TODO: Detect other headless environments
@@ -136,6 +138,10 @@ class Window(pyglet.window.Window):
         self._ctx: ArcadeContext = ArcadeContext(self, gc_mode=gc_mode)
         set_viewport(0, self.width, 0, self.height)
         self._background_color: Color = (0, 0, 0, 0)
+
+        # See if we should center the window
+        if center_window:
+            self.center_window()
 
     @property
     def current_view(self):
