@@ -125,7 +125,7 @@ class Texture:
         if hit_box_algorithm != "Simple" and \
            hit_box_algorithm != "Detailed" and \
            hit_box_algorithm != "None" and \
-           hit_box_algorithm != None:
+           hit_box_algorithm is not None:
            raise ValueError(
                "hit_box_algorithm must be 'Simple', 'Detailed', 'None'"
                ", or an actual None value."
