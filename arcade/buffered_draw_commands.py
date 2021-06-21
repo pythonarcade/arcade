@@ -749,6 +749,7 @@ class ShapeElementList(Generic[TShape]):
         Draw everything in the list.
         """
         self.program['Position'] = [self._center_x, self._center_y]
+        self.program['Angle'] = self._angle
 
         for group in self.dirties:
             self._refresh_shape(group)
