@@ -226,6 +226,16 @@ class TextureAtlas:
         self._textures.add(texture)
         return region
 
+    def remove(self, texture: "Texture"):
+        """
+        Remove a texture from the atlas.
+
+        This doesn't remove the image from the underlying texture.
+        To physically remove the data you need to rebuild().
+        """
+        self._textures.remove(texture)
+        del self._atlas_regions[texture.name]
+
     def update_textures(self, textures: Set["Texture"], keep_old_textures=True):
         """Batch update atlas with new textures.
 
@@ -260,6 +270,18 @@ class TextureAtlas:
         self._textures = set()
         self._atlas_regions = dict()
         self._allocator = Allocator(*self._size)
+
+    def rebuild(self) -> None:
+        """Rebuild the underlying atlas texture.
+        
+        This method also tries to organize the textures
+        more efficiently.
+        """
+        textures = self._textures
+        self.clear()
+        # Add textures back sorted by height to potentially make more room
+        for texture in sorted(textures, key=lambda x: x.image.size[1]):
+            self.add(texture)
 
     # --- Utility functions ---
 
