@@ -6,9 +6,11 @@ python -m arcade.examples.drawing_text
 """
 import arcade
 
-SCREEN_WIDTH = 500
-SCREEN_HEIGHT = 500
+SCREEN_WIDTH = 1200
+SCREEN_HEIGHT = 800
 SCREEN_TITLE = "Drawing Text Example"
+DEFAULT_LINE_HEIGHT = 45
+DEFAULT_FONT_SIZE = 20
 
 
 class MyGame(arcade.Window):
@@ -19,7 +21,7 @@ class MyGame(arcade.Window):
     def __init__(self, width, height, title):
         super().__init__(width, height, title)
 
-        arcade.set_background_color(arcade.color.WHITE)
+        arcade.set_background_color(arcade.color.BEIGE)
         self.text_angle = 0
         self.time_elapsed = 0.0
 
@@ -36,66 +38,125 @@ class MyGame(arcade.Window):
         # the screen to the background color, and erase what we drew last frame.
         arcade.start_render()
 
+        # Add the screen title
+        start_x = 0
+        start_y = SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 1.5
+        arcade.draw_text("Text Drawing Examples",
+                         start_x, start_y,
+                         arcade.color.BLACK, DEFAULT_FONT_SIZE * 2, width=SCREEN_WIDTH, align="center")
+
         # start_x and start_y make the start point for the text. We draw a dot to make it easy too see
         # the text in relation to its start x and y.
-        start_x = 50
-        start_y = 450
-        arcade.draw_point(start_x, start_y, arcade.color.BLUE, 5)
-        arcade.draw_text("Simple line of text in 12 point", start_x, start_y, arcade.color.BLACK, 12)
+        start_x = 10
+        start_y = SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 3
+        arcade.draw_text("Fonts:", start_x, start_y, arcade.color.FRENCH_WINE, DEFAULT_FONT_SIZE, bold=True)
 
-        start_x = 50
-        start_y = 150
-        arcade.draw_point(start_x, start_y, arcade.color.BLUE, 5)
-        arcade.draw_text("Garamond Text", start_x, start_y, arcade.color.BLACK, 15, font_name='GARA')
+        # Move the y value down to create another line of text
+        start_y -= DEFAULT_LINE_HEIGHT
+        arcade.draw_text("Default Font (Arial)", start_x, start_y, arcade.color.BLACK, DEFAULT_FONT_SIZE)
 
-        start_x = 50
-        start_y = 400
-        arcade.draw_point(start_x, start_y, arcade.color.BLUE, 5)
-        arcade.draw_text("Text anchored 'top' and 'left'.",
-                         start_x, start_y, arcade.color.BLACK, 12, anchor_x="left", anchor_y="top")
+        # Show some built-in fonts
+        start_y -= DEFAULT_LINE_HEIGHT
+        arcade.draw_text("Kenney Blocks Font",
+                         start_x, start_y, arcade.color.BLACK, DEFAULT_FONT_SIZE, font_name="Kenney Blocks")
 
-        start_y = 350
-        arcade.draw_point(start_x, start_y, arcade.color.BLUE, 5)
-        arcade.draw_text("14 point multi\nline\ntext",
-                         start_x, start_y, arcade.color.BLACK, 14, anchor_y="top")
+        start_y -= DEFAULT_LINE_HEIGHT
+        arcade.draw_text("Kenney Future Font",
+                         start_x, start_y, arcade.color.BLACK, DEFAULT_FONT_SIZE, font_name="Kenney Future")
 
-        start_y = 450
-        start_x = 300
-        width = 200
-        height = 20
-        arcade.draw_point(start_x, start_y, arcade.color.BLUE, 5)
-        arcade.draw_lrtb_rectangle_outline(start_x, start_x + width,
-                                           start_y + height, start_y,
-                                           arcade.color.BLUE, 1)
-        arcade.draw_text("Centered Text.",
-                         start_x, start_y, arcade.color.BLACK, 14, width=200, align="center")
+        start_y -= DEFAULT_LINE_HEIGHT
+        arcade.draw_text("Kenney High Font",
+                         start_x, start_y, arcade.color.BLACK, DEFAULT_FONT_SIZE, font_name="Kenney High")
 
-        start_y = 250
-        start_x = 300
-        arcade.draw_point(start_x, start_y, arcade.color.BLUE, 5)
-        arcade.draw_text("Text centered on\na point",
-                         start_x, start_y, arcade.color.BLACK, 14, width=200, align="center",
-                         anchor_x="center", anchor_y="center")
+        start_y -= DEFAULT_LINE_HEIGHT
+        arcade.draw_text("Kenney High Square Font",
+                         start_x, start_y, arcade.color.BLACK, DEFAULT_FONT_SIZE, font_name="Kenney High Square")
 
-        start_y = 150
-        start_x = 300
-        arcade.draw_point(start_x, start_y, arcade.color.BLUE, 5)
-        arcade.draw_text("Text rotated on\na point", start_x, start_y,
-                         arcade.color.BLACK, 14, width=200, align="center", anchor_x="center",
-                         anchor_y="center", rotation=self.text_angle)
+        start_y -= DEFAULT_LINE_HEIGHT
+        arcade.draw_text("Kenney Mini Square Font",
+                         start_x, start_y, arcade.color.BLACK, DEFAULT_FONT_SIZE, font_name="Kenney Mini Square")
 
-        start_y = 150
-        start_x = 20
-        arcade.draw_point(start_x, start_y, arcade.color.BLUE, 5)
-        arcade.draw_text("Sideways text", start_x, start_y,
-                         arcade.color.BLACK, 14, width=200, align="center",
-                         anchor_x="center", anchor_y="center", rotation=90.0)
+        start_y -= DEFAULT_LINE_HEIGHT
+        arcade.draw_text("Kenney Pixel Font",
+                         start_x, start_y, arcade.color.BLACK, DEFAULT_FONT_SIZE, font_name="Kenney Pixel")
 
-        start_y = 20
-        start_x = 50
-        arcade.draw_point(start_x, start_y, arcade.color.BLUE, 5)
-        arcade.draw_text(f"Time elapsed: {self.time_elapsed:7.1f}",
-                         start_x, start_y, arcade.color.BLACK, 14)
+        start_y -= DEFAULT_LINE_HEIGHT
+        arcade.draw_text("Kenney Pixel Square Font",
+                         start_x, start_y, arcade.color.BLACK, DEFAULT_FONT_SIZE, font_name="Kenney Pixel Square")
+
+        start_y -= DEFAULT_LINE_HEIGHT
+        arcade.draw_text("Kenney Rocket Font",
+                         start_x, start_y, arcade.color.BLACK, DEFAULT_FONT_SIZE, font_name="Kenney Rocket")
+
+        start_y -= DEFAULT_LINE_HEIGHT
+        arcade.draw_text("Kenney Rocket Square Font",
+                         start_x, start_y, arcade.color.BLACK, DEFAULT_FONT_SIZE, font_name="Kenney Rocket Square")
+
+        start_y -= DEFAULT_LINE_HEIGHT
+        arcade.draw_text("Garamond Font",
+                         start_x, start_y, arcade.color.BLACK, DEFAULT_FONT_SIZE, font_name="Garamond")
+
+        start_y -= DEFAULT_LINE_HEIGHT
+        arcade.draw_text("Multi-Line\ntext using\n\\n characters.",
+                         start_x, start_y, arcade.color.BLACK, DEFAULT_FONT_SIZE / 2, multiline=True, width=300)
+
+        start_y -= DEFAULT_LINE_HEIGHT * 1.5
+        arcade.draw_text("Wrapping really long text automatically to a new line. "
+                         "The quick brown fox jumped over the lazy dogs.",
+                         start_x, start_y, arcade.color.BLACK, DEFAULT_FONT_SIZE / 2, multiline=True, width=300)
+
+        # --- Column 2 ---
+        start_x = 750
+        start_y = SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 3
+        arcade.draw_text("Text Positioning:", start_x, start_y, arcade.color.FRENCH_WINE, DEFAULT_FONT_SIZE, bold=True)
+
+        # start_x and start_y make the start point for the text. We draw a dot to make it easy too see
+        # the text in relation to its start x and y.
+        start_y -= DEFAULT_LINE_HEIGHT
+        arcade.draw_point(start_x, start_y, arcade.color.BARN_RED, 5)
+        arcade.draw_text("Default of 'baseline' and 'Left'",
+                         start_x, start_y,
+                         arcade.color.BLACK, DEFAULT_FONT_SIZE)
+
+        start_y -= DEFAULT_LINE_HEIGHT
+        arcade.draw_point(start_x, start_y, arcade.color.BARN_RED, 5)
+        arcade.draw_text("'bottom' and 'left'",
+                         start_x, start_y,
+                         arcade.color.BLACK, DEFAULT_FONT_SIZE,
+                         anchor_x="left", anchor_y="bottom")
+
+        start_y -= DEFAULT_LINE_HEIGHT
+        arcade.draw_point(start_x, start_y, arcade.color.BARN_RED, 5)
+        arcade.draw_text("'top' and 'left'",
+                         start_x, start_y,
+                         arcade.color.BLACK, DEFAULT_FONT_SIZE, anchor_x="left", anchor_y="top")
+
+        start_y -= DEFAULT_LINE_HEIGHT * 2
+        arcade.draw_point(start_x, start_y, arcade.color.BARN_RED, 5)
+        arcade.draw_text("'baseline' and 'center'",
+                         start_x, start_y,
+                         arcade.color.BLACK, DEFAULT_FONT_SIZE, anchor_x="center", anchor_y="baseline")
+
+        start_y -= DEFAULT_LINE_HEIGHT
+        arcade.draw_point(start_x, start_y, arcade.color.BARN_RED, 5)
+        arcade.draw_text("'baseline' and 'right'",
+                         start_x, start_y,
+                         arcade.color.BLACK, DEFAULT_FONT_SIZE, anchor_x="right", anchor_y="baseline")
+
+        start_y -= DEFAULT_LINE_HEIGHT
+        arcade.draw_point(start_x, start_y, arcade.color.BARN_RED, 5)
+        arcade.draw_text("'center' and 'center'",
+                         start_x, start_y,
+                         arcade.color.BLACK, DEFAULT_FONT_SIZE, anchor_x="center", anchor_y="center")
+
+        start_y -= DEFAULT_LINE_HEIGHT * 4
+        # start_x = 0
+        # start_y = 0
+        arcade.draw_point(start_x, start_y, arcade.color.BARN_RED, 5)
+        arcade.draw_text("Rotating Text",
+                         start_x, start_y,
+                         arcade.color.BLACK, DEFAULT_FONT_SIZE, anchor_x="center", anchor_y="center",
+                         rotation=self.text_angle)
 
 
 def main():
