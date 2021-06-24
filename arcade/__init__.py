@@ -256,6 +256,7 @@ from .physics_engines import PhysicsEngineSimple
 from .text import DEFAULT_FONT_NAMES
 from .text import create_text
 from .text import draw_text
+from .text import load_font
 from .text import create_text_image
 from .text import create_text_sprite
 
@@ -465,3 +466,15 @@ __all__ = ['AStarBarrierList',
 
 __version__ = VERSION
 
+# Auto load fonts
+load_font(":resources:fonts/ttf/Kenney Blocks.ttf")
+load_font(":resources:fonts/ttf/Kenney Future.ttf")
+load_font(":resources:fonts/ttf/Kenney Future Narrow.ttf")
+load_font(":resources:fonts/ttf/Kenney High.ttf")
+load_font(":resources:fonts/ttf/Kenney High Square.ttf")
+load_font(":resources:fonts/ttf/Kenney Mini.ttf")
+load_font(":resources:fonts/ttf/Kenney Mini Square.ttf")
+load_font(":resources:fonts/ttf/Kenney Pixel.ttf")
+load_font(":resources:fonts/ttf/Kenney Pixel Square.ttf")
+load_font(":resources:fonts/ttf/Kenney Rocket.ttf")
+load_font(":resources:fonts/ttf/Kenney Rocket Square.ttf")
