@@ -177,6 +177,13 @@ def stop_sound(player: media.Player):
 
     :param pyglet.media.Player player: Player returned from :func:`play_sound`.
     """
+    if isinstance(player, Sound):
+        raise ValueError("stop_sound takes the media player object returned from the play() command, "
+                         "not the loaded Sound object.")
+
+    if not isinstance(player, media.Player):
+        raise ValueError("stop_sound takes a media player object returned from the play() command.")
+
     player.pause()
     player.delete()
     if player in media.Source._players:
