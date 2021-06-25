@@ -20,8 +20,6 @@ Classes
     :members:
     :show-inheritance:
 
-------------
-
 UIElements
 ----------
 

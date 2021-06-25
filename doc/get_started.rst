@@ -150,7 +150,7 @@ Arcade Skill Tree
 
 * Sound - `Learn Arcade book sound chapter <https://learn.arcade.academy/chapters/17_sounds/sounds.html>`_
 
-  * :ref:`background_music`
+  * :ref:`music_control_demo`
   * Spatial sound :ref:`sound_demo`
 
 * Particles - :ref:`particle_systems`

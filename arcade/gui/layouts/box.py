@@ -3,8 +3,9 @@ from arcade.gui.layouts import UILayout
 
 class UIBoxLayout(UILayout):
     """
-    :class:`~arcade.gui.UIBoxLayout` provides a layout, which places elements in a vertical or horizontal direction next to each other.
-    To achieve a grid like layout it is possible to use nested  :class:`~arcade.gui.UIBoxLayout`s.
+    :class:`~arcade.gui.UIBoxLayout` provides a layout, which places elements in a vertical or horizontal direction
+    next to each other.
+    To achieve a grid like layout it is possible to use nested  :class:`~arcade.gui.UIBoxLayout`.
 
     **Behavior**
 

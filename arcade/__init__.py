@@ -275,8 +275,6 @@ from .context import ArcadeContext
 
 from .texture_atlas import TextureAtlas
 
-
-
 # noinspection PyPep8
 from arcade import experimental
 
@@ -466,15 +464,16 @@ __all__ = ['AStarBarrierList',
 
 __version__ = VERSION
 
-# Auto load fonts
-load_font(":resources:fonts/ttf/Kenney Blocks.ttf")
-load_font(":resources:fonts/ttf/Kenney Future.ttf")
-load_font(":resources:fonts/ttf/Kenney Future Narrow.ttf")
-load_font(":resources:fonts/ttf/Kenney High.ttf")
-load_font(":resources:fonts/ttf/Kenney High Square.ttf")
-load_font(":resources:fonts/ttf/Kenney Mini.ttf")
-load_font(":resources:fonts/ttf/Kenney Mini Square.ttf")
-load_font(":resources:fonts/ttf/Kenney Pixel.ttf")
-load_font(":resources:fonts/ttf/Kenney Pixel Square.ttf")
-load_font(":resources:fonts/ttf/Kenney Rocket.ttf")
-load_font(":resources:fonts/ttf/Kenney Rocket Square.ttf")
+if not os.path.basename(sys.argv[0]) == "sphinx-build":
+    # Auto load fonts
+    load_font(":resources:fonts/ttf/Kenney Blocks.ttf")
+    load_font(":resources:fonts/ttf/Kenney Future.ttf")
+    load_font(":resources:fonts/ttf/Kenney Future Narrow.ttf")
+    load_font(":resources:fonts/ttf/Kenney High.ttf")
+    load_font(":resources:fonts/ttf/Kenney High Square.ttf")
+    load_font(":resources:fonts/ttf/Kenney Mini.ttf")
+    load_font(":resources:fonts/ttf/Kenney Mini Square.ttf")
+    load_font(":resources:fonts/ttf/Kenney Pixel.ttf")
+    load_font(":resources:fonts/ttf/Kenney Pixel Square.ttf")
+    load_font(":resources:fonts/ttf/Kenney Rocket.ttf")
+    load_font(":resources:fonts/ttf/Kenney Rocket Square.ttf")

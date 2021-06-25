@@ -328,10 +328,10 @@ Sound
 
    :ref:`sound_demo`
 
-.. figure:: thumbs/background_music.png
+.. figure:: thumbs/music_control_demo.png
    :figwidth: 170px
 
-   :ref:`background_music`
+   :ref:`music_control_demo`
 
 Platformers
 -----------

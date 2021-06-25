@@ -187,6 +187,6 @@ class MyView(arcade.View):
 
 
 if __name__ == "__main__":
-    window = arcade.Window(title="Arcade GUI Tutorial")
+    window = arcade.Window(title="Arcade Music Control Demo")
     window.show_view(MyView(window))
     arcade.run()
