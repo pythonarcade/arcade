@@ -53,7 +53,7 @@ class UIImageButton(UIClickable):
         self._normal_texture: Texture = normal_texture
         self._hover_texture: Optional[Texture] = hover_texture
         self._press_texture: Optional[Texture] = press_texture
-
+        self._text = text
         self.write_text(text=text)
         self.set_proper_texture()
 
@@ -63,7 +63,10 @@ class UIImageButton(UIClickable):
 
     @normal_texture.setter
     def normal_texture(self, texture: Texture):
-        raise Exception("Change texture not supported")
+        self._normal_texture = texture
+        self.write_text(text=self._text)
+        self.set_proper_texture()
+        # raise Exception("Change texture not supported")
 
     @property
     def hover_texture(self):
@@ -71,7 +74,10 @@ class UIImageButton(UIClickable):
 
     @hover_texture.setter
     def hover_texture(self, texture: Texture):
-        raise Exception("Change texture not supported")
+        self._hover_texture = texture
+        self.write_text(text=self._text)
+        self.set_proper_texture()
+        # raise Exception("Change texture not supported")
 
     @property
     def press_texture(self):
@@ -79,7 +85,10 @@ class UIImageButton(UIClickable):
 
     @press_texture.setter
     def press_texture(self, texture: Texture):
-        raise Exception("Change texture not supported")
+        self._press_texture = texture
+        self.write_text(text=self._text)
+        self.set_proper_texture()
+        # raise Exception("Change texture not supported")
 
     def render(self):
         self.set_proper_texture()
