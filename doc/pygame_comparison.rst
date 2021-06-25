@@ -6,51 +6,85 @@ Pygame Comparison
 The Python Arcade Library has the same target audience as the well-known
 Pygame library. So how do they differ?
 
-Features that the Arcade Library has:
+.. list-table:: Feature Comparison
+   :widths: 33 33 33
+   :header-rows: 1
 
-* Licensed under the `MIT License`_, which is more generous than Pygame's LGPL_.
-* Draws stationary sprites much faster. See :ref:`drawing_stationary_performance`
-* Supports Python 3 `type hinting`_.
-* Thick ellipses, arcs, and circles do not have a `moiré pattern`_.
-* Ellipses, arcs, and other shapes can be easily rotated.
-* Uses standard coordinate system you learned about in math. (0, 0) is in
-  the lower left, and not upper left. Y-coordinates are not reversed.
-* Has built-in physics engine for platformers.
-* Supports animated sprites.
-* API documentation for the commands is better.
-* Command names are consistent. For example, to add to a sprite list you use the
-  ``append()`` method, like any other list in Python. Pygame uses ``add()``.
-* Parameter and command names are clearer. For example, open_window instead of
-  set_mode.
-* Less boiler-plate code than Pygame.
-* Basic drawing does not require knowledge on how to define functions or
-  classes or how to do loops.
-* Encourages separation of logic and display code. Pygame tends to put both into
-  the same game loop.
-* With the use of sprite lists, uses the acceleration of the graphics card to
-  improve performance.
-* Easily scale and rotate sprites and graphics.
-* Images with transparency are transparent by default. No extra code needed.
-* Lots of :ref:`example-code`.
+   * - Feature
+     - Arcade
+     - PyGame
+   * - Website
+     - https://arcade.academy/
+     - https://www.pygame.org/
+   * - API Docs
+     - `API Docs <https://arcade.academy/quick_index.html>`_
+     - `API Docs <https://www.pygame.org/docs/>`_
+   * - Official examples
+     - `Example code <https://arcade.academy/examples/index.html>`_
+     - N/A
+   * - License
+     - `MIT License`_
+     - LGPL_
+   * - Back-end graphics engine
+     - OpenGL 3.3+ and Pyglet
+     - `SDL 2 <https://www.libsdl.org/>`_
+   * - Back-end audio engine
+     - ffmpeg
+     - `SDL 2 <https://www.libsdl.org/>`_
+   * - Tiled Map Support
+     - Yes
+     - No
+   * - Drawing primitives support rotation
+     - Yes
+     - No [#f1]_
+   * - Sprites support rotation
+     - Yes
+     - No [#f1]_
+   * - Sprites support scaling
+     - Yes
+     - No [#f1]_
+   * - Sprite image caching
+     - Yes
+     - No [#f2]_
+   * - Transparency support
+     - Yes
+     - Must specify transparent pixel
+   * - Android support
+     - No
+     - Yes
+   * - Raspberry Pi support
+     - No
+     - Yes
+   * - Batch drawing
+     - Via GPU
+     - No [#f5]_
+   * - Default Hitbox
+     - .. image:: images/hitbox_simple.png
+          :width: 30%
+     - .. image:: images/hitbox_none.png
+          :width: 50%
+   * - Physics engines
+     - Simple, platformer, and PyMunk
+     - None
+   * - Draw 50,000 sprites
+     - 0.004 seconds
+     - 0.425 seconds
+   * - Move 5,000 sprites
+     - 0.011 seconds
+     - 0.003 seconds
+   * - Collision detection 50,000 sprites
+     - | 0.044 seconds no spatial hashing [#f3]_
+       | 0.005 seconds with spatial hashing
+     - 0.004 seconds [#f4]_
 
-
-Features that Pygame has that the Arcade Library does not:
-
-* Has better performance for moving sprites
-* Python 2 support
-* Does not require OpenGL, so works on Raspberry Pis
-* Has better support for pixel manipulation in a memory buffer that isn't
-  displayed on screen.
-
-Things that are just different:
-
-* Pygame supports SDL2 library from 2.0_. Arcade runs on top of OpenGL 3+ and
-  Pyglet. 
-* Sound support: Pygame uses the old, unsupported Avbin library.
-  Arcade uses SoLoud. Supports panning and volume.
-
-:ref:`performance`.
-
+.. [#f1] To support rotation and/or scaling, PyGame programs must write the image to a surface, transform the surface,
+         then create a sprite out of the surface. This takes a lot of CPU. Arcade off-loads all these operations to the
+         graphics card.
+.. [#f2] When creating a sprite from an image, PyGame will load the image from the disk every time. The user must
+         cache the image with their own code for better performance. Arcade does this automatically.
+.. [#f5] A programmer can achieve a similar result by drawing to a surface, then drawing drawing the surface to the screen.
+.. [#f3] Polygon hit box, rotation allowed
+.. [#f4] Rectangular hit box, no rotation allowed
 
 .. _MIT License: https://github.com/pythonarcade/arcade/blob/development/license.rst
 .. _LGPL: https://github.com/pygame/pygame/blob/main/docs/LGPL.txt
