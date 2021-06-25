@@ -42,7 +42,7 @@ class MyView(arcade.View):
         hover_texture = arcade.load_texture(":resources:onscreen_controls/shaded_light/pause.png")
 
         # Create our button
-        self.start_button = arcade.gui.UIImageButton(
+        self.pause_button = arcade.gui.UIImageButton(
             normal_texture=normal_texture,
             hover_texture=hover_texture,
             press_texture=press_texture,
@@ -51,7 +51,7 @@ class MyView(arcade.View):
         )
 
         # Map that button's on_click method to this view's on_button_click method.
-        self.start_button.on_click = self.pause_button_clicked
+        self.pause_button.on_click = self.pause_button_clicked
 
         # Add in our element.
         self.ui_manager.add_ui_element(self.start_button)
