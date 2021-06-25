@@ -6,34 +6,42 @@ Pygame Comparison
 The Python Arcade Library has the same target audience as the well-known
 Pygame library. So how do they differ?
 
-.. list-table:: Feature Comparison
+.. list-table:: Library Information
    :widths: 33 33 33
    :header-rows: 1
 
    * - Feature
      - Arcade
-     - PyGame
+     - Pygame
    * - Website
-     - https://arcade.academy/
-     - https://www.pygame.org/
+     - https://arcade.academy
+     - https://www.pygame.org
    * - API Docs
      - `API Docs <https://arcade.academy/quick_index.html>`_
      - `API Docs <https://www.pygame.org/docs/>`_
-   * - Official examples
+   * - Examples code
      - `Example code <https://arcade.academy/examples/index.html>`_
      - N/A
    * - License
      - `MIT License`_
      - LGPL_
    * - Back-end graphics engine
-     - OpenGL 3.3+ and Pyglet
+     - OpenGL 3.3+ and `Pyglet <http://pyglet.org/>`_
      - `SDL 2 <https://www.libsdl.org/>`_
    * - Back-end audio engine
-     - ffmpeg
+     - ffmpeg via Pyglet_
      - `SDL 2 <https://www.libsdl.org/>`_
-   * - Tiled Map Support
-     - Yes
-     - No
+   * - Example Projects
+     - :ref:`sample_games`
+     - `Games Made With Pygame <https://www.pygame.org/tags/all>`_
+
+.. list-table:: Feature Comparison
+   :widths: 33 33 33
+   :header-rows: 1
+
+   * - Feature
+     - Arcade
+     - Pygame
    * - Drawing primitives support rotation
      - Yes
      - No [#f1]_
@@ -63,9 +71,37 @@ Pygame library. So how do they differ?
           :width: 30%
      - .. image:: images/hitbox_none.png
           :width: 50%
+   * - Tiled Map Support
+     - `Yes <examples/platform_tutorial/step_09.html>`_
+     - No
    * - Physics engines
-     - Simple, platformer, and PyMunk
+     - `Simple <examples/platform_tutorial/step_04.html>`_,
+       `platformer <examples/platform_tutorial/step_05.html>`_, and
+       `PyMunk <tutorials/pymunk_platformer/index.html>`_
      - None
+   * - Event Management
+     - Pyglet-based
+     - No (or add `Pygame Zero <https://pygame-zero.readthedocs.io/en/stable/>`_)
+   * - View Support
+     - `Yes <tutorials/views/index.html>`_
+     - No
+   * - Light Support
+     - `Yes <tutorials/lights/index.html>`_
+     - No
+   * - GUI Support
+     - `Yes <tutorials/user_interface/index.html>`_
+     - No (or add `pygame-gui <https://pygame-gui.readthedocs.io/en/latest/>`_)
+   * - GPU Shader Support
+     - `Yes <tutorials/gpu_particle_burst/index.html>`_
+     - No
+
+.. list-table:: Performance Comparison
+   :widths: 33 33 33
+   :header-rows: 1
+
+   * - Feature
+     - Arcade
+     - Pygame
    * - Draw 50,000 sprites
      - 0.004 seconds
      - 0.425 seconds
