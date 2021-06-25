@@ -94,8 +94,11 @@ Pygame library. So how do they differ?
    * - GPU Shader Support
      - `Yes <tutorials/gpu_particle_burst/index.html>`_
      - No
+   * - Built-in Resources
+     - `Yes <resources.html>`_
+     - No
 
-.. list-table:: Performance Comparison
+.. list-table:: Performance Comparison [#f6]_
    :widths: 33 33 33
    :header-rows: 1
 
@@ -103,8 +106,8 @@ Pygame library. So how do they differ?
      - Arcade
      - Pygame
    * - Draw 50,000 sprites
-     - 0.004 seconds
-     - 0.425 seconds
+     - 0.004 seconds `Source <https://github.com/pythonarcade/performance_tests/blob/master/src/arcade_tests/draw_stationary_sprites.py>`_
+     - 0.425 seconds `Source <https://github.com/pythonarcade/performance_tests/blob/master/src/pygame_1_9_tests/draw_stationary_sprites.py>`_
    * - Move 5,000 sprites
      - 0.011 seconds
      - 0.003 seconds
@@ -119,6 +122,9 @@ Pygame library. So how do they differ?
 .. [#f2] When creating a sprite from an image, PyGame will load the image from the disk every time. The user must
          cache the image with their own code for better performance. Arcade does this automatically.
 .. [#f5] A programmer can achieve a similar result by drawing to a surface, then drawing drawing the surface to the screen.
+.. [#f6] Performance tests done on an Intel Core i7-9700F with GeForce GTX 980 Ti. Souce code for tests available at
+         https://github.com/pythonarcade/performance_tests and more detailed results at
+         https://craven-performance-testing.s3-us-west-2.amazonaws.com/index.html
 .. [#f3] Polygon hit box, rotation allowed
 .. [#f4] Rectangular hit box, no rotation allowed
 
