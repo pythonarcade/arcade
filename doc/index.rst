@@ -13,8 +13,6 @@ The Python Arcade Library
 |Go| :ref:`get-started-here`
 ----------------------------
 
-:ref:`pygame-comparison`
-
 .. raw:: html
 
     <table style="width:100%;">

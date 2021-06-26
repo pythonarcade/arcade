@@ -54,12 +54,12 @@ and transparency to the graphics card.
    * - Sprites support scaling
      - Yes
      - No [#f1]_
-   * - Sprite image caching
+   * - Sprite image caching [#f2]_
      - Yes
-     - No [#f2]_
+     - No
    * - Transparency support
      - Yes
-     - Must specify transparent pixel
+     - Must specify transparent colorkey
    * - Android support
      - No
      - Yes
@@ -128,7 +128,7 @@ and transparency to the graphics card.
 .. [#f1] To support rotation and/or scaling, PyGame programs must write the image to a surface, transform the surface,
          then create a sprite out of the surface. This takes a lot of CPU. Arcade off-loads all these operations to the
          graphics card.
-.. [#f2] When creating a sprite from an image, PyGame will load the image from the disk every time. The user must
+.. [#f2] When creating a sprite from an image, Pygame will load the image from the disk every time. The user must
          cache the image with their own code for better performance. Arcade does this automatically.
 .. [#f5] A programmer can achieve a similar result by drawing to a surface, then drawing drawing the surface to the screen.
 .. [#f6] Performance tests done on an Intel Core i7-9700F with GeForce GTX 980 Ti. Source code for tests available at
