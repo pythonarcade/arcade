@@ -28,11 +28,14 @@ titles = {
     'utils.py': 'Misc Utility Functions',
     'version.py': 'Arcade Version Number',
     'window_commands.py': 'Window Commands',
+    'texture_atlas.py': 'Texture Atlas',
 
     'gui/core.py': 'Core GUI',
     'gui/manager.py': 'GUI Manager',
     'gui/ui_style.py': 'GUI Style',
     'gui/utils.py': 'GUI Utilities',
+    'gui/exceptions.py': 'GUI Exceptions',
+    'gui/text_utils.py': 'GUI Text Utilities',
 
     'gl/buffer.py': 'OpenGL Buffer',
     'gl/context.py': 'OpenGL Context',
@@ -87,6 +90,7 @@ def get_member_list(filepath):
     function_list.sort()
     type_list.sort()
     return type_list, class_list, function_list
+
 
 def process_directory(directory, text_file):
     file_list = directory.glob('*.py')
