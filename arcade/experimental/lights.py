@@ -16,7 +16,7 @@ class Light:
                  mode: str = 'hard'):
         """Create a Light.
 
-        Note: It's important to separate lights that don' change properties
+        Note: It's important to separate lights that don't change properties
         and static ones with the `usage` parameter.
 
         :param Tuple[float, float] position: the position of the light
