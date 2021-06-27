@@ -847,7 +847,7 @@ class SpriteList:
         self.program["TextureTransform"] = Matrix3x3().v
 
         self._atlas.texture.use(0)
-        self._atlas.uv_texture.use(1)
+        self._atlas.use_uv_texture(1)
         self._geometry.render(
             self.program,
             mode=self.ctx.POINTS,

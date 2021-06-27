@@ -267,7 +267,6 @@ class TextureAtlas:
         self._uv_data[slot * 4 + 1] = region.texture_coordinates[1]
         self._uv_data[slot * 4 + 2] = region.texture_coordinates[2]
         self._uv_data[slot * 4 + 3] = region.texture_coordinates[3]
-        self._uv_texture.write(self._uv_data, 0)
         self._uv_data_changed = True
         self._textures.add(texture)
         return slot
@@ -339,6 +338,20 @@ class TextureAtlas:
         # Add textures back sorted by height to potentially make more room
         for texture in sorted(textures, key=lambda x: x.image.size[1]):
             self.add(texture)
+
+    def use_uv_texture(self, unit: int = 0):
+        """
+        Bind the texture coordinate texture to a channel.
+        In addition this method writes the texture
+        coordinate to the texture if the data is stale.
+        This is to avoid a full update every time a texture
+        is added to the atlas.
+        """
+        if self._uv_data_changed:
+            self._uv_texture.write(self._uv_data, 0)
+            self._uv_data_changed = False
+
+        self._uv_texture.use(unit)
 
     # --- Utility functions ---
 
