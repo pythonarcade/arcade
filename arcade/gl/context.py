@@ -150,6 +150,9 @@ class Context:
         self.limits = Limits(self)
         self._gl_version = (self.limits.MAJOR_VERSION, self.limits.MINOR_VERSION)
         Context.activate(self)
+        # Texture unit we use when doing operations on textures to avoid
+        # affecting currently bound textures in the first units
+        self.default_texture_unit = self.limits.MAX_TEXTURE_IMAGE_UNITS - 1
 
         # Detect the default framebuffer
         self._screen = DefaultFrameBuffer(self)
