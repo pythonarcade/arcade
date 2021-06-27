@@ -79,11 +79,16 @@ class ArcadeContext(Context):
             geometry_shader=":resources:shaders/sprites/sprite_list_geometry_no_cull_geo.glsl",
             fragment_shader=":resources:shaders/sprites/sprite_list_geometry_fs.glsl",
         )
+        self.sprite_list_program_no_cull["Texture"] = 0
+        self.sprite_list_program_no_cull["uv_texture"] = 1
+
         self.sprite_list_program_cull = self.load_program(
             vertex_shader=":resources:shaders/sprites/sprite_list_geometry_vs.glsl",
             geometry_shader=":resources:shaders/sprites/sprite_list_geometry_cull_geo.glsl",
             fragment_shader=":resources:shaders/sprites/sprite_list_geometry_fs.glsl",
         )
+        self.sprite_list_program_cull["Texture"] = 0
+        self.sprite_list_program_cull["uv_texture"] = 1
 
         # Shapes
         self.shape_line_program = self.load_program(

@@ -70,19 +70,19 @@ class SpriteList:
         "_sprite_angle_data",
         "_sprite_color_data",
         "_sprite_sub_tex_data",
-        "_sprite_sub_tex_data",
+        "_sprite_texture_data",
         "_sprite_index_data",
         "_sprite_pos_buf",
         "_sprite_size_buf",
         "_sprite_angle_buf",
         "_sprite_color_buf",
-        "_sprite_sub_tex_buf",
+        "_sprite_texture_buf",
         "_sprite_index_buf",
         "_sprite_pos_changed",
         "_sprite_size_changed",
         "_sprite_angle_changed",
         "_sprite_color_changed",
-        "_sprite_sub_tex_changed",
+        "_sprite_texture_changed",
         "_sprite_index_changed",
         "_geometry",
         "_sprites_moved",
@@ -154,7 +154,7 @@ class SpriteList:
         self._sprite_size_data = array("f", [0] * self._buf_capacity * 2)
         self._sprite_angle_data = array("f", [0] * self._buf_capacity)
         self._sprite_color_data = array("B", [0] * self._buf_capacity * 4)
-        self._sprite_sub_tex_data = array("f", [0] * self._buf_capacity * 4)
+        self._sprite_texture_data = array("i", [0] * self._buf_capacity)
         # Index buffer
         self._sprite_index_data = array("I", [0] * self._idx_capacity)
 
@@ -163,7 +163,7 @@ class SpriteList:
         self._sprite_size_changed = False
         self._sprite_angle_changed = False
         self._sprite_color_changed = False
-        self._sprite_sub_tex_changed = False
+        self._sprite_texture_changed = False
         self._sprite_index_changed = False
 
         # Info for spatial hash
@@ -205,7 +205,7 @@ class SpriteList:
         self._sprite_size_buf = self.ctx.buffer(reserve=self._buf_capacity * 4 * 2)
         self._sprite_angle_buf = self.ctx.buffer(reserve=self._buf_capacity * 4)
         self._sprite_color_buf = self.ctx.buffer(reserve=self._buf_capacity * 4 * 4)
-        self._sprite_sub_tex_buf = self.ctx.buffer(reserve=self._buf_capacity * 4 * 4)
+        self._sprite_texture_buf = self.ctx.buffer(reserve=self._buf_capacity * 4)
         # Index buffer
         self._sprite_index_buf = self.ctx.buffer(reserve=self._idx_capacity * 4)
 
@@ -213,7 +213,7 @@ class SpriteList:
             gl.BufferDescription(self._sprite_pos_buf, "2f", ["in_pos"]),
             gl.BufferDescription(self._sprite_size_buf, "2f", ["in_size"]),
             gl.BufferDescription(self._sprite_angle_buf, "1f", ["in_angle"]),
-            gl.BufferDescription(self._sprite_sub_tex_buf, "4f", ["in_sub_tex_coords"]),
+            gl.BufferDescription(self._sprite_texture_buf, "u4", ["in_texture"]),
             gl.BufferDescription(
                 self._sprite_color_buf, "4f1", ["in_color"], normalized=["in_color"]
             ),
@@ -241,7 +241,7 @@ class SpriteList:
         self._sprite_size_changed = True
         self._sprite_angle_changed = True
         self._sprite_color_changed = True
-        self._sprite_sub_tex_changed = True
+        self._sprite_texture_changed = True
         self._sprite_index_changed = True
 
     def __len__(self) -> int:
@@ -618,16 +618,11 @@ class SpriteList:
         if not sprite._texture:
             return
 
-        region = self._atlas.add(sprite._texture)
-
+        tex_slot = self._atlas.add(sprite._texture)
         slot = self.sprite_slot[sprite]
-        new_coords = region.texture_coordinates
 
-        self._sprite_sub_tex_data[slot * 4] = new_coords[0]
-        self._sprite_sub_tex_data[slot * 4 + 1] = new_coords[1]
-        self._sprite_sub_tex_data[slot * 4 + 2] = new_coords[2]
-        self._sprite_sub_tex_data[slot * 4 + 3] = new_coords[3]
-        self._sprite_sub_tex_changed = True
+        self._sprite_texture_data[slot] = tex_slot
+        self._sprite_texture_changed = True
 
     def update_texture(self, sprite) -> None:
         """Make sure we update the texture for this sprite for the next batch
@@ -641,16 +636,11 @@ class SpriteList:
         if not sprite._texture:
             return
 
-        region = self._atlas.add(sprite._texture)
-
+        tex_slot = self._atlas.add(sprite._texture)
         slot = self.sprite_slot[sprite]
-        new_coords = region.texture_coordinates
 
-        self._sprite_sub_tex_data[slot * 4] = new_coords[0]
-        self._sprite_sub_tex_data[slot * 4 + 1] = new_coords[1]
-        self._sprite_sub_tex_data[slot * 4 + 2] = new_coords[2]
-        self._sprite_sub_tex_data[slot * 4 + 3] = new_coords[3]
-        self._sprite_sub_tex_changed = True
+        self._sprite_texture_data[slot] = tex_slot
+        self._sprite_texture_changed = True
 
         # Update size in cas the sprite was initialized without size
         # NOTE: There should be a better way to do this
@@ -759,7 +749,7 @@ class SpriteList:
             self._sprite_size_changed,
             self._sprite_angle_changed,
             self._sprite_color_changed,
-            self._sprite_sub_tex_changed,
+            self._sprite_texture_changed,
             self._sprite_index_changed,
         )
 
@@ -779,7 +769,7 @@ class SpriteList:
             self._sprite_color_buf.write(self._sprite_color_data)
             self._sprite_color_changed = False
 
-        if self._sprite_sub_tex_changed:
+        if self._sprite_texture_changed:
             if not self._keep_textures:
                 # Gather all unique textures in a set (Texture hash() is the name)
                 textures = set(sprite._texture for sprite in self.sprite_list)
@@ -790,8 +780,8 @@ class SpriteList:
                 for sprite in self.sprite_list:
                     self.update_texture(sprite)
 
-            self._sprite_sub_tex_buf.write(self._sprite_sub_tex_data)
-            self._sprite_sub_tex_changed = False
+            self._sprite_texture_buf.write(self._sprite_texture_data)
+            self._sprite_texture_changed = False
 
         if self._sprite_index_changed:
             self._sprite_index_buf.write(self._sprite_index_data)
@@ -828,7 +818,7 @@ class SpriteList:
                         self._sprite_size_changed,
                         self._sprite_angle_changed,
                         self._sprite_color_changed,
-                        self._sprite_sub_tex_changed,
+                        self._sprite_texture_changed,
                         self._sprite_index_changed,
                 )
         ):
@@ -857,6 +847,7 @@ class SpriteList:
         self.program["TextureTransform"] = Matrix3x3().v
 
         self._atlas.texture.use(0)
+        self._atlas.uv_texture.use(1)
         self._geometry.render(
             self.program,
             mode=self.ctx.POINTS,
@@ -907,20 +898,20 @@ class SpriteList:
         self._sprite_size_data.extend([0] * extend_by * 2)
         self._sprite_angle_data.extend([0] * extend_by)
         self._sprite_color_data.extend([0] * extend_by * 4)
-        self._sprite_sub_tex_data.extend([0] * extend_by * 4)
+        self._sprite_texture_data.extend([0] * extend_by)
 
         if self._initialized:
             self._sprite_pos_buf.orphan(size=self._buf_capacity * 4 * 2)
             self._sprite_size_buf.orphan(size=self._buf_capacity * 4 * 2)
             self._sprite_angle_buf.orphan(size=self._buf_capacity * 4)
             self._sprite_color_buf.orphan(size=self._buf_capacity * 4 * 4)
-            self._sprite_sub_tex_buf.orphan(size=self._buf_capacity * 4 * 4)
+            self._sprite_texture_buf.orphan(size=self._buf_capacity * 4)
 
         self._sprite_pos_changed = True
         self._sprite_size_changed = True
         self._sprite_angle_changed = True
         self._sprite_color_changed = True
-        self._sprite_sub_tex_changed = True
+        self._sprite_texture_changed = True
 
     def _grow_index_buffer(self):
         # Extend the index buffer capacity if needed

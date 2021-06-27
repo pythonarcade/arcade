@@ -6,12 +6,13 @@ uniform Projection {
     uniform mat4 matrix;
 } proj;
 
+uniform sampler2D uv_texture;
 uniform mat3 TextureTransform;
 
 in float v_angle[1];
 in vec4 v_color[1];
 in vec2 v_size[1];
-in vec4 v_sub_tex_coords[1];
+in int v_texture[1];
 in int vertex_id[1];
 
 out vec2 gs_uv;
@@ -43,8 +44,10 @@ void main() {
     if ((ct.y + st) < -VP_CLIP || (ct.y - st) > VP_CLIP) return;
 
     // Emit a quad with the right position, rotation and texture coordinates
-    vec2 tex_offset = v_sub_tex_coords[0].xy;
-    vec2 tex_size = v_sub_tex_coords[0].zw;
+    // Read texture coordinates from UV texture here
+    vec4 uv_data = texelFetch(uv_texture, ivec2(v_texture[0], 0), 0);
+    vec2 tex_offset = uv_data.xy;
+    vec2 tex_size = uv_data.zw;
 
     // Upper left
     gl_Position = proj.matrix * vec4(rot * vec2(-hsize.x, hsize.y) + center, 0.0, 1.0);

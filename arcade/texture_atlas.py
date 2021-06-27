@@ -11,6 +11,8 @@ Pyglet atlases are located here:
 https://github.com/einarf/pyglet/blob/master/pyglet/image/atlas.py
 
 """
+from array import array
+from collections import deque
 import logging
 from typing import Dict, Set, Tuple, Sequence, TYPE_CHECKING
 
@@ -27,6 +29,8 @@ if TYPE_CHECKING:
     from arcade import ArcadeContext, Texture
     from arcade.gl import Texture as GLTexture
 
+# How many texture coordinates to store
+TEXCOORD_BUFFER_SIZE = 8192
 LOG = logging.getLogger(__name__)
 
 
@@ -40,15 +44,25 @@ LOG = logging.getLogger(__name__)
 # Warning adding large textures?
 # SpriteList.update_texture calls _calculate_sprite_buffer()
 # Only loop sprites if we are removing unused ones
-# Loops "textures" attributes for anumated sprites
+# Loops "textures" attributes for animated sprites?
 
 
 class AtlasRegion:
     """Stores information about an allocated region"""
 
-    __slots__ = ('atlas', 'texture', 'x', 'y', 'width', 'height', 'texture_coordinates')
+    __slots__ = (
+        'atlas', 'texture', 'x', 'y', 'width', 'height',
+        'texture_coordinates', 'texture_coordinates_buffer', 'texture_id',
+    )
 
-    def __init__(self, atlas: "TextureAtlas", texture: "Texture", x: int, y: int, width: int, height: int):
+    def __init__(
+        self,
+        atlas: "TextureAtlas",
+        texture: "Texture",
+        x: int,
+        y: int, width: int,
+        height: int,
+    ):
         """Represents a region a texture is located.
 
         :param str atlas: The atlas this region belongs to
@@ -105,16 +119,27 @@ class TextureAtlas:
         self._size: Tuple[int, int] = size
         self._border: int = border
         self._mutable = True
-        self._texture = self._ctx.texture(size, components=4)
         self._allocator = Allocator(*self._size)
+
+        self._texture = self._ctx.texture(size, components=4)
         # Creating an fbo makes us able to clear the texture
         self._fbo = self._ctx.framebuffer(color_attachments=[self._texture])
 
         # A dictionary of all the allocated regions
         # The key is the cache name for a texture
         self._atlas_regions: Dict[str, AtlasRegion] = dict()
-        # A set of textures this atlas contains for fast lookups
+        # A set of textures this atlas contains for fast lookups + set oprations
         self._textures: Set["Texture"] = set()
+
+        # Texture containing texture coordinates
+        self._uv_texture = self._ctx.texture((TEXCOORD_BUFFER_SIZE, 1), components=4, dtype="f4")
+        self._uv_texture.filter = self._ctx.NEAREST, self._ctx.NEAREST
+        self._uv_data = array("f", [0] * TEXCOORD_BUFFER_SIZE * 4)
+        # Free slos in the texture coordinate texture
+        self._uv_slots_free = deque(i for i in range(0, TEXCOORD_BUFFER_SIZE))
+        # Map texture names to slots
+        self._uv_slots: Dict[str, int] = dict()
+        self._uv_data_changed = True
 
         # Add all the textures
         for tex in textures or []:
@@ -168,6 +193,15 @@ class TextureAtlas:
         return self._texture
 
     @property
+    def uv_texture(self) -> "GLTexture":
+        """
+        Texture coordinate texture.
+
+        :type: Texture
+        """
+        return self._uv_texture
+
+    @property
     def mutable(self) -> bool:
         """
         Is this atlas mutable?
@@ -176,10 +210,14 @@ class TextureAtlas:
         """
         return self._mutable
 
-    def add(self, texture: "Texture") -> AtlasRegion:
-        """Add a texture to the atlas"""
+    def add(self, texture: "Texture") -> int:
+        """
+        Add a texture to the atlas.
+
+        :returns: The texture_id in this atlas
+        """
         if self.has_texture(texture):
-            return self.get_region_info(texture.name)
+            return self.get_uv_slot(texture.name)
 
         LOG.debug("Attempting to add texture: %s", texture.name)
 
@@ -197,7 +235,7 @@ class TextureAtlas:
                 texture.image.height + self.border * 2,
             )
         except AllocatorException:
-            self.show()
+            # self.show()
             raise AllocatorException(f"No more space for texture {texture.name} size={texture.image.size}")
 
         LOG.debug("Allocated new space for texture %s : %s %s", texture.name, x, y)
@@ -220,11 +258,19 @@ class TextureAtlas:
             x + 1,
             y + 1,
             texture.image.width,
-            texture.image.height
+            texture.image.height,
         )
         self._atlas_regions[texture.name] = region
+        slot = self._uv_slots_free.popleft()
+        self._uv_slots[texture.name] = slot
+        self._uv_data[slot * 4] = region.texture_coordinates[0]
+        self._uv_data[slot * 4 + 1] = region.texture_coordinates[1]
+        self._uv_data[slot * 4 + 2] = region.texture_coordinates[2]
+        self._uv_data[slot * 4 + 3] = region.texture_coordinates[3]
+        self._uv_texture.write(self._uv_data, 0)
+        self._uv_data_changed = True
         self._textures.add(texture)
-        return region
+        return slot
 
     def remove(self, texture: "Texture"):
         """
@@ -235,6 +281,9 @@ class TextureAtlas:
         """
         self._textures.remove(texture)
         del self._atlas_regions[texture.name]
+        # Reclaim the uv slot
+        slot = self._uv_slots[texture.name]
+        self._uv_slots_free.appendleft(slot)
 
     def update_textures(self, textures: Set["Texture"], keep_old_textures=True):
         """Batch update atlas with new textures.
@@ -260,6 +309,10 @@ class TextureAtlas:
         """Get the region info for a texture"""
         return self._atlas_regions[name]
 
+    def get_uv_slot(self, name: str) -> int:
+        """Get the uv slot for a texture name"""
+        return self._uv_slots[name]
+
     def has_texture(self, texture: "Texture") -> bool:
         """Check if a texture is already in the atlas"""
         return texture in self._textures
@@ -270,6 +323,9 @@ class TextureAtlas:
         self._textures = set()
         self._atlas_regions = dict()
         self._allocator = Allocator(*self._size)
+        self._uv_slots_free = deque(i for i in range(TEXCOORD_BUFFER_SIZE))
+        self._uv_slots = dict()
+        self._uv_data_changed = True
 
     def rebuild(self) -> None:
         """Rebuild the underlying atlas texture.
@@ -277,6 +333,7 @@ class TextureAtlas:
         This method also tries to organize the textures
         more efficiently.
         """
+        # Hold a reference to the old textures
         textures = self._textures
         self.clear()
         # Add textures back sorted by height to potentially make more room
