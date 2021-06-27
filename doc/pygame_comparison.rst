@@ -3,8 +3,40 @@
 Pygame Comparison
 =================
 
-The Python Arcade Library has the same target audience as the well-known
-Pygame library. So how do they differ?
+Both Pygame and Arcade have are Python libraries for making it easy to create 2D games.
+Pygame is raster-graphics based. It is very fast at manipulating individual pixels and can run on almost
+anything.
+Arcade uses OpenGL. It is very fast at drawing sprites and off-loads functions such as rotation
+and transparency to the graphics card.
+
+.. list-table:: Library Information
+   :widths: 33 33 33
+   :header-rows: 1
+
+   * - Feature
+     - Arcade
+     - Pygame
+   * - Website
+     - https://arcade.academy
+     - https://www.pygame.org
+   * - API Docs
+     - `API Docs <https://arcade.academy/quick_index.html>`__
+     - `API Docs <https://www.pygame.org/docs/>`__
+   * - Example code
+     - `Example code <https://arcade.academy/examples/index.html>`_
+     - N/A
+   * - License
+     - `MIT License`_
+     - LGPL_
+   * - Back-end graphics engine
+     - OpenGL 3.3+ and `Pyglet <http://pyglet.org/>`_
+     - `SDL 2 <https://www.libsdl.org/>`_
+   * - Back-end audio engine
+     - ffmpeg via Pyglet_
+     - `SDL 2 <https://www.libsdl.org/>`_
+   * - Example Projects
+     - :ref:`sample_games`
+     - `Games Made With Pygame <https://www.pygame.org/tags/all>`_
 
 .. list-table:: Feature Comparison
    :widths: 33 33 33
@@ -12,28 +44,7 @@ Pygame library. So how do they differ?
 
    * - Feature
      - Arcade
-     - PyGame
-   * - Website
-     - https://arcade.academy/
-     - https://www.pygame.org/
-   * - API Docs
-     - `API Docs <https://arcade.academy/quick_index.html>`_
-     - `API Docs <https://www.pygame.org/docs/>`_
-   * - Official examples
-     - `Example code <https://arcade.academy/examples/index.html>`_
-     - N/A
-   * - License
-     - `MIT License`_
-     - LGPL_
-   * - Back-end graphics engine
-     - OpenGL 3.3+ and Pyglet
-     - `SDL 2 <https://www.libsdl.org/>`_
-   * - Back-end audio engine
-     - ffmpeg
-     - `SDL 2 <https://www.libsdl.org/>`_
-   * - Tiled Map Support
-     - Yes
-     - No
+     - Pygame
    * - Drawing primitives support rotation
      - Yes
      - No [#f1]_
@@ -43,12 +54,12 @@ Pygame library. So how do they differ?
    * - Sprites support scaling
      - Yes
      - No [#f1]_
-   * - Sprite image caching
+   * - Sprite image caching [#f2]_
      - Yes
-     - No [#f2]_
+     - No
    * - Transparency support
      - Yes
-     - Must specify transparent pixel
+     - Must specify transparent colorkey
    * - Android support
      - No
      - Yes
@@ -57,15 +68,46 @@ Pygame library. So how do they differ?
      - Yes
    * - Batch drawing
      - Via GPU
-     - No [#f5]_
+     - Via Surface [#f5]_
    * - Default Hitbox
      - .. image:: images/hitbox_simple.png
           :width: 30%
      - .. image:: images/hitbox_none.png
           :width: 50%
+   * - Tiled Map Support
+     - `Yes <examples/platform_tutorial/step_09.html>`_
+     - No
    * - Physics engines
-     - Simple, platformer, and PyMunk
+     - `Simple <examples/platform_tutorial/step_04.html>`_,
+       `platformer <examples/platform_tutorial/step_05.html>`_, and
+       `PyMunk <tutorials/pymunk_platformer/index.html>`_
      - None
+   * - Event Management
+     - Pyglet-based
+     - No (or add `Pygame Zero <https://pygame-zero.readthedocs.io/en/stable/>`_)
+   * - View Support
+     - `Yes <tutorials/views/index.html>`__
+     - No
+   * - Light Support
+     - `Yes <tutorials/lights/index.html>`__
+     - No
+   * - GUI Support
+     - `Yes <tutorials/user_interface/index.html>`__
+     - No (or add `pygame-gui <https://pygame-gui.readthedocs.io/en/latest/>`_)
+   * - GPU Shader Support
+     - `Yes <tutorials/gpu_particle_burst/index.html>`__
+     - No
+   * - Built-in Resources
+     - `Yes <resources.html>`__
+     - No
+
+.. list-table:: Performance Comparison [#f6]_
+   :widths: 33 33 33
+   :header-rows: 1
+
+   * - Feature
+     - Arcade
+     - Pygame
    * - Draw 50,000 sprites
      - 0.004 seconds
      - 0.425 seconds
@@ -76,15 +118,29 @@ Pygame library. So how do they differ?
      - | 0.044 seconds no spatial hashing [#f3]_
        | 0.005 seconds with spatial hashing
      - 0.004 seconds [#f4]_
+   * - Draw 5,000 plain rectangles [#f7]_
+     - 0.082 seconds
+     - 0.008 seconds
+   * - Draw 5,000 rotated rectangles [#f8]_
+     - 0.082 seconds
+     - 0.029 seconds
 
 .. [#f1] To support rotation and/or scaling, PyGame programs must write the image to a surface, transform the surface,
          then create a sprite out of the surface. This takes a lot of CPU. Arcade off-loads all these operations to the
          graphics card.
-.. [#f2] When creating a sprite from an image, PyGame will load the image from the disk every time. The user must
+.. [#f2] When creating a sprite from an image, Pygame will load the image from the disk every time. The user must
          cache the image with their own code for better performance. Arcade does this automatically.
 .. [#f5] A programmer can achieve a similar result by drawing to a surface, then drawing drawing the surface to the screen.
+.. [#f6] Performance tests done on an Intel Core i7-9700F with GeForce GTX 980 Ti. Source code for tests available at
+         https://github.com/pythonarcade/performance_tests and more detailed results at
+         https://craven-performance-testing.s3-us-west-2.amazonaws.com/index.html
 .. [#f3] Polygon hit box, rotation allowed
 .. [#f4] Rectangular hit box, no rotation allowed
+.. [#f7] This tests raw pixel manipulation. If pre-drawn to a surface, Pygame is almost instant, and Arcade is
+         almost instant if rectangles are batch-drawn in a sprite or shape list.
+.. [#f8] Scaling and rotation must be done by the programmer drawing to a surface, transforming the surface,
+         then blit'ing the surface to the screen. Arcade uses the GPU for these operations and needs no
+         additional code or performance hits.
 
 .. _MIT License: https://github.com/pythonarcade/arcade/blob/development/license.rst
 .. _LGPL: https://github.com/pygame/pygame/blob/main/docs/LGPL.txt

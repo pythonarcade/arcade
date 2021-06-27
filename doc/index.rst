@@ -7,7 +7,7 @@ The Python Arcade Library
 
 .. |Go| image:: images/woman_sprinter.svg
    :width: 48
-   :alt: Alternative text
+   :alt: Get started here
    :target: get_started.html
 
 |Go| :ref:`get-started-here`
@@ -73,11 +73,11 @@ The Python Arcade Library
             <h2>Social</h2>
           </div>
           <ul>
+            <li><a href="https://discord.gg/ZjGDqMp">Discord</a> (most active spot)</li>
+            <li><a href="https://www.reddit.com/r/pythonarcade/">Reddit /r/pythonarcade</a></li>
             <li><a href="https://twitter.com/ArcadeLibrary">Twitter @ArcadeLibrary</a></li>
             <li><a href="https://www.instagram.com/PythonArcadeLibrary/">Instagram @PythonArcadeLibrary</a></li>
             <li><a href="https://www.facebook.com/ArcadeLibrary/">Facebook @ArcadeLibrary</a></li>
-            <li><a href="https://www.reddit.com/r/pythonarcade/">Reddit /r/pythonarcade</a></li>
-            <li><a href="https://discord.gg/ZjGDqMp">Discord</a></li>
             <li><a href="community/diversity.html">Statement on Diversity</a></li>
           </ul>
         </td>
@@ -94,6 +94,17 @@ The Python Arcade Library
             <li><a href="sample_games.html">Example Games</a></li>
             <li><a href="game_jam_2020.html">GameJam 2020 Games</a></li>
           </ul>
+
+          <div style="display:inline-block;">
+            <img style="width:78px;" src="_static/download-circle.svg" alt="download icon">
+          </div>
+          <div style="display:inline-block;">
+            <h2>Distribute Your Game</h2>
+          </div>
+          <ul>
+            <li><a href="tutorials/bundling_with_pyinstaller/index.html">Bundling a game with PyInstaller</a></li>
+          </ul>
+
         </td>
 
         <td>
@@ -114,27 +125,6 @@ The Python Arcade Library
         </td>
 
       </tr>
-
-      <tr>
-
-        <td>
-          <div style="display:inline-block;">
-            <img style="width:78px;" src="_static/download-circle.svg" alt="download icon">
-          </div>
-          <div style="display:inline-block;">
-            <h2>Distribute Your Game</h2>
-          </div>
-          <ul>
-            <li><a href="tutorials/bundling_with_pyinstaller/index.html">Bundling a game with PyInstaller</a></li>
-          </ul>
-        </td>
-
-        <td>
-
-        </td>
-
-      </tr>
-
 
       <tr>
 
@@ -161,8 +151,7 @@ The Python Arcade Library
           </div>
           <ul>
           <li><a href="performance_tips.html">Performance Tips</a></li>
-          <li><a href="arcade_vs_pygame_performance.html">Arcade vs. Pygame Performance</a></li>
-          <li><a href="pygame_comparison.html">Arcade vs. Pygame Feature Comparison</a></li>
+          <li><a href="https://craven-performance-testing.s3-us-west-2.amazonaws.com/index.html">Arcade vs. Pygame</a></li>
           </ul>
         </td>
 
@@ -189,12 +178,21 @@ The Python Arcade Library
 
         <td>
           <div style="display:inline-block;">
+            <h2>Other Gaming Libraries</h2>
+          </div>
+          <ul>
+            <li><a href="pygame_comparison.html">Arcade vs. Pygame Comparison</a></li>
+          </ul>
+
+
+          <div style="display:inline-block;">
             <h2>Related Libraries</h2>
           </div>
           <ul>
             <li><a href="https://github.com/kfields/arcade-imgui">Arcade-ImGui</a></li>
             <li><a href="https://github.com/maarten-dp/arcade-curtains">Arcade-Curtains</a></li>
            </ul>
+
         </td>
 
       </tr>
