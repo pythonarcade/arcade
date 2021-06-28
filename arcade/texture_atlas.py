@@ -117,7 +117,7 @@ class TextureAtlas:
         *,
         border: int = 1,
         textures: Sequence["Texture"] = None,
-        mutable: bool = False,
+        mutable: bool = True,
         ctx: "ArcadeContext" = None,
     ):
         """
