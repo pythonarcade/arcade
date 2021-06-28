@@ -54,7 +54,7 @@ class MyView(arcade.View):
         self.pause_button.on_click = self.pause_button_clicked
 
         # Add in our element.
-        self.ui_manager.add_ui_element(self.start_button)
+        self.ui_manager.add_ui_element(self.pause_button)
 
     def start_button_clicked(self):
         print("Start button has been clicked!")
