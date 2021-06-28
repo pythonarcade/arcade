@@ -9,6 +9,8 @@ anything.
 Arcade uses OpenGL. It is very fast at drawing sprites and off-loads functions such as rotation
 and transparency to the graphics card.
 
+Here are some comparisons between Arcade 2.6 and Pygame 2.0.1
+
 .. list-table:: Library Information
    :widths: 33 33 33
    :header-rows: 1
@@ -55,6 +57,9 @@ and transparency to the graphics card.
      - Yes
      - No [#f1]_
    * - Sprite image caching [#f2]_
+     - Yes
+     - No
+   * - Type Hints
      - Yes
      - No
    * - Transparency support
@@ -108,21 +113,25 @@ and transparency to the graphics card.
    * - Feature
      - Arcade
      - Pygame
-   * - Draw 50,000 sprites
-     - 0.004 seconds
+   * - Draw 50,000 stationary sprites
+     - 0.001 seconds
      - 0.425 seconds
    * - Move 5,000 sprites
-     - 0.011 seconds
+     - 0.010 seconds
      - 0.003 seconds
+   * - # sprites program can move + draw
+       before FPS drops below 55
+     - 8500
+     - 2000
    * - Collision detection 50,000 sprites
      - | 0.044 seconds no spatial hashing [#f3]_
        | 0.005 seconds with spatial hashing
      - 0.004 seconds [#f4]_
    * - Draw 5,000 plain rectangles [#f7]_
-     - 0.082 seconds
+     - 0.081 seconds
      - 0.008 seconds
    * - Draw 5,000 rotated rectangles [#f8]_
-     - 0.082 seconds
+     - 0.081 seconds
      - 0.029 seconds
 
 .. [#f1] To support rotation and/or scaling, PyGame programs must write the image to a surface, transform the surface,
@@ -130,7 +139,7 @@ and transparency to the graphics card.
          graphics card.
 .. [#f2] When creating a sprite from an image, Pygame will load the image from the disk every time. The user must
          cache the image with their own code for better performance. Arcade does this automatically.
-.. [#f5] A programmer can achieve a similar result by drawing to a surface, then drawing drawing the surface to the screen.
+.. [#f5] A programmer can achieve a similar result by drawing to a surface, then drawing the surface to the screen.
 .. [#f6] Performance tests done on an Intel Core i7-9700F with GeForce GTX 980 Ti. Source code for tests available at
          https://github.com/pythonarcade/performance_tests and more detailed results at
          https://craven-performance-testing.s3-us-west-2.amazonaws.com/index.html
