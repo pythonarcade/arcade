@@ -1,6 +1,7 @@
 import pytest
 from pyglet.image.atlas import AllocatorException
 from arcade import TextureAtlas, load_texture
+import arcade
 from arcade.texture_atlas import TEXCOORD_BUFFER_SIZE
 
 
@@ -108,3 +109,56 @@ def test_to_image(ctx):
     """Convert atlas to image"""
     atlas = TextureAtlas((100, 100))
     atlas.to_image()
+
+
+def test_calculate_minimum_size(ctx):
+    """Calculate the min size for an atlas"""
+    texture_paths = [
+        ":resources:images/topdown_tanks/tankBlue_barrel1.png",
+        ":resources:images/topdown_tanks/tankBlue_barrel1_outline.png",
+        ":resources:images/topdown_tanks/tankBlue_barrel2.png",
+        ":resources:images/topdown_tanks/tankBlue_barrel2_outline.png",
+        ":resources:images/topdown_tanks/tankBlue_barrel3.png",
+        ":resources:images/topdown_tanks/tankBlue_barrel3_outline.png",
+        ":resources:images/topdown_tanks/tankBody_bigRed.png",
+        ":resources:images/topdown_tanks/tankBody_bigRed_outline.png",
+        ":resources:images/topdown_tanks/tankBody_blue.png",
+        ":resources:images/topdown_tanks/tankBody_blue_outline.png",
+        ":resources:images/topdown_tanks/tankBody_dark.png",
+        ":resources:images/topdown_tanks/tankBody_darkLarge.png",
+        ":resources:images/topdown_tanks/tankBody_darkLarge_outline.png",
+        ":resources:images/topdown_tanks/tankBody_dark_outline.png",
+        ":resources:images/topdown_tanks/tankBody_green.png",
+        ":resources:images/topdown_tanks/tankBody_green_outline.png",
+        ":resources:images/topdown_tanks/tankBody_huge.png",
+        ":resources:images/topdown_tanks/tankBody_huge_outline.png",
+        ":resources:images/topdown_tanks/tankBody_red.png",
+        ":resources:images/topdown_tanks/tankSand_barrel3_outline.png",
+        ":resources:images/topdown_tanks/tankGreen_barrel1_outline.png",
+        ":resources:images/topdown_tanks/tankRed_barrel2_outline.png",
+        ":resources:images/topdown_tanks/tank_sand.png",
+        ":resources:images/topdown_tanks/tank_green.png",
+        ":resources:images/topdown_tanks/tank_green.png",
+        ":resources:images/topdown_tanks/tank_green.png",
+    ]
+    textures = []
+    for path in texture_paths:
+        textures.append(arcade.load_texture(path))
+
+    size = TextureAtlas.calculate_minimum_size(textures)
+    atlas = TextureAtlas(size, textures=textures)
+    # We have two duplicate textures in the list
+    check_internals(atlas, len(textures) - 2)
+    assert size == (256, 256)
+
+    textures = textures[:len(textures) // 2]
+    size = TextureAtlas.calculate_minimum_size(textures)
+    atlas = TextureAtlas(size, textures=textures)
+    check_internals(atlas, len(textures))
+    assert size == (192, 192)
+
+    textures = textures[:len(textures) // 2]
+    size = TextureAtlas.calculate_minimum_size(textures)
+    atlas = TextureAtlas(size, textures=textures)
+    check_internals(atlas, len(textures))
+    assert size == (64, 64)

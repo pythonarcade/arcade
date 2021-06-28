@@ -400,6 +400,37 @@ class TextureAtlas:
 
     # --- Utility functions ---
 
+    @classmethod
+    def calculate_minimum_size(self, textures: Sequence["Texture"], border: int = 1):
+        """
+        Calculate the minimum atlas size needed to store the
+        the provided sequence of textures
+
+        :param Sequence[Texture] textures: Sequence of textures
+        :return: An estimated minimum size as a (width, height) tuple
+        """
+        # Ensure all textures are unique
+        textures = set(textures)
+        # Sort the images by height
+        textures = sorted(textures, key=lambda x: x.image.size[1])
+        # For now we just brute force a solution by gradually
+        # increasing the atlas size using the allocator as a guide.
+        for size in range(64, 16385, 64):
+            allocator = Allocator(size, size)
+            try:
+                for texture in textures:
+                    allocator.alloc(
+                        texture.image.width + border * 2,
+                        texture.image.height + border * 2,
+                    )
+            except AllocatorException:
+                continue
+            break
+        else:
+            raise ValueError("Too many textures to fit into one atlas")
+
+        return size, size
+
     def to_image(self):
         """
         Convert the atlas to a Pillow image
