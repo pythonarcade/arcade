@@ -151,7 +151,7 @@ class TextureAtlas:
         )
         self._uv_texture.filter = self._ctx.NEAREST, self._ctx.NEAREST
         self._uv_data = array("f", [0] * TEXCOORD_BUFFER_SIZE * 4)
-        # Free slos in the texture coordinate texture
+        # Free slots in the texture coordinate texture
         self._uv_slots_free = deque(i for i in range(0, TEXCOORD_BUFFER_SIZE))
         # Map texture names to slots
         self._uv_slots: Dict[str, int] = dict()
@@ -281,9 +281,9 @@ class TextureAtlas:
         )
         self._atlas_regions[texture.name] = region
         # Get the existing slot for this texture or grab a new one.
-        # Existing slots for textures will only happen when rebulding
+        # Existing slots for textures will only happen when re-bulding
         # the atlas since we want to keep the same slots to avoid
-        # rebulding the sprite list
+        # re-bulding the sprite list
         slot = self._uv_slots.get(texture.name) or self._uv_slots_free.popleft()
         self._uv_slots[texture.name] = slot
         self._uv_data[slot * 4] = region.texture_coordinates[0]
