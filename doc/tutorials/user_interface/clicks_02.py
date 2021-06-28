@@ -19,7 +19,8 @@ class MyView(arcade.View):
                                      "bg_color": (40, 40, 40),
                                      "bg_color_hover": (40, 40, 40),
                                      "bg_color_press": arcade.color.DARK_GRAY,
-                                     "font_name": ["Calibri", "Arial"]
+                                     "font_name": ["Calibri", "Arial"],
+                                     "padding": 10,
                                      },
                       }
 
@@ -31,8 +32,6 @@ class MyView(arcade.View):
             center_x=self.window.width / 2,
             center_y=self.window.height / 2,
             style=style,
-            width=300,
-            height=70
         )
 
         # Map that button's on_click method to this view's on_button_click method.
