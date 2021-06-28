@@ -7,7 +7,7 @@ class MyView(arcade.View):
         super().__init__(my_window)
 
         # This creates a "manager" for all our UI elements
-        self.ui_manager = arcade.gui.UIManager(self.window, attach_callbacks=False)
+        self.ui_manager = arcade.gui.UIManager(self.window)
 
         # Add in a simple label element.
         self.ui_manager.add_ui_element(

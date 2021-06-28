@@ -32,12 +32,11 @@ First, we'll need to import the GUI package:
     :caption: Importing the GUI package
     :lines: 2
 
-Next, we need to create a UI manager that will handle our GUI for us. We need to tell it what
-window the GUI will be in, and we'll also set ``attach_callbacks`` to ``False``. That parameter, if true,
-will automatically call ``register_callbacks``. We'll do that ourselves instead.
-
-Then, also in the init, we'll create our first label and put it in the center of the screen.
-We'll show how to style the label later.
+Next, we need to create a ``UIManager`` that will handle our GUI for us.
+We'll define this manager as an instance attribute of our ``MyView`` class.
+Then, also in the ``__init__``, we'll create our first label using the ``UILabel`` class
+and put it in the center of the screen.
+(We'll show how to style the label in :ref:`styling-gui-labels`.)
 
 .. literalinclude:: labels_01.py
     :caption: Creating the UI manager
@@ -52,8 +51,8 @@ before drawing the GUI.
     :pyobject: MyView.on_draw
     :emphasize-lines: 4-5
 
-When our view is shown, we need to register our mouse event handlers.
-When the view is hidden, we need to unregister the those mouse handlers.
+When our view is shown, we need to register our event handlers.
+When the view is hidden, we need to unregister the those handlers.
 
 .. literalinclude:: labels_01.py
     :caption: Show the view
@@ -84,7 +83,7 @@ file here:
 
 https://github.com/pythonarcade/arcade/blob/development/arcade/resources/style/default.yml
 
-You can either create your own ``.yaml`` file, or a dictionary with the new style information.
+You can either create your own ``.yaml`` file, or a create a Python dictionary with the new style information.
 The dictionary would look like this:
 
 .. code-block:: python
