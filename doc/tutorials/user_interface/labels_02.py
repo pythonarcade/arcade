@@ -1,8 +1,6 @@
 import arcade
 import arcade.gui
 
-LABEL_WIDTH = 600
-LABEL_LEFT_MARGIN = 20
 LABEL_LINE_HEIGHT = 60
 
 
@@ -23,7 +21,7 @@ class MyView(arcade.View):
 
         style = arcade.gui.UIStyle(style_data)
 
-        center_x = LABEL_WIDTH / 2 + LABEL_LEFT_MARGIN
+        center_x = self.window.width / 2
         center_y = self.window.height - 40
 
         for text in ["Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune"]:
@@ -32,8 +30,8 @@ class MyView(arcade.View):
             self.ui_manager.add_ui_element(
                 arcade.gui.UILabel(
                     text=text,
-                    align="left",
-                    width=LABEL_WIDTH,
+                    align="center",
+                    width=self.window.width,
                     center_x=center_x,
                     center_y=center_y,
                     style=style
@@ -53,15 +51,15 @@ class MyView(arcade.View):
 
         # Registers handlers for GUI button clicks, etc.
         # We don't really use them in this example.
-        self.ui_manager.register_handlers()
+        self.ui_manager.enable()
 
     def on_hide_view(self):
         # This unregisters the manager's UI handlers,
         # Handlers respond to GUI button clicks, etc.
-        self.ui_manager.unregister_handlers()
+        self.ui_manager.disable()
 
 
 if __name__ == "__main__":
-    window = arcade.Window(title="ARCADE_GUI")
+    window = arcade.Window(title="Arcade GUI Example")
     window.show_view(MyView(window))
     arcade.run()

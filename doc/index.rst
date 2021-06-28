@@ -143,16 +143,14 @@ The Python Arcade Library
         </td>
 
         <td>
+
           <div style="display:inline-block;">
-            <img style="width:78px;" src="_static/performance.svg">
-          </div>
-          <div style="display:inline-block;">
-            <h2>Performance</h2>
+            <h2>Other Gaming Libraries</h2>
           </div>
           <ul>
-          <li><a href="performance_tips.html">Performance Tips</a></li>
-          <li><a href="https://craven-performance-testing.s3-us-west-2.amazonaws.com/index.html">Arcade vs. Pygame</a></li>
+            <li><a href="pygame_comparison.html">Arcade vs. Pygame Comparison</a></li>
           </ul>
+
         </td>
 
       </tr>
@@ -177,13 +175,18 @@ The Python Arcade Library
         </td>
 
         <td>
+
+
           <div style="display:inline-block;">
-            <h2>Other Gaming Libraries</h2>
+            <img style="width:78px;" src="_static/performance.svg">
+          </div>
+          <div style="display:inline-block;">
+            <h2>Performance</h2>
           </div>
           <ul>
-            <li><a href="pygame_comparison.html">Arcade vs. Pygame Comparison</a></li>
+          <li><a href="performance_tips.html">Performance Tips</a></li>
+          <li><a href="https://craven-performance-testing.s3-us-west-2.amazonaws.com/index.html">Arcade vs. Pygame</a></li>
           </ul>
-
 
           <div style="display:inline-block;">
             <h2>Related Libraries</h2>
