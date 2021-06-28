@@ -91,6 +91,29 @@ class UIAbstractFlatButton(UIClickable):
         v_align = self.style_attr("v_align", "center")
         h_align = self.style_attr("h_align", "center")
 
+        # Process padding
+        padding_value = self.style_attr("padding", 0)
+        if padding_value:
+            padding: text_utils.Padding = text_utils.Padding(padding_value, padding_value, padding_value, padding_value)
+        else:
+            padding: text_utils.Padding = text_utils.Padding(0, 0, 0, 0)
+
+        padding_value = self.style_attr("padding_left", None)
+        if padding_value is not None:
+            padding.left = padding_value
+
+        padding_value = self.style_attr("padding_right", None)
+        if padding_value is not None:
+            padding.right = padding_value
+
+        padding_value = self.style_attr("padding_top", None)
+        if padding_value is not None:
+            padding.top = padding_value
+
+        padding_value = self.style_attr("padding_bottom", None)
+        if padding_value is not None:
+            padding.bottom = padding_value
+
         text_image_normal, text_image_normal_uuid = text_utils.create_text(
             text=self._text,
             font_name=font_name,
@@ -103,6 +126,7 @@ class UIAbstractFlatButton(UIClickable):
             h_align=h_align,
             border_width=border_width,
             border_color=border_color,
+            padding=padding,
         )
         text_image_hover, text_image_hover_uuid = text_utils.create_text(
             text=self.text,
@@ -116,6 +140,7 @@ class UIAbstractFlatButton(UIClickable):
             h_align=h_align,
             border_width=border_width,
             border_color=border_color_hover,
+            padding=padding,
         )
         text_image_press, text_image_press_uuid = text_utils.create_text(
             text=self.text,
@@ -129,6 +154,7 @@ class UIAbstractFlatButton(UIClickable):
             h_align=h_align,
             border_width=border_width,
             border_color=border_color_press,
+            padding=padding,
         )
 
         self.normal_texture = arcade.Texture(
