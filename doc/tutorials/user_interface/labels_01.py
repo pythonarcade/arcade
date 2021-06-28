@@ -29,12 +29,12 @@ class MyView(arcade.View):
 
         # Registers handlers for GUI button clicks, etc.
         # We don't really use them in this example.
-        self.ui_manager.register_handlers()
+        self.ui_manager.enable()
 
     def on_hide_view(self):
         # This unregisters the manager's UI handlers,
         # Handlers respond to GUI button clicks, etc.
-        self.ui_manager.unregister_handlers()
+        self.ui_manager.disable()
 
 
 if __name__ == "__main__":
