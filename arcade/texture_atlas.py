@@ -13,6 +13,7 @@ https://github.com/einarf/pyglet/blob/master/pyglet/image/atlas.py
 """
 from array import array
 from collections import deque
+import math
 import logging
 from typing import Dict, Set, Tuple, Sequence, TYPE_CHECKING
 
@@ -33,18 +34,11 @@ if TYPE_CHECKING:
 TEXCOORD_BUFFER_SIZE = 8192
 LOG = logging.getLogger(__name__)
 
-
 # TODO:
-# TextureRegion
-# repack()
 # Detect texture changes
-# Clear atlas texture
 # Resize?
 # SpriteList.preload_textures
-# Warning adding large textures?
 # SpriteList.update_texture calls _calculate_sprite_buffer()
-# Only loop sprites if we are removing unused ones
-# Loops "textures" attributes for animated sprites?
 
 
 class AtlasRegion:
@@ -311,6 +305,10 @@ class TextureAtlas:
         del self._uv_slots[texture.name]
         self._uv_slots_free.appendleft(slot)
 
+    def update_texture_image(self, texture: "Texture"):
+        pass
+
+
     def update_textures(self, textures: Set["Texture"], keep_old_textures=True):
         """Batch update atlas with new textures.
 
@@ -413,9 +411,17 @@ class TextureAtlas:
         textures = set(textures)
         # Sort the images by height
         textures = sorted(textures, key=lambda x: x.image.size[1])
+
+        # Try to guess some sane minimum size to reduce the brute force iterations
+        total_area = sum(t.image.size[0] * t.image.size[1] for t in textures)
+        sqrt_size = int(math.sqrt(total_area))
+        start_size = sqrt_size or 64
+        if start_size % 64:
+            start_size = sqrt_size + (64 - sqrt_size % 64)
+
         # For now we just brute force a solution by gradually
         # increasing the atlas size using the allocator as a guide.
-        for size in range(64, 16385, 64):
+        for size in range(start_size, 16385, 64):
             allocator = Allocator(size, size)
             try:
                 for texture in textures:

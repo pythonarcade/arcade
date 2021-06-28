@@ -162,3 +162,7 @@ def test_calculate_minimum_size(ctx):
     atlas = TextureAtlas(size, textures=textures)
     check_internals(atlas, len(textures))
     assert size == (64, 64)
+
+    # Empty list should at least create the minimum atlas
+    size = TextureAtlas.calculate_minimum_size([])
+    assert size == (64, 64)
