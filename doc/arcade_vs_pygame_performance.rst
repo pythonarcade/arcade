@@ -83,7 +83,7 @@ closer to O(1).
 
 Unfortunately, it take longer to move a sprite in a SpriteList with spatial
 hashing enabled because the hash maps have to be updated. For applications like
-map walls, wanter, etc. it works great since their location rarely changes.
+map walls, water, etc. it works great since their location rarely changes.
 
 You can specify points of a polygon (and even draw them using the TileMap editor)
 for collision detection. Arcade first checks the spatial hash, then a rough
