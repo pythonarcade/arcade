@@ -7,6 +7,7 @@ from arcade.draw_commands import Texture
 import arcade.utils
 from arcade.arcade_types import Point, Vector
 from typing import Union
+from arcade.geometry import clamp
 
 FilenameOrTexture = Union[str, Texture]
 
@@ -106,13 +107,6 @@ class LifetimeParticle(Particle):
         """Determine if Particle can be deleted"""
         return self.lifetime_elapsed >= self.lifetime_original
 
-def clamp(a, low, high):
-    if a > high:
-        return high
-    elif a < low:
-        return low
-    else:
-        return a
 
 class FadeParticle(LifetimeParticle):
     """Particle that animates its alpha between two values during its lifetime"""

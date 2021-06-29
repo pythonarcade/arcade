@@ -34,7 +34,7 @@ def are_polygons_intersecting(poly_a: PointList,
     return r1 and not r2
 
 
-def is_point_in_polygon(x, y, polygon_point_list):
+def is_point_in_polygon(x: float, y: float, polygon_point_list):
     """
     Use ray-tracing to see if point is inside a polygon
 
@@ -55,3 +55,13 @@ def is_point_in_polygon(x, y, polygon_point_list):
 def get_distance(x1: float, y1: float, x2: float, y2: float):
     """ Get the distance between two points. """
     return math.hypot(x1 - x2, y1 - y2)
+
+
+def clamp(a, low, high):
+    """ Clamp a number between a range. """
+    if a > high:
+        return high
+    elif a < low:
+        return low
+    else:
+        return a
