@@ -1,3 +1,4 @@
+import PIL
 import pytest
 from pyglet.image.atlas import AllocatorException
 from arcade import TextureAtlas, load_texture
@@ -166,3 +167,30 @@ def test_calculate_minimum_size(ctx):
     # Empty list should at least create the minimum atlas
     size = TextureAtlas.calculate_minimum_size([])
     assert size == (64, 64)
+
+
+def test_update_texture_image(ctx):
+    """Test partial image updates"""
+    # Create the smallest atlas possible without border
+    atlas = TextureAtlas((64 * 3, 64), border=0)
+    # Load 3 x 64 x 64 images
+    tex_1 = arcade.load_texture(":resources:images/topdown_tanks/tileGrass1.png")
+    tex_2 = arcade.load_texture(":resources:images/topdown_tanks/tileSand2.png")
+    tex_3 = arcade.load_texture(":resources:images/topdown_tanks/tileGrass_roadCrossing.png")
+    # Add to atlas
+    atlas.add(tex_1)
+    atlas.add(tex_2)
+    atlas.add(tex_3)
+    # Change the internal images of each texture
+    tex_1.image = PIL.Image.new("RGBA", tex_1.image.size, (255, 0, 0, 255))
+    tex_2.image = PIL.Image.new("RGBA", tex_1.image.size, (0, 255, 0, 255))
+    tex_3.image = PIL.Image.new("RGBA", tex_1.image.size, (0, 0, 255, 255))
+    # Update the images in the atlas
+    atlas.update_texture_image(tex_1)
+    atlas.update_texture_image(tex_2)
+    atlas.update_texture_image(tex_3)
+    # Test pixels one pixel in the middle of each texture to verify
+    # the images was replaced with colored textures
+    assert b'\xff\x00\x00\xff' == atlas.fbo.read(viewport=(32, 32, 1, 1), components=4)
+    assert b'\x00\xff\x00\xff' == atlas.fbo.read(viewport=(96, 32, 1, 1), components=4)
+    assert b'\x00\x00\xff\xff' == atlas.fbo.read(viewport=(160, 32, 1, 1), components=4)
