@@ -120,8 +120,9 @@ from .utils import rand_on_line
 from .utils import rand_vec_magnitude
 from .utils import rand_vec_spread_deg
 
-from .drawing_support import calculate_hit_box_points_detailed
-from .drawing_support import calculate_hit_box_points_simple
+from .hitbox import calculate_hit_box_points_detailed
+from .hitbox import calculate_hit_box_points_simple
+
 from .drawing_support import get_four_byte_color
 from .drawing_support import get_four_float_color
 from .drawing_support import get_points_for_thick_line
