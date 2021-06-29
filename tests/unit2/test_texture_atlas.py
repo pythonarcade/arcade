@@ -194,3 +194,16 @@ def test_update_texture_image(ctx):
     assert b'\xff\x00\x00\xff' == atlas.fbo.read(viewport=(32, 32, 1, 1), components=4)
     assert b'\x00\xff\x00\xff' == atlas.fbo.read(viewport=(96, 32, 1, 1), components=4)
     assert b'\x00\x00\xff\xff' == atlas.fbo.read(viewport=(160, 32, 1, 1), components=4)
+
+
+def test_resize(ctx):
+    """Attempt to resize the atlas"""
+    atlas = TextureAtlas((50, 100), border=0)
+    t1 = arcade.Texture("t1", image=PIL.Image.new("RGBA", (50, 50), (255, 0, 0, 255)))
+    t2 = arcade.Texture("t2", image=PIL.Image.new("RGBA", (50, 50), (0, 255, 0, 255)))
+    atlas.add(t1)
+    atlas.add(t2)
+    atlas.resize((50, 100))
+
+    with pytest.raises(AllocatorException):
+        atlas.resize((50, 99))

@@ -14,6 +14,7 @@ https://github.com/einarf/pyglet/blob/master/pyglet/image/atlas.py
 from arcade.gl.framebuffer import Framebuffer
 from array import array
 from collections import deque
+import gc
 import math
 import logging
 from typing import Dict, Set, Tuple, Sequence, TYPE_CHECKING
@@ -385,6 +386,21 @@ class TextureAtlas:
     def has_texture(self, texture: "Texture") -> bool:
         """Check if a texture is already in the atlas"""
         return texture in self._textures
+
+    def resize(self, size: Tuple[int, int]) -> None:
+        """
+        Resize the texture atlas.
+        This will cause a full rebuild.
+
+        :param Tuple[int,int]: The new size
+        """
+        self._size = size
+        self._texture = None
+        self._fbo = None
+        gc.collect()  # Try to force garbage collection of the gl resource asap
+        self._texture = self._ctx.texture(size, components=4)
+        self._fbo = self._ctx.framebuffer(color_attachments=[self._texture])
+        self.rebuild()
 
     def clear(self, uv_slots=True) -> None:
         """
