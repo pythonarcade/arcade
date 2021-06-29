@@ -5,17 +5,26 @@
 The Python Arcade Library
 =========================
 
-.. |Go| image:: images/woman_sprinter.svg
-   :width: 48
-   :alt: Get started here
-   :target: get_started.html
-
-|Go| :ref:`get-started-here`
-----------------------------
-
 .. raw:: html
 
     <table style="width:100%;">
+      <tr>
+        <td>
+           <h2>
+             <a class="reference external" href="get_started.html">
+               <img alt="Get started here" src="_images/woman_sprinter.svg" width="48">
+             </a>
+             <a class="reference internal" href="get_started.html#get-started-here">
+               <span class="std std-ref">Get Started Here</span>
+             </a>
+             <a class="headerlink" href="#go-get-started-here" title="Permalink to this headline">¶</a>
+           </h2>
+        </td>
+        <td>
+          <iframe src="https://ghbtns.com/github-btn.html?user=pythonarcade&repo=arcade&type=star&count=true&size=large" frameborder="0" scrolling="0" width="170" height="30" title="GitHub"></iframe>
+        </td>
+      </tr>
+
       <tr>
         <td>
           <div style="display:inline-block;">

@@ -1,27 +1,31 @@
-import os
+"""
+Script used to create the quick index
+"""
 import re
 from pathlib import Path
 
 titles = {
     'arcade_types.py': 'Arcade Data Types',
     'application.py': 'Window and View Classes',
-    'buffered_draw_commands.py': 'Buffered Draw Commands',
+    'buffered_draw_commands.py': 'Drawing - Batch',
     'context.py': 'OpenGL Context',
-    'drawing_support.py': 'Support for Drawing Commands',
-    'draw_commands.py': 'Drawing Primitives',
-    'earclip_module.py': 'Earclip Collision Detection',
+    'drawing_support.py': 'Drawing - Utility',
+    'draw_commands.py': 'Drawing - Primitives',
+    'earclip_module.py': 'Geometry Support',
     'emitter.py': 'Particle Emitter',
-    'emitter_simple.py': 'Particle Emitter Simple',
+    'emitter_simple.py': 'Particle Emitter',
     'geometry.py': 'Geometry Support',
+    'hitbox.py': 'Geometry Support',
     'isometric.py': 'Isometric Map Support (incomplete)',
     'joysticks.py': 'Game Controller Support',
     'particle.py': 'Particle',
-    'paths.py': 'Pathfinding Support',
-    'physics_engines.py': 'Simple Physics Engines',
-    'pymunk_physics_engine.py': 'Pymunk Physics Engine',
-    'sound.py': 'Sound Support',
+    'paths.py': 'Pathfinding',
+    'physics_engines.py': 'Physics Engines',
+    'pymunk_physics_engine.py': 'Physics Engines',
+    'sound.py': 'Sound',
     'sprite.py': 'Sprites',
-    'sprite_list.py': 'Sprite Lists',
+    'sprite_list/sprite_list.py': 'Sprite Lists',
+    'sprite_list/spatial_hash.py': 'Sprite Lists',
     'text.py': 'Draw Text',
     'texture.py': 'OpenGL Texture Management',
     'tilemap.py': 'Loading TMX (Tiled Map Editor) Maps',
@@ -29,13 +33,31 @@ titles = {
     'version.py': 'Arcade Version Number',
     'window_commands.py': 'Window Commands',
     'texture_atlas.py': 'Texture Atlas',
+    'scene.py': 'Sprite Scenes',
 
-    'gui/core.py': 'Core GUI',
-    'gui/manager.py': 'GUI Manager',
-    'gui/ui_style.py': 'GUI Style',
-    'gui/utils.py': 'GUI Utilities',
-    'gui/exceptions.py': 'GUI Exceptions',
-    'gui/text_utils.py': 'GUI Text Utilities',
+    'elements/exceptions.py': 'GUI Elements',
+    'elements/box.py': 'GUI Elements',
+    'elements/flat_button.py': 'GUI Elements',
+    'elements/image_button.py': 'GUI Elements',
+    'elements/inputbox.py': 'GUI Elements',
+    'elements/label.py': 'GUI Elements',
+    'elements/toggle.py': 'GUI Elements',
+    'elements/__init__.py': 'GUI Elements',
+
+    'layouts/__init__.py': 'GUI Layout Manger',
+    'layouts/anchor.py': 'GUI Layout Manger',
+    'layouts/box.py': 'GUI Layout Manger',
+    'layouts/manager.py': 'GUI Layout Manger',
+    'layouts/utils.py': 'GUI Layout Manger',
+
+    'tilemap/tilemap.py': 'Tiled Map Reader',
+
+    'gui/exceptions.py': 'GUI',
+    'gui/manager.py': 'GUI',
+    'gui/style.py': 'GUI',
+    'gui/text_utils.py': 'GUI',
+    'gui/ui_style.py': 'GUI',
+    'gui/utils.py': 'GUI',
 
     'gl/buffer.py': 'OpenGL Buffer',
     'gl/context.py': 'OpenGL Context',
@@ -52,6 +74,7 @@ titles = {
     'gl/texture.py': 'OpenGL Texture',
     'gl/vertex_array.py': 'OpenGL Vertex Array (VAO)',
 }
+
 
 def get_member_list(filepath):
     file_pointer = open(filepath)
@@ -95,13 +118,35 @@ def get_member_list(filepath):
 def process_directory(directory, text_file):
     file_list = directory.glob('*.py')
 
+    text_file.write(f"\n")
+
     if directory.name == "arcade":
         prepend = ""
     else:
         prepend = directory.name + "/"
 
     for path in file_list:
+        if "test" in path.name:
+            break
+
+        if not path.exists():
+            print(f"Error, can't find file: {path.name}")
+            break
+        else:
+            print(f"Processing: {path.name}")
+
         type_list, class_list, function_list = get_member_list(path)
+
+        mapping = {"arcade": "arcade",
+                   "sprite_list": "arcade",
+                   "text": "arcade",
+                   "gui": "arcade.gui",
+                   "elements": "arcade.gui",
+                   "events": "arcade.gui",
+                   "layouts": "arcade.gui",
+                   "tilemap": "arcade.tilemap",
+                   }
+        package = mapping[directory.name]
 
         path_name = prepend + path.name
 
@@ -109,45 +154,43 @@ def process_directory(directory, text_file):
 
             # Print title
             title = titles[path_name]
-            text_file.write(f"\n{title}\n")
-            underline = "~" * len(title)
-            text_file.write(f"{underline}\n\n")
+        else:
+            title = f"ERR: `{path_name}`"
 
-            # Classes
-            if len(class_list) > 0:
-                text_file.write(f"Classes:\n\n")
+        # Classes
+        if len(class_list) > 0:
+            for item in class_list:
+                text_file.write(f"   * - :py:class:`{package}.{item}`\n")
+                text_file.write(f"     - {title}\n")
+                print(f"  {item}")
+                # text_file.write(f"     - Class\n")
+                # text_file.write(f"     - {path_name}\n")
 
-                for item in class_list:
-                    text_file.write(f"* :data:`~arcade.{item}`\n")
+        # Functions
+        if len(function_list) > 0:
+            for item in function_list:
+                text_file.write(f"   * - :py:func:`{package}.{item}`\n")
+                text_file.write(f"     - {title}\n")
+                # text_file.write(f"     - Func\n")
+                # text_file.write(f"     - {path_name}\n")
 
-                text_file.write(f"\n")
-
-            # Functions
-            if len(function_list) > 0:
-                text_file.write(f"Functions:\n\n")
-
-                for item in function_list:
-                    text_file.write(f"- :data:`~arcade.{item}`\n")
-
-                text_file.write(f"\n")
-
-            # Data Types
-            if len(type_list) > 0:
-                text_file.write(f"Constants and Data Types:\n\n")
-
-                for item in type_list:
-                    text_file.write(f"- :data:`~arcade.{item}`\n")
-
-                text_file.write(f"\n")
-
-        elif "__init__" not in path_name:
-            print(f"WARNING: Can't create quick index for {path_name}, as no title listed.")
 
 def include_template(text_file):
     with open('template_quick_index.rst', 'r') as content_file:
         quick_index_content = content_file.read()
 
     text_file.write(quick_index_content)
+
+
+table_header = """
+.. list-table::
+   :widths: 50 50
+   :header-rows: 1
+   :name: quickapi
+   :class: display
+
+   * - Name
+     - Group"""
 
 def main():
 
@@ -156,17 +199,38 @@ def main():
 
     text_file.write(f"The ``arcade`` module\n")
     text_file.write(f"---------------------\n\n")
+
+    text_file.write(table_header)
+
     process_directory(Path("../arcade"), text_file)
+    process_directory(Path("../arcade/sprite_list"), text_file)
+    process_directory(Path("../arcade/text"), text_file)
 
-    text_file.write(f"The ``arcade.gl`` module\n")
-    text_file.write(f"-------------------------\n\n")
-    process_directory(Path("../arcade/gl"), text_file)
+    # text_file.write(f"The ``arcade.gl`` module\n")
+    # text_file.write(f"-------------------------\n\n")
+    # process_directory(Path("../arcade/gl"), text_file)
 
+    text_file.write(f"\n\n")
     text_file.write(f"The ``arcade.gui`` module\n")
     text_file.write(f"-------------------------\n\n")
+
+    text_file.write(table_header)
+
     process_directory(Path("../arcade/gui"), text_file)
+    process_directory(Path("../arcade/gui/elements"), text_file)
+    process_directory(Path("../arcade/gui/events"), text_file)
+    process_directory(Path("../arcade/gui/layouts"), text_file)
+
+    text_file.write(f"\n\n")
+    text_file.write(f"The ``arcade.tilemap`` module\n")
+    text_file.write(f"-----------------------------\n\n")
+
+    text_file.write(table_header)
+
+    process_directory(Path("../arcade/tilemap"), text_file)
 
     text_file.close()
     print("Done creating quick_index.rst")
+
 
 main()

@@ -120,13 +120,13 @@ from .utils import rand_on_line
 from .utils import rand_vec_magnitude
 from .utils import rand_vec_spread_deg
 
-from .drawing_support import calculate_hit_box_points_detailed
-from .drawing_support import calculate_hit_box_points_simple
+from .hitbox import calculate_hit_box_points_detailed
+from .hitbox import calculate_hit_box_points_simple
+
 from .drawing_support import get_four_byte_color
 from .drawing_support import get_four_float_color
 from .drawing_support import get_points_for_thick_line
 from .drawing_support import make_transparent_color
-from .drawing_support import rotate_point
 
 from .texture import Matrix3x3
 from .texture import Texture
@@ -195,6 +195,7 @@ from .draw_commands import get_pixel
 from .geometry import are_polygons_intersecting
 from .geometry import get_distance
 from .geometry import is_point_in_polygon
+from .geometry import rotate_point
 
 from .isometric import create_isometric_grid_lines
 from .isometric import isometric_grid_to_screen

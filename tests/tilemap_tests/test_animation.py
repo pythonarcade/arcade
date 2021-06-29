@@ -2,6 +2,7 @@ import os
 
 import arcade
 
+
 def test_rotation_mirror():
 
     # Change to current directory

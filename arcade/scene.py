@@ -14,7 +14,7 @@ from arcade.tilemap import TileMap
 
 class Scene:
     """
-    Class that represents a `scene` object. Most games will use Scene's to render their Sprites.
+    Class that represents a `scene` object. Most games will use Scenes to render their Sprites.
     For examples on how to use this class, see:
     https://arcade.academy/examples/index.html#scenes
 
