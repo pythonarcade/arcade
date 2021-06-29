@@ -4,7 +4,7 @@ Functions used to support drawing. No Pyglet/OpenGL here.
 
 import math
 
-from typing import List, Tuple, cast
+from typing import Tuple, cast
 
 from arcade import Color
 from arcade import RGBA
@@ -83,34 +83,3 @@ def make_transparent_color(color: Color, transparency: float):
     :param float transparency: Transparency
     """
     return color[0], color[1], color[2], transparency
-
-
-def rotate_point(x: float, y: float, cx: float, cy: float,
-                 angle_degrees: float) -> List[float]:
-    """
-    Rotate a point around a center.
-
-    :param x: x value of the point you want to rotate
-    :param y: y value of the point you want to rotate
-    :param cx: x value of the center point you want to rotate around
-    :param cy: y value of the center point you want to rotate around
-    :param angle_degrees: Angle, in degrees, to rotate
-    :return: Return rotated (x, y) pair
-    :rtype: (float, float)
-    """
-    temp_x = x - cx
-    temp_y = y - cy
-
-    # now apply rotation
-    angle_radians = math.radians(angle_degrees)
-    cos_angle = math.cos(angle_radians)
-    sin_angle = math.sin(angle_radians)
-    rotated_x = temp_x * cos_angle - temp_y * sin_angle
-    rotated_y = temp_x * sin_angle + temp_y * cos_angle
-
-    # translate back
-    rounding_precision = 2
-    x = round(rotated_x + cx, rounding_precision)
-    y = round(rotated_y + cy, rounding_precision)
-
-    return [x, y]

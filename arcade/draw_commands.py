@@ -24,7 +24,7 @@ from typing import TYPE_CHECKING
 from arcade import Color
 from arcade import PointList
 from arcade import earclip
-from arcade import rotate_point
+from .geometry import rotate_point
 from arcade import get_four_byte_color
 from arcade import get_points_for_thick_line
 from arcade import Texture
