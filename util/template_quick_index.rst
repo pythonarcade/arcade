@@ -1,5 +1,3 @@
-.. _quick_index:
-
 .. raw:: html
 
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.css">
@@ -13,14 +11,10 @@
     } );
     </script>
 
+.. _quick_index:
+
 Quick API Index
 ===============
 
-.. list-table::
-   :widths: 50 50
-   :header-rows: 1
-   :name: quickapi
-   :class: display
+.. contents::
 
-   * - Name
-     - Group
