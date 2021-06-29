@@ -308,7 +308,6 @@ class TextureAtlas:
     def update_texture_image(self, texture: "Texture"):
         pass
 
-
     def update_textures(self, textures: Set["Texture"], keep_old_textures=True):
         """Batch update atlas with new textures.
 
