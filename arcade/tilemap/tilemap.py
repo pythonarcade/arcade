@@ -32,7 +32,7 @@ _FLIPPED_DIAGONALLY_FLAG = 0x20000000
 
 class TileMap:
     """
-    Class that represent's a fully parsed and loaded map from Tiled.
+    Class that represents a fully parsed and loaded map from Tiled.
     For examples on how to use this class, see:
     https://arcade.academy/examples/index.html#using-tiled-map-editor-to-create-maps
 
