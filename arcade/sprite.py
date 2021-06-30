@@ -118,43 +118,6 @@ class Sprite:
 
     """
 
-    # __slots__ = (
-    #     '_hit_box_algorithm',
-    #     '_hit_box_detail',
-    #     'sprite_lists',
-    #     'physics_engines',
-    #     '_texture',
-    #     '_points',
-    #     '_hit_box_shape',
-    #     'textures',
-    #     '_width',
-    #     '_height',
-    #     'cur_texture_index',
-    #     '_scale',
-    #     '_position',
-    #     '_angle',
-    #     'velocity',
-    #     'change_angle',
-    #     'boundary_left',
-    #     'boundary_right',
-    #     'boundary_top',
-    #     'boundary_bottom',
-    #     'properties',
-    #     '_alpha',
-    #     '_collision_radius',
-    #     '_color',
-    #     '_points',
-    #     '_point_list_cache',
-    #     'force',
-    #     'guid',
-    #     'repeat_count_x',
-    #     'repeat_count_y',
-    #     '_texture_transform',
-    #     '_sprite_list',
-    #     'pymunk',
-    #     'extra',
-    # )
-
     def __init__(
         self,
         filename: str = None,
