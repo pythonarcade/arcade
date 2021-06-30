@@ -26,7 +26,9 @@ titles = {
     'sprite.py': 'Sprites',
     'sprite_list/sprite_list.py': 'Sprite Lists',
     'sprite_list/spatial_hash.py': 'Sprite Lists',
-    'text.py': 'Draw Text',
+    'text.py': 'Text',
+    'text_pillow.py': 'Text - Image/Pillow based',
+    'text_pyglet.py': 'Text - Pyglet/Glyph based',
     'texture.py': 'OpenGL Texture Management',
     'tilemap.py': 'Loading TMX (Tiled Map Editor) Maps',
     'utils.py': 'Misc Utility Functions',
@@ -77,7 +79,7 @@ titles = {
 
 
 def get_member_list(filepath):
-    file_pointer = open(filepath)
+    file_pointer = open(filepath, encoding="utf8")
     filename = filepath.name
 
     class_re = re.compile("^class ([A-Za-z0-9]+[^\(:]*)")
@@ -116,6 +118,9 @@ def get_member_list(filepath):
 
 
 def process_directory(directory, text_file):
+    # print()
+    # print(f"Processing directory {directory}")
+
     file_list = directory.glob('*.py')
 
     text_file.write(f"\n")
@@ -127,13 +132,13 @@ def process_directory(directory, text_file):
 
     for path in file_list:
         if "test" in path.name:
-            break
+            continue
 
         if not path.exists():
             print(f"Error, can't find file: {path.name}")
-            break
-        else:
-            print(f"Processing: {path.name}")
+            continue
+        # else:
+        #     print(f"Processing: {path.name}")
 
         type_list, class_list, function_list = get_member_list(path)
 
@@ -160,9 +165,11 @@ def process_directory(directory, text_file):
         # Classes
         if len(class_list) > 0:
             for item in class_list:
-                text_file.write(f"   * - :py:class:`{package}.{item}`\n")
+                full_name = f"{package}.{item}"
+                text_file.write(f"   * - :py:class:`{full_name}`\n")
                 text_file.write(f"     - {title}\n")
-                print(f"  {item}")
+
+                # print(f"  Class {item}")
                 # text_file.write(f"     - Class\n")
                 # text_file.write(f"     - {path_name}\n")
 
@@ -171,6 +178,7 @@ def process_directory(directory, text_file):
             for item in function_list:
                 text_file.write(f"   * - :py:func:`{package}.{item}`\n")
                 text_file.write(f"     - {title}\n")
+                # print(f"  Function {item}")
                 # text_file.write(f"     - Func\n")
                 # text_file.write(f"     - {path_name}\n")
 
