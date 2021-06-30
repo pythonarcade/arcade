@@ -214,3 +214,15 @@ def test_max_size(ctx):
     atlas = TextureAtlas((100, 100))
     assert atlas.max_size[0] >= 8192
     assert atlas.max_size[1] >= 8192
+
+    # Resize the atlas to something any hardware wouldn't support
+    with pytest.raises(ValueError):
+        atlas.resize((100_000, 100_000))
+    with pytest.raises(ValueError):
+        atlas.resize((100, 100_000))
+    with pytest.raises(ValueError):
+        atlas.resize((100_000, 100))
+
+    # Create an unreasonable sized atlas
+    with pytest.raises(ValueError):
+        TextureAtlas((100_000, 100_000))
