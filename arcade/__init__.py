@@ -254,13 +254,6 @@ from .scene import Scene
 from .physics_engines import PhysicsEnginePlatformer
 from .physics_engines import PhysicsEngineSimple
 
-from .text import DEFAULT_FONT_NAMES
-from .text import create_text
-from .text import draw_text
-from .text import load_font
-from .text import create_text_image
-from .text import create_text_sprite
-
 from .tilemap import load_tilemap
 from .tilemap import read_tmx
 from .tilemap import TileMap
@@ -280,6 +273,18 @@ from .texture_atlas import TextureAtlas
 
 # noinspection PyPep8
 from arcade import experimental
+
+from .text_pyglet import (
+    draw_text,
+    load_font,
+    create_text,
+    Text,
+)
+from .text_pillow import (
+    create_text_sprite,
+    create_text_image,
+    DEFAULT_FONT_NAMES,
+)
 
 # --- Generated __all__ ---
 
@@ -323,6 +328,7 @@ __all__ = ['AStarBarrierList',
            'RGBA',
            'Rect',
            'RectList',
+           'Scene',
            'Shape',
            'ShapeElementList',
            'Sound',
@@ -368,6 +374,7 @@ __all__ = ['AStarBarrierList',
            'create_rectangle_filled_with_colors',
            'create_rectangle_outline',
            'create_rectangles_filled_with_colors',
+           'create_text_image',
            'create_text_sprite',
            'create_triangles_filled_with_colors',
            'draw_arc_filled',
@@ -417,9 +424,7 @@ __all__ = ['AStarBarrierList',
            'get_screens',
            'get_sprites_at_exact_point',
            'get_sprites_at_point',
-           'get_text_image',
            'create_text_image',
-           'get_tilemap_layer',
            'get_viewport',
            'get_window',
            'has_line_of_sight',
@@ -428,6 +433,7 @@ __all__ = ['AStarBarrierList',
            'lerp',
            'lerp_vec',
            'load_animated_gif',
+           'load_font',
            'load_sound',
            'load_spritesheet',
            'load_texture',
@@ -442,7 +448,6 @@ __all__ = ['AStarBarrierList',
            'open_window',
            'pause',
            'play_sound',
-           'process_layer',
            'quick_run',
            'rand_angle_360_deg',
            'rand_angle_spread_deg',
@@ -466,6 +471,7 @@ __all__ = ['AStarBarrierList',
            'trim_image',
            'unschedule',
            ]
+
 
 __version__ = VERSION
 
