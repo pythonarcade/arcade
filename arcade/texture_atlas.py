@@ -11,8 +11,10 @@ Pyglet atlases are located here:
 https://github.com/einarf/pyglet/blob/master/pyglet/image/atlas.py
 
 """
+from arcade.gl.framebuffer import Framebuffer
 from array import array
 from collections import deque
+import gc
 import math
 import logging
 from typing import Dict, Set, Tuple, Sequence, TYPE_CHECKING
@@ -88,6 +90,19 @@ class AtlasRegion:
             self.height / self.atlas.height,
         )
 
+    def verify_image_size(self):
+        """
+        Verify the image has the right size.
+        The internal image of a texture can be tampered with
+        at any point causing an atlas update to fail.
+        """
+        if self.texture.image.size != (self.width, self.height):
+            raise ValueError((
+                f"Texture '{self.texture.name}' change their internal image "
+                f"size from {self.width}x{self.height} to "
+                f"{self.texture.image.size[0]}x{self.texture.image.size[1]}. "
+                "It's not possible to fit this into the old allocated area in the atlas. "
+            ))
 
 class TextureAtlas:
     """
@@ -212,6 +227,11 @@ class TextureAtlas:
         return self._uv_texture
 
     @property
+    def fbo(self) -> Framebuffer:
+        """The framebuffer object for this atlas"""
+        return self._fbo
+
+    @property
     def mutable(self) -> bool:
         """
         Is this atlas mutable?
@@ -268,8 +288,8 @@ class TextureAtlas:
         region = AtlasRegion(
             self,
             texture,
-            x + 1,
-            y + 1,
+            x + self._border,
+            y + self._border,
             texture.image.width,
             texture.image.height,
         )
@@ -306,7 +326,28 @@ class TextureAtlas:
         self._uv_slots_free.appendleft(slot)
 
     def update_texture_image(self, texture: "Texture"):
-        pass
+        """
+        Updates the internal image of a texture in the atlas texture.
+        The new image needs to be the exact same size as the original
+        one meaning the texture already need to exist in the atlas.
+
+        This can be used in cases were the image is manipulated in some way
+        and we need a quick way to sync these changes to graphics memory.
+        This operation is fairly expensive, but still orders of magnitude
+        faster than removing the old texture, adding the new one and
+        re-building the entire atlas.
+
+        :param Texture texture: The texture to update
+        """
+        region = self._atlas_regions[texture.name]
+        region.verify_image_size()
+        viewport = (
+            region.x + self._border,
+            region.y + self._border,
+            region.width,
+            region.height,
+        )
+        self._texture.write(texture.image.tobytes(), 0, viewport=viewport)
 
     def update_textures(self, textures: Set["Texture"], keep_old_textures=True):
         """Batch update atlas with new textures.
@@ -345,6 +386,21 @@ class TextureAtlas:
     def has_texture(self, texture: "Texture") -> bool:
         """Check if a texture is already in the atlas"""
         return texture in self._textures
+
+    def resize(self, size: Tuple[int, int]) -> None:
+        """
+        Resize the texture atlas.
+        This will cause a full rebuild.
+
+        :param Tuple[int,int]: The new size
+        """
+        self._size = size
+        self._texture = None
+        self._fbo = None
+        gc.collect()  # Try to force garbage collection of the gl resource asap
+        self._texture = self._ctx.texture(size, components=4)
+        self._fbo = self._ctx.framebuffer(color_attachments=[self._texture])
+        self.rebuild()
 
     def clear(self, uv_slots=True) -> None:
         """

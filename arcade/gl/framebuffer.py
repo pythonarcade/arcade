@@ -347,7 +347,14 @@ class Framebuffer:
     def read(
         self, *, viewport=None, components=3, attachment=0, dtype="f1"
     ) -> bytearray:
-        """Read framebuffer pixels"""
+        """
+        Read framebuffer pixels
+        
+        :param viewport Tuple[int,int,int,int]: The x, y, with, height to read
+        :param int attachment: The attachment id to read from
+        :param str dtype: The data type to read
+        :return: pixel data as a bytearray
+        """
         # TODO: use texture attachment info to determine read format?
         try:
             frmt = pixel_formats[dtype]
@@ -359,7 +366,10 @@ class Framebuffer:
         with self:
             # Configure attachment to read from
             # gl.glReadBuffer(gl.GL_COLOR_ATTACHMENT0 + attachment)
-            x, y, width, height = 0, 0, self._width, self._height
+            if viewport:
+                x, y, width, height = viewport
+            else:
+                x, y, width, height = 0, 0, self._width, self._height
             data = (gl.GLubyte * (components * width * height))(0)
             gl.glReadPixels(x, y, width, height, base_format, pixel_type, data)
 
