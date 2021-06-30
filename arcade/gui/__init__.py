@@ -99,6 +99,7 @@ from arcade.gui.layouts.manager import UIStack
 from arcade.gui.manager import UIManager
 from arcade.gui.manager import UIAbstractManager
 from arcade.gui.style import UIStyle
+from arcade.gui.utils import center_on_viewport
 
 __all__ = [
     "UIAbstractFlatButton",
@@ -124,6 +125,7 @@ __all__ = [
     "UIStyle",
     "UIToggle",
     "UITextureBox",
+    "center_on_viewport",
     ###
     # deprecated, use arcade.gui.events
     ###

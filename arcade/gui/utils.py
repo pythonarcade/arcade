@@ -13,6 +13,12 @@ if TYPE_CHECKING:
 
 
 def center_on_viewport(element: Union[Sprite, "UIElement", "UILayout"]):
+    """
+    Centers a sprite, GUI Element, or layout of elements on the current viewport.
+
+    :param element: Item to center
+
+    """
     left, right, bottom, top = get_viewport()
     element.center_x = left + (right - left) / 2
     element.center_y = bottom + (top - bottom) / 2

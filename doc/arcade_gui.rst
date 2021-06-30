@@ -87,8 +87,6 @@ Classes
     :show-inheritance:
 
 
-------------
-
 UILayouts
 ---------
 
@@ -147,8 +145,6 @@ Classes
     :members:
     :show-inheritance:
 
-------------
-
 UIEvents
 --------
 
@@ -166,3 +162,12 @@ Classes
 .. autoclass:: arcade.gui.UIEvent
     :members:
 
+Utility
+-------
+
+Functions
+~~~~~~~~~
+
+.. autoclass:: arcade.gui.center_on_viewport
+    :members:
+    :show-inheritance:
