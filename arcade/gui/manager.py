@@ -111,7 +111,7 @@ class UIAbstractManager(EventDispatcher, metaclass=ABCMeta):
 
     def dispatch_ui_event(self, event: UIEvent):
         """
-        Dispatches a :py:class:`arcade.gui.UIEvent` to all added :py:class:`arcade.gui.UIElement`s.
+        Dispatches a :py:class:`arcade.gui.UIEvent` to all added :py:class:`arcade.gui.UIElement`.
 
         :param UIEvent event: event to dispatch
         :return:

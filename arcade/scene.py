@@ -20,10 +20,10 @@ class Scene:
 
     Attributes:
         :sprite_lists: A list of `SpriteList` objects. The order of this list is the
-        order in which they will be drawn.
+                       order in which they will be drawn.
         :name_mapping: A dictionary of `SpriteList` objects. This contains the same lists
-        as the `sprite_lists` attribute, but is a mapping of them by name. This is
-        not necessarily in the same order as the `sprite_lists` attribute.
+                       as the `sprite_lists` attribute, but is a mapping of them by name. This is
+                       not necessarily in the same order as the `sprite_lists` attribute.
     """
 
     def __init__(self) -> None:

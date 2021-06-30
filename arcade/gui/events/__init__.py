@@ -86,7 +86,8 @@ class UIEvent:
 
     def __init__(self, type: str, **kwargs):
         """
-        :param type: Type of the event, like :py:attr:`arcade.gui.events.MOUSE_PRESS` :py:attr:`arcade.gui.events.KEY_PRESS`
+        :param type: Type of the event,
+                     like :py:attr:`arcade.gui.events.MOUSE_PRESS` :py:attr:`arcade.gui.events.KEY_PRESS`
         :param kwargs: Data of the event
         """
         self.type = type
