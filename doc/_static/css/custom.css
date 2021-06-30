@@ -54,12 +54,15 @@ div[class^='highlight'] pre {
     overflow: auto;
     color: #404040;
 }
+
 .headerlink {
     visibility: hidden;
 }
 .rst-content code.literal {
 	color: black;
     font-weight: bold;
+    background-color: transparent;
+    border: none;
 }
 /* By default table cells don't wrap in RTD style.
    This makes them wrap again. */
