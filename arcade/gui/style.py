@@ -13,7 +13,7 @@ from typing import Dict, Any, Sequence, Set, Union
 import yaml
 from pyglet.event import EventDispatcher
 
-from arcade.gui.utils import parse_value
+from arcade.gui.utils import parse_rgb_value
 from arcade.resources import resolve_resource_path
 
 
@@ -63,7 +63,7 @@ class UIStyle(EventDispatcher):
         # parse values, expected structure Dict[class, Dict[key, value]]
         for style_class, style_data in data.items():
             for key, value in style_data.items():
-                style_data[key] = parse_value(value)
+                style_data[key] = parse_rgb_value(value)
 
         self.data = data
 

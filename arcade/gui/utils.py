@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from typing import Union, Any, TYPE_CHECKING
+from typing import Union, Any, TYPE_CHECKING, Tuple, Optional
 from warnings import warn
 
 from PIL.ImageColor import getrgb
@@ -24,7 +24,7 @@ def center_on_viewport(element: Union[Sprite, "UIElement", "UILayout"]):
     element.center_y = bottom + (top - bottom) / 2
 
 
-def parse_value(value: Any):
+def parse_rgb_value(value: Any) -> Optional[Tuple]:
     """
     Parses the input string returning rgb int-tuple.
 
@@ -33,6 +33,8 @@ def parse_value(value: Any):
     * RGB ('r,g,b', 'r, g, b')
     * HEX ('00ff00')
     * Arcade colors ('BLUE', 'DARK_BLUE')
+
+    :param value: Color to parse
 
     """
     import arcade
@@ -45,10 +47,6 @@ def parse_value(value: Any):
 
     # if a string, then try parsing
     if isinstance(value, str):
-        try:
-            return int(value)
-        except ValueError:
-            pass
 
         # arcade color
         if isinstance(value, str) and hasattr(arcade.color, value.upper()):
@@ -67,9 +65,5 @@ def parse_value(value: Any):
         except ValueError:
             pass
 
-        # last chance some Path
-        if os.path.exists(value):
-            return Path(value)
-
     warn(f"Could not parse style value: {value}")
-    return value
+    return None

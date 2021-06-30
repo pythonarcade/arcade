@@ -171,3 +171,7 @@ Functions
 .. autoclass:: arcade.gui.center_on_viewport
     :members:
     :show-inheritance:
+
+.. autoclass:: arcade.gui.parse_rgb_value
+    :members:
+    :show-inheritance:
