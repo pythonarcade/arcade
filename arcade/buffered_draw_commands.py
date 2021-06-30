@@ -311,16 +311,15 @@ def create_rectangle_outline(center_x: float, center_y: float, width: float,
     draw that list. This allows nearly unlimited shapes to be drawn just as fast
     as one.
 
-    Args:
-        center_x:
-        center_y:
-        width:
-        height:
-        color:
-        border_width:
-        tilt_angle:
+    :param float center_x:
+    :param float center_y:
+    :param float width:
+    :param float height:
+    :param Color color:
+    :param Color border_width:
+    :param float tilt_angle:
 
-    Returns:
+    Returns: Shape
 
     """
     return create_rectangle(center_x, center_y, width, height,
@@ -333,14 +332,13 @@ def get_rectangle_points(center_x: float, center_y: float, width: float,
     Utility function that will return all four coordinate points of a
     rectangle given the x, y center, width, height, and rotation.
 
-    Args:
-        center_x:
-        center_y:
-        width:
-        height:
-        tilt_angle:
+    :param float center_x:
+    :param float center_y:
+    :param float width:
+    :param float height:
+    :param float tilt_angle:
 
-    Returns:
+    Returns: PointList
 
     """
     x1 = -width / 2 + center_x
