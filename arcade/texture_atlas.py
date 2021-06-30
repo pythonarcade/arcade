@@ -139,10 +139,12 @@ class TextureAtlas:
         :param Context ctx: The context for this atlas (will use window context if left empty)
         """
         self._ctx = ctx or arcade.get_window().ctx
+        self._max_size = self._ctx.limits.MAX_VIEWPORT_DIMS
         self._size: Tuple[int, int] = size
         self._border: int = border
         self._mutable = True
         self._allocator = Allocator(*self._size)
+        self._check_size(self._size)
 
         self._texture = self._ctx.texture(size, components=4)
         # Creating an fbo makes us able to clear the texture
@@ -198,6 +200,13 @@ class TextureAtlas:
         :rtype: int
         """
         return self._size
+
+    @property
+    def max_size(self) -> Tuple[int, int]:
+        """
+        The maximum size of the atlas in pixels (x, y)
+        """
+        return self._max_size
 
     @property
     def border(self) -> int:
@@ -342,8 +351,8 @@ class TextureAtlas:
         region = self._atlas_regions[texture.name]
         region.verify_image_size()
         viewport = (
-            region.x + self._border,
-            region.y + self._border,
+            region.x,
+            region.y,
             region.width,
             region.height,
         )
@@ -394,6 +403,7 @@ class TextureAtlas:
 
         :param Tuple[int,int]: The new size
         """
+        self._check_size(size)
         self._size = size
         self._texture = None
         self._fbo = None
@@ -511,3 +521,10 @@ class TextureAtlas:
         :param str path: The path to save the atlas on disk
         """
         self.to_image().save(path, format="png")
+
+    def _check_size(self, size):
+        if size[0] > self._max_size[0] or size[1] > self._max_size[1]:
+            raise ValueError(
+                "Attempting to create or resize an atlas to "
+                f"{size} past its maximum size of {self._max_size}"
+            )
