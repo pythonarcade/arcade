@@ -42,6 +42,10 @@ Classes
     :members:
     :show-inheritance:
 
+.. autoclass:: arcade.gui.UIColorBox
+    :members:
+    :show-inheritance:
+
 .. autoclass:: arcade.gui.UILabel
     :members:
     :show-inheritance:
@@ -54,6 +58,14 @@ Classes
     :members:
     :show-inheritance:
 
+.. autoclass:: arcade.gui.UITextureBox
+    :members:
+    :show-inheritance:
+
+.. autoclass:: arcade.gui.UIAbstractFlatButton
+    :members:
+    :show-inheritance:
+
 .. autoclass:: arcade.gui.UIFlatButton
     :members:
     :show-inheritance:
@@ -62,7 +74,15 @@ Classes
     :members:
     :show-inheritance:
 
+.. autoclass:: arcade.gui.UIAbstractToggle
+    :members:
+    :show-inheritance:
+
 .. autoclass:: arcade.gui.UIToggle
+    :members:
+    :show-inheritance:
+
+.. autoclass:: arcade.gui.UIException
     :members:
     :show-inheritance:
 
@@ -83,6 +103,10 @@ Overview
 Classes
 ~~~~~~~
 
+.. autoclass:: arcade.gui.UIAbstractManager
+    :members:
+    :show-inheritance:
+
 .. autoclass:: arcade.gui.UILayoutManager
     :members:
     :show-inheritance:
@@ -96,6 +120,10 @@ Classes
     :show-inheritance:
 
 .. autoclass:: arcade.gui.UIAnchorLayout
+    :members:
+    :show-inheritance:
+
+.. autoclass:: arcade.gui.UIStack
     :members:
     :show-inheritance:
 

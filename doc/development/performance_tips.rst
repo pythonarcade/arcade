@@ -13,4 +13,4 @@ the graphics card and just keep them there.
 
 **Collision detection performance:** If it is taking too long to detect collisions
 between sprites, make sure that the SpriteList with all the sprites has
-``use_spatial_hasing`` turned on.
+``use_spatial_hashing`` turned on.
