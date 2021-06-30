@@ -90,7 +90,7 @@ def test_expand_ignores_bigger_images():
     image = Image.new("RGBA", (20, 30))
 
     # WHEN
-    image = text_utils.expand(image, size=(10, 20), v_align="bottom", h_align="right")
+    image = text_utils.expand_image(image, size=(10, 20), v_align="bottom", h_align="right")
 
     # THEN
     assert image.size == (20, 30)
@@ -110,7 +110,7 @@ def test_expand_text_image_align_bottom_right():
         font_color=(0, 0, 0),
         bg_color=(0, 100, 100),
     )
-    image = text_utils.expand(image, size=(300, 50), v_align="bottom", h_align="right")
+    image = text_utils.expand_image(image, size=(300, 50), v_align="bottom", h_align="right")
 
     image.save(str(actual_screen_path))
 
@@ -139,7 +139,7 @@ def test_expand_text_image_align_top_center():
         font_color=(0, 0, 0),
         bg_color=(0, 100, 100),
     )
-    image = text_utils.expand(image, size=(300, 50), v_align="top", h_align="center")
+    image = text_utils.expand_image(image, size=(300, 50), v_align="top", h_align="center")
 
     image.save(str(actual_screen_path))
 
@@ -168,7 +168,7 @@ def test_expand_text_image_align_center_left():
         font_color=(0, 0, 0),
         bg_color=(0, 100, 100),
     )
-    image = text_utils.expand(image, size=(300, 50), v_align="center", h_align="left")
+    image = text_utils.expand_image(image, size=(300, 50), v_align="center", h_align="left")
 
     image.save(str(actual_screen_path))
 

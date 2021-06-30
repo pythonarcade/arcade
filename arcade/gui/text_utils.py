@@ -149,7 +149,7 @@ def create_raw_text_image(
     return bg_image
 
 
-def add_bg_color(
+def add_bg_color_to_image(
     image: Image,
     bg_color: Color,
 ) -> Image:
@@ -160,7 +160,7 @@ def add_bg_color(
     return Image.alpha_composite(bg_image, image)
 
 
-def add_padding(image: Image, pad: Padding, color: Color):
+def add_padding_to_image(image: Image, pad: Padding, color: Color):
     """
     Surrounds image with the given padding. The padding is filled with the color.
     """
@@ -172,7 +172,7 @@ def add_padding(image: Image, pad: Padding, color: Color):
     return result
 
 
-def add_border(
+def add_border_to_image(
     image: Image,
     border_width: int,
     border_color: Color,
@@ -186,7 +186,7 @@ def add_border(
         return image
 
 
-def expand(
+def expand_image(
     image: Image,
     size: Tuple[float, float],
     color: Color = (0, 0, 0, 0),
@@ -224,7 +224,7 @@ def expand(
         else:
             right = h_space
 
-    return add_padding(image, Padding(top, right, bottom, left), color)
+    return add_padding_to_image(image, Padding(top, right, bottom, left), color)
 
 
 def create_text(
@@ -284,16 +284,16 @@ def create_text(
     )
 
     if padding.vertical > 0 or padding.horizontal > 0:
-        image = add_padding(image, padding, bg_color)
+        image = add_padding_to_image(image, padding, bg_color)
 
-    image = expand(
+    image = expand_image(
         image=image,
         size=(min_width - 2 * border_width, min_height - 2 * border_width),
         color=bg_color,
         v_align=v_align,
         h_align=h_align,
     )
-    image = add_border(
+    image = add_border_to_image(
         image=image,
         border_width=border_width,
         border_color=border_color,

@@ -179,6 +179,26 @@ Functions
     :members:
     :show-inheritance:
 
+.. autoclass:: arcade.gui.create_raw_text_image
+    :members:
+    :show-inheritance:
+
 .. autoclass:: arcade.gui.parse_rgb_value
+    :members:
+    :show-inheritance:
+
+.. autoclass:: arcade.gui.add_bg_color_to_image
+    :members:
+    :show-inheritance:
+
+.. autoclass:: arcade.gui.add_padding_to_image
+    :members:
+    :show-inheritance:
+
+.. autoclass:: arcade.gui.add_border_to_image
+    :members:
+    :show-inheritance:
+
+.. autoclass:: arcade.gui.expand_image
     :members:
     :show-inheritance:

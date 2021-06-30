@@ -57,9 +57,10 @@ titles = {
     'gui/exceptions.py': 'GUI',
     'gui/manager.py': 'GUI',
     'gui/style.py': 'GUI',
-    'gui/text_utils.py': 'GUI',
+    'gui/text_utils.py': 'GUI Utility Functions',
     'gui/ui_style.py': 'GUI',
-    'gui/utils.py': 'GUI',
+    'gui/utils.py': 'GUI Utility Functions',
+    'events/__init__.py': 'GUI Utility Functions',
 
     'gl/buffer.py': 'OpenGL Buffer',
     'gl/context.py': 'OpenGL Context',

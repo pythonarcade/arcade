@@ -102,6 +102,11 @@ from arcade.gui.style import UIStyle
 from arcade.gui.utils import center_on_viewport
 from arcade.gui.utils import parse_rgb_value
 from arcade.gui.text_utils import Padding
+from arcade.gui.text_utils import create_raw_text_image
+from arcade.gui.text_utils import add_bg_color_to_image
+from arcade.gui.text_utils import add_padding_to_image
+from arcade.gui.text_utils import add_border_to_image
+from arcade.gui.text_utils import expand_image
 
 __all__ = [
     "Padding",
@@ -130,6 +135,11 @@ __all__ = [
     "UITextureBox",
     "center_on_viewport",
     "parse_rgb_value",
+    "create_raw_text_image",
+    "add_bg_color_to_image",
+    "add_padding_to_image",
+    "add_border_to_image",
+    "expand_image",
     ###
     # deprecated, use arcade.gui.events
     ###

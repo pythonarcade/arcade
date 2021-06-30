@@ -223,7 +223,7 @@ class UILayout(ABC):
 
         # apply border
         if self._border_color:
-            bg_image = PIL.ImageOps.expand(
+            bg_image = PIL.ImageOps.expand_image(
                 bg_image, border=self._border_width, fill=self._border_color
             )
 
