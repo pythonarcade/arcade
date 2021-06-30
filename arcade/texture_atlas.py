@@ -342,8 +342,8 @@ class TextureAtlas:
         region = self._atlas_regions[texture.name]
         region.verify_image_size()
         viewport = (
-            region.x + self._border,
-            region.y + self._border,
+            region.x,
+            region.y,
             region.width,
             region.height,
         )
