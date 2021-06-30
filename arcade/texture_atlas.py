@@ -139,6 +139,7 @@ class TextureAtlas:
         :param Context ctx: The context for this atlas (will use window context if left empty)
         """
         self._ctx = ctx or arcade.get_window().ctx
+        self._max_size = self._ctx.limits.MAX_VIEWPORT_DIMS
         self._size: Tuple[int, int] = size
         self._border: int = border
         self._mutable = True
@@ -198,6 +199,13 @@ class TextureAtlas:
         :rtype: int
         """
         return self._size
+
+    @property
+    def max_size(self) -> Tuple[int, int]:
+        """
+        The maximum size of the atlas in pixels (x, y)
+        """
+        return self._max_size
 
     @property
     def border(self) -> int:

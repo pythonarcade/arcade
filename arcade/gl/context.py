@@ -777,12 +777,19 @@ class Limits:
         self.MAX_TEXTURE_IMAGE_UNITS = self.get(gl.GL_MAX_TEXTURE_IMAGE_UNITS)
         # TODO: Missing in pyglet
         # self.MAX_TEXTURE_MAX_ANISOTROPY = self.get_float(gl.GL_MAX_TEXTURE_MAX_ANISOTROPY)
+        self.MAX_VIEWPORT_DIMS =  self.get_int_tuple(gl.GL_MAX_VIEWPORT_DIMS, 2)
 
         err = self._ctx.error
         if err:
             from warnings import warn
 
             warn("Error happened while querying of limits. Moving on ..")
+
+    def get_int_tuple(self, enum, length):
+        """Get an enum as an int tuple"""
+        values = (c_int * length)()
+        gl.glGetIntegerv(enum, values)
+        return tuple(values)
 
     def get(self, enum: gl.GLenum) -> int:
         """Get an integer limit"""

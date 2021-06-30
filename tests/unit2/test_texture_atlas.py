@@ -207,3 +207,10 @@ def test_resize(ctx):
 
     with pytest.raises(AllocatorException):
         atlas.resize((50, 99))
+
+
+def test_max_size(ctx):
+    """The maximum atlas size should at least be 8192 (2^13)"""
+    atlas = TextureAtlas((100, 100))
+    assert atlas.max_size[0] >= 8192
+    assert atlas.max_size[1] >= 8192
