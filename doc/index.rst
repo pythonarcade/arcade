@@ -5,6 +5,11 @@
 The Python Arcade Library
 =========================
 
+.. |Go| image:: images/woman_sprinter.svg
+   :width: 48
+   :alt: Get started here
+   :target: get_started.html
+
 .. raw:: html
 
     <table style="width:100%;">

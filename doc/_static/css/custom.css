@@ -131,3 +131,10 @@ a:visited {
 .inline-image {
     display: inline;
 }
+
+#quickapi.dataTable {
+    width: 99%;
+}
+#quickapigui.dataTable {
+    width: 99%;
+}
