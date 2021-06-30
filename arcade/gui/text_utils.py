@@ -1,13 +1,13 @@
 """
 This collection contains functions to generate text, apply space around, padding and draw borders for PIL.Images.
 """
-from io import StringIO
 from itertools import chain
 from typing import Tuple, Union, Iterable, NamedTuple, Sequence
 
 from PIL import Image, ImageDraw, ImageOps, ImageFont
 
 from arcade import Color, DEFAULT_FONT_NAMES
+from arcade.utils import generate_uuid
 
 TEXT_SCALE_ALIASED = 2
 LEGACY_FONT_SIZE_MODE = True
@@ -298,11 +298,3 @@ def create_text(
 
     return image, text_image_uuid
 
-
-def generate_uuid(**kwargs) -> str:
-    with StringIO() as guid:
-        for key, value in kwargs.items():
-            guid.write(str(key))
-            guid.write(str(value))
-            guid.write("-")
-        return guid.getvalue()

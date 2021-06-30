@@ -1,5 +1,6 @@
 import math
 import random
+from io import StringIO
 from arcade.arcade_types import Point, Vector
 
 
@@ -137,3 +138,12 @@ class _Vec2:
 
     def as_tuple(self) -> Point:
         return self.x, self.y
+
+
+def generate_uuid(**kwargs) -> str:
+    with StringIO() as guid:
+        for key, value in kwargs.items():
+            guid.write(str(key))
+            guid.write(str(value))
+            guid.write("-")
+        return guid.getvalue()
