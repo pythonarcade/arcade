@@ -193,7 +193,7 @@ The Python Arcade Library
             <h2>Performance</h2>
           </div>
           <ul>
-          <li><a href="performance_tips.html">Performance Tips</a></li>
+          <li><a href="development/performance_tips.html">Performance Tips</a></li>
           <li><a href="https://craven-performance-testing.s3-us-west-2.amazonaws.com/index.html">Arcade vs. Pygame</a></li>
           </ul>
 
@@ -260,6 +260,7 @@ game without learning a complex framework.
    :caption: Advanced
 
    advanced/vsync
+   development/performance_tips
 
 .. toctree::
    :maxdepth: 1
