@@ -262,6 +262,8 @@ from .text import create_text_image
 from .text import create_text_sprite
 
 from .tilemap import load_tilemap
+from .tilemap import read_tmx
+from .tilemap import TileMap
 
 from .pymunk_physics_engine import PymunkPhysicsEngine
 from .pymunk_physics_engine import PymunkPhysicsObject
@@ -332,6 +334,7 @@ __all__ = ['AStarBarrierList',
            'Text',
            'Texture',
            'TextureAtlas',
+           'TileMap',
            'VERSION',
            'Vector',
            'View',
@@ -450,6 +453,7 @@ __all__ = ['AStarBarrierList',
            'rand_vec_magnitude',
            'rand_vec_spread_deg',
            'read_tmx',
+           'load_tilemap',
            'rotate_point',
            'run',
            'schedule',

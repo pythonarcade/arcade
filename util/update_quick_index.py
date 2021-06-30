@@ -144,7 +144,7 @@ def process_directory(directory, text_file):
                    "elements": "arcade.gui",
                    "events": "arcade.gui",
                    "layouts": "arcade.gui",
-                   "tilemap": "arcade.tilemap",
+                   "tilemap": "arcade",
                    }
         package = mapping[directory.name]
 
@@ -182,11 +182,31 @@ def include_template(text_file):
     text_file.write(quick_index_content)
 
 
-table_header = """
+table_header_arcade = """
 .. list-table::
    :widths: 50 50
    :header-rows: 1
    :name: quickapi
+   :class: display
+
+   * - Name
+     - Group"""
+
+table_header_gui = """
+.. list-table::
+   :widths: 50 50
+   :header-rows: 1
+   :name: quickapigui
+   :class: display
+
+   * - Name
+     - Group"""
+
+table_header_tiled = """
+.. list-table::
+   :widths: 50 50
+   :header-rows: 1
+   :name: quickapitiled
    :class: display
 
    * - Name
@@ -197,37 +217,30 @@ def main():
     text_file = open("../doc/quick_index.rst", "w")
     include_template(text_file)
 
-    text_file.write(f"The ``arcade`` module\n")
-    text_file.write(f"---------------------\n\n")
+    text_file.write(f"The arcade module\n")
+    text_file.write(f"-----------------\n\n")
 
-    text_file.write(table_header)
+    text_file.write(table_header_arcade)
 
     process_directory(Path("../arcade"), text_file)
     process_directory(Path("../arcade/sprite_list"), text_file)
     process_directory(Path("../arcade/text"), text_file)
+    process_directory(Path("../arcade/tilemap"), text_file)
 
     # text_file.write(f"The ``arcade.gl`` module\n")
     # text_file.write(f"-------------------------\n\n")
     # process_directory(Path("../arcade/gl"), text_file)
 
     text_file.write(f"\n\n")
-    text_file.write(f"The ``arcade.gui`` module\n")
-    text_file.write(f"-------------------------\n\n")
+    text_file.write(f"The arcade.gui module\n")
+    text_file.write(f"---------------------\n\n")
 
-    text_file.write(table_header)
+    text_file.write(table_header_gui)
 
     process_directory(Path("../arcade/gui"), text_file)
     process_directory(Path("../arcade/gui/elements"), text_file)
     process_directory(Path("../arcade/gui/events"), text_file)
     process_directory(Path("../arcade/gui/layouts"), text_file)
-
-    text_file.write(f"\n\n")
-    text_file.write(f"The ``arcade.tilemap`` module\n")
-    text_file.write(f"-----------------------------\n\n")
-
-    text_file.write(table_header)
-
-    process_directory(Path("../arcade/tilemap"), text_file)
 
     text_file.close()
     print("Done creating quick_index.rst")

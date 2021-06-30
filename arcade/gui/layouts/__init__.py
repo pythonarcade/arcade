@@ -158,7 +158,8 @@ class UILayout(ABC):
         """
 
         :param id: id of this layout
-        :param size_hint: The size_hint is a tuple of two floats used by layouts to manage the sizes of their children. It indicates the size relative to the layout’s size (0.0 - 1.0)
+        :param size_hint: The size_hint is a tuple of two floats used by layouts to manage the sizes of their children.
+                          It indicates the size relative to the layout’s size (0.0 - 1.0)
         :param bg: background, may be a color for a solid background color or the path to a image file
         :param border_color: color of the border
         :param border_width: width of the border

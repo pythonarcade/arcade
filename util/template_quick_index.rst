@@ -8,6 +8,10 @@
           "paging":   false,
           "dom": '<"bottom"flp><"clear">'
         } );
+        $('#quickapigui').DataTable( {
+          "paging":   false,
+          "dom": '<"bottom"flp><"clear">'
+        } );
     } );
     </script>
 
