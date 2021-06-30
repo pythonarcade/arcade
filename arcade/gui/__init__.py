@@ -70,11 +70,12 @@ Run examples with ``python -m arcade.gui.examples.<example name>``
 """
 from arcade.gui import utils
 from arcade.gui.elements import UIClickable, UIElement
-from arcade.gui.elements.flat_button import UIFlatButton, UIGhostFlatButton
+from arcade.gui.elements.flat_button import UIAbstractFlatButton, UIFlatButton, UIGhostFlatButton
 from arcade.gui.elements.image_button import UIImageButton
 from arcade.gui.elements.inputbox import UIInputBox
+from arcade.gui.elements.box import UITextureBox, UIColorBox
 from arcade.gui.elements.label import UILabel
-from arcade.gui.elements.toggle import UIToggle, UIImageToggle
+from arcade.gui.elements.toggle import UIAbstractToggle, UIToggle, UIImageToggle
 from arcade.gui.events import (  # deprecated
     MOUSE_DRAG,
     MOUSE_PRESS,
@@ -94,30 +95,35 @@ from arcade.gui.layouts import UILayout
 from arcade.gui.layouts.anchor import UIAnchorLayout
 from arcade.gui.layouts.box import UIBoxLayout
 from arcade.gui.layouts.manager import UILayoutManager
+from arcade.gui.layouts.manager import UIStack
 from arcade.gui.manager import UIManager
 from arcade.gui.manager import UIAbstractManager
 from arcade.gui.style import UIStyle
 
 __all__ = [
+    "UIAbstractFlatButton",
     "UIAbstractManager",
+    "UIAbstractToggle",
     "UIAnchorLayout",
     "UIBoxLayout",
-    "UIManager",
-    "UILabel",
-    "UIInputBox",
     "UIClickable",
+    "UIColorBox",
+    "UIElement",
+    "UIEvent",
+    "UIException",
     "UIFlatButton",
-    "UIGhostFlatButton",
     "UIImageButton",
-    "UIToggle",
     "UIImageToggle",
+    "UIInputBox",
     "UILayoutManager",
     "UILayout",
-    "UIEvent",
-    "UIElement",
-    "UIException",
     "UILabel",
+    "UIManager",
+    "UIGhostFlatButton",
+    "UIStack",
     "UIStyle",
+    "UIToggle",
+    "UITextureBox",
     ###
     # deprecated, use arcade.gui.events
     ###
