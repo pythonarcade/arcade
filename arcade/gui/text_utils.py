@@ -14,6 +14,9 @@ LEGACY_FONT_SIZE_MODE = True
 
 
 class Padding(NamedTuple):
+    """
+    Data class to hold padding for a GUI item. Has fields for top, bottom, left, and right.
+    """
     top: int = 0
     right: int = 0
     bottom: int = 0

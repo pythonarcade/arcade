@@ -165,6 +165,13 @@ Classes
 Utility
 -------
 
+Classes
+~~~~~~~
+
+.. autoclass:: arcade.gui.Padding
+    :members:
+    :show-inheritance:
+
 Functions
 ~~~~~~~~~
 

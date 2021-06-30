@@ -101,8 +101,10 @@ from arcade.gui.manager import UIAbstractManager
 from arcade.gui.style import UIStyle
 from arcade.gui.utils import center_on_viewport
 from arcade.gui.utils import parse_rgb_value
+from arcade.gui.text_utils import Padding
 
 __all__ = [
+    "Padding",
     "UIAbstractFlatButton",
     "UIAbstractManager",
     "UIAbstractToggle",
