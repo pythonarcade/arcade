@@ -14,6 +14,7 @@ https://github.com/einarf/pyglet/blob/master/pyglet/image/atlas.py
 from arcade.gl.framebuffer import Framebuffer
 from array import array
 from collections import deque
+from contextlib import contextmanager
 import gc
 import math
 import logging
@@ -460,6 +461,24 @@ class TextureAtlas:
             self._uv_data_changed = False
 
         self._uv_texture.use(unit)
+
+    @contextmanager
+    def render_into(self, texture: "Texture"):
+        """
+        Render directly into a sub-section of the atlas.
+        The sub-section is defined by the already allocated space
+        of the texture supplied in this method.
+
+        This method should should be used with the ``with`` statement::
+
+            with atlas.render_into(texture):
+                # Draw commands here
+        """
+        region = self._atlas_regions[texture.name]
+        with self._fbo.activate() as fbo:
+            fbo.viewport = region.x, region.y, region.width, region.height
+            yield fbo
+            fbo.viewport = 0, 0, *self._fbo.size
 
     # --- Utility functions ---
 

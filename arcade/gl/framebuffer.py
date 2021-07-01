@@ -1,5 +1,6 @@
 from ctypes import c_int
-from typing import Tuple, List, Union, TYPE_CHECKING
+from contextlib import contextmanager
+from typing import Tuple, List, TYPE_CHECKING
 import weakref
 
 
@@ -279,6 +280,20 @@ class Framebuffer:
     def __exit__(self, exc_type, exc_val, exc_tb):
         self._prev_fbo.use()
 
+    @contextmanager
+    def activate(self):
+        """Context manager for binding the framebuffer.
+
+        Unlike the default context manager in this class
+        this support nested framebuffer binding.
+        """
+        prev_fbo = self._ctx.active_framebuffer
+        try:
+            self.use()
+            yield self
+        finally:
+            prev_fbo.use()
+
     def use(self, *, force: bool = False):
         """Bind the framebuffer making it the target of all redering commands
         
@@ -323,7 +338,7 @@ class Framebuffer:
         :param float depth: Value to clear the depth buffer (unused)
         :param bool normalized: If the color values are normalized or not
         """
-        with self:
+        with self.activate():
             if normalized:
                 # If the colors are already normalized we can pass them right in
                 if len(color) == 3:
