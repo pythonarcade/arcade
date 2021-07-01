@@ -16,14 +16,11 @@ class AtlasRenderDemo(arcade.Window):
         dummy_image = PIL.Image.new("RGBA", (256, 256), (255, 0, 0, 255))
         self.texture_1 = arcade.Texture("render_area_1", image=dummy_image, hit_box_algorithm=None)
         self.texture_2 = arcade.Texture("render_area_2", image=dummy_image, hit_box_algorithm=None)
-        self.sprite_1 = arcade.Sprite(center_x=200, center_y=300)
-        self.sprite_2 = arcade.Sprite(center_x=600, center_y=300)
-        self.sprite_1.texture = self.texture_1
-        self.sprite_2.texture = self.texture_2
+        self.sprite_1 = arcade.Sprite(center_x=200, center_y=300, texture=self.texture_1)
+        self.sprite_2 = arcade.Sprite(center_x=600, center_y=300, texture=self.texture_2)
 
         self.spritelist = arcade.SpriteList(atlas=self.atlas)
-        self.spritelist.append(self.sprite_1)
-        self.spritelist.append(self.sprite_2)
+        self.spritelist.extend([self.sprite_1, self.sprite_2])
 
         self.elapsed_time = 0
         self.frame = 0
