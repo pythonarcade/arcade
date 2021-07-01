@@ -227,11 +227,7 @@ class Sprite:
         if image_height == 0 and image_width != 0:
             raise ValueError("Height can't be zero.")
 
-        if (
-            hit_box_algorithm != "Simple"
-            and hit_box_algorithm != "Detailed"
-            and hit_box_algorithm != "None"
-        ):
+        if hit_box_algorithm not in ["Simple", "Detailed", "None"]:
             raise ValueError(
                 "hit_box_algorithm must be 'Simple', 'Detailed', or 'None'."
             )
