@@ -135,6 +135,7 @@ class Sprite:
         flipped_diagonally: bool = False,
         hit_box_algorithm: str = "Simple",
         hit_box_detail: float = 4.5,
+        texture: Texture = None,
     ):
         """
         Create a new sprite.
@@ -154,6 +155,8 @@ class Sprite:
         Defaults to 'Simple'. Use 'Simple' for the :data:`PhysicsEngineSimple`, \
         :data:`PhysicsEnginePlatformer` \
         and 'Detailed' for the :data:`PymunkPhysicsEngine`.
+        :param Texture texture: Specify the texture directly.
+        This will ignore all hit box and image size arguments. 
 
             .. figure:: images/hit_box_algorithm_none.png
                :width: 40%
@@ -231,6 +234,11 @@ class Sprite:
             raise ValueError(
                 "hit_box_algorithm must be 'Simple', 'Detailed', or 'None'."
             )
+
+        if texture:
+            self._texture = texture
+            self._textures = [texture]
+            self._width, self._height = self._texture.size
 
         if filename is not None:
             self._texture = load_texture(
