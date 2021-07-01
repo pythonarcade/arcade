@@ -10,7 +10,7 @@ class AtlasRenderDemo(arcade.Window):
 
     def __init__(self):
         super().__init__(800, 600, "Atlas Render Demo")
-        self.ctx.atlas_size = (600, 600)
+        self.atlas = arcade.TextureAtlas((600, 600))
 
         # Empty dummy image to reseve space in the atlas
         dummy_image = PIL.Image.new("RGBA", (256, 256), (255, 0, 0, 255))
@@ -21,7 +21,7 @@ class AtlasRenderDemo(arcade.Window):
         self.sprite_1.texture = self.texture_1
         self.sprite_2.texture = self.texture_2
 
-        self.spritelist = arcade.SpriteList()
+        self.spritelist = arcade.SpriteList(atlas=self.atlas)
         self.spritelist.append(self.sprite_1)
         self.spritelist.append(self.sprite_2)
 
