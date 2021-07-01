@@ -9,7 +9,7 @@ import PIL.Image
 import PIL.ImageOps
 import PIL.ImageDraw
 
-from typing import Optional
+from typing import Optional, Tuple
 from typing import List
 from typing import Union
 
@@ -177,6 +177,13 @@ class Texture:
             return self.image.height
         else:
             return 0
+
+    @property
+    def size(self) -> Tuple[int, int]:
+        """
+        Width and height as a tuple
+        """
+        return self.width, self.height
 
     @property
     def hit_box_points(self):
