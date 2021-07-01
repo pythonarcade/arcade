@@ -32,22 +32,18 @@ class AtlasRenderDemo(arcade.Window):
         self.clear()
         self.render_into_sprite_texture()
         self.spritelist.draw()
+        # self.spritelist.atlas.show()
 
     def render_into_sprite_texture(self):
         # Render shape into texture atlas in the first sprite texture's space
-        with self.spritelist.atlas.render_into(self.texture_1) as fbo:
-            proj_old = self.ctx.projection_2d
-            target_size = self.texture_1.image.size
-            self.ctx.projection_2d = 0, target_size[0], 0, target_size[1]
+        proj = 0, self.texture_1.image.size[0], 0, self.texture_1.image.size[1]
+        with self.spritelist.atlas.render_into(self.texture_1, projection=proj) as fbo:
             fbo.clear((255, 0, 0, 255))
             arcade.draw_rectangle_filled(128, 128, 160, 160, arcade.color.WHITE, self.elapsed_time * 100)
-            self.ctx.projection_2d = proj_old
 
         # Render a shape into the second texture in the atlas
-        with self.spritelist.atlas.render_into(self.texture_2) as fbo:
-            proj_old = self.ctx.projection_2d
-            target_size = self.texture_2.image.size
-            self.ctx.projection_2d = 0, target_size[0], 0, target_size[1]
+        proj = 0, self.texture_2.image.size[0], 0, self.texture_2.image.size[1]
+        with self.spritelist.atlas.render_into(self.texture_2, projection=proj) as fbo:
             fbo.clear((0, 255, 0, 255))
             arcade.draw_circle_filled(
                 128,
@@ -55,7 +51,6 @@ class AtlasRenderDemo(arcade.Window):
                 80 + math.sin(self.elapsed_time) * 30,
                 arcade.color.BLUE,
             )
-            self.ctx.projection_2d = proj_old
 
         self.sprite_1.angle = self.elapsed_time * 66
         self.sprite_2.angle = self.elapsed_time * 56

@@ -463,7 +463,10 @@ class TextureAtlas:
         self._uv_texture.use(unit)
 
     @contextmanager
-    def render_into(self, texture: "Texture"):
+    def render_into(
+        self, texture: "Texture",
+        projection: Tuple[float, float, float, float] = None,
+    ):
         """
         Render directly into a sub-section of the atlas.
         The sub-section is defined by the already allocated space
@@ -473,12 +476,28 @@ class TextureAtlas:
 
             with atlas.render_into(texture):
                 # Draw commands here
+        
+            # Specify projection
+            with atlas.render_into(texture, projection=(0, 100, 0, 100))
+                # Draw geometry
+
+        :param Texture texture: The texture area to render into
+        :param Tuple[float,float,float,float] projection: The ortho projection to render with.
+            This parameter can be left blank if no projection changes are needed.
+            The tuple values are: (left, right, button, top)
         """
+        proj_prev = self._ctx.projection_2d
+        if projection:
+            self._ctx.projection_2d = projection
+
         region = self._atlas_regions[texture.name]
         with self._fbo.activate() as fbo:
             fbo.viewport = region.x, region.y, region.width, region.height
             yield fbo
             fbo.viewport = 0, 0, *self._fbo.size
+
+        if projection:
+            self._ctx.projection_2d = proj_prev
 
     # --- Utility functions ---
 
