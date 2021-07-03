@@ -136,6 +136,7 @@ class Sprite:
         hit_box_algorithm: str = "Simple",
         hit_box_detail: float = 4.5,
         texture: Texture = None,
+        angle: float = 0,
     ):
         """
         Create a new sprite.
@@ -156,6 +157,7 @@ class Sprite:
         :data:`PhysicsEnginePlatformer` \
         and 'Detailed' for the :data:`PymunkPhysicsEngine`.
         :param Texture texture: Specify the texture directly.
+        :param float angle: The initial rotation of the sprite in degrees
         This will ignore all hit box and image size arguments. 
 
             .. figure:: images/hit_box_algorithm_none.png
@@ -207,7 +209,7 @@ class Sprite:
         self._sprite_list: Optional["SpriteList"] = None  # # Used for Sprite.draw()
 
         self._position: Point = (center_x, center_y)
-        self._angle = 0.0
+        self._angle = angle
 
         self.velocity = [0.0, 0.0]
         self.change_angle: float = 0.0
