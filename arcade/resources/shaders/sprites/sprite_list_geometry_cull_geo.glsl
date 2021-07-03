@@ -27,6 +27,7 @@ void main() {
     // Get center of the sprite
     vec2 center = gl_in[0].gl_Position.xy;
     vec2 hsize = v_size[0] / 2.0;
+    vec2 hsize_max = vec2(max(v_size[0].x, v_size[0].y)) / 1.5;
     float angle = radians(v_angle[0]);
     mat2 rot = mat2(
         cos(angle), sin(angle),
@@ -37,8 +38,8 @@ void main() {
     // apply projection to the center point. This is important so we get zooming/scrollig right
     vec2 ct = (proj.matrix * vec4(center, 0.0, 1.0)).xy;
     // We can get away with cheaper calculation of size
-    // The length of the diagonal is the cheapest estimation in case roations are applied
-    float st = length(hsize * vec2(proj.matrix[0][0], proj.matrix[1][1]));
+    // The length of the diagonal is the cheapest estimation in case rotation is applied
+    float st = length(hsize_max * vec2(proj.matrix[0][0], proj.matrix[1][1]));
     // Discard sprites outside the viewport
     if ((ct.x + st) < -VP_CLIP || (ct.x - st) > VP_CLIP) return;
     if ((ct.y + st) < -VP_CLIP || (ct.y - st) > VP_CLIP) return;
