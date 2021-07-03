@@ -6,15 +6,15 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Dict, Optional, Tuple, Union
 
-from PIL import Image
 import pyglet
+from PIL import Image
 from pyglet.math import Mat4
 
+import arcade
 from arcade.gl import BufferDescription, Context
 from arcade.gl.program import Program
 from arcade.gl.texture import Texture
 from arcade.texture_atlas import TextureAtlas
-import arcade
 
 
 class ArcadeContext(Context):
@@ -47,7 +47,6 @@ class ArcadeContext(Context):
         # Set up a default orthogonal projection for sprites and shapes
         self._projection_2d_buffer = self.buffer(reserve=64)
         self._projection_2d_buffer.bind_to_uniform_block(0)
-        self._projection_2d_matrix = None
         self.projection_2d = (
             0,
             self.screen.width,
@@ -234,6 +233,14 @@ class ArcadeContext(Context):
         """
         return self._projection_2d_matrix
 
+    @projection_2d_matrix.setter
+    def projection_2d_matrix(self, value: Mat4):
+        if not isinstance(value, Mat4):
+            raise ValueError(f"projection_matrix must be a Mat4 object")
+
+        self._projection_2d_matrix = value
+        self._projection_2d_buffer.write(self._projection_2d_matrix)
+
     @contextmanager
     def pyglet_rendering(self):
         """Context manager for pyglet rendering.
@@ -246,10 +253,7 @@ class ArcadeContext(Context):
                 # Draw with pyglet here
         """
         # Ensure projection and view matrices are set in pyglet
-        self.window.projection = Mat4.orthogonal_projection(
-            *self.projection_2d,
-            1, -1
-        )
+        self.window.projection = self._projection_2d_matrix
         # Global modelview matrix should be set to identity
         self.window.view = Mat4()
         try:
