@@ -1256,7 +1256,7 @@ class SpriteSolidColor(Sprite):
         :param Color color: Color of the sprite
         """
         super().__init__()
-
+        self._color = color
         image = PIL.Image.new("RGBA", (width, height), color)
         self.texture = Texture(f"Solid-{color[0]}-{color[1]}-{color[2]}", image)
         self._points = self.texture.hit_box_points
@@ -1276,7 +1276,7 @@ class SpriteCircle(Sprite):
         :param bool soft: If True, will add a alpha gradient
         """
         super().__init__()
-
+        self._color = color
         if soft:
             self.texture = make_soft_circle_texture(radius * 2, color)
         else:
