@@ -129,7 +129,7 @@ def draw_text(
             for font in font_list:
                 try:
                     path = resolve_resource_path(font)
-                    print(f"Font path: {path=}")
+                    # print(f"Font path: {path=}")
                     adjusted_font = path
                     break
                 except FileNotFoundError:
