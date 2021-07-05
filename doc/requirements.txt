@@ -4,3 +4,4 @@ sphinx-rtd-theme==0.5.2
 sphinx-sitemap==2.2.0
 pyglet==1.5.18
 dirsync==2.2.5
+pytiled-parser==1.5.0
