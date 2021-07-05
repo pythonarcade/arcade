@@ -18,6 +18,9 @@ runpy.run_path('../util/create_resources_listing.py', run_name='__main__')
 # Run the generate quick API index script
 runpy.run_path('../util/update_quick_index.py', run_name='__main__')
 
+# Enable this is you want __init__ to show up in docs.
+# Ideally, these docs should be in the class docs, not __init__ so try to
+# leave this disabled.
 # autodoc_default_options = {
 #     'special-members': '__init__',
 # }
@@ -138,6 +141,8 @@ html_extra_path = ['html_extra']
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'Arcadedoc'
 html_baseurl = 'https://arcade.academy/'
+
+# Fix line numbers on code listings until the RTD theme updates to sphinx 4+
 html_codeblock_linenos_style = 'table'
 
 # -- Options for manual page output ---------------------------------------
@@ -151,7 +156,6 @@ man_pages = [
 
 # If true, show URL addresses after external links.
 # man_show_urls = False
-
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {'python': ('https://docs.python.org/3', None),
@@ -197,6 +201,10 @@ def source_read(app, docname, source):
 
 def post_process(app, exception):
     try:
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        print(f"Performing dirsync")
+        print(f"Current dir: {dir_path}")
+        print(os.listdir("."))
         from dirsync import sync
         source_path = '../arcade/resources'
         target_path = 'build/html/resources'
