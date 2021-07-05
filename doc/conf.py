@@ -160,43 +160,6 @@ intersphinx_mapping = {'python': ('https://docs.python.org/3', None),
                        'PIL': ('https://pillow.readthedocs.io/en/stable', None)}
 
 
-def replace_in_file(filename, replace_list):
-    try:
-        import os
-        file_path = os.path.dirname(os.path.abspath(__file__))
-        os.chdir(file_path)
-
-        temp_filename = filename + ".tmp"
-        my_api_file = open(filename, encoding="utf8")
-        my_updated_api_file = open(temp_filename, 'w', encoding="utf8")
-
-        line_count = 0
-        fix_count = 0
-        for line in my_api_file:
-            line_count += 1
-            for replacement in replace_list:
-                original_text = replacement[0]
-                new_text = replacement[1]
-                new_line = line.replace(original_text, new_text)
-                if len(new_line) != len(line):
-                    line = new_line
-                    fix_count += 1
-            my_updated_api_file.write(line)
-
-        my_api_file.close()
-        my_updated_api_file.close()
-
-        import os
-        os.remove(filename)
-        os.rename(temp_filename, filename)
-        print(f"Done fixing {fix_count} lines out of {line_count} lines in {filename} with {replace_list}")
-
-    except Exception as e:
-        import logging
-        logging.exception("Something bad happened.")
-        print("Error")
-
-
 def source_read(app, docname, source):
 
     # print(f"  XXX Reading {docname}")
@@ -234,38 +197,12 @@ def source_read(app, docname, source):
 
 def post_process(app, exception):
     try:
-        # The API docs include the submodules the commands are in. This is confusing
-        # so let's remove them.
-        replace_list = [
-            [".window_commands.", "."],
-            [".draw_commands.", "."],
-            [".buffered_draw_commands.", "."],
-            [".text.", "."],
-            [".application.", "."],
-            [".geometry.", "."],
-            [".sprite_list.", "."],
-            [".sprite.", "."],
-            [".physics_engines.", "."],
-            [".sound.", "."]
-        ]
-        filename = 'build/html/arcade.html'
-        replace_in_file(filename, replace_list)
-
         from dirsync import sync
         source_path = '../arcade/resources'
         target_path = 'build/html/resources'
 
         sync(source_path, target_path, 'sync', create=True)  # for syncing one way
 
-        # filename = 'build/html/quick_index.html'
-        # replace_in_file(filename, replace_list)
-
-        # # Figures have an align-center style I can't easily get rid of.
-        # filename = 'build/html/examples/index.html'
-        # replace_list = [
-        #     ["figure align-center", "figure"]
-        # ]
-        # replace_in_file(filename, replace_list)
     except:
         import traceback
         traceback.print_exc()
