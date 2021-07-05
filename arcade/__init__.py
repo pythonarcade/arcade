@@ -478,7 +478,7 @@ __all__ = ['AStarBarrierList',
 
 __version__ = VERSION
 
-if not os.path.basename(sys.argv[0]) == "sphinx-build":
+if not os.path.basename(sys.argv[0]) == "sphinx-build" or os.environ['READTHEDOCS'] == 'True':
     # Auto load fonts
     load_font(":resources:fonts/ttf/Kenney Blocks.ttf")
     load_font(":resources:fonts/ttf/Kenney Future.ttf")
