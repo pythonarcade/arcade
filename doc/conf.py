@@ -7,11 +7,7 @@ import runpy
 import sys
 import os
 
-# Don't change to
-# from arcade.version import VERSION
-# or read the docs build will fail.
 # --- Pre-processing Tasks
-from .version import VERSION
 
 # Then generate thumbnails if they do not exist
 
@@ -30,6 +26,11 @@ autodoc_inherit_docstrings = False
 
 sys.path.insert(0, os.path.abspath('..'))
 sys.path.insert(0, os.path.abspath('../arcade'))
+
+# Don't change to
+# from arcade.version import VERSION
+# or read the docs build will fail.
+from version import VERSION
 
 RELEASE = VERSION
 
