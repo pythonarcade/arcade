@@ -8,3 +8,4 @@ pytiled-parser==1.5.0
 pymunk==6.0.0
 shapely==1.7.1
 pillow==8.3.0
+pyyaml~=5.4
