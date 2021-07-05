@@ -8,6 +8,7 @@ from arcade.gui.style import UIStyle
 class UIAbstractFlatButton(UIClickable):
     """
     Style attributes:
+
     * font_name - List of font names
     * font_size
     * font_color

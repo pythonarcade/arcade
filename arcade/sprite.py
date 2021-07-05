@@ -67,6 +67,43 @@ class Sprite:
     For examples on how to use this class, see:
     https://arcade.academy/examples/index.html#sprites
 
+    :param str filename: Filename of an image that represents the sprite.
+    :param float scale: Scale the image up or down. Scale of 1.0 is none.
+    :param float image_x: X offset to sprite within sprite sheet.
+    :param float image_y: Y offset to sprite within sprite sheet.
+    :param float image_width: Width of the sprite
+    :param float image_height: Height of the sprite
+    :param float center_x: Location of the sprite
+    :param float center_y: Location of the sprite
+    :param bool flipped_horizontally: Mirror the sprite image. Flip left/right across vertical axis.
+    :param bool flipped_vertically: Flip the image up/down across the horizontal axis.
+    :param bool flipped_diagonally: Transpose the image, flip it across the diagonal.
+    :param str hit_box_algorithm: One of 'None', 'Simple' or 'Detailed'.
+          Defaults to 'Simple'. Use 'Simple' for the :data:`PhysicsEngineSimple`,
+          :data:`PhysicsEnginePlatformer`
+          and 'Detailed' for the :data:`PymunkPhysicsEngine`.
+    :param Texture texture: Specify the texture directly.
+    :param float angle: The initial rotation of the sprite in degrees
+
+    This will ignore all hit box and image size arguments.
+
+        .. figure:: ../images/hit_box_algorithm_none.png
+           :width: 40%
+
+           hit_box_algorithm = "None"
+
+        .. figure:: ../images/hit_box_algorithm_simple.png
+           :width: 55%
+
+           hit_box_algorithm = "Simple"
+
+        .. figure:: ../images/hit_box_algorithm_detailed.png
+           :width: 75%
+
+           hit_box_algorithm = "Detailed"
+
+    :param float hit_box_detail: Float, defaults to 4.5. Used with 'Detailed' to hit box
+
     Attributes:
         :alpha: Transparency of sprite. 0 is invisible, 255 is opaque.
         :angle: Rotation angle in degrees.
@@ -116,6 +153,7 @@ class Sprite:
     It is common to over-ride the `update` method and provide mechanics on
     movement or other sprite updates.
 
+
     """
 
     def __init__(
@@ -138,44 +176,7 @@ class Sprite:
         texture: Texture = None,
         angle: float = 0,
     ):
-        """
-        Create a new sprite.
-
-        :param str filename: Filename of an image that represents the sprite.
-        :param float scale: Scale the image up or down. Scale of 1.0 is none.
-        :param float image_x: X offset to sprite within sprite sheet.
-        :param float image_y: Y offset to sprite within sprite sheet.
-        :param float image_width: Width of the sprite
-        :param float image_height: Height of the sprite
-        :param float center_x: Location of the sprite
-        :param float center_y: Location of the sprite
-        :param bool flipped_horizontally: Mirror the sprite image. Flip left/right across vertical axis.
-        :param bool flipped_vertically: Flip the image up/down across the horizontal axis.
-        :param bool flipped_diagonally: Transpose the image, flip it across the diagonal.
-        :param str hit_box_algorithm: One of 'None', 'Simple' or 'Detailed'. \
-        Defaults to 'Simple'. Use 'Simple' for the :data:`PhysicsEngineSimple`, \
-        :data:`PhysicsEnginePlatformer` \
-        and 'Detailed' for the :data:`PymunkPhysicsEngine`.
-        :param Texture texture: Specify the texture directly.
-        :param float angle: The initial rotation of the sprite in degrees
-        This will ignore all hit box and image size arguments. 
-
-            .. figure:: images/hit_box_algorithm_none.png
-               :width: 40%
-
-               hit_box_algorithm = "None"
-
-            .. figure:: images/hit_box_algorithm_simple.png
-               :width: 55%
-
-               hit_box_algorithm = "Simple"
-
-            .. figure:: images/hit_box_algorithm_detailed.png
-               :width: 75%
-
-               hit_box_algorithm = "Detailed"
-        :param float hit_box_detail: Float, defaults to 4.5. Used with 'Detailed' to hit box
-        """
+        """ Constructor """
         self._width: float = 0.0
         self._height: float = 0.0
         self._scale: float = scale
@@ -1085,7 +1086,7 @@ class AnimatedWalkingSprite(Sprite):
     Make sure to call update_animation after loading the animations so the
     initial texture can be set. Or manually set it.
     For a better example, see:
-    https://arcade.academy/examples/platformer.html#animate-character
+    https://arcade.academy/examples/platform_tutorial/step_11.html
     """
 
     def __init__(
@@ -1245,15 +1246,15 @@ class SpriteSolidColor(Sprite):
     """
     This sprite is just a rectangular sprite of one solid color. No need to
     use an image file.
+
+    :param int width: Width of the sprite
+    :param int height: Height of the sprite
+    :param Color color: Color of the sprite
     """
 
     def __init__(self, width: int, height: int, color):
         """
         Create a solid-color rectangular sprite.
-
-        :param int width: Width of the sprite
-        :param int height: Height of the sprite
-        :param Color color: Color of the sprite
         """
         super().__init__()
 
@@ -1266,15 +1267,15 @@ class SpriteCircle(Sprite):
     """
     This sprite is just an elliptical sprite of one solid color. No need to
     use an image file.
+
+
+    :param float radius: Radius of the circle
+    :param Color color: Color of the circle
+    :param bool soft: If True, will add a alpha gradient
+
     """
 
     def __init__(self, radius: int, color: Color, soft: bool = False):
-        """
-
-        :param float radius: Radius of the circle
-        :param Color color: Color of the circle
-        :param bool soft: If True, will add a alpha gradient
-        """
         super().__init__()
 
         if soft:
@@ -1287,6 +1288,7 @@ class SpriteCircle(Sprite):
 def get_distance_between_sprites(sprite1: Sprite, sprite2: Sprite) -> float:
     """
     Returns the distance between the center of two given sprites
+
     :param Sprite sprite1: Sprite one
     :param Sprite sprite2: Sprite two
     :return: Distance

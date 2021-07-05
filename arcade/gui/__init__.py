@@ -96,6 +96,7 @@ from arcade.gui.layouts.anchor import UIAnchorLayout
 from arcade.gui.layouts.box import UIBoxLayout
 from arcade.gui.layouts.manager import UILayoutManager
 from arcade.gui.layouts.manager import UIStack
+from arcade.gui.layouts.utils import valid
 from arcade.gui.manager import UIManager
 from arcade.gui.manager import UIAbstractManager
 from arcade.gui.style import UIStyle
@@ -107,6 +108,7 @@ from arcade.gui.text_utils import add_bg_color_to_image
 from arcade.gui.text_utils import add_padding_to_image
 from arcade.gui.text_utils import add_border_to_image
 from arcade.gui.text_utils import expand_image
+from arcade.gui.text_utils import create_text
 
 __all__ = [
     "Padding",

@@ -1,7 +1,24 @@
 body {
     counter-reset: listing;
 }
+li {
+    list-style: disc;
+    line-height: 30px;
+    margin-left: 24px;
+}
 
+ul {
+    margin-bottom: 30px;
+}
+
+li p {
+    margin-bottom: 0;
+}
+.wy-menu ul li {
+    list-style: none;
+    line-height: 30px;
+    margin-left: 12px;
+}
 .code-block-caption::before {
     counter-increment: listing;
     content: "Listing " counter(listing) ": ";
@@ -136,4 +153,19 @@ a:visited {
 }
 #quickapigui.dataTable {
     width: 99%;
+}
+.sig-name {
+    color: black;
+}
+.sig-praram {
+    color: darkgray;
+}
+.sig-param .n:first-of-type {
+    color: black;
+    margin-left: 10px;
+}
+.sig-param::before {
+    content: '\A  ';
+    white-space: pre;
+    margin-left: 10px;
 }

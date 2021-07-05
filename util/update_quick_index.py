@@ -2,84 +2,90 @@
 Script used to create the quick index
 """
 import re
+import os
 from pathlib import Path
 
 titles = {
-    'arcade_types.py': 'Arcade Data Types',
-    'application.py': 'Window and View Classes',
-    'buffered_draw_commands.py': 'Drawing - Batch',
-    'context.py': 'OpenGL Context',
-    'drawing_support.py': 'Drawing - Utility',
-    'draw_commands.py': 'Drawing - Primitives',
-    'earclip_module.py': 'Geometry Support',
-    'emitter.py': 'Particle Emitter',
-    'emitter_simple.py': 'Particle Emitter',
-    'geometry.py': 'Geometry Support',
-    'hitbox.py': 'Geometry Support',
-    'isometric.py': 'Isometric Map Support (incomplete)',
-    'joysticks.py': 'Game Controller Support',
-    'particle.py': 'Particle',
-    'paths.py': 'Pathfinding',
-    'physics_engines.py': 'Physics Engines',
-    'pymunk_physics_engine.py': 'Physics Engines',
-    'sound.py': 'Sound',
-    'sprite.py': 'Sprites',
-    'sprite_list/sprite_list.py': 'Sprite Lists',
-    'sprite_list/spatial_hash.py': 'Sprite Lists',
-    'text.py': 'Text',
-    'text_pillow.py': 'Text - Image/Pillow based',
-    'text_pyglet.py': 'Text - Pyglet/Glyph based',
-    'texture.py': 'OpenGL Texture Management',
-    'tilemap.py': 'Loading TMX (Tiled Map Editor) Maps',
-    'utils.py': 'Misc Utility Functions',
-    'version.py': 'Arcade Version Number',
-    'window_commands.py': 'Window Commands',
-    'texture_atlas.py': 'Texture Atlas',
-    'scene.py': 'Sprite Scenes',
+    'arcade_types.py': ['Arcade Data Types', 'arcade_types.rst'],
+    'application.py': ['Window and View', 'window.rst'],
+    'buffered_draw_commands.py': ['Drawing - Batch', 'drawing_batch.rst'],
+    'context.py': ['OpenGL Context', 'open_gl.rst'],
+    'drawing_support.py': ['Drawing - Utility', 'drawing_utilities.rst'],
+    'draw_commands.py': ['Drawing - Primitives', 'drawing_primitives.rst'],
+    'earclip_module.py': ['Geometry Support', 'geometry.rst'],
+    'emitter.py': ['Particles', 'particle_emitter.rst'],
+    'emitter_simple.py': ['Particles', 'particle_emitter.rst'],
+    'geometry.py': ['Geometry Support', 'geometry.rst'],
+    'hitbox.py': ['Geometry Support', 'geometry.rst'],
+    'isometric.py': ['Isometric Map Support (incomplete)', 'isometric.rst'],
+    'joysticks.py': ['Game Controller Support', 'game_controller.rst'],
+    'particle.py': ['Particles', 'particle_emitter.rst'],
+    'paths.py': ['Pathfinding', 'path_finding.rst'],
+    'physics_engines.py': ['Physics Engines', 'physics_engines.rst'],
+    'pymunk_physics_engine.py': ['Physics Engines', 'physics_engines.rst'],
+    'sound.py': ['Sound', 'sound.rst'],
+    'sprite.py': ['Sprites', 'sprites.rst'],
+    'sprite_list/__init__.py': ['Sprite Lists', 'sprite_list.rst'],
+    'sprite_list/sprite_list.py': ['Sprite Lists', 'sprite_list.rst'],
+    'sprite_list/spatial_hash.py': ['Sprite Lists', 'sprite_list.rst'],
+    'text.py': ['Text', 'text.rst'],
+    'text_pillow.py': ['Text - Image/Pillow based', 'text_image.rst'],
+    'text_pyglet.py': ['Text - Pyglet/Glyph based', 'text_pyglet.rst'],
+    'texture.py': ['OpenGL Texture Management', 'texture.rst'],
+    'tilemap/__init__.py': ['Loading TMX (Tiled Map Editor) Maps', 'tiled.rst'],
+    'tilemap.py': ['Loading TMX (Tiled Map Editor) Maps', 'tiled.rst'],
+    '__init__.py': ['Misc Utility Functions', 'utility.rst'],
+    '__main__.py': ['Misc Utility Functions', 'utility.rst'],
+    'utils.py': ['Misc Utility Functions', 'utility.rst'],
+    'version.py': ['Arcade Version Number', 'version.rst'],
+    'window_commands.py': ['Window and View', 'window.rst'],
+    'texture_atlas.py': ['Texture Atlas', 'texture_atlas.rst'],
+    'scene.py': ['Sprite Scenes', 'sprite_scenes.rst'],
 
-    'elements/exceptions.py': 'GUI Elements',
-    'elements/box.py': 'GUI Elements',
-    'elements/flat_button.py': 'GUI Elements',
-    'elements/image_button.py': 'GUI Elements',
-    'elements/inputbox.py': 'GUI Elements',
-    'elements/label.py': 'GUI Elements',
-    'elements/toggle.py': 'GUI Elements',
-    'elements/__init__.py': 'GUI Elements',
+    'elements/exceptions.py': ['GUI Elements', 'gui_elements.rst'],
+    'elements/box.py': ['GUI Elements', 'gui_elements.rst'],
+    'elements/flat_button.py': ['GUI Elements', 'gui_elements.rst'],
+    'elements/image_button.py': ['GUI Elements', 'gui_elements.rst'],
+    'elements/inputbox.py': ['GUI Elements', 'gui_elements.rst'],
+    'elements/label.py': ['GUI Elements', 'gui_elements.rst'],
+    'elements/toggle.py': ['GUI Elements', 'gui_elements.rst'],
+    'elements/__init__.py': ['GUI Elements', 'gui_elements.rst'],
+    'layouts/__init__.py': ['GUI Layout Manger', 'gui_layout.rst'],
+    'layouts/anchor.py': ['GUI Layout Manger', 'gui_layout.rst'],
+    'layouts/box.py': ['GUI Layout Manger', 'gui_layout.rst'],
+    'layouts/manager.py': ['GUI Layout Manger', 'gui_layout.rst'],
+    'layouts/utils.py': ['GUI Layout Manger', 'gui_layout.rst'],
+    'tilemap/tilemap.py': ['Tiled Map Reader', 'tilemap.rst'],
 
-    'layouts/__init__.py': 'GUI Layout Manger',
-    'layouts/anchor.py': 'GUI Layout Manger',
-    'layouts/box.py': 'GUI Layout Manger',
-    'layouts/manager.py': 'GUI Layout Manger',
-    'layouts/utils.py': 'GUI Layout Manger',
-
-    'tilemap/tilemap.py': 'Tiled Map Reader',
-
-    'gui/exceptions.py': 'GUI',
-    'gui/manager.py': 'GUI',
-    'gui/style.py': 'GUI',
-    'gui/text_utils.py': 'GUI Utility Functions',
-    'gui/ui_style.py': 'GUI',
-    'gui/utils.py': 'GUI Utility Functions',
-    'events/__init__.py': 'GUI Utility Functions',
-
-    'gl/buffer.py': 'OpenGL Buffer',
-    'gl/context.py': 'OpenGL Context',
-    'gl/enums.py': 'OpenGL Enums',
-    'gl/exceptions.py': 'OpenGL Exceptions',
-    'gl/framebuffer.py': 'OpenGL FrameBuffer',
-    'gl/geometry.py': 'OpenGL Geometry',
-    'gl/program.py': 'OpenGL Program',
-    'gl/glsl.py': 'OpenGL GLSL',
-    'gl/types.py': 'OpenGL Types',
-    'gl/uniform.py': 'OpenGL Uniform Data',
-    'gl/utils.py': 'OpenGL Utils',
-    'gl/query.py': 'OpenGL Query',
-    'gl/texture.py': 'OpenGL Texture',
-    'gl/vertex_array.py': 'OpenGL Vertex Array (VAO)',
+    'gui/__init__.py': ['GUI', 'gui.rst'],
+    'gui/exceptions.py': ['GUI', 'gui.rst'],
+    'gui/manager.py': ['GUI', 'gui.rst'],
+    'gui/style.py': ['GUI', 'gui.rst'],
+    'gui/text_utils.py': ['GUI Utility Functions', 'gui_utility.rst'],
+    'gui/ui_style.py': ['GUI', 'gui.rst'],
+    'gui/utils.py': ['GUI Utility Functions', 'gui_utility.rst'],
+    'events/__init__.py': ['GUI Utility Functions', 'gui_utility.rst'],
+    'gl/buffer.py': ['OpenGL Buffer', 'open_gl.rst'],
+    'gl/context.py': ['OpenGL Context', 'open_gl.rst'],
+    'gl/enums.py': ['OpenGL Enums', 'open_gl.rst'],
+    'gl/exceptions.py': ['OpenGL Exceptions', 'open_gl.rst'],
+    'gl/framebuffer.py': ['OpenGL FrameBuffer', 'open_gl.rst'],
+    'gl/geometry.py': ['OpenGL Geometry', 'open_gl.rst'],
+    'gl/program.py': ['OpenGL Program', 'open_gl.rst'],
+    'gl/glsl.py': ['OpenGL GLSL', 'open_gl.rst'],
+    'gl/types.py': ['OpenGL Types', 'open_gl.rst'],
+    'gl/uniform.py': ['OpenGL Uniform Data', 'open_gl.rst'],
+    'gl/utils.py': ['OpenGL Utils', 'open_gl.rst'],
+    'gl/query.py': ['OpenGL Query', 'open_gl.rst'],
+    'gl/texture.py': ['OpenGL Texture', 'open_gl.rst'],
+    'gl/vertex_array.py': ['OpenGL Vertex Array (VAO)', 'open_gl.rst'],
 }
 
 
 def get_member_list(filepath):
+    """
+    Take a file, and return all the classes, functions, and data declarations in it
+    """
     file_pointer = open(filepath, encoding="utf8")
     filename = filepath.name
 
@@ -118,13 +124,16 @@ def get_member_list(filepath):
     return type_list, class_list, function_list
 
 
-def process_directory(directory, text_file):
+def process_directory(directory, quick_index_file):
+    """
+    Take a directory and process all the files in it.
+    """
     # print()
     # print(f"Processing directory {directory}")
 
     file_list = directory.glob('*.py')
 
-    text_file.write(f"\n")
+    quick_index_file.write(f"\n")
 
     if directory.name == "arcade":
         prepend = ""
@@ -136,7 +145,7 @@ def process_directory(directory, text_file):
             continue
 
         if not path.exists():
-            print(f"Error, can't find file: {path.name}")
+            print(f"Error, can't find file: '{path.name}'")
             continue
         # else:
         #     print(f"Processing: {path.name}")
@@ -159,16 +168,42 @@ def process_directory(directory, text_file):
         if path_name in titles and (len(type_list) > 0 or len(class_list) > 0 or len(function_list) > 0):
 
             # Print title
-            title = titles[path_name]
-        else:
+            title = titles[path_name][0]
+            api_file_name = titles[path_name][1]
+        elif path_name not in titles:
             title = f"ERR: `{path_name}`"
+            api_file_name = "zzz.rst"
+            print(f"No title for '{path_name}'.")
+        else:
+            continue
+
+        full_api_file_name = "../doc/api/" + api_file_name
+
+        new_api_file = True
+        if os.path.isfile(full_api_file_name):
+            new_api_file = False
+
+        api_file = open(full_api_file_name, "a")
+
+        if new_api_file:
+            api_file.write(f"{title}\n")
+            underline = "-" * len(title)
+            api_file.write(f"{underline}\n\n")
+            api_file.write(f".. contents::\n\n")
 
         # Classes
         if len(class_list) > 0:
             for item in class_list:
-                full_name = f"{package}.{item}"
-                text_file.write(f"   * - :py:class:`{full_name}`\n")
-                text_file.write(f"     - {title}\n")
+                full_class_name = f"{package}.{item}"
+                quick_index_file.write(f"   * - :py:class:`{full_class_name}`\n")
+                quick_index_file.write(f"     - {title}\n")
+
+                api_file.write(f"{full_class_name}\n")
+                underline = "^" * len(full_class_name)
+                api_file.write(f"{underline}\n\n")
+
+                api_file.write(f".. autoclass:: {full_class_name}\n")
+                api_file.write(f"    :members:\n\n")
 
                 # print(f"  Class {item}")
                 # text_file.write(f"     - Class\n")
@@ -177,11 +212,21 @@ def process_directory(directory, text_file):
         # Functions
         if len(function_list) > 0:
             for item in function_list:
-                text_file.write(f"   * - :py:func:`{package}.{item}`\n")
-                text_file.write(f"     - {title}\n")
+                full_class_name = f"{package}.{item}"
+                quick_index_file.write(f"   * - :py:func:`{full_class_name}`\n")
+                quick_index_file.write(f"     - {title}\n")
+
+                api_file.write(f"{full_class_name}\n")
+                underline = "^" * len(full_class_name)
+                api_file.write(f"{underline}\n\n")
+
+                api_file.write(f".. autofunction:: {full_class_name}\n\n")
+
                 # print(f"  Function {item}")
                 # text_file.write(f"     - Func\n")
                 # text_file.write(f"     - {path_name}\n")
+
+        api_file.close()
 
 
 def include_template(text_file):
@@ -221,7 +266,19 @@ table_header_tiled = """
    * - Name
      - Group"""
 
+
+def clear_api_directory():
+    """
+    Delete the API files and make new ones
+    """
+    directory = Path("../doc/api/")
+    file_list = directory.glob('*.rst')
+    for file in file_list:
+        os.remove(file)
+
+
 def main():
+    clear_api_directory()
 
     text_file = open("../doc/quick_index.rst", "w")
     include_template(text_file)

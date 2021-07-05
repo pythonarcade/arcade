@@ -292,7 +292,7 @@ Version 2.4 Major Features
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 * Support for defining your own frame buffers, shaders, and more
-  advanced OpenGL programming. New API in :ref:`arcade-api-gl`.
+  advanced OpenGL programming. New API in Arcade Open GL.
 
     * Support to render to frame buffer, then re-render. Example:
       :ref:`mini_map_defender`.

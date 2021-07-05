@@ -106,6 +106,7 @@ from .arcade_types import RGBA
 from .arcade_types import Rect
 from .arcade_types import RectList
 from .arcade_types import Vector
+from .arcade_types import TiledObject
 
 from .earclip_module import earclip
 
@@ -119,6 +120,7 @@ from .utils import rand_on_circle
 from .utils import rand_on_line
 from .utils import rand_vec_magnitude
 from .utils import rand_vec_spread_deg
+from .utils import generate_uuid
 
 from .hitbox import calculate_hit_box_points_detailed
 from .hitbox import calculate_hit_box_points_simple
@@ -270,6 +272,7 @@ from .paths import has_line_of_sight
 from .context import ArcadeContext
 
 from .texture_atlas import TextureAtlas
+from .texture_atlas import AtlasRegion
 
 # noinspection PyPep8
 from arcade import experimental
