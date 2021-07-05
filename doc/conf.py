@@ -6,9 +6,12 @@ Generate HTML docs
 import runpy
 import sys
 import os
-from arcade.version import VERSION
 
+# Don't change to
+# from arcade.version import VERSION
+# or read the docs build will fail.
 # --- Pre-processing Tasks
+from .version import VERSION
 
 # Then generate thumbnails if they do not exist
 
