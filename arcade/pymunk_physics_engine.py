@@ -14,6 +14,7 @@ from arcade import Sprite
 import logging
 LOG = logging.getLogger(__name__)
 
+
 class PymunkPhysicsObject:
     """ Object that holds pymunk body/shape for a sprite. """
     def __init__(self,
@@ -180,6 +181,7 @@ class PymunkPhysicsEngine:
                         elasticity: Optional[float] = None,
                         moment=None,
                         body_type=DYNAMIC,
+                        damping=None,
                         collision_type=None
                         ):
         """ Add all sprites in a sprite list to the physics engine. """
@@ -191,6 +193,7 @@ class PymunkPhysicsEngine:
                             elasticity=elasticity,
                             moment=moment,
                             body_type=body_type,
+                            damping=damping,
                             collision_type=collision_type)
 
     def remove_sprite(self, sprite: Sprite):
