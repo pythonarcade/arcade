@@ -159,7 +159,7 @@ def process_directory(directory, quick_index_file):
                    "elements": "arcade.gui",
                    "events": "arcade.gui",
                    "layouts": "arcade.gui",
-                   "tilemap": "arcade",
+                   "tilemap": "arcade.tilemap",
                    }
         package = mapping[directory.name]
 
@@ -291,7 +291,6 @@ def main():
     process_directory(Path("../arcade"), text_file)
     process_directory(Path("../arcade/sprite_list"), text_file)
     process_directory(Path("../arcade/text"), text_file)
-    process_directory(Path("../arcade/tilemap"), text_file)
 
     # text_file.write(f"The ``arcade.gl`` module\n")
     # text_file.write(f"-------------------------\n\n")
@@ -307,6 +306,14 @@ def main():
     process_directory(Path("../arcade/gui/elements"), text_file)
     process_directory(Path("../arcade/gui/events"), text_file)
     process_directory(Path("../arcade/gui/layouts"), text_file)
+
+    text_file.write(f"\n\n")
+    text_file.write(f"The arcade.tilemap module\n")
+    text_file.write(f"-------------------------\n\n")
+
+    text_file.write(table_header_gui)
+
+    process_directory(Path("../arcade/tilemap"), text_file)
 
     text_file.close()
     print("Done creating quick_index.rst")
