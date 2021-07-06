@@ -200,21 +200,27 @@ def source_read(app, docname, source):
 
 
 def post_process(app, exception):
-    try:
-        dir_path = os.path.dirname(os.path.realpath(__file__))
-        print(f"Performing dirsync")
-        print(f"Current dir: {dir_path}")
-        print(os.listdir("."))
-        from dirsync import sync
-        source_path = '../arcade/resources'
-        target_path = 'build/html/resources'
+    pass
 
-        sync(source_path, target_path, 'sync', create=True)  # for syncing one way
-
-    except:
-        import traceback
-        traceback.print_exc()
-        raise
+#     try:
+#         dir_path = os.path.dirname(os.path.realpath(__file__))
+#         print(f"Performing dirsync")
+#         print(f"Current dir: {dir_path}")
+#         print(os.listdir("."))
+#         from dirsync import sync
+#         source_path = '../arcade/resources'
+#         print(f"Items in resource path:")
+#         print(os.listdir(source_path))
+#
+#         target_path = 'build/html/resources'
+#
+#         sync(source_path, target_path, 'sync', create=True)  # for syncing one way
+#
+#     except:
+#         print("ERROR: Exception in post-process.")
+#         import traceback
+#         traceback.print_exc()
+#         raise
 
 
 def setup(app):
