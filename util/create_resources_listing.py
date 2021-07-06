@@ -66,15 +66,27 @@ def process_resource_files(out, my_path: Path):
                 out.write(f"    {start_row} - .. image:: ../arcade/{r3}\n\n")
                 out.write(f"        {cur_node.name}\n")
                 process_resource_directory.cell_count += 1
-            # elif cur_node.suffix == ".wav":
-            #     out.write(f"    {start_row} - .. raw:: html\n\n")
-            #     out.write(f"            <audio controls><source src='{r3}' type='audio/x-wav'></audio><br />{cur_node.name}\n")
-            # elif cur_node.suffix == ".mp3":
-            #     out.write(f"    {start_row} - .. raw:: html\n\n")
-            #     out.write(f"            <audio controls><source src='{r3}' type='audio/mpeg'></audio><br />{cur_node.name}\n")
-            # elif cur_node.suffix == ".ogg":
-            #     out.write(f"    {start_row} - .. raw:: html\n\n")
-            #     out.write(f"            <audio controls><source src='{r3}' type='audio/ogg'></audio><br />{cur_node.name}\n")
+            elif cur_node.suffix == ".wav":
+                file_path = f"https://github.com/pythonarcade/arcade/blob/development/arcade/{r3}?raw=true"
+                out.write(f"    {start_row} - .. raw:: html\n\n")
+                out.write(f"            <audio controls><source src='{file_path}' type='audio/x-wav'></audio><br />{cur_node.name}\n")
+                process_resource_directory.cell_count += 1
+            elif cur_node.suffix == ".mp3":
+                file_path = f"https://github.com/pythonarcade/arcade/blob/development/arcade/{r3}?raw=true"
+                out.write(f"    {start_row} - .. raw:: html\n\n")
+                out.write(f"            <audio controls><source src='{file_path}' type='audio/mpeg'></audio><br />{cur_node.name}\n")
+                process_resource_directory.cell_count += 1
+            elif cur_node.suffix == ".ogg":
+                file_path = f"https://github.com/pythonarcade/arcade/blob/development/arcade/{r3}?raw=true"
+                out.write(f"    {start_row} - .. raw:: html\n\n")
+                out.write(f"            <audio controls><source src='{file_path}' type='audio/ogg'></audio><br />{cur_node.name}\n")
+                process_resource_directory.cell_count += 1
+            elif cur_node.suffix == ".glsl":
+                file_path = f"https://github.com/pythonarcade/arcade/blob/development/arcade/{r3}"
+                out.write(f"    {start_row} - `{cur_node.name} <{file_path}>`_\n")
+                # out.write(f"    {start_row} - .. raw:: html\n\n")
+                # out.write(f"            <audio controls><source src='{file_path}' type='audio/ogg'></audio><br />{cur_node.name}\n")
+                process_resource_directory.cell_count += 1
             elif cur_node.suffix in [".url", ".txt"]:
                 pass
             else:
