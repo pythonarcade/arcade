@@ -4,6 +4,7 @@ Example of Pymunk Physics Engine
 Top-down
 """
 import math
+import random
 import arcade
 from typing import Optional
 from arcade.pymunk_physics_engine import PymunkPhysicsEngine
@@ -36,7 +37,8 @@ class MyWindow(arcade.Window):
         self.player_list = None
         self.wall_list = None
         self.bullet_list = None
-        self.item_list = None
+        self.rock_list = None
+        self.gem_list = None
         self.player_sprite = None
         self.physics_engine: Optional[PymunkPhysicsEngine] = None
 
@@ -52,7 +54,8 @@ class MyWindow(arcade.Window):
         self.player_list = arcade.SpriteList()
         self.wall_list = arcade.SpriteList()
         self.bullet_list = arcade.SpriteList()
-        self.item_list = arcade.SpriteList()
+        self.rock_list = arcade.SpriteList()
+        self.gem_list = arcade.SpriteList()
 
         # Set up the player
         self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
@@ -89,13 +92,27 @@ class MyWindow(arcade.Window):
             wall.center_y = y
             self.wall_list.append(wall)
 
-        # Add some movable boxes
-        for x in range(SPRITE_SIZE * 3, SPRITE_SIZE * 8, SPRITE_SIZE):
-            item = arcade.Sprite(":resources:images/space_shooter/meteorGrey_big1.png",
+        # Add some movable rocks
+        for x in range(SPRITE_SIZE * 3, SPRITE_SIZE * 18, SPRITE_SIZE):
+            rock = random.randrange(4) + 1
+            item = arcade.Sprite(f":resources:images/space_shooter/meteorGrey_big{rock}.png",
+                                 SPRITE_SCALING_PLAYER)
+            item.center_x = x
+            item.center_y = 500
+            self.rock_list.append(item)
+
+        # Add some movable coins
+        for x in range(SPRITE_SIZE * 3, SPRITE_SIZE * 18, SPRITE_SIZE):
+            items = [":resources:images/items/gemBlue.png",
+                     ":resources:images/items/gemRed.png",
+                     ":resources:images/items/coinGold.png",
+                     ":resources:images/items/keyBlue.png"]
+            item_name = random.choice(items)
+            item = arcade.Sprite(item_name,
                                  SPRITE_SCALING_PLAYER)
             item.center_x = x
             item.center_y = 400
-            self.item_list.append(item)
+            self.gem_list.append(item)
 
         # --- Pymunk Physics Engine Setup ---
 
@@ -114,14 +131,14 @@ class MyWindow(arcade.Window):
         self.physics_engine = PymunkPhysicsEngine(damping=damping,
                                                   gravity=gravity)
 
-        def rock_hit_handler(arbiter, space, data):
+        def rock_hit_handler(sprite_a, sprite_b, arbiter, space, data):
             """ Called for bullet/rock collision """
             bullet_shape = arbiter.shapes[0]
             bullet_sprite = self.physics_engine.get_sprite_for_shape(bullet_shape)
             bullet_sprite.remove_from_sprite_lists()
             print("Rock")
 
-        def wall_hit_handler(arbiter, space, data):
+        def wall_hit_handler(sprite_a, sprite_b, arbiter, space, data):
             """ Called for bullet/rock collision """
             bullet_shape = arbiter.shapes[0]
             bullet_sprite = self.physics_engine.get_sprite_for_shape(bullet_shape)
@@ -162,9 +179,17 @@ class MyWindow(arcade.Window):
 
         # Create some boxes to push around.
         # Mass controls, well, the mass of an object. Defaults to 1.
-        self.physics_engine.add_sprite_list(self.item_list,
-                                            mass=1,
-                                            friction=0.6,
+        self.physics_engine.add_sprite_list(self.rock_list,
+                                            mass=2,
+                                            friction=0.8,
+                                            damping=0.1,
+                                            collision_type="rock")
+        # Create some boxes to push around.
+        # Mass controls, well, the mass of an object. Defaults to 1.
+        self.physics_engine.add_sprite_list(self.gem_list,
+                                            mass=0.5,
+                                            friction=0.8,
+                                            damping=0.4,
                                             collision_type="rock")
 
     def on_mouse_press(self, x, y, button, modifiers):
@@ -275,8 +300,10 @@ class MyWindow(arcade.Window):
         arcade.start_render()
         self.wall_list.draw()
         self.bullet_list.draw()
-        self.item_list.draw()
+        self.rock_list.draw()
+        self.gem_list.draw()
         self.player_list.draw()
+
 
 def main():
     """ Main method """
