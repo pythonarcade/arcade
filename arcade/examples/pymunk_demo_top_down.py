@@ -16,8 +16,8 @@ MOVEMENT_SPEED = 5
 SPRITE_IMAGE_SIZE = 128
 SPRITE_SIZE = int(SPRITE_IMAGE_SIZE * SPRITE_SCALING_PLAYER)
 
-SCREEN_WIDTH = SPRITE_SIZE * 20
-SCREEN_HEIGHT = SPRITE_SIZE * 15
+SCREEN_WIDTH = SPRITE_SIZE * 15
+SCREEN_HEIGHT = SPRITE_SIZE * 10
 
 # Physics force used to move the player. Higher number, faster accelerating.
 PLAYER_MOVE_FORCE = 4000
@@ -93,16 +93,16 @@ class MyWindow(arcade.Window):
             self.wall_list.append(wall)
 
         # Add some movable rocks
-        for x in range(SPRITE_SIZE * 3, SPRITE_SIZE * 18, SPRITE_SIZE):
+        for x in range(SPRITE_SIZE * 2, SPRITE_SIZE * 13, SPRITE_SIZE):
             rock = random.randrange(4) + 1
             item = arcade.Sprite(f":resources:images/space_shooter/meteorGrey_big{rock}.png",
                                  SPRITE_SCALING_PLAYER)
             item.center_x = x
-            item.center_y = 500
+            item.center_y = 400
             self.rock_list.append(item)
 
         # Add some movable coins
-        for x in range(SPRITE_SIZE * 3, SPRITE_SIZE * 18, SPRITE_SIZE):
+        for x in range(SPRITE_SIZE * 2, SPRITE_SIZE * 13, SPRITE_SIZE):
             items = [":resources:images/items/gemBlue.png",
                      ":resources:images/items/gemRed.png",
                      ":resources:images/items/coinGold.png",
@@ -111,7 +111,7 @@ class MyWindow(arcade.Window):
             item = arcade.Sprite(item_name,
                                  SPRITE_SCALING_PLAYER)
             item.center_x = x
-            item.center_y = 400
+            item.center_y = 300
             self.gem_list.append(item)
 
         # --- Pymunk Physics Engine Setup ---

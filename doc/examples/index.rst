@@ -513,6 +513,11 @@ Using PyMunk for Physics
 
    :ref:`pymunk_pegboard`
 
+.. figure:: thumbs/pymunk_demo_top_down.png
+   :figwidth: 170px
+
+   :ref:`pymunk_demo_top_down`
+
 .. figure:: thumbs/pymunk_joint_builder.png
    :figwidth: 170px
 
