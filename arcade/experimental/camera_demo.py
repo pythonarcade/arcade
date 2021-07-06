@@ -1,5 +1,4 @@
 import math
-import time
 
 import arcade
 from arcade.experimental.camera import Camera2D
@@ -10,8 +9,9 @@ class MyGame(arcade.Window):
     def __init__(self, width, height, title):
         super().__init__(width, height, title=title, resizable=True)
         self.set_vsync(True)
-        self.map = arcade.tilemap.read_tmx(':resources:tmx_maps/map.tmx')
-        self.background = arcade.tilemap.process_layer(self.map, 'Platforms', hit_box_algorithm='None')
+        self.map = arcade.tilemap.load_tilemap(':resources:tiled_maps/map.json')
+        self.background = self.map.sprite_lists['Platforms']
+
         self.camera = Camera2D(
             viewport=(0, 0, self.width, self.height),
             projection=(0, self.width, 0, self.height),
@@ -41,6 +41,7 @@ class MyGame(arcade.Window):
 
     def on_mouse_motion(self, x, y, dx, dy):
         self.mouse_pos = x, y
+
 
 if __name__ == "__main__":
     MyGame(800, 600, "Camera Test")
