@@ -100,7 +100,7 @@ class UIAbstractManager(EventDispatcher, metaclass=ABCMeta):
         respecting the viewport and projection of cameras.
         The implementation should work in most common cases.
 
-        If you use scrolling in the :py:class:`arcade.experimental.camera.Camera2D` you have to reset scrolling
+        If you use scrolling in the :py:class:`arcade.Camera` you have to reset scrolling
         or overwrite this method using the camera conversion: `ui_manager.adjust_mouse_coordinates = camera.mouse_coordinates_to_world`
         """
         vx, vy, vw, vh = self.window.ctx.viewport

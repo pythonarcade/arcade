@@ -12,7 +12,6 @@ python -m arcade.examples.sprite_move_scrolling
 import random
 import arcade
 import os
-from arcade.experimental.camera import Camera2D
 
 SPRITE_SCALING = 0.5
 
@@ -58,16 +57,8 @@ class MyGame(arcade.Window):
         self.view_bottom = 0
         self.view_left = 0
 
-        # Create our camera that we'll scroll to
-        self.camera_sprites = Camera2D(
-            viewport=(0, 0, self.width, self.height),
-            projection=(0, self.width, 0, self.height),
-        )
-        # Create our camera that we'll scroll to
-        self.camera_gui = Camera2D(
-            viewport=(0, 0, self.width, self.height),
-            projection=(0, self.width, 0, self.height),
-        )
+        self.camera_sprites = arcade.Camera(self, SCREEN_WIDTH, SCREEN_HEIGHT)
+        self.camera_gui = arcade.Camera(self, SCREEN_WIDTH, SCREEN_HEIGHT)
 
     def setup(self):
         """ Set up the game and initialize the variables. """
@@ -122,8 +113,8 @@ class MyGame(arcade.Window):
         self.camera_gui.use()
 
         # Draw the GUI
-        arcade.draw_rectangle_filled(150, 20, 300, 40, arcade.color.ALMOND)
-        arcade.draw_text(f"Scroll value: {self.camera_sprites.scroll}", 10, 10, arcade.color.BLACK_BEAN, 20)
+        arcade.draw_rectangle_filled(self.width // 2, 20, self.width, 40, arcade.color.ALMOND)
+        arcade.draw_text(f"Scroll value: {self.camera_sprites.position}", 10, 10, arcade.color.BLACK_BEAN, 20)
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
@@ -180,7 +171,20 @@ class MyGame(arcade.Window):
             self.view_bottom -= bottom_boundary - self.player_sprite.bottom
 
         # Scroll to the proper location
-        self.camera_sprites.scroll = (self.view_left, self.view_bottom)
+        position = self.view_left, self.view_bottom
+        self.camera_sprites.move_to(position)
+
+    def on_resize(self, width, height):
+        """Resize window"""
+        self.camera_sprites.resize(width, height)
+        self.camera_gui.resize(width, height)
+
+    def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
+        """Mouse scroll - control zoom."""
+        if scroll_y > 0:
+            self.camera.zoom(-0.01)
+        else:
+            self.camera.zoom(0.01)
 
 
 def main():
