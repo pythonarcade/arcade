@@ -10,10 +10,11 @@ def test_rotation_mirror():
     os.chdir(file_path)
 
     # Read in the tiled map
-    my_map = arcade.tilemap.read_map("../tiled_maps/animation.json")
+    tile_map = arcade.load_tilemap("../tiled_maps/animation.json")
 
     # --- Platforms ---
-    wall_list = arcade.tilemap.process_layer(my_map, 'Blocking Sprites')
+    assert "Blocking Sprites" in tile_map.sprite_lists
+    wall_list = tile_map.sprite_lists["Blocking Sprites"]
 
     assert len(wall_list) == 1
 
@@ -25,8 +26,7 @@ def test_rotation_mirror():
     assert sprite.frames[1].duration == 500
     assert "torch2" in sprite.frames[1].texture.name
 
-    assert "torch1" in sprite.texture.name
-    sprite.update_animation(.501)
+    sprite.update_animation(0.501)
     assert "torch2" in sprite.texture.name
-    sprite.update_animation(.501)
+    sprite.update_animation(0.501)
     assert "torch1" in sprite.texture.name
