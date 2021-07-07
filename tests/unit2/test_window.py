@@ -1,6 +1,8 @@
 import arcade
 import pyglet
 
+from arcade.math import Mat4
+
 
 def test_window(window: arcade.Window):
     width = window.width
@@ -29,7 +31,7 @@ def test_window(window: arcade.Window):
     w.set_size(width, height)
 
     p = arcade.get_projection()
-    assert isinstance(p, pyglet.math.Mat4)
+    assert isinstance(p, Mat4)
 
     v = arcade.get_viewport()
     assert v[0] == 0

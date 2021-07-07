@@ -28,7 +28,6 @@ import PIL.Image
 
 from arcade import load_texture
 from arcade import Texture
-from arcade import Matrix3x3
 from arcade import rotate_point
 from arcade import create_line_loop
 from arcade import ShapeElementList
@@ -36,6 +35,7 @@ from arcade import make_soft_circle_texture
 from arcade import make_circle_texture
 from arcade import Color
 from arcade.color import BLACK
+from arcade.math import Mat3
 from arcade.resources import resolve_resource_path
 
 from arcade.arcade_types import RGB, Point, PointList
@@ -215,7 +215,7 @@ class Sprite:
         self.velocity = [0.0, 0.0]
         self.change_angle: float = 0.0
 
-        self._texture_transform = Matrix3x3()
+        self._texture_transform = Mat3()
         self.pymunk = PyMunk()
 
         # Sanity check values
@@ -791,10 +791,10 @@ class Sprite:
 
     texture = property(_get_texture, _set_texture2)
 
-    def _get_texture_transform(self) -> Matrix3x3:
+    def _get_texture_transform(self) -> Mat3:
         return self._texture_transform
 
-    def _set_texture_transform(self, m: Matrix3x3):
+    def _set_texture_transform(self, m: Mat3):
         self._texture_transform = m
 
     texture_transform = property(_get_texture_transform, _set_texture_transform)

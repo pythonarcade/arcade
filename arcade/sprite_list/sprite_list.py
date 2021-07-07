@@ -8,29 +8,16 @@ individual sprites.
 import logging
 from array import array
 from collections import deque
-from typing import (
-    Dict,
-    Deque,
-    Iterator,
-    TYPE_CHECKING,
-    TypeVar,
-    List,
-    Tuple,
-    Optional,
-    Union,
-    Set,
-)
+from typing import (TYPE_CHECKING, Deque, Dict, Iterator, List, Optional, Set,
+                    Tuple, TypeVar, Union)
 
-from arcade import Color
-from arcade import Matrix3x3
-from arcade import Sprite
-from arcade import get_window
-from arcade import gl
+from arcade import Color, Sprite, get_window, gl
 from arcade.context import ArcadeContext
 
+from arcade.math import Mat3
+
 if TYPE_CHECKING:
-    from arcade import TextureAtlas
-    from arcade import Texture
+    from arcade import Texture, TextureAtlas
 
 _SpriteType = TypeVar("_SpriteType", bound=Sprite)
 
@@ -157,9 +144,9 @@ class SpriteList:
         )
 
         # Buffers for each sprite attribute (read by shader) with initial capacity
-        self._sprite_pos_buf = self.ctx.buffer(reserve=self._buf_capacity * 4 * 2)
-        self._sprite_size_buf = self.ctx.buffer(reserve=self._buf_capacity * 4 * 2)
-        self._sprite_angle_buf = self.ctx.buffer(reserve=self._buf_capacity * 4)
+        self._sprite_pos_buf = self.ctx.buffer(reserve=self._buf_capacity * 8 * 2)
+        self._sprite_size_buf = self.ctx.buffer(reserve=self._buf_capacity * 8 * 2)
+        self._sprite_angle_buf = self.ctx.buffer(reserve=self._buf_capacity * 8)
         self._sprite_color_buf = self.ctx.buffer(reserve=self._buf_capacity * 4 * 4)
         self._sprite_texture_buf = self.ctx.buffer(reserve=self._buf_capacity * 4)
         # Index buffer
@@ -795,12 +782,12 @@ class SpriteList:
         #     # always wrap texture transformations with translations
         #     # so that rotate and resize operations act on the texture
         #     # center by default
-        #     texture_transform = Matrix3x3().translate(-0.5, -0.5).multiply(self.sprite_list[0].texture_transform.v).multiply(Matrix3x3().translate(0.5, 0.5).v)
+        #     texture_transform = Mat3().translate(-0.5, -0.5).multiply(self.sprite_list[0].texture_transform.v).multiply(Mat3().translate(0.5, 0.5).v)
         # else:
-        #     texture_transform = Matrix3x3()
+        #     texture_transform = Mat3()
         # self.program['TextureTransform'] = texture_transform.v
 
-        self.program["TextureTransform"] = Matrix3x3().v
+        self.program["TextureTransform"] = list(Mat3())
 
         self._atlas.texture.use(0)
         self._atlas.use_uv_texture(1)

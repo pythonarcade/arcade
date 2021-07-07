@@ -8,12 +8,12 @@ from typing import Dict, Optional, Tuple, Union
 
 import pyglet
 from PIL import Image
-from pyglet.math import Mat4
 
 import arcade
 from arcade.gl import BufferDescription, Context
 from arcade.gl.program import Program
 from arcade.gl.texture import Texture
+from arcade.math import Mat4
 from arcade.texture_atlas import TextureAtlas
 
 
@@ -27,6 +27,7 @@ class ArcadeContext(Context):
     **This is part of the low level rendering API in arcade
     and is mainly for more advanced usage**
     """
+
     atlas_size = 8192, 8192
 
     def __init__(self, window: pyglet.window.Window, gc_mode: str = "auto"):
@@ -45,7 +46,7 @@ class ArcadeContext(Context):
         self.blend_func = self.BLEND_DEFAULT
 
         # Set up a default orthogonal projection for sprites and shapes
-        self._projection_2d_buffer = self.buffer(reserve=64)
+        self._projection_2d_buffer = self.buffer(reserve=128)
         self._projection_2d_buffer.bind_to_uniform_block(0)
         self.projection_2d = (
             0,
@@ -195,7 +196,9 @@ class ArcadeContext(Context):
             # 8192 is a safe maximum size for textures in OpenGL 3.3
             # We might want to query the max limit, but this makes it consistent
             # across all OpenGL implementations.
-            self._atlas = TextureAtlas(self.atlas_size, border=1, mutable=True, ctx=self)
+            self._atlas = TextureAtlas(
+                self.atlas_size, border=1, mutable=True, ctx=self
+            )
 
         return self._atlas
 
@@ -219,7 +222,7 @@ class ArcadeContext(Context):
 
         self._projection_2d = value
         self._projection_2d_matrix = arcade.create_orthogonal_projection(
-            value[0], value[1], value[2], value[3], -100, 100,
+           value[0], value[1], value[2], value[3], -100, 100,
         )
         self._projection_2d_buffer.write(self._projection_2d_matrix)
 
@@ -314,7 +317,9 @@ class ArcadeContext(Context):
 
         if tess_control_shader and tess_evaluation_shader:
             tess_control_src = resolve_resource_path(tess_control_shader).read_text()
-            tess_evaluation_src = resolve_resource_path(tess_evaluation_shader).read_text()
+            tess_evaluation_src = resolve_resource_path(
+                tess_evaluation_shader
+            ).read_text()
 
         return self.program(
             vertex_shader=vertex_shader_src,
@@ -344,6 +349,7 @@ class ArcadeContext(Context):
         :param bool build_mipmaps: Build mipmaps for the texture
         """
         from arcade.resources import resolve_resource_path
+
         path = resolve_resource_path(path)
 
         image = Image.open(str(path))
@@ -351,7 +357,9 @@ class ArcadeContext(Context):
         if flip:
             image = image.transpose(Image.FLIP_TOP_BOTTOM)
 
-        texture = self.texture(image.size, components=4, data=image.convert("RGBA").tobytes())
+        texture = self.texture(
+            image.size, components=4, data=image.convert("RGBA").tobytes()
+        )
         image.close()
 
         if build_mipmaps:

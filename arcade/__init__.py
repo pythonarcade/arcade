@@ -130,7 +130,6 @@ from .drawing_support import get_four_float_color
 from .drawing_support import get_points_for_thick_line
 from .drawing_support import make_transparent_color
 
-from .texture import Matrix3x3
 from .texture import Texture
 from .texture import cleanup_texture_cache
 from .texture import load_spritesheet
@@ -289,6 +288,8 @@ from .text_pillow import (
     DEFAULT_FONT_NAMES,
 )
 
+from .camera import Camera
+
 # --- Generated __all__ ---
 
 __all__ = ['AStarBarrierList',
@@ -296,6 +297,7 @@ __all__ = ['AStarBarrierList',
            'AnimatedWalkingSprite',
            'AnimationKeyframe',
            'ArcadeContext',
+           'Camera',
            'Color',
            'DEFAULT_FONT_NAMES',
            'EmitBurst',
@@ -316,7 +318,6 @@ __all__ = ['AStarBarrierList',
            'MOUSE_BUTTON_LEFT',
            'MOUSE_BUTTON_MIDDLE',
            'MOUSE_BUTTON_RIGHT',
-           'Matrix3x3',
            'NamedPoint',
            'NoOpenGLException',
            'Particle',

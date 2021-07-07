@@ -8,7 +8,6 @@ import time
 import os
 
 import pyglet
-from pyglet.math import Mat4
 
 from numbers import Number
 from typing import (
@@ -19,6 +18,7 @@ from typing import (
     TYPE_CHECKING
 )
 from arcade.arcade_types import Color
+from arcade.math import Mat4
 
 if TYPE_CHECKING:
     from arcade import Window
