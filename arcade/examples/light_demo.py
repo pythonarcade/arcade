@@ -23,6 +23,7 @@ MOVEMENT_SPEED = 5
 # ambient light, set it to black.
 AMBIENT_COLOR = (10, 10, 10)
 
+
 class MyGame(arcade.Window):
     """ Main Game Window """
 
@@ -58,7 +59,8 @@ class MyGame(arcade.Window):
         self.wall_list = arcade.SpriteList()
 
         # Create player sprite
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", 0.4)
+        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
+                                           0.4)
         self.player_sprite.center_x = 64
         self.player_sprite.center_y = 270
         self.player_list.append(self.player_sprite)
