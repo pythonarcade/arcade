@@ -74,6 +74,7 @@ BULLET_MASS = 0.1
 # Make bullet less affected by gravity
 BULLET_GRAVITY = 300
 
+
 class PlayerSprite(arcade.Sprite):
     """ Player Sprite """
     def __init__(self,
@@ -237,7 +238,7 @@ class GameWindow(arcade.Window):
         self.down_pressed: bool = False
 
         # Physics engine
-        self.physics_engine = Optional[arcade.PymunkPhysicsEngine]
+        self.physics_engine: Optional[arcade.PymunkPhysicsEngine] = None
 
         # Set background color
         arcade.set_background_color(arcade.color.AMAZON)
