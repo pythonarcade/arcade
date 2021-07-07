@@ -221,10 +221,10 @@ class ArcadeContext(Context):
             )
 
         self._projection_2d = value
-        # self._projection_2d_matrix = arcade.create_orthogonal_projection(
-        #    value[0], value[1], value[2], value[3], -100, 100,
-        # )
-        # self._projection_2d_buffer.write(self._projection_2d_matrix)
+        self._projection_2d_matrix = arcade.create_orthogonal_projection(
+           value[0], value[1], value[2], value[3], -100, 100,
+        )
+        self._projection_2d_buffer.write(self._projection_2d_matrix)
 
     @property
     def projection_2d_matrix(self) -> Mat4:
