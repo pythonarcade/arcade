@@ -18,6 +18,7 @@ from arcade import RectList
 from arcade import Color
 from arcade import calculate_hit_box_points_simple
 from arcade import calculate_hit_box_points_detailed
+from arcade.math import Mat3
 from arcade.resources import resolve_resource_path
 
 
@@ -27,42 +28,6 @@ def _lerp_color(start_color: Color, end_color: Color, u: float) -> Color:
         int(lerp(start_color[1], end_color[1], u)),
         int(lerp(start_color[2], end_color[2], u))
     )
-
-
-class Matrix3x3:
-    def __init__(self):
-        self.reset()
-
-    def reset(self):
-        self.v = [1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]
-        return self
-
-    def multiply(self, o: List[float]):
-        v = self.v
-        self.v = [v[0] * o[0] + v[3] * o[1] + v[6] * o[2],
-                  v[1] * o[0] + v[4] * o[1] + v[7] * o[2],
-                  v[2] * o[0] + v[5] * o[1] + v[8] * o[2],
-                  v[0] * o[3] + v[3] * o[4] + v[6] * o[5],
-                  v[1] * o[3] + v[4] * o[4] + v[7] * o[5],
-                  v[2] * o[3] + v[5] * o[4] + v[8] * o[5],
-                  v[0] * o[6] + v[3] * o[7] + v[6] * o[8],
-                  v[1] * o[6] + v[4] * o[7] + v[7] * o[8],
-                  v[2] * o[6] + v[5] * o[7] + v[8] * o[8]]
-        return self
-
-    def scale(self, sx: float, sy: float):
-        return self.multiply([1.0 / sx, 0.0, 0.0, 0.0, 1.0 / sy, 0.0, 0.0, 0.0, 1.0])
-
-    def translate(self, tx: float, ty: float):
-        return self.multiply([1.0, 0.0, 0.0, 0.0, 1.0, 0.0, -tx, ty, 1.0])
-
-    def rotate(self, phi: float):
-        s = math.sin(math.radians(phi))
-        c = math.cos(math.radians(phi))
-        return self.multiply([c, s, 0.0, -s, c, 0.0, 0.0, 0.0, 1.0])
-
-    def shear(self, sx: float, sy: float):
-        return self.multiply([1.0, sy, 0.0, sx, 1.0, 0.0, 0.0, 0.0, 1.0])
 
 
 class Texture:
@@ -241,7 +206,7 @@ class Texture:
                          height: float,
                          angle: float = 0,
                          alpha: int = 255,
-                         texture_transform: Matrix3x3 = Matrix3x3()):
+                         texture_transform: Mat3 = Mat3()):
 
         self._create_cached_sprite()
         if self._sprite and self._sprite_list:

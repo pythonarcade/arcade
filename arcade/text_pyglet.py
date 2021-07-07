@@ -9,6 +9,7 @@ import arcade
 import pyglet
 from arcade.arcade_types import Color
 from arcade.draw_commands import get_four_byte_color
+from arcade.math import Mat4
 from arcade.resources import resolve_resource_path
 
 
@@ -168,8 +169,8 @@ def draw_text(
             y = label.y
             label.x = 0
             label.y = 0
-            rview = pyglet.math.Mat4().rotate(angle_radians, x=0, y=0, z=1)
-            tview = pyglet.math.Mat4().translate(x=x, y=y, z=0)
+            rview = Mat4().rotate(angle_radians, x=0, y=0, z=1)
+            tview = Mat4().translate(x=x, y=y, z=0)
             final_view = rview @ tview
             window.view = final_view
 
