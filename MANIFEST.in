@@ -9,5 +9,6 @@ recursive-include arcade/resources *.png *.jpg *.gif
 recursive-include arcade/resources *.tmx *.tsx *.json
 recursive-include arcade/resources *.glsl
 recursive-include arcade/resources *.yml
+recursive-include arcade/resources *.ttf
 recursive-include arcade/lib *.dylib
 recursive-exclude arcade .mypy_cache/**
