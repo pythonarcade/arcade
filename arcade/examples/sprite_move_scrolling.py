@@ -22,7 +22,7 @@ SCREEN_TITLE = "Sprite Move with Scrolling Screen Example"
 
 # How many pixels to keep as a minimum margin between the character
 # and the edge of the screen.
-VIEWPORT_MARGIN = 150
+VIEWPORT_MARGIN = 220
 
 MOVEMENT_SPEED = 5
 
@@ -114,9 +114,6 @@ class MyGame(arcade.Window):
         # Select the camera we'll use to draw all our sprites
         self.camera_sprites.use()
 
-        # Scroll to the proper location
-        self.camera_sprites.scroll = (self.view_left, self.view_bottom)
-
         # Draw all the sprites.
         self.wall_list.draw()
         self.player_list.draw()
@@ -155,6 +152,11 @@ class MyGame(arcade.Window):
         # example though.)
         self.physics_engine.update()
 
+        # Scroll the screen to the player
+        self.scroll_to_player()
+
+    def scroll_to_player(self):
+
         # --- Manage Scrolling ---
 
         # Scroll left
@@ -163,12 +165,12 @@ class MyGame(arcade.Window):
             self.view_left -= left_boundary - self.player_sprite.left
 
         # Scroll right
-        right_boundary = self.view_left + SCREEN_WIDTH - VIEWPORT_MARGIN
+        right_boundary = self.view_left + self.width - VIEWPORT_MARGIN
         if self.player_sprite.right > right_boundary:
             self.view_left += self.player_sprite.right - right_boundary
 
         # Scroll up
-        top_boundary = self.view_bottom + SCREEN_HEIGHT - VIEWPORT_MARGIN
+        top_boundary = self.view_bottom + self.height - VIEWPORT_MARGIN
         if self.player_sprite.top > top_boundary:
             self.view_bottom += self.player_sprite.top - top_boundary
 
@@ -177,12 +179,8 @@ class MyGame(arcade.Window):
         if self.player_sprite.bottom < bottom_boundary:
             self.view_bottom -= bottom_boundary - self.player_sprite.bottom
 
-        # Make sure our boundaries are integer values. While the view port does
-        # support floating point numbers, for this application we want every pixel
-        # in the view port to map directly onto a pixel on the screen. We don't want
-        # any rounding errors.
-        self.view_left = int(self.view_left)
-        self.view_bottom = int(self.view_bottom)
+        # Scroll to the proper location
+        self.camera_sprites.scroll = (self.view_left, self.view_bottom)
 
 
 def main():
