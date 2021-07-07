@@ -61,31 +61,12 @@ class GameWindow(arcade.Window):
         # Map name
         map_name = "pymunk_test_map.json"
 
-        # Layer Specific Options for the Tilemap
-        layer_options = {
-            'Platforms': {
-                "use_spatial_hash": True,
-            },
-            'Dynamic Items': {
-                "use_spatial_hash": True,
-            },
-        }
-
         # Load in TileMap
-        tile_map = arcade.load_tilemap(map_name, SPRITE_SCALING_TILES, layer_options)
+        tile_map = arcade.load_tilemap(map_name, SPRITE_SCALING_TILES)
 
-        # Initiate New Scene with our TileMap, this will automatically add all layers
-        # from the map as SpriteLists in the scene in the proper order.
+        # Pull the sprite layers out of the tile map
         self.wall_list = tile_map.sprite_lists["Platforms"]
         self.item_list = tile_map.sprite_lists["Dynamic Items"]
-
-        # # Read in the tiled map
-        # map_name = "pymunk_test_map.json"
-        # my_map = arcade.tilemap.read_map(map_name)
-        #
-        # # Read in the map layers
-        # self.wall_list = arcade.tilemap.process_layer(my_map, 'Platforms', SPRITE_SCALING_TILES)
-        # self.item_list = arcade.tilemap.process_layer(my_map, 'Dynamic Items', SPRITE_SCALING_TILES)
 
         # Create player sprite
         self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",

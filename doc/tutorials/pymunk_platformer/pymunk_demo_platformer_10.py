@@ -74,6 +74,7 @@ BULLET_MASS = 0.1
 # Make bullet less affected by gravity
 BULLET_GRAVITY = 300
 
+
 class PlayerSprite(arcade.Sprite):
     """ Player Sprite """
     def __init__(self):
@@ -158,6 +159,7 @@ class PlayerSprite(arcade.Sprite):
                 self.cur_texture = 0
             self.texture = self.walk_textures[self.cur_texture][self.character_face_direction]
 
+
 class BulletSprite(arcade.SpriteSolidColor):
     """ Bullet Sprite """
     def pymunk_moved(self, physics_engine, dx, dy, d_angle):
@@ -165,6 +167,7 @@ class BulletSprite(arcade.SpriteSolidColor):
         # If the bullet falls below the screen, remove it
         if self.center_y < -100:
             self.remove_from_sprite_lists()
+
 
 class GameWindow(arcade.Window):
     """ Main Window """
@@ -201,13 +204,15 @@ class GameWindow(arcade.Window):
         self.player_list = arcade.SpriteList()
         self.bullet_list = arcade.SpriteList()
 
-        # Read in the tiled map
+        # Map name
         map_name = "pymunk_test_map.json"
-        my_map = arcade.tilemap.read_map(map_name)
 
-        # Read in the map layers
-        self.wall_list = arcade.tilemap.process_layer(my_map, 'Platforms', SPRITE_SCALING_TILES)
-        self.item_list = arcade.tilemap.process_layer(my_map, 'Dynamic Items', SPRITE_SCALING_TILES)
+        # Load in TileMap
+        tile_map = arcade.load_tilemap(map_name, SPRITE_SCALING_TILES)
+
+        # Pull the sprite layers out of the tile map
+        self.wall_list = tile_map.sprite_lists["Platforms"]
+        self.item_list = tile_map.sprite_lists["Dynamic Items"]
 
         # Create player sprite
         self.player_sprite = PlayerSprite()

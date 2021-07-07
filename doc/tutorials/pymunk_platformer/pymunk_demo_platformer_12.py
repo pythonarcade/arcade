@@ -250,24 +250,17 @@ class GameWindow(arcade.Window):
         self.player_list = arcade.SpriteList()
         self.bullet_list = arcade.SpriteList()
 
-        # Read in the tiled map
+        # Map name
         map_name = "pymunk_test_map.json"
-        my_map = arcade.tilemap.read_map(map_name)
 
-        # Read in the map layers
-        self.wall_list = arcade.tilemap.process_layer(my_map,
-                                                      'Platforms',
-                                                      SPRITE_SCALING_TILES,
-                                                      hit_box_algorithm="Detailed")
-        self.item_list = arcade.tilemap.process_layer(my_map,
-                                                      'Dynamic Items',
-                                                      SPRITE_SCALING_TILES,
-                                                      hit_box_algorithm="Detailed")
-        self.ladder_list = arcade.tilemap.process_layer(my_map,
-                                                        'Ladders',
-                                                        SPRITE_SCALING_TILES,
-                                                        use_spatial_hash=True,
-                                                        hit_box_algorithm="Detailed")
+        # Load in TileMap
+        tile_map = arcade.load_tilemap(map_name, SPRITE_SCALING_TILES)
+
+        # Pull the sprite layers out of the tile map
+        self.wall_list = tile_map.sprite_lists["Platforms"]
+        self.item_list = tile_map.sprite_lists["Dynamic Items"]
+        self.ladder_list = tile_map.sprite_lists["Ladders"]
+        self.moving_sprites_list = tile_map.sprite_lists['Moving Platforms']
 
         # Create player sprite
         self.player_sprite = PlayerSprite(self.ladder_list, hit_box_algorithm="Detailed")
@@ -279,11 +272,6 @@ class GameWindow(arcade.Window):
         self.player_sprite.center_y = SPRITE_SIZE * grid_y + SPRITE_SIZE / 2
         # Add to player sprite list
         self.player_list.append(self.player_sprite)
-
-        # Moving Sprite
-        self.moving_sprites_list = arcade.tilemap.process_layer(my_map,
-                                                                'Moving Platforms',
-                                                                SPRITE_SCALING_TILES)
 
         # --- Pymunk Physics Engine Setup ---
 
