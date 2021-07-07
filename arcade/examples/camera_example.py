@@ -47,7 +47,7 @@ class MyGame(arcade.Window):
         """
         Initializer
         """
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, resizable=True)
 
         # Our TileMap Object
         self.tile_map = None
@@ -140,13 +140,7 @@ class MyGame(arcade.Window):
     def on_resize(self, width, height):
         """Resize window"""
         self.camera.resize(width, height)
-
-    def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
-        """Mouse scroll - control zoom."""
-        if scroll_y > 0:
-            self.camera.zoom(-0.01)
-        else:
-            self.camera.zoom(0.01)
+        self.gui_camera.resize(width, height)
 
     def on_draw(self):
         """Render the screen."""
