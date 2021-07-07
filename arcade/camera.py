@@ -70,10 +70,10 @@ class Camera:
 
         # Update Projection Matrix
         self.projection_matrix = Mat4.orthogonal_projection(
-            int(self.scale * (0 + self.position[0])),
-            int(self.scale * (self.viewport_width + self.position[0])),
-            int(self.scale * (0 + self.position[1])),
-            int(self.scale * (self.viewport_height + self.position[1])),
+            int(self.scale * (0 + math.floor(self.position[0]))),
+            int(self.scale * (self.viewport_width + math.floor(self.position[0]))),
+            int(self.scale * (0 + math.floor(self.position[1]))),
+            int(self.scale * (self.viewport_height + math.floor(self.position[1]))),
             self.near,
             self.far,
         )
