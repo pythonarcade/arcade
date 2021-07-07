@@ -253,7 +253,9 @@ class SpriteList:
         """
         Return the index of a sprite in the spritelist
 
-        :type: int
+        :param Sprite sprite: Sprite to find and return the index of
+
+        :rtype: int
         """
         return self.sprite_list.index(sprite)
 
@@ -269,6 +271,8 @@ class SpriteList:
     def pop(self, index: int = -1) -> Sprite:
         """
         Pop off the last sprite, or the given index, from the list
+
+        :param int index: Index of sprite to remove, defaults to -1 for the last item.
         """
         if len(self.sprite_list) == 0:
             raise (ValueError("pop from empty list"))
@@ -281,7 +285,7 @@ class SpriteList:
         """
         Add a new sprite to the list.
 
-        :param Sprite item: Sprite to add to the list.
+        :param Sprite sprite: Sprite to add to the list.
         """
         # print(f"{id(self)} : {id(sprite)} append")
         if sprite in self.sprite_slot:
@@ -310,7 +314,11 @@ class SpriteList:
                 self._atlas.add(texture)
 
     def swap(self, index_1: int, index_2: int):
-        """Swap two sprites by index"""
+        """
+        Swap two sprites by index
+        :param int index_1: Item index to swap
+        :param int index_2: Item index to swap
+        """
         # Swap order in spritelist
         sprite_1 = self.sprite_list[index_1]
         sprite_2 = self.sprite_list[index_2]
@@ -328,7 +336,7 @@ class SpriteList:
     def remove(self, sprite: _SpriteType):
         """
         Remove a specific sprite from the list.
-        :param Sprite item: Item to remove from the list
+        :param Sprite sprite: Item to remove from the list
         """
         # print(f"{id(self)} : {id(sprite)} remove")
         try:
@@ -361,7 +369,7 @@ class SpriteList:
         """
         Extends the current list with the given list
 
-        :param list items: list of Sprites to add to the list
+        :param list sprites: list of Sprites to add to the list
         """
         for sprite in sprites:
             self.append(sprite)
@@ -371,7 +379,7 @@ class SpriteList:
         Inserts a sprite at a given index.
 
         :param int index: The index at which to insert
-        :param Sprite item: The sprite to insert
+        :param Sprite sprite: The sprite to insert
         """
         if sprite in self.sprite_list:
             raise ValueError("Sprite is already in list")
