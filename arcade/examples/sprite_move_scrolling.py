@@ -1,7 +1,5 @@
 """
-Use sprites to scroll around a large screen.
-
-Simple program to show basic sprite usage.
+Scroll around a large screen.
 
 Artwork from https://kenney.nl
 
@@ -34,13 +32,6 @@ class MyGame(arcade.Window):
         Initializer
         """
         super().__init__(width, height, title)
-
-        # Set the working directory (where we expect to find files) to the same
-        # directory this .py file is in. You can leave this out of your own
-        # code, but it is needed to easily run the examples using "python -m"
-        # as mentioned at the top of this program.
-        file_path = os.path.dirname(os.path.abspath(__file__))
-        os.chdir(file_path)
 
         # Sprite lists
         self.player_list = None
@@ -178,13 +169,6 @@ class MyGame(arcade.Window):
         """Resize window"""
         self.camera_sprites.resize(width, height)
         self.camera_gui.resize(width, height)
-
-    def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
-        """Mouse scroll - control zoom."""
-        if scroll_y > 0:
-            self.camera.zoom(-0.01)
-        else:
-            self.camera.zoom(0.01)
 
 
 def main():
