@@ -9,7 +9,6 @@ python -m arcade.examples.sprite_move_scrolling
 
 import random
 import arcade
-import os
 
 SPRITE_SCALING = 0.5
 
@@ -21,7 +20,8 @@ SCREEN_TITLE = "Sprite Move with Scrolling Screen Example"
 # and the edge of the screen.
 VIEWPORT_MARGIN = 220
 
-MOVEMENT_SPEED = 5
+MOVEMENT_SPEED = 7
+CAMERA_SPEED = 0.1
 
 
 class MyGame(arcade.Window):
@@ -31,16 +31,14 @@ class MyGame(arcade.Window):
         """
         Initializer
         """
-        super().__init__(width, height, title)
+        super().__init__(width, height, title, resizable=True)
 
         # Sprite lists
         self.player_list = None
+        self.wall_list = None
 
         # Set up the player
         self.player_sprite = None
-
-        self.coin_list = None
-        self.wall_list = None
 
         self.physics_engine = None
 
@@ -61,13 +59,13 @@ class MyGame(arcade.Window):
         # Set up the player
         self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
                                            scale=0.4)
-        self.player_sprite.center_x = 64
-        self.player_sprite.center_y = 270
+        self.player_sprite.center_x = 256
+        self.player_sprite.center_y = 512
         self.player_list.append(self.player_sprite)
 
         # -- Set up several columns of walls
         for x in range(200, 1650, 210):
-            for y in range(0, 1000, 64):
+            for y in range(0, 1600, 64):
                 # Randomly skip a box so the player can find a way through
                 if random.randrange(5) > 0:
                     wall = arcade.Sprite(":resources:images/tiles/grassCenter.png", SPRITE_SCALING)
@@ -138,6 +136,20 @@ class MyGame(arcade.Window):
         self.scroll_to_player()
 
     def scroll_to_player(self):
+        """
+        Scroll the window to the player.
+        This method will attempt to keep the player at least VIEWPORT_MARGIN
+        pixels away from the edge.
+
+        Code to center the window on the user is even easier. Simply use:
+        position = self.player_sprite.center_x - self.width / 2, \
+                   self.player_sprite.center_y - self.height / 2
+        self.camera_sprites.move_to(position, CAMERA_SPEED)
+
+        if CAMERA_SPEED is 1, the camera will immediately move to the desired position.
+        Anything between 0 and 1 will have the camera move to the location with a smoother
+        pan.
+        """
 
         # --- Manage Scrolling ---
 
@@ -163,12 +175,16 @@ class MyGame(arcade.Window):
 
         # Scroll to the proper location
         position = self.view_left, self.view_bottom
-        self.camera_sprites.move_to(position)
+        self.camera_sprites.move_to(position, CAMERA_SPEED)
 
     def on_resize(self, width, height):
-        """Resize window"""
+        """
+        Resize window
+        Handle the user grabbing the edge and resizing the window.
+        """
         self.camera_sprites.resize(width, height)
         self.camera_gui.resize(width, height)
+        self.scroll_to_player()
 
 
 def main():
