@@ -198,8 +198,9 @@ class TileMap:
                 tile_ref = pytiled_parser.Tile(
                     id=(tile_gid - tileset_key), image=tileset.image
                 )
-            elif tileset.tiles is None:
-                raise ValueError(f"Error, no tiles in tileset with key of '{tileset_key}' - {tileset}")
+            elif tileset.tiles is None and tileset.image is not None:
+                # Not in this tileset, move to the next
+                continue
             else:
                 tile_ref = tileset.tiles.get(tile_gid - tileset_key)
 
@@ -452,7 +453,8 @@ class TileMap:
                     raise ValueError(
                         (
                             f"Couldn't find tile for item {item} in layer "
-                            f"'{layer.name}' in file '{self.tiled_map.map_file}'."
+                            f"'{layer.name}' in file '{self.tiled_map.map_file}'"
+                            f"at ({column_index}, {row_index})."
                         )
                     )
 
