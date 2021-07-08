@@ -64,6 +64,7 @@ class Window(pyglet.window.Window):
                  antialiasing: bool = True,
                  gl_version: Tuple[int, int] = (3, 3),
                  screen: pyglet.canvas.Screen = None,
+                 style = pyglet.window.Window.WINDOW_STYLE_DEFAULT,
                  visible: bool = True,
                  vsync: bool = False,
                  gc_mode: str = "auto",
@@ -105,7 +106,7 @@ class Window(pyglet.window.Window):
 
         try:
             super().__init__(width=width, height=height, caption=title,
-                             resizable=resizable, config=config, vsync=vsync, visible=visible)
+                             resizable=resizable, config=config, vsync=vsync, visible=visible, style=style)
             self.register_event_type('update')
             self.register_event_type('on_update')
         except pyglet.window.NoSuchConfigException:
