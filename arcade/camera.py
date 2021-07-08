@@ -30,9 +30,6 @@ class Camera:
         self.shake_offset = Vec2()
         self.shake_decay = Vec2()
 
-        # Scale Value
-        self.scale = 1.0
-
         # Initial Update
         self.resize(viewport_width, viewport_height)
 
@@ -68,12 +65,11 @@ class Camera:
 
             self.position += Vec2(self.shake_offset[0], self.shake_offset[1])
 
-        # Update Projection Matrix
         self.projection_matrix = Mat4.orthogonal_projection(
-            int(self.scale * (0 + math.floor(self.position[0]))),
-            int(self.scale * (self.viewport_width + math.floor(self.position[0]))),
-            int(self.scale * (0 + math.floor(self.position[1]))),
-            int(self.scale * (self.viewport_height + math.floor(self.position[1]))),
+            math.floor(self.position[0]),
+            self.viewport_width + math.floor(self.position[0]),
+            math.floor(self.position[1]),
+            self.viewport_height + math.floor(self.position[1]),
             self.near,
             self.far,
         )
@@ -92,8 +88,9 @@ class Camera:
         self.position = self.position.lerp(pos, speed)
 
     def zoom(self, change: float):
-        self.scale += change
+        raise NotImplementedError("Camera Zooming is not yet supported")
 
     def use(self):
         self.update()
+        self._window.set_viewport(0, self.viewport_width, 0, self.viewport_height)
         self._window.ctx.projection_2d_matrix = self.projection_matrix
