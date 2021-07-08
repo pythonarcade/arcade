@@ -198,6 +198,8 @@ class TileMap:
                 tile_ref = pytiled_parser.Tile(
                     id=(tile_gid - tileset_key), image=tileset.image
                 )
+            elif tileset.tiles is None:
+                raise ValueError(f"Error, no tiles in tileset with key of '{tileset_key}' - {tileset}")
             else:
                 tile_ref = tileset.tiles.get(tile_gid - tileset_key)
 
