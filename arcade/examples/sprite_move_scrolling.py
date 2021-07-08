@@ -12,16 +12,19 @@ import arcade
 
 SPRITE_SCALING = 0.5
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+DEFAULT_SCREEN_WIDTH = 800
+DEFAULT_SCREEN_HEIGHT = 600
 SCREEN_TITLE = "Sprite Move with Scrolling Screen Example"
 
 # How many pixels to keep as a minimum margin between the character
 # and the edge of the screen.
 VIEWPORT_MARGIN = 220
 
-MOVEMENT_SPEED = 7
+# How fast the camera pans to the player. 1.0 is instant.
 CAMERA_SPEED = 0.1
+
+# How fast the character moves
+PLAYER_MOVEMENT_SPEED = 7
 
 
 class MyGame(arcade.Window):
@@ -46,8 +49,8 @@ class MyGame(arcade.Window):
         self.view_bottom = 0
         self.view_left = 0
 
-        self.camera_sprites = arcade.Camera(self, SCREEN_WIDTH, SCREEN_HEIGHT)
-        self.camera_gui = arcade.Camera(self, SCREEN_WIDTH, SCREEN_HEIGHT)
+        self.camera_sprites = arcade.Camera(self, DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT)
+        self.camera_gui = arcade.Camera(self, DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT)
 
     def setup(self):
         """ Set up the game and initialize the variables. """
@@ -109,13 +112,13 @@ class MyGame(arcade.Window):
         """Called whenever a key is pressed. """
 
         if key == arcade.key.UP:
-            self.player_sprite.change_y = MOVEMENT_SPEED
+            self.player_sprite.change_y = PLAYER_MOVEMENT_SPEED
         elif key == arcade.key.DOWN:
-            self.player_sprite.change_y = -MOVEMENT_SPEED
+            self.player_sprite.change_y = -PLAYER_MOVEMENT_SPEED
         elif key == arcade.key.LEFT:
-            self.player_sprite.change_x = -MOVEMENT_SPEED
+            self.player_sprite.change_x = -PLAYER_MOVEMENT_SPEED
         elif key == arcade.key.RIGHT:
-            self.player_sprite.change_x = MOVEMENT_SPEED
+            self.player_sprite.change_x = PLAYER_MOVEMENT_SPEED
 
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key. """
@@ -189,7 +192,7 @@ class MyGame(arcade.Window):
 
 def main():
     """ Main method """
-    window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    window = MyGame(DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT, SCREEN_TITLE)
     window.setup()
     arcade.run()
 
