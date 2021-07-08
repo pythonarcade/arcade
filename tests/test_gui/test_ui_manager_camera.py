@@ -1,13 +1,10 @@
-from arcade.experimental.camera import Camera2D
+import arcade
 
 
 def test_ui_manager_respects_camera(mock_mng, window):
     # GIVEN
     mock_mng.use_super_mouse_adjustment = True
-    camera = Camera2D(
-        viewport=(0, 0, window.width, window.height),
-        projection=(0, window.width, 0, window.height),
-    )
+    camera = arcade.Camera(window, window.width, window.height)
 
     # WHEN
     window.set_size(width=400, height=300)
