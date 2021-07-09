@@ -187,7 +187,6 @@ class MyGame(arcade.Window):
         """
         self.camera_sprites.resize(width, height)
         self.camera_gui.resize(width, height)
-        self.scroll_to_player()
 
 
 def main():
