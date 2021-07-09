@@ -1,3 +1,4 @@
+from arcade.window_commands import get_scaling_factor
 import math
 from copy import copy
 from typing import Tuple
@@ -10,8 +11,8 @@ class Camera:
     def __init__(
         self,
         window,
-        viewport_width: float = 0.0,
-        viewport_height: float = 0.0,
+        viewport_width: int = 0,
+        viewport_height: int = 0,
     ):
         # Window
         if isinstance(window, arcade.View):
@@ -80,7 +81,7 @@ class Camera:
             self.far,
         )
 
-    def resize(self, viewport_width: float, viewport_height: float):
+    def resize(self, viewport_width: int, viewport_height: int):
         self.viewport_width = viewport_width
         self.viewport_height = viewport_height
 
@@ -98,5 +99,12 @@ class Camera:
 
     def use(self):
         self.update()
-        self._window.set_viewport(0, self.viewport_width, 0, self.viewport_height)
+        fbo = self._window.ctx.fbo
+        scaling = get_scaling_factor(self._window) if fbo.is_default else 1.0
+        fbo.ctx.viewport = (
+            0,
+            0,
+            int(self.viewport_width * scaling),
+            int(self.viewport_height * scaling),
+        )
         self._window.ctx.projection_2d_matrix = self.projection_matrix
