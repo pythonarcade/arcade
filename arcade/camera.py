@@ -2,6 +2,7 @@ import math
 from copy import copy
 from typing import Tuple
 
+import arcade
 from arcade.math import Mat4, Vec2
 
 
@@ -13,6 +14,11 @@ class Camera:
         viewport_height: float = 0.0,
     ):
         # Window
+        if isinstance(window, arcade.View):
+            raise ValueError("The first parameter must be an instance of arcade.Window, not arcade.View. "
+                                "Try passing in 'myview.window' instead of 'myview'.")
+        if not isinstance(window, arcade.Window):
+            raise ValueError("The first parameter must be an instance of arcade.Window.")
         self._window = window
 
         # Position
