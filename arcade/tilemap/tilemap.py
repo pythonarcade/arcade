@@ -105,6 +105,7 @@ class TileMap:
         # Dictionaries to store the SpriteLists for processed layers
         self.sprite_lists: OrderedDict[str, SpriteList] = OrderedDict()
         self.object_lists: OrderedDict[str, List[TiledObject]] = OrderedDict()
+        self.properties = self.tiled_map.properties
 
         if not layer_options:
             layer_options = {}
@@ -581,7 +582,13 @@ class TileMap:
                 sprite_list.append(my_sprite)
                 continue
             elif isinstance(cur_object, pytiled_parser.tiled_object.Point):
-                shape = [cur_object.coordinates.x, cur_object.coordinates.y]
+                x = cur_object.coordinates.x * scaling
+                y = (
+                    self.tiled_map.map_size.height * self.tiled_map.tile_size[1]
+                    - cur_object.coordinates.y
+                ) * scaling
+
+                shape = [x, y]
             elif isinstance(cur_object, pytiled_parser.tiled_object.Rectangle):
                 sx = cur_object.coordinates.x
                 sy = -cur_object.coordinates.y
