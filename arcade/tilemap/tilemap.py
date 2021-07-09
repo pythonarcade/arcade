@@ -600,7 +600,7 @@ class TileMap:
                 shape = []
                 for point in cur_object.points:
                     x = point.x + cur_object.coordinates.x
-                    y = -(point.y + cur_object.coordinates.y)
+                    y = (self.height * self.tile_height) - (point.y + cur_object.coordinates.y)
                     point = (x, y)
                     shape.append(point)
 
