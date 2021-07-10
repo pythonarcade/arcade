@@ -149,20 +149,20 @@ class TileMap:
         x = math.floor(x / self.tiled_map.tile_size.width)
         y = math.floor(y / self.tiled_map.tile_size.height)
 
-        return (x, y)
+        return x, y
 
     def get_tilemap_layer(self, layer_path: str) -> Optional[pytiled_parser.Layer]:
         assert isinstance(layer_path, str)
 
-        def _get_tilemap_layer(path, layers):
-            layer_name = path.pop(0)
-            for layer in layers:
-                if layer.name == layer_name:
-                    if isinstance(layer, pytiled_parser.LayerGroup):
-                        if len(path) != 0:
-                            return _get_tilemap_layer(path, layer.layers)
+        def _get_tilemap_layer(my_path, layers):
+            layer_name = my_path.pop(0)
+            for my_layer in layers:
+                if my_layer.name == layer_name:
+                    if isinstance(my_layer, pytiled_parser.LayerGroup):
+                        if len(my_path) != 0:
+                            return _get_tilemap_layer(my_path, my_layer.layers)
                     else:
-                        return layer
+                        return my_layer
             return None
 
         path = layer_path.strip("/").split("/")
@@ -191,11 +191,11 @@ class TileMap:
                 continue
 
             # No specific tile info, but there is a tile sheet
-            if (
-                tileset.tiles is None
-                and tileset.image is not None
+            # print(f"data {tileset_key} {tileset.tiles} {tileset.image} {tileset_key} {tile_gid} {tileset.tile_count}")
+            if (tileset.image is not None
                 and tileset_key <= tile_gid < tileset_key + tileset.tile_count
             ):
+                # No specific tile info, but there is a tile sheet
                 tile_ref = pytiled_parser.Tile(
                     id=(tile_gid - tileset_key), image=tileset.image
                 )
@@ -212,6 +212,8 @@ class TileMap:
                 my_tile.flipped_diagonally = flipped_diagonally
                 my_tile.flipped_horizontally = flipped_horizontally
                 return my_tile
+
+        print(f"Returning NO tile for {tile_gid}.")
         return None
 
     def _get_tile_by_id(
@@ -229,7 +231,7 @@ class TileMap:
         self,
         tile: pytiled_parser.Tile,
         map_directory: Optional[str],
-    ) -> Optional[str]:
+    ) -> Optional[Path]:
         image_file = None
         if tile.image:
             image_file = tile.image
@@ -643,7 +645,7 @@ class TileMap:
 
                 objects_list.append(tiled_object)
 
-        return (sprite_list or None, objects_list or None)
+        return sprite_list or None, objects_list or None
 
 
 def load_tilemap(
