@@ -15,6 +15,8 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, OrderedDict, Tuple, Union, cast
 
 import pytiled_parser
+import pytiled_parser.tiled_object
+
 from arcade import (
     AnimatedTimeBasedSprite,
     AnimationKeyframe,
@@ -22,12 +24,61 @@ from arcade import (
     SpriteList,
     load_texture,
 )
-from arcade.arcade_types import Point, PointList, Rect, TiledObject
+from arcade.arcade_types import Point, TiledObject
 from arcade.resources import resolve_resource_path
 
 _FLIPPED_HORIZONTALLY_FLAG = 0x80000000
 _FLIPPED_VERTICALLY_FLAG = 0x40000000
 _FLIPPED_DIAGONALLY_FLAG = 0x20000000
+
+
+def _get_image_info_from_tileset(tile: pytiled_parser.Tile):
+    image_x = 0
+    image_y = 0
+    if tile.tileset.image is not None:
+        margin = tile.tileset.margin or 0
+        spacing = tile.tileset.spacing or 0
+        row = tile.id // tile.tileset.columns
+        image_y = margin + row * (tile.tileset.tile_height + spacing)
+        col = tile.id % tile.tileset.columns
+        image_x = margin + col * (tile.tileset.tile_width + spacing)
+
+    if tile.tileset.image:
+        width = tile.tileset.tile_width
+        height = tile.tileset.tile_height
+    else:
+        width = tile.image_width
+        height = tile.image_height
+
+    return image_x, image_y, width, height
+
+
+def _get_image_source(
+    tile: pytiled_parser.Tile,
+    map_directory: Optional[str],
+) -> Optional[Path]:
+    image_file = None
+    if tile.image:
+        image_file = tile.image
+    elif tile.tileset.image:
+        image_file = tile.tileset.image
+
+    if not image_file:
+        print(
+            f"Warning for tile {tile.id}, no image source listed either for individual tile, or as a tileset."
+        )
+        return None
+
+    if os.path.exists(image_file):
+        return image_file
+
+    if map_directory:
+        try2 = Path(map_directory, image_file)
+        if os.path.exists(try2):
+            return try2
+
+    print(f"Warning, can't find image {image_file} for tile {tile.id}")
+    return None
 
 
 class TileMap:
@@ -103,8 +154,8 @@ class TileMap:
         self.scaling = scaling
 
         # Dictionaries to store the SpriteLists for processed layers
-        self.sprite_lists: OrderedDict[str, SpriteList] = OrderedDict()
-        self.object_lists: OrderedDict[str, List[TiledObject]] = OrderedDict()
+        self.sprite_lists: OrderedDict[str, SpriteList] = OrderedDict[str, SpriteList]()
+        self.object_lists: OrderedDict[str, List[TiledObject]] = OrderedDict[str, SpriteList]()
         self.properties = self.tiled_map.properties
 
         if not layer_options:
@@ -192,9 +243,7 @@ class TileMap:
 
             # No specific tile info, but there is a tile sheet
             # print(f"data {tileset_key} {tileset.tiles} {tileset.image} {tileset_key} {tile_gid} {tileset.tile_count}")
-            if (tileset.image is not None
-                and tileset_key <= tile_gid < tileset_key + tileset.tile_count
-            ):
+            if tileset.image is not None and tileset_key <= tile_gid < tileset_key + tileset.tile_count:
                 # No specific tile info, but there is a tile sheet
                 tile_ref = pytiled_parser.Tile(
                     id=(tile_gid - tileset_key), image=tileset.image
@@ -203,6 +252,8 @@ class TileMap:
                 # Not in this tileset, move to the next
                 continue
             else:
+                if tileset.tiles is None:
+                    return None
                 tile_ref = tileset.tiles.get(tile_gid - tileset_key)
 
             if tile_ref:
@@ -227,54 +278,6 @@ class TileMap:
 
         return None
 
-    def _get_image_source(
-        self,
-        tile: pytiled_parser.Tile,
-        map_directory: Optional[str],
-    ) -> Optional[Path]:
-        image_file = None
-        if tile.image:
-            image_file = tile.image
-        elif tile.tileset.image:
-            image_file = tile.tileset.image
-
-        if not image_file:
-            print(
-                f"Warning for tile {tile.id}, no image source listed either for individual tile, or as a tileset."
-            )
-            return None
-
-        if os.path.exists(image_file):
-            return image_file
-
-        if map_directory:
-            try2 = Path(map_directory, image_file)
-            if os.path.exists(try2):
-                return try2
-
-        print(f"Warning, can't find image {image_file} for tile {tile.id}")
-        return None
-
-    def _get_image_info_from_tileset(self, tile: pytiled_parser.Tile):
-        image_x = 0
-        image_y = 0
-        if tile.tileset.image is not None:
-            margin = tile.tileset.margin or 0
-            spacing = tile.tileset.spacing or 0
-            row = tile.id // tile.tileset.columns
-            image_y = margin + row * (tile.tileset.tile_height + spacing)
-            col = tile.id % tile.tileset.columns
-            image_x = margin + col * (tile.tileset.tile_width + spacing)
-
-        if tile.tileset.image:
-            width = tile.tileset.tile_width
-            height = tile.tileset.tile_height
-        else:
-            width = tile.image_width
-            height = tile.image_height
-
-        return image_x, image_y, width, height
-
     def _create_sprite_from_tile(
         self,
         tile: pytiled_parser.Tile,
@@ -290,12 +293,12 @@ class TileMap:
         # --- Step 1, Find a reference to an image this is going to be based off of
         map_source = self.tiled_map.map_file
         map_directory = os.path.dirname(map_source)
-        image_file = self._get_image_source(tile, map_directory)
+        image_file = _get_image_source(tile, map_directory)
 
         if tile.animation:
             my_sprite: Sprite = AnimatedTimeBasedSprite(image_file, scaling)
         else:
-            image_x, image_y, width, height = self._get_image_info_from_tileset(tile)
+            image_x, image_y, width, height = _get_image_info_from_tileset(tile)
             my_sprite = Sprite(
                 image_file,
                 scaling,
@@ -318,10 +321,19 @@ class TileMap:
             my_sprite.properties["type"] = tile.type
 
         if tile.objects is not None:
+            if not isinstance(tile.objects, pytiled_parser.ObjectLayer):
+                print("Warning, tile.objects is not an ObjectLayer as expected.")
+                return my_sprite
+
             if len(tile.objects.tiled_objects) > 1:
-                print(
-                    f"Warning, only one hit box supported for tile with image {tile.image.source}."
-                )
+                if tile.image:
+                    print(
+                        f"Warning, only one hit box supported for tile with image {tile.image}."
+                    )
+                else:
+                    print(
+                        f"Warning, only one hit box supported for tile."
+                    )
 
             for hitbox in tile.objects.tiled_objects:
                 points: List[Point] = []
@@ -329,7 +341,7 @@ class TileMap:
                     if hitbox.size is None:
                         print(
                             f"Warning: Rectangle hitbox created for without a "
-                            f"height or width for {tile.image.source}. Ignoring."
+                            f"height or width Ignoring."
                         )
                         continue
 
@@ -366,7 +378,7 @@ class TileMap:
                     if not hitbox.size:
                         print(
                             f"Warning: Ellipse hitbox created without a height "
-                            f" or width for {tile.image.source}. Ignoring."
+                            f" or width for {tile.image}. Ignoring."
                         )
                         continue
 
@@ -389,14 +401,14 @@ class TileMap:
                 else:
                     print(f"Warning: Hitbox type {type(hitbox)} not supported.")
 
-                my_sprite.set_hit_box(points)
+                my_sprite.hit_box = points
 
         if tile.animation:
             key_frame_list = []
             for frame in tile.animation:
                 frame_tile = self._get_tile_by_id(tile.tileset, frame.tile_id)
                 if frame_tile:
-                    image_file = self._get_image_source(frame_tile, map_directory)
+                    image_file = _get_image_source(frame_tile, map_directory)
 
                     if frame_tile.image and image_file:
                         texture = load_texture(image_file)
@@ -407,7 +419,7 @@ class TileMap:
                             image_y,
                             width,
                             height,
-                        ) = self._get_image_info_from_tileset(frame_tile)
+                        ) = _get_image_info_from_tileset(frame_tile)
 
                         texture = load_texture(
                             image_file, image_x, image_y, width, height
@@ -416,6 +428,7 @@ class TileMap:
                         print(
                             f"Warning: failed to load image for animation frame for tile {frame_tile.id}"
                         )
+                        texture = None
 
                     key_frame = AnimationKeyframe(
                         frame.tile_id, frame.duration, texture
@@ -423,7 +436,7 @@ class TileMap:
                     key_frame_list.append(key_frame)
 
                     if len(key_frame_list) == 1:
-                        my_sprite.texture == key_frame.texture
+                        my_sprite.texture = key_frame.texture
 
             cast(AnimatedTimeBasedSprite, my_sprite).frames = key_frame_list
 
@@ -470,7 +483,7 @@ class TileMap:
 
                 if my_sprite is None:
                     print(
-                        f"Warning: Could not create sprite number {item} in layer '{layer.name}' {tile.image.source}"
+                        f"Warning: Could not create sprite number {item} in layer '{layer.name}' {tile.image}"
                     )
                 else:
                     my_sprite.center_x = (
@@ -506,7 +519,7 @@ class TileMap:
         objects_list: Optional[List[TiledObject]] = []
 
         for cur_object in layer.tiled_objects:
-            shape: Optional[Union[Point, PointList, Rect]] = None
+            # shape: Optional[Union[Point, PointList, Rect]] = None
             if isinstance(cur_object, pytiled_parser.tiled_object.Tile):
                 if not sprite_list:
                     sprite_list = SpriteList(use_spatial_hash=use_spatial_hash)
@@ -673,7 +686,7 @@ def read_tmx(map_file: Union[str, Path]) -> pytiled_parser.TiledMap:
     """
     Deprecated function to raise a warning that it has been removed.
 
-    Exists to provide info for outdated codebases.
+    Exists to provide info for outdated code bases.
     """
     raise DeprecationWarning(
         "The read_tmx function has been replaced by the new TileMap class."
