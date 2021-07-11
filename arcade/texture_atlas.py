@@ -127,7 +127,6 @@ class TextureAtlas:
         *,
         border: int = 1,
         textures: Sequence["Texture"] = None,
-        mutable: bool = True,
         ctx: "ArcadeContext" = None,
     ):
         """
@@ -143,7 +142,6 @@ class TextureAtlas:
         self._max_size = self._ctx.limits.MAX_VIEWPORT_DIMS
         self._size: Tuple[int, int] = size
         self._border: int = border
-        self._mutable = True
         self._allocator = Allocator(*self._size)
         self._check_size(self._size)
 
@@ -172,8 +170,6 @@ class TextureAtlas:
         # Add all the textures
         for tex in textures or []:
             self.add(tex)
-
-        self._mutable = mutable
 
     @property
     def width(self) -> int:
@@ -241,15 +237,6 @@ class TextureAtlas:
         """The framebuffer object for this atlas"""
         return self._fbo
 
-    @property
-    def mutable(self) -> bool:
-        """
-        Is this atlas mutable?
-
-        :rtype: bool
-        """
-        return self._mutable
-
     def add(self, texture: "Texture") -> int:
         """
         Add a texture to the atlas.
@@ -261,9 +248,6 @@ class TextureAtlas:
             return self.get_texture_id(texture.name)
 
         LOG.debug("Attempting to add texture: %s", texture.name)
-
-        if not self._mutable:
-            raise AllocatorException("The atlas is not mutable")
 
         if texture.image.mode != "RGBA":
             LOG.warning(f"TextureAtlas: Converting texture '{texture.name}' to RGBA")

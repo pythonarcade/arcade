@@ -197,7 +197,7 @@ class ArcadeContext(Context):
             # We might want to query the max limit, but this makes it consistent
             # across all OpenGL implementations.
             self._atlas = TextureAtlas(
-                self.atlas_size, border=1, mutable=True, ctx=self
+                self.atlas_size, border=1, ctx=self,
             )
 
         return self._atlas
