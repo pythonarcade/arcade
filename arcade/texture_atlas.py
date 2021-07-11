@@ -510,10 +510,11 @@ class TextureAtlas:
         :param Sequence[Texture] textures: Sequence of textures
         :return: An estimated minimum size as a (width, height) tuple
         """
+        # TODO: We cannot change the order of the incoming textures.
         # Ensure all textures are unique
-        textures = set(textures)
+        # textures = set(textures)
         # Sort the images by height
-        textures = sorted(textures, key=lambda x: x.image.size[1])
+        # textures = sorted(textures, key=lambda x: x.image.size[1])
 
         # Try to guess some sane minimum size to reduce the brute force iterations
         total_area = sum(t.image.size[0] * t.image.size[1] for t in textures)
