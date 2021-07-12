@@ -4,6 +4,8 @@
 // texture atlas texture
 
 // Old and new texture coordiantes
+uniform sampler2D atlas_old;
+uniform sampler2D atlas_new;
 uniform sampler2D texcoords_old;
 uniform sampler2D texcoords_new;
 uniform mat4 projection;
@@ -15,38 +17,38 @@ out vec2 uv;
 
 void main() {
     // Get the texture sizes
-    ivec2 size_old = textureSize(texcoords_old).xy;
-    ivec2 size_new = textureSize(texcoords_new).xy;
+    ivec2 size_old = textureSize(atlas_old, 0).xy;
+    ivec2 size_new = textureSize(atlas_new, 0).xy;
 
-    vec4 data_old = texelFetch(texcoords_old, gl_PrimitiveIDIn);
-    vec4 data_new = texelFetch(texcoords_new, gl_PrimitiveIDIn);
+    vec4 data_old = texelFetch(texcoords_old, ivec2(gl_PrimitiveIDIn, 0), 0);
+    vec4 data_new = texelFetch(texcoords_new, ivec2(gl_PrimitiveIDIn, 0), 0);
 
     // Create quads from the new texture coordinates
     vec2 pos = data_new.xy * size_new;
     vec2 size = data_new.zw * size_new;
 
     // Map these with the old texture coordiantes
-    vec2 tex_offset = data_old.xy;
-    vec2 tex_size = data_old.zw;
+    vec2 tex_offset = data_old.xy * vec2(1.0, -1.0);
+    vec2 tex_size = data_old.zw * vec2(1.0, -1.0);;
 
     // upper left
-    uv = vec2(0.0, 0.0);
-    gl_Position = projection * vec4(1.0);
+    uv = tex_offset + vec2(0.0, tex_size.y);
+    gl_Position = projection * vec4(pos + vec2(0.0, size.y), 0.0, 1.0);
     EmitVertex();
 
     // lower left
-    uv = vec2(0.0, 0.0);
-    gl_Position = projection * vec4(1.0);
+    uv = tex_offset;
+    gl_Position = projection * vec4(pos, 0.0, 1.0);
     EmitVertex();
 
     // upper right
-    uv = vec2(0.0, 0.0);
-    gl_Position = projection * vec4(1.0);
+    uv = tex_offset + vec2(tex_size.x, tex_size.y);
+    gl_Position = projection * vec4(pos + vec2(size.x, size.y), 0.0, 1.0);
     EmitVertex();
 
     // lower right
-    uv = vec2(0.0, 0.0);
-    gl_Position = projection * vec4(1.0);
+    uv = tex_offset + vec2(tex_size.x, 0.0);
+    gl_Position = projection * vec4(pos + vec2(size.x, 0.0), 0.0, 1.0);
     EmitVertex();
 
     EndPrimitive();

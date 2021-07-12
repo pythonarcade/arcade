@@ -111,6 +111,15 @@ class ArcadeContext(Context):
             fragment_shader=":resources:/shaders/shapes/rectangle/filled_unbuffered_fs.glsl",
             geometry_shader=":resources:/shaders/shapes/rectangle/filled_unbuffered_geo.glsl",
         )
+        self.atlas_resize_program = self.load_program(
+            vertex_shader=":resources:/shaders/atlas/resize_vs.glsl",
+            geometry_shader=":resources:/shaders/atlas/resize_gs.glsl",
+            fragment_shader=":resources:/shaders/atlas/resize_fs.glsl",
+        )
+        self.atlas_resize_program["atlas_old"] = 0  # Configure texture channels
+        self.atlas_resize_program["atlas_new"] = 1
+        self.atlas_resize_program["texcoords_old"] = 2
+        self.atlas_resize_program["texcoords_new"] = 3
 
         # --- Pre-created geometry and buffers for unbuffered draw calls ----
         # FIXME: These pre-created resources needs to be packaged nicely
@@ -163,6 +172,7 @@ class ArcadeContext(Context):
                 )
             ]
         )
+        self.atlas_geometry = self.geometry()
 
         self._atlas: Optional[TextureAtlas] = None
         # Global labels we modify in `arcade.draw_text`.
@@ -197,7 +207,7 @@ class ArcadeContext(Context):
             # We might want to query the max limit, but this makes it consistent
             # across all OpenGL implementations.
             self._atlas = TextureAtlas(
-                self.atlas_size, border=1, mutable=True, ctx=self
+                self.atlas_size, border=1, ctx=self,
             )
 
         return self._atlas

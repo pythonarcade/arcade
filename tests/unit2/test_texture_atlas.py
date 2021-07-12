@@ -150,7 +150,7 @@ def test_calculate_minimum_size(ctx):
     atlas = TextureAtlas(size, textures=textures)
     # We have two duplicate textures in the list
     check_internals(atlas, len(textures) - 2)
-    assert size == (256, 256)
+    assert size == (320, 320)
 
     textures = textures[:len(textures) // 2]
     size = TextureAtlas.calculate_minimum_size(textures)
@@ -166,7 +166,7 @@ def test_calculate_minimum_size(ctx):
 
     # Empty list should at least create the minimum atlas
     size = TextureAtlas.calculate_minimum_size([])
-    assert size == (64, 64)
+    assert size == (128, 128)
 
 
 def test_update_texture_image(ctx):
@@ -207,6 +207,14 @@ def test_resize(ctx):
 
     with pytest.raises(AllocatorException):
         atlas.resize((50, 99))
+
+
+def test_create_from_texture_sequence(ctx):
+    tex_1 = arcade.load_texture(":resources:images/topdown_tanks/tileGrass1.png")
+    tex_2 = arcade.load_texture(":resources:images/topdown_tanks/tileSand2.png")
+    tex_3 = arcade.load_texture(":resources:images/topdown_tanks/tileGrass_roadCrossing.png")
+    atlas = arcade.TextureAtlas.create_from_texture_sequence([tex_1, tex_2, tex_3])
+    assert atlas.size == (192, 192)
 
 
 def test_max_size(ctx):
