@@ -12,7 +12,7 @@ class AtlasRenderDemo(arcade.Window):
         super().__init__(800, 600, "Atlas Render Demo")
         self.atlas = arcade.TextureAtlas((600, 600))
 
-        # Empty dummy image to reseve space in the atlas
+        # Empty dummy image to reserve space in the atlas
         dummy_image = PIL.Image.new("RGBA", (256, 256), (255, 0, 0, 255))
         self.texture_1 = arcade.Texture("render_area_1", image=dummy_image, hit_box_algorithm=None)
         self.texture_2 = arcade.Texture("render_area_2", image=dummy_image, hit_box_algorithm=None)
