@@ -53,6 +53,7 @@ class MyGame(arcade.Window):
         self.minimap_sprite_list = None
         # Texture to render our minimap to
         self.minimap_texture = None
+        self.minimap_sprite = None
 
         # Set up the player
         self.player_sprite = None
@@ -95,11 +96,6 @@ class MyGame(arcade.Window):
         # Set the background color
         arcade.set_background_color(arcade.color.AMAZON)
 
-        # Set the viewport boundaries
-        # These numbers set where we have 'scrolled' to.
-        self.view_left = 0
-        self.view_bottom = 0
-
         # Construct the minimap
         texture_atlas = arcade.TextureAtlas((MINIMAP_WIDTH + 2, MINIMAP_HEIGHT + 2))
         texture_image = PIL.Image.new("RGBA",
@@ -109,14 +105,14 @@ class MyGame(arcade.Window):
                                               image=texture_image,
                                               hit_box_algorithm='None')
         self.minimap_sprite = arcade.Sprite(center_x=MINIMAP_WIDTH / 2,
-                                       center_y=self.height - MINIMAP_HEIGHT / 2,
-                                       texture=self.minimap_texture)
+                                            center_y=self.height - MINIMAP_HEIGHT / 2,
+                                            texture=self.minimap_texture)
 
         self.minimap_sprite_list = arcade.SpriteList(atlas=texture_atlas)
         self.minimap_sprite_list.append(self.minimap_sprite)
 
     def update_minimap(self):
-        proj = 0, MAP_WIDTH, 0, MAP_HEIGHT
+        proj = 0, MAP_WIDTH, MAP_HEIGHT, 0
         with self.minimap_sprite_list.atlas.render_into(self.minimap_texture, projection=proj) as fbo:
             fbo.clear(MINIMAP_BACKGROUND_COLOR)
             self.wall_list.draw()
@@ -148,8 +144,8 @@ class MyGame(arcade.Window):
 
         # Draw the GUI
         arcade.draw_rectangle_filled(self.width // 2, 20, self.width, 40, arcade.color.ALMOND)
-        arcade.draw_text(f"Scroll value: {self.camera_sprites.position[0]:4.1f}, {self.camera_sprites.position[1]:4.1f}",
-                         10, 10, arcade.color.BLACK_BEAN, 20)
+        text = f"Scroll value: {self.camera_sprites.position[0]:4.1f}, {self.camera_sprites.position[1]:4.1f}"
+        arcade.draw_text(text, 10, 10, arcade.color.BLACK_BEAN, 20)
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
@@ -198,7 +194,6 @@ class MyGame(arcade.Window):
         """
         self.camera_sprites.resize(int(width), int(height))
         self.camera_gui.resize(int(width), int(height))
-        self.minimap_sprite.center_y = self.height - MINIMAP_HEIGHT / 2
 
 
 def main():
