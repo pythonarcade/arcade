@@ -31,8 +31,8 @@ PLAYER_MOVEMENT_SPEED = 7
 MINIMAP_BACKGROUND_COLOR = arcade.get_four_byte_color(arcade.color.ALMOND)
 MINIMAP_WIDTH = 256
 MINIMAP_HEIGHT = 256
-MAP_WIDTH = 1024
-MAP_HEIGHT = 1024
+MAP_WIDTH = 2048
+MAP_HEIGHT = 2048
 
 
 class MyGame(arcade.Window):
@@ -81,8 +81,8 @@ class MyGame(arcade.Window):
         self.player_list.append(self.player_sprite)
 
         # -- Set up several columns of walls
-        for x in range(200, 1650, 210):
-            for y in range(0, 1600, 64):
+        for x in range(0, MAP_WIDTH, 210):
+            for y in range(0, MAP_HEIGHT, 64):
                 # Randomly skip a box so the player can find a way through
                 if random.randrange(5) > 0:
                     wall = arcade.Sprite(":resources:images/tiles/grassCenter.png", SPRITE_SCALING)
@@ -108,12 +108,12 @@ class MyGame(arcade.Window):
         self.minimap_texture = arcade.Texture(arcade.utils.generate_uuid(),
                                               image=texture_image,
                                               hit_box_algorithm='None')
-        minimap_sprite = arcade.Sprite(center_x=MINIMAP_WIDTH / 2,
-                                       center_y=MINIMAP_HEIGHT / 2,
+        self.minimap_sprite = arcade.Sprite(center_x=MINIMAP_WIDTH / 2,
+                                       center_y=self.height - MINIMAP_HEIGHT / 2,
                                        texture=self.minimap_texture)
 
         self.minimap_sprite_list = arcade.SpriteList(atlas=texture_atlas)
-        self.minimap_sprite_list.append(minimap_sprite)
+        self.minimap_sprite_list.append(self.minimap_sprite)
 
     def update_minimap(self):
         proj = 0, MAP_WIDTH, 0, MAP_HEIGHT
@@ -184,43 +184,11 @@ class MyGame(arcade.Window):
     def scroll_to_player(self):
         """
         Scroll the window to the player.
-        This method will attempt to keep the player at least VIEWPORT_MARGIN
-        pixels away from the edge.
-
-        Code to center the window on the user is even easier. Simply use:
-        position = self.player_sprite.center_x - self.width / 2, \
-                   self.player_sprite.center_y - self.height / 2
-        self.camera_sprites.move_to(position, CAMERA_SPEED)
-
-        if CAMERA_SPEED is 1, the camera will immediately move to the desired position.
-        Anything between 0 and 1 will have the camera move to the location with a smoother
-        pan.
         """
 
-        # --- Manage Scrolling ---
-
-        # Scroll left
-        left_boundary = self.view_left + VIEWPORT_MARGIN
-        if self.player_sprite.left < left_boundary:
-            self.view_left -= left_boundary - self.player_sprite.left
-
-        # Scroll right
-        right_boundary = self.view_left + self.width - VIEWPORT_MARGIN
-        if self.player_sprite.right > right_boundary:
-            self.view_left += self.player_sprite.right - right_boundary
-
-        # Scroll up
-        top_boundary = self.view_bottom + self.height - VIEWPORT_MARGIN
-        if self.player_sprite.top > top_boundary:
-            self.view_bottom += self.player_sprite.top - top_boundary
-
-        # Scroll down
-        bottom_boundary = self.view_bottom + VIEWPORT_MARGIN
-        if self.player_sprite.bottom < bottom_boundary:
-            self.view_bottom -= bottom_boundary - self.player_sprite.bottom
-
         # Scroll to the proper location
-        position = self.view_left, self.view_bottom
+        position = self.player_sprite.center_x - self.width / 2, \
+                   self.player_sprite.center_y - self.height / 2
         self.camera_sprites.move_to(position, CAMERA_SPEED)
 
     def on_resize(self, width, height):
@@ -230,6 +198,7 @@ class MyGame(arcade.Window):
         """
         self.camera_sprites.resize(int(width), int(height))
         self.camera_gui.resize(int(width), int(height))
+        self.minimap_sprite.center_y = self.height - MINIMAP_HEIGHT / 2
 
 
 def main():
