@@ -11,6 +11,7 @@ Learn to use the built-in UI elements for the Arcade library!
    :maxdepth: 1
 
    labels
-   image_button
+   text_button_tutorial
    responding_to_clicks
+   image_button_tutorial
    layout_manager
