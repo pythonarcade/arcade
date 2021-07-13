@@ -1,7 +1,9 @@
+"""
+Camera class
+"""
+
 from arcade.window_commands import get_scaling_factor
 import math
-from copy import copy
-from typing import Tuple
 
 import arcade
 from arcade.math import Mat4, Vec2
@@ -17,7 +19,7 @@ class Camera:
         # Window
         if isinstance(window, arcade.View):
             raise ValueError("The first parameter must be an instance of arcade.Window, not arcade.View. "
-                                "Try passing in 'myview.window' instead of 'myview'.")
+                             "Try passing in 'myview.window' instead of 'myview'.")
         if not isinstance(window, arcade.Window):
             raise ValueError("The first parameter must be an instance of arcade.Window.")
         self._window = window
@@ -36,6 +38,9 @@ class Camera:
         self.shake_velocity = Vec2()
         self.shake_offset = Vec2()
         self.shake_decay = Vec2()
+
+        self.viewport_width = viewport_width
+        self.viewport_height = viewport_height
 
         # Initial Update
         self.resize(viewport_width, viewport_height)
