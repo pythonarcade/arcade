@@ -10,4 +10,4 @@ GUI example from :ref:`set_on_click`.
 .. literalinclude:: clicks_02.py
     :caption: Responding to GUI mouse clicks
     :linenos:
-    :emphasize-lines: 28-42
+    :emphasize-lines: 29-38, 43-48

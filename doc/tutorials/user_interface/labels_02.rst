@@ -7,7 +7,7 @@ GUI Labels Example 2
 
 GUI example from :ref:`styling-gui-labels`.
 
-.. figure:: labels_02.gif
+.. figure:: labels_02.png
    :width: 70%
 
    Styled GUI labels

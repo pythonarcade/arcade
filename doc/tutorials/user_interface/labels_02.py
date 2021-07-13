@@ -13,8 +13,6 @@ class MyView(arcade.View):
 
         style_data = {"label": {"font_size": 40,
                                 "font_color": arcade.color.WHITE,
-                                "font_color_hover": arcade.color.YELLOW,
-                                "font_color_press": arcade.color.RED,
                                 "font_name": ["CENSCBK", "Arial"]
                                 },
                       }

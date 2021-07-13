@@ -3,7 +3,7 @@
 Using GUI Labels
 ================
 
-One of the most basic elements in the GUI library is the ``UILabel``, a class that allows us to put a text
+One of the most basic elements in the GUI library is the :py:class:`UILabel`, a class that allows us to put a text
 message up on the screen.
 
 .. figure:: labels_01.png
@@ -73,7 +73,7 @@ Styling GUI Labels
 
 Chances are, most programs will need something other than the default font and color.
 
-.. figure:: labels_02.gif
+.. figure:: labels_02.png
    :width: 50%
 
    Styled GUI labels
@@ -90,8 +90,6 @@ The dictionary would look like this:
 
     style_data = {"label": {"font_size": 40,
                             "font_color": arcade.color.WHITE,
-                            "font_color_hover": arcade.color.YELLOW,
-                            "font_color_press": arcade.color.RED,
                             "font_name": ["CENSCBK", "Arial"]
                             },
                   }
