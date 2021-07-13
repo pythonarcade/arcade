@@ -144,6 +144,9 @@ def process_directory(directory, quick_index_file):
         if "test" in path.name:
             continue
 
+        if "math.py" in path.name:
+            continue
+
         if not path.exists():
             print(f"Error, can't find file: '{path.name}'")
             continue
@@ -311,7 +314,7 @@ def main():
     text_file.write(f"The arcade.tilemap module\n")
     text_file.write(f"-------------------------\n\n")
 
-    text_file.write(table_header_gui)
+    text_file.write(table_header_tiled)
 
     process_directory(Path("../arcade/tilemap"), text_file)
 
