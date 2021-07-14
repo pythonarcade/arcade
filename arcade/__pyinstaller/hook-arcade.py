@@ -23,7 +23,11 @@ NOTE: The sequence of steps above do NOT support editable installs of Arcade (ex
 the paths to binary files can be slightly different.
 """
 from pathlib import Path
-from PyInstaller.compat import is_win, is_darwin, is_unix  # type: ignore
+
+import pymunk
+from PyInstaller.compat import is_darwin, is_unix, is_win  # type: ignore
+
+pymunk_path = Path(pymunk.__file__)
 
 hook_path = Path(__file__)
 
@@ -45,5 +49,5 @@ elif is_unix:
     ]
 
     binaries = [
-        (hook_path.parent.parent.parent.joinpath("pymunk/libchipmunk.so"), "."),
+        (pymunk_path.parent / "_chipmunk.abi3.so", "."),
     ]
