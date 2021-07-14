@@ -280,6 +280,7 @@ class MyGame(arcade.Window):
             cartesian = self.tile_map.get_cartesian(
                 my_object.shape[0], my_object.shape[1]
             )
+            print(cartesian)
             enemy_type = my_object.properties["type"]
             if enemy_type == "robot":
                 enemy = RobotEnemy()
@@ -288,13 +289,12 @@ class MyGame(arcade.Window):
             else:
                 raise Exception(f"Unknown enemy type {enemy_type}.")
             enemy.center_x = math.floor(
-                cartesian[0] * TILE_SCALING * self.tile_map.tiled_map.tile_size[0]
+                cartesian[0] * TILE_SCALING * self.tile_map.tile_width
             )
             enemy.center_y = math.floor(
-                -(cartesian[1] - self.tile_map.tiled_map.map_size.height)
-                * TILE_SCALING
-                * self.tile_map.tiled_map.tile_size[1]
+                (cartesian[1] + 1) * (self.tile_map.tile_height * TILE_SCALING)
             )
+            print(enemy.center_y)
             self.scene.add_sprite(LAYER_NAME_ENEMIES, enemy)
 
         # --- Other stuff
