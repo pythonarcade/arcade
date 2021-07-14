@@ -174,83 +174,6 @@
         }, 
         {
          "draworder":"topdown",
-         "id":19,
-         "name":"Enemy Collisions",
-         "objects":[
-                {
-                 "height":136.319498825372,
-                 "id":8,
-                 "name":"",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":130.938465977002,
-                 "x":635.14,
-                 "y":1151.54102955117
-                }, 
-                {
-                 "height":136.319498825372,
-                 "id":9,
-                 "name":"",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":138.113176441495,
-                 "x":125.557433128632,
-                 "y":1149.74735193505
-                }, 
-                {
-                 "height":139.906854057619,
-                 "id":10,
-                 "name":"",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":130.938465977002,
-                 "x":1282.47949552817,
-                 "y":1408.0369286568
-                }, 
-                {
-                 "height":147.081564522112,
-                 "id":11,
-                 "name":"",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":138.113176441495,
-                 "x":1793.67761612332,
-                 "y":1402.65589580843
-                }, 
-                {
-                 "height":129.144788360878,
-                 "id":14,
-                 "name":"",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":132.732143593125,
-                 "x":1921.02872686807,
-                 "y":1921.02872686807
-                }, 
-                {
-                 "height":134.525821209249,
-                 "id":15,
-                 "name":"",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":134.525821209249,
-                 "x":1151.54102955117,
-                 "y":1917.44137163582
-                }],
-         "opacity":1,
-         "type":"objectgroup",
-         "visible":true,
-         "x":0,
-         "y":0
-        }, 
-        {
-         "draworder":"topdown",
          "id":20,
          "name":"Player Death Zones",
          "objects":[
@@ -352,7 +275,7 @@
  "nextobjectid":16,
  "orientation":"orthogonal",
  "renderorder":"left-up",
- "tiledversion":"1.6.0",
+ "tiledversion":"1.7.0",
  "tileheight":128,
  "tilesets":[
         {

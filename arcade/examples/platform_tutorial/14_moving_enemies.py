@@ -310,12 +310,10 @@ class MyGame(arcade.Window):
             elif enemy_type == "zombie":
                 enemy = ZombieEnemy()
             enemy.center_x = math.floor(
-                cartesian[0] * TILE_SCALING * self.tile_map.tiled_map.tile_size[0]
+                cartesian[0] * TILE_SCALING * self.tile_map.tile_width
             )
             enemy.center_y = math.floor(
-                -(cartesian[1] - self.tile_map.tiled_map.map_size.height)
-                * TILE_SCALING
-                * self.tile_map.tiled_map.tile_size[1]
+                (cartesian[1] + 1) * (self.tile_map.tile_height * TILE_SCALING)
             )
             if "boundary_left" in my_object.properties:
                 enemy.boundary_left = my_object.properties["boundary_left"]
