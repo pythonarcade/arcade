@@ -1,28 +1,23 @@
 """
 Camera class
 """
-
-from arcade.window_commands import get_scaling_factor
 import math
+from typing import Optional
 
 import arcade
 from arcade.math import Mat4, Vec2
+from arcade.window_commands import get_scaling_factor
 
 
 class Camera:
     def __init__(
         self,
-        window,
         viewport_width: int = 0,
         viewport_height: int = 0,
+        window: Optional[arcade.Window] = None,
     ):
-        # Window
-        if isinstance(window, arcade.View):
-            raise ValueError("The first parameter must be an instance of arcade.Window, not arcade.View. "
-                             "Try passing in 'myview.window' instead of 'myview'.")
-        if not isinstance(window, arcade.Window):
-            raise ValueError("The first parameter must be an instance of arcade.Window.")
-        self._window = window
+        # Reference to Context, used to update projection matrix
+        self._window = window or arcade.get_window()
 
         # Position
         self.position = Vec2(0, 0)
