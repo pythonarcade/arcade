@@ -354,6 +354,11 @@ Basic Platformers
 
    :ref:`sprite_move_scrolling`
 
+.. figure:: thumbs/sprite_move_scrolling_box.png
+   :figwidth: 170px
+
+   :ref:`sprite_move_scrolling_box`
+
 .. figure:: thumbs/sprite_move_animation.gif
    :figwidth: 170px
 
