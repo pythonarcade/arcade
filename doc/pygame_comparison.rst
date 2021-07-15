@@ -65,6 +65,9 @@ Here are some comparisons between Arcade 2.6 and Pygame 2.0.1
    * - Transparency support
      - Yes
      - Must specify transparent colorkey
+   * - Camera support
+     - `Yes <api/camera.html>`__
+     - No
    * - Android support
      - No
      - Yes
