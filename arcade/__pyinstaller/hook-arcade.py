@@ -20,11 +20,9 @@ arcade_path = Path(arcade.__file__).parent
 
 datas = [
     (
-        arcade_path / "resources/shaders",
-        "./arcade/resources/shaders",
+        arcade_path / "resources",
+        "./arcade/resources",
     ),
-    (arcade_path / "resources/style", "./arcade/resources/style"),
-    (arcade_path.parent / "resources/fonts", "./arcade/resources/fonts"),
 ]
 
 if is_win:
