@@ -333,6 +333,20 @@ Sound
 
    :ref:`music_control_demo`
 
+Camera Use
+----------
+
+.. figure:: thumbs/sprite_move_scrolling.png
+   :figwidth: 170px
+
+   :ref:`sprite_move_scrolling`
+
+.. figure:: thumbs/sprite_move_scrolling_box.png
+   :figwidth: 170px
+
+   :ref:`sprite_move_scrolling_box`
+
+
 Platformers
 -----------
 
@@ -348,16 +362,6 @@ Basic Platformers
    :figwidth: 170px
 
    :ref:`sprite_no_coins_on_walls`
-
-.. figure:: thumbs/sprite_move_scrolling.png
-   :figwidth: 170px
-
-   :ref:`sprite_move_scrolling`
-
-.. figure:: thumbs/sprite_move_scrolling_box.png
-   :figwidth: 170px
-
-   :ref:`sprite_move_scrolling_box`
 
 .. figure:: thumbs/sprite_move_animation.gif
    :figwidth: 170px
