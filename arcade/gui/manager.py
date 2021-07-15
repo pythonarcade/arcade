@@ -314,7 +314,6 @@ class UIManager(UIAbstractManager):
         self.window: Window = window or arcade.get_window()
 
         self._ui_elements: SpriteList = SpriteList(atlas=TextureAtlas(size=(1024, 1024)))
-        self._ui_elements._keep_textures = False  # Workaround to prevent OOM
         self._id_cache: Dict[str, UIElement] = {}
 
         if auto_enable:
@@ -326,7 +325,6 @@ class UIManager(UIAbstractManager):
         Removes all UIElements which where added to the :py:class:`arcade.gui.UIManager`.
         """
         self._ui_elements = SpriteList(atlas=TextureAtlas(size=(1024, 1024)))
-        self._ui_elements._keep_textures = False  # Workaround to prevent OOM
         self._id_cache = {}
 
     def add_ui_element(self, ui_element: UIElement):
