@@ -337,7 +337,7 @@ def check_for_collision_with_list(
 
 
 def check_for_collision_with_lists(sprite: Sprite,
-                                  sprite_lists: List[SpriteList]) -> List[Sprite]:
+                                   sprite_lists: List[SpriteList]) -> List[Sprite]:
     """
     Check for a collision between a Sprite, and a list of SpriteLists.
     :param Sprite sprite: Sprite to check
@@ -355,8 +355,8 @@ def check_for_collision_with_lists(sprite: Sprite,
     for sprite_list in sprite_lists:  
         if sprite_list.use_spatial_hash is None and len(sprite_list) > 30 and sprite_list.percent_sprites_moved < 10:
             LOG.debug(f"Enabling spatial hash - Spatial hash is none, sprite list "
-                    f"is {len(sprite_list)} elements. Percent moved "
-                    f"{sprite_list._percent_sprites_moved * 100}.")
+                      f"is {len(sprite_list)} elements. Percent moved "
+                      f"{sprite_list._percent_sprites_moved * 100}.")
             sprite_list.enable_spatial_hashing()
 
         if sprite_list.use_spatial_hash:
