@@ -23,14 +23,14 @@ def test_add(ctx):
     tex_a = load_texture(":resources:onscreen_controls/shaded_dark/a.png")
     tex_b = load_texture(":resources:onscreen_controls/shaded_dark/b.png")
     atlas = TextureAtlas((200, 200), border=1)
-    slot_a = atlas.add(tex_a)
-    slot_b = atlas.add(tex_b)
+    slot_a, region_a = atlas.add(tex_a)
+    slot_b, region_b = atlas.add(tex_b)
     assert slot_a == 0
     assert slot_b == 1
     check_internals(atlas, 2)
     # Add existing textures
-    assert slot_a == atlas.add(tex_a)
-    assert slot_b == atlas.add(tex_b)
+    assert slot_a == atlas.add(tex_a)[0]
+    assert slot_b == atlas.add(tex_b)[0]
     check_internals(atlas, 2)
     atlas.use_uv_texture()
 
@@ -40,8 +40,8 @@ def test_remove(ctx):
     tex_a = load_texture(":resources:onscreen_controls/shaded_dark/a.png")
     tex_b = load_texture(":resources:onscreen_controls/shaded_dark/b.png")
     atlas = TextureAtlas((200, 200), border=1)
-    slot_a = atlas.add(tex_a)
-    slot_b = atlas.add(tex_b)
+    slot_a, region_a = atlas.add(tex_a)
+    slot_b, region_b = atlas.add(tex_b)
     check_internals(atlas, 2)
     atlas.remove(tex_a)
     check_internals(atlas, 1)
@@ -58,7 +58,7 @@ def test_add_overflow(ctx):
     tex_a = load_texture(":resources:onscreen_controls/shaded_dark/a.png")
     tex_b = load_texture(":resources:onscreen_controls/shaded_dark/b.png")
     atlas = TextureAtlas((100, 100), border=1)
-    slot_a = atlas.add(tex_a)
+    slot_a, region = atlas.add(tex_a)
     assert slot_a == 0
     # Atlas should be full at this point
     with pytest.raises(AllocatorException):
@@ -72,8 +72,8 @@ def test_rebuild(ctx):
     # 64 x 64
     tex_big = load_texture(":resources:images/topdown_tanks/treeGreen_large.png")
     atlas = TextureAtlas((104, 104), border=1)
-    slot_a = atlas.add(tex_big)
-    slot_b = atlas.add(tex_small)
+    slot_a, region_a = atlas.add(tex_big)
+    slot_b, region_b = atlas.add(tex_small)
     region_a = atlas.get_region_info(tex_big.name)
     region_b = atlas.get_region_info(tex_small.name)
 

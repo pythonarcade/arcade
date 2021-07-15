@@ -242,29 +242,30 @@ class TextureAtlas:
         """The framebuffer object for this atlas"""
         return self._fbo
 
-    def add(self, texture: "Texture", auto_resize=True) -> int:
+    def add(self, texture: "Texture") -> Tuple[int, AtlasRegion]:
         """
         Add a texture to the atlas.
 
         :param Texture texture: The texture to add
-        :param bool auto_resize: Automatically resize the atlas if full
-        :return: The texture_id for this texture in this atlas
+        :return: texture_id, AtlasRegion tuple
         """
         if self.has_texture(texture):
-            return self.get_texture_id(texture.name)
+            slot = self.get_texture_id(texture.name)
+            region = self.get_region_info(texture.name)
+            return slot, region
 
         LOG.debug("Attempting to add texture: %s", texture.name)
-        x, y, slot =  self.allocate(texture)
+        x, y, slot, region = self.allocate(texture)
         self.write_texture(texture, x, y)
-        return slot
+        return slot, region
 
-    def allocate(self, texture) -> Tuple[int, int, int]:
+    def allocate(self, texture) -> Tuple[int, int, int, AtlasRegion]:
         """
         Attempts to allocate space for a texture in the atlas.
         This doesn't write the texture to the atlas texture itself.
         It only allocates space.
 
-        :return: The x, y position and texture_id for this texture
+        :return: The x, y texture_id, TextureRegion
         """
         # Allocate space for texture
         try:
@@ -302,7 +303,7 @@ class TextureAtlas:
         self._uv_data[slot * 4 + 3] = region.texture_coordinates[3]
         self._uv_data_changed = True
         self._textures.append(texture)
-        return x, y, slot
+        return x, y, slot, region
 
     def write_texture(self, texture, x, y):
         """

@@ -567,7 +567,7 @@ class SpriteList:
         if not sprite._texture:
             return
 
-        tex_slot = self._atlas.add(sprite._texture)
+        tex_slot, _ = self._atlas.add(sprite._texture)
         slot = self.sprite_slot[sprite]
 
         self._sprite_texture_data[slot] = tex_slot
@@ -585,7 +585,7 @@ class SpriteList:
         if not sprite._texture:
             return
 
-        tex_slot = self._atlas.add(sprite._texture)
+        tex_slot, _ = self._atlas.add(sprite._texture)
         slot = self.sprite_slot[sprite]
 
         self._sprite_texture_data[slot] = tex_slot
