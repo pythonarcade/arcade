@@ -43,14 +43,13 @@ class MyGame(arcade.Window):
         # Set up the player
         self.player_sprite = None
 
+        # Physics engine so we don't run into walls.
         self.physics_engine = None
 
-        # Used in scrolling
-        self.view_bottom = 0
-        self.view_left = 0
-
-        self.camera_sprites = arcade.Camera(self, DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT)
-        self.camera_gui = arcade.Camera(self, DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT)
+        # Create the cameras. One for the GUI, one for the sprites.
+        # We scroll the 'sprite world' but not the GUI.
+        self.camera_sprites = arcade.Camera(DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT)
+        self.camera_gui = arcade.Camera(DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT)
 
     def setup(self):
         """ Set up the game and initialize the variables. """
@@ -81,11 +80,6 @@ class MyGame(arcade.Window):
         # Set the background color
         arcade.set_background_color(arcade.color.AMAZON)
 
-        # Set the viewport boundaries
-        # These numbers set where we have 'scrolled' to.
-        self.view_left = 0
-        self.view_bottom = 0
-
     def on_draw(self):
         """
         Render the screen.
@@ -106,7 +100,8 @@ class MyGame(arcade.Window):
 
         # Draw the GUI
         arcade.draw_rectangle_filled(self.width // 2, 20, self.width, 40, arcade.color.ALMOND)
-        arcade.draw_text(f"Scroll value: {self.camera_sprites.position}", 10, 10, arcade.color.BLACK_BEAN, 20)
+        text = f"Scroll value: ({self.camera_sprites.position[0]:5.1f}, {self.camera_sprites.position[1]:5.1f})"
+        arcade.draw_text(text, 10, 10, arcade.color.BLACK_BEAN, 20)
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
@@ -141,43 +136,14 @@ class MyGame(arcade.Window):
     def scroll_to_player(self):
         """
         Scroll the window to the player.
-        This method will attempt to keep the player at least VIEWPORT_MARGIN
-        pixels away from the edge.
-
-        Code to center the window on the user is even easier. Simply use:
-        position = self.player_sprite.center_x - self.width / 2, \
-                   self.player_sprite.center_y - self.height / 2
-        self.camera_sprites.move_to(position, CAMERA_SPEED)
 
         if CAMERA_SPEED is 1, the camera will immediately move to the desired position.
         Anything between 0 and 1 will have the camera move to the location with a smoother
         pan.
         """
 
-        # --- Manage Scrolling ---
-
-        # Scroll left
-        left_boundary = self.view_left + VIEWPORT_MARGIN
-        if self.player_sprite.left < left_boundary:
-            self.view_left -= left_boundary - self.player_sprite.left
-
-        # Scroll right
-        right_boundary = self.view_left + self.width - VIEWPORT_MARGIN
-        if self.player_sprite.right > right_boundary:
-            self.view_left += self.player_sprite.right - right_boundary
-
-        # Scroll up
-        top_boundary = self.view_bottom + self.height - VIEWPORT_MARGIN
-        if self.player_sprite.top > top_boundary:
-            self.view_bottom += self.player_sprite.top - top_boundary
-
-        # Scroll down
-        bottom_boundary = self.view_bottom + VIEWPORT_MARGIN
-        if self.player_sprite.bottom < bottom_boundary:
-            self.view_bottom -= bottom_boundary - self.player_sprite.bottom
-
-        # Scroll to the proper location
-        position = self.view_left, self.view_bottom
+        position = self.player_sprite.center_x - self.width / 2, \
+            self.player_sprite.center_y - self.height / 2
         self.camera_sprites.move_to(position, CAMERA_SPEED)
 
     def on_resize(self, width, height):
