@@ -126,7 +126,7 @@ from typing import List, NamedTuple, Union, Dict, Optional, Tuple
 
 import PIL
 
-from arcade import Sprite, SpriteList, get_sprites_at_point, Color, Texture, Point
+from arcade import Sprite, SpriteList, get_sprites_at_point, Color, Texture, Point, TextureAtlas
 from arcade.gui.elements import UIElement
 from arcade.gui.events import UIEvent
 from arcade.resources import resolve_resource_path
@@ -169,7 +169,7 @@ class UILayout(ABC):
         self._id = id
 
         self._elements: List[_PackedElement] = []
-        self._layer = SpriteList()
+        self._layer = SpriteList(atlas=TextureAtlas(size=(1024, 1024)))
         self._layer._keep_textures = False  # Workaround to prevent OOM
         self._child_layouts: List[UILayout] = []
 
@@ -223,7 +223,7 @@ class UILayout(ABC):
 
         # apply border
         if self._border_color:
-            bg_image = PIL.ImageOps.expand_image(
+            bg_image = PIL.ImageOps.expand(
                 bg_image, border=self._border_width, fill=self._border_color
             )
 

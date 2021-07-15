@@ -1,55 +1,17 @@
 import pytest
 from pytest import fixture
+
 import arcade
-from pyglet.window import EventDispatcher
-from . import MockHolder, MockButton, TestUIManager
 from . import MockButton, TestUIManager, TestUILayoutManager
 
-
-class MockWindow(EventDispatcher):
-    def __init__(self):
-        self.register_event_type("on_draw")
-        self.register_event_type("on_mouse_drag")
-        self.register_event_type("on_mouse_motion")
-        self.register_event_type("on_mouse_press")
-        self.register_event_type("on_mouse_release")
-        self.register_event_type("on_mouse_scroll")
-        self.register_event_type("on_key_press")
-        self.register_event_type("on_key_release")
-        self.register_event_type("on_update")
-        self.register_event_type("on_resize")
-        self.register_event_type("on_text")
-        self.register_event_type("on_text_motion")
-        self.register_event_type("on_text_motion_select")
-
-
-@fixture()
-def draw_commands():
-    """
-    Decorator
-
-    Mocks all 'arcade.draw_...' methods and injects a holder with mocks
-    """
-    import arcade
-    to_patch = [attr for attr in dir(arcade) if attr.startswith('draw_')]
-    holder = MockHolder()
-
-    with ExitStack() as stack:
-        for method in to_patch:
-            holder[method] = stack.enter_context(patch(f'arcade.{method}'))
-
-        yield holder
-
-
-@pytest.fixture
+@pytest.fixture(autouse=True)
 def window():
     window = arcade.Window(title='ARCADE_GUI')
     yield window
     window.close()
 
 
-
-@fixture
+@fixture()
 def mock_mng(window):
     ui_manager = TestUIManager(window)
     yield ui_manager
