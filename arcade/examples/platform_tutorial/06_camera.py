@@ -44,21 +44,19 @@ class MyGame(arcade.Window):
         # Our physics engine
         self.physics_engine = None
 
-        # Used to keep track of our scrolling
-        self.view_bottom = 0
-        self.view_left = 0
+        # A Camera that that can be used for scrolling the screen
+        self.camera = None
 
         arcade.set_background_color(arcade.csscolor.CORNFLOWER_BLUE)
 
     def setup(self):
         """Set up the game here. Call this function to restart the game."""
 
+        # Setup the Camera
+        self.camera = arcade.Camera(self.width, self.height)
+
         # Initialize Scene
         self.scene = arcade.Scene()
-
-        # Used to keep track of our scrolling
-        self.view_bottom = 0
-        self.view_left = 0
 
         # Create the Sprite lists
         self.scene.add_sprite_list("Player")
@@ -102,6 +100,9 @@ class MyGame(arcade.Window):
         # Clear the screen to the background color
         arcade.start_render()
 
+        # Activate our Camera
+        self.camera.use()
+
         # Draw our Scene
         self.scene.draw()
 
@@ -124,55 +125,27 @@ class MyGame(arcade.Window):
         elif key == arcade.key.RIGHT or key == arcade.key.D:
             self.player_sprite.change_x = 0
 
+    def center_camera_to_player(self):
+        screen_center_x = self.player_sprite.center_x - (self.camera.viewport_width / 2)
+        screen_center_y = self.player_sprite.center_y - (
+            self.camera.viewport_height / 2
+        )
+        if screen_center_x < 0:
+            screen_center_x = 0
+        if screen_center_y < 0:
+            screen_center_y = 0
+        player_centered = screen_center_x, screen_center_y
+
+        self.camera.move_to(player_centered)
+
     def on_update(self, delta_time):
         """Movement and game logic"""
 
         # Move the player with the physics engine
         self.physics_engine.update()
 
-        # --- Manage Scrolling ---
-
-        # Track if we need to change the viewport
-
-        changed = False
-
-        # Scroll left
-        left_boundary = self.view_left + LEFT_VIEWPORT_MARGIN
-        if self.player_sprite.left < left_boundary:
-            self.view_left -= left_boundary - self.player_sprite.left
-            changed = True
-
-        # Scroll right
-        right_boundary = self.view_left + SCREEN_WIDTH - RIGHT_VIEWPORT_MARGIN
-        if self.player_sprite.right > right_boundary:
-            self.view_left += self.player_sprite.right - right_boundary
-            changed = True
-
-        # Scroll up
-        top_boundary = self.view_bottom + SCREEN_HEIGHT - TOP_VIEWPORT_MARGIN
-        if self.player_sprite.top > top_boundary:
-            self.view_bottom += self.player_sprite.top - top_boundary
-            changed = True
-
-        # Scroll down
-        bottom_boundary = self.view_bottom + BOTTOM_VIEWPORT_MARGIN
-        if self.player_sprite.bottom < bottom_boundary:
-            self.view_bottom -= bottom_boundary - self.player_sprite.bottom
-            changed = True
-
-        if changed:
-            # Only scroll to integers. Otherwise we end up with pixels that
-            # don't line up on the screen
-            self.view_bottom = int(self.view_bottom)
-            self.view_left = int(self.view_left)
-
-            # Do the scrolling
-            arcade.set_viewport(
-                self.view_left,
-                SCREEN_WIDTH + self.view_left,
-                self.view_bottom,
-                SCREEN_HEIGHT + self.view_bottom,
-            )
+        # Position the camera
+        self.center_camera_to_player()
 
 
 def main():
