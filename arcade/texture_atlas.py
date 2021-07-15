@@ -517,6 +517,14 @@ class TextureAtlas:
         The sub-section is defined by the already allocated space
         of the texture supplied in this method.
 
+        By default the projection will be set to match the texture area size
+        were `0, 0` is the lower left corner and `width, height` (of texture)
+        is the upper right corner.
+
+        If you are specifying your own projection make sure you change the
+        order of the last two parameters to render the content upside down.
+        This is just how OpenGL stores textures in memory.
+
         This method should should be used with the ``with`` statement::
 
             with atlas.render_into(texture):
@@ -531,18 +539,19 @@ class TextureAtlas:
             This parameter can be left blank if no projection changes are needed.
             The tuple values are: (left, right, button, top)
         """
-        proj_prev = self._ctx.projection_2d
-        if projection:
-            self._ctx.projection_2d = projection
-
         region = self._atlas_regions[texture.name]
+        proj_prev = self._ctx.projection_2d
+        projection = projection or (0, region.width, region.height, 0)
+        self._ctx.projection_2d = projection
+
         with self._fbo.activate() as fbo:
             fbo.viewport = region.x, region.y, region.width, region.height
-            yield fbo
-            fbo.viewport = 0, 0, *self._fbo.size
+            try:
+                yield fbo
+            finally:
+                fbo.viewport = 0, 0, *self._fbo.size
 
-        if projection:
-            self._ctx.projection_2d = proj_prev
+        self._ctx.projection_2d = proj_prev
 
     @classmethod
     def create_from_texture_sequence(cls, textures: Sequence["Texture"], border: int = 1) -> "TextureAtlas":

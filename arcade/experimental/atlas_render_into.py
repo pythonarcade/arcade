@@ -29,18 +29,15 @@ class AtlasRenderDemo(arcade.Window):
         self.clear()
         self.render_into_sprite_texture()
         self.spritelist.draw()
-        # self.spritelist.atlas.show()
 
     def render_into_sprite_texture(self):
         # Render shape into texture atlas in the first sprite texture's space
-        proj = 0, self.texture_1.image.size[0], 0, self.texture_1.image.size[1]
-        with self.spritelist.atlas.render_into(self.texture_1, projection=proj) as fbo:
+        with self.spritelist.atlas.render_into(self.texture_1) as fbo:
             fbo.clear((255, 0, 0, 255))
             arcade.draw_rectangle_filled(128, 128, 160, 160, arcade.color.WHITE, self.elapsed_time * 100)
 
         # Render a shape into the second texture in the atlas
-        proj = 0, self.texture_2.image.size[0], 0, self.texture_2.image.size[1]
-        with self.spritelist.atlas.render_into(self.texture_2, projection=proj) as fbo:
+        with self.spritelist.atlas.render_into(self.texture_2) as fbo:
             fbo.clear((0, 255, 0, 255))
             arcade.draw_circle_filled(
                 128,
