@@ -68,8 +68,6 @@ class SpriteList:
         self._initialized = False
         self.extra = None
 
-        self._keep_textures = True
-
         # The initial capacity of the spritelist buffers (internal)
         self._buf_capacity = abs(capacity) or 100
         # The initial capacity of the index buffer (internal)
@@ -721,16 +719,6 @@ class SpriteList:
             self._sprite_color_changed = False
 
         if self._sprite_texture_changed:
-            if not self._keep_textures:
-                # Gather all unique textures in a set (Texture hash() is the name)
-                textures = set(sprite._texture for sprite in self.sprite_list)
-                self._atlas.update_textures(
-                    textures, keep_old_textures=self._keep_textures
-                )
-                # Re-write texture coordinates for all sprites
-                for sprite in self.sprite_list:
-                    self.update_texture(sprite)
-
             self._sprite_texture_buf.write(self._sprite_texture_data)
             self._sprite_texture_changed = False
 
@@ -793,9 +781,9 @@ class SpriteList:
         #     texture_transform = Mat3().translate(-0.5, -0.5).multiply(self.sprite_list[0].texture_transform.v).multiply(Mat3().translate(0.5, 0.5).v)
         # else:
         #     texture_transform = Mat3()
-        # self.program['TextureTransform'] = texture_transform.v
+        # self.program['TextureTransform'] = texture_transform
 
-        self.program["TextureTransform"] = list(Mat3())
+        self.program["TextureTransform"] = Mat3()
 
         self._atlas.texture.use(0)
         self._atlas.use_uv_texture(1)

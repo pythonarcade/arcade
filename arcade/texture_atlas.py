@@ -371,26 +371,6 @@ class TextureAtlas:
         )
         self._texture.write(texture.image.tobytes(), 0, viewport=viewport)
 
-    def update_textures(self, textures: Set["Texture"], keep_old_textures=True):
-        """Batch update atlas with new textures.
-
-        THIS METHOD SHOULD NEVER BE USED.
-
-        :param textures: List of Texture objects
-        :param bool keep_old_textures: Keep textures not in the texture list
-        """
-        new_textures = set(textures) - set(self._textures)
-
-        if keep_old_textures:
-            for tex in new_textures:
-                self.add(tex)
-        else:
-            old_textures = set(self._textures) - set(textures)
-            if old_textures:
-                self.clear()
-            for tex in new_textures:
-                self.add(tex)
-
     def get_region_info(self, name: str) -> AtlasRegion:
         """
         Get the region info for a texture

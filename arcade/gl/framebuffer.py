@@ -65,10 +65,10 @@ class Framebuffer:
         :param List[arcade.gl.Texture] color_attachments: List of color attachments.
         :param arcade.gl.Texture depth_attachment: A depth attachment (optional)
         """
+        self._ctx = ctx
         if not color_attachments:
             raise ValueError("Framebuffer must at least have one color attachment")
 
-        self._ctx = ctx
         self._color_attachments = (
             color_attachments
             if isinstance(color_attachments, list)
