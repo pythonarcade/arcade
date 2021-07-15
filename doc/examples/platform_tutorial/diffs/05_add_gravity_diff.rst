@@ -11,4 +11,4 @@ Differences - 05_add_gravity.py
 
 * :ref:`05_add_gravity`
 * :ref:`04_user_control_diff`
-* :ref:`06_scrolling_diff`
+* :ref:`06_camera_diff`

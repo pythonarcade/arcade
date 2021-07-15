@@ -5,7 +5,7 @@ from pyglet.event import EventDispatcher
 from pyglet.window import Window
 
 import arcade
-from arcade import SpriteList
+from arcade import SpriteList, TextureAtlas
 from arcade.gui import (
     UIElement,
     UIEvent,
@@ -313,7 +313,7 @@ class UIManager(UIAbstractManager):
         super().__init__()
         self.window: Window = window or arcade.get_window()
 
-        self._ui_elements: SpriteList = SpriteList(use_spatial_hash=True)
+        self._ui_elements: SpriteList = SpriteList(atlas=TextureAtlas(size=(1024, 1024)))
         self._ui_elements._keep_textures = False  # Workaround to prevent OOM
         self._id_cache: Dict[str, UIElement] = {}
 
@@ -325,7 +325,7 @@ class UIManager(UIAbstractManager):
         """
         Removes all UIElements which where added to the :py:class:`arcade.gui.UIManager`.
         """
-        self._ui_elements = SpriteList(use_spatial_hash=True)
+        self._ui_elements = SpriteList(atlas=TextureAtlas(size=(1024, 1024)))
         self._ui_elements._keep_textures = False  # Workaround to prevent OOM
         self._id_cache = {}
 

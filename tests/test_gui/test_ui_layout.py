@@ -58,14 +58,16 @@ def test_layout_moves_children():
 
 
 @pytest.mark.parametrize(
-    ["layout"],
+    ["layout_factory"],
     [
-        t("VBox", UIBoxLayout()),
-        t("HBox", UIBoxLayout(vertical=False)),
-        t("Anchor", UIAnchorLayout(800, 600)),
+        t("VBox", lambda: UIBoxLayout()),
+        t("HBox", lambda: UIBoxLayout(vertical=False)),
+        t("Anchor", lambda: UIAnchorLayout(800, 600)),
     ],
 )
-def test_passes_ui_events(layout):
+def test_passes_ui_events(layout_factory):
+    layout = layout_factory()
+
     # GIVEN
     element = dummy_element()
     element.on_ui_event = Mock()
@@ -88,14 +90,16 @@ def test_passes_ui_events(layout):
 
 
 @pytest.mark.parametrize(
-    ["layout"],
+    ["layout_factory"],
     [
-        t("VBox", UIBoxLayout()),
-        t("HBox", UIBoxLayout(vertical=False)),
-        t("Anchor", UIAnchorLayout(800, 600)),
+        t("VBox", lambda: UIBoxLayout()),
+        t("HBox", lambda: UIBoxLayout(vertical=False)),
+        t("Anchor", lambda: UIAnchorLayout(800, 600)),
     ],
 )
-def test_pack_adds_elements_to_draw_layer(layout: UILayout):
+def test_pack_adds_elements_to_draw_layer(layout_factory):
+    layout = layout_factory()
+
     ui_element = dummy_element()
     sprite = SpriteSolidColor(100, 50, arcade.color.GREEN)
 
@@ -107,14 +111,16 @@ def test_pack_adds_elements_to_draw_layer(layout: UILayout):
 
 
 @pytest.mark.parametrize(
-    ["layout"],
+    ["layout_factory"],
     [
-        t("VBox", UIBoxLayout()),
-        t("HBox", UIBoxLayout(vertical=False)),
-        t("Anchor", UIAnchorLayout(800, 600)),
+        t("VBox", lambda: UIBoxLayout()),
+        t("HBox", lambda: UIBoxLayout(vertical=False)),
+        t("Anchor", lambda: UIAnchorLayout(800, 600)),
     ],
 )
-def test_remove_child(layout):
+def test_remove_child(layout_factory):
+    layout = layout_factory()
+
     sprite = SpriteSolidColor(100, 50, arcade.color.GREEN)
     layout.pack(sprite)
 
@@ -126,14 +132,16 @@ def test_remove_child(layout):
 
 
 @pytest.mark.parametrize(
-    ["layout"],
+    ["layout_factory"],
     [
-        t("VBox", UIBoxLayout()),
-        t("HBox", UIBoxLayout(vertical=False)),
-        t("Anchor", UIAnchorLayout(800, 600)),
+        t("VBox", lambda: UIBoxLayout()),
+        t("HBox", lambda: UIBoxLayout(vertical=False)),
+        t("Anchor", lambda: UIAnchorLayout(800, 600)),
     ],
 )
-def test_child_expanded_to_parent_size(layout: UILayout):
+def test_child_expanded_to_parent_size(layout_factory):
+    layout = layout_factory()
+
     ui_element = dummy_element()
     ui_element.size_hint = (1, 1)
     layout.width = 300

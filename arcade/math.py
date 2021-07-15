@@ -1058,7 +1058,7 @@ class Mat3(tuple):
         return Mat3(tuple(-v for v in self))
 
     def __matmul__(self, other) -> "Mat3":
-        assert len(other) in (4, 16), "Can only multiply with Mat4 or Vec4 types"
+        assert len(other) in (3, 9), "Can only multiply with Mat4 or Vec4 types"
 
         return Mat3(
             (

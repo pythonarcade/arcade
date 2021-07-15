@@ -6,7 +6,6 @@ from arcade.gui.layouts.anchor import UIAnchorLayout
 from arcade.gui.layouts.box import UIBoxLayout
 from tests.test_gui import dummy_element
 
-
 @pytest.fixture()
 def anchor_layout():
     layout = UIAnchorLayout(800, 600)

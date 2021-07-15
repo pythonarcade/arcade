@@ -197,8 +197,8 @@ class TileMap:
         :param float x: The X Coordinate to convert
         :param float y: The Y Coordinate to convert
         """
-        x = math.floor(x / self.tiled_map.tile_size.width)
-        y = math.floor(y / self.tiled_map.tile_size.height)
+        x = math.floor(x / (self.tile_width * self.scaling))
+        y = math.floor(y / (self.tile_height * self.scaling))
 
         return x, y
 

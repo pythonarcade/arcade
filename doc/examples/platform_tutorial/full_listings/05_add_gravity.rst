@@ -11,4 +11,4 @@ Full Listing - 05_add_gravity.py
 
 * :ref:`05_add_gravity_diff`
 * :ref:`04_user_control`
-* :ref:`06_scrolling`
+* :ref:`06_camera`
