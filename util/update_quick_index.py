@@ -9,6 +9,7 @@ titles = {
     'arcade_types.py': ['Arcade Data Types', 'arcade_types.rst'],
     'application.py': ['Window and View', 'window.rst'],
     'buffered_draw_commands.py': ['Drawing - Batch', 'drawing_batch.rst'],
+    'camera.py': ['Camera', 'camera.rst'],
     'context.py': ['OpenGL Context', 'open_gl.rst'],
     'drawing_support.py': ['Drawing - Utility', 'drawing_utilities.rst'],
     'draw_commands.py': ['Drawing - Primitives', 'drawing_primitives.rst'],
