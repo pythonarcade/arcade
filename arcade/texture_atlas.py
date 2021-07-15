@@ -11,15 +11,16 @@ Pyglet atlases are located here:
 https://github.com/einarf/pyglet/blob/master/pyglet/image/atlas.py
 
 """
+import math
+import time
+import logging
+from typing import Dict, List, Tuple, Sequence, TYPE_CHECKING
+from array import array
+
 import PIL
 from arcade.gl.framebuffer import Framebuffer
-from array import array
 from collections import deque
 from contextlib import contextmanager
-import gc
-import math
-import logging
-from typing import Dict, List, Set, Tuple, Sequence, TYPE_CHECKING
 
 from PIL import Image
 
@@ -131,6 +132,7 @@ class TextureAtlas:
         *,
         border: int = 1,
         textures: Sequence["Texture"] = None,
+        auto_resize: bool = True,
         ctx: "ArcadeContext" = None,
     ):
         """
@@ -139,7 +141,7 @@ class TextureAtlas:
         :param Tuple[int, int] size: The width and height of the atlas in pixels
         :param int border: Border in pixels around every texture in the atlas
         :param Sequence[arcade.Texture] textures: The texture for this atlas
-        :param bool mutable: If this atlas can be changed after creation
+        :param bool auto_resize: Automatically resize the atlas when full
         :param Context ctx: The context for this atlas (will use window context if left empty)
         """
         self._ctx = ctx or arcade.get_window().ctx
@@ -147,6 +149,7 @@ class TextureAtlas:
         self._size: Tuple[int, int] = size
         self._border: int = border
         self._allocator = Allocator(*self._size)
+        self._auto_resize = auto_resize
         self._check_size(self._size)
 
         self._texture = self._ctx.texture(size, components=4)
@@ -199,16 +202,50 @@ class TextureAtlas:
         """
         The width and height of the texture atlas in pixels
 
-        :rtype: int
+        :rtype: Tuple[int,int]
         """
         return self._size
+
+    @property
+    def max_width(self) -> int:
+        """
+        The maximum width of the atlas in pixels
+
+        :rtype: int
+        """
+        return self._max_size[0]
+
+    @property
+    def max_height(self) -> int:
+        """
+        The maximum height of the atlas in pixels
+
+        :rtype: int
+        """
+        return self._max_size[1]
 
     @property
     def max_size(self) -> Tuple[int, int]:
         """
         The maximum size of the atlas in pixels (x, y)
+
+        :rtype: Tuple[int,int]
         """
         return self._max_size
+
+    @property
+    def auto_resize(self) -> bool:
+        """
+        Get or set the auto resize flag for the atlas.
+        If enabled the atlas will resize itself when full.
+
+        :rtype: bool
+        """
+        return self._auto_resize
+
+    @auto_resize.setter
+    def auto_resize(self, value: bool):
+        self._auto_resize = value
 
     @property
     def border(self) -> int:
@@ -254,8 +291,22 @@ class TextureAtlas:
             region = self.get_region_info(texture.name)
             return slot, region
 
-        LOG.debug("Attempting to add texture: %s", texture.name)
-        x, y, slot, region = self.allocate(texture)
+        LOG.info("Attempting to add texture: %s", texture.name)
+
+        try:
+            x, y, slot, region = self.allocate(texture)
+        except AllocatorException:
+            LOG.info("[%s] No room for %s size %s", id(self), texture.name, texture.image.size)
+            if self._auto_resize:
+                width = min(self.width * 2, self.max_width)
+                height = min(self.height * 2, self.max_height)
+                if self._size == (width, height):
+                    raise
+                self.resize((width, height))
+                return self.add(texture)
+            else:
+                raise
+
         self.write_texture(texture, x, y)
         return slot, region
 
@@ -392,33 +443,45 @@ class TextureAtlas:
         """Check if a texture is already in the atlas"""
         return texture.name in self._atlas_regions
 
+    # TODO: Possibly let user decide the resize function
+    # def resize(self, size: Tuple[int, int]) -> None:
+    #     """
+    #     Resize the texture atlas.
+    #     This will cause a full rebuild.
+
+    #     :param Tuple[int,int]: The new size
+    #     """
+    #     # if size == self._size:
+    #     #     return
+
+    #     self._check_size(size)
+    #     self._size = size
+    #     self._texture = None
+    #     self._fbo = None
+    #     gc.collect()  # Try to force garbage collection of the gl resource asap
+    #     self._texture = self._ctx.texture(size, components=4)
+    #     self._fbo = self._ctx.framebuffer(color_attachments=[self._texture])
+    #     self.rebuild()
+
     def resize(self, size: Tuple[int, int]) -> None:
         """
-        Resize the texture atlas.
-        This will cause a full rebuild.
-
-        :param Tuple[int,int]: The new size
-        """
-        # if size == self._size:
-        #     return
-
-        self._check_size(size)
-        self._size = size
-        self._texture = None
-        self._fbo = None
-        gc.collect()  # Try to force garbage collection of the gl resource asap
-        self._texture = self._ctx.texture(size, components=4)
-        self._fbo = self._ctx.framebuffer(color_attachments=[self._texture])
-        self.rebuild()
-
-    def resize_gpu(self, size: Tuple[int, int]) -> None:
-        """
         Resize the atlas on the gpu.
+
         This will copy the pixel data from the old to the
         new atlas retaining the exact same data.
-        This is useful if the atlas was rendered into directly.
-        A simply resize by copying in the original textures don't have this advantage.
+        This is useful if the atlas was rendered into directly
+        and we don't have to transfer each texture individually
+        from system memory to graphics memory.
+
+        :param Tuple[int,int] size: The new size
         """
+        LOG.info("[%s] Resizing atlas from %s to %s", id(self), self._size, size)
+
+        if size == self._size:
+            return
+
+        resize_start = time.perf_counter()
+
         self._check_size(size)
         self._size = size
         # Keep the old atlas texture and uv texture
@@ -456,6 +519,7 @@ class TextureAtlas:
                 mode=self._ctx.POINTS,
                 vertices=TEXCOORD_BUFFER_SIZE,
             )
+        LOG.info("[%s] Atlas resize took %s seconds", id(self), time.perf_counter() - resize_start)
 
     def rebuild(self) -> None:
         """Rebuild the underlying atlas texture.

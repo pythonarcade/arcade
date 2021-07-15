@@ -28,7 +28,7 @@ class ArcadeContext(Context):
     and is mainly for more advanced usage**
     """
 
-    atlas_size = 8192, 8192
+    atlas_size = 512, 512
 
     def __init__(self, window: pyglet.window.Window, gc_mode: str = "auto"):
         """
@@ -207,7 +207,7 @@ class ArcadeContext(Context):
             # We might want to query the max limit, but this makes it consistent
             # across all OpenGL implementations.
             self._atlas = TextureAtlas(
-                self.atlas_size, border=1, ctx=self,
+                self.atlas_size, border=1, auto_resize=True, ctx=self,
             )
 
         return self._atlas

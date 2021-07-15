@@ -57,7 +57,7 @@ def test_add_overflow(ctx):
     """Ensure AllocatorException is raised when atlas is full"""
     tex_a = load_texture(":resources:onscreen_controls/shaded_dark/a.png")
     tex_b = load_texture(":resources:onscreen_controls/shaded_dark/b.png")
-    atlas = TextureAtlas((100, 100), border=1)
+    atlas = TextureAtlas((100, 100), border=1, auto_resize=False)
     slot_a, region = atlas.add(tex_a)
     assert slot_a == 0
     # Atlas should be full at this point
@@ -198,7 +198,7 @@ def test_update_texture_image(ctx):
 
 def test_resize(ctx):
     """Attempt to resize the atlas"""
-    atlas = TextureAtlas((50, 100), border=0)
+    atlas = TextureAtlas((50, 100), border=0, auto_resize=False)
     t1 = arcade.Texture("t1", image=PIL.Image.new("RGBA", (50, 50), (255, 0, 0, 255)))
     t2 = arcade.Texture("t2", image=PIL.Image.new("RGBA", (50, 50), (0, 255, 0, 255)))
     atlas.add(t1)
