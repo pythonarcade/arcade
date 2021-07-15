@@ -10,6 +10,16 @@ from arcade.window_commands import get_scaling_factor
 
 
 class Camera:
+    """
+    The Camera class is used for controlling the visible viewport.
+    It is very useful for separating a scrolling screen of sprites, and a GUI overlay.
+    For an example of this in action, see :ref:`sprite_move_scrolling`.
+
+    :param int viewport_width: Width of the viewport
+    :param int viewport_height: Height of the viewport
+    :param Window window: Window to associate with this camera, if working with a multi-window program.
+
+    """
     def __init__(
         self,
         viewport_width: int = 0,
@@ -41,6 +51,9 @@ class Camera:
         self.resize(viewport_width, viewport_height)
 
     def update(self):
+        """
+        Update the camera's viewport to the current settings.
+        """
         # Apply Camera Shake
 
         self.shake_offset += self.shake_velocity
@@ -82,22 +95,48 @@ class Camera:
         )
 
     def resize(self, viewport_width: int, viewport_height: int):
+        """
+        Resize the camera's viewport. Call this when the window resizes.
+
+        :param int viewport_width: Width of the viewport
+        :param int viewport_height: Height of the viewport
+
+        """
+
         self.viewport_width = viewport_width
         self.viewport_height = viewport_height
 
     def shake(self, velocity: Vec2, decay: Vec2 = Vec2(0.9, 0.9)):
+        """
+        Add a camera shake.
+
+        :param Vec2 velocity: Vector to start moving the camera
+        :param Vec2 decay: How fast to stop shaking
+        """
         self.shake_velocity += velocity
         decay = Vec2(decay[0], decay[1])
         self.shake_decay = decay.clamp(0.9, 0.9)
 
     def move_to(self, vector: Vec2, speed: float = 1.0):
+        """
+        Move the camera to a new position
+
+        :param Vec2 vector: Vector to move the camera to. (Lower left corner.)
+        :param Vec2 speed: How fast to move the camera there. 1.0 is instance. 0.1 gives it a smooth transition.
+        """
         pos = Vec2(vector[0], vector[1])
         self.position = self.position.lerp(pos, speed)
 
     def zoom(self, change: float):
+        """
+        Zoom the camera in or out. Or not.
+        """
         raise NotImplementedError("Camera Zooming is not yet supported")
 
     def use(self):
+        """
+        Select this camera for use. Do this right before you draw.
+        """
         self.update()
         fbo = self._window.ctx.fbo
         scaling = get_scaling_factor(self._window) if fbo.is_default else 1.0
