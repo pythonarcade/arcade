@@ -81,8 +81,6 @@ class Camera:
         velocity_mag = arcade.get_distance(0, 0, vx, vy)
 
         # Ok, what's the reverse? Pull it back in.
-        print(self.shake_speed)
-        print(distance)
         reverse_speed = min(self.shake_speed, distance)
         opposite_angle = angle + math.pi
         opposite_vector = Vec2(
