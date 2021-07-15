@@ -346,6 +346,10 @@ Camera Use
 
    :ref:`sprite_move_scrolling_box`
 
+.. figure:: thumbs/sprite_move_scrolling.png
+   :figwidth: 170px
+
+   :ref:`sprite_move_scrolling_shake`
 
 Platformers
 -----------
