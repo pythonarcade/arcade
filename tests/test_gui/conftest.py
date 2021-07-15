@@ -4,12 +4,6 @@ from pytest import fixture
 import arcade
 from . import MockButton, TestUIManager, TestUILayoutManager
 
-@pytest.fixture(autouse=True)
-def window():
-    window = arcade.Window(title='ARCADE_GUI')
-    yield window
-    window.close()
-
 
 @fixture()
 def mock_mng(window):
