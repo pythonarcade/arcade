@@ -17,13 +17,6 @@ PLAYER_MOVEMENT_SPEED = 5
 GRAVITY = 1
 PLAYER_JUMP_SPEED = 20
 
-# How many pixels to keep as a minimum margin between the character
-# and the edge of the screen.
-LEFT_VIEWPORT_MARGIN = 250
-RIGHT_VIEWPORT_MARGIN = 250
-BOTTOM_VIEWPORT_MARGIN = 50
-TOP_VIEWPORT_MARGIN = 100
-
 
 class MyGame(arcade.Window):
     """
@@ -44,7 +37,7 @@ class MyGame(arcade.Window):
         # Our physics engine
         self.physics_engine = None
 
-        # A Camera that that can be used for scrolling the screen
+        # A Camera that can be used for scrolling the screen
         self.camera = None
 
         arcade.set_background_color(arcade.csscolor.CORNFLOWER_BLUE)
