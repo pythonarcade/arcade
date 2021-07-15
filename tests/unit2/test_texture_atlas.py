@@ -208,6 +208,15 @@ def test_resize(ctx):
     with pytest.raises(AllocatorException):
         atlas.resize((50, 99))
 
+    # Resize past max size
+    atlas = TextureAtlas((50, 50), border=0)
+    atlas._max_size = 60, 60
+    t1 = arcade.Texture("t1", image=PIL.Image.new("RGBA", (50, 50), (255, 0, 0, 255)))
+    t2 = arcade.Texture("t2", image=PIL.Image.new("RGBA", (50, 50), (0, 255, 0, 255)))
+    atlas.add(t1)
+    with pytest.raises(AllocatorException):
+        atlas.add(t2)
+
 
 def test_create_from_texture_sequence(ctx):
     tex_1 = arcade.load_texture(":resources:images/topdown_tanks/tileGrass1.png")
