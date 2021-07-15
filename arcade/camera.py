@@ -42,7 +42,8 @@ class Camera:
         # Shake
         self.shake_velocity = Vec2()
         self.shake_offset = Vec2()
-        self.shake_decay = Vec2()
+        self.shake_speed = 0
+        self.shake_damping = 0
 
         self.viewport_width = viewport_width
         self.viewport_height = viewport_height
@@ -56,40 +57,45 @@ class Camera:
         """
         # Apply Camera Shake
 
+        # Move our offset based on shake velocity
         self.shake_offset += self.shake_velocity
 
-        if self.shake_offset[0] or self.shake_offset[1]:
-            velocity_change_x = 0
-            velocity_change_y = 0
+        # Get x and ys
+        vx = self.shake_velocity[0]
+        vy = self.shake_velocity[1]
 
-            if self.shake_offset[0] > 0:
-                velocity_change_x = -1
-            elif self.shake_offset[0] < 0:
-                velocity_change_x = 1
+        ox = self.shake_offset[0]
+        oy = self.shake_offset[1]
 
-            if self.shake_offset[1] > 0:
-                velocity_change_y = -1
-            elif self.shake_offset[1] < 0:
-                velocity_change_y = 1
+        # Calculate the angle our ofset is at, and how far out
+        angle = math.atan2(ox, oy)
+        distance = arcade.get_distance(0, 0, ox, oy)
+        velocity_mag = arcade.get_distance(0, 0, vx, vy)
 
-            self.shake_velocity += Vec2(velocity_change_x, velocity_change_y)
-            self.shake_velocity *= self.shake_decay
+        # Ok, what's the reverse? Pull it back in.
+        reverse_speed = min(self.shake_speed, distance)
+        opposite_angle = angle + math.pi
+        opposite_vector = Vec2(math.sin(opposite_angle) * reverse_speed,
+                               math.cos(opposite_angle) * reverse_speed)
 
-            if abs(self.shake_velocity[0]) < 0.5 and abs(self.shake_offset[0]) < 0.5:
-                self.shake_velocity = Vec2(0, self.shake_velocity[1])
-                self.shake_offset = Vec2(0, self.shake_offset[1])
+        # Shaking almost done? Zero it out
+        if velocity_mag < self.shake_speed and distance < self.shake_speed:
+            self.shake_velocity = Vec2(0, 0)
+            self.shake_offset = Vec2(0, 0)
 
-            if abs(self.shake_velocity[1]) < 0.5 and abs(self.shake_offset[1]) < 0.5:
-                self.shake_velocity = Vec2(self.shake_velocity[0], 0)
-                self.shake_offset = Vec2(self.shake_offset[0], 0)
+        # Come up with a new velocity, pulled by opposite vector and damped
+        self.shake_velocity += opposite_vector
+        self.shake_velocity *= Vec2(self.shake_damping, self.shake_damping)
 
-            self.position += Vec2(self.shake_offset[0], self.shake_offset[1])
+        # Figure out our 'real' position plus the shake
+        result_position = self.position + self.shake_offset
 
+        # Update the projection
         self.projection_matrix = Mat4.orthogonal_projection(
-            math.floor(self.position[0]),
-            self.viewport_width + math.floor(self.position[0]),
-            math.floor(self.position[1]),
-            self.viewport_height + math.floor(self.position[1]),
+            math.floor(result_position[0]),
+            self.viewport_width + math.floor(result_position[0]),
+            math.floor(result_position[1]),
+            self.viewport_height + math.floor(result_position[1]),
             self.near,
             self.far,
         )
@@ -106,16 +112,20 @@ class Camera:
         self.viewport_width = viewport_width
         self.viewport_height = viewport_height
 
-    def shake(self, velocity: Vec2, decay: Vec2 = Vec2(0.9, 0.9)):
+    def shake(self,
+              velocity: Vec2,
+              speed: float = 1.5,
+              damping: float = 0.9):
         """
         Add a camera shake.
 
         :param Vec2 velocity: Vector to start moving the camera
-        :param Vec2 decay: How fast to stop shaking
+        :param float speed: How fast to shake
+        :param float damping: How fast to stop shaking
         """
         self.shake_velocity += velocity
-        decay = Vec2(decay[0], decay[1])
-        self.shake_decay = decay.clamp(0.9, 0.9)
+        self.shake_speed = speed
+        self.shake_damping = damping
 
     def move_to(self, vector: Vec2, speed: float = 1.0):
         """

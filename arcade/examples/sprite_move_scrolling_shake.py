@@ -115,13 +115,13 @@ class MyGame(arcade.Window):
         self.bomb_list.draw()
         self.player_list.draw()
 
-        # Select the (unscrolled) camera for our GUI
-        self.camera_gui.use()
-
-        # Draw the GUI
-        arcade.draw_rectangle_filled(self.width // 2, 20, self.width, 40, arcade.color.ALMOND)
-        text = f"Scroll value: ({self.camera_sprites.position[0]:5.1f}, {self.camera_sprites.position[1]:5.1f})"
-        arcade.draw_text(text, 10, 10, arcade.color.BLACK_BEAN, 20)
+        # # Select the (unscrolled) camera for our GUI
+        # self.camera_gui.use()
+        #
+        # # Draw the GUI
+        # arcade.draw_rectangle_filled(self.width // 2, 20, self.width, 40, arcade.color.ALMOND)
+        # text = f"Scroll value: ({self.camera_sprites.position[0]:5.1f}, {self.camera_sprites.position[1]:5.1f})"
+        # arcade.draw_text(text, 10, 10, arcade.color.BLACK_BEAN, 20)
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
@@ -157,10 +157,13 @@ class MyGame(arcade.Window):
         for bomb in hit_list:
             bomb.remove_from_sprite_lists()
             shake_direction = random.random() * 2 * math.pi
-            shake_amplitude = 4
-            shake_vector = math.cos(shake_direction) * shake_amplitude, math.cos(shake_direction) * shake_amplitude
-            shake_decay = .90, .90
-            self.camera_sprites.shake(shake_vector, shake_decay)
+            shake_amplitude = 10
+            shake_vector = math.cos(shake_direction) * shake_amplitude, math.sin(shake_direction) * shake_amplitude
+            shake_speed = 1.5
+            shake_damping = 0.9
+            self.camera_sprites.shake(shake_vector,
+                                      speed=shake_speed,
+                                      damping=shake_damping)
             self.explosion_sound.play()
 
     def scroll_to_player(self):
