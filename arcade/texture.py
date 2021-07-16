@@ -2,7 +2,6 @@
 Code related to working with textures.
 """
 
-import math
 from pathlib import Path
 
 import PIL.Image
@@ -98,6 +97,35 @@ class Texture:
         self._hit_box_algorithm = hit_box_algorithm or "None"
 
         self._hit_box_detail = hit_box_detail
+
+    @classmethod
+    def create_empty(cls, name: str, size: Tuple[int, int]) -> "Texture":
+        """
+        Create an empty texture with a black image.
+
+        This can be used to allocate space in texture atlases.
+        The hit box algorithm will be a simply bounding box (None)
+        since we have no pixel data to possibly determine a hit box.
+
+        Note that this creates an internal empty RGBA Pillow Image.
+        If creating many large textures be aware of the memory usage
+        (4 bytes per pixel). Optionally the normal texture initializer
+        can be used providing your own image. If making many equally sized
+        empty texture the same image an be reused across across these textures.
+
+        The internal image can also be latered with Pillow draw commands
+        and written/updated to a texture atlas. This works great for infrequent
+        changes. For frequent texture changes you should instead render
+        directly into the texture atlas.
+
+        :param str name: The unique name for this texture
+        :param Tuple[int,int] size: The xy size of the internal image.
+        """
+        return Texture(
+            name,
+            image=PIL.Image.new("RGBA", size, (0, 0, 0, 0)),
+            hit_box_algorithm=None,
+        )
 
     # ------------------------------------------------------------
     # Comparison and hash functions so textures can work with sets

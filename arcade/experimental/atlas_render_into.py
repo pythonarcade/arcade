@@ -3,7 +3,6 @@ Render into a sub-section of a texture atlas
 """
 import math
 import arcade
-import PIL
 
 
 class AtlasRenderDemo(arcade.Window):
@@ -12,10 +11,8 @@ class AtlasRenderDemo(arcade.Window):
         super().__init__(800, 600, "Atlas Render Demo")
         self.atlas = arcade.TextureAtlas((600, 600))
 
-        # Empty dummy image to reserve space in the atlas
-        dummy_image = PIL.Image.new("RGBA", (256, 256), (255, 0, 0, 255))
-        self.texture_1 = arcade.Texture("render_area_1", image=dummy_image, hit_box_algorithm=None)
-        self.texture_2 = arcade.Texture("render_area_2", image=dummy_image, hit_box_algorithm=None)
+        self.texture_1 = arcade.Texture.create_empty("render_area_1", size=(256, 256))
+        self.texture_2 = arcade.Texture.create_empty("render_area_2", size=(256, 256))
         self.sprite_1 = arcade.Sprite(center_x=200, center_y=300, texture=self.texture_1)
         self.sprite_2 = arcade.Sprite(center_x=600, center_y=300, texture=self.texture_2)
 

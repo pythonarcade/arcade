@@ -71,3 +71,18 @@ def test_missing_image():
 
     with pytest.raises(ValueError):
         tex.hit_box_points
+
+
+def test_crate_empty():
+    """Create empty texture"""
+    size = (256, 256)
+    tex = Texture.create_empty("empty", size)
+    assert tex.name == "empty"
+    assert tex.size == size
+    assert tex._hit_box_algorithm == 'None'
+    assert tex.hit_box_points == (
+        (-128.0, -128.0),
+        (128.0, -128.0),
+        (128.0, 128.0),
+        (-128.0, 128.0)
+    )
