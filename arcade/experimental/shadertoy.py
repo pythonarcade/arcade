@@ -42,6 +42,10 @@ class ShaderToy:
                 "uniform float iTime;\n"
                 "uniform vec2 iMouse;\n"
                 "uniform vec2 iResolution;\n"
+                "uniform sampler2D iChannel0;\n"
+                "uniform sampler2D iChannel1;\n"
+                "uniform sampler2D iChannel2;\n"
+                "uniform sampler2D iChannel3;\n"
                 "\n"
                 "in vec2 v_uv;\n"
                 "out vec4 out_color;\n"
@@ -70,5 +74,10 @@ class ShaderToy:
                 self.program['iResolution'] = self.window.get_framebuffer_size()
         except KeyError:
             pass
+        for channel in [0, 1, 2, 3]:
+            try:
+                self.program[f"iChannel{channel}"] = channel
+            except KeyError:
+                pass
 
         self.quad.render(self.program)
