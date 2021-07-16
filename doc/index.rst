@@ -257,6 +257,8 @@ game without learning a complex framework.
    tutorials/gpu_particle_burst/index
    tutorials/bundling_with_pyinstaller/index
    tutorials/user_interface/index
+   tutorials/shader_toy/index
+   tutorials/framebuffer/index
 
 .. toctree::
    :maxdepth: 1
