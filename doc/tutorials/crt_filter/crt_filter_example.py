@@ -19,23 +19,20 @@ class MyGame(arcade.Window):
         shader_sourcecode = file.read()
 
         # Create the frame buffer
-        self._fbo = self.ctx.framebuffer(
-            color_attachments=[self.ctx.texture((width, height), components=4)])
+        self.fbo = self.ctx.framebuffer(color_attachments=[self.ctx.texture((width, height), components=4)])
 
         # Create the shader toy
         self.shadertoy = ShaderToy(shader_sourcecode)
 
         # Bind channel 0 to frame buffer
-        self.shadertoy.program["iChannel0"] = 0
-        self._fbo.color_attachments[0].use(0)
+        self.fbo.color_attachments[0].use(0)
 
     def on_draw(self):
-        self._fbo.use()
+        self.fbo.use()
         arcade.draw_circle_filled(30, 30, 30, arcade.color.BLUE)
 
         self.use()
         arcade.start_render()
-
         self.shadertoy.draw(time=self.time)
 
     def on_update(self, dt):
