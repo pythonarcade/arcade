@@ -20,6 +20,7 @@ class Camera:
     :param Window window: Window to associate with this camera, if working with a multi-window program.
 
     """
+
     def __init__(
         self,
         viewport_width: int = 0,
@@ -31,6 +32,10 @@ class Camera:
 
         # Position
         self.position = Vec2(0, 0)
+        self.goal_position = Vec2(0, 0)
+
+        # Movement Speed, 1.0 is instant
+        self.move_speed = 1.0
 
         # Projection Matrix
         self.projection_matrix = None
@@ -42,8 +47,8 @@ class Camera:
         # Shake
         self.shake_velocity = Vec2()
         self.shake_offset = Vec2()
-        self.shake_speed = 0
-        self.shake_damping = 0
+        self.shake_speed = 0.0
+        self.shake_damping = 0.0
 
         self.viewport_width = viewport_width
         self.viewport_height = viewport_height
@@ -55,6 +60,9 @@ class Camera:
         """
         Update the camera's viewport to the current settings.
         """
+        # Apply Goal Position
+        self.position = self.position.lerp(self.goal_position, self.move_speed)
+
         # Apply Camera Shake
 
         # Move our offset based on shake velocity
@@ -75,8 +83,10 @@ class Camera:
         # Ok, what's the reverse? Pull it back in.
         reverse_speed = min(self.shake_speed, distance)
         opposite_angle = angle + math.pi
-        opposite_vector = Vec2(math.sin(opposite_angle) * reverse_speed,
-                               math.cos(opposite_angle) * reverse_speed)
+        opposite_vector = Vec2(
+            math.sin(opposite_angle) * reverse_speed,
+            math.cos(opposite_angle) * reverse_speed,
+        )
 
         # Shaking almost done? Zero it out
         if velocity_mag < self.shake_speed and distance < self.shake_speed:
@@ -112,10 +122,7 @@ class Camera:
         self.viewport_width = viewport_width
         self.viewport_height = viewport_height
 
-    def shake(self,
-              velocity: Vec2,
-              speed: float = 1.5,
-              damping: float = 0.9):
+    def shake(self, velocity: Vec2, speed: float = 1.5, damping: float = 0.9):
         """
         Add a camera shake.
 
@@ -129,13 +136,25 @@ class Camera:
 
     def move_to(self, vector: Vec2, speed: float = 1.0):
         """
-        Move the camera to a new position
+        Sets the goal position of the camera.
 
-        :param Vec2 vector: Vector to move the camera to. (Lower left corner.)
-        :param Vec2 speed: How fast to move the camera there. 1.0 is instance. 0.1 gives it a smooth transition.
+        The camera will lerp towards this position based on the provided speed,
+        updating it's position everytime the use() function is called.
+
+        :param Vec2 vector: Vector to move the camera towards.
+        :param Vec2 speed: How fast to move the camera, 1.0 is instant, 0.1 moves slowly
         """
         pos = Vec2(vector[0], vector[1])
-        self.position = self.position.lerp(pos, speed)
+        self.goal_position = pos
+        self.move_speed = speed
+
+    def move(self, vector: Vec2):
+        """
+        Moves the camera with a speed of 1.0, aka instant move
+
+        This is equivalent to calling move_to(my_pos, 1.0)
+        """
+        self.move_to(vector, 1.0)
 
     def zoom(self, change: float):
         """

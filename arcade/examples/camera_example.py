@@ -247,7 +247,7 @@ class MyGame(arcade.Window):
         for bomb in bombs_hit:
             bomb.remove_from_sprite_lists()
             print("Pow")
-            self.camera.shake((4, 7), (1.2, 1.2))
+            self.camera.shake((4, 7))
 
         # Pan to the user
         self.pan_camera_to_user(panning_fraction=0.12)

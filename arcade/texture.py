@@ -128,20 +128,20 @@ class Texture:
         """
         Width of the texture in pixels.
         """
-        if self.image:
-            return self.image.width
-        else:
-            return 0
+        if not self.image:
+            raise ValueError(f"Texture '{self.name}' doesn't have an image")
+
+        return self.image.width
 
     @property
     def height(self) -> int:
         """
         Height of the texture in pixels.
         """
-        if self.image:
-            return self.image.height
-        else:
-            return 0
+        if not self.image:
+            raise ValueError(f"Texture '{self.name}' doesn't have an image")
+
+        return self.image.height
 
     @property
     def size(self) -> Tuple[int, int]:
@@ -155,6 +155,9 @@ class Texture:
         if self._hit_box_points is not None:
             return self._hit_box_points
         else:
+            if not self.image:
+                raise ValueError(f"Texture '{self.name}' doesn't have an image")
+
             if self._hit_box_algorithm == "Simple":
                 self._hit_box_points = calculate_hit_box_points_simple(self.image)
             elif self._hit_box_algorithm == "Detailed":
