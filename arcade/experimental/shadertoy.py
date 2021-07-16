@@ -58,6 +58,12 @@ class ShaderToy:
                 "}\n"
             ),
         )
+        # Configure texture channels
+        for channel in [0, 1, 2, 3]:
+            try:
+                self.program[f"iChannel{channel}"] = channel
+            except KeyError:
+                pass        
 
     def draw(self, time: float = 0, target=None):
         try:
@@ -73,10 +79,5 @@ class ShaderToy:
                 self.program['iResolution'] = self.window.get_framebuffer_size()
         except KeyError:
             pass
-        for channel in [0, 1, 2, 3]:
-            try:
-                self.program[f"iChannel{channel}"] = channel
-            except KeyError:
-                pass
 
         self.quad.render(self.program)

@@ -1,3 +1,4 @@
+from pathlib import Path
 import arcade
 from arcade.experimental.shadertoy import ShaderToy
 
@@ -14,7 +15,7 @@ class MyGame(arcade.Window):
         self.time = 0
 
         # Read in the program
-        file_name = "crt_monitor_filter.glsl"
+        file_name = Path(__file__).parent / "crt_monitor_filter.glsl"
         file = open(file_name)
         shader_sourcecode = file.read()
 
@@ -24,15 +25,14 @@ class MyGame(arcade.Window):
         # Create the shader toy
         self.shadertoy = ShaderToy(shader_sourcecode)
 
-        # Bind channel 0 to frame buffer
-        self.fbo.color_attachments[0].use(0)
-
     def on_draw(self):
         self.fbo.use()
-        arcade.draw_circle_filled(30, 30, 30, arcade.color.BLUE)
+        arcade.draw_circle_filled(400, 300, 200, arcade.color.BLUE)
 
         self.use()
         arcade.start_render()
+        # Bind fbo texture to channel 0
+        self.fbo.color_attachments[0].use(0)
         self.shadertoy.draw(time=self.time)
 
     def on_update(self, dt):
