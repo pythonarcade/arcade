@@ -88,10 +88,7 @@ class Texture:
         self._sprite_list: Optional[SpriteList] = None
         self._hit_box_points = None
 
-        if hit_box_algorithm != "Simple" and \
-           hit_box_algorithm != "Detailed" and \
-           hit_box_algorithm != "None" and \
-           hit_box_algorithm is not None:
+        if hit_box_algorithm not in ["Simple", "Detailed", "None", None]:
            raise ValueError(
                "hit_box_algorithm must be 'Simple', 'Detailed', 'None'"
                ", or an actual None value."

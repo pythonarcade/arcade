@@ -40,19 +40,19 @@ def test_main(window: arcade.Window):
     arcade.cleanup_texture_cache()
 
 
-def test_texture_constructor_allows_none_and_none_string():
+def test_texture_constructor_hit_box_algo():
     """
-    Test constructor accepting both None and the old style 'None'
+    Test the different hitbox algorithms
     """
-    Texture(
-        name="allowsnonehitbox",
-        hit_box_algorithm=None
-    )
+    Texture(name="default")
+    Texture(name="simple", hit_box_algorithm="Simple")
+    Texture(name="detailed", hit_box_algorithm="Detailed")
+    Texture(name="allowsnonehitbox", hit_box_algorithm=None)
+    Texture(name="old_behavior_preserved", hit_box_algorithm="None")
 
-    Texture(
-        name="old_behavior_preserved",
-        hit_box_algorithm="None"
-    )
+    with pytest.raises(ValueError):
+        Texture(name="random", hit_box_algorithm="definitely invalid")
+
     arcade.cleanup_texture_cache()
 
 
