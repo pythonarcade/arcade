@@ -29,7 +29,7 @@ Step 2: Create One Particle For Each Click
 For this next section, we are going to draw a dot each time the user clicks
 her mouse on the screen.
 
-For each click, we are going to create an instance of a "burst" that will eventually
+For each click, we are going to create an instance of a ``Burst`` class that will eventually
 be turned into a full explosion. Each burst instance will be added to a list.
 
 Imports
@@ -79,14 +79,14 @@ graphics card (GPU) rather than your CPU. Unfortunately a full explanation
 of the language is beyond the scope of this tutorial. I hope, however,
 the tutorial can get you started understanding how it works.
 
-We'll have two shaders. A vertex shader, and a fragment shader.
+We'll have two shaders. A **vertex shader**, and a **fragment shader**.
 A vertex shader runs for each vertex point of the geometry we are rendering,
 and a fragment shader runs for each pixel.
 For example, vertex shader might run four times for each point on a
 rectangle, and the fragment shader would run for each pixel on the screen.
 
 The vertex shader takes in the position of our vertex.
-We'll set `in_pos` in our Python program, and pass that data to this shader.
+We'll set ``in_pos`` in our Python program, and pass that data to this shader.
 
 The vertex shader outputs the color of our vertex.
 Colors are in Red-Green-Blue-Alpha (RGBA) format, with floating-point numbers

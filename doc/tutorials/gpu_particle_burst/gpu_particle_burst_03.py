@@ -14,12 +14,14 @@ SCREEN_TITLE = "GPU Particle Explosion"
 
 PARTICLE_COUNT = 300
 
+
 @dataclass
 class Burst:
     """ Track for each burst. """
     buffer: arcade.gl.Buffer
     vao: arcade.gl.Geometry
     start_time: float
+
 
 class MyWindow(arcade.Window):
     """ Main window"""

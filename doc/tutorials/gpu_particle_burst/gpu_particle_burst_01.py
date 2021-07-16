@@ -7,6 +7,7 @@ SCREEN_WIDTH = 1024
 SCREEN_HEIGHT = 768
 SCREEN_TITLE = "GPU Particle Explosion"
 
+
 class MyWindow(arcade.Window):
     """ Main window"""
     def __init__(self):
