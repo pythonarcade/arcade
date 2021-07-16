@@ -67,7 +67,7 @@ class Camera:
         ox = self.shake_offset[0]
         oy = self.shake_offset[1]
 
-        # Calculate the angle our ofset is at, and how far out
+        # Calculate the angle our offset is at, and how far out
         angle = math.atan2(ox, oy)
         distance = arcade.get_distance(0, 0, ox, oy)
         velocity_mag = arcade.get_distance(0, 0, vx, vy)

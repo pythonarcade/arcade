@@ -6,7 +6,7 @@ a name, as well as control the draw order. In addition it provides a
 helper function to create a Scene directly from a TileMap object.
 """
 
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Optional
 
 from arcade import Sprite, SpriteList
 from arcade.tilemap import TileMap

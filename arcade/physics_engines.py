@@ -44,6 +44,7 @@ def _circular_check(player: Sprite, walls: List[SpriteList]):
                 return
         vary *= 2
 
+
 def _move_sprite(moving_sprite: Sprite, walls: List[SpriteList], ramp_up: bool) -> List[Sprite]:
 
     # start_time = time.time()
@@ -288,7 +289,6 @@ class PhysicsEnginePlatformer:
         else:
             raise TypeError(f"Parameter 2 is a {type(platforms)}, expected a SpriteList or List[SpriteList]")
              
-
         self.player_sprite: Sprite = player_sprite
         self.gravity_constant: float = gravity_constant
         self.jumps_since_ground: int = 0

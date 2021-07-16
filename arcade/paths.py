@@ -2,8 +2,8 @@
 Path-related functions.
 
 """
-from shapely import speedups # type: ignore
-from shapely.geometry import LineString, Polygon # type: ignore
+from shapely import speedups  # type: ignore
+from shapely.geometry import LineString, Polygon  # type: ignore
 
 from arcade import Point
 from arcade import check_for_collision_with_list
@@ -86,11 +86,11 @@ class _AStarGraph(object):
         """
         # Use Chebyshev distance heuristic if we can move one square either
         # adjacent or diagonal
-        D = 1
-        D2 = 1
+        d = 1
+        d2 = 1
         dx = abs(start[0] - goal[0])
         dy = abs(start[1] - goal[1])
-        return D * (dx + dy) + (D2 - 2 * D) * min(dx, dy)
+        return d * (dx + dy) + (d2 - 2 * d) * min(dx, dy)
 
     def get_vertex_neighbours(self, pos):
         n = []
@@ -163,18 +163,18 @@ def _AStarSearch(start, end, graph):
         for neighbour in sorted(graph.get_vertex_neighbours(current)):
             if neighbour in closed_vertices:
                 continue  # We have already processed this node exhaustively
-            candidateG = G[current] + graph.move_cost(current, neighbour)
+            candidate_g = G[current] + graph.move_cost(current, neighbour)
 
             if neighbour not in open_vertices:
                 open_vertices.add(neighbour)  # Discovered a new vertex
-            elif candidateG >= G[neighbour]:
+            elif candidate_g >= G[neighbour]:
                 continue  # This G score is worse than previously found
 
             # Adopt this G score
             came_from[neighbour] = current
-            G[neighbour] = candidateG
-            H = graph.heuristic(neighbour, end)
-            F[neighbour] = G[neighbour] + H
+            G[neighbour] = candidate_g
+            h = graph.heuristic(neighbour, end)
+            F[neighbour] = G[neighbour] + h
 
     # Out-of-bounds
     return None

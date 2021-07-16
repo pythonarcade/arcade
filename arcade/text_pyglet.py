@@ -2,7 +2,6 @@
 Drawing text with pyglet label
 """
 import math
-from pathlib import Path
 from typing import Tuple, Union
 
 import arcade

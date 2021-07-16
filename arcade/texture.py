@@ -2,7 +2,6 @@
 Code related to working with textures.
 """
 
-import math
 from pathlib import Path
 
 import PIL.Image
@@ -92,10 +91,10 @@ class Texture:
            hit_box_algorithm != "Detailed" and \
            hit_box_algorithm != "None" and \
            hit_box_algorithm is not None:
-           raise ValueError(
-               "hit_box_algorithm must be 'Simple', 'Detailed', 'None'"
-               ", or an actual None value."
-           )
+            raise ValueError(
+                "hit_box_algorithm must be 'Simple', 'Detailed', 'None'"
+                ", or an actual None value."
+            )
 
         # preserve old behavior in case any users subclassed Texture
         self._hit_box_algorithm = hit_box_algorithm or "None"
@@ -335,8 +334,8 @@ def load_texture(file_name: Union[str, Path],
                  flipped_vertically: bool = False,
                  flipped_diagonally: bool = False,
                  can_cache: bool = True,
-                 mirrored = None,
-                 hit_box_algorithm = "Simple",
+                 mirrored: bool = None,
+                 hit_box_algorithm: str = "Simple",
                  hit_box_detail: float = 4.5) -> Texture:
     """
     Load an image from disk and create a texture.
@@ -476,6 +475,7 @@ def cleanup_texture_cache():
     import gc
     gc.collect()
 
+
 def load_texture_pair(filename, hit_box_algorithm: str = "Simple"):
     """
     Load a texture pair, with the second being a mirror image of the first.
@@ -488,6 +488,7 @@ def load_texture_pair(filename, hit_box_algorithm: str = "Simple"):
                      flipped_horizontally=True,
                      hit_box_algorithm=hit_box_algorithm)
     ]
+
 
 def load_spritesheet(file_name: Union[str, Path],
                      sprite_width: int,
