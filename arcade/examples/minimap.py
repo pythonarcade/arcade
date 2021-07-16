@@ -9,7 +9,6 @@ python -m arcade.examples.sprite_move_scrolling
 
 import random
 import arcade
-import PIL
 
 SPRITE_SCALING = 0.5
 
@@ -94,12 +93,8 @@ class MyGame(arcade.Window):
 
         # Construct the minimap
         texture_atlas = arcade.TextureAtlas((MINIMAP_WIDTH + 2, MINIMAP_HEIGHT + 2))
-        texture_image = PIL.Image.new("RGBA",
-                                      (MINIMAP_WIDTH, MINIMAP_HEIGHT),
-                                      MINIMAP_BACKGROUND_COLOR)
-        self.minimap_texture = arcade.Texture(arcade.utils.generate_uuid(),
-                                              image=texture_image,
-                                              hit_box_algorithm='None')
+        self.minimap_texture = arcade.Texture.create_empty(arcade.utils.generate_uuid(),
+                                                           (MINIMAP_WIDTH, MINIMAP_HEIGHT))
         self.minimap_sprite = arcade.Sprite(center_x=MINIMAP_WIDTH / 2,
                                             center_y=self.height - MINIMAP_HEIGHT / 2,
                                             texture=self.minimap_texture)
@@ -180,7 +175,7 @@ class MyGame(arcade.Window):
 
         # Scroll to the proper location
         position = self.player_sprite.center_x - self.width / 2, \
-                   self.player_sprite.center_y - self.height / 2
+            self.player_sprite.center_y - self.height / 2
         self.camera_sprites.move_to(position, CAMERA_SPEED)
 
     def on_resize(self, width, height):
