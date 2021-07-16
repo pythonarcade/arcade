@@ -15,7 +15,7 @@ SPRITE_SCALING = 0.5
 
 DEFAULT_SCREEN_WIDTH = 800
 DEFAULT_SCREEN_HEIGHT = 600
-SCREEN_TITLE = "Sprite Move with Scrolling Screen Example"
+SCREEN_TITLE = "Minimap Example"
 
 # How many pixels to keep as a minimum margin between the character
 # and the edge of the screen.
@@ -60,12 +60,8 @@ class MyGame(arcade.Window):
 
         self.physics_engine = None
 
-        # Used in scrolling
-        self.view_bottom = 0
-        self.view_left = 0
-
-        self.camera_sprites = arcade.Camera(self, DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT)
-        self.camera_gui = arcade.Camera(self, DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT)
+        self.camera_sprites = arcade.Camera(DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT)
+        self.camera_gui = arcade.Camera(DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT)
 
     def setup(self):
         """ Set up the game and initialize the variables. """
