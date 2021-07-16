@@ -1,4 +1,6 @@
 import os
+
+import pytest
 import arcade
 from arcade import Texture
 
@@ -52,3 +54,20 @@ def test_texture_constructor_allows_none_and_none_string():
         hit_box_algorithm="None"
     )
     arcade.cleanup_texture_cache()
+
+
+def test_missing_image():
+    """Texture without image raises ValueError when accessing properties"""
+    tex = Texture("empty")
+
+    with pytest.raises(ValueError):
+        tex.width
+
+    with pytest.raises(ValueError):
+        tex.height
+
+    with pytest.raises(ValueError):
+        tex.size
+
+    with pytest.raises(ValueError):
+        tex.hit_box_points

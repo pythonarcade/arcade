@@ -129,20 +129,20 @@ class Texture:
         """
         Width of the texture in pixels.
         """
-        if self.image:
-            return self.image.width
-        else:
-            return 0
+        if not self.image:
+            raise ValueError(f"Texture '{self.name}' doesn't have an image")
+
+        return self.image.width
 
     @property
     def height(self) -> int:
         """
         Height of the texture in pixels.
         """
-        if self.image:
-            return self.image.height
-        else:
-            return 0
+        if not self.image:
+            raise ValueError(f"Texture '{self.name}' doesn't have an image")
+
+        return self.image.height
 
     @property
     def size(self) -> Tuple[int, int]:
