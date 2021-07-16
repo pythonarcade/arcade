@@ -15,7 +15,7 @@ SPRITE_SCALING = 0.5
 
 DEFAULT_SCREEN_WIDTH = 800
 DEFAULT_SCREEN_HEIGHT = 600
-SCREEN_TITLE = "Sprite Move with Scrolling Screen Example"
+SCREEN_TITLE = "Camera Shake Example"
 
 # How many pixels to keep as a minimum margin between the character
 # and the edge of the screen.
@@ -27,7 +27,7 @@ CAMERA_SPEED = 0.1
 # How fast the character moves
 PLAYER_MOVEMENT_SPEED = 7
 
-BOMB_COUNT = 20
+BOMB_COUNT = 50
 PLAYING_FIELD_WIDTH = 1600
 PLAYING_FIELD_HEIGHT = 1600
 
@@ -70,7 +70,7 @@ class MyGame(arcade.Window):
         # Set up the player
         self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
                                            scale=0.4)
-        self.player_sprite.center_x = 256
+        self.player_sprite.center_x = 512
         self.player_sprite.center_y = 512
         self.player_list.append(self.player_sprite)
 
@@ -115,14 +115,6 @@ class MyGame(arcade.Window):
         self.bomb_list.draw()
         self.player_list.draw()
 
-        # Select the (unscrolled) camera for our GUI
-        self.camera_gui.use()
-
-        # Draw the GUI
-        arcade.draw_rectangle_filled(self.width // 2, 20, self.width, 40, arcade.color.ALMOND)
-        text = f"Scroll value: ({self.camera_sprites.position[0]:5.1f}, {self.camera_sprites.position[1]:5.1f})"
-        arcade.draw_text(text, 10, 10, arcade.color.BLACK_BEAN, 20)
-
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
 
@@ -155,13 +147,26 @@ class MyGame(arcade.Window):
 
         hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.bomb_list)
         for bomb in hit_list:
+
+            # Remove the bomb and go 'boom'
             bomb.remove_from_sprite_lists()
-            shake_direction = random.random() * 2 * math.pi
-            shake_amplitude = 4
-            shake_vector = math.cos(shake_direction) * shake_amplitude, math.cos(shake_direction) * shake_amplitude
-            shake_decay = .90, .90
-            self.camera_sprites.shake(shake_vector, shake_decay)
             self.explosion_sound.play()
+
+            # --- Shake the camera ---
+            # Pick a random direction
+            shake_direction = random.random() * 2 * math.pi
+            # How 'far' to shake
+            shake_amplitude = 10
+            # Calculate a vector based on that
+            shake_vector = math.cos(shake_direction) * shake_amplitude, math.sin(shake_direction) * shake_amplitude
+            # Frequency of the shake
+            shake_speed = 1.5
+            # How fast to damp the shake
+            shake_damping = 0.9
+            # Do the shake
+            self.camera_sprites.shake(shake_vector,
+                                      speed=shake_speed,
+                                      damping=shake_damping)
 
     def scroll_to_player(self):
         """

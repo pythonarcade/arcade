@@ -831,7 +831,7 @@ class Vec2(tuple):
         return vec_class(*(self["xy".index(c)] for c in attrs))
 
     def __repr__(self):
-        return f"Vec2({self[0]}, {self[1]})"
+        return f"Vec2({self[0]:.2f}, {self[1]:.2f})"
 
 
 class Vec3(tuple):
