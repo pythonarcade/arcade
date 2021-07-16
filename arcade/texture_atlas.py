@@ -586,10 +586,6 @@ class TextureAtlas:
         were `0, 0` is the lower left corner and `width, height` (of texture)
         is the upper right corner.
 
-        If you are specifying your own projection make sure you change the
-        order of the last two parameters to render the content upside down.
-        This is just how OpenGL stores textures in memory.
-
         This method should should be used with the ``with`` statement::
 
             with atlas.render_into(texture):
@@ -606,7 +602,10 @@ class TextureAtlas:
         """
         region = self._atlas_regions[texture.name]
         proj_prev = self._ctx.projection_2d
-        projection = projection or (0, region.width, region.height, 0)
+        # Use provided projection or default
+        projection = projection or (0, region.width, 0, region.height)
+        # Flip the top and bottom because we need to render things upside down
+        projection = projection[0], projection[1], projection[3], projection[2]
         self._ctx.projection_2d = projection
 
         with self._fbo.activate() as fbo:
