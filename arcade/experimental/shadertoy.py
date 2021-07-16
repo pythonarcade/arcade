@@ -38,7 +38,6 @@ class ShaderToy:
             fragment_shader=(
                 "#version 330\n"
                 "\n"
-                "uniform sampler2D background;\n"
                 "uniform float iTime;\n"
                 "uniform vec2 iMouse;\n"
                 "uniform vec2 iResolution;\n"

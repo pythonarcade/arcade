@@ -12,6 +12,7 @@
 // It is an example what I personally would want as a display option for pixel art games.
 // Please take and use, change, or whatever.
 //
+// See https://www.shadertoy.com/view/XsjSzR
 
 // Emulated input resolution.
 #if 0
