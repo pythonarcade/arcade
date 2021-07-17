@@ -14,33 +14,35 @@
 //
 // See https://www.shadertoy.com/view/XsjSzR
 
-// Emulated input resolution.
-#if 0
-  // Fix resolution to set amount.
-  #define res (vec2(320.0/1.0,160.0/1.0))
-#else
-  // Optimize for resize.
-  #define res (iResolution.xy/6.0)
-#endif
+// How much we down scale the resolution
+uniform float resolutionDownScale;
 
 // Hardness of scanline.
 //  -8.0 = soft
 // -16.0 = medium
-float hardScan=-8.0;
+uniform float hardScan;
+
+// Emulated input resolution.
+#define res (iResolution.xy/resolutionDownScale)
 
 // Hardness of pixels in scanline.
 // -2.0 = soft
 // -4.0 = hard
-float hardPix=-3.0;
+//float hardPix=-3.0;
+uniform float hardPix;
+
 
 // Display warp.
 // 0.0 = none
 // 1.0/8.0 = extreme
-vec2 warp=vec2(1.0/32.0,1.0/24.0);
+// vec2 warp=vec2(1.0/32.0, 1.0/24.0);
+uniform vec2 warp;
 
 // Amount of shadow mask.
-float maskDark=0.5;
-float maskLight=1.5;
+//float maskDark=0.5;
+//float maskLight=1.5;
+uniform float maskDark;
+uniform float maskLight;
 
 //------------------------------------------------------------------------
 
@@ -136,18 +138,11 @@ float Bar(float pos,float bar){pos-=bar;return pos*pos<4.0?0.0:1.0;}
 // Entry.
 void mainImage( out vec4 fragColor, in vec2 fragCoord ){
   // Unmodified.
-  if(fragCoord.x<iResolution.x*0.333){
-    fragColor.rgb=Fetch(fragCoord.xy/iResolution.xy+vec2(0.333,0.0),vec2(0.0,0.0));}
-  else{
-    vec2 pos=Warp(fragCoord.xy/iResolution.xy+vec2(-0.333,0.0));
-    if(fragCoord.x<iResolution.x*0.666){
-      hardScan=-12.0;
-      maskDark=maskLight=1.0;
-      pos=Warp(fragCoord.xy/iResolution.xy);}
-    fragColor.rgb=Tri(pos)*Mask(fragCoord.xy);}
+  {
+    vec2 pos=Warp(fragCoord.xy/iResolution.xy);
+    fragColor.rgb=Tri(pos)*Mask(fragCoord.xy);
+  }
   fragColor.a=1.0;
-  fragColor.rgb*=
-    Bar(fragCoord.x,iResolution.x*0.333)*
-    Bar(fragCoord.x,iResolution.x*0.666);
-  fragColor.rgb=ToSrgb(fragColor.rgb);}
+  fragColor.rgb=ToSrgb(fragColor.rgb);
+}
 
