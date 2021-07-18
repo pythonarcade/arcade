@@ -1,9 +1,9 @@
-from arcade.experimental import ShaderToy
+from arcade.experimental import Shadertoy
 from arcade.resources import resolve_resource_path
 from arcade.math import Vec2
 
 
-class CRTFilter(ShaderToy):
+class CRTFilter(Shadertoy):
     """
     CRT Filter
 
