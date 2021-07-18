@@ -47,7 +47,7 @@ class Text:
 
     @property
     def value(self) -> str:
-        self._label.text
+        return self._label.text
 
     @value.setter
     def value(self, value: str):
