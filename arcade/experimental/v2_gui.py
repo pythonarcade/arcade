@@ -6,8 +6,9 @@ from typing import List, Tuple
 from pyglet.event import EventDispatcher
 
 import arcade
+from arcade import Color
 from arcade.examples.perf_test.stress_test_draw_shapes import FPSCounter
-from arcade.gl import geometry
+from arcade.gl import geometry, Framebuffer
 
 
 def point_in_rect(x, y, rx, ry, rw, rh):
@@ -54,10 +55,12 @@ class Widget(EventDispatcher):
         self.width = width
         self.height = height
 
+        self.rendered = False
+
         self.register_event_type("on_click")
 
-    def render(self):
-        pass
+    def render(self, surface: "Surface"):
+        self.rendered = True
 
     def on_update(self, dt):
         pass
@@ -75,7 +78,17 @@ class Widget(EventDispatcher):
 class InteractiveWidget(Widget):
     # Interaction
     _hover = False
-    _press = False
+    _pressed = False
+
+    @property
+    def pressed(self):
+        return self._pressed
+
+    @pressed.setter
+    def pressed(self, value):
+        if self._pressed != value:
+            self._pressed = value
+            self.rendered = False
 
     @property
     def hover(self):
@@ -83,17 +96,19 @@ class InteractiveWidget(Widget):
 
     @hover.setter
     def hover(self, value):
-        self._hover = value
+        if value != self._hover:
+            self._hover = value
+            self.rendered = False
 
     def on_event(self, event: Event):
         if isinstance(event, MouseMovement):
             self.hover = point_in_rect(event.x, event.y, *self.rect())
 
         if isinstance(event, MousePress):
-            self._press = point_in_rect(event.x, event.y, *self.rect())
+            self.pressed = point_in_rect(event.x, event.y, *self.rect())
 
-        if self._press and isinstance(event, MouseRelease):
-            self._press = False
+        if self.pressed and isinstance(event, MouseRelease):
+            self.pressed = False
             if point_in_rect(event.x, event.y, *self.rect()):
                 self.dispatch_event("on_click", self, event)
                 return True
@@ -108,13 +123,110 @@ class Button(InteractiveWidget):
         self.color = color
         self.frame = randint(0, 255)
 
-    def render(self):
+    def render(self, surface: "Surface"):
         self.frame += 1
         frame = self.frame % 256
-        arcade.draw_xywh_rectangle_filled(*self.rect(), color=(*self.color[:3], frame))
+        surface.clear((*self.color[:3], frame))
 
         if self.hover:
-            arcade.draw_xywh_rectangle_outline(*self.rect(), color=arcade.color.BATTLESHIP_GREY, border_width=3)
+            arcade.draw_xywh_rectangle_outline(0, 0,
+                                               self.width, self.height,
+                                               color=arcade.color.BATTLESHIP_GREY,
+                                               border_width=3)
+
+
+class FlatButton(InteractiveWidget):
+    def __init__(self, x=0, y=0, width=100, height=50, text="", style=None):
+        super().__init__(x, y, width, height)
+        self._text = text
+        self._style = style or {}
+
+    def render(self, surface: "Surface"):
+        if self.rendered:
+            return
+        self.rendered = True
+
+        # Render button
+        font_size = self._style.get("font_size", 15)
+        font_color = self._style.get("font_color", arcade.color.WHITE)
+        border_width = self._style.get("border_width", 2)
+        border_color = self._style.get("border_color", None)
+        bg_color = self._style.get("bg_color", (21, 19, 21))
+
+        if self.pressed:
+            bg_color = self._style.get("bg_color_pressed", arcade.color.WHITE)
+            border_color = self._style.get("border_color_pressed", arcade.color.WHITE)
+            font_color = self._style.get("font_color_pressed", arcade.color.BLACK)
+        elif self.hover:
+            border_color = self._style.get("border_color_pressed", arcade.color.WHITE)
+
+        # render BG
+        if bg_color:
+            arcade.draw_xywh_rectangle_filled(*self.rect(), color=bg_color)
+
+        # render border
+        if border_color and border_width:
+            x, y, w, h = self.rect()
+            arcade.draw_xywh_rectangle_outline(
+                x + border_width,
+                y + border_width,
+                w - 2 * border_width,
+                h - 2 * border_width,
+                color=border_color,
+                border_width=border_width)
+
+        # render text
+        text_margin = 2
+        if self.text:
+            start_x = self.x + self.width // 2
+            start_y = self.y + self.height // 2
+
+            arcade.draw_text(
+                text=self.text,
+                start_x=start_x,
+                start_y=start_y,
+                font_size=font_size,
+                color=font_color,
+                align="center",
+                anchor_x='center', anchor_y='center',
+                width=self.width - 2 * border_width - 2 * text_margin
+            )
+
+    @property
+    def text(self):
+        return self._text
+
+    @text.setter
+    def text(self, value):
+        self._text = value
+
+
+class BoxLayout(Widget):
+    def __init__(self, x=0, y=0, width=100, height=100):
+        super().__init__(x, y, width, height)
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+
+        self.rendered = False
+
+        self.register_event_type("on_click")
+
+    def render(self, surface: "Surface"):
+        self.rendered = True
+
+    def on_update(self, dt):
+        pass
+
+    def rect(self) -> Tuple[int, int, int, int]:
+        """
+        Rectangle of the widget
+        """
+        return self.x, self.y, self.width, self.height
+
+    def on_event(self, event: Event):
+        pass
 
 
 class Surface:
@@ -122,12 +234,12 @@ class Surface:
     Holds a FBO and abstracts the drawing on it.
     """
 
-    def __init__(self, ):
+    def __init__(self):
         self.window = arcade.get_window()
         self.ctx = self.window.ctx
 
         self.texture = self.ctx.texture(self.window.get_framebuffer_size(), components=4)
-        self.fbo = self.ctx.framebuffer(color_attachments=[self.texture])
+        self.fbo: Framebuffer = self.ctx.framebuffer(color_attachments=[self.texture])
         self.fbo.clear()
 
         # fullscreen quad geometry
@@ -156,20 +268,28 @@ class Surface:
         self.frame = 0
 
     @contextmanager
-    def limit(self, x, y, w, h):
-        # TODO ask einarf to apply magic
-        # self.fbo.scissor = x, y, w, h
-        yield self
-        # self.fbo.scissor = 0, 0, *self.fbo.size
+    def activate(self):
+        """
+        Save and restore projection and viewport, activate Surface Buffer to draw on.
+        """
+        with self.fbo.activate():
+            proj = self.ctx.projection_2d
+            view = self.fbo.ctx.viewport
+            yield self
 
-    def __enter__(self):
-        self.fbo.__enter__()
-        return self
+        self.fbo.viewport = view
+        self.ctx.projection_2d = proj
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self.fbo.__exit__(exc_type, exc_val, exc_tb)
+    def clear(self, color: Color = arcade.color.BLACK):
+        self.fbo.clear(color=color)
+
+    def limit(self, x, y, width, height):
+        """Reduces the draw area to the given rect"""
+        self.fbo.viewport = x, y, width, height
+        self.ctx.projection_2d = 0, width, 0, height
 
     def draw(self):
+        """Draws the current buffer on screen"""
         self.texture.use(0)
         self._quad.render(self._program)
 
@@ -177,23 +297,27 @@ class Surface:
 class UIManager:
     def __init__(self) -> None:
         self._surface = Surface()
-        self.children: List[Widget] = []
+        self._children: List[Widget] = []
+
+    def add(self, widget: Widget) -> Widget:
+        self._children.append(widget)
+        return widget
 
     def render(self):
-        with self._surface:
-            for child in self.children:
-                with self._surface.limit(*child.rect()):
-                    child.render()
+        with self._surface.activate():
+            for child in self._children:
+                self._surface.limit(*child.rect())
+                child.render(self._surface)
 
     def on_update(self, time_delta):
-        for child in self.children:
+        for child in self._children:
             child.on_update(time_delta)
 
     def draw(self):
         self._surface.draw()
 
     def on_event(self, event):
-        for child in self.children:
+        for child in self._children:
             if child.on_event(event):
                 # child can consume an event by returning True
                 break
@@ -214,15 +338,26 @@ class UIMockup(arcade.Window):
         self.manager = UIManager()
         self.fps = FPSCounter()
 
-        size = 100
+        size = 50
         for y in range(0, self.height, size):
             for x in range(0, self.width, size):
                 button = Button(x, y, size, size)
                 self.change_color(button)
                 button.on_click = self.change_color
-                self.manager.children.append(button)
+                self.manager.add(button)
 
-        print(f"Render {len(self.manager.children)} widgets")
+        arcade.set_background_color(arcade.color.DARK_BLUE_GRAY)
+
+        # for y in range(0, self.height, 40):
+        #     for x in range(0, self.width, 90):
+        #         self.manager.add(
+        #             FlatButton(x, y, 80, 30, text="Hello", style={"font_size": 10})
+        #         ).on_click = self.on_button_click
+
+        print(f"Render {len(self.manager._children)} widgets")
+
+    def on_button_click(self, button, *args):
+        print(button)
 
     def change_color(self, button: Button, *args):
         colors = [arcade.color.RED,
@@ -235,6 +370,7 @@ class UIMockup(arcade.Window):
         button.color = choice(colors)
 
     def on_draw(self):
+        self.fps.tick()
         arcade.start_render()
         self.manager.draw()
         arcade.draw_text(f"{self.fps.get_fps():.0f}", self.width // 2, self.height // 2, color=arcade.color.RED,
@@ -243,9 +379,8 @@ class UIMockup(arcade.Window):
     def on_update(self, time_delta):
         self.manager.on_update(time_delta)
         self.manager.render()
-        self.fps.tick()
 
-    # These can be registered by UIManager
+    # TODO These can be registered by UIManager
     def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
         self.manager.on_mouse_motion(x, y, dx, dy)
 
