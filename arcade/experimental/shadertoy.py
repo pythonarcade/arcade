@@ -338,6 +338,15 @@ class Shadertoy(ShadertoyBase):
         """
         return ShadertoyBuffer(self._size, source)
 
+    def create_buffer_from_file(self, path: Union[str, Path]) -> ShadertoyBuffer:
+        """
+        Shortcut for creating a buffer.
+        """
+        path = arcade.resources.resolve_resource_path(path)
+        with open(path) as fd:
+            source = fd.read()
+        return ShadertoyBuffer(self._size, source)
+
     def resize(self, size: Tuple[int, int]):
         """
         Resize the internal buffers
