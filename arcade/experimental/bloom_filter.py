@@ -35,8 +35,6 @@ class BloomFilter:
         self.shadertoy.channel_0 = self.shadertoy.buffer_a.texture
         self.shadertoy.channel_1 = self.shadertoy.buffer_b.texture
 
-        # self.shadertoy.channel_0 = self.fbo.color_attachments[0]
-
     def use(self):
         self.fbo.use()
 
