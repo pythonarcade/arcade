@@ -107,7 +107,6 @@ class Button(InteractiveWidget):
 
 
 class SpriteWidget(Widget):
-
     def __init__(self, *, x=0, y=0, width=100, height=100, sprite: Sprite = None):
         super().__init__(x, y, width, height)
         self._sprite = sprite
@@ -205,8 +204,8 @@ class TextArea(Widget):
         self.layout.y = 3
         # self.layout.view_y = -80
 
-        surface.clear((0, 100, 0, 255))
-        # arcade.draw_xywh_rectangle_outline(2, 2, self.width-6, self.height-6, (0, 100, 0, 255), border_width=3)
+        # surface.clear((0, 100, 0, 255))
+        arcade.draw_xywh_rectangle_outline(2, 2, self.width - 6, self.height - 6, (0, 100, 0, 255), border_width=3)
 
         with surface.ctx.pyglet_rendering():
             self.layout.draw()
@@ -215,6 +214,34 @@ class TextArea(Widget):
         if isinstance(event, MouseScroll):
             if point_in_rect(event.x, event.y, *self.rect()):
                 self.layout.view_y += event.scroll_y
+
+
+class InputText(Widget):
+    def __init__(self, x=0, y=0, width=100, height=50, text="", style=None):
+        super().__init__(x, y, width, height)
+
+        self.doc = pyglet.text.document.FormattedDocument()
+        self.doc = pyglet.text.decode_text(text)
+        self.doc.set_style(0, 12, dict(font_name='Arial', font_size=12,
+                                       color=(255, 255, 255, 255)))
+
+        self.layout = pyglet.text.layout.IncrementalTextLayout(self.doc, width-6, height-6)
+        caret = pyglet.text.caret.Caret(self.layout)
+        caret.visible = True
+
+        # TODO how to remove the handlers?
+        arcade.get_window().push_handlers(caret)
+
+    def render(self, surface: Surface):
+        surface.clear(arcade.color.GRAY)
+
+        with surface.ctx.pyglet_rendering():
+            self.layout.x = 3
+            self.layout.anchor_x = "left"
+            self.layout.y = 3
+            self.layout.anchor_y = "bottom"
+            self.layout.draw()
+
 
 class FlatButton(InteractiveWidget):
     def __init__(self, x=0, y=0, width=100, height=50, text="", style=None):
@@ -279,6 +306,7 @@ class FlatButton(InteractiveWidget):
     @text.setter
     def text(self, value):
         self._text = value
+        self.rendered = False
 
 
 class BoxLayout(Widget):

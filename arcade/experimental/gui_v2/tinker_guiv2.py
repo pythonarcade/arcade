@@ -4,8 +4,7 @@ import arcade
 from arcade import load_texture
 from arcade.examples.perf_test.stress_test_draw_shapes import FPSCounter
 from arcade.experimental.gui_v2 import UIManager
-from arcade.experimental.gui_v2.widgets import Button, SpriteWidget, TextArea
-
+from arcade.experimental.gui_v2.widgets import Button, SpriteWidget, TextArea, InputText, FlatButton
 
 LOREM_IPSUM = """
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eget pellentesque velit. Nam eu rhoncus nulla. Fusce ornare libero eget ex vulputate, vitae mattis orci eleifend. Donec quis volutpat arcu. Proin lacinia velit id imperdiet ultrices. Fusce porta magna leo, non maximus justo facilisis vel. Duis pretium sem ut eros scelerisque, a dignissim ante pellentesque. Cras rutrum aliquam fermentum. Donec id mollis mi.
@@ -68,17 +67,21 @@ class UIMockup(arcade.Window):
         # for y in range(0, self.height, 40):
         #     for x in range(0, self.width, 90):
         #         self.manager.add(
-        #             # FlatButton(x, y, 80, 30, text="Hello", style={"font_size": 10})
-        #             # ImageButton(x, y, 80, 30, tex, tex_hov, tex_press, text="Hallo")
-        #             # SpriteWidget(x=x, y=y, width=80, height=30, sprite=Sprite(":resources:gui_basic_assets/red_button_normal.png"))
-        #         ).on_click = self.on_button_click
+                    # FlatButton(x, y, 80, 30, text="Hello", style={"font_size": 10})
+                    # ImageButton(x, y, 80, 30, tex, tex_hov, tex_press, text="Hallo")
+                    # SpriteWidget(x=x, y=y, width=80, height=30, sprite=Sprite(":resources:gui_basic_assets/red_button_normal.png"))
+                # ).on_click = self.on_button_click
+
+        # self.manager.add(
+        #     SpriteWidget(x=400, y=300, width=256, height=256, sprite=self.load_explosion())
+        # )
+        #
+        # self.manager.add(
+        #     TextArea(x=100, y=200, width=200, height=300, text=LOREM_IPSUM)
+        # )
 
         self.manager.add(
-            SpriteWidget(x=400, y=300, width=256, height=256, sprite=self.load_explosion())
-        )
-
-        self.manager.add(
-            TextArea(x=100, y=200, width=200, height=300, text=LOREM_IPSUM)
+            InputText(x=400, y=200, width=200, height=300, text="Hello")
         )
 
         print(f"Render {len(self.manager._children)} widgets")
