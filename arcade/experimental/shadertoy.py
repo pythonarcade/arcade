@@ -109,7 +109,7 @@ class ShadertoyBase:
 
     @channel_0.setter
     def channel_0(self, value: Texture):
-        if not isinstance(Texture):
+        if not isinstance(value, Texture):
             raise ValueError("A channel only accepts an arcade.gl.Texture")
         self._channel_0 = value
 
@@ -120,7 +120,7 @@ class ShadertoyBase:
 
     @channel_1.setter
     def channel_1(self, value: Texture):
-        if not isinstance(Texture):
+        if not isinstance(value, Texture):
             raise ValueError("A channel only accepts an arcade.gl.Texture")
         self._channel_1 = value
 
@@ -131,7 +131,7 @@ class ShadertoyBase:
 
     @channel_2.setter
     def channel_2(self, value: Texture):
-        if not isinstance(Texture):
+        if not isinstance(value, Texture):
             raise ValueError("A channel only accepts an arcade.gl.Texture")
         self._channel_2 = value
 
@@ -142,9 +142,13 @@ class ShadertoyBase:
 
     @channel_3.setter
     def channel_3(self, value: Texture):
-        if not isinstance(Texture):
+        if not isinstance(value, Texture):
             raise ValueError("A channel only accepts an arcade.gl.Texture")
         self._channel_3 = value
+
+    @property
+    def program(self):
+        return self._program
 
     @property
     def ctx(self) -> ArcadeContext:
@@ -363,7 +367,6 @@ class Shadertoy(ShadertoyBase):
                     size=self._size,
                 )
 
-        print(self._size)
         # Run the main program
         self._bind_channels()
         self._set_uniforms()
