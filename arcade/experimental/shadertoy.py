@@ -244,10 +244,12 @@ class ShadertoyBase:
 
 class ShadertoyBuffer(ShadertoyBase):
 
-    def __init__(self, size: Tuple[int, int], source: str):
+    def __init__(self, size: Tuple[int, int], source: str, repeat: bool = False):
         super().__init__(size, source)
         self._texture = self.ctx.texture(size, components=4)
         self._fbo = self.ctx.framebuffer(color_attachments=[self._texture])
+        self._repeat = repeat
+        self._set_repeat()
 
     @property
     def texture(self) -> Texture:
@@ -257,6 +259,23 @@ class ShadertoyBuffer(ShadertoyBase):
         """
         return self._texture
 
+    @property
+    def repeat(self) -> bool:
+        return self._repeat
+
+    @repeat.setter
+    def repeat(self, value: bool):
+        self._repeat = value
+        self._set_repeat()
+
+    def _set_repeat(self):
+        if self._repeat:
+            self._texture.wrap_x = self.ctx.REPEAT
+            self._texture.wrap_y = self.ctx.REPEAT
+        else:
+            self._texture.wrap_x = self.ctx.CLAMP_TO_EDGE
+            self._texture.wrap_y = self.ctx.CLAMP_TO_EDGE
+
     def _render(self):
         self._bind_channels()
         self._set_uniforms()
@@ -265,7 +284,10 @@ class ShadertoyBuffer(ShadertoyBase):
 
     def resize(self, size: Tuple[int, int]):
         """Resize the internal texture"""
+        if self._size == size:
+            return
         self._size = size
+        print(self._size)
 
 
 class Shadertoy(ShadertoyBase):
@@ -332,11 +354,11 @@ class Shadertoy(ShadertoyBase):
             source = fd.read()
         return Shadertoy(size, source)
 
-    def create_buffer(self, source) -> ShadertoyBuffer:
+    def create_buffer(self, source, repeat: bool = False) -> ShadertoyBuffer:
         """
         Shortcut for creating a buffer.
         """
-        return ShadertoyBuffer(self._size, source)
+        return ShadertoyBuffer(self._size, source, repeat=repeat)
 
     def create_buffer_from_file(self, path: Union[str, Path]) -> ShadertoyBuffer:
         """
