@@ -5,3 +5,4 @@ from . import gui
 from .texture_render_target import RenderTargetTexture
 from .shadertoy import Shadertoy
 from .crt_filter import CRTFilter
+from .bloom_filter import  BloomFilter
