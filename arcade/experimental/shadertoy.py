@@ -247,7 +247,7 @@ class ShadertoyBuffer(ShadertoyBase):
     def __init__(self, size: Tuple[int, int], source: str):
         super().__init__(size, source)
         self._texture = self.ctx.texture(size, components=4)
-        self._fbo = self.ctx.framebuffer()
+        self._fbo = self.ctx.framebuffer(color_attachments=[self._texture])
 
     @property
     def texture(self) -> Texture:
@@ -305,7 +305,7 @@ class Shadertoy(ShadertoyBase):
 
     @buffer_b.setter
     def buffer_b(self, value):
-        self._buffer_a = value
+        self._buffer_b = value
 
     @property
     def buffer_c(self) -> ShadertoyBuffer:
@@ -314,7 +314,7 @@ class Shadertoy(ShadertoyBase):
 
     @buffer_c.setter
     def buffer_c(self, value):
-        self._buffer_a = value
+        self._buffer_c = value
 
     @property
     def buffer_d(self) -> ShadertoyBuffer:
