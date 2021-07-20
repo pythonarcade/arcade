@@ -104,6 +104,9 @@ Running the program, our output should look like:
 .. image:: step_01.png
    :width: 50%
 
+* :ref:`raycasting_step_01` |larr| Full listing of where we are right now
+* :ref:`raycasting_step_01_diff` |larr| What we changed to get here
+
 Simple Shader Experiments
 -------------------------
 
@@ -114,16 +117,67 @@ We can modify our shader to get the current texture color and store it in the va
 A color has four components, red-green-blue and alpha. If the alpha is above zero, we can output
 a red color. If the alpha is zero, we output a blue color.
 
-.. literalinclude:: step_01b.glsl
-    :caption: GLSL Program for Step 1
+.. literalinclude:: step_02.glsl
+    :caption: GLSL Program for Step 2
     :language: glsl
 
 Giving us a resulting image that looks like:
 
-.. image:: step_01b.png
+.. image:: step_02.png
    :width: 50%
 
+Creating a Light
+----------------
+
+Our next step is to create a light. We'll be fading between no light (black) and whatever we draw
+in Channel 1.
+
+.. image:: step_03.png
+   :width: 50%
+
+In this step, we won't worry about the walls yet.
+
+This step will require to pass additional data into our shader. We'll do this using **uniforms**.
+We will pass in *where* the light is, and the light *size*.
+
+We first declare and use the variables in our shader program.
+
+.. literalinclude:: step_03.glsl
+    :caption: GLSL Program for Step 3
+    :language: glsl
+
+We'll update our ``on_draw`` method to:
+
+* Draw the bombs into channel 1.
+* Send the player position and the size of the light using the uniform.
+* Draw the player character on the window.
+
+.. note::
+
+   If you set a uniform variable using ``program``, that variable has to exist in the
+   glsl program, *and be used* or you'll get an error. The glsl compiler will automatically
+   drop unused variables, causing a confusing error when the program says a variable
+   is missing even if you've declared it.
+
+.. literalinclude:: step_03.py
+    :caption: Drawing using the shader
+    :pyobject: MyGame.on_draw
+    :emphasize-lines: 7-9, 15-20
 
 
-* :ref:`raycasting_step_01` |larr| Full listing of where we are right now
-* :ref:`raycasting_step_01_diff` |larr| What we changed to get here
+* :ref:`raycasting_step_03` |larr| Full listing of where we are right now
+* :ref:`raycasting_step_03_diff` |larr| What we changed to get here
+
+Make the Walls Shadowed
+-----------------------
+
+.. image:: step_04.png
+   :width: 50%
+
+.. literalinclude:: step_04.glsl
+    :caption: GLSL Program for Step 4
+    :language: glsl
+
+
+Cast the Shadows
+----------------
