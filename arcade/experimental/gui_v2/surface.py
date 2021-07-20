@@ -4,7 +4,7 @@ from typing import Tuple
 import arcade
 from arcade import Texture
 from arcade.gl import Framebuffer
-from arcade.gl.geometry import quad_2d_fs
+from arcade.gl import geometry
 
 
 class Surface:
@@ -23,23 +23,33 @@ class Surface:
         self.fbo.clear()
 
         # fullscreen quad geometry
-        self._quad = quad_2d_fs()
+        self._quad = geometry.screen_rectangle(0, 0, *self.size)
         self._program = self.ctx.program(
             vertex_shader="""
                     #version 330
+
+                    uniform Projection {
+                        uniform mat4 matrix;
+                    } proj;                    
+
                     in vec2 in_vert;
                     in vec2 in_uv;
+
                     out vec2 uv;
+
                     void main() {
-                        gl_Position = vec4(in_vert, 0.0, 1.0);
-                        uv = in_uv;                
+                        gl_Position = proj.matrix * vec4(in_vert, 0.0, 1.0);
+                        uv = in_uv;
                     }
                     """,
             fragment_shader="""
                     #version 330
+
                     uniform sampler2D ui_texture;
+
                     in vec2 uv;
                     out vec4 fragColor;
+
                     void main() {
                         fragColor = texture(ui_texture, uv);
                     }
