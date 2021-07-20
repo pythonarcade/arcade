@@ -41,6 +41,9 @@ class UIMockup(arcade.Window):
                 child=self.h_box)
         )
 
+        # Hack to prevent artefacts from not layouted rendering
+        self.manager.on_update(0)
+
 
     def on_draw(self):
         arcade.start_render()
