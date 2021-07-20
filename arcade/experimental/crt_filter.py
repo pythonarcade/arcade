@@ -26,7 +26,7 @@ class CRTFilter:
     ):
         self.shadertoy = Shadertoy.create_from_file(
             (width, height),
-            ":resources:shaders/crt_monitor_filter.glsl"
+            ":resources:shaders/shadertoy/crt_monitor_filter.glsl"
         )
         self.fbo = self.shadertoy.ctx.framebuffer(
             color_attachments=[self.shadertoy.ctx.texture((width, height), components=4)]
