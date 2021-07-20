@@ -1,4 +1,6 @@
 import random
+from pathlib import Path
+
 import arcade
 from arcade.experimental import Shadertoy
 
@@ -37,6 +39,30 @@ class MyGame(arcade.Window):
         self.physics_engine = None
 
         self.generate_sprites()
+        arcade.set_background_color(arcade.color.ARMY_GREEN)
+
+    def load_shader(self):
+        # Where is the shader file? Must be specified as a path.
+        shader_file_path = Path("step_01.glsl")
+
+        # Size of the window
+        window_size = self.get_size()
+
+        # Create the shader toy
+        self.shadertoy = Shadertoy.create_from_file(window_size, shader_file_path)
+
+        # Create the channels 0 and 1 frame buffers.
+        # Make the buffer the size of the window, with 4 channels (RGBA)
+        self.channel0 = self.shadertoy.ctx.framebuffer(
+            color_attachments=[self.shadertoy.ctx.texture(window_size, components=4)]
+        )
+        self.channel1 = self.shadertoy.ctx.framebuffer(
+            color_attachments=[self.shadertoy.ctx.texture(window_size, components=4)]
+        )
+
+        # Assign the frame buffers to the channels
+        self.shadertoy.channel_0 = self.channel0.color_attachments[0]
+        self.shadertoy.channel_1 = self.channel1.color_attachments[0]
 
     def generate_sprites(self):
         # -- Set up several columns of walls
@@ -44,7 +70,7 @@ class MyGame(arcade.Window):
             for y in range(0, PLAYING_FIELD_HEIGHT, int(128 * SPRITE_SCALING)):
                 # Randomly skip a box so the player can find a way through
                 if random.randrange(2) > 0:
-                    wall = arcade.Sprite(":resources:images/tiles/grassCenter.png", SPRITE_SCALING)
+                    wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", SPRITE_SCALING)
                     wall.center_x = x
                     wall.center_y = y
                     self.wall_list.append(wall)
@@ -70,39 +96,18 @@ class MyGame(arcade.Window):
         # Physics engine, so we don't run into walls
         self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.wall_list)
 
-    def load_shader(self):
-        file_name = "example.glsl"
-        file = open(file_name)
-        shader_sourcecode = file.read()
-        size = self.width, self.height
-
-        self.shadertoy = Shadertoy(size, shader_sourcecode)
-        self.channel0 = self.shadertoy.ctx.framebuffer(
-            color_attachments=[self.shadertoy.ctx.texture(size, components=4)]
-        )
-        self.shadertoy.channel_0 = self.channel0.color_attachments[0]
-
-        self.channel1 = self.shadertoy.ctx.framebuffer(
-            color_attachments=[self.shadertoy.ctx.texture(size, components=4)]
-        )
-        self.shadertoy.channel_1 = self.channel1.color_attachments[0]
-
     def on_draw(self):
+        # Select the channel 0 frame buffer to draw on
         self.channel0.use()
-        # clear_color = 0, 0, 0, 0
-        # self.channel0.clear(clear_color)
+        # Draw the walls
         self.wall_list.draw()
 
-        self.channel1.use()
-        # self.channel1.clear(clear_color)
-        self.channel1.clear(arcade.get_four_byte_color(arcade.color.ARMY_GREEN))
-        self.bomb_list.draw()
-
+        # Select this window to draw on
         self.use()
-        # self.camera_sprites.use()
-        self.shadertoy.render(mouse_position=(self.player_sprite.center_x, self.player_sprite.center_y))
-        self.wall_list.draw()
-        self.player_list.draw()
+        # Clear to background color
+        self.clear()
+        # Run the shader and render to the window
+        self.shadertoy.render()
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """

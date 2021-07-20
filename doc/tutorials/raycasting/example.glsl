@@ -2,11 +2,10 @@
 
 float terrain(vec2 p)
 {
-    float barrier = texture(iChannel0, p).x;
-    float x = step(0.25, barrier);
-    return 1.0 - x;
+    float barrier = texture(iChannel0, p).a;
+    float barrier_stepped = step(0.1, barrier);
+    return 1.0 - barrier_stepped;
 }
-
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
@@ -22,6 +21,6 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     }
 
     b *= 1.0 - smoothstep(0.0, 0.5, length(d));
-    fragColor = mix(texture(iChannel2, p) * 0.125, texture(iChannel1, p), b);
-
+    vec4 black = vec4(0.0, 0.0, 0.0, 1.0);
+    fragColor = mix(black, texture(iChannel1, p), b);
 }

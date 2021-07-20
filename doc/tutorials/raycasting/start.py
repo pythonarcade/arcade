@@ -1,6 +1,5 @@
 import random
 import arcade
-from arcade.experimental import Shadertoy
 
 # Do the math to figure out our screen dimensions
 SCREEN_WIDTH = 800
@@ -23,12 +22,6 @@ class MyGame(arcade.Window):
     def __init__(self, width, height, title):
         super().__init__(width, height, title, resizable=True)
 
-        # The shader toy and 'channels' we'll be using
-        self.shadertoy = None
-        self.channel0 = None
-        self.channel1 = None
-        self.load_shader()
-
         # Sprites and sprite lists
         self.player_sprite = None
         self.wall_list = arcade.SpriteList()
@@ -37,6 +30,7 @@ class MyGame(arcade.Window):
         self.physics_engine = None
 
         self.generate_sprites()
+        arcade.set_background_color(arcade.color.ARMY_GREEN)
 
     def generate_sprites(self):
         # -- Set up several columns of walls
@@ -44,7 +38,7 @@ class MyGame(arcade.Window):
             for y in range(0, PLAYING_FIELD_HEIGHT, int(128 * SPRITE_SCALING)):
                 # Randomly skip a box so the player can find a way through
                 if random.randrange(2) > 0:
-                    wall = arcade.Sprite(":resources:images/tiles/grassCenter.png", SPRITE_SCALING)
+                    wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", SPRITE_SCALING)
                     wall.center_x = x
                     wall.center_y = y
                     self.wall_list.append(wall)
@@ -70,38 +64,11 @@ class MyGame(arcade.Window):
         # Physics engine, so we don't run into walls
         self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.wall_list)
 
-    def load_shader(self):
-        file_name = "example.glsl"
-        file = open(file_name)
-        shader_sourcecode = file.read()
-        size = self.width, self.height
-
-        self.shadertoy = Shadertoy(size, shader_sourcecode)
-        self.channel0 = self.shadertoy.ctx.framebuffer(
-            color_attachments=[self.shadertoy.ctx.texture(size, components=4)]
-        )
-        self.shadertoy.channel_0 = self.channel0.color_attachments[0]
-
-        self.channel1 = self.shadertoy.ctx.framebuffer(
-            color_attachments=[self.shadertoy.ctx.texture(size, components=4)]
-        )
-        self.shadertoy.channel_1 = self.channel1.color_attachments[0]
-
     def on_draw(self):
-        self.channel0.use()
-        # clear_color = 0, 0, 0, 0
-        # self.channel0.clear(clear_color)
-        self.wall_list.draw()
+        arcade.start_render()
 
-        self.channel1.use()
-        # self.channel1.clear(clear_color)
-        self.channel1.clear(arcade.get_four_byte_color(arcade.color.ARMY_GREEN))
+        self.wall_list.draw()
         self.bomb_list.draw()
-
-        self.use()
-        # self.camera_sprites.use()
-        self.shadertoy.render(mouse_position=(self.player_sprite.center_x, self.player_sprite.center_y))
-        self.wall_list.draw()
         self.player_list.draw()
 
     def on_key_press(self, key, modifiers):
