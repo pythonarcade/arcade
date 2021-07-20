@@ -70,20 +70,30 @@ class Surface:
         """Get or set the surface position"""
         return self._pos
 
+    @position.setter
+    def position(self, value):
+        self._pos = value
+
     @property
     def size(self):
+        """Size of the surface in window coordinates"""
         return self._size
 
     @property
     def size_scaled(self):
+        """The physical size of the buffer"""
         return (
             int(self._size[0] * self._pixel_ratio),
             int(self._size[1] * self._pixel_ratio)
         )
 
-    @position.setter
-    def position(self, value):
-        self._pos = value
+    @property
+    def width(self) -> int:
+        return self._size[0]
+
+    @property
+    def height(self) -> int:
+        return self._size[1]
 
     def clear(self, color: arcade.Color = (0, 0, 0, 0)):
         """Clear the surface"""
@@ -108,22 +118,13 @@ class Surface:
     @contextmanager
     def activate(self):
         """
-        Save and restore projection and viewport, activate Surface Buffer to draw on.
+        Save and restore projection and activate Surface buffer to draw on.
         """
         proj = self.ctx.projection_2d
-        vx, vy, vw, vh = self.fbo.ctx.viewport
 
         with self.fbo.activate():
             yield self
 
-        fbo = self.fbo
-        scaling = arcade.get_scaling_factor(self.window) if fbo.is_default else 1.0
-        fbo.ctx.viewport = (
-            int(vx * scaling),
-            int(vy * scaling),
-            int(vw * scaling),
-            int(vh * scaling),
-        )
         self.ctx.projection_2d = proj
 
     def limit(self, x, y, width, height):
