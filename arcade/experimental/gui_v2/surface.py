@@ -1,4 +1,5 @@
 from contextlib import contextmanager
+from pathlib import PosixPath
 from typing import Tuple
 
 import arcade
@@ -12,13 +13,19 @@ class Surface:
     Holds a FBO and abstracts the drawing on it.
     """
 
-    def __init__(self, *, pos: Tuple[int, int], size: Tuple[int, int]):
+    def __init__(
+        self,
+        *,
+        size: Tuple[int, int],
+        position: Tuple[int, int] = (0, 0),
+        pixel_ratio: float = 1.0,
+    ):
         self.ctx = arcade.get_window().ctx
-
-        self._pos = pos
         self._size = size
+        self._pos = position
+        self._pixel_ratio = pixel_ratio
 
-        self.texture = self.ctx.texture(self._size, components=4)
+        self.texture = self.ctx.texture(self.size_scaled, components=4)
         self.fbo: Framebuffer = self.ctx.framebuffer(color_attachments=[self.texture])
         self.fbo.clear()
 
@@ -26,39 +33,57 @@ class Surface:
         self._quad = geometry.screen_rectangle(0, 0, 1, 1)
         self._program = self.ctx.program(
             vertex_shader="""
-                    #version 330
+                #version 330
 
-                    uniform Projection {
-                        uniform mat4 matrix;
-                    } proj;
-                    uniform vec2 pos;
-                    uniform vec2 size;
+                uniform Projection {
+                    uniform mat4 matrix;
+                } proj;
+                uniform vec2 pos;
+                uniform vec2 size;
 
-                    in vec2 in_vert;
-                    in vec2 in_uv;
+                in vec2 in_vert;
+                in vec2 in_uv;
 
-                    out vec2 uv;
+                out vec2 uv;
 
-                    void main() {
-                        gl_Position = proj.matrix * vec4((in_vert * size) + pos, 0.0, 1.0);
-                        uv = in_uv;
-                    }
-                    """,
+                void main() {
+                    gl_Position = proj.matrix * vec4((in_vert * size) + pos, 0.0, 1.0);
+                    uv = in_uv;
+                }
+                """,
             fragment_shader="""
-                    #version 330
+                #version 330
 
-                    uniform sampler2D ui_texture;
+                uniform sampler2D ui_texture;
 
-                    in vec2 uv;
-                    out vec4 fragColor;
+                in vec2 uv;
+                out vec4 fragColor;
 
-                    void main() {
-                        fragColor = texture(ui_texture, uv);
-                    }
-                    """,
+                void main() {
+                    fragColor = texture(ui_texture, uv);
+                }
+                """,
         )
-        self._program["pos"] = self._pos
-        self._program["size"] = self._size
+
+    @property
+    def position(self) -> Tuple[int, int]:
+        """Get or set the surface position"""
+        return self._pos
+
+    @property
+    def size(self):
+        return self._size
+
+    @property
+    def size_scaled(self):
+        return (
+            int(self._size[0] * self._pixel_ratio),
+            int(self._size[1] * self._pixel_ratio)
+        )
+
+    @position.setter
+    def position(self, value):
+        self._pos = value
 
     def clear(self, color: arcade.Color = (0, 0, 0, 0)):
         """Clear the surface"""
@@ -103,27 +128,34 @@ class Surface:
 
     def limit(self, x, y, width, height):
         """Reduces the draw area to the given rect"""
-        self.fbo.viewport = x, y, width, height
+        self.fbo.viewport = (
+            int(x * self._pixel_ratio),
+            int(y * self._pixel_ratio),
+            int(width * self._pixel_ratio),
+            int(height * self._pixel_ratio),
+        )
         self.ctx.projection_2d = 0, width, 0, height
 
     def draw(self) -> None:
         """Draws the current buffer on screen"""
         self.texture.use(0)
+        self._program["pos"] = self._pos
+        self._program["size"] = self._size
         self._quad.render(self._program)
 
-    def resize(self, size: Tuple[int, int]) -> None:
+    def resize(self, *, size: Tuple[int, int], pixel_ratio: float) -> None:
         """
         Resize the internal texture by re-allocating a new one
 
         :param Tuple[int,int] size: The new size in pixels (xy)
+        :param float pixel_ratio: The pixel scale of the window
         """
         # Texture re-allocation is expensive so we should block unnecessary calls.
-        if self._size == size:
+        if self._size == size and self._pixel_ratio == pixel_ratio:
             return
         self._size = size
+        self._pixel_ratio = pixel_ratio
         # Create new texture and fbo
-        self.texture = self.ctx.texture(self._size, components=4)
+        self.texture = self.ctx.texture(self.size_scaled, components=4)
         self.fbo: Framebuffer = self.ctx.framebuffer(color_attachments=[self.texture])
-        # Set size uniforms
-        self._program["pos"] = self._pos
-        self._program["size"] = self._size
+        self.fbo.clear()

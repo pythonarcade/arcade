@@ -16,12 +16,13 @@ from arcade.experimental.gui_v2.surface import Surface
 from arcade.experimental.gui_v2.widgets import Widget
 
 
-
-
-
 class UIManager:
     def __init__(self) -> None:
-        self._surface = Surface(pos=(0, 0), size=arcade.get_window().get_framebuffer_size())
+        self.window = arcade.get_window()
+        self._surface = Surface(
+            size=self.window.get_size(),
+            pixel_ratio=self.window.get_pixel_ratio(),
+        )
         self._children: List[Widget] = []
 
     def add(self, widget: Widget) -> Widget:
@@ -60,4 +61,5 @@ class UIManager:
         self.on_event(MouseScroll(x, y, scroll_x, scroll_y))
 
     def resize(self, width, height):
-        self._surface.resize((width, height))
+        scale = arcade.get_scaling_factor(self.window)
+        self._surface.resize(size=(width, height), pixel_ratio=scale)
