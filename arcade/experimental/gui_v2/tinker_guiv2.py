@@ -48,7 +48,7 @@ class UIMockup(arcade.Window):
         return Explosion(explosion_texture_list)
 
     def __init__(self):
-        super().__init__(800, 600, "UI Mockup")
+        super().__init__(800, 600, "UI Mockup", resizable=True)
         self.manager = UIManager()
         self.fps = FPSCounter()
 
@@ -119,6 +119,11 @@ class UIMockup(arcade.Window):
 
     def on_mouse_scroll(self, x: int, y: int, scroll_x: int, scroll_y: int):
         self.manager.on_mouse_scroll(x, y, scroll_x, scroll_y)
+
+    def on_resize(self, width: float, height: float):
+        # TODO: Tell Widgets they need to re-draw because surface was cleared
+        super().on_resize(width, height)
+        self.manager.resize(width, height)
 
 
 window = UIMockup()

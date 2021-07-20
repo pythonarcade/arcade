@@ -8,6 +8,7 @@ The better gui for arcade
 - Texts are now rendered with pyglet, open easier support for text areas with scolling
 - TextArea with scroll support
 """
+import arcade
 from typing import List
 
 from arcade.experimental.gui_v2.events import MouseMovement, MousePress, MouseRelease, MouseScroll
@@ -20,7 +21,7 @@ from arcade.experimental.gui_v2.widgets import Widget
 
 class UIManager:
     def __init__(self) -> None:
-        self._surface = Surface()
+        self._surface = Surface(pos=(0, 0), size=arcade.get_window().get_framebuffer_size())
         self._children: List[Widget] = []
 
     def add(self, widget: Widget) -> Widget:
@@ -57,3 +58,6 @@ class UIManager:
 
     def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
         self.on_event(MouseScroll(x, y, scroll_x, scroll_y))
+
+    def resize(self, width, height):
+        self._surface.resize((width, height))

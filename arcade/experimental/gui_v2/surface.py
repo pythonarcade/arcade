@@ -1,4 +1,5 @@
 from contextlib import contextmanager
+from typing import Tuple
 
 import arcade
 from arcade import Texture
@@ -11,11 +12,13 @@ class Surface:
     Holds a FBO and abstracts the drawing on it.
     """
 
-    def __init__(self):
-        self.window = arcade.get_window()
-        self.ctx = self.window.ctx
+    def __init__(self, *, pos: Tuple[int, int], size: Tuple[int, int]):
+        self.ctx = arcade.get_window().ctx
 
-        self.texture = self.ctx.texture(self.window.get_framebuffer_size(), components=4)
+        self.pos = pos
+        self.size = size
+
+        self.texture = self.ctx.texture(size, components=4)
         self.fbo: Framebuffer = self.ctx.framebuffer(color_attachments=[self.texture])
         self.fbo.clear()
 
@@ -55,10 +58,6 @@ class Surface:
                                             angle=angle,
                                             alpha=alpha)
 
-    def draw_surface(self, x: float, y: float, width: float, height: float, tex: Texture, angle=0, alpha: int = 255):
-        # TODO einarf implement draw this surface on another
-        pass
-
     def draw_sprite(self, x, y, width, height, sprite):
         sprite.set_position(x + width // 2, y + height // 2)
         sprite.width = width
@@ -95,3 +94,15 @@ class Surface:
         """Draws the current buffer on screen"""
         self.texture.use(0)
         self._quad.render(self._program)
+
+    # def draw_surface(self, x: float, y: float, width: float, height: float, tex: Texture, angle=0, alpha: int = 255):
+    #     # TODO einarf implement draw this surface on another
+    #     pass
+
+    def resize(self, size: Tuple[int, int]):
+        """Resize the internal texture by re-allocating a new one"""
+        if self.size == size:
+            return
+        self.size = size
+        self.texture = self.ctx.texture(size, components=4)
+        self.fbo: Framebuffer = self.ctx.framebuffer(color_attachments=[self.texture])
