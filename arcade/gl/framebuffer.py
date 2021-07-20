@@ -342,13 +342,13 @@ class Framebuffer:
             if normalized:
                 # If the colors are already normalized we can pass them right in
                 if len(color) == 3:
-                    gl.glClearColor(*color, 0.0)
+                    gl.glClearColor(*color, 1.0)
                 else:
                     gl.glClearColor(*color)
             else:
                 # OpenGL wants normalized colors (0.0 -> 1.0)
                 if len(color) == 3:
-                    gl.glClearColor(color[0] / 255, color[1] / 255, color[2] / 255, 0.0)
+                    gl.glClearColor(color[0] / 255, color[1] / 255, color[2] / 255, 1.0)
                 else:
                     gl.glClearColor(
                         color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255
