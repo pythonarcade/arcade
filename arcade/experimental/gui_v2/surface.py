@@ -87,6 +87,10 @@ class Surface:
         )
 
     @property
+    def pixel_ratio(self) -> float:
+        return self._pixel_ratio
+
+    @property
     def width(self) -> int:
         return self._size[0]
 

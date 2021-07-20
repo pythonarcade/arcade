@@ -28,6 +28,15 @@ class Rect(NamedTuple):
         left, bottom, width, height = self
         return left < x < left + width and bottom < y < bottom + height
 
+    def scale(self, scale: float) -> "Rect":
+        """Returns a new rect with scale applied"""
+        return Rect(
+            int(self.x * scale),
+            int(self.y * scale),
+            int(self.width * scale),
+            int(self.height * scale),
+        )
+
     @property
     def left(self):
         return self.x
@@ -319,6 +328,13 @@ class TextArea(Widget):
         arcade.draw_xywh_rectangle_outline(2, 2, self.width - 6, self.height - 6, (0, 100, 0, 255), border_width=3)
 
         with surface.ctx.pyglet_rendering():
+            # self.layout.default_group_class.scissor_area = (
+            #     int(x * surface._pixel_ratio),
+            #     int(y * surface._pixel_ratio),
+            #     int(w * surface._pixel_ratio),
+            #     int(h * surface._pixel_ratio),
+            # )
+            self.layout.default_group_class.scissor_area = self.rect.scale(surface.pixel_ratio)
             self.layout.draw()
 
     def on_event(self, event: Event):
