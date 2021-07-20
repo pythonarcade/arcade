@@ -72,16 +72,16 @@ class UIMockup(arcade.Window):
                     # SpriteWidget(x=x, y=y, width=80, height=30, sprite=Sprite(":resources:gui_basic_assets/red_button_normal.png"))
                 # ).on_click = self.on_button_click
 
-        # self.manager.add(
-        #     SpriteWidget(x=400, y=300, width=256, height=256, sprite=self.load_explosion())
-        # )
-        #
-        # self.manager.add(
-        #     TextArea(x=100, y=200, width=200, height=300, text=LOREM_IPSUM)
-        # )
+        self.manager.add(
+            SpriteWidget(x=500, y=300, width=256, height=256, sprite=self.load_explosion())
+        )
+        
+        self.manager.add(
+            TextArea(x=100, y=200, width=200, height=300, text=LOREM_IPSUM)
+        )
 
         self.manager.add(
-            InputText(x=400, y=200, width=200, height=300, text="Hello")
+            InputText(x=340, y=200, width=200, height=300, text="Hello")
         )
 
         print(f"Render {len(self.manager._children)} widgets")
