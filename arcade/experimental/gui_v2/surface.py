@@ -15,22 +15,24 @@ class Surface:
     def __init__(self, *, pos: Tuple[int, int], size: Tuple[int, int]):
         self.ctx = arcade.get_window().ctx
 
-        self.pos = pos
-        self.size = size
+        self._pos = pos
+        self._size = size
 
-        self.texture = self.ctx.texture(size, components=4)
+        self.texture = self.ctx.texture(self._size, components=4)
         self.fbo: Framebuffer = self.ctx.framebuffer(color_attachments=[self.texture])
         self.fbo.clear()
 
-        # fullscreen quad geometry
-        self._quad = geometry.screen_rectangle(0, 0, *self.size)
+        # Create 1 pixel rectangle we scale and move using pos and size
+        self._quad = geometry.screen_rectangle(0, 0, 1, 1)
         self._program = self.ctx.program(
             vertex_shader="""
                     #version 330
 
                     uniform Projection {
                         uniform mat4 matrix;
-                    } proj;                    
+                    } proj;
+                    uniform vec2 pos;
+                    uniform vec2 size;
 
                     in vec2 in_vert;
                     in vec2 in_uv;
@@ -38,7 +40,7 @@ class Surface:
                     out vec2 uv;
 
                     void main() {
-                        gl_Position = proj.matrix * vec4(in_vert, 0.0, 1.0);
+                        gl_Position = proj.matrix * vec4((in_vert * size) + pos, 0.0, 1.0);
                         uv = in_uv;
                     }
                     """,
@@ -55,8 +57,11 @@ class Surface:
                     }
                     """,
         )
+        self._program["pos"] = self._pos
+        self._program["size"] = self._size
 
     def clear(self, color: arcade.Color = (0, 0, 0, 0)):
+        """Clear the surface"""
         self.fbo.clear(color=color)
 
     def draw_texture(self, x: float, y: float, width: float, height: float, tex: Texture, angle=0, alpha: int = 255):
@@ -69,6 +74,7 @@ class Surface:
                                             alpha=alpha)
 
     def draw_sprite(self, x, y, width, height, sprite):
+        """Draw a sprite to the surface"""
         sprite.set_position(x + width // 2, y + height // 2)
         sprite.width = width
         sprite.height = height
@@ -100,19 +106,24 @@ class Surface:
         self.fbo.viewport = x, y, width, height
         self.ctx.projection_2d = 0, width, 0, height
 
-    def draw(self):
+    def draw(self) -> None:
         """Draws the current buffer on screen"""
         self.texture.use(0)
         self._quad.render(self._program)
 
-    # def draw_surface(self, x: float, y: float, width: float, height: float, tex: Texture, angle=0, alpha: int = 255):
-    #     # TODO einarf implement draw this surface on another
-    #     pass
+    def resize(self, size: Tuple[int, int]) -> None:
+        """
+        Resize the internal texture by re-allocating a new one
 
-    def resize(self, size: Tuple[int, int]):
-        """Resize the internal texture by re-allocating a new one"""
-        if self.size == size:
+        :param Tuple[int,int] size: The new size in pixels (xy)
+        """
+        # Texture re-allocation is expensive so we should block unnecessary calls.
+        if self._size == size:
             return
-        self.size = size
-        self.texture = self.ctx.texture(size, components=4)
+        self._size = size
+        # Create new texture and fbo
+        self.texture = self.ctx.texture(self._size, components=4)
         self.fbo: Framebuffer = self.ctx.framebuffer(color_attachments=[self.texture])
+        # Set size uniforms
+        self._program["pos"] = self._pos
+        self._program["size"] = self._size
