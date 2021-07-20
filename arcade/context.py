@@ -265,6 +265,7 @@ class ArcadeContext(Context):
             with window.ctx.pyglet_rendering():
                 # Draw with pyglet here
         """
+        prev_viewport = self.fbo.viewport
         # Ensure projection and view matrices are set in pyglet
         self.window.projection = self._projection_2d_matrix
         # Global modelview matrix should be set to identity
@@ -276,8 +277,9 @@ class ArcadeContext(Context):
             self.active_program = None
             # Rebind the projection uniform block
             self._projection_2d_buffer.bind_to_uniform_block(binding=0)
-            self.enable(self.BLEND)
+            self.enable(self.BLEND, pyglet.gl.GL_SCISSOR_TEST)
             self.blend_func = self.BLEND_DEFAULT
+            self.fbo.viewport = prev_viewport
 
     def load_program(
         self,
