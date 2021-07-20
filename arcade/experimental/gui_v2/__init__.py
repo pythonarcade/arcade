@@ -13,10 +13,10 @@ from typing import List
 
 from arcade.experimental.gui_v2.events import MouseMovement, MousePress, MouseRelease, MouseScroll
 from arcade.experimental.gui_v2.surface import Surface
-from arcade.experimental.gui_v2.widgets import Widget
+from arcade.experimental.gui_v2.widgets import Widget, WidgetParent, Rect
 
 
-class UIManager:
+class UIManager(WidgetParent):
     def __init__(self) -> None:
         self.window = arcade.get_window()
         self._surface = Surface(
@@ -27,13 +27,17 @@ class UIManager:
 
     def add(self, widget: Widget) -> Widget:
         self._children.append(widget)
+        widget.parent = self
         return widget
 
-    def render(self):
+    def render(self, force=False):
         with self._surface.activate():
+            if force:
+                self._surface.clear()
+
             for child in self._children:
-                self._surface.limit(*child.rect())
-                child.render(self._surface)
+                self._surface.limit(*child.rect)
+                child.render(self._surface, force)
 
     def on_update(self, time_delta):
         for child in self._children:
@@ -63,3 +67,7 @@ class UIManager:
     def resize(self, width, height):
         scale = arcade.get_scaling_factor(self.window)
         self._surface.resize(size=(width, height), pixel_ratio=scale)
+
+    @property
+    def rect(self) -> Rect:
+        return Rect(0, 0, *self._surface.size)
