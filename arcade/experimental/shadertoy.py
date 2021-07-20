@@ -348,11 +348,11 @@ class Shadertoy(ShadertoyBase):
         self._buffer_d = value
 
     @classmethod
-    def create_from_file(self, size: Tuple[int, int], path: Union[str, Path]) -> "Shadertoy":
+    def create_from_file(cls, size: Tuple[int, int], path: Union[str, Path]) -> "Shadertoy":
         path = arcade.resources.resolve_resource_path(path)
         with open(path) as fd:
             source = fd.read()
-        return Shadertoy(size, source)
+        return cls(size, source)
 
     def create_buffer(self, source, repeat: bool = False) -> ShadertoyBuffer:
         """
