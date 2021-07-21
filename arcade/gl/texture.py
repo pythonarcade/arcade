@@ -162,6 +162,14 @@ class Texture:
 
         self.ctx.stats.incr("texture")
 
+    def resize(self, size: Tuple[int, int]):
+        """
+        Resize the texture. This will re-allocate the internal
+        memory and all pixel data will be lost.
+        """
+        self._width, self._height = size
+        self._texture_2d(None)
+
     def __del__(self):
         # Intercept garbage collection if we are using Context.gc()
         if self._ctx.gc_mode == "context_gc":

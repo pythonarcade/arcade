@@ -106,3 +106,13 @@ def test_read(ctx):
     # data = fb.read(components=3)
     # assert len(data) == 12
     # assert data == b'\xff\xff\x00' * 4
+
+def test_resize(ctx):
+    tex = ctx.texture((100, 100), components=4)
+    fbo = ctx.framebuffer(color_attachments=[tex])
+    assert fbo.size == tex.size
+    tex.resize((200, 200))
+    assert tex.size == (200, 200)
+    fbo.resize()
+    assert fbo.size == tex.size
+    assert fbo.viewport == (0, 0, *fbo.size)

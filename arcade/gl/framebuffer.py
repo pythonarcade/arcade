@@ -87,18 +87,7 @@ class Framebuffer:
         # Ensure all attachments have the same size.
         # OpenGL do actually support different sizes,
         # but let's keep this simple with high compatibility.
-        expected_size = (
-            self._color_attachments[0]
-            if self._color_attachments
-            else self._depth_attachment
-        ).size
-        for layer in [*self._color_attachments, self._depth_attachment]:
-            if layer and layer.size != expected_size:
-                raise ValueError(
-                    "All framebuffer attachments should have the same size"
-                )
-
-        self._width, self._height = expected_size
+        self._width, self._height = self._detect_size()
         self._viewport = 0, 0, self._width, self._height
 
         # Attach textures to it
@@ -393,6 +382,14 @@ class Framebuffer:
 
         return bytearray(data)
 
+    def resize(self):
+        """
+        Detects size changes in attachments.
+        This will reset the viewport to ``0, 0, width, height``.
+        """
+        self._width, self._height = self._detect_size()
+        self.viewport = 0, 0, self.width, self._height
+
     def delete(self):
         """
         Destroy the underlying OpenGL resource.
@@ -413,6 +410,20 @@ class Framebuffer:
 
         gl.glDeleteFramebuffers(1, framebuffer_id)
         ctx.stats.decr("framebuffer")
+
+    def _detect_size(self) -> Tuple[int, int]:
+        """Detect the size of the framebuffer based on the attachments"""
+        expected_size = (
+            self._color_attachments[0]
+            if self._color_attachments
+            else self._depth_attachment
+        ).size
+        for layer in [*self._color_attachments, self._depth_attachment]:
+            if layer and layer.size != expected_size:
+                raise ValueError(
+                    "All framebuffer attachments should have the same size"
+                )
+        return expected_size
 
     @staticmethod
     def _check_completeness() -> None:
