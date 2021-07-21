@@ -30,6 +30,7 @@ class ShadertoyBase:
     It can represent the main image or buffers.
     """
     def __init__(self, size: Tuple[int, int], source: str):
+        self._ctx = get_window().ctx
         self._size = size
         self._source = source
         # Uniforms
@@ -104,7 +105,7 @@ class ShadertoyBase:
     @property
     def channel_0(self) -> Optional[Texture]:
         """Get or set channel 0"""
-        return self.channel_0        
+        return self._channel_0        
 
     @channel_0.setter
     def channel_0(self, value: Texture):
@@ -115,7 +116,7 @@ class ShadertoyBase:
     @property
     def channel_1(self) -> Optional[Texture]:
         """Get or set channel 1"""
-        return self.channel_1
+        return self._channel_1
 
     @channel_1.setter
     def channel_1(self, value: Texture):
@@ -126,7 +127,7 @@ class ShadertoyBase:
     @property
     def channel_2(self) -> Optional[Texture]:
         """Get or set channel 2"""
-        return self.channel_2        
+        return self._channel_2        
 
     @channel_2.setter
     def channel_2(self, value: Texture):
@@ -137,7 +138,7 @@ class ShadertoyBase:
     @property
     def channel_3(self) -> Optional[Texture]:
         """Get or set channel 3"""
-        return self.channel_3
+        return self._channel_3
 
     @channel_3.setter
     def channel_3(self, value: Texture):
@@ -151,7 +152,7 @@ class ShadertoyBase:
 
     @property
     def ctx(self) -> ArcadeContext:
-        return get_window().ctx
+        return self._ctx
 
     def resize(self, size: Tuple[int, int]):
         raise NotImplementedError
@@ -213,7 +214,6 @@ class ShadertoyBase:
         except KeyError:
             pass
 
-
     def _set_source(self, source: str):
         """
         Load shader templates, injects main function,
@@ -267,6 +267,10 @@ class ShadertoyBuffer(ShadertoyBase):
         self._repeat = value
         self._set_repeat()
 
+    def clear(self):
+        """Clear the buffer contents"""
+        self._fbo.clear()
+
     def _set_repeat(self):
         if self._repeat:
             self._texture.wrap_x = self.ctx.REPEAT
@@ -286,7 +290,10 @@ class ShadertoyBuffer(ShadertoyBase):
         if self._size == size:
             return
         self._size = size
-        print(self._size)
+        # Resize the internal texture and fbo + clear
+        self._texture.resize((self._size))
+        self._fbo.resize()
+        self._fbo.clear()
 
 
 class Shadertoy(ShadertoyBase):
@@ -387,17 +394,19 @@ class Shadertoy(ShadertoyBase):
 
     def _render(self):
         # Render buffers first
-        buffers = [self._buffer_a, self._buffer_b, self._buffer_c, self._buffer_b]
-        for buffer in buffers:
-            if buffer is not None:
-                buffer.render(
-                    time=self._time,
-                    time_delta=self._time_delta,
-                    mouse_position=self._mouse_pos,
-                    size=self._size,
-                )
-
-        # Run the main program
-        self._bind_channels()
-        self._set_uniforms()
-        self._quad.render(self._program)
+        with self.ctx.enabled_only():
+            buffers = [self._buffer_a, self._buffer_b, self._buffer_c, self._buffer_d]
+            for buffer in buffers:
+                if buffer is not None:
+                    buffer.render(
+                        time=self._time,
+                        time_delta=self._time_delta,
+                        mouse_position=self._mouse_pos,
+                        size=self._size,
+                        frame=self._frame,
+                    )
+ 
+            # Run the main program
+            self._bind_channels()
+            self._set_uniforms()
+            self._quad.render(self._program)
