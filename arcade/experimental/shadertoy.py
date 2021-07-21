@@ -33,17 +33,16 @@ class ShadertoyBase:
         self._size = size
         self._source = source
         # Uniforms
-        self._mouse_pos = 0, 0
-        self._time = 0
-        self._time_delta = 0
-        self._frame = 0
+        self._mouse_pos: Tuple[float, float] = 0.0, 0.0
+        self._time: float = 0.0
+        self._time_delta: float = 0.0
+        self._frame: int = 0
         # Shader inputs
-        self._channel_0 = None
-        self._channel_1 = None
-        self._channel_2 = None
-        self._channel_3 = None
+        self._channel_0: Optional[Texture] = None
+        self._channel_1: Optional[Texture] = None
+        self._channel_2: Optional[Texture] = None
+        self._channel_3: Optional[Texture] = None
 
-        self._program = None
         self._set_source(source)
         self._quad = geometry.quad_2d_fs()
 
@@ -74,7 +73,7 @@ class ShadertoyBase:
         """
         Get or set the current delta time
         """
-        return self._delta_time
+        return self._time_delta
 
     @time_delta.setter
     def time_delta(self, value):
@@ -103,7 +102,7 @@ class ShadertoyBase:
         self._mouse_pos = value
 
     @property
-    def channel_0(self) -> Texture:
+    def channel_0(self) -> Optional[Texture]:
         """Get or set channel 0"""
         return self.channel_0        
 
@@ -114,7 +113,7 @@ class ShadertoyBase:
         self._channel_0 = value
 
     @property
-    def channel_1(self) -> Texture:
+    def channel_1(self) -> Optional[Texture]:
         """Get or set channel 1"""
         return self.channel_1
 
@@ -125,7 +124,7 @@ class ShadertoyBase:
         self._channel_1 = value
 
     @property
-    def channel_2(self) -> Texture:
+    def channel_2(self) -> Optional[Texture]:
         """Get or set channel 2"""
         return self.channel_2        
 
@@ -136,7 +135,7 @@ class ShadertoyBase:
         self._channel_2 = value
 
     @property
-    def channel_3(self) -> Texture:
+    def channel_3(self) -> Optional[Texture]:
         """Get or set channel 3"""
         return self.channel_3
 
@@ -154,8 +153,8 @@ class ShadertoyBase:
     def ctx(self) -> ArcadeContext:
         return get_window().ctx
 
-    def resize(self, width: int, height: int):
-        pass
+    def resize(self, size: Tuple[int, int]):
+        raise NotImplementedError
 
     def render(
         self,
@@ -312,7 +311,7 @@ class Shadertoy(ShadertoyBase):
         self._buffer_d: Optional[ShadertoyBuffer] = None
 
     @property
-    def buffer_a(self) -> ShadertoyBuffer:
+    def buffer_a(self) -> Optional[ShadertoyBuffer]:
         """Get or set buffer a"""
         return self._buffer_a
 
@@ -321,7 +320,7 @@ class Shadertoy(ShadertoyBase):
         self._buffer_a = value
 
     @property
-    def buffer_b(self) -> ShadertoyBuffer:
+    def buffer_b(self) -> Optional[ShadertoyBuffer]:
         """Get or set buffer b"""
         return self._buffer_b
 
@@ -330,7 +329,7 @@ class Shadertoy(ShadertoyBase):
         self._buffer_b = value
 
     @property
-    def buffer_c(self) -> ShadertoyBuffer:
+    def buffer_c(self) -> Optional[ShadertoyBuffer]:
         """Get or set buffer c"""
         return self._buffer_c
 
@@ -339,7 +338,7 @@ class Shadertoy(ShadertoyBase):
         self._buffer_c = value
 
     @property
-    def buffer_d(self) -> ShadertoyBuffer:
+    def buffer_d(self) -> Optional[ShadertoyBuffer]:
         """Get or set buffer d"""
         return self._buffer_d
 
