@@ -15,7 +15,7 @@ with a scene object.
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/03_scene_object.py
     :caption: 03_scene_object.py - Scene Object Definition
-    :lines: 22-33
+    :lines: 21-32
     :emphasize-lines: 6-7
 
 Next we will initialize the scene object in the ``setup`` function and then add the SpriteLists to it
@@ -26,15 +26,22 @@ specify by name what SpriteList we want them added to.
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/03_scene_object.py
     :caption: 03_scene_object.py - Add SpriteLists to the Scene
-    :lines: 35-70
+    :lines: 34-69
     :emphasize-lines: 4-9, 16, 24, 36
 
 Lastly in our ``on_draw`` function we can draw the scene.
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/03_scene_object.py
     :caption: 03_scene_object.py - Draw the Scene
-    :lines: 72-79
+    :lines: 71-78
     :emphasize-lines: 7-8
+
+Putting it all together looks like this:
+
+.. literalinclude:: ../../../arcade/examples/platform_tutorial/03_scene_object.py
+    :caption: 03_scene_object - Scene Object
+    :linenos:
+    :emphasize-lines: 26-27, 37-42, 49, 57, 69, 77-78
 
 Source Code
 ~~~~~~~~~~~
