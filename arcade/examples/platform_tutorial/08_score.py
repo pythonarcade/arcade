@@ -56,15 +56,17 @@ class MyGame(arcade.Window):
     def setup(self):
         """Set up the game here. Call this function to restart the game."""
 
-        # Setup the Cameras
+        # Setup the Game Camera
         self.camera = arcade.Camera(self.width, self.height)
-        self.gui_camera = arcade.Camera(self.width, self.height)
 
-        # Initialize Scene
-        self.scene = arcade.Scene()
+        # Setup the GUI Camera
+        self.gui_camera = arcade.Camera(self.width, self.height)
 
         # Keep track of the score
         self.score = 0
+
+        # Initialize Scene
+        self.scene = arcade.Scene()
 
         # Set up the player, specifically placing it at these coordinates.
         image_source = ":resources:images/animated_characters/female_adventurer/femaleAdventurer_idle.png"
