@@ -164,15 +164,21 @@ class Window(pyglet.window.Window):
         """
         return self._ctx
 
-    def clear(self):
+    def clear(self, color: Optional[Color] = None):
         """Clears the window with the configured background color
         set through :py:attr:`arcade.Window.background_color`.
+
+        :param Color color: Optional color overriding the current background color
         """
-        self.ctx.screen.clear(self.background_color)
+        color = color if color is not None else self.background_color
+        self.ctx.screen.clear(color)
 
     @property
     def background_color(self):
         """Get or set the background color for this window.
+
+        If the background color is an ``RGB`` value instead of ``RGBA```
+        we assume alpha value 255.
 
         :type: Color
         """

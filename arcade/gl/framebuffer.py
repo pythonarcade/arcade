@@ -334,6 +334,9 @@ class Framebuffer:
             # Clear the framebuffer using arcade's colors (not normalized)
             fb.clear(color=arcade.color.WHITE)
 
+        If the background color is an ``RGB`` value instead of ``RGBA```
+        we assume alpha value 255.
+
         :param tuple color: A 3 or 4 component tuple containing the color
         :param float depth: Value to clear the depth buffer (unused)
         :param bool normalized: If the color values are normalized or not
