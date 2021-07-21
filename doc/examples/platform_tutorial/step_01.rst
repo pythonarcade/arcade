@@ -53,8 +53,3 @@ Once you get the code working, figure out how to:
 * Look through the documentation for the
   `Window <../../arcade.html#arcade.Window>`_ class to get an idea of everything
   it can do.
-
-Source Code
-~~~~~~~~~~~
-
-* :ref:`01_open_window`

@@ -106,6 +106,9 @@ Notice that the code creates ``Sprites`` three ways:
 * Creating a ``Sprite`` class, positioning it, adding it to the list
 * Create a series of sprites in a loop
 
+Source Code
+~~~~~~~~~~~
+
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/02_draw_sprites.py
     :caption: 02_draw_sprites - Draw and Position Sprites
     :linenos:
@@ -118,9 +121,3 @@ Notice that the code creates ``Sprites`` three ways:
     * Adjust the code and try putting sprites in new positions.
     * Use different images for sprites (see the images folder).
     * Practice placing individually, via a loop, and by coordinates in a list.
-
-Source Code
-~~~~~~~~~~~
-
-* :ref:`02_draw_sprites`
-* :ref:`02_draw_sprites_diff`

@@ -36,15 +36,11 @@ Lastly in our ``on_draw`` function we can draw the scene.
     :lines: 71-78
     :emphasize-lines: 7-8
 
-Putting it all together looks like this:
+Source Code
+~~~~~~~~~~~
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/03_scene_object.py
     :caption: 03_scene_object - Scene Object
     :linenos:
     :emphasize-lines: 26-27, 37-42, 49, 57, 69, 77-78
-
-Source Code
-~~~~~~~~~~~
-
-* :ref:`03_scene_object`
-* :ref:`03_scene_object_diff`
+    
