@@ -394,19 +394,19 @@ class Shadertoy(ShadertoyBase):
 
     def _render(self):
         # Render buffers first
-        with self.ctx.enabled_only():
-            buffers = [self._buffer_a, self._buffer_b, self._buffer_c, self._buffer_d]
-            for buffer in buffers:
-                if buffer is not None:
-                    buffer.render(
-                        time=self._time,
-                        time_delta=self._time_delta,
-                        mouse_position=self._mouse_pos,
-                        size=self._size,
-                        frame=self._frame,
-                    )
- 
-            # Run the main program
-            self._bind_channels()
-            self._set_uniforms()
-            self._quad.render(self._program)
+        # with self.ctx.enabled_only():
+        buffers = [self._buffer_a, self._buffer_b, self._buffer_c, self._buffer_d]
+        for buffer in buffers:
+            if buffer is not None:
+                buffer.render(
+                    time=self._time,
+                    time_delta=self._time_delta,
+                    mouse_position=self._mouse_pos,
+                    size=self._size,
+                    frame=self._frame,
+                )
+
+        # Run the main program
+        self._bind_channels()
+        self._set_uniforms()
+        self._quad.render(self._program)
