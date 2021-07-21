@@ -1,3 +1,4 @@
+from contextlib import contextmanager
 from ctypes import c_int, c_char_p, cast, c_float
 from collections import deque
 import logging
@@ -278,7 +279,7 @@ class Context:
         """Mark a context as the currently active one"""
         cls.active = ctx
 
-    def enable(self, *args):
+    def enable(self, *flags):
         """
         Enables one or more context flags::
 
@@ -287,9 +288,9 @@ class Context:
             # Multiple flags
             ctx.enable(ctx.DEPTH_TEST, ctx.CULL_FACE)
         """
-        self._flags.update(args)
+        self._flags.update(flags)
 
-        for flag in args:
+        for flag in flags:
             gl.glEnable(flag)
 
     def enable_only(self, *args):
@@ -326,6 +327,36 @@ class Context:
             gl.glEnable(self.PROGRAM_POINT_SIZE)
         else:
             gl.glDisable(self.PROGRAM_POINT_SIZE)
+
+    @contextmanager
+    def enabled(self, *flags):
+        """
+        Temporarily change enabled flags::
+
+            with ctx.enabled(ctx.BLEND, ctx.CULL_FACE):
+                # Render something
+        """
+        old_flags = self._flags
+        self.enable(*flags)
+        try:
+            yield
+        finally:
+            self.enable(*old_flags)
+
+    @contextmanager
+    def enabled_only(self, *flags):
+        """
+        Temporarily change enabled flags::
+
+            with ctx.enabled_only(ctx.BLEND, ctx.CULL_FACE):
+                # Render something
+        """
+        old_flags = self._flags
+        self.enable_only(*flags)
+        try:
+            yield
+        finally:
+            self.enable_only(*old_flags)
 
     def disable(self, *args):
         """

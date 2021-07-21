@@ -36,21 +36,23 @@ def test_projection(window):
 
 
 def test_point_size(ctx):
+    """Attempt to set point size"""
     assert ctx.point_size == 1.0
     ctx.point_size = 2.0
     assert ctx.point_size == 2.0
 
 
 def test_primitive_restart(ctx):
+    """Get or set primitive restart"""
     assert ctx.primitive_restart_index == -1
     ctx.primitive_restart_index = -2
     assert ctx.primitive_restart_index == -2
 
 
 def test_enable_disable(ctx):
-    # Blend is enabled by default
+    """Try enable and disable states manually"""
     assert ctx.is_enabled(ctx.BLEND)
-    ctx.enable_only() 
+    ctx.enable_only()
     assert len(ctx._flags) == 0
 
     ctx.enable(ctx.BLEND)
@@ -64,3 +66,26 @@ def test_enable_disable(ctx):
     assert len(ctx._flags) == 2
 
     ctx.enable_only(ctx.BLEND, ctx.CULL_FACE, ctx.DEPTH_TEST, ctx.PROGRAM_POINT_SIZE)
+
+def test_enabled_only(ctx):
+    """Enabled only context manager"""    
+    assert ctx.is_enabled(ctx.BLEND)
+    assert not ctx.is_enabled(ctx.DEPTH_TEST)
+
+    with ctx.enabled(ctx.DEPTH_TEST):
+        assert ctx.is_enabled(ctx.BLEND)
+        assert ctx.is_enabled(ctx.DEPTH_TEST)
+
+    assert ctx.is_enabled(ctx.BLEND)
+    assert not ctx.is_enabled(ctx.DEPTH_TEST)
+
+def test_enabled_only(ctx):
+    """Enabled only context manager"""    
+    assert ctx.is_enabled(ctx.BLEND)
+
+    with ctx.enabled_only(ctx.DEPTH_TEST):
+        assert not ctx.is_enabled(ctx.BLEND)
+        assert ctx.is_enabled(ctx.DEPTH_TEST)
+
+    assert ctx.is_enabled(ctx.BLEND)
+    assert not ctx.is_enabled(ctx.DEPTH_TEST)
