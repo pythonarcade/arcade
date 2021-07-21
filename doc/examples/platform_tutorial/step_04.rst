@@ -11,9 +11,9 @@ per update our character travels:
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/04_user_control.py
     :caption: 04_user_control.py - Player Move Speed Constant
-    :lines: 16-17
+    :lines: 15-16
 
-Next, at the end of our ``setup`` method, we are need to create a physics engine that will
+Next, at the end of our ``setup`` method, we need to create a physics engine that will
 move our player and keep her from running through walls. The ``PhysicsEngineSimple``
 class takes two parameters: The moving
 sprite, and a list of sprites the moving sprite can't move through.
@@ -29,7 +29,7 @@ For more information about the physics engine we are using here, see
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/04_user_control.py
     :caption: 04_user_control.py - Create Physics Engine
-    :lines: 74-77
+    :lines: 73-76
 
 Each sprite has ``center_x`` and ``center_y`` attributes. Changing these will
 change the location of the sprite. (There are also attributes for top, bottom,
@@ -75,5 +75,7 @@ engine to move our player based on her ``change_x`` and ``change_y``.
 Source Code
 ~~~~~~~~~~~
 
-* :ref:`04_user_control`
-* :ref:`04_user_control_diff`
+.. literalinclude:: ../../../arcade/examples/platform_tutorial/04_user_control.py
+    :caption: 04_user_control.py - User Control
+    :linenos:
+    :emphasize-lines: 15-16, 35-36, 73-76, 87-115

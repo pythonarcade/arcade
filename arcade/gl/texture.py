@@ -1,3 +1,4 @@
+from array import array
 from ctypes import byref
 import weakref
 from typing import Any, Optional, Tuple, Union, TYPE_CHECKING
@@ -160,6 +161,14 @@ class Texture:
             weakref.finalize(self, Texture.delete_glo, self._ctx, glo)
 
         self.ctx.stats.incr("texture")
+
+    def resize(self, size: Tuple[int, int]):
+        """
+        Resize the texture. This will re-allocate the internal
+        memory and all pixel data will be lost.
+        """
+        self._width, self._height = size
+        self._texture_2d(None)
 
     def __del__(self):
         # Intercept garbage collection if we are using Context.gc()
@@ -471,7 +480,7 @@ class Texture:
 
         return bytearray(buffer)
 
-    def write(self, data: Union[bytes, Buffer], level: int = 0, viewport=None) -> None:
+    def write(self, data: Union[bytes, Buffer, array], level: int = 0, viewport=None) -> None:
         """Write byte data to the texture. This can be bytes or a :py:class:`~arcade.gl.Buffer`.
 
         :param Union[bytes,Buffer] data: bytes or a Buffer with data to write

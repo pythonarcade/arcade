@@ -1,5 +1,4 @@
 from contextlib import contextmanager
-from pathlib import PosixPath
 from typing import Tuple
 
 import arcade
@@ -14,11 +13,11 @@ class Surface:
     """
 
     def __init__(
-        self,
-        *,
-        size: Tuple[int, int],
-        position: Tuple[int, int] = (0, 0),
-        pixel_ratio: float = 1.0,
+            self,
+            *,
+            size: Tuple[int, int],
+            position: Tuple[int, int] = (0, 0),
+            pixel_ratio: float = 1.0,
     ):
         self.ctx = arcade.get_window().ctx
         self._size = size
@@ -88,6 +87,10 @@ class Surface:
         )
 
     @property
+    def pixel_ratio(self) -> float:
+        return self._pixel_ratio
+
+    @property
     def width(self) -> int:
         return self._size[0]
 
@@ -119,8 +122,10 @@ class Surface:
     def activate(self):
         """
         Save and restore projection and activate Surface buffer to draw on.
+        Also resets the limit of the surface (viewport).
         """
         proj = self.ctx.projection_2d
+        self.limit(0, 0, *self.size)
 
         with self.fbo.activate():
             yield self

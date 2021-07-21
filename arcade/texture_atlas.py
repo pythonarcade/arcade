@@ -138,6 +138,9 @@ class TextureAtlas:
         """
         Creates a texture atlas with a size in a context.
 
+        The border value should ideally be 1 (default) to avoid
+        interpolation bleeding between the textures.
+
         :param Tuple[int, int] size: The width and height of the atlas in pixels
         :param int border: Border in pixels around every texture in the atlas
         :param Sequence[arcade.Texture] textures: The texture for this atlas
@@ -310,7 +313,7 @@ class TextureAtlas:
         self.write_texture(texture, x, y)
         return slot, region
 
-    def allocate(self, texture) -> Tuple[int, int, int, AtlasRegion]:
+    def allocate(self, texture: "Texture") -> Tuple[int, int, int, AtlasRegion]:
         """
         Attempts to allocate space for a texture in the atlas.
         This doesn't write the texture to the atlas texture itself.
@@ -356,7 +359,7 @@ class TextureAtlas:
         self._textures.append(texture)
         return x, y, slot, region
 
-    def write_texture(self, texture, x, y):
+    def write_texture(self, texture: "Texture", x: int, y: int):
         """
         Writes an arcade texture to a subsection of the texture atlas
         """
@@ -366,12 +369,13 @@ class TextureAtlas:
 
         self.write_image(texture.image, x, y)
 
-    def write_image(self, image: PIL.Image.Image, x, y):
+    def write_image(self, image: PIL.Image.Image, x: int, y: int) -> None:
         """
         Write a PIL image to the atlas in a specific region.
 
         :param PIL.Image.Image image: The pillow image
-        :param Tuple[int,int] position: the xy position for the image
+        :param int x: The x position to write the texture
+        :param int y: The y position to write the texture
         """
         # Write into atlas at the allocated location
         viewport = (
@@ -380,7 +384,7 @@ class TextureAtlas:
             image.width,
             image.height,
         )
-        # Write the image directly to vram in the allocated space
+        # Write the image directly to graphics memory in the allocated space
         self._texture.write(image.tobytes(), 0, viewport=viewport)
 
     def remove(self, texture: "Texture") -> None:
@@ -619,10 +623,13 @@ class TextureAtlas:
 
     @classmethod
     def create_from_texture_sequence(cls, textures: Sequence["Texture"], border: int = 1) -> "TextureAtlas":
-        # Ensure all textures are unique
-        textures = set(textures)
-        # Sort the images by height
-        textures = sorted(textures, key=lambda x: x.image.size[1])
+        """
+        Create a texture atlas of a reasonable size from a sequence of textures.
+
+        :param Sequence[Texture] textures: A sequence of textures (list, set, tuple, generator etc.)
+        :param int border: The border for the atlas in pixels (space between each texture)
+        """
+        textures = sorted(set(textures), key=lambda x: x.image.size[1])
         size = TextureAtlas.calculate_minimum_size(textures)
         return TextureAtlas(size, textures=textures, border=border)
 
@@ -660,7 +667,7 @@ class TextureAtlas:
 
         return size, size
 
-    def to_image(self):
+    def to_image(self) -> Image.Image:
         """
         Convert the atlas to a Pillow image
 
@@ -668,11 +675,11 @@ class TextureAtlas:
         """
         return Image.frombytes("RGBA", self._texture.size, bytes(self._texture.read()))
 
-    def show(self):
+    def show(self) -> None:
         """Show the texture atlas using Pillow"""
         self.to_image().show()
 
-    def save(self, path: str):
+    def save(self, path: str) -> None:
         """
         Save the texture atlas to a png.
 
@@ -680,7 +687,8 @@ class TextureAtlas:
         """
         self.to_image().save(path, format="png")
 
-    def _check_size(self, size):
+    def _check_size(self, size: Tuple[int, int]) -> None:
+        """Check it the atlas exceeds the hardware limitations"""
         if size[0] > self._max_size[0] or size[1] > self._max_size[1]:
             raise ValueError(
                 "Attempting to create or resize an atlas to "

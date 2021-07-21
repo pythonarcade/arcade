@@ -123,6 +123,8 @@ class MyGame(arcade.Window):
         screen_center_y = self.player_sprite.center_y - (
             self.camera.viewport_height / 2
         )
+
+        # Don't let camera travel past 0
         if screen_center_x < 0:
             screen_center_x = 0
         if screen_center_y < 0:
