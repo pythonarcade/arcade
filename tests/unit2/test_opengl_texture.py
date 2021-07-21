@@ -181,5 +181,8 @@ def test_byte_size(ctx):
 def test_resize(ctx):
     tex = ctx.texture((100, 100), components=4)
     assert tex.size == (100, 100)
+    assert len(tex.read()) == 100 * 100 * 4
+
     tex.resize((200, 200))
     assert tex.size == (200, 200)
+    assert len(tex.read()) == 200 * 200 * 4
