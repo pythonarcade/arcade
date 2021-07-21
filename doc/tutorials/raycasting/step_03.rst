@@ -2,8 +2,8 @@
 
 .. _raycasting_step_03:
 
-Step 3
-======
+Step 3 Python
+=============
 
 .. image:: step_03.png
 
