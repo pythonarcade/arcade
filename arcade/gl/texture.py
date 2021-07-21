@@ -167,6 +167,9 @@ class Texture:
         Resize the texture. This will re-allocate the internal
         memory and all pixel data will be lost.
         """
+        gl.glActiveTexture(gl.GL_TEXTURE0 + self._ctx.default_texture_unit)
+        gl.glBindTexture(self._target, self._glo)
+
         self._width, self._height = size
         self._texture_2d(None)
 
