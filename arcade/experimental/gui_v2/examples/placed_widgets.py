@@ -1,6 +1,6 @@
 import arcade
 from arcade.experimental.gui_v2 import UIManager
-from arcade.experimental.gui_v2.widgets import Button, PlacedWidget
+from arcade.experimental.gui_v2.widgets import Dummy, PlacedWidget
 
 
 class UIMockup(arcade.Window):
@@ -11,38 +11,38 @@ class UIMockup(arcade.Window):
         arcade.set_background_color(arcade.color.DARK_BLUE_GRAY)
 
         self.manager.add(PlacedWidget(
-            Button(color=arcade.color.RED),
+            child=Dummy(color=arcade.color.RED),
             x_anchor="center_x",
             y_anchor="top",
         ))
 
         self.manager.add(PlacedWidget(
-            Button(color=arcade.color.BLUE),
+            child=Dummy(color=arcade.color.BLUE),
             x_anchor="right",
             y_anchor="center_y",
         ))
 
         self.manager.add(PlacedWidget(
-            Button(color=arcade.color.GREEN),
+            child=Dummy(color=arcade.color.GREEN),
             x_anchor="center_x",
             y_anchor="center_y",
         ))
 
         self.manager.add(PlacedWidget(
-            Button(color=arcade.color.YELLOW),
+            child=Dummy(color=arcade.color.YELLOW),
             x_anchor="left",
             y_anchor="bottom",
         ))
 
         self.manager.add(PlacedWidget(
-            Button(color=arcade.color.ORANGE),
+            child=Dummy(color=arcade.color.ORANGE),
             x_anchor="left",
             x_align=20,
             y_anchor="center_y",
         ))
 
         self.manager.add(PlacedWidget(
-            Button(color=arcade.color.ORANGE),
+            child=Dummy(color=arcade.color.ORANGE),
             x_anchor="right",
             x_align=-40,
             y_anchor="bottom",
@@ -55,7 +55,6 @@ class UIMockup(arcade.Window):
 
     def on_update(self, time_delta):
         self.manager.on_update(time_delta)
-        self.manager.render()
 
     # TODO These can be registered by UIManager
     def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):

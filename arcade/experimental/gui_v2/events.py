@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Any
 
 
 class Event:
@@ -20,6 +21,15 @@ class MousePress(Event):
     button: int
     modifiers: int
 
+@dataclass
+class MouseDrag(Event):
+    x: float
+    y: float
+    dx: float
+    dy: float
+    buttons: int
+    modifiers: int
+
 
 @dataclass
 class MouseRelease(Event):
@@ -34,3 +44,16 @@ class MouseScroll(Event):
     y: float
     scroll_x: int
     scroll_y: int
+
+
+@dataclass
+class Text(Event):
+    text: str
+
+@dataclass
+class TextMotion(Event):
+    motion: Any
+
+@dataclass
+class TextMotionSelect(Event):
+    motion: Any

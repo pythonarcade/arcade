@@ -1,13 +1,15 @@
+from abc import abstractmethod, ABC
 from random import randint
-from typing import NamedTuple, TYPE_CHECKING, Iterable
+from typing import NamedTuple, Iterable
 
 import pyglet
 from pyglet.event import EventDispatcher
 
 import arcade
 from arcade import Texture, Sprite
-from arcade.experimental.gui_v2 import Surface, MouseScroll
-from arcade.experimental.gui_v2.events import Event, MouseMovement, MousePress, MouseRelease
+from arcade.experimental.gui_v2 import Surface
+from arcade.experimental.gui_v2.events import Event, MouseMovement, MousePress, MouseRelease, Text, MouseDrag, \
+    MouseScroll, TextMotion, TextMotionSelect
 
 
 def point_in_rect(x, y, rx, ry, rw, rh):
@@ -104,7 +106,7 @@ class WidgetParent:
     rect: Rect
 
 
-class Widget(EventDispatcher, WidgetParent):
+class Widget(EventDispatcher, WidgetParent, ABC):
     def __init__(self,
                  x=0,
                  y=0,
@@ -115,6 +117,7 @@ class Widget(EventDispatcher, WidgetParent):
         self.rendered = False
         self.parent: WidgetParent = None
 
+    @abstractmethod
     def render(self, surface: Surface, force=False):
         """
         Render the widget with arcade.draw commands or using the surface methods.
@@ -123,8 +126,35 @@ class Widget(EventDispatcher, WidgetParent):
     def on_update(self, dt):
         pass
 
+    def do_layout(self) -> bool:
+        """
+        Called by the UIManager before rendering, Widgets should place themselves or children
+        :return: in case of any change, which requires a forced rerender of the UI return True
+        """
+
     def on_event(self, event: Event):
         pass
+
+    def with_border(self, width=2, color=(0, 0, 0)):
+        """
+        Wraps this Widget with a border
+        :param width: border width
+        :param color: border color
+        :return: Wrapping Border with self as child
+        """
+        return Border(self, border_width=width, border_color=color)
+
+    def with_padding(self, top=0, right=0, bottom=0, left=0, bg_color=None):
+        """
+        Wraps this Widget with a border
+        :param top: Top Padding
+        :param right: Right Padding
+        :param bottom: Bottom Padding
+        :param left: Left Padding
+        :param bg_color: Background color
+        :return: Wrapping Padding with self as child
+        """
+        return Padding(self, pad=(top, right, bottom, left), bg_color=bg_color)
 
     @property
     def rect(self) -> Rect:
@@ -163,7 +193,7 @@ class Widget(EventDispatcher, WidgetParent):
 
 
 class InteractiveWidget(Widget):
-    # Interaction
+    # States
     _hover = False
     _pressed = False
 
@@ -196,11 +226,13 @@ class InteractiveWidget(Widget):
             self.hover = point_in_rect(event.x, event.y, *self.rect)
 
         if isinstance(event, MousePress):
-            self.pressed = point_in_rect(event.x, event.y, *self.rect)
+            if self.rect.collide_with_point(event.x, event.y):
+                self.pressed = True
+                return True
 
         if self.pressed and isinstance(event, MouseRelease):
             self.pressed = False
-            if point_in_rect(event.x, event.y, *self.rect):
+            if self.rect.collide_with_point(event.x, event.y):
                 self.dispatch_event("on_click", self, event)
                 return True
 
@@ -208,7 +240,7 @@ class InteractiveWidget(Widget):
         pass
 
 
-class Button(InteractiveWidget):
+class Dummy(InteractiveWidget):
     def __init__(self, x=0, y=0, width=100, height=100, color=arcade.color.BLACK):
         super().__init__(x, y, width, height)
         self.color = color
@@ -240,7 +272,7 @@ class SpriteWidget(Widget):
         surface.draw_sprite(0, 0, self.width, self.height, self._sprite)
 
 
-class ImageButton(InteractiveWidget):
+class TextureButton(InteractiveWidget):
     def __init__(self,
                  x=0, y=0,
                  width=100, height=50,
@@ -305,35 +337,46 @@ class ImageButton(InteractiveWidget):
 
 
 class TextArea(Widget):
-    def __init__(self, x=0, y=0, width=100, height=50, text="", style=None):
+    def __init__(self, x=0, y=0, width=100, height=200, text="",
+                 font_name=('Arial',),
+                 font_size=12,
+                 text_color=(255, 255, 255, 255),
+                 style=None):
         super().__init__(x, y, width, height)
 
         self.doc = pyglet.text.decode_text(text)
-        self.doc.set_style(0, 12, dict(font_name='Arial', font_size=12,
-                                       color=(255, 255, 255, 255)))
+        self.doc.set_style(0, 12, dict(
+            font_name=font_name,
+            font_size=font_size,
+            color=text_color
+        ))
 
         self.layout = pyglet.text.layout.ScrollableTextLayout(self.doc,
-                                                              width=self.width - 6,
-                                                              height=self.height - 6,
+                                                              width=self.width,
+                                                              height=self.height,
                                                               multiline=True,
-                                                              # batch=self.lbatch
                                                               )
 
+    @property
+    def rect(self) -> Rect:
+        return self._rect
+
+    @rect.setter
+    def rect(self, value):
+        self._rect = value
+        self.rendered = False
+
+        # Update Pyglet layout
+        l = self.layout
+        l.x, l.y, l.width, l.height = self.rect
+
     def render(self, surface: Surface, force=False):
-        self.layout.x = 3
-        self.layout.y = 3
-        # self.layout.view_y = -80
+        if self.rendered and not force:
+            return
+        self.rendered = True
 
-        # surface.clear((0, 100, 0, 255))
-        arcade.draw_xywh_rectangle_outline(2, 2, self.width - 6, self.height - 6, (0, 100, 0, 255), border_width=3)
-
+        # surface.clear()
         with surface.ctx.pyglet_rendering():
-            # self.layout.default_group_class.scissor_area = (
-            #     int(x * surface._pixel_ratio),
-            #     int(y * surface._pixel_ratio),
-            #     int(w * surface._pixel_ratio),
-            #     int(h * surface._pixel_ratio),
-            # )
             self.layout.default_group_class.scissor_area = self.rect.scale(surface.pixel_ratio)
             self.layout.draw()
 
@@ -341,6 +384,7 @@ class TextArea(Widget):
         if isinstance(event, MouseScroll):
             if point_in_rect(event.x, event.y, *self.rect):
                 self.layout.view_y += event.scroll_y
+                self.rendered = False
 
 
 class InputText(Widget):
@@ -352,21 +396,47 @@ class InputText(Widget):
         self.doc.set_style(0, 12, dict(font_name='Arial', font_size=12,
                                        color=(255, 255, 255, 255)))
 
-        self.layout = pyglet.text.layout.IncrementalTextLayout(self.doc, width - 6, height - 6)
-        caret = pyglet.text.caret.Caret(self.layout)
-        caret.visible = True
+        self.layout = pyglet.text.layout.IncrementalTextLayout(self.doc, width, height)
+        self.caret = pyglet.text.caret.Caret(self.layout)
+        self.caret.on_activate()
+        self.caret.visible = True
 
-        # TODO how to remove the handlers?
-        arcade.get_window().push_handlers(caret)
+    def on_event(self, event: Event):
+        if isinstance(event, Text):
+            self.caret.on_text(event.text)
+        elif isinstance(event, MousePress):
+            self.caret.on_mouse_press(event.x, event.y, event.button, event.modifiers)
+        elif isinstance(event, MouseDrag):
+            self.caret.on_mouse_drag(event.x, event.y, event.dx, event.dy, event.buttons, event.modifiers)
+        elif isinstance(event, TextMotion):
+            self.caret.on_text_motion(event.motion)
+        elif isinstance(event, TextMotionSelect):
+            self.caret.on_text_motion_select(event.motion)
+        elif isinstance(event, MouseScroll):
+            self.caret.on_mouse_scroll(event.x, event.y, event.scroll_x, event.scroll_y)
+        self.rendered = False
+        self.parent.rendered = False
+
+    @property
+    def rect(self) -> Rect:
+        return self._rect
+
+    @rect.setter
+    def rect(self, value):
+        self._rect = value
+        self.rendered = False
+
+        # Update Pyglet layout
+        l = self.layout
+        l.x, l.y, l.width, l.height = self.rect
 
     def render(self, surface: Surface, force=False):
-        surface.clear(arcade.color.GRAY)
+        if self.rendered and not force:
+            return
+        self.rendered = True
 
         with surface.ctx.pyglet_rendering():
-            self.layout.x = 3
-            self.layout.anchor_x = "left"
-            self.layout.y = 3
-            self.layout.anchor_y = "bottom"
+            self.layout.default_group_class.scissor_area = self.rect.scale(surface.pixel_ratio)
             self.layout.draw()
 
 
@@ -436,89 +506,39 @@ class FlatButton(InteractiveWidget):
         self.rendered = False
 
 
-class PlacedWidget(Widget):
+class Wrapper(Widget):
     """
-    Widget, which places itself relative to the window.
+    Wraps a Widget and reserves space around
     """
 
-    def __init__(self,
-                 *,
-                 x_align=0,
-                 y_align=0,
-                 x_anchor="left",
-                 y_anchor="bottom",
-                 child: Widget,
-                 ):
-        super().__init__(0, 0, child.width, child.height)
+    def __init__(self, *, child: Widget, pad=(0, 0, 0, 0)):
+        """
+        :param child: Child Widget which will be wrapped
+        :param pad: Space between top, right, bottom, left
+        """
+        if isinstance(child, PlacedWidget):
+            raise Exception("Wrapping PlaceWidget into a Wrapper is not supported")
+
         self.child = child
-        self.x_align = x_align
-        self.y_align = y_align
-        self.x_anchor = x_anchor
-        self.y_anchor = y_anchor
-
-    # Sync rect with child rect
-    @property
-    def rect(self) -> Rect:
-        return self.child.rect
-
-    @rect.setter
-    def rect(self, value):
-        self.child.rect = value
-        self.rendered = False
-
-    def render(self, surface: Surface, force=False):
-        self.child.render(surface, force=force)
-
-    def on_update(self, dt):
-        self.child.on_update(dt)
-        self.do_layout()
-
-    def do_layout(self):
-        rect = self.rect
-        parent_rect = self.parent.rect
-
-        own_x_anchor_value = getattr(rect, self.x_anchor)
-        par_x_anchor_value = getattr(parent_rect, self.x_anchor)
-        diff_x = par_x_anchor_value + self.x_align - own_x_anchor_value
-
-        own_y_anchor_value = getattr(rect, self.y_anchor)
-        par_y_anchor_value = getattr(parent_rect, self.y_anchor)
-        diff_y = par_y_anchor_value + self.y_align - own_y_anchor_value
-
-        print(f"Placed: {self.rect} ({diff_x}, {diff_y})")
-        if diff_x or diff_y:
-            self.rect = self.rect.move(diff_x, diff_y)
-
-
-class Space(Widget):
-    def __init__(self, x=0, y=0, width=10, height=10):
-        super().__init__(x, y, width, height)
-
-    def render(self, surface: Surface, force=False):
-        if self.rendered and not force:
-            return
-
-        surface.clear()
-
-
-class Border(Widget):
-    def __init__(self, child: Widget, border_width=2, border_color=(0, 0, 0, 255)):
-        self.child = child
+        child.parent = self
         super().__init__(*child.rect)
-        self.border_color = border_color
-        self.border_width = border_width
+
+        self._pad = pad
 
     @property
     def rect(self) -> Rect:
+        # Adjust Rect to consume _pad more then child
         x, y, w, h = self.child.rect
-        bw = self.border_width
-        return Rect(x - bw, y - bw, w + 2 * bw, h + 2 * bw)
+        pt, pr, pb, pl = self._pad
+        return Rect(x - pl, y - pb, w + pl + pr, h + pb + pt)
 
     @rect.setter
     def rect(self, value: Rect):
+        # Child Rect has to be _pad smaller
         x, y, w, h = value
-        bw = self.border_width
-        self.child.rect = Rect(x + bw, y + bw, w - 2 * bw, h - 2 * bw)
+        pt, pr, pb, pl = self._pad
+        self.child.rect = Rect(x + pl, y + pb, w - pl - pr, h - pb - pt)
+        self.rendered = False
 
     @property
     def rendered(self):
@@ -531,14 +551,144 @@ class Border(Widget):
     def on_update(self, dt):
         self.child.on_update(dt)
 
+    def do_layout(self) -> bool:
+        return self.child.do_layout()
+
+    def on_event(self, event: Event):
+        self.child.on_event(event)
+
     def render(self, surface: Surface, force=False):
         if self.rendered and not force:
             return
 
-        surface.clear(self.border_color)
         surface.limit(*self.child.rect)
+        self.child.render(surface, force=force)
 
-        # Enforce redraw, because we used clear to draw border
+
+class PlacedWidget(Wrapper):
+    """
+    Widget, which places itself relative to the window.
+    """
+
+    def __init__(self,
+                 *,
+                 x_align=0,
+                 y_align=0,
+                 x_anchor="left",
+                 y_anchor="bottom",
+                 child: Widget,
+                 ):
+        super().__init__(child=child)
+        self.x_align = x_align
+        self.y_align = y_align
+        self.x_anchor = x_anchor
+        self.y_anchor = y_anchor
+
+    def do_layout(self):
+        request_rerender = super().do_layout()
+
+        rect = self.rect
+        parent_rect = self.parent.rect
+
+        own_x_anchor_value = getattr(rect, self.x_anchor)
+        par_x_anchor_value = getattr(parent_rect, self.x_anchor)
+        diff_x = par_x_anchor_value + self.x_align - own_x_anchor_value
+
+        own_y_anchor_value = getattr(rect, self.y_anchor)
+        par_y_anchor_value = getattr(parent_rect, self.y_anchor)
+        diff_y = par_y_anchor_value + self.y_align - own_y_anchor_value
+
+        if diff_x or diff_y:
+            self.rect = self.rect.move(diff_x, diff_y)
+            request_rerender = True
+
+        return request_rerender
+
+
+class Space(Widget):
+    def __init__(self, x=0, y=0, width=10, height=10, color=(0, 0, 0, 0)):
+        super().__init__(x, y, width, height)
+        self._color = color
+
+    @property
+    def color(self):
+        return self._color
+
+    @color.setter
+    def color(self, value):
+        self._color = value
+        self.rendered = False
+
+    def render(self, surface: Surface, force=False):
+        if self.rendered and not force:
+            return
+
+        surface.clear(self._color)
+
+
+class Border(Wrapper):
+    """
+    Wraps a Widget with a border of given color.
+    """
+
+    def __init__(self, child: Widget, border_width=2, border_color=(0, 0, 0, 255)):
+        super().__init__(
+            child=child,
+            pad=(border_width, border_width, border_width, border_width)
+        )
+        self._border_color = border_color
+
+    def render(self, surface: Surface, force=False):
+        if self.rendered and not force:
+            return
+
+        surface.clear(self._border_color)
+        surface.limit(*self.child.rect)
+        surface.clear()
+        self.child.render(surface, force=True)
+
+
+class TexturePane(Wrapper):
+    """
+    Wraps a Widget with a border of given color.
+    """
+
+    def __init__(self, child: Widget, tex: Texture, pad=(0, 0, 0, 0)):
+        super().__init__(
+            child=child,
+            pad=pad
+        )
+        self._tex = tex
+
+    def render(self, surface: Surface, force=False):
+        if self.rendered and not force:
+            return
+        surface.draw_texture(0, 0, self.width, self.height, tex=self._tex)
+        surface.limit(*self.child.rect)
+        self.child.render(surface, force=True)
+
+
+class Padding(Wrapper):
+    """Wraps a Widget and applies padding"""
+
+    def __init__(self, child: Widget, pad=(0, 0, 0, 0), bg_color=None):
+        """
+        :arg pad: Padding - top, right, bottom, left
+        """
+        super().__init__(
+            child=child,
+            pad=pad
+        )
+        self._bg_color = bg_color
+
+    def render(self, surface: Surface, force=False):
+        if self.rendered and not force:
+            return
+
+        if self._bg_color:
+            # clear with bg color if set
+            surface.clear(self._bg_color)
+        surface.limit(*self.child.rect)
         self.child.render(surface, force=True)
 
 
@@ -554,15 +704,22 @@ class BoxWidget(Widget):
 
         self.align = align
         self.vertical = vertical
+        self._children_modified = False
 
     def add(self, child: Widget):
         self._children.append(child)
+        self._children_modified = True
+
+    def remove(self, child: Widget):
+        self._children.remove(child)
+        self._children_modified = True
+
+    def __contains__(self, item):
+        return item in self._children
 
     def on_update(self, dt):
         for child in self._children:
             child.on_update(dt)
-
-        self.do_layout()
 
     def render(self, surface: Surface, force=False):
         for child in self._children:
@@ -583,9 +740,14 @@ class BoxWidget(Widget):
         else:
             new_height = max(child.height for child in self._children)
             new_width = sum(child.width for child in self._children)
-            center_y = start_y + new_height // 2
+            center_y = start_y - new_height // 2
             for child in self._children:
                 child.rect = child.rect.align_left(start_x).align_center_y(center_y)
                 start_x += child.width
 
         self.rect = Rect(self.left, self.bottom, new_width, new_height)
+
+        if self._children_modified:
+            self._children_modified = False
+            # Requires rerender
+            return True
