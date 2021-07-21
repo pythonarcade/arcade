@@ -10,7 +10,10 @@ float terrain(vec2 samplePoint)
     float samplePointAlpha = texture(iChannel0, samplePoint).a;
     float sampleStepped = step(0.1, samplePointAlpha);
     float returnValue = 1.0 - sampleStepped;
-    returnValue = mix(0.92, 1.0, returnValue);
+
+    // Soften the shadows. Comment out for hard shadows.
+    // The closer the first number is to 1.0, the softer the shadows.
+    returnValue = mix(0.98, 1.0, returnValue);
 
     return returnValue;
 }
@@ -31,9 +34,9 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         // A 0.0 - 1.0 ratio between where our current pixel is, and where the light is
         float t = i / N;
         // Grab a coordinate between where we are and the light
-        vec2 castCoord = mix(normalizedFragCoord, normalizedLightCoord, t);
+        vec2 samplePoint = mix(normalizedFragCoord, normalizedLightCoord, t);
         // Is there something there? If so, we'll assume we are in shadow
-	    float shadowAmount = terrain(castCoord);
+	    float shadowAmount = terrain(samplePoint);
         // Multiply the light amount.
         // (Multiply in case we want to upgrade to soft shadows)
         lightAmount *= shadowAmount;

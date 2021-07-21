@@ -114,6 +114,10 @@ class MyGame(arcade.Window):
         self.shadertoy.program['lightPosition'] = self.player_sprite.position
         self.shadertoy.program['lightSize'] = 300
         self.shadertoy.render()
+
+        # Draw the walls
+        self.wall_list.draw()
+
         # Draw the player
         self.player_list.draw()
 
