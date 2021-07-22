@@ -243,6 +243,10 @@ class ShadertoyBase:
 
 
 class ShadertoyBuffer(ShadertoyBase):
+    """
+    An offscreen framebuffer we can render to with the supplied
+    shader or render any other content into. 
+    """
 
     def __init__(self, size: Tuple[int, int], source: str, repeat: bool = False):
         super().__init__(size, source)
