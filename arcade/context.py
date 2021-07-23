@@ -13,6 +13,7 @@ import arcade
 from arcade.gl import BufferDescription, Context
 from arcade.gl.program import Program
 from arcade.gl.texture import Texture
+from arcade.gl.vertex_array import Geometry
 from arcade.math import Mat4
 from arcade.texture_atlas import TextureAtlas
 
@@ -58,15 +59,15 @@ class ArcadeContext(Context):
         # --- Pre-load system shaders here ---
         # FIXME: These pre-created resources needs to be packaged nicely
         #        Just having them globally in the context is probably not a good idea
-        self.line_vertex_shader = self.load_program(
+        self.line_vertex_shader: Program = self.load_program(
             vertex_shader=":resources:shaders/shapes/line/line_vertex_shader_vs.glsl",
             fragment_shader=":resources:shaders/shapes/line/line_vertex_shader_fs.glsl",
         )
-        self.line_generic_with_colors_program = self.load_program(
+        self.line_generic_with_colors_program: Program = self.load_program(
             vertex_shader=":resources:shaders/shapes/line/line_generic_with_colors_vs.glsl",
             fragment_shader=":resources:shaders/shapes/line/line_generic_with_colors_fs.glsl",
         )
-        self.shape_element_list_program = self.load_program(
+        self.shape_element_list_program: Program = self.load_program(
             vertex_shader=":resources:shaders/shape_element_list_vs.glsl",
             fragment_shader=":resources:shaders/shape_element_list_fs.glsl",
         )
@@ -74,7 +75,7 @@ class ArcadeContext(Context):
         #     vertex_shader=':resources:shaders/sprites/sprite_list_instanced_vs.glsl',
         #     fragment_shader=':resources:shaders/sprites/sprite_list_instanced_fs.glsl',
         # )
-        self.sprite_list_program_no_cull = self.load_program(
+        self.sprite_list_program_no_cull: Program = self.load_program(
             vertex_shader=":resources:shaders/sprites/sprite_list_geometry_vs.glsl",
             geometry_shader=":resources:shaders/sprites/sprite_list_geometry_no_cull_geo.glsl",
             fragment_shader=":resources:shaders/sprites/sprite_list_geometry_fs.glsl",
@@ -82,7 +83,7 @@ class ArcadeContext(Context):
         self.sprite_list_program_no_cull["Texture"] = 0
         self.sprite_list_program_no_cull["uv_texture"] = 1
 
-        self.sprite_list_program_cull = self.load_program(
+        self.sprite_list_program_cull: Program = self.load_program(
             vertex_shader=":resources:shaders/sprites/sprite_list_geometry_vs.glsl",
             geometry_shader=":resources:shaders/sprites/sprite_list_geometry_cull_geo.glsl",
             fragment_shader=":resources:shaders/sprites/sprite_list_geometry_fs.glsl",
@@ -91,17 +92,17 @@ class ArcadeContext(Context):
         self.sprite_list_program_cull["uv_texture"] = 1
 
         # Shapes
-        self.shape_line_program = self.load_program(
+        self.shape_line_program: Program = self.load_program(
             vertex_shader=":resources:/shaders/shapes/line/unbuffered_vs.glsl",
             fragment_shader=":resources:/shaders/shapes/line/unbuffered_fs.glsl",
             geometry_shader=":resources:/shaders/shapes/line/unbuffered_geo.glsl",
         )
-        self.shape_ellipse_filled_unbuffered_program = self.load_program(
+        self.shape_ellipse_filled_unbuffered_program: Program = self.load_program(
             vertex_shader=":resources:/shaders/shapes/ellipse/filled_unbuffered_vs.glsl",
             fragment_shader=":resources:/shaders/shapes/ellipse/filled_unbuffered_fs.glsl",
             geometry_shader=":resources:/shaders/shapes/ellipse/filled_unbuffered_geo.glsl",
         )
-        self.shape_ellipse_outline_unbuffered_program = self.load_program(
+        self.shape_ellipse_outline_unbuffered_program: Program = self.load_program(
             vertex_shader=":resources:/shaders/shapes/ellipse/outline_unbuffered_vs.glsl",
             fragment_shader=":resources:/shaders/shapes/ellipse/outline_unbuffered_fs.glsl",
             geometry_shader=":resources:/shaders/shapes/ellipse/outline_unbuffered_geo.glsl",
@@ -111,7 +112,7 @@ class ArcadeContext(Context):
             fragment_shader=":resources:/shaders/shapes/rectangle/filled_unbuffered_fs.glsl",
             geometry_shader=":resources:/shaders/shapes/rectangle/filled_unbuffered_geo.glsl",
         )
-        self.atlas_resize_program = self.load_program(
+        self.atlas_resize_program: Program = self.load_program(
             vertex_shader=":resources:/shaders/atlas/resize_vs.glsl",
             geometry_shader=":resources:/shaders/atlas/resize_gs.glsl",
             fragment_shader=":resources:/shaders/atlas/resize_fs.glsl",
@@ -151,12 +152,12 @@ class ArcadeContext(Context):
         )
         # ellipse/circle filled
         self.shape_ellipse_unbuffered_buffer = self.buffer(reserve=8)
-        self.shape_ellipse_unbuffered_geometry = self.geometry(
+        self.shape_ellipse_unbuffered_geometry: Geometry = self.geometry(
             [BufferDescription(self.shape_ellipse_unbuffered_buffer, "2f", ["in_vert"])]
         )
         # ellipse/circle outline
         self.shape_ellipse_outline_unbuffered_buffer = self.buffer(reserve=8)
-        self.shape_ellipse_outline_unbuffered_geometry = self.geometry(
+        self.shape_ellipse_outline_unbuffered_geometry: Geometry = self.geometry(
             [
                 BufferDescription(
                     self.shape_ellipse_outline_unbuffered_buffer, "2f", ["in_vert"]
@@ -165,14 +166,14 @@ class ArcadeContext(Context):
         )
         # rectangle filled
         self.shape_rectangle_filled_unbuffered_buffer = self.buffer(reserve=8)
-        self.shape_rectangle_filled_unbuffered_geometry = self.geometry(
+        self.shape_rectangle_filled_unbuffered_geometry: Geometry = self.geometry(
             [
                 BufferDescription(
                     self.shape_rectangle_filled_unbuffered_buffer, "2f", ["in_vert"]
                 )
             ]
         )
-        self.atlas_geometry = self.geometry()
+        self.atlas_geometry: Geometry = self.geometry()
 
         self._atlas: Optional[TextureAtlas] = None
         # Global labels we modify in `arcade.draw_text`.

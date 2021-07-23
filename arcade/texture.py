@@ -46,7 +46,7 @@ class Texture:
     def __init__(self,
                  name: str,
                  image: PIL.Image.Image = None,
-                 hit_box_algorithm: str = "Simple",
+                 hit_box_algorithm: Optional[str] = "Simple",
                  hit_box_detail: float = 4.5):
         """
         Create a texture, given a PIL Image object.
