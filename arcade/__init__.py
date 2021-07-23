@@ -126,6 +126,7 @@ from .hitbox import calculate_hit_box_points_detailed
 from .hitbox import calculate_hit_box_points_simple
 
 from .drawing_support import get_four_byte_color
+from .drawing_support import get_three_float_color
 from .drawing_support import get_four_float_color
 from .drawing_support import get_points_for_thick_line
 from .drawing_support import make_transparent_color
