@@ -7,4 +7,4 @@ numpy==1.21.1
 pymunk==6.0.0
 shapely==1.7.1
 pytiled-parser==0.9.4a3
-
+pyyaml==5.4.1
