@@ -74,6 +74,7 @@ def get_four_float_color(color: Color) -> Tuple[float, float, float, float]:
     else:
         raise ValueError("This isn't a 3 or 4 byte color")
 
+
 def get_three_float_color(color: Color) -> Tuple[float, float, float, float]:
     """
     Given a 3 or 4 RGB/RGBA color where each color goes 0-255, this
@@ -86,6 +87,7 @@ def get_three_float_color(color: Color) -> Tuple[float, float, float, float]:
         return color[0] / 255, color[1] / 255, color[2] / 255  # type: ignore
     else:
         raise ValueError("This isn't a 3 or 4 byte color")
+
 
 def make_transparent_color(color: Color, transparency: float):
     """
