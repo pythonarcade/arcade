@@ -4,3 +4,4 @@ sphinx-sitemap==2.2.0
 pyglet==1.5.18
 dirsync==2.2.5
 numpy==1.21.1
+pymunk==6.0.0
