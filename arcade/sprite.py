@@ -1094,11 +1094,15 @@ class AnimatedTimeBasedSprite(Sprite):
 
 class AnimatedWalkingSprite(Sprite):
     """
-    Sprite for platformer games that supports walking animations.
+    Deprecated Sprite for platformer games that supports walking animations.
     Make sure to call update_animation after loading the animations so the
     initial texture can be set. Or manually set it.
-    For a better example, see:
-    https://arcade.academy/examples/platform_tutorial/step_11.html
+
+    It is highly recommended you create your own version of this class rather than
+    try to use this pre-packaged one.
+
+    For an example, see this section of the platformer tutorial:
+    :ref:`platformer_part_twelve`.
     """
 
     def __init__(
@@ -1229,7 +1233,16 @@ class AnimatedWalkingSprite(Sprite):
 
 
 def load_animated_gif(resource_name):
-    """ Given an animated gif, return a AnimatedTimeBasedSprite. """
+    """
+    Given an animated gif, return a AnimatedTimeBasedSprite.
+
+    Support for transparency in animated gifs in Python is lacking.
+    There are a lot of
+    older animated gifs that are saved weird. The end result is that the
+    often the first frame of an animated gif is the only frame that
+    we correctly get the transparency on. Until the Pillow library better
+    handles this, loading animated gifs will be pretty buggy.
+    """
 
     file_name = resolve_resource_path(resource_name)
     print(file_name)
