@@ -10,14 +10,51 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
 UNRELEASED (2.6.0)
 ------------------
 
-* Revamped text rendering
+* Revamped text rendering. Rather than use Pillow to render onto an image, Arcade uses Pyglet's
+  text drawing system.
 * Texture atlases
-* Extended tilemap support
+
+  * The image of a sprite can be drawn to and quickly updated on the GPU side.
+
+* Extended tilemap support.
+
+  * Arcade now uses the .json file format for maps created by the Tiled Map Editor rather than the TMX format.
+  * Feature-support for Tiles items has been improved.
+
 * GUI improvements
-* Documentation restructuring
-* SpriteList optimization
-* ``arcade.get_pixel`` supports getting RGB and RGBA color value
+
+* Documentation
+
+  * Lots of individual documentation updates for commands.
+  * The :ref:`quick_index` has been reorganized to be easier to find commands, and
+    the individual API documentation pages have been broken into parts, so it isn't one large monolithic page.
+  * New tutorial for :ref:`user-interface-tutorial`.
+  * New tutorial for :ref:`raycasting_tutorial`.
+  * New tutorial for :ref:`shader_toy_tutorial`.
+  * Moved from AWS hosting to read-the-docs hosting so we can support multiple versions of docs.
+
+* SpriteList optimizations.
+
+  * Sprites are faster to draw.
+
+* Shadertoy support
+
+  * See :ref:`shader_toy_tutorial` and `Asteroids <https://github.com/pythonarcade/asteroids>`.
+
+* API command update
+
+   * :func:`arcade.get_pixel` supports getting RGB and RGBA color value
+   * :func:`arcade.get_three_color_float` Returns colors as RGB float with numbers 0.0-1.1 for each color
+   * :func:`arcade.get_four_color_float`  Returns colors as RGBA float with numbers 0.0-1.1 for each color
+
 * .. more ...
+
+Special thanks to:
+
+* `einarf <https://github.com/einarf>`_ for performance improvements, texture atlas support, shader toy support,
+  text drawing support, advice on GUI, and more.
+* `Cleptomania <https://github.com/Cleptomania>`_ for Tiled Map support, sound support, and more.
+* `eruvanos <https://github.com/eruvanos>`_ for the original GUI and all the GUI updates.
 
 Version 2.5.7
 -------------
