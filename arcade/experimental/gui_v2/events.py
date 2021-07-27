@@ -7,24 +7,28 @@ class Event:
 
 
 @dataclass
-class MouseMovement(Event):
+class MouseEvent(Event):
+    """
+    Covers all mouse event
+    """
     x: float
     y: float
+
+
+@dataclass
+class MouseMovement(MouseEvent):
     dx: float
     dy: float
 
 
 @dataclass
-class MousePress(Event):
-    x: float
-    y: float
+class MousePress(MouseEvent):
     button: int
     modifiers: int
 
+
 @dataclass
-class MouseDrag(Event):
-    x: float
-    y: float
+class MouseDrag(MouseEvent):
     dx: float
     dy: float
     buttons: int
@@ -32,16 +36,13 @@ class MouseDrag(Event):
 
 
 @dataclass
-class MouseRelease(Event):
-    x: float
-    y: float
+class MouseRelease(MouseEvent):
     button: int
     modifiers: int
 
+
 @dataclass
-class MouseScroll(Event):
-    x: float
-    y: float
+class MouseScroll(MouseEvent):
     scroll_x: int
     scroll_y: int
 
@@ -50,9 +51,11 @@ class MouseScroll(Event):
 class Text(Event):
     text: str
 
+
 @dataclass
 class TextMotion(Event):
     motion: Any
+
 
 @dataclass
 class TextMotionSelect(Event):

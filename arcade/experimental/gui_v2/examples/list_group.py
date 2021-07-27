@@ -1,7 +1,7 @@
 import arcade
 from arcade import MOUSE_BUTTON_LEFT, MOUSE_BUTTON_RIGHT
 from arcade.experimental.gui_v2 import UIManager
-from arcade.experimental.gui_v2.widgets import Dummy, PlacedWidget, BoxWidget, Space, Border, Padding
+from arcade.experimental.gui_v2.widgets import Dummy, AnchorWidget, ListGroup, Space, Border, Padding
 
 
 class UIMockup(arcade.Window):
@@ -10,22 +10,23 @@ class UIMockup(arcade.Window):
         self.manager = UIManager()
         arcade.set_background_color(arcade.color.DARK_BLUE_GRAY)
 
-        self.v_box = BoxWidget(
+        self.v_box = ListGroup(
             x=0, y=0,
             children=[
-                Dummy(width=200, color=arcade.color.RED),
-                Dummy(width=100, color=arcade.color.YELLOW),
-                Dummy(width=80, color=arcade.color.GREEN),
+                Dummy(width=200, color=arcade.color.RED).with_padding(bottom=20),
+                Dummy(width=200, color=arcade.color.YELLOW).with_padding(bottom=20),
+                Dummy(width=200, color=arcade.color.GREEN).with_padding(bottom=20),
             ])
         self.manager.add(
-            PlacedWidget(
-                x_align=400,
-                y_anchor="top",
-                y_align=-20,
+            AnchorWidget(
+                anchor_x="center_x",
+                # x_align=-50,
+                anchor_y="center_y",
+                # y_align=-20,
                 child=self.v_box)
         )
 
-        self.h_box = BoxWidget(
+        self.h_box = ListGroup(
             x=0, y=0, vertical=False,
             children=[
                 Dummy(width=100, color=arcade.color.RED),
@@ -35,7 +36,7 @@ class UIMockup(arcade.Window):
             ])
 
         self.manager.add(
-            PlacedWidget(
+            AnchorWidget(
                 x_align=20,
                 y_align=20,
                 child=self.h_box.with_border())

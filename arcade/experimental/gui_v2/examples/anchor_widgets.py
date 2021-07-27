@@ -1,6 +1,6 @@
 import arcade
 from arcade.experimental.gui_v2 import UIManager
-from arcade.experimental.gui_v2.widgets import Dummy, PlacedWidget
+from arcade.experimental.gui_v2.widgets import Dummy, AnchorWidget
 
 
 class UIMockup(arcade.Window):
@@ -10,43 +10,43 @@ class UIMockup(arcade.Window):
         self.manager = UIManager()
         arcade.set_background_color(arcade.color.DARK_BLUE_GRAY)
 
-        self.manager.add(PlacedWidget(
+        self.manager.add(AnchorWidget(
             child=Dummy(color=arcade.color.RED),
-            x_anchor="center_x",
-            y_anchor="top",
+            anchor_x="center_x",
+            anchor_y="top",
         ))
 
-        self.manager.add(PlacedWidget(
+        self.manager.add(AnchorWidget(
             child=Dummy(color=arcade.color.BLUE),
-            x_anchor="right",
-            y_anchor="center_y",
+            anchor_x="right",
+            anchor_y="center_y",
         ))
 
-        self.manager.add(PlacedWidget(
+        self.manager.add(AnchorWidget(
             child=Dummy(color=arcade.color.GREEN),
-            x_anchor="center_x",
-            y_anchor="center_y",
+            anchor_x="center_x",
+            anchor_y="center_y",
         ))
 
-        self.manager.add(PlacedWidget(
+        self.manager.add(AnchorWidget(
             child=Dummy(color=arcade.color.YELLOW),
-            x_anchor="left",
-            y_anchor="bottom",
+            anchor_x="left",
+            anchor_y="bottom",
         ))
 
-        self.manager.add(PlacedWidget(
+        self.manager.add(AnchorWidget(
             child=Dummy(color=arcade.color.ORANGE),
-            x_anchor="left",
-            x_align=20,
-            y_anchor="center_y",
+            anchor_x="left",
+            align_x=20,
+            anchor_y="center_y",
         ))
 
-        self.manager.add(PlacedWidget(
+        self.manager.add(AnchorWidget(
             child=Dummy(color=arcade.color.ORANGE),
-            x_anchor="right",
-            x_align=-40,
-            y_anchor="bottom",
-            y_align=40,
+            anchor_x="right",
+            align_x=-40,
+            anchor_y="bottom",
+            align_y=40,
         ))
 
     def on_draw(self):

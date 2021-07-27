@@ -9,7 +9,7 @@ import arcade
 from arcade import Texture, Sprite
 from arcade.experimental.gui_v2 import Surface
 from arcade.experimental.gui_v2.events import Event, MouseMovement, MousePress, MouseRelease, Text, MouseDrag, \
-    MouseScroll, TextMotion, TextMotionSelect
+    MouseScroll, TextMotion, TextMotionSelect, MouseEvent
 
 
 def point_in_rect(x, y, rx, ry, rw, rh):
@@ -71,32 +71,32 @@ class Rect(NamedTuple):
     def center_y(self):
         return self.y + self.height / 2
 
-    def align_top(self, value: int) -> "Rect":
+    def align_top(self, value: float) -> "Rect":
         """Returns new Rect, which is aligned to the top"""
         diff_y = value - self.top
         return self.move(dy=diff_y)
 
-    def align_bottom(self, value: int) -> "Rect":
+    def align_bottom(self, value: float) -> "Rect":
         """Returns new Rect, which is aligned to the bottom"""
         diff_y = value - self.bottom
         return self.move(dy=diff_y)
 
-    def align_left(self, value: int) -> "Rect":
+    def align_left(self, value: float) -> "Rect":
         """Returns new Rect, which is aligned to the left"""
         diff_x = value - self.left
         return self.move(dx=diff_x)
 
-    def align_right(self, value: int) -> "Rect":
+    def align_right(self, value: float) -> "Rect":
         """Returns new Rect, which is aligned to the right"""
         diff_x = value - self.right
         return self.move(dx=diff_x)
 
-    def align_center_x(self, value: int) -> "Rect":
+    def align_center_x(self, value: float) -> "Rect":
         """Returns new Rect, which is aligned to the center_x"""
         diff_x = value - self.center_x
         return self.move(dx=diff_x)
 
-    def align_center_y(self, value: int) -> "Rect":
+    def align_center_y(self, value: float) -> "Rect":
         """Returns new Rect, which is aligned to the center_y"""
         diff_y = value - self.center_y
         return self.move(dy=diff_y)
@@ -154,7 +154,7 @@ class Widget(EventDispatcher, WidgetParent, ABC):
         :param bg_color: Background color
         :return: Wrapping Padding with self as child
         """
-        return Padding(self, pad=(top, right, bottom, left), bg_color=bg_color)
+        return Padding(self, padding=(top, right, bottom, left), bg_color=bg_color)
 
     @property
     def rect(self) -> Rect:
@@ -166,6 +166,10 @@ class Widget(EventDispatcher, WidgetParent, ABC):
         self.rendered = False
 
     @property
+    def x(self):
+        return self.rect.x
+
+    @property
     def left(self):
         return self.rect.x
 
@@ -173,6 +177,10 @@ class Widget(EventDispatcher, WidgetParent, ABC):
     def right(self):
         rect = self.rect
         return rect.x + rect.width
+
+    @property
+    def y(self):
+        return self.rect.y
 
     @property
     def bottom(self):
@@ -388,34 +396,62 @@ class TextArea(Widget):
 
 
 class InputText(Widget):
-    def __init__(self, x=0, y=0, width=100, height=50, text="", style=None):
+    def __init__(self, x=0, y=0, width=100, height=50, text="",
+                 font_name=('Arial',),
+                 font_size=12,
+                 text_color=(0, 0, 0, 255),
+                 ):
         super().__init__(x, y, width, height)
+
+        self._active = False
 
         self.doc = pyglet.text.document.FormattedDocument()
         self.doc = pyglet.text.decode_text(text)
-        self.doc.set_style(0, 12, dict(font_name='Arial', font_size=12,
-                                       color=(255, 255, 255, 255)))
+        self.doc.set_style(0, 12, dict(font_name=font_name,
+                                       font_size=font_size,
+                                       color=text_color))
 
         self.layout = pyglet.text.layout.IncrementalTextLayout(self.doc, width, height)
-        self.caret = pyglet.text.caret.Caret(self.layout)
-        self.caret.on_activate()
-        self.caret.visible = True
+        self.caret = pyglet.text.caret.Caret(self.layout, color=(0, 0, 0))
 
     def on_event(self, event: Event):
-        if isinstance(event, Text):
-            self.caret.on_text(event.text)
-        elif isinstance(event, MousePress):
-            self.caret.on_mouse_press(event.x, event.y, event.button, event.modifiers)
-        elif isinstance(event, MouseDrag):
-            self.caret.on_mouse_drag(event.x, event.y, event.dx, event.dy, event.buttons, event.modifiers)
-        elif isinstance(event, TextMotion):
-            self.caret.on_text_motion(event.motion)
-        elif isinstance(event, TextMotionSelect):
-            self.caret.on_text_motion_select(event.motion)
-        elif isinstance(event, MouseScroll):
-            self.caret.on_mouse_scroll(event.x, event.y, event.scroll_x, event.scroll_y)
         self.rendered = False
-        self.parent.rendered = False
+        self.parent.rendered = False  # TODO we could have a method to request enforced rendering
+
+        # if not active, check to activate, return
+        if not self._active and isinstance(event, MousePress):
+            if self.rect.collide_with_point(event.x, event.y):
+                self._active = True
+                self.caret.on_activate()
+                print("activate")
+                return
+
+        # if active check to deactivate
+        if self._active and isinstance(event, MousePress):
+            if self.rect.collide_with_point(event.x, event.y):
+                x, y = event.x - self.x, event.y - self.y
+                self.caret.on_mouse_press(x, y, event.button, event.modifiers)
+            else:
+                self._active = False
+                self.caret.on_deactivate()
+                return
+
+        # if active pass all non press events to caret
+        if self._active:
+            # Act on events if active
+            if isinstance(event, Text):
+                self.caret.on_text(event.text)
+            elif isinstance(event, TextMotion):
+                self.caret.on_text_motion(event.motion)
+            elif isinstance(event, TextMotionSelect):
+                self.caret.on_text_motion_select(event.motion)
+
+            if isinstance(event, MouseEvent) and self.rect.collide_with_point(event.x, event.y):
+                x, y = event.x - self.x, event.y - self.y
+                if isinstance(event, MouseDrag):
+                    self.caret.on_mouse_drag(x, y, event.dx, event.dy, event.buttons, event.modifiers)
+                elif isinstance(event, MouseScroll):
+                    self.caret.on_mouse_scroll(x, y, event.scroll_x, event.scroll_y)
 
     @property
     def rect(self) -> Rect:
@@ -511,19 +547,19 @@ class Wrapper(Widget):
     Wraps a Widget and reserves space around
     """
 
-    def __init__(self, *, child: Widget, pad=(0, 0, 0, 0)):
+    def __init__(self, *, child: Widget, padding=(0, 0, 0, 0)):
         """
         :param child: Child Widget which will be wrapped
-        :param pad: Space between top, right, bottom, left
+        :param padding: Space between top, right, bottom, left
         """
-        if isinstance(child, PlacedWidget):
+        if isinstance(child, AnchorWidget):
             raise Exception("Wrapping PlaceWidget into a Wrapper is not supported")
 
         self.child = child
         child.parent = self
         super().__init__(*child.rect)
 
-        self._pad = pad
+        self._pad = padding
 
     @property
     def rect(self) -> Rect:
@@ -565,24 +601,25 @@ class Wrapper(Widget):
         self.child.render(surface, force=force)
 
 
-class PlacedWidget(Wrapper):
+class AnchorWidget(Wrapper):
     """
-    Widget, which places itself relative to the window.
+    Widget, which places itself relative to the parent.
     """
 
     def __init__(self,
                  *,
-                 x_align=0,
-                 y_align=0,
-                 x_anchor="left",
-                 y_anchor="bottom",
                  child: Widget,
+                 anchor_x="center",
+                 align_x=0,
+                 anchor_y="center",
+                 align_y=0,
                  ):
         super().__init__(child=child)
-        self.x_align = x_align
-        self.y_align = y_align
-        self.x_anchor = x_anchor
-        self.y_anchor = y_anchor
+        self.anchor_x = anchor_x
+        self.anchor_y = anchor_y
+        self.align_x = align_x
+        self.align_y = align_y
+
 
     def do_layout(self):
         request_rerender = super().do_layout()
@@ -590,13 +627,13 @@ class PlacedWidget(Wrapper):
         rect = self.rect
         parent_rect = self.parent.rect
 
-        own_x_anchor_value = getattr(rect, self.x_anchor)
-        par_x_anchor_value = getattr(parent_rect, self.x_anchor)
-        diff_x = par_x_anchor_value + self.x_align - own_x_anchor_value
+        own_anchor_x_value = getattr(rect, self.anchor_x)
+        par_anchor_x_value = getattr(parent_rect, self.anchor_x)
+        diff_x = par_anchor_x_value + self.align_x - own_anchor_x_value
 
-        own_y_anchor_value = getattr(rect, self.y_anchor)
-        par_y_anchor_value = getattr(parent_rect, self.y_anchor)
-        diff_y = par_y_anchor_value + self.y_align - own_y_anchor_value
+        own_anchor_y_value = getattr(rect, self.anchor_y)
+        par_anchor_y_value = getattr(parent_rect, self.anchor_y)
+        diff_y = par_anchor_y_value + self.align_y - own_anchor_y_value
 
         if diff_x or diff_y:
             self.rect = self.rect.move(diff_x, diff_y)
@@ -634,7 +671,7 @@ class Border(Wrapper):
     def __init__(self, child: Widget, border_width=2, border_color=(0, 0, 0, 255)):
         super().__init__(
             child=child,
-            pad=(border_width, border_width, border_width, border_width)
+            padding=(border_width, border_width, border_width, border_width)
         )
         self._border_color = border_color
 
@@ -650,13 +687,13 @@ class Border(Wrapper):
 
 class TexturePane(Wrapper):
     """
-    Wraps a Widget with a border of given color.
+    Wraps a Widget and underlays a background texture.
     """
 
-    def __init__(self, child: Widget, tex: Texture, pad=(0, 0, 0, 0)):
+    def __init__(self, child: Widget, tex: Texture, padding=(0, 0, 0, 0)):
         super().__init__(
             child=child,
-            pad=pad
+            padding=padding
         )
         self._tex = tex
 
@@ -671,13 +708,13 @@ class TexturePane(Wrapper):
 class Padding(Wrapper):
     """Wraps a Widget and applies padding"""
 
-    def __init__(self, child: Widget, pad=(0, 0, 0, 0), bg_color=None):
+    def __init__(self, child: Widget, padding=(0, 0, 0, 0), bg_color=None):
         """
-        :arg pad: Padding - top, right, bottom, left
+        :arg padding: Padding - top, right, bottom, left
         """
         super().__init__(
             child=child,
-            pad=pad
+            padding=padding
         )
         self._bg_color = bg_color
 
@@ -692,7 +729,7 @@ class Padding(Wrapper):
         self.child.render(surface, force=True)
 
 
-class BoxWidget(Widget):
+class ListGroup(Widget):
     """
     Places Widgets next to each other.
     Depending on the vertical attribute, the Widgets are placed top to bottom or left to right.

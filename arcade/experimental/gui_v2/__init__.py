@@ -136,6 +136,8 @@ class UIManager(WidgetParent):
         for surface in self._surfaces.values():
             surface.resize(size=(width, height), pixel_ratio=scale)
 
+        self.rendered = False
+
     @property
     def rect(self) -> Rect:
         return Rect(0, 0, *self._surfaces[0].size)
