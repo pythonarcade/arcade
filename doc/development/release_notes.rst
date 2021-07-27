@@ -12,9 +12,10 @@ UNRELEASED (2.6.0)
 
 * Revamped text rendering. Rather than use Pillow to render onto an image, Arcade uses Pyglet's
   text drawing system.
-* Texture atlases
+* Texture atlas and improved texture support.
 
-  * The image of a sprite can be drawn to and quickly updated on the GPU side.
+  * A sprite list will create and use its own texture atlas.
+  * The texture atlas portion of a sprite can be drawn to, and quickly updated on the GPU side.
 
 * Extended tilemap support.
 
@@ -31,6 +32,7 @@ UNRELEASED (2.6.0)
   * New tutorial for :ref:`user-interface-tutorial`.
   * New tutorial for :ref:`raycasting_tutorial`.
   * New tutorial for :ref:`shader_toy_tutorial`.
+  * Revamped tutorial: :ref:`platformer_tutorial`.
   * Moved from AWS hosting to read-the-docs hosting so we can support multiple versions of docs.
 
 * SpriteList optimizations.
@@ -41,13 +43,17 @@ UNRELEASED (2.6.0)
 
   * See :ref:`shader_toy_tutorial` and `Asteroids <https://github.com/pythonarcade/asteroids>`.
 
-* API command update
+* Camera support
+
+  * Easy scrolling with :class:`arcade.Camera`
+  * Example: :ref:`sprite_move_scrolling`.
+  * Camera shake: :ref:`sprite_move_scrolling_shake`.
+
+* API commands
 
    * :func:`arcade.get_pixel` supports getting RGB and RGBA color value
    * :func:`arcade.get_three_color_float` Returns colors as RGB float with numbers 0.0-1.1 for each color
    * :func:`arcade.get_four_color_float`  Returns colors as RGBA float with numbers 0.0-1.1 for each color
-
-* .. more ...
 
 Special thanks to:
 
