@@ -1,3 +1,5 @@
+.. _shader_toy_tutorial:
+
 Shader Toy Tutorial
 ===================
 
