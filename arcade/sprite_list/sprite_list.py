@@ -169,6 +169,7 @@ class SpriteList:
 
         # Load all the textures and write texture coordinates into buffers
         for sprite in self._deferred_sprites:
+            # noinspection PyProtectedMember
             if sprite._texture is None:
                 raise ValueError("Attempting to use a sprite without a texture")
             self.update_texture(sprite)
@@ -205,7 +206,7 @@ class SpriteList:
             if existing_index == index:
                 return
             raise Exception(f"Sprite is already in the list (index {existing_index})")
-        except ValueError as ex:
+        except ValueError:
             pass
 
         sprite_to_be_removed = self.sprite_list[index]
@@ -392,7 +393,7 @@ class SpriteList:
 
         # Allocate room in the index buffer
         self._normalize_index_buffer()
-        idx_slot = self._sprite_index_slots
+        # idx_slot = self._sprite_index_slots
         self._sprite_index_slots += 1
         self._grow_index_buffer()
         self._sprite_index_data.insert(index, slot)
@@ -436,12 +437,19 @@ class SpriteList:
 
     @property
     def percent_sprites_moved(self):
-        """What percent of the sprites moved?"""
+        """
+        Property to estimate what percent of the sprites moved. Use internally to guess
+        if spatial hashing should be turned on or off if the user didn't specify.
+        """
         return self._percent_sprites_moved
 
     @property
     def use_spatial_hash(self) -> bool:
-        """Are we using a spatial hash?"""
+        """
+        Boolean variable that controls if this sprite list is using a spatial hash.
+        If spatial hashing is turned on, it takes longer to move a sprite, and less time
+        to see if that sprite is colliding with another sprite.
+        """
         return self._use_spatial_hash
 
     def disable_spatial_hashing(self) -> None:
@@ -542,20 +550,29 @@ class SpriteList:
         """
         slot = self.sprite_slot[sprite]
         # position
+        # noinspection PyProtectedMember
         self._sprite_pos_data[slot * 2] = sprite._position[0]
+        # noinspection PyProtectedMember
         self._sprite_pos_data[slot * 2 + 1] = sprite._position[1]
         self._sprite_pos_changed = True
         # size
+        # noinspection PyProtectedMember
         self._sprite_size_data[slot * 2] = sprite._width
+        # noinspection PyProtectedMember
         self._sprite_size_data[slot * 2 + 1] = sprite._height
         self._sprite_size_changed = True
         # angle
+        # noinspection PyProtectedMember
         self._sprite_angle_data[slot] = sprite._angle
         self._sprite_angle_changed = True
         # color
+        # noinspection PyProtectedMember
         self._sprite_color_data[slot * 4] = sprite._color[0]
+        # noinspection PyProtectedMember
         self._sprite_color_data[slot * 4 + 1] = sprite._color[1]
+        # noinspection PyProtectedMember
         self._sprite_color_data[slot * 4 + 2] = sprite._color[2]
+        # noinspection PyProtectedMember
         self._sprite_color_data[slot * 4 + 3] = sprite._alpha
         self._sprite_color_changed = True
 
@@ -564,9 +581,11 @@ class SpriteList:
             self._deferred_sprites.add(sprite)
             return
 
+        # noinspection PyProtectedMember
         if not sprite._texture:
             return
 
+        # noinspection PyProtectedMember
         tex_slot, _ = self._atlas.add(sprite._texture)
         slot = self.sprite_slot[sprite]
 
@@ -582,9 +601,11 @@ class SpriteList:
             self._deferred_sprites.add(sprite)
             return
 
+        # noinspection PyProtectedMember
         if not sprite._texture:
             return
 
+        # noinspection PyProtectedMember
         tex_slot, _ = self._atlas.add(sprite._texture)
         slot = self.sprite_slot[sprite]
 
@@ -593,7 +614,9 @@ class SpriteList:
 
         # Update size in cas the sprite was initialized without size
         # NOTE: There should be a better way to do this
+        # noinspection PyProtectedMember
         self._sprite_size_data[slot * 2] = sprite._width
+        # noinspection PyProtectedMember
         self._sprite_size_data[slot * 2 + 1] = sprite._height
         self._sprite_size_changed = True
 
@@ -608,7 +631,9 @@ class SpriteList:
         :param Sprite sprite: Sprite to update.
         """
         slot = self.sprite_slot[sprite]
+        # noinspection PyProtectedMember
         self._sprite_pos_data[slot * 2] = sprite._position[0]
+        # noinspection PyProtectedMember
         self._sprite_pos_data[slot * 2 + 1] = sprite._position[1]
         self._sprite_pos_changed = True
 
@@ -621,9 +646,13 @@ class SpriteList:
         :param Sprite sprite: Sprite to update.
         """
         slot = self.sprite_slot[sprite]
+        # noinspection PyProtectedMember
         self._sprite_color_data[slot * 4] = int(sprite._color[0])
+        # noinspection PyProtectedMember
         self._sprite_color_data[slot * 4 + 1] = int(sprite._color[1])
+        # noinspection PyProtectedMember
         self._sprite_color_data[slot * 4 + 2] = int(sprite._color[2])
+        # noinspection PyProtectedMember
         self._sprite_color_data[slot * 4 + 3] = int(sprite._alpha)
         self._sprite_color_changed = True
 
@@ -658,6 +687,7 @@ class SpriteList:
         :param Sprite sprite: Sprite to update.
         """
         slot = self.sprite_slot[sprite]
+        # noinspection PyProtectedMember
         self._sprite_size_data[slot * 2] = sprite._width
         self._sprite_size_changed = True
 
@@ -673,7 +703,9 @@ class SpriteList:
             slot = self.sprite_slot[sprite]
         except KeyError:
             raise ValueError(id(sprite))
+        # noinspection PyProtectedMember
         self._sprite_pos_data[slot * 2] = sprite._position[0]
+        # noinspection PyProtectedMember
         self._sprite_pos_data[slot * 2 + 1] = sprite._position[1]
         self._sprite_pos_changed = True
         self._sprites_moved += 1
@@ -807,10 +839,10 @@ class SpriteList:
         to the end of the index buffer to preserve order
         """
         # Need counter for how many slots are used in index buffer.
-        # 1) Sort the deleted indices (decending) and pop() them in a loop
+        # 1) Sort the deleted indices (descending) and pop() them in a loop
         # 2) Create a new array.array and manually copy every
         #    item in the list except the deleted index slots
-        # 3) Use a tranform (gpu) to trim the index buffer and
+        # 3) Use a transform (gpu) to trim the index buffer and
         #    read this buffer back into a new array using array.from_bytes
         # NOTE: Right now the index buffer is always normalized
         pass
