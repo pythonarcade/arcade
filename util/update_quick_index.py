@@ -32,7 +32,7 @@ titles = {
     'text.py': ['Text', 'text.rst'],
     'text_pillow.py': ['Text - Image/Pillow based', 'text_image.rst'],
     'text_pyglet.py': ['Text - Pyglet/Glyph based', 'text_pyglet.rst'],
-    'texture.py': ['OpenGL Texture Management', 'texture.rst'],
+    'texture.py': ['Texture Management', 'texture.rst'],
     'tilemap/__init__.py': ['Loading TMX (Tiled Map Editor) Maps', 'tiled.rst'],
     'tilemap.py': ['Loading TMX (Tiled Map Editor) Maps', 'tiled.rst'],
     '__init__.py': ['Misc Utility Functions', 'utility.rst'],
@@ -78,7 +78,7 @@ titles = {
     'gl/uniform.py': ['OpenGL Uniform Data', 'open_gl.rst'],
     'gl/utils.py': ['OpenGL Utils', 'open_gl.rst'],
     'gl/query.py': ['OpenGL Query', 'open_gl.rst'],
-    'gl/texture.py': ['OpenGL Texture', 'open_gl.rst'],
+    'gl/texture.py': ['Texture Management', 'open_gl.rst'],
     'gl/vertex_array.py': ['OpenGL Vertex Array (VAO)', 'open_gl.rst'],
 }
 
