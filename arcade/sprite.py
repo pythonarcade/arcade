@@ -321,7 +321,16 @@ class Sprite:
 
     def get_hit_box(self) -> PointList:
         """
-        Get a sprite's hit box, unadjusted for translation, rotation, or scale.
+        Use the hit_box property to get or set a sprite's hit box.
+        Hit boxes are specified assuming the sprite's center is at (0, 0).
+        Specify hit boxes like:
+
+        .. code-block::
+
+            mySprite.hit_box = [[-10, -10], [10, -10], [10, 10]]
+
+        Specify a hit box unadjusted for translation, rotation, or scale.
+        You can get an adjusted hit box with :class:`arcade.Sprite.get_adjusted_hit_box`.
         """
         # If there is no hitbox, use the width/height to get one
         if self._points is None and self._texture:
