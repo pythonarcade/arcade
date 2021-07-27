@@ -151,8 +151,8 @@ The Python Arcade Library
           </div>
           <ul>
             <li><a href="https://github.com/pvcraven/arcade">GitHub</a></li>
-            <li><a href="release_notes.html">Release Notes</a></li>
-            <li><a href="enhancement_list.html">Enhancement List</a></li>
+            <li><a href="development/release_notes.html">Release Notes</a></li>
+            <li><a href="enhancement_list/enhancement_list.html">Enhancement List</a></li>
           </ul>
         </td>
 
