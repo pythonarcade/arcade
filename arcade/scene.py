@@ -218,7 +218,7 @@ class Scene:
         for sprite_list in self.sprite_lists:
             sprite_list.update_animation(delta_time)
 
-    def draw(self, names: Optional[List[str]] = None) -> None:
+    def draw(self, names: Optional[List[str]] = None, **kwargs) -> None:
         """
         Draw the Scene.
 
@@ -229,11 +229,17 @@ class Scene:
         attribute of the Scene.
 
         :param Optional[List[str]] names: A list of names of SpriteLists to draw.
+        :param filter: Optional parameter to set OpenGL filter, such as
+                       `gl.GL_NEAREST` to avoid smoothing.
+        :param blend_function: Optional parameter to set the OpenGL blend function
+            used for drawing the sprite list, such as `arcade.Window.ctx.BLEND_ADDITIVE`
+            or `arcade.Window.ctx.BLEND_DEFAULT`
         """
+
         if names:
             for name in names:
-                self.name_mapping[name].draw()
+                self.name_mapping[name].draw(**kwargs)
             return
 
         for sprite_list in self.sprite_lists:
-            sprite_list.draw()
+            sprite_list.draw(**kwargs)
