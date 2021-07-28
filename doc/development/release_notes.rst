@@ -22,7 +22,21 @@ UNRELEASED (2.6.0)
   * Arcade now uses the .json file format for maps created by the Tiled Map Editor rather than the TMX format.
   * Feature-support for Tiles items has been improved.
 
-* GUI improvements
+* Reworked GUI
+
+  * UIEvents are replaced by Widgets
+  * Option to relative pin Widgets on screen to center or border (supports resizing)
+  * Widgets can be placed on top of each other
+  * Overlapping Widgets properly handle mouse interaction
+  * Fully typed event classes
+  * Events contain source Widget *(planned)*
+  * ScrollableText Widgets (more to come)
+  * Support for Sprites within Widgets
+  * Declarative coding style for borders and padding `widget.with_border(...)`
+  * Automatically place Widgets vertically or horizontally (`ListGroup`)
+  * Dropped support for YAML style files
+  * Better performance and limited memory usage
+  * More documentation *(planned)*
 
 * Documentation
 
