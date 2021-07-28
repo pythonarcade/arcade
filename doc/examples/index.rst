@@ -544,10 +544,10 @@ Using PyMunk for Physics
 Frame Buffers
 ^^^^^^^^^^^^^
 
-.. figure:: thumbs/mini_map_defender.png
+.. figure:: thumbs/minimap.png
    :figwidth: 170px
 
-   :ref:`mini_map_defender`
+   :ref:`minimap`
 
 .. figure:: thumbs/bloom_defender.png
    :figwidth: 170px

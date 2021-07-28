@@ -4,7 +4,7 @@ Work with a mini-map
 Artwork from https://kenney.nl
 
 If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.sprite_move_scrolling
+python -m arcade.examples.minimap
 """
 
 import random
@@ -50,7 +50,7 @@ class MyGame(arcade.Window):
         # Mini-map related
         # List of all our minimaps (there's just one)
         self.minimap_sprite_list = None
-        # Texture to render our minimap to
+        # Texture and associated sprite to render our minimap to
         self.minimap_texture = None
         self.minimap_sprite = None
 
@@ -59,6 +59,7 @@ class MyGame(arcade.Window):
 
         self.physics_engine = None
 
+        # Camera for sprites, and one for our GUI
         self.camera_sprites = arcade.Camera(DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT)
         self.camera_gui = arcade.Camera(DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT)
 
