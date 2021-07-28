@@ -10,6 +10,39 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
 Version 2.6.0 (UNRELEASED)
 --------------------------
 
+Version 2.6.0 is a major update to Arcade. It is not 100% backwards compatible with the 2.5 API.
+Updates were made to text rendering, tiled map support, sprites, shaders, textures, GUI system,
+and the documentation.
+
+* `Tiled Map Editor <https://www.mapeditor.org/>`_ support has been overhauled.
+
+  * Arcade now uses the .json file format for maps created by the Tiled Map Editor rather than the TMX format.
+    Tile sets and other supporting files need to all be saved in .json format. The XML based formats are no longer
+    supported by Arcade.
+  * Feature-support for Tiles items has been improved.
+  * See :ref:`platformer_tutorial` for a how-to.
+  * See the `Community RPG <https://github.com/pythonarcade/community-rpg>`_ for a more complex example program.
+
+  .. image:: https://raw.githubusercontent.com/pythonarcade/community-rpg/main/screenshot.png
+     :width: 50%
+     :alt: Screenshot of tile map
+
+* Texture atlases have been introduced, texture management has been improved.
+
+  * A sprite list will create and use its own texture atlas.
+  * This introduces a new :class:`arcade.TextureAtlas` class that is used internally by SpriteList.
+  * Sprites with new textures can be added to a sprite list without the delay. Arcade 2.5 had a delay caused by rebuilding
+    its internal sprite sheet.
+  * As a side effect, sprites can only belong to one sprite list that renders.
+  * The texture atlas portion of a sprite can be drawn to, and quickly updated on the GPU side.
+
+    * To demonstrate, there is a new :ref:`minimap` example that creates a sprite that has a dynamic minimap
+      projected onto it.
+
+    .. image:: ../examples/minimap.png
+       :width: 50%
+       :alt: Screenshot of minimap
+
 * Revamped text rendering done by :func:`arcade.draw_text`.
   Rather than use Pillow to render onto an image, Arcade uses Pyglet's
   text drawing system.
@@ -24,26 +57,19 @@ Version 2.6.0 (UNRELEASED)
      :width: 50%
      :alt: Screenshot of drawing text
 
-* Texture atlas and improved texture support.
 
-  * A sprite list will create and use its own texture atlas.
-  * The texture atlas portion of a sprite can be drawn to, and quickly updated on the GPU side.
-  * Created a :ref:`minimap` example to show this process.
+* SpriteList optimizations.
 
-  .. image:: ../examples/minimap.png
-     :width: 50%
-     :alt: Screenshot of minimap
+  * Sprites now draw even faster than before.
 
-* Extended tilemap support.
+* Shadertoy support.
 
-  * Arcade now uses the .json file format for maps created by the Tiled Map Editor rather than the TMX format.
-  * Feature-support for Tiles items has been improved.
-  * See :ref:`platformer_tutorial` for a how-to.
-  * See the `Community RPG <https://github.com/pythonarcade/community-rpg>`_ for a full example.
+  * `Shadertoy.com <https://www.shadertoy.com/>`_ is a website that makes it easier to write OpenGL shaders.
+  * The new :class:`arcade.Shadertoy` class makes it easy to run and interact with these shaders in Arcade.
+  * See :ref:`shader_toy_tutorial` and `Asteroids <https://github.com/pythonarcade/asteroids>`_.
 
-  .. image:: https://raw.githubusercontent.com/pythonarcade/community-rpg/main/screenshot.png
-     :width: 50%
-     :alt: Screenshot of tile map
+    .. image:: ../tutorials/shader_toy/cyber_fuji_2020.png
+       :width: 50%
 
 * Reworked GUI
 
@@ -61,6 +87,12 @@ Version 2.6.0 (UNRELEASED)
   * Better performance and limited memory usage
   * More documentation *(planned)*
 
+* Camera support
+
+  * Easy scrolling with :class:`arcade.Camera`
+  * Example: :ref:`sprite_move_scrolling`.
+  * Camera shake: :ref:`sprite_move_scrolling_shake`.
+
 * Documentation
 
   * Lots of individual documentation updates for commands.
@@ -76,20 +108,6 @@ Version 2.6.0 (UNRELEASED)
   * Revamped tutorial: :ref:`platformer_tutorial`.
   * Revamped minimap example: :ref:`minimap`.
   * Moved from AWS hosting to read-the-docs hosting so we can support multiple versions of docs.
-
-* SpriteList optimizations.
-
-  * Sprites are faster to draw.
-
-* Shadertoy support
-
-  * See :ref:`shader_toy_tutorial` and `Asteroids <https://github.com/pythonarcade/asteroids>`_.
-
-* Camera support
-
-  * Easy scrolling with :class:`arcade.Camera`
-  * Example: :ref:`sprite_move_scrolling`.
-  * Camera shake: :ref:`sprite_move_scrolling_shake`.
 
 * API commands
 
