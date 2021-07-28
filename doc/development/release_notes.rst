@@ -60,7 +60,9 @@ and the documentation.
 
 * SpriteList optimizations.
 
-  * Sprites now draw even faster than before.
+  * Sprites now draw even faster than before. On an Intel i7 with nVidia 980 Ti graphics card,
+    8,000+ moving sprites can be drawn while maintaining 60 FPS. The same machine can only
+    do 2,000 sprites with Pygame before FPS drops.
 
 * Shadertoy support.
 
@@ -69,7 +71,10 @@ and the documentation.
   * See :ref:`shader_toy_tutorial` and `Asteroids <https://github.com/pythonarcade/asteroids>`_.
 
     .. image:: ../tutorials/shader_toy/cyber_fuji_2020.png
-       :width: 50%
+       :width: 40%
+
+    .. image:: ../tutorials/shader_toy/star_nest.png
+       :width: 40%
 
 * Reworked GUI
 
@@ -90,8 +95,8 @@ and the documentation.
 * Camera support
 
   * Easy scrolling with :class:`arcade.Camera`
-  * Example: :ref:`sprite_move_scrolling`.
-  * Camera shake: :ref:`sprite_move_scrolling_shake`.
+  * For an example of this see the example: :ref:`sprite_move_scrolling`.
+  * Automatic camera shake can be added in, see the example: :ref:`sprite_move_scrolling_shake`.
 
 * Documentation
 
