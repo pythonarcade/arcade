@@ -124,5 +124,10 @@ Test the Level
 Source Code
 ~~~~~~~~~~~
 
-* :ref:`09_load_map`
-* :ref:`09_load_map_diff`
+.. literalinclude:: ../../../arcade/examples/platform_tutorial/09_load_map.py
+    :caption: Load the Map
+    :linenos:
+
+..
+    * :ref:`09_load_map`
+    * :ref:`09_load_map_diff`

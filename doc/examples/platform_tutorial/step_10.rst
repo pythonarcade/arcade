@@ -42,5 +42,10 @@ Here's an expanded example:
 Source Code
 ~~~~~~~~~~~
 
-* :ref:`10_multiple_levels`
-* :ref:`10_multiple_levels_diff`
+.. literalinclude:: ../../../arcade/examples/platform_tutorial/10_multiple_levels.py
+    :caption: Multiple Levels
+    :linenos:
+
+..
+    * :ref:`10_multiple_levels`
+    * :ref:`10_multiple_levels_diff`

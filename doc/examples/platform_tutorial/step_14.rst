@@ -4,11 +4,16 @@ Step 14 - Moving Enemies
 ------------------------
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/14_moving_enemies.py
-    :caption: Animate Characters
+    :caption: Moving the enemies
     :linenos:
 
 Source Code
 ~~~~~~~~~~~
 
-* :ref:`14_moving_enemies`
-* :ref:`14_moving_enemies_diff`
+.. literalinclude:: ../../../arcade/examples/platform_tutorial/14_moving_enemies.py
+    :caption: Moving the enemies
+    :linenos:
+
+..
+    * :ref:`14_moving_enemies`
+    * :ref:`14_moving_enemies_diff`
