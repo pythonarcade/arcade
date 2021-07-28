@@ -7,20 +7,43 @@ Release Notes
 
 Keep up-to-date with the latest changes to the Arcade library by the release notes.
 
-UNRELEASED (2.6.0)
-------------------
+Version 2.6.0 (UNRELEASED)
+--------------------------
 
-* Revamped text rendering. Rather than use Pillow to render onto an image, Arcade uses Pyglet's
+* Revamped text rendering done by :func:`arcade.draw_text`.
+  Rather than use Pillow to render onto an image, Arcade uses Pyglet's
   text drawing system.
+  Text drawing is faster, higher resolution, and not prone to memory leaks. Fonts are now specifed by the
+  font name, rather than the file name of the font.
+
+  * Fonts can be dynamically loaded with :func:`arcade.load_font`.
+  * Kenney.nl's TTF are now included as build-in resources.
+  * See the :ref:`drawing_text` example.
+
+  .. image:: ../examples/drawing_text.png
+     :width: 50%
+     :alt: Screenshot of drawing text
+
 * Texture atlas and improved texture support.
 
   * A sprite list will create and use its own texture atlas.
   * The texture atlas portion of a sprite can be drawn to, and quickly updated on the GPU side.
+  * Created a :ref:`minimap` example to show this process.
+
+  .. image:: ../examples/minimap.png
+     :width: 50%
+     :alt: Screenshot of minimap
 
 * Extended tilemap support.
 
   * Arcade now uses the .json file format for maps created by the Tiled Map Editor rather than the TMX format.
   * Feature-support for Tiles items has been improved.
+  * See :ref:`platformer_tutorial` for a how-to.
+  * See the `Community RPG <https://github.com/pythonarcade/community-rpg>`_ for a full example.
+
+  .. image:: https://raw.githubusercontent.com/pythonarcade/community-rpg/main/screenshot.png
+     :width: 50%
+     :alt: Screenshot of tile map
 
 * Reworked GUI
 
@@ -45,8 +68,13 @@ UNRELEASED (2.6.0)
     the individual API documentation pages have been broken into parts, so it isn't one large monolithic page.
   * New tutorial for :ref:`user-interface-tutorial`.
   * New tutorial for :ref:`raycasting_tutorial`.
+
+    .. image:: ../tutorials/raycasting/example.png
+       :width: 50%
+
   * New tutorial for :ref:`shader_toy_tutorial`.
   * Revamped tutorial: :ref:`platformer_tutorial`.
+  * Revamped minimap example: :ref:`minimap`.
   * Moved from AWS hosting to read-the-docs hosting so we can support multiple versions of docs.
 
 * SpriteList optimizations.
@@ -55,7 +83,7 @@ UNRELEASED (2.6.0)
 
 * Shadertoy support
 
-  * See :ref:`shader_toy_tutorial` and `Asteroids <https://github.com/pythonarcade/asteroids>`.
+  * See :ref:`shader_toy_tutorial` and `Asteroids <https://github.com/pythonarcade/asteroids>`_.
 
 * Camera support
 
@@ -310,11 +338,6 @@ Arcade version 2.4 is a major enhancement release to Arcade.
     :class: inline-image
     :target: examples/astar_pathfinding.html
 
-.. image:: ../examples/mini_map_defender.png
-    :width: 30%
-    :class: inline-image
-    :target: examples/mini_map_defender.html
-
 .. image:: ../examples/bloom_defender.png
     :width: 30%
     :class: inline-image
@@ -351,8 +374,7 @@ Version 2.4 Major Features
 * Support for defining your own frame buffers, shaders, and more
   advanced OpenGL programming. New API in Arcade Open GL.
 
-    * Support to render to frame buffer, then re-render. Example:
-      :ref:`mini_map_defender`.
+    * Support to render to frame buffer, then re-render.
     * Use frame buffers to create a 'glow' or 'bloom' effect: :ref:`bloom_defender`.
     * Use frame-buffers to support lights: :ref:`light_demo`.
 
