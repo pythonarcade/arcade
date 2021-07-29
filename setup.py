@@ -33,7 +33,7 @@ setup(
         "pymunk~=6.0.0",
         "pyyaml~=5.4",
         "shapely==1.7.1",
-        "pytiled-parser==1.5.1",
+        "pytiled-parser==1.5.2",
         "dataclasses; python_version < '3.7'",
     ],
     extras_require={
@@ -80,5 +80,5 @@ setup(
         "Source": "https://github.com/pythonarcade/arcade",
         "On-line Book": "https://learn.arcade.academy",
     },
-    version=VERSION
+    version=VERSION,
 )
