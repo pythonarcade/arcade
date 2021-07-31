@@ -494,6 +494,10 @@ class TileMap:
                         self.tiled_map.map_size.height - row_index - 1
                     ) * (self.tiled_map.tile_size[1] * scaling) + my_sprite.height / 2
 
+                    # Tint
+                    if layer.tint_color:
+                        my_sprite.color = layer.tint_color
+
                     # Opacity
                     opacity = layer.opacity
                     if opacity:
@@ -554,6 +558,9 @@ class TileMap:
 
                 my_sprite.position = (x + rotated_center_x, y + rotated_center_y)
                 my_sprite.angle = math.degrees(rotation)
+
+                if layer.tint_color:
+                    my_sprite.color = layer.tint_color
 
                 opacity = layer.opacity
                 if opacity:
