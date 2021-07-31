@@ -16,7 +16,6 @@ from typing import Any, Dict, List, Optional, OrderedDict, Tuple, Union, cast
 
 import pytiled_parser
 import pytiled_parser.tiled_object
-
 from arcade import (
     AnimatedTimeBasedSprite,
     AnimationKeyframe,
@@ -155,7 +154,9 @@ class TileMap:
 
         # Dictionaries to store the SpriteLists for processed layers
         self.sprite_lists: OrderedDict[str, SpriteList] = OrderedDict[str, SpriteList]()
-        self.object_lists: OrderedDict[str, List[TiledObject]] = OrderedDict[str, SpriteList]()
+        self.object_lists: OrderedDict[str, List[TiledObject]] = OrderedDict[
+            str, SpriteList
+        ]()
         self.properties = self.tiled_map.properties
 
         if not layer_options:
@@ -243,7 +244,10 @@ class TileMap:
 
             # No specific tile info, but there is a tile sheet
             # print(f"data {tileset_key} {tileset.tiles} {tileset.image} {tileset_key} {tile_gid} {tileset.tile_count}")
-            if tileset.image is not None and tileset_key <= tile_gid < tileset_key + tileset.tile_count:
+            if (
+                tileset.image is not None
+                and tileset_key <= tile_gid < tileset_key + tileset.tile_count
+            ):
                 # No specific tile info, but there is a tile sheet
                 tile_ref = pytiled_parser.Tile(
                     id=(tile_gid - tileset_key), image=tileset.image
@@ -331,9 +335,7 @@ class TileMap:
                         f"Warning, only one hit box supported for tile with image {tile.image}."
                     )
                 else:
-                    print(
-                        f"Warning, only one hit box supported for tile."
-                    )
+                    print(f"Warning, only one hit box supported for tile.")
 
             for hitbox in tile.objects.tiled_objects:
                 points: List[Point] = []
@@ -629,7 +631,9 @@ class TileMap:
                 shape = []
                 for point in cur_object.points:
                     x = point.x + cur_object.coordinates.x
-                    y = (self.height * self.tile_height) - (point.y + cur_object.coordinates.y)
+                    y = (self.height * self.tile_height) - (
+                        point.y + cur_object.coordinates.y
+                    )
                     point = (x, y)
                     shape.append(point)
 
