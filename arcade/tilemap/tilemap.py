@@ -14,6 +14,7 @@ from collections import OrderedDict
 from pathlib import Path
 from typing import Any, Dict, List, Optional, OrderedDict, Tuple, Union, cast
 
+import PIL
 import pytiled_parser
 import pytiled_parser.tiled_object
 from arcade import (
@@ -180,6 +181,9 @@ class TileMap:
                     object_list = processed[1]
                     if object_list:
                         self.object_lists[layer.name] = object_list
+            elif isinstance(layer, pytiled_parser.ImageLayer):
+                processed = self._process_image_layer(layer, **options)
+                self.sprite_lists[layer.name] = processed
 
     def get_cartesian(
         self,
@@ -443,6 +447,79 @@ class TileMap:
             cast(AnimatedTimeBasedSprite, my_sprite).frames = key_frame_list
 
         return my_sprite
+
+    def _process_image_layer(
+        self,
+        layer: pytiled_parser.ImageLayer,
+        scaling: Optional[float] = None,
+        use_spatial_hash: Optional[bool] = None,
+        hit_box_algorithm: str = "Simple",
+        hit_box_detail: float = 4.5,
+    ) -> SpriteList:
+
+        if not scaling:
+            scaling = self.scaling
+
+        sprite_list: SpriteList = SpriteList(use_spatial_hash=use_spatial_hash)
+
+        map_source = self.tiled_map.map_file
+        map_directory = os.path.dirname(map_source)
+        image_file = layer.image
+
+        if not os.path.exists(image_file) and (map_directory):
+            try2 = Path(map_directory, image_file)
+            if not os.path.exists(try2):
+                print(
+                    f"Warning, can't find image {image_file} for Image Layer {layer.name}"
+                )
+            image_file = try2
+
+        my_texture = load_texture(
+            image_file,
+            hit_box_algorithm=hit_box_algorithm,
+            hit_box_detail=hit_box_detail,
+        )
+
+        if layer.transparent_color:
+            data = my_texture.image.getdata()
+
+            target = layer.transparent_color
+            new_data = []
+            for item in data:
+                if (
+                    item[0] == target[0]
+                    and item[1] == target[1]
+                    and item[2] == target[2]
+                ):
+                    new_data.append((255, 255, 255, 0))
+                else:
+                    new_data.append(item)
+
+            my_texture.image.putdata(new_data)
+
+        my_sprite = Sprite(
+            image_file,
+            scaling,
+            texture=my_texture,
+            hit_box_algorithm=hit_box_algorithm,
+            hit_box_detail=hit_box_detail,
+        )
+
+        if layer.properties:
+            for key, value in layer.properties.items():
+                my_sprite.properties[key] = value
+
+        if layer.tint_color:
+            my_sprite.color = layer.tint_color
+
+        if layer.opacity:
+            my_sprite.alpha = int(layer.opacity * 255)
+
+        my_sprite.center_x = (layer.offset[0] * scaling) + my_sprite.width / 2
+        my_sprite.center_y = layer.offset[1]
+
+        sprite_list.append(my_sprite)
+        return sprite_list
 
     def _process_tile_layer(
         self,
