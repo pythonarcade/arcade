@@ -1,4 +1,4 @@
-from arcade.experimental.gui_v2.widgets import AnchorWidget, Widget, ListGroup, Dummy
+from arcade.experimental.gui_v2.widgets import AnchorWidget, Widget, BoxGroup, Dummy
 
 
 def test_place_widget():
@@ -18,7 +18,7 @@ def test_place_widget():
 
 
 def test_place_box_widget():
-    widget = ListGroup()
+    widget = BoxGroup()
     widget.add(Dummy(width=100, height=100))
     widget.add(Dummy(width=100, height=100))
 

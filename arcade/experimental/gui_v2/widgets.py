@@ -103,7 +103,10 @@ class Rect(NamedTuple):
 
 
 class WidgetParent:
-    rect: Rect
+    @property
+    @abstractmethod
+    def rect(self) -> Rect:
+        pass
 
 
 class Widget(EventDispatcher, WidgetParent, ABC):
@@ -198,6 +201,14 @@ class Widget(EventDispatcher, WidgetParent, ABC):
     @property
     def height(self):
         return self.rect.height
+
+    @property
+    def center_x(self):
+        return self.rect.center_x
+
+    @property
+    def center_y(self):
+        return self.rect.center_y
 
 
 class InteractiveWidget(Widget):
@@ -620,7 +631,6 @@ class AnchorWidget(Wrapper):
         self.align_x = align_x
         self.align_y = align_y
 
-
     def do_layout(self):
         request_rerender = super().do_layout()
 
@@ -729,14 +739,22 @@ class Padding(Wrapper):
         self.child.render(surface, force=True)
 
 
-class ListGroup(Widget):
+class BoxGroup(Widget):
     """
     Places Widgets next to each other.
     Depending on the vertical attribute, the Widgets are placed top to bottom or left to right.
     """
 
     def __init__(self, x=0, y=0, vertical=True, align="center", children: Iterable[Widget] = tuple()):
-        super().__init__(x, y, 1, 1)
+        """
+
+        :param x: x coordinate of bottom left
+        :param y: x coordinate of bottom left
+        :param vertical: Layout children vertical (True) or horizontal (False)
+        :param align: Align children in orthogonal direction
+        :param children: Initial children, more can be added
+        """
+        super().__init__(x, y, 0, 0)
         self._children = list(children)
 
         self.align = align
@@ -764,6 +782,8 @@ class ListGroup(Widget):
             child.render(surface, force=force)
 
     def do_layout(self):
+        # TODO use alignment
+        initial_top = self.top
         start_y = self.top
         start_x = self.left
 
@@ -782,7 +802,7 @@ class ListGroup(Widget):
                 child.rect = child.rect.align_left(start_x).align_center_y(center_y)
                 start_x += child.width
 
-        self.rect = Rect(self.left, self.bottom, new_width, new_height)
+        self.rect = Rect(self.left, self.bottom, new_width, new_height).align_top(initial_top)
 
         if self._children_modified:
             self._children_modified = False
