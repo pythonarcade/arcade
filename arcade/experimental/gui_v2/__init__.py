@@ -11,14 +11,18 @@ The better gui for arcade
 from collections import defaultdict
 from typing import List, Dict
 
+import pyglet.event
+
 import arcade
-from arcade.experimental.gui_v2.events import MouseMovement, MousePress, MouseRelease, MouseScroll, Text, MouseDrag, \
-    TextMotion, TextMotionSelect
+from arcade.experimental.gui_v2.events import UIMouseMovementEvent, UIMousePressEvent, UIMouseReleaseEvent, \
+    UIMouseScrollEvent, UITextEvent, \
+    UIMouseDragEvent, \
+    UITextMotionEvent, UITextMotionSelectEvent, UIEvent, UIKeyPressEvent, UIKeyReleaseEvent
 from arcade.experimental.gui_v2.surface import Surface
 from arcade.experimental.gui_v2.widgets import Widget, WidgetParent, Rect
 
 
-class UIManager(WidgetParent):
+class UIManager(pyglet.event.EventDispatcher, WidgetParent):
     """
     V2 UIManager
 
@@ -40,7 +44,7 @@ class UIManager(WidgetParent):
 
     """
 
-    def __init__(self) -> None:
+    def __init__(self):
         self.window = arcade.get_window()
         self._surfaces = {0: Surface(
             size=self.window.get_size(),
@@ -48,6 +52,8 @@ class UIManager(WidgetParent):
         )}
         self._children: Dict[int, List[Widget]] = defaultdict(list)
         self.rendered = False
+
+        self.register_event_type("on_event")
 
     def add(self, widget: Widget, layer=0) -> Widget:
         self._children[layer].append(widget)
@@ -102,33 +108,42 @@ class UIManager(WidgetParent):
         layers = sorted(self._children.keys(), reverse=True)
         for layer in layers:
             for child in reversed(self._children[layer]):
-                if child.on_event(event):
+                if child.dispatch_event("on_event", event):
                     # child can consume an event by returning True
                     return
 
+    def dispatch_ui_event(self, event):
+        self.dispatch_event("on_event", event)
+
     def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
-        self.on_event(MouseMovement(x, y, dx, dy))
+        self.dispatch_ui_event(UIMouseMovementEvent(self, x, y, dx, dy))
 
     def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
-        self.on_event(MousePress(x, y, button, modifiers))
+        self.dispatch_ui_event(UIMousePressEvent(self, x, y, button, modifiers))
 
     def on_mouse_drag(self, x: float, y: float, dx: float, dy: float, buttons: int, modifiers: int):
-        self.on_event(MouseDrag(x, y, dx, dy, buttons, modifiers))
+        self.dispatch_ui_event(UIMouseDragEvent(self, x, y, dx, dy, buttons, modifiers))
 
     def on_mouse_release(self, x: float, y: float, button: int, modifiers: int):
-        self.on_event(MouseRelease(x, y, button, modifiers))
+        self.dispatch_ui_event(UIMouseReleaseEvent(self, x, y, button, modifiers))
 
     def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
-        self.on_event(MouseScroll(x, y, scroll_x, scroll_y))
+        self.dispatch_ui_event(UIMouseScrollEvent(self, x, y, scroll_x, scroll_y))
+
+    def on_key_press(self, symbol: int, modifiers: int):
+        self.dispatch_ui_event(UIKeyPressEvent(self, symbol, modifiers))
+
+    def on_key_release(self, symbol: int, modifiers: int):
+        self.dispatch_ui_event(UIKeyReleaseEvent(self, symbol, modifiers))
 
     def on_text(self, text):
-        self.on_event(Text(text))
+        self.dispatch_ui_event(UITextEvent(self, text))
 
     def on_text_motion(self, motion):
-        self.on_event(TextMotion(motion))
+        self.dispatch_ui_event(UITextMotionEvent(self, motion))
 
     def on_text_motion_select(self, motion):
-        self.on_event(TextMotionSelect(motion))
+        self.dispatch_ui_event(UITextMotionSelectEvent(self, motion))
 
     def resize(self, width, height):
         scale = arcade.get_scaling_factor(self.window)
@@ -141,4 +156,3 @@ class UIManager(WidgetParent):
     @property
     def rect(self) -> Rect:
         return Rect(0, 0, *self._surfaces[0].size)
-

@@ -4,12 +4,15 @@ from typing import NamedTuple, Iterable
 
 import pyglet
 from pyglet.event import EventDispatcher
+from pyglet.text.document import AbstractDocument
 
 import arcade
 from arcade import Texture, Sprite
 from arcade.experimental.gui_v2 import Surface
-from arcade.experimental.gui_v2.events import Event, MouseMovement, MousePress, MouseRelease, Text, MouseDrag, \
-    MouseScroll, TextMotion, TextMotionSelect, MouseEvent
+from arcade.experimental.gui_v2.events import UIEvent, UIMouseMovementEvent, UIMousePressEvent, UIMouseReleaseEvent, \
+    UITextEvent, \
+    UIMouseDragEvent, \
+    UIMouseScrollEvent, UITextMotionEvent, UITextMotionSelectEvent, UIMouseEvent, UIOnClickEvent
 
 
 def point_in_rect(x, y, rx, ry, rw, rh):
@@ -120,6 +123,8 @@ class Widget(EventDispatcher, WidgetParent, ABC):
         self.rendered = False
         self.parent: WidgetParent = None
 
+        self.register_event_type("on_event")
+
     @abstractmethod
     def render(self, surface: Surface, force=False):
         """
@@ -135,7 +140,10 @@ class Widget(EventDispatcher, WidgetParent, ABC):
         :return: in case of any change, which requires a forced rerender of the UI return True
         """
 
-    def on_event(self, event: Event):
+    def dispatch_ui_event(self, event):
+        self.dispatch_event("on_event", event)
+
+    def on_event(self, event: UIEvent):
         pass
 
     def with_border(self, width=2, color=(0, 0, 0)):
@@ -147,7 +155,7 @@ class Widget(EventDispatcher, WidgetParent, ABC):
         """
         return Border(self, border_width=width, border_color=color)
 
-    def with_padding(self, top=0, right=0, bottom=0, left=0, bg_color=None):
+    def with_margin(self, top=0, right=0, bottom=0, left=0, bg_color=None):
         """
         Wraps this Widget with a border
         :param top: Top Padding
@@ -240,22 +248,26 @@ class InteractiveWidget(Widget):
             self._hover = value
             self.rendered = False
 
-    def on_event(self, event: Event):
-        if isinstance(event, MouseMovement):
+    def on_event(self, event: UIEvent):
+        if isinstance(event, UIMouseMovementEvent):
             self.hover = point_in_rect(event.x, event.y, *self.rect)
 
-        if isinstance(event, MousePress):
+        if isinstance(event, UIMousePressEvent):
             if self.rect.collide_with_point(event.x, event.y):
                 self.pressed = True
                 return True
 
-        if self.pressed and isinstance(event, MouseRelease):
+        if self.pressed and isinstance(event, UIMouseReleaseEvent):
             self.pressed = False
             if self.rect.collide_with_point(event.x, event.y):
-                self.dispatch_event("on_click", self, event)
+                # Dispatch new on_click event, source is this widget itself
+                self.dispatch_event("on_event", UIOnClickEvent(self, event.x, event.y))
                 return True
 
-    def on_click(self, source, event: MouseRelease):
+        if isinstance(event, UIOnClickEvent) and self.rect.collide_with_point(event.x, event.y):
+            self.dispatch_event("on_click", event)
+
+    def on_click(self, event: UIOnClickEvent):
         pass
 
 
@@ -363,7 +375,7 @@ class TextArea(Widget):
                  style=None):
         super().__init__(x, y, width, height)
 
-        self.doc = pyglet.text.decode_text(text)
+        self.doc: AbstractDocument = pyglet.text.decode_text(text)
         self.doc.set_style(0, 12, dict(
             font_name=font_name,
             font_size=font_size,
@@ -377,6 +389,14 @@ class TextArea(Widget):
                                                               )
 
     @property
+    def text(self):
+        return self.doc.text
+
+    @text.setter
+    def text(self, value):
+        self.doc.text = value
+
+    @property
     def rect(self) -> Rect:
         return self._rect
 
@@ -387,20 +407,24 @@ class TextArea(Widget):
 
         # Update Pyglet layout
         l = self.layout
+
+        l.begin_update()
         l.x, l.y, l.width, l.height = self.rect
+        l.end_update()
 
     def render(self, surface: Surface, force=False):
         if self.rendered and not force:
             return
         self.rendered = True
+        print("Lay:", self.layout.position)
+        print("Rec:", self.rect)
 
-        # surface.clear()
         with surface.ctx.pyglet_rendering():
             self.layout.default_group_class.scissor_area = self.rect.scale(surface.pixel_ratio)
             self.layout.draw()
 
-    def on_event(self, event: Event):
-        if isinstance(event, MouseScroll):
+    def on_event(self, event: UIEvent):
+        if isinstance(event, UIMouseScrollEvent):
             if point_in_rect(event.x, event.y, *self.rect):
                 self.layout.view_y += event.scroll_y
                 self.rendered = False
@@ -425,12 +449,12 @@ class InputText(Widget):
         self.layout = pyglet.text.layout.IncrementalTextLayout(self.doc, width, height)
         self.caret = pyglet.text.caret.Caret(self.layout, color=(0, 0, 0))
 
-    def on_event(self, event: Event):
+    def on_event(self, event: UIEvent):
         self.rendered = False
         self.parent.rendered = False  # TODO we could have a method to request enforced rendering
 
         # if not active, check to activate, return
-        if not self._active and isinstance(event, MousePress):
+        if not self._active and isinstance(event, UIMousePressEvent):
             if self.rect.collide_with_point(event.x, event.y):
                 self._active = True
                 self.caret.on_activate()
@@ -438,7 +462,7 @@ class InputText(Widget):
                 return
 
         # if active check to deactivate
-        if self._active and isinstance(event, MousePress):
+        if self._active and isinstance(event, UIMousePressEvent):
             if self.rect.collide_with_point(event.x, event.y):
                 x, y = event.x - self.x, event.y - self.y
                 self.caret.on_mouse_press(x, y, event.button, event.modifiers)
@@ -450,18 +474,18 @@ class InputText(Widget):
         # if active pass all non press events to caret
         if self._active:
             # Act on events if active
-            if isinstance(event, Text):
+            if isinstance(event, UITextEvent):
                 self.caret.on_text(event.text)
-            elif isinstance(event, TextMotion):
+            elif isinstance(event, UITextMotionEvent):
                 self.caret.on_text_motion(event.motion)
-            elif isinstance(event, TextMotionSelect):
+            elif isinstance(event, UITextMotionSelectEvent):
                 self.caret.on_text_motion_select(event.motion)
 
-            if isinstance(event, MouseEvent) and self.rect.collide_with_point(event.x, event.y):
+            if isinstance(event, UIMouseEvent) and self.rect.collide_with_point(event.x, event.y):
                 x, y = event.x - self.x, event.y - self.y
-                if isinstance(event, MouseDrag):
+                if isinstance(event, UIMouseDragEvent):
                     self.caret.on_mouse_drag(x, y, event.dx, event.dy, event.buttons, event.modifiers)
-                elif isinstance(event, MouseScroll):
+                elif isinstance(event, UIMouseScrollEvent):
                     self.caret.on_mouse_scroll(x, y, event.scroll_x, event.scroll_y)
 
     @property
@@ -601,8 +625,8 @@ class Wrapper(Widget):
     def do_layout(self) -> bool:
         return self.child.do_layout()
 
-    def on_event(self, event: Event):
-        self.child.on_event(event)
+    def on_event(self, event: UIEvent):
+        self.child.dispatch_event("on_event", event)
 
     def render(self, surface: Surface, force=False):
         if self.rendered and not force:
@@ -637,12 +661,14 @@ class AnchorWidget(Wrapper):
         rect = self.rect
         parent_rect = self.parent.rect
 
-        own_anchor_x_value = getattr(rect, self.anchor_x)
-        par_anchor_x_value = getattr(parent_rect, self.anchor_x)
+        anchor_x = "center_x" if self.anchor_x == "center" else self.anchor_x
+        own_anchor_x_value = getattr(rect, anchor_x)
+        par_anchor_x_value = getattr(parent_rect, anchor_x)
         diff_x = par_anchor_x_value + self.align_x - own_anchor_x_value
 
-        own_anchor_y_value = getattr(rect, self.anchor_y)
-        par_anchor_y_value = getattr(parent_rect, self.anchor_y)
+        anchor_y = "center_y" if self.anchor_y == "center" else self.anchor_y
+        own_anchor_y_value = getattr(rect, anchor_y)
+        par_anchor_y_value = getattr(parent_rect, anchor_y)
         diff_y = par_anchor_y_value + self.align_y - own_anchor_y_value
 
         if diff_x or diff_y:
@@ -739,7 +765,56 @@ class Padding(Wrapper):
         self.child.render(surface, force=True)
 
 
-class BoxGroup(Widget):
+class Group(Widget):
+    """
+    Group of Widgets
+    """
+
+    def __init__(self, x=0, y=0, width=100, height=100, children: Iterable[Widget] = tuple()):
+        super().__init__(x, y, width, height)
+        self._children = list(children)
+        self._children_modified = True
+
+        for child in self._children:
+            child.parent = self
+
+    def add(self, child: Widget):
+        self._children.append(child)
+        self._children_modified = True
+
+        child.parent = self
+
+    def remove(self, child: Widget):
+        self._children.remove(child)
+        self._children_modified = True
+
+        child.parent = None
+
+    def __contains__(self, item):
+        return item in self._children
+
+    def on_update(self, dt):
+        for child in self._children:
+            child.on_update(dt)
+
+    def on_event(self, event: UIEvent):
+        for child in self._children:
+            child.dispatch_ui_event(event)
+
+    def render(self, surface: Surface, force=False):
+        for child in self._children:
+            surface.limit(*child.rect)
+            child.render(surface, force=force)
+
+    def do_layout(self) -> bool:
+        result = False
+        for child in self._children:
+            result |= bool(child.do_layout())
+
+        return result
+
+
+class BoxGroup(Group):
     """
     Places Widgets next to each other.
     Depending on the vertical attribute, the Widgets are placed top to bottom or left to right.
@@ -754,32 +829,9 @@ class BoxGroup(Widget):
         :param align: Align children in orthogonal direction
         :param children: Initial children, more can be added
         """
-        super().__init__(x, y, 0, 0)
-        self._children = list(children)
-
+        super().__init__(x=x, y=y, width=0, height=0, children=children)
         self.align = align
         self.vertical = vertical
-        self._children_modified = False
-
-    def add(self, child: Widget):
-        self._children.append(child)
-        self._children_modified = True
-
-    def remove(self, child: Widget):
-        self._children.remove(child)
-        self._children_modified = True
-
-    def __contains__(self, item):
-        return item in self._children
-
-    def on_update(self, dt):
-        for child in self._children:
-            child.on_update(dt)
-
-    def render(self, surface: Surface, force=False):
-        for child in self._children:
-            surface.limit(*child.rect)
-            child.render(surface, force=force)
 
     def do_layout(self):
         # TODO use alignment

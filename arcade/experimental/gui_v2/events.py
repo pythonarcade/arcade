@@ -2,12 +2,18 @@ from dataclasses import dataclass
 from typing import Any
 
 
-class Event:
-    pass
+@dataclass
+class UIEvent:
+    """
+    An event created by the GUI system. Can be passed using widget.dispatch("on_event", event).
+    An event always has a source, which is the UIManager for general input events,
+    but will be the specific widget in case of events like on_click events.
+    """
+    source: Any
 
 
 @dataclass
-class MouseEvent(Event):
+class UIMouseEvent(UIEvent):
     """
     Covers all mouse event
     """
@@ -16,19 +22,19 @@ class MouseEvent(Event):
 
 
 @dataclass
-class MouseMovement(MouseEvent):
+class UIMouseMovementEvent(UIMouseEvent):
     dx: float
     dy: float
 
 
 @dataclass
-class MousePress(MouseEvent):
+class UIMousePressEvent(UIMouseEvent):
     button: int
     modifiers: int
 
 
 @dataclass
-class MouseDrag(MouseEvent):
+class UIMouseDragEvent(UIMouseEvent):
     dx: float
     dy: float
     buttons: int
@@ -36,27 +42,49 @@ class MouseDrag(MouseEvent):
 
 
 @dataclass
-class MouseRelease(MouseEvent):
+class UIMouseReleaseEvent(UIMouseEvent):
     button: int
     modifiers: int
 
 
 @dataclass
-class MouseScroll(MouseEvent):
+class UIMouseScrollEvent(UIMouseEvent):
     scroll_x: int
     scroll_y: int
 
 
 @dataclass
-class Text(Event):
+class UIKeyEvent(UIEvent):
+    symbol: int
+    modifiers: int
+
+
+@dataclass
+class UIKeyPressEvent(UIKeyEvent):
+    pass
+
+
+@dataclass
+class UIKeyReleaseEvent(UIKeyEvent):
+    pass
+
+
+@dataclass
+class UITextEvent(UIEvent):
+    # Name contains 'Event' suffix to separate from other 'UIText' classes
     text: str
 
 
 @dataclass
-class TextMotion(Event):
+class UITextMotionEvent(UIEvent):
     motion: Any
 
 
 @dataclass
-class TextMotionSelect(Event):
-    motion: Any
+class UITextMotionSelectEvent(UIEvent):
+    selection: Any
+
+
+@dataclass
+class UIOnClickEvent(UIMouseEvent):
+    pass
