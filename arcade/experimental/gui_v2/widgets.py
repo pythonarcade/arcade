@@ -105,14 +105,7 @@ class Rect(NamedTuple):
         return self.move(dy=diff_y)
 
 
-class WidgetParent:
-    @property
-    @abstractmethod
-    def rect(self) -> Rect:
-        pass
-
-
-class Widget(EventDispatcher, WidgetParent, ABC):
+class Widget(EventDispatcher, ABC):
     def __init__(self,
                  x=0,
                  y=0,
@@ -155,7 +148,7 @@ class Widget(EventDispatcher, WidgetParent, ABC):
         """
         return Border(self, border_width=width, border_color=color)
 
-    def with_margin(self, top=0, right=0, bottom=0, left=0, bg_color=None):
+    def with_space_around(self, top=0, right=0, bottom=0, left=0, bg_color=None):
         """
         Wraps this Widget with a border
         :param top: Top Padding
@@ -166,6 +159,9 @@ class Widget(EventDispatcher, WidgetParent, ABC):
         :return: Wrapping Padding with self as child
         """
         return Padding(self, padding=(top, right, bottom, left), bg_color=bg_color)
+
+    def with_background(self, texture: Texture, top=0, right=0, bottom=0, left=0):
+        return TexturePane(self, tex=texture, padding=(top, right, bottom, left))
 
     @property
     def rect(self) -> Rect:
@@ -219,6 +215,17 @@ class Widget(EventDispatcher, WidgetParent, ABC):
         return self.rect.center_y
 
 
+class WidgetParent(ABC):
+    @property
+    @abstractmethod
+    def rect(self) -> Rect:
+        pass
+
+    @abstractmethod
+    def remove(self, child: Widget):
+        pass
+
+
 class InteractiveWidget(Widget):
     # States
     _hover = False
@@ -249,13 +256,16 @@ class InteractiveWidget(Widget):
             self.rendered = False
 
     def on_event(self, event: UIEvent):
+        super().on_event(event)
+
         if isinstance(event, UIMouseMovementEvent):
             self.hover = point_in_rect(event.x, event.y, *self.rect)
 
-        if isinstance(event, UIMousePressEvent):
-            if self.rect.collide_with_point(event.x, event.y):
-                self.pressed = True
-                return True
+        if isinstance(event, UIMousePressEvent) and self.rect.collide_with_point(
+                event.x, event.y
+        ):
+            self.pressed = True
+            return True
 
         if self.pressed and isinstance(event, UIMouseReleaseEvent):
             self.pressed = False
@@ -379,7 +389,7 @@ class TextArea(Widget):
         self.doc.set_style(0, 12, dict(
             font_name=font_name,
             font_size=font_size,
-            color=text_color
+            color=arcade.get_four_byte_color(text_color)
         ))
 
         self.layout = pyglet.text.layout.ScrollableTextLayout(self.doc,
@@ -409,21 +419,21 @@ class TextArea(Widget):
         l = self.layout
 
         l.begin_update()
-        l.x, l.y, l.width, l.height = self.rect
+        l.x, l.y, l.width, l.height = 0, 0, self.width, self.height
         l.end_update()
 
     def render(self, surface: Surface, force=False):
         if self.rendered and not force:
             return
         self.rendered = True
-        print("Lay:", self.layout.position)
-        print("Rec:", self.rect)
 
         with surface.ctx.pyglet_rendering():
             self.layout.default_group_class.scissor_area = self.rect.scale(surface.pixel_ratio)
             self.layout.draw()
 
     def on_event(self, event: UIEvent):
+        super().on_event(event)
+
         if isinstance(event, UIMouseScrollEvent):
             if point_in_rect(event.x, event.y, *self.rect):
                 self.layout.view_y += event.scroll_y
@@ -450,6 +460,7 @@ class InputText(Widget):
         self.caret = pyglet.text.caret.Caret(self.layout, color=(0, 0, 0))
 
     def on_event(self, event: UIEvent):
+        super().on_event(event)
         self.rendered = False
         self.parent.rendered = False  # TODO we could have a method to request enforced rendering
 
@@ -577,7 +588,7 @@ class FlatButton(InteractiveWidget):
         self.rendered = False
 
 
-class Wrapper(Widget):
+class Wrapper(Widget, WidgetParent):
     """
     Wraps a Widget and reserves space around
     """
@@ -595,6 +606,9 @@ class Wrapper(Widget):
         super().__init__(*child.rect)
 
         self._pad = padding
+
+    def remove(self, child: Widget):
+        self.parent.remove(self)
 
     @property
     def rect(self) -> Rect:
@@ -626,6 +640,7 @@ class Wrapper(Widget):
         return self.child.do_layout()
 
     def on_event(self, event: UIEvent):
+        super().on_event(event)
         self.child.dispatch_event("on_event", event)
 
     def render(self, surface: Surface, force=False):
@@ -765,7 +780,7 @@ class Padding(Wrapper):
         self.child.render(surface, force=True)
 
 
-class Group(Widget):
+class Group(Widget, WidgetParent):
     """
     Group of Widgets
     """
@@ -798,6 +813,7 @@ class Group(Widget):
             child.on_update(dt)
 
     def on_event(self, event: UIEvent):
+        super().on_event(event)
         for child in self._children:
             child.dispatch_ui_event(event)
 
@@ -860,3 +876,10 @@ class BoxGroup(Group):
             self._children_modified = False
             # Requires rerender
             return True
+
+
+class DraggableMixin(Widget):
+    def on_event(self, event):
+        super().on_event(event)
+        if isinstance(event, UIMouseDragEvent) and self.rect.collide_with_point(event.x, event.y):
+            self.rect = self.rect.move(event.dx, event.dy)

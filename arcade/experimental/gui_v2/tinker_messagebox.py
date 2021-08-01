@@ -1,9 +1,7 @@
 import arcade
 from arcade.examples.perf_test.stress_test_draw_shapes import FPSCounter
 from arcade.experimental.gui_v2 import UIManager
-from arcade.experimental.gui_v2.events import UIOnClickEvent
-from arcade.experimental.gui_v2.widgets import TextArea, FlatButton, \
-    AnchorWidget, Group
+from arcade.experimental.gui_v2.constructs import OKMessageBox
 
 LOREM_IPSUM = """Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eget pellentesque velit. Nam eu rhoncus nulla. Fusce ornare libero eget ex vulputate, vitae mattis orci eleifend. Donec quis volutpat arcu. Proin lacinia velit id imperdiet ultrices. Fusce porta magna leo, non maximus justo facilisis vel. Duis pretium sem ut eros scelerisque, a dignissim ante pellentesque. Cras rutrum aliquam fermentum. Donec id mollis mi.
 
@@ -19,36 +17,20 @@ class UIMockup(arcade.Window):
         self.fps = FPSCounter()
         arcade.set_background_color(arcade.color.COOL_GREY)
 
-        ok_button = FlatButton(text="OK")
-        ok_button.on_click = self.on_button_click
-        message_text = TextArea(text="Are", x=252, y=198, width=300, height=200).with_border(color=arcade.color.RED)
-
-        # Option 1: works
-        # self.manager.add(message_text)
-
-        # Option 2: not working
-        self.manager.add(AnchorWidget(child=message_text, anchor_x="left", anchor_y="bottom", align_x=252, align_y=198))
-
-        # Option 3: not working
-        # self.manager.add(
-        #     AnchorWidget(
-        #         child=Group(width=320, height=220, children=[
-        #             AnchorWidget(child=message_text, anchor_x="left", anchor_y="top", align_x=10, align_y=-10),
-        #             AnchorWidget(child=ok_button, anchor_x="right", anchor_y="bottom", align_x=-10, align_y=10)
-        #         ]).with_border())
-        # )
-
-        print(f"Render {len(self.manager._children[0])} widgets")
-
-    def on_button_click(self, event: UIOnClickEvent):
-        print(event)
+        self.manager.add(
+            OKMessageBox(
+                width=300,
+                height=200,
+                text=(
+                    "You should have a look on the new GUI features "
+                    "coming up with arcade 2.6!"
+                ))
+        )
 
     def on_draw(self):
         self.fps.tick()
         arcade.start_render()
         self.manager.draw()
-        # arcade.draw_text(f"{self.fps.get_fps():.0f}", self.width // 2, self.height // 2, color=arcade.color.RED,
-        #                  font_size=20)
 
     def on_update(self, time_delta):
         self.manager.on_update(time_delta)

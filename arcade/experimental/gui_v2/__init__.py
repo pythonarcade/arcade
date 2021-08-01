@@ -60,6 +60,12 @@ class UIManager(pyglet.event.EventDispatcher, WidgetParent):
         widget.parent = self
         return widget
 
+    def remove(self, child: Widget):
+        for children in self._children.values():
+            if child in children:
+                children.remove(child)
+                self.rendered = False
+
     def _get_surface(self, layer: int):
         if layer not in self._surfaces:
             if len(self._surfaces) > 2:
