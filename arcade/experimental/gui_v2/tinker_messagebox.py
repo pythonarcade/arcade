@@ -21,15 +21,22 @@ class UIMockup(arcade.Window):
 
         ok_button = FlatButton(text="OK")
         ok_button.on_click = self.on_button_click
-        message_text = TextArea(text="Are", width=300, height=200).with_border(color=arcade.color.RED)
+        message_text = TextArea(text="Are", x=252, y=198, width=300, height=200).with_border(color=arcade.color.RED)
 
-        self.manager.add(
-            AnchorWidget(
-                child=Group(width=320, height=220, children=[
-                    AnchorWidget(child=message_text, anchor_x="left", anchor_y="top", align_x=10, align_y=-10),
-                    AnchorWidget(child=ok_button, anchor_x="right", anchor_y="bottom", align_x=-10, align_y=10)
-                ]).with_border())
-        )
+        # Option 1: works
+        # self.manager.add(message_text)
+
+        # Option 2: not working
+        self.manager.add(AnchorWidget(child=message_text, anchor_x="left", anchor_y="bottom", align_x=252, align_y=198))
+
+        # Option 3: not working
+        # self.manager.add(
+        #     AnchorWidget(
+        #         child=Group(width=320, height=220, children=[
+        #             AnchorWidget(child=message_text, anchor_x="left", anchor_y="top", align_x=10, align_y=-10),
+        #             AnchorWidget(child=ok_button, anchor_x="right", anchor_y="bottom", align_x=-10, align_y=10)
+        #         ]).with_border())
+        # )
 
         print(f"Render {len(self.manager._children[0])} widgets")
 
@@ -64,6 +71,7 @@ class UIMockup(arcade.Window):
 
     def on_mouse_scroll(self, x: int, y: int, scroll_x: int, scroll_y: int):
         self.manager.on_mouse_scroll(x, y, scroll_x, scroll_y)
+        self.manager._render(True)
 
     def on_text(self, text):
         self.manager.on_text(text)
