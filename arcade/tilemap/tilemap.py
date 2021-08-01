@@ -106,7 +106,10 @@ class TileMap:
         self,
         map_file: Union[str, Path],
         scaling: float = 1.0,
-        layer_options: Optional[Dict[str, Dict[str, Any]]] = None,
+        use_spatial_hash: Optional[bool] = None,
+        hit_box_algorithm: str = "Simple",
+        hit_box_detail: float = 4.5,
+        layer_options: Optional[Dict[str, Dict[str, Any]]] = None
     ) -> None:
         """
         Given a .json file, this will read in a Tiled map file, and
@@ -137,6 +140,12 @@ class TileMap:
         :param Union[str, Path] map_file: The JSON map file.
         :param float scaling: Global scaling to apply to all Sprites.
         :param Dict[str, Dict[str, Any]] layer_options: Extra parameters for each layer.
+        :param Optional[bool] use_spatial_hash: If set to True, this will make moving a sprite
+               in the SpriteList slower, but it will speed up collision detection
+               with items in the SpriteList. Great for doing collision detection
+               with static walls/platforms.
+        :param str hit_box_algorithm: One of 'None', 'Simple' or 'Detailed'.
+        :param float hit_box_detail: Float, defaults to 4.5. Used with 'Detailed' to hit box.
         """
 
         # If we should pull from local resources, replace with proper path
@@ -163,11 +172,16 @@ class TileMap:
         if not layer_options:
             layer_options = {}
 
+        global_options = {"use_spatial_hash": use_spatial_hash,
+                          "hit_box_algorithm": hit_box_algorithm,
+                          "hit_box_detail": hit_box_detail}
+
         for layer in self.tiled_map.layers:
             processed: Union[
                 SpriteList, Tuple[Optional[SpriteList], Optional[List[TiledObject]]]
             ]
-            options = layer_options[layer.name] if layer.name in layer_options else {}
+            options = dict(global_options, **layer_options[layer.name]) if layer.name in layer_options \
+                else global_options
             if isinstance(layer, pytiled_parser.TileLayer):
                 processed = self._process_tile_layer(layer, **options)
                 self.sprite_lists[layer.name] = processed
@@ -752,7 +766,10 @@ class TileMap:
 def load_tilemap(
     map_file: Union[str, Path],
     scaling: float = 1.0,
-    layer_options: Optional[Dict[str, Dict[str, Any]]] = None,
+    use_spatial_hash: Optional[bool] = None,
+    hit_box_algorithm: str = "Simple",
+    hit_box_detail: float = 4.5,
+    layer_options: Optional[Dict[str, Dict[str, Any]]] = None
 ) -> TileMap:
     """
     Given a .json map file, loads in and returns a `TileMap` object.
@@ -765,9 +782,15 @@ def load_tilemap(
 
     :param Union[str, Path] map_file: The JSON map file.
     :param float scaling: The global scaling to apply to all Sprite's within the map.
+    :param Optional[bool] use_spatial_hash: If set to True, this will make moving a sprite
+               in the SpriteList slower, but it will speed up collision detection
+               with items in the SpriteList. Great for doing collision detection
+               with static walls/platforms.
+    :param str hit_box_algorithm: One of 'None', 'Simple' or 'Detailed'.
+    :param float hit_box_detail: Float, defaults to 4.5. Used with 'Detailed' to hit box.
     :param Dict[str, Dict[str, Any]] layer_options: Layer specific options for the map.
     """
-    return TileMap(map_file, scaling, layer_options)
+    return TileMap(map_file, scaling, use_spatial_hash, hit_box_algorithm, hit_box_detail, layer_options)
 
 
 def read_tmx(map_file: Union[str, Path]) -> pytiled_parser.TiledMap:
