@@ -105,10 +105,10 @@ class TileMap:
         self,
         map_file: Union[str, Path],
         scaling: float = 1.0,
+        layer_options: Optional[Dict[str, Dict[str, Any]]] = None,
         use_spatial_hash: Optional[bool] = None,
         hit_box_algorithm: str = "Simple",
         hit_box_detail: float = 4.5,
-        layer_options: Optional[Dict[str, Dict[str, Any]]] = None,
     ) -> None:
         """
         Given a .json file, this will read in a Tiled map file, and
@@ -159,7 +159,12 @@ class TileMap:
         self.tile_width = self.tiled_map.tile_size.width
         self.tile_height = self.tiled_map.tile_size.height
         self.background_color = self.tiled_map.background_color
+
+        # Global Layer Defaults
         self.scaling = scaling
+        self.use_spatial_hash = use_spatial_hash
+        self.hit_box_algorithm = hit_box_algorithm
+        self.hit_box_detail = hit_box_detail
 
         # Dictionaries to store the SpriteLists for processed layers
         self.sprite_lists: OrderedDict[str, SpriteList] = OrderedDict[str, SpriteList]()
@@ -168,24 +173,33 @@ class TileMap:
         ]()
         self.properties = self.tiled_map.properties
 
-        if not layer_options:
-            layer_options = {}
-
-        global_options = {
-            "use_spatial_hash": use_spatial_hash,
-            "hit_box_algorithm": hit_box_algorithm,
-            "hit_box_detail": hit_box_detail,
-        }
-
         for layer in self.tiled_map.layers:
             processed: Union[
                 SpriteList, Tuple[Optional[SpriteList], Optional[List[TiledObject]]]
             ]
-            options = (
-                dict(global_options, **layer_options[layer.name])
-                if layer.name in layer_options
-                else global_options
-            )
+
+            global_options = {
+                "scaling": self.scaling,
+                "use_spatial_hash": self.use_spatial_hash,
+                "hit_box_algorithm": self.hit_box_algorithm,
+                "hit_box_detail": self.hit_box_detail,
+            }
+
+            options = global_options
+
+            print(layer.name)
+            print(options)
+
+            if layer_options:
+                if layer.name in layer_options:
+                    new_options = {
+                        key: layer_options[layer.name].get(key, global_options[key])
+                        for key in global_options
+                    }
+                    options = new_options
+
+            print(options)
+
             if isinstance(layer, pytiled_parser.TileLayer):
                 processed = self._process_tile_layer(layer, **options)
                 self.sprite_lists[layer.name] = processed
@@ -307,14 +321,11 @@ class TileMap:
     def _create_sprite_from_tile(
         self,
         tile: pytiled_parser.Tile,
-        scaling: Optional[float] = None,
+        scaling: float = 1.0,
         hit_box_algorithm: str = "Simple",
         hit_box_detail: float = 4.5,
     ) -> Sprite:
         """Given a tile from the parser, try and create a Sprite from it."""
-
-        if not scaling:
-            scaling = self.scaling
 
         # --- Step 1, Find a reference to an image this is going to be based off of
         map_source = self.tiled_map.map_file
@@ -469,14 +480,11 @@ class TileMap:
     def _process_image_layer(
         self,
         layer: pytiled_parser.ImageLayer,
-        scaling: Optional[float] = None,
+        scaling: float = 1.0,
         use_spatial_hash: Optional[bool] = None,
         hit_box_algorithm: str = "Simple",
         hit_box_detail: float = 4.5,
     ) -> SpriteList:
-
-        if not scaling:
-            scaling = self.scaling
 
         sprite_list: SpriteList = SpriteList(use_spatial_hash=use_spatial_hash)
 
@@ -542,14 +550,11 @@ class TileMap:
     def _process_tile_layer(
         self,
         layer: pytiled_parser.TileLayer,
-        scaling: Optional[float] = None,
+        scaling: float = 1.0,
         use_spatial_hash: Optional[bool] = None,
         hit_box_algorithm: str = "Simple",
         hit_box_detail: float = 4.5,
     ) -> SpriteList:
-
-        if not scaling:
-            scaling = self.scaling
 
         sprite_list: SpriteList = SpriteList(use_spatial_hash=use_spatial_hash)
         map_array = layer.data
@@ -607,7 +612,7 @@ class TileMap:
     def _process_object_layer(
         self,
         layer: pytiled_parser.ObjectLayer,
-        scaling: Optional[float] = None,
+        scaling: float = 1.0,
         use_spatial_hash: Optional[bool] = None,
         hit_box_algorithm: str = "Simple",
         hit_box_detail: float = 4.5,
@@ -770,10 +775,10 @@ class TileMap:
 def load_tilemap(
     map_file: Union[str, Path],
     scaling: float = 1.0,
+    layer_options: Optional[Dict[str, Dict[str, Any]]] = None,
     use_spatial_hash: Optional[bool] = None,
     hit_box_algorithm: str = "Simple",
     hit_box_detail: float = 4.5,
-    layer_options: Optional[Dict[str, Dict[str, Any]]] = None,
 ) -> TileMap:
     """
     Given a .json map file, loads in and returns a `TileMap` object.
@@ -797,10 +802,10 @@ def load_tilemap(
     return TileMap(
         map_file,
         scaling,
+        layer_options,
         use_spatial_hash,
         hit_box_algorithm,
         hit_box_detail,
-        layer_options,
     )
 
 
