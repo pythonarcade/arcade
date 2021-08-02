@@ -73,8 +73,7 @@ class _SpatialHash:
                 # append to each intersecting cell
                 bucket = self.contents.setdefault((i, j), [])
                 buckets.append(bucket)
-                if new_object not in bucket:
-                    bucket.append(new_object)
+                bucket.append(new_object)
 
         self.buckets_for_sprite[new_object] = buckets
 
