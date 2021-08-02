@@ -173,44 +173,56 @@ class TileMap:
         ]()
         self.properties = self.tiled_map.properties
 
+        global_options = {
+            "scaling": self.scaling,
+            "use_spatial_hash": self.use_spatial_hash,
+            "hit_box_algorithm": self.hit_box_algorithm,
+            "hit_box_detail": self.hit_box_detail,
+        }
+
         for layer in self.tiled_map.layers:
-            processed: Union[
-                SpriteList, Tuple[Optional[SpriteList], Optional[List[TiledObject]]]
-            ]
+            self._process_layer(layer, global_options, layer_options)
 
-            global_options = {
-                "scaling": self.scaling,
-                "use_spatial_hash": self.use_spatial_hash,
-                "hit_box_algorithm": self.hit_box_algorithm,
-                "hit_box_detail": self.hit_box_detail,
-            }
+    def _process_layer(
+        self,
+        layer: pytiled_parser.Layer,
+        global_options: Dict[str, Any],
+        layer_options: Optional[Dict[str, Dict[str, Any]]] = None,
+    ) -> None:
 
-            options = global_options
+        processed: Union[
+            SpriteList, Tuple[Optional[SpriteList], Optional[List[TiledObject]]]
+        ]
 
-            if layer_options:
-                if layer.name in layer_options:
-                    new_options = {
-                        key: layer_options[layer.name].get(key, global_options[key])
-                        for key in global_options
-                    }
-                    options = new_options
+        options = global_options
 
-            if isinstance(layer, pytiled_parser.TileLayer):
-                processed = self._process_tile_layer(layer, **options)
-                self.sprite_lists[layer.name] = processed
-            elif isinstance(layer, pytiled_parser.ObjectLayer):
-                processed = self._process_object_layer(layer, **options)
-                if processed[0]:
-                    sprite_list = processed[0]
-                    if sprite_list:
-                        self.sprite_lists[layer.name] = sprite_list
-                if processed[1]:
-                    object_list = processed[1]
-                    if object_list:
-                        self.object_lists[layer.name] = object_list
-            elif isinstance(layer, pytiled_parser.ImageLayer):
-                processed = self._process_image_layer(layer, **options)
-                self.sprite_lists[layer.name] = processed
+        if layer_options:
+            if layer.name in layer_options:
+                new_options = {
+                    key: layer_options[layer.name].get(key, global_options[key])
+                    for key in global_options
+                }
+                options = new_options
+
+        if isinstance(layer, pytiled_parser.TileLayer):
+            processed = self._process_tile_layer(layer, **options)
+            self.sprite_lists[layer.name] = processed
+        elif isinstance(layer, pytiled_parser.ObjectLayer):
+            processed = self._process_object_layer(layer, **options)
+            if processed[0]:
+                sprite_list = processed[0]
+                if sprite_list:
+                    self.sprite_lists[layer.name] = sprite_list
+            if processed[1]:
+                object_list = processed[1]
+                if object_list:
+                    self.object_lists[layer.name] = object_list
+        elif isinstance(layer, pytiled_parser.ImageLayer):
+            processed = self._process_image_layer(layer, **options)
+            self.sprite_lists[layer.name] = processed
+        elif isinstance(layer, pytiled_parser.LayerGroup):
+            for sub_layer in layer.layers:
+                self._process_layer(sub_layer, global_options, layer_options)
 
     def get_cartesian(
         self,
