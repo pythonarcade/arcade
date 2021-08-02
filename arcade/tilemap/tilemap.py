@@ -181,6 +181,11 @@ class TileMap:
         }
 
         for layer in self.tiled_map.layers:
+            if (layer.name in self.sprite_lists) or (layer.name in self.object_lists):
+                raise AttributeError(
+                    f"You have a duplicate layer name '{layer.name}' in your Tiled map. "
+                    "Please use unique names for all layers and tilesets in your map."
+                )
             self._process_layer(layer, global_options, layer_options)
 
     def _process_layer(
