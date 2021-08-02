@@ -499,12 +499,10 @@ class Sprite:
         # This happens if our point list is empty, such as a completely
         # transparent sprite.
         if len(points) == 0:
-            return self.center_x
+            return self.center_y
 
-        my_min = points[0][1]
-        for point in range(1, len(points)):
-            my_min = min(my_min, points[point][1])
-        return my_min
+        y_points = [point[1] for point in points]
+        return min(y_points)
 
     def _set_bottom(self, amount: float):
         """
@@ -525,12 +523,10 @@ class Sprite:
         # This happens if our point list is empty, such as a completely
         # transparent sprite.
         if len(points) == 0:
-            return self.center_x
+            return self.center_y
 
-        my_max = points[0][1]
-        for i in range(1, len(points)):
-            my_max = max(my_max, points[i][1])
-        return my_max
+        y_points = [point[1] for point in points]
+        return max(y_points)
 
     def _set_top(self, amount: float):
         """The highest y coordinate."""
@@ -712,10 +708,8 @@ class Sprite:
         if len(points) == 0:
             return self.center_x
 
-        my_min = points[0][0]
-        for i in range(1, len(points)):
-            my_min = min(my_min, points[i][0])
-        return my_min
+        x_points = [point[0] for point in points]
+        return min(x_points)
 
     def _set_left(self, amount: float):
         """The left most x coordinate."""
@@ -737,10 +731,8 @@ class Sprite:
         if len(points) == 0:
             return self.center_x
 
-        my_max = points[0][0]
-        for point in range(1, len(points)):
-            my_max = max(my_max, points[point][0])
-        return my_max
+        x_points = [point[0] for point in points]
+        return max(x_points)
 
     def _set_right(self, amount: float):
         """The right most x coordinate."""
