@@ -371,11 +371,11 @@ class Sprite:
         def _adjust_point(point):
 
             # Rotate the point
-            if self.angle:
-                point = rotate_point(point[0], point[1], 0, 0, self.angle)
+            if self._angle:
+                point = rotate_point(point[0], point[1], 0, 0, self._angle)
 
             # Get a copy of the point
-            point = [point[0] * self.scale + self.center_x, point[1] * self.scale + self.center_y]
+            point = [point[0] * self._scale + self.position[0], point[1] * self._scale + self.position[1]]
 
             return point
 
