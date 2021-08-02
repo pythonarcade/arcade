@@ -374,7 +374,9 @@ def check_for_collision_with_lists(sprite: Sprite,
 
 def get_sprites_at_point(point: Point, sprite_list: SpriteList) -> List[Sprite]:
     """
-    Get a list of sprites at a particular point
+    Get a list of sprites at a particular point. This function sees if any sprite overlaps
+    the specified point. If a sprite has a different center_x/center_y but touches the point,
+    this will return that sprite.
 
     :param Point point: Point to check
     :param SpriteList sprite_list: SpriteList to check against
@@ -403,7 +405,8 @@ def get_sprites_at_point(point: Point, sprite_list: SpriteList) -> List[Sprite]:
 
 def get_sprites_at_exact_point(point: Point, sprite_list: SpriteList) -> List[Sprite]:
     """
-    Get a list of sprites at a particular point
+    Get a list of sprites whose center_x, center_y match the given point.
+    This does NOT return sprites that overlap the point, the center has to be an exact match.
 
     :param Point point: Point to check
     :param SpriteList sprite_list: SpriteList to check against
