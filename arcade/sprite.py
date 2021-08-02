@@ -368,30 +368,21 @@ class Sprite:
         if self._point_list_cache is not None:
             return self._point_list_cache
 
-        # Adjust the hitbox
-        point_list = []
-        for point in self.hit_box:
-            # Get a copy of the point
-            point = [point[0], point[1]]
-
-            # Scale the point
-            if self.scale != 1:
-                point[0] *= self.scale
-                point[1] *= self.scale
+        def _adjust_point(point):
 
             # Rotate the point
             if self.angle:
                 point = rotate_point(point[0], point[1], 0, 0, self.angle)
 
-            # Offset the point
-            point = [point[0] + self.center_x, point[1] + self.center_y]
-            point_list.append(point)
+            # Get a copy of the point
+            point = [point[0] * self.scale + self.center_x, point[1] * self.scale + self.center_y]
+
+            return point
+
+        point_list = [_adjust_point(point) for point in self.hit_box]
 
         # Cache the results
         self._point_list_cache = point_list
-
-        # if self.texture:
-        #     print(self.texture.name, self._point_list_cache)
 
         return self._point_list_cache
 
