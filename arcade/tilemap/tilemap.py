@@ -187,9 +187,6 @@ class TileMap:
 
             options = global_options
 
-            print(layer.name)
-            print(options)
-
             if layer_options:
                 if layer.name in layer_options:
                     new_options = {
@@ -197,8 +194,6 @@ class TileMap:
                         for key in global_options
                     }
                     options = new_options
-
-            print(options)
 
             if isinstance(layer, pytiled_parser.TileLayer):
                 processed = self._process_tile_layer(layer, **options)
