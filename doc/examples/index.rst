@@ -464,16 +464,6 @@ Resizable Window and Fullscreen Games
 Graphical User Interface
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. figure:: thumbs/gui_elements.png
-   :figwidth: 170px
-
-   :ref:`gui_elements`
-
-.. figure:: thumbs/gui_custom_style.png
-   :figwidth: 170px
-
-   :ref:`gui_custom_style`
-
 
 Grid-Based Games
 ----------------
