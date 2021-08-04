@@ -47,9 +47,9 @@ def _dispatch_event(self, *args):
         data.pop(0)
 
 
-def dump_timings():
+def print_timings():
     """
-    This dumps to stdout a table of the most recent dispatched events and
+    This prints to stdout a table of the most recent dispatched events and
     their average time.
 
     The table looks something like:
@@ -122,7 +122,7 @@ def disable_timings():
     clear_timings()
 
 
-def get_fps(frame_count: int = 30) -> float:
+def get_fps(frame_count: int = 60) -> float:
     """
     Get the current FPS.
     :func:`arcade.enable_timings` must be called before getting the FPS.

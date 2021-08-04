@@ -464,6 +464,7 @@ Resizable Window and Fullscreen Games
 Graphical User Interface
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
+(Placeholder for GUI examples)
 
 Grid-Based Games
 ----------------
@@ -613,15 +614,15 @@ Odds and Ends
 
    :ref:`sprite_collect_coins_background`
 
-.. figure:: thumbs/sprite_collect_coins_with_stats.png
-   :figwidth: 170px
-
-   :ref:`sprite_collect_coins_with_stats`
-
 .. figure:: thumbs/timer.png
    :figwidth: 170px
 
    :ref:`timer`
+
+.. figure:: thumbs/performance_statistics.png
+   :figwidth: 170px
+
+   :ref:`performance_statistics_example`
 
 .. figure:: thumbs/texture_transform.png
    :figwidth: 170px

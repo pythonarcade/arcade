@@ -23,6 +23,7 @@ titles = {
     'particle.py': ['Particles', 'particle_emitter.rst'],
     'paths.py': ['Pathfinding', 'path_finding.rst'],
     'perf_info.py': ['Performance Information', 'perf_info.rst'],
+    'perf_graph.py': ['Performance Information', 'perf_info.rst'],
     'physics_engines.py': ['Physics Engines', 'physics_engines.rst'],
     'pymunk_physics_engine.py': ['Physics Engines', 'physics_engines.rst'],
     'sound.py': ['Sound', 'sound.rst'],
@@ -191,6 +192,8 @@ def process_directory(directory, quick_index_file):
         api_file = open(full_api_file_name, "a")
 
         if new_api_file:
+            api_file.write(f".. _{api_file_name[:-4]}_api:")
+            api_file.write(f"\n\n")
             api_file.write(f"{title}\n")
             underline = "-" * len(title)
             api_file.write(f"{underline}\n\n")

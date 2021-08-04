@@ -275,12 +275,14 @@ from .texture_atlas import TextureAtlas
 from .texture_atlas import AtlasRegion
 
 from .perf_info import enable_timings
-from .perf_info import dump_timings
+from .perf_info import print_timings
 from .perf_info import get_fps
 from .perf_info import get_timings
 from .perf_info import clear_timings
 from .perf_info import timings_enabled
 from .perf_info import disable_timings
+
+from .perf_graph import PerfGraph
 
 
 # noinspection PyPep8
@@ -331,6 +333,7 @@ __all__ = ['AStarBarrierList',
            'NamedPoint',
            'NoOpenGLException',
            'Particle',
+           'PerfGraph',
            'PhysicsEnginePlatformer',
            'PhysicsEngineSimple',
            'Point',

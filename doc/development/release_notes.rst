@@ -57,7 +57,6 @@ and the documentation.
      :width: 50%
      :alt: Screenshot of drawing text
 
-
 * SpriteList optimizations.
 
   * Sprites now draw even faster than before. On an Intel i7 with nVidia 980 Ti graphics card,
@@ -98,6 +97,14 @@ and the documentation.
   * For an example of this see the example: :ref:`sprite_move_scrolling`.
   * Automatic camera shake can be added in, see the example: :ref:`sprite_move_scrolling_shake`.
 
+* Add a set of functions to track performance statistics. See :ref:`perf_info_api`.
+* Added the class :class:`arcade.PerfGraph`, a subclass of Sprite that will graph FPS or time to process a dispatch-able
+  event line 'update' or 'on_draw'.
+
+  .. image:: ../examples/performance_statistics.png
+     :width: 50%
+     :alt: Screenshot of performance statistics
+
 * Documentation
 
   * Lots of individual documentation updates for commands.
@@ -113,6 +120,7 @@ and the documentation.
   * Revamped tutorial: :ref:`platformer_tutorial`.
   * Revamped minimap example: :ref:`minimap`.
   * Moved from AWS hosting to read-the-docs hosting so we can support multiple versions of docs.
+  * New example showing how to use the new performance statistics API: :ref:`performance_statistics_example`
 
 * API commands
 
@@ -289,7 +297,7 @@ Documentation
 * Add :ref:`conway_alpha` example showing how to use alpha to control display
   of sprites in a grid.
 * Improve documentation around sound API.
-* Improve documentation with FPS and timing stats example :ref:`sprite_collect_coins_with_stats`.
+* Improve documentation with FPS and timing stats example.
 * Improve moving platform docs a bit in :ref:`platformer_tutorial` tutorial.
 
 Version 2.4.3
