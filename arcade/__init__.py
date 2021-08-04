@@ -274,6 +274,15 @@ from .context import ArcadeContext
 from .texture_atlas import TextureAtlas
 from .texture_atlas import AtlasRegion
 
+from .perf_info import enable_timings
+from .perf_info import dump_timings
+from .perf_info import get_fps
+from .perf_info import get_timings
+from .perf_info import clear_timings
+from .perf_info import timings_enabled
+from .perf_info import disable_timings
+
+
 # noinspection PyPep8
 from arcade import experimental
 
@@ -382,6 +391,7 @@ __all__ = ['AStarBarrierList',
            'create_text_image',
            'create_text_sprite',
            'create_triangles_filled_with_colors',
+           'disable_timings',
            'draw_arc_filled',
            'draw_arc_outline',
            'draw_circle_filled',
@@ -411,6 +421,7 @@ __all__ = ['AStarBarrierList',
            'draw_xywh_rectangle_filled',
            'draw_xywh_rectangle_outline',
            'earclip',
+           'enable_timings',
            'finish_render',
            'get_closest_sprite',
            'get_display_size',
@@ -429,6 +440,8 @@ __all__ = ['AStarBarrierList',
            'get_screens',
            'get_sprites_at_exact_point',
            'get_sprites_at_point',
+           'get_timings',
+           'clear_timings',
            'create_text_image',
            'get_viewport',
            'get_window',
@@ -473,6 +486,7 @@ __all__ = ['AStarBarrierList',
            'set_window',
            'start_render',
            'stop_sound',
+           'timings_enabled',
            'trim_image',
            'unschedule',
            ]

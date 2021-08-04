@@ -22,6 +22,7 @@ titles = {
     'joysticks.py': ['Game Controller Support', 'game_controller.rst'],
     'particle.py': ['Particles', 'particle_emitter.rst'],
     'paths.py': ['Pathfinding', 'path_finding.rst'],
+    'perf_info.py': ['Performance Information', 'perf_info.rst'],
     'physics_engines.py': ['Physics Engines', 'physics_engines.rst'],
     'pymunk_physics_engine.py': ['Physics Engines', 'physics_engines.rst'],
     'sound.py': ['Sound', 'sound.rst'],
