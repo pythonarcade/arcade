@@ -7,7 +7,7 @@ from typing import Tuple, Union, Iterable, NamedTuple, Sequence
 from PIL import Image, ImageDraw, ImageOps, ImageFont
 
 from arcade import Color, DEFAULT_FONT_NAMES
-from arcade.utils import generate_uuid
+from arcade.utils import generate_uuid_from_kwargs
 
 TEXT_SCALE_ALIASED = 2
 LEGACY_FONT_SIZE_MODE = True
@@ -257,7 +257,7 @@ def create_text(
     if padding is None:
         padding = Padding()
 
-    text_image_uuid = generate_uuid(
+    text_image_uuid = generate_uuid_from_kwargs(
         # Text props
         text=text,
         font_name=font_name,

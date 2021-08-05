@@ -117,7 +117,7 @@ class UIImageButton(UIClickable):
             font_color=font_color,
             bg_image=self._normal_texture.image,
         )
-        normal_image_uuid = text_utils.generate_uuid(
+        normal_image_uuid = text_utils.generate_uuid_from_kwargs(
             text=text,
             font_name=font_name,
             font_size=font_size,
@@ -136,7 +136,7 @@ class UIImageButton(UIClickable):
                 font_color=font_color_hover,
                 bg_image=self._hover_texture.image,
             )
-            hover_image_uuid = text_utils.generate_uuid(
+            hover_image_uuid = text_utils.generate_uuid_from_kwargs(
                 text=text,
                 font_name=font_name,
                 font_size=font_size,
@@ -155,7 +155,7 @@ class UIImageButton(UIClickable):
                 font_color=font_color_press,
                 bg_image=self._press_texture.image,
             )
-            press_image_uuid = text_utils.generate_uuid(
+            press_image_uuid = text_utils.generate_uuid_from_kwargs(
                 text=text,
                 font_name=font_name,
                 font_size=font_size,

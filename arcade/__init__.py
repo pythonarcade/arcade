@@ -120,7 +120,7 @@ from .utils import rand_on_circle
 from .utils import rand_on_line
 from .utils import rand_vec_magnitude
 from .utils import rand_vec_spread_deg
-from .utils import generate_uuid
+from .utils import generate_uuid_from_kwargs
 
 from .hitbox import calculate_hit_box_points_detailed
 from .hitbox import calculate_hit_box_points_simple

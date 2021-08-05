@@ -8,6 +8,8 @@ python -m arcade.examples.minimap
 """
 
 import random
+from uuid import uuid4
+
 import arcade
 
 SPRITE_SCALING = 0.5
@@ -94,7 +96,7 @@ class MyGame(arcade.Window):
 
         # Construct the minimap
         texture_atlas = arcade.TextureAtlas((MINIMAP_WIDTH + 2, MINIMAP_HEIGHT + 2))
-        self.minimap_texture = arcade.Texture.create_empty(arcade.utils.generate_uuid(),
+        self.minimap_texture = arcade.Texture.create_empty(str(uuid4()),
                                                            (MINIMAP_WIDTH, MINIMAP_HEIGHT))
         self.minimap_sprite = arcade.Sprite(center_x=MINIMAP_WIDTH / 2,
                                             center_y=self.height - MINIMAP_HEIGHT / 2,
