@@ -31,10 +31,6 @@ class UIManager(pyglet.event.EventDispatcher, WidgetParent):
 
     manager.add(Dummy())
 
-    def on_update(dt):
-        # This will update all children and prepares the UI
-        manager.on_update(dt)
-
     def on_draw():
         arcade.start_render()
 
@@ -45,6 +41,7 @@ class UIManager(pyglet.event.EventDispatcher, WidgetParent):
     """
 
     def __init__(self, window: arcade.Window = None, auto_enable=False):
+        super().__init__()
         self.window = window or arcade.get_window()
         self._surfaces = {0: Surface(
             size=self.window.get_size(),
@@ -157,6 +154,21 @@ class UIManager(pyglet.event.EventDispatcher, WidgetParent):
         for layer in layers:
             self._get_surface(layer).draw()
 
+    def adjust_mouse_coordinates(self, x, y):
+        """
+        This method is used, to translate mouse coordinates to coordinates
+        respecting the viewport and projection of cameras.
+        The implementation should work in most common cases.
+
+        If you use scrolling in the :py:class:`arcade.Camera` you have to reset scrolling
+        or overwrite this method using the camera conversion: `ui_manager.adjust_mouse_coordinates = camera.mouse_coordinates_to_world`
+        """
+        vx, vy, vw, vh = self.window.ctx.viewport
+        pl, pr, pb, pt = self.window.ctx.projection_2d
+        proj_width, proj_height = pr - pl, pt - pb
+        dx, dy = proj_width / vw, proj_height / vh
+        return (x - vx) * dx, (y - vy) * dy
+
     def on_event(self, event):
         layers = sorted(self._children.keys(), reverse=True)
         for layer in layers:
@@ -169,18 +181,23 @@ class UIManager(pyglet.event.EventDispatcher, WidgetParent):
         self.dispatch_event("on_event", event)
 
     def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
+        x, y = self.adjust_mouse_coordinates(x, y)
         self.dispatch_ui_event(UIMouseMovementEvent(self, x, y, dx, dy))
 
     def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
+        x, y = self.adjust_mouse_coordinates(x, y)
         self.dispatch_ui_event(UIMousePressEvent(self, x, y, button, modifiers))
 
     def on_mouse_drag(self, x: float, y: float, dx: float, dy: float, buttons: int, modifiers: int):
+        x, y = self.adjust_mouse_coordinates(x, y)
         self.dispatch_ui_event(UIMouseDragEvent(self, x, y, dx, dy, buttons, modifiers))
 
     def on_mouse_release(self, x: float, y: float, button: int, modifiers: int):
+        x, y = self.adjust_mouse_coordinates(x, y)
         self.dispatch_ui_event(UIMouseReleaseEvent(self, x, y, button, modifiers))
 
     def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
+        x, y = self.adjust_mouse_coordinates(x, y)
         self.dispatch_ui_event(UIMouseScrollEvent(self, x, y, scroll_x, scroll_y))
 
     def on_key_press(self, symbol: int, modifiers: int):
