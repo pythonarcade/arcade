@@ -44,8 +44,8 @@ class UIManager(pyglet.event.EventDispatcher, WidgetParent):
 
     """
 
-    def __init__(self):
-        self.window = arcade.get_window()
+    def __init__(self, window: arcade.Window = None, auto_enable=False):
+        self.window = window or arcade.get_window()
         self._surfaces = {0: Surface(
             size=self.window.get_size(),
             pixel_ratio=self.window.get_pixel_ratio(),
@@ -54,6 +54,9 @@ class UIManager(pyglet.event.EventDispatcher, WidgetParent):
         self.rendered = False
 
         self.register_event_type("on_event")
+
+        if auto_enable:
+            self.enable()
 
     def add(self, widget: Widget, layer=0) -> Widget:
         self._children[layer].append(widget)
@@ -96,6 +99,50 @@ class UIManager(pyglet.event.EventDispatcher, WidgetParent):
                     child.render(surface, force)
 
         self.rendered = True
+
+    def enable(self):
+        """
+        Registers handler functions (`on_...`) to :py:attr:`arcade.gui.UIElement`
+
+        on_draw is not registered, to provide full control about draw order,
+        so it has to be called by the devs themselves.
+        """
+        self.window.push_handlers(
+            self.on_resize,
+            self.on_update,
+            self.on_mouse_drag,
+            self.on_mouse_motion,
+            self.on_mouse_press,
+            self.on_mouse_release,
+            self.on_mouse_scroll,
+            self.on_key_press,
+            self.on_key_release,
+            self.on_text,
+            self.on_text_motion,
+            self.on_text_motion_select,
+        )
+
+    def disable(self):
+        """
+        Remove handler functions (`on_...`) from :py:attr:`arcade.Window`
+
+        If every :py:class:`arcade.View` uses its own :py:class:`arcade.gui.UIManager`,
+        this method should be called in :py:meth:`arcade.View.on_hide_view()`.
+        """
+        self.window.remove_handlers(
+            self.on_resize,
+            self.on_update,
+            self.on_mouse_drag,
+            self.on_mouse_motion,
+            self.on_mouse_press,
+            self.on_mouse_release,
+            self.on_mouse_scroll,
+            self.on_key_press,
+            self.on_key_release,
+            self.on_text,
+            self.on_text_motion,
+            self.on_text_motion_select,
+        )
 
     def on_update(self, time_delta):
         layers = sorted(self._children.keys())
@@ -151,7 +198,7 @@ class UIManager(pyglet.event.EventDispatcher, WidgetParent):
     def on_text_motion_select(self, motion):
         self.dispatch_ui_event(UITextMotionSelectEvent(self, motion))
 
-    def resize(self, width, height):
+    def on_resize(self, width, height):
         scale = arcade.get_scaling_factor(self.window)
 
         for surface in self._surfaces.values():
