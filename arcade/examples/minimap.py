@@ -93,7 +93,7 @@ class MyGame(arcade.Window):
         arcade.set_background_color(arcade.color.AMAZON)
 
         # Construct the minimap
-        self.minimap_texture = arcade.Texture.create_empty(arcade.utils.generate_uuid(),
+        self.minimap_texture = arcade.Texture.create_empty(str(uuid4(),
                                                            (MINIMAP_WIDTH, MINIMAP_HEIGHT))
         self.minimap_sprite = arcade.Sprite(center_x=MINIMAP_WIDTH / 2,
                                             center_y=self.height - MINIMAP_HEIGHT / 2,
