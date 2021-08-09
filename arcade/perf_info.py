@@ -1,6 +1,7 @@
 """
 Utility functions to keep performance information
 """
+import collections
 from typing import Dict
 
 import pyglet
@@ -9,7 +10,7 @@ import time
 # Evil globals
 _timings: Dict = {}
 _pyglets_dispatch_event = None
-_frame_times = []
+_frame_times = collections.deque()
 _max_history: int = 100
 
 
@@ -36,7 +37,7 @@ def _dispatch_event(self, *args):
     if name in _timings:
         data = _timings[name]
     else:
-        data = []
+        data = collections.deque()
         _timings[name] = data
 
     # Add out time to the list
@@ -44,7 +45,7 @@ def _dispatch_event(self, *args):
 
     # Past out history limit? Pop off the first one on the list
     if len(data) > _max_history:
-        data.pop(0)
+        data.popleft()
 
 
 def print_timings():
