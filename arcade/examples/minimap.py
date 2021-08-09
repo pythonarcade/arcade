@@ -93,14 +93,13 @@ class MyGame(arcade.Window):
         arcade.set_background_color(arcade.color.AMAZON)
 
         # Construct the minimap
-        texture_atlas = arcade.TextureAtlas((MINIMAP_WIDTH + 2, MINIMAP_HEIGHT + 2))
         self.minimap_texture = arcade.Texture.create_empty(arcade.utils.generate_uuid(),
                                                            (MINIMAP_WIDTH, MINIMAP_HEIGHT))
         self.minimap_sprite = arcade.Sprite(center_x=MINIMAP_WIDTH / 2,
                                             center_y=self.height - MINIMAP_HEIGHT / 2,
                                             texture=self.minimap_texture)
 
-        self.minimap_sprite_list = arcade.SpriteList(atlas=texture_atlas)
+        self.minimap_sprite_list = arcade.SpriteList()
         self.minimap_sprite_list.append(self.minimap_sprite)
 
     def update_minimap(self):
