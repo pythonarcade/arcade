@@ -20,6 +20,10 @@ class UIMouseEvent(UIEvent):
     x: float
     y: float
 
+    @property
+    def pos(self):
+        return self.x, self.y
+
 
 @dataclass
 class UIMouseMovementEvent(UIMouseEvent):

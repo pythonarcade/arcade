@@ -5,7 +5,10 @@ from tests.test_gui_v2 import InteractionMixin
 
 
 class InteractionUIManager(UIManager, InteractionMixin):
-    pass
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.push_handlers(on_event=self._on_ui_event)
+
 
 
 @fixture

@@ -1,10 +1,14 @@
-from unittest.mock import Mock, call
+from unittest.mock import call, create_autospec
 
-from arcade.gui import UIManager
+import pytest
+
+import arcade
+from arcade.experimental.gui_v2 import UIManager
 
 
+@pytest.mark.usefixtures("window")
 def test_handler_pushed():
-    window = Mock()
+    window = create_autospec(arcade.Window)
 
     msg = UIManager(window)
     msg.enable()
@@ -30,7 +34,7 @@ def test_handler_pushed():
 
 
 def test_auto_enable_handler_pushed():
-    window = Mock()
+    window = create_autospec(arcade.Window)
 
     msg = UIManager(window, auto_enable=True)
 
@@ -53,8 +57,9 @@ def test_auto_enable_handler_pushed():
         ]
     )
 
+
 def test_handler_not_pushed():
-    window = Mock()
+    window = create_autospec(arcade.Window)
 
     _ = UIManager(window)
 
@@ -62,7 +67,7 @@ def test_handler_not_pushed():
 
 
 def test_handler_removed():
-    window = Mock()
+    window = create_autospec(arcade.Window)
     msg = UIManager(window)
 
     msg.disable()
