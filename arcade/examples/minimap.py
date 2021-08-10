@@ -8,7 +8,10 @@ python -m arcade.examples.minimap
 """
 
 import random
+from uuid import uuid4
+
 import arcade
+from arcade.math import Vec2
 
 SPRITE_SCALING = 0.5
 
@@ -93,8 +96,8 @@ class MyGame(arcade.Window):
         arcade.set_background_color(arcade.color.AMAZON)
 
         # Construct the minimap
-        self.minimap_texture = arcade.Texture.create_empty(str(uuid4(),
-                                                           (MINIMAP_WIDTH, MINIMAP_HEIGHT))
+        size = (MINIMAP_WIDTH, MINIMAP_HEIGHT)
+        self.minimap_texture = arcade.Texture.create_empty(str(uuid4()), size)
         self.minimap_sprite = arcade.Sprite(center_x=MINIMAP_WIDTH / 2,
                                             center_y=self.height - MINIMAP_HEIGHT / 2,
                                             texture=self.minimap_texture)
@@ -174,8 +177,8 @@ class MyGame(arcade.Window):
         """
 
         # Scroll to the proper location
-        position = self.player_sprite.center_x - self.width / 2, \
-            self.player_sprite.center_y - self.height / 2
+        position = Vec2(self.player_sprite.center_x - self.width / 2,
+                        self.player_sprite.center_y - self.height / 2)
         self.camera_sprites.move_to(position, CAMERA_SPEED)
 
     def on_resize(self, width, height):
