@@ -466,6 +466,11 @@ Graphical User Interface
 
    :ref:`gui_flat_button`
 
+.. figure:: thumbs/gui_widgets.png
+   :figwidth: 170px
+
+   :ref:`gui_widgets`
+
 
 Grid-Based Games
 ----------------

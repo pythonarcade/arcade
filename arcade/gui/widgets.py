@@ -382,7 +382,7 @@ class UITextureButton(UIInteractiveWidget):
 
 class UITextWidget(UIWidget):
     """ A text label. """
-    def __init__(self, x=0, y=0, width=100, height=200, text="",
+    def __init__(self, x=0, y=0, width=400, height=40, text="",
                  font_name=('Arial',),
                  font_size=12,
                  text_color=(255, 255, 255, 255),
