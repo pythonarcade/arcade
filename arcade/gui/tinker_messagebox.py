@@ -1,7 +1,7 @@
 import arcade
 from arcade.examples.perf_test.stress_test_draw_shapes import FPSCounter
-from arcade.experimental.gui_v2 import UIManager
-from arcade.experimental.gui_v2.constructs import OKMessageBox
+from arcade.gui import UIManager
+from arcade.gui.constructs import OKMessageBox
 
 LOREM_IPSUM = """Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eget pellentesque velit. Nam eu rhoncus nulla. Fusce ornare libero eget ex vulputate, vitae mattis orci eleifend. Donec quis volutpat arcu. Proin lacinia velit id imperdiet ultrices. Fusce porta magna leo, non maximus justo facilisis vel. Duis pretium sem ut eros scelerisque, a dignissim ante pellentesque. Cras rutrum aliquam fermentum. Donec id mollis mi.
 

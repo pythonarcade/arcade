@@ -1,14 +1,14 @@
 import arcade
-from arcade.experimental.gui_v2 import UIMousePressEvent, UIMouseReleaseEvent, UIKeyReleaseEvent
-from arcade.experimental.gui_v2.events import UIMouseScrollEvent, UIMouseMovementEvent, UIKeyPressEvent, UITextEvent, UITextMotionEvent, \
+from arcade.gui import UIMousePressEvent, UIMouseReleaseEvent, UIKeyReleaseEvent
+from arcade.gui.events import UIMouseScrollEvent, UIMouseMovementEvent, UIKeyPressEvent, UITextEvent, UITextMotionEvent, \
     UITextMotionSelectEvent
-from arcade.experimental.gui_v2.widgets import Dummy
+from arcade.gui.widgets import UIDummy
 from arcade.key import MOTION_UP
-from tests.test_gui_v2 import record_ui_events
+from tests.test_gui import record_ui_events
 
 
 def test_on_mouse_press_passes_an_event(uimanager):
-    uimanager.add(Dummy())
+    uimanager.add(UIDummy())
 
     with record_ui_events(uimanager, "on_event") as records:
         uimanager.on_mouse_press(1, 2, 3, 4)
@@ -22,7 +22,7 @@ def test_on_mouse_press_passes_an_event(uimanager):
 
 
 def test_on_mouse_release_passes_an_event(uimanager):
-    uimanager.add(Dummy())
+    uimanager.add(UIDummy())
 
     with record_ui_events(uimanager, "on_event") as records:
         uimanager.on_mouse_release(1, 2, 3, 4)
@@ -36,7 +36,7 @@ def test_on_mouse_release_passes_an_event(uimanager):
 
 
 def test_on_mouse_scroll_passes_an_event(uimanager):
-    uimanager.add(Dummy())
+    uimanager.add(UIDummy())
 
     with record_ui_events(uimanager, "on_event") as records:
         uimanager.on_mouse_scroll(1, 2, 3, 4)
@@ -50,7 +50,7 @@ def test_on_mouse_scroll_passes_an_event(uimanager):
 
 
 def test_on_mouse_motion_passes_an_event(uimanager):
-    uimanager.add(Dummy())
+    uimanager.add(UIDummy())
 
     with record_ui_events(uimanager, "on_event") as records:
         uimanager.on_mouse_motion(1, 2, 3, 4)
@@ -64,7 +64,7 @@ def test_on_mouse_motion_passes_an_event(uimanager):
 
 
 def test_on_key_press_passes_an_event(uimanager):
-    uimanager.add(Dummy())
+    uimanager.add(UIDummy())
 
     with record_ui_events(uimanager, "on_event") as records:
         uimanager.on_key_press(arcade.key.ENTER, 0)
@@ -76,7 +76,7 @@ def test_on_key_press_passes_an_event(uimanager):
 
 
 def test_on_key_release_passes_an_event(uimanager):
-    uimanager.add(Dummy())
+    uimanager.add(UIDummy())
 
     with record_ui_events(uimanager, "on_event") as records:
         uimanager.on_key_release(arcade.key.ENTER, 0)
@@ -88,7 +88,7 @@ def test_on_key_release_passes_an_event(uimanager):
 
 
 def test_on_text_passes_an_event(uimanager):
-    uimanager.add(Dummy())
+    uimanager.add(UIDummy())
 
     with record_ui_events(uimanager, "on_event") as records:
         uimanager.on_text("a")
@@ -99,7 +99,7 @@ def test_on_text_passes_an_event(uimanager):
 
 
 def test_on_text_motion_passes_an_event(uimanager):
-    uimanager.add(Dummy())
+    uimanager.add(UIDummy())
 
     with record_ui_events(uimanager, "on_event") as records:
         uimanager.on_text_motion(MOTION_UP)
@@ -110,7 +110,7 @@ def test_on_text_motion_passes_an_event(uimanager):
 
 
 def test_on_text_motion_selection_passes_an_event(uimanager):
-    uimanager.add(Dummy())
+    uimanager.add(UIDummy())
 
     with record_ui_events(uimanager, "on_event") as records:
         uimanager.on_text_motion_select(MOTION_UP)

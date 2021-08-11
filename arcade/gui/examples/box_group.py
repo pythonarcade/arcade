@@ -1,7 +1,6 @@
 import arcade
-from arcade import MOUSE_BUTTON_LEFT, MOUSE_BUTTON_RIGHT
-from arcade.experimental.gui_v2 import UIManager
-from arcade.experimental.gui_v2.widgets import Dummy, AnchorWidget, BoxGroup, Space
+from arcade.gui import UIManager
+from arcade.gui.widgets import UIDummy, UIAnchorWidget, UIBoxGroup, UISpace
 
 
 class UIMockup(arcade.Window):
@@ -11,15 +10,15 @@ class UIMockup(arcade.Window):
         self.manager.enable()
         arcade.set_background_color(arcade.color.DARK_BLUE_GRAY)
 
-        self.v_box = BoxGroup(
+        self.v_box = UIBoxGroup(
             x=0, y=0,
             children=[
-                Dummy(width=200, color=arcade.color.RED).with_space_around(bottom=20),
-                Dummy(width=200, color=arcade.color.YELLOW).with_space_around(bottom=20),
-                Dummy(width=200, color=arcade.color.GREEN).with_space_around(bottom=20),
+                UIDummy(width=200, color=arcade.color.RED).with_space_around(bottom=20),
+                UIDummy(width=200, color=arcade.color.YELLOW).with_space_around(bottom=20),
+                UIDummy(width=200, color=arcade.color.GREEN).with_space_around(bottom=20),
             ])
         self.manager.add(
-            AnchorWidget(
+            UIAnchorWidget(
                 anchor_x="center_x",
                 # x_align=-50,
                 anchor_y="center_y",
@@ -27,17 +26,17 @@ class UIMockup(arcade.Window):
                 child=self.v_box)
         )
 
-        self.h_box = BoxGroup(
+        self.h_box = UIBoxGroup(
             vertical=False,
             children=[
-                Dummy(width=100, color=arcade.color.RED),
-                Space(width=20, height=100),
-                Dummy(width=50, color=arcade.color.YELLOW).with_space_around(right=30),
-                Dummy(width=20, color=arcade.color.GREEN),
+                UIDummy(width=100, color=arcade.color.RED),
+                UISpace(width=20, height=100),
+                UIDummy(width=50, color=arcade.color.YELLOW).with_space_around(right=30),
+                UIDummy(width=20, color=arcade.color.GREEN),
             ])
 
         self.manager.add(
-            AnchorWidget(
+            UIAnchorWidget(
                 align_x=20,
                 anchor_x="left",
                 align_y=20,

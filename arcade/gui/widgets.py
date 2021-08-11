@@ -8,8 +8,8 @@ from pyglet.text.document import AbstractDocument
 
 import arcade
 from arcade import Texture, Sprite
-from arcade.experimental.gui_v2 import Surface
-from arcade.experimental.gui_v2.events import UIEvent, UIMouseMovementEvent, UIMousePressEvent, UIMouseReleaseEvent, \
+from arcade.gui import Surface
+from arcade.gui.events import UIEvent, UIMouseMovementEvent, UIMousePressEvent, UIMouseReleaseEvent, \
     UITextEvent, \
     UIMouseDragEvent, \
     UIMouseScrollEvent, UITextMotionEvent, UITextMotionSelectEvent, UIMouseEvent, UIOnClickEvent
@@ -105,7 +105,7 @@ class Rect(NamedTuple):
         return self.move(dy=diff_y)
 
 
-class Widget(EventDispatcher, ABC):
+class UIWidget(EventDispatcher, ABC):
     def __init__(self,
                  x=0,
                  y=0,
@@ -114,7 +114,7 @@ class Widget(EventDispatcher, ABC):
                  ):
         self._rect = Rect(x, y, width, height)
         self.rendered = False
-        self.parent: WidgetParent = None
+        self.parent: UIWidgetParent = None
 
         self.register_event_type("on_event")
 
@@ -146,7 +146,7 @@ class Widget(EventDispatcher, ABC):
         :param color: border color
         :return: Wrapping Border with self as child
         """
-        return Border(self, border_width=width, border_color=color)
+        return UIBorder(self, border_width=width, border_color=color)
 
     def with_space_around(self, top=0, right=0, bottom=0, left=0, bg_color=None):
         """
@@ -158,10 +158,10 @@ class Widget(EventDispatcher, ABC):
         :param bg_color: Background color
         :return: Wrapping Padding with self as child
         """
-        return Padding(self, padding=(top, right, bottom, left), bg_color=bg_color)
+        return UIPadding(self, padding=(top, right, bottom, left), bg_color=bg_color)
 
     def with_background(self, texture: Texture, top=0, right=0, bottom=0, left=0):
-        return TexturePane(self, tex=texture, padding=(top, right, bottom, left))
+        return UITexturePane(self, tex=texture, padding=(top, right, bottom, left))
 
     @property
     def rect(self) -> Rect:
@@ -215,18 +215,18 @@ class Widget(EventDispatcher, ABC):
         return self.rect.center_y
 
 
-class WidgetParent(ABC):
+class UIWidgetParent(ABC):
     @property
     @abstractmethod
     def rect(self) -> Rect:
         pass
 
     @abstractmethod
-    def remove(self, child: Widget):
+    def remove(self, child: UIWidget):
         pass
 
 
-class InteractiveWidget(Widget):
+class UIInteractiveWidget(UIWidget):
     # States
     _hover = False
     _pressed = False
@@ -281,7 +281,7 @@ class InteractiveWidget(Widget):
         pass
 
 
-class Dummy(InteractiveWidget):
+class UIDummy(UIInteractiveWidget):
     def __init__(self, x=0, y=0, width=100, height=100, color=arcade.color.BLACK):
         super().__init__(x, y, width, height)
         self.color = color
@@ -299,7 +299,7 @@ class Dummy(InteractiveWidget):
                                                border_width=3)
 
 
-class SpriteWidget(Widget):
+class UISpriteWidget(UIWidget):
     def __init__(self, *, x=0, y=0, width=100, height=100, sprite: Sprite = None):
         super().__init__(x, y, width, height)
         self._sprite = sprite
@@ -313,7 +313,7 @@ class SpriteWidget(Widget):
         surface.draw_sprite(0, 0, self.width, self.height, self._sprite)
 
 
-class TextureButton(InteractiveWidget):
+class UITextureButton(UIInteractiveWidget):
     def __init__(self,
                  x=0, y=0,
                  width=100, height=50,
@@ -377,7 +377,7 @@ class TextureButton(InteractiveWidget):
             )
 
 
-class TextWidget(Widget):
+class UITextWidget(UIWidget):
     def __init__(self, x=0, y=0, width=100, height=200, text="",
                  font_name=('Arial',),
                  font_size=12,
@@ -441,7 +441,7 @@ class TextWidget(Widget):
                 self.rendered = False
 
 
-class TextArea(TextWidget):
+class UITextArea(UITextWidget):
     def __init__(self, x=0, y=0, width=100, height=200, text="",
                  font_name=('Arial',),
                  font_size=12,
@@ -462,7 +462,7 @@ class TextArea(TextWidget):
 
 
 
-class InputText(Widget):
+class UIInputText(UIWidget):
     def __init__(self, x=0, y=0, width=100, height=50, text="",
                  font_name=('Arial',),
                  font_size=12,
@@ -544,7 +544,7 @@ class InputText(Widget):
             self.layout.draw()
 
 
-class FlatButton(InteractiveWidget):
+class UIFlatButton(UIInteractiveWidget):
     def __init__(self, x=0, y=0, width=100, height=50, text="", style=None):
         super().__init__(x, y, width, height)
         self._text = text
@@ -610,17 +610,17 @@ class FlatButton(InteractiveWidget):
         self.rendered = False
 
 
-class Wrapper(Widget, WidgetParent):
+class UIWrapper(UIWidget, UIWidgetParent):
     """
     Wraps a Widget and reserves space around
     """
 
-    def __init__(self, *, child: Widget, padding=(0, 0, 0, 0)):
+    def __init__(self, *, child: UIWidget, padding=(0, 0, 0, 0)):
         """
         :param child: Child Widget which will be wrapped
         :param padding: Space between top, right, bottom, left
         """
-        if isinstance(child, AnchorWidget):
+        if isinstance(child, UIAnchorWidget):
             raise Exception("Wrapping PlaceWidget into a Wrapper is not supported")
 
         self.child = child
@@ -629,7 +629,7 @@ class Wrapper(Widget, WidgetParent):
 
         self._pad = padding
 
-    def remove(self, child: Widget):
+    def remove(self, child: UIWidget):
         self.parent.remove(self)
 
     @property
@@ -673,14 +673,14 @@ class Wrapper(Widget, WidgetParent):
         self.child.render(surface, force=force)
 
 
-class AnchorWidget(Wrapper):
+class UIAnchorWidget(UIWrapper):
     """
     Widget, which places itself relative to the parent.
     """
 
     def __init__(self,
                  *,
-                 child: Widget,
+                 child: UIWidget,
                  anchor_x="center",
                  align_x=0,
                  anchor_y="center",
@@ -715,7 +715,7 @@ class AnchorWidget(Wrapper):
         return request_rerender
 
 
-class Space(Widget):
+class UISpace(UIWidget):
     def __init__(self, x=0, y=0, width=10, height=10, color=(0, 0, 0, 0)):
         super().__init__(x, y, width, height)
         self._color = color
@@ -736,12 +736,12 @@ class Space(Widget):
         surface.clear(self._color)
 
 
-class Border(Wrapper):
+class UIBorder(UIWrapper):
     """
     Wraps a Widget with a border of given color.
     """
 
-    def __init__(self, child: Widget, border_width=2, border_color=(0, 0, 0, 255)):
+    def __init__(self, child: UIWidget, border_width=2, border_color=(0, 0, 0, 255)):
         super().__init__(
             child=child,
             padding=(border_width, border_width, border_width, border_width)
@@ -758,12 +758,12 @@ class Border(Wrapper):
         self.child.render(surface, force=True)
 
 
-class TexturePane(Wrapper):
+class UITexturePane(UIWrapper):
     """
     Wraps a Widget and underlays a background texture.
     """
 
-    def __init__(self, child: Widget, tex: Texture, padding=(0, 0, 0, 0)):
+    def __init__(self, child: UIWidget, tex: Texture, padding=(0, 0, 0, 0)):
         super().__init__(
             child=child,
             padding=padding
@@ -778,10 +778,10 @@ class TexturePane(Wrapper):
         self.child.render(surface, force=True)
 
 
-class Padding(Wrapper):
+class UIPadding(UIWrapper):
     """Wraps a Widget and applies padding"""
 
-    def __init__(self, child: Widget, padding=(0, 0, 0, 0), bg_color=None):
+    def __init__(self, child: UIWidget, padding=(0, 0, 0, 0), bg_color=None):
         """
         :arg padding: Padding - top, right, bottom, left
         """
@@ -802,12 +802,12 @@ class Padding(Wrapper):
         self.child.render(surface, force=True)
 
 
-class Group(Widget, WidgetParent):
+class UIGroup(UIWidget, UIWidgetParent):
     """
     Group of Widgets
     """
 
-    def __init__(self, x=0, y=0, width=100, height=100, children: Iterable[Widget] = tuple()):
+    def __init__(self, x=0, y=0, width=100, height=100, children: Iterable[UIWidget] = tuple()):
         super().__init__(x, y, width, height)
         self._children = list(children)
         self._children_modified = True
@@ -815,13 +815,13 @@ class Group(Widget, WidgetParent):
         for child in self._children:
             child.parent = self
 
-    def add(self, child: Widget):
+    def add(self, child: UIWidget):
         self._children.append(child)
         self._children_modified = True
 
         child.parent = self
 
-    def remove(self, child: Widget):
+    def remove(self, child: UIWidget):
         self._children.remove(child)
         self._children_modified = True
 
@@ -852,13 +852,13 @@ class Group(Widget, WidgetParent):
         return result
 
 
-class BoxGroup(Group):
+class UIBoxGroup(UIGroup):
     """
     Places Widgets next to each other.
     Depending on the vertical attribute, the Widgets are placed top to bottom or left to right.
     """
 
-    def __init__(self, x=0, y=0, vertical=True, align="center", children: Iterable[Widget] = tuple()):
+    def __init__(self, x=0, y=0, vertical=True, align="center", children: Iterable[UIWidget] = tuple()):
         """
 
         :param x: x coordinate of bottom left
@@ -900,7 +900,10 @@ class BoxGroup(Group):
             return True
 
 
-class DraggableMixin(Widget):
+class UIDraggableMixin(UIWidget):
+    def render(self, surface: Surface, force=False):
+        super().render(surface, force)
+
     def on_event(self, event):
         super().on_event(event)
         if isinstance(event, UIMouseDragEvent) and self.rect.collide_with_point(event.x, event.y):

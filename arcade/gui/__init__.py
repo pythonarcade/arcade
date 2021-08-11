@@ -14,15 +14,15 @@ from typing import List, Dict
 import pyglet.event
 
 import arcade
-from arcade.experimental.gui_v2.events import UIMouseMovementEvent, UIMousePressEvent, UIMouseReleaseEvent, \
+from arcade.gui.events import UIMouseMovementEvent, UIMousePressEvent, UIMouseReleaseEvent, \
     UIMouseScrollEvent, UITextEvent, \
     UIMouseDragEvent, \
     UITextMotionEvent, UITextMotionSelectEvent, UIEvent, UIKeyPressEvent, UIKeyReleaseEvent
-from arcade.experimental.gui_v2.surface import Surface
-from arcade.experimental.gui_v2.widgets import Widget, WidgetParent, Rect
+from arcade.gui.surface import Surface
+from arcade.gui.widgets import UIWidget, UIWidgetParent, Rect
 
 
-class UIManager(pyglet.event.EventDispatcher, WidgetParent):
+class UIManager(pyglet.event.EventDispatcher, UIWidgetParent):
     """
     V2 UIManager
 
@@ -47,7 +47,7 @@ class UIManager(pyglet.event.EventDispatcher, WidgetParent):
             size=self.window.get_size(),
             pixel_ratio=self.window.get_pixel_ratio(),
         )}
-        self._children: Dict[int, List[Widget]] = defaultdict(list)
+        self._children: Dict[int, List[UIWidget]] = defaultdict(list)
         self.rendered = False
 
         self.register_event_type("on_event")
@@ -55,12 +55,12 @@ class UIManager(pyglet.event.EventDispatcher, WidgetParent):
         if auto_enable:
             self.enable()
 
-    def add(self, widget: Widget, layer=0) -> Widget:
+    def add(self, widget: UIWidget, layer=0) -> UIWidget:
         self._children[layer].append(widget)
         widget.parent = self
         return widget
 
-    def remove(self, child: Widget):
+    def remove(self, child: UIWidget):
         for children in self._children.values():
             if child in children:
                 children.remove(child)

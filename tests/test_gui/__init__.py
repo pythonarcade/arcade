@@ -3,7 +3,7 @@ from contextlib import contextmanager
 from typing import List
 
 import arcade
-from arcade.experimental.gui_v2.events import UIEvent
+from arcade.gui.events import UIEvent
 
 
 class InteractionMixin:

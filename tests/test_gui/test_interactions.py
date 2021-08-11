@@ -1,13 +1,13 @@
 from typing import List
 
-from arcade.experimental.gui_v2.events import UIEvent, UIOnClickEvent, UIMousePressEvent, UIMouseReleaseEvent
-from arcade.experimental.gui_v2.widgets import Dummy
-from tests.test_gui_v2 import record_ui_events
+from arcade.gui.events import UIEvent, UIOnClickEvent, UIMousePressEvent, UIMouseReleaseEvent
+from arcade.gui.widgets import UIDummy
+from tests.test_gui import record_ui_events
 
 
 def test_hover_on_widget(uimanager):
     # GIVEN
-    widget = Dummy()
+    widget = UIDummy()
     uimanager.add(widget)
 
     # WHEN
@@ -19,8 +19,8 @@ def test_hover_on_widget(uimanager):
 
 def test_overlapping_hover_on_widget(uimanager):
     # GIVEN
-    widget1 = Dummy()
-    widget2 = Dummy()
+    widget1 = UIDummy()
+    widget2 = UIDummy()
     uimanager.add(widget1)
     uimanager.add(widget2)
 
@@ -34,7 +34,7 @@ def test_overlapping_hover_on_widget(uimanager):
 
 def test_click_on_widget(uimanager):
     # GIVEN
-    widget1 = Dummy()
+    widget1 = UIDummy()
     uimanager.add(widget1)
 
     # WHEN
@@ -56,8 +56,8 @@ def test_click_on_widget(uimanager):
 
 def test_click_on_overlay_widget_consumes_events(uimanager):
     # GIVEN
-    widget1 = Dummy()
-    widget2 = Dummy()
+    widget1 = UIDummy()
+    widget2 = UIDummy()
     uimanager.add(widget1)
     uimanager.add(widget2)
 

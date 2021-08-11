@@ -1,4 +1,4 @@
-from arcade.experimental.gui_v2.widgets import Rect
+from arcade.gui.widgets import Rect
 
 
 def test_rect_properties():

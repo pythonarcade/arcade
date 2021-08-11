@@ -3,7 +3,7 @@ from unittest.mock import call, create_autospec
 import pytest
 
 import arcade
-from arcade.experimental.gui_v2 import UIManager
+from arcade.gui import UIManager
 
 
 @pytest.mark.usefixtures("window")

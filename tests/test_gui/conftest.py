@@ -1,7 +1,7 @@
-from arcade.experimental.gui_v2 import UIManager
+from arcade.gui import UIManager
 from pytest import fixture
 
-from tests.test_gui_v2 import InteractionMixin
+from tests.test_gui import InteractionMixin
 
 
 class InteractionUIManager(UIManager, InteractionMixin):

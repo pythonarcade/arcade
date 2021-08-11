@@ -1,10 +1,10 @@
 import arcade
-from arcade.experimental.gui_v2 import UIManager
-from arcade.experimental.gui_v2.events import UIOnClickEvent
-from arcade.experimental.gui_v2.widgets import AnchorWidget, BoxGroup, FlatButton
+from arcade.gui import UIManager
+from arcade.gui.events import UIOnClickEvent
+from arcade.gui.widgets import UIAnchorWidget, UIBoxGroup, UIFlatButton
 
 
-class QuitButton(FlatButton):
+class QuitButton(UIFlatButton):
     def on_click(self, event: UIOnClickEvent):
         arcade.exit()
 
@@ -20,15 +20,15 @@ class UIMockup(arcade.Window):
         arcade.set_background_color(arcade.color.DARK_BLUE_GRAY)
 
         # Create a vertical BoxGroup to align buttons
-        self.v_box = BoxGroup()
+        self.v_box = UIBoxGroup()
 
         # create StartButton, assign self.on_click_start as callback
-        start_button = FlatButton(text="Start Game", width=200)
+        start_button = UIFlatButton(text="Start Game", width=200)
         self.v_box.add(start_button.with_space_around(bottom=20))
         start_button.on_click = self.on_click_start
 
         # create SettingsButton, assign a inline function as callback
-        settings_button = FlatButton(text="Settings", width=200)
+        settings_button = UIFlatButton(text="Settings", width=200)
         self.v_box.add(settings_button.with_space_around(bottom=20))
 
         @settings_button.event("on_click")
@@ -40,7 +40,7 @@ class UIMockup(arcade.Window):
         self.v_box.add(quit_button)
 
         self.manager.add(
-            AnchorWidget(
+            UIAnchorWidget(
                 anchor_x="center_x",
                 anchor_y="center_y",
                 child=self.v_box)

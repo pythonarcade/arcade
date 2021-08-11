@@ -1,16 +1,16 @@
-from arcade.experimental.gui_v2.widgets import AnchorWidget, Widget, BoxGroup, Dummy
+from arcade.gui.widgets import UIAnchorWidget, UIWidget, UIBoxGroup, UIDummy
 
 
 def test_place_widget():
-    widget = Dummy(width=100, height=200)
+    widget = UIDummy(width=100, height=200)
 
-    placed_widget = AnchorWidget(
+    placed_widget = UIAnchorWidget(
         anchor_x="center_x",
         align_y=-20,
         anchor_y="top",
         child=widget
     )
-    placed_widget.parent = Dummy(width=500, height=500)
+    placed_widget.parent = UIDummy(width=500, height=500)
 
     placed_widget.do_layout()
 
@@ -18,17 +18,17 @@ def test_place_widget():
 
 
 def test_place_box_widget():
-    widget = BoxGroup()
-    widget.add(Dummy(width=100, height=100))
-    widget.add(Dummy(width=100, height=100))
+    widget = UIBoxGroup()
+    widget.add(UIDummy(width=100, height=100))
+    widget.add(UIDummy(width=100, height=100))
 
-    placed_widget = AnchorWidget(
+    placed_widget = UIAnchorWidget(
         anchor_x="center_x",
         align_y=-20,
         anchor_y="top",
         child=widget
     )
-    placed_widget.parent = Dummy(width=500, height=500)
+    placed_widget.parent = UIDummy(width=500, height=500)
 
     placed_widget.do_layout()
 

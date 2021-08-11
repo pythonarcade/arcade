@@ -75,7 +75,6 @@ class UIKeyReleaseEvent(UIKeyEvent):
 
 @dataclass
 class UITextEvent(UIEvent):
-    # Name contains 'Event' suffix to separate from other 'UIText' classes
     text: str
 
 

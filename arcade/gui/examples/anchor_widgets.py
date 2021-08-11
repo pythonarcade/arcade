@@ -1,6 +1,6 @@
 import arcade
-from arcade.experimental.gui_v2 import UIManager
-from arcade.experimental.gui_v2.widgets import Dummy, AnchorWidget
+from arcade.gui import UIManager
+from arcade.gui.widgets import UIDummy, UIAnchorWidget
 
 
 class UIMockup(arcade.Window):
@@ -11,39 +11,39 @@ class UIMockup(arcade.Window):
         self.manager.enable()
         arcade.set_background_color(arcade.color.DARK_BLUE_GRAY)
 
-        self.manager.add(AnchorWidget(
-            child=Dummy(color=arcade.color.RED),
+        self.manager.add(UIAnchorWidget(
+            child=UIDummy(color=arcade.color.RED),
             anchor_x="center_x",
             anchor_y="top",
         ))
 
-        self.manager.add(AnchorWidget(
-            child=Dummy(color=arcade.color.BLUE),
+        self.manager.add(UIAnchorWidget(
+            child=UIDummy(color=arcade.color.BLUE),
             anchor_x="right",
             anchor_y="center_y",
         ))
 
-        self.manager.add(AnchorWidget(
-            child=Dummy(color=arcade.color.GREEN),
+        self.manager.add(UIAnchorWidget(
+            child=UIDummy(color=arcade.color.GREEN),
             anchor_x="center_x",
             anchor_y="center_y",
         ))
 
-        self.manager.add(AnchorWidget(
-            child=Dummy(color=arcade.color.YELLOW),
+        self.manager.add(UIAnchorWidget(
+            child=UIDummy(color=arcade.color.YELLOW),
             anchor_x="left",
             anchor_y="bottom",
         ))
 
-        self.manager.add(AnchorWidget(
-            child=Dummy(color=arcade.color.ORANGE),
+        self.manager.add(UIAnchorWidget(
+            child=UIDummy(color=arcade.color.ORANGE),
             anchor_x="left",
             align_x=20,
             anchor_y="center_y",
         ))
 
-        self.manager.add(AnchorWidget(
-            child=Dummy(color=arcade.color.ORANGE),
+        self.manager.add(UIAnchorWidget(
+            child=UIDummy(color=arcade.color.ORANGE),
             anchor_x="right",
             align_x=-40,
             anchor_y="bottom",

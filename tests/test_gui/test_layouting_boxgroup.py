@@ -1,13 +1,13 @@
-from arcade.experimental.gui_v2.widgets import BoxGroup, Dummy
+from arcade.gui.widgets import UIBoxGroup, UIDummy
 
 
 # Vertical
 def test_do_layout_vertical_with_initial_children():
     # add two 100x100 Dummy widgets
-    element_1 = Dummy()
-    element_2 = Dummy()
+    element_1 = UIDummy()
+    element_2 = UIDummy()
 
-    group = BoxGroup(x=100, y=400, vertical=True, children=[element_1, element_2])
+    group = UIBoxGroup(x=100, y=400, vertical=True, children=[element_1, element_2])
 
     group.do_layout()
 
@@ -21,10 +21,10 @@ def test_do_layout_vertical_with_initial_children():
 
 
 def test_do_layout_vertical_add_children():
-    group = BoxGroup(x=100, y=400, vertical=True)
+    group = UIBoxGroup(x=100, y=400, vertical=True)
 
-    element_1 = Dummy()
-    element_2 = Dummy()
+    element_1 = UIDummy()
+    element_2 = UIDummy()
 
     group.add(element_1)
     group.add(element_2)
@@ -40,11 +40,11 @@ def test_do_layout_vertical_add_children():
 
 
 def test_do_layout_vertical_add_child_with_initial_children():
-    element_1 = Dummy()
-    element_2 = Dummy()
-    element_3 = Dummy()
+    element_1 = UIDummy()
+    element_2 = UIDummy()
+    element_3 = UIDummy()
 
-    group = BoxGroup(x=100, y=400, vertical=True, children=[element_1, element_2])
+    group = UIBoxGroup(x=100, y=400, vertical=True, children=[element_1, element_2])
 
     group.add(element_3)
     group.do_layout()
@@ -63,11 +63,11 @@ def test_do_layout_vertical_add_child_with_initial_children():
 
 
 def test_vertical_group_keep_top_alignment_while_adding_children():
-    element_1 = Dummy()
-    element_2 = Dummy()
-    element_3 = Dummy()
+    element_1 = UIDummy()
+    element_2 = UIDummy()
+    element_3 = UIDummy()
 
-    group = BoxGroup(x=100, y=400, vertical=True, children=[element_1, element_2])
+    group = UIBoxGroup(x=100, y=400, vertical=True, children=[element_1, element_2])
     assert group.top == 400
 
     group.add(element_3)
@@ -82,10 +82,10 @@ def test_vertical_group_keep_top_alignment_while_adding_children():
 # Horizontal
 def test_do_layout_horizontal_with_initial_children():
     # add two 100x100 Dummy widgets
-    element_1 = Dummy()
-    element_2 = Dummy()
+    element_1 = UIDummy()
+    element_2 = UIDummy()
 
-    group = BoxGroup(x=100, y=400, vertical=False, children=[element_1, element_2])
+    group = UIBoxGroup(x=100, y=400, vertical=False, children=[element_1, element_2])
 
     group.do_layout()
 
@@ -99,10 +99,10 @@ def test_do_layout_horizontal_with_initial_children():
 
 
 def test_do_layout_horizontal_add_children():
-    group = BoxGroup(x=100, y=400, vertical=False)
+    group = UIBoxGroup(x=100, y=400, vertical=False)
 
-    element_1 = Dummy()
-    element_2 = Dummy()
+    element_1 = UIDummy()
+    element_2 = UIDummy()
 
     group.add(element_1)
     group.add(element_2)
@@ -118,11 +118,11 @@ def test_do_layout_horizontal_add_children():
 
 
 def test_do_layout_horizontal_add_child_with_initial_children():
-    element_1 = Dummy()
-    element_2 = Dummy()
-    element_3 = Dummy()
+    element_1 = UIDummy()
+    element_2 = UIDummy()
+    element_3 = UIDummy()
 
-    group = BoxGroup(x=100, y=400, vertical=False, children=[element_1, element_2])
+    group = UIBoxGroup(x=100, y=400, vertical=False, children=[element_1, element_2])
 
     group.add(element_3)
     group.do_layout()
@@ -141,11 +141,11 @@ def test_do_layout_horizontal_add_child_with_initial_children():
 
 
 def test_horizontal_group_keep_left_alignment_while_adding_children():
-    element_1 = Dummy()
-    element_2 = Dummy()
-    element_3 = Dummy()
+    element_1 = UIDummy()
+    element_2 = UIDummy()
+    element_3 = UIDummy()
 
-    group = BoxGroup(x=100, y=400, vertical=False, children=[element_1, element_2])
+    group = UIBoxGroup(x=100, y=400, vertical=False, children=[element_1, element_2])
 
     group.add(element_3)
     group.do_layout()

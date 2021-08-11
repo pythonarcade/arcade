@@ -1,7 +1,7 @@
 import pytest
 
 import arcade
-from arcade.experimental.gui_v2 import UIMouseReleaseEvent
+from arcade.gui import UIMouseReleaseEvent
 from arcade.math import Vec2
 
 

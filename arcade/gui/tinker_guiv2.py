@@ -3,8 +3,9 @@ from random import choice
 import arcade
 from arcade import load_texture
 from arcade.examples.perf_test.stress_test_draw_shapes import FPSCounter
-from arcade.experimental.gui_v2 import UIManager
-from arcade.experimental.gui_v2.widgets import Dummy, SpriteWidget, TextArea, InputText, TexturePane, FlatButton
+from arcade.gui import UIManager
+from arcade.gui.widgets import UIDummy, UISpriteWidget, UITextArea, UIInputText, UITexturePane, UIFlatButton, \
+    UIAnchorWidget
 
 LOREM_IPSUM = """Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eget pellentesque velit. Nam eu rhoncus nulla. Fusce ornare libero eget ex vulputate, vitae mattis orci eleifend. Donec quis volutpat arcu. Proin lacinia velit id imperdiet ultrices. Fusce porta magna leo, non maximus justo facilisis vel. Duis pretium sem ut eros scelerisque, a dignissim ante pellentesque. Cras rutrum aliquam fermentum. Donec id mollis mi.
 
@@ -87,13 +88,13 @@ class UIMockup(arcade.Window):
         )
 
         self.manager.add(
-            TexturePane(
-                InputText(x=340, y=200, width=200, height=50, text="Hello"),
+            UITexturePane(
+                UIInputText(x=340, y=200, width=200, height=50, text="Hello"),
                 tex=bg_tex,
                 pad=(10, 10, 10, 10)
             ))
         self.manager.add(
-                InputText(x=340, y=110, width=200, height=50, text="Hello"),
+                UIInputText(x=340, y=110, width=200, height=50, text="Hello"),
             )
 
         self.manager.add(
@@ -108,7 +109,7 @@ class UIMockup(arcade.Window):
     def on_button_click(self, button, *args):
         print(button)
 
-    def change_color(self, button: Dummy, *args):
+    def change_color(self, button: UIDummy, *args):
         colors = [arcade.color.RED,
                   arcade.color.BLACK,
                   arcade.color.GREEN,
