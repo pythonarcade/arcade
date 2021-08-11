@@ -128,6 +128,8 @@ and the documentation.
    * :func:`arcade.get_three_color_float` Returns colors as RGB float with numbers 0.0-1.1 for each color
    * :func:`arcade.get_four_color_float`  Returns colors as RGBA float with numbers 0.0-1.1 for each color
 
+* `Fix for A-star path finding routing through walls <https://github.com/pythonarcade/arcade/issues/806>`_
+
 Special thanks to:
 
 * `einarf <https://github.com/einarf>`_ for performance improvements, texture atlas support, shader toy support,
