@@ -1,10 +1,11 @@
-import pytest
 import arcade
+import pytest
 
 # Reduce the atlas size
 arcade.ArcadeContext.atlas_size = (2048, 2048)
 
 WINDOW = None
+
 
 def create_window():
     global WINDOW
@@ -33,17 +34,6 @@ def prepare_window(window: arcade.Window):
     window.on_draw = lambda: None
     window.on_update = lambda dt: None
     window.update = lambda dt: None
-
-
-def pytest_addoption(parser):
-    parser.addoption("--twm", action="store_true", default=False, help="Disable window geometry tests when using a tiling window manager" )
-
-
-@pytest.fixture(scope="function")
-def twm(pytestconfig):
-    if pytestconfig.getoption("twm"):
-        return True
-    return False
 
 
 @pytest.fixture(scope="function")
