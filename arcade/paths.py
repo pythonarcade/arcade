@@ -106,7 +106,7 @@ class _AStarGraph(object):
     def move_cost(self, a, b):
         if b in self.barriers:
             # print("Ping")
-            return 50  # Extremely high cost to enter barrier squares
+            return float('inf')  # Infitely high cost to enter barrier squares
 
         elif a[0] == b[0] or a[1] == b[1]:
             return 1
