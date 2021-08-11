@@ -377,12 +377,13 @@ class TextureButton(InteractiveWidget):
             )
 
 
-class TextArea(Widget):
+class TextWidget(Widget):
     def __init__(self, x=0, y=0, width=100, height=200, text="",
                  font_name=('Arial',),
                  font_size=12,
                  text_color=(255, 255, 255, 255),
-                 style=None):
+                 style=None,
+                 multiline=False):
         super().__init__(x, y, width, height)
 
         self.doc: AbstractDocument = pyglet.text.decode_text(text)
@@ -395,7 +396,7 @@ class TextArea(Widget):
         self.layout = pyglet.text.layout.ScrollableTextLayout(self.doc,
                                                               width=self.width,
                                                               height=self.height,
-                                                              multiline=True,
+                                                              multiline=multiline,
                                                               )
 
     @property
@@ -438,6 +439,27 @@ class TextArea(Widget):
             if point_in_rect(event.x, event.y, *self.rect):
                 self.layout.view_y += event.scroll_y
                 self.rendered = False
+
+
+class TextArea(TextWidget):
+    def __init__(self, x=0, y=0, width=100, height=200, text="",
+                 font_name=('Arial',),
+                 font_size=12,
+                 text_color=(255, 255, 255, 255),
+                 style=None):
+        super().__init__(
+            text=text,
+            x=x,
+            y=y,
+            width=width,
+            height=height,
+            font_name=font_name,
+            font_size=font_size,
+            text_color=text_color,
+            style=style,
+            multiline=True
+        )
+
 
 
 class InputText(Widget):

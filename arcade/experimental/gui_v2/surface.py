@@ -140,6 +140,8 @@ class Surface:
             int(width * self._pixel_ratio),
             int(height * self._pixel_ratio),
         )
+        width = max(width, 1)
+        height = max(height, 1)
         self.ctx.projection_2d = 0, width, 0, height
 
     def draw(self) -> None:

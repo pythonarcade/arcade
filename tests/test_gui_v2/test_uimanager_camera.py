@@ -28,7 +28,7 @@ def test_ui_manager_respects_camera_pos(uimanager, window):
     camera = arcade.Camera(window=window, viewport_width=window.width, viewport_height=window.height)
 
     # WHEN
-    camera.position = Vec2(-100,-100)
+    camera.position = Vec2(-100, -100)
     camera.update()
     camera.use()
 
