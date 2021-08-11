@@ -131,6 +131,31 @@ class Scene:
         index = self.sprite_lists.index(before_list) - 1
         self.sprite_lists.insert(index, sprite_list)
 
+    def move_sprite_list_before(
+        self,
+        name: str,
+        before: str,
+    ) -> None:
+        """
+        Move a given SpriteList in the scene to before another given SpriteList.
+
+        This will adjust the render order so that the SpriteList specified by `name`
+        is placed before the one specified by `before`.
+
+        :param str name: The name of the SpriteList to move.
+        :param str before: The name of the SpriteList to place it before.
+        """
+        if name in self.name_mapping:
+            name_list = self.name_mapping[name]
+            before_list = self.name_mapping[before]
+            new_index = self.sprite_lists.index(before_list)
+            old_index = self.sprite_lists.index(name_list)
+            self.sprite_lists.insert(new_index, self.sprite_lists.pop(old_index))
+
+        raise ValueError(
+            f"Tried to move unknown SpriteList with the name {name} in Scene"
+        )
+
     def add_sprite_list_after(
         self,
         name: str,
@@ -157,6 +182,31 @@ class Scene:
         after_list = self.name_mapping[after]
         index = self.sprite_lists.index(after_list)
         self.sprite_lists.insert(index, sprite_list)
+
+    def move_sprite_list_after(
+        self,
+        name: str,
+        after: str,
+    ) -> None:
+        """
+        Move a given SpriteList in the scene to after another given SpriteList.
+
+        This will adjust the render order so that the SpriteList specified by `name`
+        is placed after the one specified by `after`.
+
+        :param str name: The name of the SpriteList to move.
+        :param str after: The name of the SpriteList to place it after.
+        """
+        if name in self.name_mapping:
+            name_list = self.name_mapping[name]
+            after_list = self.name_mapping[after]
+            new_index = self.sprite_lists.index(after_list)
+            old_index = self.sprite_lists.index(name_list)
+            self.sprite_lists.insert(new_index, self.sprite_lists.pop(old_index))
+
+        raise ValueError(
+            f"Tried to move unknown SpriteList with the name {name} in Scene"
+        )
 
     def remove_sprite_list_by_name(
         self,
