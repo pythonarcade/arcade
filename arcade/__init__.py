@@ -72,6 +72,7 @@ from arcade import resources
 # --- Generated imports ---
 from .window_commands import close_window
 from .window_commands import create_orthogonal_projection
+from .window_commands import exit
 from .window_commands import finish_render
 from .window_commands import get_display_size
 from .window_commands import get_projection
@@ -425,6 +426,7 @@ __all__ = ['AStarBarrierList',
            'draw_xywh_rectangle_outline',
            'earclip',
            'enable_timings',
+           'exit',
            'finish_render',
            'get_closest_sprite',
            'get_display_size',
