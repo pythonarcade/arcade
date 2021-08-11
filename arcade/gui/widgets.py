@@ -301,6 +301,7 @@ class UIDummy(UIInteractiveWidget):
 
 
 class UISpriteWidget(UIWidget):
+    """ Create a UI element with a sprite that controls what is displayed. """
     def __init__(self, *, x=0, y=0, width=100, height=100, sprite: Sprite = None):
         super().__init__(x, y, width, height)
         self._sprite = sprite
