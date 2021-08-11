@@ -62,10 +62,10 @@ titles = {
 
     'gui/__init__.py': ['GUI', 'gui.rst'],
     'gui/constructs.py': ['GUI', 'gui.rst'],
-    'gui/events.py': ['GUI', 'gui.rst'],
+    'gui/events.py': ['GUI Event', 'gui_events.rst'],
     'gui/surface.py': ['GUI', 'gui.rst'],
     'gui/ui_manager.py': ['GUI', 'gui.rst'],
-    'gui/widgets.py': ['GUI', 'gui.rst'],
+    'gui/widgets.py': ['GUI Widgets', 'gui_widgets.rst'],
 
     'events/__init__.py': ['GUI Utility Functions', 'gui_utility.rst'],
     'gl/buffer.py': ['OpenGL Buffer', 'open_gl.rst'],

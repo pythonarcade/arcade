@@ -1,6 +1,6 @@
 from abc import abstractmethod, ABC
 from random import randint
-from typing import NamedTuple, Iterable
+from typing import NamedTuple, Iterable, Optional
 
 import pyglet
 from pyglet.event import EventDispatcher
@@ -106,6 +106,7 @@ class _Rect(NamedTuple):
 
 
 class UIWidget(EventDispatcher, ABC):
+    """ Base class for UI widgets. """
     def __init__(self,
                  x=0,
                  y=0,
@@ -114,7 +115,7 @@ class UIWidget(EventDispatcher, ABC):
                  ):
         self._rect = _Rect(x, y, width, height)
         self.rendered = False
-        self.parent: UIWidgetParent = None
+        self.parent: Optional[UIWidgetParent] = None
 
         self.register_event_type("on_event")
 
@@ -314,6 +315,7 @@ class UISpriteWidget(UIWidget):
 
 
 class UITextureButton(UIInteractiveWidget):
+    """ A button with an image for the face of the button. """
     def __init__(self,
                  x=0, y=0,
                  width=100, height=50,
@@ -356,8 +358,8 @@ class UITextureButton(UIInteractiveWidget):
             font_size = self._style.get("font_size", 15)
             font_color = self._style.get("font_color", arcade.color.WHITE)
             border_width = self._style.get("border_width", 2)
-            border_color = self._style.get("border_color", None)
-            bg_color = self._style.get("bg_color", (21, 19, 21))
+            # border_color = self._style.get("border_color", None)
+            # bg_color = self._style.get("bg_color", (21, 19, 21))
 
             start_x = self.width // 2
             start_y = self.height // 2 + 4
@@ -378,6 +380,7 @@ class UITextureButton(UIInteractiveWidget):
 
 
 class UITextWidget(UIWidget):
+    """ A text label. """
     def __init__(self, x=0, y=0, width=100, height=200, text="",
                  font_name=('Arial',),
                  font_size=12,
@@ -417,11 +420,11 @@ class UITextWidget(UIWidget):
         self.rendered = False
 
         # Update Pyglet layout
-        l = self.layout
+        my_layout = self.layout
 
-        l.begin_update()
-        l.x, l.y, l.width, l.height = 0, 0, self.width, self.height
-        l.end_update()
+        my_layout.begin_update()
+        my_layout.x, my_layout.y, my_layout.width, my_layout.height = 0, 0, self.width, self.height
+        my_layout.end_update()
 
     def render(self, surface: Surface, force=False):
         if self.rendered and not force:
@@ -442,6 +445,7 @@ class UITextWidget(UIWidget):
 
 
 class UITextArea(UITextWidget):
+    """ A multi-line text display. """
     def __init__(self, x=0, y=0, width=100, height=200, text="",
                  font_name=('Arial',),
                  font_size=12,
@@ -461,8 +465,8 @@ class UITextArea(UITextWidget):
         )
 
 
-
 class UIInputText(UIWidget):
+    """ An input field the user can type text into. """
     def __init__(self, x=0, y=0, width=100, height=50, text="",
                  font_name=('Arial',),
                  font_size=12,
@@ -531,8 +535,8 @@ class UIInputText(UIWidget):
         self.rendered = False
 
         # Update Pyglet layout
-        l = self.layout
-        l.x, l.y, l.width, l.height = self.rect
+        my_layout = self.layout
+        my_layout.x, my_layout.y, my_layout.width, my_layout.height = self.rect
 
     def render(self, surface: Surface, force=False):
         if self.rendered and not force:
@@ -545,6 +549,7 @@ class UIInputText(UIWidget):
 
 
 class UIFlatButton(UIInteractiveWidget):
+    """ A text button, with support for background color and a border. """
     def __init__(self, x=0, y=0, width=100, height=50, text="", style=None):
         super().__init__(x, y, width, height)
         self._text = text
@@ -612,7 +617,7 @@ class UIFlatButton(UIInteractiveWidget):
 
 class UIWrapper(UIWidget, UIWidgetParent):
     """
-    Wraps a Widget and reserves space around
+    Wraps a :class:`arcade.gui.Widget` and reserves space around it.
     """
 
     def __init__(self, *, child: UIWidget, padding=(0, 0, 0, 0)):

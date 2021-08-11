@@ -46,6 +46,8 @@ for the Python Arcade library. Soo also:
     :caption: Arcade GUI
 
     api/gui
+    api/gui_widgets
+    api/gui_events
 
 .. toctree::
     :maxdepth: 1
