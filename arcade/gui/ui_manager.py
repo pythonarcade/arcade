@@ -163,11 +163,13 @@ class UIManager(pyglet.event.EventDispatcher, UIWidgetParent):
         If you use scrolling in the :py:class:`arcade.Camera` you have to reset scrolling
         or overwrite this method using the camera conversion: `ui_manager.adjust_mouse_coordinates = camera.mouse_coordinates_to_world`
         """
-        vx, vy, vw, vh = self.window.ctx.viewport
-        pl, pr, pb, pt = self.window.ctx.projection_2d
-        proj_width, proj_height = pr - pl, pt - pb
-        dx, dy = proj_width / vw, proj_height / vh
-        return (x - vx) * dx, (y - vy) * dy
+        # TODO This code does not work anymore, for now no camera support by default
+        # vx, vy, vw, vh = self.window.ctx.viewport
+        # pl, pr, pb, pt = self.window.ctx.projection_2d
+        # proj_width, proj_height = pr - pl, pt - pb
+        # dx, dy = proj_width / vw, proj_height / vh
+        # return (x - vx) * dx, (y - vy) * dy
+        return x, y
 
     def on_event(self, event):
         layers = sorted(self._children.keys(), reverse=True)

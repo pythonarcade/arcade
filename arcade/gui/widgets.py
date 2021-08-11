@@ -618,7 +618,7 @@ class UIFlatButton(UIInteractiveWidget):
 
 class UIWrapper(UIWidget, UIWidgetParent):
     """
-    Wraps a :class:`arcade.gui.Widget` and reserves space around it.
+    Wraps a :class:`arcade.gui.UIWidget` and reserves space around it.
     """
 
     def __init__(self, *, child: UIWidget, padding=(0, 0, 0, 0)):
