@@ -15,11 +15,11 @@ from arcade.gui.events import UIEvent, UIMouseMovementEvent, UIMousePressEvent, 
     UIMouseScrollEvent, UITextMotionEvent, UITextMotionSelectEvent, UIMouseEvent, UIOnClickEvent
 
 
-def point_in_rect(x, y, rx, ry, rw, rh):
+def _point_in_rect(x, y, rx, ry, rw, rh):
     return rx < x < rx + rw and ry < y < ry + rh
 
 
-class Rect(NamedTuple):
+class _Rect(NamedTuple):
     x: float
     y: float
     width: float
@@ -27,15 +27,15 @@ class Rect(NamedTuple):
 
     def move(self, dx: float = 0, dy: float = 0):
         """Returns new Rect which is moved by dx and dy"""
-        return Rect(self.x + dx, self.y + dy, self.width, self.height)
+        return _Rect(self.x + dx, self.y + dy, self.width, self.height)
 
     def collide_with_point(self, x, y):
         left, bottom, width, height = self
         return left < x < left + width and bottom < y < bottom + height
 
-    def scale(self, scale: float) -> "Rect":
+    def scale(self, scale: float) -> "_Rect":
         """Returns a new rect with scale applied"""
-        return Rect(
+        return _Rect(
             int(self.x * scale),
             int(self.y * scale),
             int(self.width * scale),
@@ -74,32 +74,32 @@ class Rect(NamedTuple):
     def center_y(self):
         return self.y + self.height / 2
 
-    def align_top(self, value: float) -> "Rect":
+    def align_top(self, value: float) -> "_Rect":
         """Returns new Rect, which is aligned to the top"""
         diff_y = value - self.top
         return self.move(dy=diff_y)
 
-    def align_bottom(self, value: float) -> "Rect":
+    def align_bottom(self, value: float) -> "_Rect":
         """Returns new Rect, which is aligned to the bottom"""
         diff_y = value - self.bottom
         return self.move(dy=diff_y)
 
-    def align_left(self, value: float) -> "Rect":
+    def align_left(self, value: float) -> "_Rect":
         """Returns new Rect, which is aligned to the left"""
         diff_x = value - self.left
         return self.move(dx=diff_x)
 
-    def align_right(self, value: float) -> "Rect":
+    def align_right(self, value: float) -> "_Rect":
         """Returns new Rect, which is aligned to the right"""
         diff_x = value - self.right
         return self.move(dx=diff_x)
 
-    def align_center_x(self, value: float) -> "Rect":
+    def align_center_x(self, value: float) -> "_Rect":
         """Returns new Rect, which is aligned to the center_x"""
         diff_x = value - self.center_x
         return self.move(dx=diff_x)
 
-    def align_center_y(self, value: float) -> "Rect":
+    def align_center_y(self, value: float) -> "_Rect":
         """Returns new Rect, which is aligned to the center_y"""
         diff_y = value - self.center_y
         return self.move(dy=diff_y)
@@ -112,7 +112,7 @@ class UIWidget(EventDispatcher, ABC):
                  width=100,
                  height=100,
                  ):
-        self._rect = Rect(x, y, width, height)
+        self._rect = _Rect(x, y, width, height)
         self.rendered = False
         self.parent: UIWidgetParent = None
 
@@ -164,7 +164,7 @@ class UIWidget(EventDispatcher, ABC):
         return UITexturePane(self, tex=texture, padding=(top, right, bottom, left))
 
     @property
-    def rect(self) -> Rect:
+    def rect(self) -> _Rect:
         return self._rect
 
     @rect.setter
@@ -218,7 +218,7 @@ class UIWidget(EventDispatcher, ABC):
 class UIWidgetParent(ABC):
     @property
     @abstractmethod
-    def rect(self) -> Rect:
+    def rect(self) -> _Rect:
         pass
 
     @abstractmethod
@@ -259,7 +259,7 @@ class UIInteractiveWidget(UIWidget):
         super().on_event(event)
 
         if isinstance(event, UIMouseMovementEvent):
-            self.hover = point_in_rect(event.x, event.y, *self.rect)
+            self.hover = _point_in_rect(event.x, event.y, *self.rect)
 
         if isinstance(event, UIMousePressEvent) and self.rect.collide_with_point(
                 event.x, event.y
@@ -408,7 +408,7 @@ class UITextWidget(UIWidget):
         self.doc.text = value
 
     @property
-    def rect(self) -> Rect:
+    def rect(self) -> _Rect:
         return self._rect
 
     @rect.setter
@@ -436,7 +436,7 @@ class UITextWidget(UIWidget):
         super().on_event(event)
 
         if isinstance(event, UIMouseScrollEvent):
-            if point_in_rect(event.x, event.y, *self.rect):
+            if _point_in_rect(event.x, event.y, *self.rect):
                 self.layout.view_y += event.scroll_y
                 self.rendered = False
 
@@ -522,7 +522,7 @@ class UIInputText(UIWidget):
                     self.caret.on_mouse_scroll(x, y, event.scroll_x, event.scroll_y)
 
     @property
-    def rect(self) -> Rect:
+    def rect(self) -> _Rect:
         return self._rect
 
     @rect.setter
@@ -633,18 +633,18 @@ class UIWrapper(UIWidget, UIWidgetParent):
         self.parent.remove(self)
 
     @property
-    def rect(self) -> Rect:
+    def rect(self) -> _Rect:
         # Adjust Rect to consume _pad more then child
         x, y, w, h = self.child.rect
         pt, pr, pb, pl = self._pad
-        return Rect(x - pl, y - pb, w + pl + pr, h + pb + pt)
+        return _Rect(x - pl, y - pb, w + pl + pr, h + pb + pt)
 
     @rect.setter
-    def rect(self, value: Rect):
+    def rect(self, value: _Rect):
         # Child Rect has to be _pad smaller
         x, y, w, h = value
         pt, pr, pb, pl = self._pad
-        self.child.rect = Rect(x + pl, y + pb, w - pl - pr, h - pb - pt)
+        self.child.rect = _Rect(x + pl, y + pb, w - pl - pr, h - pb - pt)
         self.rendered = False
 
     @property
@@ -892,7 +892,7 @@ class UIBoxGroup(UIGroup):
                 child.rect = child.rect.align_left(start_x).align_center_y(center_y)
                 start_x += child.width
 
-        self.rect = Rect(self.left, self.bottom, new_width, new_height).align_top(initial_top)
+        self.rect = _Rect(self.left, self.bottom, new_width, new_height).align_top(initial_top)
 
         if self._children_modified:
             self._children_modified = False

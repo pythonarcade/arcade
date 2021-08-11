@@ -61,12 +61,12 @@ titles = {
     'tilemap/tilemap.py': ['Tiled Map Reader', 'tilemap.rst'],
 
     'gui/__init__.py': ['GUI', 'gui.rst'],
-    'gui/exceptions.py': ['GUI', 'gui.rst'],
-    'gui/manager.py': ['GUI', 'gui.rst'],
-    'gui/style.py': ['GUI', 'gui.rst'],
-    'gui/text_utils.py': ['GUI Utility Functions', 'gui_utility.rst'],
-    'gui/ui_style.py': ['GUI', 'gui.rst'],
-    'gui/utils.py': ['GUI Utility Functions', 'gui_utility.rst'],
+    'gui/constructs.py': ['GUI', 'gui.rst'],
+    'gui/events.py': ['GUI', 'gui.rst'],
+    'gui/surface.py': ['GUI', 'gui.rst'],
+    'gui/ui_manager.py': ['GUI', 'gui.rst'],
+    'gui/widgets.py': ['GUI', 'gui.rst'],
+
     'events/__init__.py': ['GUI Utility Functions', 'gui_utility.rst'],
     'gl/buffer.py': ['OpenGL Buffer', 'open_gl.rst'],
     'gl/context.py': ['OpenGL Context', 'open_gl.rst'],
@@ -212,6 +212,9 @@ def process_directory(directory, quick_index_file):
 
                 api_file.write(f".. autoclass:: {full_class_name}\n")
                 api_file.write(f"    :members:\n\n")
+
+                if "UIMockup" in full_class_name:
+                    print(f"AAAAA {full_api_file_name}")
 
                 # print(f"  Class {item}")
                 # text_file.write(f"     - Class\n")

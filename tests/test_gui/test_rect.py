@@ -1,9 +1,9 @@
-from arcade.gui.widgets import Rect
+from arcade.gui.widgets import _Rect
 
 
 def test_rect_properties():
     # GIVEN
-    rect = Rect(10, 20, 100, 200)
+    rect = _Rect(10, 20, 100, 200)
 
     # THEN
     assert rect.x == 10
@@ -18,7 +18,7 @@ def test_rect_properties():
 
 def test_rect_move():
     # GIVEN
-    rect = Rect(10, 20, 100, 200)
+    rect = _Rect(10, 20, 100, 200)
 
     # WHEN
     new_rect = rect.move(30, 50)
@@ -29,7 +29,7 @@ def test_rect_move():
 
 def test_rect_align_center_x():
     # GIVEN
-    rect = Rect(10, 20, 100, 200)
+    rect = _Rect(10, 20, 100, 200)
 
     # WHEN
     new_rect = rect.align_center_x(50)
@@ -40,7 +40,7 @@ def test_rect_align_center_x():
 
 def test_rect_align_center_y():
     # GIVEN
-    rect = Rect(10, 20, 100, 200)
+    rect = _Rect(10, 20, 100, 200)
 
     # WHEN
     new_rect = rect.align_center_y(50)
@@ -51,7 +51,7 @@ def test_rect_align_center_y():
 
 def test_rect_align_top():
     # GIVEN
-    rect = Rect(10, 20, 100, 200)
+    rect = _Rect(10, 20, 100, 200)
 
     # WHEN
     new_rect = rect.align_top(50)
@@ -62,7 +62,7 @@ def test_rect_align_top():
 
 def test_rect_align_bottom():
     # GIVEN
-    rect = Rect(10, 20, 100, 200)
+    rect = _Rect(10, 20, 100, 200)
 
     # WHEN
     new_rect = rect.align_bottom(50)
@@ -73,7 +73,7 @@ def test_rect_align_bottom():
 
 def test_rect_align_right():
     # GIVEN
-    rect = Rect(10, 20, 100, 200)
+    rect = _Rect(10, 20, 100, 200)
 
     # WHEN
     new_rect = rect.align_right(50)
@@ -84,7 +84,7 @@ def test_rect_align_right():
 
 def test_rect_align_left():
     # GIVEN
-    rect = Rect(10, 20, 100, 200)
+    rect = _Rect(10, 20, 100, 200)
 
     # WHEN
     new_rect = rect.align_left(50)

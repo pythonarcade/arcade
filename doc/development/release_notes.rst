@@ -374,11 +374,6 @@ Arcade version 2.4 is a major enhancement release to Arcade.
     :class: inline-image
     :target: examples/bloom_defender.html
 
-.. image:: ../examples/gui_elements.png
-    :width: 30%
-    :class: inline-image
-    :target: examples/gui_elements.html
-
 .. image:: ../tutorials/pymunk_platformer/title_animated_gif.gif
     :width: 30%
     :class: inline-image
@@ -409,11 +404,7 @@ Version 2.4 Major Features
     * Use frame buffers to create a 'glow' or 'bloom' effect: :ref:`bloom_defender`.
     * Use frame-buffers to support lights: :ref:`light_demo`.
 
-* New support for style-able GUI elements. New API in :ref:`arcade-api-gui`.
-
-    * Example: :ref:`gui_elements`
-    * Example: :ref:`gui_custom_style`
-
+* New support for style-able GUI elements.
 * PyMunk engine for platformers. See tutorial: :ref:`pymunk_platformer_tutorial`.
 * AStar algorithm for finding paths. See
   :data:`~arcade.astar_calculate_path` and :data:`~arcade.AStarBarrierList`.
