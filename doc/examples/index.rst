@@ -471,6 +471,11 @@ Graphical User Interface
 
    :ref:`gui_widgets`
 
+.. figure:: thumbs/gui_ok_messagebox.png
+   :figwidth: 170px
+
+   :ref:`gui_ok_messagebox`
+
 
 Grid-Based Games
 ----------------
