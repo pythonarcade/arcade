@@ -8,7 +8,7 @@ import arcade.gui
 
 class MyWindow(arcade.Window):
     def __init__(self):
-        super().__init__(800, 600, "UIFlatButton Example", resizable=True)
+        super().__init__(800, 600, "GUI Widgets Example", resizable=True)
 
         # --- Required for all code that uses UI element,
         # a UIManager to handle the UI.

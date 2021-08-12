@@ -77,6 +77,15 @@ and the documentation.
 
 * Reworked GUI
 
+    .. image:: ../examples/gui_flat_button.png
+       :width: 40%
+
+    .. image:: ../examples/gui_widgets.png
+       :width: 40%
+
+    .. image:: ../examples/gui_ok_messagebox.png
+       :width: 40%
+
   * UIEvents are replaced by Widgets
   * Option to relative pin Widgets on screen to center or border (supports resizing)
   * Widgets can be placed on top of each other
@@ -110,7 +119,6 @@ and the documentation.
   * Lots of individual documentation updates for commands.
   * The :ref:`quick_index` has been reorganized to be easier to find commands, and
     the individual API documentation pages have been broken into parts, so it isn't one large monolithic page.
-  * New tutorial for :ref:`user-interface-tutorial`.
   * New tutorial for :ref:`raycasting_tutorial`.
 
     .. image:: ../tutorials/raycasting/example.png
@@ -121,6 +129,9 @@ and the documentation.
   * Revamped minimap example: :ref:`minimap`.
   * Moved from AWS hosting to read-the-docs hosting so we can support multiple versions of docs.
   * New example showing how to use the new performance statistics API: :ref:`performance_statistics_example`
+  * New example: :ref:`gui_widgets`
+  * New example: :ref:`gui_flat_button`
+  * New example: :ref:`gui_ok_messagebox`
 
 * API commands
 
