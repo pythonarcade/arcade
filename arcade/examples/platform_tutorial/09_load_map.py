@@ -68,7 +68,9 @@ class MyGame(arcade.Window):
         # Name of map file to load
         map_name = ":resources:tiled_maps/map.json"
 
-        # Layer Specific Options for the Tilemap
+        # Layer specific options are defined based on Layer names in a dictionary
+        # Doing this will make the SpriteList for the platforms layer
+        # use spatial hashing for detection.
         layer_options = {
             "Platforms": {
                 "use_spatial_hash": True,
