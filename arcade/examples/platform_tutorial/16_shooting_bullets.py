@@ -22,7 +22,9 @@ GRID_PIXEL_SIZE = SPRITE_PIXEL_SIZE * TILE_SCALING
 
 # Shooting Constants
 SPRITE_SCALING_LASER = 0.8
+SHOOT_SPEED = 15
 BULLET_SPEED = 12
+BULLET_DAMAGE = 25
 
 # Movement speed of player, in pixels per frame
 PLAYER_MOVEMENT_SPEED = 7
@@ -109,6 +111,7 @@ class Enemy(Entity):
         super().__init__(name_folder, name_file)
 
         self.should_update_walk = 0
+        self.health = 0
 
     def update_animation(self, delta_time: float = 1 / 60):
 
@@ -141,12 +144,16 @@ class RobotEnemy(Enemy):
         # Set up parent class
         super().__init__("robot", "robot")
 
+        self.health = 100
+
 
 class ZombieEnemy(Enemy):
     def __init__(self):
 
         # Set up parent class
         super().__init__("zombie", "zombie")
+
+        self.health = 50
 
 
 class PlayerCharacter(Entity):
@@ -253,7 +260,6 @@ class MyGame(arcade.Window):
 
         # Shooting mechanics
         self.can_shoot = False
-        self.shoot_speed = 0
         self.shoot_timer = 0
 
         # Load sounds
@@ -301,7 +307,6 @@ class MyGame(arcade.Window):
 
         # Shooting mechanics
         self.can_shoot = True
-        self.shoot_speed = 30
         self.shoot_timer = 0
 
         # Set up the player, specifically placing it at these coordinates.
@@ -515,7 +520,7 @@ class MyGame(arcade.Window):
                 self.can_shoot = False
         else:
             self.shoot_timer += 1
-            if self.shoot_timer == self.shoot_speed:
+            if self.shoot_timer == SHOOT_SPEED:
                 self.can_shoot = True
                 self.shoot_timer = 0
 
@@ -589,24 +594,38 @@ class MyGame(arcade.Window):
         )
 
         for bullet in self.scene.get_sprite_list(LAYER_NAME_BULLETS):
-            hit_list = arcade.check_for_collision_with_list(
-                bullet, self.scene.get_sprite_list(LAYER_NAME_ENEMIES)
+            hit_list = arcade.check_for_collision_with_lists(
+                bullet,
+                [
+                    self.scene.get_sprite_list(LAYER_NAME_ENEMIES),
+                    self.scene.get_sprite_list(LAYER_NAME_PLATFORMS),
+                    self.scene.get_sprite_list(LAYER_NAME_MOVING_PLATFORMS),
+                ],
             )
 
             if hit_list:
                 bullet.remove_from_sprite_lists()
 
-                for enemy in hit_list:
-                    enemy.remove_from_sprite_lists()
-                    self.score += 100
+                for collision in hit_list:
+                    if (
+                        self.scene.get_sprite_list(LAYER_NAME_ENEMIES)
+                        in collision.sprite_lists
+                    ):
+                        # The collision was with an enemy
+                        collision.health -= BULLET_DAMAGE
 
-                    # Hit sound
-                    arcade.play_sound(self.hit_sound)
+                        if collision.health <= 0:
+                            collision.remove_from_sprite_lists()
+                            self.score += 100
+
+                        # Hit sound
+                        arcade.play_sound(self.hit_sound)
 
                 return
 
             if (bullet.right < 0) or (
-                bullet.left > self.tile_map.width * self.tile_map.tile_width
+                bullet.left
+                > (self.tile_map.width * self.tile_map.tile_width) * TILE_SCALING
             ):
                 bullet.remove_from_sprite_lists()
 
