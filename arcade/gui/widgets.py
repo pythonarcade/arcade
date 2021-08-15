@@ -857,9 +857,11 @@ class UIBorder(UIWrapper):
         if self.rendered and not force:
             return
 
-        surface.clear(self._border_color)
+
+        arcade.draw_xywh_rectangle_outline(0, 0, self.width, self.height,
+                                           color=self._border_color,
+                                           border_width=self._border_width)
         surface.limit(*self.child.rect)
-        surface.clear()
         self.child.render(surface, force=True)
 
 
