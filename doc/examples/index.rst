@@ -444,6 +444,11 @@ Instruction Screens and Game Over Screens
 
    :ref:`view_pause_screen`
 
+.. figure:: thumbs/view_screens_minimal.png
+   :figwidth: 170px
+
+   :ref:`transitions`
+
 Resizable Window and Fullscreen Games
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
