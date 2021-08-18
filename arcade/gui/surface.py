@@ -9,7 +9,8 @@ from arcade.gl import geometry
 
 class Surface:
     """
-    Holds a FBO and abstracts the drawing on it.
+    Holds a :class:`arcade.gl.Framebuffer` and abstracts the drawing on it.
+    Used internally for rendering widgets.
     """
 
     def __init__(

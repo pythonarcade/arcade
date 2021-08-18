@@ -108,10 +108,10 @@ class _Rect(NamedTuple):
 class UIWidget(EventDispatcher, ABC):
     """ Base class for UI widgets. """
     def __init__(self,
-                 x=0,
-                 y=0,
-                 width=100,
-                 height=100,
+                 x: float = 0,
+                 y: float = 0,
+                 width: float = 100,
+                 height: float = 100,
                  ):
         self._rect = _Rect(x, y, width, height)
         self.rendered = False
@@ -149,7 +149,12 @@ class UIWidget(EventDispatcher, ABC):
         """
         return UIBorder(self, border_width=width, border_color=color)
 
-    def with_space_around(self, top=0, right=0, bottom=0, left=0, bg_color=None):
+    def with_space_around(self,
+                          top: float = 0,
+                          right: float = 0,
+                          bottom: float = 0,
+                          left: float = 0,
+                          bg_color: Optional[arcade.Color] = None):
         """
         Wraps this Widget with a border
         :param top: Top Padding
@@ -283,6 +288,9 @@ class UIInteractiveWidget(UIWidget):
 
 
 class UIDummy(UIInteractiveWidget):
+    """
+    Solid color widget, used for testing.
+    """
     def __init__(self, x=0, y=0, width=100, height=100, color=arcade.color.BLACK):
         super().__init__(x, y, width, height)
         self.color = color
@@ -316,16 +324,31 @@ class UISpriteWidget(UIWidget):
 
 
 class UITextureButton(UIInteractiveWidget):
-    """ A button with an image for the face of the button. """
+    """
+    A button with an image for the face of the button.
+
+    :param float x: x-coordinate of widget
+    :param float y: y-coordinate of widget
+    :param float width: width of widget. Defaults to texture width if not specified.
+    :param float height: height of widget. Defaults to texture height if not specified.
+    :param Texture texture: texture to display for the widget.
+    :param Texture texture_hover: different texture to display if mouse is hovering over button.
+    :param Texture texture_pressed: different texture to display if mouse button is pressed while hovering over button.
+    :param str text: text to add to the button.
+    :param style: style information for the button.
+    :param float scale: scale the button, based on the base texture size.
+    """
     def __init__(self,
-                 x=0, y=0,
-                 width=None, height=None,
+                 x: float = 0,
+                 y: float = 0,
+                 width: float = None,
+                 height: float = None,
                  texture: Texture = None,
                  texture_hover: Texture = None,
                  texture_pressed: Texture = None,
-                 text="",
+                 text: str = "",
                  style=None,
-                 scale=None):
+                 scale: float = None):
 
         if width is None and texture is not None:
             width = texture.width
@@ -394,13 +417,34 @@ class UITextureButton(UIInteractiveWidget):
 
 
 class UITextWidget(UIWidget):
-    """ A text label. """
-    def __init__(self, x=0, y=0, width=400, height=40, text="",
+    """
+    A text label.
+
+    :param float x: x-coordinate of widget.
+    :param float y: y-coordinate of widget.
+    :param float width: width of widget. Defaults to texture width if not specified.
+    :param float height: height of widget. Defaults to texture height if not specified.
+    :param str text: text to add to the button.
+    :param font_name: a list of fonts to use. Program will start at the beginning of the list
+                      and keep trying to load fonts until success.
+    :param float font_size: size of font.
+    :param arcade.Color text_color: Color of font. 
+    :param style: Not used. 
+    :param bool multiline: if multiline is true, a \\n will start a new line.
+                           A UITextWidget with multiline of true is the same thing as UITextArea.
+
+    """
+    def __init__(self,
+                 x: float = 0,
+                 y: float = 0,
+                 width: float = 400,
+                 height: float = 40,
+                 text: str = "",
                  font_name=('Arial',),
-                 font_size=12,
-                 text_color=(255, 255, 255, 255),
+                 font_size: float = 12,
+                 text_color: arcade.Color = (255, 255, 255, 255),
                  style=None,
-                 multiline=False):
+                 multiline: bool = False):
         super().__init__(x, y, width, height)
 
         self.doc: AbstractDocument = pyglet.text.decode_text(text)
@@ -459,11 +503,30 @@ class UITextWidget(UIWidget):
 
 
 class UITextArea(UITextWidget):
-    """ A multi-line text display. """
-    def __init__(self, x=0, y=0, width=100, height=200, text="",
+    """
+    A multi-line text display. Same thing as :class:`arcade.UITextWidget` except multi-line is True.
+
+    :param float x: x-coordinate of widget.
+    :param float y: y-coordinate of widget.
+    :param float width: width of widget. Defaults to texture width if not specified.
+    :param float height: height of widget. Defaults to texture height if not specified.
+    :param str text: text to add to the button.
+    :param font_name: a list of fonts to use. Program will start at the beginning of the list
+                      and keep trying to load fonts until success.
+    :param float font_size: size of font.
+    :param arcade.Color text_color: Color of font.
+    :param style:
+
+    """
+    def __init__(self,
+                 x: float = 0,
+                 y: float = 0,
+                 width: float = 100,
+                 height: float = 200,
+                 text: str = "",
                  font_name=('Arial',),
-                 font_size=12,
-                 text_color=(255, 255, 255, 255),
+                 font_size: float = 12,
+                 text_color: arcade.Color = (255, 255, 255, 255),
                  style=None):
         super().__init__(
             text=text,
@@ -480,11 +543,18 @@ class UITextArea(UITextWidget):
 
 
 class UIInputText(UIWidget):
-    """ An input field the user can type text into. """
-    def __init__(self, x=0, y=0, width=100, height=50, text="",
+    """
+    An input field the user can type text into.
+    """
+    def __init__(self,
+                 x: float = 0,
+                 y: float = 0,
+                 width: float = 100,
+                 height: float = 50,
+                 text: str = "",
                  font_name=('Arial',),
-                 font_size=12,
-                 text_color=(0, 0, 0, 255),
+                 font_size: float = 12,
+                 text_color: arcade.Color = (0, 0, 0, 255),
                  ):
         super().__init__(x, y, width, height)
 
@@ -563,8 +633,24 @@ class UIInputText(UIWidget):
 
 
 class UIFlatButton(UIInteractiveWidget):
-    """ A text button, with support for background color and a border. """
-    def __init__(self, x=0, y=0, width=100, height=50, text="", style=None):
+    """
+    A text button, with support for background color and a border.
+
+    :param float x: x-coordinate of widget.
+    :param float y: y-coordinate of widget.
+    :param float width: width of widget. Defaults to texture width if not specified.
+    :param float height: height of widget. Defaults to texture height if not specified.
+    :param str text: text to add to the button.
+    :param style:
+
+    """
+    def __init__(self,
+                 x: float = 0,
+                 y: float = 0,
+                 width: float = 100,
+                 height: float = 50,
+                 text="",
+                 style=None):
         super().__init__(x, y, width, height)
         self._text = text
         self._style = style or {}
