@@ -17,7 +17,7 @@ we'll use a map editor that we can build maps with and then load in the map file
 To start off with, download and install the `Tiled Map Editor`_. (Think about donating,
 as it is a  wonderful project provided for free.)
 
-Tiled already has excellect documentation available at https://doc.mapeditor.org/, so for
+Tiled already has excellent documentation available at https://doc.mapeditor.org/, so for
 this tutorial we'll assume that you're already familiar with how to create maps using Tiled.
 If you're not, you can check out the Tiled documentation and come back to here.
 
@@ -49,8 +49,9 @@ Then we will do the actual loading in the setup function Our new setup function 
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/09_load_map.py
     :caption: Load a map - Setup the map
-    :lines: 61-108
-    :emphasize-lines: 68-69,71-78,80-81,83-85,101-103,105-108
+    :pyobject: MyGame.setup
+    :linenos:
+    :emphasize-lines: 8-25, 40-48
 
 This is pretty much all that needs done to load in the Tilemap, we get a Scene created from it and can use it just like we
 have been up until now. But let's go through this setup function and look at all the updates.
