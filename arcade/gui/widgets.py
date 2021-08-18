@@ -106,7 +106,14 @@ class _Rect(NamedTuple):
 
 
 class UIWidget(EventDispatcher, ABC):
-    """ Base class for UI widgets. """
+    """
+    Base class for UI widgets.
+
+    :param x: center x of widget
+    :param y: center y of widget
+    :param width: width of widget
+    :param height: height of widget
+    """
     def __init__(self,
                  x: float = 0,
                  y: float = 0,
@@ -786,10 +793,10 @@ class UIAnchorWidget(UIWrapper):
     def __init__(self,
                  *,
                  child: UIWidget,
-                 anchor_x="center",
-                 align_x=0,
-                 anchor_y="center",
-                 align_y=0,
+                 anchor_x: str = "center",
+                 align_x: float = 0,
+                 anchor_y: str = "center",
+                 align_y: float = 0,
                  ):
         super().__init__(child=child)
         self.anchor_x = anchor_x
