@@ -49,8 +49,7 @@ class MyWindow(arcade.Window):
 
         # Create a UITextureButton
         texture = arcade.load_texture(":resources:onscreen_controls/flat_dark/play.png")
-        ui_texture_button = arcade.gui.UITextureButton(texture=texture,
-                                                       height=texture.height, width=texture.width)
+        ui_texture_button = arcade.gui.UITextureButton(texture=texture)
 
         # Handle Clicks
         @ui_texture_button.event("on_click")

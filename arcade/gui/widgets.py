@@ -319,13 +319,26 @@ class UITextureButton(UIInteractiveWidget):
     """ A button with an image for the face of the button. """
     def __init__(self,
                  x=0, y=0,
-                 width=100, height=50,
+                 width=None, height=None,
                  texture: Texture = None,
                  texture_hover: Texture = None,
                  texture_pressed: Texture = None,
                  text="",
-                 style=None):
+                 style=None,
+                 scale=None):
+
+        if width is None and texture is not None:
+            width = texture.width
+
+        if height is None and texture is not None:
+            height = texture.height
+
+        if scale is not None and texture is not None:
+            height = texture.height * scale
+            width = texture.width * scale
+
         super().__init__(x, y, width, height)
+
         self._tex = texture
         self._tex_hover = texture_hover
         self._tex_pressed = texture_pressed
