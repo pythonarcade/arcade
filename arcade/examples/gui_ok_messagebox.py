@@ -39,16 +39,22 @@ class MyWindow(arcade.Window):
         message_box = arcade.gui.OKMessageBox(
             width=300,
             height=200,
-            text=(
+            message_text=(
                 "You should have a look on the new GUI features "
                 "coming up with arcade 2.6!"
-            ))
+            ),
+            callback=self.on_message_box_close,
+            buttons=["Ok", "Cancel"]
+        )
 
         self.manager.add(message_box)
 
     def on_draw(self):
         arcade.start_render()
         self.manager.draw()
+
+    def on_message_box_close(self, button_text):
+        print(f"User pressed {button_text}.")
 
 
 window = MyWindow()

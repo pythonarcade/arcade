@@ -6,23 +6,42 @@ from arcade.gui.widgets import UIGroup, UIAnchorWidget, UITextArea, UIFlatButton
 
 
 class OKMessageBox(UIAnchorWidget):
-    def __init__(self, *, width: float, height: float, text: str):
+    """
+    A simple dialog box that pops up a message with an 'Ok' button to close.
+    """
+    def __init__(self,
+                 *,
+                 width: float,
+                 height: float,
+                 message_text: str,
+                 buttons=("Ok",),
+                 callback=None):
+
         space = 5
 
-        self._text_area = UITextArea(text=text, width=height - space, height=width - space, text_color=arcade.color.BLACK)
-        self._ok_button = UIFlatButton(text="OK")
+        self._text_area = UITextArea(text=message_text,
+                                     width=height - space,
+                                     height=width - space,
+                                     text_color=arcade.color.BLACK)
+
+        button_group = arcade.gui.UIBoxGroup(vertical=False)
+        for button_text in buttons:
+            button = UIFlatButton(text=button_text)
+            button_group.add(button)
+            button.on_click = self.on_ok
 
         self._bg_tex = arcade.load_texture(":resources:gui_basic_assets/window/grey_panel.png")
 
+        self._callback = callback
+
         group = UIGroup(width=width, height=height, children=[
             UIAnchorWidget(child=self._text_area, anchor_x="left", anchor_y="top", align_x=10, align_y=-10),
-            UIAnchorWidget(child=self._ok_button, anchor_x="right", anchor_y="bottom", align_x=-10, align_y=10)
+            UIAnchorWidget(child=button_group, anchor_x="right", anchor_y="bottom", align_x=-10, align_y=10)
         ]).with_background(self._bg_tex)
-
-        # TODO schedule on_ok event
-        self._ok_button.on_click = self.on_ok
 
         super().__init__(child=group)
 
     def on_ok(self, event):
         self.parent.remove(self)
+        if self._callback is not None:
+            self._callback(event.source.text)
