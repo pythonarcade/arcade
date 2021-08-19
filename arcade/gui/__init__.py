@@ -21,10 +21,11 @@ from .widgets import UIWidget
 from .widgets import UIBorder
 from .widgets import UIBoxGroup
 from .widgets import UIFlatButton
+from .widgets import UILabel
 from .widgets import UITexturePane
 from .widgets import UITextureButton
 from .widgets import UIWrapper
-from .widgets import UITextWidget
+from .widgets import UITextArea
 from .widgets import UIInteractiveWidget
 from .widgets import UIInputText
 from .widgets import UIPadding
@@ -49,6 +50,7 @@ __all__ = ['UIManager',
            'UIKeyReleaseEvent',
            'UIEvent',
            'UIInputText',
+           'UILabel',
            'UIPadding',
            'UIInteractiveWidget',
            'UIMouseEvent',
@@ -62,7 +64,7 @@ __all__ = ['UIManager',
            'UITextMotionEvent',
            'UITextMotionSelectEvent',
            'UITexturePane',
-           'UITextWidget',
+           'UITextArea',
            'UITextureButton',
            'UISpace',
            'UIGroup',
@@ -72,5 +74,4 @@ __all__ = ['UIManager',
            'UIWidgetParent',
            'UIWrapper',
            'Surface',
-
            ]

@@ -27,7 +27,7 @@ class OKMessageBox(UIAnchorWidget):
         button_group = arcade.gui.UIBoxGroup(vertical=False)
         for button_text in buttons:
             button = UIFlatButton(text=button_text)
-            button_group.add(button)
+            button_group.add(button.with_space_around(left=10))
             button.on_click = self.on_ok
 
         self._bg_tex = arcade.load_texture(":resources:gui_basic_assets/window/grey_panel.png")
