@@ -14,10 +14,16 @@ from typing import List, Dict
 import pyglet.event
 
 import arcade
-from arcade.gui.events import UIMouseMovementEvent, UIMousePressEvent, UIMouseReleaseEvent, \
-    UIMouseScrollEvent, UITextEvent, \
-    UIMouseDragEvent, \
-    UITextMotionEvent, UITextMotionSelectEvent, UIEvent, UIKeyPressEvent, UIKeyReleaseEvent
+from arcade.gui.events import (UIMouseMovementEvent,
+                               UIMousePressEvent,
+                               UIMouseReleaseEvent,
+                               UIMouseScrollEvent,
+                               UITextEvent,
+                               UIMouseDragEvent,
+                               UITextMotionEvent,
+                               UITextMotionSelectEvent,
+                               UIKeyPressEvent,
+                               UIKeyReleaseEvent)
 from arcade.gui.surface import Surface
 from arcade.gui.widgets import UIWidget, UIWidgetParent, _Rect
 
@@ -39,6 +45,7 @@ class UIManager(pyglet.event.EventDispatcher, UIWidgetParent):
         manager.draw() # draws the UI on screen
 
     """
+    _enabled = False
 
     def __init__(self, window: arcade.Window = None, auto_enable=False):
         super().__init__()
@@ -104,20 +111,22 @@ class UIManager(pyglet.event.EventDispatcher, UIWidgetParent):
         on_draw is not registered, to provide full control about draw order,
         so it has to be called by the devs themselves.
         """
-        self.window.push_handlers(
-            self.on_resize,
-            self.on_update,
-            self.on_mouse_drag,
-            self.on_mouse_motion,
-            self.on_mouse_press,
-            self.on_mouse_release,
-            self.on_mouse_scroll,
-            self.on_key_press,
-            self.on_key_release,
-            self.on_text,
-            self.on_text_motion,
-            self.on_text_motion_select,
-        )
+        if not self._enabled:
+            self._enabled = True
+            self.window.push_handlers(
+                self.on_resize,
+                self.on_update,
+                self.on_mouse_drag,
+                self.on_mouse_motion,
+                self.on_mouse_press,
+                self.on_mouse_release,
+                self.on_mouse_scroll,
+                self.on_key_press,
+                self.on_key_release,
+                self.on_text,
+                self.on_text_motion,
+                self.on_text_motion_select,
+            )
 
     def disable(self):
         """
@@ -126,20 +135,22 @@ class UIManager(pyglet.event.EventDispatcher, UIWidgetParent):
         If every :py:class:`arcade.View` uses its own :py:class:`arcade.gui.UIManager`,
         this method should be called in :py:meth:`arcade.View.on_hide_view()`.
         """
-        self.window.remove_handlers(
-            self.on_resize,
-            self.on_update,
-            self.on_mouse_drag,
-            self.on_mouse_motion,
-            self.on_mouse_press,
-            self.on_mouse_release,
-            self.on_mouse_scroll,
-            self.on_key_press,
-            self.on_key_release,
-            self.on_text,
-            self.on_text_motion,
-            self.on_text_motion_select,
-        )
+        if self._enabled:
+            self._enabled = False
+            self.window.remove_handlers(
+                self.on_resize,
+                self.on_update,
+                self.on_mouse_drag,
+                self.on_mouse_motion,
+                self.on_mouse_press,
+                self.on_mouse_release,
+                self.on_mouse_scroll,
+                self.on_key_press,
+                self.on_key_release,
+                self.on_text,
+                self.on_text_motion,
+                self.on_text_motion_select,
+            )
 
     def on_update(self, time_delta):
         layers = sorted(self._children.keys())
