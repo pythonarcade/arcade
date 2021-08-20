@@ -439,7 +439,10 @@ class UITextWidget(UIWidget):
     :param style: Not used. 
     :param bool multiline: if multiline is true, a \\n will start a new line.
                            A UITextWidget with multiline of true is the same thing as UITextArea.
-
+    :param float scroll_speed: For a multi-line display that is longer than the window allows,
+                               the user can scroll it with the mouse's scroll wheel. This controls
+                               how many pixels per 'click' it moves the text. This defaults to the
+                               font size.
     """
     def __init__(self,
                  x: float = 0,
@@ -451,8 +454,17 @@ class UITextWidget(UIWidget):
                  font_size: float = 12,
                  text_color: arcade.Color = (255, 255, 255, 255),
                  style=None,
-                 multiline: bool = False):
+                 multiline: bool = False,
+                 scroll_speed: float = None):
         super().__init__(x, y, width, height)
+
+        # Set how fast the mouse scroll wheel will scroll text in the pane.
+        # Measured in pixels per 'click'
+        if scroll_speed is not None:
+            self.scroll_speed = scroll_speed
+        else:
+            # If nothing, use font size
+            self.scroll_speed = font_size
 
         self.doc: AbstractDocument = pyglet.text.decode_text(text)
         self.doc.set_style(0, 12, dict(
@@ -497,7 +509,6 @@ class UITextWidget(UIWidget):
         self.rendered = True
 
         with surface.ctx.pyglet_rendering():
-            self.layout.default_group_class.scissor_area = self.rect.scale(surface.pixel_ratio)
             self.layout.draw()
 
     def on_event(self, event: UIEvent):
@@ -505,7 +516,7 @@ class UITextWidget(UIWidget):
 
         if isinstance(event, UIMouseScrollEvent):
             if _point_in_rect(event.x, event.y, *self.rect):
-                self.layout.view_y += event.scroll_y
+                self.layout.view_y += event.scroll_y * self.scroll_speed
                 self.rendered = False
 
 
@@ -523,6 +534,10 @@ class UITextArea(UITextWidget):
     :param float font_size: size of font.
     :param arcade.Color text_color: Color of font.
     :param style:
+    :param float scroll_speed: For a multi-line display that is longer than the window allows,
+                               the user can scroll it with the mouse's scroll wheel. This controls
+                               how many pixels per 'click' it moves the text. This defaults to the
+                               font size.
 
     """
     def __init__(self,
@@ -534,7 +549,8 @@ class UITextArea(UITextWidget):
                  font_name=('Arial',),
                  font_size: float = 12,
                  text_color: arcade.Color = (255, 255, 255, 255),
-                 style=None):
+                 style=None,
+                 scroll_speed: float = None):
         super().__init__(
             text=text,
             x=x,
@@ -545,7 +561,8 @@ class UITextArea(UITextWidget):
             font_size=font_size,
             text_color=text_color,
             style=style,
-            multiline=True
+            multiline=True,
+            scroll_speed=scroll_speed
         )
 
 
@@ -586,7 +603,6 @@ class UIInputText(UIWidget):
             if self.rect.collide_with_point(event.x, event.y):
                 self._active = True
                 self.caret.on_activate()
-                print("activate")
                 return
 
         # if active check to deactivate
@@ -635,7 +651,6 @@ class UIInputText(UIWidget):
         self.rendered = True
 
         with surface.ctx.pyglet_rendering():
-            self.layout.default_group_class.scissor_area = self.rect.scale(surface.pixel_ratio)
             self.layout.draw()
 
 
