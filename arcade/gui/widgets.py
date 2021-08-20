@@ -541,7 +541,6 @@ class UILabel(UIWidget):
         self.rendered = True
 
         with surface.ctx.pyglet_rendering():
-            self.label.default_group_class.scissor_area = self.rect.scale(surface.pixel_ratio)
             self.label.draw()
 
     def on_event(self, event: UIEvent):
@@ -616,7 +615,6 @@ class UITextArea(UIWidget):
         self.rendered = True
 
         with surface.ctx.pyglet_rendering():
-            self.layout.default_group_class.scissor_area = self.rect.scale(surface.pixel_ratio)
             self.layout.draw()
 
     def on_event(self, event: UIEvent):
@@ -716,7 +714,6 @@ class UIInputText(UIWidget):
         self.rendered = True
 
         with surface.ctx.pyglet_rendering():
-            self.layout.default_group_class.scissor_area = self.rect.scale(surface.pixel_ratio)
             self.layout.draw()
 
 
