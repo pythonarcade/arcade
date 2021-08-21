@@ -19,7 +19,7 @@ class MyWindow(arcade.Window):
         arcade.set_background_color(arcade.color.DARK_BLUE_GRAY)
 
         # Create a vertical BoxGroup to align buttons
-        self.v_box = arcade.gui.UIBoxGroup()
+        self.v_box = arcade.gui.UIBoxLayout()
 
         # Create a text label
         ui_text_label = arcade.gui.UITextArea(text="This is a Text Widget",

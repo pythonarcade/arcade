@@ -2,12 +2,12 @@
 Constructs, are prepared widget combinations, you can use for common usecases
 """
 import arcade
-from arcade.gui.widgets import UIGroup, UIAnchorWidget, UITextArea, UIFlatButton
+from arcade.gui.widgets import UILayout, UIAnchorWidget, UITextArea, UIFlatButton
 
 
-class OKMessageBox(UIAnchorWidget):
+class UIMessageBox(UIAnchorWidget):
     """
-    A simple dialog box that pops up a message with an 'Ok' button to close.
+    A simple dialog box that pops up a message with buttons to close.
     """
     def __init__(self,
                  *,
@@ -16,6 +16,15 @@ class OKMessageBox(UIAnchorWidget):
                  message_text: str,
                  buttons=("Ok",),
                  callback=None):
+        """
+        A simple dialog box that pops up a message with buttons to close.
+
+        :param width: Width of the message box
+        :param height: Height of the message box
+        :param message_text:
+        :param buttons: List of strings, which are shown as buttons
+        :param callback: Callback method, will receive the text of the clicked button
+        """
 
         space = 5
 
@@ -24,7 +33,7 @@ class OKMessageBox(UIAnchorWidget):
                                      height=width - space,
                                      text_color=arcade.color.BLACK)
 
-        button_group = arcade.gui.UIBoxGroup(vertical=False)
+        button_group = arcade.gui.UIBoxLayout(vertical=False)
         for button_text in buttons:
             button = UIFlatButton(text=button_text)
             button_group.add(button.with_space_around(left=10))
@@ -34,7 +43,7 @@ class OKMessageBox(UIAnchorWidget):
 
         self._callback = callback
 
-        group = UIGroup(width=width, height=height, children=[
+        group = UILayout(width=width, height=height, children=[
             UIAnchorWidget(child=self._text_area, anchor_x="left", anchor_y="top", align_x=10, align_y=-10),
             UIAnchorWidget(child=button_group, anchor_x="right", anchor_y="bottom", align_x=-10, align_y=10)
         ]).with_background(self._bg_tex)

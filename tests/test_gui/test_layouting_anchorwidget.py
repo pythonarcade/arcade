@@ -1,4 +1,4 @@
-from arcade.gui.widgets import UIAnchorWidget, UIWidget, UIBoxGroup, UIDummy
+from arcade.gui.widgets import UIAnchorWidget, UIWidget, UIBoxLayout, UIDummy
 
 
 def test_place_widget():
@@ -18,7 +18,7 @@ def test_place_widget():
 
 
 def test_place_box_widget():
-    widget = UIBoxGroup()
+    widget = UIBoxLayout()
     widget.add(UIDummy(width=100, height=100))
     widget.add(UIDummy(width=100, height=100))
 

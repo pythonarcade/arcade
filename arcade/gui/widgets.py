@@ -463,23 +463,6 @@ class UITextureButton(UIInteractiveWidget):
 class UILabel(UIWidget):
     """ A simple text label. Also supports multiline text.
     In case you want to scroll text use a :class:`UITextArea`
-
-    :param float x: x-coordinate of widget.
-    :param float y: y-coordinate of widget.
-    :param float width: width of widget. Defaults to text width if not specified.
-    :param float height: height of widget. Defaults to text height if not specified.
-    :param str text: text of the label.
-    :param font_name: a list of fonts to use. Program will start at the beginning of the list
-                      and keep trying to load fonts until success.
-    :param float font_size: size of font.
-    :param arcade.Color text_color: Color of font.
-    :param style: Not used.
-    :param bool multiline: if multiline is true, a \\n will start a new line.
-                           A UITextWidget with multiline of true is the same thing as UITextArea.
-    :param float scroll_speed: For a multi-line display that is longer than the window allows,
-                               the user can scroll it with the mouse's scroll wheel. This controls
-                               how many pixels per 'click' it moves the text. This defaults to the
-                               font size.
     """
 
     def __init__(self,
@@ -492,8 +475,24 @@ class UILabel(UIWidget):
                  font_size: float = 12,
                  text_color: arcade.Color = (255, 255, 255, 255),
                  style=None,
-                 multiline: bool = False,
-                 scroll_speed: float = None):
+                 multiline: bool = False):
+        """
+        A simple text label. Also supports multiline text.
+        In case you want to scroll text use a :class:`UITextArea`
+
+        :param float x: x-coordinate of widget.
+        :param float y: y-coordinate of widget.
+        :param float width: width of widget. Defaults to text width if not specified.
+        :param float height: height of widget. Defaults to text height if not specified.
+        :param str text: text of the label.
+        :param font_name: a list of fonts to use. Program will start at the beginning of the list
+                          and keep trying to load fonts until success.
+        :param float font_size: size of font.
+        :param arcade.Color text_color: Color of font.
+        :param style: Not used.
+        :param bool multiline: if multiline is true, a \\n will start a new line.
+                               A UITextWidget with multiline of true is the same thing as UITextArea.
+        """
         # Use Pyglet's Label for text rendering
         self.label = pyglet.text.Label(text=text,
                                        font_name=font_name,
@@ -511,14 +510,6 @@ class UILabel(UIWidget):
             width = self.label.content_width
 
         super().__init__(x, y, width, height)
-
-        # Set how fast the mouse scroll wheel will scroll text in the pane.
-        # Measured in pixels per 'click'
-        if scroll_speed is not None:
-            self.scroll_speed = scroll_speed
-        else:
-            # If nothing, use font size
-            self.scroll_speed = font_size
 
         self.label.width = width
         self.label.height = height
@@ -1044,7 +1035,7 @@ class UIPadding(UIWrapper):
         self.child.render(surface, force=True)
 
 
-class UIGroup(UIWidget, UIWidgetParent):
+class UILayout(UIWidget, UIWidgetParent):
     """
     Group of Widgets
 
@@ -1114,9 +1105,9 @@ class UIGroup(UIWidget, UIWidgetParent):
         return result
 
 
-class UIBoxGroup(UIGroup):
+class UIBoxLayout(UILayout):
     """
-    Places Widgets next to each other.
+    Places widgets next to each other.
     Depending on the vertical attribute, the Widgets are placed top to bottom or left to right.
 
     :param x: x coordinate of bottom left
