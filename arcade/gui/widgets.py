@@ -118,6 +118,7 @@ class UIWidget(EventDispatcher, ABC):
     The :class:`Widget` class is the base class required for creating Widgets.
 
     We also have some default values and behaviors that you should be aware of:
+
     * A :class:`UIWidget` is not a :class:`~arcade.gui.UILayout`: it will not
       change the position or the size of its children. If you want control over
       positioning or sizing, use a :class:`~arcade.gui.UILayout`.

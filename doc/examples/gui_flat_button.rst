@@ -5,6 +5,8 @@
 Flat Text Buttons
 =================
 
+For an introduction the GUI system, see :ref:`gui_concepts`.
+
 The :class:`arcade.gui.UIFlatButton` is a simple button with a text label.
 It doesn't have any three-dimensional look to it.
 

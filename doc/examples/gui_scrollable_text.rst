@@ -5,6 +5,8 @@
 GUI Scrollable Text
 ===================
 
+For an introduction the GUI system, see :ref:`gui_concepts`.
+
 .. image:: gui_scrollable_text.png
     :width: 600px
     :align: center
