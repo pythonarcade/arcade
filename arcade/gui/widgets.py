@@ -114,7 +114,7 @@ class _Rect(NamedTuple):
 class UIWidget(EventDispatcher, ABC):
     """
     Widget class
-    ============
+
     The :class:`Widget` class is the base class required for creating Widgets.
 
     We also have some default values and behaviors that you should be aware of:
@@ -122,6 +122,10 @@ class UIWidget(EventDispatcher, ABC):
       change the position or the size of its children. If you want control over
       positioning or sizing, use a :class:`~arcade.gui.UILayout`.
 
+    :param x: center x of widget
+    :param y: center y of widget
+    :param width: width of widget
+    :param height: height of widget
     """
 
     def __init__(self,
@@ -459,31 +463,38 @@ class UITextureButton(UIInteractiveWidget):
 class UILabel(UIWidget):
     """ A simple text label. Also supports multiline text.
     In case you want to scroll text use a :class:`UITextArea`
+
+    :param float x: x-coordinate of widget.
+    :param float y: y-coordinate of widget.
+    :param float width: width of widget. Defaults to text width if not specified.
+    :param float height: height of widget. Defaults to text height if not specified.
+    :param str text: text of the label.
+    :param font_name: a list of fonts to use. Program will start at the beginning of the list
+                      and keep trying to load fonts until success.
+    :param float font_size: size of font.
+    :param arcade.Color text_color: Color of font.
+    :param style: Not used.
+    :param bool multiline: if multiline is true, a \\n will start a new line.
+                           A UITextWidget with multiline of true is the same thing as UITextArea.
+    :param float scroll_speed: For a multi-line display that is longer than the window allows,
+                               the user can scroll it with the mouse's scroll wheel. This controls
+                               how many pixels per 'click' it moves the text. This defaults to the
+                               font size.
     """
 
-    def __init__(self, x=0, y=0, width=None, height=None, text="",
+    def __init__(self,
+                 x: float = 0,
+                 y: float = 0,
+                 width: float = 400,
+                 height: float = 40,
+                 text: str = "",
                  font_name=('Arial',),
-                 font_size=12,
-                 text_color=(255, 255, 255, 255),
+                 font_size: float = 12,
+                 text_color: arcade.Color = (255, 255, 255, 255),
                  style=None,
-                 multiline=False):
-        """
-        If width and height are not set, the label will use the rendered text size
-
-        :param float x: x-coordinate of widget.
-        :param float y: y-coordinate of widget.
-        :param float width: width of widget. Defaults to text width if not specified.
-        :param float height: height of widget. Defaults to text height if not specified.
-        :param str text: text of the label.
-        :param font_name: a list of fonts to use. Program will start at the beginning of the list
-                          and keep trying to load fonts until success.
-        :param float font_size: size of font.
-        :param arcade.Color text_color: Color of font.
-        :param style: Not used.
-        :param bool multiline: if multiline is true, a \\n will start a new line.
-                               A UITextWidget with multiline of true is the same thing as UITextArea.
-        """
-        # Use Pyglets Label for text rendering
+                 multiline: bool = False,
+                 scroll_speed: float = None):
+        # Use Pyglet's Label for text rendering
         self.label = pyglet.text.Label(text=text,
                                        font_name=font_name,
                                        font_size=font_size,
@@ -500,6 +511,14 @@ class UILabel(UIWidget):
             width = self.label.content_width
 
         super().__init__(x, y, width, height)
+
+        # Set how fast the mouse scroll wheel will scroll text in the pane.
+        # Measured in pixels per 'click'
+        if scroll_speed is not None:
+            self.scroll_speed = scroll_speed
+        else:
+            # If nothing, use font size
+            self.scroll_speed = font_size
 
         self.label.width = width
         self.label.height = height
@@ -562,8 +581,17 @@ class UITextArea(UIWidget):
                  font_size: float = 12,
                  text_color: arcade.Color = (255, 255, 255, 255),
                  style=None,
-                 multiline: bool = True):
+                 multiline: bool = True,
+                 scroll_speed: float = None):
         super().__init__(x, y, width, height)
+
+        # Set how fast the mouse scroll wheel will scroll text in the pane.
+        # Measured in pixels per 'click'
+        if scroll_speed is not None:
+            self.scroll_speed = scroll_speed
+        else:
+            # If nothing, use font size
+            self.scroll_speed = font_size
 
         self.doc: AbstractDocument = pyglet.text.decode_text(text)
         self.doc.set_style(0, 12, dict(
@@ -622,7 +650,7 @@ class UITextArea(UIWidget):
 
         if isinstance(event, UIMouseScrollEvent):
             if _point_in_rect(event.x, event.y, *self.rect):
-                self.layout.view_y += event.scroll_y
+                self.layout.view_y += event.scroll_y * self.scroll_speed
                 self.rendered = False
 
 
@@ -665,7 +693,6 @@ class UIInputText(UIWidget):
             if self.rect.collide_with_point(event.x, event.y):
                 self._active = True
                 self.caret.on_activate()
-                print("activate")
                 return
 
         # if active check to deactivate
@@ -881,11 +908,10 @@ class UIAnchorWidget(UIWrapper):
     def __init__(self,
                  *,
                  child: UIWidget,
-                 anchor_x="center",
-                 align_x=0,
-                 anchor_y="center",
-                 align_y=0,
-
+                 anchor_x: str = "center",
+                 align_x: float = 0,
+                 anchor_y: str = "center",
+                 align_y: float = 0,
                  # Properties which might be used by layouts
                  size_hint=None,  # in percentage
                  # size_hint_min=None,  # in pixel
@@ -967,18 +993,16 @@ class UIBorder(UIWrapper):
 
 class UITexturePane(UIWrapper):
     """
-    Wraps a Widget and underlays a background texture.
+    This wrapper draws a background before child widget is rendered
+
+    :param child: Child of this widget
+    :param tex: Texture to use as background
+    :param padding: Space between the outer border of this widget and the child
+    :param size_hint: A hint for :class:`UILayout`, if this :class:`UIWidget` would like to grow (default: (1, 1) -> full size of parent)
+
     """
 
     def __init__(self, child: UIWidget, tex: Texture, padding=(0, 0, 0, 0), size_hint=(1, 1)):
-        """
-        This wrapper draws a background before child widget is rendered
-
-        :param child: Child of this widget
-        :param tex: Texture to use as background
-        :param padding: Space between the outer border of this widget and the child
-        :param size_hint: A hint for :class:`UILayout`, if this :class:`UIWidget` would like to grow (default: (1, 1) -> full size of parent)
-        """
         super().__init__(
             child=child,
             padding=padding,
@@ -1023,18 +1047,16 @@ class UIPadding(UIWrapper):
 class UIGroup(UIWidget, UIWidgetParent):
     """
     Group of Widgets
+
+    :param x:
+    :param y:
+    :param width:
+    :param height:
+    :param children: Child widgets of this group
+    :param size_hint: A hint for :class:`UILayout`, if this :class:`UIWidget` would like to grow
     """
 
     def __init__(self, x=0, y=0, width=100, height=100, children: Iterable[UIWidget] = tuple(), size_hint=None):
-        """
-
-        :param x:
-        :param y:
-        :param width:
-        :param height:
-        :param children: Child widgets of this group
-        :param size_hint: A hint for :class:`UILayout`, if this :class:`UIWidget` would like to grow
-        """
         super().__init__(x, y, width, height)
         self._children = list(children)
         self._children_modified = True
@@ -1096,18 +1118,16 @@ class UIBoxGroup(UIGroup):
     """
     Places Widgets next to each other.
     Depending on the vertical attribute, the Widgets are placed top to bottom or left to right.
+
+    :param x: x coordinate of bottom left
+    :param y: x coordinate of bottom left
+    :param vertical: Layout children vertical (True) or horizontal (False)
+    :param align: Align children in orthogonal direction
+    :param children: Initial children, more can be added
+    :param size_hint: A hint for :class:`UILayout`, if this :class:`UIWidget` would like to grow
     """
 
     def __init__(self, x=0, y=0, vertical=True, align="center", children: Iterable[UIWidget] = tuple(), size_hint=None):
-        """
-
-        :param x: x coordinate of bottom left
-        :param y: x coordinate of bottom left
-        :param vertical: Layout children vertical (True) or horizontal (False)
-        :param align: Align children in orthogonal direction
-        :param children: Initial children, more can be added
-        :param size_hint: A hint for :class:`UILayout`, if this :class:`UIWidget` would like to grow
-        """
         super().__init__(x=x, y=y, width=0, height=0, children=children, size_hint=size_hint)
         self.align = align
         self.vertical = vertical
