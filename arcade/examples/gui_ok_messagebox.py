@@ -21,7 +21,7 @@ class MyWindow(arcade.Window):
         # Create a button. We'll click on this to open our window.
         # Add it v_box for positioning.
         open_message_box_button = arcade.gui.UIFlatButton(text="Open", width=200)
-        self.v_box.add(open_message_box_button.with_space_around(bottom=20))
+        self.v_box.add(open_message_box_button)
 
         # Add a hook to run when we click on the button.
         open_message_box_button.on_click = self.on_click_open

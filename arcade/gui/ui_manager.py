@@ -25,7 +25,7 @@ from arcade.gui.events import (UIMouseMovementEvent,
                                UIKeyPressEvent,
                                UIKeyReleaseEvent)
 from arcade.gui.surface import Surface
-from arcade.gui.widgets import UIWidget, UIWidgetParent, _Rect
+from arcade.gui.widgets import UIWidget, UIWidgetParent, _Rect, UIGroup, UIWrapper
 
 
 class UIManager(pyglet.event.EventDispatcher, UIWidgetParent):
@@ -239,3 +239,20 @@ class UIManager(pyglet.event.EventDispatcher, UIWidgetParent):
     @property
     def rect(self) -> _Rect:
         return _Rect(0, 0, *self._surfaces[0].size)
+
+    def debug(self):
+        """Walks through all widgets of a UIManager and prints out the rect"""
+        for index, layer in self._children.items():
+            print(f"Layer {index}")
+            for child in reversed(layer):
+                self._debug(child, prefix="  ")
+        return
+
+    @staticmethod
+    def _debug(element, prefix=""):
+        print(f"{prefix}{element.__class__}:{element.rect}")
+        if isinstance(element, UIGroup):
+            for child in element._children:
+                UIManager._debug(child, prefix=prefix + "  ")
+        if isinstance(element, UIWrapper):
+            UIManager._debug(element.child, prefix=prefix + "  ")
