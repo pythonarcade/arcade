@@ -69,6 +69,7 @@ def test_handler_not_pushed():
 def test_handler_removed():
     window = create_autospec(arcade.Window)
     msg = UIManager(window)
+    msg.enable()  # UIManager has to be enabled before it can be disabled
 
     msg.disable()
 

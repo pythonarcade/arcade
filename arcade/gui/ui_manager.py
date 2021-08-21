@@ -50,10 +50,7 @@ class UIManager(pyglet.event.EventDispatcher, UIWidgetParent):
     def __init__(self, window: arcade.Window = None, auto_enable=False):
         super().__init__()
         self.window = window or arcade.get_window()
-        self._surfaces = {0: Surface(
-            size=self.window.get_size(),
-            pixel_ratio=self.window.get_pixel_ratio(),
-        )}
+        self._surfaces: Dict[int, Surface] = {}
         self._children: Dict[int, List[UIWidget]] = defaultdict(list)
         self.rendered = False
 

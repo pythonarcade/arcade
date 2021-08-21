@@ -5,9 +5,9 @@ import arcade
 from arcade.gui.widgets import UIGroup, UIAnchorWidget, UITextArea, UIFlatButton
 
 
-class OKMessageBox(UIAnchorWidget):
+class UIMessageBox(UIAnchorWidget):
     """
-    A simple dialog box that pops up a message with an 'Ok' button to close.
+    A simple dialog box that pops up a message with buttons to close.
     """
     def __init__(self,
                  *,
@@ -16,6 +16,15 @@ class OKMessageBox(UIAnchorWidget):
                  message_text: str,
                  buttons=("Ok",),
                  callback=None):
+        """
+        A simple dialog box that pops up a message with buttons to close.
+
+        :param width: Width of the message box
+        :param height: Height of the message box
+        :param message_text:
+        :param buttons: List of strings, which are shown as buttons
+        :param callback: Callback method, will receive the text of the clicked button
+        """
 
         space = 5
 

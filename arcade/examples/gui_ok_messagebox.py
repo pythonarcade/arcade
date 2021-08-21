@@ -36,7 +36,7 @@ class MyWindow(arcade.Window):
     def on_click_open(self, event):
         # The code in this function is run when we click the ok button.
         # The code below opens the message box and auto-dismisses it when done.
-        message_box = arcade.gui.OKMessageBox(
+        message_box = arcade.gui.UIMessageBox(
             width=300,
             height=200,
             message_text=(
