@@ -1035,7 +1035,7 @@ class UIPadding(UIWrapper):
         self.child.render(surface, force=True)
 
 
-class UIGroup(UIWidget, UIWidgetParent):
+class UILayout(UIWidget, UIWidgetParent):
     """
     Group of Widgets
 
@@ -1105,9 +1105,9 @@ class UIGroup(UIWidget, UIWidgetParent):
         return result
 
 
-class UIBoxGroup(UIGroup):
+class UIBoxLayout(UILayout):
     """
-    Places Widgets next to each other.
+    Places widgets next to each other.
     Depending on the vertical attribute, the Widgets are placed top to bottom or left to right.
 
     :param x: x coordinate of bottom left

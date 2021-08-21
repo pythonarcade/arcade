@@ -134,7 +134,7 @@ from .events import UIOnClickEvent
 from .widgets import UIWidgetParent
 from .widgets import UIWidget
 from .widgets import UIBorder
-from .widgets import UIBoxGroup
+from .widgets import UIBoxLayout
 from .widgets import UIFlatButton
 from .widgets import UILabel
 from .widgets import UITexturePane
@@ -146,7 +146,7 @@ from .widgets import UIInputText
 from .widgets import UIPadding
 from .widgets import UISpriteWidget
 from .widgets import UISpace
-from .widgets import UIGroup
+from .widgets import UILayout
 from .widgets import UIDraggableMixin
 from .widgets import UITextArea
 from .widgets import UIAnchorWidget
@@ -155,7 +155,7 @@ from .widgets import UIDummy
 
 __all__ = ['UIManager',
            'UIBorder',
-           'UIBoxGroup',
+           'UIBoxLayout',
            'UIMessageBox',
            'UIFlatButton',
            'UIAnchorWidget',
@@ -182,7 +182,7 @@ __all__ = ['UIManager',
            'UITextArea',
            'UITextureButton',
            'UISpace',
-           'UIGroup',
+           'UILayout',
            'UIDraggableMixin',
            'UISpriteWidget',
            'UIWidget',

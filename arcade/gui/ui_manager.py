@@ -25,7 +25,7 @@ from arcade.gui.events import (UIMouseMovementEvent,
                                UIKeyPressEvent,
                                UIKeyReleaseEvent)
 from arcade.gui.surface import Surface
-from arcade.gui.widgets import UIWidget, UIWidgetParent, _Rect, UIGroup, UIWrapper
+from arcade.gui.widgets import UIWidget, UIWidgetParent, _Rect, UILayout, UIWrapper
 
 
 class UIManager(pyglet.event.EventDispatcher, UIWidgetParent):
@@ -248,7 +248,7 @@ class UIManager(pyglet.event.EventDispatcher, UIWidgetParent):
     @staticmethod
     def _debug(element, prefix=""):
         print(f"{prefix}{element.__class__}:{element.rect}")
-        if isinstance(element, UIGroup):
+        if isinstance(element, UILayout):
             for child in element._children:
                 UIManager._debug(child, prefix=prefix + "  ")
         if isinstance(element, UIWrapper):

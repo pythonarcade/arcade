@@ -86,16 +86,17 @@ and the documentation.
     .. image:: ../examples/gui_ok_messagebox.png
        :width: 40%
 
-  * UIEvents are replaced by Widgets
-  * Option to relative pin Widgets on screen to center or border (supports resizing)
+  * UIEvents are replaced by UIWidgets
+  * Option to relative pin widgets on screen to center or border (supports resizing)
   * Widgets can be placed on top of each other
-  * Overlapping Widgets properly handle mouse interaction
+  * Overlapping widgets properly handle mouse interaction
   * Fully typed event classes
-  * Events contain source Widget *(planned)*
-  * ScrollableText Widgets (more to come)
+  * Events contain source widget *(planned)*
+  * ScrollableText widgets (more to come)
+  * UILayouts can grow or shrink widgets, to adjust to different screen sizes
   * Support for Sprites within Widgets
   * Declarative coding style for borders and padding `widget.with_border(...)`
-  * Automatically place Widgets vertically or horizontally (`ListGroup`)
+  * Automatically place widgets vertically or horizontally (`UIBoxLayout`)
   * Dropped support for YAML style files
   * Better performance and limited memory usage
   * More documentation *(planned)*
