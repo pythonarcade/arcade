@@ -260,7 +260,8 @@ class PymunkPhysicsEngine:
 
         def _f1(arbiter, space, data):
             sprite_a, sprite_b = self.get_sprites_from_arbiter(arbiter)
-            begin_handler(sprite_a, sprite_b, arbiter, space, data)
+            should_process_collision = begin_handler(sprite_a, sprite_b, arbiter, space, data)
+            return should_process_collision
 
         def _f2(arbiter, space, data):
             sprite_a, sprite_b = self.get_sprites_from_arbiter(arbiter)
