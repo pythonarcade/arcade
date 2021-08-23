@@ -8,7 +8,7 @@ helper function to create a Scene directly from a TileMap object.
 
 from typing import Dict, List, Optional
 
-from arcade import Sprite, SpriteList
+from arcade import Color, Sprite, SpriteList
 from arcade.tilemap import TileMap
 
 
@@ -293,3 +293,29 @@ class Scene:
 
         for sprite_list in self.sprite_lists:
             sprite_list.draw(**kwargs)
+
+    def draw_hit_boxes(
+        self,
+        color: Color = (0, 0, 0, 255),
+        line_thickness: float = 1,
+        names: Optional[List[str]] = None,
+    ) -> None:
+        """
+        Draw hitboxes for all sprites in the scene.
+
+        If `names` parameter is provided then only the specified SpriteLists
+        will be drawn. They will be drawn in the order that the names in the
+        list were arranged. If `names` is not provided, then every SpriteList
+        in the scene will be drawn according to the order of the main sprite_lists
+        attribute of the Scene.
+
+        :param Optional[List[str]] names: A list of names of SpriteLists to draw.
+        """
+
+        if names:
+            for name in names:
+                self.name_mapping[name].draw_hit_boxes(color, line_thickness)
+            return
+
+        for sprite_list in self.sprite_lists:
+            sprite_list.draw_hit_boxes(color, line_thickness)
