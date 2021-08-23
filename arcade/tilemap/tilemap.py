@@ -449,6 +449,19 @@ class TileMap:
                 else:
                     print(f"Warning: Hitbox type {type(hitbox)} not supported.")
 
+                if tile.flipped_vertically:
+                    for point in points:
+                        point[1] *= -1
+
+                if tile.flipped_horizontally:
+                    for point in points:
+                        point[0] *= -1
+
+                if tile.flipped_diagonally:
+                    for point in points:
+                        point[0], point[1] = point[1], point[0]
+
+
                 my_sprite.hit_box = points
 
         if tile.animation:
