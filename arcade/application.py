@@ -52,6 +52,22 @@ class Window(pyglet.window.Window):
     """
     The Window class forms the basis of most advanced games that use Arcade.
     It represents a window on the screen, and manages events.
+
+    :param int width: Window width
+    :param int height: Window height
+    :param str title: Title (appears in title bar)
+    :param bool fullscreen: Should this be full screen?
+    :param bool resizable: Can the user resize the window?
+    :param float update_rate: How frequently to update the window.
+    :param bool antialiasing: Should OpenGL's anti-aliasing be enabled?
+    :param Tuple[int,int] gl_version: What OpenGL version to request. This is ``(3, 3)`` by default
+                                       and can be overridden when using more advanced OpenGL features.
+    :param bool visible: Should the window be visible immediately
+    :param bool vsync: Wait for vertical screen refresh before swapping buffer
+                       This can make animations and movement look smoother.
+    :param bool gc_mode: Decides how opengl objects should be garbage collected
+    :param bool center_window: If true, will center the window.
+
     """
 
     def __init__(self,
@@ -71,21 +87,6 @@ class Window(pyglet.window.Window):
                  center_window: bool = False):
         """
         Construct a new window
-
-        :param int width: Window width
-        :param int height: Window height
-        :param str title: Title (appears in title bar)
-        :param bool fullscreen: Should this be full screen?
-        :param bool resizable: Can the user resize the window?
-        :param float update_rate: How frequently to update the window.
-        :param bool antialiasing: Should OpenGL's anti-aliasing be enabled?
-        :param Tuple[int,int] gl_version: What OpenGL version to request. This is ``(3, 3)`` by default
-                                           and can be overridden when using more advanced OpenGL features.
-        :param bool visible: Should the window be visible immediately
-        :param bool vsync: Wait for vertical screen refresh before swapping buffer
-                           This can make animations and movement look smoother.
-        :param bool gc_mode: Decides how opengl objects should be garbage collected
-        :param bool center_window: If true, will center the window.
         """
         # In certain environments (mainly headless) we can't have antialiasing/MSAA enabled.
         # TODO: Detect other headless environments
@@ -193,14 +194,22 @@ class Window(pyglet.window.Window):
         super().close()
         pyglet.clock.unschedule(self._dispatch_updates)
 
-    def set_fullscreen(self, fullscreen=True, screen=None, mode=None,
-                       width=None, height=None):
+    def set_fullscreen(self,
+                       fullscreen: bool = True,
+                       screen: Optional['Window'] = None,
+                       mode: pyglet.canvas.ScreenMode = None,
+                       width: Optional[float] = None,
+                       height: Optional[float] = None):
         """
         Set if we are full screen or not.
 
         :param bool fullscreen:
         :param screen: Which screen should we display on? See :func:`get_screens`
-        :param mode:
+        :param pyglet.canvas.ScreenMode mode:
+                The screen will be switched to the given mode.  The mode must
+                have been obtained by enumerating `Screen.get_modes`.  If
+                None, an appropriate mode will be selected from the given
+                `width` and `height`.
         :param int width:
         :param int height:
         """
@@ -426,7 +435,7 @@ class Window(pyglet.window.Window):
 
         return super().get_location()
 
-    def set_visible(self, visible=True):
+    def set_visible(self, visible: bool = True):
         """
         Set if the window is visible or not. Normally, a program's window is visible.
 

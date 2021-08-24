@@ -107,7 +107,7 @@ class MyGame(arcade.Window):
         with self.minimap_sprite_list.atlas.render_into(self.minimap_texture, projection=proj) as fbo:
             fbo.clear(MINIMAP_BACKGROUND_COLOR)
             self.wall_list.draw()
-            self.player_sprite.draw()
+            self.player_sparite.draw()
 
     def on_draw(self):
         """
