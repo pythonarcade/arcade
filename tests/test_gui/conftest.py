@@ -1,28 +1,16 @@
-import pytest
+from arcade.gui import UIManager
 from pytest import fixture
 
-import arcade
-from . import MockButton, TestUIManager, TestUILayoutManager
+from tests.test_gui import InteractionMixin
 
 
-@fixture()
-def mock_mng(window):
-    ui_manager = TestUIManager(window)
-    yield ui_manager
+class InteractionUIManager(UIManager, InteractionMixin):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.push_handlers(on_event=self._on_ui_event)
 
 
-@pytest.fixture()
-def mock_layout_mng(window):
-    ui_manager = TestUILayoutManager(window)
-    ui_manager.enable()
-    yield ui_manager
-    ui_manager.disable()
 
-
-@pytest.fixture()
-def mock_button() -> MockButton:
-    return MockButton(center_x=50, center_y=50, width=40, height=40)
-
-
-# provide same fixture twice, in case we need a second button
-mock_button2 = mock_button
+@fixture
+def uimanager(window) -> InteractionUIManager:
+    return InteractionUIManager()

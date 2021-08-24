@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.1.5" orientation="orthogonal" renderorder="right-down" width="10" height="10" tilewidth="128" tileheight="128" infinite="0" nextobjectid="1">
- <tileset firstgid="1" source="my_tileset.tsx"/>
- <layer name="Obstructions" width="10" height="10">
-  <data encoding="base64" compression="zlib">
-   eJxjYmBgYCISEwLI6hiJVIcOGIlUR6x5hNRh00fIPEYs6ojxLwcBDFIDAEJ8AH8=
-  </data>
- </layer>
-</map>

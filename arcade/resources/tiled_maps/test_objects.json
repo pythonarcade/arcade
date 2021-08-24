@@ -120,7 +120,7 @@
                 {
                  "draworder":"topdown",
                  "id":6,
-                 "name":"Tiles",
+                 "name":"GroupTiles",
                  "objects":[
                         {
                          "gid":11,
@@ -198,7 +198,7 @@
  "nextobjectid":13,
  "orientation":"orthogonal",
  "renderorder":"right-down",
- "tiledversion":"1.4.3",
+ "tiledversion":"1.7.0",
  "tileheight":128,
  "tilesets":[
         {
@@ -207,6 +207,6 @@
         }],
  "tilewidth":128,
  "type":"map",
- "version":1.4,
+ "version":"1.6",
  "width":20
 }

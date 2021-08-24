@@ -21,28 +21,28 @@ elements this could get out of hand.
 First start by creating the new GUI camera and the score variables in the ``__init__`` function.
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/08_score.py
-    :caption: Display The Score
+    :caption: Display The Score - The init method
     :lines: 44-48
 
 Then we can initialize them in the ``setup`` function. We reset the score to 0 here because this
 function is intended to fully reset the game back to it's starting state.
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/08_score.py
-    :caption: Display The Score
+    :caption: Display The Score - The setup method
     :lines: 62-66
 
 Then in our ``on_draw`` function we can first draw our scene like normal, and then switch to the
 GUI camera, and then finally draw our text.
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/08_score.py
-    :caption: Display The Score
+    :caption: Display The Score - The on_draw method
     :lines: 110-133
-    :emphasize-lines: 122-133
+    :emphasize-lines: 13-24
   
 Lastly in the ``on_update`` function we just need to update the score when a player collects a coin:
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/08_score.py
-    :caption: Display The Score
+    :caption: Display The Score - The on_update method
     :lines: 179-186
     :emphasize-lines: 7-8
 

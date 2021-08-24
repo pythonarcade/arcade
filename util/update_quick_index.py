@@ -22,6 +22,8 @@ titles = {
     'joysticks.py': ['Game Controller Support', 'game_controller.rst'],
     'particle.py': ['Particles', 'particle_emitter.rst'],
     'paths.py': ['Pathfinding', 'path_finding.rst'],
+    'perf_info.py': ['Performance Information', 'perf_info.rst'],
+    'perf_graph.py': ['Performance Information', 'perf_info.rst'],
     'physics_engines.py': ['Physics Engines', 'physics_engines.rst'],
     'pymunk_physics_engine.py': ['Physics Engines', 'physics_engines.rst'],
     'sound.py': ['Sound', 'sound.rst'],
@@ -32,7 +34,7 @@ titles = {
     'text.py': ['Text', 'text.rst'],
     'text_pillow.py': ['Text - Image/Pillow based', 'text_image.rst'],
     'text_pyglet.py': ['Text - Pyglet/Glyph based', 'text_pyglet.rst'],
-    'texture.py': ['OpenGL Texture Management', 'texture.rst'],
+    'texture.py': ['Texture Management', 'texture.rst'],
     'tilemap/__init__.py': ['Loading TMX (Tiled Map Editor) Maps', 'tiled.rst'],
     'tilemap.py': ['Loading TMX (Tiled Map Editor) Maps', 'tiled.rst'],
     '__init__.py': ['Misc Utility Functions', 'utility.rst'],
@@ -59,12 +61,12 @@ titles = {
     'tilemap/tilemap.py': ['Tiled Map Reader', 'tilemap.rst'],
 
     'gui/__init__.py': ['GUI', 'gui.rst'],
-    'gui/exceptions.py': ['GUI', 'gui.rst'],
-    'gui/manager.py': ['GUI', 'gui.rst'],
-    'gui/style.py': ['GUI', 'gui.rst'],
-    'gui/text_utils.py': ['GUI Utility Functions', 'gui_utility.rst'],
-    'gui/ui_style.py': ['GUI', 'gui.rst'],
-    'gui/utils.py': ['GUI Utility Functions', 'gui_utility.rst'],
+    'gui/constructs.py': ['GUI', 'gui.rst'],
+    'gui/events.py': ['GUI Event', 'gui_events.rst'],
+    'gui/surface.py': ['GUI', 'gui.rst'],
+    'gui/ui_manager.py': ['GUI', 'gui.rst'],
+    'gui/widgets.py': ['GUI Widgets', 'gui_widgets.rst'],
+
     'events/__init__.py': ['GUI Utility Functions', 'gui_utility.rst'],
     'gl/buffer.py': ['OpenGL Buffer', 'open_gl.rst'],
     'gl/context.py': ['OpenGL Context', 'open_gl.rst'],
@@ -78,7 +80,7 @@ titles = {
     'gl/uniform.py': ['OpenGL Uniform Data', 'open_gl.rst'],
     'gl/utils.py': ['OpenGL Utils', 'open_gl.rst'],
     'gl/query.py': ['OpenGL Query', 'open_gl.rst'],
-    'gl/texture.py': ['OpenGL Texture', 'open_gl.rst'],
+    'gl/texture.py': ['Texture Management', 'open_gl.rst'],
     'gl/vertex_array.py': ['OpenGL Vertex Array (VAO)', 'open_gl.rst'],
 }
 
@@ -190,6 +192,8 @@ def process_directory(directory, quick_index_file):
         api_file = open(full_api_file_name, "a")
 
         if new_api_file:
+            api_file.write(f".. _{api_file_name[:-4]}_api:")
+            api_file.write(f"\n\n")
             api_file.write(f"{title}\n")
             underline = "-" * len(title)
             api_file.write(f"{underline}\n\n")
@@ -208,6 +212,9 @@ def process_directory(directory, quick_index_file):
 
                 api_file.write(f".. autoclass:: {full_class_name}\n")
                 api_file.write(f"    :members:\n\n")
+
+                if "UIMockup" in full_class_name:
+                    print(f"AAAAA {full_api_file_name}")
 
                 # print(f"  Class {item}")
                 # text_file.write(f"     - Class\n")

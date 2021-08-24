@@ -36,5 +36,10 @@ To create a moving platform using TMX editor, there are a few steps:
 Source Code
 ~~~~~~~~~~~
 
-* :ref:`11_ladders_and_more`
-* :ref:`11_ladders_and_more_diff`
+.. literalinclude:: ../../../arcade/examples/platform_tutorial/11_ladders_and_more.py
+    :caption: Ladders and More
+    :linenos:
+
+..
+    * :ref:`11_ladders_and_more`
+    * :ref:`11_ladders_and_more_diff`

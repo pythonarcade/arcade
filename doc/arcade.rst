@@ -26,6 +26,7 @@ for the Python Arcade library. Soo also:
     api/tilemap
     api/texture
     api/texture_atlas
+    api/perf_info
     api/physics_engines
     api/utility
     api/geometry
@@ -45,9 +46,8 @@ for the Python Arcade library. Soo also:
     :caption: Arcade GUI
 
     api/gui
-    api/gui_elements
-    api/gui_layout
-    api/gui_utility
+    api/gui_widgets
+    api/gui_events
 
 .. toctree::
     :maxdepth: 1

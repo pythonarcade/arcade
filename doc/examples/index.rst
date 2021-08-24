@@ -424,9 +424,6 @@ Procedural Generation
 
    :ref:`procedural_caves_bsp`
 
-User Interface
---------------
-
 .. _view-examples:
 
 Instruction Screens and Game Over Screens
@@ -447,6 +444,11 @@ Instruction Screens and Game Over Screens
 
    :ref:`view_pause_screen`
 
+.. figure:: thumbs/view_screens_minimal.png
+   :figwidth: 170px
+
+   :ref:`transitions`
+
 Resizable Window and Fullscreen Games
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -464,15 +466,25 @@ Resizable Window and Fullscreen Games
 Graphical User Interface
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. figure:: thumbs/gui_elements.png
+.. figure:: thumbs/gui_flat_button.png
    :figwidth: 170px
 
-   :ref:`gui_elements`
+   :ref:`gui_flat_button`
 
-.. figure:: thumbs/gui_custom_style.png
+.. figure:: thumbs/gui_widgets.png
    :figwidth: 170px
 
-   :ref:`gui_custom_style`
+   :ref:`gui_widgets`
+
+.. figure:: thumbs/gui_ok_messagebox.png
+   :figwidth: 170px
+
+   :ref:`gui_ok_messagebox`
+
+.. figure:: thumbs/gui_scrollable_text.png
+   :figwidth: 170px
+
+   :ref:`gui_scrollable_text`
 
 
 Grid-Based Games
@@ -544,10 +556,10 @@ Using PyMunk for Physics
 Frame Buffers
 ^^^^^^^^^^^^^
 
-.. figure:: thumbs/mini_map_defender.png
+.. figure:: thumbs/minimap.png
    :figwidth: 170px
 
-   :ref:`mini_map_defender`
+   :ref:`minimap`
 
 .. figure:: thumbs/bloom_defender.png
    :figwidth: 170px
@@ -623,15 +635,15 @@ Odds and Ends
 
    :ref:`sprite_collect_coins_background`
 
-.. figure:: thumbs/sprite_collect_coins_with_stats.png
-   :figwidth: 170px
-
-   :ref:`sprite_collect_coins_with_stats`
-
 .. figure:: thumbs/timer.png
    :figwidth: 170px
 
    :ref:`timer`
+
+.. figure:: thumbs/performance_statistics.png
+   :figwidth: 170px
+
+   :ref:`performance_statistics_example`
 
 .. figure:: thumbs/texture_transform.png
    :figwidth: 170px

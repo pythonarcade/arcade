@@ -14,6 +14,7 @@ uniform samplerXX iChannel0..3;          // input channel. XX = 2D/Cube
 uniform vec4      iDate;                 // (year, month, day, time in seconds)
 uniform float     iSampleRate;           // sound sample rate (i.e., 44100)
 """
+from arcade.gl.framebuffer import Framebuffer
 import string
 from pathlib import Path
 from typing import Tuple, Optional, Union
@@ -242,10 +243,14 @@ class ShadertoyBase:
 
 
 class ShadertoyBuffer(ShadertoyBase):
+    """
+    An offscreen framebuffer we can render to with the supplied
+    shader or render any other content into. 
+    """
 
     def __init__(self, size: Tuple[int, int], source: str, repeat: bool = False):
         super().__init__(size, source)
-        self._texture = self.ctx.texture(size, components=4)
+        self._texture = self.ctx.texture(self._size, components=4)
         self._fbo = self.ctx.framebuffer(color_attachments=[self._texture])
         self._repeat = repeat
         self._set_repeat()
@@ -257,6 +262,10 @@ class ShadertoyBuffer(ShadertoyBase):
         This can be assigned to channels.
         """
         return self._texture
+
+    @property
+    def fbo(self) -> Framebuffer:
+        return self._fbo
 
     @property
     def repeat(self) -> bool:

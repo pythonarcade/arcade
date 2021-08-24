@@ -14,5 +14,10 @@ Add character animations!
 Source Code
 ~~~~~~~~~~~
 
-* :ref:`12_animate_character`
-* :ref:`12_animate_character_diff`
+.. literalinclude:: ../../../arcade/examples/platform_tutorial/12_animate_character.py
+    :caption: Animate the player character
+    :linenos:
+
+..
+    * :ref:`12_animate_character`
+    * :ref:`12_animate_character_diff`

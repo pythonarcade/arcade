@@ -11,8 +11,10 @@ Installation
 ------------
 Arcade can be installed like any other Python
 Package. Arcade needs support for OpenGL 3.3+. It does not run on Raspberry
-Pi or Wayland. If on Linux, sound support needs at least GLIB 2.29+.
-For detailed instructions see :ref:`installation-instructions`.
+Pi or Wayland.
+If you are familiar with Python package management you can just
+"pip install" Arcade.
+For more detailed instructions see :ref:`installation-instructions`.
 
 Starting Tutorials
 ------------------
@@ -32,27 +34,27 @@ Arcade Skill Tree
     :class: right-image
 
 * Basic Drawing Commands -
-  See `How to Draw with Your Computer <https://learn.arcade.academy/chapters/05_drawing/drawing.html>`_,
+  See `How to Draw with Your Computer <https://learn.arcade.academy/en/latest/chapters/05_drawing/drawing.html>`_,
   :ref:`drawing_primitives`
 
   * ShapeElementLists - Batch together thousands
     of drawing commands into one using a
-    `ShapeElementList <arcade.html#arcade.ShapeElementList>`_. See examples in
+    :class:`arcade.ShapeElementList`. See examples in
     :ref:`shape-element-lists`.
 
-* Sprites - Almost everything in Arcade is done with sprites.
+* Sprites - Almost everything in Arcade is done with the :class:`arcade.Sprite` class.
 
-  * `Basic Sprites and Collisions <https://learn.arcade.academy/chapters/18_sprites_and_collisions/sprites.html#basic-sprites-and-collisions>`_
-  * `Individually place sprites <https://learn.arcade.academy/chapters/22_sprites_and_walls/sprites_and_walls.html#individually-placing-walls>`_
-  * `Place sprites with a loop <https://learn.arcade.academy/chapters/22_sprites_and_walls/sprites_and_walls.html#placing-walls-with-a-loop>`_
-  * `Place sprites with a list <https://learn.arcade.academy/chapters/22_sprites_and_walls/sprites_and_walls.html#placing-walls-with-a-list>`_
+  * `Basic Sprites and Collisions <https://learn.arcade.academy/en/latest/chapters/18_sprites_and_collisions/sprites.html#basic-sprites-and-collisions>`_
+  * `Individually place sprites <https://learn.arcade.academy/en/latest/chapters/22_sprites_and_walls/sprites_and_walls.html#individually-placing-walls>`_
+  * `Place sprites with a loop <https://learn.arcade.academy/en/latest/chapters/22_sprites_and_walls/sprites_and_walls.html#placing-walls-with-a-loop>`_
+  * `Place sprites with a list <https://learn.arcade.academy/en/latest/chapters/22_sprites_and_walls/sprites_and_walls.html#placing-walls-with-a-list>`_
 
 * Moving player sprites
 
   * Mouse - :ref:`sprite_collect_coins`
   * Keyboard - :ref:`sprite_move_keyboard`
 
-    * Keyboard, slightly more complex but handles multiple keypresses better:
+    * Keyboard, slightly more complex but handles multiple key presses better:
       :ref:`sprite_move_keyboard_better`
     * Keyboard with acceleration, de-acceleration: :ref:`sprite_move_keyboard_accel`
     * Keyboard, rotate and move forward/back like a space ship: :ref:`sprite_move_angle`
@@ -63,16 +65,17 @@ Arcade Skill Tree
 * Sprite collision detection
 
   * Basic detection -
-    `Learn arcade book on collisions <https://learn.arcade.academy/chapters/18_sprites_and_collisions/sprites.html#the-update-method>`_,
+    `Learn arcade book on collisions <https://learn.arcade.academy/en/latest/chapters/18_sprites_and_collisions/sprites.html#the-update-method>`_,
     :ref:`sprite_collect_coins`
   * Understanding collision detection and spatial hashing
   * Sprite Hit boxes
 
-    * Changing - *Supported, but documentation needed.*
-    * Drawing - *Supported, but documentation needed.*
+    * Detail amount - :class:`arcade.Sprite`
+    * Changing -:class:`arcade.Sprite.hit_box`
+    * Drawing - :class:`arcade.Sprite.draw_hit_box`
 
   * Avoid placing items on walls - :ref:`sprite_no_coins_on_walls`
-  * Sprite drag-and-drop - *Supported, but documentation needed.*
+  * Sprite drag-and-drop - See the :ref:`solitaire_tutorial`.
 
 
 * Drawing sprites in layers
@@ -101,7 +104,7 @@ Arcade Skill Tree
 * Physics Engines
 
   * SimplePhysicsEngine - Platformer tutorial :ref:`platformer_part_three`,
-    Learn Arcade Book `Simple Physics Engine <https://learn.arcade.academy/chapters/22_sprites_and_walls/sprites_and_walls.html#physics-engine>`_,
+    Learn Arcade Book `Simple Physics Engine <https://learn.arcade.academy/en/latest/chapters/22_sprites_and_walls/sprites_and_walls.html#physics-engine>`_,
     Example :ref:`sprite_move_walls`
   * PlatformerPhysicsEngine - From the platformer tutorial: :ref:`platformer_part_four`,
 
@@ -129,9 +132,9 @@ Arcade Skill Tree
 
   * Programmatic creation
 
-    * `Individually place sprites <https://learn.arcade.academy/chapters/22_sprites_and_walls/sprites_and_walls.html#individually-placing-walls>`_
-    * `Place sprites with a loop <https://learn.arcade.academy/chapters/22_sprites_and_walls/sprites_and_walls.html#placing-walls-with-a-loop>`_
-    * `Place sprites with a list <https://learn.arcade.academy/chapters/22_sprites_and_walls/sprites_and_walls.html#placing-walls-with-a-list>`_
+    * `Individually place sprites <https://learn.arcade.academy/en/latest/chapters/22_sprites_and_walls/sprites_and_walls.html#individually-placing-walls>`_
+    * `Place sprites with a loop <https://learn.arcade.academy/en/latest/chapters/22_sprites_and_walls/sprites_and_walls.html#placing-walls-with-a-loop>`_
+    * `Place sprites with a list <https://learn.arcade.academy/en/latest/chapters/22_sprites_and_walls/sprites_and_walls.html#placing-walls-with-a-list>`_
 
   * Procedural Generation
 
@@ -148,7 +151,7 @@ Arcade Skill Tree
     * Hit-boxes - *Supported, but documentation needed.*
     * Animated Tiles - *Supported, but documentation needed.*
 
-* Sound - `Learn Arcade book sound chapter <https://learn.arcade.academy/chapters/17_sounds/sounds.html>`_
+* Sound - `Learn Arcade book sound chapter <https://learn.arcade.academy/en/latest/chapters/17_sounds/sounds.html>`_
 
   * :ref:`music_control_demo`
   * Spatial sound :ref:`sound_demo`
@@ -163,7 +166,7 @@ Arcade Skill Tree
 
   * Lights - :ref:`light_demo`
   * Wrap-around - *Supported, but documentation needed.*
-  * Mini-map - :ref:`mini_map_defender`
+  * Mini-map - :ref:`minimap`
   * Bloom/glow effect - :ref:`bloom_defender`
   * Writing your own shader - *Supported, but documentation needed.*
 

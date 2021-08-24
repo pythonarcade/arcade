@@ -1,16 +1,6 @@
 """
 Generates arcade/resources/__init__.py by looking for
 media types in arcade/resources.
-
-Add file extensions to MEDIA_TYPES
-
-Getting duplicate name errors:
-Warning: There is a duplicate resource variable name (image_ladder_mid).
-Warning: There is a duplicate resource variable name (image_ladder_top).
-Warning: There is a duplicate resource variable name (sound_laser1).
-Warning: There is a duplicate resource variable name (sound_laser1).
-Warning: There is a duplicate resource variable name (sound_phase_jump1).
-Warning: There is a duplicate resource variable name (sound_rock_hit2).
 """
 
 import pathlib

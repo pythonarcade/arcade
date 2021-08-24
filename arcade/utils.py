@@ -142,7 +142,15 @@ class _Vec2:
         return self.x, self.y
 
 
-def generate_uuid(**kwargs) -> str:
+def generate_uuid_from_kwargs(**kwargs) -> str:
+    """
+    Given key/pair combos, returns a string in uuid format.
+    Such as `text='hi', size=32` it will return "text-hi-size-32".
+    Called with no parameters, id does NOT return a random unique id.
+    """
+    if len(kwargs) == 0:
+        raise Exception("generate_uuid_from_kwargs has to be used with kwargs, please check the doc.")
+
     with StringIO() as guid:
         for key, value in kwargs.items():
             guid.write(str(key))

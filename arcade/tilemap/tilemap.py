@@ -16,7 +16,6 @@ from typing import Any, Dict, List, Optional, OrderedDict, Tuple, Union, cast
 
 import pytiled_parser
 import pytiled_parser.tiled_object
-
 from arcade import (
     AnimatedTimeBasedSprite,
     AnimationKeyframe,
@@ -26,6 +25,7 @@ from arcade import (
 )
 from arcade.arcade_types import Point, TiledObject
 from arcade.resources import resolve_resource_path
+from arcade.geometry import rotate_point
 
 _FLIPPED_HORIZONTALLY_FLAG = 0x80000000
 _FLIPPED_VERTICALLY_FLAG = 0x40000000
@@ -107,6 +107,9 @@ class TileMap:
         map_file: Union[str, Path],
         scaling: float = 1.0,
         layer_options: Optional[Dict[str, Dict[str, Any]]] = None,
+        use_spatial_hash: Optional[bool] = None,
+        hit_box_algorithm: str = "Simple",
+        hit_box_detail: float = 4.5,
     ) -> None:
         """
         Given a .json file, this will read in a Tiled map file, and
@@ -137,6 +140,12 @@ class TileMap:
         :param Union[str, Path] map_file: The JSON map file.
         :param float scaling: Global scaling to apply to all Sprites.
         :param Dict[str, Dict[str, Any]] layer_options: Extra parameters for each layer.
+        :param Optional[bool] use_spatial_hash: If set to True, this will make moving a sprite
+               in the SpriteList slower, but it will speed up collision detection
+               with items in the SpriteList. Great for doing collision detection
+               with static walls/platforms.
+        :param str hit_box_algorithm: One of 'None', 'Simple' or 'Detailed'.
+        :param float hit_box_detail: Float, defaults to 4.5. Used with 'Detailed' to hit box.
         """
 
         # If we should pull from local resources, replace with proper path
@@ -151,34 +160,75 @@ class TileMap:
         self.tile_width = self.tiled_map.tile_size.width
         self.tile_height = self.tiled_map.tile_size.height
         self.background_color = self.tiled_map.background_color
+
+        # Global Layer Defaults
         self.scaling = scaling
+        self.use_spatial_hash = use_spatial_hash
+        self.hit_box_algorithm = hit_box_algorithm
+        self.hit_box_detail = hit_box_detail
 
         # Dictionaries to store the SpriteLists for processed layers
         self.sprite_lists: OrderedDict[str, SpriteList] = OrderedDict[str, SpriteList]()
-        self.object_lists: OrderedDict[str, List[TiledObject]] = OrderedDict[str, SpriteList]()
+        self.object_lists: OrderedDict[str, List[TiledObject]] = OrderedDict[
+            str, SpriteList
+        ]()
         self.properties = self.tiled_map.properties
 
-        if not layer_options:
-            layer_options = {}
+        global_options = {
+            "scaling": self.scaling,
+            "use_spatial_hash": self.use_spatial_hash,
+            "hit_box_algorithm": self.hit_box_algorithm,
+            "hit_box_detail": self.hit_box_detail,
+        }
 
         for layer in self.tiled_map.layers:
-            processed: Union[
-                SpriteList, Tuple[Optional[SpriteList], Optional[List[TiledObject]]]
-            ]
-            options = layer_options[layer.name] if layer.name in layer_options else {}
-            if isinstance(layer, pytiled_parser.TileLayer):
-                processed = self._process_tile_layer(layer, **options)
-                self.sprite_lists[layer.name] = processed
-            elif isinstance(layer, pytiled_parser.ObjectLayer):
-                processed = self._process_object_layer(layer, **options)
-                if processed[0]:
-                    sprite_list = processed[0]
-                    if sprite_list:
-                        self.sprite_lists[layer.name] = sprite_list
-                if processed[1]:
-                    object_list = processed[1]
-                    if object_list:
-                        self.object_lists[layer.name] = object_list
+            if (layer.name in self.sprite_lists) or (layer.name in self.object_lists):
+                raise AttributeError(
+                    f"You have a duplicate layer name '{layer.name}' in your Tiled map. "
+                    "Please use unique names for all layers and tilesets in your map."
+                )
+            self._process_layer(layer, global_options, layer_options)
+
+    def _process_layer(
+        self,
+        layer: pytiled_parser.Layer,
+        global_options: Dict[str, Any],
+        layer_options: Optional[Dict[str, Dict[str, Any]]] = None,
+    ) -> None:
+
+        processed: Union[
+            SpriteList, Tuple[Optional[SpriteList], Optional[List[TiledObject]]]
+        ]
+
+        options = global_options
+
+        if layer_options:
+            if layer.name in layer_options:
+                new_options = {
+                    key: layer_options[layer.name].get(key, global_options[key])
+                    for key in global_options
+                }
+                options = new_options
+
+        if isinstance(layer, pytiled_parser.TileLayer):
+            processed = self._process_tile_layer(layer, **options)
+            self.sprite_lists[layer.name] = processed
+        elif isinstance(layer, pytiled_parser.ObjectLayer):
+            processed = self._process_object_layer(layer, **options)
+            if processed[0]:
+                sprite_list = processed[0]
+                if sprite_list:
+                    self.sprite_lists[layer.name] = sprite_list
+            if processed[1]:
+                object_list = processed[1]
+                if object_list:
+                    self.object_lists[layer.name] = object_list
+        elif isinstance(layer, pytiled_parser.ImageLayer):
+            processed = self._process_image_layer(layer, **options)
+            self.sprite_lists[layer.name] = processed
+        elif isinstance(layer, pytiled_parser.LayerGroup):
+            for sub_layer in layer.layers:
+                self._process_layer(sub_layer, global_options, layer_options)
 
     def get_cartesian(
         self,
@@ -243,7 +293,10 @@ class TileMap:
 
             # No specific tile info, but there is a tile sheet
             # print(f"data {tileset_key} {tileset.tiles} {tileset.image} {tileset_key} {tile_gid} {tileset.tile_count}")
-            if tileset.image is not None and tileset_key <= tile_gid < tileset_key + tileset.tile_count:
+            if (
+                tileset.image is not None
+                and tileset_key <= tile_gid < tileset_key + tileset.tile_count
+            ):
                 # No specific tile info, but there is a tile sheet
                 tile_ref = pytiled_parser.Tile(
                     id=(tile_gid - tileset_key), image=tileset.image
@@ -281,14 +334,11 @@ class TileMap:
     def _create_sprite_from_tile(
         self,
         tile: pytiled_parser.Tile,
-        scaling: Optional[float] = None,
+        scaling: float = 1.0,
         hit_box_algorithm: str = "Simple",
         hit_box_detail: float = 4.5,
     ) -> Sprite:
         """Given a tile from the parser, try and create a Sprite from it."""
-
-        if not scaling:
-            scaling = self.scaling
 
         # --- Step 1, Find a reference to an image this is going to be based off of
         map_source = self.tiled_map.map_file
@@ -331,9 +381,7 @@ class TileMap:
                         f"Warning, only one hit box supported for tile with image {tile.image}."
                     )
                 else:
-                    print(
-                        f"Warning, only one hit box supported for tile."
-                    )
+                    print(f"Warning, only one hit box supported for tile.")
 
             for hitbox in tile.objects.tiled_objects:
                 points: List[Point] = []
@@ -401,6 +449,19 @@ class TileMap:
                 else:
                     print(f"Warning: Hitbox type {type(hitbox)} not supported.")
 
+                if tile.flipped_vertically:
+                    for point in points:
+                        point[1] *= -1
+
+                if tile.flipped_horizontally:
+                    for point in points:
+                        point[0] *= -1
+
+                if tile.flipped_diagonally:
+                    for point in points:
+                        point[0], point[1] = point[1], point[0]
+
+
                 my_sprite.hit_box = points
 
         if tile.animation:
@@ -442,17 +503,84 @@ class TileMap:
 
         return my_sprite
 
-    def _process_tile_layer(
+    def _process_image_layer(
         self,
-        layer: pytiled_parser.TileLayer,
-        scaling: Optional[float] = None,
+        layer: pytiled_parser.ImageLayer,
+        scaling: float = 1.0,
         use_spatial_hash: Optional[bool] = None,
         hit_box_algorithm: str = "Simple",
         hit_box_detail: float = 4.5,
     ) -> SpriteList:
 
-        if not scaling:
-            scaling = self.scaling
+        sprite_list: SpriteList = SpriteList(use_spatial_hash=use_spatial_hash)
+
+        map_source = self.tiled_map.map_file
+        map_directory = os.path.dirname(map_source)
+        image_file = layer.image
+
+        if not os.path.exists(image_file) and (map_directory):
+            try2 = Path(map_directory, image_file)
+            if not os.path.exists(try2):
+                print(
+                    f"Warning, can't find image {image_file} for Image Layer {layer.name}"
+                )
+            image_file = try2
+
+        my_texture = load_texture(
+            image_file,
+            hit_box_algorithm=hit_box_algorithm,
+            hit_box_detail=hit_box_detail,
+        )
+
+        if layer.transparent_color:
+            data = my_texture.image.getdata()
+
+            target = layer.transparent_color
+            new_data = []
+            for item in data:
+                if (
+                    item[0] == target[0]
+                    and item[1] == target[1]
+                    and item[2] == target[2]
+                ):
+                    new_data.append((255, 255, 255, 0))
+                else:
+                    new_data.append(item)
+
+            my_texture.image.putdata(new_data)
+
+        my_sprite = Sprite(
+            image_file,
+            scaling,
+            texture=my_texture,
+            hit_box_algorithm=hit_box_algorithm,
+            hit_box_detail=hit_box_detail,
+        )
+
+        if layer.properties:
+            for key, value in layer.properties.items():
+                my_sprite.properties[key] = value
+
+        if layer.tint_color:
+            my_sprite.color = layer.tint_color
+
+        if layer.opacity:
+            my_sprite.alpha = int(layer.opacity * 255)
+
+        my_sprite.center_x = (layer.offset[0] * scaling) + my_sprite.width / 2
+        my_sprite.center_y = layer.offset[1]
+
+        sprite_list.append(my_sprite)
+        return sprite_list
+
+    def _process_tile_layer(
+        self,
+        layer: pytiled_parser.TileLayer,
+        scaling: float = 1.0,
+        use_spatial_hash: Optional[bool] = None,
+        hit_box_algorithm: str = "Simple",
+        hit_box_detail: float = 4.5,
+    ) -> SpriteList:
 
         sprite_list: SpriteList = SpriteList(use_spatial_hash=use_spatial_hash)
         map_array = layer.data
@@ -494,6 +622,10 @@ class TileMap:
                         self.tiled_map.map_size.height - row_index - 1
                     ) * (self.tiled_map.tile_size[1] * scaling) + my_sprite.height / 2
 
+                    # Tint
+                    if layer.tint_color:
+                        my_sprite.color = layer.tint_color
+
                     # Opacity
                     opacity = layer.opacity
                     if opacity:
@@ -506,7 +638,7 @@ class TileMap:
     def _process_object_layer(
         self,
         layer: pytiled_parser.ObjectLayer,
-        scaling: Optional[float] = None,
+        scaling: float = 1.0,
         use_spatial_hash: Optional[bool] = None,
         hit_box_algorithm: str = "Simple",
         hit_box_detail: float = 4.5,
@@ -547,13 +679,14 @@ class TileMap:
                 else:
                     rotation = 0
 
-                cos_rotation = math.cos(rotation)
-                sin_rotation = math.sin(rotation)
-                rotated_center_x = center_x * cos_rotation - center_y * sin_rotation
-                rotated_center_y = center_y * sin_rotation + center_y * cos_rotation
+                angle_degrees = math.degrees(rotation)
+                rotated_center_x, rotated_center_y = rotate_point(width / 2, height / 2, 0, 0, angle_degrees)
 
                 my_sprite.position = (x + rotated_center_x, y + rotated_center_y)
-                my_sprite.angle = math.degrees(rotation)
+                my_sprite.angle = angle_degrees
+
+                if layer.tint_color:
+                    my_sprite.color = layer.tint_color
 
                 opacity = layer.opacity
                 if opacity:
@@ -622,7 +755,9 @@ class TileMap:
                 shape = []
                 for point in cur_object.points:
                     x = point.x + cur_object.coordinates.x
-                    y = (self.height * self.tile_height) - (point.y + cur_object.coordinates.y)
+                    y = (self.height * self.tile_height) - (
+                        point.y + cur_object.coordinates.y
+                    )
                     point = (x, y)
                     shape.append(point)
 
@@ -665,6 +800,9 @@ def load_tilemap(
     map_file: Union[str, Path],
     scaling: float = 1.0,
     layer_options: Optional[Dict[str, Dict[str, Any]]] = None,
+    use_spatial_hash: Optional[bool] = None,
+    hit_box_algorithm: str = "Simple",
+    hit_box_detail: float = 4.5,
 ) -> TileMap:
     """
     Given a .json map file, loads in and returns a `TileMap` object.
@@ -677,9 +815,22 @@ def load_tilemap(
 
     :param Union[str, Path] map_file: The JSON map file.
     :param float scaling: The global scaling to apply to all Sprite's within the map.
+    :param Optional[bool] use_spatial_hash: If set to True, this will make moving a sprite
+               in the SpriteList slower, but it will speed up collision detection
+               with items in the SpriteList. Great for doing collision detection
+               with static walls/platforms.
+    :param str hit_box_algorithm: One of 'None', 'Simple' or 'Detailed'.
+    :param float hit_box_detail: Float, defaults to 4.5. Used with 'Detailed' to hit box.
     :param Dict[str, Dict[str, Any]] layer_options: Layer specific options for the map.
     """
-    return TileMap(map_file, scaling, layer_options)
+    return TileMap(
+        map_file,
+        scaling,
+        layer_options,
+        use_spatial_hash,
+        hit_box_algorithm,
+        hit_box_detail,
+    )
 
 
 def read_tmx(map_file: Union[str, Path]) -> pytiled_parser.TiledMap:

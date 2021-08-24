@@ -1,4 +1,4 @@
-Sphinx==4.1.1
+Sphinx==4.1.2
 sphinx-copybutton==0.4.0
 sphinx-rtd-theme==0.5.2
 sphinx-sitemap==2.2.0
@@ -7,5 +7,6 @@ dirsync==2.2.5
 pytiled-parser==1.5.0
 pymunk==6.0.0
 shapely==1.7.1
-pillow==8.3.1
-pyyaml~=5.4
+pyyaml==5.4.1
+Pillow==8.3.1
+

@@ -20,6 +20,7 @@ PLAYER_MOVEMENT_SPEED = 10
 GRAVITY = 1
 PLAYER_JUMP_SPEED = 20
 
+# Player starting position
 PLAYER_START_X = 64
 PLAYER_START_Y = 225
 
@@ -73,7 +74,7 @@ class MyGame(arcade.Window):
         self.jump_sound = arcade.load_sound(":resources:sounds/jump1.wav")
         self.game_over = arcade.load_sound(":resources:sounds/gameover1.wav")
 
-    def setup(self, level):
+    def setup(self):
         """Set up the game here. Call this function to restart the game."""
 
         # Setup the Cameras
@@ -81,7 +82,7 @@ class MyGame(arcade.Window):
         self.gui_camera = arcade.Camera(self.width, self.height)
 
         # Map name
-        map_name = f":resources:tiled_maps/map2_level_{level}.json"
+        map_name = f":resources:tiled_maps/map2_level_{self.level}.json"
 
         # Layer Specific Options for the Tilemap
         layer_options = {
@@ -239,7 +240,7 @@ class MyGame(arcade.Window):
             self.level += 1
 
             # Load the next level
-            self.setup(self.level)
+            self.setup()
 
         # Position the camera
         self.center_camera_to_player()
@@ -248,7 +249,7 @@ class MyGame(arcade.Window):
 def main():
     """Main method"""
     window = MyGame()
-    window.setup(window.level)
+    window.setup()
     arcade.run()
 
 

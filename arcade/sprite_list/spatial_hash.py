@@ -30,6 +30,7 @@ class _SpatialHash:
     def __init__(self, cell_size):
         self.cell_size = cell_size
         self.contents = {}
+        self.buckets_for_sprite = {}
 
     def _hash(self, point):
         return int(point[0] / self.cell_size), int(point[1] / self.cell_size)
@@ -64,18 +65,17 @@ class _SpatialHash:
         # print(f"Add 2: {min_point} {max_point}")
         # print("Add: ", min_point, max_point)
 
+        buckets = []
+
         # iterate over the rectangular region
         for i in range(min_point[0], max_point[0] + 1):
             for j in range(min_point[1], max_point[1] + 1):
                 # append to each intersecting cell
                 bucket = self.contents.setdefault((i, j), [])
-                if new_object in bucket:
-                    # print(f"Error, {new_object.guid} already in ({i}, {j}) bucket. ")
-                    pass
-                else:
-                    bucket.append(new_object)
-                    # print(f"Adding {new_object.guid} to ({i}, {j}) bucket. "
-                    #       f"{new_object._position} {min_point} {max_point}")
+                buckets.append(bucket)
+                bucket.append(new_object)
+
+        self.buckets_for_sprite[new_object] = buckets
 
     def remove_object(self, sprite_to_delete: Sprite):
         """
@@ -83,40 +83,9 @@ class _SpatialHash:
 
         :param Sprite sprite_to_delete: Pointer to sprite to be removed.
         """
-        # Get the corners
-        min_x = sprite_to_delete.left
-        max_x = sprite_to_delete.right
-        min_y = sprite_to_delete.bottom
-        max_y = sprite_to_delete.top
 
-        # print(f"Del - Center: ({sprite_to_delete.center_x}, {sprite_to_delete.center_y}), "
-        #       f"Angle: {sprite_to_delete.angle}, Left: {sprite_to_delete.left}, Right {sprite_to_delete.right}")
-
-        min_point = (min_x, min_y)
-        max_point = (max_x, max_y)
-
-        # print(f"Remove 1: {min_point} {max_point}")
-
-        # hash the minimum and maximum points
-        min_point, max_point = self._hash(min_point), self._hash(max_point)
-
-        # print(f"Remove 2: {min_point} {max_point}")
-        # print("Remove: ", min_point, max_point)
-
-        # iterate over the rectangular region
-        for i in range(min_point[0], max_point[0] + 1):
-            for j in range(min_point[1], max_point[1] + 1):
-                bucket = self.contents.setdefault((i, j), [])
-                try:
-                    bucket.remove(sprite_to_delete)
-                    # print(f"Removing {sprite_to_delete.guid} from ({i}, {j}) bucket. {sprite_to_delete._position} "
-                    #       f"{min_point} {max_point}")
-
-                except ValueError:
-                    print(
-                        f"Warning, tried to remove item {sprite_to_delete.guid} from spatial hash {i} {j} when "
-                        f"it wasn't there. {min_point} {max_point}"
-                    )
+        for bucket in self.buckets_for_sprite[sprite_to_delete]:
+            bucket.remove(sprite_to_delete)
 
     def get_objects_for_box(self, check_object: Sprite) -> Set[Sprite]:
         """
@@ -374,7 +343,9 @@ def check_for_collision_with_lists(sprite: Sprite,
 
 def get_sprites_at_point(point: Point, sprite_list: SpriteList) -> List[Sprite]:
     """
-    Get a list of sprites at a particular point
+    Get a list of sprites at a particular point. This function sees if any sprite overlaps
+    the specified point. If a sprite has a different center_x/center_y but touches the point,
+    this will return that sprite.
 
     :param Point point: Point to check
     :param SpriteList sprite_list: SpriteList to check against
@@ -403,7 +374,8 @@ def get_sprites_at_point(point: Point, sprite_list: SpriteList) -> List[Sprite]:
 
 def get_sprites_at_exact_point(point: Point, sprite_list: SpriteList) -> List[Sprite]:
     """
-    Get a list of sprites at a particular point
+    Get a list of sprites whose center_x, center_y match the given point.
+    This does NOT return sprites that overlap the point, the center has to be an exact match.
 
     :param Point point: Point to check
     :param SpriteList sprite_list: SpriteList to check against

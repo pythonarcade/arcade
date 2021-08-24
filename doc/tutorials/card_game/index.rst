@@ -2,8 +2,8 @@
 
 .. _solitaire_tutorial:
 
-Solitaire
-=========
+Solitaire Tutorial
+==================
 
 .. image:: animated.gif
 

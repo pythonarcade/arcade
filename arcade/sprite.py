@@ -321,7 +321,16 @@ class Sprite:
 
     def get_hit_box(self) -> PointList:
         """
-        Get a sprite's hit box, unadjusted for translation, rotation, or scale.
+        Use the hit_box property to get or set a sprite's hit box.
+        Hit boxes are specified assuming the sprite's center is at (0, 0).
+        Specify hit boxes like:
+
+        .. code-block::
+
+            mySprite.hit_box = [[-10, -10], [10, -10], [10, 10]]
+
+        Specify a hit box unadjusted for translation, rotation, or scale.
+        You can get an adjusted hit box with :class:`arcade.Sprite.get_adjusted_hit_box`.
         """
         # If there is no hitbox, use the width/height to get one
         if self._points is None and self._texture:
@@ -359,30 +368,21 @@ class Sprite:
         if self._point_list_cache is not None:
             return self._point_list_cache
 
-        # Adjust the hitbox
-        point_list = []
-        for point in self.hit_box:
-            # Get a copy of the point
-            point = [point[0], point[1]]
-
-            # Scale the point
-            if self.scale != 1:
-                point[0] *= self.scale
-                point[1] *= self.scale
+        def _adjust_point(point):
 
             # Rotate the point
-            if self.angle:
-                point = rotate_point(point[0], point[1], 0, 0, self.angle)
+            if self._angle:
+                point = rotate_point(point[0], point[1], 0, 0, self._angle)
 
-            # Offset the point
-            point = [point[0] + self.center_x, point[1] + self.center_y]
-            point_list.append(point)
+            # Get a copy of the point
+            point = [point[0] * self._scale + self.position[0], point[1] * self._scale + self.position[1]]
+
+            return point
+
+        point_list = [_adjust_point(point) for point in self.hit_box]
 
         # Cache the results
         self._point_list_cache = point_list
-
-        # if self.texture:
-        #     print(self.texture.name, self._point_list_cache)
 
         return self._point_list_cache
 
@@ -499,12 +499,10 @@ class Sprite:
         # This happens if our point list is empty, such as a completely
         # transparent sprite.
         if len(points) == 0:
-            return self.center_x
+            return self.center_y
 
-        my_min = points[0][1]
-        for point in range(1, len(points)):
-            my_min = min(my_min, points[point][1])
-        return my_min
+        y_points = [point[1] for point in points]
+        return min(y_points)
 
     def _set_bottom(self, amount: float):
         """
@@ -525,12 +523,10 @@ class Sprite:
         # This happens if our point list is empty, such as a completely
         # transparent sprite.
         if len(points) == 0:
-            return self.center_x
+            return self.center_y
 
-        my_max = points[0][1]
-        for i in range(1, len(points)):
-            my_max = max(my_max, points[i][1])
-        return my_max
+        y_points = [point[1] for point in points]
+        return max(y_points)
 
     def _set_top(self, amount: float):
         """The highest y coordinate."""
@@ -712,10 +708,8 @@ class Sprite:
         if len(points) == 0:
             return self.center_x
 
-        my_min = points[0][0]
-        for i in range(1, len(points)):
-            my_min = min(my_min, points[i][0])
-        return my_min
+        x_points = [point[0] for point in points]
+        return min(x_points)
 
     def _set_left(self, amount: float):
         """The left most x coordinate."""
@@ -737,10 +731,8 @@ class Sprite:
         if len(points) == 0:
             return self.center_x
 
-        my_max = points[0][0]
-        for point in range(1, len(points)):
-            my_max = max(my_max, points[point][0])
-        return my_max
+        x_points = [point[0] for point in points]
+        return max(x_points)
 
     def _set_right(self, amount: float):
         """The right most x coordinate."""
@@ -1085,11 +1077,15 @@ class AnimatedTimeBasedSprite(Sprite):
 
 class AnimatedWalkingSprite(Sprite):
     """
-    Sprite for platformer games that supports walking animations.
+    Deprecated Sprite for platformer games that supports walking animations.
     Make sure to call update_animation after loading the animations so the
     initial texture can be set. Or manually set it.
-    For a better example, see:
-    https://arcade.academy/examples/platform_tutorial/step_11.html
+
+    It is highly recommended you create your own version of this class rather than
+    try to use this pre-packaged one.
+
+    For an example, see this section of the platformer tutorial:
+    :ref:`platformer_part_twelve`.
     """
 
     def __init__(
@@ -1220,7 +1216,16 @@ class AnimatedWalkingSprite(Sprite):
 
 
 def load_animated_gif(resource_name):
-    """ Given an animated gif, return a AnimatedTimeBasedSprite. """
+    """
+    Given an animated gif, return a AnimatedTimeBasedSprite.
+
+    Support for transparency in animated gifs in Python is lacking.
+    There are a lot of
+    older animated gifs that are saved weird. The end result is that the
+    often the first frame of an animated gif is the only frame that
+    we correctly get the transparency on. Until the Pillow library better
+    handles this, loading animated gifs will be pretty buggy.
+    """
 
     file_name = resolve_resource_path(resource_name)
     print(file_name)

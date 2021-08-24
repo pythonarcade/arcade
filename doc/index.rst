@@ -131,6 +131,7 @@ The Python Arcade Library
           <ul>
           <li><a href="quick_index.html">Quick API Index</a></li>
           <li><a href="arcade.html">Full Arcade API Docs</a></li>
+          <li><a href="gui/index.html">GUI Concepts</a></li>
           <li><a href="arcade.color.html">Colors</a> | <a href="arcade.csscolor.html">CSS Colors</a></li>
           <li><a href="arcade.html#arcade.Window">Window Class</a></li>
           <li><a href="arcade.html#arcade.Sprite">Sprite</a> | <a href="arcade.html#arcade.SpriteList">SpriteList</a></li>
@@ -151,8 +152,8 @@ The Python Arcade Library
           </div>
           <ul>
             <li><a href="https://github.com/pvcraven/arcade">GitHub</a></li>
-            <li><a href="release_notes.html">Release Notes</a></li>
-            <li><a href="enhancement_list.html">Enhancement List</a></li>
+            <li><a href="development/release_notes.html">Release Notes</a></li>
+            <li><a href="enhancement_list/enhancement_list.html">Enhancement List</a></li>
           </ul>
         </td>
 
@@ -256,10 +257,10 @@ game without learning a complex framework.
    tutorials/lights/index
    tutorials/gpu_particle_burst/index
    tutorials/bundling_with_pyinstaller/index
-   tutorials/user_interface/index
    tutorials/shader_toy/index
    tutorials/framebuffer/index
    tutorials/raycasting/index
+   gui/index
 
 .. toctree::
    :maxdepth: 1

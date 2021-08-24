@@ -2,8 +2,8 @@
 
 .. _platformer_part_nine:
 
-Step 9 - Use a Map Editor
--------------------------
+Step 9 - Use Tiled Map Editor
+-----------------------------
 
 .. image:: use_tileset.png
     :width: 70%
@@ -11,118 +11,92 @@ Step 9 - Use a Map Editor
 Create a Map File
 ~~~~~~~~~~~~~~~~~
 
-For this part, we'll restart with a new program. Instead of placing our tiles
-by code, we'll use a map editor.
+For this part, instead of placing the tiles through code using specific points,
+we'll use a map editor that we can build maps with and then load in the map files.
 
-Download and install the `Tiled Map Editor`_. (Think about donating, as it is
-a wonderful project.)
+To start off with, download and install the `Tiled Map Editor`_. (Think about donating,
+as it is a  wonderful project provided for free.)
 
-Open a new file with options similar to these:
+Tiled already has excellent documentation available at https://doc.mapeditor.org/, so for
+this tutorial we'll assume that you're already familiar with how to create maps using Tiled.
+If you're not, you can check out the Tiled documentation and come back to here.
 
-* Orthogonal - This is a normal square-grid layout. It is the only version that
-  Arcade supports very well at this time.
-* Tile layer format - This selects how the data is stored inside the file. Any option works, but Base64
-  zlib compressed is the smallest.
-* Tile render order - Any of these should work. It simply specifies what order the tiles are
-  added. Right-down has tiles added left->right and top->down.
-* Map size - You can change this later, but this is your total grid size.
-* Tile size - the size, in pixels, of your tiles. Your tiles all need to be the same size.
-  Also, rendering works better if the tile size is a power of 2, such as
-  16, 32, 64, 128, and 256.
-
-.. image:: new_file.png
-   :scale: 80%
+From this point on in the tutorial, every chapter will be working with a Tiled map. If you don't
+want to create your own yet, Arcade ships a few examples in it's included ``resources`` folder, which
+is what these examples pull from, so you don't have to create your own maps yet if you don't want to.
 
 .. Note::
 
    Arcade can only work with JSON maps from Tiled. TMX maps will not work. Make sure to save/export your maps accordingly.
 
-Save it as ``map.json``.
+We'll start with a basic ``map.json`` file provided by Arcade. You can open this file in Tiled and look at how it's setup,
+but we'll go over some of the basics now.
 
-Rename the layer "Platforms". We'll use layer names to load our data later. Eventually
-you might have layers for:
+In this map we have two layers named "Platforms" and "Coins". On the platforms layer are all of the blocks
+which a player will collide with using the physics engine, and on the coins layer are all the coins
+the player can pickup to increase their score. That's pretty much it for this map.
+
+.. image:: images/step_09/layer_names.png
+
+These layers will be automatically loaded by Arcade as SpriteLists that we can access and draw with our scene. Let's look at how
+we load in the map, first we'll create a ``tile_map`` object in our init function:
+
+.. literalinclude:: ../../../arcade/examples/platform_tutorial/09_load_map.py
+    :caption: Load a map - Create the object
+    :lines: 34-35
+
+Then we will do the actual loading in the setup function Our new setup function will look like this:
+
+.. literalinclude:: ../../../arcade/examples/platform_tutorial/09_load_map.py
+    :caption: Load a map - Setup the map
+    :pyobject: MyGame.setup
+    :linenos:
+    :emphasize-lines: 8-25, 40-48
+
+This is pretty much all that needs done to load in the Tilemap, we get a Scene created from it and can use it just like we
+have been up until now. But let's go through this setup function and look at all the updates.
+
+In the first piece we define the name of map file we want to load, that one is pretty simple.
+
+Next we have a ``layer_options`` variable. This is a dictionary which let's you assign special options to specific layers
+in the map. In this example, we're just adding spatial hashing to the "Platforms" layer, but we can do a few other things here.
+
+The available options you can set for a layer are:
+
+* ``use_spatial_hash`` - Make a Layer's SpriteList use spatial hashing
+* ``scaling`` - Set per layer scaling of Sprites
+* ``hit_box_algorithm`` - Change the hit box algorithm used when doing collision detection with this SpriteList
+* ``hit_box_detail`` - Change the hit box detail used when doing collision detection with this SpriteList
+
+Then we actually load in the Tilemap using the ``arcade.load_tilemap`` function. This will return us back an instance of the
+``arcade.TileMap`` class. For now, we don't actually need to interact with this object much, but later we will do some more
+advanced things like setting enemy spawn points and movement paths from within the map editor.
+
+Finally we use a new way to create our Scene, with the ``arcade.Scene.from_tilemap`` function. This let's you specify a TileMap
+object, and will automatically construct a scene with all of the layers in your map, arranged in the proper render order. Then
+you can work with the scene exactly like we have up until this point.
+
+The last small piece we changed is when we create the physics engine, we've now have to use "Platforms" as the sprite list name
+since that is the name of our Layer in the map file.
+
+And that's all! You should now have a full game loading from a map file created with Tiled.
+
+Some things we will use Tiled for in upcoming chapters are:
 
 * Platforms that you run into (or you can think of them as walls)
+* Moving platforms
 * Coins or objects to pick up
 * Background objects that you don't interact with, but appear behind the player
 * Foreground objects that you don't interact with, but appear in front of the player
-* Insta-death blocks (like lava)
+* Insta-death blocks and zones (like lava)
 * Ladders
-
-.. Note::
-
-    Once you get multiple layers it is VERY easy to add items to the wrong
-    layer.
-
-.. image:: platforms.png
-   :scale: 80%
-
-Create a Tileset
-~~~~~~~~~~~~~~~~
-
-Before we can add anything to the layer we need to create a set of tiles.
-This isn't as obvious or intuitive as it should be. To create a new tileset
-click "New Tileset" in the window on the lower right:
-
-.. image:: new_tileset.png
-   :scale: 80%
-
-Right now, Arcade only supports a "collection of images" for a tileset.
-I find it convenient to embed the tileset in the map.
-
-.. image:: new_tileset_02.png
-   :scale: 80%
-
-Once you create a new tile, the button to add tiles to the tileset is
-hard to find. Click the wrench:
-
-.. image:: new_tileset_03.png
-   :scale: 80%
-
-Then click the 'plus' and add in your tiles
-
-.. image:: new_tileset_04.png
-   :scale: 80%
-
-Draw a Level
-~~~~~~~~~~~~
-
-At this point you should be able to "paint" a level. At the very least, put
-in a floor and then see if you can get this program working. (Don't put
-in a lot of time designing a level until you are sure you can get it to
-load.)
-
-We are able to load in the map file to a ``TileMap`` object, and then use that
-object to create our scene. This will take all of the layers in the map and load
-them in as SpriteLists, and set their draw orders in the scene to however they are
-defined in the map file. You can access the SpriteLists directly the same way you do
-with a normal scene. The SpriteLists are named according to the layer names from Tiled.
-
-Test the Level
-~~~~~~~~~~~~~~
-
-.. literalinclude:: ../../../arcade/examples/platform_tutorial/09_load_map.py
-    :caption: Load a .json file from Tiled Map Editor
-    :linenos:
-    :emphasize-lines: 41-42, 69-84, 103-106
-
-.. note::
-
-    You can set the **background color** of the map by selecting "Map...Map Properties".
-    Then click on the three dots to pull up a color picker.
-
-    You can edit the **hitbox** of a tile to make ramps
-    or platforms that only cover a portion of the rectangle in the grid.
-
-    To edit the hitbox, use the polygon tool (only) and draw a polygon around
-    the item. You can hold down "CTRL" when positioning a point to get the exact
-    corner of an item.
-
-    .. image:: collision_editor.png
-       :scale: 20%
+* Enemy spawn positions
+* Enemy movement paths
 
 Source Code
 ~~~~~~~~~~~
 
-* :ref:`09_load_map`
-* :ref:`09_load_map_diff`
+.. literalinclude:: ../../../arcade/examples/platform_tutorial/09_load_map.py
+    :caption: Load the Map
+    :linenos:
+    :emphasize-lines: 34-35,68-69,71-78,80-81,83-85,101-103,105-108

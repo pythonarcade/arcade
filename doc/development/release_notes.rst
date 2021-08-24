@@ -7,17 +7,147 @@ Release Notes
 
 Keep up-to-date with the latest changes to the Arcade library by the release notes.
 
-UNRELEASED (2.6.0)
-------------------
+Version 2.6.0 (UNRELEASED)
+--------------------------
 
-* Revamped text rendering
-* Texture atlases
-* Extended tilemap support
-* GUI improvements
-* Documentation restructuring
-* SpriteList optimization
-* ``arcade.get_pixel`` supports getting RGB and RGBA color value
-* .. more ...
+Version 2.6.0 is a major update to Arcade. It is not 100% backwards compatible with the 2.5 API.
+Updates were made to text rendering, tiled map support, sprites, shaders, textures, GUI system,
+and the documentation.
+
+* `Tiled Map Editor <https://www.mapeditor.org/>`_ support has been overhauled.
+
+  * Arcade now uses the .json file format for maps created by the Tiled Map Editor rather than the TMX format.
+    Tile sets and other supporting files need to all be saved in .json format. The XML based formats are no longer
+    supported by Arcade.
+  * Feature-support for Tiles items has been improved.
+  * See :ref:`platformer_tutorial` for a how-to.
+  * See the `Community RPG <https://github.com/pythonarcade/community-rpg>`_ for a more complex example program.
+
+  .. image:: https://raw.githubusercontent.com/pythonarcade/community-rpg/main/screenshot.png
+     :width: 50%
+     :alt: Screenshot of tile map
+
+* Texture atlases have been introduced, texture management has been improved.
+
+  * A sprite list will create and use its own texture atlas.
+  * This introduces a new :class:`arcade.TextureAtlas` class that is used internally by SpriteList.
+  * Sprites with new textures can be added to a sprite list without the delay. Arcade 2.5 had a delay caused by rebuilding
+    its internal sprite sheet.
+  * As a side effect, sprites can only belong to one sprite list that renders.
+  * The texture atlas portion of a sprite can be drawn to, and quickly updated on the GPU side.
+
+    * To demonstrate, there is a new :ref:`minimap` example that creates a sprite that has a dynamic minimap
+      projected onto it.
+
+    .. image:: ../examples/minimap.png
+       :width: 50%
+       :alt: Screenshot of minimap
+
+* Revamped text rendering done by :func:`arcade.draw_text`.
+  Rather than use Pillow to render onto an image, Arcade uses Pyglet's
+  text drawing system.
+  Text drawing is faster, higher resolution, and not prone to memory leaks. Fonts are now specifed by the
+  font name, rather than the file name of the font.
+
+  * Fonts can be dynamically loaded with :func:`arcade.load_font`.
+  * Kenney.nl's TTF are now included as build-in resources.
+  * See the :ref:`drawing_text` example.
+
+  .. image:: ../examples/drawing_text.png
+     :width: 50%
+     :alt: Screenshot of drawing text
+
+* SpriteList optimizations.
+
+  * Sprites now draw even faster than before. On an Intel i7 with nVidia 980 Ti graphics card,
+    8,000+ moving sprites can be drawn while maintaining 60 FPS. The same machine can only
+    do 2,000 sprites with Pygame before FPS drops.
+
+* Shadertoy support.
+
+  * `Shadertoy.com <https://www.shadertoy.com/>`_ is a website that makes it easier to write OpenGL shaders.
+  * The new :class:`arcade.Shadertoy` class makes it easy to run and interact with these shaders in Arcade.
+  * See :ref:`shader_toy_tutorial` and `Asteroids <https://github.com/pythonarcade/asteroids>`_.
+
+    .. image:: ../tutorials/shader_toy/cyber_fuji_2020.png
+       :width: 40%
+
+    .. image:: ../tutorials/shader_toy/star_nest.png
+       :width: 40%
+
+* Reworked GUI
+
+    .. image:: ../examples/gui_flat_button.png
+       :width: 40%
+
+    .. image:: ../examples/gui_widgets.png
+       :width: 40%
+
+    .. image:: ../examples/gui_ok_messagebox.png
+       :width: 40%
+
+  * UIEvents are replaced by UIWidgets
+  * Option to relative pin widgets on screen to center or border (supports resizing)
+  * Widgets can be placed on top of each other
+  * Overlapping widgets properly handle mouse interaction
+  * Fully typed event classes
+  * Events contain source widget *(planned)*
+  * ScrollableText widgets (more to come)
+  * UILayouts can grow or shrink widgets, to adjust to different screen sizes
+  * Support for Sprites within Widgets
+  * Declarative coding style for borders and padding `widget.with_border(...)`
+  * Automatically place widgets vertically or horizontally (`UIBoxLayout`)
+  * Dropped support for YAML style files
+  * Better performance and limited memory usage
+  * More documentation *(planned)*
+
+* Camera support
+
+  * Easy scrolling with :class:`arcade.Camera`
+  * For an example of this see the example: :ref:`sprite_move_scrolling`.
+  * Automatic camera shake can be added in, see the example: :ref:`sprite_move_scrolling_shake`.
+
+* Add a set of functions to track performance statistics. See :ref:`perf_info_api`.
+* Added the class :class:`arcade.PerfGraph`, a subclass of Sprite that will graph FPS or time to process a dispatch-able
+  event line 'update' or 'on_draw'.
+
+  .. image:: ../examples/performance_statistics.png
+     :width: 50%
+     :alt: Screenshot of performance statistics
+
+* Documentation
+
+  * Lots of individual documentation updates for commands.
+  * The :ref:`quick_index` has been reorganized to be easier to find commands, and
+    the individual API documentation pages have been broken into parts, so it isn't one large monolithic page.
+  * New tutorial for :ref:`raycasting_tutorial`.
+
+    .. image:: ../tutorials/raycasting/example.png
+       :width: 50%
+
+  * New tutorial for :ref:`shader_toy_tutorial`.
+  * Revamped tutorial: :ref:`platformer_tutorial`.
+  * Revamped minimap example: :ref:`minimap`.
+  * Moved from AWS hosting to read-the-docs hosting so we can support multiple versions of docs.
+  * New example showing how to use the new performance statistics API: :ref:`performance_statistics_example`
+  * New example: :ref:`gui_widgets`
+  * New example: :ref:`gui_flat_button`
+  * New example: :ref:`gui_ok_messagebox`
+
+* API commands
+
+   * :func:`arcade.get_pixel` supports getting RGB and RGBA color value
+   * :func:`arcade.get_three_color_float` Returns colors as RGB float with numbers 0.0-1.1 for each color
+   * :func:`arcade.get_four_color_float`  Returns colors as RGBA float with numbers 0.0-1.1 for each color
+
+* `Fix for A-star path finding routing through walls <https://github.com/pythonarcade/arcade/issues/806>`_
+
+Special thanks to:
+
+* `einarf <https://github.com/einarf>`_ for performance improvements, texture atlas support, shader toy support,
+  text drawing support, advice on GUI, and more.
+* `Cleptomania <https://github.com/Cleptomania>`_ for Tiled Map support, sound support, and more.
+* `eruvanos <https://github.com/eruvanos>`_ for the original GUI and all the GUI updates.
 
 Version 2.5.7
 -------------
@@ -181,7 +311,7 @@ Documentation
 * Add :ref:`conway_alpha` example showing how to use alpha to control display
   of sprites in a grid.
 * Improve documentation around sound API.
-* Improve documentation with FPS and timing stats example :ref:`sprite_collect_coins_with_stats`.
+* Improve documentation with FPS and timing stats example.
 * Improve moving platform docs a bit in :ref:`platformer_tutorial` tutorial.
 
 Version 2.4.3
@@ -253,20 +383,10 @@ Arcade version 2.4 is a major enhancement release to Arcade.
     :class: inline-image
     :target: examples/astar_pathfinding.html
 
-.. image:: ../examples/mini_map_defender.png
-    :width: 30%
-    :class: inline-image
-    :target: examples/mini_map_defender.html
-
 .. image:: ../examples/bloom_defender.png
     :width: 30%
     :class: inline-image
     :target: examples/bloom_defender.html
-
-.. image:: ../examples/gui_elements.png
-    :width: 30%
-    :class: inline-image
-    :target: examples/gui_elements.html
 
 .. image:: ../tutorials/pymunk_platformer/title_animated_gif.gif
     :width: 30%
@@ -294,16 +414,11 @@ Version 2.4 Major Features
 * Support for defining your own frame buffers, shaders, and more
   advanced OpenGL programming. New API in Arcade Open GL.
 
-    * Support to render to frame buffer, then re-render. Example:
-      :ref:`mini_map_defender`.
+    * Support to render to frame buffer, then re-render.
     * Use frame buffers to create a 'glow' or 'bloom' effect: :ref:`bloom_defender`.
     * Use frame-buffers to support lights: :ref:`light_demo`.
 
-* New support for style-able GUI elements. New API in :ref:`arcade-api-gui`.
-
-    * Example: :ref:`gui_elements`
-    * Example: :ref:`gui_custom_style`
-
+* New support for style-able GUI elements.
 * PyMunk engine for platformers. See tutorial: :ref:`pymunk_platformer_tutorial`.
 * AStar algorithm for finding paths. See
   :data:`~arcade.astar_calculate_path` and :data:`~arcade.AStarBarrierList`.

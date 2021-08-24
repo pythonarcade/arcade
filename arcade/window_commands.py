@@ -281,6 +281,13 @@ def quick_run(time_to_pause: Number):
     close_window()
 
 
+def exit():
+    """
+    Exits the application.
+    """
+    pyglet.app.exit()
+
+
 def start_render() -> None:
     """
     Clears the window. Can also be replaced with :py:meth:`~arcade.Window.clear`.

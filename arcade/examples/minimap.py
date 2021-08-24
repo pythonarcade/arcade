@@ -4,11 +4,14 @@ Work with a mini-map
 Artwork from https://kenney.nl
 
 If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.sprite_move_scrolling
+python -m arcade.examples.minimap
 """
 
 import random
+from uuid import uuid4
+
 import arcade
+from arcade.math import Vec2
 
 SPRITE_SCALING = 0.5
 
@@ -50,7 +53,7 @@ class MyGame(arcade.Window):
         # Mini-map related
         # List of all our minimaps (there's just one)
         self.minimap_sprite_list = None
-        # Texture to render our minimap to
+        # Texture and associated sprite to render our minimap to
         self.minimap_texture = None
         self.minimap_sprite = None
 
@@ -59,6 +62,7 @@ class MyGame(arcade.Window):
 
         self.physics_engine = None
 
+        # Camera for sprites, and one for our GUI
         self.camera_sprites = arcade.Camera(DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT)
         self.camera_gui = arcade.Camera(DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT)
 
@@ -92,14 +96,13 @@ class MyGame(arcade.Window):
         arcade.set_background_color(arcade.color.AMAZON)
 
         # Construct the minimap
-        texture_atlas = arcade.TextureAtlas((MINIMAP_WIDTH + 2, MINIMAP_HEIGHT + 2))
-        self.minimap_texture = arcade.Texture.create_empty(arcade.utils.generate_uuid(),
-                                                           (MINIMAP_WIDTH, MINIMAP_HEIGHT))
+        size = (MINIMAP_WIDTH, MINIMAP_HEIGHT)
+        self.minimap_texture = arcade.Texture.create_empty(str(uuid4()), size)
         self.minimap_sprite = arcade.Sprite(center_x=MINIMAP_WIDTH / 2,
                                             center_y=self.height - MINIMAP_HEIGHT / 2,
                                             texture=self.minimap_texture)
 
-        self.minimap_sprite_list = arcade.SpriteList(atlas=texture_atlas)
+        self.minimap_sprite_list = arcade.SpriteList()
         self.minimap_sprite_list.append(self.minimap_sprite)
 
     def update_minimap(self):
@@ -174,8 +177,8 @@ class MyGame(arcade.Window):
         """
 
         # Scroll to the proper location
-        position = self.player_sprite.center_x - self.width / 2, \
-            self.player_sprite.center_y - self.height / 2
+        position = Vec2(self.player_sprite.center_x - self.width / 2,
+                        self.player_sprite.center_y - self.height / 2)
         self.camera_sprites.move_to(position, CAMERA_SPEED)
 
     def on_resize(self, width, height):

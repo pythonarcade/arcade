@@ -8,7 +8,7 @@ helper function to create a Scene directly from a TileMap object.
 
 from typing import Dict, List, Optional
 
-from arcade import Sprite, SpriteList
+from arcade import Color, Sprite, SpriteList
 from arcade.tilemap import TileMap
 
 
@@ -131,6 +131,31 @@ class Scene:
         index = self.sprite_lists.index(before_list) - 1
         self.sprite_lists.insert(index, sprite_list)
 
+    def move_sprite_list_before(
+        self,
+        name: str,
+        before: str,
+    ) -> None:
+        """
+        Move a given SpriteList in the scene to before another given SpriteList.
+
+        This will adjust the render order so that the SpriteList specified by `name`
+        is placed before the one specified by `before`.
+
+        :param str name: The name of the SpriteList to move.
+        :param str before: The name of the SpriteList to place it before.
+        """
+        if name in self.name_mapping:
+            name_list = self.name_mapping[name]
+            before_list = self.name_mapping[before]
+            new_index = self.sprite_lists.index(before_list)
+            old_index = self.sprite_lists.index(name_list)
+            self.sprite_lists.insert(new_index, self.sprite_lists.pop(old_index))
+
+        raise ValueError(
+            f"Tried to move unknown SpriteList with the name {name} in Scene"
+        )
+
     def add_sprite_list_after(
         self,
         name: str,
@@ -157,6 +182,31 @@ class Scene:
         after_list = self.name_mapping[after]
         index = self.sprite_lists.index(after_list)
         self.sprite_lists.insert(index, sprite_list)
+
+    def move_sprite_list_after(
+        self,
+        name: str,
+        after: str,
+    ) -> None:
+        """
+        Move a given SpriteList in the scene to after another given SpriteList.
+
+        This will adjust the render order so that the SpriteList specified by `name`
+        is placed after the one specified by `after`.
+
+        :param str name: The name of the SpriteList to move.
+        :param str after: The name of the SpriteList to place it after.
+        """
+        if name in self.name_mapping:
+            name_list = self.name_mapping[name]
+            after_list = self.name_mapping[after]
+            new_index = self.sprite_lists.index(after_list)
+            old_index = self.sprite_lists.index(name_list)
+            self.sprite_lists.insert(new_index, self.sprite_lists.pop(old_index))
+
+        raise ValueError(
+            f"Tried to move unknown SpriteList with the name {name} in Scene"
+        )
 
     def remove_sprite_list_by_name(
         self,
@@ -218,7 +268,7 @@ class Scene:
         for sprite_list in self.sprite_lists:
             sprite_list.update_animation(delta_time)
 
-    def draw(self, names: Optional[List[str]] = None) -> None:
+    def draw(self, names: Optional[List[str]] = None, **kwargs) -> None:
         """
         Draw the Scene.
 
@@ -229,11 +279,43 @@ class Scene:
         attribute of the Scene.
 
         :param Optional[List[str]] names: A list of names of SpriteLists to draw.
+        :param filter: Optional parameter to set OpenGL filter, such as
+                       `gl.GL_NEAREST` to avoid smoothing.
+        :param blend_function: Optional parameter to set the OpenGL blend function
+            used for drawing the sprite list, such as `arcade.Window.ctx.BLEND_ADDITIVE`
+            or `arcade.Window.ctx.BLEND_DEFAULT`
         """
+
         if names:
             for name in names:
-                self.name_mapping[name].draw()
+                self.name_mapping[name].draw(**kwargs)
             return
 
         for sprite_list in self.sprite_lists:
-            sprite_list.draw()
+            sprite_list.draw(**kwargs)
+
+    def draw_hit_boxes(
+        self,
+        color: Color = (0, 0, 0, 255),
+        line_thickness: float = 1,
+        names: Optional[List[str]] = None,
+    ) -> None:
+        """
+        Draw hitboxes for all sprites in the scene.
+
+        If `names` parameter is provided then only the specified SpriteLists
+        will be drawn. They will be drawn in the order that the names in the
+        list were arranged. If `names` is not provided, then every SpriteList
+        in the scene will be drawn according to the order of the main sprite_lists
+        attribute of the Scene.
+
+        :param Optional[List[str]] names: A list of names of SpriteLists to draw.
+        """
+
+        if names:
+            for name in names:
+                self.name_mapping[name].draw_hit_boxes(color, line_thickness)
+            return
+
+        for sprite_list in self.sprite_lists:
+            sprite_list.draw_hit_boxes(color, line_thickness)

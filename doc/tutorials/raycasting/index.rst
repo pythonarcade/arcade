@@ -1,5 +1,7 @@
 .. include:: <isonum.txt>
 
+.. _raycasting_tutorial:
+
 Ray-casting Shadows
 ===================
 

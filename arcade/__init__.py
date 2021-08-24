@@ -72,6 +72,7 @@ from arcade import resources
 # --- Generated imports ---
 from .window_commands import close_window
 from .window_commands import create_orthogonal_projection
+from .window_commands import exit
 from .window_commands import finish_render
 from .window_commands import get_display_size
 from .window_commands import get_projection
@@ -120,12 +121,13 @@ from .utils import rand_on_circle
 from .utils import rand_on_line
 from .utils import rand_vec_magnitude
 from .utils import rand_vec_spread_deg
-from .utils import generate_uuid
+from .utils import generate_uuid_from_kwargs
 
 from .hitbox import calculate_hit_box_points_detailed
 from .hitbox import calculate_hit_box_points_simple
 
 from .drawing_support import get_four_byte_color
+from .drawing_support import get_three_float_color
 from .drawing_support import get_four_float_color
 from .drawing_support import get_points_for_thick_line
 from .drawing_support import make_transparent_color
@@ -273,6 +275,17 @@ from .context import ArcadeContext
 from .texture_atlas import TextureAtlas
 from .texture_atlas import AtlasRegion
 
+from .perf_info import enable_timings
+from .perf_info import print_timings
+from .perf_info import get_fps
+from .perf_info import get_timings
+from .perf_info import clear_timings
+from .perf_info import timings_enabled
+from .perf_info import disable_timings
+
+from .perf_graph import PerfGraph
+
+
 # noinspection PyPep8
 from arcade import experimental
 
@@ -321,6 +334,7 @@ __all__ = ['AStarBarrierList',
            'NamedPoint',
            'NoOpenGLException',
            'Particle',
+           'PerfGraph',
            'PhysicsEnginePlatformer',
            'PhysicsEngineSimple',
            'Point',
@@ -381,6 +395,7 @@ __all__ = ['AStarBarrierList',
            'create_text_image',
            'create_text_sprite',
            'create_triangles_filled_with_colors',
+           'disable_timings',
            'draw_arc_filled',
            'draw_arc_outline',
            'draw_circle_filled',
@@ -410,6 +425,8 @@ __all__ = ['AStarBarrierList',
            'draw_xywh_rectangle_filled',
            'draw_xywh_rectangle_outline',
            'earclip',
+           'enable_timings',
+           'exit',
            'finish_render',
            'get_closest_sprite',
            'get_display_size',
@@ -428,6 +445,8 @@ __all__ = ['AStarBarrierList',
            'get_screens',
            'get_sprites_at_exact_point',
            'get_sprites_at_point',
+           'get_timings',
+           'clear_timings',
            'create_text_image',
            'get_viewport',
            'get_window',
@@ -472,6 +491,7 @@ __all__ = ['AStarBarrierList',
            'set_window',
            'start_render',
            'stop_sound',
+           'timings_enabled',
            'trim_image',
            'unschedule',
            ]

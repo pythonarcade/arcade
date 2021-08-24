@@ -10,5 +10,11 @@ Step 13 - Add Enemies
 Source Code
 ~~~~~~~~~~~
 
-* :ref:`13_add_enemies`
-* :ref:`13_add_enemies_diff`
+.. literalinclude:: ../../../arcade/examples/platform_tutorial/13_add_enemies.py
+    :caption: Add Enemies
+    :linenos:
+
+
+..
+    * :ref:`13_add_enemies`
+    * :ref:`13_add_enemies_diff`
