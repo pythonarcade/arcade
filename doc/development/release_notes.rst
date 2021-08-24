@@ -148,6 +148,8 @@ Special thanks to:
   text drawing support, advice on GUI, and more.
 * `Cleptomania <https://github.com/Cleptomania>`_ for Tiled Map support, sound support, and more.
 * `eruvanos <https://github.com/eruvanos>`_ for the original GUI and all the GUI updates.
+* `benmoran56 <https://github.com/benmoran56>`_ and everyone that contributes to the excellent
+  `Pyglet <http://pyglet.org/>`_ library we use so much.
 
 Version 2.5.7
 -------------
