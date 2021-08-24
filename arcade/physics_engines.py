@@ -216,16 +216,15 @@ class PhysicsEngineSimple:
     """
     Simplistic physics engine for use in games without gravity, such as top-down
     games. It is easier to get
-    started with this engine than more sophisticated engines like PyMunk. Note, it
-    does not currently handle rotation.
+    started with this engine than more sophisticated engines like PyMunk.
+
+    :param Sprite player_sprite: The moving sprite
+    :param SpriteList walls: The sprites it can't move through
     """
 
     def __init__(self, player_sprite: Sprite, walls: Union[SpriteList, List[SpriteList]]):
         """
         Create a simple physics engine.
-
-        :param Sprite player_sprite: The moving sprite
-        :param SpriteList walls: The sprites it can't move through
         """
         assert(isinstance(player_sprite, Sprite))
 
@@ -253,6 +252,11 @@ class PhysicsEnginePlatformer:
     Simplistic physics engine for use in a platformer. It is easier to get
     started with this engine than more sophisticated engines like PyMunk. Note, it
     does not currently handle rotation.
+
+    :param Sprite player_sprite: The moving sprite
+    :param SpriteList platforms: The sprites it can't move through
+    :param float gravity_constant: Downward acceleration per frame
+    :param SpriteList ladders: Ladders the user can climb on
     """
 
     def __init__(self,
@@ -263,11 +267,6 @@ class PhysicsEnginePlatformer:
                  ):
         """
         Create a physics engine for a platformer.
-
-        :param Sprite player_sprite: The moving sprite
-        :param SpriteList platforms: The sprites it can't move through
-        :param float gravity_constant: Downward acceleration per frame
-        :param SpriteList ladders: Ladders the user can climb on
         """
         self.ladders: Optional[List[SpriteList]]
         self.platforms: Optional[List[SpriteList]]
@@ -304,7 +303,7 @@ class PhysicsEnginePlatformer:
                 return True
         return False
 
-    def can_jump(self, y_distance=5) -> bool:
+    def can_jump(self, y_distance: float = 5) -> bool:
         """
         Method that looks to see if there is a floor under
         the player_sprite. If there is a floor, the player can jump
