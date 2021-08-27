@@ -170,12 +170,21 @@ class UIWidget(EventDispatcher, ABC):
         """
         self._rendered = False
 
-    def add(self, child: "UIWidget", index=None):
+    def add(self, child: "UIWidget", *, index=None):
+        """
+        Add a widget to this :class:`UIWidget` as a child.
+        Added widgets will receive ui events and be rendered.
+
+        By default the latest added widget will receive ui events first and will be rendered on top of others.
+
+        :param widget: widget to add
+        :param index: position a widget is added, None has the highest priority
+        """
         child.parent = self
         if index is None:
             self.children.append(child)
         else:
-            self.children.insert(index, child)
+            self.children.insert(max(len(self.children), index), child)
         self.trigger_full_render()
 
     def remove(self, child: "UIWidget"):

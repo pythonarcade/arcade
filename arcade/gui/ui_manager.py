@@ -60,11 +60,21 @@ class UIManager(EventDispatcher, UIWidgetParent):
         if auto_enable:
             self.enable()
 
-    def add(self, widget: UIWidget, index=None) -> UIWidget:
+    def add(self, widget: UIWidget, *, index=None) -> UIWidget:
+        """
+        Add a widget to the :class:`UIManager`.
+        Added widgets will receive ui events and be rendered.
+
+        By default the latest added widget will receive ui events first and will be rendered on top of others.
+
+        :param widget: widget to add
+        :param index: position a widget is added, None has the highest priority
+        :return: the widget
+        """
         if index is None:
             self.children[0].append(widget)
         else:
-            self.children[0].insert(index, widget)
+            self.children[0].insert(max(len(self.children), index), widget)
         widget.parent = self
         self.trigger_render()
         return widget
