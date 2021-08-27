@@ -1,14 +1,18 @@
 """
 Constructs, are prepared widget combinations, you can use for common usecases
 """
+from pyglet.event import EVENT_HANDLED
+
 import arcade
+from arcade.gui.mixins import UIWindowLikeMixin, UIMouseFilterMixin
 from arcade.gui.widgets import UILayout, UIAnchorWidget, UITextArea, UIFlatButton
 
 
-class UIMessageBox(UIAnchorWidget):
+class UIMessageBox(UIMouseFilterMixin, UIAnchorWidget):
     """
     A simple dialog box that pops up a message with buttons to close.
     """
+
     def __init__(self,
                  *,
                  width: float,

@@ -65,6 +65,7 @@ titles = {
     'gui/events.py': ['GUI Event', 'gui_events.rst'],
     'gui/surface.py': ['GUI', 'gui.rst'],
     'gui/ui_manager.py': ['GUI', 'gui.rst'],
+    'gui/mixins.py': ['GUI', 'gui.rst'],
     'gui/widgets.py': ['GUI Widgets', 'gui_widgets.rst'],
 
     'events/__init__.py': ['GUI Utility Functions', 'gui_utility.rst'],
@@ -162,9 +163,6 @@ def process_directory(directory, quick_index_file):
                    "sprite_list": "arcade",
                    "text": "arcade",
                    "gui": "arcade.gui",
-                   "elements": "arcade.gui",
-                   "events": "arcade.gui",
-                   "layouts": "arcade.gui",
                    "tilemap": "arcade.tilemap",
                    }
         package = mapping[directory.name]
