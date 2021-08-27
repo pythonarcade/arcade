@@ -26,7 +26,7 @@ class UIDraggableMixin(UILayout):
     def on_event(self, event) -> bool:
         if isinstance(event, UIMouseDragEvent) and self.rect.collide_with_point(event.x, event.y):
             self.rect = self.rect.move(event.dx, event.dy)
-            self.enforce_full_render()
+            self.trigger_full_render()
 
         if super().on_event(event):
             return EVENT_HANDLED

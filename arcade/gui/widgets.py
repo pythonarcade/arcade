@@ -170,22 +170,25 @@ class UIWidget(EventDispatcher, ABC):
         """
         self._rendered = False
 
-    def add(self, child: "UIWidget"):
+    def add(self, child: "UIWidget", index=None):
         child.parent = self
-        self.children.append(child)
-        self.trigger_render()
+        if index is None:
+            self.children.append(child)
+        else:
+            self.children.insert(index, child)
+        self.trigger_full_render()
 
     def remove(self, child: "UIWidget"):
         child.parent = None
         self.children.remove(child)
-        self.trigger_render()
+        self.trigger_full_render()
 
     def clear(self):
         for child in self.children:
             child.parent = None
 
         self.children.clear()
-        self.trigger_render()
+        self.trigger_full_render()
 
     def __contains__(self, item):
         return item in self.children
@@ -215,7 +218,7 @@ class UIWidget(EventDispatcher, ABC):
         if parent:
             yield parent
 
-    def enforce_full_render(self):
+    def trigger_full_render(self):
         """In case a widget uses transperant areas or was moved,
          it might be important to request a full rendering of parents"""
         self.trigger_render()
@@ -233,7 +236,7 @@ class UIWidget(EventDispatcher, ABC):
             if rect != child.rect:
                 # Rerender in case the child rect has changed
                 # TODO use Arcade Property instead
-                self.enforce_full_render()
+                self.trigger_full_render()
 
     def _do_render(self, surface: Surface, force=False):
         """Helper function to trigger :meth:`UIWidget.do_render` through the widget tree,
@@ -303,7 +306,7 @@ class UIWidget(EventDispatcher, ABC):
     @rect.setter
     def rect(self, value):
         self._rect = value
-        self.enforce_full_render()
+        self.trigger_full_render()
 
     @property
     def x(self):
@@ -410,7 +413,7 @@ class UIInteractiveWidget(UIWidget):
     def pressed(self, value):
         if self._pressed != value:
             self._pressed = value
-            self.trigger_render()
+            self.trigger_full_render()
 
     @property
     def hovered(self):
@@ -420,7 +423,7 @@ class UIInteractiveWidget(UIWidget):
     def hovered(self, value):
         if value != self._hovered:
             self._hovered = value
-            self.trigger_render()
+            self.trigger_full_render()
 
     def on_event(self, event: UIEvent) -> bool:
         if isinstance(event, UIMouseMovementEvent):
@@ -520,6 +523,7 @@ class UISpriteWidget(UIWidget):
     def on_update(self, dt):
         self._sprite.update()
         self._sprite.update_animation(dt)
+        self.trigger_render()
 
     def do_render(self, surface: Surface):
         self.prepare_render(surface)
@@ -706,7 +710,7 @@ class UILabel(UIWidget):
     @text.setter
     def text(self, value):
         self.label.text = value
-        self.enforce_full_render()
+        self.trigger_full_render()
 
     @property
     def rect(self) -> _Rect:
@@ -715,7 +719,7 @@ class UILabel(UIWidget):
     @rect.setter
     def rect(self, value):
         self._rect = _Rect(*value)
-        self.enforce_full_render()
+        self.trigger_full_render()
 
         # Update Pyglet layout
         label = self.label
@@ -802,7 +806,7 @@ class UITextArea(UIWidget):
     @text.setter
     def text(self, value):
         self.doc.text = value
-        self.enforce_full_render()
+        self.trigger_full_render()
 
     @property
     def rect(self) -> _Rect:
@@ -811,7 +815,7 @@ class UITextArea(UIWidget):
     @rect.setter
     def rect(self, value):
         self._rect = _Rect(*value)
-        self.enforce_full_render()
+        self.trigger_full_render()
 
         # Update Pyglet layout
         my_layout = self.layout
@@ -829,7 +833,7 @@ class UITextArea(UIWidget):
         if isinstance(event, UIMouseScrollEvent):
             if self.rect.collide_with_point(event.x, event.y):
                 self.layout.view_y += event.scroll_y * self.scroll_speed
-                self.enforce_full_render()
+                self.trigger_full_render()
 
         if super().on_event(event):
             return EVENT_HANDLED
@@ -895,14 +899,14 @@ class UIInputText(UIWidget):
         current_state = self._get_caret_blink_state()
         if self._blink_state != current_state:
             self._blink_state = current_state
-            self.enforce_full_render()
+            self.trigger_full_render()
 
     def on_event(self, event: UIEvent):
         # if not active, check to activate, return
         if not self._active and isinstance(event, UIMousePressEvent):
             if self.rect.collide_with_point(event.x, event.y):
                 self._active = True
-                self.enforce_full_render()
+                self.trigger_full_render()
                 self.caret.on_activate()
                 self.caret.position = len(self.doc.text)
                 return
@@ -914,7 +918,7 @@ class UIInputText(UIWidget):
                 self.caret.on_mouse_press(x, y, event.button, event.modifiers)
             else:
                 self._active = False
-                self.enforce_full_render()
+                self.trigger_full_render()
                 self.caret.on_deactivate()
                 return
 
@@ -923,22 +927,22 @@ class UIInputText(UIWidget):
             # Act on events if active
             if isinstance(event, UITextEvent):
                 self.caret.on_text(event.text)
-                self.enforce_full_render()
+                self.trigger_full_render()
             elif isinstance(event, UITextMotionEvent):
                 self.caret.on_text_motion(event.motion)
-                self.enforce_full_render()
+                self.trigger_full_render()
             elif isinstance(event, UITextMotionSelectEvent):
                 self.caret.on_text_motion_select(event.selection)
-                self.enforce_full_render()
+                self.trigger_full_render()
 
             if isinstance(event, UIMouseEvent) and self.rect.collide_with_point(event.x, event.y):
                 x, y = event.x - self.x, event.y - self.y
                 if isinstance(event, UIMouseDragEvent):
                     self.caret.on_mouse_drag(x, y, event.dx, event.dy, event.buttons, event.modifiers)
-                    self.enforce_full_render()
+                    self.trigger_full_render()
                 elif isinstance(event, UIMouseScrollEvent):
                     self.caret.on_mouse_scroll(x, y, event.scroll_x, event.scroll_y)
-                    self.enforce_full_render()
+                    self.trigger_full_render()
 
         if super().on_event(event):
             return EVENT_HANDLED
@@ -950,7 +954,7 @@ class UIInputText(UIWidget):
     @rect.setter
     def rect(self, value):
         self._rect = _Rect(*value)
-        self.enforce_full_render()
+        self.trigger_full_render()
 
         # Update Pyglet layout
         my_layout = self.layout

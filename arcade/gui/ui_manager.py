@@ -52,7 +52,7 @@ class UIManager(EventDispatcher, UIWidgetParent):
         super().__init__()
         self.window = window or arcade.get_window()
         self._surfaces: Dict[int, Surface] = {}
-        self._children: Dict[int, List[UIWidget]] = defaultdict(list)
+        self.children: Dict[int, List[UIWidget]] = defaultdict(list)
         self._rendered = False
 
         self.register_event_type("on_event")
@@ -60,14 +60,17 @@ class UIManager(EventDispatcher, UIWidgetParent):
         if auto_enable:
             self.enable()
 
-    def add(self, widget: UIWidget, layer=0) -> UIWidget:
-        self._children[layer].append(widget)
+    def add(self, widget: UIWidget, index=None) -> UIWidget:
+        if index is None:
+            self.children[0].append(widget)
+        else:
+            self.children[0].insert(index, widget)
         widget.parent = self
         self.trigger_render()
         return widget
 
     def remove(self, child: UIWidget):
-        for children in self._children.values():
+        for children in self.children.values():
             if child in children:
                 children.remove(child)
                 self.trigger_render()
@@ -88,9 +91,9 @@ class UIManager(EventDispatcher, UIWidgetParent):
         self._rendered = False
 
     def _do_layout(self):
-        layers = sorted(self._children.keys())
+        layers = sorted(self.children.keys())
         for layer in layers:
-            for child in self._children[layer]:
+            for child in self.children[layer]:
                 #TODO Observe if rect of child changed. This will be solved with observable properties later
                 rect = child.rect
                 child._do_layout()
@@ -99,7 +102,7 @@ class UIManager(EventDispatcher, UIWidgetParent):
                     self.trigger_render()
 
     def _do_render(self, force=False):
-        layers = sorted(self._children.keys())
+        layers = sorted(self.children.keys())
         force = force or not self._rendered
         for layer in layers:
             surface = self._get_surface(layer)
@@ -107,7 +110,7 @@ class UIManager(EventDispatcher, UIWidgetParent):
                 if force:
                     surface.clear()
 
-                for child in self._children[layer]:
+                for child in self.children[layer]:
                     child._do_render(surface, force)
 
         self._rendered = True
@@ -169,7 +172,7 @@ class UIManager(EventDispatcher, UIWidgetParent):
         self._do_render()
 
         # Draw layers
-        layers = sorted(self._children.keys())
+        layers = sorted(self.children.keys())
         for layer in layers:
             self._get_surface(layer).draw()
 
@@ -191,9 +194,9 @@ class UIManager(EventDispatcher, UIWidgetParent):
         return x, y
 
     def on_event(self, event) -> bool:
-        layers = sorted(self._children.keys(), reverse=True)
+        layers = sorted(self.children.keys(), reverse=True)
         for layer in layers:
-            for child in reversed(self._children[layer]):
+            for child in reversed(self.children[layer]):
                 if child.dispatch_event("on_event", event):
                     # child can consume an event by returning True
                     return EVENT_HANDLED
@@ -251,7 +254,7 @@ class UIManager(EventDispatcher, UIWidgetParent):
 
     def debug(self):
         """Walks through all widgets of a UIManager and prints out the rect"""
-        for index, layer in self._children.items():
+        for index, layer in self.children.items():
             print(f"Layer {index}")
             for child in reversed(layer):
                 self._debug(child, prefix="  ")

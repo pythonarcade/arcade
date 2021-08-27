@@ -47,7 +47,7 @@ Rendering
 .........
 
 :meth:`UIWidget.do_render` is called recursively if rendering was requested via :meth:`UIWidget.trigger_render`.
-In case widgets have to request their parents to render use :meth:`UIWidget.enforce_full_render`
+In case widgets have to request their parents to render use :meth:`UIWidget.trigger_full_render`
 
 The widget has to draw itself and child widgets within :meth:`UIWidget.do_render`. Due to the deferred functionality
 render does not have to check any dirty variables, as long as state changes use the trigger function.

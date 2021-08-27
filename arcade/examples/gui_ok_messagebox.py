@@ -47,7 +47,7 @@ class MyWindow(arcade.Window):
             buttons=["Ok", "Cancel"]
         )
 
-        self.manager.add(message_box, layer=1)
+        self.manager.add(message_box)
 
     def on_draw(self):
         arcade.start_render()
