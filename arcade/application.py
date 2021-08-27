@@ -10,6 +10,7 @@ from typing import Tuple, Optional
 
 import pyglet
 import pyglet.gl as gl
+from pyglet.canvas.base import ScreenMode
 
 import arcade
 from arcade import get_display_size
@@ -197,7 +198,7 @@ class Window(pyglet.window.Window):
     def set_fullscreen(self,
                        fullscreen: bool = True,
                        screen: Optional['Window'] = None,
-                       mode: pyglet.canvas.ScreenMode = None,
+                       mode: ScreenMode = None,
                        width: Optional[float] = None,
                        height: Optional[float] = None):
         """
