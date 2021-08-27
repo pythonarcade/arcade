@@ -86,20 +86,53 @@ and the documentation.
     .. image:: ../examples/gui_ok_messagebox.png
        :width: 40%
 
-  * UIEvents are replaced by UIWidgets
+  * UIElements are replaced by UIWidgets
   * Option to relative pin widgets on screen to center or border (supports resizing)
   * Widgets can be placed on top of each other
   * Overlapping widgets properly handle mouse interaction
   * Fully typed event classes
-  * Events contain source widget *(planned)*
+  * Events contain source widget
   * ScrollableText widgets (more to come)
-  * UILayouts can grow or shrink widgets, to adjust to different screen sizes
   * Support for Sprites within Widgets
   * Declarative coding style for borders and padding `widget.with_border(...)`
   * Automatically place widgets vertically or horizontally (`UIBoxLayout`)
   * Dropped support for YAML style files
   * Better performance and limited memory usage
-  * More documentation *(planned)*
+  * More documentation (:ref:`gui_concepts`)
+  * Available Elements:
+
+    * :class:`~arcade.gui.UIWidget`:
+
+      * :class:`~arcade.gui.UIFlatButton` - 2D flat button for simple interactions (hover, press, release, click)
+      * :class:`~arcade.gui.UITextureButton` - textured button (use :meth:`arcade.load_texture()`) for simple interactions (hover, press, release, click)
+      * :class:`~arcade.gui.UILabel` - Simple text, supports multiline
+      * :class:`~arcade.gui.UIInputText` - field to accept user text input
+      * :class:`~arcade.gui.UITextArea` - Multiline scrollable text widget.
+      * :class:`~arcade.gui.UISpriteWidget` - Embeds a Sprite within the GUI tree
+
+    * :class:`~arcade.gui.UILayout`:
+
+        * :class:`~arcade.gui.UIBoxLayout` - Places widgets next to each other (vertical or horizontal)
+
+    * :class:`~arcade.gui.UIWrapper`:
+
+        * :class:`~arcade.gui.UIPadding` - Add space around a widget
+        * :class:`~arcade.gui.UIBorder` - Add border around a widget
+        * :class:`~arcade.gui.UIAnchorWidget` - Used to position UIWidgets relative on screen
+
+    * Constructs
+
+        * :class:`~arcade.gui.UIMessageBox` - Popup box with a message text and a few buttons.
+
+    * Mixins
+
+        * :class:`~arcade.gui.UIDraggableMixin` - Makes a widget draggable.
+        * :class:`~arcade.gui.UIMouseFilterMixin` - Catches mouse events that occure within the widget boundaries.
+        * :class:`~arcade.gui.UIWindowLikeMixin` - Combination of :class:`~arcade.gui.UIDraggableMixin` and :class:`~arcade.gui.UIMouseFilterMixin`.
+
+  * WIP
+    * UIWidgets contain information about preferred sizes
+    * UILayouts can grow or shrink widgets, to adjust to different screen sizes
 
 * Camera support
 

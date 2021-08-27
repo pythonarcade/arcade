@@ -11,7 +11,7 @@ The better gui for arcade
 from collections import defaultdict
 from typing import List, Dict
 
-import pyglet.event
+from pyglet.event import EventDispatcher, EVENT_HANDLED, EVENT_UNHANDLED
 
 import arcade
 from arcade.gui.events import (UIMouseMovementEvent,
@@ -23,12 +23,13 @@ from arcade.gui.events import (UIMouseMovementEvent,
                                UITextMotionEvent,
                                UITextMotionSelectEvent,
                                UIKeyPressEvent,
-                               UIKeyReleaseEvent)
+                               UIKeyReleaseEvent,
+                               UIOnUpdateEvent)
 from arcade.gui.surface import Surface
-from arcade.gui.widgets import UIWidget, UIWidgetParent, _Rect, UILayout, UIWrapper
+from arcade.gui.widgets import UIWidget, UIWidgetParent, _Rect
 
 
-class UIManager(pyglet.event.EventDispatcher, UIWidgetParent):
+class UIManager(EventDispatcher, UIWidgetParent):
     """
     V2 UIManager
 
@@ -52,7 +53,7 @@ class UIManager(pyglet.event.EventDispatcher, UIWidgetParent):
         self.window = window or arcade.get_window()
         self._surfaces: Dict[int, Surface] = {}
         self._children: Dict[int, List[UIWidget]] = defaultdict(list)
-        self.rendered = False
+        self._rendered = False
 
         self.register_event_type("on_event")
 
@@ -62,13 +63,14 @@ class UIManager(pyglet.event.EventDispatcher, UIWidgetParent):
     def add(self, widget: UIWidget, layer=0) -> UIWidget:
         self._children[layer].append(widget)
         widget.parent = self
+        self.trigger_render()
         return widget
 
     def remove(self, child: UIWidget):
         for children in self._children.values():
             if child in children:
                 children.remove(child)
-                self.rendered = False
+                self.trigger_render()
 
     def _get_surface(self, layer: int):
         if layer not in self._surfaces:
@@ -82,24 +84,33 @@ class UIManager(pyglet.event.EventDispatcher, UIWidgetParent):
 
         return self._surfaces.get(layer)
 
-    def _render(self, force=False):
-        force = force or not self.rendered
+    def trigger_render(self):
+        self._rendered = False
 
+    def _do_layout(self):
         layers = sorted(self._children.keys())
         for layer in layers:
             for child in self._children[layer]:
-                force = child.do_layout() or force
+                #TODO Observe if rect of child changed. This will be solved with observable properties later
+                rect = child.rect
+                child._do_layout()
+                if rect != child.rect:
+                    # TODO use Arcade Property instead
+                    self.trigger_render()
 
+    def _do_render(self, force=False):
+        layers = sorted(self._children.keys())
+        force = force or not self._rendered
+        for layer in layers:
             surface = self._get_surface(layer)
             with surface.activate():
                 if force:
                     surface.clear()
 
                 for child in self._children[layer]:
-                    surface.limit(*child.rect)
-                    child.render(surface, force)
+                    child._do_render(surface, force)
 
-        self.rendered = True
+        self._rendered = True
 
     def enable(self):
         """
@@ -150,14 +161,14 @@ class UIManager(pyglet.event.EventDispatcher, UIWidgetParent):
             )
 
     def on_update(self, time_delta):
-        layers = sorted(self._children.keys())
-        for layer in layers:
-            for child in self._children[layer]:
-                child.on_update(time_delta)
-
-        self._render()
+        self.dispatch_ui_event(UIOnUpdateEvent(self, time_delta))
 
     def draw(self):
+        # Request Widgets to prepare for next frame
+        self._do_layout()
+        self._do_render()
+
+        # Draw layers
         layers = sorted(self._children.keys())
         for layer in layers:
             self._get_surface(layer).draw()
@@ -179,13 +190,14 @@ class UIManager(pyglet.event.EventDispatcher, UIWidgetParent):
         # return (x - vx) * dx, (y - vy) * dy
         return x, y
 
-    def on_event(self, event):
+    def on_event(self, event) -> bool:
         layers = sorted(self._children.keys(), reverse=True)
         for layer in layers:
             for child in reversed(self._children[layer]):
                 if child.dispatch_event("on_event", event):
                     # child can consume an event by returning True
-                    return
+                    return EVENT_HANDLED
+        return EVENT_UNHANDLED
 
     def dispatch_ui_event(self, event):
         self.dispatch_event("on_event", event)
@@ -231,11 +243,11 @@ class UIManager(pyglet.event.EventDispatcher, UIWidgetParent):
         for surface in self._surfaces.values():
             surface.resize(size=(width, height), pixel_ratio=scale)
 
-        self.rendered = False
+        self.trigger_render()
 
     @property
     def rect(self) -> _Rect:
-        return _Rect(0, 0, *self._surfaces[0].size)
+        return _Rect(0, 0, *self.window.get_size())
 
     def debug(self):
         """Walks through all widgets of a UIManager and prints out the rect"""
@@ -248,8 +260,6 @@ class UIManager(pyglet.event.EventDispatcher, UIWidgetParent):
     @staticmethod
     def _debug(element, prefix=""):
         print(f"{prefix}{element.__class__}:{element.rect}")
-        if isinstance(element, UILayout):
-            for child in element._children:
+        if isinstance(element, UIWidget):
+            for child in element.children:
                 UIManager._debug(child, prefix=prefix + "  ")
-        if isinstance(element, UIWrapper):
-            UIManager._debug(element.child, prefix=prefix + "  ")

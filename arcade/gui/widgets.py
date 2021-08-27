@@ -1,22 +1,21 @@
 from abc import abstractmethod, ABC
 from random import randint
-from typing import NamedTuple, Iterable, Optional
+from typing import NamedTuple, Iterable, Optional, List, Union, TYPE_CHECKING
 
 import pyglet
-from pyglet.event import EventDispatcher
+from pyglet.event import EventDispatcher, EVENT_HANDLED, EVENT_UNHANDLED
 from pyglet.text.document import AbstractDocument
 
 import arcade
 from arcade import Texture, Sprite
-from arcade.gui import Surface
 from arcade.gui.events import UIEvent, UIMouseMovementEvent, UIMousePressEvent, UIMouseReleaseEvent, \
     UITextEvent, \
     UIMouseDragEvent, \
-    UIMouseScrollEvent, UITextMotionEvent, UITextMotionSelectEvent, UIMouseEvent, UIOnClickEvent
+    UIMouseScrollEvent, UITextMotionEvent, UITextMotionSelectEvent, UIMouseEvent, UIOnClickEvent, UIOnUpdateEvent
+from arcade.gui.surface import Surface
 
-
-def _point_in_rect(x, y, rx, ry, rw, rh):
-    return rx < x < rx + rw and ry < y < ry + rh
+if TYPE_CHECKING:
+    from arcade.gui.ui_manager import UIManager
 
 
 class _Rect(NamedTuple):
@@ -113,9 +112,7 @@ class _Rect(NamedTuple):
 
 class UIWidget(EventDispatcher, ABC):
     """
-    Widget class
-
-    The :class:`Widget` class is the base class required for creating Widgets.
+    The :class:`UIWidget` class is the base class required for creating widgets.
 
     We also have some default values and behaviors that you should be aware of:
 
@@ -127,6 +124,10 @@ class UIWidget(EventDispatcher, ABC):
     :param y: center y of widget
     :param width: width of widget
     :param height: height of widget
+    :param size_hint: Tuple of floats (0.0-1.0), how much space of the parent should be requested
+    :param size_hint_min: min width and height in pixel
+    :param size_hint_max: max width and height in pixel
+    :param style: not used
     """
 
     def __init__(self,
@@ -135,43 +136,136 @@ class UIWidget(EventDispatcher, ABC):
                  width: float = 100,
                  height: float = 100,
 
+                 children: Iterable["UIWidget"] = tuple(),
+
                  # Properties which might be used by layouts
                  size_hint=None,  # in percentage
-                 # size_hint_min=None,  # in pixel
-                 # size_hint_max=None,  # in pixel
+                 size_hint_min=None,  # in pixel
+                 size_hint_max=None,  # in pixel
+
+                 style=None,
+                 **kwargs
                  ):
+        self.children: List[UIWidget] = []
+
+        self._rendered = False
         self._rect = _Rect(x, y, width, height)
-        self.rendered = False
         self.parent: Optional[UIWidgetParent] = None
 
         # Size hints are properties that can be used by layouts
         self.size_hint = size_hint
-        # self.size_hint_min = size_hint_min
-        # self.size_hint_max = size_hint_max
+        self.size_hint_min = size_hint_min
+        self.size_hint_max = size_hint_max
 
         self.register_event_type("on_event")
+        self.register_event_type("on_update")
 
-    @abstractmethod
-    def render(self, surface: Surface, force=False):
+        for child in children:
+            self.add(child)
+
+    def trigger_render(self):
         """
-        Render the widget with arcade.draw commands or using the surface methods.
+        This will delay a render right before the next frame is rendered, so that :meth:`UIWidget.do_render`
+        is not called multiple times.
         """
+        self._rendered = False
+
+    def add(self, child: "UIWidget"):
+        child.parent = self
+        self.children.append(child)
+        self.trigger_render()
+
+    def remove(self, child: "UIWidget"):
+        child.parent = None
+        self.children.remove(child)
+        self.trigger_render()
+
+    def clear(self):
+        for child in self.children:
+            child.parent = None
+
+        self.children.clear()
+        self.trigger_render()
+
+    def __contains__(self, item):
+        return item in self.children
 
     def on_update(self, dt):
+        """Custom logic which will be triggered."""
         pass
 
-    def do_layout(self) -> bool:
-        """
-        Called by the UIManager before rendering, Widgets should place themselves or children
+    def on_event(self, event: UIEvent) -> bool:
+        """Passes :class:`UIEvent` s through the widget tree."""
+        if isinstance(event, UIOnUpdateEvent):
+            self.dispatch_event("on_update", event.dt)
 
-        :return: in case of any change, which requires a forced rerender of the UI return True
-        """
+        # pass event to children
+        for child in self.children:
+            if child.dispatch_event("on_event", event):
+                return EVENT_HANDLED
 
-    def dispatch_ui_event(self, event):
+        return EVENT_UNHANDLED
+
+    def _walk_parents(self) -> Iterable[Union["UIWidget", "UIManager"]]:
+        parent = self.parent
+        while isinstance(parent, UIWidget):
+            yield parent
+            parent = parent.parent
+
+        if parent:
+            yield parent
+
+    def enforce_full_render(self):
+        """In case a widget uses transperant areas or was moved,
+         it might be important to request a full rendering of parents"""
+        self.trigger_render()
+        for parent in self._walk_parents():
+            parent.trigger_render()
+
+    def _do_layout(self):
+        """Helper function to trigger :meth:`UIWidget.do_layout` through the widget tree,
+        should only be used by UIManager!
+        """
+        for child in self.children:
+            rect = child.rect
+            child._do_layout()
+
+            if rect != child.rect:
+                # Rerender in case the child rect has changed
+                # TODO use Arcade Property instead
+                self.enforce_full_render()
+
+    def _do_render(self, surface: Surface, force=False):
+        """Helper function to trigger :meth:`UIWidget.do_render` through the widget tree,
+        should only be used by UIManager!
+        """
+        should_render = force or not self._rendered
+        if should_render:
+            self.do_render(surface)
+            self._rendered = True
+
+        for child in self.children:
+            child._do_render(surface, should_render)
+
+    def prepare_render(self, surface):
+        """
+        Helper for rendering, the drawing area will be adjusted to the own position and size.
+        Draw calls have to be relative to 0,0.
+        This will also prevent any overdraw outside of the widgets area
+
+        :param surface: Surface used for rendering
+        """
+        surface.limit(*self.rect)
+
+    def do_render(self, surface: Surface):
+        """Render the widgets graphical representation, use :meth:`UIWidget.prepare_render` to limit the drawing area
+        to the widgets rect and draw relative to 0,0."""
+        pass
+
+    def dispatch_ui_event(self, event: UIEvent):
+        """Dispatch a :class:`UIEvent` using pyglet event dispatch mechanism
+         """
         self.dispatch_event("on_event", event)
-
-    def on_event(self, event: UIEvent):
-        pass
 
     def with_border(self, width=2, color=(0, 0, 0)):
         """
@@ -209,7 +303,7 @@ class UIWidget(EventDispatcher, ABC):
     @rect.setter
     def rect(self, value):
         self._rect = value
-        self.rendered = False
+        self.enforce_full_render()
 
     @property
     def x(self):
@@ -269,18 +363,43 @@ class UIWidgetParent(ABC):
     def rect(self) -> _Rect:
         pass
 
+    def trigger_render(self):
+        """Widget might request parent to rerender due to transparent part of the widget"""
+        pass
+
     @abstractmethod
     def remove(self, child: UIWidget):
         pass
 
 
 class UIInteractiveWidget(UIWidget):
+    """
+    Base class for widgets which use mouse interaction (hover, pressed, clicked)
+
+    :param x: center x of widget
+    :param y: center y of widget
+    :param width: width of widget
+    :param height: height of widget
+    :param size_hint: Tuple of floats (0.0-1.0), how much space of the parent should be requested
+    :param size_hint_min: min width and height in pixel
+    :param size_hint_max: max width and height in pixel:param x: center x of widget
+    :param style: not used
+    """
     # States
-    _hover = False
+    _hovered = False
     _pressed = False
 
-    def __init__(self, x=0, y=0, width=100, height=100):
-        super().__init__(x, y, width, height)
+    def __init__(self, x=0, y=0, width=100, height=100,
+                 size_hint=None,
+                 size_hint_min=None,
+                 size_hint_max=None,
+                 style=None,
+                 **kwargs):
+        super().__init__(x, y, width, height,
+                         size_hint=size_hint,
+                         size_hint_min=size_hint_min,
+                         size_hint_max=size_hint_max
+                         )
         self.register_event_type("on_click")
 
     @property
@@ -291,39 +410,40 @@ class UIInteractiveWidget(UIWidget):
     def pressed(self, value):
         if self._pressed != value:
             self._pressed = value
-            self.rendered = False
+            self.trigger_render()
 
     @property
-    def hover(self):
-        return self._hover
+    def hovered(self):
+        return self._hovered
 
-    @hover.setter
-    def hover(self, value):
-        if value != self._hover:
-            self._hover = value
-            self.rendered = False
+    @hovered.setter
+    def hovered(self, value):
+        if value != self._hovered:
+            self._hovered = value
+            self.trigger_render()
 
-    def on_event(self, event: UIEvent):
-        super().on_event(event)
-
+    def on_event(self, event: UIEvent) -> bool:
         if isinstance(event, UIMouseMovementEvent):
-            self.hover = _point_in_rect(event.x, event.y, *self.rect)
+            self.hovered = self.rect.collide_with_point(event.x, event.y)
 
         if isinstance(event, UIMousePressEvent) and self.rect.collide_with_point(
                 event.x, event.y
         ):
             self.pressed = True
-            return True
+            return EVENT_HANDLED
 
         if self.pressed and isinstance(event, UIMouseReleaseEvent):
             self.pressed = False
             if self.rect.collide_with_point(event.x, event.y):
                 # Dispatch new on_click event, source is this widget itself
                 self.dispatch_event("on_event", UIOnClickEvent(self, event.x, event.y))
-                return True
+                return EVENT_HANDLED
 
         if isinstance(event, UIOnClickEvent) and self.rect.collide_with_point(event.x, event.y):
             self.dispatch_event("on_click", event)
+
+        if super().on_event(event):
+            return EVENT_HANDLED
 
     def on_click(self, event: UIOnClickEvent):
         pass
@@ -332,19 +452,38 @@ class UIInteractiveWidget(UIWidget):
 class UIDummy(UIInteractiveWidget):
     """
     Solid color widget, used for testing.
+
+    :param x: center x of widget
+    :param y: center y of widget
+    :param color: fill color for the widget
+    :param width: width of widget
+    :param height: height of widget
+    :param size_hint: Tuple of floats (0.0-1.0), how much space of the parent should be requested
+    :param size_hint_min: min width and height in pixel
+    :param size_hint_max: max width and height in pixel
+    :param style: not used
     """
 
-    def __init__(self, x=0, y=0, width=100, height=100, color=arcade.color.BLACK):
-        super().__init__(x, y, width, height)
+    def __init__(self, x=0, y=0, width=100, height=100, color=arcade.color.BLACK,
+                 size_hint=None,
+                 size_hint_min=None,
+                 size_hint_max=None,
+                 style=None,
+                 **kwargs):
+        super().__init__(x, y, width, height,
+                         size_hint=size_hint,
+                         size_hint_min=size_hint_min,
+                         size_hint_max=size_hint_max)
         self.color = color
         self.frame = randint(0, 255)
 
-    def render(self, surface: Surface, force=False):
+    def do_render(self, surface: Surface):
+        self.prepare_render(surface)
         self.frame += 1
         frame = self.frame % 256
         surface.clear((*self.color[:3], frame))
 
-        if self.hover:
+        if self.hovered:
             arcade.draw_xywh_rectangle_outline(0, 0,
                                                self.width, self.height,
                                                color=arcade.color.BATTLESHIP_GREY,
@@ -352,18 +491,39 @@ class UIDummy(UIInteractiveWidget):
 
 
 class UISpriteWidget(UIWidget):
-    """ Create a UI element with a sprite that controls what is displayed. """
+    """ Create a UI element with a sprite that controls what is displayed.
 
-    def __init__(self, *, x=0, y=0, width=100, height=100, sprite: Sprite = None):
-        super().__init__(x, y, width, height)
+    :param x: center x of widget
+    :param y: center y of widget
+    :param width: width of widget
+    :param height: height of widget
+    :param sprite: Sprite to embed in gui
+    :param size_hint: Tuple of floats (0.0-1.0), how much space of the parent should be requested
+    :param size_hint_min: min width and height in pixel
+    :param size_hint_max: max width and height in pixel
+    :param style: not used
+    """
+
+    def __init__(self, *, x=0, y=0, width=100, height=100,
+                 sprite: Sprite = None,
+                 size_hint=None,
+                 size_hint_min=None,
+                 size_hint_max=None,
+                 style=None,
+                 **kwargs):
+        super().__init__(x, y, width, height,
+                         size_hint=size_hint,
+                         size_hint_min=size_hint_min,
+                         size_hint_max=size_hint_max)
         self._sprite = sprite
 
     def on_update(self, dt):
         self._sprite.update()
-        self._sprite.update_animation(dt)  # ?
+        self._sprite.update_animation(dt)
 
-    def render(self, surface: Surface, force=False):
-        surface.clear((0, 0, 0, 0))
+    def do_render(self, surface: Surface):
+        self.prepare_render(surface)
+        surface.clear(color=(0, 0, 0, 0))
         surface.draw_sprite(0, 0, self.width, self.height, self._sprite)
 
 
@@ -376,11 +536,14 @@ class UITextureButton(UIInteractiveWidget):
     :param float width: width of widget. Defaults to texture width if not specified.
     :param float height: height of widget. Defaults to texture height if not specified.
     :param Texture texture: texture to display for the widget.
-    :param Texture texture_hover: different texture to display if mouse is hovering over button.
+    :param Texture texture_hovered: different texture to display if mouse is hovering over button.
     :param Texture texture_pressed: different texture to display if mouse button is pressed while hovering over button.
     :param str text: text to add to the button.
     :param style: style information for the button.
     :param float scale: scale the button, based on the base texture size.
+    :param size_hint: Tuple of floats (0.0-1.0), how much space of the parent should be requested
+    :param size_hint_min: min width and height in pixel
+    :param size_hint_max: max width and height in pixel
     """
 
     def __init__(self,
@@ -389,11 +552,15 @@ class UITextureButton(UIInteractiveWidget):
                  width: float = None,
                  height: float = None,
                  texture: Texture = None,
-                 texture_hover: Texture = None,
+                 texture_hovered: Texture = None,
                  texture_pressed: Texture = None,
                  text: str = "",
+                 scale: float = None,
+                 size_hint=None,
+                 size_hint_min=None,
+                 size_hint_max=None,
                  style=None,
-                 scale: float = None):
+                 **kwargs):
 
         if width is None and texture is not None:
             width = texture.width
@@ -405,10 +572,13 @@ class UITextureButton(UIInteractiveWidget):
             height = texture.height * scale
             width = texture.width * scale
 
-        super().__init__(x, y, width, height)
+        super().__init__(x, y, width, height,
+                         size_hint=size_hint,
+                         size_hint_min=size_hint_min,
+                         size_hint_max=size_hint_max)
 
         self._tex = texture
-        self._tex_hover = texture_hover
+        self._tex_hover = texture_hovered
         self._tex_pressed = texture_pressed
         self._style = style or {}
         self._text = text
@@ -420,17 +590,15 @@ class UITextureButton(UIInteractiveWidget):
     @text.setter
     def text(self, value):
         self._text = value
-        self.rendered = False
+        self.trigger_render()
 
-    def render(self, surface: Surface, force=False):
-        if self.rendered and not force:
-            return
-        self.rendered = True
+    def do_render(self, surface: Surface):
+        self.prepare_render(surface)
 
         tex = self._tex
         if self.pressed and self._tex_pressed:
             tex = self._tex_pressed
-        elif self.hover and self._tex_hover:
+        elif self.hovered and self._tex_hover:
             tex = self._tex_hover
 
         surface.draw_texture(0, 0, self.width, self.height, tex)
@@ -464,36 +632,43 @@ class UITextureButton(UIInteractiveWidget):
 class UILabel(UIWidget):
     """ A simple text label. Also supports multiline text.
     In case you want to scroll text use a :class:`UITextArea`
+    By default a :class:`UILabel` will fit its initial content,
+    if the text changed use :meth:`UILabel.fit_content` to adjust the size.
+
+    :param float x: x-coordinate of widget.
+    :param float y: y-coordinate of widget.
+    :param float width: width of widget. Defaults to text width if not specified.
+    :param float height: height of widget. Defaults to text height if not specified.
+    :param str text: text of the label.
+    :param font_name: a list of fonts to use. Program will start at the beginning of the list
+                      and keep trying to load fonts until success.
+    :param float font_size: size of font.
+    :param arcade.Color text_color: Color of font.
+    :param bool multiline: if multiline is true, a \\n will start a new line.
+                           A UITextWidget with multiline of true is the same thing as UITextArea.
+
+    :param size_hint: Tuple of floats (0.0-1.0), how much space of the parent should be requested
+    :param size_hint_min: min width and height in pixel
+    :param size_hint_max: max width and height in pixel
+    :param style: Not used.
     """
 
     def __init__(self,
                  x: float = 0,
                  y: float = 0,
-                 width: float = 400,
-                 height: float = 40,
+                 width: float = None,
+                 height: float = None,
                  text: str = "",
                  font_name=('Arial',),
                  font_size: float = 12,
                  text_color: arcade.Color = (255, 255, 255, 255),
+                 multiline: bool = False,
+                 size_hint=None,
+                 size_hint_min=None,
+                 size_hint_max=None,
                  style=None,
-                 multiline: bool = False):
-        """
-        A simple text label. Also supports multiline text.
-        In case you want to scroll text use a :class:`UITextArea`
+                 **kwargs):
 
-        :param float x: x-coordinate of widget.
-        :param float y: y-coordinate of widget.
-        :param float width: width of widget. Defaults to text width if not specified.
-        :param float height: height of widget. Defaults to text height if not specified.
-        :param str text: text of the label.
-        :param font_name: a list of fonts to use. Program will start at the beginning of the list
-                          and keep trying to load fonts until success.
-        :param float font_size: size of font.
-        :param arcade.Color text_color: Color of font.
-        :param style: Not used.
-        :param bool multiline: if multiline is true, a \\n will start a new line.
-                               A UITextWidget with multiline of true is the same thing as UITextArea.
-        """
         # Use Pyglet's Label for text rendering
         self.label = pyglet.text.Label(text=text,
                                        font_name=font_name,
@@ -510,7 +685,10 @@ class UILabel(UIWidget):
         if not width:
             width = self.label.content_width
 
-        super().__init__(x, y, width, height)
+        super().__init__(x, y, width, height,
+                         size_hint=size_hint,
+                         size_hint_min=size_hint_min,
+                         size_hint_max=size_hint_max)
 
         self.label.width = width
         self.label.height = height
@@ -528,7 +706,7 @@ class UILabel(UIWidget):
     @text.setter
     def text(self, value):
         self.label.text = value
-        self.rendered = False
+        self.enforce_full_render()
 
     @property
     def rect(self) -> _Rect:
@@ -537,7 +715,7 @@ class UILabel(UIWidget):
     @rect.setter
     def rect(self, value):
         self._rect = _Rect(*value)
-        self.rendered = False
+        self.enforce_full_render()
 
         # Update Pyglet layout
         label = self.label
@@ -546,21 +724,31 @@ class UILabel(UIWidget):
         label.x, label.y, label.width, label.height = 0, 0, self.width, self.height
         label.end_update()
 
-    def render(self, surface: Surface, force=False):
-        if self.rendered and not force:
-            return
-        self.rendered = True
-
+    def do_render(self, surface: Surface):
+        self.prepare_render(surface)
         with surface.ctx.pyglet_rendering():
             self.label.draw()
-
-    def on_event(self, event: UIEvent):
-        super().on_event(event)
 
 
 class UITextArea(UIWidget):
     """
     A text area for scollable text.
+
+
+    :param x: center x of widget
+    :param y: center y of widget
+    :param width: width of widget
+    :param height: height of widget
+    :param text: Text to show
+    :param font_name: string or tuple of font names, to load
+    :param font_size: size of the text
+    :param text_color: color of the text
+    :param multiline: support for multiline
+    :param scroll_speed: speed of scolling
+    :param size_hint: Tuple of floats (0.0-1.0), how much space of the parent should be requested
+    :param size_hint_min: min width and height in pixel
+    :param size_hint_max: max width and height in pixel
+    :param style: not used
     """
 
     def __init__(self,
@@ -572,18 +760,21 @@ class UITextArea(UIWidget):
                  font_name=('Arial',),
                  font_size: float = 12,
                  text_color: arcade.Color = (255, 255, 255, 255),
-                 style=None,
                  multiline: bool = True,
-                 scroll_speed: float = None):
-        super().__init__(x, y, width, height)
+                 scroll_speed: float = None,
+                 size_hint=None,
+                 size_hint_min=None,
+                 size_hint_max=None,
+                 style=None,
+                 **kwargs):
+        super().__init__(x, y, width, height,
+                         size_hint=size_hint,
+                         size_hint_min=size_hint_min,
+                         size_hint_max=size_hint_max)
 
         # Set how fast the mouse scroll wheel will scroll text in the pane.
         # Measured in pixels per 'click'
-        if scroll_speed is not None:
-            self.scroll_speed = scroll_speed
-        else:
-            # If nothing, use font size
-            self.scroll_speed = font_size
+        self.scroll_speed = scroll_speed if scroll_speed is not None else font_size
 
         self.doc: AbstractDocument = pyglet.text.decode_text(text)
         self.doc.set_style(0, 12, dict(
@@ -611,7 +802,7 @@ class UITextArea(UIWidget):
     @text.setter
     def text(self, value):
         self.doc.text = value
-        self.rendered = False
+        self.enforce_full_render()
 
     @property
     def rect(self) -> _Rect:
@@ -620,7 +811,7 @@ class UITextArea(UIWidget):
     @rect.setter
     def rect(self, value):
         self._rect = _Rect(*value)
-        self.rendered = False
+        self.enforce_full_render()
 
         # Update Pyglet layout
         my_layout = self.layout
@@ -629,26 +820,38 @@ class UITextArea(UIWidget):
         my_layout.x, my_layout.y, my_layout.width, my_layout.height = 0, 0, self.width, self.height
         my_layout.end_update()
 
-    def render(self, surface: Surface, force=False):
-        if self.rendered and not force:
-            return
-        self.rendered = True
-
+    def do_render(self, surface: Surface):
+        self.prepare_render(surface)
         with surface.ctx.pyglet_rendering():
             self.layout.draw()
 
     def on_event(self, event: UIEvent):
-        super().on_event(event)
-
         if isinstance(event, UIMouseScrollEvent):
-            if _point_in_rect(event.x, event.y, *self.rect):
+            if self.rect.collide_with_point(event.x, event.y):
                 self.layout.view_y += event.scroll_y * self.scroll_speed
-                self.rendered = False
+                self.enforce_full_render()
+
+        if super().on_event(event):
+            return EVENT_HANDLED
 
 
 class UIInputText(UIWidget):
     """
     An input field the user can type text into.
+
+   :param x: center x of widget
+    :param y: center y of widget
+    :param width: width of widget
+    :param height: height of widget
+    :param text: Text to show
+    :param font_name: string or tuple of font names, to load
+    :param font_size: size of the text
+    :param text_color: color of the text
+    :param multiline: support for multiline
+    :param size_hint: Tuple of floats (0.0-1.0), how much space of the parent should be requested
+    :param size_hint_min: min width and height in pixel
+    :param size_hint_max: max width and height in pixel
+    :param style: not used
     """
 
     def __init__(self,
@@ -660,31 +863,48 @@ class UIInputText(UIWidget):
                  font_name=('Arial',),
                  font_size: float = 12,
                  text_color: arcade.Color = (0, 0, 0, 255),
-                 multiline=False
+                 multiline=False,
+                 size_hint=None,
+                 size_hint_min=None,
+                 size_hint_max=None,
+                 style=None,
+                 **kwargs
                  ):
-        super().__init__(x, y, width, height)
+        super().__init__(x, y, width, height,
+                         size_hint=size_hint,
+                         size_hint_min=size_hint_min,
+                         size_hint_max=size_hint_max)
 
         self._active = False
+        self._text_color = text_color
 
-        self.doc = pyglet.text.document.FormattedDocument()
-        self.doc = pyglet.text.decode_text(text)
-        self.doc.set_style(0, 12, dict(font_name=font_name,
-                                       font_size=font_size,
-                                       color=text_color))
+        self.doc: AbstractDocument = pyglet.text.decode_text(text)
+        self.doc.set_style(0, len(text), dict(font_name=font_name,
+                                              font_size=font_size,
+                                              color=text_color))
 
         self.layout = pyglet.text.layout.IncrementalTextLayout(self.doc, width, height, multiline=multiline)
         self.caret = pyglet.text.caret.Caret(self.layout, color=(0, 0, 0))
 
-    def on_event(self, event: UIEvent):
-        super().on_event(event)
-        self.rendered = False
-        self.parent.rendered = False  # TODO we could have a method to request enforced rendering
+        self._blink_state = self._get_caret_blink_state()
 
+    def _get_caret_blink_state(self):
+        return self.caret._visible and self._active and self.caret._blink_visible
+
+    def on_update(self, dt):
+        current_state = self._get_caret_blink_state()
+        if self._blink_state != current_state:
+            self._blink_state = current_state
+            self.enforce_full_render()
+
+    def on_event(self, event: UIEvent):
         # if not active, check to activate, return
         if not self._active and isinstance(event, UIMousePressEvent):
             if self.rect.collide_with_point(event.x, event.y):
                 self._active = True
+                self.enforce_full_render()
                 self.caret.on_activate()
+                self.caret.position = len(self.doc.text)
                 return
 
         # if active check to deactivate
@@ -694,6 +914,7 @@ class UIInputText(UIWidget):
                 self.caret.on_mouse_press(x, y, event.button, event.modifiers)
             else:
                 self._active = False
+                self.enforce_full_render()
                 self.caret.on_deactivate()
                 return
 
@@ -702,17 +923,25 @@ class UIInputText(UIWidget):
             # Act on events if active
             if isinstance(event, UITextEvent):
                 self.caret.on_text(event.text)
+                self.enforce_full_render()
             elif isinstance(event, UITextMotionEvent):
                 self.caret.on_text_motion(event.motion)
+                self.enforce_full_render()
             elif isinstance(event, UITextMotionSelectEvent):
                 self.caret.on_text_motion_select(event.selection)
+                self.enforce_full_render()
 
             if isinstance(event, UIMouseEvent) and self.rect.collide_with_point(event.x, event.y):
                 x, y = event.x - self.x, event.y - self.y
                 if isinstance(event, UIMouseDragEvent):
                     self.caret.on_mouse_drag(x, y, event.dx, event.dy, event.buttons, event.modifiers)
+                    self.enforce_full_render()
                 elif isinstance(event, UIMouseScrollEvent):
                     self.caret.on_mouse_scroll(x, y, event.scroll_x, event.scroll_y)
+                    self.enforce_full_render()
+
+        if super().on_event(event):
+            return EVENT_HANDLED
 
     @property
     def rect(self) -> _Rect:
@@ -720,20 +949,45 @@ class UIInputText(UIWidget):
 
     @rect.setter
     def rect(self, value):
-        self._rect = value
-        self.rendered = False
+        self._rect = _Rect(*value)
+        self.enforce_full_render()
 
         # Update Pyglet layout
         my_layout = self.layout
+        my_layout.begin_update()
         my_layout.x, my_layout.y, my_layout.width, my_layout.height = self.rect
+        my_layout.end_update()
 
-    def render(self, surface: Surface, force=False):
-        if self.rendered and not force:
-            return
-        self.rendered = True
+    @property
+    def text(self):
+        return self.doc.text
+
+    @text.setter
+    def text(self, value):
+        self.doc.text = value
+
+    def do_render(self, surface: Surface):
+        self.prepare_render(surface)
 
         with surface.ctx.pyglet_rendering():
             self.layout.draw()
+
+        if self._blink_state:
+            # FIXME Blinking is a dirty hack!
+            self.prepare_render(surface)
+            line = self.caret.line
+            if line is None:
+                line = self.layout.get_line_from_position(self.caret.position)
+                self.caret._ideal_line = None
+            else:
+                self.caret._ideal_line = line
+            x, y = self.layout.get_point_from_position(self.caret.position, line)
+            y += self.height
+
+            x -= self.layout.view_x
+            y -= self.layout.view_y
+            font = self.layout.document.get_font(max(0, self.caret.position - 1))
+            arcade.draw_line(x, y + font.descent, x, y + font.ascent, self._text_color, line_width=2)
 
 
 class UIFlatButton(UIInteractiveWidget):
@@ -745,7 +999,7 @@ class UIFlatButton(UIInteractiveWidget):
     :param float width: width of widget. Defaults to texture width if not specified.
     :param float height: height of widget. Defaults to texture height if not specified.
     :param str text: text to add to the button.
-    :param style:
+    :param style: Used to style the button
 
     """
 
@@ -755,15 +1009,20 @@ class UIFlatButton(UIInteractiveWidget):
                  width: float = 100,
                  height: float = 50,
                  text="",
-                 style=None):
-        super().__init__(x, y, width, height)
+                 size_hint=None,
+                 size_hint_min=None,
+                 size_hint_max=None,
+                 style=None,
+                 **kwargs):
+        super().__init__(x, y, width, height,
+                         size_hint=size_hint,
+                         size_hint_min=size_hint_min,
+                         size_hint_max=size_hint_max)
         self._text = text
         self._style = style or {}
 
-    def render(self, surface: Surface, force=False):
-        if self.rendered and not force:
-            return
-        self.rendered = True
+    def do_render(self, surface: Surface):
+        self.prepare_render(surface)
 
         # Render button
         font_size = self._style.get("font_size", 15)
@@ -776,7 +1035,7 @@ class UIFlatButton(UIInteractiveWidget):
             bg_color = self._style.get("bg_color_pressed", arcade.color.WHITE)
             border_color = self._style.get("border_color_pressed", arcade.color.WHITE)
             font_color = self._style.get("font_color_pressed", arcade.color.BLACK)
-        elif self.hover:
+        elif self.hovered:
             border_color = self._style.get("border_color_pressed", arcade.color.WHITE)
 
         # render BG
@@ -794,11 +1053,11 @@ class UIFlatButton(UIInteractiveWidget):
                 border_width=border_width)
 
         # render text
-        text_margin = 2
         if self.text:
             start_x = self.width // 2
             start_y = self.height // 2
 
+            text_margin = 2
             arcade.draw_text(
                 text=self.text,
                 start_x=start_x,
@@ -817,39 +1076,101 @@ class UIFlatButton(UIInteractiveWidget):
     @text.setter
     def text(self, value):
         self._text = value
-        self.rendered = False
+        self.trigger_render()
 
 
-class UIWrapper(UIWidget, UIWidgetParent):
+class UILayout(UIWidget, UIWidgetParent):
     """
-    Wraps a :class:`arcade.gui.UIWidget` and reserves space around it.
+    Base class for widgets, which position themselves or their children.
+
+    :param x: center x of widget
+    :param y: center y of widget
+    :param width: width of widget
+    :param height: height of widget
+    :param children: Child widgets of this group
+    :param size_hint: A hint for :class:`UILayout`, if this :class:`UIWidget` would like to grow
+    :param size_hint: Tuple of floats (0.0-1.0), how much space of the parent should be requested
+    :param size_hint_min: min width and height in pixel
+    :param size_hint_max: max width and height in pixel
+    :param style: not used
+    """
+
+    def __init__(self, x=0, y=0, width=100, height=100,
+                 children: Iterable[UIWidget] = tuple(),
+                 size_hint=None,
+                 size_hint_min=None,
+                 size_hint_max=None,
+                 style=None,
+                 **kwargs):
+        super().__init__(x, y, width, height,
+                         children=children,
+                         size_hint=size_hint,
+                         size_hint_min=size_hint_min,
+                         size_hint_max=size_hint_max)
+
+    def add(self, child: "UIWidget"):
+        super().add(child)
+        self.do_layout()
+
+    def remove(self, child: "UIWidget"):
+        super().remove(child)
+        self.do_layout()
+
+    def clear(self):
+        super().clear()
+        self.do_layout()
+
+    def do_layout(self):
+        """
+        Triggered by the UIManager before rendering, :class:`UILayout` s should place themselves and/or children.
+        Do layout will be triggered on children afterwards.
+
+        Use :meth:`UIWidget.trigger_render` to trigger a rendering before the next frame, this will happen automatically
+        if the position or size of this widget changed.
+        """
+
+    def _do_layout(self):
+        # do layout, detect changed rect
+        rect = self.rect
+        self.do_layout()
+        if rect != self.rect:
+            self.trigger_render()
+
+        # Continue do_layout within subtree
+        super()._do_layout()
+
+
+class UIWrapper(UILayout, UIWidgetParent):
+    """
+    Wraps a :class:`arcade.gui.UIWidget` and reserves space around it, exactly one child supported.
+
+    :param child: Single child of this wrapper
+    :param padding: space around (top, right, bottom, left)
+    :param size_hint: Tuple of floats (0.0-1.0), how much space of the parent should be requested
+    :param size_hint_min: min width and height in pixel
+    :param size_hint_max: max width and height in pixel
+    :param style: not used
     """
 
     def __init__(self,
                  *,
                  child: UIWidget,
                  padding=(0, 0, 0, 0),
-
-                 # Properties which might be used by layouts
-                 size_hint=None,  # in percentage
-                 # size_hint_min=None,  # in pixel
-                 # size_hint_max=None,  # in pixel
+                 size_hint=None,
+                 size_hint_min=None,
+                 size_hint_max=None,
+                 style=None,
                  ):
         """
         :param child: Child Widget which will be wrapped
         :param padding: Space between top, right, bottom, left
         """
-        if isinstance(child, UIAnchorWidget):
-            raise Exception("Wrapping PlaceWidget into a Wrapper is not supported")
-
-        self.child = child
-        child.parent = self
-        super().__init__(*child.rect, size_hint=size_hint)
-
         self._pad = padding
-
-    def remove(self, child: UIWidget):
-        self.parent.remove(self)
+        super().__init__(*child.rect,
+                         size_hint=size_hint,
+                         size_hint_min=size_hint_min,
+                         size_hint_max=size_hint_max,
+                         children=[child])
 
     @property
     def rect(self) -> _Rect:
@@ -864,37 +1185,29 @@ class UIWrapper(UIWidget, UIWidgetParent):
         x, y, w, h = value
         pt, pr, pb, pl = self._pad
         self.child.rect = _Rect(x + pl, y + pb, w - pl - pr, h - pb - pt)
-        self.rendered = False
 
     @property
-    def rendered(self):
-        return self.child.rendered
+    def child(self) -> UIWidget:
+        return self.children[0]
 
-    @rendered.setter
-    def rendered(self, value):
-        self.child.rendered = value
-
-    def on_update(self, dt):
-        self.child.on_update(dt)
-
-    def do_layout(self) -> bool:
-        return self.child.do_layout()
-
-    def on_event(self, event: UIEvent):
-        super().on_event(event)
-        self.child.dispatch_event("on_event", event)
-
-    def render(self, surface: Surface, force=False):
-        if self.rendered and not force:
-            return
-
-        surface.limit(*self.child.rect)
-        self.child.render(surface, force=force)
+    @child.setter
+    def child(self, value: UIWidget):
+        self.children[0] = value
 
 
 class UIAnchorWidget(UIWrapper):
     """
     Widget, which places itself relative to the parent.
+
+    :param child: Child of this wrapper
+    :param anchor_x: Which anchor to use for x axis (left, center, right)
+    :param align_x: offset for x value (- = left, + = right)
+    :param anchor_y: Which anchor to use for y axis (top, center, bottom)
+    :param align_x: offset for y value (- = down, + = up)
+    :param size_hint: Tuple of floats (0.0-1.0), how much space of the parent should be requested
+    :param size_hint_min: min width and height in pixel
+    :param size_hint_max: max width and height in pixel
+    :param style: not used
     """
 
     def __init__(self,
@@ -904,22 +1217,24 @@ class UIAnchorWidget(UIWrapper):
                  align_x: float = 0,
                  anchor_y: str = "center",
                  align_y: float = 0,
-                 # Properties which might be used by layouts
-                 size_hint=None,  # in percentage
-                 # size_hint_min=None,  # in pixel
-                 # size_hint_max=None,  # in pixel
+                 size_hint=None,
+                 size_hint_min=None,
+                 size_hint_max=None,
+                 style=None,
+                 **kwargs
                  ):
-        super().__init__(child=child, size_hint=size_hint)
         self.anchor_x = anchor_x
         self.anchor_y = anchor_y
         self.align_x = align_x
         self.align_y = align_y
+        super().__init__(child=child,
+                         size_hint=size_hint,
+                         size_hint_min=size_hint_min,
+                         size_hint_max=size_hint_max)
 
     def do_layout(self):
-        request_rerender = super().do_layout()
-
         rect = self.rect
-        parent_rect = self.parent.rect
+        parent_rect = self.parent.rect if self.parent else _Rect(0, 0, *arcade.get_window().get_size())
 
         anchor_x = "center_x" if self.anchor_x == "center" else self.anchor_x
         own_anchor_x_value = getattr(rect, anchor_x)
@@ -933,14 +1248,33 @@ class UIAnchorWidget(UIWrapper):
 
         if diff_x or diff_y:
             self.rect = self.rect.move(diff_x, diff_y)
-            request_rerender = True
-
-        return request_rerender
 
 
 class UISpace(UIWidget):
-    def __init__(self, x=0, y=0, width=10, height=10, color=(0, 0, 0, 0)):
-        super().__init__(x, y, width, height)
+    """
+    Widget reserving space, can also have a background color.
+
+    :param x: center x of widget
+    :param y: center y of widget
+    :param width: width of widget
+    :param height: height of widget
+    :param color: Color for widget area
+    :param size_hint: Tuple of floats (0.0-1.0), how much space of the parent should be requested
+    :param size_hint_min: min width and height in pixel
+    :param size_hint_max: max width and height in pixel
+    :param style: not used
+    """
+
+    def __init__(self, x=0, y=0, width=100, height=100, color=(0, 0, 0, 0),
+                 size_hint=None,
+                 size_hint_min=None,
+                 size_hint_max=None,
+                 style=None,
+                 **kwargs):
+        super().__init__(x, y, width, height,
+                         size_hint=size_hint,
+                         size_hint_min=size_hint_min,
+                         size_hint_max=size_hint_max)
         self._color = color
 
     @property
@@ -950,70 +1284,104 @@ class UISpace(UIWidget):
     @color.setter
     def color(self, value):
         self._color = value
-        self.rendered = False
+        self.trigger_render()
 
-    def render(self, surface: Surface, force=False):
-        if self.rendered and not force:
-            return
-
+    def do_render(self, surface: Surface):
+        self.prepare_render(surface)
         surface.clear(self._color)
 
 
 class UIBorder(UIWrapper):
     """
     Wraps a Widget with a border of given color.
+
+
+    :param child: Child of this wrapper
+    :param border_width: Width of the border
+    :param border_color: Color of the border
+    :param size_hint: Tuple of floats (0.0-1.0), how much space of the parent should be requested
+    :param size_hint_min: min width and height in pixel
+    :param size_hint_max: max width and height in pixel
+    :param style: not used
     """
 
-    def __init__(self, child: UIWidget, border_width=2, border_color=(0, 0, 0, 255)):
+    def __init__(self, child: UIWidget, border_width=2, border_color=(0, 0, 0, 255),
+                 size_hint=None,
+                 size_hint_min=None,
+                 size_hint_max=None,
+                 style=None,
+                 **kwargs):
         super().__init__(
             child=child,
-            padding=(border_width, border_width, border_width, border_width)
+            padding=(border_width, border_width, border_width, border_width),
+            size_hint=size_hint,
+            size_hint_min=size_hint_min,
+            size_hint_max=size_hint_max
         )
         self._border_color = border_color
         self._border_width = border_width
 
-    def render(self, surface: Surface, force=False):
-        if self.rendered and not force:
-            return
-
+    def do_render(self, surface: Surface):
+        self.prepare_render(surface)
         arcade.draw_xywh_rectangle_outline(0, 0, self.width, self.height,
                                            color=self._border_color,
                                            border_width=self._border_width)
-        surface.limit(*self.child.rect)
-        self.child.render(surface, force=True)
 
 
 class UITexturePane(UIWrapper):
     """
     This wrapper draws a background before child widget is rendered
 
-    :param child: Child of this widget
+    :param child: Child of this wrapper
     :param tex: Texture to use as background
     :param padding: Space between the outer border of this widget and the child
-    :param size_hint: A hint for :class:`UILayout`, if this :class:`UIWidget` would like to grow (default: (1, 1) -> full size of parent)
-
+    :param size_hint: Tuple of floats (0.0-1.0), how much space of the parent should be requested
+    :param size_hint_min: min width and height in pixel
+    :param size_hint_max: max width and height in pixel
+    :param style: not used
     """
 
-    def __init__(self, child: UIWidget, tex: Texture, padding=(0, 0, 0, 0), size_hint=(1, 1)):
+    def __init__(self, child: UIWidget,
+                 tex: Texture,
+                 padding=(0, 0, 0, 0),
+                 size_hint=(1, 1),
+                 size_hint_min=None,
+                 size_hint_max=None,
+                 style=None,
+                 **kwargs):
         super().__init__(
             child=child,
             padding=padding,
-            size_hint=size_hint
+            size_hint=size_hint,
+            size_hint_min=size_hint_min,
+            size_hint_max=size_hint_max
         )
         self._tex = tex
 
-    def render(self, surface: Surface, force=False):
-        if self.rendered and not force:
-            return
+    def do_render(self, surface: Surface):
+        self.prepare_render(surface)
         surface.draw_texture(0, 0, self.width, self.height, tex=self._tex)
-        surface.limit(*self.child.rect)
-        self.child.render(surface, force=True)
 
 
 class UIPadding(UIWrapper):
-    """Wraps a Widget and applies padding"""
+    """Wraps a Widget and applies padding.
 
-    def __init__(self, child: UIWidget, padding=(0, 0, 0, 0), bg_color=None, size_hint=(1, 1)):
+    :param child: Child of this wrapper
+    :param bg_color: background color
+    :param padding: Space between the outer border of this widget and the child
+    :param size_hint: Tuple of floats (0.0-1.0), how much space of the parent should be requested
+    :param size_hint_min: min width and height in pixel
+    :param size_hint_max: max width and height in pixel
+    :param style: not used
+    """
+
+    def __init__(self, child: UIWidget,
+                 padding=(0, 0, 0, 0),
+                 bg_color=None,
+                 size_hint=(1, 1),
+                 size_hint_min=None,
+                 size_hint_max=None,
+                 **kwargs):
         """
         :arg padding: Padding - top, right, bottom, left
         :param size_hint: A hint for :class:`UILayout`, if this :class:`UIWidget` would like to grow (default: (1, 1) -> full size of parent)
@@ -1021,89 +1389,17 @@ class UIPadding(UIWrapper):
         super().__init__(
             child=child,
             padding=padding,
-            size_hint=size_hint
+            size_hint=size_hint,
+            size_hint_min=size_hint_min,
+            size_hint_max=size_hint_max
         )
         self._bg_color = bg_color
 
-    def render(self, surface: Surface, force=False):
-        if self.rendered and not force:
-            return
-
+    def do_render(self, surface: Surface):
+        self.prepare_render(surface)
         if self._bg_color:
             # clear with bg color if set
             surface.clear(self._bg_color)
-        surface.limit(*self.child.rect)
-        self.child.render(surface, force=True)
-
-
-class UILayout(UIWidget, UIWidgetParent):
-    """
-    Group of Widgets
-
-    :param x:
-    :param y:
-    :param width:
-    :param height:
-    :param children: Child widgets of this group
-    :param size_hint: A hint for :class:`UILayout`, if this :class:`UIWidget` would like to grow
-    """
-
-    def __init__(self, x=0, y=0, width=100, height=100, children: Iterable[UIWidget] = tuple(), size_hint=None):
-        super().__init__(x, y, width, height)
-        self._children = list(children)
-        self._children_modified = True
-
-        for child in self._children:
-            child.parent = self
-
-    @property
-    def rect(self) -> _Rect:
-        return self._rect
-
-    @rect.setter
-    def rect(self, value):
-        # Move all children
-        self._rect = value
-        self.rendered = False
-
-        # we were moved or resized, so do layout again
-        self.do_layout()
-
-    def add(self, child: UIWidget):
-        self._children.append(child)
-        self._children_modified = True
-
-        child.parent = self
-
-    def remove(self, child: UIWidget):
-        self._children.remove(child)
-        self._children_modified = True
-
-        child.parent = None
-
-    def __contains__(self, item):
-        return item in self._children
-
-    def on_update(self, dt):
-        for child in self._children:
-            child.on_update(dt)
-
-    def on_event(self, event: UIEvent):
-        super().on_event(event)
-        for child in self._children:
-            child.dispatch_ui_event(event)
-
-    def render(self, surface: Surface, force=False):
-        for child in self._children:
-            surface.limit(*child.rect)
-            child.render(surface, force=force)
-
-    def do_layout(self) -> bool:
-        result = False
-        for child in self._children:
-            result |= bool(child.do_layout())
-
-        return result
 
 
 class UIBoxLayout(UILayout):
@@ -1114,71 +1410,61 @@ class UIBoxLayout(UILayout):
     :param x: x coordinate of bottom left
     :param y: x coordinate of bottom left
     :param vertical: Layout children vertical (True) or horizontal (False)
-    :param align: Align children in orthogonal direction
+    :param align: Align children in orthogonal direction (x: left, center, right / y: top, center, bottom)
     :param children: Initial children, more can be added
     :param size_hint: A hint for :class:`UILayout`, if this :class:`UIWidget` would like to grow
     """
 
-    def __init__(self, x=0, y=0, vertical=True, align="center", children: Iterable[UIWidget] = tuple(), size_hint=None):
-        super().__init__(x=x, y=y, width=0, height=0, children=children, size_hint=size_hint)
+    def __init__(self, x=0, y=0,
+                 vertical=True,
+                 align="center",
+                 children: Iterable[UIWidget] = tuple(),
+                 size_hint=None,
+                 size_hint_min=None,
+                 size_hint_max=None,
+                 style=None,
+                 **kwargs):
         self.align = align
         self.vertical = vertical
+        super().__init__(x=x,
+                         y=y,
+                         width=0,
+                         height=0,
+                         children=children,
+                         size_hint=size_hint,
+                         size_hint_min=size_hint_min,
+                         size_hint_max=size_hint_max)
 
     def do_layout(self):
-        child_requests_rerender = super().do_layout()
-
-        # TODO use alignment
+        # TODO support self.align and self.spacing
         initial_top = self.top
         start_y = self.top
         start_x = self.left
 
+        # min_height = sum(map(attrgetter("height"), self.children))
+        # min_width = sum(map(attrgetter("width"), self.children))
+
+        if not self.children:
+            self.rect = _Rect(self.left, self.bottom, 0, 0)
+            return
+
         if self.vertical:
-            new_height = sum(child.height for child in self._children)
-            new_width = max(child.width for child in self._children)
+            new_height = sum(child.height for child in self.children)
+            new_width = max(child.width for child in self.children)
             center_x = start_x + new_width // 2
-            for child in self._children:
-                child.rect = child.rect.align_top(start_y).align_center_x(center_x)
+            for child in self.children:
+                new_rect = child.rect.align_top(start_y).align_center_x(center_x)
+                if new_rect != child.rect:
+                    child.rect = new_rect
                 start_y -= child.height
         else:
-            new_height = max(child.height for child in self._children)
-            new_width = sum(child.width for child in self._children)
+            new_height = max(child.height for child in self.children)
+            new_width = sum(child.width for child in self.children)
             center_y = start_y - new_height // 2
-            for child in self._children:
-                child.rect = child.rect.align_left(start_x).align_center_y(center_y)
+            for child in self.children:
+                new_rect = child.rect.align_left(start_x).align_center_y(center_y)
+                if new_rect != child.rect:
+                    child.rect = new_rect
                 start_x += child.width
 
         self._rect = _Rect(self.left, self.bottom, new_width, new_height).align_top(initial_top)
-
-        if self._children_modified:
-            self._children_modified = False
-            # Requires rerender
-            return True
-
-        return child_requests_rerender
-
-
-class UIDraggableMixin(UIWidget):
-    """
-    UIDraggableMixin can be used to make any :class:`UIWidget` draggable.
-
-    Example, create a draggable Frame, with a background, usefull for window like constructs:
-
-        class DraggablePane(UITexturePane, UIDraggableMixin):
-            ...
-
-    This does overwrite :class:`UILayout` behaviour which position themselves, like :class:`UIAnchorWidget`
-
-    """
-
-    def do_layout(self) -> bool:
-        # Preserve top left alignment, this overwrites self placing behaviour like :class:`UIAnchorWidget`
-        rect = self.rect
-        rerender = super(UIDraggableMixin, self).do_layout()
-        self.rect = self.rect.align_top(rect.top).align_left(rect.left)
-
-        return rerender
-
-    def on_event(self, event):
-        super().on_event(event)
-        if isinstance(event, UIMouseDragEvent) and self.rect.collide_with_point(event.x, event.y):
-            self.rect = self.rect.move(event.dx, event.dy)

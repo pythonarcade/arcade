@@ -14,7 +14,7 @@ def test_hover_on_widget(uimanager):
     uimanager.move_mouse(widget.center_x, widget.center_y)
 
     # THEN
-    assert widget.hover is True
+    assert widget.hovered is True
 
 
 def test_overlapping_hover_on_widget(uimanager):
@@ -28,8 +28,8 @@ def test_overlapping_hover_on_widget(uimanager):
     uimanager.move_mouse(widget1.center_x, widget1.center_y)
 
     # THEN
-    assert widget1.hover is True
-    assert widget2.hover is True
+    assert widget1.hovered is True
+    assert widget2.hovered is True
 
 
 def test_click_on_widget(uimanager):

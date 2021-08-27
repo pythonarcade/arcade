@@ -1,4 +1,4 @@
-from arcade.gui.widgets import UIAnchorWidget, UIWidget, UIBoxLayout, UIDummy
+from arcade.gui.widgets import UIAnchorWidget, UIBoxLayout, UIDummy
 
 
 def test_place_widget():
@@ -12,7 +12,7 @@ def test_place_widget():
     )
     placed_widget.parent = UIDummy(width=500, height=500)
 
-    placed_widget.do_layout()
+    placed_widget._do_layout()
 
     assert placed_widget.rect == (200, 280, 100, 200)
 
@@ -30,6 +30,6 @@ def test_place_box_widget():
     )
     placed_widget.parent = UIDummy(width=500, height=500)
 
-    placed_widget.do_layout()
+    placed_widget._do_layout()
 
     assert placed_widget.rect == (200, 280, 100, 200)
