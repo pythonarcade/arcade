@@ -185,6 +185,15 @@ and the documentation.
    * :func:`arcade.get_three_color_float` Returns colors as RGB float with numbers 0.0-1.1 for each color
    * :func:`arcade.get_four_color_float`  Returns colors as RGBA float with numbers 0.0-1.1 for each color\
 
+* Better PyInstaller Support
+
+  Previously our PyInstaller hook only fully functioned on Windows, with a bit of functionality on Linux.
+  Mac was just completely unsupported and would raise an UnimplementedError if you tried.
+
+  Now we have full out of the box support for PyInstaller with Windows, Mac, and Linux.
+
+  See :ref:`bundle_into_redistributable` for an example of how to use it.
+
 * Sound
 
   The sound API remains unchanged, however general stability of the sound system has been greatly improved via
