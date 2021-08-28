@@ -2,7 +2,7 @@ Sphinx==4.1.2
 sphinx-copybutton==0.4.0
 sphinx-rtd-theme==0.5.2
 sphinx-sitemap==2.2.0
-pyglet==2.0.dev6
+pyglet==2.0.dev7
 dirsync==2.2.5
 pytiled-parser==1.5.2
 pymunk==6.1.0
