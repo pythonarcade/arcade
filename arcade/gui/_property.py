@@ -1,6 +1,5 @@
 import warnings
-from _weakrefset import WeakSet
-from weakref import WeakKeyDictionary
+from weakref import WeakKeyDictionary, WeakSet, ref
 
 
 class _Obs:
@@ -18,34 +17,37 @@ class _Property:
     """
     An observable property which triggers observers when changed.
     """
-    __slots__ = "name", "default", "obs"
+    __slots__ = "name", "default_factory", "obs"
 
     name: str
 
-    def __init__(self, default=None):
-        self.default = default
+    def __init__(self, default=None, default_factory=None):
+
+        if default_factory is None:
+            default_factory = lambda prop, instance: default
+
+        self.default_factory = default_factory
         self.obs = WeakKeyDictionary()
-
-    def __get__(self, instance, owner):
-        if instance is None:
-            return self
-
-        obs = self._get_obs(instance)
-        return obs.value
-
-    def __set_name__(self, owner, name):
-        self.name = name
 
     def _get_obs(self, instance) -> _Obs:
         obs = self.obs.get(instance)
         if obs is None:
             obs = _Obs()
+            obs.value = self.default_factory(self, instance)
             self.obs[instance] = obs
         return obs
 
-    def __set__(self, instance, value):
+    def get(self, instance):
+        obs = self._get_obs(instance)
+        return obs.value
+
+    def set(self, instance, value):
         obs = self._get_obs(instance)
         obs.value = value
+        self.dispatch(instance, value)
+
+    def dispatch(self, instance, value):
+        obs = self._get_obs(instance)
         for listener in obs.listeners:
             try:
                 listener()
@@ -54,6 +56,17 @@ class _Property:
 
     def bind(self, instance, callback):
         self._get_obs(instance).listeners.add(callback)
+
+    def __set_name__(self, owner, name):
+        self.name = name
+
+    def __get__(self, instance, owner):
+        if instance is None:
+            return self
+        return self.get(instance)
+
+    def __set__(self, instance, value):
+        self.set(instance, value)
 
 
 def _bind(instance, property, callback):
@@ -83,76 +96,132 @@ def _bind(instance, property, callback):
         prop.bind(instance, callback)
 
 
-# class ObservableList(list):
-#     # Internal class to observe changes inside a native python list.
-#     def __init__(self, *largs):
-#         self.prop = largs[0]
-#         self.obj = ref(largs[1])
-#         self.last_op = '', None
-#         super(ObservableList, self).__init__(*largs[2:])
-#
-#     def __setitem__(self, key, value):
-#         list.__setitem__(self, key, value)
-#         self.last_op = '__setitem__', key
-#         observable_list_dispatch(self)
-#
-#     def __delitem__(self, key):
-#         list.__delitem__(self, key)
-#         self.last_op = '__delitem__', key
-#         observable_list_dispatch(self)
-#
-#     def __setslice__(self, b, c, v):
-#         list.__setslice__(self, b, c, v)
-#         self.last_op = '__setslice__', (b, c)
-#         observable_list_dispatch(self)
-#
-#     def __delslice__(self, b, c):
-#         list.__delslice__(self, b, c)
-#         self.last_op = '__delslice__', (b, c)
-#         observable_list_dispatch(self)
-#
-#     def __iadd__(self, *largs):
-#         list.__iadd__(self, *largs)
-#         self.last_op = '__iadd__', None
-#         observable_list_dispatch(self)
-#
-#     def __imul__(self, b):
-#         list.__imul__(self, b)
-#         self.last_op = '__imul__'. b
-#         observable_list_dispatch(self)
-#
-#     def append(self, *largs):
-#         list.append(self, *largs)
-#         self.last_op = 'append', None
-#         observable_list_dispatch(self)
-#
-#     def remove(self, *largs):
-#         list.remove(self, *largs)
-#         self.last_op = 'remove', None
-#         observable_list_dispatch(self)
-#
-#     def insert(self, i, x):
-#         list.insert(self, i, x)
-#         self.last_op = 'insert', i
-#         observable_list_dispatch(self)
-#
-#     def pop(self, *largs):
-#         cdef object result = list.pop(self, *largs)
-#         self.last_op = 'pop', largs
-#         observable_list_dispatch(self)
-#         return result
-#
-#     def extend(self, *largs):
-#         list.extend(self, *largs)
-#         self.last_op = 'extend', None
-#         observable_list_dispatch(self)
-#
-#     def sort(self, *largs, **kwargs):
-#         list.sort(self, *largs, **kwargs)
-#         self.last_op = 'sort', None
-#         observable_list_dispatch(self)
-#
-#     def reverse(self, *largs):
-#         list.reverse(self, *largs)
-#         self.last_op = 'reverse', None
-#         observable_list_dispatch(self)
+class _ObservableDict(dict):
+    # Internal class to observe changes inside a native python dict.
+    def __init__(self, prop: _Property, instance, *largs):
+        self.prop: _Property = prop
+        self.obj = ref(instance)
+        super().__init__(*largs)
+
+    def dispatch(self):
+        self.prop.dispatch(self.obj(), self)
+
+    def __setitem__(self, key, value):
+        dict.__setitem__(self, key, value)
+        self.dispatch()
+
+    def __delitem__(self, key):
+        dict.__delitem__(self, key)
+        self.dispatch()
+
+    def clear(self):
+        dict.clear(self)
+        self.dispatch()
+
+    def pop(self, *largs):
+        result = dict.pop(self, *largs)
+        self.dispatch()
+        return result
+
+    def popitem(self):
+        result = dict.popitem(self)
+        self.dispatch()
+        return result
+
+    def setdefault(self, *largs):
+        dict.setdefault(self, *largs)
+        self.dispatch()
+
+    def update(self, *largs):
+        dict.update(self, *largs)
+        self.dispatch()
+
+
+class _DictProperty(_Property):
+    """
+    Property that represents a dict.
+    Only dict are allowed. Any other classes are forbidden.
+    """
+
+    def __init__(self):
+        super().__init__(default_factory=_ObservableDict)
+
+    def set(self, instance, value: dict):
+        value = _ObservableDict(self, instance, value)
+        super().set(instance, value)
+
+
+class _ObservableList(list):
+    # Internal class to observe changes inside a native python list.
+    def __init__(self, prop: _Property, instance, *largs):
+        self.prop: _Property = prop
+        self.obj = ref(instance)
+        super().__init__(*largs)
+
+    def dispatch(self):
+        self.prop.dispatch(self.obj(), self)
+
+    def __setitem__(self, key, value):
+        list.__setitem__(self, key, value)
+        self.dispatch()
+
+    def __delitem__(self, key):
+        list.__delitem__(self, key)
+        self.dispatch()
+
+    def __iadd__(self, *largs):
+        list.__iadd__(self, *largs)
+        self.dispatch()
+        return self
+
+    def __imul__(self, *largs):
+        list.__imul__(self, *largs)
+        self.dispatch()
+        return self
+
+    def append(self, *largs):
+        list.append(self, *largs)
+        self.dispatch()
+
+    def clear(self):
+        list.clear(self)
+        self.dispatch()
+
+    def remove(self, *largs):
+        list.remove(self, *largs)
+        self.dispatch()
+
+    def insert(self, *largs):
+        list.insert(self, *largs)
+        self.dispatch()
+
+    def pop(self, *largs):
+        result = list.pop(self, *largs)
+        self.dispatch()
+        return result
+
+    def extend(self, *largs):
+        list.extend(self, *largs)
+        self.dispatch()
+
+    def sort(self, **kwargs):
+        list.sort(self, **kwargs)
+        self.dispatch()
+
+    def reverse(self):
+        list.reverse(self)
+        self.dispatch()
+
+
+class _ListProperty(_Property):
+    """
+    Property that represents a list.
+    Only list are allowed. Any other classes are forbidden.
+    """
+
+    def __init__(self):
+        super().__init__(default_factory=_ObservableList)
+
+    def set(self, instance, value: dict):
+        value = _ObservableList(self, instance, value)
+        super().set(instance, value)
