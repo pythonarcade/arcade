@@ -1,6 +1,7 @@
 import gc
+from typing import Dict
 
-from arcade.gui._property import _Property, _bind
+from arcade.gui._property import _Property, _bind, _DictProperty, _ObservableDict
 
 
 class MyObject:
