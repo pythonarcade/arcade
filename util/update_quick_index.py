@@ -66,6 +66,7 @@ titles = {
     'gui/surface.py': ['GUI', 'gui.rst'],
     'gui/ui_manager.py': ['GUI', 'gui.rst'],
     'gui/mixins.py': ['GUI', 'gui.rst'],
+    'gui/_property.py': ['GUI', 'gui.rst'],
     'gui/widgets.py': ['GUI Widgets', 'gui_widgets.rst'],
 
     'events/__init__.py': ['GUI Utility Functions', 'gui_utility.rst'],
