@@ -1,9 +1,10 @@
-.. _gui_concepts:
 
 .. py:module:: arcade.gui
 
-GUI Concept
------------
+.. _gui_concepts:
+
+GUI Concepts
+------------
 
 GUI elements are represented as instances of :class:`UIWidget`. The GUI is structured like a tree, every widget
 can have other widgets as children.
@@ -67,7 +68,7 @@ like borders or space around.
 
 
 Algorithm (WIP, not fully implemented)
-...............
+......................................
 
 :class:`UIManager` triggers the layout and render process right before the actual frame draw.
 This opens the possibility, to adjust to multiple changes only ones.
