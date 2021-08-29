@@ -317,6 +317,9 @@ class UIWidget(EventDispatcher, ABC):
         self._rect = value
         self.trigger_full_render()
 
+    def scale(self, factor):
+        self.rect = self.rect.scale(factor)
+
     @property
     def x(self):
         return self.rect.x
@@ -591,7 +594,7 @@ class UITextureButton(UIInteractiveWidget):
                          size_hint_max=size_hint_max)
 
         self._tex = texture
-        self._tex_hover = texture_hovered
+        self._tex_hovered = texture_hovered
         self._tex_pressed = texture_pressed
         self._style = style or {}
         self._text = text
@@ -605,14 +608,41 @@ class UITextureButton(UIInteractiveWidget):
         self._text = value
         self.trigger_render()
 
+    @property
+    def texture(self):
+        return self._tex
+
+    @texture.setter
+    def texture(self, value: Texture):
+        self._tex = value
+        self.trigger_render()
+
+    @property
+    def texture_hovered(self):
+        return self._tex_hovered
+
+    @texture_hovered.setter
+    def texture_hovered(self, value: Texture):
+        self._tex_hovered = value
+        self.trigger_render()
+
+    @property
+    def texture_pressed(self):
+        return self._tex
+
+    @texture_pressed.setter
+    def texture_pressed(self, value: Texture):
+        self._tex_pressed = value
+        self.trigger_render()
+
     def do_render(self, surface: Surface):
         self.prepare_render(surface)
 
         tex = self._tex
         if self.pressed and self._tex_pressed:
             tex = self._tex_pressed
-        elif self.hovered and self._tex_hover:
-            tex = self._tex_hover
+        elif self.hovered and self._tex_hovered:
+            tex = self._tex_hovered
 
         surface.draw_texture(0, 0, self.width, self.height, tex)
 
