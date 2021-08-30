@@ -213,7 +213,6 @@ class Program:
             return
 
         gl.glDeleteProgram(prog_id)
-
         ctx.stats.decr("program")
 
     def __getitem__(self, item) -> Union[Uniform, UniformBlock]:

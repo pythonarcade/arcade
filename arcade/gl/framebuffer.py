@@ -1,5 +1,6 @@
 from ctypes import c_int
-from typing import Tuple, List, Union, TYPE_CHECKING
+from contextlib import contextmanager
+from typing import Tuple, List, TYPE_CHECKING
 import weakref
 
 
@@ -64,10 +65,10 @@ class Framebuffer:
         :param List[arcade.gl.Texture] color_attachments: List of color attachments.
         :param arcade.gl.Texture depth_attachment: A depth attachment (optional)
         """
+        self._ctx = ctx
         if not color_attachments:
             raise ValueError("Framebuffer must at least have one color attachment")
 
-        self._ctx = ctx
         self._color_attachments = (
             color_attachments
             if isinstance(color_attachments, list)
@@ -86,18 +87,7 @@ class Framebuffer:
         # Ensure all attachments have the same size.
         # OpenGL do actually support different sizes,
         # but let's keep this simple with high compatibility.
-        expected_size = (
-            self._color_attachments[0]
-            if self._color_attachments
-            else self._depth_attachment
-        ).size
-        for layer in [*self._color_attachments, self._depth_attachment]:
-            if layer and layer.size != expected_size:
-                raise ValueError(
-                    "All framebuffer attachments should have the same size"
-                )
-
-        self._width, self._height = expected_size
+        self._width, self._height = self._detect_size()
         self._viewport = 0, 0, self._width, self._height
 
         # Attach textures to it
@@ -279,6 +269,20 @@ class Framebuffer:
     def __exit__(self, exc_type, exc_val, exc_tb):
         self._prev_fbo.use()
 
+    @contextmanager
+    def activate(self):
+        """Context manager for binding the framebuffer.
+
+        Unlike the default context manager in this class
+        this support nested framebuffer binding.
+        """
+        prev_fbo = self._ctx.active_framebuffer
+        try:
+            self.use()
+            yield self
+        finally:
+            prev_fbo.use()
+
     def use(self, *, force: bool = False):
         """Bind the framebuffer making it the target of all redering commands
         
@@ -319,21 +323,24 @@ class Framebuffer:
             # Clear the framebuffer using arcade's colors (not normalized)
             fb.clear(color=arcade.color.WHITE)
 
+        If the background color is an ``RGB`` value instead of ``RGBA```
+        we assume alpha value 255.
+
         :param tuple color: A 3 or 4 component tuple containing the color
         :param float depth: Value to clear the depth buffer (unused)
         :param bool normalized: If the color values are normalized or not
         """
-        with self:
+        with self.activate():
             if normalized:
                 # If the colors are already normalized we can pass them right in
                 if len(color) == 3:
-                    gl.glClearColor(*color, 0.0)
+                    gl.glClearColor(*color, 1.0)
                 else:
                     gl.glClearColor(*color)
             else:
                 # OpenGL wants normalized colors (0.0 -> 1.0)
                 if len(color) == 3:
-                    gl.glClearColor(color[0] / 255, color[1] / 255, color[2] / 255, 0.0)
+                    gl.glClearColor(color[0] / 255, color[1] / 255, color[2] / 255, 1.0)
                 else:
                     gl.glClearColor(
                         color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255
@@ -347,7 +354,14 @@ class Framebuffer:
     def read(
         self, *, viewport=None, components=3, attachment=0, dtype="f1"
     ) -> bytearray:
-        """Read framebuffer pixels"""
+        """
+        Read framebuffer pixels
+        
+        :param viewport Tuple[int,int,int,int]: The x, y, with, height to read
+        :param int attachment: The attachment id to read from
+        :param str dtype: The data type to read
+        :return: pixel data as a bytearray
+        """
         # TODO: use texture attachment info to determine read format?
         try:
             frmt = pixel_formats[dtype]
@@ -359,11 +373,22 @@ class Framebuffer:
         with self:
             # Configure attachment to read from
             # gl.glReadBuffer(gl.GL_COLOR_ATTACHMENT0 + attachment)
-            x, y, width, height = 0, 0, self._width, self._height
+            if viewport:
+                x, y, width, height = viewport
+            else:
+                x, y, width, height = 0, 0, self._width, self._height
             data = (gl.GLubyte * (components * width * height))(0)
             gl.glReadPixels(x, y, width, height, base_format, pixel_type, data)
 
         return bytearray(data)
+
+    def resize(self):
+        """
+        Detects size changes in attachments.
+        This will reset the viewport to ``0, 0, width, height``.
+        """
+        self._width, self._height = self._detect_size()
+        self.viewport = 0, 0, self.width, self._height
 
     def delete(self):
         """
@@ -385,6 +410,20 @@ class Framebuffer:
 
         gl.glDeleteFramebuffers(1, framebuffer_id)
         ctx.stats.decr("framebuffer")
+
+    def _detect_size(self) -> Tuple[int, int]:
+        """Detect the size of the framebuffer based on the attachments"""
+        expected_size = (
+            self._color_attachments[0]
+            if self._color_attachments
+            else self._depth_attachment
+        ).size
+        for layer in [*self._color_attachments, self._depth_attachment]:
+            if layer and layer.size != expected_size:
+                raise ValueError(
+                    "All framebuffer attachments should have the same size"
+                )
+        return expected_size
 
     @staticmethod
     def _check_completeness() -> None:

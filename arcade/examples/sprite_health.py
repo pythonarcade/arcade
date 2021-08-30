@@ -1,7 +1,7 @@
 """
 Sprite Hit Points and Health Bars
 
-Artwork from http://kenney.nl
+Artwork from https://kenney.nl
 
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.sprite_health
@@ -68,6 +68,7 @@ class SpriteWithHealth(arcade.Sprite):
                                      height=HEALTHBAR_HEIGHT,
                                      color=arcade.color.GREEN)
 
+
 class MyGame(arcade.Window):
     """ Main application class. """
 
@@ -108,7 +109,8 @@ class MyGame(arcade.Window):
         self.score = 0
 
         # Image from kenney.nl
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", SPRITE_SCALING_PLAYER)
+        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
+                                           SPRITE_SCALING_PLAYER)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 70
         self.player_list.append(self.player_sprite)

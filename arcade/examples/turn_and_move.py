@@ -1,5 +1,7 @@
 """
-Turn and Move Example
+Turn and Move Example.
+
+Right-click to cause the tank to move to that point.
 """
 
 

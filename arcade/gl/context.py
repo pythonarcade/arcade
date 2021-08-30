@@ -1,8 +1,9 @@
+from contextlib import contextmanager
 from ctypes import c_int, c_char_p, cast, c_float
 from collections import deque
 import logging
 import weakref
-from typing import Any, Dict, List, Tuple, Union, Sequence, Set
+from typing import Any, Deque, Dict, List, Tuple, Union, Sequence, Set
 
 import pyglet
 from pyglet.window import Window
@@ -150,6 +151,9 @@ class Context:
         self.limits = Limits(self)
         self._gl_version = (self.limits.MAJOR_VERSION, self.limits.MINOR_VERSION)
         Context.activate(self)
+        # Texture unit we use when doing operations on textures to avoid
+        # affecting currently bound textures in the first units
+        self.default_texture_unit: int = self.limits.MAX_TEXTURE_IMAGE_UNITS - 1
 
         # Detect the default framebuffer
         self._screen = DefaultFrameBuffer(self)
@@ -181,7 +185,7 @@ class Context:
         self._gc_mode = "auto"
         self.gc_mode = gc_mode
         #: Collected objects to gc when gc_mode is "context_gc"
-        self.objects = deque()
+        self.objects: Deque[Any] = deque()
 
     @property
     def window(self) -> Window:
@@ -275,7 +279,7 @@ class Context:
         """Mark a context as the currently active one"""
         cls.active = ctx
 
-    def enable(self, *args):
+    def enable(self, *flags):
         """
         Enables one or more context flags::
 
@@ -284,9 +288,9 @@ class Context:
             # Multiple flags
             ctx.enable(ctx.DEPTH_TEST, ctx.CULL_FACE)
         """
-        self._flags.update(args)
+        self._flags.update(flags)
 
-        for flag in args:
+        for flag in flags:
             gl.glEnable(flag)
 
     def enable_only(self, *args):
@@ -323,6 +327,36 @@ class Context:
             gl.glEnable(self.PROGRAM_POINT_SIZE)
         else:
             gl.glDisable(self.PROGRAM_POINT_SIZE)
+
+    @contextmanager
+    def enabled(self, *flags):
+        """
+        Temporarily change enabled flags::
+
+            with ctx.enabled(ctx.BLEND, ctx.CULL_FACE):
+                # Render something
+        """
+        old_flags = self._flags
+        self.enable(*flags)
+        try:
+            yield
+        finally:
+            self.enable(*old_flags)
+
+    @contextmanager
+    def enabled_only(self, *flags):
+        """
+        Temporarily change enabled flags::
+
+            with ctx.enabled_only(ctx.BLEND, ctx.CULL_FACE):
+                # Render something
+        """
+        old_flags = self._flags
+        self.enable_only(*flags)
+        try:
+            yield
+        finally:
+            self.enable_only(*old_flags)
 
     def disable(self, *args):
         """
@@ -774,12 +808,19 @@ class Limits:
         self.MAX_TEXTURE_IMAGE_UNITS = self.get(gl.GL_MAX_TEXTURE_IMAGE_UNITS)
         # TODO: Missing in pyglet
         # self.MAX_TEXTURE_MAX_ANISOTROPY = self.get_float(gl.GL_MAX_TEXTURE_MAX_ANISOTROPY)
+        self.MAX_VIEWPORT_DIMS =  self.get_int_tuple(gl.GL_MAX_VIEWPORT_DIMS, 2)
 
         err = self._ctx.error
         if err:
             from warnings import warn
 
             warn("Error happened while querying of limits. Moving on ..")
+
+    def get_int_tuple(self, enum, length):
+        """Get an enum as an int tuple"""
+        values = (c_int * length)()
+        gl.glGetIntegerv(enum, values)
+        return tuple(values)
 
     def get(self, enum: gl.GLenum) -> int:
         """Get an integer limit"""

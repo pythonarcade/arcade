@@ -1,115 +1,64 @@
-.. _Tiled Map Editor: https://www.mapeditor.org/
 
 .. _platformer_part_eight:
 
-Step 8 - Use a Map Editor
--------------------------
+Step 8 - Display The Score
+--------------------------
 
-.. image:: use_tileset.png
-    :width: 70%
+Now that we can collect coins and get points, we need a way to display the score on the screen.
 
-Create a Map File
-~~~~~~~~~~~~~~~~~
+This process is a little bit more complex than just drawing some text at an X and Y location.
+For properly drawing text, or and GUI elements, we need to use a separate camera than the one
+we use to draw the rest of our scene.
 
-For this part, we'll restart with a new program. Instead of placing our tiles
-by code, we'll use a map editor.
+This is because we are scrolling around the main game camera, but we want our GUI elements to
+stay still. Using a second camera lets us do this.
 
-Download and install the `Tiled Map Editor`_. (Think about donating, as it is
-a wonderful project.)
+As an example, if we were not to use a second camera, and instead draw on the same camera as
+our scene. We would need to offset the position that we draw our text at by position of the
+camera. This might be easier if you're only displaying one thing, but if you have a lot of GUI
+elements this could get out of hand.
 
-Open a new file with options similar to these:
+First start by creating the new GUI camera and the score variables in the ``__init__`` function.
 
-* Orthogonal - This is a normal square-grid layout. It is the only version that
-  Arcade supports very well at this time.
-* Tile layer format - This selects how the data is stored inside the file. Any option works, but Base64
-  zlib compressed is the smallest.
-* Tile render order - Any of these should work. It simply specifies what order the tiles are
-  added. Right-down has tiles added left->right and top->down.
-* Map size - You can change this later, but this is your total grid size.
-* Tile size - the size, in pixels, of your tiles. Your tiles all need to be the same size.
-  Also, rendering works better if the tile size is a power of 2, such as
-  16, 32, 64, 128, and 256.
+.. literalinclude:: ../../../arcade/examples/platform_tutorial/08_score.py
+    :caption: Display The Score - The init method
+    :lines: 44-48
 
-.. image:: new_file.png
-   :scale: 80%
+Then we can initialize them in the ``setup`` function. We reset the score to 0 here because this
+function is intended to fully reset the game back to it's starting state.
 
-Save it as ``map.tmx``.
+.. literalinclude:: ../../../arcade/examples/platform_tutorial/08_score.py
+    :caption: Display The Score - The setup method
+    :lines: 62-66
 
-Rename the layer "Platforms". We'll use layer names to load our data later. Eventually
-you might have layers for:
+Then in our ``on_draw`` function we can first draw our scene like normal, and then switch to the
+GUI camera, and then finally draw our text.
 
-* Platforms that you run into (or you can think of them as walls)
-* Coins or objects to pick up
-* Background objects that you don't interact with, but appear behind the player
-* Foreground objects that you don't interact with, but appear in front of the player
-* Insta-death blocks (like lava)
-* Ladders
+.. literalinclude:: ../../../arcade/examples/platform_tutorial/08_score.py
+    :caption: Display The Score - The on_draw method
+    :lines: 110-133
+    :emphasize-lines: 13-24
+  
+Lastly in the ``on_update`` function we just need to update the score when a player collects a coin:
 
-.. Note::
-
-    Once you get multiple layers it is VERY easy to add items to the wrong
-    layer.
-
-.. image:: platforms.png
-   :scale: 80%
-
-Create a Tileset
-~~~~~~~~~~~~~~~~
-
-Before we can add anything to the layer we need to create a set of tiles.
-This isn't as obvious or intuitive as it should be. To create a new tileset
-click "New Tileset" in the window on the lower right:
-
-.. image:: new_tileset.png
-   :scale: 80%
-
-Right now, Arcade only supports a "collection of images" for a tileset.
-I find it convenient to embed the tileset in the map.
-
-.. image:: new_tileset_02.png
-   :scale: 80%
-
-Once you create a new tile, the button to add tiles to the tileset is
-hard to find. Click the wrench:
-
-.. image:: new_tileset_03.png
-   :scale: 80%
-
-Then click the 'plus' and add in your tiles
-
-.. image:: new_tileset_04.png
-   :scale: 80%
-
-Draw a Level
-~~~~~~~~~~~~
-
-At this point you should be able to "paint" a level. At the very least, put
-in a floor and then see if you can get this program working. (Don't put
-in a lot of time designing a level until you are sure you can get it to
-load.)
-
-The program below assumes there are layers created by the tiled
-map editor for for "Platforms" and "Coins".
-
-Test the Level
-~~~~~~~~~~~~~~
-
-.. literalinclude:: ../../../arcade/examples/platform_tutorial/08_load_map.py
-    :caption: Load a .tmx file from Tiled Map Editor
-    :linenos:
-    :emphasize-lines: 88-117
+.. literalinclude:: ../../../arcade/examples/platform_tutorial/08_score.py
+    :caption: Display The Score - The on_update method
+    :lines: 179-186
+    :emphasize-lines: 7-8
 
 .. note::
 
-    You can set the **background color** of the map by selecting "Map...Map Properties".
-    Then click on the three dots to pull up a color picker.
+    You might also want to add:
 
-    You can edit the **hitbox** of a tile to make ramps
-    or platforms that only cover a portion of the rectangle in the grid.
+    * A count of how many coins are left to be collected.
+    * Number of lives left.
+    * A timer: :ref:`timer`
+    * This example shows how to add an FPS timer: :ref:`stress_test_draw_moving`
 
-    To edit the hitbox, use the polygon tool (only) and draw a polygon around
-    the item. You can hold down "CTRL" when positioning a point to get the exact
-    corner of an item.
+Source Code
+~~~~~~~~~~~
 
-    .. image:: collision_editor.png
-       :scale: 20%
+.. literalinclude:: ../../../arcade/examples/platform_tutorial/08_score.py
+    :caption: Display The Score
+    :linenos:
+    :emphasize-lines: 44-48, 62-66, 122-133, 186

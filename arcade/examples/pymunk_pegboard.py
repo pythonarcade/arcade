@@ -2,12 +2,12 @@
 Use Pymunk physics engine.
 
 For more info on Pymunk see:
-http://www.pymunk.org/en/latest/
+https://www.pymunk.org/en/latest/
 
 To install pymunk:
 pip install pymunk
 
-Artwork from http://kenney.nl
+Artwork from https://kenney.nl
 
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.pymunk_pegboard
@@ -148,7 +148,7 @@ class MyGame(arcade.Window):
         # Update physics
         # Use a constant time step, don't use delta_time
         # See "Game loop / moving time forward"
-        # http://www.pymunk.org/en/latest/overview.html#game-loop-moving-time-forward
+        # https://www.pymunk.org/en/latest/overview.html#game-loop-moving-time-forward
         self.space.step(1 / 60.0)
 
         # Move sprites to where physics objects are

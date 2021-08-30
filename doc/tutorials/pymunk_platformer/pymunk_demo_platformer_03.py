@@ -71,6 +71,7 @@ class GameWindow(arcade.Window):
         """ Draw everything """
         arcade.start_render()
 
+
 def main():
     """ Main method """
     window = GameWindow(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)

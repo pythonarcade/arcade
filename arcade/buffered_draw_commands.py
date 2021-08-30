@@ -6,11 +6,12 @@ but uses Vertex Buffer Objects. This keeps the vertices loaded on
 the graphics card for much faster render times.
 """
 
+from array import array
+import struct
 import math
 import itertools
 from collections import defaultdict
 import pyglet.gl as gl
-import numpy as np
 
 from typing import List, Iterable, Sequence
 from typing import TypeVar
@@ -18,7 +19,7 @@ from typing import Generic
 from typing import cast
 
 from arcade import Color
-from arcade import rotate_point
+from .geometry import rotate_point
 from arcade import Point, PointList
 from arcade import get_four_byte_color
 from arcade import get_window
@@ -46,11 +47,6 @@ class Shape:
         assert(self.line_width == 1)
         gl.glLineWidth(self.line_width)
 
-        gl.glEnable(gl.GL_BLEND)
-        gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-        gl.glEnable(gl.GL_LINE_SMOOTH)
-        gl.glHint(gl.GL_LINE_SMOOTH_HINT, gl.GL_NICEST)
-        gl.glHint(gl.GL_POLYGON_SMOOTH_HINT, gl.GL_NICEST)
         gl.glEnable(gl.GL_PRIMITIVE_RESTART)
         gl.glPrimitiveRestartIndex(2 ** 32 - 1)
 
@@ -100,12 +96,16 @@ def create_line_generic_with_colors(point_list: PointList,
     ctx = window.ctx
     program = ctx.line_generic_with_colors_program
 
-    buffer_type = np.dtype([('vertex', '2f4'), ('color', '4B')])
-    data = np.zeros(len(point_list), dtype=buffer_type)
-    data['vertex'] = point_list
-    data['color'] = [get_four_byte_color(color) for color in color_list]
+    # Ensure colors have 4 components
+    color_list = [get_four_byte_color(color) for color in color_list]
 
-    vbo = ctx.buffer(data=data.tobytes())
+    vertex_size = 12  # 2f 4f1 = 12 bytes
+    data = bytearray(vertex_size * len(point_list))
+    for i, entry in enumerate(zip(point_list, color_list)):
+        offset = i * vertex_size
+        struct.pack_into("ffBBBB", data, offset, *entry[0], *entry[1])
+
+    vbo = ctx.buffer(data=data)
     vao_content = [
         BufferDescription(
             vbo,
@@ -311,16 +311,15 @@ def create_rectangle_outline(center_x: float, center_y: float, width: float,
     draw that list. This allows nearly unlimited shapes to be drawn just as fast
     as one.
 
-    Args:
-        center_x:
-        center_y:
-        width:
-        height:
-        color:
-        border_width:
-        tilt_angle:
+    :param float center_x:
+    :param float center_y:
+    :param float width:
+    :param float height:
+    :param Color color:
+    :param Color border_width:
+    :param float tilt_angle:
 
-    Returns:
+    Returns: Shape
 
     """
     return create_rectangle(center_x, center_y, width, height,
@@ -333,14 +332,13 @@ def get_rectangle_points(center_x: float, center_y: float, width: float,
     Utility function that will return all four coordinate points of a
     rectangle given the x, y center, width, height, and rotation.
 
-    Args:
-        center_x:
-        center_y:
-        width:
-        height:
-        tilt_angle:
+    :param float center_x:
+    :param float center_y:
+    :param float width:
+    :param float height:
+    :param float tilt_angle:
 
-    Returns:
+    Returns: PointList
 
     """
     x1 = -width / 2 + center_x
@@ -701,8 +699,8 @@ class ShapeElementList(Generic[TShape]):
             indices.extend(itertools.islice(counter, shape.vao.num_vertices))
             indices.append(reset_idx)
         del indices[-1]
-        indices = np.array(indices)
-        ibo = self.ctx.buffer(data=indices.astype('i4').tobytes())
+
+        ibo = self.ctx.buffer(data=array('I', indices))
 
         vao_content = [
             BufferDescription(
@@ -749,6 +747,7 @@ class ShapeElementList(Generic[TShape]):
         Draw everything in the list.
         """
         self.program['Position'] = [self._center_x, self._center_y]
+        self.program['Angle'] = self._angle
 
         for group in self.dirties:
             self._refresh_shape(group)

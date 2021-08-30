@@ -1,78 +1,81 @@
-"""
-This module provides UIElements which can be used to ease the interaction
-with the player.
+from .constructs import UIMessageBox
+from .events import UIEvent
+from .events import UIKeyEvent
+from .events import UIKeyPressEvent
+from .events import UIKeyReleaseEvent
+from .events import UIMouseDragEvent
+from .events import UIMouseEvent
+from .events import UIMouseMovementEvent
+from .events import UIMousePressEvent
+from .events import UIMouseReleaseEvent
+from .events import UIMouseScrollEvent
+from .events import UIOnClickEvent
+from .events import UIOnUpdateEvent
+from .events import UITextEvent
+from .events import UITextMotionEvent
+from .events import UITextMotionSelectEvent
+from .mixins import UIDraggableMixin
+from .mixins import UIMouseFilterMixin
+from .mixins import UIWindowLikeMixin
+from .surface import Surface
+from .ui_manager import UIManager
+from .widgets import UIAnchorWidget
+from .widgets import UIBorder
+from .widgets import UIBoxLayout
+from .widgets import UIDummy
+from .widgets import UIFlatButton
+from .widgets import UIInputText
+from .widgets import UIInteractiveWidget
+from .widgets import UILabel
+from .widgets import UILayout
+from .widgets import UIPadding
+from .widgets import UISpace
+from .widgets import UISpriteWidget
+from .widgets import UITextArea
+from .widgets import UITextArea
+from .widgets import UITextureButton
+from .widgets import UITexturePane
+from .widgets import UIWidget
+from .widgets import UIWidgetParent
+from .widgets import UIWrapper
 
-Starting with :py:class:`arcade.gui.UIManager` you can add new :py:class:`arcade.gui.UIElement`
-which will be drawn on top of your other sprites.
-
-The UI interactions are implemented using Pyglets :py:class:`pyglet.event.EventDispatcher`.
-The :py:class:`arcade.gui.UIManager` subscribes to all :py:class:`arcade.Window`
-events and converts them into a :py:class:`arcade.gui.UIEvent` object,
-which is passed to all added :py:class:`arcade.gui.UIElement`.
-
-Available :py:class:`arcade.gui.UIElement`
-
-* :py:class:`arcade.gui.UILabel`
-* :py:class:`arcade.gui.UIInputBox`
-* :py:class:`arcade.gui.UIImageButton`
-* :py:class:`arcade.gui.UIFlatButton`
-* :py:class:`arcade.gui.UIGhostFlatButton`
-* :py:class:`arcade.gui.UIToggel`
-
-Run examples with `python -m arcade.gui.examples.<example name>`
-
-* show_all - Show all components
-* show_decorator_example - Show example interaction using event decorators
-* show_id_example - Using id off an :py:class:`arcade.gui.UIElement`
-* show_uiflatbutton - :py:class:`arcade.gui.UIFlatButton` example
-* show_uiflatbutton_custom_style - Flatbutton with custom styleing
-* show_uiinputbox - Example with a :py:class:`arcade.gui.UIInputBox`
-* show_uilabel - Show text with a :py:class:`arcade.gui.UILabel`
-
-"""
-from arcade.gui import utils
-from arcade.gui.core import (
-    UIEvent,
-    UIElement,
-    UIException,
-    MOUSE_MOTION,
-    MOUSE_PRESS,
-    MOUSE_RELEASE,
-    MOUSE_SCROLL,
-    KEY_PRESS,
-    KEY_RELEASE,
-    TEXT_INPUT,
-    TEXT_MOTION,
-    TEXT_MOTION_SELECTION
-)
-from arcade.gui.elements import UIClickable
-from arcade.gui.elements.flat_button import UIFlatButton, UIGhostFlatButton
-from arcade.gui.elements.image_button import UIImageButton
-from arcade.gui.elements.inputbox import UIInputBox
-from arcade.gui.elements.label import UILabel
-from arcade.gui.elements.toggle import UIToggle, UIImageToggle
-from arcade.gui.manager import UIManager
-
-__all__ = [
-    'UIEvent',
-    'UIManager',
-    'UIElement',
-    'UIException',
-    'UILabel',
-    'UIInputBox',
-    'UIClickable',
-    'UIFlatButton',
-    'UIGhostFlatButton',
-    'UIImageButton',
-    'UIToggle',
-    'UIImageToggle',
-    'MOUSE_MOTION',
-    'MOUSE_PRESS',
-    'MOUSE_RELEASE',
-    'MOUSE_SCROLL',
-    'KEY_PRESS',
-    'KEY_RELEASE',
-    'TEXT_INPUT',
-    'TEXT_MOTION',
-    'TEXT_MOTION_SELECTION',
-]
+__all__ = ['UIManager',
+           'UIBorder',
+           'UIBoxLayout',
+           'UIMessageBox',
+           'UIFlatButton',
+           'UIAnchorWidget',
+           'UIKeyEvent',
+           'UIDummy',
+           'UIDraggableMixin',
+           'UIMouseFilterMixin',
+           'UIWindowLikeMixin',
+           'UIKeyPressEvent',
+           'UIKeyReleaseEvent',
+           'UIEvent',
+           'UIInputText',
+           'UILabel',
+           'UIPadding',
+           'UIInteractiveWidget',
+           'UIMouseEvent',
+           'UIMouseDragEvent',
+           'UIMouseMovementEvent',
+           'UIMousePressEvent',
+           'UIMouseReleaseEvent',
+           'UIMouseScrollEvent',
+           'UIOnUpdateEvent',
+           'UIOnClickEvent',
+           'UITextEvent',
+           'UITextMotionEvent',
+           'UITextMotionSelectEvent',
+           'UITexturePane',
+           'UITextArea',
+           'UITextureButton',
+           'UISpace',
+           'UILayout',
+           'UISpriteWidget',
+           'UIWidget',
+           'UIWidgetParent',
+           'UIWrapper',
+           'Surface',
+           ]

@@ -5,7 +5,7 @@ Show how to use lights.
           functions may still change. To use, you will need to install one of the
           pre-release packages, or install via GitHub.
 
-Artwork from http://kenney.nl
+Artwork from https://kenney.nl
 
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.light_demo
@@ -22,6 +22,7 @@ MOVEMENT_SPEED = 5
 # This is the color used for 'ambient light'. If you don't want any
 # ambient light, set it to black.
 AMBIENT_COLOR = (10, 10, 10)
+
 
 class MyGame(arcade.Window):
     """ Main Game Window """
@@ -58,7 +59,8 @@ class MyGame(arcade.Window):
         self.wall_list = arcade.SpriteList()
 
         # Create player sprite
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", 0.4)
+        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
+                                           0.4)
         self.player_sprite.center_x = 64
         self.player_sprite.center_y = 270
         self.player_list.append(self.player_sprite)

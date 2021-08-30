@@ -65,7 +65,7 @@ class MyGame(arcade.Window):
                 self.grid_sprite_list.append(sprite)
 
     def resync_grid_with_sprites(self):
-        self.shape_list = arcade.ShapeElementList()
+
         for row in range(ROW_COUNT):
             for column in range(COLUMN_COUNT):
                 # We need to convert our two dimensional grid to our

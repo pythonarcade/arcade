@@ -29,14 +29,14 @@ SCREEN_HEIGHT = (HEIGHT + MARGIN) * ROW_COUNT + MARGIN
 SCREEN_TITLE = "Tetris"
 
 colors = [
-          (0,   0,   0),
-          (255, 0,   0),
-          (0,   150, 0),
-          (0,   0,   255),
-          (255, 120, 0),
-          (255, 255, 0),
-          (180, 0,   255),
-          (0,   220, 220)
+          (0,   0,   0, 255),
+          (255, 0,   0, 255),
+          (0,   150, 0, 255),
+          (0,   0,   255, 255),
+          (255, 120, 0, 255),
+          (255, 255, 0, 255),
+          (180, 0,   255, 255),
+          (0,   220, 220, 255)
           ]
 
 # Define the shapes of the single parts
@@ -68,7 +68,7 @@ def create_textures():
     new_textures = []
     for color in colors:
         # noinspection PyUnresolvedReferences
-        image = PIL.Image.new('RGB', (WIDTH, HEIGHT), color)
+        image = PIL.Image.new('RGBA', (WIDTH, HEIGHT), color)
         new_textures.append(arcade.Texture(str(color), image=image))
     return new_textures
 

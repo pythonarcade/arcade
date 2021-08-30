@@ -10,7 +10,7 @@ with on the screen.
 
 .. _sprites: https://en.wikipedia.org/wiki/Sprite_(computer_graphics)
 
-.. image:: listing_02.png
+.. image:: images/title_02.png
     :width: 70%
 
 Setup vs. Init
@@ -40,21 +40,18 @@ Sprites are managed in lists. The ``SpriteList`` class optimizes drawing, moveme
 and collision detection.
 
 We are using three logical groups in our game. A ``player_list`` for the player.
-A ``wall_list`` for walls we can't move through. And finally a
-``coin_list`` for coins we can pick up.
+A ``wall_list`` for walls we can't move through.
 
 .. code-block::
 
     self.player_list = arcade.SpriteList()
     self.wall_list = arcade.SpriteList(use_spatial_hash=True)
-    self.coin_list = arcade.SpriteList(use_spatial_hash=True)
 
 Sprite lists have an option to use something called "spatial hashing." Spatial
 hashing speeds the time it takes to find collisions, but increases the time it
-takes to move a sprite. Since I don't expect most of my walls or coins to move,
+takes to move a sprite. Since I don't expect most of my walls to move,
 I'll turn on spatial hashing for these lists. My player moves around a lot,
 so I'll leave it off for her.
-
 
 Add Sprites to the Game
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -98,8 +95,7 @@ class.
 
 We manage groups of sprites by the list that they are in.
 In the example below there's a ``wall_list`` that will hold everything that the
-player character can't walk through, and
-a ``coin_list`` for sprites we can pick up to get points. There's also a ``player_list``
+player character can't walk through. There's also a ``player_list``
 which holds only the player.
 
 * Documentation for the `Sprite class <../../arcade.html#arcade.Sprite>`_
@@ -109,12 +105,14 @@ Notice that the code creates ``Sprites`` three ways:
 
 * Creating a ``Sprite`` class, positioning it, adding it to the list
 * Create a series of sprites in a loop
-* Create a series of sprites using coordinates
+
+Source Code
+~~~~~~~~~~~
 
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/02_draw_sprites.py
     :caption: 02_draw_sprites - Draw and Position Sprites
     :linenos:
-    :emphasize-lines: 11-14, 27-34, 38-70, 78-81
+    :emphasize-lines: 11-13, 26-29, 36-67, 75-77
 
 .. note::
 

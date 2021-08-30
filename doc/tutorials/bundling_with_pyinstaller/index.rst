@@ -5,8 +5,10 @@ Bundling a Game with PyInstaller
 
 .. note::
 
-    You must have Arcade version 2.4.3 or greater and Pymunk 5.7.0 or greater
-    for the instructions below to work.
+    You must have Arcade_ version 2.6.0 or greater and Pymunk_ 6.0.0 or greater
+    for the instructions below to work. The pyinstaller hook from Arcade_ 2.5.x
+    may work with certain versions of Pymunk_, however support for Pyinstaller
+    was not fully stable across all operating systems until Arcade_ 2.6.0
 
 You've written your game using Arcade_ and it is a masterpiece! Congrats! Now
 you want to share it with others. That usually means helping people install
@@ -17,6 +19,14 @@ that!
 PyInstaller_ is a tool for Python that lets you bundle up an entire Python
 application into a one-file executable bundle that you can easily share.
 Thankfully, it works great with Arcade_!
+
+We will be demonstrating usage with Windows, but everything should work exactly
+the same across Windows, Mac, and Linux. Note that you can only build for the
+system you are on. This means that in order to make a Windows build, you must
+be on a Windows machine, same thing for Linux and Mac. 
+
+Note that Mac bundles will have about an additional 60MB of data added into them
+over Windows/Linux due to Arcade needing to add some additional libraries for Mac.
 
 Bundling a Simple Arcade Script
 -------------------------------
@@ -232,3 +242,4 @@ reading, here are links to the official PyInstaller documentation:
 
 .. _Arcade: http://arcade.academy
 .. _PyInstaller: http://www.pyinstaller.org
+.. _Pymunk: http://www.pymunk.org/en/latest/

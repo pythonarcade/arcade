@@ -10,6 +10,7 @@ from typing import Tuple, Optional
 
 import pyglet
 import pyglet.gl as gl
+from pyglet.canvas.base import ScreenMode
 
 import arcade
 from arcade import get_display_size
@@ -52,6 +53,22 @@ class Window(pyglet.window.Window):
     """
     The Window class forms the basis of most advanced games that use Arcade.
     It represents a window on the screen, and manages events.
+
+    :param int width: Window width
+    :param int height: Window height
+    :param str title: Title (appears in title bar)
+    :param bool fullscreen: Should this be full screen?
+    :param bool resizable: Can the user resize the window?
+    :param float update_rate: How frequently to update the window.
+    :param bool antialiasing: Should OpenGL's anti-aliasing be enabled?
+    :param Tuple[int,int] gl_version: What OpenGL version to request. This is ``(3, 3)`` by default
+                                       and can be overridden when using more advanced OpenGL features.
+    :param bool visible: Should the window be visible immediately
+    :param bool vsync: Wait for vertical screen refresh before swapping buffer
+                       This can make animations and movement look smoother.
+    :param bool gc_mode: Decides how opengl objects should be garbage collected
+    :param bool center_window: If true, will center the window.
+
     """
 
     def __init__(self,
@@ -64,22 +81,13 @@ class Window(pyglet.window.Window):
                  antialiasing: bool = True,
                  gl_version: Tuple[int, int] = (3, 3),
                  screen: pyglet.canvas.Screen = None,
-                 visible: bool=True,
-                 gc_mode: str = "auto"):
+                 style: Optional[str] = pyglet.window.Window.WINDOW_STYLE_DEFAULT,
+                 visible: bool = True,
+                 vsync: bool = False,
+                 gc_mode: str = "auto",
+                 center_window: bool = False):
         """
         Construct a new window
-
-        :param int width: Window width
-        :param int height: Window height
-        :param str title: Title (appears in title bar)
-        :param bool fullscreen: Should this be full screen?
-        :param bool resizable: Can the user resize the window?
-        :param float update_rate: How frequently to update the window.
-        :param bool antialiasing: Should OpenGL's anti-aliasing be enabled?
-        :param Tuple[int,int] gl_version: What OpenGL version to request. This is ``(3, 3)`` by default
-                                           and can be overridden when using more advanced OpenGL features.
-        :param bool visible: Should the window be visible immediately
-        :param bool gc_mode: Decides how opengl objects should be garbage collected
         """
         # In certain environments (mainly headless) we can't have antialiasing/MSAA enabled.
         # TODO: Detect other headless environments
@@ -100,7 +108,7 @@ class Window(pyglet.window.Window):
 
         try:
             super().__init__(width=width, height=height, caption=title,
-                             resizable=resizable, config=config, vsync=False, visible=visible)
+                             resizable=resizable, config=config, vsync=vsync, visible=visible, style=style)
             self.register_event_type('update')
             self.register_event_type('on_update')
         except pyglet.window.NoSuchConfigException:
@@ -114,11 +122,9 @@ class Window(pyglet.window.Window):
                 print("Warning: Anti-aliasing not supported on this computer.")
 
         if update_rate:
-            from pyglet import compat_platform
-            if compat_platform == 'darwin' or compat_platform == 'linux':
-                # Set vsync to false, or we'll be limited to a 1/30 sec update rate possibly
-                self.context.set_vsync(False)
             self.set_update_rate(update_rate)
+
+        self.set_vsync(vsync)
 
         super().set_fullscreen(fullscreen, screen)
         # This used to be necessary on Linux, but no longer appears to be.
@@ -131,16 +137,14 @@ class Window(pyglet.window.Window):
         self._current_view: Optional[View] = None
         self.textbox_time = 0.0
         self.key: Optional[int] = None
-        self.ui_manager = arcade.experimental.gui.UIManager(self)
 
         self._ctx: ArcadeContext = ArcadeContext(self, gc_mode=gc_mode)
         set_viewport(0, self.width, 0, self.height)
-
         self._background_color: Color = (0, 0, 0, 0)
 
-        # Required for transparency
-        self._ctx.enable(self.ctx.BLEND)
-        self._ctx.blend_func = self.ctx.BLEND_DEFAULT
+        # See if we should center the window
+        if center_window:
+            self.center_window()
 
     @property
     def current_view(self):
@@ -162,15 +166,21 @@ class Window(pyglet.window.Window):
         """
         return self._ctx
 
-    def clear(self):
+    def clear(self, color: Optional[Color] = None):
         """Clears the window with the configured background color
         set through :py:attr:`arcade.Window.background_color`.
+
+        :param Color color: Optional color overriding the current background color
         """
-        self.ctx.screen.clear(self.background_color)
+        color = color if color is not None else self.background_color
+        self.ctx.screen.clear(color)
 
     @property
     def background_color(self):
         """Get or set the background color for this window.
+
+        If the background color is an ``RGB`` value instead of ``RGBA```
+        we assume alpha value 255.
 
         :type: Color
         """
@@ -185,14 +195,22 @@ class Window(pyglet.window.Window):
         super().close()
         pyglet.clock.unschedule(self._dispatch_updates)
 
-    def set_fullscreen(self, fullscreen=True, screen=None, mode=None,
-                       width=None, height=None):
+    def set_fullscreen(self,
+                       fullscreen: bool = True,
+                       screen: Optional['Window'] = None,
+                       mode: ScreenMode = None,
+                       width: Optional[float] = None,
+                       height: Optional[float] = None):
         """
         Set if we are full screen or not.
 
         :param bool fullscreen:
         :param screen: Which screen should we display on? See :func:`get_screens`
-        :param mode:
+        :param pyglet.canvas.ScreenMode mode:
+                The screen will be switched to the given mode.  The mode must
+                have been obtained by enumerating `Screen.get_modes`.  If
+                None, an appropriate mode will be selected from the given
+                `width` and `height`.
         :param int width:
         :param int height:
         """
@@ -326,6 +344,10 @@ class Window(pyglet.window.Window):
         except AttributeError:
             pass
 
+        # TEMP HACK
+        if symbol == arcade.key.F12:
+            self.ctx.default_atlas.show()
+
     def on_key_release(self, symbol: int, modifiers: int):
         """
         Override this function to add key release functionality.
@@ -350,21 +372,17 @@ class Window(pyglet.window.Window):
         Override this function to add custom code to be called any time the window
         is resized. The only responsibility here is to update the viewport.
 
-        :param float width: New width
-        :param float height: New height
+        :param int width: New width
+        :param int height: New height
         """
-        try:
-            original_viewport = self.get_viewport()
-        except Exception as ex:
-            print("Error getting viewport:", ex)
-            return
-
+        # Retain projection scrolling if applied
+        original_viewport = self.get_viewport()
         self.set_viewport(original_viewport[0],
                           original_viewport[0] + width,
                           original_viewport[2],
                           original_viewport[2] + height)
 
-    def set_min_size(self, width: float, height: float):
+    def set_min_size(self, width: int, height: int):
         """ Wrap the Pyglet window call to set minimum size
 
         :param float width: width in pixels.
@@ -376,11 +394,11 @@ class Window(pyglet.window.Window):
         else:
             raise ValueError('Cannot set min size on non-resizable window')
 
-    def set_max_size(self, width: float, height: float):
+    def set_max_size(self, width: int, height: int):
         """ Wrap the Pyglet window call to set maximum size
 
-        :param float width: width in pixels.
-        :param float height: height in pixels.
+        :param int width: width in pixels.
+        :param int height: height in pixels.
         :Raises ValueError:
 
         """
@@ -390,12 +408,12 @@ class Window(pyglet.window.Window):
         else:
             raise ValueError('Cannot set max size on non-resizable window')
 
-    def set_size(self, width: float, height: float):
+    def set_size(self, width: int, height: int):
         """
         Ignore the resizable flag and set the size
 
-        :param float width:
-        :param float height:
+        :param int width:
+        :param int height:
         """
 
         super().set_size(width, height)
@@ -418,7 +436,7 @@ class Window(pyglet.window.Window):
 
         return super().get_location()
 
-    def set_visible(self, visible=True):
+    def set_visible(self, visible: bool = True):
         """
         Set if the window is visible or not. Normally, a program's window is visible.
 
@@ -510,6 +528,21 @@ class Window(pyglet.window.Window):
         # will still call the Window's event handlers. (See pyglet's EventDispatcher.dispatch_event() implementation
         # for details)
 
+    def hide_view(self):
+        """
+        Hide the currently active view (if any) returning us
+        back to ``on_draw`` and ``on_update`` functions in the window.
+
+        This is not necessary to call if you are switching views.
+        Simply call ``show_view`` again.
+        """
+        if self._current_view is None:
+            return
+
+        self._current_view.on_hide_view()
+        self.remove_handlers(self._current_view)
+        self._current_view = None
+
     def _create(self):
         super()._create()
 
@@ -592,7 +625,7 @@ def open_window(width: int, height: int, window_title: str, resizable: bool = Fa
     :param bool antialiasing: Smooth the graphics?
 
     :returns: Handle to window
-    :rtype arcade.Window:
+    :rtype: Window
     """
 
     global _window

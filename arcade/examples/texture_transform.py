@@ -1,16 +1,17 @@
 """
 Sprites with texture transformations
 
-Artwork from http://kenney.nl
+Artwork from https://kenney.nl
 
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.sprite_texture_transform
 """
 
 import arcade
-from arcade import Matrix3x3
 import math
 import os
+
+from arcade.math import Mat3
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -74,18 +75,18 @@ class MyGame(arcade.Window):
             translate = scale / 500
             self.stars.draw_transformed(
                 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, opacity,
-                Matrix3x3().rotate(angle).scale(scale * ASPECT, scale).translate(-self.camera_x * translate, 0))
+                Mat3().rotate(angle).scale(scale * ASPECT, scale).translate(-self.camera_x * translate, 0))
         self.ship.draw()
 
         for i, pair in enumerate([
-            ['identity', Matrix3x3()],
-            ['rotate(30)', Matrix3x3().rotate(30)],
-            ['scale(0.8, 0.5)', Matrix3x3().scale(0.8, 0.5)],
-            ['translate(0.3, 0.1)', Matrix3x3().translate(0.3, 0.1)],
-            ['rotate(10).\nscale(0.33, 0.33)', Matrix3x3().rotate(10).scale(0.7, 0.7)],
-            ['scale(-1, 1)', Matrix3x3().scale(-1, 1)],
-            ['shear(0.3, 0.1)', Matrix3x3().shear(0.3, 0.1)],
-            [f'rotate({int(self.t) % 360})', Matrix3x3().rotate(self.t)],
+            ['identity', Mat3()],
+            ['rotate(30)', Mat3().rotate(30)],
+            ['scale(0.8, 0.5)', Mat3().scale(0.8, 0.5)],
+            ['translate(0.3, 0.1)', Mat3().translate(0.3, 0.1)],
+            ['rotate(10).\nscale(0.33, 0.33)', Mat3().rotate(10).scale(0.7, 0.7)],
+            ['scale(-1, 1)', Mat3().scale(-1, 1)],
+            ['shear(0.3, 0.1)', Mat3().shear(0.3, 0.1)],
+            [f'rotate({int(self.t) % 360})', Mat3().rotate(self.t)],
         ]):
             x = 80 + 180 * (i % 4)
             y = 420 - (i // 4) * 320

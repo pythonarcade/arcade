@@ -3,7 +3,7 @@ Sprite Explosion
 
 Simple program to show creating explosions with particles
 
-Artwork from http://kenney.nl
+Artwork from https://kenney.nl
 
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.sprite_explosion_particles
@@ -66,6 +66,7 @@ SMOKE_RISE_RATE = 0.5
 
 # Chance we leave smoke trail
 SMOKE_CHANCE = 0.25
+
 
 class Smoke(arcade.SpriteCircle):
     """ This represents a puff of smoke """
@@ -131,7 +132,8 @@ class Particle(arcade.SpriteCircle):
             # Should we sparkle this?
             if random.random() <= PARTICLE_SPARKLE_CHANCE:
                 self.alpha = 255
-                self.texture = arcade.make_circle_texture(self.width, arcade.color.WHITE)
+                self.texture = arcade.make_circle_texture(int(self.width),
+                                                          arcade.color.WHITE)
             else:
                 self.texture = self.normal_texture
 
@@ -183,7 +185,8 @@ class MyGame(arcade.Window):
         self.score = 0
 
         # Image from kenney.nl
-        self.player_sprite = arcade.Sprite(":resources:images/space_shooter/playerShip2_orange.png", SPRITE_SCALING_PLAYER)
+        self.player_sprite = arcade.Sprite(":resources:images/space_shooter/playerShip2_orange.png",
+                                           SPRITE_SCALING_PLAYER)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 70
         self.player_list.append(self.player_sprite)
@@ -193,7 +196,8 @@ class MyGame(arcade.Window):
 
             # Create the coin instance
             # Coin image from kenney.nl
-            coin = arcade.Sprite(":resources:images/space_shooter/playerShip1_green.png", SPRITE_SCALING_COIN)
+            coin = arcade.Sprite(":resources:images/space_shooter/playerShip1_green.png",
+                                 SPRITE_SCALING_COIN)
             coin.angle = 180
 
             # Position the coin

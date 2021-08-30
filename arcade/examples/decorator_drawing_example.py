@@ -1,6 +1,8 @@
 """
 Example "Arcade" library code.
 
+NOTE: This example isn't linked to in the main documents.
+
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.decorator_drawing_example
 """
@@ -20,6 +22,7 @@ bird_list = []
 
 def setup():
     create_birds()
+    # Call update 60 times per second
     arcade.schedule(update, 1 / 60)
     arcade.run()
 
@@ -27,7 +30,7 @@ def setup():
 def create_birds():
     for bird_count in range(10):
         x = random.randrange(SCREEN_WIDTH)
-        y = random.randrange(SCREEN_HEIGHT/2, SCREEN_HEIGHT)
+        y = random.randrange(SCREEN_HEIGHT // 2, SCREEN_HEIGHT)
         bird_list.append([x, y])
 
 
@@ -83,8 +86,14 @@ def draw_bird(x, y):
     """
     Draw a bird using a couple arcs.
     """
-    arcade.draw_arc_outline(x, y, 20, 20, arcade.color.BLACK, 0, 90)
-    arcade.draw_arc_outline(x + 40, y, 20, 20, arcade.color.BLACK, 90, 180)
+    arcade.draw_arc_outline(x, y, 20, 20, arcade.color.BLACK,
+                            start_angle=0,
+                            end_angle=90,
+                            border_width=2)
+    arcade.draw_arc_outline(x + 20, y, 20, 20, arcade.color.BLACK,
+                            start_angle=90,
+                            end_angle=180,
+                            border_width=2)
 
 
 def draw_trees():
@@ -121,4 +130,3 @@ def draw_pine_tree(center_x, center_y):
 
 if __name__ == "__main__":
     setup()
-

@@ -51,3 +51,9 @@ doc/_build
 # local testing/mocking
 test.py
 pip-wheel-metadata/
+temp/
+
+# Tiled Session for project
+*.tiled-session
+
+doc/api/*.rst

@@ -134,6 +134,9 @@ class VertexArray:
         gl.glGenVertexArrays(1, byref(self.glo))
         gl.glBindVertexArray(self.glo)
 
+        if index_buffer is not None:
+            gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, index_buffer.glo)
+
         # Lookup dict for BufferDescription attrib names
         # print(content)
         descr_attribs = {
@@ -200,9 +203,6 @@ class VertexArray:
             if buff_descr.instanced:
                 gl.glVertexAttribDivisor(prog_attr.location, 1)
 
-        if index_buffer is not None:
-            gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, index_buffer.glo)
-
     def render(
         self, mode: gl.GLenum, first: int = 0, vertices: int = 0, instances: int = 1
     ):
@@ -215,6 +215,8 @@ class VertexArray:
         """
         gl.glBindVertexArray(self.glo)
         if self._ibo is not None:
+            # HACK: re-bind index buffer just in case. pyglet rendering was somehow replacing the index buffer.
+            gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, self._ibo.glo)
             gl.glDrawElementsInstanced(mode, vertices, self._index_element_type, first * self._index_element_size, instances)
         else:
             gl.glDrawArraysInstanced(mode, first, vertices, instances)

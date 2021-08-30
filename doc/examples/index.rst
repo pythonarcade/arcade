@@ -328,10 +328,28 @@ Sound
 
    :ref:`sound_demo`
 
-.. figure:: thumbs/background_music.png
+.. figure:: thumbs/music_control_demo.png
    :figwidth: 170px
 
-   :ref:`background_music`
+   :ref:`music_control_demo`
+
+Camera Use
+----------
+
+.. figure:: thumbs/sprite_move_scrolling.png
+   :figwidth: 170px
+
+   :ref:`sprite_move_scrolling`
+
+.. figure:: thumbs/sprite_move_scrolling_box.png
+   :figwidth: 170px
+
+   :ref:`sprite_move_scrolling_box`
+
+.. figure:: thumbs/sprite_move_scrolling.png
+   :figwidth: 170px
+
+   :ref:`sprite_move_scrolling_shake`
 
 Platformers
 -----------
@@ -348,11 +366,6 @@ Basic Platformers
    :figwidth: 170px
 
    :ref:`sprite_no_coins_on_walls`
-
-.. figure:: thumbs/sprite_move_scrolling.png
-   :figwidth: 170px
-
-   :ref:`sprite_move_scrolling`
 
 .. figure:: thumbs/sprite_move_animation.gif
    :figwidth: 170px
@@ -378,7 +391,7 @@ Basic Platformers
 Using Tiled Map Editor to Create Maps
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. figure:: thumbs/08_load_map.png
+.. figure:: thumbs/sprite_tiled_map.png
    :figwidth: 170px
 
    :ref:`sprite_tiled_map`
@@ -387,16 +400,6 @@ Using Tiled Map Editor to Create Maps
    :figwidth: 170px
 
    :ref:`sprite_tiled_map_with_levels`
-
-.. figure:: thumbs/09_endgame.png
-   :figwidth: 170px
-
-   :ref:`09_endgame`
-
-.. figure:: thumbs/10_ladders_and_more.png
-   :figwidth: 170px
-
-   :ref:`10_ladders_and_more`
 
 Procedural Generation
 ^^^^^^^^^^^^^^^^^^^^^
@@ -421,9 +424,6 @@ Procedural Generation
 
    :ref:`procedural_caves_bsp`
 
-User Interface
---------------
-
 .. _view-examples:
 
 Instruction Screens and Game Over Screens
@@ -444,6 +444,11 @@ Instruction Screens and Game Over Screens
 
    :ref:`view_pause_screen`
 
+.. figure:: thumbs/view_screens_minimal.png
+   :figwidth: 170px
+
+   :ref:`transitions`
+
 Resizable Window and Fullscreen Games
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -461,15 +466,25 @@ Resizable Window and Fullscreen Games
 Graphical User Interface
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. figure:: thumbs/gui_elements.png
+.. figure:: thumbs/gui_flat_button.png
    :figwidth: 170px
 
-   :ref:`gui_elements`
+   :ref:`gui_flat_button`
 
-.. figure:: thumbs/gui_custom_style.png
+.. figure:: thumbs/gui_widgets.png
    :figwidth: 170px
 
-   :ref:`gui_custom_style`
+   :ref:`gui_widgets`
+
+.. figure:: thumbs/gui_ok_messagebox.png
+   :figwidth: 170px
+
+   :ref:`gui_ok_messagebox`
+
+.. figure:: thumbs/gui_scrollable_text.png
+   :figwidth: 170px
+
+   :ref:`gui_scrollable_text`
 
 
 Grid-Based Games
@@ -523,6 +538,11 @@ Using PyMunk for Physics
 
    :ref:`pymunk_pegboard`
 
+.. figure:: thumbs/pymunk_demo_top_down.png
+   :figwidth: 170px
+
+   :ref:`pymunk_demo_top_down`
+
 .. figure:: thumbs/pymunk_joint_builder.png
    :figwidth: 170px
 
@@ -536,10 +556,10 @@ Using PyMunk for Physics
 Frame Buffers
 ^^^^^^^^^^^^^
 
-.. figure:: thumbs/mini_map_defender.png
+.. figure:: thumbs/minimap.png
    :figwidth: 170px
 
-   :ref:`mini_map_defender`
+   :ref:`minimap`
 
 .. figure:: thumbs/bloom_defender.png
    :figwidth: 170px
@@ -615,15 +635,15 @@ Odds and Ends
 
    :ref:`sprite_collect_coins_background`
 
-.. figure:: thumbs/sprite_collect_coins_with_stats.png
-   :figwidth: 170px
-
-   :ref:`sprite_collect_coins_with_stats`
-
 .. figure:: thumbs/timer.png
    :figwidth: 170px
 
    :ref:`timer`
+
+.. figure:: thumbs/performance_statistics.png
+   :figwidth: 170px
+
+   :ref:`performance_statistics_example`
 
 .. figure:: thumbs/texture_transform.png
    :figwidth: 170px

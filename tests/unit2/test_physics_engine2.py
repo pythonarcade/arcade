@@ -6,7 +6,7 @@ OUT_OF_THE_WAY = (250, 250)
 
 
 def basic_tests(moving_sprite, wall_list, physics_engine):
-    """ Run basic tests that can be done by both engines. """
+    """Run basic tests that can be done by both engines."""
     wall_sprite_1 = wall_list[0]
     wall_sprite_2 = wall_list[1]
     wall_sprite_2.position = OUT_OF_THE_WAY
@@ -41,7 +41,7 @@ def basic_tests(moving_sprite, wall_list, physics_engine):
         moving_sprite.change_x = speed
         moving_sprite.change_y = 0
         collisions = physics_engine.update()
-        assert(moving_sprite.position == (1, 0))
+        assert moving_sprite.position == (1, 0)
         assert len(collisions) == 1
         assert collisions[0] == wall_sprite_1
 
@@ -52,7 +52,7 @@ def basic_tests(moving_sprite, wall_list, physics_engine):
         moving_sprite.change_x = -speed
         moving_sprite.change_y = 0
         collisions = physics_engine.update()
-        assert(moving_sprite.position == (-1, 0))
+        assert moving_sprite.position == (-1, 0)
         assert len(collisions) == 1
         assert collisions[0] == wall_sprite_1
 
@@ -63,7 +63,7 @@ def basic_tests(moving_sprite, wall_list, physics_engine):
         moving_sprite.change_x = 0
         moving_sprite.change_y = -speed
         collisions = physics_engine.update()
-        assert(moving_sprite.position == (0, -1))
+        assert moving_sprite.position == (0, -1)
         assert len(collisions) == 1
         assert collisions[0] == wall_sprite_1
 
@@ -74,7 +74,7 @@ def basic_tests(moving_sprite, wall_list, physics_engine):
         moving_sprite.change_x = 0
         moving_sprite.change_y = speed
         collisions = physics_engine.update()
-        assert(moving_sprite.position == (0, 1))
+        assert moving_sprite.position == (0, 1)
         assert len(collisions) == 1
         assert collisions[0] == wall_sprite_1
 
@@ -181,6 +181,7 @@ def basic_tests(moving_sprite, wall_list, physics_engine):
     assert moving_sprite.position == (-1, 0)
     assert len(collisions) == 0
 
+
 def simple_engine_tests(moving_sprite, wall_list, physics_engine):
     wall_sprite_1 = wall_list[0]
     wall_sprite_2 = wall_list[1]
@@ -216,6 +217,7 @@ def simple_engine_tests(moving_sprite, wall_list, physics_engine):
             assert len(collisions) == 0
         else:
             assert len(collisions) == 1
+
 
 def platformer_tests(moving_sprite, wall_list, physics_engine):
     wall_sprite_1 = wall_list[0]
@@ -285,26 +287,25 @@ def platformer_tests(moving_sprite, wall_list, physics_engine):
     assert moving_sprite.position == (3, -6)
 
 
-def test_main(twm):
-    if twm:
-        assert True
-    else:
-        character_list = arcade.SpriteList()
-        wall_list = arcade.SpriteList()
-        moving_sprite = arcade.SpriteSolidColor(10, 10, arcade.color.RED)
-        character_list.append(moving_sprite)
+def test_main():
+    character_list = arcade.SpriteList()
+    wall_list = arcade.SpriteList()
+    moving_sprite = arcade.SpriteSolidColor(10, 10, arcade.color.RED)
+    character_list.append(moving_sprite)
 
-        wall_sprite = arcade.SpriteSolidColor(10, 10, arcade.color.BLUE)
-        wall_list.append(wall_sprite)
+    wall_sprite = arcade.SpriteSolidColor(10, 10, arcade.color.BLUE)
+    wall_list.append(wall_sprite)
 
-        wall_sprite = arcade.SpriteSolidColor(10, 10, arcade.color.BLUE)
-        wall_sprite.position = OUT_OF_THE_WAY
-        wall_list.append(wall_sprite)
+    wall_sprite = arcade.SpriteSolidColor(10, 10, arcade.color.BLUE)
+    wall_sprite.position = OUT_OF_THE_WAY
+    wall_list.append(wall_sprite)
 
-        physics_engine = arcade.PhysicsEngineSimple(moving_sprite, wall_list)
-        basic_tests(moving_sprite, wall_list, physics_engine)
-        simple_engine_tests(moving_sprite, wall_list, physics_engine)
+    physics_engine = arcade.PhysicsEngineSimple(moving_sprite, wall_list)
+    basic_tests(moving_sprite, wall_list, physics_engine)
+    simple_engine_tests(moving_sprite, wall_list, physics_engine)
 
-        physics_engine = arcade.PhysicsEnginePlatformer(moving_sprite, wall_list, gravity_constant=0.0)
-        basic_tests(moving_sprite, wall_list, physics_engine)
-        platformer_tests(moving_sprite, wall_list, physics_engine)
+    physics_engine = arcade.PhysicsEnginePlatformer(
+        moving_sprite, wall_list, gravity_constant=0.0
+    )
+    basic_tests(moving_sprite, wall_list, physics_engine)
+    platformer_tests(moving_sprite, wall_list, physics_engine)

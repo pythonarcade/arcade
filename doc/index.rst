@@ -7,15 +7,29 @@ The Python Arcade Library
 
 .. |Go| image:: images/woman_sprinter.svg
    :width: 48
-   :alt: Alternative text
+   :alt: Get started here
    :target: get_started.html
-
-|Go| :ref:`get-started-here`
-----------------------------
 
 .. raw:: html
 
     <table style="width:100%;">
+      <tr>
+        <td>
+           <h2>
+             <a class="reference external" href="get_started.html">
+               <img alt="Get started here" src="_images/woman_sprinter.svg" width="48">
+             </a>
+             <a class="reference internal" href="get_started.html#get-started-here">
+               <span class="std std-ref">Get Started Here</span>
+             </a>
+             <a class="headerlink" href="#go-get-started-here" title="Permalink to this headline">¶</a>
+           </h2>
+        </td>
+        <td>
+          <iframe src="https://ghbtns.com/github-btn.html?user=pythonarcade&repo=arcade&type=star&count=true&size=large" frameborder="0" scrolling="0" width="170" height="30" title="GitHub"></iframe>
+        </td>
+      </tr>
+
       <tr>
         <td>
           <div style="display:inline-block;">
@@ -39,10 +53,10 @@ The Python Arcade Library
             <h2 style="width:auto;">Installation</h2>
           </div>
           <ul>
-          <li><a href="installation_windows.html">Windows</a></li>
-          <li><a href="installation_mac.html">Mac</a></li>
-          <li><a href="installation_linux.html">Linux</a></li>
-          <li><a href="installation_from_source.html">Install From Source</a></li>
+          <li><a href="install/windows.html">Windows</a></li>
+          <li><a href="install/mac.html">Mac</a></li>
+          <li><a href="install/linux.html">Linux</a></li>
+          <li><a href="install/source.html">Install From Source</a></li>
           </ul>
         </td>
       </tr>
@@ -73,12 +87,12 @@ The Python Arcade Library
             <h2>Social</h2>
           </div>
           <ul>
+            <li><a href="https://discord.gg/ZjGDqMp">Discord</a> (most active spot)</li>
+            <li><a href="https://www.reddit.com/r/pythonarcade/">Reddit /r/pythonarcade</a></li>
             <li><a href="https://twitter.com/ArcadeLibrary">Twitter @ArcadeLibrary</a></li>
             <li><a href="https://www.instagram.com/PythonArcadeLibrary/">Instagram @PythonArcadeLibrary</a></li>
             <li><a href="https://www.facebook.com/ArcadeLibrary/">Facebook @ArcadeLibrary</a></li>
-            <li><a href="https://www.reddit.com/r/pythonarcade/">Reddit /r/pythonarcade</a></li>
-            <li><a href="https://discord.gg/ZjGDqMp">Discord</a></li>
-            <li><a href="diversity.html">Statement on Diversity</a></li>
+            <li><a href="community/diversity.html">Statement on Diversity</a></li>
           </ul>
         </td>
       </tr>
@@ -94,6 +108,17 @@ The Python Arcade Library
             <li><a href="sample_games.html">Example Games</a></li>
             <li><a href="game_jam_2020.html">GameJam 2020 Games</a></li>
           </ul>
+
+          <div style="display:inline-block;">
+            <img style="width:78px;" src="_static/download-circle.svg" alt="download icon">
+          </div>
+          <div style="display:inline-block;">
+            <h2>Distribute Your Game</h2>
+          </div>
+          <ul>
+            <li><a href="tutorials/bundling_with_pyinstaller/index.html">Bundling a game with PyInstaller</a></li>
+          </ul>
+
         </td>
 
         <td>
@@ -106,6 +131,7 @@ The Python Arcade Library
           <ul>
           <li><a href="quick_index.html">Quick API Index</a></li>
           <li><a href="arcade.html">Full Arcade API Docs</a></li>
+          <li><a href="gui/index.html">GUI Concepts</a></li>
           <li><a href="arcade.color.html">Colors</a> | <a href="arcade.csscolor.html">CSS Colors</a></li>
           <li><a href="arcade.html#arcade.Window">Window Class</a></li>
           <li><a href="arcade.html#arcade.Sprite">Sprite</a> | <a href="arcade.html#arcade.SpriteList">SpriteList</a></li>
@@ -119,27 +145,6 @@ The Python Arcade Library
 
         <td>
           <div style="display:inline-block;">
-            <img style="width:78px;" src="_static/download-circle.svg" alt="download icon">
-          </div>
-          <div style="display:inline-block;">
-            <h2>Distribute Your Game</h2>
-          </div>
-          <ul>
-            <li><a href="tutorials/bundling_with_pyinstaller/index.html">Bundling a game with PyInstaller</a></li>
-          </ul>
-        </td>
-
-        <td>
-
-        </td>
-
-      </tr>
-
-
-      <tr>
-
-        <td>
-          <div style="display:inline-block;">
             <img style="width:78px;" src="_static/source.svg" alt="source icon">
           </div>
           <div style="display:inline-block;">
@@ -147,23 +152,20 @@ The Python Arcade Library
           </div>
           <ul>
             <li><a href="https://github.com/pvcraven/arcade">GitHub</a></li>
-            <li><a href="release_notes.html">Release Notes</a></li>
-            <li><a href="enhancement_list.html">Enhancement List</a></li>
+            <li><a href="development/release_notes.html">Release Notes</a></li>
+            <li><a href="enhancement_list/enhancement_list.html">Enhancement List</a></li>
           </ul>
         </td>
 
         <td>
+
           <div style="display:inline-block;">
-            <img style="width:78px;" src="_static/performance.svg">
-          </div>
-          <div style="display:inline-block;">
-            <h2>Performance</h2>
+            <h2>Other Gaming Libraries</h2>
           </div>
           <ul>
-          <li><a href="performance_tips.html">Performance Tips</a></li>
-          <li><a href="arcade_vs_pygame_performance.html">Arcade vs. Pygame Performance</a></li>
-          <li><a href="pygame_comparison.html">Arcade vs. Pygame Feature Comparison</a></li>
+            <li><a href="pygame_comparison.html">Arcade vs. Pygame Comparison</a></li>
           </ul>
+
         </td>
 
       </tr>
@@ -188,6 +190,19 @@ The Python Arcade Library
         </td>
 
         <td>
+
+
+          <div style="display:inline-block;">
+            <img style="width:78px;" src="_static/performance.svg">
+          </div>
+          <div style="display:inline-block;">
+            <h2>Performance</h2>
+          </div>
+          <ul>
+          <li><a href="development/performance_tips.html">Performance Tips</a></li>
+          <li><a href="https://craven-performance-testing.s3-us-west-2.amazonaws.com/index.html">Arcade vs. Pygame</a></li>
+          </ul>
+
           <div style="display:inline-block;">
             <h2>Related Libraries</h2>
           </div>
@@ -195,6 +210,7 @@ The Python Arcade Library
             <li><a href="https://github.com/kfields/arcade-imgui">Arcade-ImGui</a></li>
             <li><a href="https://github.com/maarten-dp/arcade-curtains">Arcade-Curtains</a></li>
            </ul>
+
         </td>
 
       </tr>
@@ -216,7 +232,7 @@ game without learning a complex framework.
    :maxdepth: 1
 
    get_started
-   installation
+   install/index
    pygame_comparison
    sample_games
    examples/index
@@ -227,8 +243,6 @@ game without learning a complex framework.
 
    quick_index
    arcade
-   arcade_gl
-   arcade_gui
    resources
    keyboard
 
@@ -243,27 +257,26 @@ game without learning a complex framework.
    tutorials/lights/index
    tutorials/gpu_particle_burst/index
    tutorials/bundling_with_pyinstaller/index
+   tutorials/shader_toy/index
+   tutorials/framebuffer/index
+   tutorials/raycasting/index
+   gui/index
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Advanced
+
+   advanced/vsync
+   development/performance_tips
 
 .. toctree::
    :maxdepth: 1
    :caption: Community
 
-   diversity
-   social
+   community/index
 
 .. toctree::
    :maxdepth: 1
    :caption: Development
 
-   release_notes
-   how_to_contribute
-   performance_tips
-   directory_structure
-   how_to_compile
-   how_to_submit_changes
-   enhancement_list
-   tutorials/edge_artifacts/index
-   logging
-
-
-
+   development/index

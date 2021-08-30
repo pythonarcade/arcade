@@ -18,12 +18,14 @@ PARTICLE_COUNT = 300
 MIN_FADE_TIME = 0.25
 MAX_FADE_TIME = 1.5
 
+
 @dataclass
 class Burst:
     """ Track for each burst. """
     buffer: arcade.gl.Buffer
     vao: arcade.gl.Geometry
     start_time: float
+
 
 class MyWindow(arcade.Window):
     """ Main window"""

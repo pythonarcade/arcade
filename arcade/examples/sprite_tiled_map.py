@@ -1,16 +1,14 @@
 """
 Load a Tiled map file
 
-Artwork from: http://kenney.nl
-Tiled available from: http://www.mapeditor.org/
+Artwork from: https://kenney.nl
+Tiled available from: https://www.mapeditor.org/
 
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.sprite_tiled_map
 """
 
 import arcade
-import os
-import time
 
 TILE_SCALING = 0.5
 PLAYER_SCALING = 1
@@ -19,7 +17,7 @@ SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 SCREEN_TITLE = "Sprite Tiled Map Example"
 SPRITE_PIXEL_SIZE = 128
-GRID_PIXEL_SIZE = (SPRITE_PIXEL_SIZE * TILE_SCALING)
+GRID_PIXEL_SIZE = SPRITE_PIXEL_SIZE * TILE_SCALING
 
 # How many pixels to keep as a minimum margin between the character
 # and the edge of the screen.
@@ -35,7 +33,7 @@ GRAVITY = 1.1
 
 
 class MyGame(arcade.Window):
-    """ Main application class. """
+    """Main application class."""
 
     def __init__(self):
         """
@@ -43,16 +41,12 @@ class MyGame(arcade.Window):
         """
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
-        # Set the working directory (where we expect to find files) to the same
-        # directory this .py file is in. You can leave this out of your own
-        # code, but it is needed to easily run the examples using "python -m"
-        # as mentioned at the top of this program.
-        file_path = os.path.dirname(os.path.abspath(__file__))
-        os.chdir(file_path)
+        # Tilemap Object
+        self.tile_map = None
 
         # Sprite lists
-        self.wall_list = None
         self.player_list = None
+        self.wall_list = None
         self.coin_list = None
 
         # Set up the player
@@ -60,62 +54,63 @@ class MyGame(arcade.Window):
         self.player_sprite = None
 
         self.physics_engine = None
-        self.view_left = 0
-        self.view_bottom = 0
         self.end_of_map = 0
         self.game_over = False
-        self.last_time = None
-        self.frame_count = 0
-        self.fps_message = None
+
+        # Cameras
+        self.camera = None
+        self.gui_camera = None
 
     def setup(self):
-        """ Set up the game and initialize the variables. """
+        """Set up the game and initialize the variables."""
 
         # Sprite lists
         self.player_list = arcade.SpriteList()
-        self.coin_list = arcade.SpriteList()
 
         # Set up the player
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                                           PLAYER_SCALING)
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            PLAYER_SCALING,
+        )
 
         # Starting position of the player
         self.player_sprite.center_x = 196
         self.player_sprite.center_y = 270
         self.player_list.append(self.player_sprite)
 
-        map_name = ":resources:/tmx_maps/map.tmx"
+        map_name = ":resources:/tiled_maps/map.json"
+
+        layer_options = {
+            "Platforms": {"use_spatial_hash": True},
+            "Coins": {"use_spatial_hash": True},
+        }
 
         # Read in the tiled map
-        my_map = arcade.tilemap.read_tmx(map_name)
-        self.end_of_map = my_map.map_size.width * GRID_PIXEL_SIZE
+        self.tile_map = arcade.load_tilemap(
+            map_name, layer_options=layer_options, scaling=TILE_SCALING
+        )
+        self.end_of_map = self.tile_map.width * GRID_PIXEL_SIZE
 
-        # --- Platforms ---
-        self.wall_list = arcade.tilemap.process_layer(my_map,
-                                                      'Platforms',
-                                                      TILE_SCALING,
-                                                      use_spatial_hash=True)
-
-        # --- Coins ---
-        self.coin_list = arcade.tilemap.process_layer(my_map,
-                                                      'Coins',
-                                                      TILE_SCALING,
-                                                      use_spatial_hash=True)
+        # Set wall and coin SpriteLists
+        self.wall_list = self.tile_map.sprite_lists["Platforms"]
+        self.coin_list = self.tile_map.sprite_lists["Coins"]
 
         # --- Other stuff
         # Set the background color
-        if my_map.background_color:
-            arcade.set_background_color(my_map.background_color)
+        if self.tile_map.background_color:
+            arcade.set_background_color(self.tile_map.background_color)
 
         # Keep player from running through the wall_list layer
-        self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
-                                                             self.wall_list,
-                                                             gravity_constant=GRAVITY)
+        walls = [self.wall_list, ]
+        self.physics_engine = arcade.PhysicsEnginePlatformer(
+            self.player_sprite, walls, gravity_constant=GRAVITY
+        )
 
-        # Set the view port boundaries
-        # These numbers set where we have 'scrolled' to.
-        self.view_left = 0
-        self.view_bottom = 0
+        self.camera = arcade.Camera(SCREEN_WIDTH, SCREEN_HEIGHT)
+        self.gui_camera = arcade.Camera(SCREEN_WIDTH, SCREEN_HEIGHT)
+
+        # Center camera on user
+        self.pan_camera_to_user()
 
         self.game_over = False
 
@@ -124,41 +119,38 @@ class MyGame(arcade.Window):
         Render the screen.
         """
 
-        self.frame_count += 1
-
         # This command has to happen before we start drawing
-        arcade.start_render()
+        self.camera.use()
+        self.clear()
 
         # Draw all the sprites.
         self.player_list.draw()
         self.wall_list.draw()
         self.coin_list.draw()
 
-        for item in self.player_list:
-            item.draw_hit_box(arcade.color.RED)
+        # Enable to draw hit boxes
+        # self.wall_list.draw_hit_boxes()
+        # self.wall_list_objects.draw_hit_boxes()
 
-        for item in self.wall_list:
-            item.draw_hit_box(arcade.color.RED)
-
-        if self.last_time and self.frame_count % 60 == 0:
-            fps = 1.0 / (time.time() - self.last_time) * 60
-            self.fps_message = f"FPS: {fps:5.0f}"
-
-        if self.fps_message:
-            arcade.draw_text(self.fps_message, self.view_left + 10, self.view_bottom + 40, arcade.color.BLACK, 14)
-
-        if self.frame_count % 60 == 0:
-            self.last_time = time.time()
+        self.gui_camera.use()
 
         # Put the text on the screen.
         # Adjust the text position based on the view port so that we don't
         # scroll the text too.
         distance = self.player_sprite.right
         output = f"Distance: {distance}"
-        arcade.draw_text(output, self.view_left + 10, self.view_bottom + 20, arcade.color.BLACK, 14)
+        arcade.draw_text(
+            output, 10, 20, arcade.color.BLACK, 14
+        )
 
         if self.game_over:
-            arcade.draw_text("Game Over", self.view_left + 200, self.view_bottom + 200, arcade.color.BLACK, 30)
+            arcade.draw_text(
+                "Game Over",
+                200,
+                200,
+                arcade.color.BLACK,
+                30,
+            )
 
     def on_key_press(self, key, modifiers):
         """
@@ -180,7 +172,7 @@ class MyGame(arcade.Window):
             self.player_sprite.change_x = 0
 
     def on_update(self, delta_time):
-        """ Movement and game logic """
+        """Movement and game logic"""
 
         if self.player_sprite.right >= self.end_of_map:
             self.game_over = True
@@ -189,49 +181,31 @@ class MyGame(arcade.Window):
         if not self.game_over:
             self.physics_engine.update()
 
-        coins_hit = arcade.check_for_collision_with_list(self.player_sprite, self.coin_list)
+        coins_hit = arcade.check_for_collision_with_list(
+            self.player_sprite, self.coin_list
+        )
         for coin in coins_hit:
             coin.remove_from_sprite_lists()
             self.score += 1
 
-        # --- Manage Scrolling ---
+        # Pan to the user
+        self.pan_camera_to_user(panning_fraction=0.12)
 
-        # Track if we need to change the view port
+    def pan_camera_to_user(self, panning_fraction: float = 1.0):
+        """ Manage Scrolling """
 
-        changed = False
+        # This spot would center on the user
+        screen_center_x = self.player_sprite.center_x - (self.camera.viewport_width / 2)
+        screen_center_y = self.player_sprite.center_y - (
+            self.camera.viewport_height / 2
+        )
+        if screen_center_x < 0:
+            screen_center_x = 0
+        if screen_center_y < 0:
+            screen_center_y = 0
+        user_centered = screen_center_x, screen_center_y
 
-        # Scroll left
-        left_bndry = self.view_left + VIEWPORT_LEFT_MARGIN
-        if self.player_sprite.left < left_bndry:
-            self.view_left -= left_bndry - self.player_sprite.left
-            changed = True
-
-        # Scroll right
-        right_bndry = self.view_left + SCREEN_WIDTH - VIEWPORT_RIGHT_MARGIN
-        if self.player_sprite.right > right_bndry:
-            self.view_left += self.player_sprite.right - right_bndry
-            changed = True
-
-        # Scroll up
-        top_bndry = self.view_bottom + SCREEN_HEIGHT - VIEWPORT_MARGIN_TOP
-        if self.player_sprite.top > top_bndry:
-            self.view_bottom += self.player_sprite.top - top_bndry
-            changed = True
-
-        # Scroll down
-        bottom_bndry = self.view_bottom + VIEWPORT_MARGIN_BOTTOM
-        if self.player_sprite.bottom < bottom_bndry:
-            self.view_bottom -= bottom_bndry - self.player_sprite.bottom
-            changed = True
-
-        # If we need to scroll, go ahead and do it.
-        if changed:
-            self.view_left = int(self.view_left)
-            self.view_bottom = int(self.view_bottom)
-            arcade.set_viewport(self.view_left,
-                                SCREEN_WIDTH + self.view_left,
-                                self.view_bottom,
-                                SCREEN_HEIGHT + self.view_bottom)
+        self.camera.move_to(user_centered, panning_fraction)
 
 
 def main():

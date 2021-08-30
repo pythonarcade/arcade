@@ -1,17 +1,5 @@
 import pytest
-
 import arcade
-
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
-
-
-@pytest.fixture(scope="module")
-def ctx():
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, "Test OpenGL")
-    yield window.ctx
-    window.use()
-    window.close()
 
 
 def create(ctx, width, height, components=4, layers=1, dtype='f1'):
@@ -107,16 +95,24 @@ def test_varying_attachment_size(ctx):
                 ctx.texture((10, 11), components=4)])
 
 
-def test_read(twm, ctx):
+def test_read(ctx):
     fb = create(ctx, 2, 2, components=4)
     fb.clear(color=(255, 255, 0, 255))
     data = fb.read(components=4)
 
     assert len(data) == 16
-    if not twm:
-        assert data == b'\xff\xff\x00\xff' * 4
 
     # FIXME: needs read alignment
     # data = fb.read(components=3)
     # assert len(data) == 12
     # assert data == b'\xff\xff\x00' * 4
+
+def test_resize(ctx):
+    tex = ctx.texture((100, 100), components=4)
+    fbo = ctx.framebuffer(color_attachments=[tex])
+    assert fbo.size == tex.size
+    tex.resize((200, 200))
+    assert tex.size == (200, 200)
+    fbo.resize()
+    assert fbo.size == tex.size
+    assert fbo.viewport == (0, 0, *fbo.size)

@@ -1,5 +1,5 @@
 import arcade
-from arcade.experimental.shadertoy import ShaderToy
+from arcade.experimental.shadertoy import Shadertoy
 
 # Do the math to figure out our screen dimensions
 SCREEN_WIDTH = 800
@@ -11,7 +11,8 @@ class MyGame(arcade.Window):
 
     def __init__(self, width, height, title):
         super().__init__(width, height, title, resizable=True)
-        self.shadertoy = ShaderToy("""
+        self.shadertoy = Shadertoy(self.get_framebuffer_size(),
+        """
             void mainImage( out vec4 fragColor, in vec2 fragCoord )
             {
                 // Calculate the texture coordinate of the current fragment.
@@ -23,8 +24,8 @@ class MyGame(arcade.Window):
         """)
 
     def on_draw(self):
-        arcade.start_render()
-        self.shadertoy.draw()
+        self.clear()
+        self.shadertoy.render()
 
 
 if __name__ == "__main__":

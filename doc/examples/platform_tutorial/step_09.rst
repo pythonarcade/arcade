@@ -1,40 +1,102 @@
+.. _Tiled Map Editor: https://www.mapeditor.org/
 
 .. _platformer_part_nine:
 
-Step 9 - Multiple Levels and Other Layers
------------------------------------------
+Step 9 - Use Tiled Map Editor
+-----------------------------
 
-Here's an expanded example:
+.. image:: use_tileset.png
+    :width: 70%
 
-* This adds foreground, background, and "Don't Touch" layers.
+Create a Map File
+~~~~~~~~~~~~~~~~~
 
-  * The background tiles appear behind the player
-  * The foreground appears in front of the player
-  * The Don't Touch layer will reset the player to the start (228-237)
+For this part, instead of placing the tiles through code using specific points,
+we'll use a map editor that we can build maps with and then load in the map files.
 
-* The player resets to the start if they fall off the map (217-226)
-* If the player gets to the right side of the map, the program attempts to load another layer
+To start off with, download and install the `Tiled Map Editor`_. (Think about donating,
+as it is a  wonderful project provided for free.)
 
-  * Add ``level`` attribute (69-70)
-  * Updated ``setup`` to load a file based on the level (76-144, specifically lines 77 and 115)
-  * Added end-of-map check(245-256)
+Tiled already has excellent documentation available at https://doc.mapeditor.org/, so for
+this tutorial we'll assume that you're already familiar with how to create maps using Tiled.
+If you're not, you can check out the Tiled documentation and come back to here.
 
-.. literalinclude:: ../../../arcade/examples/platform_tutorial/09_endgame.py
-    :caption: More Advanced Example
+From this point on in the tutorial, every chapter will be working with a Tiled map. If you don't
+want to create your own yet, Arcade ships a few examples in it's included ``resources`` folder, which
+is what these examples pull from, so you don't have to create your own maps yet if you don't want to.
+
+.. Note::
+
+   Arcade can only work with JSON maps from Tiled. TMX maps will not work. Make sure to save/export your maps accordingly.
+
+We'll start with a basic ``map.json`` file provided by Arcade. You can open this file in Tiled and look at how it's setup,
+but we'll go over some of the basics now.
+
+In this map we have two layers named "Platforms" and "Coins". On the platforms layer are all of the blocks
+which a player will collide with using the physics engine, and on the coins layer are all the coins
+the player can pickup to increase their score. That's pretty much it for this map.
+
+.. image:: images/step_09/layer_names.png
+
+These layers will be automatically loaded by Arcade as SpriteLists that we can access and draw with our scene. Let's look at how
+we load in the map, first we'll create a ``tile_map`` object in our init function:
+
+.. literalinclude:: ../../../arcade/examples/platform_tutorial/09_load_map.py
+    :caption: Load a map - Create the object
+    :lines: 34-35
+
+Then we will do the actual loading in the setup function Our new setup function will look like this:
+
+.. literalinclude:: ../../../arcade/examples/platform_tutorial/09_load_map.py
+    :caption: Load a map - Setup the map
+    :pyobject: MyGame.setup
     :linenos:
-    :emphasize-lines: 69-70, 77, 114-115, 248-259
+    :emphasize-lines: 8-25, 40-48
 
-.. note::
+This is pretty much all that needs done to load in the Tilemap, we get a Scene created from it and can use it just like we
+have been up until now. But let's go through this setup function and look at all the updates.
 
-    What else might you want to do?
+In the first piece we define the name of map file we want to load, that one is pretty simple.
 
-    * :ref:`sprite_enemies_in_platformer`
-    * :ref:`sprite_face_left_or_right`
-    * Bullets (or something you can shoot)
+Next we have a ``layer_options`` variable. This is a dictionary which let's you assign special options to specific layers
+in the map. In this example, we're just adding spatial hashing to the "Platforms" layer, but we can do a few other things here.
 
-      * :ref:`sprite_bullets`
-      * :ref:`sprite_bullets_aimed`
-      * :ref:`sprite_bullets_enemy_aims`
+The available options you can set for a layer are:
 
-    * Add :ref:`sprite_explosion_bitmapped`
-    * Add :ref:`sprite_move_animation`
+* ``use_spatial_hash`` - Make a Layer's SpriteList use spatial hashing
+* ``scaling`` - Set per layer scaling of Sprites
+* ``hit_box_algorithm`` - Change the hit box algorithm used when doing collision detection with this SpriteList
+* ``hit_box_detail`` - Change the hit box detail used when doing collision detection with this SpriteList
+
+Then we actually load in the Tilemap using the ``arcade.load_tilemap`` function. This will return us back an instance of the
+``arcade.TileMap`` class. For now, we don't actually need to interact with this object much, but later we will do some more
+advanced things like setting enemy spawn points and movement paths from within the map editor.
+
+Finally we use a new way to create our Scene, with the ``arcade.Scene.from_tilemap`` function. This let's you specify a TileMap
+object, and will automatically construct a scene with all of the layers in your map, arranged in the proper render order. Then
+you can work with the scene exactly like we have up until this point.
+
+The last small piece we changed is when we create the physics engine, we've now have to use "Platforms" as the sprite list name
+since that is the name of our Layer in the map file.
+
+And that's all! You should now have a full game loading from a map file created with Tiled.
+
+Some things we will use Tiled for in upcoming chapters are:
+
+* Platforms that you run into (or you can think of them as walls)
+* Moving platforms
+* Coins or objects to pick up
+* Background objects that you don't interact with, but appear behind the player
+* Foreground objects that you don't interact with, but appear in front of the player
+* Insta-death blocks and zones (like lava)
+* Ladders
+* Enemy spawn positions
+* Enemy movement paths
+
+Source Code
+~~~~~~~~~~~
+
+.. literalinclude:: ../../../arcade/examples/platform_tutorial/09_load_map.py
+    :caption: Load the Map
+    :linenos:
+    :emphasize-lines: 34-35,68-69,71-78,80-81,83-85,101-103,105-108

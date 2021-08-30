@@ -2,14 +2,13 @@
 Code related to working with textures.
 """
 
-import math
 from pathlib import Path
 
 import PIL.Image
 import PIL.ImageOps
 import PIL.ImageDraw
 
-from typing import Optional
+from typing import Optional, Tuple
 from typing import List
 from typing import Union
 
@@ -18,6 +17,7 @@ from arcade import RectList
 from arcade import Color
 from arcade import calculate_hit_box_points_simple
 from arcade import calculate_hit_box_points_detailed
+from arcade.math import Mat3
 from arcade.resources import resolve_resource_path
 
 
@@ -27,42 +27,6 @@ def _lerp_color(start_color: Color, end_color: Color, u: float) -> Color:
         int(lerp(start_color[1], end_color[1], u)),
         int(lerp(start_color[2], end_color[2], u))
     )
-
-
-class Matrix3x3:
-    def __init__(self):
-        self.reset()
-
-    def reset(self):
-        self.v = [1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]
-        return self
-
-    def multiply(self, o: List[float]):
-        v = self.v
-        self.v = [v[0] * o[0] + v[3] * o[1] + v[6] * o[2],
-                  v[1] * o[0] + v[4] * o[1] + v[7] * o[2],
-                  v[2] * o[0] + v[5] * o[1] + v[8] * o[2],
-                  v[0] * o[3] + v[3] * o[4] + v[6] * o[5],
-                  v[1] * o[3] + v[4] * o[4] + v[7] * o[5],
-                  v[2] * o[3] + v[5] * o[4] + v[8] * o[5],
-                  v[0] * o[6] + v[3] * o[7] + v[6] * o[8],
-                  v[1] * o[6] + v[4] * o[7] + v[7] * o[8],
-                  v[2] * o[6] + v[5] * o[7] + v[8] * o[8]]
-        return self
-
-    def scale(self, sx: float, sy: float):
-        return self.multiply([1.0 / sx, 0.0, 0.0, 0.0, 1.0 / sy, 0.0, 0.0, 0.0, 1.0])
-
-    def translate(self, tx: float, ty: float):
-        return self.multiply([1.0, 0.0, 0.0, 0.0, 1.0, 0.0, -tx, ty, 1.0])
-
-    def rotate(self, phi: float):
-        s = math.sin(math.radians(phi))
-        c = math.cos(math.radians(phi))
-        return self.multiply([c, s, 0.0, -s, c, 0.0, 0.0, 0.0, 1.0])
-
-    def shear(self, sx: float, sy: float):
-        return self.multiply([1.0, sy, 0.0, sx, 1.0, 0.0, 0.0, 0.0, 1.0])
 
 
 class Texture:
@@ -82,32 +46,33 @@ class Texture:
     def __init__(self,
                  name: str,
                  image: PIL.Image.Image = None,
-                 hit_box_algorithm: str = "Simple",
+                 hit_box_algorithm: Optional[str] = "Simple",
                  hit_box_detail: float = 4.5):
         """
         Create a texture, given a PIL Image object.
 
         :param str name: Name of texture. Used for caching, so must be unique for each texture.
         :param PIL.Image.Image image: Image to use as a texture.
-        :param str hit_box_algorithm: One of 'None', 'Simple' or 'Detailed'. \
+        :param str hit_box_algorithm: One of None, 'None', 'Simple' or 'Detailed'. \
         Defaults to 'Simple'. Use 'Simple' for the :data:`PhysicsEngineSimple`, \
         :data:`PhysicsEnginePlatformer` \
         and 'Detailed' for the :data:`PymunkPhysicsEngine`.
 
-            .. figure:: images/hit_box_algorithm_none.png
+            .. figure:: ../images/hit_box_algorithm_none.png
                :width: 40%
 
                hit_box_algorithm = "None"
 
-            .. figure:: images/hit_box_algorithm_simple.png
+            .. figure:: ../images/hit_box_algorithm_simple.png
                :width: 55%
 
                hit_box_algorithm = "Simple"
 
-            .. figure:: images/hit_box_algorithm_detailed.png
+            .. figure:: ../images/hit_box_algorithm_detailed.png
                :width: 75%
 
                hit_box_algorithm = "Detailed"
+
         :param float hit_box_detail: Float, defaults to 4.5. Used with 'Detailed' to hit box
 
         """
@@ -122,39 +87,103 @@ class Texture:
         self._sprite_list: Optional[SpriteList] = None
         self._hit_box_points = None
 
-        if hit_box_algorithm != "Simple" and \
-           hit_box_algorithm != "Detailed" and \
-           hit_box_algorithm != "None":
-           raise ValueError("hit_box_algorithm must be 'Simple', 'Detailed', or 'None'.")
-        self._hit_box_algorithm = hit_box_algorithm
+        if hit_box_algorithm not in ["Simple", "Detailed", "None", None]:
+            raise ValueError(
+                "hit_box_algorithm must be 'Simple', 'Detailed', 'None'"
+                ", or an actual None value."
+            )
+
+        # preserve old behavior in case any users subclassed Texture
+        self._hit_box_algorithm = hit_box_algorithm or "None"
 
         self._hit_box_detail = hit_box_detail
+
+    @classmethod
+    def create_empty(cls, name: str, size: Tuple[int, int]) -> "Texture":
+        """
+        Create an empty texture with a black image.
+
+        This can be used to allocate space in texture atlases.
+        The hit box algorithm will be a simply bounding box (None)
+        since we have no pixel data to possibly determine a hit box.
+
+        Note that this creates an internal empty RGBA Pillow Image.
+        If creating many large textures be aware of the memory usage
+        (4 bytes per pixel). Optionally the normal texture initializer
+        can be used providing your own image. If making many equally sized
+        empty texture the same image an be reused across across these textures.
+
+        The internal image can also be latered with Pillow draw commands
+        and written/updated to a texture atlas. This works great for infrequent
+        changes. For frequent texture changes you should instead render
+        directly into the texture atlas.
+
+        :param str name: The unique name for this texture
+        :param Tuple[int,int] size: The xy size of the internal image.
+        """
+        return Texture(
+            name,
+            image=PIL.Image.new("RGBA", size, (0, 0, 0, 0)),
+            hit_box_algorithm=None,
+        )
+
+    # ------------------------------------------------------------
+    # Comparison and hash functions so textures can work with sets
+    # A texture's uniqueness is simply based on the name
+    def __hash__(self) -> int:
+        """The hash if a texture is the name"""
+        return hash(self.name)
+
+    def __eq__(self, other) -> bool:
+        if other is None:
+            return False
+        if not isinstance(other, self.__class__):
+            return False
+        return self.name == other.name
+
+    def __ne__(self, other) -> bool:
+        if other is None:
+            return True
+        if not isinstance(other, self.__class__):
+            return True
+        return self.name != other.name
+    # ------------------------------------------------------------
 
     @property
     def width(self) -> int:
         """
         Width of the texture in pixels.
         """
-        if self.image:
-            return self.image.width
-        else:
-            return 0
+        if not self.image:
+            raise ValueError(f"Texture '{self.name}' doesn't have an image")
+
+        return self.image.width
 
     @property
     def height(self) -> int:
         """
         Height of the texture in pixels.
         """
-        if self.image:
-            return self.image.height
-        else:
-            return 0
+        if not self.image:
+            raise ValueError(f"Texture '{self.name}' doesn't have an image")
+
+        return self.image.height
+
+    @property
+    def size(self) -> Tuple[int, int]:
+        """
+        Width and height as a tuple
+        """
+        return self.width, self.height
 
     @property
     def hit_box_points(self):
         if self._hit_box_points is not None:
             return self._hit_box_points
         else:
+            if not self.image:
+                raise ValueError(f"Texture '{self.name}' doesn't have an image")
+
             if self._hit_box_algorithm == "Simple":
                 self._hit_box_points = calculate_hit_box_points_simple(self.image)
             elif self._hit_box_algorithm == "Detailed":
@@ -205,7 +234,7 @@ class Texture:
                          height: float,
                          angle: float = 0,
                          alpha: int = 255,
-                         texture_transform: Matrix3x3 = Matrix3x3()):
+                         texture_transform: Mat3 = Mat3()):
 
         self._create_cached_sprite()
         if self._sprite and self._sprite_list:
@@ -334,8 +363,8 @@ def load_texture(file_name: Union[str, Path],
                  flipped_vertically: bool = False,
                  flipped_diagonally: bool = False,
                  can_cache: bool = True,
-                 mirrored = None,
-                 hit_box_algorithm = "Simple",
+                 mirrored: bool = None,
+                 hit_box_algorithm: str = "Simple",
                  hit_box_detail: float = 4.5) -> Texture:
     """
     Load an image from disk and create a texture.
@@ -366,20 +395,21 @@ def load_texture(file_name: Union[str, Path],
     :data:`PhysicsEnginePlatformer` \
     and 'Detailed' for the :data:`PymunkPhysicsEngine`.
 
-        .. figure:: images/hit_box_algorithm_none.png
+        .. figure:: ../images/hit_box_algorithm_none.png
            :width: 40%
 
            hit_box_algorithm = "None"
 
-        .. figure:: images/hit_box_algorithm_simple.png
+        .. figure:: ../images/hit_box_algorithm_simple.png
            :width: 55%
 
            hit_box_algorithm = "Simple"
 
-        .. figure:: images/hit_box_algorithm_detailed.png
+        .. figure:: ../images/hit_box_algorithm_detailed.png
            :width: 75%
 
            hit_box_algorithm = "Detailed"
+
     :param float hit_box_detail: Float, defaults to 4.5. Used with 'Detailed' to hit box
 
     :returns: New :class:`Texture` object.
@@ -474,6 +504,7 @@ def cleanup_texture_cache():
     import gc
     gc.collect()
 
+
 def load_texture_pair(filename, hit_box_algorithm: str = "Simple"):
     """
     Load a texture pair, with the second being a mirror image of the first.
@@ -486,6 +517,7 @@ def load_texture_pair(filename, hit_box_algorithm: str = "Simple"):
                      flipped_horizontally=True,
                      hit_box_algorithm=hit_box_algorithm)
     ]
+
 
 def load_spritesheet(file_name: Union[str, Path],
                      sprite_width: int,

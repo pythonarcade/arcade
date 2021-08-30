@@ -3,7 +3,7 @@ Sprite Collect Coins with Background
 
 Simple program to show basic sprite usage.
 
-Artwork from http://kenney.nl
+Artwork from https://kenney.nl
 
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.sprite_collect_coins_background
@@ -61,7 +61,7 @@ class MyGame(arcade.Window):
 
         # Load the background image. Do this in the setup so we don't keep reloading it all the time.
         # Image from:
-        # http://wallpaper-gallery.net/single/free-background-images/free-background-images-22.html
+        # https://wallpaper-gallery.net/single/free-background-images/free-background-images-22.html
         self.background = arcade.load_texture(":resources:images/backgrounds/abstract_1.jpg")
 
         # Sprite lists
@@ -70,7 +70,8 @@ class MyGame(arcade.Window):
 
         # Set up the player
         self.score = 0
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", PLAYER_SCALING)
+        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
+                                           PLAYER_SCALING)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 50
         self.player_list.append(self.player_sprite)

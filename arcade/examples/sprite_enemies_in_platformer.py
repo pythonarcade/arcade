@@ -1,8 +1,8 @@
 """
 Show how to do enemies in a platformer
 
-Artwork from: http://kenney.nl
-Tiled available from: http://www.mapeditor.org/
+Artwork from: https://kenney.nl
+Tiled available from: https://www.mapeditor.org/
 
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.sprite_enemies_in_platformer
@@ -113,7 +113,8 @@ class MyGame(arcade.Window):
         self.enemy_list.append(enemy)
 
         # -- Set up the player
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", SPRITE_SCALING)
+        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
+                                           SPRITE_SCALING)
         self.player_list.append(self.player_sprite)
 
         # Starting position of the player

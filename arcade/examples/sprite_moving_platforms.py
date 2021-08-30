@@ -3,7 +3,7 @@ Sprite with Moving Platforms
 
 Load a map stored in csv format, as exported by the program 'Tiled.'
 
-Artwork from http://kenney.nl
+Artwork from https://kenney.nl
 
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.sprite_moving_platforms
@@ -68,7 +68,8 @@ class MyGame(arcade.Window):
         self.player_list = arcade.SpriteList()
 
         # Set up the player
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", SPRITE_SCALING)
+        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
+                                           SPRITE_SCALING)
         self.player_sprite.center_x = 2 * GRID_PIXEL_SIZE
         self.player_sprite.center_y = 3 * GRID_PIXEL_SIZE
         self.player_list.append(self.player_sprite)

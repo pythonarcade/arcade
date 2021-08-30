@@ -1,5 +1,6 @@
 import math
 import random
+from io import StringIO
 from arcade.arcade_types import Point, Vector
 
 
@@ -26,7 +27,7 @@ def rand_in_circle(center: Point, radius: float):
     """
     Generate a point in a circle, or can think of it as a vector pointing
     a random direction with a random magnitude <= radius
-    Reference: http://stackoverflow.com/a/30564123
+    Reference: https://stackoverflow.com/a/30564123
     Note: This algorithm returns a higher concentration of points around the center of the circle
     """
     # random angle
@@ -50,11 +51,13 @@ def rand_on_circle(center: Point, radius: float) -> Point:
 
 
 def rand_on_line(pos1: Point, pos2: Point) -> Point:
+    """ Given two points defining a line, return a random point on that line."""
     u = random.uniform(0.0, 1.0)
     return lerp_vec(pos1, pos2, u)
 
 
 def rand_angle_360_deg():
+    """ Return a random angle in degrees. """
     return random.uniform(0.0, 360.0)
 
 
@@ -137,3 +140,20 @@ class _Vec2:
 
     def as_tuple(self) -> Point:
         return self.x, self.y
+
+
+def generate_uuid_from_kwargs(**kwargs) -> str:
+    """
+    Given key/pair combos, returns a string in uuid format.
+    Such as `text='hi', size=32` it will return "text-hi-size-32".
+    Called with no parameters, id does NOT return a random unique id.
+    """
+    if len(kwargs) == 0:
+        raise Exception("generate_uuid_from_kwargs has to be used with kwargs, please check the doc.")
+
+    with StringIO() as guid:
+        for key, value in kwargs.items():
+            guid.write(str(key))
+            guid.write(str(value))
+            guid.write("-")
+        return guid.getvalue()

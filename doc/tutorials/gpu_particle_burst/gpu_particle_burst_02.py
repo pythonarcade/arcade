@@ -10,11 +10,13 @@ SCREEN_WIDTH = 1024
 SCREEN_HEIGHT = 768
 SCREEN_TITLE = "GPU Particle Explosion"
 
+
 @dataclass
 class Burst:
     """ Track for each burst. """
     buffer: arcade.gl.Buffer
     vao: arcade.gl.Geometry
+
 
 class MyWindow(arcade.Window):
     """ Main window"""

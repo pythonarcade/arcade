@@ -2,8 +2,8 @@
 Path-related functions.
 
 """
-from shapely import speedups # type: ignore
-from shapely.geometry import LineString, Polygon # type: ignore
+from shapely import speedups  # type: ignore
+from shapely.geometry import LineString, Polygon  # type: ignore
 
 from arcade import Point
 from arcade import check_for_collision_with_list
@@ -86,11 +86,11 @@ class _AStarGraph(object):
         """
         # Use Chebyshev distance heuristic if we can move one square either
         # adjacent or diagonal
-        D = 1
-        D2 = 1
+        d = 1
+        d2 = 1
         dx = abs(start[0] - goal[0])
         dy = abs(start[1] - goal[1])
-        return D * (dx + dy) + (D2 - 2 * D) * min(dx, dy)
+        return d * (dx + dy) + (d2 - 2 * d) * min(dx, dy)
 
     def get_vertex_neighbours(self, pos):
         n = []
@@ -106,13 +106,12 @@ class _AStarGraph(object):
     def move_cost(self, a, b):
         if b in self.barriers:
             # print("Ping")
-            return 50  # Extremely high cost to enter barrier squares
+            return float('inf')  # Infitely high cost to enter barrier squares
 
         elif a[0] == b[0] or a[1] == b[1]:
             return 1
         else:
             return 1.42
-
 
         return 1  # Normal movement cost
 
@@ -125,29 +124,29 @@ def _AStarSearch(start, end, graph):
     G[start] = 0
     F[start] = graph.heuristic(start, end)
 
-    closedVertices = set()
-    openVertices = set([start])
-    cameFrom = {}
+    closed_vertices = set()
+    open_vertices = set([start])
+    came_from = {}
 
     count = 0
-    while len(openVertices) > 0:
+    while len(open_vertices) > 0:
         count += 1
         if count > 500:
             break
         # Get the vertex in the open list with the lowest F score
         current = None
-        currentFscore = None
-        for pos in sorted(openVertices):
-            if current is None or F[pos] < currentFscore:
-                currentFscore = F[pos]
+        current_fscore = None
+        for pos in sorted(open_vertices):
+            if current is None or F[pos] < current_fscore:
+                current_fscore = F[pos]
                 current = pos
 
         # Check if we have reached the goal
         if current == end:
             # Retrace our route backward
             path = [current]
-            while current in cameFrom:
-                current = cameFrom[current]
+            while current in came_from:
+                current = came_from[current]
                 path.append(current)
             path.reverse()
             if F[end] >= 10000:
@@ -157,25 +156,25 @@ def _AStarSearch(start, end, graph):
             # return path, F[end]  # Done!
 
         # Mark the current vertex as closed
-        openVertices.remove(current)
-        closedVertices.add(current)
+        open_vertices.remove(current)
+        closed_vertices.add(current)
 
         # Update scores for vertices near the current position
         for neighbour in sorted(graph.get_vertex_neighbours(current)):
-            if neighbour in closedVertices:
+            if neighbour in closed_vertices:
                 continue  # We have already processed this node exhaustively
-            candidateG = G[current] + graph.move_cost(current, neighbour)
+            candidate_g = G[current] + graph.move_cost(current, neighbour)
 
-            if neighbour not in openVertices:
-                openVertices.add(neighbour)  # Discovered a new vertex
-            elif candidateG >= G[neighbour]:
+            if neighbour not in open_vertices:
+                open_vertices.add(neighbour)  # Discovered a new vertex
+            elif candidate_g >= G[neighbour]:
                 continue  # This G score is worse than previously found
 
             # Adopt this G score
-            cameFrom[neighbour] = current
-            G[neighbour] = candidateG
-            H = graph.heuristic(neighbour, end)
-            F[neighbour] = G[neighbour] + H
+            came_from[neighbour] = current
+            G[neighbour] = candidate_g
+            h = graph.heuristic(neighbour, end)
+            F[neighbour] = G[neighbour] + h
 
     # Out-of-bounds
     return None
@@ -183,6 +182,7 @@ def _AStarSearch(start, end, graph):
 
 def _collapse(pos, grid_size):
     return int(pos[0] // grid_size),  int(pos[1] // grid_size)
+
 
 def _expand(pos, grid_size):
     return int(pos[0] * grid_size),  int(pos[1] * grid_size)

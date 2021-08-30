@@ -5,7 +5,7 @@ Line of Sight
           functions may still change. To use, you will need to install one of the
           pre-release packages, or install via GitHub.
 
-Artwork from http://kenney.nl
+Artwork from https://kenney.nl
 
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.line_of_sight
@@ -78,7 +78,8 @@ class MyGame(arcade.Window):
         self.enemy_list = arcade.SpriteList()
 
         # Set up the player
-        self.player = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", SPRITE_SCALING)
+        self.player = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
+                                    SPRITE_SCALING)
         self.player.center_x = 50
         self.player.center_y = 350
         self.player_list.append(self.player)

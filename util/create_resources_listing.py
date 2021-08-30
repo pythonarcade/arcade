@@ -9,6 +9,19 @@ import os
 import shutil
 from pathlib import Path
 
+COLUMNS = 3
+
+
+skip_extensions = ['.glsl', '.md', '.py', '.yml', '.json', '.url', '.txt']
+
+
+def skipped_file(path):
+    filename = path.name
+    for extension in skip_extensions:
+        if filename.endswith(extension):
+            return True
+    return False
+
 
 def process_resource_directory(out, my_path: Path):
 
@@ -20,85 +33,82 @@ def process_resource_directory(out, my_path: Path):
             if cur_node.name.endswith("__"):
                 continue
 
-            has_files = False
-            for check_node in cur_node.iterdir():
-                if check_node.is_file():
-                    has_files = True
-                    break
-
             os.makedirs(Path("build/html", *curr_node_rel.parts), exist_ok=True)
 
             # out.write(f"\n{cur_node.name}\n")
             # out.write("-" * len(cur_node.name) + "\n\n")
             process_resource_directory.cell_count = 0
 
-            if has_files:
+            only_file_list = [item for item in cur_node.iterdir() if not (item.is_dir() or skipped_file(item))]
+            if len(only_file_list) > 0:
                 header_title = f":resources:{curr_node_rel.relative_to('resources').as_posix()}/"
-                out.write(f"\n{header_title}\n")
-                out.write("-" * (len(header_title)) + "\n\n")
+                if header_title == ":resources:images/":
+                    for f in only_file_list:
+                        print(f.name)
+                # out.write(f"\n{header_title}\n")
+                # out.write("-" * (len(header_title)) + "\n\n")
 
-                out.write(".. raw:: html\n\n")
-                out.write("    <table class='resource-table'><tr>\n")
-                process_resource_files(out, cur_node)
-                out.write("    </tr></table>\n")
+                out.write(f"\n")
+                out.write(f".. list-table:: {header_title}\n")
+                out.write(f"    :widths: 33 33 33\n")
+                out.write(f"    :header-rows: 0\n")
+                out.write(f"    :class: resource-table\n\n")
+
+                process_resource_files(out, only_file_list)
+                out.write("\n\n")
 
             process_resource_directory(out, cur_node)
 
 
-def process_resource_files(out, my_path: Path):
+def process_resource_files(out, file_list):
 
-    for cur_node in my_path.iterdir():
-        # cur_node ..\arcade\resources\tmx_maps\standard_tileset.tsx
-        # cur_node_rel tmx_maps\standard_tileset.tsx
-        # r1 ..\arcade\resources\tmx_maps\standard_tileset.tsx
-        # r3 resources/tmx_maps/standard_tileset.tsx
-        # r2 :resources:tmx_maps/standard_tileset.tsx
+    start_row = True
+    for cur_node in file_list:
         cur_node_rel = cur_node.relative_to('../arcade')
         r1 = cur_node.relative_to('.')
         r3 = 'resources/' + str(r1)[20:].replace('\\', '/')
-        if not cur_node.is_dir():
-            r2 = f":resources:{cur_node_rel.relative_to('resources').as_posix()}"
-            if process_resource_directory.cell_count % 3 == 0:
-                out.write(f"    </tr>\n")
-                out.write(f"    <tr>\n")
-            if cur_node.suffix in [".png", ".jpg", ".gif", ".svg"]:
-                out.write(f"    <td>")
-                out.write(f"<a href='{r3}'><img alt='{r2}' title='{r2}' src='{r3}'></a><br />")
-                out.write(f"{cur_node.name}")
-                process_resource_directory.cell_count += 1
-                out.write("</td>\n")
-            elif cur_node.suffix == ".wav":
-                out.write(f"    <td>")
-                out.write(f"<audio controls><source src='{r3}' type='audio/x-wav'></audio><br />")
-                out.write(f"{cur_node.name}")
-                process_resource_directory.cell_count += 1
-                out.write("</td>\n")
-            elif cur_node.suffix == ".mp3":
-                out.write(f"    <td>")
-                out.write(f"<audio controls><source src='{r3}' type='audio/mpeg'></audio><br />")
-                out.write(f"{cur_node.name}")
-                process_resource_directory.cell_count += 1
-                out.write("</td>\n")
-            elif cur_node.suffix == ".ogg":
-                out.write(f"    <td>")
-                out.write(f"<audio controls><source src='{r3}' type='audio/ogg'></audio><br />")
-                out.write(f"{cur_node.name}")
-                process_resource_directory.cell_count += 1
-                out.write("</td>\n")
-            elif cur_node.suffix in [".url", ".txt"]:
-                pass
-            else:
-                out.write(f"    <td>")
-                out.write(f"{cur_node.name}")
-                process_resource_directory.cell_count += 1
-                out.write("</td>\n")
-            # out.write(f"<br />{r2}</td>")
-            src = r1
-            dst = Path("build/html", r3)
-            shutil.copyfile(src, dst)
+
+        # r2 = f":resources:{cur_node_rel.relative_to('resources').as_posix()}"
+        if process_resource_directory.cell_count % COLUMNS == 0:
+            start_row = "*"
+        if cur_node.suffix in [".png", ".jpg", ".gif", ".svg"]:
+            out.write(f"    {start_row} - .. image:: ../arcade/{r3}\n\n")
+            out.write(f"        {cur_node.name}\n")
+            process_resource_directory.cell_count += 1
+        elif cur_node.suffix == ".wav":
+            file_path = f"https://github.com/pythonarcade/arcade/blob/development/arcade/{r3}?raw=true"
+            out.write(f"    {start_row} - .. raw:: html\n\n")
+            out.write(f"            <audio controls><source src='{file_path}' type='audio/x-wav'></audio><br />{cur_node.name}\n")
+            process_resource_directory.cell_count += 1
+        elif cur_node.suffix == ".mp3":
+            file_path = f"https://github.com/pythonarcade/arcade/blob/development/arcade/{r3}?raw=true"
+            out.write(f"    {start_row} - .. raw:: html\n\n")
+            out.write(f"            <audio controls><source src='{file_path}' type='audio/mpeg'></audio><br />{cur_node.name}\n")
+            process_resource_directory.cell_count += 1
+        elif cur_node.suffix == ".ogg":
+            file_path = f"https://github.com/pythonarcade/arcade/blob/development/arcade/{r3}?raw=true"
+            out.write(f"    {start_row} - .. raw:: html\n\n")
+            out.write(f"            <audio controls><source src='{file_path}' type='audio/ogg'></audio><br />{cur_node.name}\n")
+            process_resource_directory.cell_count += 1
+        elif cur_node.suffix == ".glsl":
+            file_path = f"https://github.com/pythonarcade/arcade/blob/development/arcade/{r3}"
+            out.write(f"    {start_row} - `{cur_node.name} <{file_path}>`_\n")
+            # out.write(f"    {start_row} - .. raw:: html\n\n")
+            # out.write(f"            <audio controls><source src='{file_path}' type='audio/ogg'></audio><br />{cur_node.name}\n")
+            process_resource_directory.cell_count += 1
+        else:
+            out.write(f"    {start_row} - {cur_node.name}\n")
+            process_resource_directory.cell_count += 1
+
+        start_row = " "
+
+    while process_resource_directory.cell_count % COLUMNS > 0:
+        out.write(f"      -\n")
+        process_resource_directory.cell_count += 1
 
 
 process_resource_directory.cell_count = 0
+
 
 def resources():
     file_path = os.path.dirname(os.path.abspath(__file__))

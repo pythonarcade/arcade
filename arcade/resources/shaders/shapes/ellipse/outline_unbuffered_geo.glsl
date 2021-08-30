@@ -1,11 +1,11 @@
 #version 330
 
 #define PI 3.1415926535897932384626433832795
-#define MIN_SEGMENTS 16
+#define MIN_SEGMENTS 3
 #define MAX_SEGMENTS 112
 
 layout (points) in;
-// TODO: We might want to increase the number of emitted verties, but core 3.3 says 256 is min requirement.
+// TODO: We might want to increase the number of emitted vertices, but core 3.3 says 256 is min requirement.
 // TODO: Normally 4096 is supported, but let's stay on the safe side
 layout (triangle_strip, max_vertices = 256) out;
 
@@ -14,7 +14,7 @@ uniform Projection {
 } proj;
 
 uniform int segments;
-// [w, h, tilt, thinkness]
+// [w, h, tilt, thickness]
 uniform vec4 shape;
 
 void main() {
@@ -42,8 +42,8 @@ void main() {
     // sin(v), cos(v) travels clockwise around the circle starting at 0, 1 (top of circle)
     float step = PI * 2 / segments_selected;
 
-    // Draw thick circle with triangle strip. This can be handled as a single primive by the gpu.
-    // Number of vertices is segments * 2 + 2, so we need to emit the inital vertex first
+    // Draw thick circle with triangle strip. This can be handled as a single primitive by the gpu.
+    // Number of vertices is segments * 2 + 2, so we need to emit the initial vertex first
 
     // First outer vertex
     vec2 p_start = vec2(sin(0), cos(0)) * shape.xy;

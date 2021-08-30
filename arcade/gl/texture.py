@@ -1,3 +1,4 @@
+from array import array
 from ctypes import byref
 import weakref
 from typing import Any, Optional, Tuple, Union, TYPE_CHECKING
@@ -132,7 +133,7 @@ class Texture:
         if self._components not in [1, 2, 3, 4]:
             raise ValueError("Components must be 1, 2, 3 or 4")
 
-        gl.glActiveTexture(gl.GL_TEXTURE0)  # Create textures in the default channel (0)
+        gl.glActiveTexture(gl.GL_TEXTURE0 + self._ctx.default_texture_unit)
 
         self._glo = glo = gl.GLuint()
         gl.glGenTextures(1, byref(self._glo))
@@ -160,6 +161,17 @@ class Texture:
             weakref.finalize(self, Texture.delete_glo, self._ctx, glo)
 
         self.ctx.stats.incr("texture")
+
+    def resize(self, size: Tuple[int, int]):
+        """
+        Resize the texture. This will re-allocate the internal
+        memory and all pixel data will be lost.
+        """
+        gl.glActiveTexture(gl.GL_TEXTURE0 + self._ctx.default_texture_unit)
+        gl.glBindTexture(self._target, self._glo)
+
+        self._width, self._height = size
+        self._texture_2d(None)
 
     def __del__(self):
         # Intercept garbage collection if we are using Context.gc()
@@ -342,7 +354,8 @@ class Texture:
             raise ValueError("Texture filter must be a 2 component tuple (min, mag)")
 
         self._filter = value
-        self.use()
+        gl.glActiveTexture(gl.GL_TEXTURE0 + self._ctx.default_texture_unit)
+        gl.glBindTexture(self._target, self._glo)
         gl.glTexParameteri(self._target, gl.GL_TEXTURE_MIN_FILTER, self._filter[0])
         gl.glTexParameteri(self._target, gl.GL_TEXTURE_MAG_FILTER, self._filter[1])
 
@@ -372,7 +385,8 @@ class Texture:
     @wrap_x.setter
     def wrap_x(self, value: int):
         self._wrap_x = value
-        self.use()
+        gl.glActiveTexture(gl.GL_TEXTURE0 + self._ctx.default_texture_unit)
+        gl.glBindTexture(self._target, self._glo)
         gl.glTexParameteri(self._target, gl.GL_TEXTURE_WRAP_S, value)
 
     @property
@@ -401,7 +415,8 @@ class Texture:
     @wrap_y.setter
     def wrap_y(self, value: int):
         self._wrap_y = value
-        self.use()
+        gl.glActiveTexture(gl.GL_TEXTURE0 + self._ctx.default_texture_unit)
+        gl.glBindTexture(self._target, self._glo)
         gl.glTexParameteri(self._target, gl.GL_TEXTURE_WRAP_T, value)
 
     @property
@@ -438,7 +453,7 @@ class Texture:
             raise ValueError(f"value must be as string: {self._compare_funcs.keys()}")
 
         self._compare_func = value
-        gl.glActiveTexture(gl.GL_TEXTURE0)
+        gl.glActiveTexture(gl.GL_TEXTURE0 + self._ctx.default_texture_unit)
         gl.glBindTexture(self._target, self._glo)
         if value is None:
             gl.glTexParameteri(self._target, gl.GL_TEXTURE_COMPARE_MODE, gl.GL_NONE)
@@ -456,6 +471,7 @@ class Texture:
         :param int alignment: Alignment of the start of each row in memory in number of bytes. Possible values: 1,2,4
         :rtype: bytearray
         """
+        gl.glActiveTexture(gl.GL_TEXTURE0 + self._ctx.default_texture_unit)
         gl.glBindTexture(self._target, self._glo)
         gl.glPixelStorei(gl.GL_PACK_ALIGNMENT, alignment)
 
@@ -467,7 +483,7 @@ class Texture:
 
         return bytearray(buffer)
 
-    def write(self, data: Union[bytes, Buffer], level: int = 0, viewport=None) -> None:
+    def write(self, data: Union[bytes, Buffer, array], level: int = 0, viewport=None) -> None:
         """Write byte data to the texture. This can be bytes or a :py:class:`~arcade.gl.Buffer`.
 
         :param Union[bytes,Buffer] data: bytes or a Buffer with data to write
@@ -489,7 +505,7 @@ class Texture:
 
         if isinstance(data, Buffer):
             gl.glBindBuffer(gl.GL_PIXEL_UNPACK_BUFFER, data.glo)
-            gl.glActiveTexture(gl.GL_TEXTURE0)
+            gl.glActiveTexture(gl.GL_TEXTURE0 + self._ctx.default_texture_unit)
             gl.glBindTexture(self._target, self._glo)
             gl.glPixelStorei(gl.GL_PACK_ALIGNMENT, 1)
             gl.glPixelStorei(gl.GL_UNPACK_ALIGNMENT, 1)
@@ -499,7 +515,7 @@ class Texture:
             gl.glBindBuffer(gl.GL_PIXEL_UNPACK_BUFFER, 0)
         else:
             byte_size, data = data_to_ctypes(data)
-            gl.glActiveTexture(gl.GL_TEXTURE0)
+            gl.glActiveTexture(gl.GL_TEXTURE0 + self._ctx.default_texture_unit)
             gl.glBindTexture(self._target, self._glo)
             gl.glPixelStorei(gl.GL_PACK_ALIGNMENT, 1)
             gl.glPixelStorei(gl.GL_UNPACK_ALIGNMENT, 1)
@@ -533,7 +549,8 @@ class Texture:
 
         Also see: https://www.khronos.org/opengl/wiki/Texture#Mip_maps
         """
-        self.use()
+        gl.glActiveTexture(gl.GL_TEXTURE0 + self._ctx.default_texture_unit)
+        gl.glBindTexture(gl.GL_TEXTURE_2D, self._glo)
         gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_BASE_LEVEL, base)
         gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAX_LEVEL, max_level)
         gl.glGenerateMipmap(gl.GL_TEXTURE_2D)

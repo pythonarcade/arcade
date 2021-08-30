@@ -1,17 +1,5 @@
 import array
 import pytest
-import arcade
-
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
-
-
-@pytest.fixture(scope="module")
-def ctx():
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, "Test OpenGL")
-    yield window.ctx
-    window.use()
-    window.close()
 
 
 def test_default_properties(ctx):
@@ -189,3 +177,12 @@ def test_byte_size(ctx):
     assert texture.byte_size == 64
     texture = ctx.texture((4, 4), components=4, dtype='i4')
     assert texture.byte_size == 256
+
+def test_resize(ctx):
+    tex = ctx.texture((100, 100), components=4)
+    assert tex.size == (100, 100)
+    assert len(tex.read()) == 100 * 100 * 4
+
+    tex.resize((200, 200))
+    assert tex.size == (200, 200)
+    assert len(tex.read()) == 200 * 200 * 4

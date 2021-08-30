@@ -1,38 +1,47 @@
-
 .. _platformer_part_six:
 
-Step 6 - Add Coins And Sound
-----------------------------
+Step 6 - Add a Camera
+----------------------
 
-.. image:: listing_06.png
-    :width: 70%
+We can have our window be a small viewport into a much larger world by adding
+a camera to it. 
 
-The code below adds coins that we can collect. It also adds a sound to be played
-when the user hits a coin, or presses the jump button.
+First we need to create a new variable in our ``__init__`` method:
 
-We check to see if the user hits a coin by the ``arcade.check_for_collision_with_list``
-function. Just pass the player sprite, along with a ``SpriteList`` that holds
-the coins. The function returns a list of coins in contact with the player sprite.
-If no coins are in contact, the list is empty.
+.. literalinclude:: ../../../arcade/examples/platform_tutorial/06_camera.py
+    :caption: 06_camera.py - Create camera variable
+    :lines: 40-41
 
-The method ``Sprite.remove_from_sprite_lists`` will remove that sprite from all
-lists, and effectively the game.
+Next we can initialize the camera in the ``setup`` function:
 
-Notice that any transparent "white-space" around the image counts as the hitbox.
-You can trim the space in a graphics editor, or in the second section,
-we'll show you how to specify the hitbox.
+.. literalinclude:: ../../../arcade/examples/platform_tutorial/06_camera.py
+    :caption: 06_camera.py - Setup Camera
+    :lines: 48-49
 
-.. literalinclude:: ../../../arcade/examples/platform_tutorial/06_coins_and_sound.py
-    :caption: Add Coins and Sound
+Then to use our camera when drawing, we can activate it in our ``on_draw`` function:
+
+.. literalinclude:: ../../../arcade/examples/platform_tutorial/06_camera.py
+    :caption: 06_camera.py - Use camera when drawing
+    :lines: 96-97
+
+Now at this point everything should be working the same, but the camera can do a lot
+more than this. We can use the ``move`` function of the camera to scroll it to a different
+position. We can use this functionality to keep the camera centered on the player:
+
+We can create a function to calculate the coordinates for the center of our player
+relative to the screen, then move the camera to those. Then we can call that function in
+``on_update`` to actually move it. The new position will be taken into account during
+the ``use`` function in ``on_draw``
+
+.. literalinclude:: ../../../arcade/examples/platform_tutorial/06_camera.py
+    :caption: 06_camera.py - Center camera on player
+    :lines: 121-143
+    :emphasize-lines: 1-14, 22-23
+
+Source Code
+~~~~~~~~~~~
+
+.. literalinclude:: ../../../arcade/examples/platform_tutorial/06_camera.py
+    :caption: Add a Camera
     :linenos:
-    :emphasize-lines: 55-57, 71, 100-105, 120, 129, 149-158
-
-.. note::
-
-    Spend time placing the coins where you would like them.
-    If you have extra time, try adding more than just coins. Also add gems or keys
-    from the graphics provided.
-
-    You could also subclass the coin sprite and add an attribute for a score
-    value. Then you could have coins worth one point, and gems worth 5, 10, and
-    15 points.
+    :emphasize-lines: 40-41, 48-49, 96-97, 121-134, 142-143

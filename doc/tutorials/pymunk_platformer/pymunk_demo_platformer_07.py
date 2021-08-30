@@ -55,6 +55,7 @@ PLAYER_MOVE_FORCE_IN_AIR = 900
 # Strength of a jump
 PLAYER_JUMP_IMPULSE = 1800
 
+
 class GameWindow(arcade.Window):
     """ Main Window """
 
@@ -90,13 +91,15 @@ class GameWindow(arcade.Window):
         self.player_list = arcade.SpriteList()
         self.bullet_list = arcade.SpriteList()
 
-        # Read in the tiled map
-        map_name = "pymunk_test_map.tmx"
-        my_map = arcade.tilemap.read_tmx(map_name)
+        # Map name
+        map_name = "pymunk_test_map.json"
 
-        # Read in the map layers
-        self.wall_list = arcade.tilemap.process_layer(my_map, 'Platforms', SPRITE_SCALING_TILES)
-        self.item_list = arcade.tilemap.process_layer(my_map, 'Dynamic Items', SPRITE_SCALING_TILES)
+        # Load in TileMap
+        tile_map = arcade.load_tilemap(map_name, SPRITE_SCALING_TILES)
+
+        # Pull the sprite layers out of the tile map
+        self.wall_list = tile_map.sprite_lists["Platforms"]
+        self.item_list = tile_map.sprite_lists["Dynamic Items"]
 
         # Create player sprite
         self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",

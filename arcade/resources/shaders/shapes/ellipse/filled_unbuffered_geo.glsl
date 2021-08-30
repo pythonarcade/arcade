@@ -1,11 +1,12 @@
 #version 330
 
 #define PI 3.1415926535897932384626433832795
-#define MIN_SEGMENTS 16
+#define MIN_SEGMENTS 3
+// 3 points per segment, max of 256 points, so 85 * 3 = 255
 #define MAX_SEGMENTS 85
 
 layout (points) in;
-// TODO: We might want to increase the number of emitted verties, but core 3.3 says 256 is min requirement.
+// TODO: We might want to increase the number of emitted vertices, but core 3.3 says 256 is min requirement.
 // TODO: Normally 4096 is supported, but let's stay on the safe side
 layout (triangle_strip, max_vertices = 256) out;
 

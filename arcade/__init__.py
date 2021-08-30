@@ -54,10 +54,11 @@ else:
 # noinspection PyPep8
 import pyglet
 
-# On OS X we need to disable the shadow context
-# because the 2.1 shadow context cannot be upgrade to a 3.3+ core
-if platform.system() == 'Darwin':
-    pyglet.options['shadow_window'] = False
+# Disable shadow windows until issues with intel GPUs
+# on Windows and elsewhere are better understood.
+# Originally, this only disabled them for macs where
+# the 2.1 shadow context cannot be upgrade to a 3.3+ core
+pyglet.options['shadow_window'] = False
 
 # noinspection PyPep8
 from arcade import color
@@ -71,6 +72,7 @@ from arcade import resources
 # --- Generated imports ---
 from .window_commands import close_window
 from .window_commands import create_orthogonal_projection
+from .window_commands import exit
 from .window_commands import finish_render
 from .window_commands import get_display_size
 from .window_commands import get_projection
@@ -105,6 +107,7 @@ from .arcade_types import RGBA
 from .arcade_types import Rect
 from .arcade_types import RectList
 from .arcade_types import Vector
+from .arcade_types import TiledObject
 
 from .earclip_module import earclip
 
@@ -118,16 +121,17 @@ from .utils import rand_on_circle
 from .utils import rand_on_line
 from .utils import rand_vec_magnitude
 from .utils import rand_vec_spread_deg
+from .utils import generate_uuid_from_kwargs
 
-from .drawing_support import calculate_hit_box_points_detailed
-from .drawing_support import calculate_hit_box_points_simple
+from .hitbox import calculate_hit_box_points_detailed
+from .hitbox import calculate_hit_box_points_simple
+
 from .drawing_support import get_four_byte_color
+from .drawing_support import get_three_float_color
 from .drawing_support import get_four_float_color
 from .drawing_support import get_points_for_thick_line
 from .drawing_support import make_transparent_color
-from .drawing_support import rotate_point
 
-from .texture import Matrix3x3
 from .texture import Texture
 from .texture import cleanup_texture_cache
 from .texture import load_spritesheet
@@ -194,6 +198,7 @@ from .draw_commands import get_pixel
 from .geometry import are_polygons_intersecting
 from .geometry import get_distance
 from .geometry import is_point_in_polygon
+from .geometry import rotate_point
 
 from .isometric import create_isometric_grid_lines
 from .isometric import isometric_grid_to_screen
@@ -230,7 +235,7 @@ from .sprite import FACE_LEFT
 from .sprite import FACE_RIGHT
 from .sprite import FACE_UP
 from .sprite import AnimatedTimeBasedSprite
-from .sprite import AnimatedTimeSprite
+from .sprite import load_animated_gif
 from .sprite import AnimatedWalkingSprite
 from .sprite import AnimationKeyframe
 from .sprite import PyMunk
@@ -242,25 +247,19 @@ from .sprite import get_distance_between_sprites
 from .sprite_list import SpriteList
 from .sprite_list import check_for_collision
 from .sprite_list import check_for_collision_with_list
+from .sprite_list import check_for_collision_with_lists
 from .sprite_list import get_closest_sprite
 from .sprite_list import get_sprites_at_exact_point
 from .sprite_list import get_sprites_at_point
 
+from .scene import Scene
+
 from .physics_engines import PhysicsEnginePlatformer
 from .physics_engines import PhysicsEngineSimple
 
-from .text import DEFAULT_FONT_NAMES
-from .text import CreateText
-from .text import Text
-from .text import create_text
-from .text import draw_text
-from .text import draw_text_2
-from .text import get_text_image
-from .text import render_text
-
-from .tilemap import get_tilemap_layer
-from .tilemap import process_layer
+from .tilemap import load_tilemap
 from .tilemap import read_tmx
+from .tilemap import TileMap
 
 from .pymunk_physics_engine import PymunkPhysicsEngine
 from .pymunk_physics_engine import PymunkPhysicsObject
@@ -273,21 +272,46 @@ from .paths import has_line_of_sight
 
 from .context import ArcadeContext
 
+from .texture_atlas import TextureAtlas
+from .texture_atlas import AtlasRegion
+
+from .perf_info import enable_timings
+from .perf_info import print_timings
+from .perf_info import get_fps
+from .perf_info import get_timings
+from .perf_info import clear_timings
+from .perf_info import timings_enabled
+from .perf_info import disable_timings
+
+from .perf_graph import PerfGraph
 
 
 # noinspection PyPep8
 from arcade import experimental
 
+from .text_pyglet import (
+    draw_text,
+    load_font,
+    create_text,
+    Text,
+)
+from .text_pillow import (
+    create_text_sprite,
+    create_text_image,
+    DEFAULT_FONT_NAMES,
+)
+
+from .camera import Camera
+
 # --- Generated __all__ ---
 
 __all__ = ['AStarBarrierList',
            'AnimatedTimeBasedSprite',
-           'AnimatedTimeSprite',
            'AnimatedWalkingSprite',
            'AnimationKeyframe',
            'ArcadeContext',
+           'Camera',
            'Color',
-           'CreateText',
            'DEFAULT_FONT_NAMES',
            'EmitBurst',
            'EmitController',
@@ -307,10 +331,10 @@ __all__ = ['AStarBarrierList',
            'MOUSE_BUTTON_LEFT',
            'MOUSE_BUTTON_MIDDLE',
            'MOUSE_BUTTON_RIGHT',
-           'Matrix3x3',
            'NamedPoint',
            'NoOpenGLException',
            'Particle',
+           'PerfGraph',
            'PhysicsEnginePlatformer',
            'PhysicsEngineSimple',
            'Point',
@@ -322,6 +346,7 @@ __all__ = ['AStarBarrierList',
            'RGBA',
            'Rect',
            'RectList',
+           'Scene',
            'Shape',
            'ShapeElementList',
            'Sound',
@@ -332,6 +357,8 @@ __all__ = ['AStarBarrierList',
            'TShape',
            'Text',
            'Texture',
+           'TextureAtlas',
+           'TileMap',
            'VERSION',
            'Vector',
            'View',
@@ -342,6 +369,7 @@ __all__ = ['AStarBarrierList',
            'calculate_hit_box_points_simple',
            'check_for_collision',
            'check_for_collision_with_list',
+           'check_for_collision_with_lists',
            'clamp',
            'cleanup_texture_cache',
            'close_window',
@@ -364,8 +392,10 @@ __all__ = ['AStarBarrierList',
            'create_rectangle_filled_with_colors',
            'create_rectangle_outline',
            'create_rectangles_filled_with_colors',
-           'create_text',
+           'create_text_image',
+           'create_text_sprite',
            'create_triangles_filled_with_colors',
+           'disable_timings',
            'draw_arc_filled',
            'draw_arc_outline',
            'draw_circle_filled',
@@ -387,14 +417,16 @@ __all__ = ['AStarBarrierList',
            'draw_rectangle_filled',
            'draw_rectangle_outline',
            'draw_scaled_texture_rectangle',
+           'create_text',
            'draw_text',
-           'draw_text_2',
            'draw_texture_rectangle',
            'draw_triangle_filled',
            'draw_triangle_outline',
            'draw_xywh_rectangle_filled',
            'draw_xywh_rectangle_outline',
            'earclip',
+           'enable_timings',
+           'exit',
            'finish_render',
            'get_closest_sprite',
            'get_display_size',
@@ -413,8 +445,9 @@ __all__ = ['AStarBarrierList',
            'get_screens',
            'get_sprites_at_exact_point',
            'get_sprites_at_point',
-           'get_text_image',
-           'get_tilemap_layer',
+           'get_timings',
+           'clear_timings',
+           'create_text_image',
            'get_viewport',
            'get_window',
            'has_line_of_sight',
@@ -422,6 +455,8 @@ __all__ = ['AStarBarrierList',
            'isometric_grid_to_screen',
            'lerp',
            'lerp_vec',
+           'load_animated_gif',
+           'load_font',
            'load_sound',
            'load_spritesheet',
            'load_texture',
@@ -436,7 +471,6 @@ __all__ = ['AStarBarrierList',
            'open_window',
            'pause',
            'play_sound',
-           'process_layer',
            'quick_run',
            'rand_angle_360_deg',
            'rand_angle_spread_deg',
@@ -447,7 +481,7 @@ __all__ = ['AStarBarrierList',
            'rand_vec_magnitude',
            'rand_vec_spread_deg',
            'read_tmx',
-           'render_text',
+           'load_tilemap',
            'rotate_point',
            'run',
            'schedule',
@@ -457,8 +491,24 @@ __all__ = ['AStarBarrierList',
            'set_window',
            'start_render',
            'stop_sound',
+           'timings_enabled',
            'trim_image',
            'unschedule',
            ]
 
+
 __version__ = VERSION
+
+if not os.path.basename(sys.argv[0]) == "sphinx-build" and 'READTHEDOCS' not in os.environ:
+    # Auto load fonts
+    load_font(":resources:fonts/ttf/Kenney Blocks.ttf")
+    load_font(":resources:fonts/ttf/Kenney Future.ttf")
+    load_font(":resources:fonts/ttf/Kenney Future Narrow.ttf")
+    load_font(":resources:fonts/ttf/Kenney High.ttf")
+    load_font(":resources:fonts/ttf/Kenney High Square.ttf")
+    load_font(":resources:fonts/ttf/Kenney Mini.ttf")
+    load_font(":resources:fonts/ttf/Kenney Mini Square.ttf")
+    load_font(":resources:fonts/ttf/Kenney Pixel.ttf")
+    load_font(":resources:fonts/ttf/Kenney Pixel Square.ttf")
+    load_font(":resources:fonts/ttf/Kenney Rocket.ttf")
+    load_font(":resources:fonts/ttf/Kenney Rocket Square.ttf")

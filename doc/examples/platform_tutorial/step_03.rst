@@ -1,76 +1,46 @@
-
 .. _platformer_part_three:
 
-Step 3 - Add User Control
--------------------------
+Step 3 - Scene Object
+---------------------
 
-Now we need to be able to get the user to move around.
+Next we will add a Scene to our game. A Scene is a tool to manage a number of different
+SpriteLists by assigning each one a name, and maintaining a draw order.
 
-First, at the top of the program add a constant that controls how many pixels
-per update our character travels:
+SpriteLists can be drawn directly like we saw in step 2 of this tutorial, but a Scene can
+be helpful to handle a lot of different lists at once and being able to draw them all with
+one call to the scene.
 
-.. literalinclude:: ../../../arcade/examples/platform_tutorial/03_user_control.py
-    :caption: 03_user_control.py - Player Move Speed Constant
-    :lines: 16-17
+To start with we will remove our sprite lists from the ``__init__`` function, and replace them
+with a scene object.
 
-Next, at the end of our ``setup`` method, we are need to create a physics engine that will
-move our player and keep her from running through walls. The ``PhysicsEngineSimple``
-class takes two parameters: The moving
-sprite, and a list of sprites the moving sprite can't move through.
+.. literalinclude:: ../../../arcade/examples/platform_tutorial/03_scene_object.py
+    :caption: 03_scene_object.py - Scene Object Definition
+    :lines: 21-32
+    :emphasize-lines: 6-7
 
-For more information about the physics engine we are using here, see
-`PhysicsEngineSimple class <../../arcade.html#arcade.PhysicsEngineSimple>`_
+Next we will initialize the scene object in the ``setup`` function and then add the SpriteLists to it
+instead of creating new SpriteList objects directly.
 
-.. note::
+Then instead of appending the Sprites to the SpriteLists directly, we can add them to the Scene and
+specify by name what SpriteList we want them added to.
 
-    It is possible to have multiple physics engines, one per moving sprite. These
-    are very simple, but easy physics engines. See
-    :ref:`pymunk_platformer_tutorial` for a more advanced physics engine.
+.. literalinclude:: ../../../arcade/examples/platform_tutorial/03_scene_object.py
+    :caption: 03_scene_object.py - Add SpriteLists to the Scene
+    :lines: 34-69
+    :emphasize-lines: 4-9, 16, 24, 36
 
-.. literalinclude:: ../../../arcade/examples/platform_tutorial/03_user_control.py
-    :caption: 03_user_control.py - Create Physics Engine
-    :lines: 16-17
+Lastly in our ``on_draw`` function we can draw the scene.
 
-Each sprite has ``center_x`` and ``center_y`` attributes. Changing these will
-change the location of the sprite. (There are also attributes for top, bottom,
-left, right, and angle that will move the sprite.)
+.. literalinclude:: ../../../arcade/examples/platform_tutorial/03_scene_object.py
+    :caption: 03_scene_object.py - Draw the Scene
+    :lines: 71-78
+    :emphasize-lines: 7-8
 
-Each sprite has ``change_x`` and ``change_y`` variables. These can be used to
-hold the velocity that the sprite is moving with. We will adjust these
-based on what key the user hits. If the user hits the right arrow key
-we want a positive value for ``change_x``. If the value is 5, it will move
-5 pixels per frame.
+Source Code
+~~~~~~~~~~~
 
-In this case, when the user presses a key we'll change the sprites change x and y.
-The physics engine will look at that, and move the player unless she'll hit a wall.
-
-.. literalinclude:: ../../../arcade/examples/platform_tutorial/03_user_control.py
-    :caption: 03_user_control.py - Handle key-down
+.. literalinclude:: ../../../arcade/examples/platform_tutorial/03_scene_object.py
+    :caption: 03_scene_object - Scene Object
     :linenos:
-    :pyobject: MyGame.on_key_press
-
-On releasing the key, we'll put our speed back to zero.
-
-.. literalinclude:: ../../../arcade/examples/platform_tutorial/03_user_control.py
-    :caption: 03_user_control.py - Handle key-up
-    :linenos:
-    :pyobject: MyGame.on_key_release
-
-.. note::
-
-    This method of tracking the speed to the key the player presses is simple, but
-    isn't perfect. If the player hits both left and right keys at the same time,
-    then lets off the left one, we expect the player to move right. This method won't
-    support that. If you want a slightly more complex method that does, see
-    :ref:`sprite_move_keyboard_better`.
-
-Our ``on_update`` method is called about 60 times per second. We'll ask the physics
-engine to move our player based on her ``change_x`` and ``change_y``.
-
-.. literalinclude:: ../../../arcade/examples/platform_tutorial/03_user_control.py
-    :caption: 03_user_control.py - Update the sprites
-    :linenos:
-    :pyobject: MyGame.on_update
-
-* :ref:`03_user_control`
-* :ref:`03_user_control_diff`
+    :emphasize-lines: 26-27, 37-42, 49, 57, 69, 77-78
+    

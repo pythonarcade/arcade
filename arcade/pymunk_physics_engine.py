@@ -14,6 +14,7 @@ from arcade import Sprite
 import logging
 LOG = logging.getLogger(__name__)
 
+
 class PymunkPhysicsObject:
     """ Object that holds pymunk body/shape for a sprite. """
     def __init__(self,
@@ -180,6 +181,7 @@ class PymunkPhysicsEngine:
                         elasticity: Optional[float] = None,
                         moment=None,
                         body_type=DYNAMIC,
+                        damping=None,
                         collision_type=None
                         ):
         """ Add all sprites in a sprite list to the physics engine. """
@@ -191,6 +193,7 @@ class PymunkPhysicsEngine:
                             elasticity=elasticity,
                             moment=moment,
                             body_type=body_type,
+                            damping=damping,
                             collision_type=collision_type)
 
     def remove_sprite(self, sprite: Sprite):
@@ -257,7 +260,8 @@ class PymunkPhysicsEngine:
 
         def _f1(arbiter, space, data):
             sprite_a, sprite_b = self.get_sprites_from_arbiter(arbiter)
-            begin_handler(sprite_a, sprite_b, arbiter, space, data)
+            should_process_collision = begin_handler(sprite_a, sprite_b, arbiter, space, data)
+            return should_process_collision
 
         def _f2(arbiter, space, data):
             sprite_a, sprite_b = self.get_sprites_from_arbiter(arbiter)
@@ -367,7 +371,7 @@ class PymunkPhysicsEngine:
         grounding = self.check_grounding(sprite)
         body = self.get_physics_object(sprite).body
         if not body:
-           raise ValueError("Physics body not set.")
+            raise ValueError("Physics body not set.")
 
         if body.force[0] and grounding and grounding['body']:
             grounding['body'].apply_force_at_world_point((-body.force[0], 0), grounding['position'])

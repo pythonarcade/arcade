@@ -11,24 +11,17 @@ Installation
 ~~~~~~~~~~~~
 * Make sure Python is installed. `Download Python here <https://www.python.org/downloads/>`_
   if you don't already have it.
-* `Download this bundle with code, images, and sounds <../../_static/platform_tutorial.zip>`_.
-  (Images are from `kenney.nl`_.)
-  Your file structure should look like:
-
-.. image:: file_structure.png
-    :scale: 75%
 
 * Make sure the `Arcade library <https://pypi.org/project/arcade/>`_ is installed.
 
-  * Install Arcade with ``pip install arcade`` on Windows
-    or ``pip3 install arcade`` on Mac/Linux. Or install by using a venv.
+  * You should first setup a virtual environment(venv) and activate it. 
+  * Install Arcade with ``pip install arcade``.
   * Here are the longer, official :ref:`installation-instructions`.
 
 I highly recommend using the free community edition of PyCharm as an editor.
 If you do, see :ref:`install-pycharm`.
 
 .. _kenney.nl: https://kenney.nl/
-
 
 Open a Window
 ~~~~~~~~~~~~~
