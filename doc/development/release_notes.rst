@@ -7,8 +7,10 @@ Release Notes
 
 Keep up-to-date with the latest changes to the Arcade library by the release notes.
 
-Version 2.6.0 (UNRELEASED)
---------------------------
+Version 2.6.0
+-------------
+
+*Released on 2021-Aug-30*
 
 Version 2.6.0 is a major update to Arcade. It is not 100% backwards compatible with the 2.5 API.
 Updates were made to text rendering, tiled map support, sprites, shaders, textures, GUI system,
@@ -212,6 +214,8 @@ Special thanks to:
 
 Version 2.5.7
 -------------
+
+*Released on 2021-May-25*
 
 Fixes
 ~~~~~
