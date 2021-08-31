@@ -602,7 +602,7 @@ Concept Games
 
    `Asteroids <https://github.com/pythonarcade/asteroids>`_
 
-.. figure:: https://github.com/pythonarcade/community-rpg/blob/main/screenshot.png
+.. figure:: thumbs/community-rpg.png
    :figwidth: 170px
 
    `Community RPG <https://github.com/pythonarcade/community-rpg>`_
@@ -686,5 +686,10 @@ Tutorials
    :figwidth: 170px
 
    :ref:`pymunk_platformer_tutorial`
+
+.. figure:: thumbs/shader_toy_tutorial.png
+   :figwidth: 170px
+
+   :ref:`shader_toy_tutorial`
 
 
