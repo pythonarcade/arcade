@@ -17,25 +17,25 @@ class MyView(arcade.View):
         # This creates a "manager" for all our UI elements
         self.ui_manager = arcade.gui.UIManager(self.window)
 
+        box = arcade.gui.UIBoxLayout(vertical=False)
+
         # --- Start button
-        press_texture = arcade.load_texture(":resources:onscreen_controls/shaded_dark/sound_off.png")
         normal_texture = arcade.load_texture(":resources:onscreen_controls/flat_dark/sound_off.png")
         hover_texture = arcade.load_texture(":resources:onscreen_controls/shaded_dark/sound_off.png")
+        press_texture = arcade.load_texture(":resources:onscreen_controls/shaded_dark/sound_off.png")
 
         # Create our button
-        self.start_button = arcade.gui.UIImageButton(
-            normal_texture=normal_texture,
-            hover_texture=hover_texture,
-            press_texture=press_texture,
-            center_x=self.window.width / 2,
-            center_y=self.window.height / 2,
+        self.start_button = arcade.gui.UITextureButton(
+            texture=normal_texture,
+            texture_hovered=hover_texture,
+            texture_pressed=press_texture,
         )
 
         # Map that button's on_click method to this view's on_button_click method.
         self.start_button.on_click = self.start_button_clicked
 
         # Add in our element.
-        self.ui_manager.add_ui_element(self.start_button)
+        box.add(self.start_button)
 
         # --- Down button
         press_texture = arcade.load_texture(":resources:onscreen_controls/shaded_dark/down.png")
@@ -43,20 +43,18 @@ class MyView(arcade.View):
         hover_texture = arcade.load_texture(":resources:onscreen_controls/shaded_dark/down.png")
 
         # Create our button
-        self.down_button = arcade.gui.UIImageButton(
-            normal_texture=normal_texture,
-            hover_texture=hover_texture,
-            press_texture=press_texture,
-            center_x=self.window.width / 2,
-            center_y=self.window.height / 2 - 130,
+        self.down_button = arcade.gui.UITextureButton(
+            texture=normal_texture,
+            texture_hovered=hover_texture,
+            texture_pressed=press_texture,
         )
 
         # Map that button's on_click method to this view's on_button_click method.
         self.down_button.on_click = self.volume_down
-        self.down_button.scale = 0.5
+        self.down_button.scale(0.5)
 
         # Add in our element.
-        self.ui_manager.add_ui_element(self.down_button)
+        box.add(self.down_button)
 
         # --- Up button
         press_texture = arcade.load_texture(":resources:onscreen_controls/shaded_dark/up.png")
@@ -64,20 +62,18 @@ class MyView(arcade.View):
         hover_texture = arcade.load_texture(":resources:onscreen_controls/shaded_dark/up.png")
 
         # Create our button
-        self.up_button = arcade.gui.UIImageButton(
-            normal_texture=normal_texture,
-            hover_texture=hover_texture,
-            press_texture=press_texture,
-            center_x=self.window.width / 2,
-            center_y=self.window.height / 2 - 80,
+        self.up_button = arcade.gui.UITextureButton(
+            texture=normal_texture,
+            texture_hovered=hover_texture,
+            texture_pressed=press_texture,
         )
 
         # Map that button's on_click method to this view's on_button_click method.
         self.up_button.on_click = self.volume_up
-        self.up_button.scale = 0.5
+        self.up_button.scale(0.5)
 
         # Add in our element.
-        self.ui_manager.add_ui_element(self.up_button)
+        box.add(self.up_button)
 
         # --- Right button
         press_texture = arcade.load_texture(":resources:onscreen_controls/shaded_dark/right.png")
@@ -85,20 +81,21 @@ class MyView(arcade.View):
         hover_texture = arcade.load_texture(":resources:onscreen_controls/shaded_dark/right.png")
 
         # Create our button
-        self.right_button = arcade.gui.UIImageButton(
-            normal_texture=normal_texture,
-            hover_texture=hover_texture,
-            press_texture=press_texture,
-            center_x=self.window.width / 2 + 40,
-            center_y=self.window.height / 2 - 105,
+        self.right_button = arcade.gui.UITextureButton(
+            texture=normal_texture,
+            texture_hovered=hover_texture,
+            texture_pressed=press_texture,
         )
 
         # Map that button's on_click method to this view's on_button_click method.
         self.right_button.on_click = self.forward
-        self.right_button.scale = 0.5
+        self.right_button.scale(0.5)
 
         # Add in our element.
-        self.ui_manager.add_ui_element(self.right_button)
+        box.add(self.right_button)
+
+        # Place buttons in the center of the screen using an UIAnchorWidget with default values
+        self.ui_manager.add(arcade.gui.UIAnchorWidget(child=box))
 
     def music_over(self):
         self.media_player.pop_handlers()
@@ -111,31 +108,31 @@ class MyView(arcade.View):
         self.media_player = self.my_music.play()
         self.media_player.push_handlers(on_eos=self.music_over)
 
-    def volume_down(self):
+    def volume_down(self, *_):
         if self.media_player and self.media_player.volume > 0.2:
             self.media_player.volume -= 0.2
 
-    def volume_up(self):
+    def volume_up(self, *_):
         if self.media_player and self.media_player.volume < 1.0:
             self.media_player.volume += 0.2
 
-    def forward(self):
+    def forward(self, *_):
         skip_time = 10
 
         if self.media_player and self.media_player.time < self.my_music.get_length() - skip_time:
             self.media_player.seek(self.media_player.time + 10)
 
     def sound_button_on(self):
-        self.start_button.press_texture = arcade.load_texture(":resources:onscreen_controls/shaded_dark/sound_on.png")
-        self.start_button.normal_texture = arcade.load_texture(":resources:onscreen_controls/flat_dark/sound_on.png")
-        self.start_button.hover_texture = arcade.load_texture(":resources:onscreen_controls/shaded_dark/sound_on.png")
+        self.start_button.texture_pressed = arcade.load_texture(":resources:onscreen_controls/shaded_dark/sound_on.png")
+        self.start_button.texture = arcade.load_texture(":resources:onscreen_controls/flat_dark/sound_on.png")
+        self.start_button.texture_hovered = arcade.load_texture(":resources:onscreen_controls/shaded_dark/sound_on.png")
 
     def sound_button_off(self):
-        self.start_button.press_texture = arcade.load_texture(":resources:onscreen_controls/shaded_dark/sound_off.png")
-        self.start_button.normal_texture = arcade.load_texture(":resources:onscreen_controls/flat_dark/sound_off.png")
-        self.start_button.hover_texture = arcade.load_texture(":resources:onscreen_controls/shaded_dark/sound_off.png")
+        self.start_button.texture_pressed = arcade.load_texture(":resources:onscreen_controls/shaded_dark/sound_off.png")
+        self.start_button.texture = arcade.load_texture(":resources:onscreen_controls/flat_dark/sound_off.png")
+        self.start_button.texture_hovered = arcade.load_texture(":resources:onscreen_controls/shaded_dark/sound_off.png")
 
-    def start_button_clicked(self):
+    def start_button_clicked(self, *_):
         self.paused = False
         if not self.media_player:
             # Play button has been hit, and we need to start playing from the beginning.
@@ -155,7 +152,7 @@ class MyView(arcade.View):
         arcade.start_render()
 
         # This draws our UI elements
-        self.ui_manager.on_draw()
+        self.ui_manager.draw()
         arcade.draw_text("Music Demo",
                          start_x=0, start_y=self.window.height - 55,
                          width=self.window.width,

@@ -51,11 +51,13 @@ def rand_on_circle(center: Point, radius: float) -> Point:
 
 
 def rand_on_line(pos1: Point, pos2: Point) -> Point:
+    """ Given two points defining a line, return a random point on that line."""
     u = random.uniform(0.0, 1.0)
     return lerp_vec(pos1, pos2, u)
 
 
 def rand_angle_360_deg():
+    """ Return a random angle in degrees. """
     return random.uniform(0.0, 360.0)
 
 

@@ -91,3 +91,11 @@ class UITextMotionSelectEvent(UIEvent):
 @dataclass
 class UIOnClickEvent(UIMouseEvent):
     pass
+
+
+@dataclass
+class UIOnUpdateEvent(UIEvent):
+    """
+    Arcade on_update callback passed as :class:`UIEvent`
+    """
+    dt: int

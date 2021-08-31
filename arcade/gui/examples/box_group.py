@@ -1,6 +1,6 @@
 import arcade
 from arcade.gui import UIManager
-from arcade.gui.widgets import UIDummy, UIAnchorWidget, UIBoxGroup, UISpace
+from arcade.gui.widgets import UIDummy, UIAnchorWidget, UIBoxLayout, UISpace
 
 
 class UIMockup(arcade.Window):
@@ -10,7 +10,7 @@ class UIMockup(arcade.Window):
         self.manager.enable()
         arcade.set_background_color(arcade.color.DARK_BLUE_GRAY)
 
-        self.v_box = UIBoxGroup(
+        self.v_box = UIBoxLayout(
             x=0, y=0,
             children=[
                 UIDummy(width=200, color=arcade.color.RED).with_space_around(bottom=20),
@@ -26,7 +26,7 @@ class UIMockup(arcade.Window):
                 child=self.v_box)
         )
 
-        self.h_box = UIBoxGroup(
+        self.h_box = UIBoxLayout(
             vertical=False,
             children=[
                 UIDummy(width=100, color=arcade.color.RED),

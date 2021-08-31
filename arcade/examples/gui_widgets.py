@@ -19,14 +19,14 @@ class MyWindow(arcade.Window):
         arcade.set_background_color(arcade.color.DARK_BLUE_GRAY)
 
         # Create a vertical BoxGroup to align buttons
-        self.v_box = arcade.gui.UIBoxGroup()
+        self.v_box = arcade.gui.UIBoxLayout()
 
         # Create a text label
-        ui_text_label = arcade.gui.UITextWidget(text="This is a Text Widget",
-                                                width=450,
-                                                height=40,
-                                                font_size=24,
-                                                font_name="Kenney Future")
+        ui_text_label = arcade.gui.UITextArea(text="This is a Text Widget",
+                                              width=450,
+                                              height=40,
+                                              font_size=24,
+                                              font_name="Kenney Future")
         self.v_box.add(ui_text_label.with_space_around(bottom=0))
 
         text="The real danger is not that computers will begin to think like people, but that people will begin " \

@@ -25,6 +25,7 @@ from arcade import (
 )
 from arcade.arcade_types import Point, TiledObject
 from arcade.resources import resolve_resource_path
+from arcade.geometry import rotate_point
 
 _FLIPPED_HORIZONTALLY_FLAG = 0x80000000
 _FLIPPED_VERTICALLY_FLAG = 0x40000000
@@ -448,6 +449,19 @@ class TileMap:
                 else:
                     print(f"Warning: Hitbox type {type(hitbox)} not supported.")
 
+                if tile.flipped_vertically:
+                    for point in points:
+                        point[1] *= -1
+
+                if tile.flipped_horizontally:
+                    for point in points:
+                        point[0] *= -1
+
+                if tile.flipped_diagonally:
+                    for point in points:
+                        point[0], point[1] = point[1], point[0]
+
+
                 my_sprite.hit_box = points
 
         if tile.animation:
@@ -665,13 +679,11 @@ class TileMap:
                 else:
                     rotation = 0
 
-                cos_rotation = math.cos(rotation)
-                sin_rotation = math.sin(rotation)
-                rotated_center_x = center_x * cos_rotation - center_y * sin_rotation
-                rotated_center_y = center_y * sin_rotation + center_y * cos_rotation
+                angle_degrees = math.degrees(rotation)
+                rotated_center_x, rotated_center_y = rotate_point(width / 2, height / 2, 0, 0, angle_degrees)
 
                 my_sprite.position = (x + rotated_center_x, y + rotated_center_y)
-                my_sprite.angle = math.degrees(rotation)
+                my_sprite.angle = angle_degrees
 
                 if layer.tint_color:
                     my_sprite.color = layer.tint_color

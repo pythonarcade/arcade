@@ -481,6 +481,11 @@ Graphical User Interface
 
    :ref:`gui_ok_messagebox`
 
+.. figure:: thumbs/gui_scrollable_text.png
+   :figwidth: 170px
+
+   :ref:`gui_scrollable_text`
+
 
 Grid-Based Games
 ----------------

@@ -49,7 +49,7 @@ class UIMockup(arcade.Window):
 
     def __init__(self):
         super().__init__(800, 600, "UI Mockup", resizable=True)
-        self.manager = UIManager()
+        self.manager = UIManager(auto_enable=True)
         self.fps = FPSCounter()
 
         # size = 40
@@ -74,13 +74,13 @@ class UIMockup(arcade.Window):
         # ).on_click = self.on_button_click
 
         self.manager.add(
-            SpriteWidget(x=500, y=300, width=256, height=256, sprite=self.load_explosion())
+            UISpriteWidget(x=500, y=300, width=256, height=256, sprite=self.load_explosion())
         )
 
         bg_tex = load_texture(":resources:gui_basic_assets/window/grey_panel.png")
         self.manager.add(
-            TexturePane(
-                TextArea(x=100, y=200, width=200, height=300, text=LOREM_IPSUM, text_color=(0, 0, 0, 255)).with_padding(
+            UITexturePane(
+                UITextArea(x=100, y=200, width=200, height=300, text=LOREM_IPSUM, text_color=(0, 0, 0, 255)).with_space_around(
                     right=20),
                 tex=bg_tex,
                 pad=(10, 10, 10, 10)
@@ -98,13 +98,13 @@ class UIMockup(arcade.Window):
             )
 
         self.manager.add(
-            FlatButton(x=500, y=50, width=200, height=200, text="Hello 1")
+            UIFlatButton(x=500, y=50, width=200, height=200, text="Hello 1")
         )
         self.manager.add(
-            FlatButton(x=500, y=50, width=100, height=100, text="Hello 2"), layer=1
+            UIFlatButton(x=500, y=50, width=100, height=100, text="Hello 2")
         )
 
-        print(f"Render {len(self.manager._children)} widgets")
+        print(f"Render {len(self.manager.children)} widgets")
 
     def on_button_click(self, button, *args):
         print(button)
@@ -128,43 +128,6 @@ class UIMockup(arcade.Window):
         self.manager.draw()
         arcade.draw_text(f"{self.fps.get_fps():.0f}", self.width // 2, self.height // 2, color=arcade.color.RED,
                          font_size=20)
-
-    def on_update(self, time_delta):
-        self.manager.on_update(time_delta)
-
-    # TODO These can be registered by UIManager
-    def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
-        self.manager.on_mouse_motion(x, y, dx, dy)
-
-    def on_key_press(self, symbol: int, modifiers: int):
-        super().on_key_press(symbol, modifiers)
-
-    def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
-        self.manager.on_mouse_press(x, y, button, modifiers)
-
-    def on_mouse_drag(self, x: float, y: float, dx: float, dy: float, buttons: int, modifiers: int):
-        self.manager.on_mouse_drag(x, y, dx, dy, buttons, modifiers)
-
-    def on_mouse_release(self, x: float, y: float, button: int, modifiers: int):
-        self.manager.on_mouse_release(x, y, button, modifiers)
-
-    def on_mouse_scroll(self, x: int, y: int, scroll_x: int, scroll_y: int):
-        self.manager.on_mouse_scroll(x, y, scroll_x, scroll_y)
-
-    def on_text(self, text):
-        self.manager.on_text(text)
-
-    def on_text_motion(self, motion):
-        self.manager.on_text_motion(motion)
-
-    def on_text_motion_select(self, motion):
-        self.manager.on_text_motion_select(motion)
-
-    def on_resize(self, width: float, height: float):
-        # TODO: Tell Widgets they need to re-draw because surface was cleared
-        super().on_resize(width, height)
-        self.manager.resize(width, height)
-
 
 window = UIMockup()
 arcade.run()

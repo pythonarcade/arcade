@@ -5,6 +5,8 @@
 OK Message Box
 ==============
 
+For an introduction the GUI system, see :ref:`gui_concepts`.
+
 This example shows how to pop up a quick message box for the user to click 'Ok' on
 using the :class:`arcade.gui.OKMessagebox` class.
 
