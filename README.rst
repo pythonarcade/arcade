@@ -27,17 +27,17 @@ Arcade is built on top of Pyglet and OpenGL.
 Documentation
 -------------
 
-* For full documentation see http://arcade.academy
-* For installation: http://arcade.academy/installation.html
-* For example code that uses the Arcade library see: http://arcade.academy/examples/index.html
-* For API documentation see: http://arcade.academy/quick_index.html
+* For full documentation see https://api.arcade.academy
+* For installation: https://api.arcade.academy/en/latest/install/index.html
+* For example code that uses the Arcade library see: https://api.arcade.academy/en/latest/examples/index.html
+* For API documentation see: https://api.arcade.academy/en/latest/quick_index.html
 * Learn Arcade AND how to program: https://learn.arcade.academy
-* Release notes: http://arcade.academy/release_notes.html
+* Release notes: https://api.arcade.academy/en/latest/development/release_notes.html
 
 Games Using Arcade
 ------------------
 
-See: http://arcade.academy/sample_games.html
+See: https://api.arcade.academy/en/latest/sample_games.html
 
 Contact the Maintainer
 ----------------------

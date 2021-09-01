@@ -524,7 +524,6 @@ Grid-Based Games
 Advanced
 --------
 
-
 Using PyMunk for Physics
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -560,11 +559,6 @@ Frame Buffers
    :figwidth: 170px
 
    :ref:`minimap`
-
-.. figure:: thumbs/bloom_defender.png
-   :figwidth: 170px
-
-   :ref:`bloom_defender`
 
 .. figure:: thumbs/light_demo.png
    :figwidth: 170px
@@ -602,6 +596,16 @@ Concept Games
    :figwidth: 170px
 
    :ref:`slime_invaders`
+
+.. figure:: https://raw.githubusercontent.com/pythonarcade/asteroids/main/screenshot.png
+   :figwidth: 170px
+
+   `Asteroids <https://github.com/pythonarcade/asteroids>`_
+
+.. figure:: thumbs/community-rpg.png
+   :figwidth: 170px
+
+   `Community RPG <https://github.com/pythonarcade/community-rpg>`_
 
 .. figure:: thumbs/2048.png
    :figwidth: 170px
@@ -655,5 +659,37 @@ Odds and Ends
 
    :ref:`text_loc_example`
 
+Tutorials
+---------
+
+.. figure:: thumbs/11_animate_character.png
+   :figwidth: 170px
+
+   :ref:`platformer_tutorial`
+
+.. figure:: thumbs/solitaire_11.png
+   :figwidth: 170px
+
+   :ref:`solitaire_tutorial`
+
+.. figure:: thumbs/crt_filter.png
+   :figwidth: 170px
+
+   :ref:`crt_filter`
+
+.. figure:: thumbs/raycasting_tutorial.png
+   :figwidth: 170px
+
+   :ref:`raycasting_tutorial`
+
+.. figure:: thumbs/pymunk_platformer_tutorial.png
+   :figwidth: 170px
+
+   :ref:`pymunk_platformer_tutorial`
+
+.. figure:: thumbs/shader_toy_tutorial.png
+   :figwidth: 170px
+
+   :ref:`shader_toy_tutorial`
 
 
