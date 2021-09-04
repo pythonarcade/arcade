@@ -7,6 +7,14 @@ Release Notes
 
 Keep up-to-date with the latest changes to the Arcade library by the release notes.
 
+Version 2.6.1
+-------------
+
+*Released on 2021-Sept-04*
+
+* `Issue #858 - Fix flickering display with simple drawings <https://github.com/pythonarcade/arcade/issues/858>`_
+* `Issue #934 - Compatability issue with Python 3.7 <https://github.com/pythonarcade/arcade/issues/934>`_
+
 Version 2.6.0
 -------------
 
