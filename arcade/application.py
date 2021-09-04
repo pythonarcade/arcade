@@ -554,7 +554,7 @@ class Window(pyglet.window.Window):
 
     def flip(self):
         """ Swap OpenGL and backing buffers for double-buffered windows. """
-        if self.static_display and self.flip_count > 2:
+        if self.static_display and self.flip_count > 0:
             return
         elif self.static_display:
             self.flip_count += 1
