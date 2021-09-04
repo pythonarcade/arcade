@@ -137,6 +137,8 @@ class Window(pyglet.window.Window):
         self._current_view: Optional[View] = None
         self.textbox_time = 0.0
         self.key: Optional[int] = None
+        self.flip_count: int = 0
+        self.static_display: bool = False
 
         self._ctx: ArcadeContext = ArcadeContext(self, gc_mode=gc_mode)
         set_viewport(0, self.width, 0, self.height)
@@ -145,6 +147,7 @@ class Window(pyglet.window.Window):
         # See if we should center the window
         if center_window:
             self.center_window()
+
 
     @property
     def current_view(self):
@@ -551,6 +554,11 @@ class Window(pyglet.window.Window):
 
     def flip(self):
         """ Swap OpenGL and backing buffers for double-buffered windows. """
+        if self.static_display and self.flip_count > 2:
+            return
+        elif self.static_display:
+            self.flip_count += 1
+
         super().flip()
 
     def switch_to(self):

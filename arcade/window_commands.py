@@ -211,6 +211,8 @@ def finish_render():
     If programs use derive from the Window class, this function is
     automatically called.
     """
+    get_window().static_display = True
+    get_window().flip_count = 0
     get_window().flip()
 
 
