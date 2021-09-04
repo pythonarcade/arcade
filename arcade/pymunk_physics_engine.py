@@ -35,7 +35,15 @@ class PymunkPhysicsEngine:
     KINEMATIC = pymunk.Body.KINEMATIC
     MOMENT_INF = float('inf')
 
-    def __init__(self, gravity=(0, 0), damping: float = 1.0):
+    def __init__(self, gravity=(0, 0), damping: float = 1.0, maximum_incline_on_ground: float = 0.708):
+        """ 
+            Creates a new physics engine, based on pymunk
+            
+            :param gravity The direction where gravity is pointing
+            :param damping The dampning of the sprites
+            :param maximum_incline_on_ground The maximum incline the ground can have, before is_on_ground() becomes False
+                default = 0.708 or a little bit over 45° angle
+        """
         # -- Pymunk
         self.space = pymunk.Space()
         self.space.gravity = gravity
@@ -43,6 +51,7 @@ class PymunkPhysicsEngine:
         self.collision_types: List[str] = []
         self.sprites: Dict[Sprite, PymunkPhysicsObject] = {}
         self.non_static_sprite_list: List = []
+        self.maximum_incline_on_ground = maximum_incline_on_ground
 
     def add_sprite(self,
                    sprite: Sprite,
@@ -386,10 +395,22 @@ class PymunkPhysicsEngine:
             'body': None
         }
 
-        def f(arbiter):
-            """ I don't know how this works. """
-            n = -arbiter.contact_point_set.normal
-            if n.y > grounding['normal'].y:
+        # creates a unit vector (Vector of length 1) in the same direction as the gravity
+        gravity_unit_vector = pymunk.Vec2d(1, 0).rotated(self.space.gravity.angle)
+
+        def f(arbiter: pymunk.Arbiter):
+            """
+            Checks if the the point of collision is in a way, that the sprite is on top of the other
+            """
+            
+            # Gets the normal vector of the collision. This is basicly the point of collision.
+            n = arbiter.contact_point_set.normal
+
+            # Checks if the x component of the gravity is in range of the maximum incline, same for the y component.
+            # This will work, as the normal AND gravity are both points on a circle with a radius of 1. (both are unit vecors)
+            if gravity_unit_vector.x + self.maximum_incline_on_ground > n.x > gravity_unit_vector.x - self.maximum_incline_on_ground\
+                    and \
+                gravity_unit_vector.y + self.maximum_incline_on_ground > n.y > gravity_unit_vector.y - self.maximum_incline_on_ground:
                 grounding['normal'] = n
                 grounding['penetration'] = -arbiter.contact_point_set.points[0].distance
                 grounding['body'] = arbiter.shapes[1].body
