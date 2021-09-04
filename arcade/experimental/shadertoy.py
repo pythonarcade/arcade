@@ -35,7 +35,7 @@ class ShadertoyBase:
         self._size = size
         self._source = source
         # Uniforms
-        self._mouse_pos: Tuple[float, float] = 0.0, 0.0
+        self._mouse_pos = 0.0, 0.0
         self._time: float = 0.0
         self._time_delta: float = 0.0
         self._frame: int = 0

@@ -4,7 +4,6 @@ Script used to create the quick index
 import re
 import os
 from pathlib import Path
-
 titles = {
     'arcade_types.py': ['Arcade Data Types', 'arcade_types.rst'],
     'application.py': ['Window and View', 'window.rst'],
@@ -45,28 +44,15 @@ titles = {
     'texture_atlas.py': ['Texture Atlas', 'texture_atlas.rst'],
     'scene.py': ['Sprite Scenes', 'sprite_scenes.rst'],
 
-    'elements/exceptions.py': ['GUI Elements', 'gui_elements.rst'],
-    'elements/box.py': ['GUI Elements', 'gui_elements.rst'],
-    'elements/flat_button.py': ['GUI Elements', 'gui_elements.rst'],
-    'elements/image_button.py': ['GUI Elements', 'gui_elements.rst'],
-    'elements/inputbox.py': ['GUI Elements', 'gui_elements.rst'],
-    'elements/label.py': ['GUI Elements', 'gui_elements.rst'],
-    'elements/toggle.py': ['GUI Elements', 'gui_elements.rst'],
-    'elements/__init__.py': ['GUI Elements', 'gui_elements.rst'],
-    'layouts/__init__.py': ['GUI Layout Manger', 'gui_layout.rst'],
-    'layouts/anchor.py': ['GUI Layout Manger', 'gui_layout.rst'],
-    'layouts/box.py': ['GUI Layout Manger', 'gui_layout.rst'],
-    'layouts/manager.py': ['GUI Layout Manger', 'gui_layout.rst'],
-    'layouts/utils.py': ['GUI Layout Manger', 'gui_layout.rst'],
     'tilemap/tilemap.py': ['Tiled Map Reader', 'tilemap.rst'],
 
     'gui/__init__.py': ['GUI', 'gui.rst'],
+    'gui/_property.py': ['GUI', 'gui.rst'],
     'gui/constructs.py': ['GUI', 'gui.rst'],
-    'gui/events.py': ['GUI Event', 'gui_events.rst'],
+    'gui/events.py': ['GUI Events', 'gui_events.rst'],
+    'gui/mixins.py': ['GUI', 'gui.rst'],
     'gui/surface.py': ['GUI', 'gui.rst'],
     'gui/ui_manager.py': ['GUI', 'gui.rst'],
-    'gui/mixins.py': ['GUI', 'gui.rst'],
-    'gui/_property.py': ['GUI', 'gui.rst'],
     'gui/widgets.py': ['GUI Widgets', 'gui_widgets.rst'],
 
     'events/__init__.py': ['GUI Utility Functions', 'gui_utility.rst'],
@@ -85,6 +71,7 @@ titles = {
     'gl/texture.py': ['Texture Management', 'open_gl.rst'],
     'gl/vertex_array.py': ['OpenGL Vertex Array (VAO)', 'open_gl.rst'],
 }
+
 
 
 def get_member_list(filepath):

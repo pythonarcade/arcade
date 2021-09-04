@@ -159,8 +159,8 @@ Arcade Skill Tree
 * Particles - :ref:`particle_systems`
 * GUI
 
-  * Buttons
-  * Text boxes
+  * Concepts - :ref:`_gui_concepts`
+  * Examples - :ref:`_gui_concepts`
 
 * OpenGL Frame buffers
 

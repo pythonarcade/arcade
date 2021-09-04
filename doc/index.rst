@@ -131,7 +131,7 @@ The Python Arcade Library
           <ul>
           <li><a href="quick_index.html">Quick API Index</a></li>
           <li><a href="arcade.html">Full Arcade API Docs</a></li>
-          <li><a href="gui/index.html">GUI Concepts</a></li>
+          <li><a href="gui/index.html">GUI</a></li>
           <li><a href="arcade.color.html">Colors</a> | <a href="arcade.csscolor.html">CSS Colors</a></li>
           <li><a href="arcade.html#arcade.Window">Window Class</a></li>
           <li><a href="arcade.html#arcade.Sprite">Sprite</a> | <a href="arcade.html#arcade.SpriteList">SpriteList</a></li>
