@@ -636,19 +636,3 @@ And, of course, don't forget to draw the ladders:
 
 * :ref:`pymunk_demo_platformer_12`
 * :ref:`pymunk_demo_platformer_12_diff`
-
-
-Add "Hit" Ability
------------------
-
-(To be done)
-
-Add "Grab" Ability
-------------------
-
-(To be done)
-
-Add "Claw-Shot" Ability
------------------------
-
-(To be done)

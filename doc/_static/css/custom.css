@@ -179,3 +179,8 @@ a:visited {
     white-space: pre;
     margin-left: 10px;
 }
+#gui, #gui div {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+}
