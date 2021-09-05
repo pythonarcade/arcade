@@ -28,6 +28,11 @@ class PymunkPhysicsObject:
 class PymunkPhysicsEngine:
     """
     Pymunk Physics Engine
+
+    :param gravity: The direction where gravity is pointing
+    :param damping: The amount of speed which is kept to the next tick. a value of 1.0 means no speed loss, while 0.9 has 10% loss of speed etc.
+    :param maximum_incline_on_ground: The maximum incline the ground can have, before is_on_ground() becomes False
+        default = 0.708 or a little bit over 45° angle
     """
 
     DYNAMIC = pymunk.Body.DYNAMIC
@@ -37,12 +42,7 @@ class PymunkPhysicsEngine:
 
     def __init__(self, gravity=(0, 0), damping: float = 1.0, maximum_incline_on_ground: float = 0.708):
         """ 
-            Creates a new physics engine, based on pymunk
-            
-            :param gravity The direction where gravity is pointing
-            :param damping The dampning of the sprites
-            :param maximum_incline_on_ground The maximum incline the ground can have, before is_on_ground() becomes False
-                default = 0.708 or a little bit over 45° angle
+
         """
         # -- Pymunk
         self.space = pymunk.Space()
