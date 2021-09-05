@@ -41,9 +41,6 @@ class PymunkPhysicsEngine:
     MOMENT_INF = float('inf')
 
     def __init__(self, gravity=(0, 0), damping: float = 1.0, maximum_incline_on_ground: float = 0.708):
-        """ 
-
-        """
         # -- Pymunk
         self.space = pymunk.Space()
         self.space.gravity = gravity
