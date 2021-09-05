@@ -179,6 +179,7 @@ class TileMap:
             "use_spatial_hash": self.use_spatial_hash,
             "hit_box_algorithm": self.hit_box_algorithm,
             "hit_box_detail": self.hit_box_detail,
+            "custom_class": Sprite,
         }
 
         for layer in self.tiled_map.layers:
@@ -337,6 +338,7 @@ class TileMap:
         scaling: float = 1.0,
         hit_box_algorithm: str = "Simple",
         hit_box_detail: float = 4.5,
+        custom_class: type = Sprite,
     ) -> Sprite:
         """Given a tile from the parser, try and create a Sprite from it."""
 
@@ -349,7 +351,7 @@ class TileMap:
             my_sprite: Sprite = AnimatedTimeBasedSprite(image_file, scaling)
         else:
             image_x, image_y, width, height = _get_image_info_from_tileset(tile)
-            my_sprite = Sprite(
+            my_sprite = custom_class(
                 image_file,
                 scaling,
                 image_x,
@@ -580,6 +582,7 @@ class TileMap:
         use_spatial_hash: Optional[bool] = None,
         hit_box_algorithm: str = "Simple",
         hit_box_detail: float = 4.5,
+        custom_class: type = Sprite,
     ) -> SpriteList:
 
         sprite_list: SpriteList = SpriteList(use_spatial_hash=use_spatial_hash)
@@ -607,6 +610,7 @@ class TileMap:
                     scaling=scaling,
                     hit_box_algorithm=hit_box_algorithm,
                     hit_box_detail=hit_box_detail,
+                    custom_class=custom_class
                 )
 
                 if my_sprite is None:
