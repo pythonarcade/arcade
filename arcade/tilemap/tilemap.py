@@ -122,6 +122,7 @@ class TileMap:
             scaling - A float providing layer specific Sprite scaling.
             hit_box_algorithm - A string for the hit box algorithm to use for the Sprite's in this layer.
             hit_box_detail - A float specifying the level of detail for each Sprite's hitbox
+            custom_class - All objects in the layer are created from this class instead of Sprite. Must be subclass of Sprite.
 
             For example:
 
@@ -131,6 +132,7 @@ class TileMap:
                     "Platforms": {
                         "use_spatial_hash": True,
                         "scaling": 2.5,
+                        "custom_class": Platform,
                     },
                 }
 
