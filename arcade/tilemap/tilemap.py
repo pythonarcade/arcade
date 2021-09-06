@@ -185,7 +185,7 @@ class TileMap:
             "use_spatial_hash": self.use_spatial_hash,
             "hit_box_algorithm": self.hit_box_algorithm,
             "hit_box_detail": self.hit_box_detail,
-            "custom_class": Sprite,
+            "custom_class": None,
             "custom_class_args": {},
         }
 
@@ -365,6 +365,7 @@ class TileMap:
                     Custom classes for animated tiles must subclass AnimatedTimeBasedSprite.
                     """
                 )
+            print(custom_class.__name__)
             args = {"filename": image_file, "scale": scaling}
             my_sprite = custom_class(**custom_class_args, **args)  # type: ignore
         else:
@@ -539,7 +540,7 @@ class TileMap:
         use_spatial_hash: Optional[bool] = None,
         hit_box_algorithm: str = "Simple",
         hit_box_detail: float = 4.5,
-        custom_class: type = Sprite,
+        custom_class: Optional[type] = None,
         custom_class_args: Dict[str, Any] = {},
     ) -> SpriteList:
 
@@ -623,7 +624,7 @@ class TileMap:
         use_spatial_hash: Optional[bool] = None,
         hit_box_algorithm: str = "Simple",
         hit_box_detail: float = 4.5,
-        custom_class: type = Sprite,
+        custom_class: Optional[type] = None,
         custom_class_args: Dict[str, Any] = {},
     ) -> SpriteList:
 
@@ -689,7 +690,7 @@ class TileMap:
         use_spatial_hash: Optional[bool] = None,
         hit_box_algorithm: str = "Simple",
         hit_box_detail: float = 4.5,
-        custom_class: type = Sprite,
+        custom_class: Optional[type] = None,
         custom_class_args: Dict[str, Any] = {},
     ) -> Tuple[Optional[SpriteList], Optional[List[TiledObject]]]:
 
