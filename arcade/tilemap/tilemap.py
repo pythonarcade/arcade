@@ -24,8 +24,8 @@ from arcade import (
     load_texture,
 )
 from arcade.arcade_types import Point, TiledObject
-from arcade.resources import resolve_resource_path
 from arcade.geometry import rotate_point
+from arcade.resources import resolve_resource_path
 
 _FLIPPED_HORIZONTALLY_FLAG = 0x80000000
 _FLIPPED_VERTICALLY_FLAG = 0x40000000
@@ -186,7 +186,7 @@ class TileMap:
             "hit_box_algorithm": self.hit_box_algorithm,
             "hit_box_detail": self.hit_box_detail,
             "custom_class": Sprite,
-            "custom_class_args": {}
+            "custom_class_args": {},
         }
 
         for layer in self.tiled_map.layers:
@@ -345,7 +345,7 @@ class TileMap:
         scaling: float = 1.0,
         hit_box_algorithm: str = "Simple",
         hit_box_detail: float = 4.5,
-        custom_class: type = Sprite,
+        custom_class: Optional[type] = None,
         custom_class_args: Dict[str, Any] = {},
     ) -> Sprite:
         """Given a tile from the parser, try and create a Sprite from it."""
@@ -356,23 +356,42 @@ class TileMap:
         image_file = _get_image_source(tile, map_directory)
 
         if tile.animation:
-            my_sprite: Sprite = AnimatedTimeBasedSprite(image_file, scaling)
+            if not custom_class:
+                custom_class = AnimatedTimeBasedSprite
+            elif not issubclass(custom_class, AnimatedTimeBasedSprite):
+                raise RuntimeError(
+                    f"""
+                    Tried to use a custom class {custom_class.__name__} for animated tiles that doesn't subclass AnimatedTimeBasedSprite.
+                    Custom classes for animated tiles must subclass AnimatedTimeBasedSprite.
+                    """
+                )
+            args = {"filename": image_file, "scale": scaling}
+            my_sprite: Sprite = custom_class(**custom_class_args, **args)  # type: ignore
         else:
+            if not custom_class:
+                custom_class = Sprite
+            elif not issubclass(custom_class, Sprite):
+                raise RuntimeError(
+                    f"""
+                    Tried to use a custom class {custom_class.__name__} for a tile that doesn't subclass arcade.Sprite.
+                    Custom classes for tiles must subclass arcade.Sprite.
+                    """
+                )
             image_x, image_y, width, height = _get_image_info_from_tileset(tile)
-            my_sprite = custom_class(
-                image_file,
-                scaling,
-                image_x,
-                image_y,
-                width,
-                height,
-                flipped_horizontally=tile.flipped_horizontally,
-                flipped_vertically=tile.flipped_vertically,
-                flipped_diagonally=tile.flipped_diagonally,
-                hit_box_algorithm=hit_box_algorithm,
-                hit_box_detail=hit_box_detail,
-                **custom_class_args,
-            )
+            args = {
+                "filename": image_file,
+                "scale": scaling,
+                "image_x": image_x,
+                "image_y": image_y,
+                "image_width": width,
+                "image_height": height,
+                "flipped_horizontally": tile.flipped_horizontally,
+                "flipped_vertically": tile.flipped_vertically,
+                "flipped_diagonally": tile.flipped_diagonally,
+                "hit_box_algorithm": hit_box_algorithm,
+                "hit_box_detail": hit_box_detail,
+            }
+            my_sprite = custom_class(**custom_class_args, **args)  # type: ignore
 
         if tile.properties is not None and len(tile.properties) > 0:
             for key, value in tile.properties.items():
@@ -472,7 +491,6 @@ class TileMap:
                     for point in points:
                         point[0], point[1] = point[1], point[0]
 
-
                 my_sprite.hit_box = points
 
         if tile.animation:
@@ -521,6 +539,8 @@ class TileMap:
         use_spatial_hash: Optional[bool] = None,
         hit_box_algorithm: str = "Simple",
         hit_box_detail: float = 4.5,
+        custom_class: type = Sprite,
+        custom_class_args: Dict[str, Any] = {},
     ) -> SpriteList:
 
         sprite_list: SpriteList = SpriteList(use_spatial_hash=use_spatial_hash)
@@ -560,13 +580,25 @@ class TileMap:
 
             my_texture.image.putdata(new_data)
 
-        my_sprite = Sprite(
-            image_file,
-            scaling,
-            texture=my_texture,
-            hit_box_algorithm=hit_box_algorithm,
-            hit_box_detail=hit_box_detail,
-        )
+        if not custom_class:
+            custom_class = Sprite
+        elif not issubclass(custom_class, Sprite):
+            raise RuntimeError(
+                f"""
+                    Tried to use a custom class {custom_class.__name__} for an Image Layer that doesn't subclass arcade.Sprite.
+                    Custom classes for image layers must subclass arcade.Sprite.
+                """
+            )
+
+        args = {
+            "filename": image_file,
+            "scale": scaling,
+            "texture": my_texture,
+            "hit_box_algorithm": hit_box_algorithm,
+            "hit_box_detail": hit_box_detail,
+        }
+
+        my_sprite = custom_class(**custom_class_args, **args)
 
         if layer.properties:
             for key, value in layer.properties.items():
@@ -621,7 +653,7 @@ class TileMap:
                     hit_box_algorithm=hit_box_algorithm,
                     hit_box_detail=hit_box_detail,
                     custom_class=custom_class,
-                    custom_class_args=custom_class_args
+                    custom_class_args=custom_class_args,
                 )
 
                 if my_sprite is None:
@@ -699,7 +731,9 @@ class TileMap:
                     rotation = 0
 
                 angle_degrees = math.degrees(rotation)
-                rotated_center_x, rotated_center_y = rotate_point(width / 2, height / 2, 0, 0, angle_degrees)
+                rotated_center_x, rotated_center_y = rotate_point(
+                    width / 2, height / 2, 0, 0, angle_degrees
+                )
 
                 my_sprite.position = (x + rotated_center_x, y + rotated_center_y)
                 my_sprite.angle = angle_degrees
