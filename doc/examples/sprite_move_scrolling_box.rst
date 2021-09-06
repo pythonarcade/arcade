@@ -15,3 +15,6 @@ move the camera.
     :align: center
     :alt: Screen shot of using a scrolling window
 
+.. literalinclude:: ../../arcade/examples/sprite_move_scrolling_box.py
+    :caption: sprite_move_scrolling_box.py
+    :linenos:
