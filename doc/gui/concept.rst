@@ -1,7 +1,5 @@
 .. _gui_concepts:
 
-.. py:module:: arcade.gui
-
 GUI Concepts
 ------------
 
@@ -9,7 +7,7 @@ GUI elements are represented as instances of :class:`UIWidget`. The GUI is struc
 can have other widgets as children.
 
 The root of the tree is the :class:`UIManager`. The UIManager connects the user interactions with the GUI.
-Read more about :ref:`UIEvent`s.
+Read more about :ref:`UIEvent`.
 
 Classes of Arcades GUI code are prefixed with UI- to make them easy to identify and search for in autocompletion.
 
@@ -147,6 +145,8 @@ Available Elements
     - :class:`UIDraggableMixin` - Makes a widget draggable.
     - :class:`UIMouseFilterMixin` - Catches mouse events that occure within the widget boundaries.
     - :class:`UIWindowLikeMixin` - Combination of :class:`UIDraggableMixin` and :class:`UIMouseFilterMixin`.
+
+.. _UIEvent:
 
 UIEvents
 ========
