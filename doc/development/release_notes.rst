@@ -7,8 +7,26 @@ Release Notes
 
 Keep up-to-date with the latest changes to the Arcade library by the release notes.
 
-Version 2.6.0 (UNRELEASED)
+Version 2.6.2 (UNRELEASED)
 --------------------------
+
+New Features
+~~~~~~~~~~~~
+
+* Support for custom classes that subclass Sprite for tiles in TileMap objects. See `#942 <https://github.com/pythonarcade/arcade/issues/942>`_
+* Update PymunkPhysicsEngine to work with any direction of gravity rather than just downward. See `#940 <https://github.com/pythonarcade/arcade/issues/940>`_
+
+Version 2.6.1
+-------------
+
+Fixes
+~~~~~
+
+* Removed type annotations which were introduced in Python 3.8 to fix compatibility with Python 3.7 and 3.6
+* Fixed flickering on static drawing. See `#858 <https://github.com/pythonarcade/arcade/issues/858>`_
+
+Version 2.6.0
+-------------
 
 Version 2.6.0 is a major update to Arcade. It is not 100% backwards compatible with the 2.5 API.
 Updates were made to text rendering, tiled map support, sprites, shaders, textures, GUI system,
