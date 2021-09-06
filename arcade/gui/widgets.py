@@ -687,6 +687,13 @@ class UILabel(UIWidget):
                       and keep trying to load fonts until success.
     :param float font_size: size of font.
     :param arcade.Color text_color: Color of font.
+    :param bool bold: Bold font style.
+    :param bool italic: Italic font style.
+    :param bool stretch: Stretch font style.
+    :param str anchor_x: Anchor point of the X coordinate: one of ``"left"``, ``"center"`` or ``"right"``.
+    :param str anchor_y: Anchor point of the Y coordinate: one of ``"bottom"``, ``"baseline"``, ``"center"`` or ``"top"``.
+    :param str align: Horizontal alignment of text on a line, only applies if a width is supplied. One of ``"left"``, ``"center"`` or ``"right"``.
+    :param float dpi: Resolution of the fonts in this layout.  Defaults to 96.
     :param bool multiline: if multiline is true, a \\n will start a new line.
                            A UITextWidget with multiline of true is the same thing as UITextArea.
 
@@ -705,6 +712,13 @@ class UILabel(UIWidget):
                  font_name=('Arial',),
                  font_size: float = 12,
                  text_color: arcade.Color = (255, 255, 255, 255),
+                 bold=False,
+                 italic=False,
+                 stretch=False,
+                 anchor_x='left',
+                 anchor_y='baseline',
+                 align='left',
+                 dpi=None,
                  multiline: bool = False,
                  size_hint=None,
                  size_hint_min=None,
@@ -719,6 +733,13 @@ class UILabel(UIWidget):
                                        color=arcade.get_four_byte_color(text_color),
                                        width=None,
                                        height=None,
+                                       bold=bold,
+                                       italic=italic,
+                                       stretch=stretch,
+                                       anchor_x=anchor_x,
+                                       anchor_y=anchor_y,
+                                       align=align,
+                                       dpi=dpi,
                                        multiline=multiline,
                                        )
 
