@@ -657,6 +657,8 @@ class TileMap:
         use_spatial_hash: Optional[bool] = None,
         hit_box_algorithm: str = "Simple",
         hit_box_detail: float = 4.5,
+        custom_class: type = Sprite,
+        custom_class_args: Dict[str, Any] = {},
     ) -> Tuple[Optional[SpriteList], Optional[List[TiledObject]]]:
 
         if not scaling:
@@ -677,6 +679,8 @@ class TileMap:
                     scaling=scaling,
                     hit_box_algorithm=hit_box_algorithm,
                     hit_box_detail=hit_box_detail,
+                    custom_class=custom_class,
+                    custom_class_args=custom_class_args,
                 )
 
                 x = cur_object.coordinates.x * scaling
