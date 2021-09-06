@@ -366,7 +366,7 @@ class TileMap:
                     """
                 )
             args = {"filename": image_file, "scale": scaling}
-            my_sprite: Sprite = custom_class(**custom_class_args, **args)  # type: ignore
+            my_sprite = custom_class(**custom_class_args, **args)  # type: ignore
         else:
             if not custom_class:
                 custom_class = Sprite
