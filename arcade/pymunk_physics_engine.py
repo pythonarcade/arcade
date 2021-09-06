@@ -2,16 +2,15 @@
 Pymunk Physics Engine
 """
 
+import logging
+import math
+from typing import Callable, Dict, List, Optional, Union, Tuple
+
 import pymunk
 
-import math
-from typing import Callable
-from typing import List
-from typing import Dict
-from typing import Optional
 from arcade import Sprite
+from arcade.math import Vec2
 
-import logging
 LOG = logging.getLogger(__name__)
 
 
@@ -57,8 +56,8 @@ class PymunkPhysicsEngine:
                    elasticity: Optional[float] = None,
                    moment_of_intertia: Optional[float] =None,
                    body_type: int =DYNAMIC,
-                   damping: Optoinal[float] =None,
-                   gravity: Union[pymunk.Vec2d, Tuple[float, float], arcade.math.Vec2] =None,
+                   damping: Optional[float] =None,
+                   gravity: Union[pymunk.Vec2d, Tuple[float, float], Vec2] =None,
                    max_velocity: int =None,
                    max_horizontal_velocity: int =None,
                    max_vertical_velocity: int =None,
@@ -223,7 +222,7 @@ class PymunkPhysicsEngine:
         if sprite in self.non_static_sprite_list:
             self.non_static_sprite_list.remove(sprite)
 
-    def get_sprite_for_shape(self, shape: Optional[Shape]) -> Optional[Sprite]:
+    def get_sprite_for_shape(self, shape: Optional[pymunk.Shape]) -> Optional[Sprite]:
         """ Given a shape, what sprite is associated with it? """
         for sprite in self.sprites:
             if self.sprites[sprite].shape is shape:
