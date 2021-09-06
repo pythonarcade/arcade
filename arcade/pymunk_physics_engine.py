@@ -55,17 +55,29 @@ class PymunkPhysicsEngine:
                    mass: float = 1,
                    friction: float = 0.2,
                    elasticity: Optional[float] = None,
-                   moment=None,
-                   body_type=DYNAMIC,
-                   damping=None,
-                   gravity=None,
-                   max_velocity=None,
-                   max_horizontal_velocity=None,
-                   max_vertical_velocity=None,
+                   moment_of_intertia: Optional[float] =None,
+                   body_type: int =DYNAMIC,
+                   damping: Optoinal[float] =None,
+                   gravity: Union[pymunk.Vec2d, Tuple[float, float], arcade.math.Vec2] =None,
+                   max_velocity: int =None,
+                   max_horizontal_velocity: int =None,
+                   max_vertical_velocity: int =None,
                    radius: float = 0,
                    collision_type: str = "default",
                    ):
-        """ Add a sprite to the physics engine. """
+        """ Add a sprite to the physics engine. 
+            :param sprite: The sprite to add
+            :param mass: The mass of the object. Defaults to 1
+            :param friction: The friction the object has. Defaults to 0.2
+            :param elasticity: Not sure for this one #TODO insert what this is about
+            :param moment_of_intertia: The moment of inertia, or force needed to change angular momentum. Providing infinite makes this object stuck in its rotation.
+            :param body_type: The type of the body. Defaults to Dynamic, meaning, the body can move, rotate etc. providing STATIC makes it fixed to the world.
+            :param damping: See class docs
+            :param gravity: See class docs
+            :param max_velocity: The maximum velocity of the object.
+            :param max_horizontal_velocity: maximum velocity on the x axis
+            :param max_vertical_velocity: maximum velocity on the y axis
+        """
 
         if damping is not None:
             sprite.pymunk.damping = damping
@@ -95,12 +107,12 @@ class PymunkPhysicsEngine:
         # Get a number associated with the string of collision_type
         collision_type_id = self.collision_types.index(collision_type)
 
-        # Default to a box moment
-        if moment is None:
-            moment = pymunk.moment_for_box(mass, (sprite.width, sprite.height))
+        # Default to a box moment_of_intertia
+        if moment_of_intertia is None:
+            moment_of_intertia = pymunk.moment_for_box(mass, (sprite.width, sprite.height))
 
         # Create the physics body
-        body = pymunk.Body(mass, moment, body_type=body_type)
+        body = pymunk.Body(mass, moment_of_intertia, body_type=body_type)
 
         # Set the body's position
         body.position = pymunk.Vec2d(sprite.center_x, sprite.center_y)
@@ -185,10 +197,10 @@ class PymunkPhysicsEngine:
                         mass: float = 1,
                         friction: float = 0.2,
                         elasticity: Optional[float] = None,
-                        moment=None,
-                        body_type=DYNAMIC,
-                        damping=None,
-                        collision_type=None
+                        moment_of_intertia: Optional[float] =None,
+                        body_type: int =DYNAMIC,
+                        damping: Optional[float] =None,
+                        collision_type: Optional[str] =None
                         ):
         """ Add all sprites in a sprite list to the physics engine. """
 
@@ -197,7 +209,7 @@ class PymunkPhysicsEngine:
                             mass=mass,
                             friction=friction,
                             elasticity=elasticity,
-                            moment=moment,
+                            moment_of_intertia=moment_of_intertia,
                             body_type=body_type,
                             damping=damping,
                             collision_type=collision_type)
@@ -211,36 +223,36 @@ class PymunkPhysicsEngine:
         if sprite in self.non_static_sprite_list:
             self.non_static_sprite_list.remove(sprite)
 
-    def get_sprite_for_shape(self, shape) -> Optional[Sprite]:
+    def get_sprite_for_shape(self, shape: Optional[Shape]) -> Optional[Sprite]:
         """ Given a shape, what sprite is associated with it? """
         for sprite in self.sprites:
             if self.sprites[sprite].shape is shape:
                 return sprite
         return None
 
-    def get_sprites_from_arbiter(self, arbiter):
+    def get_sprites_from_arbiter(self, arbiter: pymunk.Arbiter) -> Tuple[Sprite]:
         """ Given a collision arbiter, return the sprites associated with the collision. """
         shape1, shape2 = arbiter.shapes
         sprite1 = self.get_sprite_for_shape(shape1)
         sprite2 = self.get_sprite_for_shape(shape2)
         return sprite1, sprite2
 
-    def is_on_ground(self, sprite):
+    def is_on_ground(self, sprite: Sprite) -> bool:
         """ Return true of sprite is on top of something. """
         grounding = self.check_grounding(sprite)
         return grounding['body'] is not None
 
-    def apply_impulse(self, sprite, impulse):
+    def apply_impulse(self, sprite: Sprite, impulse: Tuple[float, float]):
         """ Apply an impulse force on a sprite """
         physics_object = self.get_physics_object(sprite)
         physics_object.body.apply_impulse_at_local_point(impulse)
 
-    def set_position(self, sprite, position):
+    def set_position(self, sprite: Sprite, position: Union[pymunk.Vec2d, Tuple[float, float]]):
         """ Apply an impulse force on a sprite """
         physics_object = self.get_physics_object(sprite)
         physics_object.body.position = position
 
-    def set_velocity(self, sprite, velocity):
+    def set_velocity(self, sprite: Sprite, velocity: Tuple[float, float]):
         """ Apply an impulse force on a sprite """
         physics_object = self.get_physics_object(sprite)
         physics_object.body.velocity = velocity
@@ -352,19 +364,19 @@ class PymunkPhysicsEngine:
         """ Get the shape/body for a sprite. """
         return self.sprites[sprite]
 
-    def apply_force(self, sprite, force):
+    def apply_force(self, sprite: Sprite, force: Tuple[float, float]):
         """ Apply force to a Sprite. """
         physics_object = self.sprites[sprite]
         physics_object.body.apply_force_at_local_point(force, (0, 0))
 
-    def set_horizontal_velocity(self, sprite, velocity):
+    def set_horizontal_velocity(self, sprite: Sprite, velocity: float):
         """ Set a sprite's velocity """
         physics_object = self.sprites[sprite]
         cv = physics_object.body.velocity
         new_cv = (velocity, cv[1])
         physics_object.body.velocity = new_cv
 
-    def set_friction(self, sprite, friction):
+    def set_friction(self, sprite: Sprite, friction: float):
         """ Apply force to a Sprite. """
         physics_object = self.sprites[sprite]
         physics_object.shape.friction = friction

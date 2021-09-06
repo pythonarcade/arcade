@@ -122,6 +122,8 @@ class TileMap:
             scaling - A float providing layer specific Sprite scaling.
             hit_box_algorithm - A string for the hit box algorithm to use for the Sprite's in this layer.
             hit_box_detail - A float specifying the level of detail for each Sprite's hitbox
+            custom_class - All objects in the layer are created from this class instead of Sprite. Must be subclass of Sprite.
+            custom_class_args - Custom arguments, passed into the constructor of the custom_class
 
             For example:
 
@@ -131,6 +133,10 @@ class TileMap:
                     "Platforms": {
                         "use_spatial_hash": True,
                         "scaling": 2.5,
+                        "custom_class": Platform,
+                        "custom_class_args": {
+                            "health": 100
+                        }
                     },
                 }
 
@@ -179,6 +185,8 @@ class TileMap:
             "use_spatial_hash": self.use_spatial_hash,
             "hit_box_algorithm": self.hit_box_algorithm,
             "hit_box_detail": self.hit_box_detail,
+            "custom_class": Sprite,
+            "custom_class_args": {}
         }
 
         for layer in self.tiled_map.layers:
@@ -337,6 +345,8 @@ class TileMap:
         scaling: float = 1.0,
         hit_box_algorithm: str = "Simple",
         hit_box_detail: float = 4.5,
+        custom_class: type = Sprite,
+        custom_class_args: Dict[str, Any] = {},
     ) -> Sprite:
         """Given a tile from the parser, try and create a Sprite from it."""
 
@@ -349,7 +359,7 @@ class TileMap:
             my_sprite: Sprite = AnimatedTimeBasedSprite(image_file, scaling)
         else:
             image_x, image_y, width, height = _get_image_info_from_tileset(tile)
-            my_sprite = Sprite(
+            my_sprite = custom_class(
                 image_file,
                 scaling,
                 image_x,
@@ -361,6 +371,7 @@ class TileMap:
                 flipped_diagonally=tile.flipped_diagonally,
                 hit_box_algorithm=hit_box_algorithm,
                 hit_box_detail=hit_box_detail,
+                **custom_class_args,
             )
 
         if tile.properties is not None and len(tile.properties) > 0:
@@ -580,6 +591,8 @@ class TileMap:
         use_spatial_hash: Optional[bool] = None,
         hit_box_algorithm: str = "Simple",
         hit_box_detail: float = 4.5,
+        custom_class: type = Sprite,
+        custom_class_args: Dict[str, Any] = {},
     ) -> SpriteList:
 
         sprite_list: SpriteList = SpriteList(use_spatial_hash=use_spatial_hash)
@@ -607,6 +620,8 @@ class TileMap:
                     scaling=scaling,
                     hit_box_algorithm=hit_box_algorithm,
                     hit_box_detail=hit_box_detail,
+                    custom_class=custom_class,
+                    custom_class_args=custom_class_args
                 )
 
                 if my_sprite is None:
@@ -642,6 +657,8 @@ class TileMap:
         use_spatial_hash: Optional[bool] = None,
         hit_box_algorithm: str = "Simple",
         hit_box_detail: float = 4.5,
+        custom_class: type = Sprite,
+        custom_class_args: Dict[str, Any] = {},
     ) -> Tuple[Optional[SpriteList], Optional[List[TiledObject]]]:
 
         if not scaling:
@@ -662,6 +679,8 @@ class TileMap:
                     scaling=scaling,
                     hit_box_algorithm=hit_box_algorithm,
                     hit_box_detail=hit_box_detail,
+                    custom_class=custom_class,
+                    custom_class_args=custom_class_args,
                 )
 
                 x = cur_object.coordinates.x * scaling
