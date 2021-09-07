@@ -308,8 +308,6 @@ class Scene:
         list were arranged. If `names` is not provided, then every SpriteList
         in the scene will be drawn according to the order of the main sprite_lists
         attribute of the Scene.
-
-        :param Optional[List[str]] names: A list of names of SpriteLists to draw.
         """
 
         if names:

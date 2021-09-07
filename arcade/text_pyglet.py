@@ -28,7 +28,7 @@ class Text:
         italic: bool = False,
         anchor_x: str = "left",
         anchor_y: str = "baseline",
-        rotation: float = 0,
+        rotation: float = 0, # TODO: Look into, why this field is not used
     ):
         self._label = pyglet.text.Label(
             text=text,
@@ -176,5 +176,6 @@ def draw_text(
         label.draw()
 
 
+# TODO: maybe remove, as this is invalid
 def create_text(*args, **kwargs):
     return Text("Hello")

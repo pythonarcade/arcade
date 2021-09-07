@@ -1,15 +1,19 @@
 
 from arcade import ShapeElementList
 from arcade.buffered_draw_commands import create_line
+from typing import Tuple
+from arcade import Color
 
 
-def isometric_grid_to_screen(tile_x, tile_y, width, height, tile_width, tile_height):
+def isometric_grid_to_screen(tile_x: int, tile_y: int, width: int, height: int, tile_width: int, tile_height: int)\
+        -> Tuple[int, int]:
     screen_x = tile_width * tile_x // 2 + height * tile_width // 2 - tile_y * tile_width // 2
     screen_y = (height - tile_y - 1) * tile_height // 2 + width * tile_height // 2 - tile_x * tile_height // 2
     return screen_x, screen_y
 
 
-def screen_to_isometric_grid(screen_x, screen_y, width, height, tile_width, tile_height):
+def screen_to_isometric_grid(screen_x: int, screen_y: int, width: int, height: int, tile_width: int, tile_height: int)\
+        -> Tuple[int, int]:
     x2 = (1 / tile_width * screen_x / 2 - 1 / tile_height * screen_y / 2 + width / 2) * 2 - (width / 2 + 0.5)
     y2 = (height - 1) - ((1 / tile_width * screen_x / 2 + 1 / tile_height * screen_y / 2) * 2 - (width / 2 + 0.5))
     x2 = round(x2)
@@ -17,7 +21,13 @@ def screen_to_isometric_grid(screen_x, screen_y, width, height, tile_width, tile
     return x2, y2
 
 
-def create_isometric_grid_lines(width, height, tile_width, tile_height, color, line_width):
+def create_isometric_grid_lines(width: int,
+                                height: int,
+                                tile_width: int,
+                                tile_height: int,
+                                color: Color,
+                                line_width: int)\
+        -> ShapeElementList:
 
     # Grid lines 1
     shape_list = ShapeElementList()

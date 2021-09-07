@@ -1260,7 +1260,7 @@ class SpriteSolidColor(Sprite):
     :param Color color: Color of the sprite
     """
 
-    def __init__(self, width: int, height: int, color):
+    def __init__(self, width: int, height: int, color: Color):
         """
         Create a solid-color rectangular sprite.
         """

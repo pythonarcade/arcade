@@ -166,7 +166,7 @@ class Emitter:
     def draw(self):
         self._particles.draw()
 
-    def can_reap(self):
+    def can_reap(self) -> bool:
         """Determine if Emitter can be deleted"""
         is_emit_complete = self.rate_factory.is_complete()
         can_reap = is_emit_complete and len(self._particles) <= 0

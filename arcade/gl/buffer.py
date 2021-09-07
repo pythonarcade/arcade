@@ -121,7 +121,7 @@ class Buffer:
 
         ctx.stats.decr("buffer")
 
-    def read(self, size=-1, offset=0) -> bytes:
+    def read(self, size: int = -1, offset: int = 0) -> bytes:
         """Read data from the buffer.
 
         :param int size: The bytes to read. -1 means the entire buffer (default)
@@ -190,7 +190,7 @@ class Buffer:
             size,  # size (number of bytes to copy)
         )
 
-    def orphan(self, size=-1, double: bool = False):
+    def orphan(self, size: int = -1, double: bool = False):
         """
         Re-allocate the entire buffer memory. This can be used to resize
         a buffer or for re-specification (orphan the buffer to avoid blocking).

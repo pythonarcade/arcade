@@ -104,10 +104,6 @@ import warnings as _warnings
 from operator import mul as _mul
 
 
-def clamp(num, min_val, max_val):
-    return max(min(num, max_val), min_val)
-
-
 class Vec2(tuple):
     def __new__(cls, *args):
         len_args = len(args)

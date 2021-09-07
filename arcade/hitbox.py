@@ -4,11 +4,12 @@ This module is used for calculating hit boxes
 import pymunk
 
 from PIL import Image
-
+from arcade import NamedPoint
+from typing import List, Union, Tuple
 from pymunk import autogeometry
 
 
-def calculate_hit_box_points_simple(image):
+def calculate_hit_box_points_simple(image: Image):
     """
     Given an image, this returns points that make up a hit box around it. Attempts
     to trim out transparent pixels.
@@ -73,7 +74,7 @@ def calculate_hit_box_points_simple(image):
     if bottom_border == 0:
         return []
 
-    def _check_corner_offset(start_x, start_y, x_direction, y_direction):
+    def _check_corner_offset(start_x: int, start_y: int, x_direction: int, y_direction: int) -> int:
 
         bad = False
         offset = 0
@@ -94,8 +95,8 @@ def calculate_hit_box_points_simple(image):
         # print(f"offset: {offset}")
         return offset
 
-    def _r(point, height, width):
-        return point[0] - width / 2, (height - point[1]) - height / 2
+    def _r(point: NamedPoint, height: int, width: int):
+        return point.x - width / 2, (height - point.y) - height / 2
 
     top_left_corner_offset = _check_corner_offset(left_border, top_border, 1, 1)
     top_right_corner_offset = _check_corner_offset(right_border, top_border, -1, 1)
@@ -138,7 +139,9 @@ def calculate_hit_box_points_simple(image):
     return result
 
 
-def calculate_hit_box_points_detailed(image: Image, hit_box_detail: float = 4.5):
+def calculate_hit_box_points_detailed(image: Image,
+                                      hit_box_detail: float = 4.5)\
+        -> Union[List[NamedPoint], Tuple[NamedPoint, ...]]:
     """
     Given an image, this returns points that make up a hit box around it. Attempts
     to trim out transparent pixels.
@@ -151,7 +154,7 @@ def calculate_hit_box_points_detailed(image: Image, hit_box_detail: float = 4.5)
 
     """
 
-    def sample_func(sample_point):
+    def sample_func(sample_point: NamedPoint) -> int:
         """ Method used to sample image. """
         if sample_point[0] < 0 \
                 or sample_point[1] < 0 \

@@ -9,8 +9,6 @@ from typing import List, Optional, Union
 from arcade import (Sprite, SpriteList, check_for_collision,
                     check_for_collision_with_lists, get_distance)
 
-# import time
-
 
 def _circular_check(player: Sprite, walls: List[SpriteList]):
     """
@@ -46,8 +44,6 @@ def _circular_check(player: Sprite, walls: List[SpriteList]):
 
 
 def _move_sprite(moving_sprite: Sprite, walls: List[SpriteList], ramp_up: bool) -> List[Sprite]:
-
-    # start_time = time.time()
 
     # See if we are starting this turn with a sprite already colliding with us.
     if len(check_for_collision_with_lists(moving_sprite, walls)) > 0:
