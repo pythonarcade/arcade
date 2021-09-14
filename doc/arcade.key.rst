@@ -1,3 +1,5 @@
+.. _key:
+
 arcade.key package
 ==================
 

@@ -25,6 +25,7 @@ Quick API Index
 
 * :ref:`color`
 * :ref:`csscolor`
+* :ref:`key`
 * :ref:`resources`
 
 
