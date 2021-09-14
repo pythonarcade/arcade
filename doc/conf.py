@@ -140,7 +140,7 @@ html_extra_path = ['html_extra']
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'Arcadedoc'
-html_baseurl = 'https://arcade.academy/'
+html_baseurl = 'https://api.arcade.academy/'
 
 # Fix line numbers on code listings until the RTD theme updates to sphinx 4+
 html_codeblock_linenos_style = 'table'
