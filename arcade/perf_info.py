@@ -10,7 +10,7 @@ import time
 # Evil globals
 _timings: Dict = {}
 _pyglets_dispatch_event = None
-_frame_times = collections.deque()
+_frame_times: collections.deque = collections.deque()
 _max_history: int = 100
 
 
