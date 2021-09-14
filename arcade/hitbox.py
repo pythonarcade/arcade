@@ -95,8 +95,8 @@ def calculate_hit_box_points_simple(image: Image):
         # print(f"offset: {offset}")
         return offset
 
-    def _r(point: NamedPoint, height: int, width: int):
-        return point.x - width / 2, (height - point.y) - height / 2
+    def _r(point: (float, float), height: int, width: int):
+        return point[0] - width / 2, (height - point[1]) - height / 2
 
     top_left_corner_offset = _check_corner_offset(left_border, top_border, 1, 1)
     top_right_corner_offset = _check_corner_offset(right_border, top_border, -1, 1)
