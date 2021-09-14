@@ -15,6 +15,13 @@ New Features
 
 * Support for custom classes that subclass Sprite for tiles in TileMap objects. See `#942 <https://github.com/pythonarcade/arcade/issues/942>`_
 * Update PymunkPhysicsEngine to work with any direction of gravity rather than just downward. See `#940 <https://github.com/pythonarcade/arcade/issues/940>`_
+* Update library versions we depend on. PIL, Pymunk, etc.
+* Fix the card game example code. See `#951 <https://github.com/pythonarcade/arcade/issues/951>`_
+* Fix for drawing small circles not using enough segments. See `#950 <https://github.com/pythonarcade/arcade/issues/950>`_
+* A lot of documentation links in the .py files were old and not updated to the RTD way, fixed now.
+* ``arcade.key`` was missing from the documentation quick index. Fixed.
+
+
 
 Version 2.6.1
 -------------
