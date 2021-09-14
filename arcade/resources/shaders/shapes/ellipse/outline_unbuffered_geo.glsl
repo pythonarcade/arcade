@@ -34,7 +34,13 @@ void main() {
         segments_selected = segments;
     } else {
         // Estimate the number of segments needed based on size
-        segments_selected = int(2.0 * PI * max(shape.x, shape.y) / 3.0);
+        float size = max(shape.x, shape.y);
+        if (size <= 4)
+            segments_selected = 4;
+        else if (size <= 16)
+            segments_selected = 16;
+        else
+            segments_selected = 32;
     }
     // Clamp number of segments
     segments_selected = clamp(segments_selected, MIN_SEGMENTS, MAX_SEGMENTS);
