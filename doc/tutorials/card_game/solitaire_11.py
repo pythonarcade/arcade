@@ -238,6 +238,8 @@ class MyGame(arcade.Window):
 
             # Might be a stack of cards, get the top one
             primary_card = cards[-1]
+            assert isinstance(primary_card, Card)
+
             # Figure out what pile the card is in
             pile_index = self.get_pile_for_card(primary_card)
 

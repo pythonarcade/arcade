@@ -44,6 +44,7 @@ X_SPACING = MAT_WIDTH + MAT_WIDTH * HORIZONTAL_MARGIN_PERCENT
 CARD_VALUES = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"]
 CARD_SUITS = ["Clubs", "Hearts", "Spades", "Diamonds"]
 
+
 class Card(arcade.Sprite):
     """ Card sprite """
 
@@ -59,6 +60,7 @@ class Card(arcade.Sprite):
 
         # Call the parent
         super().__init__(self.image_file_name, scale, hit_box_algorithm="None")
+
 
 class MyGame(arcade.Window):
     """ Main application class. """

@@ -35,6 +35,7 @@ START_X = MAT_WIDTH / 2 + MAT_WIDTH * HORIZONTAL_MARGIN_PERCENT
 CARD_VALUES = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"]
 CARD_SUITS = ["Clubs", "Hearts", "Spades", "Diamonds"]
 
+
 class Card(arcade.Sprite):
     """ Card sprite """
 
@@ -50,6 +51,7 @@ class Card(arcade.Sprite):
 
         # Call the parent
         super().__init__(self.image_file_name, scale, hit_box_algorithm="None")
+
 
 class MyGame(arcade.Window):
     """ Main application class. """
@@ -97,15 +99,12 @@ class MyGame(arcade.Window):
         # Draw the cards
         self.card_list.draw()
 
-    def pull_to_top(self, card):
+    def pull_to_top(self, card: arcade.Sprite):
         """ Pull card to top of rendering order (last to render, looks on-top) """
-        # Find the index of the card
-        index = self.card_list.index(card)
-        # Loop and pull all the other cards down towards the zero end
-        for i in range(index, len(self.card_list) - 1):
-            self.card_list[i] = self.card_list[i + 1]
-        # Put this card at the right-side/top/size of list
-        self.card_list[len(self.card_list) - 1] = card
+
+        # Remove, and append to the end
+        self.card_list.remove(card)
+        self.card_list.append(card)
 
     def on_mouse_press(self, x, y, button, key_modifiers):
         """ Called when the user presses a mouse button. """

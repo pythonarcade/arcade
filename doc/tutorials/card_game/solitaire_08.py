@@ -81,6 +81,7 @@ class Card(arcade.Sprite):
         # Call the parent
         super().__init__(self.image_file_name, scale, hit_box_algorithm="None")
 
+
 class MyGame(arcade.Window):
     """ Main application class. """
 
