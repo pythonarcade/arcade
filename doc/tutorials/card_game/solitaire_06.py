@@ -61,6 +61,7 @@ class Card(arcade.Sprite):
         # Call the parent
         super().__init__(self.image_file_name, scale, hit_box_algorithm="None")
 
+
 class MyGame(arcade.Window):
     """ Main application class. """
 
@@ -133,8 +134,7 @@ class MyGame(arcade.Window):
         # Shuffle the cards
         for pos1 in range(len(self.card_list)):
             pos2 = random.randrange(len(self.card_list))
-            self.card_list[pos1], self.card_list[pos2] = self.card_list[pos2], self.card_list[pos1]
-
+            self.card_list.swap(pos1, pos2)
 
     def on_draw(self):
         """ Render the screen. """
@@ -147,15 +147,12 @@ class MyGame(arcade.Window):
         # Draw the cards
         self.card_list.draw()
 
-    def pull_to_top(self, card):
+    def pull_to_top(self, card: arcade.Sprite):
         """ Pull card to top of rendering order (last to render, looks on-top) """
-        # Find the index of the card
-        index = self.card_list.index(card)
-        # Loop and pull all the other cards down towards the zero end
-        for i in range(index, len(self.card_list) - 1):
-            self.card_list[i] = self.card_list[i + 1]
-        # Put this card at the right-side/top/size of list
-        self.card_list[len(self.card_list) - 1] = card
+
+        # Remove, and append to the end
+        self.card_list.remove(card)
+        self.card_list.append(card)
 
     def on_mouse_press(self, x, y, button, key_modifiers):
         """ Called when the user presses a mouse button. """

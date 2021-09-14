@@ -1,6 +1,8 @@
 """
 Solitaire clone.
 """
+from typing import Optional
+
 import random
 import arcade
 
@@ -106,7 +108,7 @@ class MyGame(arcade.Window):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
         # Sprite list with all the cards, no matter what pile they are in.
-        self.card_list = None
+        self.card_list: Optional[arcade.SpriteList] = None
 
         arcade.set_background_color(arcade.color.AMAZON)
 
@@ -174,7 +176,7 @@ class MyGame(arcade.Window):
         # Shuffle the cards
         for pos1 in range(len(self.card_list)):
             pos2 = random.randrange(len(self.card_list))
-            self.card_list[pos1], self.card_list[pos2] = self.card_list[pos2], self.card_list[pos1]
+            self.card_list.swap(pos1, pos2)
 
         # Create a list of lists, each holds a pile of cards.
         self.piles = [[] for _ in range(PILE_COUNT)]
@@ -212,15 +214,12 @@ class MyGame(arcade.Window):
         # Draw the cards
         self.card_list.draw()
 
-    def pull_to_top(self, card):
+    def pull_to_top(self, card: arcade.Sprite):
         """ Pull card to top of rendering order (last to render, looks on-top) """
-        # Find the index of the card
-        index = self.card_list.index(card)
-        # Loop and pull all the other cards down towards the zero end
-        for i in range(index, len(self.card_list) - 1):
-            self.card_list[i] = self.card_list[i + 1]
-        # Put this card at the right-side/top/size of list
-        self.card_list[len(self.card_list) - 1] = card
+
+        # Remove, and append to the end
+        self.card_list.remove(card)
+        self.card_list.append(card)
 
     def on_key_press(self, symbol: int, modifiers: int):
         """ User presses key """
