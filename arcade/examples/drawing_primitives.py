@@ -6,7 +6,7 @@ It does not assume the programmer knows how to define functions or classes
 yet.
 
 API documentation for the draw commands can be found here:
-https://arcade.academy/quick_index.html#id1
+https://api.arcade.academy/en/latest/quick_index.html
 
 A video explaining this example can be found here:
 https://vimeo.com/167158158
@@ -17,7 +17,7 @@ python -m arcade.examples.drawing_primitives
 
 # Import the Arcade library. If this fails, then try following the instructions
 # for how to install arcade:
-# https://arcade.academy/installation.html
+# https://api.arcade.academy/en/latest/install/index.html
 import arcade
 
 # Open the window. Set the window title and dimensions (width and height)
@@ -25,7 +25,7 @@ arcade.open_window(600, 600, "Drawing Primitives Example")
 
 # Set the background color to white
 # For a list of named colors see
-# https://arcade.academy/arcade.color.html
+# https://api.arcade.academy/en/latest/arcade.color.html
 # Colors can also be specified in (red, green, blue) format and
 # (red, green, blue, alpha) format.
 arcade.set_background_color(arcade.color.WHITE)

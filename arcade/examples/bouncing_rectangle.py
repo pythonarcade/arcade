@@ -7,7 +7,7 @@ It assumes a programmer knows how to create functions already.
 It does not assume a programmer knows how to create classes. If you do know
 how to create classes, see the starting template for a better example:
 
-https://arcade.academy/examples/starting_template.html
+https://api.arcade.academy/en/latest/examples/starting_template.html
 
 Or look through the examples showing how to use Sprites.
 
@@ -44,7 +44,7 @@ def on_draw(delta_time):
 
     # Draw a rectangle.
     # For a full list of colors see:
-    # https://arcade.academy/arcade.color.html
+    # https://api.arcade.academy/en/latest/arcade.color.html
     arcade.draw_rectangle_filled(on_draw.center_x, on_draw.center_y,
                                  RECT_WIDTH, RECT_HEIGHT,
                                  arcade.color.ALIZARIN_CRIMSON)

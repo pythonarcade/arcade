@@ -1,6 +1,6 @@
 """
 Simple Snow
-Based primarily on: https://arcade.academy/examples/sprite_collect_coins_move_down.html
+Based primarily on: https://api.arcade.academy/en/latest/examples/sprite_collect_coins_move_down.html
 
 Contributed to Python Arcade Library by Nicholas Hartunian
 

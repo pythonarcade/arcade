@@ -8,7 +8,9 @@ and inefficient.
 Using buffered drawing commands (Vertex Buffer Objects) is a bit more complex,
 but faster.
 
-See https://arcade.academy/examples/index.html#shape-lists for some examples.
+See
+https://api.arcade.academy/en/latest/examples/index.html#faster-drawing-with-shapeelementlists
+for some examples.
 
 Also, any Sprite class put in a SpriteList and drawn with the SpriteList will
 be drawn using Vertex Buffer Objects for better performance.

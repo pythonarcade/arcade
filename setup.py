@@ -25,8 +25,8 @@ setup(
     author="Paul Vincent Craven",
     author_email="paul.craven@simpson.edu",
     license="MIT",
-    url="https://arcade.academy",
-    download_url="https://arcade.academy",
+    url="https://api.arcade.academy",
+    download_url="https://api.arcade.academy",
     install_requires=[
         "pyglet==2.0.dev8",
         "pillow~=8.3",
@@ -73,8 +73,8 @@ setup(
     ],
     include_package_data=True,
     project_urls={
-        "Documentation": "https://arcade.academy/",
-        "Example Code": "https://arcade.academy/examples/index.html",
+        "Documentation": "https://api.arcade.academy/",
+        "Example Code": "https://api.arcade.academy/en/latest/examples/index.html",
         "Issue Tracker": "https://github.com/pythonarcade/arcade/issues",
         "Source": "https://github.com/pythonarcade/arcade",
         "On-line Book": "https://learn.arcade.academy",

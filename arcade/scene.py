@@ -16,7 +16,7 @@ class Scene:
     """
     Class that represents a `scene` object. Most games will use Scenes to render their Sprites.
     For examples on how to use this class, see:
-    https://arcade.academy/examples/index.html#scenes
+    https://api.arcade.academy/en/latest/tutorials/views/index.html
 
     Attributes:
         :sprite_lists: A list of `SpriteList` objects. The order of this list is the

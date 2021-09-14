@@ -60,7 +60,7 @@ class MyGame(arcade.Window):
         Called whenever a key on the keyboard is pressed.
 
         For a full list of keys, see:
-        https://arcade.academy/arcade.key.html
+        https://api.arcade.academy/en/latest/arcade.key.html
         """
         pass
 

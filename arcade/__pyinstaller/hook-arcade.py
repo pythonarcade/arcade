@@ -6,8 +6,8 @@ Official Sample: https://github.com/pyinstaller/hooksample
 
 Note: See setup.cfg for entry points that enable this hook file to be found
 
-For a walkthrough of building an Arcade application with pyinstaller see:
-https://arcade.academy/tutorials/bundling_with_pyinstaller/index.html
+For a walk through of building an Arcade application with pyinstaller see:
+https://api.arcade.academy/en/latest/tutorials/bundling_with_pyinstaller/index.html
 """
 from pathlib import Path
 

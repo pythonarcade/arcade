@@ -65,7 +65,7 @@ class Sprite:
     """
     Class that represents a 'sprite' on-screen. Most games center around sprites.
     For examples on how to use this class, see:
-    https://arcade.academy/examples/index.html#sprites
+    https://api.arcade.academy/en/latest/examples/index.html#sprites
 
     :param str filename: Filename of an image that represents the sprite.
     :param float scale: Scale the image up or down. Scale of 1.0 is none.

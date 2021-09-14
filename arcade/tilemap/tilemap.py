@@ -85,7 +85,7 @@ class TileMap:
     """
     Class that represents a fully parsed and loaded map from Tiled.
     For examples on how to use this class, see:
-    https://arcade.academy/examples/index.html#using-tiled-map-editor-to-create-maps
+    https://api.arcade.academy/en/latest/examples/platform_tutorial/step_09.html
 
     Attributes:
         :tiled_map: The pytiled-parser map object. This can be useful for implementing features
