@@ -159,6 +159,8 @@ class Camera:
     def zoom(self, change: float):
         """
         Zoom the camera in or out. Or not.
+        This will currently raise an error
+        TODO implement
         """
         raise NotImplementedError("Camera Zooming is not yet supported")
 

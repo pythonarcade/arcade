@@ -179,6 +179,9 @@ class ArcadeContext(Context):
         # Global labels we modify in `arcade.draw_text`.
         # These multiple labels with different configurations are stored
         self.pyglet_label_cache: Dict[str, pyglet.text.Label] = {}
+        
+        self.active_program = None
+        self.point_size = 1.0
 
     def reset(self) -> None:
         """
@@ -348,7 +351,7 @@ class ArcadeContext(Context):
         path: Union[str, Path],
         *,
         flip: bool = True,
-        build_mipmaps=False,
+        build_mipmaps: bool = False,
     ) -> Texture:
         """Loads and creates an OpenGL 2D texture.
         Currently all textures are converted to RGBA.

@@ -7,7 +7,8 @@ import math
 
 SQRT2 = math.sqrt(2)
 
-def erf(x):
+
+def erf(x: float):
     a1 = 0.254829592
     a2 = -0.284496736
     a3 = 1.421413741
@@ -20,8 +21,10 @@ def erf(x):
 
     return math.copysign(1, x) * y
 
-def def_int_gaussian(x, mu, sigma):
+
+def def_int_gaussian(x: float, mu: float, sigma: float):
     return 0.5 * erf((x - mu) / (SQRT2 * sigma))
+
 
 def gaussian_kernel(kernel_size: int = 5,
                     sigma: float = 1,

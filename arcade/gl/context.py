@@ -816,7 +816,7 @@ class Limits:
 
             warn("Error happened while querying of limits. Moving on ..")
 
-    def get_int_tuple(self, enum, length):
+    def get_int_tuple(self, enum: gl.GLenum, length: int):
         """Get an enum as an int tuple"""
         values = (c_int * length)()
         gl.glGetIntegerv(enum, values)
@@ -828,7 +828,7 @@ class Limits:
         gl.glGetIntegerv(enum, value)
         return value.value
 
-    def get_float(self, enum) -> float:
+    def get_float(self, enum: gl.GLenum) -> float:
         """Get a float limit"""
         value = c_float()
         gl.glGetFloatv(enum, value)

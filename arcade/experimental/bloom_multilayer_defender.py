@@ -17,6 +17,7 @@ import pyglet.gl as gl
 # --- Bloom related ---
 from arcade.experimental import postprocessing
 
+
 # Size/title of the window
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 720

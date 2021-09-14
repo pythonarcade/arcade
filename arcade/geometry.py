@@ -37,7 +37,7 @@ def are_polygons_intersecting(poly_a: PointList,
     return r1 and not r2
 
 
-def is_point_in_polygon(x: float, y: float, polygon_point_list):
+def is_point_in_polygon(x: float, y: float, polygon_point_list) -> bool:
     """
     Use ray-tracing to see if point is inside a polygon
 

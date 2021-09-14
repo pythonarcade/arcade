@@ -5,10 +5,8 @@ Path-related functions.
 from shapely import speedups  # type: ignore
 from shapely.geometry import LineString, Polygon  # type: ignore
 
-from arcade import Point
-from arcade import check_for_collision_with_list
-from arcade import Sprite
-from arcade import SpriteList
+from arcade import Point, check_for_collision_with_list, SpriteList, Sprite
+from typing import Union, List, Tuple, Set
 
 
 speedups.enable()
@@ -17,7 +15,7 @@ speedups.enable()
 def has_line_of_sight(point_1: Point,
                       point_2: Point,
                       walls: SpriteList,
-                      max_distance: int = -1):
+                      max_distance: int = -1) -> bool:
     """
     Determine if we have line of sight between two points. Having a line of
     sight means, that you can connect both points with straight line without
@@ -44,7 +42,10 @@ Classic A-star algorithm for path finding.
 """
 
 
-def _spot_is_blocked(position, moving_sprite, blocking_sprites):
+def _spot_is_blocked(position: Union[Tuple[float, float], List[float]],
+                     moving_sprite: Sprite,
+                     blocking_sprites: SpriteList)\
+        -> bool:
     original_pos = moving_sprite.position
     moving_sprite.position = position
     hit_list = check_for_collision_with_list(moving_sprite, blocking_sprites)
@@ -55,10 +56,34 @@ def _spot_is_blocked(position, moving_sprite, blocking_sprites):
         return False
 
 
+def heuristic(start: Point, goal: Point):
+    """
+
+    Args:
+        start:
+        goal:
+
+    Returns:
+
+    """
+    # Use Chebyshev distance heuristic if we can move one square either
+    # adjacent or diagonal
+    d = 1
+    d2 = 1
+    dx = abs(start[0] - goal[0])
+    dy = abs(start[1] - goal[1])
+    return d * (dx + dy) + (d2 - 2 * d) * min(dx, dy)
+
+
 class _AStarGraph(object):
     # Define a class board like grid with two barriers
 
-    def __init__(self, barriers, left, right, bottom, top, diagonal_movement):
+    def __init__(self, barriers: Union[List, Tuple, Set],
+                 left: int,
+                 right: int,
+                 bottom: int,
+                 top: int,
+                 diagonal_movement: bool):
         if barriers is set:
             self.barriers = barriers
         else:
@@ -74,25 +99,7 @@ class _AStarGraph(object):
         else:
             self.movement_directions = (1, 0), (-1, 0), (0, 1), (0, -1)
 
-    def heuristic(self, start, goal):
-        """
-
-        Args:
-            start:
-            goal:
-
-        Returns:
-
-        """
-        # Use Chebyshev distance heuristic if we can move one square either
-        # adjacent or diagonal
-        d = 1
-        d2 = 1
-        dx = abs(start[0] - goal[0])
-        dy = abs(start[1] - goal[1])
-        return d * (dx + dy) + (d2 - 2 * d) * min(dx, dy)
-
-    def get_vertex_neighbours(self, pos):
+    def get_vertex_neighbours(self, pos: Point) -> List[Tuple[float, float]]:
         n = []
         # Moves allow link a chess king
         for dx, dy in self.movement_directions:
@@ -103,29 +110,27 @@ class _AStarGraph(object):
             n.append((x2, y2))
         return n
 
-    def move_cost(self, a, b):
+    def move_cost(self, a: Point, b: Point):
         if b in self.barriers:
             # print("Ping")
             return float('inf')  # Infitely high cost to enter barrier squares
 
         elif a[0] == b[0] or a[1] == b[1]:
-            return 1
+            return 1  # Normal movement cost
         else:
             return 1.42
 
-        return 1  # Normal movement cost
 
-
-def _AStarSearch(start, end, graph):
+def _AStarSearch(start: Point, end: Point, graph: _AStarGraph):
     G = {}  # Actual movement cost to each position from the start position
     F = {}  # Estimated movement cost of start to end going via this position
 
     # Initialize starting values
     G[start] = 0
-    F[start] = graph.heuristic(start, end)
+    F[start] = heuristic(start, end)
 
     closed_vertices = set()
-    open_vertices = set([start])
+    open_vertices = {start}
     came_from = {}
 
     count = 0
@@ -173,18 +178,18 @@ def _AStarSearch(start, end, graph):
             # Adopt this G score
             came_from[neighbour] = current
             G[neighbour] = candidate_g
-            h = graph.heuristic(neighbour, end)
+            h = heuristic(neighbour, end)
             F[neighbour] = G[neighbour] + h
 
     # Out-of-bounds
     return None
 
 
-def _collapse(pos, grid_size):
+def _collapse(pos: Point, grid_size: float):
     return int(pos[0] // grid_size),  int(pos[1] // grid_size)
 
 
-def _expand(pos, grid_size):
+def _expand(pos: Point, grid_size: float):
     return int(pos[0] * grid_size),  int(pos[1] * grid_size)
 
 

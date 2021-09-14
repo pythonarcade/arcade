@@ -3,16 +3,13 @@ Sound Library.
 """
 
 import math
+import pyglet
+import pyglet.media as media
 from pathlib import Path
+from arcade.resources import resolve_resource_path
 from typing import Optional, Union
 
-import pyglet
-
 pyglet.options["audio"] = ("openal", "xaudio2", "directsound", "pulse", "silent")
-
-import pyglet.media as media
-
-from arcade.resources import resolve_resource_path
 
 
 class Sound:
@@ -41,11 +38,11 @@ class Sound:
         :param float pan: Pan, from -1=left to 0=centered to 1=right
         :param bool loop: Loop, false to play once, true to loop continously
         """
-        if isinstance(self.source, media.StreamingSource):
-            if self.source.is_player_source:
-                raise RuntimeError("Tried to play a streaming source more than once."
-                                   " Streaming sources should only be played in one instance."
-                                   " If you need more use a Static source.")
+        if isinstance(self.source, media.StreamingSource) \
+                and self.source.is_player_source:
+            raise RuntimeError("Tried to play a streaming source more than once."
+                               " Streaming sources should only be played in one instance."
+                               " If you need more use a Static source.")
 
         player: media.Player = media.Player()
         player.volume = volume
@@ -137,8 +134,8 @@ def load_sound(path: Union[str, Path], streaming: bool = False) -> Optional[Soun
     :rtype: Sound
     """
 
+    file_name = str(path)
     try:
-        file_name = str(path)
         sound = Sound(file_name, streaming)
         return sound
     except Exception as ex:
@@ -146,7 +143,7 @@ def load_sound(path: Union[str, Path], streaming: bool = False) -> Optional[Soun
 
 
 def play_sound(
-    sound: Sound, volume: float = 1.0, pan: float = 0.0, looping: bool = False
+        sound: Sound, volume: float = 1.0, pan: float = 0.0, looping: bool = False
 ) -> media.Player:
     """
     Play a sound.
@@ -158,11 +155,11 @@ def play_sound(
     """
     if sound is None:
         print("Unable to play sound, no data passed in.")
-        return
+        return None
     elif isinstance(sound, str):
         msg = (
-            "Error, passed in a string as a sound. "
-            + "Make sure to use load_sound first, and use that result in play_sound."
+                "Error, passed in a string as a sound. "
+                + "Make sure to use load_sound first, and use that result in play_sound."
         )
         raise Exception(msg)
     try:

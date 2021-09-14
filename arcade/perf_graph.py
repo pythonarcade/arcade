@@ -31,14 +31,14 @@ class PerfGraph(arcade.Sprite):
         self.graph_data = graph_data
         self.max_data = 0
         self.font_color = font_color
-        self.font_size = 10
+        self.font_size = font_size
         pyglet.clock.schedule_interval(self.update_graph, update_rate)
 
     def remove_from_sprite_lists(self):
         super().remove_from_sprite_lists()
         pyglet.clock.unschedule(self.update)
 
-    def update_graph(self, dt):
+    def update_graph(self, delta_time: float):
         """
         Update the graph.
         """

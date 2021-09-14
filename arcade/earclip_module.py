@@ -3,10 +3,11 @@
 from: https://github.com/linuxlewis/tripy/blob/master/tripy.py
 """
 
-from arcade import NamedPoint
+from arcade import NamedPoint, Point
+from typing import List, Tuple, Union
 
 
-def earclip(polygon):
+def earclip(polygon: List[Point]) -> List[Tuple[Point, Point, Point]]:
     """
     Simple earclipping algorithm for a given polygon p.
     polygon is expected to be an array of 2-tuples of the cartesian points of the polygon
@@ -65,7 +66,7 @@ def earclip(polygon):
     return triangles
 
 
-def _is_clockwise(polygon):
+def _is_clockwise(polygon: List[NamedPoint]):
     s = 0
     polygon_count = len(polygon)
     for i in range(polygon_count):
@@ -75,18 +76,18 @@ def _is_clockwise(polygon):
     return s > 0
 
 
-def _is_convex(prev, point, next_point):
+def _is_convex(prev: NamedPoint, point: NamedPoint, next_point: NamedPoint):
     return _triangle_sum(prev.x, prev.y, point.x, point.y, next_point.x, next_point.y) < 0
 
 
-def _is_ear(p1, p2, p3, polygon):
+def _is_ear(p1: NamedPoint, p2: NamedPoint, p3: NamedPoint, polygon: List[NamedPoint]):
     ear = _contains_no_points(p1, p2, p3, polygon) and \
           _is_convex(p1, p2, p3) and \
           _triangle_area(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y) > 0
     return ear
 
 
-def _contains_no_points(p1, p2, p3, polygon):
+def _contains_no_points(p1: NamedPoint, p2: NamedPoint, p3: NamedPoint, polygon: List[NamedPoint]):
     for pn in polygon:
         if pn in (p1, p2, p3):
             continue
@@ -95,7 +96,7 @@ def _contains_no_points(p1, p2, p3, polygon):
     return True
 
 
-def _is_point_inside(p, a, b, c):
+def _is_point_inside(p: NamedPoint, a: NamedPoint, b: NamedPoint, c: NamedPoint):
     area = _triangle_area(a.x, a.y, b.x, b.y, c.x, c.y)
     area1 = _triangle_area(p.x, p.y, b.x, b.y, c.x, c.y)
     area2 = _triangle_area(p.x, p.y, a.x, a.y, c.x, c.y)
@@ -103,9 +104,9 @@ def _is_point_inside(p, a, b, c):
     return area == sum([area1, area2, area3])
 
 
-def _triangle_area(x1, y1, x2, y2, x3, y3):
+def _triangle_area(x1: float, y1: float, x2: float, y2: float, x3: float, y3: float) -> float:
     return abs((x1 * (y2 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2)) / 2.0)
 
 
-def _triangle_sum(x1, y1, x2, y2, x3, y3):
+def _triangle_sum(x1: float, y1: float, x2: float, y2: float, x3: float, y3: float) -> float:
     return x1 * (y3 - y2) + x2 * (y1 - y3) + x3 * (y2 - y1)

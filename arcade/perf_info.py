@@ -100,7 +100,7 @@ def enable_timings(max_history: int = 100):
     global _pyglets_dispatch_event, _max_history
 
     if _pyglets_dispatch_event is not None:
-        raise Exception("Timings already enabled.")
+        raise ValueError("Timings already enabled.")
 
     _pyglets_dispatch_event = pyglet.window.BaseWindow.dispatch_event
     pyglet.window.BaseWindow.dispatch_event = _dispatch_event
@@ -114,7 +114,7 @@ def disable_timings():
     global _pyglets_dispatch_event
 
     if _pyglets_dispatch_event is None:
-        raise Exception("Timings are not enabled.")
+        raise ValueError("Timings are not enabled.")
 
     # Restore the original pyglet dispatch event function
     pyglet.window.BaseWindow.dispatch_event = _dispatch_event

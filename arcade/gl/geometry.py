@@ -69,7 +69,7 @@ def screen_rectangle(bottom_left_x: float, bottom_left_y: float, width: float, h
     )], mode=ctx.TRIANGLE_STRIP)
 
 
-def cube(size=(1.0, 1.0, 1.0), center=(0.0, 0.0, 0.0)) -> Geometry:
+def cube(size: Tuple[float, float, float] = (1.0, 1.0, 1.0), center: Tuple[float, float, float] = (0.0, 0.0, 0.0)) -> Geometry:
     """Creates a cube with normals and texture coordinates.
 
     :param tuple size: size of the cube as a 3-component tuple

@@ -1,7 +1,9 @@
 import pyglet.input
+from typing import List
+from pyglet.input import Joystick
 
 
-def get_joysticks():
+def get_joysticks() -> List[Joystick]:
     """
     Get a list of all the game controllers
 
@@ -12,7 +14,7 @@ def get_joysticks():
     return pyglet.input.get_joysticks()
 
 
-def get_game_controllers():
+def get_game_controllers() -> List[Joystick]:
     """
     Get a list of all the game controllers
 

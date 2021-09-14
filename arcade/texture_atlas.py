@@ -110,6 +110,7 @@ class AtlasRegion:
                 "It's not possible to fit this into the old allocated area in the atlas. "
             ))
 
+
 class TextureAtlas:
     """
     A texture atlas is a large texture containing several textures
@@ -541,7 +542,7 @@ class TextureAtlas:
         for texture in sorted(textures, key=lambda x: x.image.size[1]):
             self.add(texture)
 
-    def clear(self, texture_ids: bool = True, texture = True) -> None:
+    def clear(self, texture_ids: bool = True, texture: bool = True) -> None:
         """
         Clear and reset the texture atlas.
         Note that also clearing "texture_ids" makes the atlas
@@ -634,12 +635,13 @@ class TextureAtlas:
         return TextureAtlas(size, textures=textures, border=border)
 
     @classmethod
-    def calculate_minimum_size(self, textures: Sequence["Texture"], border: int = 1):
+    def calculate_minimum_size(cls, textures: Sequence["Texture"], border: int = 1):
         """
         Calculate the minimum atlas size needed to store the
         the provided sequence of textures
 
         :param Sequence[Texture] textures: Sequence of textures
+        :param border:
         :return: An estimated minimum size as a (width, height) tuple
         """
         # Try to guess some sane minimum size to reduce the brute force iterations
