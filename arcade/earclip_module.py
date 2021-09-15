@@ -7,7 +7,7 @@ from arcade import NamedPoint, Point
 from typing import List, Tuple, Union
 
 
-def earclip(polygon: List[Point]) -> List[Tuple[Point, Point, Point]]:
+def earclip(polygon: List[Point]) -> List[Tuple[Tuple[float, float], Tuple[float, float], Tuple[float, float]]]:
     """
     Simple earclipping algorithm for a given polygon p.
     polygon is expected to be an array of 2-tuples of the cartesian points of the polygon
@@ -20,7 +20,7 @@ def earclip(polygon: List[Point]) -> List[Tuple[Point, Point, Point]]:
     ear_vertex = []
     triangles = []
 
-    polygon = [NamedPoint(*point) for point in polygon]
+    polygon = [point for point in polygon]
 
     if _is_clockwise(polygon):
         polygon.reverse()
@@ -46,7 +46,7 @@ def earclip(polygon: List[Point]) -> List[Tuple[Point, Point, Point]]:
 
         polygon.remove(ear)
         point_count -= 1
-        triangles.append(((prev_point.x, prev_point.y), (ear.x, ear.y), (next_point.x, next_point.y)))
+        triangles.append(((prev_point[0], prev_point[1]), (ear[0], ear[1]), (next_point[0], next_point[1])))
         if point_count > 3:
             prev_prev_point = polygon[prev_index - 1]
             next_next_index = (i + 1) % point_count
@@ -66,28 +66,28 @@ def earclip(polygon: List[Point]) -> List[Tuple[Point, Point, Point]]:
     return triangles
 
 
-def _is_clockwise(polygon: List[NamedPoint]):
-    s = 0
+def _is_clockwise(polygon: List[Point]):
+    s = 0.0
     polygon_count = len(polygon)
     for i in range(polygon_count):
         point = polygon[i]
         point2 = polygon[(i + 1) % polygon_count]
-        s += (point2.x - point.x) * (point2.y + point.y)
+        s += (point2[0] - point[0]) * (point2[1] + point[1])
     return s > 0
 
 
-def _is_convex(prev: NamedPoint, point: NamedPoint, next_point: NamedPoint):
-    return _triangle_sum(prev.x, prev.y, point.x, point.y, next_point.x, next_point.y) < 0
+def _is_convex(prev: Point, point: Point, next_point: Point):
+    return _triangle_sum(prev[0], prev[1], point[0], point[1], next_point[0], next_point[1]) < 0
 
 
-def _is_ear(p1: NamedPoint, p2: NamedPoint, p3: NamedPoint, polygon: List[NamedPoint]):
+def _is_ear(p1: Point, p2: Point, p3: Point, polygon: List[Point]):
     ear = _contains_no_points(p1, p2, p3, polygon) and \
           _is_convex(p1, p2, p3) and \
-          _triangle_area(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y) > 0
+          _triangle_area(p1[0], p1[1], p2[0], p2[1], p3[0], p3[1]) > 0
     return ear
 
 
-def _contains_no_points(p1: NamedPoint, p2: NamedPoint, p3: NamedPoint, polygon: List[NamedPoint]):
+def _contains_no_points(p1: Point, p2: Point, p3: Point, polygon: List[Point]):
     for pn in polygon:
         if pn in (p1, p2, p3):
             continue
@@ -96,11 +96,11 @@ def _contains_no_points(p1: NamedPoint, p2: NamedPoint, p3: NamedPoint, polygon:
     return True
 
 
-def _is_point_inside(p: NamedPoint, a: NamedPoint, b: NamedPoint, c: NamedPoint):
-    area = _triangle_area(a.x, a.y, b.x, b.y, c.x, c.y)
-    area1 = _triangle_area(p.x, p.y, b.x, b.y, c.x, c.y)
-    area2 = _triangle_area(p.x, p.y, a.x, a.y, c.x, c.y)
-    area3 = _triangle_area(p.x, p.y, a.x, a.y, b.x, b.y)
+def _is_point_inside(p: Point, a: Point, b: Point, c: Point):
+    area = _triangle_area(a[0], a[1], b[0], b[1], c[0], c[1])
+    area1 = _triangle_area(p[0], p[1], b[0], b[1], c[0], c[1])
+    area2 = _triangle_area(p[0], p[1], a[0], a[1], c[0], c[1])
+    area3 = _triangle_area(p[0], p[1], a[0], a[1], b[0], b[1])
     return area == sum([area1, area2, area3])
 
 

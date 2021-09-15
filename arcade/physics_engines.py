@@ -265,7 +265,7 @@ class PhysicsEnginePlatformer:
         Create a physics engine for a platformer.
         """
         self.ladders: Optional[List[SpriteList]]
-        self.platforms: Optional[List[SpriteList]]
+        self.platforms: List[SpriteList]
 
         if ladders:
             if isinstance(ladders, SpriteList):

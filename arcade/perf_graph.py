@@ -1,3 +1,5 @@
+from typing import List
+
 import arcade
 import random
 import pyglet.clock
@@ -25,11 +27,11 @@ class PerfGraph(arcade.Sprite):
         self.background_color = background_color
         self.line_color = data_line_color
         self.grid_color = grid_color
-        self.data_to_graph = []
+        self.data_to_graph: List[float] = []
         self.proj = 0, self.width, 0, self.height
         self.axis_color = axis_color
         self.graph_data = graph_data
-        self.max_data = 0
+        self.max_data = 0.0
         self.font_color = font_color
         self.font_size = font_size
         pyglet.clock.schedule_interval(self.update_graph, update_rate)
@@ -76,7 +78,7 @@ class PerfGraph(arcade.Sprite):
 
         # Set max data
         max_value = max(self.data_to_graph)
-        self.max_data = ( (max_value + 1.5) // 20 + 1) * 20
+        self.max_data = ((max_value + 1.5) // 20 + 1) * 20.0
 
         # Render to the screen
         with sprite_list.atlas.render_into(self.minimap_texture, projection=self.proj) as fbo:

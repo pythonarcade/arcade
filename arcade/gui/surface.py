@@ -166,5 +166,5 @@ class Surface:
         self._pixel_ratio = pixel_ratio
         # Create new texture and fbo
         self.texture = self.ctx.texture(self.size_scaled, components=4)
-        self.fbo: Framebuffer = self.ctx.framebuffer(color_attachments=[self.texture])
+        self.fbo = self.ctx.framebuffer(color_attachments=[self.texture])
         self.fbo.clear()

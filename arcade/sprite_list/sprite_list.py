@@ -14,7 +14,7 @@ from typing import (TYPE_CHECKING, Deque, Dict, Iterator, List, Optional, Set,
 from arcade import Color, Sprite, get_window, gl
 from arcade.context import ArcadeContext
 
-from arcade.math import Mat3
+from pyglet.math import Mat3
 
 if TYPE_CHECKING:
     from arcade import Texture, TextureAtlas

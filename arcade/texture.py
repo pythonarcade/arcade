@@ -17,7 +17,7 @@ from arcade import RectList
 from arcade import Color
 from arcade import calculate_hit_box_points_simple
 from arcade import calculate_hit_box_points_detailed
-from arcade.math import Mat3
+from pyglet.math import Mat3
 from arcade.resources import resolve_resource_path
 
 

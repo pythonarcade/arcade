@@ -35,7 +35,7 @@ from arcade import make_soft_circle_texture
 from arcade import make_circle_texture
 from arcade import Color
 from arcade.color import BLACK
-from arcade.math import Mat3
+from pyglet.math import Mat3
 from arcade.resources import resolve_resource_path
 
 from arcade.arcade_types import RGB, Point, PointList
@@ -190,10 +190,10 @@ class Sprite:
         self.guid: Optional[str] = None
         self.properties: Dict[str, Any] = {}
 
-        self.boundary_left = None
-        self.boundary_right = None
-        self.boundary_top = None
-        self.boundary_bottom = None
+        self.boundary_left: Optional[float] = None
+        self.boundary_right: Optional[float] = None
+        self.boundary_top: Optional[float] = None
+        self.boundary_bottom: Optional[float] = None
 
         self._texture: Optional[Texture] = None
         self.textures = []

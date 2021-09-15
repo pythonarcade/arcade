@@ -14,7 +14,7 @@ from arcade.gl import BufferDescription, Context
 from arcade.gl.program import Program
 from arcade.gl.texture import Texture
 from arcade.gl.vertex_array import Geometry
-from arcade.math import Mat4
+from pyglet.math import Mat4
 from arcade.texture_atlas import TextureAtlas
 
 

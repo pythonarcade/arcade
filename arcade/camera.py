@@ -5,7 +5,7 @@ import math
 from typing import Optional
 
 import arcade
-from arcade.math import Mat4, Vec2
+from pyglet.math import Mat4, Vec2
 from arcade.window_commands import get_scaling_factor
 
 

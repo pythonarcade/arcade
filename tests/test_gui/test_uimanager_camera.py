@@ -2,7 +2,7 @@ import pytest
 
 import arcade
 from arcade.gui import UIMouseReleaseEvent
-from arcade.math import Vec2
+from pyglet.math import Vec2
 
 
 @pytest.mark.xfail

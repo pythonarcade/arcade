@@ -9,7 +9,7 @@ from typing import Callable, Dict, List, Optional, Union, Tuple
 import pymunk
 
 from arcade import Sprite
-from arcade.math import Vec2
+from pyglet.math import Vec2
 
 LOG = logging.getLogger(__name__)
 
@@ -22,6 +22,10 @@ class PymunkPhysicsObject:
         """ Init """
         self.body: Optional[pymunk.Body] = body
         self.shape: Optional[pymunk.Shape] = shape
+
+
+class PymunkException(Exception):
+    pass
 
 
 class PymunkPhysicsEngine:
@@ -62,7 +66,7 @@ class PymunkPhysicsEngine:
                    max_horizontal_velocity: int =None,
                    max_vertical_velocity: int =None,
                    radius: float = 0,
-                   collision_type: str = "default",
+                   collision_type: Optional[str] = "default",
                    ):
         """ Add a sprite to the physics engine. 
             :param sprite: The sprite to add
@@ -76,6 +80,8 @@ class PymunkPhysicsEngine:
             :param max_velocity: The maximum velocity of the object.
             :param max_horizontal_velocity: maximum velocity on the x axis
             :param max_vertical_velocity: maximum velocity on the y axis
+            :param radius:
+            :param collision_type:
         """
 
         if damping is not None:
@@ -244,16 +250,22 @@ class PymunkPhysicsEngine:
     def apply_impulse(self, sprite: Sprite, impulse: Tuple[float, float]):
         """ Apply an impulse force on a sprite """
         physics_object = self.get_physics_object(sprite)
+        if physics_object.body is None:
+            raise PymunkException("Tried to apply an impulse, but this physics object has no 'body' set.")
         physics_object.body.apply_impulse_at_local_point(impulse)
 
     def set_position(self, sprite: Sprite, position: Union[pymunk.Vec2d, Tuple[float, float]]):
         """ Apply an impulse force on a sprite """
         physics_object = self.get_physics_object(sprite)
+        if physics_object.body is None:
+            raise PymunkException("Tried to set a position, but this physics object has no 'body' set.")
         physics_object.body.position = position
 
     def set_velocity(self, sprite: Sprite, velocity: Tuple[float, float]):
         """ Apply an impulse force on a sprite """
         physics_object = self.get_physics_object(sprite)
+        if physics_object.body is None:
+            raise PymunkException("Tried to set a velocity, but this physics object has no 'body' set.")
         physics_object.body.velocity = velocity
 
     def add_collision_handler(self,
@@ -366,11 +378,15 @@ class PymunkPhysicsEngine:
     def apply_force(self, sprite: Sprite, force: Tuple[float, float]):
         """ Apply force to a Sprite. """
         physics_object = self.sprites[sprite]
+        if physics_object.body is None:
+            raise PymunkException("Tried to apply a force, but this physics object has no 'body' set.")
         physics_object.body.apply_force_at_local_point(force, (0, 0))
 
     def set_horizontal_velocity(self, sprite: Sprite, velocity: float):
         """ Set a sprite's velocity """
         physics_object = self.sprites[sprite]
+        if physics_object.body is None:
+            raise PymunkException("Tried to set a velocity, but this physics object has no 'body' set.")
         cv = physics_object.body.velocity
         new_cv = (velocity, cv[1])
         physics_object.body.velocity = new_cv
@@ -378,6 +394,8 @@ class PymunkPhysicsEngine:
     def set_friction(self, sprite: Sprite, friction: float):
         """ Apply force to a Sprite. """
         physics_object = self.sprites[sprite]
+        if physics_object.shape is None:
+            raise PymunkException("Tried to set friction, but this physics object has no 'shape' set.")
         physics_object.shape.friction = friction
 
     def apply_opposite_running_force(self, sprite: Sprite):

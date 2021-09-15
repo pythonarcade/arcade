@@ -1,7 +1,7 @@
 import arcade
 import pyglet
 
-from arcade.math import Mat4
+from pyglet.math import Mat4
 
 
 def test_window(window: arcade.Window):

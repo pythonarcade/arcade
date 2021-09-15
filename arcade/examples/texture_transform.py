@@ -11,7 +11,7 @@ import arcade
 import math
 import os
 
-from arcade.math import Mat3
+from pyglet.math import Mat3
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600

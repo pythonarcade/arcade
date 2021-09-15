@@ -8,7 +8,7 @@ import arcade
 import pyglet
 from arcade.arcade_types import Color
 from arcade.draw_commands import get_four_byte_color
-from arcade.math import Mat4
+from pyglet.math import Mat4
 from arcade.resources import resolve_resource_path
 
 

@@ -58,14 +58,6 @@ class _Rect(NamedTuple):
         return self.y + self.height
 
     @property
-    def width(self):
-        return self.width
-
-    @property
-    def height(self):
-        return self.height
-
-    @property
     def center_x(self):
         return self.x + self.width / 2
 

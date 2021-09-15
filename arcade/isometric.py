@@ -30,7 +30,7 @@ def create_isometric_grid_lines(width: int,
         -> ShapeElementList:
 
     # Grid lines 1
-    shape_list = ShapeElementList()
+    shape_list: ShapeElementList = ShapeElementList()
 
     for tile_row in range(-1, height):
         tile_x = 0

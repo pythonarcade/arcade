@@ -5,11 +5,12 @@ import pymunk
 
 from PIL import Image
 from arcade import NamedPoint
+from arcade import Point
 from typing import List, Union, Tuple
 from pymunk import autogeometry
 
 
-def calculate_hit_box_points_simple(image: Image):
+def calculate_hit_box_points_simple(image: Image) -> List[Point]:
     """
     Given an image, this returns points that make up a hit box around it. Attempts
     to trim out transparent pixels.
@@ -95,7 +96,7 @@ def calculate_hit_box_points_simple(image: Image):
         # print(f"offset: {offset}")
         return offset
 
-    def _r(point: (float, float), height: int, width: int):
+    def _r(point: Tuple[float, float], height: int, width: int):
         return point[0] - width / 2, (height - point[1]) - height / 2
 
     top_left_corner_offset = _check_corner_offset(left_border, top_border, 1, 1)
@@ -154,7 +155,7 @@ def calculate_hit_box_points_detailed(image: Image,
 
     """
 
-    def sample_func(sample_point: NamedPoint) -> int:
+    def sample_func(sample_point: Point) -> int:
         """ Method used to sample image. """
         if sample_point[0] < 0 \
                 or sample_point[1] < 0 \
