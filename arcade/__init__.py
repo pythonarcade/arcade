@@ -499,7 +499,8 @@ __all__ = ['AStarBarrierList',
 
 __version__ = VERSION
 
-if not os.path.basename(sys.argv[0]) == "sphinx-build" and 'READTHEDOCS' not in os.environ:
+# Piggyback on pyglet's doc run detection
+if not getattr(sys, 'is_pyglet_doc_run', False):
     # Auto load fonts
     load_font(":resources:fonts/ttf/Kenney Blocks.ttf")
     load_font(":resources:fonts/ttf/Kenney Future.ttf")
