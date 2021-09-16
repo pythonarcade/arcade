@@ -3,7 +3,7 @@
 in vec2 in_pos;
 in float in_angle;
 in vec2 in_size;
-in int in_texture;
+in float in_texture;
 in vec4 in_color;
 
 out float v_angle;
@@ -17,6 +17,6 @@ void main() {
     v_angle = in_angle;
     v_color = in_color;
     v_size = in_size;
-    v_texture = in_texture;
+    v_texture = int(in_texture);
     vertex_id = gl_VertexID;
 }

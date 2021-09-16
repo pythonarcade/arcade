@@ -95,7 +95,7 @@ class SpriteList:
         self._sprite_size_data = array("f", [0] * self._buf_capacity * 2)
         self._sprite_angle_data = array("f", [0] * self._buf_capacity)
         self._sprite_color_data = array("B", [0] * self._buf_capacity * 4)
-        self._sprite_texture_data = array("i", [0] * self._buf_capacity)
+        self._sprite_texture_data = array("f", [0] * self._buf_capacity)
         # Index buffer
         self._sprite_index_data = array("I", [0] * self._idx_capacity)
 
@@ -154,7 +154,7 @@ class SpriteList:
             gl.BufferDescription(self._sprite_pos_buf, "2f", ["in_pos"]),
             gl.BufferDescription(self._sprite_size_buf, "2f", ["in_size"]),
             gl.BufferDescription(self._sprite_angle_buf, "1f", ["in_angle"]),
-            gl.BufferDescription(self._sprite_texture_buf, "u4", ["in_texture"]),
+            gl.BufferDescription(self._sprite_texture_buf, "1f", ["in_texture"]),
             gl.BufferDescription(
                 self._sprite_color_buf, "4f1", ["in_color"], normalized=["in_color"]
             ),
