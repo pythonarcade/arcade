@@ -268,6 +268,8 @@ game without learning a complex framework.
    :caption: Advanced
 
    advanced/vsync
+   advanced/textures
+   advanced/texture_atlas
    development/performance_tips
 
 .. toctree::
