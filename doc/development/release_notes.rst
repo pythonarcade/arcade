@@ -20,7 +20,7 @@ New Features
 * Fix for drawing small circles not using enough segments. See `#950 <https://github.com/pythonarcade/arcade/issues/950>`_
 * A lot of documentation links in the .py files were old and not updated to the RTD way, fixed now.
 * ``arcade.key`` was missing from the documentation quick index. Fixed.
-
+* Fixed a rendering issue with sprites on M1 Macs
 
 
 Version 2.6.1
