@@ -199,7 +199,7 @@ class ArcadeContext(Context):
     @property
     def default_atlas(self) -> TextureAtlas:
         """
-        The default texture atlas. This is crated when arcade is initialized.
+        The default texture atlas. This is created when arcade is initialized.
         All sprite lists will use use this atlas unless a different atlas
         is passned in the ``SpriteList`` constructor.
 
