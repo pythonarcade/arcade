@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED
 
 from arcade.gui.widgets import UIWidget, UILayout
@@ -23,7 +25,7 @@ class UIDraggableMixin(UILayout):
         super().do_layout()
         self.rect = self.rect.align_top(rect.top).align_left(rect.left)
 
-    def on_event(self, event) -> bool:
+    def on_event(self, event) -> Optional[bool]:
         if isinstance(event, UIMouseDragEvent) and self.rect.collide_with_point(event.x, event.y):
             self.rect = self.rect.move(event.dx, event.dy)
             self.trigger_full_render()
@@ -41,7 +43,7 @@ class UIMouseFilterMixin(UIWidget):
     Usefull for window like widgets, :class:`UIMouseEvents` should not trigger effects which are under the widget.
     """
 
-    def on_event(self, event):
+    def on_event(self, event) -> Optional[bool]:
         if super().on_event(event):
             return EVENT_HANDLED
 

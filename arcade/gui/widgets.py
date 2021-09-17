@@ -198,7 +198,7 @@ class UIWidget(EventDispatcher, ABC):
         """Custom logic which will be triggered."""
         pass
 
-    def on_event(self, event: UIEvent) -> bool:
+    def on_event(self, event: UIEvent) -> Optional[bool]:
         """Passes :class:`UIEvent` s through the widget tree."""
         if isinstance(event, UIOnUpdateEvent):
             self.dispatch_event("on_update", event.dt)
@@ -429,7 +429,7 @@ class UIInteractiveWidget(UIWidget):
             self._hovered = value
             self.trigger_full_render()
 
-    def on_event(self, event: UIEvent) -> bool:
+    def on_event(self, event: UIEvent) -> Optional[bool]:
         if isinstance(event, UIMouseMovementEvent):
             self.hovered = self.rect.collide_with_point(event.x, event.y)
 
@@ -451,6 +451,8 @@ class UIInteractiveWidget(UIWidget):
 
         if super().on_event(event):
             return EVENT_HANDLED
+
+        return EVENT_UNHANDLED
 
     def on_click(self, event: UIOnClickEvent):
         pass
@@ -881,7 +883,7 @@ class UITextArea(UIWidget):
         with surface.ctx.pyglet_rendering():
             self.layout.draw()
 
-    def on_event(self, event: UIEvent):
+    def on_event(self, event: UIEvent) -> Optional[bool]:
         if isinstance(event, UIMouseScrollEvent):
             if self.rect.collide_with_point(event.x, event.y):
                 self.layout.view_y += event.scroll_y * self.scroll_speed
@@ -948,12 +950,13 @@ class UIInputText(UIWidget):
         return self.caret._visible and self._active and self.caret._blink_visible
 
     def on_update(self, dt):
+        # Only trigger render if blinking state changed
         current_state = self._get_caret_blink_state()
         if self._blink_state != current_state:
             self._blink_state = current_state
             self.trigger_full_render()
 
-    def on_event(self, event: UIEvent):
+    def on_event(self, event: UIEvent) -> Optional[bool]:
         # if not active, check to activate, return
         if not self._active and isinstance(event, UIMousePressEvent):
             if self.rect.collide_with_point(event.x, event.y):
