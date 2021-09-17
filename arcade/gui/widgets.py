@@ -113,8 +113,8 @@ class UIWidget(EventDispatcher, ABC):
       change the position or the size of its children. If you want control over
       positioning or sizing, use a :class:`~arcade.gui.UILayout`.
 
-    :param x: x coordinate of bottom left
-    :param y: y coordinate of bottom left
+    :param float x: x coordinate of bottom left
+    :param float y: y coordinate of bottom left
     :param width: width of widget
     :param height: height of widget
     :param size_hint: Tuple of floats (0.0-1.0), how much space of the parent should be requested
@@ -384,8 +384,8 @@ class UIInteractiveWidget(UIWidget):
     """
     Base class for widgets which use mouse interaction (hover, pressed, clicked)
 
-    :param x: x coordinate of bottom left
-    :param y: y coordinate of bottom left
+    :param float x: x coordinate of bottom left
+    :param float y: y coordinate of bottom left
     :param width: width of widget
     :param height: height of widget
     :param size_hint: Tuple of floats (0.0-1.0), how much space of the parent should be requested
@@ -463,8 +463,8 @@ class UIDummy(UIInteractiveWidget):
     """
     Solid color widget, used for testing.
 
-    :param x: x coordinate of bottom left
-    :param y: y coordinate of bottom left
+    :param float x: x coordinate of bottom left
+    :param float y: y coordinate of bottom left
     :param color: fill color for the widget
     :param width: width of widget
     :param height: height of widget
@@ -503,8 +503,8 @@ class UIDummy(UIInteractiveWidget):
 class UISpriteWidget(UIWidget):
     """ Create a UI element with a sprite that controls what is displayed.
 
-    :param x: x coordinate of bottom left
-    :param y: y coordinate of bottom left
+    :param float x: x coordinate of bottom left
+    :param float y: y coordinate of bottom left
     :param width: width of widget
     :param height: height of widget
     :param sprite: Sprite to embed in gui
@@ -542,8 +542,8 @@ class UITextureButton(UIInteractiveWidget):
     """
     A button with an image for the face of the button.
 
-    :param float x: x-coordinate of widget
-    :param float y: y-coordinate of widget
+    :param float x: x coordinate of bottom left
+    :param float y: y coordinate of bottom left
     :param float width: width of widget. Defaults to texture width if not specified.
     :param float height: height of widget. Defaults to texture height if not specified.
     :param Texture texture: texture to display for the widget.
@@ -673,8 +673,8 @@ class UILabel(UIWidget):
     By default a :class:`UILabel` will fit its initial content,
     if the text changed use :meth:`UILabel.fit_content` to adjust the size.
 
-    :param float x: x-coordinate of widget.
-    :param float y: y-coordinate of widget.
+    :param float x: x coordinate of bottom left
+    :param float y: y coordinate of bottom left
     :param float width: width of widget. Defaults to text width if not specified.
     :param float height: height of widget. Defaults to text height if not specified.
     :param str text: text of the label.
@@ -794,8 +794,8 @@ class UITextArea(UIWidget):
     A text area for scollable text.
 
 
-    :param x: x coordinate of bottom left
-    :param y: y coordinate of bottom left
+    :param float x: x coordinate of bottom left
+    :param float y: y coordinate of bottom left
     :param width: width of widget
     :param height: height of widget
     :param text: Text to show
@@ -926,8 +926,8 @@ class UIInputText(UIWidget):
     """
     An input field the user can type text into.
 
-    :param x: x coordinate of bottom left
-    :param y: y coordinate of bottom left
+    :param float x: x coordinate of bottom left
+    :param float y: y coordinate of bottom left
     :param width: width of widget
     :param height: height of widget
     :param text: Text to show
@@ -1065,8 +1065,8 @@ class UIFlatButton(UIInteractiveWidget):
     """
     A text button, with support for background color and a border.
 
-    :param float x: x-coordinate of widget.
-    :param float y: y-coordinate of widget.
+    :param float x: x coordinate of bottom left
+    :param float y: y coordinate of bottom left
     :param float width: width of widget. Defaults to texture width if not specified.
     :param float height: height of widget. Defaults to texture height if not specified.
     :param str text: text to add to the button.
@@ -1154,8 +1154,8 @@ class UILayout(UIWidget, UIWidgetParent):
     """
     Base class for widgets, which position themselves or their children.
 
-    :param x: x coordinate of bottom left
-    :param y: y coordinate of bottom left
+    :param float x: x coordinate of bottom left
+    :param float y: y coordinate of bottom left
     :param width: width of widget
     :param height: height of widget
     :param children: Child widgets of this group
@@ -1325,8 +1325,8 @@ class UISpace(UIWidget):
     """
     Widget reserving space, can also have a background color.
 
-    :param x: x coordinate of bottom left
-    :param y: y coordinate of bottom left
+    :param float x: x coordinate of bottom left
+    :param float y: y coordinate of bottom left
     :param width: width of widget
     :param height: height of widget
     :param color: Color for widget area
@@ -1478,8 +1478,8 @@ class UIBoxLayout(UILayout):
     Places widgets next to each other.
     Depending on the vertical attribute, the Widgets are placed top to bottom or left to right.
 
-    :param x: x coordinate of bottom left
-    :param y: y coordinate of bottom left
+    :param float x: x coordinate of bottom left
+    :param float y: y coordinate of bottom left
     :param vertical: Layout children vertical (True) or horizontal (False)
     :param align: Align children in orthogonal direction (x: left, center, right / y: top, center, bottom)
     :param children: Initial children, more can be added
