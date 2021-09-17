@@ -122,15 +122,17 @@ def draw_text(
 
         if font_name:
             if isinstance(font_name, str):
-                font_list = (font_name, )
-            else:
+                font_list: Tuple[str, ...] = (font_name, )
+            elif isinstance(font_name, tuple):
                 font_list = font_name
+            else:
+                raise TypeError("font_name parameter must be a string, or a list of strings that specify a font name.")
 
             for font in font_list:
                 try:
                     path = resolve_resource_path(font)
                     # print(f"Font path: {path=}")
-                    adjusted_font = path
+                    adjusted_font = path.name
                     break
                 except FileNotFoundError:
                     pass
