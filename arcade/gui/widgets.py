@@ -112,8 +112,8 @@ class UIWidget(EventDispatcher, ABC):
       change the position or the size of its children. If you want control over
       positioning or sizing, use a :class:`~arcade.gui.UILayout`.
 
-    :param x: center x of widget
-    :param y: center y of widget
+    :param x: x coordinate of bottom left
+    :param y: y coordinate of bottom left
     :param width: width of widget
     :param height: height of widget
     :param size_hint: Tuple of floats (0.0-1.0), how much space of the parent should be requested
@@ -383,8 +383,8 @@ class UIInteractiveWidget(UIWidget):
     """
     Base class for widgets which use mouse interaction (hover, pressed, clicked)
 
-    :param x: center x of widget
-    :param y: center y of widget
+    :param x: x coordinate of bottom left
+    :param y: y coordinate of bottom left
     :param width: width of widget
     :param height: height of widget
     :param size_hint: Tuple of floats (0.0-1.0), how much space of the parent should be requested
@@ -462,8 +462,8 @@ class UIDummy(UIInteractiveWidget):
     """
     Solid color widget, used for testing.
 
-    :param x: center x of widget
-    :param y: center y of widget
+    :param x: x coordinate of bottom left
+    :param y: y coordinate of bottom left
     :param color: fill color for the widget
     :param width: width of widget
     :param height: height of widget
@@ -502,8 +502,8 @@ class UIDummy(UIInteractiveWidget):
 class UISpriteWidget(UIWidget):
     """ Create a UI element with a sprite that controls what is displayed.
 
-    :param x: center x of widget
-    :param y: center y of widget
+    :param x: x coordinate of bottom left
+    :param y: y coordinate of bottom left
     :param width: width of widget
     :param height: height of widget
     :param sprite: Sprite to embed in gui
@@ -793,8 +793,8 @@ class UITextArea(UIWidget):
     A text area for scollable text.
 
 
-    :param x: center x of widget
-    :param y: center y of widget
+    :param x: x coordinate of bottom left
+    :param y: y coordinate of bottom left
     :param width: width of widget
     :param height: height of widget
     :param text: Text to show
@@ -897,8 +897,8 @@ class UIInputText(UIWidget):
     """
     An input field the user can type text into.
 
-   :param x: center x of widget
-    :param y: center y of widget
+    :param x: x coordinate of bottom left
+    :param y: y coordinate of bottom left
     :param width: width of widget
     :param height: height of widget
     :param text: Text to show
@@ -1142,8 +1142,8 @@ class UILayout(UIWidget, UIWidgetParent):
     """
     Base class for widgets, which position themselves or their children.
 
-    :param x: center x of widget
-    :param y: center y of widget
+    :param x: x coordinate of bottom left
+    :param y: y coordinate of bottom left
     :param width: width of widget
     :param height: height of widget
     :param children: Child widgets of this group
@@ -1262,7 +1262,7 @@ class UIAnchorWidget(UIWrapper):
     :param anchor_x: Which anchor to use for x axis (left, center, right)
     :param align_x: offset for x value (- = left, + = right)
     :param anchor_y: Which anchor to use for y axis (top, center, bottom)
-    :param align_x: offset for y value (- = down, + = up)
+    :param align_y: offset for y value (- = down, + = up)
     :param size_hint: Tuple of floats (0.0-1.0), how much space of the parent should be requested
     :param size_hint_min: min width and height in pixel
     :param size_hint_max: max width and height in pixel
@@ -1313,8 +1313,8 @@ class UISpace(UIWidget):
     """
     Widget reserving space, can also have a background color.
 
-    :param x: center x of widget
-    :param y: center y of widget
+    :param x: x coordinate of bottom left
+    :param y: y coordinate of bottom left
     :param width: width of widget
     :param height: height of widget
     :param color: Color for widget area
@@ -1467,7 +1467,7 @@ class UIBoxLayout(UILayout):
     Depending on the vertical attribute, the Widgets are placed top to bottom or left to right.
 
     :param x: x coordinate of bottom left
-    :param y: x coordinate of bottom left
+    :param y: y coordinate of bottom left
     :param vertical: Layout children vertical (True) or horizontal (False)
     :param align: Align children in orthogonal direction (x: left, center, right / y: top, center, bottom)
     :param children: Initial children, more can be added
