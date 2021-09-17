@@ -4,6 +4,7 @@ from typing import NamedTuple, Iterable, Optional, List, Union, TYPE_CHECKING
 
 import pyglet
 from pyglet.event import EventDispatcher, EVENT_HANDLED, EVENT_UNHANDLED
+from pyglet.text.caret import Caret
 from pyglet.text.document import AbstractDocument
 
 import arcade
@@ -893,6 +894,34 @@ class UITextArea(UIWidget):
             return EVENT_HANDLED
 
 
+class _Arcade_Caret(Caret):
+    def _update(self, line=None, update_ideal_x=True):
+        if line is None:
+            line = self._layout.get_line_from_position(self._position)
+            self._ideal_line = None
+        else:
+            self._ideal_line = line
+        x, y = self._layout.get_point_from_position(self._position, line)
+        if update_ideal_x:
+            self._ideal_x = x
+
+        # x -= self._layout.view_x
+        # y -= self._layout.view_y
+        # add 1px offset to make caret visible on line start
+        x += self._layout.x + 1
+
+        y += self._layout.y + self._layout.height
+
+        font = self._layout.document.get_font(max(0, self._position - 1))
+        self._list.position[:] = [x, y + font.descent, x, y + font.ascent]
+
+        if self._mark is not None:
+            self._layout.set_selection(min(self._position, self._mark), max(self._position, self._mark))
+
+        self._layout.ensure_line_visible(line)
+        self._layout.ensure_x_visible(x)
+
+
 class UIInputText(UIWidget):
     """
     An input field the user can type text into.
@@ -942,7 +971,7 @@ class UIInputText(UIWidget):
                                               color=text_color))
 
         self.layout = pyglet.text.layout.IncrementalTextLayout(self.doc, width, height, multiline=multiline)
-        self.caret = pyglet.text.caret.Caret(self.layout, color=(0, 0, 0))
+        self.caret = _Arcade_Caret(self.layout, color=(0, 0, 0))
 
         self._blink_state = self._get_caret_blink_state()
 
@@ -1030,23 +1059,6 @@ class UIInputText(UIWidget):
 
         with surface.ctx.pyglet_rendering():
             self.layout.draw()
-
-        if self._blink_state:
-            # FIXME Blinking is a dirty hack!
-            self.prepare_render(surface)
-            line = self.caret.line
-            if line is None:
-                line = self.layout.get_line_from_position(self.caret.position)
-                self.caret._ideal_line = None
-            else:
-                self.caret._ideal_line = line
-            x, y = self.layout.get_point_from_position(self.caret.position, line)
-            y += self.height
-
-            x -= self.layout.view_x
-            y -= self.layout.view_y
-            font = self.layout.document.get_font(max(0, self.caret.position - 1))
-            arcade.draw_line(x, y + font.descent, x, y + font.ascent, self._text_color, line_width=2)
 
 
 class UIFlatButton(UIInteractiveWidget):
