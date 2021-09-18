@@ -21,7 +21,8 @@ New Features
 * A lot of documentation links in the .py files were old and not updated to the RTD way, fixed now.
 * ``arcade.key`` was missing from the documentation quick index. Fixed.
 * Fixed a rendering issue with sprites on M1 Macs
-
+* Fix caret not showing up in input box
+* Lots of type-hint fixes
 
 Version 2.6.1
 -------------
