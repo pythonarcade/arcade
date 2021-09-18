@@ -7,8 +7,34 @@ Release Notes
 
 Keep up-to-date with the latest changes to the Arcade library by the release notes.
 
-Version 2.6.2 (UNRELEASED)
---------------------------
+Version 2.6.2
+-------------
+
+*Released on 2021-Sept-18*
+
+* Support for custom classes that subclass Sprite for tiles in TileMap objects. See `#942 <https://github.com/pythonarcade/arcade/issues/942>`_
+* Update PymunkPhysicsEngine to work with any direction of gravity rather than just downward. See `#940 <https://github.com/pythonarcade/arcade/issues/940>`_
+* Update library versions we depend on. PIL, Pymunk, etc.
+* Fix the card game example code. See `#951 <https://github.com/pythonarcade/arcade/issues/951>`_
+* Fix for drawing small circles not using enough segments. See `#950 <https://github.com/pythonarcade/arcade/issues/950>`_
+* A lot of documentation links in the .py files were old and not updated to the RTD way, fixed now.
+* ``arcade.key`` was missing from the documentation quick index. Fixed.
+* Fixed a rendering issue with sprites on M1 Macs
+* Fix caret not showing up in input box
+* Lots of type-hint fixes
+
+Version 2.6.1
+-------------
+
+*Released on 2021-Sept-04*
+
+* `Issue #858 - Fix flickering display with simple drawings <https://github.com/pythonarcade/arcade/issues/858>`_
+* `Issue #934 - Compatability issue with Python 3.7 <https://github.com/pythonarcade/arcade/issues/934>`_
+
+Version 2.6.0
+-------------
+
+*Released on 2021-Aug-30*
 
 New Features
 ~~~~~~~~~~~~
@@ -238,6 +264,8 @@ Special thanks to:
 
 Version 2.5.7
 -------------
+
+*Released on 2021-May-25*
 
 Fixes
 ~~~~~
