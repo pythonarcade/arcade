@@ -802,7 +802,7 @@ class SpriteList:
             self.ctx.blend_func = self.ctx.BLEND_DEFAULT
 
         if "filter" in kwargs:
-            self.atlas.texture.filter = self.ctx.NEAREST, self.ctx.NEAREST
+            self.atlas.texture.filter = kwargs["filter"], kwargs["filter"]
 
         # TODO: Find a way to re-enable texture transforms
         # texture_transform = None
