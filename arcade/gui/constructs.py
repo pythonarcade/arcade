@@ -27,7 +27,7 @@ class UIMessageBox(UIMouseFilterMixin, UIAnchorWidget):
         :param height: Height of the message box
         :param message_text:
         :param buttons: List of strings, which are shown as buttons
-        :param callback: Callback method, will receive the text of the clicked button
+        :param callback: Callback function, will receive the text of the clicked button
         """
 
         space = 5
