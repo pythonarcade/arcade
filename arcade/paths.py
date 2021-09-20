@@ -20,7 +20,7 @@ def has_line_of_sight(point_1: Point,
     Determine if we have line of sight between two points. Having a line of
     sight means, that you can connect both points with straight line without
     intersecting any obstacle.
-    Thanks to the shapely efficiency and speedups boost, this method is very
+    Thanks to the shapely efficiency and speedups boost, this function is very
     fast. It can easily test 10 000 lines_of_sight.
 
     :param point_1: tuple -- coordinates of first position (x, y)

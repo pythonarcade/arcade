@@ -161,7 +161,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    """ Main method """
+    """ Main function """
     window = MyGame()
     window.setup()
     arcade.run()

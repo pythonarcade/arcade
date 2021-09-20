@@ -276,7 +276,7 @@ class MyGame:
 
 
 def main():
-    """ Main method """
+    """ Main function """
     window = MyGame()
 
     # Loop until the user clicks the close button.

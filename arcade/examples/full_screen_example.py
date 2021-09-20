@@ -99,7 +99,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    """ Main method """
+    """ Main function """
     MyGame()
     arcade.run()
 

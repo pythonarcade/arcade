@@ -700,7 +700,7 @@ class GameOverView(arcade.View):
 
 
 def main():
-    """Main method"""
+    """Main function"""
     window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     menu_view = MainMenu()
     window.show_view(menu_view)

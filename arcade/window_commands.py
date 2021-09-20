@@ -148,7 +148,7 @@ def set_viewport(left: float, right: float, bottom: float, top: float) -> None:
     the blocks may not line up well, creating rectangle artifacts.
 
     Note: ``Window.on_resize`` will call ``set_viewport`` by default. If you set your
-    own custom viewport, you may need to over-ride this method.
+    own custom viewport, you may need to over-ride this function.
 
     **For more advanced users**: This functions sets the orthogonal projection
     used by shapes and sprites. It also updates the viewport to match the current
@@ -312,7 +312,7 @@ def schedule(function_pointer: Callable, interval: Number):
     Schedule a function to be automatically called every ``interval``
     seconds. The function/callable needs to take a delta time argument
     similar to ``on_update``. This is a float representing the number
-    of seconds since the method was scheduled or called.
+    of seconds since it was scheduled or called.
 
     A function can be scheduled multiple times, but this is not recommended.
 
