@@ -65,7 +65,7 @@ Arcade Skill Tree
 * Sprite collision detection
 
   * Basic detection -
-    `Learn arcade book on collisions <https://learn.arcade.academy/en/latest/chapters/18_sprites_and_collisions/sprites.html#the-update-method>`_,
+    `Learn arcade book on collisions <https://learn.arcade.academy/en/latest/chapters/21_sprites_and_collisions/sprites.html#the-update-method>`_,
     :ref:`sprite_collect_coins`
   * Understanding collision detection and spatial hashing
   * Sprite Hit boxes
@@ -104,7 +104,7 @@ Arcade Skill Tree
 * Physics Engines
 
   * SimplePhysicsEngine - Platformer tutorial :ref:`platformer_part_three`,
-    Learn Arcade Book `Simple Physics Engine <https://learn.arcade.academy/en/latest/chapters/22_sprites_and_walls/sprites_and_walls.html#physics-engine>`_,
+    Learn Arcade Book `Simple Physics Engine <https://learn.arcade.academy/en/latest/chapters/25_sprites_and_walls/sprites_and_walls.html#physics-engine>`_,
     Example :ref:`sprite_move_walls`
   * PlatformerPhysicsEngine - From the platformer tutorial: :ref:`platformer_part_four`,
 
@@ -132,9 +132,9 @@ Arcade Skill Tree
 
   * Programmatic creation
 
-    * `Individually place sprites <https://learn.arcade.academy/en/latest/chapters/22_sprites_and_walls/sprites_and_walls.html#individually-placing-walls>`_
-    * `Place sprites with a loop <https://learn.arcade.academy/en/latest/chapters/22_sprites_and_walls/sprites_and_walls.html#placing-walls-with-a-loop>`_
-    * `Place sprites with a list <https://learn.arcade.academy/en/latest/chapters/22_sprites_and_walls/sprites_and_walls.html#placing-walls-with-a-list>`_
+    * `Individually place sprites <https://learn.arcade.academy/en/latest/chapters/25_sprites_and_walls/sprites_and_walls.html#individually-placing-walls>`_
+    * `Place sprites with a loop <https://learn.arcade.academy/en/latest/chapters/25_sprites_and_walls/sprites_and_walls.html#placing-walls-with-a-loop>`_
+    * `Place sprites with a list <https://learn.arcade.academy/en/latest/chapters/25_sprites_and_walls/sprites_and_walls.html#placing-walls-with-a-list>`_
 
   * Procedural Generation
 
@@ -151,7 +151,7 @@ Arcade Skill Tree
     * Hit-boxes - *Supported, but documentation needed.*
     * Animated Tiles - *Supported, but documentation needed.*
 
-* Sound - `Learn Arcade book sound chapter <https://learn.arcade.academy/en/latest/chapters/17_sounds/sounds.html>`_
+* Sound - `Learn Arcade book sound chapter <https://learn.arcade.academy/en/latest/chapters/20_sounds/sounds.html>`_
 
   * :ref:`music_control_demo`
   * Spatial sound :ref:`sound_demo`

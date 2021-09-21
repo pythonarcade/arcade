@@ -461,7 +461,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    """ Main method, start up window and run """
+    """ Main function, start up window and run """
     game = MyGame(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
     game.setup()
     arcade.run()

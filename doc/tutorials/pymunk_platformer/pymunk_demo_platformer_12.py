@@ -513,7 +513,7 @@ class GameWindow(arcade.Window):
         #     item.draw_hit_box(arcade.color.RED)
 
 def main():
-    """ Main method """
+    """ Main function """
     window = GameWindow(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     window.setup()
     arcade.run()

@@ -173,7 +173,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    """ Main method - starting point to the program """
+    """ Main function - starting point to the program """
     window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     window.center_window()
     arcade.run()

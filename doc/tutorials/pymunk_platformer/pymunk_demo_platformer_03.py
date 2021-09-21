@@ -73,7 +73,7 @@ class GameWindow(arcade.Window):
 
 
 def main():
-    """ Main method """
+    """ Main function """
     window = GameWindow(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     window.setup()
     arcade.run()

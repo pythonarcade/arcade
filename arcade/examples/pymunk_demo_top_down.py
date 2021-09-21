@@ -304,7 +304,7 @@ class MyWindow(arcade.Window):
 
 
 def main():
-    """ Main method """
+    """ Main function """
     window = MyWindow(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     window.setup()
     arcade.run()

@@ -383,7 +383,7 @@ class GameWindow(arcade.Window):
         self.player_list.draw()
 
 def main():
-    """ Main method """
+    """ Main function """
     window = GameWindow(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     window.setup()
     arcade.run()

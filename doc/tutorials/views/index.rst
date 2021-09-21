@@ -83,7 +83,7 @@ Now in the ``main`` function, instead of just creating a window, we'll create
 a window, a view, and then show that view.
 
 .. literalinclude:: 02_views.py
-    :caption: Add views - Main method
+    :caption: Add views - Main function
     :linenos:
     :pyobject: main
 
@@ -135,11 +135,11 @@ Then we'll put in a method to respond to a mouse click. Here we'll create our
     :caption: Add views - on_mouse_press
     :pyobject: InstructionView.on_mouse_press
 
-Now we need to go back to the ``main`` method. Instead of creating a ``GameView``
-it needs to now create an ``InstructionView``.
+Now we need to go back to the ``main`` function. Instead of creating a
+``GameView`` it needs to now create an ``InstructionView``.
 
 .. literalinclude:: 03_views.py
-    :caption: Add views - Main method
+    :caption: Add views - Main function
     :linenos:
     :pyobject: main
 
