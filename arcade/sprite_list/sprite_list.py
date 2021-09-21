@@ -797,14 +797,19 @@ class SpriteList:
             self._write_sprite_buffers_to_gpu()
 
         self.ctx.enable(self.ctx.BLEND)
+        # Set custom blend function or revert to default
         if blend_function is not None:
             self.ctx.blend_func = blend_function
         else:
             self.ctx.blend_func = self.ctx.BLEND_DEFAULT
 
-        if filter is not None:
+        # Set custom filter or reset to default
+        if filter:
             self.atlas.texture.filter = filter, filter
+        else:
+            self.atlas.texture.filter = self.ctx.LINEAR, self.ctx.LINEAR
 
+        # Handle the pixelated shortcut
         if pixelated is not None:
             if pixelated is True:
                 self.atlas.texture.filter = self.ctx.NEAREST, self.ctx.NEAREST
