@@ -758,13 +758,14 @@ class SpriteList:
             self._sprite_index_buf.write(self._sprite_index_data)
             self._sprite_index_changed = False
 
-    def draw(self, **kwargs):
+    def draw(self, *, filter=None, pixelated=None, blend_function=None):
         """
         Draw this list of sprites.
 
         :param filter: Optional parameter to set OpenGL filter, such as
                        `gl.GL_NEAREST` to avoid smoothing.
-
+        :param pixelated: ``True`` for pixelated and ``False`` for smooth interpolation.
+                          Shortcut for setting filter=GL_NEAREST.
         :param blend_function: Optional parameter to set the OpenGL blend function used for drawing the sprite list, such as
                         'arcade.Window.ctx.BLEND_ADDITIVE' or 'arcade.Window.ctx.BLEND_DEFAULT'
         """
@@ -796,13 +797,19 @@ class SpriteList:
             self._write_sprite_buffers_to_gpu()
 
         self.ctx.enable(self.ctx.BLEND)
-        if "blend_function" in kwargs:
-            self.ctx.blend_func = kwargs["blend_function"]
+        if blend_function is not None:
+            self.ctx.blend_func = blend_function
         else:
             self.ctx.blend_func = self.ctx.BLEND_DEFAULT
 
-        if "filter" in kwargs:
-            self.atlas.texture.filter = kwargs["filter"], kwargs["filter"]
+        if filter is not None:
+            self.atlas.texture.filter = filter, filter
+
+        if pixelated is not None:
+            if pixelated is True:
+                self.atlas.texture.filter = self.ctx.NEAREST, self.ctx.NEAREST
+            else:
+                self.atlas.texture.filter = self.ctx.LINEAR, self.ctx.LINEAR
 
         # TODO: Find a way to re-enable texture transforms
         # texture_transform = None
