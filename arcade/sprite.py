@@ -872,8 +872,17 @@ class Sprite:
         """Called by the pymunk physics engine if this sprite moves."""
         pass
 
-    def draw(self):
-        """Draw the sprite."""
+    def draw(self,  *, filter=None, pixelated=None, blend_function=None):
+        """
+        Draw the sprite.
+
+        :param filter: Optional parameter to set OpenGL filter, such as
+                       `gl.GL_NEAREST` to avoid smoothing.
+        :param pixelated: ``True`` for pixelated and ``False`` for smooth interpolation.
+                          Shortcut for setting filter=GL_NEAREST.
+        :param blend_function: Optional parameter to set the OpenGL blend function used for drawing the sprite list, such as
+                        'arcade.Window.ctx.BLEND_ADDITIVE' or 'arcade.Window.ctx.BLEND_DEFAULT'
+        """
 
         if self._sprite_list is None:
             from arcade import SpriteList
@@ -881,7 +890,7 @@ class Sprite:
             self._sprite_list = SpriteList()
             self._sprite_list.append(self)
 
-        self._sprite_list.draw()
+        self._sprite_list.draw(filter=filter, pixelated=pixelated, blend_function=blend_function)
 
     def draw_hit_box(self, color: Color = BLACK, line_thickness: float = 1):
         """
