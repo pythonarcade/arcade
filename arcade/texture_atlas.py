@@ -42,12 +42,6 @@ TEXCOORD_BUFFER_SIZE = 8192
 RESIZE_STEP = 128
 LOG = logging.getLogger(__name__)
 
-# TODO:
-# Detect texture changes
-# Resize?
-# SpriteList.preload_textures
-# SpriteList.update_texture calls _calculate_sprite_buffer()
-
 
 class AtlasRegion:
     """Stores information about an allocated region"""
@@ -143,7 +137,7 @@ class TextureAtlas:
         interpolation bleeding between the textures.
 
         :param Tuple[int, int] size: The width and height of the atlas in pixels
-        :param int border: Border in pixels around every texture in the atlas
+        :param int border: Currently as no effect. It should always be 1.
         :param Sequence[arcade.Texture] textures: The texture for this atlas
         :param bool auto_resize: Automatically resize the atlas when full
         :param Context ctx: The context for this atlas (will use window context if left empty)
@@ -151,7 +145,7 @@ class TextureAtlas:
         self._ctx = ctx or arcade.get_window().ctx
         self._max_size = self._ctx.limits.MAX_VIEWPORT_DIMS
         self._size: Tuple[int, int] = size
-        self._border: int = border
+        self._border: int = 1
         self._allocator = Allocator(*self._size)
         self._auto_resize = auto_resize
         self._check_size(self._size)
@@ -364,9 +358,10 @@ class TextureAtlas:
         """
         Writes an arcade texture to a subsection of the texture atlas
         """
-        if texture.image.mode != "RGBA":
-            LOG.warning(f"TextureAtlas: Converting texture '{texture.name}' to RGBA")
-            texture.image = texture.image.convert("RGBA")
+        # NOTE: We convert to RGBA when padding the image data
+        # if texture.image.mode != "RGBA":
+        #     LOG.warning(f"TextureAtlas: Converting texture '{texture.name}' to RGBA")
+        #     texture.image = texture.image.convert("RGBA")
 
         self.write_image(texture.image, x, y)
 
@@ -378,15 +373,26 @@ class TextureAtlas:
         :param int x: The x position to write the texture
         :param int y: The y position to write the texture
         """
-        # Write into atlas at the allocated location
+        # NOTE: We assume border is at least 1 here
+        # Write into atlas at the allocated location + a 1 pixel border
         viewport = (
-            x + self._border,
-            y + self._border,
-            image.width,
-            image.height,
+            x + self._border - 1,
+            y + self._border - 1,
+            image.width + 2,
+            image.height + 2,
         )
+        # print(image.size, viewport,"|", x, y, self._border)
+
+        # Pad the 1-pixel border with repeating data
+        tmp = Image.new('RGBA', (image.width + 2, image.height + 2))
+        tmp.paste(image, (1, 1))
+        tmp.paste(tmp.crop((1          , 1           , image.width+1, 2             )), (1            , 0             ))
+        tmp.paste(tmp.crop((1          , image.height, image.width+1, image.height+1)), (1            , image.height+1))
+        tmp.paste(tmp.crop((1          , 0           ,             2, image.height+2)), (0            , 0             ))
+        tmp.paste(tmp.crop((image.width, 0           , image.width+1, image.height+2)), (image.width+1, 0             ))
+
         # Write the image directly to graphics memory in the allocated space
-        self._texture.write(image.tobytes(), 0, viewport=viewport)
+        self._texture.write(tmp.tobytes(), 0, viewport=viewport)
 
     def remove(self, texture: "Texture") -> None:
         """
