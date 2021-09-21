@@ -21,8 +21,8 @@ out vec4 gs_color;
 #define VP_CLIP 1.0
 
 void main() {
-    // Sprite index 4294967294 means the sprite is deleted or disabled
-    if (vertex_id[0] == 4294967294) return;
+    // Sprite index 2000000000 means the sprite is deleted or disabled
+    if (vertex_id[0] == 2000000000) return;
 
     // Get center of the sprite
     vec2 center = gl_in[0].gl_Position.xy;

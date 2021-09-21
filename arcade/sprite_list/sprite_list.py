@@ -26,7 +26,7 @@ LOG = logging.getLogger(__name__)
 # The slot index that makes a sprite invisible.
 # 2^32-1 is usually reserved for primitive restart
 # NOTE: Possibly we want to use slot 0 for this?
-_SPRITE_SLOT_INVISIBLE = 2 ** 32 - 2
+_SPRITE_SLOT_INVISIBLE = 2000000000
 
 
 class SpriteList:
