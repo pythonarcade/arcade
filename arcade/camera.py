@@ -5,7 +5,7 @@ import math
 from typing import Optional
 
 import arcade
-from pyglet.math import Mat4, Vec2
+from pyglet.math import Mat4, Vec2, Vec3
 from arcade.window_commands import get_scaling_factor
 
 
@@ -37,18 +37,25 @@ class Camera:
         # Movement Speed, 1.0 is instant
         self.move_speed = 1.0
 
-        # Projection Matrix
+        # Matrixes
+        # Projection Matrix is used to apply the camera viewport size
         self.projection_matrix = None
+        # View Matrix is what the camera is looking at(position)
+        self.view_matrix = None
+        # We multiple projection and view matrices to get combined, this is what actually gets sent to GL context
+        self.combined_matrix = None
 
         # Near and Far
-        self.near = -100
-        self.far = 100
+        self.near = -1
+        self.far = 1
 
         # Shake
         self.shake_velocity = Vec2()
         self.shake_offset = Vec2()
         self.shake_speed = 0.0
         self.shake_damping = 0.0
+
+        self.scale = 1.0
 
         self.viewport_width = viewport_width
         self.viewport_height = viewport_height
@@ -99,15 +106,23 @@ class Camera:
 
         # Figure out our 'real' position plus the shake
         result_position = self.position + self.shake_offset
+        result_position = Vec3(
+            (result_position[0] / ((self.viewport_width * self.scale) / 2)),
+            (result_position[1] / ((self.viewport_height * self.scale) / 2)),
+            0
+        )
+        
+        self.view_matrix = ~(Mat4.from_translation(result_position) @ Mat4().scale(x=self.scale, y=self.scale, z=self.scale))
+        self.combined_matrix = self.projection_matrix @ self.view_matrix
 
-        # Update the projection
+    def set_projection(self):
         self.projection_matrix = Mat4.orthogonal_projection(
-            math.floor(result_position[0]),
-            self.viewport_width + math.floor(result_position[0]),
-            math.floor(result_position[1]),
-            self.viewport_height + math.floor(result_position[1]),
+            0,
+            self.scale * self.viewport_width,
+            0,
+            self.scale * self.viewport_height,
             self.near,
-            self.far,
+            self.far
         )
 
     def resize(self, viewport_width: int, viewport_height: int):
@@ -121,6 +136,7 @@ class Camera:
 
         self.viewport_width = viewport_width
         self.viewport_height = viewport_height
+        self.set_projection()
 
     def shake(self, velocity: Vec2, speed: float = 1.5, damping: float = 0.9):
         """
@@ -162,7 +178,8 @@ class Camera:
         This will currently raise an error
         TODO implement
         """
-        raise NotImplementedError("Camera Zooming is not yet supported")
+        self.scale += change
+        self.set_projection()
 
     def use(self):
         """
@@ -177,4 +194,4 @@ class Camera:
             int(self.viewport_width * scaling),
             int(self.viewport_height * scaling),
         )
-        self._window.ctx.projection_2d_matrix = self.projection_matrix
+        self._window.ctx.projection_2d_matrix = self.combined_matrix

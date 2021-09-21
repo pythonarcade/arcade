@@ -473,6 +473,11 @@ class GameView(arcade.View):
         if key == arcade.key.Q:
             self.shoot_pressed = True
 
+        if key == arcade.key.PLUS:
+            self.camera.zoom(0.01)
+        elif key == arcade.key.MINUS:
+            self.camera.zoom(-0.01)
+
         self.process_keychange()
 
     def on_key_release(self, key, modifiers):
@@ -493,16 +498,17 @@ class GameView(arcade.View):
 
         self.process_keychange()
 
+    def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
+        self.camera.zoom(-0.01 * scroll_y)
+
     def center_camera_to_player(self, speed=0.2):
-        screen_center_x = self.player_sprite.center_x - (self.camera.viewport_width / 2)
-        screen_center_y = self.player_sprite.center_y - (
-            self.camera.viewport_height / 2
-        )
+        screen_center_x = self.camera.scale * (self.player_sprite.center_x - (self.camera.viewport_width / 2))
+        screen_center_y = self.camera.scale * (self.player_sprite.center_y - (self.camera.viewport_height / 2))
         if screen_center_x < 0:
             screen_center_x = 0
         if screen_center_y < 0:
             screen_center_y = 0
-        player_centered = screen_center_x, screen_center_y
+        player_centered = (screen_center_x, screen_center_y)    
 
         self.camera.move_to(player_centered, speed)
 
