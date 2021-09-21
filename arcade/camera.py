@@ -178,8 +178,7 @@ class Camera:
         This will currently raise an error
         TODO implement
         """
-        self.scale += change
-        self.set_projection()
+        raise NotImplementedError("Zooming the camera is currently un-supported, but will be in a later release.")
 
     def use(self):
         """
