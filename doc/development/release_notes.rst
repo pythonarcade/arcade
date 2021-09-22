@@ -7,6 +7,18 @@ Release Notes
 
 Keep up-to-date with the latest changes to the Arcade library by the release notes.
 
+Version 2.6.3
+-------------
+
+*Released on 2021-Sept-21*
+
+* Bug fix, use a signed in as the 'killed' index. `#965 <https://github.com/pythonarcade/arcade/issues/965>`_
+* SpriteList.draw, Expose arguments in a better way, and ensure defaults are restored.
+* Pad atlas with repeating border pixels. `#959 <https://github.com/pythonarcade/arcade/issues/959>`_
+* Fix dead links on getting started page See `#960 <https://github.com/pythonarcade/arcade/issues/960>`_
+* Fix some doc language that mixed function/method vocabulary. See `#963 <https://github.com/pythonarcade/arcade/issues/963>`_
+* Some initial work on compute and camera shader work. Not done yet.
+
 Version 2.6.2
 -------------
 
