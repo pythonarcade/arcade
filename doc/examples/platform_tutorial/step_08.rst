@@ -7,7 +7,7 @@ Step 8 - Display The Score
 Now that we can collect coins and get points, we need a way to display the score on the screen.
 
 This process is a little bit more complex than just drawing some text at an X and Y location.
-For properly drawing text, or and GUI elements, we need to use a separate camera than the one
+For properly drawing text, or any GUI elements, we need to use a separate camera than the one
 we use to draw the rest of our scene.
 
 This is because we are scrolling around the main game camera, but we want our GUI elements to
