@@ -7,6 +7,19 @@ Release Notes
 
 Keep up-to-date with the latest changes to the Arcade library by the release notes.
 
+Version 2.6.3
+-------------
+* Fixed a bug causing the sprite geometry shader to not compile in some platforms
+* Fixed a bug related to texture bleeding with sprites. Texture atlases now
+  pad the texture borders with repeating pixel data to combat this. It should make sprites
+  look much better when scrolling, zooming and on hidpi displays.
+* Added hack for some gui text not appearing (pyglet 2.0 bug)
+* UIMessageBox should now respect the width and height of the widget
+* ``SpriteList.draw``: Added ``pixelated`` (bool) argument as a shortcut to setting nearest interpolation
+* ``SpriteList.draw``: The arguments are now better exposed in docs
+* ``Sprite.draw`` now has the same blending and interpolation argument as ``SpriteList.draw``
+* Upgraded to pyglet 2.0dev9
+
 Version 2.6.2
 -------------
 
