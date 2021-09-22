@@ -30,11 +30,11 @@ class UIMessageBox(UIMouseFilterMixin, UIAnchorWidget):
         :param callback: Callback function, will receive the text of the clicked button
         """
 
-        space = 5
+        space = 10
 
         self._text_area = UITextArea(text=message_text,
-                                     width=height - space,
-                                     height=width - space,
+                                     width=width - space,
+                                     height=height - space,
                                      text_color=arcade.color.BLACK)
 
         button_group = arcade.gui.UIBoxLayout(vertical=False)

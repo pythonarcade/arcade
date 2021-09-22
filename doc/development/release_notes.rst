@@ -13,11 +13,20 @@ Version 2.6.3
 *Released on 2021-Sept-21*
 
 * Bug fix, use a signed in as the 'killed' index. `#965 <https://github.com/pythonarcade/arcade/issues/965>`_
-* SpriteList.draw, Expose arguments in a better way, and ensure defaults are restored.
-* Pad atlas with repeating border pixels. `#959 <https://github.com/pythonarcade/arcade/issues/959>`_
 * Fix dead links on getting started page See `#960 <https://github.com/pythonarcade/arcade/issues/960>`_
 * Fix some doc language that mixed function/method vocabulary. See `#963 <https://github.com/pythonarcade/arcade/issues/963>`_
 * Some initial work on compute and camera shader work. Not done yet.
+* Fixed a bug causing the sprite geometry shader to not compile in some platforms
+* Fixed a bug related to texture bleeding with sprites. Texture atlases now
+  pad the texture borders with repeating pixel data to combat this. It should make sprites
+  look much better when scrolling, zooming and on hidpi displays.
+  `#959 <https://github.com/pythonarcade/arcade/issues/959>`_
+* Added hack for some gui text not appearing (pyglet 2.0 bug)
+* UIMessageBox should now respect the width and height of the widget
+* ``SpriteList.draw``: Added ``pixelated`` (bool) argument as a shortcut to setting nearest interpolation
+* ``SpriteList.draw``: The arguments are now better exposed in docs
+* ``Sprite.draw`` now has the same blending and interpolation argument as ``SpriteList.draw``
+* Upgraded to pyglet 2.0dev9
 
 Version 2.6.2
 -------------
