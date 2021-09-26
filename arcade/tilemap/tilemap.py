@@ -365,7 +365,7 @@ class TileMap:
                     Custom classes for animated tiles must subclass AnimatedTimeBasedSprite.
                     """
                 )
-            print(custom_class.__name__)
+            # print(custom_class.__name__)
             args = {"filename": image_file, "scale": scaling}
             my_sprite = custom_class(**custom_class_args, **args)  # type: ignore
         else:
