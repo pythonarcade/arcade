@@ -382,7 +382,7 @@ class PhysicsEnginePlatformer:
         complete_hit_list = _move_sprite(self.player_sprite, self.platforms, ramp_up=True)
 
         for platform_list in self.platforms:
-            for platform in platform_list:
+            for platform in self._select_sprites(platform_list, self.player_sprite):
                 if platform.change_x != 0 or platform.change_y != 0:
                     platform.center_x += platform.change_x
 
@@ -424,3 +424,12 @@ class PhysicsEnginePlatformer:
         # print(f"Update - {end_time - start_time:7.4f}\n")
 
         return complete_hit_list
+
+    def _select_sprites(self, sprites: Union[Sprite, List[SpriteList]], sprite: Sprite):
+        """Attempts to reduce the number of sprites to check"""
+        # O(1) : Returns the nearby sprites using spatial hash
+        if isinstance(sprites, SpriteList) and sprites.use_spatial_hash:
+            return sprites.spatial_hash.get_objects_for_box(sprite)
+
+        # O(N) : Otherwise we're just have to interate everything
+        return sprites
