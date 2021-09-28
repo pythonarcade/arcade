@@ -308,7 +308,7 @@ class GameView(arcade.View):
                 "use_spatial_hash": True,
             },
             LAYER_NAME_MOVING_PLATFORMS: {
-                "use_spatial_hash": True,
+                "use_spatial_hash": False,
             },
             LAYER_NAME_LADDERS: {
                 "use_spatial_hash": True,
