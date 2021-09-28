@@ -66,7 +66,7 @@ class Window(pyglet.window.Window):
     :param bool visible: Should the window be visible immediately
     :param bool vsync: Wait for vertical screen refresh before swapping buffer
                        This can make animations and movement look smoother.
-    :param bool gc_mode: Decides how opengl objects should be garbage collected
+    :param bool gc_mode: Decides how opengl objects should be garbage collected ("auto", "context_gc")
     :param bool center_window: If true, will center the window.
 
     """

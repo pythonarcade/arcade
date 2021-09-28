@@ -243,6 +243,12 @@ class Context:
 
             # default: Auto 
             ctx.gc_mode = "auto"
+
+            # Defer garbage collection until ctx.gc() is called
+            # This can be useful to enforce the main thread to
+            # run garbage collection of opengl resources
+            ctx.gc_mode = "context_gc"
+            
         """
         return self._gc_mode
 
