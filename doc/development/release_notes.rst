@@ -7,6 +7,20 @@ Release Notes
 
 Keep up-to-date with the latest changes to the Arcade library by the release notes.
 
+UNRELEASED
+----------
+
+* Optimization: PhysicsEnginePlatformer now separates moving platforms and static platforms. New
+  arguments were added to the initializer to supply them separately. This makes collision checking
+  with huge maps much more performant. Collision checking for static sprites goes from O(N) to O(1).
+  500k+ static sprites is no problem.
+* Added support for compute shaders. We support writing to textures and SSBOs (buffers).
+  Examples can be found in ``arcade/experimental/examples``
+* Fixed a problem causing Geometry / VertexArray to ignore ``POINTS`` primitive mode when this is set as default.
+* Added ``run()`` shortcut in ``arcade.Window```. Usage: `MyWindow().run()`
+* Various docstring improvements
+* Bug: Removed a lingering debug key ``F12`` that showed the contents of the global texture atlas
+
 Version 2.6.3
 -------------
 
