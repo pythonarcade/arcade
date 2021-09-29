@@ -405,7 +405,27 @@ class Geometry:
         """
         program.use()
         vao = self.instance(program)
+
         mode = self._mode if mode is None else mode
+
+        # If we have a geometry shader we need to sanity check that
+        # the primitive mode is supported
+        if program.geometry_vertices > 0:
+            if program.geometry_input == self._ctx.POINTS:
+                mode = program.geometry_input
+            if program.geometry_input == self._ctx.LINES:
+                if mode not in [self._ctx.LINES, self._ctx.LINE_STRIP, self._ctx.LINE_LOOP, self._ctx.LINES_ADJACENCY]:
+                    raise ValueError("Geometry shader expects LINES, LINE_STRIP, LINE_LOOP or LINES_ADJACENCY as input")
+            if program.geometry_input == self._ctx.LINES_ADJACENCY:
+                if mode not in [self._ctx.LINES_ADJACENCY, self._ctx.LINE_STRIP_ADJACENCY]:
+                    raise ValueError("Geometry shader expects LINES_ADJACENCY or LINE_STRIP_ADJACENCY as input")
+            if program.geometry_input == self._ctx.TRIANGLES:
+                if mode not in [self._ctx.GL_TRIANGLES, self._ctx.TRIANGLE_STRIP, self._ctx.TRIANGLE_FAN]:
+                    raise ValueError("Geometry shader expects GL_TRIANGLES, GL_TRIANGLE_STRIP or GL_TRIANGLE_FAN as input")
+            if program.geometry_input == self._ctx.TRIANGLES_ADJACENCY:
+                if mode not in [self._ctx.TRIANGLES_ADJACENCY, self._ctx.TRIANGLE_STRIP_ADJACENCY]:
+                    raise ValueError("Geometry shader expects GL_TRIANGLES_ADJACENCY or GL_TRIANGLE_STRIP_ADJACENCY as input")
+
         vao.render(
             mode=mode,
             first=first,
