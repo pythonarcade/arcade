@@ -150,7 +150,7 @@ class Window(pyglet.window.Window):
 
 
     @property
-    def current_view(self):
+    def current_view(self) -> Optional["View"]:
         """
         This property returns the current view being shown.
         To set a different view, call the
@@ -489,8 +489,14 @@ class Window(pyglet.window.Window):
 
     def show_view(self, new_view: 'View'):
         """
-        Select the view to show. Calling this function is the same as setting the
-        :py:meth:`arcade.Window.current_view` attribute.
+        Select the view to show in the next frame.
+        This is not a blocking call showing the view.
+        Your code will continue to run after this call
+        and the view will appear in the next dispatch
+        of ``on_update``/``on_draw```.
+     
+        Calling this function is the same as setting the
+        :py:attr:`arcade.Window.current_view` attribute.
 
         :param View new_view: View to show
         """
