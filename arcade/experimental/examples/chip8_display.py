@@ -65,7 +65,7 @@ class MyGame(arcade.Window):
             """
         )
         # 8 x 4 
-        self.program['projection'] = get_projection().flatten()
+        self.program['projection'] = get_projection()
         self.program['screen'] = 0
         b = 0  # border to test scale
         self.quad = geometry.screen_rectangle(b, b, SCREEN_WIDTH - b * 2, SCREEN_HEIGHT - b * 2)
