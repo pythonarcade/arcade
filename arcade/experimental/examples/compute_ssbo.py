@@ -207,7 +207,7 @@ class App(arcade.Window):
         self.cs.run(group_x=self.group_x, group_y=self.group_y)
 
         # Draw the balls
-        self.vao_2.render(self.program, mode=self.ctx.POINTS)
+        self.vao_2.render(self.program)
 
         # Swap the buffers around (we are ping-ping rendering between two buffers)
         self.ssbo_1, self.ssbo_2 = self.ssbo_2, self.ssbo_1

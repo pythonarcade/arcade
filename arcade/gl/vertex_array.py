@@ -314,7 +314,7 @@ class Geometry:
         self._content = content or []
         self._index_buffer = index_buffer
         self._index_element_size = index_element_size
-        self._mode = mode or ctx.TRIANGLES
+        self._mode = mode if mode is not None else ctx.TRIANGLES
         self._vao_cache = {}  # type: Dict[str, VertexArray]
         self._num_vertices = -1
         """
