@@ -589,7 +589,16 @@ class Texture:
         gl.glBindTexture(gl.GL_TEXTURE_2D, self._glo)
 
     def bind_to_image(self, unit: int, read: bool = True, write: bool = True, level: int = 0):
-        """Used to bind textures to image units for a compute shader"""
+        """
+        Bind textures to image units.
+
+        Note that either or both ``read`` and ``write`` needs to be ``True``.
+        The supported modes are: read only, write only, read-write
+
+        :param int unit: The image unit
+        :param bool read: The compute shader intends to read from this image
+        :param bool write: The compute shader intends to write to this image
+        """
 
         access = gl.GL_READ_WRITE
         if read and write:
