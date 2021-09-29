@@ -193,6 +193,16 @@ class Window(pyglet.window.Window):
     def background_color(self, value: Color):
         self._background_color = value
 
+    def run(self):
+        """
+        Shortcut for :py:func:`arcade.run()`.
+
+        For example::
+
+            MyWindow().run()
+        """
+        arcade.run()
+
     def close(self):
         """ Close the Window. """
         super().close()
