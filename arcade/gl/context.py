@@ -117,6 +117,8 @@ class Context:
     #: Primitive mode
     LINES = gl.GL_LINES  # 1
     #: Primitive mode
+    LINE_LOOP = gl.GL_LINE_LOOP  # 2
+    #: Primitive mode
     LINE_STRIP = gl.GL_LINE_STRIP  # 3
     #: Primitive mode
     TRIANGLES = gl.GL_TRIANGLES  # 4
