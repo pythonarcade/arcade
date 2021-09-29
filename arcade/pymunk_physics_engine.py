@@ -72,7 +72,7 @@ class PymunkPhysicsEngine:
             :param sprite: The sprite to add
             :param mass: The mass of the object. Defaults to 1
             :param friction: The friction the object has. Defaults to 0.2
-            :param elasticity: Not sure for this one #TODO insert what this is about
+            :param elasticity: How bouncy this object is. 0 is no bounce. Values of 1.0 and higher may behave badly.
             :param moment_of_intertia: The moment of inertia, or force needed to change angular momentum. Providing infinite makes this object stuck in its rotation.
             :param body_type: The type of the body. Defaults to Dynamic, meaning, the body can move, rotate etc. providing STATIC makes it fixed to the world.
             :param damping: See class docs
