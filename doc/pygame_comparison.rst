@@ -100,7 +100,7 @@ Here are some comparisons between Arcade 2.6 and Pygame 2.0.1
      - `Yes <tutorials/lights/index.html>`__
      - No
    * - GUI Support
-     - `Yes <tutorials/user_interface/index.html>`__
+     - `Yes <gui/index.html>`__
      - No (or add `pygame-gui <https://pygame-gui.readthedocs.io/en/latest/>`_)
    * - GPU Shader Support
      - `Yes <tutorials/gpu_particle_burst/index.html>`__
