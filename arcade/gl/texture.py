@@ -588,6 +588,21 @@ class Texture:
         gl.glActiveTexture(gl.GL_TEXTURE0 + unit)
         gl.glBindTexture(gl.GL_TEXTURE_2D, self._glo)
 
+    def bind_to_image(self, unit: int, read: bool = True, write: bool = True, level: int = 0):
+        """Used to bind textures to image units for a compute shader"""
+
+        access = gl.GL_READ_WRITE
+        if read and write:
+            access = gl.GL_READ_WRITE
+        elif read and not write:
+            access = gl.GL_READ_ONLY
+        elif not read and write:
+            access = gl.GL_WRITE_ONLY
+        else:
+            raise ValueError("Illegal access mode. The texture must at least be read or write only")
+
+        gl.glBindImageTexture(unit, self._glo, level, 0, 0, access, self._internal_format)
+
     def __repr__(self) -> str:
         return "<Texture glo={} size={}x{} components={}>".format(
             self._glo.value, self._width, self._height, self._components
