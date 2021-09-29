@@ -222,3 +222,16 @@ class Buffer:
             size = self.size
 
         gl.glBindBufferRange(gl.GL_UNIFORM_BUFFER, binding, self._glo, offset, size)
+
+    def bind_to_storage_buffer(self, *, binding=0, offset=0, size=-1):
+        """
+        Bind this buffer as a shader storage buffer.
+
+        :param int binding: The binding location
+        :param int offset: Byte offset in the buffer
+        :param int size: The size in bytes. The entire buffer will be mapped by default.
+        """
+        if size < 0:
+            size = self.size
+
+        gl.glBindBufferRange(gl.GL_SHADER_STORAGE_BUFFER, binding, self._glo, offset, size)
