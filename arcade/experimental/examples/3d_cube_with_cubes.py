@@ -3,9 +3,7 @@
 This example needs pyrr installed for matrix math:
     pip install pyrr
 """
-from array import array
-
-from pyrr import Matrix44
+from pyglet.math import Mat4
 
 import arcade
 from arcade.gl import geometry
@@ -112,13 +110,16 @@ class MyGame(arcade.Window):
         # Draw the current cube using the last one as a texture
         self.fbo1.use()
         self.fbo1.clear(color=(1.0, 1.0, 1.0, 1.0), normalized=True)
-        rotate = Matrix44.from_eulers((self.time, self.time * 0.77, self.time * 0.01), dtype='f4')
-        translate = Matrix44.from_translation((0, 0, -1.75), dtype='f4')
-        modelview = translate * rotate
+
+        translate = Mat4.from_translation((0, 0, -1.75))
+        rx = Mat4.rotate(Mat4(), angle=self.time, x=1, y=0, z=0)
+        ry = Mat4.rotate(Mat4(), angle=self.time, x=0, y=1, z=0)
+        modelview = rx @ ry @ translate
+
         if self.frame > 0:
             self.program['use_texture'] = 1
             self.fbo2.color_attachments[0].use()
-        self.program['modelview'] = modelview.flatten()
+        self.program['modelview'] = modelview
         self.cube.render(self.program)
 
         self.ctx.disable(self.ctx.DEPTH_TEST)
@@ -141,7 +142,7 @@ class MyGame(arcade.Window):
         ratio = arcade.get_scaling_factor(self)
         self.ctx.viewport = 0, 0, int(width * ratio), int(height * ratio)
         aspect_ratio = width / height
-        self.program['projection'] = Matrix44.perspective_projection(60, aspect_ratio, 0.1, 100).flatten()
+        self.program['projection'] = Mat4.perspective_projection(0, self.width, 0, self.height, 0.1, 100, fov=60)
 
 
 if __name__ == "__main__":
