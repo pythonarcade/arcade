@@ -58,7 +58,7 @@ class PymunkPhysicsEngine:
                    mass: float = 1,
                    friction: float = 0.2,
                    elasticity: Optional[float] = None,
-                   moment_of_inertia: Optional[float] =None,
+                   moment_of_inertia: Optional[float] =None,  # correct spelling, easy to google for further explanation
                    body_type: int =DYNAMIC,
                    damping: Optional[float] =None,
                    gravity: Union[pymunk.Vec2d, Tuple[float, float], Vec2] =None,
@@ -67,7 +67,9 @@ class PymunkPhysicsEngine:
                    max_vertical_velocity: int =None,
                    radius: float = 0,
                    collision_type: Optional[str] = "default",
-                   moment_of_intertia: Optional[float] = None
+                   # the next two arguments are for backwards compatibility with prior versions
+                   moment_of_intertia: Optional[float] = None,  # typo keyword, used by 2.6.2 and 2.6.3
+                   moment: Optional[float] = None  # used prior to 2.6.2
                    ):
         """ Add a sprite to the physics engine. 
             :param sprite: The sprite to add
@@ -84,6 +86,7 @@ class PymunkPhysicsEngine:
             :param radius:
             :param collision_type:
             :param moment_of_intertia: Deprecated alias of moment_of_inertia compatible with a typo introduced in 2.6.2
+            :param moment: Deprecated alias of moment_of_inertia compatible with versions <= 2.6.1
         """
 
         if damping is not None:
@@ -114,8 +117,9 @@ class PymunkPhysicsEngine:
         # Get a number associated with the string of collision_type
         collision_type_id = self.collision_types.index(collision_type)
 
-        # Backwards compatibility for a typo introduced in 2.6.2
-        moment_of_inertia = moment_of_intertia or moment_of_inertia
+        # Backwards compatibility for a typo introduced in 2.6.2 and for versions under 2.6.1
+        # The current version is checked first, then the most common older form, then the typo
+        moment_of_inertia = moment_of_inertia or moment or moment_of_intertia
 
         # Default to a box moment_of_inertia
         if moment_of_inertia is None:
