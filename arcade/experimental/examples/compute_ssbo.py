@@ -72,7 +72,7 @@ void main()
     out_ball.pos.xyzw = p.xyzw;
     out_ball.vel.xyzw = v.xyzw;
 
-    vec4 c = in_ball.col.xyzw;f
+    vec4 c = in_ball.col.xyzw;
     out_ball.col.xyzw = c.xyzw;
 
     Out.balls[x] = out_ball;
