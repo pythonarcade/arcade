@@ -8,7 +8,7 @@ import PIL.Image
 import PIL.ImageOps
 import PIL.ImageDraw
 
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Any
 from typing import List
 from typing import Union
 
@@ -547,24 +547,40 @@ def load_spritesheet(file_name: Union[str, Path],
     return texture_list
 
 
-def make_circle_texture(diameter: int, color: Color) -> Texture:
+def build_cache_name(*args: Any) -> str:
+    """
+    Generate cache names from the given parameters
+
+    This is mostly useful when generating textures with many parameters
+
+    :param args:
+    :return:
+    """
+    return "-".join([f"{arg}" for arg in args])
+
+
+def make_circle_texture(diameter: int, color: Color, name: str = None) -> Texture:
     """
     Return a Texture of a circle with the given diameter and color.
 
     :param int diameter: Diameter of the circle and dimensions of the square :class:`Texture` returned.
     :param Color color: Color of the circle.
+    :param str name: Custom or pre-chosen name for this texture
 
     :returns: New :class:`Texture` object.
     """
+
+    name = name or build_cache_name("circle_texture", diameter, color[0], color[1], color[2])
+
     bg_color = (0, 0, 0, 0)  # fully transparent
     img = PIL.Image.new("RGBA", (diameter, diameter), bg_color)
     draw = PIL.ImageDraw.Draw(img)
     draw.ellipse((0, 0, diameter - 1, diameter - 1), fill=color)
-    name = "{}:{}:{}".format("circle_texture", diameter, color)  # name must be unique for caching
     return Texture(name, img)
 
 
-def make_soft_circle_texture(diameter: int, color: Color, center_alpha: int = 255, outer_alpha: int = 0) -> Texture:
+def make_soft_circle_texture(diameter: int, color: Color, center_alpha: int = 255, outer_alpha: int = 0,
+                             name: str = None) -> Texture:
     """
     Return a :class:`Texture` of a circle with the given diameter and color, fading out at its edges.
 
@@ -572,12 +588,16 @@ def make_soft_circle_texture(diameter: int, color: Color, center_alpha: int = 25
     :param Color color: Color of the circle.
     :param int center_alpha: Alpha value of the circle at its center.
     :param int outer_alpha: Alpha value of the circle at its edges.
+    :param str name: Custom or pre-chosen name for this texture
 
     :returns: New :class:`Texture` object.
     :rtype: arcade.Texture
     """
     # TODO: create a rectangle and circle (and triangle? and arbitrary poly where client passes
     # in list of points?) particle?
+    name = name or build_cache_name("soft_circle_texture", diameter, color[0], color[1], color[3], center_alpha,
+                                    outer_alpha)  # name must be unique for caching
+
     bg_color = (0, 0, 0, 0)  # fully transparent
     img = PIL.Image.new("RGBA", (diameter, diameter), bg_color)
     draw = PIL.ImageDraw.Draw(img)
@@ -587,8 +607,7 @@ def make_soft_circle_texture(diameter: int, color: Color, center_alpha: int = 25
         alpha = int(lerp(center_alpha, outer_alpha, radius / max_radius))
         clr = (color[0], color[1], color[2], alpha)
         draw.ellipse((center - radius, center - radius, center + radius - 1, center + radius - 1), fill=clr)
-    name = "{}:{}:{}:{}:{}".format("soft_circle_texture", diameter, color, center_alpha,
-                                   outer_alpha)  # name must be unique for caching
+
     return Texture(name, img)
 
 
