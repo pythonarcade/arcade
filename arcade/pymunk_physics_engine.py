@@ -58,7 +58,7 @@ class PymunkPhysicsEngine:
                    mass: float = 1,
                    friction: float = 0.2,
                    elasticity: Optional[float] = None,
-                   moment_of_intertia: Optional[float] =None,
+                   moment_of_inertia: Optional[float] =None,
                    body_type: int =DYNAMIC,
                    damping: Optional[float] =None,
                    gravity: Union[pymunk.Vec2d, Tuple[float, float], Vec2] =None,
@@ -67,13 +67,14 @@ class PymunkPhysicsEngine:
                    max_vertical_velocity: int =None,
                    radius: float = 0,
                    collision_type: Optional[str] = "default",
+                   moment_of_intertia: Optional[float] = None
                    ):
         """ Add a sprite to the physics engine. 
             :param sprite: The sprite to add
             :param mass: The mass of the object. Defaults to 1
             :param friction: The friction the object has. Defaults to 0.2
             :param elasticity: How bouncy this object is. 0 is no bounce. Values of 1.0 and higher may behave badly.
-            :param moment_of_intertia: The moment of inertia, or force needed to change angular momentum. Providing infinite makes this object stuck in its rotation.
+            :param moment_of_inertia: The moment of inertia, or force needed to change angular momentum. Providing infinite makes this object stuck in its rotation.
             :param body_type: The type of the body. Defaults to Dynamic, meaning, the body can move, rotate etc. providing STATIC makes it fixed to the world.
             :param damping: See class docs
             :param gravity: See class docs
@@ -82,6 +83,7 @@ class PymunkPhysicsEngine:
             :param max_vertical_velocity: maximum velocity on the y axis
             :param radius:
             :param collision_type:
+            :param moment_of_intertia: Deprecated alias of moment_of_inertia compatible with a typo introduced in 2.6.2
         """
 
         if damping is not None:
@@ -112,12 +114,15 @@ class PymunkPhysicsEngine:
         # Get a number associated with the string of collision_type
         collision_type_id = self.collision_types.index(collision_type)
 
-        # Default to a box moment_of_intertia
-        if moment_of_intertia is None:
-            moment_of_intertia = pymunk.moment_for_box(mass, (sprite.width, sprite.height))
+        # Backwards compatibility for a typo introduced in 2.6.2
+        moment_of_inertia = moment_of_intertia or moment_of_inertia
+
+        # Default to a box moment_of_inertia
+        if moment_of_inertia is None:
+            moment_of_inertia = pymunk.moment_for_box(mass, (sprite.width, sprite.height))
 
         # Create the physics body
-        body = pymunk.Body(mass, moment_of_intertia, body_type=body_type)
+        body = pymunk.Body(mass, moment_of_inertia, body_type=body_type)
 
         # Set the body's position
         body.position = pymunk.Vec2d(sprite.center_x, sprite.center_y)
@@ -214,7 +219,7 @@ class PymunkPhysicsEngine:
                             mass=mass,
                             friction=friction,
                             elasticity=elasticity,
-                            moment_of_intertia=moment_of_intertia,
+                            moment_of_inertia=moment_of_intertia,
                             body_type=body_type,
                             damping=damping,
                             collision_type=collision_type)
