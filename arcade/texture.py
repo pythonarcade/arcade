@@ -547,16 +547,18 @@ def load_spritesheet(file_name: Union[str, Path],
     return texture_list
 
 
-def build_cache_name(*args: Any) -> str:
+def build_cache_name(*args: Any, separator: str="-") -> str:
     """
     Generate cache names from the given parameters
 
     This is mostly useful when generating textures with many parameters
 
-    :param args:
-    :return:
+    :param args: params to format
+    :param separator: separator character or string between params
+
+    :returns: Formatted cache string representing passed parameters
     """
-    return "-".join([f"{arg}" for arg in args])
+    return separator.join([f"{arg}" for arg in args])
 
 
 def make_circle_texture(diameter: int, color: Color, name: str = None) -> Texture:
