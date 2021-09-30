@@ -7,6 +7,8 @@ https://www.gamedev.net/articles/programming/general-and-gameplay-programming/sp
 
 import math
 
+from arcade.texture import build_cache_name
+
 try:
     import dataclasses
 except ModuleNotFoundError:
@@ -1295,10 +1297,29 @@ class SpriteCircle(Sprite):
     def __init__(self, radius: int, color: Color, soft: bool = False):
         super().__init__()
 
+        diameter = radius * 2
+
+        # determine the texture's cache name
         if soft:
-            self.texture = make_soft_circle_texture(radius * 2, color)
+            cache_name = build_cache_name("circle_texture_soft", diameter, color[0], color[1], color[2])
         else:
-            self.texture = make_circle_texture(radius * 2, color)
+            cache_name = build_cache_name("circle_texture", diameter, color[0], color[1], color[2], 255, 0)
+
+        # use the named texture if it was already made
+        if cache_name in load_texture.texture_cache:
+            texture = load_texture.texture_cache[cache_name]
+
+        # generate the texture if it's not in the cache
+        else:
+            if soft:
+                texture = make_soft_circle_texture(diameter, color, name=cache_name)
+            else:
+                texture = make_circle_texture(diameter, color, name=cache_name)
+
+            load_texture.texture_cache[cache_name] = texture
+
+        # apply results to the new sprite
+        self.texture = texture
         self._points = self.texture.hit_box_points
 
 
