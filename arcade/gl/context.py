@@ -11,13 +11,14 @@ from pyglet import gl
 
 from .buffer import Buffer
 from .program import Program
-from .vertex_array import Geometry, VertexArray
+from .vertex_array import Geometry
 from .framebuffer import Framebuffer, DefaultFrameBuffer
 from typing import Optional
 from .texture import Texture
 from .query import Query
 from .glsl import ShaderSource
 from .types import BufferDescription
+from .compute_shader import ComputeShader
 
 LOG = logging.getLogger(__name__)
 
@@ -646,6 +647,14 @@ class Context:
         :rtype: :py:class:`~arcade.gl.Query`
         """
         return Query(self)
+
+    def compute_shader(self, *, source: str):
+        """
+        Create a compute shader
+
+        :param str source: The glsl source
+        """
+        return ComputeShader(self, source)
 
 
 class ContextStats:

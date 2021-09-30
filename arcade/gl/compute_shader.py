@@ -2,7 +2,6 @@ from typing import TYPE_CHECKING, Tuple, Union
 from ctypes import c_char, cast, byref, POINTER, c_char_p, pointer, c_int, create_string_buffer, c_buffer
 
 from pyglet import gl
-from arcade.gl import ShaderException
 from .uniform import Uniform, UniformBlock
 
 if TYPE_CHECKING:
@@ -20,6 +19,8 @@ class ComputeShader:
         self._members = {}
         self._uniforms = dict()
         self._uniform_blocks = dict()
+
+        from arcade.gl import ShaderException
 
         # Create the program
         self._glo = gl.glCreateProgram()

@@ -6,7 +6,6 @@ import math
 from array import array
 
 import arcade
-from arcade.gl.compute_shader import ComputeShader
 from arcade.gl import BufferDescription
 
 COMPUTE_SHADER = """
@@ -73,7 +72,7 @@ void main()
     out_ball.pos.xyzw = p.xyzw;
     out_ball.vel.xyzw = v.xyzw;
 
-    vec4 c = in_ball.col.xyzw;
+    vec4 c = in_ball.col.xyzw;f
     out_ball.col.xyzw = c.xyzw;
 
     Out.balls[x] = out_ball;
@@ -89,7 +88,9 @@ class App(arcade.Window):
         self.num_balls = min(256 * 32, 16384)
         self.group_x = 256
         self.group_y = self.group_x // 256
-        self.cs = ComputeShader(self.ctx, COMPUTE_SHADER.replace("%COMPUTE_SIZE_X%", str(self.group_x)).replace("%COMPUTE_SIZE_Y%", str(self.group_y)))
+        self.cs = self.ctx.compute_shader(
+            source=COMPUTE_SHADER.replace("%COMPUTE_SIZE_X%", str(self.group_x)).replace("%COMPUTE_SIZE_Y%", str(self.group_y))
+        )
 
         # Buffers with data for the compute shader (We ping-pong render between these)
         self.ssbo_1 = self.ctx.buffer(data=array('f', self.gen_initial_data()))

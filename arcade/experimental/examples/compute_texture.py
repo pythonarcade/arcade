@@ -3,7 +3,6 @@ Redering to texture with a compute shader
 """
 
 import arcade
-from arcade.gl.compute_shader import ComputeShader
 from arcade.gl import geometry
 
 SIZE = 512, 512
@@ -34,7 +33,7 @@ class App(arcade.Window):
     def __init__(self, *args, **kwargs):
         super().__init__(*SIZE, "Compute Shader", gl_version=(4, 3))
         self.time = 0
-        self.cs = ComputeShader(self.ctx, COMPUTE_SHADER)
+        self.cs = self.ctx.compute_shader(source=COMPUTE_SHADER)
         self.texture = self.ctx.texture(SIZE, components=4)
         self.texture.filter = self.ctx.NEAREST, self.ctx.NEAREST
 
