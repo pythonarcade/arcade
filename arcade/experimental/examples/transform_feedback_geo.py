@@ -19,13 +19,10 @@ a system that is reacting to external forces in this way.
 There are no predetermined paths and they system just lives on its own.
 """
 from array import array
-import math
 import time
 import random
-import struct
 import arcade
-from arcade import window_commands
-from arcade.gl import BufferDescription, geometry
+from arcade.gl import BufferDescription
 
 # Do the math to figure out our screen dimensions
 SCREEN_WIDTH = 1920

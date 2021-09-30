@@ -20,7 +20,7 @@ import math
 import time
 import random
 import arcade
-from arcade.gl import BufferDescription, geometry
+from arcade.gl import BufferDescription
 
 # Do the math to figure out our screen dimensions
 SCREEN_WIDTH = 800
