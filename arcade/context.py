@@ -2,6 +2,7 @@
 Arcade's version of the OpenGL Context.
 Contains pre-loaded programs
 """
+from arcade.gl.compute_shader import ComputeShader
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Dict, Optional, Tuple, Union
@@ -345,6 +346,16 @@ class ArcadeContext(Context):
             tess_evaluation_shader=tess_evaluation_src,
             defines=defines,
         )
+
+    def load_compute_shader(self, path: Union[str, Path]) -> ComputeShader:
+        """
+        Loads a compute shader.
+
+        :param Union[str,pathlib.Path] path: Path to texture
+        """
+        from arcade.resources import resolve_resource_path
+        path = resolve_resource_path(path)
+        return self.compute_shader(open(str(path).read()))
 
     def load_texture(
         self,
