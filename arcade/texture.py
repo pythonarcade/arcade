@@ -611,7 +611,8 @@ def make_soft_circle_texture(diameter: int, color: Color, center_alpha: int = 25
     return Texture(name, img)
 
 
-def make_soft_square_texture(size: int, color: Color, center_alpha: int = 255, outer_alpha: int = 0) -> Texture:
+def make_soft_square_texture(size: int, color: Color, center_alpha: int = 255, outer_alpha: int = 0,
+                             name: str = None) -> Texture:
     """
     Return a :class:`Texture` of a square with the given diameter and color, fading out at its edges.
 
@@ -619,9 +620,12 @@ def make_soft_square_texture(size: int, color: Color, center_alpha: int = 255, o
     :param Color color: Color of the square.
     :param int center_alpha: Alpha value of the square at its center.
     :param int outer_alpha: Alpha value of the square at its edges.
+    :param str name: Custom or pre-chosen name for this texture
 
     :returns: New :class:`Texture` object.
     """
+    name = name or build_cache_name("gradientsquare", size, color, center_alpha,
+                                   outer_alpha)  # name must be unique for caching
 
     bg_color = (0, 0, 0, 0)  # fully transparent
     img = PIL.Image.new("RGBA", (size, size), bg_color)
@@ -632,8 +636,6 @@ def make_soft_square_texture(size: int, color: Color, center_alpha: int = 255, o
         clr = (color[0], color[1], color[2], alpha)
         # draw.ellipse((center-radius, center-radius, center+radius, center+radius), fill=clr)
         draw.rectangle((cur_size, cur_size, size - cur_size, size - cur_size), clr, None)
-    name = "{}:{}:{}:{}:{}".format("gradientsquare", size, color, center_alpha,
-                                   outer_alpha)  # name must be unique for caching
     return Texture(name, img)
 
 
