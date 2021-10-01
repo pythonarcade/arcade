@@ -82,7 +82,7 @@ void main()
 class App(arcade.Window):
 
     def __init__(self, *args, **kwargs):
-        super().__init__(720, 720, "Compute Shader", gl_version=(4, 3), resizable=True)
+        super().__init__(720, 720, "Compute Shader", gl_version=(4, 3), resizable=True, vsync=True)
         self.time = 0
         self.frame_time = 0
         self.num_balls = min(256 * 32, 16384)
@@ -213,7 +213,7 @@ class App(arcade.Window):
         # Swap the buffers around (we are ping-ping rendering between two buffers)
         self.ssbo_1, self.ssbo_2 = self.ssbo_2, self.ssbo_1
         # Swap what geometry we draw
-        self.vao_1, self.vao_2, self.vao_2, self.vao_1
+        self.vao_1, self.vao_2 = self.vao_2, self.vao_1
 
     def on_update(self, delta_time: float):
         self.time += delta_time
