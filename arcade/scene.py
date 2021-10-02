@@ -229,7 +229,7 @@ class Scene:
             key: val for key, val in self.name_mapping.items() if val != sprite_list
         }
 
-    def update(self, names: Optional[List[str]] = None) -> None:
+    def update(self, names: Optional[List[str]] = None, delta_time: float = 1 / 60) -> None:
         """
         Used to update SpriteLists contained in the scene.
 
@@ -241,11 +241,11 @@ class Scene:
         """
         if names:
             for name in names:
-                self.name_mapping[name].update()
+                self.name_mapping[name].update(delta_time)
             return
 
         for sprite_list in self.sprite_lists:
-            sprite_list.update()
+            sprite_list.update(delta_time)
 
     def update_animation(
         self, delta_time: float, names: Optional[List[str]] = None
