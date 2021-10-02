@@ -90,3 +90,16 @@ def test_can_shuffle():
         assert spritelist._sprite_buffer_slots == 10
         assert spritelist._sprite_index_slots == 10
         assert len(spritelist) == 10
+
+
+def test_spritelist_lazy():
+    """Test lazy creation of spritelist"""
+    spritelist = arcade.SpriteList(lazy=True, use_spatial_hash=True)
+    assert spritelist._sprite_pos_buf == None
+    assert spritelist._geometry == None
+    for x in range(100):
+        spritelist.append(
+            arcade.Sprite(":resources:images/items/coinGold.png", center_x=x * 64)
+        )
+    assert len(spritelist) == 100
+    assert spritelist.spatial_hash
