@@ -3,8 +3,6 @@ from os import path
 
 from setuptools import find_namespace_packages, setup
 
-required_python_version = ">=3.6"
-
 exec(open("arcade/version.py").read())
 
 
