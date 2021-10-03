@@ -51,6 +51,13 @@ FACE_DOWN = 4
 
 class PyMunk:
     """Object used to hold pymunk info for a sprite."""
+    __slots__ = (
+        "damping",
+        "gravity",
+        "max_velocity",
+        "max_horizontal_velocity",
+        "max_vertical_velocity",
+    )
 
     def __init__(self):
         """Set up pymunk object"""
@@ -136,8 +143,6 @@ class Sprite:
         that encompass the image. If you are creating a ramp or making better \
         hit-boxes, you can custom-set these.
         :position: A list with the (x, y) of where the sprite is.
-        :repeat_count_x: Unused
-        :repeat_count_y: Unused
         :right: Set/query the sprite location by using the right coordinate. \
         This will be the 'y=x' of the right of the sprite.
         :sprite_lists: List of all the sprite lists this sprite is part of.
@@ -152,8 +157,6 @@ class Sprite:
 
     It is common to over-ride the `update` method and provide mechanics on
     movement or other sprite updates.
-
-
     """
 
     def __init__(
@@ -166,8 +169,8 @@ class Sprite:
         image_height: float = 0,
         center_x: float = 0,
         center_y: float = 0,
-        repeat_count_x: int = 1,
-        repeat_count_y: int = 1,
+        repeat_count_x: int = 1,  # Unused
+        repeat_count_y: int = 1,  # Unused
         flipped_horizontally: bool = False,
         flipped_vertically: bool = False,
         flipped_diagonally: bool = False,
@@ -177,46 +180,52 @@ class Sprite:
         angle: float = 0,
     ):
         """ Constructor """
+        # Position, size and orientation propreties
         self._width: float = 0.0
         self._height: float = 0.0
         self._scale: float = scale
-        self.force = [0, 0]
-        self._color: RGB = (255, 255, 255)
-        self._alpha: int = 255
-        self.repeat_count_x = repeat_count_x
-        self.repeat_count_y = repeat_count_y
-        self._collision_radius: Optional[float] = None
+        self._position: Point = (center_x, center_y)
+        self._angle = angle
+        self.velocity = [0.0, 0.0]
+        self.change_angle: float = 0.0
 
-        self.guid: Optional[str] = None
-        self.properties: Dict[str, Any] = {}
-
-        self.boundary_left: Optional[float] = None
-        self.boundary_right: Optional[float] = None
-        self.boundary_top: Optional[float] = None
-        self.boundary_bottom: Optional[float] = None
-
-        self._texture: Optional[Texture] = None
-        self.textures = []
-        self.cur_texture_index: int = 0
-
+        # Hit box and collision propret
         self._points: Optional[PointList] = None
         self._point_list_cache: Optional[PointList] = None
         self._hit_box_shape: Optional[ShapeElementList] = None
         self._hit_box_algorithm = hit_box_algorithm
         self._hit_box_detail = hit_box_detail
+        self._collision_radius: Optional[float] = None
+
+        # Color
+        self._color: RGB = (255, 255, 255)
+        self._alpha: int = 255
+
+        # Custom sprite properties
+        self._properties: Optional[Dict[str, Any]] = None
+
+        # Boundaries for moving platforms in tilemaps
+        self.boundary_left: Optional[float] = None
+        self.boundary_right: Optional[float] = None
+        self.boundary_top: Optional[float] = None
+        self.boundary_bottom: Optional[float] = None
+
+        # Texture propreties
+        self._texture: Optional[Texture] = None
+        self.textures = None
+        self.cur_texture_index: int = 0
 
         self.sprite_lists: List["SpriteList"] = []
         self.physics_engines: List[Any] = []
-        self._sprite_list: Optional["SpriteList"] = None  # # Used for Sprite.draw()
+        self._sprite_list: Optional["SpriteList"] = None  # Used for Sprite.draw()
 
-        self._position: Point = (center_x, center_y)
-        self._angle = angle
+        self._texture_transform = None
+        # Pymunk specific properties
+        self.pymunk = None
+        self.force = [0, 0]
 
-        self.velocity = [0.0, 0.0]
-        self.change_angle: float = 0.0
-
-        self._texture_transform = Mat3()
-        self.pymunk = PyMunk()
+        # Debug propreties
+        self.guid: Optional[str] = None
 
         # Sanity check values
         if image_width < 0:
@@ -242,8 +251,7 @@ class Sprite:
             self._texture = texture
             self._textures = [texture]
             self._width, self._height = self._texture.size
-
-        if filename is not None:
+        elif filename is not None:
             self._texture = load_texture(
                 filename,
                 image_x,
@@ -263,6 +271,35 @@ class Sprite:
 
         if self._texture and not self._points:
             self._points = self._texture.hit_box_points
+
+    @property
+    def properties(self) -> Dict[str, Any]:
+        """
+        Get or set custom sprite properties.
+
+        :rtype: Dict[str, Any]
+        """
+        if self._properties is None:
+            self._properties = {}
+        return self._properties
+
+    @properties.setter
+    def properties(self, value):
+        self._properties = value
+
+    @property
+    def pymunk(self) -> PyMunk:
+        """
+        Get or set the Pymunk property objects.
+        This is used by the pymunk physics engine.
+        """
+        if self._pymunk is None:
+            self._pymunk = PyMunk()
+        return self._pymunk
+    
+    @pymunk.setter
+    def pymunk(self, value):
+        self._pymunk = value
 
     def append_texture(self, texture: Texture):
         """
@@ -787,6 +824,8 @@ class Sprite:
     texture = property(_get_texture, _set_texture2)
 
     def _get_texture_transform(self) -> Mat3:
+        if self._texture_transform is None:
+            self._texture_transform = Mat3()
         return self._texture_transform
 
     def _set_texture_transform(self, m: Mat3):
@@ -1050,8 +1089,8 @@ class AnimatedTimeBasedSprite(Sprite):
         image_height: float = 0,
         center_x: float = 0,
         center_y: float = 0,
-        _repeat_count_x=1,
-        _repeat_count_y=1,
+        _repeat_count_x=1,  # Unused
+        _repeat_count_y=1,  # Unused
     ):
 
         super().__init__(
