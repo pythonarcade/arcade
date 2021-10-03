@@ -306,7 +306,7 @@ def check_for_collision_with_list(
 
 
 def check_for_collision_with_lists(sprite: Sprite,
-                                   sprite_lists: List[SpriteList]) -> List[Sprite]:
+                                   sprite_lists: Iterable[SpriteList]) -> List[Sprite]:
     """
     Check for a collision between a Sprite, and a list of SpriteLists.
     :param Sprite sprite: Sprite to check
@@ -316,8 +316,6 @@ def check_for_collision_with_lists(sprite: Sprite,
     """
     if not isinstance(sprite, Sprite):
         raise TypeError(f"Parameter 1 is not an instance of the Sprite class, it is an instance of {type(sprite)}.")
-    if not isinstance(sprite_lists, list):
-        raise TypeError(f"Parameter 2 is a {type(sprite_lists)} instead of expected List[SpriteList].")
 
     sprites = []
 
