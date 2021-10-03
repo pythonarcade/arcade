@@ -967,12 +967,12 @@ class UIInputText(UIWidget):
                          size_hint_max=size_hint_max)
 
         self._active = False
-        self._text_color = text_color
+        self._text_color = text_color if len(text_color) == 4 else (*text_color, 255)
 
         self.doc: AbstractDocument = pyglet.text.decode_text(text)
         self.doc.set_style(0, len(text), dict(font_name=font_name,
                                               font_size=font_size,
-                                              color=text_color))
+                                              color=self._text_color))
 
         self.layout = pyglet.text.layout.IncrementalTextLayout(self.doc, width, height, multiline=multiline)
         self.caret = _Arcade_Caret(self.layout, color=(0, 0, 0))
