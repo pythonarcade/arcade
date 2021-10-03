@@ -69,7 +69,10 @@ class Scene:
 
         :param str key: The name of the 'SpriteList' to retreive.
         """
-        return self.name_mapping[key]
+        if key in self.name_mapping:
+            return self.name_mapping[key]
+
+        raise KeyError(f"Scene does not contain a layer named: {key}")
 
     def add_sprite(self, name: str, sprite: Sprite) -> None:
         """
