@@ -24,6 +24,7 @@ UNRELEASED
 * Added ``run()`` shortcut in ``arcade.Window```. Usage: `MyWindow().run()`
 * Various docstring improvements
 * Bug: Removed a lingering debug key ``F12`` that showed the contents of the global texture atlas
+* UIInputText now supports both RGB and RGBA text color
 
 Version 2.6.3
 -------------
