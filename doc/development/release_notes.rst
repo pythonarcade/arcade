@@ -10,6 +10,9 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
 UNRELEASED
 ----------
 
+* SpriteList now has a ``lazy`` (bool) parameter causing it not create internal OpenGL resources
+  until the first draw call or until ``spriteList.initialize()`` is called. This means that
+  sprite lists and sprites can now be created threads.
 * Optimization: PhysicsEnginePlatformer now separates moving platforms and static platforms. New
   arguments were added to the initializer to supply them separately. This makes collision checking
   with huge maps much more performant. Collision checking for static sprites goes from O(N) to O(1).
