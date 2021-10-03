@@ -17,6 +17,7 @@ UNRELEASED
   arguments were added to the initializer to supply them separately. This makes collision checking
   with huge maps much more performant. Collision checking for static sprites goes from O(N) to O(1).
   500k+ static sprites is no problem.
+* Optimization: Sprites should now take ~15 less memory and be ~15% faster to create
 * Added support for compute shaders. We support writing to textures and SSBOs (buffers).
   Examples can be found in ``arcade/experimental/examples``
 * Fixed a problem causing Geometry / VertexArray to ignore ``POINTS`` primitive mode when this is set as default.
