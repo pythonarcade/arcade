@@ -4,10 +4,13 @@ Physics engines for top-down or platformers.
 # pylint: disable=too-many-arguments, too-many-locals, too-few-public-methods
 
 import math
-from typing import List, Optional, Union
+from typing import Iterable, List, Optional, Union
+
+from shapely.geometry import Polygon
 
 from arcade import (Sprite, SpriteList, check_for_collision,
                     check_for_collision_with_lists, get_distance)
+
 
 
 def _circular_check(player: Sprite, walls: List[SpriteList]):
@@ -218,7 +221,7 @@ class PhysicsEngineSimple:
     :param SpriteList walls: The sprites it can't move through
     """
 
-    def __init__(self, player_sprite: Sprite, walls: Union[SpriteList, List[SpriteList]]):
+    def __init__(self, player_sprite: Sprite, walls: Union[Sprite, SpriteList, Iterable[SpriteList]]):
         """
         Create a simple physics engine.
         """
@@ -226,10 +229,12 @@ class PhysicsEngineSimple:
 
         if isinstance(walls, SpriteList):
             self.walls = [walls]
-        elif isinstance(walls, list):
-            self.walls = walls
+        elif isinstance(walls, Sprite):
+            new = SpriteList()
+            new.append(walls)
+            self.walls = [new]
         else:
-            raise TypeError(f"Parameter 2 is a {type(walls)}, expected a SpriteList or List of SpriteLists")
+            self.walls = walls
         
         self.player_sprite = player_sprite
 
@@ -257,32 +262,50 @@ class PhysicsEnginePlatformer:
 
     def __init__(self,
                  player_sprite: Sprite,
-                 platforms: Union[Sprite, List[SpriteList]],
+                 platforms: Union[Sprite, SpriteList, Iterable[SpriteList]],
                  gravity_constant: float = 0.5,
-                 ladders: Optional[Union[Sprite, List[SpriteList]]] = None,
+                 ladders: Optional[Union[Sprite, SpriteList, Iterable[SpriteList]]] = None,
+                 moving_platforms: Optional[Union[Sprite, SpriteList, Iterable[SpriteList]]] = None,
                  ):
         """
         Create a physics engine for a platformer.
         """
-        self.ladders: Optional[List[SpriteList]]
-        self.platforms: List[SpriteList]
+        self.ladders: Optional[Iterable[SpriteList]]
+        self.moving_platforms: Iterable[SpriteList]
+        self.platforms: Iterable[SpriteList]
 
         if ladders:
             if isinstance(ladders, SpriteList):
                 self.ladders = [ladders]
-            elif isinstance(ladders, list):
-                self.ladders = ladders
+            elif isinstance(ladders, Sprite):
+                new = SpriteList()
+                new.append(ladders)
+                self.ladders = [new]
             else:
-                raise TypeError(f"Parameter 4 is a {type(ladders)}, expected a SpriteList or List[SpriteList]")
+                self.ladders = ladders
         else:
             self.ladders = None
 
+        if moving_platforms:
+            if isinstance(moving_platforms, SpriteList):
+                self.moving_platforms = [moving_platforms]
+            elif isinstance(moving_platforms, Sprite):
+                new = SpriteList()
+                new.append(moving_platforms)
+                self.moving_platforms = [new]
+            else:
+                self.moving_platforms = moving_platforms
+        else:
+            self.moving_platforms = []
+
         if isinstance(platforms, SpriteList):
             self.platforms = [platforms]
-        elif isinstance(platforms, list):
-            self.platforms = platforms
+        elif isinstance(platforms, Sprite):
+            new = SpriteList()
+            new.append(platforms)
+            self.platforms = [new]
         else:
-            raise TypeError(f"Parameter 2 is a {type(platforms)}, expected a SpriteList or List[SpriteList]")
+            self.platforms = platforms
              
         self.player_sprite: Sprite = player_sprite
         self.gravity_constant: float = gravity_constant
@@ -313,7 +336,7 @@ class PhysicsEnginePlatformer:
         self.player_sprite.center_y -= y_distance
 
         # Check for wall hit
-        hit_list = check_for_collision_with_lists(self.player_sprite, self.platforms)
+        hit_list = check_for_collision_with_lists(self.player_sprite, self.platforms + self.moving_platforms)
         
         self.player_sprite.center_y += y_distance
 
@@ -379,30 +402,20 @@ class PhysicsEnginePlatformer:
 
         # print(f"Spot B ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
 
-        complete_hit_list = _move_sprite(self.player_sprite, self.platforms, ramp_up=True)
+        complete_hit_list = _move_sprite(self.player_sprite, self.platforms + self.moving_platforms, ramp_up=True)
 
-        for platform_list in self.platforms:
-            for platform in self._select_sprites(platform_list, self.player_sprite):
+        for platform_list in self.moving_platforms:
+            for platform in platform_list:
                 if platform.change_x != 0 or platform.change_y != 0:
-                    platform.center_x += platform.change_x
-
-                    if platform.boundary_left is not None \
-                            and platform.left <= platform.boundary_left:
+                    if platform.boundary_left and platform.left <= platform.boundary_left:
                         platform.left = platform.boundary_left
                         if platform.change_x < 0:
                             platform.change_x *= -1
 
-                    if platform.boundary_right is not None \
-                            and platform.right >= platform.boundary_right:
+                    if platform.boundary_right and platform.right >= platform.boundary_right:
                         platform.right = platform.boundary_right
                         if platform.change_x > 0:
                             platform.change_x *= -1
-
-                    if check_for_collision(self.player_sprite, platform):
-                        if platform.change_x < 0:
-                            self.player_sprite.right = platform.left
-                        if platform.change_x > 0:
-                            self.player_sprite.left = platform.right
 
                     platform.center_y += platform.change_y
 
@@ -424,12 +437,3 @@ class PhysicsEnginePlatformer:
         # print(f"Update - {end_time - start_time:7.4f}\n")
 
         return complete_hit_list
-
-    def _select_sprites(self, sprites: Union[Sprite, List[SpriteList]], sprite: Sprite):
-        """Attempts to reduce the number of sprites to check"""
-        # O(1) : Returns the nearby sprites using spatial hash
-        if isinstance(sprites, SpriteList) and sprites.use_spatial_hash:
-            return sprites.spatial_hash.get_objects_for_box(sprite)
-
-        # O(N) : Otherwise we're just have to interate everything
-        return sprites
