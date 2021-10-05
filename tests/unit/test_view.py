@@ -3,8 +3,7 @@ from unittest.mock import Mock
 from arcade import Window, View
 
 
-def test_on_show_view_called():
-    window = Window()
+def test_on_show_view_called(window):
     view = View(window)
     show_mock = Mock()
     view.on_show_view = show_mock
@@ -14,8 +13,7 @@ def test_on_show_view_called():
     show_mock.assert_called_once()
 
 
-def test_on_hide_view_called():
-    window = Window()
+def test_on_hide_view_called(window):
     view1 = View(window)
     view2 = View(window)
     window.show_view(view1)
