@@ -597,7 +597,7 @@ def make_soft_circle_texture(diameter: int, color: Color, center_alpha: int = 25
     """
     # TODO: create a rectangle and circle (and triangle? and arbitrary poly where client passes
     # in list of points?) particle?
-    name = name or build_cache_name("soft_circle_texture", diameter, color[0], color[1], color[3], center_alpha,
+    name = name or build_cache_name("soft_circle_texture", diameter, color[0], color[1], color[2], center_alpha,
                                     outer_alpha)  # name must be unique for caching
 
     bg_color = (0, 0, 0, 0)  # fully transparent
