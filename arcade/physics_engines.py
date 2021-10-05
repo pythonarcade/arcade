@@ -261,20 +261,20 @@ class PhysicsEnginePlatformer:
     ``change_x`` or ``change_y`` on it.
 
     :param Sprite player_sprite: The moving sprite
-    :param Optional[Union[Sprite, SpriteList, Iterable[SpriteList]]] platforms: Sprites the player can't move through.
+    :param Optional[Union[SpriteList, Iterable[SpriteList]]] platforms: Sprites the player can't move through.
         This value should only be used for moving Sprites. Static sprites should be sent to the ``walls`` parameter.
     :param float gravity_constant: Downward acceleration per frame
-    :param Optional[Union[Sprite, SpriteList, Iterable[SpriteList]]] ladders: Ladders the user can climb on
-    :param Optional[Union[Sprite, SpriteList, Iterable[SpriteList]]] walls: Sprites the player can't move through.
+    :param Optional[Union[SpriteList, Iterable[SpriteList]]] ladders: Ladders the user can climb on
+    :param Optional[Union[SpriteList, Iterable[SpriteList]]] walls: Sprites the player can't move through.
         This value should only be used for static Sprites. Moving sprites should be sent to the ``platforms`` parameter.
     """
 
     def __init__(self,
                  player_sprite: Sprite,
-                 platforms: Optional[Union[Sprite, SpriteList, Iterable[SpriteList]]] = None,
+                 platforms: Optional[Union[SpriteList, Iterable[SpriteList]]] = None,
                  gravity_constant: float = 0.5,
-                 ladders: Optional[Union[Sprite, SpriteList, Iterable[SpriteList]]] = None,
-                 walls: Optional[Union[Sprite, SpriteList, Iterable[SpriteList]]] = None,
+                 ladders: Optional[Union[SpriteList, Iterable[SpriteList]]] = None,
+                 walls: Optional[Union[SpriteList, Iterable[SpriteList]]] = None,
                  ):
         """
         Create a physics engine for a platformer.
@@ -286,10 +286,6 @@ class PhysicsEnginePlatformer:
         if ladders:
             if isinstance(ladders, SpriteList):
                 self.ladders = [ladders]
-            elif isinstance(ladders, Sprite):
-                new = SpriteList()
-                new.append(ladders)
-                self.ladders = [new]
             else:
                 self.ladders = ladders
         else:
@@ -298,10 +294,6 @@ class PhysicsEnginePlatformer:
         if platforms:
             if isinstance(platforms, SpriteList):
                 self.platforms = [platforms]
-            elif isinstance(platforms, Sprite):
-                new = SpriteList()
-                new.append(platforms)
-                self.platforms = [new]
             else:
                 self.platforms = platforms
         else:
