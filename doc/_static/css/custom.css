@@ -27,7 +27,7 @@ li p {
     font-family: 'Consolas', 'courier new', 'courier', monospace;
     font-size: 15px;
 }
-#how-to-example-code div {
+#how-to-example-code section {
 	display: flex;
 	flex-direction: row;
 	flex-wrap: wrap;
