@@ -4,7 +4,6 @@ This module is used for calculating hit boxes
 import pymunk
 
 from PIL import Image
-from arcade import NamedPoint
 from arcade import Point
 from typing import List, Union, Tuple
 from pymunk import autogeometry
