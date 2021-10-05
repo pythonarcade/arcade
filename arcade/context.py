@@ -355,7 +355,7 @@ class ArcadeContext(Context):
         """
         from arcade.resources import resolve_resource_path
         path = resolve_resource_path(path)
-        return self.compute_shader(open(str(path).read()))
+        return self.compute_shader(source=path.read_text())
 
     def load_texture(
         self,
