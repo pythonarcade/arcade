@@ -32,7 +32,7 @@ jobs:
           python -m pip install -U pip wheel setuptools mypy flake8
       - name: wheel
         run: |
-          python setup.py bdist_wheel
+          python -m pip install -e .
       - name: code-inspection
         run: | 
           mypy arcade
