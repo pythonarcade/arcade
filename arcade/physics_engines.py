@@ -251,13 +251,22 @@ class PhysicsEngineSimple:
 class PhysicsEnginePlatformer:
     """
     Simplistic physics engine for use in a platformer. It is easier to get
-    started with this engine than more sophisticated engines like PyMunk. Note, it
-    does not currently handle rotation.
+    started with this engine than more sophisticated engines like PyMunk.
+
+    **Note:** Sending static sprites to the ``walls`` parameter and moving sprites to the ``platforms`` parameter
+    will have very extreme benefits to performance.
+
+    **Note:** This engine will automatically move any Sprites sent to the ``platforms`` parameter between a ``boundary_top``
+    and ``boundary_bottom`` or a ``boundary_left`` and ``boundary_right`` attribute of the Sprite. You need only set an initial
+    ``change_x`` or ``change_y`` on it.
 
     :param Sprite player_sprite: The moving sprite
-    :param SpriteList platforms: The sprites it can't move through
+    :param Optional[Union[Sprite, SpriteList, Iterable[SpriteList]]] platforms: Sprites the player can't move through.
+        This value should only be used for moving Sprites. Static sprites should be sent to the ``walls`` parameter.
     :param float gravity_constant: Downward acceleration per frame
-    :param SpriteList ladders: Ladders the user can climb on
+    :param Optional[Union[Sprite, SpriteList, Iterable[SpriteList]]] ladders: Ladders the user can climb on
+    :param Optional[Union[Sprite, SpriteList, Iterable[SpriteList]]] walls: Sprites the player can't move through.
+        This value should only be used for static Sprites. Moving sprites should be sent to the ``platforms`` parameter.
     """
 
     def __init__(self,
