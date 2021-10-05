@@ -262,17 +262,17 @@ class PhysicsEnginePlatformer:
 
     def __init__(self,
                  player_sprite: Sprite,
-                 platforms: Union[Sprite, SpriteList, Iterable[SpriteList]],
+                 platforms: Optional[Union[Sprite, SpriteList, Iterable[SpriteList]]] = None,
                  gravity_constant: float = 0.5,
                  ladders: Optional[Union[Sprite, SpriteList, Iterable[SpriteList]]] = None,
-                 moving_platforms: Optional[Union[Sprite, SpriteList, Iterable[SpriteList]]] = None,
+                 walls: Optional[Union[Sprite, SpriteList, Iterable[SpriteList]]] = None,
                  ):
         """
         Create a physics engine for a platformer.
         """
         self.ladders: Optional[Iterable[SpriteList]]
-        self.moving_platforms: Iterable[SpriteList]
         self.platforms: Iterable[SpriteList]
+        self.walls: Iterable[SpriteList]
 
         if ladders:
             if isinstance(ladders, SpriteList):
@@ -286,26 +286,29 @@ class PhysicsEnginePlatformer:
         else:
             self.ladders = None
 
-        if moving_platforms:
-            if isinstance(moving_platforms, SpriteList):
-                self.moving_platforms = [moving_platforms]
-            elif isinstance(moving_platforms, Sprite):
+        if platforms:
+            if isinstance(platforms, SpriteList):
+                self.platforms = [platforms]
+            elif isinstance(platforms, Sprite):
                 new = SpriteList()
-                new.append(moving_platforms)
-                self.moving_platforms = [new]
+                new.append(platforms)
+                self.platforms = [new]
             else:
-                self.moving_platforms = moving_platforms
+                self.platforms = platforms
         else:
-            self.moving_platforms = []
+            self.platforms = []
 
-        if isinstance(platforms, SpriteList):
-            self.platforms = [platforms]
-        elif isinstance(platforms, Sprite):
-            new = SpriteList()
-            new.append(platforms)
-            self.platforms = [new]
+        if walls:
+            if isinstance(walls, SpriteList):
+                self.walls = [walls]
+            elif isinstance(walls, Sprite):
+                new = SpriteList()
+                new.append(walls)
+                self.walls = [new]
+            else:
+                self.walls = walls
         else:
-            self.platforms = platforms
+            self.walls = []
              
         self.player_sprite: Sprite = player_sprite
         self.gravity_constant: float = gravity_constant
@@ -336,7 +339,7 @@ class PhysicsEnginePlatformer:
         self.player_sprite.center_y -= y_distance
 
         # Check for wall hit
-        hit_list = check_for_collision_with_lists(self.player_sprite, self.platforms + self.moving_platforms)
+        hit_list = check_for_collision_with_lists(self.player_sprite, self.walls + self.platforms)
         
         self.player_sprite.center_y += y_distance
 
@@ -402,9 +405,9 @@ class PhysicsEnginePlatformer:
 
         # print(f"Spot B ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
 
-        complete_hit_list = _move_sprite(self.player_sprite, self.platforms + self.moving_platforms, ramp_up=True)
+        complete_hit_list = _move_sprite(self.player_sprite, self.walls + self.platforms, ramp_up=True)
 
-        for platform_list in self.moving_platforms:
+        for platform_list in self.platforms:
             for platform in platform_list:
                 if platform.change_x != 0 or platform.change_y != 0:
                     if platform.boundary_left and platform.left <= platform.boundary_left:
