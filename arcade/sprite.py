@@ -214,7 +214,7 @@ class Sprite:
 
         # Texture propreties
         self._texture: Optional[Texture] = None
-        self.textures = None
+        self.textures: List[Texture] = []
         self.cur_texture_index: int = 0
 
         self.sprite_lists: List["SpriteList"] = []
@@ -223,7 +223,7 @@ class Sprite:
 
         self._texture_transform = None
         # Pymunk specific properties
-        self.pymunk: Optional[PyMunk] = None
+        self._pymunk: Optional[PyMunk] = None
         self.force = [0, 0]
 
         # Debug propreties
@@ -1319,14 +1319,14 @@ class SpriteSolidColor(Sprite):
         cache_name = build_cache_name("Solid", width, height, color[0], color[1], color[2])
 
         # use existing texture if it exists
-        if cache_name in load_texture.texture_cache:
-            texture = load_texture.texture_cache[cache_name]
+        if cache_name in load_texture.texture_cache:  # type: ignore
+            texture = load_texture.texture_cache[cache_name]  # type: ignore
 
         # otherwise, generate a filler sprite and add it to the cache
         else:
             image = PIL.Image.new("RGBA", (width, height), color)
             texture = Texture(cache_name, image)
-            load_texture.texture_cache[cache_name] = texture
+            load_texture.texture_cache[cache_name] = texture  # type: ignore
 
         # apply chosen texture to the current sprite
         self.texture = texture
@@ -1357,8 +1357,8 @@ class SpriteCircle(Sprite):
             cache_name = build_cache_name("circle_texture", diameter, color[0], color[1], color[2], 255, 0)
 
         # use the named texture if it was already made
-        if cache_name in load_texture.texture_cache:
-            texture = load_texture.texture_cache[cache_name]
+        if cache_name in load_texture.texture_cache:  # type: ignore
+            texture = load_texture.texture_cache[cache_name]  # type: ignore
 
         # generate the texture if it's not in the cache
         else:
@@ -1367,7 +1367,7 @@ class SpriteCircle(Sprite):
             else:
                 texture = make_circle_texture(diameter, color, name=cache_name)
 
-            load_texture.texture_cache[cache_name] = texture
+            load_texture.texture_cache[cache_name] = texture  # type: ignore
 
         # apply results to the new sprite
         self.texture = texture

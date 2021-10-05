@@ -289,7 +289,7 @@ def check_for_collision_with_list(
         sprite_list_to_check = sprite_list.spatial_hash.get_objects_for_box(sprite)
         # checks_saved = len(sprite_list) - len(sprite_list_to_check)
     else:
-        sprite_list_to_check = sprite_list
+        sprite_list_to_check = sprite_list  # type: ignore
 
     # print(len(sprite_list_to_check.sprite_list))
     return [

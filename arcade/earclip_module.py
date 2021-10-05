@@ -3,11 +3,11 @@
 from: https://github.com/linuxlewis/tripy/blob/master/tripy.py
 """
 
-from arcade import NamedPoint, Point
+from arcade import NamedPoint, Point, PointList
 from typing import List, Tuple, Union
 
 
-def earclip(polygon: List[Point]) -> List[Tuple[Tuple[float, float], Tuple[float, float], Tuple[float, float]]]:
+def earclip(polygon: PointList) -> List[Tuple[Tuple[float, float], Tuple[float, float], Tuple[float, float]]]:
     """
     Simple earclipping algorithm for a given polygon p.
     polygon is expected to be an array of 2-tuples of the cartesian points of the polygon

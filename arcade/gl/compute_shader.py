@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Tuple, Union
+from typing import TYPE_CHECKING, Any, Dict, Tuple, Union
 from ctypes import c_char, cast, byref, POINTER, c_char_p, pointer, c_int, create_string_buffer, c_buffer
 
 from pyglet import gl
@@ -16,9 +16,8 @@ class ComputeShader:
     def __init__(self, ctx: "Context", glsl_source: str) -> None:
         self._ctx = ctx
         self._source = glsl_source
-        self._members = {}
-        self._uniforms = dict()
-        self._uniform_blocks = dict()
+        self._uniforms: Dict[str, Uniform] = dict()
+        self._uniform_blocks: Dict[str, UniformBlock] = dict()
 
         from arcade.gl import ShaderException
 
