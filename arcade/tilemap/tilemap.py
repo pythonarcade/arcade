@@ -522,7 +522,7 @@ class TileMap:
                         )
                         texture = None  # type: ignore
 
-                    key_frame = AnimationKeyframe(
+                    key_frame = AnimationKeyframe(  # type: ignore
                         frame.tile_id, frame.duration, texture
                     )
                     key_frame_list.append(key_frame)

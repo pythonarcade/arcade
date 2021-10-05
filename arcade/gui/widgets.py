@@ -444,7 +444,7 @@ class UIInteractiveWidget(UIWidget):
             self.pressed = False
             if self.rect.collide_with_point(event.x, event.y):
                 # Dispatch new on_click event, source is this widget itself
-                self.dispatch_event("on_event", UIOnClickEvent(self, event.x, event.y))
+                self.dispatch_event("on_event", UIOnClickEvent(self, event.x, event.y))  # type: ignore
                 return EVENT_HANDLED
 
         if isinstance(event, UIOnClickEvent) and self.rect.collide_with_point(event.x, event.y):
