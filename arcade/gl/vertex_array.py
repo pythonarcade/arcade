@@ -420,7 +420,7 @@ class Geometry:
                 if mode not in [self._ctx.LINES_ADJACENCY, self._ctx.LINE_STRIP_ADJACENCY]:
                     raise ValueError("Geometry shader expects LINES_ADJACENCY or LINE_STRIP_ADJACENCY as input")
             if program.geometry_input == self._ctx.TRIANGLES:
-                if mode not in [self._ctx.GL_TRIANGLES, self._ctx.TRIANGLE_STRIP, self._ctx.TRIANGLE_FAN]:
+                if mode not in [self._ctx.TRIANGLES, self._ctx.TRIANGLE_STRIP, self._ctx.TRIANGLE_FAN]:
                     raise ValueError("Geometry shader expects GL_TRIANGLES, GL_TRIANGLE_STRIP or GL_TRIANGLE_FAN as input")
             if program.geometry_input == self._ctx.TRIANGLES_ADJACENCY:
                 if mode not in [self._ctx.TRIANGLES_ADJACENCY, self._ctx.TRIANGLE_STRIP_ADJACENCY]:
