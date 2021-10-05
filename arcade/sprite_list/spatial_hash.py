@@ -6,7 +6,6 @@ from typing import (
     Optional,
     Set,
     Tuple,
-    TYPE_CHECKING,
 )
 
 from arcade import Sprite

@@ -156,7 +156,7 @@ class SpriteList:
         self.ctx: ArcadeContext = get_window().ctx
         self.program = self.ctx.sprite_list_program_cull
         self._atlas: TextureAtlas = (
-                getattr(self, "_atlas", None) or self.ctx.default_atlas
+            getattr(self, "_atlas", None) or self.ctx.default_atlas
         )
 
         # Buffers for each sprite attribute (read by shader) with initial capacity
@@ -283,7 +283,7 @@ class SpriteList:
         # Manually remove the spritelist from all sprites
         #    We don't want lingering references in sprites
         # Clear the slot_idx and slot info
-        raise NotImplemented
+        raise NotImplementedError()
 
     def pop(self, index: int = -1) -> Sprite:
         """
@@ -797,8 +797,8 @@ class SpriteList:
                        `gl.GL_NEAREST` to avoid smoothing.
         :param pixelated: ``True`` for pixelated and ``False`` for smooth interpolation.
                           Shortcut for setting filter=GL_NEAREST.
-        :param blend_function: Optional parameter to set the OpenGL blend function used for drawing the sprite list, such as
-                        'arcade.Window.ctx.BLEND_ADDITIVE' or 'arcade.Window.ctx.BLEND_DEFAULT'
+        :param blend_function: Optional parameter to set the OpenGL blend function used for drawing the
+                         sprite list, such as 'arcade.Window.ctx.BLEND_ADDITIVE' or 'arcade.Window.ctx.BLEND_DEFAULT'
         """
         self._init_deferred()
 
@@ -811,12 +811,12 @@ class SpriteList:
 
         if any(
                 (
-                        self._sprite_pos_changed,
-                        self._sprite_size_changed,
-                        self._sprite_angle_changed,
-                        self._sprite_color_changed,
-                        self._sprite_texture_changed,
-                        self._sprite_index_changed,
+                    self._sprite_pos_changed,
+                    self._sprite_size_changed,
+                    self._sprite_angle_changed,
+                    self._sprite_color_changed,
+                    self._sprite_texture_changed,
+                    self._sprite_index_changed,
                 )
         ):
             self._write_sprite_buffers_to_gpu()
@@ -847,7 +847,8 @@ class SpriteList:
         #     # always wrap texture transformations with translations
         #     # so that rotate and resize operations act on the texture
         #     # center by default
-        #     texture_transform = Mat3().translate(-0.5, -0.5).multiply(self.sprite_list[0].texture_transform.v).multiply(Mat3().translate(0.5, 0.5).v)
+        #     texture_transform = Mat3().translate(-0.5, -0.5).multiply(self.sprite_list[0] \
+        #     .texture_transform.v).multiply(Mat3().translate(0.5, 0.5).v)
         # else:
         #     texture_transform = Mat3()
         # self.program['TextureTransform'] = texture_transform
@@ -895,7 +896,7 @@ class SpriteList:
         self._buf_capacity = self._buf_capacity * 2
 
         LOG.debug(
-            f"(%s) Increasing buffer capacity from %s to %s",
+            "(%s) Increasing buffer capacity from %s to %s",
             self._sprite_buffer_slots,
             extend_by,
             self._buf_capacity,
@@ -937,7 +938,7 @@ class SpriteList:
         )
 
         LOG.debug(
-            f"(%s) Increasing index capacity from %s to %s",
+            "(%s) Increasing index capacity from %s to %s",
             self._sprite_index_slots,
             extend_by,
             self._idx_capacity,

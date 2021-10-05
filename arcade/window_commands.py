@@ -226,7 +226,7 @@ def run():
         # print("Testing!!!")
         window = get_window()
         if window:
-            window.on_update(1/60)
+            window.on_update(1 / 60)
             window.on_draw()
     else:
         import sys

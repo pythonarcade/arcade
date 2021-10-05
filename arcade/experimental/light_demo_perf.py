@@ -1,6 +1,5 @@
 import math
 import random
-import traceback
 import arcade
 from arcade.experimental.lights import Light, LightLayer
 

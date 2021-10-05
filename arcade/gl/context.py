@@ -194,7 +194,7 @@ class Context:
     def window(self) -> Window:
         """
         The window this context belongs to.
-        
+
         :type: ``pyglet.Window``
         """
         return self._window_ref()
@@ -203,7 +203,7 @@ class Context:
     def screen(self) -> Framebuffer:
         """
         The framebuffer for the window.
-        
+
         :type: :py:class:`~arcade.Framebuffer`
         """
         return self._screen
@@ -250,8 +250,7 @@ class Context:
             # Defer garbage collection until ctx.gc() is called
             # This can be useful to enforce the main thread to
             # run garbage collection of opengl resources
-            ctx.gc_mode = "context_gc"
-            
+            ctx.gc_mode = "context_gc"            
         """
         return self._gc_mode
 
@@ -436,7 +435,8 @@ class Context:
     def patch_vertices(self) -> int:
         """
         Get or set number of vertices that will be used to make up a single patch primitive.
-        Patch primitives are consumed by the tessellation control shader (if present) and subsequently used for tessellation.
+        Patch primitives are consumed by the tessellation control shader (if present)
+        and subsequently used for tessellation.
 
         :type: int
         """
@@ -567,7 +567,8 @@ class Context:
         :param Buffer index_buffer: Index/element buffer (optional)
         :param int mode: The default draw mode (optional)
         :param int mode: The default draw mode (optional)
-        :param int index_element_size: Byte size of the index buffer type. Can be 1, 2 or 4 (8, 16 or 32 bit unsigned integer)
+        :param int index_element_size: Byte size of the index buffer type.
+                                       Can be 1, 2 or 4 (8, 16 or 32 bit unsigned integer)
         """
         return Geometry(self, content, index_buffer=index_buffer, mode=mode, index_element_size=index_element_size)
 
@@ -825,7 +826,7 @@ class Limits:
         self.MAX_TEXTURE_IMAGE_UNITS = self.get(gl.GL_MAX_TEXTURE_IMAGE_UNITS)
         # TODO: Missing in pyglet
         # self.MAX_TEXTURE_MAX_ANISOTROPY = self.get_float(gl.GL_MAX_TEXTURE_MAX_ANISOTROPY)
-        self.MAX_VIEWPORT_DIMS =  self.get_int_tuple(gl.GL_MAX_VIEWPORT_DIMS, 2)
+        self.MAX_VIEWPORT_DIMS = self.get_int_tuple(gl.GL_MAX_VIEWPORT_DIMS, 2)
 
         err = self._ctx.error
         if err:

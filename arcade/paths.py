@@ -186,11 +186,11 @@ def _AStarSearch(start: Point, end: Point, graph: _AStarGraph):
 
 
 def _collapse(pos: Point, grid_size: float):
-    return int(pos[0] // grid_size),  int(pos[1] // grid_size)
+    return int(pos[0] // grid_size), int(pos[1] // grid_size)
 
 
 def _expand(pos: Point, grid_size: float):
-    return int(pos[0] * grid_size),  int(pos[1] * grid_size)
+    return int(pos[0] * grid_size), int(pos[1] * grid_size)
 
 
 class AStarBarrierList:

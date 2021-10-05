@@ -258,7 +258,7 @@ class MyGame(arcade.Window):
         self.gui_camera = arcade.Camera(self.width, self.height)
 
         # Map name
-        map_name = f":resources:tiled_maps/map_with_ladders.json"
+        map_name = ":resources:tiled_maps/map_with_ladders.json"
 
         # Layer Specific Options for the Tilemap
         layer_options = {
@@ -529,10 +529,10 @@ class MyGame(arcade.Window):
             ],
         )
 
-        # See if we hit any coins
-        coin_hit_list = arcade.check_for_collision_with_list(
-            self.player_sprite, self.scene.get_sprite_list(LAYER_NAME_COINS)
-        )
+        # # See if we hit any coins
+        # coin_hit_list = arcade.check_for_collision_with_list(
+        #     self.player_sprite, self.scene.get_sprite_list(LAYER_NAME_COINS)
+        # )
 
         # Loop through each coin we hit (if any) and remove it
         for collision in player_collision_list:

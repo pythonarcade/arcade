@@ -29,6 +29,7 @@ SCREEN_HEIGHT = 1000
 SCREEN_TITLE = "Moving Sprite Stress Test"
 TOP_MARGIN = 40
 
+
 class FPSCounter:
     def __init__(self):
         self.time = time.perf_counter()

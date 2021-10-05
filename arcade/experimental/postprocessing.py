@@ -1,7 +1,6 @@
 """
 Post-processing shaders.
 """
-from pathlib import Path
 from typing import Tuple
 from arcade.context import ArcadeContext
 from arcade.gl.texture import Texture
@@ -154,12 +153,30 @@ class BloomEffect(PostProcessing):
                  step: int = 1):
         super().__init__(size, kernel_size=kernel_size)
 
-        self._gaussian_1 = GaussianBlur((size[0], size[1]), kernel_size=kernel_size, sigma=sigma, multiplier=multiplier, step=step)
-        self._gaussian_2 = GaussianBlur((size[0] // 4, size[1] // 4), kernel_size=kernel_size, sigma=sigma, multiplier=multiplier, step=step)
-        self._gaussian_3 = GaussianBlur((size[0] // 8, size[1] // 8), kernel_size=kernel_size, sigma=sigma, multiplier=multiplier, step=step)
+        self._gaussian_1 = GaussianBlur(
+            (size[0], size[1]),
+            kernel_size=kernel_size,
+            sigma=sigma,
+            multiplier=multiplier,
+            step=step,
+        )
+        self._gaussian_2 = GaussianBlur(
+            (size[0] // 4, size[1] // 4),
+            kernel_size=kernel_size,
+            sigma=sigma,
+            multiplier=multiplier,
+            step=step,
+        )
+        self._gaussian_3 = GaussianBlur(
+            (size[0] // 8, size[1] // 8),
+            kernel_size=kernel_size,
+            sigma=sigma,
+            multiplier=multiplier,
+            step=step,
+        )
 
         # Program and buffer doing contrast / brightness / luma
-        luma_tex = self.ctx.texture((self.width // 2, self.height // 2),components=3)
+        luma_tex = self.ctx.texture((self.width // 2, self.height // 2), components=3)
         luma_tex.wrap_x = self.ctx.CLAMP_TO_EDGE
         luma_tex.wrap_y = self.ctx.CLAMP_TO_EDGE
         self._cb_luma_buffer = self.ctx.framebuffer(color_attachments=[luma_tex])

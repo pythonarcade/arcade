@@ -10,7 +10,6 @@ References:
 http://mattmik.com/files/chip8/mastering/chip8.html
 https://github.com/JohnEarnest/Octo
 """
-import math
 from array import array
 
 import arcade

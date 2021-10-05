@@ -244,7 +244,7 @@ class BufferDescription:
             raise ValueError("Normalized attribute not found in attributes.")
 
         formats_list = formats.split(" ")
-        non_padded_formats = [f for f in formats_list if not "x" in f]
+        non_padded_formats = [f for f in formats_list if "x" not in f]
 
         if len(non_padded_formats) != len(self.attributes):
             raise ValueError(
@@ -347,8 +347,6 @@ class GLTypes:
     that to the types in the `BufferDescription`.
     These an also be used for uniform introspection.
     """
-
-    # Source : https://github.com/Contraz/demosys-py/blob/f63f5dc727eafb8302cce64a890ce4527303588b/demosys/opengl/constants.py#L37-L139
     types = {
         # Floats
         gl.GL_FLOAT: TypeInfo("GL_FLOAT", gl.GL_FLOAT, gl.GL_FLOAT, 4, 1),

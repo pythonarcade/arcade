@@ -57,7 +57,7 @@ def create_outside_walls(maze):
     # Create left and right walls
     for row in range(len(maze)):
         maze[row][0] = TILE_CRATE
-        maze[row][len(maze[row])-1] = TILE_CRATE
+        maze[row][len(maze[row]) - 1] = TILE_CRATE
 
     # Create top and bottom walls
     for column in range(1, len(maze[0]) - 1):

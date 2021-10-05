@@ -14,6 +14,7 @@ should be done through methods in a context.
 .. warning:: This module contains the low level rendering API for arcade
              and is only recommended for more advanced users
 """
+# flake8: noqa
 
 from .context import Context
 from .types import BufferDescription

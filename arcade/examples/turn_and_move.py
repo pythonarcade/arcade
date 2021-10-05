@@ -40,7 +40,7 @@ class Player(arcade.Sprite):
     def destination_point(self, destination_point):
         self._destination_point = destination_point
 
-    def on_update(self, delta_time: float = 1/60):
+    def on_update(self, delta_time: float = 1 / 60):
         """ Update the player """
 
         # If we have no destination, don't go anywhere.

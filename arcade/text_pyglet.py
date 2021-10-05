@@ -28,7 +28,7 @@ class Text:
         italic: bool = False,
         anchor_x: str = "left",
         anchor_y: str = "baseline",
-        rotation: float = 0, # TODO: Look into, why this field is not used
+        rotation: float = 0,  # TODO: Look into, why this field is not used
     ):
         self._label = pyglet.text.Label(
             text=text,
@@ -164,7 +164,7 @@ def draw_text(
     with arcade.get_window().ctx.pyglet_rendering():
 
         if rotation:
-            original_view = window.view
+            # original_view = window.view
             angle_radians = math.radians(rotation)
             x = label.x
             y = label.y

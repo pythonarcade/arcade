@@ -134,8 +134,8 @@ class _Vec2:
         cosine = math.cos(rads)
         sine = math.sin(rads)
         return _Vec2(
-            (self.x*cosine) - (self.y*sine),
-            (self.y*cosine) + (self.x*sine)
+            (self.x * cosine) - (self.y * sine),
+            (self.y * cosine) + (self.x * sine)
         )
 
     def as_tuple(self) -> Point:

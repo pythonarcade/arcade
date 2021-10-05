@@ -87,9 +87,6 @@ class MyGame(arcade.Window):
         # Keep track of the score
         self.score = 0
 
-        # Create the Player Sprite lists
-        player_list = arcade.SpriteList()
-
         # Set up the player, specifically placing it at these coordinates.
         image_source = ":resources:images/animated_characters/female_adventurer/femaleAdventurer_idle.png"
         self.player_sprite = arcade.Sprite(image_source, CHARACTER_SCALING)

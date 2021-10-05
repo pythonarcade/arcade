@@ -1,3 +1,4 @@
+import logging
 from itertools import cycle
 import arcade
 from arcade import gl
@@ -7,8 +8,8 @@ SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 SCREEN_TITLE = "Subpixel Experiment"
 
-import logging
 arcade.configure_logging(logging.DEBUG)
+
 
 class MyGame(arcade.Window):
 
@@ -34,7 +35,12 @@ class MyGame(arcade.Window):
                 while True:
                     resource = next(resource_cycle)
                     print('sprite', resource)
-                    sprite = arcade.Sprite(resource, center_x=x + sprite_size // 2, center_y=y + sprite_size // 2, hit_box_algorithm='None')
+                    sprite = arcade.Sprite(
+                        resource,
+                        center_x=x + sprite_size // 2,
+                        center_y=y + sprite_size // 2,
+                        hit_box_algorithm='None',
+                    )
                     # Add sprite if correct size and get to the next sprite in the grid
                     if sprite.width == 128 and sprite.height == 128:
                         self.sprites.append(sprite)

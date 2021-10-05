@@ -3,12 +3,11 @@ The Arcade Library
 
 A Python simple, easy to use module for creating 2D games.
 """
-
+# flake8: noqa: E402
 # Note: DO NOT EDIT arcade/__init__.py
 # Instead look at util/init_template.py and update_init.py
 
 # Error out if we import Arcade with an incompatible version of Python.
-import platform
 import sys
 import os
 

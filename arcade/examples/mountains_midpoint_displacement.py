@@ -34,7 +34,7 @@ def midpoint_displacement(start, end, roughness, vertical_displacement=None,
     if vertical_displacement is None:
         # if no initial displacement is specified set displacement to:
         #  (y_start+y_end)/2
-        vertical_displacement = (start[1]+end[1])/2
+        vertical_displacement = (start[1] + end[1]) / 2
     # Data structure that stores the points is a list of lists where
     # each sublist represents a point and holds its x and y coordinates:
     # points=[[x_0, y_0],[x_1, y_1],...,[x_n, y_n]]
@@ -50,10 +50,10 @@ def midpoint_displacement(start, end, roughness, vertical_displacement=None,
         # the original sequence.
         # Tuple type is used for security reasons since they are immutable in Python.
         points_tup = tuple(points)
-        for i in range(len(points_tup)-1):
+        for i in range(len(points_tup) - 1):
             # Calculate x and y midpoint coordinates:
             # [(x_i+x_(i+1))/2, (y_i+y_(i+1))/2]
-            midpoint = list(map(lambda x: (points_tup[i][x]+points_tup[i+1][x])/2,
+            midpoint = list(map(lambda x: (points_tup[i][x] + points_tup[i + 1][x]) / 2,
                                 [0, 1]))
             # Displace midpoint y-coordinate
             midpoint[1] += random.choice([-vertical_displacement,
@@ -175,7 +175,7 @@ class MyGame(arcade.Window):
         """
         This is called every time we need to update our screen. About 60
         times per second.
-        
+
         Just draw things in this function, don't update where they are.
         """
         # Call our drawing functions.

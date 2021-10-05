@@ -98,7 +98,7 @@ class MyGame(arcade.Window):
             angle = math.atan2(y_diff, x_diff)
 
             # Set the enemy to face the player.
-            enemy.angle = math.degrees(angle)-90
+            enemy.angle = math.degrees(angle) - 90
 
             # Shoot every 60 frames change of shooting each frame
             if self.frame_count % 60 == 0:

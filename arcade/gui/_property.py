@@ -51,7 +51,7 @@ class _Property:
         for listener in obs.listeners:
             try:
                 listener()
-            except:
+            except Exception:
                 warnings.warn(f"Change listener for {instance}.{self.name} = {value} raised an exception!")
 
     def bind(self, instance, callback):
@@ -169,12 +169,12 @@ class _ObservableList(list):
         list.__delitem__(self, key)
         self.dispatch()
 
-    def __iadd__(self, *largs):
+    def __iadd__(self, *largs):  # type: ignore
         list.__iadd__(self, *largs)
         self.dispatch()
         return self
 
-    def __imul__(self, *largs):
+    def __imul__(self, *largs):  # type: ignore
         list.__imul__(self, *largs)
         self.dispatch()
         return self
@@ -223,5 +223,5 @@ class _ListProperty(_Property):
         super().__init__(default_factory=_ObservableList)
 
     def set(self, instance, value: dict):
-        value = _ObservableList(self, instance, value)
+        value = _ObservableList(self, instance, value)  # type: ignore
         super().set(instance, value)

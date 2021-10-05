@@ -42,6 +42,7 @@ ENEMY_MOVE_DOWN_AMOUNT = 30
 GAME_OVER = 1
 PLAY_GAME = 0
 
+
 class MyGame(arcade.Window):
     """ Main application class. """
 
@@ -148,7 +149,7 @@ class MyGame(arcade.Window):
         self.score = 0
 
         # Image from kenney.nl
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", SPRITE_SCALING_PLAYER)
+        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", SPRITE_SCALING_PLAYER)  # noqa
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 40
         self.player_list.append(self.player_sprite)
@@ -180,7 +181,7 @@ class MyGame(arcade.Window):
 
         # Draw game over if the game state is such
         if self.game_state == GAME_OVER:
-            arcade.draw_text(f"GAME OVER", 250, 300, arcade.color.WHITE, 55)
+            arcade.draw_text("GAME OVER", 250, 300, arcade.color.WHITE, 55)
             self.set_mouse_visible(True)
 
     def on_mouse_motion(self, x, y, dx, dy):

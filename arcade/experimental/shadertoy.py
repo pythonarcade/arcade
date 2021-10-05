@@ -93,7 +93,7 @@ class ShadertoyBase:
         self._frame = value
 
     @property
-    def mouse_position(self) ->Tuple[float, float]:
+    def mouse_position(self) -> Tuple[float, float]:
         """
         Get or set the current mouse position
         """

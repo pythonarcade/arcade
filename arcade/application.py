@@ -5,7 +5,6 @@ derive from.
 import logging
 import os
 import time
-from numbers import Number
 from typing import Tuple, Optional
 
 import pyglet
@@ -147,7 +146,6 @@ class Window(pyglet.window.Window):
         # See if we should center the window
         if center_window:
             self.center_window()
-
 
     @property
     def current_view(self) -> Optional["View"]:
@@ -504,7 +502,7 @@ class Window(pyglet.window.Window):
         Your code will continue to run after this call
         and the view will appear in the next dispatch
         of ``on_update``/``on_draw```.
-     
+
         Calling this function is the same as setting the
         :py:attr:`arcade.Window.current_view` attribute.
 

@@ -180,7 +180,7 @@ class ArcadeContext(Context):
         # Global labels we modify in `arcade.draw_text`.
         # These multiple labels with different configurations are stored
         self.pyglet_label_cache: Dict[str, pyglet.text.Label] = {}
-        
+
         self.active_program = None
         self.point_size = 1.0
 
@@ -237,7 +237,7 @@ class ArcadeContext(Context):
 
         self._projection_2d = value
         self._projection_2d_matrix = Mat4.orthogonal_projection(
-           value[0], value[1], value[2], value[3], -100, 100,
+            value[0], value[1], value[2], value[3], -100, 100,
         )
         self._projection_2d_buffer.write(self._projection_2d_matrix)
 
@@ -254,7 +254,7 @@ class ArcadeContext(Context):
     @projection_2d_matrix.setter
     def projection_2d_matrix(self, value: Mat4):
         if not isinstance(value, Mat4):
-            raise ValueError(f"projection_matrix must be a Mat4 object")
+            raise ValueError("projection_matrix must be a Mat4 object")
 
         self._projection_2d_matrix = value
         self._projection_2d_buffer.write(self._projection_2d_matrix)

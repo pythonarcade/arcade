@@ -28,6 +28,7 @@ void main() {
 }
 """
 
+
 class App(arcade.Window):
 
     def __init__(self, *args, **kwargs):

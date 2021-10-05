@@ -19,7 +19,10 @@ class GeoCullingTest(arcade.Window):
         self.texture = arcade.Texture("weird_texture", image=PIL.Image.new("RGBA", (2048, 2), (255, 255, 255, 255)))
 
         self.spritelist = arcade.SpriteList()
-        self.spritelist.append(Sprite(":resources:images/tiles/boxCrate_double.png", center_x=400, center_y=300, scale=6))
+        self.spritelist.append(Sprite(
+            ":resources:images/tiles/boxCrate_double.png",
+            center_x=400, center_y=300, scale=6)
+        )
         for i in range(0, 360, 36):
             self.spritelist.append(
                 arcade.Sprite(texture=self.texture, center_x=400, center_y=300, angle=i)

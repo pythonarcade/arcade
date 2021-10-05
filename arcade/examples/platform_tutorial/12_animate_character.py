@@ -203,7 +203,7 @@ class MyGame(arcade.Window):
         self.gui_camera = arcade.Camera(self.width, self.height)
 
         # Map name
-        map_name = f":resources:tiled_maps/map_with_ladders.json"
+        map_name = ":resources:tiled_maps/map_with_ladders.json"
 
         # Layer Specific Options for the Tilemap
         layer_options = {

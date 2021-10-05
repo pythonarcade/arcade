@@ -94,6 +94,7 @@ class Player(arcade.Sprite):
         """ Handle hat events """
         print("Hat ({}, {})".format(hat_x, hat_y))
 
+
 class MyGame(arcade.Window):
     """
     Main application class.
@@ -130,7 +131,7 @@ class MyGame(arcade.Window):
         self.all_sprites_list = arcade.SpriteList()
 
         # Set up the player
-        self.player_sprite = Player(":resources:images/animated_characters/female_person/femalePerson_idle.png", SPRITE_SCALING)
+        self.player_sprite = Player(":resources:images/animated_characters/female_person/femalePerson_idle.png", SPRITE_SCALING)  # noqa
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 50
         self.all_sprites_list.append(self.player_sprite)

@@ -1,11 +1,9 @@
 """
 Constructs, are prepared widget combinations, you can use for common usecases
 """
-from pyglet.event import EVENT_HANDLED
-
 import arcade
-from arcade.gui.mixins import UIWindowLikeMixin, UIMouseFilterMixin
-from arcade.gui.widgets import UILayout, UIAnchorWidget, UITextArea, UIFlatButton
+from arcade.gui.mixins import UIMouseFilterMixin
+from arcade.gui.widgets import UILayout, UIAnchorWidget, UITextArea, UIFlatButton, UIBoxLayout
 
 
 class UIMessageBox(UIMouseFilterMixin, UIAnchorWidget):
@@ -37,7 +35,7 @@ class UIMessageBox(UIMouseFilterMixin, UIAnchorWidget):
                                      height=height - space,
                                      text_color=arcade.color.BLACK)
 
-        button_group = arcade.gui.UIBoxLayout(vertical=False)
+        button_group = UIBoxLayout(vertical=False)
         for button_text in buttons:
             button = UIFlatButton(text=button_text)
             button_group.add(button.with_space_around(left=10))

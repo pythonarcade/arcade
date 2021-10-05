@@ -74,7 +74,6 @@ class MyGame(arcade.Window):
         """Set up viewport and projection"""
         ratio = arcade.get_scaling_factor(self)
         self.ctx.viewport = 0, 0, int(width * ratio), int(height * ratio)
-        aspect_ratio = width / height
         self.program['projection'] = Mat4.perspective_projection(0, self.width, 0, self.height, 0.1, 100, fov=60)
 
 

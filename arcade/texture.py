@@ -424,7 +424,7 @@ def load_texture(file_name: Union[str, Path],
         flipped_horizontally = mirrored
 
     # See if we already loaded this texture, and we can just use a cached version.
-    cache_name = f"{file_name}-{x}-{y}-{width}-{height}-{flipped_horizontally}-{flipped_vertically}-{flipped_diagonally}-{hit_box_algorithm} "
+    cache_name = f"{file_name}-{x}-{y}-{width}-{height}-{flipped_horizontally}-{flipped_vertically}-{flipped_diagonally}-{hit_box_algorithm} "  # noqa
     if can_cache and cache_name in load_texture.texture_cache:  # type: ignore # dynamic attribute on function obj
         return load_texture.texture_cache[cache_name]  # type: ignore # dynamic attribute on function obj
 
@@ -547,7 +547,7 @@ def load_spritesheet(file_name: Union[str, Path],
     return texture_list
 
 
-def build_cache_name(*args: Any, separator: str="-") -> str:
+def build_cache_name(*args: Any, separator: str = "-") -> str:
     """
     Generate cache names from the given parameters
 
@@ -626,8 +626,8 @@ def make_soft_square_texture(size: int, color: Color, center_alpha: int = 255, o
 
     :returns: New :class:`Texture` object.
     """
-    name = name or build_cache_name("gradientsquare", size, color, center_alpha,
-                                   outer_alpha)  # name must be unique for caching
+    # name must be unique for caching
+    name = name or build_cache_name("gradientsquare", size, color, center_alpha, outer_alpha)
 
     bg_color = (0, 0, 0, 0)  # fully transparent
     img = PIL.Image.new("RGBA", (size, size), bg_color)
@@ -636,7 +636,7 @@ def make_soft_square_texture(size: int, color: Color, center_alpha: int = 255, o
     for cur_size in range(0, half_size):
         alpha = int(lerp(outer_alpha, center_alpha, cur_size / half_size))
         clr = (color[0], color[1], color[2], alpha)
-        # draw.ellipse((center-radius, center-radius, center+radius, center+radius), fill=clr)
+        # draw.ellipse((center - radius, center - radius, center + radius, center + radius), fill=clr)
         draw.rectangle((cur_size, cur_size, size - cur_size, size - cur_size), clr, None)
     return Texture(name, img)
 

@@ -1,9 +1,8 @@
 from array import array
 from typing import Iterable, Tuple, Sequence, List, Optional
 
-from arcade import Color, get_window, get_scaling_factor, set_viewport
+from arcade import Color
 from arcade import gl
-from arcade.gl import geometry
 from arcade.experimental.texture_render_target import RenderTargetTexture
 
 
@@ -34,7 +33,7 @@ class Light:
         self._radius = radius
         self._attenuation = Light.HARD if mode == 'hard' else Light.SOFT
         self._color = color
-        self._light_layer: Optional[LightLayer] =  None
+        self._light_layer: Optional[LightLayer] = None
 
     @property
     def position(self) -> Tuple[float, float]:
@@ -98,7 +97,7 @@ class LightLayer(RenderTargetTexture):
     @property
     def diffuse_texture(self):
         self.texture
-    
+
     @property
     def light_texture(self):
         self._light_buffer.color_attachments[0]

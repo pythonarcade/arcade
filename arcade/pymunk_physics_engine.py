@@ -33,7 +33,8 @@ class PymunkPhysicsEngine:
     Pymunk Physics Engine
 
     :param gravity: The direction where gravity is pointing
-    :param damping: The amount of speed which is kept to the next tick. a value of 1.0 means no speed loss, while 0.9 has 10% loss of speed etc.
+    :param damping: The amount of speed which is kept to the next tick. a value of 1.0 means no speed loss,
+                    while 0.9 has 10% loss of speed etc.
     :param maximum_incline_on_ground: The maximum incline the ground can have, before is_on_ground() becomes False
         default = 0.708 or a little bit over 45° angle
     """
@@ -58,13 +59,13 @@ class PymunkPhysicsEngine:
                    mass: float = 1,
                    friction: float = 0.2,
                    elasticity: Optional[float] = None,
-                   moment_of_inertia: Optional[float] =None,  # correct spelling, easy to google for further explanation
-                   body_type: int =DYNAMIC,
-                   damping: Optional[float] =None,
-                   gravity: Union[pymunk.Vec2d, Tuple[float, float], Vec2] =None,
-                   max_velocity: int =None,
-                   max_horizontal_velocity: int =None,
-                   max_vertical_velocity: int =None,
+                   moment_of_inertia: Optional[float] = None,  # correct spelling
+                   body_type: int = DYNAMIC,
+                   damping: Optional[float] = None,
+                   gravity: Union[pymunk.Vec2d, Tuple[float, float], Vec2] = None,
+                   max_velocity: int = None,
+                   max_horizontal_velocity: int = None,
+                   max_vertical_velocity: int = None,
                    radius: float = 0,
                    collision_type: Optional[str] = "default",
                    # the next two arguments are for backwards compatibility with prior versions
@@ -76,8 +77,10 @@ class PymunkPhysicsEngine:
             :param mass: The mass of the object. Defaults to 1
             :param friction: The friction the object has. Defaults to 0.2
             :param elasticity: How bouncy this object is. 0 is no bounce. Values of 1.0 and higher may behave badly.
-            :param moment_of_inertia: The moment of inertia, or force needed to change angular momentum. Providing infinite makes this object stuck in its rotation.
-            :param body_type: The type of the body. Defaults to Dynamic, meaning, the body can move, rotate etc. providing STATIC makes it fixed to the world.
+            :param moment_of_inertia: The moment of inertia, or force needed to change angular momentum.
+                                      Providing infinite makes this object stuck in its rotation.
+            :param body_type: The type of the body. Defaults to Dynamic, meaning, the body can move, rotate etc.
+                              Providing STATIC makes it fixed to the world.
             :param damping: See class docs
             :param gravity: See class docs
             :param max_velocity: The maximum velocity of the object.
@@ -211,10 +214,10 @@ class PymunkPhysicsEngine:
                         mass: float = 1,
                         friction: float = 0.2,
                         elasticity: Optional[float] = None,
-                        moment_of_intertia: Optional[float] =None,
-                        body_type: int =DYNAMIC,
-                        damping: Optional[float] =None,
-                        collision_type: Optional[str] =None
+                        moment_of_intertia: Optional[float] = None,
+                        body_type: int = DYNAMIC,
+                        damping: Optional[float] = None,
+                        collision_type: Optional[str] = None
                         ):
         """ Add all sprites in a sprite list to the physics engine. """
 
@@ -437,15 +440,18 @@ class PymunkPhysicsEngine:
             """
             Checks if the the point of collision is in a way, that the sprite is on top of the other
             """
-            
-            # Gets the normal vector of the collision. This is basicly the point of collision.
+            # Gets the normal vector of the collision. This is the point of collision.
             n = arbiter.contact_point_set.normal
 
             # Checks if the x component of the gravity is in range of the maximum incline, same for the y component.
-            # This will work, as the normal AND gravity are both points on a circle with a radius of 1. (both are unit vecors)
-            if gravity_unit_vector.x + self.maximum_incline_on_ground > n.x > gravity_unit_vector.x - self.maximum_incline_on_ground\
-                    and \
-                gravity_unit_vector.y + self.maximum_incline_on_ground > n.y > gravity_unit_vector.y - self.maximum_incline_on_ground:
+            # This will work, as the normal AND gravity are both points on a circle with a radius of 1.
+            # (both are unit vectors)
+            if gravity_unit_vector.x + self.maximum_incline_on_ground > \
+               n.x > \
+               gravity_unit_vector.x - self.maximum_incline_on_ground\
+               and \
+               gravity_unit_vector.y + self.maximum_incline_on_ground > \
+               n.y > gravity_unit_vector.y - self.maximum_incline_on_ground:
                 grounding['normal'] = n
                 grounding['penetration'] = -arbiter.contact_point_set.points[0].distance
                 grounding['body'] = arbiter.shapes[1].body

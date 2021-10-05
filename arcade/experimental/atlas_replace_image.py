@@ -78,7 +78,7 @@ class AtlasReplaceImage(arcade.Window):
 
     def on_draw(self):
         self.spritelist.draw()
-    
+
     def on_update(self, delta_time: float):
         self.elapsed_time += delta_time
         # Change textures 

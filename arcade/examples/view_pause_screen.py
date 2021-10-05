@@ -30,9 +30,9 @@ class MenuView(arcade.View):
 
     def on_draw(self):
         arcade.start_render()
-        arcade.draw_text("Menu Screen", WIDTH/2, HEIGHT/2,
+        arcade.draw_text("Menu Screen", WIDTH / 2, HEIGHT / 2,
                          arcade.color.BLACK, font_size=50, anchor_x="center")
-        arcade.draw_text("Click to advance.", WIDTH/2, HEIGHT/2-75,
+        arcade.draw_text("Click to advance.", WIDTH / 2, HEIGHT / 2 - 75,
                          arcade.color.GRAY, font_size=20, anchor_x="center")
 
     def on_mouse_press(self, _x, _y, _button, _modifiers):
@@ -59,8 +59,8 @@ class GameView(arcade.View):
 
         # Show tip to pause screen
         arcade.draw_text("Press Esc. to pause",
-                         WIDTH/2,
-                         HEIGHT-100,
+                         WIDTH / 2,
+                         HEIGHT - 100,
                          arcade.color.BLACK,
                          font_size=20,
                          anchor_x="center")
@@ -106,19 +106,19 @@ class PauseView(arcade.View):
                                           bottom=player_sprite.bottom,
                                           color=arcade.color.ORANGE + (200,))
 
-        arcade.draw_text("PAUSED", WIDTH/2, HEIGHT/2+50,
+        arcade.draw_text("PAUSED", WIDTH / 2, HEIGHT / 2 + 50,
                          arcade.color.BLACK, font_size=50, anchor_x="center")
 
         # Show tip to return or reset
         arcade.draw_text("Press Esc. to return",
-                         WIDTH/2,
-                         HEIGHT/2,
+                         WIDTH / 2,
+                         HEIGHT / 2,
                          arcade.color.BLACK,
                          font_size=20,
                          anchor_x="center")
         arcade.draw_text("Press Enter to reset",
-                         WIDTH/2,
-                         HEIGHT/2-30,
+                         WIDTH / 2,
+                         HEIGHT / 2 - 30,
                          arcade.color.BLACK,
                          font_size=20,
                          anchor_x="center")

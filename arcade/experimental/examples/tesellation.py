@@ -2,11 +2,10 @@
 Drawing bezier curve using tessellation shader.
 This example is ported from moderngl : https://github.com/moderngl/moderngl/blob/master/examples/tesselation.py
 """
-import random
 from array import array
 
 import arcade
-from arcade.gl import BufferDescription, geometry
+from arcade.gl import BufferDescription
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 800
@@ -33,7 +32,7 @@ class MyGame(arcade.Window):
                 gl_Position = vec4(pos, 0.0, 1.0);
             }
             """,
-           tess_control_shader="""
+            tess_control_shader="""
             #version 400 core
 
             uniform float time;

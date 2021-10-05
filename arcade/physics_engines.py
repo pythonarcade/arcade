@@ -6,11 +6,8 @@ Physics engines for top-down or platformers.
 import math
 from typing import Iterable, List, Optional, Union
 
-from shapely.geometry import Polygon
-
 from arcade import (Sprite, SpriteList, check_for_collision,
                     check_for_collision_with_lists, get_distance)
-
 
 
 def _circular_check(player: Sprite, walls: List[SpriteList]):
@@ -235,7 +232,7 @@ class PhysicsEngineSimple:
             self.walls = [new]
         else:
             self.walls = walls
-        
+
         self.player_sprite = player_sprite
 
     def update(self):
@@ -253,11 +250,12 @@ class PhysicsEnginePlatformer:
     Simplistic physics engine for use in a platformer. It is easier to get
     started with this engine than more sophisticated engines like PyMunk.
 
-    **Note:** Sending static sprites to the ``walls`` parameter and moving sprites to the ``platforms`` parameter
-    will have very extreme benefits to performance.
+    **Note:** Sending static sprites to the ``walls`` parameter and moving sprites to the
+    ``platforms`` parameter will have very extreme benefits to performance.
 
-    **Note:** This engine will automatically move any Sprites sent to the ``platforms`` parameter between a ``boundary_top``
-    and ``boundary_bottom`` or a ``boundary_left`` and ``boundary_right`` attribute of the Sprite. You need only set an initial
+    **Note:** This engine will automatically move any Sprites sent to the ``platforms``
+    parameter between a ``boundary_top`` and ``boundary_bottom`` or a ``boundary_left``
+    and ``boundary_right`` attribute of the Sprite. You need only set an initial
     ``change_x`` or ``change_y`` on it.
 
     :param Sprite player_sprite: The moving sprite
@@ -310,7 +308,7 @@ class PhysicsEnginePlatformer:
                 self.walls = walls
         else:
             self.walls = []
-             
+
         self.player_sprite: Sprite = player_sprite
         self.gravity_constant: float = gravity_constant
         self.jumps_since_ground: int = 0
@@ -341,7 +339,7 @@ class PhysicsEnginePlatformer:
 
         # Check for wall hit
         hit_list = check_for_collision_with_lists(self.player_sprite, self.walls + self.platforms)
-        
+
         self.player_sprite.center_y += y_distance
 
         if len(hit_list) > 0:

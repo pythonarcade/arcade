@@ -79,6 +79,7 @@ void main()
 }
 """
 
+
 class App(arcade.Window):
 
     def __init__(self, *args, **kwargs):
@@ -89,7 +90,9 @@ class App(arcade.Window):
         self.group_x = 256
         self.group_y = self.group_x // 256
         self.cs = self.ctx.compute_shader(
-            source=COMPUTE_SHADER.replace("%COMPUTE_SIZE_X%", str(self.group_x)).replace("%COMPUTE_SIZE_Y%", str(self.group_y))
+            source=COMPUTE_SHADER.replace(
+                "%COMPUTE_SIZE_X%", str(self.group_x)).replace(
+                    "%COMPUTE_SIZE_Y%", str(self.group_y))
         )
 
         # Buffers with data for the compute shader (We ping-pong render between these)

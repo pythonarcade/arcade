@@ -27,7 +27,7 @@ class EnemySprite(arcade.Sprite):
         # When we fire, what list tracks the bullets?
         self.bullet_list = bullet_list
 
-    def on_update(self, delta_time: float = 1/60):
+    def on_update(self, delta_time: float = 1 / 60):
         """ Update this sprite. """
 
         # Track time since we last fired

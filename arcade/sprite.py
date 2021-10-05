@@ -298,7 +298,7 @@ class Sprite:
         if self._pymunk is None:
             self._pymunk = PyMunk()
         return self._pymunk
-    
+
     @pymunk.setter
     def pymunk(self, value):
         self._pymunk = value
@@ -913,7 +913,7 @@ class Sprite:
         """Called by the pymunk physics engine if this sprite moves."""
         pass
 
-    def draw(self,  *, filter=None, pixelated=None, blend_function=None):
+    def draw(self, *, filter=None, pixelated=None, blend_function=None):
         """
         Draw the sprite.
 
@@ -921,8 +921,8 @@ class Sprite:
                        `gl.GL_NEAREST` to avoid smoothing.
         :param pixelated: ``True`` for pixelated and ``False`` for smooth interpolation.
                           Shortcut for setting filter=GL_NEAREST.
-        :param blend_function: Optional parameter to set the OpenGL blend function used for drawing the sprite list, such as
-                        'arcade.Window.ctx.BLEND_ADDITIVE' or 'arcade.Window.ctx.BLEND_DEFAULT'
+        :param blend_function: Optional parameter to set the OpenGL blend function used for drawing the sprite list,
+                               such as 'arcade.Window.ctx.BLEND_ADDITIVE' or 'arcade.Window.ctx.BLEND_DEFAULT'
         """
 
         if self._sprite_list is None:

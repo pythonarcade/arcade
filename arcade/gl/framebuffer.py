@@ -285,7 +285,7 @@ class Framebuffer:
 
     def use(self, *, force: bool = False):
         """Bind the framebuffer making it the target of all redering commands
-        
+
         :param bool force: Force the framebuffer binding even if the system
                            already believes it's already bound.
         """
@@ -356,7 +356,7 @@ class Framebuffer:
     ) -> bytearray:
         """
         Read framebuffer pixels
-        
+
         :param viewport Tuple[int,int,int,int]: The x, y, with, height to read
         :param int attachment: The attachment id to read from
         :param str dtype: The data type to read

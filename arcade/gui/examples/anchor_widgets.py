@@ -55,6 +55,5 @@ class UIMockup(arcade.Window):
         self.manager.draw()
 
 
-
 window = UIMockup()
 arcade.run()

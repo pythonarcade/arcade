@@ -189,7 +189,7 @@ def calculate_hit_box_points_detailed(image: Image,
     logo_bb = pymunk.BB(-1, -1, image.width, image.height)
 
     # Set of lines that trace the image
-    line_set = pymunk.autogeometry.PolylineSet()
+    line_set = autogeometry.PolylineSet()
 
     # How often to sample?
     downres = 1
@@ -198,7 +198,7 @@ def calculate_hit_box_points_detailed(image: Image,
 
     # Run the trace
     # Get back one or more sets of lines covering stuff.
-    line_sets = pymunk.autogeometry.march_soft(
+    line_sets = autogeometry.march_soft(
         logo_bb,
         horizontal_samples, vertical_samples,
         99,
@@ -237,7 +237,7 @@ def calculate_hit_box_points_detailed(image: Image,
 
     # Reduce number of vertices
     # original_points = len(selected_line_set)
-    selected_line_set = pymunk.autogeometry.simplify_curves(selected_line_set,
+    selected_line_set = autogeometry.simplify_curves(selected_line_set,
                                                             hit_box_detail)
     # downsampled_points = len(selected_line_set)
 
@@ -252,5 +252,5 @@ def calculate_hit_box_points_detailed(image: Image,
     if len(points) > 1 and points[0] == points[-1]:
         points.pop()
 
-    # print(f"{sprite.texture.name} Line-sets={len(line_set)}, Original points={original_points}, Downsampled points={downsampled_points}")
+    # print(f"{sprite.texture.name} Line-sets={len(line_set)}, Original points={original_points}, Downsampled points={downsampled_points}")  # noqa
     return points

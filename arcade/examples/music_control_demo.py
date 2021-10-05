@@ -123,14 +123,14 @@ class MyView(arcade.View):
             self.media_player.seek(self.media_player.time + 10)
 
     def sound_button_on(self):
-        self.start_button.texture_pressed = arcade.load_texture(":resources:onscreen_controls/shaded_dark/sound_on.png")
+        self.start_button.texture_pressed = arcade.load_texture(":resources:onscreen_controls/shaded_dark/sound_on.png")  # noqa
         self.start_button.texture = arcade.load_texture(":resources:onscreen_controls/flat_dark/sound_on.png")
-        self.start_button.texture_hovered = arcade.load_texture(":resources:onscreen_controls/shaded_dark/sound_on.png")
+        self.start_button.texture_hovered = arcade.load_texture(":resources:onscreen_controls/shaded_dark/sound_on.png")  # noqa
 
     def sound_button_off(self):
-        self.start_button.texture_pressed = arcade.load_texture(":resources:onscreen_controls/shaded_dark/sound_off.png")
+        self.start_button.texture_pressed = arcade.load_texture(":resources:onscreen_controls/shaded_dark/sound_off.png")  # noqa
         self.start_button.texture = arcade.load_texture(":resources:onscreen_controls/flat_dark/sound_off.png")
-        self.start_button.texture_hovered = arcade.load_texture(":resources:onscreen_controls/shaded_dark/sound_off.png")
+        self.start_button.texture_hovered = arcade.load_texture(":resources:onscreen_controls/shaded_dark/sound_off.png")  # noqa
 
     def start_button_clicked(self, *_):
         self.paused = False

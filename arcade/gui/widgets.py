@@ -491,7 +491,7 @@ class UIDummy(UIInteractiveWidget):
         self.prepare_render(surface)
         self.frame += 1
         frame = self.frame % 256
-        surface.clear((*self.color[:3], frame))
+        surface.clear((self.color[0], self.color[1], self.color[2], frame))
 
         if self.hovered:
             arcade.draw_xywh_rectangle_outline(0, 0,
@@ -639,7 +639,8 @@ class UITextureButton(UIInteractiveWidget):
         elif self.hovered and self._tex_hovered:
             tex = self._tex_hovered
 
-        surface.draw_texture(0, 0, self.width, self.height, tex)
+        if tex:
+            surface.draw_texture(0, 0, self.width, self.height, tex)
 
         if self.text:
             text_margin = 2
@@ -685,9 +686,12 @@ class UILabel(UIWidget):
     :param bool bold: Bold font style.
     :param bool italic: Italic font style.
     :param bool stretch: Stretch font style.
-    :param str anchor_x: Anchor point of the X coordinate: one of ``"left"``, ``"center"`` or ``"right"``.
-    :param str anchor_y: Anchor point of the Y coordinate: one of ``"bottom"``, ``"baseline"``, ``"center"`` or ``"top"``.
-    :param str align: Horizontal alignment of text on a line, only applies if a width is supplied. One of ``"left"``, ``"center"`` or ``"right"``.
+    :param str anchor_x: Anchor point of the X coordinate: one of ``"left"``, 
+                         ``"center"`` or ``"right"``.
+    :param str anchor_y: Anchor point of the Y coordinate: one of ``"bottom"``,
+                         ``"baseline"``, ``"center"`` or ``"top"``.
+    :param str align: Horizontal alignment of text on a line, only applies if a width is supplied.
+                      One of ``"left"``, ``"center"`` or ``"right"``.
     :param float dpi: Resolution of the fonts in this layout.  Defaults to 96.
     :param bool multiline: if multiline is true, a \\n will start a new line.
                            A UITextWidget with multiline of true is the same thing as UITextArea.
@@ -701,8 +705,8 @@ class UILabel(UIWidget):
     def __init__(self,
                  x: float = 0,
                  y: float = 0,
-                 width: float = None,
-                 height: float = None,
+                 width: Optional[float] = None,
+                 height: Optional[float] = None,
                  text: str = "",
                  font_name=('Arial',),
                  font_size: float = 12,
@@ -898,6 +902,7 @@ class UITextArea(UIWidget):
             return EVENT_HANDLED
 
         return EVENT_UNHANDLED
+
 
 class _Arcade_Caret(Caret):
     def _update(self, line=None, update_ideal_x=True):
@@ -1462,7 +1467,8 @@ class UIPadding(UIWrapper):
                  **kwargs):
         """
         :arg padding: Padding - top, right, bottom, left
-        :param size_hint: A hint for :class:`UILayout`, if this :class:`UIWidget` would like to grow (default: (1, 1) -> full size of parent)
+        :param size_hint: A hint for :class:`UILayout`, if this :class:`UIWidget` would
+                          like to grow (default: (1, 1) -> full size of parent)
         """
         super().__init__(
             child=child,

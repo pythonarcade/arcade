@@ -277,7 +277,7 @@ class Scene:
             for name in names:
                 self.name_mapping[name].on_update(delta_time)
             return
-        
+
         for sprite_list in self.sprite_lists:
             sprite_list.on_update(delta_time)
 

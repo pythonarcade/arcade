@@ -104,7 +104,7 @@ class UIManager(EventDispatcher, UIWidgetParent):
         layers = sorted(self.children.keys())
         for layer in layers:
             for child in self.children[layer]:
-                #TODO Observe if rect of child changed. This will be solved with observable properties later
+                # TODO Observe if rect of child changed. This will be solved with observable properties later
                 rect = child.rect
                 child._do_layout()
                 if rect != child.rect:
@@ -193,7 +193,9 @@ class UIManager(EventDispatcher, UIWidgetParent):
         The implementation should work in most common cases.
 
         If you use scrolling in the :py:class:`arcade.Camera` you have to reset scrolling
-        or overwrite this method using the camera conversion: `ui_manager.adjust_mouse_coordinates = camera.mouse_coordinates_to_world`
+        or overwrite this method using the camera conversion::
+
+            ui_manager.adjust_mouse_coordinates = camera.mouse_coordinates_to_world
         """
         # TODO This code does not work anymore, for now no camera support by default
         # vx, vy, vw, vh = self.window.ctx.viewport

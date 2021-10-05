@@ -91,7 +91,7 @@ def get_joy_position(x, y):
 
 class Player(arcade.sprite.Sprite):
     def __init__(self, filename):
-        super().__init__(filename=filename, scale=0.4, center_x=SCREEN_WIDTH/2, center_y=SCREEN_HEIGHT/2)
+        super().__init__(filename=filename, scale=0.4, center_x=SCREEN_WIDTH / 2, center_y=SCREEN_HEIGHT / 2)
         self.shoot_up_pressed = False
         self.shoot_down_pressed = False
         self.shoot_left_pressed = False
@@ -186,13 +186,13 @@ class MyGame(arcade.View):
         else:
             # Keyboard input - shooting
             if self.player.shoot_right_pressed and self.player.shoot_up_pressed:
-                self.spawn_bullet(0+45)
+                self.spawn_bullet(0 + 45)
             elif self.player.shoot_up_pressed and self.player.shoot_left_pressed:
-                self.spawn_bullet(90+45)
+                self.spawn_bullet(90 + 45)
             elif self.player.shoot_left_pressed and self.player.shoot_down_pressed:
-                self.spawn_bullet(180+45)
+                self.spawn_bullet(180 + 45)
             elif self.player.shoot_down_pressed and self.player.shoot_right_pressed:
-                self.spawn_bullet(270+45)
+                self.spawn_bullet(270 + 45)
             elif self.player.shoot_right_pressed:
                 self.spawn_bullet(0)
             elif self.player.shoot_up_pressed:
@@ -302,7 +302,7 @@ class MyGame(arcade.View):
 
         # Game over message
         if self.game_over:
-            arcade.draw_text("Game Over", SCREEN_WIDTH/2, SCREEN_HEIGHT/2, arcade.color.WHITE, 100, width=SCREEN_WIDTH,
+            arcade.draw_text("Game Over", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, arcade.color.WHITE, 100, width=SCREEN_WIDTH,  # noqa
                              align="center", anchor_x="center", anchor_y="center")
 
 
@@ -342,7 +342,7 @@ class JoyConfigView(arcade.View):
             if farthest_val > max_val:
                 max_attr = attr
                 max_val = farthest_val
-        self.msg = f"Registered!"
+        self.msg = "Registered!"
 
         setattr(pyglet.input.base.Joystick, method_name, property(lambda that: getattr(that, max_attr), None))
 
@@ -366,9 +366,9 @@ class JoyConfigView(arcade.View):
 
     def on_draw(self):
         arcade.start_render()
-        arcade.draw_text("Configure your joystick", self.width/2, self.height/2+100,
+        arcade.draw_text("Configure your joystick", self.width / 2, self.height / 2 + 100,
                          arcade.color.BLACK, font_size=32, anchor_x="center")
-        arcade.draw_text(self.msg, self.width/2, self.height/2,
+        arcade.draw_text(self.msg, self.width / 2, self.height / 2,
                          arcade.color.BLACK, font_size=24, anchor_x="center")
 
     def _pause(self, delay):

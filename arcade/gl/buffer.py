@@ -1,6 +1,6 @@
-from ctypes import c_byte, byref, string_at
+from ctypes import byref, string_at
 import weakref
-from typing import Any, Optional, Tuple, TYPE_CHECKING
+from typing import Any, Optional, TYPE_CHECKING
 
 from pyglet import gl
 
@@ -31,7 +31,8 @@ class Buffer:
     ):
         """
         :param Context ctx: The context this buffer belongs to
-        :param Any data: The data this buffer should contain. It can be bytes or any object supporting the buffer protocol.
+        :param Any data: The data this buffer should contain.
+                         It can be bytes or any object supporting the buffer protocol.
         :param int reserve: Create a buffer of a specific byte size
         :param str usage: A hit of this buffer is ``static`` or ``dynamic`` (can mostly be ignored)
         """
@@ -213,7 +214,7 @@ class Buffer:
     def bind_to_uniform_block(self, binding: int = 0, offset: int = 0, size: int = -1):
         """Bind this buffer to a uniform block location.
         In most cases it will be sufficient to only provice a binding location.
-        
+
         :param int binding: The binding location
         :param int offset: byte offset
         :param int size: size of the buffer to bind.

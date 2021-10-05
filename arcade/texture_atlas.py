@@ -386,10 +386,10 @@ class TextureAtlas:
         # Pad the 1-pixel border with repeating data
         tmp = Image.new('RGBA', (image.width + 2, image.height + 2))
         tmp.paste(image, (1, 1))
-        tmp.paste(tmp.crop((1          , 1           , image.width+1, 2             )), (1            , 0             ))
-        tmp.paste(tmp.crop((1          , image.height, image.width+1, image.height+1)), (1            , image.height+1))
-        tmp.paste(tmp.crop((1          , 0           ,             2, image.height+2)), (0            , 0             ))
-        tmp.paste(tmp.crop((image.width, 0           , image.width+1, image.height+2)), (image.width+1, 0             ))
+        tmp.paste(tmp.crop((1          , 1           , image.width+1, 2             )), (1            , 0             ))  # noqa
+        tmp.paste(tmp.crop((1          , image.height, image.width+1, image.height+1)), (1            , image.height+1))  # noqa
+        tmp.paste(tmp.crop((1          , 0           ,             2, image.height+2)), (0            , 0             ))  # noqa
+        tmp.paste(tmp.crop((image.width, 0           , image.width+1, image.height+2)), (image.width+1, 0             ))  # noqa
 
         # Write the image directly to graphics memory in the allocated space
         self._texture.write(tmp.tobytes(), 0, viewport=viewport)
@@ -521,9 +521,11 @@ class TextureAtlas:
         self._texture.use(1)
         uv_texture_old.use(2)
         self._uv_texture.use(3)
-        self._ctx.atlas_resize_program["projection"] = arcade.create_orthogonal_projection(0, self.width, self.height, 0)
+        self._ctx.atlas_resize_program["projection"] = arcade.create_orthogonal_projection(
+            0, self.width, self.height, 0,
+        )
 
-        with self._fbo.activate() as fbo:
+        with self._fbo.activate():
             self._ctx.disable(self._ctx.BLEND)
             self._ctx.atlas_geometry.render(
                 self._ctx.atlas_resize_program,
@@ -601,7 +603,7 @@ class TextureAtlas:
 
             with atlas.render_into(texture):
                 # Draw commands here
-        
+
             # Specify projection
             with atlas.render_into(texture, projection=(0, 100, 0, 100))
                 # Draw geometry
