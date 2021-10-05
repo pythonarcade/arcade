@@ -218,7 +218,7 @@ class UIWidget(EventDispatcher, ABC):
             parent = parent.parent
 
         if parent:
-            yield parent
+            yield parent  # type: ignore
 
     def trigger_full_render(self):
         """In case a widget uses transperant areas or was moved,
@@ -748,7 +748,7 @@ class UILabel(UIWidget):
         if not width:
             width = self.label.content_width
 
-        super().__init__(x, y, width, height,
+        super().__init__(x, y, width, height,  # type: ignore
                          size_hint=size_hint,
                          size_hint_min=size_hint_min,
                          size_hint_max=size_hint_max)

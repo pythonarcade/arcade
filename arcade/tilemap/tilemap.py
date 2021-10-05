@@ -12,7 +12,7 @@ import math
 import os
 from collections import OrderedDict
 from pathlib import Path
-from typing import Any, Dict, List, Optional, OrderedDict, Tuple, Union, cast
+from typing import Any, Dict, List, Optional, Tuple, Union, cast
 
 import pytiled_parser
 import pytiled_parser.tiled_object
@@ -175,10 +175,8 @@ class TileMap:
         self.hit_box_detail = hit_box_detail
 
         # Dictionaries to store the SpriteLists for processed layers
-        self.sprite_lists: OrderedDict[str, SpriteList] = OrderedDict[str, SpriteList]()
-        self.object_lists: OrderedDict[str, List[TiledObject]] = OrderedDict[
-            str, SpriteList
-        ]()
+        self.sprite_lists: Dict[str, SpriteList] = OrderedDict()
+        self.object_lists: Dict[str, List[TiledObject]] = OrderedDict()
         self.properties = self.tiled_map.properties
 
         global_options = {  # type: ignore
@@ -392,7 +390,7 @@ class TileMap:
                 "flipped_horizontally": tile.flipped_horizontally,
                 "flipped_vertically": tile.flipped_vertically,
                 "flipped_diagonally": tile.flipped_diagonally,
-                "hit_box_algorithm": hit_box_algorithm,
+                "hit_box_algorithm": hit_box_algorithm,  # type: ignore
                 "hit_box_detail": hit_box_detail,
             }
             my_sprite = custom_class(**custom_class_args, **args)  # type: ignore
@@ -522,7 +520,7 @@ class TileMap:
                         print(
                             f"Warning: failed to load image for animation frame for tile {frame_tile.id}"
                         )
-                        texture = None
+                        texture = None  # type: ignore
 
                     key_frame = AnimationKeyframe(
                         frame.tile_id, frame.duration, texture
