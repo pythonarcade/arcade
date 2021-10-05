@@ -238,7 +238,7 @@ def calculate_hit_box_points_detailed(image: Image,
     # Reduce number of vertices
     # original_points = len(selected_line_set)
     selected_line_set = autogeometry.simplify_curves(selected_line_set,
-                                                            hit_box_detail)
+                                                     hit_box_detail)
     # downsampled_points = len(selected_line_set)
 
     # Convert to normal points, offset fo 0,0 is center, flip the y
