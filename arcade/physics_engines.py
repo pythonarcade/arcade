@@ -218,7 +218,7 @@ class PhysicsEngineSimple:
     :param SpriteList walls: The sprites it can't move through
     """
 
-    def __init__(self, player_sprite: Sprite, walls: Union[Sprite, SpriteList, Iterable[SpriteList]]):
+    def __init__(self, player_sprite: Sprite, walls: Union[SpriteList, Iterable[SpriteList]]):
         """
         Create a simple physics engine.
         """
@@ -226,12 +226,10 @@ class PhysicsEngineSimple:
 
         if isinstance(walls, SpriteList):
             self.walls = [walls]
-        elif isinstance(walls, Sprite):
-            new = SpriteList()
-            new.append(walls)
-            self.walls = [new]
+        elif isinstance(walls, list):
+            self.walls = list(walls)
         else:
-            self.walls = walls
+            raise ValueError("Unsupported wall type. Must be SpriteList or list of SpriteLists")
 
         self.player_sprite = player_sprite
 
@@ -277,15 +275,15 @@ class PhysicsEnginePlatformer:
         """
         Create a physics engine for a platformer.
         """
-        self.ladders: Optional[Iterable[SpriteList]]
-        self.platforms: Iterable[SpriteList]
-        self.walls: Iterable[SpriteList]
+        self.ladders: Optional[List[SpriteList]]
+        self.platforms: List[SpriteList]
+        self.walls: List[SpriteList]
 
         if ladders:
             if isinstance(ladders, SpriteList):
                 self.ladders = [ladders]
             else:
-                self.ladders = ladders
+                self.ladders = list(ladders)
         else:
             self.ladders = None
 
@@ -293,19 +291,15 @@ class PhysicsEnginePlatformer:
             if isinstance(platforms, SpriteList):
                 self.platforms = [platforms]
             else:
-                self.platforms = platforms
+                self.platforms = list(platforms)
         else:
             self.platforms = []
 
         if walls:
             if isinstance(walls, SpriteList):
                 self.walls = [walls]
-            elif isinstance(walls, Sprite):
-                new = SpriteList()
-                new.append(walls)
-                self.walls = [new]
             else:
-                self.walls = walls
+                self.walls = list(walls)
         else:
             self.walls = []
 

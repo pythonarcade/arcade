@@ -1,7 +1,6 @@
 """
 Pymunk Physics Engine
 """
-
 import logging
 import math
 from typing import Callable, Dict, List, Optional, Union, Tuple
@@ -115,10 +114,10 @@ class PymunkPhysicsEngine:
         # Keep track of collision types
         if collision_type not in self.collision_types:
             LOG.debug(f"Adding new collision type of {collision_type}.")
-            self.collision_types.append(collision_type)
+            self.collision_types.append(collision_type)  # type: ignore
 
         # Get a number associated with the string of collision_type
-        collision_type_id = self.collision_types.index(collision_type)
+        collision_type_id = self.collision_types.index(collision_type)  # type: ignore
 
         # Backwards compatibility for a typo introduced in 2.6.2 and for versions under 2.6.1
         # The current version is checked first, then the most common older form, then the typo
@@ -183,7 +182,7 @@ class PymunkPhysicsEngine:
         # Set the physics shape to the sprite's hitbox
         poly = sprite.get_hit_box()
         scaled_poly = [[x * sprite.scale for x in z] for z in poly]
-        shape = pymunk.Poly(body, scaled_poly, radius=radius)
+        shape = pymunk.Poly(body, scaled_poly, radius=radius)  # type: ignore
 
         # Set collision type, used in collision callbacks
         if collision_type:
@@ -234,8 +233,8 @@ class PymunkPhysicsEngine:
     def remove_sprite(self, sprite: Sprite):
         """ Remove a sprite from the physics engine. """
         physics_object = self.sprites[sprite]
-        self.space.remove(physics_object.body)
-        self.space.remove(physics_object.shape)
+        self.space.remove(physics_object.body)  # type: ignore
+        self.space.remove(physics_object.shape)  # type: ignore
         self.sprites.pop(sprite)
         if sprite in self.non_static_sprite_list:
             self.non_static_sprite_list.remove(sprite)
@@ -247,7 +246,7 @@ class PymunkPhysicsEngine:
                 return sprite
         return None
 
-    def get_sprites_from_arbiter(self, arbiter: pymunk.Arbiter) -> Tuple[Sprite]:
+    def get_sprites_from_arbiter(self, arbiter: pymunk.Arbiter) -> Tuple[Optional[Sprite], Optional[Sprite]]:
         """ Given a collision arbiter, return the sprites associated with the collision. """
         shape1, shape2 = arbiter.shapes
         sprite1 = self.get_sprite_for_shape(shape1)

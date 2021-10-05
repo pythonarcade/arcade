@@ -10,7 +10,7 @@ from typing import List, Union, Tuple
 from pymunk import autogeometry
 
 
-def calculate_hit_box_points_simple(image: Image) -> List[Point]:
+def calculate_hit_box_points_simple(image: Image) -> Union[Tuple[Point], List]:
     """
     Given an image, this returns points that make up a hit box around it. Attempts
     to trim out transparent pixels.
@@ -18,7 +18,6 @@ def calculate_hit_box_points_simple(image: Image) -> List[Point]:
     :param Image image:
 
     :Returns: List of points
-
     """
     left_border = 0
     good = True
@@ -73,7 +72,7 @@ def calculate_hit_box_points_simple(image: Image) -> List[Point]:
 
     # If the image is empty, return an empty set
     if bottom_border == 0:
-        return []
+        return []  # typing: ignore
 
     def _check_corner_offset(start_x: int, start_y: int, x_direction: int, y_direction: int) -> int:
 
@@ -96,7 +95,7 @@ def calculate_hit_box_points_simple(image: Image) -> List[Point]:
         # print(f"offset: {offset}")
         return offset
 
-    def _r(point: Tuple[float, float], height: int, width: int):
+    def _r(point: Tuple[float, float], height: int, width: int) -> Point:
         return point[0] - width / 2, (height - point[1]) - height / 2
 
     top_left_corner_offset = _check_corner_offset(left_border, top_border, 1, 1)
@@ -135,14 +134,12 @@ def calculate_hit_box_points_simple(image: Image) -> List[Point]:
         result.append(_r(p8, h, w))
 
     # Remove duplicates
-    result = tuple(dict.fromkeys(result))
-
-    return result
+    return tuple(dict.fromkeys(result))  # type: ignore
 
 
 def calculate_hit_box_points_detailed(image: Image,
                                       hit_box_detail: float = 4.5)\
-        -> Union[List[NamedPoint], Tuple[NamedPoint, ...]]:
+        -> Union[List[Point], Tuple[Point, ...]]:
     """
     Given an image, this returns points that make up a hit box around it. Attempts
     to trim out transparent pixels.
@@ -246,11 +243,11 @@ def calculate_hit_box_points_detailed(image: Image,
     hw = image.width / 2
     points = []
     for vec2 in selected_line_set:
-        point = round(vec2.x - hw), round(image.height - (vec2.y - hh) - image.height)
+        point = round(vec2.x - hw), round(image.height - (vec2.y - hh) - image.height)  # type: ignore
         points.append(point)
 
     if len(points) > 1 and points[0] == points[-1]:
         points.pop()
 
     # print(f"{sprite.texture.name} Line-sets={len(line_set)}, Original points={original_points}, Downsampled points={downsampled_points}")  # noqa
-    return points
+    return points  # type: ignore
