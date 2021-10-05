@@ -41,11 +41,11 @@ class UIMessageBox(UIMouseFilterMixin, UIAnchorWidget):
         for button_text in buttons:
             button = UIFlatButton(text=button_text)
             button_group.add(button.with_space_around(left=10))
-            button.on_click = self.on_ok
+            button.on_click = self.on_ok  # type: ignore
 
         self._bg_tex = arcade.load_texture(":resources:gui_basic_assets/window/grey_panel.png")
 
-        self._callback = callback
+        self._callback = callback  # type: ignore
 
         group = UILayout(width=width, height=height, children=[
             UIAnchorWidget(child=self._text_area, anchor_x="left", anchor_y="top", align_x=10, align_y=-10),

@@ -32,7 +32,7 @@ class MyView(arcade.View):
         )
 
         # Map that button's on_click method to this view's on_button_click method.
-        self.start_button.on_click = self.start_button_clicked
+        self.start_button.on_click = self.start_button_clicked  # type: ignore
 
         # Add in our element.
         box.add(self.start_button)
@@ -50,7 +50,7 @@ class MyView(arcade.View):
         )
 
         # Map that button's on_click method to this view's on_button_click method.
-        self.down_button.on_click = self.volume_down
+        self.down_button.on_click = self.volume_down  # type: ignore
         self.down_button.scale(0.5)
 
         # Add in our element.
@@ -69,7 +69,7 @@ class MyView(arcade.View):
         )
 
         # Map that button's on_click method to this view's on_button_click method.
-        self.up_button.on_click = self.volume_up
+        self.up_button.on_click = self.volume_up  # type: ignore
         self.up_button.scale(0.5)
 
         # Add in our element.
@@ -88,7 +88,7 @@ class MyView(arcade.View):
         )
 
         # Map that button's on_click method to this view's on_button_click method.
-        self.right_button.on_click = self.forward
+        self.right_button.on_click = self.forward  # type: ignore
         self.right_button.scale(0.5)
 
         # Add in our element.

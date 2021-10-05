@@ -2,7 +2,7 @@ from random import choice
 
 import arcade
 from arcade import load_texture
-from arcade.examples.perf_test.stress_test_draw_shapes import FPSCounter
+from arcade.examples.perf_test.stress_test_draw_shapes import FPSCounter  # type: ignore
 from arcade.gui import UIManager
 from arcade.gui.widgets import UIDummy, UISpriteWidget, UITextArea, UIInputText, UITexturePane, UIFlatButton, \
     UIAnchorWidget

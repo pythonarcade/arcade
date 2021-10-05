@@ -180,7 +180,7 @@ class TileMap:
         ]()
         self.properties = self.tiled_map.properties
 
-        global_options = {
+        global_options = {  # type: ignore
             "scaling": self.scaling,
             "use_spatial_hash": self.use_spatial_hash,
             "hit_box_algorithm": self.hit_box_algorithm,
