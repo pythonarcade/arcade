@@ -468,7 +468,7 @@ class SpriteList:
         If spatial hashing is turned on, it takes longer to move a sprite, and less time
         to see if that sprite is colliding with another sprite.
         """
-        return self.spatial_hash and self._use_spatial_hash
+        return self.spatial_hash is not None and self._use_spatial_hash is True
 
     def disable_spatial_hashing(self) -> None:
         """Turn off spatial hashing."""
