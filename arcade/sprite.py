@@ -221,7 +221,7 @@ class Sprite:
 
         self._texture_transform = None
         # Pymunk specific properties
-        self.pymunk = None
+        self.pymunk: Optional[PyMunk] = None
         self.force = [0, 0]
 
         # Debug propreties
