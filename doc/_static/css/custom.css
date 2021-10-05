@@ -32,6 +32,9 @@ li p {
 	flex-direction: row;
 	flex-wrap: wrap;
 }
+#how-to-example-code img {
+    padding-right: 5px;
+}
 h1, h2, h3 {
 	width: 100%;
 }
