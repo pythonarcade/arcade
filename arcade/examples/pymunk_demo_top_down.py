@@ -158,7 +158,7 @@ class MyWindow(arcade.Window):
         # by damping.
         self.physics_engine.add_sprite(self.player_sprite,
                                        friction=0.6,
-                                       moment_of_intertia=PymunkPhysicsEngine.MOMENT_INF,
+                                       moment_of_inertia=PymunkPhysicsEngine.MOMENT_INF,
                                        damping=0.01,
                                        collision_type="player",
                                        max_velocity=400)

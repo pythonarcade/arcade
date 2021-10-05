@@ -27,10 +27,13 @@ li p {
     font-family: 'Consolas', 'courier new', 'courier', monospace;
     font-size: 15px;
 }
-#how-to-example-code div {
+#how-to-example-code section {
 	display: flex;
 	flex-direction: row;
 	flex-wrap: wrap;
+}
+#how-to-example-code img {
+    padding-right: 5px;
 }
 h1, h2, h3 {
 	width: 100%;
