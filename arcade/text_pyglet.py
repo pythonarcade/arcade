@@ -36,8 +36,12 @@ def attempt_font_name_resolution(font_name: FontNameOrNames) -> FontNameOrNames:
     doesn't seem to make sense entirely. Comments are an attempt
     to make sense of the original code.
 
+    If it can't resolve a definite path, it will return the original
+    argument for pyglet to attempt to resolve. This is consistent with
+    the original behavior of this code before it was encapsulated.
+
     :param Union[str, Tuple[str, ...]] font_name:
-    :return:
+    :return: Either a resolved path or the original tuple
     """
     if font_name:
 
@@ -110,8 +114,16 @@ class Text:
         italic: bool = False,
         anchor_x: str = "left",
         anchor_y: str = "baseline",
+        multiline: bool = False,
         rotation: float = 0
     ):
+
+        if align != "center" and align != "left" and align != "right":
+            raise ValueError("The 'align' parameter must be equal to 'left', 'right', or 'center'.")
+
+        if align != "left":
+            multiline = True
+
         adjusted_font = attempt_font_name_resolution(font_name)
         self._label = pyglet.text.Label(
             text=text,
@@ -125,7 +137,8 @@ class Text:
             width=width,
             align=align,
             bold=bold,
-            italic=italic
+            italic=italic,
+            multiline=multiline
         )
         self.rotation = rotation
 
