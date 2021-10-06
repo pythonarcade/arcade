@@ -403,6 +403,8 @@ class PhysicsEnginePlatformer:
         for platform_list in self.platforms:
             for platform in platform_list:
                 if platform.change_x != 0 or platform.change_y != 0:
+
+                    # Check x boundaries and move the platform in x direction
                     if platform.boundary_left and platform.left <= platform.boundary_left:
                         platform.left = platform.boundary_left
                         if platform.change_x < 0:
@@ -413,8 +415,9 @@ class PhysicsEnginePlatformer:
                         if platform.change_x > 0:
                             platform.change_x *= -1
 
-                    platform.center_y += platform.change_y
+                    platform.center_x += platform.change_x
 
+                    # Check y boundaries and move the platform in y direction
                     if platform.boundary_top is not None \
                             and platform.top >= platform.boundary_top:
                         platform.top = platform.boundary_top
@@ -426,6 +429,8 @@ class PhysicsEnginePlatformer:
                         platform.bottom = platform.boundary_bottom
                         if platform.change_y < 0:
                             platform.change_y *= -1
+
+                    platform.center_y += platform.change_y
 
         # print(f"Spot Z ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
         # Return list of encountered sprites
