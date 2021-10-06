@@ -164,6 +164,7 @@ class Text:
     def draw(self):
         _draw_label_with_rotation(self._label, self.rotation)
 
+
 def draw_text(
     text: str,
     start_x: float,
