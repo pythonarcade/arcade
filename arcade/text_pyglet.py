@@ -12,6 +12,58 @@ from pyglet.math import Mat4
 from arcade.resources import resolve_resource_path
 
 
+def load_font(font_name):
+    """ Load a font for later use """
+    if font_name.startswith(":resources:"):
+        try:
+            file_path = resolve_resource_path(font_name)
+        except FileNotFoundError:
+            raise FileNotFoundError(f"Unable to find resource with the name: {font_name}")
+    else:
+        file_path = font_name
+
+    pyglet.font.add_file(str(file_path))
+
+
+FontNameOrNames = Union[str, Tuple[str, ...]]
+
+
+def attempt_font_name_resolution(font_name: FontNameOrNames) -> FontNameOrNames:
+    """
+    Attempt to resolve a tuple of font names.
+
+    Preserves the original logic of this section, even though it
+    doesn't seem to make sense entirely. Comments are an attempt
+    to make sense of the original code.
+
+    :param Union[str, Tuple[str, ...]] font_name:
+    :return:
+    """
+    if font_name:
+
+        # ensure
+        if isinstance(font_name, str):
+            font_list: Tuple[str, ...] = (font_name,)
+        elif isinstance(font_name, tuple):
+            font_list = font_name
+        else:
+            raise TypeError("font_name parameter must be a string, or a list of strings that specify a font name.")
+
+        for font in font_list:
+            try:
+                path = resolve_resource_path(font)
+                # print(f"Font path: {path=}")
+
+                # found a font successfully!
+                return path.name
+
+            except FileNotFoundError:
+                pass
+
+    # failed to find it ourselves, hope pyglet can make sense of it
+    return font_name
+
+
 class Text:
 
     def __init__(
@@ -23,18 +75,19 @@ class Text:
         font_size: float = 12,
         width: int = 0,
         align: str = "left",
-        font_name: Union[str, Tuple[str, ...]] = ("calibri", "arial"),
+        font_name: FontNameOrNames = ("calibri", "arial"),
         bold: bool = False,
         italic: bool = False,
         anchor_x: str = "left",
         anchor_y: str = "baseline",
         rotation: float = 0,  # TODO: Look into, why this field is not used
     ):
+        adjusted_font = attempt_font_name_resolution(font_name)
         self._label = pyglet.text.Label(
             text=text,
             x=start_x,
             y=start_y,
-            font_name=font_name,
+            font_name=adjusted_font,
             font_size=font_size,
             anchor_x=anchor_x,
             anchor_y=anchor_y,
@@ -59,19 +112,6 @@ class Text:
             self._label.draw()
 
 
-def load_font(font_name):
-    """ Load a font for later use """
-    if font_name.startswith(":resources:"):
-        try:
-            file_path = resolve_resource_path(font_name)
-        except FileNotFoundError:
-            raise FileNotFoundError(f"Unable to find resource with the name: {font_name}")
-    else:
-        file_path = font_name
-
-    pyglet.font.add_file(str(file_path))
-
-
 def draw_text(
     text: str,
     start_x: float,
@@ -80,7 +120,7 @@ def draw_text(
     font_size: float = 12,
     width: int = 0,
     align: str = "left",
-    font_name: Union[str, Tuple[str, ...]] = ("calibri", "arial"),
+    font_name: FontNameOrNames = ("calibri", "arial"),
     bold: bool = False,
     italic: bool = False,
     anchor_x: str = "left",
@@ -120,24 +160,7 @@ def draw_text(
         multiline = True
 
     if not label:
-        adjusted_font = font_name
-
-        if font_name:
-            if isinstance(font_name, str):
-                font_list: Tuple[str, ...] = (font_name, )
-            elif isinstance(font_name, tuple):
-                font_list = font_name
-            else:
-                raise TypeError("font_name parameter must be a string, or a list of strings that specify a font name.")
-
-            for font in font_list:
-                try:
-                    path = resolve_resource_path(font)
-                    # print(f"Font path: {path=}")
-                    adjusted_font = path.name
-                    break
-                except FileNotFoundError:
-                    pass
+        adjusted_font = attempt_font_name_resolution(font_name)
 
         label = pyglet.text.Label(
             text=text,
