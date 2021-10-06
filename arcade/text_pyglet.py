@@ -73,18 +73,22 @@ def _draw_label_with_rotation(label: pyglet.text.Label, rotation: float) -> None
 
     Helper for drawing pyglet labels with rotation within arcade.
 
-    Originally part of draw_text in this module, now abstracted so that
-    the OOP version, arcade.Text, can also make use of it.
+    Originally part of draw_text in this module, now abstracted and improved
+    so that both arcade.Text and arcade.draw_text can make use of it.
 
     :param pyglet.text.Label label: a pyglet label to wrap and draw
     :param float rotation: rotate this many degrees from horizontal around anchor
     :return:
     """
+
+    # raw pyglet draw functions need this context helper inside arcade
     window = arcade.get_window()
     with window.ctx.pyglet_rendering():
 
+        # execute view matrix magic to rotate cleanly
         if rotation:
             # original_view = window.view
+
             angle_radians = math.radians(rotation)
             x = label.x
             y = label.y
@@ -96,6 +100,13 @@ def _draw_label_with_rotation(label: pyglet.text.Label, rotation: float) -> None
             window.view = final_view
 
         label.draw()
+
+        # restore original position if we used view matrix magic
+        if rotation:
+            # linters might warn that this is used before assignment,
+            # but it's actually valid since we only use it when it was
+            # previously assigned.
+            label.x, label.y = x, y
 
 
 class Text:
