@@ -38,7 +38,7 @@ class Text:
             font_size=font_size,
             anchor_x=anchor_x,
             anchor_y=anchor_y,
-            color=color,
+            color=get_four_byte_color(color),
             width=width,
             align=align,
             bold=bold,
@@ -54,7 +54,9 @@ class Text:
         self._label.text = value
 
     def draw(self):
-        self._label.draw()
+        window = arcade.get_window()
+        with window.ctx.pyglet_rendering():
+            self._label.draw()
 
 
 def load_font(font_name):
