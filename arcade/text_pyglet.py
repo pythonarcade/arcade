@@ -64,6 +64,36 @@ def attempt_font_name_resolution(font_name: FontNameOrNames) -> FontNameOrNames:
     return font_name
 
 
+def _draw_label_with_rotation(label: pyglet.text.Label, rotation: float) -> None:
+    """
+
+    Helper for drawing pyglet labels with rotation within arcade.
+
+    Originally part of draw_text in this module, now abstracted so that
+    the OOP version, arcade.Text, can also make use of it.
+
+    :param pyglet.text.Label label: a pyglet label to wrap and draw
+    :param float rotation: rotate this many degrees from horizontal around anchor
+    :return:
+    """
+    window = arcade.get_window()
+    with window.ctx.pyglet_rendering():
+
+        if rotation:
+            # original_view = window.view
+            angle_radians = math.radians(rotation)
+            x = label.x
+            y = label.y
+            label.x = 0
+            label.y = 0
+            rview = Mat4().rotate(angle_radians, x=0, y=0, z=1)
+            tview = Mat4().translate(x=x, y=y, z=0)
+            final_view = rview @ tview
+            window.view = final_view
+
+        label.draw()
+
+
 class Text:
 
     def __init__(
@@ -80,7 +110,7 @@ class Text:
         italic: bool = False,
         anchor_x: str = "left",
         anchor_y: str = "baseline",
-        rotation: float = 0,  # TODO: Look into, why this field is not used
+        rotation: float = 0
     ):
         adjusted_font = attempt_font_name_resolution(font_name)
         self._label = pyglet.text.Label(
@@ -95,8 +125,9 @@ class Text:
             width=width,
             align=align,
             bold=bold,
-            italic=italic,
+            italic=italic
         )
+        self.rotation = rotation
 
     @property
     def value(self) -> str:
@@ -107,10 +138,7 @@ class Text:
         self._label.text = value
 
     def draw(self):
-        window = arcade.get_window()
-        with window.ctx.pyglet_rendering():
-            self._label.draw()
-
+        _draw_label_with_rotation(self._label, self.rotation)
 
 def draw_text(
     text: str,
@@ -185,22 +213,7 @@ def draw_text(
     label.y = start_y
     label.color = color
 
-    window = arcade.get_window()
-    with arcade.get_window().ctx.pyglet_rendering():
-
-        if rotation:
-            # original_view = window.view
-            angle_radians = math.radians(rotation)
-            x = label.x
-            y = label.y
-            label.x = 0
-            label.y = 0
-            rview = Mat4().rotate(angle_radians, x=0, y=0, z=1)
-            tview = Mat4().translate(x=x, y=y, z=0)
-            final_view = rview @ tview
-            window.view = final_view
-
-        label.draw()
+    _draw_label_with_rotation(label, rotation)
 
 
 # TODO: maybe remove, as this is invalid
