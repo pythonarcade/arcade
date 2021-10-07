@@ -10,13 +10,29 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
 UNRELEASED
 ----------
 
+* :class:`~arcade.PhysicsEnginePlatformer` Optimization:
+
+  A ``walls`` parameter has been added to this class. The new intention for usage of this class is for static(non-moving)
+  sprites to be sent to the ``walls`` parameter, while moving platforms should be sent to the ``platforms`` parameter. Properly
+  differentiating between these parameters can result in extreme performance benefits. Sprites added to ``platforms`` are
+  O(n) whereas Sprites added to ``walls`` are O(1). This has been tested with anywhere from 100 to 500k+ Sprites, and the
+  physics engine shows no measurable difference between those scenarios.
+
+  We have also removed the ability to send a single Sprite to the ``platforms``, ``ladders``, and ``walls`` parameters of this class.
+  This is a use case which results in some improper usage and unnecessary slowdowns. These parameters will now only accept SpriteLists
+  or an iterable such as a list containing SpriteLists. If you are currently using this functionality, you just need to add your Sprite
+  to a SpriteList and provide that instead.
+
+  The simple platformer tutorial has already been updated to make use of this optimzation.
+
+* :class:`~arcade.Scene` is now sub-scriptable:
+
+  Previously in order to retrieve a SpriteList from Scene, you needed to use either ``Scene.name_mapping`` or ``Scene.get_sprite_list``.
+  We have now added the ability to access it by subscripting the Scene object directly, like ``spritelist = my_scene["My Layer"]``
+
 * SpriteList now has a ``lazy`` (bool) parameter causing it not create internal OpenGL resources
   until the first draw call or until ``spriteList.initialize()`` is called. This means that
   sprite lists and sprites can now be created threads.
-* Optimization: PhysicsEnginePlatformer now separates moving platforms and static platforms. New
-  arguments were added to the initializer to supply them separately. This makes collision checking
-  with huge maps much more performant. Collision checking for static sprites goes from O(N) to O(1).
-  500k+ static sprites is no problem.
 * Optimization: Sprites should now take ~15 less memory and be ~15% faster to create
 * Added support for compute shaders. We support writing to textures and SSBOs (buffers).
   Examples can be found in ``arcade/experimental/examples``

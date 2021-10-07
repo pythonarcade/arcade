@@ -124,18 +124,18 @@ class MyGame(arcade.Window):
         # --- Load in a map from the tiled editor ---
 
         # Calculate the right edge of the my_map in pixels
-        self.end_of_map = self.tile_map.tiled_map.map_size.width * GRID_PIXEL_SIZE
+        self.end_of_map = self.tile_map.width * GRID_PIXEL_SIZE
 
         # --- Other stuff
         # Set the background color
-        if self.tile_map.tiled_map.background_color:
-            arcade.set_background_color(self.tile_map.tiled_map.background_color)
+        if self.tile_map.background_color:
+            arcade.set_background_color(self.tile_map.background_color)
 
         # Create the 'physics engine'
         self.physics_engine = arcade.PhysicsEnginePlatformer(
             self.player_sprite,
-            self.scene.get_sprite_list(LAYER_NAME_PLATFORMS),
-            GRAVITY,
+            gravity_constant=GRAVITY,
+            walls=self.scene[LAYER_NAME_PLATFORMS],
         )
 
     def on_draw(self):
@@ -204,7 +204,7 @@ class MyGame(arcade.Window):
 
         # See if we hit any coins
         coin_hit_list = arcade.check_for_collision_with_list(
-            self.player_sprite, self.scene.get_sprite_list(LAYER_NAME_COINS)
+            self.player_sprite, self.scene[LAYER_NAME_COINS]
         )
 
         # Loop through each coin we hit (if any) and remove it
@@ -225,7 +225,7 @@ class MyGame(arcade.Window):
 
         # Did the player touch something they should not?
         if arcade.check_for_collision_with_list(
-            self.player_sprite, self.scene.get_sprite_list(LAYER_NAME_DONT_TOUCH)
+            self.player_sprite, self.scene[LAYER_NAME_DONT_TOUCH]
         ):
             self.player_sprite.change_x = 0
             self.player_sprite.change_y = 0

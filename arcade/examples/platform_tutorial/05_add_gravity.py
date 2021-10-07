@@ -74,7 +74,7 @@ class MyGame(arcade.Window):
 
         # Create the 'physics engine'
         self.physics_engine = arcade.PhysicsEnginePlatformer(
-            self.player_sprite, self.scene.get_sprite_list("Walls"), GRAVITY
+            self.player_sprite, gravity_constant=GRAVITY, walls=self.scene["Walls"]
         )
 
     def on_draw(self):

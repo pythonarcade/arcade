@@ -335,15 +335,15 @@ class GameView(arcade.View):
         # Set up the player, specifically placing it at these coordinates.
         self.player_sprite = PlayerCharacter()
         self.player_sprite.center_x = (
-            self.tile_map.tiled_map.tile_size[0] * TILE_SCALING * PLAYER_START_X
+            self.tile_map.tile_width * TILE_SCALING * PLAYER_START_X
         )
         self.player_sprite.center_y = (
-            self.tile_map.tiled_map.tile_size[1] * TILE_SCALING * PLAYER_START_Y
+            self.tile_map.tile_height * TILE_SCALING * PLAYER_START_Y
         )
         self.scene.add_sprite(LAYER_NAME_PLAYER, self.player_sprite)
 
         # Calculate the right edge of the my_map in pixels
-        self.end_of_map = self.tile_map.tiled_map.map_size.width * GRID_PIXEL_SIZE
+        self.end_of_map = self.tile_map.width * GRID_PIXEL_SIZE
 
         # -- Enemies
         enemies_layer = self.tile_map.object_lists[LAYER_NAME_ENEMIES]
@@ -376,18 +376,16 @@ class GameView(arcade.View):
 
         # --- Other stuff
         # Set the background color
-        if self.tile_map.tiled_map.background_color:
-            arcade.set_background_color(self.tile_map.tiled_map.background_color)
+        if self.tile_map.background_color:
+            arcade.set_background_color(self.tile_map.background_color)
 
         # Create the 'physics engine'
         self.physics_engine = arcade.PhysicsEnginePlatformer(
             self.player_sprite,
-            [
-                self.scene.get_sprite_list(LAYER_NAME_PLATFORMS),
-                self.scene.get_sprite_list(LAYER_NAME_MOVING_PLATFORMS),
-            ],
+            platforms=self.scene[LAYER_NAME_MOVING_PLATFORMS],
             gravity_constant=GRAVITY,
-            ladders=self.scene.get_sprite_list(LAYER_NAME_LADDERS),
+            ladders=self.scene[LAYER_NAME_LADDERS],
+            walls=self.scene[LAYER_NAME_PLATFORMS]
         )
 
     def on_show(self):
@@ -573,7 +571,7 @@ class GameView(arcade.View):
         )
 
         # See if the enemy hit a boundary and needs to reverse direction.
-        for enemy in self.scene.get_sprite_list(LAYER_NAME_ENEMIES):
+        for enemy in self.scene[LAYER_NAME_ENEMIES]:
             if (
                 enemy.boundary_right
                 and enemy.right > enemy.boundary_right
@@ -588,45 +586,13 @@ class GameView(arcade.View):
             ):
                 enemy.change_x *= -1
 
-        # See if the moving wall hit a boundary and needs to reverse direction.
-        for wall in self.scene.get_sprite_list(LAYER_NAME_MOVING_PLATFORMS):
-
-            if (
-                wall.boundary_right
-                and wall.right > wall.boundary_right
-                and wall.change_x > 0
-            ):
-                wall.change_x *= -1
-            if (
-                wall.boundary_left
-                and wall.left < wall.boundary_left
-                and wall.change_x < 0
-            ):
-                wall.change_x *= -1
-            if wall.boundary_top and wall.top > wall.boundary_top and wall.change_y > 0:
-                wall.change_y *= -1
-            if (
-                wall.boundary_bottom
-                and wall.bottom < wall.boundary_bottom
-                and wall.change_y < 0
-            ):
-                wall.change_y *= -1
-
-        player_collision_list = arcade.check_for_collision_with_lists(
-            self.player_sprite,
-            [
-                self.scene.get_sprite_list(LAYER_NAME_COINS),
-                self.scene.get_sprite_list(LAYER_NAME_ENEMIES),
-            ],
-        )
-
-        for bullet in self.scene.get_sprite_list(LAYER_NAME_BULLETS):
+        for bullet in self.scene[LAYER_NAME_BULLETS]:
             hit_list = arcade.check_for_collision_with_lists(
                 bullet,
                 [
-                    self.scene.get_sprite_list(LAYER_NAME_ENEMIES),
-                    self.scene.get_sprite_list(LAYER_NAME_PLATFORMS),
-                    self.scene.get_sprite_list(LAYER_NAME_MOVING_PLATFORMS),
+                    self.scene[LAYER_NAME_ENEMIES],
+                    self.scene[LAYER_NAME_PLATFORMS],
+                    self.scene[LAYER_NAME_MOVING_PLATFORMS],
                 ],
             )
 
@@ -635,7 +601,7 @@ class GameView(arcade.View):
 
                 for collision in hit_list:
                     if (
-                        self.scene.get_sprite_list(LAYER_NAME_ENEMIES)
+                        self.scene[LAYER_NAME_ENEMIES]
                         in collision.sprite_lists
                     ):
                         # The collision was with an enemy
@@ -656,10 +622,18 @@ class GameView(arcade.View):
             ):
                 bullet.remove_from_sprite_lists()
 
+        player_collision_list = arcade.check_for_collision_with_lists(
+            self.player_sprite,
+            [
+                self.scene[LAYER_NAME_COINS],
+                self.scene[LAYER_NAME_ENEMIES],
+            ],
+        )
+
         # Loop through each coin we hit (if any) and remove it
         for collision in player_collision_list:
 
-            if self.scene.get_sprite_list(LAYER_NAME_ENEMIES) in collision.sprite_lists:
+            if self.scene[LAYER_NAME_ENEMIES] in collision.sprite_lists:
                 arcade.play_sound(self.game_over)
                 game_over = GameOverView()
                 self.window.show_view(game_over)
