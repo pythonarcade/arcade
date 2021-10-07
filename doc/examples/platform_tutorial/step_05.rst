@@ -20,6 +20,20 @@ At the end of the ``setup`` method, change the physics engine to
     :caption: 05_add_gravity.py - Add Gravity
     :lines: 75-78
 
+We are sending our ``SpriteList`` for the things the player should collide with to the ``walls``
+parameter of the the physics engine. As we'll see in later chapters, the platformer physics engine
+has a ``platforms`` and ``walls`` parameter. The difference between these is very important. Static
+non-moving spritelists should always be sent to the ``walls`` parameter, and moving sprites should
+be sent to the ``platforms`` parameter. Ensuring you do this will have extreme benefits to performance.
+
+Adding static sprites via the ``platforms`` parameter is roughly an O(n) operation, meaning performance will
+linearly get worse as you add more sprites. If you add your static sprites via the ``walls`` parameter, then
+it is nearly O(1) and there is essentially no difference between for example 100 and 50,000 non-moving sprites.
+
+We also see here some new syntax relating to our ``Scene`` object. You can access the scene like you would a
+Python dictionary in order to get your SpriteLists from it. There are multiple ways to access the SpriteLists
+within a Scene but this is the easiest and most straight forward. You could alternatively use ``scene.get_sprite_list("My Layer")``.
+
 Then, modify the key down and key up event handlers. We'll remove the up/down
 statements we had before, and make 'UP' jump when pressed.
 

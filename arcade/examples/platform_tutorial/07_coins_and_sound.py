@@ -92,7 +92,7 @@ class MyGame(arcade.Window):
 
         # Create the 'physics engine'
         self.physics_engine = arcade.PhysicsEnginePlatformer(
-            self.player_sprite, self.scene.get_sprite_list("Walls"), GRAVITY
+            self.player_sprite, gravity_constant=GRAVITY, walls=self.scene["Walls"]
         )
 
     def on_draw(self):
@@ -148,7 +148,7 @@ class MyGame(arcade.Window):
 
         # See if we hit any coins
         coin_hit_list = arcade.check_for_collision_with_list(
-            self.player_sprite, self.scene.get_sprite_list("Coins")
+            self.player_sprite, self.scene["Coins"]
         )
 
         # Loop through each coin we hit (if any) and remove it
