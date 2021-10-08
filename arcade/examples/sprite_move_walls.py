@@ -63,14 +63,16 @@ class MyGame(arcade.Window):
         # -- Set up the walls
         # Create a row of boxes
         for x in range(173, 650, 64):
-            wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", SPRITE_SCALING)
+            wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png",
+                                 SPRITE_SCALING)
             wall.center_x = x
             wall.center_y = 200
             self.wall_list.append(wall)
 
         # Create a column of boxes
         for y in range(273, 500, 64):
-            wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", SPRITE_SCALING)
+            wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png",
+                                 SPRITE_SCALING)
             wall.center_x = 465
             wall.center_y = y
             self.wall_list.append(wall)

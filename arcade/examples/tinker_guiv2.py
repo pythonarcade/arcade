@@ -88,7 +88,11 @@ class UIMockup(arcade.Window):
         #         self.manager.add(
         # FlatButton(x, y, 80, 30, text="Hello", style={"font_size": 10})
         # ImageButton(x, y, 80, 30, tex, tex_hov, tex_press, text="Hallo")
-        # SpriteWidget(x=x, y=y, width=80, height=30, sprite=Sprite(":resources:gui_basic_assets/red_button_normal.png"))  # noqa
+        # SpriteWidget(x=x,
+        #              y=y,
+        #              width=80,
+        #              height=30,
+        #              sprite=Sprite(":resources:gui_basic_assets/red_button_normal.png"))
         # ).on_click = self.on_button_click
 
         self.manager.add(

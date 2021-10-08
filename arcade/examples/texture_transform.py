@@ -44,7 +44,8 @@ class MyGame(arcade.Window):
 
     def setup(self):
         """ Setup """
-        self.ship = arcade.Sprite(":resources:images/space_shooter/playerShip1_orange.png", 0.5)
+        self.ship = arcade.Sprite(":resources:images/space_shooter/playerShip1_orange.png",
+                                  0.5)
         self.ship.center_x = SCREEN_WIDTH / 2
         self.ship.center_y = SCREEN_HEIGHT / 2
         self.ship.angle = 270

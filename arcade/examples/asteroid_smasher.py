@@ -188,14 +188,18 @@ class MyGame(arcade.Window):
 
         # Set up the player
         self.score = 0
-        self.player_sprite = ShipSprite(":resources:images/space_shooter/playerShip1_orange.png", SCALE)
+        self.player_sprite = ShipSprite(":resources:images/space_shooter/"
+                                        "playerShip1_orange.png",
+                                        SCALE)
         self.player_sprite_list.append(self.player_sprite)
         self.lives = 3
 
         # Set up the little icons that represent the player lives.
         cur_pos = 10
         for i in range(self.lives):
-            life = arcade.Sprite(":resources:images/space_shooter/playerLife1_orange.png", SCALE)
+            life = arcade.Sprite(":resources:images/space_shooter/"
+                                 "playerLife1_orange.png",
+                                 SCALE)
             life.center_x = cur_pos + life.width
             life.center_y = life.height
             cur_pos += life.width
@@ -246,7 +250,9 @@ class MyGame(arcade.Window):
         """ Called whenever a key is pressed. """
         # Shoot if the player hit the space bar and we aren't respawning.
         if not self.player_sprite.respawning and symbol == arcade.key.SPACE:
-            bullet_sprite = TurningSprite(":resources:images/space_shooter/laserBlue01.png", SCALE)
+            bullet_sprite = TurningSprite(":resources:images/space_shooter/"
+                                          "laserBlue01.png",
+                                          SCALE)
             bullet_sprite.guid = "Bullet"
 
             bullet_speed = 13
@@ -367,10 +373,12 @@ class MyGame(arcade.Window):
             self.player_sprite_list.update()
 
             for bullet in self.bullet_list:
-                asteroids = arcade.check_for_collision_with_list(bullet, self.asteroid_list)
+                asteroids = arcade.check_for_collision_with_list(bullet,
+                                                                 self.asteroid_list)
 
                 for asteroid in asteroids:
-                    self.split_asteroid(cast(AsteroidSprite, asteroid))  # expected AsteroidSprite, got Sprite instead
+                    # expected AsteroidSprite, got Sprite instead
+                    self.split_asteroid(cast(AsteroidSprite, asteroid))
                     asteroid.remove_from_sprite_lists()
                     bullet.remove_from_sprite_lists()
 
@@ -386,7 +394,8 @@ class MyGame(arcade.Window):
                     bullet.remove_from_sprite_lists()
 
             if not self.player_sprite.respawning:
-                asteroids = arcade.check_for_collision_with_list(self.player_sprite, self.asteroid_list)
+                asteroids = arcade.check_for_collision_with_list(self.player_sprite,
+                                                                 self.asteroid_list)
                 if len(asteroids) > 0:
                     if self.lives > 0:
                         self.lives -= 1

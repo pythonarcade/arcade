@@ -39,13 +39,15 @@ def make_person(head_radius,
     shape_list.append(shape)
 
     # Right leg
-    shape = arcade.create_rectangle_filled((chest_width / 2) - leg_width / 2, -(chest_height / 2) - leg_height / 2,
+    shape = arcade.create_rectangle_filled((chest_width / 2) - leg_width / 2,
+                                           -(chest_height / 2) - leg_height / 2,
                                            leg_width, leg_height, arcade.color.RED)
     shape_list.append(shape)
 
     # Left arm
     shape = arcade.create_rectangle_filled(-(chest_width / 2) - arm_width / 2 - arm_gap,
-                                           (chest_height / 2) - arm_length / 2 - shoulder_height, arm_width, arm_length,
+                                           (chest_height / 2) - arm_length / 2 - shoulder_height,
+                                           arm_width, arm_length,
                                            arcade.color.BLUE)
     shape_list.append(shape)
 
@@ -57,7 +59,8 @@ def make_person(head_radius,
 
     # Right arm
     shape = arcade.create_rectangle_filled((chest_width / 2) + arm_width / 2 + arm_gap,
-                                           (chest_height / 2) - arm_length / 2 - shoulder_height, arm_width, arm_length,
+                                           (chest_height / 2) - arm_length / 2 - shoulder_height,
+                                           arm_width, arm_length,
                                            arcade.color.BLUE)
     shape_list.append(shape)
 

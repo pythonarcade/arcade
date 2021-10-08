@@ -79,7 +79,8 @@ texture_list = create_textures()
 
 def rotate_counterclockwise(shape):
     """ Rotates a matrix clockwise """
-    return [[shape[y][x] for y in range(len(shape))] for x in range(len(shape[0]) - 1, -1, -1)]
+    return [[shape[y][x] for y in range(len(shape))]
+            for x in range(len(shape[0]) - 1, -1, -1)]
 
 
 def check_collision(board, shape, offset):

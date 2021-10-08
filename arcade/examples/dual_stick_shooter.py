@@ -205,12 +205,14 @@ class MyGame(arcade.View):
         self.enemy_list.update()
         self.player.update()
         self.bullet_list.update()
-        ship_death_hit_list = arcade.check_for_collision_with_list(self.player, self.enemy_list)
+        ship_death_hit_list = arcade.check_for_collision_with_list(self.player,
+                                                                   self.enemy_list)
         if len(ship_death_hit_list) > 0:
             self.game_over = True
         for bullet in self.bullet_list:
             bullet_killed = False
-            enemy_shot_list = arcade.check_for_collision_with_list(bullet, self.enemy_list)
+            enemy_shot_list = arcade.check_for_collision_with_list(bullet,
+                                                                   self.enemy_list)
             # Loop through each colliding sprite, remove it, and add to the score.
             for enemy in enemy_shot_list:
                 enemy.remove_from_sprite_lists()
@@ -302,8 +304,14 @@ class MyGame(arcade.View):
 
         # Game over message
         if self.game_over:
-            arcade.draw_text("Game Over", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, arcade.color.WHITE, 100, width=SCREEN_WIDTH,  # noqa
-                             align="center", anchor_x="center", anchor_y="center")
+            arcade.draw_text("Game Over",
+                             SCREEN_WIDTH / 2,
+                             SCREEN_HEIGHT / 2,
+                             arcade.color.WHITE, 100,
+                             width=SCREEN_WIDTH,
+                             align="center",
+                             anchor_x="center",
+                             anchor_y="center")
 
 
 class JoyConfigView(arcade.View):
