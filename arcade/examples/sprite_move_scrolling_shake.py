@@ -179,8 +179,10 @@ class MyGame(arcade.Window):
         pan.
         """
 
-        position = self.player_sprite.center_x - self.width / 2, \
-                   self.player_sprite.center_y - self.height / 2
+        position = (
+            self.player_sprite.center_x - self.width / 2,
+            self.player_sprite.center_y - self.height / 2
+        )
         self.camera_sprites.move_to(position, CAMERA_SPEED)
 
     def on_resize(self, width, height):
