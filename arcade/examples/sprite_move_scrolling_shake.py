@@ -147,7 +147,6 @@ class MyGame(arcade.Window):
 
         hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.bomb_list)
         for bomb in hit_list:
-
             # Remove the bomb and go 'boom'
             bomb.remove_from_sprite_lists()
             self.explosion_sound.play()
@@ -159,7 +158,7 @@ class MyGame(arcade.Window):
             shake_amplitude = 10
             # Calculate a vector based on that
             shake_vector = math.cos(shake_direction) * shake_amplitude, \
-                           math.sin(shake_direction) * shake_amplitude
+                math.sin(shake_direction) * shake_amplitude
             # Frequency of the shake
             shake_speed = 1.5
             # How fast to damp the shake
@@ -179,7 +178,7 @@ class MyGame(arcade.Window):
         """
 
         position = self.player_sprite.center_x - self.width / 2, \
-            self.player_sprite.center_y - self.height / 2
+                   self.player_sprite.center_y - self.height / 2
         self.camera_sprites.move_to(position, CAMERA_SPEED)
 
     def on_resize(self, width, height):
