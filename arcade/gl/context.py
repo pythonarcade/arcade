@@ -227,16 +227,25 @@ class Context:
         """
         return self._gl_version
 
-    def gc(self):
+    def gc(self) -> int:
         """
         Run garbage collection of OpenGL objects for this context.
         This is only needed when ``gc_mode`` is ``context_gc``.
+
+        :return: The number of resources destroyed
+        :rtype: int
         """
         # Loop the array until all objects are gone.
         # Deleting one object might add new ones so we need
+        # to loop until the deque is empty
+        num_objects = 0
+
         while len(self.objects):
             obj = self.objects.pop()
             obj.delete()
+            num_objects += 1
+
+        return num_objects
 
     @property
     def gc_mode(self) -> str:
