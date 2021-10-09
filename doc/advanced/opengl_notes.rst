@@ -54,3 +54,10 @@ Note that if vsync is enabled all threads will stall
 when all rendering is done and OpenGL is waiting for
 the next vertical blank. The only way to combat this
 is to disable vsync or use subprocesses.
+
+SpriteLists can be created in threads if they are
+created with the ``lazy=True`` parameters.
+This ensures OpenGL resources are not created until the
+first ``draw()`` call or ``initialize()`` is called.
+This can be especially useful when using spatial hashing
+because the initial calculations can be costly.
