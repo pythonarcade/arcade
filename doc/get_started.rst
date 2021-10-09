@@ -44,10 +44,10 @@ Arcade Skill Tree
 
 * Sprites - Almost everything in Arcade is done with the :class:`arcade.Sprite` class.
 
-  * `Basic Sprites and Collisions <https://learn.arcade.academy/en/latest/chapters/18_sprites_and_collisions/sprites.html#basic-sprites-and-collisions>`_
-  * `Individually place sprites <https://learn.arcade.academy/en/latest/chapters/22_sprites_and_walls/sprites_and_walls.html#individually-placing-walls>`_
-  * `Place sprites with a loop <https://learn.arcade.academy/en/latest/chapters/22_sprites_and_walls/sprites_and_walls.html#placing-walls-with-a-loop>`_
-  * `Place sprites with a list <https://learn.arcade.academy/en/latest/chapters/22_sprites_and_walls/sprites_and_walls.html#placing-walls-with-a-list>`_
+  * `Basic Sprites and Collisions <https://learn.arcade.academy/en/latest/chapters/21_sprites_and_collisions/sprites.html#basic-sprites-and-collisions>`_
+  * `Individually place sprites <https://learn.arcade.academy/en/latest/chapters/25_sprites_and_walls/sprites_and_walls.html#individually-placing-walls>`_
+  * `Place sprites with a loop <https://learn.arcade.academy/en/latest/chapters/25_sprites_and_walls/sprites_and_walls.html#placing-walls-with-a-loop>`_
+  * `Place sprites with a list <https://learn.arcade.academy/en/latest/chapters/25_sprites_and_walls/sprites_and_walls.html#placing-walls-with-a-list>`_
 
 * Moving player sprites
 
