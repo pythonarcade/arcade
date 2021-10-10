@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Dict, Optional, Tuple, Union
 
 import pyglet
+from pyglet import gl
 from PIL import Image
 
 import arcade
@@ -275,9 +276,13 @@ class ArcadeContext(Context):
         self.window.projection = self._projection_2d_matrix
         # Global modelview matrix should be set to identity
         self.window.view = Mat4()
+        # Ensure pyglet doesn't mess with our vertex arrays
+        gl.glBindVertexArray(0)
         try:
             yield None
         finally:
+            # Ensure we don't mess with pyglet's vertex arrays
+            gl.glBindVertexArray(0)
             # Force arcade.gl to rebind programs
             self.active_program = None
             # Rebind the projection uniform block
