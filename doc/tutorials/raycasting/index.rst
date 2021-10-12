@@ -361,7 +361,7 @@ Step 6: Soft Shadows and Wall Drawing
 With one more line of code, we can soften up the shadows so they don't have
 such a "hard" edge to them.
 
-To do this, modify tje ``terrain`` function in our GLSL program.
+To do this, modify the ``terrain`` function in our GLSL program.
 Rather than return 0.0 or 1.0, we'll return 0.0 or 0.98.
 This allows edges to only partially block the light.
 
