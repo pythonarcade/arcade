@@ -90,7 +90,7 @@ rem -- Make the documentation
 
 rmdir /s /q "doc\build"
 sphinx-build -n -b html doc doc/build/html
-
+echo "Finished building the documentation. Docs are in .\doc\build\html"
 GOTO end
 
 rem -- Make the documentation
