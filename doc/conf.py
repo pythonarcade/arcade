@@ -27,6 +27,9 @@ runpy.run_path('../util/update_quick_index.py', run_name='__main__')
 
 autodoc_inherit_docstrings = False
 
+# quick fix for #1005 to enable constructor docstrings to be used
+autoclass_content = 'both'
+
 sys.path.insert(0, os.path.abspath('..'))
 sys.path.insert(0, os.path.abspath('../arcade'))
 
