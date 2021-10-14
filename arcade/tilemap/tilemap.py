@@ -616,6 +616,7 @@ class TileMap:
         my_sprite.center_x = (layer.offset[0] * scaling) + my_sprite.width / 2
         my_sprite.center_y = layer.offset[1]
 
+        sprite_list.visible = layer.visible
         sprite_list.append(my_sprite)
         return sprite_list
 
@@ -681,6 +682,7 @@ class TileMap:
                     if opacity:
                         my_sprite.alpha = int(opacity * 255)
 
+                    sprite_list.visible = layer.visible
                     sprite_list.append(my_sprite)
 
         return sprite_list
@@ -783,6 +785,7 @@ class TileMap:
                 if cur_object.name:
                     my_sprite.properties["name"] = cur_object.name
 
+                sprite_list.visible = layer.visible
                 sprite_list.append(my_sprite)
                 continue
             elif isinstance(cur_object, pytiled_parser.tiled_object.Point):
