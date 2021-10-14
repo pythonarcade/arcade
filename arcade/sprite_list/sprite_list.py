@@ -13,7 +13,6 @@ from typing import (TYPE_CHECKING, Deque, Dict, Iterator, List, Optional, Set,
 
 from arcade import Color, Sprite, get_window, gl
 from arcade.context import ArcadeContext
-
 from pyglet.math import Mat3
 
 if TYPE_CHECKING:
@@ -44,6 +43,7 @@ class SpriteList:
             atlas: "TextureAtlas" = None,
             capacity: int = 100,
             lazy: bool = False,
+            visible: bool = True,
     ):
         """
         Initialize the sprite list
@@ -64,6 +64,8 @@ class SpriteList:
         :param bool lazy: Enabling lazy spritelists ensures no internal OpenGL
                           resources are created until the first draw. This can be
                           useful when making spritelists in threads.
+        :param bool visible: Setting this to False will cause the SpriteList to not
+                be drawn. When draw is called, the method will just return without drawing.
         """
         self.ctx = None
         self.program = None
@@ -72,6 +74,7 @@ class SpriteList:
         self._initialized = False
         self.extra = None
         self._lazy = lazy
+        self.visible = visible
 
         # The initial capacity of the spritelist buffers (internal)
         self._buf_capacity = abs(capacity) or 100
@@ -802,7 +805,7 @@ class SpriteList:
         """
         self._init_deferred()
 
-        if len(self.sprite_list) == 0:
+        if len(self.sprite_list) == 0 or not self.visible:
             return
 
         # What percent of this sprite list moved? Used in guessing spatial hashing
