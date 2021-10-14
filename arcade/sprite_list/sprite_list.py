@@ -30,11 +30,46 @@ _SPRITE_SLOT_INVISIBLE = 2000000000
 
 class SpriteList:
     """
-    Keep a list of sprites. Contains many optimizations around batch-drawing sprites
-    and doing collision detection. For optimization reasons, use_spatial_hash and
-    is_static are very important.
-    """
+    The purpose of the spriteList is to batch draw a list of sprites.
+    Drawing single sprites will not get you anywhere performance wise
+    as the number of sprites in your project increases. The spritelist
+    contains many low level optimizations taking advantage of your
+    graphics processor. To put things into perspective, a spritelist
+    can contain tens of thousands of sprites without any issues.
+    Sprites outside the viewport/window will not be rendered.
 
+    If the spriteslist are going to be used for collision it's a good
+    idea to enable spatial hashing. Especially if no sprites are moving.
+    This will make collision checking **a lot** faster.
+    In technical terms collision checking is ``O(1)`` with spatial hashing
+    enabled and ``O(N)`` without. However, if you have a
+    list of moving sprites the cost of updating the spatial hash
+    when they are moved can be greater than what you save with
+    spatial collision checks. This needs to be profiled on a
+    case by case basis.
+
+    For the advanced options check the advanced section in the
+    arcade documentation.
+
+    :param bool use_spatial_hash: If set to True, this will make moving a sprite
+            in the SpriteList slower, but it will speed up collision detection
+            with items in the SpriteList. Great for doing collision detection
+            with static walls/platforms.
+    :param int spatial_hash_cell_size: The cell size of the spatial hash (default: 128)
+    :param bool is_static: DEPRECATED. This parameter has no effect.
+    :param TextureAtlas atlas: (Advanced) The texture atlas for this sprite list. If no
+            atlas is supplied the global/default one will be used.
+    :param int capacity: (Advanced) The initial capacity of the internal buffer.
+            It's a suggestion for the maximum amount of sprites this list
+            can hold. Can normally be left with default value.
+    :param bool lazy: (Advanced) Enabling lazy spritelists ensures no internal OpenGL
+                      resources are created until the first draw call or ``initialize()``
+                      is called. This can be useful when making spritelists in threads
+                      because only the main thread is allowed to interact with
+                      OpenGL.
+    :param bool visible: Setting this to False will cause the SpriteList to not
+            be drawn. When draw is called, the method will just return without drawing.
+    """
     def __init__(
             self,
             use_spatial_hash=None,
@@ -45,28 +80,6 @@ class SpriteList:
             lazy: bool = False,
             visible: bool = True,
     ):
-        """
-        Initialize the sprite list
-
-        :param bool use_spatial_hash: If set to True, this will make moving a sprite
-               in the SpriteList slower, but it will speed up collision detection
-               with items in the SpriteList. Great for doing collision detection
-               with static walls/platforms.
-        :param int spatial_hash_cell_size:
-        :param bool is_static: Speeds drawing if the sprites in the list do not
-               move. Will result in buggy behavior if the sprites move when this
-               is set to True.
-        :param TextureAtlas atlas: The texture alas for this sprite list. If no
-               atlas is supplied the global/default one will be used.
-        :param int capacity: The initial capacity of the internal buffer.
-               It's a suggestion for the maximum amount of sprites this list
-               can hold. Can normally be left with default value.
-        :param bool lazy: Enabling lazy spritelists ensures no internal OpenGL
-                          resources are created until the first draw. This can be
-                          useful when making spritelists in threads.
-        :param bool visible: Setting this to False will cause the SpriteList to not
-                be drawn. When draw is called, the method will just return without drawing.
-        """
         self.ctx = None
         self.program = None
         if atlas:
@@ -74,7 +87,7 @@ class SpriteList:
         self._initialized = False
         self.extra = None
         self._lazy = lazy
-        self.visible = visible
+        self._visible = visible
 
         # The initial capacity of the spritelist buffers (internal)
         self._buf_capacity = abs(capacity) or 100
@@ -152,7 +165,10 @@ class SpriteList:
             print(ex)
 
     def _init_deferred(self):
-        """Since spritelist can be created before the window we need to defer initialization"""
+        """
+        Since spritelist can be created before the window we need to defer initialization.
+        It also make us able to support lazy loading.
+        """
         if self._initialized:
             return
 
@@ -246,6 +262,18 @@ class SpriteList:
 
         # Update the internal sprite buffer data
         self._update_all(sprite)
+
+    @property
+    def visible(self) -> bool:
+        """
+        Get or set the visible flag for this spritelist.
+        If visible is ``False`` the ``draw()`` has no effect.
+        """
+        return self._visible
+
+    @visible.setter
+    def visible(self, value: bool):
+        self._visible = value
 
     @property
     def atlas(self) -> "TextureAtlas":
@@ -805,7 +833,7 @@ class SpriteList:
         """
         self._init_deferred()
 
-        if len(self.sprite_list) == 0 or not self.visible:
+        if len(self.sprite_list) == 0 or not self._visible:
             return
 
         # What percent of this sprite list moved? Used in guessing spatial hashing
