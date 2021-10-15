@@ -136,11 +136,27 @@ class MyGame(arcade.Window):
                          font_name="Kenney Rocket Square")
 
         start_y -= DEFAULT_LINE_HEIGHT
-        arcade.draw_text("Garamond Font",
+        # When trying to use system fonts, it can be risky to specify
+        # only a single font because someone else's computer might not
+        # have it installed. This is especially true if they run a
+        # different operating system. For example, if you are on Windows
+        # and a friend has a mac or Linux, they might not have the same
+        # fonts. Your game could look different or broken on their computer.
+        # One way around that is to provide multiple options for draw_text
+        # to try. It will use the first one it finds, and use Arial as a
+        # default if it can't find any of them.
+        # In the example below, draw_text is given a tuple of names for very
+        # similar fonts, each of which is common on a different major
+        # operating systems.
+        arcade.draw_text("Times New Roman (Or closest match on system)",
                          start_x, start_y,
                          arcade.color.BLACK,
                          DEFAULT_FONT_SIZE,
-                         font_name="Garamond")
+                         font_name=(
+                             "Times New Roman",  # Comes with Windows
+                             "Times",  # MacOS may sometimes have this variant
+                             "Liberation Serif"  # Common on Linux systems
+                         ))
 
         start_y -= DEFAULT_LINE_HEIGHT
         arcade.draw_text("Multi-Line\ntext using\n\\n characters.",
