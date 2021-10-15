@@ -34,6 +34,30 @@ class Texture:
     Class that represents a texture.
     Usually created by the :class:`load_texture` or :class:`load_textures` commands.
 
+    :param str name: Name of texture. Used for caching, so must be unique for each texture.
+    :param PIL.Image.Image image: Image to use as a texture.
+    :param str hit_box_algorithm: One of None, 'None', 'Simple' or 'Detailed'. \
+    Defaults to 'Simple'. Use 'Simple' for the :data:`PhysicsEngineSimple`, \
+    :data:`PhysicsEnginePlatformer` \
+    and 'Detailed' for the :data:`PymunkPhysicsEngine`.
+
+        .. figure:: ../images/hit_box_algorithm_none.png
+           :width: 40%
+
+           hit_box_algorithm = "None"
+
+        .. figure:: ../images/hit_box_algorithm_simple.png
+           :width: 55%
+
+           hit_box_algorithm = "Simple"
+
+        .. figure:: ../images/hit_box_algorithm_detailed.png
+           :width: 75%
+
+           hit_box_algorithm = "Detailed"
+
+    :param float hit_box_detail: Float, defaults to 4.5. Used with 'Detailed' to hit box
+
     Attributes:
         :name: Unique name of the texture. Used by load_textures for caching.
                If you are manually creating a texture, you can just set this
@@ -41,6 +65,8 @@ class Texture:
         :image: A :py:class:`PIL.Image.Image` object.
         :width: Width of the texture in pixels.
         :height: Height of the texture in pixels.
+
+
     """
 
     def __init__(self,
@@ -49,33 +75,7 @@ class Texture:
                  hit_box_algorithm: Optional[str] = "Simple",
                  hit_box_detail: float = 4.5):
         """
-        Create a texture, given a PIL Image object.
-
-        :param str name: Name of texture. Used for caching, so must be unique for each texture.
-        :param PIL.Image.Image image: Image to use as a texture.
-        :param str hit_box_algorithm: One of None, 'None', 'Simple' or 'Detailed'. \
-        Defaults to 'Simple'. Use 'Simple' for the :data:`PhysicsEngineSimple`, \
-        :data:`PhysicsEnginePlatformer` \
-        and 'Detailed' for the :data:`PymunkPhysicsEngine`.
-
-            .. figure:: ../images/hit_box_algorithm_none.png
-               :width: 40%
-
-               hit_box_algorithm = "None"
-
-            .. figure:: ../images/hit_box_algorithm_simple.png
-               :width: 55%
-
-               hit_box_algorithm = "Simple"
-
-            .. figure:: ../images/hit_box_algorithm_detailed.png
-               :width: 75%
-
-               hit_box_algorithm = "Detailed"
-
-        :param float hit_box_detail: Float, defaults to 4.5. Used with 'Detailed' to hit box
-
-        """
+        Create a texture, given a PIL Image object. """
         from arcade.sprite import Sprite
         from arcade.sprite_list import SpriteList
 
@@ -556,7 +556,7 @@ def build_cache_name(*args: Any, separator: str = "-") -> str:
     :param args: params to format
     :param separator: separator character or string between params
 
-    :returns: Formatted cache string representing passed parameters
+    :return: Formatted cache string representing passed parameters
     """
     return separator.join([f"{arg}" for arg in args])
 
