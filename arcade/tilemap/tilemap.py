@@ -87,6 +87,49 @@ class TileMap:
     For examples on how to use this class, see:
     https://api.arcade.academy/en/latest/examples/platform_tutorial/step_09.html
 
+
+    :param Union[str, Path] map_file: A JSON map file for a Tiled map to initialize from
+    :param float scaling: Global scaling to apply to all Sprites.
+    :param Dict[str, Dict[str, Any]] layer_options: Extra parameters for each layer.
+    :param Optional[bool] use_spatial_hash: If set to True, this will make moving a sprite
+           in the SpriteList slower, but it will speed up collision detection
+           with items in the SpriteList. Great for doing collision detection
+           with static walls/platforms.
+    :param str hit_box_algorithm: One of 'None', 'Simple' or 'Detailed'.
+    :param float hit_box_detail: Float, defaults to 4.5. Used with 'Detailed' to hit box.
+
+
+    The `layer_options` parameter can be used to specify per layer arguments.
+
+    The available options for this are:
+
+        use_spatial_hash - A boolean to enable spatial hashing on this layer's SpriteList.
+        scaling - A float providing layer specific Sprite scaling.
+        hit_box_algorithm - A string for the hit box algorithm to use for the Sprite's in this layer.
+        hit_box_detail - A float specifying the level of detail for each Sprite's hitbox
+        custom_class - All objects in the layer are created from this class instead of Sprite.
+                       Must be subclass of Sprite.
+        custom_class_args - Custom arguments, passed into the constructor of the custom_class
+
+        For example:
+
+        code-block::
+
+            layer_options = {
+                "Platforms": {
+                    "use_spatial_hash": True,
+                    "scaling": 2.5,
+                    "custom_class": Platform,
+                    "custom_class_args": {
+                        "health": 100
+                    }
+                },
+            }
+
+    The keys and their values in each layer are passed to the layer processing functions
+    using the `**` operator on the dictionary.
+
+
     Attributes:
         :tiled_map: The pytiled-parser map object. This can be useful for implementing features
                     that aren't supported by this class by accessing the raw map data directly.
@@ -115,44 +158,7 @@ class TileMap:
         Given a .json file, this will read in a Tiled map file, and
         initialize a new TileMap object.
 
-        The `layer_options` parameter can be used to specify per layer arguments.
-        The available options for this are:
 
-            use_spatial_hash - A boolean to enable spatial hashing on this layer's SpriteList.
-            scaling - A float providing layer specific Sprite scaling.
-            hit_box_algorithm - A string for the hit box algorithm to use for the Sprite's in this layer.
-            hit_box_detail - A float specifying the level of detail for each Sprite's hitbox
-            custom_class - All objects in the layer are created from this class instead of Sprite.
-                           Must be subclass of Sprite.
-            custom_class_args - Custom arguments, passed into the constructor of the custom_class
-
-            For example:
-
-            code-block::
-
-                layer_options = {
-                    "Platforms": {
-                        "use_spatial_hash": True,
-                        "scaling": 2.5,
-                        "custom_class": Platform,
-                        "custom_class_args": {
-                            "health": 100
-                        }
-                    },
-                }
-
-        The keys and their values in each layer are passed to the layer processing functions
-        using the `**` operator on the dictionary.
-
-        :param Union[str, Path] map_file: The JSON map file.
-        :param float scaling: Global scaling to apply to all Sprites.
-        :param Dict[str, Dict[str, Any]] layer_options: Extra parameters for each layer.
-        :param Optional[bool] use_spatial_hash: If set to True, this will make moving a sprite
-               in the SpriteList slower, but it will speed up collision detection
-               with items in the SpriteList. Great for doing collision detection
-               with static walls/platforms.
-        :param str hit_box_algorithm: One of 'None', 'Simple' or 'Detailed'.
-        :param float hit_box_detail: Float, defaults to 4.5. Used with 'Detailed' to hit box.
         """
 
         # If we should pull from local resources, replace with proper path
