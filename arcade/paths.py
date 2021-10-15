@@ -202,6 +202,14 @@ class AStarBarrierList:
     """
     Class that manages a list of barriers that can be encountered during
     A* path finding.
+
+    :param Sprite moving_sprite: Sprite that will be moving
+    :param SpriteList blocking_sprites: Sprites that can block movement
+    :param int grid_size: Size of the grid, in pixels
+    :param int left: Left border of playing field
+    :param int right: Right border of playing field
+    :param int bottom: Bottom of playing field
+    :param int top: Top of playing field
     """
     def __init__(self,
                  moving_sprite: Sprite,
@@ -211,15 +219,6 @@ class AStarBarrierList:
                  right: int,
                  bottom: int,
                  top: int):
-        """
-        :param Sprite moving_sprite: Sprite that will be moving
-        :param SpriteList blocking_sprites: Sprites that can block movement
-        :param int grid_size: Size of the grid, in pixels
-        :param int left: Left border of playing field
-        :param int right: Right border of playing field
-        :param int bottom: Bottom of playing field
-        :param int top: Top of playing field
-        """
 
         self.grid_size = grid_size
         self.bottom = int(bottom // grid_size)
