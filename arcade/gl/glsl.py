@@ -18,15 +18,14 @@ class ShaderSource:
 
     NOTE: We do assume the source is neat enough to be parsed
     this way and don't contain several statements on one line.
+
+    :param Context ctx: The context this framebuffer belongs to
+    :param List[arcade.gl.Texture] color_attachments: List of color attachments.
+    :param arcade.gl.Texture depth_attachment: A depth attachment (optional)
     """
 
     def __init__(self, source: str, source_type: gl.GLenum):
-        """Create a shader source wrapper.
-
-        :param str source: The shader source
-        :param gl.GLenum: The shader type (vertex, fragment, geometry etc)
-        :param str path: Path to the shader file if relevant
-        """
+        """Create a shader source wrapper."""
         self._source = source.strip()
         self._type = source_type
         self._lines = self._source.split("\n") if source else []
