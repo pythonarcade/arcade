@@ -210,13 +210,7 @@ class BufferDescription:
         normalized: Iterable[str] = None,
         instanced: bool = False,
     ):
-        """
-        :param Buffer buffer: The buffer to describe
-        :param str formats: The format of each attribute
-        :param list attributes: List of attributes names (strings)
-        :param list normalized: list of attribute names that should be normalized
-        :param bool instanced: ``True`` if this is per instance data
-        """
+
         #: The :py:class:`~arcade.gl.Buffer` this description object describes
         self.buffer = buffer  # type: Buffer
         #: List of string attributes
