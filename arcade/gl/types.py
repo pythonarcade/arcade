@@ -304,17 +304,19 @@ class BufferDescription:
 
 
 class TypeInfo:
+    """
+    Describes an opengl type
+
+    :param name: the string representation of this type
+    :param enum: The enum of this type
+    :param gl_type: the base enum of this type
+    :param gl_size: byte size if the gl_type
+    :param components: Number of components for this enum
+    """
     __slots__ = "name", "enum", "gl_type", "gl_size", "components"
 
     def __init__(self, name, enum, gl_type, gl_size, components):
-        """Describes an opengl type
 
-        :param name: the string representation of this type
-        :param enum: The enum of this type
-        :param gl_type: the base enum of this type
-        :param gl_size: byte size if the gl_type
-        :param components: Number of components for this enum
-        """
         self.name = name  # type: str
         self.enum = enum  # type: gl.GLenum
         self.gl_type = gl_type  # type: gl.GLenum
