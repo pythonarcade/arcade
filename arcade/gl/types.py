@@ -87,7 +87,15 @@ SHADER_TYPE_NAMES = {
 
 
 class AttribFormat:
-    """Describes a format for a single attribute"""
+    """"
+    Represents an attribute in a BufferDescription or a Program.
+
+    :param str name: Name of the attribute
+    :param gl.GLEnum gl_type: The OpenGL type such as GL_FLOAT, GL_HALF_FLOAT etc.
+    :param int bytes_per_component: Number of bytes a single component takes
+    :param int offset: (Optional offset for BufferDescription)
+    :param int location: (Optional location for program attribute)
+    """
 
     __slots__ = (
         "name",
@@ -101,14 +109,6 @@ class AttribFormat:
     def __init__(
         self, name, gl_type, components, bytes_per_component, offset=0, location=0
     ):
-        """Represents an attribute in a BufferDescription or a Program.
-
-        :param str name: Name of the attribute
-        :param gl.GLEnum gl_type: The OpenGL type such as GL_FLOAT, GL_HALF_FLOAT etc.
-        :param int bytes_per_component: Number of bytes a single component takes
-        :param int offset: (Optional offset for BufferDescription)
-        :param int location: (Optional location for program attribute)
-        """
         self.name = name  # type: str
         self.gl_type = gl_type  # type: gl.GLenum
         self.components = components  # type: int
