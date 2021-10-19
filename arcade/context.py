@@ -31,7 +31,7 @@ class ArcadeContext(Context):
     and is mainly for more advanced usage**
 
     :param pyglet.window.Window window: The pyglet window
-    :param str gc_mode: The gabage collection mode for opengl objects.
+    :param str gc_mode: The garbage collection mode for opengl objects.
                         ``auto`` (default) is just what we would expect in python
                         while ``context_gc`` requires you to call ``Context.gc()``.
                         The latter can be useful when using multiple threads when
