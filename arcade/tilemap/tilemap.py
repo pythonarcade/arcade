@@ -157,8 +157,6 @@ class TileMap:
         """
         Given a .json file, this will read in a Tiled map file, and
         initialize a new TileMap object.
-
-
         """
 
         # If we should pull from local resources, replace with proper path
