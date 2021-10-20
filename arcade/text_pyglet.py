@@ -149,8 +149,10 @@ class Text:
     :param bool italic: Whether to draw the text as italic
     :param str anchor_x: How to calculate the anchor point's x coordinate
     :param str anchor_y: How to calculate the anchor point's y coordinate
-    :param bool multiline: If width was set, enables word wrap rather than clipping
+    :param bool multiline: Requires  width to be set; enables word wrap rather than clipping
     :param float rotation: rotation in degrees, counter-clockwise from horizontal
+
+    Attributes are identical to parameters.
 
     By default, the text is placed so that:
 
@@ -401,7 +403,7 @@ def draw_text(
     :param bool italic: Whether to draw the text as italic
     :param str anchor_x: How to calculate the anchor point's x coordinate
     :param str anchor_y: How to calculate the anchor point's y coordinate
-    :param bool multiline: If width was set, enables word wrap rather than clipping
+    :param bool multiline: Requires width to be set; enables word wrap rather than clipping
     :param float rotation: rotation in degrees, counter-clockwise from horizontal
 
     By default, the text is placed so that:
