@@ -6,7 +6,7 @@ from typing import Tuple, Union
 
 import arcade
 import pyglet
-from arcade.arcade_types import Color
+from arcade.arcade_types import Color, Point
 from arcade.draw_commands import get_four_byte_color
 from pyglet.math import Mat4
 from arcade.resources import resolve_resource_path
@@ -237,6 +237,107 @@ class Text:
         """
         self._label.text = value
 
+    @property
+    def x(self) -> float:
+        return self._label.x
+
+    @x.setter
+    def x(self, x: float) -> None:
+        self._label.x = x
+
+    @property
+    def y(self) -> float:
+        return self._label.y
+
+    @y.setter
+    def y(self, y: float):
+        self._label.y = y
+
+    @property
+    def font_name(self) -> FontNameOrNames:
+        return self._label.font_name
+
+    @font_name.setter
+    def font_name(self, font_name: FontNameOrNames) -> None:
+        self._label.font_name = font_name
+
+    @property
+    def font_size(self) -> float:
+        return self._label.font_size
+
+    @font_size.setter
+    def font_size(self, font_size: float):
+        self._label.font_size = font_size
+
+    @property
+    def anchor_x(self) -> str:
+        return self._label.anchor_x
+
+    @anchor_x.setter
+    def anchor_x(self, anchor_x: str):
+        self._label.anchor_x = anchor_x
+
+    @property
+    def anchor_y(self) -> str:
+        return self._label.anchor_y
+
+    @anchor_y.setter
+    def anchor_y(self, anchor_y: str):
+        self._label.anchor_y = anchor_y
+
+    @property
+    def color(self) -> Color:
+        return self._label.color
+
+    @color.setter
+    def color(self, color: Color):
+        self._label.color = get_four_byte_color(color)
+
+    @property
+    def width(self) -> int:
+        return self._label.width
+
+    @width.setter
+    def width(self, width: int):
+        self._label.width = width
+
+    @property
+    def align(self) -> str:
+        return self._label.get_style("align")  # type: ignore
+
+    @align.setter
+    def align(self, align: str):
+
+        # duplicates the logic used in the rest of this module
+        if align != "left":
+            self.multiline = True
+
+        self._label.set_style("align", align)
+
+    @property
+    def bold(self) -> bool:
+        return self._label.bold
+
+    @bold.setter
+    def bold(self, bold: bool):
+        self._label.bold = bold
+
+    @property
+    def italic(self) -> bool:
+        return self._label.italic
+
+    @italic.setter
+    def italic(self, italic: bool):
+        self._label.italic = italic
+
+    @property
+    def multiline(self) -> bool:
+        return self._label.multiline
+
+    @multiline.setter
+    def multiline(self, multiline: bool):
+        self._label.multiline = multiline
+
     def draw(self) -> None:
         """
         Draw this label to the screen at its current ``x`` and ``y`` position.
@@ -249,6 +350,14 @@ class Text:
 
         """
         _draw_label_with_rotation(self._label, self.rotation)
+
+    @property
+    def position(self) -> Point:
+        return self._label.x, self._label.y
+
+    @position.setter
+    def position(self, point: Point):
+        self._label.x, self._label.y = point
 
 
 def draw_text(
