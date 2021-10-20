@@ -152,7 +152,9 @@ class Text:
     :param bool multiline: Requires width to be set; enables word wrap rather than clipping
     :param float rotation: rotation in degrees, counter-clockwise from horizontal
 
-    Attributes are identical to parameters.
+    All constructor arguments other than ``text`` have a corresponding
+    property. To access the current text, use the ``value`` property
+    instead.
 
     By default, the text is placed so that:
 
@@ -226,17 +228,12 @@ class Text:
     @property
     def value(self) -> str:
         """
-        The current value displayed.
+        The current value to displayed.
         """
         return self._label.text
 
     @value.setter
     def value(self, value: str):
-        """
-        Set the text of the label.
-
-        :param str value: a string to display.
-        """
         self._label.text = value
 
     @property
@@ -355,6 +352,9 @@ class Text:
 
     @property
     def position(self) -> Point:
+        """
+        The current x, y position as a tuple. This wraps x and y.
+        """
         return self._label.x, self._label.y
 
     @position.setter
