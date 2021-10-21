@@ -143,7 +143,7 @@ class Text:
     :param Color color: Color of the text as a tuple or list of 3 (RGB) or 4 (RGBA) integers
     :param float font_size: Size of the text in points
     :param float width: A width limit in pixels
-    :param str align: Horizontal alignment; only used if width was given
+    :param str align: Horizontal alignment; values other than "left" require width to be set
     :param Union[str, Tuple[str, ...]] font_name: A font name, path to a font file, or list of names
     :param bool bold: Whether to draw the text as bold
     :param bool italic: Whether to draw the text as italic
@@ -228,7 +228,7 @@ class Text:
     @property
     def value(self) -> str:
         """
-        The current value to displayed.
+        The current value to display.
         """
         return self._label.text
 
@@ -397,7 +397,7 @@ def draw_text(
     :param Color color: Color of the text as a tuple or list of 3 (RGB) or 4 (RGBA) integers
     :param float font_size: Size of the text in points
     :param float width: A width limit in pixels
-    :param str align: Horizontal alignment; only used if width was given
+    :param str align: Horizontal alignment; values other than "left" require width to be set
     :param Union[str, Tuple[str, ...]] font_name: A font name, path to a font file, or list of names
     :param bool bold: Whether to draw the text as bold
     :param bool italic: Whether to draw the text as italic
