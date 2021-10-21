@@ -883,10 +883,6 @@ class UITextArea(UIWidget):
         my_layout.x, my_layout.y, my_layout.width, my_layout.height = 0, 0, self.width, self.height
         my_layout.end_update()
 
-        # HACK: Manually update the scissor areas. These were lost when changing the above properties
-        for group in self.layout.groups.values():
-            group.scissor_area = 0, 0, self.width, self.height
-
     def do_render(self, surface: Surface):
         self.prepare_render(surface)
         with surface.ctx.pyglet_rendering():
