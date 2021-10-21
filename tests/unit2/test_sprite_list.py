@@ -8,7 +8,8 @@ def make_named_sprites(amount):
 
     sprites = []
     for i in range(amount):
-        sprite = arcade.Sprite()
+        c = i + 1
+        sprite = arcade.SpriteSolidColor(16, 16, (c, c, c, 1))
         sprite.name = i
         sprites.append(sprite)
 
@@ -59,7 +60,7 @@ def test_it_can_pop_at_a_given_index():
     assert [spritelist.sprite_slot[s] for s in spritelist] == [0, 2]
 
 
-def test_setitem():
+def test_setitem(ctx):
     """Testing __setitem__"""
     num_sprites = 10
     spritelist = make_named_sprites(num_sprites)
@@ -74,7 +75,10 @@ def test_setitem():
         spritelist[0] = spritelist[1]
 
     # Assign new sprite
-    spritelist[0] = arcade.Sprite()
+    spritelist[0] = arcade.SpriteSolidColor(16, 16, arcade.color.RED)
+    spritelist.insert(0, arcade.SpriteSolidColor(16, 16, arcade.color.BLUE))
+
+    spritelist.draw()
 
 
 def test_can_shuffle():
