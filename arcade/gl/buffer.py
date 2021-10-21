@@ -17,6 +17,12 @@ class Buffer:
     element data (vertex indexing), uniform block data etc.
 
     Buffer objects should be created using :py:meth:`arcade.gl.Context.buffer`
+
+    :param Context ctx: The context this buffer belongs to
+    :param Any data: The data this buffer should contain.
+                     It can be bytes or any object supporting the buffer protocol.
+    :param int reserve: Create a buffer of a specific byte size
+    :param str usage: A hit of this buffer is ``static`` or ``dynamic`` (can mostly be ignored)
     """
 
     __slots__ = "_ctx", "_glo", "_size", "_usage", "__weakref__"
@@ -29,13 +35,7 @@ class Buffer:
     def __init__(
         self, ctx: "Context", data: Optional[Any] = None, reserve: int = 0, usage: str = "static"
     ):
-        """
-        :param Context ctx: The context this buffer belongs to
-        :param Any data: The data this buffer should contain.
-                         It can be bytes or any object supporting the buffer protocol.
-        :param int reserve: Create a buffer of a specific byte size
-        :param str usage: A hit of this buffer is ``static`` or ``dynamic`` (can mostly be ignored)
-        """
+
         self._ctx = ctx
         self._glo = glo = gl.GLuint()
         self._size = -1

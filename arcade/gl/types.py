@@ -87,7 +87,15 @@ SHADER_TYPE_NAMES = {
 
 
 class AttribFormat:
-    """Describes a format for a single attribute"""
+    """"
+    Represents an attribute in a BufferDescription or a Program.
+
+    :param str name: Name of the attribute
+    :param gl.GLEnum gl_type: The OpenGL type such as GL_FLOAT, GL_HALF_FLOAT etc.
+    :param int bytes_per_component: Number of bytes a single component takes
+    :param int offset: (Optional offset for BufferDescription)
+    :param int location: (Optional location for program attribute)
+    """
 
     __slots__ = (
         "name",
@@ -101,14 +109,6 @@ class AttribFormat:
     def __init__(
         self, name, gl_type, components, bytes_per_component, offset=0, location=0
     ):
-        """Represents an attribute in a BufferDescription or a Program.
-
-        :param str name: Name of the attribute
-        :param gl.GLEnum gl_type: The OpenGL type such as GL_FLOAT, GL_HALF_FLOAT etc.
-        :param int bytes_per_component: Number of bytes a single component takes
-        :param int offset: (Optional offset for BufferDescription)
-        :param int location: (Optional location for program attribute)
-        """
         self.name = name  # type: str
         self.gl_type = gl_type  # type: gl.GLenum
         self.components = components  # type: int
@@ -210,13 +210,7 @@ class BufferDescription:
         normalized: Iterable[str] = None,
         instanced: bool = False,
     ):
-        """
-        :param Buffer buffer: The buffer to describe
-        :param str formats: The format of each attribute
-        :param list attributes: List of attributes names (strings)
-        :param list normalized: list of attribute names that should be normalized
-        :param bool instanced: ``True`` if this is per instance data
-        """
+
         #: The :py:class:`~arcade.gl.Buffer` this description object describes
         self.buffer = buffer  # type: Buffer
         #: List of string attributes
@@ -310,17 +304,19 @@ class BufferDescription:
 
 
 class TypeInfo:
+    """
+    Describes an opengl type
+
+    :param name: the string representation of this type
+    :param enum: The enum of this type
+    :param gl_type: the base enum of this type
+    :param gl_size: byte size if the gl_type
+    :param components: Number of components for this enum
+    """
     __slots__ = "name", "enum", "gl_type", "gl_size", "components"
 
     def __init__(self, name, enum, gl_type, gl_size, components):
-        """Describes an opengl type
 
-        :param name: the string representation of this type
-        :param enum: The enum of this type
-        :param gl_type: the base enum of this type
-        :param gl_size: byte size if the gl_type
-        :param components: Number of components for this enum
-        """
         self.name = name  # type: str
         self.enum = enum  # type: gl.GLenum
         self.gl_type = gl_type  # type: gl.GLenum

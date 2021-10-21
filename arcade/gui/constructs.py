@@ -9,6 +9,12 @@ from arcade.gui.widgets import UILayout, UIAnchorWidget, UITextArea, UIFlatButto
 class UIMessageBox(UIMouseFilterMixin, UIAnchorWidget):
     """
     A simple dialog box that pops up a message with buttons to close.
+
+    :param width: Width of the message box
+    :param height: Height of the message box
+    :param message_text:
+    :param buttons: List of strings, which are shown as buttons
+    :param callback: Callback function, will receive the text of the clicked button
     """
 
     def __init__(self,
@@ -18,15 +24,6 @@ class UIMessageBox(UIMouseFilterMixin, UIAnchorWidget):
                  message_text: str,
                  buttons=("Ok",),
                  callback=None):
-        """
-        A simple dialog box that pops up a message with buttons to close.
-
-        :param width: Width of the message box
-        :param height: Height of the message box
-        :param message_text:
-        :param buttons: List of strings, which are shown as buttons
-        :param callback: Callback function, will receive the text of the clicked button
-        """
 
         space = 10
 

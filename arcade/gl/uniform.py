@@ -5,7 +5,13 @@ from .exceptions import ShaderException
 
 
 class Uniform:
-    """A Program uniform"""
+    """
+    A Program uniform
+
+    :param int location: The location of the uniform in the program
+    :param str name: Name of the uniform in the program
+    :param gl.GLenum data_type: The data type of the uniform (GL_FLOAT
+    """
 
     _uniform_getters = {
         gl.GLint: gl.glGetUniformiv,
@@ -83,12 +89,7 @@ class Uniform:
     )
 
     def __init__(self, program_id, location, name, data_type, array_length):
-        """Create a Uniform
 
-        :param int location: The location of the uniform in the program
-        :param str name: Name of the uniform in the program
-        :param gl.GLenum data_type: The data type of the uniform (GL_FLOAT
-        """
         self._program_id = program_id
         self._location = location
         self._name = name

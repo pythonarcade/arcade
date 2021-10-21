@@ -20,6 +20,9 @@ class Texture:
     A texture can also be created with different datatypes such as
     float, integer or unsigned integer.
 
+    NOTE: Currently does not support multisample textures even
+    though ``_samples`` is set.
+
     The best way to create a texture instance is through :py:meth:`arcade.gl.Context.texture`
 
     Supported ``dtype`` values are::
@@ -46,6 +49,8 @@ class Texture:
     :param Tuple[gl.GLuint,gl.GLuint] filter: The minification/magnification filter of the texture
     :param gl.GLuint wrap_x: Wrap mode x
     :param gl.GLuint wrap_y: Wrap mode y
+    :param int target: The texture type
+    :param bool depth: creates a depth texture if `True`
     """
 
     __slots__ = (
@@ -95,22 +100,7 @@ class Texture:
         target=gl.GL_TEXTURE_2D,
         depth=False,
     ):
-        """
-        A texture can be created with or without initial data.
-        NOTE: Currently does not support multisample textures even
-        thought ``samples`` is exposed.
 
-        :param Context ctx: The context the object belongs to
-        :param Tuple[int,int] size: The size of the texture
-        :param int components: The number of components (1: R, 2: RG, 3: RGB, 4: RGBA)
-        :param str dtype: The data type of each component: f1, f2, f4 / i1, i2, i4 / u1, u2, u4
-        :param Any data: The byte data of the texture. bytes or anything supporting the buffer protocol.
-        :param Tuple[gl.GLuint, gl.GLuint] filter: The minification/magnification filter of the texture
-        :param gl.GLuint wrap_x: Wrap mode x
-        :param gl.GLuint wrap_y: Wrap mode y
-        :param int target: The texture type
-        :param bool depth: creates a depth texture if `True`
-        """
         self._ctx = ctx
         self._width, self._height = size
         self._dtype = dtype
