@@ -432,6 +432,8 @@ class SpriteList:
         if sprite in self.sprite_list:
             raise ValueError("Sprite is already in list")
 
+        index = max(min(len(self.sprite_list), index), 0)
+
         self.sprite_list.insert(index, sprite)
         sprite.register_sprite_list(self)
 
