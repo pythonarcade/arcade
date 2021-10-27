@@ -6,7 +6,7 @@ from typing import Tuple, Union
 
 import arcade
 import pyglet
-from arcade.arcade_types import Color
+from arcade.arcade_types import Color, Point
 from arcade.draw_commands import get_four_byte_color
 from pyglet.math import Mat4
 from arcade.resources import resolve_resource_path
@@ -143,14 +143,18 @@ class Text:
     :param Color color: Color of the text as a tuple or list of 3 (RGB) or 4 (RGBA) integers
     :param float font_size: Size of the text in points
     :param float width: A width limit in pixels
-    :param str align: Horizontal alignment; only used if width was given
+    :param str align: Horizontal alignment; values other than "left" require width to be set
     :param Union[str, Tuple[str, ...]] font_name: A font name, path to a font file, or list of names
     :param bool bold: Whether to draw the text as bold
     :param bool italic: Whether to draw the text as italic
     :param str anchor_x: How to calculate the anchor point's x coordinate
     :param str anchor_y: How to calculate the anchor point's y coordinate
-    :param bool multiline: If width was set, enables word wrap rather than clipping
+    :param bool multiline: Requires width to be set; enables word wrap rather than clipping
     :param float rotation: rotation in degrees, counter-clockwise from horizontal
+
+    All constructor arguments other than ``text`` have a corresponding
+    property. To access the current text, use the ``value`` property
+    instead.
 
     By default, the text is placed so that:
 
@@ -224,18 +228,114 @@ class Text:
     @property
     def value(self) -> str:
         """
-        The current value displayed.
+        The current value to display.
         """
         return self._label.text
 
     @value.setter
     def value(self, value: str):
-        """
-        Set the text of the label.
-
-        :param str value: a string to display.
-        """
         self._label.text = value
+
+    @property
+    def x(self) -> float:
+        return self._label.x
+
+    @x.setter
+    def x(self, x: float) -> None:
+        self._label.x = x
+
+    @property
+    def y(self) -> float:
+        return self._label.y
+
+    @y.setter
+    def y(self, y: float):
+        self._label.y = y
+
+    @property
+    def font_name(self) -> FontNameOrNames:
+        return self._label.font_name
+
+    @font_name.setter
+    def font_name(self, font_name: FontNameOrNames) -> None:
+        self._label.font_name = font_name
+
+    @property
+    def font_size(self) -> float:
+        return self._label.font_size
+
+    @font_size.setter
+    def font_size(self, font_size: float):
+        self._label.font_size = font_size
+
+    @property
+    def anchor_x(self) -> str:
+        return self._label.anchor_x
+
+    @anchor_x.setter
+    def anchor_x(self, anchor_x: str):
+        self._label.anchor_x = anchor_x
+
+    @property
+    def anchor_y(self) -> str:
+        return self._label.anchor_y
+
+    @anchor_y.setter
+    def anchor_y(self, anchor_y: str):
+        self._label.anchor_y = anchor_y
+
+    @property
+    def color(self) -> Color:
+        return self._label.color
+
+    @color.setter
+    def color(self, color: Color):
+        self._label.color = get_four_byte_color(color)
+
+    @property
+    def width(self) -> int:
+        return self._label.width
+
+    @width.setter
+    def width(self, width: int):
+        self._label.width = width
+
+    @property
+    def align(self) -> str:
+        return self._label.get_style("align")  # type: ignore
+
+    @align.setter
+    def align(self, align: str):
+
+        # duplicates the logic used in the rest of this module
+        if align != "left":
+            self.multiline = True
+
+        self._label.set_style("align", align)
+
+    @property
+    def bold(self) -> bool:
+        return self._label.bold
+
+    @bold.setter
+    def bold(self, bold: bool):
+        self._label.bold = bold
+
+    @property
+    def italic(self) -> bool:
+        return self._label.italic
+
+    @italic.setter
+    def italic(self, italic: bool):
+        self._label.italic = italic
+
+    @property
+    def multiline(self) -> bool:
+        return self._label.multiline
+
+    @multiline.setter
+    def multiline(self, multiline: bool):
+        self._label.multiline = multiline
 
     def draw(self) -> None:
         """
@@ -249,6 +349,17 @@ class Text:
 
         """
         _draw_label_with_rotation(self._label, self.rotation)
+
+    @property
+    def position(self) -> Point:
+        """
+        The current x, y position as a tuple. This wraps x and y.
+        """
+        return self._label.x, self._label.y
+
+    @position.setter
+    def position(self, point: Point):
+        self._label.x, self._label.y = point
 
 
 def draw_text(
@@ -286,13 +397,13 @@ def draw_text(
     :param Color color: Color of the text as a tuple or list of 3 (RGB) or 4 (RGBA) integers
     :param float font_size: Size of the text in points
     :param float width: A width limit in pixels
-    :param str align: Horizontal alignment; only used if width was given
+    :param str align: Horizontal alignment; values other than "left" require width to be set
     :param Union[str, Tuple[str, ...]] font_name: A font name, path to a font file, or list of names
     :param bool bold: Whether to draw the text as bold
     :param bool italic: Whether to draw the text as italic
     :param str anchor_x: How to calculate the anchor point's x coordinate
     :param str anchor_y: How to calculate the anchor point's y coordinate
-    :param bool multiline: If width was set, enables word wrap rather than clipping
+    :param bool multiline: Requires width to be set; enables word wrap rather than clipping
     :param float rotation: rotation in degrees, counter-clockwise from horizontal
 
     By default, the text is placed so that:
