@@ -458,15 +458,15 @@ class SpriteList:
         """
         Reverses the current list in-place
         """
+        # Ensure the index buffer is normalized
+        self._normalize_index_buffer()
+
+        # Reverse the sprites and index buffer
         self.sprite_list.reverse()
-        # Reverse the index buffer
-        # Only revers the part of the array we use
-        self._sprite_index_data = self._sprite_index_data[: self._sprite_index_slots]
-        self._sprite_index_data.reverse()
-        # Resize the index buffer to the original capacity
-        if len(self._sprite_index_data) < self._idx_capacity:
-            extend_by = self._idx_capacity - len(self._sprite_index_data)
-            self._sprite_index_data.extend([0] * extend_by)
+        # This seems to be the reasonable way to reverse a subset of an array
+        reverse_data = self._sprite_index_data[0:len(self.sprite_list)]
+        reverse_data.reverse()
+        self._sprite_index_data[0:len(self.sprite_list)] = reverse_data
 
         self._sprite_index_changed = True
 
