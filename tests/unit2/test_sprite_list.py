@@ -1,3 +1,4 @@
+from array import array
 import struct
 import pytest
 import arcade
@@ -110,3 +111,31 @@ def test_spritelist_lazy():
         )
     assert len(spritelist) == 100
     assert spritelist.spatial_hash
+
+
+def test_sort(ctx):
+    s1 = arcade.SpriteSolidColor(10, 10, arcade.color.WHITE)
+    s1.set_position(100, 100)
+
+    s2 = arcade.SpriteSolidColor(10, 10, arcade.color.WHITE)
+    s2.set_position(110, 100)
+
+    s3 = arcade.SpriteSolidColor(10, 10, arcade.color.WHITE)
+    s3.set_position(120, 100)
+
+    sprites_v1 = [s1, s2, s3]
+    sprites_v2 = [s3, s2, s1]
+
+    spritelist = arcade.SpriteList()
+    spritelist.extend(sprites_v1)
+    spritelist.draw()
+
+    assert spritelist.sprite_list == sprites_v1
+
+    spritelist.sort(key=lambda x: x.position[0], reverse=True)
+    assert spritelist.sprite_list == sprites_v2
+    assert spritelist._sprite_index_data[0:3] == array("f", [2, 1, 0])
+
+    spritelist.sort(key=lambda x: x.position[0])
+    assert spritelist.sprite_list == sprites_v1
+    assert spritelist._sprite_index_data[0:3] == array("f", [0, 1, 2])

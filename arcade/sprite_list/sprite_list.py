@@ -497,6 +497,40 @@ class SpriteList:
 
         self._sprite_index_changed = True
 
+    def sort(self, *, key=None,  reverse: bool = False):
+        """
+        Sort the spritelist in place using ``<`` comparison between sprites.
+        This function is similar to python's ``list.sort``.
+
+        Example sorting sprites based on y axis position using a lambda::
+
+            # Normal order
+            spritelist.sort(key=lambda x: x.position[1])
+            # Reversed order
+            spritelist.sort(key=lambda x: x.position[1], reverse=True)
+
+        Example sorting sprites using a function::
+
+            # More complex sorting logic can be applied, but let's just stick to y position
+            def create_y_pos_comparison(sprite):
+                return sprite.position[1]
+
+            spritelist.sort(key=create_y_pos_comparison)
+
+        :param key: A function taking a sprite as an argument returning a comparison key
+        :param bool reverse: If set to ``True`` the sprites will be sorted in reverse
+        """
+        # Ensure the index buffer is normalized
+        self._normalize_index_buffer()
+
+        # In-place sort the spritelist
+        self.sprite_list.sort(key=key, reverse=reverse)
+        # Loop over the sorted sprites and assign new values in index buffer
+        for i, sprite in enumerate(self.sprite_list):
+            self._sprite_index_data[i] = self.sprite_slot[sprite]
+
+        self._sprite_index_changed = True
+
     @property
     def percent_sprites_moved(self):
         """
