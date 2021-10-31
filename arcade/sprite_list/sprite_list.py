@@ -163,7 +163,7 @@ class SpriteList:
             if not self._lazy:
                 self._init_deferred()
         except Exception as ex:
-            print(ex)
+            pass
 
     def _init_deferred(self):
         """
