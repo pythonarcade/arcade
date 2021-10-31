@@ -130,6 +130,9 @@ from .drawing_support import get_three_float_color
 from .drawing_support import get_four_float_color
 from .drawing_support import get_points_for_thick_line
 from .drawing_support import make_transparent_color
+from .drawing_support import uint24_to_three_byte_color
+from .drawing_support import uint32_to_four_byte_color
+from .drawing_support import color_from_hex_string
 
 from .texture import Texture
 from .texture import cleanup_texture_cache
@@ -372,6 +375,7 @@ __all__ = ['AStarBarrierList',
            'clamp',
            'cleanup_texture_cache',
            'close_window',
+           'color_from_hex_string',
            'create_ellipse',
            'create_ellipse_filled',
            'create_ellipse_filled_with_colors',
@@ -492,6 +496,8 @@ __all__ = ['AStarBarrierList',
            'stop_sound',
            'timings_enabled',
            'trim_image',
+           'uint24_to_three_byte_color',
+           'uint32_to_four_byte_color',
            'unschedule',
            ]
 
