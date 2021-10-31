@@ -123,7 +123,7 @@ def color_from_hex_string(code: str) -> RGBA:
     """
     code = code.lstrip("#")
     if len(code) <= 4:
-        code = "".join(i+"0" for i in code)
+        code = "".join(i + "0" for i in code)
     if len(code) == 6:
         # full opacity if no alpha specified
         return int(code[0:2], 16), int(code[2:4], 16), int(code[4:6], 16), 255
