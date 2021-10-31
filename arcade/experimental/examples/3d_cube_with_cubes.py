@@ -112,8 +112,8 @@ class MyGame(arcade.Window):
         self.fbo1.clear(color=(1.0, 1.0, 1.0, 1.0), normalized=True)
 
         translate = Mat4.from_translation((0, 0, -1.75))
-        rx = Mat4.rotate(Mat4(), angle=self.time, x=1, y=0, z=0)
-        ry = Mat4.rotate(Mat4(), angle=self.time, x=0, y=1, z=0)
+        rx = Mat4.from_rotation(self.time, (1, 0, 0))
+        ry = Mat4.from_rotation(self.time, (0, 1, 0))
         modelview = rx @ ry @ translate
 
         if self.frame > 0:

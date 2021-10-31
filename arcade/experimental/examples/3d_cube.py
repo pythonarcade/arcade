@@ -60,8 +60,8 @@ class MyGame(arcade.Window):
         self.ctx.enable_only(self.ctx.CULL_FACE, self.ctx.DEPTH_TEST)
 
         translate = Mat4.from_translation((0, 0, -1.75))
-        rx = Mat4.rotate(Mat4(), angle=self.time, x=1, y=0, z=0)
-        ry = Mat4.rotate(Mat4(), angle=self.time * 0.77, x=0, y=1, z=0)
+        rx = Mat4.from_rotation(self.time, (1, 0, 0))
+        ry = Mat4.from_rotation(self.time * 0.77, (0, 1, 0))
         modelview = rx @ ry @ translate
         self.program['modelview'] = modelview
 
