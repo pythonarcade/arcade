@@ -26,7 +26,7 @@ setup(
         "pyglet==2.0.dev9",
         "pillow~=8.3",
         "pymunk~=6.2.0",
-        "shapely==1.7.1",
+        "shapely==1.8.0",
         "pytiled-parser==1.5.4",
         "dataclasses; python_version < '3.7'",
     ],
