@@ -162,7 +162,7 @@ class SpriteList:
             get_window()
             if not self._lazy:
                 self._init_deferred()
-        except Exception as ex:
+        except Exception:
             pass
 
     def _init_deferred(self):
