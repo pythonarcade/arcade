@@ -1,4 +1,4 @@
-
+import struct
 import pytest
 import arcade
 
@@ -81,19 +81,22 @@ def test_setitem(ctx):
     spritelist.draw()
 
 
-def test_can_shuffle():
+def test_can_shuffle(ctx):
     num_sprites = 10
     spritelist = make_named_sprites(num_sprites)
 
     # Shuffle multiple times
-    for _ in range(10):
+    for _ in range(100):
         spritelist.shuffle()
+        spritelist.draw()
         # Ensure the index buffer is referring to the correct slots
-        slots = [spritelist.sprite_slot[s] for s in spritelist]
-        assert list(spritelist._sprite_index_data[:num_sprites]) == slots
-        assert spritelist._sprite_buffer_slots == 10
-        assert spritelist._sprite_index_slots == 10
-        assert len(spritelist) == 10
+        # Raw buffer from OpenGL
+        index_data = struct.unpack(f"i", spritelist._sprite_index_buf.read()[:num_sprites * 4])
+        for i, sprite in enumerate(spritelist):
+            # Check if slots are updated
+            slot = spritelist.sprite_slot[sprite]
+            assert slot == spritelist._sprite_index_data[i]
+            assert slot == index_data[i]
 
 
 def test_spritelist_lazy():

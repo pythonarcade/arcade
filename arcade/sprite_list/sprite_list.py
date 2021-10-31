@@ -6,6 +6,7 @@ individual sprites.
 """
 
 import logging
+import random
 from array import array
 from collections import deque
 from typing import (TYPE_CHECKING, Deque, Dict, Iterator, List, Optional, Set,
@@ -473,18 +474,28 @@ class SpriteList:
         """
         Shuffles the current list in-place
         """
+        # The only thing we need to do when shuffling is
+        # to shuffle the sprite_list and index buffer in
+        # in the same operation. We don't change the sprite buffers
+
         # Make sure the index buffer is the same length as the sprite list
         self._normalize_index_buffer()
+
         # zip index and sprite into pairs and shuffle
         pairs = list(zip(self.sprite_list, self._sprite_index_data))
+        random.shuffle(pairs)
+
         # Reconstruct the lists again from pairs
         sprites, indices = zip(*pairs)
         self.sprite_list = list(sprites)
         self._sprite_index_data = array("I", indices)
+
         # Resize the index buffer to the original capacity
         if len(self._sprite_index_data) < self._idx_capacity:
             extend_by = self._idx_capacity - len(self._sprite_index_data)
             self._sprite_index_data.extend([0] * extend_by)
+
+        self._sprite_index_changed = True
 
     @property
     def percent_sprites_moved(self):
@@ -909,6 +920,9 @@ class SpriteList:
         New sprites on the other hand always needs to be added
         to the end of the index buffer to preserve order
         """
+        # NOTE: Currently we keep the index buffer normalized
+        #       but we can increase the performance in the future
+        #       delaying normalization.
         # Need counter for how many slots are used in index buffer.
         # 1) Sort the deleted indices (descending) and pop() them in a loop
         # 2) Create a new array.array and manually copy every
