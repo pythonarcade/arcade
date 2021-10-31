@@ -91,7 +91,7 @@ def test_can_shuffle(ctx):
         spritelist.draw()
         # Ensure the index buffer is referring to the correct slots
         # Raw buffer from OpenGL
-        index_data = struct.unpack(f"i", spritelist._sprite_index_buf.read()[:num_sprites * 4])
+        index_data = struct.unpack(f"{num_sprites}i", spritelist._sprite_index_buf.read()[:num_sprites * 4])
         for i, sprite in enumerate(spritelist):
             # Check if slots are updated
             slot = spritelist.sprite_slot[sprite]
