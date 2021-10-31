@@ -51,10 +51,10 @@ def test_rotate_point():
 
 def test_parse_color():
     with pytest.raises(ValueError):
-        arcade.color_from_hex("#ff0000ff0")
+        arcade.color_from_hex_string("#ff0000ff0")
 
-    color = arcade.color_from_hex("ff0000")
+    color = arcade.color_from_hex_string("ff0000")
     assert color == (255, 0, 0, 255)
 
-    color = arcade.color_from_hex("#ff0000")
+    color = arcade.color_from_hex_string("#ff0000")
     assert color == (255, 0, 0, 255)
