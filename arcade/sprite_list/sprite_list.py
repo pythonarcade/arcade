@@ -497,7 +497,7 @@ class SpriteList:
 
         self._sprite_index_changed = True
 
-    def sort(self, *, key=None,  reverse: bool = False):
+    def sort(self, *, key=None, reverse: bool = False):
         """
         Sort the spritelist in place using ``<`` comparison between sprites.
         This function is similar to python's ``list.sort``.
