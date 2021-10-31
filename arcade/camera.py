@@ -113,7 +113,7 @@ class Camera:
         )
 
         self.view_matrix = ~(Mat4.from_translation(result_position) @ Mat4().scale(
-            x=self.scale, y=self.scale, z=self.scale))
+            (self.scale, self.scale, self.scale)))
         self.combined_matrix = self.projection_matrix @ self.view_matrix
 
     def set_projection(self):
