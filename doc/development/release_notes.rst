@@ -7,8 +7,10 @@ Release Notes
 
 Keep up-to-date with the latest changes to the Arcade library by the release notes.
 
-UNRELEASED
-----------
+Version 2.6.4
+-------------
+
+*Released on 2021-Nov-02*
 
 * :class:`~arcade.SpriteList` additions:
 
@@ -31,22 +33,30 @@ UNRELEASED
   or an iterable such as a list containing SpriteLists. If you are currently using this functionality, you just need to add your Sprite
   to a SpriteList and provide that instead.
 
-  The simple platformer tutorial has already been updated to make use of this optimzation.
+  The simple platformer tutorial has already been updated to make use of this optimization.
 
 * :class:`~arcade.Scene` is additions:
 
-  * The Scene class is now sub-scriptable, previously in order to retrieve a SpriteList from Scene, you needed to use either ``Scene.name_mapping`` or ``Scene.get_sprite_list``.
-    We have now added the ability to access it by sub-scripting the Scene object directly, like ``spritelist = my_scene["My Layer"]``
-  * Added ``on_update()`` method. Previously Scene only had ``update()``. Both of these methods simply call the corresponding one on each SpriteList, however previously you could not 
-    do this with ``on_update()``. The difference between these methods is that ``on_update()`` allows passing a delta time, whereas ``update()`` does not.
+  * The Scene class is now sub-scriptable, previously in order to retrieve a SpriteList from Scene, you needed to use
+    either ``Scene.name_mapping`` or ``Scene.get_sprite_list``.
+    We have now added the ability to access it by sub-scripting the Scene object directly, like
+    ``spritelist = my_scene["My Layer"]``
+  * Added ``on_update()`` method. Previously Scene only had ``update()``. Both of these methods simply call the
+    corresponding one on each SpriteList, however previously you could not
+    do this with ``on_update()``. The difference between these methods is that ``on_update()`` allows passing a delta
+    time, whereas ``update()`` does not.
 
 * :class:`~arcade.TileMap` additions and fixes:
 
-  * When loading a Tiled map Arcade will now respect if layers are visible or not. If a layer is not visible in Tiled, the SpriteList
-    created for it will use the new ``visible`` attribute to control it. This means that when creating a Scene from a TileMap, this will
+  * When loading a Tiled map Arcade will now respect if layers are visible or not. If a layer is not visible in Tiled,
+    the SpriteList
+    created for it will use the new ``visible`` attribute to control it. This means that when creating a Scene from a
+    TileMap, this will
     automatically be respected as well.
-  * Fixed support for parallax values on layers. Currently there is no support to do anything with these out of the box, you'd need to manually
-    pull the values and do something based on them, however previously the map would not load if the values were changed from the defualt. This has
+  * Fixed support for parallax values on layers. Currently there is no support to do anything with these out of the box,
+    you'd need to manually
+    pull the values and do something based on them, however previously the map would not load if the values were changed
+    from the default. This has
     been fixed in pytiled-parser and we have updated our version in Arcade accordingly.
   * Removed a lingering debug tactic of printing the class name of custom SpriteList classes when loading a TileMap.
 
