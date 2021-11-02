@@ -56,7 +56,7 @@ def _spot_is_blocked(position: Union[Tuple[float, float], List[float]],
         return False
 
 
-def heuristic(start: Point, goal: Point):
+def _heuristic(start: Point, goal: Point):
     """
 
     Args:
@@ -132,7 +132,7 @@ def _AStarSearch(start: Point, end: Point, graph: _AStarGraph):
 
     # Initialize starting values
     G[start] = 0
-    F[start] = heuristic(start, end)
+    F[start] = _heuristic(start, end)
 
     closed_vertices = set()
     open_vertices = {start}
@@ -183,7 +183,7 @@ def _AStarSearch(start: Point, end: Point, graph: _AStarGraph):
             # Adopt this G score
             came_from[neighbour] = current
             G[neighbour] = candidate_g
-            h = heuristic(neighbour, end)
+            h = _heuristic(neighbour, end)
             F[neighbour] = G[neighbour] + h
 
     # Out-of-bounds
