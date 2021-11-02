@@ -25,7 +25,7 @@ setup(
     install_requires=[
         "pyglet==2.0.dev10",
         "pillow~=8.3",
-        "pymunk~=6.2.0",
+        "pymunk~=6.2.1",
         "shapely==1.8.0",
         "pytiled-parser==1.5.4",
         "dataclasses; python_version < '3.7'",
