@@ -9,4 +9,5 @@ pymunk==6.2.1
 shapely==1.8.0
 pyyaml==6.0
 Pillow==8.4
+docutils<0.18
 

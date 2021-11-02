@@ -18,7 +18,8 @@ Version 2.6.4
     will simply return and do nothing. Causing the SpriteList to not be drawn. 
   * SpriteList now has a ``lazy`` (bool) parameter causing it to not create internal OpenGL resources
     until the first draw call or until ``spriteList.initialize()`` is called. This means that
-    sprite lists and sprites can now be created in threads. 
+    sprite lists and sprites can now be created in threads.
+  * Added fixes/optimizations to sort, reverse, and shuffle methods.
 
 * :class:`~arcade.PhysicsEnginePlatformer` Optimization:
 
@@ -60,15 +61,17 @@ Version 2.6.4
     been fixed in pytiled-parser and we have updated our version in Arcade accordingly.
   * Removed a lingering debug tactic of printing the class name of custom SpriteList classes when loading a TileMap.
 
-* The ``check_for_collision_with_lists`` function will now accept any Iterable(List, Tuple, Set, etc) containing SpriteLists.
+* New utility function :func:`~arcade.color_from_hex_string` that will turn a hex string into a color.
+* Added support to the :class:`~arcade.View` class for :meth:`~arcade.View.on_resize`
+* The :func:`~arcade.check_for_collision_with_lists` function will now accept any Iterable(List, Tuple, Set, etc) containing SpriteLists.
 * Optimization: Sprites should now take ~15 less memory and be ~15% faster to create
 * Added support for compute shaders. We support writing to textures and SSBOs (buffers).
   Examples can be found in ``arcade/experimental/examples``
 * Fixed a problem causing Geometry / VertexArray to ignore ``POINTS`` primitive mode when this is set as default.
-* Added ``run()`` shortcut in ``arcade.Window```. Usage: `MyWindow().run()`
+* Added ``run()`` shortcut in ``arcade.Window``. Usage: ``MyWindow().run()``
 * Various docstring improvements
 * Bug: Removed a lingering debug key ``F12`` that showed the contents of the global texture atlas
-* UIInputText now supports both RGB and RGBA text color
+* :class:`~arcade.UIInputText` now supports both RGB and RGBA text color
 
 Version 2.6.3
 -------------
