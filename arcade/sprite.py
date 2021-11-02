@@ -7,7 +7,7 @@ https://www.gamedev.net/articles/programming/general-and-gameplay-programming/sp
 
 import math
 
-from arcade.texture import build_cache_name
+from arcade.texture import _build_cache_name
 
 try:
     import dataclasses
@@ -1316,7 +1316,7 @@ class SpriteSolidColor(Sprite):
         """
         super().__init__()
 
-        cache_name = build_cache_name("Solid", width, height, color[0], color[1], color[2])
+        cache_name = _build_cache_name("Solid", width, height, color[0], color[1], color[2])
 
         # use existing texture if it exists
         if cache_name in load_texture.texture_cache:  # type: ignore
@@ -1352,9 +1352,9 @@ class SpriteCircle(Sprite):
 
         # determine the texture's cache name
         if soft:
-            cache_name = build_cache_name("circle_texture_soft", diameter, color[0], color[1], color[2])
+            cache_name = _build_cache_name("circle_texture_soft", diameter, color[0], color[1], color[2])
         else:
-            cache_name = build_cache_name("circle_texture", diameter, color[0], color[1], color[2], 255, 0)
+            cache_name = _build_cache_name("circle_texture", diameter, color[0], color[1], color[2], 255, 0)
 
         # use the named texture if it was already made
         if cache_name in load_texture.texture_cache:  # type: ignore
