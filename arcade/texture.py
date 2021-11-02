@@ -547,7 +547,7 @@ def load_spritesheet(file_name: Union[str, Path],
     return texture_list
 
 
-def build_cache_name(*args: Any, separator: str = "-") -> str:
+def _build_cache_name(*args: Any, separator: str = "-") -> str:
     """
     Generate cache names from the given parameters
 
@@ -572,7 +572,7 @@ def make_circle_texture(diameter: int, color: Color, name: str = None) -> Textur
     :returns: New :class:`Texture` object.
     """
 
-    name = name or build_cache_name("circle_texture", diameter, color[0], color[1], color[2])
+    name = name or _build_cache_name("circle_texture", diameter, color[0], color[1], color[2])
 
     bg_color = (0, 0, 0, 0)  # fully transparent
     img = PIL.Image.new("RGBA", (diameter, diameter), bg_color)
@@ -597,8 +597,8 @@ def make_soft_circle_texture(diameter: int, color: Color, center_alpha: int = 25
     """
     # TODO: create a rectangle and circle (and triangle? and arbitrary poly where client passes
     # in list of points?) particle?
-    name = name or build_cache_name("soft_circle_texture", diameter, color[0], color[1], color[2], center_alpha,
-                                    outer_alpha)  # name must be unique for caching
+    name = name or _build_cache_name("soft_circle_texture", diameter, color[0], color[1], color[2], center_alpha,
+                                     outer_alpha)  # name must be unique for caching
 
     bg_color = (0, 0, 0, 0)  # fully transparent
     img = PIL.Image.new("RGBA", (diameter, diameter), bg_color)
@@ -627,7 +627,7 @@ def make_soft_square_texture(size: int, color: Color, center_alpha: int = 255, o
     :returns: New :class:`Texture` object.
     """
     # name must be unique for caching
-    name = name or build_cache_name("gradientsquare", size, color, center_alpha, outer_alpha)
+    name = name or _build_cache_name("gradientsquare", size, color, center_alpha, outer_alpha)
 
     bg_color = (0, 0, 0, 0)  # fully transparent
     img = PIL.Image.new("RGBA", (size, size), bg_color)
