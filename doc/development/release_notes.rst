@@ -10,14 +10,18 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
 Version 2.6.4
 -------------
 
-*Released on 2021-Nov-02*
+*Soon to be released on 2021-Nov-?*
 
+* Python 3.10 updates. Dependent library versions have been updated to
+  include Python 3.10 support. All libraries appear to support 3.10 except
+  Shapely 1.8.0 on the Windows platform. Until those binaries are released,
+  3.10 support for Windows is still not there.
 * :class:`~arcade.SpriteList` additions:
 
   * A ``visible`` attribute has been added to this class. If it is set to true, when calling ``draw()`` on the SpriteList it
     will simply return and do nothing. Causing the SpriteList to not be drawn. 
   * SpriteList now has a ``lazy`` (bool) parameter causing it to not create internal OpenGL resources
-    until the first draw call or until ``spriteList.initialize()`` is called. This means that
+    until the first draw call or until SpriteList's :meth:`~arcade.SpriteList.initialize` is called. This means that
     sprite lists and sprites can now be created in threads.
   * Added fixes/optimizations to sort, reverse, and shuffle methods.
 
@@ -69,9 +73,24 @@ Version 2.6.4
   Examples can be found in ``arcade/experimental/examples``
 * Fixed a problem causing Geometry / VertexArray to ignore ``POINTS`` primitive mode when this is set as default.
 * Added ``run()`` shortcut in ``arcade.Window``. Usage: ``MyWindow().run()``
-* Various docstring improvements
+* Many docstring improvements
 * Bug: Removed a lingering debug key ``F12`` that showed the contents of the global texture atlas
 * :class:`~arcade.UIInputText` now supports both RGB and RGBA text color
+* Addition of :class:`~arcade.PymunkException` class for throwing Pymunk errors in the
+  Pymunk physics engine.
+* Several improvements to typing and PEP-8. Plus automated tests to help keep things
+  in good shape.
+
+Special thanks to
+`einarf <https://github.com/einarf>`_,
+`pvcraven <https://github.com/pvcraven>`_,
+`pushfoo <https://github.com/pushfoo>`_,
+`Cleptomania <https://github.com/Cleptomania>`_,
+`Olliroxx <https://github.com/Olliroxx>`_,
+`mlr07 <https://github.com/mlr07>`_,
+`yegarti <https://github.com/yegarti>`_,
+`Jayman2000 <https://github.com/Jayman2000>`_
+for their contributions to this release.
 
 Version 2.6.3
 -------------
