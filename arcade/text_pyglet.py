@@ -420,7 +420,7 @@ def draw_text(
 
     ``font_name`` can be any of the following:
 
-    - a built-in font in the :ref:`Resources<Resources folder>`
+    - a built-in font in the :ref:`Resources`
     - the name of a system font
     - a path to a font on the system
     - a `tuple` containing any mix of the previous three
