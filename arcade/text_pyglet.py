@@ -36,7 +36,7 @@ def load_font(font_name) -> None:
 FontNameOrNames = Union[str, Tuple[str, ...]]
 
 
-def attempt_font_name_resolution(font_name: FontNameOrNames) -> FontNameOrNames:
+def _attempt_font_name_resolution(font_name: FontNameOrNames) -> FontNameOrNames:
     """
     Attempt to resolve a tuple of font names.
 
@@ -207,7 +207,7 @@ class Text:
         if align != "left":
             multiline = True
 
-        adjusted_font = attempt_font_name_resolution(font_name)
+        adjusted_font = _attempt_font_name_resolution(font_name)
         self._label = pyglet.text.Label(
             text=text,
             x=start_x,
@@ -513,7 +513,7 @@ def draw_text(
            and ``anchor_y``
 
     2. The text is placed so its anchor point is at ``(start_x,
-       start_y))`
+       start_y))``
 
     3. The text is rotated around its anchor point before finally
        being drawn
@@ -537,7 +537,7 @@ def draw_text(
         multiline = True
 
     if not label:
-        adjusted_font = attempt_font_name_resolution(font_name)
+        adjusted_font = _attempt_font_name_resolution(font_name)
 
         label = pyglet.text.Label(
             text=text,
