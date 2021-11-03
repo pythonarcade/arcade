@@ -8,7 +8,6 @@ from pathlib import Path
 from typing import Dict, Optional, Tuple, Union
 
 import pyglet
-from pyglet import gl
 from PIL import Image
 
 import arcade
