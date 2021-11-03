@@ -23,7 +23,20 @@ Version 2.6.4
   * SpriteList now has a ``lazy`` (bool) parameter causing it to not create internal OpenGL resources
     until the first draw call or until SpriteList's :meth:`~arcade.SpriteList.initialize` is called. This means that
     sprite lists and sprites can now be created in threads.
-  * Added fixes/optimizations to sort, reverse, and shuffle methods.
+  * Fixes/optimized :py:meth:`~arcade.SpriteList.reverse` and :py:meth:`~arcade.SpriteList.shuffle` methods.
+  * Added :py:meth:`~arcade.SpriteList.sort` method. This is identical to python's ``list.sort``
+    but are many times faster sorting your sprites.
+  * Removed noisy warning message when spritelists were created before the window
+  * Fixed an issue with :py:meth:`~arcade.SpriteList.insert` when trying to insert sprites past
+    an index greater than the current length. It could cause inserted sprites to be invisible.
+
+* :class:`~arcade.Sprite` changes:
+
+  * Added :py:attr:`arcade.Sprite.visible` property for quickly making sprites visible/invisible. This is simply
+    a shortcut for changing the alpha value.
+  * Optimization: Sprites should now take ~15% less memory and be ~15% faster to create
+  * :py:class:`~arcade.SpriteCircle` and :py:class:`SpriteSolidColor` textures are now cached internally
+    for better performance.
 
 * :class:`~arcade.PhysicsEnginePlatformer` Optimization:
 
@@ -65,21 +78,41 @@ Version 2.6.4
     been fixed in pytiled-parser and we have updated our version in Arcade accordingly.
   * Removed a lingering debug tactic of printing the class name of custom SpriteList classes when loading a TileMap.
 
-* New utility function :func:`~arcade.color_from_hex_string` that will turn a hex string into a color.
-* Added support to the :class:`~arcade.View` class for :meth:`~arcade.View.on_resize`
-* The :func:`~arcade.check_for_collision_with_lists` function will now accept any Iterable(List, Tuple, Set, etc) containing SpriteLists.
-* Optimization: Sprites should now take ~15 less memory and be ~15% faster to create
-* Added support for compute shaders. We support writing to textures and SSBOs (buffers).
-  Examples can be found in ``arcade/experimental/examples``
-* Fixed a problem causing Geometry / VertexArray to ignore ``POINTS`` primitive mode when this is set as default.
-* Added ``run()`` shortcut in ``arcade.Window``. Usage: ``MyWindow().run()``
-* Many docstring improvements
-* Bug: Removed a lingering debug key ``F12`` that showed the contents of the global texture atlas
-* :class:`~arcade.UIInputText` now supports both RGB and RGBA text color
-* Addition of :class:`~arcade.PymunkException` class for throwing Pymunk errors in the
-  Pymunk physics engine.
-* Several improvements to typing and PEP-8. Plus automated tests to help keep things
-  in good shape.
+* UI
+
+  * :class:`~arcade.UIInputText` now supports both RGB and RGBA text color
+
+* Text
+  
+  * Several text related bugs have been resolved in pyglet, the underlying library
+    we now use for text drawing. This has been a fairly time consuming task
+    over several weeks and we hope the new pyglet based text system will stabilize from now on.
+    Arcade is an early adopter of pyglet 2.0 currently using a pre-release
+  * The :py:class:`~arcade.Text` object is now usable and is preferred over
+    :py:func:`arcade.draw_text` in many cases for performance reasons.
+  * Text related functions should now have better documentation
+
+* Misc:
+
+  * Added support to the :class:`~arcade.View` class for :meth:`~arcade.View.on_resize`
+  * Many docstring improvements. Initializer docstrings have now been moved to the class
+    docstring ensuring they will always show up in the generated api docs.
+  * Added some new sections under advanced docs related to OpenGL, textures and texture atlas
+  * New utility function :func:`~arcade.color_from_hex_string` that will turn a hex string into a color.
+  * Bug: Removed a lingering debug key ``F12`` that showed the contents of the global texture atlas
+  * Several improvements to typing and PEP-8. Plus automated tests to help keep things
+    in good shape.
+  * Added ``run()`` shortcut in ``arcade.Window``. Usage: ``MyWindow().run()``
+  * Addition of :class:`~arcade.PymunkException` class for throwing Pymunk errors in the
+    Pymunk physics engine.
+  * The :func:`~arcade.check_for_collision_with_lists` function will now accept any Iterable(List, Tuple, Set, etc) containing SpriteLists.
+
+* Lower level rendering API:
+
+  * Fixed a problem causing Geometry / VertexArray to ignore ``POINTS`` primitive mode when this is set as default.
+  * Added support for compute shaders. We support writing to textures and SSBOs (buffers).
+    Examples can be found in ``arcade/experimental/examples``
+  * Fixed a crash when drawing with geometry shaders due to referencing a non-existent enum
 
 Special thanks to
 `einarf <https://github.com/einarf>`_,
@@ -91,6 +124,9 @@ Special thanks to
 `yegarti <https://github.com/yegarti>`_,
 `Jayman2000 <https://github.com/Jayman2000>`_
 for their contributions to this release.
+
+Special thanks to `Benjamin <https://github.com/benmoran56>`_ and `caffeinepills <https://github.com/caffeinepills>`_
+for their help to squash bugs in pyglet 2.0.
 
 Version 2.6.3
 -------------
