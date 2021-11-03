@@ -10,7 +10,7 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
 Version 2.6.4
 -------------
 
-*Soon to be released on 2021-Nov-?*
+*Released on 2021-Nov-3*
 
 * Python 3.10 updates. Dependent library versions have been updated to
   include Python 3.10 support. All libraries appear to support 3.10 except
