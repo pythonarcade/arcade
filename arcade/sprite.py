@@ -896,6 +896,34 @@ class Sprite:
 
     alpha = property(_get_alpha, _set_alpha)
 
+    @property
+    def visible(self) -> bool:
+        """
+        Get or set the visibility of this sprite.
+        This is a shortcut for changing the alpha value of a sprite
+        to 0 or 255::
+
+            # Make the sprite invisible
+            sprite.visible = False
+            # Change back to visible
+            sprite.visible = True
+            # Toggle visible
+            sprite.visible = not sprite.visible
+
+        :rtype: bool
+        """
+        return self._alpha > 0
+
+    @visible.setter
+    def visible(self, value: bool):
+        if value:
+            self._alpha = 255
+        else:
+            self._alpha = 0
+
+        for sprite_list in self.sprite_lists:
+            sprite_list.update_color(self)
+
     def register_sprite_list(self, new_list: "SpriteList"):
         """
         Register this sprite as belonging to a list. We will automatically

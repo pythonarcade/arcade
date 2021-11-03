@@ -265,3 +265,21 @@ def test_sprite_removal(window):
     window.update = update
     window.test()
     arcade.cleanup_texture_cache()
+
+
+def test_visible():
+    sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png")
+
+    # Default values
+    assert sprite.alpha == 255
+    assert sprite.visible is True
+
+    # Make invisible
+    sprite.visible = False
+    assert sprite.visible is False
+    assert sprite.alpha == 0
+
+    # Make visible again
+    sprite.visible = True
+    assert sprite.visible is True
+    assert sprite.alpha == 255
