@@ -9,11 +9,11 @@ uniform Projection {
 uniform sampler2D uv_texture;
 uniform mat3 TextureTransform;
 
-in float v_angle[1];
-in vec4 v_color[1];
-in vec2 v_size[1];
-in int v_texture[1];
-in int vertex_id[1];
+in float v_angle[];
+in vec4 v_color[];
+in vec2 v_size[];
+in float v_texture[];
+// in float vertex_id[];
 
 out vec2 gs_uv;
 out vec4 gs_color;
@@ -22,7 +22,7 @@ out vec4 gs_color;
 
 void main() {
     // Sprite index 2000000000 means the sprite is deleted or disabled
-    if (vertex_id[0] == 2000000000) return;
+    // if (int(vertex_id[0]) == 2000000000) return;
 
     // Get center of the sprite
     vec2 center = gl_in[0].gl_Position.xy;
