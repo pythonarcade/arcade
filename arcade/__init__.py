@@ -59,6 +59,10 @@ import pyglet
 # the 2.1 shadow context cannot be upgrade to a 3.3+ core
 pyglet.options['shadow_window'] = False
 
+# HACK: Increase pyglet's glyph atlas size to minimize issues
+pyglet.font.base.Font.texture_width = 4096
+pyglet.font.base.Font.texture_height = 4096
+
 # noinspection PyPep8
 from arcade import color
 # noinspection PyPep8
