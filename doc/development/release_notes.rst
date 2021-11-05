@@ -7,6 +7,14 @@ Release Notes
 
 Keep up-to-date with the latest changes to the Arcade library by the release notes.
 
+Version 2.6.5 (NOT RELEASED)
+----------------------------
+
+* Increased pyglet's default atlas size for text glyphs to remove text
+  flickering and various other artifacts. This issue will be fixed
+  in future versions of pyglet.
+* Fixed as issue causing all sprites to use the same texture on some Macs.
+
 Version 2.6.4
 -------------
 
@@ -18,7 +26,7 @@ Version 2.6.4
   3.10 support for Windows is still not there.
 * :class:`~arcade.SpriteList` additions:
 
-  * A ``visible`` attribute has been added to this class. If it is set to true, when calling ``draw()`` on the SpriteList it
+  * A ``visible`` attribute has been added to this class. If set to ``False``, when calling ``draw()`` on the SpriteList it
     will simply return and do nothing. Causing the SpriteList to not be drawn. 
   * SpriteList now has a ``lazy`` (bool) parameter causing it to not create internal OpenGL resources
     until the first draw call or until SpriteList's :meth:`~arcade.SpriteList.initialize` is called. This means that
