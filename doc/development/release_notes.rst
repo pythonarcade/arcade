@@ -7,13 +7,21 @@ Release Notes
 
 Keep up-to-date with the latest changes to the Arcade library by the release notes.
 
-Version 2.6.5 (NOT RELEASED)
-----------------------------
+Version 2.6.5
+-------------
+
+*Released on 2021-Nov-5*
 
 * Increased pyglet's default atlas size for text glyphs to remove text
   flickering and various other artifacts. This issue will be fixed
   in future versions of pyglet.
 * Fixed as issue causing all sprites to use the same texture on some Macs.
+* Improved doc for setting the viewport.
+
+Special thanks to
+`einarf <https://github.com/einarf>`_,
+`pushfoo <https://github.com/pushfoo>`_,
+for their contributions to this release.
 
 Version 2.6.4
 -------------
