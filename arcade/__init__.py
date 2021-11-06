@@ -60,7 +60,7 @@ import pyglet
 pyglet.options['shadow_window'] = False
 
 # HACK: Increase pyglet's glyph atlas size to minimize issues
-if "READTHEDOCS" not in os.environ:
+if not getattr(sys, 'is_pyglet_doc_run', False):
     pyglet.font.base.Font.texture_width = 4096
     pyglet.font.base.Font.texture_height = 4096
 
