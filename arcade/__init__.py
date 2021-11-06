@@ -60,8 +60,9 @@ import pyglet
 pyglet.options['shadow_window'] = False
 
 # HACK: Increase pyglet's glyph atlas size to minimize issues
-pyglet.font.base.Font.texture_width = 4096
-pyglet.font.base.Font.texture_height = 4096
+if not getattr(sys, 'is_pyglet_doc_run', False):
+    pyglet.font.base.Font.texture_width = 4096
+    pyglet.font.base.Font.texture_height = 4096
 
 # noinspection PyPep8
 from arcade import color
