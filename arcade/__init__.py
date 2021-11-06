@@ -59,9 +59,12 @@ import pyglet
 # the 2.1 shadow context cannot be upgrade to a 3.3+ core
 pyglet.options['shadow_window'] = False
 
+# will make sphinx render until pyglet exposes Font class better
+import pyglet.font.base as pyglet_font_base
+
 # HACK: Increase pyglet's glyph atlas size to minimize issues
-pyglet.font.base.Font.texture_width = 4096
-pyglet.font.base.Font.texture_height = 4096
+pyglet_font_base.Font.texture_width = 4096
+pyglet_font_base.Font.texture_height = 4096
 
 # noinspection PyPep8
 from arcade import color
