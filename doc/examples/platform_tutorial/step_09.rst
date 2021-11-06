@@ -51,7 +51,7 @@ Then we will do the actual loading in the setup function Our new setup function 
     :caption: Load a map - Setup the map
     :pyobject: MyGame.setup
     :linenos:
-    :emphasize-lines: 8-25, 40-48
+    :emphasize-lines: 8-25, 40-45
 
 This is pretty much all that needs done to load in the Tilemap, we get a Scene created from it and can use it just like we
 have been up until now. But let's go through this setup function and look at all the updates.
