@@ -101,25 +101,56 @@ class Texture:
     @classmethod
     def create_empty(cls, name: str, size: Tuple[int, int]) -> "Texture":
         """
-        Create an empty texture with a black image.
+        Create a texture with all pixels set to transparent black.
 
-        This can be used to allocate space in texture atlases.
-        The hit box algorithm will be a simply bounding box (None)
-        since we have no pixel data to possibly determine a hit box.
-
-        Note that this creates an internal empty RGBA Pillow Image.
-        If creating many large textures be aware of the memory usage
-        (4 bytes per pixel). Optionally the normal texture initializer
-        can be used providing your own image. If making many equally sized
-        empty texture the same image an be reused across across these textures.
-
-        The internal image can also be latered with Pillow draw commands
-        and written/updated to a texture atlas. This works great for infrequent
-        changes. For frequent texture changes you should instead render
-        directly into the texture atlas.
+        The hit box of the returned Texture will be set to a rectangle
+        with the dimensions in ``size`` because there is no non-blank
+        pixel data to calculate a hit box.
 
         :param str name: The unique name for this texture
-        :param Tuple[int,int] size: The xy size of the internal image.
+        :param Tuple[int,int] size: The xy size of the internal image
+
+        This function has multiple uses, including:
+
+            - Allocating space in texture atlases
+            - Generating custom cached textures from component images
+
+        The internal image can be altered with Pillow draw commands and
+        then written/updated to a texture atlas. This works best for
+        infrequent changes such as generating custom cached sprites.
+        For frequent texture changes, you should instead render directly
+        into the texture atlas.
+
+        .. warning::
+
+           If you plan to alter images using Pillow, read its
+           documentation thoroughly! Some of the functions can have
+           unexpected behavior.
+
+           For example, if you want to draw one or more images that
+           contain transparency onto a base image that also contains
+           transparency, you will likely need to use
+           `PIL.Image.alpha_composite`_ as part of your solution.
+           Otherwise, blending may behave in unexpected ways.
+
+           This is especially important for customizable characters.
+
+        .. _PIL.Image.alpha_composite: https://pillow.readthedocs.io/en/stable/\
+                                       reference/Image.html#PIL.Image.alpha_composite
+
+        Be careful of your RAM usage when using this function. The
+        Texture this method returns will have a new internal RGBA
+        Pillow image which uses 4 bytes for every pixel in it.
+        This will quickly add up if you create many large Textures.
+
+        If you want to create more than one blank texture with the same
+        dimensions, you can save CPU time and RAM by calling this
+        function once, then passing the ``image`` attribute of the
+        resulting Texture object to the class constructor for each
+        additional blank Texture instance you would like to create.
+        This can be especially helpful if you are creating multiple
+        large Textures.
+
         """
         return Texture(
             name,
