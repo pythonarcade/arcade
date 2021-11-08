@@ -1104,6 +1104,7 @@ class UIFlatButton(UIInteractiveWidget):
         self.prepare_render(surface)
 
         # Render button
+        font_name = self._style.get("font_name", ("calibri", "arial"))
         font_size = self._style.get("font_size", 15)
         font_color = self._style.get("font_color", arcade.color.WHITE)
         border_width = self._style.get("border_width", 2)
@@ -1141,6 +1142,7 @@ class UIFlatButton(UIInteractiveWidget):
                 text=self.text,
                 start_x=start_x,
                 start_y=start_y,
+                font_name=font_name,
                 font_size=font_size,
                 color=font_color,
                 align="center",
