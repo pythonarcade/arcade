@@ -1,7 +1,6 @@
 import gc
-from typing import Dict
 
-from arcade.gui._property import _Property, _bind, _DictProperty, _ObservableDict
+from arcade.gui._property import _Property, _bind
 
 
 class MyObject:
@@ -11,15 +10,15 @@ class MyObject:
 class Observer:
     called = None
 
+    def call(self, *args, **kwargs):
+        self.called = (args, kwargs)
+
     def __call__(self, *args, **kwargs):
         self.called = (args, kwargs)
 
 
 def test_callback():
     observer = Observer()
-
-    class MyObject:
-        name = _Property()
 
     my_obj = MyObject()
     _bind(my_obj, "name", observer)
@@ -58,6 +57,20 @@ def test_independent_obj_instances():
     assert my_obj2.name == "Franz"
 
 
+def test_does_not_trigger_if_value_unchanged():
+    observer = Observer()
+    my_obj = MyObject()
+    my_obj.name = "CONSTANT"
+    _bind(my_obj, "name", observer)
+
+    assert not observer.called
+
+    # WHEN
+    my_obj.name = "CONSTANT"
+
+    assert not observer.called
+
+
 def test_gc_entries_are_collected():
     obj = MyObject()
     obj.name = "Some Name"
@@ -72,3 +85,35 @@ def test_gc_entries_are_collected():
 
     # No left overs
     assert len(MyObject.name.obs) == 0
+
+
+def test_gc_keeps_bound_methods():
+    observer = Observer()
+    obj = MyObject()
+    obj.name = "Some Name"
+
+    _bind(obj, "name", observer.call)
+
+    assert len(MyObject.name.obs[obj].listeners) == 1
+
+    del observer
+    gc.collect()
+
+    assert len(MyObject.name.obs[obj].listeners) == 1
+
+
+def test_gc_keeps_temp_methods():
+    obj = MyObject()
+    obj.name = "Some Name"
+    calls = []
+
+    def callback(*args, **kwargs):
+        calls.append((args, kwargs))
+
+    _bind(obj, "name", callback)
+
+    assert len(MyObject.name.obs[obj].listeners) == 1
+
+    del callback
+
+    assert len(MyObject.name.obs[obj].listeners) == 1

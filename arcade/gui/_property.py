@@ -1,16 +1,17 @@
 import warnings
-from weakref import WeakKeyDictionary, WeakSet, ref
+from weakref import WeakKeyDictionary, ref
 
 
 class _Obs:
     """
-    Internal holder for Property value and change lsiteners
+    Internal holder for Property value and change listeners
     """
     __slots__ = 'value', 'listeners'
 
     def __init__(self):
         self.value = None
-        self.listeners = WeakSet()
+        # This will keep any added listener even if it is not referenced anymore and would be garbage collected
+        self.listeners = set()
 
 
 class _Property:
@@ -22,7 +23,10 @@ class _Property:
     name: str
 
     def __init__(self, default=None, default_factory=None):
+        """
 
+        :type default: Default value which is returned, if no value set before
+        """
         if default_factory is None:
             default_factory = lambda prop, instance: default
 
@@ -43,8 +47,9 @@ class _Property:
 
     def set(self, instance, value):
         obs = self._get_obs(instance)
-        obs.value = value
-        self.dispatch(instance, value)
+        if obs.value != value:
+            obs.value = value
+            self.dispatch(instance, value)
 
     def dispatch(self, instance, value):
         obs = self._get_obs(instance)
@@ -55,7 +60,10 @@ class _Property:
                 warnings.warn(f"Change listener for {instance}.{self.name} = {value} raised an exception!")
 
     def bind(self, instance, callback):
-        self._get_obs(instance).listeners.add(callback)
+        obs = self._get_obs(instance)
+        # Instance methods are bound methods, which can not be referenced by normal `ref()`
+        # if listeners would be a WeakSet, we would have to add listeners as WeakMethod ourselfs into `WeakSet.data`.
+        obs.listeners.add(callback)
 
     def __set_name__(self, owner, name):
         self.name = name
@@ -69,9 +77,10 @@ class _Property:
         self.set(instance, value)
 
 
-def _bind(instance, property, callback):
+def _bind(instance, property: str, callback):
     """
-    Binds a function to the change event of the property.
+    Binds a function to the change event of the property. A reference to the function will be kept,
+    so that it will be still invoked, even if it would normally have been garbage collected.
 
         def log_change():
             print("Something changed")
