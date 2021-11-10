@@ -97,6 +97,9 @@ class TileMap:
            with static walls/platforms.
     :param str hit_box_algorithm: One of 'None', 'Simple' or 'Detailed'.
     :param float hit_box_detail: Float, defaults to 4.5. Used with 'Detailed' to hit box.
+    :param pytiled_parser.TiledMap tiled_map: An already parsed pytiled-parser map object.
+           Passing this means that the ``map_file`` argument will be ignored, and the pre-parsed
+           map will instead be used. This can be helpful for working with Tiled World files.
 
 
     The `layer_options` parameter can be used to specify per layer arguments.
@@ -147,23 +150,31 @@ class TileMap:
 
     def __init__(
         self,
-        map_file: Union[str, Path],
+        map_file: Union[str, Path] = "",
         scaling: float = 1.0,
         layer_options: Optional[Dict[str, Dict[str, Any]]] = None,
         use_spatial_hash: Optional[bool] = None,
         hit_box_algorithm: str = "Simple",
         hit_box_detail: float = 4.5,
+        tiled_map: Optional[pytiled_parser.TiledMap] = None,
     ) -> None:
         """
         Given a .json file, this will read in a Tiled map file, and
         initialize a new TileMap object.
         """
+        if not map_file and not tiled_map:
+            raise AttributeError(
+                "Initialized TileMap with an empty map_file or no map_object argument"
+            )
 
-        # If we should pull from local resources, replace with proper path
-        map_file = resolve_resource_path(map_file)
+        if tiled_map:
+            self.tiled_map = tiled_map
+        else:
+            # If we should pull from local resources, replace with proper path
+            map_file = resolve_resource_path(map_file)
 
-        # This attribute stores the pytiled-parser map object
-        self.tiled_map = pytiled_parser.parse_map(map_file)
+            # This attribute stores the pytiled-parser map object
+            self.tiled_map = pytiled_parser.parse_map(map_file)
 
         # Set Map Attributes
         self.width = self.tiled_map.map_size.width

@@ -7,6 +7,16 @@ Release Notes
 
 Keep up-to-date with the latest changes to the Arcade library by the release notes.
 
+Unreleased
+----------
+
+* :class:`~arcade.TileMap` changes:
+
+  * Added ``tiled_map`` parameter to init function of TileMap class. It allows to pass an already parsed map from 
+    from pytiled-parser to it. Previously it could only be used with raw files and would handle the parsing automatically.
+    If a pre-parsed map is passed to this, the ``map_file`` parameter will simply be ignored. This addition makes working
+    with pre-parsed maps from a World file possible.
+
 Version 2.6.5
 -------------
 
