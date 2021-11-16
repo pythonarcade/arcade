@@ -31,7 +31,6 @@ class UISlider(UIWidget):
                  style: dict = None,
                  **kwargs
                  ):
-        # noinspection Mypy
         super().__init__(
             x=x,
             y=y,
@@ -40,7 +39,7 @@ class UISlider(UIWidget):
             size_hint=size_hint,
             size_hint_min=size_hint_min,
             size_hint_max=size_hint_max,
-            style=ChainMap(style or {}, UISliderStyle()),
+            style=ChainMap(style or {}, UISliderStyle()),  # type: ignore
             **kwargs
         )
 
