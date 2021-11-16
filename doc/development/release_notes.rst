@@ -20,6 +20,7 @@ Unreleased
 * UI: Add experimental UI styles dataclasses for UIWidget styling.
 * UI: Add UISlider, which provides a general slider element with some basic functionality
 * UI: Fix UIInputText rendering
+* UI: ⚡️UIFlatButton now uses style parameter with prefixed state like ``hovered_bg``
 
 Version 2.6.5
 -------------
