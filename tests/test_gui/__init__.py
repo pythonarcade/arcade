@@ -19,6 +19,11 @@ class InteractionMixin:
             x=x, y=y, button=button, modifiers=0
         )
 
+    def drag(self, x: int, y: int, dx=0.0, dy=0.0, buttons=arcade.MOUSE_BUTTON_LEFT, modifiers=0):
+        self.on_mouse_drag(
+            x=x, y=y, dx=dx, dy=dy, buttons=buttons, modifiers=modifiers
+        )
+
     def release(self, x: int, y: int, button=arcade.MOUSE_BUTTON_LEFT):
         self.on_mouse_release(
             x=x, y=y, button=button, modifiers=0

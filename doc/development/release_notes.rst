@@ -17,6 +17,10 @@ Unreleased
     If a pre-parsed map is passed to this, the ``map_file`` parameter will simply be ignored. This addition makes working
     with pre-parsed maps from a World file possible.
 
+* UI: Add experimental UI styles dataclasses for UIWidget styling.
+* UI: Add UISlider, which provides a general slider element with some basic functionality
+* UI: Fix UIInputText rendering
+
 Version 2.6.5
 -------------
 

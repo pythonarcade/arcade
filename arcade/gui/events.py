@@ -99,3 +99,12 @@ class UIOnUpdateEvent(UIEvent):
     Arcade on_update callback passed as :class:`UIEvent`
     """
     dt: int
+
+
+@dataclass
+class UIChangeEvent(UIEvent):
+    """
+    Value of a widget changed
+    """
+    old_value: Any
+    new_value: Any

@@ -139,6 +139,7 @@ class UIWidget(EventDispatcher, ABC):
                  style=None,
                  **kwargs
                  ):
+        self.style = style or {}
         self.children: List[UIWidget] = []
 
         self._rendered = False
@@ -406,7 +407,8 @@ class UIInteractiveWidget(UIWidget):
         super().__init__(x, y, width, height,
                          size_hint=size_hint,
                          size_hint_min=size_hint_min,
-                         size_hint_max=size_hint_max
+                         size_hint_max=size_hint_max,
+                         style=style
                          )
         self.register_event_type("on_click")
 
@@ -1051,7 +1053,7 @@ class UIInputText(UIWidget):
         # Update Pyglet layout
         my_layout = self.layout
         my_layout.begin_update()
-        my_layout.x, my_layout.y, my_layout.width, my_layout.height = self.rect
+        my_layout.x, my_layout.y, my_layout.width, my_layout.height = 0, 0, self.width, self.height
         my_layout.end_update()
 
     @property

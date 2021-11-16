@@ -39,7 +39,7 @@ A :class:`UIWidget` has following properties
     If set, changing the size of a widget to a higher values will use this size instead.
 
     *size_hint*, *size_hint_min*, and *size_hint_max* are values that are additional information of a widget, but do not
-    effect the widget on its own. :class:`UILayouts` may use these information to place or resize a widget.
+    effect the widget on its own. :class:`UILayout`s may use these information to place or resize a widget.
 
 Rendering
 .........
@@ -155,7 +155,7 @@ UIEvents are fully typed dataclasses, which provide information about a event ef
 Events are passed top down to every :class:`UIWidget` by the UIManager.
 
 General pyglet window events are converted by the UIManager into UIEvents and passed via dispatch_event
-to the on_event callbacks.
+to the ``on_event`` callbacks.
 
 Widget specific UIEvents like UIOnClick are dispatched via "on_event" and are then  dispatched as specific event types (like 'on_click')
 
@@ -170,4 +170,35 @@ Widget specific UIEvents like UIOnClick are dispatched via "on_event" and are th
 - :class:`UITextMotionEvent` - Text motion events like arrows
 - :class:`UITextMotionSelectEvent` - Text motion events for selection
 - :class:`UIOnClickEvent` - Click event of :class:`UIInteractiveWidget` class
+- :class:`UIOnChangeEvent` - A value of a :class:`UIWidget` has changed
 - :class:`UIOnUpdateEvent` - arcade.Window `on_update` callback
+
+Different Event Systems
+=======================
+
+The GUI uses different event systems, dependent on the required flow. A game developer should mostly interact with UIEvents
+which are dispatched from specific UIWidgets like ``on_click`` of a button.
+
+In rare cases a developer might implement some UIWidgets or wants to modify the existing GUI behavior. In those cases a
+developer might register own Pyglet event types on UIWidgets or overwrite the ``UIWidget.on_event`` method.
+
+### Pyglet Window Events
+
+Received by UIManager, dispatched via ``UIWidget.dispatch_event("on_event", UIEvent(...))``.
+Window Events are wrapped into subclasses of UIEvent.
+
+### Pyglet EventDispatcher - UIWidget
+
+UIWidgets implement Pyglets EventDispatcher and register an ``on_event`` event type.
+``UIWidget.on_event`` contains specific event handling and should not be overwritten without deeper understanding of the consequences.
+To add custom event handling use the decorator syntax to add another listener (``@UIWidget.event("on_event")``).
+
+### UIEvents
+
+UIEvents are typed representations of events that are passed within the GUI. UIWidgets might define their own UIEvents.
+
+### _Property
+
+``_Property`` is an internal, experimental, pure-Python implementation of Kivy Properties. They are used to detect attribute
+changes of UIWidgets and trigger rendering. They should only be used in arcade internal code.
+
