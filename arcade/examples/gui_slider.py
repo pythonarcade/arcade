@@ -1,7 +1,7 @@
 import arcade
 from arcade.experimental.uislider import UISlider
 from arcade.gui import UIManager, UIAnchorWidget, UILabel
-from arcade.gui.events import UIChangeEvent
+from arcade.gui.events import UIOnChangeEvent
 
 
 class UIMockup(arcade.Window):
@@ -14,7 +14,7 @@ class UIMockup(arcade.Window):
         label = UILabel(text=f"{ui_slider.value:02.0f}")
 
         @ui_slider.event()
-        def on_change(event: UIChangeEvent):
+        def on_change(event: UIOnChangeEvent):
             label.text = f"{ui_slider.value:02.0f}"
             label.fit_content()
 

@@ -8,7 +8,7 @@ from arcade.experimental.uistyle import UISliderStyle
 from arcade.gui import UIWidget, Surface, UIEvent, UIMouseMovementEvent, UIMouseDragEvent, UIMousePressEvent, \
     UIMouseReleaseEvent
 from arcade.gui._property import _Property, _bind
-from arcade.gui.events import UIChangeEvent
+from arcade.gui.events import UIOnChangeEvent
 
 
 class UISlider(UIWidget):
@@ -138,7 +138,7 @@ class UISlider(UIWidget):
             if self.pressed:
                 old_value = self.value
                 self.value_x = event.x
-                self.dispatch_event("on_change", UIChangeEvent(self, old_value, self.value))
+                self.dispatch_event("on_change", UIOnChangeEvent(self, old_value, self.value))
 
         if isinstance(event, UIMousePressEvent):
             if self._is_on_cursor(event.x, event.y):
@@ -149,5 +149,5 @@ class UISlider(UIWidget):
 
         return EVENT_UNHANDLED
 
-    def on_change(self, event: UIChangeEvent):
+    def on_change(self, event: UIOnChangeEvent):
         pass

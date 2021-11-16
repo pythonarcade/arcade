@@ -10,6 +10,7 @@ from .events import UIMousePressEvent
 from .events import UIMouseReleaseEvent
 from .events import UIMouseScrollEvent
 from .events import UIOnClickEvent
+from .events import UIOnChangeEvent
 from .events import UIOnUpdateEvent
 from .events import UITextEvent
 from .events import UITextMotionEvent

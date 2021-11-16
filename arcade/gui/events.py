@@ -102,7 +102,7 @@ class UIOnUpdateEvent(UIEvent):
 
 
 @dataclass
-class UIChangeEvent(UIEvent):
+class UIOnChangeEvent(UIEvent):
     """
     Value of a widget changed
     """
