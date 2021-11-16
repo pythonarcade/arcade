@@ -1,4 +1,5 @@
 from abc import abstractmethod, ABC
+from collections import ChainMap
 from random import randint
 from typing import NamedTuple, Iterable, Optional, List, Union, TYPE_CHECKING, TypeVar
 
@@ -9,6 +10,7 @@ from pyglet.text.document import AbstractDocument
 
 import arcade
 from arcade import Texture, Sprite
+from arcade.experimental.uistyle import UIFlatButtonStyle
 from arcade.gui.events import UIEvent, UIMouseMovementEvent, UIMousePressEvent, UIMouseReleaseEvent, \
     UITextEvent, \
     UIMouseDragEvent, \
@@ -1152,31 +1154,27 @@ class UIFlatButton(UIInteractiveWidget):
         super().__init__(x, y, width, height,
                          size_hint=size_hint,
                          size_hint_min=size_hint_min,
-                         size_hint_max=size_hint_max)
+                         size_hint_max=size_hint_max,
+                         style=ChainMap(style or {}, UIFlatButtonStyle()))  # type: ignore
         self._text = text
-        self._style = style or {}
 
     def do_render(self, surface: Surface):
         self.prepare_render(surface)
+        state = "pressed" if self.pressed else "hovered" if self.hovered else "normal"
 
         # Render button
-        font_name = self._style.get("font_name", ("calibri", "arial"))
-        font_size = self._style.get("font_size", 15)
-        font_color = self._style.get("font_color", arcade.color.WHITE)
-        border_width = self._style.get("border_width", 2)
-        border_color = self._style.get("border_color", None)
-        bg_color = self._style.get("bg_color", (21, 19, 21))
+        font_name = self.style.get(f"{state}_font_name")
+        font_size = self.style.get(f"{state}_font_size")
+        font_color = self.style.get(f"{state}_font_color")
 
-        if self.pressed:
-            bg_color = self._style.get("bg_color_pressed", arcade.color.WHITE)
-            border_color = self._style.get("border_color_pressed", arcade.color.WHITE)
-            font_color = self._style.get("font_color_pressed", arcade.color.BLACK)
-        elif self.hovered:
-            border_color = self._style.get("border_color_pressed", arcade.color.WHITE)
+        border_width = self.style.get(f"{state}_border_width")
+        border_color = self.style.get(f"{state}_border")
+        bg_color = self.style.get(f"{state}_bg")
 
         # render BG
         if bg_color:
-            arcade.draw_xywh_rectangle_filled(0, 0, self.width, self.height, color=bg_color)
+            surface.clear(bg_color)
+            # arcade.draw_xywh_rectangle_filled(0, 0, self.width, self.height, color=bg_color)
 
         # render border
         if border_color and border_width:
@@ -1189,7 +1187,7 @@ class UIFlatButton(UIInteractiveWidget):
                 border_width=border_width)
 
         # render text
-        if self.text:
+        if self.text and border_width:
             start_x = self.width // 2
             start_y = self.height // 2
 
@@ -1198,9 +1196,9 @@ class UIFlatButton(UIInteractiveWidget):
                 text=self.text,
                 start_x=start_x,
                 start_y=start_y,
-                font_name=font_name,
-                font_size=font_size,
-                color=font_color,
+                font_name=font_name,  # type: ignore
+                font_size=font_size,  # type: ignore
+                color=font_color,  # type: ignore
                 align="center",
                 anchor_x='center', anchor_y='center',
                 width=self.width - 2 * border_width - 2 * text_margin
