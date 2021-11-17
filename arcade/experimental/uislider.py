@@ -138,7 +138,7 @@ class UISlider(UIWidget):
             if self.pressed:
                 old_value = self.value
                 self.value_x = event.x
-                self.dispatch_event("on_change", UIOnChangeEvent(self, old_value, self.value))
+                self.dispatch_event("on_change", UIOnChangeEvent(self, old_value, self.value))  # type: ignore
 
         if isinstance(event, UIMousePressEvent):
             if self._is_on_cursor(event.x, event.y):
