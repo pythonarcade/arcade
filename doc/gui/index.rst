@@ -32,6 +32,7 @@ It is recommended to read through them.
    :maxdepth: 1
 
    concept
+   style
    troubleshooting
 
 

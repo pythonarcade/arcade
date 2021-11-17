@@ -3,9 +3,9 @@
 GUI Style
 ---------
 
-    :module:`arcade.experimental.uistyle` is an experimental component, which might change in upcoming versions.
+    ``arcade.experimental.uistyle`` is an experimental component, which might change in upcoming versions.
 
-:module:`arcade.experimental.uistyle` provides style dicts, which are used within :class:`UIWidget` to provide the colors for default appearance.
+``arcade.experimental.uistyle`` provides style dicts, which are used within :class:`UIWidget` to provide the colors for default appearance.
 
 Style Parameters
 ================

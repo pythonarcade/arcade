@@ -39,7 +39,7 @@ A :class:`UIWidget` has following properties
     If set, changing the size of a widget to a higher values will use this size instead.
 
     *size_hint*, *size_hint_min*, and *size_hint_max* are values that are additional information of a widget, but do not
-    effect the widget on its own. :class:`UILayout`s may use these information to place or resize a widget.
+    effect the widget on its own. :class:`UILayout` may use these information to place or resize a widget.
 
 Rendering
 .........
