@@ -3,11 +3,11 @@
 from: https://github.com/linuxlewis/tripy/blob/master/tripy.py
 """
 
-from arcade import NamedPoint, Point
-from typing import List, Tuple, Union
+from arcade import Point, PointList
+from typing import List, Tuple
 
 
-def earclip(polygon: List[Point]) -> List[Tuple[Tuple[float, float], Tuple[float, float], Tuple[float, float]]]:
+def earclip(polygon: PointList) -> List[Tuple[Tuple[float, float], Tuple[float, float], Tuple[float, float]]]:
     """
     Simple earclipping algorithm for a given polygon p.
     polygon is expected to be an array of 2-tuples of the cartesian points of the polygon
@@ -81,10 +81,9 @@ def _is_convex(prev: Point, point: Point, next_point: Point):
 
 
 def _is_ear(p1: Point, p2: Point, p3: Point, polygon: List[Point]):
-    ear = _contains_no_points(p1, p2, p3, polygon) and \
-          _is_convex(p1, p2, p3) and \
-          _triangle_area(p1[0], p1[1], p2[0], p2[1], p3[0], p3[1]) > 0
-    return ear
+    return _contains_no_points(p1, p2, p3, polygon) and \
+        _is_convex(p1, p2, p3) and \
+        _triangle_area(p1[0], p1[1], p2[0], p2[1], p3[0], p3[1]) > 0
 
 
 def _contains_no_points(p1: Point, p2: Point, p3: Point, polygon: List[Point]):

@@ -49,7 +49,7 @@ def quad_2d(size: Tuple[float, float] = (1.0, 1.0), pos: Tuple[float, float] = (
 def screen_rectangle(bottom_left_x: float, bottom_left_y: float, width: float, height: float) -> Geometry:
     """
     Creates screen rectangle using 2 triangle strip with texture coordinates.
-    
+
     :param float bottom_left_x: Bottom left x position
     :param float bottom_left_y: Bottom left y position
     :param float width: Width of the rectangle
@@ -69,7 +69,10 @@ def screen_rectangle(bottom_left_x: float, bottom_left_y: float, width: float, h
     )], mode=ctx.TRIANGLE_STRIP)
 
 
-def cube(size: Tuple[float, float, float] = (1.0, 1.0, 1.0), center: Tuple[float, float, float] = (0.0, 0.0, 0.0)) -> Geometry:
+def cube(
+    size: Tuple[float, float, float] = (1.0, 1.0, 1.0),
+    center: Tuple[float, float, float] = (0.0, 0.0, 0.0),
+) -> Geometry:
     """Creates a cube with normals and texture coordinates.
 
     :param tuple size: size of the cube as a 3-component tuple

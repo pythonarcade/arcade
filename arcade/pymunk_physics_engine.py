@@ -1,7 +1,6 @@
 """
 Pymunk Physics Engine
 """
-
 import logging
 import math
 from typing import Callable, Dict, List, Optional, Union, Tuple
@@ -33,7 +32,8 @@ class PymunkPhysicsEngine:
     Pymunk Physics Engine
 
     :param gravity: The direction where gravity is pointing
-    :param damping: The amount of speed which is kept to the next tick. a value of 1.0 means no speed loss, while 0.9 has 10% loss of speed etc.
+    :param damping: The amount of speed which is kept to the next tick. a value of 1.0 means no speed loss,
+                    while 0.9 has 10% loss of speed etc.
     :param maximum_incline_on_ground: The maximum incline the ground can have, before is_on_ground() becomes False
         default = 0.708 or a little bit over 45° angle
     """
@@ -58,23 +58,28 @@ class PymunkPhysicsEngine:
                    mass: float = 1,
                    friction: float = 0.2,
                    elasticity: Optional[float] = None,
-                   moment_of_intertia: Optional[float] =None,
-                   body_type: int =DYNAMIC,
-                   damping: Optional[float] =None,
-                   gravity: Union[pymunk.Vec2d, Tuple[float, float], Vec2] =None,
-                   max_velocity: int =None,
-                   max_horizontal_velocity: int =None,
-                   max_vertical_velocity: int =None,
+                   moment_of_inertia: Optional[float] = None,  # correct spelling
+                   body_type: int = DYNAMIC,
+                   damping: Optional[float] = None,
+                   gravity: Union[pymunk.Vec2d, Tuple[float, float], Vec2] = None,
+                   max_velocity: int = None,
+                   max_horizontal_velocity: int = None,
+                   max_vertical_velocity: int = None,
                    radius: float = 0,
                    collision_type: Optional[str] = "default",
+                   # the next two arguments are for backwards compatibility with prior versions
+                   moment_of_intertia: Optional[float] = None,  # typo keyword, used by 2.6.2 and 2.6.3
+                   moment: Optional[float] = None  # used prior to 2.6.2
                    ):
         """ Add a sprite to the physics engine. 
             :param sprite: The sprite to add
             :param mass: The mass of the object. Defaults to 1
             :param friction: The friction the object has. Defaults to 0.2
-            :param elasticity: Not sure for this one #TODO insert what this is about
-            :param moment_of_intertia: The moment of inertia, or force needed to change angular momentum. Providing infinite makes this object stuck in its rotation.
-            :param body_type: The type of the body. Defaults to Dynamic, meaning, the body can move, rotate etc. providing STATIC makes it fixed to the world.
+            :param elasticity: How bouncy this object is. 0 is no bounce. Values of 1.0 and higher may behave badly.
+            :param moment_of_inertia: The moment of inertia, or force needed to change angular momentum. \
+            Providing infinite makes this object stuck in its rotation.
+            :param body_type: The type of the body. Defaults to Dynamic, meaning, the body can move, rotate etc. \
+            Providing STATIC makes it fixed to the world.
             :param damping: See class docs
             :param gravity: See class docs
             :param max_velocity: The maximum velocity of the object.
@@ -82,6 +87,8 @@ class PymunkPhysicsEngine:
             :param max_vertical_velocity: maximum velocity on the y axis
             :param radius:
             :param collision_type:
+            :param moment_of_intertia: Deprecated alias of moment_of_inertia compatible with a typo introduced in 2.6.2
+            :param moment: Deprecated alias of moment_of_inertia compatible with versions <= 2.6.1
         """
 
         if damping is not None:
@@ -107,17 +114,21 @@ class PymunkPhysicsEngine:
         # Keep track of collision types
         if collision_type not in self.collision_types:
             LOG.debug(f"Adding new collision type of {collision_type}.")
-            self.collision_types.append(collision_type)
+            self.collision_types.append(collision_type)  # type: ignore
 
         # Get a number associated with the string of collision_type
-        collision_type_id = self.collision_types.index(collision_type)
+        collision_type_id = self.collision_types.index(collision_type)  # type: ignore
 
-        # Default to a box moment_of_intertia
-        if moment_of_intertia is None:
-            moment_of_intertia = pymunk.moment_for_box(mass, (sprite.width, sprite.height))
+        # Backwards compatibility for a typo introduced in 2.6.2 and for versions under 2.6.1
+        # The current version is checked first, then the most common older form, then the typo
+        moment_of_inertia = moment_of_inertia or moment or moment_of_intertia
+
+        # Default to a box moment_of_inertia
+        if moment_of_inertia is None:
+            moment_of_inertia = pymunk.moment_for_box(mass, (sprite.width, sprite.height))
 
         # Create the physics body
-        body = pymunk.Body(mass, moment_of_intertia, body_type=body_type)
+        body = pymunk.Body(mass, moment_of_inertia, body_type=body_type)
 
         # Set the body's position
         body.position = pymunk.Vec2d(sprite.center_x, sprite.center_y)
@@ -171,7 +182,7 @@ class PymunkPhysicsEngine:
         # Set the physics shape to the sprite's hitbox
         poly = sprite.get_hit_box()
         scaled_poly = [[x * sprite.scale for x in z] for z in poly]
-        shape = pymunk.Poly(body, scaled_poly, radius=radius)
+        shape = pymunk.Poly(body, scaled_poly, radius=radius)  # type: ignore
 
         # Set collision type, used in collision callbacks
         if collision_type:
@@ -202,10 +213,10 @@ class PymunkPhysicsEngine:
                         mass: float = 1,
                         friction: float = 0.2,
                         elasticity: Optional[float] = None,
-                        moment_of_intertia: Optional[float] =None,
-                        body_type: int =DYNAMIC,
-                        damping: Optional[float] =None,
-                        collision_type: Optional[str] =None
+                        moment_of_intertia: Optional[float] = None,
+                        body_type: int = DYNAMIC,
+                        damping: Optional[float] = None,
+                        collision_type: Optional[str] = None
                         ):
         """ Add all sprites in a sprite list to the physics engine. """
 
@@ -214,7 +225,7 @@ class PymunkPhysicsEngine:
                             mass=mass,
                             friction=friction,
                             elasticity=elasticity,
-                            moment_of_intertia=moment_of_intertia,
+                            moment_of_inertia=moment_of_intertia,
                             body_type=body_type,
                             damping=damping,
                             collision_type=collision_type)
@@ -222,8 +233,8 @@ class PymunkPhysicsEngine:
     def remove_sprite(self, sprite: Sprite):
         """ Remove a sprite from the physics engine. """
         physics_object = self.sprites[sprite]
-        self.space.remove(physics_object.body)
-        self.space.remove(physics_object.shape)
+        self.space.remove(physics_object.body)  # type: ignore
+        self.space.remove(physics_object.shape)  # type: ignore
         self.sprites.pop(sprite)
         if sprite in self.non_static_sprite_list:
             self.non_static_sprite_list.remove(sprite)
@@ -235,7 +246,7 @@ class PymunkPhysicsEngine:
                 return sprite
         return None
 
-    def get_sprites_from_arbiter(self, arbiter: pymunk.Arbiter) -> Tuple[Sprite]:
+    def get_sprites_from_arbiter(self, arbiter: pymunk.Arbiter) -> Tuple[Optional[Sprite], Optional[Sprite]]:
         """ Given a collision arbiter, return the sprites associated with the collision. """
         shape1, shape2 = arbiter.shapes
         sprite1 = self.get_sprite_for_shape(shape1)
@@ -428,15 +439,18 @@ class PymunkPhysicsEngine:
             """
             Checks if the the point of collision is in a way, that the sprite is on top of the other
             """
-            
-            # Gets the normal vector of the collision. This is basicly the point of collision.
+            # Gets the normal vector of the collision. This is the point of collision.
             n = arbiter.contact_point_set.normal
 
             # Checks if the x component of the gravity is in range of the maximum incline, same for the y component.
-            # This will work, as the normal AND gravity are both points on a circle with a radius of 1. (both are unit vecors)
-            if gravity_unit_vector.x + self.maximum_incline_on_ground > n.x > gravity_unit_vector.x - self.maximum_incline_on_ground\
-                    and \
-                gravity_unit_vector.y + self.maximum_incline_on_ground > n.y > gravity_unit_vector.y - self.maximum_incline_on_ground:
+            # This will work, as the normal AND gravity are both points on a circle with a radius of 1.
+            # (both are unit vectors)
+            if gravity_unit_vector.x + self.maximum_incline_on_ground > \
+               n.x > \
+               gravity_unit_vector.x - self.maximum_incline_on_ground\
+               and \
+               gravity_unit_vector.y + self.maximum_incline_on_ground > \
+               n.y > gravity_unit_vector.y - self.maximum_incline_on_ground:
                 grounding['normal'] = n
                 grounding['penetration'] = -arbiter.contact_point_set.points[0].distance
                 grounding['body'] = arbiter.shapes[1].body

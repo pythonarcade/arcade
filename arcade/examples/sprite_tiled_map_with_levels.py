@@ -95,7 +95,7 @@ class MyGame(arcade.Window):
         self.game_over = False
 
     def load_level(self, level):
-        layer_options = {"Platforms": {"use_spatial_hash": True}}
+        # layer_options = {"Platforms": {"use_spatial_hash": True}}
 
         # Read in the tiled map
         self.tile_map = arcade.load_tilemap(

@@ -36,6 +36,14 @@ class Program:
     Example::
 
         program['MyUniform'] = value
+
+    :param Context ctx: The context this program belongs to
+    :param str vertex_shader: vertex shader source
+    :param str fragment_shader: fragment shader source
+    :param str geometry_shader: geometry shader source
+    :param str tess_control_shader: tessellation control shader source
+    :param str tess_evaluation_shader: tessellation evaluation shader source
+    :param List[str] out_attributes: List of out attributes used in transform feedback.
     """
 
     __slots__ = (
@@ -60,16 +68,8 @@ class Program:
         tess_evaluation_shader: str = None,
         out_attributes: List[str] = None,
     ):
-        """Create a Program.
+        """Create a Program."""
 
-        :param Context ctx: The context this program belongs to
-        :param str vertex_shader: vertex shader source
-        :param str fragment_shader: fragment shader source
-        :param str geometry_shader: geometry shader source
-        :param str tess_control_shader: tessellation control shader source
-        :param str tess_evaluation_shader: tessellation evaluation shader source
-        :param List[str] out_attributes: List of out attributes used in transform feedback.
-        """
         self._ctx = ctx
         self._glo = glo = gl.glCreateProgram()
         self._out_attributes = out_attributes or []
@@ -124,7 +124,7 @@ class Program:
         self._introspect_uniform_blocks()
 
         if self._ctx.gc_mode == "auto":
-            weakref.finalize(self, Program.delete_glo, self._ctx, self._glo)
+            weakref.finalize(self, Program.delete_glo, self._ctx, glo)
 
         self.ctx.stats.incr("program")
 
@@ -137,7 +137,7 @@ class Program:
     def ctx(self) -> "Context":
         """
         The context this program belongs to
-        
+
         :type: :py:class:`arcade.gl.Context`
         """
         return self._ctx
@@ -162,7 +162,7 @@ class Program:
     def out_attributes(self) -> List[str]:
         """
         Out attributes names used in transform feedback
-        
+
         :type: list of str
         """
         return self._out_attributes

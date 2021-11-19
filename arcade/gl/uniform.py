@@ -5,7 +5,13 @@ from .exceptions import ShaderException
 
 
 class Uniform:
-    """A Program uniform"""
+    """
+    A Program uniform
+
+    :param int location: The location of the uniform in the program
+    :param str name: Name of the uniform in the program
+    :param gl.GLenum data_type: The data type of the uniform (GL_FLOAT
+    """
 
     _uniform_getters = {
         gl.GLint: gl.glGetUniformiv,
@@ -48,6 +54,19 @@ class Uniform:
         gl.GL_FLOAT_MAT2: (gl.GLfloat, gl.glUniformMatrix2fv, 4, 1),
         gl.GL_FLOAT_MAT3: (gl.GLfloat, gl.glUniformMatrix3fv, 9, 1),
         gl.GL_FLOAT_MAT4: (gl.GLfloat, gl.glUniformMatrix4fv, 16, 1),
+        # Image (compute shader)
+        gl.GL_IMAGE_1D: (gl.GLint, gl.glUniform1iv, 1, 1),
+        gl.GL_IMAGE_2D: (gl.GLint, gl.glUniform1iv, 1, 1),
+        gl.GL_IMAGE_2D_RECT: (gl.GLint, gl.glUniform1iv, 1, 1),
+        gl.GL_IMAGE_3D: (gl.GLint, gl.glUniform1iv, 1, 1),
+        gl.GL_IMAGE_CUBE: (gl.GLint, gl.glUniform1iv, 1, 1),
+        gl.GL_IMAGE_1D_ARRAY: (gl.GLint, gl.glUniform1iv, 1, 1),
+        gl.GL_IMAGE_2D_ARRAY: (gl.GLint, gl.glUniform1iv, 1, 1),
+        gl.GL_IMAGE_CUBE_MAP_ARRAY: (gl.GLint, gl.glUniform1iv, 1, 1),
+        gl.GL_IMAGE_2D_MULTISAMPLE: (gl.GLint, gl.glUniform1iv, 1, 1),
+        gl.GL_IMAGE_2D_MULTISAMPLE_ARRAY: (gl.GLint, gl.glUniform1iv, 1, 1),
+        gl.GL_IMAGE_BUFFER: (gl.GLint, gl.glUniform1iv, 1, 1),
+
         # TODO: test/implement these:
         # gl.GL_FLOAT_MAT2x3: glUniformMatrix2x3fv,
         # gl.GL_FLOAT_MAT2x4: glUniformMatrix2x4fv,
@@ -70,12 +89,7 @@ class Uniform:
     )
 
     def __init__(self, program_id, location, name, data_type, array_length):
-        """Create a Uniform
 
-        :param int location: The location of the uniform in the program
-        :param str name: Name of the uniform in the program
-        :param gl.GLenum data_type: The data type of the uniform (GL_FLOAT
-        """
         self._program_id = program_id
         self._location = location
         self._name = name

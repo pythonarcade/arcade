@@ -82,18 +82,21 @@ class MyGame(arcade.Window):
 
         # Sprite lists
         self.player_list = arcade.SpriteList()
-        self.wall_list = arcade.SpriteList(use_spatial_hash=True, spatial_hash_cell_size=128)
+        self.wall_list = arcade.SpriteList(use_spatial_hash=True,
+                                           spatial_hash_cell_size=128)
         self.enemy_list = arcade.SpriteList()
 
         # Set up the player
-        self.player = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                                    SPRITE_SCALING)
+        resource = ":resources:images/animated_characters/" \
+                   "female_person/femalePerson_idle.png"
+        self.player = arcade.Sprite(resource, SPRITE_SCALING)
         self.player.center_x = SPRITE_SIZE * 5
         self.player.center_y = SPRITE_SIZE * 1
         self.player_list.append(self.player)
 
         # Set enemies
-        enemy = arcade.Sprite(":resources:images/animated_characters/zombie/zombie_idle.png", SPRITE_SCALING)
+        resource = ":resources:images/animated_characters/zombie/zombie_idle.png"
+        enemy = arcade.Sprite(resource, SPRITE_SCALING)
         enemy.center_x = SPRITE_SIZE * 4
         enemy.center_y = SPRITE_SIZE * 7
         self.enemy_list.append(enemy)
@@ -101,7 +104,8 @@ class MyGame(arcade.Window):
         spacing = SPRITE_SIZE * 3
         for column in range(10):
             for row in range(15):
-                sprite = arcade.Sprite(":resources:images/tiles/grassCenter.png", SPRITE_SCALING)
+                sprite = arcade.Sprite(":resources:images/tiles/grassCenter.png",
+                                       SPRITE_SCALING)
 
                 x = (column + 1) * spacing
                 y = (row + 1) * sprite.height

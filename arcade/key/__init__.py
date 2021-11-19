@@ -1,3 +1,4 @@
+# flake8: noqa
 """
 Constants used to signify what keys on the keyboard were pressed.
 """

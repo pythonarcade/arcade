@@ -136,19 +136,26 @@ def set_viewport(left: float, right: float, bottom: float, top: float) -> None:
     """
     This sets what coordinates the window will cover.
 
-    By default, the lower left coordinate will be ``(0, 0)`` and the top y
+    .. tip:: Beginners will want to use :py:class:`~arcade.Camera`.
+             It provides easy to use support for common tasks
+             such as screenshake and movement to a destination.
+
+    If you are making a game with complex control over the viewport,
+    this function can help.
+
+    By default, the lower left coordinate will be ``(0, 0)``, the top y
     coordinate will be the height of the window in pixels, and the right x
     coordinate will be the width of the window in pixels.
 
-    If a program is making a game where the user scrolls around a larger
-    world, this command can help out.
+    .. warning:: Be careful of fractional or non-multiple values!
 
-    Note: It is recommended to only set the viewport to integer values that
-    line up with the pixels on the screen. Otherwise if making a tiled game
-    the blocks may not line up well, creating rectangle artifacts.
+        It is recommended to only set the viewport to integer values that
+        line up with the pixels on the screen. Otherwise, tiled pixel art
+        may not line up well during render, creating rectangle artifacts.
 
-    Note: ``Window.on_resize`` will call ``set_viewport`` by default. If you set your
-    own custom viewport, you may need to over-ride this function.
+    .. note:: ``Window.on_resize`` calls ``set_viewport`` by default.
+              If you want to set your own custom viewport during the
+              game, you may need to over-ride this function.
 
     **For more advanced users**: This functions sets the orthogonal projection
     used by shapes and sprites. It also updates the viewport to match the current
@@ -226,7 +233,7 @@ def run():
         # print("Testing!!!")
         window = get_window()
         if window:
-            window.on_update(1/60)
+            window.on_update(1 / 60)
             window.on_draw()
     else:
         import sys

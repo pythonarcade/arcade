@@ -69,6 +69,7 @@ class Shape:
         # self.shape_list.angle = self.angle
         self.shape_list.draw()
 
+
 class Ellipse(Shape):
 
     def __init__(self, x, y, width, height, angle, delta_x, delta_y,
@@ -98,6 +99,7 @@ class Rectangle(Shape):
         self.shape_list = arcade.ShapeElementList()
         self.shape_list.append(shape)
 
+
 class Line(Shape):
 
     def __init__(self, x, y, width, height, angle, delta_x, delta_y,
@@ -111,6 +113,7 @@ class Line(Shape):
                                    self.color, 2)
         self.shape_list = arcade.ShapeElementList()
         self.shape_list.append(shape)
+
 
 class MyGame(arcade.Window):
     """ Main application class. """
@@ -153,7 +156,7 @@ class MyGame(arcade.Window):
                                   d_angle, (red, green, blue, alpha))
             elif shape_type == 1:
                 shape = Ellipse(x, y, width, height, angle, d_x, d_y,
-                            d_angle, (red, green, blue, alpha))
+                                d_angle, (red, green, blue, alpha))
             elif shape_type == 2:
                 shape = Line(x, y, width, height, angle, d_x, d_y,
                              d_angle, (red, green, blue, alpha))

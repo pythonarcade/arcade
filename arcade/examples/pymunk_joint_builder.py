@@ -124,7 +124,11 @@ class MyApplication(arcade.Window):
             color = arcade.color.WHITE
             if isinstance(joint, pymunk.DampedSpring):
                 color = arcade.color.DARK_GREEN
-            arcade.draw_line(joint.a.position.x, joint.a.position.y, joint.b.position.x, joint.b.position.y, color, 3)
+            arcade.draw_line(joint.a.position.x,
+                             joint.a.position.y,
+                             joint.b.position.x,
+                             joint.b.position.y,
+                             color, 3)
 
         # arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
         # Display timings

@@ -8,7 +8,7 @@ import random
 from array import array
 
 import arcade
-from arcade.gl import BufferDescription, geometry
+from arcade.gl import BufferDescription
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 800
@@ -87,22 +87,24 @@ class MyGame(arcade.Window):
 
         per_instance = array("f", gen_instance_data(self.instances))
 
-        self.geometry = self.ctx.geometry([
-            # Base geometry
-            BufferDescription(
-                self.ctx.buffer(data=vertices),
-                '2f',
-                ['in_vert'],
-            ),
-            # Per instance buffer
-            BufferDescription(
-                self.ctx.buffer(data=per_instance),
-                '2f 4f',
-                ['in_offset', 'in_color'],
-                instanced=True,
-            ),
-        ],
-        mode=self.ctx.TRIANGLES)
+        self.geometry = self.ctx.geometry(
+            [
+                # Base geometry
+                BufferDescription(
+                    self.ctx.buffer(data=vertices),
+                    '2f',
+                    ['in_vert'],
+                ),
+                # Per instance buffer
+                BufferDescription(
+                    self.ctx.buffer(data=per_instance),
+                    '2f 4f',
+                    ['in_offset', 'in_color'],
+                    instanced=True,
+                ),
+            ],
+            mode=self.ctx.TRIANGLES
+        )
 
     def on_draw(self):
         self.clear()

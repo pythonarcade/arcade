@@ -7,6 +7,7 @@ https://gist.github.com/silvasur/565419/d9de6a84e7da000797ac681976442073045c74a4
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.tetris
 """
+# flake8: noqa: E241
 import arcade
 import random
 import PIL
@@ -29,15 +30,15 @@ SCREEN_HEIGHT = (HEIGHT + MARGIN) * ROW_COUNT + MARGIN
 SCREEN_TITLE = "Tetris"
 
 colors = [
-          (0,   0,   0, 255),
-          (255, 0,   0, 255),
-          (0,   150, 0, 255),
-          (0,   0,   255, 255),
-          (255, 120, 0, 255),
-          (255, 255, 0, 255),
-          (180, 0,   255, 255),
-          (0,   220, 220, 255)
-          ]
+    (0,   0,   0, 255),
+    (255, 0,   0, 255),
+    (0,   150, 0, 255),
+    (0,   0,   255, 255),
+    (255, 120, 0, 255),
+    (255, 255, 0, 255),
+    (180, 0,   255, 255),
+    (0,   220, 220, 255)
+]
 
 # Define the shapes of the single parts
 tetris_shapes = [
@@ -78,7 +79,8 @@ texture_list = create_textures()
 
 def rotate_counterclockwise(shape):
     """ Rotates a matrix clockwise """
-    return [[shape[y][x] for y in range(len(shape))] for x in range(len(shape[0]) - 1, -1, -1)]
+    return [[shape[y][x] for y in range(len(shape))]
+            for x in range(len(shape[0]) - 1, -1, -1)]
 
 
 def check_collision(board, shape, offset):

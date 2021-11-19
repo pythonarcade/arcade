@@ -184,7 +184,9 @@ class MyGame(arcade.Window):
         # Frame to receive the glow, and color attachment to store each pixel's
         # color data
         self.bloom_color_attachment = self.ctx.texture((SCREEN_WIDTH, SCREEN_HEIGHT))
-        self.bloom_screen = self.ctx.framebuffer(color_attachments=[self.bloom_color_attachment])
+        self.bloom_screen = self.ctx.framebuffer(
+            color_attachments=[self.bloom_color_attachment]
+        )
 
         # Down-sampling helps improve the blur.
         # Note: Any item with a size less than the down-sampling size may get missed in
@@ -205,7 +207,12 @@ class MyGame(arcade.Window):
         multiplier = 2
 
         # Create a post-processor to create a bloom
-        self.bloom_postprocessing = postprocessing.BloomEffect(size, kernel_size, sigma, mu, multiplier, step)
+        self.bloom_postprocessing = postprocessing.BloomEffect(size,
+                                                               kernel_size,
+                                                               sigma,
+                                                               mu,
+                                                               multiplier,
+                                                               step)
 
     def setup(self):
         """ Set up the game and initialize the variables. """
@@ -295,7 +302,8 @@ class MyGame(arcade.Window):
         self.bullet_sprite_list.update()
 
         for bullet in self.bullet_sprite_list:
-            enemy_hit_list = arcade.check_for_collision_with_list(bullet, self.enemy_sprite_list)
+            enemy_hit_list = arcade.check_for_collision_with_list(bullet,
+                                                                  self.enemy_sprite_list)
             for enemy in enemy_hit_list:
                 enemy.remove_from_sprite_lists()
                 for i in range(10):

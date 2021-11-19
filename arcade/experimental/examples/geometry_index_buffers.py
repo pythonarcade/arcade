@@ -40,14 +40,15 @@ class IndexBufferExample(arcade.Window):
         )
 
         # Vertices
-        self.vertex_buffer = self.ctx.buffer(data=array('f',
+        self.vertex_buffer = self.ctx.buffer(data=array(
+            'f',
             [
                 # x  y    r    g    b
-                -1.0, -1.0, 1.0, 0.0, 0.0, # lower left
-                1, -1.0, 0.0, 1.0, 0.0, # lower right
-                1.0, 1.0, 0.0, 0.0, 1.0, # upper right
-                -1.0, 1.0, 0.0, 1.0, 1.0, # upper left
-                0, 0, 0, 0,0,  # dummy data for testing
+                -1.0, -1.0, 1.0, 0.0, 0.0,  # lower left
+                1, -1.0, 0.0, 1.0, 0.0,  # lower right
+                1.0, 1.0, 0.0, 0.0, 1.0,  # upper right
+                -1.0, 1.0, 0.0, 1.0, 1.0,  # upper left
+                0, 0, 0, 0, 0,  # dummy data for testing
             ]
         ))
         self.ibo_8 = self.ctx.buffer(data=array('B', [3, 0, 2, 1]))
@@ -82,7 +83,7 @@ class IndexBufferExample(arcade.Window):
 
     def on_draw(self):
         self.clear()
-        
+
         mode = self.frames % 3
         if mode == 0:
             self.vao_8.render(self.program, mode=self.ctx.TRIANGLE_STRIP)

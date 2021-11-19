@@ -104,7 +104,7 @@ class UIManager(EventDispatcher, UIWidgetParent):
         layers = sorted(self.children.keys())
         for layer in layers:
             for child in self.children[layer]:
-                #TODO Observe if rect of child changed. This will be solved with observable properties later
+                # TODO Observe if rect of child changed. This will be solved with observable properties later
                 rect = child.rect
                 child._do_layout()
                 if rect != child.rect:
@@ -193,7 +193,9 @@ class UIManager(EventDispatcher, UIWidgetParent):
         The implementation should work in most common cases.
 
         If you use scrolling in the :py:class:`arcade.Camera` you have to reset scrolling
-        or overwrite this method using the camera conversion: `ui_manager.adjust_mouse_coordinates = camera.mouse_coordinates_to_world`
+        or overwrite this method using the camera conversion::
+
+            ui_manager.adjust_mouse_coordinates = camera.mouse_coordinates_to_world
         """
         # TODO This code does not work anymore, for now no camera support by default
         # vx, vy, vw, vh = self.window.ctx.viewport
@@ -217,29 +219,29 @@ class UIManager(EventDispatcher, UIWidgetParent):
 
     def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
         x, y = self.adjust_mouse_coordinates(x, y)
-        self.dispatch_ui_event(UIMouseMovementEvent(self, x, y, dx, dy))
+        self.dispatch_ui_event(UIMouseMovementEvent(self, x, y, dx, dy))  # type: ignore
 
     def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
         x, y = self.adjust_mouse_coordinates(x, y)
-        self.dispatch_ui_event(UIMousePressEvent(self, x, y, button, modifiers))
+        self.dispatch_ui_event(UIMousePressEvent(self, x, y, button, modifiers))  # type: ignore
 
     def on_mouse_drag(self, x: float, y: float, dx: float, dy: float, buttons: int, modifiers: int):
         x, y = self.adjust_mouse_coordinates(x, y)
-        self.dispatch_ui_event(UIMouseDragEvent(self, x, y, dx, dy, buttons, modifiers))
+        self.dispatch_ui_event(UIMouseDragEvent(self, x, y, dx, dy, buttons, modifiers))  # type: ignore
 
     def on_mouse_release(self, x: float, y: float, button: int, modifiers: int):
         x, y = self.adjust_mouse_coordinates(x, y)
-        self.dispatch_ui_event(UIMouseReleaseEvent(self, x, y, button, modifiers))
+        self.dispatch_ui_event(UIMouseReleaseEvent(self, x, y, button, modifiers))  # type: ignore
 
     def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
         x, y = self.adjust_mouse_coordinates(x, y)
         self.dispatch_ui_event(UIMouseScrollEvent(self, x, y, scroll_x, scroll_y))
 
     def on_key_press(self, symbol: int, modifiers: int):
-        self.dispatch_ui_event(UIKeyPressEvent(self, symbol, modifiers))
+        self.dispatch_ui_event(UIKeyPressEvent(self, symbol, modifiers))  # type: ignore
 
     def on_key_release(self, symbol: int, modifiers: int):
-        self.dispatch_ui_event(UIKeyReleaseEvent(self, symbol, modifiers))
+        self.dispatch_ui_event(UIKeyReleaseEvent(self, symbol, modifiers))  # type: ignore
 
     def on_text(self, text):
         self.dispatch_ui_event(UITextEvent(self, text))

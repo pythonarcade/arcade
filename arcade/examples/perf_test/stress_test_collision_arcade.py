@@ -112,7 +112,10 @@ class MyGame(arcade.Window):
         # Sprite lists
         self.coin_list = arcade.SpriteList(use_spatial_hash=USE_SPATIAL_HASHING)
         self.player_list = arcade.SpriteList()
-        self.player = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", SPRITE_SCALING_PLAYER)
+        self.player = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            SPRITE_SCALING_PLAYER,
+        )
         self.player.center_x = random.randrange(SCREEN_WIDTH)
         self.player.center_y = random.randrange(SCREEN_HEIGHT)
         self.player.change_x = 3
@@ -191,7 +194,7 @@ class MyGame(arcade.Window):
                 if total_program_time % 2 == 1:
 
                     output = f"{total_program_time}, {len(self.coin_list)}, {self.fps.get_fps():.1f}, " \
-                            f"{self.processing_time:.4f}, {self.draw_time:.4f}\n"
+                             f"{self.processing_time:.4f}, {self.draw_time:.4f}\n"
                     print(output, end="")
                     self.results_file.write(output)
 

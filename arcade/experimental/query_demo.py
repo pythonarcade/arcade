@@ -20,7 +20,6 @@ class MyGame(arcade.Window):
         num_sprites = 100_000
         # sprite_scale = 0.01  # All sprites covering the screen
         sprite_scale = 1.0  # default
-        sprite_size = 128
         r = int(math.sqrt(num_sprites))
         for y in range(r):
             for x in range(r):

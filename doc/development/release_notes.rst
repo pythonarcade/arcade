@@ -7,6 +7,143 @@ Release Notes
 
 Keep up-to-date with the latest changes to the Arcade library by the release notes.
 
+Version 2.6.5
+-------------
+
+*Released on 2021-Nov-5*
+
+* Increased pyglet's default atlas size for text glyphs to remove text
+  flickering and various other artifacts. This issue will be fixed
+  in future versions of pyglet.
+* Fixed as issue causing all sprites to use the same texture on some Macs.
+* Improved doc for setting the viewport.
+
+Special thanks to
+`einarf <https://github.com/einarf>`_,
+`pushfoo <https://github.com/pushfoo>`_,
+for their contributions to this release.
+
+Version 2.6.4
+-------------
+
+*Released on 2021-Nov-3*
+
+* Python 3.10 updates. Dependent library versions have been updated to
+  include Python 3.10 support. All libraries appear to support 3.10 except
+  Shapely 1.8.0 on the Windows platform. Until those binaries are released,
+  3.10 support for Windows is still not there.
+* :class:`~arcade.SpriteList` additions:
+
+  * A ``visible`` attribute has been added to this class. If set to ``False``, when calling ``draw()`` on the SpriteList it
+    will simply return and do nothing. Causing the SpriteList to not be drawn. 
+  * SpriteList now has a ``lazy`` (bool) parameter causing it to not create internal OpenGL resources
+    until the first draw call or until SpriteList's :meth:`~arcade.SpriteList.initialize` is called. This means that
+    sprite lists and sprites can now be created in threads.
+  * Fixes/optimized :py:meth:`~arcade.SpriteList.reverse` and :py:meth:`~arcade.SpriteList.shuffle` methods.
+  * Added :py:meth:`~arcade.SpriteList.sort` method. This is identical to python's ``list.sort``
+    but are many times faster sorting your sprites.
+  * Removed noisy warning message when spritelists were created before the window
+  * Fixed an issue with :py:meth:`~arcade.SpriteList.insert` when trying to insert sprites past
+    an index greater than the current length. It could cause inserted sprites to be invisible.
+
+* :class:`~arcade.Sprite` changes:
+
+  * Added :py:attr:`arcade.Sprite.visible` property for quickly making sprites visible/invisible. This is simply
+    a shortcut for changing the alpha value.
+  * Optimization: Sprites should now take ~15% less memory and be ~15% faster to create
+  * :py:class:`~arcade.SpriteCircle` and :py:class:`SpriteSolidColor` textures are now cached internally
+    for better performance.
+
+* :class:`~arcade.PhysicsEnginePlatformer` Optimization:
+
+  A ``walls`` parameter has been added to this class. The new intention for usage of this class is for static(non-moving)
+  sprites to be sent to the ``walls`` parameter, while moving platforms should be sent to the ``platforms`` parameter. Properly
+  differentiating between these parameters can result in extreme performance benefits. Sprites added to ``platforms`` are
+  O(n) whereas Sprites added to ``walls`` are O(1). This has been tested with anywhere from 100 to 500k+ Sprites, and the
+  physics engine shows no measurable difference between those scenarios.
+
+  We have also removed the ability to send a single Sprite to the ``platforms``, ``ladders``, and ``walls`` parameters of this class.
+  This is a use case which results in some improper usage and unnecessary slowdowns. These parameters will now only accept SpriteLists
+  or an iterable such as a list containing SpriteLists. If you are currently using this functionality, you just need to add your Sprite
+  to a SpriteList and provide that instead.
+
+  The simple platformer tutorial has already been updated to make use of this optimization.
+
+* :class:`~arcade.Scene` is additions:
+
+  * The Scene class is now sub-scriptable, previously in order to retrieve a SpriteList from Scene, you needed to use
+    either ``Scene.name_mapping`` or ``Scene.get_sprite_list``.
+    We have now added the ability to access it by sub-scripting the Scene object directly, like
+    ``spritelist = my_scene["My Layer"]``
+  * Added ``on_update()`` method. Previously Scene only had ``update()``. Both of these methods simply call the
+    corresponding one on each SpriteList, however previously you could not
+    do this with ``on_update()``. The difference between these methods is that ``on_update()`` allows passing a delta
+    time, whereas ``update()`` does not.
+
+* :class:`~arcade.TileMap` additions and fixes:
+
+  * When loading a Tiled map Arcade will now respect if layers are visible or not. If a layer is not visible in Tiled,
+    the SpriteList
+    created for it will use the new ``visible`` attribute to control it. This means that when creating a Scene from a
+    TileMap, this will
+    automatically be respected as well.
+  * Fixed support for parallax values on layers. Currently there is no support to do anything with these out of the box,
+    you'd need to manually
+    pull the values and do something based on them, however previously the map would not load if the values were changed
+    from the default. This has
+    been fixed in pytiled-parser and we have updated our version in Arcade accordingly.
+  * Removed a lingering debug tactic of printing the class name of custom SpriteList classes when loading a TileMap.
+
+* UI
+
+  * :class:`~arcade.UIInputText` now supports both RGB and RGBA text color
+
+* Text
+  
+  * Several text related bugs have been resolved in pyglet, the underlying library
+    we now use for text drawing. This has been a fairly time consuming task
+    over several weeks and we hope the new pyglet based text system will stabilize from now on.
+    Arcade is an early adopter of pyglet 2.0 currently using a pre-release
+  * The :py:class:`~arcade.Text` object is now usable and is preferred over
+    :py:func:`arcade.draw_text` in many cases for performance reasons.
+  * Text related functions should now have better documentation
+
+* Misc:
+
+  * Added support to the :class:`~arcade.View` class for :meth:`~arcade.View.on_resize`
+  * Many docstring improvements. Initializer docstrings have now been moved to the class
+    docstring ensuring they will always show up in the generated api docs.
+  * Added some new sections under advanced docs related to OpenGL, textures and texture atlas
+  * New utility function :func:`~arcade.color_from_hex_string` that will turn a hex string into a color.
+  * Bug: Removed a lingering debug key ``F12`` that showed the contents of the global texture atlas
+  * Several improvements to typing and PEP-8. Plus automated tests to help keep things
+    in good shape.
+  * Added ``run()`` shortcut in ``arcade.Window``. Usage: ``MyWindow().run()``
+  * Addition of :class:`~arcade.PymunkException` class for throwing Pymunk errors in the
+    Pymunk physics engine.
+  * The :func:`~arcade.check_for_collision_with_lists` function will now accept any Iterable(List, Tuple, Set, etc) containing SpriteLists.
+
+* Lower level rendering API:
+
+  * Fixed a problem causing Geometry / VertexArray to ignore ``POINTS`` primitive mode when this is set as default.
+  * Added support for compute shaders. We support writing to textures and SSBOs (buffers).
+    Examples can be found in ``arcade/experimental/examples``
+  * Fixed a crash when drawing with geometry shaders due to referencing a non-existent enum
+
+Special thanks to
+`einarf <https://github.com/einarf>`_,
+`pvcraven <https://github.com/pvcraven>`_,
+`pushfoo <https://github.com/pushfoo>`_,
+`Cleptomania <https://github.com/Cleptomania>`_,
+`Olliroxx <https://github.com/Olliroxx>`_,
+`mlr07 <https://github.com/mlr07>`_,
+`yegarti <https://github.com/yegarti>`_,
+`Jayman2000 <https://github.com/Jayman2000>`_
+for their contributions to this release.
+
+Special thanks to `Benjamin <https://github.com/benmoran56>`_ and `caffeinepills <https://github.com/caffeinepills>`_
+for their help to squash bugs in pyglet 2.0.
+
 Version 2.6.3
 -------------
 
@@ -32,33 +169,6 @@ Version 2.6.2
 -------------
 
 *Released on 2021-Sept-18*
-
-* Support for custom classes that subclass Sprite for tiles in TileMap objects. See `#942 <https://github.com/pythonarcade/arcade/issues/942>`_
-* Update PymunkPhysicsEngine to work with any direction of gravity rather than just downward. See `#940 <https://github.com/pythonarcade/arcade/issues/940>`_
-* Update library versions we depend on. PIL, Pymunk, etc.
-* Fix the card game example code. See `#951 <https://github.com/pythonarcade/arcade/issues/951>`_
-* Fix for drawing small circles not using enough segments. See `#950 <https://github.com/pythonarcade/arcade/issues/950>`_
-* A lot of documentation links in the .py files were old and not updated to the RTD way, fixed now.
-* ``arcade.key`` was missing from the documentation quick index. Fixed.
-* Fixed a rendering issue with sprites on M1 Macs
-* Fix caret not showing up in input box
-* Lots of type-hint fixes
-
-Version 2.6.1
--------------
-
-*Released on 2021-Sept-04*
-
-* `Issue #858 - Fix flickering display with simple drawings <https://github.com/pythonarcade/arcade/issues/858>`_
-* `Issue #934 - Compatability issue with Python 3.7 <https://github.com/pythonarcade/arcade/issues/934>`_
-
-Version 2.6.0
--------------
-
-*Released on 2021-Aug-30*
-
-New Features
-~~~~~~~~~~~~
 
 * Support for custom classes that subclass Sprite for tiles in TileMap objects. See `#942 <https://github.com/pythonarcade/arcade/issues/942>`_
 * Update PymunkPhysicsEngine to work with any direction of gravity rather than just downward. See `#940 <https://github.com/pythonarcade/arcade/issues/940>`_

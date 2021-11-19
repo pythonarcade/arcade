@@ -1,15 +1,10 @@
 #!/usr/bin/env python
-import sys
 from os import path
 
 from setuptools import find_namespace_packages, setup
 
-if sys.platform == "darwin":
-    required_python_version = ">=3.6"
-else:
-    required_python_version = ">=3.6"
-
-exec(open("arcade/version.py").read())
+with open("arcade/version.py") as file:
+    exec(file.read())
 
 
 def get_long_description() -> str:
@@ -28,11 +23,11 @@ setup(
     url="https://api.arcade.academy",
     download_url="https://api.arcade.academy",
     install_requires=[
-        "pyglet==2.0.dev9",
-        "pillow~=8.3",
-        "pymunk~=6.2.0",
-        "shapely==1.7.1",
-        "pytiled-parser==1.5.3",
+        "pyglet==2.0.dev11",
+        "pillow~=8.4",
+        "pymunk~=6.2.1",
+        "shapely==1.8.0",
+        "pytiled-parser==1.5.4",
         "dataclasses; python_version < '3.7'",
     ],
     extras_require={

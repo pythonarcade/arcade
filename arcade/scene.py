@@ -60,6 +60,20 @@ class Scene:
         """
         return self.name_mapping[name]
 
+    def __getitem__(self, key: str) -> SpriteList:
+        """
+        Retrieve a `SpriteList` by name.
+
+        This is here for ease of use to make sub-scripting the scene object directly
+        to retrieve a SpriteList possible.
+
+        :param str key: The name of the 'SpriteList' to retreive.
+        """
+        if key in self.name_mapping:
+            return self.name_mapping[key]
+
+        raise KeyError(f"Scene does not contain a layer named: {key}")
+
     def add_sprite(self, name: str, sprite: Sprite) -> None:
         """
         Add a Sprite to a SpriteList in the Scene with the specified name.
@@ -246,6 +260,26 @@ class Scene:
 
         for sprite_list in self.sprite_lists:
             sprite_list.update()
+
+    def on_update(self, delta_time: float = 1 / 60, names: Optional[List[str]] = None) -> None:
+        """
+        Used to call on_update of SpriteLists contained in the scene.
+        Similar to update() but allows passing a delta_time variable.
+
+        If `names` parameter is provided then only the specified spritelists
+        will be updated. If `names` is not provided, then every SpriteList
+        in the scene will have on_update called.
+
+        :param delta_time float: Time since last update.
+        :param Optional[List[str]] names: A list of names of SpriteLists to update.
+        """
+        if names:
+            for name in names:
+                self.name_mapping[name].on_update(delta_time)
+            return
+
+        for sprite_list in self.sprite_lists:
+            sprite_list.on_update(delta_time)
 
     def update_animation(
         self, delta_time: float, names: Optional[List[str]] = None

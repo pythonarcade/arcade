@@ -52,6 +52,8 @@ class UIMouseFilterMixin(UIWidget):
             if self.rect.collide_with_point(*event.pos):
                 return EVENT_HANDLED
 
+        return EVENT_UNHANDLED
+
 
 class UIWindowLikeMixin(UIMouseFilterMixin, UIDraggableMixin, UIWidget):
     """

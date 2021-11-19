@@ -56,7 +56,8 @@ class MyWindow(arcade.Window):
         self.gem_list = arcade.SpriteList()
 
         # Set up the player
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
+        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/"
+                                           "femalePerson_idle.png",
                                            SPRITE_SCALING_PLAYER)
         self.player_sprite.center_x = 250
         self.player_sprite.center_y = 250
@@ -158,7 +159,7 @@ class MyWindow(arcade.Window):
         # by damping.
         self.physics_engine.add_sprite(self.player_sprite,
                                        friction=0.6,
-                                       moment_of_intertia=PymunkPhysicsEngine.MOMENT_INF,
+                                       moment_of_inertia=PymunkPhysicsEngine.MOMENT_INF,
                                        damping=0.01,
                                        collision_type="player",
                                        max_velocity=400)

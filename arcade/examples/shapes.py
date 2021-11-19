@@ -8,8 +8,9 @@ and inefficient.
 Using buffered drawing commands (Vertex Buffer Objects) is a bit more complex,
 but faster.
 
-See https://api.arcade.academy/en/latest/examples/index.html#faster-drawing-with-shapeelementlists for this same example
-using shape element lists.
+See
+https://api.arcade.academy/en/latest/examples/index.html#faster-drawing-with-shapeelementlists
+for this same example using shape element lists.
 
 Also, any Sprite class put in a SpriteList and drawn with the SpriteList will
 be drawn using Vertex Buffer Objects for better performance.
@@ -60,6 +61,7 @@ class Shape:
         if self.y > SCREEN_HEIGHT and self.delta_y > 0:
             self.delta_y *= -1
 
+
 class Ellipse(Shape):
 
     def draw(self):
@@ -72,6 +74,7 @@ class Rectangle(Shape):
     def draw(self):
         arcade.draw_rectangle_filled(self.x, self.y, self.width, self.height,
                                      self.color, self.angle)
+
 
 class Line(Shape):
 
@@ -122,7 +125,7 @@ class MyGame(arcade.Window):
                                   d_angle, (red, green, blue, alpha))
             elif shape_type == 1:
                 shape = Ellipse(x, y, width, height, angle, d_x, d_y,
-                            d_angle, (red, green, blue, alpha))
+                                d_angle, (red, green, blue, alpha))
             elif shape_type == 2:
                 shape = Line(x, y, width, height, angle, d_x, d_y,
                              d_angle, (red, green, blue, alpha))

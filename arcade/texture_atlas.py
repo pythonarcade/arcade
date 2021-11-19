@@ -44,7 +44,16 @@ LOG = logging.getLogger(__name__)
 
 
 class AtlasRegion:
-    """Stores information about an allocated region"""
+    """
+    Stores information about where a texture is located
+
+    :param str atlas: The atlas this region belongs to
+    :param str texture: The arcade texture
+    :param int x: The x position of the texture
+    :param int y: The y position of the texture
+    :param int width: The width of the texture in pixels
+    :param int height: The height of the texture in pixels
+    """
 
     __slots__ = (
         "atlas",
@@ -67,15 +76,6 @@ class AtlasRegion:
         width: int,
         height: int,
     ):
-        """Represents a region a texture is located.
-
-        :param str atlas: The atlas this region belongs to
-        :param str texture: The arcade texture
-        :param int x: The x position of the texture
-        :param int y: The y position of the texture
-        :param int width: The width of the texture in pixels
-        :param int height: The height of the texture in pixels
-        """
         self.atlas = atlas
         self.texture = texture
         self.x = x
@@ -107,6 +107,8 @@ class AtlasRegion:
 
 class TextureAtlas:
     """
+    A texture atlas with a size in a context.
+
     A texture atlas is a large texture containing several textures
     so OpenGL can easily batch draw thousands or hundreds of thousands
     of sprites on one draw operation.
@@ -119,6 +121,12 @@ class TextureAtlas:
     texture each sprite is using. The actual texture coordinates
     are located in a float32 texture this atlas is responsible for
     keeping up to date.
+
+    :param Tuple[int, int] size: The width and height of the atlas in pixels
+    :param int border: Currently no effect; Should always be 1 to avoid textures bleeding
+    :param Sequence[arcade.Texture] textures: The texture for this atlas
+    :param bool auto_resize: Automatically resize the atlas when full
+    :param Context ctx: The context for this atlas (will use window context if left empty)
     """
 
     def __init__(
@@ -130,18 +138,7 @@ class TextureAtlas:
         auto_resize: bool = True,
         ctx: "ArcadeContext" = None,
     ):
-        """
-        Creates a texture atlas with a size in a context.
 
-        The border value should ideally be 1 (default) to avoid
-        interpolation bleeding between the textures.
-
-        :param Tuple[int, int] size: The width and height of the atlas in pixels
-        :param int border: Currently as no effect. It should always be 1.
-        :param Sequence[arcade.Texture] textures: The texture for this atlas
-        :param bool auto_resize: Automatically resize the atlas when full
-        :param Context ctx: The context for this atlas (will use window context if left empty)
-        """
         self._ctx = ctx or arcade.get_window().ctx
         self._max_size = self._ctx.limits.MAX_VIEWPORT_DIMS
         self._size: Tuple[int, int] = size
@@ -386,10 +383,10 @@ class TextureAtlas:
         # Pad the 1-pixel border with repeating data
         tmp = Image.new('RGBA', (image.width + 2, image.height + 2))
         tmp.paste(image, (1, 1))
-        tmp.paste(tmp.crop((1          , 1           , image.width+1, 2             )), (1            , 0             ))
-        tmp.paste(tmp.crop((1          , image.height, image.width+1, image.height+1)), (1            , image.height+1))
-        tmp.paste(tmp.crop((1          , 0           ,             2, image.height+2)), (0            , 0             ))
-        tmp.paste(tmp.crop((image.width, 0           , image.width+1, image.height+2)), (image.width+1, 0             ))
+        tmp.paste(tmp.crop((1          , 1           , image.width+1, 2             )), (1            , 0             ))  # noqa
+        tmp.paste(tmp.crop((1          , image.height, image.width+1, image.height+1)), (1            , image.height+1))  # noqa
+        tmp.paste(tmp.crop((1          , 0           ,             2, image.height+2)), (0            , 0             ))  # noqa
+        tmp.paste(tmp.crop((image.width, 0           , image.width+1, image.height+2)), (image.width+1, 0             ))  # noqa
 
         # Write the image directly to graphics memory in the allocated space
         self._texture.write(tmp.tobytes(), 0, viewport=viewport)
@@ -521,9 +518,11 @@ class TextureAtlas:
         self._texture.use(1)
         uv_texture_old.use(2)
         self._uv_texture.use(3)
-        self._ctx.atlas_resize_program["projection"] = arcade.create_orthogonal_projection(0, self.width, self.height, 0)
+        self._ctx.atlas_resize_program["projection"] = arcade.create_orthogonal_projection(
+            0, self.width, self.height, 0,
+        )
 
-        with self._fbo.activate() as fbo:
+        with self._fbo.activate():
             self._ctx.disable(self._ctx.BLEND)
             self._ctx.atlas_geometry.render(
                 self._ctx.atlas_resize_program,
@@ -601,7 +600,7 @@ class TextureAtlas:
 
             with atlas.render_into(texture):
                 # Draw commands here
-        
+
             # Specify projection
             with atlas.render_into(texture, projection=(0, 100, 0, 100))
                 # Draw geometry

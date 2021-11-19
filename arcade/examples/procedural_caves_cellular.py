@@ -173,7 +173,8 @@ class MyGame(arcade.Window):
                     self.wall_list.append(wall)
 
         # Set up the player
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
+        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/"
+                                           "femalePerson_idle.png",
                                            SPRITE_SCALING)
         self.player_list.append(self.player_sprite)
 

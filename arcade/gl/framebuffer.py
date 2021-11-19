@@ -60,11 +60,7 @@ class Framebuffer:
     def __init__(
         self, ctx: "Context", *, color_attachments=None, depth_attachment=None
     ):
-        """
-        :param Context ctx: The context this framebuffer belongs to
-        :param List[arcade.gl.Texture] color_attachments: List of color attachments.
-        :param arcade.gl.Texture depth_attachment: A depth attachment (optional)
-        """
+
         self._ctx = ctx
         if not color_attachments:
             raise ValueError("Framebuffer must at least have one color attachment")
@@ -285,7 +281,7 @@ class Framebuffer:
 
     def use(self, *, force: bool = False):
         """Bind the framebuffer making it the target of all redering commands
-        
+
         :param bool force: Force the framebuffer binding even if the system
                            already believes it's already bound.
         """
@@ -356,7 +352,7 @@ class Framebuffer:
     ) -> bytearray:
         """
         Read framebuffer pixels
-        
+
         :param viewport Tuple[int,int,int,int]: The x, y, with, height to read
         :param int attachment: The attachment id to read from
         :param str dtype: The data type to read

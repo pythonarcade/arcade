@@ -130,25 +130,31 @@ class MyGame(arcade.Window):
             for column in range(COLUMN_COUNT):
                 live_neighbors = 0
                 # -1 -1
-                if row > 0 and column > 0 and layer1[row - 1][column - 1].alpha == ALPHA_ON:
+                if row > 0 and column > 0 \
+                        and layer1[row - 1][column - 1].alpha == ALPHA_ON:
                     live_neighbors += 1
                 # -1  0
                 if row > 0 and layer1[row - 1][column].alpha == ALPHA_ON:
                     live_neighbors += 1
                 # -1 +1
-                if row > 0 and column < COLUMN_COUNT - 1 and layer1[row - 1][column + 1].alpha == ALPHA_ON:
+                if row > 0 and column < COLUMN_COUNT - 1\
+                        and layer1[row - 1][column + 1].alpha == ALPHA_ON:
                     live_neighbors += 1
                 #  0 +1
-                if column < COLUMN_COUNT - 1 and layer1[row][column + 1].alpha == ALPHA_ON:
+                if column < COLUMN_COUNT - 1 \
+                        and layer1[row][column + 1].alpha == ALPHA_ON:
                     live_neighbors += 1
                 # +1 +1
-                if row < ROW_COUNT - 1 and column < COLUMN_COUNT - 1 and layer1[row + 1][column + 1].alpha == ALPHA_ON:
+                if row < ROW_COUNT - 1 \
+                        and column < COLUMN_COUNT - 1 \
+                        and layer1[row + 1][column + 1].alpha == ALPHA_ON:
                     live_neighbors += 1
                 # +1  0
                 if row < ROW_COUNT - 1 and layer1[row + 1][column].alpha == ALPHA_ON:
                     live_neighbors += 1
                 # +1 -1
-                if row < ROW_COUNT - 1 and column > 0 and layer1[row + 1][column - 1].alpha == ALPHA_ON:
+                if row < ROW_COUNT - 1 and column > 0 \
+                        and layer1[row + 1][column - 1].alpha == ALPHA_ON:
                     live_neighbors += 1
                 #  0 -1
                 if column > 0 and layer1[row][column - 1].alpha == ALPHA_ON:
@@ -156,7 +162,7 @@ class MyGame(arcade.Window):
 
                 """
                 Implement Conway's game of life rules
-                
+
                 Any live cell with two or three live neighbours survives.
                 Any dead cell with three live neighbours becomes a live cell.
                 All other live cells die in the next generation. Similarly, all other dead cells stay dead.

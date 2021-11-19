@@ -29,8 +29,9 @@ class MyWindow(arcade.Window):
                                               font_name="Kenney Future")
         self.v_box.add(ui_text_label.with_space_around(bottom=0))
 
-        text="The real danger is not that computers will begin to think like people, but that people will begin " \
-             "to think like computers. - Sydney Harris (Journalist)"
+        text = "The real danger is not that computers will begin to think like people, " \
+               "but that people will begin " \
+               "to think like computers. - Sydney Harris (Journalist)"
         ui_text_label = arcade.gui.UITextArea(text=text,
                                               width=450,
                                               height=60,
@@ -57,7 +58,7 @@ class MyWindow(arcade.Window):
             print("UITextureButton pressed", event)
 
         self.v_box.add(ui_texture_button.with_space_around(bottom=20))
-        
+
         # Create a widget to hold the v_box widget, that will center the buttons
         self.manager.add(
             arcade.gui.UIAnchorWidget(

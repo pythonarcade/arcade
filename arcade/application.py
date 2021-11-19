@@ -5,7 +5,6 @@ derive from.
 import logging
 import os
 import time
-from numbers import Number
 from typing import Tuple, Optional
 
 import pyglet
@@ -66,7 +65,7 @@ class Window(pyglet.window.Window):
     :param bool visible: Should the window be visible immediately
     :param bool vsync: Wait for vertical screen refresh before swapping buffer
                        This can make animations and movement look smoother.
-    :param bool gc_mode: Decides how opengl objects should be garbage collected
+    :param bool gc_mode: Decides how opengl objects should be garbage collected ("auto", "context_gc")
     :param bool center_window: If true, will center the window.
 
     """
@@ -148,9 +147,8 @@ class Window(pyglet.window.Window):
         if center_window:
             self.center_window()
 
-
     @property
-    def current_view(self):
+    def current_view(self) -> Optional["View"]:
         """
         This property returns the current view being shown.
         To set a different view, call the
@@ -192,6 +190,16 @@ class Window(pyglet.window.Window):
     @background_color.setter
     def background_color(self, value: Color):
         self._background_color = value
+
+    def run(self):
+        """
+        Shortcut for :py:func:`arcade.run()`.
+
+        For example::
+
+            MyWindow().run()
+        """
+        arcade.run()
 
     def close(self):
         """ Close the Window. """
@@ -347,10 +355,6 @@ class Window(pyglet.window.Window):
         except AttributeError:
             pass
 
-        # TEMP HACK
-        if symbol == arcade.key.F12:
-            self.ctx.default_atlas.show()
-
     def on_key_release(self, symbol: int, modifiers: int):
         """
         Override this function to add key release functionality.
@@ -373,7 +377,15 @@ class Window(pyglet.window.Window):
     def on_resize(self, width: float, height: float):
         """
         Override this function to add custom code to be called any time the window
-        is resized. The only responsibility here is to update the viewport.
+        is resized. The main responsibility of this method is updating
+        the projection and the viewport.
+
+        If you are not changing the default behavior when overriding, make sure
+        you call the parent's ``on_resize`` first::
+
+            def on_resize(self, width: int, height: int):
+                super().on_resize(width, height)
+                # Add extra resize logic here
 
         :param int width: New width
         :param int height: New height
@@ -493,8 +505,14 @@ class Window(pyglet.window.Window):
 
     def show_view(self, new_view: 'View'):
         """
-        Select the view to show. Calling this function is the same as setting the
-        :py:meth:`arcade.Window.current_view` attribute.
+        Select the view to show in the next frame.
+        This is not a blocking call showing the view.
+        Your code will continue to run after this call
+        and the view will appear in the next dispatch
+        of ``on_update``/``on_draw```.
+
+        Calling this function is the same as setting the
+        :py:attr:`arcade.Window.current_view` attribute.
 
         :param View new_view: View to show
         """
@@ -772,3 +790,12 @@ class View:
             self.key = None
         except AttributeError:
             pass
+
+    def on_resize(self, width: int, height: int):
+        """
+        Called when the window is resized while this view is active.
+        :py:meth:`~arcade.Window.on_resize` is also called separately.
+        By default this method does nothing and can be overridden to
+        handle resize logic.
+        """
+        pass

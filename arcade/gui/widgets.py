@@ -218,7 +218,7 @@ class UIWidget(EventDispatcher, ABC):
             parent = parent.parent
 
         if parent:
-            yield parent
+            yield parent  # type: ignore
 
     def trigger_full_render(self):
         """In case a widget uses transperant areas or was moved,
@@ -444,7 +444,7 @@ class UIInteractiveWidget(UIWidget):
             self.pressed = False
             if self.rect.collide_with_point(event.x, event.y):
                 # Dispatch new on_click event, source is this widget itself
-                self.dispatch_event("on_event", UIOnClickEvent(self, event.x, event.y))
+                self.dispatch_event("on_event", UIOnClickEvent(self, event.x, event.y))  # type: ignore
                 return EVENT_HANDLED
 
         if isinstance(event, UIOnClickEvent) and self.rect.collide_with_point(event.x, event.y):
@@ -491,7 +491,7 @@ class UIDummy(UIInteractiveWidget):
         self.prepare_render(surface)
         self.frame += 1
         frame = self.frame % 256
-        surface.clear((*self.color[:3], frame))
+        surface.clear((self.color[0], self.color[1], self.color[2], frame))
 
         if self.hovered:
             arcade.draw_xywh_rectangle_outline(0, 0,
@@ -639,7 +639,8 @@ class UITextureButton(UIInteractiveWidget):
         elif self.hovered and self._tex_hovered:
             tex = self._tex_hovered
 
-        surface.draw_texture(0, 0, self.width, self.height, tex)
+        if tex:
+            surface.draw_texture(0, 0, self.width, self.height, tex)
 
         if self.text:
             text_margin = 2
@@ -685,9 +686,12 @@ class UILabel(UIWidget):
     :param bool bold: Bold font style.
     :param bool italic: Italic font style.
     :param bool stretch: Stretch font style.
-    :param str anchor_x: Anchor point of the X coordinate: one of ``"left"``, ``"center"`` or ``"right"``.
-    :param str anchor_y: Anchor point of the Y coordinate: one of ``"bottom"``, ``"baseline"``, ``"center"`` or ``"top"``.
-    :param str align: Horizontal alignment of text on a line, only applies if a width is supplied. One of ``"left"``, ``"center"`` or ``"right"``.
+    :param str anchor_x: Anchor point of the X coordinate: one of ``"left"``, 
+                         ``"center"`` or ``"right"``.
+    :param str anchor_y: Anchor point of the Y coordinate: one of ``"bottom"``,
+                         ``"baseline"``, ``"center"`` or ``"top"``.
+    :param str align: Horizontal alignment of text on a line, only applies if a width is supplied.
+                      One of ``"left"``, ``"center"`` or ``"right"``.
     :param float dpi: Resolution of the fonts in this layout.  Defaults to 96.
     :param bool multiline: if multiline is true, a \\n will start a new line.
                            A UITextWidget with multiline of true is the same thing as UITextArea.
@@ -701,8 +705,8 @@ class UILabel(UIWidget):
     def __init__(self,
                  x: float = 0,
                  y: float = 0,
-                 width: float = None,
-                 height: float = None,
+                 width: Optional[float] = None,
+                 height: Optional[float] = None,
                  text: str = "",
                  font_name=('Arial',),
                  font_size: float = 12,
@@ -744,7 +748,7 @@ class UILabel(UIWidget):
         if not width:
             width = self.label.content_width
 
-        super().__init__(x, y, width, height,
+        super().__init__(x, y, width, height,  # type: ignore
                          size_hint=size_hint,
                          size_hint_min=size_hint_min,
                          size_hint_max=size_hint_max)
@@ -879,10 +883,6 @@ class UITextArea(UIWidget):
         my_layout.x, my_layout.y, my_layout.width, my_layout.height = 0, 0, self.width, self.height
         my_layout.end_update()
 
-        # HACK: Manually update the scissor areas. These were lost when changing the above properties
-        for group in self.layout.groups.values():
-            group.scissor_area = 0, 0, self.width, self.height
-
     def do_render(self, surface: Surface):
         self.prepare_render(surface)
         with surface.ctx.pyglet_rendering():
@@ -896,6 +896,8 @@ class UITextArea(UIWidget):
 
         if super().on_event(event):
             return EVENT_HANDLED
+
+        return EVENT_UNHANDLED
 
 
 class _Arcade_Caret(Caret):
@@ -967,12 +969,12 @@ class UIInputText(UIWidget):
                          size_hint_max=size_hint_max)
 
         self._active = False
-        self._text_color = text_color
+        self._text_color = text_color if len(text_color) == 4 else (*text_color, 255)
 
         self.doc: AbstractDocument = pyglet.text.decode_text(text)
         self.doc.set_style(0, len(text), dict(font_name=font_name,
                                               font_size=font_size,
-                                              color=text_color))
+                                              color=self._text_color))
 
         self.layout = pyglet.text.layout.IncrementalTextLayout(self.doc, width, height, multiline=multiline)
         self.caret = _Arcade_Caret(self.layout, color=(0, 0, 0))
@@ -997,7 +999,7 @@ class UIInputText(UIWidget):
                 self.trigger_full_render()
                 self.caret.on_activate()
                 self.caret.position = len(self.doc.text)
-                return
+                return EVENT_UNHANDLED
 
         # if active check to deactivate
         if self._active and isinstance(event, UIMousePressEvent):
@@ -1008,7 +1010,7 @@ class UIInputText(UIWidget):
                 self._active = False
                 self.trigger_full_render()
                 self.caret.on_deactivate()
-                return
+                return EVENT_UNHANDLED
 
         # if active pass all non press events to caret
         if self._active:
@@ -1034,6 +1036,8 @@ class UIInputText(UIWidget):
 
         if super().on_event(event):
             return EVENT_HANDLED
+
+        return EVENT_UNHANDLED
 
     @property
     def rect(self) -> _Rect:
@@ -1183,7 +1187,7 @@ class UILayout(UIWidget, UIWidgetParent):
                          size_hint_min=size_hint_min,
                          size_hint_max=size_hint_max)
 
-    def add(self, child: "UIWidget"):
+    def add(self, child: "UIWidget", **kwargs):
         super().add(child)
         self.do_layout()
 
@@ -1459,7 +1463,8 @@ class UIPadding(UIWrapper):
                  **kwargs):
         """
         :arg padding: Padding - top, right, bottom, left
-        :param size_hint: A hint for :class:`UILayout`, if this :class:`UIWidget` would like to grow (default: (1, 1) -> full size of parent)
+        :param size_hint: A hint for :class:`UILayout`, if this :class:`UIWidget` would
+                          like to grow (default: (1, 1) -> full size of parent)
         """
         super().__init__(
             child=child,

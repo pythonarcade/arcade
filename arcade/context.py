@@ -2,6 +2,7 @@
 Arcade's version of the OpenGL Context.
 Contains pre-loaded programs
 """
+from arcade.gl.compute_shader import ComputeShader
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Dict, Optional, Tuple, Union
@@ -27,19 +28,19 @@ class ArcadeContext(Context):
 
     **This is part of the low level rendering API in arcade
     and is mainly for more advanced usage**
+
+    :param pyglet.window.Window window: The pyglet window
+    :param str gc_mode: The garbage collection mode for opengl objects.
+                        ``auto`` (default) is just what we would expect in python
+                        while ``context_gc`` requires you to call ``Context.gc()``.
+                        The latter can be useful when using multiple threads when
+                        it's not clear what thread will gc the object.
     """
 
     atlas_size = 512, 512
 
     def __init__(self, window: pyglet.window.Window, gc_mode: str = "auto"):
-        """
-        :param pyglet.window.Window window: The pyglet window
-        :param str gc_mode: The gabage collection mode for opengl objects.
-                            ``auto`` (default) is just what we would expect in python
-                            while ``context_gc`` requires you to call ``Context.gc()``.
-                            The latter can be useful when using multiple threads when
-                            it's not clear what thread will gc the object.
-        """
+
         super().__init__(window, gc_mode=gc_mode)
 
         # Enabled blending by default
@@ -179,7 +180,7 @@ class ArcadeContext(Context):
         # Global labels we modify in `arcade.draw_text`.
         # These multiple labels with different configurations are stored
         self.pyglet_label_cache: Dict[str, pyglet.text.Label] = {}
-        
+
         self.active_program = None
         self.point_size = 1.0
 
@@ -236,7 +237,7 @@ class ArcadeContext(Context):
 
         self._projection_2d = value
         self._projection_2d_matrix = Mat4.orthogonal_projection(
-           value[0], value[1], value[2], value[3], -100, 100,
+            value[0], value[1], value[2], value[3], -100, 100,
         )
         self._projection_2d_buffer.write(self._projection_2d_matrix)
 
@@ -253,7 +254,7 @@ class ArcadeContext(Context):
     @projection_2d_matrix.setter
     def projection_2d_matrix(self, value: Mat4):
         if not isinstance(value, Mat4):
-            raise ValueError(f"projection_matrix must be a Mat4 object")
+            raise ValueError("projection_matrix must be a Mat4 object")
 
         self._projection_2d_matrix = value
         self._projection_2d_buffer.write(self._projection_2d_matrix)
@@ -345,6 +346,16 @@ class ArcadeContext(Context):
             tess_evaluation_shader=tess_evaluation_src,
             defines=defines,
         )
+
+    def load_compute_shader(self, path: Union[str, Path]) -> ComputeShader:
+        """
+        Loads a compute shader.
+
+        :param Union[str,pathlib.Path] path: Path to texture
+        """
+        from arcade.resources import resolve_resource_path
+        path = resolve_resource_path(path)
+        return self.compute_shader(source=path.read_text())
 
     def load_texture(
         self,

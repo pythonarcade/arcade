@@ -44,7 +44,6 @@ def gaussian_kernel(kernel_size: int = 5,
         sum += c
         last_int = new_int
 
-
     # normalize
     sum_norm = 1 / sum
     for i in range(len(coeff)):

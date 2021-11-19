@@ -2,15 +2,33 @@ from random import choice
 
 import arcade
 from arcade import load_texture
-from arcade.examples.perf_test.stress_test_draw_shapes import FPSCounter
+from arcade.examples.perf_test.stress_test_draw_shapes import FPSCounter  # type: ignore
 from arcade.gui import UIManager
-from arcade.gui.widgets import UIDummy, UISpriteWidget, UITextArea, UIInputText, UITexturePane, UIFlatButton, \
-    UIAnchorWidget
+from arcade.gui.widgets import (
+    UIDummy,
+    UISpriteWidget,
+    UITextArea,
+    UIInputText,
+    UITexturePane,
+    UIFlatButton,
+)
 
-LOREM_IPSUM = """Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eget pellentesque velit. Nam eu rhoncus nulla. Fusce ornare libero eget ex vulputate, vitae mattis orci eleifend. Donec quis volutpat arcu. Proin lacinia velit id imperdiet ultrices. Fusce porta magna leo, non maximus justo facilisis vel. Duis pretium sem ut eros scelerisque, a dignissim ante pellentesque. Cras rutrum aliquam fermentum. Donec id mollis mi.
-
-Nullam vitae nunc aliquet, lobortis purus eget, porttitor purus. Curabitur feugiat purus sit amet finibus accumsan. Proin varius, enim in pretium pulvinar, augue erat pellentesque ipsum, sit amet varius leo risus quis tellus. Donec posuere ligula risus, et scelerisque nibh cursus ac. Mauris feugiat tortor turpis, vitae imperdiet mi euismod aliquam. Fusce vel ligula volutpat, finibus sapien in, lacinia lorem. Proin tincidunt gravida nisl in pellentesque. Aenean sed arcu ipsum. Vivamus quam arcu, elementum nec auctor non, convallis non elit. Maecenas id scelerisque lectus. Vivamus eget sem tristique, dictum lorem eget, maximus leo. Mauris lorem tellus, molestie eu orci ut, porta aliquam est. Nullam lobortis tempor magna, egestas lacinia lectus.
-"""
+LOREM_IPSUM = (
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eget pellentesque velit. "
+    "Nam eu rhoncus nulla. Fusce ornare libero eget ex vulputate, vitae mattis orci eleifend. "
+    "Donec quis volutpat arcu. Proin lacinia velit id imperdiet ultrices. Fusce porta magna leo, "
+    "non maximus justo facilisis vel. Duis pretium sem ut eros scelerisque, a dignissim ante "
+    "pellentesque. Cras rutrum aliquam fermentum. Donec id mollis mi.\n"
+    "\n"
+    "Nullam vitae nunc aliquet, lobortis purus eget, porttitor purus. Curabitur feugiat purus sit "
+    "amet finibus accumsan. Proin varius, enim in pretium pulvinar, augue erat pellentesque ipsum, "
+    "sit amet varius leo risus quis tellus. Donec posuere ligula risus, et scelerisque nibh cursus ac. "
+    "Mauris feugiat tortor turpis, vitae imperdiet mi euismod aliquam. Fusce vel ligula volutpat, "
+    "finibus sapien in, lacinia lorem. Proin tincidunt gravida nisl in pellentesque. Aenean sed arcu ipsum. "
+    "Vivamus quam arcu, elementum nec auctor non, convallis non elit. Maecenas id scelerisque lectus. "
+    "Vivamus eget sem tristique, dictum lorem eget, maximus leo. Mauris lorem tellus, molestie eu orci ut, "
+    "porta aliquam est. Nullam lobortis tempor magna, egestas lacinia lectus.\n"
+)
 
 
 class Explosion(arcade.Sprite):
@@ -61,16 +79,20 @@ class UIMockup(arcade.Window):
         #         self.manager.add(button)
 
         arcade.set_background_color(arcade.color.DARK_BLUE_GRAY)
-        tex = load_texture(":resources:gui_basic_assets/red_button_normal.png")
-        tex_hov = load_texture(":resources:gui_basic_assets/red_button_hover.png")
-        tex_press = load_texture(":resources:gui_basic_assets/red_button_press.png")
+        # tex = load_texture(":resources:gui_basic_assets/red_button_normal.png")
+        # tex_hov = load_texture(":resources:gui_basic_assets/red_button_hover.png")
+        # tex_press = load_texture(":resources:gui_basic_assets/red_button_press.png")
 
         # for y in range(0, self.height, 40):
         #     for x in range(0, self.width, 90):
         #         self.manager.add(
         # FlatButton(x, y, 80, 30, text="Hello", style={"font_size": 10})
         # ImageButton(x, y, 80, 30, tex, tex_hov, tex_press, text="Hallo")
-        # SpriteWidget(x=x, y=y, width=80, height=30, sprite=Sprite(":resources:gui_basic_assets/red_button_normal.png"))
+        # SpriteWidget(x=x,
+        #              y=y,
+        #              width=80,
+        #              height=30,
+        #              sprite=Sprite(":resources:gui_basic_assets/red_button_normal.png"))
         # ).on_click = self.on_button_click
 
         self.manager.add(
@@ -80,10 +102,16 @@ class UIMockup(arcade.Window):
         bg_tex = load_texture(":resources:gui_basic_assets/window/grey_panel.png")
         self.manager.add(
             UITexturePane(
-                UITextArea(x=100, y=200, width=200, height=300, text=LOREM_IPSUM, text_color=(0, 0, 0, 255)).with_space_around(
-                    right=20),
+                UITextArea(
+                    x=100,
+                    y=200,
+                    width=200,
+                    height=300,
+                    text=LOREM_IPSUM,
+                    text_color=(0, 0, 0, 255),
+                ).with_space_around(right=20),
                 tex=bg_tex,
-                pad=(10, 10, 10, 10)
+                pad=(10, 10, 10, 10),
             )
         )
 
@@ -94,8 +122,8 @@ class UIMockup(arcade.Window):
                 pad=(10, 10, 10, 10)
             ))
         self.manager.add(
-                UIInputText(x=340, y=110, width=200, height=50, text="Hello"),
-            )
+            UIInputText(x=340, y=110, width=200, height=50, text="Hello"),
+        )
 
         self.manager.add(
             UIFlatButton(x=500, y=50, width=200, height=200, text="Hello 1")
@@ -128,6 +156,7 @@ class UIMockup(arcade.Window):
         self.manager.draw()
         arcade.draw_text(f"{self.fps.get_fps():.0f}", self.width // 2, self.height // 2, color=arcade.color.RED,
                          font_size=20)
+
 
 window = UIMockup()
 arcade.run()

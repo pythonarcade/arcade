@@ -8,7 +8,7 @@ import PIL.Image
 import PIL.ImageOps
 import PIL.ImageDraw
 
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Any
 from typing import List
 from typing import Union
 
@@ -34,6 +34,30 @@ class Texture:
     Class that represents a texture.
     Usually created by the :class:`load_texture` or :class:`load_textures` commands.
 
+    :param str name: Name of texture. Used for caching, so must be unique for each texture.
+    :param PIL.Image.Image image: Image to use as a texture.
+    :param str hit_box_algorithm: One of None, 'None', 'Simple' or 'Detailed'. \
+    Defaults to 'Simple'. Use 'Simple' for the :data:`PhysicsEngineSimple`, \
+    :data:`PhysicsEnginePlatformer` \
+    and 'Detailed' for the :data:`PymunkPhysicsEngine`.
+
+        .. figure:: ../images/hit_box_algorithm_none.png
+           :width: 40%
+
+           hit_box_algorithm = "None"
+
+        .. figure:: ../images/hit_box_algorithm_simple.png
+           :width: 55%
+
+           hit_box_algorithm = "Simple"
+
+        .. figure:: ../images/hit_box_algorithm_detailed.png
+           :width: 75%
+
+           hit_box_algorithm = "Detailed"
+
+    :param float hit_box_detail: Float, defaults to 4.5. Used with 'Detailed' to hit box
+
     Attributes:
         :name: Unique name of the texture. Used by load_textures for caching.
                If you are manually creating a texture, you can just set this
@@ -41,6 +65,8 @@ class Texture:
         :image: A :py:class:`PIL.Image.Image` object.
         :width: Width of the texture in pixels.
         :height: Height of the texture in pixels.
+
+
     """
 
     def __init__(self,
@@ -49,33 +75,7 @@ class Texture:
                  hit_box_algorithm: Optional[str] = "Simple",
                  hit_box_detail: float = 4.5):
         """
-        Create a texture, given a PIL Image object.
-
-        :param str name: Name of texture. Used for caching, so must be unique for each texture.
-        :param PIL.Image.Image image: Image to use as a texture.
-        :param str hit_box_algorithm: One of None, 'None', 'Simple' or 'Detailed'. \
-        Defaults to 'Simple'. Use 'Simple' for the :data:`PhysicsEngineSimple`, \
-        :data:`PhysicsEnginePlatformer` \
-        and 'Detailed' for the :data:`PymunkPhysicsEngine`.
-
-            .. figure:: ../images/hit_box_algorithm_none.png
-               :width: 40%
-
-               hit_box_algorithm = "None"
-
-            .. figure:: ../images/hit_box_algorithm_simple.png
-               :width: 55%
-
-               hit_box_algorithm = "Simple"
-
-            .. figure:: ../images/hit_box_algorithm_detailed.png
-               :width: 75%
-
-               hit_box_algorithm = "Detailed"
-
-        :param float hit_box_detail: Float, defaults to 4.5. Used with 'Detailed' to hit box
-
-        """
+        Create a texture, given a PIL Image object. """
         from arcade.sprite import Sprite
         from arcade.sprite_list import SpriteList
 
@@ -424,7 +424,7 @@ def load_texture(file_name: Union[str, Path],
         flipped_horizontally = mirrored
 
     # See if we already loaded this texture, and we can just use a cached version.
-    cache_name = f"{file_name}-{x}-{y}-{width}-{height}-{flipped_horizontally}-{flipped_vertically}-{flipped_diagonally}-{hit_box_algorithm} "
+    cache_name = f"{file_name}-{x}-{y}-{width}-{height}-{flipped_horizontally}-{flipped_vertically}-{flipped_diagonally}-{hit_box_algorithm} "  # noqa
     if can_cache and cache_name in load_texture.texture_cache:  # type: ignore # dynamic attribute on function obj
         return load_texture.texture_cache[cache_name]  # type: ignore # dynamic attribute on function obj
 
@@ -547,24 +547,42 @@ def load_spritesheet(file_name: Union[str, Path],
     return texture_list
 
 
-def make_circle_texture(diameter: int, color: Color) -> Texture:
+def _build_cache_name(*args: Any, separator: str = "-") -> str:
+    """
+    Generate cache names from the given parameters
+
+    This is mostly useful when generating textures with many parameters
+
+    :param args: params to format
+    :param separator: separator character or string between params
+
+    :return: Formatted cache string representing passed parameters
+    """
+    return separator.join([f"{arg}" for arg in args])
+
+
+def make_circle_texture(diameter: int, color: Color, name: str = None) -> Texture:
     """
     Return a Texture of a circle with the given diameter and color.
 
     :param int diameter: Diameter of the circle and dimensions of the square :class:`Texture` returned.
     :param Color color: Color of the circle.
+    :param str name: Custom or pre-chosen name for this texture
 
     :returns: New :class:`Texture` object.
     """
+
+    name = name or _build_cache_name("circle_texture", diameter, color[0], color[1], color[2])
+
     bg_color = (0, 0, 0, 0)  # fully transparent
     img = PIL.Image.new("RGBA", (diameter, diameter), bg_color)
     draw = PIL.ImageDraw.Draw(img)
     draw.ellipse((0, 0, diameter - 1, diameter - 1), fill=color)
-    name = "{}:{}:{}".format("circle_texture", diameter, color)  # name must be unique for caching
     return Texture(name, img)
 
 
-def make_soft_circle_texture(diameter: int, color: Color, center_alpha: int = 255, outer_alpha: int = 0) -> Texture:
+def make_soft_circle_texture(diameter: int, color: Color, center_alpha: int = 255, outer_alpha: int = 0,
+                             name: str = None) -> Texture:
     """
     Return a :class:`Texture` of a circle with the given diameter and color, fading out at its edges.
 
@@ -572,12 +590,16 @@ def make_soft_circle_texture(diameter: int, color: Color, center_alpha: int = 25
     :param Color color: Color of the circle.
     :param int center_alpha: Alpha value of the circle at its center.
     :param int outer_alpha: Alpha value of the circle at its edges.
+    :param str name: Custom or pre-chosen name for this texture
 
     :returns: New :class:`Texture` object.
     :rtype: arcade.Texture
     """
     # TODO: create a rectangle and circle (and triangle? and arbitrary poly where client passes
     # in list of points?) particle?
+    name = name or _build_cache_name("soft_circle_texture", diameter, color[0], color[1], color[2], center_alpha,
+                                     outer_alpha)  # name must be unique for caching
+
     bg_color = (0, 0, 0, 0)  # fully transparent
     img = PIL.Image.new("RGBA", (diameter, diameter), bg_color)
     draw = PIL.ImageDraw.Draw(img)
@@ -587,12 +609,12 @@ def make_soft_circle_texture(diameter: int, color: Color, center_alpha: int = 25
         alpha = int(lerp(center_alpha, outer_alpha, radius / max_radius))
         clr = (color[0], color[1], color[2], alpha)
         draw.ellipse((center - radius, center - radius, center + radius - 1, center + radius - 1), fill=clr)
-    name = "{}:{}:{}:{}:{}".format("soft_circle_texture", diameter, color, center_alpha,
-                                   outer_alpha)  # name must be unique for caching
+
     return Texture(name, img)
 
 
-def make_soft_square_texture(size: int, color: Color, center_alpha: int = 255, outer_alpha: int = 0) -> Texture:
+def make_soft_square_texture(size: int, color: Color, center_alpha: int = 255, outer_alpha: int = 0,
+                             name: str = None) -> Texture:
     """
     Return a :class:`Texture` of a square with the given diameter and color, fading out at its edges.
 
@@ -600,9 +622,12 @@ def make_soft_square_texture(size: int, color: Color, center_alpha: int = 255, o
     :param Color color: Color of the square.
     :param int center_alpha: Alpha value of the square at its center.
     :param int outer_alpha: Alpha value of the square at its edges.
+    :param str name: Custom or pre-chosen name for this texture
 
     :returns: New :class:`Texture` object.
     """
+    # name must be unique for caching
+    name = name or _build_cache_name("gradientsquare", size, color, center_alpha, outer_alpha)
 
     bg_color = (0, 0, 0, 0)  # fully transparent
     img = PIL.Image.new("RGBA", (size, size), bg_color)
@@ -611,10 +636,8 @@ def make_soft_square_texture(size: int, color: Color, center_alpha: int = 255, o
     for cur_size in range(0, half_size):
         alpha = int(lerp(outer_alpha, center_alpha, cur_size / half_size))
         clr = (color[0], color[1], color[2], alpha)
-        # draw.ellipse((center-radius, center-radius, center+radius, center+radius), fill=clr)
+        # draw.ellipse((center - radius, center - radius, center + radius, center + radius), fill=clr)
         draw.rectangle((cur_size, cur_size, size - cur_size, size - cur_size), clr, None)
-    name = "{}:{}:{}:{}:{}".format("gradientsquare", size, color, center_alpha,
-                                   outer_alpha)  # name must be unique for caching
     return Texture(name, img)
 
 

@@ -3,12 +3,11 @@ The Arcade Library
 
 A Python simple, easy to use module for creating 2D games.
 """
-
+# flake8: noqa: E402
 # Note: DO NOT EDIT arcade/__init__.py
 # Instead look at util/init_template.py and update_init.py
 
 # Error out if we import Arcade with an incompatible version of Python.
-import platform
 import sys
 import os
 
@@ -59,6 +58,11 @@ import pyglet
 # Originally, this only disabled them for macs where
 # the 2.1 shadow context cannot be upgrade to a 3.3+ core
 pyglet.options['shadow_window'] = False
+
+# HACK: Increase pyglet's glyph atlas size to minimize issues
+if not getattr(sys, 'is_pyglet_doc_run', False):
+    pyglet.font.base.Font.texture_width = 4096
+    pyglet.font.base.Font.texture_height = 4096
 
 # noinspection PyPep8
 from arcade import color
@@ -131,6 +135,9 @@ from .drawing_support import get_three_float_color
 from .drawing_support import get_four_float_color
 from .drawing_support import get_points_for_thick_line
 from .drawing_support import make_transparent_color
+from .drawing_support import uint24_to_three_byte_color
+from .drawing_support import uint32_to_four_byte_color
+from .drawing_support import color_from_hex_string
 
 from .texture import Texture
 from .texture import cleanup_texture_cache
@@ -263,6 +270,7 @@ from .tilemap import TileMap
 
 from .pymunk_physics_engine import PymunkPhysicsEngine
 from .pymunk_physics_engine import PymunkPhysicsObject
+from .pymunk_physics_engine import PymunkException
 
 from .version import VERSION
 
@@ -373,6 +381,7 @@ __all__ = ['AStarBarrierList',
            'clamp',
            'cleanup_texture_cache',
            'close_window',
+           'color_from_hex_string',
            'create_ellipse',
            'create_ellipse_filled',
            'create_ellipse_filled_with_colors',
@@ -493,6 +502,8 @@ __all__ = ['AStarBarrierList',
            'stop_sound',
            'timings_enabled',
            'trim_image',
+           'uint24_to_three_byte_color',
+           'uint32_to_four_byte_color',
            'unschedule',
            ]
 

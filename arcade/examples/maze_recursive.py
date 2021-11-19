@@ -57,7 +57,7 @@ def create_outside_walls(maze):
     # Create left and right walls
     for row in range(len(maze)):
         maze[row][0] = TILE_CRATE
-        maze[row][len(maze[row])-1] = TILE_CRATE
+        maze[row][len(maze[row]) - 1] = TILE_CRATE
 
     # Create top and bottom walls
     for column in range(1, len(maze[0]) - 1):
@@ -220,7 +220,8 @@ class MyGame(arcade.Window):
                     self.wall_list.append(wall)
 
         # Set up the player
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
+        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/"
+                                           "femalePerson_idle.png",
                                            SPRITE_SCALING)
         self.player_list.append(self.player_sprite)
 

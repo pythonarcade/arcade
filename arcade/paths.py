@@ -56,7 +56,7 @@ def _spot_is_blocked(position: Union[Tuple[float, float], List[float]],
         return False
 
 
-def heuristic(start: Point, goal: Point):
+def _heuristic(start: Point, goal: Point):
     """
 
     Args:
@@ -95,9 +95,14 @@ class _AStarGraph(object):
         self.bottom = bottom
 
         if diagonal_movement:
-            self.movement_directions = (1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (-1, 1), (1, -1), (-1, -1)
+            self.movement_directions = (  # type: ignore
+                (1, 0), (-1, 0),
+                (0, 1), (0, -1),
+                (1, 1), (-1, 1),
+                (1, -1), (-1, -1)
+            )
         else:
-            self.movement_directions = (1, 0), (-1, 0), (0, 1), (0, -1)
+            self.movement_directions = (1, 0), (-1, 0), (0, 1), (0, -1)  # type: ignore
 
     def get_vertex_neighbours(self, pos: Point) -> List[Tuple[float, float]]:
         n = []
@@ -127,11 +132,11 @@ def _AStarSearch(start: Point, end: Point, graph: _AStarGraph):
 
     # Initialize starting values
     G[start] = 0
-    F[start] = heuristic(start, end)
+    F[start] = _heuristic(start, end)
 
     closed_vertices = set()
     open_vertices = {start}
-    came_from = {}
+    came_from = {}  # type: ignore
 
     count = 0
     while len(open_vertices) > 0:
@@ -152,7 +157,7 @@ def _AStarSearch(start: Point, end: Point, graph: _AStarGraph):
             path = [current]
             while current in came_from:
                 current = came_from[current]
-                path.append(current)
+                path.append(current)  # type: ignore
             path.reverse()
             if F[end] >= 10000:
                 return None
@@ -161,14 +166,14 @@ def _AStarSearch(start: Point, end: Point, graph: _AStarGraph):
             # return path, F[end]  # Done!
 
         # Mark the current vertex as closed
-        open_vertices.remove(current)
-        closed_vertices.add(current)
+        open_vertices.remove(current)  # type: ignore
+        closed_vertices.add(current)  # type: ignore
 
         # Update scores for vertices near the current position
-        for neighbour in sorted(graph.get_vertex_neighbours(current)):
+        for neighbour in sorted(graph.get_vertex_neighbours(current)):  # type: ignore
             if neighbour in closed_vertices:
                 continue  # We have already processed this node exhaustively
-            candidate_g = G[current] + graph.move_cost(current, neighbour)
+            candidate_g = G[current] + graph.move_cost(current, neighbour)  # type: ignore
 
             if neighbour not in open_vertices:
                 open_vertices.add(neighbour)  # Discovered a new vertex
@@ -178,7 +183,7 @@ def _AStarSearch(start: Point, end: Point, graph: _AStarGraph):
             # Adopt this G score
             came_from[neighbour] = current
             G[neighbour] = candidate_g
-            h = heuristic(neighbour, end)
+            h = _heuristic(neighbour, end)
             F[neighbour] = G[neighbour] + h
 
     # Out-of-bounds
@@ -186,17 +191,25 @@ def _AStarSearch(start: Point, end: Point, graph: _AStarGraph):
 
 
 def _collapse(pos: Point, grid_size: float):
-    return int(pos[0] // grid_size),  int(pos[1] // grid_size)
+    return int(pos[0] // grid_size), int(pos[1] // grid_size)
 
 
 def _expand(pos: Point, grid_size: float):
-    return int(pos[0] * grid_size),  int(pos[1] * grid_size)
+    return int(pos[0] * grid_size), int(pos[1] * grid_size)
 
 
 class AStarBarrierList:
     """
     Class that manages a list of barriers that can be encountered during
     A* path finding.
+
+    :param Sprite moving_sprite: Sprite that will be moving
+    :param SpriteList blocking_sprites: Sprites that can block movement
+    :param int grid_size: Size of the grid, in pixels
+    :param int left: Left border of playing field
+    :param int right: Right border of playing field
+    :param int bottom: Bottom of playing field
+    :param int top: Top of playing field
     """
     def __init__(self,
                  moving_sprite: Sprite,
@@ -206,15 +219,6 @@ class AStarBarrierList:
                  right: int,
                  bottom: int,
                  top: int):
-        """
-        :param Sprite moving_sprite: Sprite that will be moving
-        :param SpriteList blocking_sprites: Sprites that can block movement
-        :param int grid_size: Size of the grid, in pixels
-        :param int left: Left border of playing field
-        :param int right: Right border of playing field
-        :param int bottom: Bottom of playing field
-        :param int top: Top of playing field
-        """
 
         self.grid_size = grid_size
         self.bottom = int(bottom // grid_size)
@@ -281,7 +285,7 @@ def astar_calculate_path(start_point: Point,
 
     barrier_list = astar_barrier_list.barrier_list
 
-    graph = _AStarGraph(barrier_list, left, right, bottom, top, diagonal_movement)
+    graph = _AStarGraph(barrier_list, left, right, bottom, top, diagonal_movement)  # type: ignore
     result = _AStarSearch(mod_start, mod_end, graph)
 
     if result is None:

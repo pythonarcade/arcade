@@ -20,6 +20,9 @@ class Texture:
     A texture can also be created with different datatypes such as
     float, integer or unsigned integer.
 
+    NOTE: Currently does not support multisample textures even
+    though ``_samples`` is set.
+
     The best way to create a texture instance is through :py:meth:`arcade.gl.Context.texture`
 
     Supported ``dtype`` values are::
@@ -46,6 +49,8 @@ class Texture:
     :param Tuple[gl.GLuint,gl.GLuint] filter: The minification/magnification filter of the texture
     :param gl.GLuint wrap_x: Wrap mode x
     :param gl.GLuint wrap_y: Wrap mode y
+    :param int target: The texture type
+    :param bool depth: creates a depth texture if `True`
     """
 
     __slots__ = (
@@ -95,22 +100,7 @@ class Texture:
         target=gl.GL_TEXTURE_2D,
         depth=False,
     ):
-        """
-        A texture can be created with or without initial data.
-        NOTE: Currently does not support multisample textures even
-        thought ``samples`` is exposed.
 
-        :param Context ctx: The context the object belongs to
-        :param Tuple[int,int] size: The size of the texture
-        :param int components: The number of components (1: R, 2: RG, 3: RGB, 4: RGBA)
-        :param str dtype: The data type of each component: f1, f2, f4 / i1, i2, i4 / u1, u2, u4
-        :param Any data: The byte data of the texture. bytes or anything supporting the buffer protocol.
-        :param Tuple[gl.GLuint, gl.GLuint] filter: The minification/magnification filter of the texture
-        :param gl.GLuint wrap_x: Wrap mode x
-        :param gl.GLuint wrap_y: Wrap mode y
-        :param int target: The texture type
-        :param bool depth: creates a depth texture if `True`
-        """
         self._ctx = ctx
         self._width, self._height = size
         self._dtype = dtype
@@ -231,7 +221,8 @@ class Texture:
             except gl.GLException as ex:
                 raise gl.GLException(
                     (
-                        f"Unable to create texture: {ex} : dtype={self._dtype} size={self.size} components={self._components} "
+                        f"Unable to create texture: {ex} : dtype={self._dtype} "
+                        f"size={self.size} components={self._components} "
                         f"MAX_TEXTURE_SIZE = {self.ctx.limits.MAX_TEXTURE_SIZE}"
                     )
                 )
@@ -587,6 +578,30 @@ class Texture:
         """
         gl.glActiveTexture(gl.GL_TEXTURE0 + unit)
         gl.glBindTexture(gl.GL_TEXTURE_2D, self._glo)
+
+    def bind_to_image(self, unit: int, read: bool = True, write: bool = True, level: int = 0):
+        """
+        Bind textures to image units.
+
+        Note that either or both ``read`` and ``write`` needs to be ``True``.
+        The supported modes are: read only, write only, read-write
+
+        :param int unit: The image unit
+        :param bool read: The compute shader intends to read from this image
+        :param bool write: The compute shader intends to write to this image
+        """
+
+        access = gl.GL_READ_WRITE
+        if read and write:
+            access = gl.GL_READ_WRITE
+        elif read and not write:
+            access = gl.GL_READ_ONLY
+        elif not read and write:
+            access = gl.GL_WRITE_ONLY
+        else:
+            raise ValueError("Illegal access mode. The texture must at least be read or write only")
+
+        gl.glBindImageTexture(unit, self._glo, level, 0, 0, access, self._internal_format)
 
     def __repr__(self) -> str:
         return "<Texture glo={} size={}x{} components={}>".format(

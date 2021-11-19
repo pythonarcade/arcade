@@ -1,16 +1,20 @@
 """
 Constructs, are prepared widget combinations, you can use for common usecases
 """
-from pyglet.event import EVENT_HANDLED
-
 import arcade
-from arcade.gui.mixins import UIWindowLikeMixin, UIMouseFilterMixin
-from arcade.gui.widgets import UILayout, UIAnchorWidget, UITextArea, UIFlatButton
+from arcade.gui.mixins import UIMouseFilterMixin
+from arcade.gui.widgets import UILayout, UIAnchorWidget, UITextArea, UIFlatButton, UIBoxLayout
 
 
 class UIMessageBox(UIMouseFilterMixin, UIAnchorWidget):
     """
     A simple dialog box that pops up a message with buttons to close.
+
+    :param width: Width of the message box
+    :param height: Height of the message box
+    :param message_text:
+    :param buttons: List of strings, which are shown as buttons
+    :param callback: Callback function, will receive the text of the clicked button
     """
 
     def __init__(self,
@@ -20,15 +24,6 @@ class UIMessageBox(UIMouseFilterMixin, UIAnchorWidget):
                  message_text: str,
                  buttons=("Ok",),
                  callback=None):
-        """
-        A simple dialog box that pops up a message with buttons to close.
-
-        :param width: Width of the message box
-        :param height: Height of the message box
-        :param message_text:
-        :param buttons: List of strings, which are shown as buttons
-        :param callback: Callback function, will receive the text of the clicked button
-        """
 
         space = 10
 
@@ -37,15 +32,15 @@ class UIMessageBox(UIMouseFilterMixin, UIAnchorWidget):
                                      height=height - space,
                                      text_color=arcade.color.BLACK)
 
-        button_group = arcade.gui.UIBoxLayout(vertical=False)
+        button_group = UIBoxLayout(vertical=False)
         for button_text in buttons:
             button = UIFlatButton(text=button_text)
             button_group.add(button.with_space_around(left=10))
-            button.on_click = self.on_ok
+            button.on_click = self.on_ok  # type: ignore
 
         self._bg_tex = arcade.load_texture(":resources:gui_basic_assets/window/grey_panel.png")
 
-        self._callback = callback
+        self._callback = callback  # type: ignore
 
         group = UILayout(width=width, height=height, children=[
             UIAnchorWidget(child=self._text_area, anchor_x="left", anchor_y="top", align_x=10, align_y=-10),

@@ -1,4 +1,6 @@
 import arcade
+import pytest
+
 
 def test_rotate_point():
     x = 0
@@ -46,3 +48,13 @@ def test_rotate_point():
     assert rx == 0
     assert ry == 10
 
+
+def test_parse_color():
+    with pytest.raises(ValueError):
+        arcade.color_from_hex_string("#ff0000ff0")
+
+    color = arcade.color_from_hex_string("ff0000")
+    assert color == (255, 0, 0, 255)
+
+    color = arcade.color_from_hex_string("#ff0000")
+    assert color == (255, 0, 0, 255)

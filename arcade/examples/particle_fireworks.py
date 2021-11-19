@@ -129,8 +129,15 @@ class AnimatedAlphaParticle(arcade.LifetimeParticle):
             scale: float = 1.0,
             mutation_callback=None,
     ):
-        super().__init__(filename_or_texture, change_xy, duration1 + duration2, center_xy, angle, change_angle, scale,
-                         start_alpha, mutation_callback)
+        super().__init__(filename_or_texture,
+                         change_xy,
+                         duration1 + duration2,
+                         center_xy,
+                         angle,
+                         change_angle,
+                         scale,
+                         start_alpha,
+                         mutation_callback)
         self.start_alpha = start_alpha
         self.in_duration = duration1
         self.mid_alpha = mid_alpha

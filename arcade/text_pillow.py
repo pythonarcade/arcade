@@ -162,7 +162,7 @@ def create_text_image(
     # Convert to tuple if needed, because the multiline_text does not take a
     # list for a color
     if isinstance(text_color, list):
-        color = cast(RGBA, tuple(text_color))
+        text_color = cast(RGBA, tuple(text_color))
 
     draw.multiline_text(
         (image_start_x, image_start_y), text, text_color, align=align, font=font

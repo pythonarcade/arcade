@@ -270,6 +270,7 @@ game without learning a complex framework.
    advanced/vsync
    advanced/textures
    advanced/texture_atlas
+   advanced/opengl_notes.rst
    development/performance_tips
 
 .. toctree::

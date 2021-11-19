@@ -11,13 +11,14 @@ from pyglet import gl
 
 from .buffer import Buffer
 from .program import Program
-from .vertex_array import Geometry, VertexArray
+from .vertex_array import Geometry
 from .framebuffer import Framebuffer, DefaultFrameBuffer
 from typing import Optional
 from .texture import Texture
 from .query import Query
 from .glsl import ShaderSource
 from .types import BufferDescription
+from .compute_shader import ComputeShader
 
 LOG = logging.getLogger(__name__)
 
@@ -117,6 +118,8 @@ class Context:
     #: Primitive mode
     LINES = gl.GL_LINES  # 1
     #: Primitive mode
+    LINE_LOOP = gl.GL_LINE_LOOP  # 2
+    #: Primitive mode
     LINE_STRIP = gl.GL_LINE_STRIP  # 3
     #: Primitive mode
     TRIANGLES = gl.GL_TRIANGLES  # 4
@@ -191,7 +194,7 @@ class Context:
     def window(self) -> Window:
         """
         The window this context belongs to.
-        
+
         :type: ``pyglet.Window``
         """
         return self._window_ref()
@@ -200,7 +203,7 @@ class Context:
     def screen(self) -> Framebuffer:
         """
         The framebuffer for the window.
-        
+
         :type: :py:class:`~arcade.Framebuffer`
         """
         return self._screen
@@ -224,16 +227,25 @@ class Context:
         """
         return self._gl_version
 
-    def gc(self):
+    def gc(self) -> int:
         """
         Run garbage collection of OpenGL objects for this context.
         This is only needed when ``gc_mode`` is ``context_gc``.
+
+        :return: The number of resources destroyed
+        :rtype: int
         """
         # Loop the array until all objects are gone.
         # Deleting one object might add new ones so we need
+        # to loop until the deque is empty
+        num_objects = 0
+
         while len(self.objects):
             obj = self.objects.pop()
             obj.delete()
+            num_objects += 1
+
+        return num_objects
 
     @property
     def gc_mode(self) -> str:
@@ -243,6 +255,11 @@ class Context:
 
             # default: Auto 
             ctx.gc_mode = "auto"
+
+            # Defer garbage collection until ctx.gc() is called
+            # This can be useful to enforce the main thread to
+            # run garbage collection of opengl resources
+            ctx.gc_mode = "context_gc"            
         """
         return self._gc_mode
 
@@ -427,7 +444,8 @@ class Context:
     def patch_vertices(self) -> int:
         """
         Get or set number of vertices that will be used to make up a single patch primitive.
-        Patch primitives are consumed by the tessellation control shader (if present) and subsequently used for tessellation.
+        Patch primitives are consumed by the tessellation control shader (if present)
+        and subsequently used for tessellation.
 
         :type: int
         """
@@ -558,7 +576,8 @@ class Context:
         :param Buffer index_buffer: Index/element buffer (optional)
         :param int mode: The default draw mode (optional)
         :param int mode: The default draw mode (optional)
-        :param int index_element_size: Byte size of the index buffer type. Can be 1, 2 or 4 (8, 16 or 32 bit unsigned integer)
+        :param int index_element_size: Byte size of the index buffer type.
+                                       Can be 1, 2 or 4 (8, 16 or 32 bit unsigned integer)
         """
         return Geometry(self, content, index_buffer=index_buffer, mode=mode, index_element_size=index_element_size)
 
@@ -638,6 +657,14 @@ class Context:
         :rtype: :py:class:`~arcade.gl.Query`
         """
         return Query(self)
+
+    def compute_shader(self, *, source: str):
+        """
+        Create a compute shader
+
+        :param str source: The glsl source
+        """
+        return ComputeShader(self, source)
 
 
 class ContextStats:
@@ -808,7 +835,7 @@ class Limits:
         self.MAX_TEXTURE_IMAGE_UNITS = self.get(gl.GL_MAX_TEXTURE_IMAGE_UNITS)
         # TODO: Missing in pyglet
         # self.MAX_TEXTURE_MAX_ANISOTROPY = self.get_float(gl.GL_MAX_TEXTURE_MAX_ANISOTROPY)
-        self.MAX_VIEWPORT_DIMS =  self.get_int_tuple(gl.GL_MAX_VIEWPORT_DIMS, 2)
+        self.MAX_VIEWPORT_DIMS = self.get_int_tuple(gl.GL_MAX_VIEWPORT_DIMS, 2)
 
         err = self._ctx.error
         if err:

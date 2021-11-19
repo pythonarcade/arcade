@@ -4,12 +4,10 @@ We generate a bunch of random points and draw them using POINTS mode.
 The geometry shader if configured to receive points and emit triangle strip.
 We generate two triangles on the fly displaying a quad.
 """
-import math
 import random
 from array import array
 import arcade
 from arcade.gl import BufferDescription
-from pyglet import gl
 
 # Do the math to figure out our screen dimensions
 SCREEN_WIDTH = 800

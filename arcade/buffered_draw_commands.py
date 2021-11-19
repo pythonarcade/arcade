@@ -223,11 +223,11 @@ def create_lines_with_colors(point_list: PointList,
         triangle_point_list: List[Point] = []
         new_color_list: List[Color] = []
         for i in range(1, len(point_list), 2):
-            start_x = point_list[i-1][0]
-            start_y = point_list[i-1][1]
+            start_x = point_list[i - 1][0]
+            start_y = point_list[i - 1][1]
             end_x = point_list[i][0]
             end_y = point_list[i][1]
-            color1 = color_list[i-1]
+            color1 = color_list[i - 1]
             color2 = color_list[i]
             points = get_points_for_thick_line(start_x, start_y, end_x, end_y, line_width)
             new_color_list += color1, color1, color2, color2

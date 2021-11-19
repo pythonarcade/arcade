@@ -3,11 +3,7 @@
 This example needs pyrr installed for matrix math:
     pip install pyrr
 """
-from array import array
-
-from pyrr import Matrix44
-from pyglet import gl
-
+from pyglet.math import Mat4
 import arcade
 from arcade.gl import geometry
 
@@ -63,10 +59,12 @@ class MyGame(arcade.Window):
         self.clear()
         self.ctx.enable_only(self.ctx.CULL_FACE, self.ctx.DEPTH_TEST)
 
-        rotate = Matrix44.from_eulers((self.time, self.time * 0.77, self.time * 0.01), dtype='f4')
-        translate = Matrix44.from_translation((0, 0, -2.0), dtype='f4')
-        modelview = translate * rotate
-        self.program['modelview'] = modelview.flatten()
+        translate = Mat4.from_translation((0, 0, -1.75))
+        rx = Mat4.from_rotation(self.time, (1, 0, 0))
+        ry = Mat4.from_rotation(self.time * 0.77, (0, 1, 0))
+        modelview = rx @ ry @ translate
+        self.program['modelview'] = modelview
+
         self.cube.render(self.program)
 
     def on_update(self, dt):
@@ -76,8 +74,7 @@ class MyGame(arcade.Window):
         """Set up viewport and projection"""
         ratio = arcade.get_scaling_factor(self)
         self.ctx.viewport = 0, 0, int(width * ratio), int(height * ratio)
-        aspect_ratio = width / height
-        self.program['projection'] = Matrix44.perspective_projection(60, aspect_ratio, 0.1, 100).flatten()
+        self.program['projection'] = Mat4.perspective_projection(0, self.width, 0, self.height, 0.1, 100, fov=60)
 
 
 if __name__ == "__main__":

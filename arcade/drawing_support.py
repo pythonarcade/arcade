@@ -7,7 +7,7 @@ import math
 from typing import Tuple, cast
 
 from arcade import Color
-from arcade import RGBA
+from arcade import RGBA, RGB
 
 
 def get_points_for_thick_line(start_x: float, start_y: float,
@@ -97,3 +97,37 @@ def make_transparent_color(color: Color, transparency: float):
     :param float transparency: Transparency
     """
     return color[0], color[1], color[2], transparency
+
+
+def uint24_to_three_byte_color(color: int) -> RGB:
+    """
+    Given an int between 0 and 16777215, return a RGB color tuple.
+
+    :param int color: 3 byte int
+    """
+    return (color & (255 << 16)) >> 16, (color & (255 << 8)) >> 8, color & 255
+
+
+def uint32_to_four_byte_color(color: int) -> RGBA:
+    """
+    Given an int between 0 and 4294967295, return a RGBA color tuple.
+
+    :param int color: 4 byte int
+    """
+    return (color & (255 << 24)) >> 24, (color & (255 << 16)) >> 16, (color & (255 << 8)) >> 8, color & 255
+
+
+def color_from_hex_string(code: str) -> RGBA:
+    """
+    Make a color from a hex code (3, 4, 6 or 8 characters of hex, normally with a hashtag)
+    """
+    code = code.lstrip("#")
+    if len(code) <= 4:
+        code = "".join(i + "0" for i in code)
+    if len(code) == 6:
+        # full opacity if no alpha specified
+        return int(code[0:2], 16), int(code[2:4], 16), int(code[4:6], 16), 255
+    elif len(code) == 8:
+        return int(code[2:4], 16), int(code[4:6], 16), int(code[6:8], 16), int(code[0:2], 16)
+
+    raise ValueError("Improperly formatted color passed to color_from_hex")

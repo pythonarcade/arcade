@@ -1,5 +1,5 @@
 from ctypes import c_void_p, byref
-from typing import Dict, Iterable, Optional, Sequence, TYPE_CHECKING
+from typing import Dict, Optional, Sequence, TYPE_CHECKING
 import weakref
 
 from pyglet import gl
@@ -99,7 +99,7 @@ class VertexArray:
     def num_vertices(self) -> int:
         """
         The number of vertices
-        
+
         :type: int
         """
         return self._num_vertices
@@ -217,7 +217,10 @@ class VertexArray:
         if self._ibo is not None:
             # HACK: re-bind index buffer just in case. pyglet rendering was somehow replacing the index buffer.
             gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, self._ibo.glo)
-            gl.glDrawElementsInstanced(mode, vertices, self._index_element_type, first * self._index_element_size, instances)
+            gl.glDrawElementsInstanced(
+                mode, vertices, self._index_element_type,
+                first * self._index_element_size, instances
+            )
         else:
             gl.glDrawArraysInstanced(mode, first, vertices, instances)
 
@@ -232,7 +235,7 @@ class VertexArray:
         buffer_offset=0,
     ):
         """Run a transform feedback.
-        
+
         :param Buffer buffer: The buffer to write the output
         :param gl.GLenum mode: The input primitive mode
         :param gl.GLenum output:mode: The output primitive mode
@@ -314,7 +317,7 @@ class Geometry:
         self._content = content or []
         self._index_buffer = index_buffer
         self._index_element_size = index_element_size
-        self._mode = mode or ctx.TRIANGLES
+        self._mode = mode if mode is not None else ctx.TRIANGLES
         self._vao_cache = {}  # type: Dict[str, VertexArray]
         self._num_vertices = -1
         """
@@ -405,7 +408,31 @@ class Geometry:
         """
         program.use()
         vao = self.instance(program)
+
         mode = self._mode if mode is None else mode
+
+        # If we have a geometry shader we need to sanity check that
+        # the primitive mode is supported
+        if program.geometry_vertices > 0:
+            if program.geometry_input == self._ctx.POINTS:
+                mode = program.geometry_input
+            if program.geometry_input == self._ctx.LINES:
+                if mode not in [self._ctx.LINES, self._ctx.LINE_STRIP, self._ctx.LINE_LOOP, self._ctx.LINES_ADJACENCY]:
+                    raise ValueError(
+                        "Geometry shader expects LINES, LINE_STRIP, LINE_LOOP or LINES_ADJACENCY as input")
+            if program.geometry_input == self._ctx.LINES_ADJACENCY:
+                if mode not in [self._ctx.LINES_ADJACENCY, self._ctx.LINE_STRIP_ADJACENCY]:
+                    raise ValueError(
+                        "Geometry shader expects LINES_ADJACENCY or LINE_STRIP_ADJACENCY as input")
+            if program.geometry_input == self._ctx.TRIANGLES:
+                if mode not in [self._ctx.TRIANGLES, self._ctx.TRIANGLE_STRIP, self._ctx.TRIANGLE_FAN]:
+                    raise ValueError(
+                        "Geometry shader expects GL_TRIANGLES, GL_TRIANGLE_STRIP or GL_TRIANGLE_FAN as input")
+            if program.geometry_input == self._ctx.TRIANGLES_ADJACENCY:
+                if mode not in [self._ctx.TRIANGLES_ADJACENCY, self._ctx.TRIANGLE_STRIP_ADJACENCY]:
+                    raise ValueError(
+                        "Geometry shader expects GL_TRIANGLES_ADJACENCY or GL_TRIANGLE_STRIP_ADJACENCY as input")
+
         vao.render(
             mode=mode,
             first=first,
@@ -460,7 +487,11 @@ class Geometry:
         # print(f"Generating vao for key {program.attribute_key}")
 
         vao = VertexArray(
-            self._ctx, program, self._content, index_buffer=self._index_buffer, index_element_size=self._index_element_size,
+            self._ctx,
+            program,
+            self._content,
+            index_buffer=self._index_buffer,
+            index_element_size=self._index_element_size,
         )
         self._vao_cache[program.attribute_key] = vao
         return vao

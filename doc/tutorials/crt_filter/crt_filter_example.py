@@ -1,14 +1,15 @@
 from pathlib import Path
 import arcade
 from arcade.experimental.crt_filter import CRTFilter
-from arcade.math import Vec2
+from pyglet.math import Vec2
 
 
 # Do the math to figure out our screen dimensions
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 1100
 SCREEN_TITLE = "ShaderToy Demo"
-RESOURCE_DIR =  Path(__file__).parent
+RESOURCE_DIR = Path(__file__).parent
+
 
 class MyGame(arcade.Window):
 

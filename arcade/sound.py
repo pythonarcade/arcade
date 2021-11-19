@@ -158,8 +158,8 @@ def play_sound(
         return None
     elif isinstance(sound, str):
         msg = (
-                "Error, passed in a string as a sound. "
-                + "Make sure to use load_sound first, and use that result in play_sound."
+            "Error, passed in a string as a sound. "
+            "Make sure to use load_sound first, and use that result in play_sound."
         )
         raise Exception(msg)
     try:
