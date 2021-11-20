@@ -1,7 +1,7 @@
 """
 This demo shows the speed of drawing a full grid of squares using no buffering.
 
-For me this takes about 1.3 seconds per frame.
+For me this takes about 0.16 seconds per frame.
 
 It is slow because we load all the points and all the colors to the card every
 time.
@@ -46,7 +46,9 @@ class MyGame(arcade.Window):
         # --- Draw all the rectangles
         for x in range(0, SCREEN_WIDTH, SQUARE_SPACING):
             for y in range(0, SCREEN_HEIGHT, SQUARE_SPACING):
-                arcade.draw_rectangle_filled(x, y, SQUARE_WIDTH, SQUARE_HEIGHT, arcade.color.DARK_BLUE)
+                arcade.draw_rectangle_filled(x, y,
+                                             SQUARE_WIDTH, SQUARE_HEIGHT,
+                                             arcade.color.DARK_BLUE)
 
         # Print the timing
         output = f"Drawing time: {self.draw_time:.3f} seconds per frame."

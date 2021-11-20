@@ -42,30 +42,6 @@ Drawing Primitives
 
    :ref:`drawing_text`
 
-
-Animating Drawing Primitives
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. figure:: thumbs/bouncing_rectangle.png
-   :figwidth: 170px
-
-   :ref:`bouncing_rectangle`
-
-.. figure:: thumbs/bouncing_ball.png
-   :figwidth: 170px
-
-   :ref:`bouncing_ball`
-
-.. figure:: thumbs/bouncing_balls.png
-   :figwidth: 170px
-
-   :ref:`bouncing_balls`
-
-.. figure:: thumbs/radar_sweep.png
-   :figwidth: 170px
-
-   :ref:`radar_sweep`
-
 Drawing with Loops
 ^^^^^^^^^^^^^^^^^^
 
@@ -84,40 +60,35 @@ Drawing with Loops
 
    :ref:`nested_loops_bottom_left_triangle`
 
-.. figure:: thumbs/nested_loops_top_right_triangle.png
+
+Animating Drawing Primitives
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. figure:: thumbs/bouncing_rectangle.png
    :figwidth: 170px
 
-   :ref:`nested_loops_top_right_triangle`
-
-.. figure:: thumbs/nested_loops_top_left_triangle.png
-   :figwidth: 170px
-
-   :ref:`nested_loops_top_left_triangle`
-
-.. figure:: thumbs/nested_loops_bottom_right_triangle.png
-   :figwidth: 170px
-
-   :ref:`nested_loops_bottom_right_triangle`
-
-.. figure:: thumbs/snow.png
-   :figwidth: 170px
-
-   :ref:`snow`
+   :ref:`bouncing_rectangle`
 
 .. figure:: thumbs/shapes.png
    :figwidth: 170px
 
    :ref:`shapes-slow`
 
+.. figure:: thumbs/radar_sweep.png
+   :figwidth: 170px
+
+   :ref:`radar_sweep`
+
+.. figure:: thumbs/snow.png
+   :figwidth: 170px
+
+   :ref:`snow`
+
+
 .. _shape-element-lists:
 
 Faster Drawing with ShapeElementLists
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. figure:: thumbs/shapes_buffered.png
-   :figwidth: 170px
-
-   :ref:`shapes-fast`
 
 .. figure:: thumbs/shape_list_demo.png
    :figwidth: 170px
@@ -133,11 +104,6 @@ Faster Drawing with ShapeElementLists
    :figwidth: 170px
 
    :ref:`shape_list_demo_skylines`
-
-.. figure:: thumbs/shape_list_demo_person.png
-   :figwidth: 170px
-
-   :ref:`shape_list_demo_person`
 
 .. figure:: thumbs/gradients.png
    :figwidth: 170px

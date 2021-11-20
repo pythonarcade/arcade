@@ -2,34 +2,19 @@
 This simple animation example shows how to use classes to animate
 multiple objects on the screen at the same time.
 
-Because this is redraws the shapes from scratch each frame, this is SLOW
-and inefficient.
-
-Using buffered drawing commands (Vertex Buffer Objects) is a bit more complex,
-but faster.
-
-See
-https://api.arcade.academy/en/latest/examples/index.html#faster-drawing-with-shapeelementlists
-for this same example using shape element lists.
-
-Also, any Sprite class put in a SpriteList and drawn with the SpriteList will
-be drawn using Vertex Buffer Objects for better performance.
+Note: Sprites draw much faster than drawing primitives
 
 If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.shapes_buffered
+python -m arcade.examples.shapes
 """
 
 import arcade
 import random
-import timeit
 
 # Set up the constants
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
-SCREEN_TITLE = "Shapes! Non-buffered"
-
-RECT_WIDTH = 50
-RECT_HEIGHT = 50
+SCREEN_TITLE = "Shapes!"
 
 NUMBER_OF_SHAPES = 500
 
@@ -88,37 +73,38 @@ class MyGame(arcade.Window):
     """ Main application class. """
 
     def __init__(self):
+        # Call the parent __init__
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-        self.shape_list = None
 
-        self.processing_time = 0
-        self.draw_time = 0
-        self.frame_count = 0
-        self.fps_start_timer = None
-        self.fps = None
-
-    def setup(self):
-        """ Set up the game and initialize the variables. """
+        # Create a shape list
         self.shape_list = []
 
         for i in range(NUMBER_OF_SHAPES):
+
+            # Random spot
             x = random.randrange(0, SCREEN_WIDTH)
             y = random.randrange(0, SCREEN_HEIGHT)
-            width = random.randrange(10, 30)
-            height = random.randrange(10, 30)
+
+            # Random size
+            width = random.randrange(15, 40)
+            height = random.randrange(15, 40)
+
+            # Random angle
             angle = random.randrange(0, 360)
 
+            # Random movement
             d_x = random.randrange(-3, 4)
             d_y = random.randrange(-3, 4)
             d_angle = random.randrange(-3, 4)
 
+            # Random color
             red = random.randrange(256)
             green = random.randrange(256)
             blue = random.randrange(256)
             alpha = random.randrange(256)
 
+            # Random line, ellipse, or rect
             shape_type = random.randrange(3)
-            # shape_type = 2
 
             if shape_type == 0:
                 shape = Rectangle(x, y, width, height, angle, d_x, d_y,
@@ -126,57 +112,31 @@ class MyGame(arcade.Window):
             elif shape_type == 1:
                 shape = Ellipse(x, y, width, height, angle, d_x, d_y,
                                 d_angle, (red, green, blue, alpha))
-            elif shape_type == 2:
+            else:
                 shape = Line(x, y, width, height, angle, d_x, d_y,
                              d_angle, (red, green, blue, alpha))
 
+            # Add this new shape to the list
             self.shape_list.append(shape)
 
     def on_update(self, dt):
         """ Move everything """
-        start_time = timeit.default_timer()
-
         for shape in self.shape_list:
             shape.move()
 
-        self.processing_time = timeit.default_timer() - start_time
-
     def on_draw(self):
-        """
-        Render the screen.
-        """
-        # Start timing how long this takes
-        draw_start_time = timeit.default_timer()
+        """ Render the screen. """
 
-        if self.frame_count % 60 == 0:
-            if self.fps_start_timer is not None:
-                total_time = timeit.default_timer() - self.fps_start_timer
-                self.fps = 60 / total_time
-            self.fps_start_timer = timeit.default_timer()
-        self.frame_count += 1
-
+        # Clear teh screen
         arcade.start_render()
 
+        # Draw the shapes
         for shape in self.shape_list:
             shape.draw()
 
-        # Display timings
-        output = f"Processing time: {self.processing_time:.3f}"
-        arcade.draw_text(output, 20, SCREEN_HEIGHT - 20, arcade.color.WHITE, 16)
-
-        output = f"Drawing time: {self.draw_time:.3f}"
-        arcade.draw_text(output, 20, SCREEN_HEIGHT - 40, arcade.color.WHITE, 16)
-
-        if self.fps is not None:
-            output = f"FPS: {self.fps:.0f}"
-            arcade.draw_text(output, 20, SCREEN_HEIGHT - 60, arcade.color.WHITE, 16)
-
-        self.draw_time = timeit.default_timer() - draw_start_time
-
 
 def main():
-    window = MyGame()
-    window.setup()
+    MyGame()
     arcade.run()
 
 

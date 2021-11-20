@@ -2,18 +2,6 @@
 This simple animation example shows how to bounce a rectangle
 on the screen.
 
-It assumes a programmer knows how to create functions already.
-
-It does not assume a programmer knows how to create classes. If you do know
-how to create classes, see the starting template for a better example:
-
-https://api.arcade.academy/en/latest/examples/starting_template.html
-
-Or look through the examples showing how to use Sprites.
-
-A video walk-through of this example is available at:
-https://vimeo.com/168063840
-
 If Python and Arcade are installed, this example can be run
 from the command line with:
 python -m arcade.examples.bouncing_rectangle
@@ -29,71 +17,87 @@ SCREEN_WIDTH = 600
 SCREEN_HEIGHT = 600
 SCREEN_TITLE = "Bouncing Rectangle Example"
 
-# Size of the rectangle
+# Rectangle info
 RECT_WIDTH = 50
 RECT_HEIGHT = 50
+RECT_COLOR = arcade.color.DARK_BROWN
+
+BACKGROUND_COLOR = arcade.color.ALMOND
 
 
-def on_draw(delta_time):
-    """
-    Use this function to draw everything to the screen.
-    """
+class Item:
+    """ This class represents our rectangle """
 
-    # Start the render. This must happen before any drawing
-    # commands. We do NOT need a stop render command.
-    arcade.start_render()
+    def __init__(self):
 
-    # Draw a rectangle.
-    # For a full list of colors see:
-    # https://api.arcade.academy/en/latest/arcade.color.html
-    arcade.draw_rectangle_filled(on_draw.center_x, on_draw.center_y,
-                                 RECT_WIDTH, RECT_HEIGHT,
-                                 arcade.color.ALIZARIN_CRIMSON)
+        # Set up attribute variables
 
-    # Modify rectangles position based on the delta
-    # vector. (Delta means change. You can also think
-    # of this as our speed and direction.)
-    on_draw.center_x += on_draw.delta_x * delta_time
-    on_draw.center_y += on_draw.delta_y * delta_time
+        # Where we are
+        self.center_x = 0
+        self.center_y = 0
 
-    # Figure out if we hit the edge and need to reverse.
-    if on_draw.center_x < RECT_WIDTH // 2 \
-            or on_draw.center_x > SCREEN_WIDTH - RECT_WIDTH // 2:
-        on_draw.delta_x *= -1
-    if on_draw.center_y < RECT_HEIGHT // 2 \
-            or on_draw.center_y > SCREEN_HEIGHT - RECT_HEIGHT // 2:
-        on_draw.delta_y *= -1
+        # Where we are going
+        self.change_x = 0
+        self.change_y = 0
+
+    def update(self):
+        # Move the rectangle
+        self.center_x += self.change_x
+        self.center_y += self.change_y
+        # Check if we need to bounce of right edge
+        if self.center_x > SCREEN_WIDTH - RECT_WIDTH / 2:
+            self.change_x *= -1
+        # Check if we need to bounce of top edge
+        if self.center_y > SCREEN_HEIGHT - RECT_HEIGHT / 2:
+            self.change_y *= -1
+        # Check if we need to bounce of left edge
+        if self.center_x < RECT_WIDTH / 2:
+            self.change_x *= -1
+        # Check if we need to bounce of bottom edge
+        if self.center_y < RECT_HEIGHT / 2:
+            self.change_y *= -1
+
+    def draw(self):
+        # Draw the rectangle
+        arcade.draw_rectangle_filled(self.center_x,
+                                     self.center_y,
+                                     RECT_WIDTH,
+                                     RECT_HEIGHT,
+                                     RECT_COLOR)
 
 
-# Below are function-specific variables. Before we use them
-# in our function, we need to give them initial values. Then
-# the values will persist between function calls.
-#
-# In other languages, we'd declare the variables as 'static' inside the
-# function to get that same functionality.
-#
-# Later on, we'll use 'classes' to track position and velocity for multiple
-# objects.
+class MyGame(arcade.Window):
+    """ Main application class. """
 
-# Initial x position
-on_draw.center_x = 100  # type: ignore # dynamic attribute on function obj
-# Initial y position
-on_draw.center_y = 50   # type: ignore # dynamic attribute on function obj
-# Initial change in x
-on_draw.delta_x = 115   # type: ignore # dynamic attribute on function obj
-# Initial change in y
-on_draw.delta_y = 130   # type: ignore # dynamic attribute on function obj
+    def __init__(self, width, height, title):
+        super().__init__(width, height, title)
+
+        # Create our rectangle
+        self.item = Item()
+        self.item.center_x = 200
+        self.item.center_y = 300
+        self.item.change_x = 2
+        self.item.change_y = 3
+
+        # Set background color
+        arcade.set_background_color(BACKGROUND_COLOR)
+
+    def on_update(self, delta_time):
+        # Move the rectangle
+        self.item.update()
+
+    def on_draw(self):
+        """ Render the screen. """
+
+        # Clear screen
+        arcade.start_render()
+        # Draw the rectangle
+        self.item.draw()
 
 
 def main():
-    # Open up our window
-    arcade.open_window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    arcade.set_background_color(arcade.color.WHITE)
-
-    # Tell the computer to call the draw command at the specified interval.
-    arcade.schedule(on_draw, 1 / 80)
-
-    # Run the program
+    """ Main function """
+    MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     arcade.run()
 
 

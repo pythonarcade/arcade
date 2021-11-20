@@ -2,14 +2,33 @@
 
 .. _shape_list_demo:
 
-Shape List Demo
-===============
+ShapeElementList Explanation
+============================
 
-These are three examples:
+If you are drawing a lot of items on your screen, the :class:`arcade.ShapeElementList` can
+speed your drawing. How does it work?
 
-* One with no shape lists, and no buffered drawing.
-* One with simple buffered drawing. About 4x faster.
-* The last with complex buffered drawing. More than 850x faster.
+Say we have a screen with about 9,600 rectangles:
+
+.. image:: shape_list_demo.png
+    :width: 600px
+    :align: center
+    :alt: Screenshot of using shape list to make rectangles
+
+Those rectangles are created with 38,400 points + 9,600 colors
++ 9,600 angles. They need
+to be sent to the graphics card 60 times per second. This quickly balloons into 3.5 million numbers
+being sent to the graphics card each second to display a bunch of rectangles that aren't even moving.
+
+What we want to do instead is package all these rectangles up, send them to the graphics
+card, and then have them be drawn in just one command. This takes us from 3.5 million items per
+second down to about 60.
+
+There are three examples here:
+
+* First, no shape lists. Just drawing rectangles.
+* Second, each rectangle is individually buffered to the GPU.
+* Third, all rectangles are buffered to the GPU as and drawn as a group.
 
 .. image:: shape_list_demo.png
     :width: 600px

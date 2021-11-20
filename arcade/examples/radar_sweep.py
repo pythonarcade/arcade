@@ -20,48 +20,67 @@ RADIANS_PER_FRAME = 0.02
 SWEEP_LENGTH = 250
 
 
-def on_draw(_delta_time):
-    """ Use this function to draw everything to the screen. """
+class Radar:
+    def __init__(self):
+        self.angle = 0
 
-    # Move the angle of the sweep.
-    on_draw.angle += RADIANS_PER_FRAME
+    def update(self):
 
-    # Calculate the end point of our radar sweep. Using math.
-    x = SWEEP_LENGTH * math.sin(on_draw.angle) + CENTER_X
-    y = SWEEP_LENGTH * math.cos(on_draw.angle) + CENTER_Y
+        # Move the angle of the sweep.
+        self.angle += RADIANS_PER_FRAME
 
-    # Start the render. This must happen before any drawing
-    # commands. We do NOT need an stop render command.
-    arcade.start_render()
+    def draw(self):
+        """ Use this function to draw everything to the screen. """
 
-    # Draw the radar line
-    arcade.draw_line(CENTER_X, CENTER_Y, x, y, arcade.color.OLIVE, 4)
+        # Calculate the end point of our radar sweep. Using math.
+        x = SWEEP_LENGTH * math.sin(self.angle) + CENTER_X
+        y = SWEEP_LENGTH * math.cos(self.angle) + CENTER_Y
 
-    # Draw the outline of the radar
-    arcade.draw_circle_outline(CENTER_X, CENTER_Y, SWEEP_LENGTH,
-                               arcade.color.DARK_GREEN, 10)
+        # Start the render. This must happen before any drawing
+        # commands. We do NOT need an stop render command.
+        arcade.start_render()
+
+        # Draw the radar line
+        arcade.draw_line(CENTER_X, CENTER_Y, x, y, arcade.color.OLIVE, 4)
+
+        # Draw the outline of the radar
+        arcade.draw_circle_outline(CENTER_X,
+                                   CENTER_Y,
+                                   SWEEP_LENGTH,
+                                   arcade.color.DARK_GREEN,
+                                   border_width=10,
+                                   num_segments=60)
 
 
-# This is a function-specific variable. Before we
-# use them in our function, we need to give them initial
-# values.
-on_draw.angle = 0  # type: ignore # dynamic attribute on function obj
+class MyGame(arcade.Window):
+    """ Main application class. """
+
+    def __init__(self, width, height, title):
+        super().__init__(width, height, title)
+
+        # Create our rectangle
+        self.radar = Radar()
+
+        # Set background color
+        arcade.set_background_color(arcade.color.BLACK)
+
+    def on_update(self, delta_time):
+        # Move the rectangle
+        self.radar.update()
+
+    def on_draw(self):
+        """ Render the screen. """
+
+        # Clear screen
+        arcade.start_render()
+        # Draw the rectangle
+        self.radar.draw()
 
 
 def main():
-
-    # Open up our window
-    arcade.open_window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    arcade.set_background_color(arcade.color.BLACK)
-
-    # Tell the computer to call the draw command at the specified interval.
-    arcade.schedule(on_draw, 1 / 80)
-
-    # Run the program
+    """ Main function """
+    MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     arcade.run()
-
-    # When done running the program, close the window.
-    arcade.close_window()
 
 
 if __name__ == "__main__":

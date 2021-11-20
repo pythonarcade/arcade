@@ -2,8 +2,8 @@
 
 .. _shapes-slow:
 
-Drawing Shapes with Classes - Slow
-==================================
+Bouncing Shapes
+===============
 
 .. image:: shapes.png
     :width: 600px

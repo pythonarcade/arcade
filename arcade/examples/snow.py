@@ -1,6 +1,7 @@
 """
 Simple Snow
-Based primarily on: https://api.arcade.academy/en/latest/examples/sprite_collect_coins_move_down.html
+Based primarily on:
+https://api.arcade.academy/en/latest/examples/sprite_collect_coins_move_down.html
 
 Contributed to Python Arcade Library by Nicholas Hartunian
 
@@ -37,11 +38,7 @@ class MyGame(arcade.Window):
     """ Main application class. """
 
     def __init__(self, width, height, title):
-        """
-        Initializer
-        :param width:
-        :param height:
-        """
+        """ Initializer """
         # Calls "__init__" of parent class (arcade.Window) to setup screen
         super().__init__(width, height, title)
 
@@ -75,9 +72,7 @@ class MyGame(arcade.Window):
         arcade.set_background_color(arcade.color.BLACK)
 
     def on_draw(self):
-        """
-        Render the screen.
-        """
+        """ Render the screen. """
 
         # This command is necessary before drawing
         arcade.start_render()
@@ -88,9 +83,7 @@ class MyGame(arcade.Window):
                                       snowflake.size, arcade.color.WHITE)
 
     def on_update(self, delta_time):
-        """
-        All the logic to move, and the game logic goes here.
-        """
+        """ All the logic to move, and the game logic goes here. """
 
         # Animate all the snowflakes falling
         for snowflake in self.snowflake_list:

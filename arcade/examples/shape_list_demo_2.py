@@ -2,12 +2,11 @@
 This demo shows using buffered rectangles to draw a grid of squares on the
 screen.
 
-For me this starts at 0.500 seconds and goes down to 0.220 seconds after the
-graphics card figures out some optimizations.
+For me this runs about 0.002 seconds per frame.
 
 It is faster than demo 1 because we aren't loading the vertices and color
-to the card again and again. It isn't very fast because we are still sending
-individual draw commands to the graphics card for each square.
+to the card again and again. It could be faster though, if we group all
+rectangles together.
 
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.shape_list_demo_2
@@ -42,7 +41,9 @@ class MyGame(arcade.Window):
         self.shape_list = arcade.ShapeElementList()
         for x in range(0, SCREEN_WIDTH, SQUARE_SPACING):
             for y in range(0, SCREEN_HEIGHT, SQUARE_SPACING):
-                shape = arcade.create_rectangle_filled(x, y, SQUARE_WIDTH, SQUARE_HEIGHT, arcade.color.DARK_BLUE)
+                shape = arcade.create_rectangle_filled(x, y,
+                                                       SQUARE_WIDTH, SQUARE_HEIGHT,
+                                                       arcade.color.DARK_BLUE)
                 self.shape_list.append(shape)
 
     def on_draw(self):
