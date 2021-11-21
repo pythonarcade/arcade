@@ -196,6 +196,9 @@ Sprite Non-Player Movement
 
    :ref:`sprite_collect_rotating`
 
+Sprite Pathing
+^^^^^^^^^^^^^^
+
 .. figure:: thumbs/sprite_follow_simple.png
    :figwidth: 170px
 

@@ -22,4 +22,4 @@ See also :ref:`sprite_move_scrolling_box`.
 .. literalinclude:: ../../arcade/examples/sprite_move_scrolling.py
     :caption: sprite_move_scrolling.py
     :linenos:
-    :emphasize-lines: 49-52, 91-92, 98-99, 138-139, 141-152, 154-160
+    :emphasize-lines: 55-58, 95-96, 102-103, 159-160, 162-173, 175-181

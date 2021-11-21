@@ -16,4 +16,4 @@ See the highlighted lines below.
 .. literalinclude:: ../../arcade/examples/sprite_move_scrolling_shake.py
     :caption: sprite_move_scrolling_shake.py
     :linenos:
-    :emphasize-lines: 155-169
+    :emphasize-lines: 154-171
