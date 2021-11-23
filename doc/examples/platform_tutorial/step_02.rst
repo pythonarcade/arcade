@@ -98,8 +98,8 @@ In the example below there's a ``wall_list`` that will hold everything that the
 player character can't walk through. There's also a ``player_list``
 which holds only the player.
 
-* Documentation for the `Sprite class <../../arcade.html#arcade.Sprite>`_
-* Documentation for the `SpriteList class <../../arcade.html#arcade.SpriteList>`_
+* Documentation for the :class:`arcade.Sprite` class
+* Documentation for the :class:`arcade.SpriteList` class
 
 Notice that the code creates ``Sprites`` three ways:
 
@@ -114,10 +114,14 @@ Source Code
     :linenos:
     :emphasize-lines: 11-13, 26-29, 36-67, 75-77
 
+Running this code should result in some sprites drawn on the screen, as
+shown in the image at the top of this page.
+
 .. note::
 
-    Once the code example is up and working:
+    Once the code example is up and working, try adjusting the code for the following:
 
     * Adjust the code and try putting sprites in new positions.
-    * Use different images for sprites (see the images folder).
+    * Use different images for sprites (see :ref:`resources` for the build-in images, or use
+      your own images.)
     * Practice placing individually, via a loop, and by coordinates in a list.

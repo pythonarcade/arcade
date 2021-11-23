@@ -187,3 +187,7 @@ a:visited {
 	flex-direction: row;
 	flex-wrap: wrap;
 }
+.rst-content code, .rst-content tt, code {
+    font-size: 85%;
+    padding: 0 0 5px 0;
+}

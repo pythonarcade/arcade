@@ -6,16 +6,13 @@ Simple Platformer
 .. image:: intro_screen.png
     :width: 70%
 
-Use Python and the Arcade_ library to create a 2D platformer game.
-Learn to work with Sprites and the `Tiled Map Editor`_ to create your own games.
-Add coins, ramps, moving platforms, enemies, and more.
+This tutorial shows how to use Python and the Arcade library to create a 2D platformer game.
+You'll learn to work with Sprites and the `Tiled Map Editor`_ to create your own games.
+You can add coins, ramps, moving platforms, enemies, and more.
 
 .. _Tiled Map Editor: https://www.mapeditor.org/
-.. _Arcade: http://arcade.academy
 
-At the end of each chapter of this tutorial. There is a link to the full source code
-for that chapter as well as a difference listing for that chapter against the previous.
-
+At the end of each chapter of this tutorial there is a link to the full source code.
 The tutorial is divided into these parts:
 
 .. toctree::

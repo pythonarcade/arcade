@@ -60,19 +60,6 @@ if you have a file called `requirements.txt` that lists the required libraries.
 .. image:: images/venv_setup_4.png
     :width: 650px
 
-.. note::
-
-   If you are using Python 3.8, the "Numpy" and "Pillow" libraries might try
-   to build themselves from scratch, which will probably error out.
-   To fix, we can manually update "pip" by opening a
-   a PyCharm terminal, and then typing the following into the terminal:
-
-   ``python -m pip install -U --force-reinstall pip``
-
-   Restart PyCharm (or exit and restart the terminal)
-   and then attempt to install Arcade again.
-
-
 Install Arcade using the command line interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

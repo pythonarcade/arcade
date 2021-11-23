@@ -14,7 +14,7 @@ Installation
 
 * Make sure the `Arcade library <https://pypi.org/project/arcade/>`_ is installed.
 
-  * You should first setup a virtual environment(venv) and activate it. 
+  * You should first setup a virtual environment (venv) and activate it.
   * Install Arcade with ``pip install arcade``.
   * Here are the longer, official :ref:`installation-instructions`.
 
@@ -41,7 +41,12 @@ below working. (It is also in the zip file as
     :caption: 01_open_window.py - Open a Window
     :linenos:
 
-Once you get the code working, figure out how to:
+You should end up with a window like this:
+
+.. image:: step_01.png
+   :width: 75%
+
+Once you get the code working, figure out how to adjust the code so you can:
 
 * Change the screen size
 * Change the title
@@ -50,6 +55,5 @@ Once you get the code working, figure out how to:
   * See the documentation for :ref:`color`
   * See the documentation for :ref:`csscolor`
 
-* Look through the documentation for the
-  `Window <../../arcade.html#arcade.Window>`_ class to get an idea of everything
-  it can do.
+* Look through the documentation for the :class:`arcade.Window`
+  class to get an idea of everything it can do.
