@@ -1,5 +1,7 @@
 :orphan:
 
+.. _2020_game_jam:
+
 Python Discord GameJam 2020
 ===========================
 

@@ -4,7 +4,7 @@ How-To Example Code
 ===================
 
 .. contents::
-   :depth: 3
+   :depth: 1
    :local:
 
 Starting Template
@@ -553,6 +553,8 @@ Particle System
    :ref:`particle_systems`
 
 
+.. _concept_games:
+
 Concept Games
 -------------
 
@@ -561,15 +563,15 @@ Concept Games
 
    :ref:`asteroid_smasher`
 
+.. figure:: https://raw.githubusercontent.com/pythonarcade/asteroids/main/screenshot.png
+   :figwidth: 170px
+
+   `Asteroids with Shaders <https://github.com/pythonarcade/asteroids>`_
+
 .. figure:: thumbs/slime_invaders.png
    :figwidth: 170px
 
    :ref:`slime_invaders`
-
-.. figure:: https://raw.githubusercontent.com/pythonarcade/asteroids/main/screenshot.png
-   :figwidth: 170px
-
-   `Asteroids <https://github.com/pythonarcade/asteroids>`_
 
 .. figure:: thumbs/community-rpg.png
    :figwidth: 170px

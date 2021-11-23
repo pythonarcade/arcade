@@ -3,8 +3,15 @@
 Games Made With Arcade
 ======================
 
-Have a sample game you'd like to share here? E-mail
+Here are some sample games made with Arcade.
+Have a game you'd like to share here? E-mail
 paul@cravenfamily.com.
+
+You also might want to check out sample Arcade games from:
+
+* :ref:`2020_game_jam`
+* :ref:`concept_games`
+* :ref:`platformer_tutorial`
 
 Ready or Not?
 ~~~~~~~~~~~~~
