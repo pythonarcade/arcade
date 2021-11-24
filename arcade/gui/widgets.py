@@ -717,7 +717,7 @@ class UILabel(UIWidget):
                  italic=False,
                  stretch=False,
                  anchor_x='left',
-                 anchor_y='baseline',
+                 anchor_y='bottom',
                  align='left',
                  dpi=None,
                  multiline: bool = False,
