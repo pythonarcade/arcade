@@ -13,6 +13,24 @@ You also might want to check out sample Arcade games from:
 * :ref:`concept_games`
 * :ref:`platformer_tutorial`
 
+SOL Defender
+~~~~~~~~~~~~
+
+.. raw:: html
+
+   <iframe width="560" height="315" src="https://www.youtube.com/embed/8CV7MTSfCQk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+SOL Defender, by DragonMoffon
+
+Temporum
+~~~~~~~~
+
+.. raw:: html
+
+   <iframe width="560" height="315" src="https://www.youtube.com/embed/we82_W4nbjY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+Temporum, by DragonMoffon
+
 Ready or Not?
 ~~~~~~~~~~~~~
 
@@ -142,6 +160,7 @@ Space Typer
 ~~~~~~~~~~~
 
 .. image:: images/space_typer.png
+   :width: 75%
 
 `Space Typer`_ - A typing game
 
@@ -164,6 +183,7 @@ PyOverheadGame
 ~~~~~~~~~~~~~~
 
 .. image:: images/PyOverheadGame.png
+   :width: 75%
 
 PyOverheadGame_, a 2D overhead game where you go through several rooms and pick up keys and other objects.
 
@@ -174,6 +194,7 @@ Dungeon
 ~~~~~~~
 
 .. image:: images/blake.png
+   :width: 75%
 
 Dungeon_, explore a maze picking up arrows and coins.
 
@@ -181,6 +202,9 @@ Dungeon_, explore a maze picking up arrows and coins.
 
 Two Worlds
 ~~~~~~~~~~
+
+.. image:: https://camo.githubusercontent.com/bb2fb323ea9ab3f6041d3b72569a2d2360aa46ba07fe4cb3dbcd8248b3e8699d/68747470733a2f2f696d6775722e636f6d2f7356516e4331542e706e67
+   :width: 75%
 
 `Two Worlds`_, a castle adventure with a dungeon and caverns underneath it.
 
@@ -238,8 +262,4 @@ These games were created by first-semester programming students.
 .. raw:: html
 
 	<iframe width="560" height="315" src="https://www.youtube.com/embed/Q65Sc8SLHho" frameborder="0" allowfullscreen></iframe>
-
-.. raw:: html
-
-	<iframe width="560" height="315" src="https://www.youtube.com/embed/Kog417X313Y" frameborder="0" allowfullscreen></iframe>
 
