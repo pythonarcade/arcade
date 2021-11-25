@@ -170,7 +170,6 @@ class Scene:
         old_index = self.sprite_lists.index(name_list)
         self.sprite_lists.insert(new_index, self.sprite_lists.pop(old_index))
 
-
     def add_sprite_list_after(
         self,
         name: str,
