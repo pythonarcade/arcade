@@ -142,7 +142,7 @@ class Scene:
             sprite_list = SpriteList(use_spatial_hash=use_spatial_hash)
         self.name_mapping[name] = sprite_list
         before_list = self.name_mapping[before]
-        index = self.sprite_lists.index(before_list) - 1
+        index = self.sprite_lists.index(before_list)
         self.sprite_lists.insert(index, sprite_list)
 
     def move_sprite_list_before(
@@ -159,16 +159,17 @@ class Scene:
         :param str name: The name of the SpriteList to move.
         :param str before: The name of the SpriteList to place it before.
         """
-        if name in self.name_mapping:
-            name_list = self.name_mapping[name]
-            before_list = self.name_mapping[before]
-            new_index = self.sprite_lists.index(before_list)
-            old_index = self.sprite_lists.index(name_list)
-            self.sprite_lists.insert(new_index, self.sprite_lists.pop(old_index))
+        if name not in self.name_mapping:
+            raise ValueError(
+                f"Tried to move unknown SpriteList with the name {name} in Scene"
+            )
 
-        raise ValueError(
-            f"Tried to move unknown SpriteList with the name {name} in Scene"
-        )
+        name_list = self.name_mapping[name]
+        before_list = self.name_mapping[before]
+        new_index = self.sprite_lists.index(before_list)
+        old_index = self.sprite_lists.index(name_list)
+        self.sprite_lists.insert(new_index, self.sprite_lists.pop(old_index))
+
 
     def add_sprite_list_after(
         self,
@@ -194,7 +195,7 @@ class Scene:
             sprite_list = SpriteList(use_spatial_hash=use_spatial_hash)
         self.name_mapping[name] = sprite_list
         after_list = self.name_mapping[after]
-        index = self.sprite_lists.index(after_list)
+        index = self.sprite_lists.index(after_list) + 1
         self.sprite_lists.insert(index, sprite_list)
 
     def move_sprite_list_after(
@@ -211,16 +212,16 @@ class Scene:
         :param str name: The name of the SpriteList to move.
         :param str after: The name of the SpriteList to place it after.
         """
-        if name in self.name_mapping:
-            name_list = self.name_mapping[name]
-            after_list = self.name_mapping[after]
-            new_index = self.sprite_lists.index(after_list)
-            old_index = self.sprite_lists.index(name_list)
-            self.sprite_lists.insert(new_index, self.sprite_lists.pop(old_index))
+        if name not in self.name_mapping:
+            raise ValueError(
+                f"Tried to move unknown SpriteList with the name {name} in Scene"
+            )
 
-        raise ValueError(
-            f"Tried to move unknown SpriteList with the name {name} in Scene"
-        )
+        name_list = self.name_mapping[name]
+        after_list = self.name_mapping[after]
+        new_index = self.sprite_lists.index(after_list) + 1
+        old_index = self.sprite_lists.index(name_list)
+        self.sprite_lists.insert(new_index, self.sprite_lists.pop(old_index))
 
     def remove_sprite_list_by_name(
         self,
