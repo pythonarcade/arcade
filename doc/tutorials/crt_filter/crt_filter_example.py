@@ -71,16 +71,15 @@ class MyGame(arcade.Window):
 
     def on_draw(self):
         if self.filter_on:
-            # Draw our stuff into the CRT filter
+            # Draw our stuff into the CRT filter instead of on screen
             self.crt_filter.use()
             self.crt_filter.clear()
             self.sprite_list.draw()
 
-            # Switch back to our window and draw the CRT filter do
-            # draw its stuff to the screen
+            # Next, switch back to the screen and dump the contents of the CRT filter
+            # to it.
             self.use()
             self.clear()
-
             self.crt_filter.draw()
         else:
             # Draw our stuff into the screen
