@@ -199,6 +199,11 @@ Sprite Non-Player Movement
 Sprite Pathing
 ^^^^^^^^^^^^^^
 
+.. figure:: thumbs/follow_path.png
+   :figwidth: 170px
+
+   :ref:`follow_path`
+
 .. figure:: thumbs/sprite_follow_simple.png
    :figwidth: 170px
 
