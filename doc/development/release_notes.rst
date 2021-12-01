@@ -20,6 +20,15 @@ Unreleased
 * UI: Add experimental UI styles dataclasses for UIWidget styling.
 * UI: Add UISlider, which provides a general slider element with some basic functionality
 * UI: Fix UIInputText rendering
+* Update mini-map example
+* Update scrolling camera example
+* Update google analytics code in docs
+* Remove some less-than-useful examples in the example code section
+* Update platformer example
+* Update windows install instructions
+* Update sample games to show more sample games
+* Improve CRT filter tutorial
+* New example code on how to follow a path
 
 Version 2.6.5
 -------------
