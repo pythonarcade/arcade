@@ -13,6 +13,17 @@ You also might want to check out sample Arcade games from:
 * :ref:`concept_games`
 * :ref:`platformer_tutorial`
 
+
+Temporum
+~~~~~~~~
+
+.. raw:: html
+
+   <iframe width="560" height="315" src="https://www.youtube.com/embed/we82_W4nbjY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+
+`Temporum <https://github.com/DragonMoffon/Temporum>`_, by DragonMoffon
+
 SOL Defender
 ~~~~~~~~~~~~
 
@@ -22,14 +33,22 @@ SOL Defender
 
 SOL Defender, by DragonMoffon
 
-Temporum
-~~~~~~~~
+Binary Defense
+~~~~~~~~~~~~~~
 
 .. raw:: html
 
-   <iframe width="560" height="315" src="https://www.youtube.com/embed/we82_W4nbjY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+   <iframe width="560" height="315" src="https://user-images.githubusercontent.com/46420447/143848782-8f80a448-08a7-476a-aa5d-d1bd79794b75.mp4" title="Video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
-Temporum, by DragonMoffon
+`Binary Defense <https://github.com/KommentatorForAll/Binary-defense>`_ by KommentatorForAll
+
+Space Invaders
+~~~~~~~~~~~~~~
+
+.. image:: https://github.com/pvcraven/space_invaders/raw/main/screenshot.png
+   :width: 560px
+
+`Space Invaders <https://github.com/pvcraven/space_invaders>`_
 
 Ready or Not?
 ~~~~~~~~~~~~~
