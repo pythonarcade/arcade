@@ -60,7 +60,7 @@ class Framebuffer:
     def __init__(
         self, ctx: "Context", *, color_attachments=None, depth_attachment=None
     ):
-
+        self._glo = fbo_id = gl.GLuint()  # The OpenGL alias/name
         self._ctx = ctx
         if not color_attachments:
             raise ValueError("Framebuffer must at least have one color attachment")
@@ -71,7 +71,6 @@ class Framebuffer:
             else [color_attachments]
         )
         self._depth_attachment = depth_attachment
-        self._glo = fbo_id = gl.GLuint()  # The OpenGL alias/name
         self._samples = 0  # Leaving this at 0 for future sample support
         self._depth_mask = True  # Determines if the depth buffer should be affected
         self._prev_fbo = None
@@ -128,7 +127,7 @@ class Framebuffer:
 
     def __del__(self):
         # Intercept garbage collection if we are using Context.gc()
-        if self._ctx.gc_mode == "context_gc" and not self.is_default:
+        if self._ctx.gc_mode == "context_gc" and not self.is_default and self._glo.value > 0:
             self._ctx.objects.append(self)
 
     @property

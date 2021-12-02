@@ -100,7 +100,7 @@ class Texture:
         target=gl.GL_TEXTURE_2D,
         depth=False,
     ):
-
+        self._glo = glo = gl.GLuint()
         self._ctx = ctx
         self._width, self._height = size
         self._dtype = dtype
@@ -125,7 +125,6 @@ class Texture:
 
         gl.glActiveTexture(gl.GL_TEXTURE0 + self._ctx.default_texture_unit)
 
-        self._glo = glo = gl.GLuint()
         gl.glGenTextures(1, byref(self._glo))
 
         if self._glo.value == 0:
@@ -165,7 +164,7 @@ class Texture:
 
     def __del__(self):
         # Intercept garbage collection if we are using Context.gc()
-        if self._ctx.gc_mode == "context_gc":
+        if self._ctx.gc_mode == "context_gc" and self._glo.value > 0:
             self._ctx.objects.append(self)
 
     def _texture_2d(self, data):
