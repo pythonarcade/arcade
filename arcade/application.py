@@ -65,32 +65,30 @@ class Window(pyglet.window.Window):
     :param bool visible: Should the window be visible immediately
     :param bool vsync: Wait for vertical screen refresh before swapping buffer
                        This can make animations and movement look smoother.
-    :param bool gc_mode: Decides how opengl objects should be garbage collected ("auto", "context_gc")
+    :param bool gc_mode: Decides how OpenGL objects should be garbage collected ("context_gc" (default) or "auto")
     :param bool center_window: If true, will center the window.
 
     """
 
-    def __init__(self,
-                 width: int = 800,
-                 height: int = 600,
-                 title: str = 'Arcade Window',
-                 fullscreen: bool = False,
-                 resizable: bool = False,
-                 update_rate: Optional[float] = 1 / 60,
-                 antialiasing: bool = True,
-                 gl_version: Tuple[int, int] = (3, 3),
-                 screen: pyglet.canvas.Screen = None,
-                 style: Optional[str] = pyglet.window.Window.WINDOW_STYLE_DEFAULT,
-                 visible: bool = True,
-                 vsync: bool = False,
-                 gc_mode: str = "auto",
-                 center_window: bool = False):
-        """
-        Construct a new window
-        """
-        # In certain environments (mainly headless) we can't have antialiasing/MSAA enabled.
-        # TODO: Detect other headless environments
-        # Detect replit environment 
+    def __init__(
+        self,
+        width: int = 800,
+        height: int = 600,
+        title: str = 'Arcade Window',
+        fullscreen: bool = False,
+        resizable: bool = False,
+        update_rate: Optional[float] = 1 / 60,
+        antialiasing: bool = True,
+        gl_version: Tuple[int, int] = (3, 3),
+        screen: pyglet.canvas.Screen = None,
+        style: Optional[str] = pyglet.window.Window.WINDOW_STYLE_DEFAULT,
+        visible: bool = True,
+        vsync: bool = False,
+        gc_mode: str = "context_gc",
+        center_window: bool = False
+    ):
+        # In certain environments we can't have antialiasing/MSAA enabled.
+        # Detect replit environment
         if os.environ.get("REPL_ID"):
             antialiasing = False
 
@@ -571,7 +569,20 @@ class Window(pyglet.window.Window):
         super()._recreate(changes)
 
     def flip(self):
-        """ Swap OpenGL and backing buffers for double-buffered windows. """
+        """
+        Window framebuffers norally have a back and front buffer.
+        This method makes the back buffer visible and hides the front buffer.
+        A frame is rendered into the back buffer, so this method displays
+        the frame we currently worked on.
+
+        This method also garbage collect OpenGL resources
+        before swapping the buffers.
+        """
+        # Garbage collect OpenGL resources
+        num_collected = self.ctx.gc()
+        LOG.debug("Collected %s OpenGL resources", num_collected)
+
+        # Attempt to handle static draw setups
         if self.static_display and self.flip_count > 0:
             return
         elif self.static_display:
