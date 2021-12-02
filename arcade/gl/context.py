@@ -241,7 +241,7 @@ class Context:
         num_objects = 0
 
         while len(self.objects):
-            obj = self.objects.pop()
+            obj = self.objects.popleft()
             obj.delete()
             num_objects += 1
 
