@@ -3,13 +3,19 @@ Sound Library.
 """
 
 import math
-import pyglet
-import pyglet.media as media
+import os
 from pathlib import Path
-from arcade.resources import resolve_resource_path
 from typing import Optional, Union
 
-pyglet.options["audio"] = ("openal", "xaudio2", "directsound", "pulse", "silent")
+from arcade.resources import resolve_resource_path
+import pyglet
+
+if os.environ.get("ARCADE_SOUND_BACKENDS"):
+    pyglet.options["audio"] = tuple(v.strip() for v in os.environ["ARCADE_SOUND_BACKENDS"].split(","))
+else:
+    pyglet.options["audio"] = ("openal", "xaudio2", "directsound", "pulse", "silent")
+
+import pyglet.media as media
 
 
 class Sound:
@@ -17,7 +23,6 @@ class Sound:
 
     def __init__(self, file_name: Union[str, Path], streaming: bool = False):
         self.file_name: str = ""
-
         file_name = resolve_resource_path(file_name)
 
         if not Path(file_name).is_file():
