@@ -67,9 +67,9 @@ class Window(pyglet.window.Window):
                        This can make animations and movement look smoother.
     :param bool gc_mode: Decides how OpenGL objects should be garbage collected ("context_gc" (default) or "auto")
     :param bool center_window: If true, will center the window.
-
+    :param bool samples: Number of samples used in antialiasing (default 4).
+                         Usually this is 2, 4, 8 or 16.
     """
-
     def __init__(
         self,
         width: int = 800,
@@ -85,24 +85,39 @@ class Window(pyglet.window.Window):
         visible: bool = True,
         vsync: bool = False,
         gc_mode: str = "context_gc",
-        center_window: bool = False
+        center_window: bool = False,
+        samples: int = 4,
     ):
         # In certain environments we can't have antialiasing/MSAA enabled.
         # Detect replit environment
         if os.environ.get("REPL_ID"):
             antialiasing = False
 
+        config = None
+        # Attempt to make window with antialiasing
         if antialiasing:
-            config = pyglet.gl.Config(major_version=gl_version[0],
-                                      minor_version=gl_version[1],
-                                      double_buffer=True,
-                                      sample_buffers=1,
-                                      samples=4)
-        else:
-            config = pyglet.gl.Config(major_version=3,
-                                      minor_version=3,
-                                      double_buffer=True)
-
+            try:
+                config = pyglet.gl.Config(
+                    major_version=gl_version[0],
+                    minor_version=gl_version[1],
+                    double_buffer=True,
+                    sample_buffers=1,
+                    samples=samples,
+                )
+                display = pyglet.canvas.get_display()
+                screen = display.get_default_screen()
+                config = screen.get_best_config(config)
+            except pyglet.window.NoSuchConfigException:
+                LOG.warning("Skipping antialiasing due missing hardware/driver support")
+                config = None
+                antialiasing = False
+        # If we still don't have a config 
+        if not config:
+            config = pyglet.gl.Config(
+                major_version=3,
+                minor_version=3,
+                double_buffer=True,
+            )
         try:
             super().__init__(width=width, height=height, caption=title,
                              resizable=resizable, config=config, vsync=vsync, visible=visible, style=style)
@@ -111,12 +126,11 @@ class Window(pyglet.window.Window):
         except pyglet.window.NoSuchConfigException:
             raise NoOpenGLException("Unable to create an OpenGL 3.3+ context. "
                                     "Check to make sure your system supports OpenGL 3.3 or higher.")
-
         if antialiasing:
             try:
                 gl.glEnable(gl.GL_MULTISAMPLE_ARB)
             except pyglet.gl.GLException:
-                print("Warning: Anti-aliasing not supported on this computer.")
+                LOG.warning("Warning: Anti-aliasing not supported on this computer.")
 
         if update_rate:
             self.set_update_rate(update_rate)
