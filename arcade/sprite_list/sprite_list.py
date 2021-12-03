@@ -878,10 +878,10 @@ class SpriteList:
         :param blend_function: Optional parameter to set the OpenGL blend function used for drawing the
                          sprite list, such as 'arcade.Window.ctx.BLEND_ADDITIVE' or 'arcade.Window.ctx.BLEND_DEFAULT'
         """
-        self._init_deferred()
-
         if len(self.sprite_list) == 0 or not self._visible:
             return
+
+        self._init_deferred()
 
         # What percent of this sprite list moved? Used in guessing spatial hashing
         self._percent_sprites_moved = self._sprites_moved / len(self.sprite_list) * 100
