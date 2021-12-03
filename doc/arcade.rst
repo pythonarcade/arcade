@@ -38,6 +38,7 @@ for the Python Arcade library. See also:
     api/version
     api/isometric
     api/open_gl
+    gl/index
 
 .. _arcade-api-gui:
 
