@@ -51,11 +51,16 @@ for the Python Arcade library. See also:
 
 .. toctree::
     :maxdepth: 1
-    :caption: Other Arcade Sub Modules
+    :caption: Arcade Sub Modules
 
     arcade.key
     arcade.csscolor
     arcade.color
-    resources
 
+.. toctree::
+    :maxdepth: 1
+    :caption: Other Information
+
+    resources
+    keyboard
 

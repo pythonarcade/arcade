@@ -122,8 +122,8 @@ def resources():
 
     out.write(".. _resources:\n")
     out.write("\n")
-    out.write("Resources\n")
-    out.write("=========\n")
+    out.write("Built-In Resources\n")
+    out.write("==================\n")
     out.write("\n")
     out.write("Resource files are images and sounds built into Arcade that "
               "can be used to quickly build and test simple code without having "

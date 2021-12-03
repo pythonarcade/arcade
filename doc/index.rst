@@ -245,7 +245,6 @@ game without learning a complex framework.
    arcade
    gl/index
    resources
-   keyboard
 
 .. toctree::
    :maxdepth: 1
