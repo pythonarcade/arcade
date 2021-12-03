@@ -25,8 +25,8 @@ be crated before the window is created, but :py:class:`~arcade.Texture`
 can freely be loaded at any time since these only manage
 pixel data with Pillow and calculate hit box data on the cpu.
 
-Threads
--------
+Garbage Collection & Threads
+----------------------------
 
 OpenGL is not thread safe meaning doing actions from
 anything but the main thread is not possible. You
@@ -34,30 +34,61 @@ can still use threads with arcade, but they cannot
 interact with anything that affects OpenGL objects.
 This will throw an error immediately.
 
-Another problem with threads is that the garbage
-collector might decide to run in a non-main thread
-for various reasons. A way to combat this is to change
-the garbage collection mode for OpenGL resources
+When threads are used in a project or underlying libraries
+there is always the risk that python's garbage collector
+will run outside the main thread. This is just how python's
+garbage collector works.
+
+For this reason Arcade's default garbage collection mode
+requires actively releasing OpenGL objects. We are doing
+this for you in the :py:meth:`arcade.Window.flip` method that is
+automatically called every frame.
+
+This garbage collection mode is called ``context_gc``
+since dead OpenGL objects are collected in the context
+and only released when ``ctx.gc()`` is called.
+
+Garbage collection modes can be configured during
+window creation or changed runtime in the context.
 
 .. code:: python
 
-    # Enable "context_gc" mode (default is "auto") during
-    # window creation
-    Window(gc_mode="context_gc")
+    # auto mode works like python's garbage collection (but more risky)
+    window = Window(gc_mode="auto")
 
-    # From now on you need to manually call ctx.gc()
+    # This context mode is implied by default
+    window = Window(gc_mode="context_gc")
+    # From now on you need to manually call window.ctx.gc()
     # for OpenGL resources to be deleted. This can be
     # done very frame if needed or in shorter intervals
-    window.ctx.gc()
+    num_released = window.ctx.gc()
+    print("Resources released:", num_released)
+
+    # Change gc mode runtime
+    window.gc_mode = "auto"
+    window.gc_mode = "context_gc"
+
+If you for some reason need garbage collection to run more
+often than once per frame it can safely be called as many
+times as you want from the main thread.
+
+In the vast majority of cases this is nothing you need to
+be worried about. The current default exists to make your
+life as easy as possible.
+
+Threads & vsync
+---------------
 
 Note that if vsync is enabled all threads will stall
 when all rendering is done and OpenGL is waiting for
 the next vertical blank. The only way to combat this
-is to disable vsync or use subprocesses.
+is to disable vsync or use sub-processes.
+
+SpriteList & Threads
+--------------------
 
 SpriteLists can be created in threads if they are
 created with the ``lazy=True`` parameters.
 This ensures OpenGL resources are not created until the
 first ``draw()`` call or ``initialize()`` is called.
-This can be especially useful when using spatial hashing
-because the initial calculations can be costly.
+
