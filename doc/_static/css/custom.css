@@ -191,3 +191,8 @@ a:visited {
     font-size: 85%;
     padding: 0 0 5px 0;
 }
+
+.rst-content .toctree-wrapper ul li > ul {
+    margin-top: 0;
+    margin-bottom: 0;
+}
