@@ -120,14 +120,15 @@ def create_resources(ctx):
     assert ctx.stats.vertex_array == (created + 1, freed + 1)
 
     # Compute shader
-    created, freed = ctx.stats.compute_shader
-    compute_shader =  ctx.compute_shader(source=COMPUTE_SHADER_SOURCE)
-    assert ctx.stats.compute_shader == (created + 1, freed)
-    compute_shader = None
-    if ctx.gc_mode == "context_gc":
-        collected = ctx.gc()
-        assert collected > 0
-    assert ctx.stats.compute_shader == (created + 1, freed + 1)    
+    if ctx.gl_version >= (4, 3):
+        created, freed = ctx.stats.compute_shader
+        compute_shader =  ctx.compute_shader(source=COMPUTE_SHADER_SOURCE)
+        assert ctx.stats.compute_shader == (created + 1, freed)
+        compute_shader = None
+        if ctx.gc_mode == "context_gc":
+            collected = ctx.gc()
+            assert collected > 0
+        assert ctx.stats.compute_shader == (created + 1, freed + 1)    
 
     # query
     created, freed = ctx.stats.query
