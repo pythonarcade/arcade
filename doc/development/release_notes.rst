@@ -7,8 +7,8 @@ Release Notes
 
 Keep up-to-date with the latest changes to the Arcade library by the release notes.
 
-Unreleased
-----------
+2.6.6
+-----
 
 * :class:`~arcade.TileMap` changes:
 
@@ -17,18 +17,57 @@ Unreleased
     If a pre-parsed map is passed to this, the ``map_file`` parameter will simply be ignored. This addition makes working
     with pre-parsed maps from a World file possible.
 
-* UI: Add experimental UI styles dataclasses for UIWidget styling.
-* UI: Add UISlider, which provides a general slider element with some basic functionality
-* UI: Fix UIInputText rendering
-* Update mini-map example
-* Update scrolling camera example
-* Update google analytics code in docs
-* Remove some less-than-useful examples in the example code section
-* Update platformer example
-* Update windows install instructions
-* Update sample games to show more sample games
-* Improve CRT filter tutorial
-* New example code on how to follow a path
+* Text
+
+  * Added extra guards around text rendering calls to hopefully reduce
+    glitchy text rendering. Work is still ongoing to fix the remaining issues with text.
+
+* SpriteList
+
+  * Optimization: Empty spritelists created before the window or created with ``lazy=True``
+    no longer automatically initialize internal OpenGL resources for empty
+    spritelists and will instead immediately leave the ```draw()`` method.
+
+* UI
+
+  * Add experimental UI styles dataclasses for UIWidget styling.
+  * Add UISlider, which provides a general slider element with some basic functionality
+  * Fix UIInputText rendering
+
+* Sound
+
+  * Pyglet audio drivers can now be overridden using the ``ARCADE_SOUND_BACKENDS``
+    environment variable for debug purposes. It expects a comma separated string
+    with driver names.
+
+* OpenGL
+
+  * From version 2.6.6 Arcade is no longer using the ``auto`` garbage collection
+    mode for OpenGL resources. This mode has the same behavior as the python
+    garbage collection. Instead we're now using the ``context_gc`` mode were
+    resources are released every time ``Window.flip()`` is called (every frame by default).
+    This solves many problems such as threads in your project or external libraries
+    suddenly trying to garbage collect OpenGL objects while this is only possible
+    in the main thread. This should not cause any problems for most users.
+
+* Examples
+
+  * Update mini-map example
+  * Update scrolling camera example
+  * Update google analytics code in docs
+  * Remove some less-than-useful examples in the example code section
+  * Update platformer example
+  * Update windows install instructions
+  * Update sample games to show more sample games
+  * Improve CRT filter tutorial
+  * New example code on how to follow a path
+
+* Documentation
+
+  * Added api docs for ``arcade.gl``
+  * ``ArcadeContext`` should now show inherited members
+  * Edge artifact page now encourage using ``pixelated`` argument instead of importing
+    OpenGL enums from pyglet
 
 Version 2.6.5
 -------------
