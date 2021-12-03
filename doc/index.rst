@@ -243,6 +243,7 @@ game without learning a complex framework.
 
    quick_index
    arcade
+   gl/index
    resources
    keyboard
 
