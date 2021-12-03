@@ -797,7 +797,7 @@ class UILabel(UIWidget):
 
 class UITextArea(UIWidget):
     """
-    A text area for scollable text.
+    A text area for scrollable text.
 
 
     :param float x: x coordinate of bottom left
@@ -809,7 +809,7 @@ class UITextArea(UIWidget):
     :param font_size: size of the text
     :param text_color: color of the text
     :param multiline: support for multiline
-    :param scroll_speed: speed of scolling
+    :param scroll_speed: speed of scrolling
     :param size_hint: Tuple of floats (0.0-1.0), how much space of the parent should be requested
     :param size_hint_min: min width and height in pixel
     :param size_hint_max: max width and height in pixel
