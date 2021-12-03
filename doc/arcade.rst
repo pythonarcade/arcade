@@ -4,7 +4,7 @@ Arcade Package API
 ==================
 
 This page documents the Application Programming Interface (API)
-for the Python Arcade library. Soo also:
+for the Python Arcade library. See also:
 
 * :ref:`quick_index`
 * :ref:`example-code`
