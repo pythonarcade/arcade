@@ -1,7 +1,7 @@
 .. _arcade-api-gl:
 
-arcade.gl (advanced)
-====================
+Arcade OpenGL API
+=================
 
 .. toctree::
    :maxdepth: 2
