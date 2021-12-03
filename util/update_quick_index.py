@@ -197,9 +197,14 @@ def process_directory(directory, quick_index_file):
                 api_file.write(f"{underline}\n\n")
 
                 api_file.write(f".. autoclass:: {full_class_name}\n")
-                api_file.write(f"    :members:\n\n")
-                # api_file.write(f"    :show-inheritance:\n")
-                # api_file.write(f"    :inherited-members:\n\n")
+                api_file.write(f"    :members:\n")
+
+                # Include inherited members
+                if full_class_name in ("arcade.ArcadeContext",):
+                    api_file.write(f"    :show-inheritance:\n")
+                    api_file.write(f"    :inherited-members:\n")
+
+                api_file.write("\n")
 
                 if "UIMockup" in full_class_name:
                     print(f"AAAAA {full_api_file_name}")
