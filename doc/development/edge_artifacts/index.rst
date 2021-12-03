@@ -81,17 +81,9 @@ number such as 23.5, this can cause the artifacts to appear.
 Solutions
 ---------
 
-Keeping sprite sizes to a power of
-two will help. For pixel-art types of games, using the ``GL_NEAREST`` filter can
-also help.
-
-Use The Power of Two
-^^^^^^^^^^^^^^^^^^^^
-
-Keep all sprite dimensions a power of two. Such as 2, 4, 8, 16, 32, 64, 128, 256,
-etc. It is ok if they aren't square, such as a 32x64 pixel is fine.
-
-Don't scale up, only scale down. Also, only scale down in powers of two.
+Keeping sprite sizes to a power of two or at least have a width
+and heights divisible by 2. For pixel-art types of games, using
+the ``pixelated`` drawing mode can also help.
 
 Aligning to the Nearest Pixel
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -99,19 +91,14 @@ Aligning to the Nearest Pixel
 By default, Arcade draws sprites with a filter called "linear" which makes for
 smoother scaling and lines. If instead you want a pixel-look, you can use a different
 filter called "nearest." This filter also reduces issues with edge artifacts.
-First, import the filters at the top of your program:
 
-.. code-block:: python
-
-    from pyglet.gl import GL_NEAREST
-    from pyglet.gl import GL_LINEAR
-
-Then, in your ``on_draw`` update the drawing of your sprites with the filter:
+You enable the nearest filter using the ``pixelated`` argument when drawing::
 
 .. code-block:: python
 
     def on_draw(self):
-        self.my_sprite_list.draw(filter=GL_NEAREST)
+        self.my_sprite_list.draw(pixelated=True)
+
 
 Double-Check Viewport Code
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
