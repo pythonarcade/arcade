@@ -29,6 +29,7 @@ def prepare_window(window: arcade.Window):
     ctx.reset()
     window.flip()
     window.clear()
+    ctx.gc_mode = "context_gc"
 
     # Ensure no old functions are lingering
     window.on_draw = lambda: None
