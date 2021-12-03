@@ -83,7 +83,7 @@ Solutions
 
 Keeping sprite sizes to a power of two or at least have a width
 and heights divisible by 2. For pixel-art types of games, using
-the ``pixelated`` drawing mode can also help.
+the ``pixelated`` drawing mode will greatly reduce the problem.
 
 Aligning to the Nearest Pixel
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -92,7 +92,7 @@ By default, Arcade draws sprites with a filter called "linear" which makes for
 smoother scaling and lines. If instead you want a pixel-look, you can use a different
 filter called "nearest." This filter also reduces issues with edge artifacts.
 
-You enable the nearest filter using the ``pixelated`` argument when drawing::
+You enable the nearest filter using the ``pixelated`` argument when drawing
 
 .. code-block:: python
 
