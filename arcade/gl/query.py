@@ -52,8 +52,14 @@ class Query:
 
         glos = [glo_samples_passed, glo_time_elapsed, glo_time_elapsed]
 
+        self.ctx.stats.incr("query")
+
         if self._ctx.gc_mode == "auto":
             weakref.finalize(self, Query.delete_glo, self._ctx, glos)
+
+    def __del__(self):
+        if self._ctx.gc_mode == "context_gc":
+            self._ctx.objects.append(self)
 
     @property
     def ctx(self) -> "Context":
@@ -132,3 +138,5 @@ class Query:
 
         for glo in glos:
             gl.glDeleteQueries(1, glo)
+
+        ctx.stats.decr("query")

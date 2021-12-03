@@ -65,7 +65,7 @@ class VertexArray:
 
     def __del__(self):
         # Intercept garbage collection if we are using Context.gc()
-        if self._ctx.gc_mode == "context_gc":
+        if self._ctx.gc_mode == "context_gc" and self.glo.value > 0:
             self._ctx.objects.append(self)
 
     @property
@@ -110,6 +110,7 @@ class VertexArray:
         Don't use this unless you know exactly what you are doing.
         """
         VertexArray.delete_glo(self._ctx, self.glo)
+        self.glo.value = 0
 
     @staticmethod
     def delete_glo(ctx: "Context", glo: gl.GLuint):

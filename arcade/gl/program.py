@@ -130,7 +130,7 @@ class Program:
 
     def __del__(self):
         # Intercept garbage collection if we are using Context.gc()
-        if self._ctx.gc_mode == "context_gc":
+        if self._ctx.gc_mode == "context_gc" and self._glo > 0:
             self._ctx.objects.append(self)
 
     @property
@@ -204,6 +204,7 @@ class Program:
         Don't use this unless you know exactly what you are doing.
         """
         Program.delete_glo(self._ctx, self._glo)
+        self._glo = 0
 
     @staticmethod
     def delete_glo(ctx, prog_id):

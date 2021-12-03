@@ -551,6 +551,7 @@ class Texture:
         Don't use this unless you know exactly what you are doing.
         """
         Texture.delete_glo(self._ctx, self._glo)
+        self._glo.value = 0
 
     @staticmethod
     def delete_glo(ctx: "Context", glo: gl.GLuint):

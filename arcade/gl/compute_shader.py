@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING, Dict, Tuple, Union
 from ctypes import c_char, cast, byref, POINTER, c_char_p, pointer, c_int, create_string_buffer, c_buffer
+import weakref
 
 from pyglet import gl
 from .uniform import Uniform, UniformBlock
@@ -22,7 +23,7 @@ class ComputeShader:
         from arcade.gl import ShaderException
 
         # Create the program
-        self._glo = gl.glCreateProgram()
+        self._glo = glo = gl.glCreateProgram()
         if not self._glo:
             raise ShaderException("Failed to create program object")
 
@@ -59,6 +60,7 @@ class ComputeShader:
         # Attach and link shader
         gl.glAttachShader(self._glo, self._shader_obj)
         gl.glLinkProgram(self._glo)
+        gl.glDeleteShader(self._shader_obj)
         status = c_int()
         gl.glGetProgramiv(self._glo, gl.GL_LINK_STATUS, status)
         if not status.value:
@@ -70,6 +72,11 @@ class ComputeShader:
 
         self._introspect_uniforms()
         self._introspect_uniform_blocks()
+
+        if self._ctx.gc_mode == "auto":
+            weakref.finalize(self, ComputeShader.delete_glo, self._ctx, glo)
+
+        ctx.stats.incr("compute_shader")
 
     @property
     def glo(self) -> int:
@@ -116,8 +123,23 @@ class ComputeShader:
         return id(self)
 
     def __del__(self):
-        # Delete opengl resource
-        pass
+        if self._ctx.gc_mode == "context_gc" and self._glo > 0:
+            self._ctx.objects.append(self)
+
+    def delete(self):
+        ComputeShader.delete_glo(self._ctx, self._glo)
+        self._glo = 0
+
+    @staticmethod
+    def delete_glo(ctx, prog_id):
+        # Check to see if the context was already cleaned up from program
+        # shut down. If so, we don't need to delete the shaders.
+        if gl.current_context is None:
+            return
+
+        gl.glDeleteProgram(prog_id)
+        # TODO: Count compute shaders
+        ctx.stats.decr("compute_shader")
 
     def _introspect_uniforms(self):
         """Figure out what uniforms are available and build an internal map"""

@@ -677,6 +677,8 @@ class ContextStats:
         self.program = (0, 0)
         self.vertex_array = (0, 0)
         self.geometry = (0, 0)
+        self.compute_shader = (0, 0)
+        self.query = (0, 0)
 
     def incr(self, key):
         created, freed = getattr(self, key)

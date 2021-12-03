@@ -391,6 +391,7 @@ class Framebuffer:
         Don't use this unless you know exactly what you are doing.
         """
         Framebuffer.delete_glo(self._ctx, self._glo)
+        self._glo.value = 0
 
     @staticmethod
     def delete_glo(ctx, framebuffer_id):

@@ -580,7 +580,7 @@ class Window(pyglet.window.Window):
         """
         # Garbage collect OpenGL resources
         num_collected = self.ctx.gc()
-        LOG.debug("Collected %s OpenGL resources", num_collected)
+        LOG.debug("Gargage collected %s OpenGL resource(s)", num_collected)
 
         # Attempt to handle static draw setups
         if self.static_display and self.flip_count > 0:
