@@ -163,6 +163,10 @@ intersphinx_mapping = {'python': ('https://docs.python.org/3', None),
                        'pyglet': ('https://numpy.org/doc/stable', None),
                        'PIL': ('https://pillow.readthedocs.io/en/stable', None)}
 
+# Fix: "more than one target found for cross-reference 'Texture'"
+suppress_warnings = [
+    "ref.python",
+]
 
 def source_read(app, docname, source):
 
