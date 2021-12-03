@@ -22,6 +22,13 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
   * Added extra guards around text rendering calls to hopefully reduce
     glitchy text rendering. Work is still ongoing to fix the remaining issues with text.
 
+* Window:
+  
+  * Added ``samples`` parameter so user can specify antialiasing quality.
+  * The arcade window should fall back to no antialiasing if the window
+    creation fails. Some drivers/hardware don't support it. For example
+    when running arcade in WSL or services like Repl.it.
+
 * SpriteList
 
   * Optimization: Empty spritelists created before the window or created with ``lazy=True``
