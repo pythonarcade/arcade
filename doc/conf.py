@@ -159,7 +159,6 @@ man_pages = [
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {'python': ('https://docs.python.org/3', None),
-                       'numpy': ('https://pyglet.readthedocs.io/en/latest/', None),
                        'pyglet': ('https://numpy.org/doc/stable', None),
                        'PIL': ('https://pillow.readthedocs.io/en/stable', None)}
 
