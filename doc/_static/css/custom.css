@@ -46,7 +46,7 @@ h1, h2, h3 {
     line-height: 1.5;
 }
 .rst-content .section ul p {
-    margin-bottom: 0px;
+    margin-bottom: 0;
 }
 .resource-table td {
     width: 50px;
@@ -155,7 +155,7 @@ a:visited {
     color:#d9d9d9;
 }
 #quick-api-index > div > div > p {
-  margin-bottom: 0px;
+  margin-bottom: 0;
     font-weight: bold;
 }
 .inline-image {
