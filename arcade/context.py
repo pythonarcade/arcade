@@ -275,9 +275,11 @@ class ArcadeContext(Context):
         self.window.projection = self._projection_2d_matrix
         # Global modelview matrix should be set to identity
         self.window.view = Mat4()
+        self.finish()
         try:
             yield None
         finally:
+            self.finish()
             # Force arcade.gl to rebind programs
             self.active_program = None
             # Rebind the projection uniform block
