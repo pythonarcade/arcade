@@ -51,7 +51,7 @@ Then we will do the actual loading in the setup function Our new setup function 
     :caption: Load a map - Setup the map
     :pyobject: MyGame.setup
     :linenos:
-    :emphasize-lines: 8-25, 40-45
+    :emphasize-lines: 8-25, 37-45
 
 This is pretty much all that needs done to load in the Tilemap, we get a Scene created from it and can use it just like we
 have been up until now. But let's go through this setup function and look at all the updates.
@@ -99,4 +99,4 @@ Source Code
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/09_load_map.py
     :caption: Load the Map
     :linenos:
-    :emphasize-lines: 34-35,68-69,71-78,80-81,83-85,101-103,105-108
+    :emphasize-lines: 34-35,68-69,71-78,80-81,83-85,97-105,116-117
