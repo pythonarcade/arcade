@@ -484,6 +484,19 @@ class Context:
         """Wait until all OpenGL rendering commands are completed"""
         gl.glFinish()
 
+    # Various utility methods
+
+    def copy_framebuffer(self, src: Framebuffer, dst: Framebuffer):
+        gl.glBindFramebuffer(gl.GL_READ_FRAMEBUFFER, src._glo)
+        gl.glBindFramebuffer(gl.GL_DRAW_FRAMEBUFFER, dst._glo)
+        gl.glBlitFramebuffer(
+            0, 0, src.width, src.height,
+            0, 0, dst.width, dst.height,
+            gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT,
+            gl.GL_NEAREST,
+        )
+        self.active_framebuffer.use(force=True)
+
     # --- Resource methods ---
 
     def buffer(
@@ -524,7 +537,8 @@ class Context:
         data: Any = None,
         wrap_x: gl.GLenum = None,
         wrap_y: gl.GLenum = None,
-        filter: Tuple[gl.GLenum, gl.GLenum] = None
+        filter: Tuple[gl.GLenum, gl.GLenum] = None,
+        samples: int = 0,
     ) -> Texture:
         """Create a 2D Texture.
 
@@ -542,6 +556,7 @@ class Context:
         :param GLenum wrap_x: How the texture wraps in x direction
         :param GLenum wrap_y: How the texture wraps in y direction
         :param Tuple[GLenum,GLenum] filter: Minification and magnification filter
+        :param int samples: Creates a multisampled texture for values > 0
         """
         return Texture(
             self,
@@ -552,6 +567,7 @@ class Context:
             wrap_x=wrap_x,
             wrap_y=wrap_y,
             filter=filter,
+            samples=samples,
         )
 
     def depth_texture(self, size: Tuple[int, int], *, data=None) -> Texture:

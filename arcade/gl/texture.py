@@ -15,7 +15,7 @@ if TYPE_CHECKING:  # handle import cycle caused by type hinting
 
 class Texture:
     """
-    An OpenGL texture.
+    An OpenGL 2D texture.
     We can create an empty black texture or a texture from byte data.
     A texture can also be created with different datatypes such as
     float, integer or unsigned integer.
@@ -49,8 +49,9 @@ class Texture:
     :param Tuple[gl.GLuint,gl.GLuint] filter: The minification/magnification filter of the texture
     :param gl.GLuint wrap_x: Wrap mode x
     :param gl.GLuint wrap_y: Wrap mode y
-    :param int target: The texture type
+    :param int target: The texture type (Ignored. Legacy)
     :param bool depth: creates a depth texture if `True`
+    :param int samples: Creates a multisampled texture for values > 0
     """
 
     __slots__ = (
@@ -99,6 +100,7 @@ class Texture:
         wrap_y: gl.GLuint = None,
         target=gl.GL_TEXTURE_2D,
         depth=False,
+        samples: int = 0,
     ):
         self._glo = glo = gl.GLuint()
         self._ctx = ctx
@@ -107,9 +109,9 @@ class Texture:
         self._components = components
         self._alignment = 1
         self._target = target
-        self._samples = 0
+        self._samples = min(max(0, samples), self._ctx.limits.MAX_SAMPLES)
         self._depth = depth
-        self._compare_func = None
+        self._compare_func: Optional[str] = None
         # Default filters for float and integer textures
         # Integer textures should have NEAREST interpolation
         # by default 3.3 core doesn't really support it consistently.
@@ -123,8 +125,12 @@ class Texture:
         if self._components not in [1, 2, 3, 4]:
             raise ValueError("Components must be 1, 2, 3 or 4")
 
-        gl.glActiveTexture(gl.GL_TEXTURE0 + self._ctx.default_texture_unit)
+        if data and self._samples > 0:
+            raise ValueError("Multisamples textures are not writable (cannot be initialized with data)")
 
+        self._target = gl.GL_TEXTURE_2D if self._samples == 0 else gl.GL_TEXTURE_2D_MULTISAMPLE
+
+        gl.glActiveTexture(gl.GL_TEXTURE0 + self._ctx.default_texture_unit)
         gl.glGenTextures(1, byref(self._glo))
 
         if self._glo.value == 0:
@@ -137,14 +143,13 @@ class Texture:
         if data is not None:
             byte_length, data = data_to_ctypes(data)
 
-        if self._target == gl.GL_TEXTURE_2D:
-            self._texture_2d(data)
-        else:
-            raise ValueError("Unsupported texture target")
+        self._texture_2d(data)
 
-        self.filter = filter or self._filter
-        self.wrap_x = wrap_x or self._wrap_x
-        self.wrap_y = wrap_y or self._wrap_y
+        # Only set texture parameters on non-multisamples textures
+        if self._samples == 0:
+            self.filter = filter or self._filter
+            self.wrap_x = wrap_x or self._wrap_x
+            self.wrap_y = wrap_y or self._wrap_y
 
         if self._ctx.gc_mode == "auto":
             weakref.finalize(self, Texture.delete_glo, self._ctx, glo)
@@ -169,6 +174,27 @@ class Texture:
 
     def _texture_2d(self, data):
         """Create a 2D texture"""
+        # Start by resolving the texture format
+        try:
+            format_info = pixel_formats[self._dtype]
+        except KeyError:
+            raise ValueError(
+                f"dype '{self._dtype}' not support. Supported types are : {tuple(pixel_formats.keys())}"
+            )
+        _format, _internal_format, self._type, self._component_size = format_info
+
+        # If we are dealing with a multisampled texture we have less options
+        if self._target == gl.GL_TEXTURE_2D_MULTISAMPLE:
+            gl.glTexImage2DMultisample(
+                self._target,
+                self._samples,
+                _internal_format[self._components],
+                self._width,
+                self._height,
+                True,  # Fixed sample locations
+            )
+            return
+
         # Make sure we unpack the pixel data with correct alignment
         # or we'll end up with corrupted textures
         gl.glPixelStorei(gl.GL_UNPACK_ALIGNMENT, self._alignment)
@@ -191,19 +217,6 @@ class Texture:
         # Create normal 2d texture
         else:
             try:
-                format_info = pixel_formats[self._dtype]
-            except KeyError:
-                raise ValueError(
-                    f"dype '{self._dtype}' not support. Supported types are : {tuple(pixel_formats.keys())}"
-                )
-
-            try:
-                (
-                    _format,
-                    _internal_format,
-                    self._type,
-                    self._component_size,
-                ) = format_info
                 self._format = _format[self._components]
                 self._internal_format = _internal_format[self._components]
                 gl.glTexImage2D(
@@ -461,6 +474,9 @@ class Texture:
         :param int alignment: Alignment of the start of each row in memory in number of bytes. Possible values: 1,2,4
         :rtype: bytearray
         """
+        if self._samples > 0:
+            raise ValueError("Multisampled textures cannot be read directly")
+
         gl.glActiveTexture(gl.GL_TEXTURE0 + self._ctx.default_texture_unit)
         gl.glBindTexture(self._target, self._glo)
         gl.glPixelStorei(gl.GL_PACK_ALIGNMENT, alignment)
@@ -482,7 +498,7 @@ class Texture:
         """
         # TODO: Support writing to layers using viewport + alignment
         if self._samples > 0:
-            raise ValueError("Writing to multisample textures not supported")
+            raise ValueError("Writing to multisampled textures not supported")
 
         x, y, w, h = 0, 0, self._width, self._height
         if viewport:

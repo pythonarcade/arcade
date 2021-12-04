@@ -92,7 +92,7 @@ class Framebuffer:
             gl.glFramebufferTexture2D(
                 gl.GL_FRAMEBUFFER,
                 gl.GL_COLOR_ATTACHMENT0 + i,
-                gl.GL_TEXTURE_2D,
+                tex._target,
                 tex.glo,
                 0,  # Level 0
             )
