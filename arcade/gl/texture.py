@@ -294,6 +294,15 @@ class Texture:
         return self._width, self._height
 
     @property
+    def samples(self) -> int:
+        """
+        Number of samples if multisampling is enabled (read only)
+
+        :type: int
+        """
+        return self._samples
+
+    @property
     def byte_size(self) -> int:
         """
         The byte size of the texture.
