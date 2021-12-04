@@ -208,5 +208,4 @@ class GameOfLife(arcade.Window):
             self.write_initial_state()
 
 
-
 GameOfLife(WINDOW_WIDTH, WINDOW_HEIGHT).run()
