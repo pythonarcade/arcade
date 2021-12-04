@@ -487,11 +487,25 @@ class Context:
     # Various utility methods
 
     def copy_framebuffer(self, src: Framebuffer, dst: Framebuffer):
+        """
+        Copies/blits a framebuffer to another one.
+
+        This operation many restrictions to ensure it works across
+        different platforms and drivers:
+
+        * The source and destination framebuffer must be the same size
+        * The formats of the attachments must be the same
+        * Only the source framebuffer can be multisampled
+        * Framebuffers cannot have interger attachments
+
+        :param Framebuffer src: The framebuffer to copy from
+        :param Framebuffer dst: The framebuffer we copy to
+        """
         gl.glBindFramebuffer(gl.GL_READ_FRAMEBUFFER, src._glo)
         gl.glBindFramebuffer(gl.GL_DRAW_FRAMEBUFFER, dst._glo)
         gl.glBlitFramebuffer(
+            0, 0, src.width, src.height,  # Make source and dest size the same
             0, 0, src.width, src.height,
-            0, 0, dst.width, dst.height,
             gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT,
             gl.GL_NEAREST,
         )
