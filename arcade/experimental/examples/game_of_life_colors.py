@@ -82,6 +82,9 @@ class GameOfLife(arcade.Window):
             """,
         )
 
+        # Shader for creating the next game state.
+        # It takes the previous state as input (texture0)
+        # and renders the next state directly into the second texture.
         self.life_program = self.ctx.program(
             vertex_shader="""
             #version 330
