@@ -7,14 +7,18 @@ How-To Example Code
    :depth: 1
    :local:
 
-Starting Template
------------------
+Starting Templates
+------------------
 
 .. figure:: thumbs/starting_template.png
    :figwidth: 170px
 
    :ref:`starting_template`
 
+.. figure:: thumbs/template_platformer.png
+   :figwidth: 170px
+
+   :ref:`template_platformer`
 
 Drawing
 -------
@@ -544,19 +548,10 @@ Frame Buffers
 
    :ref:`transform_feedback`
 
-Particle System
-^^^^^^^^^^^^^^^
-
-.. figure:: thumbs/particle_fireworks.png
+.. figure:: thumbs/game_of_life_fbo.png
    :figwidth: 170px
 
-   :ref:`particle_fireworks`
-
-.. figure:: thumbs/particle_systems.png
-   :figwidth: 170px
-
-   :ref:`particle_systems`
-
+   :ref:`game_of_life_fbo`
 
 .. _concept_games:
 
@@ -592,20 +587,6 @@ Concept Games
    :figwidth: 170px
 
    `Rogue-Like <https://github.com/pythonarcade/roguelike>`_
-
-Stress Tests
-------------
-
-.. figure:: thumbs/stress_test_draw_moving.png
-   :figwidth: 170px
-
-   :ref:`stress_test_draw_moving`
-
-.. figure:: thumbs/stress_test_collision.png
-   :figwidth: 170px
-
-   :ref:`stress_test_collision`
-
 
 Odds and Ends
 -------------
@@ -667,5 +648,32 @@ Tutorials
    :figwidth: 170px
 
    :ref:`shader_toy_tutorial`
+
+
+Particle System
+^^^^^^^^^^^^^^^
+
+.. figure:: thumbs/particle_fireworks.png
+   :figwidth: 170px
+
+   :ref:`particle_fireworks`
+
+.. figure:: thumbs/particle_systems.png
+   :figwidth: 170px
+
+   :ref:`particle_systems`
+
+Stress Tests
+------------
+
+.. figure:: thumbs/stress_test_draw_moving.png
+   :figwidth: 170px
+
+   :ref:`stress_test_draw_moving`
+
+.. figure:: thumbs/stress_test_collision.png
+   :figwidth: 170px
+
+   :ref:`stress_test_collision`
 
 

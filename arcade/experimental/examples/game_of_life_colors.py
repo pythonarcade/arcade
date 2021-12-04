@@ -162,7 +162,7 @@ class GameOfLife(arcade.Window):
 
     def gen_initial_data(self, num_values: int):
         """
-        Generate initial data. We need to be carful about the initial state.
+        Generate initial data. We need to be careful about the initial state.
         Just throwing in lots of random numbers will make the entire system
         die in a few frames. We need to give enough room for life to exist.
 
