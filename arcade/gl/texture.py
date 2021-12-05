@@ -51,7 +51,9 @@ class Texture:
     :param gl.GLuint wrap_y: Wrap mode y
     :param int target: The texture type (Ignored. Legacy)
     :param bool depth: creates a depth texture if `True`
-    :param int samples: Creates a multisampled texture for values > 0
+    :param int samples: Creates a multisampled texture for values > 0.
+                        This value will be clamped between 0 and the max
+                        sample capability reported by the drivers.
     """
 
     __slots__ = (
@@ -564,6 +566,9 @@ class Texture:
 
         Also see: https://www.khronos.org/opengl/wiki/Texture#Mip_maps
         """
+        if self._samples > 0:
+            raise ValueError("Multisampled textures don't support mimpmaps")
+
         gl.glActiveTexture(gl.GL_TEXTURE0 + self._ctx.default_texture_unit)
         gl.glBindTexture(gl.GL_TEXTURE_2D, self._glo)
         gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_BASE_LEVEL, base)
@@ -602,7 +607,7 @@ class Texture:
         :param int unit: The texture unit to bind the texture.
         """
         gl.glActiveTexture(gl.GL_TEXTURE0 + unit)
-        gl.glBindTexture(gl.GL_TEXTURE_2D, self._glo)
+        gl.glBindTexture(self._target, self._glo)
 
     def bind_to_image(self, unit: int, read: bool = True, write: bool = True, level: int = 0):
         """

@@ -39,6 +39,7 @@ class Uniform:
         gl.GL_TEXTURE_1D_ARRAY: (gl.GLint, gl.glUniform1iv, 1, 1),
         # 2D samplers
         gl.GL_SAMPLER_2D: (gl.GLint, gl.glUniform1iv, 1, 1),
+        gl.GL_SAMPLER_2D_MULTISAMPLE: (gl.GLint, gl.glUniform1iv, 1, 1),
         gl.GL_INT_SAMPLER_2D: (gl.GLint, gl.glUniform1iv, 1, 1),
         gl.GL_UNSIGNED_INT_SAMPLER_2D: (gl.GLint, gl.glUniform1iv, 1, 1),
         gl.GL_TEXTURE_2D_MULTISAMPLE: (gl.GLint, gl.glUniform1iv, 1, 1),
