@@ -68,6 +68,7 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
   * Update sample games to show more sample games
   * Improve CRT filter tutorial
   * New example code on how to follow a path
+  * Add conway game of life with shaders/frame buffers
 
 * Documentation
 
@@ -75,6 +76,14 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
   * ``ArcadeContext`` should now show inherited members
   * Edge artifact page now encourage using ``pixelated`` argument instead of importing
     OpenGL enums from pyglet
+
+Special thanks to
+`einarf <https://github.com/einarf>`_,
+`pvcraven <https://github.com/pvcraven>`_,
+`Cleptomania <https://github.com/Cleptomania>`_,
+`eruvanos <https://github.com/eruvanos>`_,
+for their contributions to this release. Also, thanks to everyone on the Pyglet team! We depend heavily on
+Pyglet's continued development.
 
 Version 2.6.5
 -------------
