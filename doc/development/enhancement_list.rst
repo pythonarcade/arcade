@@ -18,11 +18,7 @@ Drawing
   Add support for bitmapped fonts.
 * `Issue 595 <https://github.com/pvcraven/arcade/issues/595>`_
   Optimize drawing functions by caching them
-* After updating to Pyglet 2.x, update text drawing to use Pyglet's text drawing
-  rather than the Pillow text drawing.
-* Explore using frame buffers to overlay non-moving text and icons on a scrolling
-  screen.
-* Add support for Pyglets ImageMouseCursors
+* Add support for Pyglet's ImageMouseCursors
 
 GUI
 ---
@@ -44,7 +40,7 @@ Sprites
   Add lighting effects.
 * Add bloom effects.
 * `Issue 523 <https://github.com/pvcraven/arcade/issues/523>`_
-  Add sprite trigger/example for onenter / onexit.
+  Add sprite trigger/example for on_enter / on_exit.
 * `Issue 289 <https://github.com/pvcraven/arcade/issues/289>`_
   Be able to get Sprite position and velocity as vectors.
 * Be able to load an animated gif as an animated time-based sprite.
@@ -67,15 +63,6 @@ Event Processing
 * `Issue 593 <https://github.com/pvcraven/arcade/issues/593>`_
   Add support for signals
 
-
-Tilemaps
---------
-
-* `Issue 375 <https://github.com/pvcraven/arcade/issues/375>`_
-  Support rotated tiles in .tmx.
-* `Issue 478 <https://github.com/pvcraven/arcade/issues/478>`_
-  Processing object layer needs better support.
-
 Documentation
 -------------
 
@@ -88,22 +75,12 @@ Examples
 
 * `Issue 345 <https://github.com/pvcraven/arcade/issues/345>`_
   Create example showing how to manage multiple windows.
-* `Issue 371 <https://github.com/pvcraven/arcade/issues/371>`_
-  Create example showing how to bounce items off walls.
 * `Issue 397 <https://github.com/pvcraven/arcade/issues/397>`_
   Add example code showing how to do parallax.
 * `Issue 446 <https://github.com/pvcraven/arcade/issues/446>`_
   Add more procedural generation examples.
 * `Issue 464 <https://github.com/pvcraven/arcade/issues/464>`_
   Add example for checkers-like game.
-* Add example showing how to use lerp or smoothstep for smooth camera panning.
-
-Testing
--------
-
-* `Issue 450 <https://github.com/pvcraven/arcade/issues/450>`_
-  Create unit tests for new View class.
-
 
 This enhancement is not currently in process. Please re-open if you'd like to work on it. A full list of desired enhancements is available at:
 

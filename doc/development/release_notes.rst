@@ -83,6 +83,14 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
   * Edge artifact page now encourage using ``pixelated`` argument instead of importing
     OpenGL enums from pyglet
 
+Special thanks to
+`einarf <https://github.com/einarf>`_,
+`pvcraven <https://github.com/pvcraven>`_,
+`Cleptomania <https://github.com/Cleptomania>`_,
+`eruvanos <https://github.com/eruvanos>`_,
+for their contributions to this release. Also, thanks to everyone on the Pyglet team! We depend heavily on
+Pyglet's continued development.
+
 Version 2.6.5
 -------------
 
