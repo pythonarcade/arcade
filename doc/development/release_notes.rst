@@ -34,7 +34,7 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
 
   * Optimization: Empty spritelists created before the window or created with ``lazy=True``
     no longer automatically initialize internal OpenGL resources for empty
-    spritelists and will instead immediately leave the ```draw()`` method.
+    spritelists and will instead immediately leave the ``draw()`` method.
 
 * UI
 
@@ -60,9 +60,9 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
   * Added ``Context.copy_framebuffer``. This can be used to copy framebuffers
     with or without multisampling to another framebuffer. This makes us able
     to do offscreen rendering with multisampling.
-  * ``Texture``s can now be created with multisampling by passing the ``samples``
+  * ``Texture`` s can now be created with multisampling by passing the ``samples``
     parameter. This should only be used for attachments to framebuffers.
-    The ``Texture```object now also has a ``samples`` property (read only).
+    The ``Texture`` object now also has a ``samples`` property (read only).
 
 * Examples
 
