@@ -9,6 +9,7 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
 
 2.6.6
 -----
+*Released on 2021-Dec-04*
 
 * :class:`~arcade.TileMap` changes:
 
