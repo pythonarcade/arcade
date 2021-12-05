@@ -56,6 +56,12 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
     This solves many problems such as threads in your project or external libraries
     suddenly trying to garbage collect OpenGL objects while this is only possible
     in the main thread. This should not cause any problems for most users.
+  * Added ``Context.copy_framebuffer``. This can be used to copy framebuffers
+    with or without multisampling to another framebuffer. This makes us able
+    to do offscreen rendering with multisampling.
+  * ``Texture``s can now be created with multisampling by passing the ``samples``
+    parameter. This should only be used for attachments to framebuffers.
+    The ``Texture```object now also has a ``samples`` property (read only).
 
 * Examples
 
@@ -68,6 +74,7 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
   * Update sample games to show more sample games
   * Improve CRT filter tutorial
   * New example code on how to follow a path
+  * Added Game of Life example using shaders
 
 * Documentation
 
