@@ -481,8 +481,23 @@ class Context:
         gl.glPrimitiveRestartIndex(value)
 
     def finish(self) -> None:
-        """Wait until all OpenGL rendering commands are completed"""
+        """
+        Wait until all OpenGL rendering commands are completed.
+
+        This function will actually stall until all work is done
+        and may have severe performance implications.
+        """
         gl.glFinish()
+
+    def flush(self):
+        """
+        A suggestion to the driver to execute all the queued
+        drawing calls even if the queue is not full yet.
+        This is not a blocking call and only a suggestion.
+        This can potentially be used for speedups when
+        we don't have anything else to render.
+        """
+        gl.glFlush()
 
     # Various utility methods
 
