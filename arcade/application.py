@@ -69,6 +69,8 @@ class Window(pyglet.window.Window):
     :param bool center_window: If true, will center the window.
     :param bool samples: Number of samples used in antialiasing (default 4).
                          Usually this is 2, 4, 8 or 16.
+    :param bool enable_polling: Enabled input polling capability. This makes the ``keyboard`` and ``mouse``
+                                attributes available for use.
     """
     def __init__(
         self,
