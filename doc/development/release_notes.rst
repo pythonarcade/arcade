@@ -7,6 +7,35 @@ Release Notes
 
 Keep up-to-date with the latest changes to the Arcade library by the release notes.
 
+2.6.7 - UNRELEASED
+------------------
+
+* :class:`~arcade.Window` changes:
+
+  * Added ``enable_polling`` option to constructor. If enabled then ``window.keyboard`` and ``window.mouse``
+    will be activated and able to be used to poll input by accessing them as if they were a dictionary.
+    
+    ``window.keyboard`` can be polled using the values from ``arcade.key``.
+
+    ``window.mouse`` can be polled using the following values:
+
+      * 1: Left click
+      * 2: Right click
+      * 3: Middle click
+      * "x": X position
+      * "y": Y position
+
+* :class:`~arcade.Camera` changes:
+
+  * Defaults the viewport width and height to the window size if they are set to 0 now, since you cannot have
+    a size of 0 in any direction due to projection calculation. This means that if you do not provide those arguments
+    to the constructor it will default to the window size.
+
+* :class:`~arcade.tilemap.TileMap` changes:
+
+  * Added a new error message for JSONDecodeError exceptions, a common problem when tilesets are TSX but maps are JSON.
+    This change simply provides a more clear error of the most likely cause of the problem so users don't have to dig as much.
+
 2.6.6
 -----
 *Released on 2021-Dec-04*
