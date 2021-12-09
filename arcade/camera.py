@@ -16,8 +16,8 @@ class Camera:
     It is very useful for separating a scrolling screen of sprites, and a GUI overlay.
     For an example of this in action, see :ref:`sprite_move_scrolling`.
 
-    :param int viewport_width: Width of the viewport
-    :param int viewport_height: Height of the viewport
+    :param int viewport_width: Width of the viewport. If not set the window width will be used.
+    :param int viewport_height: Height of the viewport. If not set the window height will be used.
     :param Window window: Window to associate with this camera, if working with a multi-window program.
 
     """
@@ -116,6 +116,10 @@ class Camera:
         self.combined_matrix = self.projection_matrix @ self.view_matrix
 
     def set_projection(self):
+        """
+        Update the projection matrix of the camera. This creates an orthogonal
+        projection based on the viewport size of the camera.
+        """
         self.projection_matrix = Mat4.orthogonal_projection(
             0,
             self.scale * self.viewport_width,
