@@ -87,6 +87,7 @@ class Window(pyglet.window.Window):
         gc_mode: str = "context_gc",
         center_window: bool = False,
         samples: int = 4,
+        enable_polling: bool = False
     ):
         # In certain environments we can't have antialiasing/MSAA enabled.
         # Detect replit environment
@@ -158,6 +159,14 @@ class Window(pyglet.window.Window):
         # See if we should center the window
         if center_window:
             self.center_window()
+
+        if enable_polling:
+            self.keyboard = pyglet.window.key.KeyStateHandler()
+            self.mouse = pyglet.window.mouse.MouseStateHandler()
+            self.push_handlers(self.keyboard, self.mouse)
+        else:
+            self.keyboard = None
+            self.mouse = None
 
     @property
     def current_view(self) -> Optional["View"]:
