@@ -11,6 +11,7 @@ import copy
 import math
 import os
 from collections import OrderedDict
+from json.decoder import JSONDecodeError
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Union, cast
 
@@ -174,7 +175,13 @@ class TileMap:
             map_file = resolve_resource_path(map_file)
 
             # This attribute stores the pytiled-parser map object
-            self.tiled_map = pytiled_parser.parse_map(map_file)
+            try:
+                self.tiled_map = pytiled_parser.parse_map(map_file)
+            except JSONDecodeError:
+                raise RuntimeError(
+                    "Error parsing Tiled map, please ensure both your map and tileset are saved as JSON. "
+                    "A common cause of this error is the tileset being saved as TSX while the map is JSON. "
+                )
 
         # Set Map Attributes
         self.width = self.tiled_map.map_size.width
