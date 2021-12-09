@@ -4,8 +4,9 @@ Camera class
 import math
 from typing import Optional
 
-import arcade
 from pyglet.math import Mat4, Vec2, Vec3
+
+import arcade
 from arcade.window_commands import get_scaling_factor
 
 
@@ -57,11 +58,9 @@ class Camera:
 
         self.scale = 1.0
 
-        self.viewport_width = viewport_width
-        self.viewport_height = viewport_height
-
-        # Initial Update
-        self.resize(viewport_width, viewport_height)
+        self.viewport_width = viewport_width or self._window.width
+        self.viewport_height = viewport_height or self._window.height
+        self.set_projection()
 
     def update(self):
         """
