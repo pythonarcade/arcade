@@ -8,6 +8,8 @@ If Python and Arcade are installed, this example can be run from the command lin
 python -m arcade.examples.sprite_tiled_map
 """
 
+import time
+
 import arcade
 
 TILE_SCALING = 0.5
@@ -56,6 +58,9 @@ class MyGame(arcade.Window):
         self.physics_engine = None
         self.end_of_map = 0
         self.game_over = False
+        self.last_time = None
+        self.frame_count = 0
+        self.fps_message = None
 
         # Cameras
         self.camera = None
@@ -123,26 +128,49 @@ class MyGame(arcade.Window):
         self.camera.use()
         self.clear()
 
+        # Start counting frames
+        self.frame_count += 1
+
         # Draw all the sprites.
         self.player_list.draw()
         self.wall_list.draw()
         self.coin_list.draw()
 
+        # Activate GUI camera for FPS, distance and hit boxes
+        # This will adjust text position based on viewport
+        self.gui_camera.use()
+
+        # Calculate FPS if conidtions are met
+        if self.last_time and self.frame_count % 60 == 0:
+            fps = 1.0 / (time.time() - self.last_time) * 60
+            self.fps_message = f"FPS: {fps:5.0f}"
+
+        # Draw FPS text
+        if self.fps_message:
+            arcade.draw_text(
+                self.fps_message,
+                10,
+                40,
+                arcade.color.BLACK,
+                14
+            )
+
+        # Get time for every 60 frames
+        if self.frame_count % 60 == 0:
+            self.last_time = time.time()
+
         # Enable to draw hit boxes
         # self.wall_list.draw_hit_boxes()
         # self.wall_list_objects.draw_hit_boxes()
 
-        self.gui_camera.use()
-
-        # Put the text on the screen.
-        # Adjust the text position based on the view port so that we don't
-        # scroll the text too.
+        # Get distance and draw text
         distance = self.player_sprite.right
         output = f"Distance: {distance}"
         arcade.draw_text(
             output, 10, 20, arcade.color.BLACK, 14
         )
 
+        # Draw game over text if condition met
         if self.game_over:
             arcade.draw_text(
                 "Game Over",
