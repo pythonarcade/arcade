@@ -9,6 +9,7 @@ python -m arcade.examples.sprite_move_scrolling
 
 import random
 import arcade
+from pyglet.math import Vec2
 
 SPRITE_SCALING = 0.5
 
@@ -168,8 +169,8 @@ class MyGame(arcade.Window):
         pan.
         """
 
-        position = self.player_sprite.center_x - self.width / 2, \
-            self.player_sprite.center_y - self.height / 2
+        position = Vec2(self.player_sprite.center_x - self.width / 2,
+                        self.player_sprite.center_y - self.height / 2)
         self.camera_sprites.move_to(position, CAMERA_SPEED)
 
     def on_resize(self, width, height):
