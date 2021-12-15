@@ -27,6 +27,7 @@ from arcade import (
 from arcade.arcade_types import Point, TiledObject
 from arcade.geometry import rotate_point
 from arcade.resources import resolve_resource_path
+from pyglet.math import Vec2
 
 _FLIPPED_HORIZONTALLY_FLAG = 0x80000000
 _FLIPPED_VERTICALLY_FLAG = 0x40000000
@@ -158,6 +159,7 @@ class TileMap:
         hit_box_algorithm: str = "Simple",
         hit_box_detail: float = 4.5,
         tiled_map: Optional[pytiled_parser.TiledMap] = None,
+        offset: Vec2 = Vec2(0, 0),
     ) -> None:
         """
         Given a .json file, this will read in a Tiled map file, and
@@ -195,6 +197,7 @@ class TileMap:
         self.use_spatial_hash = use_spatial_hash
         self.hit_box_algorithm = hit_box_algorithm
         self.hit_box_detail = hit_box_detail
+        self.offset = offset
 
         # Dictionaries to store the SpriteLists for processed layers
         self.sprite_lists: Dict[str, SpriteList] = OrderedDict()
@@ -206,6 +209,7 @@ class TileMap:
             "use_spatial_hash": self.use_spatial_hash,
             "hit_box_algorithm": self.hit_box_algorithm,
             "hit_box_detail": self.hit_box_detail,
+            "offset": self.offset,
             "custom_class": None,
             "custom_class_args": {},
         }
@@ -563,6 +567,7 @@ class TileMap:
         use_spatial_hash: Optional[bool] = None,
         hit_box_algorithm: str = "Simple",
         hit_box_detail: float = 4.5,
+        offset: Vec2 = Vec2(0, 0),
         custom_class: Optional[type] = None,
         custom_class_args: Dict[str, Any] = {},
     ) -> SpriteList:
@@ -635,8 +640,10 @@ class TileMap:
         if layer.opacity:
             my_sprite.alpha = int(layer.opacity * 255)
 
-        my_sprite.center_x = (layer.offset[0] * scaling) + my_sprite.width / 2
-        my_sprite.center_y = layer.offset[1]
+        my_sprite.center_x = (
+            (layer.offset[0] * scaling) + my_sprite.width / 2
+        ) + offset[0]
+        my_sprite.center_y = (layer.offset[1]) + offset[1]
 
         sprite_list.visible = layer.visible
         sprite_list.append(my_sprite)
@@ -649,6 +656,7 @@ class TileMap:
         use_spatial_hash: Optional[bool] = None,
         hit_box_algorithm: str = "Simple",
         hit_box_detail: float = 4.5,
+        offset: Vec2 = Vec2(0, 0),
         custom_class: Optional[type] = None,
         custom_class_args: Dict[str, Any] = {},
     ) -> SpriteList:
@@ -690,10 +698,12 @@ class TileMap:
                     my_sprite.center_x = (
                         column_index * (self.tiled_map.tile_size[0] * scaling)
                         + my_sprite.width / 2
-                    )
+                    ) + offset[0]
                     my_sprite.center_y = (
-                        self.tiled_map.map_size.height - row_index - 1
-                    ) * (self.tiled_map.tile_size[1] * scaling) + my_sprite.height / 2
+                        (self.tiled_map.map_size.height - row_index - 1)
+                        * (self.tiled_map.tile_size[1] * scaling)
+                        + my_sprite.height / 2
+                    ) + offset[1]
 
                     # Tint
                     if layer.tint_color:
@@ -716,6 +726,7 @@ class TileMap:
         use_spatial_hash: Optional[bool] = None,
         hit_box_algorithm: str = "Simple",
         hit_box_detail: float = 4.5,
+        offset: Vec2 = Vec2(0, 0),
         custom_class: Optional[type] = None,
         custom_class_args: Dict[str, Any] = {},
     ) -> Tuple[Optional[SpriteList], Optional[List[TiledObject]]]:
@@ -742,11 +753,14 @@ class TileMap:
                     custom_class_args=custom_class_args,
                 )
 
-                x = cur_object.coordinates.x * scaling
+                x = (cur_object.coordinates.x * scaling) + offset[0]
                 y = (
-                    self.tiled_map.map_size.height * self.tiled_map.tile_size[1]
-                    - cur_object.coordinates.y
-                ) * scaling
+                    (
+                        self.tiled_map.map_size.height * self.tiled_map.tile_size[1]
+                        - cur_object.coordinates.y
+                    )
+                    * scaling
+                ) + offset[1]
 
                 my_sprite.width = width = cur_object.size[0] * scaling
                 my_sprite.height = height = cur_object.size[1] * scaling
@@ -817,12 +831,14 @@ class TileMap:
                     - cur_object.coordinates.y
                 ) * scaling
 
-                shape = [x, y]
+                shape = [x + offset[0], y + offset[1]]
             elif isinstance(cur_object, pytiled_parser.tiled_object.Rectangle):
-                sx = cur_object.coordinates.x
-                sy = -cur_object.coordinates.y
-                ex = cur_object.coordinates.x + cur_object.size.width
-                ey = -(cur_object.coordinates.y + cur_object.size.height)
+                x = cur_object.coordinates.x + offset[0]
+                y = cur_object.coordinates.y + offset[1]
+                sx = x
+                sy = -y
+                ex = x + cur_object.size.width
+                ey = -(y + cur_object.size.height)
 
                 p1 = [sx, sy]
                 p2 = [ex, sy]
@@ -839,7 +855,7 @@ class TileMap:
                     y = (self.height * self.tile_height) - (
                         point.y + cur_object.coordinates.y
                     )
-                    point = (x, y)
+                    point = (x + offset[0], y + offset[1])
                     shape.append(point)
 
                 # If shape is a polyline, and it is closed, we need to remove the duplicate end point
@@ -859,7 +875,7 @@ class TileMap:
                 for angle in angles:
                     x = hw * math.cos(angle) + cx
                     y = -(hh * math.sin(angle) + cy)
-                    point = [x, y]
+                    point = [x + offset[0], y + offset[1]]
                     shape.append(point)
             else:
                 continue
@@ -884,6 +900,7 @@ def load_tilemap(
     use_spatial_hash: Optional[bool] = None,
     hit_box_algorithm: str = "Simple",
     hit_box_detail: float = 4.5,
+    offset: Vec2 = Vec2(0, 0),
 ) -> TileMap:
     """
     Given a .json map file, loads in and returns a `TileMap` object.
@@ -905,12 +922,13 @@ def load_tilemap(
     :param Dict[str, Dict[str, Any]] layer_options: Layer specific options for the map.
     """
     return TileMap(
-        map_file,
-        scaling,
-        layer_options,
-        use_spatial_hash,
-        hit_box_algorithm,
-        hit_box_detail,
+        map_file=map_file,
+        scaling=scaling,
+        layer_options=layer_options,
+        use_spatial_hash=use_spatial_hash,
+        hit_box_algorithm=hit_box_algorithm,
+        hit_box_detail=hit_box_detail,
+        offset=offset,
     )
 
 
