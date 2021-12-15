@@ -102,6 +102,9 @@ class TileMap:
     :param pytiled_parser.TiledMap tiled_map: An already parsed pytiled-parser map object.
            Passing this means that the ``map_file`` argument will be ignored, and the pre-parsed
            map will instead be used. This can be helpful for working with Tiled World files.
+    :param pyglet.math.Vec2 offset: Can be used to offset the position of all sprites and objects
+            within the map. This will be applied in addition to any offsets from Tiled. This value
+            can be overridden with the layer_options dict.
 
 
     The `layer_options` parameter can be used to specify per layer arguments.
@@ -112,6 +115,7 @@ class TileMap:
         scaling - A float providing layer specific Sprite scaling.
         hit_box_algorithm - A string for the hit box algorithm to use for the Sprite's in this layer.
         hit_box_detail - A float specifying the level of detail for each Sprite's hitbox
+        offset - A tuple containing X and Y position offsets for the layer
         custom_class - All objects in the layer are created from this class instead of Sprite. \
                        Must be subclass of Sprite.
         custom_class_args - Custom arguments, passed into the constructor of the custom_class
@@ -124,6 +128,7 @@ class TileMap:
                 "Platforms": {
                     "use_spatial_hash": True,
                     "scaling": 2.5,
+                    "offset": (-128, 64),
                     "custom_class": Platform,
                     "custom_class_args": {
                         "health": 100
@@ -148,6 +153,7 @@ class TileMap:
                        for all tile layers of the map.
         :object_lists: A dictionary mapping TiledObjects to their layer names. This is used
                        for all object layers of the map.
+        :offset: A tuple containing the X and Y position offset values.
     """
 
     def __init__(
@@ -920,6 +926,9 @@ def load_tilemap(
     :param str hit_box_algorithm: One of 'None', 'Simple' or 'Detailed'.
     :param float hit_box_detail: Float, defaults to 4.5. Used with 'Detailed' to hit box.
     :param Dict[str, Dict[str, Any]] layer_options: Layer specific options for the map.
+    :param pyglet.math.Vec2 offset: Can be used to offset the position of all sprites and objects
+            within the map. This will be applied in addition to any offsets from Tiled. This value
+            can be overridden with the layer_options dict.
     """
     return TileMap(
         map_file=map_file,
