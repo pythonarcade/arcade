@@ -7,13 +7,14 @@ Release Notes
 
 Keep up-to-date with the latest changes to the Arcade library by the release notes.
 
-2.6.7 - UNRELEASED
+2.6.7
 ------------------
 
 * :class:`~arcade.Window` changes:
 
   * Added ``enable_polling`` option to constructor. If enabled then ``window.keyboard`` and ``window.mouse``
     will be activated and able to be used to poll input by accessing them as if they were a dictionary.
+    This option is enabled by default. See  `#1038 <https://github.com/pythonarcade/arcade/issues/1038>`_
     
     ``window.keyboard`` can be polled using the values from ``arcade.key``.
 
@@ -29,12 +30,27 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
 
   * Defaults the viewport width and height to the window size if they are set to 0 now, since you cannot have
     a size of 0 in any direction due to projection calculation. This means that if you do not provide those arguments
-    to the constructor it will default to the window size.
+    to the constructor it will default to the window size. See  `#1041 <https://github.com/pythonarcade/arcade/issues/1041>`_
 
 * :class:`~arcade.tilemap.TileMap` changes:
 
+  * Added support for layer position offsets. This allows passing a tuple containing an X and Y offset that will be applied to
+    each Sprite/Object within the layer. You can set this via an ``offset`` parameter in the ``layer_options`` dict, or you can
+    supply a global offset to the map which will be applied to all layers via the ``offset`` parameter of either ``arcade.load_tilemap``
+    or to the TileMap constructor directly. Layer specific offsets will override the global default if both are set.
+    See  `#1048 <https://github.com/pythonarcade/arcade/issues/1048>`_
+
   * Added a new error message for JSONDecodeError exceptions, a common problem when tilesets are TSX but maps are JSON.
     This change simply provides a more clear error of the most likely cause of the problem so users don't have to dig as much.
+
+* Text
+
+  * Reverted the extra guards around text rendering that was implemented in 2.6.6. This turned out to cause slowdowns where
+    text was being used heavily. Work is still ongoing to fix the remaining issues with text.
+
+* Docs Fixes:
+
+  * See  `#1033 <https://github.com/pythonarcade/arcade/issues/1033>`_ and  `#1046 <https://github.com/pythonarcade/arcade/issues/1046>`_
 
 2.6.6
 -----
