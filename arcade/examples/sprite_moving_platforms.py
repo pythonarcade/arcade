@@ -1,14 +1,13 @@
 """
 Sprite with Moving Platforms
 
-Load a map stored in csv format, as exported by the program 'Tiled.'
-
 Artwork from https://kenney.nl
 
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.sprite_moving_platforms
 """
 import arcade
+from pyglet.math import Vec2
 
 SPRITE_SCALING = 0.5
 
@@ -28,21 +27,20 @@ MOVEMENT_SPEED = 10 * SPRITE_SCALING
 JUMP_SPEED = 28 * SPRITE_SCALING
 GRAVITY = .9 * SPRITE_SCALING
 
+# How fast the camera pans to the player. 1.0 is instant.
+CAMERA_SPEED = 0.1
+
 
 class MyGame(arcade.Window):
     """ Main application class. """
 
     def __init__(self, width, height, title):
-        """
-        Initializer
-        """
+        """ Initializer """
 
+        # Call the parent init
         super().__init__(width, height, title)
 
         # Sprite lists
-
-        # We use an all-wall list to check for collisions.
-        self.all_wall_list = None
 
         # Drawing non-moving walls separate from moving walls improves performance.
         self.static_wall_list = None
@@ -53,16 +51,20 @@ class MyGame(arcade.Window):
         # Set up the player
         self.player_sprite = None
         self.physics_engine = None
-        self.view_left = 0
-        self.view_bottom = 0
-        self.end_of_map = 0
         self.game_over = False
+
+        # Create the cameras. One for the GUI, one for the sprites.
+        # We scroll the 'sprite world' but not the GUI.
+        self.camera_sprites = arcade.Camera(SCREEN_WIDTH, SCREEN_HEIGHT)
+        self.camera_gui = arcade.Camera(SCREEN_WIDTH, SCREEN_HEIGHT)
+
+        self.left_down = False
+        self.right_down = False
 
     def setup(self):
         """ Set up the game and initialize the variables. """
 
         # Sprite lists
-        self.all_wall_list = arcade.SpriteList()
         self.static_wall_list = arcade.SpriteList()
         self.moving_wall_list = arcade.SpriteList()
         self.player_list = arcade.SpriteList()
@@ -81,7 +83,6 @@ class MyGame(arcade.Window):
             wall.bottom = 0
             wall.center_x = i * GRID_PIXEL_SIZE
             self.static_wall_list.append(wall)
-            self.all_wall_list.append(wall)
 
         # Create platform side to side
         wall = arcade.Sprite(":resources:images/tiles/grassMid.png", SPRITE_SCALING)
@@ -90,8 +91,6 @@ class MyGame(arcade.Window):
         wall.boundary_left = 2 * GRID_PIXEL_SIZE
         wall.boundary_right = 5 * GRID_PIXEL_SIZE
         wall.change_x = 2 * SPRITE_SCALING
-
-        self.all_wall_list.append(wall)
         self.moving_wall_list.append(wall)
 
         # Create platform side to side
@@ -101,8 +100,6 @@ class MyGame(arcade.Window):
         wall.boundary_left = 5 * GRID_PIXEL_SIZE
         wall.boundary_right = 9 * GRID_PIXEL_SIZE
         wall.change_x = -2 * SPRITE_SCALING
-
-        self.all_wall_list.append(wall)
         self.moving_wall_list.append(wall)
 
         # Create platform moving up and down
@@ -112,8 +109,6 @@ class MyGame(arcade.Window):
         wall.boundary_top = 8 * GRID_PIXEL_SIZE
         wall.boundary_bottom = 4 * GRID_PIXEL_SIZE
         wall.change_y = 2 * SPRITE_SCALING
-
-        self.all_wall_list.append(wall)
         self.moving_wall_list.append(wall)
 
         # Create platform moving diagonally
@@ -122,27 +117,20 @@ class MyGame(arcade.Window):
         wall.center_x = 8 * GRID_PIXEL_SIZE
         wall.boundary_left = 7 * GRID_PIXEL_SIZE
         wall.boundary_right = 9 * GRID_PIXEL_SIZE
-
         wall.boundary_top = 8 * GRID_PIXEL_SIZE
         wall.boundary_bottom = 4 * GRID_PIXEL_SIZE
         wall.change_x = 2 * SPRITE_SCALING
         wall.change_y = 2 * SPRITE_SCALING
-
-        self.all_wall_list.append(wall)
         self.moving_wall_list.append(wall)
 
+        # Creaate our physics engine
         self.physics_engine = \
             arcade.PhysicsEnginePlatformer(self.player_sprite,
-                                           self.all_wall_list,
+                                           [self.static_wall_list, self.moving_wall_list],
                                            gravity_constant=GRAVITY)
 
         # Set the background color
         arcade.set_background_color(arcade.color.AMAZON)
-
-        # Set the viewport boundaries
-        # These numbers set where we have 'scrolled' to.
-        self.view_left = 0
-        self.view_bottom = 0
 
         self.game_over = False
 
@@ -154,37 +142,49 @@ class MyGame(arcade.Window):
         # This command has to happen before we start drawing
         arcade.start_render()
 
+        # Select the camera we'll use to draw all our sprites
+        self.camera_sprites.use()
+
         # Draw the sprites.
         self.static_wall_list.draw()
         self.moving_wall_list.draw()
         self.player_list.draw()
 
+        self.camera_gui.use()
+
         # Put the text on the screen.
-        # Adjust the text position based on the viewport so that we don't
-        # scroll the text too.
         distance = self.player_sprite.right
         output = f"Distance: {distance}"
-        arcade.draw_text(output, self.view_left + 10, self.view_bottom + 20,
-                         arcade.color.WHITE, 14)
+        arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
+
+    def set_x_speed(self):
+        if self.left_down and not self.right_down:
+            self.player_sprite.change_x = -MOVEMENT_SPEED
+        elif self.right_down and not self.left_down:
+            self.player_sprite.change_x = MOVEMENT_SPEED
+        else:
+            self.player_sprite.change_x = 0
 
     def on_key_press(self, key, modifiers):
-        """
-        Called whenever the mouse moves.
-        """
+        """ Called whenever the mouse moves. """
         if key == arcade.key.UP:
             if self.physics_engine.can_jump():
                 self.player_sprite.change_y = JUMP_SPEED
         elif key == arcade.key.LEFT:
-            self.player_sprite.change_x = -MOVEMENT_SPEED
+            self.left_down = True
+            self.set_x_speed()
         elif key == arcade.key.RIGHT:
-            self.player_sprite.change_x = MOVEMENT_SPEED
+            self.right_down = True
+            self.set_x_speed()
 
     def on_key_release(self, key, modifiers):
-        """
-        Called when the user presses a mouse button.
-        """
-        if key == arcade.key.LEFT or key == arcade.key.RIGHT:
-            self.player_sprite.change_x = 0
+        """ Called when the user presses a mouse button. """
+        if key == arcade.key.LEFT:
+            self.left_down = False
+            self.set_x_speed()
+        elif key == arcade.key.RIGHT:
+            self.right_down = False
+            self.set_x_speed()
 
     def on_update(self, delta_time):
         """ Movement and game logic """
@@ -192,42 +192,21 @@ class MyGame(arcade.Window):
         # Call update on all sprites
         self.physics_engine.update()
 
-        # --- Manage Scrolling ---
+        # Scroll the screen to the player
+        self.scroll_to_player()
 
-        # Track if we need to change the viewport
+    def scroll_to_player(self):
+        """
+        Scroll the window to the player.
 
-        changed = False
+        if CAMERA_SPEED is 1, the camera will immediately move to the desired position.
+        Anything between 0 and 1 will have the camera move to the location with a smoother
+        pan.
+        """
 
-        # Scroll left
-        left_boundary = self.view_left + VIEWPORT_MARGIN
-        if self.player_sprite.left < left_boundary:
-            self.view_left -= left_boundary - self.player_sprite.left
-            changed = True
-
-        # Scroll right
-        right_boundary = self.view_left + SCREEN_WIDTH - RIGHT_MARGIN
-        if self.player_sprite.right > right_boundary:
-            self.view_left += self.player_sprite.right - right_boundary
-            changed = True
-
-        # Scroll up
-        top_boundary = self.view_bottom + SCREEN_HEIGHT - VIEWPORT_MARGIN
-        if self.player_sprite.top > top_boundary:
-            self.view_bottom += self.player_sprite.top - top_boundary
-            changed = True
-
-        # Scroll down
-        bottom_boundary = self.view_bottom + VIEWPORT_MARGIN
-        if self.player_sprite.bottom < bottom_boundary:
-            self.view_bottom -= bottom_boundary - self.player_sprite.bottom
-            changed = True
-
-        # If we need to scroll, go ahead and do it.
-        if changed:
-            arcade.set_viewport(self.view_left,
-                                SCREEN_WIDTH + self.view_left,
-                                self.view_bottom,
-                                SCREEN_HEIGHT + self.view_bottom)
+        position = Vec2(self.player_sprite.center_x - self.width / 2,
+                        self.player_sprite.center_y - self.height / 2)
+        self.camera_sprites.move_to(position, CAMERA_SPEED)
 
 
 def main():
