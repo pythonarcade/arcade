@@ -51,6 +51,7 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
 * Docs Fixes:
 
   * See  `#1033 <https://github.com/pythonarcade/arcade/issues/1033>`_ and  `#1046 <https://github.com/pythonarcade/arcade/issues/1046>`_
+  * `#1043 <https://github.com/pythonarcade/arcade/issues/1043>`_ Update moving platforms example.
 
 2.6.6
 -----
