@@ -10,6 +10,10 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
 2.6.7
 ------------------
 
+*Released on 2021-Dec-15*
+
+* This version updates Pyglet to 2.0dev12. Programs WILL NOT RUN with prior versions of Pyglet.
+
 * :class:`~arcade.Window` changes:
 
   * Added ``enable_polling`` option to constructor. If enabled then ``window.keyboard`` and ``window.mouse``
@@ -52,6 +56,15 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
 
   * See  `#1033 <https://github.com/pythonarcade/arcade/issues/1033>`_ and  `#1046 <https://github.com/pythonarcade/arcade/issues/1046>`_
   * `#1043 <https://github.com/pythonarcade/arcade/issues/1043>`_ Update moving platforms example.
+
+Special thanks to
+`Cleptomania <https://github.com/Cleptomania>`_,
+`einarf <https://github.com/einarf>`_,
+`pvcraven <https://github.com/pvcraven>`_,
+`mlr07 <https://github.com/mlr07>`_,
+`pushfoo <https://github.com/pushfoo>`_,
+for their contributions to this release. Also, thanks to everyone on the Pyglet team! We depend heavily on
+Pyglet's continued development.
 
 2.6.6
 -----
