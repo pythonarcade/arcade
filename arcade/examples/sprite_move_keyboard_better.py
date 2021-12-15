@@ -85,18 +85,15 @@ class MyGame(arcade.Window):
         self.player_list.append(self.player_sprite)
 
     def on_draw(self):
-        """
-        Render the screen.
-        """
+        """ Render the screen. """
 
-        # This command has to happen before we start drawing
+        # Clear the screen
         arcade.start_render()
 
         # Draw all the sprites.
         self.player_list.draw()
 
-    def on_update(self, delta_time):
-        """ Movement and game logic """
+    def update_player_speed(self):
 
         # Calculate speed based on the keys pressed
         self.player_sprite.change_x = 0
@@ -111,6 +108,9 @@ class MyGame(arcade.Window):
         elif self.right_pressed and not self.left_pressed:
             self.player_sprite.change_x = MOVEMENT_SPEED
 
+    def on_update(self, delta_time):
+        """ Movement and game logic """
+
         # Call update to move the sprite
         # If using a physics engine, call update player to rely on physics engine
         # for movement, and call physics engine here.
@@ -121,24 +121,32 @@ class MyGame(arcade.Window):
 
         if key == arcade.key.UP:
             self.up_pressed = True
+            self.update_player_speed()
         elif key == arcade.key.DOWN:
             self.down_pressed = True
+            self.update_player_speed()
         elif key == arcade.key.LEFT:
             self.left_pressed = True
+            self.update_player_speed()
         elif key == arcade.key.RIGHT:
             self.right_pressed = True
+            self.update_player_speed()
 
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key. """
 
         if key == arcade.key.UP:
             self.up_pressed = False
+            self.update_player_speed()
         elif key == arcade.key.DOWN:
             self.down_pressed = False
+            self.update_player_speed()
         elif key == arcade.key.LEFT:
             self.left_pressed = False
+            self.update_player_speed()
         elif key == arcade.key.RIGHT:
             self.right_pressed = False
+            self.update_player_speed()
 
 
 def main():
