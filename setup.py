@@ -1,6 +1,6 @@
 #!/usr/bin/env python
+import sys
 from os import path
-
 from setuptools import find_namespace_packages, setup
 
 with open("arcade/version.py") as file:
@@ -13,6 +13,16 @@ def get_long_description() -> str:
         return f.read()
 
 
+install_requires = [
+        "pyglet==2.0.dev12",
+        "pillow~=8.4",
+        "pymunk~=6.2.1",
+        "pytiled-parser==1.5.4",
+    ]
+
+if (sys.platform == "linux" or sys.platform == "linux2") or sys.version_info[1] < 10:
+    install_requires.append("shapely==1.8.0")
+
 setup(
     name="arcade",
     description="Arcade Game Development Library",
@@ -22,13 +32,7 @@ setup(
     license="MIT",
     url="https://api.arcade.academy",
     download_url="https://api.arcade.academy",
-    install_requires=[
-        "pyglet==2.0.dev12",
-        "pillow~=8.4",
-        "pymunk~=6.2.1",
-        "pytiled-parser==1.5.4",
-        "dataclasses; python_version < '3.7'",
-    ],
+    install_requires=install_requires,
     extras_require={
         "dev": [
             "pytest",
