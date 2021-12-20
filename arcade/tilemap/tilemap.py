@@ -549,10 +549,8 @@ class TileMap:
                             image_file, image_x, image_y, width, height
                         )
                     else:
-                        print(
-                            f"Warning: failed to load image for animation frame for tile {frame_tile.id}"
-                        )
-                        texture = None  # type: ignore
+                        raise RuntimeError(f"Warning: failed to load image for animation frame for "
+                                           f"tile '{frame_tile.id}', '{image_file}'.")
 
                     key_frame = AnimationKeyframe(  # type: ignore
                         frame.tile_id, frame.duration, texture
