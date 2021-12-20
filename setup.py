@@ -13,16 +13,6 @@ def get_long_description() -> str:
         return f.read()
 
 
-install_requires = [
-        "pyglet==2.0.dev12",
-        "pillow~=8.4",
-        "pymunk~=6.2.1",
-        "pytiled-parser==1.5.4",
-    ]
-
-if (sys.platform == "linux" or sys.platform == "linux2") or sys.version_info[1] < 10:
-    install_requires.append("shapely==1.8.0")
-
 setup(
     name="arcade",
     description="Arcade Game Development Library",
@@ -32,7 +22,13 @@ setup(
     license="MIT",
     url="https://api.arcade.academy",
     download_url="https://api.arcade.academy",
-    install_requires=install_requires,
+    install_requires=[
+        "pyglet==2.0.dev12",
+        "pillow~=8.4",
+        "pymunk~=6.2.1",
+        "pytiled-parser==1.5.4",
+        "dataclasses; python_version < '3.7'",
+    ],
     extras_require={
         "dev": [
             "pytest",
@@ -48,7 +44,6 @@ setup(
             "sphinx_copybutton",
             "dirsync",
             "wheel",
-            "numpy",
         ],
     },
     packages=find_namespace_packages(
@@ -65,6 +60,7 @@ setup(
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: Implementation :: CPython",
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
