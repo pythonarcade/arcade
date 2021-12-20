@@ -6,7 +6,7 @@ Compute Shader Tutorial
 .. figure:: compute_shader.png
    :width: 60%
 
-   :ref:`compute_shader`
+   A compute shader in action
 
 Using the compute shader, you can use the GPU to perform calculations.
 
