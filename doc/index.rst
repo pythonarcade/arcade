@@ -260,6 +260,7 @@ game without learning a complex framework.
    tutorials/framebuffer/index
    tutorials/raycasting/index
    tutorials/crt_filter/index
+   tutorials/compute_shader/index
    gui/index
 
 .. toctree::
