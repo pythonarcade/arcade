@@ -7,7 +7,7 @@ from arcade.draw_commands import Texture
 import arcade.utils
 from arcade.arcade_types import Point, Vector
 from typing import Union
-from arcade.geometry import clamp
+from arcade.geometry_generic import clamp
 
 FilenameOrTexture = Union[str, Texture]
 

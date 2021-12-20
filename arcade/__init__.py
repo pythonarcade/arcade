@@ -127,6 +127,10 @@ from .utils import rand_vec_magnitude
 from .utils import rand_vec_spread_deg
 from .utils import generate_uuid_from_kwargs
 
+from .geometry_generic import get_distance
+from .geometry_generic import rotate_point
+from .geometry_generic import clamp
+
 from .hitbox import calculate_hit_box_points_detailed
 from .hitbox import calculate_hit_box_points_simple
 
@@ -203,9 +207,7 @@ from .draw_commands import get_image
 from .draw_commands import get_pixel
 
 from .geometry import are_polygons_intersecting
-from .geometry import get_distance
 from .geometry import is_point_in_polygon
-from .geometry import rotate_point
 
 from .isometric import create_isometric_grid_lines
 from .isometric import isometric_grid_to_screen
@@ -230,7 +232,6 @@ from .particle import EternalParticle
 from .particle import FadeParticle
 from .particle import LifetimeParticle
 from .particle import Particle
-from .particle import clamp
 
 from .sound import Sound
 from .sound import load_sound
@@ -274,9 +275,9 @@ from .pymunk_physics_engine import PymunkException
 
 from .version import VERSION
 
+from .paths import has_line_of_sight
 from .paths import AStarBarrierList
 from .paths import astar_calculate_path
-from .paths import has_line_of_sight
 
 from .context import ArcadeContext
 

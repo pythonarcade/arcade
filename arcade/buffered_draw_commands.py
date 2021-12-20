@@ -19,12 +19,13 @@ from typing import Generic
 from typing import cast
 
 from arcade import Color
-from .geometry import rotate_point
 from arcade import Point, PointList
 from arcade import get_four_byte_color
 from arcade import get_window
 from arcade import get_points_for_thick_line
 from arcade.gl import BufferDescription
+
+from .geometry_generic import rotate_point
 
 
 class Shape:

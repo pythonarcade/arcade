@@ -25,7 +25,7 @@ from arcade import (
     load_texture,
 )
 from arcade.arcade_types import Point, TiledObject
-from arcade.geometry import rotate_point
+from arcade.geometry_generic import rotate_point
 from arcade.resources import resolve_resource_path
 from pyglet.math import Vec2
 
