@@ -27,7 +27,7 @@ setup(
         "pillow~=8.4",
         "pymunk~=6.2.1",
         "shapely==1.8.0",
-        "pytiled-parser==1.5.4",
+        "pytiled-parser==2.0.1",
         "dataclasses; python_version < '3.7'",
     ],
     extras_require={
