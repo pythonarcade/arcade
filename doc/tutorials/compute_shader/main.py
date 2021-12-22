@@ -2,7 +2,6 @@
 Compute shader with buffers
 """
 import random
-import math
 from array import array
 
 import arcade
@@ -17,8 +16,6 @@ GRAPH_WIDTH = 200
 GRAPH_HEIGHT = 120
 GRAPH_MARGIN = 5
 
-arcade.enable_timings()
-
 
 class MyWindow(arcade.Window):
 
@@ -32,8 +29,7 @@ class MyWindow(arcade.Window):
         self.center_window()
 
         # --- Class instance variables
-        # How long we have been running, in seconds
-        self.run_time = 0
+
         # Number of balls to move
         self.num_balls = 40000
 
@@ -96,6 +92,11 @@ class MyWindow(arcade.Window):
             fragment_shader=fragment_shader_source,
         )
 
+        # --- Create FPS graph
+
+        # Enable timings for the performance graph
+        arcade.enable_timings()
+
         # Create a sprite list to put the performance graph into
         self.perf_graph_list = arcade.SpriteList()
 
@@ -106,18 +107,17 @@ class MyWindow(arcade.Window):
         self.perf_graph_list.append(graph)
 
     def on_draw(self):
+        # Clear the screen
         self.clear()
+        # Enable blending so our alpha channel works
         self.ctx.enable(self.ctx.BLEND)
-
-        # Change the force
-        force = math.sin(self.run_time / 10) / 2, math.cos(self.run_time / 10) / 2
-        force = 0.0, 0.0
 
         # Bind buffers
         self.ssbo_1.bind_to_storage_buffer(binding=0)
         self.ssbo_2.bind_to_storage_buffer(binding=1)
 
         # Set input variables for compute shader
+        # These are examples, although this example doesn't use them
         # self.compute_shader["screen_size"] = self.get_size()
         # self.compute_shader["force"] = force
         # self.compute_shader["frame_time"] = self.run_time
@@ -135,13 +135,6 @@ class MyWindow(arcade.Window):
 
         # Draw the graphs
         self.perf_graph_list.draw()
-
-        # Get FPS for the last 60 frames
-        text = f"FPS: {arcade.get_fps(60):5.1f}"
-        arcade.draw_text(text, 10, 10, arcade.color.BLACK, 22)
-
-    def on_update(self, delta_time: float):
-        self.run_time = delta_time
 
     def gen_initial_data(self):
         for i in range(self.num_balls):
