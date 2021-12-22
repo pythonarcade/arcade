@@ -7,6 +7,22 @@ Release Notes
 
 Keep up-to-date with the latest changes to the Arcade library by the release notes.
 
+2.6.8
+------------------
+
+* :class:`~arcade.TileMap` changes:
+
+  There are no API changes to the TileMap class, however full support for TMX maps, TSX tilesets, and TX object templates
+  has been added thanks to pytiled-parser 2.0. You should be able to load these formats with 0 change to your code, and use
+  all the same features that were available with JSON maps.
+
+  This update also includes the ability to cross-load JSON and TMX maps/tilesets. Meaning you can have a JSON map load a TSX tileset,
+  or have a TMX map load a JSON tileset.
+
+  You don't ever need to explicitly set or configure a format to use, it will be automatically determined based on the file you pass
+  in. It is determined based on the actual content of the file, and not the filetype, so if you give it a ``.json`` file that actually
+  contains TMX, or vice versa, it will still work without problem.
+
 2.6.7
 ------------------
 
