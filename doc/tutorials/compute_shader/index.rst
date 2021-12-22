@@ -8,18 +8,19 @@ Compute Shader Tutorial
    <div style="width: 100%; height: 0px; position: relative; padding-bottom: 56.250%;"><iframe src="https://streamable.com/e/ab8d87" frameborder="0" width="100%" height="100%" allowfullscreen style="width: 100%; height: 100%; position: absolute;"></iframe></div>
 
 Using the compute shader, you can use the GPU to perform calculations thousands
-of times faster than just by using teh CPU.
+of times faster than just by using the CPU.
 
 In this example, we will simulate a star field using an 'N-Body simulation'. Each
 star is effected by each other star's gravity. For 1,000 stars, this means we have
 1,000 x 1,000 = 1,000,000 million calculations to perform for each frame.
+The video has 65,000 stars, requiring 4.2 billion gravity force calculations per frame.
+On high-end hardware it can still run at 60 fps!
 
-By using the thousands of processors available with the GPU, we can speed our simulation up.
-
+How does this work?
 There are three major parts to this program:
 
-* The python code, this glues everything together.
-* The visualization shaders, which lets us see our data.
+* The Python code, this glues everything together.
+* The visualization shaders, which let us see the data.
 * The compute shader, which moves everything.
 
 Visualization Shaders
@@ -29,7 +30,8 @@ There are multiple visualization shaders, which operate in this order:
 
 .. image:: shaders.svg
 
-The Python program creates a "buffer" of floating point numbers. This buffer
+The Python program creates a **shader storage buffer object** (SSBO) of
+floating point numbers. This buffer
 has the x, y, z and radius of each star stored in ``in_vertex``. It also
 stores the color in ``in_color``.
 
