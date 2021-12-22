@@ -8,18 +8,18 @@ uniform Projection {
     uniform mat4 matrix;
 } proj;
 
-in vec2 v_pos[];
-in vec4 v_col[];
-in float v_radius[];
+in vec2 vertex_pos[];
+in vec4 vertex_color[];
+in float vertex_radius[];
 
 out vec2 g_uv;
-out vec3 g_col;
+out vec3 g_color;
 
 void main() {
-    vec2 center = v_pos[0];
-    vec2 hsize = vec2(v_radius[0]);
+    vec2 center = vertex_pos[0];
+    vec2 hsize = vec2(vertex_radius[0]);
 
-    g_col = v_col[0].rgb;
+    g_color = vertex_color[0].rgb;
 
     gl_Position = proj.matrix * vec4(vec2(-hsize.x, hsize.y) + center, 0.0, 1.0);
     g_uv = vec2(0, 1);

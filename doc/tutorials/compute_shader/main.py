@@ -8,18 +8,26 @@ from array import array
 import arcade
 from arcade.gl import BufferDescription
 
+# Size of performance graphs and distance between them
+GRAPH_WIDTH = 200
+GRAPH_HEIGHT = 120
+GRAPH_MARGIN = 5
 
-class App(arcade.Window):
+arcade.enable_timings()
+
+
+class MyWindow(arcade.Window):
 
     def __init__(self):
         # Call parent constructor
-        super().__init__(720, 720, "Compute Shader", gl_version=(4, 3), resizable=True, vsync=True)
+        super().__init__(2300, 1300, "Compute Shader", gl_version=(4, 3), resizable=True)
+        self.center_window()
 
         # --- Class instance variables
         # How long we have been running, in seconds
         self.run_time = 0
         # Number of balls to move
-        self.num_balls = 650
+        self.num_balls = 40000
 
         # This has something to do with how we break the calculations up
         # and parallelize them.
@@ -28,16 +36,22 @@ class App(arcade.Window):
 
         # --- Create buffers
 
-        # Buffers with data for the compute shader (We ping-pong render between these)
-        # ssbo = shader storage buffer object
+        # Format of the buffer data.
+        # 4f = position and size -> x, y, z, radius
+        # 4x4 = Four floats used for calculating velocity. Not needed for visualization.
+        # 4f = color -> rgba
+        buffer_format = "4f 4x4 4f"
+        # Generate the initial data that we will put in buffer 1.
         initial_data = self.gen_initial_data()
+
+        # Create data buffers for the compute shader
+        # We ping-pong render between these two buffers
+        # ssbo = shader storage buffer object
         self.ssbo_1 = self.ctx.buffer(data=array('f', initial_data))
         self.ssbo_2 = self.ctx.buffer(reserve=self.ssbo_1.size)
 
-        # Geometry for buffers
-        buffer_format = "4f 4x4 4f"
-        # Attribute variable names
-        attributes = ["in_vert", "in_col"]
+        # Attribute variable names for the vertex shader
+        attributes = ["in_vertex", "in_color"]
         self.vao_1 = self.ctx.geometry(
             [BufferDescription(self.ssbo_1, buffer_format, attributes)],
             mode=self.ctx.POINTS,
@@ -50,14 +64,14 @@ class App(arcade.Window):
         # --- Create shaders
 
         # Load in the shader source code
-        file = open("compute_1/compute_shader.glsl")
+        file = open("shaders/compute_shader.glsl")
         compute_shader_source = file.read()
-        file = open("compute_1/vertex_shader.glsl")
+        file = open("shaders/vertex_shader.glsl")
         vertex_shader_source = file.read()
-        file = open("compute_1/geometry_shader.glsl")
-        geometry_shader_source = file.read()
-        file = open("compute_1/fragment_shader.glsl")
+        file = open("shaders/fragment_shader.glsl")
         fragment_shader_source = file.read()
+        file = open("shaders/geometry_shader.glsl")
+        geometry_shader_source = file.read()
 
         # Create our compute shader
         compute_shader_source = compute_shader_source.replace("COMPUTE_SIZE_X", str(self.group_x))
@@ -71,8 +85,18 @@ class App(arcade.Window):
             fragment_shader=fragment_shader_source,
         )
 
+        # Create a sprite list to put the performance graph into
+        self.perf_graph_list = arcade.SpriteList()
+
+        # Create the FPS performance graph
+        graph = arcade.PerfGraph(GRAPH_WIDTH, GRAPH_HEIGHT, graph_data="FPS")
+        graph.center_x = GRAPH_WIDTH / 2
+        graph.center_y = self.height - GRAPH_HEIGHT / 2
+        self.perf_graph_list.append(graph)
+
     def on_draw(self):
         self.clear()
+        self.ctx.enable(self.ctx.BLEND)
 
         # Change the force
         force = math.sin(self.run_time / 10) / 2, math.cos(self.run_time / 10) / 2
@@ -83,9 +107,9 @@ class App(arcade.Window):
         self.ssbo_2.bind_to_storage_buffer(binding=1)
 
         # Set input variables for compute shader
-        self.compute_shader["screen_size"] = self.get_size()
-        self.compute_shader["force"] = force
-        self.compute_shader["frame_time"] = self.run_time
+        # self.compute_shader["screen_size"] = self.get_size()
+        # self.compute_shader["force"] = force
+        # self.compute_shader["frame_time"] = self.run_time
 
         # Run compute shader
         self.compute_shader.run(group_x=self.group_x, group_y=self.group_y)
@@ -98,32 +122,36 @@ class App(arcade.Window):
         # Swap what geometry we draw
         self.vao_1, self.vao_2 = self.vao_2, self.vao_1
 
+        # Draw the graphs
+        self.perf_graph_list.draw()
+
+        # Get FPS for the last 60 frames
+        text = f"FPS: {arcade.get_fps(60):5.1f}"
+        arcade.draw_text(text, 10, 10, arcade.color.BLACK, 22)
+
     def on_update(self, delta_time: float):
         self.run_time = delta_time
 
     def gen_initial_data(self):
         for i in range(self.num_balls):
             # Position/radius
-            radius = 3  # random.random() * 10 + 3
             yield random.randrange(0, self.width)
             yield random.randrange(0, self.height)
             yield 0.0  # z (padding)
-            yield radius  # w / radius
+            yield 6.0
 
             # Velocity
-            v = random.random() * 1.0 + 0.1
-            angle = (i / self.num_balls) * math.pi * 2.0
-            yield math.cos(angle) * v  # vx
-            yield math.sin(angle) * v  # vy
+            yield 0.0
+            yield 0.0
             yield 0.0  # vz (padding)
             yield 0.0  # vw (padding)
 
             # Color
-            yield 1.0 * random.random()  # r
-            yield 1.0 * random.random()  # g
-            yield 1.0 * random.random()  # b
+            yield 1.0  # r
+            yield 1.0  # g
+            yield 1.0  # b
             yield 1.0  # a
 
 
-app = App()
+app = MyWindow()
 arcade.run()
