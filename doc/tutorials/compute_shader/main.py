@@ -8,7 +8,11 @@ from array import array
 import arcade
 from arcade.gl import BufferDescription
 
-# Size of performance graphs and distance between them
+# Window dimensions
+WINDOW_WIDTH = 2300
+WINDOW_HEIGHT = 1300
+
+# Size of performance graphs
 GRAPH_WIDTH = 200
 GRAPH_HEIGHT = 120
 GRAPH_MARGIN = 5
@@ -20,7 +24,11 @@ class MyWindow(arcade.Window):
 
     def __init__(self):
         # Call parent constructor
-        super().__init__(2300, 1300, "Compute Shader", gl_version=(4, 3), resizable=True)
+        # Ask for OpenGL 4.3 context, as we need that for compute shader support.
+        super().__init__(WINDOW_WIDTH, WINDOW_HEIGHT,
+                         "Compute Shader",
+                         gl_version=(4, 3),
+                         resizable=True)
         self.center_window()
 
         # --- Class instance variables
@@ -73,9 +81,12 @@ class MyWindow(arcade.Window):
         file = open("shaders/geometry_shader.glsl")
         geometry_shader_source = file.read()
 
-        # Create our compute shader
-        compute_shader_source = compute_shader_source.replace("COMPUTE_SIZE_X", str(self.group_x))
-        compute_shader_source = compute_shader_source.replace("COMPUTE_SIZE_Y", str(self.group_y))
+        # Create our compute shader.
+        # Search/replace to set up our compute groups
+        compute_shader_source = compute_shader_source.replace("COMPUTE_SIZE_X",
+                                                              str(self.group_x))
+        compute_shader_source = compute_shader_source.replace("COMPUTE_SIZE_Y",
+                                                              str(self.group_y))
         self.compute_shader = self.ctx.compute_shader(source=compute_shader_source)
 
         # Program for visualizing the balls

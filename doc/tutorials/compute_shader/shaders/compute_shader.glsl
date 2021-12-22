@@ -1,8 +1,10 @@
 #version 430
 
+// Set up our compute groups
 layout(local_size_x=COMPUTE_SIZE_X, local_size_y=COMPUTE_SIZE_Y) in;
 
-// Input uniforms if you need them
+// Input uniforms go here if you need them.
+// Some examples:
 //uniform vec2 screen_size;
 //uniform vec2 force;
 //uniform float frame_time;
@@ -36,8 +38,10 @@ void main()
     vec4 p = in_ball.pos.xyzw;
     vec4 v = in_ball.vel.xyzw;
 
+    // Move the ball according to the current force
     p.xy += v.xy;
 
+    // Calculate the new force based on all the other bodies
     for (int i=0; i < In.balls.length(); i++) {
         // If enabled, this will keep the star from calculating gravity on itself
         // However, it does slow down the calcluations do do this check.
@@ -61,6 +65,7 @@ void main()
         vec2 delta_v = diff * force;
         v.xy += delta_v;
     }
+
 
     Ball out_ball;
     out_ball.pos.xyzw = p.xyzw;
