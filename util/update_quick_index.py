@@ -16,11 +16,15 @@ titles = {
     'emitter.py': ['Particles', 'particle_emitter.rst'],
     'emitter_simple.py': ['Particles', 'particle_emitter.rst'],
     'geometry.py': ['Geometry Support', 'geometry.rst'],
+    'geometry_generic.py': ['Geometry Support', 'geometry.rst'],
+    'geometry_shapely.py': ['Geometry Support', 'geometry.rst'],
     'hitbox.py': ['Geometry Support', 'geometry.rst'],
     'isometric.py': ['Isometric Map Support (incomplete)', 'isometric.rst'],
     'joysticks.py': ['Game Controller Support', 'game_controller.rst'],
     'particle.py': ['Particles', 'particle_emitter.rst'],
     'paths.py': ['Pathfinding', 'path_finding.rst'],
+    'paths_python.py': ['Pathfinding', 'path_finding.rst'],
+    'paths_shapely.py': ['Pathfinding', 'path_finding.rst'],
     'perf_info.py': ['Performance Information', 'perf_info.rst'],
     'perf_graph.py': ['Performance Information', 'perf_info.rst'],
     'physics_engines.py': ['Physics Engines', 'physics_engines.rst'],
@@ -137,6 +141,15 @@ def process_directory(directory, quick_index_file):
             continue
 
         if "math.py" in path.name:
+            continue
+
+        if "geometry_python.py" in path.name:
+            continue
+
+        if "geometry.py" in path.name:
+            continue
+
+        if "paths_python.py" in path.name:
             continue
 
         if not path.exists():
