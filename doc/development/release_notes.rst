@@ -29,7 +29,7 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
   in. It is determined based on the actual content of the file, and not the filetype, so if you give it a ``.json`` file that actually
   contains TMX, or vice versa, it will still work without problem.
 
-* Update `Pyglet <https://pyglet.readthedocs.io/en/latest/>`_ to 2.0.dev13 which fixes a bug where  ``on_resize`` wasn't getting called.
+* Update `Pyglet`_ to 2.0.dev13 which fixes a bug where  ``on_resize`` wasn't getting called.
 * Added a `compute shader tutorial <https://api.arcade.academy/en/development/tutorials/compute_shader/index.html>`_.
 
 Special thanks to
