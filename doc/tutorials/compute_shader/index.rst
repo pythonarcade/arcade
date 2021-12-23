@@ -60,8 +60,8 @@ star, and rounds off the quad into a circle.
     :linenos:
 
 
-Computate Shaders
------------------
+Compute Shaders
+---------------
 
 This program runs two buffers. We have an **input buffer**, with all our current data. We perform
 calculations on that data and write to the **output buffer**. We then swap those buffers for the
@@ -81,3 +81,4 @@ Read through the code here, I've tried hard to explain all the parts in the comm
     :caption: main.py
     :linenos:
 
+An expanded version of this, with support for 3D, is available at: https://github.com/pvcraven/n-body
