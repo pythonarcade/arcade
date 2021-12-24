@@ -10,6 +10,8 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
 2.6.8
 ------------------
 
+*Released on 2021-Dec-25*
+
 * The `Shapely <https://shapely.readthedocs.io/en/latest/>`_ library is now optional.
   The shapely library uses native code to make operations
   such as collision detection and some other geometry operations faster. However they have not
