@@ -74,7 +74,7 @@ def is_point_in_polygon(x, y, polygon_point_list):
         return False
 
     p1x, p1y = polygon_point_list[0]
-    for i in range(n+1):
+    for i in range(n + 1):
         p2x, p2y = polygon_point_list[i % n]
         if y > min(p1y, p2y):
             if y <= max(p1y, p2y):
