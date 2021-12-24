@@ -184,7 +184,7 @@ physics engine:
 .. literalinclude:: pymunk_demo_platformer_05.py
     :caption: Add Physics Engine Attribute
     :linenos:
-    :lines: 71-72
+    :lines: 72-73
 
 Third, in the ``setup`` method we create the physics engine and add the sprites.
 The player, walls, and dynamic items all have different properties so they are
@@ -200,7 +200,7 @@ Fourth, in the ``on_update`` method we call the physics engine's ``step`` method
 .. literalinclude:: pymunk_demo_platformer_05.py
     :caption: Add Sprites to Physics Engine in 'setup' Method
     :linenos:
-    :lines: 163-165
+    :lines: 166-168
 
 If you run the program, and you have dynamic items that are up in the air, you
 should see them fall when the game starts.
