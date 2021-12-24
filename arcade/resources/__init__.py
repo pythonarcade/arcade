@@ -39,7 +39,7 @@ def resolve_resource_path(path: Union[str, Path]) -> Path:
         raise FileNotFoundError(f"Cannot locate resource : {path}")
 
     # Always return absolute paths
-    return path.absolute()
+    return path.resolve()
 
 
 def add_resource_handle(handle: str, path: Union[str, Path]) -> None:
@@ -49,7 +49,15 @@ def add_resource_handle(handle: str, path: Union[str, Path]) -> None:
     :param Union[str, Path] path: The location the handle points to
     """
     if isinstance(path, str):
-        path = Path(path)
+        path = Path(path).resolve()
+    elif isinstance(path, Path):
+        if not path.is_absolute():
+            raise RuntimeError(
+                "Path for resource handle must be absolute. "
+                "See https://docs.python.org/3/library/pathlib.html#pathlib.Path.resolve"
+            )
+    else:
+        raise TypeError("Path for resource handle must be a string or Path object")
 
     if not path.exists():
         raise FileNotFoundError(f"Cannot locate location for handle: {path}")
