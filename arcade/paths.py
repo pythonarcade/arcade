@@ -9,9 +9,9 @@ import sys
 
 
 if 'shapely' in sys.modules:
-    from .paths_python import has_line_of_sight
+    from .paths_python import has_line_of_sight  # noqa: F401
 else:
-    from .paths_python import has_line_of_sight
+    from .paths_python import has_line_of_sight  # noqa: F401
 
 """
 Classic A-star algorithm for path finding.
