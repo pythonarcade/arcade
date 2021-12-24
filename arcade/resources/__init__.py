@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import Dict, Union
 
 #: The absolute path to this directory
-RESOURCE_PATH = Path(__file__).parent.absolute()
+RESOURCE_PATH = Path(__file__).parent.resolve()
 
 resource_handles: Dict[str, Path] = {
     "resources": RESOURCE_PATH
@@ -51,13 +51,15 @@ def add_resource_handle(handle: str, path: Union[str, Path]) -> None:
     if isinstance(path, str):
         path = Path(path).resolve()
     elif isinstance(path, Path):
-        if not path.is_absolute():
-            raise RuntimeError(
-                "Path for resource handle must be absolute. "
-                "See https://docs.python.org/3/library/pathlib.html#pathlib.Path.resolve"
-            )
+        path = path.resolve()
     else:
         raise TypeError("Path for resource handle must be a string or Path object")
+
+    if not path.is_absolute():
+        raise RuntimeError(
+            "Path for resource handle must be absolute. "
+            "See https://docs.python.org/3/library/pathlib.html#pathlib.Path.resolve"
+        )
 
     if not path.exists():
         raise FileNotFoundError(f"Cannot locate location for handle: {path}")
