@@ -1,8 +1,12 @@
-from typing import Union
 from pathlib import Path
+from typing import Dict, Union
 
 #: The absolute path to this directory
 RESOURCE_PATH = Path(__file__).parent.absolute()
+
+resource_handles: Dict[str, Path] = {
+    "resources": RESOURCE_PATH
+}
 
 
 def resolve_resource_path(path: Union[str, Path]) -> Path:
@@ -13,13 +17,19 @@ def resolve_resource_path(path: Union[str, Path]) -> Path:
     # Convert to a Path object and resolve :resources:
     if isinstance(path, str):
         path = path.strip()  # Allow for silly mistakes with extra spaces
-        if path.startswith(':resources:'):
-            path = path[11:]
-            while path.startswith('/') or path.startswith('\\'):
-                path = path[1:]
+        if path.startswith(':'):
+            path = path[1:]
+            handle, resource = path.split(":")
+            while resource.startswith('/') or resource.startswith('\\'):
+                resource = resource[1:]
+
+            try:
+                handle_path = resource_handles[handle]
+            except KeyError:
+                raise KeyError(f"Unknown resource handle \"{handle}\"")
 
             # Always convert into a Path object
-            path = Path(RESOURCE_PATH / path)
+            path = Path(handle_path / resource)
         else:
             path = Path(path)
 
@@ -30,6 +40,21 @@ def resolve_resource_path(path: Union[str, Path]) -> Path:
 
     # Always return absolute paths
     return path.absolute()
+
+
+def add_resource_handle(handle: str, path: Union[str, Path]) -> None:
+    """Adds a new handle to built-in resources
+
+    :param str handle: The name of the handle
+    :param Union[str, Path] path: The location the handle points to
+    """
+    if isinstance(path, str):
+        path = Path(path)
+
+    if not path.exists():
+        raise FileNotFoundError(f"Cannot locate location for handle: {path}")
+
+    resource_handles[handle] = path
 
 
 # RESOURCE LIST : (Truncate file from here if auto generating resource list)
