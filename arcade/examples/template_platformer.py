@@ -92,8 +92,8 @@ class MyGame(arcade.Window):
         self.score = 0
 
         # Set up the player, specifically placing it at these coordinates.
-        image_source = ":resources:images/animated_characters/female_adventurer/femaleAdventurer_idle.png"
-        self.player_sprite = arcade.Sprite(image_source, CHARACTER_SCALING)
+        src = ":resources:images/animated_characters/female_adventurer/femaleAdventurer_idle.png"
+        self.player_sprite = arcade.Sprite(src, CHARACTER_SCALING)
         self.player_sprite.center_x = 128
         self.player_sprite.center_y = 128
         self.scene.add_sprite("Player", self.player_sprite)
@@ -128,6 +128,16 @@ class MyGame(arcade.Window):
                          color=arcade.csscolor.WHITE,
                          font_size=18)
 
+    def update_player_speed(self):
+
+        # Calculate speed based on the keys pressed
+        self.player_sprite.change_x = 0
+
+        if self.left_key_down and not self.right_key_down:
+            self.player_sprite.change_x = -PLAYER_MOVEMENT_SPEED
+        elif self.right_key_down and not self.left_key_down:
+            self.player_sprite.change_x = PLAYER_MOVEMENT_SPEED
+
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed."""
 
@@ -139,17 +149,21 @@ class MyGame(arcade.Window):
         # Left
         elif key == arcade.key.LEFT or key == arcade.key.A:
             self.left_key_down = True
+            self.update_player_speed()
 
         # Right
         elif key == arcade.key.RIGHT or key == arcade.key.D:
             self.right_key_down = True
+            self.update_player_speed()
 
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key."""
         if key == arcade.key.LEFT or key == arcade.key.A:
             self.left_key_down = False
+            self.update_player_speed()
         elif key == arcade.key.RIGHT or key == arcade.key.D:
             self.right_key_down = False
+            self.update_player_speed()
 
     def center_camera_to_player(self):
         # Find where player is, then calculate lower left corner from that
@@ -168,14 +182,6 @@ class MyGame(arcade.Window):
 
     def on_update(self, delta_time):
         """Movement and game logic"""
-
-        # Set player speed
-        if self.left_key_down and not self.right_key_down:
-            self.player_sprite.change_x = -PLAYER_MOVEMENT_SPEED
-        elif self.right_key_down and not self.left_key_down:
-            self.player_sprite.change_x = PLAYER_MOVEMENT_SPEED
-        else:
-            self.player_sprite.change_x = 0
 
         # Move the player with the physics engine
         self.physics_engine.update()
