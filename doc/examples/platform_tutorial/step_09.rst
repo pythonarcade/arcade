@@ -25,12 +25,8 @@ From this point on in the tutorial, every chapter will be working with a Tiled m
 want to create your own yet, Arcade ships a few examples in it's included ``resources`` folder, which
 is what these examples pull from, so you don't have to create your own maps yet if you don't want to.
 
-.. Note::
-
-   Arcade can only work with JSON maps from Tiled. TMX maps will not work. Make sure to save/export your maps accordingly.
-
 We'll start with a basic ``map.json`` file provided by Arcade. You can open this file in Tiled and look at how it's setup,
-but we'll go over some of the basics now.
+but we'll go over some of the basics now. You can save files in either the "JSON" or "TMX" format.
 
 In this map we have two layers named "Platforms" and "Coins". On the platforms layer are all of the blocks
 which a player will collide with using the physics engine, and on the coins layer are all the coins
