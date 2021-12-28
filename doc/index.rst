@@ -39,7 +39,7 @@ The Python Arcade Library
             <h2 style="width:auto;">Examples</h2>
           </div>
           <ul>
-          <li><a href="examples/index.html">All Examples</a></li>
+          <li><a href="examples/index.html">All Example Code</a></li>
           <li><a href="examples/index.html#sprites">Sprites</a></li>
           <li><a href="examples/index.html#shooting-with-sprites">Shooting</a></li>
           <li><a href="examples/index.html#platformers">Platformers</a></li>
