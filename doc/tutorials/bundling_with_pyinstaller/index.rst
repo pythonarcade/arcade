@@ -76,7 +76,9 @@ For simple games, this is all you need to know! But, if your game loads any kind
 Handling Data Files
 -------------------
 
-
+.. image:: ../../images/data-files.svg
+    :width: 20%
+    :class: right-image
 
 When creating a bundle, PyInstaller first examines your project and automatically identifies nearly everything your project needs (a Python interpreter,
 installed modules, etc). But, it can't automatically determine what data files your game is loading from disk (images, sounds,
