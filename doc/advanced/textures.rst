@@ -42,7 +42,7 @@ Texture Cache
 -------------
 
 Arcade is caching texture instances based on the ``name`` attribute
-to significantly increase load times.
+to significantly speed up loading times.
 
 .. code:: python
 
