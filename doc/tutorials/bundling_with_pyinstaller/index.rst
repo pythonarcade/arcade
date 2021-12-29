@@ -3,14 +3,11 @@
 Bundling a Game with PyInstaller
 ================================
 
-.. note::
+.. image:: ../../images/floppy-disk.svg
+    :width: 30%
+    :class: right-image
 
-    You must have Arcade_ version 2.6.0 or greater and Pymunk_ 6.0.0 or greater
-    for the instructions below to work. The pyinstaller hook from Arcade_ 2.5.x
-    may work with certain versions of Pymunk_, however support for Pyinstaller
-    was not fully stable across all operating systems until Arcade_ 2.6.0
-
-You've written your game using Arcade_ and it is a masterpiece! Congrats! Now
+You've written your game using Arcade and it is a masterpiece! Congrats! Now
 you want to share it with others. That usually means helping people install
 Python, downloading the necessary modules, copying your code, and then getting
 it all working. Sharing is not an easy task. Well, PyInstaller_ can change all
@@ -18,25 +15,26 @@ that!
 
 PyInstaller_ is a tool for Python that lets you bundle up an entire Python
 application into a one-file executable bundle that you can easily share.
-Thankfully, it works great with Arcade_!
+Thankfully, it works great with Arcade!
 
 We will be demonstrating usage with Windows, but everything should work exactly
 the same across Windows, Mac, and Linux. Note that you can only build for the
 system you are on. This means that in order to make a Windows build, you must
 be on a Windows machine, same thing for Linux and Mac. 
 
-Note that Mac bundles will have about an additional 60MB of data added into them
-over Windows/Linux due to Arcade needing to add some additional libraries for Mac.
-
 Bundling a Simple Arcade Script
 -------------------------------
 
+.. image:: ../../images/script.svg
+    :width: 20%
+    :class: right-image
+
 To demonstrate how PyInstaller works, we will:
 
-* install PyInstaller
-* create a simple example application that uses Arcade
-* bundle the application into a one-file executable
-* run the application
+* Install PyInstaller
+* Create a simple example application that uses Arcade
+* Bundle the application into a one-file executable
+* Run the application
 
 First, make sure both Arcade and PyInstaller are installed in your Python environment with:
 
@@ -44,12 +42,14 @@ First, make sure both Arcade and PyInstaller are installed in your Python enviro
 
     pip install arcade pyinstaller
 
-Then create a file called ``myscript.py`` that contains the following:
+Then we need our game. In this case, we'll start simple. We need a one-file game that doesn't require
+any additional images or sounds. Once we have that working, we can get more complicated.
+Create a file called ``main.py`` that contains the following:
 
 .. code-block:: python
 
     import arcade
-    arcade.open_window(400, 400, "My Script")
+    arcade.open_window(400, 400, "My Game")
     arcade.start_render()
     arcade.draw_circle_filled(200, 200, 100, arcade.color.BLUE)
     arcade.finish_render()
@@ -59,10 +59,10 @@ Now, create a one-file executable bundle file by running PyInstaller:
 
 .. code-block:: bash
 
-    pyinstaller myscript.py --onefile
+    pyinstaller main.py --onefile
 
 PyInstaller generates the executable that is a bundle of your game. It puts it in the ``dist\`` folder under your current working directory. Look for a
-file named ``myscript.exe`` in ``dist\``. Run this and see the example application start up!
+file named ``main.exe`` in ``dist\``. Run this and see the example application start up!
 
 You can copy this file wherever you want on your computer and run it. Or, share it with others. Everything your
 script needs is inside this executable file.
@@ -71,6 +71,8 @@ For simple games, this is all you need to know! But, if your game loads any kind
 
 Handling Data Files
 -------------------
+
+
 
 When creating a bundle, PyInstaller first examines your project and automatically identifies nearly everything your project needs (a Python interpreter,
 installed modules, etc). But, it can't automatically determine what data files your game is loading from disk (images, sounds,
@@ -135,6 +137,10 @@ Then, you would use a PyInstaller command like this to include the data file in 
 One Data Directory
 ~~~~~~~~~~~~~~~~~~
 
+.. image:: ../../images/document-icon.svg
+    :width: 20%
+    :class: right-image
+
 If you have a directory of data files (such as ``images``), refer to the data directory using a relative path like this:
 
 .. code-block:: python
@@ -165,7 +171,7 @@ that you write your game so that all of your data files are under one root direc
 can use subdirectories to help organize everything. An example directory tree could look like::
 
     project/
-    |--- game.py
+    |--- main.py
     |--- resources/
          |--- images/
          |    |--- enemy.jpg
