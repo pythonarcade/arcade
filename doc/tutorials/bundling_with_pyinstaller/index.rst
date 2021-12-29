@@ -47,15 +47,19 @@ any additional images or sounds. Once we have that working, we can get more comp
 Create a file called ``main.py`` that contains the following:
 
 .. code-block:: python
+    :caption: Sample game -- main.py
 
     import arcade
+
     arcade.open_window(400, 400, "My Game")
+
     arcade.start_render()
     arcade.draw_circle_filled(200, 200, 100, arcade.color.BLUE)
     arcade.finish_render()
+
     arcade.run()
 
-Now, create a one-file executable bundle file by running PyInstaller:
+Now, create a one-file executable bundle file by running PyInstaller from the command-line:
 
 .. code-block:: bash
 
@@ -81,7 +85,7 @@ This is done with PyInstaller's ``--add-data`` flag:
 
 .. code-block:: bash
 
-    pyinstaller myscript.py --add-data "stripes.jpg;."
+    pyinstaller main.py --add-data "stripes.jpg;."
 
 The first item passed to ``--add-data`` is the "source" file or directory (ex: ``stripes.jpg``) identifying what
 PyInstaller should include in the bundle. The item after the semicolon is the "destination" (ex: "``.``"), which
@@ -130,9 +134,9 @@ Then, you would use a PyInstaller command like this to include the data file in 
 
 .. code-block:: bash
 
-    pyinstaller myscript.py --add-data "stripes.jpg;."
+    pyinstaller main.py --add-data "stripes.jpg;."
     ...or...
-    pyinstaller myscript.py --add-data "*.jpg;."
+    pyinstaller main.py --add-data "*.jpg;."
 
 One Data Directory
 ~~~~~~~~~~~~~~~~~~
@@ -152,7 +156,7 @@ Then, you would use a PyInstaller command like this to include the directory in 
 
 .. code-block:: bash
 
-    pyinstaller myscript.py --add-data "images;images"
+    pyinstaller main.py --add-data "images;images"
 
 Multiple Data Files and Directories
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -161,7 +165,7 @@ You can use the ``--add-data`` flag multiple times to add multiple files and dir
 
 .. code-block:: bash
 
-    pyinstaller myscript.py --add-data "player.jpg;." --add-data "enemy.jpg;." --add-data "music;music"
+    pyinstaller main.py --add-data "player.jpg;." --add-data "enemy.jpg;." --add-data "music;music"
 
 One Directory for Everything
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -194,7 +198,7 @@ And, you would include this entire directory tree into the bundle like this:
 
 .. code-block:: bash
 
-    pyinstaller myscript.py --add-data "resources;resources"
+    pyinstaller main.py --add-data "resources;resources"
 
 It is worth spending a bit of time to plan out how you will layout and load your data files in order to keep
 the bundling process simple.
@@ -209,6 +213,10 @@ have what you need to bundle your game and share it with your new fans!
 
 Troubleshooting
 ---------------
+
+.. image:: ../../images/detective.svg
+    :width: 30%
+    :class: right-image
 
 Use a One-Folder Bundle for Troubleshooting
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
