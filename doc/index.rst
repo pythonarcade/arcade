@@ -36,10 +36,10 @@ The Python Arcade Library
             <img style="width:78px;" src="_static/example_code.svg">
           </div>
           <div style="display:inline-block;">
-            <h2 style="width:auto;">Examples</h2>
+            <h2 style="width:auto;">Example Code</h2>
           </div>
           <ul>
-          <li><a href="examples/index.html">All Example Code</a></li>
+          <li><a href="examples/index.html">All Examples</a></li>
           <li><a href="examples/index.html#sprites">Sprites</a></li>
           <li><a href="examples/index.html#shooting-with-sprites">Shooting</a></li>
           <li><a href="examples/index.html#platformers">Platformers</a></li>
@@ -71,11 +71,12 @@ The Python Arcade Library
           </div>
           <ul>
             <li><a href="examples/platform_tutorial/index.html">Simple Platformer</a></li>
-            <li><a href="tutorials/pymunk_platformer/index.html">Platformer with Physics</a></li>
-            <li><a href="tutorials/views/index.html">Views for Menu, Title, Game Over Screens</a></li>
-            <li><a href="tutorials/card_game/index.html">Solitaire</a></li>
-            <li><a href="tutorials/gpu_particle_burst/index.html">GPU Particle Burst</a></li>
-            <li><a href="https://realpython.com/arcade-python-game-framework/">Real Python: Primer on Arcade</a></li>
+            <li><a href="tutorials/pymunk_platformer/index.html">Platformer with Pymunk Physics</a></li>
+            <li><a href="tutorials/views/index.html">Using Views for Menus, Game Over Screens</a></li>
+            <li><a href="tutorials/card_game/index.html">Solitaire Card Game</a></li>
+            <li><a href="tutorials/lights/index.html">Lights</a></li>
+            <li><a href="raycasting/lights/index.html">Ray-casting Shadows</a></li>
+            <li><a href="gui/index.html">GUI</a></li>
            </ul>
         </td>
 
