@@ -20,8 +20,8 @@ ContextStats
    :undoc-members:
    :show-inheritance:
 
-ContextStats
-------------
+Limits
+------
 
 .. autoclass:: arcade.gl.context.Limits
    :members:
