@@ -272,7 +272,7 @@ class VertexArray:
         if self._ibo is not None:
             count = self._ibo.size // 4
             # TODO: Support first argument by offsetting pointer (second last arg)
-            gl.glDrawElementsInstanced(mode, count, gl.GL_UNSIGNED_INT, None, instances)
+            gl.glDrawElementsInstanced(mode, vertices or count, gl.GL_UNSIGNED_INT, None, instances)
         else:
             # print(f"glDrawArraysInstanced({mode}, {first}, {vertices}, {instances})")
             gl.glDrawArraysInstanced(mode, first, vertices, instances)
