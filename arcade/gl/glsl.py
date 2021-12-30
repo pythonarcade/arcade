@@ -36,7 +36,7 @@ class ShaderSource:
 
         self._version = self._find_glsl_version()
 
-        if self._type in [gl.GL_VERTEX_SHADER, gl.GL_FRAGMENT_SHADER]:
+        if self._type in [gl.GL_VERTEX_SHADER, gl.GL_GEOMETRY_SHADER]:
             self._parse_out_attributes()
 
     @property
