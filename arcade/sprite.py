@@ -926,9 +926,18 @@ class Sprite:
         self.sprite_lists.append(new_list)
 
     def register_physics_engine(self, physics_engine):
-        """Called by the Pymunk physics engine when this sprite is added
-        to that physics engine. Lets the sprite know about the engine and
-        remove itself if it gets deleted."""
+        """
+        Register a physics engine on the sprite.
+        This is only needed if you actually need a reference
+        to your physics engine in the sprite itself.
+        It has no other purposes.
+
+        The registered physics engines can be accessed
+        through the ``physics_engines`` attribute.
+
+        It can for example be the pymunk physics engine
+        or a custom one you made.
+        """
         self.physics_engines.append(physics_engine)
 
     def pymunk_moved(self, physics_engine, dx, dy, d_angle):
