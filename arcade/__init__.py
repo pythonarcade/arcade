@@ -142,6 +142,7 @@ from .drawing_support import make_transparent_color
 from .drawing_support import uint24_to_three_byte_color
 from .drawing_support import uint32_to_four_byte_color
 from .drawing_support import color_from_hex_string
+from .drawing_support import float_to_byte_color
 
 from .texture import Texture
 from .texture import cleanup_texture_cache

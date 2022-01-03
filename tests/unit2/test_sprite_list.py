@@ -139,3 +139,40 @@ def test_sort(ctx):
     spritelist.sort(key=lambda x: x.position[0])
     assert spritelist.sprite_list == sprites_v1
     assert spritelist._sprite_index_data[0:3] == array("f", [0, 1, 2])
+
+
+def test_color():
+    """Spritelist color"""
+    sp = arcade.SpriteList()
+    # Check default values
+    assert sp.color == (255, 255, 255, 255)
+    assert sp.color_normalized == (1.0, 1.0, 1.0, 1.0)
+    assert sp.alpha == 255
+    assert sp.alpha_normalized == 1.0
+
+    # Change color and test
+    sp.color = 16, 32, 64, 128
+    assert sp.color == (16, 32, 64, 128)
+    assert sp.color_normalized == pytest.approx((16 / 255, 32 / 255, 64 / 255, 128 / 255), rel=0.01)
+    assert sp.alpha == 128
+    assert sp.alpha_normalized == pytest.approx(128 / 256, rel=0.01)
+
+    # Alpha
+    sp.alpha = 172
+    assert sp.alpha == 172
+    assert sp.alpha_normalized == pytest.approx(172/255, rel=0.01)
+    sp.alpha_normalized == 1.0
+
+    # overflow
+    sp.alpha = 1000
+    assert sp.alpha == 255
+    assert sp.alpha_normalized == 1.0
+    sp.alpha_normalized = 20.0
+    assert sp.alpha_normalized == 1.0
+    assert sp.alpha == 255
+    sp.alpha = -1000
+    assert sp.alpha == 0
+    assert sp.alpha_normalized == 0.0
+    sp.alpha_normalized = -1000
+    assert sp.alpha == 0
+    assert sp.alpha_normalized == 0.0

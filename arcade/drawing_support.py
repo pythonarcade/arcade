@@ -4,7 +4,7 @@ Functions used to support drawing. No Pyglet/OpenGL here.
 
 import math
 
-from typing import Tuple, cast
+from typing import Tuple, Union, cast
 
 from arcade import Color
 from arcade import RGBA, RGB
@@ -75,7 +75,7 @@ def get_four_float_color(color: Color) -> Tuple[float, float, float, float]:
         raise ValueError("This isn't a 3 or 4 byte color")
 
 
-def get_three_float_color(color: Color) -> Tuple[float, float, float, float]:
+def get_three_float_color(color: Color) -> Tuple[float, float, float]:
     """
     Given a 3 or 4 RGB/RGBA color where each color goes 0-255, this
     returns a RGBA tuple where each item is a scaled float from 0 to 1.
@@ -131,3 +131,19 @@ def color_from_hex_string(code: str) -> RGBA:
         return int(code[2:4], 16), int(code[4:6], 16), int(code[6:8], 16), int(code[0:2], 16)
 
     raise ValueError("Improperly formatted color passed to color_from_hex")
+
+
+def float_to_byte_color(
+    color: Union[Tuple[float, float, float, float], Tuple[float, float, float]],
+) -> Color:
+    """
+    Converts a float colors to a byte color.
+    This works for 3 of 4-component colors.
+    """
+    if len(color) == 3:
+        return int(color[0] * 255), int(color[1] * 255), int(color[2] * 255)
+    elif len(color) == 4:
+        color = cast(Tuple[float, float, float, float], color)
+        return int(color[0] * 255), int(color[1] * 255), int(color[2] * 255), int(color[3] * 255)
+    else:
+        raise ValueError(f"color needs to have 3 or 4 components, not {color}")
