@@ -275,7 +275,7 @@ class Texture:
             self._sprite.height = height
             self._sprite.angle = angle
             self._sprite.alpha = alpha
-            self._sprite.texture_transform = texture_transform
+            # self._sprite.texture_transform = texture_transform
             self._sprite_list.draw()
 
     def draw_scaled(self, center_x: float, center_y: float,

@@ -9,12 +9,32 @@ import logging
 import random
 from array import array
 from collections import deque
-from typing import (TYPE_CHECKING, Deque, Dict, Iterator, List, Optional, Set,
-                    Tuple, TypeVar, Union)
+from typing import (
+    TYPE_CHECKING,
+    Deque,
+    Dict,
+    Iterator,
+    List,
+    Optional,
+    Set,
+    Tuple,
+    TypeVar,
+    Union,
+)
 
-from arcade import Color, Sprite, get_window, gl
+from arcade import (
+    Color,
+    Sprite,
+    get_window,
+    gl,
+    float_to_byte_color,
+    get_four_float_color,
+)
 from arcade.context import ArcadeContext
-from pyglet.math import Mat3
+from pyglet.math import (
+    Mat3,
+    clamp,
+)
 
 if TYPE_CHECKING:
     from arcade import Texture, TextureAtlas
@@ -90,6 +110,7 @@ class SpriteList:
         self.extra = None
         self._lazy = lazy
         self._visible = visible
+        self._color: Tuple[float, float, float, float] = (1.0, 1.0, 1.0, 1.0)
 
         # The initial capacity of the spritelist buffers (internal)
         self._buf_capacity = abs(capacity) or 100
@@ -270,12 +291,78 @@ class SpriteList:
         """
         Get or set the visible flag for this spritelist.
         If visible is ``False`` the ``draw()`` has no effect.
+
+        :rtype: bool
         """
         return self._visible
 
     @visible.setter
     def visible(self, value: bool):
         self._visible = value
+
+    @property
+    def color(self) -> Color:
+        """
+        Get or set the spritelist color. This will affect all sprites in the list.
+        Individual sprites can also be assigned a color.
+        These colors are converted into floating point colors (0.0 -> 1.0)
+        and multiplied together.
+
+        The final color of the sprite is::
+
+            texture_color * sprite_color * spritelist_color
+
+        :rtype: Color
+        """
+        return float_to_byte_color(self._color)
+
+    @color.setter
+    def color(self, color: Color):
+        self._color = get_four_float_color(color)
+
+    @property
+    def color_normalized(self) -> Tuple[float, float, float, float]:
+        """
+        Get or set the spritelist color in normalized form (0.0 -> 1.0 floats).
+        This property works the same as :py:attr:`~arcade.SpriteList.color`.
+        """
+        return self._color
+
+    @color_normalized.setter
+    def color_normalized(self, value):
+        self._color = value
+
+    @property
+    def alpha(self) -> int:
+        """
+        Get or set the alpha/transparency of the entire spritelist.
+        This is a byte value from 0 to 255 were 0 is completely
+        transparent/invisible and 255 is opaque.
+        """
+        return int(self._color[3] * 255)
+
+    @alpha.setter
+    def alpha(self, value: int):
+        value = clamp(value, 0, 255)
+        self._color = self._color[0], self._color[1], self._color[2], value / 255
+
+    @property
+    def alpha_normalized(self) -> float:
+        """
+        Get or set the alpha/transparency of all the sprites in the list.
+        This is a floating point number from 0.0 to 1.0 were 0.0 is completely
+        transparent/invisible and 1.0 is opaque.
+
+        This is a shortcut for setting the alpha value in the spritelist color.
+
+        :rtype: float
+        """
+        return self._color[3]
+
+    @alpha_normalized.setter
+    def alpha_normalized(self, value: float):
+        value = clamp(value, 0.0, 1.0)
+        self._color = self._color[0], self._color[1], self._color[2], value
 
     @property
     def atlas(self) -> "TextureAtlas":
@@ -920,19 +1007,15 @@ class SpriteList:
             else:
                 self.atlas.texture.filter = self.ctx.LINEAR, self.ctx.LINEAR
 
-        # TODO: Find a way to re-enable texture transforms
-        # texture_transform = None
-        # if len(self.sprite_list) > 0:
-        #     # always wrap texture transformations with translations
-        #     # so that rotate and resize operations act on the texture
-        #     # center by default
-        #     texture_transform = Mat3().translate(-0.5, -0.5).multiply(self.sprite_list[0] \
-        #     .texture_transform.v).multiply(Mat3().translate(0.5, 0.5).v)
-        # else:
-        #     texture_transform = Mat3()
-        # self.program['TextureTransform'] = texture_transform
-
-        self.program["TextureTransform"] = Mat3()
+        try:
+            self.program["spritelist_color"] = self._color
+        except KeyError:
+            pass
+        # TODO: Should be removed in future versions. No longer in use.
+        try:
+            self.program["TextureTransform"] = Mat3()
+        except KeyError:
+            pass
 
         self._atlas.texture.use(0)
         self._atlas.use_uv_texture(1)

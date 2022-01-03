@@ -31,7 +31,7 @@ from arcade import make_soft_circle_texture
 from arcade import make_circle_texture
 from arcade import Color
 from arcade.color import BLACK
-from pyglet.math import Mat3
+# from pyglet.math import Mat3
 from arcade.resources import resolve_resource_path
 
 from arcade.arcade_types import RGB, Point, PointList
@@ -215,7 +215,6 @@ class Sprite:
         self.physics_engines: List[Any] = []
         self._sprite_list: Optional["SpriteList"] = None  # Used for Sprite.draw()
 
-        self._texture_transform = None
         # Pymunk specific properties
         self._pymunk: Optional[PyMunk] = None
         self.force = [0, 0]
@@ -819,16 +818,6 @@ class Sprite:
 
     texture = property(_get_texture, _set_texture2)
 
-    def _get_texture_transform(self) -> Mat3:
-        if self._texture_transform is None:
-            self._texture_transform = Mat3()
-        return self._texture_transform
-
-    def _set_texture_transform(self, m: Mat3):
-        self._texture_transform = m
-
-    texture_transform = property(_get_texture_transform, _set_texture_transform)
-
     def _get_color(self) -> RGB:
         """
         Return the RGB color associated with the sprite.
@@ -926,9 +915,18 @@ class Sprite:
         self.sprite_lists.append(new_list)
 
     def register_physics_engine(self, physics_engine):
-        """Called by the Pymunk physics engine when this sprite is added
-        to that physics engine. Lets the sprite know about the engine and
-        remove itself if it gets deleted."""
+        """
+        Register a physics engine on the sprite.
+        This is only needed if you actually need a reference
+        to your physics engine in the sprite itself.
+        It has no other purposes.
+
+        The registered physics engines can be accessed
+        through the ``physics_engines`` attribute.
+
+        It can for example be the pymunk physics engine
+        or a custom one you made.
+        """
         self.physics_engines.append(physics_engine)
 
     def pymunk_moved(self, physics_engine, dx, dy, d_angle):

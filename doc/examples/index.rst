@@ -606,11 +606,6 @@ Odds and Ends
 
    :ref:`performance_statistics_example`
 
-.. figure:: thumbs/texture_transform.png
-   :figwidth: 170px
-
-   :ref:`texture_transform`
-
 .. figure:: thumbs/text_loc_example_translated.png
    :figwidth: 170px
 
