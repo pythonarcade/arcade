@@ -353,7 +353,7 @@ def check_for_collision_with_lists(sprite: Sprite,
     if not isinstance(sprite, Sprite):
         raise TypeError(f"Parameter 1 is not an instance of the Sprite class, it is an instance of {type(sprite)}.")
 
-    sprites = []
+    sprites: List[Sprite] = []
 
     for sprite_list in sprite_lists:
 
@@ -366,6 +366,10 @@ def check_for_collision_with_lists(sprite: Sprite,
         else:
             # GPU transform
             sprite_list_to_check = _get_nearby_sprites(sprite, sprite_list)  # type: ignore
+
+        for sprite2 in sprite_list_to_check:
+            if sprite is not sprite2 and _check_for_collision(sprite, sprite2):
+                sprites.append(sprite2)
 
     return sprites
 
