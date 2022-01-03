@@ -342,6 +342,7 @@ def check_for_collision_with_lists(sprite: Sprite,
                                    method=1) -> List[Sprite]:
     """
     Check for a collision between a Sprite, and a list of SpriteLists.
+
     :param Sprite sprite: Sprite to check
     :param List[SpriteList] sprite_list: SpriteLists to check against
     :param int method: Collision check method. 1 is Spatial Hashing if available,
