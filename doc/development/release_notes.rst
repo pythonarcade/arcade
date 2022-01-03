@@ -7,8 +7,25 @@ Release Notes
 
 Keep up-to-date with the latest changes to the Arcade library by the release notes.
 
+2.6.9
+-----
+
+*Unreleased*
+
+* Collision checking against one or more sprite lists
+  now uses the GPU via a 'transform' for much better performance.
+  The :meth:`arcade.check_for_collision_with_lists` and :meth:`arcade.check_for_collision_with_lists`
+  methods now support selection between spatial, GPU, and CPU methods of detection.
+  Performance is fast enough now, unless you have a very large map, turning on spatial hashing
+  isn't necessary.
+* Arcade.gl: Allow specifying number of vertices when transforming with index buffer.
+* Fix bug arround parsing out attributes from geometry shaders.
+* Update pyinstaller instructions.
+* Other documentation updates
+* Add support for custom resource handles
+
 2.6.8
-------------------
+-----
 
 *Released on 2021-Dec-25*
 

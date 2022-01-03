@@ -118,6 +118,10 @@ class ArcadeContext(Context):
             geometry_shader=":resources:/shaders/atlas/resize_gs.glsl",
             fragment_shader=":resources:/shaders/atlas/resize_fs.glsl",
         )
+        self.collision_detection_program = self.load_program(
+            vertex_shader=":resources:shaders/collision/col_trans_vs.glsl",
+            geometry_shader=":resources:shaders/collision/col_trans_gs.glsl",
+        )
         self.atlas_resize_program["atlas_old"] = 0  # Configure texture channels
         self.atlas_resize_program["atlas_new"] = 1
         self.atlas_resize_program["texcoords_old"] = 2

@@ -52,10 +52,11 @@ class SpriteList:
     For the advanced options check the advanced section in the
     arcade documentation.
 
-    :param bool use_spatial_hash: If set to True, this will make moving a sprite
+    :param bool use_spatial_hash: If set to True, this will make creating a sprite, and
+            moving a sprite
             in the SpriteList slower, but it will speed up collision detection
             with items in the SpriteList. Great for doing collision detection
-            with static walls/platforms.
+            with static walls/platforms in large maps.
     :param int spatial_hash_cell_size: The cell size of the spatial hash (default: 128)
     :param bool is_static: DEPRECATED. This parameter has no effect.
     :param TextureAtlas atlas: (Advanced) The texture atlas for this sprite list. If no

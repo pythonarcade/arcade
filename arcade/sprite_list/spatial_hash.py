@@ -1,4 +1,5 @@
 import logging
+import struct
 
 from typing import (
     Iterable,
@@ -14,6 +15,7 @@ from arcade import rotate_point
 from arcade import are_polygons_intersecting
 from arcade import get_distance_between_sprites
 from arcade import is_point_in_polygon
+from arcade import get_window
 from .sprite_list import SpriteList
 
 LOG = logging.getLogger(__name__)
@@ -251,14 +253,53 @@ def _check_for_collision(sprite1: Sprite, sprite2: Sprite) -> bool:
     )
 
 
+def _get_nearby_sprites(sprite, sprite_list):
+    if len(sprite_list) == 0:
+        return []
+
+    # Update the position and size to check
+    ctx = get_window().ctx
+    ctx.collision_detection_program["check_pos"] = sprite.position
+    ctx.collision_detection_program["check_size"] = sprite.width, sprite.height
+
+    # Ensure the result buffer can fit all the sprites (worst case)
+    buffer = ctx.buffer(reserve=len(sprite_list) * 4)
+
+    # Run the transform shader emitting sprites close to the configured position and size.
+    # This runs in a query so we can measure the number of sprites emitted.
+    query = ctx.query()
+    with query:
+        sprite_list._geometry.transform(ctx.collision_detection_program, buffer, vertices=len(sprite_list))
+
+    # Store the number of sprites emitted
+    num_sprites = query.primitives_generated
+    # print(num_sprites, self.query.time_elapsed, self.query.time_elapsed / 1_000_000_000)
+
+    # If no sprites emitted we can just return an empty list
+    if num_sprites == 0:
+        return []
+
+    # .. otherwise build and return a list of the sprites selected by the transform
+    sprite_list_to_check = [
+        sprite_list[i]
+        for i in struct.unpack(f'{num_sprites}i', buffer.read(size=num_sprites * 4))
+    ]
+
+    return sprite_list_to_check
+
+
 def check_for_collision_with_list(
-    sprite: Sprite, sprite_list: SpriteList
+    sprite: Sprite,
+    sprite_list: SpriteList,
+    method=1
 ) -> List[Sprite]:
     """
     Check for a collision between a sprite, and a list of sprites.
 
     :param Sprite sprite: Sprite to check
     :param SpriteList sprite_list: SpriteList to check against
+    :param int method: Collision check method. 1 is Spatial Hashing if available,
+       2 is GPU based, 3 is slow CPU-bound check-everything. Defaults to 1.
 
     :returns: List of sprites colliding, or an empty list.
     :rtype: list
@@ -272,21 +313,13 @@ def check_for_collision_with_list(
             f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList."
         )
 
-    if (
-        sprite_list.use_spatial_hash is None
-        and len(sprite_list) > 30
-        and sprite_list.percent_sprites_moved < 10
-    ):
-        LOG.debug(
-            f"Enabling spatial hash - Spatial hash is none, sprite list "
-            f"is {len(sprite_list)} elements. Percent moved "
-            f"{sprite_list._percent_sprites_moved * 100}."
-        )
-        sprite_list.enable_spatial_hashing()
-
-    if sprite_list.spatial_hash:
+    if sprite_list.spatial_hash and method == 1:
+        # Spatial
         sprite_list_to_check = sprite_list.spatial_hash.get_objects_for_box(sprite)
         # checks_saved = len(sprite_list) - len(sprite_list_to_check)
+    elif method == 2:
+        # GPU transform
+        sprite_list_to_check = _get_nearby_sprites(sprite, sprite_list)  # type: ignore
     else:
         sprite_list_to_check = sprite_list  # type: ignore
 
@@ -305,11 +338,14 @@ def check_for_collision_with_list(
 
 
 def check_for_collision_with_lists(sprite: Sprite,
-                                   sprite_lists: Iterable[SpriteList]) -> List[Sprite]:
+                                   sprite_lists: Iterable[SpriteList],
+                                   method=1) -> List[Sprite]:
     """
     Check for a collision between a Sprite, and a list of SpriteLists.
     :param Sprite sprite: Sprite to check
     :param List[SpriteList] sprite_list: SpriteLists to check against
+    :param int method: Collision check method. 1 is Spatial Hashing if available,
+       2 is GPU based, 3 is slow CPU-bound check-everything. Defaults to 1.
     :returns: List of sprites colliding, or an empty list.
     :rtype: list
     """
@@ -318,16 +354,15 @@ def check_for_collision_with_lists(sprite: Sprite,
 
     sprites = []
 
-    for sprite_list in sprite_lists:  
-        if sprite_list.use_spatial_hash is None and len(sprite_list) > 30 and sprite_list.percent_sprites_moved < 10:
-            LOG.debug(f"Enabling spatial hash - Spatial hash is none, sprite list "
-                      f"is {len(sprite_list)} elements. Percent moved "
-                      f"{sprite_list._percent_sprites_moved * 100}.")
-            sprite_list.enable_spatial_hashing()
+    for sprite_list in sprite_lists:
 
-        if sprite_list.use_spatial_hash:
-            sprite_list_to_check = sprite_list.spatial_hash.get_objects_for_box(sprite)  # type: ignore
+        if sprite_list.spatial_hash and method == 1:
+            # Spatial
+            sprite_list_to_check = sprite_list.spatial_hash.get_objects_for_box(sprite)
             # checks_saved = len(sprite_list) - len(sprite_list_to_check)
+        elif method == 2:
+            # GPU transform
+            sprite_list_to_check = _get_nearby_sprites(sprite, sprite_list)  # type: ignore
         else:
             sprite_list_to_check = sprite_list  # type: ignore
 
