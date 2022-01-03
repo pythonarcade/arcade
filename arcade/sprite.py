@@ -31,7 +31,7 @@ from arcade import make_soft_circle_texture
 from arcade import make_circle_texture
 from arcade import Color
 from arcade.color import BLACK
-from pyglet.math import Mat3
+# from pyglet.math import Mat3
 from arcade.resources import resolve_resource_path
 
 from arcade.arcade_types import RGB, Point, PointList
@@ -215,7 +215,6 @@ class Sprite:
         self.physics_engines: List[Any] = []
         self._sprite_list: Optional["SpriteList"] = None  # Used for Sprite.draw()
 
-        self._texture_transform = None
         # Pymunk specific properties
         self._pymunk: Optional[PyMunk] = None
         self.force = [0, 0]
@@ -818,16 +817,6 @@ class Sprite:
         return self._texture
 
     texture = property(_get_texture, _set_texture2)
-
-    def _get_texture_transform(self) -> Mat3:
-        if self._texture_transform is None:
-            self._texture_transform = Mat3()
-        return self._texture_transform
-
-    def _set_texture_transform(self, m: Mat3):
-        self._texture_transform = m
-
-    texture_transform = property(_get_texture_transform, _set_texture_transform)
 
     def _get_color(self) -> RGB:
         """

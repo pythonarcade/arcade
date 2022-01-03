@@ -1006,20 +1006,12 @@ class SpriteList:
             else:
                 self.atlas.texture.filter = self.ctx.LINEAR, self.ctx.LINEAR
 
-        # TODO: Find a way to re-enable texture transforms
-        # texture_transform = None
-        # if len(self.sprite_list) > 0:
-        #     # always wrap texture transformations with translations
-        #     # so that rotate and resize operations act on the texture
-        #     # center by default
-        #     texture_transform = Mat3().translate(-0.5, -0.5).multiply(self.sprite_list[0] \
-        #     .texture_transform.v).multiply(Mat3().translate(0.5, 0.5).v)
-        # else:
-        #     texture_transform = Mat3()
-        # self.program['TextureTransform'] = texture_transform
-
         try:
             self.program["spritelist_color"] = self._color
+        except KeyError:
+            pass
+        # TODO: Should be removed in future versions. No longer in use.
+        try:
             self.program["TextureTransform"] = Mat3()
         except KeyError:
             pass
