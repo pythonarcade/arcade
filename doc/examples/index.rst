@@ -402,6 +402,9 @@ Procedural Generation
 
    :ref:`procedural_caves_bsp`
 
+View Management
+---------------
+
 .. _view-examples:
 
 Instruction Screens and Game Over Screens
@@ -442,7 +445,7 @@ Resizable Window and Fullscreen Games
 
 
 Graphical User Interface
-^^^^^^^^^^^^^^^^^^^^^^^^
+------------------------
 
 .. figure:: thumbs/gui_flat_button.png
    :figwidth: 170px

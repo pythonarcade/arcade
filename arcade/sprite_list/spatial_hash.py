@@ -299,7 +299,7 @@ def check_for_collision_with_list(
     :param Sprite sprite: Sprite to check
     :param SpriteList sprite_list: SpriteList to check against
     :param int method: Collision check method. 1 is Spatial Hashing if available,
-                       2 is GPU based, 3 is slow CPU-bound check-everything. Defaults to 1.
+        2 is GPU based, 3 is slow CPU-bound check-everything. Defaults to 1.
 
     :returns: List of sprites colliding, or an empty list.
     :rtype: list
@@ -345,7 +345,7 @@ def check_for_collision_with_lists(sprite: Sprite,
     :param Sprite sprite: Sprite to check
     :param List[SpriteList] sprite_list: SpriteLists to check against
     :param int method: Collision check method. 1 is Spatial Hashing if available,
-                       2 is GPU based, 3 is slow CPU-bound check-everything. Defaults to 1.
+        2 is GPU based, 3 is slow CPU-bound check-everything. Defaults to 1.
 
     :returns: List of sprites colliding, or an empty list.
     :rtype: list
