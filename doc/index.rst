@@ -75,7 +75,7 @@ The Python Arcade Library
             <li><a href="tutorials/views/index.html">Using Views for Menus, Game Over Screens</a></li>
             <li><a href="tutorials/card_game/index.html">Solitaire Card Game</a></li>
             <li><a href="tutorials/lights/index.html">Lights</a></li>
-            <li><a href="raycasting/lights/index.html">Ray-casting Shadows</a></li>
+            <li><a href="tutorials/raycasting/index.html">Ray-casting Shadows</a></li>
             <li><a href="gui/index.html">GUI</a></li>
            </ul>
         </td>
