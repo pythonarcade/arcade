@@ -9,7 +9,7 @@ OpenGL context. Arcade's representation of this context
 is the :py:attr:`arcade.Window.ctx`. This is an
 :py:class:`~arcade.ArcadeContext`.
 
-Working with OpenGL do add some challenges we need to be aware of.
+Working with OpenGL adds some challenges we need to be aware of.
 
 Initialization
 --------------
@@ -35,11 +35,11 @@ interact with anything that affects OpenGL objects.
 This will throw an error immediately.
 
 When threads are used in a project or underlying libraries
-there is always the risk that python's garbage collector
-will run outside the main thread. This is just how python's
+there is always the risk that Python's garbage collector
+will run outside the main thread. This is just how Python's
 garbage collector works.
 
-For this reason Arcade's default garbage collection mode
+For this reason, Arcade's default garbage collection mode
 requires actively releasing OpenGL objects. We are doing
 this for you in the :py:meth:`arcade.Window.flip` method that is
 automatically called every frame.

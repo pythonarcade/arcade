@@ -15,7 +15,7 @@ and we keep track of where these textures are located. Arcade's
 texture atlas reside in graphics memory and is dynamic meaning
 textures can be added and removed on the fly.
 
-Arcade's texture atlas also automatically resize when needed all the way
+Arcade's texture atlas also automatically resizes when needed all the way
 up to the maximum texture size your hardware supports. This requires
 a complete rebuild of the atlas, something we do on the gpu itself
 to minimize the impact of this operations. For average hardware 
@@ -53,7 +53,7 @@ of these if they run into limitations.
 
 Arcade has a global default texture atlas stored in ``window.ctx.default_atlas``.
 This is an instance of :py:class:`arcade.ArcadeContext` where the low
-level rendering api is accessed (OpenGL).
+level rendering API is accessed (OpenGL).
 
 Custom Atlas
 ------------

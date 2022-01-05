@@ -27,7 +27,7 @@ Step 2: Create One Particle For Each Click
     :width: 50%
 
 For this next section, we are going to draw a dot each time the user clicks
-her mouse on the screen.
+their mouse on the screen.
 
 For each click, we are going to create an instance of a ``Burst`` class that will eventually
 be turned into a full explosion. Each burst instance will be added to a list.
