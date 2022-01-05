@@ -48,6 +48,9 @@ LOG = logging.getLogger(__name__)
 # NOTE: Possibly we want to use slot 0 for this?
 _SPRITE_SLOT_INVISIBLE = 2000000000
 
+# The default capacity from spritelists
+_DEFAULT_CAPACITY = 100
+
 
 class SpriteList:
     """
@@ -113,9 +116,9 @@ class SpriteList:
         self._color: Tuple[float, float, float, float] = (1.0, 1.0, 1.0, 1.0)
 
         # The initial capacity of the spritelist buffers (internal)
-        self._buf_capacity = abs(capacity) or 100
+        self._buf_capacity = abs(capacity) or _DEFAULT_CAPACITY
         # The initial capacity of the index buffer (internal)
-        self._idx_capacity = abs(capacity) or 100
+        self._idx_capacity = abs(capacity) or _DEFAULT_CAPACITY
         # The number of slots used in the sprite buffer
         self._sprite_buffer_slots = 0
         # Number of slots used in the index buffer
@@ -141,7 +144,7 @@ class SpriteList:
         self._sprite_color_data = array("B", [0] * self._buf_capacity * 4)
         self._sprite_texture_data = array("f", [0] * self._buf_capacity)
         # Index buffer
-        self._sprite_index_data = array("I", [0] * self._idx_capacity)
+        self._sprite_index_data = array("i", [0] * self._idx_capacity)
 
         self._sprite_pos_buf = None
         self._sprite_size_buf = None
@@ -169,8 +172,9 @@ class SpriteList:
 
         self.spatial_hash: Optional[_SpatialHash] = None
         self._use_spatial_hash = use_spatial_hash
+        self._spatial_hash_cell_size = spatial_hash_cell_size
         if use_spatial_hash is True:
-            self.spatial_hash = _SpatialHash(cell_size=spatial_hash_cell_size)
+            self.spatial_hash = _SpatialHash(cell_size=self._spatial_hash_cell_size)
 
         LOG.debug(
             "[%s] Creating SpriteList use_spatial_hash=%s is_static=%s",
@@ -202,13 +206,13 @@ class SpriteList:
         )
 
         # Buffers for each sprite attribute (read by shader) with initial capacity
-        self._sprite_pos_buf = self.ctx.buffer(reserve=self._buf_capacity * 8 * 2)
-        self._sprite_size_buf = self.ctx.buffer(reserve=self._buf_capacity * 8 * 2)
-        self._sprite_angle_buf = self.ctx.buffer(reserve=self._buf_capacity * 8)
-        self._sprite_color_buf = self.ctx.buffer(reserve=self._buf_capacity * 4 * 4)
-        self._sprite_texture_buf = self.ctx.buffer(reserve=self._buf_capacity * 4)
+        self._sprite_pos_buf = self.ctx.buffer(reserve=self._buf_capacity * 8)  # 2 x 32 bit floats
+        self._sprite_size_buf = self.ctx.buffer(reserve=self._buf_capacity * 8)  # 2 x 32 bit floats
+        self._sprite_angle_buf = self.ctx.buffer(reserve=self._buf_capacity * 4)  # 32 bit float
+        self._sprite_color_buf = self.ctx.buffer(reserve=self._buf_capacity * 16)  # 4 x 32 bit floats
+        self._sprite_texture_buf = self.ctx.buffer(reserve=self._buf_capacity * 4)  # 32 bit floats
         # Index buffer
-        self._sprite_index_buf = self.ctx.buffer(reserve=self._idx_capacity * 4)
+        self._sprite_index_buf = self.ctx.buffer(reserve=self._idx_capacity * 4)  # 32 bit unsigned integers
 
         contents = [
             gl.BufferDescription(self._sprite_pos_buf, "2f", ["in_pos"]),
@@ -397,13 +401,46 @@ class SpriteList:
         return self.sprite_list.index(sprite)
 
     def clear(self):
-        """Clears the spritelist"""
-        # Reset buffers
-        # Reset SpatialHash
+        """
+        Remove all the sprites resetting the spritelist
+        to it's initial state.
+
+        The complexity of this method is ``O(N)``.
+        """
+        from .spatial_hash import _SpatialHash
+
         # Manually remove the spritelist from all sprites
-        #    We don't want lingering references in sprites
-        # Clear the slot_idx and slot info
-        raise NotImplementedError()
+        for sprite in self.sprite_list:
+            sprite.sprite_lists.remove(self)
+
+        self.sprite_list: List[Sprite] = []
+        self.sprite_slot: Dict[Sprite, int] = dict()
+
+        # Reset SpatialHash
+        if self.spatial_hash:
+            self.spatial_hash = _SpatialHash(cell_size=self._spatial_hash_cell_size)
+
+        # Clear the slot_idx and slot info and other states
+        self._buf_capacity = _DEFAULT_CAPACITY
+        self._idx_capacity = _DEFAULT_CAPACITY
+        self._sprite_buffer_slots = 0
+        self._sprite_index_slots = 0
+        self._sprite_buffer_free_slots = deque()
+        self._deferred_sprites = set()
+
+        # Reset buffers
+        # Python representation of buffer data
+        self._sprite_pos_data = array("f", [0] * self._buf_capacity * 2)
+        self._sprite_size_data = array("f", [0] * self._buf_capacity * 2)
+        self._sprite_angle_data = array("f", [0] * self._buf_capacity)
+        self._sprite_color_data = array("B", [0] * self._buf_capacity * 4)
+        self._sprite_texture_data = array("f", [0] * self._buf_capacity)
+        # Index buffer
+        self._sprite_index_data = array("I", [0] * self._idx_capacity)
+
+        if self._initialized:
+            self._initialized = False
+            self._init_deferred()
 
     def pop(self, index: int = -1) -> Sprite:
         """
