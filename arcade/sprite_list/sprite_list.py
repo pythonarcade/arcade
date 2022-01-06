@@ -163,10 +163,6 @@ class SpriteList:
         self._sprite_texture_changed = False
         self._sprite_index_changed = False
 
-        # Info for spatial hash
-        self._sprites_moved = 0
-        self._percent_sprites_moved = 0
-
         # Used in collision detection optimization
         from .spatial_hash import _SpatialHash
 
@@ -657,14 +653,6 @@ class SpriteList:
         self._sprite_index_changed = True
 
     @property
-    def percent_sprites_moved(self):
-        """
-        Property to estimate what percent of the sprites moved. Use internally to guess
-        if spatial hashing should be turned on or off if the user didn't specify.
-        """
-        return self._percent_sprites_moved
-
-    @property
     def use_spatial_hash(self) -> bool:
         """
         Boolean variable that controls if this sprite list is using a spatial hash.
@@ -929,7 +917,6 @@ class SpriteList:
         # noinspection PyProtectedMember
         self._sprite_pos_data[slot * 2 + 1] = sprite._position[1]
         self._sprite_pos_changed = True
-        self._sprites_moved += 1
 
     def update_angle(self, sprite: Sprite):
         """
@@ -1007,22 +994,7 @@ class SpriteList:
             return
 
         self._init_deferred()
-
-        # What percent of this sprite list moved? Used in guessing spatial hashing
-        self._percent_sprites_moved = self._sprites_moved / len(self.sprite_list) * 100
-        self._sprites_moved = 0
-
-        if any(
-                (
-                    self._sprite_pos_changed,
-                    self._sprite_size_changed,
-                    self._sprite_angle_changed,
-                    self._sprite_color_changed,
-                    self._sprite_texture_changed,
-                    self._sprite_index_changed,
-                )
-        ):
-            self._write_sprite_buffers_to_gpu()
+        self._write_sprite_buffers_to_gpu()
 
         self.ctx.enable(self.ctx.BLEND)
         # Set custom blend function or revert to default
