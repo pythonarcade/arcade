@@ -23,7 +23,7 @@ GUI
 
    :ref:`gui_scrollable_text`
 
-Arcade GUI module provides you classes to interact with the user using buttons, labels and many more.
+Arcade's GUI module provides you classes to interact with the user using buttons, labels and much more.
 
 Using those classes is way easier if the general concepts are known.
 It is recommended to read through them.

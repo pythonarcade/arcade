@@ -3,13 +3,13 @@
 Pygame Comparison
 =================
 
-Both Pygame and Arcade have are Python libraries for making it easy to create 2D games.
+Both Pygame and Arcade are Python libraries for making it easy to create 2D games.
 Pygame is raster-graphics based. It is very fast at manipulating individual pixels and can run on almost
 anything.
 Arcade uses OpenGL. It is very fast at drawing sprites and off-loads functions such as rotation
 and transparency to the graphics card.
 
-Here are some comparisons between Arcade 2.6 and Pygame 2.0.1
+Here are some comparisons between Arcade 2.6 and Pygame 2.0.1:
 
 .. list-table:: Library Information
    :widths: 33 33 33

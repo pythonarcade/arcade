@@ -161,7 +161,7 @@ Pyglet's continued development.
 * OpenGL
 
   * From version 2.6.6 Arcade is no longer using the ``auto`` garbage collection
-    mode for OpenGL resources. This mode has the same behavior as the python
+    mode for OpenGL resources. This mode has the same behavior as the Python
     garbage collection. Instead we're now using the ``context_gc`` mode were
     resources are released every time ``Window.flip()`` is called (every frame by default).
     This solves many problems such as threads in your project or external libraries
@@ -189,7 +189,7 @@ Pyglet's continued development.
 
 * Documentation
 
-  * Added api docs for ``arcade.gl``
+  * Added API docs for ``arcade.gl``
   * ``ArcadeContext`` should now show inherited members
   * Edge artifact page now encourage using ``pixelated`` argument instead of importing
     OpenGL enums from pyglet
@@ -235,7 +235,7 @@ Version 2.6.4
     until the first draw call or until SpriteList's :meth:`~arcade.SpriteList.initialize` is called. This means that
     sprite lists and sprites can now be created in threads.
   * Fixes/optimized :py:meth:`~arcade.SpriteList.reverse` and :py:meth:`~arcade.SpriteList.shuffle` methods.
-  * Added :py:meth:`~arcade.SpriteList.sort` method. This is identical to python's ``list.sort``
+  * Added :py:meth:`~arcade.SpriteList.sort` method. This is identical to Python's ``list.sort``
     but are many times faster sorting your sprites.
   * Removed noisy warning message when spritelists were created before the window
   * Fixed an issue with :py:meth:`~arcade.SpriteList.insert` when trying to insert sprites past
@@ -622,12 +622,12 @@ well with software rendering.
 ``arcade.gl.Context`` now supports an alternative garbage collection mode more
 compatible with threaded applications and garbage collection of OpenGL resources.
 OpenGL resources can only be accessed or destroyed from the same thread the
-window was created. In threaded applications the python garbage collector
+window was created. In threaded applications the Python garbage collector
 can in some cases try to destroy OpenGL objects possibly causing a hard crash.
 
 This can be configured when creating the ``arcade.Window`` passing in a new
-``gc_mode`` parameter. By default his parameter is ``"auto"`` providing
-the default garbage collection we have in python.
+``gc_mode`` parameter. By default this parameter is ``"auto"`` providing
+the default garbage collection we have in Python.
 
 Passing in ``"context_gc"`` on the other hand will move all "dead" OpenGL
 objects into ``Context.objects``. These can be garbage collected manually
@@ -766,7 +766,7 @@ General
 * ShapeLists should no longer share position between instances
 * GUI improvements: new UIImageToggle
 
-Low level rendering api (arcade.gl):
+Low level rendering API (arcade.gl):
 
 * ArcadeContext now has a load_texture method for creating opengl textures using Pillow.
 * Bug: Fixed an issue related to drawing indexed geometry with offset
