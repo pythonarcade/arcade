@@ -141,6 +141,20 @@ def test_sort(ctx):
     assert spritelist._sprite_index_data[0:3] == array("f", [0, 1, 2])
 
 
+def test_clear(ctx):
+    sp = arcade.SpriteList()
+    sp.clear()
+    sp.extend(make_named_sprites(100))
+    sp.clear()
+    assert len(sp) == 0
+    assert sp._sprite_index_slots == 0
+    assert sp._sprite_buffer_slots == 0
+    assert sp.atlas is not None
+    assert len(sp._sprite_index_data) == 100
+    assert len(sp._sprite_pos_data) == 100 * 2
+    assert sp._sprite_index_buf.size == 100 * 4
+    assert sp._sprite_pos_buf.size == 100 * 4 * 2
+
 def test_color():
     """Spritelist color"""
     sp = arcade.SpriteList()
@@ -162,6 +176,11 @@ def test_color():
     assert sp.alpha == 172
     assert sp.alpha_normalized == pytest.approx(172/255, rel=0.01)
     sp.alpha_normalized == 1.0
+
+    # Alpha Normalized
+    sp.alpha_normalized = 0.5
+    assert sp.alpha == 127
+    assert sp.alpha_normalized == 0.5
 
     # overflow
     sp.alpha = 1000

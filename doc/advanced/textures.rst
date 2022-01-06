@@ -12,10 +12,10 @@ using pymunk depending on the selected hit box algorithm. These texture
 objects are in other words responsible to provide raw RGBA pixel
 data to OpenGL and hit box geometry to the sprite engine.
 
-There is another texture type in arcade in the lower level
-OpenGL api: :py:class:`arcade.gl.Texture`. This represents and
+There is another texture type in Arcade in the lower level
+OpenGL API: :py:class:`arcade.gl.Texture`. This represents an
 actual OpenGL texture and should only be used when dealing
-with the low level rendering api :py:mod:`arcade.gl`.
+with the low level rendering API :py:mod:`arcade.gl`.
 
 Textures can be created/loaded before or after the window is created
 because they don't interact with OpenGL directly.

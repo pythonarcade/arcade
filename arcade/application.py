@@ -651,9 +651,9 @@ class Window(pyglet.window.Window):
         """ Set if we sync our draws to the monitors vertical sync rate. """
         super().set_vsync(vsync)
 
-    def set_mouse_platform_visible(self, platform_visible=None):
-        """ This does something. """
-        super().set_mouse_platform_visible(platform_visible)
+    # def set_mouse_platform_visible(self, platform_visible=None):
+    #     """ This does something. """
+    #     super().set_mouse_platform_visible(platform_visible)
 
     def set_exclusive_mouse(self, exclusive=True):
         """ Capture the mouse. """

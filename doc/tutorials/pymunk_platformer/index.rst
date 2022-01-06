@@ -162,7 +162,7 @@ The next step is to add in the physics engine.
 
 First, add some constants for our physics. Here we are setting:
 
-* A constant for the force of gravity
+* A constant for the force of gravity.
 * Values for "damping". A damping of 1.0 will cause an item to lose all it's
   velocity once a force no longer applies to it. A damping of 0.5 causes 50% of
   speed to be lost in 1 second. A value of 0 is free-fall.
@@ -253,8 +253,8 @@ Add Player Jumping
 
 To get the player to jump we need to:
 
-* Make sure the player is on the ground
-* Apply an impulse force to the player upward
+* Make sure the player is on the ground.
+* Apply an impulse force to the player upward.
 * Change the left/right force to the player while they are in the air.
 
 We can see if a sprite has a sprite below it with the ``is_on_ground`` function.
