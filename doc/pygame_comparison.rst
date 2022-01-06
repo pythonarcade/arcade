@@ -148,8 +148,16 @@ Here are some comparisons between Arcade 2.6 and Pygame 2.0.1
          https://craven-performance-testing.s3-us-west-2.amazonaws.com/index.html
 .. [#f3] Polygon hit box, rotation allowed
 .. [#f4] Rectangular hit box, no rotation allowed
-.. [#f7] This tests raw pixel manipulation. If pre-drawn to a surface, Pygame is almost instant, and Arcade is
-         almost instant if rectangles are batch-drawn in a sprite or shape list.
+.. [#f7] Why is Arcade so slow here? With PyGame, most of the drawing is done on the **CPU** side. Bitmaps
+         are created and manipulated by the CPU. It is pretty fast. With Arcade, most of the drawing happens
+         on the **GPU** side. Sprites and drawings are batched together, and we just tell the GPU what we want
+         to change. Or better yet, we write a "shader" program that runs completely on the GPU.
+         This is *incredibly* fast. But
+         if instead a CPU program runs commands to draw individual GPU items one-by-one, both sets
+         of processors wait for a synchronous communication.
+         That is horribly slow. Drawing individual rects and bits like
+         PyGame does, won't work well at all on Arcade. Use sprites, shaders, or batch-drawing to
+         get fast performance.
 .. [#f8] Scaling and rotation must be done by the programmer drawing to a surface, transforming the surface,
          then blit'ing the surface to the screen. Arcade uses the GPU for these operations and needs no
          additional code or performance hits.
