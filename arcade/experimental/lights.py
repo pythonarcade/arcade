@@ -96,11 +96,11 @@ class LightLayer(RenderTargetTexture):
 
     @property
     def diffuse_texture(self):
-        self.texture
+        return self.texture
 
     @property
     def light_texture(self):
-        self._light_buffer.color_attachments[0]
+        return self._light_buffer.color_attachments[0]
 
     def resize(self, width, height):
         super().resize(width, height)
