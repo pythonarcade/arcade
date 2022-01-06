@@ -293,15 +293,17 @@ def _get_nearby_sprites(sprite, sprite_list):
 def check_for_collision_with_list(
     sprite: Sprite,
     sprite_list: SpriteList,
-    method=1
+    method=0
 ) -> List[Sprite]:
     """
     Check for a collision between a sprite, and a list of sprites.
 
     :param Sprite sprite: Sprite to check
     :param SpriteList sprite_list: SpriteList to check against
-    :param int method: Collision check method. 1 is Spatial Hashing if available,
-        2 is GPU based, 3 is slow CPU-bound check-everything. Defaults to 1.
+    :param int method: Collision check method.
+        0 is auto-select. (spatial if available, GPU if 1500+ sprites, else simple)
+        1 is Spatial Hashing if available,
+        2 is GPU based, 3 is simple check-everything. Defaults to 0.
 
     :returns: List of sprites colliding, or an empty list.
     :rtype: list
@@ -319,13 +321,12 @@ def check_for_collision_with_list(
         # Spatial
         sprite_list_to_check = sprite_list.spatial_hash.get_objects_for_box(sprite)
         # checks_saved = len(sprite_list) - len(sprite_list_to_check)
-    elif method == 3:
+    elif method == 3 or (method == 0 and len(sprite_list) <= 1500):
         sprite_list_to_check = sprite_list  # type: ignore
     else:
         # GPU transform
         sprite_list_to_check = _get_nearby_sprites(sprite, sprite_list)  # type: ignore
 
-    # print(len(sprite_list_to_check.sprite_list))
     return [
         sprite2
         for sprite2 in sprite_list_to_check
