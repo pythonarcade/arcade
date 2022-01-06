@@ -259,6 +259,8 @@ def _get_nearby_sprites(sprite, sprite_list):
 
     # Update the position and size to check
     ctx = get_window().ctx
+    sprite_list._write_sprite_buffers_to_gpu()
+
     ctx.collision_detection_program["check_pos"] = sprite.position
     ctx.collision_detection_program["check_size"] = sprite.width, sprite.height
 

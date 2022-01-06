@@ -20,7 +20,7 @@ void main() {
     vec2 size = max(v_size[0], check_size);
 
     // Destroy the sprite if too far away
-    if (dist > max(size.x, size.y)) return;
+    if (dist > max(size.x, size.y) * 1.42) return;
 
     // Set the sprite index to the current primitive id
     // We are only processing points, so it will match
