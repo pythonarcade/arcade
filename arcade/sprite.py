@@ -104,6 +104,8 @@ class Sprite:
 
     :param float hit_box_detail: Float, defaults to 4.5. Used with 'Detailed' to hit box
 
+    :param Sprite clone: Clones the sprites information over to this one.
+
     Attributes:
         :alpha: Transparency of sprite. 0 is invisible, 255 is opaque.
         :angle: Rotation angle in degrees.
@@ -175,6 +177,7 @@ class Sprite:
         hit_box_detail: float = 4.5,
         texture: Texture = None,
         angle: float = 0,
+        clone: Optional['Sprite'] = None,
     ):
         """ Constructor """
         self._width: float = 0.0
@@ -237,6 +240,20 @@ class Sprite:
             raise ValueError(
                 "hit_box_algorithm must be 'Simple', 'Detailed', or 'None'."
             )
+
+        if clone is not None:
+            self.texture = clone.texture
+
+            self.scale = clone.scale
+            self.alpha = clone.alpha
+
+            self.center_x = clone.center_x
+            self.center_y = clone.center_y
+            self.angle = clone.angle
+
+            self.velocity = clone.velocity
+
+            self.properties = clone.properties
 
         if texture:
             self._texture = texture
@@ -1260,7 +1277,7 @@ class SpriteSolidColor(Sprite):
     :param Color color: Color of the sprite
     """
 
-    def __init__(self, width: int, height: int, color):
+    def __init__(self, width: int, height: int, color: Color):
         """
         Create a solid-color rectangular sprite.
         """
