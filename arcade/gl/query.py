@@ -27,30 +27,48 @@ class Query:
     __slots__ = (
         "_ctx",
         "_glo_samples_passed",
-        "_glo_any_samples_passed",
         "_glo_time_elapsed",
         "_glo_primitives_generated",
         "__weakref__",
+        "_samples_enabled",
+        "_time_enabled",
+        "_primitives_enabled",
+        "_samples",
+        "_time",
+        "_primitives",
     )
 
-    def __init__(self, ctx: "Context"):
+    def __init__(self, ctx: "Context", samples=True, time=True, primitives=True):
         # TODO: Support querying a subset of these queries (faster)
         # TODO: Evalute of this query should be included
         # gl.GL_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN
         # gl.GL_ANY_SAMPLES_PASSED
-
         self._ctx = ctx
 
+        self._samples_enabled = samples
+        self._time_enabled = time
+        self._primitives_enabled = primitives
+
+        self._samples = 0
+        self._time = 0
+        self._primitives = 0
+
+        glos = []
+
         self._glo_samples_passed = glo_samples_passed = gl.GLuint()
-        gl.glGenQueries(1, self._glo_samples_passed)
+        if self._samples_enabled:
+            gl.glGenQueries(1, self._glo_samples_passed)
+            glos.append(glo_samples_passed)
 
         self._glo_time_elapsed = glo_time_elapsed = gl.GLuint()
-        gl.glGenQueries(1, self._glo_time_elapsed)
+        if self._time_enabled:
+            gl.glGenQueries(1, self._glo_time_elapsed)
+            glos.append(glo_time_elapsed)
 
-        self._glo_primitives_generated = glo_time_elapsed = gl.GLuint()
-        gl.glGenQueries(1, self._glo_primitives_generated)
-
-        glos = [glo_samples_passed, glo_time_elapsed, glo_time_elapsed]
+        self._glo_primitives_generated = glo_primitives_generated = gl.GLuint()
+        if self._primitives_enabled:
+            gl.glGenQueries(1, self._glo_primitives_generated)
+            glos.append(glo_primitives_generated)
 
         self.ctx.stats.incr("query")
 
@@ -77,9 +95,7 @@ class Query:
 
         :type: int
         """
-        value = gl.GLint()
-        gl.glGetQueryObjectiv(self._glo_samples_passed, gl.GL_QUERY_RESULT, value)
-        return value.value
+        return self._samples
 
     @property
     def time_elapsed(self) -> int:
@@ -88,30 +104,45 @@ class Query:
 
         :type: int
         """
-        value = gl.GLint()
-        gl.glGetQueryObjectiv(self._glo_time_elapsed, gl.GL_QUERY_RESULT, value)
-        return value.value
+        return self._time
 
     @property
     def primitives_generated(self) -> int:
         """
-        How many primitives a vertex or geometry shader processed
+        How many primitives a vertex or geometry shader processed.
+        When using a geometry shader this only counts
+        the primitives actually emitted.
 
         :type: int
         """
-        value = gl.GLint()
-        gl.glGetQueryObjectiv(self._glo_primitives_generated, gl.GL_QUERY_RESULT, value)
-        return value.value
+        return self._primitives
 
     def __enter__(self):
-        gl.glBeginQuery(gl.GL_SAMPLES_PASSED, self._glo_samples_passed)
-        gl.glBeginQuery(gl.GL_TIME_ELAPSED, self._glo_time_elapsed)
-        gl.glBeginQuery(gl.GL_PRIMITIVES_GENERATED, self._glo_primitives_generated)
+        if self._samples_enabled:
+            gl.glBeginQuery(gl.GL_SAMPLES_PASSED, self._glo_samples_passed)
+        if self._time_enabled:
+            gl.glBeginQuery(gl.GL_TIME_ELAPSED, self._glo_time_elapsed)
+        if self._primitives_enabled:
+            gl.glBeginQuery(gl.GL_PRIMITIVES_GENERATED, self._glo_primitives_generated)
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        gl.glEndQuery(gl.GL_SAMPLES_PASSED)
-        gl.glEndQuery(gl.GL_TIME_ELAPSED)
-        gl.glEndQuery(gl.GL_PRIMITIVES_GENERATED)
+        if self._samples_enabled:
+            gl.glEndQuery(gl.GL_SAMPLES_PASSED)
+            value = gl.GLint()
+            gl.glGetQueryObjectiv(self._glo_samples_passed, gl.GL_QUERY_RESULT, value)
+            self._samples = value.value
+
+        if self._time_enabled:
+            gl.glEndQuery(gl.GL_TIME_ELAPSED)
+            value = gl.GLint()
+            gl.glGetQueryObjectiv(self._glo_time_elapsed, gl.GL_QUERY_RESULT, value)
+            self._time = value.value
+
+        if self._primitives_enabled:
+            gl.glEndQuery(gl.GL_PRIMITIVES_GENERATED)
+            value = gl.GLint()
+            gl.glGetQueryObjectiv(self._glo_primitives_generated, gl.GL_QUERY_RESULT, value)
+            self._primitives = value.value
 
     def delete(self):
         """
