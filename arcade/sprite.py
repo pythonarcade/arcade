@@ -245,7 +245,8 @@ class Sprite:
         if texture:
             self._texture = texture
             self._textures = [texture]
-            self._width, self._height = self._texture.size
+            self._width = self._texture.width * scale
+            self._height = self._texture.height * scale
         elif filename is not None:
             self._texture = load_texture(
                 filename,
