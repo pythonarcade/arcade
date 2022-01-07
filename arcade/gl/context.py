@@ -695,9 +695,13 @@ class Context:
             out_attributes=out_attributes,
         )
 
-    def query(self):
+    def query(self, *, samples=True, time=True, primitives=True):
         """
         Create a query object for measuring rendering calls in opengl.
+
+        :param bool sampled: Collect written samples
+        :param bool time: Measure redering duration
+        :param bool primitives: Collect the number of primitives emitted
 
         :rtype: :py:class:`~arcade.gl.Query`
         """

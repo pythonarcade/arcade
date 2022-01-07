@@ -9,13 +9,15 @@ from typing import (
     Tuple,
 )
 
-from arcade import Sprite
-from arcade import Point
-from arcade import rotate_point
-from arcade import are_polygons_intersecting
-from arcade import get_distance_between_sprites
-from arcade import is_point_in_polygon
-from arcade import get_window
+from arcade import (
+    Sprite,
+    Point,
+    rotate_point,
+    are_polygons_intersecting,
+    get_distance_between_sprites,
+    is_point_in_polygon,
+    get_window,
+)
 from .sprite_list import SpriteList
 
 LOG = logging.getLogger(__name__)
@@ -253,8 +255,9 @@ def _check_for_collision(sprite1: Sprite, sprite2: Sprite) -> bool:
     )
 
 
-def _get_nearby_sprites(sprite, sprite_list):
-    if len(sprite_list) == 0:
+def _get_nearby_sprites(sprite: Sprite, sprite_list: SpriteList):
+    sprite_count = len(sprite_list)
+    if sprite_count == 0:
         return []
 
     # Update the position and size to check
@@ -265,29 +268,28 @@ def _get_nearby_sprites(sprite, sprite_list):
     ctx.collision_detection_program["check_size"] = sprite.width, sprite.height
 
     # Ensure the result buffer can fit all the sprites (worst case)
-    buffer = ctx.buffer(reserve=len(sprite_list) * 4)
+    buffer = ctx.collision_buffer
+    if buffer.size < sprite_count * 4:
+        buffer.orphan(size=sprite_count * 4)
 
     # Run the transform shader emitting sprites close to the configured position and size.
     # This runs in a query so we can measure the number of sprites emitted.
-    query = ctx.query()
-    with query:
-        sprite_list._geometry.transform(ctx.collision_detection_program, buffer, vertices=len(sprite_list))
+    with ctx.collision_query:
+        sprite_list._geometry.transform(ctx.collision_detection_program, buffer, vertices=len(sprite_list))  # type: ignore
 
     # Store the number of sprites emitted
-    num_sprites = query.primitives_generated
+    emit_count = ctx.collision_query.primitives_generated
     # print(num_sprites, self.query.time_elapsed, self.query.time_elapsed / 1_000_000_000)
 
     # If no sprites emitted we can just return an empty list
-    if num_sprites == 0:
+    if emit_count == 0:
         return []
 
     # .. otherwise build and return a list of the sprites selected by the transform
-    sprite_list_to_check = [
+    return [
         sprite_list[i]
-        for i in struct.unpack(f'{num_sprites}i', buffer.read(size=num_sprites * 4))
+        for i in struct.unpack(f'{emit_count}i', buffer.read(size=emit_count * 4))
     ]
-
-    return sprite_list_to_check
 
 
 def check_for_collision_with_list(
