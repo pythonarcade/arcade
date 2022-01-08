@@ -190,14 +190,21 @@ class Window(pyglet.window.Window):
         """
         return self._ctx
 
-    def clear(self, color: Optional[Color] = None):
+    def clear(
+        self,
+        color: Optional[Color] = None,
+        normalized: bool = False,
+        viewport: Tuple[int, int, int, int] = None,
+    ):
         """Clears the window with the configured background color
         set through :py:attr:`arcade.Window.background_color`.
 
         :param Color color: Optional color overriding the current background color
+        :param bool normalized: If the color format is normalized (0.0 -> 1.0) or byte values
+        :param Tuple[int, int, int, int]: The viewport range to clear
         """
         color = color if color is not None else self.background_color
-        self.ctx.screen.clear(color)
+        self.ctx.screen.clear(color, normalized=normalized, viewport=viewport)
 
     @property
     def background_color(self):

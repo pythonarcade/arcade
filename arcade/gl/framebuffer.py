@@ -309,6 +309,7 @@ class Framebuffer:
         *,
         depth: float = 1.0,
         normalized: bool = False,
+        viewport: Tuple[int, int, int, int] = None,
     ):
         """
         Clears the framebuffer::
@@ -324,8 +325,12 @@ class Framebuffer:
         :param tuple color: A 3 or 4 component tuple containing the color
         :param float depth: Value to clear the depth buffer (unused)
         :param bool normalized: If the color values are normalized or not
+        :param Tuple[int, int, int, int] viewport: The viewport range to clear
         """
         with self.activate():
+            if viewport:
+                gl.glScissor(*viewport)
+
             if normalized:
                 # If the colors are already normalized we can pass them right in
                 if len(color) == 3:
@@ -345,6 +350,9 @@ class Framebuffer:
                 gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
             else:
                 gl.glClear(gl.GL_COLOR_BUFFER_BIT)
+
+            if viewport:
+                gl.glScissor(*self._viewport)
 
     def read(
         self, *, viewport=None, components=3, attachment=0, dtype="f1"
