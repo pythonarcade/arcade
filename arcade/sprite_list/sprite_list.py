@@ -343,7 +343,7 @@ class SpriteList:
 
     @alpha.setter
     def alpha(self, value: int):
-        value = clamp(value, 0, 255)
+        # value = clamp(value, 0, 255)
         self._color = self._color[0], self._color[1], self._color[2], value / 255
 
     @property
@@ -361,7 +361,7 @@ class SpriteList:
 
     @alpha_normalized.setter
     def alpha_normalized(self, value: float):
-        value = clamp(value, 0.0, 1.0)
+        # value = clamp(value, 0.0, 1.0)
         self._color = self._color[0], self._color[1], self._color[2], value
 
     @property
