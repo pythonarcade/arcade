@@ -12,17 +12,56 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
 
 *Unreleased*
 
-* Collision checking against one or more sprite lists
-  now uses the GPU via a 'transform' for much better performance.
-  The :meth:`arcade.check_for_collision_with_lists` and :meth:`arcade.check_for_collision_with_lists`
-  methods now support selection between spatial, GPU, and CPU methods of detection.
-  Performance is fast enough now, unless you have a very large map, turning on spatial hashing
-  isn't necessary.
-* Arcade.gl: Allow specifying number of vertices when transforming with index buffer.
-* Fix bug arround parsing out attributes from geometry shaders.
-* Update pyinstaller instructions.
-* Other documentation updates
-* Add support for custom resource handles
+* Sprites
+
+  * Collision checking against one or more sprite lists
+    now uses the GPU via a 'transform' for much better performance.
+    The :meth:`arcade.check_for_collision_with_lists` and :meth:`arcade.check_for_collision_with_lists`
+    methods now support selection between spatial, GPU, and CPU methods of detection.
+    Performance is fast enough now, unless you have a very large map, turning on spatial hashing
+    isn't necessary.
+
+  * Added :py:meth:`~arcade.SpriteList.clear` for resetting/clearing a spritelist. This will iterate
+    and remove all sprites by default, or do a faster `O(1)` clear. Please read the api docs
+    to find out what version fits your use case.
+
+  * :py:class:`~arcade.SpriteList` now supports setting a global color and alpha value.
+    The new :py:attr:`~arcade.SpriteList.color`, :py:attr:`~arcade.SpriteList.color_normalized`,
+    :py:attr:`~arcade.SpriteList.alpha` and :py:attr:`~arcade.SpriteList.alpha_normalized`
+    will affect every sprite in the list. This global color value is multiplied by the
+    individual sprite colors. 
+
+  * The :py:class:`~arcade.Sprite` initializer now also accepts ``None`` value for ``hit_box_algorithm``
+    in line with the underlying texture method.
+
+  * Fixed a bug causing sprites to have incorrect scale when passing a texture
+    during creation.
+
+  * Removed the texture transform feature in sprites. This feature no longer
+    makes sense since arcade 2.6.0 due to the new texture atlas feature.
+
+* General
+
+  * ``Window.clear`` can now clear a sub-section of the screen through
+    the new optional ``viewport`` parameter.
+
+  * :py:meth:`arcade.Window.clear` can now take normalized/float color values
+
+  * Update pyinstaller instructions
+
+  * Add support for custom resource handles
+
+  * Various documentation improvements and updates
+
+* ``arcade.gl``
+
+  * Fixed a bug were out attributes in transforms was not properly detected
+    with geometry shaders
+
+  * Fixed a bug were specifying vertex count wasn't possible with transforms when
+    the vertex array has an index buffer bound.
+
+  * The :py:class:`~arcade.gl.Query` object now allows for selecting what specific queries should be performed
 
 2.6.8
 -----
