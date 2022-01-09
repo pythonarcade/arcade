@@ -152,7 +152,7 @@ The Python Arcade Library
             <h2>Source Code</h2>
           </div>
           <ul>
-            <li><a href="https://github.com/pvcraven/arcade">GitHub</a></li>
+            <li><a href="https://github.com/pythonarcade/arcade">GitHub</a></li>
             <li><a href="development/release_notes.html">Release Notes</a></li>
             <li><a href="enhancement_list/enhancement_list.html">Enhancement List</a></li>
           </ul>

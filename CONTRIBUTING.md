@@ -6,7 +6,7 @@ Suggest Improvements
 
 Open up issues:
 
-https://github.com/pvcraven/arcade/issues
+https://github.com/pythonarcade/arcade/issues
 
 Fix Bugs or Implement Features
 ------------------------------
