@@ -33,7 +33,6 @@ from arcade import (
 from arcade.context import ArcadeContext
 from pyglet.math import (
     Mat3,
-    clamp,
 )
 
 if TYPE_CHECKING:
