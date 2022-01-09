@@ -396,21 +396,30 @@ class SpriteList:
         """
         return self.sprite_list.index(sprite)
 
-    def clear(self):
+    def clear(self, deep: bool = True):
         """
         Remove all the sprites resetting the spritelist
         to it's initial state.
 
-        The complexity of this method is ``O(N)``.
+        The complexity of this method is ``O(N)`` with a deep clear (default).
+        If ALL the sprites in the list gets garbage collected
+        with the list itself you can do an ``O(1)``` clear using
+        ``deep=False``. **Make sure you know exactly what you are doing before
+        using this option.** Any lingering sprite reference will
+        cause a massive memory leak. The ``deep`` option will
+        iterate all the sprites and remove their references to
+        this spritelist. Sprite and SpriteList have a circular
+        reference for performance reasons.
         """
         from .spatial_hash import _SpatialHash
 
         # Manually remove the spritelist from all sprites
-        for sprite in self.sprite_list:
-            sprite.sprite_lists.remove(self)
+        if deep:
+            for sprite in self.sprite_list:
+                sprite.sprite_lists.remove(self)
 
-        self.sprite_list: List[Sprite] = []
-        self.sprite_slot: Dict[Sprite, int] = dict()
+        self.sprite_list = []
+        self.sprite_slot = dict()
 
         # Reset SpatialHash
         if self.spatial_hash:
