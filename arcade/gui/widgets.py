@@ -311,7 +311,20 @@ class UIWidget(EventDispatcher, ABC):
         self._rect = value
         self.trigger_full_render()
 
+    def move(self, dx=0, dy=0):
+        """
+        Move the widget by dx and dy.
+
+        :param dx: x axis difference
+        :param dy: y axis difference
+        """
+        self.rect = self.rect.move(dx, dy)
+
     def scale(self, factor):
+        """
+        Scales the size of the widget (x,y,width, height) by factor.
+        :param factor: scale factor
+        """
         self.rect = self.rect.scale(factor)
 
     @property

@@ -27,3 +27,15 @@ def test_widget_scale_up():
     assert widget.height == 200
     assert widget.x == 0
     assert widget.y == 0
+
+
+def test_widget_move():
+    # GIVEN
+    widget = UIWidget(x=100, y=200)
+
+    # WHEN
+    widget.move(10, 20)
+
+    # THEN
+    assert widget.x == 110
+    assert widget.y == 220
