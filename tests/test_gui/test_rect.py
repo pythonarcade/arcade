@@ -27,6 +27,17 @@ def test_rect_move():
     assert new_rect == (40, 70, 100, 200)
 
 
+def test_rect_resize():
+    # GIVEN
+    rect = _Rect(10, 20, 100, 200)
+
+    # WHEN
+    new_rect = rect.resize(200, 300)
+
+    # THEN
+    assert new_rect == (10, 20, 200, 300)
+
+
 def test_rect_align_center_x():
     # GIVEN
     rect = _Rect(10, 20, 100, 200)

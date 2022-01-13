@@ -42,6 +42,11 @@ class _Rect(NamedTuple):
             int(self.height * scale),
         )
 
+    def resize(self, width=None, height=None):
+        width = width or self.width
+        height = height or self.height
+        return _Rect(self.x, self.y, width, height)
+
     @property
     def left(self):
         return self.x
