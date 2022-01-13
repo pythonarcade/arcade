@@ -34,11 +34,6 @@ Sprites
   Support basic sprite animations like rotate, flicker, disappear, etc.
 * `Issue 380 <https://github.com/pvcraven/arcade/issues/380>`_
   Add ability to specify a point the sprite rotates around.
-* `Issue 419 <https://github.com/pvcraven/arcade/issues/419>`_
-  Create function to get sprites at a particular point.
-* `Issue 498 <https://github.com/pvcraven/arcade/issues/498>`_
-  Add lighting effects.
-* Add bloom effects.
 * `Issue 523 <https://github.com/pvcraven/arcade/issues/523>`_
   Add sprite trigger/example for on_enter / on_exit.
 * `Issue 289 <https://github.com/pvcraven/arcade/issues/289>`_
