@@ -7,8 +7,8 @@ Release Notes
 
 Keep up-to-date with the latest changes to the Arcade library by the release notes.
 
-2.6.9
------
+2.6.10
+------
 
 *Unreleased*
 
@@ -62,6 +62,14 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
     the vertex array has an index buffer bound.
 
   * The :py:class:`~arcade.gl.Query` object now allows for selecting what specific queries should be performed
+
+
+2.6.9
+-----
+
+*Released on 2022-01-13-2022*
+
+* Bump version of Pillow from 8.4 to 9.0.0 due to security vulnerability in Pillow.
 
 2.6.8
 -----

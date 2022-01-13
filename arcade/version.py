@@ -1,3 +1,3 @@
 #!/usr/bin/env python
 
-VERSION = "2.6.9.dev2"
+VERSION = "2.6.10.dev1"
