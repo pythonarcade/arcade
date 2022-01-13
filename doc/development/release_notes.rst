@@ -7,8 +7,15 @@ Release Notes
 
 Keep up-to-date with the latest changes to the Arcade library by the release notes.
 
+2.6.9
+-----
+
+*Released on 2022-01-13-2022*
+
+* Bump version of Pillow from 8.4 to 9.0.0 due to security vulnerability in Pillow.
+
 2.6.8
-------------------
+-----
 
 *Released on 2021-Dec-25*
 
