@@ -7,6 +7,6 @@ dirsync==2.2.5
 pytiled-parser==1.5.4
 pymunk==6.2.1
 pyyaml==6.0
-Pillow==8.4
+Pillow==9.0.0
 docutils<0.18
 
