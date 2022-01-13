@@ -51,6 +51,7 @@ class Framebuffer:
         "_depth_attachment",
         "_samples",
         "_viewport",
+        "_scissor",
         "_depth_mask",
         "_draw_buffers",
         "_prev_fbo",
@@ -84,6 +85,7 @@ class Framebuffer:
         # but let's keep this simple with high compatibility.
         self._width, self._height = self._detect_size()
         self._viewport = 0, 0, self._width, self._height
+        self._scissor = 0, 0, self._width, self._height
 
         # Attach textures to it
         for i, tex in enumerate(self._color_attachments):
@@ -150,12 +152,10 @@ class Framebuffer:
         The viewport value is persistent all will automatically
         be applies every time the framebuffer is bound.
 
-        Two or four integer values can be assigned::
+        Example::
 
-            # Explicitly set x, y, width, height
+            # 100, x 100 lower left with size 200 x 200px
             fb.viewport = 100, 100, 200, 200
-            # Implies 0, 0, 100, 100
-            fb.viewport = 100, 100
         """
         return self._viewport
 
@@ -170,7 +170,25 @@ class Framebuffer:
         # Otherwise it will be set on use()
         if self._ctx.active_framebuffer == self:
             gl.glViewport(*self._viewport)
-            gl.glScissor(*self._viewport)
+
+    @property
+    def scissor(self) -> Tuple[int, int, int, int]:
+        """
+        Get or set the scissor box for this framebuffer.      
+        """
+        return self._scissor
+
+    @scissor.setter
+    def scissor(self, value: Tuple[int, int, int, int]):
+        if not isinstance(value, tuple) or len(value) != 4:
+            raise ValueError("scissor should be a 4-component tuple")
+
+        self._scissor = value
+
+        # If the framebuffer is bound we need to set the scissor box.
+        # Otherwise it will be set on use()
+        if self._ctx.active_framebuffer == self:
+            gl.glScissor(*self._scissor)
 
     @property
     def ctx(self) -> "Context":
@@ -301,7 +319,7 @@ class Framebuffer:
 
         gl.glDepthMask(self._depth_mask)
         gl.glViewport(*self._viewport)
-        gl.glScissor(*self._viewport)
+        gl.glScissor(*self._scissor)
 
     def clear(
         self,
@@ -309,6 +327,7 @@ class Framebuffer:
         *,
         depth: float = 1.0,
         normalized: bool = False,
+        viewport: Tuple[int, int, int, int] = None,
     ):
         """
         Clears the framebuffer::
@@ -324,8 +343,12 @@ class Framebuffer:
         :param tuple color: A 3 or 4 component tuple containing the color
         :param float depth: Value to clear the depth buffer (unused)
         :param bool normalized: If the color values are normalized or not
+        :param Tuple[int, int, int, int] viewport: The viewport range to clear
         """
         with self.activate():
+            if viewport:
+                gl.glScissor(*viewport)
+
             if normalized:
                 # If the colors are already normalized we can pass them right in
                 if len(color) == 3:
@@ -345,6 +368,9 @@ class Framebuffer:
                 gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
             else:
                 gl.glClear(gl.GL_COLOR_BUFFER_BIT)
+
+            if viewport:
+                gl.glScissor(*self._viewport)
 
     def read(
         self, *, viewport=None, components=3, attachment=0, dtype="f1"
@@ -486,6 +512,7 @@ class DefaultFrameBuffer(Framebuffer):
         x, y, width, height = list(values)
 
         self._viewport = x, y, width, height
+        self._scissor = x, y, width, height
         self._width = width
         self._height = height
 

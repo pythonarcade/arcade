@@ -33,6 +33,6 @@ Then you can improve these parts of the project:
 A list of enhancements people have requested is available on the :ref:`enhancement_list` page.
 
 .. _Python Arcade SubReddit: https://www.reddit.com/r/pythonarcade
-.. _Github Issue List: https://github.com/pvcraven/arcade/issues
+.. _Github Issue List: https://github.com/pythonarcade/arcade/issues
 .. _reStructuredText: http://www.sphinx-doc.org/en/stable/rest.html
 .. _docstrings: http://www.pythonforbeginners.com/basics/python-docstrings

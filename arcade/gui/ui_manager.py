@@ -85,6 +85,26 @@ class UIManager(EventDispatcher, UIWidgetParent):
                 children.remove(child)
                 self.trigger_render()
 
+    def walk_widgets(self, *, root: UIWidget = None):
+        """walks through widget tree, in reverse draw order (most top drawn widget first)"""
+        layer = 0
+        children = root.children if root else self.children[layer]
+        for child in reversed(children):
+            yield from self.walk_widgets(root=child)
+            yield child
+
+    def get_widgets_at(self, pos, cls=UIWidget):
+        """
+        Yields all widgets containing a position, returns first top laying widgets which is instance of cls.
+
+        :param pos: Pos within the widget bounds
+        :param cls: class which the widget should be instance of
+        :return: iterator of widgets of given type at position
+        """
+        for widget in self.walk_widgets():
+            if isinstance(widget, cls) and widget.rect.collide_with_point(*pos):
+                yield widget
+
     def _get_surface(self, layer: int):
         if layer not in self._surfaces:
             if len(self._surfaces) > 2:
@@ -98,6 +118,9 @@ class UIManager(EventDispatcher, UIWidgetParent):
         return self._surfaces.get(layer)
 
     def trigger_render(self):
+        """
+        Request rendering of all widgets
+        """
         self._rendered = False
 
     def _do_layout(self):

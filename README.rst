@@ -18,7 +18,7 @@ Arcade is built on top of Pyglet and OpenGL.
 .. image:: https://img.shields.io/pypi/dm/arcade
     :alt: PyPI - Downloads
 
-.. image:: https://img.shields.io/github/commit-activity/m/pvcraven/arcade
+.. image:: https://img.shields.io/github/commit-activity/m/pythonarcade/arcade
     :alt: GitHub commit activity
 
 .. image:: https://img.shields.io/pypi/l/arcade
