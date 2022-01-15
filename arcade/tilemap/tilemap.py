@@ -184,6 +184,12 @@ class TileMap:
             # This attribute stores the pytiled-parser map object
             self.tiled_map = pytiled_parser.parse_map(map_file)
 
+        if self.tiled_map.infinite:
+            raise AttributeError(
+                "Attempted to load an infinite TileMap. Arcade currently cannot load "
+                "infinite maps. Disable the infinite map property and re-save the file."
+            )
+
         # Set Map Attributes
         self.width = self.tiled_map.map_size.width
         self.height = self.tiled_map.map_size.height
@@ -542,8 +548,10 @@ class TileMap:
                             image_file, image_x, image_y, width, height
                         )
                     else:
-                        raise RuntimeError(f"Warning: failed to load image for animation frame for "
-                                           f"tile '{frame_tile.id}', '{image_file}'.")
+                        raise RuntimeError(
+                            f"Warning: failed to load image for animation frame for "
+                            f"tile '{frame_tile.id}', '{image_file}'."
+                        )
 
                     key_frame = AnimationKeyframe(  # type: ignore
                         frame.tile_id, frame.duration, texture
