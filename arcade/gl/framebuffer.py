@@ -1,6 +1,6 @@
 from ctypes import c_int
 from contextlib import contextmanager
-from typing import Tuple, List, TYPE_CHECKING
+from typing import Optional, Tuple, List, TYPE_CHECKING
 import weakref
 
 
@@ -85,7 +85,7 @@ class Framebuffer:
         # but let's keep this simple with high compatibility.
         self._width, self._height = self._detect_size()
         self._viewport = 0, 0, self._width, self._height
-        self._scissor = 0, 0, self._width, self._height
+        self._scissor: Optional[Tuple[int, int, int, int]] = None
 
         # Attach textures to it
         for i, tex in enumerate(self._color_attachments):
@@ -170,25 +170,41 @@ class Framebuffer:
         # Otherwise it will be set on use()
         if self._ctx.active_framebuffer == self:
             gl.glViewport(*self._viewport)
+            if self._scissor is None:
+                gl.glScissor(*self._viewport)
+            else:
+                gl.glScissor(*self._scissor)
 
     @property
-    def scissor(self) -> Tuple[int, int, int, int]:
+    def scissor(self) -> Optional[Tuple[int, int, int, int]]:
         """
         Get or set the scissor box for this framebuffer.      
+
+        By default the scissor box is disabled and has no effect
+        and will have an initial value of ``None``. The scissor
+        box is enabled when setting a value and disabled when
+        set to ``None``
+
+            # Set and eneable scissor box only drawing
+            # in a 100 x 100 pixel lower left area
+            ctx.scissor = 0, 0, 100, 100
+            # Disable scissoring
+            ctx.scissor = None
+
+        :type: tuple (x, y, width, height)
+
         """
         return self._scissor
 
     @scissor.setter
-    def scissor(self, value: Tuple[int, int, int, int]):
-        if not isinstance(value, tuple) or len(value) != 4:
-            raise ValueError("scissor should be a 4-component tuple")
-
+    def scissor(self, value):
         self._scissor = value
 
-        # If the framebuffer is bound we need to set the scissor box.
-        # Otherwise it will be set on use()
-        if self._ctx.active_framebuffer == self:
-            gl.glScissor(*self._scissor)
+        if self._scissor is not None:
+            # If the framebuffer is bound we need to set the scissor box.
+            # Otherwise it will be set on use()
+            if self._ctx.active_framebuffer == self:
+                gl.glScissor(*self._scissor)
 
     @property
     def ctx(self) -> "Context":
@@ -319,7 +335,10 @@ class Framebuffer:
 
         gl.glDepthMask(self._depth_mask)
         gl.glViewport(*self._viewport)
-        gl.glScissor(*self._scissor)
+        if self._scissor is not None:
+            gl.glScissor(*self._scissor)
+        else:
+            gl.glScissor(*self._viewport)
 
     def clear(
         self,
@@ -370,7 +389,10 @@ class Framebuffer:
                 gl.glClear(gl.GL_COLOR_BUFFER_BIT)
 
             if viewport:
-                gl.glScissor(*self._viewport)
+                if self._scissor is None:
+                    gl.glScissor(*self._viewport)
+                else:
+                    gl.glScissor(*self._scissor)
 
     def read(
         self, *, viewport=None, components=3, attachment=0, dtype="f1"
@@ -512,7 +534,7 @@ class DefaultFrameBuffer(Framebuffer):
         x, y, width, height = list(values)
 
         self._viewport = x, y, width, height
-        self._scissor = x, y, width, height
+        self._scissor = None
         self._width = width
         self._height = height
 

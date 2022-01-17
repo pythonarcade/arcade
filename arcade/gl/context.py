@@ -421,6 +421,31 @@ class Context:
         self.active_framebuffer.viewport = value
 
     @property
+    def scissor(self) -> Optional[Tuple[int, int, int, int]]:
+        """
+        Get or set the scissor box for the active framebuffer.
+        This is a shortcut for :py:meth:`~arcade.gl.Framebuffer.scissor`.
+
+        By default the scissor box is disabled and has no effect
+        and will have an initial value of ``None``. The scissor
+        box is enabled when setting a value and disabled when
+        set to ``None``
+
+            # Set and eneable scissor box only drawing
+            # in a 100 x 100 pixel lower left area
+            ctx.scissor = 0, 0, 100, 100
+            # Disable scissoring
+            ctx.scissor = None
+
+        :type: tuple (x, y, width, height)
+        """
+        return self.fbo.scissor
+
+    @scissor.setter
+    def scissor(self, value):
+        self.fbo.scissor = value
+
+    @property
     def blend_func(self) -> Tuple[int, int]:
         """
         Get or the blend function::
