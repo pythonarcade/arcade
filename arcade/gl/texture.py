@@ -75,6 +75,7 @@ class Texture:
         "_filter",
         "_wrap_x",
         "_wrap_y",
+        "_anisotropy",
         "__weakref__",
     )
     _compare_funcs = {
@@ -114,6 +115,7 @@ class Texture:
         self._samples = min(max(0, samples), self._ctx.limits.MAX_SAMPLES)
         self._depth = depth
         self._compare_func: Optional[str] = None
+        self._anisotropy = 1.0
         # Default filters for float and integer textures
         # Integer textures should have NEAREST interpolation
         # by default 3.3 core doesn't really support it consistently.
@@ -432,6 +434,20 @@ class Texture:
         gl.glActiveTexture(gl.GL_TEXTURE0 + self._ctx.default_texture_unit)
         gl.glBindTexture(self._target, self._glo)
         gl.glTexParameteri(self._target, gl.GL_TEXTURE_WRAP_T, value)
+
+    @property
+    def anisotropy(self) -> float:
+        """
+        Get or set the anisotropy for this texture.
+        """
+        return self._anisotropy
+
+    @anisotropy.setter
+    def anisotropy(self, value):
+        self._anisotropy = max(1.0, min(value, self._ctx.limits.MAX_TEXTURE_MAX_ANISOTROPY))
+        gl.glActiveTexture(gl.GL_TEXTURE0 + self._ctx.default_texture_unit)
+        gl.glBindTexture(self._target, self._glo)
+        gl.glTexParameterf(self._target, gl.GL_TEXTURE_MAX_ANISOTROPY, self._anisotropy)
 
     @property
     def compare_func(self) -> Optional[str]:
