@@ -1563,7 +1563,14 @@ class UIBoxLayout(UILayout):
             new_width = max(child.width for child in self.children)
             center_x = start_x + new_width // 2
             for child in self.children:
-                new_rect = child.rect.align_top(start_y).align_center_x(center_x)
+                if self.align == "left":
+                    new_rect = child.rect.align_left(start_x)
+                elif self.align == "right":
+                    new_rect = child.rect.align_right(start_x + new_width)
+                else:
+                    new_rect = child.rect.align_center_x(center_x)
+
+                new_rect = new_rect.align_top(start_y)
                 if new_rect != child.rect:
                     child.rect = new_rect
                 start_y -= child.height
@@ -1571,8 +1578,16 @@ class UIBoxLayout(UILayout):
             new_height = max(child.height for child in self.children)
             new_width = sum(child.width for child in self.children)
             center_y = start_y - new_height // 2
+
             for child in self.children:
-                new_rect = child.rect.align_left(start_x).align_center_y(center_y)
+                if self.align == "top":
+                    new_rect = child.rect.align_top(start_y)
+                elif self.align == "bottom":
+                    new_rect = child.rect.align_bottom(start_y - new_height)
+                else:
+                    new_rect = child.rect.align_center_y(center_y)
+
+                new_rect = new_rect.align_left(start_x)
                 if new_rect != child.rect:
                     child.rect = new_rect
                 start_x += child.width

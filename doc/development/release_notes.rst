@@ -63,6 +63,11 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
 
   * The :py:class:`~arcade.gl.Query` object now allows for selecting what specific queries should be performed
 
+* ``arcade.gui``
+
+  * :py:class:`~arcade.gui.UIBoxLayout` supports now align values.
+
+
 
 2.6.9
 -----

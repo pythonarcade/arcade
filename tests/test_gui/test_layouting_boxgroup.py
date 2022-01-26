@@ -79,6 +79,37 @@ def test_vertical_group_keep_top_alignment_while_adding_children():
     assert group.width == 100
 
 
+def test_do_layout_vertical_align_left():
+    element_1 = UIDummy(width=50)
+    element_2 = UIDummy(width=100)
+
+    group = UIBoxLayout(x=100, y=400, align="left", vertical=True, children=[element_1, element_2])
+    group.do_layout()
+
+    assert group.left == 100
+    assert group.top == 400
+    assert group.height == 200
+    assert group.width == 100
+
+    assert element_1.left == 100
+    assert element_2.left == 100
+
+
+def test_do_layout_vertical_align_right():
+    element_1 = UIDummy(width=50)
+    element_2 = UIDummy(width=100)
+
+    group = UIBoxLayout(x=100, y=400, align="right", vertical=True, children=[element_1, element_2])
+    group.do_layout()
+
+    assert group.left == 100
+    assert group.top == 400
+    assert group.height == 200
+    assert group.width == 100
+
+    assert element_1.left == 150
+    assert element_2.left == 100
+
 # Horizontal
 def test_do_layout_horizontal_with_initial_children():
     # add two 100x100 Dummy widgets
@@ -154,3 +185,33 @@ def test_horizontal_group_keep_left_alignment_while_adding_children():
     assert group.top == 400
     assert group.height == 100
     assert group.width == 300
+
+
+def test_do_layout_horizontal_align_top():
+    element_1 = UIDummy(height=50)
+    element_2 = UIDummy(height=100)
+
+    group = UIBoxLayout(x=100, y=400, align="top", vertical=False, children=[element_1, element_2])
+    group.do_layout()
+
+    assert group.left == 100
+    assert group.top == 400
+    assert group.height == 100
+    assert group.width == 200
+
+
+def test_do_layout_horizontal_align_bottom():
+    element_1 = UIDummy(height=50)
+    element_2 = UIDummy(height=100)
+
+    group = UIBoxLayout(x=100, y=400, align="bottom", vertical=False, children=[element_1, element_2])
+    group.do_layout()
+
+    assert group.left == 100
+    assert group.top == 400
+    assert group.height == 100
+    assert group.width == 200
+
+    assert element_1.top == 350
+    assert element_2.top == 400
+
