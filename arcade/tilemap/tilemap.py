@@ -461,7 +461,9 @@ class TileMap:
                     ex = (hitbox.coordinates.x + hitbox.size.width) - (
                         my_sprite.width / (scaling * 2)
                     )
-                    ey = -(hitbox.coordinates.y + hitbox.size.height) - (
+                    # issue #1068
+                    # fixed size of rectangular hitbox
+                    ey = -(hitbox.coordinates.y + hitbox.size.height) + (
                         my_sprite.height / (scaling * 2)
                     )
 
