@@ -1,5 +1,5 @@
 from collections import ChainMap
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Union
 
 from pyglet.event import EVENT_UNHANDLED
 
@@ -28,7 +28,7 @@ class UISlider(UIWidget):
                  size_hint=None,
                  size_hint_min=None,
                  size_hint_max=None,
-                 style: dict = None,
+                 style: Union[UISliderStyle, dict, None] = None,
                  **kwargs
                  ):
         super().__init__(

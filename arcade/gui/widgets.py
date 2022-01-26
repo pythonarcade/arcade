@@ -48,6 +48,10 @@ class _Rect(NamedTuple):
         return _Rect(self.x, self.y, width, height)
 
     @property
+    def size(self):
+        return self.width, self.height
+
+    @property
     def left(self):
         return self.x
 
@@ -70,6 +74,15 @@ class _Rect(NamedTuple):
     @property
     def center_y(self):
         return self.y + self.height / 2
+
+    @property
+    def center(self):
+        return self.left, self.bottom
+
+    @property
+    def position(self):
+        """Bottom left coordinates"""
+        return self.left, self.bottom
 
     def align_top(self, value: float) -> "_Rect":
         """Returns new Rect, which is aligned to the top"""
