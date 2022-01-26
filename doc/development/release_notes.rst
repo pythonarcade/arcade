@@ -65,7 +65,8 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
 
 * ``arcade.gui``
 
-  * :py:class:`~arcade.gui.UIBoxLayout` supports now align values.
+  * :py:class:`~arcade.gui.UIBoxLayout` supports now align in constructor (changing later requires a `UIBoxLayout.trigger_full_render()`).
+  * :py:class:`~arcade.gui.UIBoxLayout` supports now space_between in constructor.
 
 
 

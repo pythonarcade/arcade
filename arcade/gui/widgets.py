@@ -1228,7 +1228,9 @@ class UILayout(UIWidget, UIWidgetParent):
                          children=children,
                          size_hint=size_hint,
                          size_hint_min=size_hint_min,
-                         size_hint_max=size_hint_max)
+                         size_hint_max=size_hint_max,
+                         style=style,
+                         **kwargs)
 
     def add(self, child: "UIWidget", **kwargs):
         super().add(child)
@@ -1536,6 +1538,9 @@ class UIBoxLayout(UILayout):
     :param align: Align children in orthogonal direction (x: left, center, right / y: top, center, bottom)
     :param children: Initial children, more can be added
     :param size_hint: A hint for :class:`UILayout`, if this :class:`UIWidget` would like to grow
+    :param size_hint_min: min width and height in pixel
+    :param size_hint_max: max width and height in pixel
+    :param space_between: Space between the children
     """
 
     def __init__(self, x=0, y=0,
@@ -1545,10 +1550,12 @@ class UIBoxLayout(UILayout):
                  size_hint=None,
                  size_hint_min=None,
                  size_hint_max=None,
+                 space_between=0,
                  style=None,
                  **kwargs):
         self.align = align
         self.vertical = vertical
+        self._space_between = space_between
         super().__init__(x=x,
                          y=y,
                          width=0,
@@ -1556,7 +1563,9 @@ class UIBoxLayout(UILayout):
                          children=children,
                          size_hint=size_hint,
                          size_hint_min=size_hint_min,
-                         size_hint_max=size_hint_max)
+                         size_hint_max=size_hint_max,
+                         style=style,
+                         **kwargs)
 
     def do_layout(self):
         # TODO support self.align and self.spacing
@@ -1571,8 +1580,10 @@ class UIBoxLayout(UILayout):
             self.rect = _Rect(self.left, self.bottom, 0, 0)
             return
 
+        required_space_between = max(0, len(self.children)-1) * self._space_between
+
         if self.vertical:
-            new_height = sum(child.height for child in self.children)
+            new_height = sum(child.height for child in self.children) + required_space_between
             new_width = max(child.width for child in self.children)
             center_x = start_x + new_width // 2
             for child in self.children:
@@ -1587,9 +1598,10 @@ class UIBoxLayout(UILayout):
                 if new_rect != child.rect:
                     child.rect = new_rect
                 start_y -= child.height
+                start_y -= self._space_between
         else:
             new_height = max(child.height for child in self.children)
-            new_width = sum(child.width for child in self.children)
+            new_width = sum(child.width for child in self.children) + required_space_between
             center_y = start_y - new_height // 2
 
             for child in self.children:
@@ -1604,5 +1616,6 @@ class UIBoxLayout(UILayout):
                 if new_rect != child.rect:
                     child.rect = new_rect
                 start_x += child.width
+                start_x += self._space_between
 
         self._rect = _Rect(self.left, self.bottom, new_width, new_height).align_top(initial_top)

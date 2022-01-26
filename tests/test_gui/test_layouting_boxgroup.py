@@ -110,6 +110,23 @@ def test_do_layout_vertical_align_right():
     assert element_1.left == 150
     assert element_2.left == 100
 
+
+def test_do_layout_vertical_space_between():
+    element_1 = UIDummy()
+    element_2 = UIDummy()
+
+    group = UIBoxLayout(x=100, y=400, space_between=10, vertical=True, children=[element_1, element_2])
+    group.do_layout()
+
+    assert group.left == 100
+    assert group.top == 400
+    assert group.height == 210
+    assert group.width == 100
+
+    assert element_1.top == 400
+    assert element_2.top == 290
+
+
 # Horizontal
 def test_do_layout_horizontal_with_initial_children():
     # add two 100x100 Dummy widgets
@@ -215,3 +232,18 @@ def test_do_layout_horizontal_align_bottom():
     assert element_1.top == 350
     assert element_2.top == 400
 
+
+def test_do_layout_horizontal_space_between():
+    element_1 = UIDummy()
+    element_2 = UIDummy()
+
+    group = UIBoxLayout(x=100, y=400, space_between=10, vertical=False, children=[element_1, element_2])
+    group.do_layout()
+
+    assert group.left == 100
+    assert group.top == 400
+    assert group.height == 100
+    assert group.width == 210
+
+    assert element_1.left == 100
+    assert element_2.left == 210
