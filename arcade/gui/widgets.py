@@ -1580,7 +1580,7 @@ class UIBoxLayout(UILayout):
             self.rect = _Rect(self.left, self.bottom, 0, 0)
             return
 
-        required_space_between = max(0, len(self.children)-1) * self._space_between
+        required_space_between = max(0, len(self.children) - 1) * self._space_between
 
         if self.vertical:
             new_height = sum(child.height for child in self.children) + required_space_between
