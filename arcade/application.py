@@ -587,7 +587,7 @@ class Window(pyglet.window.Window):
             **{
                 et: getattr(new_view, et, None)
                 for et in self.event_types
-                if et != 'on_show' and hasattr(new_view, et)
+                if et != 'on_show' and et not in self.section_manager_events and hasattr(new_view, et)
             }
         )
         self._current_view.on_show()
