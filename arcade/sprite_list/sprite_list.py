@@ -11,6 +11,7 @@ from array import array
 from collections import deque
 from typing import (
     TYPE_CHECKING,
+    Any,
     Deque,
     Dict,
     Iterator,
@@ -170,6 +171,8 @@ class SpriteList:
         self._spatial_hash_cell_size = spatial_hash_cell_size
         if use_spatial_hash is True:
             self.spatial_hash = _SpatialHash(cell_size=self._spatial_hash_cell_size)
+
+        self.properties: Optional[Dict[str, Any]] = None
 
         LOG.debug(
             "[%s] Creating SpriteList use_spatial_hash=%s is_static=%s",

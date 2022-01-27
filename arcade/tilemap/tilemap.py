@@ -638,6 +638,7 @@ class TileMap:
         my_sprite = custom_class(**custom_class_args, **args)
 
         if layer.properties:
+            sprite_list.properties = layer.properties
             for key, value in layer.properties.items():
                 my_sprite.properties[key] = value
 
@@ -723,6 +724,9 @@ class TileMap:
 
                     sprite_list.visible = layer.visible
                     sprite_list.append(my_sprite)
+
+                if layer.properties:
+                    sprite_list.properties = layer.properties
 
         return sprite_list
 
