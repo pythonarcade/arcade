@@ -72,6 +72,9 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
   * :py:class:`~arcade.gui.UIBoxLayout` supports now align in constructor (changing later requires a `UIBoxLayout.trigger_full_render()`).
   * :py:class:`~arcade.gui.UIBoxLayout` supports now space_between in constructor.
   * :py:class:`~arcade.gui.UIManager` fix #1067, consume press and release mouse events
+  * :py:meth:`~arcade.gui.UIManager.add()` returns added child
+  * :py:meth:`~arcade.gui.UILayout.add()` returns added child
+  * :py:meth:`~arcade.gui.UIWidget.add()` returns added child
 
 
 

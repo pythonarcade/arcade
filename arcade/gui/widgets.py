@@ -1234,9 +1234,10 @@ class UILayout(UIWidget, UIWidgetParent):
                          style=style,
                          **kwargs)
 
-    def add(self, child: "UIWidget", **kwargs):
+    def add(self, child: "UIWidget", **kwargs) -> "UIWidget":
         super().add(child)
         self.do_layout()
+        return child
 
     def remove(self, child: "UIWidget"):
         super().remove(child)
