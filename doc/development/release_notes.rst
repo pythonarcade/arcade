@@ -39,7 +39,6 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
     (#1069) where loaded rectangular hit box was wrong.
   * Add better error for infinite tile maps
 
-
 * General
 
   * ``Window.current_camera`` will now hold a reference to the currently active camera.
@@ -48,12 +47,18 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
   * ``Window.clear`` can now clear a sub-section of the screen through
     the new optional ``viewport`` parameter.
   * :py:meth:`arcade.Window.clear` can now take normalized/float color values
-  * Update pyinstaller instructions
   * Add support for custom resource handles
-  * Various documentation improvements and updates
   * Add support for anisotropic filtering with textures.
+
+* Documentation
+
+  * Change examples so instead of `self.clear()` we use `self.window.clear()`
+    as what `start_render` did was confusing people, while `clear` is ... well,
+    more clear. `#1071 <https://github.com/pythonarcade/arcade/issues/1071>`_
   * Fix a bunch of links that were incorrectly pointing to old pvcraven instead of pythonarcade.
-    `#1038 <https://github.com/pythonarcade/arcade/issues/1063>`_
+    `#1063 <https://github.com/pythonarcade/arcade/issues/1063>`_
+  * Update pyinstaller instructions
+  * Various documentation improvements and updates
 
 * ``arcade.gl``
 
