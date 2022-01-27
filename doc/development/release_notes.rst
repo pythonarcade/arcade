@@ -15,56 +15,52 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
 * Sprites
 
   * Collision checking against one or more sprite lists
-    now uses the GPU via a 'transform' for much better performance.
+    can use the GPU via a 'transform' for much better performance.
     The :meth:`arcade.check_for_collision_with_lists` and :meth:`arcade.check_for_collision_with_lists`
     methods now support selection between spatial, GPU, and CPU methods of detection.
-    Performance is fast enough now, unless you have a very large map, turning on spatial hashing
-    isn't necessary.
-
   * Added :py:meth:`~arcade.SpriteList.clear` for resetting/clearing a spritelist. This will iterate
     and remove all sprites by default, or do a faster `O(1)` clear. Please read the api docs
     to find out what version fits your use case.
-
   * :py:class:`~arcade.SpriteList` now supports setting a global color and alpha value.
     The new :py:attr:`~arcade.SpriteList.color`, :py:attr:`~arcade.SpriteList.color_normalized`,
     :py:attr:`~arcade.SpriteList.alpha` and :py:attr:`~arcade.SpriteList.alpha_normalized`
     will affect every sprite in the list. This global color value is multiplied by the
     individual sprite colors. 
-
   * The :py:class:`~arcade.Sprite` initializer now also accepts ``None`` value for ``hit_box_algorithm``
     in line with the underlying texture method.
-
   * Fixed a bug causing sprites to have incorrect scale when passing a texture
     during creation.
-
   * Removed the texture transform feature in sprites. This feature no longer
     makes sense since arcade 2.6.0 due to the new texture atlas feature.
+
+* Tiled Maps
+
+  * Fixed issue `#1068 <https://github.com/pythonarcade/arcade/issues/1068>`_
+    (#1069) where loaded rectangular hit box was wrong.
+  * Add better error for infinite tile maps
+
 
 * General
 
   * ``Window.current_camera`` will now hold a reference to the currently active camera.
     This will be set when calling :py:meth:`arcade.Camera.use`, if no camera is active
     then it will be ``None``.
-
   * ``Window.clear`` can now clear a sub-section of the screen through
     the new optional ``viewport`` parameter.
-
   * :py:meth:`arcade.Window.clear` can now take normalized/float color values
-
   * Update pyinstaller instructions
-
   * Add support for custom resource handles
-
   * Various documentation improvements and updates
+  * Add support for anisotropic filtering with textures.
+  * Fix a bunch of links that were incorrectly pointing to old pvcraven instead of pythonarcade.
+    `#1038 <https://github.com/pythonarcade/arcade/issues/1063>`_
 
 * ``arcade.gl``
 
   * Fixed a bug were out attributes in transforms was not properly detected
     with geometry shaders
-
   * Fixed a bug were specifying vertex count wasn't possible with transforms when
     the vertex array has an index buffer bound.
-
   * The :py:class:`~arcade.gl.Query` object now allows for selecting what specific queries should be performed
 
 * ``arcade.gui``
@@ -72,16 +68,27 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
   * :py:class:`~arcade.gui.UIBoxLayout` supports now align in constructor (changing later requires a `UIBoxLayout.trigger_full_render()`).
   * :py:class:`~arcade.gui.UIBoxLayout` supports now space_between in constructor.
   * :py:class:`~arcade.gui.UIManager` fix #1067, consume press and release mouse events
-  * :py:meth:`~arcade.gui.UIManager.add()` returns added child
-  * :py:meth:`~arcade.gui.UILayout.add()` returns added child
-  * :py:meth:`~arcade.gui.UIWidget.add()` returns added child
+  * UIManager :py:meth:`~arcade.gui.UIManager.add()` returns added child
+  * UILayout :py:meth:`~arcade.gui.UILayout.add()` returns added child
+  * UIWidget :py:meth:`~arcade.gui.UIWidget.add()` returns added child
+  * New method in UIManager: :py:meth:`~arcade.gui.UIManager.walk_widgets()`
+  * New method in UIManager: :py:meth:`~arcade.gui.UIManager.get_widgets_at()`
+  * New method in UIWidget: :py:meth:`~arcade.gui.UIWidget.move()`
 
-
+Special thanks to
+`Cleptomania <https://github.com/Cleptomania>`_,
+`einarf <https://github.com/einarf>`_,
+`eruvanos <https://github.com/eruvanos>`_,
+`nrukin <https://github.com/nrukin>`_,
+`Jayman2000 <https://github.com/Jayman2000>`_,
+`pvcraven <https://github.com/pvcraven>`_,
+for their contributions to this release. Also, thanks to everyone on the Pyglet team! We depend heavily on
+Pyglet's continued development.
 
 2.6.9
 -----
 
-*Released on 2022-01-13-2022*
+*Released on 2022-Jan-13*
 
 * Bump version of Pillow from 8.4 to 9.0.0 due to security vulnerability in Pillow.
 
