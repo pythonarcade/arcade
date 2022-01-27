@@ -149,6 +149,7 @@ class Window(pyglet.window.Window):
         set_window(self)
 
         self._current_view: Optional[View] = None
+        self.current_camera: Optional[arcade.Camera] = None
         self.textbox_time = 0.0
         self.key: Optional[int] = None
         self.flip_count: int = 0

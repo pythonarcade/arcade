@@ -188,6 +188,7 @@ class Camera:
         """
         Select this camera for use. Do this right before you draw.
         """
+        self._window.current_camera = self
         self.update()
         fbo = self._window.ctx.fbo
         scaling = get_scaling_factor(self._window) if fbo.is_default else 1.0
