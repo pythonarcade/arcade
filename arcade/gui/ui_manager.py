@@ -8,6 +8,7 @@ The better gui for arcade
 - Texts are now rendered with pyglet, open easier support for text areas with scolling
 - TextArea with scroll support
 """
+import warnings
 from collections import defaultdict
 from typing import List, Dict
 
@@ -58,6 +59,7 @@ class UIManager(EventDispatcher, UIWidgetParent):
         self.register_event_type("on_event")
 
         if auto_enable:
+            warnings.warn("`auto_enable=True` -> UIManager should be enabled in a `View.on_show_view()`")
             self.enable()
 
     def add(self, widget: UIWidget, *, index=None) -> UIWidget:
@@ -197,7 +199,7 @@ class UIManager(EventDispatcher, UIWidgetParent):
             )
 
     def on_update(self, time_delta):
-        self.dispatch_ui_event(UIOnUpdateEvent(self, time_delta))
+        return self.dispatch_ui_event(UIOnUpdateEvent(self, time_delta))
 
     def draw(self):
         # Request Widgets to prepare for next frame
@@ -238,42 +240,42 @@ class UIManager(EventDispatcher, UIWidgetParent):
         return EVENT_UNHANDLED
 
     def dispatch_ui_event(self, event):
-        self.dispatch_event("on_event", event)
+        return self.dispatch_event("on_event", event)
 
     def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
         x, y = self.adjust_mouse_coordinates(x, y)
-        self.dispatch_ui_event(UIMouseMovementEvent(self, x, y, dx, dy))  # type: ignore
+        return self.dispatch_ui_event(UIMouseMovementEvent(self, x, y, dx, dy))  # type: ignore
 
     def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
         x, y = self.adjust_mouse_coordinates(x, y)
-        self.dispatch_ui_event(UIMousePressEvent(self, x, y, button, modifiers))  # type: ignore
+        return self.dispatch_ui_event(UIMousePressEvent(self, x, y, button, modifiers))  # type: ignore
 
     def on_mouse_drag(self, x: float, y: float, dx: float, dy: float, buttons: int, modifiers: int):
         x, y = self.adjust_mouse_coordinates(x, y)
-        self.dispatch_ui_event(UIMouseDragEvent(self, x, y, dx, dy, buttons, modifiers))  # type: ignore
+        return self.dispatch_ui_event(UIMouseDragEvent(self, x, y, dx, dy, buttons, modifiers))  # type: ignore
 
     def on_mouse_release(self, x: float, y: float, button: int, modifiers: int):
         x, y = self.adjust_mouse_coordinates(x, y)
-        self.dispatch_ui_event(UIMouseReleaseEvent(self, x, y, button, modifiers))  # type: ignore
+        return self.dispatch_ui_event(UIMouseReleaseEvent(self, x, y, button, modifiers))  # type: ignore
 
     def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
         x, y = self.adjust_mouse_coordinates(x, y)
-        self.dispatch_ui_event(UIMouseScrollEvent(self, x, y, scroll_x, scroll_y))
+        return self.dispatch_ui_event(UIMouseScrollEvent(self, x, y, scroll_x, scroll_y))
 
     def on_key_press(self, symbol: int, modifiers: int):
-        self.dispatch_ui_event(UIKeyPressEvent(self, symbol, modifiers))  # type: ignore
+        return self.dispatch_ui_event(UIKeyPressEvent(self, symbol, modifiers))  # type: ignore
 
     def on_key_release(self, symbol: int, modifiers: int):
-        self.dispatch_ui_event(UIKeyReleaseEvent(self, symbol, modifiers))  # type: ignore
+        return self.dispatch_ui_event(UIKeyReleaseEvent(self, symbol, modifiers))  # type: ignore
 
     def on_text(self, text):
-        self.dispatch_ui_event(UITextEvent(self, text))
+        return self.dispatch_ui_event(UITextEvent(self, text))
 
     def on_text_motion(self, motion):
-        self.dispatch_ui_event(UITextMotionEvent(self, motion))
+        return self.dispatch_ui_event(UITextMotionEvent(self, motion))
 
     def on_text_motion_select(self, motion):
-        self.dispatch_ui_event(UITextMotionSelectEvent(self, motion))
+        return self.dispatch_ui_event(UITextMotionSelectEvent(self, motion))
 
     def on_resize(self, width, height):
         scale = arcade.get_scaling_factor(self.window)

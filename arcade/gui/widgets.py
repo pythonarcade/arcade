@@ -182,15 +182,16 @@ class UIWidget(EventDispatcher, ABC):
         """
         self._rendered = False
 
-    def add(self, child: "UIWidget", *, index=None):
+    def add(self, child: "UIWidget", *, index=None) -> "UIWidget":
         """
         Add a widget to this :class:`UIWidget` as a child.
         Added widgets will receive ui events and be rendered.
 
-        By default the latest added widget will receive ui events first and will be rendered on top of others.
+        By default, the latest added widget will receive ui events first and will be rendered on top of others.
 
-        :param widget: widget to add
+        :param child: widget to add
         :param index: position a widget is added, None has the highest priority
+        :return: given child
         """
         child.parent = self
         if index is None:
@@ -198,6 +199,7 @@ class UIWidget(EventDispatcher, ABC):
         else:
             self.children.insert(max(len(self.children), index), child)
         self.trigger_full_render()
+        return child
 
     def remove(self, child: "UIWidget"):
         child.parent = None
@@ -289,7 +291,7 @@ class UIWidget(EventDispatcher, ABC):
     def dispatch_ui_event(self, event: UIEvent):
         """Dispatch a :class:`UIEvent` using pyglet event dispatch mechanism
          """
-        self.dispatch_event("on_event", event)
+        return self.dispatch_event("on_event", event)
 
     def with_border(self, width=2, color=(0, 0, 0)):
         """
@@ -481,7 +483,7 @@ class UIInteractiveWidget(UIWidget):
                 return EVENT_HANDLED
 
         if isinstance(event, UIOnClickEvent) and self.rect.collide_with_point(event.x, event.y):
-            self.dispatch_event("on_click", event)
+            return self.dispatch_event("on_click", event)
 
         if super().on_event(event):
             return EVENT_HANDLED
