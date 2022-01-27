@@ -11,13 +11,17 @@ class Section:
     """
 
     def __init__(self, view, left: float, bottom: float, width: float, height: float, *,
-                 keyboard_primary: bool = False, prevent_dispatch: bool = True):
+                 accept_keyboard_events: bool = False, prevent_dispatch: bool = True,
+                 prevent_dispatch_view: bool = True):
         # parent view
         self.view = view
 
         # section options
-        self._keyboard_primary: bool = keyboard_primary
-        self.prevent_dispatch: bool = prevent_dispatch
+        self.enabled: bool = True  # enables or disables this section
+        self.block_updates: bool = False  # if True update and on_update will not trigger in this section
+        self.accept_keyboard_events: bool = accept_keyboard_events
+        self.prevent_dispatch: bool = prevent_dispatch  # prevents events to propagate
+        self.prevent_dispatch_view: bool = prevent_dispatch_view  # prevents events to propagate to the view
 
         # section position into the current viewport
         # if screen is resized it's upto the user to move or resize each section
@@ -44,22 +48,10 @@ class Section:
         """ The view window """
         return self.view.window
 
-    @property
-    def keyboard_primary(self) -> bool:
-        """ Sets if this section receives the keyboard events """
-        return self._keyboard_primary
-
-    @keyboard_primary.setter
-    def keyboard_primary(self, value) -> None:
-        if value is True:
-            self.view.section_manager.remove_keyboard_primary()
-            self._keyboard_primary = True
-        else:
-            self._keyboard_primary = value
-
     def overlaps_with(self, section) -> bool:
         """ Checks if this section overlaps with another section """
-        return not (self.right < section.left or self.left > section.right or self.top < section.bottom or self.bottom > section.top)
+        return not(self.right < section.left or self.left > section.right
+                   or self.top < section.bottom or self.bottom > section.top)
 
     def mouse_is_on_top(self, x: float, y: float) -> bool:
         """ Check if the current mouse position is on top of this section """
@@ -131,28 +123,40 @@ class SectionManager:
         """ Returns true if sections are available """
         return bool(self.sections)
 
-    def add_section(self, new_section: "Section") -> bool:
-        """
-        Ads a section to this Section Manger.
-        It checks if the new section overlaps with other sections.
-        """
+    def disable(self) -> None:
+        """ Disable all sections """
         for section in self.sections:
-            if new_section.overlaps_with(section):
-                return False
-        self.sections.append(new_section)
-        return True
+            section.enabled = False
+
+    def enable(self) -> None:
+        """ Enables all section """
+        for section in self.sections:
+            section.enabled = True
+
+    def add_section(self, section: "Section", at_index: Optional[int] = None) -> None:
+        """
+        Adds a section to this Section Manager.
+        :param section: the section to add to this section manager
+        :param at_index: inserts the section at that index. If None at the end
+        """
+        if at_index is None:
+            self.sections.append(section)
+        else:
+            self.sections.insert(at_index, section)
 
     def on_update(self, delta_time: float):
         """ Called on each event loop. First dispatch the view event, then the section ones. """
         self.view.on_update(delta_time)
         for section in self.sections:
-            section.on_update(delta_time)
+            if section.enabled and not section.block_updates:
+                section.on_update(delta_time)
 
     def update(self, delta_time: float):
         """ Called on each event loop. First dispatch the view event, then the section ones. """
         self.view.update(delta_time)
         for section in self.sections:
-            section.update(delta_time)
+            if section.enabled and not section.block_updates:
+                section.update(delta_time)
 
     def on_draw(self):
         """
@@ -162,6 +166,8 @@ class SectionManager:
         """
         self.view.on_draw()
         for section in self.sections:
+            if not section.enabled:
+                continue
             if section.camera:
                 section.camera.use()  # call the camera use of the current section before section.on_draw
             section.on_draw()
@@ -172,28 +178,26 @@ class SectionManager:
                                             section.top, section.bottom, WHITE)
 
     def on_resize(self, width: int, height: int):
-        """ Called when the windows is resized. First dispatch the view event, then the section ones. """
+        """ Called when the window is resized. First dispatch the view event, then the section ones. """
         self.camera.resize(width, height)  # resize the default camera
-        self.view.on_resize(width, height)
+        self.view.on_resize(width, height)  # call resize on the view
         for section in self.sections:
-            section.on_resize(width, height)
+            if section.enabled:
+                section.on_resize(width, height)
 
-    def get_keyboard_primary(self) -> Optional[Section]:
-        """ Returns the section that has keyboard_primary set """
-        for section in self.sections:
-            if section.keyboard_primary:
-                return section
-        return None
+    def get_keyboard_sections(self) -> List[Section]:
+        """ Returns the sections that have accept_keyboard_events set """
+        return [section for section in self.sections if section.enabled and section.accept_keyboard_events]
 
-    def remove_keyboard_primary(self) -> None:
+    def disable_all_keyboard_events(self) -> None:
         """ Removes the keyboard events handling from all sections """
         for section in self.sections:
-            section._keyboard_primary = False
+            section.accept_keyboard_events = False
 
     def get_section(self, x: float, y: float) -> Optional[Section]:
         """ Returns a section based on a position """
         for section in self.sections:
-            if section.mouse_is_on_top(x, y):
+            if section.enabled and section.mouse_is_on_top(x, y):
                 return section
         return None
 
@@ -214,14 +218,17 @@ class SectionManager:
                 # if the method returns EVENT_HANDLED (True) then avoid propagating the event.
                 # if the section prevents dispatching events to the view return
                 return True
+        if section and section.prevent_dispatch_view:
+            return True
         method = getattr(self.view, event, None)  # get the method from the view
         if method:
             return method(x, y, *args, **kwargs)  # call the view method
 
     def dispatch_keyboard_event(self, event, *args, **kwargs) -> Optional[bool]:
-        """ Generic method to dispatch keyboard events to the correct Section """
-        section = self.get_keyboard_primary()  # get the section that receives keyboard events if any
-        if section:
+        """ Generic method to dispatch keyboard events to the correct sections """
+        # get the sections that receives keyboard events if any
+        propagate_to_view = True
+        for section in self.get_keyboard_sections():
             method = getattr(section, event, None)  # get the method to call from the section
             if method:
                 result = method(*args, **kwargs)  # call the section method
@@ -229,6 +236,10 @@ class SectionManager:
                 # if the method returns EVENT_HANDLED (True) then avoid propagating the event.
                 # if the section prevents dispatching events to the view return
                 return True
+            if section.prevent_dispatch_view:
+                propagate_to_view = False
+        if not propagate_to_view:
+            return True
         method = getattr(self.view, event, None)  # get the method from the view
         if method:
             return method(*args, **kwargs)  # call the view method
@@ -263,7 +274,7 @@ class SectionManager:
     def on_mouse_enter(self, x: float, y: float, *args, **kwargs) -> Optional[bool]:
         current_section = self.get_section(x, y)
         self.mouse_over_section = current_section  # set the section the mouse is over
-        # pass the correct section to the dispatch event so it is not computed again
+        # pass the correct section to the dispatch event, so it is not computed again
         kwargs['current_section'] = current_section
         return self.dispatch_mouse_event('on_mouse_enter', x, y, *args, **kwargs)
 

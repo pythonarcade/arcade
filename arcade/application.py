@@ -174,10 +174,10 @@ class Window(pyglet.window.Window):
             self.mouse = None
 
         # Events that the section manager should handle (instead of the View) if sections are present in a View
-        self.section_manager_events = ('on_mouse_motion', 'on_mouse_drag', 'on_mouse_press',
+        self.section_manager_events = {'on_mouse_motion', 'on_mouse_drag', 'on_mouse_press',
                                        'on_mouse_release', 'on_mouse_scroll', 'on_mouse_enter',
                                        'on_mouse_leave', 'on_key_press', 'on_key_release', 'on_draw',
-                                       'on_update', 'update', 'on_resize')
+                                       'on_update', 'update', 'on_resize'}
 
     @property
     def current_view(self) -> Optional["View"]:
@@ -580,7 +580,7 @@ class Window(pyglet.window.Window):
             self.push_handlers(
                 **{
                     et: getattr(new_view.section_manager, et, None)
-                    for et in self.section_override_methods
+                    for et in self.section_manager_events
                  }
             )
         self.push_handlers(
@@ -745,9 +745,13 @@ class View:
         """ Return if the View has sections """
         return self.section_manager.has_sections
 
-    def add_section(self, section) -> bool:
-        """ Adds a section to this View """
-        return self.section_manager.add_section(section)
+    def add_section(self, section, at_index: Optional[int] = None) -> None:
+        """
+        Adds a section to the view Section Manager.
+        :param section: the section to add to this section manager
+        :param at_index: inserts the section at that index. If None at the end
+        """
+        return self.section_manager.add_section(section, at_index)
 
     def update(self, delta_time: float):
         """To be overridden"""
