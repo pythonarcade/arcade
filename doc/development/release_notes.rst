@@ -42,6 +42,10 @@ Keep up-to-date with the latest changes to the Arcade library by the release not
 
 * General
 
+  * ``Window.current_camera`` will now hold a reference to the currently active camera.
+    This will be set when calling :py:meth:`arcade.Camera.use`, if no camera is active
+    then it will be ``None``.
+
   * ``Window.clear`` can now clear a sub-section of the screen through
     the new optional ``viewport`` parameter.
 
