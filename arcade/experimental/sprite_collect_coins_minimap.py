@@ -101,7 +101,7 @@ class MyGame(arcade.Window):
 
     def on_draw(self):
         """ Draw everything """
-        arcade.start_render()
+        self.clear()
 
         self.offscreen.use()
         self.offscreen.clear(arcade.color.AMAZON)

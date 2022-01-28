@@ -70,7 +70,7 @@ class MyGame(arcade.Window):
         """Render the screen."""
 
         # Clear the screen to the background color
-        arcade.start_render()
+        self.clear()
 
         # Draw our sprites
         self.wall_list.draw()

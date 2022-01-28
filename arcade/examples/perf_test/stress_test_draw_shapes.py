@@ -114,7 +114,7 @@ class MyGame(arcade.Window):
         # Start timing how long this takes
         draw_start_time = timeit.default_timer()
 
-        arcade.start_render()
+        self.clear()
         for shape in self.shape_list:
             shape.draw()
 

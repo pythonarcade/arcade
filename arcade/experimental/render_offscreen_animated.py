@@ -196,7 +196,7 @@ class MyGame(arcade.Window):
         """
 
         start_time = int(round(time.time() * 1000))
-        arcade.start_render()
+        self.clear()
 
         self.offscreen.use()
         self.offscreen.clear()

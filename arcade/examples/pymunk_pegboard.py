@@ -95,7 +95,7 @@ class MyGame(arcade.Window):
         """
 
         # This command has to happen before we start drawing
-        arcade.start_render()
+        self.clear()
 
         draw_start_time = timeit.default_timer()
         self.peg_list.draw()

@@ -296,7 +296,7 @@ class MyWindow(arcade.Window):
 
     def on_draw(self):
         """ Draw everything """
-        arcade.start_render()
+        self.clear()
         self.wall_list.draw()
         self.bullet_list.draw()
         self.rock_list.draw()

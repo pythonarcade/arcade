@@ -169,7 +169,7 @@ class MyGame(arcade.Window):
     def on_draw(self):
         """ Render the screen. """
         # Clear the screen
-        arcade.start_render()
+        self.clear()
 
         # Draw the mats the cards go on to
         self.pile_mat_list.draw()

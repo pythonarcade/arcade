@@ -24,7 +24,7 @@ class MyGame(arcade.Window):
     def on_draw(self):
         """ Render the screen. """
         # Clear the screen
-        arcade.start_render()
+        self.clear()
 
     def on_mouse_press(self, x, y, button, key_modifiers):
         """ Called when the user presses a mouse button. """

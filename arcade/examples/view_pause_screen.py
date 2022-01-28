@@ -29,7 +29,7 @@ class MenuView(arcade.View):
         arcade.set_background_color(arcade.color.WHITE)
 
     def on_draw(self):
-        arcade.start_render()
+        self.clear()
         arcade.draw_text("Menu Screen", WIDTH / 2, HEIGHT / 2,
                          arcade.color.BLACK, font_size=50, anchor_x="center")
         arcade.draw_text("Click to advance.", WIDTH / 2, HEIGHT / 2 - 75,
@@ -53,7 +53,7 @@ class GameView(arcade.View):
         arcade.set_background_color(arcade.color.AMAZON)
 
     def on_draw(self):
-        arcade.start_render()
+        self.clear()
         # Draw all the sprites.
         self.player_sprite.draw()
 
@@ -91,7 +91,7 @@ class PauseView(arcade.View):
         arcade.set_background_color(arcade.color.ORANGE)
 
     def on_draw(self):
-        arcade.start_render()
+        self.clear()
 
         # Draw player, for effect, on pause screen.
         # The previous View (GameView) was passed in

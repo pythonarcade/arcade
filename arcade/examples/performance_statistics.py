@@ -112,7 +112,7 @@ class MyGame(arcade.Window):
         """ Draw everything """
 
         # Clear the screen
-        arcade.start_render()
+        self.clear()
 
         # Draw all the sprites
         self.coin_list.draw()

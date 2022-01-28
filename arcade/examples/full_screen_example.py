@@ -56,7 +56,7 @@ class MyGame(arcade.Window):
         Render the screen.
         """
 
-        arcade.start_render()
+        self.clear()
 
         # Get viewport dimensions
         left, screen_width, bottom, screen_height = self.get_viewport()

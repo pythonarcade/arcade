@@ -68,7 +68,7 @@ class MyGame(arcade.Window):
         """
 
         # This command has to happen before we start drawing
-        arcade.start_render()
+        self.clear()
 
         self.grid_sprite_list.draw()
 

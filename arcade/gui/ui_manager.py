@@ -40,7 +40,7 @@ class UIManager(EventDispatcher, UIWidgetParent):
     manager.add(Dummy())
 
     def on_draw():
-        arcade.start_render()
+        self.clear()
 
         ...
 

@@ -121,7 +121,7 @@ class MyGame(arcade.Window):
     def on_draw(self):
 
         # This command has to happen before we start drawing
-        arcade.start_render()
+        self.clear()
 
         # Draw all the sprites.
         self.all_sprites_list.draw()

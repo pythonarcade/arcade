@@ -330,7 +330,7 @@ class FireworksApp(arcade.Window):
             self.emitters.remove(e)
 
     def on_draw(self):
-        arcade.start_render()
+        self.clear()
         for e in self.emitters:
             e.draw()
         arcade.draw_lrtb_rectangle_filled(0, SCREEN_WIDTH, 25, 0, arcade.color.DARK_GREEN)

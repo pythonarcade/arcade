@@ -24,7 +24,7 @@ class InstructionView(arcade.View):
 
     def on_draw(self):
         """ Draw this view """
-        arcade.start_render()
+        self.clear()
         arcade.draw_text("Instructions Screen", self.window.width / 2, self.window.height / 2,
                          arcade.color.WHITE, font_size=50, anchor_x="center")
         arcade.draw_text("Click to advance", self.window.width / 2, self.window.height / 2-75,
@@ -51,7 +51,7 @@ class GameOverView(arcade.View):
 
     def on_draw(self):
         """ Draw this view """
-        arcade.start_render()
+        self.clear()
         self.texture.draw_sized(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2,
                                 SCREEN_WIDTH, SCREEN_HEIGHT)
 
@@ -118,7 +118,7 @@ class GameView(arcade.View):
 
     def on_draw(self):
         """ Draw everything """
-        arcade.start_render()
+        self.clear()
         self.coin_list.draw()
         self.player_list.draw()
 

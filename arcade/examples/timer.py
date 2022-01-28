@@ -34,7 +34,7 @@ class MyGame(arcade.Window):
 
         # Start the render. This must happen before any drawing
         # commands. We do NOT need an stop render command.
-        arcade.start_render()
+        self.clear()
 
         # Output the timer text.
         arcade.draw_text(self.output,

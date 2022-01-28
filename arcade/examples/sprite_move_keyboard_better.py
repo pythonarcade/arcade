@@ -88,7 +88,7 @@ class MyGame(arcade.Window):
         """ Render the screen. """
 
         # Clear the screen
-        arcade.start_render()
+        self.clear()
 
         # Draw all the sprites.
         self.player_list.draw()

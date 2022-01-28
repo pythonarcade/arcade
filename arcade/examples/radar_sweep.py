@@ -72,7 +72,7 @@ class MyGame(arcade.Window):
         """ Render the screen. """
 
         # Clear screen
-        arcade.start_render()
+        self.clear()
         # Draw the rectangle
         self.radar.draw()
 

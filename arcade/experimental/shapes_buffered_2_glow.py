@@ -109,7 +109,7 @@ class MyGame(arcade.Window):
         """
         Render the screen.
         """
-        arcade.start_render()
+        self.clear()
 
         self.offscreen.use()
         self.offscreen.clear()
@@ -117,7 +117,7 @@ class MyGame(arcade.Window):
 
         # This command has to happen before we start drawing
         self.use()
-        arcade.start_render()
+        self.clear()
 
         gl.glDisable(gl.GL_BLEND)
         self.glow.render(self.offscreen.color_attachments[0], self)

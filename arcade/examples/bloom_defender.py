@@ -246,7 +246,7 @@ class MyGame(arcade.Window):
     def on_draw(self):
         """ Render the screen. """
         # This command has to happen before we start drawing
-        arcade.start_render()
+        self.clear()
 
         # --- Bloom related ---
 

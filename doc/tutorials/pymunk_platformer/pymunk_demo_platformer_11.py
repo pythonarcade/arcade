@@ -434,7 +434,7 @@ class GameWindow(arcade.Window):
 
     def on_draw(self):
         """ Draw everything """
-        arcade.start_render()
+        self.clear()
         self.wall_list.draw()
         self.moving_sprites_list.draw()
         self.bullet_list.draw()

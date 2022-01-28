@@ -89,7 +89,7 @@ class MyGame(arcade.Window):
         """
 
         # This command has to happen before we start drawing
-        arcade.start_render()
+        self.clear()
 
         # Draw all the sprites.
         self.wall_list.draw()

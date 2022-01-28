@@ -124,7 +124,7 @@ class MyGame(arcade.Window):
         """
         # Call our drawing functions.
 
-        arcade.start_render()
+        self.clear()
         for mountain_range in self.mountains:
             mountain_range.draw()
 

@@ -36,7 +36,7 @@ class MyGame(arcade.Window):
 
         # This command should happen before we start drawing. It will clear
         # the screen to the background color, and erase what we drew last frame.
-        arcade.start_render()
+        self.clear()
 
         # Add the screen title
         start_x = 0

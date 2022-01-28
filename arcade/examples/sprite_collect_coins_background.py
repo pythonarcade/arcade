@@ -94,7 +94,7 @@ class MyGame(arcade.Window):
         """
 
         # This command has to happen before we start drawing
-        arcade.start_render()
+        self.clear()
 
         # Draw the background texture
         arcade.draw_lrwh_rectangle_textured(0, 0,

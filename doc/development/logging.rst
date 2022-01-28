@@ -92,7 +92,7 @@ the OpenGL context ``arcade.Window.ctx`` as this example shows:
 
     def on_draw(self):
         """ Render the screen. """
-        arcade.start_render()
+        self.clear()
 
         query = self.ctx.query()
         with query:

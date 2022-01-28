@@ -77,7 +77,7 @@ class MyGame(arcade.Window):
         """
 
         # This command has to happen before we start drawing
-        arcade.start_render()
+        self.clear()
         self.shapes.draw()
         # arcade.draw_rectangle_filled(500, 500, 50, 50, (255, 0, 0, 127))
 

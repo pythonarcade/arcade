@@ -181,7 +181,7 @@ class MyGame(arcade.Window):
 
         # This command should happen before we start drawing. It will clear
         # the screen to the background color, and erase what we drew last frame.
-        arcade.start_render()
+        self.clear()
 
         # Call draw() on all your sprite lists below
         self.button_sprites.draw()

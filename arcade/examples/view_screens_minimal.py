@@ -33,7 +33,7 @@ class MenuView(arcade.View):
 
     def on_draw(self):
         """ Draw the menu """
-        arcade.start_render()
+        self.clear()
         arcade.draw_text("Menu Screen - click to advance", WIDTH / 2, HEIGHT / 2,
                          arcade.color.BLACK, font_size=30, anchor_x="center")
 
@@ -62,7 +62,7 @@ class GameView(arcade.View):
 
     def on_draw(self):
         """ Draw everything for the game. """
-        arcade.start_render()
+        self.clear()
         arcade.draw_text("Game - press SPACE to advance", WIDTH / 2, HEIGHT / 2,
                          arcade.color.BLACK, font_size=30, anchor_x="center")
 
@@ -82,7 +82,7 @@ class GameOverView(arcade.View):
 
     def on_draw(self):
         """ Draw the game over view """
-        arcade.start_render()
+        self.clear()
         arcade.draw_text("Game Over - press ESCAPE to advance", WIDTH / 2, HEIGHT / 2,
                          arcade.color.WHITE, 30, anchor_x="center")
 

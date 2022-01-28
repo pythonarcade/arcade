@@ -152,7 +152,7 @@ class UIMockup(arcade.Window):
         # print("window size", self.get_size())
         # print("proj", self.ctx.projection_2d)
         # print("vp", self.ctx.viewport)
-        arcade.start_render()
+        self.clear()
         self.manager.draw()
         arcade.draw_text(f"{self.fps.get_fps():.0f}", self.width // 2, self.height // 2, color=arcade.color.RED,
                          font_size=20)

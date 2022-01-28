@@ -53,7 +53,7 @@ Create a file called ``main.py`` that contains the following:
 
     arcade.open_window(400, 400, "My Game")
 
-    arcade.start_render()
+    self.clear()
     arcade.draw_circle_filled(200, 200, 100, arcade.color.BLUE)
     arcade.finish_render()
 

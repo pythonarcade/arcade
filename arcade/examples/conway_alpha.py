@@ -109,7 +109,7 @@ class MyGame(arcade.Window):
         """ Render the screen. """
 
         # This command has to happen before we start drawing
-        arcade.start_render()
+        self.clear()
         self.layers_grid_sprites_one_dim[0].draw()
 
     def on_update(self, delta_time: float):

@@ -171,7 +171,7 @@ class MyGame(arcade.Window):
         Render the screen.
         """
 
-        arcade.start_render()
+        self.clear()
         """
         This is called every time we need to update our screen. About 60
         times per second.

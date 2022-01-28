@@ -42,7 +42,7 @@ class MyGame(arcade.Window):
 
         # This command should happen before we start drawing. It will clear
         # the screen to the background color, and erase what we drew last frame.
-        arcade.start_render()
+        self.clear()
 
         # start_x and start_y make the start point for the text.
         # We draw a dot to make it easy too see

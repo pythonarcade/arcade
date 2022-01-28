@@ -80,7 +80,7 @@ class MyGame(arcade.Window):
     def on_draw(self):
         """ Render the screen. """
         # Clear the screen
-        arcade.start_render()
+        self.clear()
 
         # Draw the cards
         self.card_list.draw()

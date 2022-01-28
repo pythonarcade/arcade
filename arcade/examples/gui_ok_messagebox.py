@@ -50,7 +50,7 @@ class MyWindow(arcade.Window):
         self.manager.add(message_box)
 
     def on_draw(self):
-        arcade.start_render()
+        self.clear()
         self.manager.draw()
 
     def on_message_box_close(self, button_text):

@@ -19,7 +19,7 @@ def resource_path(file):
 def main():
     arcade.open_window(SCREEN_WIDTH, SCREEN_HEIGHT, TITLE)
     arcade.set_background_color(BACKGROUND_COLOR)
-    arcade.start_render()
+    self.clear()
     arcade.draw_circle_filled(400, 250, 100, arcade.color.BLACK)
     # load image
     image = arcade.load_texture(resource_path('character.png'))

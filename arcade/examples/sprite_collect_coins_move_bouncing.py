@@ -109,7 +109,7 @@ class MyGame(arcade.Window):
 
     def on_draw(self):
         """ Draw everything """
-        arcade.start_render()
+        self.clear()
         self.all_sprites_list.draw()
 
         # Put the text on the screen.

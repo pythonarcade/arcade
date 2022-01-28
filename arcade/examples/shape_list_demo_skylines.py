@@ -152,7 +152,7 @@ class MyGame(arcade.Window):
         # This command has to happen before we start drawing
 
         start_time = int(round(time.time() * 1000))
-        arcade.start_render()
+        self.clear()
 
         self.stars.draw()
         self.skyline1.draw()

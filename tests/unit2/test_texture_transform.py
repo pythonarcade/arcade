@@ -25,7 +25,7 @@
 #     arcade.set_background_color(arcade.color.BLACK)
 
 #     # This command has to happen before we start drawing
-#     arcade.start_render()
+#     self.clear()
 
 #     tests = [
 #         ['identity', Matrix3x3(), (14, 14, 0)],

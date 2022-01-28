@@ -749,7 +749,7 @@ class MyGame(arcade.Window):
             self.obj.center_x = 0
 
     def on_draw(self):
-        arcade.start_render()
+        self.clear()
         self.obj.draw()
         if self.label:
             arcade.draw_text("#{} {}".format(self.emitter_factory_id, self.label),

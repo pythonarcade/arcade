@@ -193,7 +193,7 @@ class MyGame(arcade.Window):
 
     def on_draw(self):
         """ Draw everything. """
-        arcade.start_render()
+        self.clear()
 
         # --- Light related ---
         # Everything that should be affected by lights gets rendered inside this

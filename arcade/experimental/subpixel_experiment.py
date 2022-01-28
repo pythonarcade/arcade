@@ -47,7 +47,7 @@ class MyGame(arcade.Window):
                         break
 
     def on_draw(self):
-        arcade.start_render()
+        self.clear()
         # self.sprites.draw(filter=gl.NEAREST)
         self.sprites.draw(filter=gl.LINEAR)
 

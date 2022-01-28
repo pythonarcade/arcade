@@ -71,7 +71,7 @@ class MyWindow(arcade.Window):
         print("Start:", event)
 
     def on_draw(self):
-        arcade.start_render()
+        self.clear()
         self.manager.draw()
 
 

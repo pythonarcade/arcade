@@ -45,7 +45,7 @@ class UIMockup(arcade.Window):
         )
 
     def on_draw(self):
-        arcade.start_render()
+        self.clear()
         self.manager.draw()
 
 

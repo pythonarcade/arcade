@@ -131,7 +131,7 @@ class MyGame(arcade.Window):
         self.frame_count += 1
 
         # This command has to happen before we start drawing
-        arcade.start_render()
+        self.clear()
 
         # Draw all the sprites.
         self.player_list.draw()

@@ -59,7 +59,7 @@ class MyGame(arcade.Window):
 
     def on_draw(self):
         """ Draw everything. """
-        arcade.start_render()
+        self.clear()
 
         self.background_sprite_list.draw()
         self.player_list.draw()

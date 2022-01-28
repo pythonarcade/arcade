@@ -54,7 +54,7 @@ class MenuView(FadingView):
 
     def on_draw(self):
         """ Draw the menu """
-        arcade.start_render()
+        self.clear()
         arcade.draw_text("Menu Screen - press space to advance", WIDTH / 2, HEIGHT / 2,
                          arcade.color.BLACK, font_size=30, anchor_x="center")
         self.draw_fading()
@@ -88,7 +88,7 @@ class GameView(FadingView):
 
     def on_draw(self):
         """ Draw everything for the game. """
-        arcade.start_render()
+        self.clear()
         arcade.draw_text("Game - press SPACE to advance", WIDTH / 2, HEIGHT / 2,
                          arcade.color.BLACK, font_size=30, anchor_x="center")
         self.draw_fading()
@@ -111,7 +111,7 @@ class GameOverView(FadingView):
 
     def on_draw(self):
         """ Draw the game over view """
-        arcade.start_render()
+        self.clear()
         arcade.draw_text("Game Over - press SPACE to advance", WIDTH / 2, HEIGHT / 2,
                          arcade.color.WHITE, 30, anchor_x="center")
         self.draw_fading()

@@ -128,7 +128,7 @@ class MyGame(arcade.Window):
         """ Render the screen. """
 
         # Clear teh screen
-        arcade.start_render()
+        self.clear()
 
         # Draw the shapes
         for shape in self.shape_list:

@@ -128,7 +128,7 @@ class MyGame(arcade.Window):
         # Start timing how long this takes
         draw_start_time = timeit.default_timer()
 
-        arcade.start_render()
+        self.clear()
         self.coin_list.draw()
         self.player_list.draw()
 

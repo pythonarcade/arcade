@@ -31,7 +31,7 @@ def test_main(window: arcade.Window):
     explosion_texture_list = arcade.load_spritesheet(file_name, sprite_width, sprite_height, columns, count)
 
     def on_draw():
-        arcade.start_render()
+        self.clear()
         texture.draw_scaled(50, 50, 1)
         texture.draw_sized(150, 50, 99, 75)
 

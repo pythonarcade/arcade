@@ -291,7 +291,7 @@ class MyGame(arcade.View):
 
     def on_draw(self):
         # clear screen and start render process
-        arcade.start_render()
+        self.clear()
 
         # draw game items
         self.bullet_list.draw()
@@ -373,7 +373,7 @@ class JoyConfigView(arcade.View):
             self.window.show_view(self.next_view)
 
     def on_draw(self):
-        arcade.start_render()
+        self.clear()
         arcade.draw_text("Configure your joystick", self.width / 2, self.height / 2 + 100,
                          arcade.color.BLACK, font_size=32, anchor_x="center")
         arcade.draw_text(self.msg, self.width / 2, self.height / 2,

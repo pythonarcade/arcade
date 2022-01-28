@@ -141,7 +141,7 @@ class MyGame(arcade.Window):
     def on_draw(self):
         """Render the screen."""
         # Clear the screen to the background color
-        arcade.start_render()
+        self.clear()
 
         # Activate the game camera
         self.camera.use()

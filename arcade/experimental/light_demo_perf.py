@@ -35,7 +35,7 @@ class MyGame(arcade.Window):
             )
 
     def on_draw(self):
-        arcade.start_render()
+        self.clear()
 
         # Everything that should be affected by lights in here
         with self.light_layer:

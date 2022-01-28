@@ -22,7 +22,7 @@ class UIMockup(arcade.Window):
         self.manager.add(UIAnchorWidget(child=label, align_y=100))
 
     def on_draw(self):
-        arcade.start_render()
+        self.clear()
         self.manager.draw()
 
 

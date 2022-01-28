@@ -16,7 +16,7 @@ class MyGame(arcade.Window):
         pass
 
     def on_draw(self):
-        arcade.start_render()
+        self.clear()
 
 
 def main():

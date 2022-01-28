@@ -75,7 +75,7 @@ class MyGame(arcade.Window):
         """ Render the screen. """
 
         # This command is necessary before drawing
-        arcade.start_render()
+        self.clear()
 
         # Draw the current position of each snowflake
         for snowflake in self.snowflake_list:

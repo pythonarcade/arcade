@@ -720,6 +720,21 @@ class View:
 
         self.key: Optional[int] = None
 
+    def clear(
+        self,
+        color: Optional[Color] = None,
+        normalized: bool = False,
+        viewport: Tuple[int, int, int, int] = None,
+    ):
+        """Clears the View's Window with the configured background color
+        set through :py:attr:`arcade.Window.background_color`.
+
+        :param Color color: Optional color overriding the current background color
+        :param bool normalized: If the color format is normalized (0.0 -> 1.0) or byte values
+        :param Tuple[int, int, int, int]: The viewport range to clear
+        """
+        self.window.clear(color, normalized, viewport)
+
     def update(self, delta_time: float):
         """To be overridden"""
         pass

@@ -72,7 +72,7 @@ class UIMockup(arcade.Window):
         self.timer.value += delta_time
 
     def on_draw(self):
-        arcade.start_render()
+        self.clear()
         self.manager.draw()
 
 

@@ -36,7 +36,7 @@ class MyGame(arcade.Window):
     def on_draw(self):
         """ Render the screen. """
 
-        arcade.start_render()
+        self.clear()
 
         # Draw the y labels
         i = 0

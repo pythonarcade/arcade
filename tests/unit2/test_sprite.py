@@ -65,7 +65,7 @@ def test_sprite(window: arcade.Window):
     individual_coin.position = (230, 230)
 
     def on_draw():
-        arcade.start_render()
+        self.clear()
         coin_list.draw()
         character_list.draw()
         assert arcade.get_pixel(150, 50) == (191, 121, 88)
@@ -111,7 +111,7 @@ def test_sprite_2(window):
     sprite_list.append(sprite)
 
     def on_draw():
-        arcade.start_render()
+        self.clear()
         assert arcade.get_pixel(50, 50) == (59, 122, 87)
         sprite.draw()
         assert arcade.get_pixel(50, 50) == (255, 204, 0)
@@ -151,7 +151,7 @@ def test_sprite_sizes(window: arcade.Window):
         character_list.append(character_sprite)
 
     def on_draw():
-        arcade.start_render()
+        self.clear()
         character_list.draw()
 
         for i in range(7):
@@ -203,7 +203,7 @@ def test_sprite_scale(window):
     character_list.append(character_sprite)
 
     def on_draw():
-        arcade.start_render()
+        self.clear()
         character_list.draw()
 
     def update(delta_time):
@@ -242,7 +242,7 @@ def test_sprite_removal(window):
 
 
     def on_draw():
-        arcade.start_render()
+        self.clear()
         character_list.draw()
 
     def update(delta_time):

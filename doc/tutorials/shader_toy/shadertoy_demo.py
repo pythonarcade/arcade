@@ -23,7 +23,7 @@ class MyGame(arcade.Window):
         self.mouse_pos = 0, 0
 
     def on_draw(self):
-        arcade.start_render()
+        self.clear()
         self.shadertoy.render(time=self.time, mouse_position=self.mouse_pos)
 
     def on_update(self, dt):

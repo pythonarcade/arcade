@@ -219,7 +219,7 @@ class MainMenu(arcade.View):
 
     def on_draw(self):
         """Draw the menu"""
-        arcade.start_render()
+        self.clear()
         arcade.draw_text(
             "Main Menu - Click to play",
             SCREEN_WIDTH / 2,
@@ -395,7 +395,7 @@ class GameView(arcade.View):
         """Render the screen."""
 
         # Clear the screen to the background color
-        arcade.start_render()
+        self.clear()
 
         # Activate the game camera
         self.camera.use()
@@ -663,7 +663,7 @@ class GameOverView(arcade.View):
 
     def on_draw(self):
         """Draw the game over view"""
-        arcade.start_render()
+        self.clear()
         arcade.draw_text(
             "Game Over - Click to restart",
             SCREEN_WIDTH / 2,

@@ -59,7 +59,7 @@ class MyGame(arcade.Window):
         Render the screen.
         """
         # This command has to happen before we start drawing
-        arcade.start_render()
+        self.clear()
 
         self.shape_list.draw()
 
