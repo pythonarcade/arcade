@@ -164,7 +164,19 @@ class Framebuffer:
         if not isinstance(value, tuple) or len(value) != 4:
             raise ValueError("viewport should be a 4-component tuple")
 
-        self._viewport = value
+        # If this is the default framebuffer we apply pixel scale
+        # automatically for the user. This will make sense for
+        # most users.
+        if self.is_default:
+            ratio = self.ctx.window.get_pixel_ratio()
+            self._viewport = (
+                int(value[0] * ratio),
+                int(value[1] * ratio),
+                int(value[2] * ratio),
+                int(value[3] * ratio),
+            )
+        else:
+            self._viewport = value
 
         # If the framebuffer is bound we need to set the viewport.
         # Otherwise it will be set on use()
